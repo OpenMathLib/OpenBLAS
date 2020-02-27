@@ -184,7 +184,7 @@ void CNAME(enum CBLAS_ORDER order,
 
   if (n == 0) return;
 
-  if (beta != ONE) SCAL_K(n, 0, 0, beta, y, abs(incy), NULL, 0, NULL, 0);
+  if (beta != ONE) SCAL_K(n, 0, 0, beta, y, blasabs(incy), NULL, 0, NULL, 0);
 
   if (alpha == ZERO) return;
 

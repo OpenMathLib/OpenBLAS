@@ -89,7 +89,7 @@ function(AllCombinations list_in absent_codes_in)
   set(CODES_OUT ${CODES_OUT} PARENT_SCOPE)
 endfunction ()
 
-# generates object files for each of the sources, using the BLAS naming scheme to pass the funciton name as a preprocessor definition
+# generates object files for each of the sources, using the BLAS naming scheme to pass the function name as a preprocessor definition
 # @param sources_in the source files to build from
 # @param defines_in (optional) preprocessor definitions that will be applied to all objects
 # @param name_in (optional) if this is set this name will be used instead of the filename. Use a * to indicate where the float character should go, if no star the character will be prepended.

@@ -64,19 +64,19 @@
 *> \verbatim
 *>          PREC_TYPE is INTEGER
 *>     Specifies the intermediate precision to be used in refinement.
-*>     The value is defined by ILAPREC(P) where P is a CHARACTER and
-*>     P    = 'S':  Single
+*>     The value is defined by ILAPREC(P) where P is a CHARACTER and P
+*>          = 'S':  Single
 *>          = 'D':  Double
 *>          = 'I':  Indigenous
-*>          = 'X', 'E':  Extra
+*>          = 'X' or 'E':  Extra
 *> \endverbatim
 *>
 *> \param[in] TRANS_TYPE
 *> \verbatim
 *>          TRANS_TYPE is INTEGER
 *>     Specifies the transposition operation on A.
-*>     The value is defined by ILATRANS(T) where T is a CHARACTER and
-*>     T    = 'N':  No transpose
+*>     The value is defined by ILATRANS(T) where T is a CHARACTER and T
+*>          = 'N':  No transpose
 *>          = 'T':  Transpose
 *>          = 'C':  Conjugate transpose
 *> \endverbatim
@@ -256,7 +256,7 @@
 *>     information as described below. There currently are up to three
 *>     pieces of information returned for each right-hand side. If
 *>     componentwise accuracy is not requested (PARAMS(3) = 0.0), then
-*>     ERRS_C is not accessed.  If N_ERR_BNDS .LT. 3, then at most
+*>     ERRS_C is not accessed.  If N_ERR_BNDS < 3, then at most
 *>     the first (:,N_ERR_BNDS) entries are returned.
 *>
 *>     The first index in ERRS_C(i,:) corresponds to the ith

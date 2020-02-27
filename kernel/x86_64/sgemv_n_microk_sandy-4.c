@@ -39,14 +39,14 @@ static void sgemv_kernel_4x8( BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y, BLASLO
 	__asm__  __volatile__
 	(
 	"vzeroupper			 \n\t"
-	"vbroadcastss    (%2), %%ymm12	 \n\t"	// x0 
-	"vbroadcastss   4(%2), %%ymm13	 \n\t"	// x1 
-	"vbroadcastss   8(%2), %%ymm14	 \n\t"	// x2 
-	"vbroadcastss  12(%2), %%ymm15	 \n\t"	// x3 
-	"vbroadcastss  16(%2), %%ymm0 	 \n\t"	// x4 
-	"vbroadcastss  20(%2), %%ymm1 	 \n\t"	// x5 
-	"vbroadcastss  24(%2), %%ymm2 	 \n\t"	// x6 
-	"vbroadcastss  28(%2), %%ymm3 	 \n\t"	// x7 
+	"vbroadcastss    (%3), %%ymm12	 \n\t"	// x0 
+	"vbroadcastss   4(%3), %%ymm13	 \n\t"	// x1 
+	"vbroadcastss   8(%3), %%ymm14	 \n\t"	// x2 
+	"vbroadcastss  12(%3), %%ymm15	 \n\t"	// x3 
+	"vbroadcastss  16(%3), %%ymm0 	 \n\t"	// x4 
+	"vbroadcastss  20(%3), %%ymm1 	 \n\t"	// x5 
+	"vbroadcastss  24(%3), %%ymm2 	 \n\t"	// x6 
+	"vbroadcastss  28(%3), %%ymm3 	 \n\t"	// x7 
 
 	"vbroadcastss    (%9), %%ymm6 	 \n\t"	// alpha 
 
@@ -55,21 +55,21 @@ static void sgemv_kernel_4x8( BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y, BLASLO
 
 	"vxorps	  %%xmm4 , %%xmm4 , %%xmm4        \n\t"
 	"vxorps	  %%xmm5 , %%xmm5 , %%xmm5        \n\t"
-	"vmovups	(%3,%0,4), %%xmm7	  \n\t"	// 4 * y
+	"vmovups	(%4,%0,4), %%xmm7	  \n\t"	// 4 * y
 
-	"vmulps   (%4,%0,4), %%xmm12, %%xmm8      \n\t" 
-	"vmulps   (%5,%0,4), %%xmm13, %%xmm10     \n\t" 
-	"vmulps   (%6,%0,4), %%xmm14, %%xmm9      \n\t" 
-	"vmulps   (%7,%0,4), %%xmm15, %%xmm11     \n\t" 
+	"vmulps   (%5,%0,4), %%xmm12, %%xmm8      \n\t" 
+	"vmulps   (%6,%0,4), %%xmm13, %%xmm10     \n\t" 
+	"vmulps   (%7,%0,4), %%xmm14, %%xmm9      \n\t" 
+	"vmulps   (%8,%0,4), %%xmm15, %%xmm11     \n\t" 
 	"vaddps	  %%xmm4, %%xmm8 , %%xmm4	  \n\t"
 	"vaddps	  %%xmm5, %%xmm10, %%xmm5	  \n\t"
 	"vaddps	  %%xmm4, %%xmm9 , %%xmm4	  \n\t"
 	"vaddps	  %%xmm5, %%xmm11, %%xmm5	  \n\t"
 
-	"vmulps   (%4,%8,4), %%xmm0 , %%xmm8      \n\t" 
-	"vmulps   (%5,%8,4), %%xmm1 , %%xmm10     \n\t" 
-	"vmulps   (%6,%8,4), %%xmm2 , %%xmm9      \n\t" 
-	"vmulps   (%7,%8,4), %%xmm3 , %%xmm11     \n\t" 
+	"vmulps   (%5,%2,4), %%xmm0 , %%xmm8      \n\t" 
+	"vmulps   (%6,%2,4), %%xmm1 , %%xmm10     \n\t" 
+	"vmulps   (%7,%2,4), %%xmm2 , %%xmm9      \n\t" 
+	"vmulps   (%8,%2,4), %%xmm3 , %%xmm11     \n\t" 
 	"vaddps	  %%xmm4, %%xmm8 , %%xmm4	  \n\t"
 	"vaddps	  %%xmm5, %%xmm10, %%xmm5	  \n\t"
 	"vaddps	  %%xmm4, %%xmm9 , %%xmm4	  \n\t"
@@ -79,9 +79,9 @@ static void sgemv_kernel_4x8( BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y, BLASLO
 	"vmulps	  %%xmm6, %%xmm4 , %%xmm5	  \n\t"
 	"vaddps	  %%xmm5, %%xmm7 , %%xmm5	  \n\t"
 
-	"vmovups  %%xmm5,   (%3,%0,4)		  \n\t"	// 4 * y
+	"vmovups  %%xmm5,   (%4,%0,4)		  \n\t"	// 4 * y
 
-        "addq		$4, %8	  	 	  \n\t"
+        "addq		$4, %2	  	 	  \n\t"
         "addq		$4, %0	  	 	  \n\t"
 	"subq	        $4, %1			  \n\t"		
 
@@ -92,21 +92,21 @@ static void sgemv_kernel_4x8( BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y, BLASLO
 
 	"vxorps	  %%ymm4 , %%ymm4 , %%ymm4        \n\t"
 	"vxorps	  %%ymm5 , %%ymm5 , %%ymm5        \n\t"
-	"vmovups	(%3,%0,4), %%ymm7	  \n\t"	// 8 * y
+	"vmovups	(%4,%0,4), %%ymm7	  \n\t"	// 8 * y
 
-	"vmulps   (%4,%0,4), %%ymm12, %%ymm8      \n\t" 
-	"vmulps   (%5,%0,4), %%ymm13, %%ymm10     \n\t" 
-	"vmulps   (%6,%0,4), %%ymm14, %%ymm9      \n\t" 
-	"vmulps   (%7,%0,4), %%ymm15, %%ymm11     \n\t" 
+	"vmulps   (%5,%0,4), %%ymm12, %%ymm8      \n\t" 
+	"vmulps   (%6,%0,4), %%ymm13, %%ymm10     \n\t" 
+	"vmulps   (%7,%0,4), %%ymm14, %%ymm9      \n\t" 
+	"vmulps   (%8,%0,4), %%ymm15, %%ymm11     \n\t" 
 	"vaddps	  %%ymm4, %%ymm8 , %%ymm4	  \n\t"
 	"vaddps	  %%ymm5, %%ymm10, %%ymm5	  \n\t"
 	"vaddps	  %%ymm4, %%ymm9 , %%ymm4	  \n\t"
 	"vaddps	  %%ymm5, %%ymm11, %%ymm5	  \n\t"
 
-	"vmulps   (%4,%8,4), %%ymm0 , %%ymm8      \n\t" 
-	"vmulps   (%5,%8,4), %%ymm1 , %%ymm10     \n\t" 
-	"vmulps   (%6,%8,4), %%ymm2 , %%ymm9      \n\t" 
-	"vmulps   (%7,%8,4), %%ymm3 , %%ymm11     \n\t" 
+	"vmulps   (%5,%2,4), %%ymm0 , %%ymm8      \n\t" 
+	"vmulps   (%6,%2,4), %%ymm1 , %%ymm10     \n\t" 
+	"vmulps   (%7,%2,4), %%ymm2 , %%ymm9      \n\t" 
+	"vmulps   (%8,%2,4), %%ymm3 , %%ymm11     \n\t" 
 	"vaddps	  %%ymm4, %%ymm8 , %%ymm4	  \n\t"
 	"vaddps	  %%ymm5, %%ymm10, %%ymm5	  \n\t"
 	"vaddps	  %%ymm4, %%ymm9 , %%ymm4	  \n\t"
@@ -116,9 +116,9 @@ static void sgemv_kernel_4x8( BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y, BLASLO
 	"vmulps	  %%ymm6, %%ymm4 , %%ymm5	  \n\t"
 	"vaddps	  %%ymm5, %%ymm7 , %%ymm5	  \n\t"
 
-	"vmovups  %%ymm5,   (%3,%0,4)		  \n\t"	// 8 * y
+	"vmovups  %%ymm5,   (%4,%0,4)		  \n\t"	// 8 * y
 
-        "addq		$8, %8	  	 	  \n\t"
+        "addq		$8, %2	  	 	  \n\t"
         "addq		$8, %0	  	 	  \n\t"
 	"subq	        $8, %1			  \n\t"		
 
@@ -134,45 +134,45 @@ static void sgemv_kernel_4x8( BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y, BLASLO
 	"vxorps	  %%ymm4 , %%ymm4 , %%ymm4        \n\t"
 	"vxorps	  %%ymm5 , %%ymm5 , %%ymm5        \n\t"
 
-	"prefetcht0	 192(%4,%0,4)		  \n\t"
-	"vmulps   (%4,%0,4), %%ymm12, %%ymm8      \n\t" 
-	"vmulps 32(%4,%0,4), %%ymm12, %%ymm9      \n\t" 
 	"prefetcht0	 192(%5,%0,4)		  \n\t"
-	"vmulps   (%5,%0,4), %%ymm13, %%ymm10     \n\t" 
-	"vmulps 32(%5,%0,4), %%ymm13, %%ymm11     \n\t" 
-	"vaddps	  %%ymm4, %%ymm8 , %%ymm4	  \n\t"
-	"vaddps	  %%ymm5, %%ymm9 , %%ymm5	  \n\t"
-	"vaddps	  %%ymm4, %%ymm10, %%ymm4	  \n\t"
-	"vaddps	  %%ymm5, %%ymm11, %%ymm5	  \n\t"
-
+	"vmulps   (%5,%0,4), %%ymm12, %%ymm8      \n\t" 
+	"vmulps 32(%5,%0,4), %%ymm12, %%ymm9      \n\t" 
 	"prefetcht0	 192(%6,%0,4)		  \n\t"
-	"vmulps   (%6,%0,4), %%ymm14, %%ymm8      \n\t" 
-	"vmulps 32(%6,%0,4), %%ymm14, %%ymm9      \n\t" 
+	"vmulps   (%6,%0,4), %%ymm13, %%ymm10     \n\t" 
+	"vmulps 32(%6,%0,4), %%ymm13, %%ymm11     \n\t" 
+	"vaddps	  %%ymm4, %%ymm8 , %%ymm4	  \n\t"
+	"vaddps	  %%ymm5, %%ymm9 , %%ymm5	  \n\t"
+	"vaddps	  %%ymm4, %%ymm10, %%ymm4	  \n\t"
+	"vaddps	  %%ymm5, %%ymm11, %%ymm5	  \n\t"
+
 	"prefetcht0	 192(%7,%0,4)		  \n\t"
-	"vmulps   (%7,%0,4), %%ymm15, %%ymm10     \n\t" 
-	"vmulps 32(%7,%0,4), %%ymm15, %%ymm11     \n\t" 
+	"vmulps   (%7,%0,4), %%ymm14, %%ymm8      \n\t" 
+	"vmulps 32(%7,%0,4), %%ymm14, %%ymm9      \n\t" 
+	"prefetcht0	 192(%8,%0,4)		  \n\t"
+	"vmulps   (%8,%0,4), %%ymm15, %%ymm10     \n\t" 
+	"vmulps 32(%8,%0,4), %%ymm15, %%ymm11     \n\t" 
 	"vaddps	  %%ymm4, %%ymm8 , %%ymm4	  \n\t"
 	"vaddps	  %%ymm5, %%ymm9 , %%ymm5	  \n\t"
 	"vaddps	  %%ymm4, %%ymm10, %%ymm4	  \n\t"
 	"vaddps	  %%ymm5, %%ymm11, %%ymm5	  \n\t"
 
-	"prefetcht0	 192(%4,%8,4)		  \n\t"
-	"vmulps   (%4,%8,4), %%ymm0 , %%ymm8      \n\t" 
-	"vmulps 32(%4,%8,4), %%ymm0 , %%ymm9      \n\t" 
-	"prefetcht0	 192(%5,%8,4)		  \n\t"
-	"vmulps   (%5,%8,4), %%ymm1 , %%ymm10     \n\t" 
-	"vmulps 32(%5,%8,4), %%ymm1 , %%ymm11     \n\t" 
+	"prefetcht0	 192(%5,%2,4)		  \n\t"
+	"vmulps   (%5,%2,4), %%ymm0 , %%ymm8      \n\t" 
+	"vmulps 32(%5,%2,4), %%ymm0 , %%ymm9      \n\t" 
+	"prefetcht0	 192(%6,%2,4)		  \n\t"
+	"vmulps   (%6,%2,4), %%ymm1 , %%ymm10     \n\t" 
+	"vmulps 32(%6,%2,4), %%ymm1 , %%ymm11     \n\t" 
 	"vaddps	  %%ymm4, %%ymm8 , %%ymm4	  \n\t"
 	"vaddps	  %%ymm5, %%ymm9 , %%ymm5	  \n\t"
 	"vaddps	  %%ymm4, %%ymm10, %%ymm4	  \n\t"
 	"vaddps	  %%ymm5, %%ymm11, %%ymm5	  \n\t"
 
-	"prefetcht0	 192(%6,%8,4)		  \n\t"
-	"vmulps   (%6,%8,4), %%ymm2 , %%ymm8      \n\t" 
-	"vmulps 32(%6,%8,4), %%ymm2 , %%ymm9      \n\t" 
-	"prefetcht0	 192(%7,%8,4)		  \n\t"
-	"vmulps   (%7,%8,4), %%ymm3 , %%ymm10     \n\t" 
-	"vmulps 32(%7,%8,4), %%ymm3 , %%ymm11     \n\t" 
+	"prefetcht0	 192(%7,%2,4)		  \n\t"
+	"vmulps   (%7,%2,4), %%ymm2 , %%ymm8      \n\t" 
+	"vmulps 32(%7,%2,4), %%ymm2 , %%ymm9      \n\t" 
+	"prefetcht0	 192(%8,%2,4)		  \n\t"
+	"vmulps   (%8,%2,4), %%ymm3 , %%ymm10     \n\t" 
+	"vmulps 32(%8,%2,4), %%ymm3 , %%ymm11     \n\t" 
 	"vaddps	  %%ymm4, %%ymm8 , %%ymm4	  \n\t"
 	"vaddps	  %%ymm5, %%ymm9 , %%ymm5	  \n\t"
 	"vaddps	  %%ymm4, %%ymm10, %%ymm4	  \n\t"
@@ -181,13 +181,13 @@ static void sgemv_kernel_4x8( BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y, BLASLO
 	"vmulps	  %%ymm6, %%ymm4 , %%ymm4	  \n\t"
 	"vmulps	  %%ymm6, %%ymm5 , %%ymm5	  \n\t"
 
-	"vaddps    (%3,%0,4), %%ymm4 , %%ymm4	 \n\t"	// 8 * y
-	"vaddps  32(%3,%0,4), %%ymm5 , %%ymm5	 \n\t"	// 8 * y
+	"vaddps    (%4,%0,4), %%ymm4 , %%ymm4	 \n\t"	// 8 * y
+	"vaddps  32(%4,%0,4), %%ymm5 , %%ymm5	 \n\t"	// 8 * y
 
-	"vmovups  %%ymm4,   (%3,%0,4)		  \n\t"	// 8 * y
-	"vmovups  %%ymm5, 32(%3,%0,4)		  \n\t"	// 8 * y
+	"vmovups  %%ymm4,   (%4,%0,4)		  \n\t"	// 8 * y
+	"vmovups  %%ymm5, 32(%4,%0,4)		  \n\t"	// 8 * y
 
-        "addq		$16, %8	  	 	  \n\t"
+        "addq		$16, %2	  	 	  \n\t"
         "addq		$16, %0	  	 	  \n\t"
 	"subq	        $16, %1			  \n\t"		
 	"jnz		1b		  \n\t"
@@ -197,15 +197,15 @@ static void sgemv_kernel_4x8( BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y, BLASLO
 
 	:
           "+r" (i),	// 0	
-	  "+r" (n)  	// 1
+	  "+r" (n),  	// 1
+          "+r" (lda4)   // 2
         : 
-          "r" (x),      // 2
-          "r" (y),      // 3
-          "r" (ap[0]),  // 4
-          "r" (ap[1]),  // 5
-          "r" (ap[2]),  // 6
-          "r" (ap[3]),  // 7
-          "r" (lda4),   // 8
+          "r" (x),      // 3
+          "r" (y),      // 4
+          "r" (ap[0]),  // 5
+          "r" (ap[1]),  // 6
+          "r" (ap[2]),  // 7
+          "r" (ap[3]),  // 8
           "r" (alpha)   // 9
 	: "cc", 
 	  "%xmm0", "%xmm1", 

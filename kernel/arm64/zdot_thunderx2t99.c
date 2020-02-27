@@ -317,13 +317,10 @@ OPENBLAS_COMPLEX_FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLA
        CIMAG(zdot) = 0.0;
 
 #if defined(SMP)
-	nthreads = num_cpu_avail(1);
-
-	if (inc_x == 0 || inc_y == 0)
+	if (inc_x == 0 || inc_y == 0 || n <= 10000)
 		nthreads = 1;
-
-	if (n <= 10000)
-		nthreads = 1;
+	else
+		nthreads = num_cpu_avail(1);
 
 	if (nthreads == 1) {
 		zdot_compute(n, x, inc_x, y, inc_y, &zdot);

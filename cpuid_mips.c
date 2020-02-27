@@ -72,10 +72,12 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #define CPU_UNKNOWN     0
 #define CPU_P5600       1
+#define CPU_1004K	2
 
 static char *cpuname[] = {
-  "UNKOWN",
-  "P5600"
+  "UNKNOWN",
+  "P5600",
+  "1004K"
 };
 
 int detect(void){
@@ -90,7 +92,7 @@ int detect(void){
     if (!strncmp("cpu", buffer, 3)){
 	p = strchr(buffer, ':') + 2;
 #if 0
-	fprintf(stderr, "%s\n", p);
+	fprintf(stderr, "%s \n", p);
 #endif
 	break;
       }
@@ -99,42 +101,12 @@ int detect(void){
   fclose(infile);
 
   if(p != NULL){
-  if (strstr(p, "Loongson-3A")){
-    return CPU_LOONGSON3A;
-  }else if(strstr(p, "Loongson-3B")){
-    return CPU_LOONGSON3B;
-  }else if (strstr(p, "Loongson-3")){
-    infile = fopen("/proc/cpuinfo", "r");
-    p = (char *)NULL;
-    while (fgets(buffer, sizeof(buffer), infile)){
-      if (!strncmp("system type", buffer, 11)){
-	p = strchr(buffer, ':') + 2;
-	break;
-      }
-    }
-    fclose(infile);
-    if (strstr(p, "loongson3a"))
-      return CPU_LOONGSON3A;
-  }else{
+  if (strstr(p, "5600")) {
+    return CPU_P5600;
+  } else if (strstr(p, "1004K")) {
+    return CPU_1004K;
+  } else  
     return CPU_UNKNOWN;
-  }
-  }
-  //Check model name for Loongson3
-  infile = fopen("/proc/cpuinfo", "r");
-  p = (char *)NULL;
-  while (fgets(buffer, sizeof(buffer), infile)){
-    if (!strncmp("model name", buffer, 10)){
-      p = strchr(buffer, ':') + 2;
-      break;
-    }
-  }
-  fclose(infile);
-  if(p != NULL){
-  if (strstr(p, "Loongson-3A")){
-    return CPU_LOONGSON3A;
-  }else if(strstr(p, "Loongson-3B")){
-    return CPU_LOONGSON3B;
-  }
   }
 #endif
     return CPU_UNKNOWN;
@@ -149,7 +121,7 @@ void get_architecture(void){
 }
 
 void get_subarchitecture(void){
-  if(detect()==CPU_P5600){
+  if(detect()==CPU_P5600|| detect()==CPU_1004K){
     printf("P5600");
   }else{
     printf("UNKNOWN");
@@ -170,6 +142,14 @@ void get_cpuconfig(void){
     printf("#define DTB_DEFAULT_ENTRIES 64\n");
     printf("#define DTB_SIZE 4096\n");
     printf("#define L2_ASSOCIATIVE 8\n");
+  } else if (detect()==CPU_1004K) {
+    printf("#define MIPS1004K\n");
+    printf("#define L1_DATA_SIZE 32768\n");
+    printf("#define L1_DATA_LINESIZE 32\n");
+    printf("#define L2_SIZE 26144\n");
+    printf("#define DTB_DEFAULT_ENTRIES 8\n");
+    printf("#define DTB_SIZE 4096\n");
+    printf("#define L2_ASSOCIATIVE 4\n");
   }else{
     printf("#define UNKNOWN\n");
   }
@@ -178,6 +158,8 @@ void get_cpuconfig(void){
 void get_libname(void){
   if(detect()==CPU_P5600) {
     printf("p5600\n");
+  } else if (detect()==CPU_1004K) {
+    printf("1004K\n");
   }else{
     printf("mips\n");
   }

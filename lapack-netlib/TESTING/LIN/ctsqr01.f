@@ -114,7 +114,7 @@
 *     ..
 *     .. Local Arrays ..
       INTEGER            ISEED( 4 )
-      COMPLEX            TQUERY( 5 ), WORKQUERY
+      COMPLEX            TQUERY( 5 ), WORKQUERY( 1 )
 *     ..
 *     .. External Functions ..
       REAL     SLAMCH, CLANGE, CLANSY
@@ -173,22 +173,22 @@
 *
       CALL CGEQR( M, N, AF, M, TQUERY, -1, WORKQUERY, -1, INFO )
       TSIZE = INT( TQUERY( 1 ) )
-      LWORK = INT( WORKQUERY )
+      LWORK = INT( WORKQUERY( 1 ) )
       CALL CGEMQR( 'L', 'N', M, M, K, AF, M, TQUERY, TSIZE, CF, M,
      $             WORKQUERY, -1, INFO)
-      LWORK = MAX( LWORK, INT( WORKQUERY ) )
+      LWORK = MAX( LWORK, INT( WORKQUERY( 1 ) ) )
       CALL CGEMQR( 'L', 'N', M, N, K, AF, M, TQUERY, TSIZE, CF, M,
      $             WORKQUERY, -1, INFO)
-      LWORK = MAX( LWORK, INT( WORKQUERY ) )
+      LWORK = MAX( LWORK, INT( WORKQUERY( 1 ) ) )
       CALL CGEMQR( 'L', 'C', M, N, K, AF, M, TQUERY, TSIZE, CF, M,
      $             WORKQUERY, -1, INFO)
-      LWORK = MAX( LWORK, INT( WORKQUERY ) )
+      LWORK = MAX( LWORK, INT( WORKQUERY( 1 ) ) )
       CALL CGEMQR( 'R', 'N', N, M, K, AF, M, TQUERY, TSIZE, DF, N,
      $             WORKQUERY, -1, INFO)
-      LWORK = MAX( LWORK, INT( WORKQUERY ) )
+      LWORK = MAX( LWORK, INT( WORKQUERY( 1 ) ) )
       CALL CGEMQR( 'R', 'C', N, M, K, AF, M, TQUERY, TSIZE, DF, N,
      $             WORKQUERY, -1, INFO)
-      LWORK = MAX( LWORK, INT( WORKQUERY ) )
+      LWORK = MAX( LWORK, INT( WORKQUERY( 1 ) ) )
       ALLOCATE ( T( TSIZE ) )
       ALLOCATE ( WORK( LWORK ) )
       srnamt = 'CGEQR'
@@ -316,22 +316,22 @@
       ELSE
       CALL CGELQ( M, N, AF, M, TQUERY, -1, WORKQUERY, -1, INFO )
       TSIZE = INT( TQUERY( 1 ) )
-      LWORK = INT( WORKQUERY )
+      LWORK = INT( WORKQUERY( 1 ) )
       CALL CGEMLQ( 'R', 'N', N, N, K, AF, M, TQUERY, TSIZE, Q, N,
      $              WORKQUERY, -1, INFO )
-      LWORK = MAX( LWORK, INT( WORKQUERY ) )
+      LWORK = MAX( LWORK, INT( WORKQUERY( 1 ) ) )
       CALL CGEMLQ( 'L', 'N', N, M, K, AF, M, TQUERY, TSIZE, DF, N,
      $             WORKQUERY, -1, INFO)
-      LWORK = MAX( LWORK, INT( WORKQUERY ) )
+      LWORK = MAX( LWORK, INT( WORKQUERY( 1 ) ) )
       CALL CGEMLQ( 'L', 'C', N, M, K, AF, M, TQUERY, TSIZE, DF, N,
      $             WORKQUERY, -1, INFO)
-      LWORK = MAX( LWORK, INT( WORKQUERY ) )
+      LWORK = MAX( LWORK, INT( WORKQUERY( 1 ) ) )
       CALL CGEMLQ( 'R', 'N', M, N, K, AF, M, TQUERY, TSIZE, CF, M,
      $             WORKQUERY, -1, INFO)
-      LWORK = MAX( LWORK, INT( WORKQUERY ) )
+      LWORK = MAX( LWORK, INT( WORKQUERY( 1 ) ) )
       CALL CGEMLQ( 'R', 'C', M, N, K, AF, M, TQUERY, TSIZE, CF, M,
      $             WORKQUERY, -1, INFO)
-      LWORK = MAX( LWORK, INT( WORKQUERY ) )
+      LWORK = MAX( LWORK, INT( WORKQUERY( 1 ) ) )
       ALLOCATE ( T( TSIZE ) )
       ALLOCATE ( WORK( LWORK ) )
       srnamt = 'CGELQ'

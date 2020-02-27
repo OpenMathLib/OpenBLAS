@@ -199,7 +199,7 @@
 *> \verbatim
 *>          SPARSE is DOUBLE PRECISION between 0. and 1.
 *>           On entry specifies the sparsity of the matrix
-*>           if sparse matix is to be generated.
+*>           if sparse matrix is to be generated.
 *>           SPARSE should lie between 0 and 1.
 *>           A uniform ( 0, 1 ) random number x is generated and
 *>           compared to SPARSE; if x is larger the matrix entry

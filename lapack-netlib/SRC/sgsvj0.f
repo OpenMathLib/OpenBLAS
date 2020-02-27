@@ -117,7 +117,7 @@
 *> \param[in] MV
 *> \verbatim
 *>          MV is INTEGER
-*>          If JOBV .EQ. 'A', then MV rows of V are post-multipled by a
+*>          If JOBV = 'A', then MV rows of V are post-multipled by a
 *>                           sequence of Jacobi rotations.
 *>          If JOBV = 'N',   then MV is not referenced.
 *> \endverbatim
@@ -125,9 +125,9 @@
 *> \param[in,out] V
 *> \verbatim
 *>          V is REAL array, dimension (LDV,N)
-*>          If JOBV .EQ. 'V' then N rows of V are post-multipled by a
+*>          If JOBV = 'V' then N rows of V are post-multipled by a
 *>                           sequence of Jacobi rotations.
-*>          If JOBV .EQ. 'A' then MV rows of V are post-multipled by a
+*>          If JOBV = 'A' then MV rows of V are post-multipled by a
 *>                           sequence of Jacobi rotations.
 *>          If JOBV = 'N',   then V is not referenced.
 *> \endverbatim
@@ -136,8 +136,8 @@
 *> \verbatim
 *>          LDV is INTEGER
 *>          The leading dimension of the array V,  LDV >= 1.
-*>          If JOBV = 'V', LDV .GE. N.
-*>          If JOBV = 'A', LDV .GE. MV.
+*>          If JOBV = 'V', LDV >= N.
+*>          If JOBV = 'A', LDV >= MV.
 *> \endverbatim
 *>
 *> \param[in] EPS
@@ -157,7 +157,7 @@
 *>          TOL is REAL
 *>          TOL is the threshold for Jacobi rotations. For a pair
 *>          A(:,p), A(:,q) of pivot columns, the Jacobi rotation is
-*>          applied only if ABS(COS(angle(A(:,p),A(:,q)))) .GT. TOL.
+*>          applied only if ABS(COS(angle(A(:,p),A(:,q)))) > TOL.
 *> \endverbatim
 *>
 *> \param[in] NSWEEP
@@ -175,14 +175,14 @@
 *> \param[in] LWORK
 *> \verbatim
 *>          LWORK is INTEGER
-*>          LWORK is the dimension of WORK. LWORK .GE. M.
+*>          LWORK is the dimension of WORK. LWORK >= M.
 *> \endverbatim
 *>
 *> \param[out] INFO
 *> \verbatim
 *>          INFO is INTEGER
-*>          = 0 : successful exit.
-*>          < 0 : if INFO = -i, then the i-th argument had an illegal value
+*>          = 0:  successful exit.
+*>          < 0:  if INFO = -i, then the i-th argument had an illegal value
 *> \endverbatim
 *
 *  Authors:
@@ -1045,7 +1045,7 @@
 
  1993 CONTINUE
 *     end i=1:NSWEEP loop
-* #:) Reaching this point means that the procedure has comleted the given
+* #:) Reaching this point means that the procedure has completed the given
 *     number of iterations.
       INFO = NSWEEP - 1
       GO TO 1995

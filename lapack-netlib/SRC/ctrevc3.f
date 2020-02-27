@@ -27,8 +27,8 @@
 *       ..
 *       .. Array Arguments ..
 *       LOGICAL            SELECT( * )
-*       REAL   RWORK( * )
-*       COMPLEX         T( LDT, * ), VL( LDVL, * ), VR( LDVR, * ),
+*       REAL               RWORK( * )
+*       COMPLEX            T( LDT, * ), VL( LDVL, * ), VR( LDVR, * ),
 *      $                   WORK( * )
 *       ..
 *
@@ -258,17 +258,17 @@
 *     ..
 *     .. Array Arguments ..
       LOGICAL            SELECT( * )
-      REAL   RWORK( * )
-      COMPLEX         T( LDT, * ), VL( LDVL, * ), VR( LDVR, * ),
+      REAL               RWORK( * )
+      COMPLEX            T( LDT, * ), VL( LDVL, * ), VR( LDVR, * ),
      $                   WORK( * )
 *     ..
 *
 *  =====================================================================
 *
 *     .. Parameters ..
-      REAL   ZERO, ONE
+      REAL               ZERO, ONE
       PARAMETER          ( ZERO = 0.0E+0, ONE = 1.0E+0 )
-      COMPLEX         CZERO, CONE
+      COMPLEX            CZERO, CONE
       PARAMETER          ( CZERO = ( 0.0E+0, 0.0E+0 ),
      $                     CONE  = ( 1.0E+0, 0.0E+0 ) )
       INTEGER            NBMIN, NBMAX
@@ -277,13 +277,13 @@
 *     .. Local Scalars ..
       LOGICAL            ALLV, BOTHV, LEFTV, LQUERY, OVER, RIGHTV, SOMEV
       INTEGER            I, II, IS, J, K, KI, IV, MAXWRK, NB
-      REAL   OVFL, REMAX, SCALE, SMIN, SMLNUM, ULP, UNFL
-      COMPLEX         CDUM
+      REAL               OVFL, REMAX, SCALE, SMIN, SMLNUM, ULP, UNFL
+      COMPLEX            CDUM
 *     ..
 *     .. External Functions ..
       LOGICAL            LSAME
       INTEGER            ILAENV, ICAMAX
-      REAL   SLAMCH, SCASUM
+      REAL               SLAMCH, SCASUM
       EXTERNAL           LSAME, ILAENV, ICAMAX, SLAMCH, SCASUM
 *     ..
 *     .. External Subroutines ..

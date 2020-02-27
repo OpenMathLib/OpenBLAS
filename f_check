@@ -19,7 +19,7 @@ $nofortran = 0;
 
 $compiler = join(" ", @ARGV);
 $compiler_bin = shift(@ARGV);
-
+ 
 # f77 is too ambiguous
 $compiler = "" if $compiler eq "f77";
 
@@ -71,7 +71,7 @@ if ($compiler eq "") {
 
 	if ($data =~ /GNU/) {
 
-	    $data =~ /(\d)\.(\d).(\d)/;
+	    $data =~ /(\d+)\.(\d+).(\d+)/;
 	    $major = $1;
 	    $minor = $2;
 
@@ -97,7 +97,7 @@ if ($compiler eq "") {
 
 	if ($data =~ /Intel/) {
 	    $vendor = INTEL;
-	    $openmp = "-openmp";
+	    $openmp = "-fopenmp";
 	}
 
         if ($data =~ /Sun Fortran/) {
@@ -125,10 +125,15 @@ if ($compiler eq "") {
 	    $openmp = "-openmp";
 	}
 
-	# for embeded underscore name, e.g. zho_ge, it may append 2 underscores.
+	# for embedded underscore name, e.g. zho_ge, it may append 2 underscores.
 	$data = `$compiler -O2 -S ftest3.f > /dev/null 2>&1 && cat ftest3.s && rm -f ftest3.s`;
-	if ($data =~ /zho_ge__/) {
+	if ($data =~ / zho_ge__/) {
 	    $need2bu       = 1;
+	}
+	if ($vendor =~ /G95/) {
+    	  if ($ENV{NO_LAPACKE} != 1) {
+		$need2bu = "";
+	  }
 	}
     }
 
@@ -155,7 +160,7 @@ if ($compiler eq "") {
 	if ($compiler =~ /ifort/) {
 	    $vendor = INTEL;
 	    $bu       = "_";
-	    $openmp = "-openmp";
+	    $openmp = "-fopenmp";
 	}
 
 	if ($compiler =~ /pathf/) {
@@ -277,6 +282,8 @@ $linker_a = "";
 if ($link ne "") {
 
     $link =~ s/\-Y\sP\,/\-Y/g;
+    
+    $link =~ s/\-R\s*/\-rpath\@/g;
 
     $link =~ s/\-rpath\s+/\-rpath\@/g;
 
@@ -292,9 +299,6 @@ if ($link ne "") {
 	    && ($flags !~ /^-LIST:/)
 	    && ($flags !~ /^-LANG:/)
 	    ) {
-	    if ($vendor eq "PGI") {
-		$flags =~ s/lib$/libso/;
-	    }
 	    $linker_L .= $flags . " ";
 	}
 
@@ -311,17 +315,11 @@ if ($link ne "") {
 
 	if ($flags =~ /^\-rpath\@/) {
 	    $flags =~ s/\@/\,/g;
-	    if ($vendor eq "PGI") {
-		$flags =~ s/lib$/libso/;
-	    }
 	    $linker_L .= "-Wl,". $flags . " " ;
 	}
 
 	if ($flags =~ /^\-rpath-link\@/) {
 	    $flags =~ s/\@/\,/g;
-	    if ($vendor eq "PGI") {
-		$flags =~ s/lib$/libso/;
-	    }
 	    $linker_L .= "-Wl,". $flags . " " ;
 	}
 
@@ -330,13 +328,13 @@ if ($link ne "") {
 	    && ($flags !~ /gfortranbegin/)
 	    && ($flags !~ /frtbegin/)
 	    && ($flags !~ /pathfstart/)
-	    && ($flags !~ /numa/)
 	    && ($flags !~ /crt[0-9]/)
 	    && ($flags !~ /gcc/)
 	    && ($flags !~ /user32/)
 	    && ($flags !~ /kernel32/)
 	    && ($flags !~ /advapi32/)
 	    && ($flags !~ /shell32/)
+	    && ($flags !~ /omp/)
 		&& ($flags !~ /^\-l$/)
 	    ) {
 	    $linker_l .= $flags . " ";

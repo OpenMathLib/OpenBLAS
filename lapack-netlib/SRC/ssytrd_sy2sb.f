@@ -285,8 +285,8 @@
 *     ..
 *     .. External Functions ..
       LOGICAL            LSAME
-      INTEGER            ILAENV 
-      EXTERNAL           LSAME, ILAENV
+      INTEGER            ILAENV2STAGE 
+      EXTERNAL           LSAME, ILAENV2STAGE
 *     ..
 *     .. Executable Statements ..
 *
@@ -296,7 +296,7 @@
       INFO   = 0
       UPPER  = LSAME( UPLO, 'U' )
       LQUERY = ( LWORK.EQ.-1 )
-      LWMIN  = ILAENV( 20, 'SSYTRD_SY2SB', '', N, KD, -1, -1 )
+      LWMIN  = ILAENV2STAGE( 4, 'SSYTRD_SY2SB', '', N, KD, -1, -1 )
       
       IF( .NOT.UPPER .AND. .NOT.LSAME( UPLO, 'L' ) ) THEN
          INFO = -1
@@ -363,7 +363,7 @@
 *
 *
 *     Set the workspace of the triangular matrix T to zero once such a
-*     way everytime T is generated the upper/lower portion will be always zero  
+*     way every time T is generated the upper/lower portion will be always zero
 *   
       CALL SLASET( "A", LDT, KD, ZERO, ZERO, WORK( TPOS ), LDT )
 *

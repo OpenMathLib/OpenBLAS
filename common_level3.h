@@ -47,6 +47,14 @@ __global__ void cuda_dgemm_kernel(int, int, int, double *, double *, double *);
 extern "C" {
 #endif
 
+extern void sgemm_kernel_direct(BLASLONG M, BLASLONG N, BLASLONG K,
+	float * A, BLASLONG strideA,
+	float * B, BLASLONG strideB,
+	float * R, BLASLONG strideR);
+
+extern int sgemm_kernel_direct_performant(BLASLONG M, BLASLONG N, BLASLONG K);
+
+
 int sgemm_beta(BLASLONG, BLASLONG, BLASLONG, float,
 	       float  *, BLASLONG, float   *, BLASLONG, float  *, BLASLONG);
 int dgemm_beta(BLASLONG, BLASLONG, BLASLONG, double,

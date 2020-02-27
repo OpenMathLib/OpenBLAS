@@ -50,7 +50,7 @@
 
 /* This is a thread implementation for Win32 lazy implementation */
 
-/* Thread server common infomation */
+/* Thread server common information */
 typedef struct{
   CRITICAL_SECTION lock;
   HANDLE filled;
@@ -61,7 +61,7 @@ typedef struct{
 
 } blas_pool_t;
 
-/* We need this global for cheking if initialization is finished.   */
+/* We need this global for checking if initialization is finished.   */
 int blas_server_avail = 0;
 
 /* Local Variables */
@@ -461,12 +461,21 @@ int BLASFUNC(blas_thread_shutdown)(void){
     SetEvent(pool.killed);
 
     for(i = 0; i < blas_num_threads - 1; i++){
-      WaitForSingleObject(blas_threads[i], 5);  //INFINITE);
+      // Could also just use WaitForMultipleObjects
+      DWORD wait_thread_value = WaitForSingleObject(blas_threads[i], 50);
+
 #ifndef OS_WINDOWSSTORE
-// TerminateThread is only available with WINAPI_DESKTOP and WINAPI_SYSTEM not WINAPI_APP in UWP
-      TerminateThread(blas_threads[i],0);
+      // TerminateThread is only available with WINAPI_DESKTOP and WINAPI_SYSTEM not WINAPI_APP in UWP
+      if (WAIT_OBJECT_0 != wait_thread_value) {
+        TerminateThread(blas_threads[i],0);
+      }
 #endif
+
+      CloseHandle(blas_threads[i]);
     }
+
+    CloseHandle(pool.filled);
+    CloseHandle(pool.killed);
 
     blas_server_avail = 0;
   }
@@ -478,7 +487,12 @@ int BLASFUNC(blas_thread_shutdown)(void){
 
 void goto_set_num_threads(int num_threads)
 {
-	 long i;
+	long i;
+
+#if defined(SMP_SERVER) && defined(OS_CYGWIN_NT)
+	// Handle lazy re-init of the thread-pool after a POSIX fork
+	if (unlikely(blas_server_avail == 0)) blas_thread_init();
+#endif
 
 	if (num_threads < 1) num_threads = blas_cpu_number;
 

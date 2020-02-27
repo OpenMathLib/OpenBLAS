@@ -3,6 +3,11 @@
 ## Description: Ported from portion of OpenBLAS/Makefile.system
 ##              Sets Fortran related variables.
 
+if (INTERFACE64)
+  set(SUFFIX64 64)
+  set(SUFFIX64_UNDERSCORE _64)
+endif()
+
 if (${F_COMPILER} STREQUAL "FLANG")
   set(CCOMMON_OPT "${CCOMMON_OPT} -DF_INTERFACE_FLANG")
   if (BINARY64 AND INTERFACE64)
@@ -39,7 +44,10 @@ endif ()
 
 if (${F_COMPILER} STREQUAL "GFORTRAN")
   set(CCOMMON_OPT "${CCOMMON_OPT} -DF_INTERFACE_GFORT")
-  set(FCOMMON_OPT "${FCOMMON_OPT} -Wall")
+  # ensure reentrancy of lapack codes
+  set(FCOMMON_OPT "${FCOMMON_OPT} -Wall -frecursive")
+  # work around ABI violation in passing string arguments from C
+  set(FCOMMON_OPT "${FCOMMON_OPT} -fno-optimize-sibling-calls")
   #Don't include -lgfortran, when NO_LAPACK=1 or lsbcc
   if (NOT NO_LAPACK)
     set(EXTRALIB "{EXTRALIB} -lgfortran")

@@ -97,6 +97,7 @@
 *>          B is COMPLEX*16 array, dimension (LDB,N)
 *>          The triangular factor from the Cholesky factorization of B,
 *>          as returned by ZPOTRF.
+*>          B is modified by the routine but restored on exit.
 *> \endverbatim
 *>
 *> \param[in] LDB

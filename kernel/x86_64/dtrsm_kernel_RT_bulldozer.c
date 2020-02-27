@@ -125,14 +125,14 @@ static void dtrsm_RT_solve_opt(BLASLONG n, FLOAT *a, FLOAT *b, FLOAT *c, BLASLON
 	"	.align 16							\n\t"
 	"1:									\n\t"
 
-	"	prefetcht0	384(%2,%1,8)					\n\t"
-	"	prefetcht0	384(%3,%1,8)					\n\t"
-	"	vmovddup	(%3,%1,2), %%xmm0				\n\t"	// read b
-	"	vmovups         (%2,%1,8), %%xmm4				\n\t"
-	"	vmovddup       8(%3,%1,2), %%xmm1				\n\t"	
-	"	vmovups       16(%2,%1,8), %%xmm5				\n\t"
-	"	vmovups       32(%2,%1,8), %%xmm6				\n\t"
-	"	vmovups       48(%2,%1,8), %%xmm7				\n\t"
+	"	prefetcht0	384(%6,%1,8)					\n\t"
+	"	prefetcht0	384(%7,%1,8)					\n\t"
+	"	vmovddup	(%7,%1,2), %%xmm0				\n\t"	// read b
+	"	vmovups         (%6,%1,8), %%xmm4				\n\t"
+	"	vmovddup       8(%7,%1,2), %%xmm1				\n\t"	
+	"	vmovups       16(%6,%1,8), %%xmm5				\n\t"
+	"	vmovups       32(%6,%1,8), %%xmm6				\n\t"
+	"	vmovups       48(%6,%1,8), %%xmm7				\n\t"
 
 	"	vfmaddpd	%%xmm8 , %%xmm0 , %%xmm4 , %%xmm8		\n\t"
 	"	vfmaddpd	%%xmm12, %%xmm1 , %%xmm4 , %%xmm12		\n\t"
@@ -147,13 +147,13 @@ static void dtrsm_RT_solve_opt(BLASLONG n, FLOAT *a, FLOAT *b, FLOAT *c, BLASLON
 
 	"	jz		2f						\n\t"
 
-	"	prefetcht0	384(%2,%1,8)					\n\t"
-	"	vmovddup	(%3,%1,2), %%xmm0				\n\t"	// read b
-	"	vmovups         (%2,%1,8), %%xmm4				\n\t"
-	"	vmovddup       8(%3,%1,2), %%xmm1				\n\t"	
-	"	vmovups       16(%2,%1,8), %%xmm5				\n\t"
-	"	vmovups       32(%2,%1,8), %%xmm6				\n\t"
-	"	vmovups       48(%2,%1,8), %%xmm7				\n\t"
+	"	prefetcht0	384(%6,%1,8)					\n\t"
+	"	vmovddup	(%7,%1,2), %%xmm0				\n\t"	// read b
+	"	vmovups         (%6,%1,8), %%xmm4				\n\t"
+	"	vmovddup       8(%7,%1,2), %%xmm1				\n\t"	
+	"	vmovups       16(%6,%1,8), %%xmm5				\n\t"
+	"	vmovups       32(%6,%1,8), %%xmm6				\n\t"
+	"	vmovups       48(%6,%1,8), %%xmm7				\n\t"
 
 	"	vfmaddpd	%%xmm8 , %%xmm0 , %%xmm4 , %%xmm8		\n\t"
 	"	vfmaddpd	%%xmm12, %%xmm1 , %%xmm4 , %%xmm12		\n\t"
@@ -168,13 +168,13 @@ static void dtrsm_RT_solve_opt(BLASLONG n, FLOAT *a, FLOAT *b, FLOAT *c, BLASLON
 
 	"	jz		2f						\n\t"
 
-	"	prefetcht0	384(%2,%1,8)					\n\t"
-	"	vmovddup	(%3,%1,2), %%xmm0				\n\t"	// read b
-	"	vmovups         (%2,%1,8), %%xmm4				\n\t"
-	"	vmovddup       8(%3,%1,2), %%xmm1				\n\t"	
-	"	vmovups       16(%2,%1,8), %%xmm5				\n\t"
-	"	vmovups       32(%2,%1,8), %%xmm6				\n\t"
-	"	vmovups       48(%2,%1,8), %%xmm7				\n\t"
+	"	prefetcht0	384(%6,%1,8)					\n\t"
+	"	vmovddup	(%7,%1,2), %%xmm0				\n\t"	// read b
+	"	vmovups         (%6,%1,8), %%xmm4				\n\t"
+	"	vmovddup       8(%7,%1,2), %%xmm1				\n\t"	
+	"	vmovups       16(%6,%1,8), %%xmm5				\n\t"
+	"	vmovups       32(%6,%1,8), %%xmm6				\n\t"
+	"	vmovups       48(%6,%1,8), %%xmm7				\n\t"
 
 	"	vfmaddpd	%%xmm8 , %%xmm0 , %%xmm4 , %%xmm8		\n\t"
 	"	vfmaddpd	%%xmm12, %%xmm1 , %%xmm4 , %%xmm12		\n\t"
@@ -189,13 +189,13 @@ static void dtrsm_RT_solve_opt(BLASLONG n, FLOAT *a, FLOAT *b, FLOAT *c, BLASLON
 
 	"	jz		2f						\n\t"
 
-	"	prefetcht0	384(%2,%1,8)					\n\t"
-	"	vmovddup	(%3,%1,2), %%xmm0				\n\t"	// read b
-	"	vmovddup       8(%3,%1,2), %%xmm1				\n\t"	
-	"	vmovups         (%2,%1,8), %%xmm4				\n\t"
-	"	vmovups       16(%2,%1,8), %%xmm5				\n\t"
-	"	vmovups       32(%2,%1,8), %%xmm6				\n\t"
-	"	vmovups       48(%2,%1,8), %%xmm7				\n\t"
+	"	prefetcht0	384(%6,%1,8)					\n\t"
+	"	vmovddup	(%7,%1,2), %%xmm0				\n\t"	// read b
+	"	vmovddup       8(%7,%1,2), %%xmm1				\n\t"	
+	"	vmovups         (%6,%1,8), %%xmm4				\n\t"
+	"	vmovups       16(%6,%1,8), %%xmm5				\n\t"
+	"	vmovups       32(%6,%1,8), %%xmm6				\n\t"
+	"	vmovups       48(%6,%1,8), %%xmm7				\n\t"
 
 	"	vfmaddpd	%%xmm8 , %%xmm0 , %%xmm4 , %%xmm8		\n\t"
 	"	vfmaddpd	%%xmm12, %%xmm1 , %%xmm4 , %%xmm12		\n\t"
@@ -235,18 +235,18 @@ static void dtrsm_RT_solve_opt(BLASLONG n, FLOAT *a, FLOAT *b, FLOAT *c, BLASLON
 
 	"3:									\n\t"	// i = 1
 
-	"	vmovddup	(%7), %%xmm1					\n\t"	// read b
-	"	vmovddup       8(%7), %%xmm0					\n\t"	// read bb
+	"	vmovddup	(%3), %%xmm1					\n\t"	// read b
+	"	vmovddup       8(%3), %%xmm0					\n\t"	// read bb
 
 	"	vmulpd		%%xmm12 ,  %%xmm0 ,  %%xmm12			\n\t"	// aa * bb 
 	"	vmulpd		%%xmm13 ,  %%xmm0 ,  %%xmm13			\n\t"	// aa * bb 
 	"	vmulpd		%%xmm14 ,  %%xmm0 ,  %%xmm14			\n\t"	// aa * bb 
 	"	vmulpd		%%xmm15 ,  %%xmm0 ,  %%xmm15			\n\t"	// aa * bb 
 
-	"	vmovups		%%xmm12 ,    (%6)				\n\t"	// write a
-	"	vmovups		%%xmm13 ,  16(%6)				\n\t"	// write a
-	"	vmovups		%%xmm14 ,  32(%6)				\n\t"	// write a
-	"	vmovups		%%xmm15 ,  48(%6)				\n\t"	// write a
+	"	vmovups		%%xmm12 ,    (%2)				\n\t"	// write a
+	"	vmovups		%%xmm13 ,  16(%2)				\n\t"	// write a
+	"	vmovups		%%xmm14 ,  32(%2)				\n\t"	// write a
+	"	vmovups		%%xmm15 ,  48(%2)				\n\t"	// write a
 
 	"	vmovups		%%xmm12 ,    (%5)				\n\t"	// write c1
 	"	vmovups		%%xmm13 ,  16(%5)				\n\t"	
@@ -259,20 +259,20 @@ static void dtrsm_RT_solve_opt(BLASLONG n, FLOAT *a, FLOAT *b, FLOAT *c, BLASLON
 	"	vfnmaddpd	%%xmm11 ,  %%xmm15 , %%xmm1 , %%xmm11		\n\t"   
 
 	"									\n\t" // i = 0
-	"	subq		$16 , %7					\n\t" // b = b - 2
-	"	subq		$64 , %6					\n\t" // a = a - 8
+	"	subq		$16 , %3					\n\t" // b = b - 2
+	"	subq		$64 , %2					\n\t" // a = a - 8
 
-	"	vmovddup        (%7), %%xmm0					\n\t"	// read bb
+	"	vmovddup        (%3), %%xmm0					\n\t"	// read bb
 
 	"	vmulpd		%%xmm8  ,  %%xmm0 ,  %%xmm8 			\n\t"	// aa * bb 
 	"	vmulpd		%%xmm9  ,  %%xmm0 ,  %%xmm9 			\n\t"
 	"	vmulpd		%%xmm10 ,  %%xmm0 ,  %%xmm10			\n\t"
 	"	vmulpd		%%xmm11 ,  %%xmm0 ,  %%xmm11			\n\t"
 
-	"	vmovups		%%xmm8  ,    (%6)				\n\t"	// write a
-	"	vmovups		%%xmm9  ,  16(%6)				\n\t"
-	"	vmovups		%%xmm10 ,  32(%6)				\n\t"
-	"	vmovups		%%xmm11 ,  48(%6)				\n\t"
+	"	vmovups		%%xmm8  ,    (%2)				\n\t"	// write a
+	"	vmovups		%%xmm9  ,  16(%2)				\n\t"
+	"	vmovups		%%xmm10 ,  32(%2)				\n\t"
+	"	vmovups		%%xmm11 ,  48(%2)				\n\t"
 
 	"	vmovups		%%xmm8  ,    (%4)				\n\t"	// write c0
 	"	vmovups		%%xmm9  ,  16(%4)				\n\t"
@@ -282,15 +282,15 @@ static void dtrsm_RT_solve_opt(BLASLONG n, FLOAT *a, FLOAT *b, FLOAT *c, BLASLON
 	"	vzeroupper							\n\t"
 
         :
+          "+r" (n1),     // 0    
+          "+a" (i),      // 1    
+          "+r" (as),     // 2
+          "+r" (bs)      // 3
         :
-          "r" (n1),     // 0    
-          "a" (i),      // 1    
-          "r" (a),      // 2
-          "r" (b),      // 3
           "r" (c),      // 4
           "r" (c1),     // 5
-          "r" (as),     // 6
-          "r" (bs)      // 7
+          "r" (a),      // 6
+          "r" (b)       // 7
         : "cc",
           "%xmm0", "%xmm1", "%xmm2", "%xmm3",
           "%xmm4", "%xmm5", "%xmm6", "%xmm7",

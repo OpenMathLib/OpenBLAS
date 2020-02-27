@@ -1,10 +1,10 @@
 #include "relapack.h"
 #include <math.h>
 
-static void RELAPACK_ctgsyl_rec(const char *, const int *, const int *,
-    const int *, const float *, const int *, const float *, const int *,
-    float *, const int *, const float *, const int *, const float *,
-    const int *, float *, const int *, float *, float *, float *, int *);
+static void RELAPACK_ctgsyl_rec(const char *, const blasint *, const blasint *,
+    const blasint *, const float *, const blasint *, const float *, const blasint *,
+    float *, const blasint *, const float *, const blasint *, const float *,
+    const blasint *, float *, const blasint *, float *, float *, float *, blasint *);
 
 
 /** CTGSYL solves the generalized Sylvester equation.
@@ -14,21 +14,21 @@ static void RELAPACK_ctgsyl_rec(const char *, const int *, const int *,
  * http://www.netlib.org/lapack/explore-html/d7/de7/ctgsyl_8f.html
  * */
 void RELAPACK_ctgsyl(
-    const char *trans, const int *ijob, const int *m, const int *n,
-    const float *A, const int *ldA, const float *B, const int *ldB,
-    float *C, const int *ldC,
-    const float *D, const int *ldD, const float *E, const int *ldE,
-    float *F, const int *ldF,
+    const char *trans, const blasint *ijob, const blasint *m, const blasint *n,
+    const float *A, const blasint *ldA, const float *B, const blasint *ldB,
+    float *C, const blasint *ldC,
+    const float *D, const blasint *ldD, const float *E, const blasint *ldE,
+    float *F, const blasint *ldF,
     float *scale, float *dif,
-    float *Work, const int *lWork, int *iWork, int *info
+    float *Work, const blasint *lWork, blasint *iWork, blasint *info
 ) {
 
     // Parse arguments
-    const int notran = LAPACK(lsame)(trans, "N");
-    const int tran = LAPACK(lsame)(trans, "C");
+    const blasint notran = LAPACK(lsame)(trans, "N");
+    const blasint tran = LAPACK(lsame)(trans, "C");
 
     // Compute work buffer size
-    int lwmin = 1;
+    blasint lwmin = 1;
     if (notran && (*ijob == 1 || *ijob == 2))
         lwmin = MAX(1, 2 * *m * *n);
     *info = 0;
@@ -57,8 +57,8 @@ void RELAPACK_ctgsyl(
     else if (*lWork < lwmin && *lWork != -1)
         *info = -20;
     if (*info) {
-        const int minfo = -*info;
-        LAPACK(xerbla)("CTGSYL", &minfo);
+        const blasint minfo = -*info;
+        LAPACK(xerbla)("CTGSYL", &minfo, strlen("CTGSYL"));
         return;
     }
 
@@ -74,8 +74,8 @@ void RELAPACK_ctgsyl(
     // Constant
     const float ZERO[] = { 0., 0. };
 
-    int isolve = 1;
-    int ifunc  = 0;
+    blasint isolve = 1;
+    blasint ifunc  = 0;
     if (notran) {
         if (*ijob >= 3) {
             ifunc = *ijob - 2;
@@ -86,7 +86,7 @@ void RELAPACK_ctgsyl(
     }
 
     float scale2;
-    int iround;
+    blasint iround;
     for (iround = 1; iround <= isolve; iround++) {
         *scale = 1;
         float dscale = 0;
@@ -119,13 +119,13 @@ void RELAPACK_ctgsyl(
 
 /** ctgsyl's recursive vompute kernel */
 static void RELAPACK_ctgsyl_rec(
-    const char *trans, const int *ifunc, const int *m, const int *n,
-    const float *A, const int *ldA, const float *B, const int *ldB,
-    float *C, const int *ldC,
-    const float *D, const int *ldD, const float *E, const int *ldE,
-    float *F, const int *ldF,
+    const char *trans, const blasint *ifunc, const blasint *m, const blasint *n,
+    const float *A, const blasint *ldA, const float *B, const blasint *ldB,
+    float *C, const blasint *ldC,
+    const float *D, const blasint *ldD, const float *E, const blasint *ldE,
+    float *F, const blasint *ldF,
     float *scale, float *dsum, float *dscale,
-    int *info
+    blasint *info
 ) {
 
     if (*m <= MAX(CROSSOVER_CTGSYL, 1) && *n <= MAX(CROSSOVER_CTGSYL, 1)) {
@@ -137,18 +137,18 @@ static void RELAPACK_ctgsyl_rec(
     // Constants
     const float ONE[]  = { 1., 0. };
     const float MONE[] = { -1., 0. };
-    const int   iONE[] = { 1 };
+    const blasint   iONE[] = { 1 };
 
     // Outputs
     float scale1[] = { 1., 0. };
     float scale2[] = { 1., 0. };
-    int   info1[]  = { 0 };
-    int   info2[]  = { 0 };
+    blasint   info1[]  = { 0 };
+    blasint   info2[]  = { 0 };
 
     if (*m > *n) {
         // Splitting
-        const int m1 = CREC_SPLIT(*m);
-        const int m2 = *m - m1;
+        const blasint m1 = CREC_SPLIT(*m);
+        const blasint m2 = *m - m1;
 
         // A_TL A_TR
         // 0    A_BR
@@ -206,8 +206,8 @@ static void RELAPACK_ctgsyl_rec(
         }
     } else {
         // Splitting
-        const int n1 = CREC_SPLIT(*n);
-        const int n2 = *n - n1;
+        const blasint n1 = CREC_SPLIT(*n);
+        const blasint n2 = *n - n1;
 
         // B_TL B_TR
         // 0    B_BR

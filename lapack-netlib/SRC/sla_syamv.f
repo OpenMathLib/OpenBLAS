@@ -230,7 +230,7 @@
          INFO = 10
       END IF
       IF( INFO.NE.0 )THEN
-         CALL XERBLA( 'SSYMV ', INFO )
+         CALL XERBLA( 'SLA_SYAMV', INFO )
          RETURN
       END IF
 *

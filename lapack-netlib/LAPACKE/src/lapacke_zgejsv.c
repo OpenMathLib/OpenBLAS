@@ -124,7 +124,6 @@ lapack_int LAPACKE_zgejsv( int matrix_layout, char joba, char jobu, char jobv,
     double* rwork = NULL;
     lapack_complex_double* cwork = NULL;
     lapack_int i;
-    lapack_int nu, nv;
     if( matrix_layout != LAPACK_COL_MAJOR && matrix_layout != LAPACK_ROW_MAJOR ) {
         LAPACKE_xerbla( "LAPACKE_zgejsv", -1 );
         return -1;
@@ -132,8 +131,6 @@ lapack_int LAPACKE_zgejsv( int matrix_layout, char joba, char jobu, char jobv,
 #ifndef LAPACK_DISABLE_NAN_CHECK
     if( LAPACKE_get_nancheck() ) {
         /* Optionally check input matrices for NaNs */
-        nu = LAPACKE_lsame( jobu, 'n' ) ? 1 : m;
-        nv = LAPACKE_lsame( jobv, 'n' ) ? 1 : n;
         if( LAPACKE_zge_nancheck( matrix_layout, m, n, a, lda ) ) {
             return -10;
         }

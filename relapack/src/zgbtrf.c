@@ -1,9 +1,9 @@
 #include "relapack.h"
 #include "stdlib.h"
 
-static void RELAPACK_zgbtrf_rec(const int *, const int *, const int *,
-    const int *, double *, const int *, int *, double *, const int *, double *,
-    const int *, int *);
+static void RELAPACK_zgbtrf_rec(const blasint *, const blasint *, const blasint *,
+    const blasint *, double *, const blasint *, blasint *, double *, const blasint *, double *,
+    const blasint *, blasint *);
 
 
 /** ZGBTRF computes an LU factorization of a complex m-by-n band matrix A using partial pivoting with row interchanges.
@@ -13,9 +13,9 @@ static void RELAPACK_zgbtrf_rec(const int *, const int *, const int *,
  * http://www.netlib.org/lapack/explore-html/dc/dcb/zgbtrf_8f.html
  * */
 void RELAPACK_zgbtrf(
-    const int *m, const int *n, const int *kl, const int *ku,
-    double *Ab, const int *ldAb, int *ipiv,
-    int *info
+    const blasint *m, const blasint *n, const blasint *kl, const blasint *ku,
+    double *Ab, const blasint *ldAb, blasint *ipiv,
+    blasint *info
 ) {
 
     // Check arguments
@@ -31,8 +31,8 @@ void RELAPACK_zgbtrf(
     else if (*ldAb < 2 * *kl + *ku + 1)
         *info = -6;
     if (*info) {
-        const int minfo = -*info;
-        LAPACK(xerbla)("ZGBTRF", &minfo);
+        const blasint minfo = -*info;
+        LAPACK(xerbla)("ZGBTRF", &minfo, strlen("ZGBTRF"));
         return;
     }
 
@@ -40,14 +40,14 @@ void RELAPACK_zgbtrf(
     const double ZERO[] = { 0., 0. };
 
     // Result upper band width
-    const int kv = *ku + *kl;
+    const blasint kv = *ku + *kl;
 
     // Unskew A
-    const int ldA[] = { *ldAb - 1 };
+    const blasint ldA[] = { *ldAb - 1 };
     double *const A = Ab + 2 * kv;
 
     // Zero upper diagonal fill-in elements
-    int i, j;
+    blasint i, j;
     for (j = 0; j < *n; j++) {
         double *const A_j = A + 2 * *ldA * j;
         for (i = MAX(0, j - kv); i < j - *ku; i++)
@@ -55,11 +55,11 @@ void RELAPACK_zgbtrf(
     }
 
     // Allocate work space
-    const int n1 = ZREC_SPLIT(*n);
-    const int mWorkl = (kv > n1) ? MAX(1, *m - *kl) : kv;
-    const int nWorkl = (kv > n1) ? n1 : kv;
-    const int mWorku = (*kl > n1) ? n1 : *kl;
-    const int nWorku = (*kl > n1) ? MAX(0, *n - *kl) : *kl;
+    const blasint n1 = ZREC_SPLIT(*n);
+    const blasint mWorkl = abs ( (kv > n1) ? MAX(1, *m - *kl) : kv);
+    const blasint nWorkl = abs ( (kv > n1) ? n1 : kv);
+    const blasint mWorku = abs ( (*kl > n1) ? n1 : *kl);
+    const blasint nWorku = abs ( (*kl > n1) ? MAX(0, *n - *kl) : *kl);
     double *Workl = malloc(mWorkl * nWorkl * 2 * sizeof(double));
     double *Worku = malloc(mWorku * nWorku * 2 * sizeof(double));
     LAPACK(zlaset)("L", &mWorkl, &nWorkl, ZERO, ZERO, Workl, &mWorkl);
@@ -76,10 +76,10 @@ void RELAPACK_zgbtrf(
 
 /** zgbtrf's recursive compute kernel */
 static void RELAPACK_zgbtrf_rec(
-    const int *m, const int *n, const int *kl, const int *ku,
-    double *Ab, const int *ldAb, int *ipiv,
-    double *Workl, const int *ldWorkl, double *Worku, const int *ldWorku,
-    int *info
+    const blasint *m, const blasint *n, const blasint *kl, const blasint *ku,
+    double *Ab, const blasint *ldAb, blasint *ipiv,
+    double *Workl, const blasint *ldWorkl, double *Worku, const blasint *ldWorku,
+    blasint *info
 ) {
 
     if (*n <= MAX(CROSSOVER_ZGBTRF, 1)) {
@@ -91,25 +91,25 @@ static void RELAPACK_zgbtrf_rec(
     // Constants
     const double ONE[]  = { 1., 0. };
     const double MONE[] = { -1., 0. };
-    const int    iONE[] = { 1 };
+    const blasint    iONE[] = { 1 };
 
     // Loop iterators
-    int i, j;
+    blasint i, j;
 
     // Output upper band width
-    const int kv = *ku + *kl;
+    const blasint kv = *ku + *kl;
 
     // Unskew A
-    const int ldA[] = { *ldAb - 1 };
+    const blasint ldA[] = { *ldAb - 1 };
     double *const A = Ab + 2 * kv;
 
     // Splitting
-    const int n1  = MIN(ZREC_SPLIT(*n), *kl);
-    const int n2  = *n - n1;
-    const int m1  = MIN(n1, *m);
-    const int m2  = *m - m1;
-    const int mn1 = MIN(m1, n1);
-    const int mn2 = MIN(m2, n2);
+    const blasint n1  = MIN(ZREC_SPLIT(*n), *kl);
+    const blasint n2  = *n - n1;
+    const blasint m1  = MIN(n1, *m);
+    const blasint m2  = *m - m1;
+    const blasint mn1 = MIN(m1, n1);
+    const blasint mn2 = MIN(m2, n2);
 
     // Ab_L *
     //      Ab_BR
@@ -129,14 +129,14 @@ static void RELAPACK_zgbtrf_rec(
 
     // ipiv_T
     // ipiv_B
-    int *const ipiv_T = ipiv;
-    int *const ipiv_B = ipiv + n1;
+    blasint *const ipiv_T = ipiv;
+    blasint *const ipiv_B = ipiv + n1;
 
     // Banded splitting
-    const int n21 = MIN(n2, kv - n1);
-    const int n22 = MIN(n2 - n21, n1);
-    const int m21 = MIN(m2, *kl - m1);
-    const int m22 = MIN(m2 - m21, m1);
+    const blasint n21 = MIN(n2, kv - n1);
+    const blasint n22 = MIN(n2 - n21, n1);
+    const blasint m21 = MIN(m2, *kl - m1);
+    const blasint m22 = MIN(m2 - m21, m1);
 
     //   n1 n21  n22
     // m *  A_Rl ARr
@@ -164,7 +164,7 @@ static void RELAPACK_zgbtrf_rec(
 
     // partially redo swaps in A_L
     for (i = 0; i < mn1; i++) {
-        const int ip = ipiv_T[i] - 1;
+        const blasint ip = ipiv_T[i] - 1;
         if (ip != i) {
             if (ip < *kl)
                 BLAS(zswap)(&i, A_L + 2 * i, ldA, A_L + 2 * ip, ldA);
@@ -180,7 +180,7 @@ static void RELAPACK_zgbtrf_rec(
     for (j = 0; j < n22; j++) {
         double *const A_Rrj = A_Rr + 2 * *ldA * j;
         for (i = j; i < mn1; i++) {
-            const int ip = ipiv_T[i] - 1;
+            const blasint ip = ipiv_T[i] - 1;
             if (ip != i) {
                 const double tmpr = A_Rrj[2 * i];
                 const double tmpc = A_Rrj[2 * i + 1];
@@ -211,7 +211,7 @@ static void RELAPACK_zgbtrf_rec(
 
     // partially undo swaps in A_L
     for (i = mn1 - 1; i >= 0; i--) {
-        const int ip = ipiv_T[i] - 1;
+        const blasint ip = ipiv_T[i] - 1;
         if (ip != i) {
             if (ip < *kl)
                 BLAS(zswap)(&i, A_L + 2 * i, ldA, A_L + 2 * ip, ldA);
@@ -221,7 +221,9 @@ static void RELAPACK_zgbtrf_rec(
     }
 
     // recursion(Ab_BR, ipiv_B)
-    RELAPACK_zgbtrf_rec(&m2, &n2, kl, ku, Ab_BR, ldAb, ipiv_B, Workl, ldWorkl, Worku, ldWorku, info);
+ //   RELAPACK_zgbtrf_rec(&m2, &n2, kl, ku, Ab_BR, ldAb, ipiv_B, Workl, ldWorkl, Worku, ldWorku, info);
+ LAPACK(zgbtf2)(&m2, &n2, kl, ku, Ab_BR, ldAb, ipiv_B, info);
+ 
     if (*info)
         *info += n1;
     // shift pivots

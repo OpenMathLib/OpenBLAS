@@ -103,7 +103,7 @@
 *> \param[in] NW
 *> \verbatim
 *>          NW is INTEGER
-*>          Deflation window size.  1 .LE. NW .LE. (KBOT-KTOP+1).
+*>          Deflation window size.  1 <= NW <= (KBOT-KTOP+1).
 *> \endverbatim
 *>
 *> \param[in,out] H
@@ -121,7 +121,7 @@
 *> \verbatim
 *>          LDH is INTEGER
 *>          Leading dimension of H just as declared in the calling
-*>          subroutine.  N .LE. LDH
+*>          subroutine.  N <= LDH
 *> \endverbatim
 *>
 *> \param[in] ILOZ
@@ -133,7 +133,7 @@
 *> \verbatim
 *>          IHIZ is INTEGER
 *>          Specify the rows of Z to which transformations must be
-*>          applied if WANTZ is .TRUE.. 1 .LE. ILOZ .LE. IHIZ .LE. N.
+*>          applied if WANTZ is .TRUE.. 1 <= ILOZ <= IHIZ <= N.
 *> \endverbatim
 *>
 *> \param[in,out] Z
@@ -149,7 +149,7 @@
 *> \verbatim
 *>          LDZ is INTEGER
 *>          The leading dimension of Z just as declared in the
-*>          calling subroutine.  1 .LE. LDZ.
+*>          calling subroutine.  1 <= LDZ.
 *> \endverbatim
 *>
 *> \param[out] NS
@@ -194,13 +194,13 @@
 *> \verbatim
 *>          LDV is INTEGER
 *>          The leading dimension of V just as declared in the
-*>          calling subroutine.  NW .LE. LDV
+*>          calling subroutine.  NW <= LDV
 *> \endverbatim
 *>
 *> \param[in] NH
 *> \verbatim
 *>          NH is INTEGER
-*>          The number of columns of T.  NH.GE.NW.
+*>          The number of columns of T.  NH >= NW.
 *> \endverbatim
 *>
 *> \param[out] T
@@ -212,14 +212,14 @@
 *> \verbatim
 *>          LDT is INTEGER
 *>          The leading dimension of T just as declared in the
-*>          calling subroutine.  NW .LE. LDT
+*>          calling subroutine.  NW <= LDT
 *> \endverbatim
 *>
 *> \param[in] NV
 *> \verbatim
 *>          NV is INTEGER
 *>          The number of rows of work array WV available for
-*>          workspace.  NV.GE.NW.
+*>          workspace.  NV >= NW.
 *> \endverbatim
 *>
 *> \param[out] WV
@@ -231,7 +231,7 @@
 *> \verbatim
 *>          LDWV is INTEGER
 *>          The leading dimension of W just as declared in the
-*>          calling subroutine.  NW .LE. LDV
+*>          calling subroutine.  NW <= LDV
 *> \endverbatim
 *>
 *> \param[out] WORK

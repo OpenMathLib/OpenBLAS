@@ -34,7 +34,7 @@
 #define CPU_CORTEXA15       	4
 
 static char *cpuname[] = {
-  "UNKOWN",
+  "UNKNOWN",
   "ARMV6",
   "ARMV7",
   "CORTEXA9",

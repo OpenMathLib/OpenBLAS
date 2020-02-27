@@ -50,9 +50,9 @@
 *  Arguments:
 *  ==========
 *
-*> \param[in] STAGE
+*> \param[in] STAGE1
 *> \verbatim
-*>          STAGE is CHARACTER*1
+*>          STAGE1 is CHARACTER*1
 *>          = 'N':  "No": to mention that the stage 1 of the reduction  
 *>                  from dense to band using the zhetrd_he2hb routine
 *>                  was not called before this routine to reproduce AB. 
@@ -280,8 +280,8 @@
 *     ..
 *     .. External Functions ..
       LOGICAL            LSAME
-      INTEGER            ILAENV 
-      EXTERNAL           LSAME, ILAENV
+      INTEGER            ILAENV2STAGE 
+      EXTERNAL           LSAME, ILAENV2STAGE
 *     ..
 *     .. Executable Statements ..
 *
@@ -297,9 +297,9 @@
 *
 *     Determine the block size, the workspace size and the hous size.
 *
-      IB     = ILAENV( 18, 'ZHETRD_HB2ST', VECT, N, KD, -1, -1 )
-      LHMIN  = ILAENV( 19, 'ZHETRD_HB2ST', VECT, N, KD, IB, -1 )
-      LWMIN  = ILAENV( 20, 'ZHETRD_HB2ST', VECT, N, KD, IB, -1 )
+      IB     = ILAENV2STAGE( 2, 'ZHETRD_HB2ST', VECT, N, KD, -1, -1 )
+      LHMIN  = ILAENV2STAGE( 3, 'ZHETRD_HB2ST', VECT, N, KD, IB, -1 )
+      LWMIN  = ILAENV2STAGE( 4, 'ZHETRD_HB2ST', VECT, N, KD, IB, -1 )
 *
       IF( .NOT.AFTERS1 .AND. .NOT.LSAME( STAGE1, 'N' ) ) THEN
          INFO = -1
@@ -512,7 +512,7 @@ C                 END IF
 *
 *                         Call the kernel
 *                             
-#if defined(_OPENMP) &&  _OPENMP >= 201307L
+#if defined(_OPENMP) &&  _OPENMP >= 201307
 
                           IF( TTYPE.NE.1 ) THEN      
 !$OMP TASK DEPEND(in:WORK(MYID+SHIFT-1))

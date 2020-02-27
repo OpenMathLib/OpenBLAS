@@ -2,6 +2,8 @@
 
 argv <- commandArgs(trailingOnly = TRUE)
 
+if (!is.null(options("matprod")[[1]])) options(matprod = "blas")
+
 nfrom <- 128
 nto <- 2048
 nstep <- 128
@@ -19,7 +21,6 @@ if (length(argv) > 0) {
       loops <- as.numeric(argv[z])
     }
   }
-
 }
 
 p <- Sys.getenv("OPENBLAS_LOOPS")
@@ -27,29 +28,21 @@ if (p != "") {
   loops <- as.numeric(p)
 }
 
-
-cat(sprintf(
-  "From %.0f To %.0f Step=%.0f Loops=%.0f\n",
-  nfrom,
-  nto,
-  nstep,
-  loops
-))
+cat(sprintf("From %.0f To %.0f Step=%.0f Loops=%.0f\n", nfrom, nto, nstep, loops))
 cat(sprintf("      SIZE             Flops                   Time\n"))
 
 n <- nfrom
 while (n <= nto) {
-  A <- matrix(rnorm(n * n), ncol = n, nrow = n)
+  A <- matrix(rnorm(n * n), nrow = n)
   ev <- 0
   z <- system.time(for (l in 1:loops) {
     ev <- eigen(A)
   })
 
-  mflops <- (26.66 * n * n * n) * loops / (z[3] * 1.0e6)
+  mflops <- (26.66 * n * n * n) * loops / (z[3] * 1e+06)
 
   st <- sprintf("%.0fx%.0f :", n, n)
   cat(sprintf("%20s %10.2f MFlops %10.6f sec\n", st, mflops, z[3]))
 
   n <- n + nstep
-
 }

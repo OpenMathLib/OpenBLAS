@@ -213,7 +213,7 @@ void CNAME(enum CBLAS_ORDER order,
   if (trans) lenx = m;
   if (trans) leny = n;
 
-  if (beta != ONE) SCAL_K(leny, 0, 0, beta, y, abs(incy), NULL, 0, NULL, 0);
+  if (beta != ONE) SCAL_K(leny, 0, 0, beta, y, blasabs(incy), NULL, 0, NULL, 0);
 
   if (alpha == ZERO) return;
 

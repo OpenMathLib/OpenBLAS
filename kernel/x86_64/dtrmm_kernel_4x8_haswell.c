@@ -33,7 +33,7 @@ static void dtrmm_kernel_4x8( BLASLONG n, FLOAT *alpha ,FLOAT *a, FLOAT *b, FLOA
 		"	vfmadd231pd	%%ymm0 , %%ymm1 , %%ymm4		\n\t"
 		"	vfmadd231pd	%%ymm0 , %%ymm2 , %%ymm8		\n\t"
 
-		"	vpermpd         $0xb1  , %%ymm0 , %%ymm0		\n\t"
+		"	vpermilpd         $0x05  , %%ymm0 , %%ymm0		\n\t"
 		"	vfmadd231pd	%%ymm0 , %%ymm1 , %%ymm5		\n\t"
 		"	vfmadd231pd	%%ymm0 , %%ymm2 , %%ymm9		\n\t"
 
@@ -41,7 +41,7 @@ static void dtrmm_kernel_4x8( BLASLONG n, FLOAT *alpha ,FLOAT *a, FLOAT *b, FLOA
 		"	vfmadd231pd	%%ymm0 , %%ymm1 , %%ymm6		\n\t"
 		"	vfmadd231pd	%%ymm0 , %%ymm2 , %%ymm10		\n\t"
 
-		"	vpermpd         $0xb1  , %%ymm0 , %%ymm0		\n\t"
+		"	vpermilpd         $0x05  , %%ymm0 , %%ymm0		\n\t"
 		"	vfmadd231pd	%%ymm0 , %%ymm1 , %%ymm7		\n\t"
 		"	vfmadd231pd	%%ymm0 , %%ymm2 , %%ymm11		\n\t"
 
@@ -62,18 +62,16 @@ static void dtrmm_kernel_4x8( BLASLONG n, FLOAT *alpha ,FLOAT *a, FLOAT *b, FLOA
 		"	vmulpd		%%ymm0 , %%ymm10, %%ymm10		\n\t"
 		"	vmulpd		%%ymm0 , %%ymm11, %%ymm11		\n\t"
 
-		"	vpermpd 	$0xb1  , %%ymm5 , %%ymm5		\n\t"
-		"	vpermpd 	$0xb1  , %%ymm7 , %%ymm7		\n\t"
+		"	vpermilpd 	$0x05  , %%ymm5 , %%ymm5		\n\t"
+		"	vpermilpd 	$0x05  , %%ymm7 , %%ymm7		\n\t"
 
 		"	vblendpd 	$0x0a  , %%ymm5 , %%ymm4 , %%ymm0	\n\t"
 		"	vblendpd 	$0x05  , %%ymm5 , %%ymm4 , %%ymm1	\n\t"
 		"	vblendpd 	$0x0a  , %%ymm7 , %%ymm6 , %%ymm2	\n\t"
 		"	vblendpd 	$0x05  , %%ymm7 , %%ymm6 , %%ymm3	\n\t"
 
-		"	vpermpd 	$0x1b  , %%ymm2 , %%ymm2		\n\t"
-		"	vpermpd 	$0x1b  , %%ymm3 , %%ymm3		\n\t"
-		"	vpermpd 	$0xb1  , %%ymm2 , %%ymm2		\n\t"
-		"	vpermpd 	$0xb1  , %%ymm3 , %%ymm3		\n\t"
+		"	vperm2f128 	$0x01  , %%ymm2 , %%ymm2 , %%ymm2	\n\t"
+		"	vperm2f128 	$0x01  , %%ymm3 , %%ymm3 , %%ymm3	\n\t"
 
 		"	vblendpd 	$0x03  , %%ymm0 , %%ymm2 , %%ymm4	\n\t"
 		"	vblendpd 	$0x03  , %%ymm1 , %%ymm3 , %%ymm5	\n\t"
@@ -85,18 +83,16 @@ static void dtrmm_kernel_4x8( BLASLONG n, FLOAT *alpha ,FLOAT *a, FLOAT *b, FLOA
 		"	vmovups		%%ymm6 , (%7)				\n\t"
 		"	vmovups		%%ymm7 , (%8)				\n\t"
 
-		"	vpermpd 	$0xb1  , %%ymm9 , %%ymm9		\n\t"
-		"	vpermpd 	$0xb1  , %%ymm11, %%ymm11		\n\t"
+		"	vpermilpd 	$0x05  , %%ymm9 , %%ymm9		\n\t"
+		"	vpermilpd 	$0x05  , %%ymm11, %%ymm11		\n\t"
 
 		"	vblendpd 	$0x0a  , %%ymm9 , %%ymm8 , %%ymm0	\n\t"
 		"	vblendpd 	$0x05  , %%ymm9 , %%ymm8 , %%ymm1	\n\t"
 		"	vblendpd 	$0x0a  , %%ymm11, %%ymm10, %%ymm2	\n\t"
 		"	vblendpd 	$0x05  , %%ymm11, %%ymm10, %%ymm3	\n\t"
 
-		"	vpermpd 	$0x1b  , %%ymm2 , %%ymm2		\n\t"
-		"	vpermpd 	$0x1b  , %%ymm3 , %%ymm3		\n\t"
-		"	vpermpd 	$0xb1  , %%ymm2 , %%ymm2		\n\t"
-		"	vpermpd 	$0xb1  , %%ymm3 , %%ymm3		\n\t"
+		"	vperm2f128 	$0x01  , %%ymm2 , %%ymm2 , %%ymm2	\n\t"
+		"	vperm2f128 	$0x01  , %%ymm3 , %%ymm3 , %%ymm3	\n\t"
 
 		"	vblendpd 	$0x03  , %%ymm0 , %%ymm2 , %%ymm4	\n\t"
 		"	vblendpd 	$0x03  , %%ymm1 , %%ymm3 , %%ymm5	\n\t"

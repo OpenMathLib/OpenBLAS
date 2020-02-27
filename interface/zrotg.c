@@ -14,7 +14,7 @@ void NAME(FLOAT *DA, FLOAT *DB, FLOAT *C, FLOAT *S){
   long double db_i = *(DB + 1);
   long double r;
 
-  long double ada = fabs(da_r) + fabs(da_i);
+  long double ada = fabsl(da_r) + fabsl(da_i);
 
   PRINT_DEBUG_NAME;
 

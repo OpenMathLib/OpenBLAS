@@ -39,7 +39,7 @@ lapack_int LAPACKE_zlacgv( lapack_int n, lapack_complex_double* x,
 #ifndef LAPACK_DISABLE_NAN_CHECK
     if( LAPACKE_get_nancheck() ) {
         /* Optionally check input matrices for NaNs */
-        if( LAPACKE_z_nancheck( 1+(n-1)*ABS(incx), x, incx ) ) {
+        if( LAPACKE_z_nancheck( n, x, incx ) ) {
             return -2;
         }
     }

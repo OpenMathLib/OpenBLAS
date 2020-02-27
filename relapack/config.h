@@ -36,8 +36,8 @@
 // allow malloc in xsygst for improved performance
 #define XSYGST_ALLOW_MALLOC ALLOW_MALLOC
 // allow malloc in xsytrf if the passed work buffer is too small
-#define XSYTRF_ALLOW_MALLOC ALLOW_MALLOC
-
+//#define XSYTRF_ALLOW_MALLOC ALLOW_MALLOC
+#define XSYTRF_ALLOW_MALLOC 0
 
 ////////////////////////////////
 // LAPACK routine replacement //

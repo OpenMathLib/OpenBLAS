@@ -3,6 +3,7 @@
 [![Build Status](https://travis-ci.org/Reference-LAPACK/lapack.svg?branch=master)](https://travis-ci.org/Reference-LAPACK/lapack)
 [![Appveyor](https://ci.appveyor.com/api/projects/status/bh38iin398msrbtr?svg=true)](https://ci.appveyor.com/project/langou/lapack/)
 [![codecov](https://codecov.io/gh/Reference-LAPACK/lapack/branch/master/graph/badge.svg)](https://codecov.io/gh/Reference-LAPACK/lapack)
+[![Packaging status](https://repology.org/badge/tiny-repos/lapack.svg)](https://repology.org/metapackage/lapack/versions)
 
 
 * VERSION 1.0   :  February 29, 1992
@@ -29,6 +30,7 @@
 * VERSION 3.7.0 : December 2016
 * VERSION 3.7.1 : June 2017
 * VERSION 3.8.0 : November 2017
+* VERSION 3.9.0 : November 2019
 
 LAPACK is a library of Fortran subroutines for solving the most commonly
 occurring problems in numerical linear algebra.
@@ -70,6 +72,14 @@ CBLAS, a C interface to the BLAS, and (5) LAPACKE, a C interface to LAPACK.
  - LAPACK includes also the CMake build. You will need to have CMake installed
    on your machine (CMake is available at http://www.cmake.org/). CMake will
    allow an easy installation on a Windows Machine.
+   An example CMake build is:
+   ```sh
+   mkdir build
+   cd build
+   cmake -DCMAKE_INSTALL_LIBDIR=$HOME/.local/lapack ..
+   cmake --build -j . --target install
+   ```
+   That installs the LAPACK library under $HOME/.local/lapack/
  - Specific information to run LAPACK under Windows is available at
    http://icl.cs.utk.edu/lapack-for-windows/lapack/.
 
@@ -99,7 +109,7 @@ You can also contact directly the LAPACK team at lapack@icl.utk.edu.
 ## Testing
 
 LAPACK includes a thorough test suite. We recommend that, after compilation,
-you run the test suite. 
+you run the test suite.
 
 For complete information on the LAPACK Testing please consult LAPACK Working
 Note 41 "Installation Guide for LAPACK".
@@ -115,4 +125,3 @@ LAPACK now includes the LAPACKE package.  LAPACKE is a Standard C language API
 for LAPACK This was born from a collaboration of the LAPACK and INTEL Math
 Kernel Library teams. See:
 http://www.netlib.org/lapack/#_standard_c_language_apis_for_lapack.
-

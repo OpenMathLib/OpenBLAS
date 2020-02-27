@@ -40,15 +40,28 @@
 
 void gotoblas_init(void);
 void gotoblas_quit(void);
+#if defined(SMP) && defined(USE_TLS)
+void blas_thread_memory_cleanup(void);
+#endif
 
 BOOL APIENTRY DllMain(HINSTANCE hInst, DWORD reason, LPVOID reserved) {
-
-  if (reason == DLL_PROCESS_ATTACH) {
-    gotoblas_init();
-  }
-
-  if (reason == DLL_PROCESS_DETACH) {
-    gotoblas_quit();
+  switch(reason) {
+      case DLL_PROCESS_ATTACH:
+        gotoblas_init();
+        break;
+      case DLL_PROCESS_DETACH:
+        // If the process is about to exit, don't bother releasing any resources
+        // The kernel is much better at bulk releasing then.
+        if (!reserved)
+          gotoblas_quit();
+        break;
+      case DLL_THREAD_ATTACH:
+        break;
+      case DLL_THREAD_DETACH:
+#if defined(SMP) && defined(USE_TLS)
+        blas_thread_memory_cleanup();
+#endif
+        break;
   }
 
   return TRUE;

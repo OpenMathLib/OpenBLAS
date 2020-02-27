@@ -331,7 +331,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	add	r4  , CO2, r3
 	pld	[ CO2 , #C_PRE ]
 
-	fldmiad CO1, { d8 - d11 }
+	vldmia.f64 CO1, { d8 - d11 }
 	pld	[ r4 , #C_PRE ]
 
 	fmacd	d8 , d0 , d16
@@ -352,7 +352,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	fmacd	d15, d0 , d23
 	fstd	d11, [CO1, #24 ]
 
-	fldmiad r4, { d8 - d11 }
+	vldmia.f64 r4, { d8 - d11 }
 
 	fmacd	d8 , d0 , d24
 	fstd	d12, [CO2]
@@ -367,7 +367,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	pld	[ CO2 , #C_PRE ]
 
-	fldmiad CO2, { d12 - d15 }
+	vldmia.f64 CO2, { d12 - d15 }
 
 	fstd	d8 , [r4 ]
 	fmacd	d12, d0 , d28
@@ -378,7 +378,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	fstd	d11, [r4 , #24 ]
 	fmacd	d15, d0 , d31
 
-	fstmiad CO2, { d12 - d15 }
+	vstmia.f64 CO2, { d12 - d15 }
 
 	add	CO1, CO1, #32
 

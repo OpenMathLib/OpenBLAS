@@ -207,7 +207,7 @@ int main(int argc, char *argv[]){
   for (i = 0; i < m * n * COMPSIZE; i++) {
     c[i] = ((FLOAT) rand() / (FLOAT) RAND_MAX) - 0.5;
   }
- 
+
   fprintf(stderr, "          SIZE                   Flops             Time\n");
 
   for (i = from; i <= to; i += step) {

@@ -35,7 +35,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "sgemv_n_microk_nehalem-4.c"
 #elif defined(SANDYBRIDGE)
 #include "sgemv_n_microk_sandy-4.c"
-#elif defined(HASWELL) || defined(ZEN)
+#elif defined(HASWELL) || defined(ZEN) || defined (SKYLAKEX)
 #include "sgemv_n_microk_haswell-4.c"
 #endif
 
@@ -149,9 +149,9 @@ static void sgemv_kernel_4x2( BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y, FLOAT 
 	"jnz		1b		       \n\t"
 
 	:
-        : 
-          "r" (i),	// 0	
-	  "r" (n),  	// 1
+          "+r" (i),	// 0	
+	  "+r" (n)  	// 1
+	:
           "r" (x),      // 2
           "r" (y),      // 3
           "r" (ap[0]),  // 4
@@ -223,9 +223,9 @@ static void sgemv_kernel_4x1(BLASLONG n, FLOAT *ap, FLOAT *x, FLOAT *y, FLOAT *a
 
         "3:      			 \n\t" 
         :
+          "+r" (i),     // 0    
+          "+r" (n1)     // 1
         :
-          "r" (i),      // 0    
-          "r" (n1),     // 1
           "r" (x),      // 2
           "r" (y),      // 3
           "r" (ap),     // 4
@@ -277,9 +277,9 @@ static void add_y(BLASLONG n, FLOAT *src, FLOAT *dest, BLASLONG inc_dest)
         "jnz            1b              \n\t"
 
         :
+        "+r" (i),         // 0
+        "+r" (n)          // 1
         :
-        "r" (i),          // 0
-        "r" (n),          // 1
         "r" (src),        // 2
         "r" (dest)        // 3
         : "cc",

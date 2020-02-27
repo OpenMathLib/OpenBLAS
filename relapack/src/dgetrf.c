@@ -1,7 +1,7 @@
 #include "relapack.h"
 
-static void RELAPACK_dgetrf_rec(const int *, const int *, double *,
-    const int *, int *, int *);
+static void RELAPACK_dgetrf_rec(const blasint *, const blasint *, double *,
+    const blasint *, blasint *, blasint *);
 
 
 /** DGETRF computes an LU factorization of a general M-by-N matrix A using partial pivoting with row interchanges.
@@ -11,26 +11,25 @@ static void RELAPACK_dgetrf_rec(const int *, const int *, double *,
  * http://www.netlib.org/lapack/explore-html/d3/d6a/dgetrf_8f.html
  * */
 void RELAPACK_dgetrf(
-    const int *m, const int *n,
-    double *A, const int *ldA, int *ipiv,
-    int *info
+    const blasint *m, const blasint *n,
+    double *A, const blasint *ldA, blasint *ipiv,
+    blasint *info
 ) {
-
     // Check arguments
     *info = 0;
     if (*m < 0)
         *info = -1;
     else if (*n < 0)
         *info = -2;
-    else if (*ldA < MAX(1, *n))
+    else if (*ldA < MAX(1, *m))
         *info = -4;
-    if (*info) {
-        const int minfo = -*info;
-        LAPACK(xerbla)("DGETRF", &minfo);
+    if (*info!=0) {
+        const blasint minfo = -*info;
+        LAPACK(xerbla)("DGETRF", &minfo, strlen("DGETRF"));
         return;
     }
 
-    const int sn = MIN(*m, *n);
+    const blasint sn = MIN(*m, *n);
 
     RELAPACK_dgetrf_rec(m, &sn, A, ldA, ipiv, info);
 
@@ -38,10 +37,10 @@ void RELAPACK_dgetrf(
     if (*m < *n) {
         // Constants
         const double ONE[] = { 1. };
-        const int   iONE[] = { 1. };
+        const blasint   iONE[] = { 1. };
 
         // Splitting
-        const int rn = *n - *m;
+        const blasint rn = *n - *m;
 
         // A_L A_R
         const double *const A_L = A;
@@ -57,9 +56,9 @@ void RELAPACK_dgetrf(
 
 /** dgetrf's recursive compute kernel */
 static void RELAPACK_dgetrf_rec(
-    const int *m, const int *n,
-    double *A, const int *ldA, int *ipiv,
-    int *info
+    const blasint *m, const blasint *n,
+    double *A, const blasint *ldA, blasint *ipiv,
+    blasint *info
 ) {
 
     if (*n <= MAX(CROSSOVER_DGETRF, 1)) {
@@ -71,12 +70,12 @@ static void RELAPACK_dgetrf_rec(
     // Constants
     const double ONE[]  = { 1. };
     const double MONE[] = { -1. };
-    const int    iONE[] = { 1 };
+    const blasint    iONE[] = { 1 };
 
     // Splitting
-    const int n1 = DREC_SPLIT(*n);
-    const int n2 = *n - n1;
-    const int m2 = *m - n1;
+    const blasint n1 = DREC_SPLIT(*n);
+    const blasint n2 = *n - n1;
+    const blasint m2 = *m - n1;
 
     // A_L A_R
     double *const A_L = A;
@@ -91,8 +90,8 @@ static void RELAPACK_dgetrf_rec(
 
     // ipiv_T
     // ipiv_B
-    int *const ipiv_T = ipiv;
-    int *const ipiv_B = ipiv + n1;
+    blasint *const ipiv_T = ipiv;
+    blasint *const ipiv_B = ipiv + n1;
 
     // recursion(A_L, ipiv_T)
     RELAPACK_dgetrf_rec(m, &n1, A_L, ldA, ipiv_T, info);
@@ -111,7 +110,7 @@ static void RELAPACK_dgetrf_rec(
     // apply pivots to A_BL
     LAPACK(dlaswp)(&n1, A_BL, ldA, iONE, &n2, ipiv_B, iONE);
     // shift pivots
-    int i;
+    blasint i;
     for (i = 0; i < n2; i++)
         ipiv_B[i] += n1;
 }

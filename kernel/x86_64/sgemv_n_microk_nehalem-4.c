@@ -37,19 +37,19 @@ static void sgemv_kernel_4x8( BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y, BLASLO
 
 	__asm__  __volatile__
 	(
-	"movss    (%2), %%xmm12	 \n\t"	// x0 
-	"movss   4(%2), %%xmm13	 \n\t"	// x1 
-	"movss   8(%2), %%xmm14	 \n\t"	// x2 
-	"movss  12(%2), %%xmm15	 \n\t"	// x3 
+	"movss    (%3), %%xmm12	 \n\t"	// x0 
+	"movss   4(%3), %%xmm13	 \n\t"	// x1 
+	"movss   8(%3), %%xmm14	 \n\t"	// x2 
+	"movss  12(%3), %%xmm15	 \n\t"	// x3 
 	"shufps $0,  %%xmm12, %%xmm12\n\t"	
 	"shufps $0,  %%xmm13, %%xmm13\n\t"	
 	"shufps $0,  %%xmm14, %%xmm14\n\t"	
 	"shufps $0,  %%xmm15, %%xmm15\n\t"	
 
-	"movss  16(%2), %%xmm0	 \n\t"	// x4 
-	"movss  20(%2), %%xmm1	 \n\t"	// x5 
-	"movss  24(%2), %%xmm2	 \n\t"	// x6 
-	"movss  28(%2), %%xmm3	 \n\t"	// x7 
+	"movss  16(%3), %%xmm0	 \n\t"	// x4 
+	"movss  20(%3), %%xmm1	 \n\t"	// x5 
+	"movss  24(%3), %%xmm2	 \n\t"	// x6 
+	"movss  28(%3), %%xmm3	 \n\t"	// x7 
 	"shufps $0,  %%xmm0 , %%xmm0 \n\t"	
 	"shufps $0,  %%xmm1 , %%xmm1 \n\t"	
 	"shufps $0,  %%xmm2 , %%xmm2 \n\t"	
@@ -63,13 +63,13 @@ static void sgemv_kernel_4x8( BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y, BLASLO
 	"1:				 \n\t"
 	"xorps           %%xmm4 , %%xmm4	 \n\t"
 	"xorps           %%xmm5 , %%xmm5	 \n\t"
-	"movups             (%3,%0,4), %%xmm7          \n\t" // 4 * y
+	"movups             (%4,%0,4), %%xmm7          \n\t" // 4 * y
 
 	".p2align 1				       \n\t"
-	"movups             (%4,%0,4), %%xmm8          \n\t" 
-	"movups             (%5,%0,4), %%xmm9          \n\t" 
-	"movups             (%6,%0,4), %%xmm10         \n\t" 
-	"movups             (%7,%0,4), %%xmm11         \n\t" 
+	"movups             (%5,%0,4), %%xmm8          \n\t" 
+	"movups             (%6,%0,4), %%xmm9          \n\t" 
+	"movups             (%7,%0,4), %%xmm10         \n\t" 
+	"movups             (%8,%0,4), %%xmm11         \n\t" 
 	".p2align 1				       \n\t"
 	"mulps		%%xmm12, %%xmm8		       \n\t"
 	"mulps		%%xmm13, %%xmm9		       \n\t"
@@ -80,10 +80,10 @@ static void sgemv_kernel_4x8( BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y, BLASLO
 	"addps		%%xmm10, %%xmm4	               \n\t"
 	"addps		%%xmm11, %%xmm5 	       \n\t"
 
-	"movups             (%4,%8,4), %%xmm8          \n\t" 
-	"movups             (%5,%8,4), %%xmm9          \n\t" 
-	"movups             (%6,%8,4), %%xmm10         \n\t" 
-	"movups             (%7,%8,4), %%xmm11         \n\t" 
+	"movups             (%5,%2,4), %%xmm8          \n\t" 
+	"movups             (%6,%2,4), %%xmm9          \n\t" 
+	"movups             (%7,%2,4), %%xmm10         \n\t" 
+	"movups             (%8,%2,4), %%xmm11         \n\t" 
 	".p2align 1				       \n\t"
 	"mulps		%%xmm0 , %%xmm8		       \n\t"
 	"mulps		%%xmm1 , %%xmm9		       \n\t"
@@ -94,28 +94,28 @@ static void sgemv_kernel_4x8( BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y, BLASLO
 	"addps		%%xmm10, %%xmm4	       	       \n\t"
 	"addps		%%xmm11, %%xmm5 	       \n\t"
 
-        "addq		$4 , %8	  	 	       \n\t"
+        "addq		$4 , %2	  	 	       \n\t"
 	"addps		%%xmm5 , %%xmm4 	       \n\t"
         "addq		$4 , %0	  	 	       \n\t"
 	"mulps		%%xmm6 , %%xmm4		       \n\t" 
 	"subq	        $4 , %1			       \n\t"		
 	"addps		%%xmm4 , %%xmm7 	       \n\t"
 
-	"movups  %%xmm7 , -16(%3,%0,4)		       \n\t"	// 4 * y
+	"movups  %%xmm7 , -16(%4,%0,4)		       \n\t"	// 4 * y
 
 	"jnz		1b		       \n\t"
 
 	:
           "+r" (i),	// 0	
-	  "+r" (n)  	// 1
+	  "+r" (n), 	// 1
+          "+r" (lda4)   // 2
         : 
-          "r" (x),      // 2
-          "r" (y),      // 3
-          "r" (ap[0]),  // 4
-          "r" (ap[1]),  // 5
-          "r" (ap[2]),  // 6
-          "r" (ap[3]),  // 7
-          "r" (lda4),   // 8
+          "r" (x),      // 3
+          "r" (y),      // 4
+          "r" (ap[0]),  // 5
+          "r" (ap[1]),  // 6
+          "r" (ap[2]),  // 7
+          "r" (ap[3]),  // 8
           "r" (alpha)   // 9
 	: "cc", 
 	  "%xmm0", "%xmm1", 

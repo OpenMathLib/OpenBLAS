@@ -47,10 +47,10 @@
 *> \verbatim
 *>          JOB is CHARACTER*1
 *>          Specifies the type of backward transformation required:
-*>          = 'N', do nothing, return immediately;
-*>          = 'P', do backward transformation for permutation only;
-*>          = 'S', do backward transformation for scaling only;
-*>          = 'B', do backward transformations for both permutation and
+*>          = 'N': do nothing, return immediately;
+*>          = 'P': do backward transformation for permutation only;
+*>          = 'S': do backward transformation for scaling only;
+*>          = 'B': do backward transformations for both permutation and
 *>                 scaling.
 *>          JOB must be the same as the argument JOB supplied to DGEBAL.
 *> \endverbatim

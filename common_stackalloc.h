@@ -45,16 +45,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * SIZE must be carefully chosen to be:
  * - as small as possible to maximize the number of stack allocation
  * - large enough to support all architectures and kernel
- * Chosing a too small SIZE will lead to a stack smashing.
+ * Choosing a SIZE too small will lead to a stack smashing.
  */
-#define STACK_ALLOC(SIZE, TYPE, BUFFER)                                    \
-  /* make it volatile because some function (ex: dgemv_n.S) */             \
-  /* do not restore all register */                                        \
-  volatile int stack_alloc_size = SIZE;                                    \
-  if(stack_alloc_size > MAX_STACK_ALLOC / sizeof(TYPE))                    \
-    stack_alloc_size = 0;                                                  \
-  STACK_ALLOC_PROTECT_SET                                                  \
-  TYPE stack_buffer[stack_alloc_size] __attribute__((aligned(0x20)));    \
+#define STACK_ALLOC(SIZE, TYPE, BUFFER)                                        \
+  /* make it volatile because some function (ex: dgemv_n.S) */                 \
+  /* do not restore all register */                                            \
+  volatile int stack_alloc_size = SIZE;                                        \
+  if (stack_alloc_size > MAX_STACK_ALLOC / sizeof(TYPE)) stack_alloc_size = 0; \
+  STACK_ALLOC_PROTECT_SET                                                      \
+  /* Avoid declaring an array of length 0 */                                   \
+  TYPE stack_buffer[stack_alloc_size ? stack_alloc_size : 1]                   \
+      __attribute__((aligned(0x20)));                                          \
   BUFFER = stack_alloc_size ? stack_buffer : (TYPE *)blas_memory_alloc(1);
 #else
   //Original OpenBLAS/GotoBLAS codes.

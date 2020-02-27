@@ -391,8 +391,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	FMAC_R2 d10, d1 , d23
 	FMAC_I2	d11, d1 , d22
 
-	fstmiad CO1, { d4 - d7 }
-	fstmiad CO2, { d8 - d11 }
+	vstmia.f64 CO1, { d4 - d7 }
+	vstmia.f64 CO2, { d8 - d11 }
 
 	add	CO1, CO1, #32
 
@@ -569,8 +569,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	FMAC_R2 d8 , d1 , d21
 	FMAC_I2	d9 , d1 , d20
 
-	fstmiad CO1, { d4 - d5 }
-	fstmiad CO2, { d8 - d9  }
+	vstmia.f64 CO1, { d4 - d5 }
+	vstmia.f64 CO2, { d8 - d9  }
 
 	add	CO1, CO1, #16
 
@@ -747,7 +747,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	FMAC_R2 d6 , d1 , d19
 	FMAC_I2	d7 , d1 , d18
 
-	fstmiad CO1, { d4 - d7 }
+	vstmia.f64 CO1, { d4 - d7 }
 
 	add	CO1, CO1, #32
 
@@ -872,7 +872,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	FMAC_R2 d4 , d1 , d17
 	FMAC_I2	d5 , d1 , d16
 
-	fstmiad CO1, { d4 - d5 }
+	vstmia.f64 CO1, { d4 - d5 }
 
 	add	CO1, CO1, #16
 

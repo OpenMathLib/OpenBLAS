@@ -129,7 +129,10 @@ int main(int argc, char *argv[]){
   int step =   1;
 
   struct timeval start, stop;
-  double time1,timeg;
+  double time1 = 0.0, timeg = 0.0;
+  long nanos = 0;
+  time_t seconds = 0;
+  struct timespec time_start = { 0, 0 }, time_end = { 0, 0 };
 
   argc--;argv++;
 
@@ -163,35 +166,32 @@ int main(int argc, char *argv[]){
    timeg=0;
 
    fprintf(stderr, " %6d : ", (int)m);
+   for(i = 0; i < m * COMPSIZE * abs(inc_x); i++){
+       x[i] = ((FLOAT) rand() / (FLOAT) RAND_MAX) - 0.5;
+   }
 
+   for(i = 0; i < m * COMPSIZE * abs(inc_y); i++){
+       y[i] = ((FLOAT) rand() / (FLOAT) RAND_MAX) - 0.5;
+   }
 
    for (l=0; l<loops; l++)
    {
+       clock_gettime(CLOCK_REALTIME, &time_start);
+       COPY (&m, x, &inc_x, y, &inc_y );
+       clock_gettime(CLOCK_REALTIME, &time_end);
 
-   	for(i = 0; i < m * COMPSIZE * abs(inc_x); i++){
-			x[i] = ((FLOAT) rand() / (FLOAT) RAND_MAX) - 0.5;
-   	}
+       nanos = time_end.tv_nsec - time_start.tv_nsec;
+       seconds = time_end.tv_sec - time_start.tv_sec;
 
-   	for(i = 0; i < m * COMPSIZE * abs(inc_y); i++){
-			y[i] = ((FLOAT) rand() / (FLOAT) RAND_MAX) - 0.5;
-   	}
-    	gettimeofday( &start, (struct timezone *)0);
+       time1 = seconds + nanos / 1.e9;
+       timeg += time1;
+   }
 
-    	COPY (&m, x, &inc_x, y, &inc_y );
+      timeg /= loops;
 
-    	gettimeofday( &stop, (struct timezone *)0);
-
-    	time1 = (double)(stop.tv_sec - start.tv_sec) + (double)((stop.tv_usec - start.tv_usec)) * 1.e-6;
-
-	timeg += time1;
-
-    }
-
-    timeg /= loops;
-
-    fprintf(stderr,
-	    " %10.2f MBytes %10.6f sec\n",
-	    COMPSIZE * sizeof(FLOAT) * 1. * (double)m / timeg * 1.e-6, timeg);
+      fprintf(stderr,
+	    " %10.2f MBytes %12.9f sec\n",
+	    COMPSIZE * sizeof(FLOAT) * 1. * (double)m / timeg / 1.e6, timeg);
 
   }
 

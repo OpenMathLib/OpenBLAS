@@ -19,6 +19,7 @@
 #define	CDOTC_K			cdotc_k
 #define	CNRM2_K			cnrm2_k
 #define	CSCAL_K			cscal_k
+#define	CSUM_K			csum_k
 #define	CSWAP_K			cswap_k
 #define	CROT_K			csrot_k
 
@@ -249,6 +250,7 @@
 #define	CDOTC_K			gotoblas -> cdotc_k
 #define	CNRM2_K			gotoblas -> cnrm2_k
 #define	CSCAL_K			gotoblas -> cscal_k
+#define	CSUM_K			gotoblas -> csum_k
 #define	CSWAP_K			gotoblas -> cswap_k
 #define	CROT_K			gotoblas -> csrot_k
 

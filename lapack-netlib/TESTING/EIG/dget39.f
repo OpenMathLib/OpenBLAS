@@ -194,7 +194,7 @@
       VM5( 2 ) = EPS
       VM5( 3 ) = SQRT( SMLNUM )
 *
-*     Initalization
+*     Initialization
 *
       KNT = 0
       RMAX = ZERO

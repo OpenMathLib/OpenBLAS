@@ -113,8 +113,8 @@ static void dsymv_kernel_4x4(BLASLONG from, BLASLONG to, FLOAT **a, FLOAT *x, FL
 	"vmovsd         %%xmm3 ,24(%9)		\n\t"	// save temp2
 
 	:
-        : 
-          "r" (from),	// 0	
+          "+r" (from)	// 0	
+        :
 	  "r" (to),  	// 1
           "r" (x),      // 2
           "r" (y),      // 3

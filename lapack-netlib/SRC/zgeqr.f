@@ -1,3 +1,4 @@
+*> \brief \b ZGEQR
 *
 *  Definition:
 *  ===========
@@ -17,7 +18,18 @@
 *  =============
 *>
 *> \verbatim
-*> ZGEQR computes a QR factorization of an M-by-N matrix A.
+*>
+*> ZGEQR computes a QR factorization of a complex M-by-N matrix A:
+*>
+*>    A = Q * ( R ),
+*>            ( 0 )
+*>
+*> where:
+*>
+*>    Q is a M-by-M orthogonal matrix;
+*>    R is an upper-triangular N-by-N matrix;
+*>    0 is a (M-N)-by-N zero matrix, if M > N.
+*>
 *> \endverbatim
 *
 *  Arguments:
@@ -138,7 +150,7 @@
 *> \verbatim
 *>
 *> These details are particular for this LAPACK implementation. Users should not 
-*> take them for granted. These details may change in the future, and are unlikely not
+*> take them for granted. These details may change in the future, and are not likely
 *> true for another LAPACK implementation. These details are relevant if one wants
 *> to try to understand the code. They are not part of the interface.
 *>
@@ -160,10 +172,10 @@
       SUBROUTINE ZGEQR( M, N, A, LDA, T, TSIZE, WORK, LWORK,
      $                  INFO )
 *
-*  -- LAPACK computational routine (version 3.7.0) --
+*  -- LAPACK computational routine (version 3.9.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd. --
-*     December 2016
+*     November 2019
 *
 *     .. Scalar Arguments ..
       INTEGER            INFO, LDA, M, N, TSIZE, LWORK

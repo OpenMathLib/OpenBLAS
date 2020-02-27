@@ -943,13 +943,9 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	prfm	PLDL1KEEP, [origPB]
 	prfm	PLDL1KEEP, [origPA]
 
-
-	ldr     A_PRE_SIZE, =dgemm_prefetch_size_a
-	ldr     A_PRE_SIZE, [A_PRE_SIZE]
-	ldr     B_PRE_SIZE, =dgemm_prefetch_size_b
-	ldr     B_PRE_SIZE, [B_PRE_SIZE]
-	ldr     C_PRE_SIZE, =dgemm_prefetch_size_c
-	ldr     C_PRE_SIZE, [C_PRE_SIZE]
+	mov	A_PRE_SIZE, #3584
+	mov	B_PRE_SIZE, #512
+	mov	C_PRE_SIZE, #128
 	add	A_PRE_SIZE_64, A_PRE_SIZE, #64
 	add	B_PRE_SIZE_64, B_PRE_SIZE, #64
 

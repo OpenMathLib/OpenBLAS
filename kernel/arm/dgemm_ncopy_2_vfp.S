@@ -73,7 +73,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	fldd	d3 , [ AO2, #8  ]
 
 	add	AO1, AO1, #16
-	fstmiad	BO!, { d0 - d3 }
+	vstmia.f64	BO!, { d0 - d3 }
 	add	AO2, AO2, #16
 
 .endm
@@ -85,7 +85,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	fldd	d1 , [ AO2, #0  ]
 	add	AO1, AO1, #8
 
-	fstmiad	BO!, { d0 - d1 }
+	vstmia.f64	BO!, { d0 - d1 }
 	add	AO2, AO2, #8
 
 .endm
@@ -95,7 +95,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	fldd	d0 , [ AO1, #0  ]
 	fldd	d1 , [ AO1, #8  ]
 
-	fstmiad	BO!, { d0 - d1 }
+	vstmia.f64	BO!, { d0 - d1 }
 	add	AO1, AO1, #16
 
 .endm
@@ -105,7 +105,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	fldd	d0 , [ AO1, #0  ]
 
-	fstmiad	BO!, { d0 }
+	vstmia.f64	BO!, { d0 }
 	add	AO1, AO1, #8
 
 .endm

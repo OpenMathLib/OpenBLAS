@@ -14,7 +14,7 @@
 
 /* Table of constant values */
 
-static int c__1 = 1;
+static blasint c__1 = 1;
 static double c_b9 = -1.;
 static double c_b10 = 1.;
 
@@ -25,39 +25,39 @@ static double c_b10 = 1.;
  * The blocked BLAS Level 3 updates were removed and moved to the
  * recursive algorithm.
  * */
-/* Subroutine */ void RELAPACK_dsytrf_rook_rec2(char *uplo, int *n,
-	int *nb, int *kb, double *a, int *lda, int *ipiv,
-	double *w, int *ldw, int *info, ftnlen uplo_len)
+/* Subroutine */ void RELAPACK_dsytrf_rook_rec2(char *uplo, blasint *n,
+	int *nb, blasint *kb, double *a, blasint *lda, blasint *ipiv,
+	double *w, blasint *ldw, blasint *info, ftnlen uplo_len)
 {
     /* System generated locals */
-    int a_dim1, a_offset, w_dim1, w_offset, i__1, i__2;
+    blasint a_dim1, a_offset, w_dim1, w_offset, i__1, i__2;
     double d__1;
 
     /* Builtin functions */
     double sqrt(double);
 
     /* Local variables */
-    static int j, k, p;
+    static blasint j, k, p;
     static double t, r1, d11, d12, d21, d22;
-    static int ii, jj, kk, kp, kw, jp1, jp2, kkw;
+    static blasint ii, jj, kk, kp, kw, jp1, jp2, kkw;
     static logical done;
-    static int imax, jmax;
+    static blasint imax, jmax;
     static double alpha;
-    extern /* Subroutine */ int dscal_(int *, double *, double *,
-	    int *);
+    extern /* Subroutine */ blasint dscal_(int *, double *, double *,
+	    blasint *);
     extern logical lsame_(char *, char *, ftnlen, ftnlen);
-    extern /* Subroutine */ int dgemv_(char *, int *, int *,
-	    double *, double *, int *, double *, int *,
-	    double *, double *, int *, ftnlen);
+    extern /* Subroutine */ blasint dgemv_(char *, blasint *, blasint *,
+	    double *, double *, blasint *, double *, blasint *,
+	    double *, double *, blasint *, ftnlen);
     static double dtemp, sfmin;
-    static int itemp;
-    extern /* Subroutine */ int dcopy_(int *, double *, int *,
-	    double *, int *), dswap_(int *, double *, int
-	    *, double *, int *);
-    static int kstep;
+    static blasint itemp;
+    extern /* Subroutine */ blasint dcopy_(int *, double *, blasint *,
+	    double *, blasint *), dswap_(int *, double *, int
+	    *, double *, blasint *);
+    static blasint kstep;
     extern double dlamch_(char *, ftnlen);
     static double absakk;
-    extern int idamax_(int *, double *, int *);
+    extern blasint idamax_(int *, double *, blasint *);
     static double colmax, rowmax;
 
     /* Parameter adjustments */

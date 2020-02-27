@@ -54,16 +54,12 @@ int CNAME(BLASLONG m, FLOAT *a, BLASLONG lda, FLOAT *b, BLASLONG incb, FLOAT *bu
     COPY_K(m, b, incb, buffer, 1);
   }
 
-/*FIXME the GEMV unrolling performed here was found to be broken, see issue 1332 */
-/* Multiplying DTB size by 100 is just a quick-and-dirty hack to disable it for now[B */
+  for (is = 0; is < m; is += DTB_ENTRIES){
 
-  for (is = 0; is < m; is += DTB_ENTRIES * 100){
-
-    min_i = MIN(m - is, DTB_ENTRIES * 100);
+    min_i = MIN(m - is, DTB_ENTRIES);
 
 #ifndef TRANSA
-    if (is > 0){
-fprintf(stderr,"WARNING unrolling of the trmv_U loop may give wrong results\n");    
+    if (is > 0){ 
       GEMV_N(is, min_i, 0, dp1,
 	     a + is * lda,  lda,
 	     B + is, 1,

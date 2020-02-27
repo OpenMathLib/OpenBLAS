@@ -91,7 +91,7 @@ lapack_int LAPACKE_zggesx( int matrix_layout, char jobvsl, char jobvsr,
     if( info != 0 ) {
         goto exit_level_2;
     }
-    liwork = (lapack_int)iwork_query;
+    liwork = iwork_query;
     lwork = LAPACK_Z2INT( work_query );
     /* Allocate memory for work arrays */
     iwork = (lapack_int*)LAPACKE_malloc( sizeof(lapack_int) * liwork );

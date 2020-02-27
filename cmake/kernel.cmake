@@ -1,7 +1,7 @@
 # helper functions for the kernel CMakeLists.txt
 
 
-# Set the default filenames for L1 objects. Most of these will be overriden by the appropriate KERNEL file.
+# Set the default filenames for L1 objects. Most of these will be overridden by the appropriate KERNEL file.
 macro(SetDefaultL1)
   set(SAMAXKERNEL amax.S)
   set(DAMAXKERNEL amax.S)
@@ -107,6 +107,12 @@ macro(SetDefaultL1)
   set(DAXPBYKERNEL ../arm/axpby.c)
   set(CAXPBYKERNEL ../arm/zaxpby.c)
   set(ZAXPBYKERNEL ../arm/zaxpby.c)
+  set(SSUMKERNEL sum.S)
+  set(DSUMKERNEL sum.S)
+  set(CSUMKERNEL zsum.S)
+  set(ZSUMKERNEL zsum.S)
+  set(QSUMKERNEL sum.S)
+  set(XSUMKERNEL zsum.S)
 endmacro ()
 
 macro(SetDefaultL2)

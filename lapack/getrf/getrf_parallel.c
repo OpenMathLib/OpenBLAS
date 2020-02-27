@@ -119,7 +119,11 @@ static void inner_basic_thread(blas_arg_t *args, BLASLONG *range_m, BLASLONG *ra
   FLOAT *d = (FLOAT *)args -> b + (k + k * lda) * COMPSIZE;
   FLOAT *sbb = sb;
 
+#if __STDC_VERSION__ >= 201112L
+  _Atomic BLASLONG *flag = (_Atomic BLASLONG *)args -> d;
+#else
   volatile BLASLONG *flag = (volatile BLASLONG *)args -> d;
+#endif
 
   blasint *ipiv = (blasint *)args -> c;
 
@@ -197,7 +201,12 @@ static void inner_basic_thread(blas_arg_t *args, BLASLONG *range_m, BLASLONG *ra
 /* Non blocking implementation */
 
 typedef struct {
-  volatile BLASLONG working[MAX_CPU_NUMBER][CACHE_LINE_SIZE * DIVIDE_RATE];
+#if __STDC_VERSION__ >= 201112L
+  _Atomic
+#else
+  volatile
+#endif
+   BLASLONG working[MAX_CPU_NUMBER][CACHE_LINE_SIZE * DIVIDE_RATE];
 } job_t;
 
 #define ICOPY_OPERATION(M, N, A, LDA, X, Y, BUFFER) GEMM_ITCOPY(M, N, (FLOAT *)(A) + ((Y) + (X) * (LDA)) * COMPSIZE, LDA, BUFFER);
@@ -236,11 +245,12 @@ static int inner_advanced_thread(blas_arg_t *args, BLASLONG *range_m, BLASLONG *
   FLOAT *sbb= sb;
 
   blasint *ipiv = (blasint *)args -> c;
-
-   BLASLONG jw;
-  
+  BLASLONG jw;
+#if __STDC_VERSION__ >= 201112L
+  _Atomic BLASLONG *flag = (_Atomic BLASLONG *)args -> d;
+#else
   volatile BLASLONG *flag = (volatile BLASLONG *)args -> d;
-
+#endif
   if (args -> a == NULL) {
     TRSM_ILTCOPY(k, k, (FLOAT *)args -> b, lda, 0, sb);
     sbb = (FLOAT *)((((BLASULONG)(sb + k * k * COMPSIZE) + GEMM_ALIGN) & ~GEMM_ALIGN) + GEMM_OFFSET_B);
@@ -269,9 +279,6 @@ static int inner_advanced_thread(blas_arg_t *args, BLASLONG *range_m, BLASLONG *
     for (i = 0; i < args -> nthreads; i++)
 #if 1
     {
-	LOCK_COMMAND(&getrf_lock);
-	jw = job[mypos].working[i][CACHE_LINE_SIZE * bufferside];
-	UNLOCK_COMMAND(&getrf_lock);
 	do {
 	    LOCK_COMMAND(&getrf_lock);
 	    jw = job[mypos].working[i][CACHE_LINE_SIZE * bufferside];
@@ -358,9 +365,6 @@ static int inner_advanced_thread(blas_arg_t *args, BLASLONG *range_m, BLASLONG *
 
 	  if ((current != mypos) && (!is)) {
 #if 1
-		LOCK_COMMAND(&getrf_lock);
-		jw = job[current].working[mypos][CACHE_LINE_SIZE * bufferside];
-		UNLOCK_COMMAND(&getrf_lock);
 		do {
 		    LOCK_COMMAND(&getrf_lock);
 		    jw = job[current].working[mypos][CACHE_LINE_SIZE * bufferside];
@@ -392,9 +396,6 @@ static int inner_advanced_thread(blas_arg_t *args, BLASLONG *range_m, BLASLONG *
   for (i = 0; i < args -> nthreads; i++) {
     for (xxx = 0; xxx < DIVIDE_RATE; xxx++) {
 #if 1
-	LOCK_COMMAND(&getrf_lock);
-	jw = job[mypos].working[i][CACHE_LINE_SIZE *xxx];
-	UNLOCK_COMMAND(&getrf_lock);
 	do {
 	    LOCK_COMMAND(&getrf_lock);
 	    jw = job[mypos].working[i][CACHE_LINE_SIZE *xxx];
@@ -442,7 +443,12 @@ blasint CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa,
 #ifdef _MSC_VER
   BLASLONG flag[MAX_CPU_NUMBER * CACHE_LINE_SIZE];
 #else
-  volatile BLASLONG flag[MAX_CPU_NUMBER * CACHE_LINE_SIZE] __attribute__((aligned(128)));
+#if __STDC_VERSION__ >= 201112L
+  _Atomic
+#else  
+  volatile
+#endif  
+   BLASLONG flag[MAX_CPU_NUMBER * CACHE_LINE_SIZE] __attribute__((aligned(128)));
 #endif
 
 #ifndef COMPLEX
@@ -713,8 +719,12 @@ blasint CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa,
   BLASLONG range[MAX_CPU_NUMBER + 1];
 
   BLASLONG width, nn, num_cpu;
-
-  volatile BLASLONG flag[MAX_CPU_NUMBER * CACHE_LINE_SIZE] __attribute__((aligned(128)));
+#if __STDC_VERSION__ >= 201112L
+  _Atomic
+#else  
+  volatile
+#endif
+   BLASLONG flag[MAX_CPU_NUMBER * CACHE_LINE_SIZE] __attribute__((aligned(128)));
 
 #ifndef COMPLEX
 #ifdef XDOUBLE

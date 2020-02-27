@@ -38,7 +38,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "common.h"
 
 
-#if defined(POWER8)
+#if defined(POWER8) || defined(POWER9)
 #include "dgemv_n_microk_power8.c"
 #endif
 
@@ -145,7 +145,7 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1, FLOAT alpha, FLOAT *a, BLASLO
 	BLASLONG m3;
 	BLASLONG n2;
 	BLASLONG lda4 =  lda << 2;
-	FLOAT xbuffer[8] __attribute__ ((aligned (16)));;
+	FLOAT xbuffer[8] __attribute__ ((aligned (16)));
 	FLOAT *ybuffer;
 
         if ( m < 1 ) return(0);

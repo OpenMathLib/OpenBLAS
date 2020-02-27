@@ -105,6 +105,10 @@ $(LIBPREFIX).def : gensymbol
 libgoto_hpl.def : gensymbol
 	perl ./gensymbol win2khpl $(ARCH) dummy $(EXPRECISION) $(NO_CBLAS) $(NO_LAPACK) $(NO_LAPACKE) $(NEED2UNDERSCORES) $(ONLY_CBLAS) "$(SYMBOLPREFIX)" "$(SYMBOLSUFFIX)" $(BUILD_LAPACK_DEPRECATED) > $(@F)
 
+ifeq ($(OSNAME), Darwin)
+INTERNALNAME = $(LIBPREFIX).$(MAJOR_VERSION).dylib
+endif
+
 ifeq (, $(SYMBOLPREFIX)$(SYMBOLSUFFIX))
 $(LIBDYNNAME) : ../$(LIBNAME) osx.def
 else
@@ -114,20 +118,22 @@ $(LIBDYNNAME) : ../$(LIBNAME).osx.renamed osx.def
 endif
 ifneq (,$(filter 1 2,$(NOFORTRAN)))
 #only build without Fortran
-	$(CC) $(CFLAGS) -all_load -headerpad_max_install_names -install_name "$(CURDIR)/../$(LIBDYNNAME)" -dynamiclib -o ../$(LIBDYNNAME) $< -Wl,-exported_symbols_list,osx.def  $(FEXTRALIB)
+	$(CC) $(CFLAGS) $(LDFLAGS) -all_load -headerpad_max_install_names -install_name "$(CURDIR)/../$(INTERNALNAME)" -dynamiclib -o ../$(LIBDYNNAME) $< -Wl,-exported_symbols_list,osx.def  $(FEXTRALIB)
 else
-	$(FC) $(FFLAGS) -all_load -headerpad_max_install_names -install_name "$(CURDIR)/../$(LIBDYNNAME)" -dynamiclib -o ../$(LIBDYNNAME) $< -Wl,-exported_symbols_list,osx.def  $(FEXTRALIB)
+	$(FC) $(FFLAGS) $(LDFLAGS) -all_load -headerpad_max_install_names -install_name "$(CURDIR)/../$(INTERNALNAME)" -dynamiclib -o ../$(LIBDYNNAME) $< -Wl,-exported_symbols_list,osx.def  $(FEXTRALIB)
 endif
 
 dllinit.$(SUFFIX) : dllinit.c
 	$(CC) $(CFLAGS) -c -o $(@F) -s $<
 
-ifeq ($(OSNAME), $(filter $(OSNAME),Linux SunOS Android))
+ifeq ($(OSNAME), $(filter $(OSNAME),Linux SunOS Android Haiku))
 
 so : ../$(LIBSONAME)
 
 ifeq ($(OSNAME), Android)
 INTERNALNAME = $(LIBPREFIX).so
+FEXTRALIB += -lm
+EXTRALIB += -lm
 else
 INTERNALNAME = $(LIBPREFIX).so.$(MAJOR_VERSION)
 endif
@@ -139,6 +145,14 @@ else
 	$(OBJCOPY) --redefine-syms objcopy.def ../$(LIBNAME) ../$(LIBNAME).renamed
 ../$(LIBSONAME) : ../$(LIBNAME).renamed linktest.c
 endif
+
+ifeq ($(F_COMPILER), INTEL)
+	$(FC) $(FFLAGS) $(LDFLAGS) -shared -o ../$(LIBSONAME) \
+	-Wl,--whole-archive $< -Wl,--no-whole-archive \
+	-Wl,-soname,$(INTERNALNAME) $(EXTRALIB)
+	$(CC) $(CFLAGS) $(LDFLAGS) -w -o linktest linktest.c ../$(LIBSONAME) $(FEXTRALIB) && echo OK.
+else
+
 ifneq ($(C_COMPILER), LSB)
 	$(CC) $(CFLAGS) $(LDFLAGS) -shared -o ../$(LIBSONAME) \
 	-Wl,--whole-archive $< -Wl,--no-whole-archive \
@@ -150,6 +164,7 @@ else
 	-Wl,--whole-archive $< -Wl,--no-whole-archive \
 	-Wl,-soname,$(INTERNALNAME) $(EXTRALIB)
 	$(FC) $(CFLAGS) $(LDFLAGS) -w -o linktest linktest.c ../$(LIBSONAME) $(FEXTRALIB) && echo OK.
+endif
 endif
 	rm -f linktest
 

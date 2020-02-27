@@ -7,6 +7,7 @@ else ()
   set(OpenBLAS_utest_src
     utest_main.c
     test_amax.c
+    test_ismin.c
     test_rotmg.c
     test_rot.c
     test_axpy.c
@@ -39,6 +40,12 @@ set(OpenBLAS_utest_src
   ${OpenBLAS_utest_src}
   test_potrs.c
   )
+if (NOT NO_CBLAS AND NOT NO_LAPACKE)
+set(OpenBLAS_utest_src
+  ${OpenBLAS_utest_src}
+  test_kernel_regress.c
+  )
+endif()
 endif()
 
 set(OpenBLAS_utest_bin openblas_utest)
@@ -61,7 +68,7 @@ foreach (OUTPUTCONFIG ${CMAKE_CONFIGURATION_TYPES})
   set_target_properties( ${OpenBLAS_utest_bin} PROPERTIES RUNTIME_OUTPUT_DIRECTORY_${OUTPUTCONFIG} ${CMAKE_CURRENT_BINARY_DIR})
 endforeach()
 
-if (MSVC)
+if (MSVC AND BUILD_SHARED_LIBS)
 add_custom_command(TARGET ${OpenBLAS_utest_bin}
           POST_BUILD
           COMMAND ${CMAKE_COMMAND} -E copy ${PROJECT_BINARY_DIR}/lib/${CMAKE_CFG_INTDIR}/${OpenBLAS_LIBNAME}.dll ${CMAKE_CURRENT_BINARY_DIR}/.

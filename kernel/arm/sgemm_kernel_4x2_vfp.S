@@ -112,8 +112,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .macro KERNEL4x2_SUB
 
-	fldmias	AO! , { s0 - s3 }
-	fldmias	BO! , { s4 - s5 }
+	vldmia.f32	AO! , { s0 - s3 }
+	vldmia.f32	BO! , { s4 - s5 }
 
 	fmacs	s8  , s0,  s4
 	fmacs	s9  , s1,  s4

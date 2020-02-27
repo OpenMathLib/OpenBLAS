@@ -33,6 +33,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "dgemv_n_microk_nehalem-4.c"
 #elif defined(HASWELL) || defined(ZEN) || defined(STEAMROLLER) || defined(EXCAVATOR)
 #include "dgemv_n_microk_haswell-4.c"
+#elif  defined (SKYLAKEX)
+#include "dgemv_n_microk_skylakex-4.c"
 #endif
 
 
@@ -109,9 +111,9 @@ static void dgemv_kernel_4x2( BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y, FLOAT 
 	"jnz		1b		       \n\t"
 
 	:
-        : 
-          "r" (i),	// 0	
-	  "r" (n),  	// 1
+          "+r" (i),	// 0	
+	  "+r" (n)  	// 1
+        :
           "r" (x),      // 2
           "r" (y),      // 3
           "r" (ap[0]),  // 4
@@ -164,9 +166,9 @@ static void dgemv_kernel_4x1(BLASLONG n, FLOAT *ap, FLOAT *x, FLOAT *y, FLOAT *a
         "jnz            1b               \n\t"
 
         :
+          "+r" (i),     // 0    
+          "+r" (n)      // 1
         :
-          "r" (i),      // 0    
-          "r" (n),      // 1
           "r" (x),      // 2
           "r" (y),      // 3
           "r" (ap),     // 4

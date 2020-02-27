@@ -42,7 +42,7 @@
 *> matrices.
 *>
 *> Aasen's algorithm is used to factor A as
-*>    A = U * T * U**H,  if UPLO = 'U', or
+*>    A = U**H * T * U,  if UPLO = 'U', or
 *>    A = L * T * L**H,  if UPLO = 'L',
 *> where U (or L) is a product of permutation and unit upper (lower)
 *> triangular matrices, and T is Hermitian and tridiagonal. The factored form
@@ -86,7 +86,7 @@
 *>
 *>          On exit, if INFO = 0, the tridiagonal matrix T and the
 *>          multipliers used to obtain the factor U or L from the
-*>          factorization A = U*T*U**H or A = L*T*L**H as computed by
+*>          factorization A = U**H*T*U or A = L*T*L**H as computed by
 *>          CHETRF_AA.
 *> \endverbatim
 *>
@@ -209,6 +209,8 @@
          INFO = -5
       ELSE IF( LDB.LT.MAX( 1, N ) ) THEN
          INFO = -8
+      ELSE IF( LWORK.LT.MAX( 2*N, 3*N-2 ) .AND. .NOT.LQUERY ) THEN
+         INFO = -10
       END IF
 *
       IF( INFO.EQ.0 ) THEN
@@ -219,9 +221,6 @@
          LWKOPT_HETRS = INT( WORK(1) )
          LWKOPT = MAX( LWKOPT_HETRF, LWKOPT_HETRS )
          WORK( 1 ) = LWKOPT
-         IF( LWORK.LT.LWKOPT .AND. .NOT.LQUERY ) THEN
-            INFO = -10
-         END IF
       END IF
 *
       IF( INFO.NE.0 ) THEN
@@ -231,7 +230,7 @@
          RETURN
       END IF
 *
-*     Compute the factorization A = U*T*U**H or A = L*T*L**H.
+*     Compute the factorization A = U**H*T*U or A = L*T*L**H.
 *
       CALL CHETRF_AA( UPLO, N, A, LDA, IPIV, WORK, LWORK, INFO )
       IF( INFO.EQ.0 ) THEN

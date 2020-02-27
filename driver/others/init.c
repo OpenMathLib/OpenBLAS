@@ -765,7 +765,7 @@ int gotoblas_set_affinity(int pos) {
 
   int mynode = 1;
 
-  /* if number of threads is larger than inital condition */
+  /* if number of threads is larger than initial condition */
   if (pos < 0) {
       sched_setaffinity(0, sizeof(cpu_orig_mask), &cpu_orig_mask[0]);
       return 0;
@@ -857,7 +857,14 @@ void gotoblas_affinity_init(void) {
   common -> shmid = pshmid;
 
   if (common -> magic != SH_MAGIC) {
+
+#if defined(__GLIBC_PREREQ)
+#if __GLIBC_PREREQ(2, 7)
     cpu_set_t *cpusetp;
+#else
+    cpu_set_t cpuset;
+#endif
+#endif    
     int nums;
     int ret;
 
@@ -890,7 +897,7 @@ void gotoblas_affinity_init(void) {
     }
     CPU_FREE(cpusetp);
 #else
-    ret = sched_getaffinity(0,sizeof(cpu_set_t), cpusetp);
+    ret = sched_getaffinity(0,sizeof(cpu_set_t), &cpuset);
     if (ret!=0) {
         common->num_procs = nums;
     } else {
@@ -898,11 +905,11 @@ void gotoblas_affinity_init(void) {
     int i;
     int n = 0;
     for (i=0;i<nums;i++)
-        if (CPU_ISSET(i,cpusetp)) n++;
+        if (CPU_ISSET(i,&cpuset)) n++;
     common->num_procs = n;
     }
 #else
-    common->num_procs = CPU_COUNT(sizeof(cpu_set_t),cpusetp);
+    common->num_procs = CPU_COUNT(&cpuset);
     }
 #endif
 

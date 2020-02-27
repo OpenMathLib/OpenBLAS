@@ -165,7 +165,7 @@
 *>
 *> \param[out] Z
 *> \verbatim
-*>          Z is REAL array, dimension (2*N,K) )
+*>          Z is REAL array, dimension (2*N,K)
 *>          If JOBZ = 'V', then if INFO = 0 the first NS columns of Z
 *>          contain the singular vectors of the matrix B corresponding to
 *>          the selected singular values, with U in rows 1 to N and V

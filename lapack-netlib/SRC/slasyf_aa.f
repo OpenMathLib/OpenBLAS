@@ -284,8 +284,9 @@
 *
 *              Swap A(I1, I2+1:M) with A(I2, I2+1:M)
 *
-               CALL SSWAP( M-I2, A( J1+I1-1, I2+1 ), LDA,
-     $                           A( J1+I2-1, I2+1 ), LDA )
+               IF( I2.LT.M )
+     $            CALL SSWAP( M-I2, A( J1+I1-1, I2+1 ), LDA,
+     $                              A( J1+I2-1, I2+1 ), LDA )
 *
 *              Swap A(I1, I1) with A(I2,I2)
 *
@@ -325,13 +326,15 @@
 *           Compute L(J+2, J+1) = WORK( 3:M ) / T(J, J+1),
 *            where A(J, J+1) = T(J, J+1) and A(J+2:M, J) = L(J+2:M, J+1)
 *
-            IF( A( K, J+1 ).NE.ZERO ) THEN
-               ALPHA = ONE / A( K, J+1 )
-               CALL SCOPY( M-J-1, WORK( 3 ), 1, A( K, J+2 ), LDA )
-               CALL SSCAL( M-J-1, ALPHA, A( K, J+2 ), LDA )
-            ELSE
-               CALL SLASET( 'Full', 1, M-J-1, ZERO, ZERO,
-     $                      A( K, J+2 ), LDA)
+            IF( J.LT.(M-1) ) THEN
+               IF( A( K, J+1 ).NE.ZERO ) THEN
+                  ALPHA = ONE / A( K, J+1 )
+                  CALL SCOPY( M-J-1, WORK( 3 ), 1, A( K, J+2 ), LDA )
+                  CALL SSCAL( M-J-1, ALPHA, A( K, J+2 ), LDA )
+               ELSE
+                  CALL SLASET( 'Full', 1, M-J-1, ZERO, ZERO,
+     $                         A( K, J+2 ), LDA)
+               END IF
             END IF
          END IF
          J = J + 1
@@ -432,8 +435,9 @@
 *
 *              Swap A(I2+1:M, I1) with A(I2+1:M, I2)
 *
-               CALL SSWAP( M-I2, A( I2+1, J1+I1-1 ), 1,
-     $                           A( I2+1, J1+I2-1 ), 1 )
+               IF( I2.LT.M )
+     $            CALL SSWAP( M-I2, A( I2+1, J1+I1-1 ), 1,
+     $                              A( I2+1, J1+I2-1 ), 1 )
 *
 *              Swap A(I1, I1) with A(I2, I2)
 *
@@ -473,13 +477,15 @@
 *           Compute L(J+2, J+1) = WORK( 3:M ) / T(J, J+1),
 *            where A(J, J+1) = T(J, J+1) and A(J+2:M, J) = L(J+2:M, J+1)
 *
-            IF( A( J+1, K ).NE.ZERO ) THEN
-               ALPHA = ONE / A( J+1, K )
-               CALL SCOPY( M-J-1, WORK( 3 ), 1, A( J+2, K ), 1 )
-               CALL SSCAL( M-J-1, ALPHA, A( J+2, K ), 1 )
-            ELSE
-               CALL SLASET( 'Full', M-J-1, 1, ZERO, ZERO,
-     $                      A( J+2, K ), LDA )
+            IF( J.LT.(M-1) ) THEN
+               IF( A( J+1, K ).NE.ZERO ) THEN
+                  ALPHA = ONE / A( J+1, K )
+                  CALL SCOPY( M-J-1, WORK( 3 ), 1, A( J+2, K ), 1 )
+                  CALL SSCAL( M-J-1, ALPHA, A( J+2, K ), 1 )
+               ELSE
+                  CALL SLASET( 'Full', M-J-1, 1, ZERO, ZERO,
+     $                         A( J+2, K ), LDA )
+               END IF
             END IF
          END IF
          J = J + 1

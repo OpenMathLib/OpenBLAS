@@ -35,7 +35,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "common.h"
 
-#if defined(POWER8)
+#if defined(POWER8) || defined(POWER9)
 #include "sswap_microk_power8.c"
 #endif
 

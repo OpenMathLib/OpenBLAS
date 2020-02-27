@@ -62,7 +62,7 @@
 *> \param[in,out] A
 *> \verbatim
 *>          A is COMPLEX*16 array, dimension (LDA,N)
-*>          On entry, the NB diagonal matrix D and the multipliers
+*>          On entry, the block diagonal matrix D and the multipliers
 *>          used to obtain the factor U or L as computed by ZSYTRF.
 *>
 *>          On exit, if INFO = 0, the (symmetric) inverse of the original
@@ -82,7 +82,7 @@
 *> \param[in] IPIV
 *> \verbatim
 *>          IPIV is INTEGER array, dimension (N)
-*>          Details of the interchanges and the NB structure of D
+*>          Details of the interchanges and the block structure of D
 *>          as determined by ZSYTRF.
 *> \endverbatim
 *>
@@ -163,7 +163,7 @@
       UPPER = LSAME( UPLO, 'U' )
       LQUERY = ( LWORK.EQ.-1 )
 *     Get blocksize
-      NBMAX = ILAENV( 1, 'ZSYTRF', UPLO, N, -1, -1, -1 )
+      NBMAX = ILAENV( 1, 'ZSYTRI2', UPLO, N, -1, -1, -1 )
       IF ( NBMAX .GE. N ) THEN
          MINSIZE = N
       ELSE

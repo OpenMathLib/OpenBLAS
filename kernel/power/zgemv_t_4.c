@@ -59,11 +59,7 @@ static void zgemv_kernel_4x4(BLASLONG n, BLASLONG lda, FLOAT *ap, FLOAT *x, FLOA
     i = 0;
     n = n << 1;
     while (i < n) {
-//        __builtin_prefetch(&x[i]);
-//        __builtin_prefetch(&a0[i]);   
-//        __builtin_prefetch(&a1[i]);
-//        __builtin_prefetch(&a2[i]);
-//        __builtin_prefetch(&a3[i]);
+
         register __vector double vx_0 = *(__vector double*) (&x[i]);
         register __vector double vx_1 = *(__vector double*) (&x[i + 2]);
         register __vector double vx_2 = *(__vector double*) (&x[i + 4]);
@@ -536,8 +532,8 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1, FLOAT alpha_r, FLOAT alpha_i,
     BLASLONG m2;
     BLASLONG m3;
     BLASLONG n2;
-
-    FLOAT ybuffer[8], *xbuffer;
+    FLOAT ybuffer[8] __attribute__((aligned(16)));
+    FLOAT *xbuffer;
 
     if (m < 1) return (0);
     if (n < 1) return (0);

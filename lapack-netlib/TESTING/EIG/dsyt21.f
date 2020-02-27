@@ -28,9 +28,9 @@
 *>
 *> DSYT21 generally checks a decomposition of the form
 *>
-*>    A = U S U'
+*>    A = U S U**T
 *>
-*> where ' means transpose, A is symmetric, U is orthogonal, and S is
+*> where **T means transpose, A is symmetric, U is orthogonal, and S is
 *> diagonal (if KBAND=0) or symmetric tridiagonal (if KBAND=1).
 *>
 *> If ITYPE=1, then U is represented as a dense matrix; otherwise U is
@@ -41,18 +41,19 @@
 *>
 *> Specifically, if ITYPE=1, then:
 *>
-*>    RESULT(1) = | A - U S U' | / ( |A| n ulp ) *andC>    RESULT(2) = | I - UU' | / ( n ulp )
+*>    RESULT(1) = | A - U S U**T | / ( |A| n ulp ) and
+*>    RESULT(2) = | I - U U**T | / ( n ulp )
 *>
 *> If ITYPE=2, then:
 *>
-*>    RESULT(1) = | A - V S V' | / ( |A| n ulp )
+*>    RESULT(1) = | A - V S V**T | / ( |A| n ulp )
 *>
 *> If ITYPE=3, then:
 *>
-*>    RESULT(1) = | I - VU' | / ( n ulp )
+*>    RESULT(1) = | I - V U**T | / ( n ulp )
 *>
 *> For ITYPE > 1, the transformation U is expressed as a product
-*> V = H(1)...H(n-2),  where H(j) = I  -  tau(j) v(j) v(j)' and each
+*> V = H(1)...H(n-2),  where H(j) = I  -  tau(j) v(j) v(j)**T and each
 *> vector v(j) has its first j elements 0 and the remaining n-j elements
 *> stored in V(j+1:n,j).
 *> \endverbatim
@@ -65,14 +66,15 @@
 *>          ITYPE is INTEGER
 *>          Specifies the type of tests to be performed.
 *>          1: U expressed as a dense orthogonal matrix:
-*>             RESULT(1) = | A - U S U' | / ( |A| n ulp )   *andC>             RESULT(2) = | I - UU' | / ( n ulp )
+*>             RESULT(1) = | A - U S U**T | / ( |A| n ulp )  and
+*>             RESULT(2) = | I - U U**T | / ( n ulp )
 *>
 *>          2: U expressed as a product V of Housholder transformations:
-*>             RESULT(1) = | A - V S V' | / ( |A| n ulp )
+*>             RESULT(1) = | A - V S V**T | / ( |A| n ulp )
 *>
 *>          3: U expressed both as a dense orthogonal matrix and
 *>             as a product of Housholder transformations:
-*>             RESULT(1) = | I - VU' | / ( n ulp )
+*>             RESULT(1) = | I - V U**T | / ( n ulp )
 *> \endverbatim
 *>
 *> \param[in] UPLO
@@ -170,7 +172,7 @@
 *> \verbatim
 *>          TAU is DOUBLE PRECISION array, dimension (N)
 *>          If ITYPE >= 2, then TAU(j) is the scalar factor of
-*>          v(j) v(j)' in the Householder transformation H(j) of
+*>          v(j) v(j)**T in the Householder transformation H(j) of
 *>          the product  U = H(1)...H(n-2)
 *>          If ITYPE < 2, then TAU is not referenced.
 *> \endverbatim
@@ -283,7 +285,7 @@
 *
       IF( ITYPE.EQ.1 ) THEN
 *
-*        ITYPE=1: error = A - U S U'
+*        ITYPE=1: error = A - U S U**T
 *
          CALL DLASET( 'Full', N, N, ZERO, ZERO, WORK, N )
          CALL DLACPY( CUPLO, N, N, A, LDA, WORK, N )
@@ -302,7 +304,7 @@
 *
       ELSE IF( ITYPE.EQ.2 ) THEN
 *
-*        ITYPE=2: error = V S V' - A
+*        ITYPE=2: error = V S V**T - A
 *
          CALL DLASET( 'Full', N, N, ZERO, ZERO, WORK, N )
 *
@@ -359,7 +361,7 @@
 *
       ELSE IF( ITYPE.EQ.3 ) THEN
 *
-*        ITYPE=3: error = U V' - I
+*        ITYPE=3: error = U V**T - I
 *
          IF( N.LT.2 )
      $      RETURN
@@ -395,7 +397,7 @@
 *
 *     Do Test 2
 *
-*     Compute  UU' - I
+*     Compute  U U**T - I
 *
       IF( ITYPE.EQ.1 ) THEN
          CALL DGEMM( 'N', 'C', N, N, N, ONE, U, LDU, U, LDU, ZERO, WORK,

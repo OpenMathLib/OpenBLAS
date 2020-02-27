@@ -318,10 +318,10 @@ FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x)
 	if (n <= 0 || inc_x <= 0) return 0.0;
 
 #if defined(SMP)
-	nthreads = num_cpu_avail(1);
-
 	if (n <= 10000)
 		nthreads = 1;
+	else
+		nthreads = num_cpu_avail(1);
 
 	if (nthreads == 1) {
 		nrm2_double = nrm2_compute(n, x, inc_x);

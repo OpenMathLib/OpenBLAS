@@ -33,17 +33,48 @@ endif ()
 if (DEFINED BINARY AND DEFINED TARGET AND BINARY EQUAL 32)
   message(STATUS "Compiling a ${BINARY}-bit binary.")
   set(NO_AVX 1)
-  if (${TARGET} STREQUAL "HASWELL" OR ${TARGET} STREQUAL "SANDYBRIDGE")
+  if (${TARGET} STREQUAL "HASWELL" OR ${TARGET} STREQUAL "SANDYBRIDGE" OR ${TARGET} STREQUAL "SKYLAKEX")
     set(TARGET "NEHALEM")
   endif ()
   if (${TARGET} STREQUAL "BULLDOZER" OR ${TARGET} STREQUAL "PILEDRIVER" OR ${TARGET} STREQUAL "ZEN")
     set(TARGET "BARCELONA")
   endif ()
+  if (${TARGET} STREQUAL "ARMV8" OR ${TARGET} STREQUAL "CORTEXA57" OR ${TARGET} STREQUAL "CORTEXA53")
+    set(TARGET "ARMV7")
+  endif ()
 endif ()
+
+if (DEFINED TARGET)
+  if (${TARGET} STREQUAL "SKYLAKEX" AND NOT NO_AVX512)
+    set (KERNEL_DEFINITIONS "${KERNEL_DEFINITIONS} -march=skylake-avx512")
+  endif()
+  if (${TARGET} STREQUAL "HASWELL" AND NOT NO_AVX2)
+    if (${CMAKE_C_COMPILER_ID} STREQUAL "GNU")
+      execute_process(COMMAND ${CMAKE_C_COMPILER} -dumpversion OUTPUT_VARIABLE GCC_VERSION)
+      if (${GCC_VERSION} VERSION_GREATER 4.7 OR ${GCC_VERSION} VERSION_EQUAL 4.7)
+        set (KERNEL_DEFINITIONS "${KERNEL_DEFINITIONS} -mavx2")
+      endif()
+    elseif (${CMAKE_C_COMPILER_ID} STREQUAL "CLANG")
+      set (KERNEL_DEFINITIONS "${KERNEL_DEFINITIONS} -mavx2")
+    endif()
+  endif()
+endif()
 
 if (DEFINED TARGET)
   message(STATUS "Targeting the ${TARGET} architecture.")
   set(GETARCH_FLAGS "-DFORCE_${TARGET}")
+endif ()
+
+# On x86_64 build getarch with march=native. This is required to detect AVX512 support in getarch.
+if (X86_64 AND NOT ${CMAKE_C_COMPILER_ID} STREQUAL "PGI")
+  set(GETARCH_FLAGS "${GETARCH_FLAGS} -march=native")
+endif ()
+
+# On x86 no AVX support is available
+if (X86 OR X86_64)
+if ((DEFINED BINARY AND BINARY EQUAL 32) OR ("$CMAKE_SIZEOF_VOID_P}" EQUAL "4"))
+  set(GETARCH_FLAGS "${GETARCH_FLAGS} -DNO_AVX -DNO_AVX2 -DNO_AVX512")
+endif ()
 endif ()
 
 if (INTERFACE64)
@@ -96,6 +127,10 @@ if (NOT CMAKE_CROSSCOMPILING)
 
 endif()
 
+if (NOT DEFINED NUM_PARALLEL)
+  set(NUM_PARALLEL 1)
+endif()
+
 if (NOT DEFINED NUM_THREADS)
   if (DEFINED NUM_CORES AND NOT NUM_CORES EQUAL 0)
     # HT?
@@ -113,10 +148,16 @@ endif ()
 
 if (USE_THREAD)
   message(STATUS "Multi-threading enabled with ${NUM_THREADS} threads.")
+else()
+  if (${USE_LOCKING})
+    set(CCOMMON_OPT "${CCOMMON_OPT} -DUSE_LOCKING")
+  endif ()
 endif ()
 
 include("${PROJECT_SOURCE_DIR}/cmake/prebuild.cmake")
-
+if (DEFINED BINARY)
+  message(STATUS "Compiling a ${BINARY}-bit binary.")
+endif ()
 if (NOT DEFINED NEED_PIC)
   set(NEED_PIC 1)
 endif ()
@@ -133,6 +174,9 @@ include("${PROJECT_SOURCE_DIR}/cmake/cc.cmake")
 if (NOT NOFORTRAN)
   # Fortran Compiler dependent settings
   include("${PROJECT_SOURCE_DIR}/cmake/fc.cmake")
+else ()
+set(NO_LAPACK 1)
+set(NO_LAPACKE 1)
 endif ()
 
 if (BINARY64)
@@ -158,7 +202,22 @@ if (NEED_PIC)
 endif ()
 
 if (DYNAMIC_ARCH)
-  set(CCOMMON_OPT "${CCOMMON_OPT} -DDYNAMIC_ARCH")
+  if (X86 OR X86_64 OR ARM64 OR PPC)
+    set(CCOMMON_OPT "${CCOMMON_OPT} -DDYNAMIC_ARCH")
+    if (DYNAMIC_OLDER)
+      set(CCOMMON_OPT "${CCOMMON_OPT} -DDYNAMIC_OLDER")
+    endif ()
+  else ()
+    unset (DYNAMIC_ARCH)
+    message (STATUS "DYNAMIC_ARCH is not supported on the target architecture, removing")
+  endif ()
+endif ()
+
+if (DYNAMIC_LIST)
+  set(CCOMMON_OPT "${CCOMMON_OPT} -DDYNAMIC_LIST")
+  foreach(DCORE ${DYNAMIC_LIST})
+    set(CCOMMON_OPT "${CCOMMON_OPT} -DDYN_${DCORE}")
+  endforeach ()
 endif ()
 
 if (NO_LAPACK)
@@ -207,6 +266,10 @@ if (CONSISTENT_FPCSR)
   set(CCOMMON_OPT "${CCOMMON_OPT} -DCONSISTENT_FPCSR")
 endif ()
 
+if (USE_TLS)
+  set(CCOMMON_OPT "${CCOMMON_OPT} -DUSE_TLS")
+endif ()
+
 # Only for development
 # set(CCOMMON_OPT "${CCOMMON_OPT} -DPARAMTEST")
 # set(CCOMMON_OPT "${CCOMMON_OPT} -DPREFETCHTEST")
@@ -223,6 +286,12 @@ if (DYNAMIC_THREADS)
 endif ()
 
 set(CCOMMON_OPT "${CCOMMON_OPT} -DMAX_CPU_NUMBER=${NUM_THREADS}")
+
+set(CCOMMON_OPT "${CCOMMON_OPT} -DMAX_PARALLEL_NUMBER=${NUM_PARALLEL}")
+
+if (BUFFERSIZE)
+set(CCOMMON_OPT "${CCOMMON_OPT} -DBUFFERSIZE=${BUFFERSIZE}")
+endif ()
 
 if (USE_SIMPLE_THREADED_LEVEL3)
   set(CCOMMON_OPT "${CCOMMON_OPT} -DUSE_SIMPLE_THREADED_LEVEL3")
@@ -244,7 +313,7 @@ endif ()
 
 set(KERNELDIR	"${PROJECT_SOURCE_DIR}/kernel/${ARCH}")
 
-# TODO: nead to convert these Makefiles
+# TODO: need to convert these Makefiles
 # include ${PROJECT_SOURCE_DIR}/cmake/${ARCH}.cmake
 
 if (${CORE} STREQUAL "PPC440")
@@ -290,6 +359,8 @@ endif ()
 if (MIXED_MEMORY_ALLOCATION)
   set(CCOMMON_OPT "${CCOMMON_OPT} -DMIXED_MEMORY_ALLOCATION")
 endif ()
+
+set(CCOMMON_OPT "${CCOMMON_OPT} -DVERSION=\"\\\"${OpenBLAS_VERSION}\\\"\"")
 
 set(REVISION "-r${OpenBLAS_VERSION}")
 set(MAJOR_VERSION ${OpenBLAS_MAJOR_VERSION})

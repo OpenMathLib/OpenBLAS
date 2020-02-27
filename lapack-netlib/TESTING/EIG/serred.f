@@ -36,6 +36,8 @@
 *>       SGEJSV   compute SVD of an M-by-N matrix A where M >= N
 *>       SGESVDX  compute SVD of an M-by-N matrix A(by bisection
 *>                and inverse iteration)
+*>       SGESVDQ  compute SVD of an M-by-N matrix A(with a 
+*>                QR-Preconditioned )
 *> \endverbatim
 *
 *  Arguments:
@@ -100,7 +102,7 @@
 *     ..
 *     .. External Subroutines ..
       EXTERNAL           CHKXER, SGEES, SGEESX, SGEEV, SGEEVX, SGEJSV,
-     $                   SGESDD, SGESVD
+     $                   SGESDD, SGESVD, SGESVDX, SGESVDQ
 *     ..
 *     .. External Functions ..
       LOGICAL            SSLECT, LSAMEN
@@ -480,6 +482,61 @@
      $                 0, 0, NS, S, U, 1, VT, 1, W, 1, IW, INFO )
          CALL CHKXER( 'SGESVDX', INFOT, NOUT, LERR, OK )
          NT = 12
+         IF( OK ) THEN
+            WRITE( NOUT, FMT = 9999 )SRNAMT( 1:LEN_TRIM( SRNAMT ) ),
+     $           NT
+         ELSE
+            WRITE( NOUT, FMT = 9998 )
+         END IF
+*
+*        Test SGESVDQ
+*
+         SRNAMT = 'SGESVDQ'
+         INFOT = 1
+         CALL SGESVDQ( 'X', 'P', 'T', 'A', 'A', 0, 0, A, 1, S, U,
+     $                 0, VT, 0, NS, IW, 1, W, 1, W, 1, INFO )
+         CALL CHKXER( 'SGESVDQ', INFOT, NOUT, LERR, OK )
+         INFOT = 2
+         CALL SGESVDQ( 'A', 'X', 'T', 'A', 'A', 0, 0, A, 1, S, U,
+     $                 0, VT, 0, NS, IW, 1, W, 1, W, 1, INFO )
+         CALL CHKXER( 'SGESVDQ', INFOT, NOUT, LERR, OK )
+         INFOT = 3
+         CALL SGESVDQ( 'A', 'P', 'X', 'A', 'A', 0, 0, A, 1, S, U,
+     $                 0, VT, 0, NS, IW, 1, W, 1, W, 1, INFO )
+         CALL CHKXER( 'SGESVDQ', INFOT, NOUT, LERR, OK )
+         INFOT = 4
+         CALL SGESVDQ( 'A', 'P', 'T', 'X', 'A', 0, 0, A, 1, S, U,
+     $                 0, VT, 0, NS, IW, 1, W, 1, W, 1, INFO )
+         CALL CHKXER( 'SGESVDQ', INFOT, NOUT, LERR, OK )
+         INFOT = 5
+         CALL SGESVDQ( 'A', 'P', 'T', 'A', 'X', 0, 0, A, 1, S, U,
+     $                 0, VT, 0, NS, IW, 1, W, 1, W, 1, INFO )
+         CALL CHKXER( 'SGESVDQ', INFOT, NOUT, LERR, OK )
+         INFOT = 6
+         CALL SGESVDQ( 'A', 'P', 'T', 'A', 'A', -1, 0, A, 1, S, U,
+     $                 0, VT, 0, NS, IW, 1, W, 1, W, 1, INFO )
+         CALL CHKXER( 'SGESVDQ', INFOT, NOUT, LERR, OK )
+         INFOT = 7
+         CALL SGESVDQ( 'A', 'P', 'T', 'A', 'A', 0, 1, A, 1, S, U,
+     $                 0, VT, 0, NS, IW, 1, W, 1, W, 1, INFO )
+         CALL CHKXER( 'SGESVDQ', INFOT, NOUT, LERR, OK )
+         INFOT = 9
+         CALL SGESVDQ( 'A', 'P', 'T', 'A', 'A', 1, 1, A, 0, S, U,
+     $                 0, VT, 0, NS, IW, 1, W, 1, W, 1, INFO )
+         CALL CHKXER( 'SGESVDQ', INFOT, NOUT, LERR, OK )
+         INFOT = 12
+         CALL SGESVDQ( 'A', 'P', 'T', 'A', 'A', 1, 1, A, 1, S, U,
+     $                 -1, VT, 0, NS, IW, 1, W, 1, W, 1, INFO )
+         CALL CHKXER( 'SGESVDQ', INFOT, NOUT, LERR, OK )
+         INFOT = 14
+         CALL SGESVDQ( 'A', 'P', 'T', 'A', 'A', 1, 1, A, 1, S, U,
+     $                 1, VT, -1, NS, IW, 1, W, 1, W, 1, INFO )
+         CALL CHKXER( 'SGESVDQ', INFOT, NOUT, LERR, OK )
+         INFOT = 17
+         CALL SGESVDQ( 'A', 'P', 'T', 'A', 'A', 1, 1, A, 1, S, U,
+     $                 1, VT, 1, NS, IW, -5, W, 1, W, 1, INFO )
+         CALL CHKXER( 'SGESVDQ', INFOT, NOUT, LERR, OK )
+         NT = 11
          IF( OK ) THEN
             WRITE( NOUT, FMT = 9999 )SRNAMT( 1:LEN_TRIM( SRNAMT ) ),
      $           NT

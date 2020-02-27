@@ -90,10 +90,10 @@ void CNAME(blasint n, FLOAT alpha_r, void *vx, blasint incx){
   FUNCTION_PROFILE_START();
 
 #ifdef SMP
-  nthreads = num_cpu_avail(1);
-
   if ( n <= 1048576 )
 	nthreads = 1;
+  else
+	nthreads = num_cpu_avail(1);
 
   if (nthreads == 1) {
 #endif

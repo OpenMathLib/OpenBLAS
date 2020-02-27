@@ -199,7 +199,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	"	faddp	"DOTF", v0.2d			\n"
 #endif /* !defined(DSDOT) */
 
-#else /* !defined(DOUBLE) */ 
+#else /* !defined(DOUBLE) */
 #define KERNEL_F1						\
 	"	ldr	"TMPX", ["X"]			\n"	\
 	"	ldr	"TMPY", ["Y"]			\n"	\
@@ -384,13 +384,10 @@ RETURN_TYPE CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG inc_y
 	RETURN_TYPE dot = 0.0;
 
 #if defined(SMP)
-	nthreads = num_cpu_avail(1);
-
-	if (inc_x == 0 || inc_y == 0)
+	if (inc_x == 0 || inc_y == 0 || n <= 10000)
 		nthreads = 1;
-
-	if (n <= 10000)
-		nthreads = 1;
+	else
+		nthreads = num_cpu_avail(1);
 
 	if (nthreads == 1) {
 		dot = dot_compute(n, x, inc_x, y, inc_y);

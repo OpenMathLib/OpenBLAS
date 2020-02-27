@@ -1,9 +1,9 @@
 #include "relapack.h"
 #include "stdlib.h"
 
-static void RELAPACK_sgbtrf_rec(const int *, const int *, const int *,
-    const int *, float *, const int *, int *, float *, const int *, float *,
-    const int *, int *);
+static void RELAPACK_sgbtrf_rec(const blasint *, const blasint *, const blasint *,
+    const blasint *, float *, const blasint *, blasint *, float *, const blasint *, float *,
+    const blasint *, blasint *);
 
 
 /** SGBTRF computes an LU factorization of a real m-by-n band matrix A using partial pivoting with row interchanges.
@@ -13,11 +13,10 @@ static void RELAPACK_sgbtrf_rec(const int *, const int *, const int *,
  * http://www.netlib.org/lapack/explore-html/d5/d72/sgbtrf_8f.html
  * */
 void RELAPACK_sgbtrf(
-    const int *m, const int *n, const int *kl, const int *ku,
-    float *Ab, const int *ldAb, int *ipiv,
-    int *info
+    const blasint *m, const blasint *n, const blasint *kl, const blasint *ku,
+    float *Ab, const blasint *ldAb, blasint *ipiv,
+    blasint *info
 ) {
-
     // Check arguments
     *info = 0;
     if (*m < 0)
@@ -28,11 +27,11 @@ void RELAPACK_sgbtrf(
         *info = -3;
     else if (*ku < 0)
         *info = -4;
-    else if (*ldAb < 2 * *kl + *ku + 1)
+    else if (*ldAb < 2 * *kl + *ku + 1) 
         *info = -6;
     if (*info) {
-        const int minfo = -*info;
-        LAPACK(xerbla)("SGBTRF", &minfo);
+        const blasint minfo = -*info;
+        LAPACK(xerbla)("SGBTRF", &minfo, strlen("SGBTRF"));
         return;
     }
 
@@ -40,14 +39,14 @@ void RELAPACK_sgbtrf(
     const float ZERO[] = { 0. };
 
     // Result upper band width
-    const int kv = *ku + *kl;
+    const blasint kv = *ku + *kl;
 
     // Unskewg A
-    const int ldA[] = { *ldAb - 1 };
+    const blasint ldA[] = { *ldAb - 1 };
     float *const A = Ab + kv;
 
     // Zero upper diagonal fill-in elements
-    int i, j;
+    blasint i, j;
     for (j = 0; j < *n; j++) {
         float *const A_j = A + *ldA * j;
         for (i = MAX(0, j - kv); i < j - *ku; i++)
@@ -55,15 +54,16 @@ void RELAPACK_sgbtrf(
     }
 
     // Allocate work space
-    const int n1 = SREC_SPLIT(*n);
-    const int mWorkl = (kv > n1) ? MAX(1, *m - *kl) : kv;
-    const int nWorkl = (kv > n1) ? n1 : kv;
-    const int mWorku = (*kl > n1) ? n1 : *kl;
-    const int nWorku = (*kl > n1) ? MAX(0, *n - *kl) : *kl;
+    const blasint n1 = SREC_SPLIT(*n);
+    const blasint mWorkl = abs( (kv > n1) ? MAX(1, *m - *kl) : kv );
+    const blasint nWorkl = abs( (kv > n1) ? n1 : kv );
+    const blasint mWorku = abs( (*kl > n1) ? n1 : *kl );
+    const blasint nWorku = abs( (*kl > n1) ? MAX(0, *n - *kl) : *kl );
     float *Workl = malloc(mWorkl * nWorkl * sizeof(float));
     float *Worku = malloc(mWorku * nWorku * sizeof(float));
     LAPACK(slaset)("L", &mWorkl, &nWorkl, ZERO, ZERO, Workl, &mWorkl);
     LAPACK(slaset)("U", &mWorku, &nWorku, ZERO, ZERO, Worku, &mWorku);
+
 
     // Recursive kernel
     RELAPACK_sgbtrf_rec(m, n, kl, ku, Ab, ldAb, ipiv, Workl, &mWorkl, Worku, &mWorku, info);
@@ -76,11 +76,12 @@ void RELAPACK_sgbtrf(
 
 /** sgbtrf's recursive compute kernel */
 static void RELAPACK_sgbtrf_rec(
-    const int *m, const int *n, const int *kl, const int *ku,
-    float *Ab, const int *ldAb, int *ipiv,
-    float *Workl, const int *ldWorkl, float *Worku, const int *ldWorku,
-    int *info
+    const blasint *m, const blasint *n, const blasint *kl, const blasint *ku,
+    float *Ab, const blasint *ldAb, blasint *ipiv,
+    float *Workl, const blasint *ldWorkl, float *Worku, const blasint *ldWorku,
+    blasint *info
 ) {
+
 
     if (*n <= MAX(CROSSOVER_SGBTRF, 1)) {
         // Unblocked
@@ -91,25 +92,25 @@ static void RELAPACK_sgbtrf_rec(
     // Constants
     const float ONE[]  = { 1. };
     const float MONE[] = { -1. };
-    const int    iONE[] = { 1 };
+    const blasint    iONE[] = { 1 };
 
     // Loop iterators
-    int i, j;
+    blasint i, j;
 
     // Output upper band width
-    const int kv = *ku + *kl;
+    const blasint kv = *ku + *kl;
 
     // Unskew A
-    const int ldA[] = { *ldAb - 1 };
+    const blasint ldA[] = { *ldAb - 1 };
     float *const A = Ab + kv;
 
     // Splitting
-    const int n1  = MIN(SREC_SPLIT(*n), *kl);
-    const int n2  = *n - n1;
-    const int m1  = MIN(n1, *m);
-    const int m2  = *m - m1;
-    const int mn1 = MIN(m1, n1);
-    const int mn2 = MIN(m2, n2);
+    const blasint n1  = MIN(SREC_SPLIT(*n), *kl);
+    const blasint n2  = *n - n1;
+    const blasint m1  = MIN(n1, *m);
+    const blasint m2  = *m - m1;
+    const blasint mn1 = MIN(m1, n1);
+    const blasint mn2 = MIN(m2, n2);
 
     // Ab_L *
     //      Ab_BR
@@ -128,15 +129,15 @@ static void RELAPACK_sgbtrf_rec(
     float *const A_BR = A + *ldA * n1 + m1;
 
     // ipiv_T
-    // ipiv_B
-    int *const ipiv_T = ipiv;
-    int *const ipiv_B = ipiv + n1;
+    // ipiv_B 
+    blasint *const ipiv_T = ipiv;
+    blasint *const ipiv_B = ipiv + n1;
 
     // Banded splitting
-    const int n21 = MIN(n2, kv - n1);
-    const int n22 = MIN(n2 - n21, n1);
-    const int m21 = MIN(m2, *kl - m1);
-    const int m22 = MIN(m2 - m21, m1);
+    const blasint n21 = MIN(n2, kv - n1);
+    const blasint n22 = MIN(n2 - n21, n1);
+    const blasint m21 = MIN(m2, *kl - m1);
+    const blasint m22 = MIN(m2 - m21, m1);
 
     //   n1 n21  n22
     // m *  A_Rl ARr
@@ -156,6 +157,7 @@ static void RELAPACK_sgbtrf_rec(
     float *const A_BRbl = A_BR              + m21;
     float *const A_BRbr = A_BR + *ldA * n21 + m21;
 
+
     // recursion(Ab_L, ipiv_T)
     RELAPACK_sgbtrf_rec(m, &n1, kl, ku, Ab_L, ldAb, ipiv_T, Workl, ldWorkl, Worku, ldWorku, info);
 
@@ -164,7 +166,7 @@ static void RELAPACK_sgbtrf_rec(
 
     // partially redo swaps in A_L
     for (i = 0; i < mn1; i++) {
-        const int ip = ipiv_T[i] - 1;
+        const blasint ip = ipiv_T[i] - 1;
         if (ip != i) {
             if (ip < *kl)
                 BLAS(sswap)(&i, A_L + i, ldA, A_L + ip, ldA);
@@ -180,7 +182,7 @@ static void RELAPACK_sgbtrf_rec(
     for (j = 0; j < n22; j++) {
         float *const A_Rrj = A_Rr + *ldA * j;
         for (i = j; i < mn1; i++) {
-            const int ip = ipiv_T[i] - 1;
+            const blasint ip = ipiv_T[i] - 1;
             if (ip != i) {
                 const float tmp = A_Rrj[i];
                 A_Rrj[i] = A_Rr[ip];
@@ -208,7 +210,7 @@ static void RELAPACK_sgbtrf_rec(
 
     // partially undo swaps in A_L
     for (i = mn1 - 1; i >= 0; i--) {
-        const int ip = ipiv_T[i] - 1;
+        const blasint ip = ipiv_T[i] - 1;
         if (ip != i) {
             if (ip < *kl)
                 BLAS(sswap)(&i, A_L + i, ldA, A_L + ip, ldA);
@@ -217,8 +219,11 @@ static void RELAPACK_sgbtrf_rec(
         }
     }
 
+
     // recursion(Ab_BR, ipiv_B)
-    RELAPACK_sgbtrf_rec(&m2, &n2, kl, ku, Ab_BR, ldAb, ipiv_B, Workl, ldWorkl, Worku, ldWorku, info);
+//cause of infinite recursion here ?    
+//      RELAPACK_sgbtrf_rec(&m2, &n2, kl, ku, Ab_BR, ldAb, ipiv_B, Workl, ldWorkl, Worku, ldWorku, info);
+        LAPACK(sgbtf2)(&m2, &n2, kl, ku, Ab_BR, ldAb, ipiv_B, info);
     if (*info)
         *info += n1;
     // shift pivots

@@ -76,21 +76,21 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .macro COPY4x4_1
 
 	pld	[ AO1, #A_PRE  ]
-	fldmias	AO1, { s0 - s3 }
+	vldmia.f32	AO1, { s0 - s3 }
 
 	add	r3, AO1, LDA
 	pld	[ r3, #A_PRE  ]
-	fldmias	r3, { s4 - s7 }
+	vldmia.f32	r3, { s4 - s7 }
 
 	add	r3, r3, LDA
 	pld	[ r3, #A_PRE  ]
-	fldmias	r3, { s8 - s11 }
+	vldmia.f32	r3, { s8 - s11 }
 
 	add	r3, r3, LDA
 	pld	[ r3, #A_PRE  ]
-	fldmias	r3, { s12 - s15 }
+	vldmia.f32	r3, { s12 - s15 }
 
-	fstmias	BO1, { s0 - s15 }
+	vstmia.f32	BO1, { s0 - s15 }
 	add	AO1, AO1, #16
 	add	BO1, BO1, M4
 
@@ -98,18 +98,18 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .macro COPY4x4_2
 
-	fldmias	AO1, { s0 - s3 }
+	vldmia.f32	AO1, { s0 - s3 }
 
 	add	r3, AO1, LDA
-	fldmias	r3, { s4 - s7 }
+	vldmia.f32	r3, { s4 - s7 }
 
 	add	r3, r3, LDA
-	fldmias	r3, { s8 - s11 }
+	vldmia.f32	r3, { s8 - s11 }
 
 	add	r3, r3, LDA
-	fldmias	r3, { s12 - s15 }
+	vldmia.f32	r3, { s12 - s15 }
 
-	fstmias	BO1, { s0 - s15 }
+	vstmia.f32	BO1, { s0 - s15 }
 	add	AO1, AO1, #16
 	add	BO1, BO1, M4
 
@@ -118,18 +118,18 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .macro COPY2x4
 
-	fldmias	AO1, { s0 - s1 }
+	vldmia.f32	AO1, { s0 - s1 }
 
 	add	r3, AO1, LDA
-	fldmias	r3, { s2 - s3 }
+	vldmia.f32	r3, { s2 - s3 }
 
 	add	r3, r3, LDA
-	fldmias	r3, { s4 - s5 }
+	vldmia.f32	r3, { s4 - s5 }
 
 	add	r3, r3, LDA
-	fldmias	r3, { s6 - s7 }
+	vldmia.f32	r3, { s6 - s7 }
 
-	fstmias	BO2, { s0 - s7 }
+	vstmia.f32	BO2, { s0 - s7 }
 	add	AO1, AO1, #8
 	add	BO2, BO2, #32
 
@@ -137,18 +137,18 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .macro COPY1x4
 
-	fldmias	AO1, { s0 }
+	vldmia.f32	AO1, { s0 }
 
 	add	r3, AO1, LDA
-	fldmias	r3, { s1 }
+	vldmia.f32	r3, { s1 }
 
 	add	r3, r3, LDA
-	fldmias	r3, { s2 }
+	vldmia.f32	r3, { s2 }
 
 	add	r3, r3, LDA
-	fldmias	r3, { s3 }
+	vldmia.f32	r3, { s3 }
 
-	fstmias	BO3, { s0 - s3 }
+	vstmia.f32	BO3, { s0 - s3 }
 	add	AO1, AO1, #4
 	add	BO3, BO3, #16
 
@@ -158,12 +158,12 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .macro COPY4x2
 
-	fldmias	AO1, { s0 - s3 }
+	vldmia.f32	AO1, { s0 - s3 }
 
 	add	r3, AO1, LDA
-	fldmias	r3, { s4 - s7 }
+	vldmia.f32	r3, { s4 - s7 }
 
-	fstmias	BO1, { s0 - s7 }
+	vstmia.f32	BO1, { s0 - s7 }
 	add	AO1, AO1, #16
 	add	BO1, BO1, M4
 
@@ -171,12 +171,12 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .macro COPY2x2
 
-	fldmias	AO1, { s0 - s1 }
+	vldmia.f32	AO1, { s0 - s1 }
 
 	add	r3, AO1, LDA
-	fldmias	r3, { s2 - s3 }
+	vldmia.f32	r3, { s2 - s3 }
 
-	fstmias	BO2, { s0 - s3 }
+	vstmia.f32	BO2, { s0 - s3 }
 	add	AO1, AO1, #8
 	add	BO2, BO2, #16
 
@@ -184,12 +184,12 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .macro COPY1x2
 
-	fldmias	AO1, { s0 }
+	vldmia.f32	AO1, { s0 }
 
 	add	r3, AO1, LDA
-	fldmias	r3, { s1 }
+	vldmia.f32	r3, { s1 }
 
-	fstmias	BO3, { s0 - s1 }
+	vstmia.f32	BO3, { s0 - s1 }
 	add	AO1, AO1, #4
 	add	BO3, BO3, #8
 
@@ -199,9 +199,9 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .macro COPY4x1
 
-	fldmias	AO1, { s0 - s3 }
+	vldmia.f32	AO1, { s0 - s3 }
 
-	fstmias	BO1, { s0 - s3 }
+	vstmia.f32	BO1, { s0 - s3 }
 	add	AO1, AO1, #16
 	add	BO1, BO1, M4
 
@@ -209,9 +209,9 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .macro COPY2x1
 
-	fldmias	AO1, { s0 - s1 }
+	vldmia.f32	AO1, { s0 - s1 }
 
-	fstmias	BO2, { s0 - s1 }
+	vstmia.f32	BO2, { s0 - s1 }
 	add	AO1, AO1, #8
 	add	BO2, BO2, #8
 
@@ -219,9 +219,9 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .macro COPY1x1
 
-	fldmias	AO1, { s0 }
+	vldmia.f32	AO1, { s0 }
 
-	fstmias	BO3, { s0 }
+	vstmia.f32	BO3, { s0 }
 	add	AO1, AO1, #4
 	add	BO3, BO3, #4
 

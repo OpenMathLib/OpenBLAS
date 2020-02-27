@@ -1,11 +1,11 @@
 #include "relapack.h"
 #include <math.h>
 
-static void RELAPACK_stgsyl_rec(const char *, const int *, const int *,
-    const int *, const float *, const int *, const float *, const int *,
-    float *, const int *, const float *, const int *, const float *,
-    const int *, float *, const int *, float *, float *, float *, int *, int *,
-    int *);
+static void RELAPACK_stgsyl_rec(const char *, const blasint *, const blasint *,
+    const blasint *, const float *, const blasint *, const float *, const blasint *,
+    float *, const blasint *, const float *, const blasint *, const float *,
+    const blasint *, float *, const blasint *, float *, float *, float *, blasint *, blasint *,
+    blasint *);
 
 
 /** STGSYL solves the generalized Sylvester equation.
@@ -15,21 +15,21 @@ static void RELAPACK_stgsyl_rec(const char *, const int *, const int *,
  * http://www.netlib.org/lapack/explore-html/dc/d67/stgsyl_8f.html
  * */
 void RELAPACK_stgsyl(
-    const char *trans, const int *ijob, const int *m, const int *n,
-    const float *A, const int *ldA, const float *B, const int *ldB,
-    float *C, const int *ldC,
-    const float *D, const int *ldD, const float *E, const int *ldE,
-    float *F, const int *ldF,
+    const char *trans, const blasint *ijob, const blasint *m, const blasint *n,
+    const float *A, const blasint *ldA, const float *B, const blasint *ldB,
+    float *C, const blasint *ldC,
+    const float *D, const blasint *ldD, const float *E, const blasint *ldE,
+    float *F, const blasint *ldF,
     float *scale, float *dif,
-    float *Work, const int *lWork, int *iWork, int *info
+    float *Work, const blasint *lWork, blasint *iWork, blasint *info
 ) {
 
     // Parse arguments
-    const int notran = LAPACK(lsame)(trans, "N");
-    const int tran = LAPACK(lsame)(trans, "T");
+    const blasint notran = LAPACK(lsame)(trans, "N");
+    const blasint tran = LAPACK(lsame)(trans, "T");
 
     // Compute work buffer size
-    int lwmin = 1;
+    blasint lwmin = 1;
     if (notran && (*ijob == 1 || *ijob == 2))
         lwmin = MAX(1, 2 * *m * *n);
     *info = 0;
@@ -58,8 +58,8 @@ void RELAPACK_stgsyl(
     else if (*lWork < lwmin && *lWork != -1)
         *info = -20;
     if (*info) {
-        const int minfo = -*info;
-        LAPACK(xerbla)("STGSYL", &minfo);
+        const blasint minfo = -*info;
+        LAPACK(xerbla)("STGSYL", &minfo, strlen("STGSYL"));
         return;
     }
 
@@ -75,8 +75,8 @@ void RELAPACK_stgsyl(
     // Constant
     const float ZERO[] = { 0. };
 
-    int isolve = 1;
-    int ifunc  = 0;
+    blasint isolve = 1;
+    blasint ifunc  = 0;
     if (notran) {
         if (*ijob >= 3) {
             ifunc = *ijob - 2;
@@ -87,12 +87,12 @@ void RELAPACK_stgsyl(
     }
 
     float scale2;
-    int iround;
+    blasint iround;
     for (iround = 1; iround <= isolve; iround++) {
         *scale = 1;
         float dscale = 0;
         float dsum   = 1;
-        int pq;
+        blasint pq;
         RELAPACK_stgsyl_rec(&cleantrans, &ifunc, m, n, A, ldA, B, ldB, C, ldC, D, ldD, E, ldE, F, ldF, scale, &dsum, &dscale, iWork, &pq, info);
         if (dscale != 0) {
             if (*ijob == 1 || *ijob == 3)
@@ -121,13 +121,13 @@ void RELAPACK_stgsyl(
 
 /** stgsyl's recursive vompute kernel */
 static void RELAPACK_stgsyl_rec(
-    const char *trans, const int *ifunc, const int *m, const int *n,
-    const float *A, const int *ldA, const float *B, const int *ldB,
-    float *C, const int *ldC,
-    const float *D, const int *ldD, const float *E, const int *ldE,
-    float *F, const int *ldF,
+    const char *trans, const blasint *ifunc, const blasint *m, const blasint *n,
+    const float *A, const blasint *ldA, const float *B, const blasint *ldB,
+    float *C, const blasint *ldC,
+    const float *D, const blasint *ldD, const float *E, const blasint *ldE,
+    float *F, const blasint *ldF,
     float *scale, float *dsum, float *dscale,
-    int *iWork, int *pq, int *info
+    blasint *iWork, blasint *pq, blasint *info
 ) {
 
     if (*m <= MAX(CROSSOVER_STGSYL, 1) && *n <= MAX(CROSSOVER_STGSYL, 1)) {
@@ -139,20 +139,20 @@ static void RELAPACK_stgsyl_rec(
     // Constants
     const float ONE[]  = { 1. };
     const float MONE[] = { -1. };
-    const int   iONE[] = { 1 };
+    const blasint   iONE[] = { 1 };
 
     // Outputs
     float scale1[] = { 1. };
     float scale2[] = { 1. };
-    int   info1[]  = { 0 };
-    int   info2[]  = { 0 };
+    blasint   info1[]  = { 0 };
+    blasint   info2[]  = { 0 };
 
     if (*m > *n) {
         // Splitting
-        int m1 = SREC_SPLIT(*m);
+        blasint m1 = SREC_SPLIT(*m);
         if (A[m1 + *ldA * (m1 - 1)])
             m1++;
-        const int m2 = *m - m1;
+        const blasint m2 = *m - m1;
 
         // A_TL A_TR
         // 0    A_BR
@@ -210,10 +210,10 @@ static void RELAPACK_stgsyl_rec(
         }
     } else {
         // Splitting
-        int n1 = SREC_SPLIT(*n);
+        blasint n1 = SREC_SPLIT(*n);
         if (B[n1 + *ldB * (n1 - 1)])
             n1++;
-        const int n2 = *n - n1;
+        const blasint n2 = *n - n1;
 
         // B_TL B_TR
         // 0    B_BR

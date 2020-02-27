@@ -59,10 +59,10 @@ static void saxpy_kernel_16( BLASLONG n, FLOAT *x, FLOAT *y, FLOAT *alpha)
 	"jnz		1b		             \n\t"
 	"vzeroupper				     \n\t"
 
-	:
-        : 
-          "r" (i),	// 0	
-	  "r" (n),  	// 1
+	: 
+          "+r" (i),	// 0	
+	  "+r" (n)  	// 1
+        :
           "r" (x),      // 2
           "r" (y),      // 3
           "r" (alpha)   // 4

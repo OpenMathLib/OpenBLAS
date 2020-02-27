@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 2.8.12)
 project(LAPACK Fortran C)
 
 set(LAPACK_MAJOR_VERSION 3)
-set(LAPACK_MINOR_VERSION 8)
+set(LAPACK_MINOR_VERSION 9)
 set(LAPACK_PATCH_VERSION 0)
 set(
   LAPACK_VERSION
@@ -13,6 +13,9 @@ set(
 # Add the CMake directory for custon CMake modules
 set(CMAKE_MODULE_PATH "${LAPACK_SOURCE_DIR}/CMAKE" ${CMAKE_MODULE_PATH})
 
+# Export all symbols on Windows when building shared libraries
+SET(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS TRUE)
+
 # Set a default build type if none was specified
 if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
   message(STATUS "Setting build type to 'Release' as none was specified.")
@@ -21,8 +24,19 @@ if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
   set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS "Debug" "Release" "MinSizeRel" "RelWithDebInfo" "Coverage")
 endif()
 
-string(TOUPPER ${CMAKE_BUILD_TYPE} CMAKE_BUILD_TYPE_UPPER)
-if(${CMAKE_BUILD_TYPE_UPPER} STREQUAL "COVERAGE")
+# Coverage
+set(_is_coverage_build 0)
+set(_msg "Checking if build type is 'Coverage'")
+message(STATUS "${_msg}")
+if(NOT CMAKE_CONFIGURATION_TYPES)
+  string(TOLOWER ${CMAKE_BUILD_TYPE} _build_type_lc)
+  if(${_build_type_lc} STREQUAL "coverage")
+    set(_is_coverage_build 1)
+  endif()
+endif()
+message(STATUS "${_msg}: ${_is_coverage_build}")
+
+if(_is_coverage_build)
   message(STATUS "Adding coverage")
   find_package(codecov)
 endif()
@@ -58,18 +72,18 @@ include(PreventInSourceBuilds)
 include(PreventInBuildInstalls)
 
 if(UNIX)
-  if("${CMAKE_Fortran_COMPILER}" MATCHES "ifort")
-    set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS} -fp-model strict")
+  if(CMAKE_Fortran_COMPILER_ID STREQUAL Intel)
+    list(APPEND CMAKE_Fortran_FLAGS "-fp-model strict")
   endif()
-  if("${CMAKE_Fortran_COMPILER}" MATCHES "xlf")
-    set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS} -qnosave -qstrict=none")
+  if(CMAKE_Fortran_COMPILER_ID STREQUAL XL)
+    list(APPEND CMAKE_Fortran_FLAGS "-qnosave -qstrict=none")
   endif()
 # Delete libmtsk in linking sequence for Sun/Oracle Fortran Compiler.
 # This library is not present in the Sun package SolarisStudio12.3-linux-x86-bin
   string(REPLACE \;mtsk\; \; CMAKE_Fortran_IMPLICIT_LINK_LIBRARIES "${CMAKE_Fortran_IMPLICIT_LINK_LIBRARIES}")
 endif()
 
-if(CMAKE_Fortran_COMPILER_ID STREQUAL "Compaq")
+if(CMAKE_Fortran_COMPILER_ID STREQUAL Compaq)
   if(WIN32)
     if(CMAKE_GENERATOR STREQUAL "NMake Makefiles")
       get_filename_component(CMAKE_Fortran_COMPILER_CMDNAM ${CMAKE_Fortran_COMPILER} NAME_WE)
@@ -96,24 +110,16 @@ if(CMAKE_Fortran_COMPILER_ID STREQUAL "Compaq")
   endif()
 endif()
 
-# Get Python
-message(STATUS "Looking for Python greater than 2.6 - ${PYTHONINTERP_FOUND}")
-find_package(PythonInterp 2.7) # lapack_testing.py uses features from python 2.7 and greater
-if(PYTHONINTERP_FOUND)
-  message(STATUS "Using Python version ${PYTHON_VERSION_STRING}")
-else()
-  message(STATUS "No suitable Python version found, so skipping summary tests.")
-endif()
-# --------------------------------------------------
 
+# --------------------------------------------------
 set(LAPACK_INSTALL_EXPORT_NAME lapack-targets)
 
 macro(lapack_install_library lib)
   install(TARGETS ${lib}
     EXPORT ${LAPACK_INSTALL_EXPORT_NAME}
-    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR} COMPONENT Development
+    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR} COMPONENT RuntimeLibraries
+    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR} COMPONENT RuntimeLibraries
   )
 endmacro()
 
@@ -121,11 +127,21 @@ set(PKG_CONFIG_DIR ${CMAKE_INSTALL_LIBDIR}/pkgconfig)
 
 # --------------------------------------------------
 # Testing
-option(BUILD_TESTING "Build tests" OFF)
-enable_testing()
+option(BUILD_TESTING "Build tests" ${_is_coverage_build})
 include(CTest)
-enable_testing()
 message(STATUS "Build tests: ${BUILD_TESTING}")
+
+# lapack_testing.py uses features from python 2.7 and greater
+if(BUILD_TESTING)
+  set(_msg "Looking for Python >= 2.7 needed for summary tests")
+  message(STATUS "${_msg}")
+  find_package(PythonInterp 2.7 QUIET)
+  if(PYTHONINTERP_FOUND)
+    message(STATUS "${_msg} - found (${PYTHON_VERSION_STRING})")
+  else()
+    message(STATUS "${_msg} - not found (skipping summary tests)")
+  endif()
+endif()
 
 # --------------------------------------------------
 # Organize output files.  On Windows this also keeps .dll files next
@@ -299,16 +315,40 @@ if(LAPACKE)
   add_subdirectory(LAPACKE)
 endif()
 
+#-------------------------------------
+# BLAS++ / LAPACK++
+option(BLAS++ "Build BLAS++" OFF)
+option(LAPACK++ "Build LAPACK++" OFF)
+ 
+ 
+function(_display_cpp_implementation_msg name)
+  string(TOLOWER ${name} name_lc)
+  message(STATUS "${name}++ enable")
+  message(STATUS "----------------")
+  message(STATUS "Thank you for your interest in ${name}++, a newly developed C++ API for ${name} library")
+  message(STATUS "The objective of ${name}++ is to provide a convenient, performance oriented API for development in the C++ language, that, for the most part, preserves established conventions, while, at the same time, takes advantages of modern C++ features, such as: namespaces, templates, exceptions, etc.")
+  message(STATUS "We are still working on integrating ${name}++ in our library. For the moment, you can download directly ${name_lc}++ from https://bitbucket.org/icl/${name_lc}pp")
+  message(STATUS "For support ${name}++ related question, please email: slate-user@icl.utk.edu")
+  message(STATUS "----------------")
+endfunction()
+if(BLAS++)
+  _display_cpp_implementation_msg("BLAS")
+endif()
+if(LAPACK++)
+  _display_cpp_implementation_msg("LAPACK")
+endif()
+
 # --------------------------------------------------
 # CPACK Packaging
 
 set(CPACK_PACKAGE_NAME "LAPACK")
 set(CPACK_PACKAGE_VENDOR "University of Tennessee, Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd")
 set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "LAPACK- Linear Algebra Package")
-set(CPACK_PACKAGE_VERSION_MAJOR 3)
-set(CPACK_PACKAGE_VERSION_MINOR 5)
-set(CPACK_PACKAGE_VERSION_PATCH 0)
+set(CPACK_PACKAGE_VERSION_MAJOR ${LAPACK_MAJOR_VERSION})
+set(CPACK_PACKAGE_VERSION_MINOR ${LAPACK_MINOR_VERSION})
+set(CPACK_PACKAGE_VERSION_PATCH ${LAPACK_PATCH_VERSION})
 set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/LICENSE")
+set(CPACK_MONOLITHIC_INSTALL ON)
 set(CPACK_PACKAGE_INSTALL_DIRECTORY "LAPACK")
 if(WIN32 AND NOT UNIX)
   # There is a bug in NSI that does not handle full unix paths properly. Make
@@ -347,7 +387,9 @@ endif()
 set(_lapack_config_install_guard_target "")
 if(ALL_TARGETS)
   install(EXPORT lapack-targets
-    DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/lapack-${LAPACK_VERSION})
+    DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/lapack-${LAPACK_VERSION}
+    COMPONENT Development
+    )
 
   # Choose one of the lapack targets to use as a guard for
   # lapack-config.cmake to load targets from the install tree.
@@ -382,6 +424,7 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/lapack.pc.in ${CMAKE_CURRENT_BINARY_D
   install(FILES
   ${CMAKE_CURRENT_BINARY_DIR}/lapack.pc
   DESTINATION ${PKG_CONFIG_DIR}
+  COMPONENT Development
   )
 
 configure_file(${LAPACK_SOURCE_DIR}/CMAKE/lapack-config-install.cmake.in
@@ -398,4 +441,6 @@ install(FILES
   ${LAPACK_BINARY_DIR}/CMakeFiles/lapack-config.cmake
   ${LAPACK_BINARY_DIR}/lapack-config-version.cmake
   DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/lapack-${LAPACK_VERSION}
+  COMPONENT Development
   )
+  

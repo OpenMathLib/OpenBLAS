@@ -28,6 +28,7 @@
 *
 *> \param[in] CMACH
 *> \verbatim
+*>          CMACH is CHARACTER*1
 *>          Specifies the value to be returned by SLAMCH:
 *>          = 'E' or 'e',   SLAMCH := eps
 *>          = 'S' or 's ,   SLAMCH := sfmin

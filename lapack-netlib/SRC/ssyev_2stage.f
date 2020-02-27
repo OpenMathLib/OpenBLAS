@@ -317,7 +317,7 @@
       IF( .NOT.WANTZ ) THEN
          CALL SSTERF( N, W, WORK( INDE ), INFO )
       ELSE
-*        Not available in this release, and agrument checking should not
+*        Not available in this release, and argument checking should not
 *        let it getting here
          RETURN
          CALL SORGTR( UPLO, N, A, LDA, WORK( INDTAU ), WORK( INDWRK ),

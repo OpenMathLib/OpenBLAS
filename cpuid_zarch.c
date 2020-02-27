@@ -27,17 +27,23 @@
 
 #include <string.h>
 
-#define CPU_GENERIC    	0
-#define CPU_Z13       	1
+#define CPU_GENERIC     0
+#define CPU_Z13         1
+#define CPU_Z14         2
+#define CPU_Z15         3
 
 static char *cpuname[] = {
   "ZARCH_GENERIC",
-  "Z13"
+  "Z13",
+  "Z14",
+  "Z15"
 };
 
 static char *cpuname_lower[] = {
   "zarch_generic",
-  "z13"
+  "z13",
+  "z14",
+  "z15"
 };
 
 int detect(void)
@@ -61,6 +67,10 @@ int detect(void)
 
   if (strstr(p, "2964")) return CPU_Z13;
   if (strstr(p, "2965")) return CPU_Z13;
+  if (strstr(p, "3906")) return CPU_Z14;
+  if (strstr(p, "3907")) return CPU_Z14;
+  if (strstr(p, "8561")) return CPU_Z14;        // fallback z15 to z14
+  if (strstr(p, "8562")) return CPU_Z14;        // fallback z15 to z14
 
   return CPU_GENERIC;
 }
@@ -106,6 +116,17 @@ void get_cpuconfig(void)
 	case CPU_Z13:
 	  printf("#define Z13\n");
 	  printf("#define DTB_DEFAULT_ENTRIES 64\n");
+	  break;
+	case CPU_Z14:
+	  printf("#define Z14\n");
+	  printf("#define L1_DATA_SIZE 131072\n");
+	  printf("#define L1_DATA_LINESIZE 256\n");
+	  printf("#define L1_DATA_ASSOCIATIVE 8\n");
+	  printf("#define L2_SIZE 4194304\n");
+	  printf("#define L2_LINESIZE 256\n");
+	  printf("#define L2_ASSOCIATIVE 8\n");
+	  printf("#define DTB_DEFAULT_ENTRIES 64\n");
+	  printf("#define DTB_SIZE 4096\n");
 	  break;
 	}
 }

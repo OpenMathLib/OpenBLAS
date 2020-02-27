@@ -42,7 +42,7 @@ lapack_int LAPACKE_slarfg( lapack_int n, float* alpha, float* x,
         if( LAPACKE_s_nancheck( 1, alpha, 1 ) ) {
             return -2;
         }
-        if( LAPACKE_s_nancheck( 1+(n-2)*ABS(incx), x, incx ) ) {
+        if( LAPACKE_s_nancheck( n-1, x, incx ) ) {
             return -3;
         }
     }

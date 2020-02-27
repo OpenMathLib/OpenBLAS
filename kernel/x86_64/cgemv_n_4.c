@@ -29,7 +29,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <stdio.h>
 #include "common.h"
 
-#if defined(HASWELL) || defined(ZEN)
+#if defined(HASWELL) || defined(ZEN) || defined (SKYLAKEX)
 #include "cgemv_n_microk_haswell-4.c"
 #elif defined(BULLDOZER) || defined(PILEDRIVER) || defined(STEAMROLLER) || defined(EXCAVATOR)
 #include "cgemv_n_microk_bulldozer-4.c"

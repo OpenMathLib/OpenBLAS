@@ -94,7 +94,7 @@
 *>
 *> \param[in] V
 *> \verbatim
-*>          V is DOUBLE PRECISION array, dimension (LDA,K)
+*>          V is DOUBLE PRECISION array, dimension (LDV,K)
 *>          The i-th row must contain the vector which defines the
 *>          elementary reflector H(i), for i = 1,2,...,k, as returned by
 *>          DTPLQT in B.  See Further Details.

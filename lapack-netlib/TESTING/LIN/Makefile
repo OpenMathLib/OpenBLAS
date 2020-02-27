@@ -1,5 +1,3 @@
-include ../../make.inc
-
 #######################################################################
 #  This makefile creates the test programs for the linear equation
 #  routines in LAPACK.  The test files are grouped as follows:
@@ -33,10 +31,8 @@ include ../../make.inc
 #
 #######################################################################
 
-ifneq ($(strip $(VARLIB)),)
-    LAPACKLIB := $(VARLIB) ../../$(LAPACKLIB)
-endif
-
+TOPSRCDIR = ../..
+include $(TOPSRCDIR)/make.inc
 
 ALINTST = \
    aladhd.o alaerh.o alaesm.o alahd.o alareq.o \
@@ -77,7 +73,8 @@ SLINTST = schkaa.o \
    strt02.o strt03.o strt05.o strt06.o \
    sgennd.o sqrt04.o sqrt05.o schkqrt.o serrqrt.o schkqrtp.o serrqrtp.o \
    schklqt.o schklqtp.o schktsqr.o \
-   serrlqt.o serrlqtp.o serrtsqr.o stsqr01.o slqt04.o slqt05.o
+   serrlqt.o serrlqtp.o serrtsqr.o stsqr01.o slqt04.o slqt05.o \
+   schkorhr_col.o serrorhr_col.o sorhr_col01.o
 
 ifdef USEXBLAS
 SLINTST += sdrvgbx.o sdrvgex.o sdrvsyx.o sdrvpox.o \
@@ -125,7 +122,8 @@ CLINTST = cchkaa.o \
    sget06.o cgennd.o \
    cqrt04.o cqrt05.o cchkqrt.o cerrqrt.o cchkqrtp.o cerrqrtp.o \
    cchklqt.o cchklqtp.o cchktsqr.o \
-   cerrlqt.o cerrlqtp.o cerrtsqr.o ctsqr01.o clqt04.o clqt05.o
+   cerrlqt.o cerrlqtp.o cerrtsqr.o ctsqr01.o clqt04.o clqt05.o \
+   cchkunhr_col.o cerrunhr_col.o cunhr_col01.o
 
 ifdef USEXBLAS
 CLINTST += cdrvgbx.o cdrvgex.o cdrvhex.o cdrvsyx.o cdrvpox.o \
@@ -168,7 +166,8 @@ DLINTST = dchkaa.o \
    dgennd.o \
    dqrt04.o dqrt05.o dchkqrt.o derrqrt.o dchkqrtp.o derrqrtp.o \
    dchklq.o dchklqt.o dchklqtp.o dchktsqr.o \
-   derrlqt.o derrlqtp.o derrtsqr.o dtsqr01.o dlqt04.o dlqt05.o
+   derrlqt.o derrlqtp.o derrtsqr.o dtsqr01.o dlqt04.o dlqt05.o \
+   dchkorhr_col.o derrorhr_col.o dorhr_col01.o
 
 ifdef USEXBLAS
 DLINTST += ddrvgbx.o ddrvgex.o ddrvsyx.o ddrvpox.o \
@@ -215,7 +214,8 @@ ZLINTST = zchkaa.o \
    dget06.o zgennd.o \
    zqrt04.o zqrt05.o zchkqrt.o zerrqrt.o zchkqrtp.o zerrqrtp.o \
    zchklqt.o zchklqtp.o zchktsqr.o \
-   zerrlqt.o zerrlqtp.o zerrtsqr.o ztsqr01.o zlqt04.o zlqt05.o
+   zerrlqt.o zerrlqtp.o zerrtsqr.o ztsqr01.o zlqt04.o zlqt05.o \
+   zchkunhr_col.o zerrunhr_col.o zunhr_col01.o
 
 ifdef USEXBLAS
 ZLINTST += zdrvgbx.o zdrvgex.o zdrvhex.o zdrvsyx.o zdrvpox.o \
@@ -254,47 +254,50 @@ ZLINTSTRFP = zchkrfp.o zdrvrfp.o zdrvrf1.o zdrvrf2.o zdrvrf3.o zdrvrf4.o zerrrfp
 	zlatb4.o zlaipd.o zlarhs.o zsbmv.o zget04.o zpot01.o zpot03.o zpot02.o \
 	chkxer.o xerbla.o alaerh.o aladhd.o alahd.o alasvm.o
 
+.PHONY: all
 all: single double complex complex16 proto-single proto-double proto-complex proto-complex16
 
+.PHONY: single double complex complex16
 single: xlintsts
 double: xlintstd
 complex: xlintstc
 complex16: xlintstz
 
+.PHONY: proto-single proto-double proto-complex proto-complex16
 proto-single: xlintstrfs
 proto-double: xlintstds xlintstrfd
 proto-complex: xlintstrfc
 proto-complex16: xlintstzc xlintstrfz
 
-xlintsts: $(ALINTST) $(SLINTST) $(SCLNTST) ../../$(TMGLIB) ../../$(LAPACKLIB) $(XBLASLIB) $(BLASLIB)
-	$(LOADER) $(LOADOPTS) -o $@ $^
+xlintsts: $(ALINTST) $(SLINTST) $(SCLNTST) $(TMGLIB) $(VARLIB) ../$(LAPACKLIB) $(XBLASLIB) $(BLASLIB)
+	$(LOADER) $(FFLAGS) $(LDFLAGS) -o $@ $^
 
-xlintstc: $(ALINTST) $(CLINTST) $(SCLNTST) ../../$(TMGLIB) ../../$(LAPACKLIB) $(XBLASLIB) $(BLASLIB)
-	$(LOADER) $(LOADOPTS) -o $@ $^
+xlintstc: $(ALINTST) $(CLINTST) $(SCLNTST) $(TMGLIB) $(VARLIB) ../$(LAPACKLIB) $(XBLASLIB) $(BLASLIB)
+	$(LOADER) $(FFLAGS) $(LDFLAGS) -o $@ $^
 
-xlintstd: $(ALINTST) $(DLINTST) $(DZLNTST) ../../$(TMGLIB) ../../$(LAPACKLIB) $(XBLASLIB) $(BLASLIB)
-	$(LOADER) $(LOADOPTS) -o $@ $^
+xlintstd: $(ALINTST) $(DLINTST) $(DZLNTST) $(TMGLIB) $(VARLIB) ../$(LAPACKLIB) $(XBLASLIB) $(BLASLIB)
+	$(LOADER) $(FFLAGS) $(LDFLAGS) -o $@ $^
 
-xlintstz: $(ALINTST) $(ZLINTST) $(DZLNTST) ../../$(TMGLIB) ../../$(LAPACKLIB) $(XBLASLIB) $(BLASLIB)
-	$(LOADER) $(LOADOPTS) -o $@ $^
+xlintstz: $(ALINTST) $(ZLINTST) $(DZLNTST) $(TMGLIB) $(VARLIB) ../$(LAPACKLIB) $(XBLASLIB) $(BLASLIB)
+	$(LOADER) $(FFLAGS) $(LDFLAGS) -o $@ $^
 
-xlintstds: $(DSLINTST) ../../$(TMGLIB) ../../$(LAPACKLIB) $(BLASLIB)
-	$(LOADER) $(LOADOPTS) -o $@ $^
+xlintstds: $(DSLINTST) $(TMGLIB) $(VARLIB) ../$(LAPACKLIB) $(BLASLIB)
+	$(LOADER) $(FFLAGS) $(LDFLAGS) -o $@ $^
 
-xlintstzc: $(ZCLINTST) ../../$(TMGLIB) ../../$(LAPACKLIB) $(BLASLIB)
-	$(LOADER) $(LOADOPTS) -o $@ $^
+xlintstzc: $(ZCLINTST) $(TMGLIB) $(VARLIB) ../$(LAPACKLIB) $(BLASLIB)
+	$(LOADER) $(FFLAGS) $(LDFLAGS) -o $@ $^
 
-xlintstrfs: $(SLINTSTRFP) ../../$(TMGLIB) ../../$(LAPACKLIB) $(BLASLIB)
-	$(LOADER) $(LOADOPTS) -o $@ $^
+xlintstrfs: $(SLINTSTRFP) $(TMGLIB) $(VARLIB) ../$(LAPACKLIB) $(BLASLIB)
+	$(LOADER) $(FFLAGS) $(LDFLAGS) -o $@ $^
 
-xlintstrfd: $(DLINTSTRFP) ../../$(TMGLIB) ../../$(LAPACKLIB) $(BLASLIB)
-	$(LOADER) $(LOADOPTS) -o $@ $^
+xlintstrfd: $(DLINTSTRFP) $(TMGLIB) $(VARLIB) ../$(LAPACKLIB) $(BLASLIB)
+	$(LOADER) $(FFLAGS) $(LDFLAGS) -o $@ $^
 
-xlintstrfc: $(CLINTSTRFP) ../../$(TMGLIB) ../../$(LAPACKLIB) $(BLASLIB)
-	$(LOADER) $(LOADOPTS) -o $@ $^
+xlintstrfc: $(CLINTSTRFP) $(TMGLIB) $(VARLIB) ../$(LAPACKLIB) $(BLASLIB)
+	$(LOADER) $(FFLAGS) $(LDFLAGS) -o $@ $^
 
-xlintstrfz: $(ZLINTSTRFP) ../../$(TMGLIB) ../../$(LAPACKLIB) $(BLASLIB)
-	$(LOADER) $(LOADOPTS) -o $@ $^
+xlintstrfz: $(ZLINTSTRFP) $(TMGLIB) $(VARLIB) ../$(LAPACKLIB) $(BLASLIB)
+	$(LOADER) $(FFLAGS) $(LDFLAGS) -o $@ $^
 
 $(ALINTST): $(FRC)
 $(SCLNTST): $(FRC)
@@ -307,6 +310,7 @@ $(ZLINTST): $(FRC)
 FRC:
 	@FRC=$(FRC)
 
+.PHONY: clean cleanobj cleanexe
 clean: cleanobj cleanexe
 cleanobj:
 	rm -f *.o
@@ -314,15 +318,12 @@ cleanexe:
 	rm -f xlintst*
 
 schkaa.o: schkaa.f
-	$(FORTRAN) $(DRVOPTS) -c -o $@ $<
+	$(FC) $(FFLAGS_DRV) -c -o $@ $<
 dchkaa.o: dchkaa.f
-	$(FORTRAN) $(DRVOPTS) -c -o $@ $<
+	$(FC) $(FFLAGS_DRV) -c -o $@ $<
 cchkaa.o: cchkaa.f
-	$(FORTRAN) $(DRVOPTS) -c -o $@ $<
+	$(FC) $(FFLAGS_DRV) -c -o $@ $<
 zchkaa.o: zchkaa.f
-	$(FORTRAN) $(DRVOPTS) -c -o $@ $<
-
-.f.o:
-	$(FORTRAN) $(OPTS) -c -o $@ $<
+	$(FC) $(FFLAGS_DRV) -c -o $@ $<
 
 .NOTPARALLEL:

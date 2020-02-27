@@ -58,7 +58,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .macro KERNEL_F1
 
-	fldmiad	X!, 	{ d4 }
+	vldmia.f64	X!, 	{ d4 }
 	vcmpe.f64	d4, d6				// compare with 0.0
 	vmrs		APSR_nzcv, fpscr
 	beq		KERNEL_F1_NEXT_\@
@@ -95,7 +95,7 @@ KERNEL_F1_NEXT_\@:
 
 .macro KERNEL_S1
 
-	fldmiad	X, 	{ d4 }
+	vldmia.f64	X, 	{ d4 }
 	vcmpe.f64	d4, d6				// compare with 0.0
 	vmrs		APSR_nzcv, fpscr
 	beq		KERNEL_S1_NEXT
@@ -121,7 +121,7 @@ KERNEL_S1_NEXT:
 
 .macro KERNEL_F1
 
-	fldmias	X!, 	{ s4 }
+	vldmia.f32	X!, 	{ s4 }
 	vcmpe.f32	s4, s6				// compare with 0.0
 	vmrs		APSR_nzcv, fpscr
 	beq		KERNEL_F1_NEXT_\@
@@ -158,7 +158,7 @@ KERNEL_F1_NEXT_\@:
 
 .macro KERNEL_S1
 
-	fldmias	X, 	{ s4 }
+	vldmia.f32	X, 	{ s4 }
 	vcmpe.f32	s4, s6				// compare with 0.0
 	vmrs		APSR_nzcv, fpscr
 	beq		KERNEL_S1_NEXT
@@ -191,7 +191,7 @@ KERNEL_S1_NEXT:
 
 .macro KERNEL_F1
 
-	fldmiad	X!, 	{ d4 - d5 }
+	vldmia.f64	X!, 	{ d4 - d5 }
 
 	vcmpe.f64	d4, d6				// compare with 0.0
 	vmrs		APSR_nzcv, fpscr
@@ -249,7 +249,7 @@ KERNEL_F1_END_\@:
 
 .macro KERNEL_S1
 
-	fldmiad	X, 	{ d4 - d5 }
+	vldmia.f64	X, 	{ d4 - d5 }
 
 	vcmpe.f64	d4, d6				// compare with 0.0
 	vmrs		APSR_nzcv, fpscr
@@ -294,7 +294,7 @@ KERNEL_S1_END_\@:
 
 .macro KERNEL_F1
 
-	fldmias	X!, 	{ s4 - s5 }
+	vldmia.f32	X!, 	{ s4 - s5 }
 
 	vcmpe.f32	s4, s6				// compare with 0.0
 	vmrs		APSR_nzcv, fpscr
@@ -350,7 +350,7 @@ KERNEL_F1_END_\@:
 
 .macro KERNEL_S1
 
-	fldmias	X, 	{ s4 - s5 }
+	vldmia.f32	X, 	{ s4 - s5 }
 
 	vcmpe.f32	s4, s6				// compare with 0.0
 	vmrs		APSR_nzcv, fpscr

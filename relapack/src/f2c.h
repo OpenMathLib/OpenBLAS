@@ -7,6 +7,19 @@
 #ifndef F2C_INCLUDE
 #define F2C_INCLUDE
 
+#ifdef USE64BITINT
+typedef BLASLONG blasint;
+#if defined(OS_WINDOWS) && defined(__64BIT__)
+#define blasabs(x) llabs(x)
+#else
+#define blasabs(x) labs(x)
+#endif
+#else
+typedef int blasint;
+#define blasabs(x) abs(x)
+#endif
+                      
+                      
 typedef long int integer;
 typedef unsigned long int uinteger;
 typedef char *address;

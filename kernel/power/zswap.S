@@ -39,7 +39,7 @@
 #define ASSEMBLER
 #include "common.h"
 
-#ifdef linux
+#if defined(linux) || defined(__FreeBSD__)
 #ifndef __64BIT__
 #define N	r3
 #define X	r6
@@ -117,7 +117,7 @@
 	stfd	f30,  128(SP)
 	stfd	f31,  136(SP)
 
-#if defined(linux) && defined(__64BIT__)
+#if (defined(linux) || defined(__FreeBSD__)) && defined(__64BIT__)
 	ld	INCY, FRAMESLOT(0) + STACKSIZE(SP)
 #endif
 

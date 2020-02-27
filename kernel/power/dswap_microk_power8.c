@@ -39,8 +39,8 @@ static void dswap_kernel_32 (long n, double *x, double *y)
 {
   __asm__
     (
-       ".p2align	5		\n"
-     "1:				\n\t"
+       ".align	5		\n"
+     "one%=:				\n\t"
 
        "lxvd2x		32, 0, %4	\n\t"
        "lxvd2x		33, %5, %4	\n\t"
@@ -131,7 +131,7 @@ static void dswap_kernel_32 (long n, double *x, double *y)
        "addi		%4, %4, 128	\n\t"
 
        "addic.		%2, %2, -32	\n\t"
-       "bgt		1b		\n"
+       "bgt		one%=		\n"
 
      "#n=%2 x=%0=%3 y=%1=%4 o16=%5 o32=%6 o48=%7 o64=%8 o80=%9 o96=%10 o112=%11"
      :

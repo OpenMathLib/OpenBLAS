@@ -43,7 +43,7 @@ lapack_int LAPACKE_zlarfg( lapack_int n, lapack_complex_double* alpha,
         if( LAPACKE_z_nancheck( 1, alpha, 1 ) ) {
             return -2;
         }
-        if( LAPACKE_z_nancheck( 1+(n-2)*ABS(incx), x, incx ) ) {
+        if( LAPACKE_z_nancheck( n-1, x, incx ) ) {
             return -3;
         }
     }

@@ -109,8 +109,8 @@ static void ssymv_kernel_4x4(BLASLONG from, BLASLONG to, FLOAT **a, FLOAT *x, FL
 	"vzeroupper				     \n\t"
 
 	:
-        : 
-          "r" (from),	// 0	
+          "+r" (from)	// 0	
+        :
 	  "r" (to),  	// 1
           "r" (x),      // 2
           "r" (y),      // 3
@@ -217,8 +217,8 @@ static void ssymv_kernel_4x4(BLASLONG from, BLASLONG to, FLOAT **a, FLOAT *x, FL
 	"vzeroupper				     \n\t"
 
 	:
-        : 
-          "r" (from),	// 0	
+          "+r" (from)	// 0	
+        :
 	  "r" (to),  	// 1
           "r" (x),      // 2
           "r" (y),      // 3

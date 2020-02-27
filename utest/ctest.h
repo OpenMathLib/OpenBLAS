@@ -83,10 +83,6 @@ struct ctest {
 #undef CTEST_SEGFAULT
 #endif
 
-#if _MSC_VER < 1900
-#define snprintf _snprintf_s
-#endif
-
 #ifndef __cplusplus
 #define inline __inline
 #endif

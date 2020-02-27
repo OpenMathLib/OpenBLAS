@@ -50,7 +50,6 @@ lapack_int LAPACKE_zsytrf_aa_2stage_work( int matrix_layout, char uplo, lapack_i
         }
     } else if( matrix_layout == LAPACK_ROW_MAJOR ) {
         lapack_int lda_t = MAX(1,n);
-        lapack_int ldb_t = MAX(1,n);
         lapack_complex_double* a_t = NULL;
         lapack_complex_double* tb_t = NULL;
         /* Check leading dimension(s) */

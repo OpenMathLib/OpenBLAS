@@ -100,6 +100,13 @@ float   casum_k (BLASLONG, float  *, BLASLONG);
 double  zasum_k (BLASLONG, double *, BLASLONG);
 xdouble xasum_k (BLASLONG, xdouble *, BLASLONG);
 
+float   ssum_k (BLASLONG, float  *, BLASLONG);
+double  dsum_k (BLASLONG, double *, BLASLONG);
+xdouble qsum_k (BLASLONG, xdouble *, BLASLONG);
+float   csum_k (BLASLONG, float  *, BLASLONG);
+double  zsum_k (BLASLONG, double *, BLASLONG);
+xdouble xsum_k (BLASLONG, xdouble *, BLASLONG);
+
 float   samax_k (BLASLONG, float  *, BLASLONG);
 double  damax_k (BLASLONG, double *, BLASLONG);
 xdouble qamax_k (BLASLONG, xdouble *, BLASLONG);

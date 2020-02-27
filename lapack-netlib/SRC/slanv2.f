@@ -161,7 +161,6 @@
       IF( C.EQ.ZERO ) THEN
          CS = ONE
          SN = ZERO
-         GO TO 10
 *
       ELSE IF( B.EQ.ZERO ) THEN
 *
@@ -174,12 +173,12 @@
          A = TEMP
          B = -C
          C = ZERO
-         GO TO 10
+*
       ELSE IF( (A-D).EQ.ZERO .AND. SIGN( ONE, B ).NE.
      $   SIGN( ONE, C ) ) THEN
          CS = ONE
          SN = ZERO
-         GO TO 10
+*
       ELSE
 *
          TEMP = A - D
@@ -207,6 +206,7 @@
             SN = C / TAU
             B = B - C
             C = ZERO
+*
          ELSE
 *
 *           Complex eigenvalues, or real (almost) equal eigenvalues.
@@ -268,8 +268,6 @@
          END IF
 *
       END IF
-*
-   10 CONTINUE
 *
 *     Store eigenvalues in (RT1R,RT1I) and (RT2R,RT2I).
 *

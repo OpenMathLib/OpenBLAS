@@ -3,8 +3,8 @@
 #include <stdlib.h>
 #endif
 
-static void RELAPACK_chetrf_rec(const char *, const int *, const int *, int *,
-    float *, const int *, int *, float *, const int *, int *);
+static void RELAPACK_chetrf_rec(const char *, const blasint *, const blasint *, blasint *,
+    float *, const blasint *, blasint *, float *, const blasint *, blasint *);
 
 
 /** CHETRF computes the factorization of a complex Hermitian matrix A using the Bunch-Kaufman diagonal pivoting method.
@@ -14,21 +14,21 @@ static void RELAPACK_chetrf_rec(const char *, const int *, const int *, int *,
  * http://www.netlib.org/lapack/explore-html/da/dc1/chetrf_8f.html
  * */
 void RELAPACK_chetrf(
-    const char *uplo, const int *n,
-    float *A, const int *ldA, int *ipiv,
-    float *Work, const int *lWork, int *info
+    const char *uplo, const blasint *n,
+    float *A, const blasint *ldA, blasint *ipiv,
+    float *Work, const blasint *lWork, blasint *info
 ) {
 
     // Required work size
-    const int cleanlWork = *n * (*n / 2);
-    int minlWork = cleanlWork;
+    const blasint cleanlWork = *n * (*n / 2);
+    blasint minlWork = cleanlWork;
 #if XSYTRF_ALLOW_MALLOC
     minlWork = 1;
 #endif
 
     // Check arguments
-    const int lower = LAPACK(lsame)(uplo, "L");
-    const int upper = LAPACK(lsame)(uplo, "U");
+    const blasint lower = LAPACK(lsame)(uplo, "L");
+    const blasint upper = LAPACK(lsame)(uplo, "U");
     *info = 0;
     if (!lower && !upper)
         *info = -1;
@@ -55,8 +55,8 @@ void RELAPACK_chetrf(
 #endif
 
     if (*info) {
-        const int minfo = -*info;
-        LAPACK(xerbla)("CHETRF", &minfo);
+        const blasint minfo = -*info;
+        LAPACK(xerbla)("CHETRF", &minfo, strlen("CHETRF"));
         return;
     }
 
@@ -64,7 +64,7 @@ void RELAPACK_chetrf(
     const char cleanuplo = lower ? 'L' : 'U';
 
     // Dummy argument
-    int nout;
+    blasint nout;
 
     // Recursive kernel
     RELAPACK_chetrf_rec(&cleanuplo, n, n, &nout, A, ldA, ipiv, cleanWork, n, info);
@@ -78,13 +78,13 @@ void RELAPACK_chetrf(
 
 /** chetrf's recursive compute kernel */
 static void RELAPACK_chetrf_rec(
-    const char *uplo, const int *n_full, const int *n, int *n_out,
-    float *A, const int *ldA, int *ipiv,
-    float *Work, const int *ldWork, int *info
+    const char *uplo, const blasint *n_full, const blasint *n, blasint *n_out,
+    float *A, const blasint *ldA, blasint *ipiv,
+    float *Work, const blasint *ldWork, blasint *info
 ) {
 
     // top recursion level?
-    const int top = *n_full == *n;
+    const blasint top = *n_full == *n;
 
     if (*n <= MAX(CROSSOVER_CHETRF, 3)) {
         // Unblocked
@@ -96,31 +96,31 @@ static void RELAPACK_chetrf_rec(
         return;
     }
 
-    int info1, info2;
+    blasint info1, info2;
 
     // Constants
     const float ONE[]  = { 1., 0. };
     const float MONE[] = { -1., 0. };
-    const int   iONE[] = { 1 };
+    const blasint   iONE[] = { 1 };
 
-    const int n_rest = *n_full - *n;
+    const blasint n_rest = *n_full - *n;
 
     if (*uplo == 'L') {
         // Splitting (setup)
-        int n1 = CREC_SPLIT(*n);
-        int n2 = *n - n1;
+        blasint n1 = CREC_SPLIT(*n);
+        blasint n2 = *n - n1;
 
         // Work_L *
         float *const Work_L = Work;
 
         // recursion(A_L)
-        int n1_out;
+        blasint n1_out;
         RELAPACK_chetrf_rec(uplo, n_full, &n1, &n1_out, A, ldA, ipiv, Work_L, ldWork, &info1);
         n1 = n1_out;
 
         // Splitting (continued)
         n2 = *n - n1;
-        const int n_full2 = *n_full - n1;
+        const blasint n_full2 = *n_full - n1;
 
         // *      *
         // A_BL   A_BR
@@ -136,23 +136,23 @@ static void RELAPACK_chetrf_rec(
         // (top recursion level: use Work as Work_BR)
         float *const Work_BL =              Work                    + 2 * n1;
         float *const Work_BR = top ? Work : Work + 2 * *ldWork * n1 + 2 * n1;
-        const int ldWork_BR = top ? n2 : *ldWork;
+        const blasint ldWork_BR = top ? n2 : *ldWork;
 
         // ipiv_T
         // ipiv_B
-        int *const ipiv_B = ipiv + n1;
+        blasint *const ipiv_B = ipiv + n1;
 
         // A_BR = A_BR - A_BL Work_BL'
         RELAPACK_cgemmt(uplo, "N", "T", &n2, &n1, MONE, A_BL, ldA, Work_BL, ldWork, ONE, A_BR, ldA);
         BLAS(cgemm)("N", "T", &n_rest, &n2, &n1, MONE, A_BL_B, ldA, Work_BL, ldWork, ONE, A_BR_B, ldA);
 
         // recursion(A_BR)
-        int n2_out;
+        blasint n2_out;
         RELAPACK_chetrf_rec(uplo, &n_full2, &n2, &n2_out, A_BR, ldA, ipiv_B, Work_BR, &ldWork_BR, &info2);
 
         if (n2_out != n2) {
             // undo 1 column of updates
-            const int n_restp1 = n_rest + 1;
+            const blasint n_restp1 = n_rest + 1;
 
             // last column of A_BR
             float *const A_BR_r = A_BR + 2 * *ldA * n2_out + 2 * n2_out;
@@ -169,7 +169,7 @@ static void RELAPACK_chetrf_rec(
         n2 = n2_out;
 
         // shift pivots
-        int i;
+        blasint i;
         for (i = 0; i < n2; i++)
             if (ipiv_B[i] > 0)
                 ipiv_B[i] += n1;
@@ -180,22 +180,22 @@ static void RELAPACK_chetrf_rec(
         *n_out = n1 + n2;
     } else {
         // Splitting (setup)
-        int n2 = CREC_SPLIT(*n);
-        int n1 = *n - n2;
+        blasint n2 = CREC_SPLIT(*n);
+        blasint n1 = *n - n2;
 
         // * Work_R
         // (top recursion level: use Work as Work_R)
         float *const Work_R = top ? Work : Work + 2 * *ldWork * n1;
 
         // recursion(A_R)
-        int n2_out;
+        blasint n2_out;
         RELAPACK_chetrf_rec(uplo, n_full, &n2, &n2_out, A, ldA, ipiv, Work_R, ldWork, &info2);
-        const int n2_diff = n2 - n2_out;
+        const blasint n2_diff = n2 - n2_out;
         n2 = n2_out;
 
         // Splitting (continued)
         n1 = *n - n2;
-        const int n_full1 = *n_full - n2;
+        const blasint n_full1 = *n_full - n2;
 
         // * A_TL_T A_TR_T
         // * A_TL   A_TR
@@ -211,19 +211,19 @@ static void RELAPACK_chetrf_rec(
         // (top recursion level: Work_R was Work)
         float *const Work_L  = Work;
         float *const Work_TR = Work + 2 * *ldWork * (top ? n2_diff : n1) + 2 * n_rest;
-        const int ldWork_L = top ? n1 : *ldWork;
+        const blasint ldWork_L = top ? n1 : *ldWork;
 
         // A_TL = A_TL - A_TR Work_TR'
         RELAPACK_cgemmt(uplo, "N", "T", &n1, &n2, MONE, A_TR, ldA, Work_TR, ldWork, ONE, A_TL, ldA);
         BLAS(cgemm)("N", "T", &n_rest, &n1, &n2, MONE, A_TR_T, ldA, Work_TR, ldWork, ONE, A_TL_T, ldA);
 
         // recursion(A_TL)
-        int n1_out;
+        blasint n1_out;
         RELAPACK_chetrf_rec(uplo, &n_full1, &n1, &n1_out, A, ldA, ipiv, Work_L, &ldWork_L, &info1);
 
         if (n1_out != n1) {
             // undo 1 column of updates
-            const int n_restp1 = n_rest + 1;
+            const blasint n_restp1 = n_rest + 1;
 
             // A_TL_T_l = A_TL_T_l + A_TR_T Work_TR_t'
             BLAS(cgemv)("N", &n_restp1, &n2, ONE, A_TR_T, ldA, Work_TR, ldWork, ONE, A_TL_T, iONE);

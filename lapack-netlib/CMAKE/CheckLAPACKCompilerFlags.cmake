@@ -1,4 +1,4 @@
-# This module checks against various known compilers and thier respective
+# This module checks against various known compilers and their respective
 # flags to determine any specific flags needing to be set.
 #
 #  1.  If FPE traps are enabled either abort or disable them

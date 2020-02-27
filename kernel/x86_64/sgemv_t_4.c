@@ -34,7 +34,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "sgemv_t_microk_bulldozer-4.c"
 #elif defined(SANDYBRIDGE)
 #include "sgemv_t_microk_sandy-4.c"
-#elif defined(HASWELL) || defined(ZEN)
+#elif defined(HASWELL) || defined(ZEN) || defined (SKYLAKEX)
 #include "sgemv_t_microk_haswell-4.c"
 #endif
 
@@ -139,9 +139,9 @@ static void sgemv_kernel_4x2(BLASLONG n, FLOAT *ap0, FLOAT *ap1, FLOAT *x, FLOAT
 	"movss	       %%xmm11,4(%2)	        \n\t"
 
         :
-   	:
-	"r" (i),	 // 0
-	"r" (n),	 // 1
+	"+r" (i),	 // 0
+	"+r" (n)	 // 1
+	:
         "r" (y),         // 2    
         "r" (ap0),       // 3
         "r" (ap1),       // 4
@@ -208,9 +208,9 @@ static void sgemv_kernel_4x1(BLASLONG n, FLOAT *ap, FLOAT *x, FLOAT *y)
 	"movss	       %%xmm10, (%2)	        \n\t"
 
         :
-   	:
-	"r" (i),	 // 0
-	"r" (n),	 // 1
+	"+r" (i),	 // 0
+	"+r" (n)	 // 1
+	:
         "r" (y),         // 2    
         "r" (ap),        // 3
         "r" (x)          // 4
@@ -272,9 +272,9 @@ static void add_y(BLASLONG n, FLOAT da , FLOAT *src, FLOAT *dest, BLASLONG inc_d
         "jnz            1b              \n\t"
 
         :
-   	:
-	"r" (i),	  // 0
-	"r" (n),	  // 1
+	"+r" (i),	  // 0
+	"+r" (n)	  // 1
+	:
         "r" (&da),        // 2    
         "r" (src),        // 3
         "r" (dest)        // 4

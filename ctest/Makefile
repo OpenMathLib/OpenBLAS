@@ -6,6 +6,8 @@ TOPDIR = ..
 include $(TOPDIR)/Makefile.system
 
 override CFLAGS += -DADD$(BU) -DCBLAS
+override TARGET_ARCH=
+override TARGET_MACH=
 
 LIB = $(TOPDIR)/$(LIBNAME)
 
@@ -102,7 +104,13 @@ clean ::
 	rm -f x*
 
 FLDFLAGS = $(FFLAGS:-fPIC=) $(LDFLAGS)
-CEXTRALIB =
+ifeq ($(USE_OPENMP), 1)
+ifeq ($(F_COMPILER), GFORTRAN)
+ifeq ($(C_COMPILER), CLANG)
+CEXTRALIB = -lomp
+endif
+endif
+endif
 
 # Single real
 xscblat1: $(stestl1o) c_sblat1.o $(TOPDIR)/$(LIBNAME)

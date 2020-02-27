@@ -38,6 +38,7 @@ lapack_int LAPACKE_clarfx( int matrix_layout, char side, lapack_int m,
                            lapack_complex_float tau, lapack_complex_float* c,
                            lapack_int ldc, lapack_complex_float* work )
 {
+    lapack_int lv;
     if( matrix_layout != LAPACK_COL_MAJOR && matrix_layout != LAPACK_ROW_MAJOR ) {
         LAPACKE_xerbla( "LAPACKE_clarfx", -1 );
         return -1;
@@ -51,7 +52,8 @@ lapack_int LAPACKE_clarfx( int matrix_layout, char side, lapack_int m,
         if( LAPACKE_c_nancheck( 1, &tau, 1 ) ) {
             return -6;
         }
-        if( LAPACKE_c_nancheck( m, v, 1 ) ) {
+        lv = (LAPACKE_lsame( side, 'l' ) ? m : n);
+        if( LAPACKE_c_nancheck( lv, v, 1 ) ) {
             return -5;
         }
     }

@@ -120,9 +120,9 @@ static void ssymv_kernel_4x4(BLASLONG n, FLOAT *a0, FLOAT *a1, FLOAT *a2, FLOAT 
 	"vzeroupper				     \n\t"
 
 	:
-        : 
-          "r" (i),	// 0	
-	  "r" (n),  	// 1
+          "+r" (i),	// 0	
+	  "+r" (n)  	// 1
+        :
           "r" (x),      // 2
           "r" (y),      // 3
           "r" (a0),	// 4

@@ -30,6 +30,11 @@ IDMAXKERNEL  = ../mips/imax.c
 ISMINKERNEL  = ../mips/imin.c
 IDMINKERNEL  = ../mips/imin.c
 
+SSUMKERNEL  = ../mips/sum.c
+DSUMKERNEL  = ../mips/sum.c
+CSUMKERNEL  = ../mips/zsum.c
+ZSUMKERNEL  = ../mips/zsum.c
+
 ifdef HAVE_MSA
 SASUMKERNEL  = ../mips/sasum_msa.c
 DASUMKERNEL  = ../mips/dasum_msa.c
@@ -38,8 +43,8 @@ ZASUMKERNEL  = ../mips/zasum_msa.c
 else
 SASUMKERNEL  = ../mips/asum.c
 DASUMKERNEL  = ../mips/asum.c
-CASUMKERNEL  = ../mips/asum.c
-ZASUMKERNEL  = ../mips/asum.c
+CASUMKERNEL  = ../mips/zasum.c
+ZASUMKERNEL  = ../mips/zasum.c
 endif
 
 ifdef HAVE_MSA

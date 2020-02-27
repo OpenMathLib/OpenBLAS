@@ -125,7 +125,7 @@
 *> \verbatim
 *>          LDH is INTEGER
 *>             LDH is the leading dimension of H just as declared in the
-*>             calling procedure.  LDH.GE.MAX(1,N).
+*>             calling procedure.  LDH >= MAX(1,N).
 *> \endverbatim
 *>
 *> \param[in] ILOZ
@@ -137,7 +137,7 @@
 *> \verbatim
 *>          IHIZ is INTEGER
 *>             Specify the rows of Z to which transformations must be
-*>             applied if WANTZ is .TRUE.. 1 .LE. ILOZ .LE. IHIZ .LE. N
+*>             applied if WANTZ is .TRUE.. 1 <= ILOZ <= IHIZ <= N
 *> \endverbatim
 *>
 *> \param[in,out] Z
@@ -153,7 +153,7 @@
 *> \verbatim
 *>          LDZ is INTEGER
 *>             LDA is the leading dimension of Z just as declared in
-*>             the calling procedure. LDZ.GE.N.
+*>             the calling procedure. LDZ >= N.
 *> \endverbatim
 *>
 *> \param[out] V
@@ -165,7 +165,7 @@
 *> \verbatim
 *>          LDV is INTEGER
 *>             LDV is the leading dimension of V as declared in the
-*>             calling procedure.  LDV.GE.3.
+*>             calling procedure.  LDV >= 3.
 *> \endverbatim
 *>
 *> \param[out] U
@@ -177,33 +177,14 @@
 *> \verbatim
 *>          LDU is INTEGER
 *>             LDU is the leading dimension of U just as declared in the
-*>             in the calling subroutine.  LDU.GE.3*NSHFTS-3.
-*> \endverbatim
-*>
-*> \param[in] NH
-*> \verbatim
-*>          NH is INTEGER
-*>             NH is the number of columns in array WH available for
-*>             workspace. NH.GE.1.
-*> \endverbatim
-*>
-*> \param[out] WH
-*> \verbatim
-*>          WH is COMPLEX array, dimension (LDWH,NH)
-*> \endverbatim
-*>
-*> \param[in] LDWH
-*> \verbatim
-*>          LDWH is INTEGER
-*>             Leading dimension of WH just as declared in the
-*>             calling procedure.  LDWH.GE.3*NSHFTS-3.
+*>             in the calling subroutine.  LDU >= 3*NSHFTS-3.
 *> \endverbatim
 *>
 *> \param[in] NV
 *> \verbatim
 *>          NV is INTEGER
 *>             NV is the number of rows in WV agailable for workspace.
-*>             NV.GE.1.
+*>             NV >= 1.
 *> \endverbatim
 *>
 *> \param[out] WV
@@ -215,9 +196,28 @@
 *> \verbatim
 *>          LDWV is INTEGER
 *>             LDWV is the leading dimension of WV as declared in the
-*>             in the calling subroutine.  LDWV.GE.NV.
+*>             in the calling subroutine.  LDWV >= NV.
 *> \endverbatim
 *
+*> \param[in] NH
+*> \verbatim
+*>          NH is INTEGER
+*>             NH is the number of columns in array WH available for
+*>             workspace. NH >= 1.
+*> \endverbatim
+*>
+*> \param[out] WH
+*> \verbatim
+*>          WH is COMPLEX array, dimension (LDWH,NH)
+*> \endverbatim
+*>
+*> \param[in] LDWH
+*> \verbatim
+*>          LDWH is INTEGER
+*>             Leading dimension of WH just as declared in the
+*>             calling procedure.  LDWH >= 3*NSHFTS-3.
+*> \endverbatim
+*>
 *  Authors:
 *  ========
 *

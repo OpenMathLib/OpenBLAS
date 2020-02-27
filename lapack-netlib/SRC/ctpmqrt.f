@@ -94,7 +94,7 @@
 *>
 *> \param[in] V
 *> \verbatim
-*>          V is COMPLEX array, dimension (LDA,K)
+*>          V is COMPLEX array, dimension (LDV,K)
 *>          The i-th column must contain the vector which defines the
 *>          elementary reflector H(i), for i = 1,2,...,k, as returned by
 *>          CTPQRT in B.  See Further Details.

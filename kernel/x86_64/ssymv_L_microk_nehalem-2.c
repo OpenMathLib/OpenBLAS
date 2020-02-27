@@ -113,8 +113,8 @@ static void ssymv_kernel_4x4(BLASLONG from, BLASLONG to,  FLOAT **a, FLOAT *x, F
 	"movss         %%xmm3 , 12(%9)		\n\t"	// save temp2
 
 	:
-        : 
-          "r" (from),	// 0	
+          "+r" (from)	// 0	
+        :
 	  "r" (to),  	// 1
           "r" (x),      // 2
           "r" (y),      // 3

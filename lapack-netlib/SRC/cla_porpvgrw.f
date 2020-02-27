@@ -85,7 +85,7 @@
 *>     The leading dimension of the array AF.  LDAF >= max(1,N).
 *> \endverbatim
 *>
-*> \param[in] WORK
+*> \param[out] WORK
 *> \verbatim
 *>          WORK is REAL array, dimension (2*N)
 *> \endverbatim

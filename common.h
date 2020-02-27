@@ -85,6 +85,8 @@ extern "C" {
 
 #if !defined(_MSC_VER)
 #include <unistd.h>
+#elif _MSC_VER < 1900
+#define snprintf _snprintf
 #endif
 #include <time.h>
 
@@ -103,6 +105,10 @@ extern "C" {
 #if __ANDROID_API__ < 21
 #define FORCE_OPENBLAS_COMPLEX_STRUCT
 #endif
+#endif
+
+#ifdef OS_HAIKU
+#define NO_SYSV_IPC
 #endif
 
 #ifdef OS_WINDOWS
@@ -125,7 +131,7 @@ extern "C" {
 #include <time.h>
 #include <unistd.h>
 #include <math.h>
-#ifdef SMP
+#if defined(SMP) || defined(USE_LOCKING)
 #include <pthread.h>
 #endif
 #endif
@@ -179,7 +185,7 @@ extern "C" {
 
 #define ALLOCA_ALIGN 63UL
 
-#define NUM_BUFFERS (MAX_CPU_NUMBER * 2)
+#define NUM_BUFFERS MAX(50,(MAX_CPU_NUMBER * 2 * MAX_PARALLEL_NUMBER))
 
 #ifdef NEEDBUNDERSCORE
 #define BLASFUNC(FUNC) FUNC##_
@@ -194,7 +200,7 @@ extern "C" {
 #error "You can't specify both LOCK operation!"
 #endif
 
-#ifdef SMP
+#if defined(SMP) || defined(USE_LOCKING)
 #define USE_PTHREAD_LOCK
 #undef	USE_PTHREAD_SPINLOCK
 #endif
@@ -253,8 +259,14 @@ typedef unsigned long BLASULONG;
 
 #ifdef USE64BITINT
 typedef BLASLONG blasint;
+#if defined(OS_WINDOWS) && defined(__64BIT__)
+#define blasabs(x) llabs(x)
+#else
+#define blasabs(x) labs(x)
+#endif
 #else
 typedef int blasint;
+#define blasabs(x) abs(x)
 #endif
 #else
 #ifdef USE64BITINT
@@ -338,6 +350,11 @@ typedef int blasint;
 #endif
 #endif
 
+#ifdef POWER9
+#ifndef YIELDING
+#define YIELDING        __asm__ __volatile__ ("nop;nop;nop;nop;nop;nop;nop;nop;\n");
+#endif
+#endif
 
 /*
 #ifdef PILEDRIVER
@@ -434,7 +451,7 @@ please https://github.com/xianyi/OpenBLAS/issues/246
 typedef char env_var_t[MAX_PATH];
 #define readenv(p, n) 0
 #else
-#ifdef OS_WINDOWS
+#if defined(OS_WINDOWS) && !defined(OS_CYGWIN_NT)
 typedef char env_var_t[MAX_PATH];
 #define readenv(p, n) GetEnvironmentVariable((LPCTSTR)(n), (LPTSTR)(p), sizeof(p))
 #else
@@ -647,6 +664,7 @@ void gotoblas_profile_init(void);
 void gotoblas_profile_quit(void);
 
 #ifdef USE_OPENMP
+
 #ifndef C_MSVC
 int omp_in_parallel(void);
 int omp_get_num_procs(void);
@@ -654,6 +672,21 @@ int omp_get_num_procs(void);
 __declspec(dllimport) int __cdecl omp_in_parallel(void);
 __declspec(dllimport) int __cdecl omp_get_num_procs(void);
 #endif
+
+#if (__STDC_VERSION__ >= 201112L)
+#if defined(C_GCC) && ( __GNUC__ < 7) 
+// workaround for GCC bug 65467
+#ifndef _Atomic
+#define _Atomic volatile
+#endif
+#endif
+#include <stdatomic.h>
+#else
+#ifndef _Atomic
+#define _Atomic volatile
+#endif
+#endif
+
 #else
 #ifdef __ELF__
 int omp_in_parallel  (void) __attribute__ ((weak));
