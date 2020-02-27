@@ -35,6 +35,11 @@ DASUMKERNEL  = ../riscv64/asum.c
 CASUMKERNEL  = ../riscv64/zasum.c
 ZASUMKERNEL  = ../riscv64/zasum.c
 
+SSUMKERNEL  = ../arm/sum.c
+DSUMKERNEL  = ../arm/sum.c
+CSUMKERNEL  = ../arm/zsum.c
+ZSUMKERNEL  = ../arm/zsum.c
+
 SAXPYKERNEL  = ../riscv64/axpy.c
 DAXPYKERNEL  = ../riscv64/axpy.c
 CAXPYKERNEL  = ../riscv64/zaxpy.c
