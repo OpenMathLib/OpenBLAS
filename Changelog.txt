@@ -1,5 +1,49 @@
 OpenBLAS ChangeLog
 ====================================================================
+Version 0.3.9
+ 1-Mar-2020
+ 
+ common:
+ 	* Fixed a miscompilation of the GETRF functions with CMAKE
+	* Imported bugfix 390 from LAPACK (missing NaN propagation in xCOMBSSQ)
+	* The size of the memory buffer used for splitting GEMM tasks across
+          multiple threads can now be configured in the build system.
+
+POWER:
+	* Fixed several compilation problems related to endianness
+	  and ELF version on POWER8 and POWER9
+	* Fixed use of the absolute value IAMIN/IAMAX instead of IMIN/IMAX
+	* Fixed a race condition in the level3 blas code
+	
+MIPS64:
+	* Fixed use of the absoltute value IAMIN/IAMAX instead of IMIN/IMAX
+	
+ARMV7:
+	* Fixed a race condition in the level3 blas code
+	* Fixed compilation on Android
+ARMV8:
+	* Added support for Ampere EMAG8180
+	* Added support for Neoverse N1
+	* Improved performance of the blas_lock function
+	* Fixed a race condition in the level3 blas code
+	* Fixed a performance regression on TSV110-based servers
+
+x86_64:
+	* Fixed a long-standing error with undeclared register overwrites
+	  in the DSCAL microkernel for HASWELL,SKYLAKEX and ZEN
+	* Fixed a long-standing bug in the SSE implementation of IAMAX
+	* Fixed a CMAKE build failure with DYNAMIC_ARCH
+	* Fixed cpu autodetection of Goldmont+, Cannon Lake and Ice Lake
+	* Fixed a compilation failure on OSX with compiler name containing dash
+	* Fixed compilation with MinGW on SkylakeX
+	* Improved speed of the AVX512 GEMM3M kernel on SkylakeX
+	* Added an AVX512 STRMM kernel for SkylakeX
+	* Improved GEMM performance on Haswell and Zen
+
+zarch:
+	* fixed compilation of the DYNAMIC_ARCH code
+	
+====================================================================
 Version 0.3.8
  9-Feb-2020
 
