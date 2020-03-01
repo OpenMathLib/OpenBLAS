@@ -50,7 +50,7 @@
   "vmovupd (%0),%%ymm0; vmovupd 32(%0),%%ymm1; prefetcht0 512(%0); addq $64,%0;"\
   acc_m4n2_con(0,1,4,5,6,7,0,16,%1) acc_m4n2_con(0,1,8,9,10,11,0,16,%1,%%r12,1)
 #define KERNEL_2_k1m4n4 \
-  "vpermilpd $5,%%ymm0,%%ymm0; vpermilpd $5,%%ymm1,%%ymm1;"\
+  "vpermilpd $5,-64(%0),%%ymm0; vpermilpd $5,-32(%0),%%ymm1;"\
   acc_m4n2_con(0,1,4,5,6,7,8,24,%1) acc_m4n2_con(0,1,8,9,10,11,8,24,%1,%%r12,1)
 #define KERNEL_1_k1m4n6 KERNEL_1_k1m4n4 acc_m4n2_con(0,1,12,13,14,15,0,16,%1,%%r12,2)
 #define KERNEL_2_k1m4n6 KERNEL_2_k1m4n4 acc_m4n2_con(0,1,12,13,14,15,8,24,%1,%%r12,2)
@@ -93,9 +93,9 @@
   "movq $10,%5; movq $84,%%r15;"\
   #ndim"4441:\n\t"\
   "prefetcht1 (%3); subq $63,%3; addq %%r15,%3;"\
-  "prefetcht0 96(%1); prefetcht0 96(%1,%%r12,1); prefetcht0 96(%1,%%r12,2);" KERNEL_k1m4n##ndim KERNEL_k1m4n##ndim\
+  KERNEL_k1m4n##ndim KERNEL_k1m4n##ndim\
   "testq $12,%5; movq $84,%%r15; cmovz %4,%%r15; prefetcht1 (%8); addq $16,%8;"\
-  "prefetcht0 96(%1); prefetcht0 96(%1,%%r12,1); prefetcht0 96(%1,%%r12,2);" KERNEL_k1m4n##ndim KERNEL_k1m4n##ndim\
+  KERNEL_k1m4n##ndim KERNEL_k1m4n##ndim\
   "addq $4,%5; cmpq %5,%%r13; jnb "#ndim"4441b;"\
   "movq %2,%3; negq %5; leaq 10(%%r13,%5,1),%5; prefetcht0 (%6); prefetcht0 15(%6);"\
   #ndim"4442:\n\t"\

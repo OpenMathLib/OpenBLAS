@@ -34,6 +34,7 @@
 #define CPU_CORTEXA57     3
 #define CPU_CORTEXA72     4
 #define CPU_CORTEXA73     5
+#define CPU_NEOVERSEN1    11
 // Qualcomm
 #define CPU_FALKOR        6
 // Cavium
@@ -55,7 +56,8 @@ static char *cpuname[] = {
   "THUNDERX",
   "THUNDERX2T99",
   "TSV110",
-  "EMAG8180"
+  "EMAG8180",
+  "NEOVERSEN1"
 };
 
 static char *cpuname_lower[] = {
@@ -69,7 +71,8 @@ static char *cpuname_lower[] = {
   "thunderx",
   "thunderx2t99",
   "tsv110",
-  "emag8180"
+  "emag8180",
+  "neoversen1"
 };
 
 int get_feature(char *search)
@@ -144,6 +147,8 @@ int detect(void)
         return CPU_CORTEXA72;
       else if (strstr(cpu_part, "0xd09"))
         return CPU_CORTEXA73;
+      else if (strstr(cpu_part, "0xd0c"))
+        return CPU_NEOVERSEN1;
     }
     // Qualcomm
     else if (strstr(cpu_implementer, "0x51") && strstr(cpu_part, "0xc00"))
@@ -280,6 +285,20 @@ void get_cpuconfig(void)
 			printf("#define L1_DATA_LINESIZE 64\n");
 			printf("#define L1_DATA_ASSOCIATIVE 2\n");
       printf("#define L2_SIZE 524288\n");
+			printf("#define L2_LINESIZE 64\n");
+			printf("#define L2_ASSOCIATIVE 16\n");
+			printf("#define DTB_DEFAULT_ENTRIES 64\n");
+			printf("#define DTB_SIZE 4096\n");
+			break;
+		case CPU_NEOVERSEN1:
+			printf("#define %s\n", cpuname[d]);
+			printf("#define L1_CODE_SIZE 65536\n");
+			printf("#define L1_CODE_LINESIZE 64\n");
+			printf("#define L1_CODE_ASSOCIATIVE 4\n");
+			printf("#define L1_DATA_SIZE 65536\n");
+			printf("#define L1_DATA_LINESIZE 64\n");
+			printf("#define L1_DATA_ASSOCIATIVE 4\n");
+			printf("#define L2_SIZE 1048576\n");
 			printf("#define L2_LINESIZE 64\n");
 			printf("#define L2_ASSOCIATIVE 16\n");
 			printf("#define DTB_DEFAULT_ENTRIES 64\n");
