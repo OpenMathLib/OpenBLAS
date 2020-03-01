@@ -92,7 +92,7 @@ steps:
     - mkdir build && cd build
     - cmake $CMAKE_FLAGS ..
     - make -j
-    - ctest
+    - ctest -V
 
 ---
 kind: pipeline
@@ -116,7 +116,7 @@ steps:
     - mkdir build && cd build
     - cmake $CMAKE_FLAGS ..
     - make -j
-    - ctest
+    - ctest -V
 
 ---
 kind: pipeline
@@ -140,4 +140,4 @@ steps:
     - mkdir build && cd build
     - cmake $CMAKE_FLAGS ..
     - make -j
-    - ctest
+    - ctest -V

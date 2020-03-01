@@ -136,10 +136,10 @@ static void dscal_kernel_inc_8(BLASLONG n, FLOAT *alpha, FLOAT *x, BLASLONG inc_
 	"jnz    1b					    \n\t"
 
         :
-          "+r" (n)      // 0
+          "+r" (n),     // 0
+          "+r" (x),     // 1
+          "+r" (x1)     // 2
         :
-          "r" (x),      // 1
-          "r" (x1),     // 2
           "r" (alpha),  // 3
           "r" (inc_x),  // 4
           "r" (inc_x3)  // 5

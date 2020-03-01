@@ -24,6 +24,23 @@ CCOMMON_OPT += -march=armv8-a -mtune=cortex-a73
 FCOMMON_OPT += -march=armv8-a -mtune=cortex-a73
 endif
 
+# Use a72 tunings because Neoverse-N1 is only available
+# in GCC>=9
+ifeq ($(CORE), NEOVERSEN1)
+ifeq ($(GCCVERSIONGTEQ7), 1)
+ifeq ($(GCCVERSIONGTEQ9), 1)
+CCOMMON_OPT += -march=armv8.2-a -mtune=neoverse-n1
+FCOMMON_OPT += -march=armv8.2-a -mtune=neoverse-n1
+else
+CCOMMON_OPT += -march=armv8.2-a -mtune=cortex-a72
+FCOMMON_OPT += -march=armv8.2-a -mtune=cortex-a72
+endif
+else
+CCOMMON_OPT += -march=armv8-a -mtune=cortex-a72
+FCOMMON_OPT += -march=armv8-a -mtune=cortex-a72
+endif
+endif
+
 ifeq ($(CORE), THUNDERX)
 CCOMMON_OPT += -march=armv8-a -mtune=thunderx
 FCOMMON_OPT += -march=armv8-a -mtune=thunderx

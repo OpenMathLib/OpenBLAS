@@ -33,21 +33,15 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "common.h"
 
 
-#undef COPY
+#undef SYR
 
-#ifdef COMPLEX
 #ifdef DOUBLE
-#define COPY   BLASFUNC(zcopy)
+#define SYR   BLASFUNC(dsyr)
 #else
-#define COPY   BLASFUNC(ccopy)
+#define SYR   BLASFUNC(ssyr)
 #endif
-#else
-#ifdef DOUBLE
-#define COPY   BLASFUNC(dcopy)
-#else
-#define COPY   BLASFUNC(scopy)
-#endif
-#endif
+
+
 
 #if defined(__WIN32__) || defined(__WIN64__)
 
@@ -116,23 +110,22 @@ static void *huge_malloc(BLASLONG size){
 
 int main(int argc, char *argv[]){
 
-  FLOAT *x, *y;
-  FLOAT alpha[2] = { 2.0, 2.0 };
-  blasint m, i;
-  blasint inc_x=1,inc_y=1;
-  int loops = 1;
-  int l;
+  FLOAT *x,*a;
+  FLOAT alpha[] = {1.0, 1.0};
   char *p;
 
+  char uplo='U';
+
+  if ((p = getenv("OPENBLAS_UPLO"))) uplo=*p;
+
+  blasint m, i, j;
+  blasint inc_x= 1;
   int from =   1;
   int to   = 200;
   int step =   1;
-
+  
   struct timeval start, stop;
-  double time1 = 0.0, timeg = 0.0;
-  long nanos = 0;
-  time_t seconds = 0;
-  struct timespec time_start = { 0, 0 }, time_end = { 0, 0 };
+  double time1;
 
   argc--;argv++;
 
@@ -140,17 +133,14 @@ int main(int argc, char *argv[]){
   if (argc > 0) { to       = MAX(atol(*argv), from);	argc--; argv++;}
   if (argc > 0) { step     = atol(*argv);		argc--; argv++;}
 
-  if ((p = getenv("OPENBLAS_LOOPS")))  loops = atoi(p);
-  if ((p = getenv("OPENBLAS_INCX")))   inc_x = atoi(p);
-  if ((p = getenv("OPENBLAS_INCY")))   inc_y = atoi(p);
+  fprintf(stderr, "From : %3d  To : %3d Step = %3d Uplo = %c Inc_x = %d\n", from, to, step,uplo,inc_x);
 
-  fprintf(stderr, "From : %3d  To : %3d Step = %3d Inc_x = %d Inc_y = %d Loops = %d\n", from, to, step,inc_x,inc_y,loops);
 
-  if (( x = (FLOAT *)malloc(sizeof(FLOAT) * to * abs(inc_x) * COMPSIZE)) == NULL){
+  if (( a = (FLOAT *)malloc(sizeof(FLOAT) * to * to *  COMPSIZE)) == NULL){
     fprintf(stderr,"Out of Memory!!\n");exit(1);
   }
 
-  if (( y = (FLOAT *)malloc(sizeof(FLOAT) * to * abs(inc_y) * COMPSIZE)) == NULL){
+   if (( x = (FLOAT *)malloc(sizeof(FLOAT) * to * abs(inc_x) * COMPSIZE)) == NULL){
     fprintf(stderr,"Out of Memory!!\n");exit(1);
   }
 
@@ -163,35 +153,31 @@ int main(int argc, char *argv[]){
   for(m = from; m <= to; m += step)
   {
 
-   timeg=0;
+    fprintf(stderr, " %6d : ", (int)m);
+	
+	for(i = 0; i < m * COMPSIZE * abs(inc_x); i++){
+	x[i] = ((FLOAT) rand() / (FLOAT) RAND_MAX) - 0.5;
+   	}
+	
+    for(j = 0; j < m; j++){
+      for(i = 0; i < m * COMPSIZE; i++){
+	a[(long)i + (long)j * (long)m * COMPSIZE] = ((FLOAT) rand() / (FLOAT) RAND_MAX) - 0.5;
+      }
+    }
 
-   fprintf(stderr, " %6d : ", (int)m);
-   for(i = 0; i < m * COMPSIZE * abs(inc_x); i++){
-       x[i] = ((FLOAT) rand() / (FLOAT) RAND_MAX) - 0.5;
-   }
+    gettimeofday( &start, (struct timezone *)0);
 
-   for(i = 0; i < m * COMPSIZE * abs(inc_y); i++){
-       y[i] = ((FLOAT) rand() / (FLOAT) RAND_MAX) - 0.5;
-   }
+    SYR (&uplo, &m, alpha, x, &inc_x, a, &m );
 
-   for (l=0; l<loops; l++)
-   {
-       clock_gettime(CLOCK_REALTIME, &time_start);
-       COPY (&m, x, &inc_x, y, &inc_y );
-       clock_gettime(CLOCK_REALTIME, &time_end);
+    gettimeofday( &stop, (struct timezone *)0);
 
-       nanos = time_end.tv_nsec - time_start.tv_nsec;
-       seconds = time_end.tv_sec - time_start.tv_sec;
+    time1 = (double)(stop.tv_sec - start.tv_sec) + (double)((stop.tv_usec - start.tv_usec)) * 1.e-6;
 
-       time1 = seconds + nanos / 1.e9;
-       timeg += time1;
-   }
+    gettimeofday( &start, (struct timezone *)0);
 
-      timeg /= loops;
-
-      fprintf(stderr,
-	    " %10.2f MBytes %12.9f sec\n",
-	    COMPSIZE * sizeof(FLOAT) * 1. * (double)m / timeg / 1.e6, timeg);
+    fprintf(stderr,
+	    " %10.2f MFlops\n",
+	    COMPSIZE * COMPSIZE * 1. * (double)m * (double)m * (double)m / time1 * 1.e-6);
 
   }
 

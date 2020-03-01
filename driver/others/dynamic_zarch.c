@@ -3,12 +3,12 @@
 
 extern gotoblas_t gotoblas_Z13;
 extern gotoblas_t gotoblas_Z14;
-extern gotoblas_t gotoblas_Z15;
+//extern gotoblas_t gotoblas_Z15;
 //#if (!defined C_GCC) || (GCC_VERSION >= 60000)
 //extern gotoblas_t gotoblas_Z14;
 //#endif
 
-#define NUM_CORETYPES 5
+#define NUM_CORETYPES 4
 
 extern void openblas_warning(int verbose, const char* msg);
 
@@ -16,14 +16,14 @@ static char* corename[] = {
 	"unknown",
 	"Z13",
 	"Z14",
-	"Z15",
+//	"Z15",
 	"ZARCH_GENERIC",
 };
 
 char* gotoblas_corename(void) {
 	if (gotoblas == &gotoblas_Z13)	return corename[1];
 	if (gotoblas == &gotoblas_Z14)	return corename[2];
-	if (gotoblas == &gotoblas_Z15)	return corename[3];
+//	if (gotoblas == &gotoblas_Z15)	return corename[3];
 //#if (!defined C_GCC) || (GCC_VERSION >= 60000)
 //	if (gotoblas == &gotoblas_POWER9)	return corename[3];
 //#endif
@@ -31,7 +31,7 @@ char* gotoblas_corename(void) {
 }
 
 // __builtin_cpu_is is not supported by zarch
-static gotolabs_t* get_coretype(void) {
+static gotoblas_t* get_coretype(void) {
 	FILE* infile;
 	char buffer[512], * p;
 
@@ -78,7 +78,7 @@ static gotoblas_t* force_coretype(char* coretype) {
 	{
 	case  1: return (&gotoblas_Z13);
 	case  2: return (&gotoblas_Z14);
-	case  3: return (&gotoblas_Z15);
+//	case  3: return (&gotoblas_Z15);
 //#if (!defined C_GCC) || (GCC_VERSION >= 60000)
 //	case  3: return (&gotoblas_POWER9);
 //#endif
