@@ -170,46 +170,46 @@ int main(int argc, char *argv[]){
 #ifndef COMPLEX
       if (uplos & 1) {
 	for (j = 0; j < m; j++) {
-	  for(i = 0; i < j; i++)     a[i + j * m] = 0.;
-	                             a[j + j * m] = ((double) rand() / (double) RAND_MAX) + 8.;
-	  for(i = j + 1; i < m; i++) a[i + j * m] = ((double) rand() / (double) RAND_MAX) - 0.5;
+	  for(i = 0; i < j; i++)     a[(long)i + (long)j * (long)m] = 0.;
+	                             a[(long)j + (long)j * (long)m] = ((double) rand() / (double) RAND_MAX) + 8.;
+	  for(i = j + 1; i < m; i++) a[(long)i + (long)j * (long)m] = ((double) rand() / (double) RAND_MAX) - 0.5;
 	}
       } else {
 	for (j = 0; j < m; j++) {
-	  for(i = 0; i < j; i++)     a[i + j * m] = ((double) rand() / (double) RAND_MAX) - 0.5;
-	                             a[j + j * m] = ((double) rand() / (double) RAND_MAX) + 8.;
-	  for(i = j + 1; i < m; i++) a[i + j * m] = 0.;
+	  for(i = 0; i < j; i++)     a[(long)i + (long)j * (long)m] = ((double) rand() / (double) RAND_MAX) - 0.5;
+	                             a[(long)j + (long)j * (long)m] = ((double) rand() / (double) RAND_MAX) + 8.;
+	  for(i = j + 1; i < m; i++) a[(long)i + (long)j * (long)m] = 0.;
 	}
       }
 #else
       if (uplos & 1) {
 	for (j = 0; j < m; j++) {
 	  for(i = 0; i < j; i++) {
-	    a[(i + j * m) * 2 + 0] = 0.;
-	    a[(i + j * m) * 2 + 1] = 0.;
+	    a[((long)i + (long)j * (long)m) * 2 + 0] = 0.;
+	    a[((long)i + (long)j * (long)m) * 2 + 1] = 0.;
 	  }
 
-	  a[(j + j * m) * 2 + 0] = ((double) rand() / (double) RAND_MAX) + 8.;
-	  a[(j + j * m) * 2 + 1] = 0.;
+	  a[((long)j + (long)j * (long)m) * 2 + 0] = ((double) rand() / (double) RAND_MAX) + 8.;
+	  a[((long)j + (long)j * (long)m) * 2 + 1] = 0.;
 
 	  for(i = j + 1; i < m; i++) {
-	    a[(i + j * m) * 2 + 0] = ((double) rand() / (double) RAND_MAX) - 0.5;
-	    a[(i + j * m) * 2 + 1] = ((double) rand() / (double) RAND_MAX) - 0.5;
+	    a[((long)i + (long)j * (long)m) * 2 + 0] = ((double) rand() / (double) RAND_MAX) - 0.5;
+	    a[((long)i + (long)j * (long)m) * 2 + 1] = ((double) rand() / (double) RAND_MAX) - 0.5;
 	  }
 	}
       } else {
 	for (j = 0; j < m; j++) {
 	  for(i = 0; i < j; i++) {
-	    a[(i + j * m) * 2 + 0] = ((double) rand() / (double) RAND_MAX) - 0.5;
-	    a[(i + j * m) * 2 + 1] = ((double) rand() / (double) RAND_MAX) - 0.5;
+	    a[((long)i + (long)j * (long)m) * 2 + 0] = ((double) rand() / (double) RAND_MAX) - 0.5;
+	    a[((long)i + (long)j * (long)m) * 2 + 1] = ((double) rand() / (double) RAND_MAX) - 0.5;
 	  }
 
-	  a[(j + j * m) * 2 + 0] = ((double) rand() / (double) RAND_MAX) + 8.;
-	  a[(j + j * m) * 2 + 1] = 0.;
+	  a[((long)j + (long)j * (long)m) * 2 + 0] = ((double) rand() / (double) RAND_MAX) + 8.;
+	  a[((long)j + (long)j * (long)m) * 2 + 1] = 0.;
 
 	  for(i = j + 1; i < m; i++) {
-	    a[(i + j * m) * 2 + 0] = 0.;
-	    a[(i + j * m) * 2 + 1] = 0.;
+	    a[((long)i + (long)j * (long)m) * 2 + 0] = 0.;
+	    a[((long)i + (long)j * (long)m) * 2 + 1] = 0.;
 	  }
 	}
       }
