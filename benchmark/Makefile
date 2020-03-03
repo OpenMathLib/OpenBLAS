@@ -73,6 +73,7 @@ goto :: slinpack.goto dlinpack.goto clinpack.goto zlinpack.goto \
        cherk.goto zherk.goto \
        cher2k.goto zher2k.goto \
        sgemv.goto dgemv.goto cgemv.goto zgemv.goto \
+       strmv.goto dtrmv.goto ctrmv.goto ztrmv.goto \
        sgeev.goto dgeev.goto cgeev.goto zgeev.goto \
        sgesv.goto dgesv.goto cgesv.goto zgesv.goto \
        sgetri.goto dgetri.goto cgetri.goto zgetri.goto \
@@ -100,6 +101,7 @@ acml :: slinpack.acml dlinpack.acml clinpack.acml zlinpack.acml \
        cherk.acml zherk.acml \
        cher2k.acml zher2k.acml \
        sgemv.acml dgemv.acml cgemv.acml zgemv.acml \
+       strmv.acml dtrmv.acml ctrmv.acml ztrmv.acml \
        sgeev.acml dgeev.acml cgeev.acml zgeev.acml \
        sgesv.acml dgesv.acml cgesv.acml zgesv.acml \
        sgetri.acml dgetri.acml cgetri.acml zgetri.acml \
@@ -128,6 +130,7 @@ atlas :: slinpack.atlas dlinpack.atlas clinpack.atlas zlinpack.atlas \
        cherk.atlas zherk.atlas \
        cher2k.atlas zher2k.atlas \
        sgemv.atlas dgemv.atlas cgemv.atlas zgemv.atlas \
+       strmv.atlas dtrmv.atlas ctrmv.atlas ztrmv.atlas \
        sgeev.atlas dgeev.atlas cgeev.atlas zgeev.atlas \
        sgesv.atlas dgesv.atlas cgesv.atlas zgesv.atlas \
        sgetri.atlas dgetri.atlas cgetri.atlas zgetri.atlas \
@@ -155,6 +158,7 @@ mkl :: slinpack.mkl dlinpack.mkl clinpack.mkl zlinpack.mkl \
        cherk.mkl zherk.mkl \
        cher2k.mkl zher2k.mkl \
        sgemv.mkl dgemv.mkl cgemv.mkl zgemv.mkl \
+       strmv.mkl dtrmv.mkl ctrmv.mkl ztrmv.mkl \
        sgeev.mkl dgeev.mkl cgeev.mkl zgeev.mkl \
        sgesv.mkl dgesv.mkl cgesv.mkl zgesv.mkl \
        sgetri.mkl dgetri.mkl cgetri.mkl zgetri.mkl \
@@ -183,6 +187,7 @@ goto :: sgemm.goto dgemm.goto cgemm.goto zgemm.goto \
        cherk.goto zherk.goto \
        cher2k.goto zher2k.goto \
        sgemv.goto dgemv.goto cgemv.goto zgemv.goto \
+       strmv.goto dtrmv.goto ctrmv.goto ztrmv.goto \
        ssymm.goto dsymm.goto csymm.goto zsymm.goto \
        smallscaling \
        isamax.goto idamax.goto icamax.goto izamax.goto \
@@ -209,6 +214,7 @@ acml :: slinpack.acml dlinpack.acml clinpack.acml zlinpack.acml \
        cherk.acml zherk.acml \
        cher2k.acml zher2k.acml \
        sgemv.acml dgemv.acml cgemv.acml zgemv.acml \
+       strmv.acml dtrmv.acml ctrmv.acml ztrmv.acml \
        sgeev.acml dgeev.acml cgeev.acml zgeev.acml \
        sgesv.acml dgesv.acml cgesv.acml zgesv.acml \
        sgetri.acml dgetri.acml cgetri.acml zgetri.acml \
@@ -237,6 +243,7 @@ atlas :: slinpack.atlas dlinpack.atlas clinpack.atlas zlinpack.atlas \
        cherk.atlas zherk.atlas \
        cher2k.atlas zher2k.atlas \
        sgemv.atlas dgemv.atlas cgemv.atlas zgemv.atlas \
+       strmv.atlas dtrmv.atlas ctrmv.atlas ztrmv.atlas \
        sgeev.atlas dgeev.atlas cgeev.atlas zgeev.atlas \
        sgesv.atlas dgesv.atlas cgesv.atlas zgesv.atlas \
        sgetri.atlas dgetri.atlas cgetri.atlas zgetri.atlas \
@@ -266,6 +273,7 @@ mkl :: slinpack.mkl dlinpack.mkl clinpack.mkl zlinpack.mkl \
        cherk.mkl zherk.mkl \
        cher2k.mkl zher2k.mkl \
        sgemv.mkl dgemv.mkl cgemv.mkl zgemv.mkl \
+       strmv.mkl dtrmv.mkl ctrmv.mkl ztrmv.mkl \
        sgeev.mkl dgeev.mkl cgeev.mkl zgeev.mkl \
        sgesv.mkl dgesv.mkl cgesv.mkl zgesv.mkl \
        sgetri.mkl dgetri.mkl cgetri.mkl zgetri.mkl \
@@ -304,6 +312,7 @@ veclib :: slinpack.veclib dlinpack.veclib clinpack.veclib zlinpack.veclib \
        cherk.veclib zherk.veclib \
        cher2k.veclib zher2k.veclib \
        sgemv.veclib dgemv.veclib cgemv.veclib zgemv.veclib \
+       strmv.veclib dtrmv.veclib ctrmv.veclib ztrmv.veclib \
        sgeev.veclib dgeev.veclib cgeev.veclib zgeev.veclib \
        sgesv.veclib dgesv.veclib cgesv.veclib zgesv.veclib \
        sgetri.veclib dgetri.veclib cgetri.veclib zgetri.veclib \
@@ -1106,6 +1115,72 @@ zgemv.mkl : zgemv.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBMKL) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
 
 zgemv.veclib : zgemv.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBVECLIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+##################################### Strmv ####################################################
+strmv.goto : strmv.$(SUFFIX) ../$(LIBNAME)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+
+strmv.acml : strmv.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+strmv.atlas : strmv.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBATLAS) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+strmv.mkl : strmv.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBMKL) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+strmv.veclib : strmv.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBVECLIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+##################################### Dtrmv ####################################################
+dtrmv.goto : dtrmv.$(SUFFIX) ../$(LIBNAME)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+
+dtrmv.acml : dtrmv.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+dtrmv.atlas : dtrmv.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBATLAS) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+dtrmv.mkl : dtrmv.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBMKL) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+dtrmv.veclib : dtrmv.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBVECLIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+##################################### Ctrmv ####################################################
+
+ctrmv.goto : ctrmv.$(SUFFIX) ../$(LIBNAME)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+
+ctrmv.acml : ctrmv.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+ctrmv.atlas : ctrmv.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBATLAS) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+ctrmv.mkl : ctrmv.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBMKL) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+ctrmv.veclib : ctrmv.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBVECLIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+##################################### Ztrmv ####################################################
+
+ztrmv.goto : ztrmv.$(SUFFIX) ../$(LIBNAME)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+
+ztrmv.acml : ztrmv.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+ztrmv.atlas : ztrmv.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBATLAS) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+ztrmv.mkl : ztrmv.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBMKL) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+ztrmv.veclib : ztrmv.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBVECLIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
 
 ##################################### Sger ####################################################
@@ -2175,6 +2250,18 @@ cgemv.$(SUFFIX) : gemv.c
 	$(CC) $(CFLAGS) -c -DCOMPLEX -UDOUBLE -o $(@F) $^
 
 zgemv.$(SUFFIX) : gemv.c
+	$(CC) $(CFLAGS) -c -DCOMPLEX -DDOUBLE -o $(@F) $^
+
+strmv.$(SUFFIX) : trmv.c
+	$(CC) $(CFLAGS) -c -UCOMPLEX -UDOUBLE -o $(@F) $^
+
+dtrmv.$(SUFFIX) : trmv.c
+	$(CC) $(CFLAGS) -c -UCOMPLEX -DDOUBLE -o $(@F) $^
+
+ctrmv.$(SUFFIX) : trmv.c
+	$(CC) $(CFLAGS) -c -DCOMPLEX -UDOUBLE -o $(@F) $^
+
+ztrmv.$(SUFFIX) : trmv.c
 	$(CC) $(CFLAGS) -c -DCOMPLEX -DDOUBLE -o $(@F) $^
 
 sger.$(SUFFIX) : ger.c
