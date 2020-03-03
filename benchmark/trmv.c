@@ -106,7 +106,7 @@ int main(int argc, char *argv[])
     if ((p = getenv("OPENBLAS_LOOPS")))  loops = atoi(p);
     if ((p = getenv("OPENBLAS_INCX")))   inc_x = atoi(p);
 
-    long n, i, j;
+    blasint n, i, j;
 
     int from =   1;
     int to   = 200;
@@ -144,7 +144,7 @@ int main(int argc, char *argv[])
         fprintf(stderr, " %6d : ", (int)n);
         for(j = 0; j < n; j++) {
             for(i = 0; i < n * COMPSIZE; i++) {
-                a[i + j * n * COMPSIZE] = ((FLOAT) rand() / (FLOAT) RAND_MAX) - 0.5;
+                a[(long)i + (long)j * (long)n * COMPSIZE] = ((FLOAT) rand() / (FLOAT) RAND_MAX) - 0.5;
             }
         }
 
