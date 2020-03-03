@@ -572,7 +572,7 @@ int blas_thread_init(void){
       thread_status[i].status = THREAD_STATUS_WAKEUP;
 
       pthread_mutex_init(&thread_status[i].lock, NULL);
-      pthread_cond_init (&thread_status[i].wakeup, NULL)
+      pthread_cond_init (&thread_status[i].wakeup, NULL);
 
 #ifdef NEED_STACKATTR
       ret=pthread_create(&blas_threads[i], &attr,
