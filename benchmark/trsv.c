@@ -189,11 +189,11 @@ int main(int argc, char *argv[]){
 
       for(l =0;l< loops;l++){
 
-          clock_gettime(CLOCK_REALTIME,&time_start);
+          clock_gettime(CLOCK_PROCESS_CPUTIME_ID,&time_start);
 
           TRSV(&uplo,&transa,&diag,&n,a,&n,x,&inc_x);
 
-          clock_gettime(CLOCK_REALTIME,&time_end);
+          clock_gettime(CLOCK_PROCESS_CPUTIME_ID,&time_end);
           nanos = time_end.tv_nsec - time_start.tv_nsec;
           seconds = time_end.tv_sec - time_start.tv_sec;
 
