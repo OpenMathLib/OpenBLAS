@@ -56,10 +56,11 @@ ifneq ($(INTERFACE64), 0)
 	@echo "  Use 64 bits int    (equivalent to \"-i8\" in Fortran)      "
 endif
 endif
-
-	@echo "  C compiler       ... $(C_COMPILER)  (command line : $(CC))"
+	@cverinfo=`$(CC) --version | sed -n '1p'`; \
+	echo "  C compiler       ... $(C_COMPILER)  (cmd & version : $${cverinfo})"
 ifeq ($(NOFORTRAN), $(filter 0,$(NOFORTRAN)))
-	@echo "  Fortran compiler ... $(F_COMPILER)  (command line : $(FC))"
+	@fverinfo=`$(FC) --version | sed -n '1p'`; \
+	echo "  Fortran compiler ... $(F_COMPILER)  (cmd & version : $${fverinfo})"
 endif
 ifneq ($(OSNAME), AIX)
 	@echo -n "  Library Name     ... $(LIBNAME)"
@@ -68,9 +69,9 @@ else
 endif
 
 ifndef SMP
-	@echo " (Single threaded)  "
+	@echo " (Single-threading)  "
 else
-	@echo " (Multi threaded; Max num-threads is $(NUM_THREADS))"
+	@echo " (Multi-threading; Max num-threads is $(NUM_THREADS))"
 endif
 
 ifeq ($(USE_OPENMP), 1)
