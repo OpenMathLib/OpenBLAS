@@ -33,14 +33,14 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "common.h"
 
 
-#undef SYR
+#undef SYR2
+
 
 #ifdef DOUBLE
-#define SYR   BLASFUNC(dsyr)
+#define SYR2   BLASFUNC(dsyr2)
 #else
-#define SYR   BLASFUNC(ssyr)
+#define SYR2   BLASFUNC(ssyr2)
 #endif
-
 
 
 #if defined(__WIN32__) || defined(__WIN64__)
@@ -110,20 +110,21 @@ static void *huge_malloc(BLASLONG size){
 
 int main(int argc, char *argv[]){
 
-  FLOAT *x,*a;
+  FLOAT *x, *y, *a;
   FLOAT alpha[] = {1.0, 1.0};
   char *p;
 
   char uplo='U';
 
-  if ((p = getenv("OPENBLAS_UPLO"))) uplo=*p;
+  if ((p = getenv("OPENBLAS_UPLO"))) uplo=*p; 
 
   blasint m, i, j;
   blasint inc_x= 1;
+  blasint inc_y= 1;
   int from =   1;
   int to   = 200;
   int step =   1;
-  
+
   struct timeval start, stop;
   double time1;
 
@@ -133,16 +134,21 @@ int main(int argc, char *argv[]){
   if (argc > 0) { to       = MAX(atol(*argv), from);	argc--; argv++;}
   if (argc > 0) { step     = atol(*argv);		argc--; argv++;}
 
-  fprintf(stderr, "From : %3d  To : %3d Step = %3d Uplo = %c Inc_x = %d\n", from, to, step,uplo,inc_x);
+  fprintf(stderr, "From : %3d  To : %3d Step = %3d Uplo = %c Inc_x = %d Inc_y = %d\n", from, to, step,uplo,inc_x,inc_y);
 
-
-  if (( a = (FLOAT *)malloc(sizeof(FLOAT) * to * to *  COMPSIZE)) == NULL){
+  if (( a = (FLOAT *)malloc(sizeof(FLOAT) * to * to * COMPSIZE)) == NULL){
     fprintf(stderr,"Out of Memory!!\n");exit(1);
   }
 
    if (( x = (FLOAT *)malloc(sizeof(FLOAT) * to * abs(inc_x) * COMPSIZE)) == NULL){
     fprintf(stderr,"Out of Memory!!\n");exit(1);
   }
+  
+   if (( y = (FLOAT *)malloc(sizeof(FLOAT) * to * abs(inc_y) * COMPSIZE)) == NULL){
+    fprintf(stderr,"Out of Memory!!\n");exit(1);
+  }
+
+
 
 #ifdef linux
   srandom(getpid());
@@ -152,13 +158,16 @@ int main(int argc, char *argv[]){
 
   for(m = from; m <= to; m += step)
   {
-
-    fprintf(stderr, " %6d : ", (int)m);
 	
+    fprintf(stderr, " %6d : ", (int)m);
 	for(i = 0; i < m * COMPSIZE * abs(inc_x); i++){
 	x[i] = ((FLOAT) rand() / (FLOAT) RAND_MAX) - 0.5;
    	}
 	
+	for(i = 0; i < m * COMPSIZE * abs(inc_y); i++){
+	y[i] = ((FLOAT) rand() / (FLOAT) RAND_MAX) - 0.5;
+   	}
+
     for(j = 0; j < m; j++){
       for(i = 0; i < m * COMPSIZE; i++){
 	a[(long)i + (long)j * (long)m * COMPSIZE] = ((FLOAT) rand() / (FLOAT) RAND_MAX) - 0.5;
@@ -167,7 +176,7 @@ int main(int argc, char *argv[]){
 
     gettimeofday( &start, (struct timezone *)0);
 
-    SYR (&uplo, &m, alpha, x, &inc_x, a, &m );
+    SYR2 (&uplo, &m, alpha, x, &inc_x, y, &inc_y, a, &m );
 
     gettimeofday( &stop, (struct timezone *)0);
 
@@ -175,7 +184,7 @@ int main(int argc, char *argv[]){
 
     fprintf(stderr,
 	    " %10.2f MFlops\n",
-	    COMPSIZE * COMPSIZE * 1. * (double)m * (double)m / time1 * 1.e-6);
+	    COMPSIZE * COMPSIZE * 2. * (double)m * (double)m / time1 * 1.e-6);
 
   }
 
