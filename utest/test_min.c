@@ -13,9 +13,9 @@ met:
       notice, this list of conditions and the following disclaimer in
       the documentation and/or other materials provided with the
       distribution.
-   3. Neither the name of the OpenBLAS project nor the names of 
-      its contributors may be used to endorse or promote products 
-      derived from this software without specific prior written 
+   3. Neither the name of the OpenBLAS project nor the names of
+      its contributors may be used to endorse or promote products
+      derived from this software without specific prior written
       permission.
 
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -33,24 +33,68 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "openblas_utest.h"
 
-CTEST(amax, samax){
+CTEST(min, smin_negative){
+  blasint N=3, inc=1;
+  float te_min=0.0, tr_min=0.0;
+  float x[]={-1.1, -2.2, -3.3};
+
+  te_min=BLASFUNC(smin)(&N, x, &inc);
+  tr_min=-3.3;
+
+  ASSERT_DBL_NEAR_TOL((double)(tr_min), (double)(te_min), SINGLE_EPS);
+}
+
+CTEST(min, dmin_positive){
+  blasint N=3, inc=1;
+  double te_min=0.0, tr_min=0.0;
+  double x[]={1.1, 0.0, 3.3};
+
+  te_min=BLASFUNC(dmin)(&N, x, &inc);
+  tr_min=0.0;
+
+  ASSERT_DBL_NEAR_TOL((double)(tr_min), (double)(te_min), DOUBLE_EPS);
+}
+
+CTEST(min, smin_zero){
+  blasint N=3, inc=1;
+  float te_min=0.0, tr_min=0.0;
+  float x[]={1.1, 2.2, 0.0};
+
+  te_min=BLASFUNC(smin)(&N, x, &inc);
+  tr_min=0.0;
+
+  ASSERT_DBL_NEAR_TOL((double)(tr_min), (double)(te_min), SINGLE_EPS);
+}
+
+CTEST(max, smax_negative){
   blasint N=3, inc=1;
   float te_max=0.0, tr_max=0.0;
-  float x[]={-1.1, 2.2, -3.3};
+  float x[]={-1.1, -2.2, -3.3};
 
-  te_max=BLASFUNC(samax)(&N, x, &inc);
-  tr_max=3.3;
+  te_max=BLASFUNC(smax)(&N, x, &inc);
+  tr_max=-1.1;
 
   ASSERT_DBL_NEAR_TOL((double)(tr_max), (double)(te_max), SINGLE_EPS);
 }
 
-CTEST(amax, damax){
+CTEST(max, dmax_positive){
   blasint N=3, inc=1;
   double te_max=0.0, tr_max=0.0;
-  double x[]={-1.1, 2.2, -3.3};
+  double x[]={1.1, 0.0, 3.3};
 
-  te_max=BLASFUNC(damax)(&N, x, &inc);
+  te_max=BLASFUNC(dmax)(&N, x, &inc);
   tr_max=3.3;
 
   ASSERT_DBL_NEAR_TOL((double)(tr_max), (double)(te_max), DOUBLE_EPS);
+}
+
+CTEST(max, smax_zero){
+  blasint N=3, inc=1;
+  float te_max=0.0, tr_max=0.0;
+  float x[]={-1.1, -2.2, 0.0};
+
+  te_max=BLASFUNC(smax)(&N, x, &inc);
+  tr_max=0.0;
+
+  ASSERT_DBL_NEAR_TOL((double)(tr_max), (double)(te_max), SINGLE_EPS);
 }

@@ -30,25 +30,27 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifdef __CYGWIN32__
 #include <sys/time.h>
 #endif
+#include <time.h>
 #include "common.h"
 
 
-#undef SYRK
+#undef GEMV
+#undef TRSV
 
 #ifndef COMPLEX
 
 #ifdef DOUBLE
-#define SYRK   BLASFUNC(dsyrk)
+#define TRSV   BLASFUNC(dtrsv)
 #else
-#define SYRK   BLASFUNC(ssyrk)
+#define TRSV   BLASFUNC(strsv)
 #endif
 
 #else
 
 #ifdef DOUBLE
-#define SYRK   BLASFUNC(zsyrk)
+#define TRSV   BLASFUNC(ztrsv)
 #else
-#define SYRK   BLASFUNC(csyrk)
+#define TRSV   BLASFUNC(ctrsv)
 #endif
 
 #endif
@@ -120,25 +122,22 @@ static void *huge_malloc(BLASLONG size){
 
 int main(int argc, char *argv[]){
 
-  FLOAT *a, *c;
-  FLOAT alpha[] = {1.0, 1.0};
-  FLOAT beta [] = {1.0, 1.0};
+  FLOAT *a, *x;
+  blasint n = 0, i, j;
+  blasint inc_x=1;
+  int loops = 1;
+  int l;
   char *p;
-
-  char uplo='U';
-  char trans='N';
-
-  if ((p = getenv("OPENBLAS_UPLO"))) uplo=*p;
-  if ((p = getenv("OPENBLAS_TRANS"))) trans=*p;
-
-  blasint m, i, j;
 
   int from =   1;
   int to   = 200;
   int step =   1;
 
-  struct timeval start, stop;
-  double time1;
+  struct timespec time_start, time_end;
+  time_t seconds = 0;
+
+  double time1,timeg;
+  long long nanos = 0;
 
   argc--;argv++;
 
@@ -146,17 +145,18 @@ int main(int argc, char *argv[]){
   if (argc > 0) { to       = MAX(atol(*argv), from);	argc--; argv++;}
   if (argc > 0) { step     = atol(*argv);		argc--; argv++;}
 
-  fprintf(stderr, "From : %3d  To : %3d Step = %3d Uplo = %c Trans = %c\n", from, to, step,uplo,trans);
+  char uplo ='L';
+  char transa = 'N';
+  char diag ='U';
 
+  if ((p = getenv("OPENBLAS_LOOPS")))  loops = atoi(p);
+  if ((p = getenv("OPENBLAS_INCX")))   inc_x = atoi(p);
+  if ((p = getenv("OPENBLAS_TRANSA")))  transa=*p;
+  if ((p = getenv("OPENBLAS_DIAG")))  diag=*p;
+  if ((p = getenv("OPENBLAS_UPLO")))  uplo=*p;
 
-  if (( a = (FLOAT *)malloc(sizeof(FLOAT) * to * to * COMPSIZE)) == NULL){
-    fprintf(stderr,"Out of Memory!!\n");exit(1);
-  }
-
-  if (( c = (FLOAT *)malloc(sizeof(FLOAT) * to * to * COMPSIZE)) == NULL){
-    fprintf(stderr,"Out of Memory!!\n");exit(1);
-  }
-
+  fprintf(stderr, "From : %3d  To : %3d Step = %3d Transa = '%c' Inc_x = %d uplo=%c diag=%c loop = %d\n", from, to, step,transa,inc_x,
+          uplo,diag,loops);
 
 
 #ifdef linux
@@ -164,36 +164,59 @@ int main(int argc, char *argv[]){
 #endif
 
   fprintf(stderr, "   SIZE       Flops\n");
+  fprintf(stderr, "============================================\n");
 
-  for(m = from; m <= to; m += step)
+  for(n = from; n <= to; n += step)
   {
-
-    fprintf(stderr, " %6d : ", (int)m);
-
-    for(j = 0; j < m; j++){
-      for(i = 0; i < m * COMPSIZE; i++){
-	a[(long)i + (long)j * (long)m * COMPSIZE] = ((FLOAT) rand() / (FLOAT) RAND_MAX) - 0.5;
-	c[(long)i + (long)j * (long)m * COMPSIZE] = ((FLOAT) rand() / (FLOAT) RAND_MAX) - 0.5;
+      timeg=0;
+      if (( a = (FLOAT *)malloc(sizeof(FLOAT) * n * n * COMPSIZE)) == NULL){
+          fprintf(stderr,"Out of Memory!!\n");exit(1);
       }
-    }
 
-    gettimeofday( &start, (struct timezone *)0);
+      if (( x = (FLOAT *)malloc(sizeof(FLOAT) * n * abs(inc_x) * COMPSIZE)) == NULL){
+          fprintf(stderr,"Out of Memory!!\n");exit(1);
+      }
 
-    SYRK (&uplo, &trans, &m, &m, alpha, a, &m, beta, c, &m );
+      for(j = 0; j < n; j++){
+          for(i = 0; i < n * COMPSIZE; i++){
+              a[i + j * n * COMPSIZE] = ((FLOAT) rand() / (FLOAT) RAND_MAX) - 0.5;
+          }
+      }
 
-    gettimeofday( &stop, (struct timezone *)0);
+      for(i = 0; i < n * COMPSIZE * abs(inc_x); i++){
+          x[i] = ((FLOAT) rand() / (FLOAT) RAND_MAX) - 0.5;
+      }
 
-    time1 = (double)(stop.tv_sec - start.tv_sec) + (double)((stop.tv_usec - start.tv_usec)) * 1.e-6;
+      for(l =0;l< loops;l++){
 
-    gettimeofday( &start, (struct timezone *)0);
+          clock_gettime(CLOCK_PROCESS_CPUTIME_ID,&time_start);
 
-    fprintf(stderr,
-	    " %10.2f MFlops\n",
-	    COMPSIZE * COMPSIZE * 1. * (double)m * (double)m * (double)m / time1 * 1.e-6);
+          TRSV(&uplo,&transa,&diag,&n,a,&n,x,&inc_x);
+
+          clock_gettime(CLOCK_PROCESS_CPUTIME_ID,&time_end);
+          nanos = time_end.tv_nsec - time_start.tv_nsec;
+          seconds = time_end.tv_sec - time_start.tv_sec;
+
+          time1 = seconds + nanos /1.e9;
+          timeg += time1;
+      }
+
+
+      timeg /= loops;
+      long long muls = n*(n+1)/2.0;
+      long long adds = (n - 1.0)*n/2.0;
+
+      fprintf(stderr, "%10d   %10.2f MFlops %10.6f sec\n", n,(muls+adds) / timeg * 1.e-6, timeg);
+      if(a != NULL){
+        free(a);
+      }
+
+      if( x != NULL){
+        free(x);
+      }
 
   }
 
   return 0;
 }
 
-// void main(int argc, char *argv[]) __attribute__((weak, alias("MAIN__")));

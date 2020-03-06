@@ -327,7 +327,6 @@ ifeq ($(C_COMPILER), GCC)
 #Version tests for supporting specific features (MS_ABI, POWER9 intrinsics)
 GCCVERSIONGTEQ4 := $(shell expr `$(CC) -dumpversion | cut -f1 -d.` \>= 4)
 GCCVERSIONGT4 := $(shell expr `$(CC) -dumpversion | cut -f1 -d.` \> 4)
-GCCVERSIONGT5 := $(shell expr `$(CC) -dumpversion | cut -f1 -d.` \> 5)
 GCCVERSIONGTEQ7 := $(shell expr `$(CC) -dumpversion | cut -f1 -d.` \>= 7)
 GCCVERSIONGTEQ9 := $(shell expr `$(CC) -dumpversion | cut -f1 -d.` \>= 9)
 GCCMINORVERSIONGTEQ7 := $(shell expr `$(CC) -dumpversion | cut -f2 -d.` \>= 7)
@@ -575,6 +574,7 @@ ifneq ($(C_COMPILER), GCC)
 DYNAMIC_CORE += POWER9
 endif
 ifeq ($(C_COMPILER), GCC)
+GCCVERSIONGT5 := $(shell expr `$(CC) -dumpversion | cut -f1 -d.` \> 5)
 ifeq ($(GCCVERSIONGT5), 1)
 DYNAMIC_CORE += POWER9
 else
