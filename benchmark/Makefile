@@ -65,6 +65,7 @@ goto :: slinpack.goto dlinpack.goto clinpack.goto zlinpack.goto \
        sger.goto dger.goto cger.goto zger.goto \
        sdot.goto ddot.goto \
        srot.goto drot.goto \
+       srotm.goto drotm.goto \
        saxpy.goto daxpy.goto caxpy.goto zaxpy.goto \
        scopy.goto dcopy.goto ccopy.goto zcopy.goto \
        sswap.goto dswap.goto cswap.goto zswap.goto \
@@ -97,6 +98,7 @@ acml :: slinpack.acml dlinpack.acml clinpack.acml zlinpack.acml \
        ssyr2k.acml dsyr2k.acml csyr2k.acml zsyr2k.acml \
        sger.acml dger.acml cger.acml zger.acml \
        sdot.acml ddot.acml \
+       srotm.acml drotm.acml \
        saxpy.acml daxpy.acml caxpy.acml zaxpy.acml \
        scopy.acml dcopy.acml ccopy.acml zcopy.acml \
        sswap.acml dswap.acml cswap.acml zswap.acml \
@@ -129,6 +131,7 @@ atlas :: slinpack.atlas dlinpack.atlas clinpack.atlas zlinpack.atlas \
        ssyr2k.atlas dsyr2k.atlas csyr2k.atlas zsyr2k.atlas \
        sger.atlas dger.atlas cger.atlas zger.atlas\
        sdot.atlas ddot.atlas \
+       srotm.atlas drotm.atlas \
        saxpy.atlas daxpy.atlas caxpy.atlas zaxpy.atlas \
        scopy.atlas dcopy.atlas ccopy.atlas zcopy.atlas \
        sswap.atlas dswap.atlas cswap.atlas zswap.atlas \
@@ -162,6 +165,7 @@ mkl :: slinpack.mkl dlinpack.mkl clinpack.mkl zlinpack.mkl \
        ssyr2k.mkl dsyr2k.mkl csyr2k.mkl zsyr2k.mkl \
        sger.mkl dger.mkl cger.mkl zger.mkl \
        sdot.mkl ddot.mkl \
+       srotm.mkl drotm.mkl \
        saxpy.mkl daxpy.mkl caxpy.mkl zaxpy.mkl \
        scopy.mkl dcopy.mkl ccopy.mkl zcopy.mkl \
        sswap.mkl dswap.mkl cswap.mkl zswap.mkl \
@@ -195,6 +199,7 @@ goto :: sgemm.goto dgemm.goto cgemm.goto zgemm.goto \
        sger.goto dger.goto cger.goto zger.goto \
        sdot.goto ddot.goto cdot.goto zdot.goto \
        srot.goto drot.goto \
+       srotm.goto drotm.goto \
        saxpy.goto daxpy.goto caxpy.goto zaxpy.goto \
        scopy.goto dcopy.goto ccopy.goto zcopy.goto \
        sswap.goto dswap.goto cswap.goto zswap.goto \
@@ -226,6 +231,7 @@ acml :: slinpack.acml dlinpack.acml clinpack.acml zlinpack.acml \
        ssyr2k.acml dsyr2k.acml csyr2k.acml zsyr2k.acml \
        sger.acml dger.acml cger.acml zger.acml \
        sdot.acml ddot.acml \
+       srotm.acml drotm.acml \
        saxpy.acml daxpy.acml caxpy.acml zaxpy.acml \
        scopy.acml dcopy.acml ccopy.acml zcopy.acml \
        sswap.acml dswap.acml cswap.acml zswap.acml \
@@ -258,6 +264,7 @@ atlas :: slinpack.atlas dlinpack.atlas clinpack.atlas zlinpack.atlas \
        ssyr2k.atlas dsyr2k.atlas csyr2k.atlas zsyr2k.atlas \
        sger.atlas dger.atlas cger.atlas zger.atlas\
        sdot.atlas ddot.atlas \
+       srotm.atlas drotm.atlas \
        saxpy.atlas daxpy.atlas caxpy.atlas zaxpy.atlas \
        scopy.atlas dcopy.atlas ccopy.atlas zcopy.atlas \
        sswap.atlas dswap.atlas cswap.atlas zswap.atlas \
@@ -293,6 +300,7 @@ mkl :: slinpack.mkl dlinpack.mkl clinpack.mkl zlinpack.mkl \
        ssyr2k.mkl dsyr2k.mkl csyr2k.mkl zsyr2k.mkl \
        sger.mkl dger.mkl cger.mkl zger.mkl \
        sdot.mkl ddot.mkl cdot.mkl zdot.mkl \
+       srotm.atlas drotm.atlas \
        saxpy.mkl daxpy.mkl caxpy.mkl zaxpy.mkl \
        scopy.mkl dcopy.mkl ccopy.mkl zcopy.mkl \
        sswap.mkl dswap.mkl cswap.mkl zswap.mkl \
@@ -336,6 +344,7 @@ veclib :: slinpack.veclib dlinpack.veclib clinpack.veclib zlinpack.veclib \
        ssyr2k.veclib dsyr2k.veclib csyr2k.veclib zsyr2k.veclib \
        sger.veclib dger.veclib cger.veclib zger.veclib \
        sdot.veclib ddot.veclib cdot.veclib zdot.veclib \
+       srotm.veclib drotm.veclib \
        saxpy.veclib daxpy.veclib caxpy.veclib zaxpy.veclib \
        scopy.veclib dcopy.veclib ccopy.veclib zcopy.veclib \
        sswap.veclib dswap.veclib cswap.veclib zswap.veclib \
@@ -1835,6 +1844,37 @@ drot.mkl : drot.$(SUFFIX)
 drot.veclib : drot.$(SUFFIX)
 	$(CC) $(CFLAGS) -o $(@F) $^ $(LIBVECLIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
 
+##################################### srotm ####################################################
+srotm.goto : srotm.$(SUFFIX) ../$(LIBNAME)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+
+srotm.acml : srotm.$(SUFFIX)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+srotm.atlas : srotm.$(SUFFIX)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(LIBATLAS) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+srotm.mkl : srotm.$(SUFFIX)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(LIBMKL) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+srotm.veclib : srotm.$(SUFFIX)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(LIBVECLIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+##################################### drotm ####################################################
+drotm.goto : drotm.$(SUFFIX) ../$(LIBNAME)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+
+drotm.acml : drotm.$(SUFFIX)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+drotm.atlas : drotm.$(SUFFIX)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(LIBATLAS) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+drotm.mkl : drotm.$(SUFFIX)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(LIBMKL) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+drotm.veclib : drotm.$(SUFFIX)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(LIBVECLIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
 
 ##################################### Saxpy ####################################################
 saxpy.goto : saxpy.$(SUFFIX) ../$(LIBNAME)
@@ -2658,7 +2698,11 @@ srot.$(SUFFIX) : rot.c
 drot.$(SUFFIX) : rot.c
 	$(CC) $(CFLAGS) -c -UCOMPLEX -DDOUBLE -o $(@F) $^
 
+srotm.$(SUFFIX) : rotm.c
+	$(CC) $(CFLAGS) -c -UCOMPLEX -UDOUBLE -o $(@F) $^
 
+drotm.$(SUFFIX) : rotm.c
+	$(CC) $(CFLAGS) -c -UCOMPLEX -DDOUBLE -o $(@F) $^
 
 
 
