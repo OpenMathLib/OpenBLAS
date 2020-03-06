@@ -56,9 +56,10 @@ goto :: slinpack.goto dlinpack.goto clinpack.goto zlinpack.goto \
        sgemm.goto dgemm.goto cgemm.goto zgemm.goto \
        strmm.goto dtrmm.goto ctrmm.goto ztrmm.goto \
        strsm.goto dtrsm.goto ctrsm.goto ztrsm.goto \
-       ssyr.goto dsyr.goto \
        sspr.goto dspr.goto \
        sspr2.goto dspr2.goto \
+       ssyr.goto dsyr.goto \
+       ssyr2.goto dsyr2.goto \
        ssyrk.goto dsyrk.goto csyrk.goto zsyrk.goto \
        ssyr2k.goto dsyr2k.goto csyr2k.goto zsyr2k.goto \
        sger.goto dger.goto cger.goto zger.goto \
@@ -76,6 +77,7 @@ goto :: slinpack.goto dlinpack.goto clinpack.goto zlinpack.goto \
        cher2k.goto zher2k.goto \
        sgemv.goto dgemv.goto cgemv.goto zgemv.goto \
        strmv.goto dtrmv.goto ctrmv.goto ztrmv.goto \
+       strsv.goto dtrsv.goto ctrsv.goto ztrsv.goto \
        sgeev.goto dgeev.goto cgeev.goto zgeev.goto \
        sgesv.goto dgesv.goto cgesv.goto zgesv.goto \
        sgetri.goto dgetri.goto cgetri.goto zgetri.goto \
@@ -87,9 +89,10 @@ acml :: slinpack.acml dlinpack.acml clinpack.acml zlinpack.acml \
        sgemm.acml dgemm.acml cgemm.acml zgemm.acml \
        strmm.acml dtrmm.acml ctrmm.acml ztrmm.acml \
        strsm.acml dtrsm.acml ctrsm.acml ztrsm.acml \
-       ssyr.acml dsyr.acml \
        sspr.acml dspr.acml \
        sspr2.acml dspr2.acml \
+       ssyr.acml dsyr.acml \
+       ssyr2.acml dsyr2.acml \
        ssyrk.acml dsyrk.acml csyrk.acml zsyrk.acml \
        ssyr2k.acml dsyr2k.acml csyr2k.acml zsyr2k.acml \
        sger.acml dger.acml cger.acml zger.acml \
@@ -106,6 +109,7 @@ acml :: slinpack.acml dlinpack.acml clinpack.acml zlinpack.acml \
        cher2k.acml zher2k.acml \
        sgemv.acml dgemv.acml cgemv.acml zgemv.acml \
        strmv.acml dtrmv.acml ctrmv.acml ztrmv.acml \
+       strsv.acml dtrsv.acml ctrsv.acml ztrsv.acml \
        sgeev.acml dgeev.acml cgeev.acml zgeev.acml \
        sgesv.acml dgesv.acml cgesv.acml zgesv.acml \
        sgetri.acml dgetri.acml cgetri.acml zgetri.acml \
@@ -117,9 +121,10 @@ atlas :: slinpack.atlas dlinpack.atlas clinpack.atlas zlinpack.atlas \
        sgemm.atlas dgemm.atlas cgemm.atlas zgemm.atlas \
        strmm.atlas dtrmm.atlas ctrmm.atlas ztrmm.atlas \
        strsm.atlas dtrsm.atlas ctrsm.atlas ztrsm.atlas \
-       ssyr.atlas dsyr.atlas \
        sspr.atlas dspr.atlas \
        sspr2.atlas dspr2.atlas \
+       ssyr.atlas dsyr.atlas \
+       ssyr2.atlas dsyr2.atlas \
        ssyrk.atlas dsyrk.atlas csyrk.atlas zsyrk.atlas \
        ssyr2k.atlas dsyr2k.atlas csyr2k.atlas zsyr2k.atlas \
        sger.atlas dger.atlas cger.atlas zger.atlas\
@@ -137,6 +142,7 @@ atlas :: slinpack.atlas dlinpack.atlas clinpack.atlas zlinpack.atlas \
        cher2k.atlas zher2k.atlas \
        sgemv.atlas dgemv.atlas cgemv.atlas zgemv.atlas \
        strmv.atlas dtrmv.atlas ctrmv.atlas ztrmv.atlas \
+       strsv.atlas dtrsv.atlas ctrsv.atlas ztrsv.atlas \
        sgeev.atlas dgeev.atlas cgeev.atlas zgeev.atlas \
        sgesv.atlas dgesv.atlas cgesv.atlas zgesv.atlas \
        sgetri.atlas dgetri.atlas cgetri.atlas zgetri.atlas \
@@ -148,9 +154,10 @@ mkl :: slinpack.mkl dlinpack.mkl clinpack.mkl zlinpack.mkl \
        sgemm.mkl dgemm.mkl cgemm.mkl zgemm.mkl \
        strmm.mkl dtrmm.mkl ctrmm.mkl ztrmm.mkl \
        strsm.mkl dtrsm.mkl ctrsm.mkl ztrsm.mkl \
-       ssyr.mkl dsyr.mkl \
        sspr.mkl dspr.mkl \
        sspr2.mkl dspr2.mkl \
+       ssyr.mkl dsyr.mkl \
+       ssyr2.mkl dsyr2.mkl \
        ssyrk.mkl dsyrk.mkl csyrk.mkl zsyrk.mkl \
        ssyr2k.mkl dsyr2k.mkl csyr2k.mkl zsyr2k.mkl \
        sger.mkl dger.mkl cger.mkl zger.mkl \
@@ -167,6 +174,7 @@ mkl :: slinpack.mkl dlinpack.mkl clinpack.mkl zlinpack.mkl \
        cher2k.mkl zher2k.mkl \
        sgemv.mkl dgemv.mkl cgemv.mkl zgemv.mkl \
        strmv.mkl dtrmv.mkl ctrmv.mkl ztrmv.mkl \
+       strsv.mkl dtrsv.mkl ctrsv.mkl ztrsv.mkl \
        sgeev.mkl dgeev.mkl cgeev.mkl zgeev.mkl \
        sgesv.mkl dgesv.mkl cgesv.mkl zgesv.mkl \
        sgetri.mkl dgetri.mkl cgetri.mkl zgetri.mkl \
@@ -178,9 +186,10 @@ else
 goto :: sgemm.goto dgemm.goto cgemm.goto zgemm.goto \
        strmm.goto dtrmm.goto ctrmm.goto ztrmm.goto \
        strsm.goto dtrsm.goto ctrsm.goto ztrsm.goto \
-       ssyr.goto dsyr.goto \
        sspr.goto dspr.goto \
        sspr2.goto dspr2.goto \
+       ssyr.goto dsyr.goto \
+       ssyr2.goto dsyr2.goto \
        ssyrk.goto dsyrk.goto csyrk.goto zsyrk.goto \
        ssyr2k.goto dsyr2k.goto csyr2k.goto zsyr2k.goto \
        sger.goto dger.goto cger.goto zger.goto \
@@ -198,6 +207,7 @@ goto :: sgemm.goto dgemm.goto cgemm.goto zgemm.goto \
        cher2k.goto zher2k.goto \
        sgemv.goto dgemv.goto cgemv.goto zgemv.goto \
        strmv.goto dtrmv.goto ctrmv.goto ztrmv.goto \
+       strsv.goto dtrsv.goto ctrsv.goto ztrsv.goto \
        ssymm.goto dsymm.goto csymm.goto zsymm.goto \
        smallscaling \
        isamax.goto idamax.goto icamax.goto izamax.goto \
@@ -208,9 +218,10 @@ acml :: slinpack.acml dlinpack.acml clinpack.acml zlinpack.acml \
        sgemm.acml dgemm.acml cgemm.acml zgemm.acml \
        strmm.acml dtrmm.acml ctrmm.acml ztrmm.acml \
        strsm.acml dtrsm.acml ctrsm.acml ztrsm.acml \
-       ssyr.acml dsyr.acml \
        sspr.acml dspr.acml \
        sspr2.acml dspr2.acml \
+       ssyr.acml dsyr.acml \
+       ssyr2.acml dsyr2.acml \
        ssyrk.acml dsyrk.acml csyrk.acml zsyrk.acml \
        ssyr2k.acml dsyr2k.acml csyr2k.acml zsyr2k.acml \
        sger.acml dger.acml cger.acml zger.acml \
@@ -227,6 +238,7 @@ acml :: slinpack.acml dlinpack.acml clinpack.acml zlinpack.acml \
        cher2k.acml zher2k.acml \
        sgemv.acml dgemv.acml cgemv.acml zgemv.acml \
        strmv.acml dtrmv.acml ctrmv.acml ztrmv.acml \
+       strsv.acml dtrsv.acml ctrsv.acml ztrsv.acml \
        sgeev.acml dgeev.acml cgeev.acml zgeev.acml \
        sgesv.acml dgesv.acml cgesv.acml zgesv.acml \
        sgetri.acml dgetri.acml cgetri.acml zgetri.acml \
@@ -238,9 +250,10 @@ atlas :: slinpack.atlas dlinpack.atlas clinpack.atlas zlinpack.atlas \
        sgemm.atlas dgemm.atlas cgemm.atlas zgemm.atlas \
        strmm.atlas dtrmm.atlas ctrmm.atlas ztrmm.atlas \
        strsm.atlas dtrsm.atlas ctrsm.atlas ztrsm.atlas \
-       ssyr.atlas dsyr.atlas \
        sspr.atlas dspr.atlas \
        sspr2.atlas dspr2.atlas \
+       ssyr.atlas dsyr.atlas \
+       ssyr2.atlas dsyr2.atlas \
        ssyrk.atlas dsyrk.atlas csyrk.atlas zsyrk.atlas \
        ssyr2k.atlas dsyr2k.atlas csyr2k.atlas zsyr2k.atlas \
        sger.atlas dger.atlas cger.atlas zger.atlas\
@@ -258,6 +271,7 @@ atlas :: slinpack.atlas dlinpack.atlas clinpack.atlas zlinpack.atlas \
        cher2k.atlas zher2k.atlas \
        sgemv.atlas dgemv.atlas cgemv.atlas zgemv.atlas \
        strmv.atlas dtrmv.atlas ctrmv.atlas ztrmv.atlas \
+       strsv.atlas dtrsv.atlas ctrsv.atlas ztrsv.atlas \
        sgeev.atlas dgeev.atlas cgeev.atlas zgeev.atlas \
        sgesv.atlas dgesv.atlas cgesv.atlas zgesv.atlas \
        sgetri.atlas dgetri.atlas cgetri.atlas zgetri.atlas \
@@ -271,9 +285,10 @@ mkl :: slinpack.mkl dlinpack.mkl clinpack.mkl zlinpack.mkl \
        sgemm.mkl dgemm.mkl cgemm.mkl zgemm.mkl \
        strmm.mkl dtrmm.mkl ctrmm.mkl ztrmm.mkl \
        strsm.mkl dtrsm.mkl ctrsm.mkl ztrsm.mkl \
-       ssyr.mkl dsyr.mkl \
        sspr.mkl dspr.mkl \
        sspr2.mkl dspr2.mkl \
+       ssyr.mkl dsyr.mkl \
+       ssyr2.mkl dsyr2.mkl \
        ssyrk.mkl dsyrk.mkl csyrk.mkl zsyrk.mkl \
        ssyr2k.mkl dsyr2k.mkl csyr2k.mkl zsyr2k.mkl \
        sger.mkl dger.mkl cger.mkl zger.mkl \
@@ -290,6 +305,7 @@ mkl :: slinpack.mkl dlinpack.mkl clinpack.mkl zlinpack.mkl \
        cher2k.mkl zher2k.mkl \
        sgemv.mkl dgemv.mkl cgemv.mkl zgemv.mkl \
        strmv.mkl dtrmv.mkl ctrmv.mkl ztrmv.mkl \
+       strsv.mkl dtrsv.mkl ctrsv.mkl ztrsv.mkl \
        sgeev.mkl dgeev.mkl cgeev.mkl zgeev.mkl \
        sgesv.mkl dgesv.mkl cgesv.mkl zgesv.mkl \
        sgetri.mkl dgetri.mkl cgetri.mkl zgetri.mkl \
@@ -312,9 +328,10 @@ veclib :: slinpack.veclib dlinpack.veclib clinpack.veclib zlinpack.veclib \
        sgemm.veclib dgemm.veclib cgemm.veclib zgemm.veclib \
        strmm.veclib dtrmm.veclib ctrmm.veclib ztrmm.veclib \
        strsm.veclib dtrsm.veclib ctrsm.veclib ztrsm.veclib \
-       ssyr.veclib dsyr.veclib \
        sspr.veclib dspr.veclib \
        sspr2.veclib dspr2.veclib \
+       ssyr.veclib dsyr.veclib \
+       ssyr2.veclib dsyr2.veclib \
        ssyrk.veclib dsyrk.veclib csyrk.veclib zsyrk.veclib \
        ssyr2k.veclib dsyr2k.veclib csyr2k.veclib zsyr2k.veclib \
        sger.veclib dger.veclib cger.veclib zger.veclib \
@@ -331,6 +348,7 @@ veclib :: slinpack.veclib dlinpack.veclib clinpack.veclib zlinpack.veclib \
        cher2k.veclib zher2k.veclib \
        sgemv.veclib dgemv.veclib cgemv.veclib zgemv.veclib \
        strmv.veclib dtrmv.veclib ctrmv.veclib ztrmv.veclib \
+       strsv.veclib dtrsv.veclib ctrsv.veclib ztrsv.veclib \
        sgeev.veclib dgeev.veclib cgeev.veclib zgeev.veclib \
        sgesv.veclib dgesv.veclib cgesv.veclib zgesv.veclib \
        sgetri.veclib dgetri.veclib cgetri.veclib zgetri.veclib \
@@ -897,6 +915,36 @@ dspr2.mkl : dspr2.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBMKL) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
 
 dspr2.veclib : dspr2.$(SUFFIX)
+
+##################################### Ssyr2 ####################################################
+ssyr2.goto : ssyr2.$(SUFFIX) ../$(LIBNAME)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+
+ssyr2.acml : ssyr2.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+ssyr2.atlas : ssyr2.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBATLAS) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+ssyr2.mkl : ssyr2.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBMKL) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+ssyr2.veclib : ssyr2.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBVECLIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+##################################### Dsyr2 ####################################################
+dsyr2.goto : dsyr2.$(SUFFIX) ../$(LIBNAME)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+
+dsyr2.acml : dsyr2.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+dsyr2.atlas : dsyr2.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBATLAS) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+dsyr2.mkl : dsyr2.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBMKL) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+dsyr2.veclib : dsyr2.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBVECLIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
 
 ##################################### Ssyrk ####################################################
@@ -1263,6 +1311,72 @@ ztrmv.mkl : ztrmv.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBMKL) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
 
 ztrmv.veclib : ztrmv.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBVECLIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+##################################### Strsv ####################################################
+strsv.goto : strsv.$(SUFFIX) ../$(LIBNAME)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+
+strsv.acml : strsv.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+strsv.atlas : strsv.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBATLAS) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+strsv.mkl : strsv.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBMKL) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+strsv.veclib : strsv.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBVECLIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+##################################### Dtrsv ####################################################
+dtrsv.goto : dtrsv.$(SUFFIX) ../$(LIBNAME)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+
+dtrsv.acml : dtrsv.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+dtrsv.atlas : dtrsv.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBATLAS) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+dtrsv.mkl : dtrsv.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBMKL) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+dtrsv.veclib : dtrsv.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBVECLIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+##################################### Ctrsv ####################################################
+
+ctrsv.goto : ctrsv.$(SUFFIX) ../$(LIBNAME)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+
+ctrsv.acml : ctrsv.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+ctrsv.atlas : ctrsv.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBATLAS) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+ctrsv.mkl : ctrsv.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBMKL) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+ctrsv.veclib : ctrsv.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBVECLIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+##################################### Ztrsv ####################################################
+
+ztrsv.goto : ztrsv.$(SUFFIX) ../$(LIBNAME)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+
+ztrsv.acml : ztrsv.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+ztrsv.atlas : ztrsv.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBATLAS) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+ztrsv.mkl : ztrsv.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBMKL) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+ztrsv.veclib : ztrsv.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBVECLIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
 
 ##################################### Sger ####################################################
@@ -2292,6 +2406,12 @@ sspr2.$(SUFFIX) : spr2.c
 dspr2.$(SUFFIX) : spr2.c
 	$(CC) $(CFLAGS) -c -UCOMPLEX -DDOUBLE -o $(@F) $^
 
+ssyr2.$(SUFFIX) : syr2.c
+	$(CC) $(CFLAGS) -c -UCOMPLEX -UDOUBLE -o $(@F) $^
+
+dsyr2.$(SUFFIX) : syr2.c
+	$(CC) $(CFLAGS) -c -UCOMPLEX -DDOUBLE -o $(@F) $^
+
 ssyrk.$(SUFFIX) : syrk.c
 	$(CC) $(CFLAGS) -c -UCOMPLEX -UDOUBLE -o $(@F) $^
 
@@ -2356,6 +2476,18 @@ ctrmv.$(SUFFIX) : trmv.c
 	$(CC) $(CFLAGS) -c -DCOMPLEX -UDOUBLE -o $(@F) $^
 
 ztrmv.$(SUFFIX) : trmv.c
+	$(CC) $(CFLAGS) -c -DCOMPLEX -DDOUBLE -o $(@F) $^
+
+strsv.$(SUFFIX) : trsv.c
+	$(CC) $(CFLAGS) -c -UCOMPLEX -UDOUBLE -o $(@F) $^
+
+dtrsv.$(SUFFIX) : trsv.c
+	$(CC) $(CFLAGS) -c -UCOMPLEX -DDOUBLE -o $(@F) $^
+
+ctrsv.$(SUFFIX) : trsv.c
+	$(CC) $(CFLAGS) -c -DCOMPLEX -UDOUBLE -o $(@F) $^
+
+ztrsv.$(SUFFIX) : trsv.c
 	$(CC) $(CFLAGS) -c -DCOMPLEX -DDOUBLE -o $(@F) $^
 
 sger.$(SUFFIX) : ger.c
