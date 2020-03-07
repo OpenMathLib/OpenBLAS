@@ -85,7 +85,8 @@ goto :: slinpack.goto dlinpack.goto clinpack.goto zlinpack.goto \
        sgesv.goto dgesv.goto cgesv.goto zgesv.goto \
        sgetri.goto dgetri.goto cgetri.goto zgetri.goto \
        spotrf.goto dpotrf.goto cpotrf.goto zpotrf.goto \
-       ssymm.goto dsymm.goto csymm.goto zsymm.goto
+       ssymm.goto dsymm.goto csymm.goto zsymm.goto \
+       saxpby.goto daxpby.goto caxpby.goto zaxpby.goto
 
 acml :: slinpack.acml dlinpack.acml clinpack.acml zlinpack.acml \
        scholesky.acml dcholesky.acml ccholesky.acml zcholesky.acml \
@@ -120,7 +121,8 @@ acml :: slinpack.acml dlinpack.acml clinpack.acml zlinpack.acml \
        sgesv.acml dgesv.acml cgesv.acml zgesv.acml \
        sgetri.acml dgetri.acml cgetri.acml zgetri.acml \
        spotrf.acml dpotrf.acml cpotrf.acml zpotrf.acml \
-       ssymm.acml dsymm.acml csymm.acml zsymm.acml
+       ssymm.acml dsymm.acml csymm.acml zsymm.acml \
+       saxpby.goto daxpby.goto caxpby.goto zaxpby.goto
 
 atlas :: slinpack.atlas dlinpack.atlas clinpack.atlas zlinpack.atlas \
        scholesky.atlas dcholesky.atlas ccholesky.atlas zcholesky.atlas \
@@ -156,7 +158,8 @@ atlas :: slinpack.atlas dlinpack.atlas clinpack.atlas zlinpack.atlas \
        sgesv.atlas dgesv.atlas cgesv.atlas zgesv.atlas \
        sgetri.atlas dgetri.atlas cgetri.atlas zgetri.atlas \
        spotrf.atlas dpotrf.atlas cpotrf.atlas zpotrf.atlas \
-       ssymm.atlas dsymm.atlas csymm.atlas zsymm.atlas
+       ssymm.atlas dsymm.atlas csymm.atlas zsymm.atlas \
+       saxpby.goto daxpby.goto caxpby.goto zaxpby.goto
 
 mkl :: slinpack.mkl dlinpack.mkl clinpack.mkl zlinpack.mkl \
        scholesky.mkl dcholesky.mkl ccholesky.mkl zcholesky.mkl \
@@ -191,7 +194,8 @@ mkl :: slinpack.mkl dlinpack.mkl clinpack.mkl zlinpack.mkl \
        sgesv.mkl dgesv.mkl cgesv.mkl zgesv.mkl \
        sgetri.mkl dgetri.mkl cgetri.mkl zgetri.mkl \
        spotrf.mkl dpotrf.mkl cpotrf.mkl zpotrf.mkl \
-       ssymm.mkl dsymm.mkl csymm.mkl zsymm.mkl
+       ssymm.mkl dsymm.mkl csymm.mkl zsymm.mkl \
+       saxpby.goto daxpby.goto caxpby.goto zaxpby.goto
 
 else
 
@@ -226,6 +230,7 @@ goto :: sgemm.goto dgemm.goto cgemm.goto zgemm.goto \
        ssymm.goto dsymm.goto csymm.goto zsymm.goto \
        smallscaling \
        isamax.goto idamax.goto icamax.goto izamax.goto \
+       saxpby.goto daxpby.goto caxpby.goto zaxpby.goto \
        snrm2.goto dnrm2.goto scnrm2.goto dznrm2.goto $(GOTO_LAPACK_TARGETS)
 
 acml :: slinpack.acml dlinpack.acml clinpack.acml zlinpack.acml \
@@ -261,7 +266,8 @@ acml :: slinpack.acml dlinpack.acml clinpack.acml zlinpack.acml \
        sgesv.acml dgesv.acml cgesv.acml zgesv.acml \
        sgetri.acml dgetri.acml cgetri.acml zgetri.acml \
        spotrf.acml dpotrf.acml cpotrf.acml zpotrf.acml \
-       ssymm.acml dsymm.acml csymm.acml zsymm.acml
+       ssymm.acml dsymm.acml csymm.acml zsymm.acml \
+       saxpby.goto daxpby.goto caxpby.goto zaxpby.goto
 
 atlas :: slinpack.atlas dlinpack.atlas clinpack.atlas zlinpack.atlas \
        scholesky.atlas dcholesky.atlas ccholesky.atlas zcholesky.atlas \
@@ -299,7 +305,8 @@ atlas :: slinpack.atlas dlinpack.atlas clinpack.atlas zlinpack.atlas \
        spotrf.atlas dpotrf.atlas cpotrf.atlas zpotrf.atlas \
        ssymm.atlas dsymm.atlas csymm.atlas zsymm.atlas \
        isamax.atlas idamax.atlas icamax.atlas izamax.atlas \
-       snrm2.goto dnrm2.goto scnrm2.goto dznrm2.goto
+       snrm2.goto dnrm2.goto scnrm2.goto dznrm2.goto \
+       saxpby.goto daxpby.goto caxpby.goto zaxpby.goto
 
 mkl :: slinpack.mkl dlinpack.mkl clinpack.mkl zlinpack.mkl \
        scholesky.mkl dcholesky.mkl ccholesky.mkl zcholesky.mkl \
@@ -334,7 +341,8 @@ mkl :: slinpack.mkl dlinpack.mkl clinpack.mkl zlinpack.mkl \
        sgesv.mkl dgesv.mkl cgesv.mkl zgesv.mkl \
        sgetri.mkl dgetri.mkl cgetri.mkl zgetri.mkl \
        spotrf.mkl dpotrf.mkl cpotrf.mkl zpotrf.mkl \
-       ssymm.mkl dsymm.mkl csymm.mkl zsymm.mkl
+       ssymm.mkl dsymm.mkl csymm.mkl zsymm.mkl \
+       saxpby.goto daxpby.goto caxpby.goto zaxpby.goto
 
 
 
@@ -380,7 +388,8 @@ veclib :: slinpack.veclib dlinpack.veclib clinpack.veclib zlinpack.veclib \
        sgesv.veclib dgesv.veclib cgesv.veclib zgesv.veclib \
        sgetri.veclib dgetri.veclib cgetri.veclib zgetri.veclib \
        spotrf.veclib dpotrf.veclib cpotrf.veclib zpotrf.veclib \
-       ssymm.veclib dsymm.veclib csymm.veclib zsymm.veclib
+       ssymm.veclib dsymm.veclib csymm.veclib zsymm.veclib \
+       saxpby.goto daxpby.goto caxpby.goto zaxpby.goto
 
 goto_3m :: cgemm3m.goto zgemm3m.goto
 
@@ -2023,7 +2032,72 @@ zaxpy.mkl : zaxpy.$(SUFFIX)
 zaxpy.veclib : zaxpy.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBVECLIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
 
+##################################### Saxpby ####################################################
+saxpby.goto : saxpby.$(SUFFIX) ../$(LIBNAME)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
+saxpby.acml : saxpby.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+saxpby.atlas : saxpby.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBATLAS) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+saxpby.mkl : saxpby.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBMKL) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+saxpby.veclib : saxpby.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBVECLIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+##################################### Daxpby ####################################################
+daxpby.goto : daxpby.$(SUFFIX) ../$(LIBNAME)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+
+daxpby.acml : daxpby.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+daxpby.atlas : daxpby.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBATLAS) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+daxpby.mkl : daxpby.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBMKL) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+daxpby.veclib : daxpby.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBVECLIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+##################################### Caxpby ####################################################
+
+caxpby.goto : caxpby.$(SUFFIX) ../$(LIBNAME)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+
+caxpby.acml : caxpby.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+caxpby.atlas : caxpby.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBATLAS) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+caxpby.mkl : caxpby.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBMKL) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+caxpby.veclib : caxpby.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBVECLIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+##################################### Zaxpby ####################################################
+
+zaxpby.goto : zaxpby.$(SUFFIX) ../$(LIBNAME)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+
+zaxpby.acml : zaxpby.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+zaxpby.atlas : zaxpby.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBATLAS) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+zaxpby.mkl : zaxpby.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBMKL) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+zaxpby.veclib : zaxpby.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBVECLIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+	
 ##################################### Scopy ####################################################
 scopy.goto : scopy.$(SUFFIX) ../$(LIBNAME)
 	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
@@ -2720,6 +2794,18 @@ caxpy.$(SUFFIX) : axpy.c
 	$(CC) $(CFLAGS) -c -DCOMPLEX -UDOUBLE -o $(@F) $^
 
 zaxpy.$(SUFFIX) : axpy.c
+	$(CC) $(CFLAGS) -c -DCOMPLEX -DDOUBLE -o $(@F) $^
+
+saxpby.$(SUFFIX) : axpby.c
+	$(CC) $(CFLAGS) -c -UCOMPLEX -UDOUBLE -o $(@F) $^
+
+daxpby.$(SUFFIX) : axpby.c
+	$(CC) $(CFLAGS) -c -UCOMPLEX -DDOUBLE -o $(@F) $^
+
+caxpby.$(SUFFIX) : axpby.c
+	$(CC) $(CFLAGS) -c -DCOMPLEX -UDOUBLE -o $(@F) $^
+
+zaxpby.$(SUFFIX) : axpby.c
 	$(CC) $(CFLAGS) -c -DCOMPLEX -DDOUBLE -o $(@F) $^
 
 scopy.$(SUFFIX) : copy.c
