@@ -32,9 +32,9 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif
 #include "common.h"
 
+#undef ROT
 
-#undef DOT
-
+#ifndef COMPLEX
 
 #ifdef DOUBLE
 #define ROT   BLASFUNC(drot)
@@ -42,6 +42,15 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define ROT   BLASFUNC(srot)
 #endif
 
+#else
+
+#ifdef DOUBLE
+#define ROT   BLASFUNC(zdrot)
+#else
+#define ROT   BLASFUNC(csrot)
+#endif
+
+#endif
 
 #if defined(__WIN32__) || defined(__WIN64__)
 
@@ -160,17 +169,16 @@ int main(int argc, char *argv[]){
 
    fprintf(stderr, " %6d : ", (int)m);
 
+   for(i = 0; i < m * COMPSIZE * abs(inc_x); i++){
+		x[i] = ((FLOAT) rand() / (FLOAT) RAND_MAX) - 0.5;
+   }
+
+   for(i = 0; i < m * COMPSIZE * abs(inc_y); i++){
+		y[i] = ((FLOAT) rand() / (FLOAT) RAND_MAX) - 0.5;
+   }
 
    for (l=0; l<loops; l++)
    {
-
-   	for(i = 0; i < m * COMPSIZE * abs(inc_x); i++){
-			x[i] = ((FLOAT) rand() / (FLOAT) RAND_MAX) - 0.5;
-   	}
-
-   	for(i = 0; i < m * COMPSIZE * abs(inc_y); i++){
-			y[i] = ((FLOAT) rand() / (FLOAT) RAND_MAX) - 0.5;
-   	}
     	gettimeofday( &start, (struct timezone *)0);
 
     	ROT (&m, x, &inc_x, y, &inc_y, c, s);
@@ -179,13 +187,13 @@ int main(int argc, char *argv[]){
 
     	time1 = (double)(stop.tv_sec - start.tv_sec) + (double)((stop.tv_usec - start.tv_usec)) * 1.e-6;
 
-	timeg += time1;
+	    timeg += time1;
 
-    }
+   }
 
-    timeg /= loops;
+   timeg /= loops;
 
-    fprintf(stderr,
+   fprintf(stderr,
 	    " %10.2f MFlops %10.6f sec\n",
 	    COMPSIZE * COMPSIZE * 6. * (double)m / timeg * 1.e-6, timeg);
 
