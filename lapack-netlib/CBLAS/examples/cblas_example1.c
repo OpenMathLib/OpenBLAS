@@ -47,7 +47,7 @@ int main ( )
    a[m*3+1] = 6;
    a[m*3+2] = 7;
    a[m*3+3] = 8;
-   /* The elemetns of x and y */
+   /* The elements of x and y */
    x[0] = 1;
    x[1] = 2;
    x[2] = 1;

@@ -43,7 +43,7 @@
 *>
 *> where U (or L) is a product of permutation and unit upper (lower)
 *> triangular matrices, and D is symmetric and block diagonal with
-*> with 1-by-1 and 2-by-2 diagonal blocks.
+*> 1-by-1 and 2-by-2 diagonal blocks.
 *>
 *> This is the blocked version of the algorithm, calling Level 3 BLAS.
 *> \endverbatim

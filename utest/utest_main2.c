@@ -50,6 +50,17 @@ CTEST(amax, samax){
   ASSERT_DBL_NEAR_TOL((double)(tr_max), (double)(te_max), SINGLE_EPS);
 }
 
+CTEST(amax, damax){
+  blasint N=3, inc=1;
+  double te_max=0.0, tr_max=0.0;
+  double x[]={-1.1, 2.2, -3.3};
+
+  te_max=BLASFUNC(damax)(&N, x, &inc);
+  tr_max=3.3;
+
+  ASSERT_DBL_NEAR_TOL((double)(tr_max), (double)(te_max), DOUBLE_EPS);
+}
+
 CTEST (drotmg,rotmg)
 {
 	double te_d1, tr_d1;
@@ -508,9 +519,82 @@ CTEST(swap,cswap_inc_0)
 	}
 }
 
+CTEST(min, smin_negative){
+  blasint N=3, inc=1;
+  float te_min=0.0, tr_min=0.0;
+  float x[]={-1.1, -2.2, -3.3};
+
+  te_min=BLASFUNC(smin)(&N, x, &inc);
+  tr_min=-3.3;
+
+  ASSERT_DBL_NEAR_TOL((double)(tr_min), (double)(te_min), SINGLE_EPS);
+}
+
+CTEST(min, dmin_positive){
+  blasint N=3, inc=1;
+  double te_min=0.0, tr_min=0.0;
+  double x[]={1.1, 0.0, 3.3};
+
+  te_min=BLASFUNC(dmin)(&N, x, &inc);
+  tr_min=0.0;
+
+  ASSERT_DBL_NEAR_TOL((double)(tr_min), (double)(te_min), DOUBLE_EPS);
+}
+
+CTEST(min, smin_zero){
+  blasint N=3, inc=1;
+  float te_min=0.0, tr_min=0.0;
+  float x[]={1.1, 2.2, 0.0};
+
+  te_min=BLASFUNC(smin)(&N, x, &inc);
+  tr_min=0.0;
+
+  ASSERT_DBL_NEAR_TOL((double)(tr_min), (double)(te_min), SINGLE_EPS);
+}
+
+CTEST(max, smax_negative){
+  blasint N=3, inc=1;
+  float te_max=0.0, tr_max=0.0;
+  float x[]={-1.1, -2.2, -3.3};
+
+  te_max=BLASFUNC(smax)(&N, x, &inc);
+  tr_max=-1.1;
+
+  ASSERT_DBL_NEAR_TOL((double)(tr_max), (double)(te_max), SINGLE_EPS);
+}
+
+CTEST(max, dmax_positive){
+  blasint N=3, inc=1;
+  double te_max=0.0, tr_max=0.0;
+  double x[]={1.1, 0.0, 3.3};
+
+  te_max=BLASFUNC(dmax)(&N, x, &inc);
+  tr_max=3.3;
+
+  ASSERT_DBL_NEAR_TOL((double)(tr_max), (double)(te_max), DOUBLE_EPS);
+}
+
+CTEST(max, smax_zero){
+  blasint N=3, inc=1;
+  float te_max=0.0, tr_max=0.0;
+  float x[]={-1.1, -2.2, 0.0};
+
+  te_max=BLASFUNC(smax)(&N, x, &inc);
+  tr_max=0.0;
+
+  ASSERT_DBL_NEAR_TOL((double)(tr_max), (double)(te_max), SINGLE_EPS);
+}
+
 int main(int argc, const char ** argv){
 
-  CTEST_ADD(amax, samax);
+  CTEST_ADD (amax, samax);
+  CTEST_ADD (amax, damax);
+  CTEST_ADD (min, smin_negative); 
+  CTEST_ADD (min, dmin_positive); 
+  CTEST_ADD (min, smin_zero); 
+  CTEST_ADD (max, smax_negative); 
+  CTEST_ADD (max, dmax_positive); 
+  CTEST_ADD (max, smax_zero); 
   CTEST_ADD (drotmg,rotmg);
   CTEST_ADD (drotmg,rotmg_issue1452);
   CTEST_ADD (drotmg,rotmg_D1eqD2_X1eqX2);

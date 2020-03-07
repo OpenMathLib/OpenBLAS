@@ -45,7 +45,7 @@
 *> matrices.
 *>
 *> Aasen's 2-stage algorithm is used to factor A as
-*>    A = U * T * U**T,  if UPLO = 'U', or
+*>    A = U**T * T * U,  if UPLO = 'U', or
 *>    A = L * T * L**T,  if UPLO = 'L',
 *> where U (or L) is a product of permutation and unit upper (lower)
 *> triangular matrices, and T is symmetric and band. The matrix T is
@@ -259,7 +259,7 @@
       END IF
 *
 *
-*     Compute the factorization A = U*T*U**T or A = L*T*L**T.
+*     Compute the factorization A = U**T*T*U or A = L*T*L**T.
 *
       CALL DSYTRF_AA_2STAGE( UPLO, N, A, LDA, TB, LTB, IPIV, IPIV2,
      $                       WORK, LWORK, INFO )

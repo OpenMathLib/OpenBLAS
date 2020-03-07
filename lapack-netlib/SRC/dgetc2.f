@@ -85,7 +85,7 @@
 *> \verbatim
 *>          INFO is INTEGER
 *>           = 0: successful exit
-*>           > 0: if INFO = k, U(k, k) is likely to produce owerflow if
+*>           > 0: if INFO = k, U(k, k) is likely to produce overflow if
 *>                we try to solve for x in Ax = b. So U is perturbed to
 *>                avoid the overflow.
 *> \endverbatim

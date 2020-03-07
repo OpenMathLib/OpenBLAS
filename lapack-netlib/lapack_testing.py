@@ -12,8 +12,8 @@ import os, sys, math
 import getopt
 # Arguments
 try:
-    opts, args = getopt.getopt(sys.argv[1:], "hd:srep:t:n",
-                               ["help", "dir", "short", "run", "error","prec=","test=","number"])
+    opts, args = getopt.getopt(sys.argv[1:], "hd:b:srep:t:n",
+                               ["help", "dir", "bin", "short", "run", "error","prec=","test=","number"])
 
 except getopt.error as msg:
     print(msg)
@@ -29,14 +29,13 @@ only_numbers=0
 test_dir='TESTING'
 bin_dir='bin/Release'
 
-abs_bin_dir=os.path.normpath(os.path.join(os.getcwd(),bin_dir))
-
 for o, a in opts:
     if o in ("-h", "--help"):
         print(sys.argv[0]+" [-h|--help] [-d dir |--dir dir] [-s |--short] [-r |--run] [-e |--error] [-p p |--prec p] [-t test |--test test] [-n | --number]")
         print("     - h is to print this message")
         print("     - r is to use to run the LAPACK tests then analyse the output (.out files). By default, the script will not run all the LAPACK tests")
         print("     - d [dir] is to indicate where is the LAPACK testing directory (.out files). By default, the script will use .")
+        print("     - b [bin] is to indicate where is the LAPACK binary files are located. By default, the script will use .")
         print(" LEVEL OF OUTPUT")
         print("     - x is to print a detailed summary")
         print("     - e is to print only the error summary")
@@ -75,6 +74,8 @@ for o, a in opts:
             just_errors = 1
         if o in ( '-p', '--prec' ):
             prec = a
+        if o in ( '-b', '--bin' ):
+            bin_dir = a
         if o in ( '-d', '--dir' ):
             test_dir = a
         if o in ( '-t', '--test' ):
@@ -84,6 +85,8 @@ for o, a in opts:
             short_summary = 1
 
 # process options
+
+abs_bin_dir=os.path.normpath(os.path.join(os.getcwd(),bin_dir))
 
 os.chdir(test_dir)
 
@@ -114,10 +117,7 @@ def run_summary_test( f, cmdline, short_summary):
             pipe = open(cmdline,'r')
             r=0
     else:
-        if os.name != 'nt':
-            cmdline='./' + cmdline
-        else :
-            cmdline=abs_bin_dir+os.path.sep+cmdline
+        cmdline = os.path.join(abs_bin_dir, cmdline)
 
         outfile=cmdline.split()[4]
         #pipe = open(outfile,'w')

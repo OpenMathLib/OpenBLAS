@@ -51,10 +51,12 @@ extern gotoblas_t  gotoblas_FALKOR;
 extern gotoblas_t  gotoblas_THUNDERX;
 extern gotoblas_t  gotoblas_THUNDERX2T99;
 extern gotoblas_t  gotoblas_TSV110;
+extern gotoblas_t  gotoblas_EMAG8180;
+extern gotoblas_t  gotoblas_NEOVERSEN1;
 
 extern void openblas_warning(int verbose, const char * msg);
 
-#define NUM_CORETYPES    9
+#define NUM_CORETYPES   11
 
 /*
  * In case asm/hwcap.h is outdated on the build system, make sure
@@ -78,6 +80,8 @@ static char *corename[] = {
   "thunderx",
   "thunderx2t99",
   "tsv110",
+  "emag8180",
+  "neoversen1",
   "unknown"
 };
 
@@ -91,6 +95,8 @@ char *gotoblas_corename(void) {
   if (gotoblas == &gotoblas_THUNDERX)     return corename[ 6];
   if (gotoblas == &gotoblas_THUNDERX2T99) return corename[ 7];
   if (gotoblas == &gotoblas_TSV110)       return corename[ 8];
+  if (gotoblas == &gotoblas_EMAG8180)     return corename[ 9];
+  if (gotoblas == &gotoblas_NEOVERSEN1)   return corename[10];
   return corename[NUM_CORETYPES];
 }
 
@@ -119,6 +125,8 @@ static gotoblas_t *force_coretype(char *coretype) {
     case  6: return (&gotoblas_THUNDERX);
     case  7: return (&gotoblas_THUNDERX2T99);
     case  8: return (&gotoblas_TSV110);
+    case  9: return (&gotoblas_EMAG8180);
+    case 10: return (&gotoblas_NEOVERSEN1);
   }
   snprintf(message, 128, "Core not found: %s\n", coretype);
   openblas_warning(1, message);
@@ -164,6 +172,8 @@ static gotoblas_t *get_coretype(void) {
           return &gotoblas_CORTEXA72;
         case 0xd09: // Cortex A73
           return &gotoblas_CORTEXA73;
+        case 0xd0c: // Neoverse N1
+          return &gotoblas_NEOVERSEN1;
       }
       break;
     case 0x42: // Broadcom
@@ -187,6 +197,13 @@ static gotoblas_t *get_coretype(void) {
       {
         case 0xd01: // tsv110
           return &gotoblas_TSV110;
+      }
+      break;
+    case 0x50: // Ampere
+      switch (part)
+      {
+        case 0x000: // Skylark/EMAG8180
+          return &gotoblas_EMAG8180;
       }
       break;
     case 0x51: // Qualcomm

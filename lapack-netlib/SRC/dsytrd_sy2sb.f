@@ -363,7 +363,7 @@
 *
 *
 *     Set the workspace of the triangular matrix T to zero once such a
-*     way everytime T is generated the upper/lower portion will be always zero  
+*     way every time T is generated the upper/lower portion will be always zero
 *   
       CALL DLASET( "A", LDT, KD, ZERO, ZERO, WORK( TPOS ), LDT )
 *

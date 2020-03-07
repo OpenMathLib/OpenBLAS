@@ -225,7 +225,11 @@ static __inline int blas_quickdivide(unsigned int x, unsigned int y){
 #endif
 #define HUGE_PAGESIZE	( 2 << 20)
 
+#ifndef BUFFERSIZE
 #define BUFFER_SIZE	(32 << 20)
+#else
+#define BUFFER_SIZE	(32 << BUFFERSIZE)
+#endif
 
 #define SEEK_ADDRESS
 

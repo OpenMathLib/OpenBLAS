@@ -91,7 +91,7 @@
 *> \verbatim
 *>          SCALE is DOUBLE PRECISION
 *>           On exit, SCALE contains the scale factor. SCALE is chosen
-*>           0 <= SCALE <= 1 to prevent owerflow in the solution.
+*>           0 <= SCALE <= 1 to prevent overflow in the solution.
 *> \endverbatim
 *
 *  Authors:

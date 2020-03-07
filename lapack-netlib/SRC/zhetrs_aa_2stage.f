@@ -38,8 +38,8 @@
 *> \verbatim
 *>
 *> ZHETRS_AA_2STAGE solves a system of linear equations A*X = B with a 
-*> hermitian matrix A using the factorization A = U*T*U**T or
-*> A = L*T*L**T computed by ZHETRF_AA_2STAGE.
+*> hermitian matrix A using the factorization A = U**H*T*U or
+*> A = L*T*L**H computed by ZHETRF_AA_2STAGE.
 *> \endverbatim
 *
 *  Arguments:
@@ -50,8 +50,8 @@
 *>          UPLO is CHARACTER*1
 *>          Specifies whether the details of the factorization are stored
 *>          as an upper or lower triangular matrix.
-*>          = 'U':  Upper triangular, form is A = U*T*U**T;
-*>          = 'L':  Lower triangular, form is A = L*T*L**T.
+*>          = 'U':  Upper triangular, form is A = U**H*T*U;
+*>          = 'L':  Lower triangular, form is A = L*T*L**H.
 *> \endverbatim
 *>
 *> \param[in] N
@@ -210,33 +210,33 @@
 *
       IF( UPPER ) THEN
 *
-*        Solve A*X = B, where A = U*T*U**T.
+*        Solve A*X = B, where A = U**H*T*U.
 *
          IF( N.GT.NB ) THEN
 *
-*           Pivot, P**T * B
+*           Pivot, P**T * B -> B
 *
             CALL ZLASWP( NRHS, B, LDB, NB+1, N, IPIV, 1 )
 *
-*           Compute (U**T \P**T * B) -> B    [ (U**T \P**T * B) ]
+*           Compute (U**H \ B) -> B    [ (U**H \P**T * B) ]
 *
             CALL ZTRSM( 'L', 'U', 'C', 'U', N-NB, NRHS, ONE, A(1, NB+1),
      $                 LDA, B(NB+1, 1), LDB)
 *
          END IF
 *
-*        Compute T \ B -> B   [ T \ (U**T \P**T * B) ]
+*        Compute T \ B -> B   [ T \ (U**H \P**T * B) ]
 *
          CALL ZGBTRS( 'N', N, NB, NB, NRHS, TB, LDTB, IPIV2, B, LDB,
      $               INFO)
          IF( N.GT.NB ) THEN
 *
-*           Compute (U \ B) -> B   [ U \ (T \ (U**T \P**T * B) ) ]
+*           Compute (U \ B) -> B   [ U \ (T \ (U**H \P**T * B) ) ]
 *
             CALL ZTRSM( 'L', 'U', 'N', 'U', N-NB, NRHS, ONE, A(1, NB+1),
      $                  LDA, B(NB+1, 1), LDB)
 *
-*           Pivot, P * B  [ P * (U \ (T \ (U**T \P**T * B) )) ]
+*           Pivot, P * B -> B  [ P * (U \ (T \ (U**H \P**T * B) )) ]
 *
             CALL ZLASWP( NRHS, B, LDB, NB+1, N, IPIV, -1 )
 *
@@ -244,15 +244,15 @@
 *
       ELSE
 *
-*        Solve A*X = B, where A = L*T*L**T.
+*        Solve A*X = B, where A = L*T*L**H.
 *
          IF( N.GT.NB ) THEN
 *
-*           Pivot, P**T * B
+*           Pivot, P**T * B -> B
 *
             CALL ZLASWP( NRHS, B, LDB, NB+1, N, IPIV, 1 )
 *
-*           Compute (L \P**T * B) -> B    [ (L \P**T * B) ]
+*           Compute (L \ B) -> B    [ (L \P**T * B) ]
 *
             CALL ZTRSM( 'L', 'L', 'N', 'U', N-NB, NRHS, ONE, A(NB+1, 1),
      $                 LDA, B(NB+1, 1), LDB)
@@ -265,12 +265,12 @@
      $               INFO)
          IF( N.GT.NB ) THEN
 *
-*           Compute (L**T \ B) -> B   [ L**T \ (T \ (L \P**T * B) ) ]
+*           Compute (L**H \ B) -> B   [ L**H \ (T \ (L \P**T * B) ) ]
 *
             CALL ZTRSM( 'L', 'L', 'C', 'U', N-NB, NRHS, ONE, A(NB+1, 1),
      $                  LDA, B(NB+1, 1), LDB)
 *
-*           Pivot, P * B  [ P * (L**T \ (T \ (L \P**T * B) )) ]
+*           Pivot, P * B -> B  [ P * (L**H \ (T \ (L \P**T * B) )) ]
 *
             CALL ZLASWP( NRHS, B, LDB, NB+1, N, IPIV, -1 )
 *

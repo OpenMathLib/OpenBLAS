@@ -22,7 +22,7 @@
 *                                                LDAF, IPIV, C, CAPPLY,
 *                                                INFO, WORK, RWORK )
 *
-*       .. Scalar Aguments ..
+*       .. Scalar Arguments ..
 *       CHARACTER          TRANS
 *       LOGICAL            CAPPLY
 *       INTEGER            N, LDA, LDAF, INFO
@@ -114,13 +114,13 @@
 *>     i > 0:  The ith argument is invalid.
 *> \endverbatim
 *>
-*> \param[in] WORK
+*> \param[out] WORK
 *> \verbatim
 *>          WORK is COMPLEX*16 array, dimension (2*N).
 *>     Workspace.
 *> \endverbatim
 *>
-*> \param[in] RWORK
+*> \param[out] RWORK
 *> \verbatim
 *>          RWORK is DOUBLE PRECISION array, dimension (N).
 *>     Workspace.
@@ -148,7 +148,7 @@
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
 *     December 2016
 *
-*     .. Scalar Aguments ..
+*     .. Scalar Arguments ..
       CHARACTER          TRANS
       LOGICAL            CAPPLY
       INTEGER            N, LDA, LDAF, INFO

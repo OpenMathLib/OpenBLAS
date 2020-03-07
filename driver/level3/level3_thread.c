@@ -351,8 +351,9 @@ static int inner_thread(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, 
       /* Make sure if no one is using workspace */
       START_RPCC();
       for (i = 0; i < args -> nthreads; i++)
-	while (job[mypos].working[i][CACHE_LINE_SIZE * bufferside]) {YIELDING;MB;};
+	while (job[mypos].working[i][CACHE_LINE_SIZE * bufferside]) {YIELDING;};
       STOP_RPCC(waiting1);
+      MB;
 
 #if defined(FUSED_GEMM) && !defined(TIMING)
 
@@ -365,12 +366,16 @@ static int inner_thread(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, 
       /* Split local region of B into parts */
       for(jjs = js; jjs < MIN(n_to, js + div_n); jjs += min_jj){
 	min_jj = MIN(n_to, js + div_n) - jjs;
+#ifdef SKYLAKEX
+	/* the current AVX512 s/d/c/z GEMM kernel requires n>=6*GEMM_UNROLL_N to achieve the best performance */
+	if (min_jj >= 6*GEMM_UNROLL_N) min_jj = 6*GEMM_UNROLL_N;
+#else
 	if (min_jj >= 3*GEMM_UNROLL_N) min_jj = 3*GEMM_UNROLL_N;
 	else
           if (min_jj >= 2*GEMM_UNROLL_N) min_jj = 2*GEMM_UNROLL_N;
           else
             if (min_jj > GEMM_UNROLL_N) min_jj = GEMM_UNROLL_N;
-
+#endif
         /* Copy part of local region of B into workspace */
 	START_RPCC();
 	OCOPY_OPERATION(min_l, min_jj, b, ldb, ls, jjs,
@@ -391,10 +396,10 @@ static int inner_thread(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, 
       }
 #endif
 
+      WMB;
       /* Set flag so other threads can access local region of B */
       for (i = mypos_n * nthreads_m; i < (mypos_n + 1) * nthreads_m; i++)
         job[mypos].working[i][CACHE_LINE_SIZE * bufferside] = (BLASLONG)buffer[bufferside];
-      WMB;
     }
 
     /* Get regions of B from other threads and apply kernel */
@@ -413,8 +418,9 @@ static int inner_thread(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, 
 
 	  /* Wait until other region of B is initialized */
 	  START_RPCC();
-	  while(job[current].working[mypos][CACHE_LINE_SIZE * bufferside] == 0) {YIELDING;MB;};
+	  while(job[current].working[mypos][CACHE_LINE_SIZE * bufferside] == 0) {YIELDING;};
 	  STOP_RPCC(waiting2);
+	  MB;
 
           /* Apply kernel with local region of A and part of other region of B */
 	  START_RPCC();
@@ -430,8 +436,8 @@ static int inner_thread(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, 
 
         /* Clear synchronization flag if this thread is done with other region of B */
 	if (m_to - m_from == min_i) {
-	  job[current].working[mypos][CACHE_LINE_SIZE * bufferside] &= 0;
 	  WMB;
+	  job[current].working[mypos][CACHE_LINE_SIZE * bufferside] &= 0;
 	}
       }
     } while (current != mypos);
@@ -473,8 +479,8 @@ static int inner_thread(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, 
           
           /* Clear synchronization flag if this thread is done with region of B */
           if (is + min_i >= m_to) {
-            job[current].working[mypos][CACHE_LINE_SIZE * bufferside] &= 0;
             WMB;
+            job[current].working[mypos][CACHE_LINE_SIZE * bufferside] &= 0;
           }
 	}
 
@@ -493,10 +499,11 @@ static int inner_thread(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, 
   START_RPCC();
   for (i = 0; i < args -> nthreads; i++) {
     for (js = 0; js < DIVIDE_RATE; js++) {
-      while (job[mypos].working[i][CACHE_LINE_SIZE * js] ) {YIELDING;MB;};
+      while (job[mypos].working[i][CACHE_LINE_SIZE * js] ) {YIELDING;};
     }
   }
   STOP_RPCC(waiting3);
+  MB;
 
 #ifdef TIMING
   BLASLONG waiting = waiting1 + waiting2 + waiting3;
@@ -701,7 +708,7 @@ EnterCriticalSection((PCRITICAL_SECTION)&level3_lock);
 	}
       }
     }
-
+    WMB;
     /* Execute parallel computation */
     exec_blas(nthreads, queue);
   }

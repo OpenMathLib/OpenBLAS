@@ -3,7 +3,7 @@
 
 extern gotoblas_t gotoblas_POWER6;
 extern gotoblas_t gotoblas_POWER8;
-#if (!defined C_GCC) || (GCC_VERSION >= 60000)
+#if (!defined __GNUC__) || ( __GNUC__ >= 6)
 extern gotoblas_t gotoblas_POWER9;
 #endif
 
@@ -21,7 +21,7 @@ static char *corename[] = {
 char *gotoblas_corename(void) {
 	if (gotoblas == &gotoblas_POWER6)	return corename[1];
 	if (gotoblas == &gotoblas_POWER8)	return corename[2];
-#if (!defined C_GCC) || (GCC_VERSION >= 60000)
+#if (!defined __GNUC__) || ( __GNUC__ >= 6)
 	if (gotoblas == &gotoblas_POWER9)	return corename[3];
 #endif
 	return corename[0];
@@ -33,7 +33,7 @@ static gotoblas_t *get_coretype(void) {
 		return &gotoblas_POWER6;
 	if (__builtin_cpu_is("power8"))
 		return &gotoblas_POWER8;
-#if (!defined C_GCC) || (GCC_VERSION >= 60000)
+#if (!defined __GNUC__) || ( __GNUC__ >= 6)
 	if (__builtin_cpu_is("power9"))
 		return &gotoblas_POWER9;
 #endif
@@ -59,7 +59,7 @@ static gotoblas_t *force_coretype(char * coretype) {
 	{
 	case  1: return (&gotoblas_POWER6);
 	case  2: return (&gotoblas_POWER8);
-#if (!defined C_GCC) || (GCC_VERSION >= 60000)
+#if (!defined __GNUC__) || ( __GNUC__ >= 6)
 	case  3: return (&gotoblas_POWER9);
 #endif
 	default: return NULL;

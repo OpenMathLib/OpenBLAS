@@ -34,6 +34,7 @@
 #define CPU_CORTEXA57     3
 #define CPU_CORTEXA72     4
 #define CPU_CORTEXA73     5
+#define CPU_NEOVERSEN1    11
 // Qualcomm
 #define CPU_FALKOR        6
 // Cavium
@@ -41,6 +42,8 @@
 #define CPU_THUNDERX2T99  8
 //Hisilicon
 #define CPU_TSV110        9
+// Ampere
+#define CPU_EMAG8180	 10
 
 static char *cpuname[] = {
   "UNKNOWN",
@@ -52,7 +55,9 @@ static char *cpuname[] = {
   "FALKOR",
   "THUNDERX",
   "THUNDERX2T99",
-  "TSV110"
+  "TSV110",
+  "EMAG8180",
+  "NEOVERSEN1"
 };
 
 static char *cpuname_lower[] = {
@@ -65,7 +70,9 @@ static char *cpuname_lower[] = {
   "falkor",
   "thunderx",
   "thunderx2t99",
-  "tsv110"
+  "tsv110",
+  "emag8180",
+  "neoversen1"
 };
 
 int get_feature(char *search)
@@ -140,6 +147,8 @@ int detect(void)
         return CPU_CORTEXA72;
       else if (strstr(cpu_part, "0xd09"))
         return CPU_CORTEXA73;
+      else if (strstr(cpu_part, "0xd0c"))
+        return CPU_NEOVERSEN1;
     }
     // Qualcomm
     else if (strstr(cpu_implementer, "0x51") && strstr(cpu_part, "0xc00"))
@@ -152,6 +161,9 @@ int detect(void)
     // HiSilicon
     else if (strstr(cpu_implementer, "0x48") && strstr(cpu_part, "0xd01"))
                         return CPU_TSV110;
+    // Ampere
+    else if (strstr(cpu_implementer, "0x50") && strstr(cpu_part, "0x000"))
+                        return CPU_EMAG8180;
 	}
 
 	p = (char *) NULL ;
@@ -278,6 +290,20 @@ void get_cpuconfig(void)
 			printf("#define DTB_DEFAULT_ENTRIES 64\n");
 			printf("#define DTB_SIZE 4096\n");
 			break;
+		case CPU_NEOVERSEN1:
+			printf("#define %s\n", cpuname[d]);
+			printf("#define L1_CODE_SIZE 65536\n");
+			printf("#define L1_CODE_LINESIZE 64\n");
+			printf("#define L1_CODE_ASSOCIATIVE 4\n");
+			printf("#define L1_DATA_SIZE 65536\n");
+			printf("#define L1_DATA_LINESIZE 64\n");
+			printf("#define L1_DATA_ASSOCIATIVE 4\n");
+			printf("#define L2_SIZE 1048576\n");
+			printf("#define L2_LINESIZE 64\n");
+			printf("#define L2_ASSOCIATIVE 16\n");
+			printf("#define DTB_DEFAULT_ENTRIES 64\n");
+			printf("#define DTB_SIZE 4096\n");
+			break;
 
     case CPU_FALKOR:
       printf("#define FALKOR\n");
@@ -335,6 +361,18 @@ void get_cpuconfig(void)
 			printf("#define DTB_DEFAULT_ENTRIES  64       \n");
 			printf("#define DTB_SIZE             4096     \n");
 			break;	
+
+		case CPU_EMAG8180:
+      // Minimum parameters for ARMv8 (based on A53)
+	printf("#define EMAG8180\n");
+    	printf("#define L1_CODE_SIZE 32768\n");
+    	printf("#define L1_DATA_SIZE 32768\n");
+    	printf("#define L1_DATA_LINESIZE 64\n");
+    	printf("#define L2_SIZE 262144\n");
+    	printf("#define L2_LINESIZE 64\n");
+    	printf("#define DTB_DEFAULT_ENTRIES 64\n");
+    	printf("#define DTB_SIZE 4096\n");
+
 	}
 	get_cpucount();
 }

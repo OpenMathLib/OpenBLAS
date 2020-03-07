@@ -8,30 +8,28 @@ SHELL = /bin/sh
 
 #  CC is the C compiler, normally invoked with options CFLAGS.
 #
-CC     = pghpc
+CC = pghpc
 CFLAGS =
 
-#  Modify the FORTRAN and OPTS definitions to refer to the compiler
+#  Modify the FC and FFLAGS definitions to the desired compiler
 #  and desired compiler options for your machine.  NOOPT refers to
 #  the compiler options desired when NO OPTIMIZATION is selected.
 #
-FORTRAN = pghpf
-OPTS    = -O4 -Mnohpfc -Mdclchk
-DRVOPTS = $(OPTS)
-NOOPT   = -Mnohpfc -Mdclchk
+FC = pghpf
+FFLAGS = -O4 -Mnohpfc -Mdclchk
+FFLAGS_DRV = $(FFLAGS)
+FFLAGS_NOOPT = -Mnohpfc -Mdclchk
 
-#  Define LOADER and LOADOPTS to refer to the loader and desired
-#  load options for your machine.
+#  Define LDFLAGS to the desired linker options for your machine.
 #
-LOADER   = pghpf
-LOADOPTS =
+LDFLAGS =
 
 #  The archiver and the flag(s) to use when building an archive
 #  (library).  If your system has no ranlib, set RANLIB = echo.
 #
-ARCH      = ar
-ARCHFLAGS = cr
-RANLIB    = echo
+AR = ar
+ARFLAGS = cr
+RANLIB = echo
 
 #  Timer for the SECOND and DSECND routines
 #
@@ -75,8 +73,8 @@ TIMER = EXT_ETIME
 #  possible.)
 #
 #BLASLIB      = -lessl
-BLASLIB      = ../../librefblas.a
-CBLASLIB     = ../../libcblas.a
-LAPACKLIB    = liblapack.a
-TMGLIB       = libtmglib.a
-LAPACKELIB   = liblapacke.a
+BLASLIB      = $(TOPSRCDIR)/librefblas.a
+CBLASLIB     = $(TOPSRCDIR)/libcblas.a
+LAPACKLIB    = $(TOPSRCDIR)/liblapack.a
+TMGLIB       = $(TOPSRCDIR)/libtmglib.a
+LAPACKELIB   = $(TOPSRCDIR)/liblapacke.a

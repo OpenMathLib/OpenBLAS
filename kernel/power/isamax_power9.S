@@ -1,3 +1,4 @@
+/*
 	.file	"isamax.c"
 	.abiversion 2
 	.section	".text"
@@ -5,6 +6,12 @@
 	.p2align 4,,15
 	.globl isamax_k
 	.type	isamax_k, @function
+*/
+#define ASSEMBLER
+#include "common.h"
+
+        PROLOGUE
+
 isamax_k:
 .LCF0:
 0:	addis 2,12,.TOC.-.LCF0@ha

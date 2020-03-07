@@ -122,6 +122,7 @@
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
 *     December 2016
 *
+      IMPLICIT NONE
 *     .. Scalar Arguments ..
       CHARACTER          NORM, UPLO
       INTEGER            N
@@ -139,14 +140,17 @@
 *     ..
 *     .. Local Scalars ..
       INTEGER            I, J, K
-      REAL               ABSA, SCALE, SUM, VALUE
+      REAL               ABSA, SUM, VALUE
+*     ..
+*     .. Local Arrays ..
+      REAL               SSQ( 2 ), COLSSQ( 2 )
 *     ..
 *     .. External Functions ..
       LOGICAL            LSAME, SISNAN
       EXTERNAL           LSAME, SISNAN
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           CLASSQ
+      EXTERNAL           CLASSQ, SCOMBSSQ
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          ABS, REAL, SQRT
@@ -225,31 +229,48 @@
       ELSE IF( ( LSAME( NORM, 'F' ) ) .OR. ( LSAME( NORM, 'E' ) ) ) THEN
 *
 *        Find normF(A).
+*        SSQ(1) is scale
+*        SSQ(2) is sum-of-squares
+*        For better accuracy, sum each column separately.
 *
-         SCALE = ZERO
-         SUM = ONE
+         SSQ( 1 ) = ZERO
+         SSQ( 2 ) = ONE
+*
+*        Sum off-diagonals
+*
          K = 2
          IF( LSAME( UPLO, 'U' ) ) THEN
             DO 110 J = 2, N
-               CALL CLASSQ( J-1, AP( K ), 1, SCALE, SUM )
+               COLSSQ( 1 ) = ZERO
+               COLSSQ( 2 ) = ONE
+               CALL CLASSQ( J-1, AP( K ), 1, COLSSQ( 1 ), COLSSQ( 2 ) )
+               CALL SCOMBSSQ( SSQ, COLSSQ )
                K = K + J
   110       CONTINUE
          ELSE
             DO 120 J = 1, N - 1
-               CALL CLASSQ( N-J, AP( K ), 1, SCALE, SUM )
+               COLSSQ( 1 ) = ZERO
+               COLSSQ( 2 ) = ONE
+               CALL CLASSQ( N-J, AP( K ), 1, COLSSQ( 1 ), COLSSQ( 2 ) )
+               CALL SCOMBSSQ( SSQ, COLSSQ )
                K = K + N - J + 1
   120       CONTINUE
          END IF
-         SUM = 2*SUM
+         SSQ( 2 ) = 2*SSQ( 2 )
+*
+*        Sum diagonal
+*
          K = 1
+         COLSSQ( 1 ) = ZERO
+         COLSSQ( 2 ) = ONE
          DO 130 I = 1, N
             IF( REAL( AP( K ) ).NE.ZERO ) THEN
                ABSA = ABS( REAL( AP( K ) ) )
-               IF( SCALE.LT.ABSA ) THEN
-                  SUM = ONE + SUM*( SCALE / ABSA )**2
-                  SCALE = ABSA
+               IF( COLSSQ( 1 ).LT.ABSA ) THEN
+                  COLSSQ( 2 ) = ONE + COLSSQ(2)*( COLSSQ(1) / ABSA )**2
+                  COLSSQ( 1 ) = ABSA
                ELSE
-                  SUM = SUM + ( ABSA / SCALE )**2
+                  COLSSQ( 2 ) = COLSSQ( 2 ) + ( ABSA / COLSSQ( 1 ) )**2
                END IF
             END IF
             IF( LSAME( UPLO, 'U' ) ) THEN
@@ -258,7 +279,8 @@
                K = K + N - I + 1
             END IF
   130    CONTINUE
-         VALUE = SCALE*SQRT( SUM )
+         CALL SCOMBSSQ( SSQ, COLSSQ )
+         VALUE = SSQ( 1 )*SQRT( SSQ( 2 ) )
       END IF
 *
       CLANHP = VALUE

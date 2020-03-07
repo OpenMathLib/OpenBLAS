@@ -106,7 +106,7 @@ set(SLASRC
    slatbs.f slatdf.f slatps.f slatrd.f slatrs.f slatrz.f
    slauu2.f slauum.f sopgtr.f sopmtr.f sorg2l.f sorg2r.f
    sorgbr.f sorghr.f sorgl2.f sorglq.f sorgql.f sorgqr.f sorgr2.f
-   sorgrq.f sorgtr.f sorm2l.f sorm2r.f sorm22.f
+   sorgrq.f sorgtr.f sorgtsqr.f sorm2l.f sorm2r.f sorm22.f
    sormbr.f sormhr.f sorml2.f sormlq.f sormql.f sormqr.f sormr2.f
    sormr3.f sormrq.f sormrz.f sormtr.f spbcon.f spbequ.f spbrfs.f
    spbstf.f spbsv.f  spbsvx.f
@@ -148,9 +148,11 @@ set(SLASRC
    sgetsls.f sgeqr.f slatsqr.f slamtsqr.f sgemqr.f
    sgelq.f slaswlq.f slamswlq.f sgemlq.f
    stplqt.f stplqt2.f stpmlqt.f
+   sorhr_col.f slaorhr_col_getrfnp.f slaorhr_col_getrfnp2.f
    ssytrd_2stage.f ssytrd_sy2sb.f ssytrd_sb2st.F ssb2st_kernels.f
    ssyevd_2stage.f ssyev_2stage.f ssyevx_2stage.f ssyevr_2stage.f
-   ssbev_2stage.f ssbevx_2stage.f ssbevd_2stage.f ssygv_2stage.f)
+   ssbev_2stage.f ssbevx_2stage.f ssbevd_2stage.f ssygv_2stage.f
+   sgesvdq.f scombssq.f)
 
 set(DSLASRC spotrs.f sgetrs.f spotrf.f sgetrf.f)
 
@@ -233,7 +235,7 @@ set(CLASRC
    ctptrs.f ctrcon.f ctrevc.f ctrevc3.f ctrexc.f ctrrfs.f ctrsen.f ctrsna.f
    ctrsyl.f ctrti2.f ctrtri.f ctrtrs.f ctzrzf.f cung2l.f cung2r.f
    cungbr.f cunghr.f cungl2.f cunglq.f cungql.f cungqr.f cungr2.f
-   cungrq.f cungtr.f cunm2l.f cunm2r.f cunmbr.f cunmhr.f cunml2.f cunm22.f
+   cungrq.f cungtr.f cungtsqr.f cunm2l.f cunm2r.f cunmbr.f cunmhr.f cunml2.f cunm22.f
    cunmlq.f cunmql.f cunmqr.f cunmr2.f cunmr3.f cunmrq.f cunmrz.f
    cunmtr.f cupgtr.f cupmtr.f icmax1.f scsum1.f cstemr.f
    chfrk.f ctfttp.f clanhf.f cpftrf.f cpftri.f cpftrs.f ctfsm.f ctftri.f
@@ -247,9 +249,11 @@ set(CLASRC
    cgetsls.f cgeqr.f clatsqr.f clamtsqr.f cgemqr.f
    cgelq.f claswlq.f clamswlq.f cgemlq.f
    ctplqt.f ctplqt2.f ctpmlqt.f
+   cunhr_col.f claunhr_col_getrfnp.f claunhr_col_getrfnp2.f
    chetrd_2stage.f chetrd_he2hb.f chetrd_hb2st.F chb2st_kernels.f
    cheevd_2stage.f cheev_2stage.f cheevx_2stage.f cheevr_2stage.f
-   chbev_2stage.f chbevx_2stage.f chbevd_2stage.f chegv_2stage.f)
+   chbev_2stage.f chbevx_2stage.f chbevd_2stage.f chegv_2stage.f
+   cgesvdq.f)
 
 set(CXLASRC cgesvxx.f cgerfsx.f cla_gerfsx_extended.f cla_geamv.f
    cla_gercond_c.f cla_gercond_x.f cla_gerpvgrw.f
@@ -295,7 +299,7 @@ set(DLASRC
    dlatbs.f dlatdf.f dlatps.f dlatrd.f dlatrs.f dlatrz.f dlauu2.f
    dlauum.f dopgtr.f dopmtr.f dorg2l.f dorg2r.f
    dorgbr.f dorghr.f dorgl2.f dorglq.f dorgql.f dorgqr.f dorgr2.f
-   dorgrq.f dorgtr.f dorm2l.f dorm2r.f dorm22.f
+   dorgrq.f dorgtr.f dorgtsqr.f dorm2l.f dorm2r.f dorm22.f
    dormbr.f dormhr.f dorml2.f dormlq.f dormql.f dormqr.f dormr2.f
    dormr3.f dormrq.f dormrz.f dormtr.f dpbcon.f dpbequ.f dpbrfs.f
    dpbstf.f dpbsv.f  dpbsvx.f
@@ -339,9 +343,11 @@ set(DLASRC
    dgetsls.f dgeqr.f dlatsqr.f dlamtsqr.f dgemqr.f
    dgelq.f dlaswlq.f dlamswlq.f dgemlq.f
    dtplqt.f dtplqt2.f dtpmlqt.f
+   dorhr_col.f dlaorhr_col_getrfnp.f dlaorhr_col_getrfnp2.f
    dsytrd_2stage.f dsytrd_sy2sb.f dsytrd_sb2st.F dsb2st_kernels.f
    dsyevd_2stage.f dsyev_2stage.f dsyevx_2stage.f dsyevr_2stage.f
-   dsbev_2stage.f dsbevx_2stage.f dsbevd_2stage.f dsygv_2stage.f)
+   dsbev_2stage.f dsbevx_2stage.f dsbevd_2stage.f dsygv_2stage.f
+   dgesvdq.f dcombssq.f)
 
 set(DXLASRC dgesvxx.f dgerfsx.f dla_gerfsx_extended.f dla_geamv.f
    dla_gercond.f dla_gerpvgrw.f dsysvxx.f dsyrfsx.f
@@ -424,7 +430,7 @@ set(ZLASRC
    ztptrs.f ztrcon.f ztrevc.f ztrevc3.f ztrexc.f ztrrfs.f ztrsen.f ztrsna.f
    ztrsyl.f ztrti2.f ztrtri.f ztrtrs.f ztzrzf.f zung2l.f
    zung2r.f zungbr.f zunghr.f zungl2.f zunglq.f zungql.f zungqr.f zungr2.f
-   zungrq.f zungtr.f zunm2l.f zunm2r.f zunmbr.f zunmhr.f zunml2.f zunm22.f
+   zungrq.f zungtr.f zungtsqr.f zunm2l.f zunm2r.f zunmbr.f zunmhr.f zunml2.f zunm22.f
    zunmlq.f zunmql.f zunmqr.f zunmr2.f zunmr3.f zunmrq.f zunmrz.f
    zunmtr.f zupgtr.f
    zupmtr.f izmax1.f dzsum1.f zstemr.f
@@ -440,9 +446,11 @@ set(ZLASRC
    zgelqt.f zgelqt3.f zgemlqt.f
    zgetsls.f zgeqr.f zlatsqr.f zlamtsqr.f zgemqr.f
    zgelq.f zlaswlq.f zlamswlq.f zgemlq.f
+   zunhr_col.f zlaunhr_col_getrfnp.f zlaunhr_col_getrfnp2.f
    zhetrd_2stage.f zhetrd_he2hb.f zhetrd_hb2st.F zhb2st_kernels.f
    zheevd_2stage.f zheev_2stage.f zheevx_2stage.f zheevr_2stage.f
-   zhbev_2stage.f zhbevx_2stage.f zhbevd_2stage.f zhegv_2stage.f)
+   zhbev_2stage.f zhbevx_2stage.f zhbevd_2stage.f zhegv_2stage.f
+   zgesvdq.f)
 
 set(ZXLASRC zgesvxx.f zgerfsx.f zla_gerfsx_extended.f zla_geamv.f
    zla_gercond_c.f zla_gercond_x.f zla_gerpvgrw.f zsysvxx.f zsyrfsx.f
@@ -504,7 +512,7 @@ if(USE_XBLAS)
 endif()
 target_link_libraries(lapack PRIVATE ${BLAS_LIBRARIES})
 
-if (${CMAKE_BUILD_TYPE_UPPER} STREQUAL "COVERAGE")
+if(_is_coverage_build)
   target_link_libraries(lapack PRIVATE gcov)
   add_coverage(lapack)
 endif()

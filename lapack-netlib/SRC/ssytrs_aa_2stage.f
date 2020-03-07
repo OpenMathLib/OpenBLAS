@@ -36,7 +36,7 @@
 *> \verbatim
 *>
 *> SSYTRS_AA_2STAGE solves a system of linear equations A*X = B with a real
-*> symmetric matrix A using the factorization A = U*T*U**T or
+*> symmetric matrix A using the factorization A = U**T*T*U or
 *> A = L*T*L**T computed by SSYTRF_AA_2STAGE.
 *> \endverbatim
 *
@@ -48,7 +48,7 @@
 *>          UPLO is CHARACTER*1
 *>          Specifies whether the details of the factorization are stored
 *>          as an upper or lower triangular matrix.
-*>          = 'U':  Upper triangular, form is A = U*T*U**T;
+*>          = 'U':  Upper triangular, form is A = U**T*T*U;
 *>          = 'L':  Lower triangular, form is A = L*T*L**T.
 *> \endverbatim
 *>
@@ -208,15 +208,15 @@
 *
       IF( UPPER ) THEN
 *
-*        Solve A*X = B, where A = U*T*U**T.
+*        Solve A*X = B, where A = U**T*T*U.
 *
          IF( N.GT.NB ) THEN
 *
-*           Pivot, P**T * B
+*           Pivot, P**T * B -> B
 *
             CALL SLASWP( NRHS, B, LDB, NB+1, N, IPIV, 1 )
 *
-*           Compute (U**T \P**T * B) -> B    [ (U**T \P**T * B) ]
+*           Compute (U**T \ B) -> B    [ (U**T \P**T * B) ]
 *
             CALL STRSM( 'L', 'U', 'T', 'U', N-NB, NRHS, ONE, A(1, NB+1),
      $                 LDA, B(NB+1, 1), LDB)
@@ -234,7 +234,7 @@
             CALL STRSM( 'L', 'U', 'N', 'U', N-NB, NRHS, ONE, A(1, NB+1),
      $                  LDA, B(NB+1, 1), LDB)
 *
-*           Pivot, P * B  [ P * (U \ (T \ (U**T \P**T * B) )) ]
+*           Pivot, P * B -> B  [ P * (U \ (T \ (U**T \P**T * B) )) ]
 *
             CALL SLASWP( NRHS, B, LDB, NB+1, N, IPIV, -1 )
 *
@@ -246,11 +246,11 @@
 *
          IF( N.GT.NB ) THEN
 *
-*           Pivot, P**T * B
+*           Pivot, P**T * B -> B
 *
             CALL SLASWP( NRHS, B, LDB, NB+1, N, IPIV, 1 )
 *
-*           Compute (L \P**T * B) -> B    [ (L \P**T * B) ]
+*           Compute (L \ B) -> B    [ (L \P**T * B) ]
 *
             CALL STRSM( 'L', 'L', 'N', 'U', N-NB, NRHS, ONE, A(NB+1, 1),
      $                 LDA, B(NB+1, 1), LDB)
@@ -268,7 +268,7 @@
             CALL STRSM( 'L', 'L', 'T', 'U', N-NB, NRHS, ONE, A(NB+1, 1),
      $                  LDA, B(NB+1, 1), LDB)
 *
-*           Pivot, P * B  [ P * (L**T \ (T \ (L \P**T * B) )) ]
+*           Pivot, P * B -> B  [ P * (L**T \ (T \ (L \P**T * B) )) ]
 *
             CALL SLASWP( NRHS, B, LDB, NB+1, N, IPIV, -1 )
 *

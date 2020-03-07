@@ -85,7 +85,7 @@
 *>          RTOL is DOUBLE PRECISION
 *>          Tolerance for the convergence of the bisection intervals.
 *>          An interval [LEFT,RIGHT] has converged if
-*>          RIGHT-LEFT.LT.RTOL*MAX(|LEFT|,|RIGHT|).
+*>          RIGHT-LEFT < RTOL*MAX(|LEFT|,|RIGHT|).
 *> \endverbatim
 *>
 *> \param[in] OFFSET

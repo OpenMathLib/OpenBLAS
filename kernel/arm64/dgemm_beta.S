@@ -43,7 +43,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define betaV0		v11.d[0]
 #define I	x16
 
-#define size 128
+#define prfm_size 640
+#define calc_size 128
 
 /**************************************************************************************
 * Macro definitions
@@ -79,6 +80,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	add	sp, sp, #(11*16)
 .endm
 
+.macro INIT_ZERO
+	fmul v0.2d, v0.2d, betaV0
+	fmul v1.2d, v1.2d, betaV0
+	fmul v2.2d, v2.2d, betaV0
+	fmul v3.2d, v3.2d, betaV0
+	fmul v4.2d, v4.2d, betaV0
+	fmul v5.2d, v5.2d, betaV0
+	fmul v6.2d, v6.2d, betaV0
+	fmul v7.2d, v7.2d, betaV0
+.endm
+
 /**************************************************************************************
 * End of macro definitions
 **************************************************************************************/
@@ -95,6 +107,9 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	fmov beta0, BETA
 	cmp  N, #0
 	ble	.Lgemm_beta_L999
+
+	fcmp BETA, #0.0
+	beq .Lgemm_beta_zero_01
 
 .Lgemm_beta_01:
 
@@ -119,27 +134,31 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	ldp	q2, q3, [A02]
 	ldp	q4, q5, [A03]
 	ldp	q6, q7, [A04]
-  
+ 
 	fmul v0.2d, v0.2d, betaV0
 	fmul v1.2d, v1.2d, betaV0
-	
+
 	fmul v2.2d, v2.2d, betaV0
 	fmul v3.2d, v3.2d, betaV0
-	
+
+	prfm    PLDL1KEEP, [A01, prfm_size]
+
 	fmul v4.2d, v4.2d, betaV0
 	fmul v5.2d, v5.2d, betaV0
-	
+
+	prfm    PLDL1KEEP, [A03, prfm_size]
+
 	fmul v6.2d, v6.2d, betaV0
 	fmul v7.2d, v7.2d, betaV0
 
 	st1	{v0.2d, v1.2d}, [A01]
-	add	A01, A01, size
+	add	A01, A01, calc_size
 	st1	{v2.2d, v3.2d}, [A02]
-	add	A02, A02, size
+	add	A02, A02, calc_size
 	st1	{v4.2d, v5.2d}, [A03]
-	add	A03, A03, size
+	add	A03, A03, calc_size
 	st1	{v6.2d, v7.2d}, [A04]
-	add	A04, A04, size
+	add	A04, A04, calc_size
 
 	subs    I , I , #1
 	bne	.Lgemm_beta_03
@@ -172,6 +191,61 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .Lgemm_beta_L999:
 
 	mov	x0, #0
+	RESTORE_REGS
+	ret
+
+.Lgemm_beta_zero_01:
+	INIT_ZERO
+	lsl LDC, LDC, #3
+
+	.align 5
+.Lgemm_beta_zero_02:
+	mov A01, C00
+	add C00, C00, LDC
+
+	asr I, M, #4
+	cmp I, #0
+	ble .Lgemm_beta_zero_04
+
+	add A02, A01, #64
+
+	.align 5
+.Lgemm_beta_zero_03:
+	
+	st1 {v0.2d, v1.2d, v2.2d, v3.2d}, [A01]
+	add A01, A01, calc_size
+	st1 {v4.2d, v5.2d, v6.2d, v7.2d}, [A02]
+	add A02, A02, calc_size
+	
+	subs I, I, #1
+	bne .Lgemm_beta_zero_03
+
+	.align 5
+.Lgemm_beta_zero_04:
+
+	and I, M, #15
+	cmp I, #0
+	ble .Lgemm_beta_zero_06
+
+	.align 5
+.Lgemm_beta_zero_05:
+
+	str beta0, [A01]
+	add A01, A01, #8
+
+	subs I, I, #1
+	bne .Lgemm_beta_zero_05
+
+	.align 5
+.Lgemm_beta_zero_06:
+
+	subs N, N, #1
+	bne .Lgemm_beta_zero_02
+
+	.align 5
+.Lgemm_beta_zero_L999:
+
+	mov x0, #0
 	RESTORE_REGS
 	ret
 

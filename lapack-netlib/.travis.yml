@@ -1,33 +1,32 @@
-language: cpp
+language: c
+dist: xenial
+group: travis_latest
+
+git:
+  depth: 3
+  quiet: true
 
 addons:
   apt:
-    sources:
-      - george-edison55-precise-backports # cmake
     packages:
-      - cmake
-      - cmake-data
-      - gfortran
+    - gfortran
 
-os:
-  - linux
-  - osx
-
-env:
-  - CMAKE_BUILD_TYPE=Release
-  - CMAKE_BUILD_TYPE=Coverage
-
-install:
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]];
-    then
-      for pkg in gcc cmake; do
-        if brew list -1 | grep -q "^${pkg}\$"; then
-          brew outdated $pkg || brew upgrade $pkg;
-        else
-          brew install $pkg;
-        fi
-      done
-    fi
+matrix:
+  include:
+  - os: linux
+    env: CMAKE_BUILD_TYPE=Release
+  - os: linux
+    env: CMAKE_BUILD_TYPE=Coverage
+  - os: osx
+    env: CMAKE_BUILD_TYPE=Release
+    before_install:
+    - brew update > /dev/null
+    - brew install gcc > /dev/null
+  - os: osx
+    env: CMAKE_BUILD_TYPE=Coverage
+    before_install:
+    - brew update > /dev/null
+    - brew install gcc > /dev/null
 
 script:
   - export PR=https://api.github.com/repos/$TRAVIS_REPO_SLUG/pulls/$TRAVIS_PULL_REQUEST

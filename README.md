@@ -26,6 +26,8 @@ You can download them from [file hosting on sourceforge.net](https://sourceforge
 
 Download from project homepage, https://xianyi.github.com/OpenBLAS/, or check out the code
 using Git from https://github.com/xianyi/OpenBLAS.git.
+Buildtime parameters can be chosen in Makefile.rule, see there for a short description of each option.
+Most can also be given directly on the make or cmake command line.
 
 ### Dependencies
 
@@ -101,7 +103,7 @@ The default installation directory is `/opt/OpenBLAS`.
 
 ## Supported CPUs and Operating Systems
 
-Please read `GotoBLAS_01Readme.txt`.
+Please read `GotoBLAS_01Readme.txt` for older CPU models already supported by the 2010 GotoBLAS.
 
 ### Additional supported CPUs
 
@@ -109,8 +111,8 @@ Please read `GotoBLAS_01Readme.txt`.
 
 - **Intel Xeon 56xx (Westmere)**: Used GotoBLAS2 Nehalem codes.
 - **Intel Sandy Bridge**: Optimized Level-3 and Level-2 BLAS with AVX on x86-64.
-- **Intel Haswell**: Optimized Level-3 and Level-2 BLAS with AVX2 and FMA  on x86-64.
-- **Intel Skylake**: Optimized Level-3 and Level-2 BLAS with AVX512 and FMA  on x86-64.
+- **Intel Haswell**: Optimized Level-3 and Level-2 BLAS with AVX2 and FMA on x86-64.
+- **Intel Skylake-X**: Optimized Level-3 and Level-2 BLAS with AVX512 and FMA on x86-64.
 - **AMD Bobcat**: Used GotoBLAS2 Barcelona codes.
 - **AMD Bulldozer**: x86-64 ?GEMM FMA4 kernels. (Thanks to Werner Saar)
 - **AMD PILEDRIVER**: Uses Bulldozer codes with some optimizations.
@@ -129,8 +131,15 @@ Please read `GotoBLAS_01Readme.txt`.
 
 #### ARM64
 
-- **ARMv8**: Experimental
-- **ARM Cortex-A57**: Experimental
+- **ARMv8**: Basic ARMV8 with small caches, optimized Level-3 and Level-2 BLAS
+- **Cortex-A53**: same as ARMV8 (different cpu specifications)
+- **Cortex A57**: Optimized Level-3 and Level-2 functions
+- **Cortex A72**: same as A57 ( different cpu specifications)
+- **Cortex A73**: same as A57 (different cpu specifications)
+- **Falkor**: same as A57 (different cpu specifications)
+- **ThunderX**: Optimized some Level-1 functions
+- **ThunderX2T99**: Optimized Level-3 BLAS and parts of Levels 1 and 2
+- **TSV110**: Optimized some Level-3 helper functions
 
 #### PPC/PPC64
 
@@ -139,18 +148,34 @@ Please read `GotoBLAS_01Readme.txt`.
 
 #### IBM zEnterprise System
 
-- **Z13**: Optimized Level-3 BLAS and Level-1,2 (double precision)
-- **Z14**: Optimized Level-3 BLAS and Level-1,2 (single precision)
+- **Z13**: Optimized Level-3 BLAS and Level-1,2
+- **Z14**: Optimized Level-3 BLAS and (single precision) Level-1,2
+
+### Support for multiple targets in a single library
+
+OpenBLAS can be built for multiple targets with runtime detection of the target cpu by specifiying DYNAMIC_ARCH=1 in Makefile.rule, on the gmake command line or as -DDYNAMIC_ARCH=TRUE in cmake.
+For **x86_64**, the list of targets this activates contains Prescott, Core2, Nehalem, Barcelona, Sandybridge, Bulldozer, Piledriver, Steamroller, Excavator, Haswell, Zen, SkylakeX. For cpu generations not included in this list, the corresponding older model is used. If you also specify DYNAMIC_OLDER=1, specific support for Penryn, Dunnington, Opteron, Opteron/SSE3, Bobcat, Atom and Nano is added. Finally there is an option DYNAMIC_LIST that allows to specify an individual list of targets to include instead of the default.
+DYNAMIC_ARCH is also supported on **x86**, where it translates to Katmai, Coppermine, Northwood, Prescott, Banias,
+Core2, Penryn, Dunnington, Nehalem, Athlon, Opteron, Opteron_SSE3, Barcelona, Bobcat, Atom and Nano.
+On **ARMV8**, it enables support for CortexA53, CortexA57, CortexA72, CortexA73, Falkor, ThunderX, ThunderX2T99, TSV110 as well as generic ARMV8 cpus.
+For **POWER**, the list encompasses POWER6, POWER8 and POWER9, on **ZARCH** it comprises Z13 and Z14.
+The TARGET option can be used in conjunction with DYNAMIC_ARCH=1 to specify which cpu model should be assumed for all the
+common code in the library, usually you will want to set this to the oldest model you expect to encounter.
+Please note that it is not possible to combine support for different architectures, so no combined 32 and 64 bit or x86_64 and arm64 in the same library.
 
 ### Supported OS
 
 - **GNU/Linux**
 - **MinGW or Visual Studio (CMake)/Windows**: Please read <https://github.com/xianyi/OpenBLAS/wiki/How-to-use-OpenBLAS-in-Microsoft-Visual-Studio>.
-- **Darwin/macOS**: Experimental. Although GotoBLAS2 supports Darwin, we are not macOS experts.
+- **Darwin/macOS/OSX/iOS**: Experimental. Although GotoBLAS2 already supports Darwin, we are not OSX/iOS experts.
 - **FreeBSD**: Supported by the community. We don't actively test the library on this OS.
 - **OpenBSD**: Supported by the community. We don't actively test the library on this OS.
+- **NetBSD**: Supported by the community. We don't actively test the library on this OS.
 - **DragonFly BSD**: Supported by the community. We don't actively test the library on this OS.
 - **Android**: Supported by the community. Please read <https://github.com/xianyi/OpenBLAS/wiki/How-to-build-OpenBLAS-for-Android>.
+- **AIX**: Supported on PPC up to POWER8
+- **Haiku**: Supported by the community. We don't actively test the library on this OS.
+- **SunOS**: Supported by the community. We don't actively test the library on this OS:
 
 ## Usage
 
@@ -205,7 +230,7 @@ Please see Changelog.txt to view the differences between OpenBLAS and GotoBLAS2 
 * Please use Clang version 3.1 and above to compile the library on Sandy Bridge microarchitecture.
   Clang 3.0 will generate the wrong AVX binary code.
 * Please use GCC version 6 or LLVM version 6 and above to compile Skylake AVX512 kernels.
-* The number of CPUs/cores should less than or equal to 256. On Linux `x86_64` (`amd64`),
+* The number of CPUs/cores should be less than or equal to 256. On Linux `x86_64` (`amd64`),
   there is experimental support for up to 1024 CPUs/cores and 128 numa nodes if you build
   the library with `BIGNUMA=1`.
 * OpenBLAS does not set processor affinity by default.

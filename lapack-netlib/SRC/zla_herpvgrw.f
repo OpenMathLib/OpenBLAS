@@ -102,7 +102,7 @@
 *>     as determined by ZHETRF.
 *> \endverbatim
 *>
-*> \param[in] WORK
+*> \param[out] WORK
 *> \verbatim
 *>          WORK is DOUBLE PRECISION array, dimension (2*N)
 *> \endverbatim

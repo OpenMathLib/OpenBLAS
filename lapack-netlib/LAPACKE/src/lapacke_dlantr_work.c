@@ -42,12 +42,10 @@ double LAPACKE_dlantr_work( int matrix_layout, char norm, char uplo,
     if( matrix_layout == LAPACK_COL_MAJOR ) {
         /* Call LAPACK function and adjust info */
         res = LAPACK_dlantr( &norm, &uplo, &diag, &m, &n, a, &lda, work );
-        if( info < 0 ) {
-            info = info - 1;
-        }
     } else if( matrix_layout == LAPACK_ROW_MAJOR ) {
         lapack_int lda_t = MAX(1,m);
         double* a_t = NULL;
+        double* work_lapack = NULL;
         /* Check leading dimension(s) */
         if( lda < n ) {
             info = -8;
@@ -60,12 +58,23 @@ double LAPACKE_dlantr_work( int matrix_layout, char norm, char uplo,
             info = LAPACK_TRANSPOSE_MEMORY_ERROR;
             goto exit_level_0;
         }
+        /* Allocate memory for work array(s) */
+        if( LAPACKE_lsame( norm, 'i' ) ) {
+            work_lapack = (double*)LAPACKE_malloc( sizeof(double) * MAX(1,m) );
+            if( work_lapack == NULL ) {
+                info = LAPACK_WORK_MEMORY_ERROR;
+                goto exit_level_1;
+            }
+        }
         /* Transpose input matrices */
         LAPACKE_dtr_trans( matrix_layout, uplo, diag, MAX(m,n), a, lda, a_t, lda_t );
         /* Call LAPACK function and adjust info */
-        res = LAPACK_dlantr( &norm, &uplo, &diag, &m, &n, a_t, &lda_t, work );
-        info = 0;  /* LAPACK call is ok! */
+        res = LAPACK_dlantr( &norm, &uplo, &diag, &m, &n, a_t, &lda_t, work_lapack );
         /* Release memory and exit */
+        if( work_lapack ) {
+            LAPACKE_free( work_lapack );
+        }
+exit_level_1:
         LAPACKE_free( a_t );
 exit_level_0:
         if( info == LAPACK_TRANSPOSE_MEMORY_ERROR ) {

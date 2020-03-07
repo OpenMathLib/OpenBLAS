@@ -39,9 +39,9 @@
 *>
 *> ILAENV2STAGE returns an INTEGER
 *> if ILAENV2STAGE >= 0: ILAENV2STAGE returns the value of the parameter
-*                        specified by ISPEC
+*>                       specified by ISPEC
 *> if ILAENV2STAGE < 0:  if ILAENV2STAGE = -k, the k-th argument had an
-*                        illegal value.
+*>                       illegal value.
 *>
 *> This version provides a set of parameters which should give good,
 *> but not optimal, performance on many of the currently available

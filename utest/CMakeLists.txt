@@ -6,7 +6,9 @@ if (MSVC AND "${CMAKE_C_COMPILER_ID}" MATCHES Clang)
 else ()
   set(OpenBLAS_utest_src
     utest_main.c
+    test_min.c
     test_amax.c
+    test_ismin.c
     test_rotmg.c
     test_rot.c
     test_axpy.c

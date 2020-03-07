@@ -40,6 +40,17 @@ CTEST(amax, samax){
 
   te_max=BLASFUNC(samax)(&N, x, &inc);
   tr_max=3.3;
-  
+
   ASSERT_DBL_NEAR_TOL((double)(tr_max), (double)(te_max), SINGLE_EPS);
+}
+
+CTEST(amax, damax){
+  blasint N=3, inc=1;
+  double te_max=0.0, tr_max=0.0;
+  double x[]={-1.1, 2.2, -3.3};
+
+  te_max=BLASFUNC(damax)(&N, x, &inc);
+  tr_max=3.3;
+
+  ASSERT_DBL_NEAR_TOL((double)(tr_max), (double)(te_max), DOUBLE_EPS);
 }

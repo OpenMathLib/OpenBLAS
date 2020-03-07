@@ -41,7 +41,7 @@
 *> where x( i ) = abs( X( 1 + ( i - 1 )*INCX ) ). The value of sumsq is
 *> assumed to be at least unity and the value of ssq will then satisfy
 *>
-*>    1.0 .le. ssq .le. ( sumsq + 2*n ).
+*>    1.0 <= ssq <= ( sumsq + 2*n ).
 *>
 *> scale is assumed to be non-negative and scl returns the value
 *>
@@ -65,7 +65,7 @@
 *>
 *> \param[in] X
 *> \verbatim
-*>          X is COMPLEX*16 array, dimension (N)
+*>          X is COMPLEX*16 array, dimension (1+(N-1)*INCX)
 *>          The vector x as described above.
 *>             x( i )  = X( 1 + ( i - 1 )*INCX ), 1 <= i <= n.
 *> \endverbatim

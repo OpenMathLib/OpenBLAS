@@ -770,7 +770,7 @@ c        MINWRK = MAX( 10*( NSIZE+1 ), 5*NSIZE*NSIZE / 2-2 )
       CALL SLACPY( 'Full', MPLUSN, MPLUSN, AI, LDA, A, LDA )
       CALL SLACPY( 'Full', MPLUSN, MPLUSN, BI, LDA, B, LDA )
 *
-*     Compute the Schur factorization while swaping the
+*     Compute the Schur factorization while swapping the
 *     m-by-m (1,1)-blocks with n-by-n (2,2)-blocks.
 *
       CALL SGGESX( 'V', 'V', 'S', SLCTSX, 'B', MPLUSN, AI, LDA, BI, LDA,

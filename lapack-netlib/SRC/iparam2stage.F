@@ -35,7 +35,7 @@
 *> \verbatim
 *>
 *>      This program sets problem and machine dependent parameters
-*>      useful for xHETRD_2STAGE, xHETRD_H@2HB, xHETRD_HB2ST,
+*>      useful for xHETRD_2STAGE, xHETRD_HE2HB, xHETRD_HB2ST,
 *>      xGEBRD_2STAGE, xGEBRD_GE2GB, xGEBRD_GB2BD 
 *>      and related subroutines for eigenvalue problems. 
 *>      It is called whenever ILAENV is called with 17 <= ISPEC <= 21.
@@ -53,7 +53,7 @@
 *>              return.
 *>
 *>              ISPEC=17: the optimal blocksize nb for the reduction to
-*                         BAND
+*>                        BAND
 *>
 *>              ISPEC=18: the optimal blocksize ib for the eigenvectors
 *>                        singular vectors update routine
@@ -90,14 +90,14 @@
 *> \param[in] NBI
 *> \verbatim
 *>          NBI is INTEGER which is the used in the reduciton, 
-*           (e.g., the size of the band), needed to compute workspace
-*           and LHOUS2.
+*>          (e.g., the size of the band), needed to compute workspace
+*>          and LHOUS2.
 *> \endverbatim
 *>
 *> \param[in] IBI
 *> \verbatim
 *>          IBI is INTEGER which represent the IB of the reduciton,
-*           needed to compute workspace and LHOUS2.
+*>          needed to compute workspace and LHOUS2.
 *> \endverbatim
 *>
 *> \param[in] NXI
