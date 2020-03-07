@@ -56,11 +56,21 @@ ifneq ($(INTERFACE64), 0)
 	@echo "  Use 64 bits int    (equivalent to \"-i8\" in Fortran)      "
 endif
 endif
-	@cverinfo=`$(CC) --version | sed -n '1p'`; \
-	echo "  C compiler       ... $(C_COMPILER)  (cmd & version : $${cverinfo})"
+	@$(CC) --version > /dev/null 2>&1;\
+	if [ $$? -eq 0 ]; then \
+	   cverinfo=`$(CC) --version | sed -n '1p'`; \
+	   echo "  C compiler       ... $(C_COMPILER)  (cmd & version : $${cverinfo})";\
+	else  \
+	   echo "  C compiler       ... $(C_COMPILER)  (command line : $(CC))";\
+	fi
 ifeq ($(NOFORTRAN), $(filter 0,$(NOFORTRAN)))
-	@fverinfo=`$(FC) --version | sed -n '1p'`; \
-	echo "  Fortran compiler ... $(F_COMPILER)  (cmd & version : $${fverinfo})"
+	@$(FC) --version > /dev/null 2>&1;\
+	if [ $$? -eq 0 ]; then \
+	   fverinfo=`$(FC) --version | sed -n '1p'`; \
+	   echo "  Fortran compiler ... $(F_COMPILER)  (cmd & version : $${fverinfo})";\
+	else \
+	   echo "  Fortran compiler ... $(F_COMPILER)  (command line : $(FC))";\
+	fi
 endif
 ifneq ($(OSNAME), AIX)
 	@echo -n "  Library Name     ... $(LIBNAME)"
