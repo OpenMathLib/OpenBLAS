@@ -87,4 +87,5 @@ build.*
 *.swp
 benchmark/*.goto
 benchmark/smallscaling
-
+CMakeCache.txt
+CMakeFiles/*

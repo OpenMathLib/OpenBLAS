@@ -214,7 +214,7 @@ ifndef GOTOBLAS_MAKEFILE
 export GOTOBLAS_MAKEFILE = 1
 
 # Generating Makefile.conf and config.h
-DUMMY := $(shell $(MAKE) -C $(TOPDIR) -f Makefile.prebuild CC="$(CC)" FC="$(FC)" HOSTCC="$(HOSTCC)" CFLAGS="$(GETARCH_FLAGS)" BINARY=$(BINARY) USE_OPENMP=$(USE_OPENMP) TARGET_CORE=$(TARGET_CORE) ONLY_CBLAS=$(ONLY_CBLAS) TARGET=$(TARGET) all)
+DUMMY := $(shell $(MAKE) -C $(TOPDIR) -f Makefile.prebuild CC="$(CC)" FC="$(FC)" HOSTCC="$(HOSTCC)" HOST_CFLAGS="$(GETARCH_FLAGS)" CFLAGS="$(CFLAGS)" BINARY=$(BINARY) USE_OPENMP=$(USE_OPENMP) TARGET_CORE=$(TARGET_CORE) ONLY_CBLAS=$(ONLY_CBLAS) TARGET=$(TARGET) all)
 
 ifndef TARGET_CORE
 include $(TOPDIR)/Makefile.conf
@@ -327,7 +327,7 @@ ifeq ($(C_COMPILER), GCC)
 #Version tests for supporting specific features (MS_ABI, POWER9 intrinsics)
 GCCVERSIONGTEQ4 := $(shell expr `$(CC) -dumpversion | cut -f1 -d.` \>= 4)
 GCCVERSIONGT4 := $(shell expr `$(CC) -dumpversion | cut -f1 -d.` \> 4)
-GCCVERSIONGT5 := $(shell expr `$(CC) -dumpversion | cut -f1 -d.` \> 5)
+GCCVERSIONGTEQ7 := $(shell expr `$(CC) -dumpversion | cut -f1 -d.` \>= 7)
 GCCVERSIONGTEQ9 := $(shell expr `$(CC) -dumpversion | cut -f1 -d.` \>= 9)
 GCCMINORVERSIONGTEQ7 := $(shell expr `$(CC) -dumpversion | cut -f2 -d.` \>= 7)
 ifeq ($(GCCVERSIONGT4), 1)
@@ -554,10 +554,12 @@ DYNAMIC_CORE += CORTEXA53
 DYNAMIC_CORE += CORTEXA57
 DYNAMIC_CORE += CORTEXA72
 DYNAMIC_CORE += CORTEXA73
+DYNAMIC_CORE += NEOVERSEN1
 DYNAMIC_CORE += FALKOR
 DYNAMIC_CORE += THUNDERX
 DYNAMIC_CORE += THUNDERX2T99
 DYNAMIC_CORE += TSV110
+DYNAMIC_CORE += EMAG8180
 endif
 
 ifeq ($(ARCH), zarch)
@@ -572,6 +574,7 @@ ifneq ($(C_COMPILER), GCC)
 DYNAMIC_CORE += POWER9
 endif
 ifeq ($(C_COMPILER), GCC)
+GCCVERSIONGT5 := $(shell expr `$(CC) -dumpversion | cut -f1 -d.` \> 5)
 ifeq ($(GCCVERSIONGT5), 1)
 DYNAMIC_CORE += POWER9
 else
@@ -1328,6 +1331,7 @@ export OSNAME
 export ARCH
 export CORE
 export LIBCORE
+export __BYTE_ORDER__
 export PGCPATH
 export CONFIG
 export CC

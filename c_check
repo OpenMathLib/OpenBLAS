@@ -18,11 +18,12 @@ $binary = $ENV{"BINARY"};
 $makefile = shift(@ARGV);
 $config   = shift(@ARGV);
 
-$compiler_name = join(" ", @ARGV);
+$compiler_name = shift(@ARGV);
+$flags = join(" ", @ARGV);
 
 # First, we need to know the target OS and compiler name
 
-$data = `$compiler_name -E ctest.c`;
+$data = `$compiler_name $flags -E ctest.c`;
 
 if ($?) {
     printf STDERR "C Compiler ($compiler_name) is something wrong.\n";
@@ -175,7 +176,7 @@ if ($defined == 0) {
 
 # Do again
 
-$data = `$compiler_name -E ctest.c`;
+$data = `$compiler_name $flags -E ctest.c`;
 
 if ($?) {
     printf STDERR "C Compiler ($compiler_name) is something wrong.\n";
@@ -188,14 +189,14 @@ if (($architecture eq "mips") || ($architecture eq "mips64")) {
     if ($@){ 
 	warn "could not load PERL module File::Temp, so could not check MSA capatibility";
     } else {
-	$tmpf = new File::Temp( UNLINK => 1 );
+	$tmpf = new File::Temp( SUFFIX => '.c' , UNLINK => 1 );
 	$code = '"addvi.b $w0, $w1, 1"';
 	$msa_flags = "-mmsa -mfp64 -msched-weight -mload-store-pairs";
 	print $tmpf "#include <msa.h>\n\n";
 	print $tmpf "void main(void){ __asm__ volatile($code); }\n";
 
-	$args = "$msa_flags -o $tmpf.o -x c $tmpf";
-	my @cmd = ("$compiler_name $args");
+	$args = "$msa_flags -o $tmpf.o $tmpf";
+	my @cmd = ("$compiler_name $flags $args >/dev/null 2>/dev/null");
 	system(@cmd) == 0;
 	if ($? != 0) {
 	    $have_msa = 0;
@@ -229,11 +230,14 @@ if (($architecture eq "x86") || ($architecture eq "x86_64")) {
 	$no_avx512 = 0;
     } else {
 #	$tmpf = new File::Temp( UNLINK => 1 );
-	($fh,$tmpf) = tempfile( UNLINK => 1 );
+	($fh,$tmpf) = tempfile( SUFFIX => '.c' , UNLINK => 1 );
 	$code = '"vbroadcastss -4 * 4(%rsi), %zmm2"';
 	print $tmpf "#include <immintrin.h>\n\nint main(void){ __asm__ volatile($code); }\n";
-	$args = " -march=skylake-avx512 -c -o $tmpf.o -x c $tmpf";
-	my @cmd = ("$compiler_name $args >/dev/null 2>/dev/null");
+	$args = " -march=skylake-avx512 -c -o $tmpf.o $tmpf";
+	if ($compiler eq "PGI") {
+	    $args = " -tp skylake -c -o $tmpf.o $tmpf";
+	}
+	my @cmd = ("$compiler_name $flags $args >/dev/null 2>/dev/null");
 	system(@cmd) == 0;
 	if ($? != 0) {
 	    $no_avx512 = 1;
@@ -244,7 +248,7 @@ if (($architecture eq "x86") || ($architecture eq "x86_64")) {
     }
 }
 
-$data = `$compiler_name -S ctest1.c && grep globl ctest1.s | head -n 1 && rm -f ctest1.s`;
+$data = `$compiler_name $flags -S ctest1.c && grep globl ctest1.s | head -n 1 && rm -f ctest1.s`;
 
 $data =~ /globl\s([_\.]*)(.*)/;
 
@@ -260,19 +264,6 @@ if ($architecture ne $hostarch) {
 
 $cross = 1 if ($os ne $hostos);
 
-# rework cross suffix and architecture if we are on OSX cross-compiling for ARMV8-based IOS
-# the initial autodetection will have been confused by the command-line arguments to clang
-# and the cross-compiler apparently still claims to build for x86_64 in its CC -E output
-if (($os eq "Darwin") && ($cross_suffix ne "")) {
-  my $tmpnam = `xcrun --sdk iphoneos --find clang`;
-  $cross_suffix = substr($tmpnam, 0, rindex($tmpnam, "/")+1 ); 
-# this should produce something like $cross_suffix="/Applications/Xcode-10.1.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/";
-  $cross =1;
-  $architecture = arm64;
-}
-
-
-
 $openmp = "" if $ENV{USE_OPENMP} != 1;
 
 $linker_L = "";
@@ -280,7 +271,7 @@ $linker_l = "";
 $linker_a = "";
 
 {
-    $link = `$compiler_name -c ctest2.c -o ctest2.o 2>&1 && $compiler_name $openmp -v ctest2.o -o ctest2 2>&1 && rm -f ctest2.o ctest2 ctest2.exe`;
+    $link = `$compiler_name $flags -c ctest2.c -o ctest2.o 2>&1 && $compiler_name $flags $openmp -v ctest2.o -o ctest2 2>&1 && rm -f ctest2.o ctest2 ctest2.exe`;
 
     $link =~ s/\-Y\sP\,/\-Y/g;
 
@@ -318,6 +309,7 @@ $linker_a = "";
 	    && ($flags !~ /kernel32/)
 	    && ($flags !~ /advapi32/)
 	    && ($flags !~ /shell32/)
+	    && ($flags !~ /omp/)
 	    ) {
 	    $linker_l .= $flags . " "
 	}

@@ -80,6 +80,8 @@
       IF( V1( 1 ).GE.V2( 1 ) ) THEN
          IF( V1( 1 ).NE.ZERO ) THEN
             V1( 2 ) = V1( 2 ) + ( V2( 1 ) / V1( 1 ) )**2 * V2( 2 )
+         ELSE
+            V1( 2 ) = V1( 2 ) + V2( 2 )
          END IF
       ELSE
          V1( 2 ) = V2( 2 ) + ( V1( 1 ) / V2( 1 ) )**2 * V1( 2 )

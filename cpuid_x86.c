@@ -2006,6 +2006,38 @@ int get_coretype(void){
 	    return CORE_NEHALEM;
         }
 	break;
+      case 6:
+        if (model == 6)
+#ifndef NO_AVX512
+	    return CORE_SKYLAKEX;
+#else
+	  if(support_avx())
+#ifndef NO_AVX2
+	    return CORE_HASWELL;
+#else
+	    return CORE_SANDYBRIDGE;
+#endif
+	  else
+	    return CORE_NEHALEM;
+#endif			
+        break;    	
+      case 7:
+        if (model == 10) 
+            return CORE_NEHALEM;
+        if (model == 14)
+#ifndef NO_AVX512
+	    return CORE_SKYLAKEX;
+#else
+	  if(support_avx())
+#ifndef NO_AVX2
+	    return CORE_HASWELL;
+#else
+	    return CORE_SANDYBRIDGE;
+#endif
+	  else
+	    return CORE_NEHALEM;
+#endif			
+        break;    	
       case 9:
       case 8:
         if (model == 14) { // Kaby Lake 

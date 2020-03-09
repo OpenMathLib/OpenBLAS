@@ -11,7 +11,10 @@
 #include "common.h"
 
 	PROLOGUE
-
+	
+#if _CALL_ELF == 2	
+isamax_k:
+#endif
 .LCF0:
 0:	addis 2,12,.TOC.-.LCF0@ha
 	addi 2,2,.TOC.-.LCF0@l

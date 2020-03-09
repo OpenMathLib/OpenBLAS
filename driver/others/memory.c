@@ -822,7 +822,7 @@ static void *alloc_qalloc(void *address){
 
 static void alloc_windows_free(struct alloc_t *alloc_info){
 
-  VirtualFree(alloc_info, allocation_block_size, MEM_DECOMMIT);
+  VirtualFree(alloc_info, 0, MEM_RELEASE);
 
 }
 
@@ -935,7 +935,7 @@ static void alloc_hugetlb_free(struct alloc_t *alloc_info){
 
 #ifdef OS_WINDOWS
 
-  VirtualFree(alloc_info, allocation_block_size, MEM_LARGE_PAGES | MEM_DECOMMIT);
+  VirtualFree(alloc_info, 0, MEM_LARGE_PAGES | MEM_RELEASE);
 
 #endif
 
@@ -2310,7 +2310,7 @@ static void *alloc_qalloc(void *address){
 
 static void alloc_windows_free(struct release_t *release){
 
-  VirtualFree(release -> address, BUFFER_SIZE, MEM_DECOMMIT);
+  VirtualFree(release -> address, 0, MEM_RELEASE);
 
 }
 
@@ -2432,7 +2432,7 @@ static void alloc_hugetlb_free(struct release_t *release){
 
 #ifdef OS_WINDOWS
 
-  VirtualFree(release -> address, BUFFER_SIZE, MEM_LARGE_PAGES | MEM_DECOMMIT);
+  VirtualFree(release -> address, 0, MEM_LARGE_PAGES | MEM_RELEASE);
 
 #endif
 

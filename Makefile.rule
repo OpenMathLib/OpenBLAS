@@ -3,7 +3,7 @@
 #
 
 # This library's version
-VERSION = 0.3.8.dev
+VERSION = 0.3.9.dev
 
 # If you set the suffix, the library name will be libopenblas_$(LIBNAMESUFFIX).a
 # and libopenblas_$(LIBNAMESUFFIX).so. Meanwhile, the soname in shared library
@@ -96,6 +96,15 @@ VERSION = 0.3.8.dev
 # run in parallel. If more than NUM_PARALLEL threads call OpenBLAS's calculation API,
 # they need to wait for the preceding API calls to finish or risk data corruption.
 # NUM_PARALLEL = 2
+
+# When multithreading, OpenBLAS needs to use a memory buffer for communicating
+# and collating results for individual subranges of the original matrix. Since
+# the original GotoBLAS of the early 2000s, the default size of this buffer has
+# been set at a value of 32<<20 (which is 32MB) on x86_64 , twice that on PPC.
+# If you expect to handle large problem sizes (beyond about 30000x30000) uncomment
+# this line and adjust the (32<<n) factor if necessary. Usually an insufficient value
+# manifests itself as a crash in the relevant scal kernel (sscal_k, dscal_k etc) 
+# BUFFERSIZE = 25
 
 # If you don't need to install the static library, please comment this in.
 # NO_STATIC = 1

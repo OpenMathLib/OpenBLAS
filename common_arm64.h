@@ -53,16 +53,16 @@ static void __inline blas_lock(volatile BLASULONG *address){
   BLASULONG ret;
 
   do {
-    while (*address) {YIELDING;};
-
     __asm__ __volatile__(
 			 "mov	x4, #1							\n\t"
+			 "sevl								\n\t"
                          "1:                                                            \n\t"
+                         "wfe                                                           \n\t"
+			 "2:								\n\t"
                          "ldaxr x2, [%1]                                                \n\t"
                          "cbnz  x2, 1b                                                  \n\t"
-			 "2:								\n\t"
                          "stxr  w3, x4, [%1]                                            \n\t"
-                         "cbnz  w3, 1b                                                  \n\t"
+                         "cbnz  w3, 2b                                                  \n\t"
                          "mov   %0, #0                                                  \n\t"
                          : "=r"(ret), "=r"(address)
                          : "1"(address)
@@ -81,10 +81,12 @@ static void __inline blas_lock(volatile BLASULONG *address){
 #if !defined(OS_DARWIN) && !defined (OS_ANDROID)
 static __inline BLASULONG rpcc(void){
   BLASULONG ret = 0;
+  blasint shift;
  
   __asm__ __volatile__ ("isb; mrs %0,cntvct_el0":"=r"(ret));
+  __asm__ __volatile__ ("mrs %0,cntfrq_el0; clz %w0, %w0":"=&r"(shift));
 
-  return ret;
+  return ret << shift;
 }
 
 #define RPCC_DEFINED
