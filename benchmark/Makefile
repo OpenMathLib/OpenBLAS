@@ -123,7 +123,7 @@ acml :: slinpack.acml dlinpack.acml clinpack.acml zlinpack.acml \
        sgetri.acml dgetri.acml cgetri.acml zgetri.acml \
        spotrf.acml dpotrf.acml cpotrf.acml zpotrf.acml \
        ssymm.acml dsymm.acml csymm.acml zsymm.acml \
-       saxpby.goto daxpby.goto caxpby.goto zaxpby.goto
+       saxpby.acml daxpby.acml caxpby.acml zaxpby.acml
 
 atlas :: slinpack.atlas dlinpack.atlas clinpack.atlas zlinpack.atlas \
        scholesky.atlas dcholesky.atlas ccholesky.atlas zcholesky.atlas \
@@ -161,7 +161,7 @@ atlas :: slinpack.atlas dlinpack.atlas clinpack.atlas zlinpack.atlas \
        sgetri.atlas dgetri.atlas cgetri.atlas zgetri.atlas \
        spotrf.atlas dpotrf.atlas cpotrf.atlas zpotrf.atlas \
        ssymm.atlas dsymm.atlas csymm.atlas zsymm.atlas \
-       saxpby.goto daxpby.goto caxpby.goto zaxpby.goto
+       saxpby.atlas daxpby.atlas caxpby.atlas zaxpby.atlas
 
 mkl :: slinpack.mkl dlinpack.mkl clinpack.mkl zlinpack.mkl \
        scholesky.mkl dcholesky.mkl ccholesky.mkl zcholesky.mkl \
@@ -198,7 +198,7 @@ mkl :: slinpack.mkl dlinpack.mkl clinpack.mkl zlinpack.mkl \
        sgetri.mkl dgetri.mkl cgetri.mkl zgetri.mkl \
        spotrf.mkl dpotrf.mkl cpotrf.mkl zpotrf.mkl \
        ssymm.mkl dsymm.mkl csymm.mkl zsymm.mkl \
-       saxpby.goto daxpby.goto caxpby.goto zaxpby.goto
+       saxpby.mkl daxpby.mkl caxpby.mkl zaxpby.mkl
 
 else
 
@@ -233,6 +233,13 @@ goto :: sgemm.goto dgemm.goto cgemm.goto zgemm.goto \
        ssymm.goto dsymm.goto csymm.goto zsymm.goto \
        smallscaling \
        isamax.goto idamax.goto icamax.goto izamax.goto \
+       ismax.goto idmax.goto \
+       isamin.goto idamin.goto icamin.goto izamin.goto \
+       ismin.goto idmin.goto \
+       samax.goto damax.goto camax.goto zamax.goto \
+       smax.goto dmax.goto \
+       samin.goto damin.goto camin.goto zamin.goto \
+       smin.goto dmin.goto \
        saxpby.goto daxpby.goto caxpby.goto zaxpby.goto \
        snrm2.goto dnrm2.goto scnrm2.goto dznrm2.goto $(GOTO_LAPACK_TARGETS)
 
@@ -271,7 +278,7 @@ acml :: slinpack.acml dlinpack.acml clinpack.acml zlinpack.acml \
        sgetri.acml dgetri.acml cgetri.acml zgetri.acml \
        spotrf.acml dpotrf.acml cpotrf.acml zpotrf.acml \
        ssymm.acml dsymm.acml csymm.acml zsymm.acml \
-       saxpby.goto daxpby.goto caxpby.goto zaxpby.goto
+       saxpby.acml daxpby.acml caxpby.acml zaxpby.acml
 
 atlas :: slinpack.atlas dlinpack.atlas clinpack.atlas zlinpack.atlas \
        scholesky.atlas dcholesky.atlas ccholesky.atlas zcholesky.atlas \
@@ -310,8 +317,8 @@ atlas :: slinpack.atlas dlinpack.atlas clinpack.atlas zlinpack.atlas \
        spotrf.atlas dpotrf.atlas cpotrf.atlas zpotrf.atlas \
        ssymm.atlas dsymm.atlas csymm.atlas zsymm.atlas \
        isamax.atlas idamax.atlas icamax.atlas izamax.atlas \
-       snrm2.goto dnrm2.goto scnrm2.goto dznrm2.goto \
-       saxpby.goto daxpby.goto caxpby.goto zaxpby.goto
+       snrm2.atlas dnrm2.atlas scnrm2.atlas dznrm2.atlas \
+       saxpby.atlas daxpby.atlas caxpby.atlas zaxpby.atlas
 
 mkl :: slinpack.mkl dlinpack.mkl clinpack.mkl zlinpack.mkl \
        scholesky.mkl dcholesky.mkl ccholesky.mkl zcholesky.mkl \
@@ -348,7 +355,7 @@ mkl :: slinpack.mkl dlinpack.mkl clinpack.mkl zlinpack.mkl \
        sgetri.mkl dgetri.mkl cgetri.mkl zgetri.mkl \
        spotrf.mkl dpotrf.mkl cpotrf.mkl zpotrf.mkl \
        ssymm.mkl dsymm.mkl csymm.mkl zsymm.mkl \
-       saxpby.goto daxpby.goto caxpby.goto zaxpby.goto
+       saxpby.mkl daxpby.mkl caxpby.mkl zaxpby.mkl
 
 
 
@@ -396,7 +403,7 @@ veclib :: slinpack.veclib dlinpack.veclib clinpack.veclib zlinpack.veclib \
        sgetri.veclib dgetri.veclib cgetri.veclib zgetri.veclib \
        spotrf.veclib dpotrf.veclib cpotrf.veclib zpotrf.veclib \
        ssymm.veclib dsymm.veclib csymm.veclib zsymm.veclib \
-       saxpby.goto daxpby.goto caxpby.goto zaxpby.goto
+       saxpby.veclib daxpby.veclib caxpby.veclib zaxpby.veclib
 
 goto_3m :: cgemm3m.goto zgemm3m.goto
 
@@ -2519,6 +2526,86 @@ izamax.goto : izamax.$(SUFFIX) ../$(LIBNAME)
 izamax.atlas : izamax.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBATLAS) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
 
+############################################## ISMAX ##############################################
+ismax.goto : ismax.$(SUFFIX) ../$(LIBNAME)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+
+############################################## IDMAX ##############################################
+idmax.goto : idmax.$(SUFFIX) ../$(LIBNAME)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+	
+############################################## ISAMIN ##############################################
+isamin.goto : isamin.$(SUFFIX) ../$(LIBNAME)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+
+############################################## IDAMIN ##############################################
+idamin.goto : idamin.$(SUFFIX) ../$(LIBNAME)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+
+############################################## ICAMIN ##############################################
+icamin.goto : icamin.$(SUFFIX) ../$(LIBNAME)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+
+############################################## IZAMIN ##############################################
+izamin.goto : izamin.$(SUFFIX) ../$(LIBNAME)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+
+############################################## ISMIN ##############################################
+ismin.goto : ismin.$(SUFFIX) ../$(LIBNAME)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+
+############################################## IDMIN ##############################################
+idmin.goto : idmin.$(SUFFIX) ../$(LIBNAME)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+
+############################################## SAMAX ##############################################
+samax.goto : samax.$(SUFFIX) ../$(LIBNAME)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+
+############################################## DAMAX ##############################################
+damax.goto : damax.$(SUFFIX) ../$(LIBNAME)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+
+############################################## CAMAX ##############################################
+camax.goto : camax.$(SUFFIX) ../$(LIBNAME)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+
+############################################## ZAMAX ##############################################
+zamax.goto : zamax.$(SUFFIX) ../$(LIBNAME)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+
+############################################## SMAX ##############################################
+smax.goto : smax.$(SUFFIX) ../$(LIBNAME)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+
+############################################## DMAX ##############################################
+dmax.goto : dmax.$(SUFFIX) ../$(LIBNAME)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+
+############################################## SAMIN ##############################################
+samin.goto : samin.$(SUFFIX) ../$(LIBNAME)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+
+############################################## DAMIN ##############################################
+damin.goto : damin.$(SUFFIX) ../$(LIBNAME)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+
+############################################## CAMIN ##############################################
+camin.goto : camin.$(SUFFIX) ../$(LIBNAME)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+
+############################################## ZAMIN ##############################################
+zamin.goto : zamin.$(SUFFIX) ../$(LIBNAME)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+
+############################################## SMIN ##############################################
+smin.goto : smin.$(SUFFIX) ../$(LIBNAME)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+
+############################################## DMIN ##############################################
+dmin.goto : dmin.$(SUFFIX) ../$(LIBNAME)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+
 ############################################## SNRM2 ##############################################
 snrm2.goto : snrm2.$(SUFFIX) ../$(LIBNAME)
 	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
@@ -2948,6 +3035,73 @@ icamax.$(SUFFIX) : iamax.c
 
 izamax.$(SUFFIX) : iamax.c
 	$(CC) $(CFLAGS) -c -DCOMPLEX -DDOUBLE -o $(@F) $^
+
+
+ismax.$(SUFFIX) : imax.c
+	$(CC) $(CFLAGS) -c -UCOMPLEX -UDOUBLE -o $(@F) $^
+
+idmax.$(SUFFIX) : imax.c
+	$(CC) $(CFLAGS) -c -UCOMPLEX -DDOUBLE -o $(@F) $^
+
+
+isamin.$(SUFFIX) : iamin.c
+	$(CC) $(CFLAGS) -c -UCOMPLEX -UDOUBLE -o $(@F) $^
+
+idamin.$(SUFFIX) : iamin.c
+	$(CC) $(CFLAGS) -c -UCOMPLEX -DDOUBLE -o $(@F) $^
+
+icamin.$(SUFFIX) : iamin.c
+	$(CC) $(CFLAGS) -c -DCOMPLEX -UDOUBLE -o $(@F) $^
+
+izamin.$(SUFFIX) : iamin.c
+	$(CC) $(CFLAGS) -c -DCOMPLEX -DDOUBLE -o $(@F) $^
+
+
+ismin.$(SUFFIX) : imin.c
+	$(CC) $(CFLAGS) -c -UCOMPLEX -UDOUBLE -o $(@F) $^
+
+idmin.$(SUFFIX) : imin.c
+	$(CC) $(CFLAGS) -c -UCOMPLEX -DDOUBLE -o $(@F) $^
+
+
+samax.$(SUFFIX) : amax.c
+	$(CC) $(CFLAGS) -c -UCOMPLEX  -UDOUBLE -o $(@F) $^
+
+damax.$(SUFFIX) : amax.c
+	$(CC) $(CFLAGS) -c -UCOMPLEX  -DDOUBLE -o $(@F) $^
+
+camax.$(SUFFIX) : amax.c
+	$(CC) $(CFLAGS) -c -DCOMPLEX  -UDOUBLE -o $(@F) $^
+
+zamax.$(SUFFIX) : amax.c
+	$(CC) $(CFLAGS) -c -DCOMPLEX  -DDOUBLE -o $(@F) $^
+
+
+smax.$(SUFFIX) : max.c
+	$(CC) $(CFLAGS) -c -UCOMPLEX  -UDOUBLE -o $(@F) $^
+
+dmax.$(SUFFIX) : max.c
+	$(CC) $(CFLAGS) -c -UCOMPLEX  -DDOUBLE -o $(@F) $^
+
+
+samin.$(SUFFIX) : amin.c
+	$(CC) $(CFLAGS) -c -UCOMPLEX -UDOUBLE -o $(@F) $^
+
+damin.$(SUFFIX) : amin.c
+	$(CC) $(CFLAGS) -c -UCOMPLEX -DDOUBLE -o $(@F) $^
+
+camin.$(SUFFIX) : amin.c
+	$(CC) $(CFLAGS) -c -DCOMPLEX -UDOUBLE -o $(@F) $^
+
+zamin.$(SUFFIX) : amin.c
+	$(CC) $(CFLAGS) -c -DCOMPLEX -DDOUBLE -o $(@F) $^
+
+
+smin.$(SUFFIX) : min.c
+	$(CC) $(CFLAGS) -c -UCOMPLEX -UDOUBLE -o $(@F) $^
+
+dmin.$(SUFFIX) : min.c
+	$(CC) $(CFLAGS) -c -UCOMPLEX -DDOUBLE -o $(@F) $^
 
 
 snrm2.$(SUFFIX) : nrm2.c
