@@ -33,14 +33,21 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "common.h"
 
 
-#undef HEMM
+#undef AXPBY
 
+#ifdef COMPLEX
 #ifdef DOUBLE
-#define HEMM   BLASFUNC(zhemm)
+#define AXPBY   BLASFUNC(zaxpby)
 #else
-#define HEMM   BLASFUNC(chemm)
+#define AXPBY   BLASFUNC(caxpby)
 #endif
-
+#else
+#ifdef DOUBLE
+#define AXPBY   BLASFUNC(daxpby)
+#else
+#define AXPBY   BLASFUNC(saxpby)
+#endif
+#endif
 
 #if defined(__WIN32__) || defined(__WIN64__)
 
@@ -85,8 +92,8 @@ static void *huge_malloc(BLASLONG size){
 #endif
 
   if ((shmid =shmget(IPC_PRIVATE,
-		     (size + HUGE_PAGESIZE) & ~(HUGE_PAGESIZE - 1),
-		     SHM_HUGETLB | IPC_CREAT |0600)) < 0) {
+             (size + HUGE_PAGESIZE) & ~(HUGE_PAGESIZE - 1),
+             SHM_HUGETLB | IPC_CREAT |0600)) < 0) {
     printf( "Memory allocation failed(shmget).\n");
     exit(1);
   }
@@ -109,47 +116,41 @@ static void *huge_malloc(BLASLONG size){
 
 int main(int argc, char *argv[]){
 
-  FLOAT *a, *b, *c;
-  FLOAT alpha[] = {1.0, 1.0};
-  FLOAT beta [] = {1.0, 1.0};
+  FLOAT *x, *y;
+  FLOAT alpha[2] = { 2.0, 2.0 };
+  FLOAT beta[2] = {2.0, 2.0};
+  blasint m, i;
+  blasint inc_x=1,inc_y=1;
+  int loops = 1;
+  int l;
   char *p;
-
-  char side='L';
-  char uplo='U';
-
-  if ((p = getenv("OPENBLAS_SIDE"))) side=*p; 
-  if ((p = getenv("OPENBLAS_UPLO"))) uplo=*p;
-
-  blasint m, i, j;
 
   int from =   1;
   int to   = 200;
   int step =   1;
 
   struct timeval start, stop;
-  double time1;
+  double time1,timeg;
 
   argc--;argv++;
 
-  if (argc > 0) { from     = atol(*argv);		argc--; argv++;}
-  if (argc > 0) { to       = MAX(atol(*argv), from);	argc--; argv++;}
-  if (argc > 0) { step     = atol(*argv);		argc--; argv++;}
+  if (argc > 0) { from     = atol(*argv);       argc--; argv++;}
+  if (argc > 0) { to       = MAX(atol(*argv), from);    argc--; argv++;}
+  if (argc > 0) { step     = atol(*argv);       argc--; argv++;}
 
-  fprintf(stderr, "From : %3d  To : %3d Step = %3d Side = %c Uplo = %c\n", from, to, step,side,uplo);
+  if ((p = getenv("OPENBLAS_LOOPS")))  loops = atoi(p);
+  if ((p = getenv("OPENBLAS_INCX")))   inc_x = atoi(p);
+  if ((p = getenv("OPENBLAS_INCY")))   inc_y = atoi(p);
 
-  if (( a = (FLOAT *)malloc(sizeof(FLOAT) * to * to * COMPSIZE)) == NULL){
+  fprintf(stderr, "From : %3d  To : %3d Step = %3d Inc_x = %d Inc_y = %d Loops = %d\n", from, to, step,inc_x,inc_y,loops);
+
+  if (( x = (FLOAT *)malloc(sizeof(FLOAT) * to * abs(inc_x) * COMPSIZE)) == NULL){
     fprintf(stderr,"Out of Memory!!\n");exit(1);
   }
 
-  if (( b = (FLOAT *)malloc(sizeof(FLOAT) * to * to * COMPSIZE)) == NULL){
+  if (( y = (FLOAT *)malloc(sizeof(FLOAT) * to * abs(inc_y) * COMPSIZE)) == NULL){
     fprintf(stderr,"Out of Memory!!\n");exit(1);
   }
-
-  if (( c = (FLOAT *)malloc(sizeof(FLOAT) * to * to * COMPSIZE)) == NULL){
-    fprintf(stderr,"Out of Memory!!\n");exit(1);
-  }
-
-
 
 #ifdef linux
   srandom(getpid());
@@ -160,27 +161,38 @@ int main(int argc, char *argv[]){
   for(m = from; m <= to; m += step)
   {
 
+    timeg=0;
+
     fprintf(stderr, " %6d : ", (int)m);
 
-    for(j = 0; j < m; j++){
-      for(i = 0; i < m * COMPSIZE; i++){
-	a[(long)i + (long)j * (long)m * COMPSIZE] = ((FLOAT) rand() / (FLOAT) RAND_MAX) - 0.5;
-	b[(long)i + (long)j * (long)m * COMPSIZE] = ((FLOAT) rand() / (FLOAT) RAND_MAX) - 0.5;
-	c[(long)i + (long)j * (long)m * COMPSIZE] = ((FLOAT) rand() / (FLOAT) RAND_MAX) - 0.5;
-      }
+
+    for(i = 0; i < m * COMPSIZE * abs(inc_x); i++){
+            x[i] = ((FLOAT) rand() / (FLOAT) RAND_MAX) - 0.5;
     }
 
-    gettimeofday( &start, (struct timezone *)0);
+    for(i = 0; i < m * COMPSIZE * abs(inc_y); i++){
+            y[i] = ((FLOAT) rand() / (FLOAT) RAND_MAX) - 0.5;
+    }
 
-    HEMM (&side, &uplo, &m, &m, alpha, a, &m, b, &m, beta, c, &m );
+    for (l=0; l<loops; l++)
+    {
+        gettimeofday( &start, (struct timezone *)0);
 
-    gettimeofday( &stop, (struct timezone *)0);
+        AXPBY (&m, alpha, x, &inc_x, beta, y, &inc_y );
 
-    time1 = (double)(stop.tv_sec - start.tv_sec) + (double)((stop.tv_usec - start.tv_usec)) * 1.e-6;
+        gettimeofday( &stop, (struct timezone *)0);
+
+        time1 = (double)(stop.tv_sec - start.tv_sec) + (double)((stop.tv_usec - start.tv_usec)) * 1.e-6;
+
+        timeg += time1;
+
+    }
+
+    timeg /= loops;
 
     fprintf(stderr,
-	    " %10.2f MFlops\n",
-	    COMPSIZE * COMPSIZE * 2. * (double)m * (double)m * (double)m / time1 * 1.e-6);
+        " %10.2f MFlops %10.6f sec\n",
+        (COMPSIZE * COMPSIZE * 4. - COMPSIZE) * (double)m / timeg * 1.e-6, timeg);
 
   }
 

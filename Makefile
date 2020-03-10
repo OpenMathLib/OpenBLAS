@@ -56,10 +56,21 @@ ifneq ($(INTERFACE64), 0)
 	@echo "  Use 64 bits int    (equivalent to \"-i8\" in Fortran)      "
 endif
 endif
-
-	@echo "  C compiler       ... $(C_COMPILER)  (command line : $(CC))"
+	@$(CC) --version > /dev/null 2>&1;\
+	if [ $$? -eq 0 ]; then \
+	   cverinfo=`$(CC) --version | sed -n '1p'`; \
+	   echo "  C compiler       ... $(C_COMPILER)  (cmd & version : $${cverinfo})";\
+	else  \
+	   echo "  C compiler       ... $(C_COMPILER)  (command line : $(CC))";\
+	fi
 ifeq ($(NOFORTRAN), $(filter 0,$(NOFORTRAN)))
-	@echo "  Fortran compiler ... $(F_COMPILER)  (command line : $(FC))"
+	@$(FC) --version > /dev/null 2>&1;\
+	if [ $$? -eq 0 ]; then \
+	   fverinfo=`$(FC) --version | sed -n '1p'`; \
+	   echo "  Fortran compiler ... $(F_COMPILER)  (cmd & version : $${fverinfo})";\
+	else \
+	   echo "  Fortran compiler ... $(F_COMPILER)  (command line : $(FC))";\
+	fi
 endif
 ifneq ($(OSNAME), AIX)
 	@echo -n "  Library Name     ... $(LIBNAME)"
@@ -68,9 +79,9 @@ else
 endif
 
 ifndef SMP
-	@echo " (Single threaded)  "
+	@echo " (Single-threading)  "
 else
-	@echo " (Multi threaded; Max num-threads is $(NUM_THREADS))"
+	@echo " (Multi-threading; Max num-threads is $(NUM_THREADS))"
 endif
 
 ifeq ($(USE_OPENMP), 1)
@@ -317,7 +328,7 @@ lapack-test :
 	$(MAKE) -j 1 -C $(NETLIB_LAPACK_DIR)/TESTING/EIG xeigtstc  xeigtstd  xeigtsts  xeigtstz 
 	$(MAKE) -j 1 -C $(NETLIB_LAPACK_DIR)/TESTING/LIN xlintstc  xlintstd  xlintstds  xlintstrfd  xlintstrfz  xlintsts  xlintstz  xlintstzc xlintstrfs xlintstrfc
 ifneq ($(CROSS), 1)
-	( cd $(NETLIB_LAPACK_DIR)/INSTALL; make all; ./testlsame; ./testslamch; ./testdlamch; \
+	( cd $(NETLIB_LAPACK_DIR)/INSTALL; $(MAKE) all; ./testlsame; ./testslamch; ./testdlamch; \
         ./testsecond; ./testdsecnd; ./testieee; ./testversion )
 	(cd $(NETLIB_LAPACK_DIR); ./lapack_testing.py -r -b TESTING)
 endif

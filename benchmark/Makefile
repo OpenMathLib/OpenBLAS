@@ -64,7 +64,7 @@ goto :: slinpack.goto dlinpack.goto clinpack.goto zlinpack.goto \
        ssyr2k.goto dsyr2k.goto csyr2k.goto zsyr2k.goto \
        sger.goto dger.goto cger.goto zger.goto \
        sdot.goto ddot.goto \
-       srot.goto drot.goto \
+       srot.goto drot.goto csrot.goto zdrot.goto \
        srotm.goto drotm.goto \
        saxpy.goto daxpy.goto caxpy.goto zaxpy.goto \
        scopy.goto dcopy.goto ccopy.goto zcopy.goto \
@@ -85,7 +85,8 @@ goto :: slinpack.goto dlinpack.goto clinpack.goto zlinpack.goto \
        sgesv.goto dgesv.goto cgesv.goto zgesv.goto \
        sgetri.goto dgetri.goto cgetri.goto zgetri.goto \
        spotrf.goto dpotrf.goto cpotrf.goto zpotrf.goto \
-       ssymm.goto dsymm.goto csymm.goto zsymm.goto
+       ssymm.goto dsymm.goto csymm.goto zsymm.goto \
+       saxpby.goto daxpby.goto caxpby.goto zaxpby.goto
 
 acml :: slinpack.acml dlinpack.acml clinpack.acml zlinpack.acml \
        scholesky.acml dcholesky.acml ccholesky.acml zcholesky.acml \
@@ -100,6 +101,7 @@ acml :: slinpack.acml dlinpack.acml clinpack.acml zlinpack.acml \
        ssyr2k.acml dsyr2k.acml csyr2k.acml zsyr2k.acml \
        sger.acml dger.acml cger.acml zger.acml \
        sdot.acml ddot.acml \
+       srot.acml drot.acml csrot.acml zdrot.acml \
        srotm.acml drotm.acml \
        saxpy.acml daxpy.acml caxpy.acml zaxpy.acml \
        scopy.acml dcopy.acml ccopy.acml zcopy.acml \
@@ -120,7 +122,8 @@ acml :: slinpack.acml dlinpack.acml clinpack.acml zlinpack.acml \
        sgesv.acml dgesv.acml cgesv.acml zgesv.acml \
        sgetri.acml dgetri.acml cgetri.acml zgetri.acml \
        spotrf.acml dpotrf.acml cpotrf.acml zpotrf.acml \
-       ssymm.acml dsymm.acml csymm.acml zsymm.acml
+       ssymm.acml dsymm.acml csymm.acml zsymm.acml \
+       saxpby.acml daxpby.acml caxpby.acml zaxpby.acml
 
 atlas :: slinpack.atlas dlinpack.atlas clinpack.atlas zlinpack.atlas \
        scholesky.atlas dcholesky.atlas ccholesky.atlas zcholesky.atlas \
@@ -135,6 +138,7 @@ atlas :: slinpack.atlas dlinpack.atlas clinpack.atlas zlinpack.atlas \
        ssyr2k.atlas dsyr2k.atlas csyr2k.atlas zsyr2k.atlas \
        sger.atlas dger.atlas cger.atlas zger.atlas\
        sdot.atlas ddot.atlas \
+       srot.atlas drot.atlas csrot.atlas zdrot.atlas \
        srotm.atlas drotm.atlas \
        saxpy.atlas daxpy.atlas caxpy.atlas zaxpy.atlas \
        scopy.atlas dcopy.atlas ccopy.atlas zcopy.atlas \
@@ -156,7 +160,8 @@ atlas :: slinpack.atlas dlinpack.atlas clinpack.atlas zlinpack.atlas \
        sgesv.atlas dgesv.atlas cgesv.atlas zgesv.atlas \
        sgetri.atlas dgetri.atlas cgetri.atlas zgetri.atlas \
        spotrf.atlas dpotrf.atlas cpotrf.atlas zpotrf.atlas \
-       ssymm.atlas dsymm.atlas csymm.atlas zsymm.atlas
+       ssymm.atlas dsymm.atlas csymm.atlas zsymm.atlas \
+       saxpby.atlas daxpby.atlas caxpby.atlas zaxpby.atlas
 
 mkl :: slinpack.mkl dlinpack.mkl clinpack.mkl zlinpack.mkl \
        scholesky.mkl dcholesky.mkl ccholesky.mkl zcholesky.mkl \
@@ -171,6 +176,7 @@ mkl :: slinpack.mkl dlinpack.mkl clinpack.mkl zlinpack.mkl \
        ssyr2k.mkl dsyr2k.mkl csyr2k.mkl zsyr2k.mkl \
        sger.mkl dger.mkl cger.mkl zger.mkl \
        sdot.mkl ddot.mkl \
+       srot.mkl drot.mkl csrot.mkl zdrot.mkl \
        srotm.mkl drotm.mkl \
        saxpy.mkl daxpy.mkl caxpy.mkl zaxpy.mkl \
        scopy.mkl dcopy.mkl ccopy.mkl zcopy.mkl \
@@ -191,7 +197,8 @@ mkl :: slinpack.mkl dlinpack.mkl clinpack.mkl zlinpack.mkl \
        sgesv.mkl dgesv.mkl cgesv.mkl zgesv.mkl \
        sgetri.mkl dgetri.mkl cgetri.mkl zgetri.mkl \
        spotrf.mkl dpotrf.mkl cpotrf.mkl zpotrf.mkl \
-       ssymm.mkl dsymm.mkl csymm.mkl zsymm.mkl
+       ssymm.mkl dsymm.mkl csymm.mkl zsymm.mkl \
+       saxpby.mkl daxpby.mkl caxpby.mkl zaxpby.mkl
 
 else
 
@@ -206,7 +213,7 @@ goto :: sgemm.goto dgemm.goto cgemm.goto zgemm.goto \
        ssyr2k.goto dsyr2k.goto csyr2k.goto zsyr2k.goto \
        sger.goto dger.goto cger.goto zger.goto \
        sdot.goto ddot.goto cdot.goto zdot.goto \
-       srot.goto drot.goto \
+       srot.goto drot.goto csrot.goto zdrot.goto \
        srotm.goto drotm.goto \
        saxpy.goto daxpy.goto caxpy.goto zaxpy.goto \
        scopy.goto dcopy.goto ccopy.goto zcopy.goto \
@@ -226,6 +233,14 @@ goto :: sgemm.goto dgemm.goto cgemm.goto zgemm.goto \
        ssymm.goto dsymm.goto csymm.goto zsymm.goto \
        smallscaling \
        isamax.goto idamax.goto icamax.goto izamax.goto \
+       ismax.goto idmax.goto \
+       isamin.goto idamin.goto icamin.goto izamin.goto \
+       ismin.goto idmin.goto \
+       samax.goto damax.goto camax.goto zamax.goto \
+       smax.goto dmax.goto \
+       samin.goto damin.goto camin.goto zamin.goto \
+       smin.goto dmin.goto \
+       saxpby.goto daxpby.goto caxpby.goto zaxpby.goto \
        snrm2.goto dnrm2.goto scnrm2.goto dznrm2.goto $(GOTO_LAPACK_TARGETS)
 
 acml :: slinpack.acml dlinpack.acml clinpack.acml zlinpack.acml \
@@ -241,6 +256,7 @@ acml :: slinpack.acml dlinpack.acml clinpack.acml zlinpack.acml \
        ssyr2k.acml dsyr2k.acml csyr2k.acml zsyr2k.acml \
        sger.acml dger.acml cger.acml zger.acml \
        sdot.acml ddot.acml \
+       srot.acml drot.acml csrot.acml zdrot.acml \
        srotm.acml drotm.acml \
        saxpy.acml daxpy.acml caxpy.acml zaxpy.acml \
        scopy.acml dcopy.acml ccopy.acml zcopy.acml \
@@ -261,7 +277,8 @@ acml :: slinpack.acml dlinpack.acml clinpack.acml zlinpack.acml \
        sgesv.acml dgesv.acml cgesv.acml zgesv.acml \
        sgetri.acml dgetri.acml cgetri.acml zgetri.acml \
        spotrf.acml dpotrf.acml cpotrf.acml zpotrf.acml \
-       ssymm.acml dsymm.acml csymm.acml zsymm.acml
+       ssymm.acml dsymm.acml csymm.acml zsymm.acml \
+       saxpby.acml daxpby.acml caxpby.acml zaxpby.acml
 
 atlas :: slinpack.atlas dlinpack.atlas clinpack.atlas zlinpack.atlas \
        scholesky.atlas dcholesky.atlas ccholesky.atlas zcholesky.atlas \
@@ -276,6 +293,7 @@ atlas :: slinpack.atlas dlinpack.atlas clinpack.atlas zlinpack.atlas \
        ssyr2k.atlas dsyr2k.atlas csyr2k.atlas zsyr2k.atlas \
        sger.atlas dger.atlas cger.atlas zger.atlas\
        sdot.atlas ddot.atlas \
+       srot.atlas drot.atlas csrot.atlas zdrot.atlas \
        srotm.atlas drotm.atlas \
        saxpy.atlas daxpy.atlas caxpy.atlas zaxpy.atlas \
        scopy.atlas dcopy.atlas ccopy.atlas zcopy.atlas \
@@ -299,7 +317,8 @@ atlas :: slinpack.atlas dlinpack.atlas clinpack.atlas zlinpack.atlas \
        spotrf.atlas dpotrf.atlas cpotrf.atlas zpotrf.atlas \
        ssymm.atlas dsymm.atlas csymm.atlas zsymm.atlas \
        isamax.atlas idamax.atlas icamax.atlas izamax.atlas \
-       snrm2.goto dnrm2.goto scnrm2.goto dznrm2.goto
+       snrm2.atlas dnrm2.atlas scnrm2.atlas dznrm2.atlas \
+       saxpby.atlas daxpby.atlas caxpby.atlas zaxpby.atlas
 
 mkl :: slinpack.mkl dlinpack.mkl clinpack.mkl zlinpack.mkl \
        scholesky.mkl dcholesky.mkl ccholesky.mkl zcholesky.mkl \
@@ -314,6 +333,7 @@ mkl :: slinpack.mkl dlinpack.mkl clinpack.mkl zlinpack.mkl \
        ssyr2k.mkl dsyr2k.mkl csyr2k.mkl zsyr2k.mkl \
        sger.mkl dger.mkl cger.mkl zger.mkl \
        sdot.mkl ddot.mkl cdot.mkl zdot.mkl \
+       srot.atlas drot.atlas csrot.atlas zdrot.atlas \
        srotm.atlas drotm.atlas \
        saxpy.mkl daxpy.mkl caxpy.mkl zaxpy.mkl \
        scopy.mkl dcopy.mkl ccopy.mkl zcopy.mkl \
@@ -334,7 +354,8 @@ mkl :: slinpack.mkl dlinpack.mkl clinpack.mkl zlinpack.mkl \
        sgesv.mkl dgesv.mkl cgesv.mkl zgesv.mkl \
        sgetri.mkl dgetri.mkl cgetri.mkl zgetri.mkl \
        spotrf.mkl dpotrf.mkl cpotrf.mkl zpotrf.mkl \
-       ssymm.mkl dsymm.mkl csymm.mkl zsymm.mkl
+       ssymm.mkl dsymm.mkl csymm.mkl zsymm.mkl \
+       saxpby.mkl daxpby.mkl caxpby.mkl zaxpby.mkl
 
 
 
@@ -360,6 +381,7 @@ veclib :: slinpack.veclib dlinpack.veclib clinpack.veclib zlinpack.veclib \
        ssyr2k.veclib dsyr2k.veclib csyr2k.veclib zsyr2k.veclib \
        sger.veclib dger.veclib cger.veclib zger.veclib \
        sdot.veclib ddot.veclib cdot.veclib zdot.veclib \
+       srot.veclib drot.veclib csrot.veclib zdrot.veclib \
        srotm.veclib drotm.veclib \
        saxpy.veclib daxpy.veclib caxpy.veclib zaxpy.veclib \
        scopy.veclib dcopy.veclib ccopy.veclib zcopy.veclib \
@@ -380,7 +402,8 @@ veclib :: slinpack.veclib dlinpack.veclib clinpack.veclib zlinpack.veclib \
        sgesv.veclib dgesv.veclib cgesv.veclib zgesv.veclib \
        sgetri.veclib dgetri.veclib cgetri.veclib zgetri.veclib \
        spotrf.veclib dpotrf.veclib cpotrf.veclib zpotrf.veclib \
-       ssymm.veclib dsymm.veclib csymm.veclib zsymm.veclib
+       ssymm.veclib dsymm.veclib csymm.veclib zsymm.veclib \
+       saxpby.veclib daxpby.veclib caxpby.veclib zaxpby.veclib
 
 goto_3m :: cgemm3m.goto zgemm3m.goto
 
@@ -1925,6 +1948,38 @@ drot.mkl : drot.$(SUFFIX)
 drot.veclib : drot.$(SUFFIX)
 	$(CC) $(CFLAGS) -o $(@F) $^ $(LIBVECLIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
 
+##################################### csrot ####################################################
+csrot.goto : csrot.$(SUFFIX) ../$(LIBNAME)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+
+csrot.acml : csrot.$(SUFFIX)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+csrot.atlas : csrot.$(SUFFIX)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(LIBATLAS) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+csrot.mkl : csrot.$(SUFFIX)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(LIBMKL) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+csrot.veclib : csrot.$(SUFFIX)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(LIBVECLIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+##################################### zdrot ####################################################
+zdrot.goto : zdrot.$(SUFFIX) ../$(LIBNAME)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+
+zdrot.acml : zdrot.$(SUFFIX)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+zdrot.atlas : zdrot.$(SUFFIX)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(LIBATLAS) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+zdrot.mkl : zdrot.$(SUFFIX)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(LIBMKL) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+zdrot.veclib : zdrot.$(SUFFIX)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(LIBVECLIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+	
 ##################################### srotm ####################################################
 srotm.goto : srotm.$(SUFFIX) ../$(LIBNAME)
 	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
@@ -2023,7 +2078,72 @@ zaxpy.mkl : zaxpy.$(SUFFIX)
 zaxpy.veclib : zaxpy.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBVECLIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
 
+##################################### Saxpby ####################################################
+saxpby.goto : saxpby.$(SUFFIX) ../$(LIBNAME)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
+saxpby.acml : saxpby.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+saxpby.atlas : saxpby.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBATLAS) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+saxpby.mkl : saxpby.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBMKL) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+saxpby.veclib : saxpby.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBVECLIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+##################################### Daxpby ####################################################
+daxpby.goto : daxpby.$(SUFFIX) ../$(LIBNAME)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+
+daxpby.acml : daxpby.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+daxpby.atlas : daxpby.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBATLAS) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+daxpby.mkl : daxpby.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBMKL) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+daxpby.veclib : daxpby.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBVECLIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+##################################### Caxpby ####################################################
+
+caxpby.goto : caxpby.$(SUFFIX) ../$(LIBNAME)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+
+caxpby.acml : caxpby.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+caxpby.atlas : caxpby.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBATLAS) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+caxpby.mkl : caxpby.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBMKL) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+caxpby.veclib : caxpby.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBVECLIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+##################################### Zaxpby ####################################################
+
+zaxpby.goto : zaxpby.$(SUFFIX) ../$(LIBNAME)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+
+zaxpby.acml : zaxpby.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+zaxpby.atlas : zaxpby.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBATLAS) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+zaxpby.mkl : zaxpby.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBMKL) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+zaxpby.veclib : zaxpby.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBVECLIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+	
 ##################################### Scopy ####################################################
 scopy.goto : scopy.$(SUFFIX) ../$(LIBNAME)
 	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
@@ -2406,6 +2526,86 @@ izamax.goto : izamax.$(SUFFIX) ../$(LIBNAME)
 izamax.atlas : izamax.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBATLAS) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
 
+############################################## ISMAX ##############################################
+ismax.goto : ismax.$(SUFFIX) ../$(LIBNAME)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+
+############################################## IDMAX ##############################################
+idmax.goto : idmax.$(SUFFIX) ../$(LIBNAME)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+	
+############################################## ISAMIN ##############################################
+isamin.goto : isamin.$(SUFFIX) ../$(LIBNAME)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+
+############################################## IDAMIN ##############################################
+idamin.goto : idamin.$(SUFFIX) ../$(LIBNAME)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+
+############################################## ICAMIN ##############################################
+icamin.goto : icamin.$(SUFFIX) ../$(LIBNAME)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+
+############################################## IZAMIN ##############################################
+izamin.goto : izamin.$(SUFFIX) ../$(LIBNAME)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+
+############################################## ISMIN ##############################################
+ismin.goto : ismin.$(SUFFIX) ../$(LIBNAME)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+
+############################################## IDMIN ##############################################
+idmin.goto : idmin.$(SUFFIX) ../$(LIBNAME)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+
+############################################## SAMAX ##############################################
+samax.goto : samax.$(SUFFIX) ../$(LIBNAME)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+
+############################################## DAMAX ##############################################
+damax.goto : damax.$(SUFFIX) ../$(LIBNAME)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+
+############################################## CAMAX ##############################################
+camax.goto : camax.$(SUFFIX) ../$(LIBNAME)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+
+############################################## ZAMAX ##############################################
+zamax.goto : zamax.$(SUFFIX) ../$(LIBNAME)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+
+############################################## SMAX ##############################################
+smax.goto : smax.$(SUFFIX) ../$(LIBNAME)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+
+############################################## DMAX ##############################################
+dmax.goto : dmax.$(SUFFIX) ../$(LIBNAME)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+
+############################################## SAMIN ##############################################
+samin.goto : samin.$(SUFFIX) ../$(LIBNAME)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+
+############################################## DAMIN ##############################################
+damin.goto : damin.$(SUFFIX) ../$(LIBNAME)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+
+############################################## CAMIN ##############################################
+camin.goto : camin.$(SUFFIX) ../$(LIBNAME)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+
+############################################## ZAMIN ##############################################
+zamin.goto : zamin.$(SUFFIX) ../$(LIBNAME)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+
+############################################## SMIN ##############################################
+smin.goto : smin.$(SUFFIX) ../$(LIBNAME)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+
+############################################## DMIN ##############################################
+dmin.goto : dmin.$(SUFFIX) ../$(LIBNAME)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+
 ############################################## SNRM2 ##############################################
 snrm2.goto : snrm2.$(SUFFIX) ../$(LIBNAME)
 	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
@@ -2722,6 +2922,18 @@ caxpy.$(SUFFIX) : axpy.c
 zaxpy.$(SUFFIX) : axpy.c
 	$(CC) $(CFLAGS) -c -DCOMPLEX -DDOUBLE -o $(@F) $^
 
+saxpby.$(SUFFIX) : axpby.c
+	$(CC) $(CFLAGS) -c -UCOMPLEX -UDOUBLE -o $(@F) $^
+
+daxpby.$(SUFFIX) : axpby.c
+	$(CC) $(CFLAGS) -c -UCOMPLEX -DDOUBLE -o $(@F) $^
+
+caxpby.$(SUFFIX) : axpby.c
+	$(CC) $(CFLAGS) -c -DCOMPLEX -UDOUBLE -o $(@F) $^
+
+zaxpby.$(SUFFIX) : axpby.c
+	$(CC) $(CFLAGS) -c -DCOMPLEX -DDOUBLE -o $(@F) $^
+
 scopy.$(SUFFIX) : copy.c
 	$(CC) $(CFLAGS) -c -UCOMPLEX -UDOUBLE -o $(@F) $^
 
@@ -2791,6 +3003,12 @@ srot.$(SUFFIX) : rot.c
 drot.$(SUFFIX) : rot.c
 	$(CC) $(CFLAGS) -c -UCOMPLEX -DDOUBLE -o $(@F) $^
 
+csrot.$(SUFFIX) : rot.c
+	$(CC) $(CFLAGS) -c -DCOMPLEX -UDOUBLE -o $(@F) $^
+
+zdrot.$(SUFFIX) : rot.c
+	$(CC) $(CFLAGS) -c -DCOMPLEX -DDOUBLE -o $(@F) $^
+	
 srotm.$(SUFFIX) : rotm.c
 	$(CC) $(CFLAGS) -c -UCOMPLEX -UDOUBLE -o $(@F) $^
 
@@ -2817,6 +3035,73 @@ icamax.$(SUFFIX) : iamax.c
 
 izamax.$(SUFFIX) : iamax.c
 	$(CC) $(CFLAGS) -c -DCOMPLEX -DDOUBLE -o $(@F) $^
+
+
+ismax.$(SUFFIX) : imax.c
+	$(CC) $(CFLAGS) -c -UCOMPLEX -UDOUBLE -o $(@F) $^
+
+idmax.$(SUFFIX) : imax.c
+	$(CC) $(CFLAGS) -c -UCOMPLEX -DDOUBLE -o $(@F) $^
+
+
+isamin.$(SUFFIX) : iamin.c
+	$(CC) $(CFLAGS) -c -UCOMPLEX -UDOUBLE -o $(@F) $^
+
+idamin.$(SUFFIX) : iamin.c
+	$(CC) $(CFLAGS) -c -UCOMPLEX -DDOUBLE -o $(@F) $^
+
+icamin.$(SUFFIX) : iamin.c
+	$(CC) $(CFLAGS) -c -DCOMPLEX -UDOUBLE -o $(@F) $^
+
+izamin.$(SUFFIX) : iamin.c
+	$(CC) $(CFLAGS) -c -DCOMPLEX -DDOUBLE -o $(@F) $^
+
+
+ismin.$(SUFFIX) : imin.c
+	$(CC) $(CFLAGS) -c -UCOMPLEX -UDOUBLE -o $(@F) $^
+
+idmin.$(SUFFIX) : imin.c
+	$(CC) $(CFLAGS) -c -UCOMPLEX -DDOUBLE -o $(@F) $^
+
+
+samax.$(SUFFIX) : amax.c
+	$(CC) $(CFLAGS) -c -UCOMPLEX  -UDOUBLE -o $(@F) $^
+
+damax.$(SUFFIX) : amax.c
+	$(CC) $(CFLAGS) -c -UCOMPLEX  -DDOUBLE -o $(@F) $^
+
+camax.$(SUFFIX) : amax.c
+	$(CC) $(CFLAGS) -c -DCOMPLEX  -UDOUBLE -o $(@F) $^
+
+zamax.$(SUFFIX) : amax.c
+	$(CC) $(CFLAGS) -c -DCOMPLEX  -DDOUBLE -o $(@F) $^
+
+
+smax.$(SUFFIX) : max.c
+	$(CC) $(CFLAGS) -c -UCOMPLEX  -UDOUBLE -o $(@F) $^
+
+dmax.$(SUFFIX) : max.c
+	$(CC) $(CFLAGS) -c -UCOMPLEX  -DDOUBLE -o $(@F) $^
+
+
+samin.$(SUFFIX) : amin.c
+	$(CC) $(CFLAGS) -c -UCOMPLEX -UDOUBLE -o $(@F) $^
+
+damin.$(SUFFIX) : amin.c
+	$(CC) $(CFLAGS) -c -UCOMPLEX -DDOUBLE -o $(@F) $^
+
+camin.$(SUFFIX) : amin.c
+	$(CC) $(CFLAGS) -c -DCOMPLEX -UDOUBLE -o $(@F) $^
+
+zamin.$(SUFFIX) : amin.c
+	$(CC) $(CFLAGS) -c -DCOMPLEX -DDOUBLE -o $(@F) $^
+
+
+smin.$(SUFFIX) : min.c
+	$(CC) $(CFLAGS) -c -UCOMPLEX -UDOUBLE -o $(@F) $^
+
+dmin.$(SUFFIX) : min.c
+	$(CC) $(CFLAGS) -c -UCOMPLEX -DDOUBLE -o $(@F) $^
 
 
 snrm2.$(SUFFIX) : nrm2.c
