@@ -79,7 +79,7 @@ goto :: slinpack.goto dlinpack.goto clinpack.goto zlinpack.goto \
        cherk.goto zherk.goto \
        cher2k.goto zher2k.goto \
        sgemv.goto dgemv.goto cgemv.goto zgemv.goto \
-	   sspmv.goto dspmv.goto cspmv.goto zspmv.goto \
+	   sspmv.goto dspmv.goto \
        strmv.goto dtrmv.goto ctrmv.goto ztrmv.goto \
        strsv.goto dtrsv.goto ctrsv.goto ztrsv.goto \
        sgeev.goto dgeev.goto cgeev.goto zgeev.goto \
@@ -155,7 +155,7 @@ atlas :: slinpack.atlas dlinpack.atlas clinpack.atlas zlinpack.atlas \
        cherk.atlas zherk.atlas \
        cher2k.atlas zher2k.atlas \
        sgemv.atlas dgemv.atlas cgemv.atlas zgemv.atlas \
-	   sspmv.atlas dspmv.atlas cspmv.atlas zspmv.atlas \
+	   sspmv.atlas dspmv.atlas \
        strmv.atlas dtrmv.atlas ctrmv.atlas ztrmv.atlas \
        strsv.atlas dtrsv.atlas ctrsv.atlas ztrsv.atlas \
        sgeev.atlas dgeev.atlas cgeev.atlas zgeev.atlas \
@@ -230,7 +230,7 @@ goto :: sgemm.goto dgemm.goto cgemm.goto zgemm.goto \
        cherk.goto zherk.goto \
        cher2k.goto zher2k.goto \
        sgemv.goto dgemv.goto cgemv.goto zgemv.goto \
-	   sspmv.goto dspmv.goto cspmv.goto zspmv.goto \
+	   sspmv.goto dspmv.goto \
        strmv.goto dtrmv.goto ctrmv.goto ztrmv.goto \
        strsv.goto dtrsv.goto ctrsv.goto ztrsv.goto \
        ssymm.goto dsymm.goto csymm.goto zsymm.goto \
@@ -312,7 +312,7 @@ atlas :: slinpack.atlas dlinpack.atlas clinpack.atlas zlinpack.atlas \
        cherk.atlas zherk.atlas \
        cher2k.atlas zher2k.atlas \
        sgemv.atlas dgemv.atlas cgemv.atlas zgemv.atlas \
-	   sspmv.atlas dspmv.atlas cspmv.atlas zspmv.atlas \
+	   sspmv.atlas dspmv.atlas \
        strmv.atlas dtrmv.atlas ctrmv.atlas ztrmv.atlas \
        strsv.atlas dtrsv.atlas ctrsv.atlas ztrsv.atlas \
        sgeev.atlas dgeev.atlas cgeev.atlas zgeev.atlas \
@@ -1313,20 +1313,6 @@ dspmv.goto : dspmv.$(SUFFIX) ../$(LIBNAME)
 	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
 dspmv.atlas : dspmv.$(SUFFIX)
-	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBATLAS) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
-
-##################################### Cspmv ####################################################
-cspmv.goto : cspmv.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
-
-cspmv.atlas : cspmv.$(SUFFIX)
-	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBATLAS) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
-
-##################################### Zspmv ####################################################
-zspmv.goto : zspmv.$(SUFFIX) ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
-
-zspmv.atlas : zspmv.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBATLAS) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
 
 ##################################### Strmv ####################################################
@@ -2824,12 +2810,6 @@ sspmv.$(SUFFIX) : spmv.c
 
 dspmv.$(SUFFIX) : spmv.c
 	$(CC) $(CFLAGS) -c -UCOMPLEX -DDOUBLE -o $(@F) $^
-
-cspmv.$(SUFFIX) : spmv.c
-	$(CC) $(CFLAGS) -c -DCOMPLEX -UDOUBLE -o $(@F) $^
-
-zspmv.$(SUFFIX) : spmv.c
-	$(CC) $(CFLAGS) -c -DCOMPLEX -DDOUBLE -o $(@F) $^
 
 strmv.$(SUFFIX) : trmv.c
 	$(CC) $(CFLAGS) -c -UCOMPLEX -UDOUBLE -o $(@F) $^
