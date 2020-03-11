@@ -117,7 +117,6 @@ acml :: slinpack.acml dlinpack.acml clinpack.acml zlinpack.acml \
        cherk.acml zherk.acml \
        cher2k.acml zher2k.acml \
        sgemv.acml dgemv.acml cgemv.acml zgemv.acml \
-	   sspmv.acml dspmv.acml cspmv.acml zspmv.acml \
        strmv.acml dtrmv.acml ctrmv.acml ztrmv.acml \
        strsv.acml dtrsv.acml ctrsv.acml ztrsv.acml \
        sgeev.acml dgeev.acml cgeev.acml zgeev.acml \
@@ -194,7 +193,6 @@ mkl :: slinpack.mkl dlinpack.mkl clinpack.mkl zlinpack.mkl \
        cherk.mkl zherk.mkl \
        cher2k.mkl zher2k.mkl \
        sgemv.mkl dgemv.mkl cgemv.mkl zgemv.mkl \
-	   sspmv.mkl dspmv.mkl cspmv.mkl zspmv.mkl \
        strmv.mkl dtrmv.mkl ctrmv.mkl ztrmv.mkl \
        strsv.mkl dtrsv.mkl ctrsv.mkl ztrsv.mkl \
        sgeev.mkl dgeev.mkl cgeev.mkl zgeev.mkl \
@@ -276,7 +274,6 @@ acml :: slinpack.acml dlinpack.acml clinpack.acml zlinpack.acml \
        cherk.acml zherk.acml \
        cher2k.acml zher2k.acml \
        sgemv.acml dgemv.acml cgemv.acml zgemv.acml \
-	   sspmv.acml dspmv.acml cspmv.acml zspmv.acml \
        strmv.acml dtrmv.acml ctrmv.acml ztrmv.acml \
        strsv.acml dtrsv.acml ctrsv.acml ztrsv.acml \
        sgeev.acml dgeev.acml cgeev.acml zgeev.acml \
@@ -355,7 +352,6 @@ mkl :: slinpack.mkl dlinpack.mkl clinpack.mkl zlinpack.mkl \
        cherk.mkl zherk.mkl \
        cher2k.mkl zher2k.mkl \
        sgemv.mkl dgemv.mkl cgemv.mkl zgemv.mkl \
-	   sspmv.mkl dspmv.mkl cspmv.mkl zspmv.mkl \
        strmv.mkl dtrmv.mkl ctrmv.mkl ztrmv.mkl \
        strsv.mkl dtrsv.mkl ctrsv.mkl ztrsv.mkl \
        sgeev.mkl dgeev.mkl cgeev.mkl zgeev.mkl \
@@ -404,7 +400,6 @@ veclib :: slinpack.veclib dlinpack.veclib clinpack.veclib zlinpack.veclib \
        cherk.veclib zherk.veclib \
        cher2k.veclib zher2k.veclib \
        sgemv.veclib dgemv.veclib cgemv.veclib zgemv.veclib \
-	   sspmv.veclib dspmv.veclib cspmv.veclib zspmv.veclib \
        strmv.veclib dtrmv.veclib ctrmv.veclib ztrmv.veclib \
        strsv.veclib dtrsv.veclib ctrsv.veclib ztrsv.veclib \
        sgeev.veclib dgeev.veclib cgeev.veclib zgeev.veclib \
@@ -1310,65 +1305,29 @@ zgemv.veclib : zgemv.$(SUFFIX)
 sspmv.goto : sspmv.$(SUFFIX) ../$(LIBNAME)
 	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
-sspmv.acml : sspmv.$(SUFFIX)
-	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
-
 sspmv.atlas : sspmv.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBATLAS) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
-
-sspmv.mkl : sspmv.$(SUFFIX)
-	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBMKL) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
-
-sspmv.veclib : sspmv.$(SUFFIX)
-	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBVECLIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
 
 ##################################### Dspmv ####################################################
 dspmv.goto : dspmv.$(SUFFIX) ../$(LIBNAME)
 	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
-dspmv.acml : dspmv.$(SUFFIX)
-	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
-
 dspmv.atlas : dspmv.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBATLAS) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
-
-dspmv.mkl : dspmv.$(SUFFIX)
-	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBMKL) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
-
-dspmv.veclib : dspmv.$(SUFFIX)
-	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBVECLIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
 
 ##################################### Cspmv ####################################################
 cspmv.goto : cspmv.$(SUFFIX) ../$(LIBNAME)
 	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
-cspmv.acml : cspmv.$(SUFFIX)
-	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
-
 cspmv.atlas : cspmv.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBATLAS) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
-
-cspmv.mkl : cspmv.$(SUFFIX)
-	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBMKL) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
-
-cspmv.veclib : cspmv.$(SUFFIX)
-	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBVECLIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
 
 ##################################### Zspmv ####################################################
 zspmv.goto : zspmv.$(SUFFIX) ../$(LIBNAME)
 	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
-zspmv.acml : zspmv.$(SUFFIX)
-	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
-
 zspmv.atlas : zspmv.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBATLAS) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
-
-zspmv.mkl : zspmv.$(SUFFIX)
-	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBMKL) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
-
-zspmv.veclib : zspmv.$(SUFFIX)
-	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBVECLIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
 
 ##################################### Strmv ####################################################
 strmv.goto : strmv.$(SUFFIX) ../$(LIBNAME)
