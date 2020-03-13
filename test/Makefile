@@ -1,7 +1,12 @@
 TOPDIR	= ..
 include ../Makefile.system
 
+
+ifeq ($(NOFORTRAN),1)
+all ::
+else
 all :: level1 level2 level3
+endif
 
 level1 : sblat1 dblat1 cblat1 zblat1
 ifndef CROSS
