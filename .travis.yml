@@ -32,7 +32,7 @@ matrix:
           packages:
             - gfortran
       before_script:
-        - COMMON_FLAGS="DYNAMIC_ARCH=1 TARGET=POWER8 NUM_THREADS=32"
+        - COMMON_FLAGS="DYNAMIC_ARCH=1 TARGET=POWER8 NUM_THREADS=30"
       env:
         # for matrix annotation only
         - TARGET_BOX=PPC64LE_LINUX
