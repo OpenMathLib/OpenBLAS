@@ -40,8 +40,11 @@ ztestl3o = c_zblas3.o c_z3chke.o auxiliary.o c_xerbla.o constant.o
 ztestl3o_3m = c_zblas3_3m.o c_z3chke_3m.o auxiliary.o c_xerbla.o constant.o
 
 
-
+ifeq ($(NOFORTRAN),1)
+all ::
+else
 all :: all1 all2 all3
+endif
 
 all1: xscblat1 xdcblat1 xccblat1 xzcblat1
 ifndef CROSS
