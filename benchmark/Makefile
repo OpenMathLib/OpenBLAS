@@ -79,6 +79,7 @@ goto :: slinpack.goto dlinpack.goto clinpack.goto zlinpack.goto \
        cherk.goto zherk.goto \
        cher2k.goto zher2k.goto \
        sgemv.goto dgemv.goto cgemv.goto zgemv.goto \
+	   sspmv.goto dspmv.goto \
        strmv.goto dtrmv.goto ctrmv.goto ztrmv.goto \
        stpmv.goto dtpmv.goto ctpmv.goto ztpmv.goto \
        strsv.goto dtrsv.goto ctrsv.goto ztrsv.goto \
@@ -156,6 +157,7 @@ atlas :: slinpack.atlas dlinpack.atlas clinpack.atlas zlinpack.atlas \
        cherk.atlas zherk.atlas \
        cher2k.atlas zher2k.atlas \
        sgemv.atlas dgemv.atlas cgemv.atlas zgemv.atlas \
+	   sspmv.atlas dspmv.atlas \
        strmv.atlas dtrmv.atlas ctrmv.atlas ztrmv.atlas \
        stpmv.atlas dtpmv.atlas ctpmv.atlas ztpmv.atlas \
        strsv.atlas dtrsv.atlas ctrsv.atlas ztrsv.atlas \
@@ -232,6 +234,7 @@ goto :: sgemm.goto dgemm.goto cgemm.goto zgemm.goto \
        cherk.goto zherk.goto \
        cher2k.goto zher2k.goto \
        sgemv.goto dgemv.goto cgemv.goto zgemv.goto \
+	   sspmv.goto dspmv.goto \
        strmv.goto dtrmv.goto ctrmv.goto ztrmv.goto \
        stpmv.goto dtpmv.goto ctpmv.goto ztpmv.goto \
        strsv.goto dtrsv.goto ctrsv.goto ztrsv.goto \
@@ -315,6 +318,7 @@ atlas :: slinpack.atlas dlinpack.atlas clinpack.atlas zlinpack.atlas \
        cherk.atlas zherk.atlas \
        cher2k.atlas zher2k.atlas \
        sgemv.atlas dgemv.atlas cgemv.atlas zgemv.atlas \
+	   sspmv.atlas dspmv.atlas \
        strmv.atlas dtrmv.atlas ctrmv.atlas ztrmv.atlas \
        stpmv.atlas dtpmv.atlas ctpmv.atlas ztpmv.atlas \
        strsv.atlas dtrsv.atlas ctrsv.atlas ztrsv.atlas \
@@ -1305,6 +1309,20 @@ zgemv.mkl : zgemv.$(SUFFIX)
 
 zgemv.veclib : zgemv.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBVECLIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+##################################### Sspmv ####################################################
+sspmv.goto : sspmv.$(SUFFIX) ../$(LIBNAME)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+
+sspmv.atlas : sspmv.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBATLAS) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+##################################### Dspmv ####################################################
+dspmv.goto : dspmv.$(SUFFIX) ../$(LIBNAME)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+
+dspmv.atlas : dspmv.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBATLAS) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
 
 ##################################### Strmv ####################################################
 strmv.goto : strmv.$(SUFFIX) ../$(LIBNAME)
@@ -2862,6 +2880,12 @@ cgemv.$(SUFFIX) : gemv.c
 zgemv.$(SUFFIX) : gemv.c
 	$(CC) $(CFLAGS) -c -DCOMPLEX -DDOUBLE -o $(@F) $^
 
+sspmv.$(SUFFIX) : spmv.c
+	$(CC) $(CFLAGS) -c -UCOMPLEX -UDOUBLE -o $(@F) $^
+
+dspmv.$(SUFFIX) : spmv.c
+	$(CC) $(CFLAGS) -c -UCOMPLEX -DDOUBLE -o $(@F) $^
+
 strmv.$(SUFFIX) : trmv.c
 	$(CC) $(CFLAGS) -c -UCOMPLEX -UDOUBLE -o $(@F) $^
 
@@ -3211,4 +3235,3 @@ clean ::
 	@rm -f *.goto *.mkl *.acml *.atlas *.veclib *.essl smallscaling
 
 include $(TOPDIR)/Makefile.tail
-
