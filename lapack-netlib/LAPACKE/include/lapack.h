@@ -12,27 +12,6 @@
 
 #include <stdlib.h>
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-/*----------------------------------------------------------------------------*/
-#ifndef lapack_int
-#define lapack_int     int
-#endif
-
-#ifndef lapack_logical
-#define lapack_logical lapack_int
-#endif
-
-/* f2c, hence clapack and MacOS Accelerate, returns double instead of float
- * for sdot, slange, clange, etc. */
-#if defined(LAPACK_F2C)
-    typedef double lapack_float_return;
-#else
-    typedef float lapack_float_return;
-#endif
-
 /* Complex types are structures equivalent to the
 * Fortran complex types COMPLEX(4) and COMPLEX(8).
 *
@@ -87,6 +66,29 @@ extern "C" {
 #endif
 
 #endif /* LAPACK_COMPLEX_CUSTOM */
+
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+/*----------------------------------------------------------------------------*/
+#ifndef lapack_int
+#define lapack_int     int
+#endif
+
+#ifndef lapack_logical
+#define lapack_logical lapack_int
+#endif
+
+/* f2c, hence clapack and MacOS Accelerate, returns double instead of float
+ * for sdot, slange, clange, etc. */
+#if defined(LAPACK_F2C)
+    typedef double lapack_float_return;
+#else
+    typedef float lapack_float_return;
+#endif
+
 
 /* Callback logical functions of one, two, or three arguments are used
 *  to select eigenvalues to sort to the top left of the Schur form.

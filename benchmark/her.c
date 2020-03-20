@@ -1,5 +1,5 @@
 /***************************************************************************
-Copyright (c) 2016, The OpenBLAS Project
+Copyright (c) 2020, The OpenBLAS Project
 All rights reserved.
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -33,21 +33,15 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "common.h"
 
 
-#undef IAMAX
+#undef HER
 
-#ifdef COMPLEX
+
 #ifdef DOUBLE
-#define IAMAX   BLASFUNC(izamax)
+#define HER   BLASFUNC(zher)
 #else
-#define IAMAX   BLASFUNC(icamax)
+#define HER   BLASFUNC(cher)
 #endif
-#else
-#ifdef DOUBLE
-#define IAMAX   BLASFUNC(idamax)
-#else
-#define IAMAX   BLASFUNC(isamax)
-#endif
-#endif
+
 
 #if defined(__WIN32__) || defined(__WIN64__)
 
@@ -57,26 +51,26 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 int gettimeofday(struct timeval *tv, void *tz){
 
-  FILETIME ft;
-  unsigned __int64 tmpres = 0;
-  static int tzflag;
+    FILETIME ft;
+    unsigned __int64 tmpres = 0;
+    static int tzflag;
 
-  if (NULL != tv)
+    if (NULL != tv)
     {
-      GetSystemTimeAsFileTime(&ft);
+        GetSystemTimeAsFileTime(&ft);
 
-      tmpres |= ft.dwHighDateTime;
-      tmpres <<= 32;
-      tmpres |= ft.dwLowDateTime;
+        tmpres |= ft.dwHighDateTime;
+        tmpres <<= 32;
+        tmpres |= ft.dwLowDateTime;
 
-      /*converting file time to unix epoch*/
-      tmpres /= 10;  /*convert into microseconds*/
-      tmpres -= DELTA_EPOCH_IN_MICROSECS;
-      tv->tv_sec = (long)(tmpres / 1000000UL);
-      tv->tv_usec = (long)(tmpres % 1000000UL);
+        /*converting file time to unix epoch*/
+        tmpres /= 10;  /*convert into microseconds*/
+        tmpres -= DELTA_EPOCH_IN_MICROSECS;
+        tv->tv_sec = (long)(tmpres / 1000000UL);
+        tv->tv_usec = (long)(tmpres % 1000000UL);
     }
 
-  return 0;
+    return 0;
 }
 
 #endif
@@ -116,77 +110,77 @@ static void *huge_malloc(BLASLONG size){
 
 int main(int argc, char *argv[]){
 
-  FLOAT *x;
-  blasint m, i;
-  blasint inc_x=1;
-  int loops = 1;
-  int l;
-  char *p;
+    FLOAT *a, *x;
+    FLOAT alpha[] = {1.0, 1.0};
+    blasint incx = 1;
+    char *p;
 
-  int from =   1;
-  int to   = 200;
-  int step =   1;
+    char uplo='U';
+    char trans='N';
 
-  struct timeval start, stop;
-  double time1,timeg;
+    if ((p = getenv("OPENBLAS_UPLO"))) uplo=*p;
+    if ((p = getenv("OPENBLAS_TRANS"))) trans=*p;
 
-  argc--;argv++;
+    blasint m, i, j;
 
-  if (argc > 0) { from     = atol(*argv);		argc--; argv++;}
-  if (argc > 0) { to       = MAX(atol(*argv), from);	argc--; argv++;}
-  if (argc > 0) { step     = atol(*argv);		argc--; argv++;}
+    int from =   1;
+    int to   = 200;
+    int step =   1;
 
-  if ((p = getenv("OPENBLAS_LOOPS")))  loops = atoi(p);
-  if ((p = getenv("OPENBLAS_INCX")))   inc_x = atoi(p);
+    struct timeval start, stop;
+    double time1;
 
-  fprintf(stderr, "From : %3d  To : %3d Step = %3d Inc_x = %d Loops = %d\n", from, to, step,inc_x,loops);
+    argc--;argv++;
 
-  if (( x = (FLOAT *)malloc(sizeof(FLOAT) * to * abs(inc_x) * COMPSIZE)) == NULL){
-    fprintf(stderr,"Out of Memory!!\n");exit(1);
-  }
+    if (argc > 0) { from     = atol(*argv);		argc--; argv++;}
+    if (argc > 0) { to       = MAX(atol(*argv), from);	argc--; argv++;}
+    if (argc > 0) { step     = atol(*argv);		argc--; argv++;}
+
+    fprintf(stderr, "From : %3d  To : %3d Step = %3d Uplo = %c Trans = %c\n", from, to, step,uplo,trans);
+
+
+    if (( a = (FLOAT *)malloc(sizeof(FLOAT) * to * to * COMPSIZE)) == NULL){
+        fprintf(stderr,"Out of Memory!!\n");exit(1);
+    }
+
+    if (( x = (FLOAT *)malloc(sizeof(FLOAT) * to * COMPSIZE)) == NULL){
+        fprintf(stderr,"Out of Memory!!\n");exit(1);
+    }
+
+
 
 #ifdef linux
-  srandom(getpid());
+    srandom(getpid());
 #endif
 
-  fprintf(stderr, "   SIZE       Flops\n");
+    fprintf(stderr, "   SIZE       Flops\n");
 
-  for(m = from; m <= to; m += step)
-  {
+    for(m = from; m <= to; m += step)
+    {
+        fprintf(stderr, " %6d : ", (int)m);
 
-   timeg=0;
+        for(j = 0; j < m; j++){
+            for(i = 0; i < m * COMPSIZE; i++){
+                a[(long)i + (long)j * (long)m * COMPSIZE] = ((FLOAT) rand() / (FLOAT) RAND_MAX) - 0.5;
+            }
+            x[ (long)j * COMPSIZE] = ((FLOAT) rand() / (FLOAT) RAND_MAX) - 0.5;
+        }
 
-   fprintf(stderr, " %6d : ", (int)m);
+        gettimeofday( &start, (struct timezone *)0);
 
+        HER (&uplo, &m, alpha, x, &incx, a, &m );
 
-   for (l=0; l<loops; l++)
-   {
+        gettimeofday( &stop, (struct timezone *)0);
 
-   	for(i = 0; i < m * COMPSIZE * abs(inc_x); i++){
-			x[i] = ((FLOAT) rand() / (FLOAT) RAND_MAX) - 0.5;
-   	}
+        time1 = (double)(stop.tv_sec - start.tv_sec) + (double)((stop.tv_usec - start.tv_usec)) * 1.e-6;
 
-    	gettimeofday( &start, (struct timezone *)0);
+        gettimeofday( &start, (struct timezone *)0);
 
-    	IAMAX (&m, x, &inc_x);
-
-    	gettimeofday( &stop, (struct timezone *)0);
-
-    	time1 = (double)(stop.tv_sec - start.tv_sec) + (double)((stop.tv_usec - start.tv_usec)) * 1.e-6;
-
-	timeg += time1;
+        fprintf(stderr,
+                " %10.2f MFlops\n",
+                COMPSIZE * COMPSIZE * 1. * (double)m * (double)m / time1 * 1.e-6);
 
     }
 
-    timeg /= loops;
-
-    fprintf(stderr,
-	    " %10.2f MBytes %10.6f sec\n",
-	    COMPSIZE * sizeof(FLOAT) * 1. * (double)m / timeg * 1.e-6, timeg);
-
-  }
-
-  return 0;
+    return 0;
 }
-
-// void main(int argc, char *argv[]) __attribute__((weak, alias("MAIN__")));

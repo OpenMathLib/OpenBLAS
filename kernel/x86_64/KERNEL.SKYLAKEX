@@ -6,6 +6,10 @@ SGEMMINCOPY    =  ../generic/gemm_ncopy_16.c
 SGEMMITCOPY    =  sgemm_tcopy_16_skylakex.c
 SGEMMONCOPY    =  sgemm_ncopy_4_skylakex.c
 SGEMMOTCOPY    =  ../generic/gemm_tcopy_4.c
+STRSMKERNEL_LN	=  ../generic/trsm_kernel_LN.c
+STRSMKERNEL_LT	=  ../generic/trsm_kernel_LT.c
+STRSMKERNEL_RN	=  ../generic/trsm_kernel_RN.c
+STRSMKERNEL_RT	=  ../generic/trsm_kernel_RT.c
 
 DGEMMKERNEL    =  dgemm_kernel_16x2_skylakex.c
 DTRMMKERNEL    =  dgemm_kernel_16x2_skylakex.c
