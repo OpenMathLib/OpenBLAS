@@ -19,7 +19,7 @@
       DATA             SFAC/9.765625D-4/
 *     .. Executable Statements ..
       WRITE (NOUT,99999)
-      DO 20 IC = 1, 10
+      DO 20 IC = 1, 11
          ICASE = IC
          CALL HEADER
 *
@@ -40,7 +40,7 @@
          ELSE IF (ICASE.EQ.1 .OR. ICASE.EQ.2 .OR. ICASE.EQ.5 .OR.
      +            ICASE.EQ.6) THEN
             CALL CHECK2(SFAC)
-         ELSE IF (ICASE.EQ.4) THEN
+         ELSE IF (ICASE.EQ.4 .OR. ICASE.EQ.11) THEN
             CALL CHECK3(SFAC)
          END IF
 *        -- Print
@@ -59,7 +59,7 @@
       INTEGER          ICASE, INCX, INCY, MODE, N
       LOGICAL          PASS
 *     .. Local Arrays ..
-      CHARACTER*15      L(10)
+      CHARACTER*15      L(11)
 *     .. Common blocks ..
       COMMON           /COMBLA/ICASE, N, INCX, INCY, MODE, PASS
 *     .. Data statements ..
@@ -73,6 +73,7 @@
       DATA             L(8)/'CBLAS_DASUM '/
       DATA             L(9)/'CBLAS_DSCAL '/
       DATA             L(10)/'CBLAS_IDAMAX'/
+      DATA             L(11)/'CBLAS_DROTM'/
 *     .. Executable Statements ..
       WRITE (NOUT,99999) ICASE, L(ICASE)
       RETURN
@@ -400,199 +401,81 @@
       LOGICAL           PASS
 *     .. Local Scalars ..
       DOUBLE PRECISION  SC, SS
-      INTEGER           I, K, KI, KN, KSIZE, LENX, LENY, MX, MY
+      INTEGER           I, KI, KN, KSIZE, LEN
 *     .. Local Arrays ..
-      DOUBLE PRECISION  COPYX(5), COPYY(5), DT9X(7,4,4), DT9Y(7,4,4),
-     +                  DX1(7), DY1(7), MWPC(11), MWPS(11), MWPSTX(5),
-     +                  MWPSTY(5), MWPTX(11,5), MWPTY(11,5), MWPX(5),
-     +                  MWPY(5), SSIZE2(14,2), STX(7), STY(7), SX(7),
-     +                  SY(7)
-      INTEGER           INCXS(4), INCYS(4), LENS(4,2), MWPINX(11),
-     +                  MWPINY(11), MWPN(11), NS(4)
+      DOUBLE PRECISION  DX(10), DY(10), SSIZE2(10,2), STX(10), 
+     +                  STY(10), SX(10), SY(10),
+     +                  PARAM(5, 4), DPARAM(5) 
+      INTEGER           INCXS(7), INCYS(7), NS(5)
 *     .. External Subroutines ..
-      EXTERNAL          STEST,DROTTEST
+      EXTERNAL          STEST, DROTTEST, DROT
 *     .. Intrinsic Functions ..
-      INTRINSIC         ABS, MIN
+      INTRINSIC         MIN
 *     .. Common blocks ..
       COMMON            /COMBLA/ICASE, N, INCX, INCY, MODE, PASS
 *     .. Data statements ..
-      DATA              INCXS/1, 2, -2, -1/
-      DATA              INCYS/1, -2, 1, -2/
-      DATA              LENS/1, 1, 2, 4, 1, 1, 3, 7/
-      DATA              NS/0, 1, 2, 4/
-      DATA              DX1/0.6D0, 0.1D0, -0.5D0, 0.8D0, 0.9D0, -0.3D0,
-     +                  -0.4D0/
-      DATA              DY1/0.5D0, -0.9D0, 0.3D0, 0.7D0, -0.6D0, 0.2D0,
-     +                  0.8D0/
+      DATA              INCXS/1, 1, 2, 2, -2, -1, -2/
+      DATA              INCYS/1, 2, 2, -2, 1, -2, -2/
+      DATA              NS/0, 1, 2, 4, 5/
+      DATA              DX/0.6D0, 0.1D0, -0.5D0, 0.8D0, 0.9D0, -0.3D0,
+     +                  -0.4D0, 0.7D0, 0.5D0, 0.2D0/
+      DATA              DY/0.5D0, -0.9D0, 0.3D0, 0.7D0, -0.6D0, 0.2D0,
+     +                  0.8D0, -0.5D0, 0.1D0, -0.3D0/
       DATA              SC, SS/0.8D0, 0.6D0/
-      DATA              DT9X/0.6D0, 0.0D0, 0.0D0, 0.0D0, 0.0D0, 0.0D0,
-     +                  0.0D0, 0.78D0, 0.0D0, 0.0D0, 0.0D0, 0.0D0,
-     +                  0.0D0, 0.0D0, 0.78D0, -0.46D0, 0.0D0, 0.0D0,
-     +                  0.0D0, 0.0D0, 0.0D0, 0.78D0, -0.46D0, -0.22D0,
-     +                  1.06D0, 0.0D0, 0.0D0, 0.0D0, 0.6D0, 0.0D0,
-     +                  0.0D0, 0.0D0, 0.0D0, 0.0D0, 0.0D0, 0.78D0,
-     +                  0.0D0, 0.0D0, 0.0D0, 0.0D0, 0.0D0, 0.0D0,
-     +                  0.66D0, 0.1D0, -0.1D0, 0.0D0, 0.0D0, 0.0D0,
-     +                  0.0D0, 0.96D0, 0.1D0, -0.76D0, 0.8D0, 0.90D0,
-     +                  -0.3D0, -0.02D0, 0.6D0, 0.0D0, 0.0D0, 0.0D0,
-     +                  0.0D0, 0.0D0, 0.0D0, 0.78D0, 0.0D0, 0.0D0,
-     +                  0.0D0, 0.0D0, 0.0D0, 0.0D0, -0.06D0, 0.1D0,
-     +                  -0.1D0, 0.0D0, 0.0D0, 0.0D0, 0.0D0, 0.90D0,
-     +                  0.1D0, -0.22D0, 0.8D0, 0.18D0, -0.3D0, -0.02D0,
-     +                  0.6D0, 0.0D0, 0.0D0, 0.0D0, 0.0D0, 0.0D0, 0.0D0,
-     +                  0.78D0, 0.0D0, 0.0D0, 0.0D0, 0.0D0, 0.0D0,
-     +                  0.0D0, 0.78D0, 0.26D0, 0.0D0, 0.0D0, 0.0D0,
-     +                  0.0D0, 0.0D0, 0.78D0, 0.26D0, -0.76D0, 1.12D0,
-     +                  0.0D0, 0.0D0, 0.0D0/
-      DATA              DT9Y/0.5D0, 0.0D0, 0.0D0, 0.0D0, 0.0D0, 0.0D0,
-     +                  0.0D0, 0.04D0, 0.0D0, 0.0D0, 0.0D0, 0.0D0,
-     +                  0.0D0, 0.0D0, 0.04D0, -0.78D0, 0.0D0, 0.0D0,
-     +                  0.0D0, 0.0D0, 0.0D0, 0.04D0, -0.78D0, 0.54D0,
-     +                  0.08D0, 0.0D0, 0.0D0, 0.0D0, 0.5D0, 0.0D0,
-     +                  0.0D0, 0.0D0, 0.0D0, 0.0D0, 0.0D0, 0.04D0,
-     +                  0.0D0, 0.0D0, 0.0D0, 0.0D0, 0.0D0, 0.0D0, 0.7D0,
-     +                  -0.9D0, -0.12D0, 0.0D0, 0.0D0, 0.0D0, 0.0D0,
-     +                  0.64D0, -0.9D0, -0.30D0, 0.7D0, -0.18D0, 0.2D0,
-     +                  0.28D0, 0.5D0, 0.0D0, 0.0D0, 0.0D0, 0.0D0,
-     +                  0.0D0, 0.0D0, 0.04D0, 0.0D0, 0.0D0, 0.0D0,
-     +                  0.0D0, 0.0D0, 0.0D0, 0.7D0, -1.08D0, 0.0D0,
-     +                  0.0D0, 0.0D0, 0.0D0, 0.0D0, 0.64D0, -1.26D0,
-     +                  0.54D0, 0.20D0, 0.0D0, 0.0D0, 0.0D0, 0.5D0,
-     +                  0.0D0, 0.0D0, 0.0D0, 0.0D0, 0.0D0, 0.0D0,
-     +                  0.04D0, 0.0D0, 0.0D0, 0.0D0, 0.0D0, 0.0D0,
-     +                  0.0D0, 0.04D0, -0.9D0, 0.18D0, 0.0D0, 0.0D0,
-     +                  0.0D0, 0.0D0, 0.04D0, -0.9D0, 0.18D0, 0.7D0,
-     +                  -0.18D0, 0.2D0, 0.16D0/
+      DATA              LEN/10/
+      DATA              PARAM/-2.0D0, 1.0D0, 0.0D0, 0.0D0, 1.0D0,
+     +                  -1.0D0, 0.2D0, 0.3D0, 0.4D0, 0.5D0,
+     +                  0.0D0, 1.0D0, 0.3D0, 0.4D0, 1.0D0,
+     +                  1.0D0, 0.2D0, -1.0D0, 1.0D0, 0.5D0/
       DATA              SSIZE2/0.0D0, 0.0D0, 0.0D0, 0.0D0, 0.0D0, 0.0D0,
-     +                  0.0D0, 0.0D0, 0.0D0, 0.0D0, 0.0D0, 0.0D0, 0.0D0,
-     +                  0.0D0, 1.17D0, 1.17D0, 1.17D0, 1.17D0, 1.17D0,
+     +                  0.0D0, 0.0D0, 0.0D0, 0.0D0, 1.17D0, 1.17D0, 
      +                  1.17D0, 1.17D0, 1.17D0, 1.17D0, 1.17D0, 1.17D0,
-     +                  1.17D0, 1.17D0, 1.17D0/
+     +                  1.17D0, 1.17D0/
 *     .. Executable Statements ..
 *
-      DO 60 KI = 1, 4
+      DO 60 KI = 1, 7
          INCX = INCXS(KI)
          INCY = INCYS(KI)
-         MX = ABS(INCX)
-         MY = ABS(INCY)
 *
-         DO 40 KN = 1, 4
+         DO 40 KN = 1, 5
             N = NS(KN)
             KSIZE = MIN(2,KN)
-            LENX = LENS(KN,MX)
-            LENY = LENS(KN,MY)
 *
             IF (ICASE.EQ.4) THEN
 *              .. DROTTEST ..
-               DO 20 I = 1, 7
-                  SX(I) = DX1(I)
-                  SY(I) = DY1(I)
-                  STX(I) = DT9X(I,KN,KI)
-                  STY(I) = DT9Y(I,KN,KI)
+               DO 20 I = 1, 10
+                  SX(I) = DX(I)
+                  SY(I) = DY(I)
+                  STX(I) = DX(I)
+                  STY(I) = DY(I)
    20          CONTINUE
                CALL DROTTEST(N,SX,INCX,SY,INCY,SC,SS)
-               CALL STEST(LENX,SX,STX,SSIZE2(1,KSIZE),SFAC)
-               CALL STEST(LENY,SY,STY,SSIZE2(1,KSIZE),SFAC)
-            ELSE
+               CALL DROT(N,STX,INCX,STY,INCY,SC,SS)
+               CALL STEST(LEN,SX,STX,SSIZE2(1,KSIZE),SFAC)
+               CALL STEST(LEN,SY,STY,SSIZE2(1,KSIZE),SFAC)
+            ELSE IF (ICASE.EQ.11) THEN
+*              .. DROTMTEST ..
+               DO 90 I = 1, 10
+                  SX(I) = DX(I)
+                  SY(I) = DY(I)
+                  STX(I) = DX(I)
+                  STY(I) = DY(I)
+   90          CONTINUE
+               DO 70 I = 1, 4
+                  DO 80 K = 1, 5
+                     DPARAM(K) = PARAM(K,I)
+   80             CONTINUE
+                  CALL DROTMTEST(N,SX,INCX,SY,INCY,DPARAM)
+                  CALL DROTM(N,STX,INCX,STY,INCY,DPARAM)
+                  CALL STEST(LEN,SX,STX,SSIZE2(1,KSIZE),SFAC)
+                  CALL STEST(LEN,SY,STY,SSIZE2(1,KSIZE),SFAC)
+   70          CONTINUE      
+               ELSE
                WRITE (NOUT,*) ' Shouldn''t be here in CHECK3'
                STOP
             END IF
    40    CONTINUE
    60 CONTINUE
-*
-      MWPC(1) = 1
-      DO 80 I = 2, 11
-         MWPC(I) = 0
-   80 CONTINUE
-      MWPS(1) = 0.0
-      DO 100 I = 2, 6
-         MWPS(I) = 1.0
-  100 CONTINUE
-      DO 120 I = 7, 11
-         MWPS(I) = -1.0
-  120 CONTINUE
-      MWPINX(1) = 1
-      MWPINX(2) = 1
-      MWPINX(3) = 1
-      MWPINX(4) = -1
-      MWPINX(5) = 1
-      MWPINX(6) = -1
-      MWPINX(7) = 1
-      MWPINX(8) = 1
-      MWPINX(9) = -1
-      MWPINX(10) = 1
-      MWPINX(11) = -1
-      MWPINY(1) = 1
-      MWPINY(2) = 1
-      MWPINY(3) = -1
-      MWPINY(4) = -1
-      MWPINY(5) = 2
-      MWPINY(6) = 1
-      MWPINY(7) = 1
-      MWPINY(8) = -1
-      MWPINY(9) = -1
-      MWPINY(10) = 2
-      MWPINY(11) = 1
-      DO 140 I = 1, 11
-         MWPN(I) = 5
-  140 CONTINUE
-      MWPN(5) = 3
-      MWPN(10) = 3
-      DO 160 I = 1, 5
-         MWPX(I) = I
-         MWPY(I) = I
-         MWPTX(1,I) = I
-         MWPTY(1,I) = I
-         MWPTX(2,I) = I
-         MWPTY(2,I) = -I
-         MWPTX(3,I) = 6 - I
-         MWPTY(3,I) = I - 6
-         MWPTX(4,I) = I
-         MWPTY(4,I) = -I
-         MWPTX(6,I) = 6 - I
-         MWPTY(6,I) = I - 6
-         MWPTX(7,I) = -I
-         MWPTY(7,I) = I
-         MWPTX(8,I) = I - 6
-         MWPTY(8,I) = 6 - I
-         MWPTX(9,I) = -I
-         MWPTY(9,I) = I
-         MWPTX(11,I) = I - 6
-         MWPTY(11,I) = 6 - I
-  160 CONTINUE
-      MWPTX(5,1) = 1
-      MWPTX(5,2) = 3
-      MWPTX(5,3) = 5
-      MWPTX(5,4) = 4
-      MWPTX(5,5) = 5
-      MWPTY(5,1) = -1
-      MWPTY(5,2) = 2
-      MWPTY(5,3) = -2
-      MWPTY(5,4) = 4
-      MWPTY(5,5) = -3
-      MWPTX(10,1) = -1
-      MWPTX(10,2) = -3
-      MWPTX(10,3) = -5
-      MWPTX(10,4) = 4
-      MWPTX(10,5) = 5
-      MWPTY(10,1) = 1
-      MWPTY(10,2) = 2
-      MWPTY(10,3) = 2
-      MWPTY(10,4) = 4
-      MWPTY(10,5) = 3
-      DO 200 I = 1, 11
-         INCX = MWPINX(I)
-         INCY = MWPINY(I)
-         DO 180 K = 1, 5
-            COPYX(K) = MWPX(K)
-            COPYY(K) = MWPY(K)
-            MWPSTX(K) = MWPTX(I,K)
-            MWPSTY(K) = MWPTY(I,K)
-  180    CONTINUE
-         CALL DROTTEST(MWPN(I),COPYX,INCX,COPYY,INCY,MWPC(I),MWPS(I))
-         CALL STEST(5,COPYX,MWPSTX,MWPSTX,SFAC)
-         CALL STEST(5,COPYY,MWPSTY,MWPSTY,SFAC)
-  200 CONTINUE
       RETURN
       END
       SUBROUTINE STEST(LEN,SCOMP,STRUE,SSIZE,SFAC)
@@ -725,4 +608,145 @@
      +       ' COMP                                TRUE     DIFFERENCE',
      +       /1X)
 99997 FORMAT (1X,I4,I3,3I5,2I36,I12)
+      END
+      SUBROUTINE DROT(N,DX,INCX,DY,INCY,C,S)
+*     .. Scalar Arguments ..
+      DOUBLE PRECISION C,S
+      INTEGER INCX,INCY,N
+*     ..
+*     .. Array Arguments ..
+      DOUBLE PRECISION DX(*),DY(*)
+*     ..
+*     applies a plane rotation.
+*     jack dongarra, linpack, 3/11/78.
+*     modified 12/3/93, array(1) declarations changed to array(*)
+*
+*     .. Local Scalars ..
+      DOUBLE PRECISION DTEMP
+      INTEGER I,IX,IY
+*     ..
+      IF (N.LE.0) RETURN
+      IF (INCX.EQ.1 .AND. INCY.EQ.1) GO TO 20
+      IX = 1
+      IY = 1
+      IF (INCX.LT.0) IX = (-N+1)*INCX + 1
+      IF (INCY.LT.0) IY = (-N+1)*INCY + 1
+      DO 10 I = 1,N
+          DTEMP = C*DX(IX) + S*DY(IY)
+          DY(IY) = C*DY(IY) - S*DX(IX)
+          DX(IX) = DTEMP
+          IX = IX + INCX
+          IY = IY + INCY
+   10 CONTINUE
+      RETURN
+   20 DO 30 I = 1,N
+          DTEMP = C*DX(I) + S*DY(I)
+          DY(I) = C*DY(I) - S*DX(I)
+          DX(I) = DTEMP
+   30 CONTINUE
+      RETURN
+      END
+      SUBROUTINE drotm(N,DX,INCX,DY,INCY,DPARAM)
+*
+*  -- Reference BLAS level1 routine (version 3.8.0) --
+*  -- Reference BLAS is a software package provided by Univ. of Tennessee,    --
+*  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
+*     November 2017
+*
+*     .. Scalar Arguments ..
+      INTEGER INCX,INCY,N
+*     ..
+*     .. Array Arguments ..
+      DOUBLE PRECISION DPARAM(5),DX(*),DY(*)
+*     ..
+*
+*  =====================================================================
+*
+*     .. Local Scalars ..
+      DOUBLE PRECISION DFLAG,DH11,DH12,DH21,DH22,TWO,W,Z,ZERO
+      INTEGER I,KX,KY,NSTEPS
+*     ..
+*     .. Data statements ..
+      DATA zero,two/0.d0,2.d0/
+*     ..
+*
+      dflag = dparam(1)
+      IF (n.LE.0 .OR. (dflag+two.EQ.zero)) RETURN
+      IF (incx.EQ.incy.AND.incx.GT.0) THEN
+*
+         nsteps = n*incx
+         IF (dflag.LT.zero) THEN
+            dh11 = dparam(2)
+            dh12 = dparam(4)
+            dh21 = dparam(3)
+            dh22 = dparam(5)
+            DO i = 1,nsteps,incx
+               w = dx(i)
+               z = dy(i)
+               dx(i) = w*dh11 + z*dh12
+               dy(i) = w*dh21 + z*dh22
+            END DO
+         ELSE IF (dflag.EQ.zero) THEN
+            dh12 = dparam(4)
+            dh21 = dparam(3)
+            DO i = 1,nsteps,incx
+               w = dx(i)
+               z = dy(i)
+               dx(i) = w + z*dh12
+               dy(i) = w*dh21 + z
+            END DO
+         ELSE
+            dh11 = dparam(2)
+            dh22 = dparam(5)
+            DO i = 1,nsteps,incx
+               w = dx(i)
+               z = dy(i)
+               dx(i) = w*dh11 + z
+               dy(i) = -w + dh22*z
+            END DO
+         END IF
+      ELSE
+         kx = 1
+         ky = 1
+         IF (incx.LT.0) kx = 1 + (1-n)*incx
+         IF (incy.LT.0) ky = 1 + (1-n)*incy
+*
+         IF (dflag.LT.zero) THEN
+            dh11 = dparam(2)
+            dh12 = dparam(4)
+            dh21 = dparam(3)
+            dh22 = dparam(5)
+            DO i = 1,n
+               w = dx(kx)
+               z = dy(ky)
+               dx(kx) = w*dh11 + z*dh12
+               dy(ky) = w*dh21 + z*dh22
+               kx = kx + incx
+               ky = ky + incy
+            END DO
+         ELSE IF (dflag.EQ.zero) THEN
+            dh12 = dparam(4)
+            dh21 = dparam(3)
+            DO i = 1,n
+               w = dx(kx)
+               z = dy(ky)
+               dx(kx) = w + z*dh12
+               dy(ky) = w*dh21 + z
+               kx = kx + incx
+               ky = ky + incy
+            END DO
+         ELSE
+             dh11 = dparam(2)
+             dh22 = dparam(5)
+             DO i = 1,n
+                w = dx(kx)
+                z = dy(ky)
+                dx(kx) = w*dh11 + z
+                dy(ky) = -w + dh22*z
+                kx = kx + incx
+                ky = ky + incy
+            END DO
+         END IF
+      END IF
+      RETURN
       END
