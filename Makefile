@@ -84,6 +84,10 @@ else
 	@echo " (Multi-threading; Max num-threads is $(NUM_THREADS))"
 endif
 
+ifeq ($(DYNAMIC_ARCH), 1)
+	@echo "  Supporting multiple $(ARCH) cpu models with minimum requirement for the common code being $(CORE)"
+endif
+
 ifeq ($(USE_OPENMP), 1)
 	@echo
 	@echo " Use OpenMP in the multithreading. Because of ignoring OPENBLAS_NUM_THREADS and GOTO_NUM_THREADS flags, "
