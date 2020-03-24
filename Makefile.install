@@ -89,11 +89,17 @@ ifeq ($(OSNAME), Darwin)
 endif
 ifeq ($(OSNAME), WINNT)
 	@-cp $(LIBDLLNAME) "$(DESTDIR)$(OPENBLAS_BINARY_DIR)"
-	@-cp $(IMPLIBNAME) "$(DESTDIR)$(OPENBLAS_LIBRARY_DIR)"
 endif
 ifeq ($(OSNAME), CYGWIN_NT)
 	@-cp $(LIBDLLNAME) "$(DESTDIR)$(OPENBLAS_BINARY_DIR)"
+endif
+ifneq ($(NO_STATIC),1)
+ifeq ($(OSNAME), WINNT)
 	@-cp $(IMPLIBNAME) "$(DESTDIR)$(OPENBLAS_LIBRARY_DIR)"
+endif
+ifeq ($(OSNAME), CYGWIN_NT)
+	@-cp $(IMPLIBNAME) "$(DESTDIR)$(OPENBLAS_LIBRARY_DIR)"
+endif
 endif
 endif
 
