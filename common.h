@@ -657,6 +657,8 @@ void gotoblas_dynamic_init(void);
 void gotoblas_dynamic_quit(void);
 void gotoblas_profile_init(void);
 void gotoblas_profile_quit(void);
+	
+int support_avx512(void);	
 
 #ifdef USE_OPENMP
 
