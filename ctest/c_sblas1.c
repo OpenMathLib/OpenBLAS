@@ -55,6 +55,13 @@ void F77_srotg( float *a, float *b, float *c, float *s)
    return;
 }
 
+void F77_srotm(blasint *N, float *X, blasint *incX, float *Y, blasint *incY,
+               float *param)
+{
+    cblas_srotm(*N, X, *incX, Y, *incY, param);
+    return;
+}
+
 void F77_srot( blasint *N, float *X, blasint *incX, float *Y,
               blasint *incY, const float  *c, const float  *s)
 {
