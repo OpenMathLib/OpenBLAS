@@ -273,7 +273,7 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_TRANSPOSE TransA, enum CBLAS_TRANS
 
 #if !defined(COMPLEX) && !defined(DOUBLE) && defined(USE_SGEMM_KERNEL_DIRECT)
 #ifdef DYNAMIC_ARCH
- if (gotoblas == &gotoblas_SKYLAKEX)
+ if (support_avx512() )
 #endif  
   if (beta == 0 && alpha == 1.0 && order == CblasRowMajor && TransA == CblasNoTrans && TransB == CblasNoTrans && sgemm_kernel_direct_performant(m,n,k)) {
 	sgemm_kernel_direct(m, n, k, a, lda, b, ldb, c, ldc);
