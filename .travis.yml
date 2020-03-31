@@ -180,6 +180,12 @@ matrix:
         - CFLAGS="-O2 -Wno-macro-redefined -isysroot /Applications/Xcode-10.1.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS12.1.sdk -arch arm64 -miphoneos-version-min=10.0"
         - BTYPE="TARGET=ARMV8 BINARY=64 HOSTCC=clang NOFORTRAN=1"
 
+    - <<: *test-macos
+      osx_image: xcode10.1
+      env:
+        - CC="/Applications/Xcode-10.1.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang"
+        - CFLAGS="-O2 -Wno-macro-redefined -isysroot /Applications/Xcode-10.1.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS10.0.sdk -arch arm -miphoneos-version-min=10.0"
+        - BTYPE="TARGET=ARMV7 HOSTCC=clang NOFORTRAN=1"
 # whitelist
 branches:
   only:
