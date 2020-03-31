@@ -81,14 +81,14 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .endm
 
 .macro INIT_ZERO
-	fmul v0.2d, v0.2d, betaV0
-	fmul v1.2d, v1.2d, betaV0
-	fmul v2.2d, v2.2d, betaV0
-	fmul v3.2d, v3.2d, betaV0
-	fmul v4.2d, v4.2d, betaV0
-	fmul v5.2d, v5.2d, betaV0
-	fmul v6.2d, v6.2d, betaV0
-	fmul v7.2d, v7.2d, betaV0
+	movi v0.2d, #0000000000000000
+	movi v1.2d, #0000000000000000
+	movi v2.2d, #0000000000000000
+	movi v3.2d, #0000000000000000
+	movi v4.2d, #0000000000000000
+	movi v5.2d, #0000000000000000
+	movi v6.2d, #0000000000000000
+	movi v7.2d, #0000000000000000
 .endm
 
 /**************************************************************************************
