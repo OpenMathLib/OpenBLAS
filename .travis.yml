@@ -181,10 +181,10 @@ matrix:
         - BTYPE="TARGET=ARMV8 BINARY=64 HOSTCC=clang NOFORTRAN=1"
 
     - <<: *test-macos
-      osx_image: xcode8.3
+      osx_image: xcode9.2
       env:
-        - CC="/Applications/Xcode-8.3.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang"
-        - CFLAGS="-O2 -Wno-macro-redefined -isysroot /Applications/Xcode-8.3.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS10.3.sdk -arch arm -miphoneos-version-min=5.1"
+        - CC="/Applications/Xcode-9.2.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang"
+        - CFLAGS="-O2 -Wno-macro-redefined -isysroot /Applications/Xcode-9.2.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS10.3.sdk -arch arm -miphoneos-version-min=5.1"
         - BTYPE="TARGET=ARMV7 HOSTCC=clang NOFORTRAN=1"
 # whitelist
 branches:
