@@ -842,7 +842,7 @@ Lmcount$lazy_ptr:
 #elif defined(PPC440FP2)
 #define BUFFER_SIZE     ( 16 << 20)
 #elif defined(POWER8) || defined(POWER9)
-#define BUFFER_SIZE     ( 64 << 21)
+#define BUFFER_SIZE     ( 64 << 22)
 #else
 #define BUFFER_SIZE     ( 16 << 20)
 #endif
