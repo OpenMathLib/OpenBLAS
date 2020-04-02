@@ -87,6 +87,28 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif
 #endif
 
+/* Memory buffer must fit two matrix subblocks of maximal size */
+#if BUFFER_SIZE < (SGEMM_DEFAULT_P * SGEMM_DEFAULT_Q * 4 * 2) || \
+    BUFFER_SIZE < (SGEMM_DEFAULT_P * SGEMM_DEFAULT_R * 4 * 2) || \
+    BUFFER_SIZE < (SGEMM_DEFAULT_R * SGEMM_DEFAULT_Q * 4 * 2)
+#error BUFFER_SIZE is too small for P, Q, and R of SGEMM
+#endif
+#if BUFFER_SIZE < (DGEMM_DEFAULT_P * DGEMM_DEFAULT_Q * 8 * 2) || \
+    BUFFER_SIZE < (DGEMM_DEFAULT_P * DGEMM_DEFAULT_R * 8 * 2) || \
+    BUFFER_SIZE < (DGEMM_DEFAULT_R * DGEMM_DEFAULT_Q * 8 * 2)
+#error BUFFER_SIZE is too small for P, Q, and R of DGEMM
+#endif
+#if BUFFER_SIZE < (CGEMM_DEFAULT_P * CGEMM_DEFAULT_Q * 8 * 2) || \
+    BUFFER_SIZE < (CGEMM_DEFAULT_P * CGEMM_DEFAULT_R * 8 * 2) || \
+    BUFFER_SIZE < (CGEMM_DEFAULT_R * CGEMM_DEFAULT_Q * 8 * 2)
+#error BUFFER_SIZE is too small for P, Q, and R of CGEMM
+#endif
+#if BUFFER_SIZE < (ZGEMM_DEFAULT_P * ZGEMM_DEFAULT_Q * 16 * 2) || \
+    BUFFER_SIZE < (ZGEMM_DEFAULT_P * ZGEMM_DEFAULT_R * 16 * 2) || \
+    BUFFER_SIZE < (ZGEMM_DEFAULT_R * ZGEMM_DEFAULT_Q * 16 * 2)
+#error BUFFER_SIZE is too small for P, Q, and R of ZGEMM
+#endif
+
 #if defined(COMPILE_TLS)
 
 #include <errno.h>
