@@ -37,7 +37,7 @@ matrix:
     - <<: *test-ubuntu
       os: linux-s390x
       before_script:
-        - COMMON_FLAGS="DYNAMIC_ARCH=1 TARGET=Z12 NUM_THREADS=32"
+        - COMMON_FLAGS="DYNAMIC_ARCH=1 TARGET=Z13 NUM_THREADS=32"
       env:
         # for matrix annotation only
         - TARGET_BOX=IBMZ_LINUX
