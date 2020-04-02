@@ -164,7 +164,7 @@ matrix:
         - brew update
         - brew install gcc@8 # for gfortran
       script:
-        - travis_wait 45 make $COMMON_FLAGS $BTYPE
+        - travis_wait 45 make QUIET_MAKE=1 $COMMON_FLAGS $BTYPE
       env:
         - BTYPE="TARGET=NEHALEM BINARY=64 INTERFACE64=1 FC=gfortran-8"
 
