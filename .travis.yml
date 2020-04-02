@@ -35,6 +35,15 @@ matrix:
         - BTYPE="BINARY=64 USE_OPENMP=1"
 
     - <<: *test-ubuntu
+      os: linux-s390x
+      before_script:
+        - COMMON_FLAGS="DYNAMIC_ARCH=1 TARGET=Z12 NUM_THREADS=32"
+      env:
+        # for matrix annotation only
+        - TARGET_BOX=IBMZ_LINUX
+        - BTYPE="BINARY=64 USE_OPENMP=1"
+
+    - <<: *test-ubuntu
       env:
         - TARGET_BOX=LINUX64
         - BTYPE="BINARY=64 USE_OPENMP=1"
