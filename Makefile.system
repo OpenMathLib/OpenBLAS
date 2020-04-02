@@ -850,6 +850,7 @@ ifneq ($(INTERFACE64), 0)
 FCOMMON_OPT += -i8
 endif
 endif
+FCOMMON_OPT += -recursive
 ifeq ($(USE_OPENMP), 1)
 FCOMMON_OPT += -fopenmp
 endif
@@ -893,6 +894,7 @@ FCOMMON_OPT += -tp p7-64
 else
 FCOMMON_OPT += -tp p7
 endif
+FCOMMON_OPT += -Mrecursive
 ifeq ($(USE_OPENMP), 1)
 FCOMMON_OPT += -mp
 endif
