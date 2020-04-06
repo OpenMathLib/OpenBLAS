@@ -1291,39 +1291,39 @@ static void init_parameter(void) {
   TABLE_NAME.sgemm_r = (((BUFFER_SIZE -
 			       ((TABLE_NAME.sgemm_p * TABLE_NAME.sgemm_q *  4 + TABLE_NAME.offsetA
 				 + TABLE_NAME.align) & ~TABLE_NAME.align)
-			       ) / (TABLE_NAME.sgemm_q *  4) - 15) & ~15);
+			       ) / (TABLE_NAME.sgemm_q *  4) - 15) & ~15UL);
 
   TABLE_NAME.dgemm_r = (((BUFFER_SIZE -
 			       ((TABLE_NAME.dgemm_p * TABLE_NAME.dgemm_q *  8 + TABLE_NAME.offsetA
 				 + TABLE_NAME.align) & ~TABLE_NAME.align)
-			       ) / (TABLE_NAME.dgemm_q *  8) - 15) & ~15);
+			       ) / (TABLE_NAME.dgemm_q *  8) - 15) & ~15UL);
 
 #ifdef EXPRECISION
   TABLE_NAME.qgemm_r = (((BUFFER_SIZE -
 			       ((TABLE_NAME.qgemm_p * TABLE_NAME.qgemm_q * 16 + TABLE_NAME.offsetA
 				 + TABLE_NAME.align) & ~TABLE_NAME.align)
-			       ) / (TABLE_NAME.qgemm_q * 16) - 15) & ~15);
+			       ) / (TABLE_NAME.qgemm_q * 16) - 15) & ~15UL);
 #endif
 
   TABLE_NAME.cgemm_r = (((BUFFER_SIZE -
 			       ((TABLE_NAME.cgemm_p * TABLE_NAME.cgemm_q *  8 + TABLE_NAME.offsetA
 				 + TABLE_NAME.align) & ~TABLE_NAME.align)
-			       ) / (TABLE_NAME.cgemm_q *  8) - 15) & ~15);
+			       ) / (TABLE_NAME.cgemm_q *  8) - 15) & ~15UL);
 
   TABLE_NAME.zgemm_r = (((BUFFER_SIZE -
 			       ((TABLE_NAME.zgemm_p * TABLE_NAME.zgemm_q * 16 + TABLE_NAME.offsetA
 				 + TABLE_NAME.align) & ~TABLE_NAME.align)
-			       ) / (TABLE_NAME.zgemm_q * 16) - 15) & ~15);
+			       ) / (TABLE_NAME.zgemm_q * 16) - 15) & ~15UL);
 
   TABLE_NAME.cgemm3m_r = (((BUFFER_SIZE -
 			       ((TABLE_NAME.cgemm3m_p * TABLE_NAME.cgemm3m_q *  8 + TABLE_NAME.offsetA
 				 + TABLE_NAME.align) & ~TABLE_NAME.align)
-			       ) / (TABLE_NAME.cgemm3m_q *  8) - 15) & ~15);
+			       ) / (TABLE_NAME.cgemm3m_q *  8) - 15) & ~15UL);
 
   TABLE_NAME.zgemm3m_r = (((BUFFER_SIZE -
 			       ((TABLE_NAME.zgemm3m_p * TABLE_NAME.zgemm3m_q * 16 + TABLE_NAME.offsetA
 				 + TABLE_NAME.align) & ~TABLE_NAME.align)
-			       ) / (TABLE_NAME.zgemm3m_q * 16) - 15) & ~15);
+			       ) / (TABLE_NAME.zgemm3m_q * 16) - 15) & ~15UL);
 
 
 
