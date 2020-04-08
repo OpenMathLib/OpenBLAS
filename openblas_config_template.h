@@ -91,3 +91,8 @@ typedef int blasint;
   #define openblas_complex_xdouble_real(z)           ((z).real)
   #define openblas_complex_xdouble_imag(z)           ((z).imag)
 #endif
+
+/* Inclusion of Linux-specific header is needed for definition of cpu_set_t. */
+#ifdef OPENBLAS_OS_LINUX
+#include <sched.h>
+#endif
