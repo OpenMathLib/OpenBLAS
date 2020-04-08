@@ -12,7 +12,7 @@ void launch_cblas_dgemm(double* A, double* B, double* C, const blasint randomMat
 
 int main(int argc, char* argv[]){
 	blasint randomMatSize = 1024; //dimension of the random square matrices used
-	uint32_t numConcurrentThreads = 52; //number of concurrent calls of the functions being tested
+	uint32_t numConcurrentThreads = 96; //number of concurrent calls of the functions being tested
 	uint32_t numTestRounds = 16; //number of testing rounds before success exit
 	
 	if (argc > 4){
