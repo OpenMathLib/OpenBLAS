@@ -126,14 +126,14 @@ int main(int argc, char *argv[]){
   char transa = 'N';
   char transb = 'N';
   blasint m, n, k, i, j, lda, ldb, ldc;
-  int loops = 10000000;
+  int loops = 5000000;
   int has_param_m = 0;
   int has_param_n = 0;
   int has_param_k = 0;
   char *p;
 
   int from =   1;
-  int to   = 70;
+  int to   = 40;
   int step =   1;
 
   struct timeval start, stop;
