@@ -155,8 +155,7 @@ steps:
   image: ubuntu:19.04
   environment:
     CC: gcc
-    OMP_NUM_THREADS: 96
-    COMMON_FLAGS: 'USE_OPENMP=1 DYNAMIC_ARCH=1 TARGET=ARMV8'
+    COMMON_FLAGS: 'USE_OPENMP=1'
   commands:
     - echo "MAKE_FLAGS:= $COMMON_FLAGS"
     - apt-get update -y
