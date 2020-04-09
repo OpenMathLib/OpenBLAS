@@ -81,7 +81,7 @@ endif
 ifndef SMP
 	@echo " (Single-threading)  "
 else
-	@echo " (Multi-threading; Max num-threads is $(NUM_THREADS))"
+	@echo " (Multi-threading; Max num-threads is $(NUM_THREADS)) NUM_BUFFERS=$(NUM_BUFFERS)"
 endif
 
 ifeq ($(DYNAMIC_ARCH), 1)
