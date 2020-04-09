@@ -159,7 +159,7 @@ int main(int argc, char *argv[]){
   TOUPPER(transb);
 
   fprintf(stderr, "From : %3d  To : %3d Step=%d : Transa=%c : Transb=%c\n", from, to, step, transa, transb);
-   fprintf(stderr,"OMP with %d threads\n",omp_get_max_threads());
+   fprintf(stderr,"OMP with %d threads on a build with NUM_BUFFERS=%d\n",omp_get_max_threads(),NUM_BUFFERS);
   p = getenv("OPENBLAS_LOOPS");
   if ( p != NULL ) {
     loops = atoi(p);
