@@ -155,6 +155,7 @@ steps:
   image: ubuntu:19.04
   environment:
     CC: gcc
+    OMP_NUM_THREADS: 44
     COMMON_FLAGS: 'USE_OPENMP=1'
   commands:
     - echo "MAKE_FLAGS:= $COMMON_FLAGS"
