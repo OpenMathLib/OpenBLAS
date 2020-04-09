@@ -15,7 +15,7 @@ steps:
   commands:
     - echo "MAKE_FLAGS:= $COMMON_FLAGS"
     - apt-get update -y
-    - apt-get install -y make $CC gfortran perl
+    - apt-get install -y make $CC gfortran perl 
     - $CC --version
     - make QUIET_MAKE=1 $COMMON_FLAGS
     - make -C test $COMMON_FLAGS
@@ -156,7 +156,7 @@ steps:
   environment:
     CC: gcc
     OMP_NUM_THREADS: 96
-    COMMON_FLAGS: 'USE_OPENMP=1'
+    COMMON_FLAGS: 'USE_OPENMP=1 DYNAMIC_ARCH=1 TARGET=ARMV8'
   commands:
     - echo "MAKE_FLAGS:= $COMMON_FLAGS"
     - apt-get update -y
