@@ -227,7 +227,7 @@ int main(int argc, char *argv[]){
     fprintf(stderr, " M=%4d, N=%4d, K=%4d : ", (int)m, (int)n, (int)k);
     gettimeofday( &start, (struct timezone *)0);
 
-#pragma omp parallel num_threads(96)  
+#pragma omp parallel
     for (j=0; j<loops; j++) {
       GEMM (&transa, &transb, &m, &n, &k, alpha, a, &lda, b, &ldb, beta, c, &ldc);
     }
