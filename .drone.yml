@@ -167,4 +167,4 @@ steps:
     - make -C ctest $COMMON_FLAGS
     - make -C utest $COMMON_FLAGS
     - make -C benchmark $COMMON_FLAGS
-    - benchmark/dgemm.goto 10 10 0
+    - benchmark/dgemm.goto 10 10 1
