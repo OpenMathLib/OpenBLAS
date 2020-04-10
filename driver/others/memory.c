@@ -2716,7 +2716,7 @@ void *blas_memory_alloc(int procpos){
 #if (defined(SMP) || defined(USE_LOCKING)) && !defined(USE_OPENMP)
   LOCK_COMMAND(&alloc_lock);
 #endif
-	WMB;
+	MB; //for ARM etc - probably needs to be WMB
   do {
 #if defined(USE_OPENMP)	  
     if (!memory[position].used) { 
