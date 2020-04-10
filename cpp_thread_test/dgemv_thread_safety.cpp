@@ -17,7 +17,7 @@ int main(int argc, char* argv[]){
 	uint32_t numTestRounds = 16; //number of testing rounds before success exit
 	uint32_t maxHwThreads = omp_get_max_threads();
 	
-	if (maxHwThreads() < 52)
+	if (maxHwThreads < 52)
 		numConcurrentThreads = maxHwThreads -4;
 	
 	if (argc > 4){
