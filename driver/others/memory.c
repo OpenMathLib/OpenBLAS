@@ -2716,6 +2716,7 @@ void *blas_memory_alloc(int procpos){
 #if (defined(SMP) || defined(USE_LOCKING)) && !defined(USE_OPENMP)
   LOCK_COMMAND(&alloc_lock);
 #endif
+	WMB;
   do {
 #if defined(USE_OPENMP)	  
     if (!memory[position].used) { 
@@ -2740,7 +2741,7 @@ void *blas_memory_alloc(int procpos){
 #ifdef DEBUG
   printf("  Position -> %d\n", position);
 #endif
-WMB;
+// WMB; not sure if this is required here ?
   memory[position].used = 1;
 #if (defined(SMP) || defined(USE_LOCKING)) && !defined(USE_OPENMP)
   UNLOCK_COMMAND(&alloc_lock);
