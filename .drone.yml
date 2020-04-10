@@ -166,4 +166,5 @@ steps:
     - make -C ctest $COMMON_FLAGS
     - make -C utest $COMMON_FLAGS
     - make -C benchmark $COMMON_FLAGS
-    - benchmark/dgemm.goto 10 10 1
+    - benchmark/dgemm.goto 10 10 1 
+    - make -C cpp_thread_test $COMMON_FLAGS
