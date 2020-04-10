@@ -68,14 +68,14 @@ endif
 #for install shared library
 ifneq ($(NO_SHARED),1)
 	@echo Copying the shared library to $(DESTDIR)$(OPENBLAS_LIBRARY_DIR)
-ifeq ($(OSNAME), $(filter $(OSNAME),Linux SunOS Android Haiku))
+ifeq ($(OSNAME), $(filter $(OSNAME),Linux SunOS Android Haiku FreeBSD DragonFly))
 	@install -pm755 $(LIBSONAME) "$(DESTDIR)$(OPENBLAS_LIBRARY_DIR)"
 	@cd "$(DESTDIR)$(OPENBLAS_LIBRARY_DIR)" ; \
 	ln -fs $(LIBSONAME) $(LIBPREFIX).so ; \
 	ln -fs $(LIBSONAME) $(LIBPREFIX).so.$(MAJOR_VERSION)
 endif
 
-ifeq ($(OSNAME), $(filter $(OSNAME),FreeBSD OpenBSD NetBSD DragonFly))
+ifeq ($(OSNAME), $(filter $(OSNAME),OpenBSD NetBSD))
 	@cp $(LIBSONAME) "$(DESTDIR)$(OPENBLAS_LIBRARY_DIR)"
 	@cd "$(DESTDIR)$(OPENBLAS_LIBRARY_DIR)" ; \
 	ln -fs $(LIBSONAME) $(LIBPREFIX).so
