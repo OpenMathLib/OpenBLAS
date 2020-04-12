@@ -121,7 +121,7 @@ REALNAME:
 #endif
 #define HUGE_PAGESIZE   ( 4 << 20)
 
-#define BUFFER_SIZE     (16 << 20)
+#define BUFFER_SIZE     (32 << 20)
 
 
 #define BASE_ADDRESS (START_ADDRESS - BUFFER_SIZE * MAX_CPU_NUMBER)
