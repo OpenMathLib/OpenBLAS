@@ -72,6 +72,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "common.h"
 #if defined(OS_LINUX) || defined(OS_NETBSD) || defined(OS_DARWIN) || defined(OS_ANDROID) || defined(OS_SUNOS) || defined(OS_FREEBSD) || defined(OS_OPENBSD) || defined(OS_DRAGONFLY) || defined(OS_HAIKU)
 #include <dlfcn.h>
+#include <errno.h>
 #include <signal.h>
 #include <sys/resource.h>
 #include <sys/time.h>
@@ -278,6 +279,23 @@ int get_node(void);
 #endif
 
 static int increased_threads = 0;
+
+#ifdef OS_LINUX
+int openblas_setaffinity(int thread_idx, size_t cpusetsize, cpu_set_t* cpu_set) {
+  const int active_threads = openblas_get_num_threads();
+
+  if (thread_idx < 0 || thread_idx >= active_threads) {
+    errno = EINVAL;
+    return -1;
+  }
+
+  pthread_t thread = (thread_idx == active_threads - 1)
+      ? pthread_self()
+      : blas_threads[thread_idx];
+
+  return pthread_setaffinity_np(thread, cpusetsize, cpu_set);
+}
+#endif
 
 static void* blas_thread_server(void *arg){
 
