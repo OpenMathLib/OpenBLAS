@@ -226,7 +226,13 @@ static __inline int blas_quickdivide(unsigned int x, unsigned int y){
 #define HUGE_PAGESIZE	( 2 << 20)
 
 #ifndef BUFFERSIZE
+#if defined(SKYLAKEX) 
+#define BUFFER_SIZE	(32 << 21)
+#elif defined(HASWELL) || defined(ZEN)
+#define BUFFER_SIZE	(32 << 22)
+#else
 #define BUFFER_SIZE	(32 << 20)
+#endif
 #else
 #define BUFFER_SIZE	(32 << BUFFERSIZE)
 #endif
