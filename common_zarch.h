@@ -123,11 +123,7 @@ REALNAME:
 #endif
 #define HUGE_PAGESIZE   ( 4 << 20)
 
-#if defined(CORTEXA57)
-#define BUFFER_SIZE     (20 << 20)
-#else
-#define BUFFER_SIZE     (16 << 20)
-#endif
+#define BUFFER_SIZE     (32 << 22)
 
 
 #define BASE_ADDRESS (START_ADDRESS - BUFFER_SIZE * MAX_CPU_NUMBER)
