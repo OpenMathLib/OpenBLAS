@@ -43,7 +43,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #define MB   __asm__ __volatile__ ("dmb  ish" : : : "memory")
 #define WMB  __asm__ __volatile__ ("dmb  ishst" : : : "memory")
-#define RMB  __asm__ __volatile__ ("dmb  ishld" : : : "memory")
+#define RMB  __asm__ __volatile__ ("dmb  ish" : : : "memory")
 
 #endif
 
