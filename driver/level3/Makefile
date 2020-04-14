@@ -19,6 +19,7 @@ ifeq ($(ARCH), MIPS)
 USE_GEMM3M = 1
 endif
 
+SHBLASOBJS       += shgemm_nn.$(SUFFIX) shgemm_nt.$(SUFFIX) shgemm_tn.$(SUFFIX) shgemm_tt.$(SUFFIX)
 SBLASOBJS	+= \
 	sgemm_nn.$(SUFFIX) sgemm_nt.$(SUFFIX) sgemm_tn.$(SUFFIX) sgemm_tt.$(SUFFIX) \
 	strmm_LNUU.$(SUFFIX) strmm_LNUN.$(SUFFIX) strmm_LNLU.$(SUFFIX) strmm_LNLN.$(SUFFIX) \
@@ -204,6 +205,7 @@ COMMONOBJS  += syrk_thread.$(SUFFIX)
 
 ifndef USE_SIMPLE_THREADED_LEVEL3
 
+SHBLASOBJS    += shgemm_thread_nn.$(SUFFIX) shgemm_thread_nt.$(SUFFIX) shgemm_thread_tn.$(SUFFIX) shgemm_thread_tt.$(SUFFIX)
 SBLASOBJS    += sgemm_thread_nn.$(SUFFIX) sgemm_thread_nt.$(SUFFIX) sgemm_thread_tn.$(SUFFIX) sgemm_thread_tt.$(SUFFIX)
 DBLASOBJS    += dgemm_thread_nn.$(SUFFIX) dgemm_thread_nt.$(SUFFIX) dgemm_thread_tn.$(SUFFIX) dgemm_thread_tt.$(SUFFIX)
 QBLASOBJS    += qgemm_thread_nn.$(SUFFIX) qgemm_thread_nt.$(SUFFIX) qgemm_thread_tn.$(SUFFIX) qgemm_thread_tt.$(SUFFIX)
@@ -282,6 +284,18 @@ HPLOBJS += dgemm_thread_nn.$(SUFFIX) dgemm_thread_nt.$(SUFFIX) \
 endif
 
 all ::
+
+shgemm_nn.$(SUFFIX) : gemm.c level3.c ../../param.h
+	$(CC) $(CFLAGS) $(BLOCKS) -c -DHALF -UDOUBLE -UCOMPLEX -DNN $< -o $(@F)
+
+shgemm_nt.$(SUFFIX) : gemm.c level3.c ../../param.h
+	$(CC) $(CFLAGS) $(BLOCKS) -c -DHALF -UDOUBLE -UCOMPLEX -DNT $< -o $(@F)
+
+shgemm_tn.$(SUFFIX) : gemm.c level3.c ../../param.h
+	$(CC) $(CFLAGS) $(BLOCKS) -c -DHALF -UDOUBLE -UCOMPLEX -DTN $< -o $(@F)
+
+shgemm_tt.$(SUFFIX) : gemm.c level3.c ../../param.h
+	$(CC) $(CFLAGS) $(BLOCKS) -c -DHALF -UDOUBLE -UCOMPLEX -DTT $< -o $(@F)
 
 sgemm_nn.$(SUFFIX) : gemm.c level3.c ../../param.h
 	$(CC) $(CFLAGS) $(BLOCKS) -c -UDOUBLE -UCOMPLEX -DNN $< -o $(@F)
@@ -478,6 +492,17 @@ gemm_thread_variable.$(SUFFIX) : gemm_thread_variable.c ../../common.h
 beta_thread.$(SUFFIX) : beta_thread.c ../../common.h
 	$(CC) -c $(CFLAGS) $< -o $(@F)
 
+shgemm_thread_nn.$(SUFFIX) : gemm.c level3_thread.c ../../param.h
+	$(CC) $(CFLAGS) $(BLOCKS) -c -DTHREADED_LEVEL3 -DHALF -UDOUBLE -UCOMPLEX -DNN $< -o $(@F)
+
+shgemm_thread_nt.$(SUFFIX) : gemm.c level3_thread.c ../../param.h
+	$(CC) $(CFLAGS) $(BLOCKS) -c -DTHREADED_LEVEL3 -DHALF -UDOUBLE -UCOMPLEX -DNT $< -o $(@F)
+
+shgemm_thread_tn.$(SUFFIX) : gemm.c level3_thread.c ../../param.h
+	$(CC) $(CFLAGS) $(BLOCKS) -c -DTHREADED_LEVEL3 -DHALF -UDOUBLE -UCOMPLEX -DTN $< -o $(@F)
+
+shgemm_thread_tt.$(SUFFIX) : gemm.c level3_thread.c ../../param.h
+	$(CC) $(CFLAGS) $(BLOCKS) -c -DTHREADED_LEVEL3 -DHALF -UDOUBLE -UCOMPLEX -DTT $< -o $(@F)
 
 sgemm_thread_nn.$(SUFFIX) : gemm.c level3_thread.c ../../param.h
 	$(CC) $(CFLAGS) $(BLOCKS) -c -DTHREADED_LEVEL3 -UDOUBLE -UCOMPLEX -DNN $< -o $(@F)
@@ -2652,6 +2677,18 @@ xtrsm_RCLU.$(SUFFIX) : trsm_R.c
 xtrsm_RCLN.$(SUFFIX) : trsm_R.c
 	$(CC) -c $(CFLAGS) -DCOMPLEX -DXDOUBLE -DTRANSA -UUPPER -UUNIT -DCONJ $< -o $(@F)
 
+shgemm_nn.$(PSUFFIX) : gemm.c level3.c ../../param.h
+	$(CC) $(PFLAGS) $(BLOCKS) -c -DHALF -UDOUBLE -UCOMPLEX -DNN $< -o $(@F)
+
+shgemm_nt.$(PSUFFIX) : gemm.c level3.c ../../param.h
+	$(CC) $(PFLAGS) $(BLOCKS) -c -DHALF -UDOUBLE -UCOMPLEX -DNT $< -o $(@F)
+
+shgemm_tn.$(PSUFFIX) : gemm.c level3.c ../../param.h
+	$(CC) $(PFLAGS) $(BLOCKS) -c -DHALF -UDOUBLE -UCOMPLEX -DTN $< -o $(@F)
+
+shgemm_tt.$(PSUFFIX) : gemm.c level3.c ../../param.h
+	$(CC) $(PFLAGS) $(BLOCKS) -c -DHALF -UDOUBLE -UCOMPLEX -DTT $< -o $(@F)
+
 sgemm_nn.$(PSUFFIX) : gemm.c level3.c ../../param.h
 	$(CC) $(PFLAGS) $(BLOCKS) -c -UDOUBLE -UCOMPLEX -DNN $< -o $(@F)
 
@@ -2847,6 +2884,18 @@ gemm_thread_variable.$(PSUFFIX) : gemm_thread_variable.c ../../common.h
 beta_thread.$(PSUFFIX) : beta_thread.c ../../common.h
 	$(CC) -c $(PFLAGS) $< -o $(@F)
 
+
+shgemm_thread_nn.$(PSUFFIX) : gemm.c level3_thread.c ../../param.h
+	$(CC) $(PFLAGS) $(BLOCKS) -c -DTHREADED_LEVEL3 -DHALF -UDOUBLE -UCOMPLEX -DNN $< -o $(@F)
+
+shgemm_thread_nt.$(PSUFFIX) : gemm.c level3_thread.c ../../param.h
+	$(CC) $(PFLAGS) $(BLOCKS) -c -DTHREADED_LEVEL3 -DHALF -UDOUBLE -UCOMPLEX -DNT $< -o $(@F)
+
+shgemm_thread_tn.$(PSUFFIX) : gemm.c level3_thread.c ../../param.h
+	$(CC) $(PFLAGS) $(BLOCKS) -c -DTHREADED_LEVEL3 -DHALF -UDOUBLE -UCOMPLEX -DTN $< -o $(@F)
+
+shgemm_thread_tt.$(PSUFFIX) : gemm.c level3_thread.c ../../param.h
+	$(CC) $(PFLAGS) $(BLOCKS) -c -DTHREADED_LEVEL3 -DHALF -UDOUBLE -UCOMPLEX -DTT $< -o $(@F)
 
 sgemm_thread_nn.$(PSUFFIX) : gemm.c level3_thread.c ../../param.h
 	$(CC) $(PFLAGS) $(BLOCKS) -c -DTHREADED_LEVEL3 -UDOUBLE -UCOMPLEX -DNN $< -o $(@F)

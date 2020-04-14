@@ -84,6 +84,16 @@ BLASLONG (*ismin_k) (BLASLONG, float *, BLASLONG);
   int    (*sgemm_kernel   )(BLASLONG, BLASLONG, BLASLONG, float, float *, float *, float *, BLASLONG);
   int    (*sgemm_beta     )(BLASLONG, BLASLONG, BLASLONG, float, float *, BLASLONG, float *, BLASLONG, float  *, BLASLONG);
 
+  int shgemm_p, shgemm_q, shgemm_r;
+  int shgemm_unroll_m, shgemm_unroll_n, shgemm_unroll_mn;
+  int    (*shgemm_kernel   )(BLASLONG, BLASLONG, BLASLONG, float, bfloat16 *, bfloat16 *, float *, BLASLONG);
+  int    (*shgemm_beta     )(BLASLONG, BLASLONG, BLASLONG, float, bfloat16 *, BLASLONG, bfloat16 *, BLASLONG, float *, BLASLONG);
+
+  int    (*shgemm_incopy   )(BLASLONG, BLASLONG, bfloat16 *, BLASLONG, bfloat16 *);
+  int    (*shgemm_itcopy   )(BLASLONG, BLASLONG, bfloat16 *, BLASLONG, bfloat16 *);
+  int    (*shgemm_oncopy   )(BLASLONG, BLASLONG, bfloat16 *, BLASLONG, bfloat16 *);
+  int    (*shgemm_otcopy   )(BLASLONG, BLASLONG, bfloat16 *, BLASLONG, bfloat16 *);
+
   int    (*sgemm_incopy   )(BLASLONG, BLASLONG, float *, BLASLONG, float *);
   int    (*sgemm_itcopy   )(BLASLONG, BLASLONG, float *, BLASLONG, float *);
   int    (*sgemm_oncopy   )(BLASLONG, BLASLONG, float *, BLASLONG, float *);
@@ -907,6 +917,13 @@ extern gotoblas_t *gotoblas;
 
 #define HAVE_EX_L2	gotoblas -> exclusive_cache
 
+#define	SHGEMM_P		gotoblas -> shgemm_p
+#define	SHGEMM_Q		gotoblas -> shgemm_q
+#define	SHGEMM_R		gotoblas -> shgemm_r
+#define	SHGEMM_UNROLL_M	gotoblas -> shgemm_unroll_m
+#define	SHGEMM_UNROLL_N	gotoblas -> shgemm_unroll_n
+#define	SHGEMM_UNROLL_MN	gotoblas -> shgemm_unroll_mn
+
 #define	SGEMM_P		gotoblas -> sgemm_p
 #define	SGEMM_Q		gotoblas -> sgemm_q
 #define	SGEMM_R		gotoblas -> sgemm_r
@@ -982,6 +999,17 @@ extern gotoblas_t *gotoblas;
 #define HAVE_EX_L2	1
 #else
 #define HAVE_EX_L2	0
+#endif
+
+#define	SHGEMM_P		SHGEMM_DEFAULT_P
+#define	SHGEMM_Q		SHGEMM_DEFAULT_Q
+#define	SHGEMM_R		SHGEMM_DEFAULT_R
+#define SHGEMM_UNROLL_M	SHGEMM_DEFAULT_UNROLL_M
+#define SHGEMM_UNROLL_N	SHGEMM_DEFAULT_UNROLL_N
+#ifdef  SHGEMM_DEFAULT_UNROLL_MN
+#define SHGEMM_UNROLL_MN	SHGEMM_DEFAULT_UNROLL_MN
+#else
+#define SHGEMM_UNROLL_MN	MAX((SHGEMM_UNROLL_M), (SHGEMM_UNROLL_N))
 #endif
 
 #define	SGEMM_P		SGEMM_DEFAULT_P
@@ -1119,6 +1147,18 @@ extern gotoblas_t *gotoblas;
 #define GEMM_DEFAULT_R		DGEMM_DEFAULT_R
 #define GEMM_DEFAULT_UNROLL_M	DGEMM_DEFAULT_UNROLL_M
 #define GEMM_DEFAULT_UNROLL_N	DGEMM_DEFAULT_UNROLL_N
+#elif defined(HALF)
+#define GEMM_P			SHGEMM_P
+#define GEMM_Q			SHGEMM_Q
+#define GEMM_R			SHGEMM_R
+#define GEMM_UNROLL_M		SHGEMM_UNROLL_M
+#define GEMM_UNROLL_N		SHGEMM_UNROLL_N
+#define GEMM_UNROLL_MN		SHGEMM_UNROLL_MN
+#define GEMM_DEFAULT_P		SHGEMM_DEFAULT_P
+#define GEMM_DEFAULT_Q		SHGEMM_DEFAULT_Q
+#define GEMM_DEFAULT_R		SHGEMM_DEFAULT_R
+#define GEMM_DEFAULT_UNROLL_M	SHGEMM_DEFAULT_UNROLL_M
+#define GEMM_DEFAULT_UNROLL_N	SHGEMM_DEFAULT_UNROLL_N
 #else
 #define GEMM_P			SGEMM_P
 #define GEMM_Q			SGEMM_Q
@@ -1202,6 +1242,10 @@ extern gotoblas_t *gotoblas;
 
 #ifndef GEMM_THREAD
 #define GEMM_THREAD gemm_thread_n
+#endif
+
+#ifndef SHGEMM_DEFAULT_R
+#define SHGEMM_DEFAULT_R (((BUFFER_SIZE - ((SHGEMM_DEFAULT_P * SHGEMM_DEFAULT_Q *  4 + GEMM_DEFAULT_OFFSET_A + GEMM_DEFAULT_ALIGN) & ~GEMM_DEFAULT_ALIGN)) / (SHGEMM_DEFAULT_Q *  4) - 15) & ~15)
 #endif
 
 #ifndef SGEMM_DEFAULT_R

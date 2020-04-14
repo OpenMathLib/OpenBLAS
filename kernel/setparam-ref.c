@@ -54,6 +54,20 @@ gotoblas_t TABLE_NAME = {
   GEMM_DEFAULT_OFFSET_A, GEMM_DEFAULT_OFFSET_B, GEMM_DEFAULT_ALIGN,
 
   0, 0, 0,
+  SHGEMM_DEFAULT_UNROLL_M, SHGEMM_DEFAULT_UNROLL_N,
+#ifdef SHGEMM_DEFAULT_UNROLL_MN
+ SHGEMM_DEFAULT_UNROLL_MN,
+#else
+ MAX(SHGEMM_DEFAULT_UNROLL_M, SHGEMM_DEFAULT_UNROLL_N),
+#endif
+  shgemm_kernelTS, shgemm_betaTS,
+#if SHGEMM_DEFAULT_UNROLL_M != SHGEMM_DEFAULT_UNROLL_N
+  shgemm_incopyTS, shgemm_itcopyTS,
+#else
+  shgemm_oncopyTS, shgemm_otcopyTS,
+#endif
+  shgemm_oncopyTS, shgemm_otcopyTS,
+  sgemm_kernelTS, sgemm_betaTS,
   SGEMM_DEFAULT_UNROLL_M, SGEMM_DEFAULT_UNROLL_N,
 #ifdef SGEMM_DEFAULT_UNROLL_MN
  SGEMM_DEFAULT_UNROLL_MN,
@@ -648,16 +662,19 @@ gotoblas_t TABLE_NAME = {
 
 #if defined(ARCH_ARM64)
 static void init_parameter(void) {
+  TABLE_NAME.shgemm_p = SHGEMM_DEFAULT_P;
   TABLE_NAME.sgemm_p = SGEMM_DEFAULT_P;
   TABLE_NAME.dgemm_p = DGEMM_DEFAULT_P;
   TABLE_NAME.cgemm_p = CGEMM_DEFAULT_P;
   TABLE_NAME.zgemm_p = ZGEMM_DEFAULT_P;
 
+  TABLE_NAME.shgemm_q = SHGEMM_DEFAULT_Q;
   TABLE_NAME.sgemm_q = SGEMM_DEFAULT_Q;
   TABLE_NAME.dgemm_q = DGEMM_DEFAULT_Q;
   TABLE_NAME.cgemm_q = CGEMM_DEFAULT_Q;
   TABLE_NAME.zgemm_q = ZGEMM_DEFAULT_Q;
 
+  TABLE_NAME.shgemm_r = SHGEMM_DEFAULT_R;
   TABLE_NAME.sgemm_r = SGEMM_DEFAULT_R;
   TABLE_NAME.dgemm_r = DGEMM_DEFAULT_R;
   TABLE_NAME.cgemm_r = CGEMM_DEFAULT_R;
@@ -721,17 +738,20 @@ static void init_parameter(void) {
 #if defined(ARCH_POWER)
 static void init_parameter(void) {
 
+  TABLE_NAME.shgemm_p = SHGEMM_DEFAULT_P;
   TABLE_NAME.sgemm_p = SGEMM_DEFAULT_P;
   TABLE_NAME.dgemm_p = DGEMM_DEFAULT_P;
   TABLE_NAME.cgemm_p = CGEMM_DEFAULT_P;
   TABLE_NAME.zgemm_p = ZGEMM_DEFAULT_P;
 
+  TABLE_NAME.shgemm_r = SHGEMM_DEFAULT_R;
   TABLE_NAME.sgemm_r = SGEMM_DEFAULT_R;
   TABLE_NAME.dgemm_r = DGEMM_DEFAULT_R;
   TABLE_NAME.cgemm_r = CGEMM_DEFAULT_R;
   TABLE_NAME.zgemm_r = ZGEMM_DEFAULT_R;
 
 
+  TABLE_NAME.shgemm_q = SHGEMM_DEFAULT_Q;
   TABLE_NAME.sgemm_q = SGEMM_DEFAULT_Q;
   TABLE_NAME.dgemm_q = DGEMM_DEFAULT_Q;
   TABLE_NAME.cgemm_q = CGEMM_DEFAULT_Q;
@@ -741,17 +761,20 @@ static void init_parameter(void) {
 
 #if defined(ARCH_ZARCH)
 static void init_parameter(void) {
+	TABLE_NAME.shgemm_p = SHGEMM_DEFAULT_P;
 	TABLE_NAME.sgemm_p = SGEMM_DEFAULT_P;
 	TABLE_NAME.dgemm_p = DGEMM_DEFAULT_P;
 	TABLE_NAME.cgemm_p = CGEMM_DEFAULT_P;
 	TABLE_NAME.zgemm_p = ZGEMM_DEFAULT_P;
 
+	TABLE_NAME.shgemm_r = SHGEMM_DEFAULT_R;
 	TABLE_NAME.sgemm_r = SGEMM_DEFAULT_R;
 	TABLE_NAME.dgemm_r = DGEMM_DEFAULT_R;
 	TABLE_NAME.cgemm_r = CGEMM_DEFAULT_R;
 	TABLE_NAME.zgemm_r = ZGEMM_DEFAULT_R;
 
 
+	TABLE_NAME.shgemm_q = SHGEMM_DEFAULT_Q;
 	TABLE_NAME.sgemm_q = SGEMM_DEFAULT_Q;
 	TABLE_NAME.dgemm_q = DGEMM_DEFAULT_Q;
 	TABLE_NAME.cgemm_q = CGEMM_DEFAULT_Q;
@@ -891,6 +914,7 @@ static void init_parameter(void) {
   (void) l2; /* dirty trick to suppress unused variable warning for targets */
              /* where the GEMM unrolling parameters do not depend on l2 */
   
+  TABLE_NAME.shgemm_q = SHGEMM_DEFAULT_Q;
   TABLE_NAME.sgemm_q = SGEMM_DEFAULT_Q;
   TABLE_NAME.dgemm_q = DGEMM_DEFAULT_Q;
   TABLE_NAME.cgemm_q = CGEMM_DEFAULT_Q;
@@ -1261,6 +1285,7 @@ static void init_parameter(void) {
 
 
 
+  TABLE_NAME.shgemm_p = ((TABLE_NAME.shgemm_p + SHGEMM_DEFAULT_UNROLL_M - 1)/SHGEMM_DEFAULT_UNROLL_M) * SHGEMM_DEFAULT_UNROLL_M;
   TABLE_NAME.sgemm_p = ((TABLE_NAME.sgemm_p + SGEMM_DEFAULT_UNROLL_M - 1)/SGEMM_DEFAULT_UNROLL_M) * SGEMM_DEFAULT_UNROLL_M;
   TABLE_NAME.dgemm_p = ((TABLE_NAME.dgemm_p + DGEMM_DEFAULT_UNROLL_M - 1)/DGEMM_DEFAULT_UNROLL_M) * DGEMM_DEFAULT_UNROLL_M;
   TABLE_NAME.cgemm_p = ((TABLE_NAME.cgemm_p + CGEMM_DEFAULT_UNROLL_M - 1)/CGEMM_DEFAULT_UNROLL_M) * CGEMM_DEFAULT_UNROLL_M;
@@ -1287,6 +1312,11 @@ static void init_parameter(void) {
 #ifdef DEBUG
   fprintf(stderr, "L2 = %8d DGEMM_P  .. %d\n", l2, TABLE_NAME.dgemm_p);
 #endif
+
+  TABLE_NAME.shgemm_r = (((BUFFER_SIZE -
+			       ((TABLE_NAME.shgemm_p * TABLE_NAME.shgemm_q *  4 + TABLE_NAME.offsetA
+				 + TABLE_NAME.align) & ~TABLE_NAME.align)
+			       ) / (TABLE_NAME.shgemm_q *  4) - 15) & ~15);
 
   TABLE_NAME.sgemm_r = (((BUFFER_SIZE -
 			       ((TABLE_NAME.sgemm_p * TABLE_NAME.sgemm_q *  4 + TABLE_NAME.offsetA

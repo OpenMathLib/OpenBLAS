@@ -39,6 +39,7 @@
 #ifndef COMMON_MACRO
 #define COMMON_MACRO
 
+#include "common_sh.h"
 #include "common_s.h"
 #include "common_d.h"
 #include "common_q.h"
@@ -642,6 +643,53 @@
 #define IMATCOPY_K_RT		DIMATCOPY_K_RT
 
 #define GEADD_K                 DGEADD_K
+
+#elif defined(HALF)
+
+#define GEMM_BETA               SHGEMM_BETA
+#define	GEMM_KERNEL_N		SHGEMM_KERNEL
+#define	GEMM_KERNEL_L		SHGEMM_KERNEL
+#define	GEMM_KERNEL_R		SHGEMM_KERNEL
+#define	GEMM_KERNEL_B		SHGEMM_KERNEL
+
+#define	GEMM_NN			SHGEMM_NN
+#define	GEMM_CN			SHGEMM_TN
+#define	GEMM_TN			SHGEMM_TN
+#define	GEMM_NC			SHGEMM_NT
+#define	GEMM_NT			SHGEMM_NT
+#define	GEMM_CC			SHGEMM_TT
+#define	GEMM_CT			SHGEMM_TT
+#define	GEMM_TC			SHGEMM_TT
+#define	GEMM_TT			SHGEMM_TT
+#define	GEMM_NR			SHGEMM_NN
+#define	GEMM_TR			SHGEMM_TN
+#define	GEMM_CR			SHGEMM_TN
+#define	GEMM_RN			SHGEMM_NN
+#define	GEMM_RT			SHGEMM_NT
+#define	GEMM_RC			SHGEMM_NT
+#define	GEMM_RR			SHGEMM_NN
+#define	GEMM_ONCOPY		SHGEMM_ONCOPY
+#define	GEMM_OTCOPY		SHGEMM_OTCOPY
+#define	GEMM_INCOPY		SHGEMM_INCOPY
+#define	GEMM_ITCOPY		SHGEMM_ITCOPY
+
+#define	GEMM_THREAD_NN		SHGEMM_THREAD_NN
+#define	GEMM_THREAD_CN		SHGEMM_THREAD_TN
+#define	GEMM_THREAD_TN		SHGEMM_THREAD_TN
+#define	GEMM_THREAD_NC		SHGEMM_THREAD_NT
+#define	GEMM_THREAD_NT		SHGEMM_THREAD_NT
+#define	GEMM_THREAD_CC		SHGEMM_THREAD_TT
+#define	GEMM_THREAD_CT		SHGEMM_THREAD_TT
+#define	GEMM_THREAD_TC		SHGEMM_THREAD_TT
+#define	GEMM_THREAD_TT		SHGEMM_THREAD_TT
+#define	GEMM_THREAD_NR		SHGEMM_THREAD_NN
+#define	GEMM_THREAD_TR		SHGEMM_THREAD_TN
+#define	GEMM_THREAD_CR		SHGEMM_THREAD_TN
+#define	GEMM_THREAD_RN		SHGEMM_THREAD_NN
+#define	GEMM_THREAD_RT		SHGEMM_THREAD_NT
+#define	GEMM_THREAD_RC		SHGEMM_THREAD_NT
+#define	GEMM_THREAD_RR		SHGEMM_THREAD_NN
+
 #else
 
 #define	AMAX_K			SAMAX_K
@@ -2202,6 +2250,9 @@
 #if defined(ARCH_X86) || defined(ARCH_X86_64) || defined(ARCH_IA64) || defined(ARCH_MIPS64) || defined(ARCH_ARM64)
 extern BLASLONG gemm_offset_a;
 extern BLASLONG gemm_offset_b;
+extern BLASLONG shgemm_p;
+extern BLASLONG shgemm_q;
+extern BLASLONG shgemm_r;
 extern BLASLONG sgemm_p;
 extern BLASLONG sgemm_q;
 extern BLASLONG sgemm_r;

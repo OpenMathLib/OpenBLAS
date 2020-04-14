@@ -37,6 +37,9 @@
 /*********************************************************************/
 
 #ifndef ASSEMBLER
+#ifndef BFLOAT16
+typedef unsigned short bfloat16;
+#endif
 
 #ifdef __cplusplus
 extern "C" {
@@ -469,6 +472,8 @@ void BLASFUNC(xhbmv)(char *, blasint *, blasint *, xdouble *, xdouble *, blasint
 
 /* Level 3 routines */
 
+void BLASFUNC(shgemm)(char *, char *, blasint *, blasint *, blasint *, float *,
+	   bfloat16 *, blasint *, bfloat16 *, blasint *, float *, float *, blasint *);
 void BLASFUNC(sgemm)(char *, char *, blasint *, blasint *, blasint *, float *,
 	   float  *, blasint *, float  *, blasint *, float  *, float  *, blasint *);
 void BLASFUNC(dgemm)(char *, char *, blasint *, blasint *, blasint *, double *,

@@ -12,6 +12,17 @@ DTRMMKERNEL	= dgemm_kernel_power9.S
 CTRMMKERNEL	= cgemm_kernel_power9.S
 ZTRMMKERNEL	= zgemm_kernel_power9.S
 
+SHGEMM_BETA = ../generic/gemm_beta.c
+SHGEMMKERNEL    = ../generic/gemmkernel_2x2.c
+SHGEMMINCOPY    = ../generic/gemm_ncopy_2.c
+SHGEMMITCOPY    = ../generic/gemm_tcopy_2.c
+SHGEMMONCOPY    = ../generic/gemm_ncopy_2.c
+SHGEMMOTCOPY    = ../generic/gemm_tcopy_2.c
+SHGEMMINCOPYOBJ =  shgemm_incopy$(TSUFFIX).$(SUFFIX)
+SHGEMMITCOPYOBJ =  shgemm_itcopy$(TSUFFIX).$(SUFFIX)
+SHGEMMONCOPYOBJ =  shgemm_oncopy$(TSUFFIX).$(SUFFIX)
+SHGEMMOTCOPYOBJ =  shgemm_otcopy$(TSUFFIX).$(SUFFIX)
+
 SGEMMKERNEL    =  sgemm_kernel_power9.S
 SGEMMINCOPY    = ../generic/gemm_ncopy_16.c
 SGEMMITCOPY    = sgemm_tcopy_16_power8.S
