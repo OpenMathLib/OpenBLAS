@@ -6,7 +6,10 @@ Travis CI: [![Build Status](https://travis-ci.org/xianyi/OpenBLAS.svg?branch=dev
 
 AppVeyor: [![Build status](https://ci.appveyor.com/api/projects/status/09sohd35n8nkkx64/branch/develop?svg=true)](https://ci.appveyor.com/project/xianyi/openblas/branch/develop)
 
+Drone CI: [![Build Status](https://cloud.drone.io/api/badges/xianyi/OpenBLAS/status.svg?branch=develop)](https://cloud.drone.io/xianyi/OpenBLAS/)
+
 [![Build Status](https://dev.azure.com/xianyi/OpenBLAS/_apis/build/status/xianyi.OpenBLAS?branchName=develop)](https://dev.azure.com/xianyi/OpenBLAS/_build/latest?definitionId=1&branchName=develop)
+
 
 ## Introduction
 
@@ -140,6 +143,7 @@ Please read `GotoBLAS_01Readme.txt` for older CPU models already supported by th
 - **ThunderX**: Optimized some Level-1 functions
 - **ThunderX2T99**: Optimized Level-3 BLAS and parts of Levels 1 and 2
 - **TSV110**: Optimized some Level-3 helper functions
+- **EMAG 8180**: preliminary support based on A57
 
 #### PPC/PPC64
 
@@ -154,11 +158,16 @@ Please read `GotoBLAS_01Readme.txt` for older CPU models already supported by th
 ### Support for multiple targets in a single library
 
 OpenBLAS can be built for multiple targets with runtime detection of the target cpu by specifiying DYNAMIC_ARCH=1 in Makefile.rule, on the gmake command line or as -DDYNAMIC_ARCH=TRUE in cmake.
+
 For **x86_64**, the list of targets this activates contains Prescott, Core2, Nehalem, Barcelona, Sandybridge, Bulldozer, Piledriver, Steamroller, Excavator, Haswell, Zen, SkylakeX. For cpu generations not included in this list, the corresponding older model is used. If you also specify DYNAMIC_OLDER=1, specific support for Penryn, Dunnington, Opteron, Opteron/SSE3, Bobcat, Atom and Nano is added. Finally there is an option DYNAMIC_LIST that allows to specify an individual list of targets to include instead of the default.
+
 DYNAMIC_ARCH is also supported on **x86**, where it translates to Katmai, Coppermine, Northwood, Prescott, Banias,
 Core2, Penryn, Dunnington, Nehalem, Athlon, Opteron, Opteron_SSE3, Barcelona, Bobcat, Atom and Nano.
+
 On **ARMV8**, it enables support for CortexA53, CortexA57, CortexA72, CortexA73, Falkor, ThunderX, ThunderX2T99, TSV110 as well as generic ARMV8 cpus.
+
 For **POWER**, the list encompasses POWER6, POWER8 and POWER9, on **ZARCH** it comprises Z13 and Z14.
+
 The TARGET option can be used in conjunction with DYNAMIC_ARCH=1 to specify which cpu model should be assumed for all the
 common code in the library, usually you will want to set this to the oldest model you expect to encounter.
 Please note that it is not possible to combine support for different architectures, so no combined 32 and 64 bit or x86_64 and arm64 in the same library.
