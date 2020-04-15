@@ -59,6 +59,19 @@ ifeq ($(CORE), Z14)
 USE_TRMM = 1
 endif
 
+#ifndef SHGEMMKERNEL
+SHGEMM_BETA = ../generic/gemm_beta.c
+SHGEMMKERNEL    = ../generic/gemmkernel_2x2.c
+SHGEMMINCOPY    = ../generic/gemm_ncopy_2.c
+SHGEMMITCOPY    = ../generic/gemm_tcopy_2.c
+SHGEMMONCOPY    = ../generic/gemm_ncopy_2.c
+SHGEMMOTCOPY    = ../generic/gemm_tcopy_2.c
+SHGEMMINCOPYOBJ =  shgemm_incopy$(TSUFFIX).$(SUFFIX)
+SHGEMMITCOPYOBJ =  shgemm_itcopy$(TSUFFIX).$(SUFFIX)
+SHGEMMONCOPYOBJ =  shgemm_oncopy$(TSUFFIX).$(SUFFIX)
+SHGEMMOTCOPYOBJ =  shgemm_otcopy$(TSUFFIX).$(SUFFIX)
+#endif
+
 SHKERNELOBJS	+= \
 	shgemm_kernel$(TSUFFIX).$(SUFFIX) \
 	$(SHGEMMINCOPYOBJ) $(SHGEMMITCOPYOBJ) \
