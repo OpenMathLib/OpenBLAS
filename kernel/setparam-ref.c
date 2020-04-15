@@ -60,6 +60,15 @@ gotoblas_t TABLE_NAME = {
 #else
  MAX(SHGEMM_DEFAULT_UNROLL_M, SHGEMM_DEFAULT_UNROLL_N),
 #endif
+
+  samax_kTS,  samin_kTS,  smax_kTS,  smin_kTS,
+  isamax_kTS, isamin_kTS, ismax_kTS, ismin_kTS,
+  snrm2_kTS,  sasum_kTS, ssum_kTS, scopy_kTS, sdot_kTS,
+  dsdot_kTS,
+  srot_kTS,   saxpy_kTS,  sscal_kTS, sswap_kTS,
+  sgemv_nTS,  sgemv_tTS, sger_kTS,
+  ssymv_LTS, ssymv_UTS,
+
   shgemm_kernelTS, shgemm_betaTS,
 #if SHGEMM_DEFAULT_UNROLL_M != SHGEMM_DEFAULT_UNROLL_N
   shgemm_incopyTS, shgemm_itcopyTS,
@@ -67,7 +76,42 @@ gotoblas_t TABLE_NAME = {
   shgemm_oncopyTS, shgemm_otcopyTS,
 #endif
   shgemm_oncopyTS, shgemm_otcopyTS,
-  sgemm_kernelTS, sgemm_betaTS,
+
+  strsm_kernel_LNTS, strsm_kernel_LTTS, strsm_kernel_RNTS, strsm_kernel_RTTS,
+#if SGEMM_DEFAULT_UNROLL_M != SGEMM_DEFAULT_UNROLL_N
+  strsm_iunucopyTS, strsm_iunncopyTS, strsm_iutucopyTS, strsm_iutncopyTS,
+  strsm_ilnucopyTS, strsm_ilnncopyTS, strsm_iltucopyTS, strsm_iltncopyTS,
+#else
+  strsm_ounucopyTS, strsm_ounncopyTS, strsm_outucopyTS, strsm_outncopyTS,
+  strsm_olnucopyTS, strsm_olnncopyTS, strsm_oltucopyTS, strsm_oltncopyTS,
+#endif
+  strsm_ounucopyTS, strsm_ounncopyTS, strsm_outucopyTS, strsm_outncopyTS,
+  strsm_olnucopyTS, strsm_olnncopyTS, strsm_oltucopyTS, strsm_oltncopyTS,
+  strmm_kernel_RNTS, strmm_kernel_RTTS, strmm_kernel_LNTS, strmm_kernel_LTTS,
+#if SGEMM_DEFAULT_UNROLL_M != SGEMM_DEFAULT_UNROLL_N
+  strmm_iunucopyTS, strmm_iunncopyTS, strmm_iutucopyTS, strmm_iutncopyTS,
+  strmm_ilnucopyTS, strmm_ilnncopyTS, strmm_iltucopyTS, strmm_iltncopyTS,
+#else
+  strmm_ounucopyTS, strmm_ounncopyTS, strmm_outucopyTS, strmm_outncopyTS,
+  strmm_olnucopyTS, strmm_olnncopyTS, strmm_oltucopyTS, strmm_oltncopyTS,
+#endif
+  strmm_ounucopyTS, strmm_ounncopyTS, strmm_outucopyTS, strmm_outncopyTS,
+  strmm_olnucopyTS, strmm_olnncopyTS, strmm_oltucopyTS, strmm_oltncopyTS,
+#if SGEMM_DEFAULT_UNROLL_M != SGEMM_DEFAULT_UNROLL_N
+  ssymm_iutcopyTS, ssymm_iltcopyTS,
+#else
+  ssymm_outcopyTS, ssymm_oltcopyTS,
+#endif
+  ssymm_outcopyTS, ssymm_oltcopyTS,
+
+#ifndef NO_LAPACK
+  sneg_tcopyTS, slaswp_ncopyTS,
+#else
+  NULL,NULL,
+#endif
+
+
+  0, 0, 0,
   SGEMM_DEFAULT_UNROLL_M, SGEMM_DEFAULT_UNROLL_N,
 #ifdef SGEMM_DEFAULT_UNROLL_MN
  SGEMM_DEFAULT_UNROLL_MN,

@@ -1,6 +1,6 @@
 #include "common.h"
 #if defined(HALF) && defined(HALFCONVERSION)
-float
+static float
 bfloat16tof32 (bfloat16 f16)
 {
   float result = 0;
