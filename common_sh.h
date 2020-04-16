@@ -1,5 +1,5 @@
-#ifndef COMMON_H_H
-#define COMMON_H_H
+#ifndef COMMON_SH_H
+#define COMMON_SH_H
 
 #ifndef DYNAMIC_ARCH
 

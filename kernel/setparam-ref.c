@@ -958,6 +958,8 @@ static void init_parameter(void) {
   (void) l2; /* dirty trick to suppress unused variable warning for targets */
              /* where the GEMM unrolling parameters do not depend on l2 */
   
+  TABLE_NAME.shgemm_p = SHGEMM_DEFAULT_P;
+  TABLE_NAME.shgemm_r = SHGEMM_DEFAULT_R;
   TABLE_NAME.shgemm_q = SHGEMM_DEFAULT_Q;
   TABLE_NAME.sgemm_q = SGEMM_DEFAULT_Q;
   TABLE_NAME.dgemm_q = DGEMM_DEFAULT_Q;
@@ -1329,7 +1331,6 @@ static void init_parameter(void) {
 
 
 
-  TABLE_NAME.shgemm_p = ((TABLE_NAME.shgemm_p + SHGEMM_DEFAULT_UNROLL_M - 1)/SHGEMM_DEFAULT_UNROLL_M) * SHGEMM_DEFAULT_UNROLL_M;
   TABLE_NAME.sgemm_p = ((TABLE_NAME.sgemm_p + SGEMM_DEFAULT_UNROLL_M - 1)/SGEMM_DEFAULT_UNROLL_M) * SGEMM_DEFAULT_UNROLL_M;
   TABLE_NAME.dgemm_p = ((TABLE_NAME.dgemm_p + DGEMM_DEFAULT_UNROLL_M - 1)/DGEMM_DEFAULT_UNROLL_M) * DGEMM_DEFAULT_UNROLL_M;
   TABLE_NAME.cgemm_p = ((TABLE_NAME.cgemm_p + CGEMM_DEFAULT_UNROLL_M - 1)/CGEMM_DEFAULT_UNROLL_M) * CGEMM_DEFAULT_UNROLL_M;
@@ -1356,11 +1357,6 @@ static void init_parameter(void) {
 #ifdef DEBUG
   fprintf(stderr, "L2 = %8d DGEMM_P  .. %d\n", l2, TABLE_NAME.dgemm_p);
 #endif
-
-  TABLE_NAME.shgemm_r = (((BUFFER_SIZE -
-			       ((TABLE_NAME.shgemm_p * TABLE_NAME.shgemm_q *  4 + TABLE_NAME.offsetA
-				 + TABLE_NAME.align) & ~TABLE_NAME.align)
-			       ) / (TABLE_NAME.shgemm_q *  4) - 15) & ~15);
 
   TABLE_NAME.sgemm_r = (((BUFFER_SIZE -
 			       ((TABLE_NAME.sgemm_p * TABLE_NAME.sgemm_q *  4 + TABLE_NAME.offsetA

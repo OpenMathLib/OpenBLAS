@@ -43,10 +43,6 @@
 
 #ifdef DYNAMIC_ARCH
 
-#ifndef BFLOAT16
-typedef unsigned short bfloat16;
-#endif
-
 typedef struct {
   int dtb_entries;
   int offsetA, offsetB, align;

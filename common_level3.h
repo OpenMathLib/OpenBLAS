@@ -37,9 +37,6 @@
 /*********************************************************************/
 
 #ifndef ASSEMBLER
-#ifndef BFLOAT16
-typedef unsigned short bfloat16;
-#endif
 
 #ifdef __CUDACC__
 __global__ void cuda_sgemm_kernel(int, int, int, float *, float *, float *);

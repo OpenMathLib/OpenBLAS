@@ -37,9 +37,6 @@
 /*********************************************************************/
 
 #ifndef ASSEMBLER
-#ifndef BFLOAT16
-typedef unsigned short bfloat16;
-#endif
 
 #ifdef __cplusplus
 extern "C" {
