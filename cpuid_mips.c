@@ -78,8 +78,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 static char *cpuname[] = {
   "UNKNOWN",
   "P5600",
-  "1004K",
-  "24K"
+  "MIPS1004K",
+  "MIPS24K"
 };
 
 int detect(void){
@@ -171,9 +171,9 @@ void get_libname(void){
   if(detect()==CPU_P5600) {
     printf("p5600\n");
   } else if (detect()==CPU_1004K) {
-    printf("1004K\n");
+    printf("mips1004K\n");
   } else if (detect()==CPU_24K) {
-    printf("24K\n");
+    printf("mips24K\n");
   }else{
     printf("mips\n");
   }
