@@ -646,6 +646,17 @@
 
 #elif defined(HALF)
 
+#define	AMAX_K			SAMAX_K
+#define	AMIN_K			SAMIN_K
+#define	MAX_K			SMAX_K
+#define	MIN_K			SMIN_K
+#define	IAMAX_K			ISAMAX_K
+#define	IAMIN_K			ISAMIN_K
+#define	IMAX_K			ISMAX_K
+#define	IMIN_K			ISMIN_K
+#define	ASUM_K			SASUM_K
+#define	DOTU_K			SDOTU_K
+#define	DOTC_K			SDOTC_K
 #define	AXPYU_K			SAXPYU_K
 #define	AXPYC_K			SAXPYC_K
 #define AXPBY_K     SAXPBY_K
@@ -658,6 +669,10 @@
 #define	GERC_K			SGERC_K
 #define	GERV_K			SGERV_K
 #define	GERD_K			SGERD_K
+#define	SUM_K			SSUM_K
+#define	SWAP_K			SSWAP_K
+#define	ROT_K			SROT_K
+#define COPY_K    SCOPY_K
 #define SYMV_THREAD_U		SSYMV_THREAD_U
 #define SYMV_THREAD_L		SSYMV_THREAD_L
 #define GEMM_BETA               SHGEMM_BETA
