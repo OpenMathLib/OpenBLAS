@@ -2741,6 +2741,7 @@ void *blas_memory_alloc(int procpos){
   LOCK_COMMAND(&alloc_lock);
 #endif
   do {
+	  RMB;
 #if defined(USE_OPENMP)	  
     if (!memory[position].used) { 
       blas_lock(&memory[position].lock);
