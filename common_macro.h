@@ -648,6 +648,7 @@
 
 #define	AXPYU_K			SAXPYU_K
 #define	AXPYC_K			SAXPYC_K
+#define AXPBY_K     SAXPBY_K
 #define SCAL_K			SSCAL_K
 #define GEMV_N			SGEMV_N
 #define GEMV_T			SGEMV_T
