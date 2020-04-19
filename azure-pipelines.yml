@@ -50,7 +50,7 @@ jobs:
       docker run --privileged intel_sde
     displayName: 'Run AVX512 SkylakeX docker build / test'
 
- - job: Windows-cl
+- job: Windows-cl
    pool:
      vmImage: 'windows2019'
    - task: CMake@1
