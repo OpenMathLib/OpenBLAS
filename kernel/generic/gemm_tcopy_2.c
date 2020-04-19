@@ -39,11 +39,11 @@
 #include <stdio.h>
 #include "common.h"
 
-int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, FLOAT *b){
+int CNAME(BLASLONG m, BLASLONG n, IFLOAT *a, BLASLONG lda, IFLOAT *b){
   BLASLONG i, j;
 
-  FLOAT *a_offset, *a_offset1, *a_offset2;
-  FLOAT *b_offset, *b_offset1, *b_offset2;
+  IFLOAT *a_offset, *a_offset1, *a_offset2;
+  IFLOAT *b_offset, *b_offset1, *b_offset2;
 
   a_offset = a;
   b_offset = b;

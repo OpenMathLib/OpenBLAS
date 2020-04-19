@@ -47,6 +47,100 @@ typedef struct {
   int dtb_entries;
   int offsetA, offsetB, align;
 
+#if 1
+  int shgemm_p, shgemm_q, shgemm_r;
+  int shgemm_unroll_m, shgemm_unroll_n, shgemm_unroll_mn;
+
+  float  (*shamax_k) (BLASLONG, float *, BLASLONG);
+  float  (*shamin_k) (BLASLONG, float *, BLASLONG);
+  float  (*shmax_k)  (BLASLONG, float *, BLASLONG);
+  float  (*shmin_k)  (BLASLONG, float *, BLASLONG);
+BLASLONG (*ishamax_k)(BLASLONG, float *, BLASLONG);
+BLASLONG (*ishamin_k)(BLASLONG, float *, BLASLONG);
+BLASLONG (*ishmax_k) (BLASLONG, float *, BLASLONG);
+BLASLONG (*ishmin_k) (BLASLONG, float *, BLASLONG);
+
+  float  (*shnrm2_k) (BLASLONG, float *, BLASLONG);
+  float  (*shasum_k) (BLASLONG, float *, BLASLONG);
+  float  (*shsum_k)  (BLASLONG, float *, BLASLONG);
+  int    (*shcopy_k) (BLASLONG, float *, BLASLONG, float *, BLASLONG);
+  float  (*shdot_k)  (BLASLONG, float *, BLASLONG, float *, BLASLONG);
+  double (*dshdot_k) (BLASLONG, float *, BLASLONG, float *, BLASLONG);
+
+  int    (*shrot_k)  (BLASLONG, float *, BLASLONG, float *, BLASLONG, float, float);
+
+  int    (*shaxpy_k) (BLASLONG, BLASLONG, BLASLONG, float, float *, BLASLONG, float *, BLASLONG, float *, BLASLONG);
+  int    (*shscal_k) (BLASLONG, BLASLONG, BLASLONG, float, float *, BLASLONG, float *, BLASLONG, float *, BLASLONG);
+  int    (*shswap_k) (BLASLONG, BLASLONG, BLASLONG, float, float *, BLASLONG, float *, BLASLONG, float *, BLASLONG);
+
+  int    (*shgemv_n) (BLASLONG, BLASLONG, BLASLONG, float, float *, BLASLONG, float *, BLASLONG, float *, BLASLONG, float *);
+  int    (*shgemv_t) (BLASLONG, BLASLONG, BLASLONG, float, float *, BLASLONG, float *, BLASLONG, float *, BLASLONG, float *);
+  int    (*shger_k)  (BLASLONG, BLASLONG, BLASLONG, float, float *, BLASLONG, float *, BLASLONG, float *, BLASLONG, float *);
+
+  int    (*shsymv_L) (BLASLONG, BLASLONG, float,  float  *, BLASLONG, float  *, BLASLONG, float  *, BLASLONG, float *);
+  int    (*shsymv_U) (BLASLONG, BLASLONG, float,  float  *, BLASLONG, float  *, BLASLONG, float  *, BLASLONG, float *);
+
+  int    (*shgemm_kernel   )(BLASLONG, BLASLONG, BLASLONG, float, bfloat16 *, bfloat16 *, float *, BLASLONG);
+  int    (*shgemm_beta     )(BLASLONG, BLASLONG, BLASLONG, float, bfloat16 *, BLASLONG, bfloat16 *, BLASLONG, float *, BLASLONG);
+
+  int    (*shgemm_incopy   )(BLASLONG, BLASLONG, bfloat16 *, BLASLONG, bfloat16 *);
+  int    (*shgemm_itcopy   )(BLASLONG, BLASLONG, bfloat16 *, BLASLONG, bfloat16 *);
+  int    (*shgemm_oncopy   )(BLASLONG, BLASLONG, bfloat16 *, BLASLONG, bfloat16 *);
+  int    (*shgemm_otcopy   )(BLASLONG, BLASLONG, bfloat16 *, BLASLONG, bfloat16 *);
+
+  int    (*shtrsm_kernel_LN)(BLASLONG, BLASLONG, BLASLONG, float, float *, float *, float *, BLASLONG, BLASLONG);
+  int    (*shtrsm_kernel_LT)(BLASLONG, BLASLONG, BLASLONG, float, float *, float *, float *, BLASLONG, BLASLONG);
+  int    (*shtrsm_kernel_RN)(BLASLONG, BLASLONG, BLASLONG, float, float *, float *, float *, BLASLONG, BLASLONG);
+  int    (*shtrsm_kernel_RT)(BLASLONG, BLASLONG, BLASLONG, float, float *, float *, float *, BLASLONG, BLASLONG);
+
+  int    (*shtrsm_iunucopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, float *);
+  int    (*shtrsm_iunncopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, float *);
+  int    (*shtrsm_iutucopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, float *);
+  int    (*shtrsm_iutncopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, float *);
+  int    (*shtrsm_ilnucopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, float *);
+  int    (*shtrsm_ilnncopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, float *);
+  int    (*shtrsm_iltucopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, float *);
+  int    (*shtrsm_iltncopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, float *);
+  int    (*shtrsm_ounucopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, float *);
+  int    (*shtrsm_ounncopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, float *);
+  int    (*shtrsm_outucopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, float *);
+  int    (*shtrsm_outncopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, float *);
+  int    (*shtrsm_olnucopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, float *);
+  int    (*shtrsm_olnncopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, float *);
+  int    (*shtrsm_oltucopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, float *);
+  int    (*shtrsm_oltncopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, float *);
+
+  int    (*shtrmm_kernel_RN)(BLASLONG, BLASLONG, BLASLONG, float, float *, float *, float *, BLASLONG, BLASLONG);
+  int    (*shtrmm_kernel_RT)(BLASLONG, BLASLONG, BLASLONG, float, float *, float *, float *, BLASLONG, BLASLONG);
+  int    (*shtrmm_kernel_LN)(BLASLONG, BLASLONG, BLASLONG, float, float *, float *, float *, BLASLONG, BLASLONG);
+  int    (*shtrmm_kernel_LT)(BLASLONG, BLASLONG, BLASLONG, float, float *, float *, float *, BLASLONG, BLASLONG);
+
+  int    (*shtrmm_iunucopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
+  int    (*shtrmm_iunncopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
+  int    (*shtrmm_iutucopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
+  int    (*shtrmm_iutncopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
+  int    (*shtrmm_ilnucopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
+  int    (*shtrmm_ilnncopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
+  int    (*shtrmm_iltucopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
+  int    (*shtrmm_iltncopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
+  int    (*shtrmm_ounucopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
+  int    (*shtrmm_ounncopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
+  int    (*shtrmm_outucopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
+  int    (*shtrmm_outncopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
+  int    (*shtrmm_olnucopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
+  int    (*shtrmm_olnncopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
+  int    (*shtrmm_oltucopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
+  int    (*shtrmm_oltncopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
+
+  int    (*shsymm_iutcopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
+  int    (*shsymm_iltcopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
+  int    (*shsymm_outcopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
+  int    (*shsymm_oltcopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
+
+  int	 (*shneg_tcopy)   (BLASLONG, BLASLONG, float *, BLASLONG, float *);
+  int    (*shlaswp_ncopy) (BLASLONG, BLASLONG, BLASLONG, float *, BLASLONG, blasint *, float *);
+
+#endif
   int sgemm_p, sgemm_q, sgemm_r;
   int sgemm_unroll_m, sgemm_unroll_n, sgemm_unroll_mn;
 
@@ -83,6 +177,7 @@ BLASLONG (*ismin_k) (BLASLONG, float *, BLASLONG);
 
   int    (*sgemm_kernel   )(BLASLONG, BLASLONG, BLASLONG, float, float *, float *, float *, BLASLONG);
   int    (*sgemm_beta     )(BLASLONG, BLASLONG, BLASLONG, float, float *, BLASLONG, float *, BLASLONG, float  *, BLASLONG);
+
 
   int    (*sgemm_incopy   )(BLASLONG, BLASLONG, float *, BLASLONG, float *);
   int    (*sgemm_itcopy   )(BLASLONG, BLASLONG, float *, BLASLONG, float *);
@@ -907,6 +1002,13 @@ extern gotoblas_t *gotoblas;
 
 #define HAVE_EX_L2	gotoblas -> exclusive_cache
 
+#define	SHGEMM_P		gotoblas -> shgemm_p
+#define	SHGEMM_Q		gotoblas -> shgemm_q
+#define	SHGEMM_R		gotoblas -> shgemm_r
+#define	SHGEMM_UNROLL_M	gotoblas -> shgemm_unroll_m
+#define	SHGEMM_UNROLL_N	gotoblas -> shgemm_unroll_n
+#define	SHGEMM_UNROLL_MN	gotoblas -> shgemm_unroll_mn
+
 #define	SGEMM_P		gotoblas -> sgemm_p
 #define	SGEMM_Q		gotoblas -> sgemm_q
 #define	SGEMM_R		gotoblas -> sgemm_r
@@ -982,6 +1084,17 @@ extern gotoblas_t *gotoblas;
 #define HAVE_EX_L2	1
 #else
 #define HAVE_EX_L2	0
+#endif
+
+#define	SHGEMM_P		SHGEMM_DEFAULT_P
+#define	SHGEMM_Q		SHGEMM_DEFAULT_Q
+#define	SHGEMM_R		SHGEMM_DEFAULT_R
+#define SHGEMM_UNROLL_M	SHGEMM_DEFAULT_UNROLL_M
+#define SHGEMM_UNROLL_N	SHGEMM_DEFAULT_UNROLL_N
+#ifdef  SHGEMM_DEFAULT_UNROLL_MN
+#define SHGEMM_UNROLL_MN	SHGEMM_DEFAULT_UNROLL_MN
+#else
+#define SHGEMM_UNROLL_MN	MAX((SHGEMM_UNROLL_M), (SHGEMM_UNROLL_N))
 #endif
 
 #define	SGEMM_P		SGEMM_DEFAULT_P
@@ -1119,6 +1232,18 @@ extern gotoblas_t *gotoblas;
 #define GEMM_DEFAULT_R		DGEMM_DEFAULT_R
 #define GEMM_DEFAULT_UNROLL_M	DGEMM_DEFAULT_UNROLL_M
 #define GEMM_DEFAULT_UNROLL_N	DGEMM_DEFAULT_UNROLL_N
+#elif defined(HALF)
+#define GEMM_P			SHGEMM_P
+#define GEMM_Q			SHGEMM_Q
+#define GEMM_R			SHGEMM_R
+#define GEMM_UNROLL_M		SHGEMM_UNROLL_M
+#define GEMM_UNROLL_N		SHGEMM_UNROLL_N
+#define GEMM_UNROLL_MN		SHGEMM_UNROLL_MN
+#define GEMM_DEFAULT_P		SHGEMM_DEFAULT_P
+#define GEMM_DEFAULT_Q		SHGEMM_DEFAULT_Q
+#define GEMM_DEFAULT_R		SHGEMM_DEFAULT_R
+#define GEMM_DEFAULT_UNROLL_M	SHGEMM_DEFAULT_UNROLL_M
+#define GEMM_DEFAULT_UNROLL_N	SHGEMM_DEFAULT_UNROLL_N
 #else
 #define GEMM_P			SGEMM_P
 #define GEMM_Q			SGEMM_Q
@@ -1202,6 +1327,10 @@ extern gotoblas_t *gotoblas;
 
 #ifndef GEMM_THREAD
 #define GEMM_THREAD gemm_thread_n
+#endif
+
+#ifndef SHGEMM_DEFAULT_R
+#define SHGEMM_DEFAULT_R (((BUFFER_SIZE - ((SHGEMM_DEFAULT_P * SHGEMM_DEFAULT_Q *  4 + GEMM_DEFAULT_OFFSET_A + GEMM_DEFAULT_ALIGN) & ~GEMM_DEFAULT_ALIGN)) / (SHGEMM_DEFAULT_Q *  4) - 15) & ~15)
 #endif
 
 #ifndef SGEMM_DEFAULT_R
