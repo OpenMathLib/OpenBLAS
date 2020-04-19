@@ -17,7 +17,11 @@ ifdef CPUIDEMU
 EXFLAGS = -DCPUIDEMU -DVENDOR=99
 endif
 
-ifeq ($(TARGET), 1004K)
+ifeq ($(TARGET), MIPS24K)
+TARGET_FLAGS = -mips32r2
+endif
+
+ifeq ($(TARGET), MIPS1004K)
 TARGET_FLAGS = -mips32r2
 endif
 
