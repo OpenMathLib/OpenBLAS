@@ -52,7 +52,7 @@ jobs:
 
 - job: Windows_cl
   pool:
-     vmImage: 'windows2019'
+     vmImage: 'windows-latest'
   steps:   
   - task: CMake@1
     inputs:
