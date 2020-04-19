@@ -63,6 +63,7 @@ jobs:
       cmakeArgs: '--build . --config Release'
       workingDirectory: 'build'
   - script: |
+      cd build
       cd utest
       dir
   
