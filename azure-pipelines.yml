@@ -58,4 +58,8 @@ jobs:
     inputs:
       workingDirectory: 'build' # Optional
       cmakeArgs: '-G "Visual Studio 16 2019" ..'
+  - script: |
+#  call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
+      make
+    workingDirectory: 'build'
       
