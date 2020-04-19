@@ -65,5 +65,5 @@ jobs:
   - script: |
       cd utest
       dir
-      .\openblas_utest.exe
+  
       
