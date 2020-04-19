@@ -62,4 +62,7 @@ jobs:
     inputs:
       cmakeArgs: '--build . --config Release'
       workingDirectory: 'build'
+  - script: |
+      cd utest
+      ./openblas_utest
       
