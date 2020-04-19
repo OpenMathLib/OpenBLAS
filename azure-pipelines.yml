@@ -64,5 +64,6 @@ jobs:
       workingDirectory: 'build'
   - script: |
       cd utest
-      openblas_utest.exe
+      dir
+      .\openblas_utest.exe
       
