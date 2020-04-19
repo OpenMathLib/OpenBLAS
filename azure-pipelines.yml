@@ -66,5 +66,6 @@ jobs:
       cd build
       cd utest
       dir
+      openblas_utest.exe
   
       
