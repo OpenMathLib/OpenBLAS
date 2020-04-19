@@ -58,7 +58,8 @@ jobs:
     inputs:
       workingDirectory: 'build' # Optional
       cmakeArgs: '-G "Visual Studio 16 2019" ..'
-  - script: |
-      cmake --build ..
-    workingDirectory: 'build'
+  - task: CMake@1
+      inputs:
+      cmakeArgs: '--build . --config Release'
+      workingDirectory: 'build'
       
