@@ -51,10 +51,11 @@ jobs:
     displayName: 'Run AVX512 SkylakeX docker build / test'
 
 - job: Windows-cl
-   pool:
+  pool:
      vmImage: 'windows2019'
-   - task: CMake@1
-       inputs:
-        workingDirectory: 'build' # Optional
-        cmakeArgs: -G "Visual Studio 15 2017 Win64"
+  steps:   
+  - task: CMake@1
+    inputs:
+      workingDirectory: 'build' # Optional
+      cmakeArgs: '-G "Visual Studio 15 2017 Win64 .."'
       
