@@ -39,7 +39,7 @@
 #include "common.h"
 
 int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1, FLOAT beta,
-	  FLOAT *dummy2, BLASLONG dummy3, FLOAT *dummy4, BLASLONG dummy5,
+	  IFLOAT *dummy2, BLASLONG dummy3, IFLOAT *dummy4, BLASLONG dummy5,
 	  FLOAT *c, BLASLONG ldc){
 
 

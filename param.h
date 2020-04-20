@@ -72,6 +72,12 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef PARAM_H
 #define PARAM_H
 
+#define SHGEMM_DEFAULT_UNROLL_N 4
+#define SHGEMM_DEFAULT_UNROLL_M 8
+#define SHGEMM_DEFAULT_UNROLL_MN 32
+#define SHGEMM_DEFAULT_P 256
+#define SHGEMM_DEFAULT_R 256
+#define SHGEMM_DEFAULT_Q 256
 #ifdef OPTERON
 
 #define SNUMOPT		4
@@ -2468,7 +2474,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define SYMV_P	16
 #endif
 
-#if defined(P5600) || defined(MIPS1004K) || defined(I6400) || defined(P6600) || defined(I6500)
+#if defined(P5600) || defined(MIPS1004K) || defined(MIPS24K) || defined(I6400) || defined(P6600) || defined(I6500)
 #define SNUMOPT  2
 #define DNUMOPT  2
 
