@@ -240,7 +240,7 @@ if (BUILD_SHARED_LIBS AND BUILD_RELAPACK)
   if (NOT MSVC)
     target_link_libraries(${OpenBLAS_LIBNAME} "-Wl,-allow-multiple-definition")
   else()
-    target_link_libraries(${OpenBLAS_LIBNAME} "/FORCE:MULTIPLE")
+   set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} /FORCE:MULTIPLE")
   endif()
 endif()
 
