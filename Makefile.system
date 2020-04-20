@@ -690,7 +690,12 @@ CCOMMON_OPT += -march=mips64
 FCOMMON_OPT += -march=mips64
 endif
 
-ifeq ($(CORE), 1004K)
+ifeq ($(CORE), MIPS24K)
+CCOMMON_OPT += -mips32r2 -mtune=24kc  $(MSA_FLAGS)
+FCOMMON_OPT += -mips32r2 -mtune=24kc  $(MSA_FLAGS)
+endif
+
+ifeq ($(CORE), MIPS1004K)
 CCOMMON_OPT += -mips32r2   $(MSA_FLAGS)
 FCOMMON_OPT += -mips32r2   $(MSA_FLAGS)
 endif
