@@ -115,7 +115,7 @@ foreach (float_type ${FLOAT_TYPES})
     GenerateNamedObjects("syr2k.c" "HEMM" "her2k" ${CBLAS_FLAG} "" "" false ${float_type})
 
     if (USE_GEMM3M)
-      GenerateNamedObjects("gemm.c" "GEMM3M" "gemm3m" false "" "" false ${float_type})
+      GenerateNamedObjects("gemm.c" "GEMM3M" "gemm3m" ${CBLAS_FLAG} "" "" false ${float_type})
     endif()
   endif ()
   if (${float_type} STREQUAL "COMPLEX")
