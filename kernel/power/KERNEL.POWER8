@@ -233,7 +233,7 @@ QCABS_KERNEL	= ../generic/cabs.c
 CGEMM3MKERNEL    = ../generic/zgemm3mkernel_dump.c
 ZGEMM3MKERNEL    = ../generic/zgemm3mkernel_dump.c
 
-ifeq ($(__BYTE_ORDER__),__ORDER_BIG_ENDIAN__)
+ifeq ($(__BYTE_ORDER__)$(ELF_VERSION),__ORDER_BIG_ENDIAN__2)
 IDAMAXKERNEL  = ../arm/iamax.c
 IDAMINKERNEL  = ../arm/iamin.c
 IZAMAXKERNEL  = ../arm/izamax.c
