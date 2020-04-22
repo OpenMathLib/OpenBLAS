@@ -1362,9 +1362,11 @@ int main(int argc, char *argv[]){
 
 #if defined(__BYTE_ORDER__) && __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__
 printf("__BYTE_ORDER__=__ORDER_BIG_ENDIAN__\n");
-#endif
-#if defined(__BIG_ENDIAN__) && __BIG_ENDIAN__ > 0
+#elif defined(__BIG_ENDIAN__) && __BIG_ENDIAN__ > 0
 printf("__BYTE_ORDER__=__ORDER_BIG_ENDIAN__\n");
+#endif
+#if defined(_CALL_ELF) && (_CALL_ELF == 2)
+printf("ELF_VERSION=2\n");
 #endif
 
 #ifdef MAKE_NB_JOBS

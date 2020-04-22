@@ -232,3 +232,11 @@ QCABS_KERNEL	= ../generic/cabs.c
 #Dump kernel
 CGEMM3MKERNEL    = ../generic/zgemm3mkernel_dump.c
 ZGEMM3MKERNEL    = ../generic/zgemm3mkernel_dump.c
+
+ifeq ($(__BYTE_ORDER__)$(ELF_VERSION),__ORDER_BIG_ENDIAN__2)
+IDAMAXKERNEL  = ../arm/iamax.c
+IDAMINKERNEL  = ../arm/iamin.c
+IZAMAXKERNEL  = ../arm/izamax.c
+IZAMINKERNEL  = ../arm/izamin.c
+endif
+
