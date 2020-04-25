@@ -180,3 +180,7 @@ In chronological order:
   * [2019-12-23] optimize AVX2 CGEMM and ZGEMM
   * [2019-12-30] AVX2 CGEMM3M & ZGEMM3M kernels
   * [2020-01-07] optimize AVX2 SGEMM and STRMM
+
+* Rajalakshmi Srinivasaraghavan <https://github.com/RajalakshmiSR>
+  * [2020-04-15] Half-precision GEMM for bfloat16
+  
