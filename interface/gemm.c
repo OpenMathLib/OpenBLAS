@@ -115,6 +115,15 @@ static int (*gemm_small_kernel[])(BLASLONG, BLASLONG, BLASLONG, FLOAT *, BLASLON
 #endif
 #endif
 };
+
+static int (*gemm_small_kernel_a1b0[])(BLASLONG, BLASLONG, BLASLONG, FLOAT *, BLASLONG, FLOAT *, BLASLONG, FLOAT *, BLASLONG) = {
+#ifndef GEMM3M
+#ifndef COMPLEX
+	GEMM_SMALL_KERNEL_A1B0_NN, GEMM_SMALL_KERNEL_A1B0_TN, NULL, NULL,
+	GEMM_SMALL_KERNEL_A1B0_NT, GEMM_SMALL_KERNEL_A1B0_TT, NULL, NULL,
+#endif
+#endif
+};
 #endif
 
 #ifndef CBLAS
@@ -435,8 +444,13 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_TRANSPOSE TransA, enum CBLAS_TRANS
 #if !defined(COMPLEX)
   //need to tune small matrices cases.
   if(MNK <= 100.0*100.0*100.0){
-	  (gemm_small_kernel[(transb << 2) | transa])(args.m, args.n, args.k, args.a, args.lda, *(FLOAT *)(args.alpha), args.b,
-						      args.ldb, *(FLOAT *)(args.beta), args.c, args.ldc);
+
+	  if(*(FLOAT *)(args.alpha) == 1.0 && *(FLOAT *)(args.beta) == 0.0){
+		  (gemm_small_kernel_a1b0[(transb << 2) | transa])(args.m, args.n, args.k, args.a, args.lda,args.b, args.ldb, args.c, args.ldc);
+	  }else{
+		  (gemm_small_kernel[(transb << 2) | transa])(args.m, args.n, args.k, args.a, args.lda, *(FLOAT *)(args.alpha), args.b, args.ldb, *(FLOAT *)(args.beta), args.c, args.ldc);
+	  }
+	  
 	  return;
   }
 #endif

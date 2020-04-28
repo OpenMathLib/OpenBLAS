@@ -525,6 +525,17 @@ int dgemm_small_kernel_nn(BLASLONG m, BLASLONG n, BLASLONG k, double * A, BLASLO
 int dgemm_small_kernel_nt(BLASLONG m, BLASLONG n, BLASLONG k, double * A, BLASLONG lda, double alpha, double * B, BLASLONG ldb, double beta, double * C, BLASLONG ldc);
 int dgemm_small_kernel_tn(BLASLONG m, BLASLONG n, BLASLONG k, double * A, BLASLONG lda, double alpha, double * B, BLASLONG ldb, double beta, double * C, BLASLONG ldc);
 int dgemm_small_kernel_tt(BLASLONG m, BLASLONG n, BLASLONG k, double * A, BLASLONG lda, double alpha, double * B, BLASLONG ldb, double beta, double * C, BLASLONG ldc);
+
+int sgemm_small_kernel_a1b0_nn(BLASLONG m, BLASLONG n, BLASLONG k, float * A, BLASLONG lda, float * B, BLASLONG ldb, float * C, BLASLONG ldc);
+int sgemm_small_kernel_a1b0_nt(BLASLONG m, BLASLONG n, BLASLONG k, float * A, BLASLONG lda, float * B, BLASLONG ldb, float * C, BLASLONG ldc);
+int sgemm_small_kernel_a1b0_tn(BLASLONG m, BLASLONG n, BLASLONG k, float * A, BLASLONG lda, float * B, BLASLONG ldb, float * C, BLASLONG ldc);
+int sgemm_small_kernel_a1b0_tt(BLASLONG m, BLASLONG n, BLASLONG k, float * A, BLASLONG lda, float * B, BLASLONG ldb, float * C, BLASLONG ldc);
+
+int dgemm_small_kernel_a1b0_nn(BLASLONG m, BLASLONG n, BLASLONG k, double * A, BLASLONG lda, double * B, BLASLONG ldb, double * C, BLASLONG ldc);
+int dgemm_small_kernel_a1b0_nt(BLASLONG m, BLASLONG n, BLASLONG k, double * A, BLASLONG lda, double * B, BLASLONG ldb, double * C, BLASLONG ldc);
+int dgemm_small_kernel_a1b0_tn(BLASLONG m, BLASLONG n, BLASLONG k, double * A, BLASLONG lda, double * B, BLASLONG ldb, double * C, BLASLONG ldc);
+int dgemm_small_kernel_a1b0_tt(BLASLONG m, BLASLONG n, BLASLONG k, double * A, BLASLONG lda, double * B, BLASLONG ldb, double * C, BLASLONG ldc);
+
 #endif
 
 int cgemm_kernel_n(BLASLONG, BLASLONG, BLASLONG, float,  float,  float  *, float  *, float  *, BLASLONG);
