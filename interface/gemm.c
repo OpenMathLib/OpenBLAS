@@ -145,7 +145,7 @@ void NAME(char *TRANSA, char *TRANSB,
   IFLOAT *buffer;
   IFLOAT *sa, *sb;
 
-#ifdef SMP
+#if defined (SMP) || defined(SMALL_MATRIX_OPT)
   double MNK;
 #if defined(USE_SIMPLE_THREADED_LEVEL3) || !defined(NO_AFFINITY)
 #ifndef COMPLEX
@@ -269,8 +269,11 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_TRANSPOSE TransA, enum CBLAS_TRANS
   XFLOAT *buffer;
   XFLOAT *sa, *sb;
 
-#ifdef SMP
+#if defined (SMP) || defined(SMALL_MATRIX_OPT)
   double MNK;
+#endif
+
+#ifdef SMP
 #if defined(USE_SIMPLE_THREADED_LEVEL3) || !defined(NO_AFFINITY)
 #ifndef COMPLEX
 #ifdef XDOUBLE
@@ -438,7 +441,9 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_TRANSPOSE TransA, enum CBLAS_TRANS
 
   FUNCTION_PROFILE_START();
 
+#if defined(SMP) || defined(SMALL_MATRIX_OPT)
   MNK = (double) args.m * (double) args.n * (double) args.k;
+#endif
 
 #ifdef SMALL_MATRIX_OPT
 #if !defined(COMPLEX)
