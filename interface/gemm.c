@@ -105,6 +105,18 @@ static int (*gemm[])(blas_arg_t *, BLASLONG *, BLASLONG *, IFLOAT *, IFLOAT *, B
 #endif
 };
 
+#ifdef SMALL_MATRIX_OPT
+//Only support s/dgemm small matrix optimiztion so far.
+static int (*gemm_small_kernel[])(BLASLONG, BLASLONG, BLASLONG, FLOAT *, BLASLONG, FLOAT ,FLOAT *, BLASLONG, FLOAT, FLOAT *, BLASLONG) = {
+#ifndef GEMM3M
+#ifndef COMPLEX
+	GEMM_SMALL_KERNEL_NN, GEMM_SMALL_KERNEL_TN, NULL, NULL,
+	GEMM_SMALL_KERNEL_NT, GEMM_SMALL_KERNEL_TT, NULL, NULL,
+#endif
+#endif
+};
+#endif
+
 #ifndef CBLAS
 
 void NAME(char *TRANSA, char *TRANSB,
@@ -417,6 +429,20 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_TRANSPOSE TransA, enum CBLAS_TRANS
 
   FUNCTION_PROFILE_START();
 
+  MNK = (double) args.m * (double) args.n * (double) args.k;
+
+#ifdef SMALL_MATRIX_OPT
+#if !defined(COMPLEX)
+  //need to tune small matrices cases.
+  if(MNK <= 100.0*100.0*100.0){
+	  (gemm_small_kernel[(transb << 2) | transa])(args.m, args.n, args.k, args.a, args.lda, *(FLOAT *)(args.alpha), args.b,
+						      args.ldb, *(FLOAT *)(args.beta), args.c, args.ldc);
+	  return;
+  }
+#endif
+#endif
+  
+
   buffer = (XFLOAT *)blas_memory_alloc(0);
 
   sa = (XFLOAT *)((BLASLONG)buffer +GEMM_OFFSET_A);
@@ -428,7 +454,7 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_TRANSPOSE TransA, enum CBLAS_TRANS
   mode |= (transb << BLAS_TRANSB_SHIFT);
 #endif
 
-  MNK = (double) args.m * (double) args.n * (double) args.k;
+
   if ( MNK <= (SMP_THRESHOLD_MIN  * (double) GEMM_MULTITHREAD_THRESHOLD)  )
 	args.nthreads = 1;
   else

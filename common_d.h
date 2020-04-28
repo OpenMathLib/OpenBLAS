@@ -157,6 +157,12 @@
 #define DIMATCOPY_K_RT      dimatcopy_k_rt
 #define DGEADD_K                dgeadd_k 
 
+
+#define DGEMM_SMALL_KERNEL_NN   dgemm_small_kernel_nn
+#define DGEMM_SMALL_KERNEL_NT   dgemm_small_kernel_nt
+#define DGEMM_SMALL_KERNEL_TN   dgemm_small_kernel_tn
+#define DGEMM_SMALL_KERNEL_TT   dgemm_small_kernel_tt
+
 #else
 
 #define	DAMAX_K			gotoblas -> damax_k
