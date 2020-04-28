@@ -2070,7 +2070,7 @@ if (!release->address) return;
   if (munmap(release -> address, BUFFER_SIZE)) {
       int errsv=errno;
        perror("OpenBLAS : munmap failed:");
-       printf("error code=%d,\trelease->address=%lx\n",errsv,release->address);
+       printf("error code=%d,\trelease->address=%p\n",errsv,release->address);
   }
 }
 
