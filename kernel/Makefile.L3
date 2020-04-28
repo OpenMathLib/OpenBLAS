@@ -4258,115 +4258,115 @@ $(KDIR)zgeadd_k$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(ZGEADD_K)
 
 ######  BLAS small matrix optimization #####
 
-ifndef DGEMM_SAMLL_K_NN
-DGEMM_SAMLL_K_NN = ../generic/gemm_small_matrix_kernel_nn.c
+ifndef DGEMM_SMALL_K_NN
+DGEMM_SMALL_K_NN = ../generic/gemm_small_matrix_kernel_nn.c
 endif
 
-ifndef DGEMM_SAMLL_K_NT
-DGEMM_SAMLL_K_NT = ../generic/gemm_small_matrix_kernel_nt.c
+ifndef DGEMM_SMALL_K_NT
+DGEMM_SMALL_K_NT = ../generic/gemm_small_matrix_kernel_nt.c
 endif
 
-ifndef DGEMM_SAMLL_K_TN
-DGEMM_SAMLL_K_TN = ../generic/gemm_small_matrix_kernel_tn.c
+ifndef DGEMM_SMALL_K_TN
+DGEMM_SMALL_K_TN = ../generic/gemm_small_matrix_kernel_tn.c
 endif
 
-ifndef DGEMM_SAMLL_K_TT
-DGEMM_SAMLL_K_TT = ../generic/gemm_small_matrix_kernel_tt.c
+ifndef DGEMM_SMALL_K_TT
+DGEMM_SMALL_K_TT = ../generic/gemm_small_matrix_kernel_tt.c
 endif
 
-$(KDIR)dgemm_small_kernel_nn$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(DGEMM_SAMLL_K_NN)
+$(KDIR)dgemm_small_kernel_nn$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(DGEMM_SMALL_K_NN)
 	$(CC) $(CFLAGS) -c -DDOUBLE -UCOMPLEX $< -o $@
 
-$(KDIR)dgemm_small_kernel_nt$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(DGEMM_SAMLL_K_NT)
+$(KDIR)dgemm_small_kernel_nt$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(DGEMM_SMALL_K_NT)
 	$(CC) $(CFLAGS) -c -DDOUBLE -UCOMPLEX $< -o $@
 
-$(KDIR)dgemm_small_kernel_tn$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(DGEMM_SAMLL_K_TN)
+$(KDIR)dgemm_small_kernel_tn$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(DGEMM_SMALL_K_TN)
 	$(CC) $(CFLAGS) -c -DDOUBLE -UCOMPLEX $< -o $@
 
-$(KDIR)dgemm_small_kernel_tt$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(DGEMM_SAMLL_K_TT)
+$(KDIR)dgemm_small_kernel_tt$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(DGEMM_SMALL_K_TT)
 	$(CC) $(CFLAGS) -c -DDOUBLE -UCOMPLEX $< -o $@
 
-ifndef DGEMM_SAMLL_K_A1B0_NN
-DGEMM_SAMLL_K_A1B0_NN = ../generic/gemm_small_matrix_kernel_a1b0_nn.c
+ifndef DGEMM_SMALL_K_A1B0_NN
+DGEMM_SMALL_K_A1B0_NN = ../generic/gemm_small_matrix_kernel_a1b0_nn.c
 endif
 
-ifndef DGEMM_SAMLL_K_A1B0_NT
-DGEMM_SAMLL_K_A1B0_NT = ../generic/gemm_small_matrix_kernel_a1b0_nt.c
+ifndef DGEMM_SMALL_K_A1B0_NT
+DGEMM_SMALL_K_A1B0_NT = ../generic/gemm_small_matrix_kernel_a1b0_nt.c
 endif
 
-ifndef DGEMM_SAMLL_K_A1B0_TN
-DGEMM_SAMLL_K_A1B0_TN = ../generic/gemm_small_matrix_kernel_a1b0_tn.c
+ifndef DGEMM_SMALL_K_A1B0_TN
+DGEMM_SMALL_K_A1B0_TN = ../generic/gemm_small_matrix_kernel_a1b0_tn.c
 endif
 
-ifndef DGEMM_SAMLL_K_A1B0_TT
-DGEMM_SAMLL_K_A1B0_TT = ../generic/gemm_small_matrix_kernel_a1b0_tt.c
+ifndef DGEMM_SMALL_K_A1B0_TT
+DGEMM_SMALL_K_A1B0_TT = ../generic/gemm_small_matrix_kernel_a1b0_tt.c
 endif
 
-$(KDIR)dgemm_small_kernel_a1b0_nn$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(DGEMM_SAMLL_K_A1B0_NN)
+$(KDIR)dgemm_small_kernel_a1b0_nn$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(DGEMM_SMALL_K_A1B0_NN)
 	$(CC) $(CFLAGS) -c -DDOUBLE -UCOMPLEX $< -o $@
 
-$(KDIR)dgemm_small_kernel_a1b0_nt$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(DGEMM_SAMLL_K_A1B0_NT)
+$(KDIR)dgemm_small_kernel_a1b0_nt$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(DGEMM_SMALL_K_A1B0_NT)
 	$(CC) $(CFLAGS) -c -DDOUBLE -UCOMPLEX $< -o $@
 
-$(KDIR)dgemm_small_kernel_a1b0_tn$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(DGEMM_SAMLL_K_A1B0_TN)
+$(KDIR)dgemm_small_kernel_a1b0_tn$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(DGEMM_SMALL_K_A1B0_TN)
 	$(CC) $(CFLAGS) -c -DDOUBLE -UCOMPLEX $< -o $@
 
-$(KDIR)dgemm_small_kernel_a1b0_tt$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(DGEMM_SAMLL_K_A1B0_TT)
+$(KDIR)dgemm_small_kernel_a1b0_tt$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(DGEMM_SMALL_K_A1B0_TT)
 	$(CC) $(CFLAGS) -c -DDOUBLE -UCOMPLEX $< -o $@
 
 
-ifndef SGEMM_SAMLL_K_NN
-SGEMM_SAMLL_K_NN = ../generic/gemm_small_matrix_kernel_nn.c
+ifndef SGEMM_SMALL_K_NN
+SGEMM_SMALL_K_NN = ../generic/gemm_small_matrix_kernel_nn.c
 endif
 
-ifndef SGEMM_SAMLL_K_NT
-SGEMM_SAMLL_K_NT = ../generic/gemm_small_matrix_kernel_nt.c
+ifndef SGEMM_SMALL_K_NT
+SGEMM_SMALL_K_NT = ../generic/gemm_small_matrix_kernel_nt.c
 endif
 
-ifndef SGEMM_SAMLL_K_TN
-SGEMM_SAMLL_K_TN = ../generic/gemm_small_matrix_kernel_tn.c
+ifndef SGEMM_SMALL_K_TN
+SGEMM_SMALL_K_TN = ../generic/gemm_small_matrix_kernel_tn.c
 endif
 
-ifndef SGEMM_SAMLL_K_TT
-SGEMM_SAMLL_K_TT = ../generic/gemm_small_matrix_kernel_tt.c
+ifndef SGEMM_SMALL_K_TT
+SGEMM_SMALL_K_TT = ../generic/gemm_small_matrix_kernel_tt.c
 endif
 
-$(KDIR)sgemm_small_kernel_nn$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(SGEMM_SAMLL_K_NN)
+$(KDIR)sgemm_small_kernel_nn$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(SGEMM_SMALL_K_NN)
 	$(CC) $(CFLAGS) -c -UDOUBLE -UCOMPLEX $< -o $@
 
-$(KDIR)sgemm_small_kernel_nt$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(SGEMM_SAMLL_K_NT)
+$(KDIR)sgemm_small_kernel_nt$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(SGEMM_SMALL_K_NT)
 	$(CC) $(CFLAGS) -c -UDOUBLE -UCOMPLEX $< -o $@
 
-$(KDIR)sgemm_small_kernel_tn$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(SGEMM_SAMLL_K_TN)
+$(KDIR)sgemm_small_kernel_tn$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(SGEMM_SMALL_K_TN)
 	$(CC) $(CFLAGS) -c -UDOUBLE -UCOMPLEX $< -o $@
 
-$(KDIR)sgemm_small_kernel_tt$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(SGEMM_SAMLL_K_TT)
+$(KDIR)sgemm_small_kernel_tt$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(SGEMM_SMALL_K_TT)
 	$(CC) $(CFLAGS) -c -UDOUBLE -UCOMPLEX $< -o $@
 
-ifndef SGEMM_SAMLL_K_A1B0_NN
-SGEMM_SAMLL_K_A1B0_NN = ../generic/gemm_small_matrix_kernel_a1b0_nn.c
+ifndef SGEMM_SMALL_K_A1B0_NN
+SGEMM_SMALL_K_A1B0_NN = ../generic/gemm_small_matrix_kernel_a1b0_nn.c
 endif
 
-ifndef SGEMM_SAMLL_K_A1B0_NT
-SGEMM_SAMLL_K_A1B0_NT = ../generic/gemm_small_matrix_kernel_a1b0_nt.c
+ifndef SGEMM_SMALL_K_A1B0_NT
+SGEMM_SMALL_K_A1B0_NT = ../generic/gemm_small_matrix_kernel_a1b0_nt.c
 endif
 
-ifndef SGEMM_SAMLL_K_A1B0_TN
-SGEMM_SAMLL_K_A1B0_TN = ../generic/gemm_small_matrix_kernel_a1b0_tn.c
+ifndef SGEMM_SMALL_K_A1B0_TN
+SGEMM_SMALL_K_A1B0_TN = ../generic/gemm_small_matrix_kernel_a1b0_tn.c
 endif
 
-ifndef SGEMM_SAMLL_K_A1B0_TT
-SGEMM_SAMLL_K_A1B0_TT = ../generic/gemm_small_matrix_kernel_a1b0_tt.c
+ifndef SGEMM_SMALL_K_A1B0_TT
+SGEMM_SMALL_K_A1B0_TT = ../generic/gemm_small_matrix_kernel_a1b0_tt.c
 endif
 
-$(KDIR)sgemm_small_kernel_a1b0_nn$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(SGEMM_SAMLL_K_A1B0_NN)
+$(KDIR)sgemm_small_kernel_a1b0_nn$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(SGEMM_SMALL_K_A1B0_NN)
 	$(CC) $(CFLAGS) -c -UDOUBLE -UCOMPLEX $< -o $@
 
-$(KDIR)sgemm_small_kernel_a1b0_nt$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(SGEMM_SAMLL_K_A1B0_NT)
+$(KDIR)sgemm_small_kernel_a1b0_nt$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(SGEMM_SMALL_K_A1B0_NT)
 	$(CC) $(CFLAGS) -c -UDOUBLE -UCOMPLEX $< -o $@
 
-$(KDIR)sgemm_small_kernel_a1b0_tn$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(SGEMM_SAMLL_K_A1B0_TN)
+$(KDIR)sgemm_small_kernel_a1b0_tn$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(SGEMM_SMALL_K_A1B0_TN)
 	$(CC) $(CFLAGS) -c -UDOUBLE -UCOMPLEX $< -o $@
 
-$(KDIR)sgemm_small_kernel_a1b0_tt$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(SGEMM_SAMLL_K_A1B0_TT)
+$(KDIR)sgemm_small_kernel_a1b0_tt$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(SGEMM_SMALL_K_A1B0_TT)
 	$(CC) $(CFLAGS) -c -UDOUBLE -UCOMPLEX $< -o $@
