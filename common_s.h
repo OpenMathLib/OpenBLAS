@@ -160,6 +160,11 @@
 
 #define SGEADD_K                sgeadd_k 
 
+#define SGEMM_SMALL_KERNEL_NN   sgemm_small_kernel_nn
+#define SGEMM_SMALL_KERNEL_NT   sgemm_small_kernel_nt
+#define SGEMM_SMALL_KERNEL_TN   sgemm_small_kernel_tn
+#define SGEMM_SMALL_KERNEL_TT   sgemm_small_kernel_tt
+
 #else
 
 #define	SAMAX_K			gotoblas -> samax_k
