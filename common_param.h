@@ -47,7 +47,7 @@ typedef struct {
   int dtb_entries;
   int offsetA, offsetB, align;
 
-#if 1
+#ifdef BUILD_HALF
   int shgemm_p, shgemm_q, shgemm_r;
   int shgemm_unroll_m, shgemm_unroll_n, shgemm_unroll_mn;
 
@@ -1002,12 +1002,14 @@ extern gotoblas_t *gotoblas;
 
 #define HAVE_EX_L2	gotoblas -> exclusive_cache
 
+#ifdef BUILD_HALF
 #define	SHGEMM_P		gotoblas -> shgemm_p
 #define	SHGEMM_Q		gotoblas -> shgemm_q
 #define	SHGEMM_R		gotoblas -> shgemm_r
 #define	SHGEMM_UNROLL_M	gotoblas -> shgemm_unroll_m
 #define	SHGEMM_UNROLL_N	gotoblas -> shgemm_unroll_n
 #define	SHGEMM_UNROLL_MN	gotoblas -> shgemm_unroll_mn
+#endif
 
 #define	SGEMM_P		gotoblas -> sgemm_p
 #define	SGEMM_Q		gotoblas -> sgemm_q
@@ -1086,6 +1088,7 @@ extern gotoblas_t *gotoblas;
 #define HAVE_EX_L2	0
 #endif
 
+#ifdef BUILD_HALF
 #define	SHGEMM_P		SHGEMM_DEFAULT_P
 #define	SHGEMM_Q		SHGEMM_DEFAULT_Q
 #define	SHGEMM_R		SHGEMM_DEFAULT_R
@@ -1095,6 +1098,7 @@ extern gotoblas_t *gotoblas;
 #define SHGEMM_UNROLL_MN	SHGEMM_DEFAULT_UNROLL_MN
 #else
 #define SHGEMM_UNROLL_MN	MAX((SHGEMM_UNROLL_M), (SHGEMM_UNROLL_N))
+#endif
 #endif
 
 #define	SGEMM_P		SGEMM_DEFAULT_P
