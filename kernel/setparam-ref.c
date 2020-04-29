@@ -783,20 +783,26 @@ static void init_parameter(void) {
 #if defined(ARCH_POWER)
 static void init_parameter(void) {
 
+#ifdef BUILD_HALF
   TABLE_NAME.shgemm_p = SHGEMM_DEFAULT_P;
+#endif
   TABLE_NAME.sgemm_p = SGEMM_DEFAULT_P;
   TABLE_NAME.dgemm_p = DGEMM_DEFAULT_P;
   TABLE_NAME.cgemm_p = CGEMM_DEFAULT_P;
   TABLE_NAME.zgemm_p = ZGEMM_DEFAULT_P;
 
+#ifdef BUILD_HALF
   TABLE_NAME.shgemm_r = SHGEMM_DEFAULT_R;
+#endif
   TABLE_NAME.sgemm_r = SGEMM_DEFAULT_R;
   TABLE_NAME.dgemm_r = DGEMM_DEFAULT_R;
   TABLE_NAME.cgemm_r = CGEMM_DEFAULT_R;
   TABLE_NAME.zgemm_r = ZGEMM_DEFAULT_R;
 
 
+#ifdef BUILD_HALF
   TABLE_NAME.shgemm_q = SHGEMM_DEFAULT_Q;
+#endif
   TABLE_NAME.sgemm_q = SGEMM_DEFAULT_Q;
   TABLE_NAME.dgemm_q = DGEMM_DEFAULT_Q;
   TABLE_NAME.cgemm_q = CGEMM_DEFAULT_Q;
@@ -806,20 +812,26 @@ static void init_parameter(void) {
 
 #if defined(ARCH_ZARCH)
 static void init_parameter(void) {
+#ifdef BUILD_HALF
 	TABLE_NAME.shgemm_p = SHGEMM_DEFAULT_P;
+#endif
 	TABLE_NAME.sgemm_p = SGEMM_DEFAULT_P;
 	TABLE_NAME.dgemm_p = DGEMM_DEFAULT_P;
 	TABLE_NAME.cgemm_p = CGEMM_DEFAULT_P;
 	TABLE_NAME.zgemm_p = ZGEMM_DEFAULT_P;
 
+#ifdef BUILD_HALF
 	TABLE_NAME.shgemm_r = SHGEMM_DEFAULT_R;
+#endif
 	TABLE_NAME.sgemm_r = SGEMM_DEFAULT_R;
 	TABLE_NAME.dgemm_r = DGEMM_DEFAULT_R;
 	TABLE_NAME.cgemm_r = CGEMM_DEFAULT_R;
 	TABLE_NAME.zgemm_r = ZGEMM_DEFAULT_R;
 
 
+#ifdef BUILD_HALF
 	TABLE_NAME.shgemm_q = SHGEMM_DEFAULT_Q;
+#endif
 	TABLE_NAME.sgemm_q = SGEMM_DEFAULT_Q;
 	TABLE_NAME.dgemm_q = DGEMM_DEFAULT_Q;
 	TABLE_NAME.cgemm_q = CGEMM_DEFAULT_Q;
@@ -959,9 +971,11 @@ static void init_parameter(void) {
   (void) l2; /* dirty trick to suppress unused variable warning for targets */
              /* where the GEMM unrolling parameters do not depend on l2 */
   
+#ifdef BUILD_HALF
   TABLE_NAME.shgemm_p = SHGEMM_DEFAULT_P;
   TABLE_NAME.shgemm_r = SHGEMM_DEFAULT_R;
   TABLE_NAME.shgemm_q = SHGEMM_DEFAULT_Q;
+#endif
   TABLE_NAME.sgemm_q = SGEMM_DEFAULT_Q;
   TABLE_NAME.dgemm_q = DGEMM_DEFAULT_Q;
   TABLE_NAME.cgemm_q = CGEMM_DEFAULT_Q;
