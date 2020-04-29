@@ -142,6 +142,7 @@ function (build_core TARGET_CORE KDIR TSUFFIX KERNEL_DEFINITIONS)
         else ()
 	  set (float_char "SH")
       endif ()
+      endif ()
       GenerateNamedObjects("${KERNELDIR}/${${float_char}GEMMKERNEL}" "" "gemm_kernel" false "" "" false ${float_type})
     endforeach()
 
