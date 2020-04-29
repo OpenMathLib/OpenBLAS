@@ -139,7 +139,7 @@ function (build_core TARGET_CORE KDIR TSUFFIX KERNEL_DEFINITIONS)
       if (${float_type} STREQUAL "HALF")
         if (NOT ${BUILD_HALF})
 	  continue ()
-        else
+        else ()
 	  set (float_char "SH")
       endif ()
       GenerateNamedObjects("${KERNELDIR}/${${float_char}GEMMKERNEL}" "" "gemm_kernel" false "" "" false ${float_type})
