@@ -707,7 +707,7 @@ gotoblas_t TABLE_NAME = {
 
 #if defined(ARCH_ARM64)
 static void init_parameter(void) {
-#if defined(BUILD_HALFi)
+#if defined(BUILD_HALF)
   TABLE_NAME.shgemm_p = SHGEMM_DEFAULT_P;
 #endif
   TABLE_NAME.sgemm_p = SGEMM_DEFAULT_P;
