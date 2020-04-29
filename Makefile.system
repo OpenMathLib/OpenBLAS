@@ -1124,6 +1124,10 @@ ifeq ($(USE_TLS), 1)
 CCOMMON_OPT += -DUSE_TLS
 endif
 
+ifeq ($(BUILD_HALF), 1)
+CCOMMON_OPT += -DBUILD_HALF
+endif
+
 CCOMMON_OPT += -DVERSION=\"$(VERSION)\"
 
 ifndef SYMBOLPREFIX

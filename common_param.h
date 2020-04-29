@@ -47,7 +47,7 @@ typedef struct {
   int dtb_entries;
   int offsetA, offsetB, align;
 
-#if 1
+#ifdef BUILD_HALF
   int shgemm_p, shgemm_q, shgemm_r;
   int shgemm_unroll_m, shgemm_unroll_n, shgemm_unroll_mn;
 
