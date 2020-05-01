@@ -51,6 +51,7 @@ main (int argc, char *argv[])
 {
   int m, n, k;
   int i, j, l;
+  int x;
   int ret = 0;
   int loop = 100;
   char transA = 'N', transB = 'N';
@@ -58,7 +59,7 @@ main (int argc, char *argv[])
   char transa = 'N';
   char transb = 'N';
 
-  for (int x = 0; x <= loop; x++)
+  for (x = 0; x <= loop; x++)
     {
       m = k = n = x;
       float A[m * k];
@@ -67,9 +68,9 @@ main (int argc, char *argv[])
       bfloat16_bits AA[m * k], BB[k * n];
       float CC[m * n];
 
-      for (int j = 0; j < m; j++)
+      for (j = 0; j < m; j++)
 	{
-	  for (int i = 0; i < m; i++)
+	  for (i = 0; i < m; i++)
 	    {
 	      A[j * k + i] = ((FLOAT) rand() / (FLOAT) RAND_MAX) + 0.5;
 	      B[j * k + i] = ((FLOAT) rand() / (FLOAT) RAND_MAX) + 0.5;
