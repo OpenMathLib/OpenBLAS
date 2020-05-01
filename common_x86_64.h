@@ -80,7 +80,7 @@ static void __inline blas_lock(volatile BLASULONG *address){
 #endif
 
   do {
-    while (*address) {YIELDING;};
+    while (*address) {YIELDING;}
 
 #ifndef C_MSVC
     __asm__ __volatile__(
