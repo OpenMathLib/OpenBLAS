@@ -26,7 +26,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
 #include <stdio.h>
 #include <stdint.h>
-#include "common.h"
+#include "../common.h"
 #define SGEMM   BLASFUNC(sgemm)
 #define SHGEMM   BLASFUNC(shgemm)
 typedef union
@@ -52,7 +52,7 @@ main (int argc, char *argv[])
   int m, n, k;
   int i, j, l;
   int ret = 0;
-  int loop = 20;
+  int loop = 100;
   char transA = 'N', transB = 'N';
   float alpha = 1.0, beta = 0.0;
   char transa = 'N';
@@ -71,8 +71,8 @@ main (int argc, char *argv[])
 	{
 	  for (int i = 0; i < m; i++)
 	    {
-	      A[j * k + i] = j * 9.0;
-	      B[j * k + i] = i * 2.0;
+	      A[j * k + i] = ((FLOAT) rand() / (FLOAT) RAND_MAX) + 0.5;
+	      B[j * k + i] = ((FLOAT) rand() / (FLOAT) RAND_MAX) + 0.5;
 	      C[j * k + i] = 0;
 	      AA[j * k + i].v = *(uint32_t *) & A[j * k + i] >> 16;
 	      BB[j * k + i].v = *(uint32_t *) & B[j * k + i] >> 16;
@@ -85,11 +85,12 @@ main (int argc, char *argv[])
 	       &m, BB, &k, &beta, CC, &m);
 
       for (i = 0; i < n; i++)
-	for (j = 0; j < m; j++)
-	  for (l = 0; l < k; l++)
-	    if (CC[i * m + j] != C[i * m + j])
-	      ret++;
+        for (j = 0; j < m; j++)
+          for (l = 0; l < k; l++)
+            if (fabs(CC[i * m + j]-C[i * m + j]) > 1.0)
+              ret++;
     }
-  fprintf (stderr, "Return code: %d\n", ret);
+  if (ret != 0)
+    fprintf (stderr, "FATAL ERROR SHGEMM - Return code: %d\n", ret);
   return ret;
 }
