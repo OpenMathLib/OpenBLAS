@@ -59,7 +59,8 @@ ifeq ($(CORE), Z14)
 USE_TRMM = 1
 endif
 
-#ifndef SHGEMMKERNEL
+ifeq ($(BUILD_HALF), 1)
+ifndef SHGEMMKERNEL
 SHGEMM_BETA = ../generic/gemm_beta.c
 SHGEMMKERNEL    = ../generic/gemmkernel_2x2.c
 SHGEMMINCOPY    = ../generic/gemm_ncopy_2.c
@@ -70,12 +71,13 @@ SHGEMMINCOPYOBJ =  shgemm_incopy$(TSUFFIX).$(SUFFIX)
 SHGEMMITCOPYOBJ =  shgemm_itcopy$(TSUFFIX).$(SUFFIX)
 SHGEMMONCOPYOBJ =  shgemm_oncopy$(TSUFFIX).$(SUFFIX)
 SHGEMMOTCOPYOBJ =  shgemm_otcopy$(TSUFFIX).$(SUFFIX)
-#endif
+endif
 
 SHKERNELOBJS	+= \
 	shgemm_kernel$(TSUFFIX).$(SUFFIX) \
 	$(SHGEMMINCOPYOBJ) $(SHGEMMITCOPYOBJ) \
 	$(SHGEMMONCOPYOBJ) $(SHGEMMOTCOPYOBJ)
+endif
 
 SKERNELOBJS	+= \
 	sgemm_kernel$(TSUFFIX).$(SUFFIX) \
@@ -110,7 +112,9 @@ XKERNELOBJS	+= \
 	$(XGEMMINCOPYOBJ) $(XGEMMITCOPYOBJ) \
 	$(XGEMMONCOPYOBJ) $(XGEMMOTCOPYOBJ)
 
+ifeq ($(BUILD_HALF),1)
 SHBLASOBJS      += $(SHKERNELOBJS)
+endif
 SBLASOBJS	+= $(SKERNELOBJS)
 DBLASOBJS	+= $(DKERNELOBJS)
 QBLASOBJS	+= $(QKERNELOBJS)
@@ -118,7 +122,10 @@ CBLASOBJS	+= $(CKERNELOBJS)
 ZBLASOBJS	+= $(ZKERNELOBJS)
 XBLASOBJS	+= $(XKERNELOBJS)
 
+ifeq ($(BUILD_HALF),1)
 SHBLASOBJS += shgemm_beta$(TSUFFIX).$(SUFFIX)
+endif
+
 SBLASOBJS	+= \
 	sgemm_beta$(TSUFFIX).$(SUFFIX) \
 	strmm_kernel_LN$(TSUFFIX).$(SUFFIX) strmm_kernel_LT$(TSUFFIX).$(SUFFIX) \
@@ -408,11 +415,13 @@ ZBLASOBJS += \
 	zimatcopy_k_ctc$(TSUFFIX).$(SUFFIX) zimatcopy_k_rtc$(TSUFFIX).$(SUFFIX) \
 	zgeadd_k$(TSUFFIX).$(SUFFIX) 
 
-
+ifeq ($(BUILD_HALF), 1)
 SHGEMMINCOPYOBJ_P = $(SHGEMMINCOPYOBJ:.$(SUFFIX)=.$(PSUFFIX))
 SHGEMMITCOPYOBJ_P = $(SHGEMMITCOPYOBJ:.$(SUFFIX)=.$(PSUFFIX))
 SHGEMMONCOPYOBJ_P = $(SHGEMMONCOPYOBJ:.$(SUFFIX)=.$(PSUFFIX))
 SHGEMMOTCOPYOBJ_P = $(SHGEMMOTCOPYOBJ:.$(SUFFIX)=.$(PSUFFIX))
+endif
+
 SGEMMINCOPYOBJ_P = $(SGEMMINCOPYOBJ:.$(SUFFIX)=.$(PSUFFIX))
 SGEMMITCOPYOBJ_P = $(SGEMMITCOPYOBJ:.$(SUFFIX)=.$(PSUFFIX))
 SGEMMONCOPYOBJ_P = $(SGEMMONCOPYOBJ:.$(SUFFIX)=.$(PSUFFIX))
@@ -438,8 +447,10 @@ XGEMMITCOPYOBJ_P = $(XGEMMITCOPYOBJ:.$(SUFFIX)=.$(PSUFFIX))
 XGEMMONCOPYOBJ_P = $(XGEMMONCOPYOBJ:.$(SUFFIX)=.$(PSUFFIX))
 XGEMMOTCOPYOBJ_P = $(XGEMMOTCOPYOBJ:.$(SUFFIX)=.$(PSUFFIX))
 
+ifeq ($(BUILD_HALF),1)
 $(KDIR)shgemm_beta$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(SHGEMM_BETA)
 	$(CC) $(CFLAGS) -c -DHALF -UDOUBLE -UCOMPLEX $< -o $@
+endif
 
 $(KDIR)sgemm_beta$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(SGEMM_BETA)
 	$(CC) $(CFLAGS) -c -UDOUBLE -UCOMPLEX $< -o $@
@@ -459,10 +470,14 @@ $(KDIR)zgemm_beta$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(ZGEMM_BETA)
 $(KDIR)xgemm_beta$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(XGEMM_BETA)
 	$(CC) $(CFLAGS) -c -DXDOUBLE -DCOMPLEX $< -o $@
 
+
+ifeq ($(BUILD_HALF), 1)
+
 $(KDIR)$(SHGEMMONCOPYOBJ) : $(KERNELDIR)/$(SHGEMMONCOPY)
 	$(CC) $(CFLAGS) -c -DHALF -UDOUBLE -UCOMPLEX $< -o $@
 
 $(KDIR)$(SHGEMMOTCOPYOBJ) : $(KERNELDIR)/$(SHGEMMOTCOPY)
+
 ifeq ($(OS), AIX)
 	$(CC) $(CFLAGS) -E -DHALF -UDOUBLE -UCOMPLEX $< -o shgemmotcopy.s
 	m4 shgemmotcopy.s > shgemmotcopy_nomacros.s
@@ -487,6 +502,7 @@ else
 	$(CC) $(CFLAGS) -c -DHALF -UDOUBLE -UCOMPLEX $< -o $@
 endif
 
+endif
 endif
 
 $(KDIR)$(SGEMMONCOPYOBJ) : $(KERNELDIR)/$(SGEMMONCOPY)
@@ -646,6 +662,8 @@ else
 	$(CC) $(CFLAGS) -c -UDOUBLE -UCOMPLEX $< -o $@
 endif
 
+ifeq ($(BUILD_HALF), 1)
+
 $(KDIR)shgemm_kernel$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(SHGEMMKERNEL) $(SHGEMMDEPEND)
 ifeq ($(OS), AIX)
 	$(CC) $(CFLAGS) -E -DHALF -UDOUBLE -UCOMPLEX  $< -o shgemm_kernel$(TSUFFIX).s
@@ -654,6 +672,7 @@ ifeq ($(OS), AIX)
 	rm shgemm_kernel$(TSUFFIX).s shgemm_kernel$(TSUFFIX)_nomacros.s
 else
 	$(CC) $(CFLAGS) -c -DHALF -UDOUBLE -UCOMPLEX $< -o $@
+endif
 endif
 
 $(KDIR)dgemm_kernel$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(DGEMMKERNEL) $(DGEMMDEPEND)
@@ -2272,8 +2291,10 @@ $(KDIR)xtrsm_oltncopy$(TSUFFIX).$(SUFFIX) : generic/ztrsm_ltcopy_$(XGEMM_UNROLL_
 $(KDIR)sgemm_beta$(TSUFFIX).$(PSUFFIX) : $(KERNELDIR)/$(SGEMM_BETA)
 	$(CC) $(PFLAGS) -c -UDOUBLE -UCOMPLEX $< -o $@
 
+ifeq ($(BUILD_HALF),1)
 $(KDIR)shgemm_beta$(TSUFFIX).$(PSUFFIX) : $(KERNELDIR)/$(SHGEMM_BETA)
 	$(CC) $(PFLAGS) -c -DHALF -UDOUBLE -UCOMPLEX $< -o $@
+endif
 
 $(KDIR)dgemm_beta$(TSUFFIX).$(PSUFFIX) : $(KERNELDIR)/$(DGEMM_BETA)
 	$(CC) $(PFLAGS) -c -DDOUBLE -UCOMPLEX $< -o $@
@@ -2290,6 +2311,8 @@ $(KDIR)zgemm_beta$(TSUFFIX).$(PSUFFIX) : $(KERNELDIR)/$(ZGEMM_BETA)
 $(KDIR)xgemm_beta$(TSUFFIX).$(PSUFFIX) : $(KERNELDIR)/$(XGEMM_BETA)
 	$(CC) $(PFLAGS) -c -DXDOUBLE -DCOMPLEX $< -o $@
 
+
+ifeq ($(BUILD_HALF), 1)
 $(SHGEMMONCOPYOBJ_P) : $(KERNELDIR)/$(SHGEMMONCOPY)
 	$(CC) $(PFLAGS) -c -DHALF -UDOUBLE -UCOMPLEX $< -o $@
 
@@ -2304,6 +2327,8 @@ $(SHGEMMITCOPYOBJ_P) : $(KERNELDIR)/$(SHGEMMITCOPY)
 	$(CC) $(PFLAGS) -c -DHALF -UDOUBLE -UCOMPLEX $< -o $@
 
 endif
+endif
+
 $(SGEMMONCOPYOBJ_P) : $(KERNELDIR)/$(SGEMMONCOPY)
 	$(CC) $(PFLAGS) -c -UDOUBLE -UCOMPLEX $< -o $@
 
@@ -2408,8 +2433,11 @@ endif
 
 endif
 
+
+ifeq ($(BUILD_HALF), 1)
 $(KDIR)shgemm_kernel$(TSUFFIX).$(PSUFFIX) : $(KERNELDIR)/$(SHGEMMKERNEL) $(SHGEMMDEPEND)
 	$(CC) $(PFLAGS) -c -DHALF -UDOUBLE -UCOMPLEX $< -o $@
+endif
 
 $(KDIR)sgemm_kernel$(TSUFFIX).$(PSUFFIX) : $(KERNELDIR)/$(SGEMMKERNEL) $(SGEMMDEPEND)
 	$(CC) $(PFLAGS) -c -UDOUBLE -UCOMPLEX $< -o $@
