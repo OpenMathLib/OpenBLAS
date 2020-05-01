@@ -199,7 +199,7 @@ static __inline BLASLONG blas_quickdivide(BLASLONG x, BLASLONG y){
 #else
 extern unsigned int blas_quick_divide_table[];
 
-static __inline int blas_quickdivide(unsigned int x, unsigned int y){
+static __inline unsigned int blas_quickdivide(unsigned int x, unsigned int y){
 
   unsigned int result;
 
