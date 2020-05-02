@@ -202,6 +202,7 @@ extern unsigned int blas_quick_divide_table[];
 static __inline unsigned int blas_quickdivide(unsigned int x, unsigned int y){
 
   unsigned int result;
+	unsigned int yy=y;
 
   if (y <= 1) return x;
 
@@ -213,7 +214,7 @@ static __inline unsigned int blas_quickdivide(unsigned int x, unsigned int y){
 #endif
 	
   y = blas_quick_divide_table[y];
-
+fprintf(stderr,"y returned from divide table for %d is %d\n",yy,y);
   __asm__ __volatile__  ("mull %0" :"=d" (result), "+a"(x) : "0" (y));
 fprintf(stderr,"quickdivide returning %d\n",result);
   return result;
