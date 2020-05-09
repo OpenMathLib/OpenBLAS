@@ -855,7 +855,7 @@ ifneq ($(INTERFACE64), 0)
 FCOMMON_OPT += -i8
 endif
 endif
-FCOMMON_OPT += -recursive
+FCOMMON_OPT += -recursive -fp-model strict -assume protect-parens
 ifeq ($(USE_OPENMP), 1)
 FCOMMON_OPT += -fopenmp
 endif
