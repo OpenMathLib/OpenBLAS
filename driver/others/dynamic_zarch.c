@@ -1,12 +1,25 @@
-
 #include "common.h"
+#include <stdbool.h>
 
+// Gate kernels for z13 and z14 on gcc version
+#if (__GNUC__ == 5 && __GNUC_MINOR__ >= 2) || __GNUC__ >= 6 ||           \
+    /* RHEL 7 since 7.3: */                                              \
+    (__GNUC__ == 4 && __GNUC_MINOR__ == 8 && __GNUC_PATCHLEVEL__ == 5 && \
+     __GNUC_RH_RELEASE__ >= 11)
+#define HAVE_Z13_SUPPORT
+#endif
+
+#if __GNUC__ >= 7
+#define HAVE_Z14_SUPPORT
+#endif
+
+extern gotoblas_t gotoblas_ZARCH_GENERIC;
+#ifdef HAVE_Z13_SUPPORT
 extern gotoblas_t gotoblas_Z13;
+#endif
+#ifdef HAVE_Z14_SUPPORT
 extern gotoblas_t gotoblas_Z14;
-//extern gotoblas_t gotoblas_Z15;
-//#if (!defined C_GCC) || (GCC_VERSION >= 60000)
-//extern gotoblas_t gotoblas_Z14;
-//#endif
+#endif
 
 #define NUM_CORETYPES 4
 
@@ -16,18 +29,19 @@ static char* corename[] = {
 	"unknown",
 	"Z13",
 	"Z14",
-//	"Z15",
 	"ZARCH_GENERIC",
 };
 
 char* gotoblas_corename(void) {
+#ifdef HAVE_Z13_SUPPORT
 	if (gotoblas == &gotoblas_Z13)	return corename[1];
+#endif
+#ifdef HAVE_Z14_SUPPORT
 	if (gotoblas == &gotoblas_Z14)	return corename[2];
-//	if (gotoblas == &gotoblas_Z15)	return corename[3];
-//#if (!defined C_GCC) || (GCC_VERSION >= 60000)
-//	if (gotoblas == &gotoblas_POWER9)	return corename[3];
-//#endif
-	return corename[0]; // try generic?
+#endif
+	if (gotoblas == &gotoblas_ZARCH_GENERIC) return corename[3];
+
+	return corename[0];
 }
 
 // __builtin_cpu_is is not supported by zarch
@@ -49,14 +63,21 @@ static gotoblas_t* get_coretype(void) {
 
 	fclose(infile);
 
-	if (strstr(p, "2964")) return &gotoblas_Z13;
-	if (strstr(p, "2965")) return &gotoblas_Z13;
-	if (strstr(p, "3906")) return &gotoblas_Z14;
-	if (strstr(p, "3907")) return &gotoblas_Z14;
-	if (strstr(p, "8561")) return &gotoblas_Z14;        // fallback z15 to z14
-	if (strstr(p, "8562")) return &gotoblas_Z14;        // fallback z15 to z14
+#ifdef HAVE_Z13_SUPPORT
+	if (strstr(p, "2964") || strstr(p, "2965")) return &gotoblas_Z13;
+#endif
 
-	return NULL; // should be ZARCH_GENERIC
+	// Z14 and Z15 systems
+	if (strstr(p, "3906") || strstr(p, "3907") || strstr(p, "8561") ||
+	    strstr(p, "8562"))
+#ifdef HAVE_Z14_SUPPORT
+		return &gotoblas_Z14;
+#else
+		return &gotoblas_Z13;
+#endif
+
+	// unknown system or compiler too old? use generic code for z architecture
+	return &gotoblas_ZARCH_GENERIC;
 }
 
 static gotoblas_t* force_coretype(char* coretype) {
@@ -76,12 +97,13 @@ static gotoblas_t* force_coretype(char* coretype) {
 
 	switch (found)
 	{
+#ifdef HAVE_Z13_SUPPORT
 	case  1: return (&gotoblas_Z13);
+#endif
+#ifdef HAVE_Z14_SUPPORT
 	case  2: return (&gotoblas_Z14);
-//	case  3: return (&gotoblas_Z15);
-//#if (!defined C_GCC) || (GCC_VERSION >= 60000)
-//	case  3: return (&gotoblas_POWER9);
-//#endif
+#endif
+	case  3: return (&gotoblas_ZARCH_GENERIC);
 	default: return NULL;
 	}
 	snprintf(message, 128, "Core not found: %s\n", coretype);
@@ -109,9 +131,9 @@ void gotoblas_dynamic_init(void) {
 
 	if (gotoblas == NULL)
 	{
-		snprintf(coremsg, 128, "Falling back to Z14 core\n");
+		snprintf(coremsg, 128, "Failed to detect system, falling back to generic z support.\n");
 		openblas_warning(1, coremsg);
-		gotoblas = &gotoblas_Z14;
+		gotoblas = &gotoblas_ZARCH_GENERIC;
 	}
 
 	if (gotoblas && gotoblas->init) {
