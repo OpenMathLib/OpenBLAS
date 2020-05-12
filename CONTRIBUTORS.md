@@ -186,3 +186,4 @@ In chronological order:
 
 * Marius Hillenbrand <https://github.com/mhillenibm>
   * [2020-05-12] Revise dynamic architecture detection for IBM z
+  * [2020-05-12] Add new sgemm and strmm kernel for IBM z14
