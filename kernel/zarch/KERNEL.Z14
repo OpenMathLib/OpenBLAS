@@ -92,12 +92,14 @@ CTRMMKERNEL	= ctrmm4x4V.S
 ZTRMMKERNEL	= ztrmm4x4V.S
 
 SGEMMKERNEL    = gemm_vec.c
-SGEMMINCOPY    = ../generic/gemm_ncopy_8.c
-SGEMMITCOPY    = ../generic/gemm_tcopy_8.c
-SGEMMONCOPY    = ../generic/gemm_ncopy_4.c
-SGEMMOTCOPY    = ../generic/gemm_tcopy_4.c
+ifneq ($(SGEMM_UNROLL_M),$(SGEMM_UNROLL_N))
+SGEMMINCOPY    = ../generic/gemm_ncopy_$(SGEMM_UNROLL_M).c
+SGEMMITCOPY    = ../generic/gemm_tcopy_$(SGEMM_UNROLL_M).c
 SGEMMINCOPYOBJ = sgemm_incopy$(TSUFFIX).$(SUFFIX)
 SGEMMITCOPYOBJ = sgemm_itcopy$(TSUFFIX).$(SUFFIX)
+endif
+SGEMMONCOPY    = ../generic/gemm_ncopy_$(SGEMM_UNROLL_N).c
+SGEMMOTCOPY    = ../generic/gemm_tcopy_$(SGEMM_UNROLL_N).c
 SGEMMONCOPYOBJ = sgemm_oncopy$(TSUFFIX).$(SUFFIX)
 SGEMMOTCOPYOBJ = sgemm_otcopy$(TSUFFIX).$(SUFFIX)
 

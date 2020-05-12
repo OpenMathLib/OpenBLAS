@@ -220,6 +220,15 @@ typedef FLOAT vector_float __attribute__ ((vector_size (16)));
 	}
 
 
+#if UNROLL_M == 16
+VECTOR_BLOCK(16, 4)
+VECTOR_BLOCK(16, 2)
+VECTOR_BLOCK(16, 1)
+#endif
+#if UNROLL_N == 8
+VECTOR_BLOCK(8, 8)
+VECTOR_BLOCK(4, 8)
+#endif
 VECTOR_BLOCK(8, 4)
 VECTOR_BLOCK(8, 2)
 VECTOR_BLOCK(8, 1)
@@ -284,6 +293,12 @@ static inline void GEBP_block(BLASLONG m, BLASLONG n,
 		return;                                         \
 	}
 
+#if UNROLL_M == 16
+	BLOCK(16, 4); BLOCK(16, 2); BLOCK(16, 1);
+#endif
+#if UNROLL_N == 8
+	BLOCK(8, 8); BLOCK(4, 8);
+#endif
 	BLOCK(8, 4); BLOCK(8, 2); BLOCK(8, 1);
 	BLOCK(4, 4); BLOCK(4, 2); BLOCK(4, 1);
 
