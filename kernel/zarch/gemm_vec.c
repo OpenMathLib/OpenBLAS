@@ -51,6 +51,29 @@
 static const size_t unroll_m = UNROLL_M;
 static const size_t unroll_n = UNROLL_N;
 
+/* Handling of triangular matrices */
+#ifdef TRMMKERNEL
+static const bool trmm = true;
+static const bool left =
+#ifdef LEFT
+	true;
+#else
+	false;
+#endif
+
+static const bool backwards =
+#if defined(LEFT) != defined(TRANSA)
+	true;
+#else
+	false;
+#endif
+
+#else
+static const bool trmm = false;
+static const bool left = false;
+static const bool backwards = false;
+#endif /* TRMMKERNEL */
+
 /*
  * Background:
  *
@@ -110,6 +133,17 @@ static const size_t unroll_n = UNROLL_N;
  *      accumulate in registers. (use different inner-kernels to exploit
  *      vectorization for varying block sizes)
  *    - add alpha * row block of C_aux back into C_j.
+ *
+ * Note that there are additional mechanics for handling triangular matrices,
+ * calculating B := alpha (A * B) where either of the matrices A or B can be
+ * triangular. In case of A, the macro "LEFT" is defined. In addition, A can
+ * optionally be transposed.
+ * The code effectively skips an "offset" number of columns in A and rows of B
+ * in each block, to save unnecessary work by exploiting the triangular nature.
+ * To handle all cases, the code discerns (1) a "left" mode when A is triangular
+ * and (2) "forward" / "backwards" modes where only the first "offset"
+ * columns/rows of A/B are used or where the first "offset" columns/rows are
+ * skipped, respectively.
  *
  * Reference:
  *
@@ -176,7 +210,11 @@ typedef FLOAT vector_float __attribute__ ((vector_size (16)));
 				vector_float *C_ij =                          \
 				    (vector_float *)(C + i * VLEN_FLOATS +    \
 						     j * ldc);                \
-				*C_ij += alpha * Caux[i][j];                  \
+				if (trmm) {                                   \
+					*C_ij = alpha * Caux[i][j];           \
+				} else {                                      \
+					*C_ij += alpha * Caux[i][j];          \
+				}                                             \
 			}                                                     \
 		}                                                             \
 	}
@@ -209,16 +247,36 @@ VECTOR_BLOCK(2, 2)
  * @param[inout] C	Pointer to current column block (panel) of output matrix C.
  * @param[in]	ldc	Offset between elements in adjacent columns in C.
  * @param[in]	alpha	Scalar factor.
+ * @param[in]	offset  Number of columns of A and rows of B to skip (for triangular matrices).
+ * @param[in]	off	Running offset for handling triangular matrices.
  */
 static inline void GEBP_block(BLASLONG m, BLASLONG n,
 		       BLASLONG first_row,
 		       const FLOAT * restrict A, BLASLONG k,
 		       const FLOAT * restrict B,
 		       FLOAT *restrict C, BLASLONG ldc,
-		       FLOAT alpha)
+		       FLOAT alpha,
+		       BLASLONG offset, BLASLONG off)
 {
+	if (trmm && left)
+		off = offset + first_row;
+
 	A += first_row * k;
 	C += first_row;
+
+	if (trmm) {
+		if (backwards) {
+			A += off * m;
+			B += off * n;
+			k -= off;
+		} else {
+			if (left) {
+				k = off + m;
+			} else {
+				k = off + n;
+			}
+		}
+	}
 
 #define BLOCK(bm, bn)                                           \
 	if (m == bm && n == bn) {                               \
@@ -253,7 +311,11 @@ static inline void GEBP_block(BLASLONG m, BLASLONG n,
 
 	for (BLASLONG i = 0; i < m; i++)
 		for (BLASLONG j = 0; j < n; j++)
-			C[i + j * ldc] += alpha * Caux[i][j];
+			if (trmm) {
+				C[i + j * ldc] = alpha * Caux[i][j];
+			} else {
+				C[i + j * ldc] += alpha * Caux[i][j];
+			}
 }
 
 /**
@@ -268,12 +330,15 @@ static inline void GEBP_block(BLASLONG m, BLASLONG n,
  * @param[inout] C	Pointer to output matrix C (note: all of it).
  * @param[in]	ldc	Offset between elements in adjacent columns in C.
  * @param[in]	alpha	Scalar factor.
+ * @param[in]	offset	Number of columns of A and rows of B to skip (for triangular matrices).
  */
 static inline void GEBP_column_block(BLASLONG num_cols, BLASLONG first_col,
 			const FLOAT *restrict A, BLASLONG bk,
 			const FLOAT *restrict B, BLASLONG bm,
 			FLOAT *restrict C, BLASLONG ldc,
-			FLOAT alpha) {
+			FLOAT alpha,
+			BLASLONG const offset) {
+
 	FLOAT *restrict C_i = C + first_col * ldc;
 	/*
 	 * B is in column-order with n_r packed row elements, which does
@@ -281,6 +346,15 @@ static inline void GEBP_column_block(BLASLONG num_cols, BLASLONG first_col,
 	 * column*pack
 	 */
 	const FLOAT *restrict B_i = B + first_col * bk;
+
+	BLASLONG off = 0;
+	if (trmm) {
+		if (left) {
+			off = offset;
+		} else {
+			off = -offset + first_col;
+		}
+	}
 
 	/*
 	 * Calculate C_aux := A * B_j
@@ -293,13 +367,16 @@ static inline void GEBP_column_block(BLASLONG num_cols, BLASLONG first_col,
 	for (BLASLONG block_size = unroll_m; block_size > 0; block_size /= 2)
 		for (; bm - row >= block_size; row += block_size)
 			GEBP_block(block_size, num_cols, row, A, bk, B_i, C_i,
-				   ldc, alpha);
+				   ldc, alpha, offset, off);
 }
 
 /**
  * Inner kernel for matrix-matrix multiplication. C += alpha (A * B)
  * where C is an m-by-n matrix, A is m-by-k and B is k-by-n. Note that A, B, and
  * C are pointers to submatrices of the actual matrices.
+ *
+ * For triangular matrix multiplication, calculate B := alpha (A * B) where A
+ * or B can be triangular (in case of A, the macro LEFT will be defined).
  *
  * @param[in]	bm	Number of rows in C and A.
  * @param[in]	bn	Number of columns in C and B.
@@ -309,11 +386,16 @@ static inline void GEBP_column_block(BLASLONG num_cols, BLASLONG first_col,
  * @param[in]	bb	Pointer to input matrix B.
  * @param[inout] C	Pointer to output matrix C.
  * @param[in]	ldc	Offset between elements in adjacent columns in C.
+ * @param[in]	offset	Number of columns of A and rows of B to skip (for triangular matrices).
  * @returns 0 on success.
  */
 int CNAME(BLASLONG bm, BLASLONG bn, BLASLONG bk, FLOAT alpha,
 	  FLOAT *restrict ba, FLOAT *restrict bb,
-	  FLOAT *restrict C, BLASLONG ldc)
+	  FLOAT *restrict C, BLASLONG ldc
+#ifdef TRMMKERNEL
+	  , BLASLONG offset
+#endif
+	  )
 {
 	if ( (bm == 0) || (bn == 0) || (bk == 0) || (alpha == ZERO))
 		return 0;
@@ -327,6 +409,14 @@ int CNAME(BLASLONG bm, BLASLONG bn, BLASLONG bk, FLOAT alpha,
 	bb = __builtin_assume_aligned(bb, 16);
 
 	/*
+	 * Use offset and off even when compiled as SGEMMKERNEL to simplify
+	 * function signatures and function calls.
+	 */
+#ifndef TRMMKERNEL
+	BLASLONG const offset = 0;
+#endif
+
+	/*
 	 * Partition B and C into blocks of n_r (unroll_n) columns, called B_i
 	 * and C_i. For each partition, calculate C_i += alpha * (A * B_j).
 	 *
@@ -336,7 +426,7 @@ int CNAME(BLASLONG bm, BLASLONG bn, BLASLONG bk, FLOAT alpha,
 	BLASLONG col = 0;
 	for (BLASLONG block_size = unroll_n; block_size > 0; block_size /= 2)
 		for (; bn - col >= block_size; col += block_size)
-			GEBP_column_block(block_size, col, ba, bk, bb, bm, C, ldc, alpha);
+			GEBP_column_block(block_size, col, ba, bk, bb, bm, C, ldc, alpha, offset);
 
    return 0;
 }
