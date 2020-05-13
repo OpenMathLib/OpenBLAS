@@ -563,8 +563,27 @@ DYNAMIC_CORE += EMAG8180
 endif
 
 ifeq ($(ARCH), zarch)
-DYNAMIC_CORE = Z13
+DYNAMIC_CORE = ZARCH_GENERIC
+
+# Z13 is supported since gcc-5.2, gcc-6, and in RHEL 7.3 and newer
+GCC_GE_52 := $(subst 0,,$(shell expr `$(CC) -dumpversion` \>= "5.2"))
+
+ifeq ($(wildcard /etc/redhat-release), /etc/redhat-release)
+RHEL_WITH_Z13 := $(subst 0,,$(shell source /etc/os-release ; expr $$VERSION_ID \>= "7.3"))
+endif
+
+ifeq ($(or $(GCC_GE_52),$(RHEL_WITH_Z13)), 1)
+DYNAMIC_CORE += Z13
+else
+$(info OpenBLAS: Not building Z13 kernels because gcc is older than 5.2 or 6.x)
+endif
+
+GCC_MAJOR_GE_7 := $(shell expr `$(CC) -dumpversion | cut -f1 -d.` \>= 7)
+ifeq ($(GCC_MAJOR_GE_7), 1)
 DYNAMIC_CORE += Z14
+else
+$(info OpenBLAS: Not building Z14 kernels because gcc is older than 7.x)
+endif
 endif
 
 ifeq ($(ARCH), power)
