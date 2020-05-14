@@ -159,6 +159,32 @@ static const bool backwards = false;
 typedef FLOAT vector_float __attribute__ ((vector_size (16)));
 
 /**
+ * Load a vector into register, and hint on 8-byte alignment to improve
+ * performance. gcc-9 and newer will create these hints by itself. For older
+ * compiler versions, use inline assembly to explicitly express the hint.
+ * Provide explicit hex encoding to cater for binutils versions that do not know
+ * about vector-load with alignment hints yet.
+ *
+ * Note that, for block sizes where we apply vectorization, vectors in A will
+ * always be 8-byte aligned.
+ */
+static inline vector_float vec_load_hinted(FLOAT const *restrict a) {
+	vector_float const *restrict addr = (vector_float const *restrict)a;
+	vector_float y;
+
+#if __GNUC__ < 9
+	// hex-encode vl %[out],%[addr],3
+	asm(".insn vrx,0xe70000003006,%[out],%[addr],3"
+	    : [ out ] "=v"(y)
+	    : [ addr ] "R"(*addr));
+#else
+	y = *addr;
+#endif
+
+	return y;
+}
+
+/**
  * Calculate for a row-block in C_i of size ROWSxCOLS using vector intrinsics.
  *
  * @param[in] 	A	Pointer current block of input matrix A.
@@ -192,9 +218,8 @@ typedef FLOAT vector_float __attribute__ ((vector_size (16)));
 		 */                                                           \
 		for (BLASLONG k = 0; k < bk; k++) {                           \
 			for (BLASLONG i = 0; i < ROWS / VLEN_FLOATS; i++) {   \
-				vector_float Ak =                             \
-				    *(vector_float *)(A + i * VLEN_FLOATS +   \
-						      k * ROWS);              \
+				vector_float Ak = vec_load_hinted(            \
+				    A + i * VLEN_FLOATS + k * ROWS);          \
                                                                               \
 				for (BLASLONG j = 0; j < COLS; j++)           \
 					Caux[i][j] += Ak * B[j + k * COLS];   \
