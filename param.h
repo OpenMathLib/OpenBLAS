@@ -2999,7 +2999,7 @@ is a big desktop or server with abundant cache rather than a phone or embedded d
 #define GEMM_DEFAULT_OFFSET_B 0
 #define GEMM_DEFAULT_ALIGN 0x03fffUL
 
-#define SGEMM_DEFAULT_UNROLL_M  8
+#define SGEMM_DEFAULT_UNROLL_M  16
 #define SGEMM_DEFAULT_UNROLL_N  4
 
 #define DGEMM_DEFAULT_UNROLL_M  8
