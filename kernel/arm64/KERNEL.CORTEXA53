@@ -1,3 +1,5 @@
 include $(KERNELDIR)/KERNEL.ARMV8
 
-
+ifeq ($(SGEMM_UNROLL_M)x$(SGEMM_UNROLL_N), 8x8)
+SGEMMKERNEL    =  sgemm_kernel_8x8_cortexa53.S
+endif
