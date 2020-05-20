@@ -2623,7 +2623,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #define SYMV_P	16
 
-#if defined(CORTEXA53) || defined(CORTEXA57) || \
+#if defined(CORTEXA57) || \
     defined(CORTEXA72) || defined(CORTEXA73) || \
     defined(FALKOR)    || defined(TSV110) || defined(EMAG8180)
 
@@ -2663,6 +2663,35 @@ is a big desktop or server with abundant cache rather than a phone or embedded d
   #define CGEMM_DEFAULT_Q 224
   #define ZGEMM_DEFAULT_Q 112
 #endif
+
+#define SGEMM_DEFAULT_R 4096
+#define DGEMM_DEFAULT_R 4096
+#define CGEMM_DEFAULT_R 4096
+#define ZGEMM_DEFAULT_R 2048
+
+#elif defined(CORTEXA53)
+
+#define SGEMM_DEFAULT_UNROLL_M  8
+#define SGEMM_DEFAULT_UNROLL_N  8
+
+#define DGEMM_DEFAULT_UNROLL_M  8
+#define DGEMM_DEFAULT_UNROLL_N  4
+
+#define CGEMM_DEFAULT_UNROLL_M  8
+#define CGEMM_DEFAULT_UNROLL_N  4
+
+#define ZGEMM_DEFAULT_UNROLL_M  4
+#define ZGEMM_DEFAULT_UNROLL_N  4
+
+#define SGEMM_DEFAULT_P 256
+#define DGEMM_DEFAULT_P 160
+#define CGEMM_DEFAULT_P 128
+#define ZGEMM_DEFAULT_P 128
+
+#define SGEMM_DEFAULT_Q 256
+#define DGEMM_DEFAULT_Q 128
+#define CGEMM_DEFAULT_Q 224
+#define ZGEMM_DEFAULT_Q 112
 
 #define SGEMM_DEFAULT_R 4096
 #define DGEMM_DEFAULT_R 4096
