@@ -203,9 +203,12 @@ static inline vector_float vec_load_hinted(FLOAT const *restrict a) {
 		    "rows in block must be multiples of vector length");      \
 		vector_float Caux[ROWS / VLEN_FLOATS][COLS];                  \
                                                                               \
-		for (BLASLONG i = 0; i < ROWS / VLEN_FLOATS; i++)             \
+		for (BLASLONG i = 0; i < ROWS / VLEN_FLOATS; i++) {           \
+			vector_float A0 =                                     \
+			    vec_load_hinted(A + i * VLEN_FLOATS);             \
 			for (BLASLONG j = 0; j < COLS; j++)                   \
-				Caux[i][j] = vec_splats(ZERO);                \
+				Caux[i][j] = A0 * B[j];                       \
+		}                                                             \
                                                                               \
 		/*                                                            \
 		 * Stream over the row-block of A, which is packed            \
@@ -216,7 +219,7 @@ static inline vector_float vec_load_hinted(FLOAT const *restrict a) {
 		 * That equates to unrolling the loop over rows (in i) and    \
 		 * executing each unrolled iteration as a vector element.     \
 		 */                                                           \
-		for (BLASLONG k = 0; k < bk; k++) {                           \
+		for (BLASLONG k = 1; k < bk; k++) {                           \
 			for (BLASLONG i = 0; i < ROWS / VLEN_FLOATS; i++) {   \
 				vector_float Ak = vec_load_hinted(            \
 				    A + i * VLEN_FLOATS + k * ROWS);          \

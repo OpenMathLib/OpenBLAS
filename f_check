@@ -335,6 +335,7 @@ if ($link ne "") {
 	    && ($flags !~ /advapi32/)
 	    && ($flags !~ /shell32/)
 	    && ($flags !~ /omp/)
+	    && ($flags !~ /[0-9]+/)
 		&& ($flags !~ /^\-l$/)
 	    ) {
 	    $linker_l .= $flags . " ";

@@ -12575,7 +12575,7 @@ lapack_int LAPACKE_zhetrs_aa_2stage_work( int matrix_layout, char uplo, lapack_i
                    
 /* APIs for set/get nancheck flags */
 void LAPACKE_set_nancheck( int flag );
-int LAPACKE_get_nancheck( );
+int LAPACKE_get_nancheck( void );
 
 #ifdef __cplusplus
 }
