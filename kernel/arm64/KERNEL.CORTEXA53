@@ -126,16 +126,9 @@ endif
 SGEMMINCOPYOBJ =  sgemm_incopy$(TSUFFIX).$(SUFFIX)
 SGEMMITCOPYOBJ =  sgemm_itcopy$(TSUFFIX).$(SUFFIX)
 endif
-ifeq ($(SGEMM_UNROLL_N), 16)
+
 SGEMMOTCOPY    =  sgemm_tcopy_$(SGEMM_UNROLL_N).S
-else
-SGEMMOTCOPY    =  ../generic/gemm_tcopy_$(SGEMM_UNROLL_N).c
-endif
-ifeq ($(SGEMM_UNROLL_N), 4)
 SGEMMONCOPY    =  sgemm_ncopy_$(SGEMM_UNROLL_N).S
-else
-SGEMMONCOPY    =  ../generic/gemm_ncopy_$(SGEMM_UNROLL_N).c
-endif
 SGEMMONCOPYOBJ =  sgemm_oncopy$(TSUFFIX).$(SUFFIX)
 SGEMMOTCOPYOBJ =  sgemm_otcopy$(TSUFFIX).$(SUFFIX)
 
