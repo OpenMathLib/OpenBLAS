@@ -24,9 +24,6 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
 USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 **********************************************************************************/
-#if defined(__apple_build_version__) && __clang_major__ == 11 && __clang_minor__ == 0 && __clang_patchlevel__ == 3
-#pragma clang optimize off
-#endif
 
 
 /* comment below left for history, data does not represent the implementation in this file */
