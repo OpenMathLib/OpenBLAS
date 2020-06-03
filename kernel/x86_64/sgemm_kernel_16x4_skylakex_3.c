@@ -1,3 +1,8 @@
+#if defined(__apple_build_version__) && __clang_major__ == 11 && __clang_minor__ == 0 && __clang_patchlevel__ == 3
+#pragma clang optimize off
+#endif
+
+
 /* %0 = "+r"(a_pointer), %1 = "+r"(b_pointer), %2 = "+r"(c_pointer), %3 = "+r"(ldc_in_bytes), %4 for k_count, %5 for c_store */
 /* r10 to assist prefetch, r12 = k << 4(const), r13 = k(const), r14 = b_head_pos(const), r15 = %1 + 3r12 */
 
