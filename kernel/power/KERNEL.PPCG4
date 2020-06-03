@@ -20,8 +20,10 @@ ZAXPYKERNEL	= zaxpy_ppc440.S
 
 SDOTKERNEL	=  dot_ppc440.S
 DDOTKERNEL	=  dot_ppc440.S
-CDOTKERNEL	= zdot_ppc440.S
-ZDOTKERNEL	= zdot_ppc440.S
+#CDOTKERNEL	= zdot_ppc440.S
+#ZDOTKERNEL	= zdot_ppc440.S
+CDOTKERNEL	= ../arm/zdot.c
+ZDOTKERNEL	= ../arm/zdot.c
 
 ISAMAXKERNEL	=  iamax_ppc440.S
 IDAMAXKERNEL	=  iamax_ppc440.S
@@ -52,8 +54,11 @@ ZNRM2KERNEL	= znrm2_ppc440.S
 
 SROTKERNEL	=  rot_ppc440.S
 DROTKERNEL	=  rot_ppc440.S
-CROTKERNEL	= zrot_ppc440.S
-ZROTKERNEL	= zrot_ppc440.S
+#CROTKERNEL	= zrot_ppc440.S
+#ZROTKERNEL	= zrot_ppc440.S
+CROTKERNEL	= ../arm/zrot.c
+ZROTKERNEL	= ../arm/zrot.c
+
 
 SSCALKERNEL	=  scal_ppc440.S
 DSCALKERNEL	=  scal_ppc440.S
@@ -78,13 +83,18 @@ DGEMMINCOPYOBJ =
 DGEMMITCOPYOBJ =
 DGEMMONCOPYOBJ =  dgemm_oncopy$(TSUFFIX).$(SUFFIX)
 DGEMMOTCOPYOBJ =  dgemm_otcopy$(TSUFFIX).$(SUFFIX)
-CGEMMKERNEL    =  zgemm_kernel_altivec_g4.S
-CGEMMINCOPY    =  ../generic/zgemm_ncopy_8.c
-CGEMMITCOPY    =  ../generic/zgemm_tcopy_8.c
+#CGEMMKERNEL    =  zgemm_kernel_altivec_g4.S
+#CGEMMINCOPY    =  ../generic/zgemm_ncopy_8.c
+#CGEMMITCOPY    =  ../generic/zgemm_tcopy_8.c
+CGEMMKERNEL    =  zgemm_kernel.S
+CGEMMINCOPY    =
+CGEMMONCOPY    =
 CGEMMONCOPY    =  ../generic/zgemm_ncopy_2.c
 CGEMMOTCOPY    =  ../generic/zgemm_tcopy_2.c
-CGEMMINCOPYOBJ =  cgemm_incopy$(TSUFFIX).$(SUFFIX)
-CGEMMITCOPYOBJ =  cgemm_itcopy$(TSUFFIX).$(SUFFIX)
+CGEMMINCOPYOBJ =  
+#cgemm_incopy$(TSUFFIX).$(SUFFIX)
+CGEMMITCOPYOBJ =  
+#cgemm_itcopy$(TSUFFIX).$(SUFFIX)
 CGEMMONCOPYOBJ =  cgemm_oncopy$(TSUFFIX).$(SUFFIX)
 CGEMMOTCOPYOBJ =  cgemm_otcopy$(TSUFFIX).$(SUFFIX)
 ZGEMMKERNEL    =  zgemm_kernel_g4.S
