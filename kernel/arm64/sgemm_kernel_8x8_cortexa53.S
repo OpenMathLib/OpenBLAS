@@ -57,6 +57,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define alpha3		s15
 #define alphaV3		v15.s[0]
 
+#define A_PRE_SIZE	640
+#define B_PRE_SIZE	224
+#define C_PRE_SIZE	96
+
 // 00 origM
 // 01 origN
 // 02 origK
@@ -147,13 +151,13 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .endm
 
 .macro KERNEL8x8_I
-	ld1	{v0.4s, v1.4s}, [pA], #32
-	ld1	{v4.4s, v5.4s}, [pB], #32
+	ldp	q0, q1, [pA], #32
+	ldp	q4, q5, [pB], #32
+
 	ldr	d2, [pA], #8
 	ldr	d6, [pB], #8
 	ldr	d3, [pA, #8]
 	ldr	d7, [pB, #8]
-
 	ldr	x22, [pA], #16
 	fmul	v16.4s, v0.4s, v4.s[0]
 	ldr	x26, [pB], #16
@@ -163,7 +167,9 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	ldr	x27, [pB], #8
 	fmul	v19.4s, v1.4s, v4.s[1]
 	fmul	v20.4s, v0.4s, v4.s[2]
+	prfm	PLDL1KEEP, [pA, #A_PRE_SIZE]
 	fmul	v21.4s, v1.4s, v4.s[2]
+	prfm	PLDL1KEEP, [pB, #B_PRE_SIZE]
 	fmul	v22.4s, v0.4s, v4.s[3]
 	fmul	v23.4s, v1.4s, v4.s[3]
 	fmul	v24.4s, v0.4s, v5.s[0]
@@ -194,7 +200,9 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	fmla	v19.4s, v1.4s, v4.s[1]
 	ldr	x27, [pB], #8
 	fmla	v20.4s, v0.4s, v4.s[2]
+	prfm	PLDL1KEEP, [pA, #A_PRE_SIZE]
 	fmla	v21.4s, v1.4s, v4.s[2]
+	prfm	PLDL1KEEP, [pB, #B_PRE_SIZE]
 	fmla	v22.4s, v0.4s, v4.s[3]
 	fmla	v23.4s, v1.4s, v4.s[3]
 	fmla	v24.4s, v0.4s, v5.s[0]
@@ -225,7 +233,9 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	fmla	v19.4s, v3.4s, v6.s[1]
 	ldr	x25, [pB], #8
 	fmla	v20.4s, v2.4s, v6.s[2]
+	prfm	PLDL1KEEP, [pA, #A_PRE_SIZE]
 	fmla	v21.4s, v3.4s, v6.s[2]
+	prfm	PLDL1KEEP, [pB, #B_PRE_SIZE]
 	fmla	v22.4s, v2.4s, v6.s[3]
 	fmla	v23.4s, v3.4s, v6.s[3]
 	fmla	v24.4s, v2.4s, v7.s[0]
@@ -248,7 +258,9 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	fmla	v18.4s, v2.4s, v6.s[1]
 	fmla	v19.4s, v3.4s, v6.s[1]
 	fmla	v20.4s, v2.4s, v6.s[2]
+	prfm	PLDL1KEEP, [pA, #A_PRE_SIZE]
 	fmla	v21.4s, v3.4s, v6.s[2]
+	prfm	PLDL1KEEP, [pB, #B_PRE_SIZE]
 	fmla	v22.4s, v2.4s, v6.s[3]
 	fmla	v23.4s, v3.4s, v6.s[3]
 	fmla	v24.4s, v2.4s, v7.s[0]
@@ -262,21 +274,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .endm
 
 .macro KERNEL8x8_SUB
-	ld1	{v4.4s}, [pB]
-	add	pB, pB, #16
-	ld1	{v5.4s}, [pB]
-	add	pB, pB, #16
-	ld1	{v0.4s}, [pA]
-	add	pA, pA, #16
-	ld1	{v1.4s}, [pA]
-	add	pA, pA, #16
+	ldp	q0, q1, [pA], #32
+	ldp	q4, q5, [pB], #32
 
 	fmla	v16.4s, v0.4s, v4.s[0]
 	fmla	v17.4s, v1.4s, v4.s[0]
 	fmla	v18.4s, v0.4s, v4.s[1]
 	fmla	v19.4s, v1.4s, v4.s[1]
 	fmla	v20.4s, v0.4s, v4.s[2]
+	prfm	PLDL1KEEP, [pA, #A_PRE_SIZE]
 	fmla	v21.4s, v1.4s, v4.s[2]
+	prfm	PLDL1KEEP, [pB, #B_PRE_SIZE]
 	fmla	v22.4s, v0.4s, v4.s[3]
 	fmla	v23.4s, v1.4s, v4.s[3]
 	fmla	v24.4s, v0.4s, v5.s[0]
@@ -290,65 +298,73 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .endm
 
 .macro SAVE8x8
+	prfm	PLDL2KEEP, [pCRow0, #C_PRE_SIZE]
 	add	pCRow1, pCRow0, LDC
 
-	ld1	{v0.4s, v1.4s}, [pCRow0]
+	ldp	q0, q1, [pCRow0]
 	fmla	v0.4s, v16.4s, alphaV0
 	fmla	v1.4s, v17.4s, alphaV1
-	st1 	{v0.4s, v1.4s}, [pCRow0]
+	stp	q0, q1, [pCRow0]
 
+	prfm	PLDL2KEEP, [pCRow1, #C_PRE_SIZE]
 	add	pCRow2, pCRow1, LDC
 
-	ld1	{v2.4s, v3.4s}, [pCRow1]
+	ldp	q2, q3, [pCRow1]
 	fmla	v2.4s, v18.4s, alphaV2
 	fmla	v3.4s, v19.4s, alphaV3
-	st1 	{v2.4s, v3.4s}, [pCRow1]
+	stp	q2, q3, [pCRow1]
 
+	prfm	PLDL2KEEP, [pCRow2, #C_PRE_SIZE]
 	add	pCRow1, pCRow2, LDC
 
-	ld1	{v4.4s, v5.4s}, [pCRow2]
+	ldp	q4, q5, [pCRow2]
 	fmla	v4.4s, v20.4s, alphaV0
 	fmla	v5.4s, v21.4s, alphaV1
-	st1 	{v4.4s, v5.4s}, [pCRow2]
+	stp	q4, q5, [pCRow2]
 
+	prfm	PLDL2KEEP, [pCRow1, #C_PRE_SIZE]
 	add	pCRow2, pCRow1, LDC
 
-	ld1	{v6.4s, v7.4s}, [pCRow1]
+	ldp	q6, q7, [pCRow1]
 	fmla	v6.4s, v22.4s, alphaV2
 	fmla	v7.4s, v23.4s, alphaV3
-	st1 	{v6.4s, v7.4s}, [pCRow1]
+	stp	q6, q7, [pCRow1]
 
+	prfm	PLDL2KEEP, [pCRow2, #C_PRE_SIZE]
 	add	pCRow1, pCRow2, LDC
 
-	ld1	{v0.4s, v1.4s}, [pCRow2]
+	ldp	q0, q1, [pCRow2]
 	fmla	v0.4s, v24.4s, alphaV0
 	fmla	v1.4s, v25.4s, alphaV1
-	st1 	{v0.4s, v1.4s}, [pCRow2]
+	stp	q0, q1, [pCRow2]
 
+	prfm	PLDL2KEEP, [pCRow1, #C_PRE_SIZE]
 	add	pCRow2, pCRow1, LDC
 
-	ld1	{v2.4s, v3.4s}, [pCRow1]
+	ldp	q2, q3, [pCRow1]
 	fmla	v2.4s, v26.4s, alphaV2
 	fmla	v3.4s, v27.4s, alphaV3
-	st1 	{v2.4s, v3.4s}, [pCRow1]
+	stp	q2, q3, [pCRow1]
 
+	prfm	PLDL2KEEP, [pCRow2, #C_PRE_SIZE]
 	add	pCRow1, pCRow2, LDC
 
-	ld1	{v4.4s, v5.4s}, [pCRow2]
+	ldp	q4, q5, [pCRow2]
 	fmla	v4.4s, v28.4s, alphaV0
 	fmla	v5.4s, v29.4s, alphaV1
-	st1 	{v4.4s, v5.4s}, [pCRow2]
+	stp	q4, q5, [pCRow2]
 
-	ld1	{v6.4s, v7.4s}, [pCRow1]
+	prfm	PLDL2KEEP, [pCRow1, #C_PRE_SIZE]
+
+	ldp	q6, q7, [pCRow1]
 	fmla	v6.4s, v30.4s, alphaV2
 	fmla	v7.4s, v31.4s, alphaV3
-	st1 	{v6.4s, v7.4s}, [pCRow1]
+	stp	q6, q7, [pCRow1]
 
 	add	pCRow0, pCRow0, #32
 .endm
 
 /******************************************************************************/
-
 
 .macro INIT4x8
 	fmov		s16, wzr
@@ -362,19 +378,20 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .endm
 
 .macro KERNEL4x8_I
-	ld1	{v0.4s}, [pA], #16
-	ld1	{v4.4s, v5.4s}, [pB], #32
+	ldr	q0, [pA], #16
+	ldp	q4, q5, [pB], #32
 
 	ldr	d2, [pA], #8
 	ldr	d6, [pB], #8
 	ldr	d7, [pB, #8]
-	ldr	x21, [pA], #8
+	ldr	x22, [pA], #8
 	fmul	v16.4s, v0.4s, v4.s[0]
 	ldr	x26, [pB], #16
 	fmul	v18.4s, v0.4s, v4.s[1]
 	ldr	x27, [pB], #8
 	fmul	v20.4s, v0.4s, v4.s[2]
 	fmul	v22.4s, v0.4s, v4.s[3]
+	prfm	PLDL1KEEP, [pB, #B_PRE_SIZE]
 	fmul	v24.4s, v0.4s, v5.s[0]
 	fmul	v26.4s, v0.4s, v5.s[1]
 	fmul	v28.4s, v0.4s, v5.s[2]
@@ -388,13 +405,14 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	fmov	v4.d[1], x24
 	ldr	d7, [pB, #8]
 	fmov	v5.d[1], x25
+	ldr	x22, [pA], #8
 	fmla	v16.4s, v0.4s, v4.s[0]
-	ldr	x21, [pA], #8
-	fmla	v18.4s, v0.4s, v4.s[1]
 	ldr	x26, [pB], #16
-	fmla	v20.4s, v0.4s, v4.s[2]
+	fmla	v18.4s, v0.4s, v4.s[1]
 	ldr	x27, [pB], #8
+	fmla	v20.4s, v0.4s, v4.s[2]
 	fmla	v22.4s, v0.4s, v4.s[3]
+	prfm	PLDL1KEEP, [pB, #B_PRE_SIZE]
 	fmla	v24.4s, v0.4s, v5.s[0]
 	fmla	v26.4s, v0.4s, v5.s[1]
 	fmla	v28.4s, v0.4s, v5.s[2]
@@ -403,18 +421,19 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .macro KERNEL4x8_M2
 	ldr	d0, [pA], #8
-	fmov	v2.d[1], x21
+	fmov	v2.d[1], x22
 	ldr	d4, [pB], #8
 	fmov	v6.d[1], x26
 	ldr	d5, [pB, #8]
 	fmov	v7.d[1], x27
-	fmla	v16.4s, v2.4s, v6.s[0]
 	ldr	x20, [pA], #8
-	fmla	v18.4s, v2.4s, v6.s[1]
+	fmla	v16.4s, v2.4s, v6.s[0]
 	ldr	x24, [pB], #16
-	fmla	v20.4s, v2.4s, v6.s[2]
+	fmla	v18.4s, v2.4s, v6.s[1]
 	ldr	x25, [pB], #8
+	fmla	v20.4s, v2.4s, v6.s[2]
 	fmla	v22.4s, v2.4s, v6.s[3]
+	prfm	PLDL1KEEP, [pB, #B_PRE_SIZE]
 	fmla	v24.4s, v2.4s, v7.s[0]
 	fmla	v26.4s, v2.4s, v7.s[1]
 	fmla	v28.4s, v2.4s, v7.s[2]
@@ -422,13 +441,14 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .endm
 
 .macro KERNEL4x8_E
-	fmov	v2.d[1], x21
+	fmov	v2.d[1], x22
 	fmov	v6.d[1], x26
 	fmov	v7.d[1], x27
 	fmla	v16.4s, v2.4s, v6.s[0]
 	fmla	v18.4s, v2.4s, v6.s[1]
 	fmla	v20.4s, v2.4s, v6.s[2]
 	fmla	v22.4s, v2.4s, v6.s[3]
+	prfm	PLDL1KEEP, [pB, #B_PRE_SIZE]
 	fmla	v24.4s, v2.4s, v7.s[0]
 	fmla	v26.4s, v2.4s, v7.s[1]
 	fmla	v28.4s, v2.4s, v7.s[2]
@@ -436,17 +456,14 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .endm
 
 .macro KERNEL4x8_SUB
-	ld1	{v4.4s}, [pB]
-	add	pB, pB, #16
-	ld1	{v5.4s}, [pB]
-	add	pB, pB, #16
-	ld1	{v0.4s}, [pA]
-	add	pA, pA, #16
+	ldr	q0, [pA], #16
+	ldp	q4, q5, [pB], #32
 
 	fmla	v16.4s, v0.4s, v4.s[0]
 	fmla	v18.4s, v0.4s, v4.s[1]
 	fmla	v20.4s, v0.4s, v4.s[2]
 	fmla	v22.4s, v0.4s, v4.s[3]
+	prfm	PLDL1KEEP, [pB, #B_PRE_SIZE]
 	fmla	v24.4s, v0.4s, v5.s[0]
 	fmla	v26.4s, v0.4s, v5.s[1]
 	fmla	v28.4s, v0.4s, v5.s[2]
@@ -456,49 +473,49 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .macro SAVE4x8
 	add	pCRow1, pCRow0, LDC
 
-	ld1	{v0.4s}, [pCRow0]
+	ldr	q0, [pCRow0]
 	fmla	v0.4s, v16.4s, alphaV0
-	st1 	{v0.4s}, [pCRow0]
+	str	q0, [pCRow0]
 
 	add	pCRow2, pCRow1, LDC
 
-	ld1	{v2.4s}, [pCRow1]
+	ldr	q2, [pCRow1]
 	fmla	v2.4s, v18.4s, alphaV2
-	st1 	{v2.4s}, [pCRow1]
+	str	q2, [pCRow1]
 
 	add	pCRow1, pCRow2, LDC
 
-	ld1	{v4.4s}, [pCRow2]
+	ldr	q4, [pCRow2]
 	fmla	v4.4s, v20.4s, alphaV0
-	st1 	{v4.4s}, [pCRow2]
+	str	q4, [pCRow2]
 
 	add	pCRow2, pCRow1, LDC
 
-	ld1	{v6.4s}, [pCRow1]
+	ldr	q6, [pCRow1]
 	fmla	v6.4s, v22.4s, alphaV2
-	st1 	{v6.4s}, [pCRow1]
+	str	q6, [pCRow1]
 
 	add	pCRow1, pCRow2, LDC
 
-	ld1	{v0.4s}, [pCRow2]
+	ldr	q0, [pCRow2]
 	fmla	v0.4s, v24.4s, alphaV0
-	st1 	{v0.4s}, [pCRow2]
+	str	q0, [pCRow2]
 
 	add	pCRow2, pCRow1, LDC
 
-	ld1	{v2.4s}, [pCRow1]
+	ldr	q2, [pCRow1]
 	fmla	v2.4s, v26.4s, alphaV2
-	st1 	{v2.4s}, [pCRow1]
+	str	q2, [pCRow1]
 
 	add	pCRow1, pCRow2, LDC
 
-	ld1	{v4.4s}, [pCRow2]
+	ldr	q4, [pCRow2]
 	fmla	v4.4s, v28.4s, alphaV0
-	st1 	{v4.4s}, [pCRow2]
+	str	q4, [pCRow2]
 
-	ld1	{v6.4s}, [pCRow1]
+	ldr	q6, [pCRow1]
 	fmla	v6.4s, v30.4s, alphaV2
-	st1 	{v6.4s}, [pCRow1]
+	str	q6, [pCRow1]
 
 	add	pCRow0, pCRow0, #16
 .endm
@@ -517,17 +534,14 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .endm
 
 .macro KERNEL2x8_SUB
-	ld1	{v4.4s}, [pB]
-	add	pB, pB, #16
-	ld1	{v5.4s}, [pB]
-	add	pB, pB, #16
-	ld1	{v0.2s}, [pA]
-	add	pA, pA, #8
+	ldr	d0, [pA], #8
+	ldp	q4, q5, [pB], #32
 
 	fmla	v16.2s, v0.2s, v4.s[0]
 	fmla	v18.2s, v0.2s, v4.s[1]
 	fmla	v20.2s, v0.2s, v4.s[2]
 	fmla	v22.2s, v0.2s, v4.s[3]
+	prfm	PLDL1KEEP, [pB, #B_PRE_SIZE]
 	fmla	v24.2s, v0.2s, v5.s[0]
 	fmla	v26.2s, v0.2s, v5.s[1]
 	fmla	v28.2s, v0.2s, v5.s[2]
@@ -537,49 +551,49 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .macro SAVE2x8
 	add	pCRow1, pCRow0, LDC
 
-	ld1	{v0.2s}, [pCRow0]
+	ldr	d0, [pCRow0]
 	fmla	v0.2s, v16.2s, alphaV0
-	st1 	{v0.2s}, [pCRow0]
+	str	d0, [pCRow0]
 
 	add	pCRow2, pCRow1, LDC
 
-	ld1	{v2.2s}, [pCRow1]
+	ldr	d2, [pCRow1]
 	fmla	v2.2s, v18.2s, alphaV2
-	st1 	{v2.2s}, [pCRow1]
+	str	d2, [pCRow1]
 
 	add	pCRow1, pCRow2, LDC
 
-	ld1	{v4.2s}, [pCRow2]
+	ldr	d4, [pCRow2]
 	fmla	v4.2s, v20.2s, alphaV0
-	st1 	{v4.2s}, [pCRow2]
+	str	d4, [pCRow2]
 
 	add	pCRow2, pCRow1, LDC
 
-	ld1	{v6.2s}, [pCRow1]
+	ldr	d6, [pCRow1]
 	fmla	v6.2s, v22.2s, alphaV2
-	st1 	{v6.2s}, [pCRow1]
+	str	d6, [pCRow1]
 
 	add	pCRow1, pCRow2, LDC
 
-	ld1	{v0.2s}, [pCRow2]
+	ldr	d0, [pCRow2]
 	fmla	v0.2s, v24.2s, alphaV0
-	st1 	{v0.2s}, [pCRow2]
+	str	d0, [pCRow2]
 
 	add	pCRow2, pCRow1, LDC
 
-	ld1	{v2.2s}, [pCRow1]
+	ldr	d2, [pCRow1]
 	fmla	v2.2s, v26.2s, alphaV2
-	st1 	{v2.2s}, [pCRow1]
+	str	d2, [pCRow1]
 
 	add	pCRow1, pCRow2, LDC
 
-	ld1	{v4.2s}, [pCRow2]
+	ldr	d4, [pCRow2]
 	fmla	v4.2s, v28.2s, alphaV0
-	st1 	{v4.2s}, [pCRow2]
+	str	d4, [pCRow2]
 
-	ld1	{v6.2s}, [pCRow1]
+	ldr	d6, [pCRow1]
 	fmla	v6.2s, v30.2s, alphaV2
-	st1 	{v6.2s}, [pCRow1]
+	str	d6, [pCRow1]
 
 	add	pCRow0, pCRow0, #8
 .endm
@@ -598,17 +612,14 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .endm
 
 .macro KERNEL1x8_SUB
-	ld1	{v4.4s}, [pB]
-	add	pB, pB, #16
-	ld1	{v5.4s}, [pB]
-	add	pB, pB, #16
-	ldr	s0, [pA]
-	add	pA, pA, #4
+	ldp	q4, q5, [pB], #32
+	ldr	s0, [pA], #4
 
 	fmla	s16, s0, v4.s[0]
 	fmla	s18, s0, v4.s[1]
 	fmla	s20, s0, v4.s[2]
 	fmla	s22, s0, v4.s[3]
+	prfm	PLDL1KEEP, [pB, #B_PRE_SIZE]
 	fmla	s24, s0, v5.s[0]
 	fmla	s26, s0, v5.s[1]
 	fmla	s28, s0, v5.s[2]
@@ -620,47 +631,47 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	ldr	s0, [pCRow0]
 	fmla	s0, s16, alphaV0
-	str 	s0, [pCRow0]
+	str	s0, [pCRow0]
 
 	add	pCRow2, pCRow1, LDC
 
 	ldr	s2, [pCRow1]
 	fmla	s2, s18, alphaV2
-	str 	s2, [pCRow1]
+	str	s2, [pCRow1]
 
 	add	pCRow1, pCRow2, LDC
 
 	ldr	s4, [pCRow2]
 	fmla	s4, s20, alphaV0
-	str 	s4, [pCRow2]
+	str	s4, [pCRow2]
 
 	add	pCRow2, pCRow1, LDC
 
 	ldr	s6, [pCRow1]
 	fmla	s6, s22, alphaV2
-	str 	s6, [pCRow1]
+	str	s6, [pCRow1]
 
 	add	pCRow1, pCRow2, LDC
 
 	ldr	s0, [pCRow2]
 	fmla	s0, s24, alphaV0
-	str 	s0, [pCRow2]
+	str	s0, [pCRow2]
 
 	add	pCRow2, pCRow1, LDC
 
 	ldr	s2, [pCRow1]
 	fmla	s2, s26, alphaV2
-	str 	s2, [pCRow1]
+	str	s2, [pCRow1]
 
 	add	pCRow1, pCRow2, LDC
 
 	ldr	s4, [pCRow2]
 	fmla	s4, s28, alphaV0
-	str 	s4, [pCRow2]
+	str	s4, [pCRow2]
 
 	ldr	s6, [pCRow1]
 	fmla	s6, s30, alphaV2
-	str 	s6, [pCRow1]
+	str	s6, [pCRow1]
 
 	add	pCRow0, pCRow0, #4
 .endm
@@ -679,118 +690,137 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .endm
 
 .macro KERNEL8x4_I
-	ld1	{v8.4s}, [pB], #16
-	ld1	{v0.4s, v1.4s}, [pA], #32
+	ldp	q0, q1, [pA], #32
+	ldr	q4, [pB], #16
 
-	ldr	d9, [pB], #8
 	ldr	d2, [pA], #8
+	ldr	d6, [pB], #8
 	ldr	d3, [pA, #8]
-	fmul	v16.4s, v0.4s, v8.s[0]
-	ldr	x25, [pB], #8
-	fmul	v17.4s, v1.4s, v8.s[0]
+	fmul	v16.4s, v0.4s, v4.s[0]
 	ldr	x22, [pA], #16
-	fmul	v20.4s, v0.4s, v8.s[1]
+	fmul	v17.4s, v1.4s, v4.s[0]
+	ldr	x26, [pB], #8
+	fmul	v18.4s, v0.4s, v4.s[1]
 	ldr	x23, [pA], #8
-	fmul	v21.4s, v1.4s, v8.s[1]
-	fmul	v24.4s, v0.4s, v8.s[2]
-	fmul	v25.4s, v1.4s, v8.s[2]
-	fmul	v28.4s, v0.4s, v8.s[3]
-	fmul	v29.4s, v1.4s, v8.s[3]
+	fmul	v19.4s, v1.4s, v4.s[1]
+	prfm	PLDL1KEEP, [pA, #A_PRE_SIZE]
+	fmul	v20.4s, v0.4s, v4.s[2]
+	fmul	v21.4s, v1.4s, v4.s[2]
+	fmul	v22.4s, v0.4s, v4.s[3]
+	fmul	v23.4s, v1.4s, v4.s[3]
 .endm
 
 .macro KERNEL8x4_M1
-	ldr	d9, [pB], #8
-	fmov	v8.d[1], x24
 	ldr	d2, [pA], #8
 	fmov	v0.d[1], x20
+	ldr	d6, [pB], #8
+	fmov	v4.d[1], x24
 	ldr	d3, [pA, #8]
 	fmov	v1.d[1], x21
-	fmla	v16.4s, v0.4s, v8.s[0]
-	ldr	x25, [pB], #8
-	fmla	v17.4s, v1.4s, v8.s[0]
 	ldr	x22, [pA], #16
-	fmla	v20.4s, v0.4s, v8.s[1]
+	fmla	v16.4s, v0.4s, v4.s[0]
+	ldr	x26, [pB], #8
+	fmla	v17.4s, v1.4s, v4.s[0]
 	ldr	x23, [pA], #8
-	fmla	v21.4s, v1.4s, v8.s[1]
-	fmla	v24.4s, v0.4s, v8.s[2]
-	fmla	v25.4s, v1.4s, v8.s[2]
-	fmla	v28.4s, v0.4s, v8.s[3]
-	fmla	v29.4s, v1.4s, v8.s[3]
+	fmla	v18.4s, v0.4s, v4.s[1]
+	prfm	PLDL1KEEP, [pA, #A_PRE_SIZE]
+	fmla	v19.4s, v1.4s, v4.s[1]
+	fmla	v20.4s, v0.4s, v4.s[2]
+	fmla	v21.4s, v1.4s, v4.s[2]
+	fmla	v22.4s, v0.4s, v4.s[3]
+	fmla	v23.4s, v1.4s, v4.s[3]
 .endm
 
 .macro KERNEL8x4_M2
-	ldr	d8, [pB], #8
-	fmov	v9.d[1], x25
 	ldr	d0, [pA], #8
 	fmov	v2.d[1], x22
+	ldr	d4, [pB], #8
+	fmov	v6.d[1], x26
 	ldr	d1, [pA, #8]
 	fmov	v3.d[1], x23
-	fmla	v16.4s, v2.4s, v9.s[0]
-	ldr	x24, [pB], #8
-	fmla	v17.4s, v3.4s, v9.s[0]
 	ldr	x20, [pA], #16
-	fmla	v20.4s, v2.4s, v9.s[1]
+	fmla	v16.4s, v2.4s, v6.s[0]
+	ldr	x24, [pB], #8
+	fmla	v17.4s, v3.4s, v6.s[0]
 	ldr	x21, [pA], #8
-	fmla	v21.4s, v3.4s, v9.s[1]
-	fmla	v24.4s, v2.4s, v9.s[2]
-	fmla	v25.4s, v3.4s, v9.s[2]
-	fmla	v28.4s, v2.4s, v9.s[3]
-	fmla	v29.4s, v3.4s, v9.s[3]
+	fmla	v18.4s, v2.4s, v6.s[1]
+	prfm	PLDL1KEEP, [pA, #A_PRE_SIZE]
+	fmla	v19.4s, v3.4s, v6.s[1]
+	fmla	v20.4s, v2.4s, v6.s[2]
+	fmla	v21.4s, v3.4s, v6.s[2]
+	fmla	v22.4s, v2.4s, v6.s[3]
+	fmla	v23.4s, v3.4s, v6.s[3]
 .endm
 
 .macro KERNEL8x4_E
-	fmov	v9.d[1], x25
 	fmov	v2.d[1], x22
+	fmov	v6.d[1], x26
 	fmov	v3.d[1], x23
-	fmla	v16.4s, v2.4s, v9.s[0]
-	fmla	v17.4s, v3.4s, v9.s[0]
-	fmla	v20.4s, v2.4s, v9.s[1]
-	fmla	v21.4s, v3.4s, v9.s[1]
-	fmla	v24.4s, v2.4s, v9.s[2]
-	fmla	v25.4s, v3.4s, v9.s[2]
-	fmla	v28.4s, v2.4s, v9.s[3]
-	fmla	v29.4s, v3.4s, v9.s[3]
+	fmla	v16.4s, v2.4s, v6.s[0]
+	prfm	PLDL1KEEP, [pA, #A_PRE_SIZE]
+	fmla	v17.4s, v3.4s, v6.s[0]
+	fmla	v18.4s, v2.4s, v6.s[1]
+	fmla	v19.4s, v3.4s, v6.s[1]
+	fmla	v20.4s, v2.4s, v6.s[2]
+	fmla	v21.4s, v3.4s, v6.s[2]
+	fmla	v22.4s, v2.4s, v6.s[3]
+	fmla	v23.4s, v3.4s, v6.s[3]
+	fmla	v24.4s, v2.4s, v7.s[0]
+	fmla	v25.4s, v3.4s, v7.s[0]
+	fmla	v26.4s, v2.4s, v7.s[1]
+	fmla	v27.4s, v3.4s, v7.s[1]
+	fmla	v28.4s, v2.4s, v7.s[2]
+	fmla	v29.4s, v3.4s, v7.s[2]
+	fmla	v30.4s, v2.4s, v7.s[3]
+	fmla	v31.4s, v3.4s, v7.s[3]
 .endm
 
 .macro KERNEL8x4_SUB
-	ld1	{v8.4s}, [pB], #16
-	ld1	{v0.4s, v1.4s}, [pA], #32
-	fmla	v16.4s, v0.4s, v8.s[0]
-	fmla	v17.4s, v1.4s, v8.s[0]
-	fmla	v20.4s, v0.4s, v8.s[1]
-	fmla	v21.4s, v1.4s, v8.s[1]
-	fmla	v24.4s, v0.4s, v8.s[2]
-	fmla	v25.4s, v1.4s, v8.s[2]
-	fmla	v28.4s, v0.4s, v8.s[3]
-	fmla	v29.4s, v1.4s, v8.s[3]
+	ldp	q0, q1, [pA], #32
+	ldr	q4, [pB], #16
+
+	fmla	v16.4s, v0.4s, v4.s[0]
+	fmla	v17.4s, v1.4s, v4.s[0]
+	fmla	v18.4s, v0.4s, v4.s[1]
+	fmla	v19.4s, v1.4s, v4.s[1]
+	prfm	PLDL1KEEP, [pA, #A_PRE_SIZE]
+	fmla	v20.4s, v0.4s, v4.s[2]
+	fmla	v21.4s, v1.4s, v4.s[2]
+	fmla	v22.4s, v0.4s, v4.s[3]
+	fmla	v23.4s, v1.4s, v4.s[3]
 .endm
 
 .macro SAVE8x4
+	prfm	PLDL2KEEP, [pCRow0, #C_PRE_SIZE]
 	add	pCRow1, pCRow0, LDC
 
-	ld1	{v0.4s, v1.4s}, [pCRow0]
+	ldp	q0, q1, [pCRow0]
 	fmla	v0.4s, v16.4s, alphaV0
 	fmla	v1.4s, v17.4s, alphaV1
-	st1 	{v0.4s, v1.4s}, [pCRow0]
+	stp	q0, q1, [pCRow0]
 
+	prfm	PLDL2KEEP, [pCRow1, #C_PRE_SIZE]
 	add	pCRow2, pCRow1, LDC
 
-	ld1	{v4.4s, v5.4s}, [pCRow1]
-	fmla	v4.4s, v20.4s, alphaV0
-	fmla	v5.4s, v21.4s, alphaV1
-	st1 	{v4.4s, v5.4s}, [pCRow1]
+	ldp	q4, q5, [pCRow1]
+	fmla	v4.4s, v18.4s, alphaV0
+	fmla	v5.4s, v19.4s, alphaV1
+	stp	q4, q5, [pCRow1]
 
+	prfm	PLDL2KEEP, [pCRow2, #C_PRE_SIZE]
 	add	pCRow1, pCRow2, LDC
 
-	ld1	{v0.4s, v1.4s}, [pCRow2]
-	fmla	v0.4s, v24.4s, alphaV0
-	fmla	v1.4s, v25.4s, alphaV1
-	st1 	{v0.4s, v1.4s}, [pCRow2]
+	ldp	q0, q1, [pCRow2]
+	fmla	v0.4s, v20.4s, alphaV0
+	fmla	v1.4s, v21.4s, alphaV1
+	stp	q0, q1, [pCRow2]
 
-	ld1	{v4.4s, v5.4s}, [pCRow1]
-	fmla	v4.4s, v28.4s, alphaV0
-	fmla	v5.4s, v29.4s, alphaV1
-	st1 	{v4.4s, v5.4s}, [pCRow1]
+	prfm	PLDL2KEEP, [pCRow1, #C_PRE_SIZE]
+
+	ldp	q4, q5, [pCRow1]
+	fmla	v4.4s, v22.4s, alphaV0
+	fmla	v5.4s, v23.4s, alphaV1
+	stp	q4, q5, [pCRow1]
 
 	add	pCRow0, pCRow0, #32
 .endm
@@ -800,139 +830,89 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .macro INIT4x4
 	fmov		s16, wzr
-	fmov		s17, s16
-	fmov		s20, s17
-	fmov		s21, s16
-	fmov		s24, s17
-	fmov		s25, s16
-	fmov		s28, s17
-	fmov		s29, s16
+	fmov		s18, wzr
+	fmov		s20, wzr
+	fmov		s22, wzr
 .endm
 
 .macro KERNEL4x4_I
-	ld1	{v8.2s, v9.2s}, [pB]
-	add	pB, pB, #16
-	ld1	{v0.2s, v1.2s}, [pA]
-	add	pA, pA, #16
+	ldr	q0, [pA], #16
+	ldr	q4, [pB], #16
 
-	fmul	v16.2s, v0.2s, v8.s[0]
-	fmul	v29.2s, v1.2s, v9.s[1]
-
-	fmul	v20.2s, v0.2s, v8.s[1]
-	fmul	v25.2s, v1.2s, v9.s[0]
-
-	fmul	v24.2s, v0.2s, v9.s[0]
-	fmul	v21.2s, v1.2s, v8.s[1]
-
-	fmul	v28.2s, v0.2s, v9.s[1]
-	fmul	v17.2s, v1.2s, v8.s[0]
-
-	ld1	{v12.2s, v13.2s}, [pB]
-	add	pB, pB, #16
-	ld1	{v4.2s, v5.2s}, [pA]
-	add	pA, pA, #16
+	ldr	d2, [pA], #8
+	ldr	d6, [pB], #8
+	fmul	v16.4s, v0.4s, v4.s[0]
+	ldr	x22, [pA], #8
+	fmul	v18.4s, v0.4s, v4.s[1]
+	ldr	x26, [pB], #8
+	fmul	v20.4s, v0.4s, v4.s[2]
+	fmul	v22.4s, v0.4s, v4.s[3]
 .endm
 
 .macro KERNEL4x4_M1
-	fmla	v16.2s, v0.2s, v8.s[0]
-	fmla	v29.2s, v1.2s, v9.s[1]
-
-	ld1	{v12.2s, v13.2s}, [pB]		// For next round
-	add	pB, pB, #16
-
-	fmla	v20.2s, v0.2s, v8.s[1]
-	fmla	v25.2s, v1.2s, v9.s[0]
-
-	ld1	{v4.2s, v5.2s}, [pA]		// For next round
-	add	pA, pA, #16
-
-	fmla	v24.2s, v0.2s, v9.s[0]
-	fmla	v21.2s, v1.2s, v8.s[1]
-
-	prfm	PLDL1KEEP, [pB, #512]
-
-	fmla	v28.2s, v0.2s, v9.s[1]
-	fmla	v17.2s, v1.2s, v8.s[0]
+	ldr	d2, [pA], #8
+	fmov	v0.d[1], x20
+	ldr	d6, [pB], #8
+	fmov	v4.d[1], x24
+	ldr	x22, [pA], #8
+	ldr	x26, [pB], #8
+	fmla	v16.4s, v0.4s, v4.s[0]
+	fmla	v18.4s, v0.4s, v4.s[1]
+	fmla	v20.4s, v0.4s, v4.s[2]
+	fmla	v22.4s, v0.4s, v4.s[3]
 .endm
 
 .macro KERNEL4x4_M2
-	fmla	v16.2s, v4.2s, v12.s[0]
-	fmla	v29.2s, v5.2s, v13.s[1]
-
-	ld1	{v8.2s, v9.2s}, [pB]		// For next round
-	add	pB, pB, #16
-
-	fmla	v20.2s, v4.2s, v12.s[1]
-	fmla	v25.2s, v5.2s, v13.s[0]
-
-	ld1	{v0.2s, v1.2s}, [pA]		// For next round
-	add	pA, pA, #16
-
-	fmla	v24.2s, v4.2s, v13.s[0]
-	fmla	v21.2s, v5.2s, v12.s[1]
-
-	prfm	PLDL1KEEP, [pA, #512]
-
-	fmla	v28.2s, v4.2s, v13.s[1]
-	fmla	v17.2s, v5.2s, v12.s[0]
+	ldr	d0, [pA], #8
+	fmov	v2.d[1], x22
+	ldr	d4, [pB], #8
+	fmov	v6.d[1], x26
+	ldr	x20, [pA], #8
+	ldr	x24, [pB], #8
+	fmla	v16.4s, v2.4s, v6.s[0]
+	fmla	v18.4s, v2.4s, v6.s[1]
+	fmla	v20.4s, v2.4s, v6.s[2]
+	fmla	v22.4s, v2.4s, v6.s[3]
 .endm
 
 .macro KERNEL4x4_E
-	fmla	v16.2s, v4.2s, v12.s[0]
-	fmla	v29.2s, v5.2s, v13.s[1]
-
-	fmla	v20.2s, v4.2s, v12.s[1]
-	fmla	v25.2s, v5.2s, v13.s[0]
-
-	fmla	v24.2s, v4.2s, v13.s[0]
-	fmla	v21.2s, v5.2s, v12.s[1]
-
-	fmla	v28.2s, v4.2s, v13.s[1]
-	fmla	v17.2s, v5.2s, v12.s[0]
+	fmov	v2.d[1], x22
+	fmov	v6.d[1], x26
+	fmla	v16.4s, v2.4s, v6.s[0]
+	fmla	v18.4s, v2.4s, v6.s[1]
+	fmla	v20.4s, v2.4s, v6.s[2]
+	fmla	v22.4s, v2.4s, v6.s[3]
 .endm
 
 .macro KERNEL4x4_SUB
-	ld1	{v8.2s, v9.2s}, [pB]
-	add	pB, pB, #16
-	ld1	{v0.2s, v1.2s}, [pA]
-	add	pA, pA, #16
+	ldr	q0, [pA], #16
+	ldr	q4, [pB], #16
 
-	fmla	v16.2s, v0.2s, v8.s[0]
-	fmla	v29.2s, v1.2s, v9.s[1]
-
-	fmla	v20.2s, v0.2s, v8.s[1]
-	fmla	v25.2s, v1.2s, v9.s[0]
-
-	fmla	v24.2s, v0.2s, v9.s[0]
-	fmla	v21.2s, v1.2s, v8.s[1]
-
-	fmla	v28.2s, v0.2s, v9.s[1]
-	fmla	v17.2s, v1.2s, v8.s[0]
+	fmla	v16.4s, v0.4s, v4.s[0]
+	fmla	v18.4s, v0.4s, v4.s[1]
+	fmla	v20.4s, v0.4s, v4.s[2]
+	fmla	v22.4s, v0.4s, v4.s[3]
 .endm
 
 .macro SAVE4x4
-	ld1 	{v8.2s, v9.2s}, [pCRow0]
-	fmla	v8.2s, v16.2s, alphaV0
-	fmla	v9.2s, v17.2s, alphaV1
-	st1 	{v8.2s, v9.2s}, [pCRow0]
+	ldr	q0, [pCRow0]
+	fmla	v0.4s, v16.4s, alphaV0
+	str	q0, [pCRow0]
 
 	add	pCRow1, pCRow0, LDC
-	ld1 	{v12.2s, v13.2s}, [pCRow1]
-	fmla	v12.2s, v20.2s, alphaV2
-	fmla	v13.2s, v21.2s, alphaV3
-	st1 	{v12.2s, v13.2s}, [pCRow1]
+	ldr	q1, [pCRow1]
+	fmla	v1.4s, v18.4s, alphaV2
+	str	q1, [pCRow1]
 
 	add	pCRow2, pCRow1, LDC
-	ld1 	{v8.2s, v9.2s}, [pCRow2]
-	fmla	v8.2s, v24.2s, alphaV0
-	fmla	v9.2s, v25.2s, alphaV1
-	st1 	{v8.2s, v9.2s}, [pCRow2]
+	ldr	q2, [pCRow2]
+	fmla	v2.4s, v20.4s, alphaV0
+	str	q2, [pCRow2]
 
 	add	pCRow1, pCRow2, LDC
-	ld1 	{v12.2s, v13.2s}, [pCRow1]
-	fmla	v12.2s, v28.2s, alphaV2
-	fmla	v13.2s, v29.2s, alphaV3
-	st1 	{v12.2s, v13.2s}, [pCRow1]
+	ldr	q3, [pCRow1]
+	fmla	v3.4s, v22.4s, alphaV2
+	str	q3, [pCRow1]
 
 	add	pCRow0, pCRow0, #16
 .endm
@@ -941,42 +921,40 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .macro INIT2x4
 	fmov		s16, wzr
-	fmov		s20, s16
-	fmov		s24, s20
-	fmov		s28, s16
+	fmov		s18, wzr
+	fmov		s20, wzr
+	fmov		s22, s16
 .endm
 
 .macro KERNEL2x4_SUB
-	ld1	{v8.2s, v9.2s}, [pB]
-	add	pB, pB, #16
-	ld1	{v0.2s}, [pA]
-	add	pA, pA, #8
+	ldr	d0, [pA], #8
+	ldr	q4, [pB], #16
 
-	fmla	v16.2s, v0.2s, v8.s[0]
-	fmla	v20.2s, v0.2s, v8.s[1]
-	fmla	v24.2s, v0.2s, v9.s[0]
-	fmla	v28.2s, v0.2s, v9.s[1]
+	fmla	v16.2s, v0.2s, v4.s[0]
+	fmla	v18.2s, v0.2s, v4.s[1]
+	fmla	v20.2s, v0.2s, v4.s[2]
+	fmla	v22.2s, v0.2s, v4.s[3]
 .endm
 
 .macro SAVE2x4
-	ld1	{v8.2s}, [pCRow0]
+	ldr	d8, [pCRow0]
 	fmla	v8.2s, v16.2s, alphaV0
-	st1	{v8.2s}, [pCRow0]
+	str	d8, [pCRow0]
 
 	add	pCRow1, pCRow0, LDC
-	ld1	{v12.2s}, [pCRow1]
-	fmla	v12.2s, v20.2s, alphaV1
-	st1	{v12.2s}, [pCRow1]
+	ldr	d12, [pCRow1]
+	fmla	v12.2s, v18.2s, alphaV1
+	str	d12, [pCRow1]
 
 	add	pCRow2, pCRow1, LDC
-	ld1	{v8.2s}, [pCRow2]
-	fmla	v8.2s, v24.2s, alphaV2
-	st1	{v8.2s}, [pCRow2]
+	ldr	d8, [pCRow2]
+	fmla	v8.2s, v20.2s, alphaV2
+	str	d8, [pCRow2]
 
 	add	pCRow1, pCRow2, LDC
-	ld1	{v12.2s}, [pCRow1]
-	fmla	v12.2s, v28.2s, alphaV3
-	st1	{v12.2s}, [pCRow1]
+	ldr	d12, [pCRow1]
+	fmla	v12.2s, v22.2s, alphaV3
+	str	d12, [pCRow1]
 
 	add	pCRow0, pCRow0, #8
 .endm
@@ -1023,39 +1001,37 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .macro INIT8x2
 	fmov	s16, wzr
 	fmov	s17, s16
-	fmov	s20, s17
-	fmov	s21, s16
+	fmov	s18, s17
+	fmov	s19, s16
 .endm
 
 .macro KERNEL8x2_SUB
-	ld1	{v8.2s}, [pB]
-	add	pB, pB, #8
-	ld1	{v0.4s}, [pA]
-	add	pA, pA, #16
-	ld1	{v1.4s}, [pA]
-	add	pA, pA, #16
+	ldp	q0, q1, [pA], #32
+	ldr	d4, [pB], #8
 
-	fmla	v16.4s, v0.4s, v8.s[0]
-	fmla	v17.4s, v1.4s, v8.s[0]
-
-	fmla	v20.4s, v0.4s, v8.s[1]
-	fmla	v21.4s, v1.4s, v8.s[1]
+	fmla	v16.4s, v0.4s, v4.s[0]
+	fmla	v17.4s, v1.4s, v4.s[0]
+	prfm	PLDL1KEEP, [pA, #A_PRE_SIZE]
+	fmla	v18.4s, v0.4s, v4.s[1]
+	fmla	v19.4s, v1.4s, v4.s[1]
 .endm
 
 .macro SAVE8x2
+	prfm	PLDL2KEEP, [pCRow0, #C_PRE_SIZE]
 	add	pCRow1, pCRow0, LDC
 
-	ld1	{v0.4s, v1.4s}, [pCRow0]
+	ldp	q0, q1, [pCRow0]
 	fmla	v0.4s, v16.4s, alphaV0
 	fmla	v1.4s, v17.4s, alphaV1
-	st1 	{v0.4s, v1.4s}, [pCRow0]
+	stp	q0, q1, [pCRow0]
 
+	prfm	PLDL2KEEP, [pCRow1, #C_PRE_SIZE]
 	add	pCRow2, pCRow1, LDC
 
-	ld1	{v4.4s, v5.4s}, [pCRow1]
-	fmla	v4.4s, v20.4s, alphaV0
-	fmla	v5.4s, v21.4s, alphaV1
-	st1 	{v4.4s, v5.4s}, [pCRow1]
+	ldp	q4, q5, [pCRow1]
+	fmla	v4.4s, v18.4s, alphaV0
+	fmla	v5.4s, v19.4s, alphaV1
+	stp	q4, q5, [pCRow1]
 
 	add	pCRow0, pCRow0, #32
 .endm
@@ -1162,23 +1138,21 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .endm
 
 .macro KERNEL8x1_SUB
-	ldr	s8, [pB]
-	add	pB , pB, #4
+	ldr	s4, [pB], #4
+	ldp	q0, q1, [pA], #32
 
-	ld1	{v0.4s}, [pA]
-	add	pA, pA, #16
-	ld1	{v1.4s}, [pA]
-	add	pA, pA, #16
-
-	fmla	v16.4s, v0.4s, v8.s[0]
-	fmla	v17.4s, v1.4s, v8.s[0]
+	fmla	v16.4s, v0.4s, v4.s[0]
+	prfm	PLDL1KEEP, [pA, #A_PRE_SIZE]
+	fmla	v17.4s, v1.4s, v4.s[0]
 .endm
 
 .macro SAVE8x1
-	ld1	{v0.4s, v1.4s}, [pCRow0]
+	prfm	PLDL2KEEP, [pCRow0, #C_PRE_SIZE]
+
+	ldp	q0, q1, [pCRow0]
 	fmla	v0.4s, v16.4s, alphaV0
 	fmla	v1.4s, v17.4s, alphaV1
-	st1 	{v0.4s, v1.4s}, [pCRow0]
+	stp	q0, q1, [pCRow0]
 
 	add	pCRow0, pCRow0, #32
 .endm
@@ -1247,13 +1221,13 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	ldr	s0, [pA]
 	add	pA , pA, #4
 
-	fmadd 	s16, s0, s8, s16  
+	fmadd	s16, s0, s8, s16
 .endm
 
 .macro SAVE1x1
-	ldr 	s8, [pCRow0]
+	ldr	s8, [pCRow0]
 	fmla	s8, s16, alphaV0
-	str 	s8, [pCRow0]
+	str	s8, [pCRow0]
 
 	add	pCRow0, pCRow0, #4
 .endm
@@ -1290,8 +1264,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	mov	pB, origPB
 
 	mov	counterJ, origN
-	asr 	counterJ, counterJ, #3		// J = J / 8
-	cmp 	counterJ, #0
+	asr	counterJ, counterJ, #3		// J = J / 8
+	cmp	counterJ, #0
 	ble	.Lsgemm_kernel_L4_BEGIN
 
 /******************************************************************************/
@@ -1308,15 +1282,15 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .Lsgemm_kernel_L8_M8_BEGIN:
 
 	mov	counterI, origM
-	asr 	counterI, counterI, #3		// counterI = counterI / 8
-	cmp 	counterI, #0
+	asr	counterI, counterI, #3		// counterI = counterI / 8
+	cmp	counterI, #0
 	ble	.Lsgemm_kernel_L8_M4_BEGIN
 
 .Lsgemm_kernel_L8_M8_20:
 
 	mov	pB, origPB
 
-	asr 	counterL , origK, #3		// L = K / 8
+	asr	counterL , origK, #3		// L = K / 8
 	cmp	counterL , #2			// is there at least 16 to do?
 	blt	.Lsgemm_kernel_L8_M8_32
 
@@ -1415,7 +1389,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	mov	pB, origPB
 
-	asr 	counterL , origK, #1		// L = K / 2
+	asr	counterL , origK, #1		// L = K / 2
 	cmp	counterL , #2			// is there at least 4 to do?
 	blt	.Lsgemm_kernel_L8_M4_32
 
@@ -1487,7 +1461,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	mov	pB, origPB
 
-	asr 	counterL , origK, #3		// counterL = counterL / 8
+	asr	counterL , origK, #3		// counterL = counterL / 8
 	cmp	counterL , #0
 	ble	.Lsgemm_kernel_L8_M2_40
 
@@ -1538,7 +1512,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	mov	pB, origPB
 
-	asr 	counterL , origK, #3		// counterL = counterL / 8
+	asr	counterL , origK, #3		// counterL = counterL / 8
 	cmp	counterL , #0
 	ble	.Lsgemm_kernel_L8_M1_40
 
@@ -1603,15 +1577,15 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .Lsgemm_kernel_L4_M8_BEGIN:
 
 	mov	counterI, origM
-	asr 	counterI, counterI, #3		// counterI = counterI / 8
-	cmp 	counterI, #0
+	asr	counterI, counterI, #3		// counterI = counterI / 8
+	cmp	counterI, #0
 	ble	.Lsgemm_kernel_L4_M4_BEGIN
 
 .Lsgemm_kernel_L4_M8_20:
 
 	mov	pB, origPB
 
-	asr 	counterL , origK, #1		// L = K / 2
+	asr	counterL , origK, #1		// L = K / 2
 	cmp	counterL , #2			// is there at least 4 to do?
 	blt	.Lsgemm_kernel_L4_M8_32
 
@@ -1683,7 +1657,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	mov	pB, origPB
 
-	asr 	counterL , origK, #1		// L = K / 2
+	asr	counterL , origK, #1		// L = K / 2
 	cmp	counterL , #2			// is there at least 4 to do?
 	blt	.Lsgemm_kernel_L4_M4_32
 
@@ -1755,7 +1729,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	mov	pB, origPB
 
-	asr 	counterL , origK, #3		// counterL = counterL / 8
+	asr	counterL , origK, #3		// counterL = counterL / 8
 	cmp	counterL , #0
 	ble	.Lsgemm_kernel_L4_M2_40
 
@@ -1806,7 +1780,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	mov	pB, origPB
 
-	asr 	counterL , origK, #3		// counterL = counterL / 8
+	asr	counterL , origK, #3		// counterL = counterL / 8
 	cmp	counterL , #0
 	ble	.Lsgemm_kernel_L4_M1_40
 
@@ -1867,7 +1841,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .Lsgemm_kernel_L2_M8_BEGIN:
 
 	mov	counterI, origM
-	asr 	counterI, counterI, #3		// counterI = counterI / 8
+	asr	counterI, counterI, #3		// counterI = counterI / 8
 	cmp	counterI,#0
 	ble	.Lsgemm_kernel_L2_M4_BEGIN
 
@@ -2041,7 +2015,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	mov	pB, origPB
 
-	asr 	counterL , origK, #3		// counterL = counterL / 8
+	asr	counterL , origK, #3		// counterL = counterL / 8
         cmp     counterL, #0
 	ble	.Lsgemm_kernel_L2_M1_40
 
@@ -2100,7 +2074,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .Lsgemm_kernel_L1_M8_BEGIN:
 
 	mov	counterI, origM
-	asr 	counterI, counterI, #3
+	asr	counterI, counterI, #3
 	cmp	counterI, #0
 	ble	.Lsgemm_kernel_L1_M4_BEGIN
 
@@ -2223,7 +2197,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	mov	pB, origPB
 
-	asr 	counterL , origK, #3		// counterL = counterL / 8
+	asr	counterL , origK, #3		// counterL = counterL / 8
 	cmp	counterL , #0
 	ble	.Lsgemm_kernel_L1_M2_40
 
@@ -2274,7 +2248,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	mov	pB, origPB
 
-	asr 	counterL , origK, #3		// counterL = counterL / 8
+	asr	counterL , origK, #3		// counterL = counterL / 8
 	cmp	counterL , #0
 	ble	.Lsgemm_kernel_L1_M1_40
 
