@@ -23,6 +23,7 @@ option(BUILD_WITHOUT_CBLAS "Do not build the C interface (CBLAS) to the BLAS fun
 option(DYNAMIC_ARCH "Include support for multiple CPU targets, with automatic selection at runtime (x86/x86_64, aarch64 or ppc only)" OFF)
 option(DYNAMIC_OLDER "Include specific support for older x86 cpu models (Penryn,Dunnington,Atom,Nano,Opteron) with DYNAMIC_ARCH" OFF)
 option(BUILD_RELAPACK "Build with ReLAPACK (recursive implementation of several LAPACK functions on top of standard LAPACK)" OFF)
+option(USE_LOCKING "Use locks even in single-threaded builds to make them callable from multiple threads" OFF)
 if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
 option(NO_AFFINITY "Disable support for CPU affinity masks to avoid binding processes from e.g. R or numpy/scipy to a single core" ON)
 else()
