@@ -334,7 +334,7 @@ if ($link ne "") {
 	    && ($flags !~ /kernel32/)
 	    && ($flags !~ /advapi32/)
 	    && ($flags !~ /shell32/)
-	    && ($flags !~ /omp/)
+	    && ($flags !~ /omp/ || ($vendor !~ /PGI/ && $flags =~ /omp/))
 	    && ($flags !~ /[0-9]+/)
 		&& ($flags !~ /^\-l$/)
 	    ) {
