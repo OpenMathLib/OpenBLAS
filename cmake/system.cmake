@@ -417,6 +417,15 @@ if (${CMAKE_C_COMPILER} STREQUAL "LSB" OR ${CMAKE_SYSTEM_NAME} STREQUAL "Windows
   set(LAPACK_CFLAGS "${LAPACK_CFLAGS} -DLAPACK_COMPLEX_STRUCTURE")
 endif ()
 
+if ("${CMAKE_BUILD_TYPE}" STREQUAL "Release")
+if ("${F_COMPILER}" STREQUAL "FLANG")
+  set(FILTER_FLAGS "-O2;-O3")
+  foreach (FILTER_FLAG ${FILTER_FLAGS})
+    string(REPLACE ${FILTER_FLAG} "-O1" CMAKE_Fortran_FLAGS_RELEASE ${CMAKE_Fortran_FLAGS_RELEASE})
+  endforeach ()
+endif ()
+endif ()
+
 if (NOT DEFINED SUFFIX)
   set(SUFFIX o)
 endif ()
