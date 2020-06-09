@@ -200,7 +200,7 @@
             FS = FS*SAFMN2
             GS = GS*SAFMN2
             SCALE = SCALE*SAFMN2
-            IF( SCALE.GE.SAFMX2 )
+            IF( SCALE.GE.SAFMX2 .AND. COUNT .LT. 20 )
      $         GO TO 10
          ELSE IF( SCALE.LE.SAFMN2 ) THEN
             IF( G.EQ.CZERO ) THEN
