@@ -1276,7 +1276,7 @@ endif
 
 override CFLAGS     += $(COMMON_OPT) $(CCOMMON_OPT) -I$(TOPDIR)
 override PFLAGS     += $(COMMON_OPT) $(CCOMMON_OPT) -I$(TOPDIR) -DPROFILE $(COMMON_PROF)
-ifeq ($(FLANG_VENDOR),AOCC)
+ifeq ($(F_COMPILER), FLANG)
 override FFLAGS     += $(filter-out -O2 -O3,$(COMMON_OPT)) -O1 $(FCOMMON_OPT)
 else
 override FFLAGS     += $(COMMON_OPT) $(FCOMMON_OPT)
