@@ -681,12 +681,12 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .macro INIT8x4
 	fmov		s16, wzr
 	fmov		s17, wzr
+	fmov		s18, wzr
+	fmov		s19, s16
 	fmov		s20, wzr
 	fmov		s21, s16
-	fmov		s24, wzr
-	fmov		s25, s16
-	fmov		s28, wzr
-	fmov		s29, s16
+	fmov		s22, wzr
+	fmov		s23, s16
 .endm
 
 .macro KERNEL8x4_I
@@ -765,14 +765,6 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	fmla	v21.4s, v3.4s, v6.s[2]
 	fmla	v22.4s, v2.4s, v6.s[3]
 	fmla	v23.4s, v3.4s, v6.s[3]
-	fmla	v24.4s, v2.4s, v7.s[0]
-	fmla	v25.4s, v3.4s, v7.s[0]
-	fmla	v26.4s, v2.4s, v7.s[1]
-	fmla	v27.4s, v3.4s, v7.s[1]
-	fmla	v28.4s, v2.4s, v7.s[2]
-	fmla	v29.4s, v3.4s, v7.s[2]
-	fmla	v30.4s, v2.4s, v7.s[3]
-	fmla	v31.4s, v3.4s, v7.s[3]
 .endm
 
 .macro KERNEL8x4_SUB
