@@ -2260,7 +2260,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #endif
 
-#if defined(POWER9)
+#if defined(POWER9) || defined(POWER10)
 
 #define SNUMOPT		16
 #define DNUMOPT		8

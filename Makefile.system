@@ -595,6 +595,7 @@ DYNAMIC_CORE = POWER6
 DYNAMIC_CORE += POWER8
 ifneq ($(C_COMPILER), GCC)
 DYNAMIC_CORE += POWER9
+DYNAMIC_CORE += POWER10
 endif
 ifeq ($(C_COMPILER), GCC)
 GCCVERSIONGT5 := $(shell expr `$(CC) -dumpversion | cut -f1 -d.` \> 5)
@@ -602,6 +603,12 @@ ifeq ($(GCCVERSIONGT5), 1)
 DYNAMIC_CORE += POWER9
 else
 $(info, OpenBLAS: Your gcc version is too old to build the POWER9 kernels.)
+endif
+GCCVERSIONGTEQ11 := $(shell expr `$(CC) -dumpversion | cut -f1 -d.` \>= 11)
+ifeq ($(GCCVERSIONGTEQ11), 1)
+DYNAMIC_CORE += POWER10
+else
+$(info, OpenBLAS: Your gcc version is too old to build the POWER10 kernels.)
 endif
 endif
 endif
