@@ -783,7 +783,7 @@ endif
 
 ifeq ($(F_COMPILER), FLANG)
 CCOMMON_OPT += -DF_INTERFACE_FLANG
-FCOMMON_OPT += -frecursive
+FCOMMON_OPT += -Mrecursive
 ifdef BINARY64
 ifdef INTERFACE64
 ifneq ($(INTERFACE64), 0)
@@ -1276,9 +1276,8 @@ endif
 
 override CFLAGS     += $(COMMON_OPT) $(CCOMMON_OPT) -I$(TOPDIR)
 override PFLAGS     += $(COMMON_OPT) $(CCOMMON_OPT) -I$(TOPDIR) -DPROFILE $(COMMON_PROF)
-#ifeq ($(FLANG_VENDOR),AOCC)
 ifeq ($(F_COMPILER),FLANG)
-override FFLAGS     += $(filter-out -O2 -O3,$(COMMON_OPT)) -O1 $(FCOMMON_OPT)
+override FFLAGS     += $(filter-out -O2 -O3,$(COMMON_OPT)) -O0 $(FCOMMON_OPT)
 else
 override FFLAGS     += $(COMMON_OPT) $(FCOMMON_OPT)
 endif
