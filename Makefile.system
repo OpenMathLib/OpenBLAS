@@ -783,7 +783,7 @@ endif
 
 ifeq ($(F_COMPILER), FLANG)
 CCOMMON_OPT += -DF_INTERFACE_FLANG
-FCOMMON_OPT += -frecursive
+FCOMMON_OPT += -Mrecursive -Kieee
 ifdef BINARY64
 ifdef INTERFACE64
 ifneq ($(INTERFACE64), 0)
@@ -797,11 +797,6 @@ endif
 ifeq ($(USE_OPENMP), 1)
 FCOMMON_OPT += -fopenmp
 endif
-#ifeq ($(OSNAME), Linux)
-#ifeq ($(ARCH), x86_64)
-#FLANG_VENDOR := $(shell expr `$(FC) --version|cut -f 1 -d "."|head -1`)
-#endif
-#endif
 endif
 
 ifeq ($(F_COMPILER), G77)
@@ -1276,7 +1271,6 @@ endif
 
 override CFLAGS     += $(COMMON_OPT) $(CCOMMON_OPT) -I$(TOPDIR)
 override PFLAGS     += $(COMMON_OPT) $(CCOMMON_OPT) -I$(TOPDIR) -DPROFILE $(COMMON_PROF)
-#ifeq ($(FLANG_VENDOR),AOCC)
 ifeq ($(F_COMPILER),FLANG)
 override FFLAGS     += $(filter-out -O2 -O3,$(COMMON_OPT)) -O1 $(FCOMMON_OPT)
 else
