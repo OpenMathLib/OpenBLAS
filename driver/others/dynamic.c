@@ -764,18 +764,53 @@ char *gotoblas_corename(void) {
   if (gotoblas == &gotoblas_NORTHWOOD)    return corename[ 3];
   if (gotoblas == &gotoblas_PRESCOTT)     return corename[ 4];
   if (gotoblas == &gotoblas_BANIAS)       return corename[ 5];
-  if (gotoblas == &gotoblas_ATOM)         return corename[ 6];
+  if (gotoblas == &gotoblas_ATOM)
+#ifdef DYNAMIC_OLDER
+           return corename[ 6];
+#else
+           return corename[10];
+#endif
   if (gotoblas == &gotoblas_CORE2)        return corename[ 7];
-  if (gotoblas == &gotoblas_PENRYN)       return corename[ 8];
-  if (gotoblas == &gotoblas_DUNNINGTON)   return corename[ 9];
+  if (gotoblas == &gotoblas_PENRYN)
+#ifdef DYNAMIC_OLDER
+           return corename[ 8];
+#else
+           return corename[7];
+#endif
+  if (gotoblas == &gotoblas_DUNNINGTON)
+#ifdef DYNAMIC_OLDER
+           return corename[ 9];
+#else
+           return corename[7];
+#endif
   if (gotoblas == &gotoblas_NEHALEM)      return corename[10];
   if (gotoblas == &gotoblas_ATHLON)       return corename[11];
-  if (gotoblas == &gotoblas_OPTERON_SSE3) return corename[12];
-  if (gotoblas == &gotoblas_OPTERON)      return corename[13];
+  if (gotoblas == &gotoblas_OPTERON_SSE3)
+#ifdef DYNAMIC_OLDER
+           return corename[12];
+#else
+           return corename[7];
+#endif
+  if (gotoblas == &gotoblas_OPTERON)
+#ifdef DYNAMIC_OLDER
+           return corename[13];
+#else
+           return corename[7];
+#endif
   if (gotoblas == &gotoblas_BARCELONA)    return corename[14];
-  if (gotoblas == &gotoblas_NANO)         return corename[15];
+  if (gotoblas == &gotoblas_NANO)
+#ifdef DYNAMIC_OLDER
+           return corename[15];
+#else
+           return corename[10];
+#endif
   if (gotoblas == &gotoblas_SANDYBRIDGE)  return corename[16];
-  if (gotoblas == &gotoblas_BOBCAT)       return corename[17];
+  if (gotoblas == &gotoblas_BOBCAT)
+#ifdef DYNAMIC_OLDER
+           return corename[17];
+#else
+           return corename[7];
+#endif
   if (gotoblas == &gotoblas_BULLDOZER)    return corename[18];
   if (gotoblas == &gotoblas_PILEDRIVER)   return corename[19];
   if (gotoblas == &gotoblas_HASWELL)      return corename[20];
@@ -785,6 +820,7 @@ char *gotoblas_corename(void) {
   if (gotoblas == &gotoblas_SKYLAKEX)     return corename[24];
   return corename[0];
 }
+
 
 
 static gotoblas_t *force_coretype(char *coretype){
