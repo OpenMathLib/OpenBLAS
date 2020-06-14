@@ -419,10 +419,9 @@ endif ()
 
 if ("${CMAKE_BUILD_TYPE}" STREQUAL "Release")
 if ("${F_COMPILER}" STREQUAL "FLANG")
-  set(FILTER_FLAGS "-O2;-O3")
-  foreach (FILTER_FLAG ${FILTER_FLAGS})
-    string(REPLACE ${FILTER_FLAG} "-O1" CMAKE_Fortran_FLAGS_RELEASE ${CMAKE_Fortran_FLAGS_RELEASE})
-  endforeach ()
+if (${CMAKE_Fortran_COMPILER_VERSION} VERSION_LESS_EQUAL 3)
+  set(CMAKE_Fortran_FLAGS_RELEASE "${CMAKE_Fortran_FLAGS_RELEASE} -fno-unroll-loops")
+endif ()
 endif ()
 endif ()
 
