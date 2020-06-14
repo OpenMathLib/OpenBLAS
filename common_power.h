@@ -71,9 +71,11 @@
 #if defined(POWER8) || defined(POWER9)
 #define MB		__asm__ __volatile__ ("eieio":::"memory")
 #define WMB		__asm__ __volatile__ ("eieio":::"memory")
+#define RMB		__asm__ __volatile__ ("eieio":::"memory")
 #else
 #define MB		__asm__ __volatile__ ("sync")
 #define WMB		__asm__ __volatile__ ("sync")
+#define RMB		__asm__ __volatile__ ("sync")
 #endif
 
 #define INLINE inline

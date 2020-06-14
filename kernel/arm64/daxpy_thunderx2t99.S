@@ -98,9 +98,56 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	add	X, X, #128
 .endm
 
+/*
+ * No need to do software prefetches if the vector fits
+ * into L1 cache
+ */
+.macro KERNEL_F16_L1CACHE
+	ldp	q4, q5, [X]
+	ldp	q16, q17, [Y]
+
+	ldp	q6, q7, [X, #32]
+	ldp	q18, q19, [Y, #32]
+
+	fmla	v16.2d, v4.2d, v0.d[0]
+	fmla	v17.2d, v5.2d, v0.d[0]
+
+	stp	q16, q17, [Y]
+
+	ldp	q20, q21, [X, #64]
+	ldp	q24, q25, [Y, #64]
+
+	fmla	v18.2d, v6.2d, v0.d[0]
+	fmla	v19.2d, v7.2d, v0.d[0]
+
+	stp	q18, q19, [Y, #32]
+
+	ldp	q22, q23, [X, #96]
+	ldp	q26, q27, [Y, #96]
+
+	fmla	v24.2d, v20.2d, v0.d[0]
+	fmla	v25.2d, v21.2d, v0.d[0]
+
+	stp	q24, q25, [Y, #64]
+
+	fmla	v26.2d, v22.2d, v0.d[0]
+	fmla	v27.2d, v23.2d, v0.d[0]
+
+	stp	q26, q27, [Y, #96]
+
+	add	Y, Y, #128
+	add	X, X, #128
+.endm
+
 .macro KERNEL_F32
 	KERNEL_F16 
 	KERNEL_F16 
+.endm
+
+
+.macro KERNEL_F32_L1CACHE
+	KERNEL_F16_L1CACHE
+	KERNEL_F16_L1CACHE
 .endm
 
 .macro INIT_S
@@ -138,6 +185,9 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	cmp	I, xzr
 	beq	.Ldaxpy_kernel_F1
 
+	cmp	N, #2048
+	ble	.Ldaxpy_kernel_F32_L1CACHE
+
 	.align 5
 .Ldaxpy_kernel_F32:
 
@@ -145,6 +195,15 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	subs	I, I, #1
 	bne	.Ldaxpy_kernel_F32
+	b	.Ldaxpy_kernel_F1
+
+	.align 5
+.Ldaxpy_kernel_F32_L1CACHE:
+
+	KERNEL_F32_L1CACHE
+
+	subs	I, I, #1
+	bne	.Ldaxpy_kernel_F32_L1CACHE
 
 .Ldaxpy_kernel_F1:
 

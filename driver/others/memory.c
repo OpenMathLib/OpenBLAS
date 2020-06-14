@@ -87,6 +87,30 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif
 #endif
 
+/* Memory buffer must fit two matrix subblocks of maximal size */
+#define XSTR(x) STR(x)
+#define STR(x) #x
+#if BUFFER_SIZE < (SGEMM_DEFAULT_P * SGEMM_DEFAULT_Q * 4 * 2) || \
+    BUFFER_SIZE < (SGEMM_DEFAULT_P * SGEMM_DEFAULT_R * 4 * 2) || \
+    BUFFER_SIZE < (SGEMM_DEFAULT_R * SGEMM_DEFAULT_Q * 4 * 2)
+#warning BUFFER_SIZE is too small for P, Q, and R of SGEMM - large calculations may crash !
+#endif
+#if BUFFER_SIZE < (DGEMM_DEFAULT_P * DGEMM_DEFAULT_Q * 8 * 2) || \
+    BUFFER_SIZE < (DGEMM_DEFAULT_P * DGEMM_DEFAULT_R * 8 * 2) || \
+    BUFFER_SIZE < (DGEMM_DEFAULT_R * DGEMM_DEFAULT_Q * 8 * 2)
+#warning BUFFER_SIZE is too small for P, Q, and R of DGEMM - large calculations may crash !
+#endif
+#if BUFFER_SIZE < (CGEMM_DEFAULT_P * CGEMM_DEFAULT_Q * 8 * 2) || \
+    BUFFER_SIZE < (CGEMM_DEFAULT_P * CGEMM_DEFAULT_R * 8 * 2) || \
+    BUFFER_SIZE < (CGEMM_DEFAULT_R * CGEMM_DEFAULT_Q * 8 * 2)
+#warning BUFFER_SIZE is too small for P, Q, and R of CGEMM - large calculations may crash !
+#endif
+#if BUFFER_SIZE < (ZGEMM_DEFAULT_P * ZGEMM_DEFAULT_Q * 16 * 2) || \
+    BUFFER_SIZE < (ZGEMM_DEFAULT_P * ZGEMM_DEFAULT_R * 16 * 2) || \
+    BUFFER_SIZE < (ZGEMM_DEFAULT_R * ZGEMM_DEFAULT_Q * 16 * 2)
+#warning BUFFER_SIZE is too small for P, Q, and R of ZGEMM - large calculations may crash !
+#endif
+
 #if defined(COMPILE_TLS)
 
 #include <errno.h>
@@ -2046,7 +2070,7 @@ if (!release->address) return;
   if (munmap(release -> address, BUFFER_SIZE)) {
       int errsv=errno;
        perror("OpenBLAS : munmap failed:");
-       printf("error code=%d,\trelease->address=%lx\n",errsv,release->address);
+       printf("error code=%d,\trelease->address=%p\n",errsv,release->address);
   }
 }
 
@@ -2717,6 +2741,7 @@ void *blas_memory_alloc(int procpos){
   LOCK_COMMAND(&alloc_lock);
 #endif
   do {
+	  RMB;
 #if defined(USE_OPENMP)	  
     if (!memory[position].used) { 
       blas_lock(&memory[position].lock);

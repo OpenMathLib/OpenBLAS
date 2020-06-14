@@ -54,40 +54,40 @@
     #define kernel_kstart_n10(mdim,updk) ""
     #define kernel_kstart_n12(mdim,updk) ""
     #define kernel_kend_n4(mdim) "xorq %3,%3;"\
-      loada_kend_k1m##mdim acc_kend_nc2_k1m##mdim(0,8)\
-      loada_kend_k1m##mdim acc_kend_nc2_k1m##mdim(16,24)
+      loada_kend_k1m##mdim acc_kend_nc2_k1m##mdim(0)\
+      loada_kend_k1m##mdim acc_kend_nc2_k1m##mdim(16)
     #define kernel_kend_n6(mdim) "xorq %3,%3;"\
-      loada_kend_k1m##mdim acc_kend_nc2_k1m##mdim(0,8) acc_kend_nc3_k1m##mdim(0,8)\
-      loada_kend_k1m##mdim acc_kend_nc2_k1m##mdim(16,24) acc_kend_nc3_k1m##mdim(16,24)\
-      loada_kend_k1m##mdim acc_kend_nc3_k1m##mdim(32,40)\
-      loada_kend_k1m##mdim acc_kend_nc3_k1m##mdim(48,56)
+      loada_kend_k1m##mdim acc_kend_nc2_k1m##mdim(0) acc_kend_nc3_k1m##mdim(0)\
+      loada_kend_k1m##mdim acc_kend_nc2_k1m##mdim(16) acc_kend_nc3_k1m##mdim(16)\
+      loada_kend_k1m##mdim acc_kend_nc3_k1m##mdim(32)\
+      loada_kend_k1m##mdim acc_kend_nc3_k1m##mdim(48)
     #define kernel_kend_n8(mdim) "xorq %3,%3;"\
-      loada_kend_k1m##mdim acc_kend_nc2_k1m##mdim(0,8) acc_kend_nc3_k1m##mdim(0,8) acc_kend_nc4_k1m##mdim(0,8)\
-      loada_kend_k1m##mdim acc_kend_nc2_k1m##mdim(16,24) acc_kend_nc3_k1m##mdim(16,24) acc_kend_nc4_k1m##mdim(16,24)\
-      loada_kend_k1m##mdim acc_kend_nc3_k1m##mdim(32,40) acc_kend_nc4_k1m##mdim(32,40)\
-      loada_kend_k1m##mdim acc_kend_nc3_k1m##mdim(48,56) acc_kend_nc4_k1m##mdim(48,56)\
-      loada_kend_k1m##mdim acc_kend_nc4_k1m##mdim(64,72)\
-      loada_kend_k1m##mdim acc_kend_nc4_k1m##mdim(80,88)
+      loada_kend_k1m##mdim acc_kend_nc2_k1m##mdim(0) acc_kend_nc3_k1m##mdim(0) acc_kend_nc4_k1m##mdim(0)\
+      loada_kend_k1m##mdim acc_kend_nc2_k1m##mdim(16) acc_kend_nc3_k1m##mdim(16) acc_kend_nc4_k1m##mdim(16)\
+      loada_kend_k1m##mdim acc_kend_nc3_k1m##mdim(32) acc_kend_nc4_k1m##mdim(32)\
+      loada_kend_k1m##mdim acc_kend_nc3_k1m##mdim(48) acc_kend_nc4_k1m##mdim(48)\
+      loada_kend_k1m##mdim acc_kend_nc4_k1m##mdim(64)\
+      loada_kend_k1m##mdim acc_kend_nc4_k1m##mdim(80)
     #define kernel_kend_n10(mdim) "xorq %3,%3;"\
-      loada_kend_k1m##mdim acc_kend_nc2_k1m##mdim(0,8) acc_kend_nc3_k1m##mdim(0,8) acc_kend_nc4_k1m##mdim(0,8) acc_kend_nc5_k1m##mdim(0,8)\
-      loada_kend_k1m##mdim acc_kend_nc2_k1m##mdim(16,24) acc_kend_nc3_k1m##mdim(16,24) acc_kend_nc4_k1m##mdim(16,24) acc_kend_nc5_k1m##mdim(16,24)\
-      loada_kend_k1m##mdim acc_kend_nc3_k1m##mdim(32,40) acc_kend_nc4_k1m##mdim(32,40) acc_kend_nc5_k1m##mdim(32,40)\
-      loada_kend_k1m##mdim acc_kend_nc3_k1m##mdim(48,56) acc_kend_nc4_k1m##mdim(48,56) acc_kend_nc5_k1m##mdim(48,56)\
-      loada_kend_k1m##mdim acc_kend_nc4_k1m##mdim(64,72) acc_kend_nc5_k1m##mdim(64,72)\
-      loada_kend_k1m##mdim acc_kend_nc4_k1m##mdim(80,88) acc_kend_nc5_k1m##mdim(80,88)\
-      loada_kend_k1m##mdim acc_kend_nc5_k1m##mdim(96,104)\
-      loada_kend_k1m##mdim acc_kend_nc5_k1m##mdim(112,120)
+      loada_kend_k1m##mdim acc_kend_nc2_k1m##mdim(0) acc_kend_nc3_k1m##mdim(0) acc_kend_nc4_k1m##mdim(0) acc_kend_nc5_k1m##mdim(0)\
+      loada_kend_k1m##mdim acc_kend_nc2_k1m##mdim(16) acc_kend_nc3_k1m##mdim(16) acc_kend_nc4_k1m##mdim(16) acc_kend_nc5_k1m##mdim(16)\
+      loada_kend_k1m##mdim acc_kend_nc3_k1m##mdim(32) acc_kend_nc4_k1m##mdim(32) acc_kend_nc5_k1m##mdim(32)\
+      loada_kend_k1m##mdim acc_kend_nc3_k1m##mdim(48) acc_kend_nc4_k1m##mdim(48) acc_kend_nc5_k1m##mdim(48)\
+      loada_kend_k1m##mdim acc_kend_nc4_k1m##mdim(64) acc_kend_nc5_k1m##mdim(64)\
+      loada_kend_k1m##mdim acc_kend_nc4_k1m##mdim(80) acc_kend_nc5_k1m##mdim(80)\
+      loada_kend_k1m##mdim acc_kend_nc5_k1m##mdim(96)\
+      loada_kend_k1m##mdim acc_kend_nc5_k1m##mdim(112)
     #define kernel_kend_n12(mdim) "xorq %3,%3;"\
-      loada_kend_k1m##mdim acc_kend_nc2_k1m##mdim(0,8) acc_kend_nc3_k1m##mdim(0,8) acc_kend_nc4_k1m##mdim(0,8) acc_kend_nc5_k1m##mdim(0,8) acc_kend_nc6_k1m##mdim(0,8)\
-      loada_kend_k1m##mdim acc_kend_nc2_k1m##mdim(16,24) acc_kend_nc3_k1m##mdim(16,24) acc_kend_nc4_k1m##mdim(16,24) acc_kend_nc5_k1m##mdim(16,24) acc_kend_nc6_k1m##mdim(16,24)\
-      loada_kend_k1m##mdim acc_kend_nc3_k1m##mdim(32,40) acc_kend_nc4_k1m##mdim(32,40) acc_kend_nc5_k1m##mdim(32,40) acc_kend_nc6_k1m##mdim(32,40)\
-      loada_kend_k1m##mdim acc_kend_nc3_k1m##mdim(48,56) acc_kend_nc4_k1m##mdim(48,56) acc_kend_nc5_k1m##mdim(48,56) acc_kend_nc6_k1m##mdim(48,56)\
-      loada_kend_k1m##mdim acc_kend_nc4_k1m##mdim(64,72) acc_kend_nc5_k1m##mdim(64,72) acc_kend_nc6_k1m##mdim(64,72)\
-      loada_kend_k1m##mdim acc_kend_nc4_k1m##mdim(80,88) acc_kend_nc5_k1m##mdim(80,88) acc_kend_nc6_k1m##mdim(80,88)\
-      loada_kend_k1m##mdim acc_kend_nc5_k1m##mdim(96,104) acc_kend_nc6_k1m##mdim(96,104)\
-      loada_kend_k1m##mdim acc_kend_nc5_k1m##mdim(112,120) acc_kend_nc6_k1m##mdim(112,120)\
-      loada_kend_k1m##mdim acc_kend_nc6_k1m##mdim(128,136)\
-      loada_kend_k1m##mdim acc_kend_nc6_k1m##mdim(144,152)
+      loada_kend_k1m##mdim acc_kend_nc2_k1m##mdim(0) acc_kend_nc3_k1m##mdim(0) acc_kend_nc4_k1m##mdim(0) acc_kend_nc5_k1m##mdim(0) acc_kend_nc6_k1m##mdim(0)\
+      loada_kend_k1m##mdim acc_kend_nc2_k1m##mdim(16) acc_kend_nc3_k1m##mdim(16) acc_kend_nc4_k1m##mdim(16) acc_kend_nc5_k1m##mdim(16) acc_kend_nc6_k1m##mdim(16)\
+      loada_kend_k1m##mdim acc_kend_nc3_k1m##mdim(32) acc_kend_nc4_k1m##mdim(32) acc_kend_nc5_k1m##mdim(32) acc_kend_nc6_k1m##mdim(32)\
+      loada_kend_k1m##mdim acc_kend_nc3_k1m##mdim(48) acc_kend_nc4_k1m##mdim(48) acc_kend_nc5_k1m##mdim(48) acc_kend_nc6_k1m##mdim(48)\
+      loada_kend_k1m##mdim acc_kend_nc4_k1m##mdim(64) acc_kend_nc5_k1m##mdim(64) acc_kend_nc6_k1m##mdim(64)\
+      loada_kend_k1m##mdim acc_kend_nc4_k1m##mdim(80) acc_kend_nc5_k1m##mdim(80) acc_kend_nc6_k1m##mdim(80)\
+      loada_kend_k1m##mdim acc_kend_nc5_k1m##mdim(96) acc_kend_nc6_k1m##mdim(96)\
+      loada_kend_k1m##mdim acc_kend_nc5_k1m##mdim(112) acc_kend_nc6_k1m##mdim(112)\
+      loada_kend_k1m##mdim acc_kend_nc6_k1m##mdim(128)\
+      loada_kend_k1m##mdim acc_kend_nc6_k1m##mdim(144)
   #endif
 #else
   #define HEAD_SET_OFF(ndim) {}
@@ -129,18 +129,28 @@
   #define init_update_k(mdim) ""
   #define save_update_k(mdim) ""
 #endif
-    
+
 #define KERNEL_h_k1m16n1 \
   "vmovupd (%0),%%zmm1; vmovupd 64(%0),%%zmm2; addq $128,%0;"\
   "vbroadcastsd (%1),%%zmm3; vfmadd231pd %%zmm1,%%zmm3,%%zmm8; vfmadd231pd %%zmm2,%%zmm3,%%zmm9;"
 #define KERNEL_k1m16n1 KERNEL_h_k1m16n1 "addq $8,%1;"
-#define KERNEL_h_k1m16n2 KERNEL_h_k1m16n1\
+#ifdef BROADCAST_KERNEL
+ #define KERNEL_h_k1m16n2 KERNEL_h_k1m16n1\
   "vbroadcastsd 8(%1),%%zmm4; vfmadd231pd %%zmm1,%%zmm4,%%zmm10; vfmadd231pd %%zmm2,%%zmm4,%%zmm11;"
-#define KERNEL_k1m16n2 KERNEL_h_k1m16n2 "addq $16,%1;"
-#define unit_acc_gen_m16n2(c1_no,c2_no,c3_no,c4_no,boff1,boff2,...)\
+ #define unit_acc_gen_m16n2(c1_no,c2_no,c3_no,c4_no,boff1,...)\
   "vbroadcastsd "#boff1"("#__VA_ARGS__"),%%zmm3; vfmadd231pd %%zmm1,%%zmm3,%%zmm"#c1_no"; vfmadd231pd %%zmm2,%%zmm3,%%zmm"#c2_no";"\
-  "vbroadcastsd "#boff2"("#__VA_ARGS__"),%%zmm4; vfmadd231pd %%zmm1,%%zmm4,%%zmm"#c3_no"; vfmadd231pd %%zmm2,%%zmm4,%%zmm"#c4_no";"
-#define unit_acc_m16n2(c1_no,c2_no,c3_no,c4_no,...) unit_acc_gen_m16n2(c1_no,c2_no,c3_no,c4_no,0,8,__VA_ARGS__)
+  "vbroadcastsd "#boff1"+8("#__VA_ARGS__"),%%zmm4; vfmadd231pd %%zmm1,%%zmm4,%%zmm"#c3_no"; vfmadd231pd %%zmm2,%%zmm4,%%zmm"#c4_no";"
+ #define unit_acc_m16n2(c1_no,c2_no,c3_no,c4_no,...) unit_acc_gen_m16n2(c1_no,c2_no,c3_no,c4_no,0,__VA_ARGS__)
+#else
+ #define unit_acc_gen_m16n2(c1_no,c2_no,c3_no,c4_no,boff1,...)\
+  "vbroadcastf32x4 "#boff1"("#__VA_ARGS__"),%%zmm5; vfmadd231pd %%zmm1,%%zmm5,%%zmm"#c1_no"; vfmadd231pd %%zmm2,%%zmm5,%%zmm"#c2_no";"\
+  "vfmadd231pd %%zmm3,%%zmm5,%%zmm"#c3_no"; vfmadd231pd %%zmm4,%%zmm5,%%zmm"#c4_no";"
+ #define unit_acc_m16n2(c1_no,c2_no,c3_no,c4_no,...) unit_acc_gen_m16n2(c1_no,c2_no,c3_no,c4_no,0,__VA_ARGS__)
+ #define KERNEL_h_k1m16n2 \
+  "vmovddup (%0),%%zmm1; vmovddup 8(%0),%%zmm2; vmovddup 64(%0),%%zmm3; vmovddup 72(%0),%%zmm4; addq $128,%0;"\
+  unit_acc_m16n2(8,9,10,11,%1)
+#endif
+#define KERNEL_k1m16n2 KERNEL_h_k1m16n2 "addq $16,%1;"
 #define KERNEL_h_k1m16n4 KERNEL_h_k1m16n2 "prefetcht0 384(%0);" unit_acc_m16n2(12,13,14,15,%1,%%r12,1)
 #define KERNEL_k1m16n4 KERNEL_h_k1m16n4 "addq $16,%1;"
 #define KERNEL_k1m16n6 KERNEL_h_k1m16n4 unit_acc_m16n2(16,17,18,19,%1,%%r12,2) "addq $16,%1;"
@@ -151,24 +161,42 @@
 #define KERNEL_h_k1m16n12 KERNEL_h_k1m16n10 unit_acc_m16n2(28,29,30,31,%%r15,%%r12,2)
 #define KERNEL_k1m16n12 KERNEL_h_k1m16n12 "addq $16,%%r15;"
 #if defined(TRMMKERNEL) && !defined(LEFT) && (BACKWARDS == 0)
+ #ifdef BROADCAST_KERNEL
   #define loada_kend_k1m16 "vmovupd (%0,%3,1),%%zmm1; vmovupd 64(%0,%3,1),%%zmm2; addq $128,%3;"
-  #define acc_kend_nc2_k1m16(boff1,boff2) unit_acc_gen_m16n2(12,13,14,15,boff1,boff2,%1,%%r12,1)
-  #define acc_kend_nc3_k1m16(boff1,boff2) unit_acc_gen_m16n2(16,17,18,19,boff1,boff2,%1,%%r12,2)
-  #define acc_kend_nc4_k1m16(boff1,boff2) unit_acc_gen_m16n2(20,21,22,23,boff1,boff2,%%r15)
-  #define acc_kend_nc5_k1m16(boff1,boff2) unit_acc_gen_m16n2(24,25,26,27,boff1,boff2,%%r15,%%r12,1)
-  #define acc_kend_nc6_k1m16(boff1,boff2) unit_acc_gen_m16n2(28,29,30,31,boff1,boff2,%%r15,%%r12,2)
+ #else
+  #define loada_kend_k1m16 "vmovddup (%0,%3,1),%%zmm1; vmovddup 8(%0,%3,1),%%zmm2; vmovddup 64(%0,%3,1),%%zmm3; vmovddup 72(%0,%3,1),%%zmm4; addq $128,%3;"
+ #endif
+ #define acc_kend_nc2_k1m16(boff1) unit_acc_gen_m16n2(12,13,14,15,boff1,%1,%%r12,1)
+ #define acc_kend_nc3_k1m16(boff1) unit_acc_gen_m16n2(16,17,18,19,boff1,%1,%%r12,2)
+ #define acc_kend_nc4_k1m16(boff1) unit_acc_gen_m16n2(20,21,22,23,boff1,%%r15)
+ #define acc_kend_nc5_k1m16(boff1) unit_acc_gen_m16n2(24,25,26,27,boff1,%%r15,%%r12,1)
+ #define acc_kend_nc6_k1m16(boff1) unit_acc_gen_m16n2(28,29,30,31,boff1,%%r15,%%r12,2)
 #endif
 #define save_init_m16 "movq %2,%3; addq $128,%2;"
 #ifdef TRMMKERNEL
   #define SAVE_m16n1 "vmulpd %%zmm8,%%zmm0,%%zmm8; vmovupd %%zmm8,(%2); vmulpd %%zmm9,%%zmm0,%%zmm9; vmovupd %%zmm9,64(%2); addq $128,%2;"
+ #ifdef BROADCAST_KERNEL
   #define unit_save_m16n2(c1_no,c2_no,c3_no,c4_no)\
     "vmulpd %%zmm"#c1_no",%%zmm0,%%zmm"#c1_no"; vmovupd %%zmm"#c1_no",(%3); vmulpd %%zmm"#c2_no",%%zmm0,%%zmm"#c2_no"; vmovupd %%zmm"#c2_no",64(%3);"\
     "vmulpd %%zmm"#c3_no",%%zmm0,%%zmm"#c3_no"; vmovupd %%zmm"#c3_no",(%3,%4,1); vmulpd %%zmm"#c4_no",%%zmm0,%%zmm"#c4_no"; vmovupd %%zmm"#c4_no",64(%3,%4,1); leaq (%3,%4,2),%3;"
+ #else
+  #define unit_save_m16n2(c1_no,c2_no,c3_no,c4_no)\
+    "vunpcklpd %%zmm"#c2_no",%%zmm"#c1_no",%%zmm1; vunpcklpd %%zmm"#c4_no",%%zmm"#c3_no",%%zmm2; vunpckhpd %%zmm"#c2_no",%%zmm"#c1_no",%%zmm3; vunpckhpd %%zmm"#c4_no",%%zmm"#c3_no",%%zmm4;"\
+    "vmulpd %%zmm1,%%zmm0,%%zmm1; vmovupd %%zmm1,(%3); vmulpd %%zmm2,%%zmm0,%%zmm2; vmovupd %%zmm2,64(%3);"\
+    "vmulpd %%zmm3,%%zmm0,%%zmm3; vmovupd %%zmm3,(%3,%4,1); vmulpd %%zmm4,%%zmm0,%%zmm4; vmovupd %%zmm4,64(%3,%4,1); leaq (%3,%4,2),%3;"
+ #endif
 #else
   #define SAVE_m16n1 "vfmadd213pd (%2),%%zmm0,%%zmm8; vmovupd %%zmm8,(%2); vfmadd213pd 64(%2),%%zmm0,%%zmm9; vmovupd %%zmm9,64(%2); addq $128,%2;"
+ #ifdef BROADCAST_KERNEL
   #define unit_save_m16n2(c1_no,c2_no,c3_no,c4_no)\
     "vfmadd213pd (%3),%%zmm0,%%zmm"#c1_no"; vmovupd %%zmm"#c1_no",(%3); vfmadd213pd 64(%3),%%zmm0,%%zmm"#c2_no"; vmovupd %%zmm"#c2_no",64(%3);"\
     "vfmadd213pd (%3,%4,1),%%zmm0,%%zmm"#c3_no"; vmovupd %%zmm"#c3_no",(%3,%4,1); vfmadd213pd 64(%3,%4,1),%%zmm0,%%zmm"#c4_no"; vmovupd %%zmm"#c4_no",64(%3,%4,1); leaq (%3,%4,2),%3;"
+ #else
+  #define unit_save_m16n2(c1_no,c2_no,c3_no,c4_no)\
+    "vunpcklpd %%zmm"#c2_no",%%zmm"#c1_no",%%zmm1; vunpcklpd %%zmm"#c4_no",%%zmm"#c3_no",%%zmm2; vunpckhpd %%zmm"#c2_no",%%zmm"#c1_no",%%zmm3; vunpckhpd %%zmm"#c4_no",%%zmm"#c3_no",%%zmm4;"\
+    "vfmadd213pd (%3),%%zmm0,%%zmm1; vmovupd %%zmm1,(%3); vfmadd213pd 64(%3),%%zmm0,%%zmm2; vmovupd %%zmm2,64(%3);"\
+    "vfmadd213pd (%3,%4,1),%%zmm0,%%zmm3; vmovupd %%zmm3,(%3,%4,1); vfmadd213pd 64(%3,%4,1),%%zmm0,%%zmm4; vmovupd %%zmm4,64(%3,%4,1); leaq (%3,%4,2),%3;"
+ #endif
 #endif
 #define SAVE_m16n2 save_init_m16 unit_save_m16n2(8,9,10,11)
 #define SAVE_m16n4 SAVE_m16n2 unit_save_m16n2(12,13,14,15)
@@ -206,11 +234,11 @@
 #define KERNEL_k1m8n12 KERNEL_h_k1m8n12 "addq $16,%%r15;"
 #if defined(TRMMKERNEL) && !defined(LEFT) && (BACKWARDS == 0)
   #define loada_kend_k1m8 "vmovddup (%0,%3,1),%%zmm1; vmovddup 8(%0,%3,1),%%zmm2; addq $64,%3;"
-  #define acc_kend_nc2_k1m8(boff1,boff2) unit_acc_gen_m8n2(10,11,boff1,%1,%%r12,1)
-  #define acc_kend_nc3_k1m8(boff1,boff2) unit_acc_gen_m8n2(12,13,boff1,%1,%%r12,2)
-  #define acc_kend_nc4_k1m8(boff1,boff2) unit_acc_gen_m8n2(14,15,boff1,%%r15)
-  #define acc_kend_nc5_k1m8(boff1,boff2) unit_acc_gen_m8n2(16,17,boff1,%%r15,%%r12,1)
-  #define acc_kend_nc6_k1m8(boff1,boff2) unit_acc_gen_m8n2(18,19,boff1,%%r15,%%r12,2)
+  #define acc_kend_nc2_k1m8(boff1) unit_acc_gen_m8n2(10,11,boff1,%1,%%r12,1)
+  #define acc_kend_nc3_k1m8(boff1) unit_acc_gen_m8n2(12,13,boff1,%1,%%r12,2)
+  #define acc_kend_nc4_k1m8(boff1) unit_acc_gen_m8n2(14,15,boff1,%%r15)
+  #define acc_kend_nc5_k1m8(boff1) unit_acc_gen_m8n2(16,17,boff1,%%r15,%%r12,1)
+  #define acc_kend_nc6_k1m8(boff1) unit_acc_gen_m8n2(18,19,boff1,%%r15,%%r12,2)
 #endif
 #define save_init_m8 "movq %2,%3; addq $64,%2;"
 #ifdef TRMMKERNEL
@@ -258,11 +286,11 @@
 #define KERNEL_k1m4n12 KERNEL_h_k1m4n12 "addq $16,%%r15;"
 #if defined(TRMMKERNEL) && !defined(LEFT) && (BACKWARDS == 0)
   #define loada_kend_k1m4 "vmovddup (%0,%3,1),%%ymm1; vmovddup 8(%0,%3,1),%%ymm2; addq $32,%3;"
-  #define acc_kend_nc2_k1m4(boff1,boff2) unit_acc_gen_m4n2(6,7,boff1,%1,%%r12,1)
-  #define acc_kend_nc3_k1m4(boff1,boff2) unit_acc_gen_m4n2(8,9,boff1,%1,%%r12,2)
-  #define acc_kend_nc4_k1m4(boff1,boff2) unit_acc_gen_m4n2(10,11,boff1,%%r15)
-  #define acc_kend_nc5_k1m4(boff1,boff2) unit_acc_gen_m4n2(12,13,boff1,%%r15,%%r12,1)
-  #define acc_kend_nc6_k1m4(boff1,boff2) unit_acc_gen_m4n2(14,15,boff1,%%r15,%%r12,2)
+  #define acc_kend_nc2_k1m4(boff1) unit_acc_gen_m4n2(6,7,boff1,%1,%%r12,1)
+  #define acc_kend_nc3_k1m4(boff1) unit_acc_gen_m4n2(8,9,boff1,%1,%%r12,2)
+  #define acc_kend_nc4_k1m4(boff1) unit_acc_gen_m4n2(10,11,boff1,%%r15)
+  #define acc_kend_nc5_k1m4(boff1) unit_acc_gen_m4n2(12,13,boff1,%%r15,%%r12,1)
+  #define acc_kend_nc6_k1m4(boff1) unit_acc_gen_m4n2(14,15,boff1,%%r15,%%r12,2)
 #endif
 #define save_init_m4 "movq %2,%3; addq $32,%2;"
 #ifdef TRMMKERNEL
@@ -311,11 +339,11 @@
 #define KERNEL_k1m2n12 KERNEL_h_k1m2n12 "addq $16,%%r15;"
 #if defined(TRMMKERNEL) && !defined(LEFT) && (BACKWARDS == 0)
   #define loada_kend_k1m2 "vmovddup (%0,%3,1),%%xmm1; vmovddup 8(%0,%3,1),%%xmm2; addq $16,%3;"
-  #define acc_kend_nc2_k1m2(boff1,boff2) unit_acc_gen_m2n2(6,7,boff1,%1,%%r12,1)
-  #define acc_kend_nc3_k1m2(boff1,boff2) unit_acc_gen_m2n2(8,9,boff1,%1,%%r12,2)
-  #define acc_kend_nc4_k1m2(boff1,boff2) unit_acc_gen_m2n2(10,11,boff1,%%r15)
-  #define acc_kend_nc5_k1m2(boff1,boff2) unit_acc_gen_m2n2(12,13,boff1,%%r15,%%r12,1)
-  #define acc_kend_nc6_k1m2(boff1,boff2) unit_acc_gen_m2n2(14,15,boff1,%%r15,%%r12,2)
+  #define acc_kend_nc2_k1m2(boff1) unit_acc_gen_m2n2(6,7,boff1,%1,%%r12,1)
+  #define acc_kend_nc3_k1m2(boff1) unit_acc_gen_m2n2(8,9,boff1,%1,%%r12,2)
+  #define acc_kend_nc4_k1m2(boff1) unit_acc_gen_m2n2(10,11,boff1,%%r15)
+  #define acc_kend_nc5_k1m2(boff1) unit_acc_gen_m2n2(12,13,boff1,%%r15,%%r12,1)
+  #define acc_kend_nc6_k1m2(boff1) unit_acc_gen_m2n2(14,15,boff1,%%r15,%%r12,2)
 #endif
 #define save_init_m2 "movq %2,%3; addq $16,%2;"
 #ifdef TRMMKERNEL
@@ -362,11 +390,11 @@
 #define KERNEL_k1m1n12 KERNEL_h_k1m1n12 "addq $16,%%r15;"
 #if defined(TRMMKERNEL) && !defined(LEFT) && (BACKWARDS == 0)
   #define loada_kend_k1m1 "vmovddup (%0,%3,1),%%xmm1; addq $8,%3;"
-  #define acc_kend_nc2_k1m1(boff1,boff2) "vfmadd231pd "#boff1"(%1,%%r12,1),%%xmm1,%%xmm5;"
-  #define acc_kend_nc3_k1m1(boff1,boff2) "vfmadd231pd "#boff1"(%1,%%r12,2),%%xmm1,%%xmm6;"
-  #define acc_kend_nc4_k1m1(boff1,boff2) "vfmadd231pd "#boff1"(%%r15),%%xmm1,%%xmm7;"
-  #define acc_kend_nc5_k1m1(boff1,boff2) "vfmadd231pd "#boff1"(%%r15,%%r12,1),%%xmm1,%%xmm8;"
-  #define acc_kend_nc6_k1m1(boff1,boff2) "vfmadd231pd "#boff1"(%%r15,%%r12,2),%%xmm1,%%xmm9;"
+  #define acc_kend_nc2_k1m1(boff1) "vfmadd231pd "#boff1"(%1,%%r12,1),%%xmm1,%%xmm5;"
+  #define acc_kend_nc3_k1m1(boff1) "vfmadd231pd "#boff1"(%1,%%r12,2),%%xmm1,%%xmm6;"
+  #define acc_kend_nc4_k1m1(boff1) "vfmadd231pd "#boff1"(%%r15),%%xmm1,%%xmm7;"
+  #define acc_kend_nc5_k1m1(boff1) "vfmadd231pd "#boff1"(%%r15,%%r12,1),%%xmm1,%%xmm8;"
+  #define acc_kend_nc6_k1m1(boff1) "vfmadd231pd "#boff1"(%%r15,%%r12,2),%%xmm1,%%xmm9;"
 #endif
 #define save_init_m1 "movq %2,%3; addq $8,%2;"
 #ifdef TRMMKERNEL

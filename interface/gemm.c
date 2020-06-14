@@ -77,7 +77,7 @@
 #define GEMM_MULTITHREAD_THRESHOLD 4
 #endif
 
-static int (*gemm[])(blas_arg_t *, BLASLONG *, BLASLONG *, FLOAT *, FLOAT *, BLASLONG) = {
+static int (*gemm[])(blas_arg_t *, BLASLONG *, BLASLONG *, IFLOAT *, IFLOAT *, BLASLONG) = {
 #ifndef GEMM3M
   GEMM_NN, GEMM_TN, GEMM_RN, GEMM_CN,
   GEMM_NT, GEMM_TT, GEMM_RT, GEMM_CT,
@@ -108,8 +108,8 @@ static int (*gemm[])(blas_arg_t *, BLASLONG *, BLASLONG *, FLOAT *, FLOAT *, BLA
 void NAME(char *TRANSA, char *TRANSB,
 	  blasint *M, blasint *N, blasint *K,
 	  FLOAT *alpha,
-	  FLOAT *a, blasint *ldA,
-	  FLOAT *b, blasint *ldB,
+	  IFLOAT *a, blasint *ldA,
+	  IFLOAT *b, blasint *ldB,
 	  FLOAT *beta,
 	  FLOAT *c, blasint *ldC){
 
@@ -119,8 +119,8 @@ void NAME(char *TRANSA, char *TRANSB,
   blasint info;
 
   char transA, transB;
-  FLOAT *buffer;
-  FLOAT *sa, *sb;
+  IFLOAT *buffer;
+  IFLOAT *sa, *sb;
 
 #ifdef SMP
   double MNK;
@@ -272,6 +272,9 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_TRANSPOSE TransA, enum CBLAS_TRANS
   PRINT_DEBUG_CNAME;
 
 #if !defined(COMPLEX) && !defined(DOUBLE) && defined(USE_SGEMM_KERNEL_DIRECT)
+#ifdef DYNAMIC_ARCH
+ if (support_avx512() )
+#endif  
   if (beta == 0 && alpha == 1.0 && order == CblasRowMajor && TransA == CblasNoTrans && TransB == CblasNoTrans && sgemm_kernel_direct_performant(m,n,k)) {
 	sgemm_kernel_direct(m, n, k, a, lda, b, ldb, c, ldc);
 	return;

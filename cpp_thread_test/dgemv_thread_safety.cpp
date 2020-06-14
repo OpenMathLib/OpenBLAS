@@ -15,6 +15,10 @@ int main(int argc, char* argv[]){
 	blasint randomMatSize = 1024; //dimension of the random square matrices and vectors being used
 	uint32_t numConcurrentThreads = 52; //number of concurrent calls of the functions being tested
 	uint32_t numTestRounds = 16; //number of testing rounds before success exit
+	uint32_t maxHwThreads = omp_get_max_threads();
+	
+	if (maxHwThreads < 52)
+		numConcurrentThreads = maxHwThreads -4;
 	
 	if (argc > 4){
 		std::cout<<"ERROR: too many arguments for thread safety tester"<<std::endl;

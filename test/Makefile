@@ -1,7 +1,12 @@
 TOPDIR	= ..
 include ../Makefile.system
 
+
+ifeq ($(NOFORTRAN),1)
+all ::
+else
 all :: level1 level2 level3
+endif
 
 level1 : sblat1 dblat1 cblat1 zblat1
 ifndef CROSS
@@ -59,9 +64,17 @@ endif
 endif
 endif
 
+ifeq ($(BUILD_HALF),1)
+level3 : test_shgemm sblat3 dblat3 cblat3 zblat3
+else
 level3 : sblat3 dblat3 cblat3 zblat3
+endif
 ifndef CROSS
 	rm -f ?BLAT3.SUMM
+ifeq ($(BUILD_HALF),1)
+	OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 ./test_shgemm > SHBLAT3.SUMM
+	@$(GREP) -q FATAL SHBLAT3.SUMM && cat SHBLAT3.SUMM || exit 0
+endif
 	OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 ./sblat3 < ./sblat3.dat
 	@$(GREP) -q FATAL SBLAT3.SUMM && cat SBLAT3.SUMM || exit 0
 	OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 ./dblat3 < ./dblat3.dat
@@ -73,6 +86,10 @@ ifndef CROSS
 ifdef SMP
 	rm -f ?BLAT3.SUMM
 ifeq ($(USE_OPENMP), 1)
+ifeq ($(BUILD_HALF),1)
+	OMP_NUM_THREADS=2 ./test_shgemm > SHBLAT3.SUMM
+	@$(GREP) -q FATAL SHBLAT3.SUMM && cat SHBLAT3.SUMM || exit 0
+endif
 	OMP_NUM_THREADS=2 ./sblat3 < ./sblat3.dat
 	@$(GREP) -q FATAL SBLAT3.SUMM && cat SBLAT3.SUMM || exit 0
 	OMP_NUM_THREADS=2 ./dblat3 < ./dblat3.dat
@@ -82,6 +99,10 @@ ifeq ($(USE_OPENMP), 1)
 	OMP_NUM_THREADS=2 ./zblat3 < ./zblat3.dat
 	@$(GREP) -q FATAL ZBLAT3.SUMM && cat ZBLAT3.SUMM || exit 0
 else
+ifeq ($(BUILD_HALF),1)
+	OPENBLAS_NUM_THREADS=2 ./test_shgemm > SHBLAT3.SUMM
+	@$(GREP) -q FATAL SHBLAT3.SUMM && cat SHBLAT3.SUMM || exit 0
+endif
 	OPENBLAS_NUM_THREADS=2 ./sblat3 < ./sblat3.dat
 	@$(GREP) -q FATAL SBLAT3.SUMM && cat SBLAT3.SUMM || exit 0
 	OPENBLAS_NUM_THREADS=2 ./dblat3 < ./dblat3.dat
@@ -160,6 +181,11 @@ zblat2 : zblat2.$(SUFFIX) ../$(LIBNAME)
 sblat3 : sblat3.$(SUFFIX) ../$(LIBNAME)
 	$(FC) $(FLDFLAGS) -o sblat3 sblat3.$(SUFFIX) ../$(LIBNAME) $(EXTRALIB) $(CEXTRALIB)
 
+ifeq ($(BUILD_HALF),1)
+test_shgemm : compare_sgemm_shgemm.c ../$(LIBNAME)
+	$(FC) $(FLDFLAGS) -o test_shgemm compare_sgemm_shgemm.c ../$(LIBNAME) $(EXTRALIB) $(CEXTRALIB)
+endif
+
 dblat3 : dblat3.$(SUFFIX) ../$(LIBNAME)
 	$(FC) $(FLDFLAGS) -o dblat3 dblat3.$(SUFFIX) ../$(LIBNAME) $(EXTRALIB) $(CEXTRALIB)
 
@@ -182,7 +208,7 @@ clean:
 	@rm -f *.$(SUFFIX) *.$(PSUFFIX) gmon.$(SUFFIX)ut *.SUMM *.cxml *.exe *.pdb *.dwf \
 	sblat1 dblat1 cblat1 zblat1 \
 	sblat2 dblat2 cblat2 zblat2 \
-	sblat3 dblat3 cblat3 zblat3 \
+	test_shgemm sblat3 dblat3 cblat3 zblat3 \
 	sblat1p dblat1p cblat1p zblat1p \
 	sblat2p dblat2p cblat2p zblat2p \
 	sblat3p dblat3p cblat3p zblat3p \

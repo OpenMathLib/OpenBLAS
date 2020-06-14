@@ -16,7 +16,6 @@ matrix:
       before_script: &common-before
         - COMMON_FLAGS="DYNAMIC_ARCH=1 TARGET=NEHALEM NUM_THREADS=32"
       script:
-        - set -e
         - make QUIET_MAKE=1 $COMMON_FLAGS $BTYPE
         - make -C test $COMMON_FLAGS $BTYPE
         - make -C ctest $COMMON_FLAGS $BTYPE
@@ -32,6 +31,16 @@ matrix:
       env:
         # for matrix annotation only
         - TARGET_BOX=PPC64LE_LINUX
+        - BTYPE="BINARY=64 USE_OPENMP=1"
+
+    - <<: *test-ubuntu
+      os: linux
+      arch: s390x
+      before_script:
+        - COMMON_FLAGS="DYNAMIC_ARCH=1 TARGET=Z13 NUM_THREADS=32"
+      env:
+        # for matrix annotation only
+        - TARGET_BOX=IBMZ_LINUX
         - BTYPE="BINARY=64 USE_OPENMP=1"
 
     - <<: *test-ubuntu
@@ -98,7 +107,6 @@ matrix:
         - sudo sh alpine-chroot-install -p 'build-base gfortran perl linux-headers'
       before_script: *common-before
       script:
-        - set -e
         # XXX: Disable some warnings for now to avoid exceeding Travis limit for log size.
         - alpine make QUIET_MAKE=1 $COMMON_FLAGS $BTYPE
               CFLAGS="-Wno-misleading-indentation -Wno-sign-conversion -Wno-incompatible-pointer-types"
@@ -141,7 +149,6 @@ matrix:
       before_script:
         - COMMON_ARGS="-DTARGET=NEHALEM -DNUM_THREADS=32"
       script:
-        - set -e
         - mkdir build
         - CONFIG=Release
         - cmake -Bbuild -H. $CMAKE_ARGS $COMMON_ARGS -DCMAKE_BUILD_TYPE=$CONFIG
@@ -180,6 +187,12 @@ matrix:
         - CFLAGS="-O2 -Wno-macro-redefined -isysroot /Applications/Xcode-10.1.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS12.1.sdk -arch arm64 -miphoneos-version-min=10.0"
         - BTYPE="TARGET=ARMV8 BINARY=64 HOSTCC=clang NOFORTRAN=1"
 
+    - <<: *test-macos
+      osx_image: xcode10.1
+      env:
+        - CC="/Applications/Xcode-10.1.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang"
+        - CFLAGS="-O2 -mno-thumb -Wno-macro-redefined -isysroot /Applications/Xcode-10.1.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS12.1.sdk -arch armv7 -miphoneos-version-min=5.1"
+        - BTYPE="TARGET=ARMV7 HOSTCC=clang NOFORTRAN=1"
 # whitelist
 branches:
   only:

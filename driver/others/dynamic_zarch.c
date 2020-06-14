@@ -1,12 +1,58 @@
-
 #include "common.h"
+#include <stdbool.h>
 
+// Gate kernels for z13 and z14 on gcc version
+#if (__GNUC__ == 5 && __GNUC_MINOR__ >= 2) || __GNUC__ >= 6 ||           \
+    /* RHEL 7 since 7.3: */                                              \
+    (__GNUC__ == 4 && __GNUC_MINOR__ == 8 && __GNUC_PATCHLEVEL__ == 5 && \
+     __GNUC_RH_RELEASE__ >= 11)
+#define HAVE_Z13_SUPPORT
+#endif
+
+#if __GNUC__ >= 7
+#define HAVE_Z14_SUPPORT
+#endif
+
+// Guard the use of getauxval() on glibc version >= 2.16
+#ifdef __GLIBC__
+#include <features.h>
+#if __GLIBC_PREREQ(2, 16)
+#include <sys/auxv.h>
+#define HAVE_GETAUXVAL 1
+
+static unsigned long get_hwcap(void)
+{
+	unsigned long hwcap = getauxval(AT_HWCAP);
+	char *maskenv;
+
+	// honor requests for not using specific CPU features in LD_HWCAP_MASK
+	maskenv = getenv("LD_HWCAP_MASK");
+	if (maskenv)
+		hwcap &= strtoul(maskenv, NULL, 0);
+
+	return hwcap;
+	// note that a missing auxval is interpreted as no capabilities
+	// available, which is safe.
+}
+
+#else // __GLIBC_PREREQ(2, 16)
+#warn "Cannot detect SIMD support in Z13 or newer architectures since glibc is older than 2.16"
+
+static unsigned long get_hwcap(void) {
+	// treat missing support for getauxval() as no capabilities available,
+	// which is safe.
+	return 0;
+}
+#endif // __GLIBC_PREREQ(2, 16)
+#endif // __GLIBC
+
+extern gotoblas_t gotoblas_ZARCH_GENERIC;
+#ifdef HAVE_Z13_SUPPORT
 extern gotoblas_t gotoblas_Z13;
+#endif
+#ifdef HAVE_Z14_SUPPORT
 extern gotoblas_t gotoblas_Z14;
-//extern gotoblas_t gotoblas_Z15;
-//#if (!defined C_GCC) || (GCC_VERSION >= 60000)
-//extern gotoblas_t gotoblas_Z14;
-//#endif
+#endif
 
 #define NUM_CORETYPES 4
 
@@ -16,47 +62,50 @@ static char* corename[] = {
 	"unknown",
 	"Z13",
 	"Z14",
-//	"Z15",
 	"ZARCH_GENERIC",
 };
 
 char* gotoblas_corename(void) {
+#ifdef HAVE_Z13_SUPPORT
 	if (gotoblas == &gotoblas_Z13)	return corename[1];
+#endif
+#ifdef HAVE_Z14_SUPPORT
 	if (gotoblas == &gotoblas_Z14)	return corename[2];
-//	if (gotoblas == &gotoblas_Z15)	return corename[3];
-//#if (!defined C_GCC) || (GCC_VERSION >= 60000)
-//	if (gotoblas == &gotoblas_POWER9)	return corename[3];
-//#endif
-	return corename[0]; // try generic?
+#endif
+	if (gotoblas == &gotoblas_ZARCH_GENERIC) return corename[3];
+
+	return corename[0];
 }
 
-// __builtin_cpu_is is not supported by zarch
+/**
+ * Detect the fitting set of kernels by retrieving the CPU features supported by
+ * OS from the auxiliary value AT_HWCAP and choosing the set of kernels
+ * ("coretype") that exploits most of the features and can be compiled with the
+ * available gcc version.
+ * Note that we cannot use vector registers on a z13 or newer unless supported
+ * by the OS kernel (which needs to handle them properly during context switch).
+ */
 static gotoblas_t* get_coretype(void) {
-	FILE* infile;
-	char buffer[512], * p;
 
-	p = (char*)NULL;
-	infile = fopen("/proc/sysinfo", "r");
-	while (fgets(buffer, sizeof(buffer), infile)) {
-		if (!strncmp("Type", buffer, 4)) {
-			p = strchr(buffer, ':') + 2;
-#if 0
-			fprintf(stderr, "%s\n", p);
+	unsigned long hwcap __attribute__((unused)) = get_hwcap();
+
+	// z14 and z15 systems: exploit Vector Facility (SIMD) and
+	// Vector-Enhancements Facility 1 (float SIMD instructions), if present.
+#ifdef HAVE_Z14_SUPPORT
+	if ((hwcap & HWCAP_S390_VX) && (hwcap & HWCAP_S390_VXE))
+		return &gotoblas_Z14;
 #endif
-			break;
-		}
-	}
 
-	fclose(infile);
+	// z13: Vector Facility (SIMD for double)
+#ifdef HAVE_Z13_SUPPORT
+	if (hwcap & HWCAP_S390_VX)
+		return &gotoblas_Z13;
+#endif
 
-	if (strstr(p, "2964")) return &gotoblas_Z13;
-	if (strstr(p, "2965")) return &gotoblas_Z13;
-	if (strstr(p, "3906")) return &gotoblas_Z14;
-	if (strstr(p, "3907")) return &gotoblas_Z14;
-	if (strstr(p, "8561")) return &gotoblas_Z14;        // fallback z15 to z14
-	if (strstr(p, "8562")) return &gotoblas_Z14;        // fallback z15 to z14
-
-	return NULL; // should be ZARCH_GENERIC
+	// fallback in case of missing compiler support, systems before z13, or
+	// when the OS does not advertise support for the Vector Facility (e.g.,
+	// missing support in the OS kernel)
+	return &gotoblas_ZARCH_GENERIC;
 }
 
 static gotoblas_t* force_coretype(char* coretype) {
@@ -76,12 +125,13 @@ static gotoblas_t* force_coretype(char* coretype) {
 
 	switch (found)
 	{
+#ifdef HAVE_Z13_SUPPORT
 	case  1: return (&gotoblas_Z13);
+#endif
+#ifdef HAVE_Z14_SUPPORT
 	case  2: return (&gotoblas_Z14);
-//	case  3: return (&gotoblas_Z15);
-//#if (!defined C_GCC) || (GCC_VERSION >= 60000)
-//	case  3: return (&gotoblas_POWER9);
-//#endif
+#endif
+	case  3: return (&gotoblas_ZARCH_GENERIC);
 	default: return NULL;
 	}
 	snprintf(message, 128, "Core not found: %s\n", coretype);
@@ -109,9 +159,9 @@ void gotoblas_dynamic_init(void) {
 
 	if (gotoblas == NULL)
 	{
-		snprintf(coremsg, 128, "Falling back to Z14 core\n");
+		snprintf(coremsg, 128, "Failed to detect system, falling back to generic z support.\n");
 		openblas_warning(1, coremsg);
-		gotoblas = &gotoblas_Z14;
+		gotoblas = &gotoblas_ZARCH_GENERIC;
 	}
 
 	if (gotoblas && gotoblas->init) {

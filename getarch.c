@@ -812,6 +812,34 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #else
 #endif
 
+#ifdef FORCE_MIPS1004K
+#define FORCE
+#define ARCHITECTURE    "MIPS"
+#define SUBARCHITECTURE "MIPS1004K"
+#define SUBDIRNAME      "mips"
+#define ARCHCONFIG   "-DMIPS1004K " \
+       "-DL1_DATA_SIZE=32768 -DL1_DATA_LINESIZE=32 " \
+       "-DL2_SIZE=262144 -DL2_LINESIZE=32 " \
+       "-DDTB_DEFAULT_ENTRIES=64 -DDTB_SIZE=4096 -DL2_ASSOCIATIVE=8 "
+#define LIBNAME   "mips1004K"
+#define CORENAME  "MIPS1004K"
+#else
+#endif
+
+#ifdef FORCE_MIPS24K
+#define FORCE
+#define ARCHITECTURE    "MIPS"
+#define SUBARCHITECTURE "MIPS24K"
+#define SUBDIRNAME      "mips"
+#define ARCHCONFIG   "-DMIPS24K " \
+       "-DL1_DATA_SIZE=32768 -DL1_DATA_LINESIZE=32 " \
+       "-DL2_SIZE=32768 -DL2_LINESIZE=32 " \
+       "-DDTB_DEFAULT_ENTRIES=64 -DDTB_SIZE=4096 -DL2_ASSOCIATIVE=8 "
+#define LIBNAME   "mips24K"
+#define CORENAME  "MIPS24K"
+#else
+#endif
+
 #ifdef FORCE_I6500
 #define FORCE
 #define ARCHITECTURE    "MIPS"
@@ -1038,7 +1066,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
        "-DL1_DATA_SIZE=65536 -DL1_DATA_LINESIZE=64 -DL1_DATA_ASSOCIATIVE=4 " \
        "-DL2_SIZE=1048576 -DL2_LINESIZE=64 -DL2_ASSOCIATIVE=16 " \
        "-DDTB_DEFAULT_ENTRIES=64 -DDTB_SIZE=4096 " \
-       "-DHAVE_VFPV4 -DHAVE_VFPV3 -DHAVE_VFP -DHAVE_NEON -DARMV8" \
+       "-DHAVE_VFPV4 -DHAVE_VFPV3 -DHAVE_VFP -DHAVE_NEON -DARMV8 " \
        "-march=armv8.2-a -mtune=cortex-a72"
 #define LIBNAME   "neoversen1"
 #define CORENAME  "NEOVERSEN1"
@@ -1334,9 +1362,11 @@ int main(int argc, char *argv[]){
 
 #if defined(__BYTE_ORDER__) && __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__
 printf("__BYTE_ORDER__=__ORDER_BIG_ENDIAN__\n");
-#endif
-#if defined(__BIG_ENDIAN__) && __BIG_ENDIAN__ > 0
+#elif defined(__BIG_ENDIAN__) && __BIG_ENDIAN__ > 0
 printf("__BYTE_ORDER__=__ORDER_BIG_ENDIAN__\n");
+#endif
+#if defined(_CALL_ELF) && (_CALL_ELF == 2)
+printf("ELF_VERSION=2\n");
 #endif
 
 #ifdef MAKE_NB_JOBS

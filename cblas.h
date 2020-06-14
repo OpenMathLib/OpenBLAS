@@ -25,6 +25,11 @@ char* openblas_get_config(void);
 /*Get the CPU corename on runtime.*/
 char* openblas_get_corename(void);
 
+#ifdef OPENBLAS_OS_LINUX
+/* Sets thread affinity for OpenBLAS threads. `thread_idx` is in [0, openblas_get_num_threads()-1]. */
+int openblas_setaffinity(int thread_idx, size_t cpusetsize, cpu_set_t* cpu_set);
+#endif
+
 /* Get the parallelization type which is used by OpenBLAS */
 int openblas_get_parallel(void);
 /* OpenBLAS is compiled for sequential use  */

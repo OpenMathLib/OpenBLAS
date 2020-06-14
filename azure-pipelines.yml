@@ -49,3 +49,23 @@ jobs:
       # we need a privileged docker run for sde process attachment
       docker run --privileged intel_sde
     displayName: 'Run AVX512 SkylakeX docker build / test'
+
+- job: Windows_cl
+  pool:
+     vmImage: 'windows-latest'
+  steps:   
+  - task: CMake@1
+    inputs:
+      workingDirectory: 'build' # Optional
+      cmakeArgs: '-G "Visual Studio 16 2019" ..'
+  - task: CMake@1
+    inputs:
+      cmakeArgs: '--build . --config Release'
+      workingDirectory: 'build'
+  - script: |
+      cd build
+      cd utest
+      dir
+      openblas_utest.exe
+  
+      

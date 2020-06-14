@@ -56,10 +56,21 @@ ifneq ($(INTERFACE64), 0)
 	@echo "  Use 64 bits int    (equivalent to \"-i8\" in Fortran)      "
 endif
 endif
-
-	@echo "  C compiler       ... $(C_COMPILER)  (command line : $(CC))"
+	@$(CC) --version > /dev/null 2>&1;\
+	if [ $$? -eq 0 ]; then \
+	   cverinfo=`$(CC) --version | sed -n '1p'`; \
+	   echo "  C compiler       ... $(C_COMPILER)  (cmd & version : $${cverinfo})";\
+	else  \
+	   echo "  C compiler       ... $(C_COMPILER)  (command line : $(CC))";\
+	fi
 ifeq ($(NOFORTRAN), $(filter 0,$(NOFORTRAN)))
-	@echo "  Fortran compiler ... $(F_COMPILER)  (command line : $(FC))"
+	@$(FC) --version > /dev/null 2>&1;\
+	if [ $$? -eq 0 ]; then \
+	   fverinfo=`$(FC) --version | sed -n '1p'`; \
+	   echo "  Fortran compiler ... $(F_COMPILER)  (cmd & version : $${fverinfo})";\
+	else \
+	   echo "  Fortran compiler ... $(F_COMPILER)  (command line : $(FC))";\
+	fi
 endif
 ifneq ($(OSNAME), AIX)
 	@echo -n "  Library Name     ... $(LIBNAME)"
@@ -68,9 +79,13 @@ else
 endif
 
 ifndef SMP
-	@echo " (Single threaded)  "
+	@echo " (Single-threading)  "
 else
-	@echo " (Multi threaded; Max num-threads is $(NUM_THREADS))"
+	@echo " (Multi-threading; Max num-threads is $(NUM_THREADS))"
+endif
+
+ifeq ($(DYNAMIC_ARCH), 1)
+	@echo "  Supporting multiple $(ARCH) cpu models with minimum requirement for the common code being $(CORE)"
 endif
 
 ifeq ($(USE_OPENMP), 1)
@@ -97,12 +112,12 @@ endif
 
 shared :
 ifneq ($(NO_SHARED), 1)
-ifeq ($(OSNAME), $(filter $(OSNAME),Linux SunOS Android Haiku))
+ifeq ($(OSNAME), $(filter $(OSNAME),Linux SunOS Android Haiku FreeBSD DragonFly))
 	@$(MAKE) -C exports so
 	@ln -fs $(LIBSONAME) $(LIBPREFIX).so
 	@ln -fs $(LIBSONAME) $(LIBPREFIX).so.$(MAJOR_VERSION)
 endif
-ifeq ($(OSNAME), $(filter $(OSNAME),FreeBSD OpenBSD NetBSD DragonFly))
+ifeq ($(OSNAME), $(filter $(OSNAME),OpenBSD NetBSD))
 	@$(MAKE) -C exports so
 	@ln -fs $(LIBSONAME) $(LIBPREFIX).so
 endif
@@ -249,6 +264,7 @@ lapack_prebuild :
 ifeq ($(NOFORTRAN), $(filter 0,$(NOFORTRAN)))
 	-@echo "FC          = $(FC)" > $(NETLIB_LAPACK_DIR)/make.inc
 	-@echo "FFLAGS      = $(LAPACK_FFLAGS)" >> $(NETLIB_LAPACK_DIR)/make.inc
+	-@echo "FFLAGS_DRV  = $(LAPACK_FFLAGS)" >> $(NETLIB_LAPACK_DIR)/make.inc
 	-@echo "POPTS       = $(LAPACK_FPFLAGS)" >> $(NETLIB_LAPACK_DIR)/make.inc
 	-@echo "FFLAGS_NOOPT       = -O0 $(LAPACK_NOOPT)" >> $(NETLIB_LAPACK_DIR)/make.inc
 	-@echo "PNOOPT      = $(LAPACK_FPFLAGS) -O0" >> $(NETLIB_LAPACK_DIR)/make.inc
@@ -317,7 +333,7 @@ lapack-test :
 	$(MAKE) -j 1 -C $(NETLIB_LAPACK_DIR)/TESTING/EIG xeigtstc  xeigtstd  xeigtsts  xeigtstz 
 	$(MAKE) -j 1 -C $(NETLIB_LAPACK_DIR)/TESTING/LIN xlintstc  xlintstd  xlintstds  xlintstrfd  xlintstrfz  xlintsts  xlintstz  xlintstzc xlintstrfs xlintstrfc
 ifneq ($(CROSS), 1)
-	( cd $(NETLIB_LAPACK_DIR)/INSTALL; make all; ./testlsame; ./testslamch; ./testdlamch; \
+	( cd $(NETLIB_LAPACK_DIR)/INSTALL; $(MAKE) all; ./testlsame; ./testslamch; ./testdlamch; \
         ./testsecond; ./testdsecnd; ./testieee; ./testversion )
 	(cd $(NETLIB_LAPACK_DIR); ./lapack_testing.py -r -b TESTING)
 endif

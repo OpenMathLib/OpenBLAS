@@ -63,13 +63,16 @@
 #ifdef __GNUC__
 #define MB do { __asm__ __volatile__("": : :"memory"); } while (0)
 #define WMB do { __asm__ __volatile__("": : :"memory"); } while (0)
+#define RMB
 #else
 #define MB do {} while (0)
 #define WMB do {} while (0)
+#define RMB
 #endif
 
 static void __inline blas_lock(volatile BLASULONG *address){
 
+	
 #ifndef C_MSVC
   int ret;
 #else
@@ -77,7 +80,7 @@ static void __inline blas_lock(volatile BLASULONG *address){
 #endif
 
   do {
-    while (*address) {YIELDING;};
+    while (*address) {YIELDING;}
 
 #ifndef C_MSVC
     __asm__ __volatile__(
@@ -196,9 +199,9 @@ static __inline BLASLONG blas_quickdivide(BLASLONG x, BLASLONG y){
 #else
 extern unsigned int blas_quick_divide_table[];
 
-static __inline int blas_quickdivide(unsigned int x, unsigned int y){
+static __inline unsigned int blas_quickdivide(unsigned int x, unsigned int y){
 
-  unsigned int result;
+  volatile unsigned int result;
 
   if (y <= 1) return x;
 
@@ -212,7 +215,6 @@ static __inline int blas_quickdivide(unsigned int x, unsigned int y){
   y = blas_quick_divide_table[y];
 
   __asm__ __volatile__  ("mull %0" :"=d" (result), "+a"(x) : "0" (y));
-
   return result;
 }
 #endif
@@ -226,7 +228,13 @@ static __inline int blas_quickdivide(unsigned int x, unsigned int y){
 #define HUGE_PAGESIZE	( 2 << 20)
 
 #ifndef BUFFERSIZE
+#if defined(SKYLAKEX) 
+#define BUFFER_SIZE	(32 << 21)
+#elif defined(HASWELL) || defined(ZEN)
+#define BUFFER_SIZE	(32 << 22)
+#else
 #define BUFFER_SIZE	(32 << 20)
+#endif
 #else
 #define BUFFER_SIZE	(32 << BUFFERSIZE)
 #endif

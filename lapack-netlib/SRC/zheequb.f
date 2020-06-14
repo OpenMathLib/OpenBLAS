@@ -271,7 +271,7 @@
          AVG = AVG / N
 
          STD = 0.0D0
-         DO I = N+1, N
+         DO I = N+1, 2*N
             WORK( I ) = S( I-N ) * WORK( I-N ) - AVG
          END DO
          CALL ZLASSQ( N, WORK( N+1 ), 1, SCALE, SUMSQ )

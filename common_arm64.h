@@ -35,7 +35,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #define MB   __asm__ __volatile__ ("dmb  ish" : : : "memory")
 #define WMB  __asm__ __volatile__ ("dmb  ishst" : : : "memory")
-
+#define RMB  __asm__ __volatile__ ("dmb  ishld" : : : "memory")
 
 #define INLINE inline
 
@@ -141,12 +141,17 @@ REALNAME:
 #endif
 #define HUGE_PAGESIZE   ( 4 << 20)
 
+#ifndef BUFFERSIZE
 #if defined(CORTEXA57)
 #define BUFFER_SIZE     (20 << 20)
+#elif defined(TSV110) || defined(EMAG8180)
+#define BUFFER_SIZE     (32 << 20)
 #else
 #define BUFFER_SIZE     (16 << 20)
 #endif
-
+#else
+#define BUFFER_SIZE	(32 << BUFFERSIZE)
+#endif
 
 #define BASE_ADDRESS (START_ADDRESS - BUFFER_SIZE * MAX_CPU_NUMBER)
 

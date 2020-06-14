@@ -47,6 +47,7 @@
 
 #define MB
 #define WMB
+#define RMB
 
 #ifdef C_SUN
 #define	__asm__ __asm
