@@ -1,55 +1,101 @@
+*> \brief \b DBLAT3
+*
+*  =========== DOCUMENTATION ===========
+*
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
+*
+*  Definition:
+*  ===========
+*
+*       PROGRAM DBLAT3
+*
+*
+*> \par Purpose:
+*  =============
+*>
+*> \verbatim
+*>
+*> Test program for the DOUBLE PRECISION Level 3 Blas.
+*>
+*> The program must be driven by a short data file. The first 14 records
+*> of the file are read using list-directed input, the last 6 records
+*> are read using the format ( A6, L2 ). An annotated example of a data
+*> file can be obtained by deleting the first 3 characters from the
+*> following 20 lines:
+*> 'dblat3.out'      NAME OF SUMMARY OUTPUT FILE
+*> 6                 UNIT NUMBER OF SUMMARY FILE
+*> 'DBLAT3.SNAP'     NAME OF SNAPSHOT OUTPUT FILE
+*> -1                UNIT NUMBER OF SNAPSHOT FILE (NOT USED IF .LT. 0)
+*> F        LOGICAL FLAG, T TO REWIND SNAPSHOT FILE AFTER EACH RECORD.
+*> F        LOGICAL FLAG, T TO STOP ON FAILURES.
+*> T        LOGICAL FLAG, T TO TEST ERROR EXITS.
+*> 16.0     THRESHOLD VALUE OF TEST RATIO
+*> 6                 NUMBER OF VALUES OF N
+*> 0 1 2 3 5 9       VALUES OF N
+*> 3                 NUMBER OF VALUES OF ALPHA
+*> 0.0 1.0 0.7       VALUES OF ALPHA
+*> 3                 NUMBER OF VALUES OF BETA
+*> 0.0 1.0 1.3       VALUES OF BETA
+*> DGEMM  T PUT F FOR NO TEST. SAME COLUMNS.
+*> DSYMM  T PUT F FOR NO TEST. SAME COLUMNS.
+*> DTRMM  T PUT F FOR NO TEST. SAME COLUMNS.
+*> DTRSM  T PUT F FOR NO TEST. SAME COLUMNS.
+*> DSYRK  T PUT F FOR NO TEST. SAME COLUMNS.
+*> DSYR2K T PUT F FOR NO TEST. SAME COLUMNS.
+*>
+*> Further Details
+*> ===============
+*>
+*> See:
+*>
+*>    Dongarra J. J., Du Croz J. J., Duff I. S. and Hammarling S.
+*>    A Set of Level 3 Basic Linear Algebra Subprograms.
+*>
+*>    Technical Memorandum No.88 (Revision 1), Mathematics and
+*>    Computer Science Division, Argonne National Laboratory, 9700
+*>    South Cass Avenue, Argonne, Illinois 60439, US.
+*>
+*> -- Written on 8-February-1989.
+*>    Jack Dongarra, Argonne National Laboratory.
+*>    Iain Duff, AERE Harwell.
+*>    Jeremy Du Croz, Numerical Algorithms Group Ltd.
+*>    Sven Hammarling, Numerical Algorithms Group Ltd.
+*>
+*>    10-9-00:  Change STATUS='NEW' to 'UNKNOWN' so that the testers
+*>              can be run multiple times without deleting generated
+*>              output files (susan)
+*> \endverbatim
+*
+*  Authors:
+*  ========
+*
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
+*
+*> \date April 2012
+*
+*> \ingroup double_blas_testing
+*
+*  =====================================================================
       PROGRAM DBLAT3
 *
-*  Test program for the DOUBLE PRECISION Level 3 Blas.
+*  -- Reference BLAS test routine (version 3.7.0) --
+*  -- Reference BLAS is a software package provided by Univ. of Tennessee,    --
+*  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
+*     April 2012
 *
-*  The program must be driven by a short data file. The first 14 records
-*  of the file are read using list-directed input, the last 6 records
-*  are read using the format ( A6, L2 ). An annotated example of a data
-*  file can be obtained by deleting the first 3 characters from the
-*  following 20 lines:
-*  'DBLAT3.SUMM'     NAME OF SUMMARY OUTPUT FILE
-*  6                 UNIT NUMBER OF SUMMARY FILE
-*  'DBLAT3.SNAP'     NAME OF SNAPSHOT OUTPUT FILE
-*  -1                UNIT NUMBER OF SNAPSHOT FILE (NOT USED IF .LT. 0)
-*  F        LOGICAL FLAG, T TO REWIND SNAPSHOT FILE AFTER EACH RECORD.
-*  F        LOGICAL FLAG, T TO STOP ON FAILURES.
-*  T        LOGICAL FLAG, T TO TEST ERROR EXITS.
-*  16.0     THRESHOLD VALUE OF TEST RATIO
-*  6                 NUMBER OF VALUES OF N
-*  0 1 2 3 5 9       VALUES OF N
-*  3                 NUMBER OF VALUES OF ALPHA
-*  0.0 1.0 0.7       VALUES OF ALPHA
-*  3                 NUMBER OF VALUES OF BETA
-*  0.0 1.0 1.3       VALUES OF BETA
-*  DGEMM  T PUT F FOR NO TEST. SAME COLUMNS.
-*  DSYMM  T PUT F FOR NO TEST. SAME COLUMNS.
-*  DTRMM  T PUT F FOR NO TEST. SAME COLUMNS.
-*  DTRSM  T PUT F FOR NO TEST. SAME COLUMNS.
-*  DSYRK  T PUT F FOR NO TEST. SAME COLUMNS.
-*  DSYR2K T PUT F FOR NO TEST. SAME COLUMNS.
-*
-*  See:
-*
-*     Dongarra J. J., Du Croz J. J., Duff I. S. and Hammarling S.
-*     A Set of Level 3 Basic Linear Algebra Subprograms.
-*
-*     Technical Memorandum No.88 (Revision 1), Mathematics and
-*     Computer Science Division, Argonne National Laboratory, 9700
-*     South Cass Avenue, Argonne, Illinois 60439, US.
-*
-*  -- Written on 8-February-1989.
-*     Jack Dongarra, Argonne National Laboratory.
-*     Iain Duff, AERE Harwell.
-*     Jeremy Du Croz, Numerical Algorithms Group Ltd.
-*     Sven Hammarling, Numerical Algorithms Group Ltd.
+*  =====================================================================
 *
 *     .. Parameters ..
       INTEGER            NIN
       PARAMETER          ( NIN = 5 )
       INTEGER            NSUBS
       PARAMETER          ( NSUBS = 6 )
-      DOUBLE PRECISION   ZERO, HALF, ONE
-      PARAMETER          ( ZERO = 0.0D0, HALF = 0.5D0, ONE = 1.0D0 )
+      DOUBLE PRECISION   ZERO, ONE
+      PARAMETER          ( ZERO = 0.0D0, ONE = 1.0D0 )
       INTEGER            NMAX
       PARAMETER          ( NMAX = 65 )
       INTEGER            NIDMAX, NALMAX, NBEMAX
@@ -96,7 +142,7 @@
 *
       READ( NIN, FMT = * )SUMMRY
       READ( NIN, FMT = * )NOUT
-      OPEN( NOUT, FILE = SUMMRY, STATUS = 'NEW' )
+      OPEN( NOUT, FILE = SUMMRY, STATUS = 'UNKNOWN' )
       NOUTC = NOUT
 *
 *     Read name and unit number for snapshot output file and open file.
@@ -105,7 +151,7 @@
       READ( NIN, FMT = * )NTRA
       TRACE = NTRA.GE.0
       IF( TRACE )THEN
-         OPEN( NTRA, FILE = SNAPS, STATUS = 'NEW' )
+         OPEN( NTRA, FILE = SNAPS, STATUS = 'UNKNOWN' )
       END IF
 *     Read the flag that directs rewinding of the snapshot file.
       READ( NIN, FMT = * )REWI
@@ -182,14 +228,7 @@
 *
 *     Compute EPS (the machine precision).
 *
-      EPS = ONE
-   70 CONTINUE
-      IF( DDIFF( ONE + EPS, ONE ).EQ.ZERO )
-     $   GO TO 80
-      EPS = HALF*EPS
-      GO TO 70
-   80 CONTINUE
-      EPS = EPS + EPS
+      EPS = EPSILON(ZERO)
       WRITE( NOUT, FMT = 9998 )EPS
 *
 *     Check the reliability of DMMCH using exact data.
@@ -1802,7 +1841,7 @@
 *
 *  Tests the error exits from the Level 3 Blas.
 *  Requires a special version of the error-handling routine XERBLA.
-*  ALPHA, BETA, A, B and C should not need to be defined.
+*  A, B and C should not need to be defined.
 *
 *  Auxiliary routine for test program for Level 3 Blas.
 *
@@ -1812,12 +1851,18 @@
 *     Jeremy Du Croz, Numerical Algorithms Group Ltd.
 *     Sven Hammarling, Numerical Algorithms Group Ltd.
 *
+*  3-19-92:  Initialize ALPHA and BETA  (eca)
+*  3-19-92:  Fix argument 12 in calls to SSYMM with INFOT = 9  (eca)
+*
 *     .. Scalar Arguments ..
       INTEGER            ISNUM, NOUT
       CHARACTER*6        SRNAMT
 *     .. Scalars in Common ..
       INTEGER            INFOT, NOUTC
       LOGICAL            LERR, OK
+*     .. Parameters ..
+      DOUBLE PRECISION   ONE, TWO
+      PARAMETER          ( ONE = 1.0D0, TWO = 2.0D0 )
 *     .. Local Scalars ..
       DOUBLE PRECISION   ALPHA, BETA
 *     .. Local Arrays ..
@@ -1834,6 +1879,12 @@
 *     LERR is set to .TRUE. by the special version of XERBLA each time
 *     it is called, and is then tested and re-set by CHKXER.
       LERR = .FALSE.
+*
+*     Initialize ALPHA and BETA.
+*
+      ALPHA = ONE
+      BETA = TWO
+*
       GO TO ( 10, 20, 30, 40, 50, 60 )ISNUM
    10 INFOT = 1
       CALL DGEMM( '/', 'N', 0, 0, 0, ALPHA, A, 1, B, 1, BETA, C, 1 )
@@ -1963,16 +2014,16 @@
       CALL DSYMM( 'R', 'L', 0, 2, ALPHA, A, 1, B, 1, BETA, C, 1 )
       CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
       INFOT = 9
-      CALL DSYMM( 'L', 'U', 2, 0, ALPHA, A, 2, B, 1, BETA, C, 1 )
+      CALL DSYMM( 'L', 'U', 2, 0, ALPHA, A, 2, B, 1, BETA, C, 2 )
       CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
       INFOT = 9
-      CALL DSYMM( 'R', 'U', 2, 0, ALPHA, A, 1, B, 1, BETA, C, 1 )
+      CALL DSYMM( 'R', 'U', 2, 0, ALPHA, A, 1, B, 1, BETA, C, 2 )
       CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
       INFOT = 9
-      CALL DSYMM( 'L', 'L', 2, 0, ALPHA, A, 2, B, 1, BETA, C, 1 )
+      CALL DSYMM( 'L', 'L', 2, 0, ALPHA, A, 2, B, 1, BETA, C, 2 )
       CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
       INFOT = 9
-      CALL DSYMM( 'R', 'L', 2, 0, ALPHA, A, 1, B, 1, BETA, C, 1 )
+      CALL DSYMM( 'R', 'L', 2, 0, ALPHA, A, 1, B, 1, BETA, C, 2 )
       CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
       INFOT = 12
       CALL DSYMM( 'L', 'U', 2, 0, ALPHA, A, 2, B, 2, BETA, C, 1 )
@@ -2660,7 +2711,6 @@
    50    CONTINUE
       END IF
 *
-   60 CONTINUE
       LDERES = .TRUE.
       GO TO 80
    70 CONTINUE
