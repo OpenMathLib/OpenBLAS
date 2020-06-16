@@ -606,7 +606,6 @@ ifneq ($(C_COMPILER), GCC)
 DYNAMIC_CORE += POWER9
 endif
 ifeq ($(C_COMPILER), GCC)
-GCCVERSIONGT5 := $(shell expr `$(CC) -dumpversion | cut -f1 -d.` \> 5)
 ifeq ($(GCCVERSIONGT5), 1)
 DYNAMIC_CORE += POWER9
 else
