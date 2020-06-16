@@ -282,9 +282,11 @@ endif
 ifeq ($(C_COMPILER), GCC)
 GCCVERSIONGTEQ4 := $(shell expr `$(CC) -dumpversion | cut -f1 -d.` \>= 4)
 GCCVERSIONGT4 := $(shell expr `$(CC) -dumpversion | cut -f1 -d.` \> 4)
+GCCVERSIONEQ5 := $(shell expr `$(CC) -dumpversion | cut -f1 -d.` = 5)
 GCCVERSIONGT5 := $(shell expr `$(CC) -dumpversion | cut -f1 -d.` \> 5)
 GCCVERSIONGTEQ7 := $(shell expr `$(CC) -dumpversion | cut -f1 -d.` \>= 7)
 GCCVERSIONGTEQ9 := $(shell expr `$(CC) -dumpversion | cut -f1 -d.` \>= 9)
+GCCMINORVERSIONGTEQ2 := $(shell expr `$(CC) -dumpversion | cut -f2 -d.` \>= 2)
 GCCMINORVERSIONGTEQ7 := $(shell expr `$(CC) -dumpversion | cut -f2 -d.` \>= 7)
 endif
 
@@ -570,20 +572,27 @@ ifeq ($(ARCH), zarch)
 DYNAMIC_CORE = ZARCH_GENERIC
 
 # Z13 is supported since gcc-5.2, gcc-6, and in RHEL 7.3 and newer
-GCC_GE_52 := $(subst 0,,$(shell expr `$(CC) -dumpversion` \>= "5.2"))
-
-ifeq ($(wildcard /etc/redhat-release), /etc/redhat-release)
-RHEL_WITH_Z13 := $(subst 0,,$(shell source /etc/os-release ; expr $$VERSION_ID \>= "7.3"))
+ifeq ($(GCCVERSIONGT5), 1)
+	ZARCH_SUPPORT_Z13 := 1
+else ifeq ($(GCCVERSIONEQ5), 1)
+ifeq ($(GCCMINORVERSIONGTEQ2), 1)
+	ZARCH_SUPPORT_Z13 := 1
+endif
 endif
 
-ifeq ($(or $(GCC_GE_52),$(RHEL_WITH_Z13)), 1)
+ifeq ($(wildcard /etc/redhat-release), /etc/redhat-release)
+ifeq ($(shell source /etc/os-release ; expr $$VERSION_ID \>= "7.3"), 1)
+	ZARCH_SUPPORT_Z13 := 1
+endif
+endif
+
+ifeq ($(ZARCH_SUPPORT_Z13), 1)
 DYNAMIC_CORE += Z13
 else
 $(info OpenBLAS: Not building Z13 kernels because gcc is older than 5.2 or 6.x)
 endif
 
-GCC_MAJOR_GE_7 := $(shell expr `$(CC) -dumpversion | cut -f1 -d.` \>= 7)
-ifeq ($(GCC_MAJOR_GE_7), 1)
+ifeq ($(GCCVERSIONGTEQ7), 1)
 DYNAMIC_CORE += Z14
 else
 $(info OpenBLAS: Not building Z14 kernels because gcc is older than 7.x)
