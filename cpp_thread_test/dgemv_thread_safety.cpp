@@ -18,7 +18,7 @@ int main(int argc, char* argv[]){
 	uint32_t maxHwThreads = omp_get_max_threads();
 	
 	if (maxHwThreads < 52)
-		numConcurrentThreads = maxHwThreads -4;
+		numConcurrentThreads = maxHwThreads;
 	
 	if (argc > 4){
 		std::cout<<"ERROR: too many arguments for thread safety tester"<<std::endl;
