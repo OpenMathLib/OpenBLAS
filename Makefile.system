@@ -263,10 +263,10 @@ endif
 
 ARFLAGS	=
 CPP	= $(COMPILER) -E
-AR	= $(CROSS_SUFFIX)ar
-AS	= $(CROSS_SUFFIX)as
-LD	= $(CROSS_SUFFIX)ld
-RANLIB	= $(CROSS_SUFFIX)ranlib
+AR	?= $(CROSS_SUFFIX)ar
+AS	?= $(CROSS_SUFFIX)as
+LD	?= $(CROSS_SUFFIX)ld
+RANLIB	?= $(CROSS_SUFFIX)ranlib
 NM	= $(CROSS_SUFFIX)nm
 DLLWRAP = $(CROSS_SUFFIX)dllwrap
 OBJCOPY = $(CROSS_SUFFIX)objcopy
@@ -282,9 +282,11 @@ endif
 ifeq ($(C_COMPILER), GCC)
 GCCVERSIONGTEQ4 := $(shell expr `$(CC) -dumpversion | cut -f1 -d.` \>= 4)
 GCCVERSIONGT4 := $(shell expr `$(CC) -dumpversion | cut -f1 -d.` \> 4)
+GCCVERSIONEQ5 := $(shell expr `$(CC) -dumpversion | cut -f1 -d.` = 5)
 GCCVERSIONGT5 := $(shell expr `$(CC) -dumpversion | cut -f1 -d.` \> 5)
 GCCVERSIONGTEQ7 := $(shell expr `$(CC) -dumpversion | cut -f1 -d.` \>= 7)
 GCCVERSIONGTEQ9 := $(shell expr `$(CC) -dumpversion | cut -f1 -d.` \>= 9)
+GCCMINORVERSIONGTEQ2 := $(shell expr `$(CC) -dumpversion | cut -f2 -d.` \>= 2)
 GCCMINORVERSIONGTEQ7 := $(shell expr `$(CC) -dumpversion | cut -f2 -d.` \>= 7)
 endif
 
@@ -570,20 +572,27 @@ ifeq ($(ARCH), zarch)
 DYNAMIC_CORE = ZARCH_GENERIC
 
 # Z13 is supported since gcc-5.2, gcc-6, and in RHEL 7.3 and newer
-GCC_GE_52 := $(subst 0,,$(shell expr `$(CC) -dumpversion` \>= "5.2"))
-
-ifeq ($(wildcard /etc/redhat-release), /etc/redhat-release)
-RHEL_WITH_Z13 := $(subst 0,,$(shell source /etc/os-release ; expr $$VERSION_ID \>= "7.3"))
+ifeq ($(GCCVERSIONGT5), 1)
+	ZARCH_SUPPORT_Z13 := 1
+else ifeq ($(GCCVERSIONEQ5), 1)
+ifeq ($(GCCMINORVERSIONGTEQ2), 1)
+	ZARCH_SUPPORT_Z13 := 1
+endif
 endif
 
-ifeq ($(or $(GCC_GE_52),$(RHEL_WITH_Z13)), 1)
+ifeq ($(wildcard /etc/redhat-release), /etc/redhat-release)
+ifeq ($(shell source /etc/os-release ; expr $$VERSION_ID \>= "7.3"), 1)
+	ZARCH_SUPPORT_Z13 := 1
+endif
+endif
+
+ifeq ($(ZARCH_SUPPORT_Z13), 1)
 DYNAMIC_CORE += Z13
 else
 $(info OpenBLAS: Not building Z13 kernels because gcc is older than 5.2 or 6.x)
 endif
 
-GCC_MAJOR_GE_7 := $(shell expr `$(CC) -dumpversion | cut -f1 -d.` \>= 7)
-ifeq ($(GCC_MAJOR_GE_7), 1)
+ifeq ($(GCCVERSIONGTEQ7), 1)
 DYNAMIC_CORE += Z14
 else
 $(info OpenBLAS: Not building Z14 kernels because gcc is older than 7.x)
@@ -597,7 +606,6 @@ ifneq ($(C_COMPILER), GCC)
 DYNAMIC_CORE += POWER9
 endif
 ifeq ($(C_COMPILER), GCC)
-GCCVERSIONGT5 := $(shell expr `$(CC) -dumpversion | cut -f1 -d.` \> 5)
 ifeq ($(GCCVERSIONGT5), 1)
 DYNAMIC_CORE += POWER9
 else
@@ -783,7 +791,15 @@ endif
 
 ifeq ($(F_COMPILER), FLANG)
 CCOMMON_OPT += -DF_INTERFACE_FLANG
-FCOMMON_OPT += -frecursive
+FCOMMON_OPT += -Mrecursive -Kieee
+ifeq ($(OSNAME), Linux)
+ifeq ($(ARCH), x86_64)
+FLANG_VENDOR := $(shell expr `$(FC) --version|cut -f 1 -d "."|head -1`)
+ifeq ($(FLANG_VENDOR),AOCC)
+FCOMMON_OPT += -fno-unroll-loops
+endif
+endif
+endif
 ifdef BINARY64
 ifdef INTERFACE64
 ifneq ($(INTERFACE64), 0)
@@ -797,11 +813,6 @@ endif
 ifeq ($(USE_OPENMP), 1)
 FCOMMON_OPT += -fopenmp
 endif
-#ifeq ($(OSNAME), Linux)
-#ifeq ($(ARCH), x86_64)
-#FLANG_VENDOR := $(shell expr `$(FC) --version|cut -f 1 -d "."|head -1`)
-#endif
-#endif
 endif
 
 ifeq ($(F_COMPILER), G77)
@@ -1276,12 +1287,7 @@ endif
 
 override CFLAGS     += $(COMMON_OPT) $(CCOMMON_OPT) -I$(TOPDIR)
 override PFLAGS     += $(COMMON_OPT) $(CCOMMON_OPT) -I$(TOPDIR) -DPROFILE $(COMMON_PROF)
-#ifeq ($(FLANG_VENDOR),AOCC)
-ifeq ($(F_COMPILER),FLANG)
-override FFLAGS     += $(filter-out -O2 -O3,$(COMMON_OPT)) -O1 $(FCOMMON_OPT)
-else
 override FFLAGS     += $(COMMON_OPT) $(FCOMMON_OPT)
-endif
 override FPFLAGS    += $(FCOMMON_OPT) $(COMMON_PROF)
 #MAKEOVERRIDES =
 

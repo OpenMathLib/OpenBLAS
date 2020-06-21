@@ -1,50 +1,97 @@
+*> \brief \b ZBLAT3
+*
+*  =========== DOCUMENTATION ===========
+*
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
+*
+*  Definition:
+*  ===========
+*
+*       PROGRAM ZBLAT3
+*
+*
+*> \par Purpose:
+*  =============
+*>
+*> \verbatim
+*>
+*> Test program for the COMPLEX*16       Level 3 Blas.
+*>
+*> The program must be driven by a short data file. The first 14 records
+*> of the file are read using list-directed input, the last 9 records
+*> are read using the format ( A6, L2 ). An annotated example of a data
+*> file can be obtained by deleting the first 3 characters from the
+*> following 23 lines:
+*> 'zblat3.out'      NAME OF SUMMARY OUTPUT FILE
+*> 6                 UNIT NUMBER OF SUMMARY FILE
+*> 'ZBLAT3.SNAP'     NAME OF SNAPSHOT OUTPUT FILE
+*> -1                UNIT NUMBER OF SNAPSHOT FILE (NOT USED IF .LT. 0)
+*> F        LOGICAL FLAG, T TO REWIND SNAPSHOT FILE AFTER EACH RECORD.
+*> F        LOGICAL FLAG, T TO STOP ON FAILURES.
+*> T        LOGICAL FLAG, T TO TEST ERROR EXITS.
+*> 16.0     THRESHOLD VALUE OF TEST RATIO
+*> 6                 NUMBER OF VALUES OF N
+*> 0 1 2 3 5 9       VALUES OF N
+*> 3                 NUMBER OF VALUES OF ALPHA
+*> (0.0,0.0) (1.0,0.0) (0.7,-0.9)       VALUES OF ALPHA
+*> 3                 NUMBER OF VALUES OF BETA
+*> (0.0,0.0) (1.0,0.0) (1.3,-1.1)       VALUES OF BETA
+*> ZGEMM  T PUT F FOR NO TEST. SAME COLUMNS.
+*> ZHEMM  T PUT F FOR NO TEST. SAME COLUMNS.
+*> ZSYMM  T PUT F FOR NO TEST. SAME COLUMNS.
+*> ZTRMM  T PUT F FOR NO TEST. SAME COLUMNS.
+*> ZTRSM  T PUT F FOR NO TEST. SAME COLUMNS.
+*> ZHERK  T PUT F FOR NO TEST. SAME COLUMNS.
+*> ZSYRK  T PUT F FOR NO TEST. SAME COLUMNS.
+*> ZHER2K T PUT F FOR NO TEST. SAME COLUMNS.
+*> ZSYR2K T PUT F FOR NO TEST. SAME COLUMNS.
+*>
+*>
+*> Further Details
+*> ===============
+*>
+*> See:
+*>
+*>    Dongarra J. J., Du Croz J. J., Duff I. S. and Hammarling S.
+*>    A Set of Level 3 Basic Linear Algebra Subprograms.
+*>
+*>    Technical Memorandum No.88 (Revision 1), Mathematics and
+*>    Computer Science Division, Argonne National Laboratory, 9700
+*>    South Cass Avenue, Argonne, Illinois 60439, US.
+*>
+*> -- Written on 8-February-1989.
+*>    Jack Dongarra, Argonne National Laboratory.
+*>    Iain Duff, AERE Harwell.
+*>    Jeremy Du Croz, Numerical Algorithms Group Ltd.
+*>    Sven Hammarling, Numerical Algorithms Group Ltd.
+*>
+*>    10-9-00:  Change STATUS='NEW' to 'UNKNOWN' so that the testers
+*>              can be run multiple times without deleting generated
+*>              output files (susan)
+*> \endverbatim
+*
+*  Authors:
+*  ========
+*
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
+*
+*> \date April 2012
+*
+*> \ingroup complex16_blas_testing
+*
+*  =====================================================================
       PROGRAM ZBLAT3
 *
-*  Test program for the COMPLEX*16       Level 3 Blas.
+*  -- Reference BLAS test routine (version 3.7.0) --
+*  -- Reference BLAS is a software package provided by Univ. of Tennessee,    --
+*  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
+*     April 2012
 *
-*  The program must be driven by a short data file. The first 14 records
-*  of the file are read using list-directed input, the last 9 records
-*  are read using the format ( A6, L2 ). An annotated example of a data
-*  file can be obtained by deleting the first 3 characters from the
-*  following 23 lines:
-*  'ZBLAT3.SUMM'     NAME OF SUMMARY OUTPUT FILE
-*  6                 UNIT NUMBER OF SUMMARY FILE
-*  'ZBLAT3.SNAP'     NAME OF SNAPSHOT OUTPUT FILE
-*  -1                UNIT NUMBER OF SNAPSHOT FILE (NOT USED IF .LT. 0)
-*  F        LOGICAL FLAG, T TO REWIND SNAPSHOT FILE AFTER EACH RECORD.
-*  F        LOGICAL FLAG, T TO STOP ON FAILURES.
-*  T        LOGICAL FLAG, T TO TEST ERROR EXITS.
-*  16.0     THRESHOLD VALUE OF TEST RATIO
-*  6                 NUMBER OF VALUES OF N
-*  0 1 2 3 5 9       VALUES OF N
-*  3                 NUMBER OF VALUES OF ALPHA
-*  (0.0,0.0) (1.0,0.0) (0.7,-0.9)       VALUES OF ALPHA
-*  3                 NUMBER OF VALUES OF BETA
-*  (0.0,0.0) (1.0,0.0) (1.3,-1.1)       VALUES OF BETA
-*  ZGEMM  T PUT F FOR NO TEST. SAME COLUMNS.
-*  ZHEMM  T PUT F FOR NO TEST. SAME COLUMNS.
-*  ZSYMM  T PUT F FOR NO TEST. SAME COLUMNS.
-*  ZTRMM  T PUT F FOR NO TEST. SAME COLUMNS.
-*  ZTRSM  T PUT F FOR NO TEST. SAME COLUMNS.
-*  ZHERK  T PUT F FOR NO TEST. SAME COLUMNS.
-*  ZSYRK  T PUT F FOR NO TEST. SAME COLUMNS.
-*  ZHER2K T PUT F FOR NO TEST. SAME COLUMNS.
-*  ZSYR2K T PUT F FOR NO TEST. SAME COLUMNS.
-*
-*  See:
-*
-*     Dongarra J. J., Du Croz J. J., Duff I. S. and Hammarling S.
-*     A Set of Level 3 Basic Linear Algebra Subprograms.
-*
-*     Technical Memorandum No.88 (Revision 1), Mathematics and
-*     Computer Science Division, Argonne National Laboratory, 9700
-*     South Cass Avenue, Argonne, Illinois 60439, US.
-*
-*  -- Written on 8-February-1989.
-*     Jack Dongarra, Argonne National Laboratory.
-*     Iain Duff, AERE Harwell.
-*     Jeremy Du Croz, Numerical Algorithms Group Ltd.
-*     Sven Hammarling, Numerical Algorithms Group Ltd.
+*  =====================================================================
 *
 *     .. Parameters ..
       INTEGER            NIN
@@ -54,8 +101,8 @@
       COMPLEX*16         ZERO, ONE
       PARAMETER          ( ZERO = ( 0.0D0, 0.0D0 ),
      $                   ONE = ( 1.0D0, 0.0D0 ) )
-      DOUBLE PRECISION   RZERO, RHALF, RONE
-      PARAMETER          ( RZERO = 0.0D0, RHALF = 0.5D0, RONE = 1.0D0 )
+      DOUBLE PRECISION   RZERO
+      PARAMETER          ( RZERO = 0.0D0 )
       INTEGER            NMAX
       PARAMETER          ( NMAX = 65 )
       INTEGER            NIDMAX, NALMAX, NBEMAX
@@ -104,7 +151,7 @@
 *
       READ( NIN, FMT = * )SUMMRY
       READ( NIN, FMT = * )NOUT
-      OPEN( NOUT, FILE = SUMMRY, STATUS = 'NEW' )
+      OPEN( NOUT, FILE = SUMMRY, STATUS = 'UNKNOWN' )
       NOUTC = NOUT
 *
 *     Read name and unit number for snapshot output file and open file.
@@ -113,7 +160,7 @@
       READ( NIN, FMT = * )NTRA
       TRACE = NTRA.GE.0
       IF( TRACE )THEN
-         OPEN( NTRA, FILE = SNAPS, STATUS = 'NEW' )
+         OPEN( NTRA, FILE = SNAPS, STATUS = 'UNKNOWN' )
       END IF
 *     Read the flag that directs rewinding of the snapshot file.
       READ( NIN, FMT = * )REWI
@@ -190,14 +237,7 @@
 *
 *     Compute EPS (the machine precision).
 *
-      EPS = RONE
-   70 CONTINUE
-      IF( DDIFF( RONE + EPS, RONE ).EQ.RZERO )
-     $   GO TO 80
-      EPS = RHALF*EPS
-      GO TO 70
-   80 CONTINUE
-      EPS = EPS + EPS
+      EPS = EPSILON(RZERO)
       WRITE( NOUT, FMT = 9998 )EPS
 *
 *     Check the reliability of ZMMCH using exact data.
@@ -1303,8 +1343,6 @@
       NC = 0
       RESET = .TRUE.
       ERRMAX = RZERO
-      RALS = RONE
-      RBETS = RONE
 *
       DO 100 IN = 1, NIDIM
          N = IDIM( IN )
@@ -1951,7 +1989,7 @@
 *
 *  Tests the error exits from the Level 3 Blas.
 *  Requires a special version of the error-handling routine XERBLA.
-*  ALPHA, RALPHA, BETA, RBETA, A, B and C should not need to be defined.
+*  A, B and C should not need to be defined.
 *
 *  Auxiliary routine for test program for Level 3 Blas.
 *
@@ -1961,12 +1999,20 @@
 *     Jeremy Du Croz, Numerical Algorithms Group Ltd.
 *     Sven Hammarling, Numerical Algorithms Group Ltd.
 *
+*  3-19-92:  Initialize ALPHA, BETA, RALPHA, and RBETA  (eca)
+*  3-19-92:  Fix argument 12 in calls to ZSYMM and ZHEMM
+*            with INFOT = 9  (eca)
+*  10-9-00:  Declared INTRINSIC DCMPLX (susan)
+*
 *     .. Scalar Arguments ..
       INTEGER            ISNUM, NOUT
       CHARACTER*6        SRNAMT
 *     .. Scalars in Common ..
       INTEGER            INFOT, NOUTC
       LOGICAL            LERR, OK
+*     .. Parameters ..
+      REAL               ONE, TWO
+      PARAMETER          ( ONE = 1.0D0, TWO = 2.0D0 )
 *     .. Local Scalars ..
       COMPLEX*16         ALPHA, BETA
       DOUBLE PRECISION   RALPHA, RBETA
@@ -1975,6 +2021,8 @@
 *     .. External Subroutines ..
       EXTERNAL           ZGEMM, ZHEMM, ZHER2K, ZHERK, CHKXER, ZSYMM,
      $                   ZSYR2K, ZSYRK, ZTRMM, ZTRSM
+*     .. Intrinsic Functions ..
+      INTRINSIC          DCMPLX
 *     .. Common blocks ..
       COMMON             /INFOC/INFOT, NOUTC, OK, LERR
 *     .. Executable Statements ..
@@ -1984,6 +2032,14 @@
 *     LERR is set to .TRUE. by the special version of XERBLA each time
 *     it is called, and is then tested and re-set by CHKXER.
       LERR = .FALSE.
+*
+*     Initialize ALPHA, BETA, RALPHA, and RBETA.
+*
+      ALPHA = DCMPLX( ONE, -ONE )
+      BETA = DCMPLX( TWO, -TWO )
+      RALPHA = ONE
+      RBETA = TWO
+*
       GO TO ( 10, 20, 30, 40, 50, 60, 70, 80,
      $        90 )ISNUM
    10 INFOT = 1
@@ -2210,16 +2266,16 @@
       CALL ZHEMM( 'R', 'L', 0, 2, ALPHA, A, 1, B, 1, BETA, C, 1 )
       CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
       INFOT = 9
-      CALL ZHEMM( 'L', 'U', 2, 0, ALPHA, A, 2, B, 1, BETA, C, 1 )
+      CALL ZHEMM( 'L', 'U', 2, 0, ALPHA, A, 2, B, 1, BETA, C, 2 )
       CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
       INFOT = 9
-      CALL ZHEMM( 'R', 'U', 2, 0, ALPHA, A, 1, B, 1, BETA, C, 1 )
+      CALL ZHEMM( 'R', 'U', 2, 0, ALPHA, A, 1, B, 1, BETA, C, 2 )
       CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
       INFOT = 9
-      CALL ZHEMM( 'L', 'L', 2, 0, ALPHA, A, 2, B, 1, BETA, C, 1 )
+      CALL ZHEMM( 'L', 'L', 2, 0, ALPHA, A, 2, B, 1, BETA, C, 2 )
       CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
       INFOT = 9
-      CALL ZHEMM( 'R', 'L', 2, 0, ALPHA, A, 1, B, 1, BETA, C, 1 )
+      CALL ZHEMM( 'R', 'L', 2, 0, ALPHA, A, 1, B, 1, BETA, C, 2 )
       CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
       INFOT = 12
       CALL ZHEMM( 'L', 'U', 2, 0, ALPHA, A, 2, B, 2, BETA, C, 1 )
@@ -2277,16 +2333,16 @@
       CALL ZSYMM( 'R', 'L', 0, 2, ALPHA, A, 1, B, 1, BETA, C, 1 )
       CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
       INFOT = 9
-      CALL ZSYMM( 'L', 'U', 2, 0, ALPHA, A, 2, B, 1, BETA, C, 1 )
+      CALL ZSYMM( 'L', 'U', 2, 0, ALPHA, A, 2, B, 1, BETA, C, 2 )
       CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
       INFOT = 9
-      CALL ZSYMM( 'R', 'U', 2, 0, ALPHA, A, 1, B, 1, BETA, C, 1 )
+      CALL ZSYMM( 'R', 'U', 2, 0, ALPHA, A, 1, B, 1, BETA, C, 2 )
       CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
       INFOT = 9
-      CALL ZSYMM( 'L', 'L', 2, 0, ALPHA, A, 2, B, 1, BETA, C, 1 )
+      CALL ZSYMM( 'L', 'L', 2, 0, ALPHA, A, 2, B, 1, BETA, C, 2 )
       CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
       INFOT = 9
-      CALL ZSYMM( 'R', 'L', 2, 0, ALPHA, A, 1, B, 1, BETA, C, 1 )
+      CALL ZSYMM( 'R', 'L', 2, 0, ALPHA, A, 1, B, 1, BETA, C, 2 )
       CALL CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
       INFOT = 12
       CALL ZSYMM( 'L', 'U', 2, 0, ALPHA, A, 2, B, 2, BETA, C, 1 )
@@ -3276,7 +3332,6 @@
    50    CONTINUE
       END IF
 *
-   60 CONTINUE
       LZERES = .TRUE.
       GO TO 80
    70 CONTINUE

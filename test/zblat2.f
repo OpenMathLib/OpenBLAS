@@ -1,68 +1,114 @@
+*> \brief \b ZBLAT2
+*
+*  =========== DOCUMENTATION ===========
+*
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
+*
+*  Definition:
+*  ===========
+*
+*       PROGRAM ZBLAT2
+*
+*
+*> \par Purpose:
+*  =============
+*>
+*> \verbatim
+*>
+*> Test program for the COMPLEX*16       Level 2 Blas.
+*>
+*> The program must be driven by a short data file. The first 18 records
+*> of the file are read using list-directed input, the last 17 records
+*> are read using the format ( A6, L2 ). An annotated example of a data
+*> file can be obtained by deleting the first 3 characters from the
+*> following 35 lines:
+*> 'zblat2.out'      NAME OF SUMMARY OUTPUT FILE
+*> 6                 UNIT NUMBER OF SUMMARY FILE
+*> 'CBLA2T.SNAP'     NAME OF SNAPSHOT OUTPUT FILE
+*> -1                UNIT NUMBER OF SNAPSHOT FILE (NOT USED IF .LT. 0)
+*> F        LOGICAL FLAG, T TO REWIND SNAPSHOT FILE AFTER EACH RECORD.
+*> F        LOGICAL FLAG, T TO STOP ON FAILURES.
+*> T        LOGICAL FLAG, T TO TEST ERROR EXITS.
+*> 16.0     THRESHOLD VALUE OF TEST RATIO
+*> 6                 NUMBER OF VALUES OF N
+*> 0 1 2 3 5 9       VALUES OF N
+*> 4                 NUMBER OF VALUES OF K
+*> 0 1 2 4           VALUES OF K
+*> 4                 NUMBER OF VALUES OF INCX AND INCY
+*> 1 2 -1 -2         VALUES OF INCX AND INCY
+*> 3                 NUMBER OF VALUES OF ALPHA
+*> (0.0,0.0) (1.0,0.0) (0.7,-0.9)       VALUES OF ALPHA
+*> 3                 NUMBER OF VALUES OF BETA
+*> (0.0,0.0) (1.0,0.0) (1.3,-1.1)       VALUES OF BETA
+*> ZGEMV  T PUT F FOR NO TEST. SAME COLUMNS.
+*> ZGBMV  T PUT F FOR NO TEST. SAME COLUMNS.
+*> ZHEMV  T PUT F FOR NO TEST. SAME COLUMNS.
+*> ZHBMV  T PUT F FOR NO TEST. SAME COLUMNS.
+*> ZHPMV  T PUT F FOR NO TEST. SAME COLUMNS.
+*> ZTRMV  T PUT F FOR NO TEST. SAME COLUMNS.
+*> ZTBMV  T PUT F FOR NO TEST. SAME COLUMNS.
+*> ZTPMV  T PUT F FOR NO TEST. SAME COLUMNS.
+*> ZTRSV  T PUT F FOR NO TEST. SAME COLUMNS.
+*> ZTBSV  T PUT F FOR NO TEST. SAME COLUMNS.
+*> ZTPSV  T PUT F FOR NO TEST. SAME COLUMNS.
+*> ZGERC  T PUT F FOR NO TEST. SAME COLUMNS.
+*> ZGERU  T PUT F FOR NO TEST. SAME COLUMNS.
+*> ZHER   T PUT F FOR NO TEST. SAME COLUMNS.
+*> ZHPR   T PUT F FOR NO TEST. SAME COLUMNS.
+*> ZHER2  T PUT F FOR NO TEST. SAME COLUMNS.
+*> ZHPR2  T PUT F FOR NO TEST. SAME COLUMNS.
+*>
+*> Further Details
+*> ===============
+*>
+*>    See:
+*>
+*>       Dongarra J. J., Du Croz J. J., Hammarling S.  and Hanson R. J..
+*>       An  extended  set of Fortran  Basic Linear Algebra Subprograms.
+*>
+*>       Technical  Memoranda  Nos. 41 (revision 3) and 81,  Mathematics
+*>       and  Computer Science  Division,  Argonne  National Laboratory,
+*>       9700 South Cass Avenue, Argonne, Illinois 60439, US.
+*>
+*>       Or
+*>
+*>       NAG  Technical Reports TR3/87 and TR4/87,  Numerical Algorithms
+*>       Group  Ltd.,  NAG  Central  Office,  256  Banbury  Road, Oxford
+*>       OX2 7DE, UK,  and  Numerical Algorithms Group Inc.,  1101  31st
+*>       Street,  Suite 100,  Downers Grove,  Illinois 60515-1263,  USA.
+*>
+*>
+*> -- Written on 10-August-1987.
+*>    Richard Hanson, Sandia National Labs.
+*>    Jeremy Du Croz, NAG Central Office.
+*>
+*>    10-9-00:  Change STATUS='NEW' to 'UNKNOWN' so that the testers
+*>              can be run multiple times without deleting generated
+*>              output files (susan)
+*> \endverbatim
+*
+*  Authors:
+*  ========
+*
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
+*
+*> \date April 2012
+*
+*> \ingroup complex16_blas_testing
+*
+*  =====================================================================
       PROGRAM ZBLAT2
 *
-*  Test program for the COMPLEX*16       Level 2 Blas.
+*  -- Reference BLAS test routine (version 3.7.0) --
+*  -- Reference BLAS is a software package provided by Univ. of Tennessee,    --
+*  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
+*     April 2012
 *
-*  The program must be driven by a short data file. The first 18 records
-*  of the file are read using list-directed input, the last 17 records
-*  are read using the format ( A6, L2 ). An annotated example of a data
-*  file can be obtained by deleting the first 3 characters from the
-*  following 35 lines:
-*  'ZBLAT2.SUMM'     NAME OF SUMMARY OUTPUT FILE
-*  6                 UNIT NUMBER OF SUMMARY FILE
-*  'CBLA2T.SNAP'     NAME OF SNAPSHOT OUTPUT FILE
-*  -1                UNIT NUMBER OF SNAPSHOT FILE (NOT USED IF .LT. 0)
-*  F        LOGICAL FLAG, T TO REWIND SNAPSHOT FILE AFTER EACH RECORD.
-*  F        LOGICAL FLAG, T TO STOP ON FAILURES.
-*  T        LOGICAL FLAG, T TO TEST ERROR EXITS.
-*  16.0     THRESHOLD VALUE OF TEST RATIO
-*  6                 NUMBER OF VALUES OF N
-*  0 1 2 3 5 9       VALUES OF N
-*  4                 NUMBER OF VALUES OF K
-*  0 1 2 4           VALUES OF K
-*  4                 NUMBER OF VALUES OF INCX AND INCY
-*  1 2 -1 -2         VALUES OF INCX AND INCY
-*  3                 NUMBER OF VALUES OF ALPHA
-*  (0.0,0.0) (1.0,0.0) (0.7,-0.9)       VALUES OF ALPHA
-*  3                 NUMBER OF VALUES OF BETA
-*  (0.0,0.0) (1.0,0.0) (1.3,-1.1)       VALUES OF BETA
-*  ZGEMV  T PUT F FOR NO TEST. SAME COLUMNS.
-*  ZGBMV  T PUT F FOR NO TEST. SAME COLUMNS.
-*  ZHEMV  T PUT F FOR NO TEST. SAME COLUMNS.
-*  ZHBMV  T PUT F FOR NO TEST. SAME COLUMNS.
-*  ZHPMV  T PUT F FOR NO TEST. SAME COLUMNS.
-*  ZTRMV  T PUT F FOR NO TEST. SAME COLUMNS.
-*  ZTBMV  T PUT F FOR NO TEST. SAME COLUMNS.
-*  ZTPMV  T PUT F FOR NO TEST. SAME COLUMNS.
-*  ZTRSV  T PUT F FOR NO TEST. SAME COLUMNS.
-*  ZTBSV  T PUT F FOR NO TEST. SAME COLUMNS.
-*  ZTPSV  T PUT F FOR NO TEST. SAME COLUMNS.
-*  ZGERC  T PUT F FOR NO TEST. SAME COLUMNS.
-*  ZGERU  T PUT F FOR NO TEST. SAME COLUMNS.
-*  ZHER   T PUT F FOR NO TEST. SAME COLUMNS.
-*  ZHPR   T PUT F FOR NO TEST. SAME COLUMNS.
-*  ZHER2  T PUT F FOR NO TEST. SAME COLUMNS.
-*  ZHPR2  T PUT F FOR NO TEST. SAME COLUMNS.
-*
-*     See:
-*
-*        Dongarra J. J., Du Croz J. J., Hammarling S.  and Hanson R. J..
-*        An  extended  set of Fortran  Basic Linear Algebra Subprograms.
-*
-*        Technical  Memoranda  Nos. 41 (revision 3) and 81,  Mathematics
-*        and  Computer Science  Division,  Argonne  National Laboratory,
-*        9700 South Cass Avenue, Argonne, Illinois 60439, US.
-*
-*        Or
-*
-*        NAG  Technical Reports TR3/87 and TR4/87,  Numerical Algorithms
-*        Group  Ltd.,  NAG  Central  Office,  256  Banbury  Road, Oxford
-*        OX2 7DE, UK,  and  Numerical Algorithms Group Inc.,  1101  31st
-*        Street,  Suite 100,  Downers Grove,  Illinois 60515-1263,  USA.
-*
-*
-*  -- Written on 10-August-1987.
-*     Richard Hanson, Sandia National Labs.
-*     Jeremy Du Croz, NAG Central Office.
+*  =====================================================================
 *
 *     .. Parameters ..
       INTEGER            NIN
@@ -72,8 +118,8 @@
       COMPLEX*16         ZERO, ONE
       PARAMETER          ( ZERO = ( 0.0D0, 0.0D0 ),
      $                   ONE = ( 1.0D0, 0.0D0 ) )
-      DOUBLE PRECISION   RZERO, RHALF, RONE
-      PARAMETER          ( RZERO = 0.0D0, RHALF = 0.5D0, RONE = 1.0D0 )
+      DOUBLE PRECISION   RZERO
+      PARAMETER          ( RZERO = 0.0D0 )
       INTEGER            NMAX, INCMAX
       PARAMETER          ( NMAX = 65, INCMAX = 2 )
       INTEGER            NINMAX, NIDMAX, NKBMAX, NALMAX, NBEMAX
@@ -127,7 +173,7 @@
 *
       READ( NIN, FMT = * )SUMMRY
       READ( NIN, FMT = * )NOUT
-      OPEN( NOUT, FILE = SUMMRY, STATUS = 'NEW' )
+      OPEN( NOUT, FILE = SUMMRY, STATUS = 'UNKNOWN' )
       NOUTC = NOUT
 *
 *     Read name and unit number for snapshot output file and open file.
@@ -136,7 +182,7 @@
       READ( NIN, FMT = * )NTRA
       TRACE = NTRA.GE.0
       IF( TRACE )THEN
-         OPEN( NTRA, FILE = SNAPS, STATUS = 'NEW' )
+         OPEN( NTRA, FILE = SNAPS, STATUS = 'UNKNOWN' )
       END IF
 *     Read the flag that directs rewinding of the snapshot file.
       READ( NIN, FMT = * )REWI
@@ -241,14 +287,7 @@
 *
 *     Compute EPS (the machine precision).
 *
-      EPS = RONE
-   90 CONTINUE
-      IF( DDIFF( RONE + EPS, RONE ).EQ.RZERO )
-     $   GO TO 100
-      EPS = RHALF*EPS
-      GO TO 90
-  100 CONTINUE
-      EPS = EPS + EPS
+      EPS = EPSILON(RZERO)
       WRITE( NOUT, FMT = 9998 )EPS
 *
 *     Check the reliability of ZMVCH using exact data.
@@ -3087,7 +3126,6 @@
    50    CONTINUE
       END IF
 *
-   60 CONTINUE
       LZERES = .TRUE.
       GO TO 80
    70 CONTINUE
