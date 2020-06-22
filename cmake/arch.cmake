@@ -49,7 +49,7 @@ if (DYNAMIC_ARCH)
   endif ()
   
   if (POWER)
-    set(DYNAMIC_CORE POWER6 POWER8 POWER9)
+	  set(DYNAMIC_CORE POWER6 POWER8 POWER9 POWER10)
   endif ()
   
   if (X86)
