@@ -10,7 +10,7 @@ else
 STRMMKERNEL	= sgemm_kernel_power10.c
 DTRMMKERNEL	= dgemm_kernel_power10.c
 CTRMMKERNEL	= cgemm_kernel_power10.S
-ZTRMMKERNEL	= zgemm_kernel_power9.S
+ZTRMMKERNEL	= zgemm_kernel_power10.S
 
 SGEMMKERNEL    =  sgemm_kernel_power10.c
 SGEMMINCOPY    = ../generic/gemm_ncopy_16.c
@@ -42,7 +42,7 @@ CGEMMOTCOPYOBJ =  cgemm_otcopy$(TSUFFIX).$(SUFFIX)
 CGEMMINCOPYOBJ =  cgemm_incopy$(TSUFFIX).$(SUFFIX)
 CGEMMITCOPYOBJ =  cgemm_itcopy$(TSUFFIX).$(SUFFIX)
 
-ZGEMMKERNEL    = zgemm_kernel_power9.S
+ZGEMMKERNEL    = zgemm_kernel_power10.S
 ZGEMMONCOPY    = ../generic/zgemm_ncopy_2.c
 ZGEMMOTCOPY    = ../generic/zgemm_tcopy_2.c
 ZGEMMINCOPY    = ../generic/zgemm_ncopy_8.c
