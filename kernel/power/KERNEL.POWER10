@@ -7,12 +7,12 @@ else
 #CGEMM_BETA = ../generic/zgemm_beta.c
 #ZGEMM_BETA = ../generic/zgemm_beta.c
 
-STRMMKERNEL	= sgemm_kernel_power9.S
-DTRMMKERNEL	= dgemm_kernel_power9.S
-CTRMMKERNEL	= cgemm_kernel_power9.S
+STRMMKERNEL	= sgemm_kernel_power10.c
+DTRMMKERNEL	= dgemm_kernel_power10.c
+CTRMMKERNEL	= cgemm_kernel_power10.S
 ZTRMMKERNEL	= zgemm_kernel_power9.S
 
-SGEMMKERNEL    =  sgemm_kernel_power9.S
+SGEMMKERNEL    =  sgemm_kernel_power10.c
 SGEMMINCOPY    = ../generic/gemm_ncopy_16.c
 SGEMMITCOPY    = sgemm_tcopy_16_power8.S
 SGEMMONCOPY    =  ../generic/gemm_ncopy_8.c
@@ -22,7 +22,7 @@ SGEMMITCOPYOBJ =  sgemm_itcopy$(TSUFFIX).$(SUFFIX)
 SGEMMONCOPYOBJ =  sgemm_oncopy$(TSUFFIX).$(SUFFIX)
 SGEMMOTCOPYOBJ =  sgemm_otcopy$(TSUFFIX).$(SUFFIX)
 
-DGEMMKERNEL    =  dgemm_kernel_power9.S
+DGEMMKERNEL    =  dgemm_kernel_power10.c
 DGEMMINCOPY    = ../generic/gemm_ncopy_16.c
 DGEMMITCOPY    =  dgemm_tcopy_16_power8.S
 DGEMMONCOPY    =  dgemm_ncopy_4_power8.S
@@ -32,7 +32,7 @@ DGEMMITCOPYOBJ =  dgemm_itcopy$(TSUFFIX).$(SUFFIX)
 DGEMMONCOPYOBJ =  dgemm_oncopy$(TSUFFIX).$(SUFFIX)
 DGEMMOTCOPYOBJ =  dgemm_otcopy$(TSUFFIX).$(SUFFIX)
 
-CGEMMKERNEL    = cgemm_kernel_power9.S
+CGEMMKERNEL    = cgemm_kernel_power10.S
 CGEMMINCOPY    = ../generic/zgemm_ncopy_8.c
 CGEMMITCOPY    = ../generic/zgemm_tcopy_8.c
 CGEMMONCOPY    = ../generic/zgemm_ncopy_4.c
