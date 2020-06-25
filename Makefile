@@ -7,10 +7,6 @@ ifneq ($(DYNAMIC_ARCH), 1)
 BLASDIRS += kernel
 endif
 
-ifdef SANITY_CHECK
-BLASDIRS += reference
-endif
-
 SUBDIRS	= $(BLASDIRS)
 ifneq ($(NO_LAPACK), 1)
 SUBDIRS	+= lapack
@@ -364,7 +360,6 @@ clean ::
 #ifdef DYNAMIC_ARCH
 	@$(MAKE) -C kernel clean
 #endif
-	@$(MAKE) -C reference clean
 	@rm -f *.$(LIBSUFFIX) *.so *~ *.exe getarch getarch_2nd *.dll *.lib *.$(SUFFIX) *.dwf $(LIBPREFIX).$(LIBSUFFIX) $(LIBPREFIX)_p.$(LIBSUFFIX) $(LIBPREFIX).so.$(MAJOR_VERSION) *.lnk myconfig.h
 ifeq ($(OSNAME), Darwin)
 	@rm -rf getarch.dSYM getarch_2nd.dSYM

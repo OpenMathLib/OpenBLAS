@@ -76,10 +76,6 @@ if (NOT DYNAMIC_ARCH)
   list(APPEND BLASDIRS kernel)
 endif ()
 
-if (DEFINED SANITY_CHECK)
-  list(APPEND BLASDIRS reference)
-endif ()
-
 set(SUBDIRS	${BLASDIRS})
 if (NOT NO_LAPACK)
   if(BUILD_RELAPACK)

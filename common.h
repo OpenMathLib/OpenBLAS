@@ -795,9 +795,6 @@ typedef struct {
 #endif
 
 #include "common_interface.h"
-#ifdef SANITY_CHECK
-#include "common_reference.h"
-#endif
 #include "common_macro.h"
 #include "common_level1.h"
 #include "common_level2.h"

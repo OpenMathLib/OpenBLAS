@@ -218,10 +218,6 @@ NO_AFFINITY = 1
 # been reported to be optimal for certain workloads (50 is the recommended value for Julia).
 # GEMM_MULTITHREAD_THRESHOLD = 4
 
-# If you need sanity check by comparing results to reference BLAS. It'll be very
-# slow (Not implemented yet).
-# SANITY_CHECK = 1
-
 # The installation directory.
 # PREFIX = /opt/OpenBLAS
 
