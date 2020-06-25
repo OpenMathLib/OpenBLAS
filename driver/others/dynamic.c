@@ -332,7 +332,7 @@ int support_avx512(){
   if((ebx & (1<<7)) == 0){
       ret=0;  //OS does not even support AVX2
   }
-  if((ebx & (1<<31)) != 0){
+  if((ebx & (1u<<31)) != 0){
     xgetbv(0, &eax, &edx);
     if((eax & 0xe0) == 0xe0)
       ret=1;  //OS supports AVX512VL
@@ -632,7 +632,7 @@ static gotoblas_t *get_coretype(void){
         cpuid(0x80000000, &eax, &ebx, &ecx, &edx);
         if ( (eax & 0xffff)  >= 0x01) {
             cpuid(0x80000001, &eax, &ebx, &ecx, &edx);
-            if ((edx & (1 << 30)) == 0 || (edx & (1 << 31)) == 0)
+            if ((edx & (1 << 30)) == 0 || (edx & (1u << 31)) == 0)
               return NULL;
           }
         else
