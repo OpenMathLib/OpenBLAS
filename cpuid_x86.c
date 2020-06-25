@@ -1955,6 +1955,19 @@ int get_coretype(void){
 	    return CORE_NEHALEM;
         }
         break;
+      case 10:
+        switch (model) {
+    case 6:
+      // Comet Lake U
+            if(support_avx())
+  #ifndef NO_AVX2
+              return CORE_HASWELL;
+  #else
+          return CORE_SANDYBRIDGE;
+  #endif
+            else
+          return CORE_NEHALEM;
+        }
       case 5:
         switch (model) {
 	case 6:
