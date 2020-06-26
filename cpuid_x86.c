@@ -1406,6 +1406,16 @@ int get_cpuname(void){
 	    return CPUTYPE_SANDYBRIDGE;
           else
 	    return CPUTYPE_NEHALEM;
+    }
+      case 10: //family 6 exmodel 10
+        switch (model) {
+    case 6: // Comet Lake U
+          if(support_avx2())
+            return CPUTYPE_HASWELL;
+          if(support_avx())
+        return CPUTYPE_SANDYBRIDGE;
+          else
+        return CPUTYPE_NEHALEM;
 	}
 	break;    
       }
@@ -1955,6 +1965,19 @@ int get_coretype(void){
 	    return CORE_NEHALEM;
         }
         break;
+      case 10:
+        switch (model) {
+    case 6:
+      // Comet Lake U
+            if(support_avx())
+  #ifndef NO_AVX2
+              return CORE_HASWELL;
+  #else
+          return CORE_SANDYBRIDGE;
+  #endif
+            else
+          return CORE_NEHALEM;
+        }
       case 5:
         switch (model) {
 	case 6:
