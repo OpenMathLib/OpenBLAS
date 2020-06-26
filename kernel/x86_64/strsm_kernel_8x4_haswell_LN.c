@@ -1,4 +1,4 @@
-﻿#include "common.h"
+#include "common.h"
 #include <stdint.h>
 #include "strsm_kernel_8x4_haswell_L_common.h"
 

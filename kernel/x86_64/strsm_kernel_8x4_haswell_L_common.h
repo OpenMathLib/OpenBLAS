@@ -1,4 +1,4 @@
-﻿/* r11 = m_counter, r12 = size_of_k_elements, r13 = kk, r14 = b_head, r15 = a_head */
+/* r11 = m_counter, r12 = size_of_k_elements, r13 = kk, r14 = b_head, r15 = a_head */
 /* register i/o: %0 = a_ptr, %1 = b_ptr, %2 = c_ptr, %3 = c_tmp, %4 = ldc, %5 = k_counter */
 /* memory input: %6 = K, %7 = offset, %8 = {1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0}, %9 = {0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0}, %10 = M */
 
