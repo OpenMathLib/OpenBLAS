@@ -7,6 +7,17 @@ else
 #CGEMM_BETA = ../generic/zgemm_beta.c
 #ZGEMM_BETA = ../generic/zgemm_beta.c
 
+SHGEMM_BETA = ../generic/gemm_beta.c
+SHGEMMKERNEL    = shgemm_kernel_power10.c
+SHGEMMINCOPY    = ../generic/gemm_ncopy_16.c
+SHGEMMITCOPY    = ../generic/gemm_tcopy_16.c
+SHGEMMONCOPY    = ../generic/gemm_ncopy_8.c
+SHGEMMOTCOPY    = ../generic/gemm_tcopy_8.c
+SHGEMMINCOPYOBJ =  shgemm_incopy$(TSUFFIX).$(SUFFIX)
+SHGEMMITCOPYOBJ =  shgemm_itcopy$(TSUFFIX).$(SUFFIX)
+SHGEMMONCOPYOBJ =  shgemm_oncopy$(TSUFFIX).$(SUFFIX)
+SHGEMMOTCOPYOBJ =  shgemm_otcopy$(TSUFFIX).$(SUFFIX)
+
 STRMMKERNEL	= sgemm_kernel_power10.c
 DTRMMKERNEL	= dgemm_kernel_power10.c
 CTRMMKERNEL	= cgemm_kernel_power10.S
