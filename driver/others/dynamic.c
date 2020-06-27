@@ -619,7 +619,7 @@ static gotoblas_t *get_coretype(void){
 	  }
 	}
       case 10:
-    if (model == 6) {
+    if (model == 5 || model == 6) {
 	  if(support_avx2())
 	    return &gotoblas_HASWELL;
 	  if(support_avx()) {
