@@ -424,7 +424,7 @@ L999:
 	lwz	r16,  204(SP)
 	lwz	r15,  208(SP)
 	lwz	r14,  212(SP)
-        addi    r11, 224
+        addi    r11, SP, 224
 #endif
         lvx     v20, r11, r0
         addi    r11, r11, 16
@@ -459,4 +459,4 @@ L999:
 	blr
 
 	EPILOGUE
-#endif^
+#endif
