@@ -257,6 +257,11 @@ typedef long BLASLONG;
 typedef unsigned long BLASULONG;
 #endif
 
+#ifndef BFLOAT16
+typedef unsigned short bfloat16;
+#define HALFCONVERSION 1
+#endif
+
 #ifdef USE64BITINT
 typedef BLASLONG blasint;
 #if defined(OS_WINDOWS) && defined(__64BIT__)
@@ -297,6 +302,13 @@ typedef int blasint;
 #define SIZE	8
 #define  BASE_SHIFT 3
 #define ZBASE_SHIFT 4
+#elif defined(HALF)
+#define IFLOAT	bfloat16
+#define XFLOAT IFLOAT
+#define FLOAT	float
+#define SIZE   2
+#define BASE_SHIFT 1
+#define ZBASE_SHIFT 2
 #else
 #define FLOAT	float
 #define SIZE    4
@@ -306,6 +318,10 @@ typedef int blasint;
 
 #ifndef XFLOAT
 #define XFLOAT	FLOAT
+#endif
+
+#ifndef IFLOAT
+#define IFLOAT	FLOAT
 #endif
 
 #ifndef COMPLEX
@@ -344,13 +360,8 @@ typedef int blasint;
 #endif
 #endif
 
-#ifdef POWER8
-#ifndef YIELDING
-#define YIELDING        __asm__ __volatile__ ("nop;nop;nop;nop;nop;nop;nop;nop;\n");
-#endif
-#endif
 
-#ifdef POWER9
+#if defined(POWER8) || defined(POWER9) || defined(POWER10)
 #ifndef YIELDING
 #define YIELDING        __asm__ __volatile__ ("nop;nop;nop;nop;nop;nop;nop;nop;\n");
 #endif

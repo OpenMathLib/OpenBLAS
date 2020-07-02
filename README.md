@@ -122,6 +122,11 @@ Please read `GotoBLAS_01Readme.txt` for older CPU models already supported by th
 - **AMD STEAMROLLER**: Uses Bulldozer codes with some optimizations.
 - **AMD ZEN**: Uses Haswell codes with some optimizations.
 
+#### MIPS32
+
+- **MIPS 1004K**: uses P5600 codes
+- **MIPS 24K**: uses P5600 codes
+
 #### MIPS64
 
 - **ICT Loongson 3A**: Optimized Level-3 BLAS and the part of Level-1,2.

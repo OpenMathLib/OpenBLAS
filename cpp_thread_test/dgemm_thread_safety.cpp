@@ -46,6 +46,8 @@ int main(int argc, char* argv[]){
 	std::cout<<"Number of concurrent calls into OpenBLAS : "<<numConcurrentThreads<<'\n';
 	std::cout<<"Number of testing rounds : "<<numTestRounds<<'\n';
 	std::cout<<"This test will need "<<(static_cast<uint64_t>(randomMatSize*randomMatSize)*numConcurrentThreads*3*8)/static_cast<double>(1024*1024)<<" MiB of RAM\n"<<std::endl;
+
+	FailIfThreadsAreZero(numConcurrentThreads);
 	
 	std::cout<<"Initializing random number generator..."<<std::flush;
 	std::mt19937_64 PRNG = InitPRNG();

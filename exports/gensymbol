@@ -40,17 +40,13 @@
     ztbsv,ztpmv,ztpsv,ztrmm,ztrmv,ztrsm,ztrsv,
     xerbla,
     saxpby,daxpby,caxpby,zaxpby,
+    somatcopy, domatcopy, comatcopy, zomatcopy,
+    simatcopy, dimatcopy, cimatcopy, zimatcopy,
     sgeadd,dgeadd,cgeadd,zgeadd,
-    somatcopy,
-    simatcopy,
-    domatcopy,
-    dimatcopy,
-    comatcopy,
-    cimatcopy,
-    zomatcopy,
-    zimatcopy,
+    ssum, dsum, scsum, dzsum
 );
 
+@halfblasobjs = (shgemm);
 @cblasobjs = (
     cblas_caxpy, cblas_ccopy, cblas_cdotc, cblas_cdotu, cblas_cgbmv, cblas_cgemm, cblas_cgemv,
     cblas_cgerc, cblas_cgeru, cblas_chbmv, cblas_chemm, cblas_chemv, cblas_cher2, cblas_cher2k,
@@ -80,8 +76,15 @@
     cblas_saxpby,cblas_daxpby,cblas_caxpby,cblas_zaxpby,
     cblas_somatcopy, cblas_domatcopy, cblas_comatcopy, cblas_zomatcopy,
     cblas_simatcopy, cblas_dimatcopy, cblas_cimatcopy, cblas_zimatcopy,
-    cblas_sgeadd, cblas_dgeadd,cblas_cgeadd, cblas_zgeadd
+    cblas_sgeadd, cblas_dgeadd,cblas_cgeadd, cblas_zgeadd,
+    cblas_isamin, cblas_idamin, cblas_icamin, cblas_izamin,
+    cblas_ismin, cblas_idmin, cblas_icmin, cblas_izmin,
+    cblas_ismax, cblas_idmax, cblas_icmax, cblas_izmax,
+    cblas_ssum, cblas_dsum, cblas_scsum, cblas_dzsum,
+    cblas_xerbla
 );
+
+@halfcblasobjs = (cblas_shgemm);
 
 @exblasobjs = (
     qamax,qamin,qasum,qaxpy,qcabs1,qcopy,qdot,qgbmv,qgemm,
@@ -3454,6 +3457,10 @@ use File::Spec;
 use File::Basename;
 my $dirname = File::Spec->catfile(dirname(dirname(File::Spec->rel2abs(__FILE__))), "lapack-netlib");
 
+if ($ARGV[12] == 1) {
+	@blasobjs = (@blasobjs, @halfblasobjs);
+	@cblasobjs = (@cblasobjs, @halfcblasobjs);
+}
 if ($ARGV[8] == 1) {
     #ONLY_CBLAS=1
     @underscore_objs = (@misc_underscore_objs);
@@ -3494,9 +3501,12 @@ if ($ARGV[1] eq "x86")    { @underscore_objs = (@underscore_objs, @gemm3mobjs); 
 if ($ARGV[1] eq "ia64")   { @underscore_objs = (@underscore_objs, @gemm3mobjs); };
 if ($ARGV[1] eq "MIPS")   { @underscore_objs = (@underscore_objs, @gemm3mobjs); };
 
-
 if ($ARGV[4] == 0) {
     @no_underscore_objs = (@cblasobjs, @misc_no_underscore_objs);
+    if ($ARGV[1] eq "x86_64") { @no_underscore_objs = (@no_underscore_objs, @cblasgemm3mobjs); };
+    if ($ARGV[1] eq "x86")    { @no_underscore_objs = (@no_underscore_objs, @cblasgemm3mobjs); };
+    if ($ARGV[1] eq "ia64")   { @no_underscore_objs = (@no_underscore_objs, @cblasgemm3mobjs); };
+    if ($ARGV[1] eq "MIPS")   { @no_underscore_objs = (@no_underscore_objs, @cblasgemm3mobjs); };
 }else{
     #NO_CBLAS=1
     @no_underscore_objs = (@misc_no_underscore_objs);

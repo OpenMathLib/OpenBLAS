@@ -57,6 +57,7 @@
 #define CPUTYPE_PPCG4	   7
 #define CPUTYPE_POWER8     8
 #define CPUTYPE_POWER9     9
+#define CPUTYPE_POWER10    10
 
 char *cpuname[] = {
   "UNKNOWN",
@@ -68,7 +69,8 @@ char *cpuname[] = {
   "CELL",
   "PPCG4",
   "POWER8",
-  "POWER9"
+  "POWER9",
+  "POWER10"
 };
 
 char *lowercpuname[] = {
@@ -81,7 +83,8 @@ char *lowercpuname[] = {
   "cell",
   "ppcg4",
   "power8",
-  "power9"	
+  "power9",
+  "power10"
 };
 
 char *corename[] = {
@@ -94,7 +97,8 @@ char *corename[] = {
   "CELL",
   "PPCG4",
   "POWER8",
-  "POWER9"   	
+  "POWER9",
+  "POWER10"
 };
 
 int detect(void){
@@ -125,6 +129,7 @@ int detect(void){
   if (!strncasecmp(p, "POWER7", 6)) return CPUTYPE_POWER6;
   if (!strncasecmp(p, "POWER8", 6)) return CPUTYPE_POWER8;
   if (!strncasecmp(p, "POWER9", 6)) return CPUTYPE_POWER9;
+  if (!strncasecmp(p, "POWER10", 7)) return CPUTYPE_POWER10;
   if (!strncasecmp(p, "Cell",   4)) return CPUTYPE_CELL;
   if (!strncasecmp(p, "7447",   4)) return CPUTYPE_PPCG4;
 
@@ -157,6 +162,7 @@ int detect(void){
   if (!strncasecmp(p, "POWER7", 6)) return CPUTYPE_POWER6;
   if (!strncasecmp(p, "POWER8", 6)) return CPUTYPE_POWER8;
   if (!strncasecmp(p, "POWER9", 6)) return CPUTYPE_POWER9;
+  if (!strncasecmp(p, "POWER10", 7)) return CPUTYPE_POWER10;
   if (!strncasecmp(p, "Cell",   4)) return CPUTYPE_CELL;
   if (!strncasecmp(p, "7447",   4)) return CPUTYPE_PPCG4;
   return CPUTYPE_POWER5;
@@ -179,6 +185,9 @@ int detect(void){
 int id;
 __asm __volatile("mfpvr %0" : "=r"(id));
 switch ( id >> 16 ) {
+  case 0x80: // POWER10
+    return CPUTYPE_POWER10;
+    break;
   case 0x4e: // POWER9
     return CPUTYPE_POWER9;
     break;

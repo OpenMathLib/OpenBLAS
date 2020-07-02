@@ -6,7 +6,8 @@ cmake_minimum_required(VERSION 2.8.5)
 project(OpenBLAS C ASM)
 set(OpenBLAS_MAJOR_VERSION 0)
 set(OpenBLAS_MINOR_VERSION 3)
-set(OpenBLAS_PATCH_VERSION 9.dev)
+set(OpenBLAS_PATCH_VERSION 10.dev)
+
 set(OpenBLAS_VERSION "${OpenBLAS_MAJOR_VERSION}.${OpenBLAS_MINOR_VERSION}.${OpenBLAS_PATCH_VERSION}")
 
 # Adhere to GNU filesystem layout conventions
@@ -23,6 +24,7 @@ option(BUILD_WITHOUT_CBLAS "Do not build the C interface (CBLAS) to the BLAS fun
 option(DYNAMIC_ARCH "Include support for multiple CPU targets, with automatic selection at runtime (x86/x86_64, aarch64 or ppc only)" OFF)
 option(DYNAMIC_OLDER "Include specific support for older x86 cpu models (Penryn,Dunnington,Atom,Nano,Opteron) with DYNAMIC_ARCH" OFF)
 option(BUILD_RELAPACK "Build with ReLAPACK (recursive implementation of several LAPACK functions on top of standard LAPACK)" OFF)
+option(USE_LOCKING "Use locks even in single-threaded builds to make them callable from multiple threads" OFF)
 if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
 option(NO_AFFINITY "Disable support for CPU affinity masks to avoid binding processes from e.g. R or numpy/scipy to a single core" ON)
 else()
@@ -86,9 +88,13 @@ if (NOT NO_LAPACK)
   list(APPEND SUBDIRS lapack)
 endif ()
 
+if (NOT DEFINED BUILD_HALF)
+ set (BUILD_HALF false)
+endif ()
 # set which float types we want to build for
 if (NOT DEFINED BUILD_SINGLE AND NOT DEFINED BUILD_DOUBLE AND NOT DEFINED BUILD_COMPLEX AND NOT DEFINED BUILD_COMPLEX16)
   # if none are defined, build for all
+#  set(BUILD_HALF true)
   set(BUILD_SINGLE true)
   set(BUILD_DOUBLE true)
   set(BUILD_COMPLEX true)
@@ -118,6 +124,11 @@ endif ()
 if (BUILD_COMPLEX16)
   message(STATUS "Building Double Complex Precision")
   list(APPEND FLOAT_TYPES "ZCOMPLEX") # defines COMPLEX and DOUBLE
+endif ()
+
+if (BUILD_HALF)
+  message(STATUS "Building Half Precision")
+  list(APPEND FLOAT_TYPES "HALF") # defines nothing
 endif ()
 
 if (NOT DEFINED CORE OR "${CORE}" STREQUAL "UNKNOWN")
@@ -234,7 +245,7 @@ if (BUILD_SHARED_LIBS AND BUILD_RELAPACK)
   if (NOT MSVC)
     target_link_libraries(${OpenBLAS_LIBNAME} "-Wl,-allow-multiple-definition")
   else()
-    target_link_libraries(${OpenBLAS_LIBNAME} "/FORCE:MULTIPLE")
+   set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} /FORCE:MULTIPLE")
   endif()
 endif()
 

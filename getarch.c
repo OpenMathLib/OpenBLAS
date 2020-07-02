@@ -650,6 +650,19 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define CORENAME  "POWER9"
 #endif
 
+#if defined(FORCE_POWER10)
+#define FORCE
+#define ARCHITECTURE    "POWER"
+#define SUBARCHITECTURE "POWER10"
+#define SUBDIRNAME      "power"
+#define ARCHCONFIG   "-DPOWER10 " \
+		     "-DL1_DATA_SIZE=32768 -DL1_DATA_LINESIZE=128 " \
+		     "-DL2_SIZE=4194304 -DL2_LINESIZE=128 " \
+		     "-DDTB_DEFAULT_ENTRIES=128 -DDTB_SIZE=4096 -DL2_ASSOCIATIVE=8 "
+#define LIBNAME   "power10"
+#define CORENAME  "POWER10"
+#endif
+
 #ifdef FORCE_PPCG4
 #define FORCE
 #define ARCHITECTURE    "POWER"
@@ -809,6 +822,34 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
        "-DDTB_DEFAULT_ENTRIES=64 -DDTB_SIZE=4096 -DL2_ASSOCIATIVE=8 "
 #define LIBNAME   "p5600"
 #define CORENAME  "P5600"
+#else
+#endif
+
+#ifdef FORCE_MIPS1004K
+#define FORCE
+#define ARCHITECTURE    "MIPS"
+#define SUBARCHITECTURE "MIPS1004K"
+#define SUBDIRNAME      "mips"
+#define ARCHCONFIG   "-DMIPS1004K " \
+       "-DL1_DATA_SIZE=32768 -DL1_DATA_LINESIZE=32 " \
+       "-DL2_SIZE=262144 -DL2_LINESIZE=32 " \
+       "-DDTB_DEFAULT_ENTRIES=64 -DDTB_SIZE=4096 -DL2_ASSOCIATIVE=8 "
+#define LIBNAME   "mips1004K"
+#define CORENAME  "MIPS1004K"
+#else
+#endif
+
+#ifdef FORCE_MIPS24K
+#define FORCE
+#define ARCHITECTURE    "MIPS"
+#define SUBARCHITECTURE "MIPS24K"
+#define SUBDIRNAME      "mips"
+#define ARCHCONFIG   "-DMIPS24K " \
+       "-DL1_DATA_SIZE=32768 -DL1_DATA_LINESIZE=32 " \
+       "-DL2_SIZE=32768 -DL2_LINESIZE=32 " \
+       "-DDTB_DEFAULT_ENTRIES=64 -DDTB_SIZE=4096 -DL2_ASSOCIATIVE=8 "
+#define LIBNAME   "mips24K"
+#define CORENAME  "MIPS24K"
 #else
 #endif
 
@@ -1334,9 +1375,11 @@ int main(int argc, char *argv[]){
 
 #if defined(__BYTE_ORDER__) && __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__
 printf("__BYTE_ORDER__=__ORDER_BIG_ENDIAN__\n");
-#endif
-#if defined(__BIG_ENDIAN__) && __BIG_ENDIAN__ > 0
+#elif defined(__BIG_ENDIAN__) && __BIG_ENDIAN__ > 0
 printf("__BYTE_ORDER__=__ORDER_BIG_ENDIAN__\n");
+#endif
+#if defined(_CALL_ELF) && (_CALL_ELF == 2)
+printf("ELF_VERSION=2\n");
 #endif
 
 #ifdef MAKE_NB_JOBS

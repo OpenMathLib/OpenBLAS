@@ -310,6 +310,7 @@ $linker_a = "";
 	    && ($flags !~ /advapi32/)
 	    && ($flags !~ /shell32/)
 	    && ($flags !~ /omp/)
+	    && ($flags !~ /[0-9]+/)
 	    ) {
 	    $linker_l .= $flags . " "
 	}

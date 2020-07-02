@@ -5,6 +5,6 @@ FCOMMON_OPT += -march=z13 -mzvector
 endif
 
 ifeq ($(CORE), Z14)
-CCOMMON_OPT += -march=z14 -mzvector
+CCOMMON_OPT += -march=z14 -mzvector -O3
 FCOMMON_OPT += -march=z14 -mzvector
 endif

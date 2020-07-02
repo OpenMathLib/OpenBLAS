@@ -170,9 +170,11 @@ int main(int argc, char *argv[]){
 			y[i] = ((FLOAT) rand() / (FLOAT) RAND_MAX) - 0.5;
    	}
     	gettimeofday( &start, (struct timezone *)0);
-
+#ifdef RETURN_BY_STACK
+    	DOT (&result , &m, x, &inc_x, y, &inc_y );
+#else
     	result = DOT (&m, x, &inc_x, y, &inc_y );
-
+#endif
     	gettimeofday( &stop, (struct timezone *)0);
 
     	time1 = (double)(stop.tv_sec - start.tv_sec) + (double)((stop.tv_usec - start.tv_usec)) * 1.e-6;
