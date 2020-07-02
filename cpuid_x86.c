@@ -1409,6 +1409,7 @@ int get_cpuname(void){
     }
       case 10: //family 6 exmodel 10
         switch (model) {
+    case 5: // Comet Lake H and S
     case 6: // Comet Lake U
           if(support_avx2())
             return CPUTYPE_HASWELL;
@@ -1967,16 +1968,16 @@ int get_coretype(void){
         break;
       case 10:
         switch (model) {
-    case 6:
-      // Comet Lake U
+	  case 5: // Comet Lake H and S
+    	  case 6: // Comet Lake U
             if(support_avx())
   #ifndef NO_AVX2
               return CORE_HASWELL;
   #else
-          return CORE_SANDYBRIDGE;
+              return CORE_SANDYBRIDGE;
   #endif
             else
-          return CORE_NEHALEM;
+              return CORE_NEHALEM;
         }
       case 5:
         switch (model) {
