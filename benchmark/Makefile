@@ -44,6 +44,7 @@ GOTO_LAPACK_TARGETS=slinpack.goto dlinpack.goto clinpack.goto zlinpack.goto \
 		    sgeev.goto dgeev.goto cgeev.goto zgeev.goto \
 		    csymv.goto zsymv.goto \
 		    sgetri.goto dgetri.goto cgetri.goto zgetri.goto \
+		    sgetrs.goto dgetrs.goto cgetrs.goto zgetrs.goto \
 		    spotrf.goto dpotrf.goto cpotrf.goto zpotrf.goto
 else
 GOTO_LAPACK_TARGETS=
@@ -95,6 +96,7 @@ goto :: slinpack.goto dlinpack.goto clinpack.goto zlinpack.goto \
        sgeev.goto dgeev.goto cgeev.goto zgeev.goto \
        sgesv.goto dgesv.goto cgesv.goto zgesv.goto \
        sgetri.goto dgetri.goto cgetri.goto zgetri.goto \
+       sgetrs.goto dgetrs.goto cgetrs.goto zgetrs.goto \
        spotrf.goto dpotrf.goto cpotrf.goto zpotrf.goto \
        ssymm.goto dsymm.goto csymm.goto zsymm.goto \
        saxpby.goto daxpby.goto caxpby.goto zaxpby.goto $(GOTO_HALF_TARGETS)
@@ -136,6 +138,7 @@ acml :: slinpack.acml dlinpack.acml clinpack.acml zlinpack.acml \
        sgeev.acml dgeev.acml cgeev.acml zgeev.acml \
        sgesv.acml dgesv.acml cgesv.acml zgesv.acml \
        sgetri.acml dgetri.acml cgetri.acml zgetri.acml \
+       sgetrs.acml dgetrs.acml cgetrs.acml zgetrs.acml \
        spotrf.acml dpotrf.acml cpotrf.acml zpotrf.acml \
        ssymm.acml dsymm.acml csymm.acml zsymm.acml \
        saxpby.acml daxpby.acml caxpby.acml zaxpby.acml
@@ -179,6 +182,7 @@ atlas :: slinpack.atlas dlinpack.atlas clinpack.atlas zlinpack.atlas \
        sgeev.atlas dgeev.atlas cgeev.atlas zgeev.atlas \
        sgesv.atlas dgesv.atlas cgesv.atlas zgesv.atlas \
        sgetri.atlas dgetri.atlas cgetri.atlas zgetri.atlas \
+       sgetrs.atlas dgetrs.atlas cgetrs.atlas zgetrs.atlas \
        spotrf.atlas dpotrf.atlas cpotrf.atlas zpotrf.atlas \
        ssymm.atlas dsymm.atlas csymm.atlas zsymm.atlas \
        saxpby.atlas daxpby.atlas caxpby.atlas zaxpby.atlas
@@ -220,6 +224,7 @@ mkl :: slinpack.mkl dlinpack.mkl clinpack.mkl zlinpack.mkl \
        sgeev.mkl dgeev.mkl cgeev.mkl zgeev.mkl \
        sgesv.mkl dgesv.mkl cgesv.mkl zgesv.mkl \
        sgetri.mkl dgetri.mkl cgetri.mkl zgetri.mkl \
+       sgetrs.mkl dgetrs.mkl cgetrs.mkl zgetrs.mkl \
        spotrf.mkl dpotrf.mkl cpotrf.mkl zpotrf.mkl \
        ssymm.mkl dsymm.mkl csymm.mkl zsymm.mkl \
        saxpby.mkl daxpby.mkl caxpby.mkl zaxpby.mkl
@@ -309,6 +314,7 @@ acml :: slinpack.acml dlinpack.acml clinpack.acml zlinpack.acml \
        sgeev.acml dgeev.acml cgeev.acml zgeev.acml \
        sgesv.acml dgesv.acml cgesv.acml zgesv.acml \
        sgetri.acml dgetri.acml cgetri.acml zgetri.acml \
+       sgetrs.acml dgetrs.acml cgetrs.acml zgetrs.acml \
        spotrf.acml dpotrf.acml cpotrf.acml zpotrf.acml \
        ssymm.acml dsymm.acml csymm.acml zsymm.acml \
        saxpby.acml daxpby.acml caxpby.acml zaxpby.acml
@@ -352,6 +358,7 @@ atlas :: slinpack.atlas dlinpack.atlas clinpack.atlas zlinpack.atlas \
        sgeev.atlas dgeev.atlas cgeev.atlas zgeev.atlas \
        sgesv.atlas dgesv.atlas cgesv.atlas zgesv.atlas \
        sgetri.atlas dgetri.atlas cgetri.atlas zgetri.atlas \
+       sgetrs.atlas dgetrs.atlas cgetrs.atlas zgetrs.atlas \
        spotrf.atlas dpotrf.atlas cpotrf.atlas zpotrf.atlas \
        ssymm.atlas dsymm.atlas csymm.atlas zsymm.atlas \
        isamax.atlas idamax.atlas icamax.atlas izamax.atlas \
@@ -395,6 +402,7 @@ mkl :: slinpack.mkl dlinpack.mkl clinpack.mkl zlinpack.mkl \
        sgeev.mkl dgeev.mkl cgeev.mkl zgeev.mkl \
        sgesv.mkl dgesv.mkl cgesv.mkl zgesv.mkl \
        sgetri.mkl dgetri.mkl cgetri.mkl zgetri.mkl \
+       sgetrs.mkl dgetrs.mkl cgetrs.mkl zgetrs.mkl \
        spotrf.mkl dpotrf.mkl cpotrf.mkl zpotrf.mkl \
        ssymm.mkl dsymm.mkl csymm.mkl zsymm.mkl \
        saxpby.mkl daxpby.mkl caxpby.mkl zaxpby.mkl
@@ -447,6 +455,7 @@ veclib :: slinpack.veclib dlinpack.veclib clinpack.veclib zlinpack.veclib \
        sgeev.veclib dgeev.veclib cgeev.veclib zgeev.veclib \
        sgesv.veclib dgesv.veclib cgesv.veclib zgesv.veclib \
        sgetri.veclib dgetri.veclib cgetri.veclib zgetri.veclib \
+       sgetrs.veclib dgetrs.veclib cgetrs.veclib zgetrs.veclib \
        spotrf.veclib dpotrf.veclib cpotrf.veclib zpotrf.veclib \
        ssymm.veclib dsymm.veclib csymm.veclib zsymm.veclib \
        saxpby.veclib daxpby.veclib caxpby.veclib zaxpby.veclib
@@ -1953,6 +1962,70 @@ zgetri.mkl : zgetri.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBMKL) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
 
 zgetri.veclib : zgetri.$(SUFFIX)
+##################################### Sgetrs ####################################################
+sgetrs.goto : sgetrs.$(SUFFIX) ../$(LIBNAME)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+
+sgetrs.acml : sgetrs.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+sgetrs.atlas : sgetrs.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBATLAS) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+sgetrs.mkl : sgetrs.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBMKL) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+sgetrs.veclib : sgetrs.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBVECLIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+##################################### Dgetrs ####################################################
+dgetrs.goto : dgetrs.$(SUFFIX) ../$(LIBNAME)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+
+dgetrs.acml : dgetrs.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+dgetrs.atlas : dgetrs.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBATLAS) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+dgetrs.mkl : dgetrs.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBMKL) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+dgetrs.veclib : dgetrs.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBVECLIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+##################################### Cgetrs ####################################################
+
+cgetrs.goto : cgetrs.$(SUFFIX) ../$(LIBNAME)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+
+cgetrs.acml : cgetrs.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+cgetrs.atlas : cgetrs.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBATLAS) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+cgetrs.mkl : cgetrs.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBMKL) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+cgetrs.veclib : cgetrs.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBVECLIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+##################################### Zgetrs ####################################################
+
+zgetrs.goto : zgetrs.$(SUFFIX) ../$(LIBNAME)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+
+zgetrs.acml : zgetrs.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBACML) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+zgetrs.atlas : zgetrs.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBATLAS) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+zgetrs.mkl : zgetrs.$(SUFFIX)
+	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBMKL) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
+
+zgetrs.veclib : zgetrs.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBVECLIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
 
 ##################################### Spotrf ####################################################
@@ -3171,6 +3244,18 @@ cgetri.$(SUFFIX) : getri.c
 	$(CC) $(CFLAGS) -c -DCOMPLEX -UDOUBLE -o $(@F) $^
 
 zgetri.$(SUFFIX) : getri.c
+	$(CC) $(CFLAGS) -c -DCOMPLEX -DDOUBLE -o $(@F) $^
+	
+sgetrs.$(SUFFIX) : getrs.c
+	$(CC) $(CFLAGS) -c -UCOMPLEX -UDOUBLE -o $(@F) $^
+
+dgetrs.$(SUFFIX) : getrs.c
+	$(CC) $(CFLAGS) -c -UCOMPLEX -DDOUBLE -o $(@F) $^
+
+cgetrs.$(SUFFIX) : getrs.c
+	$(CC) $(CFLAGS) -c -DCOMPLEX -UDOUBLE -o $(@F) $^
+
+zgetrs.$(SUFFIX) : getrs.c
 	$(CC) $(CFLAGS) -c -DCOMPLEX -DDOUBLE -o $(@F) $^
 
 spotrf.$(SUFFIX) : potrf.c
