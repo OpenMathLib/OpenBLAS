@@ -286,8 +286,15 @@ GCCVERSIONEQ5 := $(shell expr `$(CC) -dumpversion | cut -f1 -d.` = 5)
 GCCVERSIONGT5 := $(shell expr `$(CC) -dumpversion | cut -f1 -d.` \> 5)
 GCCVERSIONGTEQ7 := $(shell expr `$(CC) -dumpversion | cut -f1 -d.` \>= 7)
 GCCVERSIONGTEQ9 := $(shell expr `$(CC) -dumpversion | cut -f1 -d.` \>= 9)
-GCCMINORVERSIONGTEQ2 := $(shell expr `$(CC) -dumpversion | cut -f2 -d.` \>= 2)
-GCCMINORVERSIONGTEQ7 := $(shell expr `$(CC) -dumpversion | cut -f2 -d.` \>= 7)
+# Note that the behavior of -dumpversion is compile-time-configurable for
+# gcc-7.x and newer. Use -dumpfullversion there
+ifeq ($(GCCVERSIONGTEQ7),1)
+	GCCDUMPVERSION_PARAM := -dumpfullversion
+else
+	GCCDUMPVERSION_PARAM := -dumpversion
+endif
+GCCMINORVERSIONGTEQ2 := $(shell expr `$(CC) $(GCCDUMPVERSION_PARAM) | cut -f2 -d.` \>= 2)
+GCCMINORVERSIONGTEQ7 := $(shell expr `$(CC) $(GCCDUMPVERSION_PARAM) | cut -f2 -d.` \>= 7)
 endif
 
 #
