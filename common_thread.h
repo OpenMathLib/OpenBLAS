@@ -135,12 +135,13 @@ static __inline int num_cpu_avail(int level) {
 	int openmp_nthreads=0;
 #endif
 
-  if (blas_cpu_number == 1
-
-#ifdef USE_OPENMP
-      || omp_in_parallel()
-#endif
-      ) return 1;
+#ifndef USE_OPENMP
+  if ( blas_cpu_number == 1 )
+#else
+  if ( omp_in_parallel() ||
+     (blas_cpu_number == 1 && !openblas_env_omp_places_threads) )
+#endif  
+     return 1;
 
 #ifdef USE_OPENMP
   openmp_nthreads=omp_get_max_threads();
