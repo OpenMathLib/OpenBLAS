@@ -1,4 +1,4 @@
-﻿/* %0 = "+r"(a_pointer), %1 = "+r"(b_pointer), %2 = "+r"(c_pointer), %3 = "+r"(ldc_in_bytes), %4 for k_count, %5 for c_store, %6 = b_pref */
+/* %0 = "+r"(a_pointer), %1 = "+r"(b_pointer), %2 = "+r"(c_pointer), %3 = "+r"(ldc_in_bytes), %4 for k_count, %5 for c_store, %6 = b_pref */
 /* r10 = tmp, r11 = m_counter, r12 = k << 2(const), r13 = tmp, r14 = b_head_pos(const), r15 = tmp */
 
 /* m = 8 *//* ymm0 for alpha, ymm1-ymm3 for temporary use, ymm4-ymm15 for accumulators */
