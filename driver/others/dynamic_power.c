@@ -45,7 +45,7 @@ static gotoblas_t *get_coretype(void) {
 		return &gotoblas_POWER9;
 #endif
 #if (!defined __GNUC__) || ( __GNUC__ >= 11)
-	if (__builtin_cpu_is("isa_3_1") && __builtin_cpu_supports ("mma"))
+	if (__builtin_cpu_supports ("arch_3_1") && __builtin_cpu_supports ("mma"))
 		return &gotoblas_POWER10;
 #endif
 	return NULL;
