@@ -233,9 +233,6 @@ if (NOT MSVC AND NOT NOFORTRAN)
   if(NOT NO_CBLAS)
     add_subdirectory(ctest)
   endif()
-endif()
-
-if (NOT NOFORTRAN)
   add_subdirectory(lapack-netlib/TESTING)
 endif()
 
