@@ -1,3 +1,5 @@
+enable_language(Fortran)
+
 enable_testing()
 
 if(MSVC_VERSION)
