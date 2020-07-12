@@ -1,5 +1,78 @@
 OpenBLAS ChangeLog
 ====================================================================
+Version 0.3.10
+ 14-Jun-2020
+
+common:
+	* Improved thread locking behaviour in blas_server and parallel getrf                         
+	* Imported bugfix 394 from LAPACK (spurious reference to "XERBL"
+	  due to overlong lines)
+	* Imported bugfix 403 from LAPACK (compile option "recursive" required
+	  for correctness with Intel and PGI)
+	* Imported bugfix 408 from LAPACK (wrong scaling in ZHEEQUB)
+	* Imported bugfix 411 from LAPACK (infinite loop in LARGV/LARTG/LARTGP)
+	* Fixed mismatches between BUFFERSIZE and GEMM_UNROLL parameters that
+	  could lead to crashes at large matrix sizes  
+	* Restored internal soname in dynamic libraries on FreeBSD and Dragonfly 
+	* Added API (openblas_setaffinity) to set the thread affinity on Linux
+	* Added initial infrastructure for half-precision floating point 
+	  (bfloat16) support with a generic implementation of SHGEMM     
+	* Added CMAKE build system support for building the cblas_Xgemm3m
+	  functions
+	* Fixed CMAKE support for building in a path with embedded spaces
+	* Fixed CMAKE (non)handling of NO_EXPRECISION and MAX_STACK_ALLOC
+	* Fixed GCC version detection in the Makefiles
+	* Allowed overriding the names of AR, AS and LD in Makefile builds
+
+POWER:
+	* Fixed big-endian POWER8 ELFv2 builds on FreeBSD
+	* Fixed GCC version checks and DYNAMIC_ARCH builds on POWER9
+	* Fixed CMAKE build support for POWER9
+	* fixed a potential race condition in the thread buffer allocation
+	* Worked around LAPACK test failures on PPC G4
+
+MIPS:
+	* Fixed a potential race condition in the thread buffer allocation
+	* Added support for MIPS 24K/24KE family based on P5600 kernels
+
+MIPS64:
+	* fixed a potential race condition in the thread buffer allocation
+	* Added TARGET=GENERIC
+
+ARMV7:
+	* Fixed a race condition in the thread buffer allocation
+
+ARMV8:
+	* Fixed a race condition in the thread buffer allocation
+	* Fixed zero initialisation in the assembly for SGEMM and DGEMM BETA
+	* Improved performance of the ThunderX2 DAXPY kernel
+	* Added an optimized SGEMM kernel for Cortex A53    
+	* Fixed Makefile support for INTERFACE64 (8-byte integer)
+
+x86_64:
+	* Fixed a syntax error in the CMAKE setup for SkylakeX
+	* Improved performance of STRSM on Haswell, SkylakeX and Ryzen
+	* Improved SGEMM performance on SGEMM for workloads with ldc a
+	  multiple of 1024
+	* Improved DGEMM performance on Skylake X
+	* Fixed unwanted AVX512-dependency of SGEMM in DYNAMIC_ARCH
+	  builds created on SkylakeX
+	* Removed data alignment requirement in the SSE2 copy kernels
+	  that could cause spurious crashes
+	* Added a workaround for an optimizer bug in AppleClang 11.0.3
+	* Fixed LAPACK test failures due to wrong options for Intel Fortran
+	* Fixed compilation and LAPACK test results with recent Flang
+	  and AMD AOCC
+	* Fixed DYNAMIC_ARCH builds with CMAKE on OS X
+	* Fixed missing exports of cblas_i?amin, cblas_i?min, cblas_i?max,
+	  cblas_?sum, cblas_?gemm3m in the shared library on OS 
+	* Fixed reporting of cpu name in DYNAMIC_ARCH builds (would sometimes
+	  show the name of an older generation chip supported by the same kernels)
+
+IBM Z:
+	* Improved performance of SGEMM/STRMM and DGEMM/DTRMM on Z14
+
+====================================================================
 Version 0.3.9
  1-Mar-2020
  

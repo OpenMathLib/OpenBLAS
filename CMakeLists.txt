@@ -233,6 +233,7 @@ if (NOT MSVC AND NOT NOFORTRAN)
   if(NOT NO_CBLAS)
     add_subdirectory(ctest)
   endif()
+  add_subdirectory(lapack-netlib/TESTING)
 endif()
 
 set_target_properties(${OpenBLAS_LIBNAME} PROPERTIES

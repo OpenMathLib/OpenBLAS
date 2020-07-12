@@ -417,6 +417,14 @@ if (${CMAKE_C_COMPILER} STREQUAL "LSB" OR ${CMAKE_SYSTEM_NAME} STREQUAL "Windows
   set(LAPACK_CFLAGS "${LAPACK_CFLAGS} -DLAPACK_COMPLEX_STRUCTURE")
 endif ()
 
+if ("${CMAKE_BUILD_TYPE}" STREQUAL "Release")
+if ("${F_COMPILER}" STREQUAL "FLANG")
+if (${CMAKE_Fortran_COMPILER_VERSION} VERSION_LESS_EQUAL 3)
+  set(CMAKE_Fortran_FLAGS_RELEASE "${CMAKE_Fortran_FLAGS_RELEASE} -fno-unroll-loops")
+endif ()
+endif ()
+endif ()
+
 if (NOT DEFINED SUFFIX)
   set(SUFFIX o)
 endif ()
