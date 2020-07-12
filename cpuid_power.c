@@ -57,6 +57,7 @@
 #define CPUTYPE_PPCG4	   7
 #define CPUTYPE_POWER8     8
 #define CPUTYPE_POWER9     9
+#define CPUTYPE_POWER10   10
 
 char *cpuname[] = {
   "UNKNOWN",
