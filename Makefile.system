@@ -109,6 +109,9 @@ endif
 ifeq ($(TARGET), ARMV8)
 GETARCH_FLAGS := -DFORCE_ARMV7
 endif
+ifeq ($(TARGET), POWER8)
+GETARCH_FLAGS := -DFORCE_POWER6
+endif
 endif
 
 
