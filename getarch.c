@@ -90,10 +90,15 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <sys/sysinfo.h>
 #include <unistd.h>
 #endif
+#if defined(AIX)
+#include <sys/sysinfo.h>
+#endif
 
+#if defined(__x86_64__) || defined(_M_X64)
 #if (( defined(__GNUC__)  && __GNUC__   > 6 && defined(__AVX2__)) || (defined(__clang__) && __clang_major__ >= 6))
 #else
 #define NO_AVX512
+#endif
 #endif
 /* #define FORCE_P2		*/
 /* #define FORCE_KATMAI		*/
@@ -1297,6 +1302,11 @@ static int get_num_cores(void) {
   sysctl(m, 2, &count, &len, NULL, 0);
 
   return count;
+
+#elif defined(AIX)
+  //returns the number of processors which are currently online
+  return sysconf(_SC_NPROCESSORS_ONLN);
+
 #else
   return 2;
 #endif

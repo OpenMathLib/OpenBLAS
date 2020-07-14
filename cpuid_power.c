@@ -57,7 +57,7 @@
 #define CPUTYPE_PPCG4	   7
 #define CPUTYPE_POWER8     8
 #define CPUTYPE_POWER9     9
-#define CPUTYPE_POWER10    10
+#define CPUTYPE_POWER10   10
 
 char *cpuname[] = {
   "UNKNOWN",
@@ -83,8 +83,8 @@ char *lowercpuname[] = {
   "cell",
   "ppcg4",
   "power8",
-  "power9",
-  "power10"
+  "power9",	
+  "power10"	
 };
 
 char *corename[] = {
@@ -97,8 +97,8 @@ char *corename[] = {
   "CELL",
   "PPCG4",
   "POWER8",
-  "POWER9",
-  "POWER10"
+  "POWER9",  	
+  "POWER10"   	
 };
 
 int detect(void){
@@ -154,17 +154,17 @@ int detect(void){
 
   pclose(infile);
 
-  if (!strncasecmp(p, "POWER3", 6)) return CPUTYPE_POWER3;
-  if (!strncasecmp(p, "POWER4", 6)) return CPUTYPE_POWER4;
-  if (!strncasecmp(p, "PPC970", 6)) return CPUTYPE_PPC970;
-  if (!strncasecmp(p, "POWER5", 6)) return CPUTYPE_POWER5;
-  if (!strncasecmp(p, "POWER6", 6)) return CPUTYPE_POWER6;
-  if (!strncasecmp(p, "POWER7", 6)) return CPUTYPE_POWER6;
-  if (!strncasecmp(p, "POWER8", 6)) return CPUTYPE_POWER8;
-  if (!strncasecmp(p, "POWER9", 6)) return CPUTYPE_POWER9;
-  if (!strncasecmp(p, "POWER10", 7)) return CPUTYPE_POWER10;
-  if (!strncasecmp(p, "Cell",   4)) return CPUTYPE_CELL;
-  if (!strncasecmp(p, "7447",   4)) return CPUTYPE_PPCG4;
+  if (strstr(p, "POWER3")) return CPUTYPE_POWER3;
+  if (strstr(p, "POWER4")) return CPUTYPE_POWER4;
+  if (strstr(p, "PPC970")) return CPUTYPE_PPC970;
+  if (strstr(p, "POWER5")) return CPUTYPE_POWER5;
+  if (strstr(p, "POWER6")) return CPUTYPE_POWER6;
+  if (strstr(p, "POWER7")) return CPUTYPE_POWER6;
+  if (strstr(p, "POWER8")) return CPUTYPE_POWER8;
+  if (strstr(p, "POWER9")) return CPUTYPE_POWER9;
+  if (strstr(p, "POWER10")) return CPUTYPE_POWER10;
+  if (strstr(p, "Cell")) return CPUTYPE_CELL;
+  if (strstr(p, "7447")) return CPUTYPE_PPCG4;
   return CPUTYPE_POWER5;
 #endif
 
