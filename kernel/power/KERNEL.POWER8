@@ -1,5 +1,4 @@
 ifeq ($(__BYTE_ORDER__)$(BINARY32),__ORDER_BIG_ENDIAN__1)
-$(info baue power6)
 SGEMMKERNEL    =  gemm_kernel_power6.S
 SGEMMINCOPY    =
 SGEMMITCOPY    =
@@ -45,7 +44,6 @@ CAXPYKERNEL  = zaxpy.S
 
 else
 
-$(info baue power8)
 #SGEMM_BETA = ../generic/gemm_beta.c
 #DGEMM_BETA = ../generic/gemm_beta.c
 #CGEMM_BETA = ../generic/zgemm_beta.c
@@ -226,7 +224,7 @@ ZCOPYKERNEL  = zcopy.c
 SDOTKERNEL   =  sdot.c
 DDOTKERNEL   =  ddot.c
 DSDOTKERNEL  =  sdot.c
-CDOTKERNEL   =  ../arm/zdot.c
+CDOTKERNEL   =  cdot.c
 ZDOTKERNEL   =  zdot.c
 #
 SNRM2KERNEL  = ../arm/nrm2.c
@@ -236,7 +234,7 @@ ZNRM2KERNEL  = ../arm/znrm2.c
 #
 SROTKERNEL   = srot.c
 DROTKERNEL   = drot.c
-#CROTKERNEL   = crot.c
+CROTKERNEL   = crot.c
 ZROTKERNEL   = zrot.c
 #
 SSCALKERNEL  = sscal.c
