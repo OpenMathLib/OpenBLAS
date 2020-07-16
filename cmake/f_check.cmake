@@ -21,6 +21,7 @@
 # NEED2UNDERSCORES
 
 if (NOT NO_LAPACK)
+  include(CheckLanguage)
   check_language(Fortran)
   if(CMAKE_Fortran_COMPILER)
     enable_language(Fortran)
