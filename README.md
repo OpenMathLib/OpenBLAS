@@ -58,6 +58,10 @@ Examples:
   ```sh
   make BINARY=64 CC=mips64el-unknown-linux-gnu-gcc FC=mips64el-unknown-linux-gnu-gfortran HOSTCC=gcc TARGET=LOONGSON3A
   ```
+  or same with the newer mips-crosscompiler put out by Loongson that defaults to the 32bit ABI:
+  ```sh
+  make HOSTCC=gcc CC='/opt/mips-loongson-gcc7.3-linux-gnu/2019.06-29/bin/mips-linux-gnu-gcc -mabi=64' FC='/opt/mips-loongson-gcc7.3-linux-gnu/2019.06-29/bin/mips-linux-gnu-gfortran -mabi=64' TARGET=LOONGSON3A
+  ```
 
 * On an x86 box, compile this library for a loongson3a CPU with loongcc (based on Open64) compiler:
   ```sh
