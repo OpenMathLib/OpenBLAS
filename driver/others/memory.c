@@ -1095,7 +1095,7 @@ static BLASULONG base_address      = 0UL;
 static BLASULONG base_address      = BASE_ADDRESS;
 #endif
 
-#if __STDC_VERSION__ >= 201112L
+#ifdef HAVE_C11
 static _Atomic int memory_initialized = 0;
 #else
 static volatile int memory_initialized = 0;
