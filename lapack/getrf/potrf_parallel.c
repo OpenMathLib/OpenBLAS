@@ -101,7 +101,7 @@ static FLOAT dm1 = -1.;
 #endif
 
 typedef struct {
-#if __STDC_VERSION__ >= 201112L
+#ifdef HAVE_C11
   _Atomic 
 #else
   volatile 
