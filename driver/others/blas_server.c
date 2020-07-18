@@ -141,7 +141,7 @@ typedef struct {
 
 } thread_status_t;
 
-#if (__STDC_VERSION__ >= 201112L)
+#ifdef HAVE_C11
 #define	atomic_load_queue(p)		__atomic_load_n(p, __ATOMIC_RELAXED)
 #define	atomic_store_queue(p, v)	__atomic_store_n(p, v, __ATOMIC_RELAXED)
 #else

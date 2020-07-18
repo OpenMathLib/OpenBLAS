@@ -55,7 +55,7 @@
 int blas_server_avail = 0;
 
 static void * blas_thread_buffer[MAX_PARALLEL_NUMBER][MAX_CPU_NUMBER];
-#if __STDC_VERSION__ >= 201112L
+#ifdef HAVE_C11
 static atomic_bool blas_buffer_inuse[MAX_PARALLEL_NUMBER];
 #else
 static _Bool blas_buffer_inuse[MAX_PARALLEL_NUMBER];
@@ -320,7 +320,7 @@ int exec_blas(BLASLONG num, blas_queue_t *queue){
 
   while(true) {
     for(i=0; i < MAX_PARALLEL_NUMBER; i++) {
-#if __STDC_VERSION__ >= 201112L
+#ifdef HAVE_C11
       _Bool inuse = false;
       if(atomic_compare_exchange_weak(&blas_buffer_inuse[i], &inuse, true)) {
 #else
@@ -345,7 +345,7 @@ int exec_blas(BLASLONG num, blas_queue_t *queue){
     exec_threads(&queue[i], buf_index);
   }
 
-#if __STDC_VERSION__ >= 201112L
+#ifdef HAVE_C11
   atomic_store(&blas_buffer_inuse[buf_index], false);
 #else
   blas_buffer_inuse[buf_index] = false;
