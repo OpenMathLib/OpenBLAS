@@ -1241,7 +1241,9 @@ KERNELDIR	= $(TOPDIR)/kernel/$(ARCH)
 
 include $(TOPDIR)/Makefile.$(ARCH)
 
+ifneq ($(C_COMPILER), PGI)
 CCOMMON_OPT     += -UASMNAME -UASMFNAME -UNAME -UCNAME -UCHAR_NAME -UCHAR_CNAME
+endif
 CCOMMON_OPT	+= -DASMNAME=$(FU)$(*F) -DASMFNAME=$(FU)$(*F)$(BU) -DNAME=$(*F)$(BU) -DCNAME=$(*F) -DCHAR_NAME=\"$(*F)$(BU)\" -DCHAR_CNAME=\"$(*F)\"
 
 ifeq ($(CORE), PPC440)
