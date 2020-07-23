@@ -185,7 +185,7 @@ int CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG inc_y, FLOAT 
 
     if ( (inc_x == 1) && (inc_y == 1) )
     {
-
+#if defined(__VEC__) || defined(__ALTIVEC__)
         BLASLONG n1 = n & -8; 
         if ( n1 > 0 )
         { 
@@ -193,7 +193,7 @@ int CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG inc_y, FLOAT 
             i=n1; 
             ix=2*n1; 
         }
-
+#endif
          while(i < n)
            {
                 temp[0]   = c*x[ix]   + s*y[ix] ;
