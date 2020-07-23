@@ -30,6 +30,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
  
 
+#if defined(__VEC__) || defined(__ALTIVEC__)
 
 #ifndef HAVE_KERNEL_8
 #include <altivec.h> 
@@ -62,6 +63,7 @@ static void saxpy_kernel_64(BLASLONG n, FLOAT *x, FLOAT *y, FLOAT alpha)
     }
 }
 #endif
+#endif
 
 int CNAME(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, FLOAT da, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG inc_y, FLOAT *dummy, BLASLONG dummy2)
 {
@@ -74,11 +76,13 @@ int CNAME(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, FLOAT da, FLOAT *x, BLAS
 	{
 
 		BLASLONG n1 = n & -64;
+#if defined(__VEC__) || defined(__ALTIVEC__)
 
 		if ( n1 )
 			saxpy_kernel_64(n1, x, y, da);
 
 		i = n1;
+#endif
 		while(i < n)
 		{
 

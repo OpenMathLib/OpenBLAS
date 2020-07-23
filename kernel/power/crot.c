@@ -28,6 +28,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "common.h"
  
 #if defined(POWER8) || defined(POWER9) || defined(POWER10)
+#if defined(__VEC__) || defined(__ALTIVEC__)
 
 static void crot_kernel_8 (long n, float *x, float *y, float c, float s)
 {
@@ -168,6 +169,7 @@ static void crot_kernel_8 (long n, float *x, float *y, float c, float s)
      );
 }
  
+#endif
 #endif
 
 

@@ -24,7 +24,6 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
 USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
- 
 
 #include "common.h"
 #include <math.h>
@@ -32,6 +31,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define ABS fabs 
 #define CABS1(x,i)    ABS(x[i])+ABS(x[i+1])
 
+#if defined(__VEC__) || defined(__ALTIVEC__)
  
 /**
  * Find  minimum index 
@@ -296,6 +296,7 @@ static BLASLONG ziamin_kernel_16_TUNED(BLASLONG n, FLOAT *x, FLOAT *minf) {
     return index; 
 }
 
+#endif 
  
 
  
@@ -316,6 +317,8 @@ BLASLONG CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x)
         minf = CABS1(x,0); //index will not be incremented
 
 #if defined(_CALL_ELF) && (_CALL_ELF == 2)
+#if defined(__VEC__) || defined(__ALTIVEC__)
+
 	BLASLONG n1 = n & -16;
         if (n1 > 0) {
 
@@ -323,6 +326,7 @@ BLASLONG CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x)
             i = n1;
             ix = n1 << 1;
         }
+#endif 
 #endif 
 
         while(i < n)
@@ -359,5 +363,3 @@ BLASLONG CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x)
     }
  
 }
-
-
