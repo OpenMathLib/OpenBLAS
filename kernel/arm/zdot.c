@@ -48,10 +48,11 @@ OPENBLAS_COMPLEX_FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLA
 
 	dot[0]=0.0;
 	dot[1]=0.0;
-
+/*
 	CREAL(result) = 0.0 ;
 	CIMAG(result) = 0.0 ;
-
+*/
+	result = OPENBLAS_MAKE_COMPLEX_FLOAT(0.0,0.0);
 	if ( n < 1 )  return(result);
 
 	inc_x2 = 2 * inc_x ;
@@ -71,8 +72,9 @@ OPENBLAS_COMPLEX_FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLA
 		i++ ;
 
 	}
-	CREAL(result) = dot[0];
-	CIMAG(result) = dot[1];
+      /*CREAL(result) = dot[0];
+	CIMAG(result) = dot[1];*/
+	result = OPENBLAS_MAKE_COMPLEX_FLOAT(dot[0],dot[1]);
 	return(result);
 
 }
