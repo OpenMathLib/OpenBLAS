@@ -796,7 +796,18 @@ endif
 
 ifeq ($(C_COMPILER), PGI)
 ifdef BINARY64
+ifeq ($(ARCH), x86_64)
 CCOMMON_OPT += -tp p7-64 -D__MMX__ -Mnollvm
+else
+ifeq ($(ARCH), power)
+ifeq ($(CORE), POWER8)
+CCOMMON_OPT += -tp pwr8
+endif
+ifeq ($(CORE), POWER9)
+CCOMMON_OPT += -tp pwr9
+endif
+endif
+endif
 else
 CCOMMON_OPT += -tp p7
 endif
@@ -960,7 +971,18 @@ ifneq ($(INTERFACE64), 0)
 FCOMMON_OPT += -i8
 endif
 endif
+ifeq ($(ARCH), x86_64)
 FCOMMON_OPT += -tp p7-64
+else
+ifeq ($(ARCH), power)
+ifeq ($(CORE), POWER8)
+FCOMMON_OPT += -tp pwr8
+endif
+ifeq ($(CORE), POWER9)
+FCOMMON_OPT += -tp pwr9
+endif
+endif
+endif
 else
 FCOMMON_OPT += -tp p7
 endif

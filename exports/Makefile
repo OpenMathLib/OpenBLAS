@@ -55,6 +55,10 @@ endif
 endif
 endif
 
+ifeq ($(C_COMPILER), PGI)
+EXTRALIB += -pgf90libs
+endif
+
 ifneq (,$(filter 1 2,$(NOFORTRAN)))
 FEXTRALIB =
 endif

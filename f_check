@@ -82,6 +82,9 @@ if ($compiler eq "") {
 		if ($compiler =~ /flang/) {
 		    $vendor = FLANG;
 		    $openmp = "-fopenmp";
+	    } elsif ($compiler =~ /pgf/) {
+		    $vendor = PGI;
+		    $openmp = "-mp";
 		} else {
 		    $vendor = G77;
 		    $openmp = "";
