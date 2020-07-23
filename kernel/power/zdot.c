@@ -157,13 +157,13 @@ FLOAT _Complex CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG in
 	__real__ result = dot[0] - dot[1];
 	__imag__ result = dot[2] + dot[3];
 	*/
-	result = OPENBLAS_MAKE_COMPLE_FLOAT(dot[0]-dot[1],dot[2]+dot[3]);
+	result = OPENBLAS_MAKE_COMPLEX_FLOAT(dot[0]-dot[1],dot[2]+dot[3]);
 #else
 	/*
 	__real__ result = dot[0] + dot[1];
 	__imag__ result = dot[2] - dot[3];
 	*/
-	result = OPENBLAS_MAKE_COMPLE_FLOAT(dot[0]+dot[1],dot[2]-dot[3]);
+	result = OPENBLAS_MAKE_COMPLEX_FLOAT(dot[0]+dot[1],dot[2]-dot[3]);
 
 #endif
 
