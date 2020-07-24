@@ -26,7 +26,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *****************************************************************************/
 #include "common.h"
 #include <math.h>
+#if defined(__VEC__) || defined(__ALTIVEC__)
 #include <altivec.h>
+#endif
+
 #if defined(DOUBLE)
 
 #define ABS fabs
@@ -36,6 +39,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define ABS fabsf
 
 #endif
+
+#if defined(__VEC__) || defined(__ALTIVEC__)
 
 /**
  * Find  maximum index 
@@ -313,6 +318,7 @@ static BLASLONG diamax_kernel_32(BLASLONG n, FLOAT *x, FLOAT *maxf) {
     return index;
 
 }
+#endif
 
 BLASLONG CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x) {
     BLASLONG i = 0;
@@ -326,12 +332,15 @@ BLASLONG CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x) {
 
         BLASLONG n1 = n & -32;
 #if defined(_CALL_ELF) && (_CALL_ELF == 2)
+#if defined(__VEC__) || defined(__ALTIVEC__)
+
 	if (n1 > 0) {
 
             max = diamax_kernel_32(n1, x, &maxf);
 
             i = n1;
         }
+#endif	
 #endif	
         while (i < n) {
             if (ABS(x[i]) > maxf) {

@@ -28,6 +28,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "common.h"
  
 #if defined(POWER8) || defined(POWER9) || defined(POWER10)
+#if defined(__VEC__) || defined(__ALTIVEC__)
 
 static void crot_kernel_8 (long n, float *x, float *y, float c, float s)
 {
@@ -169,6 +170,7 @@ static void crot_kernel_8 (long n, float *x, float *y, float c, float s)
 }
  
 #endif
+#endif
 
 
 int CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG inc_y, FLOAT c, FLOAT s)
@@ -183,7 +185,7 @@ int CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG inc_y, FLOAT 
 
     if ( (inc_x == 1) && (inc_y == 1) )
     {
-
+#if defined(__VEC__) || defined(__ALTIVEC__)
         BLASLONG n1 = n & -8; 
         if ( n1 > 0 )
         { 
@@ -191,7 +193,7 @@ int CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG inc_y, FLOAT 
             i=n1; 
             ix=2*n1; 
         }
-
+#endif
          while(i < n)
            {
                 temp[0]   = c*x[ix]   + s*y[ix] ;
