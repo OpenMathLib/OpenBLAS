@@ -202,7 +202,7 @@ ZASUMKERNEL  = zasum.c
 #
 SAXPYKERNEL  = saxpy.c
 DAXPYKERNEL  = daxpy.c
-ä
+#
 ifeq ($(__BYTE_ORDER__)$(BINARY32),__ORDER_BIG_ENDIAN__1)
 CAXPYKERNEL  = zaxpy.S
 else
