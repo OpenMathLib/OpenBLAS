@@ -27,103 +27,103 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "common.h"
 #include <altivec.h>
 
-typedef unsigned char vec_t __attribute__ ((vector_size (16)));
+typedef __vector unsigned char  vec_t;
 typedef FLOAT v4sf_t __attribute__ ((vector_size (16)));
 typedef FLOAT v2sf_t __attribute__ ((vector_size (8)));
 #if defined(TRMMKERNEL)
 #define SAVE_ACC(ACC, J)  \
-	  __builtin_mma_disassemble_acc (result, ACC); \
+	  __builtin_mma_disassemble_acc ((void *)result, ACC); \
 	  rowC = (v4sf_t *) &CO[0* ldc+J]; \
-          rowC[0] = result[3] * alpha; \
+          rowC[0] = result[0] * alpha; \
           rowC = (v4sf_t *) &CO[1*ldc+J]; \
-          rowC[0] = result[2] * alpha; \
+          rowC[0] = result[1] * alpha; \
           rowC = (v4sf_t *) &CO[2*ldc+J]; \
-          rowC[0] = result[1] * alpha; \
+          rowC[0] = result[2] * alpha; \
           rowC = (v4sf_t *) &CO[3*ldc+J]; \
-          rowC[0] = result[0] * alpha;
+          rowC[0] = result[3] * alpha;
 #define SAVE_ACC1(ACC, J)  \
-	  __builtin_mma_disassemble_acc (result, ACC); \
+	  __builtin_mma_disassemble_acc ((void *)result, ACC); \
 	  rowC = (v4sf_t *) &CO[4* ldc+J]; \
-          rowC[0] = result[3] * alpha; \
+          rowC[0] = result[0] * alpha; \
           rowC = (v4sf_t *) &CO[5*ldc+J]; \
-          rowC[0] = result[2] * alpha; \
-          rowC = (v4sf_t *) &CO[6*ldc+J]; \
           rowC[0] = result[1] * alpha; \
+          rowC = (v4sf_t *) &CO[6*ldc+J]; \
+          rowC[0] = result[2] * alpha; \
           rowC = (v4sf_t *) &CO[7*ldc+J]; \
-          rowC[0] = result[0] * alpha;
+          rowC[0] = result[3] * alpha;
 #define  SAVE4x2_ACC(ACC, J)  \
-	  __builtin_mma_disassemble_acc (result, ACC); \
+	  __builtin_mma_disassemble_acc ((void *)result, ACC); \
 	  rowC = (v2sf_t *) &CO[0* ldc+J]; \
-          rowC[0] = result[6] * alpha; \
+          rowC[0] = result[0] * alpha; \
 	  rowC = (v2sf_t *) &CO[1* ldc+J]; \
-          rowC[0] = result[4] * alpha; \
+          rowC[0] = result[2] * alpha; \
 	  rowC = (v2sf_t *) &CO[2* ldc+J]; \
-          rowC[0] = result[2] * alpha; \
-	  rowC = (v2sf_t *) &CO[3* ldc+J]; \
-          rowC[0] = result[0] * alpha;
-#define  SAVE4x2_ACC1(ACC, J)  \
-	  __builtin_mma_disassemble_acc (result, ACC); \
-	  rowC = (v2sf_t *) &CO[4* ldc+J]; \
-          rowC[0] = result[6] * alpha; \
-	  rowC = (v2sf_t *) &CO[5* ldc+J]; \
           rowC[0] = result[4] * alpha; \
-	  rowC = (v2sf_t *) &CO[6* ldc+J]; \
+	  rowC = (v2sf_t *) &CO[3* ldc+J]; \
+          rowC[0] = result[6] * alpha;
+#define  SAVE4x2_ACC1(ACC, J)  \
+	  __builtin_mma_disassemble_acc ((void *)result, ACC); \
+	  rowC = (v2sf_t *) &CO[4* ldc+J]; \
+          rowC[0] = result[0] * alpha; \
+	  rowC = (v2sf_t *) &CO[5* ldc+J]; \
           rowC[0] = result[2] * alpha; \
+	  rowC = (v2sf_t *) &CO[6* ldc+J]; \
+          rowC[0] = result[4] * alpha; \
 	  rowC = (v2sf_t *) &CO[7* ldc+J]; \
-          rowC[0] = result[0] * alpha;
+          rowC[0] = result[6] * alpha;
 #define  SAVE2x4_ACC(ACC, J)  \
-	  __builtin_mma_disassemble_acc (result, ACC); \
+	  __builtin_mma_disassemble_acc ((void *)result, ACC); \
 	  rowC = (v4sf_t *) &CO[0* ldc+J]; \
-          rowC[0] = result[3] * alpha; \
+          rowC[0] = result[0] * alpha; \
 	  rowC = (v4sf_t *) &CO[1* ldc+J]; \
-          rowC[0] = result[2] * alpha;
+          rowC[0] = result[1] * alpha;
 #else
 #define SAVE_ACC(ACC, J)  \
-	  __builtin_mma_disassemble_acc (result, ACC); \
+	  __builtin_mma_disassemble_acc ((void *)result, ACC); \
 	  rowC = (v4sf_t *) &CO[0* ldc+J]; \
-          rowC[0] += result[3] * alpha; \
+          rowC[0] += result[0] * alpha; \
           rowC = (v4sf_t *) &CO[1*ldc+J]; \
-          rowC[0] += result[2] * alpha; \
+          rowC[0] += result[1] * alpha; \
           rowC = (v4sf_t *) &CO[2*ldc+J]; \
-          rowC[0] += result[1] * alpha; \
+          rowC[0] += result[2] * alpha; \
           rowC = (v4sf_t *) &CO[3*ldc+J]; \
-          rowC[0] += result[0] * alpha;
+          rowC[0] += result[3] * alpha;
 #define SAVE_ACC1(ACC, J)  \
-	  __builtin_mma_disassemble_acc (result, ACC); \
+	  __builtin_mma_disassemble_acc ((void *)result, ACC); \
 	  rowC = (v4sf_t *) &CO[4* ldc+J]; \
-          rowC[0] += result[3] * alpha; \
+          rowC[0] += result[0] * alpha; \
           rowC = (v4sf_t *) &CO[5*ldc+J]; \
-          rowC[0] += result[2] * alpha; \
-          rowC = (v4sf_t *) &CO[6*ldc+J]; \
           rowC[0] += result[1] * alpha; \
+          rowC = (v4sf_t *) &CO[6*ldc+J]; \
+          rowC[0] += result[2] * alpha; \
           rowC = (v4sf_t *) &CO[7*ldc+J]; \
-          rowC[0] += result[0] * alpha;
+          rowC[0] += result[3] * alpha;
 #define  SAVE4x2_ACC(ACC, J)  \
-	  __builtin_mma_disassemble_acc (result, ACC); \
+	  __builtin_mma_disassemble_acc ((void *)result, ACC); \
 	  rowC = (v2sf_t *) &CO[0* ldc+J]; \
-          rowC[0] += result[6] * alpha; \
+          rowC[0] += result[0] * alpha; \
 	  rowC = (v2sf_t *) &CO[1* ldc+J]; \
-          rowC[0] += result[4] * alpha; \
+          rowC[0] += result[2] * alpha; \
 	  rowC = (v2sf_t *) &CO[2* ldc+J]; \
-          rowC[0] += result[2] * alpha; \
-	  rowC = (v2sf_t *) &CO[3* ldc+J]; \
-          rowC[0] += result[0] * alpha;
-#define  SAVE4x2_ACC1(ACC, J)  \
-	  __builtin_mma_disassemble_acc (result, ACC); \
-	  rowC = (v2sf_t *) &CO[4* ldc+J]; \
-          rowC[0] += result[6] * alpha; \
-	  rowC = (v2sf_t *) &CO[5* ldc+J]; \
           rowC[0] += result[4] * alpha; \
-	  rowC = (v2sf_t *) &CO[6* ldc+J]; \
+	  rowC = (v2sf_t *) &CO[3* ldc+J]; \
+          rowC[0] += result[6] * alpha;
+#define  SAVE4x2_ACC1(ACC, J)  \
+	  __builtin_mma_disassemble_acc ((void *)result, ACC); \
+	  rowC = (v2sf_t *) &CO[4* ldc+J]; \
+          rowC[0] += result[0] * alpha; \
+	  rowC = (v2sf_t *) &CO[5* ldc+J]; \
           rowC[0] += result[2] * alpha; \
+	  rowC = (v2sf_t *) &CO[6* ldc+J]; \
+          rowC[0] += result[4] * alpha; \
 	  rowC = (v2sf_t *) &CO[7* ldc+J]; \
-          rowC[0] += result[0] * alpha;
+          rowC[0] += result[6] * alpha;
 #define  SAVE2x4_ACC(ACC, J)  \
-	  __builtin_mma_disassemble_acc (result, ACC); \
+	  __builtin_mma_disassemble_acc ((void *)result, ACC); \
 	  rowC = (v4sf_t *) &CO[0* ldc+J]; \
-          rowC[0] += result[3] * alpha; \
+          rowC[0] += result[0] * alpha; \
 	  rowC = (v4sf_t *) &CO[1* ldc+J]; \
-          rowC[0] += result[2] * alpha;
+          rowC[0] += result[1] * alpha;
 #endif
 #define KERNEL(i, j) \
           __builtin_mma_xvf32gerpp (&acc0, rowB[i], rowA[j]); \
