@@ -10,6 +10,11 @@ ifeq ($(C_COMPILER), GCC)
 GCCVERSIONGTEQ9 := $(shell expr `$(CC) -dumpversion | cut -f1 -d.` \>= 9)
 endif
 
+ifeq ($(ARCH), power)
+ifeq ($(C_COMPILER), CLANG)
+ override CFLAGS += -fno-integrated-as
+endif
+endif
 AVX2OPT = 
 ifeq ($(C_COMPILER), GCC)
 # AVX2 support was added in 4.7.0
