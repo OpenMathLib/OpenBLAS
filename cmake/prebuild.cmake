@@ -195,8 +195,13 @@ if (DEFINED CORE AND CMAKE_CROSSCOMPILING AND NOT (${HOST_OS} STREQUAL "WINDOWSS
       "#define HAVE_VFP\n"
       "#define HAVE_NEON\n"
       "#define ARMV8\n")
+if ("${TCORE}" STREQUAL "CORTEXA57")     
     set(SGEMM_UNROLL_M 16)
     set(SGEMM_UNROLL_N 4)
+else       
+    set(SGEMM_UNROLL_M 8)
+    set(SGEMM_UNROLL_N 8) 
+endif
     set(DGEMM_UNROLL_M 8)
     set(DGEMM_UNROLL_N 4)
     set(CGEMM_UNROLL_M 8)
