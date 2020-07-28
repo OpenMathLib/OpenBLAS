@@ -1456,7 +1456,7 @@ int get_cpuname(void){
       case  3:
       case  7:
       case 10:
-	return CPUTYPE_BARCELONA;
+	return CPUTYPE_BARCELONA 
       case  5:
 	return CPUTYPE_BOBCAT;
       case  6:
@@ -1516,8 +1516,18 @@ int get_cpuname(void){
 	  else
 	    return CPUTYPE_BARCELONA;
         }
-      }
-      break;
+	break;
+      case 23: //extfamily 17h and 19h Matisse/Renoir Zen2
+      case 25:
+	  if(support_avx())
+#ifndef NO_AVX2
+	  return CPUTYPE_ZEN;
+#else
+	  return CPUTYPE_SANDYBRIDGE; // Zen is closer in architecture to Sandy Bridge than to Excavator
+#endif
+	  else
+	    return CPUTYPE_BARCELONA;
+        break;
     }
     return CPUTYPE_AMD_UNKNOWN;
   }
@@ -2150,6 +2160,15 @@ int get_coretype(void){
 	  else
 	    return CORE_BARCELONA;
 	}
+      } else if (exfamily == 23 || exfamily == 25)
+	  if (support_avx())
+#ifndef NO_AVX2
+	    return CORE_ZEN;
+#else
+	    return CORE_SANDYBRIDGE; // Zen is closer in architecture to Sandy Bridge than to Excavator
+#endif
+	  else
+	    return CORE_BARCELONA;  
       } else {
 	return CORE_BARCELONA;
       }
