@@ -28,7 +28,8 @@ You can download them from [file hosting on sourceforge.net](https://sourceforge
 ## Installation from Source
 
 Download from project homepage, https://xianyi.github.com/OpenBLAS/, or check out the code
-using Git from https://github.com/xianyi/OpenBLAS.git.
+using Git from https://github.com/xianyi/OpenBLAS.git. (If you want the most up to date version, be
+sure to use the develop branch - master is several years out of date due to a change of maintainership.)
 Buildtime parameters can be chosen in Makefile.rule, see there for a short description of each option.
 Most can also be given directly on the make or cmake command line.
 
