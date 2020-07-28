@@ -718,7 +718,7 @@ static gotoblas_t *get_coretype(void){
 	    return &gotoblas_BARCELONA; //OS doesn't support AVX. Use old kernels.
 	  }
 	}
-      } else if (exfamily == 9) {
+      } else if (exfamily == 9 || exfamily == 23 || exfamily == 25) {
 	  if(support_avx())
 	    return &gotoblas_ZEN;
 	  else{
