@@ -1454,10 +1454,11 @@ int get_cpuname(void){
 	return CPUTYPE_OPTERON;
       case  1:
       case  3:
-      case  7:
-      case 10:
+//      case  7:
+//      case 10:
 	return CPUTYPE_BARCELONA;
       case  5:
+      case  7:		      
 	return CPUTYPE_BOBCAT;
       case  6:
 	switch (model) {
@@ -1507,6 +1508,8 @@ int get_cpuname(void){
 	  // AMD Ryzen
 	case 8:
 	  // AMD Ryzen2
+	default:
+	  // Matisse/Renoir and other recent Ryzen2		
 	  if(support_avx())
 #ifndef NO_AVX2
 	    return CPUTYPE_ZEN;
@@ -1516,6 +1519,16 @@ int get_cpuname(void){
 	  else
 	    return CPUTYPE_BARCELONA;
         }
+	break;	      
+      case 10: // Zen3		      
+	if(support_avx())
+#ifndef NO_AVX2
+	    return CPUTYPE_ZEN;
+#else
+	    return CPUTYPE_SANDYBRIDGE; // Zen is closer in architecture to Sandy Bridge than to Excavator
+#endif
+	  else
+	    return CPUTYPE_BARCELONA;	      
       }
       break;
     }
@@ -2107,7 +2120,7 @@ int get_coretype(void){
 	    return CORE_PILEDRIVER;
 	  else
 	    return CORE_BARCELONA; //OS don't support AVX.
-    case 5: // New EXCAVATOR
+        case 5: // New EXCAVATOR
 	  if(support_avx())
 	    return CORE_EXCAVATOR;
 	  else
@@ -2135,12 +2148,14 @@ int get_coretype(void){
 	  }
 	  break;
 	}
-      } else if (exfamily == 8) {
+      } else if (exfamily == 8 || exfamily == 10) {
 	switch (model) {
 	case 1:
 	  // AMD Ryzen
 	case 8:
-	  // Ryzen 2		
+	  // Ryzen 2
+	default:
+	  // Matisse,Renoir Ryzen2 models		
 	  if(support_avx())
 #ifndef NO_AVX2
 	    return CORE_ZEN;
