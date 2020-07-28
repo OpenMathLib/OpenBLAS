@@ -656,7 +656,7 @@ static gotoblas_t *get_coretype(void){
       if ((exfamily == 0) || (exfamily == 2)) {
 	if (ecx & (1 <<  0)) return &gotoblas_OPTERON_SSE3;
 	else return &gotoblas_OPTERON;
-      }  else if (exfamily == 5) {
+      }  else if (exfamily == 5 || exfamily == 7) {
 	return &gotoblas_BOBCAT;
       } else if (exfamily == 6) {
 	if(model == 1){
@@ -710,7 +710,7 @@ static gotoblas_t *get_coretype(void){
 	  }
 	}
       } else if (exfamily == 8) {
-	if (model == 1 || model == 8) {
+	/* if (model == 1 || model == 8) */ {
 	  if(support_avx())
 	    return &gotoblas_ZEN;
 	  else{
@@ -718,16 +718,24 @@ static gotoblas_t *get_coretype(void){
 	    return &gotoblas_BARCELONA; //OS doesn't support AVX. Use old kernels.
 	  }
 	}
-      } else if (exfamily == 9) {
+      } else if (exfamily == 9) {  
 	  if(support_avx())
 	    return &gotoblas_ZEN;
 	  else{
 	    openblas_warning(FALLBACK_VERBOSE, BARCELONA_FALLBACK);
 	    return &gotoblas_BARCELONA; //OS doesn't support AVX. Use old kernels.
-        }
+          }
+      } else if (exfamily == 10) {  
+	  if(support_avx())
+	    return &gotoblas_ZEN;
+	  else{
+	    openblas_warning(FALLBACK_VERBOSE, BARCELONA_FALLBACK);
+	    return &gotoblas_BARCELONA; //OS doesn't support AVX. Use old kernels.
+          }
       }else {
 	return &gotoblas_BARCELONA;
       }
+   
     }
   }
 
