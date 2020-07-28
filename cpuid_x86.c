@@ -1456,7 +1456,7 @@ int get_cpuname(void){
       case  3:
       case  7:
       case 10:
-	return CPUTYPE_BARCELONA 
+	return CPUTYPE_BARCELONA;
       case  5:
 	return CPUTYPE_BOBCAT;
       case  6:
