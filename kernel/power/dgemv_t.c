@@ -25,14 +25,18 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
 USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *****************************************************************************/
 
+#if !defined(__VEC__) || !defined(__ALTIVEC__)
+#include "../arm/gemv_t.c"
+#else
+
 #include "common.h"
 
 #define NBMAX 1024
 //#define PREFETCH 1
+
 #include <altivec.h> 
 
 #define HAVE_KERNEL4x8_ASM 1
-
 
 #if defined(HAVE_KERNEL4x8_ASM)
 static void dgemv_kernel_4x8(BLASLONG n, BLASLONG lda, double *ap, double *x, double *y, double alpha) {
@@ -355,7 +359,7 @@ static void dgemv_kernel_4x8(BLASLONG n, BLASLONG lda, double *ap, double *x, do
             "stxvd2x 39, %[off], %[y]  \n\t"
             "stxvd2x 40, %[off2], %[y]  \n\t"     
                  
-            : [memy] "+m" (*(const double (*)[8])y),
+            : [memy] "+m" (*(double (*)[8])y),
             [n] "+&r" (n),
             [a0] "=b" (a0),
             [a1] "=&b" (a1),
@@ -369,7 +373,7 @@ static void dgemv_kernel_4x8(BLASLONG n, BLASLONG lda, double *ap, double *x, do
             [off2]"=&b" (off2),
             [temp] "=&b" (tempR)
             : [memx] "m" (*(const double (*)[n])x),
-            [mem_ap] "m" (*(const double (*)[]) ap),
+            [mem_ap] "m" (*(const double (*)[n*8]) ap),
             [alpha] "d" (alpha),
             "[a0]" (ap),
             [x] "b" (x),
@@ -883,4 +887,5 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1, FLOAT alpha, FLOAT *a, BLASLO
     return (0);
 
 }
+#endif
 

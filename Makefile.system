@@ -578,6 +578,7 @@ DYNAMIC_CORE += THUNDERX
 DYNAMIC_CORE += THUNDERX2T99
 DYNAMIC_CORE += TSV110
 DYNAMIC_CORE += EMAG8180
+DYNAMIC_CORE += THUNDERX3T110
 endif
 
 ifeq ($(ARCH), zarch)
@@ -617,7 +618,6 @@ DYNAMIC_CORE += POWER8
 ifneq ($(C_COMPILER), GCC)
 DYNAMIC_CORE += POWER9
 DYNAMIC_CORE += POWER10
-override LDFLAGS += -Wl,-no-power10-stubs
 endif
 ifeq ($(C_COMPILER), GCC)
 ifeq ($(GCCVERSIONGT5), 1)
@@ -627,11 +627,9 @@ $(info, OpenBLAS: Your gcc version is too old to build the POWER9 kernels.)
 endif
 ifeq ($(GCCVERSIONGTEQ11), 1)
 DYNAMIC_CORE += POWER10
-override LDFLAGS += -Wl,-no-power10-stubs
 else ifeq ($(GCCVERSIONGTEQ10), 1)
 ifeq ($(GCCMINORVERSIONGTEQ2), 1)
 DYNAMIC_CORE += POWER10
-override LDFLAGS += -Wl,-no-power10-stubs
 endif
 else
 $(info, OpenBLAS: Your gcc version is too old to build the POWER10 kernels.)
@@ -1241,7 +1239,9 @@ KERNELDIR	= $(TOPDIR)/kernel/$(ARCH)
 
 include $(TOPDIR)/Makefile.$(ARCH)
 
+ifneq ($(C_COMPILER), PGI)
 CCOMMON_OPT     += -UASMNAME -UASMFNAME -UNAME -UCNAME -UCHAR_NAME -UCHAR_CNAME
+endif
 CCOMMON_OPT	+= -DASMNAME=$(FU)$(*F) -DASMFNAME=$(FU)$(*F)$(BU) -DNAME=$(*F)$(BU) -DCNAME=$(*F) -DCHAR_NAME=\"$(*F)$(BU)\" -DCHAR_CNAME=\"$(*F)\"
 
 ifeq ($(CORE), PPC440)

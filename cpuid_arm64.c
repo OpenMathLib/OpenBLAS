@@ -40,6 +40,7 @@
 // Cavium
 #define CPU_THUNDERX      7
 #define CPU_THUNDERX2T99  8
+#define CPU_THUNDERX3T110 12
 //Hisilicon
 #define CPU_TSV110        9
 // Ampere
@@ -57,7 +58,8 @@ static char *cpuname[] = {
   "THUNDERX2T99",
   "TSV110",
   "EMAG8180",
-  "NEOVERSEN1"
+  "NEOVERSEN1",
+  "THUNDERX3T110"
 };
 
 static char *cpuname_lower[] = {
@@ -72,7 +74,8 @@ static char *cpuname_lower[] = {
   "thunderx2t99",
   "tsv110",
   "emag8180",
-  "neoversen1"
+  "neoversen1",
+  "thunderx3t110"
 };
 
 int get_feature(char *search)
@@ -158,6 +161,8 @@ int detect(void)
 			return CPU_THUNDERX;
     else if (strstr(cpu_implementer, "0x43") && strstr(cpu_part, "0x0af"))
 			return CPU_THUNDERX2T99;
+    else if (strstr(cpu_implementer, "0x43") && strstr(cpu_part, "0x0b8"))
+			return CPU_THUNDERX3T110;
     // HiSilicon
     else if (strstr(cpu_implementer, "0x48") && strstr(cpu_part, "0xd01"))
                         return CPU_TSV110;
@@ -372,7 +377,25 @@ void get_cpuconfig(void)
     	printf("#define L2_LINESIZE 64\n");
     	printf("#define DTB_DEFAULT_ENTRIES 64\n");
     	printf("#define DTB_SIZE 4096\n");
+			break;
 
+		case CPU_THUNDERX3T110:
+			printf("#define THUNDERX3T110                 \n");
+			printf("#define L1_CODE_SIZE         65536    \n");
+			printf("#define L1_CODE_LINESIZE     64       \n");
+			printf("#define L1_CODE_ASSOCIATIVE  8        \n");
+			printf("#define L1_DATA_SIZE         32768    \n");
+			printf("#define L1_DATA_LINESIZE     64       \n");
+			printf("#define L1_DATA_ASSOCIATIVE  8        \n");
+			printf("#define L2_SIZE              524288   \n");
+			printf("#define L2_LINESIZE          64       \n");
+			printf("#define L2_ASSOCIATIVE       8        \n");
+			printf("#define L3_SIZE              94371840 \n");
+			printf("#define L3_LINESIZE          64       \n");
+			printf("#define L3_ASSOCIATIVE       32       \n");
+			printf("#define DTB_DEFAULT_ENTRIES  64       \n");
+			printf("#define DTB_SIZE             4096     \n");
+			break;
 	}
 	get_cpucount();
 }

@@ -195,8 +195,13 @@ if (DEFINED CORE AND CMAKE_CROSSCOMPILING AND NOT (${HOST_OS} STREQUAL "WINDOWSS
       "#define HAVE_VFP\n"
       "#define HAVE_NEON\n"
       "#define ARMV8\n")
+if ("${TCORE}" STREQUAL "CORTEXA57")     
     set(SGEMM_UNROLL_M 16)
     set(SGEMM_UNROLL_N 4)
+else ()
+    set(SGEMM_UNROLL_M 8)
+    set(SGEMM_UNROLL_N 8) 
+endif ()
     set(DGEMM_UNROLL_M 8)
     set(DGEMM_UNROLL_N 4)
     set(CGEMM_UNROLL_M 8)
@@ -324,6 +329,33 @@ if (DEFINED CORE AND CMAKE_CROSSCOMPILING AND NOT (${HOST_OS} STREQUAL "WINDOWSS
       "#define L2_LINESIZE\t64\n"
       "#define L2_ASSOCIATIVE\t8\n"
       "#define L3_SIZE\t33554432\n"
+      "#define L3_LINESIZE\t64\n"
+      "#define L3_ASSOCIATIVE\t32\n"
+      "#define DTB_DEFAULT_ENTRIES\t64\n"
+      "#define DTB_SIZE\t4096\n"
+      "#define ARMV8\n")
+    set(SGEMM_UNROLL_M 16)
+    set(SGEMM_UNROLL_N 4)
+    set(DGEMM_UNROLL_M 8)
+    set(DGEMM_UNROLL_N 4)
+    set(CGEMM_UNROLL_M 8)
+    set(CGEMM_UNROLL_N 4)
+    set(ZGEMM_UNROLL_M 4)
+    set(ZGEMM_UNROLL_N 4)
+    set(SYMV_P 16)
+  elseif ("${TCORE}" STREQUAL "THUNDERX3T110")
+    file(APPEND ${TARGET_CONF_TEMP}
+      "#define THUNDERX3T110\n"
+      "#define L1_CODE_SIZE\t65536\n"
+      "#define L1_CODE_LINESIZE\t64\n"
+      "#define L1_CODE_ASSOCIATIVE\t8\n"
+      "#define L1_DATA_SIZE\t65536\n"
+      "#define L1_DATA_LINESIZE\t64\n"
+      "#define L1_DATA_ASSOCIATIVE\t8\n"
+      "#define L2_SIZE\t524288\n"
+      "#define L2_LINESIZE\t64\n"
+      "#define L2_ASSOCIATIVE\t8\n"
+      "#define L3_SIZE\t94371840\n"
       "#define L3_LINESIZE\t64\n"
       "#define L3_ASSOCIATIVE\t32\n"
       "#define DTB_DEFAULT_ENTRIES\t64\n"

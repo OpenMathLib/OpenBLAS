@@ -11,34 +11,34 @@ endif
 
 ifeq ($(CORE), POWER10)
 ifeq ($(USE_OPENMP), 1)
-COMMON_OPT += -Ofast -mcpu=power10 -mtune=power10 -mvsx -malign-power -DUSE_OPENMP -fno-fast-math -fopenmp
-FCOMMON_OPT += -O2 -frecursive -mcpu=power10 -mtune=power10 -malign-power -DUSE_OPENMP -fno-fast-math -fopenmp
+COMMON_OPT += -Ofast -mcpu=power10 -mtune=power10 -mvsx  -DUSE_OPENMP -fno-fast-math -fopenmp
+FCOMMON_OPT += -O2 -frecursive -mcpu=power10 -mtune=power10  -DUSE_OPENMP -fno-fast-math -fopenmp
 else
-COMMON_OPT += -Ofast -mcpu=power10 -mtune=power10 -mvsx -malign-power -fno-fast-math
-FCOMMON_OPT += -O2 -frecursive -mcpu=power10 -mtune=power10 -malign-power -fno-fast-math
+COMMON_OPT += -Ofast -mcpu=power10 -mtune=power10 -mvsx  -fno-fast-math
+FCOMMON_OPT += -O2 -frecursive -mcpu=power10 -mtune=power10  -fno-fast-math
 endif
 endif
 
 ifeq ($(CORE), POWER9)
 ifeq ($(USE_OPENMP), 1)
 ifneq ($(C_COMPILER), PGI)
-CCOMMON_OPT += -Ofast -mcpu=power9 -mtune=power9 -mvsx -malign-power -DUSE_OPENMP -fno-fast-math -fopenmp
+CCOMMON_OPT += -Ofast -mcpu=power9 -mtune=power9 -mvsx  -DUSE_OPENMP -fno-fast-math -fopenmp
 else
 CCOMMON_OPT += -fast -Mvect=simd -Mcache_align -DUSE_OPENMP -mp
 endif
 ifneq ($(F_COMPILER), PGI)
-FCOMMON_OPT += -O2 -frecursive -mcpu=power9 -mtune=power9 -malign-power -DUSE_OPENMP -fno-fast-math -fopenmp
+FCOMMON_OPT += -O2 -frecursive -mcpu=power9 -mtune=power9  -DUSE_OPENMP -fno-fast-math -fopenmp
 else
 FCOMMON_OPT += -O2 -Mrecursive -DUSE_OPENMP -mp
 endif
 else
 ifneq ($(C_COMPILER), PGI)
-CCOMMON_OPT += -Ofast -mcpu=power9 -mtune=power9 -mvsx -malign-power -fno-fast-math
+CCOMMON_OPT += -Ofast -mcpu=power9 -mtune=power9 -mvsx  -fno-fast-math
 else
 CCOMMON_OPT += -fast -Mvect=simd -Mcache_align
 endif
 ifneq ($(F_COMPILER), PGI)
-FCOMMON_OPT += -O2 -frecursive -mcpu=power9 -mtune=power9 -malign-power -fno-fast-math
+FCOMMON_OPT += -O2 -frecursive -mcpu=power9 -mtune=power9  -fno-fast-math
 else
 FCOMMON_OPT += -O2 -Mrecursive
 endif
@@ -48,26 +48,26 @@ endif
 ifeq ($(CORE), POWER8)
 ifeq ($(USE_OPENMP), 1)
 ifneq ($(C_COMPILER), PGI)
-CCOMMON_OPT += -Ofast -mcpu=power8 -mtune=power8 -mvsx -malign-power -DUSE_OPENMP -fno-fast-math -fopenmp
+CCOMMON_OPT += -Ofast -mcpu=power8 -mtune=power8 -mvsx  -DUSE_OPENMP -fno-fast-math -fopenmp
 else
 CCOMMON_OPT += -fast -Mvect=simd -Mcache_align -DUSE_OPENMP -mp
 endif
 ifneq ($(F_COMPILER), PGI)
-FCOMMON_OPT += -O2 -frecursive -mcpu=power8 -mtune=power8 -malign-power -DUSE_OPENMP -fno-fast-math -fopenmp
+FCOMMON_OPT += -O2 -frecursive -mcpu=power8 -mtune=power8  -DUSE_OPENMP -fno-fast-math -fopenmp
 else
 FCOMMON_OPT += -O2 -Mrecursive -DUSE_OPENMP -mp
 endif
 else
 ifneq ($(C_COMPILER), PGI)
-CCOMMON_OPT += -Ofast -mcpu=power8 -mtune=power8 -mvsx -malign-power -fno-fast-math
+CCOMMON_OPT += -Ofast -mcpu=power8 -mtune=power8 -mvsx  -fno-fast-math
 else
 CCOMMON_OPT += -fast -Mvect=simd -Mcache_align
 endif
 ifneq ($(F_COMPILER), PGI)
 ifeq ($(OSNAME), AIX)
-FCOMMON_OPT += -O1 -frecursive -mcpu=power8 -mtune=power8 -malign-power -fno-fast-math 
+FCOMMON_OPT += -O1 -frecursive -mcpu=power8 -mtune=power8  -fno-fast-math 
 else
-FCOMMON_OPT += -O2 -frecursive -mcpu=power8 -mtune=power8 -malign-power -fno-fast-math 
+FCOMMON_OPT += -O2 -frecursive -mcpu=power8 -mtune=power8  -fno-fast-math 
 endif
 else
 FCOMMON_OPT += -O2 -Mrecursive
