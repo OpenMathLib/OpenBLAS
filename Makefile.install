@@ -45,7 +45,16 @@ install : 	lib.grd
 
 ifndef NO_CBLAS
 	@echo Generating cblas.h in $(DESTDIR)$(OPENBLAS_INCLUDE_DIR)
-	@sed 's/common/openblas_config/g' cblas.h > "$(DESTDIR)$(OPENBLAS_INCLUDE_DIR)/cblas.h"
+	@cp cblas.h cblas.tmp
+ifdef SYMBOLPREFIX
+	@sed 's/cblas/$(SYMBOLPREFIX)cblas/g' cblas.tmp > cblas.tmp2
+	@sed 's/openblas/$(SYMBOLPREFIX)openblas/g' cblas.tmp2 > cblas.tmp
+endif
+ifdef SYMBOLSUFFIX
+	@sed 's/(OPENBLAS/$(SYMBOLSUFFIX)(OPENBLAS/g' cblas.tmp > cblas.tmp2
+	@sed 's/(void)/$(SYMBOLSUFFIX)(void)/g'  cblas.tmp2 > cblas.tmp
+endif
+	@sed 's/common/openblas_config/g' cblas.tmp > "$(DESTDIR)$(OPENBLAS_INCLUDE_DIR)/cblas.h"
 endif
 
 ifneq ($(OSNAME), AIX)
@@ -168,4 +177,3 @@ endif
 	@echo "  endif ()" >> "$(DESTDIR)$(OPENBLAS_CMAKE_DIR)/$(OPENBLAS_CMAKE_CONFIG_VERSION)"
 	@echo "endif ()" >> "$(DESTDIR)$(OPENBLAS_CMAKE_DIR)/$(OPENBLAS_CMAKE_CONFIG_VERSION)"
 	@echo Install OK!
-
