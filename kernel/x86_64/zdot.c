@@ -140,8 +140,8 @@ static void zdot_compute (BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLO
 		i=0;
 		ix=0;
 		iy=0;
-		inc_x <<= 1;
-		inc_y <<= 1;
+		inc_x *= 2;
+		inc_y *= 2;
 		while(i < n)
 		{
 
