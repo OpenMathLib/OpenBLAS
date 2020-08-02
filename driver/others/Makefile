@@ -47,7 +47,9 @@ endif
 endif
 
 ifdef USE_CUDA
+ifeq ($(USE_CUDA), 1)
 COMMONOBJS	+= cuda_init.$(SUFFIX)
+endif
 endif
 
 ifdef FUNCTION_PROFILE

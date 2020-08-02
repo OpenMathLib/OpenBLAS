@@ -38,6 +38,7 @@
 
 #include  <sys/utsname.h>
 #ifdef _AIX
+#include <sys/systemcfg.h>
 #include <sys/vminfo.h>
 #endif
 #ifdef __APPLE__
@@ -137,35 +138,19 @@ int detect(void){
 #endif
 
 #ifdef _AIX
-  FILE *infile;
-  char buffer[512], *p;
+  // Cast from int to unsigned to ensure comparisons work for all bits in
+  // the bit mask, even the top bit
+  unsigned implementation = (unsigned) _system_configuration.implementation;
 
-  p = (char *)NULL;
-  infile = popen("prtconf|grep 'Processor Type'", "r");
-  while (fgets(buffer, sizeof(buffer), infile)){
-    if (!strncmp("Pro", buffer, 3)){
-	p = strchr(buffer, ':') + 2;
-#if 0
-	fprintf(stderr, "%s\n", p);
-#endif
-	break;
-      }
-  }
-
-  pclose(infile);
-
-  if (strstr(p, "POWER3")) return CPUTYPE_POWER3;
-  if (strstr(p, "POWER4")) return CPUTYPE_POWER4;
-  if (strstr(p, "PPC970")) return CPUTYPE_PPC970;
-  if (strstr(p, "POWER5")) return CPUTYPE_POWER5;
-  if (strstr(p, "POWER6")) return CPUTYPE_POWER6;
-  if (strstr(p, "POWER7")) return CPUTYPE_POWER6;
-  if (strstr(p, "POWER8")) return CPUTYPE_POWER8;
-  if (strstr(p, "POWER9")) return CPUTYPE_POWER9;
-  if (strstr(p, "POWER10")) return CPUTYPE_POWER10;
-  if (strstr(p, "Cell")) return CPUTYPE_CELL;
-  if (strstr(p, "7447")) return CPUTYPE_PPCG4;
-  return CPUTYPE_POWER5;
+  if (implementation >= 0x40000u) return CPUTYPE_POWER10;
+  else if (implementation & 0x20000) return CPUTYPE_POWER9;
+  else if (implementation & 0x10000) return CPUTYPE_POWER8;
+  else if (implementation & 0x08000) return CPUTYPE_POWER7; // POWER 7
+  else if (implementation & 0x04000) return CPUTYPE_POWER6;
+  else if (implementation & 0x02000) return CPUTYPE_POWER5;
+  else if (implementation & 0x01000) return CPUTYPE_POWER4; // MPC7450
+  else if (implementation & 0x00800) return CPUTYPE_POWER4;
+  else return CPUTYPE_POWER3;
 #endif
 
 #ifdef __APPLE__
