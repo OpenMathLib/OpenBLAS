@@ -372,13 +372,13 @@
                         END IF
 *                       Compute workspace needed for CGELSY
                         CALL CGELSY( M, N, NRHS, A, LDA, B, LDB,
-     $                               IWQ, RCOND, CRANK, WQ, -1, RWORK,
+     $                               IWQ, RCOND, CRANK, WQ, -1, RWQ,
      $                               INFO )
                         LWORK_CGELSY = INT( WQ( 1 ) )
                         LRWORK_CGELSY = 2*N
 *                       Compute workspace needed for CGELSS
                         CALL CGELSS( M, N, NRHS, A, LDA, B, LDB, S,
-     $                               RCOND, CRANK, WQ, -1, RWORK, INFO )
+     $                               RCOND, CRANK, WQ, -1, RWQ, INFO )
                         LWORK_CGELSS = INT( WQ( 1 ) )
                         LRWORK_CGELSS = 5*MNMIN
 *                       Compute workspace needed for CGELSD
@@ -564,7 +564,7 @@
                                  CALL CLARNV( 2, ISEED, NCOLS*NRHS,
      $                                        WORK )
                                  CALL CSCAL( NCOLS*NRHS,
-     $                                       ONE / REAL( NCOLS ), WORK,
+     $                                       CONE / REAL( NCOLS ), WORK,
      $                                       1 )
                               END IF
                               CALL CGEMM( TRANS, 'No transpose', NROWS,
