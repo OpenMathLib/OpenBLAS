@@ -105,6 +105,7 @@ static void INLINE blas_lock(volatile unsigned long *address){
 	   "	bne- 1f\n"
 	   "	stwcx. %2,0, %1\n"
 	   "	bne- 0b\n"
+	   "    isync\n"
 	   "1:    "
 	: "=&r"(ret)
 	: "r"(address), "r" (val)
