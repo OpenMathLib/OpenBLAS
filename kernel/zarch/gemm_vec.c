@@ -265,11 +265,57 @@ VECTOR_BLOCK(4, 4)
 VECTOR_BLOCK(4, 2)
 VECTOR_BLOCK(4, 1)
 
+/**
+ * Calculate for a row-block in C_i of size ROWSxCOLS using scalar operations.
+ * Simple implementation for smaller block sizes
+ *
+ * @param[in] 	A	Pointer current block of input matrix A.
+ * @param[in]	k	Number of columns in A.
+ * @param[in]	B	Pointer current block of input matrix B.
+ * @param[inout] C	Pointer current block of output matrix C.
+ * @param[in]	ldc	Offset between elements in adjacent columns in C.
+ * @param[in]	alpha	Scalar factor.
+ */
+#define SCALAR_BLOCK(ROWS, COLS)                                          \
+    static inline void GEBP_block_##ROWS##_##COLS(                        \
+	FLOAT const *restrict A, BLASLONG k, FLOAT const *restrict B,     \
+	FLOAT *restrict C, BLASLONG ldc, FLOAT alpha) {                   \
+	FLOAT Caux[ROWS][COLS] __attribute__((aligned(16)));              \
+                                                                          \
+	/*                                                                \
+	 * Peel off first iteration (i.e., column of A) for               \
+	 * initializing Caux                                              \
+	 */                                                               \
+	for (BLASLONG i = 0; i < ROWS; i++)                               \
+	    for (BLASLONG j = 0; j < COLS; j++) Caux[i][j] = A[i] * B[j]; \
+                                                                          \
+	for (BLASLONG kk = 1; kk < k; kk++)                               \
+	    for (BLASLONG i = 0; i < ROWS; i++)                           \
+		for (BLASLONG j = 0; j < COLS; j++)                       \
+		    Caux[i][j] += A[i + kk * ROWS] * B[j + kk * COLS];    \
+                                                                          \
+	for (BLASLONG i = 0; i < ROWS; i++)                               \
+	    for (BLASLONG j = 0; j < COLS; j++)                           \
+		if (trmm) {                                               \
+		    C[i + j * ldc] = alpha * Caux[i][j];                  \
+		} else {                                                  \
+		    C[i + j * ldc] += alpha * Caux[i][j];                 \
+		}                                                         \
+    }
+
 #ifdef DOUBLE
 VECTOR_BLOCK(2, 4)
 VECTOR_BLOCK(2, 2)
 VECTOR_BLOCK(2, 1)
+#else
+SCALAR_BLOCK(2, 4)
+SCALAR_BLOCK(2, 2)
+SCALAR_BLOCK(2, 1)
 #endif
+
+SCALAR_BLOCK(1, 4)
+SCALAR_BLOCK(1, 2)
+SCALAR_BLOCK(1, 1)
 
 
 /**
@@ -526,6 +572,8 @@ static inline void GEBP_block(BLASLONG m, BLASLONG n,
 		}
 	}
 
+	/* Dispatch into the implementation for each block size: */
+
 #define BLOCK(bm, bn)                                           \
 	if (m == bm && n == bn) {                               \
 		GEBP_block_##bm##_##bn(A, k, B, C, ldc, alpha); \
@@ -541,35 +589,11 @@ static inline void GEBP_block(BLASLONG m, BLASLONG n,
 	BLOCK(8, 4); BLOCK(8, 2); BLOCK(8, 1);
 	BLOCK(4, 4); BLOCK(4, 2); BLOCK(4, 1);
 
-	#ifdef DOUBLE
-	BLOCK(2, 4);
-	BLOCK(2, 2);
-	#endif
+	BLOCK(2, 4); BLOCK(2, 2); BLOCK(2, 1);
+
+	BLOCK(1, 4); BLOCK(1, 2); BLOCK(1, 1);
 
 #undef BLOCK
-
-	/* simple implementation for smaller block sizes: */
-	FLOAT Caux[m][n] __attribute__ ((aligned (16)));
-
-	/*
-	 * Peel off first iteration (i.e., column of A) for initializing Caux
-	 */
-	for (BLASLONG i = 0; i < m; i++)
-		for (BLASLONG j = 0; j < n; j++)
-			Caux[i][j] = A[i] * B[j];
-
-	for (BLASLONG kk = 1; kk < k; kk++)
-		for (BLASLONG i = 0; i < m; i++)
-			for (BLASLONG j = 0; j < n; j++)
-				Caux[i][j] += A[i + kk * m] * B[j + kk * n];
-
-	for (BLASLONG i = 0; i < m; i++)
-		for (BLASLONG j = 0; j < n; j++)
-			if (trmm) {
-				C[i + j * ldc] = alpha * Caux[i][j];
-			} else {
-				C[i + j * ldc] += alpha * Caux[i][j];
-			}
 }
 
 /**
