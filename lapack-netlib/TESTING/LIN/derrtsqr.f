@@ -77,7 +77,7 @@
 *     ..
 *     .. Local Arrays ..
       DOUBLE PRECISION   A( NMAX, NMAX ), T( NMAX, NMAX ), W( NMAX ),
-     $                   C( NMAX, NMAX ), TAU(NMAX)
+     $                   C( NMAX, NMAX ), TAU(NMAX*2)
 *     ..
 *     .. External Subroutines ..
       EXTERNAL           ALAESM, CHKXER, DGEQR,
@@ -137,6 +137,8 @@
 *
       TAU(1)=1
       TAU(2)=1
+      TAU(3)=1
+      TAU(4)=1
       SRNAMT = 'DGEMQR'
       NB=1
       INFOT = 1
