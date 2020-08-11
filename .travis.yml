@@ -34,6 +34,16 @@ matrix:
         - BTYPE="BINARY=64 USE_OPENMP=1"
 
     - <<: *test-ubuntu
+      os: linux-ppc64le
+      before_script:
+        - COMMON_FLAGS="TARGET=POWER9 NUM_THREADS=32"
+      env:
+        # for matrix annotation only
+        - TARGET_BOX=PPC64LE_LINUX_P9
+        - BTYPE="BINARY=64 USE_OPENMP=1"
+
+
+    - <<: *test-ubuntu
       os: linux
       arch: s390x
       before_script:
