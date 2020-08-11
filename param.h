@@ -3092,12 +3092,12 @@ is a big desktop or server with abundant cache rather than a phone or embedded d
 #define ZGEMM_DEFAULT_UNROLL_M  4
 #define ZGEMM_DEFAULT_UNROLL_N  4
 
-#define SGEMM_DEFAULT_P	456
+#define SGEMM_DEFAULT_P	480
 #define DGEMM_DEFAULT_P	320
 #define CGEMM_DEFAULT_P 480
 #define ZGEMM_DEFAULT_P 224
 
-#define SGEMM_DEFAULT_Q 488
+#define SGEMM_DEFAULT_Q 512
 #define DGEMM_DEFAULT_Q 384
 #define CGEMM_DEFAULT_Q 128
 #define ZGEMM_DEFAULT_Q 352
