@@ -13,6 +13,7 @@ matrix:
         apt:
           packages:
             - gfortran
+            - gcc-9
       before_script: &common-before
         - COMMON_FLAGS="DYNAMIC_ARCH=1 TARGET=NEHALEM NUM_THREADS=32"
       script:
