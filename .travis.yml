@@ -15,7 +15,7 @@ matrix:
           - sourceline: 'ppa:ubuntu-toolchain-r/test'
           packages:
             - gfortran
-            - gcc-7
+            - gcc-9
       before_script: &common-before
         - COMMON_FLAGS="DYNAMIC_ARCH=1 TARGET=NEHALEM NUM_THREADS=32"
       script:
@@ -40,15 +40,17 @@ matrix:
       os: linux-ppc64le
       addons:
         apt:
+          sources:
+          - sourceline: 'ppa:ubuntu-toolchain-r/test'
           packages:
-           - gcc-7
-           - gfortran-7
+           - gcc-9
+           - gfortran-9
       before_script:
         - COMMON_FLAGS="TARGET=POWER9 NUM_THREADS=32"
       env:
         # for matrix annotation only
         - TARGET_BOX=PPC64LE_LINUX_P9
-        - BTYPE="BINARY=64 USE_OPENMP=1 CC=gcc-7 FC=gfortran-7"
+        - BTYPE="BINARY=64 USE_OPENMP=1 CC=gcc-9 FC=gfortran-9"
 
 
     - <<: *test-ubuntu
