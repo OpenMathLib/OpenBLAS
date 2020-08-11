@@ -335,7 +335,7 @@ int exec_blas(BLASLONG num, blas_queue_t *queue){
       break;
   }
 
-#pragma omp parallel for schedule(OMP_SCHED)
+#pragma omp parallel for num_threads(num) schedule(OMP_SCHED)
   for (i = 0; i < num; i ++) {
 
 #ifndef USE_SIMPLE_THREADED_LEVEL3
