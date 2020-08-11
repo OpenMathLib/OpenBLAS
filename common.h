@@ -257,9 +257,9 @@ typedef long BLASLONG;
 typedef unsigned long BLASULONG;
 #endif
 
-#ifndef BFLOAT16
+#ifndef BUILD_IN_BFLOAT16
 typedef unsigned short bfloat16;
-#define HALFCONVERSION 1
+#define BFLOAT16CONVERSION 1
 #endif
 
 #ifdef USE64BITINT
@@ -302,7 +302,7 @@ typedef int blasint;
 #define SIZE	8
 #define  BASE_SHIFT 3
 #define ZBASE_SHIFT 4
-#elif defined(HALF)
+#elif defined(BFLOAT16)
 #define IFLOAT	bfloat16
 #define XFLOAT IFLOAT
 #define FLOAT	float

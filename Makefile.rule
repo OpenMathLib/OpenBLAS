@@ -275,7 +275,7 @@ COMMON_PROF = -pg
 
 
 # If you want to enable the experimental BFLOAT16 support
-# BUILD_HALF = 1
+# BUILD_BFLOAT16 = 1
 #
 #  End of user configuration
 #

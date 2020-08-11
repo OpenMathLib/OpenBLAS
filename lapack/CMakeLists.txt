@@ -2,7 +2,7 @@
 include_directories(${PROJECT_SOURCE_DIR})
 include_directories(${PROJECT_BINARY_DIR})
 
-list (REMOVE_ITEM FLOAT_TYPES "HALF")
+list (REMOVE_ITEM FLOAT_TYPES "BFLOAT16")
 
 set(LAPACK_SOURCES
   potrf/potrf_U_single.c
@@ -46,7 +46,7 @@ GenerateNamedObjects("laswp/generic/laswp_k_4.c" "" "laswp_plus" false "" ""  fa
 GenerateNamedObjects("laswp/generic/laswp_k_4.c" "MINUS" "laswp_minus" false "" ""  false 3)
 
 foreach (float_type ${FLOAT_TYPES})
-if (${float_type} STREQUAL "HALF")
+if (${float_type} STREQUAL "BFLOAT16")
  continue()
 endif()
 GenerateNamedObjects("getrf/getrf_single.c" "UNIT" "getrf_single" false "" "" false ${float_type})

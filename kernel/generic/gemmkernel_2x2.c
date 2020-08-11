@@ -1,5 +1,5 @@
 #include "common.h"
-#if defined(HALF) && defined(HALFCONVERSION)
+#if defined(BFLOAT16) && defined(BFLOAT16CONVERSION)
 static float
 bfloat16tof32 (bfloat16 f16)
 {

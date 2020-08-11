@@ -548,8 +548,8 @@ endif ()
 #export FUNCTION_PROFILE
 #export TARGET_CORE
 #
-#export SHGEMM_UNROLL_M
-#export SHGEMM_UNROLL_N
+#export SBGEMM_UNROLL_M
+#export SBGEMM_UNROLL_N
 #export SGEMM_UNROLL_M
 #export SGEMM_UNROLL_N
 #export DGEMM_UNROLL_M

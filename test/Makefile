@@ -64,15 +64,15 @@ endif
 endif
 endif
 
-ifeq ($(BUILD_HALF),1)
-level3 : test_shgemm sblat3 dblat3 cblat3 zblat3
+ifeq ($(BUILD_BFLOAT16),1)
+level3 : test_sbgemm sblat3 dblat3 cblat3 zblat3
 else
 level3 : sblat3 dblat3 cblat3 zblat3
 endif
 ifndef CROSS
 	rm -f ?BLAT3.SUMM
-ifeq ($(BUILD_HALF),1)
-	OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 ./test_shgemm > SHBLAT3.SUMM
+ifeq ($(BUILD_BFLOAT16),1)
+	OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 ./test_sbgemm > SHBLAT3.SUMM
 	@$(GREP) -q FATAL SHBLAT3.SUMM && cat SHBLAT3.SUMM || exit 0
 endif
 	OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 ./sblat3 < ./sblat3.dat
@@ -86,8 +86,8 @@ endif
 ifdef SMP
 	rm -f ?BLAT3.SUMM
 ifeq ($(USE_OPENMP), 1)
-ifeq ($(BUILD_HALF),1)
-	OMP_NUM_THREADS=2 ./test_shgemm > SHBLAT3.SUMM
+ifeq ($(BUILD_BFLOAT16),1)
+	OMP_NUM_THREADS=2 ./test_sbgemm > SHBLAT3.SUMM
 	@$(GREP) -q FATAL SHBLAT3.SUMM && cat SHBLAT3.SUMM || exit 0
 endif
 	OMP_NUM_THREADS=2 ./sblat3 < ./sblat3.dat
@@ -99,8 +99,8 @@ endif
 	OMP_NUM_THREADS=2 ./zblat3 < ./zblat3.dat
 	@$(GREP) -q FATAL ZBLAT3.SUMM && cat ZBLAT3.SUMM || exit 0
 else
-ifeq ($(BUILD_HALF),1)
-	OPENBLAS_NUM_THREADS=2 ./test_shgemm > SHBLAT3.SUMM
+ifeq ($(BUILD_BFLOAT16),1)
+	OPENBLAS_NUM_THREADS=2 ./test_sbgemm > SHBLAT3.SUMM
 	@$(GREP) -q FATAL SHBLAT3.SUMM && cat SHBLAT3.SUMM || exit 0
 endif
 	OPENBLAS_NUM_THREADS=2 ./sblat3 < ./sblat3.dat
@@ -181,9 +181,9 @@ zblat2 : zblat2.$(SUFFIX) ../$(LIBNAME)
 sblat3 : sblat3.$(SUFFIX) ../$(LIBNAME)
 	$(FC) $(FLDFLAGS) -o sblat3 sblat3.$(SUFFIX) ../$(LIBNAME) $(EXTRALIB) $(CEXTRALIB)
 
-ifeq ($(BUILD_HALF),1)
-test_shgemm : compare_sgemm_shgemm.c ../$(LIBNAME)
-	$(FC) $(FLDFLAGS) -o test_shgemm compare_sgemm_shgemm.c ../$(LIBNAME) $(EXTRALIB) $(CEXTRALIB)
+ifeq ($(BUILD_BFLOAT16),1)
+test_sbgemm : compare_sgemm_sbgemm.c ../$(LIBNAME)
+	$(FC) $(FLDFLAGS) -o test_sbgemm compare_sgemm_sbgemm.c ../$(LIBNAME) $(EXTRALIB) $(CEXTRALIB)
 endif
 
 dblat3 : dblat3.$(SUFFIX) ../$(LIBNAME)
@@ -208,7 +208,7 @@ clean:
 	@rm -f *.$(SUFFIX) *.$(PSUFFIX) gmon.$(SUFFIX)ut *.SUMM *.cxml *.exe *.pdb *.dwf \
 	sblat1 dblat1 cblat1 zblat1 \
 	sblat2 dblat2 cblat2 zblat2 \
-	test_shgemm sblat3 dblat3 cblat3 zblat3 \
+	test_sbgemm sblat3 dblat3 cblat3 zblat3 \
 	sblat1p dblat1p cblat1p zblat1p \
 	sblat2p dblat2p cblat2p zblat2p \
 	sblat3p dblat3p cblat3p zblat3p \

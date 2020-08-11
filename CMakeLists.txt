@@ -87,13 +87,13 @@ if (NOT NO_LAPACK)
   list(APPEND SUBDIRS lapack)
 endif ()
 
-if (NOT DEFINED BUILD_HALF)
- set (BUILD_HALF false)
+if (NOT DEFINED BUILD_BFLOAT16)
+ set (BUILD_BFLOAT16 false)
 endif ()
 # set which float types we want to build for
 if (NOT DEFINED BUILD_SINGLE AND NOT DEFINED BUILD_DOUBLE AND NOT DEFINED BUILD_COMPLEX AND NOT DEFINED BUILD_COMPLEX16)
   # if none are defined, build for all
-#  set(BUILD_HALF true)
+#  set(BUILD_BFLOAT16 true)
   set(BUILD_SINGLE true)
   set(BUILD_DOUBLE true)
   set(BUILD_COMPLEX true)
@@ -125,9 +125,9 @@ if (BUILD_COMPLEX16)
   list(APPEND FLOAT_TYPES "ZCOMPLEX") # defines COMPLEX and DOUBLE
 endif ()
 
-if (BUILD_HALF)
-  message(STATUS "Building Half Precision")
-  list(APPEND FLOAT_TYPES "HALF") # defines nothing
+if (BUILD_BFLOAT16)
+    message(STATUS "Building BFloat16  Precision")
+    list(APPEND FLOAT_TYPES "BFLOAT16") # defines nothing
 endif ()
 
 if (NOT DEFINED CORE OR "${CORE}" STREQUAL "UNKNOWN")
