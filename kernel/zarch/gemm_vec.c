@@ -249,7 +249,6 @@ static inline vector_float vec_load_hinted(FLOAT const *restrict a) {
 
 
 #if UNROLL_M == 16
-VECTOR_BLOCK(16, 4)
 VECTOR_BLOCK(16, 2)
 VECTOR_BLOCK(16, 1)
 #endif
@@ -257,7 +256,9 @@ VECTOR_BLOCK(16, 1)
 VECTOR_BLOCK(8, 8)
 VECTOR_BLOCK(4, 8)
 #endif
+#ifndef DOUBLE
 VECTOR_BLOCK(8, 4)
+#endif
 VECTOR_BLOCK(8, 2)
 VECTOR_BLOCK(8, 1)
 VECTOR_BLOCK(4, 4)
@@ -267,7 +268,217 @@ VECTOR_BLOCK(4, 1)
 #ifdef DOUBLE
 VECTOR_BLOCK(2, 4)
 VECTOR_BLOCK(2, 2)
+VECTOR_BLOCK(2, 1)
 #endif
+
+
+/**
+ * Calculate a row-block that fits 4x4 vector registers using a loop
+ * unrolled-by-2 with explicit interleaving to better overlap loads and
+ * computation.
+ * This function fits 16x4 blocks for SGEMM and 8x4 blocks for DGEMM.
+ */
+#ifdef DOUBLE
+static inline void GEBP_block_8_4(
+#else // float
+static inline void GEBP_block_16_4(
+#endif
+    FLOAT const *restrict A, BLASLONG bk, FLOAT const *restrict B,
+    FLOAT *restrict C, BLASLONG ldc, FLOAT alpha) {
+#define VEC_ROWS 4
+#define VEC_COLS 4
+#define ROWS VEC_ROWS * VLEN_FLOATS
+#define COLS (VEC_COLS)
+
+	/*
+	 * Hold intermediate results in vector registers.
+	 * Since we need to force the compiler's hand in places, we need to use
+	 * individual variables in contrast to the generic implementation's
+	 * arrays.
+	 */
+#define INIT_ROW_OF_C(ROW)                                        \
+    vector_float A##ROW = vec_load_hinted(A + ROW * VLEN_FLOATS); \
+    vector_float C_##ROW##_0 = A##ROW * B[0];                     \
+    vector_float C_##ROW##_1 = A##ROW * B[1];                     \
+    vector_float C_##ROW##_2 = A##ROW * B[2];                     \
+    vector_float C_##ROW##_3 = A##ROW * B[3];
+
+	INIT_ROW_OF_C(0)
+	INIT_ROW_OF_C(1)
+	INIT_ROW_OF_C(2)
+	INIT_ROW_OF_C(3)
+#undef INIT_ROW_OF_C
+
+	if (bk > 1) {
+		BLASLONG k = 1;
+		vector_float Ak[VEC_ROWS], Aknext[VEC_ROWS];
+		vector_float Bk[VEC_COLS], Bknext[VEC_COLS];
+
+		/*
+		 * Note that in several places, we enforce an instruction
+		 * sequence that we identified empirically by utilizing dummy
+		 * asm statements.
+		 */
+
+		for (BLASLONG j = 0; j < VEC_COLS; j++)
+			Bk[j] = vec_splats(B[j + k * COLS]);
+		asm("");
+
+		for (BLASLONG i = 0; i < VEC_ROWS; i++)
+			Ak[i] = vec_load_hinted(A + i * VLEN_FLOATS + k * ROWS);
+
+		for (; k < (bk - 2); k += 2) {
+			/*
+			 * Load inputs for (k+1) into registers.
+			 * Loading from B first is advantageous.
+			 */
+			for (BLASLONG j = 0; j < VEC_COLS; j++)
+				Bknext[j] = vec_splats(B[j + (k + 1) * COLS]);
+			asm("");
+			for (BLASLONG i = 0; i < VEC_ROWS; i++)
+				Aknext[i] = vec_load_hinted(A + i * VLEN_FLOATS +
+						(k + 1) * ROWS);
+
+			/*
+			 * To achieve better instruction-level parallelism,
+			 * make sure to first load input data for (k+1) before
+			 * initiating compute for k. We enforce that ordering
+			 * with a pseudo asm statement.
+			 * Note that we need to massage this particular "barrier"
+			 * depending on the gcc version.
+			 */
+#if __GNUC__ > 7
+#define BARRIER_READ_BEFORE_COMPUTE(SUFFIX)                                    \
+    do {                                                                       \
+	asm(""                                                                 \
+	    : "+v"(C_0_0), "+v"(C_0_1), "+v"(C_0_2), "+v"(C_0_3), "+v"(C_1_0), \
+	      "+v"(C_1_1), "+v"(C_1_2), "+v"(C_1_3)                            \
+	    : "v"(B##SUFFIX[0]), "v"(B##SUFFIX[1]), "v"(B##SUFFIX[2]),         \
+	      "v"(B##SUFFIX[3]), "v"(A##SUFFIX[0]), "v"(A##SUFFIX[1]),         \
+	      "v"(A##SUFFIX[2]), "v"(A##SUFFIX[3]));                           \
+	asm(""                                                                 \
+	    : "+v"(C_2_0), "+v"(C_2_1), "+v"(C_2_2), "+v"(C_2_3), "+v"(C_3_0), \
+	      "+v"(C_3_1), "+v"(C_3_2), "+v"(C_3_3)                            \
+	    : "v"(B##SUFFIX[0]), "v"(B##SUFFIX[1]), "v"(B##SUFFIX[2]),         \
+	      "v"(B##SUFFIX[3]), "v"(A##SUFFIX[0]), "v"(A##SUFFIX[1]),         \
+	      "v"(A##SUFFIX[2]), "v"(A##SUFFIX[3]));                           \
+    } while (0)
+#else // __GNUC__ <= 7
+#define BARRIER_READ_BEFORE_COMPUTE(SUFFIX) \
+    do {                                    \
+	asm("");                            \
+    } while (0)
+#endif
+
+			BARRIER_READ_BEFORE_COMPUTE(knext);
+
+			/* Compute for (k) */
+			C_0_0 += Ak[0] * Bk[0];
+			C_1_0 += Ak[1] * Bk[0];
+			C_2_0 += Ak[2] * Bk[0];
+			C_3_0 += Ak[3] * Bk[0];
+
+			C_0_1 += Ak[0] * Bk[1];
+			C_1_1 += Ak[1] * Bk[1];
+			C_2_1 += Ak[2] * Bk[1];
+			C_3_1 += Ak[3] * Bk[1];
+
+			C_0_2 += Ak[0] * Bk[2];
+			C_1_2 += Ak[1] * Bk[2];
+			C_2_2 += Ak[2] * Bk[2];
+			C_3_2 += Ak[3] * Bk[2];
+
+			C_0_3 += Ak[0] * Bk[3];
+			C_1_3 += Ak[1] * Bk[3];
+			C_2_3 += Ak[2] * Bk[3];
+			C_3_3 += Ak[3] * Bk[3];
+
+			asm("");
+
+			/*
+			 * Load inputs for (k+2) into registers.
+			 * First load from B.
+			 */
+			for (BLASLONG j = 0; j < VEC_COLS; j++)
+				Bk[j] = vec_splats(B[j + (k + 2) * COLS]);
+			asm("");
+			for (BLASLONG i = 0; i < VEC_ROWS; i++)
+				Ak[i] = vec_load_hinted(A + i * VLEN_FLOATS + (k + 2) * ROWS);
+
+			/*
+			 * As above, make sure to first schedule the loads for (k+2)
+			 * before compute for (k+1).
+			 */
+			BARRIER_READ_BEFORE_COMPUTE(k);
+
+			/* Compute on (k+1) */
+			C_0_0 += Aknext[0] * Bknext[0];
+			C_1_0 += Aknext[1] * Bknext[0];
+			C_2_0 += Aknext[2] * Bknext[0];
+			C_3_0 += Aknext[3] * Bknext[0];
+
+			C_0_1 += Aknext[0] * Bknext[1];
+			C_1_1 += Aknext[1] * Bknext[1];
+			C_2_1 += Aknext[2] * Bknext[1];
+			C_3_1 += Aknext[3] * Bknext[1];
+
+			C_0_2 += Aknext[0] * Bknext[2];
+			C_1_2 += Aknext[1] * Bknext[2];
+			C_2_2 += Aknext[2] * Bknext[2];
+			C_3_2 += Aknext[3] * Bknext[2];
+
+			C_0_3 += Aknext[0] * Bknext[3];
+			C_1_3 += Aknext[1] * Bknext[3];
+			C_2_3 += Aknext[2] * Bknext[3];
+			C_3_3 += Aknext[3] * Bknext[3];
+		}
+
+		/* Wrapup remaining k's */
+		for (; k < bk; k++) {
+			vector_float Ak;
+
+#define COMPUTE_WRAPUP_ROW(ROW)                             \
+    Ak = vec_load_hinted(A + ROW * VLEN_FLOATS + k * ROWS); \
+    C_##ROW##_0 += Ak * B[0 + k * COLS];                    \
+    C_##ROW##_1 += Ak * B[1 + k * COLS];                    \
+    C_##ROW##_2 += Ak * B[2 + k * COLS];                    \
+    C_##ROW##_3 += Ak * B[3 + k * COLS];
+
+			COMPUTE_WRAPUP_ROW(0)
+			COMPUTE_WRAPUP_ROW(1)
+			COMPUTE_WRAPUP_ROW(2)
+			COMPUTE_WRAPUP_ROW(3)
+#undef COMPUTE_WRAPUP_ROW
+		}
+	}
+
+	/*
+	 * Unpack row-block of C_aux into outer C_i, multiply by
+	 * alpha and add up (or assign for TRMM).
+	 */
+#define WRITE_BACK_C(ROW, COL)                                   \
+    do {                                                         \
+	vector_float *Cij =                                      \
+	    (vector_float *)(C + ROW * VLEN_FLOATS + COL * ldc); \
+	if (trmm) {                                              \
+	    *Cij = alpha * C_##ROW##_##COL;                   \
+	} else {                                                 \
+	    *Cij += alpha * C_##ROW##_##COL;                  \
+	}                                                        \
+    } while (0)
+
+	WRITE_BACK_C(0, 0); WRITE_BACK_C(0, 1); WRITE_BACK_C(0, 2); WRITE_BACK_C(0, 3);
+	WRITE_BACK_C(1, 0); WRITE_BACK_C(1, 1); WRITE_BACK_C(1, 2); WRITE_BACK_C(1, 3);
+	WRITE_BACK_C(2, 0); WRITE_BACK_C(2, 1); WRITE_BACK_C(2, 2); WRITE_BACK_C(2, 3);
+	WRITE_BACK_C(3, 0); WRITE_BACK_C(3, 1); WRITE_BACK_C(3, 2); WRITE_BACK_C(3, 3);
+#undef WRITE_BACK_C
+
+#undef ROWS
+#undef VEC_ROWS
+#undef COLS
+#undef VEC_COLS
+#undef BARRIER_READ_BEFORE_COMPUTE
+}
 
 /**
  * Handle calculation for row blocks in C_i of any size by dispatching into
