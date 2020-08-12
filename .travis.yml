@@ -82,6 +82,11 @@ matrix:
         - sudo apt-get update
         - sudo apt-get install gcc-9 gfortran-9 -y
         - COMMON_FLAGS="TARGET=POWER9 NUM_THREADS=32"
+      script:
+        - make QUIET_MAKE=1 $COMMON_FLAGS $BTYPE
+        - make -C test $COMMON_FLAGS $BTYPE
+        - make -C ctest $COMMON_FLAGS $BTYPE
+        - make -C utest $COMMON_FLAGS $BTYPE 
       env:
         # for matrix annotation only
         - TARGET_BOX=PPC64LE_LINUX_P9
