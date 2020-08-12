@@ -77,14 +77,10 @@ matrix:
 
     - os: linux-ppc64le
       compiler: gcc
-      addons:
-        apt:
-          sources:
-          - sourceline: 'ppa:ubuntu-toolchain-r/test'
-          packages:
-           - gcc-9
-           - gfortran-9
       before_script:
+        - sudo add-apt-repository 'ppa:ubuntu-toolchain-r/test' -y
+        - sudo apt-get update
+        - sudo apt-get install gcc-9 gfortran-9 -y
         - COMMON_FLAGS="TARGET=POWER9 NUM_THREADS=32"
       env:
         # for matrix annotation only
