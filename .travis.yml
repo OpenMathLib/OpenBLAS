@@ -75,7 +75,8 @@ matrix:
         - TARGET_BOX=LINUX32
         - BTYPE="BINARY=32"
 
-    - os: linux-ppc64le
+    - os: linux
+      arch: ppc64le
       dist: bionic
       compiler: gcc
       before_script:
