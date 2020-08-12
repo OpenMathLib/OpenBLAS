@@ -11,11 +11,8 @@ matrix:
       compiler: gcc
       addons:
         apt:
-          sources:
-          - sourceline: 'ppa:ubuntu-toolchain-r/test'
           packages:
             - gfortran
-            - gcc-9
       before_script: &common-before
         - COMMON_FLAGS="DYNAMIC_ARCH=1 TARGET=NEHALEM NUM_THREADS=32"
       script:
@@ -35,23 +32,6 @@ matrix:
         # for matrix annotation only
         - TARGET_BOX=PPC64LE_LINUX
         - BTYPE="BINARY=64 USE_OPENMP=1"
-
-    - <<: *test-ubuntu
-      os: linux-ppc64le
-      addons:
-        apt:
-          sources:
-          - sourceline: 'ppa:ubuntu-toolchain-r/test'
-          packages:
-           - gcc-9
-           - gfortran-9
-      before_script:
-        - COMMON_FLAGS="TARGET=POWER9 NUM_THREADS=32"
-      env:
-        # for matrix annotation only
-        - TARGET_BOX=PPC64LE_LINUX_P9
-        - BTYPE="BINARY=64 USE_OPENMP=1 CC=gcc-9 FC=gfortran-9"
-
 
     - <<: *test-ubuntu
       os: linux
@@ -94,6 +74,24 @@ matrix:
       env:
         - TARGET_BOX=LINUX32
         - BTYPE="BINARY=32"
+
+    - os: linux-ppc64le
+      compiler: gcc
+      addons:
+        apt:
+          sources:
+          - sourceline: 'ppa:ubuntu-toolchain-r/test'
+          packages:
+           - gcc-9
+           - gfortran-9
+      before_script:
+        - COMMON_FLAGS="TARGET=POWER9 NUM_THREADS=32"
+      env:
+        # for matrix annotation only
+        - TARGET_BOX=PPC64LE_LINUX_P9
+        - BTYPE="BINARY=64 USE_OPENMP=1 CC=gcc-9 FC=gfortran-9"
+
+
 
     - os: linux
       compiler: gcc
