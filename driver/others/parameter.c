@@ -180,9 +180,10 @@ int get_L2_size(void){
   int eax, ebx, ecx, edx;
 
 #if defined(ATHLON) || defined(OPTERON) || defined(BARCELONA) || defined(BOBCAT) || defined(BULLDOZER) || \
-    defined(CORE_PRESCOTT) || defined(CORE_CORE2) || defined(PENRYN) || defined(DUNNINGTON) || \
-    defined(CORE_NEHALEM) || defined(CORE_SANDYBRIDGE) || defined(ATOM) || defined(GENERIC) || \
-    defined(PILEDRIVER) || defined(HASWELL) || defined(STEAMROLLER) || defined(EXCAVATOR) || defined(ZEN) || defined(SKYLAKEX)
+    defined(CORE_PRESCOTT) || defined(CORE_CORE2)       || defined(PENRYN) || defined(DUNNINGTON) || \
+    defined(CORE_NEHALEM)  || defined(CORE_SANDYBRIDGE) || defined(ATOM)   || defined(GENERIC)    || \
+    defined(PILEDRIVER)    || defined(HASWELL)          || defined(STEAMROLLER) || defined(EXCAVATOR) || \
+    defined(ZEN)           || defined(SKYLAKEX)         || defined(COOPERLAKE)
 
   cpuid(0x80000006, &eax, &ebx, &ecx, &edx);
 
@@ -266,7 +267,9 @@ int get_L2_size(void){
 void blas_set_parameter(void){
 
   int factor;
-#if defined(BULLDOZER) || defined(PILEDRIVER) || defined(SANDYBRIDGE) || defined(NEHALEM) || defined(HASWELL) || defined(STEAMROLLER) || defined(EXCAVATOR) || defined(ZEN) || defined(SKYLAKEX)
+#if defined(BULLDOZER) || defined(PILEDRIVER)  || defined(SANDYBRIDGE) || defined(NEHALEM) || \
+    defined(HASWELL)   || defined(STEAMROLLER) || defined(EXCAVATOR)   || defined(ZEN)     || \
+    defined(SKYLAKEX)  || defined(COOPERLAKE)
   int size = 16;
 #else
   int size = get_L2_size();

@@ -27,6 +27,25 @@ endif
 endif
 endif
 
+ifeq ($(CORE), COOPERLAKE)
+ifndef DYNAMIC_ARCH
+ifndef NO_AVX512
+CCOMMON_OPT += -march=cooperlake
+FCOMMON_OPT += -march=cooperlake
+ifeq ($(OSNAME), CYGWIN_NT)
+CCOMMON_OPT += -fno-asynchronous-unwind-tables
+FCOMMON_OPT += -fno-asynchronous-unwind-tables
+endif
+ifeq ($(OSNAME), WINNT)
+ifeq ($(C_COMPILER), GCC)
+CCOMMON_OPT += -fno-asynchronous-unwind-tables
+FCOMMON_OPT += -fno-asynchronous-unwind-tables
+endif
+endif
+endif
+endif
+endif
+
 ifeq ($(CORE), HASWELL)
 ifndef DYNAMIC_ARCH
 ifndef NO_AVX2

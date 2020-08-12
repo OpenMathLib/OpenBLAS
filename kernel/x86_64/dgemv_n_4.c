@@ -33,7 +33,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "dgemv_n_microk_nehalem-4.c"
 #elif defined(HASWELL) || defined(ZEN) || defined(STEAMROLLER) || defined(EXCAVATOR)
 #include "dgemv_n_microk_haswell-4.c"
-#elif  defined (SKYLAKEX)
+#elif  defined (SKYLAKEX) || defined (COOPERLAKE)
 #include "dgemv_n_microk_skylakex-4.c"
 #endif
 
