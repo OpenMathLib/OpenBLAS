@@ -76,6 +76,7 @@ matrix:
         - BTYPE="BINARY=32"
 
     - os: linux-ppc64le
+      dist: bionic
       compiler: gcc
       before_script:
         - sudo add-apt-repository 'ppa:ubuntu-toolchain-r/test' -y
