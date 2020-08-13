@@ -670,8 +670,8 @@
 *              the one from above. Compare it with D1 computed 
 *              using the SSBTRD.
 *            
-               CALL SLASET( 'Full', N, 1, ZERO, ZERO, SD, 1 )
-               CALL SLASET( 'Full', N, 1, ZERO, ZERO, SE, 1 )
+               CALL SLASET( 'Full', N, 1, ZERO, ZERO, SD, N )
+               CALL SLASET( 'Full', N, 1, ZERO, ZERO, SE, N )
                CALL SLACPY( ' ', K+1, N, A, LDA, U, LDU )
                LH = MAX(1, 4*N)
                LW = LWORK - LH
