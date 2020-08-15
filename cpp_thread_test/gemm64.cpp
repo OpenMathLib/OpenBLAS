@@ -1,5 +1,6 @@
 #include <iostream>
-#include <cblas.h>
+#include "common.h"
+#include "cblas.h"
 int main ( int argc, char* argv[] ) {
     const long n = ((long)1 << 31) - 1;
     std::cout << n <<std::endl;
