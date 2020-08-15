@@ -11,7 +11,7 @@ dgemm_tester : dgemv_tester
 	./dgemm_tester
 
 gemm64 : gemm64
-	$(CXX) $(COMMON_OPT) -Wall -Wextra -Wshadow -fopenmp -std=c++11 gemm64.cpp ../libopenblas.a -lpthread -o gemm64
+	$(CXX) $(COMMON_OPT) -I.. -Wall -Wextra -Wshadow -fopenmp -std=c++11 gemm64.cpp ../libopenblas.a -lpthread -o gemm64
 	./gemm64
 
 clean ::
