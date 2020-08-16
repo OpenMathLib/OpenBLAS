@@ -9,6 +9,10 @@ ifeq ($(ARCH), x86_64)
 USE_GEMM3M = 1
 endif
 
+ifeq ($(ARCH), x86_64)
+USE_DIRECT_SGEMM = 1
+endif
+
 ifeq ($(ARCH), ia64)
 USE_GEMM3M = 1
 endif
@@ -65,6 +69,13 @@ ifeq ($(CORE), Z14)
 USE_TRMM = 1
 endif
 
+ifdef USE_DIRECT_SGEMM
+ifndef SGEMMDIRECTKERNEL
+SGEMMDIRECTKERNEL = sgemm_direct_skylakex.c
+SGEMMDIRECTPERFORMANT = sgemm_direct_performant.c
+endif
+endif
+
 ifeq ($(BUILD_HALF), 1)
 ifndef SHGEMMKERNEL
 SHGEMM_BETA = ../generic/gemm_beta.c
@@ -89,6 +100,12 @@ SKERNELOBJS	+= \
 	sgemm_kernel$(TSUFFIX).$(SUFFIX) \
 	$(SGEMMINCOPYOBJ) $(SGEMMITCOPYOBJ) \
 	$(SGEMMONCOPYOBJ) $(SGEMMOTCOPYOBJ)
+
+ifdef USE_DIRECT_SGEMM
+SKERNELOBJS += \
+	sgemm_direct$(TSUFFIX).$(SUFFIX) \
+	sgemm_direct_performant$(TSUFFIX).$(SUFFIX) 
+endif
 
 DKERNELOBJS	+= \
 	dgemm_kernel$(TSUFFIX).$(SUFFIX) \
@@ -665,6 +682,13 @@ ifeq ($(OS), AIX)
 	$(CC) $(CFLAGS) -c -UDOUBLE -UCOMPLEX sgemm_kernel$(TSUFFIX)_nomacros.s -o $@
 	rm sgemm_kernel$(TSUFFIX).s sgemm_kernel$(TSUFFIX)_nomacros.s
 else
+	$(CC) $(CFLAGS) -c -UDOUBLE -UCOMPLEX $< -o $@
+endif
+
+ifdef USE_DIRECT_SGEMM
+$(KDIR)sgemm_direct_performant$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(SGEMMDIRECTPERFORMANT)
+	$(CC) $(CFLAGS) -c -UDOUBLE -UCOMPLEX $< -o $@
+$(KDIR)sgemm_direct$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(SGEMMDIRECTKERNEL)
 	$(CC) $(CFLAGS) -c -UDOUBLE -UCOMPLEX $< -o $@
 endif
 
