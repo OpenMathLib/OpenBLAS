@@ -134,7 +134,7 @@ gotoblas_t TABLE_NAME = {
   srot_kTS,   saxpy_kTS,  sscal_kTS, sswap_kTS,
   sgemv_nTS,  sgemv_tTS, sger_kTS,
   ssymv_LTS, ssymv_UTS,
-#if X86_64
+#ifdef ARCH_X86_64
   sgemm_directTS,
   sgemm_direct_performantTS,
 #else
