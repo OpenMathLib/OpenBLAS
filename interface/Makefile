@@ -367,7 +367,7 @@ CZBLAS3OBJS   +=  cblas_zgemm3m.$(SUFFIX)
 endif
 
 
-ifndef NO_CBLAS
+ifneq ($(NO_CBLAS), 1)
 
 override CFLAGS += -I.
 
