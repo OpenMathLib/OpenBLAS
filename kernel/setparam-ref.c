@@ -139,7 +139,7 @@ gotoblas_t TABLE_NAME = {
   sgemm_direct_performantTS,
 #else
   sgemm_direct,
-  sgemm_direct_performant	
+  sgemm_direct_performant,	
 #endif
   sgemm_kernelTS, sgemm_betaTS,
 #if SGEMM_DEFAULT_UNROLL_M != SGEMM_DEFAULT_UNROLL_N
