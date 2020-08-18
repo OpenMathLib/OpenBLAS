@@ -208,7 +208,7 @@
 #define SSYMV_THREAD_U		ssymv_thread_U
 #define SSYMV_THREAD_L		ssymv_thread_L
 
-#ifdef X86_64
+#ifdef ARCH_X86_64
 #define SGEMM_DIRECT_PERFORMANT gotoblas -> sgemm_direct_performant
 #define  SGEMM_DIRECT		gotoblas -> sgemm_direct
 #else
