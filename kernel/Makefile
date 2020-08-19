@@ -8,6 +8,7 @@ include $(TOPDIR)/Makefile.system
 
 ifeq ($(C_COMPILER), GCC)
 GCCVERSIONGTEQ9 := $(shell expr `$(CC) -dumpversion | cut -f1 -d.` \>= 9)
+GCCVERSIONGTEQ10 := $(shell expr `$(CC) -dumpversion | cut -f1 -d.` \>= 10)
 endif
 
 ifeq ($(ARCH), power)
@@ -38,7 +39,12 @@ endif
 
 ifdef TARGET_CORE
 ifeq ($(TARGET_CORE), COOPERLAKE)
- override CFLAGS += -DBUILD_KERNEL -DTABLE_NAME=gotoblas_$(TARGET_CORE) -march=cooperlake
+ override CFLAGS += -DBUILD_KERNEL -DTABLE_NAME=gotoblas_$(TARGET_CORE)
+ ifeq ($(GCCVERSIONGTEQ10, 1) 
+  override CFLAGS += -march=cooperlake
+ else 
+  override CFLAGS += -march=skylake-avx512
+ endif 
  ifeq ($(OSNAME), CYGWIN_NT)
   override CFLAGS += -fno-asynchronous-unwind-tables
  endif
