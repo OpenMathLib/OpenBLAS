@@ -40,7 +40,7 @@ endif
 ifdef TARGET_CORE
 ifeq ($(TARGET_CORE), COOPERLAKE)
  override CFLAGS += -DBUILD_KERNEL -DTABLE_NAME=gotoblas_$(TARGET_CORE)
- ifeq ($(GCCVERSIONGTEQ10, 1) 
+ ifeq ($(GCCVERSIONGTEQ10), 1) 
   override CFLAGS += -march=cooperlake
  else 
   override CFLAGS += -march=skylake-avx512
