@@ -135,6 +135,11 @@ gotoblas_t TABLE_NAME = {
   sgemv_nTS,  sgemv_tTS, sger_kTS,
   ssymv_LTS, ssymv_UTS,
 
+#ifdef ARCH_X86_64
+  sgemm_directTS,
+  sgemm_direct_performantTS,	
+#endif
+	
   sgemm_kernelTS, sgemm_betaTS,
 #if SGEMM_DEFAULT_UNROLL_M != SGEMM_DEFAULT_UNROLL_N
   sgemm_incopyTS, sgemm_itcopyTS,
