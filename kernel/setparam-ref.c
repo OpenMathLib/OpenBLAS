@@ -1171,7 +1171,7 @@ static void init_parameter(void) {
 #endif
 #endif
 
-#ifdef SKYLAKEX
+#if defined (SKYLAKEX) || defined (COOPERLAKE)
 
 #ifdef DEBUG
   fprintf(stderr, "SkylakeX\n");

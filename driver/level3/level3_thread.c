@@ -367,7 +367,7 @@ static int inner_thread(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, 
       /* Split local region of B into parts */
       for(jjs = js; jjs < MIN(n_to, js + div_n); jjs += min_jj){
 	min_jj = MIN(n_to, js + div_n) - jjs;
-#ifdef SKYLAKEX
+#if defined(SKYLAKEX) || defined(COOPERLAKE)
 	/* the current AVX512 s/d/c/z GEMM kernel requires n>=6*GEMM_UNROLL_N to achieve the best performance */
 	if (min_jj >= 6*GEMM_UNROLL_N) min_jj = 6*GEMM_UNROLL_N;
 #else

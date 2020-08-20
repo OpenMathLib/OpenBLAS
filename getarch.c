@@ -365,6 +365,36 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif
 #endif
 
+#ifdef FORCE_COOPERLAKE
+#ifdef NO_AVX512
+#define FORCE
+#define FORCE_INTEL
+#define ARCHITECTURE    "X86"
+#define SUBARCHITECTURE "HASWELL"
+#define ARCHCONFIG   "-DHASWELL " \
+                     "-DL1_DATA_SIZE=32768 -DL1_DATA_LINESIZE=64 " \
+                     "-DL2_SIZE=262144 -DL2_LINESIZE=64 " \
+                     "-DDTB_DEFAULT_ENTRIES=64 -DDTB_SIZE=4096 " \
+                     "-DHAVE_CMOV -DHAVE_MMX -DHAVE_SSE -DHAVE_SSE2 -DHAVE_SSE3 -DHAVE_SSSE3 -DHAVE_SSE4_1 -DHAVE_SSE4_2 -DHAVE_AVX " \
+                     "-DFMA3"
+#define LIBNAME   "haswell"
+#define CORENAME  "HASWELL"
+#else
+#define FORCE
+#define FORCE_INTEL
+#define ARCHITECTURE    "X86"
+#define SUBARCHITECTURE "COOPERLAKE"
+#define ARCHCONFIG   "-DCOOPERLAKE " \
+                     "-DL1_DATA_SIZE=32768 -DL1_DATA_LINESIZE=64 " \
+                     "-DL2_SIZE=262144 -DL2_LINESIZE=64 " \
+                     "-DDTB_DEFAULT_ENTRIES=64 -DDTB_SIZE=4096 " \
+                     "-DHAVE_CMOV -DHAVE_MMX -DHAVE_SSE -DHAVE_SSE2 -DHAVE_SSE3 -DHAVE_SSSE3 -DHAVE_SSE4_1 -DHAVE_SSE4_2 -DHAVE_AVX " \
+                     "-DFMA3 -DHAVE_AVX512VL -DHAVE_AVX512BF16 -march=cooperlake"
+#define LIBNAME   "cooperlake"
+#define CORENAME  "COOPERLAKE"
+#endif
+#endif
+
 #ifdef FORCE_ATOM
 #define FORCE
 #define FORCE_INTEL
