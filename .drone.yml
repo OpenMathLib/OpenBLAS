@@ -159,13 +159,14 @@ steps:
   commands:
     - echo "MAKE_FLAGS:= $COMMON_FLAGS"
     - apt-get update -y
-    - apt-get install -y make $CC gfortran perl python g++
+    - apt-get install -y make $CC gfortran perl python g++ r-base
     - $CC --version
     - make QUIET_MAKE=1 $COMMON_FLAGS
     - make -C test $COMMON_FLAGS
     - make -C ctest $COMMON_FLAGS
     - make -C utest $COMMON_FLAGS
     - make -C cpp_thread_test dgemm_tester
+    - Rscript benchmark/scripts/R/deig.R
 ---
 kind: pipeline
 name: epyc_native_test
@@ -183,10 +184,13 @@ steps:
   commands:
     - echo "MAKE_FLAGS:= $COMMON_FLAGS"
     - apt-get update -y
-    - apt-get install -y make $CC gfortran perl python g++
+    - apt-get install -y make $CC gfortran perl python g++ r-base
     - $CC --version
     - make QUIET_MAKE=1 $COMMON_FLAGS
     - make -C test $COMMON_FLAGS
     - make -C ctest $COMMON_FLAGS
     - make -C utest $COMMON_FLAGS
     - make -C cpp_thread_test dgemm_tester
+    - Rscript benchmark/scripts/R/deig.R
+    - OPENBLAS_NUM_THREADS=4 Rscript benchmark/scripts/R/deig.R
+    
