@@ -39,7 +39,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "ddot_microk_nehalem-2.c"
 #elif defined(HASWELL) || defined(ZEN)
 #include "ddot_microk_haswell-2.c"
-#elif defined (SKYLAKEX)
+#elif defined (SKYLAKEX) || defined (COOPERLAKE)
 #include "ddot_microk_skylakex-2.c"
 #elif defined(SANDYBRIDGE)
 #include "ddot_microk_sandy-2.c"
