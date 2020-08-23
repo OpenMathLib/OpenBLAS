@@ -25,6 +25,10 @@ else ifeq ($(ARCH), powerpc)
 override ARCH=power
 else ifeq ($(ARCH), i386)
 override ARCH=x86
+else ifeq ($(ARCH), armv6)
+override ARCH=arm
+else ifeq ($(ARCH), armv7)
+override ARCH=arm
 else ifeq ($(ARCH), aarch64)
 override ARCH=arm64
 else ifeq ($(ARCH), zarch)
