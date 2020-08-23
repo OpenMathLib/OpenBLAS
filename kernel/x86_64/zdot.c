@@ -168,7 +168,7 @@ static void zdot_compute (BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLO
 
 #if defined(SMP)
 static int zdot_thread_function(BLASLONG n, BLASLONG dummy0,
-BLASLONG dummy1, FLOAT dummy2, FLOAT *x, BLASLONG inc_x, FLOAT *y,
+BLASLONG dummy1, FLOAT dummy2r, FLOAT dummy2i, FLOAT *x, BLASLONG inc_x, FLOAT *y,
 BLASLONG inc_y, FLOAT *result, BLASLONG dummy3)
 {
         zdot_compute(n, x, inc_x, y, inc_y, (void *)result);
