@@ -646,6 +646,11 @@
 
 #elif defined(HALF)
 
+#define  D_TO_BF16_K    SHDTOBF16_K
+#define  D_BF16_TO_K    DBF16TOD_K
+#define  S_TO_BF16_K    SHSTOBF16_K
+#define  S_BF16_TO_K    SBF16TOS_K
+
 #define	AMAX_K			SAMAX_K
 #define	AMIN_K			SAMIN_K
 #define	MAX_K			SMAX_K
@@ -657,6 +662,7 @@
 #define	ASUM_K			SASUM_K
 #define	DOTU_K			SDOTU_K
 #define	DOTC_K			SDOTC_K
+#define BF16_DOT_K      SHDOT_K
 #define	AXPYU_K			SAXPYU_K
 #define	AXPYC_K			SAXPYC_K
 #define AXPBY_K     SAXPBY_K

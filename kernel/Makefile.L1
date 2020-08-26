@@ -262,6 +262,20 @@ ifndef XDOTKERNEL
 XDOTKERNEL = zdot.S
 endif
 
+ifeq ($(BUILD_HALF),1)
+ifndef SHDOTKERNEL
+SHDOTKERNEL = ../x86_64/shdot.c
+endif
+
+ifndef TOBF16KERNEL
+TOBF16KERNEL = ../x86_64/tobf16.c
+endif
+
+ifndef BF16TOKERNEL
+BF16TOKERNEL = ../x86_64/bf16to.c
+endif
+endif
+
 ### NRM2 ###
 
 ifndef SNRM2KERNEL
@@ -516,6 +530,15 @@ XBLASOBJS	+= \
 	xdotc_k$(TSUFFIX).$(SUFFIX) xdotu_k$(TSUFFIX).$(SUFFIX) xnrm2_k$(TSUFFIX).$(SUFFIX) xqrot_k$(TSUFFIX).$(SUFFIX) \
 	xscal_k$(TSUFFIX).$(SUFFIX) xswap_k$(TSUFFIX).$(SUFFIX) xsum_k$(TSUFFIX).$(SUFFIX)
 
+ifeq ($(BUILD_HALF),1)
+SHBLASOBJS	+= \
+	 shdot_k$(TSUFFIX).$(SUFFIX)
+SHEXTOBJS        += \
+	 shstobf16_k$(TSUFFIX).$(SUFFIX) shdtobf16_k$(TSUFFIX).$(SUFFIX)
+SHEXTOBJS        += \
+	 sbf16tos_k$(TSUFFIX).$(SUFFIX) dbf16tod_k$(TSUFFIX).$(SUFFIX)
+endif
+
 ### AMAX ###
 
 
@@ -733,6 +756,19 @@ $(KDIR)ddot_k$(TSUFFIX).$(SUFFIX) $(KDIR)ddot_k$(TPSUFFIX).$(PSUFFIX) : $(KERNEL
 
 $(KDIR)qdot_k$(TSUFFIX).$(SUFFIX) $(KDIR)qdot_k$(TPSUFFIX).$(PSUFFIX) : $(KERNELDIR)/$(QDOTKERNEL)
 	$(CC) -c $(CFLAGS) -UCOMPLEX -DXDOUBLE $< -o $@
+
+ifeq ($(BUILD_HALF),1)
+$(KDIR)shdot_k$(TSUFFIX).$(SUFFIX) $(KDIR)shdot_k$(TPSUFFIX).$(PSUFFIX) : $(KERNELDIR)/$(SHDOTKERNEL)
+	$(CC) -c $(CFLAGS) -UCOMPLEX $< -o $@
+$(KDIR)shstobf16_k$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(TOBF16KERNEL)
+	$(CC) -c $(CFLAGS) -UDOUBLE -DSINGLE $< -o $@
+$(KDIR)shdtobf16_k$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(TOBF16KERNEL)
+	$(CC) -c $(CFLAGS) -DDOUBLE -USINGLE $< -o $@
+$(KDIR)sbf16tos_k$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(BF16TOKERNEL)
+	$(CC) -c $(CFLAGS) -UDOUBLE -DSINGLE $< -o $@
+$(KDIR)dbf16tod_k$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(BF16TOKERNEL)
+	$(CC) -c $(CFLAGS) -DDOUBLE -USINGLE $< -o $@
+endif
 
 $(KDIR)sdot_k$(TSUFFIX).$(SUFFIX) $(KDIR)sdot_k$(TPSUFFIX).$(PSUFFIX) : $(KERNELDIR)/$(SDOTKERNEL)
 	$(CC) -c $(CFLAGS) -UCOMPLEX -UDOUBLE $< -o $@

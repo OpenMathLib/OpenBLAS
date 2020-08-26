@@ -3,6 +3,12 @@
 
 #ifndef DYNAMIC_ARCH
 
+#define SHDOT_K             shdot_k
+#define SHSTOBF16_K         shstobf16_k
+#define SHDTOBF16_K         shdtobf16_k
+#define SBF16TOS_K          sbf16tos_k
+#define DBF16TOD_K          dbf16tod_k
+
 #define	SHGEMM_ONCOPY		shgemm_oncopy
 #define	SHGEMM_OTCOPY		shgemm_otcopy
 
@@ -17,6 +23,12 @@
 #define SHGEMM_KERNEL            shgemm_kernel
 
 #else
+
+#define SHDOT_K             gotoblas -> shdot_k
+#define SHSTOBF16_K         gotoblas -> shstobf16_k
+#define SHDTOBF16_K         gotoblas -> shdtobf16_k
+#define SBF16TOS_K          gotoblas -> sbf16tos_k
+#define DBF16TOD_K          gotoblas -> dbf16tod_k
 
 #define	SHGEMM_ONCOPY		gotoblas -> shgemm_oncopy
 #define	SHGEMM_OTCOPY		gotoblas -> shgemm_otcopy

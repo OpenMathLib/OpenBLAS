@@ -51,6 +51,11 @@ typedef struct {
   int shgemm_p, shgemm_q, shgemm_r;
   int shgemm_unroll_m, shgemm_unroll_n, shgemm_unroll_mn;
 
+  void   (*shstobf16_k) (BLASLONG, float    *, BLASLONG, bfloat16 *, BLASLONG);
+  void   (*shdtobf16_k) (BLASLONG, double   *, BLASLONG, bfloat16 *, BLASLONG);
+  void   (*sbf16tos_k)  (BLASLONG, bfloat16 *, BLASLONG, float    *, BLASLONG);
+  void   (*dbf16tod_k)  (BLASLONG, bfloat16 *, BLASLONG, double   *, BLASLONG);
+
   float  (*shamax_k) (BLASLONG, float *, BLASLONG);
   float  (*shamin_k) (BLASLONG, float *, BLASLONG);
   float  (*shmax_k)  (BLASLONG, float *, BLASLONG);
@@ -64,7 +69,7 @@ BLASLONG (*ishmin_k) (BLASLONG, float *, BLASLONG);
   float  (*shasum_k) (BLASLONG, float *, BLASLONG);
   float  (*shsum_k)  (BLASLONG, float *, BLASLONG);
   int    (*shcopy_k) (BLASLONG, float *, BLASLONG, float *, BLASLONG);
-  float  (*shdot_k)  (BLASLONG, float *, BLASLONG, float *, BLASLONG);
+  float  (*shdot_k)  (BLASLONG, bfloat16 *, BLASLONG, bfloat16 *, BLASLONG);
   double (*dshdot_k) (BLASLONG, float *, BLASLONG, float *, BLASLONG);
 
   int    (*shrot_k)  (BLASLONG, float *, BLASLONG, float *, BLASLONG, float, float);
