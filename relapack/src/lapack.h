@@ -4,6 +4,13 @@
 extern blasint LAPACK(lsame)(const char *, const char *);
 extern blasint LAPACK(xerbla)(const char *, const blasint *, int);
 
+extern const blasint LAPACK(ilaenv)(const blasint *, const char*, const char*, const blasint* ,  int ,  int,  int );
+
+extern void LAPACK(sgetrf2)(const blasint *, const blasint *, float *, const blasint *, blasint *, blasint *);
+extern void LAPACK(dgetrf2)(const blasint *, const blasint *, double *, const blasint *, blasint *, blasint *);
+extern void LAPACK(cgetrf2)(const blasint *, const blasint *, float *, const blasint *, blasint *, blasint *);
+extern void LAPACK(zgetrf2)(const blasint *, const blasint *, double *, const blasint *, blasint *, blasint *);
+
 extern void LAPACK(slaswp)(const blasint *, float *, const blasint *, const blasint *, const blasint *, const blasint *, const blasint *);
 extern void LAPACK(dlaswp)(const blasint *, double *, const blasint *, const blasint *, const blasint *, const blasint *, const blasint *);
 extern void LAPACK(claswp)(const blasint *, float *, const blasint *, const blasint *, const blasint *, const blasint *, const blasint *);
