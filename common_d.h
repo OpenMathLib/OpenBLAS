@@ -163,10 +163,10 @@
 #define DGEMM_SMALL_KERNEL_TN   dgemm_small_kernel_tn
 #define DGEMM_SMALL_KERNEL_TT   dgemm_small_kernel_tt
 
-#define DGEMM_SMALL_KERNEL_A1B0_NN   dgemm_small_kernel_a1b0_nn
-#define DGEMM_SMALL_KERNEL_A1B0_NT   dgemm_small_kernel_a1b0_nt
-#define DGEMM_SMALL_KERNEL_A1B0_TN   dgemm_small_kernel_a1b0_tn
-#define DGEMM_SMALL_KERNEL_A1B0_TT   dgemm_small_kernel_a1b0_tt
+#define DGEMM_SMALL_KERNEL_B0_NN   dgemm_small_kernel_b0_nn
+#define DGEMM_SMALL_KERNEL_B0_NT   dgemm_small_kernel_b0_nt
+#define DGEMM_SMALL_KERNEL_B0_TN   dgemm_small_kernel_b0_tn
+#define DGEMM_SMALL_KERNEL_B0_TT   dgemm_small_kernel_b0_tt
 
 #else
 
