@@ -27,7 +27,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "common.h"
 
-int CNAME(BLASLONG M, BLASLONG N, BLASLONG K, FLOAT * A, BLASLONG lda, FLOAT* alpha, FLOAT * B, BLASLONG ldb, FLOAT * C, BLASLONG ldc)
+int CNAME(BLASLONG M, BLASLONG N, BLASLONG K, FLOAT * A, BLASLONG lda, FLOAT alpha0, FLOAT alpha1, FLOAT * B, BLASLONG ldb, FLOAT * C, BLASLONG ldc)
 {
 	FLOAT real, imag;
 
@@ -65,8 +65,8 @@ int CNAME(BLASLONG M, BLASLONG N, BLASLONG K, FLOAT * A, BLASLONG lda, FLOAT* al
 #endif
 			}
 
-			C[j*2*ldc + 2*i] = alpha[0]*real - alpha[1]*imag;
-			C[j*2*ldc+ 2*i + 1] = alpha[0]*imag + real*alpha[1];
+			C[j*2*ldc + 2*i] = alpha0*real - alpha1*imag;
+			C[j*2*ldc+ 2*i + 1] = alpha0*imag + real*alpha1;
 		}
 	}
 	
