@@ -3,7 +3,7 @@
 #
 
 # This library's version
-VERSION = 0.3.9.dev
+VERSION = 0.3.10.dev
 
 # If you set the suffix, the library name will be libopenblas_$(LIBNAMESUFFIX).a
 # and libopenblas_$(LIBNAMESUFFIX).so. Meanwhile, the soname in shared library
@@ -273,6 +273,9 @@ COMMON_PROF = -pg
 #
 # CPP_THREAD_SAFETY_TEST = 1
 
+
+# If you want to enable the experimental BFLOAT16 support
+# BUILD_HALF = 1
 #
 #  End of user configuration
 #

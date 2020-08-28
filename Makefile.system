@@ -21,8 +21,14 @@ ifeq ($(ARCH), amd64)
 override ARCH=x86_64
 else ifeq ($(ARCH), powerpc64)
 override ARCH=power
+else ifeq ($(ARCH), powerpc)
+override ARCH=power
 else ifeq ($(ARCH), i386)
 override ARCH=x86
+else ifeq ($(ARCH), armv6)
+override ARCH=arm
+else ifeq ($(ARCH), armv7)
+override ARCH=arm
 else ifeq ($(ARCH), aarch64)
 override ARCH=arm64
 else ifeq ($(ARCH), zarch)
@@ -86,6 +92,9 @@ endif
 ifeq ($(TARGET), SKYLAKEX)
 GETARCH_FLAGS := -DFORCE_NEHALEM
 endif
+ifeq ($(TARGET), COOPERLAKE)
+GETARCH_FLAGS := -DFORCE_NEHALEM
+endif
 ifeq ($(TARGET), SANDYBRIDGE)
 GETARCH_FLAGS := -DFORCE_NEHALEM
 endif
@@ -107,6 +116,9 @@ endif
 ifeq ($(TARGET), ARMV8)
 GETARCH_FLAGS := -DFORCE_ARMV7
 endif
+ifeq ($(TARGET), POWER8)
+GETARCH_FLAGS := -DFORCE_POWER6
+endif
 endif
 
 
@@ -123,6 +135,9 @@ ifeq ($(TARGET_CORE), HASWELL)
 GETARCH_FLAGS := -DFORCE_NEHALEM
 endif
 ifeq ($(TARGET_CORE), SKYLAKEX)
+GETARCH_FLAGS := -DFORCE_NEHALEM
+endif
+ifeq ($(TARGET_CORE), COOPERLAKE)
 GETARCH_FLAGS := -DFORCE_NEHALEM
 endif
 ifeq ($(TARGET_CORE), SANDYBRIDGE)
@@ -266,10 +281,10 @@ endif
 
 ARFLAGS	=
 CPP	= $(COMPILER) -E
-AR	= $(CROSS_SUFFIX)ar
-AS	= $(CROSS_SUFFIX)as
-LD	= $(CROSS_SUFFIX)ld
-RANLIB	= $(CROSS_SUFFIX)ranlib
+AR	?= $(CROSS_SUFFIX)ar
+AS	?= $(CROSS_SUFFIX)as
+LD	?= $(CROSS_SUFFIX)ld
+RANLIB	?= $(CROSS_SUFFIX)ranlib
 NM	= $(CROSS_SUFFIX)nm
 DLLWRAP = $(CROSS_SUFFIX)dllwrap
 OBJCOPY = $(CROSS_SUFFIX)objcopy
@@ -280,6 +295,26 @@ OBJCONV = $(CROSS_SUFFIX)objconv
 ifeq ($(NOFORTRAN), 1)
 NO_LAPACK = 1
 override FEXTRALIB = 
+endif
+
+ifeq ($(C_COMPILER), GCC)
+GCCVERSIONGTEQ4 := $(shell expr `$(CC) -dumpversion | cut -f1 -d.` \>= 4)
+GCCVERSIONGT4 := $(shell expr `$(CC) -dumpversion | cut -f1 -d.` \> 4)
+GCCVERSIONEQ5 := $(shell expr `$(CC) -dumpversion | cut -f1 -d.` = 5)
+GCCVERSIONGT5 := $(shell expr `$(CC) -dumpversion | cut -f1 -d.` \> 5)
+GCCVERSIONGTEQ7 := $(shell expr `$(CC) -dumpversion | cut -f1 -d.` \>= 7)
+GCCVERSIONGTEQ9 := $(shell expr `$(CC) -dumpversion | cut -f1 -d.` \>= 9)
+GCCVERSIONGTEQ11 := $(shell expr `$(CC) -dumpversion | cut -f1 -d.` \>= 11)
+GCCVERSIONGTEQ10 := $(shell expr `$(CC) -dumpversion | cut -f1 -d.` \>= 10)
+# Note that the behavior of -dumpversion is compile-time-configurable for
+# gcc-7.x and newer. Use -dumpfullversion there
+ifeq ($(GCCVERSIONGTEQ7),1)
+	GCCDUMPVERSION_PARAM := -dumpfullversion
+else
+	GCCDUMPVERSION_PARAM := -dumpversion
+endif
+GCCMINORVERSIONGTEQ2 := $(shell expr `$(CC) $(GCCDUMPVERSION_PARAM) | cut -f2 -d.` \>= 2)
+GCCMINORVERSIONGTEQ7 := $(shell expr `$(CC) $(GCCDUMPVERSION_PARAM) | cut -f2 -d.` \>= 7)
 endif
 
 #
@@ -328,13 +363,7 @@ ifeq ($(C_COMPILER), CLANG)
 CCOMMON_OPT	+= -DMS_ABI
 endif
 
-ifeq ($(C_COMPILER), GCC)
 #Version tests for supporting specific features (MS_ABI, POWER9 intrinsics)
-GCCVERSIONGTEQ4 := $(shell expr `$(CC) -dumpversion | cut -f1 -d.` \>= 4)
-GCCVERSIONGT4 := $(shell expr `$(CC) -dumpversion | cut -f1 -d.` \> 4)
-GCCVERSIONGTEQ7 := $(shell expr `$(CC) -dumpversion | cut -f1 -d.` \>= 7)
-GCCVERSIONGTEQ9 := $(shell expr `$(CC) -dumpversion | cut -f1 -d.` \>= 9)
-GCCMINORVERSIONGTEQ7 := $(shell expr `$(CC) -dumpversion | cut -f2 -d.` \>= 7)
 ifeq ($(GCCVERSIONGT4), 1)
 # GCC Major version > 4
 # It is compatible with MSVC ABI.
@@ -346,7 +375,6 @@ ifeq ($(GCCMINORVERSIONGTEQ7), 1)
 # GCC Version >=4.7
 # It is compatible with MSVC ABI.
 CCOMMON_OPT	+= -DMS_ABI
-endif
 endif
 endif
 
@@ -540,7 +568,7 @@ DYNAMIC_CORE += HASWELL ZEN
 endif
 ifneq ($(NO_AVX512), 1)
 ifneq ($(NO_AVX2), 1)
-DYNAMIC_CORE += SKYLAKEX
+DYNAMIC_CORE += SKYLAKEX COOPERLAKE
 endif
 endif
 endif
@@ -565,11 +593,38 @@ DYNAMIC_CORE += THUNDERX
 DYNAMIC_CORE += THUNDERX2T99
 DYNAMIC_CORE += TSV110
 DYNAMIC_CORE += EMAG8180
+DYNAMIC_CORE += THUNDERX3T110
 endif
 
 ifeq ($(ARCH), zarch)
-DYNAMIC_CORE = Z13
+DYNAMIC_CORE = ZARCH_GENERIC
+
+# Z13 is supported since gcc-5.2, gcc-6, and in RHEL 7.3 and newer
+ifeq ($(GCCVERSIONGT5), 1)
+	ZARCH_SUPPORT_Z13 := 1
+else ifeq ($(GCCVERSIONEQ5), 1)
+ifeq ($(GCCMINORVERSIONGTEQ2), 1)
+	ZARCH_SUPPORT_Z13 := 1
+endif
+endif
+
+ifeq ($(wildcard /etc/redhat-release), /etc/redhat-release)
+ifeq ($(shell source /etc/os-release ; expr $$VERSION_ID \>= "7.3"), 1)
+	ZARCH_SUPPORT_Z13 := 1
+endif
+endif
+
+ifeq ($(ZARCH_SUPPORT_Z13), 1)
+DYNAMIC_CORE += Z13
+else
+$(info OpenBLAS: Not building Z13 kernels because gcc is older than 5.2 or 6.x)
+endif
+
+ifeq ($(GCCVERSIONGTEQ7), 1)
 DYNAMIC_CORE += Z14
+else
+$(info OpenBLAS: Not building Z14 kernels because gcc is older than 7.x)
+endif
 endif
 
 ifeq ($(ARCH), power)
@@ -577,13 +632,22 @@ DYNAMIC_CORE = POWER6
 DYNAMIC_CORE += POWER8
 ifneq ($(C_COMPILER), GCC)
 DYNAMIC_CORE += POWER9
+DYNAMIC_CORE += POWER10
 endif
 ifeq ($(C_COMPILER), GCC)
-GCCVERSIONGT5 := $(shell expr `$(CC) -dumpversion | cut -f1 -d.` \> 5)
 ifeq ($(GCCVERSIONGT5), 1)
 DYNAMIC_CORE += POWER9
 else
 $(info, OpenBLAS: Your gcc version is too old to build the POWER9 kernels.)
+endif
+ifeq ($(GCCVERSIONGTEQ11), 1)
+DYNAMIC_CORE += POWER10
+else ifeq ($(GCCVERSIONGTEQ10), 1)
+ifeq ($(GCCMINORVERSIONGTEQ2), 1)
+DYNAMIC_CORE += POWER10
+endif
+else
+$(info, OpenBLAS: Your gcc version is too old to build the POWER10 kernels.)
 endif
 endif
 endif
@@ -745,7 +809,18 @@ endif
 
 ifeq ($(C_COMPILER), PGI)
 ifdef BINARY64
+ifeq ($(ARCH), x86_64)
 CCOMMON_OPT += -tp p7-64 -D__MMX__ -Mnollvm
+else
+ifeq ($(ARCH), power)
+ifeq ($(CORE), POWER8)
+CCOMMON_OPT += -tp pwr8
+endif
+ifeq ($(CORE), POWER9)
+CCOMMON_OPT += -tp pwr9
+endif
+endif
+endif
 else
 CCOMMON_OPT += -tp p7
 endif
@@ -765,6 +840,15 @@ endif
 
 ifeq ($(F_COMPILER), FLANG)
 CCOMMON_OPT += -DF_INTERFACE_FLANG
+FCOMMON_OPT += -Mrecursive -Kieee
+ifeq ($(OSNAME), Linux)
+ifeq ($(ARCH), x86_64)
+FLANG_VENDOR := $(shell expr `$(FC) --version|cut -f 1 -d "."|head -1`)
+ifeq ($(FLANG_VENDOR),AOCC)
+FCOMMON_OPT += -fno-unroll-loops
+endif
+endif
+endif
 ifdef BINARY64
 ifdef INTERFACE64
 ifneq ($(INTERFACE64), 0)
@@ -860,7 +944,7 @@ ifneq ($(INTERFACE64), 0)
 FCOMMON_OPT += -i8
 endif
 endif
-FCOMMON_OPT += -recursive
+FCOMMON_OPT += -recursive -fp-model strict -assume protect-parens
 ifeq ($(USE_OPENMP), 1)
 FCOMMON_OPT += -fopenmp
 endif
@@ -900,7 +984,18 @@ ifneq ($(INTERFACE64), 0)
 FCOMMON_OPT += -i8
 endif
 endif
+ifeq ($(ARCH), x86_64)
 FCOMMON_OPT += -tp p7-64
+else
+ifeq ($(ARCH), power)
+ifeq ($(CORE), POWER8)
+FCOMMON_OPT += -tp pwr8
+endif
+ifeq ($(CORE), POWER9)
+FCOMMON_OPT += -tp pwr9
+endif
+endif
+endif
 else
 FCOMMON_OPT += -tp p7
 endif
@@ -1129,6 +1224,10 @@ ifeq ($(USE_TLS), 1)
 CCOMMON_OPT += -DUSE_TLS
 endif
 
+ifeq ($(BUILD_HALF), 1)
+CCOMMON_OPT += -DBUILD_HALF
+endif
+
 CCOMMON_OPT += -DVERSION=\"$(VERSION)\"
 
 ifndef SYMBOLPREFIX
@@ -1155,6 +1254,9 @@ KERNELDIR	= $(TOPDIR)/kernel/$(ARCH)
 
 include $(TOPDIR)/Makefile.$(ARCH)
 
+ifneq ($(C_COMPILER), PGI)
+CCOMMON_OPT     += -UASMNAME -UASMFNAME -UNAME -UCNAME -UCHAR_NAME -UCHAR_CNAME
+endif
 CCOMMON_OPT	+= -DASMNAME=$(FU)$(*F) -DASMFNAME=$(FU)$(*F)$(BU) -DNAME=$(*F)$(BU) -DCNAME=$(*F) -DCHAR_NAME=\"$(*F)$(BU)\" -DCHAR_CNAME=\"$(*F)\"
 
 ifeq ($(CORE), PPC440)
@@ -1247,7 +1349,6 @@ endif
 
 override CFLAGS     += $(COMMON_OPT) $(CCOMMON_OPT) -I$(TOPDIR)
 override PFLAGS     += $(COMMON_OPT) $(CCOMMON_OPT) -I$(TOPDIR) -DPROFILE $(COMMON_PROF)
-
 override FFLAGS     += $(COMMON_OPT) $(FCOMMON_OPT)
 override FPFLAGS    += $(FCOMMON_OPT) $(COMMON_PROF)
 #MAKEOVERRIDES =
@@ -1354,6 +1455,7 @@ export ARCH
 export CORE
 export LIBCORE
 export __BYTE_ORDER__
+export ELF_VERSION
 export PGCPATH
 export CONFIG
 export CC
@@ -1399,6 +1501,7 @@ export KERNELDIR
 export FUNCTION_PROFILE
 export TARGET_CORE
 export NO_AVX512
+export BUILD_HALF
 
 export SHGEMM_UNROLL_M
 export SHGEMM_UNROLL_N

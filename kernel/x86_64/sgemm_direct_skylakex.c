@@ -1,7 +1,7 @@
-
+#if defined(SKYLAKEX) || defined (COOPERLAKE)
 /* the direct sgemm code written by Arjan van der Ven */
-//#include <immintrin.h>
-
+#include <immintrin.h>
+#include "common.h"
 /*
  * "Direct sgemm" code. This code operates directly on the inputs and outputs
  * of the sgemm call, avoiding the copies, memory realignments and threading,
@@ -38,6 +38,7 @@
 #define MATMUL_SCALAR(N,M) result##N##M +=  Aval##M * Bval##N;
 #define STORE_SCALAR(N,M)  R[(i+M) * strideR + j + N] = result##N##M;
 
+#if 0
 int sgemm_kernel_direct_performant(BLASLONG M, BLASLONG N, BLASLONG K)
 {
 	unsigned long long mnk = M * N * K;
@@ -61,9 +62,10 @@ int sgemm_kernel_direct_performant(BLASLONG M, BLASLONG N, BLASLONG K)
 	return 1;
 }
 
+#endif
 
-
-void sgemm_kernel_direct (BLASLONG M, BLASLONG N, BLASLONG K, float * __restrict A, BLASLONG strideA, float * __restrict B, BLASLONG strideB , float * __restrict R, BLASLONG strideR)
+//void sgemm_kernel_direct (BLASLONG M, BLASLONG N, BLASLONG K, float * __restrict A, BLASLONG strideA, float * __restrict B, BLASLONG strideB , float * __restrict R, BLASLONG strideR)
+void CNAME (BLASLONG M, BLASLONG N, BLASLONG K, float * __restrict A, BLASLONG strideA, float * __restrict B, BLASLONG strideB , float * __restrict R, BLASLONG strideR)
 {
 	int i, j, k;
 
@@ -465,3 +467,8 @@ void sgemm_kernel_direct (BLASLONG M, BLASLONG N, BLASLONG K, float * __restrict
 		}
 	}
 }
+#else
+#include "common.h"
+void CNAME (BLASLONG M, BLASLONG N, BLASLONG K, float * __restrict A, BLASLONG strideA, float * __restrict B, BLASLONG strideB , float * __restrict R, BLASLONG strideR)
+{}
+#endif

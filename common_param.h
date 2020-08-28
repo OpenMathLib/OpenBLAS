@@ -47,7 +47,7 @@ typedef struct {
   int dtb_entries;
   int offsetA, offsetB, align;
 
-#if 1
+#ifdef BUILD_HALF
   int shgemm_p, shgemm_q, shgemm_r;
   int shgemm_unroll_m, shgemm_unroll_n, shgemm_unroll_mn;
 
@@ -175,6 +175,11 @@ BLASLONG (*ismin_k) (BLASLONG, float *, BLASLONG);
   int    (*ssymv_L) (BLASLONG, BLASLONG, float,  float  *, BLASLONG, float  *, BLASLONG, float  *, BLASLONG, float *);
   int    (*ssymv_U) (BLASLONG, BLASLONG, float,  float  *, BLASLONG, float  *, BLASLONG, float  *, BLASLONG, float *);
 
+#ifdef ARCH_X86_64
+  void (*sgemm_direct) (BLASLONG, BLASLONG, BLASLONG, float *, BLASLONG , float *, BLASLONG , float * , BLASLONG);
+  int  (*sgemm_direct_performant) (BLASLONG M, BLASLONG N, BLASLONG K);
+#endif
+  
   int    (*sgemm_kernel   )(BLASLONG, BLASLONG, BLASLONG, float, float *, float *, float *, BLASLONG);
   int    (*sgemm_beta     )(BLASLONG, BLASLONG, BLASLONG, float, float *, BLASLONG, float *, BLASLONG, float  *, BLASLONG);
 
@@ -1002,12 +1007,14 @@ extern gotoblas_t *gotoblas;
 
 #define HAVE_EX_L2	gotoblas -> exclusive_cache
 
+#ifdef BUILD_HALF
 #define	SHGEMM_P		gotoblas -> shgemm_p
 #define	SHGEMM_Q		gotoblas -> shgemm_q
 #define	SHGEMM_R		gotoblas -> shgemm_r
 #define	SHGEMM_UNROLL_M	gotoblas -> shgemm_unroll_m
 #define	SHGEMM_UNROLL_N	gotoblas -> shgemm_unroll_n
 #define	SHGEMM_UNROLL_MN	gotoblas -> shgemm_unroll_mn
+#endif
 
 #define	SGEMM_P		gotoblas -> sgemm_p
 #define	SGEMM_Q		gotoblas -> sgemm_q
@@ -1086,6 +1093,7 @@ extern gotoblas_t *gotoblas;
 #define HAVE_EX_L2	0
 #endif
 
+#ifdef BUILD_HALF
 #define	SHGEMM_P		SHGEMM_DEFAULT_P
 #define	SHGEMM_Q		SHGEMM_DEFAULT_Q
 #define	SHGEMM_R		SHGEMM_DEFAULT_R
@@ -1095,6 +1103,7 @@ extern gotoblas_t *gotoblas;
 #define SHGEMM_UNROLL_MN	SHGEMM_DEFAULT_UNROLL_MN
 #else
 #define SHGEMM_UNROLL_MN	MAX((SHGEMM_UNROLL_M), (SHGEMM_UNROLL_N))
+#endif
 #endif
 
 #define	SGEMM_P		SGEMM_DEFAULT_P
@@ -1330,31 +1339,31 @@ extern gotoblas_t *gotoblas;
 #endif
 
 #ifndef SHGEMM_DEFAULT_R
-#define SHGEMM_DEFAULT_R (((BUFFER_SIZE - ((SHGEMM_DEFAULT_P * SHGEMM_DEFAULT_Q *  4 + GEMM_DEFAULT_OFFSET_A + GEMM_DEFAULT_ALIGN) & ~GEMM_DEFAULT_ALIGN)) / (SHGEMM_DEFAULT_Q *  4) - 15) & ~15)
+#define SHGEMM_DEFAULT_R (((BUFFER_SIZE - ((SHGEMM_DEFAULT_P * SHGEMM_DEFAULT_Q *  4 + GEMM_DEFAULT_OFFSET_A + GEMM_DEFAULT_ALIGN) & ~GEMM_DEFAULT_ALIGN)) / (SHGEMM_DEFAULT_Q *  4) - 15) & ~15UL)
 #endif
 
 #ifndef SGEMM_DEFAULT_R
-#define SGEMM_DEFAULT_R (((BUFFER_SIZE - ((SGEMM_DEFAULT_P * SGEMM_DEFAULT_Q *  4 + GEMM_DEFAULT_OFFSET_A + GEMM_DEFAULT_ALIGN) & ~GEMM_DEFAULT_ALIGN)) / (SGEMM_DEFAULT_Q *  4) - 15) & ~15)
+#define SGEMM_DEFAULT_R (((BUFFER_SIZE - ((SGEMM_DEFAULT_P * SGEMM_DEFAULT_Q *  4 + GEMM_DEFAULT_OFFSET_A + GEMM_DEFAULT_ALIGN) & ~GEMM_DEFAULT_ALIGN)) / (SGEMM_DEFAULT_Q *  4) - 15) & ~15UL)
 #endif
 
 #ifndef DGEMM_DEFAULT_R
-#define DGEMM_DEFAULT_R (((BUFFER_SIZE - ((DGEMM_DEFAULT_P * DGEMM_DEFAULT_Q *  8 + GEMM_DEFAULT_OFFSET_A + GEMM_DEFAULT_ALIGN) & ~GEMM_DEFAULT_ALIGN)) / (DGEMM_DEFAULT_Q *  8) - 15) & ~15)
+#define DGEMM_DEFAULT_R (((BUFFER_SIZE - ((DGEMM_DEFAULT_P * DGEMM_DEFAULT_Q *  8 + GEMM_DEFAULT_OFFSET_A + GEMM_DEFAULT_ALIGN) & ~GEMM_DEFAULT_ALIGN)) / (DGEMM_DEFAULT_Q *  8) - 15) & ~15UL)
 #endif
 
 #ifndef QGEMM_DEFAULT_R
-#define QGEMM_DEFAULT_R (((BUFFER_SIZE - ((QGEMM_DEFAULT_P * QGEMM_DEFAULT_Q * 16 + GEMM_DEFAULT_OFFSET_A + GEMM_DEFAULT_ALIGN) & ~GEMM_DEFAULT_ALIGN)) / (QGEMM_DEFAULT_Q * 16) - 15) & ~15)
+#define QGEMM_DEFAULT_R (((BUFFER_SIZE - ((QGEMM_DEFAULT_P * QGEMM_DEFAULT_Q * 16 + GEMM_DEFAULT_OFFSET_A + GEMM_DEFAULT_ALIGN) & ~GEMM_DEFAULT_ALIGN)) / (QGEMM_DEFAULT_Q * 16) - 15) & ~15UL)
 #endif
 
 #ifndef CGEMM_DEFAULT_R
-#define CGEMM_DEFAULT_R (((BUFFER_SIZE - ((CGEMM_DEFAULT_P * CGEMM_DEFAULT_Q *  8 + GEMM_DEFAULT_OFFSET_A + GEMM_DEFAULT_ALIGN) & ~GEMM_DEFAULT_ALIGN)) / (CGEMM_DEFAULT_Q *  8) - 15) & ~15)
+#define CGEMM_DEFAULT_R (((BUFFER_SIZE - ((CGEMM_DEFAULT_P * CGEMM_DEFAULT_Q *  8 + GEMM_DEFAULT_OFFSET_A + GEMM_DEFAULT_ALIGN) & ~GEMM_DEFAULT_ALIGN)) / (CGEMM_DEFAULT_Q *  8) - 15) & ~15UL)
 #endif
 
 #ifndef ZGEMM_DEFAULT_R
-#define ZGEMM_DEFAULT_R (((BUFFER_SIZE - ((ZGEMM_DEFAULT_P * ZGEMM_DEFAULT_Q * 16 + GEMM_DEFAULT_OFFSET_A + GEMM_DEFAULT_ALIGN) & ~GEMM_DEFAULT_ALIGN)) / (ZGEMM_DEFAULT_Q * 16) - 15) & ~15)
+#define ZGEMM_DEFAULT_R (((BUFFER_SIZE - ((ZGEMM_DEFAULT_P * ZGEMM_DEFAULT_Q * 16 + GEMM_DEFAULT_OFFSET_A + GEMM_DEFAULT_ALIGN) & ~GEMM_DEFAULT_ALIGN)) / (ZGEMM_DEFAULT_Q * 16) - 15) & ~15UL)
 #endif
 
 #ifndef XGEMM_DEFAULT_R
-#define XGEMM_DEFAULT_R (((BUFFER_SIZE - ((XGEMM_DEFAULT_P * XGEMM_DEFAULT_Q * 32 + GEMM_DEFAULT_OFFSET_A + GEMM_DEFAULT_ALIGN) & ~GEMM_DEFAULT_ALIGN)) / (XGEMM_DEFAULT_Q * 32) - 15) & ~15)
+#define XGEMM_DEFAULT_R (((BUFFER_SIZE - ((XGEMM_DEFAULT_P * XGEMM_DEFAULT_Q * 32 + GEMM_DEFAULT_OFFSET_A + GEMM_DEFAULT_ALIGN) & ~GEMM_DEFAULT_ALIGN)) / (XGEMM_DEFAULT_Q * 32) - 15) & ~15UL)
 #endif
 
 #ifndef SNUMOPT

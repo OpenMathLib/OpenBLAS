@@ -13,6 +13,14 @@ OPENBLAS_CMAKE_DIR := $(OPENBLAS_LIBRARY_DIR)/cmake/openblas
 OPENBLAS_CMAKE_CONFIG := OpenBLASConfig.cmake
 OPENBLAS_CMAKE_CONFIG_VERSION := OpenBLASConfigVersion.cmake
 OPENBLAS_PKGCONFIG_DIR := $(OPENBLAS_LIBRARY_DIR)/pkgconfig
+PKG_EXTRALIB := $(EXTRALIB)
+ifeq ($(USE_OPENMP), 1)
+  ifeq ($(C_COMPILER), PGI)
+          PKG_EXTRALIB += -lomp
+  else	  
+          PKG_EXTRALIB += -lgomp
+  endif
+endif	  
 
 .PHONY : install
 .NOTPARALLEL : install
@@ -45,7 +53,22 @@ install : 	lib.grd
 
 ifndef NO_CBLAS
 	@echo Generating cblas.h in $(DESTDIR)$(OPENBLAS_INCLUDE_DIR)
-	@sed 's/common/openblas_config/g' cblas.h > "$(DESTDIR)$(OPENBLAS_INCLUDE_DIR)/cblas.h"
+	@cp cblas.h cblas.tmp
+ifdef SYMBOLPREFIX
+	@sed 's/cblas[^( ]*/$(SYMBOLPREFIX)&/g' cblas.tmp > cblas.tmp2
+	@sed 's/openblas[^( ]*/$(SYMBOLPREFIX)&/g'  cblas.tmp2 > cblas.tmp
+	#change back any openblas_complex_float and double that got hit
+	@sed 's/$(SYMBOLPREFIX)openblas_complex_/openblas_complex_/g'  cblas.tmp > cblas.tmp2
+	@sed 's/goto[^( ]*/$(SYMBOLPREFIX)&/g'  cblas.tmp2 > cblas.tmp
+endif
+ifdef SYMBOLSUFFIX
+	@sed 's/cblas[^( ]*/&$(SYMBOLSUFFIX)/g' cblas.tmp > cblas.tmp2
+	@sed 's/openblas[^( ]*/&$(SYMBOLSUFFIX)/g'  cblas.tmp2 > cblas.tmp
+	#change back any openblas_complex_float and double that got hit
+	@sed 's/\(openblas_complex_\)\([^ ]*\)$(SYMBOLSUFFIX)/\1\2 /g'  cblas.tmp > cblas.tmp2
+	@sed 's/goto[^( ]*/&$(SYMBOLSUFFIX)/g'  cblas.tmp2 > cblas.tmp
+endif
+	@sed 's/common/openblas_config/g' cblas.tmp > "$(DESTDIR)$(OPENBLAS_INCLUDE_DIR)/cblas.h"
 endif
 
 ifneq ($(OSNAME), AIX)
@@ -132,7 +155,7 @@ endif
 	@echo 'includedir='$(OPENBLAS_INCLUDE_DIR) >> "$(DESTDIR)$(OPENBLAS_PKGCONFIG_DIR)/openblas.pc"
 	@echo 'openblas_config= USE_64BITINT='$(USE_64BITINT) 'DYNAMIC_ARCH='$(DYNAMIC_ARCH) 'DYNAMIC_OLDER='$(DYNAMIC_OLDER) 'NO_CBLAS='$(NO_CBLAS) 'NO_LAPACK='$(NO_LAPACK) 'NO_LAPACKE='$(NO_LAPACKE) 'NO_AFFINITY='$(NO_AFFINITY) 'USE_OPENMP='$(USE_OPENMP) $(CORE) 'MAX_THREADS='$(NUM_THREADS)>> "$(DESTDIR)$(OPENBLAS_PKGCONFIG_DIR)/openblas.pc"
 	@echo 'version='$(VERSION) >> "$(DESTDIR)$(OPENBLAS_PKGCONFIG_DIR)/openblas.pc"
-	@echo 'extralib='$(EXTRALIB) >> "$(DESTDIR)$(OPENBLAS_PKGCONFIG_DIR)/openblas.pc"
+	@echo 'extralib='$(PKG_EXTRALIB) >> "$(DESTDIR)$(OPENBLAS_PKGCONFIG_DIR)/openblas.pc"
 	@cat openblas.pc.in >> "$(DESTDIR)$(OPENBLAS_PKGCONFIG_DIR)/openblas.pc"
 
 
@@ -168,4 +191,3 @@ endif
 	@echo "  endif ()" >> "$(DESTDIR)$(OPENBLAS_CMAKE_DIR)/$(OPENBLAS_CMAKE_CONFIG_VERSION)"
 	@echo "endif ()" >> "$(DESTDIR)$(OPENBLAS_CMAKE_DIR)/$(OPENBLAS_CMAKE_CONFIG_VERSION)"
 	@echo Install OK!
-

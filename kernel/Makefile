@@ -8,8 +8,14 @@ include $(TOPDIR)/Makefile.system
 
 ifeq ($(C_COMPILER), GCC)
 GCCVERSIONGTEQ9 := $(shell expr `$(CC) -dumpversion | cut -f1 -d.` \>= 9)
+GCCVERSIONGTEQ10 := $(shell expr `$(CC) -dumpversion | cut -f1 -d.` \>= 10)
 endif
 
+ifeq ($(ARCH), power)
+ifeq ($(C_COMPILER), CLANG)
+ override CFLAGS += -fno-integrated-as
+endif
+endif
 AVX2OPT = 
 ifeq ($(C_COMPILER), GCC)
 # AVX2 support was added in 4.7.0
@@ -32,7 +38,22 @@ ifdef NO_AVX2
 endif
 
 ifdef TARGET_CORE
-ifeq ($(TARGET_CORE), SKYLAKEX)
+ifeq ($(TARGET_CORE), COOPERLAKE)
+ override CFLAGS += -DBUILD_KERNEL -DTABLE_NAME=gotoblas_$(TARGET_CORE)
+ ifeq ($(GCCVERSIONGTEQ10), 1) 
+  override CFLAGS += -march=cooperlake
+ else 
+  override CFLAGS += -march=skylake-avx512
+ endif 
+ ifeq ($(OSNAME), CYGWIN_NT)
+  override CFLAGS += -fno-asynchronous-unwind-tables
+ endif
+ ifeq ($(OSNAME), WINNT)
+  ifeq ($(C_COMPILER), GCC)
+   override CFLAGS += -fno-asynchronous-unwind-tables
+  endif
+ endif
+else ifeq ($(TARGET_CORE), SKYLAKEX)
  override CFLAGS += -DBUILD_KERNEL -DTABLE_NAME=gotoblas_$(TARGET_CORE) -march=skylake-avx512
  ifeq ($(OSNAME), CYGWIN_NT)
   override CFLAGS += -fno-asynchronous-unwind-tables

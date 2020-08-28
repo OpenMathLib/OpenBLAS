@@ -360,13 +360,8 @@ typedef int blasint;
 #endif
 #endif
 
-#ifdef POWER8
-#ifndef YIELDING
-#define YIELDING        __asm__ __volatile__ ("nop;nop;nop;nop;nop;nop;nop;nop;\n");
-#endif
-#endif
 
-#ifdef POWER9
+#if defined(POWER8) || defined(POWER9) || defined(POWER10)
 #ifndef YIELDING
 #define YIELDING        __asm__ __volatile__ ("nop;nop;nop;nop;nop;nop;nop;nop;\n");
 #endif
@@ -686,7 +681,7 @@ __declspec(dllimport) int __cdecl omp_in_parallel(void);
 __declspec(dllimport) int __cdecl omp_get_num_procs(void);
 #endif
 
-#if (__STDC_VERSION__ >= 201112L)
+#ifdef HAVE_C11
 #if defined(C_GCC) && ( __GNUC__ < 7) 
 // workaround for GCC bug 65467
 #ifndef _Atomic

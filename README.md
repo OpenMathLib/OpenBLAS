@@ -28,7 +28,8 @@ You can download them from [file hosting on sourceforge.net](https://sourceforge
 ## Installation from Source
 
 Download from project homepage, https://xianyi.github.com/OpenBLAS/, or check out the code
-using Git from https://github.com/xianyi/OpenBLAS.git.
+using Git from https://github.com/xianyi/OpenBLAS.git. (If you want the most up to date version, be
+sure to use the develop branch - master is several years out of date due to a change of maintainership.)
 Buildtime parameters can be chosen in Makefile.rule, see there for a short description of each option.
 Most can also be given directly on the make or cmake command line.
 
@@ -57,6 +58,10 @@ Examples:
 * On an x86 box, compile this library for a loongson3a CPU:
   ```sh
   make BINARY=64 CC=mips64el-unknown-linux-gnu-gcc FC=mips64el-unknown-linux-gnu-gfortran HOSTCC=gcc TARGET=LOONGSON3A
+  ```
+  or same with the newer mips-crosscompiler put out by Loongson that defaults to the 32bit ABI:
+  ```sh
+  make HOSTCC=gcc CC='/opt/mips-loongson-gcc7.3-linux-gnu/2019.06-29/bin/mips-linux-gnu-gcc -mabi=64' FC='/opt/mips-loongson-gcc7.3-linux-gnu/2019.06-29/bin/mips-linux-gnu-gfortran -mabi=64' TARGET=LOONGSON3A
   ```
 
 * On an x86 box, compile this library for a loongson3a CPU with loongcc (based on Open64) compiler:

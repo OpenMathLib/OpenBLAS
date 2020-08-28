@@ -1095,7 +1095,7 @@ static BLASULONG base_address      = 0UL;
 static BLASULONG base_address      = BASE_ADDRESS;
 #endif
 
-#if __STDC_VERSION__ >= 201112L
+#ifdef HAVE_C11
 static _Atomic int memory_initialized = 0;
 #else
 static volatile int memory_initialized = 0;
@@ -2070,7 +2070,7 @@ if (!release->address) return;
   if (munmap(release -> address, BUFFER_SIZE)) {
       int errsv=errno;
        perror("OpenBLAS : munmap failed:");
-       printf("error code=%d,\trelease->address=%lx\n",errsv,release->address);
+       printf("error code=%d,\trelease->address=%p\n",errsv,release->address);
   }
 }
 

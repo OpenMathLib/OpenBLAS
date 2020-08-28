@@ -68,7 +68,7 @@ double sqrt(double);
 #define GETRF_FACTOR 1.00
 
 
-#if (__STDC_VERSION__ >= 201112L)
+#ifdef HAVE_C11
 #define	atomic_load_long(p)		__atomic_load_n(p, __ATOMIC_RELAXED)
 #define	atomic_store_long(p, v)		__atomic_store_n(p, v, __ATOMIC_RELAXED)
 #else

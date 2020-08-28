@@ -16,6 +16,7 @@ if (${F_COMPILER} STREQUAL "FLANG")
   if (USE_OPENMP)
     set(FCOMMON_OPT "${FCOMMON_OPT} -fopenmp")
   endif ()
+  set(FCOMMON_OPT "${FCOMMON_OPT} -Mrecursive -Kieee")
 endif ()
 
 if (${F_COMPILER} STREQUAL "G77")

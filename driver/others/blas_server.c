@@ -141,7 +141,7 @@ typedef struct {
 
 } thread_status_t;
 
-#if (__STDC_VERSION__ >= 201112L)
+#ifdef HAVE_C11
 #define	atomic_load_queue(p)		__atomic_load_n(p, __ATOMIC_RELAXED)
 #define	atomic_store_queue(p, v)	__atomic_store_n(p, v, __ATOMIC_RELAXED)
 #else
@@ -272,7 +272,7 @@ static void legacy_exec(void *func, int mode, blas_arg_t *args, void *sb){
       }
 }
 
-#if defined(OS_LINUX) && !defined(NO_AFFINITY)
+#if defined(OS_LINUX) && !defined(NO_AFFINITY) 
 int gotoblas_set_affinity(int);
 int gotoblas_set_affinity2(int);
 int get_node(void);
@@ -281,6 +281,8 @@ int get_node(void);
 static int increased_threads = 0;
 
 #ifdef OS_LINUX
+extern int openblas_get_num_threads(void);  
+
 int openblas_setaffinity(int thread_idx, size_t cpusetsize, cpu_set_t* cpu_set) {
   const int active_threads = openblas_get_num_threads();
 
@@ -602,7 +604,7 @@ int blas_thread_init(void){
       if(ret!=0){
 	struct rlimit rlim;
         const char *msg = strerror(ret);
-        fprintf(STDERR, "OpenBLAS blas_thread_init: pthread_create failed for thread %ld of %ld: %s\n", i+1,blas_num_threads,msg);
+        fprintf(STDERR, "OpenBLAS blas_thread_init: pthread_create failed for thread %ld of %d: %s\n", i+1,blas_num_threads,msg);
 #ifdef RLIMIT_NPROC
         if(0 == getrlimit(RLIMIT_NPROC, &rlim)) {
           fprintf(STDERR, "OpenBLAS blas_thread_init: RLIMIT_NPROC "
