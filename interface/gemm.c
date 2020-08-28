@@ -106,46 +106,42 @@ static int (*gemm[])(blas_arg_t *, BLASLONG *, BLASLONG *, IFLOAT *, IFLOAT *, B
 };
 
 #ifdef SMALL_MATRIX_OPT
-//Only support s/dgemm small matrix optimiztion so far.
+
+#ifndef COMPLEX
 static int (*gemm_small_kernel[])(BLASLONG, BLASLONG, BLASLONG, FLOAT *, BLASLONG, FLOAT ,FLOAT *, BLASLONG, FLOAT, FLOAT *, BLASLONG) = {
 #ifndef GEMM3M
-#ifndef COMPLEX
 	GEMM_SMALL_KERNEL_NN, GEMM_SMALL_KERNEL_TN, NULL, NULL,
 	GEMM_SMALL_KERNEL_NT, GEMM_SMALL_KERNEL_TT, NULL, NULL,
-#endif
 #endif
 };
 
 static int (*gemm_small_kernel_b0[])(BLASLONG, BLASLONG, BLASLONG, FLOAT *, BLASLONG, FLOAT, FLOAT *, BLASLONG, FLOAT *, BLASLONG) = {
 #ifndef GEMM3M
-#ifndef COMPLEX
 	GEMM_SMALL_KERNEL_B0_NN, GEMM_SMALL_KERNEL_B0_TN, NULL, NULL,
 	GEMM_SMALL_KERNEL_B0_NT, GEMM_SMALL_KERNEL_B0_TT, NULL, NULL,
 #endif
-#endif
 };
 
-static int (*zgemm_small_kernel[])(BLASLONG, BLASLONG, BLASLONG, FLOAT *, BLASLONG, FLOAT *,FLOAT *, BLASLONG, FLOAT *, FLOAT *, BLASLONG) = {
+#else
+
+static int (*zgemm_small_kernel[])(BLASLONG, BLASLONG, BLASLONG, FLOAT *, BLASLONG, FLOAT , FLOAT, FLOAT *, BLASLONG, FLOAT , FLOAT, FLOAT *, BLASLONG) = {
 #ifndef GEMM3M
-#ifdef COMPLEX
 	GEMM_SMALL_KERNEL_NN, GEMM_SMALL_KERNEL_TN, GEMM_SMALL_KERNEL_RN, GEMM_SMALL_KERNEL_CN,
 	GEMM_SMALL_KERNEL_NT, GEMM_SMALL_KERNEL_TT, GEMM_SMALL_KERNEL_RT, GEMM_SMALL_KERNEL_CT,
 	GEMM_SMALL_KERNEL_NR, GEMM_SMALL_KERNEL_TR, GEMM_SMALL_KERNEL_RR, GEMM_SMALL_KERNEL_CR,
 	GEMM_SMALL_KERNEL_NC, GEMM_SMALL_KERNEL_TC, GEMM_SMALL_KERNEL_RC, GEMM_SMALL_KERNEL_CC,
 #endif
-#endif
 };
 
-static int (*zgemm_small_kernel_b0[])(BLASLONG, BLASLONG, BLASLONG, FLOAT *, BLASLONG, FLOAT *, FLOAT *, BLASLONG, FLOAT *, BLASLONG) = {
+static int (*zgemm_small_kernel_b0[])(BLASLONG, BLASLONG, BLASLONG, FLOAT *, BLASLONG, FLOAT , FLOAT, FLOAT *, BLASLONG, FLOAT *, BLASLONG) = {
 #ifndef GEMM3M
-#ifdef COMPLEX
 	GEMM_SMALL_KERNEL_B0_NN, GEMM_SMALL_KERNEL_B0_TN, GEMM_SMALL_KERNEL_B0_RN, GEMM_SMALL_KERNEL_B0_CN,
 	GEMM_SMALL_KERNEL_B0_NT, GEMM_SMALL_KERNEL_B0_TT, GEMM_SMALL_KERNEL_B0_RT, GEMM_SMALL_KERNEL_B0_CT,
 	GEMM_SMALL_KERNEL_B0_NR, GEMM_SMALL_KERNEL_B0_TR, GEMM_SMALL_KERNEL_B0_RR, GEMM_SMALL_KERNEL_B0_CR,
 	GEMM_SMALL_KERNEL_B0_NC, GEMM_SMALL_KERNEL_B0_TC, GEMM_SMALL_KERNEL_B0_RC, GEMM_SMALL_KERNEL_B0_CC,
 #endif
-#endif
 };
+#endif
 #endif
 
 #ifndef CBLAS
@@ -479,9 +475,9 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_TRANSPOSE TransA, enum CBLAS_TRANS
 	  }
 #else
 	  if(beta[0] == 0.0 && beta[1] == 0.0){
-		  (zgemm_small_kernel_b0[(transb << 2) | transa])(args.m, args.n, args.k, args.a, args.lda, (FLOAT *)(args.alpha), args.b, args.ldb, args.c, args.ldc);
+		  (zgemm_small_kernel_b0[(transb << 2) | transa])(args.m, args.n, args.k, args.a, args.lda, alpha[0], alpha[1], args.b, args.ldb, args.c, args.ldc);
 	  }else{
-		  (zgemm_small_kernel[(transb << 2) | transa])(args.m, args.n, args.k, args.a, args.lda, (FLOAT *)(args.alpha), args.b, args.ldb, (FLOAT *)(args.beta), args.c, args.ldc);
+		  (zgemm_small_kernel[(transb << 2) | transa])(args.m, args.n, args.k, args.a, args.lda, alpha[0], alpha[1], args.b, args.ldb, beta[0], beta[1], args.c, args.ldc);
 	  }
 #endif	  
 	  return;

@@ -27,7 +27,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "common.h"
 
-int CNAME(BLASLONG M, BLASLONG N, BLASLONG K, FLOAT * A, BLASLONG lda, FLOAT* alpha, FLOAT * B, BLASLONG ldb, FLOAT* beta, FLOAT * C, BLASLONG ldc)
+int CNAME(BLASLONG M, BLASLONG N, BLASLONG K, FLOAT * A, BLASLONG lda, FLOAT alpha0, FLOAT alpha1, FLOAT * B, BLASLONG ldb, FLOAT beta0, FLOAT beta1, FLOAT * C, BLASLONG ldc)
 {
 	FLOAT real, imag;
 	FLOAT tmp0, tmp1;
@@ -69,12 +69,12 @@ int CNAME(BLASLONG M, BLASLONG N, BLASLONG K, FLOAT * A, BLASLONG lda, FLOAT* al
 #endif
 			}
 
-			tmp0 = beta[0]*C[j*2*ldc + 2*i] - beta[1]*C[j*2*ldc+ 2*i + 1];
-			tmp1 = beta[0]*C[j*2*ldc+ 2*i + 1] + beta[1]*C[j*2*ldc + 2*i];
+			tmp0 = beta0*C[j*2*ldc + 2*i] - beta1*C[j*2*ldc+ 2*i + 1];
+			tmp1 = beta0*C[j*2*ldc+ 2*i + 1] + beta1*C[j*2*ldc + 2*i];
 
 
-			C[j*2*ldc + 2*i] =tmp0+ alpha[0]*real - alpha[1]*imag;
-			C[j*2*ldc+ 2*i + 1] = tmp1+ alpha[0]*imag + real*alpha[1];
+			C[j*2*ldc + 2*i] =tmp0+ alpha0*real - alpha1*imag;
+			C[j*2*ldc+ 2*i + 1] = tmp1+ alpha0*imag + real*alpha1;
 		}
 	}
 	
