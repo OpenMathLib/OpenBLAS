@@ -3779,7 +3779,7 @@ lapack_int LAPACK_cggsvp(  char const* jobu, char const* jobv, char const* jobq,
                            float* tolb, lapack_int* k, lapack_int* l,
                            lapack_complex_float* u, lapack_int* ldu,
                            lapack_complex_float* v, lapack_int* ldv,
-                           lapack_complex_float* q, lapack_int* ldq
+                           lapack_complex_float* q, lapack_int* ldq,
                            lapack_int* iwork, lapack_int* rwork,
                            lapack_complex_float* tau, lapack_complex_float* work,
                            lapack_int* info);
