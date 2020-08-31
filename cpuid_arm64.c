@@ -197,6 +197,8 @@ int detect(void)
 
 
 	}
+#else
+	return CPU_ARMV8;	
 #endif
 
 	return CPU_UNKNOWN;
