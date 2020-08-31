@@ -1,4 +1,4 @@
-#if (( defined(__GNUC__)  && __GNUC__   > 6 && defined(__AVX2__)) || (defined(__clang__) && __clang_major__ >= 6))
+#if (( defined(__GNUC__)  && __GNUC__   > 6 ) || (defined(__clang__) && __clang_major__ >= 6)) && defined(__AVX2__)
 
 #define HAVE_KERNEL_16 1
 
