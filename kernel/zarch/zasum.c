@@ -106,7 +106,7 @@ static FLOAT zasum_kernel_16(BLASLONG n, FLOAT *x) {
     "vfadb   %%v24,%%v24,%%v25\n\t"
     "vsteg   %%v24,%[asum],0"
     : [asum] "=Q"(asum),[n] "+&r"(n)
-    : "m"(*(const struct { FLOAT x[n * 2]; } *) x),[x] "a"(x)
+    : "m"(*(const FLOAT (*)[n * 2]) x),[x] "a"(x)
     : "cc", "r1", "v16", "v17", "v18", "v19", "v20", "v21", "v22", "v23",
        "v24", "v25", "v26", "v27", "v28", "v29", "v30", "v31");
 

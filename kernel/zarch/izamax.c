@@ -159,7 +159,7 @@ static BLASLONG izamax_kernel_16(BLASLONG n, FLOAT *x, FLOAT *amax) {
     "2:\n\t"
     "nop 0"
     : [iamax] "=r"(iamax),[amax] "=Q"(*amax),[n] "+&r"(n)
-    : "m"(*(const struct { FLOAT x[n * 2]; } *) x),[x] "a"(x)
+    : "m"(*(const FLOAT (*)[n * 2]) x),[x] "a"(x)
     : "cc", "r1", "v0", "v1", "v2", "v3", "v4", "v5", "v16", "v17", "v18",
        "v19", "v20", "v21", "v22", "v23", "v24", "v25", "v26", "v27");
 
