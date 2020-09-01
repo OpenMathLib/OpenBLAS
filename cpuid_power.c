@@ -145,7 +145,7 @@ int detect(void){
   if (implementation >= 0x40000u) return CPUTYPE_POWER10;
   else if (implementation & 0x20000) return CPUTYPE_POWER9;
   else if (implementation & 0x10000) return CPUTYPE_POWER8;
-  else if (implementation & 0x08000) return CPUTYPE_POWER7; // POWER 7
+  else if (implementation & 0x08000) return CPUTYPE_POWER6; // POWER 7
   else if (implementation & 0x04000) return CPUTYPE_POWER6;
   else if (implementation & 0x02000) return CPUTYPE_POWER5;
   else if (implementation & 0x01000) return CPUTYPE_POWER4; // MPC7450
