@@ -30,6 +30,8 @@ void RELAPACK_cgetrf(
         return;
     }
 
+    if (*m == 0 || *n == 0) return;
+
     const blasint sn = MIN(*m, *n);
 
     RELAPACK_cgetrf_rec(m, &sn, A, ldA, ipiv, info);
@@ -62,9 +64,11 @@ static void RELAPACK_cgetrf_rec(
     blasint *info
 ) {
 
-    if (*n <= MAX(CROSSOVER_CGETRF, 1)) {
+    if (*m == 0 || *n == 0) return;
+
+    if ( *n <= MAX(CROSSOVER_CGETRF, 1)) {
         // Unblocked
-        LAPACK(cgetf2)(m, n, A, ldA, ipiv, info);
+        LAPACK(cgetrf2)(m, n, A, ldA, ipiv, info);
         return;
     }
 
@@ -96,6 +100,7 @@ static void RELAPACK_cgetrf_rec(
 
     // recursion(A_L, ipiv_T)
     RELAPACK_cgetrf_rec(m, &n1, A_L, ldA, ipiv_T, info);
+    if (*info) return;
     // apply pivots to A_R
     LAPACK(claswp)(&n2, A_R, ldA, iONE, &n1, ipiv_T, iONE);
 

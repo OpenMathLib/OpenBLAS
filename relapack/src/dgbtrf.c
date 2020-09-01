@@ -36,6 +36,8 @@ void RELAPACK_dgbtrf(
         return;
     }
 
+    if (*m == 0 || *n == 0) return;
+
     // Constant
     const double ZERO[] = { 0. };
 
@@ -83,7 +85,7 @@ static void RELAPACK_dgbtrf_rec(
     blasint *info
 ) {
 
-    if (*n <= MAX(CROSSOVER_DGBTRF, 1)) {
+    if (*n <= MAX(CROSSOVER_DGBTRF, 1) || *n > *kl || *ldAb == 1) {
         // Unblocked
         LAPACK(dgbtf2)(m, n, kl, ku, Ab, ldAb, ipiv, info);
         return;
@@ -195,6 +197,7 @@ static void RELAPACK_dgbtrf_rec(
     // Worku = A_TRr
     LAPACK(dlacpy)("L", &m1, &n22, A_TRr, ldA, Worku, ldWorku);
     // Worku = A_TL \ Worku
+    if (ldWorku <= 0) return;
     BLAS(dtrsm)("L", "L", "N", "U", &m1, &n22, ONE, A_TL, ldA, Worku, ldWorku);
     // A_TRr = Worku
     LAPACK(dlacpy)("L", &m1, &n22, Worku, ldWorku, A_TRr, ldA);

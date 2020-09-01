@@ -30,6 +30,7 @@ void RELAPACK_zgetrf(
         return;
     }
 
+    if (*m == 0 || *n == 0) return;
     const blasint sn = MIN(*m, *n);
 
     RELAPACK_zgetrf_rec(m, &sn, A, ldA, ipiv, info);
@@ -62,9 +63,11 @@ static void RELAPACK_zgetrf_rec(
     blasint *info
 ) {
 
-    if (*n <= MAX(CROSSOVER_ZGETRF, 1)) {
+    if (*m == 0 || *n == 0) return;
+
+    if ( *n <= MAX(CROSSOVER_ZGETRF, 1)) {
         // Unblocked
-        LAPACK(zgetf2)(m, n, A, ldA, ipiv, info);
+        LAPACK(zgetrf2)(m, n, A, ldA, ipiv, info);
         return;
     }
 
@@ -96,6 +99,8 @@ static void RELAPACK_zgetrf_rec(
 
     // recursion(A_L, ipiv_T)
     RELAPACK_zgetrf_rec(m, &n1, A_L, ldA, ipiv_T, info);
+if (*info) return;
+
     // apply pivots to A_R
     LAPACK(zlaswp)(&n2, A_R, ldA, iONE, &n1, ipiv_T, iONE);
 

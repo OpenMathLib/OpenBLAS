@@ -14,7 +14,6 @@ void RELAPACK_sgetrf(
     float *A, const blasint *ldA, blasint *ipiv,
     blasint *info
 ) {
-
     // Check arguments
     *info = 0;
     if (*m < 0)
@@ -28,6 +27,9 @@ void RELAPACK_sgetrf(
         LAPACK(xerbla)("SGETRF", &minfo, strlen("SGETRF"));
         return;
     }
+
+    if (*m == 0 || *n == 0) return;
+
     const blasint sn = MIN(*m, *n);
     RELAPACK_sgetrf_rec(m, &sn, A, ldA, ipiv, info);
 
@@ -35,7 +37,7 @@ void RELAPACK_sgetrf(
     if (*m < *n) {
         // Constants
         const float ONE[] = { 1. };
-        const blasint  iONE[] = { 1. };
+        const blasint  iONE[] = { 1 };
 
         // Splitting
         const blasint rn = *n - *m;
@@ -58,9 +60,12 @@ static void RELAPACK_sgetrf_rec(
     float *A, const blasint *ldA, blasint *ipiv,
     blasint *info
 ) {
-    if (*n <= MAX(CROSSOVER_SGETRF, 1)) {
+
+    if (*m == 0 || *n == 0) return;
+
+    if ( *n <= MAX(CROSSOVER_SGETRF, 1)) {
         // Unblocked
-        LAPACK(sgetf2)(m, n, A, ldA, ipiv, info);
+        LAPACK(sgetrf2)(m, n, A, ldA, ipiv, info);
         return;
     }
 
@@ -91,6 +96,8 @@ static void RELAPACK_sgetrf_rec(
 
     // recursion(A_L, ipiv_T)
     RELAPACK_sgetrf_rec(m, &n1, A_L, ldA, ipiv_T, info);
+    if (*info)
+	return;
     // apply pivots to A_R
     LAPACK(slaswp)(&n2, A_R, ldA, iONE, &n1, ipiv_T, iONE);
 

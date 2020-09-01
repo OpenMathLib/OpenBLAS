@@ -36,7 +36,7 @@ void RELAPACK_ssytrf_rook(
         *info = -2;
     else if (*ldA < MAX(1, *n))
         *info = -4;
-    else if (*lWork < minlWork && *lWork != -1)
+    else if ((*lWork < 1 ||*lWork < minlWork) && *lWork != -1)
         *info = -7;
     else if (*lWork == -1) {
         // Work size query
@@ -56,7 +56,7 @@ void RELAPACK_ssytrf_rook(
 
     if (*info) {
         const blasint minfo = -*info;
-        LAPACK(xerbla)("SSYTRF", &minfo, strlen("SSYTRF"));
+        LAPACK(xerbla)("SSYTRF_ROOK", &minfo, strlen("SSYTRF_ROOK"));
         return;
     }
 
@@ -67,6 +67,7 @@ void RELAPACK_ssytrf_rook(
     blasint nout;
 
     // Recursive kernel
+if (*n != 0)
     RELAPACK_ssytrf_rook_rec(&cleanuplo, n, n, &nout, A, ldA, ipiv, cleanWork, n, info);
 
 #if XSYTRF_ALLOW_MALLOC
