@@ -431,7 +431,7 @@ static void add_y_kernel_4(BLASLONG n, FLOAT da, FLOAT *src, FLOAT *dest) {
     "agfi   %%r1,16\n\t"
     "brctg  %%r0,2b\n\t"
     "3:\n\t"
-    "nop"
+    "nop 0"
     : "+m"(*(struct { FLOAT x[n]; } *) dest)
     : [dest] "a"(dest),[da] "Q"(da), "m"(*(const struct { FLOAT x[n]; } *) src),
        [src] "a"(src),[n] "r"(n)

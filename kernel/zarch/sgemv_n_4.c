@@ -159,7 +159,7 @@ static void sgemv_kernel_4x4(BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y,
     "agfi   %%r1,16\n\t"
     "brctg  %%r0,2b\n\t"
     "3:\n\t"
-    "nop"
+    "nop 0"
     : "+m"(*(struct { FLOAT x[n]; } *) y)
     : [y] "a"(y), "m"(*(const struct { FLOAT x[n]; } *) ap0),[ap0] "a"(ap0),
        "m"(*(const struct { FLOAT x[n]; } *) ap1),[ap1] "a"(ap1),
@@ -258,7 +258,7 @@ static void sgemv_kernel_4x2(BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y,
     "agfi   %%r1,16\n\t"
     "brctg  %%r0,2b\n\t"
     "3:\n\t"
-    "nop"
+    "nop 0"
     : "+m"(*(struct { FLOAT x[n]; } *) y)
     : [y] "a"(y), "m"(*(const struct { FLOAT x[n]; } *) ap0),[ap0] "a"(ap0),
        "m"(*(const struct { FLOAT x[n]; } *) ap1),[ap1] "a"(ap1),
@@ -331,7 +331,7 @@ static void sgemv_kernel_4x1(BLASLONG n, FLOAT *a0, FLOAT *x, FLOAT *y,
     "agfi   %%r1,16\n\t"
     "brctg  %%r0,2b\n\t"
     "3:\n\t"
-    "nop"
+    "nop 0"
     : "+m"(*(struct { FLOAT x[n]; } *) y)
     : [y] "a"(y), "m"(*(const struct { FLOAT x[n]; } *) a0),[a0] "a"(a0),
        "m"(*(const FLOAT (*)[1]) x),[x] "a"(x),[alpha] "Q"(*alpha),

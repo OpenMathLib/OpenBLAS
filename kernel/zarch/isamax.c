@@ -204,7 +204,7 @@ static BLASLONG isamax_kernel_64(BLASLONG n, FLOAT *x, FLOAT *amax) {
     "ste    %%f0,%[amax]\n\t"
     "vlgvg  %[iamax],%%v1,0\n\t"
     "2:\n\t"
-    "nop"
+    "nop 0"
     : [iamax] "=r"(iamax),[amax] "=Q"(*amax),[n] "+&r"(n)
     : "m"(*(const struct { FLOAT x[n]; } *) x),[x] "a"(x)
     : "cc", "r1", "v0", "v1", "v2", "v4", "v5", "v6", "v7", "v8", "v16",

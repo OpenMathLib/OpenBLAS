@@ -204,7 +204,7 @@ static BLASLONG isamin_kernel_64(BLASLONG n, FLOAT *x, FLOAT *amin) {
     "ste    %%f0,%[amin]\n\t"
     "vlgvg  %[iamin],%%v1,0\n\t"
     "2:\n\t"
-    "nop"
+    "nop 0"
     : [iamin] "=r"(iamin),[amin] "=Q"(*amin),[n] "+&r"(n)
     : "m"(*(const struct { FLOAT x[n]; } *) x),[x] "a"(x)
     : "cc", "r1", "v0", "v1", "v2", "v4", "v5", "v6", "v7", "v8", "v16",
