@@ -172,7 +172,7 @@ static inline vector_float vec_load_hinted(FLOAT const *restrict a) {
 	vector_float const *restrict addr = (vector_float const *restrict)a;
 	vector_float y;
 
-#if __GNUC__ < 9
+#if __GNUC__ < 9 && !defined(__clang__)
 	// hex-encode vl %[out],%[addr],3
 	asm(".insn vrx,0xe70000003006,%[out],%[addr],3"
 	    : [ out ] "=v"(y)
@@ -393,7 +393,7 @@ static inline void GEBP_block_16_4(
 			 * Note that we need to massage this particular "barrier"
 			 * depending on the gcc version.
 			 */
-#if __GNUC__ > 7
+#if __GNUC__ > 7 || defined(__clang__)
 #define BARRIER_READ_BEFORE_COMPUTE(SUFFIX)                                    \
     do {                                                                       \
 	asm(""                                                                 \

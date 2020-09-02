@@ -99,7 +99,7 @@ static void dswap_kernel_32(BLASLONG n, FLOAT *x, FLOAT *y) {
     "vst  %%v31, 240(%%r1,%[y])\n\t"
     "agfi   %%r1,256\n\t"
     "brctg  %[n],0b"
-    : "+m"(*(struct { FLOAT x[n]; } *) x), "+m"(*(struct { FLOAT x[n]; } *) y),
+    : "+m"(*(FLOAT (*)[n]) x), "+m"(*(FLOAT (*)[n]) y),
        [n] "+&r"(n)
     : [x] "a"(x),[y] "a"(y)
     : "cc", "r1", "v0", "v1", "v2", "v3", "v4", "v5", "v6", "v7", "v16",

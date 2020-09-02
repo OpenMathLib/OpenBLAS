@@ -136,7 +136,7 @@ static FLOAT camax_kernel_32(BLASLONG n, FLOAT *x) {
     "wfmaxsb %%v0,%%v0,%%v16,0\n\t"
     "ler    %[amax],%%f0"
     : [amax] "=f"(amax),[n] "+&r"(n)
-    : "m"(*(const struct { FLOAT x[n * 2]; } *) x),[x] "a"(x)
+    : "m"(*(const FLOAT (*)[n * 2]) x),[x] "a"(x)
     : "cc", "r1", "v0", "v1", "v2", "v16", "v17", "v18", "v19", "v20",
        "v21", "v22", "v23", "v24", "v25", "v26", "v27", "v28", "v29", "v30",
        "v31");

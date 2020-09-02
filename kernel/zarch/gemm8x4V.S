@@ -147,7 +147,7 @@ brctg LOCAL_VAR1,.L8x4_4_BK
 
 ALIGN_4
 .L8x4_mod:
-la LOCAL_VAR1,3(0,0)
+lghi LOCAL_VAR1,3
 NGR LOCAL_VAR1,BK /*refresh BK*/ 
 jz .L8x4_BK_Store
 
@@ -183,7 +183,7 @@ brctg LOCAL_VAR1,.L4x4_4_BK
 
 ALIGN_4
 .L4x4_mod:
-la LOCAL_VAR1,3(0,0)
+lghi LOCAL_VAR1,3
 NGR LOCAL_VAR1,BK /*refresh BK*/ 
 jz .L4x4_BK_Store
 
@@ -217,7 +217,7 @@ brctg LOCAL_VAR1,.L2x4_4_BK
 
 ALIGN_4
 .L2x4_mod:
-la LOCAL_VAR1,3(0,0)
+lghi LOCAL_VAR1,3
 NGR LOCAL_VAR1,BK /*refresh BK*/ 
 jz .L2x4_BK_Store
 
@@ -252,7 +252,7 @@ brctg LOCAL_VAR1,.L1x4_4_BK
 
 ALIGN_4
 .L1x4_mod:
-la LOCAL_VAR1,3(0,0)
+lghi LOCAL_VAR1,3
 NGR LOCAL_VAR1,BK /*refresh BK*/ 
 jz .L1x4_BK_Store
 
@@ -309,7 +309,7 @@ brctg LOCAL_VAR1,.L8x2_4_BK
 
 ALIGN_4
 .L8x2_mod:
-la LOCAL_VAR1,3(0,0)
+lghi LOCAL_VAR1,3
 NGR LOCAL_VAR1,BK /*refresh BK*/ 
 jz .L8x2_BK_Store
 
@@ -346,7 +346,7 @@ brctg LOCAL_VAR1,.L4x2_4_BK
 
 ALIGN_4
 .L4x2_mod:
-la LOCAL_VAR1,3(0,0)
+lghi LOCAL_VAR1,3
 NGR LOCAL_VAR1,BK /*refresh BK*/ 
 jz .L4x2_BK_Store
 
@@ -380,7 +380,7 @@ brctg LOCAL_VAR1,.L2x2_4_BK
 
 ALIGN_4
 .L2x2_mod:
-la LOCAL_VAR1,3(0,0)
+lghi LOCAL_VAR1,3
 NGR LOCAL_VAR1,BK /*refresh BK*/ 
 jz .L2x2_BK_Store
 
@@ -415,7 +415,7 @@ brctg LOCAL_VAR1,.L1x2_4_BK
 
 ALIGN_4
 .L1x2_mod:
-la LOCAL_VAR1,3(0,0)
+lghi LOCAL_VAR1,3
 NGR LOCAL_VAR1,BK /*refresh BK*/ 
 jz .L1x2_BK_Store
 
@@ -471,7 +471,7 @@ brctg LOCAL_VAR1,.L8x1_4_BK
 
 ALIGN_4
 .L8x1_mod:
-la LOCAL_VAR1,3(0,0)
+lghi LOCAL_VAR1,3
 NGR LOCAL_VAR1,BK /*refresh BK*/ 
 jz .L8x1_BK_Store
 
@@ -508,7 +508,7 @@ brctg LOCAL_VAR1,.L4x1_4_BK
 
 ALIGN_4
 .L4x1_mod:
-la LOCAL_VAR1,3(0,0)
+lghi LOCAL_VAR1,3
 NGR LOCAL_VAR1,BK /*refresh BK*/ 
 jz .L4x1_BK_Store
 
@@ -542,7 +542,7 @@ brctg LOCAL_VAR1,.L2x1_4_BK
 
 ALIGN_4
 .L2x1_mod:
-la LOCAL_VAR1,3(0,0)
+lghi LOCAL_VAR1,3
 NGR LOCAL_VAR1,BK /*refresh BK*/ 
 jz .L2x1_BK_Store
 
@@ -577,7 +577,7 @@ brctg LOCAL_VAR1,.L1x1_4_BK
 
 ALIGN_4
 .L1x1_mod:
-la LOCAL_VAR1,3(0,0)
+lghi LOCAL_VAR1,3
 NGR LOCAL_VAR1,BK /*refresh BK*/ 
 jz .L1x1_BK_Store
 
