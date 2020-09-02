@@ -80,8 +80,8 @@ static FLOAT ddot_kernel_16(BLASLONG n, FLOAT *x, FLOAT *y) {
     "adbr   %%f0,%%f1\n\t"
     "ldr    %[dot],%%f0"
     : [dot] "=f"(dot),[n] "+&r"(n)
-    : "m"(*(const struct { FLOAT x[n]; } *) x),[x] "a"(x),
-       "m"(*(const struct { FLOAT x[n]; } *) y),[y] "a"(y)
+    : "m"(*(const FLOAT (*)[n]) x),[x] "a"(x),
+       "m"(*(const FLOAT (*)[n]) y),[y] "a"(y)
     : "cc", "r1", "v0", "v1", "v2", "v3", "v4", "v5", "v6", "v7", "v16",
        "v17", "v18", "v19", "v20", "v21", "v22", "v23", "v24", "v25", "v26",
        "v27", "v28", "v29", "v30", "v31");

@@ -40,6 +40,8 @@ void RELAPACK_chegst(
         return;
     }
 
+    if (*n == 0) return;
+
     // Clean char * arguments
     const char cleanuplo = lower ? 'L' : 'U';
 

@@ -69,8 +69,8 @@ static void RELAPACK_ztrtri_rec(
     }
 
     // Constants
-    const double ONE[]  = { 1. };
-    const double MONE[] = { -1. };
+    const double ONE[]  = { 1., 0. };
+    const double MONE[] = { -1. , 0. };
 
     // Splitting
     const blasint n1 = ZREC_SPLIT(*n);

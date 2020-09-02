@@ -68,6 +68,13 @@ void RELAPACK_ctgsyl(
         return;
     }
 
+    if ( *m == 0 || *n == 0) {
+      *scale = 1.;
+      if (notran && (*ijob != 0))
+        *dif = 0.;
+      return;
+    }
+
     // Clean char * arguments
     const char cleantrans = notran ? 'N' : 'C';
 

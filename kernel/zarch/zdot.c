@@ -93,9 +93,9 @@ static void zdot_kernel_8(BLASLONG n, FLOAT *x, FLOAT *y, FLOAT *d) {
     "vsteg  %%v24,8(%[d]),1\n\t"
     "vsteg  %%v25,16(%[d]),1\n\t"
     "vsteg  %%v25,24(%[d]),0"
-    : "=m"(*(struct { FLOAT x[4]; } *) d),[n] "+&r"(n)
-    : [d] "a"(d), "m"(*(const struct { FLOAT x[n * 2]; } *) x),[x] "a"(x),
-       "m"(*(const struct { FLOAT x[n * 2]; } *) y),[y] "a"(y)
+    : "=m"(*(FLOAT (*)[4]) d),[n] "+&r"(n)
+    : [d] "a"(d), "m"(*(const FLOAT (*)[n * 2]) x),[x] "a"(x),
+       "m"(*(const FLOAT (*)[n * 2]) y),[y] "a"(y)
     : "cc", "r1", "v0", "v1", "v2", "v3", "v16", "v17", "v18", "v19", "v20",
        "v21", "v22", "v23", "v24", "v25", "v26", "v27", "v28", "v29", "v30",
        "v31");

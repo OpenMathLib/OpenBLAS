@@ -159,13 +159,13 @@ static void sgemv_kernel_4x4(BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y,
     "agfi   %%r1,16\n\t"
     "brctg  %%r0,2b\n\t"
     "3:\n\t"
-    "nop"
-    : "+m"(*(struct { FLOAT x[n]; } *) y)
-    : [y] "a"(y), "m"(*(const struct { FLOAT x[n]; } *) ap0),[ap0] "a"(ap0),
-       "m"(*(const struct { FLOAT x[n]; } *) ap1),[ap1] "a"(ap1),
-       "m"(*(const struct { FLOAT x[n]; } *) ap2),[ap2] "a"(ap2),
-       "m"(*(const struct { FLOAT x[n]; } *) ap3),[ap3] "a"(ap3),
-       "m"(*(const struct { FLOAT x[4]; } *) x),[x] "a"(x),[alpha] "Q"(*alpha),
+    "nop 0"
+    : "+m"(*(FLOAT (*)[n]) y)
+    : [y] "a"(y), "m"(*(const FLOAT (*)[n]) ap0),[ap0] "a"(ap0),
+       "m"(*(const FLOAT (*)[n]) ap1),[ap1] "a"(ap1),
+       "m"(*(const FLOAT (*)[n]) ap2),[ap2] "a"(ap2),
+       "m"(*(const FLOAT (*)[n]) ap3),[ap3] "a"(ap3),
+       "m"(*(const FLOAT (*)[4]) x),[x] "a"(x),[alpha] "Q"(*alpha),
        [n] "r"(n)
     : "cc", "r0", "r1", "v0", "v1", "v2", "v3", "v4", "v5", "v6", "v7",
        "v16", "v17", "v18", "v19", "v20", "v21", "v22", "v23", "v24", "v25",
@@ -258,11 +258,11 @@ static void sgemv_kernel_4x2(BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y,
     "agfi   %%r1,16\n\t"
     "brctg  %%r0,2b\n\t"
     "3:\n\t"
-    "nop"
-    : "+m"(*(struct { FLOAT x[n]; } *) y)
-    : [y] "a"(y), "m"(*(const struct { FLOAT x[n]; } *) ap0),[ap0] "a"(ap0),
-       "m"(*(const struct { FLOAT x[n]; } *) ap1),[ap1] "a"(ap1),
-       "m"(*(const struct { FLOAT x[2]; } *) x),[x] "a"(x),[alpha] "Q"(*alpha),
+    "nop 0"
+    : "+m"(*(FLOAT (*)[n]) y)
+    : [y] "a"(y), "m"(*(const FLOAT (*)[n]) ap0),[ap0] "a"(ap0),
+       "m"(*(const FLOAT (*)[n]) ap1),[ap1] "a"(ap1),
+       "m"(*(const FLOAT (*)[2]) x),[x] "a"(x),[alpha] "Q"(*alpha),
        [n] "r"(n)
     : "cc", "r0", "r1", "v0", "v1", "v2", "v3", "v4", "v5", "v6", "v7",
        "v8", "v9", "v16", "v17", "v18", "v19", "v20", "v21", "v22", "v23",
@@ -331,9 +331,9 @@ static void sgemv_kernel_4x1(BLASLONG n, FLOAT *a0, FLOAT *x, FLOAT *y,
     "agfi   %%r1,16\n\t"
     "brctg  %%r0,2b\n\t"
     "3:\n\t"
-    "nop"
-    : "+m"(*(struct { FLOAT x[n]; } *) y)
-    : [y] "a"(y), "m"(*(const struct { FLOAT x[n]; } *) a0),[a0] "a"(a0),
+    "nop 0"
+    : "+m"(*(FLOAT (*)[n]) y)
+    : [y] "a"(y), "m"(*(const FLOAT (*)[n]) a0),[a0] "a"(a0),
        "m"(*(const FLOAT (*)[1]) x),[x] "a"(x),[alpha] "Q"(*alpha),
        [n] "r"(n)
     : "cc", "r0", "r1", "v0", "v16", "v17", "v18", "v19", "v20", "v21",

@@ -110,6 +110,11 @@ if (NO_AVX2)
   set(GETARCH_FLAGS "${GETARCH_FLAGS} -DNO_AVX2")
 endif ()
 
+if (NO_AVX512)
+  message(STATUS "Disabling Advanced Vector Extensions 512 (AVX512).")
+  set(GETARCH_FLAGS "${GETARCH_FLAGS} -DNO_AVX512")
+endif ()
+
 if (CMAKE_BUILD_TYPE STREQUAL "Debug")
   set(GETARCH_FLAGS "${GETARCH_FLAGS} ${CMAKE_C_FLAGS_DEBUG}")
 endif ()

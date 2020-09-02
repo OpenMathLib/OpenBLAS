@@ -78,8 +78,8 @@ static void zscal_kernel_8(BLASLONG n, FLOAT *alpha, FLOAT *x) {
     "vst %%v23,112(%%r1,%[x])\n\t"
     "agfi  %%r1,128\n\t"
     "brctg %[n],0b"
-    : "+m"(*(struct { FLOAT x[n * 2]; } *) x),[n] "+&r"(n)
-    : [x] "a"(x), "m"(*(const struct { FLOAT x[2]; } *) alpha),
+    : "+m"(*(FLOAT (*)[n * 2]) x),[n] "+&r"(n)
+    : [x] "a"(x), "m"(*(const FLOAT (*)[2]) alpha),
        [alpha] "a"(alpha)
     : "cc", "r1", "v0", "v1", "v16", "v17", "v18", "v19", "v20", "v21",
        "v22", "v23", "v24", "v25", "v26", "v27", "v28", "v29", "v30",
@@ -128,8 +128,8 @@ static void zscal_kernel_8_zero_r(BLASLONG n, FLOAT *alpha, FLOAT *x) {
     "vst %%v23,112(%%r1,%[x])\n\t"
     "agfi  %%r1,128\n\t"
     "brctg %[n],0b"
-    : "+m"(*(struct { FLOAT x[n * 2]; } *) x),[n] "+&r"(n)
-    : [x] "a"(x), "m"(*(const struct { FLOAT x[2]; } *) alpha),
+    : "+m"(*(FLOAT (*)[n * 2]) x),[n] "+&r"(n)
+    : [x] "a"(x), "m"(*(const FLOAT (*)[2]) alpha),
        [alpha] "a"(alpha)
     : "cc", "r1", "v0", "v16", "v17", "v18", "v19", "v20", "v21", "v22",
        "v23");
@@ -167,8 +167,8 @@ static void zscal_kernel_8_zero_i(BLASLONG n, FLOAT *alpha, FLOAT *x) {
     "vst %%v23,112(%%r1,%[x])\n\t"
     "agfi  %%r1,128\n\t"
     "brctg %[n],0b"
-    : "+m"(*(struct { FLOAT x[n * 2]; } *) x),[n] "+&r"(n)
-    : [x] "a"(x), "m"(*(const struct { FLOAT x[2]; } *) alpha),
+    : "+m"(*(FLOAT (*)[n * 2]) x),[n] "+&r"(n)
+    : [x] "a"(x), "m"(*(const FLOAT (*)[2]) alpha),
        [alpha] "a"(alpha)
     : "cc", "r1", "v0", "v16", "v17", "v18", "v19", "v20", "v21", "v22",
        "v23");
@@ -190,7 +190,7 @@ static void zscal_kernel_8_zero(BLASLONG n, FLOAT *x) {
     "vst  %%v0,112(%%r1,%[x])\n\t"
     "agfi  %%r1,128\n\t"
     "brctg %[n],0b"
-    : "=m"(*(struct { FLOAT x[n * 2]; } *) x),[n] "+&r"(n)
+    : "=m"(*(FLOAT (*)[n * 2]) x),[n] "+&r"(n)
     : [x] "a"(x)
     : "cc", "r1", "v0");
 }
