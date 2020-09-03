@@ -66,7 +66,7 @@ FCOMMON_OPT += -march=armv8.1-a -mtune=thunderx2t99
 endif
 endif
 
-ifeq ($(CORE), SILICON)
+ifeq ($(CORE), VORTEX)
 CCOMMON_OPT += -march=armv8.3-a
 FCOMMON_OPT += -march=armv8.3-a
 endif
