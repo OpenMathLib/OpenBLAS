@@ -51,7 +51,7 @@ size_t length=sizeof(value);
 // Ampere
 #define CPU_EMAG8180	 10
 // Apple
-#define CPU_SILICON      11
+#define CPU_VORTEX       13
 
 static char *cpuname[] = {
   "UNKNOWN",
@@ -67,7 +67,7 @@ static char *cpuname[] = {
   "EMAG8180",
   "NEOVERSEN1",
   "THUNDERX3T110",
-  "SILICON"	
+  "VORTEX"	
 };
 
 static char *cpuname_lower[] = {
@@ -84,7 +84,7 @@ static char *cpuname_lower[] = {
   "emag8180",
   "neoversen1",
   "thunderx3t110",
-  "silicon"	
+  "vortex"	
 };
 
 int get_feature(char *search)
@@ -209,7 +209,7 @@ int detect(void)
 #else
 #ifdef DARWIN
 	sysctlbyname("hw.cpufamily",&value,&length,NULL,0);
-	if (value ==131287967) return CPU_SILICON;
+	if (value ==131287967) return CPU_VORTEX;
 #endif
 	return CPU_ARMV8;	
 #endif
@@ -415,8 +415,8 @@ void get_cpuconfig(void)
 			printf("#define DTB_SIZE             4096     \n");
 			break;
 #ifdef DARWIN
-		case CPU_SILICON:
-			printf("#define SILICON			      \n");
+		case CPU_VORTEX:
+			printf("#define VORTEX			      \n");
 			sysctlbyname("hw.l1icachesize",&value,&length,NULL,0);
 			printf("#define L1_CODE_SIZE	     %d       \n",value);
 			sysctlbyname("hw.cachelinesize",&value,&length,NULL,0);
