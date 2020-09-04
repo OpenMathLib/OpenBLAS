@@ -17,6 +17,7 @@ endif
 ifeq ($(CORE), POWER9)
 ifneq ($(C_COMPILER), PGI)
 CCOMMON_OPT += -Ofast -mvsx -fno-fast-math
+ifeq ($(C_COMPILER), GCC)
 ifneq ($(GCCVERSIONGT4), 1)
 $(warning your compiler is too old to fully support POWER9, getting a newer version of gcc is recommended)
 CCOMMON_OPT += -mcpu=power8 -mtune=power8 
@@ -24,15 +25,22 @@ else
 CCOMMON_OPT += -mcpu=power9 -mtune=power9 
 endif
 else
+CCOMMON_OPT += -mcpu=power9 -mtune=power9
+endif
+else
 CCOMMON_OPT += -fast -Mvect=simd -Mcache_align
 endif
 ifneq ($(F_COMPILER), PGI)
 FCOMMON_OPT += -O2 -frecursive -fno-fast-math
+ifeq ($(C_COMPILER), GCC)
 ifneq ($(GCCVERSIONGT4), 1)
 $(warning your compiler is too old to fully support POWER9, getting a newer version of gcc is recommended)
 FCOMMON_OPT += -mcpu=power8 -mtune=power8 
 else
 FCOMMON_OPT += -mcpu=power9 -mtune=power9 
+endif
+else
+FCOMMON_OPT += -mcpu=power9 -mtune=power9
 endif
 else
 FCOMMON_OPT += -O2 -Mrecursive
