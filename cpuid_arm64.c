@@ -26,6 +26,11 @@
   *****************************************************************************/
 
 #include <string.h>
+#ifdef OS_DARWIN
+#include <sys/sysctl.h>
+int32_t value;
+size_t length=sizeof(value);
+#endif
 
 #define CPU_UNKNOWN     	0
 #define CPU_ARMV8       	1
@@ -45,6 +50,8 @@
 #define CPU_TSV110        9
 // Ampere
 #define CPU_EMAG8180	 10
+// Apple
+#define CPU_VORTEX       13
 
 static char *cpuname[] = {
   "UNKNOWN",
@@ -59,7 +66,8 @@ static char *cpuname[] = {
   "TSV110",
   "EMAG8180",
   "NEOVERSEN1",
-  "THUNDERX3T110"
+  "THUNDERX3T110",
+  "VORTEX"	
 };
 
 static char *cpuname_lower[] = {
@@ -75,7 +83,8 @@ static char *cpuname_lower[] = {
   "tsv110",
   "emag8180",
   "neoversen1",
-  "thunderx3t110"
+  "thunderx3t110",
+  "vortex"	
 };
 
 int get_feature(char *search)
@@ -198,6 +207,10 @@ int detect(void)
 
 	}
 #else
+#ifdef DARWIN
+	sysctlbyname("hw.cpufamily",&value,&length,NULL,0);
+	if (value ==131287967) return CPU_VORTEX;
+#endif
 	return CPU_ARMV8;	
 #endif
 
@@ -247,7 +260,10 @@ int n=0;
 
 	printf("#define NUM_CORES %d\n",n);
 #endif
-
+#ifdef DARWIN
+	sysctlbyname("hw.physicalcpu_max",&value,&length,NULL,0);
+	printf("#define NUM_CORES %d\n",value);
+#endif	
 }
 
 
@@ -398,6 +414,19 @@ void get_cpuconfig(void)
 			printf("#define DTB_DEFAULT_ENTRIES  64       \n");
 			printf("#define DTB_SIZE             4096     \n");
 			break;
+#ifdef DARWIN
+		case CPU_VORTEX:
+			printf("#define VORTEX			      \n");
+			sysctlbyname("hw.l1icachesize",&value,&length,NULL,0);
+			printf("#define L1_CODE_SIZE	     %d       \n",value);
+			sysctlbyname("hw.cachelinesize",&value,&length,NULL,0);
+			printf("#define L1_CODE_LINESIZE     %d       \n",value);
+			sysctlbyname("hw.l1dcachesize",&value,&length,NULL,0);
+			printf("#define L1_DATA_SIZE	     %d       \n",value);
+			sysctlbyname("hw.l2dcachesize",&value,&length,NULL,0);
+			printf("#define L2_DATA_SIZE	     %d       \n",value);
+			break;
+#endif			
 	}
 	get_cpucount();
 }
