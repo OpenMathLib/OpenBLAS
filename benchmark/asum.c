@@ -128,8 +128,13 @@ int main(int argc, char *argv[]){
   int to   = 200;
   int step =   1;
 
+#if defined(__WIN32__) || defined(__WIN64__) || !defined(_POSIX_TIMERS)
   struct timeval start, stop;
   double time1,timeg;
+#else
+  struct timespec start = { 0, 0 }, stop = { 0, 0 };
+  double time1, timeg;
+#endif
 
   argc--;argv++;
 
@@ -160,26 +165,30 @@ int main(int argc, char *argv[]){
 
    fprintf(stderr, " %6d : ", (int)m);
 
-
    for (l=0; l<loops; l++)
    {
 
    	for(i = 0; i < m * COMPSIZE * abs(inc_x); i++){
 			x[i] = ((FLOAT) rand() / (FLOAT) RAND_MAX) - 0.5;
    	}
-
+#if defined(__WIN32__) || defined(__WIN64__) || !defined(_POSIX_TIMERS)
     	gettimeofday( &start, (struct timezone *)0);
-
+#else
+        clock_gettime(CLOCK_REALTIME, &start);
+#endif
     	result = ASUM (&m, x, &inc_x);
-
-    	gettimeofday( &stop, (struct timezone *)0);
-
-    	time1 = (double)(stop.tv_sec - start.tv_sec) + (double)((stop.tv_usec - start.tv_usec)) * 1.e-6;
+#if defined(__WIN32__) || defined(__WIN64__) || !defined(_POSIX_TIMERS)
+    	clock_gettime(CLOCK_REALTIME, &stop);
+   	time1 = (double)(stop.tv_sec - start.tv_sec) + (double)((stop.tv_usec - start.tv_usec)) * 1.e-6;
+#else
+  	gettimeofday( &stop, (struct timezone *)0);
+        time1 = (double)(stop.tv_sec - start.tv_sec) + (double)((stop.tv_nsec - start.tv_nsec)) / 1.e9;
+#endif
 
 	timeg += time1;
 
     }
-
+if (loops >1)
     timeg /= loops;
 
 #ifdef COMPLEX
