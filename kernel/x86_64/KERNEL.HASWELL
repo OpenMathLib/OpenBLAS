@@ -100,3 +100,5 @@ ZTRSMKERNEL_RT	= ../generic/trsm_kernel_RT.c
 CGEMM3MKERNEL    =  cgemm3m_kernel_8x4_haswell.c
 ZGEMM3MKERNEL    =  zgemm3m_kernel_4x4_haswell.c
 
+SASUMKERNEL = sasum.c
+DASUMKERNEL = dasum.c
