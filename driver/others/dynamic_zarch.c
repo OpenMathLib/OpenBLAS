@@ -65,6 +65,10 @@ char* gotoblas_corename(void) {
 	return corename[0];
 }
 
+#ifndef HWCAP_S390_VXE
+#define HWCAP_S390_VXE 8192
+#endif
+
 /**
  * Detect the fitting set of kernels by retrieving the CPU features supported by
  * OS from the auxiliary value AT_HWCAP and choosing the set of kernels
