@@ -606,6 +606,7 @@ ZARCH_CC_SUPPORTS_Z13=$(shell $(CC) -march=z13 $(ZARCH_TEST_COMPILE) && echo 1)
 
 ifeq ($(or $(ZARCH_CC_SUPPORTS_ARCH11), $(ZARCH_CC_SUPPORTS_Z13)), 1)
 DYNAMIC_CORE += Z13
+CCOMMON_OPT += -DDYN_Z13
 else
 $(info OpenBLAS: Not building Z13 kernels because the compiler $(CC) does not support it)
 endif
@@ -615,6 +616,7 @@ ZARCH_CC_SUPPORTS_ARCH12=$(shell $(CC) -march=arch12 $(ZARCH_TEST_COMPILE) && ec
 ZARCH_CC_SUPPORTS_Z14=$(shell $(CC) -march=z14 $(ZARCH_TEST_COMPILE) && echo 1)
 ifeq ($(or $(ZARCH_CC_SUPPORTS_ARCH12), $(ZARCH_CC_SUPPORTS_Z14)), 1)
 DYNAMIC_CORE += Z14
+CCOMMON_OPT += -DDYN_Z14
 else
 $(info OpenBLAS: Not building Z14 kernels because the compiler $(CC) does not support it)
 endif
