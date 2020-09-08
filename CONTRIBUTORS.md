@@ -187,6 +187,7 @@ In chronological order:
 * Marius Hillenbrand <https://github.com/mhillenibm>
   * [2020-05-12] Revise dynamic architecture detection for IBM z
   * [2020-05-12] Add new sgemm and strmm kernel for IBM z14
+  * [2020-09-07] Fix builds with clang on IBM z, including dynamic architecture support
 
 * Danfeng Zhang <https://github.com/craft-zhang>
   * [2020-05-20] Improve performance of SGEMM and STRMM on Arm Cortex-A53
