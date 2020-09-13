@@ -1,18 +1,6 @@
 #include "common.h"
 #include <stdbool.h>
 
-// Gate kernels for z13 and z14 on gcc version
-#if (__GNUC__ == 5 && __GNUC_MINOR__ >= 2) || __GNUC__ >= 6 ||           \
-    /* RHEL 7 since 7.3: */                                              \
-    (__GNUC__ == 4 && __GNUC_MINOR__ == 8 && __GNUC_PATCHLEVEL__ == 5 && \
-     __GNUC_RH_RELEASE__ >= 11)
-#define HAVE_Z13_SUPPORT
-#endif
-
-#if __GNUC__ >= 7
-#define HAVE_Z14_SUPPORT
-#endif
-
 // Guard the use of getauxval() on glibc version >= 2.16
 #ifdef __GLIBC__
 #include <features.h>
@@ -47,10 +35,10 @@ static unsigned long get_hwcap(void) {
 #endif // __GLIBC
 
 extern gotoblas_t gotoblas_ZARCH_GENERIC;
-#ifdef HAVE_Z13_SUPPORT
+#ifdef DYN_Z13
 extern gotoblas_t gotoblas_Z13;
 #endif
-#ifdef HAVE_Z14_SUPPORT
+#ifdef DYN_Z14
 extern gotoblas_t gotoblas_Z14;
 #endif
 
@@ -66,16 +54,20 @@ static char* corename[] = {
 };
 
 char* gotoblas_corename(void) {
-#ifdef HAVE_Z13_SUPPORT
+#ifdef DYN_Z13
 	if (gotoblas == &gotoblas_Z13)	return corename[1];
 #endif
-#ifdef HAVE_Z14_SUPPORT
+#ifdef DYN_Z14
 	if (gotoblas == &gotoblas_Z14)	return corename[2];
 #endif
 	if (gotoblas == &gotoblas_ZARCH_GENERIC) return corename[3];
 
 	return corename[0];
 }
+
+#ifndef HWCAP_S390_VXE
+#define HWCAP_S390_VXE 8192
+#endif
 
 /**
  * Detect the fitting set of kernels by retrieving the CPU features supported by
@@ -89,15 +81,15 @@ static gotoblas_t* get_coretype(void) {
 
 	unsigned long hwcap __attribute__((unused)) = get_hwcap();
 
+#ifdef DYN_Z14
 	// z14 and z15 systems: exploit Vector Facility (SIMD) and
 	// Vector-Enhancements Facility 1 (float SIMD instructions), if present.
-#ifdef HAVE_Z14_SUPPORT
 	if ((hwcap & HWCAP_S390_VX) && (hwcap & HWCAP_S390_VXE))
 		return &gotoblas_Z14;
 #endif
 
+#ifdef DYN_Z13
 	// z13: Vector Facility (SIMD for double)
-#ifdef HAVE_Z13_SUPPORT
 	if (hwcap & HWCAP_S390_VX)
 		return &gotoblas_Z13;
 #endif
@@ -123,19 +115,27 @@ static gotoblas_t* force_coretype(char* coretype) {
 		}
 	}
 
-	switch (found)
-	{
-#ifdef HAVE_Z13_SUPPORT
-	case  1: return (&gotoblas_Z13);
+	if (found == 1) {
+#ifdef DYN_Z13
+		return &gotoblas_Z13;
+#else
+		openblas_warning(1, "Z13 support not compiled in");
+		return NULL;
 #endif
-#ifdef HAVE_Z14_SUPPORT
-	case  2: return (&gotoblas_Z14);
+	} else if (found == 2) {
+#ifdef DYN_Z14
+		return &gotoblas_Z14;
+#else
+		openblas_warning(1, "Z14 support not compiled in");
+		return NULL;
 #endif
-	case  3: return (&gotoblas_ZARCH_GENERIC);
-	default: return NULL;
+	} else if (found == 3) {
+		return &gotoblas_ZARCH_GENERIC;
 	}
+
 	snprintf(message, 128, "Core not found: %s\n", coretype);
 	openblas_warning(1, message);
+	return NULL;
 }
 
 void gotoblas_dynamic_init(void) {
