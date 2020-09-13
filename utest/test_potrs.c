@@ -42,7 +42,6 @@ void BLASFUNC(zpotrs_(char*, BLASINT*, BLASINT*, complex double*,
 //https://github.com/xianyi/OpenBLAS/issues/695
 CTEST(potrf, bug_695){
 
-#ifdef BUILD_COMPLEX
   openblas_complex_float A1[100] = 
   {
     openblas_make_complex_float(5.8525753, +0.0),
@@ -151,11 +150,11 @@ CTEST(potrf, bug_695){
 
   blasint n=10;
   blasint info[1];
+#ifdef BUILD_COMPLEX
   BLASFUNC(cpotrf)(&up, &n, (float*)(A1), &n, info);
   //printf("%g+%g*I\n", creal(A1[91]), cimag(A1[91]));
 #endif
 
-#ifdef BUILD_COMPLEX16
   openblas_complex_double A2[100] = 
   {
     openblas_make_complex_double(3.0607147216796875, +0.0),
@@ -284,9 +283,9 @@ CTEST(potrf, bug_695){
   };
   char lo = 'L';
   blasint nrhs = 2;
+#ifdef BUILD_COMPLEX16
   BLASFUNC(zpotrs)(&lo, &n, &nrhs, (double*)(A2), &n, (double*)(B), &n, info);
 #endif
-#ifdef BUILD_COMPLEX
   // note that this is exactly equal to A1
   openblas_complex_float A3[100] = 
   {
@@ -391,6 +390,7 @@ CTEST(potrf, bug_695){
     openblas_make_complex_float(-0.9617417, -1.2486815),
     openblas_make_complex_float(3.4629636, +0.0)
   };
+#ifdef BUILD_COMPLEX
   BLASFUNC(cpotrf)(&up, &n, (float*)(A3), &n, info);
   //  printf("%g+%g*I\n", creal(A3[91]), cimag(A3[91]));
   if(isnan(CREAL(A3[91])) || isnan(CIMAG(A3[91]))) {
