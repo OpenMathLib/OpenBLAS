@@ -33,6 +33,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "openblas_utest.h"
 
+#ifdef BUILD_COMPLEX16
 CTEST( zdotu,zdotu_n_1)
 {
 	blasint N=1,incX=1,incY=1;
@@ -80,3 +81,5 @@ CTEST(zdotu, zdotu_offset_1)
 #endif
 
 }
+#endif
+

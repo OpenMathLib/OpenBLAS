@@ -39,10 +39,10 @@ void BLASFUNC(zpotrs_(char*, BLASINT*, BLASINT*, complex double*,
 	     BLASINT*, complex double*, BLASINT*, BLASINT*);
 */
 
-
 //https://github.com/xianyi/OpenBLAS/issues/695
 CTEST(potrf, bug_695){
 
+#ifdef BUILD_COMPLEX
   openblas_complex_float A1[100] = 
   {
     openblas_make_complex_float(5.8525753, +0.0),
@@ -153,7 +153,9 @@ CTEST(potrf, bug_695){
   blasint info[1];
   BLASFUNC(cpotrf)(&up, &n, (float*)(A1), &n, info);
   //printf("%g+%g*I\n", creal(A1[91]), cimag(A1[91]));
+#endif
 
+#ifdef BUILD_COMPLEX16
   openblas_complex_double A2[100] = 
   {
     openblas_make_complex_double(3.0607147216796875, +0.0),
@@ -283,7 +285,8 @@ CTEST(potrf, bug_695){
   char lo = 'L';
   blasint nrhs = 2;
   BLASFUNC(zpotrs)(&lo, &n, &nrhs, (double*)(A2), &n, (double*)(B), &n, info);
-
+#endif
+#ifdef BUILD_COMPLEX
   // note that this is exactly equal to A1
   openblas_complex_float A3[100] = 
   {
@@ -393,8 +396,8 @@ CTEST(potrf, bug_695){
   if(isnan(CREAL(A3[91])) || isnan(CIMAG(A3[91]))) {
     CTEST_ERR("%s:%d  got NaN", __FILE__, __LINE__);
   }
+#endif
 }
-
 
 // Check potrf factorizes a small problem correctly
 CTEST(potrf, smoketest_trivial){
@@ -439,31 +442,43 @@ CTEST(potrf, smoketest_trivial){
       uplo = 'U';
     }
 
+#ifdef BUILD_SINGLE
     BLASFUNC(scopy)(&nv, A1s, &inc, As, &inc);
+#endif
+#ifdef BUILD_DOUBLE
     BLASFUNC(dcopy)(&nv, A1d, &inc, Ad, &inc);
+#endif
+#ifdef BUILD_COMPLEX
     BLASFUNC(ccopy)(&nv, (float *)A1c, &inc, (float *)Ac, &inc);
+#endif
+#ifdef BUILD_COMPLEX16
     BLASFUNC(zcopy)(&nv, (double *)A1z, &inc, (double *)Az, &inc);
+#endif
 
+#ifdef BUILD_SINGLE
     BLASFUNC(spotrf)(&uplo, &n, As, &n, &info);
     if (info != 0) {
       CTEST_ERR("%s:%d  info != 0", __FILE__, __LINE__);
     }
-
+#endif
+#ifdef BUILD_DOUBLE
     BLASFUNC(dpotrf)(&uplo, &n, Ad, &n, &info);
     if (info != 0) {
       CTEST_ERR("%s:%d  info != 0", __FILE__, __LINE__);
     }
-
+#endif
+#ifdef BUILD_COMPLEX
     BLASFUNC(cpotrf)(&uplo, &n, (float *)Ac, &n, &info);
     if (info != 0) {
       CTEST_ERR("%s:%d  info != 0", __FILE__, __LINE__);
     }
-
+#endif
+#ifdef BUILD_COMPLEX16
     BLASFUNC(zpotrf)(&uplo, &n, (double *)Az, &n, &info);
     if (info != 0) {
       CTEST_ERR("%s:%d  info != 0", __FILE__, __LINE__);
     }
-
+#endif
     /* Fill the other triangle */
     if (uplo == 'L') {
       for (i = 0; i < n; ++i) {
@@ -495,14 +510,20 @@ CTEST(potrf, smoketest_trivial){
       trans1 = 'C';
       trans2 = 'N';
     }
-
+#ifdef BUILD_SINGLE
     BLASFUNC(sgemm)(&trans1, &trans2, &n, &n, &n, &ones, As, &n, As, &n, &zeros, Bs, &n);
+#endif
+#ifdef BUILD_DOUBLE
     BLASFUNC(dgemm)(&trans1, &trans2, &n, &n, &n, &oned, Ad, &n, Ad, &n, &zerod, Bd, &n);
+#endif
+#ifdef BUILD_COMPLEX
     BLASFUNC(cgemm)(&trans1, &trans2, &n, &n, &n, (float *)&onec,
                     (float *)Ac, &n, (float *)Ac, &n, (float *)&zeroc, (float *)Bc, &n);
+#endif
+#ifdef BUILD_COMPLEX16
     BLASFUNC(zgemm)(&trans1, &trans2, &n, &n, &n, (double *)&onez,
                     (double *)Az, &n, (double *)Az, &n, (double *)&zeroz, (double *)Bz, &n);
-
+#endif
     /* Check result is close to original */
     for (i = 0; i < n; ++i) {
       for (j = 0; j < n; ++j) {
