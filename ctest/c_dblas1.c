@@ -74,16 +74,6 @@ void F77_dswap( const int *N, double *X, const int *incX,
    return;
 }
 
-double F77_dzasum(const int *N, void *X, const int *incX)
-{
-   return cblas_dzasum(*N, X, *incX);
-}
-
-double F77_dznrm2(const int *N, OPENBLAS_CONST void *X, const int *incX)
-{
-   return cblas_dznrm2(*N, X, *incX);
-}
-
 int F77_idamax(const int *N, OPENBLAS_CONST double *X, const int *incX)
 {
    if (*N < 1 || *incX < 1) return(0);
