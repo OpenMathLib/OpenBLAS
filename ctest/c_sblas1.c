@@ -21,16 +21,6 @@ void F77_saxpy(blasint *N, const float *alpha, OPENBLAS_CONST float *X,
    return;
 }
 
-float F77_scasum(blasint *N, float *X, blasint *incX)
-{
-   return cblas_scasum(*N, X, *incX);
-}
-
-float F77_scnrm2(blasint *N, OPENBLAS_CONST float *X, blasint *incX)
-{
-   return cblas_scnrm2(*N, X, *incX);
-}
-
 void F77_scopy(blasint *N, OPENBLAS_CONST float *X, blasint *incX,
                     float *Y, blasint *incY)
 {
