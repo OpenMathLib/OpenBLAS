@@ -46,7 +46,7 @@
     ssum, dsum, scsum, dzsum
 );
 
-@halfblasobjs = (shgemm);
+@halfblasobjs = (shgemm, shdot, shstobf16, shdtobf16, sbf16tos, dbf16tod);
 @cblasobjs = (
     cblas_caxpy, cblas_ccopy, cblas_cdotc, cblas_cdotu, cblas_cgbmv, cblas_cgemm, cblas_cgemv,
     cblas_cgerc, cblas_cgeru, cblas_chbmv, cblas_chemm, cblas_chemv, cblas_cher2, cblas_cher2k,
@@ -84,7 +84,7 @@
     cblas_xerbla
 );
 
-@halfcblasobjs = (cblas_shgemm);
+@halfcblasobjs = (cblas_shgemm, cblas_shdot, cblas_shstobf16, cblas_shdtobf16, cblas_sbf16tos, cblas_dbf16tod);
 
 @exblasobjs = (
     qamax,qamin,qasum,qaxpy,qcabs1,qcopy,qdot,qgbmv,qgemm,

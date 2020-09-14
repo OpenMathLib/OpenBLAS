@@ -146,6 +146,18 @@ ifndef XDOTKERNEL
 XDOTKERNEL = zdot.S
 endif
 
+ifndef SHDOTKERNEL
+SHDOTKERNEL = shdot.c
+endif
+
+ifndef TOBF16KERNEL
+TOBF16KERNEL = tobf16.c
+endif
+
+ifndef BF16TOKERNEL
+BF16TOKERNEL = bf16to.c
+endif
+
 ifndef ISAMAXKERNEL
 ISAMAXKERNEL = iamax_sse.S
 endif

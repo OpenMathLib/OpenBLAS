@@ -62,9 +62,11 @@ gotoblas_t TABLE_NAME = {
  MAX(SHGEMM_DEFAULT_UNROLL_M, SHGEMM_DEFAULT_UNROLL_N),
 #endif
 
+  shstobf16_kTS, shdtobf16_kTS, sbf16tos_kTS, dbf16tod_kTS,
+
   samax_kTS,  samin_kTS,  smax_kTS,  smin_kTS,
   isamax_kTS, isamin_kTS, ismax_kTS, ismin_kTS,
-  snrm2_kTS,  sasum_kTS, ssum_kTS, scopy_kTS, sdot_kTS,
+  snrm2_kTS,  sasum_kTS, ssum_kTS, scopy_kTS, shdot_kTS,
   dsdot_kTS,
   srot_kTS,   saxpy_kTS,  sscal_kTS, sswap_kTS,
   sgemv_nTS,  sgemv_tTS, sger_kTS,

@@ -54,6 +54,11 @@ double BLASFUNC(dsdot) (blasint *, float  *, blasint *, float  *, blasint *);
 double BLASFUNC(ddot)  (blasint *, double *, blasint *, double *, blasint *);
 xdouble BLASFUNC(qdot)  (blasint *, xdouble *, blasint *, xdouble *, blasint *);
 
+float  BLASFUNC(shdot)     (blasint *, bfloat16 *, blasint *, bfloat16 *, blasint *);
+void   BLASFUNC(shstobf16) (blasint *, float *,    blasint *, bfloat16 *, blasint *);
+void   BLASFUNC(shdtobf16) (blasint *, double *,   blasint *, bfloat16 *, blasint *);
+void   BLASFUNC(sbf16tos)  (blasint *, bfloat16 *, blasint *, float *,    blasint *);
+void   BLASFUNC(dbf16tod)  (blasint *, bfloat16 *, blasint *, double *,   blasint *);
 
 #ifdef RETURN_BY_STRUCT
 typedef struct {

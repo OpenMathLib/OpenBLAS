@@ -142,6 +142,29 @@ static __inline void cpuid(int op, int *eax, int *ebx, int *ecx, int *edx){
 #endif
 }
 
+static __inline void cpuid_count(int op, int count, int *eax, int *ebx, int *ecx, int *edx)
+{
+#ifdef C_MSVC
+  int cpuInfo[4] = {-1};
+  __cpuidex(cpuInfo, op, count);
+  *eax = cpuInfo[0];
+  *ebx = cpuInfo[1];
+  *ecx = cpuInfo[2];
+  *edx = cpuInfo[3];
+#else
+#if defined(__i386__) && defined(__PIC__)
+  __asm__ __volatile__
+    ("mov %%ebx, %%edi;"
+      "cpuid;"
+      "xchgl %%ebx, %%edi;"
+      : "=a" (*eax), "=D" (*ebx), "=c" (*ecx), "=d" (*edx) : "0" (op), "2" (count) : "cc");
+#else
+  __asm__ __volatile__
+    ("cpuid": "=a" (*eax), "=b" (*ebx), "=c" (*ecx), "=d" (*edx) : "0" (op), "2" (count) : "cc");
+#endif
+#endif
+}
+
 /*
 #define WHEREAMI
 */
