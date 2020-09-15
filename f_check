@@ -69,7 +69,7 @@ if ($compiler eq "") {
 	    $bu       = "_";
 	}
 
-	if ($data =~ /GNU/) {
+	if ($data =~ /GNU/ || $data =~ /GCC/ ) {
 
 	    $data =~ /(\d+)\.(\d+).(\d+)/;
 	    $major = $1;

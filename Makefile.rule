@@ -277,5 +277,10 @@ COMMON_PROF = -pg
 # If you want to enable the experimental BFLOAT16 support
 # BUILD_HALF = 1
 #
+# the below is not yet configurable, use cmake if you need to build only select types
+BUILD_SINGLE = 1
+BUILD_DOUBLE = 1
+BUILD_COMPLEX = 1
+BUILD_COMPLEX16 = 1
 #  End of user configuration
 #

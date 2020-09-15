@@ -258,7 +258,8 @@ typedef unsigned long BLASULONG;
 #endif
 
 #ifndef BFLOAT16
-typedef unsigned short bfloat16;
+#include <stdint.h>
+typedef uint16_t bfloat16;
 #define HALFCONVERSION 1
 #endif
 

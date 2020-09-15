@@ -59,12 +59,19 @@ extern int blas_omp_linked;
 #define BLAS_PTHREAD	0x4000U
 #define BLAS_NODE	0x2000U
 
-#define BLAS_PREC	0x0003U
-#define BLAS_SINGLE	0x0000U
-#define BLAS_DOUBLE	0x0001U
-#define BLAS_XDOUBLE	0x0002U
-#define BLAS_REAL	0x0000U
-#define BLAS_COMPLEX	0x0004U
+#define BLAS_PREC       0x000FU
+#define BLAS_INT8       0x0000U
+#define BLAS_BFLOAT16   0x0001U
+#define BLAS_SINGLE     0x0002U
+#define BLAS_DOUBLE     0x0003U
+#define BLAS_XDOUBLE    0x0004U
+#define BLAS_STOBF16    0x0008U
+#define BLAS_DTOBF16    0x0009U
+#define BLAS_BF16TOS    0x000AU
+#define BLAS_BF16TOD    0x000BU
+
+#define BLAS_REAL       0x0000U
+#define BLAS_COMPLEX    0x1000U
 
 #define BLAS_TRANSA	0x0030U	/* 2bit */
 #define BLAS_TRANSA_N	0x0000U

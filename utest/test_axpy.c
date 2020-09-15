@@ -33,6 +33,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "openblas_utest.h"
 
+#ifdef BUILD_DOUBLE
 CTEST(axpy,daxpy_inc_0)
 {
 	blasint i;
@@ -52,7 +53,9 @@ CTEST(axpy,daxpy_inc_0)
 		ASSERT_DBL_NEAR_TOL(y2[i], y1[i], DOUBLE_EPS);
 	}
 }
+#endif
 
+#ifdef BUILD_COMPLEX16
 CTEST(axpy,zaxpy_inc_0)
 {
 	blasint i;
@@ -71,7 +74,9 @@ CTEST(axpy,zaxpy_inc_0)
 		ASSERT_DBL_NEAR_TOL(y2[i], y1[i], DOUBLE_EPS);
 	}
 }
+#endif
 
+#ifdef BUILD_SINGLE
 CTEST(axpy,saxpy_inc_0)
 {
 	blasint i;
@@ -90,7 +95,9 @@ CTEST(axpy,saxpy_inc_0)
 		ASSERT_DBL_NEAR_TOL(y2[i], y1[i], DOUBLE_EPS);
 	}
 }
+#endif
 
+#ifdef BUILD_COMPLEX
 CTEST(axpy,caxpy_inc_0)
 {
 	blasint i;
@@ -109,3 +116,5 @@ CTEST(axpy,caxpy_inc_0)
 		ASSERT_DBL_NEAR_TOL(y2[i], y1[i], DOUBLE_EPS);
 	}
 }
+#endif
+

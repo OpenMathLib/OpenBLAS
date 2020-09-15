@@ -22,6 +22,7 @@ double m[DATASIZE*DATASIZE];
 
 CTEST(kernel_regress,skx_avx)
 {
+#ifdef BUILD_DOUBLE
     double norm;
     int i, j, info;
     srand(0);
@@ -47,4 +48,5 @@ CTEST(kernel_regress,skx_avx)
     
     norm = cblas_dnrm2(DATASIZE*DATASIZE, X, 1);
     ASSERT_DBL_NEAR_TOL(0.0, norm, 1e-10);
+#endif
 }

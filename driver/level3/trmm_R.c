@@ -126,7 +126,7 @@ int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa, FLO
 	/* the current AVX512 s/d/c/z GEMM kernel requires n>=6*GEMM_UNROLL_N to achieve the best performance */
 	if (min_jj >= 6*GEMM_UNROLL_N) min_jj = 6*GEMM_UNROLL_N;
 #else
-	if (min_jj > GEMM_UNROLL_N*3) min_jj = GEMM_UNROLL_N*3;
+	if (min_jj >= GEMM_UNROLL_N*3) min_jj = GEMM_UNROLL_N*3;
 	else
 	  if (min_jj > GEMM_UNROLL_N) min_jj = GEMM_UNROLL_N;
 #endif
@@ -150,7 +150,7 @@ int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa, FLO
 	/* the current AVX512 s/d/c/z GEMM kernel requires n>=6*GEMM_UNROLL_N to achieve the best performance */
 	if (min_jj >= 6*GEMM_UNROLL_N) min_jj = 6*GEMM_UNROLL_N;
 #else
-	if (min_jj > GEMM_UNROLL_N*3) min_jj = GEMM_UNROLL_N*3;
+	if (min_jj >= GEMM_UNROLL_N*3) min_jj = GEMM_UNROLL_N*3;
 	else
 	  if (min_jj > GEMM_UNROLL_N) min_jj = GEMM_UNROLL_N;
 #endif
@@ -207,7 +207,7 @@ int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa, FLO
 	/* the current AVX512 s/d/c/z GEMM kernel requires n>=6*GEMM_UNROLL_N to achieve the best performance */
 	if (min_jj >= 6*GEMM_UNROLL_N) min_jj = 6*GEMM_UNROLL_N;
 #else
-	if (min_jj > GEMM_UNROLL_N*3) min_jj = GEMM_UNROLL_N*3;
+	if (min_jj >= GEMM_UNROLL_N*3) min_jj = GEMM_UNROLL_N*3;
 	else
 	  if (min_jj > GEMM_UNROLL_N) min_jj = GEMM_UNROLL_N;
 #endif
@@ -262,7 +262,7 @@ int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa, FLO
 	/* the current AVX512 s/d/c/z GEMM kernel requires n>=6*GEMM_UNROLL_N to achieve the best performance */
 	if (min_jj >= 6*GEMM_UNROLL_N) min_jj = 6*GEMM_UNROLL_N;
 #else
-	if (min_jj > GEMM_UNROLL_N*3) min_jj = GEMM_UNROLL_N*3;
+	if (min_jj >= GEMM_UNROLL_N*3) min_jj = GEMM_UNROLL_N*3;
 	else
 	  if (min_jj > GEMM_UNROLL_N) min_jj = GEMM_UNROLL_N;
 #endif
@@ -287,7 +287,7 @@ int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa, FLO
 	/* the current AVX512 s/d/c/z GEMM kernel requires n>=6*GEMM_UNROLL_N to achieve the best performance */
 	if (min_jj >= 6*GEMM_UNROLL_N) min_jj = 6*GEMM_UNROLL_N;
 #else
-	if (min_jj > GEMM_UNROLL_N*3) min_jj = GEMM_UNROLL_N*3;
+	if (min_jj >= GEMM_UNROLL_N*3) min_jj = GEMM_UNROLL_N*3;
 	else
 	  if (min_jj > GEMM_UNROLL_N) min_jj = GEMM_UNROLL_N;
 #endif
@@ -348,7 +348,7 @@ int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa, FLO
 	/* the current AVX512 s/d/c/z GEMM kernel requires n>=6*GEMM_UNROLL_N to achieve the best performance */
 	if (min_jj >= 6*GEMM_UNROLL_N) min_jj = 6*GEMM_UNROLL_N;
 #else
-	if (min_jj > GEMM_UNROLL_N*3) min_jj = GEMM_UNROLL_N*3;
+	if (min_jj >= GEMM_UNROLL_N*3) min_jj = GEMM_UNROLL_N*3;
 	else
 	  if (min_jj > GEMM_UNROLL_N) min_jj = GEMM_UNROLL_N;
 #endif
