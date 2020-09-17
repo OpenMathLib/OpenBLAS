@@ -142,13 +142,13 @@ CASUMKERNEL  = casum.c
 ZASUMKERNEL  = zasum.c
 #
 SAXPYKERNEL  = saxpy.c
-DAXPYKERNEL  = daxpy.c
+DAXPYKERNEL  = daxpy_power10.c
 ifneq ($(GCCVERSIONGTEQ9),1)
 CAXPYKERNEL  = caxpy_power9.S
 else
 CAXPYKERNEL  = caxpy.c
 endif
-ZAXPYKERNEL  = zaxpy.c
+ZAXPYKERNEL  = zaxpy_power10.c
 #
 SCOPYKERNEL  = scopy.c
 DCOPYKERNEL  = dcopy.c
