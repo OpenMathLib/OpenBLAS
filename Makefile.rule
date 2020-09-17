@@ -272,6 +272,9 @@ COMMON_PROF = -pg
 # work at all.
 #
 # CPP_THREAD_SAFETY_TEST = 1
+#
+# use this to run only the less memory-hungry GEMV test
+# CPP_THREAD_SAFETY_GEMV = 1
 
 
 # If you want to enable the experimental BFLOAT16 support

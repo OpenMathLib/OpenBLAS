@@ -29,6 +29,8 @@ option(NO_AFFINITY "Disable support for CPU affinity masks to avoid binding proc
 else()
 set(NO_AFFINITY 1)
 endif()
+option(CPP_THREAD_SAFETY_TEST "Run a massively parallel DGEMM test to confirm thread safety of the library (requires OpenMP and about 1.3GB of RAM)" OFF)
+option(CPP_THREAD_SAFETY_GEMV "Run a massively parallel DGEMV test to confirm thread safety of the library (requires OpenMP)" OFF)
 
 # Add a prefix or suffix to all exported symbol names in the shared library.
 # Avoids conflicts with other BLAS libraries, especially when using
@@ -234,6 +236,9 @@ if (NOT MSVC AND NOT NOFORTRAN)
     add_subdirectory(ctest)
   endif()
   add_subdirectory(lapack-netlib/TESTING)
+	  if (CPP_THREAD_SAFETY_TEST OR CPP_THREAD_SAFETY_GEMV)
+	  	add_subdirectory(cpp_thread_test)
+    	  endif()
 endif()
 
 set_target_properties(${OpenBLAS_LIBNAME} PROPERTIES
