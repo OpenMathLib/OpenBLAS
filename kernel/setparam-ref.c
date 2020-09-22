@@ -114,6 +114,7 @@ gotoblas_t TABLE_NAME = {
 #endif
 #endif
 
+#if defined( BUILD_SINGLE) || defined(BUILD_COMPLEX)
   0, 0, 0,
   SGEMM_DEFAULT_UNROLL_M, SGEMM_DEFAULT_UNROLL_N,
 #ifdef SGEMM_DEFAULT_UNROLL_MN
@@ -121,7 +122,7 @@ gotoblas_t TABLE_NAME = {
 #else
  MAX(SGEMM_DEFAULT_UNROLL_M, SGEMM_DEFAULT_UNROLL_N),
 #endif
-
+#endif
 
 #ifdef HAVE_EXCLUSIVE_CACHE
   1,
@@ -129,19 +130,34 @@ gotoblas_t TABLE_NAME = {
   0,
 #endif
 
+#if defined(BUILD_SINGLE) || defined(BUILD_COMPLEX)
   samax_kTS,  samin_kTS,  smax_kTS,  smin_kTS,
   isamax_kTS, isamin_kTS, ismax_kTS, ismin_kTS,
-  snrm2_kTS,  sasum_kTS, ssum_kTS, scopy_kTS, sdot_kTS,
-  dsdot_kTS,
-  srot_kTS,   saxpy_kTS,  sscal_kTS, sswap_kTS,
-  sgemv_nTS,  sgemv_tTS, sger_kTS,
+  snrm2_kTS,  sasum_kTS,
+#endif 
+#ifdef BUILD_SINGLE  
+  ssum_kTS,
+#endif
+
+#if defined(BUILD_SINGLE) || defined(BUILD_COMPLEX)
+  scopy_kTS, sdot_kTS,
+//  dsdot_kTS,
+  srot_kTS,   saxpy_kTS,  
+  sscal_kTS, 
+  sswap_kTS,
+  sgemv_nTS,  sgemv_tTS,
+#endif
+#ifdef BUILD_SINGLE  
+  sger_kTS,
   ssymv_LTS, ssymv_UTS,
 
 #ifdef ARCH_X86_64
   sgemm_directTS,
   sgemm_direct_performantTS,	
 #endif
-	
+#endif
+
+#if defined(BUILD_SINGLE) || defined(BUILD_COMPLEX)
   sgemm_kernelTS, sgemm_betaTS,
 #if SGEMM_DEFAULT_UNROLL_M != SGEMM_DEFAULT_UNROLL_N
   sgemm_incopyTS, sgemm_itcopyTS,
@@ -149,6 +165,9 @@ gotoblas_t TABLE_NAME = {
   sgemm_oncopyTS, sgemm_otcopyTS,
 #endif
   sgemm_oncopyTS, sgemm_otcopyTS,
+#endif
+
+#ifdef BUILD_SINGLE  
   strsm_kernel_LNTS, strsm_kernel_LTTS, strsm_kernel_RNTS, strsm_kernel_RTTS,
 #if SGEMM_DEFAULT_UNROLL_M != SGEMM_DEFAULT_UNROLL_N
   strsm_iunucopyTS, strsm_iunncopyTS, strsm_iutucopyTS, strsm_iutncopyTS,
@@ -182,6 +201,9 @@ gotoblas_t TABLE_NAME = {
   NULL,NULL,
 #endif
 
+#endif
+
+#if defined (BUILD_DOUBLE) || defined(BUILD_COMPLEX16)  
   0, 0, 0,
   DGEMM_DEFAULT_UNROLL_M, DGEMM_DEFAULT_UNROLL_N,
 #ifdef DGEMM_DEFAULT_UNROLL_MN
@@ -189,14 +211,36 @@ gotoblas_t TABLE_NAME = {
 #else
  MAX(DGEMM_DEFAULT_UNROLL_M, DGEMM_DEFAULT_UNROLL_N),
 #endif
+#endif
 
+
+#if defined (BUILD_DOUBLE) || defined(BUILD_COMPLEX16)  
   damax_kTS,  damin_kTS,  dmax_kTS,  dmin_kTS,
   idamax_kTS, idamin_kTS, idmax_kTS, idmin_kTS,
-  dnrm2_kTS,  dasum_kTS,  dsum_kTS, dcopy_kTS, ddot_kTS,
-  drot_kTS,   daxpy_kTS,  dscal_kTS, dswap_kTS,
-  dgemv_nTS,  dgemv_tTS,  dger_kTS,
+  dnrm2_kTS, dasum_kTS,
+#endif  
+#if defined (BUILD_DOUBLE)  
+  dsum_kTS,
+#endif
+#if defined (BUILD_DOUBLE) || defined(BUILD_COMPLEX16)  
+  dcopy_kTS, ddot_kTS,
+#endif
+#if defined (BUILD_SINGLE) || defined(BUILD_DOUBLE)  
+  dsdot_kTS,
+#endif
+#if defined (BUILD_DOUBLE) || defined(BUILD_COMPLEX16)  
+  drot_kTS,
+  daxpy_kTS,
+  dscal_kTS, 
+  dswap_kTS,
+  dgemv_nTS,  dgemv_tTS,
+#endif
+#if defined (BUILD_DOUBLE)  
+  dger_kTS,
   dsymv_LTS,  dsymv_UTS,
+#endif
 
+#if defined (BUILD_DOUBLE) || defined(BUILD_COMPLEX16)  
   dgemm_kernelTS, dgemm_betaTS,
 #if DGEMM_DEFAULT_UNROLL_M != DGEMM_DEFAULT_UNROLL_N
   dgemm_incopyTS, dgemm_itcopyTS,
@@ -204,6 +248,9 @@ gotoblas_t TABLE_NAME = {
   dgemm_oncopyTS, dgemm_otcopyTS,
 #endif
   dgemm_oncopyTS, dgemm_otcopyTS,
+#endif
+
+#if defined (BUILD_DOUBLE)  
   dtrsm_kernel_LNTS, dtrsm_kernel_LTTS, dtrsm_kernel_RNTS, dtrsm_kernel_RTTS,
 #if DGEMM_DEFAULT_UNROLL_M != DGEMM_DEFAULT_UNROLL_N
   dtrsm_iunucopyTS, dtrsm_iunncopyTS, dtrsm_iutucopyTS, dtrsm_iutncopyTS,
@@ -235,6 +282,8 @@ gotoblas_t TABLE_NAME = {
   dneg_tcopyTS, dlaswp_ncopyTS,
 #else
   NULL, NULL,
+#endif
+
 #endif
 
 #ifdef EXPRECISION
@@ -291,6 +340,7 @@ gotoblas_t TABLE_NAME = {
 
 #endif
 
+#ifdef BUILD_COMPLEX
   0, 0, 0,
   CGEMM_DEFAULT_UNROLL_M, CGEMM_DEFAULT_UNROLL_N,
 #ifdef CGEMM_DEFAULT_UNROLL_MN
@@ -426,6 +476,9 @@ gotoblas_t TABLE_NAME = {
   NULL, NULL,
 #endif
 
+#endif
+
+#ifdef BUILD_COMPLEX16
   0, 0, 0,
   ZGEMM_DEFAULT_UNROLL_M, ZGEMM_DEFAULT_UNROLL_N,
 #ifdef ZGEMM_DEFAULT_UNROLL_MN
@@ -560,6 +613,8 @@ gotoblas_t TABLE_NAME = {
   NULL, NULL,
 #endif
 
+#endif
+
 #ifdef EXPRECISION
 
   0, 0, 0,
@@ -691,25 +746,61 @@ gotoblas_t TABLE_NAME = {
   init_parameter,
 
   SNUMOPT, DNUMOPT, QNUMOPT,
+#ifdef BUILD_SINGLE
+  saxpby_kTS,
+#endif
+#ifdef BUILD_DOUBLE  
+  daxpby_kTS,
+#endif
+#ifdef BUILD_COMPLEX
+  caxpby_kTS,
+#endif
+#ifdef BUILD_COMPLEX16
+  zaxpby_kTS,
+#endif
 
-  saxpby_kTS, daxpby_kTS, caxpby_kTS, zaxpby_kTS,
-
+#ifdef BUILD_SINGLE
   somatcopy_k_cnTS, somatcopy_k_ctTS, somatcopy_k_rnTS, somatcopy_k_rtTS,
+#endif
+#ifdef BUILD_DOUBLE
   domatcopy_k_cnTS, domatcopy_k_ctTS, domatcopy_k_rnTS, domatcopy_k_rtTS,
+#endif
+#ifdef BUILD_COMPLEX
   comatcopy_k_cnTS, comatcopy_k_ctTS, comatcopy_k_rnTS, comatcopy_k_rtTS,
   comatcopy_k_cncTS, comatcopy_k_ctcTS, comatcopy_k_rncTS, comatcopy_k_rtcTS,
+#endif
+#ifdef BUILD_COMPLEX16
   zomatcopy_k_cnTS, zomatcopy_k_ctTS, zomatcopy_k_rnTS, zomatcopy_k_rtTS,
   zomatcopy_k_cncTS, zomatcopy_k_ctcTS, zomatcopy_k_rncTS, zomatcopy_k_rtcTS,
+#endif
 
+#ifdef BUILD_SINGLE
   simatcopy_k_cnTS, simatcopy_k_ctTS, simatcopy_k_rnTS, simatcopy_k_rtTS,
+#endif
+#ifdef BUILD_DOUBLE
   dimatcopy_k_cnTS, dimatcopy_k_ctTS, dimatcopy_k_rnTS, dimatcopy_k_rtTS,
+#endif
+#ifdef BUILD_COMPLEX
   cimatcopy_k_cnTS, cimatcopy_k_ctTS, cimatcopy_k_rnTS, cimatcopy_k_rtTS,
   cimatcopy_k_cncTS, cimatcopy_k_ctcTS, cimatcopy_k_rncTS, cimatcopy_k_rtcTS,
+#endif
+#ifdef BUILD_COMPLEX16
   zimatcopy_k_cnTS, zimatcopy_k_ctTS, zimatcopy_k_rnTS, zimatcopy_k_rtTS,
   zimatcopy_k_cncTS, zimatcopy_k_ctcTS, zimatcopy_k_rncTS, zimatcopy_k_rtcTS,
+#endif
 
-  sgeadd_kTS, dgeadd_kTS, cgeadd_kTS, zgeadd_kTS
-
+#ifdef BUILD_SINGLE
+  sgeadd_kTS,
+#endif
+#ifdef BUILD_DOUBLE
+  dgeadd_kTS,
+#endif
+#ifdef BUILD_COMPLEX
+  cgeadd_kTS,
+#endif
+#ifdef BUILD_COMPLEX16
+  zgeadd_kTS
+#endif
 };
 
 #if defined(ARCH_ARM64)
@@ -717,26 +808,50 @@ static void init_parameter(void) {
 #if defined(BUILD_HALF)
   TABLE_NAME.shgemm_p = SHGEMM_DEFAULT_P;
 #endif
+#if defined(BUILD_SINGLE) || defined(BUILD_COMPLEX)
   TABLE_NAME.sgemm_p = SGEMM_DEFAULT_P;
+#endif
+#ifdef BUILD_DOUBLE
   TABLE_NAME.dgemm_p = DGEMM_DEFAULT_P;
+#endif
+#ifdef BUILD_COMPLEX
   TABLE_NAME.cgemm_p = CGEMM_DEFAULT_P;
+#endif
+#ifdef BUILD_COMPLEX16
   TABLE_NAME.zgemm_p = ZGEMM_DEFAULT_P;
+#endif
 
 #if defined(BUILD_HALF)
   TABLE_NAME.shgemm_q = SHGEMM_DEFAULT_Q;
 #endif
+#ifdef BUILD_SINGLE
   TABLE_NAME.sgemm_q = SGEMM_DEFAULT_Q;
+#endif
+#ifdef BUILD_DOUBLE
   TABLE_NAME.dgemm_q = DGEMM_DEFAULT_Q;
+#endif
+#ifdef BUILD_COMPLEX
   TABLE_NAME.cgemm_q = CGEMM_DEFAULT_Q;
+#endif
+#ifdef BUILD_COMPLEX16
   TABLE_NAME.zgemm_q = ZGEMM_DEFAULT_Q;
+#endif
 
 #if defined(BUILD_HALF)
   TABLE_NAME.shgemm_r = SHGEMM_DEFAULT_R;
 #endif
+#ifdef BUILD_SINGLE
   TABLE_NAME.sgemm_r = SGEMM_DEFAULT_R;
+#endif
+#ifdef BUILD_DOUBLE
   TABLE_NAME.dgemm_r = DGEMM_DEFAULT_R;
+#endif
+#ifdef BUILD_COMPLEX
   TABLE_NAME.cgemm_r = CGEMM_DEFAULT_R;
+#endif
+#ifdef BUILD_COMPLEX16
   TABLE_NAME.zgemm_r = ZGEMM_DEFAULT_R;
+#endif
 
 #ifdef EXPRECISION
   TABLE_NAME.qgemm_p = QGEMM_DEFAULT_P;
@@ -989,21 +1104,33 @@ static void init_parameter(void) {
   TABLE_NAME.shgemm_r = SHGEMM_DEFAULT_R;
   TABLE_NAME.shgemm_q = SHGEMM_DEFAULT_Q;
 #endif
+#ifdef BUILD_SINGLE
   TABLE_NAME.sgemm_q = SGEMM_DEFAULT_Q;
+#endif
+#ifdef BUILD_DOUBLE
   TABLE_NAME.dgemm_q = DGEMM_DEFAULT_Q;
+#endif
+#ifdef BUILD_COMPLEX
   TABLE_NAME.cgemm_q = CGEMM_DEFAULT_Q;
+#endif
+#ifdef BUILD_COMPLEX16
   TABLE_NAME.zgemm_q = ZGEMM_DEFAULT_Q;
+#endif
 
+#ifdef BUILD_COMPLEX
 #ifdef CGEMM3M_DEFAULT_Q
   TABLE_NAME.cgemm3m_q = CGEMM3M_DEFAULT_Q;
 #else
   TABLE_NAME.cgemm3m_q = SGEMM_DEFAULT_Q;
 #endif
+#endif
 
+#ifdef BUILD_COMPLEX16
 #ifdef ZGEMM3M_DEFAULT_Q
   TABLE_NAME.zgemm3m_q = ZGEMM3M_DEFAULT_Q;
 #else
   TABLE_NAME.zgemm3m_q = DGEMM_DEFAULT_Q;
+#endif
 #endif
 
 #ifdef EXPRECISION
@@ -1018,10 +1145,18 @@ static void init_parameter(void) {
   fprintf(stderr, "Katmai, Coppermine, Banias, Athlon\n");
 #endif
 
+#if defined (BUILD_SINGLE) || defined(BUILD_COMPLEX)
   TABLE_NAME.sgemm_p =  64 * (l2 >> 7);
+#endif
+#ifdef BUILD_DOUBLE
   TABLE_NAME.dgemm_p =  32 * (l2 >> 7);
+#endif
+#ifdef BUILD_COMPLEX
   TABLE_NAME.cgemm_p =  32 * (l2 >> 7);
+#endif
+#ifdef BUILD_COMPLEX16
   TABLE_NAME.zgemm_p =  16 * (l2 >> 7);
+#endif
 #ifdef EXPRECISION
   TABLE_NAME.qgemm_p =  16 * (l2 >> 7);
   TABLE_NAME.xgemm_p =   8 * (l2 >> 7);
@@ -1034,10 +1169,18 @@ static void init_parameter(void) {
   fprintf(stderr, "Northwood\n");
 #endif
 
+#if defined (BUILD_SINGLE) || defined(BUILD_COMPLEX)
   TABLE_NAME.sgemm_p =  96 * (l2 >> 7);
+#endif
+#ifdef BUILD_DOUBLE
   TABLE_NAME.dgemm_p =  48 * (l2 >> 7);
+#endif
+#ifdef BUILD_COMPLEX
   TABLE_NAME.cgemm_p =  48 * (l2 >> 7);
+#endif
+#ifdef BUILD_COMPLEX16
   TABLE_NAME.zgemm_p =  24 * (l2 >> 7);
+#endif
 #ifdef EXPRECISION
   TABLE_NAME.qgemm_p =  24 * (l2 >> 7);
   TABLE_NAME.xgemm_p =  12 * (l2 >> 7);
@@ -1050,10 +1193,18 @@ static void init_parameter(void) {
   fprintf(stderr, "Atom\n");
 #endif
 
+#if defined (BUILD_SINGLE) || defined(BUILD_COMPLEX)
   TABLE_NAME.sgemm_p = 256;
+#endif
+#ifdef BUILD_DOUBLE
   TABLE_NAME.dgemm_p = 128;
+#endif
+#ifdef BUILD_COMPLEX
   TABLE_NAME.cgemm_p = 128;
+#endif
+#ifdef BUILD_COMPLEX16
   TABLE_NAME.zgemm_p =  64;
+#endif
 #ifdef EXPRECISION
   TABLE_NAME.qgemm_p =  64;
   TABLE_NAME.xgemm_p =  32;
@@ -1066,10 +1217,18 @@ static void init_parameter(void) {
   fprintf(stderr, "Prescott\n");
 #endif
 
+#if defined (BUILD_SINGLE) || defined(BUILD_COMPLEX)
   TABLE_NAME.sgemm_p =  56 * (l2 >> 7);
+#endif
+#ifdef BUILD_DOUBLE
   TABLE_NAME.dgemm_p =  28 * (l2 >> 7);
+#endif
+#ifdef BUILD_COMPLEX
   TABLE_NAME.cgemm_p =  28 * (l2 >> 7);
+#endif
+#ifdef BUILD_COMPLEX16
   TABLE_NAME.zgemm_p =  14 * (l2 >> 7);
+#endif
 #ifdef EXPRECISION
   TABLE_NAME.qgemm_p =  14 * (l2 >> 7);
   TABLE_NAME.xgemm_p =   7 * (l2 >> 7);
@@ -1082,10 +1241,18 @@ static void init_parameter(void) {
   fprintf(stderr, "Core2\n");
 #endif
 
+#if defined (BUILD_SINGLE) || defined(BUILD_COMPLEX)
   TABLE_NAME.sgemm_p =  92 * (l2 >> 9) + 8;
+#endif
+#ifdef BUILD_DOUBLE
   TABLE_NAME.dgemm_p =  46 * (l2 >> 9) + 8;
+#endif
+#ifdef BUILD_COMPLEX
   TABLE_NAME.cgemm_p =  46 * (l2 >> 9) + 4;
+#endif
+#ifdef BUILD_COMPLEX16
   TABLE_NAME.zgemm_p =  23 * (l2 >> 9) + 4;
+#endif
 #ifdef EXPRECISION
   TABLE_NAME.qgemm_p =  92 * (l2 >> 9) + 8;
   TABLE_NAME.xgemm_p =  46 * (l2 >> 9) + 4;
@@ -1098,10 +1265,18 @@ static void init_parameter(void) {
   fprintf(stderr, "Penryn\n");
 #endif
 
+#if defined (BUILD_SINGLE) || defined(BUILD_COMPLEX)
   TABLE_NAME.sgemm_p =  42 * (l2 >> 9) + 8;
+#endif
+#ifdef BUILD_DOUBLE
   TABLE_NAME.dgemm_p =  42 * (l2 >> 9) + 8;
+#endif
+#ifdef BUILD_COMPLEX
   TABLE_NAME.cgemm_p =  21 * (l2 >> 9) + 4;
+#endif
+#ifdef BUILD_COMPLEX16
   TABLE_NAME.zgemm_p =  21 * (l2 >> 9) + 4;
+#endif
 #ifdef EXPRECISION
   TABLE_NAME.qgemm_p =  42 * (l2 >> 9) + 8;
   TABLE_NAME.xgemm_p =  21 * (l2 >> 9) + 4;
@@ -1114,10 +1289,18 @@ static void init_parameter(void) {
   fprintf(stderr, "Dunnington\n");
 #endif
 
+#if defined (BUILD_SINGLE) || defined(BUILD_COMPLEX)
   TABLE_NAME.sgemm_p =  42 * (l2 >> 9) + 8;
+#endif
+#ifdef BUILD_DOUBLE
   TABLE_NAME.dgemm_p =  42 * (l2 >> 9) + 8;
+#endif
+#ifdef BUILD_COMPLEX
   TABLE_NAME.cgemm_p =  21 * (l2 >> 9) + 4;
+#endif
+#ifdef BUILD_COMPLEX16
   TABLE_NAME.zgemm_p =  21 * (l2 >> 9) + 4;
+#endif
 #ifdef EXPRECISION
   TABLE_NAME.qgemm_p =  42 * (l2 >> 9) + 8;
   TABLE_NAME.xgemm_p =  21 * (l2 >> 9) + 4;
@@ -1131,10 +1314,18 @@ static void init_parameter(void) {
   fprintf(stderr, "Nehalem\n");
 #endif
 
+#if defined (BUILD_SINGLE) || defined(BUILD_COMPLEX)
   TABLE_NAME.sgemm_p = SGEMM_DEFAULT_P;
+#endif
+#ifdef BUILD_DOUBLE
   TABLE_NAME.dgemm_p = DGEMM_DEFAULT_P;
+#endif
+#ifdef BUILD_COMPLEX
   TABLE_NAME.cgemm_p = CGEMM_DEFAULT_P;
+#endif
+#ifdef BUILD_COMPLEX16
   TABLE_NAME.zgemm_p = ZGEMM_DEFAULT_P;
+#endif
 #ifdef EXPRECISION
   TABLE_NAME.qgemm_p = QGEMM_DEFAULT_P;
   TABLE_NAME.xgemm_p = XGEMM_DEFAULT_P;
@@ -1147,10 +1338,18 @@ static void init_parameter(void) {
   fprintf(stderr, "Sandybridge\n");
 #endif
 
+#if defined (BUILD_SINGLE) || defined(BUILD_COMPLEX)
   TABLE_NAME.sgemm_p = SGEMM_DEFAULT_P;
+#endif
+#ifdef BUILD_DOUBLE
   TABLE_NAME.dgemm_p = DGEMM_DEFAULT_P;
+#endif
+#ifdef BUILD_COMPLEX
   TABLE_NAME.cgemm_p = CGEMM_DEFAULT_P;
+#endif
+#ifdef BUILD_COMPLEX16
   TABLE_NAME.zgemm_p = ZGEMM_DEFAULT_P;
+#endif
 #ifdef EXPRECISION
   TABLE_NAME.qgemm_p = QGEMM_DEFAULT_P;
   TABLE_NAME.xgemm_p = XGEMM_DEFAULT_P;
@@ -1163,10 +1362,18 @@ static void init_parameter(void) {
   fprintf(stderr, "Haswell\n");
 #endif
 
+#if defined (BUILD_SINGLE) || defined(BUILD_COMPLEX)
   TABLE_NAME.sgemm_p = SGEMM_DEFAULT_P;
+#endif
+#ifdef BUILD_DOUBLE
   TABLE_NAME.dgemm_p = DGEMM_DEFAULT_P;
+#endif
+#ifdef BUILD_COMPLEX
   TABLE_NAME.cgemm_p = CGEMM_DEFAULT_P;
+#endif
+#ifdef BUILD_COMPLEX16
   TABLE_NAME.zgemm_p = ZGEMM_DEFAULT_P;
+#endif
 #ifdef EXPRECISION
   TABLE_NAME.qgemm_p = QGEMM_DEFAULT_P;
   TABLE_NAME.xgemm_p = XGEMM_DEFAULT_P;
@@ -1179,10 +1386,18 @@ static void init_parameter(void) {
   fprintf(stderr, "SkylakeX\n");
 #endif
 
+#if defined (BUILD_SINGLE) || defined(BUILD_COMPLEX)
   TABLE_NAME.sgemm_p = SGEMM_DEFAULT_P;
+#endif
+#ifdef BUILD_DOUBLE
   TABLE_NAME.dgemm_p = DGEMM_DEFAULT_P;
+#endif
+#ifdef BUILD_COMPLEX
   TABLE_NAME.cgemm_p = CGEMM_DEFAULT_P;
+#endif
+#ifdef BUILD_COMPLEX16
   TABLE_NAME.zgemm_p = ZGEMM_DEFAULT_P;
+#endif
 #ifdef EXPRECISION
   TABLE_NAME.qgemm_p = QGEMM_DEFAULT_P;
   TABLE_NAME.xgemm_p = XGEMM_DEFAULT_P;
@@ -1196,10 +1411,18 @@ static void init_parameter(void) {
   fprintf(stderr, "Opteron\n");
 #endif
 
+#if defined (BUILD_SINGLE) || defined(BUILD_COMPLEX)
   TABLE_NAME.sgemm_p = 224 +  56 * (l2 >> 7);
+#endif
+#ifdef BUILD_DOUBLE
   TABLE_NAME.dgemm_p = 112 +  28 * (l2 >> 7);
+#endif
+#ifdef BUILD_COMPLEX
   TABLE_NAME.cgemm_p = 112 +  28 * (l2 >> 7);
+#endif
+#ifdef BUILD_COMPLEX16
   TABLE_NAME.zgemm_p =  56 +  14 * (l2 >> 7);
+#endif
 #ifdef EXPRECISION
   TABLE_NAME.qgemm_p =  56 +  14 * (l2 >> 7);
   TABLE_NAME.xgemm_p =  28 +   7 * (l2 >> 7);
@@ -1212,10 +1435,18 @@ static void init_parameter(void) {
   fprintf(stderr, "Barcelona\n");
 #endif
 
+#if defined (BUILD_SINGLE) || defined(BUILD_COMPLEX)
   TABLE_NAME.sgemm_p = SGEMM_DEFAULT_P;
+#endif
+#ifdef BUILD_DOUBLE
   TABLE_NAME.dgemm_p = DGEMM_DEFAULT_P;
+#endif
+#ifdef BUILD_COMPLEX
   TABLE_NAME.cgemm_p = CGEMM_DEFAULT_P;
+#endif
+#ifdef BUILD_COMPLEX16
   TABLE_NAME.zgemm_p = ZGEMM_DEFAULT_P;
+#endif
 #ifdef EXPRECISION
   TABLE_NAME.qgemm_p = QGEMM_DEFAULT_P;
   TABLE_NAME.xgemm_p = XGEMM_DEFAULT_P;
@@ -1228,10 +1459,18 @@ static void init_parameter(void) {
   fprintf(stderr, "Bobcate\n");
 #endif
 
+#if defined (BUILD_SINGLE) || defined(BUILD_COMPLEX)
   TABLE_NAME.sgemm_p = SGEMM_DEFAULT_P;
+#endif
+#ifdef BUILD_DOUBLE
   TABLE_NAME.dgemm_p = DGEMM_DEFAULT_P;
+#endif
+#ifdef BUILD_COMPLEX
   TABLE_NAME.cgemm_p = CGEMM_DEFAULT_P;
+#endif
+#ifdef BUILD_COMPLEX16
   TABLE_NAME.zgemm_p = ZGEMM_DEFAULT_P;
+#endif
 #ifdef EXPRECISION
   TABLE_NAME.qgemm_p = QGEMM_DEFAULT_P;
   TABLE_NAME.xgemm_p = XGEMM_DEFAULT_P;
@@ -1244,10 +1483,18 @@ static void init_parameter(void) {
   fprintf(stderr, "Bulldozer\n");
 #endif
 
+#if defined (BUILD_SINGLE) || defined(BUILD_COMPLEX)
   TABLE_NAME.sgemm_p = SGEMM_DEFAULT_P;
+#endif
+#ifdef BUILD_DOUBLE
   TABLE_NAME.dgemm_p = DGEMM_DEFAULT_P;
+#endif
+#ifdef BUILD_COMPLEX
   TABLE_NAME.cgemm_p = CGEMM_DEFAULT_P;
+#endif
+#ifdef BUILD_COMPLEX16
   TABLE_NAME.zgemm_p = ZGEMM_DEFAULT_P;
+#endif
 #ifdef EXPRECISION
   TABLE_NAME.qgemm_p = QGEMM_DEFAULT_P;
   TABLE_NAME.xgemm_p = XGEMM_DEFAULT_P;
@@ -1260,10 +1507,18 @@ static void init_parameter(void) {
   fprintf(stderr, "Excavator\n");
 #endif
 
+#if defined (BUILD_SINGLE) || defined(BUILD_COMPLEX)
   TABLE_NAME.sgemm_p = SGEMM_DEFAULT_P;
+#endif
+#ifdef BUILD_DOUBLE
   TABLE_NAME.dgemm_p = DGEMM_DEFAULT_P;
+#endif
+#ifdef BUILD_COMPLEX
   TABLE_NAME.cgemm_p = CGEMM_DEFAULT_P;
+#endif
+#ifdef BUILD_COMPLEX16
   TABLE_NAME.zgemm_p = ZGEMM_DEFAULT_P;
+#endif
 #ifdef EXPRECISION
   TABLE_NAME.qgemm_p = QGEMM_DEFAULT_P;
   TABLE_NAME.xgemm_p = XGEMM_DEFAULT_P;
@@ -1277,10 +1532,18 @@ static void init_parameter(void) {
   fprintf(stderr, "Piledriver\n");
 #endif
 
+#if defined(BUILD_SINGLE) || defined(BUILD_COMPLEX)
   TABLE_NAME.sgemm_p = SGEMM_DEFAULT_P;
+#endif
+#ifdef BUILD_DOUBLE
   TABLE_NAME.dgemm_p = DGEMM_DEFAULT_P;
+#endif
+#ifdef BUILD_COMPLEX
   TABLE_NAME.cgemm_p = CGEMM_DEFAULT_P;
+#endif
+#ifdef BUILD_COMPLEX16
   TABLE_NAME.zgemm_p = ZGEMM_DEFAULT_P;
+#endif
 #ifdef EXPRECISION
   TABLE_NAME.qgemm_p = QGEMM_DEFAULT_P;
   TABLE_NAME.xgemm_p = XGEMM_DEFAULT_P;
@@ -1293,10 +1556,18 @@ static void init_parameter(void) {
   fprintf(stderr, "Steamroller\n");
 #endif
 
+#if defined (BUILD_SINGLE) || defined(BUILD_COMPLEX)
   TABLE_NAME.sgemm_p = SGEMM_DEFAULT_P;
+#endif
+#ifdef BUILD_DOUBLE
   TABLE_NAME.dgemm_p = DGEMM_DEFAULT_P;
+#endif
+#ifdef BUILD_COMPLEX
   TABLE_NAME.cgemm_p = CGEMM_DEFAULT_P;
+#endif
+#ifdef BUILD_COMPLEX16
   TABLE_NAME.zgemm_p = ZGEMM_DEFAULT_P;
+#endif
 #ifdef EXPRECISION
   TABLE_NAME.qgemm_p = QGEMM_DEFAULT_P;
   TABLE_NAME.xgemm_p = XGEMM_DEFAULT_P;
@@ -1309,10 +1580,18 @@ static void init_parameter(void) {
   fprintf(stderr, "Zen\n");
 #endif
 
+#if defined (BUILD_SINGLE) || defined(BUILD_COMPLEX)
   TABLE_NAME.sgemm_p = SGEMM_DEFAULT_P;
+#endif
+#ifdef BUILD_DOUBLE
   TABLE_NAME.dgemm_p = DGEMM_DEFAULT_P;
+#endif
+#ifdef BUILD_COMPLEX
   TABLE_NAME.cgemm_p = CGEMM_DEFAULT_P;
+#endif
+#ifdef BUILD_COMPLEX16
   TABLE_NAME.zgemm_p = ZGEMM_DEFAULT_P;
+#endif
 #ifdef EXPRECISION
   TABLE_NAME.qgemm_p = QGEMM_DEFAULT_P;
   TABLE_NAME.xgemm_p = XGEMM_DEFAULT_P;
@@ -1326,11 +1605,18 @@ static void init_parameter(void) {
   fprintf(stderr, "NANO\n");
 #endif
 
+#if defined (BUILD_SINGLE) || defined(BUILD_COMPLEX)
   TABLE_NAME.sgemm_p = SGEMM_DEFAULT_P;
+#endif
+#ifdef BUILD_DOUBLE
   TABLE_NAME.dgemm_p = DGEMM_DEFAULT_P;
+#endif
+#ifdef BUILD_COMPLEX
   TABLE_NAME.cgemm_p = CGEMM_DEFAULT_P;
+#endif
+#ifdef BUILD_COMPLEX16
   TABLE_NAME.zgemm_p = ZGEMM_DEFAULT_P;
-
+#endif
 
 
 #ifdef EXPRECISION
@@ -1340,17 +1626,20 @@ static void init_parameter(void) {
 
 #endif
 
-
+#ifdef BUILD_COMPLEX
 #ifdef CGEMM3M_DEFAULT_P
   TABLE_NAME.cgemm3m_p = CGEMM3M_DEFAULT_P;
 #else
   TABLE_NAME.cgemm3m_p = TABLE_NAME.sgemm_p;
 #endif
+#endif
 
+#ifdef BUILD_COMPLEX16
 #ifdef ZGEMM3M_DEFAULT_P
   TABLE_NAME.zgemm3m_p = ZGEMM3M_DEFAULT_P;
 #else
   TABLE_NAME.zgemm3m_p = TABLE_NAME.dgemm_p;
+#endif
 #endif
 
 #ifdef EXPRECISION
@@ -1358,22 +1647,33 @@ static void init_parameter(void) {
 #endif
 
 
-
+#ifdef BUILD_SINGLE
   TABLE_NAME.sgemm_p = ((TABLE_NAME.sgemm_p + SGEMM_DEFAULT_UNROLL_M - 1)/SGEMM_DEFAULT_UNROLL_M) * SGEMM_DEFAULT_UNROLL_M;
+#endif
+#ifdef BUILD_DOUBLE
   TABLE_NAME.dgemm_p = ((TABLE_NAME.dgemm_p + DGEMM_DEFAULT_UNROLL_M - 1)/DGEMM_DEFAULT_UNROLL_M) * DGEMM_DEFAULT_UNROLL_M;
+#endif
+#ifdef BUILD_COMPLEX
   TABLE_NAME.cgemm_p = ((TABLE_NAME.cgemm_p + CGEMM_DEFAULT_UNROLL_M - 1)/CGEMM_DEFAULT_UNROLL_M) * CGEMM_DEFAULT_UNROLL_M;
+#endif
+#ifdef BUILD_COMPLEX16
   TABLE_NAME.zgemm_p = ((TABLE_NAME.zgemm_p + ZGEMM_DEFAULT_UNROLL_M - 1)/ZGEMM_DEFAULT_UNROLL_M) * ZGEMM_DEFAULT_UNROLL_M;
+#endif
 
+#ifdef BUILD_COMPLEX
 #ifdef CGEMM3M_DEFAULT_UNROLL_M
   TABLE_NAME.cgemm3m_p = ((TABLE_NAME.cgemm3m_p + CGEMM3M_DEFAULT_UNROLL_M - 1)/CGEMM3M_DEFAULT_UNROLL_M) * CGEMM3M_DEFAULT_UNROLL_M;
 #else
   TABLE_NAME.cgemm3m_p = ((TABLE_NAME.cgemm3m_p + SGEMM_DEFAULT_UNROLL_M - 1)/SGEMM_DEFAULT_UNROLL_M) * SGEMM_DEFAULT_UNROLL_M;
 #endif
+#endif
 
+#ifdef BUILD_COMPLEX16
 #ifdef ZGEMM3M_DEFAULT_UNROLL_M
   TABLE_NAME.zgemm3m_p = ((TABLE_NAME.zgemm3m_p + ZGEMM3M_DEFAULT_UNROLL_M - 1)/ZGEMM3M_DEFAULT_UNROLL_M) * ZGEMM3M_DEFAULT_UNROLL_M;
 #else
   TABLE_NAME.zgemm3m_p = ((TABLE_NAME.zgemm3m_p + DGEMM_DEFAULT_UNROLL_M - 1)/DGEMM_DEFAULT_UNROLL_M) * DGEMM_DEFAULT_UNROLL_M;
+#endif
 #endif
 
 #ifdef QUAD_PRECISION
@@ -1386,15 +1686,19 @@ static void init_parameter(void) {
   fprintf(stderr, "L2 = %8d DGEMM_P  .. %d\n", l2, TABLE_NAME.dgemm_p);
 #endif
 
+#ifdef BUILD_SINGLE
   TABLE_NAME.sgemm_r = (((BUFFER_SIZE -
 			       ((TABLE_NAME.sgemm_p * TABLE_NAME.sgemm_q *  4 + TABLE_NAME.offsetA
 				 + TABLE_NAME.align) & ~TABLE_NAME.align)
 			       ) / (TABLE_NAME.sgemm_q *  4) - 15) & ~15);
+#endif
 
+#ifdef BUILD_DOUBLE
   TABLE_NAME.dgemm_r = (((BUFFER_SIZE -
 			       ((TABLE_NAME.dgemm_p * TABLE_NAME.dgemm_q *  8 + TABLE_NAME.offsetA
 				 + TABLE_NAME.align) & ~TABLE_NAME.align)
 			       ) / (TABLE_NAME.dgemm_q *  8) - 15) & ~15);
+#endif
 
 #ifdef EXPRECISION
   TABLE_NAME.qgemm_r = (((BUFFER_SIZE -
@@ -1403,26 +1707,33 @@ static void init_parameter(void) {
 			       ) / (TABLE_NAME.qgemm_q * 16) - 15) & ~15);
 #endif
 
+#ifdef BUILD_COMPLEX
   TABLE_NAME.cgemm_r = (((BUFFER_SIZE -
 			       ((TABLE_NAME.cgemm_p * TABLE_NAME.cgemm_q *  8 + TABLE_NAME.offsetA
 				 + TABLE_NAME.align) & ~TABLE_NAME.align)
 			       ) / (TABLE_NAME.cgemm_q *  8) - 15) & ~15);
+#endif
 
+#ifdef BUILD_COMPLEX16
   TABLE_NAME.zgemm_r = (((BUFFER_SIZE -
 			       ((TABLE_NAME.zgemm_p * TABLE_NAME.zgemm_q * 16 + TABLE_NAME.offsetA
 				 + TABLE_NAME.align) & ~TABLE_NAME.align)
 			       ) / (TABLE_NAME.zgemm_q * 16) - 15) & ~15);
+#endif
 
+#ifdef BUILD_COMPLEX
   TABLE_NAME.cgemm3m_r = (((BUFFER_SIZE -
 			       ((TABLE_NAME.cgemm3m_p * TABLE_NAME.cgemm3m_q *  8 + TABLE_NAME.offsetA
 				 + TABLE_NAME.align) & ~TABLE_NAME.align)
 			       ) / (TABLE_NAME.cgemm3m_q *  8) - 15) & ~15);
+#endif
 
+#ifdef BUILD_COMPLEX16
   TABLE_NAME.zgemm3m_r = (((BUFFER_SIZE -
 			       ((TABLE_NAME.zgemm3m_p * TABLE_NAME.zgemm3m_q * 16 + TABLE_NAME.offsetA
 				 + TABLE_NAME.align) & ~TABLE_NAME.align)
 			       ) / (TABLE_NAME.zgemm3m_q * 16) - 15) & ~15);
-
+#endif
 
 
 
