@@ -48,7 +48,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef HAVE_KERNEL_8
 #include"../simd/intrin.h"
 
-void daxpy_kernel_8(BLASLONG n, FLOAT *x, FLOAT *y, FLOAT *alpha)
+static void daxpy_kernel_8(BLASLONG n, FLOAT *x, FLOAT *y, FLOAT *alpha)
 {
 	BLASLONG register i = 0;
 	FLOAT a = *alpha;
@@ -57,7 +57,7 @@ void daxpy_kernel_8(BLASLONG n, FLOAT *x, FLOAT *y, FLOAT *alpha)
 	__alpha =  v_setall_f32(*alpha);
 	const int vstep = v_nlanes_f32;
 	for (; i < n; i += vstep) {
-		tmp = v_add_f32(v_loadu_f32(y + i), v_mul_f32(__alpha, v_loadu_f32( x + i )));
+		tmp = v_muladd_f32(__alpha, v_loadu_f32( x + i ), v_loadu_f32(y + i));
 		v_storeu_f32(y + i, tmp);
 	}
 #else

@@ -1,6 +1,26 @@
 #ifndef _INTRIN_H_
 #define _INTRIN_H_
 
+#if defined(_MSC_VER)
+#define BLAS_INLINE __inline
+#elif defined(__GNUC__)
+#if defined(__STRICT_ANSI__)
+#define BLAS_INLINE __inline__
+#else
+#define BLAS_INLINE inline
+#endif
+#else
+#define BLAS_INLINE
+#endif
+
+#ifdef _MSC_VER
+#define BLAS_FINLINE static __forceinline
+#elif defined(__GNUC__)
+#define BLAS_FINLINE static BLAS_INLINE __attribute__((always_inline))
+#else
+#define BLAS_FINLINE static
+#endif
+
 #ifdef __cplusplus
 extern "C" {
 #endif
