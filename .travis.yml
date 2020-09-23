@@ -233,6 +233,21 @@ matrix:
         - CC="/Applications/Xcode-10.1.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang"
         - CFLAGS="-O2 -mno-thumb -Wno-macro-redefined -isysroot /Applications/Xcode-10.1.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS12.1.sdk -arch armv7 -miphoneos-version-min=5.1"
         - BTYPE="TARGET=ARMV7 HOSTCC=clang NOFORTRAN=1"
+
+    - &test-graviton2
+      os: linux
+      arch: arm64-graviton2
+      dist: focal
+      group: edge
+      virt: lxd
+      compiler: gcc
+      addons:
+        apt:
+          packages:
+            - gfortran
+      script:
+        - travis_wait 45 make && make lapack-test
+        
 # whitelist
 branches:
   only:
