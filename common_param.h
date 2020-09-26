@@ -189,14 +189,14 @@ BLASLONG (*ismin_k) (BLASLONG, float *, BLASLONG);
 
   int    (*ssymv_L) (BLASLONG, BLASLONG, float,  float  *, BLASLONG, float  *, BLASLONG, float  *, BLASLONG, float *);
   int    (*ssymv_U) (BLASLONG, BLASLONG, float,  float  *, BLASLONG, float  *, BLASLONG, float  *, BLASLONG, float *);
+#endif
 
+#if defined(BUILD_SINGLE) || defined(BUILD_COMPLEX)
 #ifdef ARCH_X86_64
   void (*sgemm_direct) (BLASLONG, BLASLONG, BLASLONG, float *, BLASLONG , float *, BLASLONG , float * , BLASLONG);
   int  (*sgemm_direct_performant) (BLASLONG M, BLASLONG N, BLASLONG K);
 #endif
   
-#endif  
-#if defined(BUILD_SINGLE) || defined(BUILD_COMPLEX)
   int    (*sgemm_kernel   )(BLASLONG, BLASLONG, BLASLONG, float, float *, float *, float *, BLASLONG);
   int    (*sgemm_beta     )(BLASLONG, BLASLONG, BLASLONG, float, float *, BLASLONG, float *, BLASLONG, float  *, BLASLONG);
 
@@ -1085,7 +1085,7 @@ extern gotoblas_t *gotoblas;
 #define	SHGEMM_UNROLL_MN	gotoblas -> shgemm_unroll_mn
 #endif
 
-#if defined (BUILD_SINGLE) || defined(BUILD_COMPLEX)
+#if defined (BUILD_SINGLE)
 #define	SGEMM_P		gotoblas -> sgemm_p
 #define	SGEMM_Q		gotoblas -> sgemm_q
 #define	SGEMM_R		gotoblas -> sgemm_r
@@ -1094,7 +1094,7 @@ extern gotoblas_t *gotoblas;
 #define SGEMM_UNROLL_MN	gotoblas -> sgemm_unroll_mn
 #endif
 
-#if defined (BUILD_DOUBLE) || defined (BUILD_COMPLEX16)
+#if defined (BUILD_DOUBLE)
 #define	DGEMM_P		gotoblas -> dgemm_p
 #define	DGEMM_Q		gotoblas -> dgemm_q
 #define	DGEMM_R		gotoblas -> dgemm_r
@@ -1117,6 +1117,14 @@ extern gotoblas_t *gotoblas;
 #define	CGEMM_UNROLL_M	gotoblas -> cgemm_unroll_m
 #define	CGEMM_UNROLL_N	gotoblas -> cgemm_unroll_n
 #define CGEMM_UNROLL_MN	gotoblas -> cgemm_unroll_mn
+#ifndef BUILD_SINGLE
+#define	SGEMM_P		gotoblas -> sgemm_p
+#define	SGEMM_Q		gotoblas -> sgemm_q
+#define	SGEMM_R		1024
+#define	SGEMM_UNROLL_M	gotoblas -> sgemm_unroll_m
+#define	SGEMM_UNROLL_N	gotoblas -> sgemm_unroll_n
+#define SGEMM_UNROLL_MN	gotoblas -> sgemm_unroll_mn
+#endif
 #endif
 
 #ifdef BUILD_COMPLEX16
@@ -1126,6 +1134,14 @@ extern gotoblas_t *gotoblas;
 #define	ZGEMM_UNROLL_M	gotoblas -> zgemm_unroll_m
 #define	ZGEMM_UNROLL_N	gotoblas -> zgemm_unroll_n
 #define ZGEMM_UNROLL_MN	gotoblas -> zgemm_unroll_mn
+#ifndef BUILD_DOUBLE
+#define	DGEMM_P		gotoblas -> dgemm_p
+#define	DGEMM_Q		gotoblas -> dgemm_q
+#define	DGEMM_R		1024
+#define	DGEMM_UNROLL_M	gotoblas -> dgemm_unroll_m
+#define	DGEMM_UNROLL_N	gotoblas -> dgemm_unroll_n
+#define DGEMM_UNROLL_MN	gotoblas -> dgemm_unroll_mn
+#endif
 #endif
 
 #define	XGEMM_P		gotoblas -> xgemm_p
