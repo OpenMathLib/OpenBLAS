@@ -476,12 +476,15 @@ int exec_blas(BLASLONG num, blas_queue_t *queue){
 
   routine = queue -> routine;
 
-    if (!(queue -> mode & BLAS_LEGACY)) {
+  if (queue -> mode & BLAS_LEGACY) {
+    legacy_exec(routine, queue -> mode, queue -> args, queue -> sb);
+  } else
+    if (queue -> mode & BLAS_PTHREAD) {
+      void (*pthreadcompat)(void *) = queue -> routine;
+      (pthreadcompat)(queue -> args);
+    } else
       (routine)(queue -> args, queue -> range_m, queue -> range_n,
 		queue -> sa, queue -> sb, 0);
-    } else {
-      legacy_exec(routine, queue -> mode, queue -> args, queue -> sb);
-    }
 
   if ((num > 1) && queue -> next) exec_blas_async_wait(num - 1, queue -> next);
 
