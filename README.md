@@ -46,7 +46,10 @@ Building OpenBLAS requires the following to be installed:
 
 Simply invoking `make` (or `gmake` on BSD) will detect the CPU automatically.
 To set a specific target CPU, use `make TARGET=xxx`, e.g. `make TARGET=NEHALEM`.
-The full target list is in the file `TargetList.txt`.
+The full target list is in the file `TargetList.txt`. For building with `cmake`, the
+usual conventions apply, i.e. create a build directory either underneath the toplevel
+OpenBLAS source directory or separate from it, and invoke `cmake` there with the path
+to the source tree and any build options you plan to set.
 
 ### Cross compile
 
@@ -152,13 +155,17 @@ Please read `GotoBLAS_01Readme.txt` for older CPU models already supported by th
 - **Falkor**: same as A57 (different cpu specifications)
 - **ThunderX**: Optimized some Level-1 functions
 - **ThunderX2T99**: Optimized Level-3 BLAS and parts of Levels 1 and 2
+- **ThunderX3T110**
 - **TSV110**: Optimized some Level-3 helper functions
 - **EMAG 8180**: preliminary support based on A57
+- **Neoverse N1**: (AWS Graviton2) preliminary support
+- **Apple Vortex**: preliminary support based on ARMV8
 
 #### PPC/PPC64
 
 - **POWER8**: Optimized BLAS, only for PPC64LE (Little Endian), only with `USE_OPENMP=1`
 - **POWER9**: Optimized Level-3 BLAS (real) and some Level-1,2. PPC64LE with OpenMP only. 
+- **POWER10**:
 
 #### IBM zEnterprise System
 
@@ -226,7 +233,8 @@ We provide the following functions to control the number of threads at runtime:
 void goto_set_num_threads(int num_threads);
 void openblas_set_num_threads(int num_threads);
 ```
-
+Note that these are only used once at library initialization, and are not available for
+fine-tuning thread numbers in individual BLAS calls. 
 If you compile this library with `USE_OPENMP=1`, you should use the above functions too.
 
 ## Reporting bugs
