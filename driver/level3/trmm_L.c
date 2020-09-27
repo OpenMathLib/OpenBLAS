@@ -122,6 +122,9 @@ int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa, FLO
     if (min_l > GEMM_Q) min_l = GEMM_Q;
     min_i = min_l;
     if (min_i > GEMM_P) min_i = GEMM_P;
+    if( min_i > GEMM_UNROLL_M){
+        min_i =  (min_i / GEMM_UNROLL_M) * GEMM_UNROLL_M;
+      }
 
     START_RPCC();
 
@@ -161,9 +164,12 @@ int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa, FLO
     }
 
 
-    for(is = min_i; is < min_l; is += GEMM_P){
+    for(is = min_i; is < min_l; is += min_i){
       min_i = min_l - is;
       if (min_i > GEMM_P) min_i = GEMM_P;
+      if( min_i > GEMM_UNROLL_M){
+          min_i =  (min_i / GEMM_UNROLL_M) * GEMM_UNROLL_M;
+        }
 
       START_RPCC();
 
@@ -192,6 +198,10 @@ int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa, FLO
       if (min_l > GEMM_Q) min_l = GEMM_Q;
       min_i = ls;
       if (min_i > GEMM_P) min_i = GEMM_P;
+      if( min_i > GEMM_UNROLL_M){
+          min_i =  (min_i / GEMM_UNROLL_M) * GEMM_UNROLL_M;
+          }
+
 
       START_RPCC();
 
@@ -231,9 +241,12 @@ int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa, FLO
 	STOP_RPCC(gemmcost);
       }
 
-      for(is = min_i; is < ls; is += GEMM_P){
+      for(is = min_i; is < ls; is += min_i){
 	min_i = ls - is;
 	if (min_i > GEMM_P) min_i = GEMM_P;
+	if( min_i > GEMM_UNROLL_M){
+	    min_i =  (min_i / GEMM_UNROLL_M) * GEMM_UNROLL_M;
+          }
 
 	START_RPCC();
 
@@ -256,9 +269,12 @@ int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa, FLO
 	STOP_RPCC(gemmcost);
       }
 
-      for(is = ls; is < ls + min_l; is += GEMM_P){
+      for(is = ls; is < ls + min_l; is += min_i){
 	min_i = ls + min_l - is;
 	if (min_i > GEMM_P) min_i = GEMM_P;
+	if( min_i > GEMM_UNROLL_M){
+	    min_i =  (min_i / GEMM_UNROLL_M) * GEMM_UNROLL_M;
+	}
 
 	START_RPCC();
 
@@ -287,6 +303,10 @@ int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa, FLO
     if (min_l > GEMM_Q) min_l = GEMM_Q;
     min_i = min_l;
     if (min_i > GEMM_P) min_i = GEMM_P;
+    if (min_i > GEMM_UNROLL_M){
+        min_i = (min_i / GEMM_UNROLL_M) * GEMM_UNROLL_M;
+    }
+
 
     START_RPCC();
 
@@ -327,9 +347,14 @@ int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa, FLO
       STOP_RPCC(trmmcost);
     }
 
-    for(is = m - min_l + min_i; is < m; is += GEMM_P){
+    for(is = m - min_l + min_i; is < m; is += min_i){
       min_i = m - is;
       if (min_i > GEMM_P) min_i = GEMM_P;
+      if (min_i > GEMM_UNROLL_M){
+          min_i = (min_i / GEMM_UNROLL_M) * GEMM_UNROLL_M;
+      }
+
+
 
       START_RPCC();
 
@@ -357,6 +382,10 @@ int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa, FLO
       if (min_l > GEMM_Q) min_l = GEMM_Q;
       min_i = min_l;
       if (min_i > GEMM_P) min_i = GEMM_P;
+      if (min_i > GEMM_UNROLL_M){
+          min_i = (min_i / GEMM_UNROLL_M) * GEMM_UNROLL_M;
+      }
+
 
       START_RPCC();
 
@@ -397,9 +426,13 @@ int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa, FLO
 	STOP_RPCC(trmmcost);
       }
 
-      for(is = ls - min_l + min_i; is < ls; is += GEMM_P){
+      for(is = ls - min_l + min_i; is < ls; is += min_i){
 	min_i = ls - is;
 	if (min_i > GEMM_P) min_i = GEMM_P;
+	if (min_i > GEMM_UNROLL_M){
+	    min_i = (min_i / GEMM_UNROLL_M) * GEMM_UNROLL_M;
+	}
+
 
 	START_RPCC();
 
@@ -423,9 +456,12 @@ int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa, FLO
       }
 
 
-      for(is = ls; is < m; is += GEMM_P){
+      for(is = ls; is < m; is += min_i){
 	min_i = m - is;
 	if (min_i > GEMM_P) min_i = GEMM_P;
+	if (min_i > GEMM_UNROLL_M){
+	    min_i = (min_i / GEMM_UNROLL_M) * GEMM_UNROLL_M;
+	}
 
 	START_RPCC();
 
