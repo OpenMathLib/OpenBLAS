@@ -151,9 +151,9 @@ endif
 ZAXPYKERNEL  = zaxpy_power10.c
 #
 SCOPYKERNEL  = scopy.c
-DCOPYKERNEL  = dcopy.c
+DCOPYKERNEL  = dcopy_power10.c
 CCOPYKERNEL  = ccopy.c
-ZCOPYKERNEL  = zcopy.c
+ZCOPYKERNEL  = zcopy_power10.c
 #
 SDOTKERNEL   =  sdot.c
 DDOTKERNEL   =  ddot.c
