@@ -27,7 +27,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 #include "common.h"
-
+#include "../simd/intrin.h"
 #if defined(DSDOT)
 double CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG inc_y)
 #else
@@ -47,9 +47,9 @@ FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG inc_y)
 
 	if ( (inc_x == 1) && (inc_y == 1) )
 	{
-		int n1 = n & -4;
+        int n1 = n & -4;
 #if V_SIMD && !defined(DSDOT)
-		const int vstep = v_nlanes_f32;
+        const int vstep = v_nlanes_f32;
         const int unrollx4 = n & (-vstep * 4);
         const int unrollx  = n &  -vstep;
 		v_f32 vsum0 = v_zero_f32();
