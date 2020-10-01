@@ -2882,9 +2882,10 @@ void blas_memory_free(void *free_area){
   while ((position < NUM_BUFFERS) && (memory[position].addr != free_area))
     position++;
 
-  if (memory[position].addr != free_area) goto error;
+  if (position >= NUM_BUFFERS) goto error;
 
 #ifdef DEBUG
+  if (memory[position].addr != free_area) goto error;
   printf("  Position : %d\n", position);
 #endif
 
