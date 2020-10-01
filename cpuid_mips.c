@@ -84,7 +84,7 @@ static char *cpuname[] = {
 
 int detect(void){
 
-#ifdef linux
+#ifdef __linux
   FILE *infile;
   char buffer[512], *p;
 
