@@ -62,7 +62,7 @@ static void daxpy_kernel_8(BLASLONG n, FLOAT *x, FLOAT *y, FLOAT *alpha)
               y5 = a * x[5] + y[5];
               y6 = a * x[6] + y[6];
               y7 = a * x[7] + y[7];
-	      asm("":"+w"(y0),"+w"(y1),"+w"(y2),"+w"(y3),"+w"(y4),"+w"(y5),"+w"(y6),"+w"(y7));
+	      __asm__("":"+w"(y0),"+w"(y1),"+w"(y2),"+w"(y3),"+w"(y4),"+w"(y5),"+w"(y6),"+w"(y7));
 	      y[0] = y0;
 	      y[1] = y1;
 	      y[2] = y2;
@@ -74,7 +74,7 @@ static void daxpy_kernel_8(BLASLONG n, FLOAT *x, FLOAT *y, FLOAT *alpha)
 
               xx = (x + 4*128/sizeof(*x));
               yy = (y + 4*128/sizeof(*y));
-	      asm("":"+r"(yy)::"memory");
+	      __asm__("":"+r"(yy)::"memory");
 	      prefetch(xx);
 	      prefetch(yy);
 
