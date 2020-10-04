@@ -104,7 +104,7 @@ char *corename[] = {
 
 int detect(void){
 
-#ifdef linux
+#ifdef __linux
   FILE *infile;
   char buffer[512], *p;
 
@@ -214,6 +214,8 @@ switch ( id >> 16 ) {
     return  CPUTYPE_UNKNOWN;
   }
 #endif
+	
+ return CPUTYPE_UNKNOWN;	
 }
 
 void get_architecture(void){

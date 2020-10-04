@@ -163,7 +163,7 @@ int main(int argc, char *argv[]){
 	loops = atoi(p);
 
 
-#ifdef linux
+#ifdef __linux
   srandom(getpid());
 #endif
 

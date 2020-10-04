@@ -90,7 +90,7 @@ static char *cpuname_lower[] = {
 int get_feature(char *search)
 {
 
-#ifdef linux
+#ifdef __linux
 	FILE *infile;
   	char buffer[2048], *p,*t;
   	p = (char *) NULL ;
@@ -126,7 +126,7 @@ int get_feature(char *search)
 int detect(void)
 {
 
-#ifdef linux
+#ifdef __linux
 
 	FILE *infile;
 	char buffer[512], *p, *cpu_part = NULL, *cpu_implementer = NULL;
@@ -242,7 +242,7 @@ void get_cpucount(void)
 {
 int n=0;
 
-#ifdef linux
+#ifdef __linux
 	FILE *infile;
   	char buffer[2048], *p,*t;
   	p = (char *) NULL ;
@@ -441,7 +441,7 @@ void get_libname(void)
 void get_features(void)
 {
 
-#ifdef linux
+#ifdef __linux
 	FILE *infile;
   	char buffer[2048], *p,*t;
   	p = (char *) NULL ;
