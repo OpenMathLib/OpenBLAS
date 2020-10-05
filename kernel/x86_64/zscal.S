@@ -50,6 +50,8 @@
 	PROLOGUE
 	PROFCODE
 
+	fninit
+
 	salq	$ZBASE_SHIFT, INCX
 
 	FLD	 8(%rsp)

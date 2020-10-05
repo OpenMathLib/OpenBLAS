@@ -49,6 +49,7 @@
 
 	PROLOGUE
 	PROFCODE
+	fninit
 
 	salq	$BASE_SHIFT, INCX
 	salq	$BASE_SHIFT, INCY

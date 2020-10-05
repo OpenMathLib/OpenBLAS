@@ -58,6 +58,8 @@
 
 	PROLOGUE
 
+	fninit
+
 	pushl	%edi
 	pushl	%esi
 	pushl	%ebx

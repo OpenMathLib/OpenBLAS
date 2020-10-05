@@ -50,6 +50,8 @@
 	PROLOGUE
 	PROFCODE
 
+	fninit
+
 	fldz
 	testq	M, M
 	jle	.L999

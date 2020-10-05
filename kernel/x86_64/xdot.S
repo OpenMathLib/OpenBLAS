@@ -59,6 +59,9 @@
 
 	PROFCODE
 
+	fninit
+
+
 #define N	%ebx
 #define X	%esi
 #define INCX	%ecx

@@ -54,6 +54,8 @@
 	PROLOGUE
 	PROFCODE
 
+	fninit
+
 #ifdef WINDOWS_ABI
 	movq	40(%rsp), INCY
 #endif

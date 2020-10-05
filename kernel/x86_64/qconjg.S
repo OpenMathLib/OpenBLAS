@@ -41,6 +41,7 @@
 
 	PROLOGUE
 	PROFCODE
+	fninit
 
 	fldz
 	FLD	1 * SIZE(ARG1)

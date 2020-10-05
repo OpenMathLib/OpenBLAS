@@ -90,6 +90,8 @@
 	PROLOGUE
 	PROFCODE
 
+	fninit
+
 	subq	$STACKSIZE, %rsp
 	movq	%rbx,  0(%rsp)
 	movq	%rbp,  8(%rsp)
