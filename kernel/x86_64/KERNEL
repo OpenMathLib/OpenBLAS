@@ -259,7 +259,11 @@ SNRM2KERNEL = nrm2_sse.S
 endif
 
 ifndef DNRM2KERNEL
+ifeq ($(OSNAME),WINNT)
+DNRM2KERNEL = ../arm/nrm2.c
+else
 DNRM2KERNEL = nrm2.S
+endif
 endif
 
 ifndef QNRM2KERNEL
@@ -271,7 +275,11 @@ CNRM2KERNEL = znrm2_sse.S
 endif
 
 ifndef ZNRM2KERNEL
+ifeq ($(OSNAME),WINNT)
+ZNRM2KERNEL = ../arm/znrm2.c
+else
 ZNRM2KERNEL = znrm2.S
+endif
 endif
 
 ifndef XNRM2KERNEL
