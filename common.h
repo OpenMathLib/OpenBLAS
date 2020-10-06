@@ -402,7 +402,7 @@ please https://github.com/xianyi/OpenBLAS/issues/246
 #endif
 
 #ifndef BLAS3_MEM_ALLOC_THRESHOLD
-#define BLAS3_MEM_ALLOC_THRESHOLD 160
+#define BLAS3_MEM_ALLOC_THRESHOLD 32 
 #endif
 
 #ifdef QUAD_PRECISION
