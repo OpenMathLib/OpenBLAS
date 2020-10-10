@@ -79,7 +79,7 @@ if (DYNAMIC_ARCH)
       string(REGEX REPLACE "-march=native" "" CMAKE_C_FLAGS "${CMAKE_C_FLAGS}")
     endif ()
     if (DYNAMIC_LIST)
-	set(DYNAMIC_CORE ${DYNAMIC_LIST})
+      set(DYNAMIC_CORE PRESCOTT ${DYNAMIC_LIST})
     endif ()
   endif ()
 
