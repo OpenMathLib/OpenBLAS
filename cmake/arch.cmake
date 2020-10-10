@@ -1,4 +1,3 @@
-##
 ## Author: Hank Anderson <hank@statease.com>
 ## Description: Ported from portion of OpenBLAS/Makefile.system
 ##              Sets various variables based on architecture.
@@ -80,8 +79,13 @@ if (DYNAMIC_ARCH)
       string(REGEX REPLACE "-march=native" "" CMAKE_C_FLAGS "${CMAKE_C_FLAGS}")
     endif ()
     if (DYNAMIC_LIST)
-	set(DYNAMIC_CORE PRESCOTT ${DYNAMIC_LIST})
+	set(DYNAMIC_CORE ${DYNAMIC_LIST})
     endif ()
+  endif ()
+
+  CHECK_INCLUDE_FILE ("${PROJECT_SOURCE_DIR}/config_kernel.h" TRAP)
+  if (TRAP)
+	  message (FATAL_ERROR "Your build directory contains a file config_kernel.h, probably from a previous compilation with make. This will conflict with the cmake compilation and cause strange compiler errors - please remove the file before trying again")
   endif ()
 
   if (NOT DYNAMIC_CORE)
