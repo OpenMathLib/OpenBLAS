@@ -97,7 +97,7 @@ CNRM2KERNEL    = znrm2.S
 ZNRM2KERNEL    = znrm2.S
 
 DDOTKERNEL     = dot.S
-SDOTKERNEL     = dot.S
+SDOTKERNEL     = ../generic/dot.c
 CDOTKERNEL     = zdot.S
 ZDOTKERNEL     = zdot.S
 DSDOTKERNEL    = dot.S
