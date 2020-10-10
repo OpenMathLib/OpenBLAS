@@ -70,7 +70,7 @@ DCOPYKERNEL  = copy.S
 CCOPYKERNEL  = copy.S
 ZCOPYKERNEL  = copy.S
 
-SDOTKERNEL   = dot.S
+SDOTKERNEL   = ../generic/dot.c
 DDOTKERNEL   = dot.S
 CDOTKERNEL   = zdot.S
 ZDOTKERNEL   = zdot.S

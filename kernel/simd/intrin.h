@@ -51,6 +51,11 @@ extern "C" {
 #include <immintrin.h>
 #endif
 
+/** NEON **/
+#ifdef HAVE_NEON
+#include <arm_neon.h>
+#endif
+
 // distribute
 #if defined(HAVE_AVX512VL) || defined(HAVE_AVX512BF16)
 #include "intrin_avx512.h"
@@ -58,6 +63,10 @@ extern "C" {
 #include "intrin_avx.h"
 #elif defined(HAVE_SSE2)
 #include "intrin_sse.h"
+#endif
+
+#ifdef HAVE_NEON
+#include "intrin_neon.h"
 #endif
 
 #ifndef V_SIMD
