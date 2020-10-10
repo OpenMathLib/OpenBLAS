@@ -9,8 +9,10 @@ endif
 endif
 
 ifdef HAVE_SSE3
+ifndef DYNAMIC_ARCH
 CCOMMON_OPT += -msse3
 FCOMMON_OPT += -msse3
+endif
 endif
 
 ifeq ($(CORE), SKYLAKEX)
