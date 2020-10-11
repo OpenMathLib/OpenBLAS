@@ -29,10 +29,8 @@ option(NO_AFFINITY "Disable support for CPU affinity masks to avoid binding proc
 else()
 set(NO_AFFINITY 1)
 endif()
-option(BUILD_SINGLE "Single precision" OFF)
-option(BUILD_DOUBLE "Double precision" OFF)
-option(BUILD_COMPLEX "Single precision" OFF)
-option(BUILD_COMPLEX16 "Single precision" OFF)
+option(CPP_THREAD_SAFETY_TEST "Run a massively parallel DGEMM test to confirm thread safety of the library (requires OpenMP and about 1.3GB of RAM)" OFF)
+option(CPP_THREAD_SAFETY_GEMV "Run a massively parallel DGEMV test to confirm thread safety of the library (requires OpenMP)" OFF)
 
 # Add a prefix or suffix to all exported symbol names in the shared library.
 # Avoids conflicts with other BLAS libraries, especially when using
@@ -91,13 +89,13 @@ if (NOT NO_LAPACK)
   list(APPEND SUBDIRS lapack)
 endif ()
 
-if (NOT DEFINED BUILD_HALF)
- set (BUILD_HALF false)
+if (NOT DEFINED BUILD_BFLOAT16)
+ set (BUILD_BFLOAT16 false)
 endif ()
 # set which float types we want to build for
 if (NOT DEFINED BUILD_SINGLE AND NOT DEFINED BUILD_DOUBLE AND NOT DEFINED BUILD_COMPLEX AND NOT DEFINED BUILD_COMPLEX16)
   # if none are defined, build for all
-#  set(BUILD_HALF true)
+#  set(BUILD_BFLOAT16 true)
   set(BUILD_SINGLE true)
   set(BUILD_DOUBLE true)
   set(BUILD_COMPLEX true)
@@ -110,33 +108,28 @@ endif()
 
 set(FLOAT_TYPES "")
 if (BUILD_SINGLE)
-  message(STATUS "Building Songle Precision")
-  list(APPEND FLOAT_TYPES "SINGLE") 
-  #    set(CCOMMON_OPT "${CCOMMON_OPT} -DBUILD_SINGLE=1")
+  message(STATUS "Building Single Precision")
+  list(APPEND FLOAT_TYPES "SINGLE") # defines nothing
 endif ()
 
 if (BUILD_DOUBLE)
   message(STATUS "Building Double Precision")
-  list(APPEND FLOAT_TYPES "DOUBLE")
-  #set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DBUILD_DOUBLE=1")
+  list(APPEND FLOAT_TYPES "DOUBLE") # defines DOUBLE
 endif ()
 
 if (BUILD_COMPLEX)
   message(STATUS "Building Complex Precision")
-  list(APPEND FLOAT_TYPES "COMPLEX")
-  #set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DBUILD_COMPLEX=1")
-endif () 
+  list(APPEND FLOAT_TYPES "COMPLEX") # defines COMPLEX
+endif ()
 
 if (BUILD_COMPLEX16)
   message(STATUS "Building Double Complex Precision")
-  list(APPEND FLOAT_TYPES "ZCOMPLEX") 
-  #set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DBUILD_COMPLEX16=1")
+  list(APPEND FLOAT_TYPES "ZCOMPLEX") # defines COMPLEX and DOUBLE
 endif ()
 
-if (BUILD_HALF)
+if (BUILD_BFLOAT16)
   message(STATUS "Building Half Precision")
-  list(APPEND FLOAT_TYPES "HALF")
-  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DBUILD_HALF")
+  list(APPEND FLOAT_TYPES "BFLOAT16") # defines nothing
 endif ()
 
 if (NOT DEFINED CORE OR "${CORE}" STREQUAL "UNKNOWN")
@@ -243,6 +236,9 @@ if (NOT MSVC AND NOT NOFORTRAN)
     add_subdirectory(ctest)
   endif()
   add_subdirectory(lapack-netlib/TESTING)
+	  if (CPP_THREAD_SAFETY_TEST OR CPP_THREAD_SAFETY_GEMV)
+	  	add_subdirectory(cpp_thread_test)
+    	  endif()
 endif()
 
 set_target_properties(${OpenBLAS_LIBNAME} PROPERTIES
