@@ -49,8 +49,8 @@ else
 GOTO_LAPACK_TARGETS=
 endif
 
-ifeq ($(BUILD_HALF),1)
-GOTO_HALF_TARGETS=shgemm.goto
+ifeq ($(BUILD_BFLOAT16),1)
+GOTO_HALF_TARGETS=sbgemm.goto
 else
 GOTO_HALF_TARGETS=
 endif
@@ -620,8 +620,8 @@ zcholesky.essl : zcholesky.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBESSL) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
 
 ##################################### Sgemm ####################################################
-ifeq ($(BUILD_HALF),1)
-shgemm.goto : shgemm.$(SUFFIX) ../$(LIBNAME)
+ifeq ($(BUILD_BFLOAT16),1)
+sbgemm.goto : sbgemm.$(SUFFIX) ../$(LIBNAME)
 	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 endif
 
@@ -2927,8 +2927,8 @@ ccholesky.$(SUFFIX) : cholesky.c
 zcholesky.$(SUFFIX) : cholesky.c
 	$(CC) $(CFLAGS) -c -DCOMPLEX -DDOUBLE -o $(@F) $^
 
-ifeq ($(BUILD_HALF),1)
-shgemm.$(SUFFIX) : gemm.c
+ifeq ($(BUILD_BFLOAT16),1)
+sbgemm.$(SUFFIX) : gemm.c
 	$(CC) $(CFLAGS) -c -DHALF -UCOMPLEX -UDOUBLE -o $(@F) $^
 endif
 
