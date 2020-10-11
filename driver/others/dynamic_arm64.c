@@ -68,7 +68,7 @@ extern void openblas_warning(int verbose, const char * msg);
 #endif
 
 #define get_cpu_ftr(id, var) ({					\
-		asm("mrs %0, "#id : "=r" (var));		\
+		__asm__("mrs %0, "#id : "=r" (var));		\
 	})
 
 static char *corename[] = {

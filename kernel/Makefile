@@ -5,6 +5,9 @@ endif
 TOPDIR	= ..
 include $(TOPDIR)/Makefile.system
 
+ifdef HAVE_SSE3
+CFLAGS += -msse3
+endif
 
 ifeq ($(C_COMPILER), GCC)
 GCCVERSIONGTEQ9 := $(shell expr `$(CC) -dumpversion | cut -f1 -d.` \>= 9)

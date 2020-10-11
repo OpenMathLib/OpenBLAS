@@ -8,6 +8,11 @@ endif
 endif
 endif
 
+ifdef HAVE_SSE3
+CCOMMON_OPT += -msse3
+FCOMMON_OPT += -msse3
+endif
+
 ifeq ($(CORE), SKYLAKEX)
 ifndef DYNAMIC_ARCH
 ifndef NO_AVX512

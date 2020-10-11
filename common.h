@@ -352,7 +352,7 @@ typedef int blasint;
 #endif
 
 #if defined(ARMV7) || defined(ARMV6) || defined(ARMV8) || defined(ARMV5)
-#define YIELDING        asm volatile ("nop;nop;nop;nop;nop;nop;nop;nop; \n");
+#define YIELDING        __asm__ __volatile__ ("nop;nop;nop;nop;nop;nop;nop;nop; \n");
 #endif
 
 #ifdef BULLDOZER
@@ -402,7 +402,7 @@ please https://github.com/xianyi/OpenBLAS/issues/246
 #endif
 
 #ifndef BLAS3_MEM_ALLOC_THRESHOLD
-#define BLAS3_MEM_ALLOC_THRESHOLD 160
+#define BLAS3_MEM_ALLOC_THRESHOLD 32 
 #endif
 
 #ifdef QUAD_PRECISION

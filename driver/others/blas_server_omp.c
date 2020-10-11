@@ -48,6 +48,21 @@
 
 #else
 
+#ifndef likely
+#ifdef __GNUC__
+#define likely(x) __builtin_expect(!!(x), 1)
+#else
+#define likely(x) (x)
+#endif
+#endif
+#ifndef unlikely
+#ifdef __GNUC__
+#define unlikely(x) __builtin_expect(!!(x), 0)
+#else
+#define unlikely(x) (x)
+#endif
+#endif
+
 #ifndef OMP_SCHED
 #define OMP_SCHED static
 #endif
@@ -361,6 +376,9 @@ if (!sb) fprintf(stderr,"SB not declared!!!\n");
 }
 
 int exec_blas(BLASLONG num, blas_queue_t *queue){
+
+  // Handle lazy re-init of the thread-pool after a POSIX fork
+  if (unlikely(blas_server_avail == 0)) blas_thread_init();
 
   BLASLONG i, buf_index;
 
