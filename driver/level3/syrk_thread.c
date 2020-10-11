@@ -56,12 +56,12 @@ int CNAME(int mode, blas_arg_t *arg, BLASLONG *range_m, BLASLONG *range_n, int (
   if (!(mode & BLAS_COMPLEX)) {
 
     switch (mode & BLAS_PREC) {
-#ifdef BUILD_SINGLE
+#if defined(BUILD_SINGLE) || defined(BUILD_COMPLEX)
     case BLAS_SINGLE:
       mask = SGEMM_UNROLL_MN - 1;
       break;
 #endif
-#ifdef BUILD_DOUBLE
+#if defined(BUILD_DOUBLE) || defined(BUILD_COMPLEX16)
     case BLAS_DOUBLE:
       mask = DGEMM_UNROLL_MN - 1;
       break;
