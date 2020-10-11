@@ -1,11 +1,12 @@
 # Sources for compiling lapack-netlib. Can't use CMakeLists.txt because lapack-netlib already has its own cmake files.
 
 set(ALLAUX ilaenv.f ilaenv2stage.f ieeeck.f lsamen.f iparmq.f iparam2stage.F
-   ilaprec.f ilatrans.f ilauplo.f iladiag.f chla_transtype.f
+   ilaprec.f ilatrans.f ilauplo.f iladiag.f chla_transtype.f dlaset.f
    ../INSTALL/ilaver.f xerbla_array.f
    ../INSTALL/slamch.f)
 
 set(SCLAUX
+	scombssq.f sbdsvdx.f sstevx.f sstein.f
    sbdsdc.f
    sbdsqr.f sdisna.f slabad.f slacpy.f sladiv.f slae2.f  slaebz.f
    slaed0.f slaed1.f slaed2.f slaed3.f slaed4.f slaed5.f slaed6.f
@@ -25,6 +26,7 @@ set(SCLAUX
 
 set(DZLAUX
    dbdsdc.f
+   dbdsvdx.f dstevx.f dstein.f
    dbdsqr.f ddisna.f dlabad.f dlacpy.f dladiv.f dlae2.f  dlaebz.f
    dlaed0.f dlaed1.f dlaed2.f dlaed3.f dlaed4.f dlaed5.f dlaed6.f
    dlaed7.f dlaed8.f dlaed9.f dlaeda.f dlaev2.f dlagtf.f
@@ -35,14 +37,14 @@ set(DZLAUX
    dlartg.f dlaruv.f dlas2.f  dlascl.f
    dlasd0.f dlasd1.f dlasd2.f dlasd3.f dlasd4.f dlasd5.f dlasd6.f
    dlasd7.f dlasd8.f dlasda.f dlasdq.f dlasdt.f
-   dlaset.f dlasq1.f dlasq2.f dlasq3.f dlasq4.f dlasq5.f dlasq6.f
+   dlasq1.f dlasq2.f dlasq3.f dlasq4.f dlasq5.f dlasq6.f
    dlasr.f  dlasrt.f dlassq.f dlasv2.f dpttrf.f dstebz.f dstedc.f
    dsteqr.f dsterf.f dlaisnan.f disnan.f
    dlartgp.f dlartgs.f
    ../INSTALL/dlamch.f ../INSTALL/dsecnd_${TIMER}.f)
 
 set(SLASRC
-   sbdsvdx.f sgbbrd.f sgbcon.f sgbequ.f sgbrfs.f sgbsv.f
+   sgbbrd.f sgbcon.f sgbequ.f sgbrfs.f sgbsv.f
    sgbsvx.f sgbtf2.f sgbtrf.f sgbtrs.f sgebak.f sgebal.f sgebd2.f
    sgebrd.f sgecon.f sgeequ.f sgees.f  sgeesx.f sgeev.f  sgeevx.f
    sgehd2.f sgehrd.f sgelq2.f sgelqf.f
@@ -83,8 +85,8 @@ set(SLASRC
    ssbev.f  ssbevd.f ssbevx.f ssbgst.f ssbgv.f  ssbgvd.f ssbgvx.f
    ssbtrd.f sspcon.f sspev.f  sspevd.f sspevx.f sspgst.f
    sspgv.f  sspgvd.f sspgvx.f ssprfs.f sspsv.f  sspsvx.f ssptrd.f
-   ssptrf.f ssptri.f ssptrs.f sstegr.f sstein.f sstev.f  sstevd.f sstevr.f
-   sstevx.f ssycon.f ssyev.f  ssyevd.f ssyevr.f ssyevx.f ssygs2.f
+   ssptrf.f ssptri.f ssptrs.f sstegr.f sstev.f  sstevd.f sstevr.f
+   ssycon.f ssyev.f  ssyevd.f ssyevr.f ssyevx.f ssygs2.f
    ssygst.f ssygv.f  ssygvd.f ssygvx.f ssyrfs.f ssysv.f  ssysvx.f
    ssytd2.f ssytf2.f ssytrd.f ssytrf.f ssytri.f ssytri2.f ssytri2x.f
    ssyswapr.f ssytrs.f ssytrs2.f
@@ -116,7 +118,7 @@ set(SLASRC
    ssytrd_2stage.f ssytrd_sy2sb.f ssytrd_sb2st.F ssb2st_kernels.f
    ssyevd_2stage.f ssyev_2stage.f ssyevx_2stage.f ssyevr_2stage.f
    ssbev_2stage.f ssbevx_2stage.f ssbevd_2stage.f ssygv_2stage.f
-   scombssq.f sgesvdq.f slaorhr_col_getrfnp.f
+   sgesvdq.f slaorhr_col_getrfnp.f
    slaorhr_col_getrfnp2.f sorgtsqr.f sorhr_col.f )
 
 set(SXLASRC sgesvxx.f sgerfsx.f sla_gerfsx_extended.f sla_geamv.f
@@ -229,7 +231,7 @@ set(CXLASRC cgesvxx.f cgerfsx.f cla_gerfsx_extended.f cla_geamv.f
    cla_lin_berr.f clarscl2.f clascl2.f cla_wwaddw.f)
 
 set(DLASRC
-   dbdsvdx.f dgbbrd.f dgbcon.f dgbequ.f dgbrfs.f dgbsv.f
+   dgbbrd.f dgbcon.f dgbequ.f dgbrfs.f dgbsv.f
    dgbsvx.f dgbtf2.f dgbtrf.f dgbtrs.f dgebak.f dgebal.f dgebd2.f
    dgebrd.f dgecon.f dgeequ.f dgees.f  dgeesx.f dgeev.f  dgeevx.f
    dgehd2.f dgehrd.f dgelq2.f dgelqf.f
@@ -270,8 +272,8 @@ set(DLASRC
    dsbev.f  dsbevd.f dsbevx.f dsbgst.f dsbgv.f  dsbgvd.f dsbgvx.f
    dsbtrd.f dspcon.f dspev.f  dspevd.f dspevx.f dspgst.f
    dspgv.f  dspgvd.f dspgvx.f dsprfs.f dspsv.f  dspsvx.f dsptrd.f
-   dsptrf.f dsptri.f dsptrs.f dstegr.f dstein.f dstev.f  dstevd.f dstevr.f
-   dstevx.f dsycon.f dsyev.f  dsyevd.f dsyevr.f
+   dsptrf.f dsptri.f dsptrs.f dstegr.f dstev.f  dstevd.f dstevr.f
+   dsycon.f dsyev.f  dsyevd.f dsyevr.f
    dsyevx.f dsygs2.f dsygst.f dsygv.f  dsygvd.f dsygvx.f dsyrfs.f
    dsysv.f  dsysvx.f
    dsytd2.f dsytf2.f dsytrd.f dsytrf.f dsytri.f dsytrs.f dsytrs2.f
@@ -474,12 +476,16 @@ endif()
 if(BUILD_COMPLEX)
   set(LA_REL_SRC ${LA_REL_SRC} ${CLASRC} ${ZCLASRC} ${ALLAUX} ${SCLAUX})
   SET(LA_GEN_SRC ${LA_GEN_SRC} ${CMATGEN} ${SCATGEN})
-  message(STATUS "Building Complex Precision")
+  message(STATUS "Building Single Precision Complex")
 endif()
 if(BUILD_COMPLEX16)
   set(LA_REL_SRC ${LA_REL_SRC} ${ZLASRC} ${ZCLASRC} ${ALLAUX} ${DZLAUX})
   SET(LA_GEN_SRC ${LA_GEN_SRC} ${ZMATGEN} ${DZATGEN})
-  message(STATUS "Building Double Complex Precision")
+# for zlange/zlanhe
+  if (NOT BUILD_DOUBLE)
+    set (LA_REL_SRC ${LA_REL_SRC} dcombssq.f)
+  endif	()  
+  message(STATUS "Building Double Precision Complex")
 endif()
 
 # add lapack-netlib folder to the sources
