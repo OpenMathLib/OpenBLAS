@@ -2201,11 +2201,17 @@ static void *alloc_mmap(void *address){
 #endif
 #endif
 
-
-        allocsize = DGEMM_P * DGEMM_Q * sizeof(double);
-
-        start   = (BLASULONG)map_address;
-        current = (SCALING - 1) * BUFFER_SIZE;
+#ifdef BUILD_DOUBLE 
+	allocsize = DGEMM_P * DGEMM_Q * sizeof(double);
+#elif defined(BUILD_COMPLEX16)
+	allocsize = ZGEMM_P * ZGEMM_Q * sizeof(double);
+#elif defined(BUILD_COMPLEX)
+	allocsize = CGEMM_P * CGEMM_Q * sizeof(double);
+#else
+	allocsize = SGEMM_P * SGEMM_Q * sizeof(double);
+#endif
+	start   = (BLASULONG)map_address;
+	current = (SCALING - 1) * BUFFER_SIZE;
 
         while(current > 0) {
           *(BLASLONG *)start = (BLASLONG)start + PAGESIZE;

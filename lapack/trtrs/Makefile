@@ -17,6 +17,19 @@ ZBLASOBJS += ztrtrs_UNU_parallel.$(SUFFIX) ztrtrs_UNN_parallel.$(SUFFIX) ztrtrs_
 XBLASOBJS += xtrtrs_UNU_parallel.$(SUFFIX) xtrtrs_UNN_parallel.$(SUFFIX) xtrtrs_UTU_parallel.$(SUFFIX) xtrtrs_UTN_parallel.$(SUFFIX) xtrtrs_URU_parallel.$(SUFFIX) xtrtrs_URN_parallel.$(SUFFIX) xtrtrs_UCU_parallel.$(SUFFIX) xtrtrs_UCN_parallel.$(SUFFIX) xtrtrs_LNU_parallel.$(SUFFIX) xtrtrs_LNN_parallel.$(SUFFIX) xtrtrs_LTU_parallel.$(SUFFIX) xtrtrs_LTN_parallel.$(SUFFIX) xtrtrs_LRU_parallel.$(SUFFIX) xtrtrs_LRN_parallel.$(SUFFIX) xtrtrs_LCU_parallel.$(SUFFIX) xtrtrs_LCN_parallel.$(SUFFIX)
 endif
 
+ifneq ($(BUILD_SINGLE),1)
+SBLASOBJS=
+endif
+ifneq ($(BUILD_DOUBLE),1)
+DBLASOBJS=
+endif
+ifneq ($(BUILD_COMPLEX),1)
+CBLASOBJS=
+endif
+ifneq ($(BUILD_COMPLEX16),1)
+ZBLASOBJS=
+endif
+
 strtrs_UNU_single.$(SUFFIX) : trtrs_single.c
 	$(CC) -c $(CFLAGS) -UCOMPLEX -UDOUBLE -UUPLO -UTRANS -UDIAG $< -o $(@F)
 

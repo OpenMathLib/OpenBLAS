@@ -1,11 +1,19 @@
 TOPDIR	= ../..
 include ../../Makefile.system
 
+ifeq ($(BUILD_SINGLE),1)
 SBLASOBJS = slauu2_U.$(SUFFIX) slauu2_L.$(SUFFIX)
+endif
+ifeq ($(BUILD_DOUBLE),1)
 DBLASOBJS = dlauu2_U.$(SUFFIX) dlauu2_L.$(SUFFIX)
+endif
 QBLASOBJS = qlauu2_U.$(SUFFIX) qlauu2_L.$(SUFFIX)
+ifeq ($(BUILD_COMPLEX),1)
 CBLASOBJS = clauu2_U.$(SUFFIX) clauu2_L.$(SUFFIX)
+endif
+ifeq ($(BUILD_COMPLEX16),1)
 ZBLASOBJS = zlauu2_U.$(SUFFIX) zlauu2_L.$(SUFFIX)
+endif
 XBLASOBJS = xlauu2_U.$(SUFFIX) xlauu2_L.$(SUFFIX)
 
 slauu2_U.$(SUFFIX) : lauu2_U.c

@@ -287,6 +287,60 @@ HPLOBJS += dgemm_thread_nn.$(SUFFIX) dgemm_thread_nt.$(SUFFIX) \
 	   dgemm_thread_tn.$(SUFFIX) dgemm_thread_tt.$(SUFFIX)
 endif
 
+ifneq ($(BUILD_SINGLE),1)
+	SBLASOBJS=
+ifeq ($(BUILD_DOUBLE),1)
+	SBLASOBJS= \
+ 	strsm_LNUU.$(SUFFIX) strsm_LNUN.$(SUFFIX) strsm_LNLU.$(SUFFIX) strsm_LNLN.$(SUFFIX) \
+	strsm_LTUU.$(SUFFIX) strsm_LTUN.$(SUFFIX) strsm_LTLU.$(SUFFIX) strsm_LTLN.$(SUFFIX) \
+	strsm_RNUU.$(SUFFIX) strsm_RNUN.$(SUFFIX) strsm_RNLU.$(SUFFIX) strsm_RNLN.$(SUFFIX) \
+	strsm_RTUU.$(SUFFIX) strsm_RTUN.$(SUFFIX) strsm_RTLU.$(SUFFIX) strsm_RTLN.$(SUFFIX) \
+	ssyrk_UN.$(SUFFIX) ssyrk_UT.$(SUFFIX) ssyrk_LN.$(SUFFIX) ssyrk_LT.$(SUFFIX) \
+	ssyrk_kernel_U.$(SUFFIX)  ssyrk_kernel_L.$(SUFFIX)
+ifndef USE_SIMPLE_THREADED_LEVEL3
+SBLASOBJS    += ssyrk_thread_UN.$(SUFFIX) ssyrk_thread_UT.$(SUFFIX) ssyrk_thread_LN.$(SUFFIX) ssyrk_thread_LT.$(SUFFIX)
+endif
+endif
+ifeq ($(BUILD_COMPLEX),1)
+	SBLASOBJS = sgemm_nn.$(SUFFIX) sgemm_nt.$(SUFFIX) sgemm_tn.$(SUFFIX) sgemm_tt.$(SUFFIX)
+ifndef USE_SIMPLE_THREADED_LEVEL3
+SBLASOBJS    += sgemm_thread_nn.$(SUFFIX) sgemm_thread_nt.$(SUFFIX) sgemm_thread_tn.$(SUFFIX) sgemm_thread_tt.$(SUFFIX)
+endif
+endif
+endif
+ifneq ($(BUILD_DOUBLE),1)
+	DBLASOBJS=
+ifeq ($(BUILD_COMPLEX16),1)
+	DBLASOBJS = dgemm_nn.$(SUFFIX) dgemm_nt.$(SUFFIX) dgemm_tn.$(SUFFIX) dgemm_tt.$(SUFFIX)
+ifndef USE_SIMPLE_THREADED_LEVEL3
+DBLASOBJS    += dgemm_thread_nn.$(SUFFIX) dgemm_thread_nt.$(SUFFIX) dgemm_thread_tn.$(SUFFIX) dgemm_thread_tt.$(SUFFIX)
+endif
+endif
+endif
+ifneq ($(BUILD_COMPLEX),1)
+	CBLASOBJS=
+ifeq ($(BUILD_COMPLEX16),1)
+	CBLASOBJS= \
+	cherk_UN.$(SUFFIX) cherk_UC.$(SUFFIX) cherk_LN.$(SUFFIX) cherk_LC.$(SUFFIX) \
+	cherk_kernel_UN.$(SUFFIX)  cherk_kernel_UC.$(SUFFIX) \
+	cherk_kernel_LN.$(SUFFIX)  cherk_kernel_LC.$(SUFFIX) \
+	ctrsm_LNUU.$(SUFFIX) ctrsm_LNUN.$(SUFFIX) ctrsm_LNLU.$(SUFFIX) ctrsm_LNLN.$(SUFFIX) \
+	ctrsm_LTUU.$(SUFFIX) ctrsm_LTUN.$(SUFFIX) ctrsm_LTLU.$(SUFFIX) ctrsm_LTLN.$(SUFFIX) \
+	ctrsm_LRUU.$(SUFFIX) ctrsm_LRUN.$(SUFFIX) ctrsm_LRLU.$(SUFFIX) ctrsm_LRLN.$(SUFFIX) \
+	ctrsm_LCUU.$(SUFFIX) ctrsm_LCUN.$(SUFFIX) ctrsm_LCLU.$(SUFFIX) ctrsm_LCLN.$(SUFFIX) \
+	ctrsm_RNUU.$(SUFFIX) ctrsm_RNUN.$(SUFFIX) ctrsm_RNLU.$(SUFFIX) ctrsm_RNLN.$(SUFFIX) \
+	ctrsm_RTUU.$(SUFFIX) ctrsm_RTUN.$(SUFFIX) ctrsm_RTLU.$(SUFFIX) ctrsm_RTLN.$(SUFFIX) \
+	ctrsm_RRUU.$(SUFFIX) ctrsm_RRUN.$(SUFFIX) ctrsm_RRLU.$(SUFFIX) ctrsm_RRLN.$(SUFFIX) \
+	ctrsm_RCUU.$(SUFFIX) ctrsm_RCUN.$(SUFFIX) ctrsm_RCLU.$(SUFFIX) ctrsm_RCLN.$(SUFFIX) 
+ifndef USE_SIMPLE_THREADED_LEVEL3
+CBLASOBJS    += cherk_thread_UN.$(SUFFIX) cherk_thread_UC.$(SUFFIX) cherk_thread_LN.$(SUFFIX) cherk_thread_LC.$(SUFFIX)
+endif
+endif
+endif
+ifneq ($(BUILD_COMPLEX16),1)
+	ZBLASOBJS=
+endif
+
 all ::
 
 shgemm_nn.$(SUFFIX) : gemm.c level3.c ../../param.h

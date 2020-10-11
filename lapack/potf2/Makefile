@@ -8,6 +8,19 @@ CBLASOBJS = cpotf2_U.$(SUFFIX) cpotf2_L.$(SUFFIX)
 ZBLASOBJS = zpotf2_U.$(SUFFIX) zpotf2_L.$(SUFFIX)
 XBLASOBJS = xpotf2_U.$(SUFFIX) xpotf2_L.$(SUFFIX)
 
+ifeq "$(or $(BUILD_SINGLE),$(BUILD_DOUBLE))" ""
+	SBLASOBJS=
+endif
+ifneq ($(BUILD_DOUBLE),1)
+	DBLASOBJS=
+endif
+ifeq "$(or $(BUILD_COMPLEX),$(BUILD_COMPLEX16))" ""
+	CBLASOBJS=
+endif
+ifneq ($(BUILD_COMPLEX16),1)
+	ZBLASOBJS=
+endif
+
 spotf2_U.$(SUFFIX) : potf2_U.c
 	$(CC) -c $(CFLAGS) -UCOMPLEX -UDOUBLE $< -o $(@F)
 

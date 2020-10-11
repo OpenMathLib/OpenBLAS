@@ -529,16 +529,20 @@ CTEST(potrf, smoketest_trivial){
       for (j = 0; j < n; ++j) {
         double err;
 
+#ifdef BUILD_SINGLE
         err = fabs(A1s[i+n*j] - Bs[i+n*j]);
         if (err > 1e-5) {
           CTEST_ERR("%s:%d  %c s(%d,%d) difference: %g", __FILE__, __LINE__, uplo, i, j, err);
         }
-
+#endif
+#ifdef BUILD_DOUBLE
         err = fabs(A1d[i+n*j] - Bd[i+n*j]);
         if (err > 1e-12) {
           CTEST_ERR("%s:%d  %c d(%d,%d) difference: %g", __FILE__, __LINE__, uplo, i, j, err);
         }
+#endif
 
+#ifdef BUILD_COMPLEX
 #ifdef OPENBLAS_COMPLEX_C99
         err = cabsf(A1c[i+n*j] - Bc[i+n*j]);
 #else
@@ -548,7 +552,9 @@ CTEST(potrf, smoketest_trivial){
         if (err > 1e-5) {
           CTEST_ERR("%s:%d  %c c(%d,%d) difference: %g", __FILE__, __LINE__, uplo, i, j, err);
         }
+#endif
 
+#ifdef BUILD_COMPLEX16
 #ifdef OPENBLAS_COMPLEX_C99
         err = cabs(A1z[i+n*j] - Bz[i+n*j]);
 #else
@@ -558,6 +564,7 @@ CTEST(potrf, smoketest_trivial){
         if (err > 1e-12) {
           CTEST_ERR("%s:%d  %c z(%d,%d) difference: %g", __FILE__, __LINE__, uplo, i, j, err);
         }
+#endif
       }
     }
   }
