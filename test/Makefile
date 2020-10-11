@@ -7,7 +7,6 @@ all ::
 else
 all :: level1 level2 level3
 endif
-$(info buildvars [$(BUILD_SINGLE)x$(BUILD_DOUBLE)x$(BUILD_COMPLEX)x$(BUILD_COMPLEX16)])
 ifeq ($(BUILD_SINGLE)x$(BUILD_DOUBLE)x$(BUILD_COMPLEX)x$(BUILD_COMPLEX16),1x1x1x1)
 level1: sblat1 dblat1 cblat1 zblat1
 endif
