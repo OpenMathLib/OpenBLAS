@@ -46,7 +46,7 @@ float   sdot_k(BLASLONG, float   *, BLASLONG, float   *, BLASLONG);
 double dsdot_k(BLASLONG, float   *, BLASLONG, float *, BLASLONG);
 double  ddot_k(BLASLONG, double  *, BLASLONG, double  *, BLASLONG);
 xdouble qdot_k(BLASLONG, xdouble *, BLASLONG, xdouble *, BLASLONG);
-float  shdot_k(BLASLONG, bfloat16 *, BLASLONG, bfloat16 *, BLASLONG);
+float  sbdot_k(BLASLONG, bfloat16 *, BLASLONG, bfloat16 *, BLASLONG);
 
 void   shstobf16_k(BLASLONG, float    *, BLASLONG, bfloat16 *, BLASLONG);
 void   shdtobf16_k(BLASLONG, double   *, BLASLONG, bfloat16 *, BLASLONG);
