@@ -28,7 +28,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <stdint.h>
 #include "../common.h"
 #define SGEMM   BLASFUNC(sgemm)
-#define SHGEMM   BLASFUNC(shgemm)
+#define SBGEMM   BLASFUNC(sbgemm)
 typedef union
 {
   unsigned short v;
@@ -102,7 +102,7 @@ main (int argc, char *argv[])
 	}
       SGEMM (&transA, &transB, &m, &n, &k, &alpha, A,
 	     &m, B, &k, &beta, C, &m);
-      SHGEMM (&transA, &transB, &m, &n, &k, &alpha, AA,
+      SBGEMM (&transA, &transB, &m, &n, &k, &alpha, AA,
 	      &m, BB, &k, &beta, CC, &m);
       for (i = 0; i < n; i++)
 	for (j = 0; j < m; j++)
@@ -126,6 +126,6 @@ main (int argc, char *argv[])
 	}
     }
   if (ret != 0)
-    fprintf (stderr, "FATAL ERROR SHGEMM - Return code: %d\n", ret);
+    fprintf (stderr, "FATAL ERROR SBGEMM - Return code: %d\n", ret);
   return ret;
 }
