@@ -1,11 +1,19 @@
 TOPDIR	= ../..
 include ../../Makefile.system
 
+ifneq "$(or $(BUILD_SINGLE),$(BUILD_DOUBLE))" ""
 SBLASOBJS = sgetf2_k.$(SUFFIX)
+endif
+ifeq ($(BUILD_DOUBLE),1)
 DBLASOBJS = dgetf2_k.$(SUFFIX)
+endif
 QBLASOBJS = qgetf2_k.$(SUFFIX)
+ifneq "$(or $(BUILD_COMPLEX),$(BUILD_COMPLEX16))" ""
 CBLASOBJS = cgetf2_k.$(SUFFIX)
+endif
+ifeq ($(BUILD_COMPLEX16),1)
 ZBLASOBJS = zgetf2_k.$(SUFFIX)
+endif
 XBLASOBJS = xgetf2_k.$(SUFFIX)
 
 sgetf2_k.$(SUFFIX) : getf2_k.c
