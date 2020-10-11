@@ -146,9 +146,6 @@ ifneq ($(NO_CBLAS), 1)
 ifeq ($(CPP_THREAD_SAFETY_TEST), 1)
 	$(MAKE) -C cpp_thread_test all
 endif
-ifeq ($(CPP_THREAD_SAFETY_GEMV), 1)
-	$(MAKE) -C cpp_thread_test dgemv_tester
-endif
 endif
 endif
 
@@ -304,6 +301,18 @@ else
 endif
 ifeq ($(BUILD_LAPACK_DEPRECATED), 1)
 	-@echo "BUILD_DEPRECATED      = 1" >> $(NETLIB_LAPACK_DIR)/make.inc
+endif
+ifeq ($(BUILD_SINGLE), 1)
+	-@echo "BUILD_SINGLE      = 1" >> $(NETLIB_LAPACK_DIR)/make.inc
+endif
+ifeq ($(BUILD_DOUBLE), 1)
+	-@echo "BUILD_DOUBLE      = 1" >> $(NETLIB_LAPACK_DIR)/make.inc
+endif
+ifeq ($(BUILD_COMPLEX), 1)
+	-@echo "BUILD_COMPLEX      = 1" >> $(NETLIB_LAPACK_DIR)/make.inc
+endif
+ifeq ($(BUILD_COMPLEX16), 1)
+	-@echo "BUILD_COMPLEX16      = 1" >> $(NETLIB_LAPACK_DIR)/make.inc
 endif
 	-@echo "LAPACKE_WITH_TMG      = 1" >> $(NETLIB_LAPACK_DIR)/make.inc
 	-@cat  make.inc >> $(NETLIB_LAPACK_DIR)/make.inc
