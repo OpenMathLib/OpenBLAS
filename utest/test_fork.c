@@ -48,6 +48,7 @@ void* xmalloc(size_t n)
     }
 }
 
+#ifdef BUILD_DOUBLE
 void check_dgemm(double *a, double *b, double *result, double *expected, blasint n)
 {
     char trans1 = 'T';
@@ -59,9 +60,13 @@ void check_dgemm(double *a, double *b, double *result, double *expected, blasint
         ASSERT_DBL_NEAR_TOL(expected[i], result[i], DOUBLE_EPS);
     }
 }
+#endif
 
 CTEST(fork, safety)
 {
+#ifndef BUILD_DOUBLE
+exit(0);
+#else
     blasint n = 1000;
     int i;
 
@@ -124,4 +129,5 @@ CTEST(fork, safety)
         ASSERT_EQUAL(wait_pid, fork_pid);
         ASSERT_EQUAL(0, WEXITSTATUS (child_status));
     }
+#endif
 }
