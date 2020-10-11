@@ -1,11 +1,19 @@
 TOPDIR	= ../..
 include ../../Makefile.system
 
+ifneq "$(or $(BUILD_SINGLE),$(BUILD_DOUBLE))" ""
 SBLASOBJS = slaswp_plus.$(SUFFIX) slaswp_minus.$(SUFFIX)
+endif
+ifeq ($(BUILD_DOUBLE),1)
 DBLASOBJS = dlaswp_plus.$(SUFFIX) dlaswp_minus.$(SUFFIX)
+endif
 QBLASOBJS = qlaswp_plus.$(SUFFIX) qlaswp_minus.$(SUFFIX)
+ifneq "$(or $(BUILD_COMPLEX),$(BUILD_COMPLEX16))" ""
 CBLASOBJS = claswp_plus.$(SUFFIX) claswp_minus.$(SUFFIX)
+endif
+ifeq ($(BUILD_COMPLEX16),1)
 ZBLASOBJS = zlaswp_plus.$(SUFFIX) zlaswp_minus.$(SUFFIX)
+endif
 XBLASOBJS = xlaswp_plus.$(SUFFIX) xlaswp_minus.$(SUFFIX)
 
 slaswp_plus.$(SUFFIX)  slaswp_minus.$(SUFFIX)  dlaswp_plus.$(SUFFIX)  dlaswp_minus.$(SUFFIX) \

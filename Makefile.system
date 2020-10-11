@@ -9,7 +9,7 @@ ifndef TOPDIR
 TOPDIR = .
 endif
 
-# If ARCH is not set, we use the host system's architecture for getarch compile options.
+ # If ARCH is not set, we use the host system's architecture for getarch compile options.
 ifndef ARCH
 HOSTARCH := $(shell uname -m)
 else
@@ -73,6 +73,18 @@ endif
 #
 #  Beginning of system configuration
 #
+ifneq ($(BUILD_SINGLE),1)
+ifneq ($(BUILD_DOUBLE),1)
+ifneq ($(BUILD_COMPLEX),1)
+ifneq ($(BUILD_COMPLEX16),1)
+override BUILD_SINGLE=1
+override BUILD_DOUBLE=1
+override BUILD_COMPLEX=1
+override BUILD_COMPLEX16=1
+endif
+endif
+endif
+endif
 
 ifndef HOSTCC
 HOSTCC	 = $(CC)
@@ -1224,16 +1236,16 @@ ifeq ($(BUILD_HALF), 1)
 CCOMMON_OPT += -DBUILD_HALF
 endif
 ifeq ($(BUILD_SINGLE), 1)
-CCOMMON_OPT += -DBUILD_SINGLE
+CCOMMON_OPT += -DBUILD_SINGLE=1
 endif
 ifeq ($(BUILD_DOUBLE), 1)
-CCOMMON_OPT += -DBUILD_DOUBLE
+CCOMMON_OPT += -DBUILD_DOUBLE=1
 endif
 ifeq ($(BUILD_COMPLEX), 1)
-CCOMMON_OPT += -DBUILD_COMPLEX
+CCOMMON_OPT += -DBUILD_COMPLEX=1
 endif
 ifeq ($(BUILD_COMPLEX16), 1)
-CCOMMON_OPT += -DBUILD_COMPLEX16
+CCOMMON_OPT += -DBUILD_COMPLEX16=1
 endif
 
 CCOMMON_OPT += -DVERSION=\"$(VERSION)\"

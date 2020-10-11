@@ -100,8 +100,10 @@ SHKERNELOBJS	+= \
 	$(SHGEMMONCOPYOBJ) $(SHGEMMOTCOPYOBJ)
 endif
 
+ifneq "$(or $(BUILD_SINGLE),$(BUILD_DOUBLE),$(BUILD_COMPLEX))" ""
 SKERNELOBJS	+= \
 	sgemm_kernel$(TSUFFIX).$(SUFFIX) \
+	sgemm_beta$(TSUFFIX).$(SUFFIX) \
 	$(SGEMMINCOPYOBJ) $(SGEMMITCOPYOBJ) \
 	$(SGEMMONCOPYOBJ) $(SGEMMOTCOPYOBJ)
 
@@ -110,28 +112,36 @@ SKERNELOBJS += \
 	sgemm_direct$(TSUFFIX).$(SUFFIX) \
 	sgemm_direct_performant$(TSUFFIX).$(SUFFIX) 
 endif
+endif
 
+ifneq "$(or $(BUILD_DOUBLE),$(BUILD_COMPLEX16))" ""
 DKERNELOBJS	+= \
+	dgemm_beta$(TSUFFIX).$(SUFFIX) \
 	dgemm_kernel$(TSUFFIX).$(SUFFIX) \
 	$(DGEMMINCOPYOBJ) $(DGEMMITCOPYOBJ) \
 	$(DGEMMONCOPYOBJ) $(DGEMMOTCOPYOBJ)
+endif
 
 QKERNELOBJS	+= \
 	qgemm_kernel$(TSUFFIX).$(SUFFIX) \
 	$(QGEMMINCOPYOBJ) $(QGEMMITCOPYOBJ) \
 	$(QGEMMONCOPYOBJ) $(QGEMMOTCOPYOBJ)
 
+ifneq "$(or $(BUILD_COMPLEX),$(BUILD_COMPLEX16))" ""
 CKERNELOBJS	+= \
 	cgemm_kernel_n$(TSUFFIX).$(SUFFIX) cgemm_kernel_r$(TSUFFIX).$(SUFFIX) \
 	cgemm_kernel_l$(TSUFFIX).$(SUFFIX) cgemm_kernel_b$(TSUFFIX).$(SUFFIX) \
 	$(CGEMMINCOPYOBJ) $(CGEMMITCOPYOBJ) \
 	$(CGEMMONCOPYOBJ) $(CGEMMOTCOPYOBJ)
+endif
 
+ifeq ($(BUILD_COMPLEX16),1)
 ZKERNELOBJS	+= \
 	zgemm_kernel_n$(TSUFFIX).$(SUFFIX) zgemm_kernel_r$(TSUFFIX).$(SUFFIX) \
 	zgemm_kernel_l$(TSUFFIX).$(SUFFIX) zgemm_kernel_b$(TSUFFIX).$(SUFFIX) \
 	$(ZGEMMINCOPYOBJ) $(ZGEMMITCOPYOBJ) \
 	$(ZGEMMONCOPYOBJ) $(ZGEMMOTCOPYOBJ)
+endif
 
 XKERNELOBJS	+= \
 	xgemm_kernel_n$(TSUFFIX).$(SUFFIX) xgemm_kernel_r$(TSUFFIX).$(SUFFIX) \
@@ -153,38 +163,48 @@ ifeq ($(BUILD_HALF),1)
 SHBLASOBJS += shgemm_beta$(TSUFFIX).$(SUFFIX)
 endif
 
+ifneq "$(or $(BUILD_SINGLE),$(BUILD_DOUBLE))" ""
 SBLASOBJS	+= \
 	sgemm_beta$(TSUFFIX).$(SUFFIX) \
 	strmm_kernel_LN$(TSUFFIX).$(SUFFIX) strmm_kernel_LT$(TSUFFIX).$(SUFFIX) \
 	strmm_kernel_RN$(TSUFFIX).$(SUFFIX) strmm_kernel_RT$(TSUFFIX).$(SUFFIX) \
 	strsm_kernel_LN$(TSUFFIX).$(SUFFIX) strsm_kernel_LT$(TSUFFIX).$(SUFFIX) \
-	strsm_kernel_RN$(TSUFFIX).$(SUFFIX) strsm_kernel_RT$(TSUFFIX).$(SUFFIX) \
+	strsm_kernel_RN$(TSUFFIX).$(SUFFIX) strsm_kernel_RT$(TSUFFIX).$(SUFFIX) 
+endif
 
+ifeq ($(BUILD_DOUBLE),1)
 DBLASOBJS	+= \
 	dgemm_beta$(TSUFFIX).$(SUFFIX) \
 	dtrmm_kernel_LN$(TSUFFIX).$(SUFFIX) dtrmm_kernel_LT$(TSUFFIX).$(SUFFIX) \
 	dtrmm_kernel_RN$(TSUFFIX).$(SUFFIX) dtrmm_kernel_RT$(TSUFFIX).$(SUFFIX) \
 	dtrsm_kernel_LN$(TSUFFIX).$(SUFFIX) dtrsm_kernel_LT$(TSUFFIX).$(SUFFIX) \
-	dtrsm_kernel_RN$(TSUFFIX).$(SUFFIX) dtrsm_kernel_RT$(TSUFFIX).$(SUFFIX) \
+	dtrsm_kernel_RN$(TSUFFIX).$(SUFFIX) dtrsm_kernel_RT$(TSUFFIX).$(SUFFIX) 
+endif
 
 QBLASOBJS	+= \
 	qgemm_beta$(TSUFFIX).$(SUFFIX) \
 	qtrmm_kernel_LN$(TSUFFIX).$(SUFFIX) qtrmm_kernel_LT$(TSUFFIX).$(SUFFIX) \
 	qtrmm_kernel_RN$(TSUFFIX).$(SUFFIX) qtrmm_kernel_RT$(TSUFFIX).$(SUFFIX) \
 	qtrsm_kernel_LN$(TSUFFIX).$(SUFFIX) qtrsm_kernel_LT$(TSUFFIX).$(SUFFIX) \
-	qtrsm_kernel_RN$(TSUFFIX).$(SUFFIX) qtrsm_kernel_RT$(TSUFFIX).$(SUFFIX) \
+	qtrsm_kernel_RN$(TSUFFIX).$(SUFFIX) qtrsm_kernel_RT$(TSUFFIX).$(SUFFIX)
 
+ifeq ($(BUILD_COMPLEX),1)
 CBLASOBJS	+= \
-	cgemm_beta$(TSUFFIX).$(SUFFIX) \
 	ctrmm_kernel_LN$(TSUFFIX).$(SUFFIX) ctrmm_kernel_LT$(TSUFFIX).$(SUFFIX) \
 	ctrmm_kernel_LR$(TSUFFIX).$(SUFFIX) ctrmm_kernel_LC$(TSUFFIX).$(SUFFIX) \
 	ctrmm_kernel_RN$(TSUFFIX).$(SUFFIX) ctrmm_kernel_RT$(TSUFFIX).$(SUFFIX) \
-	ctrmm_kernel_RR$(TSUFFIX).$(SUFFIX) ctrmm_kernel_RC$(TSUFFIX).$(SUFFIX) \
+	ctrmm_kernel_RR$(TSUFFIX).$(SUFFIX) ctrmm_kernel_RC$(TSUFFIX).$(SUFFIX)
+endif
+ifneq "$(or $(BUILD_COMPLEX),$(BUILD_COMPLEX16))" ""
+CBLASOBJS	+= \
+	cgemm_beta$(TSUFFIX).$(SUFFIX) \
 	ctrsm_kernel_LN$(TSUFFIX).$(SUFFIX) ctrsm_kernel_LT$(TSUFFIX).$(SUFFIX) \
 	ctrsm_kernel_LR$(TSUFFIX).$(SUFFIX) ctrsm_kernel_LC$(TSUFFIX).$(SUFFIX) \
 	ctrsm_kernel_RN$(TSUFFIX).$(SUFFIX) ctrsm_kernel_RT$(TSUFFIX).$(SUFFIX) \
-	ctrsm_kernel_RR$(TSUFFIX).$(SUFFIX) ctrsm_kernel_RC$(TSUFFIX).$(SUFFIX) \
+	ctrsm_kernel_RR$(TSUFFIX).$(SUFFIX) ctrsm_kernel_RC$(TSUFFIX).$(SUFFIX) 
+endif
 
+ifeq ($(BUILD_COMPLEX16),1)
 ZBLASOBJS	+= \
 	zgemm_beta$(TSUFFIX).$(SUFFIX) \
 	ztrmm_kernel_LN$(TSUFFIX).$(SUFFIX) ztrmm_kernel_LT$(TSUFFIX).$(SUFFIX) \
@@ -194,7 +214,8 @@ ZBLASOBJS	+= \
 	ztrsm_kernel_LN$(TSUFFIX).$(SUFFIX) ztrsm_kernel_LT$(TSUFFIX).$(SUFFIX) \
 	ztrsm_kernel_LR$(TSUFFIX).$(SUFFIX) ztrsm_kernel_LC$(TSUFFIX).$(SUFFIX) \
 	ztrsm_kernel_RN$(TSUFFIX).$(SUFFIX) ztrsm_kernel_RT$(TSUFFIX).$(SUFFIX) \
-	ztrsm_kernel_RR$(TSUFFIX).$(SUFFIX) ztrsm_kernel_RC$(TSUFFIX).$(SUFFIX) \
+	ztrsm_kernel_RR$(TSUFFIX).$(SUFFIX) ztrsm_kernel_RC$(TSUFFIX).$(SUFFIX) 
+endif
 
 XBLASOBJS	+= \
 	xgemm_beta$(TSUFFIX).$(SUFFIX) \
@@ -205,7 +226,7 @@ XBLASOBJS	+= \
 	xtrsm_kernel_LN$(TSUFFIX).$(SUFFIX) xtrsm_kernel_LT$(TSUFFIX).$(SUFFIX) \
 	xtrsm_kernel_LR$(TSUFFIX).$(SUFFIX) xtrsm_kernel_LC$(TSUFFIX).$(SUFFIX) \
 	xtrsm_kernel_RN$(TSUFFIX).$(SUFFIX) xtrsm_kernel_RT$(TSUFFIX).$(SUFFIX) \
-	xtrsm_kernel_RR$(TSUFFIX).$(SUFFIX) xtrsm_kernel_RC$(TSUFFIX).$(SUFFIX) \
+	xtrsm_kernel_RR$(TSUFFIX).$(SUFFIX) xtrsm_kernel_RC$(TSUFFIX).$(SUFFIX) 
 
 ifeq ($(USE_GEMM3M), 1)
 
@@ -215,6 +236,7 @@ XBLASOBJS    +=  xgemm3m_kernel$(TSUFFIX).$(SUFFIX)
 
 endif
 
+ifeq ($(BUILD_SINGLE),1)
 SBLASOBJS += \
 	strmm_iunucopy$(TSUFFIX).$(SUFFIX) strmm_iunncopy$(TSUFFIX).$(SUFFIX) \
 	strmm_ilnucopy$(TSUFFIX).$(SUFFIX) strmm_ilnncopy$(TSUFFIX).$(SUFFIX) \
@@ -223,7 +245,10 @@ SBLASOBJS += \
 	strmm_ounucopy$(TSUFFIX).$(SUFFIX) strmm_ounncopy$(TSUFFIX).$(SUFFIX) \
 	strmm_olnucopy$(TSUFFIX).$(SUFFIX) strmm_olnncopy$(TSUFFIX).$(SUFFIX) \
 	strmm_outucopy$(TSUFFIX).$(SUFFIX) strmm_outncopy$(TSUFFIX).$(SUFFIX) \
-	strmm_oltucopy$(TSUFFIX).$(SUFFIX) strmm_oltncopy$(TSUFFIX).$(SUFFIX) \
+	strmm_oltucopy$(TSUFFIX).$(SUFFIX) strmm_oltncopy$(TSUFFIX).$(SUFFIX) 
+endif
+ifneq "$(or $(BUILD_SINGLE),$(BUILD_DOUBLE))" ""
+SBLASOBJS += \
 	strsm_iunucopy$(TSUFFIX).$(SUFFIX) strsm_iunncopy$(TSUFFIX).$(SUFFIX) \
 	strsm_ilnucopy$(TSUFFIX).$(SUFFIX) strsm_ilnncopy$(TSUFFIX).$(SUFFIX) \
 	strsm_iutucopy$(TSUFFIX).$(SUFFIX) strsm_iutncopy$(TSUFFIX).$(SUFFIX) \
@@ -231,10 +256,15 @@ SBLASOBJS += \
 	strsm_ounucopy$(TSUFFIX).$(SUFFIX) strsm_ounncopy$(TSUFFIX).$(SUFFIX) \
 	strsm_olnucopy$(TSUFFIX).$(SUFFIX) strsm_olnncopy$(TSUFFIX).$(SUFFIX) \
 	strsm_outucopy$(TSUFFIX).$(SUFFIX) strsm_outncopy$(TSUFFIX).$(SUFFIX) \
-	strsm_oltucopy$(TSUFFIX).$(SUFFIX) strsm_oltncopy$(TSUFFIX).$(SUFFIX) \
+	strsm_oltucopy$(TSUFFIX).$(SUFFIX) strsm_oltncopy$(TSUFFIX).$(SUFFIX) 
+endif
+ifeq ($(BUILD_SINGLE),1)
+SBLASOBJS += \
 	ssymm_iutcopy$(TSUFFIX).$(SUFFIX) ssymm_iltcopy$(TSUFFIX).$(SUFFIX) \
 	ssymm_outcopy$(TSUFFIX).$(SUFFIX) ssymm_oltcopy$(TSUFFIX).$(SUFFIX)
+endif
 
+ifeq ($(BUILD_DOUBLE),1)
 DBLASOBJS += \
 	dtrmm_iunucopy$(TSUFFIX).$(SUFFIX) dtrmm_iunncopy$(TSUFFIX).$(SUFFIX) \
 	dtrmm_ilnucopy$(TSUFFIX).$(SUFFIX) dtrmm_ilnncopy$(TSUFFIX).$(SUFFIX) \
@@ -254,6 +284,7 @@ DBLASOBJS += \
 	dtrsm_oltucopy$(TSUFFIX).$(SUFFIX) dtrsm_oltncopy$(TSUFFIX).$(SUFFIX) \
 	dsymm_iutcopy$(TSUFFIX).$(SUFFIX) dsymm_iltcopy$(TSUFFIX).$(SUFFIX) \
 	dsymm_outcopy$(TSUFFIX).$(SUFFIX) dsymm_oltcopy$(TSUFFIX).$(SUFFIX)
+endif
 
 QBLASOBJS += \
 	qtrmm_iunucopy$(TSUFFIX).$(SUFFIX) qtrmm_iunncopy$(TSUFFIX).$(SUFFIX) \
@@ -273,8 +304,9 @@ QBLASOBJS += \
 	qtrsm_outucopy$(TSUFFIX).$(SUFFIX) qtrsm_outncopy$(TSUFFIX).$(SUFFIX) \
 	qtrsm_oltucopy$(TSUFFIX).$(SUFFIX) qtrsm_oltncopy$(TSUFFIX).$(SUFFIX) \
 	qsymm_iutcopy$(TSUFFIX).$(SUFFIX) qsymm_iltcopy$(TSUFFIX).$(SUFFIX) \
-	qsymm_outcopy$(TSUFFIX).$(SUFFIX) qsymm_oltcopy$(TSUFFIX).$(SUFFIX) \
+	qsymm_outcopy$(TSUFFIX).$(SUFFIX) qsymm_oltcopy$(TSUFFIX).$(SUFFIX) 
 
+ifeq ($(BUILD_COMPLEX),1)
 CBLASOBJS += \
 	ctrmm_iunucopy$(TSUFFIX).$(SUFFIX) ctrmm_iunncopy$(TSUFFIX).$(SUFFIX) \
 	ctrmm_ilnucopy$(TSUFFIX).$(SUFFIX) ctrmm_ilnncopy$(TSUFFIX).$(SUFFIX) \
@@ -284,6 +316,13 @@ CBLASOBJS += \
 	ctrmm_olnucopy$(TSUFFIX).$(SUFFIX) ctrmm_olnncopy$(TSUFFIX).$(SUFFIX) \
 	ctrmm_outucopy$(TSUFFIX).$(SUFFIX) ctrmm_outncopy$(TSUFFIX).$(SUFFIX) \
 	ctrmm_oltucopy$(TSUFFIX).$(SUFFIX) ctrmm_oltncopy$(TSUFFIX).$(SUFFIX) \
+	csymm_iutcopy$(TSUFFIX).$(SUFFIX) csymm_iltcopy$(TSUFFIX).$(SUFFIX) \
+	csymm_outcopy$(TSUFFIX).$(SUFFIX) csymm_oltcopy$(TSUFFIX).$(SUFFIX) \
+	chemm_iutcopy$(TSUFFIX).$(SUFFIX) chemm_iltcopy$(TSUFFIX).$(SUFFIX) \
+	chemm_outcopy$(TSUFFIX).$(SUFFIX) chemm_oltcopy$(TSUFFIX).$(SUFFIX)
+endif
+ifneq "$(or $(BUILD_COMPLEX),$(BUILD_COMPLEX16))" ""
+CBLASOBJS += \
 	ctrsm_iunucopy$(TSUFFIX).$(SUFFIX) ctrsm_iunncopy$(TSUFFIX).$(SUFFIX) \
 	ctrsm_ilnucopy$(TSUFFIX).$(SUFFIX) ctrsm_ilnncopy$(TSUFFIX).$(SUFFIX) \
 	ctrsm_iutucopy$(TSUFFIX).$(SUFFIX) ctrsm_iutncopy$(TSUFFIX).$(SUFFIX) \
@@ -291,12 +330,10 @@ CBLASOBJS += \
 	ctrsm_ounucopy$(TSUFFIX).$(SUFFIX) ctrsm_ounncopy$(TSUFFIX).$(SUFFIX) \
 	ctrsm_olnucopy$(TSUFFIX).$(SUFFIX) ctrsm_olnncopy$(TSUFFIX).$(SUFFIX) \
 	ctrsm_outucopy$(TSUFFIX).$(SUFFIX) ctrsm_outncopy$(TSUFFIX).$(SUFFIX) \
-	ctrsm_oltucopy$(TSUFFIX).$(SUFFIX) ctrsm_oltncopy$(TSUFFIX).$(SUFFIX) \
-	csymm_iutcopy$(TSUFFIX).$(SUFFIX) csymm_iltcopy$(TSUFFIX).$(SUFFIX) \
-	csymm_outcopy$(TSUFFIX).$(SUFFIX) csymm_oltcopy$(TSUFFIX).$(SUFFIX) \
-	chemm_iutcopy$(TSUFFIX).$(SUFFIX) chemm_iltcopy$(TSUFFIX).$(SUFFIX) \
-	chemm_outcopy$(TSUFFIX).$(SUFFIX) chemm_oltcopy$(TSUFFIX).$(SUFFIX)
+	ctrsm_oltucopy$(TSUFFIX).$(SUFFIX) ctrsm_oltncopy$(TSUFFIX).$(SUFFIX) 
+endif
 
+ifeq ($(BUILD_COMPLEX16),1)
 ZBLASOBJS += \
 	ztrmm_iunucopy$(TSUFFIX).$(SUFFIX) ztrmm_iunncopy$(TSUFFIX).$(SUFFIX) \
 	ztrmm_ilnucopy$(TSUFFIX).$(SUFFIX) ztrmm_ilnncopy$(TSUFFIX).$(SUFFIX) \
@@ -318,6 +355,7 @@ ZBLASOBJS += \
 	zsymm_outcopy$(TSUFFIX).$(SUFFIX) zsymm_oltcopy$(TSUFFIX).$(SUFFIX) \
 	zhemm_iutcopy$(TSUFFIX).$(SUFFIX) zhemm_iltcopy$(TSUFFIX).$(SUFFIX) \
 	zhemm_outcopy$(TSUFFIX).$(SUFFIX) zhemm_oltcopy$(TSUFFIX).$(SUFFIX)
+endif
 
 XBLASOBJS += \
 	xtrmm_iunucopy$(TSUFFIX).$(SUFFIX) xtrmm_iunncopy$(TSUFFIX).$(SUFFIX) \
@@ -343,6 +381,7 @@ XBLASOBJS += \
 
 ifeq ($(USE_GEMM3M), 1)
 
+ifeq ($(BUILD_COMPLEX),1)
 CBLASOBJS += \
 	cgemm3m_incopyb$(TSUFFIX).$(SUFFIX) cgemm3m_itcopyb$(TSUFFIX).$(SUFFIX) \
 	cgemm3m_incopyr$(TSUFFIX).$(SUFFIX) cgemm3m_itcopyr$(TSUFFIX).$(SUFFIX) \
@@ -362,7 +401,9 @@ CBLASOBJS += \
 	chemm3m_ilcopyb$(TSUFFIX).$(SUFFIX) chemm3m_olcopyb$(TSUFFIX).$(SUFFIX) \
 	chemm3m_ilcopyr$(TSUFFIX).$(SUFFIX) chemm3m_olcopyr$(TSUFFIX).$(SUFFIX) \
 	chemm3m_ilcopyi$(TSUFFIX).$(SUFFIX) chemm3m_olcopyi$(TSUFFIX).$(SUFFIX)
+endif
 
+ifeq ($(BUILD_COMPLEX16),1)
 ZBLASOBJS += \
 	zgemm3m_incopyb$(TSUFFIX).$(SUFFIX) zgemm3m_itcopyb$(TSUFFIX).$(SUFFIX) \
 	zgemm3m_incopyr$(TSUFFIX).$(SUFFIX) zgemm3m_itcopyr$(TSUFFIX).$(SUFFIX) \
@@ -382,6 +423,7 @@ ZBLASOBJS += \
 	zhemm3m_ilcopyb$(TSUFFIX).$(SUFFIX) zhemm3m_olcopyb$(TSUFFIX).$(SUFFIX) \
 	zhemm3m_ilcopyr$(TSUFFIX).$(SUFFIX) zhemm3m_olcopyr$(TSUFFIX).$(SUFFIX) \
 	zhemm3m_ilcopyi$(TSUFFIX).$(SUFFIX) zhemm3m_olcopyi$(TSUFFIX).$(SUFFIX)
+endif
 
 XBLASOBJS += \
 	xgemm3m_incopyb$(TSUFFIX).$(SUFFIX) xgemm3m_itcopyb$(TSUFFIX).$(SUFFIX) \
@@ -406,20 +448,25 @@ XBLASOBJS += \
 endif
 
 ######  BLAS extensions #####
+
+ifeq ($(BUILD_SINGLE),1)
 SBLASOBJS += \
 	somatcopy_k_cn$(TSUFFIX).$(SUFFIX) somatcopy_k_rn$(TSUFFIX).$(SUFFIX) \
 	somatcopy_k_ct$(TSUFFIX).$(SUFFIX) somatcopy_k_rt$(TSUFFIX).$(SUFFIX) \
 	simatcopy_k_cn$(TSUFFIX).$(SUFFIX) simatcopy_k_rn$(TSUFFIX).$(SUFFIX) \
 	simatcopy_k_ct$(TSUFFIX).$(SUFFIX) simatcopy_k_rt$(TSUFFIX).$(SUFFIX) \
 	sgeadd_k$(TSUFFIX).$(SUFFIX) 
-
+endif
+ifeq ($(BUILD_DOUBLE),1)
 DBLASOBJS += \
 	domatcopy_k_cn$(TSUFFIX).$(SUFFIX) domatcopy_k_rn$(TSUFFIX).$(SUFFIX) \
 	domatcopy_k_ct$(TSUFFIX).$(SUFFIX) domatcopy_k_rt$(TSUFFIX).$(SUFFIX) \
 	dimatcopy_k_cn$(TSUFFIX).$(SUFFIX) dimatcopy_k_rn$(TSUFFIX).$(SUFFIX) \
 	dimatcopy_k_ct$(TSUFFIX).$(SUFFIX) dimatcopy_k_rt$(TSUFFIX).$(SUFFIX) \
 	dgeadd_k$(TSUFFIX).$(SUFFIX) 
+endif
 
+ifeq ($(BUILD_COMPLEX),1)
 CBLASOBJS += \
 	comatcopy_k_cn$(TSUFFIX).$(SUFFIX) comatcopy_k_rn$(TSUFFIX).$(SUFFIX) \
 	comatcopy_k_ct$(TSUFFIX).$(SUFFIX) comatcopy_k_rt$(TSUFFIX).$(SUFFIX) \
@@ -430,7 +477,9 @@ CBLASOBJS += \
 	cimatcopy_k_cnc$(TSUFFIX).$(SUFFIX) cimatcopy_k_rnc$(TSUFFIX).$(SUFFIX) \
 	cimatcopy_k_ctc$(TSUFFIX).$(SUFFIX) cimatcopy_k_rtc$(TSUFFIX).$(SUFFIX) \
 	cgeadd_k$(TSUFFIX).$(SUFFIX) 
+endif
 
+ifeq ($(BUILD_COMPLEX16),1)
 ZBLASOBJS += \
 	zomatcopy_k_cn$(TSUFFIX).$(SUFFIX) zomatcopy_k_rn$(TSUFFIX).$(SUFFIX) \
 	zomatcopy_k_ct$(TSUFFIX).$(SUFFIX) zomatcopy_k_rt$(TSUFFIX).$(SUFFIX) \
@@ -441,6 +490,7 @@ ZBLASOBJS += \
 	zimatcopy_k_cnc$(TSUFFIX).$(SUFFIX) zimatcopy_k_rnc$(TSUFFIX).$(SUFFIX) \
 	zimatcopy_k_ctc$(TSUFFIX).$(SUFFIX) zimatcopy_k_rtc$(TSUFFIX).$(SUFFIX) \
 	zgeadd_k$(TSUFFIX).$(SUFFIX) 
+endif
 
 ifeq ($(BUILD_HALF), 1)
 SHGEMMINCOPYOBJ_P = $(SHGEMMINCOPYOBJ:.$(SUFFIX)=.$(PSUFFIX))

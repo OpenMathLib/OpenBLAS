@@ -32,7 +32,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 **********************************************************************************/
 
 #include "openblas_utest.h"
-
+#if defined(BUILD_SINGLE) && defined(BUILD_DOUBLE)
 CTEST(dsdot,dsdot_n_1)
 {
 	float x= 0.172555164F;
@@ -47,17 +47,4 @@ CTEST(dsdot,dsdot_n_1)
 	ASSERT_DBL_NEAR_TOL(res2, res1, DOUBLE_EPS);
 
 }
-
-CTEST(dsdot,dsdot_n_2)
-{
-	float x[] = {0.1F, 0.2F, 0.3F, 0.4F, 0.5F, 0.6F, 0.7F, 0.8F};
-	float y[] = {0.1F, 0.2F, 0.3F, 0.4F, 0.5F, 0.6F, 0.7F, 0.8F};
-	blasint incx=1;
-	blasint incy=1;
-	blasint n=8;
-
-	double res1=0.0f, res2= 2.0400000444054616;
-
-	res1=BLASFUNC(dsdot)(&n, &x, &incx, &y, &incy);
-	ASSERT_DBL_NEAR_TOL(res2, res1, DOUBLE_EPS);
-}
+#endif
