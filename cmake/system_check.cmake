@@ -121,6 +121,6 @@ endif()
 
 include(CheckIncludeFile)
 CHECK_INCLUDE_FILE("stdatomic.h" HAVE_C11)
-if (HAVE_C11)
+if (HAVE_C11 EQUAL 1)
 set (CCOMMON_OPT "${CCOMMON_OPT} -DHAVE_C11")
 endif()

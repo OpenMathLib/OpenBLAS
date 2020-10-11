@@ -146,9 +146,6 @@ ifneq ($(NO_CBLAS), 1)
 ifeq ($(CPP_THREAD_SAFETY_TEST), 1)
 	$(MAKE) -C cpp_thread_test all
 endif
-ifeq ($(CPP_THREAD_SAFETY_GEMV), 1)
-	$(MAKE) -C cpp_thread_test dgemv_tester
-endif
 endif
 endif
 
