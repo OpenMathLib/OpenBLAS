@@ -26,7 +26,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 **********************************************************************************/
 #include "common.h"
 #include <altivec.h>
-#if defined(HALF) && defined(HALFCONVERSION)
+#if defined(BFLOAT16) && defined(BFLOAT16CONVERSION)
 static float
 bfloat16tof32 (bfloat16 f16)
 {
@@ -131,7 +131,7 @@ vector char mask =
 
 #define PREFETCH1(x, y) asm volatile ("dcbt %0, %1" : : "r" (x), "b" (y) : "memory");
 /*************************************************************************************
-* SHGEMM Kernel
+* SBGEMM Kernel
 *************************************************************************************/
 int
 CNAME (BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alpha, IFLOAT * A,
