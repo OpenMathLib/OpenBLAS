@@ -486,3 +486,11 @@ XTRSMKERNEL_RN	=  xtrsm_kernel_LT_1x1.S
 XTRSMKERNEL_RT	=  xtrsm_kernel_LT_1x1.S
 
 XGEMM3MKERNEL    =  xgemm3m_kernel_2x2.S
+
+ifeq ($(OSNAME),WINNT)
+SSUMKERNEL = ../arm/sum.c
+DSUMKERNEL = ../arm/sum.c
+CSUMKERNEL = ../arm/zsum.c
+ZSUMKERNEL = ../arm/zsum.c
+endif
+
