@@ -1502,6 +1502,10 @@ void CONSTRUCTOR gotoblas_init(void) {
    gotoblas_memory_init();
 #endif
 
+#if defined(OS_WINDOWS) && defined(HAVE_MMX)
+	__asm__ __volatile__ ("emms");
+#endif
+
 //#if defined(OS_LINUX)
 #if 0
    struct rlimit curlimit;
@@ -3104,6 +3108,9 @@ void CONSTRUCTOR gotoblas_init(void) {
    gotoblas_memory_init();
 #endif
 
+#if defined(OS_WINDOWS) && defined(HAVE_MMX)
+  __asm__ __volatile__ ("emms");
+#endif
 //#if defined(OS_LINUX)
 #if 0
   struct rlimit curlimit;
