@@ -59,7 +59,10 @@
 
 	PROLOGUE
 	PROFCODE
-	fninit
+
+#ifdef WINDOWS_ABI
+	emms
+#endif
 
 	salq	$BASE_SHIFT, INCX
 

@@ -50,7 +50,10 @@
 	PROLOGUE
 	PROFCODE
 	
-	fninit
+#ifdef WINDOWS_ABI
+	emms
+#endif
+
 	fldz
 	testq	M, M
 	jle	.L999

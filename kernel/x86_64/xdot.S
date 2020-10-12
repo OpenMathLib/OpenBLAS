@@ -59,7 +59,9 @@
 
 	PROFCODE
 
-	fninit
+#ifdef WINDOWS_ABI
+	emms
+#endif
 
 
 #define N	%ebx

@@ -97,7 +97,9 @@
 	PROLOGUE
 	PROFCODE
 
-	fninit
+#ifdef WINDOWS_ABI
+	emms
+#endif
 
 	subq	$STACKSIZE, %rsp
 	movq	%rbx,  0(%rsp)

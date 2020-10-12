@@ -58,7 +58,9 @@
 
 	PROLOGUE
 
-	fninit
+#ifdef WINDOWS_ABI
+	emms
+#endif
 
 	pushl	%edi
 	pushl	%esi
