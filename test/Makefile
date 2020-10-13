@@ -7,39 +7,21 @@ all ::
 else
 all :: level1 level2 level3
 endif
-ifeq ($(BUILD_SINGLE)x$(BUILD_DOUBLE)x$(BUILD_COMPLEX)x$(BUILD_COMPLEX16),1x1x1x1)
-level1: sblat1 dblat1 cblat1 zblat1
+
+ifeq ($(BUILD_SINGLE),1)
+S1=sblat1
 endif
-ifeq ($(BUILD_SINGLE)x$(BUILD_DOUBLE)x$(BUILD_COMPLEX)x$(BUILD_COMPLEX16),x1x1x1)
-level1: dblat1 cblat1 zblat1
+ifeq ($(BUILD_DOUBLE),1)
+D1=dblat1
 endif
-ifeq ($(BUILD_SINGLE)x$(BUILD_DOUBLE)x$(BUILD_COMPLEX)x$(BUILD_COMPLEX16),1xx1x1)
-level1: sblat1 cblat1 zblat1
+ifeq ($(BUILD_COMPLEX),1)
+C1=cblat1
 endif
-ifeq ($(BUILD_SINGLE)x$(BUILD_DOUBLE)x$(BUILD_COMPLEX)x$(BUILD_COMPLEX16),xx1x1)
-level1:  cblat1 zblat1
+ifeq ($(BUILD_COMPLEX16),1)
+Z1=zblat1
 endif
-ifeq ($(BUILD_SINGLE)x$(BUILD_DOUBLE)x$(BUILD_COMPLEX)x$(BUILD_COMPLEX16),xx1x)
-level1:  cblat1
-endif
-ifeq ($(BUILD_SINGLE)x$(BUILD_DOUBLE)x$(BUILD_COMPLEX)x$(BUILD_COMPLEX16),xxx1)
-level1:  zblat1
-endif
-ifeq ($(BUILD_SINGLE)x$(BUILD_DOUBLE)x$(BUILD_COMPLEX)x$(BUILD_COMPLEX16),1xxx1)
-level1: sblat1 zblat1
-endif
-ifeq ($(BUILD_SINGLE)x$(BUILD_DOUBLE)x$(BUILD_COMPLEX)x$(BUILD_COMPLEX16),1x1xx1)
-level1: sblat1 dblat1 zblat1
-endif
-ifeq ($(BUILD_SINGLE)x$(BUILD_DOUBLE)x$(BUILD_COMPLEX)x$(BUILD_COMPLEX16),1x1xx)
-level1: sblat1 dblat1
-endif
-ifeq ($(BUILD_SINGLE)x$(BUILD_DOUBLE)x$(BUILD_COMPLEX)x$(BUILD_COMPLEX16),1xxx)
-level1: sblat1
-endif
-ifeq ($(BUILD_SINGLE)x$(BUILD_DOUBLE)x$(BUILD_COMPLEX)x$(BUILD_COMPLEX16),x1xx)
-level1: dblat1
-endif
+
+level1: $(S1) $(D1) $(C1) $(Z1)
 
 ifndef CROSS
 ifeq ($(BUILD_SINGLE),1)
@@ -85,40 +67,21 @@ endif
 endif
 endif
 
-#level2: sblat2 dblat2 cblat2 zblat2
-ifeq ($(BUILD_SINGLE)x$(BUILD_DOUBLE)x$(BUILD_COMPLEX)x$(BUILD_COMPLEX16),1x1x1x1)
-level2: sblat2 dblat2 cblat2 zblat2
+ifeq ($(BUILD_SINGLE),1)
+S2=sblat2
 endif
-ifeq ($(BUILD_SINGLE)x$(BUILD_DOUBLE)x$(BUILD_COMPLEX)x$(BUILD_COMPLEX16),x1x1x1)
-level2: dblat2 cblat2 zblat2
+ifeq ($(BUILD_DOUBLE),1)
+D2=dblat2
 endif
-ifeq ($(BUILD_SINGLE)x$(BUILD_DOUBLE)x$(BUILD_COMPLEX)x$(BUILD_COMPLEX16),1xx1x1)
-level2: sblat2 cblat2 zblat2
+ifeq ($(BUILD_COMPLEX),1)
+C2=cblat2
 endif
-ifeq ($(BUILD_SINGLE)x$(BUILD_DOUBLE)x$(BUILD_COMPLEX)x$(BUILD_COMPLEX16),xx1x1)
-level2:  cblat2 zblat2
+ifeq ($(BUILD_COMPLEX16),1)
+Z2=zblat2
 endif
-ifeq ($(BUILD_SINGLE)x$(BUILD_DOUBLE)x$(BUILD_COMPLEX)x$(BUILD_COMPLEX16),xx1x)
-level2:  cblat2
-endif
-ifeq ($(BUILD_SINGLE)x$(BUILD_DOUBLE)x$(BUILD_COMPLEX)x$(BUILD_COMPLEX16),xxx1)
-level2:  zblat2
-endif
-ifeq ($(BUILD_SINGLE)x$(BUILD_DOUBLE)x$(BUILD_COMPLEX)x$(BUILD_COMPLEX16),1xxx1)
-level2: sblat2 zblat2
-endif
-ifeq ($(BUILD_SINGLE)x$(BUILD_DOUBLE)x$(BUILD_COMPLEX)x$(BUILD_COMPLEX16),1x1xx1)
-level2: sblat2 dblat2 zblat2
-endif
-ifeq ($(BUILD_SINGLE)x$(BUILD_DOUBLE)x$(BUILD_COMPLEX)x$(BUILD_COMPLEX16),1x1xx)
-level2: sblat2 dblat2
-endif
-ifeq ($(BUILD_SINGLE)x$(BUILD_DOUBLE)x$(BUILD_COMPLEX)x$(BUILD_COMPLEX16),1xxx)
-level2: sblat2
-endif
-ifeq ($(BUILD_SINGLE)x$(BUILD_DOUBLE)x$(BUILD_COMPLEX)x$(BUILD_COMPLEX16),x1xx)
-level2: dblat2
-endif
+
+level2: $(S2) $(D2) $(C2) $(Z2)
+
 
 ifndef CROSS
 	rm -f ?BLAT2.SUMM
@@ -178,53 +141,30 @@ endif
 endif
 endif
 
-ifeq ($(BUILD_SINGLE)x$(BUILD_DOUBLE)x$(BUILD_COMPLEX)x$(BUILD_COMPLEX16),1x1x1x1)
-level3: sblat3 dblat3 cblat3 zblat3
+ifeq ($(BUILD_BFLOAT16),1)
+B3= test_sbgemm
 endif
-ifeq ($(BUILD_SINGLE)x$(BUILD_DOUBLE)x$(BUILD_COMPLEX)x$(BUILD_COMPLEX16),x1x1x1)
-level3: dblat3 cblat3 zblat3
+ifeq ($(BUILD_SINGLE),1)
+S3=sblat3
 endif
-ifeq ($(BUILD_SINGLE)x$(BUILD_DOUBLE)x$(BUILD_COMPLEX)x$(BUILD_COMPLEX16),1xx1x1)
-level3: sblat3 cblat3 zblat3
+ifeq ($(BUILD_DOUBLE),1)
+D3=dblat3
 endif
-ifeq ($(BUILD_SINGLE)x$(BUILD_DOUBLE)x$(BUILD_COMPLEX)x$(BUILD_COMPLEX16),xx1x1)
-level3:  cblat3 zblat3
+ifeq ($(BUILD_COMPLEX),1)
+C3=cblat3
 endif
-ifeq ($(BUILD_SINGLE)x$(BUILD_DOUBLE)x$(BUILD_COMPLEX)x$(BUILD_COMPLEX16),xx1x)
-level3:  cblat3
-endif
-ifeq ($(BUILD_SINGLE)x$(BUILD_DOUBLE)x$(BUILD_COMPLEX)x$(BUILD_COMPLEX16),xxx1)
-level3:  zblat3
-endif
-ifeq ($(BUILD_SINGLE)x$(BUILD_DOUBLE)x$(BUILD_COMPLEX)x$(BUILD_COMPLEX16),1xxx1)
-level3: sblat3 zblat3
-endif
-ifeq ($(BUILD_SINGLE)x$(BUILD_DOUBLE)x$(BUILD_COMPLEX)x$(BUILD_COMPLEX16),1x1xx1)
-level3: sblat3 dblat3 zblat3
-endif
-ifeq ($(BUILD_SINGLE)x$(BUILD_DOUBLE)x$(BUILD_COMPLEX)x$(BUILD_COMPLEX16),1x1xx)
-level3: sblat3 dblat3
-endif
-ifeq ($(BUILD_SINGLE)x$(BUILD_DOUBLE)x$(BUILD_COMPLEX)x$(BUILD_COMPLEX16),1xxx)
-level3: sblat3
-endif
-ifeq ($(BUILD_SINGLE)x$(BUILD_DOUBLE)x$(BUILD_COMPLEX)x$(BUILD_COMPLEX16),x1xx)
-level3: dblat3
+ifeq ($(BUILD_COMPLEX16),1)
+Z3=zblat3
 endif
 
+level3: $(B3) $(S3) $(D3) $(C3) $(Z3)
 
-
-#ifeq ($(BUILD_BFLOAT16),1)
-#level3 : test_sbgemm sblat3 dblat3 cblat3 zblat3
-#else
-#level3 : sblat3 dblat3 cblat3 zblat3
-#endif
 
 ifndef CROSS
 	rm -f ?BLAT3.SUMM
 ifeq ($(BUILD_BFLOAT16),1)
-	OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 ./test_sbgemm > SHBLAT3.SUMM
-	@$(GREP) -q FATAL SHBLAT3.SUMM && cat SHBLAT3.SUMM || exit 0
+	OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 ./test_sbgemm > SBBLAT3.SUMM
+	@$(GREP) -q FATAL SBBLAT3.SUMM && cat SBBLAT3.SUMM || exit 0
 endif
 ifeq ($(BUILD_SINGLE),1)
 	OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 ./sblat3 < ./sblat3.dat
@@ -246,8 +186,8 @@ ifdef SMP
 	rm -f ?BLAT3.SUMM
 ifeq ($(USE_OPENMP), 1)
 ifeq ($(BUILD_BFLOAT16),1)
-	OMP_NUM_THREADS=2 ./test_sbgemm > SHBLAT3.SUMM
-	@$(GREP) -q FATAL SHBLAT3.SUMM && cat SHBLAT3.SUMM || exit 0
+	OMP_NUM_THREADS=2 ./test_sbgemm > SBBLAT3.SUMM
+	@$(GREP) -q FATAL SBBLAT3.SUMM && cat SBBLAT3.SUMM || exit 0
 endif
 ifeq ($(BUILD_SINGLE),1)
 	OMP_NUM_THREADS=2 ./sblat3 < ./sblat3.dat
@@ -267,8 +207,8 @@ ifeq ($(BUILD_COMPLEX16),1)
 endif
 else
 ifeq ($(BUILD_BFLOAT16),1)
-	OPENBLAS_NUM_THREADS=2 ./test_sbgemm > SHBLAT3.SUMM
-	@$(GREP) -q FATAL SHBLAT3.SUMM && cat SHBLAT3.SUMM || exit 0
+	OPENBLAS_NUM_THREADS=2 ./test_sbgemm > SBBLAT3.SUMM
+	@$(GREP) -q FATAL SBBLAT3.SUMM && cat SBBLAT3.SUMM || exit 0
 endif
 ifeq ($(BUILD_SINGLE),1)
 	OPENBLAS_NUM_THREADS=2 ./sblat3 < ./sblat3.dat
