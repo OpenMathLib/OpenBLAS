@@ -12,6 +12,10 @@ ifdef HAVE_SSE3
 ifndef DYNAMIC_ARCH
 CCOMMON_OPT += -msse3
 FCOMMON_OPT += -msse3
+ifdef HAVE_SSSE3
+CCOMMON_OPT += -mssse3
+FCOMMON_OPT += -mssse3
+endif
 endif
 endif
 
