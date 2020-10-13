@@ -531,11 +531,11 @@ XBLASOBJS	+= \
 	xscal_k$(TSUFFIX).$(SUFFIX) xswap_k$(TSUFFIX).$(SUFFIX) xsum_k$(TSUFFIX).$(SUFFIX)
 
 ifeq ($(BUILD_BFLOAT16),1)
-SHBLASOBJS	+= \
+SBBLASOBJS	+= \
 	 sbdot_k$(TSUFFIX).$(SUFFIX)
-SHEXTOBJS        += \
+SBEXTOBJS        += \
 	 sbstobf16_k$(TSUFFIX).$(SUFFIX) sbdtobf16_k$(TSUFFIX).$(SUFFIX)
-SHEXTOBJS        += \
+SBEXTOBJS        += \
 	 sbf16tos_k$(TSUFFIX).$(SUFFIX) dbf16tod_k$(TSUFFIX).$(SUFFIX)
 endif
 
