@@ -214,9 +214,11 @@ endif
 
 
 
-ifeq ($(BUILD_BFLOAT16),1)
-level3 : test_sbgemm
-endif
+#ifeq ($(BUILD_BFLOAT16),1)
+#level3 : test_sbgemm sblat3 dblat3 cblat3 zblat3
+#else
+#level3 : sblat3 dblat3 cblat3 zblat3
+#endif
 
 ifndef CROSS
 	rm -f ?BLAT3.SUMM
