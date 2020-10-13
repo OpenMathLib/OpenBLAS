@@ -257,7 +257,7 @@ typedef long BLASLONG;
 typedef unsigned long BLASULONG;
 #endif
 
-#ifndef BFLOAT16
+#ifndef bfloat16
 #include <stdint.h>
 typedef uint16_t bfloat16;
 #define BFLOAT16CONVERSION 1
