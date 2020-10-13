@@ -646,9 +646,9 @@
 
 #elif defined(BFLOAT16)
 
-#define  D_TO_BF16_K    SHDTOBF16_K
+#define  D_TO_BF16_K    SBDTOBF16_K
 #define  D_BF16_TO_K    DBF16TOD_K
-#define  S_TO_BF16_K    SHSTOBF16_K
+#define  S_TO_BF16_K    SBSTOBF16_K
 #define  S_BF16_TO_K    SBF16TOS_K
 
 #define	AMAX_K			SAMAX_K

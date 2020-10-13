@@ -283,9 +283,9 @@ CSBLAS3OBJS   = \
 	cblas_sgeadd.$(SUFFIX)
 
 ifeq ($(BUILD_BFLOAT16),1)
-CBHBLAS1OBJS = cblas_sbdot.$(SUFFIX)
-CBHBLAS3OBJS = cblas_sbgemm.$(SUFFIX)
-CBHEXTOBJS   = cblas_sbstobf16.$(SUFFIX) cblas_sbdtobf16.$(SUFFIX) cblas_sbf16tos.$(SUFFIX) cblas_dbf16tod.$(SUFFIX)
+CSBBLAS1OBJS = cblas_sbdot.$(SUFFIX)
+CSBBLAS3OBJS = cblas_sbgemm.$(SUFFIX)
+CSBEXTOBJS   = cblas_sbstobf16.$(SUFFIX) cblas_sbdtobf16.$(SUFFIX) cblas_sbf16tos.$(SUFFIX) cblas_dbf16tod.$(SUFFIX)
 endif
 
 CDBLAS1OBJS   = \
@@ -535,19 +535,19 @@ endif
 clean ::
 	@rm -f functable.h
 
-level1 : $(BEXTOBJS) $(SHBLAS1OBJS) $(SBLAS1OBJS) $(DBLAS1OBJS) $(QBLAS1OBJS) $(CBLAS1OBJS) $(ZBLAS1OBJS) $(XBLAS1OBJS)
+level1 : $(SBEXTOBJS) $(SBBLAS1OBJS) $(SBLAS1OBJS) $(DBLAS1OBJS) $(QBLAS1OBJS) $(CBLAS1OBJS) $(ZBLAS1OBJS) $(XBLAS1OBJS)
 	$(AR) $(ARFLAGS) -ru $(TOPDIR)/$(LIBNAME) $^
 
 level2 : $(SBLAS2OBJS) $(DBLAS2OBJS) $(QBLAS2OBJS) $(CBLAS2OBJS) $(ZBLAS2OBJS) $(XBLAS2OBJS)
 	$(AR) $(ARFLAGS) -ru $(TOPDIR)/$(LIBNAME) $^
 
-level3 : $(SHBLAS3OBJS) $(SBLAS3OBJS) $(DBLAS3OBJS) $(QBLAS3OBJS) $(CBLAS3OBJS) $(ZBLAS3OBJS) $(XBLAS3OBJS) 
+level3 : $(SBBLAS3OBJS) $(SBLAS3OBJS) $(DBLAS3OBJS) $(QBLAS3OBJS) $(CBLAS3OBJS) $(ZBLAS3OBJS) $(XBLAS3OBJS) 
 	$(AR) $(ARFLAGS) -ru $(TOPDIR)/$(LIBNAME) $^
 
 aux :	$(CBAUXOBJS)
 	$(AR) $(ARFLAGS) -ru $(TOPDIR)/$(LIBNAME) $^
 
-$(CSHBLASOBJS) $(CSHBLASOBJS_P) $(CSBLASOBJS) $(CSBLASOBJS_P) $(CDBLASOBJS) $(CDBLASOBJS_P) $(CQBLASOBJS) $(CQBLASOBJS_P) \
+$(CSBBLASOBJS) $(CSBBLASOBJS_P) $(CSBLASOBJS) $(CSBLASOBJS_P) $(CDBLASOBJS) $(CDBLASOBJS_P) $(CQBLASOBJS) $(CQBLASOBJS_P) \
 $(CCBLASOBJS) $(CCBLASOBJS_P) $(CZBLASOBJS) $(CZBLASOBJS_P) $(CXBLASOBJS) $(CXBLASOBJS_P) $(CBAUXOBJS_P) : override CFLAGS += -DCBLAS
 
 srot.$(SUFFIX) srot.$(PSUFFIX) : rot.c
@@ -775,9 +775,9 @@ dsdot.$(SUFFIX) dsdot.$(PSUFFIX) : dsdot.c
 ifeq ($(BUILD_BFLOAT16),1)
 sbdot.$(SUFFIX) sbdot.$(PSUFFIX) : bf16dot.c
 	$(CC) $(CFLAGS) -c $< -o $(@F)
-shstobf16.$(SUFFIX) shstobf16.$(PSUFFIX) : tobf16.c
+sbstobf16.$(SUFFIX) sbstobf16.$(PSUFFIX) : tobf16.c
 	$(CC) $(CFLAGS) -DSINGLE_PREC -UDOUBLE_PREC -c $< -o $(@F)
-shdtobf16.$(SUFFIX) shdtobf16.$(PSUFFIX) : tobf16.c
+sbdtobf16.$(SUFFIX) sbdtobf16.$(PSUFFIX) : tobf16.c
 	$(CC) $(CFLAGS) -USINGLE_PREC -DDOUBLE_PREC -c $< -o $(@F)
 sbf16tos.$(SUFFIX)  sbf16tos.$(PSUFFIX) : bf16to.c
 	$(CC) $(CFLAGS) -DSINGLE_PREC -UDOUBLE_PREC -c $< -o $(@F)
@@ -1526,9 +1526,9 @@ cblas_dsdot.$(SUFFIX) cblas_dsdot.$(PSUFFIX) : dsdot.c
 ifeq ($(BUILD_BFLOAT16),1)
 cblas_sbdot.$(SUFFIX) cblas_sbdot.$(PSUFFIX) : bf16dot.c
 	$(CC) $(CFLAGS) -DCBLAS -c $< -o $(@F)
-cblas_shstobf16.$(SUFFIX) cblas_shstobf16.$(PSUFFIX) : tobf16.c
+cblas_sbstobf16.$(SUFFIX) cblas_sbstobf16.$(PSUFFIX) : tobf16.c
 	$(CC) $(CFLAGS) -DCBLAS -DSINGLE_PREC -UDOUBLE_PREC -c $< -o $(@F)
-cblas_shdtobf16.$(SUFFIX) cblas_shdtobf16.$(PSUFFIX) : tobf16.c
+cblas_sbdtobf16.$(SUFFIX) cblas_sbdtobf16.$(PSUFFIX) : tobf16.c
 	$(CC) $(CFLAGS) -DCBLAS -USINGLE_PREC -DDOUBLE_PREC -c $< -o $(@F)
 cblas_sbf16tos.$(SUFFIX)  cblas_sbf16tos.$(PSUFFIX) : bf16to.c
 	$(CC) $(CFLAGS) -DCBLAS -DSINGLE_PREC -UDOUBLE_PREC -c $< -o $(@F)
