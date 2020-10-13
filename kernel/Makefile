@@ -8,6 +8,9 @@ include $(TOPDIR)/Makefile.system
 ifdef HAVE_SSE3
 CFLAGS += -msse3
 endif
+ifdef HAVE_SSSE3
+CFLAGS += -mssse3
+endif
 
 ifeq ($(C_COMPILER), GCC)
 GCCVERSIONGTEQ9 := $(shell expr `$(CC) -dumpversion | cut -f1 -d.` \>= 9)
@@ -42,7 +45,7 @@ endif
 
 ifdef TARGET_CORE
 	ifeq ($(TARGET_CORE), $(filter $(TARGET_CORE),PRESCOTT CORE2 PENRYN DUNNINGTON ATOM NANO SANDYBRIDGE HASWELL NEHALEM ZEN BARCELONA BOBCAT BULLDOZER PILEDRIVER EXCAVATOR STEAMROLLER OPTERON_SSE3))
-	override CFLAGS += -msse3
+	override CFLAGS += -msse3 -mssse3
 endif
 ifeq ($(TARGET_CORE), COOPERLAKE)
  override CFLAGS += -DBUILD_KERNEL -DTABLE_NAME=gotoblas_$(TARGET_CORE)
