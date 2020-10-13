@@ -64,7 +64,7 @@ endif
 endif
 endif
 
-ifeq ($(CORE), HASWELL)
+ifeq ($(CORE), $(filter $(CORE), HASWELL ZEN SKYLAKEX COOPERLAKE)
 ifndef DYNAMIC_ARCH
 ifndef NO_AVX2
 ifeq ($(C_COMPILER), GCC)
