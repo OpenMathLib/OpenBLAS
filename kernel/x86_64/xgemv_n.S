@@ -76,6 +76,10 @@
 	PROLOGUE
 	PROFCODE
 
+#ifdef WINDOWS_ABI
+	emms
+#endif
+
 	subq	$STACKSIZE, %rsp
 	movq	%rbx,  0(%rsp)
 	movq	%rbp,  8(%rsp)

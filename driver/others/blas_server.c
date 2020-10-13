@@ -227,7 +227,7 @@ static void legacy_exec(void *func, int mode, blas_arg_t *args, void *sb){
                   args -> a, args -> lda,
                   args -> b, args -> ldb,
                   args -> c, args -> ldc, sb);
-#ifdef BUILD_HALF
+#ifdef BUILD_BFLOAT16
 	  } else if ((mode & BLAS_PREC) == BLAS_BFLOAT16){
             /* REAL / BFLOAT16 */
             void (*afunc)(BLASLONG, BLASLONG, BLASLONG, bfloat16,

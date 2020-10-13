@@ -80,24 +80,24 @@ SGEMMDIRECTPERFORMANT = sgemm_direct_performant.c
 endif
 endif
 
-ifeq ($(BUILD_HALF), 1)
-ifndef SHGEMMKERNEL
-SHGEMM_BETA = ../generic/gemm_beta.c
-SHGEMMKERNEL    = ../generic/gemmkernel_2x2.c
-SHGEMMINCOPY    = ../generic/gemm_ncopy_2.c
-SHGEMMITCOPY    = ../generic/gemm_tcopy_2.c
-SHGEMMONCOPY    = ../generic/gemm_ncopy_2.c
-SHGEMMOTCOPY    = ../generic/gemm_tcopy_2.c
-SHGEMMINCOPYOBJ =  shgemm_incopy$(TSUFFIX).$(SUFFIX)
-SHGEMMITCOPYOBJ =  shgemm_itcopy$(TSUFFIX).$(SUFFIX)
-SHGEMMONCOPYOBJ =  shgemm_oncopy$(TSUFFIX).$(SUFFIX)
-SHGEMMOTCOPYOBJ =  shgemm_otcopy$(TSUFFIX).$(SUFFIX)
+ifeq ($(BUILD_BFLOAT16), 1)
+ifndef SBGEMMKERNEL
+SBGEMM_BETA = ../generic/gemm_beta.c
+SBGEMMKERNEL    = ../generic/gemmkernel_2x2.c
+SBGEMMINCOPY    = ../generic/gemm_ncopy_2.c
+SBGEMMITCOPY    = ../generic/gemm_tcopy_2.c
+SBGEMMONCOPY    = ../generic/gemm_ncopy_2.c
+SBGEMMOTCOPY    = ../generic/gemm_tcopy_2.c
+SBGEMMINCOPYOBJ =  sbgemm_incopy$(TSUFFIX).$(SUFFIX)
+SBGEMMITCOPYOBJ =  sbgemm_itcopy$(TSUFFIX).$(SUFFIX)
+SBGEMMONCOPYOBJ =  sbgemm_oncopy$(TSUFFIX).$(SUFFIX)
+SBGEMMOTCOPYOBJ =  sbgemm_otcopy$(TSUFFIX).$(SUFFIX)
 endif
 
 SHKERNELOBJS	+= \
-	shgemm_kernel$(TSUFFIX).$(SUFFIX) \
-	$(SHGEMMINCOPYOBJ) $(SHGEMMITCOPYOBJ) \
-	$(SHGEMMONCOPYOBJ) $(SHGEMMOTCOPYOBJ)
+	sbgemm_kernel$(TSUFFIX).$(SUFFIX) \
+	$(SBGEMMINCOPYOBJ) $(SBGEMMITCOPYOBJ) \
+	$(SBGEMMONCOPYOBJ) $(SBGEMMOTCOPYOBJ)
 endif
 
 ifneq "$(or $(BUILD_SINGLE),$(BUILD_DOUBLE),$(BUILD_COMPLEX))" ""
@@ -149,7 +149,7 @@ XKERNELOBJS	+= \
 	$(XGEMMINCOPYOBJ) $(XGEMMITCOPYOBJ) \
 	$(XGEMMONCOPYOBJ) $(XGEMMOTCOPYOBJ)
 
-ifeq ($(BUILD_HALF),1)
+ifeq ($(BUILD_BFLOAT16),1)
 SHBLASOBJS      += $(SHKERNELOBJS)
 endif
 SBLASOBJS	+= $(SKERNELOBJS)
@@ -159,8 +159,8 @@ CBLASOBJS	+= $(CKERNELOBJS)
 ZBLASOBJS	+= $(ZKERNELOBJS)
 XBLASOBJS	+= $(XKERNELOBJS)
 
-ifeq ($(BUILD_HALF),1)
-SHBLASOBJS += shgemm_beta$(TSUFFIX).$(SUFFIX)
+ifeq ($(BUILD_BFLOAT16),1)
+SHBLASOBJS += sbgemm_beta$(TSUFFIX).$(SUFFIX)
 endif
 
 ifneq "$(or $(BUILD_SINGLE),$(BUILD_DOUBLE))" ""
@@ -492,11 +492,11 @@ ZBLASOBJS += \
 	zgeadd_k$(TSUFFIX).$(SUFFIX) 
 endif
 
-ifeq ($(BUILD_HALF), 1)
-SHGEMMINCOPYOBJ_P = $(SHGEMMINCOPYOBJ:.$(SUFFIX)=.$(PSUFFIX))
-SHGEMMITCOPYOBJ_P = $(SHGEMMITCOPYOBJ:.$(SUFFIX)=.$(PSUFFIX))
-SHGEMMONCOPYOBJ_P = $(SHGEMMONCOPYOBJ:.$(SUFFIX)=.$(PSUFFIX))
-SHGEMMOTCOPYOBJ_P = $(SHGEMMOTCOPYOBJ:.$(SUFFIX)=.$(PSUFFIX))
+ifeq ($(BUILD_BFLOAT16), 1)
+SBGEMMINCOPYOBJ_P = $(SBGEMMINCOPYOBJ:.$(SUFFIX)=.$(PSUFFIX))
+SBGEMMITCOPYOBJ_P = $(SBGEMMITCOPYOBJ:.$(SUFFIX)=.$(PSUFFIX))
+SBGEMMONCOPYOBJ_P = $(SBGEMMONCOPYOBJ:.$(SUFFIX)=.$(PSUFFIX))
+SBGEMMOTCOPYOBJ_P = $(SBGEMMOTCOPYOBJ:.$(SUFFIX)=.$(PSUFFIX))
 endif
 
 SGEMMINCOPYOBJ_P = $(SGEMMINCOPYOBJ:.$(SUFFIX)=.$(PSUFFIX))
@@ -524,9 +524,9 @@ XGEMMITCOPYOBJ_P = $(XGEMMITCOPYOBJ:.$(SUFFIX)=.$(PSUFFIX))
 XGEMMONCOPYOBJ_P = $(XGEMMONCOPYOBJ:.$(SUFFIX)=.$(PSUFFIX))
 XGEMMOTCOPYOBJ_P = $(XGEMMOTCOPYOBJ:.$(SUFFIX)=.$(PSUFFIX))
 
-ifeq ($(BUILD_HALF),1)
-$(KDIR)shgemm_beta$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(SHGEMM_BETA)
-	$(CC) $(CFLAGS) -c -DHALF -UDOUBLE -UCOMPLEX $< -o $@
+ifeq ($(BUILD_BFLOAT16),1)
+$(KDIR)sbgemm_beta$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(SBGEMM_BETA)
+	$(CC) $(CFLAGS) -c -DBFLOAT16 -UDOUBLE -UCOMPLEX $< -o $@
 endif
 
 $(KDIR)sgemm_beta$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(SGEMM_BETA)
@@ -548,35 +548,35 @@ $(KDIR)xgemm_beta$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(XGEMM_BETA)
 	$(CC) $(CFLAGS) -c -DXDOUBLE -DCOMPLEX $< -o $@
 
 
-ifeq ($(BUILD_HALF), 1)
+ifeq ($(BUILD_BFLOAT16), 1)
 
-$(KDIR)$(SHGEMMONCOPYOBJ) : $(KERNELDIR)/$(SHGEMMONCOPY)
-	$(CC) $(CFLAGS) -c -DHALF -UDOUBLE -UCOMPLEX $< -o $@
+$(KDIR)$(SBGEMMONCOPYOBJ) : $(KERNELDIR)/$(SBGEMMONCOPY)
+	$(CC) $(CFLAGS) -c -DBFLOAT16 -UDOUBLE -UCOMPLEX $< -o $@
 
-$(KDIR)$(SHGEMMOTCOPYOBJ) : $(KERNELDIR)/$(SHGEMMOTCOPY)
+$(KDIR)$(SBGEMMOTCOPYOBJ) : $(KERNELDIR)/$(SBGEMMOTCOPY)
 
 ifeq ($(OS), AIX)
-	$(CC) $(CFLAGS) -S -DHALF -UDOUBLE -UCOMPLEX $< -o - > shgemmotcopy.s
-	m4 shgemmotcopy.s > shgemmotcopy_nomacros.s
-	$(CC) $(CFLAGS) -c -DHALF -UDOUBLE -UCOMPLEX shgemmotcopy_nomacros.s -o $@
-	rm shgemmotcopy.s shgemmotcopy_nomacros.s
+	$(CC) $(CFLAGS) -S -DBFLOAT16 -UDOUBLE -UCOMPLEX $< -o - > sbgemmotcopy.s
+	m4 sbgemmotcopy.s > sbgemmotcopy_nomacros.s
+	$(CC) $(CFLAGS) -c -DBFLOAT16 -UDOUBLE -UCOMPLEX sbgemmotcopy_nomacros.s -o $@
+	rm sbgemmotcopy.s sbgemmotcopy_nomacros.s
 else
-	$(CC) $(CFLAGS) -c -DHALF -UDOUBLE -UCOMPLEX $< -o $@
+	$(CC) $(CFLAGS) -c -DBFLOAT16 -UDOUBLE -UCOMPLEX $< -o $@
 endif
 
-ifneq ($(SHGEMM_UNROLL_M), $(SHGEMM_UNROLL_N))
+ifneq ($(SBGEMM_UNROLL_M), $(SBGEMM_UNROLL_N))
 
-$(KDIR)$(SHGEMMINCOPYOBJ) : $(KERNELDIR)/$(SHGEMMINCOPY)
-	$(CC) $(CFLAGS) -c -DHALF -UDOUBLE -UCOMPLEX $< -o $@
+$(KDIR)$(SBGEMMINCOPYOBJ) : $(KERNELDIR)/$(SBGEMMINCOPY)
+	$(CC) $(CFLAGS) -c -DBFLOAT16 -UDOUBLE -UCOMPLEX $< -o $@
 
-$(KDIR)$(SHGEMMITCOPYOBJ) : $(KERNELDIR)/$(SHGEMMITCOPY)
+$(KDIR)$(SBGEMMITCOPYOBJ) : $(KERNELDIR)/$(SBGEMMITCOPY)
 ifeq ($(OS), AIX)
-	$(CC) $(CFLAGS) -S -DHALF -UDOUBLE -UCOMPLEX $< -o - > shgemmitcopy.s
-	m4 shgemmitcopy.s > shgemmitcopy_nomacros.s
-	$(CC) $(CFLAGS) -c -DHALF -UDOUBLE -UCOMPLEX shgemmitcopy_nomacros.s -o $@
-	rm shgemmitcopy.s shgemmitcopy_nomacros.s
+	$(CC) $(CFLAGS) -S -DBFLOAT16 -UDOUBLE -UCOMPLEX $< -o - > sbgemmitcopy.s
+	m4 sbgemmitcopy.s > sbgemmitcopy_nomacros.s
+	$(CC) $(CFLAGS) -c -DBFLOAT16 -UDOUBLE -UCOMPLEX sbgemmitcopy_nomacros.s -o $@
+	rm sbgemmitcopy.s sbgemmitcopy_nomacros.s
 else
-	$(CC) $(CFLAGS) -c -DHALF -UDOUBLE -UCOMPLEX $< -o $@
+	$(CC) $(CFLAGS) -c -DBFLOAT16 -UDOUBLE -UCOMPLEX $< -o $@
 endif
 
 endif
@@ -746,16 +746,16 @@ $(KDIR)sgemm_direct$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(SGEMMDIRECTKERNEL)
 	$(CC) $(CFLAGS) -c -UDOUBLE -UCOMPLEX $< -o $@
 endif
 
-ifeq ($(BUILD_HALF), 1)
+ifeq ($(BUILD_BFLOAT16), 1)
 
-$(KDIR)shgemm_kernel$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(SHGEMMKERNEL) $(SHGEMMDEPEND)
+$(KDIR)sbgemm_kernel$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(SBGEMMKERNEL) $(SBGEMMDEPEND)
 ifeq ($(OS), AIX)
-	$(CC) $(CFLAGS) -S -DHALF -UDOUBLE -UCOMPLEX  $< -o - > shgemm_kernel$(TSUFFIX).s
-	m4 shgemm_kernel$(TSUFFIX).s > shgemm_kernel$(TSUFFIX)_nomacros.s
-	$(CC) $(CFLAGS) -c -DHALF -UDOUBLE -UCOMPLEX shgemm_kernel$(TSUFFIX)_nomacros.s -o $@
-	rm shgemm_kernel$(TSUFFIX).s shgemm_kernel$(TSUFFIX)_nomacros.s
+	$(CC) $(CFLAGS) -S -DBFLOAT16 -UDOUBLE -UCOMPLEX  $< -o - > sbgemm_kernel$(TSUFFIX).s
+	m4 sbgemm_kernel$(TSUFFIX).s > sbgemm_kernel$(TSUFFIX)_nomacros.s
+	$(CC) $(CFLAGS) -c -DBFLOAT16 -UDOUBLE -UCOMPLEX sbgemm_kernel$(TSUFFIX)_nomacros.s -o $@
+	rm sbgemm_kernel$(TSUFFIX).s sbgemm_kernel$(TSUFFIX)_nomacros.s
 else
-	$(CC) $(CFLAGS) -c -DHALF -UDOUBLE -UCOMPLEX $< -o $@
+	$(CC) $(CFLAGS) -c -DBFLOAT16 -UDOUBLE -UCOMPLEX $< -o $@
 endif
 endif
 
@@ -2375,9 +2375,9 @@ $(KDIR)xtrsm_oltncopy$(TSUFFIX).$(SUFFIX) : generic/ztrsm_ltcopy_$(XGEMM_UNROLL_
 $(KDIR)sgemm_beta$(TSUFFIX).$(PSUFFIX) : $(KERNELDIR)/$(SGEMM_BETA)
 	$(CC) $(PFLAGS) -c -UDOUBLE -UCOMPLEX $< -o $@
 
-ifeq ($(BUILD_HALF),1)
-$(KDIR)shgemm_beta$(TSUFFIX).$(PSUFFIX) : $(KERNELDIR)/$(SHGEMM_BETA)
-	$(CC) $(PFLAGS) -c -DHALF -UDOUBLE -UCOMPLEX $< -o $@
+ifeq ($(BUILD_BFLOAT16),1)
+$(KDIR)sbgemm_beta$(TSUFFIX).$(PSUFFIX) : $(KERNELDIR)/$(SBGEMM_BETA)
+	$(CC) $(PFLAGS) -c -DBFLOAT16 -UDOUBLE -UCOMPLEX $< -o $@
 endif
 
 $(KDIR)dgemm_beta$(TSUFFIX).$(PSUFFIX) : $(KERNELDIR)/$(DGEMM_BETA)
@@ -2396,19 +2396,19 @@ $(KDIR)xgemm_beta$(TSUFFIX).$(PSUFFIX) : $(KERNELDIR)/$(XGEMM_BETA)
 	$(CC) $(PFLAGS) -c -DXDOUBLE -DCOMPLEX $< -o $@
 
 
-ifeq ($(BUILD_HALF), 1)
-$(SHGEMMONCOPYOBJ_P) : $(KERNELDIR)/$(SHGEMMONCOPY)
-	$(CC) $(PFLAGS) -c -DHALF -UDOUBLE -UCOMPLEX $< -o $@
+ifeq ($(BUILD_BFLOAT16), 1)
+$(SBGEMMONCOPYOBJ_P) : $(KERNELDIR)/$(SBGEMMONCOPY)
+	$(CC) $(PFLAGS) -c -DBFLOAT16 -UDOUBLE -UCOMPLEX $< -o $@
 
-$(SHGEMMOTCOPYOBJ_P) : $(KERNELDIR)/$(SHGEMMOTCOPY)
-	$(CC) $(PFLAGS) -c -DHALF -UDOUBLE -UCOMPLEX $< -o $@
+$(SBGEMMOTCOPYOBJ_P) : $(KERNELDIR)/$(SBGEMMOTCOPY)
+	$(CC) $(PFLAGS) -c -DBFLOAT16 -UDOUBLE -UCOMPLEX $< -o $@
 
-ifneq ($(SHGEMM_UNROLL_M), $(SHGEMM_UNROLL_N))
-$(SHGEMMINCOPYOBJ_P) : $(KERNELDIR)/$(SHGEMMINCOPY)
-	$(CC) $(PFLAGS) -c -DHALF -UDOUBLE -UCOMPLEX $< -o $@
+ifneq ($(SBGEMM_UNROLL_M), $(SBGEMM_UNROLL_N))
+$(SBGEMMINCOPYOBJ_P) : $(KERNELDIR)/$(SBGEMMINCOPY)
+	$(CC) $(PFLAGS) -c -DBFLOAT16 -UDOUBLE -UCOMPLEX $< -o $@
 
-$(SHGEMMITCOPYOBJ_P) : $(KERNELDIR)/$(SHGEMMITCOPY)
-	$(CC) $(PFLAGS) -c -DHALF -UDOUBLE -UCOMPLEX $< -o $@
+$(SBGEMMITCOPYOBJ_P) : $(KERNELDIR)/$(SBGEMMITCOPY)
+	$(CC) $(PFLAGS) -c -DBFLOAT16 -UDOUBLE -UCOMPLEX $< -o $@
 
 endif
 endif
@@ -2518,9 +2518,9 @@ endif
 endif
 
 
-ifeq ($(BUILD_HALF), 1)
-$(KDIR)shgemm_kernel$(TSUFFIX).$(PSUFFIX) : $(KERNELDIR)/$(SHGEMMKERNEL) $(SHGEMMDEPEND)
-	$(CC) $(PFLAGS) -c -DHALF -UDOUBLE -UCOMPLEX $< -o $@
+ifeq ($(BUILD_BFLOAT16), 1)
+$(KDIR)sbgemm_kernel$(TSUFFIX).$(PSUFFIX) : $(KERNELDIR)/$(SBGEMMKERNEL) $(SBGEMMDEPEND)
+	$(CC) $(PFLAGS) -c -DBFLOAT16 -UDOUBLE -UCOMPLEX $< -o $@
 endif
 
 $(KDIR)sgemm_kernel$(TSUFFIX).$(PSUFFIX) : $(KERNELDIR)/$(SGEMMKERNEL) $(SGEMMDEPEND)

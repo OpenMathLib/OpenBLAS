@@ -28,11 +28,11 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /* need a new enough GCC for avx512 support */
 #if (( defined(__GNUC__)  && __GNUC__   >= 10 && defined(__AVX512BF16__)) || (defined(__clang__) && __clang_major__ >= 9))
 
-#define HAVE_SHDOT_ACCL_KERNEL 1
+#define HAVE_SBDOT_ACCL_KERNEL 1
 #include "common.h"
 #include <immintrin.h>
 
-static float shdot_accl_kernel(BLASLONG n, bfloat16 *x, bfloat16 *y)
+static float sbdot_accl_kernel(BLASLONG n, bfloat16 *x, bfloat16 *y)
 {
     __m128 accum128   = _mm_setzero_ps();
     if (n> 127) { /* n range from 128 to inf. */

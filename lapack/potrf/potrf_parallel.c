@@ -382,7 +382,7 @@ static int thread_driver(blas_arg_t *args, FLOAT *sa, FLOAT *sb){
   mask  = MAX(DGEMM_UNROLL_M, DGEMM_UNROLL_N) - 1;
 #elif defined(HALF)
   mode  =  BLAS_HALF  | BLAS_REAL;
-  mask  = MAX(SHGEMM_UNROLL_M, SHGEMM_UNROLL_N) - 1;
+  mask  = MAX(SBGEMM_UNROLL_M, SBGEMM_UNROLL_N) - 1;
 #else
   mode  =  BLAS_SINGLE  | BLAS_REAL;
   mask  = MAX(SGEMM_UNROLL_M, SGEMM_UNROLL_N) - 1;

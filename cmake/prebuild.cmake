@@ -16,8 +16,8 @@
 # HAVE_SSE2
 # HAVE_SSE3
 # MAKE
-# SHGEMM_UNROLL_M
-# SHGEMM_UNROLL_N
+# SBGEMM_UNROLL_M
+# SBGEMM_UNROLL_N
 # SGEMM_UNROLL_M
 # SGEMM_UNROLL_N
 # DGEMM_UNROLL_M
@@ -471,8 +471,8 @@ endif ()
     set(ZGEMM_UNROLL_N 2)
     set(SYMV_P 8)
   endif()
-  set(SHGEMM_UNROLL_M 8)
-  set(SHGEMM_UNROLL_N 4)
+  set(SBGEMM_UNROLL_M 8)
+  set(SBGEMM_UNROLL_N 4)
 
   # Or should this actually be NUM_CORES?
   if (${NUM_THREADS} GREATER 0)
