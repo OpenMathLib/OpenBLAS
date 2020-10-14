@@ -16,6 +16,10 @@ ifdef HAVE_SSSE3
 CCOMMON_OPT += -mssse3
 FCOMMON_OPT += -mssse3
 endif
+ifdef HAVE_SSE4_1
+CCOMMON_OPT += -msse4.1
+FCOMMON_OPT += -msse4.1
+endif
 endif
 endif
 
