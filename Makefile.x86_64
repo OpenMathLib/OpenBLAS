@@ -12,6 +12,10 @@ ifdef HAVE_SSE3
 ifndef DYNAMIC_ARCH
 CCOMMON_OPT += -msse3
 FCOMMON_OPT += -msse3
+ifdef HAVE_SSSE3
+CCOMMON_OPT += -mssse3
+FCOMMON_OPT += -mssse3
+endif
 endif
 endif
 
@@ -60,7 +64,7 @@ endif
 endif
 endif
 
-ifeq ($(CORE), HASWELL)
+ifeq ($(CORE), $(filter $(CORE), HASWELL ZEN SKYLAKEX COOPERLAKE))
 ifndef DYNAMIC_ARCH
 ifndef NO_AVX2
 ifeq ($(C_COMPILER), GCC)
