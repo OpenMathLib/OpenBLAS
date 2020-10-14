@@ -259,11 +259,7 @@ SNRM2KERNEL = nrm2_sse.S
 endif
 
 ifndef DNRM2KERNEL
-ifeq ($(OSNAME),WINNT)
-DNRM2KERNEL = ../arm/nrm2.c
-else
 DNRM2KERNEL = nrm2.S
-endif
 endif
 
 ifndef QNRM2KERNEL
@@ -275,11 +271,7 @@ CNRM2KERNEL = znrm2_sse.S
 endif
 
 ifndef ZNRM2KERNEL
-ifeq ($(OSNAME),WINNT)
-ZNRM2KERNEL = ../arm/znrm2.c
-else
 ZNRM2KERNEL = znrm2.S
-endif
 endif
 
 ifndef XNRM2KERNEL
@@ -486,3 +478,6 @@ XTRSMKERNEL_RN	=  xtrsm_kernel_LT_1x1.S
 XTRSMKERNEL_RT	=  xtrsm_kernel_LT_1x1.S
 
 XGEMM3MKERNEL    =  xgemm3m_kernel_2x2.S
+
+SSUMKERNEL = ../arm/sum.c
+DSUMKERNEL = ../arm/sum.c
