@@ -43,6 +43,26 @@ FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x)
 	if (inc_x == 1)
 	{
 #if V_SIMD
+#ifdef DOUBLE
+		const int vstep = v_nlanes_f64;
+		const int unrollx2 = n & (-vstep * 2);
+		const int unrollx = n & -vstep;
+		v_f64 vsum0 = v_zero_f64();
+		v_f64 vsum1 = v_zero_f64();
+		while (i < unrollx2)
+		{
+			vsum0 = v_add_f64(vsum0, v_loadu_f64(x));
+			vsum1 = v_add_f64(vsum1, v_loadu_f64(x + vstep));
+			i += vstep * 2;
+		}
+		vsum0 = v_add_f64(vsum0, vsum1);
+		while (i < unrollx)
+		{
+			vsum0 = v_add_f64(vsum0, v_loadu_f64(x + i));
+			i += vstep;
+		}
+		sumf = v_sum_f64(vsum0);
+#else
 		const int vstep = v_nlanes_f32;
 		const int unrollx4 = n & (-vstep * 4);
 		const int unrollx = n & -vstep;
@@ -66,6 +86,7 @@ FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x)
 			i += vstep;
 		}
 		sumf = v_sum_f32(vsum0);
+#endif
 #else
 		int n1 = n & -4;
 		for (; i < n1; i += 4)
