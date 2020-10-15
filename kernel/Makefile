@@ -48,7 +48,7 @@ ifdef TARGET_CORE
 	override CFLAGS += -msse3 -mssse3 -msse4.1
 endif
 	ifeq ($(TARGET_CORE), $(filter $(TARGET_CORE),KATMAI COPPERMINE NEHALEM BARCELONA CORE2 PRESCOTT NORTHWOOD ATHLON))
-	override CFLAGS += -msse
+	override CFLAGS += -msse -msse2
 endif
 ifeq ($(TARGET_CORE), COOPERLAKE)
  override CFLAGS += -DBUILD_KERNEL -DTABLE_NAME=gotoblas_$(TARGET_CORE)
