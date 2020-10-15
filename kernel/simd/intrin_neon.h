@@ -8,7 +8,7 @@
  * Data Type
  ***************************/
 typedef float32x4_t v_f32;
-#if NPY_SIMD_F64
+#if V_SIMD_F64
     typedef float64x2_t v_f64;
 #endif
 #define v_nlanes_f32 4
@@ -33,7 +33,7 @@ typedef float32x4_t v_f32;
 #endif
 
 // FUSED F64
-#if NPY_SIMD_F64
+#if V_SIMD_F64
     BLAS_FINLINE v_f64 v_muladd_f64(v_f64 a, v_f64 b, v_f64 c)
     { return vfmaq_f64(c, a, b); }
 #endif
@@ -45,7 +45,7 @@ BLAS_FINLINE float v_sum_f32(float32x4_t a)
     return vget_lane_f32(vpadd_f32(r, r), 0);
 }
 
-#if NPY_SIMD_F64
+#if V_SIMD_F64
     BLAS_FINLINE double v_sum_f64(float64x2_t a)
     {
         return vget_lane_f64(vget_low_f64(a) + vget_high_f64(a), 0);
@@ -60,7 +60,7 @@ BLAS_FINLINE float v_sum_f32(float32x4_t a)
 #define v_storeu_f32 vst1q_f32
 #define v_setall_f32(VAL) vdupq_n_f32(VAL)
 #define v_zero_f32() vdupq_n_f32(0.0f)
-#if NPY_SIMD_F64
+#if V_SIMD_F64
     #define v_loadu_f64(a) vld1q_f64((const double*)a)
     #define v_storeu_f64 vst1q_f64
     #define v_setall_f64 vdupq_n_f64
