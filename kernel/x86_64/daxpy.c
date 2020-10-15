@@ -53,6 +53,15 @@ static void daxpy_kernel_8(BLASLONG n, FLOAT *x, FLOAT *y, FLOAT *alpha)
 	BLASLONG register i = 0;
 	FLOAT a = *alpha;
 #if V_SIMD
+#ifdef DOUBLE
+	v_f64 __alpha, tmp;
+	__alpha =  v_setall_f64(*alpha);
+	const int vstep = v_nlanes_f64;
+	for (; i < n; i += vstep) {
+		tmp = v_muladd_f64(__alpha, v_loadu_f64( x + i ), v_loadu_f64(y + i));
+		v_storeu_f64(y + i, tmp);
+	}
+#else
 	v_f32 __alpha, tmp;
 	__alpha =  v_setall_f32(*alpha);
 	const int vstep = v_nlanes_f32;
@@ -60,6 +69,7 @@ static void daxpy_kernel_8(BLASLONG n, FLOAT *x, FLOAT *y, FLOAT *alpha)
 		tmp = v_muladd_f32(__alpha, v_loadu_f32( x + i ), v_loadu_f32(y + i));
 		v_storeu_f32(y + i, tmp);
 	}
+#endif
 #else
 	while(i < n)
 	{
