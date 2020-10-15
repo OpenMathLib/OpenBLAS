@@ -41,6 +41,10 @@ ifeq ($(TARGET), I6500)
 TARGET_FLAGS = -mips64r6
 endif
 
+ifeq ($(TARGET), C910V)
+TARGET_FLAGS = -march=rv64gcvxthead -mabi=lp64v
+endif
+
 all: getarch_2nd
 	./getarch_2nd  0 >> $(TARGET_MAKE)
 	./getarch_2nd  1 >> $(TARGET_CONF)
