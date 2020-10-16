@@ -1164,7 +1164,7 @@ static void init_parameter(void) {
   TABLE_NAME.xgemm3m_q = QGEMM_DEFAULT_Q;
 #endif
 
-#if (CORE_KATMAI)  || (CORE_COPPERMINE) || (CORE_BANIAS) || (CORE_YONAH) || (CORE_ATHLON)
+#if defined(CORE_KATMAI)  || defined(CORE_COPPERMINE) || defined(CORE_BANIAS) || defined(CORE_YONAH) || defined(CORE_ATHLON)
 
 #ifdef DEBUG
   fprintf(stderr, "Katmai, Coppermine, Banias, Athlon\n");
