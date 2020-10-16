@@ -163,7 +163,7 @@ int main(int argc, char *argv[]){
 	loops = atoi(p);
 
 
-#ifdef linux
+#ifdef __linux
   srandom(getpid());
 #endif
 
@@ -181,9 +181,9 @@ int main(int argc, char *argv[]){
   
     	for(j = 0; j < m; j++){
       		for(i = 0; i < m * COMPSIZE; i++){
-			a[i + j * m * COMPSIZE] = ((FLOAT) rand() / (FLOAT) RAND_MAX) - 0.5;
-			b[i + j * m * COMPSIZE] = ((FLOAT) rand() / (FLOAT) RAND_MAX) - 0.5;
-			c[i + j * m * COMPSIZE] = ((FLOAT) rand() / (FLOAT) RAND_MAX) - 0.5;
+			a[(long)i + (long)j * (long)m * COMPSIZE] = ((FLOAT) rand() / (FLOAT) RAND_MAX) - 0.5;
+			b[(long)i + (long)j * (long)m * COMPSIZE] = ((FLOAT) rand() / (FLOAT) RAND_MAX) - 0.5;
+			c[(long)i + (long)j * (long)m * COMPSIZE] = ((FLOAT) rand() / (FLOAT) RAND_MAX) - 0.5;
       		}
     	}
 

@@ -36,6 +36,8 @@ void RELAPACK_zgbtrf(
         return;
     }
 
+    if (*m == 0 || *n == 0) return;
+
     // Constant
     const double ZERO[] = { 0., 0. };
 
@@ -82,7 +84,7 @@ static void RELAPACK_zgbtrf_rec(
     blasint *info
 ) {
 
-    if (*n <= MAX(CROSSOVER_ZGBTRF, 1)) {
+    if (*n <= MAX(CROSSOVER_ZGBTRF, 1) || *n > *kl || *ldAb == 1) {
         // Unblocked
         LAPACK(zgbtf2)(m, n, kl, ku, Ab, ldAb, ipiv, info);
         return;
@@ -92,6 +94,7 @@ static void RELAPACK_zgbtrf_rec(
     const double ONE[]  = { 1., 0. };
     const double MONE[] = { -1., 0. };
     const blasint    iONE[] = { 1 };
+    const blasint min11 = -11;
 
     // Loop iterators
     blasint i, j;
@@ -158,6 +161,7 @@ static void RELAPACK_zgbtrf_rec(
 
     // recursion(Ab_L, ipiv_T)
     RELAPACK_zgbtrf_rec(m, &n1, kl, ku, Ab_L, ldAb, ipiv_T, Workl, ldWorkl, Worku, ldWorku, info);
+if (*info) return;
 
     // Workl = A_BLb
     LAPACK(zlacpy)("U", &m22, &n1, A_BLb, ldA, Workl, ldWorkl);
@@ -193,11 +197,21 @@ static void RELAPACK_zgbtrf_rec(
     }
 
     // A_TRl = A_TL \ A_TRl
+    if (*ldA < MAX(1,m1)) {
+        LAPACK(xerbla)("ZGBTRF", &min11, strlen("ZGBTRF"));
+        return;
+    } else {
     BLAS(ztrsm)("L", "L", "N", "U", &m1, &n21, ONE, A_TL, ldA, A_TRl, ldA);
+    }
     // Worku = A_TRr
     LAPACK(zlacpy)("L", &m1, &n22, A_TRr, ldA, Worku, ldWorku);
     // Worku = A_TL \ Worku
+    if (*ldWorku < MAX(1,m1)) {
+        LAPACK(xerbla)("ZGBTRF", &min11, strlen("ZGBTRF"));
+        return;
+    } else {
     BLAS(ztrsm)("L", "L", "N", "U", &m1, &n22, ONE, A_TL, ldA, Worku, ldWorku);
+    }
     // A_TRr = Worku
     LAPACK(zlacpy)("L", &m1, &n22, Worku, ldWorku, A_TRr, ldA);
     // A_BRtl = A_BRtl - A_BLt * A_TRl

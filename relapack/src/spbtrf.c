@@ -35,6 +35,9 @@ void RELAPACK_spbtrf(
         return;
     }
 
+
+    if (*n == 0) return;
+
     // Clean char * arguments
     const char cleanuplo = lower ? 'L' : 'U';
 
@@ -43,8 +46,8 @@ void RELAPACK_spbtrf(
 
     // Allocate work space
     const blasint n1 = SREC_SPLIT(*n);
-    const blasint mWork = (*kd > n1) ? (lower ? *n - *kd : n1) : *kd;
-    const blasint nWork = (*kd > n1) ? (lower ? n1 : *n - *kd) : *kd;
+    const blasint mWork = abs( (*kd > n1) ? (lower ? *n - *kd : n1) : *kd);
+    const blasint nWork = abs((*kd > n1) ? (lower ? n1 : *n - *kd) : *kd);
     float *Work = malloc(mWork * nWork * sizeof(float));
     LAPACK(slaset)(uplo, &mWork, &nWork, ZERO, ZERO, Work, &mWork);
 
@@ -64,7 +67,9 @@ static void RELAPACK_spbtrf_rec(
     blasint *info
 ){
 
-    if (*n <= MAX(CROSSOVER_SPBTRF, 1)) {
+    if (*n == 0 ) return;
+
+    if ( *n <= MAX(CROSSOVER_SPBTRF, 1) || *ldAb == 1) {
         // Unblocked
         LAPACK(spbtf2)(uplo, n, kd, Ab, ldAb, info);
         return;
@@ -148,7 +153,7 @@ static void RELAPACK_spbtrf_rec(
     }
 
     // recursion(A_BR)
-    if (*kd > n1)
+    if (*kd > n1 && ldA != 0)
         RELAPACK_spotrf(uplo, &n2, A_BR, ldA, info);
     else
         RELAPACK_spbtrf_rec(uplo, &n2, kd, Ab_BR, ldAb, Work, ldWork, info);

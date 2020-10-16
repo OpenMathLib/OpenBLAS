@@ -16,6 +16,8 @@
 # HAVE_SSE2
 # HAVE_SSE3
 # MAKE
+# SBGEMM_UNROLL_M
+# SBGEMM_UNROLL_N
 # SGEMM_UNROLL_M
 # SGEMM_UNROLL_N
 # DGEMM_UNROLL_M
@@ -193,8 +195,13 @@ if (DEFINED CORE AND CMAKE_CROSSCOMPILING AND NOT (${HOST_OS} STREQUAL "WINDOWSS
       "#define HAVE_VFP\n"
       "#define HAVE_NEON\n"
       "#define ARMV8\n")
+if ("${TCORE}" STREQUAL "CORTEXA57")     
     set(SGEMM_UNROLL_M 16)
     set(SGEMM_UNROLL_N 4)
+else ()
+    set(SGEMM_UNROLL_M 8)
+    set(SGEMM_UNROLL_N 8) 
+endif ()
     set(DGEMM_UNROLL_M 8)
     set(DGEMM_UNROLL_N 4)
     set(CGEMM_UNROLL_M 8)
@@ -211,6 +218,33 @@ if (DEFINED CORE AND CMAKE_CROSSCOMPILING AND NOT (${HOST_OS} STREQUAL "WINDOWSS
       "#define L1_DATA_LINESIZE\t64\n"
       "#define L1_DATA_ASSOCIATIVE\t2\n"
       "#define L2_SIZE\t524288\n"
+      "#define L2_LINESIZE\t64\n"
+      "#define L2_ASSOCIATIVE\t16\n"
+      "#define DTB_DEFAULT_ENTRIES\t64\n"
+      "#define DTB_SIZE\t4096\n"
+      "#define HAVE_VFPV4\n"
+      "#define HAVE_VFPV3\n"
+      "#define HAVE_VFP\n"
+      "#define HAVE_NEON\n"
+      "#define ARMV8\n")
+    set(SGEMM_UNROLL_M 16)
+    set(SGEMM_UNROLL_N 4)
+    set(DGEMM_UNROLL_M 8)
+    set(DGEMM_UNROLL_N 4)
+    set(CGEMM_UNROLL_M 8)
+    set(CGEMM_UNROLL_N 4)
+    set(ZGEMM_UNROLL_M 4)
+    set(ZGEMM_UNROLL_N 4)
+    set(SYMV_P 16)
+  elseif ("${TCORE}" STREQUAL "NEOVERSEN1")
+    file(APPEND ${TARGET_CONF_TEMP}
+      "#define L1_CODE_SIZE\t65536\n"
+      "#define L1_CODE_LINESIZE\t64\n"
+      "#define L1_CODE_ASSOCIATIVE\t4\n"
+      "#define L1_DATA_SIZE\t65536\n"
+      "#define L1_DATA_LINESIZE\t64\n"
+      "#define L1_DATA_ASSOCIATIVE\t2\n"
+      "#define L2_SIZE\t1048576\n\n"
       "#define L2_LINESIZE\t64\n"
       "#define L2_ASSOCIATIVE\t16\n"
       "#define DTB_DEFAULT_ENTRIES\t64\n"
@@ -309,6 +343,33 @@ if (DEFINED CORE AND CMAKE_CROSSCOMPILING AND NOT (${HOST_OS} STREQUAL "WINDOWSS
     set(ZGEMM_UNROLL_M 4)
     set(ZGEMM_UNROLL_N 4)
     set(SYMV_P 16)
+  elseif ("${TCORE}" STREQUAL "THUNDERX3T110")
+    file(APPEND ${TARGET_CONF_TEMP}
+      "#define THUNDERX3T110\n"
+      "#define L1_CODE_SIZE\t65536\n"
+      "#define L1_CODE_LINESIZE\t64\n"
+      "#define L1_CODE_ASSOCIATIVE\t8\n"
+      "#define L1_DATA_SIZE\t65536\n"
+      "#define L1_DATA_LINESIZE\t64\n"
+      "#define L1_DATA_ASSOCIATIVE\t8\n"
+      "#define L2_SIZE\t524288\n"
+      "#define L2_LINESIZE\t64\n"
+      "#define L2_ASSOCIATIVE\t8\n"
+      "#define L3_SIZE\t94371840\n"
+      "#define L3_LINESIZE\t64\n"
+      "#define L3_ASSOCIATIVE\t32\n"
+      "#define DTB_DEFAULT_ENTRIES\t64\n"
+      "#define DTB_SIZE\t4096\n"
+      "#define ARMV8\n")
+    set(SGEMM_UNROLL_M 16)
+    set(SGEMM_UNROLL_N 4)
+    set(DGEMM_UNROLL_M 8)
+    set(DGEMM_UNROLL_N 4)
+    set(CGEMM_UNROLL_M 8)
+    set(CGEMM_UNROLL_N 4)
+    set(ZGEMM_UNROLL_M 4)
+    set(ZGEMM_UNROLL_N 4)
+    set(SYMV_P 16)
   elseif ("${TCORE}" STREQUAL "TSV110")
     file(APPEND ${TARGET_CONF_TEMP}
       "#define ARMV8\n"
@@ -391,7 +452,7 @@ if (DEFINED CORE AND CMAKE_CROSSCOMPILING AND NOT (${HOST_OS} STREQUAL "WINDOWSS
     set(ZGEMM_UNROLL_M 8)
     set(ZGEMM_UNROLL_N 2)
     set(SYMV_P 8)
-  elseif ("${TCORE}" STREQUAL "POWER9")
+  elseif ("${TCORE}" STREQUAL "POWER9" OR "${TCORE}" STREQUAL "POWER10")
     file(APPEND ${TARGET_CONF_TEMP}
       "#define L1_DATA_SIZE 32768\n"
       "#define L1_DATA_LINESIZE 128\n"
@@ -410,6 +471,8 @@ if (DEFINED CORE AND CMAKE_CROSSCOMPILING AND NOT (${HOST_OS} STREQUAL "WINDOWSS
     set(ZGEMM_UNROLL_N 2)
     set(SYMV_P 8)
   endif()
+  set(SBGEMM_UNROLL_M 8)
+  set(SBGEMM_UNROLL_N 4)
 
   # Or should this actually be NUM_CORES?
   if (${NUM_THREADS} GREATER 0)
@@ -461,7 +524,7 @@ else(NOT CMAKE_CROSSCOMPILING)
   if (NOT "${CMAKE_SYSTEM_NAME}" STREQUAL "WindowsStore")
     try_compile(GETARCH_RESULT ${GETARCH_DIR}
       SOURCES ${GETARCH_SRC}
-    COMPILE_DEFINITIONS ${EXFLAGS} ${GETARCH_FLAGS} -I${GETARCH_DIR} -I"${PROJECT_SOURCE_DIR}" -I"${PROJECT_BINARY_DIR}"
+    COMPILE_DEFINITIONS ${EXFLAGS} ${GETARCH_FLAGS} -I"${GETARCH_DIR}" -I"${PROJECT_SOURCE_DIR}" -I"${PROJECT_BINARY_DIR}"
       OUTPUT_VARIABLE GETARCH_LOG
       COPY_FILE ${PROJECT_BINARY_DIR}/${GETARCH_BIN}
     )
@@ -489,7 +552,7 @@ execute_process(COMMAND "${PROJECT_BINARY_DIR}/${GETARCH_BIN}" 1 OUTPUT_VARIABLE
   if (NOT "${CMAKE_SYSTEM_NAME}" STREQUAL "WindowsStore")
     try_compile(GETARCH2_RESULT ${GETARCH2_DIR}
       SOURCES ${PROJECT_SOURCE_DIR}/getarch_2nd.c
-    COMPILE_DEFINITIONS ${EXFLAGS} ${GETARCH_FLAGS} ${GETARCH2_FLAGS} -I${GETARCH2_DIR} -I"${PROJECT_SOURCE_DIR}" -I"${PROJECT_BINARY_DIR}"
+    COMPILE_DEFINITIONS ${EXFLAGS} ${GETARCH_FLAGS} ${GETARCH2_FLAGS} -I"${GETARCH2_DIR}" -I"${PROJECT_SOURCE_DIR}" -I"${PROJECT_BINARY_DIR}"
       OUTPUT_VARIABLE GETARCH2_LOG
       COPY_FILE ${PROJECT_BINARY_DIR}/${GETARCH2_BIN}
     )

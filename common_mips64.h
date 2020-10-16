@@ -73,6 +73,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #define MB  __sync_synchronize()
 #define WMB __sync_synchronize()
+#define RMB __sync_synchronize()
 
 #define INLINE inline
 
@@ -226,7 +227,7 @@ REALNAME: ;\
 
 #define SEEK_ADDRESS
 
-#define BUFFER_SIZE     ( 32 << 20)
+#define BUFFER_SIZE     ( 32 << 21)
 
 #if defined(LOONGSON3A)
 #define PAGESIZE	(16UL << 10)

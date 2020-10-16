@@ -47,8 +47,8 @@ lapack_int LAPACKE_cgesvdq( int matrix_layout, char joba, char jobp,
     lapack_complex_float* cwork = NULL;
     lapack_complex_float cwork_query;
     lapack_int lrwork = -1;
-    double* rwork = NULL;
-    double rwork_query;
+    float* rwork = NULL;
+    float rwork_query;
     lapack_int i;
     if( matrix_layout != LAPACK_COL_MAJOR && matrix_layout != LAPACK_ROW_MAJOR ) {
         LAPACKE_xerbla( "LAPACKE_cgesvdq", -1 );
@@ -84,7 +84,7 @@ lapack_int LAPACKE_cgesvdq( int matrix_layout, char joba, char jobp,
         info = LAPACK_WORK_MEMORY_ERROR;
         goto exit_level_0;
     }
-    rwork = (double*)LAPACKE_malloc( sizeof(double) * lrwork );
+    rwork = (float*)LAPACKE_malloc( sizeof(float) * lrwork );
     if( rwork == NULL ) {
         info = LAPACK_WORK_MEMORY_ERROR;
         goto exit_level_0;

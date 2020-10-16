@@ -12,6 +12,9 @@ FILE(WRITE ${CMAKE_CURRENT_BINARY_DIR}/test_cblas_helper.sh
 foreach(float_type ${FLOAT_TYPES})
   string(SUBSTRING ${float_type} 0 1 float_char_upper)
   string(TOLOWER ${float_char_upper} float_char)
+  if (${float_char} STREQUAL "b")
+   continue()
+  endif()
   #level1
   add_executable(x${float_char}cblat1
     c_${float_char}blat1.f

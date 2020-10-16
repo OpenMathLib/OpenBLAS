@@ -39,34 +39,51 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "daxpy_microk_piledriver-2.c"
 #elif defined(HASWELL) || defined(ZEN)
 #include "daxpy_microk_haswell-2.c"
-#elif defined (SKYLAKEX)
+#elif defined (SKYLAKEX) || defined (COOPERLAKE)
 #include "daxpy_microk_skylakex-2.c"
 #elif defined(SANDYBRIDGE)
 #include "daxpy_microk_sandy-2.c"
 #endif
 
-
 #ifndef HAVE_KERNEL_8
+#include"../simd/intrin.h"
 
 static void daxpy_kernel_8(BLASLONG n, FLOAT *x, FLOAT *y, FLOAT *alpha)
 {
 	BLASLONG register i = 0;
 	FLOAT a = *alpha;
-
+#if V_SIMD
+#ifdef DOUBLE
+	v_f64 __alpha, tmp;
+	__alpha =  v_setall_f64(*alpha);
+	const int vstep = v_nlanes_f64;
+	for (; i < n; i += vstep) {
+		tmp = v_muladd_f64(__alpha, v_loadu_f64( x + i ), v_loadu_f64(y + i));
+		v_storeu_f64(y + i, tmp);
+	}
+#else
+	v_f32 __alpha, tmp;
+	__alpha =  v_setall_f32(*alpha);
+	const int vstep = v_nlanes_f32;
+	for (; i < n; i += vstep) {
+		tmp = v_muladd_f32(__alpha, v_loadu_f32( x + i ), v_loadu_f32(y + i));
+		v_storeu_f32(y + i, tmp);
+	}
+#endif
+#else
 	while(i < n)
-        {
-              y[i]   += a * x[i];
-              y[i+1] += a * x[i+1];
-              y[i+2] += a * x[i+2];
-              y[i+3] += a * x[i+3];
-              y[i+4] += a * x[i+4];
-              y[i+5] += a * x[i+5];
-              y[i+6] += a * x[i+6];
-              y[i+7] += a * x[i+7];
-              i+=8 ;
-
-       }
-
+	{
+		y[i]   += a * x[i];
+		y[i+1] += a * x[i+1];
+		y[i+2] += a * x[i+2];
+		y[i+3] += a * x[i+3];
+		y[i+4] += a * x[i+4];
+		y[i+5] += a * x[i+5];
+		y[i+6] += a * x[i+6];
+		y[i+7] += a * x[i+7];
+		i+=8 ;
+	}
+#endif
 }
 
 #endif

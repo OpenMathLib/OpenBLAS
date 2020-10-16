@@ -36,8 +36,8 @@ static void dcopy_kernel_32(BLASLONG n, FLOAT *x, FLOAT *y) {
     "la  %[x],256(%[x])\n\t"
     "la  %[y],256(%[y])\n\t"
     "brctg %[n],0b"
-    : "=m"(*(struct { FLOAT x[n]; } *) y),[x] "+&a"(x),[y] "+&a"(y),[n] "+&r"(n)
-    : "m"(*(const struct { FLOAT x[n]; } *) x)
+    : "=m"(*(FLOAT (*)[n]) y),[x] "+&a"(x),[y] "+&a"(y),[n] "+&r"(n)
+    : "m"(*(const FLOAT (*)[n]) x)
     : "cc");
 }
 

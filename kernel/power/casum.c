@@ -46,8 +46,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #endif
 
-#if defined(POWER8)  || defined(POWER9)
+#if defined(POWER8)  || defined(POWER9) || defined(POWER10)
+#if defined(__VEC__) || defined(__ALTIVEC__)
 #include "casum_microk_power8.c"
+#endif
 #endif
 
 

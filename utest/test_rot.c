@@ -33,6 +33,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "openblas_utest.h"
 
+#ifdef BUILD_DOUBLE
 CTEST(rot,drot_inc_0)
 {
 	blasint i=0;
@@ -52,7 +53,9 @@ CTEST(rot,drot_inc_0)
 		ASSERT_DBL_NEAR_TOL(y2[i], y1[i], DOUBLE_EPS);
 	}
 }
+#endif
 
+#ifdef BUILD_COMPLEX16
 CTEST(rot,zdrot_inc_0)
 {
 	blasint i=0;
@@ -72,7 +75,9 @@ CTEST(rot,zdrot_inc_0)
 		ASSERT_DBL_NEAR_TOL(y2[i], y1[i], DOUBLE_EPS);
 	}
 }
+#endif
 
+#ifdef BUILD_SINGLE
 CTEST(rot,srot_inc_0)
 {
 	blasint i=0;
@@ -91,7 +96,9 @@ CTEST(rot,srot_inc_0)
 		ASSERT_DBL_NEAR_TOL(y2[i], y1[i], SINGLE_EPS);
 	}
 }
+#endif
 
+#ifdef BUILD_COMPLEX
 CTEST(rot, csrot_inc_0)
 {
 	blasint i=0;
@@ -110,3 +117,5 @@ CTEST(rot, csrot_inc_0)
 		ASSERT_DBL_NEAR_TOL(y2[i], y1[i], SINGLE_EPS);
 	}
 }
+#endif
+

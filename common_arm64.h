@@ -35,7 +35,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #define MB   __asm__ __volatile__ ("dmb  ish" : : : "memory")
 #define WMB  __asm__ __volatile__ ("dmb  ishst" : : : "memory")
-
+#define RMB  __asm__ __volatile__ ("dmb  ishld" : : : "memory")
 
 #define INLINE inline
 
@@ -53,16 +53,16 @@ static void __inline blas_lock(volatile BLASULONG *address){
   BLASULONG ret;
 
   do {
-    while (*address) {YIELDING;};
-
     __asm__ __volatile__(
 			 "mov	x4, #1							\n\t"
+			 "sevl								\n\t"
                          "1:                                                            \n\t"
+                         "wfe                                                           \n\t"
+			 "2:								\n\t"
                          "ldaxr x2, [%1]                                                \n\t"
                          "cbnz  x2, 1b                                                  \n\t"
-			 "2:								\n\t"
                          "stxr  w3, x4, [%1]                                            \n\t"
-                         "cbnz  w3, 1b                                                  \n\t"
+                         "cbnz  w3, 2b                                                  \n\t"
                          "mov   %0, #0                                                  \n\t"
                          : "=r"(ret), "=r"(address)
                          : "1"(address)
@@ -81,10 +81,12 @@ static void __inline blas_lock(volatile BLASULONG *address){
 #if !defined(OS_DARWIN) && !defined (OS_ANDROID)
 static __inline BLASULONG rpcc(void){
   BLASULONG ret = 0;
+  blasint shift;
  
   __asm__ __volatile__ ("isb; mrs %0,cntvct_el0":"=r"(ret));
+  __asm__ __volatile__ ("mrs %0,cntfrq_el0; clz %w0, %w0":"=&r"(shift));
 
-  return ret;
+  return ret << shift;
 }
 
 #define RPCC_DEFINED
@@ -139,12 +141,17 @@ REALNAME:
 #endif
 #define HUGE_PAGESIZE   ( 4 << 20)
 
+#ifndef BUFFERSIZE
 #if defined(CORTEXA57)
 #define BUFFER_SIZE     (20 << 20)
+#elif defined(TSV110) || defined(EMAG8180)
+#define BUFFER_SIZE     (32 << 20)
 #else
 #define BUFFER_SIZE     (16 << 20)
 #endif
-
+#else
+#define BUFFER_SIZE	(32 << BUFFERSIZE)
+#endif
 
 #define BASE_ADDRESS (START_ADDRESS - BUFFER_SIZE * MAX_CPU_NUMBER)
 

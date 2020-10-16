@@ -1,3 +1,7 @@
+ifeq ($(__BYTE_ORDER__),__ORDER_BIG_ENDIAN__)
+include $(KERNELDIR)/KERNEL.POWER8
+else
+
 #SGEMM_BETA = ../generic/gemm_beta.c
 #DGEMM_BETA = ../generic/gemm_beta.c
 #CGEMM_BETA = ../generic/zgemm_beta.c
@@ -12,7 +16,7 @@ SGEMMKERNEL    =  sgemm_kernel_power9.S
 SGEMMINCOPY    = ../generic/gemm_ncopy_16.c
 SGEMMITCOPY    = sgemm_tcopy_16_power8.S
 SGEMMONCOPY    =  ../generic/gemm_ncopy_8.c
-SGEMMOTCOPY    = sgemm_tcopy_8_power8.S 
+SGEMMOTCOPY    = sgemm_tcopy_8_power8.S
 SGEMMINCOPYOBJ =  sgemm_incopy$(TSUFFIX).$(SUFFIX)
 SGEMMITCOPYOBJ =  sgemm_itcopy$(TSUFFIX).$(SUFFIX)
 SGEMMONCOPYOBJ =  sgemm_oncopy$(TSUFFIX).$(SUFFIX)
@@ -206,3 +210,5 @@ QCABS_KERNEL	= ../generic/cabs.c
 #Dump kernel
 CGEMM3MKERNEL    = ../generic/zgemm3mkernel_dump.c
 ZGEMM3MKERNEL    = ../generic/zgemm3mkernel_dump.c
+
+endif

@@ -29,23 +29,76 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 * trivial copy of asum.c with the ABS() removed                                       *
 **************************************************************************************/
 
-
 #include "common.h"
+#include "../simd/intrin.h"
 #include <math.h>
 
 FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x)
 {
-	BLASLONG i=0;
+	BLASLONG i = 0;
 	FLOAT sumf = 0.0;
-	if (n <= 0 || inc_x <= 0) return(sumf);
-
+	if (n <= 0 || inc_x <= 0)
+		return (sumf);
 	n *= inc_x;
-	while(i < n)
+	if (inc_x == 1)
+	{
+#if V_SIMD
+#ifdef DOUBLE
+		const int vstep = v_nlanes_f64;
+		const int unrollx2 = n & (-vstep * 2);
+		const int unrollx = n & -vstep;
+		v_f64 vsum0 = v_zero_f64();
+		v_f64 vsum1 = v_zero_f64();
+		while (i < unrollx2)
+		{
+			vsum0 = v_add_f64(vsum0, v_loadu_f64(x));
+			vsum1 = v_add_f64(vsum1, v_loadu_f64(x + vstep));
+			i += vstep * 2;
+		}
+		vsum0 = v_add_f64(vsum0, vsum1);
+		while (i < unrollx)
+		{
+			vsum0 = v_add_f64(vsum0, v_loadu_f64(x + i));
+			i += vstep;
+		}
+		sumf = v_sum_f64(vsum0);
+#else
+		const int vstep = v_nlanes_f32;
+		const int unrollx4 = n & (-vstep * 4);
+		const int unrollx = n & -vstep;
+		v_f32 vsum0 = v_zero_f32();
+		v_f32 vsum1 = v_zero_f32();
+		v_f32 vsum2 = v_zero_f32();
+		v_f32 vsum3 = v_zero_f32();
+		while (i < unrollx4)
+		{
+			vsum0 = v_add_f32(vsum0, v_loadu_f32(x));
+			vsum1 = v_add_f32(vsum1, v_loadu_f32(x + vstep));
+			vsum2 = v_add_f32(vsum2, v_loadu_f32(x + vstep * 2));
+			vsum3 = v_add_f32(vsum3, v_loadu_f32(x + vstep * 3));
+			i += vstep * 4;
+		}
+		vsum0 = v_add_f32(
+			v_add_f32(vsum0, vsum1), v_add_f32(vsum2, vsum3));
+		while (i < unrollx)
+		{
+			vsum0 = v_add_f32(vsum0, v_loadu_f32(x + i));
+			i += vstep;
+		}
+		sumf = v_sum_f32(vsum0);
+#endif
+#else
+		int n1 = n & -4;
+		for (; i < n1; i += 4)
+		{
+			sumf += x[i] + x[i + 1] + x[i + 2] + x[i + 3];
+		}
+#endif
+	}
+	while (i < n)
 	{
 		sumf += x[i];
 		i += inc_x;
 	}
-	return(sumf);
+	return (sumf);
 }
-
-

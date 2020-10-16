@@ -6,8 +6,9 @@
 # Checking cross compile
 $hostos   = `uname -s | sed -e s/\-.*//`;    chop($hostos);
 $hostarch = `uname -m | sed -e s/i.86/x86/`;chop($hostarch);
+$hostarch = `uname -p` if ($hostos eq "AIX");
 $hostarch = "x86_64" if ($hostarch eq "amd64");
-$hostarch = "arm" if ($hostarch =~ /^arm.*/);
+$hostarch = "arm" if ($hostarch ne "arm64" && $hostarch =~ /^arm.*/);
 $hostarch = "arm64" if ($hostarch eq "aarch64");
 $hostarch = "power" if ($hostarch =~ /^(powerpc|ppc).*/);
 $hostarch = "zarch" if ($hostarch eq "s390x");
@@ -254,6 +255,28 @@ if (($architecture eq "x86") || ($architecture eq "x86_64")) {
     }
 }
 
+$c11_atomics = 0;
+if ($data =~ /HAVE_C11/) {
+    eval "use File::Temp qw(tempfile)";
+    if ($@){ 
+       warn "could not load PERL module File::Temp, so could not check compiler compatibility with C11";
+       $c11_atomics = 0;
+    } else {
+       ($fh,$tmpf) = tempfile( SUFFIX => '.c' , UNLINK => 1 );
+       print $tmpf "#include <stdatomic.h>\nint main(void){}\n";
+       $args = " -c -o $tmpf.o $tmpf";
+       my @cmd = ("$compiler_name $flags $args >/dev/null 2>/dev/null");
+       system(@cmd) == 0;
+       if ($? != 0) {
+           $c11_atomics = 0;
+       } else {
+           $c11_atomics = 1;
+       }
+       unlink("$tmpf.o");
+    }
+}
+
+
 $data = `$compiler_name $flags -S ctest1.c && grep globl ctest1.s | head -n 1 && rm -f ctest1.s`;
 
 $data =~ /globl\s([_\.]*)(.*)/;
@@ -316,6 +339,7 @@ $linker_a = "";
 	    && ($flags !~ /advapi32/)
 	    && ($flags !~ /shell32/)
 	    && ($flags !~ /omp/)
+	    && ($flags !~ /[0-9]+/)
 	    ) {
 	    $linker_l .= $flags . " "
 	}
@@ -356,6 +380,8 @@ print CONFFILE "#define __32BIT__\t1\n"  if $binformat eq bin32;
 print CONFFILE "#define __64BIT__\t1\n"  if $binformat eq bin64;
 print CONFFILE "#define FUNDERSCORE\t$need_fu\n" if $need_fu ne "";
 print CONFFILE "#define HAVE_MSA\t1\n"  if $have_msa eq 1;
+print CONFFILE "#define HAVE_C11\t1\n" if $c11_atomics eq 1;
+
 
 if ($os eq "LINUX") {
 

@@ -28,10 +28,13 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "common.h"
 
 #define NBMAX 4096
+#if defined(__VEC__) || defined(__ALTIVEC__)
+
 #define HAVE_KERNEL_4x4_VEC 1
 #define HAVE_KERNEL_4x2_VEC 1
 #define HAVE_KERNEL_4x1_VEC 1
 
+#endif
 #if defined(HAVE_KERNEL_4x4_VEC) || defined(HAVE_KERNEL_4x2_VEC) || defined(HAVE_KERNEL_4x1_VEC)
 #include <altivec.h> 
 #endif

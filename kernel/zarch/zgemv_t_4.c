@@ -141,13 +141,13 @@ static void zgemv_kernel_4x4(BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y,
     "vst  %%v27,16(%[y])\n\t"
     "vst  %%v28,32(%[y])\n\t"
     "vst  %%v29,48(%[y])"
-    : "+m"(*(struct { FLOAT x[8]; } *) y),[n] "+&r"(n)
-    : [y] "a"(y), "m"(*(const struct { FLOAT x[n * 2]; } *) ap0),[ap0] "a"(ap0),
-       "m"(*(const struct { FLOAT x[n * 2]; } *) ap1),[ap1] "a"(ap1),
-       "m"(*(const struct { FLOAT x[n * 2]; } *) ap2),[ap2] "a"(ap2),
-       "m"(*(const struct { FLOAT x[n * 2]; } *) ap3),[ap3] "a"(ap3),
-       "m"(*(const struct { FLOAT x[n * 2]; } *) x),[x] "a"(x),
-       "m"(*(const struct { FLOAT x[2]; } *) alpha),[alpha] "a"(alpha)
+    : "+m"(*(FLOAT (*)[8]) y),[n] "+&r"(n)
+    : [y] "a"(y), "m"(*(const FLOAT (*)[n * 2]) ap0),[ap0] "a"(ap0),
+       "m"(*(const FLOAT (*)[n * 2]) ap1),[ap1] "a"(ap1),
+       "m"(*(const FLOAT (*)[n * 2]) ap2),[ap2] "a"(ap2),
+       "m"(*(const FLOAT (*)[n * 2]) ap3),[ap3] "a"(ap3),
+       "m"(*(const FLOAT (*)[n * 2]) x),[x] "a"(x),
+       "m"(*(const FLOAT (*)[2]) alpha),[alpha] "a"(alpha)
     : "cc", "r1", "v0", "v1", "v16", "v17", "v18", "v19", "v20", "v21",
        "v22", "v23", "v24", "v25", "v26", "v27", "v28", "v29", "v30",
        "v31");
@@ -229,11 +229,11 @@ static void zgemv_kernel_4x2(BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y,
     "vfmadb   %%v23,%%v19,%%v21,%%v23\n\t"
     "vst  %%v22,0(%[y])\n\t"
     "vst  %%v23,16(%[y])\n\t"
-    : "+m"(*(struct { FLOAT x[4]; } *) y),[n] "+&r"(n)
-    : [y] "a"(y), "m"(*(const struct { FLOAT x[n * 2]; } *) ap0),[ap0] "a"(ap0),
-       "m"(*(const struct { FLOAT x[n * 2]; } *) ap1),[ap1] "a"(ap1),
-       "m"(*(const struct { FLOAT x[n * 2]; } *) x),[x] "a"(x),
-       "m"(*(const struct { FLOAT x[2]; } *) alpha),[alpha] "a"(alpha)
+    : "+m"(*(FLOAT (*)[4]) y),[n] "+&r"(n)
+    : [y] "a"(y), "m"(*(const FLOAT (*)[n * 2]) ap0),[ap0] "a"(ap0),
+       "m"(*(const FLOAT (*)[n * 2]) ap1),[ap1] "a"(ap1),
+       "m"(*(const FLOAT (*)[n * 2]) x),[x] "a"(x),
+       "m"(*(const FLOAT (*)[2]) alpha),[alpha] "a"(alpha)
     : "cc", "r1", "v0", "v1", "v16", "v17", "v18", "v19", "v20", "v21",
        "v22", "v23");
 }
@@ -294,10 +294,10 @@ static void zgemv_kernel_4x1(BLASLONG n, FLOAT *ap, FLOAT *x, FLOAT *y,
     "vfmadb   %%v0,%%v16,%%v18,%%v0\n\t"
     "vfmadb   %%v0,%%v17,%%v19,%%v0\n\t"
     "vst  %%v0,0(%[y])\n\t"
-    : "+m"(*(struct { FLOAT x[2]; } *) y),[n] "+&r"(n)
-    : [y] "a"(y), "m"(*(const struct { FLOAT x[n * 2]; } *) ap),[ap] "a"(ap),
-       "m"(*(const struct { FLOAT x[n * 2]; } *) x),[x] "a"(x),
-       "m"(*(const struct { FLOAT x[2]; } *) alpha),[alpha] "a"(alpha)
+    : "+m"(*(FLOAT (*)[2]) y),[n] "+&r"(n)
+    : [y] "a"(y), "m"(*(const FLOAT (*)[n * 2]) ap),[ap] "a"(ap),
+       "m"(*(const FLOAT (*)[n * 2]) x),[x] "a"(x),
+       "m"(*(const FLOAT (*)[2]) alpha),[alpha] "a"(alpha)
     : "cc", "r1", "v0", "v1", "v16", "v17", "v18", "v19");
 }
 

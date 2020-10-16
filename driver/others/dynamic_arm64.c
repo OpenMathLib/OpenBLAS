@@ -52,10 +52,12 @@ extern gotoblas_t  gotoblas_THUNDERX;
 extern gotoblas_t  gotoblas_THUNDERX2T99;
 extern gotoblas_t  gotoblas_TSV110;
 extern gotoblas_t  gotoblas_EMAG8180;
+extern gotoblas_t  gotoblas_NEOVERSEN1;
+extern gotoblas_t  gotoblas_THUNDERX3T110;
 
 extern void openblas_warning(int verbose, const char * msg);
 
-#define NUM_CORETYPES   10
+#define NUM_CORETYPES   12
 
 /*
  * In case asm/hwcap.h is outdated on the build system, make sure
@@ -66,7 +68,7 @@ extern void openblas_warning(int verbose, const char * msg);
 #endif
 
 #define get_cpu_ftr(id, var) ({					\
-		asm("mrs %0, "#id : "=r" (var));		\
+		__asm__("mrs %0, "#id : "=r" (var));		\
 	})
 
 static char *corename[] = {
@@ -80,6 +82,8 @@ static char *corename[] = {
   "thunderx2t99",
   "tsv110",
   "emag8180",
+  "neoversen1",
+  "thunderx3t110",
   "unknown"
 };
 
@@ -94,6 +98,8 @@ char *gotoblas_corename(void) {
   if (gotoblas == &gotoblas_THUNDERX2T99) return corename[ 7];
   if (gotoblas == &gotoblas_TSV110)       return corename[ 8];
   if (gotoblas == &gotoblas_EMAG8180)     return corename[ 9];
+  if (gotoblas == &gotoblas_NEOVERSEN1)   return corename[10];
+  if (gotoblas == &gotoblas_THUNDERX3T110) return corename[11];
   return corename[NUM_CORETYPES];
 }
 
@@ -123,6 +129,8 @@ static gotoblas_t *force_coretype(char *coretype) {
     case  7: return (&gotoblas_THUNDERX2T99);
     case  8: return (&gotoblas_TSV110);
     case  9: return (&gotoblas_EMAG8180);
+    case 10: return (&gotoblas_NEOVERSEN1);
+    case 11: return (&gotoblas_THUNDERX3T110);
   }
   snprintf(message, 128, "Core not found: %s\n", coretype);
   openblas_warning(1, message);
@@ -168,6 +176,8 @@ static gotoblas_t *get_coretype(void) {
           return &gotoblas_CORTEXA72;
         case 0xd09: // Cortex A73
           return &gotoblas_CORTEXA73;
+        case 0xd0c: // Neoverse N1
+          return &gotoblas_NEOVERSEN1;
       }
       break;
     case 0x42: // Broadcom
@@ -184,6 +194,8 @@ static gotoblas_t *get_coretype(void) {
           return &gotoblas_THUNDERX;
         case 0x0af: // ThunderX2
           return &gotoblas_THUNDERX2T99;
+        case 0x0b8: // ThunderX3
+          return &gotoblas_THUNDERX3T110;
       }
       break;
     case 0x48: // HiSilicon

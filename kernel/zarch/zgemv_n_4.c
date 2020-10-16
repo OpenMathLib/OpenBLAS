@@ -112,12 +112,12 @@ static void zgemv_kernel_4x4(BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y) {
     "vst %%v1,16(%%r1,%[y])\n\t"
     "agfi   %%r1,32\n\t"
     "brctg  %[n],0b"
-    : "+m"(*(struct { FLOAT x[n * 2]; } *) y),[n] "+&r"(n)
-    : [y] "a"(y), "m"(*(const struct { FLOAT x[n * 2]; } *) ap0),[ap0] "a"(ap0),
-       "m"(*(const struct { FLOAT x[n * 2]; } *) ap1),[ap1] "a"(ap1),
-       "m"(*(const struct { FLOAT x[n * 2]; } *) ap2),[ap2] "a"(ap2),
-       "m"(*(const struct { FLOAT x[n * 2]; } *) ap3),[ap3] "a"(ap3),
-       "m"(*(const struct { FLOAT x[8]; } *) x),[x] "a"(x)
+    : "+m"(*(FLOAT (*)[n * 2]) y),[n] "+&r"(n)
+    : [y] "a"(y), "m"(*(const FLOAT (*)[n * 2]) ap0),[ap0] "a"(ap0),
+       "m"(*(const FLOAT (*)[n * 2]) ap1),[ap1] "a"(ap1),
+       "m"(*(const FLOAT (*)[n * 2]) ap2),[ap2] "a"(ap2),
+       "m"(*(const FLOAT (*)[n * 2]) ap3),[ap3] "a"(ap3),
+       "m"(*(const FLOAT (*)[8]) x),[x] "a"(x)
     : "cc", "r1", "v0", "v1", "v16", "v17", "v18", "v19", "v20", "v21",
        "v22", "v23", "v24", "v25", "v26", "v27", "v28", "v29", "v30",
        "v31");
@@ -172,10 +172,10 @@ static void zgemv_kernel_4x2(BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y) {
     "vst %%v1,16(%%r1,%[y])\n\t"
     "agfi   %%r1,32\n\t"
     "brctg  %[n],0b"
-    : "+m"(*(struct { FLOAT x[n * 2]; } *) y),[n] "+&r"(n)
-    : [y] "a"(y), "m"(*(const struct { FLOAT x[n * 2]; } *) ap0),[ap0] "a"(ap0),
-         "m"(*(const struct { FLOAT x[n * 2]; } *) ap1),[ap1] "a"(ap1),
-         "m"(*(const struct { FLOAT x[4]; } *) x),[x] "a"(x)
+    : "+m"(*(FLOAT (*)[n * 2]) y),[n] "+&r"(n)
+    : [y] "a"(y), "m"(*(const FLOAT (*)[n * 2]) ap0),[ap0] "a"(ap0),
+         "m"(*(const FLOAT (*)[n * 2]) ap1),[ap1] "a"(ap1),
+         "m"(*(const FLOAT (*)[4]) x),[x] "a"(x)
     : "cc", "r1", "v0", "v1", "v16", "v17", "v18", "v19", "v20", "v21",
        "v22", "v23", "v24", "v25", "v26", "v27");
 }
@@ -210,9 +210,9 @@ static void zgemv_kernel_4x1(BLASLONG n, FLOAT *ap, FLOAT *x, FLOAT *y) {
     "vst %%v1,16(%%r1,%[y])\n\t"
     "agfi   %%r1,32\n\t"
     "brctg  %[n],0b"
-    : "+m"(*(struct { FLOAT x[n * 2]; } *) y),[n] "+&r"(n)
-    : [y] "a"(y), "m"(*(const struct { FLOAT x[n * 2]; } *) ap),[ap] "a"(ap),
-       "m"(*(const struct { FLOAT x[2]; } *) x),[x] "a"(x)
+    : "+m"(*(FLOAT (*)[n * 2]) y),[n] "+&r"(n)
+    : [y] "a"(y), "m"(*(const FLOAT (*)[n * 2]) ap),[ap] "a"(ap),
+       "m"(*(const FLOAT (*)[2]) x),[x] "a"(x)
     : "cc", "r1", "v0", "v1", "v16", "v17", "v18", "v19", "v20", "v21");
 }
 
@@ -261,8 +261,8 @@ static void add_y_4(BLASLONG n, FLOAT *src, FLOAT *dest, FLOAT alpha_r,
     "vst %%v31,48(%%r1,%[dest])\n\t"
     "agfi   %%r1,64\n\t"
     "brctg  %[n],0b"
-    : "+m"(*(struct { FLOAT x[n * 2]; } *) dest),[n] "+&r"(n)
-    : [dest] "a"(dest), "m"(*(const struct { FLOAT x[n * 2]; } *) src),
+    : "+m"(*(FLOAT (*)[n * 2]) dest),[n] "+&r"(n)
+    : [dest] "a"(dest), "m"(*(const FLOAT (*)[n * 2]) src),
        [src] "a"(src),[alpha_r] "Q"(alpha_r),[alpha_i] "Q"(alpha_i)
     : "cc", "r1", "v0", "v1", "v16", "v17", "v18", "v19", "v20", "v21",
        "v22", "v23", "v24", "v25", "v26", "v27", "v28", "v29", "v30",

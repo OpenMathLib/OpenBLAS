@@ -3,8 +3,15 @@
 
 extern gotoblas_t gotoblas_POWER6;
 extern gotoblas_t gotoblas_POWER8;
-#if (!defined C_GCC) || (GCC_VERSION >= 60000)
+#if (!defined __GNUC__) || ( __GNUC__ >= 6)
 extern gotoblas_t gotoblas_POWER9;
+#endif
+#if (!defined __GNUC__) || ( __GNUC__ >= 11) \
+     || (__GNUC__ == 10 && __GNUC_MINOR__ >= 2)
+#define HAVE_P10_SUPPORT 1
+#endif
+#ifdef HAVE_P10_SUPPORT
+extern gotoblas_t gotoblas_POWER10;
 #endif
 
 extern void openblas_warning(int verbose, const char *msg);
@@ -13,7 +20,8 @@ static char *corename[] = {
 	"unknown",
 	"POWER6",
 	"POWER8",
-	"POWER9"
+	"POWER9",
+	"POWER10"
 };
 
 #define NUM_CORETYPES 4
@@ -21,8 +29,11 @@ static char *corename[] = {
 char *gotoblas_corename(void) {
 	if (gotoblas == &gotoblas_POWER6)	return corename[1];
 	if (gotoblas == &gotoblas_POWER8)	return corename[2];
-#if (!defined C_GCC) || (GCC_VERSION >= 60000)
+#if (!defined __GNUC__) || ( __GNUC__ >= 6)
 	if (gotoblas == &gotoblas_POWER9)	return corename[3];
+#endif
+#ifdef HAVE_P10_SUPPORT
+	if (gotoblas == &gotoblas_POWER10)	return corename[4];
 #endif
 	return corename[0];
 }
@@ -33,9 +44,13 @@ static gotoblas_t *get_coretype(void) {
 		return &gotoblas_POWER6;
 	if (__builtin_cpu_is("power8"))
 		return &gotoblas_POWER8;
-#if (!defined C_GCC) || (GCC_VERSION >= 60000)
+#if (!defined __GNUC__) || ( __GNUC__ >= 6)
 	if (__builtin_cpu_is("power9"))
 		return &gotoblas_POWER9;
+#endif
+#ifdef HAVE_P10_SUPPORT
+	if (__builtin_cpu_supports ("arch_3_1") && __builtin_cpu_supports ("mma"))
+		return &gotoblas_POWER10;
 #endif
 	return NULL;
 }
@@ -59,8 +74,11 @@ static gotoblas_t *force_coretype(char * coretype) {
 	{
 	case  1: return (&gotoblas_POWER6);
 	case  2: return (&gotoblas_POWER8);
-#if (!defined C_GCC) || (GCC_VERSION >= 60000)
+#if (!defined __GNUC__) || ( __GNUC__ >= 6)
 	case  3: return (&gotoblas_POWER9);
+#endif
+#ifdef HAVE_P10_SUPPORT
+	case  4: return (&gotoblas_POWER10);
 #endif
 	default: return NULL;
 	}

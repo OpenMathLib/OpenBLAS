@@ -1,13 +1,32 @@
 #include "common.h"
-int CNAME(BLASLONG bm,BLASLONG bn,BLASLONG bk,FLOAT alpha,FLOAT* ba,FLOAT* bb,FLOAT* C,BLASLONG ldc
+#if defined(BFLOAT16) && defined(BFLOAT16CONVERSION)
+static float
+bfloat16tof32 (bfloat16 f16)
+{
+  float result = 0;
+  unsigned short* q = (unsigned short*)(&result);
+#if __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__
+  q[0] = f16;
+#else
+  q[1] = f16;
+#endif
+  return result;
+}
+#define BF16TOF32(x) (bfloat16tof32(x))
+#else
+#define BF16TOF32(x) x
+#endif
+int CNAME(BLASLONG bm,BLASLONG bn,BLASLONG bk,FLOAT alpha,IFLOAT* ba,IFLOAT* bb,FLOAT* C,BLASLONG ldc
 #ifdef TRMMKERNEL
 		,BLASLONG offset
 #endif
 		)
 {
    BLASLONG i,j,k;
-   FLOAT *C0,*C1,*ptrba,*ptrbb;
-   FLOAT res0,res1,res2,res3,load0,load1,load2,load3,load4,load5,load6,load7;
+   FLOAT *C0,*C1;
+   IFLOAT *ptrba,*ptrbb;
+   FLOAT res0,res1,res2,res3;
+   IFLOAT load0,load1,load2,load3,load4,load5,load6,load7;
    for (j=0; j<bn/2; j+=1)
      {
         C0 = C;
@@ -24,36 +43,36 @@ int CNAME(BLASLONG bm,BLASLONG bn,BLASLONG bk,FLOAT alpha,FLOAT* ba,FLOAT* bb,FL
                {
                   load0 = ptrba[2*0+0];
                   load1 = ptrbb[2*0+0];
-                  res0 = res0+load0*load1;
+                  res0 = res0+BF16TOF32(load0)*BF16TOF32(load1);
                   load2 = ptrba[2*0+1];
-                  res1 = res1+load2*load1;
+                  res1 = res1+BF16TOF32(load2)*BF16TOF32(load1);
                   load3 = ptrbb[2*0+1];
-                  res2 = res2+load0*load3;
-                  res3 = res3+load2*load3;
+                  res2 = res2+BF16TOF32(load0)*BF16TOF32(load3);
+                  res3 = res3+BF16TOF32(load2)*BF16TOF32(load3);
                   load4 = ptrba[2*1+0];
                   load5 = ptrbb[2*1+0];
-                  res0 = res0+load4*load5;
+                  res0 = res0+BF16TOF32(load4)*BF16TOF32(load5);
                   load6 = ptrba[2*1+1];
-                  res1 = res1+load6*load5;
+                  res1 = res1+BF16TOF32(load6)*BF16TOF32(load5);
                   load7 = ptrbb[2*1+1];
-                  res2 = res2+load4*load7;
-                  res3 = res3+load6*load7;
+                  res2 = res2+BF16TOF32(load4)*BF16TOF32(load7);
+                  res3 = res3+BF16TOF32(load6)*BF16TOF32(load7);
                   load0 = ptrba[2*2+0];
                   load1 = ptrbb[2*2+0];
-                  res0 = res0+load0*load1;
+                  res0 = res0+BF16TOF32(load0)*BF16TOF32(load1);
                   load2 = ptrba[2*2+1];
-                  res1 = res1+load2*load1;
+                  res1 = res1+BF16TOF32(load2)*BF16TOF32(load1);
                   load3 = ptrbb[2*2+1];
-                  res2 = res2+load0*load3;
-                  res3 = res3+load2*load3;
+                  res2 = res2+BF16TOF32(load0)*BF16TOF32(load3);
+                  res3 = res3+BF16TOF32(load2)*BF16TOF32(load3);
                   load4 = ptrba[2*3+0];
                   load5 = ptrbb[2*3+0];
-                  res0 = res0+load4*load5;
+                  res0 = res0+BF16TOF32(load4)*BF16TOF32(load5);
                   load6 = ptrba[2*3+1];
-                  res1 = res1+load6*load5;
+                  res1 = res1+BF16TOF32(load6)*BF16TOF32(load5);
                   load7 = ptrbb[2*3+1];
-                  res2 = res2+load4*load7;
-                  res3 = res3+load6*load7;
+                  res2 = res2+BF16TOF32(load4)*BF16TOF32(load7);
+                  res3 = res3+BF16TOF32(load6)*BF16TOF32(load7);
                   ptrba = ptrba+8;
                   ptrbb = ptrbb+8;
                }
@@ -61,12 +80,12 @@ int CNAME(BLASLONG bm,BLASLONG bn,BLASLONG bk,FLOAT alpha,FLOAT* ba,FLOAT* bb,FL
                {
                   load0 = ptrba[2*0+0];
                   load1 = ptrbb[2*0+0];
-                  res0 = res0+load0*load1;
+                  res0 = res0+BF16TOF32(load0)*BF16TOF32(load1);
                   load2 = ptrba[2*0+1];
-                  res1 = res1+load2*load1;
+                  res1 = res1+BF16TOF32(load2)*BF16TOF32(load1);
                   load3 = ptrbb[2*0+1];
-                  res2 = res2+load0*load3;
-                  res3 = res3+load2*load3;
+                  res2 = res2+BF16TOF32(load0)*BF16TOF32(load3);
+                  res3 = res3+BF16TOF32(load2)*BF16TOF32(load3);
                   ptrba = ptrba+2;
                   ptrbb = ptrbb+2;
                }
@@ -90,9 +109,9 @@ int CNAME(BLASLONG bm,BLASLONG bn,BLASLONG bk,FLOAT alpha,FLOAT* ba,FLOAT* bb,FL
                {
                   load0 = ptrba[0+0];
                   load1 = ptrbb[2*0+0];
-                  res0 = res0+load0*load1;
+                  res0 = res0+BF16TOF32(load0)*BF16TOF32(load1);
                   load2 = ptrbb[2*0+1];
-                  res1 = res1+load0*load2;
+                  res1 = res1+BF16TOF32(load0)*BF16TOF32(load2);
                   ptrba = ptrba+1;
                   ptrbb = ptrbb+2;
                }
@@ -121,9 +140,9 @@ int CNAME(BLASLONG bm,BLASLONG bn,BLASLONG bk,FLOAT alpha,FLOAT* ba,FLOAT* bb,FL
                {
                   load0 = ptrba[2*0+0];
                   load1 = ptrbb[0+0];
-                  res0 = res0+load0*load1;
+                  res0 = res0+BF16TOF32(load0)*BF16TOF32(load1);
                   load2 = ptrba[2*0+1];
-                  res1 = res1+load2*load1;
+                  res1 = res1+BF16TOF32(load2)*BF16TOF32(load1);
                   ptrba = ptrba+2;
                   ptrbb = ptrbb+1;
                }
@@ -141,7 +160,7 @@ int CNAME(BLASLONG bm,BLASLONG bn,BLASLONG bk,FLOAT alpha,FLOAT* ba,FLOAT* bb,FL
                {
                   load0 = ptrba[0+0];
                   load1 = ptrbb[0+0];
-                  res0 = res0+load0*load1;
+                  res0 = res0+BF16TOF32(load0)*BF16TOF32(load1);
                   ptrba = ptrba+1;
                   ptrbb = ptrbb+1;
                }

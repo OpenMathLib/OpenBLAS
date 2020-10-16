@@ -28,7 +28,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "common.h"
 
 
-#if defined(HASWELL) || defined(ZEN) || defined (SKYLAKEX)
+#if defined(HASWELL) || defined(ZEN) || defined (SKYLAKEX) || defined (COOPERLAKE)
 #include "cscal_microk_haswell-2.c"
 #elif defined(BULLDOZER)  || defined(PILEDRIVER)
 #include "cscal_microk_bulldozer-2.c"

@@ -34,6 +34,11 @@ typedef long BLASLONG;
 typedef unsigned long BLASULONG;
 #endif
 
+#ifndef BFLOAT16
+#include <stdint.h>
+typedef uint16_t bfloat16;
+#endif
+
 #ifdef OPENBLAS_USE64BITINT
 typedef BLASLONG blasint;
 #else
@@ -90,4 +95,9 @@ typedef int blasint;
   #define openblas_complex_double_imag(z)            ((z).imag)
   #define openblas_complex_xdouble_real(z)           ((z).real)
   #define openblas_complex_xdouble_imag(z)           ((z).imag)
+#endif
+
+/* Inclusion of Linux-specific header is needed for definition of cpu_set_t. */
+#ifdef OPENBLAS_OS_LINUX
+#include <sched.h>
 #endif

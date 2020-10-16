@@ -126,7 +126,7 @@ int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa, FLO
 
       for(jjs = js; jjs < js + min_j; jjs += min_jj){
 	min_jj = min_j + js - jjs;
-	if (min_jj > GEMM_UNROLL_N*3) min_jj = GEMM_UNROLL_N*3;
+	if (min_jj >= GEMM_UNROLL_N*3) min_jj = GEMM_UNROLL_N*3;
 	else
 	  if (min_jj > GEMM_UNROLL_N) min_jj = GEMM_UNROLL_N;
 
@@ -182,7 +182,7 @@ int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa, FLO
 
       for(jjs = 0; jjs < min_j - min_l - ls + js; jjs += min_jj){
 	min_jj = min_j - min_l - ls + js - jjs;
-	if (min_jj > GEMM_UNROLL_N*3) min_jj = GEMM_UNROLL_N*3;
+	if (min_jj >= GEMM_UNROLL_N*3) min_jj = GEMM_UNROLL_N*3;
 	else
 	  if (min_jj > GEMM_UNROLL_N) min_jj = GEMM_UNROLL_N;
 
@@ -243,7 +243,7 @@ int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa, FLO
 
       for(jjs = js; jjs < js + min_j; jjs += min_jj){
 	min_jj = min_j + js - jjs;
-	if (min_jj > GEMM_UNROLL_N*3) min_jj = GEMM_UNROLL_N*3;
+	if (min_jj >= GEMM_UNROLL_N*3) min_jj = GEMM_UNROLL_N*3;
 	else
 	  if (min_jj > GEMM_UNROLL_N) min_jj = GEMM_UNROLL_N;
 
@@ -304,7 +304,7 @@ int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa, FLO
 
       for(jjs = 0; jjs < min_j - js + ls; jjs += min_jj){
 	min_jj = min_j - js + ls - jjs;
-	if (min_jj > GEMM_UNROLL_N*3) min_jj = GEMM_UNROLL_N*3;
+	if (min_jj >= GEMM_UNROLL_N*3) min_jj = GEMM_UNROLL_N*3;
 	else
 	  if (min_jj > GEMM_UNROLL_N) min_jj = GEMM_UNROLL_N;
 

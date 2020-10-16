@@ -37,6 +37,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #endif
 
+#if defined(__VEC__) || defined(__ALTIVEC__)
+
 /**
  * Find  minimum index 
  * Warning: requirements n>0  and n % 32 == 0
@@ -313,7 +315,7 @@ static BLASLONG diamin_kernel_32(BLASLONG n, FLOAT *x, FLOAT *minf) {
     return index;
 
 }
-
+#endif
 
 
 BLASLONG CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x) {
@@ -327,12 +329,15 @@ BLASLONG CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x) {
     if (inc_x == 1) {
 
 #if defined(_CALL_ELF) && (_CALL_ELF == 2)
+#if defined(__VEC__) || defined(__ALTIVEC__)
+
         BLASLONG n1 = n & -32;
 	if (n1 > 0) {
 
             min = diamin_kernel_32(n1, x, &minf);
             i = n1;
         }
+#endif
 #endif
         while (i < n) {
             if (ABS(x[i]) < minf) {

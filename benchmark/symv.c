@@ -162,7 +162,7 @@ int main(int argc, char *argv[]){
     fprintf(stderr,"Out of Memory!!\n");exit(1);
   }
 
-#ifdef linux
+#ifdef __linux
   srandom(getpid());
 #endif
 
@@ -177,7 +177,7 @@ int main(int argc, char *argv[]){
 
    for(j = 0; j < m; j++){
       		for(i = 0; i < m * COMPSIZE; i++){
-			a[i + j * m * COMPSIZE] = ((FLOAT) rand() / (FLOAT) RAND_MAX) - 0.5;
+			a[(long)i + (long)j * (long)m * COMPSIZE] = ((FLOAT) rand() / (FLOAT) RAND_MAX) - 0.5;
       		}
    }
 

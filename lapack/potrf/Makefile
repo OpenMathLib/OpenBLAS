@@ -17,6 +17,20 @@ ZBLASOBJS += zpotrf_U_parallel.$(SUFFIX) zpotrf_L_parallel.$(SUFFIX)
 XBLASOBJS += xpotrf_U_parallel.$(SUFFIX) xpotrf_L_parallel.$(SUFFIX)
 endif
 
+ifeq "$(or $(BUILD_SINGLE),$(BUILD_DOUBLE))" ""
+SBLASOBJS=
+endif
+ifneq ($(BUILD_DOUBLE),1)
+DBLASOBJS=
+endif
+ifeq "$(or $(BUILD_COMPLEX),$(BUILD_COMPLEX16))" ""
+CBLASOBJS=
+endif
+ifneq ($(BUILD_COMPLEX16),1)
+ZBLASOBJS=
+endif
+
+
 spotrf_U_single.$(SUFFIX) : potrf_U_single.c
 	$(CC) -c $(CFLAGS) -UCOMPLEX -UDOUBLE $< -o $(@F)
 

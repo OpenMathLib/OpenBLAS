@@ -6,7 +6,10 @@ Travis CI: [![Build Status](https://travis-ci.org/xianyi/OpenBLAS.svg?branch=dev
 
 AppVeyor: [![Build status](https://ci.appveyor.com/api/projects/status/09sohd35n8nkkx64/branch/develop?svg=true)](https://ci.appveyor.com/project/xianyi/openblas/branch/develop)
 
+Drone CI: [![Build Status](https://cloud.drone.io/api/badges/xianyi/OpenBLAS/status.svg?branch=develop)](https://cloud.drone.io/xianyi/OpenBLAS/)
+
 [![Build Status](https://dev.azure.com/xianyi/OpenBLAS/_apis/build/status/xianyi.OpenBLAS?branchName=develop)](https://dev.azure.com/xianyi/OpenBLAS/_build/latest?definitionId=1&branchName=develop)
+
 
 ## Introduction
 
@@ -25,7 +28,8 @@ You can download them from [file hosting on sourceforge.net](https://sourceforge
 ## Installation from Source
 
 Download from project homepage, https://xianyi.github.com/OpenBLAS/, or check out the code
-using Git from https://github.com/xianyi/OpenBLAS.git.
+using Git from https://github.com/xianyi/OpenBLAS.git. (If you want the most up to date version, be
+sure to use the develop branch - master is several years out of date due to a change of maintainership.)
 Buildtime parameters can be chosen in Makefile.rule, see there for a short description of each option.
 Most can also be given directly on the make or cmake command line.
 
@@ -42,7 +46,10 @@ Building OpenBLAS requires the following to be installed:
 
 Simply invoking `make` (or `gmake` on BSD) will detect the CPU automatically.
 To set a specific target CPU, use `make TARGET=xxx`, e.g. `make TARGET=NEHALEM`.
-The full target list is in the file `TargetList.txt`.
+The full target list is in the file `TargetList.txt`. For building with `cmake`, the
+usual conventions apply, i.e. create a build directory either underneath the toplevel
+OpenBLAS source directory or separate from it, and invoke `cmake` there with the path
+to the source tree and any build options you plan to set.
 
 ### Cross compile
 
@@ -54,6 +61,10 @@ Examples:
 * On an x86 box, compile this library for a loongson3a CPU:
   ```sh
   make BINARY=64 CC=mips64el-unknown-linux-gnu-gcc FC=mips64el-unknown-linux-gnu-gfortran HOSTCC=gcc TARGET=LOONGSON3A
+  ```
+  or same with the newer mips-crosscompiler put out by Loongson that defaults to the 32bit ABI:
+  ```sh
+  make HOSTCC=gcc CC='/opt/mips-loongson-gcc7.3-linux-gnu/2019.06-29/bin/mips-linux-gnu-gcc -mabi=64' FC='/opt/mips-loongson-gcc7.3-linux-gnu/2019.06-29/bin/mips-linux-gnu-gfortran -mabi=64' TARGET=LOONGSON3A
   ```
 
 * On an x86 box, compile this library for a loongson3a CPU with loongcc (based on Open64) compiler:
@@ -119,6 +130,11 @@ Please read `GotoBLAS_01Readme.txt` for older CPU models already supported by th
 - **AMD STEAMROLLER**: Uses Bulldozer codes with some optimizations.
 - **AMD ZEN**: Uses Haswell codes with some optimizations.
 
+#### MIPS32
+
+- **MIPS 1004K**: uses P5600 codes
+- **MIPS 24K**: uses P5600 codes
+
 #### MIPS64
 
 - **ICT Loongson 3A**: Optimized Level-3 BLAS and the part of Level-1,2.
@@ -139,12 +155,17 @@ Please read `GotoBLAS_01Readme.txt` for older CPU models already supported by th
 - **Falkor**: same as A57 (different cpu specifications)
 - **ThunderX**: Optimized some Level-1 functions
 - **ThunderX2T99**: Optimized Level-3 BLAS and parts of Levels 1 and 2
+- **ThunderX3T110**
 - **TSV110**: Optimized some Level-3 helper functions
+- **EMAG 8180**: preliminary support based on A57
+- **Neoverse N1**: (AWS Graviton2) preliminary support
+- **Apple Vortex**: preliminary support based on ARMV8
 
 #### PPC/PPC64
 
 - **POWER8**: Optimized BLAS, only for PPC64LE (Little Endian), only with `USE_OPENMP=1`
 - **POWER9**: Optimized Level-3 BLAS (real) and some Level-1,2. PPC64LE with OpenMP only. 
+- **POWER10**:
 
 #### IBM zEnterprise System
 
@@ -153,13 +174,18 @@ Please read `GotoBLAS_01Readme.txt` for older CPU models already supported by th
 
 ### Support for multiple targets in a single library
 
-OpenBLAS can be built for multiple targets with runtime detection of the target cpu by specifiying DYNAMIC_ARCH=1 in Makefile.rule, on the gmake command line or as -DDYNAMIC_ARCH=TRUE in cmake.
-For **x86_64**, the list of targets this activates contains Prescott, Core2, Nehalem, Barcelona, Sandybridge, Bulldozer, Piledriver, Steamroller, Excavator, Haswell, Zen, SkylakeX. For cpu generations not included in this list, the corresponding older model is used. If you also specify DYNAMIC_OLDER=1, specific support for Penryn, Dunnington, Opteron, Opteron/SSE3, Bobcat, Atom and Nano is added. Finally there is an option DYNAMIC_LIST that allows to specify an individual list of targets to include instead of the default.
-DYNAMIC_ARCH is also supported on **x86**, where it translates to Katmai, Coppermine, Northwood, Prescott, Banias,
+OpenBLAS can be built for multiple targets with runtime detection of the target cpu by specifiying `DYNAMIC_ARCH=1` in Makefile.rule, on the gmake command line or as `-DDYNAMIC_ARCH=TRUE` in cmake.
+
+For **x86_64**, the list of targets this activates contains Prescott, Core2, Nehalem, Barcelona, Sandybridge, Bulldozer, Piledriver, Steamroller, Excavator, Haswell, Zen, SkylakeX. For cpu generations not included in this list, the corresponding older model is used. If you also specify `DYNAMIC_OLDER=1`, specific support for Penryn, Dunnington, Opteron, Opteron/SSE3, Bobcat, Atom and Nano is added. Finally there is an option `DYNAMIC_LIST` that allows to specify an individual list of targets to include instead of the default.
+
+`DYNAMIC_ARCH` is also supported on **x86**, where it translates to Katmai, Coppermine, Northwood, Prescott, Banias,
 Core2, Penryn, Dunnington, Nehalem, Athlon, Opteron, Opteron_SSE3, Barcelona, Bobcat, Atom and Nano.
+
 On **ARMV8**, it enables support for CortexA53, CortexA57, CortexA72, CortexA73, Falkor, ThunderX, ThunderX2T99, TSV110 as well as generic ARMV8 cpus.
+
 For **POWER**, the list encompasses POWER6, POWER8 and POWER9, on **ZARCH** it comprises Z13 and Z14.
-The TARGET option can be used in conjunction with DYNAMIC_ARCH=1 to specify which cpu model should be assumed for all the
+
+The `TARGET` option can be used in conjunction with `DYNAMIC_ARCH=1` to specify which cpu model should be assumed for all the
 common code in the library, usually you will want to set this to the oldest model you expect to encounter.
 Please note that it is not possible to combine support for different architectures, so no combined 32 and 64 bit or x86_64 and arm64 in the same library.
 
@@ -207,7 +233,8 @@ We provide the following functions to control the number of threads at runtime:
 void goto_set_num_threads(int num_threads);
 void openblas_set_num_threads(int num_threads);
 ```
-
+Note that these are only used once at library initialization, and are not available for
+fine-tuning thread numbers in individual BLAS calls. 
 If you compile this library with `USE_OPENMP=1`, you should use the above functions too.
 
 ## Reporting bugs

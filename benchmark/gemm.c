@@ -39,6 +39,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #ifdef DOUBLE
 #define GEMM   BLASFUNC(dgemm)
+#elif defined(HALF)
+#define GEMM   BLASFUNC(sbgemm)
 #else
 #define GEMM   BLASFUNC(sgemm)
 #endif
@@ -120,7 +122,8 @@ static void *huge_malloc(BLASLONG size){
 
 int main(int argc, char *argv[]){
 
-  FLOAT *a, *b, *c;
+  IFLOAT *a, *b;
+  FLOAT *c;
   FLOAT alpha[] = {1.0, 0.0};
   FLOAT beta [] = {0.0, 0.0};
   char transa = 'N';
@@ -184,25 +187,25 @@ int main(int argc, char *argv[]){
     k = to;
   }
 
-  if (( a = (FLOAT *)malloc(sizeof(FLOAT) * m * k * COMPSIZE)) == NULL) {
+  if (( a = (IFLOAT *)malloc(sizeof(IFLOAT) * m * k * COMPSIZE)) == NULL) {
     fprintf(stderr,"Out of Memory!!\n");exit(1);
   }
-  if (( b = (FLOAT *)malloc(sizeof(FLOAT) * k * n * COMPSIZE)) == NULL) {
+  if (( b = (IFLOAT *)malloc(sizeof(IFLOAT) * k * n * COMPSIZE)) == NULL) {
     fprintf(stderr,"Out of Memory!!\n");exit(1);
   }
   if (( c = (FLOAT *)malloc(sizeof(FLOAT) * m * n * COMPSIZE)) == NULL) {
     fprintf(stderr,"Out of Memory!!\n");exit(1);
   }
 
-#ifdef linux
+#ifdef __linux
   srandom(getpid());
 #endif
 
   for (i = 0; i < m * k * COMPSIZE; i++) {
-    a[i] = ((FLOAT) rand() / (FLOAT) RAND_MAX) - 0.5;
+    a[i] = ((IFLOAT) rand() / (IFLOAT) RAND_MAX) - 0.5;
   }
   for (i = 0; i < k * n * COMPSIZE; i++) {
-    b[i] = ((FLOAT) rand() / (FLOAT) RAND_MAX) - 0.5;
+    b[i] = ((IFLOAT) rand() / (IFLOAT) RAND_MAX) - 0.5;
   }
   for (i = 0; i < m * n * COMPSIZE; i++) {
     c[i] = ((FLOAT) rand() / (FLOAT) RAND_MAX) - 0.5;

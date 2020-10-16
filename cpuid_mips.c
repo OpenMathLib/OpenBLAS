@@ -73,16 +73,18 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define CPU_UNKNOWN     0
 #define CPU_P5600       1
 #define CPU_1004K	2
+#define CPU_24K		3
 
 static char *cpuname[] = {
   "UNKNOWN",
   "P5600",
-  "1004K"
+  "MIPS1004K",
+  "MIPS24K"
 };
 
 int detect(void){
 
-#ifdef linux
+#ifdef __linux
   FILE *infile;
   char buffer[512], *p;
 
@@ -105,6 +107,8 @@ int detect(void){
     return CPU_P5600;
   } else if (strstr(p, "1004K")) {
     return CPU_1004K;
+  } else if (strstr(p, " 24K")) {
+    return CPU_24K;
   } else  
     return CPU_UNKNOWN;
   }
@@ -121,7 +125,7 @@ void get_architecture(void){
 }
 
 void get_subarchitecture(void){
-  if(detect()==CPU_P5600|| detect()==CPU_1004K){
+  if(detect()==CPU_P5600|| detect()==CPU_1004K|| detect()==CPU_24K){
     printf("P5600");
   }else{
     printf("UNKNOWN");
@@ -146,7 +150,15 @@ void get_cpuconfig(void){
     printf("#define MIPS1004K\n");
     printf("#define L1_DATA_SIZE 32768\n");
     printf("#define L1_DATA_LINESIZE 32\n");
-    printf("#define L2_SIZE 26144\n");
+    printf("#define L2_SIZE 262144\n");
+    printf("#define DTB_DEFAULT_ENTRIES 8\n");
+    printf("#define DTB_SIZE 4096\n");
+    printf("#define L2_ASSOCIATIVE 4\n");
+  } else if (detect()==CPU_24K) {
+    printf("#define MIPS24K\n");
+    printf("#define L1_DATA_SIZE 32768\n");
+    printf("#define L1_DATA_LINESIZE 32\n");
+    printf("#define L2_SIZE 32768\n");
     printf("#define DTB_DEFAULT_ENTRIES 8\n");
     printf("#define DTB_SIZE 4096\n");
     printf("#define L2_ASSOCIATIVE 4\n");
@@ -159,7 +171,9 @@ void get_libname(void){
   if(detect()==CPU_P5600) {
     printf("p5600\n");
   } else if (detect()==CPU_1004K) {
-    printf("1004K\n");
+    printf("mips1004K\n");
+  } else if (detect()==CPU_24K) {
+    printf("mips24K\n");
   }else{
     printf("mips\n");
   }

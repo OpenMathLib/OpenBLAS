@@ -162,7 +162,7 @@ int main(int argc, char *argv[]){
 
 
 
-#ifdef linux
+#ifdef __linux
   srandom(getpid());
 #endif
 
@@ -175,8 +175,8 @@ int main(int argc, char *argv[]){
 
     for(j = 0; j < m; j++){
       for(i = 0; i < m * COMPSIZE; i++){
-	a[i + j * m * COMPSIZE] = ((FLOAT) rand() / (FLOAT) RAND_MAX) - 0.5;
-	b[i + j * m * COMPSIZE] = ((FLOAT) rand() / (FLOAT) RAND_MAX) - 0.5;
+	a[(long)i + (long)j * (long)m * COMPSIZE] = ((FLOAT) rand() / (FLOAT) RAND_MAX) - 0.5;
+	b[(long)i + (long)j * (long)m * COMPSIZE] = ((FLOAT) rand() / (FLOAT) RAND_MAX) - 0.5;
       }
     }
 
@@ -187,8 +187,6 @@ int main(int argc, char *argv[]){
     gettimeofday( &stop, (struct timezone *)0);
 
     time1 = (double)(stop.tv_sec - start.tv_sec) + (double)((stop.tv_usec - start.tv_usec)) * 1.e-6;
-
-    gettimeofday( &start, (struct timezone *)0);
 
     fprintf(stderr,
 	    " %10.2f MFlops  %10.6f sec\n",

@@ -53,6 +53,13 @@ void F77_drot( const int *N, double *X, const int *incX, double *Y,
    return;
 }
 
+void F77_drotm(const int *N, double *X, const int *incX, double *Y,
+               const int *incY, const double *dparam)
+{
+   cblas_drotm(*N, X, *incX, Y, *incY, dparam);
+   return;
+}
+
 void F77_dscal(const int *N, const double *alpha, double *X,
                          const int *incX)
 {
@@ -65,16 +72,6 @@ void F77_dswap( const int *N, double *X, const int *incX,
 {
    cblas_dswap(*N,X,*incX,Y,*incY);
    return;
-}
-
-double F77_dzasum(const int *N, void *X, const int *incX)
-{
-   return cblas_dzasum(*N, X, *incX);
-}
-
-double F77_dznrm2(const int *N, OPENBLAS_CONST void *X, const int *incX)
-{
-   return cblas_dznrm2(*N, X, *incX);
 }
 
 int F77_idamax(const int *N, OPENBLAS_CONST double *X, const int *incX)

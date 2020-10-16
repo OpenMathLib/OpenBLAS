@@ -1,3 +1,4 @@
+/*
 	.file	"icamin.c"
 	.abiversion 2
 	.section	".text"
@@ -5,6 +6,12 @@
 	.p2align 4,,15
 	.globl icamin_k
 	.type	icamin_k, @function
+*/
+#define ASSEMBLER
+#include "common.h"
+
+        PROLOGUE
+
 icamin_k:
 .LCF0:
 0:	addis 2,12,.TOC.-.LCF0@ha

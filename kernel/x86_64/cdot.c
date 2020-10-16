@@ -34,7 +34,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "cdot_microk_bulldozer-2.c"
 #elif defined(STEAMROLLER) || defined(PILEDRIVER)  || defined(EXCAVATOR)
 #include "cdot_microk_steamroller-2.c"
-#elif defined(HASWELL) || defined(ZEN) || defined (SKYLAKEX)
+#elif defined(HASWELL) || defined(ZEN) || defined (SKYLAKEX) || defined (COOPERLAKE)
 #include "cdot_microk_haswell-2.c"
 #elif defined(SANDYBRIDGE)
 #include "cdot_microk_sandy-2.c"
@@ -141,8 +141,8 @@ OPENBLAS_COMPLEX_FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLA
 		i=0;
 		ix=0;
 		iy=0;
-		inc_x <<= 1;
-		inc_y <<= 1;
+		inc_x *= 2;
+		inc_y *= 2;
 		while(i < n)
 		{
 

@@ -54,7 +54,7 @@
 #ifdef OPTERON
 #define LOAD(OFFSET, ADDR, REG)		xorps	REG, REG; addpd	OFFSET(ADDR), REG
 #else
-#define LOAD(OFFSET, ADDR, REG)		movaps	OFFSET(ADDR), REG
+#define LOAD(OFFSET, ADDR, REG)		movups	OFFSET(ADDR), REG
 #endif
 
 	PROLOGUE
@@ -104,14 +104,14 @@
 	sarq	$4, %rax
 	jle	.L13
 
-	movaps	-16 * SIZE(X), %xmm0
-	movaps	-14 * SIZE(X), %xmm1
-	movaps	-12 * SIZE(X), %xmm2
-	movaps	-10 * SIZE(X), %xmm3
-	movaps	 -8 * SIZE(X), %xmm4
-	movaps	 -6 * SIZE(X), %xmm5
-	movaps	 -4 * SIZE(X), %xmm6
-	movaps	 -2 * SIZE(X), %xmm7
+	movups	-16 * SIZE(X), %xmm0
+	movups	-14 * SIZE(X), %xmm1
+	movups	-12 * SIZE(X), %xmm2
+	movups	-10 * SIZE(X), %xmm3
+	movups	 -8 * SIZE(X), %xmm4
+	movups	 -6 * SIZE(X), %xmm5
+	movups	 -4 * SIZE(X), %xmm6
+	movups	 -2 * SIZE(X), %xmm7
 
 	decq	%rax
 	jle .L12
@@ -122,36 +122,36 @@
 	PREFETCHW (PREFETCHSIZE +  0) - PREOFFSET(Y)
 #endif
 
-	movaps	%xmm0, -16 * SIZE(Y)
+	movups	%xmm0, -16 * SIZE(Y)
 	LOAD( 0 * SIZE, X, %xmm0)
-	movaps	%xmm1, -14 * SIZE(Y)
+	movups	%xmm1, -14 * SIZE(Y)
 	LOAD( 2 * SIZE, X, %xmm1)
 
 #ifdef PREFETCH
 	PREFETCH (PREFETCHSIZE +  0) - PREOFFSET(X)
 #endif
 
-	movaps	%xmm2, -12 * SIZE(Y)
+	movups	%xmm2, -12 * SIZE(Y)
 	LOAD( 4 * SIZE, X, %xmm2)
-	movaps	%xmm3, -10 * SIZE(Y)
+	movups	%xmm3, -10 * SIZE(Y)
 	LOAD( 6 * SIZE, X, %xmm3)
 
 #if defined(PREFETCHW) && !defined(FETCH128)
 	PREFETCHW (PREFETCHSIZE +  64) - PREOFFSET(Y)
 #endif
 
-	movaps	%xmm4, -8 * SIZE(Y)
+	movups	%xmm4, -8 * SIZE(Y)
 	LOAD( 8 * SIZE, X, %xmm4)
-	movaps	%xmm5, -6 * SIZE(Y)
+	movups	%xmm5, -6 * SIZE(Y)
 	LOAD(10 * SIZE, X, %xmm5)
 
 #if defined(PREFETCH) && !defined(FETCH128)
 	PREFETCH (PREFETCHSIZE +  64) - PREOFFSET(X)
 #endif
 
-	movaps	%xmm6, -4 * SIZE(Y)
+	movups	%xmm6, -4 * SIZE(Y)
 	LOAD(12 * SIZE, X, %xmm6)
-	movaps	%xmm7, -2 * SIZE(Y)
+	movups	%xmm7, -2 * SIZE(Y)
 	LOAD(14 * SIZE, X, %xmm7)
 
 	subq	$-16 * SIZE, Y
@@ -161,14 +161,14 @@
 	ALIGN_3
 
 .L12:
-	movaps	%xmm0, -16 * SIZE(Y)
-	movaps	%xmm1, -14 * SIZE(Y)
-	movaps	%xmm2, -12 * SIZE(Y)
-	movaps	%xmm3, -10 * SIZE(Y)
-	movaps	%xmm4,  -8 * SIZE(Y)
-	movaps	%xmm5,  -6 * SIZE(Y)
-	movaps	%xmm6,  -4 * SIZE(Y)
-	movaps	%xmm7,  -2 * SIZE(Y)
+	movups	%xmm0, -16 * SIZE(Y)
+	movups	%xmm1, -14 * SIZE(Y)
+	movups	%xmm2, -12 * SIZE(Y)
+	movups	%xmm3, -10 * SIZE(Y)
+	movups	%xmm4,  -8 * SIZE(Y)
+	movups	%xmm5,  -6 * SIZE(Y)
+	movups	%xmm6,  -4 * SIZE(Y)
+	movups	%xmm7,  -2 * SIZE(Y)
 
 	subq	$-16 * SIZE, Y
 	subq	$-16 * SIZE, X
@@ -179,15 +179,15 @@
 	jle	.L14
 	ALIGN_3
 
-	movaps	-16 * SIZE(X), %xmm0
-	movaps	-14 * SIZE(X), %xmm1
-	movaps	-12 * SIZE(X), %xmm2
-	movaps	-10 * SIZE(X), %xmm3
+	movups	-16 * SIZE(X), %xmm0
+	movups	-14 * SIZE(X), %xmm1
+	movups	-12 * SIZE(X), %xmm2
+	movups	-10 * SIZE(X), %xmm3
 
-	movaps	%xmm0, -16 * SIZE(Y)
-	movaps	%xmm1, -14 * SIZE(Y)
-	movaps	%xmm2, -12 * SIZE(Y)
-	movaps	%xmm3, -10 * SIZE(Y)
+	movups	%xmm0, -16 * SIZE(Y)
+	movups	%xmm1, -14 * SIZE(Y)
+	movups	%xmm2, -12 * SIZE(Y)
+	movups	%xmm3, -10 * SIZE(Y)
 
 	addq	$8 * SIZE, X
 	addq	$8 * SIZE, Y
@@ -198,11 +198,11 @@
 	jle	.L15
 	ALIGN_3
 
-	movaps	-16 * SIZE(X), %xmm0
-	movaps	-14 * SIZE(X), %xmm1
+	movups	-16 * SIZE(X), %xmm0
+	movups	-14 * SIZE(X), %xmm1
 
-	movaps	%xmm0, -16 * SIZE(Y)
-	movaps	%xmm1, -14 * SIZE(Y)
+	movups	%xmm0, -16 * SIZE(Y)
+	movups	%xmm1, -14 * SIZE(Y)
 
 	addq	$4 * SIZE, X
 	addq	$4 * SIZE, Y
@@ -213,8 +213,8 @@
 	jle	.L16
 	ALIGN_3
 
-	movaps	-16 * SIZE(X), %xmm0
-	movaps	%xmm0, -16 * SIZE(Y)
+	movups	-16 * SIZE(X), %xmm0
+	movups	%xmm0, -16 * SIZE(Y)
 
 	addq	$2 * SIZE, X
 	addq	$2 * SIZE, Y
@@ -246,13 +246,13 @@
 	sarq	$4, %rax
 	jle	.L23
 
-	movaps	-15 * SIZE(X), %xmm1
-	movaps	-13 * SIZE(X), %xmm2
-	movaps	-11 * SIZE(X), %xmm3
-	movaps	 -9 * SIZE(X), %xmm4
-	movaps	 -7 * SIZE(X), %xmm5
-	movaps	 -5 * SIZE(X), %xmm6
-	movaps	 -3 * SIZE(X), %xmm7
+	movups	-15 * SIZE(X), %xmm1
+	movups	-13 * SIZE(X), %xmm2
+	movups	-11 * SIZE(X), %xmm3
+	movups	 -9 * SIZE(X), %xmm4
+	movups	 -7 * SIZE(X), %xmm5
+	movups	 -5 * SIZE(X), %xmm6
+	movups	 -3 * SIZE(X), %xmm7
 
 	decq	%rax
 	jle .L22
@@ -264,11 +264,11 @@
 #endif
 
 	SHUFPD_1 %xmm1, %xmm0
-	movaps	%xmm0, -16 * SIZE(Y)
+	movups	%xmm0, -16 * SIZE(Y)
 	LOAD(-1 * SIZE, X, %xmm0)
 
 	SHUFPD_1 %xmm2, %xmm1
-	movaps	%xmm1, -14 * SIZE(Y)
+	movups	%xmm1, -14 * SIZE(Y)
 	LOAD( 1 * SIZE, X, %xmm1)
 
 #ifdef PREFETCH
@@ -276,11 +276,11 @@
 #endif
 
 	SHUFPD_1 %xmm3, %xmm2
-	movaps	%xmm2, -12 * SIZE(Y)
+	movups	%xmm2, -12 * SIZE(Y)
 	LOAD( 3 * SIZE, X, %xmm2)
 
 	SHUFPD_1 %xmm4, %xmm3
-	movaps	%xmm3, -10 * SIZE(Y)
+	movups	%xmm3, -10 * SIZE(Y)
 	LOAD( 5 * SIZE, X, %xmm3)
 
 #if defined(PREFETCHW) && !defined(FETCH128)
@@ -288,11 +288,11 @@
 #endif
 
 	SHUFPD_1 %xmm5, %xmm4
-	movaps	%xmm4,  -8 * SIZE(Y)
+	movups	%xmm4,  -8 * SIZE(Y)
 	LOAD( 7 * SIZE, X, %xmm4)
 
 	SHUFPD_1 %xmm6, %xmm5
-	movaps	%xmm5, -6 * SIZE(Y)
+	movups	%xmm5, -6 * SIZE(Y)
 	LOAD( 9 * SIZE, X, %xmm5)
 
 #if defined(PREFETCH) && !defined(FETCH128)
@@ -300,11 +300,11 @@
 #endif
 
 	SHUFPD_1 %xmm7, %xmm6
-	movaps	%xmm6, -4 * SIZE(Y)
+	movups	%xmm6, -4 * SIZE(Y)
 	LOAD(11 * SIZE, X, %xmm6)
 
 	SHUFPD_1 %xmm0, %xmm7
-	movaps	%xmm7, -2 * SIZE(Y)
+	movups	%xmm7, -2 * SIZE(Y)
 	LOAD(13 * SIZE, X, %xmm7)
 
 	subq	$-16 * SIZE, X
@@ -315,26 +315,26 @@
 
 .L22:
 	SHUFPD_1 %xmm1, %xmm0
-	movaps	%xmm0, -16 * SIZE(Y)
+	movups	%xmm0, -16 * SIZE(Y)
 	LOAD(-1 * SIZE, X, %xmm0)
 
 	SHUFPD_1 %xmm2, %xmm1
-	movaps	%xmm1, -14 * SIZE(Y)
+	movups	%xmm1, -14 * SIZE(Y)
 
 	SHUFPD_1 %xmm3, %xmm2
-	movaps	%xmm2, -12 * SIZE(Y)
+	movups	%xmm2, -12 * SIZE(Y)
 	SHUFPD_1 %xmm4, %xmm3
-	movaps	%xmm3, -10 * SIZE(Y)
+	movups	%xmm3, -10 * SIZE(Y)
 
 	SHUFPD_1 %xmm5, %xmm4
-	movaps	%xmm4,  -8 * SIZE(Y)
+	movups	%xmm4,  -8 * SIZE(Y)
 	SHUFPD_1 %xmm6, %xmm5
-	movaps	%xmm5,  -6 * SIZE(Y)
+	movups	%xmm5,  -6 * SIZE(Y)
 
 	SHUFPD_1 %xmm7, %xmm6
-	movaps	%xmm6,  -4 * SIZE(Y)
+	movups	%xmm6,  -4 * SIZE(Y)
 	SHUFPD_1 %xmm0, %xmm7
-	movaps	%xmm7,  -2 * SIZE(Y)
+	movups	%xmm7,  -2 * SIZE(Y)
 
 	subq	$-16 * SIZE, X
 	subq	$-16 * SIZE, Y
@@ -345,24 +345,24 @@
 	jle	.L24
 	ALIGN_3
 
-	movaps	-15 * SIZE(X), %xmm1
-	movaps	-13 * SIZE(X), %xmm2
-	movaps	-11 * SIZE(X), %xmm3
-	movaps	 -9 * SIZE(X), %xmm8
+	movups	-15 * SIZE(X), %xmm1
+	movups	-13 * SIZE(X), %xmm2
+	movups	-11 * SIZE(X), %xmm3
+	movups	 -9 * SIZE(X), %xmm8
 
 	SHUFPD_1 %xmm1, %xmm0
-	movaps	%xmm0, -16 * SIZE(Y)
+	movups	%xmm0, -16 * SIZE(Y)
 
 	SHUFPD_1 %xmm2, %xmm1
-	movaps	%xmm1, -14 * SIZE(Y)
+	movups	%xmm1, -14 * SIZE(Y)
 
 	SHUFPD_1 %xmm3, %xmm2
-	movaps	%xmm2, -12 * SIZE(Y)
+	movups	%xmm2, -12 * SIZE(Y)
 
 	SHUFPD_1 %xmm8, %xmm3
-	movaps	%xmm3, -10 * SIZE(Y)
+	movups	%xmm3, -10 * SIZE(Y)
 
-	movaps	%xmm8, %xmm0
+	movups	%xmm8, %xmm0
 
 	addq	$8 * SIZE, X
 	addq	$8 * SIZE, Y
@@ -373,15 +373,15 @@
 	jle	.L25
 	ALIGN_3
 
-	movaps	-15 * SIZE(X), %xmm1
-	movaps	-13 * SIZE(X), %xmm2
+	movups	-15 * SIZE(X), %xmm1
+	movups	-13 * SIZE(X), %xmm2
 
 	SHUFPD_1 %xmm1, %xmm0
 	SHUFPD_1 %xmm2, %xmm1
 
-	movaps	%xmm0, -16 * SIZE(Y)
-	movaps	%xmm1, -14 * SIZE(Y)
-	movaps	%xmm2, %xmm0
+	movups	%xmm0, -16 * SIZE(Y)
+	movups	%xmm1, -14 * SIZE(Y)
+	movups	%xmm2, %xmm0
 
 	addq	$4 * SIZE, X
 	addq	$4 * SIZE, Y
@@ -392,10 +392,10 @@
 	jle	.L26
 	ALIGN_3
 
-	movaps	-15 * SIZE(X), %xmm1
+	movups	-15 * SIZE(X), %xmm1
 	SHUFPD_1 %xmm1, %xmm0
 
-	movaps	%xmm0, -16 * SIZE(Y)
+	movups	%xmm0, -16 * SIZE(Y)
 
 	addq	$2 * SIZE, X
 	addq	$2 * SIZE, Y
@@ -424,14 +424,14 @@
 	sarq	$4, %rax
 	jle	.L23
 
-	movaps	-16 * SIZE(X), %xmm0
-	movaps	-14 * SIZE(X), %xmm1
-	movaps	-12 * SIZE(X), %xmm2
-	movaps	-10 * SIZE(X), %xmm3
-	movaps	 -8 * SIZE(X), %xmm4
-	movaps	 -6 * SIZE(X), %xmm5
-	movaps	 -4 * SIZE(X), %xmm6
-	movaps	 -2 * SIZE(X), %xmm7
+	movups	-16 * SIZE(X), %xmm0
+	movups	-14 * SIZE(X), %xmm1
+	movups	-12 * SIZE(X), %xmm2
+	movups	-10 * SIZE(X), %xmm3
+	movups	 -8 * SIZE(X), %xmm4
+	movups	 -6 * SIZE(X), %xmm5
+	movups	 -4 * SIZE(X), %xmm6
+	movups	 -2 * SIZE(X), %xmm7
 
 	decq	%rax
 	jle .L22
@@ -515,16 +515,16 @@
 	jle	.L24
 	ALIGN_3
 
-	movaps	-16 * SIZE(X), %xmm0
+	movups	-16 * SIZE(X), %xmm0
 	movlps	%xmm0, -16 * SIZE(Y)
 	movhps	%xmm0, -15 * SIZE(Y)
-	movaps	-14 * SIZE(X), %xmm1
+	movups	-14 * SIZE(X), %xmm1
 	movlps	%xmm1, -14 * SIZE(Y)
 	movhps	%xmm1, -13 * SIZE(Y)
-	movaps	-12 * SIZE(X), %xmm2
+	movups	-12 * SIZE(X), %xmm2
 	movlps	%xmm2, -12 * SIZE(Y)
 	movhps	%xmm2, -11 * SIZE(Y)
-	movaps	-10 * SIZE(X), %xmm3
+	movups	-10 * SIZE(X), %xmm3
 	movlps	%xmm3, -10 * SIZE(Y)
 	movhps	%xmm3,  -9 * SIZE(Y)
 
@@ -537,10 +537,10 @@
 	jle	.L25
 	ALIGN_3
 
-	movaps	-16 * SIZE(X), %xmm0
+	movups	-16 * SIZE(X), %xmm0
 	movlps	%xmm0, -16 * SIZE(Y)
 	movhps	%xmm0, -15 * SIZE(Y)
-	movaps	-14 * SIZE(X), %xmm1
+	movups	-14 * SIZE(X), %xmm1
 	movlps	%xmm1, -14 * SIZE(Y)
 	movhps	%xmm1, -13 * SIZE(Y)
 
@@ -553,7 +553,7 @@
 	jle	.L26
 	ALIGN_3
 
-	movaps	-16 * SIZE(X), %xmm0
+	movups	-16 * SIZE(X), %xmm0
 	movlps	%xmm0, -16 * SIZE(Y)
 	movhps	%xmm0, -15 * SIZE(Y)
 

@@ -157,3 +157,7 @@ ARCH_ARM64
 ARCH_RISCV64
 #endif
 
+#if (defined(__STDC_VERSION__) && __STDC_VERSION__ >= 201112L)
+HAVE_C11
+#endif
+

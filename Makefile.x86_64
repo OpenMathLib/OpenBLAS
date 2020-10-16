@@ -8,6 +8,21 @@ endif
 endif
 endif
 
+ifdef HAVE_SSE3
+ifndef DYNAMIC_ARCH
+CCOMMON_OPT += -msse3
+FCOMMON_OPT += -msse3
+ifdef HAVE_SSSE3
+CCOMMON_OPT += -mssse3
+FCOMMON_OPT += -mssse3
+endif
+ifdef HAVE_SSE4_1
+CCOMMON_OPT += -msse4.1
+FCOMMON_OPT += -msse4.1
+endif
+endif
+endif
+
 ifeq ($(CORE), SKYLAKEX)
 ifndef DYNAMIC_ARCH
 ifndef NO_AVX512
@@ -15,24 +30,62 @@ CCOMMON_OPT += -march=skylake-avx512
 FCOMMON_OPT += -march=skylake-avx512
 ifeq ($(OSNAME), CYGWIN_NT)
 CCOMMON_OPT += -fno-asynchronous-unwind-tables
+FCOMMON_OPT += -fno-asynchronous-unwind-tables
 endif
 ifeq ($(OSNAME), WINNT)
 ifeq ($(C_COMPILER), GCC)
 CCOMMON_OPT += -fno-asynchronous-unwind-tables
+FCOMMON_OPT += -fno-asynchronous-unwind-tables
 endif
 endif
 endif
 endif
 endif
 
-ifeq ($(CORE), HASWELL)
+ifeq ($(CORE), COOPERLAKE)
+ifndef DYNAMIC_ARCH
+ifndef NO_AVX512
+ifeq ($(C_COMPILER), GCC)
+# cooperlake support was added in 10.1
+GCCVERSIONGTEQ10 := $(shell expr `$(CC) -dumpversion | cut -f1 -d.` \>= 10)
+GCCMINORVERSIONGTEQ1 := $(shell expr `$(CC) -dumpversion | cut -f2 -d.` \>= 1)
+ifeq ($(GCCVERSIONGTEQ10)$(GCCMINORVERSIONGTEQ1), 11)
+CCOMMON_OPT += -march=cooperlake
+FCOMMON_OPT += -march=cooperlake
+endif
+endif
+ifeq ($(OSNAME), CYGWIN_NT)
+CCOMMON_OPT += -fno-asynchronous-unwind-tables
+FCOMMON_OPT += -fno-asynchronous-unwind-tables
+endif
+ifeq ($(OSNAME), WINNT)
+ifeq ($(C_COMPILER), GCC)
+CCOMMON_OPT += -fno-asynchronous-unwind-tables
+FCOMMON_OPT += -fno-asynchronous-unwind-tables
+endif
+endif
+endif
+endif
+endif
+
+ifeq ($(CORE), $(filter $(CORE), HASWELL ZEN SKYLAKEX COOPERLAKE))
 ifndef DYNAMIC_ARCH
 ifndef NO_AVX2
 ifeq ($(C_COMPILER), GCC)
+# AVX2 support was added in 4.7.0
+GCCVERSIONGTEQ4 := $(shell expr `$(CC) -dumpversion | cut -f1 -d.` \>= 4)
+GCCMINORVERSIONGTEQ7 := $(shell expr `$(CC) -dumpversion | cut -f2 -d.` \>= 7)
+ifeq ($(GCCVERSIONGTEQ4)$(GCCMINORVERSIONGTEQ7), 11)
 CCOMMON_OPT += -mavx2
 endif
+endif
 ifeq ($(F_COMPILER), GFORTRAN)
+# AVX2 support was added in 4.7.0
+GCCVERSIONGTEQ4 := $(shell expr `$(FC) -dumpversion | cut -f1 -d.` \>= 4)
+GCCMINORVERSIONGTEQ7 := $(shell expr `$(FC) -dumpversion | cut -f2 -d.` \>= 7)
+ifeq ($(GCCVERSIONGTEQ4)$(GCCMINORVERSIONGTEQ7), 11)
 FCOMMON_OPT += -mavx2
+endif
 endif
 endif
 endif

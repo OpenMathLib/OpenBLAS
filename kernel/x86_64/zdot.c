@@ -33,7 +33,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "zdot_microk_bulldozer-2.c"
 #elif defined(STEAMROLLER) || defined(PILEDRIVER) || defined(EXCAVATOR)
 #include "zdot_microk_steamroller-2.c"
-#elif defined(HASWELL) || defined(ZEN) || defined (SKYLAKEX)
+#elif defined(HASWELL) || defined(ZEN) || defined (SKYLAKEX) || defined (COOPERLAKE)
 #include "zdot_microk_haswell-2.c"
 #elif defined(SANDYBRIDGE)
 #include "zdot_microk_sandy-2.c"
@@ -140,8 +140,8 @@ static void zdot_compute (BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLO
 		i=0;
 		ix=0;
 		iy=0;
-		inc_x <<= 1;
-		inc_y <<= 1;
+		inc_x *= 2;
+		inc_y *= 2;
 		while(i < n)
 		{
 
@@ -168,7 +168,7 @@ static void zdot_compute (BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLO
 
 #if defined(SMP)
 static int zdot_thread_function(BLASLONG n, BLASLONG dummy0,
-BLASLONG dummy1, FLOAT dummy2, FLOAT *x, BLASLONG inc_x, FLOAT *y,
+BLASLONG dummy1, FLOAT dummy2r, FLOAT dummy2i, FLOAT *x, BLASLONG inc_x, FLOAT *y,
 BLASLONG inc_y, FLOAT *result, BLASLONG dummy3)
 {
         zdot_compute(n, x, inc_x, y, inc_y, (void *)result);

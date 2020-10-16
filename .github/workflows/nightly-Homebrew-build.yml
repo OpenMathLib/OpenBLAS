@@ -21,6 +21,7 @@ jobs:
   build-OpenBLAS-with-Homebrew:
     runs-on: macos-latest
     env:
+      DEVELOPER_DIR: /Applications/Xcode_11.4.1.app/Contents/Developer
       HOMEBREW_DEVELOPER: "ON"
       HOMEBREW_DISPLAY_INSTALL_TIMES: "ON"
       HOMEBREW_NO_ANALYTICS: "ON"
