@@ -9,7 +9,7 @@ ifndef TOPDIR
 TOPDIR = .
 endif
 
-# If ARCH is not set, we use the host system's architecture for getarch compile options.
+ # If ARCH is not set, we use the host system's architecture for getarch compile options.
 ifndef ARCH
 HOSTARCH := $(shell uname -m)
 else
@@ -25,6 +25,10 @@ else ifeq ($(ARCH), powerpc)
 override ARCH=power
 else ifeq ($(ARCH), i386)
 override ARCH=x86
+else ifeq ($(ARCH), armv6)
+override ARCH=arm
+else ifeq ($(ARCH), armv7)
+override ARCH=arm
 else ifeq ($(ARCH), aarch64)
 override ARCH=arm64
 else ifeq ($(ARCH), zarch)
@@ -69,6 +73,18 @@ endif
 #
 #  Beginning of system configuration
 #
+ifneq ($(BUILD_SINGLE),1)
+ifneq ($(BUILD_DOUBLE),1)
+ifneq ($(BUILD_COMPLEX),1)
+ifneq ($(BUILD_COMPLEX16),1)
+override BUILD_SINGLE=1
+override BUILD_DOUBLE=1
+override BUILD_COMPLEX=1
+override BUILD_COMPLEX16=1
+endif
+endif
+endif
+endif
 
 ifndef HOSTCC
 HOSTCC	 = $(CC)
@@ -86,6 +102,9 @@ ifeq ($(TARGET), HASWELL)
 GETARCH_FLAGS := -DFORCE_NEHALEM
 endif
 ifeq ($(TARGET), SKYLAKEX)
+GETARCH_FLAGS := -DFORCE_NEHALEM
+endif
+ifeq ($(TARGET), COOPERLAKE)
 GETARCH_FLAGS := -DFORCE_NEHALEM
 endif
 ifeq ($(TARGET), SANDYBRIDGE)
@@ -109,6 +128,9 @@ endif
 ifeq ($(TARGET), ARMV8)
 GETARCH_FLAGS := -DFORCE_ARMV7
 endif
+ifeq ($(TARGET), POWER8)
+GETARCH_FLAGS := -DFORCE_POWER6
+endif
 endif
 
 
@@ -125,6 +147,9 @@ ifeq ($(TARGET_CORE), HASWELL)
 GETARCH_FLAGS := -DFORCE_NEHALEM
 endif
 ifeq ($(TARGET_CORE), SKYLAKEX)
+GETARCH_FLAGS := -DFORCE_NEHALEM
+endif
+ifeq ($(TARGET_CORE), COOPERLAKE)
 GETARCH_FLAGS := -DFORCE_NEHALEM
 endif
 ifeq ($(TARGET_CORE), SANDYBRIDGE)
@@ -285,7 +310,17 @@ GCCVERSIONGT4 := $(shell expr `$(CC) -dumpversion | cut -f1 -d.` \> 4)
 GCCVERSIONGT5 := $(shell expr `$(CC) -dumpversion | cut -f1 -d.` \> 5)
 GCCVERSIONGTEQ7 := $(shell expr `$(CC) -dumpversion | cut -f1 -d.` \>= 7)
 GCCVERSIONGTEQ9 := $(shell expr `$(CC) -dumpversion | cut -f1 -d.` \>= 9)
-GCCMINORVERSIONGTEQ7 := $(shell expr `$(CC) -dumpversion | cut -f2 -d.` \>= 7)
+GCCVERSIONGTEQ11 := $(shell expr `$(CC) -dumpversion | cut -f1 -d.` \>= 11)
+GCCVERSIONGTEQ10 := $(shell expr `$(CC) -dumpversion | cut -f1 -d.` \>= 10)
+# Note that the behavior of -dumpversion is compile-time-configurable for
+# gcc-7.x and newer. Use -dumpfullversion there
+ifeq ($(GCCVERSIONGTEQ7),1)
+	GCCDUMPVERSION_PARAM := -dumpfullversion
+else
+	GCCDUMPVERSION_PARAM := -dumpversion
+endif
+GCCMINORVERSIONGTEQ2 := $(shell expr `$(CC) $(GCCDUMPVERSION_PARAM) | cut -f2 -d.` \>= 2)
+GCCMINORVERSIONGTEQ7 := $(shell expr `$(CC) $(GCCDUMPVERSION_PARAM) | cut -f2 -d.` \>= 7)
 endif
 
 #
@@ -539,7 +574,7 @@ DYNAMIC_CORE += HASWELL ZEN
 endif
 ifneq ($(NO_AVX512), 1)
 ifneq ($(NO_AVX2), 1)
-DYNAMIC_CORE += SKYLAKEX
+DYNAMIC_CORE += SKYLAKEX COOPERLAKE
 endif
 endif
 endif
@@ -564,44 +599,63 @@ DYNAMIC_CORE += THUNDERX
 DYNAMIC_CORE += THUNDERX2T99
 DYNAMIC_CORE += TSV110
 DYNAMIC_CORE += EMAG8180
+DYNAMIC_CORE += THUNDERX3T110
 endif
 
 ifeq ($(ARCH), zarch)
 DYNAMIC_CORE = ZARCH_GENERIC
 
-# Z13 is supported since gcc-5.2, gcc-6, and in RHEL 7.3 and newer
-GCC_GE_52 := $(subst 0,,$(shell expr `$(CC) -dumpversion` \>= "5.2"))
+# if the compiler accepts -march=arch11 or -march=z13 and can compile a file
+# with z13-specific inline assembly, then we can include support for Z13.
+# note: -march=z13 is equivalent to -march=arch11 yet some compiler releases
+# only support one or the other.
+# note: LLVM version 6.x supported -march=z13 yet could not handle vector
+# registers in inline assembly, so the check for supporting the -march flag is
+# not enough.
+ZARCH_TEST_COMPILE=-c $(TOPDIR)/kernel/zarch/damin_z13.c -I$(TOPDIR) -o /dev/null > /dev/null 2> /dev/null
+ZARCH_CC_SUPPORTS_ARCH11=$(shell $(CC) -march=arch11 $(ZARCH_TEST_COMPILE) && echo 1)
+ZARCH_CC_SUPPORTS_Z13=$(shell $(CC) -march=z13 $(ZARCH_TEST_COMPILE) && echo 1)
 
-ifeq ($(wildcard /etc/redhat-release), /etc/redhat-release)
-RHEL_WITH_Z13 := $(subst 0,,$(shell source /etc/os-release ; expr $$VERSION_ID \>= "7.3"))
-endif
-
-ifeq ($(or $(GCC_GE_52),$(RHEL_WITH_Z13)), 1)
+ifeq ($(or $(ZARCH_CC_SUPPORTS_ARCH11), $(ZARCH_CC_SUPPORTS_Z13)), 1)
 DYNAMIC_CORE += Z13
+CCOMMON_OPT += -DDYN_Z13
 else
-$(info OpenBLAS: Not building Z13 kernels because gcc is older than 5.2 or 6.x)
+$(info OpenBLAS: Not building Z13 kernels because the compiler $(CC) does not support it)
 endif
 
-GCC_MAJOR_GE_7 := $(shell expr `$(CC) -dumpversion | cut -f1 -d.` \>= 7)
-ifeq ($(GCC_MAJOR_GE_7), 1)
+# as above for z13, check for -march=arch12 and z14 support in the compiler.
+ZARCH_CC_SUPPORTS_ARCH12=$(shell $(CC) -march=arch12 $(ZARCH_TEST_COMPILE) && echo 1)
+ZARCH_CC_SUPPORTS_Z14=$(shell $(CC) -march=z14 $(ZARCH_TEST_COMPILE) && echo 1)
+ifeq ($(or $(ZARCH_CC_SUPPORTS_ARCH12), $(ZARCH_CC_SUPPORTS_Z14)), 1)
 DYNAMIC_CORE += Z14
+CCOMMON_OPT += -DDYN_Z14
 else
-$(info OpenBLAS: Not building Z14 kernels because gcc is older than 7.x)
+$(info OpenBLAS: Not building Z14 kernels because the compiler $(CC) does not support it)
 endif
-endif
+
+endif # ARCH zarch
 
 ifeq ($(ARCH), power)
 DYNAMIC_CORE = POWER6
 DYNAMIC_CORE += POWER8
 ifneq ($(C_COMPILER), GCC)
 DYNAMIC_CORE += POWER9
+DYNAMIC_CORE += POWER10
 endif
 ifeq ($(C_COMPILER), GCC)
-GCCVERSIONGT5 := $(shell expr `$(CC) -dumpversion | cut -f1 -d.` \> 5)
 ifeq ($(GCCVERSIONGT5), 1)
 DYNAMIC_CORE += POWER9
 else
 $(info, OpenBLAS: Your gcc version is too old to build the POWER9 kernels.)
+endif
+ifeq ($(GCCVERSIONGTEQ11), 1)
+DYNAMIC_CORE += POWER10
+else ifeq ($(GCCVERSIONGTEQ10), 1)
+ifeq ($(GCCMINORVERSIONGTEQ2), 1)
+DYNAMIC_CORE += POWER10
+endif
+else
+$(info, OpenBLAS: Your gcc version is too old to build the POWER10 kernels.)
 endif
 endif
 endif
@@ -763,7 +817,18 @@ endif
 
 ifeq ($(C_COMPILER), PGI)
 ifdef BINARY64
+ifeq ($(ARCH), x86_64)
 CCOMMON_OPT += -tp p7-64 -D__MMX__ -Mnollvm
+else
+ifeq ($(ARCH), power)
+ifeq ($(CORE), POWER8)
+CCOMMON_OPT += -tp pwr8
+endif
+ifeq ($(CORE), POWER9)
+CCOMMON_OPT += -tp pwr9
+endif
+endif
+endif
 else
 CCOMMON_OPT += -tp p7
 endif
@@ -927,7 +992,18 @@ ifneq ($(INTERFACE64), 0)
 FCOMMON_OPT += -i8
 endif
 endif
+ifeq ($(ARCH), x86_64)
 FCOMMON_OPT += -tp p7-64
+else
+ifeq ($(ARCH), power)
+ifeq ($(CORE), POWER8)
+FCOMMON_OPT += -tp pwr8
+endif
+ifeq ($(CORE), POWER9)
+FCOMMON_OPT += -tp pwr9
+endif
+endif
+endif
 else
 FCOMMON_OPT += -tp p7
 endif
@@ -1156,8 +1232,20 @@ ifeq ($(USE_TLS), 1)
 CCOMMON_OPT += -DUSE_TLS
 endif
 
-ifeq ($(BUILD_HALF), 1)
-CCOMMON_OPT += -DBUILD_HALF
+ifeq ($(BUILD_BFLOAT16), 1)
+CCOMMON_OPT += -DBUILD_BFLOAT16
+endif
+ifeq ($(BUILD_SINGLE), 1)
+CCOMMON_OPT += -DBUILD_SINGLE=1
+endif
+ifeq ($(BUILD_DOUBLE), 1)
+CCOMMON_OPT += -DBUILD_DOUBLE=1
+endif
+ifeq ($(BUILD_COMPLEX), 1)
+CCOMMON_OPT += -DBUILD_COMPLEX=1
+endif
+ifeq ($(BUILD_COMPLEX16), 1)
+CCOMMON_OPT += -DBUILD_COMPLEX16=1
 endif
 
 CCOMMON_OPT += -DVERSION=\"$(VERSION)\"
@@ -1186,7 +1274,9 @@ KERNELDIR	= $(TOPDIR)/kernel/$(ARCH)
 
 include $(TOPDIR)/Makefile.$(ARCH)
 
+ifneq ($(C_COMPILER), PGI)
 CCOMMON_OPT     += -UASMNAME -UASMFNAME -UNAME -UCNAME -UCHAR_NAME -UCHAR_CNAME
+endif
 CCOMMON_OPT	+= -DASMNAME=$(FU)$(*F) -DASMFNAME=$(FU)$(*F)$(BU) -DNAME=$(*F)$(BU) -DCNAME=$(*F) -DCHAR_NAME=\"$(*F)$(BU)\" -DCHAR_CNAME=\"$(*F)\"
 
 ifeq ($(CORE), PPC440)
@@ -1431,10 +1521,10 @@ export KERNELDIR
 export FUNCTION_PROFILE
 export TARGET_CORE
 export NO_AVX512
-export BUILD_HALF
+export BUILD_BFLOAT16
 
-export SHGEMM_UNROLL_M
-export SHGEMM_UNROLL_N
+export SBGEMM_UNROLL_M
+export SBGEMM_UNROLL_N
 export SGEMM_UNROLL_M
 export SGEMM_UNROLL_N
 export DGEMM_UNROLL_M

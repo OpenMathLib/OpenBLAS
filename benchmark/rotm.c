@@ -168,7 +168,7 @@ int main(int argc, char *argv[])
         exit(1);
     }
 
-#ifdef linux
+#ifdef __linux
     srandom(getpid());
 #endif
 

@@ -32,7 +32,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 **********************************************************************************/
 
 #include "openblas_utest.h"
-
+#ifdef BUILD_SINGLE
 CTEST(min, smin_negative){
   blasint N=3, inc=1;
   float te_min=0.0, tr_min=0.0;
@@ -43,7 +43,9 @@ CTEST(min, smin_negative){
 
   ASSERT_DBL_NEAR_TOL((double)(tr_min), (double)(te_min), SINGLE_EPS);
 }
+#endif
 
+#ifdef BUILD_DOUBLE
 CTEST(min, dmin_positive){
   blasint N=3, inc=1;
   double te_min=0.0, tr_min=0.0;
@@ -54,7 +56,9 @@ CTEST(min, dmin_positive){
 
   ASSERT_DBL_NEAR_TOL((double)(tr_min), (double)(te_min), DOUBLE_EPS);
 }
+#endif
 
+#ifdef BUILD_SINGLE
 CTEST(min, smin_zero){
   blasint N=3, inc=1;
   float te_min=0.0, tr_min=0.0;
@@ -76,7 +80,9 @@ CTEST(max, smax_negative){
 
   ASSERT_DBL_NEAR_TOL((double)(tr_max), (double)(te_max), SINGLE_EPS);
 }
+#endif
 
+#ifdef BUILD_DOUBLE
 CTEST(max, dmax_positive){
   blasint N=3, inc=1;
   double te_max=0.0, tr_max=0.0;
@@ -87,7 +93,8 @@ CTEST(max, dmax_positive){
 
   ASSERT_DBL_NEAR_TOL((double)(tr_max), (double)(te_max), DOUBLE_EPS);
 }
-
+#endif
+#ifdef BUILD_SINGLE
 CTEST(max, smax_zero){
   blasint N=3, inc=1;
   float te_max=0.0, tr_max=0.0;
@@ -98,3 +105,5 @@ CTEST(max, smax_zero){
 
   ASSERT_DBL_NEAR_TOL((double)(tr_max), (double)(te_max), SINGLE_EPS);
 }
+#endif
+

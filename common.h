@@ -257,9 +257,10 @@ typedef long BLASLONG;
 typedef unsigned long BLASULONG;
 #endif
 
-#ifndef BFLOAT16
-typedef unsigned short bfloat16;
-#define HALFCONVERSION 1
+#ifndef bfloat16
+#include <stdint.h>
+typedef uint16_t bfloat16;
+#define BFLOAT16CONVERSION 1
 #endif
 
 #ifdef USE64BITINT
@@ -302,7 +303,7 @@ typedef int blasint;
 #define SIZE	8
 #define  BASE_SHIFT 3
 #define ZBASE_SHIFT 4
-#elif defined(HALF)
+#elif defined(BFLOAT16)
 #define IFLOAT	bfloat16
 #define XFLOAT IFLOAT
 #define FLOAT	float
@@ -351,7 +352,7 @@ typedef int blasint;
 #endif
 
 #if defined(ARMV7) || defined(ARMV6) || defined(ARMV8) || defined(ARMV5)
-#define YIELDING        asm volatile ("nop;nop;nop;nop;nop;nop;nop;nop; \n");
+#define YIELDING        __asm__ __volatile__ ("nop;nop;nop;nop;nop;nop;nop;nop; \n");
 #endif
 
 #ifdef BULLDOZER
@@ -360,13 +361,8 @@ typedef int blasint;
 #endif
 #endif
 
-#ifdef POWER8
-#ifndef YIELDING
-#define YIELDING        __asm__ __volatile__ ("nop;nop;nop;nop;nop;nop;nop;nop;\n");
-#endif
-#endif
 
-#ifdef POWER9
+#if defined(POWER8) || defined(POWER9) || defined(POWER10)
 #ifndef YIELDING
 #define YIELDING        __asm__ __volatile__ ("nop;nop;nop;nop;nop;nop;nop;nop;\n");
 #endif
@@ -406,7 +402,7 @@ please https://github.com/xianyi/OpenBLAS/issues/246
 #endif
 
 #ifndef BLAS3_MEM_ALLOC_THRESHOLD
-#define BLAS3_MEM_ALLOC_THRESHOLD 160
+#define BLAS3_MEM_ALLOC_THRESHOLD 32 
 #endif
 
 #ifdef QUAD_PRECISION
@@ -686,7 +682,7 @@ __declspec(dllimport) int __cdecl omp_in_parallel(void);
 __declspec(dllimport) int __cdecl omp_get_num_procs(void);
 #endif
 
-#if (__STDC_VERSION__ >= 201112L)
+#ifdef HAVE_C11
 #if defined(C_GCC) && ( __GNUC__ < 7) 
 // workaround for GCC bug 65467
 #ifndef _Atomic

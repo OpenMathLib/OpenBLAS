@@ -3,14 +3,21 @@ include_directories(${PROJECT_BINARY_DIR})
 
 enable_language(Fortran)
 
-set(OpenBLAS_Tests
-  sblat1 sblat2 sblat3
-  dblat1 dblat2 dblat3
-  cblat1 cblat2 cblat3
-  zblat1 zblat2 zblat3)
+if (BUILD_SINGLE)
+	list( APPEND OpenBLAS_Tests sblat1 sblat2 sblat3)
+endif()
+if (BUILD_DOUBLE)
+	list (APPEND OpenBLAS_Tests dblat1 dblat2 dblat3)
+endif()
+if (BUILD_COMPLEX)
+	list (APPEND OpenBLAS_Tests cblat1 cblat2 cblat3)
+endif()
+if (BUILD_COMPLEX16)
+	list (APPEND OpenBLAS_Tests zblat1 zblat2 zblat3)
+endif()
 
 foreach(test_bin ${OpenBLAS_Tests})
-add_executable(${test_bin} ${test_bin}.f)
+	add_executable(${test_bin} ${test_bin}.f)
 target_link_libraries(${test_bin} ${OpenBLAS_LIBNAME})
 endforeach()
 
@@ -27,7 +34,19 @@ FILE(WRITE ${CMAKE_CURRENT_BINARY_DIR}/test_helper.sh
 "fi\n"
 )
 
-set(float_types s d c z)
+#set(float_types s d c z)
+if (BUILD_SINGLE)
+	list (APPEND float_types s)
+endif()
+if (BUILD_DOUBLE)
+	list (APPEND float_types d)
+endif()
+if (BUILD_COMPLEX)
+	list (APPEND float_types c)
+endif()
+if (BUILD_COMPLEX16)
+	list (APPEND float_types z)
+endif()
 foreach(float_type ${float_types})
 string(TOUPPER ${float_type} float_type_upper)
 add_test(NAME "${float_type}blas1" 

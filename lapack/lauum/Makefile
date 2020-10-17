@@ -17,6 +17,19 @@ ZBLASOBJS += zlauum_U_parallel.$(SUFFIX) zlauum_L_parallel.$(SUFFIX)
 XBLASOBJS += xlauum_U_parallel.$(SUFFIX) xlauum_L_parallel.$(SUFFIX)
 endif
 
+ifneq ($(BUILD_SINGLE),1)
+SBLASOBJS=
+endif
+ifneq ($(BUILD_DOUBLE),1)
+DBLASOBJS=
+endif
+ifneq ($(BUILD_COMPLEX),1)
+CBLASOBJS=
+endif
+ifneq ($(BUILD_COMPLEX16),1)
+ZBLASOBJS=
+endif
+
 slauum_U_single.$(SUFFIX) : lauum_U_single.c
 	$(CC) -c $(CFLAGS) -UCOMPLEX -UDOUBLE $< -o $(@F)
 

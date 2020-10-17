@@ -46,6 +46,7 @@ OBJ = \
 lapacke_ilaver.o \
 lapacke_nancheck.o
 
+ifeq ($(BUILD_COMPLEX),1)
 OBJ_C = \
 lapacke_cbbcsd.o \
 lapacke_cbbcsd_work.o \
@@ -653,7 +654,9 @@ lapacke_cupgtr.o \
 lapacke_cupgtr_work.o \
 lapacke_cupmtr.o \
 lapacke_cupmtr_work.o
+endif
 
+ifeq ($(BUILD_DOUBLE),1)
 OBJ_D = \
 lapacke_dbbcsd.o \
 lapacke_dbbcsd_work.o \
@@ -1218,8 +1221,12 @@ lapacke_dtrttf_work.o \
 lapacke_dtrttp.o \
 lapacke_dtrttp_work.o \
 lapacke_dtzrzf.o \
-lapacke_dtzrzf_work.o
+lapacke_dtzrzf_work.o \
+lapacke_slag2d.o \
+lapacke_slag2d_work.o
+endif
 
+ifeq ($(BUILD_SINGLE),1)
 OBJ_S = \
 lapacke_sbbcsd.o \
 lapacke_sbbcsd_work.o \
@@ -1395,8 +1402,6 @@ lapacke_slacn2.o \
 lapacke_slacn2_work.o \
 lapacke_slacpy.o \
 lapacke_slacpy_work.o \
-lapacke_slag2d.o \
-lapacke_slag2d_work.o \
 lapacke_slamch.o \
 lapacke_slamch_work.o \
 lapacke_slange.o \
@@ -1781,7 +1786,9 @@ lapacke_strttp.o \
 lapacke_strttp_work.o \
 lapacke_stzrzf.o \
 lapacke_stzrzf_work.o
+endif
 
+ifeq ($(BUILD_COMPLEX16),1)
 OBJ_Z = \
 lapacke_zbbcsd.o \
 lapacke_zbbcsd_work.o \
@@ -2393,33 +2400,50 @@ lapacke_zupgtr.o \
 lapacke_zupgtr_work.o \
 lapacke_zupmtr.o \
 lapacke_zupmtr_work.o
+endif
 
 ifdef BUILD_DEPRECATED
-DEPRECATED = \
+ifeq ($(BUILD_COMPLEX),1)
+DEPRECATEDC = \
 lapacke_cggsvp.o \
 lapacke_cggsvp_work.o \
-lapacke_dggsvp.o \
-lapacke_dggsvp_work.o \
-lapacke_sggsvp.o \
-lapacke_sggsvp_work.o \
-lapacke_zggsvp.o \
-lapacke_zggsvp_work.o \
 lapacke_cggsvd.o \
 lapacke_cggsvd_work.o \
+lapacke_cgeqpf.o \
+lapacke_cgeqpf_work.o
+endif
+
+ifeq ($(BUILD_DOUBLE),1)
+DEPRECATEDD = \
+lapacke_dggsvp.o \
+lapacke_dggsvp_work.o \
 lapacke_dggsvd.o \
 lapacke_dggsvd_work.o \
+lapacke_dgeqpf.o \
+lapacke_dgeqpf_work.o
+endif
+
+ifeq ($(BUILD_SINGLE),1)
+DEPRECATEDS = \
+lapacke_sggsvp.o \
+lapacke_sggsvp_work.o \
 lapacke_sggsvd.o \
 lapacke_sggsvd_work.o \
+lapacke_sgeqpf.o \
+lapacke_sgeqpf_work.o
+endif 
+
+ifeq ($(BUILD_COMPLEX16),1)
+DEPRECATEDZ = \
+lapacke_zggsvp.o \
+lapacke_zggsvp_work.o \
 lapacke_zggsvd.o \
 lapacke_zggsvd_work.o \
-lapacke_cgeqpf.o \
-lapacke_cgeqpf_work.o \
-lapacke_dgeqpf.o \
-lapacke_dgeqpf_work.o \
-lapacke_sgeqpf.o \
-lapacke_sgeqpf_work.o \
 lapacke_zgeqpf.o \
 lapacke_zgeqpf_work.o
+endif
+
+DEPRECATED = $(DEPRECATEDS) $(DEPRECATEDD) $(DEPRECATEDC) $(DEPRECATEDZ)
 endif
 
 ifdef USEXBLAS
@@ -2440,35 +2464,48 @@ endif
 
 ifdef LAPACKE_WITH_TMG
 # FILE PARTS OF TMGLIB
-MATGEN = \
+ifeq ($(BUILD_COMPLEX),1)
+MATGENC = \
 lapacke_clatms.o \
 lapacke_clatms_work.o \
-lapacke_dlatms.o \
-lapacke_dlatms_work.o \
-lapacke_slatms.o \
-lapacke_slatms_work.o \
-lapacke_zlatms.o \
-lapacke_zlatms_work.o \
 lapacke_clagge.o \
 lapacke_clagge_work.o \
-lapacke_dlagge.o \
-lapacke_dlagge_work.o \
-lapacke_slagge.o \
-lapacke_slagge_work.o \
-lapacke_zlagge.o \
-lapacke_zlagge_work.o \
 lapacke_claghe.o \
 lapacke_claghe_work.o \
+lapacke_clagsy.o \
+lapacke_clagsy_work.o
+endif
+ifeq ($(BUILD_DOUBLE),1)
+MATGEND = \
+lapacke_dlatms.o \
+lapacke_dlatms_work.o \
+lapacke_dlagge.o \
+lapacke_dlagge_work.o \
+lapacke_dlagsy.o \
+lapacke_dlagsy_work.o
+endif
+ifeq ($(BUILD_SINGLE),1)
+MATGENS = \
+lapacke_slatms.o \
+lapacke_slatms_work.o \
+lapacke_slagge.o \
+lapacke_slagge_work.o \
+lapacke_slagsy.o \
+lapacke_slagsy_work.o
+endif
+ifeq ($(BUILD_COMPLEX16),1)
+MATGENZ = \
+lapacke_zlatms.o \
+lapacke_zlatms_work.o \
+lapacke_zlagge.o \
+lapacke_zlagge_work.o \
 lapacke_zlaghe.o \
 lapacke_zlaghe_work.o \
-lapacke_clagsy.o \
-lapacke_clagsy_work.o \
-lapacke_dlagsy.o \
-lapacke_dlagsy_work.o \
-lapacke_slagsy.o \
-lapacke_slagsy_work.o \
 lapacke_zlagsy.o \
 lapacke_zlagsy_work.o
+endif
+
+MATGEN = $(MATGENS) $(MATGEND) $(MATGENC) $(MATGENZ)
 endif
 
 .PHONY: all

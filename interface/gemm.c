@@ -275,8 +275,8 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_TRANSPOSE TransA, enum CBLAS_TRANS
 #ifdef DYNAMIC_ARCH
  if (support_avx512() )
 #endif  
-  if (beta == 0 && alpha == 1.0 && order == CblasRowMajor && TransA == CblasNoTrans && TransB == CblasNoTrans && sgemm_kernel_direct_performant(m,n,k)) {
-	sgemm_kernel_direct(m, n, k, a, lda, b, ldb, c, ldc);
+  if (beta == 0 && alpha == 1.0 && order == CblasRowMajor && TransA == CblasNoTrans && TransB == CblasNoTrans && SGEMM_DIRECT_PERFORMANT(m,n,k)) {
+	SGEMM_DIRECT(m, n, k, a, lda, b, ldb, c, ldc);
 	return;
   }
 

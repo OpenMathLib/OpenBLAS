@@ -249,6 +249,22 @@ int support_avx512(){
 #endif
 }
 
+int support_avx512_bf16(){
+#if !defined(NO_AVX) && !defined(NO_AVX512)
+  int eax, ebx, ecx, edx;
+  int ret=0;
+
+  if (!support_avx512())
+    return 0;
+  cpuid_count(7, 1, &eax, &ebx, &ecx, &edx);
+  if((eax & 32) == 32){
+      ret=1;  // CPUID.7.1:EAX[bit 5] indicates whether avx512_bf16 supported or not
+  }
+  return ret;
+#else
+  return 0;
+#endif
+}
 
 int get_vendor(void){
   int eax, ebx, ecx, edx;
@@ -335,6 +351,7 @@ int get_cputype(int gettype){
     if (support_avx()) feature |= HAVE_AVX;
     if (support_avx2()) feature |= HAVE_AVX2;
     if (support_avx512()) feature |= HAVE_AVX512VL;
+    if (support_avx512_bf16()) feature |= HAVE_AVX512BF16;
     if ((ecx & (1 << 12)) != 0) feature |= HAVE_FMA3;
 #endif
 
@@ -1337,6 +1354,8 @@ int get_cpuname(void){
 	    return CPUTYPE_NEHALEM;
 	case 5:
 	  // Skylake X
+          if(support_avx512_bf16())
+            return CPUTYPE_COOPERLAKE;
           if(support_avx512())
             return CPUTYPE_SKYLAKEX;
           if(support_avx2())
@@ -1406,6 +1425,17 @@ int get_cpuname(void){
 	    return CPUTYPE_SANDYBRIDGE;
           else
 	    return CPUTYPE_NEHALEM;
+    }
+      case 10: //family 6 exmodel 10
+        switch (model) {
+    case 5: // Comet Lake H and S
+    case 6: // Comet Lake U
+          if(support_avx2())
+            return CPUTYPE_HASWELL;
+          if(support_avx())
+        return CPUTYPE_SANDYBRIDGE;
+          else
+        return CPUTYPE_NEHALEM;
 	}
 	break;    
       }
@@ -1443,10 +1473,11 @@ int get_cpuname(void){
 	return CPUTYPE_OPTERON;
       case  1:
       case  3:
-      case  7:
-      case 10:
+//      case  7:
+//      case 10:
 	return CPUTYPE_BARCELONA;
       case  5:
+      case  7:		      
 	return CPUTYPE_BOBCAT;
       case  6:
 	switch (model) {
@@ -1496,6 +1527,8 @@ int get_cpuname(void){
 	  // AMD Ryzen
 	case 8:
 	  // AMD Ryzen2
+	default:
+	  // Matisse/Renoir and other recent Ryzen2		
 	  if(support_avx())
 #ifndef NO_AVX2
 	    return CPUTYPE_ZEN;
@@ -1505,6 +1538,16 @@ int get_cpuname(void){
 	  else
 	    return CPUTYPE_BARCELONA;
         }
+	break;	      
+      case 10: // Zen3		      
+	if(support_avx())
+#ifndef NO_AVX2
+	    return CPUTYPE_ZEN;
+#else
+	    return CPUTYPE_SANDYBRIDGE; // Zen is closer in architecture to Sandy Bridge than to Excavator
+#endif
+	  else
+	    return CPUTYPE_BARCELONA;	      
       }
       break;
     }
@@ -1653,7 +1696,8 @@ static char *cpuname[] = {
   "EXCAVATOR",
   "ZEN",
   "SKYLAKEX",
-  "DHYANA"
+  "DHYANA",
+  "COOPERLAKE"
 };
 
 static char *lowercpuname[] = {
@@ -1709,7 +1753,8 @@ static char *lowercpuname[] = {
   "excavator",
   "zen",
   "skylakex",
-  "dhyana"
+  "dhyana",
+  "cooperlake"
 };
 
 static char *corename[] = {
@@ -1742,7 +1787,8 @@ static char *corename[] = {
   "EXCAVATOR",
   "ZEN",
   "SKYLAKEX",
-  "DHYANA"
+  "DHYANA",
+  "COOPERLAKE"
 };
 
 static char *corename_lower[] = {
@@ -1775,7 +1821,8 @@ static char *corename_lower[] = {
   "excavator",
   "zen",
   "skylakex",
-  "dhyana"
+  "dhyana",
+  "cooperlake"
 };
 
 
@@ -1955,6 +2002,19 @@ int get_coretype(void){
 	    return CORE_NEHALEM;
         }
         break;
+      case 10:
+        switch (model) {
+	  case 5: // Comet Lake H and S
+    	  case 6: // Comet Lake U
+            if(support_avx())
+  #ifndef NO_AVX2
+              return CORE_HASWELL;
+  #else
+              return CORE_SANDYBRIDGE;
+  #endif
+            else
+              return CORE_NEHALEM;
+        }
       case 5:
         switch (model) {
 	case 6:
@@ -1970,7 +2030,9 @@ int get_coretype(void){
 	case 5:
 	 // Skylake X
 #ifndef NO_AVX512
-	    return CORE_SKYLAKEX;
+          if(support_avx512_bf16())
+            return CORE_COOPERLAKE;
+	  return CORE_SKYLAKEX;
 #else
 	  if(support_avx())
 #ifndef NO_AVX2
@@ -2083,7 +2145,7 @@ int get_coretype(void){
 	    return CORE_PILEDRIVER;
 	  else
 	    return CORE_BARCELONA; //OS don't support AVX.
-    case 5: // New EXCAVATOR
+        case 5: // New EXCAVATOR
 	  if(support_avx())
 	    return CORE_EXCAVATOR;
 	  else
@@ -2111,12 +2173,14 @@ int get_coretype(void){
 	  }
 	  break;
 	}
-      } else if (exfamily == 8) {
+      } else if (exfamily == 8 || exfamily == 10) {
 	switch (model) {
 	case 1:
 	  // AMD Ryzen
 	case 8:
-	  // Ryzen 2		
+	  // Ryzen 2
+	default:
+	  // Matisse,Renoir Ryzen2 models		
 	  if(support_avx())
 #ifndef NO_AVX2
 	    return CORE_ZEN;
@@ -2237,6 +2301,7 @@ void get_cpuconfig(void){
     if (features & HAVE_AVX )    printf("#define HAVE_AVX\n");
     if (features & HAVE_AVX2 )    printf("#define HAVE_AVX2\n");
     if (features & HAVE_AVX512VL )    printf("#define HAVE_AVX512VL\n");
+    if (features & HAVE_AVX512BF16 )    printf("#define HAVE_AVX512BF16\n");
     if (features & HAVE_3DNOWEX) printf("#define HAVE_3DNOWEX\n");
     if (features & HAVE_3DNOW)   printf("#define HAVE_3DNOW\n");
     if (features & HAVE_FMA4 )    printf("#define HAVE_FMA4\n");
@@ -2307,6 +2372,7 @@ void get_sse(void){
   if (features & HAVE_AVX )    printf("HAVE_AVX=1\n");
   if (features & HAVE_AVX2 )    printf("HAVE_AVX2=1\n");
   if (features & HAVE_AVX512VL )    printf("HAVE_AVX512VL=1\n");
+  if (features & HAVE_AVX512BF16 )    printf("HAVE_AVX512BF16=1\n");
   if (features & HAVE_3DNOWEX) printf("HAVE_3DNOWEX=1\n");
   if (features & HAVE_3DNOW)   printf("HAVE_3DNOW=1\n");
   if (features & HAVE_FMA4 )    printf("HAVE_FMA4=1\n");

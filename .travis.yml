@@ -44,6 +44,18 @@ matrix:
         - BTYPE="BINARY=64 USE_OPENMP=1"
 
     - <<: *test-ubuntu
+      os: linux
+      dist: focal
+      arch: s390x
+      compiler: clang
+      before_script:
+        - COMMON_FLAGS="DYNAMIC_ARCH=1 TARGET=Z13 NUM_THREADS=32"
+      env:
+        # for matrix annotation only
+        - TARGET_BOX=IBMZ_LINUX
+        - BTYPE="BINARY=64 USE_OPENMP=0 CC=clang"
+
+    - <<: *test-ubuntu
       env:
         - TARGET_BOX=LINUX64
         - BTYPE="BINARY=64 USE_OPENMP=1"
@@ -74,6 +86,40 @@ matrix:
       env:
         - TARGET_BOX=LINUX32
         - BTYPE="BINARY=32"
+
+    - os: linux
+      arch: ppc64le
+      dist: bionic
+      compiler: gcc
+      before_script:
+        - sudo add-apt-repository 'ppa:ubuntu-toolchain-r/test' -y
+        - sudo apt-get update
+        - sudo apt-get install gcc-9 gfortran-9 -y
+      script:
+        - make QUIET_MAKE=1  BINARY=64 USE_OPENMP=1 CC=gcc-9 FC=gfortran-9
+        - make -C test $COMMON_FLAGS $BTYPE
+        - make -C ctest $COMMON_FLAGS $BTYPE
+        - make -C utest $COMMON_FLAGS $BTYPE 
+      env:
+        # for matrix annotation only
+        - TARGET_BOX=PPC64LE_LINUX_P9
+
+    - os: linux
+      arch: ppc64le
+      dist: bionic
+      compiler: gcc
+      before_script:
+        - sudo add-apt-repository 'ppa:ubuntu-toolchain-r/test' -y
+        - sudo apt-get update
+        - sudo apt-get install gcc-9 gfortran-9 -y
+      script:
+        - make QUIET_MAKE=1  BUILD_BFLOAT16=1 BINARY=64 USE_OPENMP=1 CC=gcc-9 FC=gfortran-9
+        - make -C test $COMMON_FLAGS $BTYPE
+        - make -C ctest $COMMON_FLAGS $BTYPE
+        - make -C utest $COMMON_FLAGS $BTYPE 
+      env:
+        # for matrix annotation only
+        - TARGET_BOX=PPC64LE_LINUX_P9
 
     - os: linux
       compiler: gcc
@@ -176,6 +222,17 @@ matrix:
         - BTYPE="TARGET=NEHALEM BINARY=64 INTERFACE64=1 FC=gfortran-8"
 
     - <<: *test-macos
+      osx_image: xcode12
+      before_script:
+        - COMMON_FLAGS="DYNAMIC_ARCH=1 NUM_THREADS=32"
+        - brew update
+        - brew install gcc@10 # for gfortran
+      script:
+        - travis_wait 45 make QUIET_MAKE=1 $COMMON_FLAGS $BTYPE
+      env:
+        - BTYPE="TARGET=NEHALEM BINARY=64 INTERFACE64=1 FC=gfortran-10"
+        
+    - <<: *test-macos
       osx_image: xcode10.0
       env:
         - BTYPE="TARGET=NEHALEM BINARY=32 NOFORTRAN=1"
@@ -193,6 +250,21 @@ matrix:
         - CC="/Applications/Xcode-10.1.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang"
         - CFLAGS="-O2 -mno-thumb -Wno-macro-redefined -isysroot /Applications/Xcode-10.1.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS12.1.sdk -arch armv7 -miphoneos-version-min=5.1"
         - BTYPE="TARGET=ARMV7 HOSTCC=clang NOFORTRAN=1"
+
+    - &test-graviton2
+      os: linux
+      arch: arm64-graviton2
+      dist: focal
+      group: edge
+      virt: lxd
+      compiler: gcc
+      addons:
+        apt:
+          packages:
+            - gfortran
+      script:
+        - travis_wait 45 make && make lapack-test
+        
 # whitelist
 branches:
   only:

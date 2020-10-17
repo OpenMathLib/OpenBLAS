@@ -40,7 +40,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifdef DOUBLE
 #define GEMM   BLASFUNC(dgemm)
 #elif defined(HALF)
-#define GEMM   BLASFUNC(shgemm)
+#define GEMM   BLASFUNC(sbgemm)
 #else
 #define GEMM   BLASFUNC(sgemm)
 #endif
@@ -197,7 +197,7 @@ int main(int argc, char *argv[]){
     fprintf(stderr,"Out of Memory!!\n");exit(1);
   }
 
-#ifdef linux
+#ifdef __linux
   srandom(getpid());
 #endif
 

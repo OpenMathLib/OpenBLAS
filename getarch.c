@@ -90,10 +90,15 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <sys/sysinfo.h>
 #include <unistd.h>
 #endif
+#if defined(AIX)
+#include <sys/sysinfo.h>
+#endif
 
+#if defined(__x86_64__) || defined(_M_X64)
 #if (( defined(__GNUC__)  && __GNUC__   > 6 && defined(__AVX2__)) || (defined(__clang__) && __clang_major__ >= 6))
 #else
 #define NO_AVX512
+#endif
 #endif
 /* #define FORCE_P2		*/
 /* #define FORCE_KATMAI		*/
@@ -360,6 +365,36 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif
 #endif
 
+#ifdef FORCE_COOPERLAKE
+#ifdef NO_AVX512
+#define FORCE
+#define FORCE_INTEL
+#define ARCHITECTURE    "X86"
+#define SUBARCHITECTURE "HASWELL"
+#define ARCHCONFIG   "-DHASWELL " \
+                     "-DL1_DATA_SIZE=32768 -DL1_DATA_LINESIZE=64 " \
+                     "-DL2_SIZE=262144 -DL2_LINESIZE=64 " \
+                     "-DDTB_DEFAULT_ENTRIES=64 -DDTB_SIZE=4096 " \
+                     "-DHAVE_CMOV -DHAVE_MMX -DHAVE_SSE -DHAVE_SSE2 -DHAVE_SSE3 -DHAVE_SSSE3 -DHAVE_SSE4_1 -DHAVE_SSE4_2 -DHAVE_AVX " \
+                     "-DFMA3"
+#define LIBNAME   "haswell"
+#define CORENAME  "HASWELL"
+#else
+#define FORCE
+#define FORCE_INTEL
+#define ARCHITECTURE    "X86"
+#define SUBARCHITECTURE "COOPERLAKE"
+#define ARCHCONFIG   "-DCOOPERLAKE " \
+                     "-DL1_DATA_SIZE=32768 -DL1_DATA_LINESIZE=64 " \
+                     "-DL2_SIZE=262144 -DL2_LINESIZE=64 " \
+                     "-DDTB_DEFAULT_ENTRIES=64 -DDTB_SIZE=4096 " \
+                     "-DHAVE_CMOV -DHAVE_MMX -DHAVE_SSE -DHAVE_SSE2 -DHAVE_SSE3 -DHAVE_SSSE3 -DHAVE_SSE4_1 -DHAVE_SSE4_2 -DHAVE_AVX " \
+                     "-DFMA3 -DHAVE_AVX512VL -DHAVE_AVX512BF16 -march=cooperlake"
+#define LIBNAME   "cooperlake"
+#define CORENAME  "COOPERLAKE"
+#endif
+#endif
+
 #ifdef FORCE_ATOM
 #define FORCE
 #define FORCE_INTEL
@@ -457,7 +492,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 		     "-DDTB_DEFAULT_ENTRIES=32 -DDTB_SIZE=4096 " \
 		     "-DHAVE_MMX -DHAVE_SSE -DHAVE_SSE2 -DHAVE_SSE3 " \
 		     "-DHAVE_SSE4A -DHAVE_MISALIGNSSE -DHAVE_128BITFPU -DHAVE_FASTMOVU " \
-                     "-DHAVE_AVX -DHAVE_FMA4"
+                     "-DHAVE_AVX"
 #define LIBNAME   "bulldozer"
 #define CORENAME  "BULLDOZER"
 #endif
@@ -473,7 +508,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 		     "-DDTB_DEFAULT_ENTRIES=64 -DDTB_SIZE=4096 " \
 		     "-DHAVE_MMX -DHAVE_SSE -DHAVE_SSE2 -DHAVE_SSE3 -DHAVE_SSE4_1 -DHAVE_SSE4_2 " \
 		     "-DHAVE_SSE4A -DHAVE_MISALIGNSSE -DHAVE_128BITFPU -DHAVE_FASTMOVU -DHAVE_CFLUSH " \
-                     "-DHAVE_AVX -DHAVE_FMA4 -DHAVE_FMA3"
+                     "-DHAVE_AVX -DHAVE_FMA3"
 #define LIBNAME   "piledriver"
 #define CORENAME  "PILEDRIVER"
 #endif
@@ -489,7 +524,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 		     "-DDTB_DEFAULT_ENTRIES=64 -DDTB_SIZE=4096 " \
 		     "-DHAVE_MMX -DHAVE_SSE -DHAVE_SSE2 -DHAVE_SSE3 -DHAVE_SSE4_1 -DHAVE_SSE4_2 " \
 		     "-DHAVE_SSE4A -DHAVE_MISALIGNSSE -DHAVE_128BITFPU -DHAVE_FASTMOVU -DHAVE_CFLUSH " \
-                     "-DHAVE_AVX -DHAVE_FMA4 -DHAVE_FMA3"
+                     "-DHAVE_AVX -DHAVE_FMA3"
 #define LIBNAME   "steamroller"
 #define CORENAME  "STEAMROLLER"
 #endif
@@ -505,7 +540,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 		     "-DDTB_DEFAULT_ENTRIES=64 -DDTB_SIZE=4096 " \
 		     "-DHAVE_MMX -DHAVE_SSE -DHAVE_SSE2 -DHAVE_SSE3 -DHAVE_SSE4_1 -DHAVE_SSE4_2 " \
 		     "-DHAVE_SSE4A -DHAVE_MISALIGNSSE -DHAVE_128BITFPU -DHAVE_FASTMOVU -DHAVE_CFLUSH " \
-                     "-DHAVE_AVX -DHAVE_FMA4 -DHAVE_FMA3"
+                     "-DHAVE_AVX -DHAVE_FMA3"
 #define LIBNAME   "excavator"
 #define CORENAME  "EXCAVATOR"
 #endif
@@ -648,6 +683,19 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 		     "-DDTB_DEFAULT_ENTRIES=128 -DDTB_SIZE=4096 -DL2_ASSOCIATIVE=8 "
 #define LIBNAME   "power9"
 #define CORENAME  "POWER9"
+#endif
+
+#if defined(FORCE_POWER10)
+#define FORCE
+#define ARCHITECTURE    "POWER"
+#define SUBARCHITECTURE "POWER10"
+#define SUBDIRNAME      "power"
+#define ARCHCONFIG   "-DPOWER10 " \
+		     "-DL1_DATA_SIZE=32768 -DL1_DATA_LINESIZE=128 " \
+		     "-DL2_SIZE=4194304 -DL2_LINESIZE=128 " \
+		     "-DDTB_DEFAULT_ENTRIES=128 -DDTB_SIZE=4096 -DL2_ASSOCIATIVE=8 "
+#define LIBNAME   "power10"
+#define CORENAME  "POWER10"
 #endif
 
 #ifdef FORCE_PPCG4
@@ -1156,6 +1204,24 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define CORENAME  "EMAG8180"
 #endif
 
+#ifdef FORCE_THUNDERX3T110
+#define ARMV8
+#define FORCE
+#define ARCHITECTURE    "ARM64"
+#define SUBARCHITECTURE "THUNDERX3T110"
+#define SUBDIRNAME      "arm64"
+#define ARCHCONFIG   "-DTHUNDERX3T110 " \
+       "-DL1_CODE_SIZE=65536 -DL1_CODE_LINESIZE=64 -DL1_CODE_ASSOCIATIVE=8 " \
+       "-DL1_DATA_SIZE=32768 -DL1_DATA_LINESIZE=64 -DL1_DATA_ASSOCIATIVE=8 " \
+       "-DL2_SIZE=524288 -DL2_LINESIZE=64 -DL2_ASSOCIATIVE=8 " \
+       "-DL3_SIZE=94371840 -DL3_LINESIZE=64 -DL3_ASSOCIATIVE=32 " \
+       "-DDTB_DEFAULT_ENTRIES=64 -DDTB_SIZE=4096 " \
+       "-DHAVE_VFPV4 -DHAVE_VFPV3 -DHAVE_VFP -DHAVE_NEON -DARMV8"
+#define LIBNAME   "thunderx3t110"
+#define CORENAME  "THUNDERX3T110"
+#else
+#endif
+
 #ifdef FORCE_ZARCH_GENERIC
 #define FORCE
 #define ARCHITECTURE    "ZARCH"
@@ -1284,6 +1350,11 @@ static int get_num_cores(void) {
   sysctl(m, 2, &count, &len, NULL, 0);
 
   return count;
+
+#elif defined(AIX)
+  //returns the number of processors which are currently online
+  return sysconf(_SC_NPROCESSORS_ONLN);
+
 #else
   return 2;
 #endif

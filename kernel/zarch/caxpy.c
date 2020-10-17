@@ -99,9 +99,9 @@ static void caxpy_kernel_16(BLASLONG n, FLOAT *x, FLOAT *y, FLOAT *alpha) {
     "vst %%v19,112(%%r1,%[y])\n\t"
     "agfi  %%r1,128\n\t"
     "brctg %[n],0b"
-    : "+m"(*(struct { FLOAT x[n * 2]; } *) y),[n] "+&r"(n)
-    : [y] "a"(y), "m"(*(const struct { FLOAT x[n * 2]; } *) x),[x] "a"(x),
-       "m"(*(const struct { FLOAT x[2]; } *) alpha),[alpha] "a"(alpha)
+    : "+m"(*(FLOAT (*)[n * 2]) y),[n] "+&r"(n)
+    : [y] "a"(y), "m"(*(const FLOAT (*)[n * 2]) x),[x] "a"(x),
+       "m"(*(const FLOAT (*)[2]) alpha),[alpha] "a"(alpha)
     : "cc", "r1", "v0", "v1", "v8", "v9", "v10", "v11", "v12", "v13",
        "v14", "v15", "v16", "v17", "v18", "v19", "v20", "v21", "v22", "v23",
        "v24", "v25", "v26", "v27", "v28", "v29", "v30", "v31");

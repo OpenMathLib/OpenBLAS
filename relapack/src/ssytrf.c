@@ -35,7 +35,7 @@ void RELAPACK_ssytrf(
         *info = -2;
     else if (*ldA < MAX(1, *n))
         *info = -4;
-    else if (*lWork < minlWork && *lWork != -1)
+    else if ((*lWork <1 || *lWork < minlWork) && *lWork != -1)
         *info = -7;
     else if (*lWork == -1) {
         // Work size query
@@ -66,6 +66,7 @@ void RELAPACK_ssytrf(
     blasint nout;
 
     // Recursive kernel
+if (*n != 0)
     RELAPACK_ssytrf_rec(&cleanuplo, n, n, &nout, A, ldA, ipiv, cleanWork, n, info);
 
 #if XSYTRF_ALLOW_MALLOC

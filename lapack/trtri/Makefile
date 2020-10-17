@@ -23,6 +23,19 @@ ZBLASOBJS += ztrtri_UU_parallel.$(SUFFIX) ztrtri_UN_parallel.$(SUFFIX) ztrtri_LU
 XBLASOBJS += xtrtri_UU_parallel.$(SUFFIX) xtrtri_UN_parallel.$(SUFFIX) xtrtri_LU_parallel.$(SUFFIX) xtrtri_LN_parallel.$(SUFFIX)
 endif
 
+ifneq ($(BUILD_SINGLE),1)
+SBLASOBJS=
+endif
+ifneq ($(BUILD_DOUBLE),1)
+DBLASOBJS=
+endif
+ifneq ($(BUILD_COMPLEX),1)
+CBLASOBJS=
+endif
+ifneq ($(BUILD_COMPLEX16),1)
+ZBLASOBJS=
+endif
+
 strtri_UU_single.$(SUFFIX) : trtri_U_single.c
 	$(CC) -c $(CFLAGS) -UCOMPLEX -UDOUBLE -DUNIT $< -o $(@F)
 

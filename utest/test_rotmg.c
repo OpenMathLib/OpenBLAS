@@ -33,6 +33,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "openblas_utest.h"
 
+#ifdef BUILD_DOUBLE
 CTEST (drotmg,rotmg)
 {
 	double te_d1, tr_d1;
@@ -204,3 +205,4 @@ CTEST(drotmg, drotmg_D1_big_D2_big_flag_zero)
 		ASSERT_DBL_NEAR_TOL(tr_param[i], te_param[i], DOUBLE_EPS);
 	}
 }
+#endif

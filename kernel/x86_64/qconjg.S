@@ -42,6 +42,10 @@
 	PROLOGUE
 	PROFCODE
 
+#ifdef WINDOWS_ABI
+	emms
+#endif
+
 	fldz
 	FLD	1 * SIZE(ARG1)
 	fsubrp	%st, %st(1)

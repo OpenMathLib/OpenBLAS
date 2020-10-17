@@ -9,6 +9,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, macos-latest]
+        fortran: [gfortran, flang]
         build: [cmake, make]
     steps:
       - name: Checkout repository
@@ -24,7 +25,7 @@ jobs:
           # Restore any ccache cache entry, if none for
           # ${{ runner.os }}-ccache-${{ github.sha }} exists
           restore-keys: |
-            ${{ runner.os }}-ccache
+            ${{ runner.os }}-ccache-
 
       - name: Print system information
         run: |
@@ -49,8 +50,8 @@ jobs:
           fi
           ccache -M 300M  # Limit the ccache size; Github's overall cache limit is 5GB
 
-      - name: Build
-        if: matrix.build == 'make'
+      - name: gfortran build
+        if: matrix.build == 'make' && matrix.fortran == 'gfortran'
         run: |
           if [ "$RUNNER_OS" == "Linux" ]; then
             export PATH="/usr/lib/ccache:${PATH}"
@@ -63,8 +64,29 @@ jobs:
 
           make -j$(nproc) DYNAMIC_ARCH=1 USE_OPENMP=0
 
-      - name: CMake build
-        if: matrix.build == 'cmake'
+      - name: flang build
+        if: matrix.build == 'make' && matrix.fortran == 'flang'
+        run: |
+          if [ "$RUNNER_OS" == "Linux" ]; then
+            export PATH="/usr/lib/ccache:${PATH}"
+          elif [ "$RUNNER_OS" == "macOS" ]; then
+            exit 0
+          else
+            echo "$RUNNER_OS not supported"
+            exit 1
+          fi
+
+          cd /usr/
+          sudo wget -nv https://github.com/flang-compiler/flang/releases/download/flang_20190329/flang-20190329-x86-70.tgz
+          sudo tar xf flang-20190329-x86-70.tgz
+          sudo rm flang-20190329-x86-70.tgz
+          cd -
+
+          make -j$(nproc) DYNAMIC_ARCH=1 USE_OPENMP=0 FC=flang
+
+
+      - name: CMake gfortran build
+        if: matrix.build == 'cmake' && matrix.fortran == 'gfortran'
         run: |
           if [ "$RUNNER_OS" == "Linux" ]; then
             export PATH="/usr/lib/ccache:${PATH}"

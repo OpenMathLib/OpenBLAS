@@ -34,6 +34,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 
+#if defined(__VEC__) || defined(__ALTIVEC__)
  
 /**
  * Find  maximum index 
@@ -299,7 +300,7 @@ static BLASLONG   ziamax_kernel_16(BLASLONG n, FLOAT *x, FLOAT *maxf) {
 
 }
  
-  
+#endif  
 
  
  
@@ -317,6 +318,8 @@ BLASLONG CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x)
     if (inc_x == 1) {
 
 #if defined(_CALL_ELF) && (_CALL_ELF == 2)
+#if defined(__VEC__) || defined(__ALTIVEC__)
+
       BLASLONG n1 = n & -16;
       if (n1 > 0) {
 
@@ -324,6 +327,7 @@ BLASLONG CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x)
             i = n1;
             ix = n1 << 1;
       }
+#endif
 #endif
 
       while(i < n)

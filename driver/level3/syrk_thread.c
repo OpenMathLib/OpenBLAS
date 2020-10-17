@@ -56,12 +56,16 @@ int CNAME(int mode, blas_arg_t *arg, BLASLONG *range_m, BLASLONG *range_n, int (
   if (!(mode & BLAS_COMPLEX)) {
 
     switch (mode & BLAS_PREC) {
+#if defined(BUILD_SINGLE) || defined(BUILD_COMPLEX)
     case BLAS_SINGLE:
       mask = SGEMM_UNROLL_MN - 1;
       break;
+#endif
+#if defined(BUILD_DOUBLE) || defined(BUILD_COMPLEX16)
     case BLAS_DOUBLE:
       mask = DGEMM_UNROLL_MN - 1;
       break;
+#endif
 #ifdef EXPRECISION
     case BLAS_XDOUBLE:
       mask = MAX(QGEMM_UNROLL_M, QGEMM_UNROLL_N) - 1;
@@ -70,12 +74,16 @@ int CNAME(int mode, blas_arg_t *arg, BLASLONG *range_m, BLASLONG *range_n, int (
     }
   } else {
     switch (mode & BLAS_PREC) {
+#ifdef BUILD_COMPLEX
     case BLAS_SINGLE:
       mask = CGEMM_UNROLL_MN - 1;
       break;
+#endif
+#ifdef BUILD_COMPLEX16
     case BLAS_DOUBLE:
       mask = ZGEMM_UNROLL_MN - 1;
       break;
+#endif
 #ifdef EXPRECISION
     case BLAS_XDOUBLE:
       mask = MAX(XGEMM_UNROLL_M, XGEMM_UNROLL_N) - 1;

@@ -62,7 +62,7 @@
 #define PREFETCHSIZE  (8 * 21 + 4)
 #endif
 
-#if defined(NEHALEM) || defined(SANDYBRIDGE) || defined(HASWELL) || defined (SKYLAKEX)
+#if defined(NEHALEM) || defined(SANDYBRIDGE) || defined(HASWELL) || defined (SKYLAKEX) || defined (COOPERLAKE)
 #define PREFETCH     prefetcht0
 #define PREFETCHSIZE  (8 * 21 + 4)
 #endif

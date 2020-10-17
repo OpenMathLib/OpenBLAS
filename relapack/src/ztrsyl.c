@@ -47,6 +47,11 @@ void RELAPACK_ztrsyl(
         return;
     }
 
+    if (*m == 0 || *n == 0) {
+        *scale = 1.;
+        return;
+    }
+
     // Clean char * arguments
     const char cleantranA = notransA ? 'N' : 'C';
     const char cleantranB = notransB ? 'N' : 'C';

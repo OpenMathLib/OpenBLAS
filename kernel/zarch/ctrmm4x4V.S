@@ -198,7 +198,7 @@ ALIGN_4
       RefreshTempBk LOCAL_VAR1,BK,OFF,4,4
       nill LOCAL_VAR1,3 
 #else
-    la LOCAL_VAR1,3(0,0)
+    lghi LOCAL_VAR1,3
     NGR LOCAL_VAR1,BK /*refresh BK*/ 
 #endif
 jz .L4x4_BK_Store
@@ -254,7 +254,7 @@ ALIGN_4
       RefreshTempBk LOCAL_VAR1,BK,OFF,2,4
       nill LOCAL_VAR1,3 
 #else
-la LOCAL_VAR1,3(0,0)
+lghi LOCAL_VAR1,3
 NGR LOCAL_VAR1,BK /*refresh BK*/ 
 #endif
 jz .L2x4_BK_Store
@@ -305,7 +305,7 @@ ALIGN_4
        RefreshTempBk LOCAL_VAR1,BK,OFF,1,4
       nill LOCAL_VAR1,3 
 #else
-la LOCAL_VAR1,3(0,0)
+lghi LOCAL_VAR1,3
 NGR LOCAL_VAR1,BK /*refresh BK*/
 #endif 
 jz .L1x4_BK_Store
@@ -385,7 +385,7 @@ ALIGN_4
       RefreshTempBk LOCAL_VAR1,BK,OFF,4,2
       nill LOCAL_VAR1,3 
 #else
-la LOCAL_VAR1,3(0,0)
+lghi LOCAL_VAR1,3
 NGR LOCAL_VAR1,BK /*refresh BK*/ 
 #endif
 jz .L4x2_BK_Store
@@ -442,7 +442,7 @@ ALIGN_4
       RefreshTempBk LOCAL_VAR1,BK,OFF,2,2
       nill LOCAL_VAR1,3 
 #else
-la LOCAL_VAR1,3(0,0)
+lghi LOCAL_VAR1,3
 NGR LOCAL_VAR1,BK /*refresh BK*/ 
 #endif
 jz .L2x2_BK_Store
@@ -492,7 +492,7 @@ ALIGN_4
       RefreshTempBk LOCAL_VAR1,BK,OFF,1,2
       nill LOCAL_VAR1,3 
 #else
-la LOCAL_VAR1,3(0,0)
+lghi LOCAL_VAR1,3
 NGR LOCAL_VAR1,BK /*refresh BK*/ 
 #endif
 jz .L1x2_BK_Store
@@ -568,7 +568,7 @@ ALIGN_4
       RefreshTempBk LOCAL_VAR1,BK,OFF,4,1
       nill LOCAL_VAR1,3 
 #else
-la LOCAL_VAR1,3(0,0)
+lghi LOCAL_VAR1,3
 NGR LOCAL_VAR1,BK /*refresh BK*/ 
 #endif
 jz .L4x1_BK_Store
@@ -620,7 +620,7 @@ ALIGN_4
       RefreshTempBk LOCAL_VAR1,BK,OFF,2,1
       nill LOCAL_VAR1,3 
 #else
-la LOCAL_VAR1,3(0,0)
+lghi LOCAL_VAR1,3
 NGR LOCAL_VAR1,BK /*refresh BK*/ 
 #endif
 jz .L2x1_BK_Store
@@ -670,7 +670,7 @@ ALIGN_4
       RefreshTempBk LOCAL_VAR1,BK,OFF,1,1
       nill LOCAL_VAR1,3 
 #else
-la LOCAL_VAR1,3(0,0)
+lghi LOCAL_VAR1,3
 NGR LOCAL_VAR1,BK /*refresh BK*/ 
 #endif
 jz .L1x1_BK_Store

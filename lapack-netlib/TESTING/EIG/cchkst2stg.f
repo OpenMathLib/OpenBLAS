@@ -1014,8 +1014,8 @@
 *           the one from above. Compare it with D1 computed 
 *           using the 1-stage.
 *
-            CALL DLASET( 'Full', N, 1, ZERO, ZERO, SD, 1 )
-            CALL DLASET( 'Full', N, 1, ZERO, ZERO, SE, 1 )
+            CALL DLASET( 'Full', N, 1, ZERO, ZERO, SD, N )
+            CALL DLASET( 'Full', N, 1, ZERO, ZERO, SE, N )
             CALL CLACPY( 'U', N, N, A, LDA, V, LDU )
             LH = MAX(1, 4*N)
             LW = LWORK - LH
@@ -1048,8 +1048,8 @@
 *           the one from above. Compare it with D1 computed 
 *           using the 1-stage. 
 *
-            CALL DLASET( 'Full', N, 1, ZERO, ZERO, SD, 1 )
-            CALL DLASET( 'Full', N, 1, ZERO, ZERO, SE, 1 )
+            CALL DLASET( 'Full', N, 1, ZERO, ZERO, SD, N )
+            CALL DLASET( 'Full', N, 1, ZERO, ZERO, SE, N )
             CALL CLACPY( 'L', N, N, A, LDA, V, LDU )
             CALL CHETRD_2STAGE( 'N', "L", N, V, LDU, SD, SE, TAU, 
      $                   WORK, LH, WORK( LH+1 ), LW, IINFO )

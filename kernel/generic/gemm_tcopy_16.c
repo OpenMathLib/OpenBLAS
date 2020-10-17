@@ -39,22 +39,22 @@
 #include <stdio.h>
 #include "common.h"
 
-int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, FLOAT *b){
+int CNAME(BLASLONG m, BLASLONG n, IFLOAT *a, BLASLONG lda, IFLOAT *b){
 
   BLASLONG i, j;
 
-  FLOAT *aoffset;
-  FLOAT *aoffset1, *aoffset2;
-  FLOAT *boffset;
+  IFLOAT *aoffset;
+  IFLOAT *aoffset1, *aoffset2;
+  IFLOAT *boffset;
 
-  FLOAT ctemp01, ctemp02, ctemp03, ctemp04;
-  FLOAT ctemp05, ctemp06, ctemp07, ctemp08;
-  FLOAT ctemp09, ctemp10, ctemp11, ctemp12;
-  FLOAT ctemp13, ctemp14, ctemp15, ctemp16;
-  FLOAT ctemp17, ctemp18, ctemp19, ctemp20;
-  FLOAT ctemp21, ctemp22, ctemp23, ctemp24;
-  FLOAT ctemp25, ctemp26, ctemp27, ctemp28;
-  FLOAT ctemp29, ctemp30, ctemp31, ctemp32;
+  IFLOAT ctemp01, ctemp02, ctemp03, ctemp04;
+  IFLOAT ctemp05, ctemp06, ctemp07, ctemp08;
+  IFLOAT ctemp09, ctemp10, ctemp11, ctemp12;
+  IFLOAT ctemp13, ctemp14, ctemp15, ctemp16;
+  IFLOAT ctemp17, ctemp18, ctemp19, ctemp20;
+  IFLOAT ctemp21, ctemp22, ctemp23, ctemp24;
+  IFLOAT ctemp25, ctemp26, ctemp27, ctemp28;
+  IFLOAT ctemp29, ctemp30, ctemp31, ctemp32;
 
   aoffset   = a;
   boffset   = b;

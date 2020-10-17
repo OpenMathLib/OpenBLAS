@@ -17,6 +17,19 @@ ZBLASOBJS += zgetrf_parallel.$(SUFFIX)
 XBLASOBJS += xgetrf_parallel.$(SUFFIX)
 endif
 
+ifeq "$(or $(BUILD_SINGLE),$(BUILD_DOUBLE))" ""
+SBLASOBJS=
+endif
+ifneq ($(BUILD_DOUBLE),1)
+DBLASOBJS=
+endif
+ifeq "$(or $(BUILD_COMPLEX),$(BUILD_COMPLEX16))" ""
+CBLASOBJS=
+endif
+ifneq ($(BUILD_COMPLEX16),1)
+ZBLASOBJS=
+endif
+
 ifeq ($(USE_OPENMP), 1)
 GETRF_SRC = getrf_parallel_omp.c
 else

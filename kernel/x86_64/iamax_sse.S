@@ -51,6 +51,8 @@
 #define MAXPS	maxps
 #define MAXSS	maxss
 #ifdef USE_MIN
+#undef MAXPS
+#undef MAXSS
 #define MAXPS	minps
 #define MAXSS	minss
 #endif

@@ -36,6 +36,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define ELEMENTS 50
 #define INCREMENT 2
 
+#ifdef BUILD_SINGLE
 CTEST(ismin, positive_step_2){
 	blasint i;
   blasint N = ELEMENTS, inc = INCREMENT;
@@ -87,3 +88,4 @@ CTEST(ismax, negative_step_2){
   blasint index = BLASFUNC(ismax)(&N, x, &inc);
   ASSERT_EQUAL(9, index);
 }
+#endif

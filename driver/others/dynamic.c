@@ -207,6 +207,19 @@ extern gotoblas_t gotoblas_SKYLAKEX;
 #else
 #define gotoblas_SKYLAKEX gotoblas_PRESCOTT
 #endif
+#ifdef DYN_COOPERLAKE
+extern gotoblas_t gotoblas_COOPERLAKE;
+#elif defined(DYN_SKYLAKEX)
+#define gotoblas_COOPERLAKE gotoblas_SKYLAKEX
+#elif defined(DYN_HASWELL)
+#define gotoblas_COOPERLAKE gotoblas_HASWELL
+#elif defined(DYN_SANDYBRIDGE)
+#define gotoblas_COOPERLAKE gotoblas_SANDYBRIDGE
+#elif defined(DYN_NEHALEM)
+#define gotoblas_COOPERLAKE gotoblas_NEHALEM
+#else
+#define gotoblas_COOPERLAKE gotoblas_PRESCOTT
+#endif
 
 
 #else // not DYNAMIC_LIST
@@ -247,14 +260,17 @@ extern gotoblas_t  gotoblas_EXCAVATOR;
 #ifdef NO_AVX2
 #define gotoblas_HASWELL gotoblas_SANDYBRIDGE
 #define gotoblas_SKYLAKEX gotoblas_SANDYBRIDGE
+#define gotoblas_COOPERLAKE gotoblas_SANDYBRIDGE
 #define gotoblas_ZEN gotoblas_SANDYBRIDGE
 #else
 extern gotoblas_t  gotoblas_HASWELL;
 extern gotoblas_t  gotoblas_ZEN;
 #ifndef NO_AVX512
 extern gotoblas_t  gotoblas_SKYLAKEX;
+extern gotoblas_t  gotoblas_COOPERLAKE;
 #else
 #define gotoblas_SKYLAKEX gotoblas_HASWELL
+#define gotoblas_COOPERLAKE gotoblas_HASWELL
 #endif
 #endif
 #else
@@ -262,6 +278,7 @@ extern gotoblas_t  gotoblas_SKYLAKEX;
 #define gotoblas_SANDYBRIDGE gotoblas_NEHALEM
 #define gotoblas_HASWELL gotoblas_NEHALEM
 #define gotoblas_SKYLAKEX gotoblas_NEHALEM
+#define gotoblas_COOPERLAKE gotoblas_NEHALEM
 #define gotoblas_BULLDOZER gotoblas_BARCELONA
 #define gotoblas_PILEDRIVER gotoblas_BARCELONA
 #define gotoblas_STEAMROLLER gotoblas_BARCELONA
@@ -332,10 +349,27 @@ int support_avx512(){
   if((ebx & (1<<7)) == 0){
       ret=0;  //OS does not even support AVX2
   }
-  if((ebx & (1<<31)) != 0){
+  if((ebx & (1u<<31)) != 0){
     xgetbv(0, &eax, &edx);
     if((eax & 0xe0) == 0xe0)
       ret=1;  //OS supports AVX512VL
+  }
+  return ret;
+#else
+  return 0;
+#endif
+}
+
+int support_avx512_bf16(){
+#if !defined(NO_AVX) && !defined(NO_AVX512)
+  int eax, ebx, ecx, edx;
+  int ret=0;
+
+  if (!support_avx512())
+    return 0;
+  cpuid_count(7, 1, &eax, &ebx, &ecx, &edx);
+  if((eax & 32) == 32){
+      ret=1;  // CPUID.7.1:EAX[bit 5] indicates whether avx512_bf16 supported or not
   }
   return ret;
 #else
@@ -524,7 +558,10 @@ static gotoblas_t *get_coretype(void){
 	    return &gotoblas_NEHALEM; //OS doesn't support AVX. Use old kernels.
 	  }
 	}
-	if (model == 5) {	
+	if (model == 5) {
+	// Intel Cooperlake
+          if(support_avx512_bf16())
+             return &gotoblas_COOPERLAKE;
 	// Intel Skylake X
           if (support_avx512()) 
 	    return &gotoblas_SKYLAKEX;
@@ -618,6 +655,18 @@ static gotoblas_t *get_coretype(void){
 	    return &gotoblas_NEHALEM; //OS doesn't support AVX. Use old kernels.
 	  }
 	}
+      case 10:
+    if (model == 5 || model == 6) {
+	  if(support_avx2())
+	    return &gotoblas_HASWELL;
+	  if(support_avx()) {
+	    openblas_warning(FALLBACK_VERBOSE, SANDYBRIDGE_FALLBACK);
+	    return &gotoblas_SANDYBRIDGE;
+	  } else {
+	    openblas_warning(FALLBACK_VERBOSE, NEHALEM_FALLBACK);
+	    return &gotoblas_NEHALEM; //OS doesn't support AVX. Use old kernels.
+	  }
+    }
 	return NULL;
       }
       case 0xf:
@@ -632,7 +681,7 @@ static gotoblas_t *get_coretype(void){
         cpuid(0x80000000, &eax, &ebx, &ecx, &edx);
         if ( (eax & 0xffff)  >= 0x01) {
             cpuid(0x80000001, &eax, &ebx, &ecx, &edx);
-            if ((edx & (1 << 30)) == 0 || (edx & (1 << 31)) == 0)
+            if ((edx & (1 << 30)) == 0 || (edx & (1u << 31)) == 0)
               return NULL;
           }
         else
@@ -644,7 +693,7 @@ static gotoblas_t *get_coretype(void){
       if ((exfamily == 0) || (exfamily == 2)) {
 	if (ecx & (1 <<  0)) return &gotoblas_OPTERON_SSE3;
 	else return &gotoblas_OPTERON;
-      }  else if (exfamily == 5) {
+      }  else if (exfamily == 5 || exfamily == 7) {
 	return &gotoblas_BOBCAT;
       } else if (exfamily == 6) {
 	if(model == 1){
@@ -698,7 +747,7 @@ static gotoblas_t *get_coretype(void){
 	  }
 	}
       } else if (exfamily == 8) {
-	if (model == 1 || model == 8) {
+	/* if (model == 1 || model == 8) */ {
 	  if(support_avx())
 	    return &gotoblas_ZEN;
 	  else{
@@ -706,16 +755,24 @@ static gotoblas_t *get_coretype(void){
 	    return &gotoblas_BARCELONA; //OS doesn't support AVX. Use old kernels.
 	  }
 	}
-      } else if (exfamily == 9) {
+      } else if (exfamily == 9) {  
 	  if(support_avx())
 	    return &gotoblas_ZEN;
 	  else{
 	    openblas_warning(FALLBACK_VERBOSE, BARCELONA_FALLBACK);
 	    return &gotoblas_BARCELONA; //OS doesn't support AVX. Use old kernels.
-        }
+          }
+      } else if (exfamily == 10) {  
+	  if(support_avx())
+	    return &gotoblas_ZEN;
+	  else{
+	    openblas_warning(FALLBACK_VERBOSE, BARCELONA_FALLBACK);
+	    return &gotoblas_BARCELONA; //OS doesn't support AVX. Use old kernels.
+          }
       }else {
 	return &gotoblas_BARCELONA;
       }
+   
     }
   }
 
@@ -754,7 +811,8 @@ static char *corename[] = {
     "Steamroller",
     "Excavator",
     "Zen",
-    "SkylakeX"	
+    "SkylakeX",
+    "Cooperlake"
 };
 
 char *gotoblas_corename(void) {
@@ -818,6 +876,7 @@ char *gotoblas_corename(void) {
   if (gotoblas == &gotoblas_EXCAVATOR)    return corename[22];
   if (gotoblas == &gotoblas_ZEN)          return corename[23];
   if (gotoblas == &gotoblas_SKYLAKEX)     return corename[24];
+  if (gotoblas == &gotoblas_COOPERLAKE)   return corename[25];
   return corename[0];
 }
 
@@ -848,6 +907,7 @@ static gotoblas_t *force_coretype(char *coretype){
 
 	switch (found)
 	{
+		case 25: return (&gotoblas_COOPERLAKE);
 		case 24: return (&gotoblas_SKYLAKEX);	
 		case 23: return (&gotoblas_ZEN);
 		case 22: return (&gotoblas_EXCAVATOR);

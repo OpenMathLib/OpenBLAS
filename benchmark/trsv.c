@@ -159,7 +159,7 @@ int main(int argc, char *argv[]){
           uplo,diag,loops);
 
 
-#ifdef linux
+#ifdef __linux
   srandom(getpid());
 #endif
 

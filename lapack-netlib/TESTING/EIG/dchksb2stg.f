@@ -670,8 +670,8 @@
 *              the one from above. Compare it with D1 computed 
 *              using the DSBTRD.
 *            
-               CALL DLASET( 'Full', N, 1, ZERO, ZERO, SD, 1 )
-               CALL DLASET( 'Full', N, 1, ZERO, ZERO, SE, 1 )
+               CALL DLASET( 'Full', N, 1, ZERO, ZERO, SD, N )
+               CALL DLASET( 'Full', N, 1, ZERO, ZERO, SE, N )
                CALL DLACPY( ' ', K+1, N, A, LDA, U, LDU )
                LH = MAX(1, 4*N)
                LW = LWORK - LH
@@ -743,8 +743,8 @@
 *              the one from above. Compare it with D1 computed 
 *              using the DSBTRD. 
 *           
-               CALL DLASET( 'Full', N, 1, ZERO, ZERO, SD, 1 )
-               CALL DLASET( 'Full', N, 1, ZERO, ZERO, SE, 1 )
+               CALL DLASET( 'Full', N, 1, ZERO, ZERO, SD, N )
+               CALL DLASET( 'Full', N, 1, ZERO, ZERO, SE, N )
                CALL DLACPY( ' ', K+1, N, A, LDA, U, LDU )
                LH = MAX(1, 4*N)
                LW = LWORK - LH

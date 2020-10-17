@@ -173,12 +173,12 @@ static void dgemv_kernel_4x4(BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y) {
     "vrepg  %%v4,%%v3,1\n\t"
     "adbr   %%f3,%%f4\n\t"
     "std    %%f3,24(%[y])"
-    : "=m"(*(struct { FLOAT x[4]; } *) y)
-    : [y] "a"(y), "m"(*(const struct { FLOAT x[n]; } *) ap0),[ap0] "a"(ap0),
-       "m"(*(const struct { FLOAT x[n]; } *) ap1),[ap1] "a"(ap1),
-       "m"(*(const struct { FLOAT x[n]; } *) ap2),[ap2] "a"(ap2),
-       "m"(*(const struct { FLOAT x[n]; } *) ap3),[ap3] "a"(ap3),
-       "m"(*(const struct { FLOAT x[n]; } *) x),[x] "a"(x),[n] "r"(n)
+    : "=m"(*(FLOAT (*)[4]) y)
+    : [y] "a"(y), "m"(*(const FLOAT (*)[n]) ap0),[ap0] "a"(ap0),
+       "m"(*(const FLOAT (*)[n]) ap1),[ap1] "a"(ap1),
+       "m"(*(const FLOAT (*)[n]) ap2),[ap2] "a"(ap2),
+       "m"(*(const FLOAT (*)[n]) ap3),[ap3] "a"(ap3),
+       "m"(*(const FLOAT (*)[n]) x),[x] "a"(x),[n] "r"(n)
     : "cc", "r0", "r1", "v0", "v1", "v2", "v3", "v4", "v5", "v6", "v7",
        "v16", "v17", "v18", "v19", "v20", "v21", "v22", "v23", "v24", "v25",
        "v26", "v27", "v28", "v29", "v30", "v31");
@@ -280,10 +280,10 @@ static void dgemv_kernel_4x2(BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y) {
     "vrepg  %%v2,%%v1,1\n\t"
     "adbr   %%f1,%%f2\n\t"
     "std    %%f1,8(%[y])"
-    : "=m"(*(struct { FLOAT x[2]; } *) y)
-    : [y] "a"(y), "m"(*(const struct { FLOAT x[n]; } *) ap0),[ap0] "a"(ap0),
-       "m"(*(const struct { FLOAT x[n]; } *) ap1),[ap1] "a"(ap1),
-       "m"(*(const struct { FLOAT x[n]; } *) x),[x] "a"(x),[n] "r"(n)
+    : "=m"(*(FLOAT (*)[2]) y)
+    : [y] "a"(y), "m"(*(const FLOAT (*)[n]) ap0),[ap0] "a"(ap0),
+       "m"(*(const FLOAT (*)[n]) ap1),[ap1] "a"(ap1),
+       "m"(*(const FLOAT (*)[n]) x),[x] "a"(x),[n] "r"(n)
     : "cc", "r0", "r1", "v0", "v1", "v2", "v3", "v4", "v5", "v6", "v7",
        "v16", "v17", "v18", "v19", "v20", "v21", "v22", "v23", "v24", "v25",
        "v26", "v27", "v28", "v29", "v30", "v31");
@@ -360,8 +360,8 @@ static void dgemv_kernel_4x1(BLASLONG n, FLOAT *a0, FLOAT *x, FLOAT *y) {
     "adbr   %%f0,%%f1\n\t"
     "std    %%f0,0(%[y])"
     : "=m"(*(FLOAT (*)[1]) y)
-    : [y] "a"(y), "m"(*(const struct { FLOAT x[n]; } *) a0),[a0] "a"(a0),
-       "m"(*(const struct { FLOAT x[n]; } *) x),[x] "a"(x),[n] "r"(n)
+    : [y] "a"(y), "m"(*(const FLOAT (*)[n]) a0),[a0] "a"(a0),
+       "m"(*(const FLOAT (*)[n]) x),[x] "a"(x),[n] "r"(n)
     : "cc", "r0", "r1", "v0", "v1", "v2", "v3", "v4", "v5", "v6", "v7",
        "v16", "v17", "v18", "v19", "v20", "v21", "v22", "v23", "v24", "v25",
        "v26", "v27", "v28", "v29", "v30", "v31");
@@ -438,9 +438,9 @@ static void add_y_kernel_4(BLASLONG n, FLOAT da, FLOAT *src, FLOAT *dest) {
     "agfi   %%r1,32\n\t"
     "brctg  %%r0,2b\n\t"
     "3:\n\t"
-    "nop"
-    : "+m"(*(struct { FLOAT x[n]; } *) dest)
-    : [dest] "a"(dest),[da] "Q"(da), "m"(*(const struct { FLOAT x[n]; } *) src),
+    "nop 0"
+    : "+m"(*(FLOAT (*)[n]) dest)
+    : [dest] "a"(dest),[da] "Q"(da), "m"(*(const FLOAT (*)[n]) src),
        [src] "a"(src),[n] "r"(n)
     : "cc", "r0", "r1", "v0", "v16", "v17", "v18", "v19", "v20", "v21",
        "v22", "v23", "v24", "v25", "v26", "v27", "v28", "v29", "v30",
