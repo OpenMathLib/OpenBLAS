@@ -424,7 +424,7 @@ void get_cpuconfig(void)
 			sysctlbyname("hw.l1dcachesize",&value,&length,NULL,0);
 			printf("#define L1_DATA_SIZE	     %d       \n",value);
 			sysctlbyname("hw.l2dcachesize",&value,&length,NULL,0);
-			printf("#define L2_DATA_SIZE	     %d       \n",value);
+			printf("#define L2_SIZE	     %d       \n",value);
 			break;
 #endif			
 	}
