@@ -50,7 +50,7 @@
     zomatcopy, zimatcopy,dzamax,dzamin,dzasum,dznrm2,
     zgeadd, dzsum);
 
-@cblasobjs = (lsame, xerbla);
+@blasobjs = (lsame, xerbla);
 @halfblasobjs = (sbgemm, sbdot, sbstobf16, sbdtobf16, sbf16tos, dbf16tod);
 @cblasobjsc = (
     cblas_caxpy, cblas_ccopy, cblas_cdotc, cblas_cdotu, cblas_cgbmv, cblas_cgemm, cblas_cgemv,
@@ -92,7 +92,7 @@
     cblas_izamax, cblas_izamin, cblas_izmin, cblas_izmax, cblas_dzsum,cblas_zimatcopy,cblas_zomatcopy
 );
 
-@cblasobjs = (  cblas_xerbla );
+@cblasobjs = ( cblas_xerbla );
 
 @halfcblasobjs = (cblas_sbgemm, cblas_sbdot, cblas_sbstobf16, cblas_sbdtobf16, cblas_sbf16tos, cblas_dbf16tod);
 
@@ -3600,6 +3600,7 @@ if ($ARGV[13] == 1) {
 	@lapack2objs = (@lapack2objs, @lapack2objss);
 	@lapack_embeded_underscore_objs = (@lapack_embeded_underscore_objs,  @lapack_embeded_underscore_objs_s); 
 	@lapackeobjs = (@lapackeobjs, @lapackeobjss);
+	@lapackobjs2 = (@lapackobjs2, @lapackobjs2s);
 }
 if ($ARGV[14] == 1) {
 	@blasobjs = (@blasobjs, @blasobjsd);
@@ -3608,6 +3609,7 @@ if ($ARGV[14] == 1) {
 	@lapack2objs = (@lapack2objs, @lapack2objsd);
 	@lapack_embeded_underscore_objs = (@lapack_embeded_underscore_objs,  @lapack_embeded_underscore_objs_d);
 	@lapackeobjs = (@lapackeobjs, @lapackeobjsd);
+	@lapackobjs2 = (@lapackobjs2, @lapackobjs2d);
 }
 if ($ARGV[15] == 1) {
 	@blasobjs = (@blasobjs, @blasobjsc);
@@ -3618,6 +3620,7 @@ if ($ARGV[15] == 1) {
 	@lapack2objs = (@lapack2objs, @lapack2objsc, @lapac2objszc);
 	@lapack_embeded_underscore_objs = (@lapack_embeded_underscore_objs,  @lapack_embeded_underscore_objs_c);
 	@lapackeobjs = (@lapackeobjs, @lapackeobjsc);
+	@lapackobjs2 = (@lapackobjs2,  @lapackobjs2sc, @lapackobjs2c);
 }
 if ($ARGV[16] == 1) {
 	@blasobjs = (@blasobjs, @blasobjsz);
@@ -3628,6 +3631,7 @@ if ($ARGV[16] == 1) {
 	@lapack2objs = (@lapack2objs, @lapack2objsz, @lapack2objszc);
 	@lapack_embeded_underscore_objs = (@lapack_embeded_underscore_objs,  @lapack_embeded_underscore_objs_z);
 	@lapackeobjs = (@lapackeobjs, @lapackeobjsz);
+	@lapackobjs2 = (@lapackobjs2,  @lapackobjs2dz, @lapackobjs2z);
 }
 if ($ARGV[8] == 1) {
     #ONLY_CBLAS=1
