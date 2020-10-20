@@ -641,6 +641,7 @@ DYNAMIC_CORE += POWER8
 ifneq ($(C_COMPILER), GCC)
 DYNAMIC_CORE += POWER9
 DYNAMIC_CORE += POWER10
+CCOMMON_OPT += -DHAVE_P10_SUPPORT
 endif
 ifeq ($(C_COMPILER), GCC)
 ifeq ($(GCCVERSIONGT5), 1)
@@ -648,11 +649,14 @@ DYNAMIC_CORE += POWER9
 else
 $(info, OpenBLAS: Your gcc version is too old to build the POWER9 kernels.)
 endif
-ifeq ($(GCCVERSIONGTEQ11), 1)
+LDVERSIONGTEQ35 := $(shell expr `ld --version | head -1 | cut -f2 -d "." | cut -f1 -d "-"` >= 35)
+ifeq ($(GCCVERSIONGTEQ11)$(LDVERSIONGTEQ35), 11)
 DYNAMIC_CORE += POWER10
+CCOMMON_OPT += -DHAVE_P10_SUPPORT
 else ifeq ($(GCCVERSIONGTEQ10), 1)
-ifeq ($(GCCMINORVERSIONGTEQ2), 1)
+ifeq ($(GCCMINORVERSIONGTEQ2)$(LDVERSIONGTEQ35), 11)
 DYNAMIC_CORE += POWER10
+CCOMMON_OPT += -DHAVE_P10_SUPPORT
 endif
 else
 $(info, OpenBLAS: Your gcc version is too old to build the POWER10 kernels.)
