@@ -90,6 +90,10 @@ GCCMINORVERSIONGTEQ7 := $(shell expr `$(FC) -dumpversion | cut -f2 -d.` \>= 7)
 ifeq ($(GCCVERSIONGTEQ4)$(GCCMINORVERSIONGTEQ7), 11)
 FCOMMON_OPT += -mavx2
 endif
+else
+ifeq ($(F_COMPILER), FLANG)
+FCOMMON_OPT += -mavx2
+endif
 endif
 endif
 endif
