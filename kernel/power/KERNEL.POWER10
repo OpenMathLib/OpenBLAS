@@ -150,9 +150,9 @@ CAXPYKERNEL  = caxpy.c
 endif
 ZAXPYKERNEL  = zaxpy_power10.c
 #
-SCOPYKERNEL  = scopy.c
+SCOPYKERNEL  = scopy_power10.c
 DCOPYKERNEL  = dcopy_power10.c
-CCOPYKERNEL  = ccopy.c
+CCOPYKERNEL  = ccopy_power10.c
 ZCOPYKERNEL  = zcopy_power10.c
 #
 SDOTKERNEL   =  sdot.c

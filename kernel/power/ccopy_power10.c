@@ -1,5 +1,5 @@
 /***************************************************************************
-Copyright (c) 2020, The OpenBLAS Project
+Copyright (c) 2013-2016, The OpenBLAS Project
 All rights reserved.
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -86,7 +86,7 @@ int CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG inc_y)
 	if ( (inc_x == 1) && (inc_y == 1 ))
 	{
 
-		BLASLONG n1 = n & -32;
+		BLASLONG n1 = n & -64;
 		if ( n1 > 0 )
 		{
 			copy_kernel(n1, x, y);
