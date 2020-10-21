@@ -126,4 +126,5 @@ int CNAME(BLASLONG dim_second, BLASLONG dim_first, double *src, BLASLONG lead_di
     }
     src1 += src_inc;
   }
+  return 0;
 }
