@@ -90,7 +90,7 @@ ifeq ($(F_COMPILER), GFORTRAN)
 GCCVERSIONGTEQ4 := $(shell expr `$(FC) -dumpversion | cut -f1 -d.` \>= 4)
 GCCVERSIONGTEQ5 := $(shell expr `$(FC) -dumpversion | cut -f1 -d.` \>= 5)
 GCCMINORVERSIONGTEQ7 := $(shell expr `$(FC) -dumpversion | cut -f2 -d.` \>= 7)
-GCCVERSIONCHECK := $(GCCVERSIONGTEQ5)$(GCCVERSIONGTEQ4)$(GCCVERSIONMINORGTEQ7)
+GCCVERSIONCHECK := $(GCCVERSIONGTEQ5)$(GCCVERSIONGTEQ4)$(GCCMINORVERSIONGTEQ7)
 ifeq ($(GCCVERSIONCHECK), $(filter $(GCCVERSIONCHECK), 011 110 111))
 FCOMMON_OPT += -mavx2
 endif

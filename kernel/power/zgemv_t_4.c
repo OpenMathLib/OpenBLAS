@@ -513,7 +513,7 @@ static void zgemv_kernel_4x1(BLASLONG n, FLOAT *ap, FLOAT *x, FLOAT *y, FLOAT al
 
 #endif
 
-static __attribute__((always_inline)) void copy_x(BLASLONG n, FLOAT *src, FLOAT *dest, BLASLONG inc_src) {
+static __attribute__((always_inline)) inline void copy_x(BLASLONG n, FLOAT *src, FLOAT *dest, BLASLONG inc_src) {
     BLASLONG i;
     for (i = 0; i < n; i++) {
         *dest = *src;
