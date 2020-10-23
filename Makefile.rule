@@ -295,10 +295,13 @@ COMMON_PROF = -pg
 
 
 
-# the below is not yet configurable, use cmake if you need to build only select types
-BUILD_SINGLE = 1
-BUILD_DOUBLE = 1
-BUILD_COMPLEX = 1
-BUILD_COMPLEX16 = 1
+# By default the library contains BLAS functions (and LAPACK if selected) for all input types.
+# To build a smaller library supporting e.g. only single precision real (SGEMM etc.) or only
+# the functions for complex numbers, uncomment the desired type(s) below
+# BUILD_SINGLE = 1
+# BUILD_DOUBLE = 1
+# BUILD_COMPLEX = 1
+# BUILD_COMPLEX16 = 1
+#
 #  End of user configuration
 #
