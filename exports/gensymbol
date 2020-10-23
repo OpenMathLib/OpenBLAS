@@ -786,22 +786,22 @@ zpotri,
     zlamswlq,
     zgemlq,
     );
-    @lapackobjs2 = (@lapackobjs2,
-    sladiv1,
-    dladiv1,
+    @lapackobjs2s = (@lapackobjs2s,
+    sladiv1);
+    @lapackobjs2d = (@lapackobjs2d,
+    dladiv1);
+    @lapackobjs = (@lapackobjs,
     iparam2stage,
-    
     # functions added for lapack-3.8.0
-
     ilaenv2stage,
     );
     # functions added for lapack-3.9.0
 @lapackobjs2c = (@lapackobjs2c,
     cgesvdq,
-    cungtsqr,
-    dcombssq,
+    cungtsqr
     );
 @lapackobjs2d = (@lapackobjs2d,
+    dcombssq,
     dgesvdq,
     dorgtsqr,
     );
