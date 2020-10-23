@@ -798,10 +798,10 @@ zpotri,
     # functions added for lapack-3.9.0
 @lapackobjs2c = (@lapackobjs2c,
     cgesvdq,
-    cungtsqr,
-    dcombssq,
+    cungtsqr
     );
 @lapackobjs2d = (@lapackobjs2d,
+    dcombssq,
     dgesvdq,
     dorgtsqr,
     );
