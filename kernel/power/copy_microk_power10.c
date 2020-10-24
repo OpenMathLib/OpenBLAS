@@ -25,9 +25,9 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
 USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
 
-#define HAVE_KERNEL_64 1
+#define HAVE_KERNEL 1
 
-static void dcopy_kernel_64 (long n, double *x, double *y)
+static void copy_kernel (BLASLONG n, FLOAT *x, FLOAT *y)
 {
   __asm__
     (
@@ -49,8 +49,13 @@ static void dcopy_kernel_64 (long n, double *x, double *y)
        "lxvp		60, 448(%2)	\n\t"
        "lxvp		62, 480(%2)	\n\t"
        "addi		%2, %2, 512	\n\t"
-
+#if !defined(COMPLEX) && !defined(DOUBLE)
+       "addic.		%1, %1, -128	\n\t"
+#elif defined(COMPLEX) && defined(DOUBLE)
+       "addic.		%1, %1, -32	\n\t"
+#else
        "addic.		%1, %1, -64	\n\t"
+#endif
        "ble		two%=		\n\t"
 
        ".align	5		\n"
@@ -94,7 +99,13 @@ static void dcopy_kernel_64 (long n, double *x, double *y)
        "addi		%3, %3, 512	\n\t"
        "addi		%2, %2, 512	\n\t"
 
+#if !defined(COMPLEX) && !defined(DOUBLE)
+       "addic.		%1, %1, -128	\n\t"
+#elif defined(COMPLEX) && defined(DOUBLE)
+       "addic.		%1, %1, -32	\n\t"
+#else
        "addic.		%1, %1, -64	\n\t"
+#endif
        "bgt		one%=		\n"
 
      "two%=:				\n\t"
@@ -121,7 +132,7 @@ static void dcopy_kernel_64 (long n, double *x, double *y)
        "=m" (*y),
        "+r" (n),	// 1
        "+b" (x),	// 2
-       "+b" (y)		// 3
+       "+b" (y) 	// 3
      :
        "m" (*x)
      :

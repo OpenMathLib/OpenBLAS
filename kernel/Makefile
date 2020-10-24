@@ -22,20 +22,25 @@ ifeq ($(C_COMPILER), CLANG)
  override CFLAGS += -fno-integrated-as
 endif
 endif
+
 AVX2OPT = 
 ifeq ($(C_COMPILER), GCC)
 # AVX2 support was added in 4.7.0
-  GCCVERSIONGTEQ4 := $(shell expr `$(CC) -dumpversion | cut -f1 -d.` \>= 4)
-  GCCMINORVERSIONGTEQ7 := $(shell expr `$(CC) -dumpversion | cut -f2 -d.` \>= 7)
-  ifeq ($(GCCVERSIONGTEQ4)$(GCCMINORVERSIONGTEQ7), 11)
+GCCVERSIONGTEQ4 := $(shell expr `$(CC) -dumpversion | cut -f1 -d.` \>= 4)
+GCCVERSIONGTEQ5 := $(shell expr `$(CC) -dumpversion | cut -f1 -d.` \>= 5)
+GCCMINORVERSIONGTEQ7 := $(shell expr `$(CC) -dumpversion | cut -f2 -d.` \>= 7)
+GCCVERSIONCHECK := $(GCCVERSIONGTEQ5)$(GCCVERSIONGTEQ4)$(GCCMINORVERSIONGTEQ7)
+ifeq ($(GCCVERSIONCHECK), $(filter $(GCCVERSIONCHECK), 011 110 111))
    AVX2OPT = -mavx2
   endif
 endif
 ifeq ($(C_COMPILER), CLANG)
 # Any clang posing as gcc 4.2 should be new enough (3.4 or later)
   GCCVERSIONGTEQ4 := $(shell expr `$(CC) -dumpversion | cut -f1 -d.` \>= 4)
+  GCCVERSIONGTEQ5 := $(shell expr `$(CC) -dumpversion | cut -f1 -d.` \>= 5)
   GCCMINORVERSIONGTEQ2 := $(shell expr `$(CC) -dumpversion | cut -f2 -d.` \>= 2)
-  ifeq ($(GCCVERSIONGTEQ4)$(GCCMINORVERSIONGTEQ2), 11)
+  GCCVERSIONCHECK := $(GCCVERSIONGTEQ5)$(GCCVERSIONGTEQ4)$(GCCMINORVERSIONGTEQ7)
+  ifeq ($(GCCVERSIONCHECK), $(filter $(GCCVERSIONCHECK), 011 110 111))
    AVX2OPT = -mavx2
   endif
 endif

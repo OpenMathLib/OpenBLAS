@@ -1,5 +1,5 @@
 /***************************************************************************
-Copyright (c) 2020, The OpenBLAS Project
+Copyright (c) 2013-2016, The OpenBLAS Project
 All rights reserved.
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -33,7 +33,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #ifndef HAVE_KERNEL
 
-static void copy_kernel(BLASLONG n, FLOAT *x, FLOAT *y)
+static void copy_kernel (BLASLONG n, FLOAT *x, FLOAT *y)
 {
 
 	BLASLONG i=0;
@@ -65,7 +65,7 @@ static void copy_kernel(BLASLONG n, FLOAT *x, FLOAT *y)
 		x1 += 8;
 		y1 += 8;
 
-		i+=4;
+		i+=8;
 	}
 	return;
 
@@ -86,21 +86,16 @@ int CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG inc_y)
 	if ( (inc_x == 1) && (inc_y == 1 ))
 	{
 
-		BLASLONG n1 = n & -32;
+		BLASLONG n1 = n & -128;
 		if ( n1 > 0 )
 		{
-			copy_kernel(n1, x, y);
+			copy_kernel (n1, x, y);
 			i=n1;
-			ix=n1*2;
-			iy=n1*2;
 		}
 
 		while(i < n)
 		{
-			y[iy] = x[iy] ;
-			y[iy+1] = x[ix+1] ;
-			ix+=2;
-			iy+=2;
+			y[i] = x[i] ;
 			i++ ;
 
 		}
@@ -110,15 +105,11 @@ int CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG inc_y)
 	else
 	{
 
-		BLASLONG inc_x2 = 2 * inc_x;
-		BLASLONG inc_y2 = 2 * inc_y;
-
 		while(i < n)
 		{
 			y[iy] = x[ix] ;
-			y[iy+1] = x[ix+1] ;
-			ix += inc_x2 ;
-			iy += inc_y2 ;
+			ix += inc_x ;
+			iy += inc_y ;
 			i++ ;
 
 		}
