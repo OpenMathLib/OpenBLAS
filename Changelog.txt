@@ -4,14 +4,14 @@ Version 0.3.12
  24-Oct-2020
 
 common:
-	* Fixed missibg LAPACK functions (inadvertently dropped during
+	* Fixed missing BLAS/LAPACK functions (inadvertently dropped during
 	  the build system restructuring)
 	* Fixed argument conversion macro in LAPACKE_zgesvdq (LAPACK #458)
 
 POWER:
 	* Added optimized SCOPY/CCOPY kernels for POWER10
 	* Increased and unified the default size of the GEMM BUFFER
-	* Fixed building for POWER1ß in DYNAMIC_ARCH mode
+	* Fixed building for POWER10 in DYNAMIC_ARCH mode
 	* POWER10 compatibility test now checks binutils version as well
 	* Cleaned up compiler warnings
 
