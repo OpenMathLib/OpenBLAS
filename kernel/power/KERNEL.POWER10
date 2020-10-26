@@ -141,7 +141,7 @@ DASUMKERNEL  = dasum.c
 CASUMKERNEL  = casum.c
 ZASUMKERNEL  = zasum.c
 #
-SAXPYKERNEL  = saxpy.c
+SAXPYKERNEL  = saxpy_power10.c
 DAXPYKERNEL  = daxpy_power10.c
 ifneq ($(GCCVERSIONGTEQ9),1)
 CAXPYKERNEL  = caxpy_power9.S
