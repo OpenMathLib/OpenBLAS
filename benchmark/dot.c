@@ -49,7 +49,6 @@ int main(int argc, char *argv[]){
   int to   = 200;
   int step =   1;
 
-  struct timeval start, stop;
   double time1,timeg;
 
   argc--;argv++;
