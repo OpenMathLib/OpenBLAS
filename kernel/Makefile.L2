@@ -48,6 +48,16 @@ ifndef XGEMVTKERNEL
 XGEMVTKERNEL = zgemv_t.S
 endif
 
+ifeq ($(BUILD_BFLOAT16),1)
+ifndef SBGEMVNKERNEL
+SBGEMVNKERNEL = ../x86_64/sbgemv_n.c
+endif
+
+ifndef SBGEMVTKERNEL
+SBGEMVTKERNEL = ../x86_64/sbgemv_t.c
+endif
+endif
+
 ### GER ###
 
 ifndef SGERKERNEL
@@ -233,6 +243,12 @@ XBLASOBJS	+= \
 	xsymv_U$(TSUFFIX).$(SUFFIX) xsymv_L$(TSUFFIX).$(SUFFIX) \
 	xhemv_U$(TSUFFIX).$(SUFFIX) xhemv_L$(TSUFFIX).$(SUFFIX) xhemv_V$(TSUFFIX).$(SUFFIX) xhemv_M$(TSUFFIX).$(SUFFIX) \
 	xgeru_k$(TSUFFIX).$(SUFFIX) xgerc_k$(TSUFFIX).$(SUFFIX) xgerv_k$(TSUFFIX).$(SUFFIX) xgerd_k$(TSUFFIX).$(SUFFIX)
+
+ifeq ($(BUILD_BFLOAT16),1)
+SBBLASOBJS     += \
+        sbgemv_n$(TSUFFIX).$(SUFFIX) \
+        sbgemv_t$(TSUFFIX).$(SUFFIX)
+endif
 
 ifneq "$(or $(BUILD_SINGLE), $(BUILD_DOUBLE), $(BUILD_COMPLEX))" ""
 $(KDIR)sgemv_n$(TSUFFIX).$(SUFFIX)  $(KDIR)sgemv_n$(TSUFFIX).$(PSUFFIX)  : $(KERNELDIR)/$(SGEMVNKERNEL) $(TOPDIR)/common.h $(GEMVDEP)
@@ -483,4 +499,10 @@ $(KDIR)xhemv_V$(TSUFFIX).$(SUFFIX)  $(KDIR)xhemv_V$(TSUFFIX).$(PSUFFIX)  : $(KER
 $(KDIR)xhemv_M$(TSUFFIX).$(SUFFIX)  $(KDIR)xhemv_M$(TSUFFIX).$(PSUFFIX)  : $(KERNELDIR)/$(XHEMV_M_KERNEL)  ../symcopy.h
 	$(CC) -c $(CFLAGS) -DCOMPLEX -DXDOUBLE -DLOWER -DHEMV -DHEMVREV $< -o $@
 
+ifeq ($(BUILD_BFLOAT16),1)
+$(KDIR)sbgemv_n$(TSUFFIX).$(SUFFIX) $(KDIR)sbgemv_n$(TPSUFFIX).$(PSUFFIX) : $(KERNELDIR)/$(SBGEMVNKERNEL)
+	$(CC) -c $(CFLAGS) -UCOMPLEX $< -o $@
+$(KDIR)sbgemv_t$(TSUFFIX).$(SUFFIX) $(KDIR)sbgemv_t$(TPSUFFIX).$(PSUFFIX) : $(KERNELDIR)/$(SBGEMVTKERNEL)
+	$(CC) -c $(CFLAGS) -UCOMPLEX $< -o $@
+endif
 
