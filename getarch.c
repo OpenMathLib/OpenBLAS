@@ -1405,8 +1405,41 @@ int main(int argc, char *argv[]){
 
     printf("NUM_CORES=%d\n", get_num_cores());
 
-#if defined(__arm__) && !defined(FORCE)
+#if defined(__arm__) 
+#if !defined(FORCE)
+    fprintf(stderr,"get features!\n");
         get_features();
+#else
+    fprintf(stderr,"split archconfig!\n");
+    sprintf(buffer, "%s", ARCHCONFIG);
+
+    p = &buffer[0];
+
+    while (*p) {
+      if ((*p == '-') && (*(p + 1) == 'D')) {
+	p += 2;
+        if (*p != 'H') {
+		while( (*p != ' ') && (*p != '-') && (*p != '\0') && (*p != '\n')) {p++; }
+		if (*p == '-') continue;
+	}
+	while ((*p != ' ') && (*p != '\0')) {
+
+	  if (*p == '=') {
+	    printf("=");
+	    p ++;
+	    while ((*p != ' ') && (*p != '\0')) {
+	      printf("%c", *p);
+	      p ++;
+	    }
+	  } else {
+	    printf("%c", *p);
+	    p ++;
+	    if ((*p == ' ') || (*p =='\0')) printf("=1\n");
+	  }
+	}
+      } else p ++;
+    }
+#endif
 #endif
 
 
