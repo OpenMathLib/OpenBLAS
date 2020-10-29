@@ -319,6 +319,7 @@ ifeq ($(GCCVERSIONGTEQ7),1)
 else
 	GCCDUMPVERSION_PARAM := -dumpversion
 endif
+GCCMINORVERSIONGTEQ1 := $(shell expr `$(CC) $(GCCDUMPVERSION_PARAM) | cut -f2 -d.` \>= 1)
 GCCMINORVERSIONGTEQ2 := $(shell expr `$(CC) $(GCCDUMPVERSION_PARAM) | cut -f2 -d.` \>= 2)
 GCCMINORVERSIONGTEQ7 := $(shell expr `$(CC) $(GCCDUMPVERSION_PARAM) | cut -f2 -d.` \>= 7)
 endif
