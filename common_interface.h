@@ -250,6 +250,8 @@ void BLASFUNC(xgeru)(blasint *,    blasint *, xdouble *, xdouble *, blasint *,
 void BLASFUNC(xgerc)(blasint *,    blasint *, xdouble *, xdouble *, blasint *,
 		    xdouble *, blasint *, xdouble *, blasint *);
 
+void BLASFUNC(sbgemv)(char *, blasint *, blasint *, float  *, bfloat16 *, blasint *,
+            bfloat16  *, blasint *, float  *, float  *, blasint *);
 void BLASFUNC(sgemv)(char *, blasint *, blasint *, float  *, float  *, blasint *,
 		    float  *, blasint *, float  *, float  *, blasint *);
 void BLASFUNC(dgemv)(char *, blasint *, blasint *, double *, double *, blasint *,
