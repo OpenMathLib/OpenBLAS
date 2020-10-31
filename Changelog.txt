@@ -1,9 +1,36 @@
 OpenBLAS ChangeLog
 ====================================================================
+Version 0.3.12
+ 24-Oct-2020
+
+common:
+	* Fixed missing BLAS/LAPACK functions (inadvertently dropped during
+	  the build system restructuring)
+	* Fixed argument conversion macro in LAPACKE_zgesvdq (LAPACK #458)
+
+POWER:
+	* Added optimized SCOPY/CCOPY kernels for POWER10
+	* Increased and unified the default size of the GEMM BUFFER
+	* Fixed building for POWER10 in DYNAMIC_ARCH mode
+	* POWER10 compatibility test now checks binutils version as well
+	* Cleaned up compiler warnings
+
+x86_64:
+	* corrected compiler version checks for AVX2 compatibility
+	* added compiler option -mavx2 for building with flang
+	* fixed direct SGEMM pathway for small matrix sizes (broken by
+	  the code refactoring in 0.3.11)
+	* fixed unhandled partial register clobbers in several kernels
+	  for AXPY,DOT,GEMV_N and GEMV_T flagged by gcc10 tree-vectorizer
+
+ARMV8:
+	* improved Apple Vortex support to include cross-compiling
+
+====================================================================
 Version 0.3.11
  17-Oct-2020
 
- common:
+common:
  	* API change:
 	  the newly added BFLOAT16 functions were renamed to use the
 	  letter "B" instead of "H" to avoid potential confusion with
@@ -28,7 +55,7 @@ Version 0.3.11
 	* Makefile builds no longer misread NO_CBLAS=0 or NO_LAPACK=0 as 
 	  enabling these options
 	* Fixed detection of gfortran when invoked through an mpi wrapper
-	* Improve thread reinitialization performance with OpenMP xafter a fork 
+	* Improve thread reinitialization performance with OpenMP after a fork 
 	* Added support for building only the subset of the library required
 	  for a particular precision by specifying BUILD_SINGLE, BUILD_DOUBLE
 	* Optional function name prefixes and suffixes are now correctly
@@ -65,7 +92,6 @@ ARMV8:
 	* Added support for the Cavium ThunderX3T110 cpu
 	* Fixed cpu detection on BSD-like systems
 	* Fixed compilation in -std=C18 mode
-
 
 IBM Z:
 	* Added support for compiling with the clang compiler

@@ -352,7 +352,6 @@ fprintf(stderr,"UNHANDLED COMPLEX\n");
           /* Other types in future */
 	  }
       }
-if (!sb) fprintf(stderr,"SB not declared!!!\n");
       queue->sb=sb;
     }
   }

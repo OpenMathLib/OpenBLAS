@@ -69,7 +69,7 @@ gotoblas_t TABLE_NAME = {
   snrm2_kTS,  sasum_kTS, ssum_kTS, scopy_kTS, sbdot_kTS,
   dsdot_kTS,
   srot_kTS,   saxpy_kTS,  sscal_kTS, sswap_kTS,
-  sgemv_nTS,  sgemv_tTS, sger_kTS,
+  sbgemv_nTS, sbgemv_tTS, sger_kTS,
   ssymv_LTS, ssymv_UTS,
 
   sbgemm_kernelTS, sbgemm_betaTS,

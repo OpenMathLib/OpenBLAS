@@ -51,7 +51,7 @@
     zgeadd, dzsum);
 
 @blasobjs = (lsame, xerbla);
-@bfblasobjs = (sbgemm, sbdot, sbstobf16, sbdtobf16, sbf16tos, dbf16tod);
+@bfblasobjs = (sbgemm, sbgemv, sbdot, sbstobf16, sbdtobf16, sbf16tos, dbf16tod);
 @cblasobjsc = (
     cblas_caxpy, cblas_ccopy, cblas_cdotc, cblas_cdotu, cblas_cgbmv, cblas_cgemm, cblas_cgemv,
     cblas_cgerc, cblas_cgeru, cblas_chbmv, cblas_chemm, cblas_chemv, cblas_cher2, cblas_cher2k,
@@ -94,7 +94,7 @@
 
 @cblasobjs = (  cblas_xerbla );
 
-@bfcblasobjs = (cblas_sbgemm, cblas_sbdot, cblas_sbstobf16, cblas_sbdtobf16, cblas_sbf16tos, cblas_dbf16tod);
+@bfcblasobjs = (cblas_sbgemm, cblas_sbgemv, cblas_sbdot, cblas_sbstobf16, cblas_sbdtobf16, cblas_sbf16tos, cblas_dbf16tod);
 
 @exblasobjs = (
     qamax,qamin,qasum,qaxpy,qcabs1,qcopy,qdot,qgbmv,qgemm,
@@ -786,22 +786,22 @@ zpotri,
     zlamswlq,
     zgemlq,
     );
-    @lapackobjs2 = (@lapackobjs2,
-    sladiv1,
-    dladiv1,
+    @lapackobjs2s = (@lapackobjs2s,
+    sladiv1);
+    @lapackobjs2d = (@lapackobjs2d,
+    dladiv1);
+    @lapackobjs = (@lapackobjs,
     iparam2stage,
-    
     # functions added for lapack-3.8.0
-
     ilaenv2stage,
     );
     # functions added for lapack-3.9.0
 @lapackobjs2c = (@lapackobjs2c,
     cgesvdq,
-    cungtsqr,
-    dcombssq,
+    cungtsqr
     );
 @lapackobjs2d = (@lapackobjs2d,
+    dcombssq,
     dgesvdq,
     dorgtsqr,
     );

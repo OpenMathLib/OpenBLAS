@@ -330,8 +330,8 @@ int support_avx2(){
   if (!support_avx())
     return 0;
   cpuid(7, &eax, &ebx, &ecx, &edx);
-  if((ebx & (1<<7)) != 0)
-      ret=1;  //OS supports AVX2
+  if((ebx & (1<<5)) != 0)
+      ret=1;  //AVX2 flag is set
   return ret;
 #else
   return 0;
@@ -346,13 +346,13 @@ int support_avx512(){
   if (!support_avx())
     return 0;
   cpuid(7, &eax, &ebx, &ecx, &edx);
-  if((ebx & (1<<7)) == 0){
-      ret=0;  //OS does not even support AVX2
+  if((ebx & (1<<5)) == 0){
+      ret=0;  //cpu does not have avx2 flag
   }
-  if((ebx & (1u<<31)) != 0){
+  if((ebx & (1<<31)) != 0){ //AVX512VL flag is set
     xgetbv(0, &eax, &edx);
     if((eax & 0xe0) == 0xe0)
-      ret=1;  //OS supports AVX512VL
+      ret=1;  //OS supports saving zmm register
   }
   return ret;
 #else

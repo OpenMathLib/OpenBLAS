@@ -8,6 +8,8 @@
 #define SBDTOBF16_K         sbdtobf16_k
 #define SBF16TOS_K          sbf16tos_k
 #define DBF16TOD_K          dbf16tod_k
+#define SBGEMV_N_K          sbgemv_n
+#define SBGEMV_T_K          sbgemv_t
 
 #define	SBGEMM_ONCOPY		sbgemm_oncopy
 #define	SBGEMM_OTCOPY		sbgemm_otcopy
@@ -29,6 +31,8 @@
 #define SBDTOBF16_K         gotoblas -> sbdtobf16_k
 #define SBF16TOS_K          gotoblas -> sbf16tos_k
 #define DBF16TOD_K          gotoblas -> dbf16tod_k
+#define SBGEMV_N_K          gotoblas -> sbgemv_n
+#define SBGEMV_T_K          gotoblas -> sbgemv_t
 
 #define	SBGEMM_ONCOPY		gotoblas -> sbgemm_oncopy
 #define	SBGEMM_OTCOPY		gotoblas -> sbgemm_otcopy
