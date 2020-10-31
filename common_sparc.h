@@ -221,7 +221,7 @@ REALNAME:;
 #define SEEK_ADDRESS
 #endif
 
-#define BUFFER_SIZE	(32 << 20)
+#define BUFFER_SIZE	(32 << 21)
 
 #ifndef PAGESIZE
 #define PAGESIZE	( 8 << 10)
