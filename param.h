@@ -2752,7 +2752,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define SYMV_P	16
 #endif
 
-// Common ARMv8 parameters
+/* Common ARMv8 parameters */
 #if defined(ARMV8)
 
 #define SNUMOPT		2
