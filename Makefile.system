@@ -93,6 +93,11 @@ endif
 ifdef TARGET
 GETARCH_FLAGS := -DFORCE_$(TARGET)
 GETARCH_FLAGS += -DUSER_TARGET
+ifeq ($(TARGET), GENERIC)
+ifeq ($(DYNAMIC_ARCH), 1)
+override NO_EXPRECISION=1
+endif
+endif
 endif
 
 # Force fallbacks for 32bit
