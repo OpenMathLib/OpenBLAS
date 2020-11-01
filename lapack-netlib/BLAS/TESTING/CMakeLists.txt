@@ -2,7 +2,7 @@ macro(add_blas_test name src)
   get_filename_component(baseNAME ${src} NAME_WE)
   set(TEST_INPUT "${CMAKE_CURRENT_SOURCE_DIR}/${baseNAME}.in")
   add_executable(${name} ${src})
-  target_link_libraries(${name} blas)
+  target_link_libraries(${name} ${BLASLIB})
   if(EXISTS "${TEST_INPUT}")
     add_test(NAME BLAS-${name} COMMAND "${CMAKE_COMMAND}"
       -DTEST=$<TARGET_FILE:${name}>
