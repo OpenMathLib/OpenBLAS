@@ -84,8 +84,10 @@ if (X86)
   set(NO_EXPRECISION 1)
 endif ()
 
-if ((DYNAMIC_ARCH) AND (${TARGET} STREQUAL "GENERIC"))
+if (DYNAMIC_ARCH)
+if (${TARGET} STREQUAL "GENERIC")
   set(NO_EXPRECISION 1)
+endif ()
 endif ()
 
 if (UTEST_CHECK)
