@@ -96,6 +96,7 @@ GETARCH_FLAGS += -DUSER_TARGET
 ifeq ($(TARGET), GENERIC)
 ifeq ($(DYNAMIC_ARCH), 1)
 override NO_EXPRECISION=1
+export NO_EXPRECiSION
 endif
 endif
 endif
