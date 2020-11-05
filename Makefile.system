@@ -93,6 +93,12 @@ endif
 ifdef TARGET
 GETARCH_FLAGS := -DFORCE_$(TARGET)
 GETARCH_FLAGS += -DUSER_TARGET
+ifeq ($(TARGET), GENERIC)
+ifeq ($(DYNAMIC_ARCH), 1)
+override NO_EXPRECISION=1
+export NO_EXPRECiSION
+endif
+endif
 endif
 
 # Force fallbacks for 32bit
@@ -319,6 +325,7 @@ ifeq ($(GCCVERSIONGTEQ7),1)
 else
 	GCCDUMPVERSION_PARAM := -dumpversion
 endif
+GCCMINORVERSIONGTEQ1 := $(shell expr `$(CC) $(GCCDUMPVERSION_PARAM) | cut -f2 -d.` \>= 1)
 GCCMINORVERSIONGTEQ2 := $(shell expr `$(CC) $(GCCDUMPVERSION_PARAM) | cut -f2 -d.` \>= 2)
 GCCMINORVERSIONGTEQ7 := $(shell expr `$(CC) $(GCCDUMPVERSION_PARAM) | cut -f2 -d.` \>= 7)
 endif
@@ -855,7 +862,7 @@ CCOMMON_OPT += -DF_INTERFACE_FLANG
 FCOMMON_OPT += -Mrecursive -Kieee
 ifeq ($(OSNAME), Linux)
 ifeq ($(ARCH), x86_64)
-FLANG_VENDOR := $(shell expr `$(FC) --version|cut -f 1 -d "."|head -1`)
+FLANG_VENDOR := $(shell `$(FC) --version|cut -f 1 -d "."|head -1`)
 ifeq ($(FLANG_VENDOR),AOCC)
 FCOMMON_OPT += -fno-unroll-loops
 endif
@@ -1102,15 +1109,16 @@ ifeq ($(ARCH), x86)
 CCOMMON_OPT  += -m32
 else
 ifdef BINARY64
-FCOMMON_OPT  += -m64
+CCOMMON_OPT  += -m64
 else
-FCOMMON_OPT  += -m32
+CCOMMON_OPT  += -m32
 endif
 endif
 endif
 
 ifeq ($(F_COMPILER), SUN)
-CCOMMON_OPT  += -DF_INTERFACE_SUN
+CCOMMON_OPT  += -DF_INTERFACE_SUN 
+FCOMMON_OPT  += -ftrap=%none -xrecursive
 ifeq ($(ARCH), x86)
 FCOMMON_OPT  += -m32
 else
@@ -1286,9 +1294,11 @@ KERNELDIR	= $(TOPDIR)/kernel/$(ARCH)
 
 include $(TOPDIR)/Makefile.$(ARCH)
 
-#ifneq ($(C_COMPILER), PGI)
-#CCOMMON_OPT     += -UASMNAME -UASMFNAME -UNAME -UCNAME -UCHAR_NAME -UCHAR_CNAME
-#endif
+ifneq ($(C_COMPILER), PGI)
+ifneq ($(C_COMPILER), SUN)
+CCOMMON_OPT     += -UASMNAME -UASMFNAME -UNAME -UCNAME -UCHAR_NAME -UCHAR_CNAME
+endif
+endif
 CCOMMON_OPT	+= -DASMNAME=$(FU)$(*F) -DASMFNAME=$(FU)$(*F)$(BU) -DNAME=$(*F)$(BU) -DCNAME=$(*F) -DCHAR_NAME=\"$(*F)$(BU)\" -DCHAR_CNAME=\"$(*F)\"
 
 ifeq ($(CORE), PPC440)
