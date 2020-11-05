@@ -70,7 +70,7 @@ static void srot_kernel(BLASLONG n, FLOAT *x, FLOAT *y, FLOAT c, FLOAT s)
         y0 = _mm256_loadu_ps(&y[i]);
 
         t0 = _mm256_mul_ps(s_256, y0);
-        t0 = _mm256_fmadd_ps(c_256, s0, t0);
+        t0 = _mm256_fmadd_ps(c_256, x0, t0);
         _mm256_storeu_ps(&x[i], t0);
 
         t0 = _mm256_mul_ps(s_256, x0);
