@@ -185,7 +185,7 @@ steps:
     - apt-get update -y
     - apt-get install -y make $CC gfortran perl python g++
     - $CC --version
-    - make QUIET_MAKE=1 $COMMON_FLAGS
+    - make QUIET_MAKE=1 $COMMON_FLAGS -j
     - make -C test $COMMON_FLAGS
     - make -C ctest $COMMON_FLAGS
     - make -C utest $COMMON_FLAGS
