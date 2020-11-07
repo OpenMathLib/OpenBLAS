@@ -255,9 +255,15 @@ else
 ifdef HAVE_NEON
 undefine HAVE_NEON
 endif
+ifdef HAVE_VFP
 undefine HAVE_VFP
+endif
+ifdef HAVE_VFPV3
 undefine HAVE_VFPV3
+endif
+ifdef HAVE_VFPV4
 undefine HAVE_VFPV4
+endif
 undefine HAVE_MMX
 undefine HAVE_SSE
 undefine HAVE_SSE2
