@@ -34,12 +34,12 @@ SGEMMONCOPYOBJ =  sgemm_oncopy$(TSUFFIX).$(SUFFIX)
 SGEMMOTCOPYOBJ =  sgemm_otcopy$(TSUFFIX).$(SUFFIX)
 
 DGEMMKERNEL    =  dgemm_kernel_power10.c
-DGEMMINCOPY    = ../generic/gemm_ncopy_16.c
-DGEMMITCOPY    =  dgemm_tcopy_16_power8.S
-DGEMMONCOPY    =  dgemm_ncopy_4_power8.S
-DGEMMOTCOPY    =  ../generic/gemm_tcopy_4.c
-DGEMMINCOPYOBJ =  dgemm_incopy$(TSUFFIX).$(SUFFIX)
-DGEMMITCOPYOBJ =  dgemm_itcopy$(TSUFFIX).$(SUFFIX)
+DGEMMINCOPY    =
+DGEMMITCOPY    =
+DGEMMONCOPY    =  dgemm_ncopy_8_power10.c
+DGEMMOTCOPY    =  ../generic/gemm_tcopy_8.c
+DGEMMINCOPYOBJ =
+DGEMMITCOPYOBJ =
 DGEMMONCOPYOBJ =  dgemm_oncopy$(TSUFFIX).$(SUFFIX)
 DGEMMOTCOPYOBJ =  dgemm_otcopy$(TSUFFIX).$(SUFFIX)
 
@@ -69,7 +69,7 @@ STRSMKERNEL_RN	=  ../generic/trsm_kernel_RN.c
 STRSMKERNEL_RT	=  ../generic/trsm_kernel_RT.c
 
 DTRSMKERNEL_LN	= ../generic/trsm_kernel_LN.c
-DTRSMKERNEL_LT	= dtrsm_kernel_LT_16x4_power8.S
+DTRSMKERNEL_LT	= ../generic/trsm_kernel_LT.c
 DTRSMKERNEL_RN	= ../generic/trsm_kernel_RN.c
 DTRSMKERNEL_RT	= ../generic/trsm_kernel_RT.c
 

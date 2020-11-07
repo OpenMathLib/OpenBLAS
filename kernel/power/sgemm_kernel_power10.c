@@ -197,7 +197,6 @@ CNAME (BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alpha, FLOAT * A, FLOAT * B,
 #endif
   )
 {
-  BLASLONG N = n;
   BLASLONG i1;
 #if defined(TRMMKERNEL)
   BLASLONG off;
@@ -207,10 +206,9 @@ CNAME (BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alpha, FLOAT * A, FLOAT * B,
 #endif
 
   v4sf_t valpha = { alpha, alpha, alpha, alpha };
-  N = n >> 3;
-  for (i1 = 0; i1 < N; i1++)
+  for (i1 = 0; i1 < (n >> 3); i1++)
     {
-      BLASLONG i, j, temp;
+      BLASLONG j, temp;
       FLOAT *CO;
       FLOAT *AO;
 #if defined(TRMMKERNEL) && defined(LEFT)
@@ -221,8 +219,7 @@ CNAME (BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alpha, FLOAT * A, FLOAT * B,
       AO = A;
       PREFETCH1 (A, 128);
       PREFETCH1 (A, 256);
-      i = m >> 4;
-      for (j = 0; j < i; j++)
+      for (j = 0; j < (m >> 4); j++)
 	{
 	  FLOAT *BO;
 #if defined(TRMMKERNEL)
@@ -438,8 +435,7 @@ CNAME (BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alpha, FLOAT * A, FLOAT * B,
 #endif
 	    CO += 16;
 	}
-      i = (m & 15) >> 3;
-      for (j = 0; j < i; j++)
+      if (m & 8)
 	{
 	  FLOAT *BO;
 #if defined(TRMMKERNEL)
@@ -478,8 +474,7 @@ CNAME (BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alpha, FLOAT * A, FLOAT * B,
 	  REFRESH_AFTER_SAVE (8, 8)
 #endif
 	}
-      i = (m & 7) >> 2;
-      for (j = 0; j < i; j++)
+      if (m & 4)
 	{
 	  FLOAT *BO;
 #if defined(TRMMKERNEL)
@@ -512,8 +507,7 @@ CNAME (BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alpha, FLOAT * A, FLOAT * B,
 	  REFRESH_AFTER_SAVE (4, 8)
 #endif
 	}
-      i = (m & 3) >> 1;
-      for (j = 0; j < i; j++)
+      if (m & 2)
 	{
 	  FLOAT *BO;
 #if defined(TRMMKERNEL)
@@ -550,8 +544,7 @@ CNAME (BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alpha, FLOAT * A, FLOAT * B,
 	  REFRESH_AFTER_SAVE (2, 8)
 #endif
 	}
-      i = (m & 1) >> 0;
-      for (j = 0; j < i; j++)
+      if (m & 1)
 	{
 	  FLOAT *BO;
 #if defined(TRMMKERNEL)
@@ -610,8 +603,7 @@ CNAME (BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alpha, FLOAT * A, FLOAT * B,
 
       B += k << 3;
     }
-  N = (n & 7) >> 2;
-  for (i1 = 0; i1 < N; i1++)
+  if (n & 4)
     {
       BLASLONG i, j, temp;
 #if defined(TRMMKERNEL) && defined(LEFT)
@@ -719,8 +711,7 @@ CNAME (BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alpha, FLOAT * A, FLOAT * B,
 	  REFRESH_AFTER_SAVE (16, 4)
 #endif
 	}
-      i = (m & 15) >> 3;
-      for (j = 0; j < i; j++)
+      if (m & 8)
 	{
 	  FLOAT *BO;
 #if defined(TRMMKERNEL)
@@ -753,8 +744,7 @@ CNAME (BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alpha, FLOAT * A, FLOAT * B,
 	  REFRESH_AFTER_SAVE (8, 4)
 #endif
 	}
-      i = (m & 7) >> 2;
-      for (j = 0; j < i; j++)
+      if (m & 4)
 	{
 	  FLOAT *BO;
 #if defined(TRMMKERNEL)
@@ -784,8 +774,7 @@ CNAME (BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alpha, FLOAT * A, FLOAT * B,
 	  REFRESH_AFTER_SAVE (4, 4)
 #endif
 	}
-      i = (m & 3) >> 1;
-      for (j = 0; j < i; j++)
+      if (m & 2)
 	{
 	  FLOAT *BO;
 #if defined(TRMMKERNEL)
@@ -818,8 +807,7 @@ CNAME (BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alpha, FLOAT * A, FLOAT * B,
 	  REFRESH_AFTER_SAVE (2, 4)
 #endif
 	}
-      i = (m & 1) >> 0;
-      for (j = 0; j < i; j++)
+      if (m & 1)
 	{
 	  FLOAT *BO;
 #if defined(TRMMKERNEL)
@@ -863,8 +851,7 @@ CNAME (BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alpha, FLOAT * A, FLOAT * B,
 
       B += k << 2;
     }
-  N = (n & 3) >> 1;
-  for (i1 = 0; i1 < N; i1++)
+  if (n & 2)
     {
       BLASLONG i, j, temp;
 #if defined(TRMMKERNEL) && defined(LEFT)
@@ -973,8 +960,7 @@ CNAME (BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alpha, FLOAT * A, FLOAT * B,
 	  REFRESH_AFTER_SAVE (16, 2)
 #endif
 	}
-      i = (m & 15) >> 3;
-      for (j = 0; j < i; j++)
+      if (m & 8)
 	{
 	  FLOAT *BO;
 	  v4sf_t *rowC;
@@ -1010,8 +996,7 @@ CNAME (BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alpha, FLOAT * A, FLOAT * B,
 	  REFRESH_AFTER_SAVE (8, 2)
 #endif
 	}
-      i = (m & 7) >> 2;
-      for (j = 0; j < i; j++)
+      if (m & 4)
 	{
 	  FLOAT *BO;
 	  v4sf_t *rowC;
@@ -1044,8 +1029,7 @@ CNAME (BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alpha, FLOAT * A, FLOAT * B,
 	  REFRESH_AFTER_SAVE (4, 2)
 #endif
 	}
-      i = (m & 3) >> 1;
-      for (j = 0; j < i; j++)
+      if (m & 2)
 	{
 	  FLOAT *BO;
 	  BLASLONG l = 0;
@@ -1081,8 +1065,7 @@ CNAME (BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alpha, FLOAT * A, FLOAT * B,
 	  REFRESH_AFTER_SAVE (2, 2)
 #endif
 	}
-      i = (m & 1) >> 0;
-      for (j = 0; j < i; j++)
+      if (m & 1)
 	{
 	  FLOAT *BO;
 	  BLASLONG l = 0;
@@ -1120,8 +1103,7 @@ CNAME (BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alpha, FLOAT * A, FLOAT * B,
 
       B += k << 1;
     }
-  N = (n & 1) >> 0;
-  for (i1 = 0; i1 < N; i1++)
+  if (n & 1)
     {
       BLASLONG i, temp;
 #if defined(TRMMKERNEL) && defined(LEFT)
@@ -1132,8 +1114,7 @@ CNAME (BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alpha, FLOAT * A, FLOAT * B,
       CO = C;
       C += ldc;
       AO = A;
-      i = m;
-      while (i >= 16)
+      for (i = 0; i < (m >> 4); i++)
 	{
 	  FLOAT *BO;
 	  BLASLONG l = 0;
@@ -1213,12 +1194,11 @@ CNAME (BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alpha, FLOAT * A, FLOAT * B,
 	  AO += temp << 4;
 	  BO += temp;
 	  CO += 16;
-	  i -= 16;
 #if defined(TRMMKERNEL)
 	  REFRESH_AFTER_SAVE (16, 1)
 #endif
 	}
-      while (i >= 8)
+      if (m & 8)
 	{
 	  FLOAT *BO;
 	  BLASLONG l = 0;
@@ -1268,12 +1248,11 @@ CNAME (BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alpha, FLOAT * A, FLOAT * B,
 	  AO += temp << 3;
 	  BO += temp;
 	  CO += 8;
-	  i -= 8;
 #if defined(TRMMKERNEL)
 	  REFRESH_AFTER_SAVE (8, 1)
 #endif
 	}
-      while (i >= 4)
+      if (m & 4)
 	{
 	  FLOAT *BO;
 	  BLASLONG l = 0;
@@ -1308,12 +1287,11 @@ CNAME (BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alpha, FLOAT * A, FLOAT * B,
 	  AO += temp << 2;
 	  BO += temp;
 	  CO += 4;
-	  i -= 4;
 #if defined(TRMMKERNEL)
 	  REFRESH_AFTER_SAVE (4, 1)
 #endif
 	}
-      while (i >= 2)
+      if (m & 2)
 	{
 	  FLOAT *BO;
 	  BLASLONG l = 0;
@@ -1342,12 +1320,11 @@ CNAME (BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alpha, FLOAT * A, FLOAT * B,
 	  AO += temp << 1;
 	  BO += temp;
 	  CO += 2;
-	  i -= 2;
 #if defined(TRMMKERNEL)
 	  REFRESH_AFTER_SAVE (2, 1)
 #endif
 	}
-      while (i >= 1)
+      if (m & 1)
 	{
 	  FLOAT *BO;
 #if defined(TRMMKERNEL)
@@ -1371,7 +1348,6 @@ CNAME (BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alpha, FLOAT * A, FLOAT * B,
 	  CO[0] += t * alpha;
 #endif
 	  CO += 1;
-	  i -= 1;
 #if defined(TRMMKERNEL)
 	  REFRESH_AFTER_SAVE (1, 1)
 #endif

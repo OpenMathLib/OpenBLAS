@@ -142,13 +142,7 @@ REALNAME:
 #define HUGE_PAGESIZE   ( 4 << 20)
 
 #ifndef BUFFERSIZE
-#if defined(CORTEXA57)
-#define BUFFER_SIZE     (20 << 20)
-#elif defined(TSV110) || defined(EMAG8180)
 #define BUFFER_SIZE     (32 << 20)
-#else
-#define BUFFER_SIZE     (16 << 20)
-#endif
 #else
 #define BUFFER_SIZE	(32 << BUFFERSIZE)
 #endif
