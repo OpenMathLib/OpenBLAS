@@ -139,36 +139,6 @@ if (DEFINED CORE AND CMAKE_CROSSCOMPILING AND NOT (${HOST_OS} STREQUAL "WINDOWSS
       set(CGEMM3M_UNROLL_N 4)
       set(ZGEMM3M_UNROLL_M 4)
       set(ZGEMM3M_UNROLL_N 4)
-  elseif ("${TCORE}" STREQUAL "BARCELONA")
-    file(APPEND ${TARGET_CONF_TEMP}
-      "#define HAVE_SSE3\n")
-  elseif ("${TCORE}" STREQUAL "STEAMROLLER")
-    file(APPEND ${TARGET_CONF_TEMP}
-      "#define HAVE_SSE3\n")
-  elseif ("${TCORE}" STREQUAL "EXCAVATOR")
-    file(APPEND ${TARGET_CONF_TEMP}
-      "#define HAVE_SSE3\n")
-  elseif ("${TCORE}" STREQUAL "NEHALEM")
-    file(APPEND ${TARGET_CONF_TEMP}
-      "#define HAVE_SSE3\n")
-  elseif ("${TCORE}" STREQUAL "PRESCOTT")
-    file(APPEND ${TARGET_CONF_TEMP}
-      "#define HAVE_SSE3\n")
-  elseif ("${TCORE}" STREQUAL "SANDYBRIDGE")
-    file(APPEND ${TARGET_CONF_TEMP}
-      "#define HAVE_AVX\n")
-  elseif ("${TCORE}" STREQUAL "HASWELL")
-    file(APPEND ${TARGET_CONF_TEMP}
-      "#define HAVE_AVX2\n")
-  elseif ("${TCORE}" STREQUAL "ZEN")
-    file(APPEND ${TARGET_CONF_TEMP}
-      "#define HAVE_AVX2\n")
-  elseif ("${TCORE}" STREQUAL "SKYLAKEX")
-    file(APPEND ${TARGET_CONF_TEMP}
-      "#define HAVE_AVX512\n")
-  elseif ("${TCORE}" STREQUAL "COOPERLAKE")
-    file(APPEND ${TARGET_CONF_TEMP}
-      "#define HAVE_AVX512\n")
   elseif ("${TCORE}" STREQUAL "ARMV7")
     file(APPEND ${TARGET_CONF_TEMP}
       "#define L1_DATA_SIZE\t65536\n"
@@ -586,6 +556,21 @@ else(NOT CMAKE_CROSSCOMPILING)
       MESSAGE(FATAL_ERROR "Compiling getarch failed ${GETARCH_LOG}")
     endif ()
   endif ()
+  unset (HAVE_AVX2)
+  unset (HAVE_AVX)
+  unset (HAVE_FMA3)
+  unset (HAVE_MMX)
+  unset (HAVE_SSE)
+  unset (HAVE_SSE2)
+  unset (HAVE_SSE3)
+  unset (HAVE_SSSE3)
+  unset (HAVE_SSE4A)
+  unset (HAVE_SSE4_1)
+  unset (HAVE_SSE4_2)
+  unset (HAVE_NEON)
+  unset (HAVE_VFP)
+  unset (HAVE_VFPV3)
+  unset (HAVE_VFPV4)
   message(STATUS "Running getarch")
 
   # use the cmake binary w/ the -E param to run a shell command in a cross-platform way
