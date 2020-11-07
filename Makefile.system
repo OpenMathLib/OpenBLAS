@@ -252,6 +252,22 @@ DUMMY := $(shell $(MAKE) -C $(TOPDIR) -f Makefile.prebuild CC="$(CC)" FC="$(FC)"
 ifndef TARGET_CORE
 include $(TOPDIR)/Makefile.conf
 else
+undefine HAVE_NEON
+undefine HAVE_VFP
+undefine HAVE_VFPV3
+undefine HAVE_VFPV4
+undefine HAVE_MMX
+undefine HAVE_SSE
+undefine HAVE_SSE2
+undefine HAVE_SSE3
+undefine HAVE_SSSE3
+undefine HAVE_SSE4_1
+undefine HAVE_SSE4_2
+undefine HAVE_SSE4A
+undefine HAVE_SSE5
+undefine HAVE_AVX
+undefine HAVE_AVX2
+undefine HAVE_FMA3
 include $(TOPDIR)/Makefile_kernel.conf
 endif
 
@@ -1522,6 +1538,8 @@ export HAVE_SSE4_2
 export HAVE_SSE4A
 export HAVE_SSE5
 export HAVE_AVX
+export HAVE_AVX2
+export HAVE_FMA3
 export HAVE_VFP
 export HAVE_VFPV3
 export HAVE_VFPV4
