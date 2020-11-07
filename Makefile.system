@@ -252,7 +252,9 @@ DUMMY := $(shell $(MAKE) -C $(TOPDIR) -f Makefile.prebuild CC="$(CC)" FC="$(FC)"
 ifndef TARGET_CORE
 include $(TOPDIR)/Makefile.conf
 else
+ifdef HAVE_NEON
 undefine HAVE_NEON
+endif
 undefine HAVE_VFP
 undefine HAVE_VFPV3
 undefine HAVE_VFPV4
