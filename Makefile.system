@@ -6,7 +6,7 @@
 INCLUDED = 1
 
 ifndef TOPDIR
-TOPDIR = .
+TOPDIR = . 
 endif
 
  # If ARCH is not set, we use the host system's architecture for getarch compile options.
@@ -252,6 +252,22 @@ DUMMY := $(shell $(MAKE) -C $(TOPDIR) -f Makefile.prebuild CC="$(CC)" FC="$(FC)"
 ifndef TARGET_CORE
 include $(TOPDIR)/Makefile.conf
 else
+HAVE_NEON=
+HAVE_VFP=
+HAVE_VFPV3=
+HAVE_VFPV4=
+HAVE_MMX=
+HAVE_SSE=
+HAVE_SSE2=
+HAVE_SSE3=
+HAVE_SSSE3=
+HAVE_SSE4_1=
+HAVE_SSE4_2=
+HAVE_SSE4A=
+HAVE_SSE5=
+HAVE_AVX=
+HAVE_AVX2=
+HAVE_FMA3=
 include $(TOPDIR)/Makefile_kernel.conf
 endif
 
@@ -1522,6 +1538,8 @@ export HAVE_SSE4_2
 export HAVE_SSE4A
 export HAVE_SSE5
 export HAVE_AVX
+export HAVE_AVX2
+export HAVE_FMA3
 export HAVE_VFP
 export HAVE_VFPV3
 export HAVE_VFPV4
