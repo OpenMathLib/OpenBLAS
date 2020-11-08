@@ -102,3 +102,6 @@ ZGEMM3MKERNEL    =  zgemm3m_kernel_4x4_haswell.c
 
 SASUMKERNEL = sasum.c
 DASUMKERNEL = dasum.c
+
+SROTKERNEL = srot.c
+DROTKERNEL = drot.c
