@@ -184,7 +184,7 @@ steps:
     - echo "MAKE_FLAGS:= $COMMON_FLAGS"
     - apt-get update -y
     - apt-get install -y software-properties-common
-    - add-apt-repository ppa:ubuntu-toolchain-r/ppa
+    - add-apt-repository ppa:ubuntu-toolchain-r/test
     - apt-get update -y
     - apt-get install -y make $CC gfortran-10 perl python g++-10
     - $CC --version
