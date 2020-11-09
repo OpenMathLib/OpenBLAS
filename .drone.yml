@@ -178,12 +178,12 @@ steps:
 - name: Build and Test
   image: ubuntu:18.04
   environment:
-    CC: gcc
+    CC: gcc-10
     COMMON_FLAGS: 'USE_OPENMP=1'
   commands:
     - echo "MAKE_FLAGS:= $COMMON_FLAGS"
     - apt-get update -y
-    - apt-get install -y make $CC gfortran perl python g++
+    - apt-get install -y make $CC gfortran-10 perl python g++-10
     - $CC --version
     - make QUIET_MAKE=1 $COMMON_FLAGS -j
     - make -C test $COMMON_FLAGS
