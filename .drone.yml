@@ -185,6 +185,7 @@ steps:
     - apt-get update -y
     - apt-get install -y software-properties-common
     - add-apt-repository ppa:ubuntu-toolchain-r/ppa
+    - apt-get update -y
     - apt-get install -y make $CC gfortran-10 perl python g++-10
     - $CC --version
     - make QUIET_MAKE=1 $COMMON_FLAGS -j
