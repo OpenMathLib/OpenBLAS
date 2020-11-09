@@ -179,6 +179,8 @@ steps:
   image: ubuntu:18.04
   environment:
     CC: gcc-10
+    FC: gfortran-10
+    CXX: g++-10
     COMMON_FLAGS: 'USE_OPENMP=1'
   commands:
     - echo "MAKE_FLAGS:= $COMMON_FLAGS"
