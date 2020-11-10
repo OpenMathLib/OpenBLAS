@@ -751,7 +751,10 @@ endif
 endif
 endif
 
-
+ifeq ($(ARCH), riscv64)
+NO_BINARY_MODE  = 1
+BINARY_DEFINED  = 1
+endif
 
 
 #

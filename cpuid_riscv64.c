@@ -71,9 +71,11 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /*********************************************************************/
 
 #define CPU_UNKNOWN     0
+#define CPU_C910V       1
 
 static char *cpuname[] = {
   "UNKOWN",
+  "C910V"
 };
 
 int detect(void){
