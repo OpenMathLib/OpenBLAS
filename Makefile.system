@@ -6,7 +6,7 @@
 INCLUDED = 1
 
 ifndef TOPDIR
-TOPDIR = .
+TOPDIR = . 
 endif
 
  # If ARCH is not set, we use the host system's architecture for getarch compile options.
@@ -93,6 +93,12 @@ endif
 ifdef TARGET
 GETARCH_FLAGS := -DFORCE_$(TARGET)
 GETARCH_FLAGS += -DUSER_TARGET
+ifeq ($(TARGET), GENERIC)
+ifeq ($(DYNAMIC_ARCH), 1)
+override NO_EXPRECISION=1
+export NO_EXPRECiSION
+endif
+endif
 endif
 
 # Force fallbacks for 32bit
@@ -246,6 +252,22 @@ DUMMY := $(shell $(MAKE) -C $(TOPDIR) -f Makefile.prebuild CC="$(CC)" FC="$(FC)"
 ifndef TARGET_CORE
 include $(TOPDIR)/Makefile.conf
 else
+HAVE_NEON=
+HAVE_VFP=
+HAVE_VFPV3=
+HAVE_VFPV4=
+HAVE_MMX=
+HAVE_SSE=
+HAVE_SSE2=
+HAVE_SSE3=
+HAVE_SSSE3=
+HAVE_SSE4_1=
+HAVE_SSE4_2=
+HAVE_SSE4A=
+HAVE_SSE5=
+HAVE_AVX=
+HAVE_AVX2=
+HAVE_FMA3=
 include $(TOPDIR)/Makefile_kernel.conf
 endif
 
@@ -319,6 +341,7 @@ ifeq ($(GCCVERSIONGTEQ7),1)
 else
 	GCCDUMPVERSION_PARAM := -dumpversion
 endif
+GCCMINORVERSIONGTEQ1 := $(shell expr `$(CC) $(GCCDUMPVERSION_PARAM) | cut -f2 -d.` \>= 1)
 GCCMINORVERSIONGTEQ2 := $(shell expr `$(CC) $(GCCDUMPVERSION_PARAM) | cut -f2 -d.` \>= 2)
 GCCMINORVERSIONGTEQ7 := $(shell expr `$(CC) $(GCCDUMPVERSION_PARAM) | cut -f2 -d.` \>= 7)
 endif
@@ -641,6 +664,7 @@ DYNAMIC_CORE += POWER8
 ifneq ($(C_COMPILER), GCC)
 DYNAMIC_CORE += POWER9
 DYNAMIC_CORE += POWER10
+CCOMMON_OPT += -DHAVE_P10_SUPPORT
 endif
 ifeq ($(C_COMPILER), GCC)
 ifeq ($(GCCVERSIONGT5), 1)
@@ -648,11 +672,14 @@ DYNAMIC_CORE += POWER9
 else
 $(info, OpenBLAS: Your gcc version is too old to build the POWER9 kernels.)
 endif
-ifeq ($(GCCVERSIONGTEQ11), 1)
+LDVERSIONGTEQ35 := $(shell expr `ld --version | head -1 | cut -f2 -d "." | cut -f1 -d "-"` >= 35)
+ifeq ($(GCCVERSIONGTEQ11)$(LDVERSIONGTEQ35), 11)
 DYNAMIC_CORE += POWER10
+CCOMMON_OPT += -DHAVE_P10_SUPPORT
 else ifeq ($(GCCVERSIONGTEQ10), 1)
-ifeq ($(GCCMINORVERSIONGTEQ2), 1)
+ifeq ($(GCCMINORVERSIONGTEQ2)$(LDVERSIONGTEQ35), 11)
 DYNAMIC_CORE += POWER10
+CCOMMON_OPT += -DHAVE_P10_SUPPORT
 endif
 else
 $(info, OpenBLAS: Your gcc version is too old to build the POWER10 kernels.)
@@ -853,7 +880,7 @@ CCOMMON_OPT += -DF_INTERFACE_FLANG
 FCOMMON_OPT += -Mrecursive -Kieee
 ifeq ($(OSNAME), Linux)
 ifeq ($(ARCH), x86_64)
-FLANG_VENDOR := $(shell expr `$(FC) --version|cut -f 1 -d "."|head -1`)
+FLANG_VENDOR := $(shell `$(FC) --version|cut -f 1 -d "."|head -1`)
 ifeq ($(FLANG_VENDOR),AOCC)
 FCOMMON_OPT += -fno-unroll-loops
 endif
@@ -1515,6 +1542,8 @@ export HAVE_SSE4_2
 export HAVE_SSE4A
 export HAVE_SSE5
 export HAVE_AVX
+export HAVE_AVX2
+export HAVE_FMA3
 export HAVE_VFP
 export HAVE_VFPV3
 export HAVE_VFPV4

@@ -47,7 +47,6 @@
 #endif
 
 #ifdef __64BIT__
-#define STACKSIZE 320
 #define STACKSIZE 520
 #define ALPHA   296+200(SP)
 #define FZERO	304+200(SP)

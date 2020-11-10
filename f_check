@@ -33,7 +33,7 @@ if ($compiler eq "") {
               "ppuf77", "ppuf95", "ppuf90", "ppuxlf",
 	      "pathf90", "pathf95",
 	      "pgf95", "pgf90", "pgf77",
-	      "flang",
+	      "flang", "egfortran",
               "ifort");
 
 OUTER:

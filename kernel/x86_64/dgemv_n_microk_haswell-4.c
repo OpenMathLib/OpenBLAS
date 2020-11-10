@@ -105,9 +105,8 @@ static void dgemv_kernel_4x4( BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y, FLOAT 
           "r" (alpha)   // 8
 	: "cc", 
 	  "%xmm0", "%xmm1", "%xmm2", "%xmm3",
-	  "%xmm4", "%xmm5", 
-	  "%xmm6", "%xmm7", 
-	  "%xmm8", "%xmm9", 
+	  "%xmm4", "%xmm5", "%xmm6", "%xmm7",
+	  "%xmm8", "%xmm9", "%xmm10", "%xmm11",
 	  "%xmm12", "%xmm13", "%xmm14", "%xmm15",
 	  "memory"
 	);
@@ -182,11 +181,10 @@ static void dgemv_kernel_4x2( BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y, FLOAT 
           "r" (ap[1]),  // 5
           "r" (alpha)   // 6
 	: "cc", 
-	  "%xmm0", "%xmm1", 
-	  "%xmm4", "%xmm5", 
-	  "%xmm6", 
-	  "%xmm8", 
-	  "%xmm12", "%xmm13",
+	  "%xmm0", "%xmm1", "%xmm2", "%xmm3",
+	  "%xmm4", "%xmm5", "%xmm6", "%xmm7",
+	  "%xmm8", "%xmm9", "%xmm10", "%xmm11",
+	  "%xmm12", "%xmm13", "%xmm14", "%xmm15",
 	  "memory"
 	);
 }

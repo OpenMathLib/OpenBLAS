@@ -330,7 +330,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 		     "-DL2_SIZE=262144 -DL2_LINESIZE=64 " \
 		     "-DDTB_DEFAULT_ENTRIES=64 -DDTB_SIZE=4096 " \
 		     "-DHAVE_CMOV -DHAVE_MMX -DHAVE_SSE -DHAVE_SSE2 -DHAVE_SSE3 -DHAVE_SSSE3 -DHAVE_SSE4_1 -DHAVE_SSE4_2 -DHAVE_AVX " \
-                     "-DFMA3"
+                     "-DHAVE_AVX2 -DHAVE_FMA3 -DFMA3"
 #define LIBNAME   "haswell"
 #define CORENAME  "HASWELL"
 #endif
@@ -346,7 +346,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 		     "-DL2_SIZE=262144 -DL2_LINESIZE=64 " \
 		     "-DDTB_DEFAULT_ENTRIES=64 -DDTB_SIZE=4096 " \
 		     "-DHAVE_CMOV -DHAVE_MMX -DHAVE_SSE -DHAVE_SSE2 -DHAVE_SSE3 -DHAVE_SSSE3 -DHAVE_SSE4_1 -DHAVE_SSE4_2 -DHAVE_AVX " \
-                     "-DFMA3"
+                     "-DHAVE_AVX2 -DHAVE_FMA3 -DFMA3"
 #define LIBNAME   "haswell"
 #define CORENAME  "HASWELL"
 #else
@@ -359,7 +359,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 		     "-DL2_SIZE=262144 -DL2_LINESIZE=64 " \
 		     "-DDTB_DEFAULT_ENTRIES=64 -DDTB_SIZE=4096 " \
 		     "-DHAVE_CMOV -DHAVE_MMX -DHAVE_SSE -DHAVE_SSE2 -DHAVE_SSE3 -DHAVE_SSSE3 -DHAVE_SSE4_1 -DHAVE_SSE4_2 -DHAVE_AVX " \
-                     "-DFMA3 -DHAVE_AVX512VL -march=skylake-avx512"
+                     "-DHAVE_AVX2 -DHAVE_FMA3 -DFMA3 -DHAVE_AVX512VL -march=skylake-avx512"
 #define LIBNAME   "skylakex"
 #define CORENAME  "SKYLAKEX"
 #endif
@@ -376,7 +376,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                      "-DL2_SIZE=262144 -DL2_LINESIZE=64 " \
                      "-DDTB_DEFAULT_ENTRIES=64 -DDTB_SIZE=4096 " \
                      "-DHAVE_CMOV -DHAVE_MMX -DHAVE_SSE -DHAVE_SSE2 -DHAVE_SSE3 -DHAVE_SSSE3 -DHAVE_SSE4_1 -DHAVE_SSE4_2 -DHAVE_AVX " \
-                     "-DFMA3"
+                     "-DHAVE_AVX2 -DHAVE_FMA3 -DFMA3"
 #define LIBNAME   "haswell"
 #define CORENAME  "HASWELL"
 #else
@@ -389,7 +389,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                      "-DL2_SIZE=262144 -DL2_LINESIZE=64 " \
                      "-DDTB_DEFAULT_ENTRIES=64 -DDTB_SIZE=4096 " \
                      "-DHAVE_CMOV -DHAVE_MMX -DHAVE_SSE -DHAVE_SSE2 -DHAVE_SSE3 -DHAVE_SSSE3 -DHAVE_SSE4_1 -DHAVE_SSE4_2 -DHAVE_AVX " \
-                     "-DFMA3 -DHAVE_AVX512VL -DHAVE_AVX512BF16 -march=cooperlake"
+                     "-DHAVE_AVX2 -DHAVE_FMA3 -DFMA3 -DHAVE_AVX512VL -DHAVE_AVX512BF16 -march=cooperlake"
 #define LIBNAME   "cooperlake"
 #define CORENAME  "COOPERLAKE"
 #endif
@@ -559,7 +559,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 		     "-DDTB_DEFAULT_ENTRIES=64 -DDTB_SIZE=4096 " \
 		     "-DHAVE_MMX -DHAVE_SSE -DHAVE_SSE2 -DHAVE_SSE3 -DHAVE_SSE4_1 -DHAVE_SSE4_2 " \
 		     "-DHAVE_SSE4A -DHAVE_MISALIGNSSE -DHAVE_128BITFPU -DHAVE_FASTMOVU -DHAVE_CFLUSH " \
-		     "-DHAVE_AVX -DHAVE_FMA3 -DFMA3"
+		     "-DHAVE_AVX -DHAVE_AVX2 -DHAVE_FMA3 -DFMA3"
 #define LIBNAME   "zen"
 #define CORENAME  "ZEN"
 #endif
@@ -1236,6 +1236,20 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #else
 #endif
 
+#ifdef FORCE_VORTEX
+#define FORCE
+#define ARCHITECTURE    "ARM64"
+#define SUBARCHITECTURE "VORTEX"
+#define SUBDIRNAME      "arm64"
+#define ARCHCONFIG   "-DVORTEX " \
+       "-DL1_DATA_SIZE=32768 -DL1_DATA_LINESIZE=64 " \
+       "-DL2_SIZE=262144 -DL2_LINESIZE=64 " \
+       "-DDTB_DEFAULT_ENTRIES=64 -DDTB_SIZE=4096 -DL2_ASSOCIATIVE=32 " \
+       "-DHAVE_VFPV4 -DHAVE_VFPV3 -DHAVE_VFP -DHAVE_NEON -DARMV8"
+#define LIBNAME   "vortex"
+#define CORENAME  "VORTEX"
+#endif
+
 #ifdef FORCE_ZARCH_GENERIC
 #define FORCE
 #define ARCHITECTURE    "ZARCH"
@@ -1409,8 +1423,41 @@ int main(int argc, char *argv[]){
 
     printf("NUM_CORES=%d\n", get_num_cores());
 
-#if defined(__arm__) && !defined(FORCE)
+#if defined(__arm__) 
+#if !defined(FORCE)
+    fprintf(stderr,"get features!\n");
         get_features();
+#else
+    fprintf(stderr,"split archconfig!\n");
+    sprintf(buffer, "%s", ARCHCONFIG);
+
+    p = &buffer[0];
+
+    while (*p) {
+      if ((*p == '-') && (*(p + 1) == 'D')) {
+	p += 2;
+        if (*p != 'H') {
+		while( (*p != ' ') && (*p != '-') && (*p != '\0') && (*p != '\n')) {p++; }
+		if (*p == '-') continue;
+	}
+	while ((*p != ' ') && (*p != '\0')) {
+
+	  if (*p == '=') {
+	    printf("=");
+	    p ++;
+	    while ((*p != ' ') && (*p != '\0')) {
+	      printf("%c", *p);
+	      p ++;
+	    }
+	  } else {
+	    printf("%c", *p);
+	    p ++;
+	    if ((*p == ' ') || (*p =='\0')) printf("=1\n");
+	  }
+	}
+      } else p ++;
+    }
+#endif
 #endif
 
 
