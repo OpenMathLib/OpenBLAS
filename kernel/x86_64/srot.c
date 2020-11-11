@@ -13,7 +13,7 @@ static void srot_kernel(BLASLONG n, FLOAT *x, FLOAT *y, FLOAT c, FLOAT s)
 {
     BLASLONG i = 0;
     
-#if V_SIMD && (HAVE_FMA3 || V_SIMD > 128)
+#if V_SIMD && (defined(HAVE_FMA3) || V_SIMD > 128)
     const int vstep = v_nlanes_f32;
     const int unrollx4 = n & (-vstep * 4);
     const int unrollx = n & -vstep;
