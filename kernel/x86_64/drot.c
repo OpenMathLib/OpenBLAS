@@ -7,10 +7,76 @@
 #endif
 
 #ifndef HAVE_DROT_KERNEL
+#include "../simd/intrin.h"
 
 static void drot_kernel(BLASLONG n, FLOAT *x, FLOAT *y, FLOAT c, FLOAT s)
 {
     BLASLONG i = 0;
+#if V_SIMD_F64 && V_SIMD > 256
+    const int vstep = v_nlanes_f64;
+    const int unrollx4 = n & (-vstep * 4);
+    const int unrollx = n & -vstep;
+
+    v_f64 __c = v_setall_f64(c);
+    v_f64 __s = v_setall_f64(s);
+    v_f64 vx0, vx1, vx2, vx3;
+    v_f64 vy0, vy1, vy2, vy3;
+    v_f64 vt0, vt1, vt2, vt3;
+
+    for (; i < unrollx4; i += vstep * 4) {
+        vx0 = v_loadu_f64(x + i);
+        vx1 = v_loadu_f64(x + i + vstep);
+        vx2 = v_loadu_f64(x + i + vstep * 2);
+        vx3 = v_loadu_f64(x + i + vstep * 3);
+        vy0 = v_loadu_f64(y + i);
+        vy1 = v_loadu_f64(y + i + vstep);
+        vy2 = v_loadu_f64(y + i + vstep * 2);
+        vy3 = v_loadu_f64(y + i + vstep * 3);
+
+        vt0 = v_mul_f64(__s, vy0);
+        vt1 = v_mul_f64(__s, vy1);
+        vt2 = v_mul_f64(__s, vy2);
+        vt3 = v_mul_f64(__s, vy3);
+
+        vt0 = v_muladd_f64(__c, vx0, vt0);
+        vt1 = v_muladd_f64(__c, vx1, vt1);
+        vt2 = v_muladd_f64(__c, vx2, vt2);
+        vt3 = v_muladd_f64(__c, vx3, vt3);
+
+        v_storeu_f64(x + i, vt0);
+        v_storeu_f64(x + i + vstep, vt1);
+        v_storeu_f64(x + i + vstep * 2, vt2);
+        v_storeu_f64(x + i + vstep * 3, vt3);
+
+        vt0 = v_mul_f64(__s, vx0);
+        vt1 = v_mul_f64(__s, vx1);
+        vt2 = v_mul_f64(__s, vx2);
+        vt3 = v_mul_f64(__s, vx3);
+
+        vt0 = v_mulsub_f64(__c, vy0, vt0);
+        vt1 = v_mulsub_f64(__c, vy1, vt1);
+        vt2 = v_mulsub_f64(__c, vy2, vt2);
+        vt3 = v_mulsub_f64(__c, vy3, vt3);
+
+        v_storeu_f64(y + i, vt0);
+        v_storeu_f64(y + i + vstep, vt1);
+        v_storeu_f64(y + i + vstep * 2, vt2);
+        v_storeu_f64(y + i + vstep * 3, vt3);
+    }
+
+    for (; i < unrollx; i += vstep) {
+        vx0 = v_loadu_f64(x + i);
+        vy0 = v_loadu_f64(y + i);
+
+        vt0 = v_mul_f64(__s, vy0);
+        vt0 = v_muladd_f64(__c, vx0, vt0);
+        v_storeu_f64(x + i, vt0);
+
+        vt0 = v_mul_f64(__s, vx0);
+        vt0 = v_mulsub_f64(__c, vy0, vt0);
+        v_storeu_f64(y + i, vt0);
+    }
+#else
     FLOAT f0, f1, f2, f3;
     FLOAT x0, x1, x2, x3;
     FLOAT g0, g1, g2, g3;
@@ -53,7 +119,7 @@ static void drot_kernel(BLASLONG n, FLOAT *x, FLOAT *y, FLOAT c, FLOAT s)
         yp += 4;
         i += 4;
     }
-
+#endif
     while (i < n) {
         FLOAT temp = c*x[i] + s*y[i];
         y[i] = c*y[i] - s*x[i];
