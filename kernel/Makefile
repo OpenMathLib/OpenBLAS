@@ -5,10 +5,6 @@ endif
 TOPDIR	= ..
 include $(TOPDIR)/Makefile.system
 
-ifdef HAVE_FMA3
-CFLAGS += -mfma
-endif
-
 ifeq ($(ARCH), power)
 ifeq ($(C_COMPILER), CLANG)
  override CFLAGS += -fno-integrated-as
