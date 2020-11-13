@@ -151,9 +151,9 @@ DCOPYKERNEL  = dcopy_power10.c
 CCOPYKERNEL  = ccopy_power10.c
 ZCOPYKERNEL  = zcopy_power10.c
 #
-SDOTKERNEL   =  sdot.c
-DDOTKERNEL   =  ddot.c
-DSDOTKERNEL  =  sdot.c
+SDOTKERNEL   =  sdot_power10.c
+DDOTKERNEL   =  ddot_power10.c
+DSDOTKERNEL  =  sdot_power10.c
 ifneq ($(GCCVERSIONGTEQ9),1)
 CDOTKERNEL   =  cdot_power9.S
 else
