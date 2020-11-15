@@ -251,7 +251,7 @@ static __inline unsigned int blas_quickdivide(unsigned int x, unsigned int y){
 #define HUGE_PAGESIZE	( 2 << 20)
 
 #ifndef BUFFERSIZE
-#define BUFFER_SIZE	(32 << 22)
+#define BUFFER_SIZE	(32 << 20)
 #else
 #define BUFFER_SIZE	(32 << BUFFERSIZE)
 #endif
