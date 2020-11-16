@@ -7,10 +7,78 @@
 #endif
 
 #ifndef HAVE_SROT_KERNEL
+#include"../simd/intrin.h"
 
 static void srot_kernel(BLASLONG n, FLOAT *x, FLOAT *y, FLOAT c, FLOAT s)
 {
     BLASLONG i = 0;
+    
+#if V_SIMD && (defined(HAVE_FMA3) || V_SIMD > 128)
+    const int vstep = v_nlanes_f32;
+    const int unrollx4 = n & (-vstep * 4);
+    const int unrollx = n & -vstep;
+
+    v_f32 __c = v_setall_f32(c);
+    v_f32 __s = v_setall_f32(s);
+    v_f32 vx0, vx1, vx2, vx3;
+    v_f32 vy0, vy1, vy2, vy3;
+    v_f32 vt0, vt1, vt2, vt3;
+
+    for (; i < unrollx4; i += vstep * 4) {
+        vx0 = v_loadu_f32(x + i);
+        vx1 = v_loadu_f32(x + i + vstep);
+        vx2 = v_loadu_f32(x + i + vstep * 2);
+        vx3 = v_loadu_f32(x + i + vstep * 3);
+        vy0 = v_loadu_f32(y + i);
+        vy1 = v_loadu_f32(y + i + vstep);
+        vy2 = v_loadu_f32(y + i + vstep * 2);
+        vy3 = v_loadu_f32(y + i + vstep * 3);
+
+        vt0 = v_mul_f32(__s, vy0);
+        vt1 = v_mul_f32(__s, vy1);
+        vt2 = v_mul_f32(__s, vy2);
+        vt3 = v_mul_f32(__s, vy3);
+
+        vt0 = v_muladd_f32(__c, vx0, vt0);
+        vt1 = v_muladd_f32(__c, vx1, vt1);
+        vt2 = v_muladd_f32(__c, vx2, vt2);
+        vt3 = v_muladd_f32(__c, vx3, vt3);
+
+        v_storeu_f32(x + i, vt0);
+        v_storeu_f32(x + i + vstep, vt1);
+        v_storeu_f32(x + i + vstep * 2, vt2);
+        v_storeu_f32(x + i + vstep * 3, vt3);
+
+        vt0 = v_mul_f32(__s, vx0);
+        vt1 = v_mul_f32(__s, vx1);
+        vt2 = v_mul_f32(__s, vx2);
+        vt3 = v_mul_f32(__s, vx3);
+
+        vt0 = v_mulsub_f32(__c, vy0, vt0);
+        vt1 = v_mulsub_f32(__c, vy1, vt1);
+        vt2 = v_mulsub_f32(__c, vy2, vt2);
+        vt3 = v_mulsub_f32(__c, vy3, vt3);
+
+        v_storeu_f32(y + i, vt0);
+        v_storeu_f32(y + i + vstep, vt1);
+        v_storeu_f32(y + i + vstep * 2, vt2);
+        v_storeu_f32(y + i + vstep * 3, vt3);
+
+    }
+
+    for (; i < unrollx; i += vstep) {
+        vx0 = v_loadu_f32(x + i);
+        vy0 = v_loadu_f32(y + i);
+
+        vt0 = v_mul_f32(__s, vy0);
+        vt0 = v_muladd_f32(__c, vx0, vt0);
+        v_storeu_f32(x + i, vt0);
+
+        vt0 = v_mul_f32(__s, vx0);
+        vt0 = v_mulsub_f32(__c, vy0, vt0);
+        v_storeu_f32(y + i, vt0);
+    }
+#else
     FLOAT f0, f1, f2, f3;
     FLOAT x0, x1, x2, x3;
     FLOAT g0, g1, g2, g3;
@@ -20,7 +88,6 @@ static void srot_kernel(BLASLONG n, FLOAT *x, FLOAT *y, FLOAT c, FLOAT s)
     FLOAT* yp = y;
 
     BLASLONG n1 = n & (~7);
-
     while (i < n1) {
         x0 = xp[0];
         y0 = yp[0];
@@ -53,6 +120,7 @@ static void srot_kernel(BLASLONG n, FLOAT *x, FLOAT *y, FLOAT c, FLOAT s)
         yp += 4;
         i += 4;
     }
+#endif
 
     while (i < n) {
         FLOAT temp = c*x[i] + s*y[i];

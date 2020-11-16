@@ -12,22 +12,35 @@ typedef __m128d  v_f64;
  ***************************/
 #define v_add_f32 _mm_add_ps
 #define v_add_f64 _mm_add_pd
+#define v_sub_f32 _mm_sub_ps
+#define v_sub_f64 _mm_sub_pd
 #define v_mul_f32 _mm_mul_ps
 #define v_mul_f64 _mm_mul_pd
 #ifdef HAVE_FMA3
     // multiply and add, a*b + c
     #define v_muladd_f32 _mm_fmadd_ps
     #define v_muladd_f64 _mm_fmadd_pd
+    // multiply and subtract, a*b - c
+    #define v_mulsub_f32 _mm_fmsub_ps
+    #define v_mulsub_f64 _mm_fmsub_pd
 #elif defined(HAVE_FMA4)
     // multiply and add, a*b + c
     #define v_muladd_f32 _mm_macc_ps
     #define v_muladd_f64 _mm_macc_pd
+    // multiply and subtract, a*b - c
+    #define v_mulsub_f32 _mm_msub_ps
+    #define v_mulsub_f64 _mm_msub_pd
 #else
     // multiply and add, a*b + c
     BLAS_FINLINE v_f32 v_muladd_f32(v_f32 a, v_f32 b, v_f32 c)
     { return v_add_f32(v_mul_f32(a, b), c); }
     BLAS_FINLINE v_f64 v_muladd_f64(v_f64 a, v_f64 b, v_f64 c)
     { return v_add_f64(v_mul_f64(a, b), c); }
+    // multiply and subtract, a*b - c
+    BLAS_FINLINE v_f32 v_mulsub_f32(v_f32 a, v_f32 b, v_f32 c)
+    { return v_sub_f32(v_mul_f32(a, b), c); }
+    BLAS_FINLINE v_f64 v_mulsub_f64(v_f64 a, v_f64 b, v_f64 c)
+    { return v_sub_f64(v_mul_f64(a, b), c); }
 #endif // HAVE_FMA3
 
 // Horizontal add: Calculates the sum of all vector elements.

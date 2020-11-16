@@ -47,7 +47,7 @@ extern "C" {
 #endif
 
 /** AVX **/
-#ifdef HAVE_AVX
+#if defined(HAVE_AVX) || defined(HAVE_FMA3)
 #include <immintrin.h>
 #endif
 

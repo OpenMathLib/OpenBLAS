@@ -12,11 +12,16 @@ typedef __m512d  v_f64;
  ***************************/
 #define v_add_f32 _mm512_add_ps
 #define v_add_f64 _mm512_add_pd
+#define v_sub_f32 _mm512_sub_ps
+#define v_sub_f64 _mm512_sub_pd
 #define v_mul_f32 _mm512_mul_ps
 #define v_mul_f64 _mm512_mul_pd
 // multiply and add, a*b + c
 #define v_muladd_f32 _mm512_fmadd_ps
 #define v_muladd_f64 _mm512_fmadd_pd
+// multiply and subtract, a*b - c
+#define v_mulsub_f32 _mm512_fmsub_ps
+#define v_mulsub_f64 _mm512_fmsub_pd
 BLAS_FINLINE float v_sum_f32(v_f32 a)
 {
     __m512 h64 = _mm512_shuffle_f32x4(a, a, _MM_SHUFFLE(3, 2, 3, 2));

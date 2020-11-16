@@ -18,6 +18,8 @@ typedef float32x4_t v_f32;
  ***************************/
 #define v_add_f32 vaddq_f32
 #define v_add_f64 vaddq_f64
+#define v_sub_f32 vsubq_f32
+#define v_sub_f64 vsubq_f64
 #define v_mul_f32 vmulq_f32
 #define v_mul_f64 vmulq_f64
 
@@ -26,16 +28,24 @@ typedef float32x4_t v_f32;
     // multiply and add, a*b + c
     BLAS_FINLINE v_f32 v_muladd_f32(v_f32 a, v_f32 b, v_f32 c)
     { return vfmaq_f32(c, a, b); }
+    // multiply and subtract, a*b - c
+    BLAS_FINLINE v_f32 v_mulsub_f32(v_f32 a, v_f32 b, v_f32 c)
+    { return vfmaq_f32(vnegq_f32(c), a, b); }
 #else
     // multiply and add, a*b + c
     BLAS_FINLINE v_f32 v_muladd_f32(v_f32 a, v_f32 b, v_f32 c)
     { return vmlaq_f32(c, a, b); }
+    // multiply and subtract, a*b - c
+    BLAS_FINLINE v_f32 v_mulsub_f32(v_f32 a, v_f32 b, v_f32 c)
+    { return vmlaq_f32(vnegq_f32(c), a, b); }
 #endif
 
 // FUSED F64
 #if V_SIMD_F64
     BLAS_FINLINE v_f64 v_muladd_f64(v_f64 a, v_f64 b, v_f64 c)
     { return vfmaq_f64(c, a, b); }
+    BLAS_FINLINE v_f64 v_mulsub_f64(v_f64 a, v_f64 b, v_f64 c)
+    { return vfmaq_f64(vnegq_f64(c), a, b); }
 #endif
 
 // Horizontal add: Calculates the sum of all vector elements.
