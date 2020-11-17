@@ -67,16 +67,19 @@ void openblas_read_env() {
   ret=0;
   if (readenv(p,"OPENBLAS_NUM_THREADS")) ret = atoi(p);
   if(ret<0) ret=0;
+  if (ret > MAX_CPU_NUMBER) ret = MAX_CPU_NUMBER;
   openblas_env_openblas_num_threads=ret;
 
   ret=0;
   if (readenv(p,"GOTO_NUM_THREADS")) ret = atoi(p);
   if(ret<0) ret=0;
+  if (ret > MAX_CPU_NUMBER) ret = MAX_CPU_NUMBER;
   openblas_env_goto_num_threads=ret;
 
   ret=0;
   if (readenv(p,"OMP_NUM_THREADS")) ret = atoi(p);
   if(ret<0) ret=0;
+  if (ret > MAX_CPU_NUMBER) ret = MAX_CPU_NUMBER;
   openblas_env_omp_num_threads=ret;
 
 }
