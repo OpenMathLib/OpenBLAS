@@ -12,6 +12,6 @@ dgemm_tester : dgemv_tester
 
 test_dgemm_omp:
 	$(CC) $(COMMON_OPT) -Wall -Wextra -Wshadow -fopenmp test_dgemm_omp.c ../libopenblas.a -lpthread -o test_dgemm_omp
-	
+	./test_dgemm_omp
 clean ::
 	rm -f dgemv_tester dgemm_tester
