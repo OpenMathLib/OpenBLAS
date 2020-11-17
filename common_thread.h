@@ -159,7 +159,7 @@ static __inline int num_cpu_avail(int level) {
 	  goto_set_num_threads(openmp_nthreads);
   }
 #endif
-
+if (blas_cpu_number > MAX_CPU_NUMBER) blas_cpu_number=MAX_CPU_NUMBER;
   return blas_cpu_number;
 
 }
