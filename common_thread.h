@@ -140,6 +140,7 @@ static __inline int num_cpu_avail(int level) {
 
 #ifdef USE_OPENMP
 	int openmp_nthreads=omp_get_max_threads();
+	if (openmp_nthreads > MAX_CPU_NUMBER) openmp_nthreads=MAX_CPU_NUMBER;
 #endif
 
 #ifndef USE_OPENMP 
