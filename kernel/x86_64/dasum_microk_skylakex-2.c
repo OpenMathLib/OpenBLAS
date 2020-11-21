@@ -39,10 +39,10 @@ static FLOAT dasum_kernel(BLASLONG n, FLOAT *x1)
         accum_2 = _mm512_setzero_pd();
         accum_3 = _mm512_setzero_pd();
         for (i = 0; i < tail_index_AVX512; i += 32) {
-            accum_0 += _mm512_abs_pd(_mm512_load_pd(&x1[i + 0]));
-            accum_1 += _mm512_abs_pd(_mm512_load_pd(&x1[i + 8]));
-            accum_2 += _mm512_abs_pd(_mm512_load_pd(&x1[i +16]));
-            accum_3 += _mm512_abs_pd(_mm512_load_pd(&x1[i +24]));
+            accum_0 += _mm512_abs_pd((__m512)_mm512_load_pd(&x1[i + 0]));
+            accum_1 += _mm512_abs_pd((__m512)_mm512_load_pd(&x1[i + 8]));
+            accum_2 += _mm512_abs_pd((__m512)_mm512_load_pd(&x1[i +16]));
+            accum_3 += _mm512_abs_pd((__m512)_mm512_load_pd(&x1[i +24]));
         }
 
         accum_0 = accum_0 + accum_1 + accum_2 + accum_3;
