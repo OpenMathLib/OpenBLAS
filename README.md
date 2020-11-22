@@ -172,6 +172,13 @@ Please read `GotoBLAS_01Readme.txt` for older CPU models already supported by th
 - **Z13**: Optimized Level-3 BLAS and Level-1,2
 - **Z14**: Optimized Level-3 BLAS and (single precision) Level-1,2
 
+#### RISC-V
+
+- **C910V**: Optimized Leve-3 BLAS (real) and Level-1,2 by RISC-V Vector extension 0.7.1.
+  ```sh
+  make HOSTCC=gcc TARGET=C910V CC=riscv64-unknown-linux-gnu-gcc FC=riscv64-unknown-linux-gnu-gfortran
+  ```
+
 ### Support for multiple targets in a single library
 
 OpenBLAS can be built for multiple targets with runtime detection of the target cpu by specifiying `DYNAMIC_ARCH=1` in Makefile.rule, on the gmake command line or as `-DDYNAMIC_ARCH=TRUE` in cmake.
