@@ -849,6 +849,10 @@ Lmcount$lazy_ptr:
 #else
 #define BUFFER_SIZE     ( 16 << 20)
 #endif
+#ifdef DYNAMIC_ARCH
+#undef BUFFER_SIZE
+#define BUFFER_SIZE (64 << 22)
+#endif
 
 #ifndef PAGESIZE
 #define PAGESIZE	( 4 << 10)
