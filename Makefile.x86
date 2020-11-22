@@ -1,5 +1,10 @@
 # COMPILER_PREFIX = mingw32-
 
+ifdef HAVE_SSE
+CCOMMON_OPT += -msse
+FCOMMON_OPT += -msse
+endif
+
 
 ifeq ($(OSNAME), Interix)
 ARFLAGS		= -m x86
