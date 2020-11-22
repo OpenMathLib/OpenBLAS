@@ -206,7 +206,7 @@ ifdef SMP
 COMMONOBJS  += gemm_thread_m.$(SUFFIX) gemm_thread_n.$(SUFFIX) gemm_thread_mn.$(SUFFIX) gemm_thread_variable.$(SUFFIX)
 COMMONOBJS  += syrk_thread.$(SUFFIX)
 
-ifndef USE_SIMPLE_THREADED_LEVEL3
+ifneq ($(USE_SIMPLE_THREADED_LEVEL3), 1)
 ifeq ($(BUILD_BFLOAT16),1)
 SBBLASOBJS    += sbgemm_thread_nn.$(SUFFIX) sbgemm_thread_nt.$(SUFFIX) sbgemm_thread_tn.$(SUFFIX) sbgemm_thread_tt.$(SUFFIX)
 endif
@@ -282,7 +282,7 @@ HPLOBJS = \
 	dtrsm_RNUU.$(SUFFIX) dtrsm_RNUN.$(SUFFIX) dtrsm_RNLU.$(SUFFIX) dtrsm_RNLN.$(SUFFIX) \
 	dtrsm_RTUU.$(SUFFIX) dtrsm_RTUN.$(SUFFIX) dtrsm_RTLU.$(SUFFIX) dtrsm_RTLN.$(SUFFIX)
 
-ifndef USE_SIMPLE_THREADED_LEVEL3
+ifneq ($(USE_SIMPLE_THREADED_LEVEL3), 1)
 HPLOBJS += dgemm_thread_nn.$(SUFFIX) dgemm_thread_nt.$(SUFFIX) \
 	   dgemm_thread_tn.$(SUFFIX) dgemm_thread_tt.$(SUFFIX)
 endif
@@ -297,13 +297,13 @@ ifeq ($(BUILD_DOUBLE),1)
 	strsm_RTUU.$(SUFFIX) strsm_RTUN.$(SUFFIX) strsm_RTLU.$(SUFFIX) strsm_RTLN.$(SUFFIX) \
 	ssyrk_UN.$(SUFFIX) ssyrk_UT.$(SUFFIX) ssyrk_LN.$(SUFFIX) ssyrk_LT.$(SUFFIX) \
 	ssyrk_kernel_U.$(SUFFIX)  ssyrk_kernel_L.$(SUFFIX)
-ifndef USE_SIMPLE_THREADED_LEVEL3
+ifneq ($(USE_SIMPLE_THREADED_LEVEL3), 1)
 SBLASOBJS    += ssyrk_thread_UN.$(SUFFIX) ssyrk_thread_UT.$(SUFFIX) ssyrk_thread_LN.$(SUFFIX) ssyrk_thread_LT.$(SUFFIX)
 endif
 endif
 ifeq ($(BUILD_COMPLEX),1)
 	SBLASOBJS = sgemm_nn.$(SUFFIX) sgemm_nt.$(SUFFIX) sgemm_tn.$(SUFFIX) sgemm_tt.$(SUFFIX)
-ifndef USE_SIMPLE_THREADED_LEVEL3
+ifneq ($(USE_SIMPLE_THREADED_LEVEL3), 1)
 SBLASOBJS    += sgemm_thread_nn.$(SUFFIX) sgemm_thread_nt.$(SUFFIX) sgemm_thread_tn.$(SUFFIX) sgemm_thread_tt.$(SUFFIX)
 endif
 endif
@@ -312,7 +312,7 @@ ifneq ($(BUILD_DOUBLE),1)
 	DBLASOBJS=
 ifeq ($(BUILD_COMPLEX16),1)
 	DBLASOBJS = dgemm_nn.$(SUFFIX) dgemm_nt.$(SUFFIX) dgemm_tn.$(SUFFIX) dgemm_tt.$(SUFFIX)
-ifndef USE_SIMPLE_THREADED_LEVEL3
+ifneq ($(USE_SIMPLE_THREADED_LEVEL3), 1)
 DBLASOBJS    += dgemm_thread_nn.$(SUFFIX) dgemm_thread_nt.$(SUFFIX) dgemm_thread_tn.$(SUFFIX) dgemm_thread_tt.$(SUFFIX)
 endif
 endif
@@ -332,7 +332,7 @@ ifeq ($(BUILD_COMPLEX16),1)
 	ctrsm_RTUU.$(SUFFIX) ctrsm_RTUN.$(SUFFIX) ctrsm_RTLU.$(SUFFIX) ctrsm_RTLN.$(SUFFIX) \
 	ctrsm_RRUU.$(SUFFIX) ctrsm_RRUN.$(SUFFIX) ctrsm_RRLU.$(SUFFIX) ctrsm_RRLN.$(SUFFIX) \
 	ctrsm_RCUU.$(SUFFIX) ctrsm_RCUN.$(SUFFIX) ctrsm_RCLU.$(SUFFIX) ctrsm_RCLN.$(SUFFIX) 
-ifndef USE_SIMPLE_THREADED_LEVEL3
+ifneq ($(USE_SIMPLE_THREADED_LEVEL3), 1)
 CBLASOBJS    += cherk_thread_UN.$(SUFFIX) cherk_thread_UC.$(SUFFIX) cherk_thread_LN.$(SUFFIX) cherk_thread_LC.$(SUFFIX)
 endif
 endif
