@@ -1,5 +1,5 @@
 /*****************************************************************************
-Copyright (c) 2011-2014, The OpenBLAS Project
+Copyright (c) 2011-2020, The OpenBLAS Project
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -34,6 +34,9 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <cblas.h>
+#ifdef USE_OPENMP
+#include <omp.h>
+#endif
 #include "openblas_utest.h"
 
 static void* xmalloc(size_t n)
@@ -62,19 +65,18 @@ static void check_dgemm(double *a, double *b, double *result, double *expected, 
 }
 #endif
 
-CTEST(fork, safety)
+CTEST(fork, safety_after_fork_in_parent)
 {
 #ifndef BUILD_DOUBLE
 exit(0);
 #else
-    blasint n = 1000;
-    int i;
+    blasint n = 100;
+    int i, nthreads_omp;
 
     double *a, *b, *c, *d;
     size_t n_bytes;
 
     pid_t fork_pid;
-    pid_t fork_pid_nested;
 
     n_bytes = sizeof(*a) * n * n;
 
@@ -83,51 +85,47 @@ exit(0);
     c = xmalloc(n_bytes);
     d = xmalloc(n_bytes);
 
-    // Put ones in a and b
+    // Put ones in a, b and n in c (result)
     for(i = 0; i < n * n; ++i) {
         a[i] = 1;
         b[i] = 1;
+        c[i] = 1 * n;
     }
 
-    // Compute a DGEMM product in the parent process prior to forking to
-    // ensure that the OpenBLAS thread pool is initialized.
-    char trans1 = 'T';
-    char trans2 = 'N';
-    double zerod = 0, oned = 1;
-    BLASFUNC(dgemm)(&trans1, &trans2, &n, &n, &n, &oned, a, &n, b, &n, &zerod, c, &n);
+    // Test that OpenBLAS works after a fork.
+    // This situation routinely happens with Pythons numpy where a
+    // `sys.platform` calls `uname` in a forked process.
+    // So we simulate this situation here.
 
-    fork_pid = fork();
-    if (fork_pid == -1) {
-        CTEST_ERR("Failed to fork process.");
-    } else if (fork_pid == 0) {
-        // Compute a DGEMM product in the child process to check that the
-        // thread pool as been properly been reinitialized after the fork.
-        check_dgemm(a, b, d, c, n);
+    // There was an issue where a different number of OpenBLAS and OpenMP
+    // threads triggered a memory leak. So run this multiple times
+    // with different number of threads set.
+#ifdef USE_OPENMP
+    nthreads_omp = omp_get_max_threads();
+    // Run with half the max OMP threads, the max threads and twice that
+    for(i = (nthreads_omp + 1) / 2; i <= nthreads_omp * 2; i *= 2) {
+        omp_set_num_threads(i);
+#endif
 
-        // Nested fork to check that the pthread_atfork protection can work
-        // recursively
-        fork_pid_nested = fork();
-        if (fork_pid_nested == -1) {
+        fork_pid = fork();
+        if (fork_pid == -1) {
             CTEST_ERR("Failed to fork process.");
-            exit(1);
-        } else if (fork_pid_nested == 0) {
-            check_dgemm(a, b, d, c, n);
+        } else if (fork_pid == 0) {
+            // Just pretend to do something, e.g. call `uname`, then exit
             exit(0);
         } else {
-            check_dgemm(a, b, d, c, n);
+            // Wait for the child to finish and check the exit code.
             int child_status = 0;
             pid_t wait_pid = wait(&child_status);
-            ASSERT_EQUAL(wait_pid, fork_pid_nested);
+            ASSERT_EQUAL(wait_pid, fork_pid);
             ASSERT_EQUAL(0, WEXITSTATUS (child_status));
-            exit(0);
+
+            // Now OpenBLAS has to work
+            check_dgemm(a, b, d, c, n);
         }
-    } else {
-        check_dgemm(a, b, d, c, n);
-        // Wait for the child to finish and check the exit code.
-        int child_status = 0;
-        pid_t wait_pid = wait(&child_status);
-        ASSERT_EQUAL(wait_pid, fork_pid);
-        ASSERT_EQUAL(0, WEXITSTATUS (child_status));
+#ifdef USE_OPENMP
     }
+#endif
+
 #endif
 }
