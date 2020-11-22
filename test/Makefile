@@ -1,211 +1,269 @@
-#
-# The Makefile compiles c wrappers and testers for CBLAS.
-#
-
-TOPDIR = ..
-include $(TOPDIR)/Makefile.system
-
-override CFLAGS += -DADD$(BU) -DCBLAS
-override TARGET_ARCH=
-override TARGET_MACH=
-
-LIB = $(TOPDIR)/$(LIBNAME)
-
-stestl1o = c_sblas1.o
-
-stestl2o = c_sblas2.o c_s2chke.o auxiliary.o c_xerbla.o constant.o
-
-stestl3o = c_sblas3.o c_s3chke.o auxiliary.o c_xerbla.o constant.o
-
-dtestl1o = c_dblas1.o
-
-dtestl2o = c_dblas2.o c_d2chke.o auxiliary.o c_xerbla.o constant.o
-
-dtestl3o = c_dblas3.o c_d3chke.o auxiliary.o c_xerbla.o constant.o
-
-ctestl1o = c_cblas1.o
-
-ctestl2o = c_cblas2.o c_c2chke.o auxiliary.o c_xerbla.o constant.o
-
-ctestl3o = c_cblas3.o c_c3chke.o auxiliary.o c_xerbla.o constant.o
-
-ctestl3o_3m = c_cblas3_3m.o c_c3chke_3m.o auxiliary.o c_xerbla.o constant.o
-
-ztestl1o = c_zblas1.o
-
-ztestl2o = c_zblas2.o c_z2chke.o auxiliary.o c_xerbla.o constant.o
-
-ztestl3o = c_zblas3.o c_z3chke.o auxiliary.o c_xerbla.o constant.o
-
-ztestl3o_3m = c_zblas3_3m.o c_z3chke_3m.o auxiliary.o c_xerbla.o constant.o
+TOPDIR	= ..
+include ../Makefile.system
 
 
 ifeq ($(NOFORTRAN),1)
 all ::
 else
-all :: all1 all2 all3
+all :: level1 level2 level3
 endif
 
 ifeq ($(BUILD_SINGLE),1)
-all1targets += xscblat1
+S1=sblat1
 endif
 ifeq ($(BUILD_DOUBLE),1)
-all1targets += xdcblat1
+D1=dblat1
 endif
 ifeq ($(BUILD_COMPLEX),1)
-all1targets += xccblat1
+C1=cblat1
 endif
 ifeq ($(BUILD_COMPLEX16),1)
-all1targets += xzcblat1
+Z1=zblat1
 endif
 
-all1: $(all1targets)
+level1: $(S1) $(D1) $(C1) $(Z1)
 
 ifneq ($(CROSS), 1)
-ifeq ($(USE_OPENMP), 1)
 ifeq ($(BUILD_SINGLE),1)
-	OMP_NUM_THREADS=2 ./xscblat1
+	OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 ./sblat1
 endif
 ifeq ($(BUILD_DOUBLE),1)
-	OMP_NUM_THREADS=2 ./xdcblat1
-endif	
+	OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 ./dblat1
+endif
 ifeq ($(BUILD_COMPLEX),1)
-	OMP_NUM_THREADS=2 ./xccblat1
+	OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 ./cblat1
 endif
 ifeq ($(BUILD_COMPLEX16),1)
-	OMP_NUM_THREADS=2 ./xzcblat1
+	OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 ./zblat1
+endif
+ifdef SMP
+ifeq ($(USE_OPENMP), 1)
+ifeq ($(BUILD_SINGLE),1)
+	OMP_NUM_THREADS=2 ./sblat1
+endif
+ifeq ($(BUILD_DOUBLE),1)
+	OMP_NUM_THREADS=2 ./dblat1
+endif
+ifeq ($(BUILD_COMPLEX),1)
+	OMP_NUM_THREADS=2 ./cblat1
+endif
+ifeq ($(BUILD_COMPLEX16),1)
+	OMP_NUM_THREADS=2 ./zblat1
 endif
 else
 ifeq ($(BUILD_SINGLE),1)
-	OPENBLAS_NUM_THREADS=2 ./xscblat1
+	OPENBLAS_NUM_THREADS=2 ./sblat1
 endif
 ifeq ($(BUILD_DOUBLE),1)
-	OPENBLAS_NUM_THREADS=2 ./xdcblat1
+	OPENBLAS_NUM_THREADS=2 ./dblat1
 endif
 ifeq ($(BUILD_COMPLEX),1)
-	OPENBLAS_NUM_THREADS=2 ./xccblat1
+	OPENBLAS_NUM_THREADS=2 ./cblat1
 endif
 ifeq ($(BUILD_COMPLEX16),1)
-	OPENBLAS_NUM_THREADS=2 ./xzcblat1
+	OPENBLAS_NUM_THREADS=2 ./zblat1
+endif
 endif
 endif
 endif
 
 ifeq ($(BUILD_SINGLE),1)
-all2targets += xscblat2
+S2=sblat2
 endif
 ifeq ($(BUILD_DOUBLE),1)
-all2targets += xdcblat2
+D2=dblat2
 endif
 ifeq ($(BUILD_COMPLEX),1)
-all2targets += xccblat2
+C2=cblat2
 endif
 ifeq ($(BUILD_COMPLEX16),1)
-all2targets += xzcblat2
+Z2=zblat2
 endif
 
-all2: $(all2targets)
+level2: $(S2) $(D2) $(C2) $(Z2)
+
 
 ifneq ($(CROSS), 1)
-ifeq ($(USE_OPENMP), 1)
+	rm -f ?BLAT2.SUMM
 ifeq ($(BUILD_SINGLE),1)
-	OMP_NUM_THREADS=2 ./xscblat2 < sin2
+	OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 ./sblat2 < ./sblat2.dat
+	@$(GREP) -q FATAL SBLAT2.SUMM && cat SBLAT2.SUMM || exit 0
 endif
 ifeq ($(BUILD_DOUBLE),1)
-	OMP_NUM_THREADS=2 ./xdcblat2 < din2
+	OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 ./dblat2 < ./dblat2.dat
+	@$(GREP) -q FATAL DBLAT2.SUMM && cat DBLAT2.SUMM || exit 0
 endif
 ifeq ($(BUILD_COMPLEX),1)
-	OMP_NUM_THREADS=2 ./xccblat2 < cin2
+	OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 ./cblat2 < ./cblat2.dat
+	@$(GREP) -q FATAL CBLAT2.SUMM && cat CBLAT2.SUMM || exit 0
 endif
 ifeq ($(BUILD_COMPLEX16),1)
-	OMP_NUM_THREADS=2 ./xzcblat2 < zin2
+	OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 ./zblat2 < ./zblat2.dat
+	@$(GREP) -q FATAL ZBLAT2.SUMM && cat ZBLAT2.SUMM || exit 0
+endif
+ifdef SMP
+	rm -f ?BLAT2.SUMM
+ifeq ($(USE_OPENMP), 1)
+ifeq ($(BUILD_SINGLE),1)
+	OMP_NUM_THREADS=2 ./sblat2 < ./sblat2.dat
+	@$(GREP) -q FATAL SBLAT2.SUMM && cat SBLAT2.SUMM || exit 0
+endif
+ifeq ($(BUILD_DOUBLE),1)
+	OMP_NUM_THREADS=2 ./dblat2 < ./dblat2.dat
+	@$(GREP) -q FATAL DBLAT2.SUMM && cat DBLAT2.SUMM || exit 0
+endif
+ifeq ($(BUILD_COMPLEX),1)
+	OMP_NUM_THREADS=2 ./cblat2 < ./cblat2.dat
+	@$(GREP) -q FATAL CBLAT2.SUMM && cat CBLAT2.SUMM || exit 0
+endif
+ifeq ($(BUILD_COMPLEX16),1)
+	OMP_NUM_THREADS=2 ./zblat2 < ./zblat2.dat
+	@$(GREP) -q FATAL ZBLAT2.SUMM && cat ZBLAT2.SUMM || exit 0
 endif
 else
 ifeq ($(BUILD_SINGLE),1)
-	OPENBLAS_NUM_THREADS=2 ./xscblat2 < sin2
+	OPENBLAS_NUM_THREADS=2 ./sblat2 < ./sblat2.dat
+	@$(GREP) -q FATAL SBLAT2.SUMM && cat SBLAT2.SUMM || exit 0
 endif
 ifeq ($(BUILD_DOUBLE),1)
-	OPENBLAS_NUM_THREADS=2 ./xdcblat2 < din2
+	OPENBLAS_NUM_THREADS=2 ./dblat2 < ./dblat2.dat
+	@$(GREP) -q FATAL DBLAT2.SUMM && cat DBLAT2.SUMM || exit 0
 endif
 ifeq ($(BUILD_COMPLEX),1)
-	OPENBLAS_NUM_THREADS=2 ./xccblat2 < cin2
+	OPENBLAS_NUM_THREADS=2 ./cblat2 < ./cblat2.dat
+	@$(GREP) -q FATAL CBLAT2.SUMM && cat CBLAT2.SUMM || exit 0
 endif
 ifeq ($(BUILD_COMPLEX16),1)
-	OPENBLAS_NUM_THREADS=2 ./xzcblat2 < zin2
+	OPENBLAS_NUM_THREADS=2 ./zblat2 < ./zblat2.dat
+	@$(GREP) -q FATAL ZBLAT2.SUMM && cat ZBLAT2.SUMM || exit 0
+endif
 endif
 endif
 endif
 
-
+ifeq ($(BUILD_BFLOAT16),1)
+B3= test_sbgemm
+endif
 ifeq ($(BUILD_SINGLE),1)
-all3targets += xscblat3
+S3=sblat3
 endif
 ifeq ($(BUILD_DOUBLE),1)
-all3targets += xdcblat3
+D3=dblat3
 endif
 ifeq ($(BUILD_COMPLEX),1)
-all3targets += xccblat3
+C3=cblat3
 endif
 ifeq ($(BUILD_COMPLEX16),1)
-all3targets += xzcblat3
+Z3=zblat3
 endif
 
-all3: $(all3targets)
+level3: $(B3) $(S3) $(D3) $(C3) $(Z3)
+
 
 ifneq ($(CROSS), 1)
-ifeq ($(USE_OPENMP), 1)
+	rm -f ?BLAT3.SUMM
+ifeq ($(BUILD_BFLOAT16),1)
+	OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 ./test_sbgemm > SBBLAT3.SUMM
+	@$(GREP) -q FATAL SBBLAT3.SUMM && cat SBBLAT3.SUMM || exit 0
+endif
 ifeq ($(BUILD_SINGLE),1)
-	OMP_NUM_THREADS=2 ./xscblat3 < sin3
+	OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 ./sblat3 < ./sblat3.dat
+	@$(GREP) -q FATAL SBLAT3.SUMM && cat SBLAT3.SUMM || exit 0
 endif
 ifeq ($(BUILD_DOUBLE),1)
-	OMP_NUM_THREADS=2 ./xdcblat3 < din3
+	OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 ./dblat3 < ./dblat3.dat
+	@$(GREP) -q FATAL DBLAT3.SUMM && cat DBLAT3.SUMM || exit 0
 endif
 ifeq ($(BUILD_COMPLEX),1)
-	OMP_NUM_THREADS=2 ./xccblat3 < cin3
+	OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 ./cblat3 < ./cblat3.dat
+	@$(GREP) -q FATAL CBLAT3.SUMM && cat CBLAT3.SUMM || exit 0
 endif
 ifeq ($(BUILD_COMPLEX16),1)
-	OMP_NUM_THREADS=2 ./xzcblat3 < zin3
+	OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 ./zblat3 < ./zblat3.dat
+	@$(GREP) -q FATAL ZBLAT3.SUMM && cat ZBLAT3.SUMM || exit 0
 endif
-else
+ifdef SMP
+	rm -f ?BLAT3.SUMM
+ifeq ($(USE_OPENMP), 1)
+ifeq ($(BUILD_BFLOAT16),1)
+	OMP_NUM_THREADS=2 ./test_sbgemm > SBBLAT3.SUMM
+	@$(GREP) -q FATAL SBBLAT3.SUMM && cat SBBLAT3.SUMM || exit 0
+endif
 ifeq ($(BUILD_SINGLE),1)
-	OPENBLAS_NUM_THREADS=2 ./xscblat3 < sin3
+	OMP_NUM_THREADS=2 ./sblat3 < ./sblat3.dat
+	@$(GREP) -q FATAL SBLAT3.SUMM && cat SBLAT3.SUMM || exit 0
 endif
 ifeq ($(BUILD_DOUBLE),1)
-	OPENBLAS_NUM_THREADS=2 ./xdcblat3 < din3
+	OMP_NUM_THREADS=2 ./dblat3 < ./dblat3.dat
+	@$(GREP) -q FATAL DBLAT3.SUMM && cat DBLAT3.SUMM || exit 0
 endif
 ifeq ($(BUILD_COMPLEX),1)
-	OPENBLAS_NUM_THREADS=2 ./xccblat3 < cin3
+	OMP_NUM_THREADS=2 ./cblat3 < ./cblat3.dat
+	@$(GREP) -q FATAL CBLAT3.SUMM && cat CBLAT3.SUMM || exit 0
 endif
 ifeq ($(BUILD_COMPLEX16),1)
-	OPENBLAS_NUM_THREADS=2 ./xzcblat3 < zin3
-endif
-endif
-endif
-
-all3_3m: xzcblat3_3m xccblat3_3m
-ifeq ($(USE_OPENMP), 1)
-ifeq ($(BUILD_SINGLE),1)
-	OMP_NUM_THREADS=2 ./xccblat3_3m < cin3_3m
-endif
-ifeq ($(BUILD_COMPLEX16),1)
-	OMP_NUM_THREADS=2 ./xzcblat3_3m < zin3_3m
+	OMP_NUM_THREADS=2 ./zblat3 < ./zblat3.dat
+	@$(GREP) -q FATAL ZBLAT3.SUMM && cat ZBLAT3.SUMM || exit 0
 endif
 else
+ifeq ($(BUILD_BFLOAT16),1)
+	OPENBLAS_NUM_THREADS=2 ./test_sbgemm > SBBLAT3.SUMM
+	@$(GREP) -q FATAL SBBLAT3.SUMM && cat SBBLAT3.SUMM || exit 0
+endif
+ifeq ($(BUILD_SINGLE),1)
+	OPENBLAS_NUM_THREADS=2 ./sblat3 < ./sblat3.dat
+	@$(GREP) -q FATAL SBLAT3.SUMM && cat SBLAT3.SUMM || exit 0
+endif
+ifeq ($(BUILD_DOUBLE),1)
+	OPENBLAS_NUM_THREADS=2 ./dblat3 < ./dblat3.dat
+	@$(GREP) -q FATAL DBLAT3.SUMM && cat DBLAT3.SUMM || exit 0
+endif
 ifeq ($(BUILD_COMPLEX),1)
-	OPENBLAS_NUM_THREADS=2 ./xccblat3_3m < cin3_3m
+	OPENBLAS_NUM_THREADS=2 ./cblat3 < ./cblat3.dat
+	@$(GREP) -q FATAL CBLAT3.SUMM && cat CBLAT3.SUMM || exit 0
 endif
 ifeq ($(BUILD_COMPLEX16),1)
-	OPENBLAS_NUM_THREADS=2 ./xzcblat3_3m < zin3_3m
+	OPENBLAS_NUM_THREADS=2 ./zblat3 < ./zblat3.dat
+	@$(GREP) -q FATAL ZBLAT3.SUMM && cat ZBLAT3.SUMM || exit 0
+endif
+endif
 endif
 endif
 
 
+level3_3m : zblat3_3m cblat3_3m
+ifneq ($(CROSS), 1)
+	rm -f ?BLAT3_3M.SUMM
+	OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 ./cblat3_3m < ./cblat3_3m.dat
+	@$(GREP) -q FATAL CBLAT3_3M.SUMM && cat CBLAT3_3M.SUMM || exit 0
+	OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 ./zblat3_3m < ./zblat3_3m.dat
+	@$(GREP) -q FATAL ZBLAT3_3M.SUMM && cat ZBLAT3_3M.SUMM || exit 0
+ifdef SMP
+	rm -f ?BLAT3_3M.SUMM
+ifeq ($(USE_OPENMP), 1)
+	OMP_NUM_THREADS=2 ./cblat3_3m < ./cblat3_3m.dat
+	@$(GREP) -q FATAL CBLAT3_3M.SUMM && cat CBLAT3_3M.SUMM || exit 0
+	OMP_NUM_THREADS=2 ./zblat3_3m < ./zblat3_3m.dat
+	@$(GREP) -q FATAL ZBLAT3_3M.SUMM && cat ZBLAT3_3M.SUMM || exit 0
+else
+	OPENBLAS_NUM_THREADS=2 ./cblat3_3m < ./cblat3_3m.dat
+	@$(GREP) -q FATAL CBLAT3_3M.SUMM && cat CBLAT3_3M.SUMM || exit 0
+	OPENBLAS_NUM_THREADS=2 ./zblat3_3m < ./zblat3_3m.dat
+	@$(GREP) -q FATAL ZBLAT3_3M.SUMM && cat ZBLAT3_3M.SUMM || exit 0
+endif
+endif
+endif
 
 
-clean ::
-	rm -f x*
+
 
 FLDFLAGS = $(FFLAGS:-fPIC=) $(LDFLAGS)
+
+ifeq ($(CORE), C910V)
+EXTRALIB =
+CEXTRALIB =
+endif
+
 ifeq ($(USE_OPENMP), 1)
 ifeq ($(F_COMPILER), GFORTRAN)
 ifeq ($(C_COMPILER), CLANG)
@@ -215,54 +273,90 @@ endif
 endif
 
 ifeq ($(BUILD_SINGLE),1)
-# Single real
-xscblat1: $(stestl1o) c_sblat1.o $(TOPDIR)/$(LIBNAME)
-	$(FC) $(FLDFLAGS) -o xscblat1 c_sblat1.o $(stestl1o) $(LIB) $(EXTRALIB) $(CEXTRALIB)
+sblat1 : sblat1.$(SUFFIX) ../$(LIBNAME)
+	$(FC) $(FLDFLAGS) -o sblat1 sblat1.$(SUFFIX) ../$(LIBNAME) $(EXTRALIB) $(CEXTRALIB)
 
-xscblat2: $(stestl2o) c_sblat2.o $(TOPDIR)/$(LIBNAME)
-	$(FC) $(FLDFLAGS) -o xscblat2 c_sblat2.o $(stestl2o) $(LIB) $(EXTRALIB) $(CEXTRALIB)
+sblat2 : sblat2.$(SUFFIX) ../$(LIBNAME)
+	$(FC) $(FLDFLAGS) -o sblat2 sblat2.$(SUFFIX) ../$(LIBNAME) $(EXTRALIB) $(CEXTRALIB)
 
-xscblat3: $(stestl3o) c_sblat3.o $(TOPDIR)/$(LIBNAME)
-	$(FC) $(FLDFLAGS) -o xscblat3 c_sblat3.o $(stestl3o) $(LIB) $(EXTRALIB) $(CEXTRALIB)
+sblat3 : sblat3.$(SUFFIX) ../$(LIBNAME)
+	$(FC) $(FLDFLAGS) -o sblat3 sblat3.$(SUFFIX) ../$(LIBNAME) $(EXTRALIB) $(CEXTRALIB)
 endif
 
 ifeq ($(BUILD_DOUBLE),1)
-# Double real
-xdcblat1: $(dtestl1o) c_dblat1.o $(TOPDIR)/$(LIBNAME)
-	$(FC) $(FLDFLAGS) -o xdcblat1 c_dblat1.o $(dtestl1o) $(LIB) $(EXTRALIB) $(CEXTRALIB)
-xdcblat2: $(dtestl2o) c_dblat2.o $(TOPDIR)/$(LIBNAME)
-	$(FC) $(FLDFLAGS) -o xdcblat2 c_dblat2.o $(dtestl2o) $(LIB) $(EXTRALIB) $(CEXTRALIB)
-xdcblat3: $(dtestl3o) c_dblat3.o $(TOPDIR)/$(LIBNAME)
-	$(FC) $(FLDFLAGS) -o xdcblat3 c_dblat3.o $(dtestl3o) $(LIB) $(EXTRALIB) $(CEXTRALIB)
+dblat1 : dblat1.$(SUFFIX) ../$(LIBNAME)
+	$(FC) $(FLDFLAGS) -o dblat1 dblat1.$(SUFFIX) ../$(LIBNAME) $(EXTRALIB) $(CEXTRALIB)
+
+dblat2 : dblat2.$(SUFFIX) ../$(LIBNAME)
+	$(FC) $(FLDFLAGS) -o dblat2 dblat2.$(SUFFIX) ../$(LIBNAME) $(EXTRALIB) $(CEXTRALIB)
+
+dblat3 : dblat3.$(SUFFIX) ../$(LIBNAME)
+	$(FC) $(FLDFLAGS) -o dblat3 dblat3.$(SUFFIX) ../$(LIBNAME) $(EXTRALIB) $(CEXTRALIB)
+else
+dblat2:
+dblat3:
 endif
 
+
+qblat1 : qblat1.$(SUFFIX) ../$(LIBNAME)
+	$(FC) $(FLDFLAGS) -o qblat1 qblat1.$(SUFFIX) ../$(LIBNAME) $(EXTRALIB) $(CEXTRALIB)
 
 ifeq ($(BUILD_COMPLEX),1)
-# Single complex
-xccblat1: $(ctestl1o) c_cblat1.o $(TOPDIR)/$(LIBNAME)
-	$(FC) $(FLDFLAGS) -o xccblat1 c_cblat1.o $(ctestl1o) $(LIB) $(EXTRALIB) $(CEXTRALIB)
-xccblat2: $(ctestl2o) c_cblat2.o $(TOPDIR)/$(LIBNAME)
-	$(FC) $(FLDFLAGS) -o xccblat2 c_cblat2.o $(ctestl2o) $(LIB) $(EXTRALIB) $(CEXTRALIB)
-xccblat3: $(ctestl3o) c_cblat3.o $(TOPDIR)/$(LIBNAME)
-	$(FC) $(FLDFLAGS) -o xccblat3 c_cblat3.o $(ctestl3o) $(LIB) $(EXTRALIB) $(CEXTRALIB)
+cblat1 : cblat1.$(SUFFIX) ../$(LIBNAME)
+	$(FC) $(FLDFLAGS) -o cblat1 cblat1.$(SUFFIX) ../$(LIBNAME) $(EXTRALIB) $(CEXTRALIB)
 
-xccblat3_3m: $(ctestl3o_3m) c_cblat3_3m.o $(TOPDIR)/$(LIBNAME)
-	$(FC) $(FLDFLAGS) -o xccblat3_3m c_cblat3_3m.o $(ctestl3o_3m) $(LIB) $(EXTRALIB) $(CEXTRALIB)
+cblat2 : cblat2.$(SUFFIX) ../$(LIBNAME)
+	$(FC) $(FLDFLAGS) -o cblat2 cblat2.$(SUFFIX) ../$(LIBNAME) $(EXTRALIB) $(CEXTRALIB)
+
+cblat3 : cblat3.$(SUFFIX) ../$(LIBNAME)
+	$(FC) $(FLDFLAGS) -o cblat3 cblat3.$(SUFFIX) ../$(LIBNAME) $(EXTRALIB) $(CEXTRALIB)
 endif
-
 
 ifeq ($(BUILD_COMPLEX16),1)
-# Double complex
-xzcblat1: $(ztestl1o) c_zblat1.o $(TOPDIR)/$(LIBNAME)
-	$(FC) $(FLDFLAGS) -o xzcblat1 c_zblat1.o $(ztestl1o) $(LIB) $(EXTRALIB) $(CEXTRALIB)
-xzcblat2: $(ztestl2o) c_zblat2.o $(TOPDIR)/$(LIBNAME)
-	$(FC) $(FLDFLAGS) -o xzcblat2 c_zblat2.o $(ztestl2o) $(LIB) $(EXTRALIB) $(CEXTRALIB)
-xzcblat3: $(ztestl3o) c_zblat3.o $(TOPDIR)/$(LIBNAME)
-	$(FC) $(FLDFLAGS) -o xzcblat3 c_zblat3.o $(ztestl3o) $(LIB) $(EXTRALIB) $(CEXTRALIB)
+zblat1 : zblat1.$(SUFFIX) ../$(LIBNAME)
+	$(FC) $(FLDFLAGS) -o zblat1 zblat1.$(SUFFIX) ../$(LIBNAME) $(EXTRALIB) $(CEXTRALIB)
 
+zblat2 : zblat2.$(SUFFIX) ../$(LIBNAME)
+	$(FC) $(FLDFLAGS) -o zblat2 zblat2.$(SUFFIX) ../$(LIBNAME) $(EXTRALIB) $(CEXTRALIB)
 
-xzcblat3_3m: $(ztestl3o_3m) c_zblat3_3m.o $(TOPDIR)/$(LIBNAME)
-	$(FC) $(FLDFLAGS) -o xzcblat3_3m c_zblat3_3m.o $(ztestl3o_3m) $(LIB) $(EXTRALIB) $(CEXTRALIB)
+zblat3 : zblat3.$(SUFFIX) ../$(LIBNAME)
+	$(FC) $(FLDFLAGS) -o zblat3 zblat3.$(SUFFIX) ../$(LIBNAME) $(EXTRALIB) $(CEXTRALIB)
 endif
 
-include $(TOPDIR)/Makefile.tail
+ifeq ($(BUILD_BFLOAT16),1)
+test_sbgemm : compare_sgemm_sbgemm.c ../$(LIBNAME)
+	$(FC) $(FLDFLAGS) -o test_sbgemm compare_sgemm_sbgemm.c ../$(LIBNAME) $(EXTRALIB) $(CEXTRALIB)
+endif
+
+ifeq ($(BUILD_COMPLEX),1)
+cblat3_3m : cblat3_3m.$(SUFFIX) ../$(LIBNAME)
+	$(FC) $(FLDFLAGS) -o cblat3_3m cblat3_3m.$(SUFFIX) ../$(LIBNAME) $(EXTRALIB) $(CEXTRALIB)
+endif
+
+ifeq ($(BUILD_COMPLEX16),1)
+zblat3_3m : zblat3_3m.$(SUFFIX) ../$(LIBNAME)
+	$(FC) $(FLDFLAGS) -o zblat3_3m zblat3_3m.$(SUFFIX) ../$(LIBNAME) $(EXTRALIB) $(CEXTRALIB)
+endif
+
+
+
+clean:
+	@rm -f *.$(SUFFIX) *.$(PSUFFIX) gmon.$(SUFFIX)ut *.SUMM *.cxml *.exe *.pdb *.dwf \
+	sblat1 dblat1 cblat1 zblat1 \
+	sblat2 dblat2 cblat2 zblat2 \
+	test_sbgemm sblat3 dblat3 cblat3 zblat3 \
+	sblat1p dblat1p cblat1p zblat1p \
+	sblat2p dblat2p cblat2p zblat2p \
+	sblat3p dblat3p cblat3p zblat3p \
+	zblat3_3m zblat3_3mp \
+	cblat3_3m cblat3_3mp \
+	*.stackdump *.dll
+
+libs:
+
+prof:
+
+quick :
+	$(MAKE) -C $(TOPDIR) libs
+
+# include ../Makefile.tail
