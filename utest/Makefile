@@ -45,7 +45,7 @@ $(UTESTBIN): $(OBJS)
 	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $^ ../$(LIBNAME) $(EXTRALIB) $(FEXTRALIB)
 
 run_test: $(UTESTBIN)
-ifndef CROSS
+ifneq ($(CROSS), 1)
 	./$(UTESTBIN)
 endif
 
