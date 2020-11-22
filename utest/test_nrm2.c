@@ -33,6 +33,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "openblas_utest.h"
 
+#ifndef INFINITY
+#define INFINITY 1e1000
+#endif
+
 #ifdef BUILD_SINGLE
 CTEST(nrm2, snrm2){
   blasint N=10, inc=1;
