@@ -143,7 +143,7 @@ static gotoblas_t *get_coretype(void) {
 
 #if (!defined OS_LINUX && !defined OS_ANDROID)
   return NULL;
-#endif
+#else
 
   if (!(getauxval(AT_HWCAP) & HWCAP_CPUID)) {
 #ifdef __linux
@@ -235,6 +235,7 @@ static gotoblas_t *get_coretype(void) {
       openblas_warning(1, coremsg);
   }
   return NULL;
+#endif
 }
 
 void gotoblas_dynamic_init(void) {
