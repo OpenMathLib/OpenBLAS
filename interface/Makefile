@@ -19,7 +19,7 @@ ifeq ($(ARCH), MIPS)
 SUPPORT_GEMM3M = 1
 endif
 
-ifndef NO_FBLAS
+ifneq ($(NO_FBLAS), 1)
 
 SBLAS1OBJS    = \
 		saxpy.$(SUFFIX) sswap.$(SUFFIX) \
@@ -146,7 +146,7 @@ ZBLAS3OBJS   +=  zgemm3m.$(SUFFIX)
 
 endif
 
-ifdef EXPRECISION
+ifeq ($(EXPRECISION), 1)
 
 QBLAS1OBJS    = \
 		qaxpy.$(SUFFIX) qswap.$(SUFFIX) \
@@ -511,11 +511,11 @@ endif
 
 FUNCOBJS    = $(SBEXTOBJS) $(CXERBLAOBJS) $(SBBLASOBJS) $(SBLASOBJS) $(DBLASOBJS) $(CBLASOBJS) $(ZBLASOBJS)
 
-ifdef EXPRECISION
+ifeq ($(EXPRECISION), 1)
 FUNCOBJS   += $(QBLASOBJS) $(XBLASOBJS)
 endif
 
-ifdef QUAD_PRECISION
+ifeq ($(QUAD_PRECISION), 1)
 FUNCOBJS   += $(QBLASOBJS) $(XBLASOBJS)
 endif
 
