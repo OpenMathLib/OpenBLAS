@@ -849,8 +849,8 @@ Lmcount$lazy_ptr:
 #else
 #define BUFFER_SIZE     ( 16 << 20)
 #endif
-#ifeq ($(DYNAMIC_ARCH), 1)
-#undefine BUFFER_SIZE
+#ifdef DYNAMIC_ARCH
+#undef BUFFER_SIZE
 #define BUFFER_SIZE (64 << 22)
 #endif
 
