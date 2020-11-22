@@ -92,6 +92,7 @@ $architecture = ia64   if ($data =~ /ARCH_IA64/);
 $architecture = arm    if ($data =~ /ARCH_ARM/);
 $architecture = arm64  if ($data =~ /ARCH_ARM64/);
 $architecture = zarch  if ($data =~ /ARCH_ZARCH/);
+$architecture = riscv64 if ($data =~ /ARCH_RISCV64/);
 
 $defined = 0;
 
@@ -134,6 +135,11 @@ if ($architecture eq "ia64") {
 if (($architecture eq "x86") && ($os ne Darwin) && ($os ne SunOS)) {
     $defined = 1;
     $binary =32;
+}
+
+if ($architecture eq "riscv64") {
+    $defined = 1;
+    $binary = 64;
 }
 
 if ($compiler eq "PGI") {
