@@ -13,11 +13,10 @@ matrix:
         apt:
           packages:
             - gfortran
-            - binutils
       before_script: &common-before
         - COMMON_FLAGS="DYNAMIC_ARCH=1 TARGET=NEHALEM NUM_THREADS=32"
       script:
-        - make QUIET_MAKE=1 $COMMON_FLAGS $BTYPE
+        - make $COMMON_FLAGS $BTYPE
         - make -C test $COMMON_FLAGS $BTYPE
         - make -C ctest $COMMON_FLAGS $BTYPE
         - make -C utest $COMMON_FLAGS $BTYPE
