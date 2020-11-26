@@ -75,17 +75,9 @@ static inline int my_mbind(void *addr, unsigned long len, int mode,
 // https://lsbbugs.linuxfoundation.org/show_bug.cgi?id=3482
         return 0;
 #else
-#if defined (LOONGSON3B)
-#if defined (__64BIT__)
-	return syscall(SYS_mbind, addr, len, mode, nodemask, maxnode, flags);
-#else
-	return 0; //NULL Implementation on Loongson 3B 32bit.
-#endif
-#else
 //Fixed randomly SEGFAULT when nodemask==NULL with above Linux 2.6.34
 //	unsigned long null_nodemask=0;
 	return syscall(SYS_mbind, addr, len, mode, nodemask, maxnode, flags);
-#endif
 #endif
 }
 

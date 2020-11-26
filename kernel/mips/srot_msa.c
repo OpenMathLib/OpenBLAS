@@ -48,11 +48,7 @@ int CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG inc_y,
     {
         if ((0 == c) && (0 == s))
         {
-            v4f32 zero = __msa_cast_to_vector_float(0);
-            zero = (v4f32) __msa_insert_w((v4i32) zero, 0, 0.0);
-            zero = (v4f32) __msa_insert_w((v4i32) zero, 1, 0.0);
-            zero = (v4f32) __msa_insert_w((v4i32) zero, 2, 0.0);
-            zero = (v4f32) __msa_insert_w((v4i32) zero, 3, 0.0);
+            v4f32 zero = {0.0, 0.0, 0.0, 0.0};
 
             /* process 4 floats */
             for (j = (n >> 2); j--;)
