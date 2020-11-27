@@ -54,7 +54,10 @@ LIBATLAS	= -L$(ATLASPATH)/32 -lcblas -lf77blas -latlas -lm
 else
 LIBATLAS	= -L$(ATLASPATH)/32 -lptf77blas -lptatlas -lpthread -lm
 endif
-
+ifdef HAVE_SSE2
+CCOMMON_OPT += -msse2
+FCOMMON_OPT += -msse2
+endif
 ifdef HAVE_SSE3
 CCOMMON_OPT += -msse3
 FCOMMON_OPT += -msse3
