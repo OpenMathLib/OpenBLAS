@@ -20,9 +20,11 @@ ifdef HAVE_SSE4_1
 CCOMMON_OPT += -msse4.1
 FCOMMON_OPT += -msse4.1
 endif
+ifndef NO_FMA
 ifdef HAVE_AVX
 CCOMMON_OPT += -mavx
 FCOMMON_OPT += -mavx
+endif
 endif
 ifndef NO_AVX2
 ifdef HAVE_AVX2
