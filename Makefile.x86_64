@@ -32,9 +32,11 @@ CCOMMON_OPT += -mavx2
 FCOMMON_OPT += -mavx2
 endif
 endif
+ifndef OLDGCC
 ifdef HAVE_FMA3
 CCOMMON_OPT += -mfma
 FCOMMON_OPT += -mfma
+endif
 endif
 
 ifeq ($(CORE), SKYLAKEX)
