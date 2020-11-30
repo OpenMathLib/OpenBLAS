@@ -229,16 +229,6 @@ $architecture = zarch  if ($data =~ /ARCH_ZARCH/);
 $binformat    = bin32;
 $binformat    = bin64  if ($data =~ /BINARY_64/);
 
-
-if ($compiler eq "GCC" &&( ($architecture eq "x86") || ($architecture eq "x86_64"))) {
-$no_avx2 = 0;
-$oldgcc = 0;
-$data = `$compiler_name -dumpversion`;
-if ($data <= 4.6) {
-$no_avx2 = 1;
-$oldgcc = 1;
-}
-}
 $no_avx512= 0;
 if (($architecture eq "x86") || ($architecture eq "x86_64")) {
     eval "use File::Temp qw(tempfile)";
@@ -286,6 +276,15 @@ if ($data =~ /HAVE_C11/) {
     }
 }
 
+if ($compiler eq "GCC" &&( ($architecture eq "x86") || ($architecture eq "x86_64"))) {
+	$no_avx2 = 0;
+	$oldgcc = 0;
+	$data = `$compiler_name -dumpversion`;
+	if ($data <= 4.6) {
+		$no_avx2 = 1;
+		$oldgcc = 1;
+	}
+}
 
 $data = `$compiler_name $flags -S ctest1.c && grep globl ctest1.s | head -n 1 && rm -f ctest1.s`;
 
