@@ -233,7 +233,7 @@ matrix:
         - BTYPE="TARGET=NEHALEM BINARY=64 INTERFACE64=1 FC=gfortran-10"
         
     - <<: *test-macos
-      osx_image: xcode10.0
+      osx_image: xcode11.5
       env:
         - BTYPE="TARGET=NEHALEM BINARY=32 NOFORTRAN=1"
 
