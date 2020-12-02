@@ -93,7 +93,7 @@ static int asum_thread_function(BLASLONG n,
     return 0;
 }
 
-extern int blas_level1_thread_with_value(int mode, 
+extern int blas_level1_thread_with_return_value(int mode, 
         BLASLONG m, BLASLONG n, BLASLONG k, void * alpha,
         void *a, BLASLONG lda, 
         void *b, BLASLONG ldb,
