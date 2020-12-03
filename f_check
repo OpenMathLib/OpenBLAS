@@ -330,6 +330,9 @@ if ($link ne "") {
 	    $flags =~ s/\@/\,/g;
 	    $linker_L .= "-Wl,". $flags . " " ;
 	}
+	if ($flags =~ /-lgomp/ && $CC == /clang/) {
+	    $flags = "-lomp";
+	}
 
 	if (
 	    ($flags =~ /^\-l/)
