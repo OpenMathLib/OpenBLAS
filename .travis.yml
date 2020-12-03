@@ -223,10 +223,12 @@ matrix:
       osx_image: xcode12
       before_script:
         - COMMON_FLAGS="DYNAMIC_ARCH=1 NUM_THREADS=32"
+        - brew update
+        - brew install gcc@10
       script:
         - travis_wait 45 make QUIET_MAKE=1 $COMMON_FLAGS $BTYPE
       env:
-        - BTYPE="TARGET=NEHALEM BINARY=64 INTERFACE64=1 FC=gfortran-9"
+        - BTYPE="TARGET=NEHALEM BINARY=64 INTERFACE64=1 FC=gfortran-10"
         
   #  - <<: *test-macos
   #    osx_image: xcode10
