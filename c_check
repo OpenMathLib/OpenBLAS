@@ -276,6 +276,15 @@ if ($data =~ /HAVE_C11/) {
     }
 }
 
+if ($compiler eq "GCC" &&( ($architecture eq "x86") || ($architecture eq "x86_64"))) {
+	$no_avx2 = 0;
+	$oldgcc = 0;
+	$data = `$compiler_name -dumpversion`;
+	if ($data <= 4.6) {
+		$no_avx2 = 1;
+		$oldgcc = 1;
+	}
+}
 
 $data = `$compiler_name $flags -S ctest1.c && grep globl ctest1.s | head -n 1 && rm -f ctest1.s`;
 
@@ -368,6 +377,8 @@ print MAKEFILE "CEXTRALIB=$linker_L $linker_l $linker_a\n";
 print MAKEFILE "HAVE_MSA=1\n" if $have_msa eq 1;
 print MAKEFILE "MSA_FLAGS=$msa_flags\n" if $have_msa eq 1;
 print MAKEFILE "NO_AVX512=1\n" if $no_avx512 eq 1;
+print MAKEFILE "NO_AVX2=1\n" if $no_avx2 eq 1;
+print MAKEFILE "OLDGCC=1\n" if $oldgcc eq 1;
 
 $os           =~ tr/[a-z]/[A-Z]/;
 $architecture =~ tr/[a-z]/[A-Z]/;
