@@ -27,3 +27,6 @@ ZGEMMKERNEL    =  zgemm_kernel_4x2_skylakex.c
 
 CSCALKERNEL    = ../arm/zscal.c
 ZSCALKERNEL    = ../arm/zscal.c
+
+CASUMKERNEL = casum.c
+ZASUMKERNEL = zasum.c

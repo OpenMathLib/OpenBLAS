@@ -58,7 +58,7 @@ add_executable(${OpenBLAS_utest_bin} ${OpenBLAS_utest_src})
 
 target_link_libraries(${OpenBLAS_utest_bin} ${OpenBLAS_LIBNAME})
 
-if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+if(${CMAKE_SYSTEM_NAME} MATCHES "Linux" OR ${CMAKE_SYSTEM_NAME} MATCHES "FreeBSD")
 target_link_libraries(${OpenBLAS_utest_bin} m)
 endif()
 

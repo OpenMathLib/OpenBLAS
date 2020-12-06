@@ -268,7 +268,11 @@ ifeq ($(NOFORTRAN), $(filter 0,$(NOFORTRAN)))
 	-@echo "POPTS       = $(LAPACK_FPFLAGS)" >> $(NETLIB_LAPACK_DIR)/make.inc
 	-@echo "FFLAGS_NOOPT       = -O0 $(LAPACK_NOOPT)" >> $(NETLIB_LAPACK_DIR)/make.inc
 	-@echo "PNOOPT      = $(LAPACK_FPFLAGS) -O0" >> $(NETLIB_LAPACK_DIR)/make.inc
+ifeq ($(C_COMPILER)$(F_COMPILER)$(USE_OPENMP), CLANGGFORTRAN1)
+	-@echo "LDFLAGS     = $(FFLAGS) $(EXTRALIB) -lomp" >> $(NETLIB_LAPACK_DIR)/make.inc
+else
 	-@echo "LDFLAGS     = $(FFLAGS) $(EXTRALIB)" >> $(NETLIB_LAPACK_DIR)/make.inc
+endif
 	-@echo "CC          = $(CC)" >> $(NETLIB_LAPACK_DIR)/make.inc
 	-@echo "override CFLAGS      = $(LAPACK_CFLAGS)" >> $(NETLIB_LAPACK_DIR)/make.inc
 	-@echo "AR          = $(AR)" >> $(NETLIB_LAPACK_DIR)/make.inc

@@ -20,17 +20,23 @@ ifdef HAVE_SSE4_1
 CCOMMON_OPT += -msse4.1
 FCOMMON_OPT += -msse4.1
 endif
+ifndef OLDGCC
 ifdef HAVE_AVX
 CCOMMON_OPT += -mavx
 FCOMMON_OPT += -mavx
 endif
+endif
+ifndef NO_AVX2
 ifdef HAVE_AVX2
 CCOMMON_OPT += -mavx2
 FCOMMON_OPT += -mavx2
 endif
+endif
+ifndef OLDGCC
 ifdef HAVE_FMA3
 CCOMMON_OPT += -mfma
 FCOMMON_OPT += -mfma
+endif
 endif
 
 ifeq ($(CORE), SKYLAKEX)
