@@ -54,3 +54,13 @@ ZTRSMKERNEL_LN	=  ztrsm_kernel_LN.S
 ZTRSMKERNEL_LT	=  ztrsm_kernel_LT.S
 ZTRSMKERNEL_RN	=  ztrsm_kernel_LT.S
 ZTRSMKERNEL_RT	=  ztrsm_kernel_RT.S
+
+
+SDOTKERNEL = ../generic/dot.c
+SDSDOTKERNEL = ../generic/dot.c
+DSDOTKERNEL = ../generic/dot.c
+DDOTKERNEL = ../generic/dot.c
+CDOTKERNEL = ../arm/zdot.c
+ZDOTKERNEL = ../arm/zdot.c
+CSWAPKERNEL = ../arm/zswap.c
+ZSWAPKERNEL = ../arm/zswap.c
