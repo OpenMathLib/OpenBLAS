@@ -35,6 +35,9 @@ endif
 ifeq ($(C_COMPILER), PGI)
 OBJS = utest_main2.o
 endif
+ifeq ($(C_COMPILER), SUN)
+OBJS = utest_main2.o
+endif
 ifeq ($(OSNAME), AIX)
 OBJS = utest_main2.o
 endif

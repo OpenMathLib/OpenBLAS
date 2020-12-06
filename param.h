@@ -1454,22 +1454,22 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #define SGEMM_DEFAULT_P 768
 #define SGEMM_DEFAULT_R sgemm_r
-//#define SGEMM_DEFAULT_R 1024
+/*#define SGEMM_DEFAULT_R 1024*/
 
 #define DGEMM_DEFAULT_P 512
 #define DGEMM_DEFAULT_R dgemm_r
-//#define DGEMM_DEFAULT_R 1024
+/*#define DGEMM_DEFAULT_R 1024*/
 
 #define QGEMM_DEFAULT_P 504
 #define QGEMM_DEFAULT_R qgemm_r
 
 #define CGEMM_DEFAULT_P 768
 #define CGEMM_DEFAULT_R cgemm_r
-//#define CGEMM_DEFAULT_R 1024
+/*#define CGEMM_DEFAULT_R 1024*/
 
 #define ZGEMM_DEFAULT_P 512
 #define ZGEMM_DEFAULT_R zgemm_r
-//#define ZGEMM_DEFAULT_R 1024
+/*#define ZGEMM_DEFAULT_R 1024*/
 
 #define XGEMM_DEFAULT_P 252
 #define XGEMM_DEFAULT_R xgemm_r
@@ -2571,7 +2571,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif
 
 #ifdef LOONGSON3A
-////Copy from SICORTEX
+/*Copy from SICORTEX*/
 #define SNUMOPT		2
 #define DNUMOPT		2
 
@@ -2863,7 +2863,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define SYMV_P	16
 #endif
 
-// Common ARMv8 parameters
+/* Common ARMv8 parameters */
 #if defined(ARMV8)
 
 #define SNUMOPT		2
@@ -3066,7 +3066,7 @@ is a big desktop or server with abundant cache rather than a phone or embedded d
 #define CGEMM_DEFAULT_R 4096
 #define ZGEMM_DEFAULT_R 4096
 
-#else // Other/undetected ARMv8 cores
+#else /* Other/undetected ARMv8 cores */
 
 #define SGEMM_DEFAULT_UNROLL_M  16
 #define SGEMM_DEFAULT_UNROLL_N  4
@@ -3095,9 +3095,9 @@ is a big desktop or server with abundant cache rather than a phone or embedded d
 #define CGEMM_DEFAULT_R 4096
 #define ZGEMM_DEFAULT_R 4096
 
-#endif // Cores
+#endif /* Cores */
 
-#endif // ARMv8
+#endif /* ARMv8 */
 
 #if defined(ARMV5)
 #define SNUMOPT		2

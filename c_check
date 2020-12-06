@@ -6,7 +6,8 @@
 # Checking cross compile
 $hostos   = `uname -s | sed -e s/\-.*//`;    chop($hostos);
 $hostarch = `uname -m | sed -e s/i.86/x86/`;chop($hostarch);
-$hostarch = `uname -p` if ($hostos eq "AIX");
+$hostarch = `uname -p` if ($hostos eq "AIX" || $hostos eq "SunOS");
+chop($hostarch);
 $hostarch = "x86_64" if ($hostarch eq "amd64");
 $hostarch = "arm" if ($hostarch ne "arm64" && $hostarch =~ /^arm.*/);
 $hostarch = "arm64" if ($hostarch eq "aarch64");

@@ -78,6 +78,12 @@ static __inline unsigned long rpcc(void){
 #define __BIG_ENDIAN__
 #endif
 
+#ifdef C_SUN
+#ifndef __64BIT
+#define RETURN_BY_STACK
+#endif
+#endif
+
 #ifdef DOUBLE
 #define GET_IMAGE(res)  __asm__ __volatile__("fmovd %%f2, %0" : "=f"(res)  : : "memory")
 #else
