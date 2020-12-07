@@ -191,3 +191,6 @@ In chronological order:
 
 * Danfeng Zhang <https://github.com/craft-zhang>
   * [2020-05-20] Improve performance of SGEMM and STRMM on Arm Cortex-A53
+
+* PingTouGe Semiconductor Co., Ltd.
+  * [2020-10] Add RISC-V Vector (0.7.1) support. Optimize BLAS kernels for Xuantie C910
