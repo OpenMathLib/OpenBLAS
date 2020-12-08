@@ -199,7 +199,7 @@ if (($architecture eq "mips") || ($architecture eq "mips64")) {
     } else {
 	$tmpf = new File::Temp( SUFFIX => '.c' , UNLINK => 1 );
 	$code = '"addvi.b $w0, $w1, 1"';
-	$msa_flags = "-mmsa -mfp64 -msched-weight -mload-store-pairs";
+	$msa_flags = "-mmsa -mfp64 -mload-store-pairs";
 	print $tmpf "#include <msa.h>\n\n";
 	print $tmpf "void main(void){ __asm__ volatile($code); }\n";
 
