@@ -1131,16 +1131,25 @@ CCOMMON_OPT  += -w
 ifeq ($(ARCH), x86)
 CCOMMON_OPT  += -m32
 else
-FCOMMON_OPT  += -m64
+ifdef BINARY64
+CCOMMON_OPT  += -m64
+else
+CCOMMON_OPT  += -m32
+endif
 endif
 endif
 
 ifeq ($(F_COMPILER), SUN)
 CCOMMON_OPT  += -DF_INTERFACE_SUN
+FCOMMON_OPT  += -ftrap=%none -xrecursive
 ifeq ($(ARCH), x86)
 FCOMMON_OPT  += -m32
 else
+ifdef BINARY64
 FCOMMON_OPT  += -m64
+else
+FCOMMON_OPT  += -m32
+endif
 endif
 ifeq ($(USE_OPENMP), 1)
 FCOMMON_OPT += -xopenmp=parallel
@@ -1313,7 +1322,9 @@ KERNELDIR	= $(TOPDIR)/kernel/$(ARCH)
 include $(TOPDIR)/Makefile.$(ARCH)
 
 ifneq ($(C_COMPILER), PGI)
+ifneq ($(C_COMPILER), SUN)
 CCOMMON_OPT     += -UASMNAME -UASMFNAME -UNAME -UCNAME -UCHAR_NAME -UCHAR_CNAME
+endif
 endif
 CCOMMON_OPT	+= -DASMNAME=$(FU)$(*F) -DASMFNAME=$(FU)$(*F)$(BU) -DNAME=$(*F)$(BU) -DCNAME=$(*F) -DCHAR_NAME=\"$(*F)$(BU)\" -DCHAR_CNAME=\"$(*F)\"
 

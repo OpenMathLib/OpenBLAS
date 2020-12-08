@@ -758,10 +758,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     pc0[1] += alphar * res1;  \
     pc0[1] += alphai * res0;  \
                               \
-    pc1[2] += alphar * res2;  \
-    pc1[2] -= alphai * res3;  \
-    pc1[3] += alphar * res3;  \
-    pc1[3] += alphai * res2;  \
+    pc1[0] += alphar * res2;  \
+    pc1[0] -= alphai * res3;  \
+    pc1[1] += alphar * res3;  \
+    pc1[1] += alphai * res2;  \
 }
 
 #define CGEMM_SCALE_1X1       \
@@ -1067,10 +1067,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     pc0[1] = alphar * res1;   \
     pc0[1] += alphai * res0;  \
                               \
-    pc1[2] = alphar * res2;   \
-    pc1[2] -= alphai * res3;  \
-    pc1[3] = alphar * res3;   \
-    pc1[3] += alphai * res2;  \
+    pc1[0] = alphar * res2;   \
+    pc1[0] -= alphai * res3;  \
+    pc1[1] = alphar * res3;   \
+    pc1[1] += alphai * res2;  \
 }
 
 #define CGEMM_TRMM_SCALE_1X1  \
