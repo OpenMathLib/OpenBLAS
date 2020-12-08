@@ -32,14 +32,26 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #undef OP1
 #undef OP2
 
-#if ( !defined(CONJ) && !defined(XCONJ) ) || ( defined(CONJ) && defined(XCONJ) )
-    #define OP0  -=
-    #define OP1  +=
-    #define OP2  +=
+#if !defined(CONJ)
+    #if !defined(XCONJ)
+        #define OP0  -=
+        #define OP1  +=
+        #define OP2  +=
+    #else
+        #define OP0  +=
+        #define OP1  +=
+        #define OP2  -=
+    #endif
 #else
-    #define OP0  +=
-    #define OP1  +=
-    #define OP2  -=
+    #if !defined(XCONJ)
+        #define OP0  +=
+        #define OP1  -=
+        #define OP2  +=
+    #else
+        #define OP0  -=
+        #define OP1  -=
+        #define OP2  -=
+    #endif
 #endif
 
 #define CGEMV_T_8x4()                        \
