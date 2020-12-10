@@ -64,12 +64,18 @@ int CNAME(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, FLOAT da, FLOAT *x, BLAS
 	if ( (inc_x == 1) && (inc_y == 1) )
 	{
 
-		BLASLONG n1 = n & -64;
-
+		if ( n >= 64 )
+		{
+			BLASLONG align = ((32 - ((uintptr_t)y & (uintptr_t)0x1F)) >> 2) & 0x7;
+			for (i = 0; i < align; i++) {
+				y[i] += da * x[i] ;
+			}
+		}
+		BLASLONG n1 = (n-i) & -64;
 		if ( n1 )
-			saxpy_kernel_64(n1, x, y, da);
+			saxpy_kernel_64(n1, &x[i], &y[i], da);
 
-		i = n1;
+		i += n1;
 		while(i < n)
 		{
 
