@@ -112,10 +112,14 @@ static void caxpy_kernel_8 (long n, float *x, float *y,
        "xvmaddasp	38, 58, 33	\n\t"
        "xvmaddasp	39, 59, 33	\n\t"
 
-       "stxvp		48, 0(%4)	\n\t"
-       "stxvp		50, 32(%4)	\n\t"
-       "stxvp		34, 64(%4)	\n\t"
-       "stxvp		38, 96(%4)	\n\t"
+       "stxv		49, 0(%4)	\n\t"
+       "stxv		48, 16(%4)	\n\t"
+       "stxv		51, 32(%4)	\n\t"
+       "stxv		50, 48(%4)	\n\t"
+       "stxv		35, 64(%4)	\n\t"
+       "stxv		34, 80(%4)	\n\t"
+       "stxv		39, 96(%4)	\n\t"
+       "stxv		38, 112(%4)	\n\t"
 
        "addi		%4, %4, 128	\n\t"
        "xxperm 52, 40, %x10 \n\t"       // exchange real and imag part
@@ -159,10 +163,14 @@ static void caxpy_kernel_8 (long n, float *x, float *y,
        "xvmaddasp	38, 58, 33	\n\t"
        "xvmaddasp	39, 59, 33	\n\t"
 
-       "stxvp		48, 0(%4)	\n\t"
-       "stxvp		50, 32(%4)	\n\t"
-       "stxvp		34, 64(%4)	\n\t"
-       "stxvp		38, 96(%4)	\n\t"
+       "stxv		49, 0(%4)	\n\t"
+       "stxv		48, 16(%4)	\n\t"
+       "stxv		51, 32(%4)	\n\t"
+       "stxv		50, 48(%4)	\n\t"
+       "stxv		35, 64(%4)	\n\t"
+       "stxv		34, 80(%4)	\n\t"
+       "stxv		39, 96(%4)	\n\t"
+       "stxv		38, 112(%4)	\n\t"
 
      "#n=%1 x=%5=%2 y=%0=%3 alpha=(%7,%8) mvecp=%6=%9 ytmp=%4\n"
      :
