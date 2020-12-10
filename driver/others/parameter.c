@@ -717,7 +717,7 @@ void blas_set_parameter(void){
 
 #if defined(ARCH_MIPS64)
 void blas_set_parameter(void){
-#if defined(LOONGSON3A)
+#if defined(LOONGSON3R3) || defined(LOONGSON3R4)
 #ifdef SMP
   if(blas_num_threads == 1){
 #endif
@@ -727,20 +727,6 @@ void blas_set_parameter(void){
   }else{
     //multi thread
     dgemm_r = 200;
-  }
-#endif
-#endif
-
-#if defined(LOONGSON3B)
-#ifdef SMP
-  if(blas_num_threads == 1 || blas_num_threads == 2){
-#endif
-    //single thread
-    dgemm_r = 640;
-#ifdef SMP
-  }else{
-    //multi thread
-    dgemm_r = 160;
   }
 #endif
 #endif

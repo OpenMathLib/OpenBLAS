@@ -168,11 +168,9 @@ void dsolve_8x4_rt_msa(FLOAT *a, FLOAT *b, FLOAT *c, BLASLONG ldc, BLASLONG bk)
     src_b8 = LD_DP(b + 8);
     src_b9 = (v2f64) __msa_splati_d((v2i64) src_b8, 1);
     src_b8 = (v2f64) __msa_splati_d((v2i64) src_b8, 0);
-    src_b10 = __msa_cast_to_vector_double(*(b + 10));
-    src_b10 = (v2f64) __msa_splati_d((v2i64) src_b10, 0);
+    src_b10 = COPY_DOUBLE_TO_VECTOR(*(b + 10));
 
-    src_b0 = __msa_cast_to_vector_double(*(b + 0));
-    src_b0 = (v2f64) __msa_splati_d((v2i64) src_b0, 0);
+    src_b0 = COPY_DOUBLE_TO_VECTOR(*(b + 0));
     src_b4 = LD_DP(b + 4);
     src_b5 = (v2f64) __msa_splati_d((v2i64) src_b4, 1);
     src_b4 = (v2f64) __msa_splati_d((v2i64) src_b4, 0);
@@ -298,8 +296,7 @@ static void dsolve_8x2_rt_msa(FLOAT *a, FLOAT *b, FLOAT *c, BLASLONG ldc, BLASLO
     a -= 16;
     b -= 4;
 
-    src_b0 = __msa_cast_to_vector_double(*(b + 0));
-    src_b0 = (v2f64) __msa_splati_d((v2i64) src_b0, 0);
+    src_b0 = COPY_DOUBLE_TO_VECTOR(*(b + 0));
     src_b2 = LD_DP(b + 2);
     src_b3 = (v2f64) __msa_splati_d((v2i64) src_b2, 1);
     src_b2 = (v2f64) __msa_splati_d((v2i64) src_b2, 0);
@@ -377,8 +374,7 @@ static void dsolve_8x1_rt_msa(FLOAT *a, FLOAT *b, FLOAT *c, BLASLONG bk)
     a -= 8;
     b -= 1;
 
-    src_b0 = __msa_cast_to_vector_double(*b);
-    src_b0 = (v2f64) __msa_splati_d((v2i64) src_b0, 0);
+    src_b0 = COPY_DOUBLE_TO_VECTOR(*b);
 
     src_c0 *= src_b0;
     src_c1 *= src_b0;
@@ -445,11 +441,9 @@ static void dsolve_4x4_rt_msa(FLOAT *a, FLOAT *b, FLOAT *c, BLASLONG ldc, BLASLO
     src_b8 = LD_DP(b + 8);
     src_b9 = (v2f64) __msa_splati_d((v2i64) src_b8, 1);
     src_b8 = (v2f64) __msa_splati_d((v2i64) src_b8, 0);
-    src_b10 = __msa_cast_to_vector_double(*(b + 10));
-    src_b10 = (v2f64) __msa_splati_d((v2i64) src_b10, 0);
+    src_b10 = COPY_DOUBLE_TO_VECTOR(*(b + 10));
 
-    src_b0 = __msa_cast_to_vector_double(*(b + 0));
-    src_b0 = (v2f64) __msa_splati_d((v2i64) src_b0, 0);
+    src_b0 = COPY_DOUBLE_TO_VECTOR(*(b + 0));
     src_b4 = LD_DP(b + 4);
     src_b5 = (v2f64) __msa_splati_d((v2i64) src_b4, 1);
     src_b4 = (v2f64) __msa_splati_d((v2i64) src_b4, 0);
@@ -527,8 +521,7 @@ static void dsolve_4x2_rt_msa(FLOAT *a, FLOAT *b, FLOAT *c, BLASLONG ldc, BLASLO
     a -= 8;
     b -= 4;
 
-    src_b0 = __msa_cast_to_vector_double(*(b + 0));
-    src_b0 = (v2f64) __msa_splati_d((v2i64) src_b0, 0);
+    src_b0 = COPY_DOUBLE_TO_VECTOR(*(b + 0));
     src_b2 = LD_DP(b + 2);
     src_b3 = (v2f64) __msa_splati_d((v2i64) src_b2, 1);
     src_b2 = (v2f64) __msa_splati_d((v2i64) src_b2, 0);
