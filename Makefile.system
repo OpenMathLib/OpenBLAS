@@ -676,7 +676,7 @@ DYNAMIC_CORE += POWER9
 else
 $(info, OpenBLAS: Your gcc version is too old to build the POWER9 kernels.)
 endif
-LDVERSIONGTEQ35 := $(shell expr `ld --version | head -1 | cut -f2 -d "." | cut -f1 -d "-"` >= 35)
+LDVERSIONGTEQ35 := $(shell expr `$(CC) -Wl,--version 2> /dev/null | head -1 | cut -f2 -d "." | cut -f1 -d "-"` \>= 35)
 ifeq ($(GCCVERSIONGTEQ11)$(LDVERSIONGTEQ35), 11)
 DYNAMIC_CORE += POWER10
 CCOMMON_OPT += -DHAVE_P10_SUPPORT
