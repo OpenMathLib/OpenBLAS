@@ -58,6 +58,8 @@ else ifeq ($(TARGET_CORE), SKYLAKEX)
  endif
 else ifeq ($(TARGET_CORE), HASWELL)
  override CFLAGS += -DBUILD_KERNEL -DTABLE_NAME=gotoblas_$(TARGET_CORE) $(AVX2OPT)
+else ifeq ($(TARGET_CORE), LOONGSON3R4)
+ override CFLAGS += -DBUILD_KERNEL -DTABLE_NAME=gotoblas_$(TARGET_CORE) $(MSA_FLAGS)
 else
  override CFLAGS += -DBUILD_KERNEL -DTABLE_NAME=gotoblas_$(TARGET_CORE)
 endif
@@ -68,6 +70,9 @@ else
 TARGET_CORE = $(CORE)
 KDIR =
 TSUFFIX =
+ifeq ($(TARGET_CORE), LOONGSON3R4)
+  override CFLAGS += $(MSA_FLAGS)
+endif
 endif
 
 -include $(KERNELDIR)/KERNEL.$(TARGET_CORE)

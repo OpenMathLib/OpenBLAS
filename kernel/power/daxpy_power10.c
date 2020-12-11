@@ -66,12 +66,19 @@ int CNAME(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, FLOAT da, FLOAT *x, BLAS
 	if ( (inc_x == 1) && (inc_y == 1) )
 	{
 
-		BLASLONG n1 = n & -16;
+                if ( n >= 16 )
+                {
+                       BLASLONG align = ((32 - ((uintptr_t)y & (uintptr_t)0x1F)) >> 3) & 0x3;
+                        for (i = 0; i < align; i++) {
+                          y[i] += da * x[i] ;
+                        }
+                }
+                BLASLONG n1 = (n-i) & -16;
+                if ( n1 )
+                      daxpy_kernel_8(n1, &x[i], &y[i], da);
 
-		if ( n1 )
-			daxpy_kernel_8(n1, x, y, da);
+                i += n1;
 
-		i = n1;
 		while(i < n)
 		{
 
