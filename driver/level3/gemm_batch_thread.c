@@ -46,41 +46,43 @@ static int inner_small_matrix_thread(blas_arg_t *args, BLASLONG *range_m, BLASLO
   int (*zgemm_small_kernel_b0)(BLASLONG, BLASLONG, BLASLONG, FLOAT *, BLASLONG, FLOAT , FLOAT, FLOAT *, BLASLONG, FLOAT *, BLASLONG);
   FLOAT alpha[2], beta[2];
 #endif
-  routine_mode=args.routine_mode;
+  routine_mode=args->routine_mode;
   if(routine_mode & BLAS_SMALL_B0_OPT){
 #ifndef COMPLEX
-    gemm_small_kernel_b0=args.routine;
-    gemm_small_kernel_b0(args.m, args.n, args.k, args.a, args.lda, *(FLOAT *)(args.alpha), args.b, args.ldb, args.c, args.ldc);
+    gemm_small_kernel_b0=args->routine;
+    gemm_small_kernel_b0(args->m, args->n, args->k, args->a, args->lda, *(FLOAT *)(args->alpha), args->b, args->ldb, args->c, args->ldc);
 #else
-    zgemm_small_kernel_b0=args.routine;
-    alpha[0]=(FLOAT *)(args.alpha)[0];
-    alpha[1]=(FLOAT *)(args.alpha)[1];
-    zgemm_small_kernel_b0(args.m, args.n, args.k, args.a, args.lda, alpha[0], alpha[1], args.b, args.ldb, args.c, args.ldc);
+    zgemm_small_kernel_b0=args->routine;
+    alpha[0]=((FLOAT *)(args->alpha))[0];
+    alpha[1]=((FLOAT *)(args->alpha))[1];
+    zgemm_small_kernel_b0(args->m, args->n, args->k, args->a, args->lda, alpha[0], alpha[1], args->b, args->ldb, args->c, args->ldc);
 #endif
   }else if(routine_mode & BLAS_SMALL_OPT){
 #ifndef COMPLEX
-    gemm_small_kernel=args.routine;
-    gemm_small_kernel(args.m, args.n, args.k, args.a, args.lda, *(FLOAT *)(args.alpha), args.b, args.ldb, *(FLOAT *)(args.beta), args.c, args.ldc);
+    gemm_small_kernel=args->routine;
+    gemm_small_kernel(args->m, args->n, args->k, args->a, args->lda, *(FLOAT *)(args->alpha), args->b, args->ldb, *(FLOAT *)(args->beta), args->c, args->ldc);
 #else
-    zgemm_small_kernel=args.routine;
-    alpha[0]=(FLOAT *)(args.alpha)[0];
-    alpha[1]=(FLOAT *)(args.alpha)[1];
-    beta[0]=(FLOAT *)(args.beta)[0];
-    beta[1]=(FLOAT *)(args.beta)[1];    
-    zgemm_small_kernel(args.m, args.n, args.k, args.a, args.lda, alpha[0], alpha[1], args.b, args.ldb, beta[0], beta[1], args.c, args.ldc);
+    zgemm_small_kernel=args->routine;
+    alpha[0]=((FLOAT *)(args->alpha))[0];
+    alpha[1]=((FLOAT *)(args->alpha))[1];
+    beta[0]=((FLOAT *)(args->beta))[0];
+    beta[1]=((FLOAT *)(args->beta))[1];    
+    zgemm_small_kernel(args->m, args->n, args->k, args->a, args->lda, alpha[0], alpha[1], args->b, args->ldb, beta[0], beta[1], args->c, args->ldc);
 #endif    
   }
+  return 0;
 }
 #endif
 
 int CNAME(blas_arg_t * args_array, BLASLONG nums){
   XFLOAT *buffer;
   XFLOAT *sa, *sb;
-  int nthreads=1;
-  int (*routine)(blas_arg_t *, void *, void *, double *, double *, BLASLONG);
-  int i=0, j, current_nums;
+  int (*routine)(blas_arg_t *, void *, void *, XFLOAT *, XFLOAT *, BLASLONG);
+  int i=0;
 
 #ifdef SMP
+  int nthreads=1;
+  int current_nums;
   blas_queue_t * queue=NULL;
 #endif
   
