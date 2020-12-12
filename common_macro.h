@@ -2636,7 +2636,17 @@ typedef struct {
   BLASLONG prea, preb, prec, pred;
 #endif
 
+  //for gemm_batch
+  void * routine;
+  int routine_mode;
+
 } blas_arg_t;
+
+#ifdef SMALL_MATRIX_OPT
+#define BLAS_SMALL_OPT  0x10000U
+#define BLAS_SMALL_B0_OPT  0x30000U
+#endif
+
 #endif
 
 #ifdef XDOUBLE

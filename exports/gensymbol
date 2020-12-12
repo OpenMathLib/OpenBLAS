@@ -81,6 +81,7 @@
     cblas_ismin, cblas_idmin, cblas_icmin, cblas_izmin,
     cblas_ismax, cblas_idmax, cblas_icmax, cblas_izmax,
     cblas_ssum, cblas_dsum, cblas_scsum, cblas_dzsum,
+    cblas_sgemm_batch, cblas_dgemm_batch, cblas_cgemm_batch, cblas_zgemm_batch,
     cblas_xerbla
 );
 

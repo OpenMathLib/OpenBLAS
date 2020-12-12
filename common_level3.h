@@ -1919,6 +1919,10 @@ int dgeadd_k(BLASLONG, BLASLONG, double, double*, BLASLONG, double, double *, BL
 int cgeadd_k(BLASLONG, BLASLONG, float, float, float*, BLASLONG, float, float, float *, BLASLONG); 
 int zgeadd_k(BLASLONG, BLASLONG, double,double, double*, BLASLONG, double, double, double *, BLASLONG); 
 
+int sgemm_batch_thread(blas_arg_t * queue, BLASLONG nums);
+int dgemm_batch_thread(blas_arg_t * queue, BLASLONG nums);
+int cgemm_batch_thread(blas_arg_t * queue, BLASLONG nums);
+int zgemm_batch_thread(blas_arg_t * queue, BLASLONG nums);
 
 #ifdef __CUDACC__
 }
