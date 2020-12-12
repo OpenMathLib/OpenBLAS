@@ -6,7 +6,7 @@ Version 0.3.13
  common:
 	* Added a generic bfloat16 SBGEMV kernel
 	* Fixed a potentially severe memory leak after fork in OpenMP builds
-	  that was introduces in 0.3.12
+	  that was introduced in 0.3.12
 	* Added detection of the Fujitsu Fortran compiler
 	* Added detection of the (e)gfortran compiler on OpenBSD
 	* Added support for overriding the default name of the library independently
