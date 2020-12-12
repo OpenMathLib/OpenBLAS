@@ -1,5 +1,55 @@
 OpenBLAS ChangeLog
 ====================================================================
+Version 0.3.13
+ 12-Dec-2020
+ 
+ common:
+	* Added a generic bfloat16 SBGEMV kernel
+	* Fixed a potentially severe memory leak after fork in OpenMP builds
+	  that was introduced in 0.3.12
+	* Added detection of the Fujitsu Fortran compiler
+	* Added detection of the (e)gfortran compiler on OpenBSD
+	* Added support for overriding the default name of the library independently
+	  from symbol suffixing in the gmake builds (already supported in cmake)
+
+RISCV:
+	* Added a RISC V port optimized for C910V
+
+POWER:
+	* Added optimized POWER10 kernels for SAXPY, CAXPY, SDOT, DDOT and DGEMV_N
+	* Improved DGEMM performance on POWER10
+	* Improved STRSM and DTRSM performance on POWER9 and POWER10
+	* Fixed segmemtation faults in DYNAMIC_ARCH builds
+ 	* Fixed compilation with the PGI compiler
+
+x86:
+	* Fixed compilation of kernels that require SSE2 intrinsics since 0.3.12
+	
+x86_64:
+	* Added an optimized bfloat16 SBGEMV kernel for SkylakeX and Cooperlake
+	* Improved the performance of SASUM and DASUM kernels through parallelization
+	* Improved the performance of SROT and DROT kernels
+	* Improved the performance of multithreaded xSYRK
+	* Fixed OpenMP builds that use the LLVM Clang compiler together with GNU gfortran
+	  (where linking of both the LLVM libomp and GNU libgomp could lead to lockups or
+	  wrong results)
+	* Fixed miscompilations by old gcc 4.6
+	* Fixed misdetection of AVX2 capability in some Sandybridge cpus
+	* Fixed lockups in builds combining DYNAMIC_ARCH with TARGET=GENERIC on OpenBSD
+
+ARM64:
+	* Fixed segmemtation faults in DYNAMIC_ARCH builds
+
+MIPS:
+	* Improved kernels for Loongson 3R3 ("3A") and 3R4 ("3B") models, including MSA
+	* Fixed bugs in the MSA kernels for CGEMM, CTRMM, CGEMV and ZGEMV
+	* Added handling of zero increments in the MSA kernels for SSWAP and DSWAP
+	* Added DYNAMIC_ARCH support for MIPS64 (currently Loongson3R3/3R4 only)
+
+SPARC:
+	* Fixed building 32 and 64 bit SPARC kernels with the SolarisStudio compilers
+
+====================================================================
 Version 0.3.12
  24-Oct-2020
 
