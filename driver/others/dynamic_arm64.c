@@ -139,19 +139,30 @@ static gotoblas_t *force_coretype(char *coretype) {
 
 static gotoblas_t *get_coretype(void) {
   int implementer, variant, part, arch, revision, midr_el1;
+  char coremsg[128];
 
-#if (defined OS_LINUX || defined OS_ANDROID)
+#if (!defined OS_LINUX && !defined OS_ANDROID)
+  return NULL;
+#else
+
   if (!(getauxval(AT_HWCAP) & HWCAP_CPUID)) {
-    char coremsg[128];
+#ifdef __linux
+        FILE *infile;
+        char buffer[512], *p, *cpu_part = NULL, *cpu_implementer = NULL;
+        p = (char *) NULL ;
+	infile = fopen("/sys/devices/system/cpu/cpu0/regs/identification/midr_el1","r");
+	if (!infile) return NULL;
+	fgets(buffer, sizeof(buffer), infile);
+	midr_el1=strtoul(buffer,NULL,16);
+	fclose(infile);
+#else
     snprintf(coremsg, 128, "Kernel lacks cpuid feature support. Auto detection of core type failed !!!\n");
     openblas_warning(1, coremsg);
     return NULL;
-  }
-#else
-   return NULL;
 #endif
-
-  get_cpu_ftr(MIDR_EL1, midr_el1);
+  } else {
+    get_cpu_ftr(MIDR_EL1, midr_el1);
+  }
   /*
    * MIDR_EL1
    *
@@ -219,8 +230,12 @@ static gotoblas_t *get_coretype(void) {
           return &gotoblas_FALKOR;
       }
       break;
+    default:
+      snprintf(coremsg, 128, "Unknown CPU model - implementer %x part %x\n",implementer,part);
+      openblas_warning(1, coremsg);
   }
   return NULL;
+#endif
 }
 
 void gotoblas_dynamic_init(void) {

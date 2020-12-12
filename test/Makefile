@@ -23,7 +23,7 @@ endif
 
 level1: $(S1) $(D1) $(C1) $(Z1)
 
-ifndef CROSS
+ifneq ($(CROSS), 1)
 ifeq ($(BUILD_SINGLE),1)
 	OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 ./sblat1
 endif
@@ -83,7 +83,7 @@ endif
 level2: $(S2) $(D2) $(C2) $(Z2)
 
 
-ifndef CROSS
+ifneq ($(CROSS), 1)
 	rm -f ?BLAT2.SUMM
 ifeq ($(BUILD_SINGLE),1)
 	OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 ./sblat2 < ./sblat2.dat
@@ -160,7 +160,7 @@ endif
 level3: $(B3) $(S3) $(D3) $(C3) $(Z3)
 
 
-ifndef CROSS
+ifneq ($(CROSS), 1)
 	rm -f ?BLAT3.SUMM
 ifeq ($(BUILD_BFLOAT16),1)
 	OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 ./test_sbgemm > SBBLAT3.SUMM
@@ -232,7 +232,7 @@ endif
 
 
 level3_3m : zblat3_3m cblat3_3m
-ifndef CROSS
+ifneq ($(CROSS), 1)
 	rm -f ?BLAT3_3M.SUMM
 	OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 ./cblat3_3m < ./cblat3_3m.dat
 	@$(GREP) -q FATAL CBLAT3_3M.SUMM && cat CBLAT3_3M.SUMM || exit 0
@@ -258,6 +258,12 @@ endif
 
 
 FLDFLAGS = $(FFLAGS:-fPIC=) $(LDFLAGS)
+
+ifeq ($(CORE), C910V)
+EXTRALIB =
+CEXTRALIB =
+endif
+
 ifeq ($(USE_OPENMP), 1)
 ifeq ($(F_COMPILER), GFORTRAN)
 ifeq ($(C_COMPILER), CLANG)

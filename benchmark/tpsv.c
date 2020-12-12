@@ -25,12 +25,7 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
 USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
 
-#include <stdio.h>
-#include <stdlib.h>
-#ifdef __CYGWIN32__
-#include <sys/time.h>
-#endif
-#include "common.h"
+#include "bench.h"
 
 #undef TPSV
 
@@ -49,40 +44,6 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #else
 #define TPSV   BLASFUNC(ctpsv)
 #endif
-
-#endif
-
-#if !defined(__WIN32__) && !defined(__WIN64__) && !defined(__CYGWIN32__) && 0
-
-static void *huge_malloc(BLASLONG size)
-{
-    int shmid;
-    void *address;
-
-#ifndef SHM_HUGETLB
-#define SHM_HUGETLB 04000
-#endif
-
-    if ((shmid =shmget(IPC_PRIVATE,
-             (size + HUGE_PAGESIZE) & ~(HUGE_PAGESIZE - 1),
-             SHM_HUGETLB | IPC_CREAT |0600)) < 0) {
-        printf( "Memory allocation failed(shmget).\n");
-        exit(1);
-    }
-
-    address = shmat(shmid, NULL, SHM_RND);
-
-    if ((BLASLONG)address == -1) {
-        printf( "Memory allocation failed(shmat).\n");
-        exit(1);
-    }
-
-    shmctl(shmid, IPC_RMID, 0);
-
-    return address;
-}
-
-#define malloc huge_malloc
 
 #endif
 
@@ -112,7 +73,6 @@ int main(int argc, char *argv[])
     int to   = 200;
     int step =   1;
 
-    struct timespec start = { 0, 0 }, stop = { 0, 0 };
     double time1, timeg;
 
     argc--;argv++;
@@ -153,11 +113,11 @@ int main(int argc, char *argv[])
         }
 
         for (l = 0; l < loops; l++) {
-            clock_gettime(CLOCK_REALTIME, &start);
+            begin();
             TPSV (&uplo, &trans, &diag, &n, a, x, &inc_x);
-            clock_gettime(CLOCK_REALTIME, &stop);
+            end();
 
-            time1 = (double)(stop.tv_sec - start.tv_sec) + (double)((stop.tv_nsec - start.tv_nsec)) / 1.e9;
+            time1 = getsec();
             timeg += time1;
         }
 

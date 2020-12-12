@@ -44,11 +44,7 @@ int CNAME(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, FLOAT da, FLOAT *x,
     {
         if (0.0 == da)
         {
-            v4f32 zero_v = __msa_cast_to_vector_float(0);
-            zero_v = (v4f32) __msa_insert_w((v4i32) zero_v, 0, 0.0);
-            zero_v = (v4f32) __msa_insert_w((v4i32) zero_v, 1, 0.0);
-            zero_v = (v4f32) __msa_insert_w((v4i32) zero_v, 2, 0.0);
-            zero_v = (v4f32) __msa_insert_w((v4i32) zero_v, 3, 0.0);
+            v4f32 zero_v = {0.0, 0.0, 0.0, 0.0};
 
             for (i = (n >> 6); i--;)
             {

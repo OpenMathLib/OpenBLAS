@@ -967,8 +967,10 @@ void goto_set_num_threads(int num_threads) {
   blas_cpu_number  = num_threads;
 
 #if defined(ARCH_MIPS64)
+#ifndef DYNAMIC_ARCH
   //set parameters for different number of threads.
   blas_set_parameter();
+#endif
 #endif
 
 }

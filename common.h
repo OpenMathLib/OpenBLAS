@@ -437,6 +437,11 @@ please https://github.com/xianyi/OpenBLAS/issues/246
 #include "common_mips.h"
 #endif
 
+    
+#ifdef ARCH_RISCV64
+#include "common_riscv64.h"
+#endif
+
 #ifdef ARCH_MIPS64
 #include "common_mips64.h"
 #endif

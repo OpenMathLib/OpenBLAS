@@ -646,10 +646,12 @@
 
 #elif defined(BFLOAT16)
 
-#define  D_TO_BF16_K    SBDTOBF16_K
-#define  D_BF16_TO_K    DBF16TOD_K
-#define  S_TO_BF16_K    SBSTOBF16_K
-#define  S_BF16_TO_K    SBF16TOS_K
+#define D_TO_BF16_K     SBDTOBF16_K
+#define D_BF16_TO_K     DBF16TOD_K
+#define S_TO_BF16_K     SBSTOBF16_K
+#define S_BF16_TO_K     SBF16TOS_K
+#define SBGEMV_N        SBGEMV_N_K
+#define SBGEMV_T        SBGEMV_T_K
 
 #define	AMAX_K			SAMAX_K
 #define	AMIN_K			SAMIN_K

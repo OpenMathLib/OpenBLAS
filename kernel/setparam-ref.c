@@ -69,7 +69,7 @@ gotoblas_t TABLE_NAME = {
   snrm2_kTS,  sasum_kTS, ssum_kTS, scopy_kTS, sbdot_kTS,
   dsdot_kTS,
   srot_kTS,   saxpy_kTS,  sscal_kTS, sswap_kTS,
-  sgemv_nTS,  sgemv_tTS, sger_kTS,
+  sbgemv_nTS, sbgemv_tTS, sger_kTS,
   ssymv_LTS, ssymv_UTS,
 
   sbgemm_kernelTS, sbgemm_betaTS,
@@ -933,6 +933,77 @@ static void init_parameter(void) {
 
 }
 #else // (ARCH_ARM64)
+#if defined(ARCH_MIPS64)
+static void init_parameter(void) {
+  TABLE_NAME.sgemm_p = SGEMM_DEFAULT_P;
+  TABLE_NAME.dgemm_p = DGEMM_DEFAULT_P;
+  TABLE_NAME.cgemm_p = CGEMM_DEFAULT_P;
+  TABLE_NAME.zgemm_p = ZGEMM_DEFAULT_P;
+
+  TABLE_NAME.sgemm_q = SGEMM_DEFAULT_Q;
+  TABLE_NAME.dgemm_q = DGEMM_DEFAULT_Q;
+  TABLE_NAME.cgemm_q = CGEMM_DEFAULT_Q;
+  TABLE_NAME.zgemm_q = ZGEMM_DEFAULT_Q;
+
+  TABLE_NAME.sgemm_r = SGEMM_DEFAULT_R;
+  TABLE_NAME.dgemm_r = 640;
+  TABLE_NAME.cgemm_r = CGEMM_DEFAULT_R;
+  TABLE_NAME.zgemm_r = ZGEMM_DEFAULT_R;
+
+#ifdef EXPRECISION
+  TABLE_NAME.qgemm_p = QGEMM_DEFAULT_P;
+  TABLE_NAME.xgemm_p = XGEMM_DEFAULT_P;
+  TABLE_NAME.qgemm_q = QGEMM_DEFAULT_Q;
+  TABLE_NAME.xgemm_q = XGEMM_DEFAULT_Q;
+  TABLE_NAME.qgemm_r = QGEMM_DEFAULT_R;
+  TABLE_NAME.xgemm_r = XGEMM_DEFAULT_R;
+#endif
+
+#if defined(USE_GEMM3M)
+#ifdef CGEMM3M_DEFAULT_P
+  TABLE_NAME.cgemm3m_p = CGEMM3M_DEFAULT_P;
+#else
+  TABLE_NAME.cgemm3m_p = TABLE_NAME.sgemm_p;
+#endif
+
+#ifdef ZGEMM3M_DEFAULT_P
+  TABLE_NAME.zgemm3m_p = ZGEMM3M_DEFAULT_P;
+#else
+  TABLE_NAME.zgemm3m_p = TABLE_NAME.dgemm_p;
+#endif
+
+#ifdef CGEMM3M_DEFAULT_Q
+  TABLE_NAME.cgemm3m_q = CGEMM3M_DEFAULT_Q;
+#else
+  TABLE_NAME.cgemm3m_q = TABLE_NAME.sgemm_q;
+#endif
+
+#ifdef ZGEMM3M_DEFAULT_Q
+  TABLE_NAME.zgemm3m_q = ZGEMM3M_DEFAULT_Q;
+#else
+  TABLE_NAME.zgemm3m_q = TABLE_NAME.dgemm_q;
+#endif
+
+#ifdef CGEMM3M_DEFAULT_R
+  TABLE_NAME.cgemm3m_r = CGEMM3M_DEFAULT_R;
+#else
+  TABLE_NAME.cgemm3m_r = TABLE_NAME.sgemm_r;
+#endif
+
+#ifdef ZGEMM3M_DEFAULT_R
+  TABLE_NAME.zgemm3m_r = ZGEMM3M_DEFAULT_R;
+#else
+  TABLE_NAME.zgemm3m_r = TABLE_NAME.dgemm_r;
+#endif
+
+#ifdef EXPRECISION
+  TABLE_NAME.xgemm3m_p = TABLE_NAME.qgemm_p;
+  TABLE_NAME.xgemm3m_q = TABLE_NAME.qgemm_q;
+  TABLE_NAME.xgemm3m_r = TABLE_NAME.qgemm_r;
+#endif
+#endif
+}
+#else // (ARCH_MIPS64)
 #if (ARCH_POWER)
 static void init_parameter(void) {
 
@@ -1780,4 +1851,5 @@ static void init_parameter(void) {
 }
 #endif //POWER
 #endif //ZARCH
+#endif //(ARCH_MIPS64)
 #endif //(ARCH_ARM64)

@@ -384,6 +384,14 @@ endif
 
 GEMVDEP = ../l2param.h
 
+ifndef SBGEMVNKERNEL
+SBGEMVNKERNEL = sbgemv_n.c
+endif
+
+ifndef SBGEMVTKERNEL
+SBGEMVTKERNEL = sbgemv_t.c
+endif
+
 ifndef SGEMVNKERNEL
 SGEMVNKERNEL = sgemv_n.c
 endif

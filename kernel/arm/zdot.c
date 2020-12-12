@@ -48,7 +48,7 @@ OPENBLAS_COMPLEX_FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLA
 
 	dot[0]=0.0;
 	dot[1]=0.0;
-#if !defined(__PPC__)
+#if !defined(__PPC__) && !defined(__SunOS)
 	CREAL(result) = 0.0 ;
 	CIMAG(result) = 0.0 ;
 #else
@@ -73,7 +73,7 @@ OPENBLAS_COMPLEX_FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLA
 		i++ ;
 
 	}
-#if !defined(__POWER__)	
+#if !defined(__PPC__)	&& !defined(__SunOS)
         CREAL(result) = dot[0];
 	CIMAG(result) = dot[1];
 #else

@@ -33,7 +33,7 @@ if ($compiler eq "") {
               "ppuf77", "ppuf95", "ppuf90", "ppuxlf",
 	      "pathf90", "pathf95",
 	      "pgf95", "pgf90", "pgf77",
-	      "flang",
+	      "flang", "egfortran",
               "ifort");
 
 OUTER:
@@ -69,7 +69,12 @@ if ($compiler eq "") {
 	    $bu       = "_";
 	}
 
-	if ($data =~ /GNU/ || $data =~ /GCC/ ) {
+	if ($data =~ /Fujitsu/) {
+
+	    $vendor = FUJITSU;
+	    $openmp = "-Kopenmp";
+
+	} elsif ($data =~ /GNU/ || $data =~ /GCC/ ) {
 
 	    $data =~ /(\d+)\.(\d+).(\d+)/;
 	    $major = $1;
@@ -325,6 +330,9 @@ if ($link ne "") {
 	    $flags =~ s/\@/\,/g;
 	    $linker_L .= "-Wl,". $flags . " " ;
 	}
+	if ($flags =~ /-lgomp/ && $CC =~ /clang/) {
+	    $flags = "-lomp";
+	}
 
 	if (
 	    ($flags =~ /^\-l/)
@@ -337,8 +345,8 @@ if ($link ne "") {
 	    && ($flags !~ /kernel32/)
 	    && ($flags !~ /advapi32/)
 	    && ($flags !~ /shell32/)
-	    && ($flags !~ /omp/ || ($vendor !~ /PGI/ && $flags =~ /omp/))
-	    && ($flags !~ /[0-9]+/)
+	    && ($flags !~ /omp/ || ($vendor !~ /PGI/ && $vendor !~ /FUJITSU/ && $flags =~ /omp/))
+	    && ($flags !~ /[0-9]+/ || ($vendor == FUJITSU && $flags =~ /^-lfj90/))
 		&& ($flags !~ /^\-l$/)
 	    ) {
 	    $linker_l .= $flags . " ";

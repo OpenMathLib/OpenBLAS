@@ -6,7 +6,8 @@
 # Checking cross compile
 $hostos   = `uname -s | sed -e s/\-.*//`;    chop($hostos);
 $hostarch = `uname -m | sed -e s/i.86/x86/`;chop($hostarch);
-$hostarch = `uname -p` if ($hostos eq "AIX");
+$hostarch = `uname -p` if ($hostos eq "AIX" || $hostos eq "SunOS");
+chop($hostarch);
 $hostarch = "x86_64" if ($hostarch eq "amd64");
 $hostarch = "arm" if ($hostarch ne "arm64" && $hostarch =~ /^arm.*/);
 $hostarch = "arm64" if ($hostarch eq "aarch64");
@@ -92,6 +93,7 @@ $architecture = ia64   if ($data =~ /ARCH_IA64/);
 $architecture = arm    if ($data =~ /ARCH_ARM/);
 $architecture = arm64  if ($data =~ /ARCH_ARM64/);
 $architecture = zarch  if ($data =~ /ARCH_ZARCH/);
+$architecture = riscv64 if ($data =~ /ARCH_RISCV64/);
 
 $defined = 0;
 
@@ -134,6 +136,11 @@ if ($architecture eq "ia64") {
 if (($architecture eq "x86") && ($os ne Darwin) && ($os ne SunOS)) {
     $defined = 1;
     $binary =32;
+}
+
+if ($architecture eq "riscv64") {
+    $defined = 1;
+    $binary = 64;
 }
 
 if ($compiler eq "PGI") {
@@ -192,7 +199,7 @@ if (($architecture eq "mips") || ($architecture eq "mips64")) {
     } else {
 	$tmpf = new File::Temp( SUFFIX => '.c' , UNLINK => 1 );
 	$code = '"addvi.b $w0, $w1, 1"';
-	$msa_flags = "-mmsa -mfp64 -msched-weight -mload-store-pairs";
+	$msa_flags = "-mmsa -mfp64 -mload-store-pairs";
 	print $tmpf "#include <msa.h>\n\n";
 	print $tmpf "void main(void){ __asm__ volatile($code); }\n";
 
@@ -270,6 +277,15 @@ if ($data =~ /HAVE_C11/) {
     }
 }
 
+if ($compiler eq "GCC" &&( ($architecture eq "x86") || ($architecture eq "x86_64"))) {
+	$no_avx2 = 0;
+	$oldgcc = 0;
+	$data = `$compiler_name -dumpversion`;
+	if ($data <= 4.6) {
+		$no_avx2 = 1;
+		$oldgcc = 1;
+	}
+}
 
 $data = `$compiler_name $flags -S ctest1.c && grep globl ctest1.s | head -n 1 && rm -f ctest1.s`;
 
@@ -362,6 +378,8 @@ print MAKEFILE "CEXTRALIB=$linker_L $linker_l $linker_a\n";
 print MAKEFILE "HAVE_MSA=1\n" if $have_msa eq 1;
 print MAKEFILE "MSA_FLAGS=$msa_flags\n" if $have_msa eq 1;
 print MAKEFILE "NO_AVX512=1\n" if $no_avx512 eq 1;
+print MAKEFILE "NO_AVX2=1\n" if $no_avx2 eq 1;
+print MAKEFILE "OLDGCC=1\n" if $oldgcc eq 1;
 
 $os           =~ tr/[a-z]/[A-Z]/;
 $architecture =~ tr/[a-z]/[A-Z]/;

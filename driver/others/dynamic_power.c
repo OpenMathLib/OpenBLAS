@@ -52,6 +52,11 @@ static gotoblas_t *get_coretype(void) {
 	if (__builtin_cpu_supports ("arch_3_1") && __builtin_cpu_supports ("mma"))
 		return &gotoblas_POWER10;
 #endif
+	/* Fall back to the POWER9 implementation if the toolchain is too old or the MMA feature is not set */
+#if (!defined __GNUC__) || ( __GNUC__ >= 6)
+	if (__builtin_cpu_is("power10"))
+		return &gotoblas_POWER9;
+#endif	
 	return NULL;
 }
 

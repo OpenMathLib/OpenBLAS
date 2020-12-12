@@ -26,164 +26,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
 
 #include "common.h"
-#include <altivec.h>
-
-typedef __vector unsigned char  vec_t;
-typedef FLOAT v4sf_t __attribute__ ((vector_size (16)));
-typedef __vector_pair          __attribute__((aligned(8))) vecp_t;
 
 #include "dgemv_n_microk_power10.c"
-
-#define MMA(X, APTR, ACC) \
-        rX = (vec_t *) & X; \
-        rowA = *((vecp_t*)((void*)&APTR)); \
-        __builtin_mma_xvf64gerpp (ACC, rowA, rX[0]);
-
-#define SAVE(ACC, Z) \
-        rowC = (v4sf_t *) &y[Z]; \
-        __builtin_mma_disassemble_acc ((void *)result, ACC); \
-        result[0][1] = result[1][0]; \
-        result[2][1] = result[3][0]; \
-        rowC[0] += valpha * result[0]; \
-        rowC[1] += valpha * result[2];
-
-void
-dgemv_kernel_4x128 (BLASLONG n, FLOAT * a_ptr, BLASLONG lda, FLOAT * xo,
-                    FLOAT * y, FLOAT alpha)
-{
-  BLASLONG i, j, tmp;
-  FLOAT *a0 = a_ptr;
-  FLOAT *x1 = xo;
-  vector double valpha = { alpha, alpha };
-  v4sf_t *rowC;
-  __vector_quad acc0, acc1, acc2, acc3, acc4, acc5, acc6, acc7;
-  v4sf_t result[4];
-  vecp_t rowA;
-  vec_t *rX;
-  tmp = (n / 32) * 32;
-  for (i = 0; i < tmp; i += 32)
-    {
-      xo = x1;
-      a0 = a_ptr;
-      __builtin_mma_xxsetaccz (&acc0);
-      __builtin_mma_xxsetaccz (&acc1);
-      __builtin_mma_xxsetaccz (&acc2);
-      __builtin_mma_xxsetaccz (&acc3);
-      __builtin_mma_xxsetaccz (&acc4);
-      __builtin_mma_xxsetaccz (&acc5);
-      __builtin_mma_xxsetaccz (&acc6);
-      __builtin_mma_xxsetaccz (&acc7);
-      for (j = 0; j < 32; j++)
-        {
-          __builtin_prefetch (xo+j);
-          __builtin_prefetch (a0+i+j+lda);
-          MMA (xo[j], a0[i + 0 + j * lda], &acc0);
-          MMA (xo[j], a0[i + 4 + j * lda], &acc1);
-          MMA (xo[j], a0[i + 8 + j * lda], &acc2);
-          MMA (xo[j], a0[i + 12 + j * lda], &acc3);
-          MMA (xo[j], a0[i + 16 + j * lda], &acc4);
-          MMA (xo[j], a0[i + 20 + j * lda], &acc5);
-          MMA (xo[j], a0[i + 24 + j * lda], &acc6);
-          MMA (xo[j], a0[i + 28 + j * lda], &acc7);
-        }
-      xo += 32;
-      a0 += lda << 5;
-      for (j = 0; j < 32; j++)
-        {
-          __builtin_prefetch (xo+j);
-          __builtin_prefetch (a0+i+j+lda);
-          MMA (xo[j], a0[i + 0 + j * lda], &acc0);
-          MMA (xo[j], a0[i + 4 + j * lda], &acc1);
-          MMA (xo[j], a0[i + 8 + j * lda], &acc2);
-          MMA (xo[j], a0[i + 12 + j * lda], &acc3);
-          MMA (xo[j], a0[i + 16 + j * lda], &acc4);
-          MMA (xo[j], a0[i + 20 + j * lda], &acc5);
-          MMA (xo[j], a0[i + 24 + j * lda], &acc6);
-          MMA (xo[j], a0[i + 28 + j * lda], &acc7);
-        }
-      xo += 32;
-      a0 += lda << 5;
-      for (j = 0; j < 32; j++)
-        {
-          __builtin_prefetch (xo+j);
-          __builtin_prefetch (a0+i+j+lda);
-          MMA (xo[j], a0[i + 0 + j * lda], &acc0);
-          MMA (xo[j], a0[i + 4 + j * lda], &acc1);
-          MMA (xo[j], a0[i + 8 + j * lda], &acc2);
-          MMA (xo[j], a0[i + 12 + j * lda], &acc3);
-          MMA (xo[j], a0[i + 16 + j * lda], &acc4);
-          MMA (xo[j], a0[i + 20 + j * lda], &acc5);
-          MMA (xo[j], a0[i + 24 + j * lda], &acc6);
-          MMA (xo[j], a0[i + 28 + j * lda], &acc7);
-        }
-      xo += 32;
-      a0 += lda << 5;
-      for (j = 0; j < 32; j++)
-        {
-          __builtin_prefetch (xo+j);
-          __builtin_prefetch (a0+i+j+lda);
-          MMA (xo[j], a0[i + 0 + j * lda], &acc0);
-          MMA (xo[j], a0[i + 4 + j * lda], &acc1);
-          MMA (xo[j], a0[i + 8 + j * lda], &acc2);
-          MMA (xo[j], a0[i + 12 + j * lda], &acc3);
-          MMA (xo[j], a0[i + 16 + j * lda], &acc4);
-          MMA (xo[j], a0[i + 20 + j * lda], &acc5);
-          MMA (xo[j], a0[i + 24 + j * lda], &acc6);
-          MMA (xo[j], a0[i + 28 + j * lda], &acc7);
-        }
-      xo += 32;
-      a0 += lda << 5;
-      SAVE (&acc0, i + 0);
-      SAVE (&acc1, i + 4);
-      SAVE (&acc2, i + 8);
-      SAVE (&acc3, i + 12);
-      SAVE (&acc4, i + 16);
-      SAVE (&acc5, i + 20);
-      SAVE (&acc6, i + 24);
-      SAVE (&acc7, i + 28);
-
-    }
-  for (i = tmp; i < n; i += 4)
-    {
-      xo = x1;
-      a0 = a_ptr;
-      __builtin_mma_xxsetaccz (&acc0);
-      for (j = 0; j < 32; j++)
-        {
-          __builtin_prefetch (xo+j);
-          __builtin_prefetch (a0+i+j+lda);
-          MMA (xo[j], a0[i + j * lda], &acc0);
-        }
-      xo += 32;
-      a0 += lda << 5;
-      for (j = 0; j < 32; j++)
-        {
-          __builtin_prefetch (xo+j);
-          __builtin_prefetch (a0+i+j+lda);
-          MMA (xo[j], a0[i + j * lda], &acc0);
-        }
-      xo += 32;
-      a0 += lda << 5;
-      for (j = 0; j < 32; j++)
-        {
-          __builtin_prefetch (xo+j);
-          __builtin_prefetch (a0+i+j+lda);
-          MMA (xo[j], a0[i + j * lda], &acc0);
-        }
-      xo += 32;
-      a0 += lda << 5;
-      for (j = 0; j < 32; j++)
-        {
-          __builtin_prefetch (xo+j);
-          __builtin_prefetch (a0+i+j+lda);
-          MMA (xo[j], a0[i + j * lda], &acc0);
-        }
-      xo += 32;
-      a0 += lda << 5;
-      SAVE (&acc0, i);
-    }
-}
-
 
 #define NBMAX 4096
 
@@ -281,13 +125,12 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1, FLOAT alpha, FLOAT *a, BLASLO
 	FLOAT *a_ptr;
 	FLOAT *x_ptr;
 	FLOAT *y_ptr;
-	BLASLONG n1;
 	BLASLONG m1;
 	BLASLONG m2;
 	BLASLONG m3;
 	BLASLONG n2;
 	BLASLONG lda4 =  lda << 2;
-	BLASLONG lda128 = lda << 7;
+	BLASLONG lda8 = lda << 3;
 
 	FLOAT xbuffer[8] __attribute__ ((aligned (16)));
 	FLOAT *ybuffer;
@@ -296,9 +139,8 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1, FLOAT alpha, FLOAT *a, BLASLO
         if ( n < 1 ) return(0);
 
 	ybuffer = buffer;
-	BLASLONG n128 = n >> 7;
-	n1 = (n - (n128 * 128)) >> 2;
-	n2 = (n - (n128 * 128)) & 3;
+	BLASLONG n8 = n >> 3;
+	n2 = n & 3;
 
         m3 = m & 3  ;
         m1 = m & -4 ;
@@ -329,14 +171,14 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1, FLOAT alpha, FLOAT *a, BLASLO
 		if ( inc_x == 1 )
 		{
 
-			for( i = 0; i < n128 ; i++)
+			for( i = 0; i < n8 ; i++)
 			{
-				dgemv_kernel_4x128(NB,a_ptr,lda,x_ptr,ybuffer,alpha);
-				a_ptr += lda128;
-				x_ptr += 128;
+				dgemv_kernel_4x8(NB,a_ptr,lda,x_ptr,ybuffer,alpha);
+				a_ptr += lda8;
+				x_ptr += 8;
 			}
 
-			for( i = 0; i < n1 ; i++)
+			if( n & 4 )
 			{
 				dgemv_kernel_4x4(NB,a_ptr,lda,x_ptr,ybuffer,alpha);
 				a_ptr += lda4;
@@ -363,20 +205,19 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1, FLOAT alpha, FLOAT *a, BLASLO
 		}
 		else
 		{
-			for( i = 0; i < n128 ; i++)
+			for( i = 0; i < n8 ; i++)
 			{
-	                        FLOAT xbuffer[128] __attribute__ ((aligned (16)));
 				BLASLONG j;
-				for ( j = 0; j < 128 ; j++)
+				for ( j = 0; j < 8 ; j++)
 				{
 					xbuffer[j] = x_ptr[0];
 				        x_ptr += inc_x;
 				}
-				dgemv_kernel_4x128(NB,a_ptr,lda,xbuffer,ybuffer,alpha);
-				a_ptr += lda128;
+				dgemv_kernel_4x8(NB,a_ptr,lda,xbuffer,ybuffer,alpha);
+				a_ptr += lda8;
 			}
 
-			for( i = 0; i < n1 ; i++)
+			if( n & 4 )
 			{
 				xbuffer[0] = x_ptr[0];
 				x_ptr += inc_x;	

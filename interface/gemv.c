@@ -191,7 +191,6 @@ void CNAME(enum CBLAS_ORDER order,
   }
 
 #endif
-  //printf("m=%d, n=%d, trans=%d, incx=%d, incy=%d, alpha=%f, beta=%f\n", m, n, trans, incx, incy, alpha, beta);
   if ((m==0) || (n==0)) return;
 
   lenx = n;
