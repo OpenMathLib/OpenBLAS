@@ -86,11 +86,18 @@ int CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG inc_y)
 	if ( (inc_x == 1) && (inc_y == 1 ))
 	{
 
-		BLASLONG n1 = n & -128;
-		if ( n1 > 0 )
+		if ( n >= 128 )
 		{
-			copy_kernel (n1, x, y);
-			i=n1;
+			BLASLONG align = ((32 - ((uintptr_t)y & (uintptr_t)0x1F)) >> 2) & 0x7;
+			for (i = 0; i < align; i++) {
+				y[i] = x[i] ;
+			}
+		}
+		BLASLONG n1 = (n-i) & -128;
+		if ( n1 )
+		{
+			copy_kernel(n1, &x[i], &y[i]);
+			i += n1;
 		}
 
 		while(i < n)
