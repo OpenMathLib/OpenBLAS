@@ -656,7 +656,7 @@ static gotoblas_t *get_coretype(void){
 	  }
 	}
       case 10:
-    if (model == 5 || model == 6) {
+        if (model == 5 || model == 6) {
 	  if(support_avx2())
 	    return &gotoblas_HASWELL;
 	  if(support_avx()) {
@@ -666,7 +666,20 @@ static gotoblas_t *get_coretype(void){
 	    openblas_warning(FALLBACK_VERBOSE, NEHALEM_FALLBACK);
 	    return &gotoblas_NEHALEM; //OS doesn't support AVX. Use old kernels.
 	  }
-    }
+        }
+        if (model == 7) {
+	  if (support_avx512()) 
+	    return &gotoblas_SKYLAKEX;
+	  if(support_avx2())
+	    return &gotoblas_HASWELL;
+	  if(support_avx()) {
+	    openblas_warning(FALLBACK_VERBOSE, SANDYBRIDGE_FALLBACK);
+	    return &gotoblas_SANDYBRIDGE;
+	  } else {
+	    openblas_warning(FALLBACK_VERBOSE, NEHALEM_FALLBACK);
+	    return &gotoblas_NEHALEM; //OS doesn't support AVX. Use old kernels.
+	  }
+        }      
 	return NULL;
       }
       case 0xf:
