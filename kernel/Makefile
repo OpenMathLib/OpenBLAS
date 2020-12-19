@@ -36,7 +36,7 @@ ifeq ($(TARGET_CORE), COOPERLAKE)
  ifeq ($(GCCVERSIONGTEQ10), 1) 
   override CFLAGS += -march=cooperlake
  else 
-  override CFLAGS += -march=skylake-avx512
+  override CFLAGS += -march=skylake-avx512 -mavx512f
  endif 
  ifeq ($(OSNAME), CYGWIN_NT)
   override CFLAGS += -fno-asynchronous-unwind-tables
@@ -47,7 +47,7 @@ ifeq ($(TARGET_CORE), COOPERLAKE)
   endif
  endif
 else ifeq ($(TARGET_CORE), SKYLAKEX)
- override CFLAGS += -DBUILD_KERNEL -DTABLE_NAME=gotoblas_$(TARGET_CORE) -march=skylake-avx512
+ override CFLAGS += -DBUILD_KERNEL -DTABLE_NAME=gotoblas_$(TARGET_CORE) -march=skylake-avx512 -mavx512f
  ifeq ($(OSNAME), CYGWIN_NT)
   override CFLAGS += -fno-asynchronous-unwind-tables
  endif
