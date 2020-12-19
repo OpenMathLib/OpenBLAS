@@ -59,6 +59,9 @@ endif
 	@$(CC) --version > /dev/null 2>&1;\
 	if [ $$? -eq 0 ]; then \
 	   cverinfo=`$(CC) --version | sed -n '1p'`; \
+	   if [ -z "$${cverinfo}" ]; then \
+	   cverinfo=`$(CC) --version | sed -n '2p'`; \
+	   fi; \
 	   echo "  C compiler       ... $(C_COMPILER)  (cmd & version : $${cverinfo})";\
 	else  \
 	   echo "  C compiler       ... $(C_COMPILER)  (command line : $(CC))";\
@@ -67,6 +70,9 @@ ifeq ($(NOFORTRAN), $(filter 0,$(NOFORTRAN)))
 	@$(FC) --version > /dev/null 2>&1;\
 	if [ $$? -eq 0 ]; then \
 	   fverinfo=`$(FC) --version | sed -n '1p'`; \
+	   if [ -z "$${fverinfo}" ]; then \
+	   fverinfo=`$(FC) --version | sed -n '2p'`; \
+	   fi; \
 	   echo "  Fortran compiler ... $(F_COMPILER)  (cmd & version : $${fverinfo})";\
 	else \
 	   echo "  Fortran compiler ... $(F_COMPILER)  (command line : $(FC))";\
