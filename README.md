@@ -13,7 +13,7 @@ Drone CI: [![Build Status](https://cloud.drone.io/api/badges/xianyi/OpenBLAS/sta
 
 ## Introduction
 
-OpenBLAS is an optimized BLAS library based on GotoBLAS2 1.13 BSD version.
+OpenBLAS is an optimized Basic Linear Algebra Subprograms library based on GotoBLAS2 1.13 BSD version.
 
 Please read the documentation on the OpenBLAS wiki pages: <https://github.com/xianyi/OpenBLAS/wiki>.
 

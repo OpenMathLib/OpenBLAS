@@ -181,7 +181,7 @@ endif
 
 # On x86_64 build getarch with march=native unless the compiler is PGI. This is required to detect AVX512 support in getarch.
 ifeq ($(HOSTARCH), x86_64)
-ifeq ($(findstring pgcc,$(HOSTCC)),)
+ifeq ($(findstring pgcc,$(HOSTCC))$(findstring nvc,$(HOSTCC)),)
 GETARCH_FLAGS += -march=native
 endif
 endif
@@ -663,6 +663,7 @@ endif
 endif # ARCH zarch
 
 ifeq ($(ARCH), power)
+ifneq ($(C_COMPILER), PGI)
 DYNAMIC_CORE = POWER6
 DYNAMIC_CORE += POWER8
 ifneq ($(C_COMPILER), GCC)
@@ -688,6 +689,10 @@ endif
 else
 $(info, OpenBLAS: Your gcc version is too old to build the POWER10 kernels.)
 endif
+endif
+else
+DYNAMIC_CORE = POWER8
+DYNAMIC_CORE += POWER9
 endif
 endif
 
@@ -847,9 +852,19 @@ endif
 endif
 
 ifeq ($(C_COMPILER), PGI)
+PGCVERSIONGT20 := $(shell expr `$(CC) --version|sed -n "2p" |sed -e "s/[^0-9.]//g" |cut -d "." -f 1` \> 20)
+PGCVERSIONGTEQ20 := $(shell expr `$(CC) --version|sed -n "2p" |sed -e "s/[^0-9.]//g" |cut -d "." -f 1` \>= 20)
+PGCMINORVERSIONGE11 := $(shell expr `$(CC) --version|sed -n "2p" |sed -e "s/[^0-9.]//g" |cut -c 4-5` == 11)
+PGCVERSIONCHECK := $(PGCVERSIONGT20)$(PGCVERSIONEQ20)$(PGCMINORVERSIONGE11)
+ifeq ($(PGCVERSIONCHECK), $(filter $(PGCVERSIONCHECK), 110 111 011))
+NEWPGI := 1
+endif
 ifdef BINARY64
 ifeq ($(ARCH), x86_64)
-CCOMMON_OPT += -tp p7-64 -D__MMX__ -Mnollvm
+CCOMMON_OPT += -tp p7-64
+ifneq ($(NEWPGI),1)
+CCOMMON_OPT +=  -D__MMX__ -Mnollvm
+endif
 else
 ifeq ($(ARCH), power)
 ifeq ($(CORE), POWER8)
@@ -1029,18 +1044,24 @@ ifeq ($(ARCH), x86_64)
 FCOMMON_OPT += -tp p7-64
 else
 ifeq ($(ARCH), power)
+ifeq ($(CORE), POWER6)
+$(warning NVIDIA HPC compilers do not support POWER6.)
+endif
 ifeq ($(CORE), POWER8)
 FCOMMON_OPT += -tp pwr8
 endif
 ifeq ($(CORE), POWER9)
 FCOMMON_OPT += -tp pwr9
 endif
+ifeq ($(CORE), POWER10)
+$(warning NVIDIA HPC compilers do not support POWER10.)
+endif
 endif
 endif
 else
 FCOMMON_OPT += -tp p7
 endif
-FCOMMON_OPT += -Mrecursive
+FCOMMON_OPT += -Mrecursive -Kieee
 ifeq ($(USE_OPENMP), 1)
 FCOMMON_OPT += -mp
 endif

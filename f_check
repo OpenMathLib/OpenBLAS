@@ -32,7 +32,7 @@ if ($compiler eq "") {
               "xlf95", "xlf90", "xlf",
               "ppuf77", "ppuf95", "ppuf90", "ppuxlf",
 	      "pathf90", "pathf95",
-	      "pgf95", "pgf90", "pgf77",
+	      "pgf95", "pgf90", "pgf77", "pgfortran", "nvfortran",
 	      "flang", "egfortran",
               "ifort");
 
@@ -64,7 +64,6 @@ if ($compiler eq "") {
     if (!$?) {
 
 	$data = `$compiler -O2 -S ftest.f > /dev/null 2>&1 && cat ftest.s && rm -f ftest.s`;
-
 	if ($data =~ /zhoge_/) {
 	    $bu       = "_";
 	}
@@ -87,7 +86,7 @@ if ($compiler eq "") {
 		if ($compiler =~ /flang/) {
 		    $vendor = FLANG;
 		    $openmp = "-fopenmp";
-	    } elsif ($compiler =~ /pgf/) {
+	    } elsif ($compiler =~ /pgf/ || $compiler =~ /nvf/) {
 		    $vendor = PGI;
 		    $openmp = "-mp";
 		} else {
@@ -123,7 +122,7 @@ if ($compiler eq "") {
 	    $openmp = "-mp";
 	}
 
-	if ($data =~ /PGF/) {
+	if ($data =~ /PGF/ || $data =~ /NVF/) {
 	    $vendor = PGI;
 	    $openmp = "-mp";
 	}
@@ -177,7 +176,7 @@ if ($compiler eq "") {
 	    $openmp = "-mp";
 	}
 
-	if ($compiler =~ /pgf/) {
+	if ($compiler =~ /pgf/ || $compiler =~ /nvf/) {
 	    $vendor = PGI;
 	    $bu       = "_";
 	    $openmp = "-mp";
@@ -330,7 +329,7 @@ if ($link ne "") {
 	    $flags =~ s/\@/\,/g;
 	    $linker_L .= "-Wl,". $flags . " " ;
 	}
-	if ($flags =~ /-lgomp/ && $ENV{"CC"} =~ /clang/) {
+	if ($flags =~ /-lgomp/ && $CC =~ /clang/) {
 	    $flags = "-lomp";
 	}
 
