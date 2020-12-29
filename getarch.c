@@ -1375,6 +1375,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #ifdef __riscv
 #include "cpuid_riscv64.c"
+#define OPENBLAS_SUPPORTED
 #endif
 
 #ifdef __arm__
