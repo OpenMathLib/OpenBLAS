@@ -36,7 +36,9 @@ int main( int argc, char** argv )
     double alpha = 3.1416;
     double beta  = 2.7183;
 
-    printf( "init\n" );
+    for (int loops = 0; loops <20; loops ++) {
+        
+    printf( "init %d\n", loops );
     std::vector<double*> A_array( batch_size ),
                          B_array( batch_size ),
                          C_array( batch_size ),
@@ -84,7 +86,9 @@ int main( int argc, char** argv )
         delete [] C_array[ i ];
     }
 
-    printf( "done\n" );
+    printf( "done %d\n", loops );
+    } 
+    printf( "all done\n");
     return 0;
 }
 
