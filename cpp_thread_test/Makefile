@@ -11,7 +11,7 @@ dgemm_tester : dgemv_tester
 	./dgemm_tester
 
 test_gemm_omp :
-	$(CXX) $(COMMON_OPT) -Wall -Wextra -Wshadow -fopenmp test_gemm_omp.cc ../libopenblas.a -lpthread -o test_gemm_omp
+	$(CXX) $(COMMON_OPT) -Wall -Wextra -Wshadow -fopenmp -I.. test_gemm_omp.cc ../libopenblas.a -lpthread -o test_gemm_omp
 	./test_gemm_omp
 
 clean ::
