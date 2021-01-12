@@ -130,6 +130,9 @@ void cblas_zdrot(OPENBLAS_CONST blasint n, OPENBLAS_CONST void *x, OPENBLAS_CONS
 
 void cblas_srotg(float *a, float *b, float *c, float *s);
 void cblas_drotg(double *a, double *b, double *c, double *s);
+void cblas_crotg(void *a, void *b, float *c, void *s);
+void cblas_zrotg(void *a, void *b, double *c, void *s);
+
 
 void cblas_srotm(OPENBLAS_CONST blasint N, float *X, OPENBLAS_CONST blasint incX, float *Y, OPENBLAS_CONST blasint incY, OPENBLAS_CONST float *P);
 void cblas_drotm(OPENBLAS_CONST blasint N, double *X, OPENBLAS_CONST blasint incX, double *Y, OPENBLAS_CONST blasint incY, OPENBLAS_CONST double *P);
