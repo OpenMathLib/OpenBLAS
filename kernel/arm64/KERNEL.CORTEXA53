@@ -96,11 +96,20 @@ DNRM2KERNEL    = nrm2.S
 CNRM2KERNEL    = znrm2.S
 ZNRM2KERNEL    = znrm2.S
 
-DDOTKERNEL     = dot.S
-SDOTKERNEL     = ../generic/dot.c
-CDOTKERNEL     = zdot.S
-ZDOTKERNEL     = zdot.S
-DSDOTKERNEL    = dot.S
+ifneq ($(C_COMPILER), PGI)
+SDOTKERNEL   = ../generic/dot.c
+else
+SDOTKERNEL   = dot.S
+endif
+DDOTKERNEL   = dot.S
+ifneq ($(C_COMPILER), PGI)
+CDOTKERNEL   = zdot.S
+ZDOTKERNEL   = zdot.S
+else
+CDOTKERNEL = ../arm/zdot.c
+ZDOTKERNEL = ../arm/zdot.c
+endif
+DSDOTKERNEL  = dot.S
 
 DGEMM_BETA     = dgemm_beta.S
 SGEMM_BETA     = sgemm_beta.S
