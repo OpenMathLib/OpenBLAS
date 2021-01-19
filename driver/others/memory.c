@@ -1668,8 +1668,10 @@ void gotoblas_dummy_for_PGI(void) {
 #ifndef MEM_LARGE_PAGES
 #define MEM_LARGE_PAGES  0x20000000
 #endif
-#else
+#elif !defined(OS_EMBEDDED)
 #define ALLOC_MMAP
+#define ALLOC_MALLOC
+#else
 #define ALLOC_MALLOC
 #endif
 
@@ -1677,7 +1679,7 @@ void gotoblas_dummy_for_PGI(void) {
 #include <stdio.h>
 #include <fcntl.h>
 
-#if !defined(OS_WINDOWS) || defined(OS_CYGWIN_NT)
+#if (!defined(OS_WINDOWS) || defined(OS_CYGWIN_NT)) && !defined(OS_EMBEDDED)
 #include <sys/mman.h>
 #ifndef NO_SYSV_IPC
 #include <sys/shm.h>

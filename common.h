@@ -122,7 +122,7 @@ extern "C" {
 #define ATOM GOTO_ATOM
 #undef  GOTO_ATOM
 #endif
-#else
+#elif !defined(OS_EMBEDDED)
 #include <sys/mman.h>
 #ifndef NO_SYSV_IPC
 #include <sys/shm.h>
@@ -134,6 +134,9 @@ extern "C" {
 #if defined(SMP) || defined(USE_LOCKING)
 #include <pthread.h>
 #endif
+#else
+#include <time.h>
+#include <math.h>
 #endif
 
 #if defined(OS_SUNOS)
@@ -488,10 +491,12 @@ static inline unsigned long long rpcc(void){
   struct timespec ts;
   clock_gettime(CLOCK_MONOTONIC, &ts);
   return (unsigned long long)ts.tv_sec * 1000000000ull + ts.tv_nsec;
-#else
+#elif !defined(OS_EMBEDDED)
   struct timeval tv;
   gettimeofday(&tv,NULL);
   return (unsigned long long)tv.tv_sec * 1000000000ull + tv.tv_usec * 1000;
+#else
+  return 0;
 #endif
 }
 #define RPCC_DEFINED
@@ -519,6 +524,10 @@ static void __inline blas_lock(volatile BLASULONG *address){
 
 #ifdef OS_LINUX
 #include "common_linux.h"
+#endif
+
+#ifdef OS_EMBEDDED
+#define DTB_DEFAULT_ENTRIES 64
 #endif
 
 #define MMAP_ACCESS (PROT_READ | PROT_WRITE)

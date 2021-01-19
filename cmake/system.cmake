@@ -233,6 +233,11 @@ if (BINARY64)
   endif ()
 endif ()
 
+if(EMBEDDED)
+  set(CCOMMON_OPT "${CCOMMON_OPT} -DOS_EMBEDDED")
+  set(CCOMMON_OPT "${CCOMMON_OPT} -mthumb -mcpu=cortex-m4 -mfloat-abi=hard -mfpu=fpv4-sp-d16")
+endif()
+
 if (NEED_PIC)
   if (${CMAKE_C_COMPILER} STREQUAL "IBM")
     set(CCOMMON_OPT "${CCOMMON_OPT} -qpic=large")
