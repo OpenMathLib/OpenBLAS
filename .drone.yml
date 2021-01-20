@@ -203,6 +203,7 @@ steps:
   image: ubuntu:20.04
   environment:
     CC: gcc-10
+    FC: gfortran-10
     COMMON_FLAGS: 'TARGET=ARMV8 DYNAMIC_ARCH=1'
   commands:
     - echo "MAKE_FLAGS:= $COMMON_FLAGS"
@@ -210,5 +211,6 @@ steps:
     - apt-get install -y make $CC gfortran-10 perl python g++
     - $CC --version
     - make QUIET_MAKE=1 $COMMON_FLAGS
+    - make -C utest $COMMON_FLAGS
     - make -C test $COMMON_FLAGS
     
