@@ -1436,6 +1436,15 @@ int get_cpuname(void){
         return CPUTYPE_SANDYBRIDGE;
           else
         return CPUTYPE_NEHALEM;
+    case 7: // Rocket Lake           
+	  if(support_avx512())
+            return CPUTYPE_SKYLAKEX;
+          if(support_avx2())
+            return CPUTYPE_HASWELL;
+          if(support_avx())
+	    return CPUTYPE_SANDYBRIDGE;
+	  else
+	  return CPUTYPE_NEHALEM;
 	}
 	break;    
       }
@@ -2014,6 +2023,19 @@ int get_coretype(void){
   #endif
             else
               return CORE_NEHALEM;
+	  case 7:// Rocket Lake
+#ifndef NO_AVX512
+	  if(support_avx512())
+            return CORE_SKYLAKEX;
+#endif
+#ifndef NO_AVX2
+	  if(support_avx2())
+            return CORE_HASWELL;
+#endif
+	  if(support_avx())
+	    return CORE_SANDYBRIDGE;
+	  else
+	  return CORE_NEHALEM;
         }
       case 5:
         switch (model) {

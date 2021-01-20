@@ -154,11 +154,7 @@ ZCOPYKERNEL  = zcopy_power10.c
 SDOTKERNEL   =  sdot_power10.c
 DDOTKERNEL   =  ddot_power10.c
 DSDOTKERNEL  =  sdot_power10.c
-ifneq ($(GCCVERSIONGTEQ9),1)
-CDOTKERNEL   =  cdot_power9.S
-else
 CDOTKERNEL   =  cdot.c
-endif
 ZDOTKERNEL   =  zdot.c
 #
 SNRM2KERNEL  = ../arm/nrm2.c
