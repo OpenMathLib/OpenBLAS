@@ -1673,6 +1673,11 @@ void gotoblas_dummy_for_PGI(void) {
 #define ALLOC_MALLOC
 #else
 #define ALLOC_MALLOC
+
+inline int puts(const char *str) { return 0; }
+inline int printf(const char *format, ...) { return 0; }
+inline char *getenv(const char *name) { return ""; }
+inline int atoi(const char *str) { return 0; }
 #endif
 
 #include <stdlib.h>
