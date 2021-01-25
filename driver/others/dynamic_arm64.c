@@ -41,11 +41,6 @@
 #include <asm/hwcap.h>
 #include <sys/auxv.h>
 #endif
-#ifdef OS_DARWIN
-#include <sys/sysctl.h>
-int32_t value;
-size_t length=sizeof(value);
-#endif
 
 extern gotoblas_t  gotoblas_ARMV8;
 #ifdef DYNAMIC_LIST
@@ -104,11 +99,6 @@ extern gotoblas_t  gotoblas_NEOVERSEN1;
 #else
 #define gotoblas_NEOVERSEN1 gotoblas_ARMV8
 #endif
-#ifdef DYN_VORTEX
-extern gotoblas_t  gotoblas_VORTEX;
-#else
-#define gotoblas_VORTEX gotoblas_ARMV8
-#endif
 #else
 extern gotoblas_t  gotoblas_CORTEXA53;
 extern gotoblas_t  gotoblas_CORTEXA57;
@@ -121,12 +111,11 @@ extern gotoblas_t  gotoblas_TSV110;
 extern gotoblas_t  gotoblas_EMAG8180;
 extern gotoblas_t  gotoblas_NEOVERSEN1;
 extern gotoblas_t  gotoblas_THUNDERX3T110;
-extern gotoblas_t  gotoblas_VORTEX;
 #endif
 
 extern void openblas_warning(int verbose, const char * msg);
 
-#define NUM_CORETYPES   13
+#define NUM_CORETYPES   12
 
 /*
  * In case asm/hwcap.h is outdated on the build system, make sure
@@ -153,7 +142,6 @@ static char *corename[] = {
   "emag8180",
   "neoversen1",
   "thunderx3t110",
-  "vortex",
   "unknown"
 };
 
@@ -170,7 +158,6 @@ char *gotoblas_corename(void) {
   if (gotoblas == &gotoblas_EMAG8180)     return corename[ 9];
   if (gotoblas == &gotoblas_NEOVERSEN1)   return corename[10];
   if (gotoblas == &gotoblas_THUNDERX3T110) return corename[11];
-  if (gotoblas == &gotoblas_VORTEX) return corename[12];
   return corename[NUM_CORETYPES];
 }
 
@@ -202,7 +189,6 @@ static gotoblas_t *force_coretype(char *coretype) {
     case  9: return (&gotoblas_EMAG8180);
     case 10: return (&gotoblas_NEOVERSEN1);
     case 11: return (&gotoblas_THUNDERX3T110);
-    case 12: return (&gotoblas_VORTEX);
   }
   snprintf(message, 128, "Core not found: %s\n", coretype);
   openblas_warning(1, message);
@@ -214,10 +200,6 @@ static gotoblas_t *get_coretype(void) {
   char coremsg[128];
 
 #if (!defined OS_LINUX && !defined OS_ANDROID)
-#ifdef DARWIN
-	sysctlbyname("hw.cpufamily",&value,&length,NULL,0);
-	if (value ==131287967) return CPU_VORTEX;
-#endif
   return NULL;
 #else
 
