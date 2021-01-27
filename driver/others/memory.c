@@ -1241,7 +1241,7 @@ UNLOCK_COMMAND(&alloc_lock);
 
       func = &memoryalloc[0];
 
-      while ((func != NULL) && (map_address == (void *) -1)) {
+      while ((*func != NULL) && (map_address == (void *) -1)) {
 
         map_address = (*func)((void *)base_address);
 
