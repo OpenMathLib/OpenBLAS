@@ -14,6 +14,9 @@ include(GNUInstallDirs)
 
 include(CMakePackageConfigHelpers)
 
+if(MSVC AND NOT DEFINED NOFORTRAN)
+  set(NOFORTRAN ON)
+endif()
 
 #######
 if(MSVC)
