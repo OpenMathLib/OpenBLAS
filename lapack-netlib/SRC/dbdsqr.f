@@ -166,7 +166,7 @@
 *>
 *> \param[out] WORK
 *> \verbatim
-*>          WORK is DOUBLE PRECISION array, dimension (4*N)
+*>          WORK is DOUBLE PRECISION array, dimension (4*(N-1))
 *> \endverbatim
 *>
 *> \param[out] INFO

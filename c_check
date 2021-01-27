@@ -5,9 +5,11 @@
 
 # Checking cross compile
 $hostos   = `uname -s | sed -e s/\-.*//`;    chop($hostos);
-$hostarch = `uname -m | sed -e s/i.86/x86/`;chop($hostarch);
+$hostarch = `uname -m | sed -e s/i.86/x86/`;
+$hostarch = `uname -p` if ($hostos eq "AIX" || $hostos eq "SunOS");
+chop($hostarch);
 $hostarch = "x86_64" if ($hostarch eq "amd64");
-$hostarch = "arm" if ($hostarch =~ /^arm.*/);
+$hostarch = "arm" if ($hostarch ne "arm64" && $hostarch =~ /^arm.*/);
 $hostarch = "arm64" if ($hostarch eq "aarch64");
 $hostarch = "power" if ($hostarch =~ /^(powerpc|ppc).*/);
 $hostarch = "zarch" if ($hostarch eq "s390x");
@@ -18,11 +20,12 @@ $binary = $ENV{"BINARY"};
 $makefile = shift(@ARGV);
 $config   = shift(@ARGV);
 
-$compiler_name = join(" ", @ARGV);
+$compiler_name = shift(@ARGV);
+$flags = join(" ", @ARGV);
 
 # First, we need to know the target OS and compiler name
 
-$data = `$compiler_name -E ctest.c`;
+$data = `$compiler_name $flags -E ctest.c`;
 
 if ($?) {
     printf STDERR "C Compiler ($compiler_name) is something wrong.\n";
@@ -90,6 +93,7 @@ $architecture = ia64   if ($data =~ /ARCH_IA64/);
 $architecture = arm    if ($data =~ /ARCH_ARM/);
 $architecture = arm64  if ($data =~ /ARCH_ARM64/);
 $architecture = zarch  if ($data =~ /ARCH_ZARCH/);
+$architecture = riscv64 if ($data =~ /ARCH_RISCV64/);
 
 $defined = 0;
 
@@ -134,6 +138,11 @@ if (($architecture eq "x86") && ($os ne Darwin) && ($os ne SunOS)) {
     $binary =32;
 }
 
+if ($architecture eq "riscv64") {
+    $defined = 1;
+    $binary = 64;
+}
+
 if ($compiler eq "PGI") {
     $compiler_name .= " -tp p7"    if ($binary eq "32");
     $compiler_name .= " -tp p7-64" if ($binary eq "64");
@@ -175,7 +184,7 @@ if ($defined == 0) {
 
 # Do again
 
-$data = `$compiler_name -E ctest.c`;
+$data = `$compiler_name $flags -E ctest.c`;
 
 if ($?) {
     printf STDERR "C Compiler ($compiler_name) is something wrong.\n";
@@ -188,14 +197,14 @@ if (($architecture eq "mips") || ($architecture eq "mips64")) {
     if ($@){ 
 	warn "could not load PERL module File::Temp, so could not check MSA capatibility";
     } else {
-	$tmpf = new File::Temp( UNLINK => 1 );
+	$tmpf = new File::Temp( SUFFIX => '.c' , UNLINK => 1 );
 	$code = '"addvi.b $w0, $w1, 1"';
-	$msa_flags = "-mmsa -mfp64 -msched-weight -mload-store-pairs";
+	$msa_flags = "-mmsa -mfp64 -mload-store-pairs";
 	print $tmpf "#include <msa.h>\n\n";
 	print $tmpf "void main(void){ __asm__ volatile($code); }\n";
 
-	$args = "$msa_flags -o $tmpf.o -x c $tmpf";
-	my @cmd = ("$compiler_name $args");
+	$args = "$msa_flags -o $tmpf.o $tmpf";
+	my @cmd = ("$compiler_name $flags $args >/dev/null 2>/dev/null");
 	system(@cmd) == 0;
 	if ($? != 0) {
 	    $have_msa = 0;
@@ -229,22 +238,56 @@ if (($architecture eq "x86") || ($architecture eq "x86_64")) {
 	$no_avx512 = 0;
     } else {
 #	$tmpf = new File::Temp( UNLINK => 1 );
-	($fh,$tmpf) = tempfile( UNLINK => 1 );
+	($fh,$tmpf) = tempfile( SUFFIX => '.c' , UNLINK => 1 );
 	$code = '"vbroadcastss -4 * 4(%rsi), %zmm2"';
 	print $tmpf "#include <immintrin.h>\n\nint main(void){ __asm__ volatile($code); }\n";
-	$args = " -march=skylake-avx512 -c -o $tmpf.o -x c $tmpf";
-	my @cmd = ("$compiler_name $args >/dev/null 2>/dev/null");
+	$args = " -march=skylake-avx512 -c -o $tmpf.o $tmpf";
+	if ($compiler eq "PGI") {
+	    $args = " -tp skylake -c -o $tmpf.o $tmpf";
+	}
+	my @cmd = ("$compiler_name $flags $args >/dev/null 2>/dev/null");
 	system(@cmd) == 0;
 	if ($? != 0) {
 	    $no_avx512 = 1;
 	} else {
 	    $no_avx512 = 0;
 	}
-	unlink("tmpf.o");
+	unlink("$tmpf.o");
     }
 }
 
-$data = `$compiler_name -S ctest1.c && grep globl ctest1.s | head -n 1 && rm -f ctest1.s`;
+$c11_atomics = 0;
+if ($data =~ /HAVE_C11/) {
+    eval "use File::Temp qw(tempfile)";
+    if ($@){ 
+       warn "could not load PERL module File::Temp, so could not check compiler compatibility with C11";
+       $c11_atomics = 0;
+    } else {
+       ($fh,$tmpf) = tempfile( SUFFIX => '.c' , UNLINK => 1 );
+       print $tmpf "#include <stdatomic.h>\nint main(void){}\n";
+       $args = " -c -o $tmpf.o $tmpf";
+       my @cmd = ("$compiler_name $flags $args >/dev/null 2>/dev/null");
+       system(@cmd) == 0;
+       if ($? != 0) {
+           $c11_atomics = 0;
+       } else {
+           $c11_atomics = 1;
+       }
+       unlink("$tmpf.o");
+    }
+}
+
+if ($compiler eq "GCC" &&( ($architecture eq "x86") || ($architecture eq "x86_64"))) {
+	$no_avx2 = 0;
+	$oldgcc = 0;
+	$data = `$compiler_name -dumpversion`;
+	if ($data <= 4.6) {
+		$no_avx2 = 1;
+		$oldgcc = 1;
+	}
+}
+
+$data = `$compiler_name $flags -S ctest1.c && grep globl ctest1.s | head -n 1 && rm -f ctest1.s`;
 
 $data =~ /globl\s([_\.]*)(.*)/;
 
@@ -267,7 +310,7 @@ $linker_l = "";
 $linker_a = "";
 
 {
-    $link = `$compiler_name -c ctest2.c -o ctest2.o 2>&1 && $compiler_name $openmp -v ctest2.o -o ctest2 2>&1 && rm -f ctest2.o ctest2 ctest2.exe`;
+    $link = `$compiler_name $flags -c ctest2.c -o ctest2.o 2>&1 && $compiler_name $flags $openmp -v ctest2.o -o ctest2 2>&1 && rm -f ctest2.o ctest2 ctest2.exe`;
 
     $link =~ s/\-Y\sP\,/\-Y/g;
 
@@ -305,6 +348,8 @@ $linker_a = "";
 	    && ($flags !~ /kernel32/)
 	    && ($flags !~ /advapi32/)
 	    && ($flags !~ /shell32/)
+	    && ($flags !~ /omp/)
+	    && ($flags !~ /[0-9]+/)
 	    ) {
 	    $linker_l .= $flags . " "
 	}
@@ -333,6 +378,8 @@ print MAKEFILE "CEXTRALIB=$linker_L $linker_l $linker_a\n";
 print MAKEFILE "HAVE_MSA=1\n" if $have_msa eq 1;
 print MAKEFILE "MSA_FLAGS=$msa_flags\n" if $have_msa eq 1;
 print MAKEFILE "NO_AVX512=1\n" if $no_avx512 eq 1;
+print MAKEFILE "NO_AVX2=1\n" if $no_avx2 eq 1;
+print MAKEFILE "OLDGCC=1\n" if $oldgcc eq 1;
 
 $os           =~ tr/[a-z]/[A-Z]/;
 $architecture =~ tr/[a-z]/[A-Z]/;
@@ -345,6 +392,8 @@ print CONFFILE "#define __32BIT__\t1\n"  if $binformat eq bin32;
 print CONFFILE "#define __64BIT__\t1\n"  if $binformat eq bin64;
 print CONFFILE "#define FUNDERSCORE\t$need_fu\n" if $need_fu ne "";
 print CONFFILE "#define HAVE_MSA\t1\n"  if $have_msa eq 1;
+print CONFFILE "#define HAVE_C11\t1\n" if $c11_atomics eq 1;
+
 
 if ($os eq "LINUX") {
 

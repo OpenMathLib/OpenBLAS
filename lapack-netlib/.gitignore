@@ -35,3 +35,9 @@ LAPACKE/example/xexample*
 # SED
 SRC/*-e
 LAPACKE/src/*-e
+build*
+
+# DOCS documentation
+DOCS/man
+DOCS/explore-html
+output_err

@@ -35,8 +35,12 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "common.h"
 
+#if defined(__VEC__) || defined(__ALTIVEC__)
 #if defined(POWER8) || defined(POWER9)
 #include "dscal_microk_power8.c"
+#elif defined(POWER10)
+#include "dscal_microk_power10.c"
+#endif
 #endif
 
 #if !defined(HAVE_KERNEL_8)
@@ -98,12 +102,28 @@ int CNAME(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, FLOAT da, FLOAT *x, BLAS
 		if ( da == 0.0 )
 		{		
 
+#if defined(POWER10)
+			if ( n >= 16 )
+			{
+				BLASLONG align = ((32 - ((uintptr_t)x & (uintptr_t)0x1F)) >> 3) & 0x3;
+				for (j = 0; j < align; j++) {
+					x[j] = 0.0;
+				}
+			}
+			BLASLONG n1 = (n-j) & -16;
+			if ( n1 > 0 )
+			{
+				dscal_kernel_8_zero(n1, &x[j]);
+				j+=n1;
+			}
+#else
 			BLASLONG n1 = n & -16;
 			if ( n1 > 0 )
 			{
 				dscal_kernel_8_zero(n1, x);
 				j=n1;
 			}
+#endif
 
 			while(j < n)
 			{
@@ -116,12 +136,28 @@ int CNAME(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, FLOAT da, FLOAT *x, BLAS
 		else
 		{
 
+#if defined(POWER10)
+			if ( n >= 16 )
+			{
+				BLASLONG align = ((32 - ((uintptr_t)x & (uintptr_t)0x1F)) >> 3) & 0x3;
+				for (j = 0; j < align; j++) {
+					x[j] = da * x[j];
+				}
+			}
+			BLASLONG n1 = (n-j) & -16;
+			if ( n1 > 0 )
+			{
+				dscal_kernel_8(n1, &x[j], da);
+				j+=n1;
+			}
+#else
 			BLASLONG n1 = n & -16;
 			if ( n1 > 0 )
 			{
 				dscal_kernel_8(n1, x, da);
 				j=n1;
 			}
+#endif
 			while(j < n)
 			{
 

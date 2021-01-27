@@ -54,138 +54,138 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #if !defined(DOUBLE)
 	ldr	s4, [X], #4
 	fcmp	s4, REGZERO
-	beq	KERNEL_F1_NEXT_\@
+	beq	2f    /* KERNEL_F1_NEXT_\@ */
 	fabs	s4, s4
 	fcmp	SCALE, s4
-	bge	KERNEL_F1_SCALE_GE_XR_\@
+	bge	1f    /* KERNEL_F1_SCALE_GE_XR_\@ */
 	fdiv	s2, SCALE, s4
 	fmul	s2, s2, s2
 	fmul	s3, SSQ, s2
 	fadd	SSQ, REGONE, s3
 	fmov	SCALE, s4
-	b	KERNEL_F1_NEXT_\@
-KERNEL_F1_SCALE_GE_XR_\@:
+	b	2f    /* KERNEL_F1_NEXT_\@ */
+1:                    /* KERNEL_F1_SCALE_GE_XR_\@: */
 	fdiv	s2, s4, SCALE
 	fmla	SSQ, s2, v2.s[0]
-KERNEL_F1_NEXT_\@:
+2:                    /* KERNEL_F1_NEXT_\@: */
 	ldr	s5, [X], #4
 	fcmp	s5, REGZERO
-	beq	KERNEL_F1_END_\@
+	beq	4f    /* KERNEL_F1_END_\@ */
 	fabs	s5, s5
 	fcmp	SCALE, s5
-	bge	KERNEL_F1_SCALE_GE_XI_\@
+	bge	3f    /* KERNEL_F1_SCALE_GE_XI_\@ */
 	fdiv	s2, SCALE, s5
 	fmul	s2, s2, s2
 	fmul	s3, SSQ, s2
 	fadd	SSQ, REGONE, s3
 	fmov	SCALE, s5
-	b	KERNEL_F1_END_\@
-KERNEL_F1_SCALE_GE_XI_\@:
+	b	4f    /* KERNEL_F1_END_\@ */
+3:                    /* KERNEL_F1_SCALE_GE_XI_\@: */
 	fdiv	s2, s5, SCALE
 	fmla	SSQ, s2, v2.s[0]
 #else
 	ldr	d4, [X], #8
 	fcmp	d4, REGZERO
-	beq	KERNEL_F1_NEXT_\@
+	beq	2f    /* KERNEL_F1_NEXT_\@ */
 	fabs	d4, d4
 	fcmp	SCALE, d4
-	bge	KERNEL_F1_SCALE_GE_XR_\@
+	bge	1f    /* KERNEL_F1_SCALE_GE_XR_\@ */
 	fdiv	d2, SCALE, d4
 	fmul	d2, d2, d2
 	fmul	d3, SSQ, d2
 	fadd	SSQ, REGONE, d3
 	fmov	SCALE, d4
-	b	KERNEL_F1_NEXT_\@
-KERNEL_F1_SCALE_GE_XR_\@:
+	b	2f    /* KERNEL_F1_NEXT_\@ */
+1:                    /* KERNEL_F1_SCALE_GE_XR_\@: */
 	fdiv	d2, d4, SCALE
 	fmla	SSQ, d2, v2.d[0]
-KERNEL_F1_NEXT_\@:
+2:                   /* KERNEL_F1_NEXT_\@: */
 	ldr	d5, [X], #8
 	fcmp	d5, REGZERO
-	beq	KERNEL_F1_END_\@
+	beq	4f  /* KERNEL_F1_END_\@ */
 	fabs	d5, d5
 	fcmp	SCALE, d5
-	bge	KERNEL_F1_SCALE_GE_XI_\@
+	bge	3f    /* KERNEL_F1_SCALE_GE_XI_\@ */
 	fdiv	d2, SCALE, d5
 	fmul	d2, d2, d2
 	fmul	d3, SSQ, d2
 	fadd	SSQ, REGONE, d3
 	fmov	SCALE, d5
-	b	KERNEL_F1_END_\@
-KERNEL_F1_SCALE_GE_XI_\@:
+	b	4f    /* KERNEL_F1_END_\@ */
+3:                    /* KERNEL_F1_SCALE_GE_XI_\@: */
 	fdiv	d2, d5, SCALE
 	fmla	SSQ, d2, v2.d[0]
 #endif
-KERNEL_F1_END_\@:
+4:                    /* KERNEL_F1_END_\@: */
 .endm
 
 .macro KERNEL_S1
 #if !defined(DOUBLE)
 	ldr	s4, [X]
 	fcmp	s4, REGZERO
-	beq	KERNEL_S1_NEXT_\@
+	beq	KERNEL_S1_NEXT
 	fabs	s4, s4
 	fcmp	SCALE, s4
-	bge	KERNEL_S1_SCALE_GE_XR_\@
+	bge	KERNEL_S1_SCALE_GE_XR
 	fdiv	s2, SCALE, s4
 	fmul	s2, s2, s2
 	fmul	s3, SSQ, s2
 	fadd	SSQ, REGONE, s3
 	fmov	SCALE, s4
-	b	KERNEL_S1_NEXT_\@
-KERNEL_S1_SCALE_GE_XR_\@:
+	b	KERNEL_S1_NEXT
+KERNEL_S1_SCALE_GE_XR:
 	fdiv	s2, s4, SCALE
 	fmla	SSQ, s2, v2.s[0]
-KERNEL_S1_NEXT_\@:
+KERNEL_S1_NEXT:
 	ldr	s5, [X, #4]
 	fcmp	s5, REGZERO
-	beq	KERNEL_S1_END_\@
+	beq	KERNEL_S1_END
 	fabs	s5, s5
 	fcmp	SCALE, s5
-	bge	KERNEL_S1_SCALE_GE_XI_\@
+	bge	KERNEL_S1_SCALE_GE_XI
 	fdiv	s2, SCALE, s5
 	fmul	s2, s2, s2
 	fmul	s3, SSQ, s2
 	fadd	SSQ, REGONE, s3
 	fmov	SCALE, s5
-	b	KERNEL_S1_END_\@
-KERNEL_S1_SCALE_GE_XI_\@:
+	b	KERNEL_S1_END
+KERNEL_S1_SCALE_GE_XI:
 	fdiv	s2, s5, SCALE
 	fmla	SSQ, s2, v2.s[0]
 #else
 	ldr	d4, [X]
 	fcmp	d4, REGZERO
-	beq	KERNEL_S1_NEXT_\@
+	beq	KERNEL_S1_NEXT
 	fabs	d4, d4
 	fcmp	SCALE, d4
-	bge	KERNEL_S1_SCALE_GE_XR_\@
+	bge	KERNEL_S1_SCALE_GE_XR
 	fdiv	d2, SCALE, d4
 	fmul	d2, d2, d2
 	fmul	d3, SSQ, d2
 	fadd	SSQ, REGONE, d3
 	fmov	SCALE, d4
-	b	KERNEL_S1_NEXT_\@
-KERNEL_S1_SCALE_GE_XR_\@:
+	b	KERNEL_S1_NEXT
+KERNEL_S1_SCALE_GE_XR:
 	fdiv	d2, d4, SCALE
 	fmla	SSQ, d2, v2.d[0]
-KERNEL_S1_NEXT_\@:
+KERNEL_S1_NEXT:
 	ldr	d5, [X, #8]
 	fcmp	d5, REGZERO
-	beq	KERNEL_S1_END_\@
+	beq	KERNEL_S1_END
 	fabs	d5, d5
 	fcmp	SCALE, d5
-	bge	KERNEL_S1_SCALE_GE_XI_\@
+	bge	KERNEL_S1_SCALE_GE_XI
 	fdiv	d2, SCALE, d5
 	fmul	d2, d2, d2
 	fmul	d3, SSQ, d2
 	fadd	SSQ, REGONE, d3
 	fmov	SCALE, d5
-	b	KERNEL_S1_END_\@
-KERNEL_S1_SCALE_GE_XI_\@:
+	b	KERNEL_S1_END
+KERNEL_S1_SCALE_GE_XI:
 	fdiv	d2, d5, SCALE
 	fmla	SSQ, d2, v2.d[0]
 #endif
-KERNEL_S1_END_\@:
+KERNEL_S1_END:
 	add	X, X, INC_X
 .endm
 

@@ -25,6 +25,11 @@ char* openblas_get_config(void);
 /*Get the CPU corename on runtime.*/
 char* openblas_get_corename(void);
 
+#ifdef OPENBLAS_OS_LINUX
+/* Sets thread affinity for OpenBLAS threads. `thread_idx` is in [0, openblas_get_num_threads()-1]. */
+int openblas_setaffinity(int thread_idx, size_t cpusetsize, cpu_set_t* cpu_set);
+#endif
+
 /* Get the parallelization type which is used by OpenBLAS */
 int openblas_get_parallel(void);
 /* OpenBLAS is compiled for sequential use  */
@@ -120,9 +125,14 @@ void cblas_zswap(OPENBLAS_CONST blasint n, void *x, OPENBLAS_CONST blasint incx,
 
 void cblas_srot(OPENBLAS_CONST blasint N, float *X, OPENBLAS_CONST blasint incX, float *Y, OPENBLAS_CONST blasint incY, OPENBLAS_CONST float c, OPENBLAS_CONST float s);
 void cblas_drot(OPENBLAS_CONST blasint N, double *X, OPENBLAS_CONST blasint incX, double *Y, OPENBLAS_CONST blasint incY, OPENBLAS_CONST double c, OPENBLAS_CONST double  s);
+void cblas_csrot(OPENBLAS_CONST blasint n, OPENBLAS_CONST void *x, OPENBLAS_CONST blasint incx, void *y, OPENBLAS_CONST blasint incY, OPENBLAS_CONST float c, OPENBLAS_CONST float s);
+void cblas_zdrot(OPENBLAS_CONST blasint n, OPENBLAS_CONST void *x, OPENBLAS_CONST blasint incx, void *y, OPENBLAS_CONST blasint incY, OPENBLAS_CONST double c, OPENBLAS_CONST double s);
 
 void cblas_srotg(float *a, float *b, float *c, float *s);
 void cblas_drotg(double *a, double *b, double *c, double *s);
+void cblas_crotg(void *a, void *b, float *c, void *s);
+void cblas_zrotg(void *a, void *b, double *c, void *s);
+
 
 void cblas_srotm(OPENBLAS_CONST blasint N, float *X, OPENBLAS_CONST blasint incX, float *Y, OPENBLAS_CONST blasint incY, OPENBLAS_CONST float *P);
 void cblas_drotm(OPENBLAS_CONST blasint N, double *X, OPENBLAS_CONST blasint incX, double *Y, OPENBLAS_CONST blasint incY, OPENBLAS_CONST double *P);
@@ -377,6 +387,18 @@ void cblas_cgeadd(OPENBLAS_CONST enum CBLAS_ORDER CORDER,OPENBLAS_CONST blasint 
 void cblas_zgeadd(OPENBLAS_CONST enum CBLAS_ORDER CORDER,OPENBLAS_CONST blasint crows, OPENBLAS_CONST blasint ccols, OPENBLAS_CONST double *calpha, double *a, OPENBLAS_CONST blasint clda, OPENBLAS_CONST double *cbeta, 
 		  double *c, OPENBLAS_CONST blasint cldc); 
 
+/*** BFLOAT16 and INT8 extensions ***/
+/* convert float array to BFLOAT16 array by rounding */
+void   cblas_sbstobf16(OPENBLAS_CONST blasint n, OPENBLAS_CONST float  *in, OPENBLAS_CONST blasint incin, bfloat16 *out, OPENBLAS_CONST blasint incout);
+/* convert double array to BFLOAT16 array by rounding */
+void   cblas_sbdtobf16(OPENBLAS_CONST blasint n, OPENBLAS_CONST double *in, OPENBLAS_CONST blasint incin, bfloat16 *out, OPENBLAS_CONST blasint incout);
+/* convert BFLOAT16 array to float array */
+void   cblas_sbf16tos(OPENBLAS_CONST blasint n, OPENBLAS_CONST bfloat16 *in, OPENBLAS_CONST blasint incin, float  *out, OPENBLAS_CONST blasint incout);
+/* convert BFLOAT16 array to double array */
+void   cblas_dbf16tod(OPENBLAS_CONST blasint n, OPENBLAS_CONST bfloat16 *in, OPENBLAS_CONST blasint incin, double *out, OPENBLAS_CONST blasint incout);
+/* dot production of BFLOAT16 input arrays, and output as float */
+float  cblas_sbdot(OPENBLAS_CONST blasint n, OPENBLAS_CONST bfloat16 *x, OPENBLAS_CONST blasint incx, OPENBLAS_CONST bfloat16 *y, OPENBLAS_CONST blasint incy);
+void   cblas_sbgemv(OPENBLAS_CONST enum CBLAS_ORDER order,  OPENBLAS_CONST enum CBLAS_TRANSPOSE trans,  OPENBLAS_CONST blasint m, OPENBLAS_CONST blasint n, OPENBLAS_CONST float alpha, OPENBLAS_CONST bfloat16 *a, OPENBLAS_CONST blasint lda, OPENBLAS_CONST bfloat16 *x, OPENBLAS_CONST blasint incx, OPENBLAS_CONST float beta, float *y, OPENBLAS_CONST blasint incy);
 
 #ifdef __cplusplus
 }

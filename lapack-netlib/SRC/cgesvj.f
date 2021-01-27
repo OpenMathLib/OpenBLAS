@@ -89,12 +89,12 @@
 *>          Specifies whether to compute the right singular vectors, that
 *>          is, the matrix V:
 *>          = 'V' or 'J': the matrix V is computed and returned in the array V
-*>          = 'A' : the Jacobi rotations are applied to the MV-by-N
+*>          = 'A':  the Jacobi rotations are applied to the MV-by-N
 *>                  array V. In other words, the right singular vector
 *>                  matrix V is not computed explicitly; instead it is
 *>                  applied to an MV-by-N matrix initially stored in the
 *>                  first MV rows of V.
-*>          = 'N' : the matrix V is not computed and the array V is not
+*>          = 'N':  the matrix V is not computed and the array V is not
 *>                  referenced
 *> \endverbatim
 *>
@@ -116,8 +116,8 @@
 *>          A is COMPLEX array, dimension (LDA,N)
 *>          On entry, the M-by-N matrix A.
 *>          On exit,
-*>          If JOBU .EQ. 'U' .OR. JOBU .EQ. 'C':
-*>                 If INFO .EQ. 0 :
+*>          If JOBU = 'U' .OR. JOBU = 'C':
+*>                 If INFO = 0 :
 *>                 RANKA orthonormal columns of U are returned in the
 *>                 leading RANKA columns of the array A. Here RANKA <= N
 *>                 is the number of computed singular values of A that are
@@ -127,9 +127,9 @@
 *>                 in the array RWORK as RANKA=NINT(RWORK(2)). Also see the
 *>                 descriptions of SVA and RWORK. The computed columns of U
 *>                 are mutually numerically orthogonal up to approximately
-*>                 TOL=SQRT(M)*EPS (default); or TOL=CTOL*EPS (JOBU.EQ.'C'),
+*>                 TOL=SQRT(M)*EPS (default); or TOL=CTOL*EPS (JOBU = 'C'),
 *>                 see the description of JOBU.
-*>                 If INFO .GT. 0,
+*>                 If INFO > 0,
 *>                 the procedure CGESVJ did not converge in the given number
 *>                 of iterations (sweeps). In that case, the computed
 *>                 columns of U may not be orthogonal up to TOL. The output
@@ -137,8 +137,8 @@
 *>                 values in SVA(1:N)) and V is still a decomposition of the
 *>                 input matrix A in the sense that the residual
 *>                 || A - SCALE * U * SIGMA * V^* ||_2 / ||A||_2 is small.
-*>          If JOBU .EQ. 'N':
-*>                 If INFO .EQ. 0 :
+*>          If JOBU = 'N':
+*>                 If INFO = 0 :
 *>                 Note that the left singular vectors are 'for free' in the
 *>                 one-sided Jacobi SVD algorithm. However, if only the
 *>                 singular values are needed, the level of numerical
@@ -147,7 +147,7 @@
 *>                 numerically orthogonal up to approximately M*EPS. Thus,
 *>                 on exit, A contains the columns of U scaled with the
 *>                 corresponding singular values.
-*>                 If INFO .GT. 0 :
+*>                 If INFO > 0 :
 *>                 the procedure CGESVJ did not converge in the given number
 *>                 of iterations (sweeps).
 *> \endverbatim
@@ -162,9 +162,9 @@
 *> \verbatim
 *>          SVA is REAL array, dimension (N)
 *>          On exit,
-*>          If INFO .EQ. 0 :
+*>          If INFO = 0 :
 *>          depending on the value SCALE = RWORK(1), we have:
-*>                 If SCALE .EQ. ONE:
+*>                 If SCALE = ONE:
 *>                 SVA(1:N) contains the computed singular values of A.
 *>                 During the computation SVA contains the Euclidean column
 *>                 norms of the iterated matrices in the array A.
@@ -173,7 +173,7 @@
 *>                 factored representation is due to the fact that some of the
 *>                 singular values of A might underflow or overflow.
 *>
-*>          If INFO .GT. 0 :
+*>          If INFO > 0 :
 *>          the procedure CGESVJ did not converge in the given number of
 *>          iterations (sweeps) and SCALE*SVA(1:N) may not be accurate.
 *> \endverbatim
@@ -181,7 +181,7 @@
 *> \param[in] MV
 *> \verbatim
 *>          MV is INTEGER
-*>          If JOBV .EQ. 'A', then the product of Jacobi rotations in CGESVJ
+*>          If JOBV = 'A', then the product of Jacobi rotations in CGESVJ
 *>          is applied to the first MV rows of V. See the description of JOBV.
 *> \endverbatim
 *>
@@ -199,16 +199,16 @@
 *> \param[in] LDV
 *> \verbatim
 *>          LDV is INTEGER
-*>          The leading dimension of the array V, LDV .GE. 1.
-*>          If JOBV .EQ. 'V', then LDV .GE. max(1,N).
-*>          If JOBV .EQ. 'A', then LDV .GE. max(1,MV) .
+*>          The leading dimension of the array V, LDV >= 1.
+*>          If JOBV = 'V', then LDV >= max(1,N).
+*>          If JOBV = 'A', then LDV >= max(1,MV) .
 *> \endverbatim
 *>
 *> \param[in,out] CWORK
 *> \verbatim
 *>          CWORK is COMPLEX array, dimension (max(1,LWORK))
 *>          Used as workspace.
-*>          If on entry LWORK .EQ. -1, then a workspace query is assumed and
+*>          If on entry LWORK = -1, then a workspace query is assumed and
 *>          no computation is done; CWORK(1) is set to the minial (and optimal)
 *>          length of CWORK.
 *> \endverbatim
@@ -223,7 +223,7 @@
 *> \verbatim
 *>          RWORK is REAL array, dimension (max(6,LRWORK))
 *>          On entry,
-*>          If JOBU .EQ. 'C' :
+*>          If JOBU = 'C' :
 *>          RWORK(1) = CTOL, where CTOL defines the threshold for convergence.
 *>                    The process stops if all columns of A are mutually
 *>                    orthogonal up to CTOL*EPS, EPS=SLAMCH('E').
@@ -243,11 +243,11 @@
 *>          RWORK(5) = max_{i.NE.j} |COS(A(:,i),A(:,j))| in the last sweep.
 *>                    This is useful information in cases when CGESVJ did
 *>                    not converge, as it can be used to estimate whether
-*>                    the output is stil useful and for post festum analysis.
+*>                    the output is still useful and for post festum analysis.
 *>          RWORK(6) = the largest absolute value over all sines of the
 *>                    Jacobi rotation angles in the last sweep. It can be
 *>                    useful for a post festum analysis.
-*>         If on entry LRWORK .EQ. -1, then a workspace query is assumed and
+*>         If on entry LRWORK = -1, then a workspace query is assumed and
 *>         no computation is done; RWORK(1) is set to the minial (and optimal)
 *>         length of RWORK.
 *> \endverbatim
@@ -261,9 +261,9 @@
 *> \param[out] INFO
 *> \verbatim
 *>          INFO is INTEGER
-*>          = 0 : successful exit.
-*>          < 0 : if INFO = -i, then the i-th argument had an illegal value
-*>          > 0 : CGESVJ did not converge in the maximal allowed number
+*>          = 0:  successful exit.
+*>          < 0:  if INFO = -i, then the i-th argument had an illegal value
+*>          > 0:  CGESVJ did not converge in the maximal allowed number
 *>                (NSWEEP=30) of sweeps. The output may still be useful.
 *>                See the description of RWORK.
 *> \endverbatim

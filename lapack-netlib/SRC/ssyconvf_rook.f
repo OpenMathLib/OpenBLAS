@@ -282,7 +282,7 @@
 *
 *           Convert PERMUTATIONS
 *
-*           Apply permutaions to submatrices of upper part of A
+*           Apply permutations to submatrices of upper part of A
 *           in factorization order where i decreases from N to 1
 *
             I = N
@@ -333,7 +333,7 @@
 *
 *           Revert PERMUTATIONS
 *
-*           Apply permutaions to submatrices of upper part of A
+*           Apply permutations to submatrices of upper part of A
 *           in reverse factorization order where i increases from 1 to N
 *
             I = 1
@@ -423,7 +423,7 @@
 *
 *           Convert PERMUTATIONS
 *
-*           Apply permutaions to submatrices of lower part of A
+*           Apply permutations to submatrices of lower part of A
 *           in factorization order where i increases from 1 to N
 *
             I = 1
@@ -474,7 +474,7 @@
 *
 *           Revert PERMUTATIONS
 *
-*           Apply permutaions to submatrices of lower part of A
+*           Apply permutations to submatrices of lower part of A
 *           in reverse factorization order where i decreases from N to 1
 *
             I = N

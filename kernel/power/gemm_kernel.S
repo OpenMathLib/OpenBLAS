@@ -59,7 +59,7 @@
 #define	N	r4
 #define	K	r5
 
-#ifdef linux
+#if defined(linux) || defined(__FreeBSD__)
 #ifndef __64BIT__
 #define A	r6
 #define	B	r7
@@ -186,7 +186,7 @@
 	slwi	LDC, LDC, BASE_SHIFT
 
 #if defined(TRMMKERNEL)
-#if defined(linux) && defined(__64BIT__)
+#if (defined(linux) || defined(__FreeBSD__)) && defined(__64BIT__)
 	ld	OFFSET,   FRAMESLOT(0) + STACKSIZE(SP)
 #endif
 
@@ -228,7 +228,7 @@
 
 #else
 
-#ifdef linux
+#if defined(linux) || defined(__FreeBSD__)
 #ifndef __64BIT__
 	mr	PREA,  r10
 	lwz	PREB,  FRAMESLOT(0) + STACKSIZE(SP)

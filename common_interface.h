@@ -54,6 +54,11 @@ double BLASFUNC(dsdot) (blasint *, float  *, blasint *, float  *, blasint *);
 double BLASFUNC(ddot)  (blasint *, double *, blasint *, double *, blasint *);
 xdouble BLASFUNC(qdot)  (blasint *, xdouble *, blasint *, xdouble *, blasint *);
 
+float  BLASFUNC(sbdot)     (blasint *, bfloat16 *, blasint *, bfloat16 *, blasint *);
+void   BLASFUNC(sbstobf16) (blasint *, float *,    blasint *, bfloat16 *, blasint *);
+void   BLASFUNC(sbdtobf16) (blasint *, double *,   blasint *, bfloat16 *, blasint *);
+void   BLASFUNC(sbf16tos)  (blasint *, bfloat16 *, blasint *, float *,    blasint *);
+void   BLASFUNC(dbf16tod)  (blasint *, bfloat16 *, blasint *, double *,   blasint *);
 
 #ifdef RETURN_BY_STRUCT
 typedef struct {
@@ -245,6 +250,8 @@ void BLASFUNC(xgeru)(blasint *,    blasint *, xdouble *, xdouble *, blasint *,
 void BLASFUNC(xgerc)(blasint *,    blasint *, xdouble *, xdouble *, blasint *,
 		    xdouble *, blasint *, xdouble *, blasint *);
 
+void BLASFUNC(sbgemv)(char *, blasint *, blasint *, float  *, bfloat16 *, blasint *,
+            bfloat16  *, blasint *, float  *, float  *, blasint *);
 void BLASFUNC(sgemv)(char *, blasint *, blasint *, float  *, float  *, blasint *,
 		    float  *, blasint *, float  *, float  *, blasint *);
 void BLASFUNC(dgemv)(char *, blasint *, blasint *, double *, double *, blasint *,
@@ -469,6 +476,8 @@ void BLASFUNC(xhbmv)(char *, blasint *, blasint *, xdouble *, xdouble *, blasint
 
 /* Level 3 routines */
 
+void BLASFUNC(sbgemm)(char *, char *, blasint *, blasint *, blasint *, float *,
+	   bfloat16 *, blasint *, bfloat16 *, blasint *, float *, float *, blasint *);
 void BLASFUNC(sgemm)(char *, char *, blasint *, blasint *, blasint *, float *,
 	   float  *, blasint *, float  *, blasint *, float  *, float  *, blasint *);
 void BLASFUNC(dgemm)(char *, char *, blasint *, blasint *, blasint *, double *,

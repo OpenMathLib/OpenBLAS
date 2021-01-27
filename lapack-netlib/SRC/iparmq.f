@@ -60,7 +60,7 @@
 *>                        invest in an (expensive) multi-shift QR sweep.
 *>                        If the aggressive early deflation subroutine
 *>                        finds LD converged eigenvalues from an order
-*>                        NW deflation window and LD.GT.(NW*NIBBLE)/100,
+*>                        NW deflation window and LD > (NW*NIBBLE)/100,
 *>                        then the next QR sweep is skipped and early
 *>                        deflation is applied immediately to the
 *>                        remaining active diagonal block.  Setting
@@ -184,8 +184,8 @@
 *>                        This depends on ILO, IHI and NS, the
 *>                        number of simultaneous shifts returned
 *>                        by IPARMQ(ISPEC=15).  The default for
-*>                        (IHI-ILO+1).LE.500 is NS.  The default
-*>                        for (IHI-ILO+1).GT.500 is 3*NS/2.
+*>                        (IHI-ILO+1) <= 500 is NS.  The default
+*>                        for (IHI-ILO+1) > 500 is 3*NS/2.
 *>
 *>       IPARMQ(ISPEC=14) Nibble crossover point.  Default: 14.
 *>

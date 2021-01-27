@@ -204,8 +204,8 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1, FLOAT alpha, FLOAT *a, BLASLO
     BLASLONG m3;
     BLASLONG n2;
 
-    FLOAT ybuffer[8], *xbuffer;
-
+    FLOAT ybuffer[8] __attribute__((aligned(16)));
+    FLOAT *xbuffer; 
     if (m < 1) return (0);
     if (n < 1) return (0);
 

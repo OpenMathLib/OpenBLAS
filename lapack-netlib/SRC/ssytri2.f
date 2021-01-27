@@ -62,7 +62,7 @@
 *> \param[in,out] A
 *> \verbatim
 *>          A is REAL array, dimension (LDA,N)
-*>          On entry, the NB diagonal matrix D and the multipliers
+*>          On entry, the block diagonal matrix D and the multipliers
 *>          used to obtain the factor U or L as computed by SSYTRF.
 *>
 *>          On exit, if INFO = 0, the (symmetric) inverse of the original
@@ -82,7 +82,7 @@
 *> \param[in] IPIV
 *> \verbatim
 *>          IPIV is INTEGER array, dimension (N)
-*>          Details of the interchanges and the NB structure of D
+*>          Details of the interchanges and the block structure of D
 *>          as determined by SSYTRF.
 *> \endverbatim
 *>

@@ -3,21 +3,29 @@ RANLIB  = ranlib
 
 ifdef BINARY64
 
+ifeq ($(C_COMPILER), GCC)
 CCOMMON_OPT += -mcpu=v9 -m64
+else
+CCOMMON_OPT +=  -m64
+endif
 ifeq ($(COMPILER_F77), g77)
 FCOMMON_OPT += -mcpu=v9 -m64
 endif
-ifeq ($(COMPILER_F77), f90)
-FCOMMON_OPT += -xarch=v9
+ifeq ($(COMPILER_F77), f95)
+FCOMMON_OPT += -m64
 endif
 else
 
+ifeq ($(C_COMPILER), GCC)
 CCOMMON_OPT += -mcpu=v9
+else
+CCOMMON_OPT +=  -xarch=v9
+endif
 
 ifeq ($(COMPILER_F77), g77)
 FCOMMON_OPT += -mcpu=v9
 endif
-ifeq ($(COMPILER_F77), f90)
+ifeq ($(COMPILER_F77), f95)
 FCOMMON_OPT += -xarch=v8plusb
 endif
 

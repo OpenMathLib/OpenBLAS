@@ -82,12 +82,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif
 
 #ifdef __64BIT__
-#define STACKSIZE 320
 #define STACKSIZE 512
 #define ALPHA_SP   296+192(SP)
 #define FZERO	304+192(SP)
 #else
-#define STACKSIZE 240
 #define STACKSIZE 440
 #define ALPHA_SP   224+200(SP)
 #define FZERO	232+200(SP)
@@ -97,7 +95,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define	N	r4
 #define	K	r5
 
-#ifdef linux
+#if defined(linux) || defined(__FreeBSD__)
 #ifndef __64BIT__
 #define A	r6
 #define	B	r7
@@ -271,7 +269,7 @@ li r11,0
 	slwi	LDC, LDC, BASE_SHIFT
 
 #if defined(TRMMKERNEL)
-#if defined(linux) && defined(__64BIT__)
+#if (defined(linux) || defined(__FreeBSD__)) && defined(__64BIT__)
 	ld	OFFSET,  FRAMESLOT(0) + STACKSIZE(SP)
 #endif
 

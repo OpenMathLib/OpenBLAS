@@ -1,5 +1,94 @@
 #define MY_ALIGN .align 3
+b L8
 
+	MY_ALIGN
+LSGEMM_L8x16_LMAIN_SUB: 
+	LOAD8x16_2    
+	MY_ALIGN
+
+LSGEMM_L8x16_LOOP:
+    KERNEL8x16_L2 128,64,0,0 
+LSGEMM_L8x16_K128:
+    KERNEL8x16_L2 128,64,1,0 
+    KERNEL8x16_I1_L4_2  128,64, 1,0
+    KERNEL8x16_I1_L4_2  128,64, 2,0
+    KERNEL8x16_I1_L4_2  128,64, 3,0
+    KERNEL8x16_I1_L4_2  128,64, 4,0
+    KERNEL8x16_I1_L4_2  128,64, 5,0        
+    KERNEL8x16_I1_L4_2  128,64, 6,0
+    KERNEL8x16_I1_L4_2  128,64, 7,0  
+    KERNEL8x16_I1_L4_2  128,64, 8,0      
+    KERNEL8x16_I1_L4_2  128,64, 9,0
+    KERNEL8x16_I1_L4_2  128,64, 10,0
+    KERNEL8x16_I1_L4_2  128,64, 11,0
+    KERNEL8x16_I1_L4_2  128,64, 12,0
+    KERNEL8x16_I1_L4_2  128,64, 13,0    
+    KERNEL8x16_I1_L4_2  128,64, 14,0    
+    KERNEL8x16_I1_L4_2  128,64, 15,0  	
+    KERNEL8x16_I1_L4_2  128,64, 16,0
+    KERNEL8x16_I1_L4_2  128,64, 17,0
+    KERNEL8x16_I1_L4_2  128,64, 18,0
+    KERNEL8x16_I1_L4_2  128,64, 19,0
+    KERNEL8x16_I1_L4_2  128,64, 20,0
+    KERNEL8x16_I1_L4_2  128,64, 21,0        
+    KERNEL8x16_I1_L4_2  128,64, 22,0
+    KERNEL8x16_I1_L4_2  128,64, 23,0  
+    KERNEL8x16_I1_L4_2  128,64, 24,0      
+    KERNEL8x16_I1_L4_2  128,64, 25,0
+    KERNEL8x16_I1_L4_2  128,64, 26,0
+    KERNEL8x16_I1_L4_2  128,64, 27,0
+    KERNEL8x16_I1_L4_2  128,64, 28,0
+    KERNEL8x16_I1_L4_2  128,64, 29,0    
+    KERNEL8x16_I1_L4_2  128,64, 30,0    
+    KERNEL8x16_I1_L4_2  128,64, 31,1 
+	bdnz		LSGEMM_L8x16_LOOP
+
+	MY_ALIGN
+LSGEMM_L8x16_LOOP_END: 
+    END8x16_2
+    blr  
+
+	MY_ALIGN
+LSGEMM_L8x16_L64_SUB: 
+	LOAD8x16_2     
+    KERNEL8x16_I1_L4_2  128,64, 0,0
+    KERNEL8x16_I1_L4_2  128,64, 1,0
+    KERNEL8x16_I1_L4_2  128,64, 2,0
+    KERNEL8x16_I1_L4_2  128,64,3,0
+    KERNEL8x16_I1_L4_2  128,64,4,0
+    KERNEL8x16_I1_L4_2  128,64,5,0        
+    KERNEL8x16_I1_L4_2  128,64,6,0
+    KERNEL8x16_I1_L4_2  128,64,7,0  
+    KERNEL8x16_I1_L4_2  128,64,8,0      
+    KERNEL8x16_I1_L4_2  128,64,9,0
+    KERNEL8x16_I1_L4_2  128,64,10,0
+    KERNEL8x16_I1_L4_2  128,64,11,0
+    KERNEL8x16_I1_L4_2  128,64,12,0
+    KERNEL8x16_I1_L4_2  128,64,13,0    
+    KERNEL8x16_I1_L4_2  128,64,14,0    
+    KERNEL8x16_I1_L4_3  128,64,15,1 
+    blr	
+LSGEMM_L8x16_L32_SUB: 
+	LOAD8x16_2     
+    KERNEL8x16_I1_L4_2  128,64,0,0
+    KERNEL8x16_I1_L4_2  128,64,1,0
+    KERNEL8x16_I1_L4_2  128,64,2,0
+    KERNEL8x16_I1_L4_2  128,64,3,0
+    KERNEL8x16_I1_L4_2  128,64,4,0
+    KERNEL8x16_I1_L4_2  128,64,5,0        
+    KERNEL8x16_I1_L4_2  128,64,6,0
+    KERNEL8x16_I1_L4_3  128,64,7,1
+    blr	
+
+LSGEMM_L8x16_L16_SUB: 
+	LOAD8x16_2     
+    KERNEL8x16_I1_L4_2  128,64,0,0
+    KERNEL8x16_I1_L4_2  128,64,1,0
+    KERNEL8x16_I1_L4_2  128,64,2,0
+    KERNEL8x16_I1_L4_3  128,64,3,1
+    blr	
+
+L8:
 #if defined(TRMMKERNEL) && !defined(LEFT)
    neg TEMP_REG, OFFSET 
 #endif
@@ -38,125 +127,95 @@ LSGEMM_L8x16_BEGIN:
 #if defined(TRMMKERNEL)
    REFRESH_TEMP_BK T11,K,TEMP_REG,16,8
    mr T12, T11
-   addi T12,T12, -1
-   srawi.		L, T12,	6 /**(T11-1) % 64x */
+   addi T12,T12, -2
+   srawi.		L, T12,	7 /**(T11-2) % 128x */
 #else
    mr T12, K
-   addi T12,T12, -1
-   srawi.		L,	T12,	6 /**(K-1) % 64x */
+   addi T12,T12, -2
+   srawi.		L,	T12,	7 /**(K-2) % 128x */
 #endif 
  
-    ZERO8x16
+    ZERO8x16 
 	ble		LSGEMM_L8x16_SUB0
-
-	MY_ALIGN
-LSGEMM_L8x16_LOOP_START:
- 
-	LOAD8x16_0  /*we already zeroed */
-    ##OffsetA=64 OffsetB=32
-    addi AO,AO,2112
-    addi BO,BO,32  
-
-	mtctr		L
-
-	MY_ALIGN
-
-LSGEMM_L8x16_LOOP:
-
-    KERNEL8x16_I1_L4_2  -2048,0, 0,0
-    KERNEL8x16_I1_L4_2  -2048,0, 1,0
-    KERNEL8x16_I1_L4_2  -2048,0, 2,0
-    KERNEL8x16_I1_L4_2  -2048,0, 3,0
-    KERNEL8x16_I1_L4_2  -2048,0, 4,0
-    KERNEL8x16_I1_L4_2  -2048,0, 5,0        
-    KERNEL8x16_I1_L4_2  -2048,0, 6,0
-    KERNEL8x16_I1_L4_2  -2048,0, 7,0  
-    KERNEL8x16_I1_L4_2  -2048,0, 8,0      
-    KERNEL8x16_I1_L4_2  -2048,0, 9,0
-    KERNEL8x16_I1_L4_2  -2048,0, 10,0
-    KERNEL8x16_I1_L4_2  -2048,0, 11,0
-    KERNEL8x16_I1_L4_2  -2048,0, 12,0
-    KERNEL8x16_I1_L4_2  -2048,0, 13,0    
-    KERNEL8x16_I1_L4_2  -2048,0, 14,0    
-    KERNEL8x16_I1_L4_2  -2048,0, 15,1  	
-
-	bdnz		LSGEMM_L8x16_LOOP
-
-	MY_ALIGN
-LSGEMM_L8x16_LOOP_END:
-
-    END8x16 0, AO, BO, -2048, 0    
-
-	b		LSGEMM_L8x16_SUB1 
+	mtctr		L 
+    bl      LSGEMM_L8x16_LMAIN_SUB
+	andi.		L,	T12,	127
+	ble		LSGEMM_L8x16_SAVE
+	b		LSGEMM_L8x16_SUB2   
 	MY_ALIGN
 LSGEMM_L8x16_SUB0:
 #if defined(TRMMKERNEL)
-	andi.		L,	T11,	127
+	andi.		L,	T11,	255
+    cmpwi   T11,129
 #else
-	andi.		L,	K,	127
-#endif   
-	b		LSGEMM_L8x16_SUB2
-	MY_ALIGN
-LSGEMM_L8x16_SUB1:
-#if defined(TRMMKERNEL)
-	andi.		L,	T12,	63
-#else
-	andi.		L,  T12,	63
-#endif	
-	ble		LSGEMM_L8x16_SAVE
+	andi.		L,	K,	255
+    cmpwi   K,129
+#endif       
+    li T10,1
+    bne CMP8x16_128K
+    addi BO,BO,-32
+    addi AO,AO,-64 
+    LOAD8x16 64,32 
+    END8x16_WITHOUT_ADD   
+    LOAD8x16_2O AO,BO,  128, 64 
+    mtctr   T10   
+    bl LSGEMM_L8x16_K128   
+    b LSGEMM_L8x16_SAVE  
+CMP8x16_128K:
+/*----------------------------------------*/   
+#if defined(TRMMKERNEL)    
+    cmpwi   T11,128
+#else    
+    cmpwi   K,128
+#endif        
+    bne LSGEMM_L8x16_SUB2 
+    MY_ALIGN   
+    mtctr   T10
+    addi BO,BO,-64
+    addi AO,AO,-128   
+    LOAD8x16_2O  AO,BO,  128,64
+    bl LSGEMM_L8x16_K128   
+    b LSGEMM_L8x16_SAVE
 	MY_ALIGN
 LSGEMM_L8x16_SUB2:
-
-    srawi.      T10,L, 5
+    andi.   T10,L,64
+    ble   LSGEMM_L8x16_SUB2_32
+    bl   LSGEMM_L8x16_L64_SUB
+    MY_ALIGN 
+LSGEMM_L8x16_SUB2_32:
+    andi.      T10,L, 32
     ble LSGEMM_L8x16_SUB2_16
-    mtctr		T10
-    MY_ALIGN
-LSGEMM_L8x16_SUB2_LOOP:
-	LOAD8x16_0 
-    KERNEL8x16_I1_L4_2  64,32, 0,0
-    KERNEL8x16_I1_L4_2  64,32, 1,0
-    KERNEL8x16_I1_L4_2  64,32, 2,0
-    KERNEL8x16_I1_L4_2  64,32, 3,0
-    KERNEL8x16_I1_L4_2  64,32, 4,0
-    KERNEL8x16_I1_L4_2  64,32, 5,0
-    KERNEL8x16_I1_L4_2  64,32, 6,0
-    KERNEL8x16_I1_L4_3  64,32, 7,1
-    bdnz LSGEMM_L8x16_SUB2_LOOP 
-    MY_ALIGN        
+    bl   LSGEMM_L8x16_L32_SUB
+    MY_ALIGN                
 LSGEMM_L8x16_SUB2_16:
     andi.      T10,L, 16
     ble LSGEMM_L8x16_SUB2_8
-	LOAD8x16_0 
-    KERNEL8x16_I1_L4_2  64,32, 0,0
-    KERNEL8x16_I1_L4_2  64,32, 1,0
-    KERNEL8x16_I1_L4_2  64,32, 2,0
-    KERNEL8x16_I1_L4_3  64,32, 3,1
+	bl  LSGEMM_L8x16_L16_SUB
     MY_ALIGN 
 LSGEMM_L8x16_SUB2_8:
     andi.      T10,L, 8
     ble LSGEMM_L8x16_SUB2_4 
-	LOAD8x16_0
-    KERNEL8x16_I1_L4_2  64,32, 0,0
-    KERNEL8x16_I1_L4_3  64,32, 1,1
+	LOAD8x16_2
+    KERNEL8x16_I1_L4_2  128,64, 0,0
+    KERNEL8x16_I1_L4_3  128,64, 1,1
 	MY_ALIGN	
 LSGEMM_L8x16_SUB2_4:
     andi.      T10,L, 4
     ble LSGEMM_L8x16_SUB2_2
-    LOAD8x16_0
-    KERNEL8x16_I1_L4_3  64,32, 0,1
+    LOAD8x16_2
+    KERNEL8x16_I1_L4_3  128,64, 0,1
     MY_ALIGN
 LSGEMM_L8x16_SUB2_2:
     andi.      T10,L, 2
     ble LSGEMM_L8x16_SUB2_1
-    LOAD8x16_0
-    KERNEL8x16_I1_L2_3  64,32, 0,1
+    LOAD8x16_2
+    KERNEL8x16_E2  128,64, 0,1
     MY_ALIGN    
 LSGEMM_L8x16_SUB2_1:
     andi.      T10,L, 1
     ble LSGEMM_L8x16_SAVE	
     KERNEL8x16 0
-#	addic.		L,	L,	-1
-#	bgt		LSGEMM_L8x16_SUB2
+
 
 	MY_ALIGN
 LSGEMM_L8x16_SAVE:

@@ -16,17 +16,15 @@ if(NOT FortranCInterface_GLOBAL_FOUND OR NOT FortranCInterface_MODULE_FOUND)
                  ${LAPACK_BINARY_DIR}/include/lapacke_mangling.h)
 endif()
 
-if(WIN32 AND NOT UNIX)
-  add_definitions(-DHAVE_LAPACK_CONFIG_H -DLAPACK_COMPLEX_STRUCTURE)
-  message(STATUS "Windows BUILD")
-endif()
-
-get_directory_property(DirDefs COMPILE_DEFINITIONS)
-
 include_directories(include ${LAPACK_BINARY_DIR}/include)
 add_subdirectory(include)
 add_subdirectory(src)
 add_subdirectory(utils)
+
+option(LAPACKE_BUILD_SINGLE "Build LAPACKE single precision real" ON)
+option(LAPACKE_BUILD_DOUBLE "Build LAPACKE double precision real" ON)
+option(LAPACKE_BUILD_COMPLEX "Build LAPACKE single precision complex" ON)
+option(LAPACKE_BUILD_COMPLEX16 "Build LAPACKE double precision complex" ON)
 
 macro(append_subdir_files variable dirname)
   get_directory_property(holder DIRECTORY ${dirname} DEFINITION ${variable})
@@ -35,8 +33,29 @@ macro(append_subdir_files variable dirname)
   endforeach()
 endmacro()
 
+message(STATUS "Build LAPACKE single precision real: ${LAPACKE_BUILD_SINGLE}")
+message(STATUS "Build LAPACKE double precision real: ${LAPACKE_BUILD_DOUBLE}")
+message(STATUS "Build LAPACKE single precision complex: ${LAPACKE_BUILD_COMPLEX}")
+message(STATUS "Build LAPACKE double precision complex: ${LAPACKE_BUILD_COMPLEX16}")
+
 append_subdir_files(LAPACKE_INCLUDE "include")
 append_subdir_files(SOURCES "src")
+if (LAPACKE_BUILD_SINGLE)
+  append_subdir_files(SOURCES_SINGLE "src")
+  list(APPEND SOURCES ${SOURCES_SINGLE})
+endif()
+if (LAPACKE_BUILD_DOUBLE)
+  append_subdir_files(SOURCES_DOUBLE "src")
+  list(APPEND SOURCES ${SOURCES_DOUBLE})
+endif()
+if (LAPACKE_BUILD_COMPLEX)
+  append_subdir_files(SOURCES_COMPLEX "src")
+  list(APPEND SOURCES ${SOURCES_COMPLEX})
+endif()
+if (LAPACKE_BUILD_COMPLEX16)
+  append_subdir_files(SOURCES_COMPLEX16 "src")
+  list(APPEND SOURCES ${SOURCES_COMPLEX16})
+endif()
 append_subdir_files(DEPRECATED "src")
 append_subdir_files(EXTENDED "src")
 append_subdir_files(MATGEN "src")
@@ -61,9 +80,13 @@ set_target_properties(
   SOVERSION ${LAPACK_MAJOR_VERSION}
   )
 target_include_directories(lapacke PUBLIC
-  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../include>
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include>
 )
+if(WIN32 AND NOT UNIX)
+  target_compile_definitions(lapacke PUBLIC HAVE_LAPACK_CONFIG_H LAPACK_COMPLEX_STRUCTURE)
+  message(STATUS "Windows BUILD")
+endif()
 
 if(LAPACKE_WITH_TMG)
   target_link_libraries(lapacke PRIVATE tmglib)
@@ -71,7 +94,11 @@ endif()
 target_link_libraries(lapacke PRIVATE ${LAPACK_LIBRARIES})
 
 lapack_install_library(lapacke)
-install(FILES ${LAPACKE_INCLUDE} ${LAPACK_BINARY_DIR}/include/lapacke_mangling.h DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+install(
+  FILES ${LAPACKE_INCLUDE} ${LAPACK_BINARY_DIR}/include/lapacke_mangling.h
+  DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+  COMPONENT Development
+  )
 
 if(BUILD_TESTING)
   add_subdirectory(example)
@@ -82,6 +109,7 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/lapacke.pc.in ${CMAKE_CURRENT_BINARY_
 install(FILES
   ${CMAKE_CURRENT_BINARY_DIR}/lapacke.pc
   DESTINATION ${PKG_CONFIG_DIR}
+  COMPONENT Development
   )
 
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/cmake/lapacke-config-version.cmake.in
@@ -95,7 +123,10 @@ install(FILES
   ${CMAKE_CURRENT_BINARY_DIR}/CMakeFiles/lapacke-config.cmake
   ${LAPACK_BINARY_DIR}/lapacke-config-version.cmake
   DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/lapacke-${LAPACK_VERSION}
+  COMPONENT Development
   )
 
 install(EXPORT lapacke-targets
-  DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/lapacke-${LAPACK_VERSION})
+  DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/lapacke-${LAPACK_VERSION}
+  COMPONENT Development
+  )

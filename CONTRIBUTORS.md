@@ -171,3 +171,26 @@ In chronological order:
   * [2019-02-01] added missing Blas Level-1,2 (single precision)  simd codes
   * [2019-03-14] power9 dgemm/dtrmm kernel
   * [2019-04-29] power9 sgemm/strmm kernel 
+
+* Jiachen Wang <https://github.com/wjc404>
+  * [2019-07-29] optimize AVX2 DGEMM
+  * [2019-10-20] AVX512 DGEMM kernel (4x8)
+  * [2019-11-06] optimize AVX512 SGEMM
+  * [2019-11-12] AVX512 CGEMM & ZGEMM kernels
+  * [2019-12-23] optimize AVX2 CGEMM and ZGEMM
+  * [2019-12-30] AVX2 CGEMM3M & ZGEMM3M kernels
+  * [2020-01-07] optimize AVX2 SGEMM and STRMM
+
+* Rajalakshmi Srinivasaraghavan <https://github.com/RajalakshmiSR>
+  * [2020-04-15] Half-precision GEMM for bfloat16
+
+* Marius Hillenbrand <https://github.com/mhillenibm>
+  * [2020-05-12] Revise dynamic architecture detection for IBM z
+  * [2020-05-12] Add new sgemm and strmm kernel for IBM z14
+  * [2020-09-07] Fix builds with clang on IBM z, including dynamic architecture support
+
+* Danfeng Zhang <https://github.com/craft-zhang>
+  * [2020-05-20] Improve performance of SGEMM and STRMM on Arm Cortex-A53
+
+* PingTouGe Semiconductor Co., Ltd.
+  * [2020-10] Add RISC-V Vector (0.7.1) support. Optimize BLAS kernels for Xuantie C910

@@ -215,8 +215,7 @@ void dsolve_8x4_lt_msa(FLOAT *a, FLOAT *b, FLOAT *c, BLASLONG ldc, BLASLONG bk)
     res_c14 -= res_c8 * src_a6;
     res_c15 -= res_c8 * src_a7;
 
-    src_a9 = __msa_cast_to_vector_double(*(a + 9));
-    src_a9 = (v2f64) __msa_splati_d((v2i64) src_a9, 0);
+    src_a9 = COPY_DOUBLE_TO_VECTOR(*(a + 9));
     src_a10 = LD_DP(a + 10);
     src_a11 = (v2f64) __msa_splati_d((v2i64) src_a10, 1);
     src_a10 = (v2f64) __msa_splati_d((v2i64) src_a10, 0);
@@ -280,8 +279,7 @@ void dsolve_8x4_lt_msa(FLOAT *a, FLOAT *b, FLOAT *c, BLASLONG ldc, BLASLONG bk)
     res_c14 -= res_c10 * src_a22;
     res_c15 -= res_c10 * src_a23;
 
-    src_a27 = __msa_cast_to_vector_double(*(a + 27));
-    src_a27 = (v2f64) __msa_splati_d((v2i64) src_a27, 0);
+    src_a27 = COPY_DOUBLE_TO_VECTOR(*(a + 27));
     src_a28 = LD_DP(a + 28);
     src_a29 = (v2f64) __msa_splati_d((v2i64) src_a28, 1);
     src_a28 = (v2f64) __msa_splati_d((v2i64) src_a28, 0);
@@ -326,8 +324,7 @@ void dsolve_8x4_lt_msa(FLOAT *a, FLOAT *b, FLOAT *c, BLASLONG ldc, BLASLONG bk)
     res_c14 -= res_c12 * src_a38;
     res_c15 -= res_c12 * src_a39;
 
-    src_a45 = __msa_cast_to_vector_double(*(a + 45));
-    src_a45 = (v2f64) __msa_splati_d((v2i64) src_a45, 0);
+    src_a45 = COPY_DOUBLE_TO_VECTOR(*(a + 45));
     src_a46 = LD_DP(a + 46);
     src_a47 = (v2f64) __msa_splati_d((v2i64) src_a46, 1);
     src_a46 = (v2f64) __msa_splati_d((v2i64) src_a46, 0);
@@ -353,8 +350,7 @@ void dsolve_8x4_lt_msa(FLOAT *a, FLOAT *b, FLOAT *c, BLASLONG ldc, BLASLONG bk)
     ILVRL_D2_DP(res_c5, res_c4, src_c2, src_c6);
     ILVRL_D2_DP(res_c13, res_c12, src_c10, src_c14);
 
-    src_a63 = __msa_cast_to_vector_double(*(a + 63));
-    src_a63 = (v2f64) __msa_splati_d((v2i64) src_a63, 0);
+    src_a63 = COPY_DOUBLE_TO_VECTOR(*(a + 63));
     src_a54 = LD_DP(a + 54);
     src_a55 = (v2f64) __msa_splati_d((v2i64) src_a54, 1);
     src_a54 = (v2f64) __msa_splati_d((v2i64) src_a54, 0);
@@ -478,8 +474,7 @@ static void dsolve_8x2_lt_msa(FLOAT *a, FLOAT *b, FLOAT *c, BLASLONG ldc, BLASLO
     res_c6 -= res_c0 * src_a6;
     res_c7 -= res_c0 * src_a7;
 
-    src_a9 = __msa_cast_to_vector_double(*(a + 9));
-    src_a9 = (v2f64) __msa_splati_d((v2i64) src_a9, 0);
+    src_a9 = COPY_DOUBLE_TO_VECTOR(*(a + 9));
     src_a10 = LD_DP(a + 10);
     src_a11 = (v2f64) __msa_splati_d((v2i64) src_a10, 1);
     src_a10 = (v2f64) __msa_splati_d((v2i64) src_a10, 0);
@@ -515,8 +510,7 @@ static void dsolve_8x2_lt_msa(FLOAT *a, FLOAT *b, FLOAT *c, BLASLONG ldc, BLASLO
     res_c6 -= res_c2 * src_a22;
     res_c7 -= res_c2 * src_a23;
 
-    src_a27 = __msa_cast_to_vector_double(*(a + 27));
-    src_a27 = (v2f64) __msa_splati_d((v2i64) src_a27, 0);
+    src_a27 = COPY_DOUBLE_TO_VECTOR(*(a + 27));
     src_a28 = LD_DP(a + 28);
     src_a29 = (v2f64) __msa_splati_d((v2i64) src_a28, 1);
     src_a28 = (v2f64) __msa_splati_d((v2i64) src_a28, 0);
@@ -553,8 +547,7 @@ static void dsolve_8x2_lt_msa(FLOAT *a, FLOAT *b, FLOAT *c, BLASLONG ldc, BLASLO
     res_c6 -= res_c4 * src_a38;
     res_c7 -= res_c4 * src_a39;
 
-    src_a45 = __msa_cast_to_vector_double(*(a + 45));
-    src_a45 = (v2f64) __msa_splati_d((v2i64) src_a45, 0);
+    src_a45 = COPY_DOUBLE_TO_VECTOR(*(a + 45));
     src_a46 = LD_DP(a + 46);
     src_a47 = (v2f64) __msa_splati_d((v2i64) src_a46, 1);
     src_a46 = (v2f64) __msa_splati_d((v2i64) src_a46, 0);
@@ -563,8 +556,7 @@ static void dsolve_8x2_lt_msa(FLOAT *a, FLOAT *b, FLOAT *c, BLASLONG ldc, BLASLO
     res_c6 -= res_c5 * src_a46;
     res_c7 -= res_c5 * src_a47;
 
-    src_a63 = __msa_cast_to_vector_double(*(a + 63));
-    src_a63 = (v2f64) __msa_splati_d((v2i64) src_a63, 0);
+    src_a63 = COPY_DOUBLE_TO_VECTOR(*(a + 63));
     src_a54 = LD_DP(a + 54);
     src_a55 = (v2f64) __msa_splati_d((v2i64) src_a54, 1);
     src_a54 = (v2f64) __msa_splati_d((v2i64) src_a54, 0);
@@ -786,8 +778,7 @@ static void dsolve_4x4_lt_msa(FLOAT *a, FLOAT *b, FLOAT *c, BLASLONG ldc, BLASLO
     res_c6 -= res_c4 * src_a2;
     res_c7 -= res_c4 * src_a3;
 
-    src_a5 = __msa_cast_to_vector_double(*(a + 5));
-    src_a5 = (v2f64) __msa_splati_d((v2i64) src_a5, 0);
+    src_a5 = COPY_DOUBLE_TO_VECTOR(*(a + 5));
     src_a6 = LD_DP(a + 6);
     src_a7 = (v2f64) __msa_splati_d((v2i64) src_a6, 1);
     src_a6 = (v2f64) __msa_splati_d((v2i64) src_a6, 0);
@@ -803,8 +794,7 @@ static void dsolve_4x4_lt_msa(FLOAT *a, FLOAT *b, FLOAT *c, BLASLONG ldc, BLASLO
     src_a10 = LD_DP(a + 10);
     src_a11 = (v2f64) __msa_splati_d((v2i64) src_a10, 1);
     src_a10 = (v2f64) __msa_splati_d((v2i64) src_a10, 0);
-    src_a15 = __msa_cast_to_vector_double(*(a + 15));
-    src_a15 = (v2f64) __msa_splati_d((v2i64) src_a15, 0);
+    src_a15 = COPY_DOUBLE_TO_VECTOR(*(a + 15));
 
     res_c2 *= src_a10;
     res_c3 -= res_c2 * src_a11;
@@ -881,8 +871,7 @@ static void dsolve_4x2_lt_msa(FLOAT *a, FLOAT *b, FLOAT *c, BLASLONG ldc, BLASLO
     res_c2 -= res_c0 * src_a2;
     res_c3 -= res_c0 * src_a3;
 
-    src_a5 = __msa_cast_to_vector_double(*(a + 5));
-    src_a5 = (v2f64) __msa_splati_d((v2i64) src_a5, 0);
+    src_a5 = COPY_DOUBLE_TO_VECTOR(*(a + 5));
     src_a6 = LD_DP(a + 6);
     src_a7 = (v2f64) __msa_splati_d((v2i64) src_a6, 1);
     src_a6 = (v2f64) __msa_splati_d((v2i64) src_a6, 0);
@@ -894,8 +883,7 @@ static void dsolve_4x2_lt_msa(FLOAT *a, FLOAT *b, FLOAT *c, BLASLONG ldc, BLASLO
     src_a10 = LD_DP(a + 10);
     src_a11 = (v2f64) __msa_splati_d((v2i64) src_a10, 1);
     src_a10 = (v2f64) __msa_splati_d((v2i64) src_a10, 0);
-    src_a15 = __msa_cast_to_vector_double(*(a + 15));
-    src_a15 = (v2f64) __msa_splati_d((v2i64) src_a15, 0);
+    src_a15 = COPY_DOUBLE_TO_VECTOR(*(a + 15));
 
     res_c2 *= src_a10;
     res_c3 -= res_c2 * src_a11;

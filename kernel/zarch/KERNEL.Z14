@@ -86,38 +86,38 @@ DGEMVTKERNEL = dgemv_t_4.c
 CGEMVTKERNEL = cgemv_t_4.c
 ZGEMVTKERNEL = zgemv_t_4.c
 
-STRMMKERNEL	= strmm8x4V.S
-DTRMMKERNEL	= trmm8x4V.S
+STRMMKERNEL	= gemm_vec.c
+DTRMMKERNEL	= gemm_vec.c
 CTRMMKERNEL	= ctrmm4x4V.S
 ZTRMMKERNEL	= ztrmm4x4V.S
 
-SGEMMKERNEL    =  strmm8x4V.S
-SGEMMINCOPY    = ../generic/gemm_ncopy_8.c
-SGEMMITCOPY    = ../generic/gemm_tcopy_8.c
-SGEMMONCOPY    = ../generic/gemm_ncopy_4.c
-SGEMMOTCOPY    = ../generic/gemm_tcopy_4.c
-SGEMMINCOPYOBJ = sgemm_incopy.o
-SGEMMITCOPYOBJ = sgemm_itcopy.o
-SGEMMONCOPYOBJ = sgemm_oncopy.o
-SGEMMOTCOPYOBJ = sgemm_otcopy.o
+SGEMMKERNEL    = gemm_vec.c
+ifneq ($(SGEMM_UNROLL_M),$(SGEMM_UNROLL_N))
+SGEMMINCOPY    = ../generic/gemm_ncopy_$(SGEMM_UNROLL_M).c
+SGEMMITCOPY    = ../generic/gemm_tcopy_$(SGEMM_UNROLL_M).c
+SGEMMINCOPYOBJ = sgemm_incopy$(TSUFFIX).$(SUFFIX)
+SGEMMITCOPYOBJ = sgemm_itcopy$(TSUFFIX).$(SUFFIX)
+endif
+SGEMMONCOPY    = ../generic/gemm_ncopy_$(SGEMM_UNROLL_N).c
+SGEMMOTCOPY    = ../generic/gemm_tcopy_$(SGEMM_UNROLL_N).c
+SGEMMONCOPYOBJ = sgemm_oncopy$(TSUFFIX).$(SUFFIX)
+SGEMMOTCOPYOBJ = sgemm_otcopy$(TSUFFIX).$(SUFFIX)
 
-
- 
-DGEMMKERNEL    =  gemm8x4V.S
+DGEMMKERNEL    = gemm_vec.c
 DGEMMINCOPY    = ../generic/gemm_ncopy_8.c
 DGEMMITCOPY    = ../generic/gemm_tcopy_8.c
 DGEMMONCOPY    = ../generic/gemm_ncopy_4.c
 DGEMMOTCOPY    = ../generic/gemm_tcopy_4.c
-DGEMMINCOPYOBJ = dgemm_incopy.o
-DGEMMITCOPYOBJ = dgemm_itcopy.o
-DGEMMONCOPYOBJ = dgemm_oncopy.o
-DGEMMOTCOPYOBJ = dgemm_otcopy.o
+DGEMMINCOPYOBJ = dgemm_incopy$(TSUFFIX).$(SUFFIX)
+DGEMMITCOPYOBJ = dgemm_itcopy$(TSUFFIX).$(SUFFIX)
+DGEMMONCOPYOBJ = dgemm_oncopy$(TSUFFIX).$(SUFFIX)
+DGEMMOTCOPYOBJ = dgemm_otcopy$(TSUFFIX).$(SUFFIX)
 
 CGEMMKERNEL    = ctrmm4x4V.S
 CGEMMONCOPY    = ../generic/zgemm_ncopy_4.c
 CGEMMOTCOPY    = ../generic/zgemm_tcopy_4.c
-CGEMMONCOPYOBJ =  cgemm_oncopy.o
-CGEMMOTCOPYOBJ =  cgemm_otcopy.o
+CGEMMONCOPYOBJ =  cgemm_oncopy$(TSUFFIX).$(SUFFIX)
+CGEMMOTCOPYOBJ =  cgemm_otcopy$(TSUFFIX).$(SUFFIX)
 
 ZGEMMKERNEL    = ztrmm4x4V.S
 ZGEMMONCOPY    = ../generic/zgemm_ncopy_4.c
@@ -144,8 +144,4 @@ ZTRSMKERNEL_LN	= ../generic/trsm_kernel_LN.c
 ZTRSMKERNEL_LT	= ../generic/trsm_kernel_LT.c
 ZTRSMKERNEL_RN	= ../generic/trsm_kernel_RN.c
 ZTRSMKERNEL_RT	= ../generic/trsm_kernel_RT.c
-
-
-
-
 

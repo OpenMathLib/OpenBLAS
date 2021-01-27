@@ -198,7 +198,7 @@ int CNAME(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, FLOAT dummy3,
             }
         }
     }
-    else
+    else if ((inc_x != 0) && (inc_y != 0))
     {
         for (i = (n >> 3); i--;)
         {
@@ -259,6 +259,33 @@ int CNAME(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, FLOAT dummy3,
 
                 *srcx = y0;
                 *srcy = x0;
+            }
+        }
+    }
+    else
+    {
+        if (inc_x == inc_y)
+        {
+            if (n & 1)
+            {
+                x0 = *srcx;
+                *srcx  = *srcy;
+                *srcy  = x0;
+            }
+            else
+                return (0);
+        }
+        else
+        {
+            BLASLONG ix = 0, iy = 0;
+            while (i < n)
+            {
+                x0 = srcx[ix];
+                srcx[ix] = srcy[iy];
+                srcy[iy] = x0;
+                ix += inc_x;
+                iy += inc_y;
+                i++;
             }
         }
     }

@@ -60,10 +60,10 @@ static void zdot_kernel_8 (long n, double *x, double *y, double *dot)
        "lxvd2x		43, %9, %2	\n\t"	// x3_r, x3_i
        "lxvd2x		51, %9, %3	\n\t"	// y3_r, y3_i
 
-       "xxswapd		0, 48		\n\t"	// y0_i, y0_r
-       "xxswapd		1, 49		\n\t"	// y1_i, y1_r
-       "xxswapd		2, 50		\n\t"	// y2_i, y2_r
-       "xxswapd		3, 51		\n\t"	// y3_i, y3_r
+       XXSWAPD_S(0,48)	// y0_i, y0_r
+       XXSWAPD_S(1,49)	// y1_i, y1_r
+       XXSWAPD_S(2,50)	// y2_i, y2_r
+       XXSWAPD_S(3,51)	// y3_i, y3_r
 
        "addi		%2, %2, 64	\n\t"
        "addi		%3, %3, 64	\n\t"
@@ -77,19 +77,19 @@ static void zdot_kernel_8 (long n, double *x, double *y, double *dot)
        "lxvd2x		47, %9, %2	\n\t"	// x3_r, x3_i
        "lxvd2x		7, %9, %3	\n\t"	// y3_r, y3_i
 
-       "xxswapd		8, 4		\n\t"	// y0_i, y0_r
-       "xxswapd		9, 5		\n\t"	// y1_i, y1_r
-       "xxswapd		10, 6		\n\t"	// y2_i, y2_r
-       "xxswapd		11, 7		\n\t"	// y3_i, y3_r
+       XXSWAPD_S(8,4)	// y0_i, y0_r
+       XXSWAPD_S(9,5)	// y1_i, y1_r
+       XXSWAPD_S(10,6)	// y2_i, y2_r
+       XXSWAPD_S(11,7)	// y3_i, y3_r
 
        "addi		%2, %2, 64	\n\t"
        "addi		%3, %3, 64	\n\t"
 
        "addic.		%1, %1, -8	\n\t"
-       "ble		2f		\n\t"
+       "ble		two%=		\n\t"
 
-       ".p2align	5		\n"
-     "1:				\n\t"
+       ".align	5		\n"
+     "one%=:				\n\t"
 
        "xvmaddadp	32, 40, 48	\n\t"	// x0_r * y0_r , x0_i * y0_i
        "lxvd2x		48, 0, %3	\n\t"	// y0_r, y0_i
@@ -111,14 +111,14 @@ static void zdot_kernel_8 (long n, double *x, double *y, double *dot)
        "xvmaddadp	39, 43, 3	\n\t"	// x3_r * y3_i , x3_i * y3_r
        "lxvd2x		43, %9, %2	\n\t"	// x3_r, x3_i
 
-       "xxswapd		0,48		\n\t"	// y0_i, y0_r
-       "xxswapd		1,49		\n\t"	// y1_i, y1_r
+       XXSWAPD_S(0,48)	// y0_i, y0_r
+       XXSWAPD_S(1,49)	// y1_i, y1_r
 
        "addi		%2, %2, 64	\n\t"
        "addi		%3, %3, 64	\n\t"
 
-       "xxswapd		2,50		\n\t"	// y2_i, y2_r
-       "xxswapd		3,51		\n\t"	// y3_i, y3_r
+       XXSWAPD_S(2,50)	// y2_i, y2_r
+       XXSWAPD_S(3,51)	// y3_i, y3_r
 
        "xvmaddadp	32, 44, 4	\n\t"	// x0_r * y0_r , x0_i * y0_i
        "lxvd2x		4, 0, %3	\n\t"	// y0_r, y0_i
@@ -138,19 +138,19 @@ static void zdot_kernel_8 (long n, double *x, double *y, double *dot)
        "xvmaddadp	39, 47, 11	\n\t"	// x3_r * y3_i , x3_i * y3_r
        "lxvd2x		47, %9, %2	\n\t"	// x3_r, x3_i
 
-       "xxswapd		8,4		\n\t"	// y0_i, y0_r
-       "xxswapd		9,5		\n\t"	// y1_i, y1_r
+       XXSWAPD_S(8,4)	// y0_i, y0_r
+       XXSWAPD_S(9,5)	// y1_i, y1_r
 
        "addi		%2, %2, 64	\n\t"
        "addi		%3, %3, 64	\n\t"
 
-       "xxswapd		10,6		\n\t"	// y2_i, y2_r
-       "xxswapd		11,7		\n\t"	// y3_i, y3_r
+       XXSWAPD_S(10,6)	// y2_i, y2_r
+       XXSWAPD_S(11,7)	// y3_i, y3_r
 
        "addic.		%1, %1, -8	\n\t"
-       "bgt		1b		\n"
+       "bgt		one%=		\n"
 
-     "2:				\n\t"
+     "two%=:				\n\t"
 
        "xvmaddadp	32, 40, 48	\n\t"	// x0_r * y0_r , x0_i * y0_i
        "xvmaddadp	34, 41, 49	\n\t"	// x1_r * y1_r , x1_i * y1_i

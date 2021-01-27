@@ -33,7 +33,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "dscal_microk_sandy-2.c"
 #elif defined(HASWELL) || defined(ZEN)
 #include "dscal_microk_haswell-2.c"
-#elif  defined (SKYLAKEX)
+#elif  defined (SKYLAKEX) || defined (COOPERLAKE)
 #include "dscal_microk_skylakex-2.c"
 #endif
 
@@ -136,10 +136,10 @@ static void dscal_kernel_inc_8(BLASLONG n, FLOAT *alpha, FLOAT *x, BLASLONG inc_
 	"jnz    1b					    \n\t"
 
         :
-          "+r" (n)      // 0
+          "+r" (n),     // 0
+          "+r" (x),     // 1
+          "+r" (x1)     // 2
         :
-          "r" (x),      // 1
-          "r" (x1),     // 2
           "r" (alpha),  // 3
           "r" (inc_x),  // 4
           "r" (inc_x3)  // 5

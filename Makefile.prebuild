@@ -17,7 +17,11 @@ ifdef CPUIDEMU
 EXFLAGS = -DCPUIDEMU -DVENDOR=99
 endif
 
-ifeq ($(TARGET), 1004K)
+ifeq ($(TARGET), MIPS24K)
+TARGET_FLAGS = -mips32r2
+endif
+
+ifeq ($(TARGET), MIPS1004K)
 TARGET_FLAGS = -mips32r2
 endif
 
@@ -37,12 +41,16 @@ ifeq ($(TARGET), I6500)
 TARGET_FLAGS = -mips64r6
 endif
 
+ifeq ($(TARGET), C910V)
+TARGET_FLAGS = -march=rv64gcvxthead -mabi=lp64v
+endif
+
 all: getarch_2nd
 	./getarch_2nd  0 >> $(TARGET_MAKE)
 	./getarch_2nd  1 >> $(TARGET_CONF)
 
 config.h : c_check f_check getarch
-	perl ./c_check $(TARGET_MAKE) $(TARGET_CONF) $(CC) $(TARGET_FLAGS)
+	perl ./c_check $(TARGET_MAKE) $(TARGET_CONF) $(CC) $(TARGET_FLAGS) $(CFLAGS)
 ifneq ($(ONLY_CBLAS), 1)
 	perl ./f_check $(TARGET_MAKE) $(TARGET_CONF) $(FC) $(TARGET_FLAGS)
 else
@@ -59,13 +67,13 @@ endif
 
 
 getarch : getarch.c cpuid.S dummy $(CPUIDEMU)
-	$(HOSTCC) $(CFLAGS) $(EXFLAGS) -o $(@F) getarch.c cpuid.S $(CPUIDEMU)
+	$(HOSTCC) $(HOST_CFLAGS) $(EXFLAGS) -o $(@F) getarch.c cpuid.S $(CPUIDEMU)
 
 getarch_2nd : getarch_2nd.c config.h dummy
 ifndef TARGET_CORE
-	$(HOSTCC) -I. $(CFLAGS) -o $(@F) getarch_2nd.c
+	$(HOSTCC) -I. $(HOST_CFLAGS) -o $(@F) getarch_2nd.c
 else
-	$(HOSTCC) -I. $(CFLAGS) -DBUILD_KERNEL -o $(@F) getarch_2nd.c
+	$(HOSTCC) -I. $(HOST_CFLAGS) -DBUILD_KERNEL -o $(@F) getarch_2nd.c
 endif
 
 dummy:

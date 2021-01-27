@@ -72,6 +72,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "common.h"
 #if defined(OS_LINUX) || defined(OS_NETBSD) || defined(OS_DARWIN) || defined(OS_ANDROID) || defined(OS_SUNOS) || defined(OS_FREEBSD) || defined(OS_OPENBSD) || defined(OS_DRAGONFLY) || defined(OS_HAIKU)
 #include <dlfcn.h>
+#include <errno.h>
 #include <signal.h>
 #include <sys/resource.h>
 #include <sys/time.h>
@@ -140,6 +141,16 @@ typedef struct {
 
 } thread_status_t;
 
+#ifdef HAVE_C11
+#define	atomic_load_queue(p)		__atomic_load_n(p, __ATOMIC_RELAXED)
+#define	atomic_store_queue(p, v)	__atomic_store_n(p, v, __ATOMIC_RELAXED)
+#else
+#define	atomic_load_queue(p)		(blas_queue_t*)(*(volatile blas_queue_t**)(p))
+#define	atomic_store_queue(p, v)	(*(volatile blas_queue_t* volatile*)(p) = (v))
+#endif
+
+
+
 static thread_status_t thread_status[MAX_CPU_NUMBER] __attribute__((aligned(ATTRIBUTE_SIZE)));
 
 #ifndef THREAD_TIMEOUT
@@ -181,7 +192,7 @@ static void legacy_exec(void *func, int mode, blas_arg_t *args, void *sb){
 
       if (!(mode & BLAS_COMPLEX)){
 #ifdef EXPRECISION
-	if (mode & BLAS_XDOUBLE){
+	if ((mode & BLAS_PREC) == BLAS_XDOUBLE){
 	  /* REAL / Extended Double */
 	  void (*afunc)(BLASLONG, BLASLONG, BLASLONG, xdouble,
 			xdouble *, BLASLONG, xdouble *, BLASLONG,
@@ -194,7 +205,7 @@ static void legacy_exec(void *func, int mode, blas_arg_t *args, void *sb){
 		args -> c, args -> ldc, sb);
 	} else
 #endif
-	  if (mode & BLAS_DOUBLE){
+	  if ((mode & BLAS_PREC) == BLAS_DOUBLE){
 	    /* REAL / Double */
 	    void (*afunc)(BLASLONG, BLASLONG, BLASLONG, double,
 			  double *, BLASLONG, double *, BLASLONG,
@@ -205,21 +216,58 @@ static void legacy_exec(void *func, int mode, blas_arg_t *args, void *sb){
 		  args -> a, args -> lda,
 		  args -> b, args -> ldb,
 		  args -> c, args -> ldc, sb);
-	  } else {
-	    /* REAL / Single */
-	    void (*afunc)(BLASLONG, BLASLONG, BLASLONG, float,
-			  float *, BLASLONG, float *, BLASLONG,
-			  float *, BLASLONG, void *) = func;
+	  } else if ((mode & BLAS_PREC) == BLAS_SINGLE){
+            /* REAL / Single */
+            void (*afunc)(BLASLONG, BLASLONG, BLASLONG, float,
+                          float *, BLASLONG, float *, BLASLONG,
+                          float *, BLASLONG, void *) = func;
 
-	    afunc(args -> m, args -> n, args -> k,
-		  ((float *)args -> alpha)[0],
-		  args -> a, args -> lda,
-		  args -> b, args -> ldb,
-		  args -> c, args -> ldc, sb);
+            afunc(args -> m, args -> n, args -> k,
+                  ((float *)args -> alpha)[0],
+                  args -> a, args -> lda,
+                  args -> b, args -> ldb,
+                  args -> c, args -> ldc, sb);
+#ifdef BUILD_BFLOAT16
+	  } else if ((mode & BLAS_PREC) == BLAS_BFLOAT16){
+            /* REAL / BFLOAT16 */
+            void (*afunc)(BLASLONG, BLASLONG, BLASLONG, bfloat16,
+                          bfloat16 *, BLASLONG, bfloat16 *, BLASLONG,
+                          bfloat16 *, BLASLONG, void *) = func;
+
+            afunc(args -> m, args -> n, args -> k,
+                  ((bfloat16 *)args -> alpha)[0],
+                  args -> a, args -> lda,
+                  args -> b, args -> ldb,
+                  args -> c, args -> ldc, sb);
+          } else if ((mode & BLAS_PREC) == BLAS_STOBF16){
+            /* REAL / BLAS_STOBF16 */
+            void (*afunc)(BLASLONG, BLASLONG, BLASLONG, float,
+                          float *, BLASLONG, bfloat16 *, BLASLONG,
+                          float *, BLASLONG, void *) = func;
+
+            afunc(args -> m, args -> n, args -> k,
+                  ((float *)args -> alpha)[0],
+                  args -> a, args -> lda,
+                  args -> b, args -> ldb,
+                  args -> c, args -> ldc, sb);
+          } else if ((mode & BLAS_PREC) == BLAS_DTOBF16){
+            /* REAL / BLAS_DTOBF16 */
+            void (*afunc)(BLASLONG, BLASLONG, BLASLONG, double,
+                          double *, BLASLONG, bfloat16 *, BLASLONG,
+                          double *, BLASLONG, void *) = func;
+
+            afunc(args -> m, args -> n, args -> k,
+                  ((double *)args -> alpha)[0],
+                  args -> a, args -> lda,
+                  args -> b, args -> ldb,
+                  args -> c, args -> ldc, sb);
+#endif
+      } else {
+	    /* REAL / Other types in future */
 	  }
       } else {
 #ifdef EXPRECISION
-	if (mode & BLAS_XDOUBLE){
+	if ((mode & BLAS_PREC) == BLAS_XDOUBLE){
 	  /* COMPLEX / Extended Double */
 	  void (*afunc)(BLASLONG, BLASLONG, BLASLONG, xdouble, xdouble,
 			xdouble *, BLASLONG, xdouble *, BLASLONG,
@@ -233,7 +281,7 @@ static void legacy_exec(void *func, int mode, blas_arg_t *args, void *sb){
 		args -> c, args -> ldc, sb);
 	} else
 #endif
-	  if (mode & BLAS_DOUBLE){
+	  if ((mode & BLAS_PREC) == BLAS_DOUBLE) {
 	    /* COMPLEX / Double */
 	  void (*afunc)(BLASLONG, BLASLONG, BLASLONG, double, double,
 			double *, BLASLONG, double *, BLASLONG,
@@ -245,7 +293,7 @@ static void legacy_exec(void *func, int mode, blas_arg_t *args, void *sb){
 		args -> a, args -> lda,
 		args -> b, args -> ldb,
 		args -> c, args -> ldc, sb);
-	  } else {
+	  } else if ((mode & BLAS_PREC) == BLAS_SINGLE) {
 	    /* COMPLEX / Single */
 	  void (*afunc)(BLASLONG, BLASLONG, BLASLONG, float, float,
 			float *, BLASLONG, float *, BLASLONG,
@@ -257,17 +305,38 @@ static void legacy_exec(void *func, int mode, blas_arg_t *args, void *sb){
 		args -> a, args -> lda,
 		args -> b, args -> ldb,
 		args -> c, args -> ldc, sb);
-	  }
+      } else {
+          /* COMPLEX / Other types in future */
+      }
       }
 }
 
-#if defined(OS_LINUX) && !defined(NO_AFFINITY)
+#if defined(OS_LINUX) && !defined(NO_AFFINITY) 
 int gotoblas_set_affinity(int);
 int gotoblas_set_affinity2(int);
 int get_node(void);
 #endif
 
 static int increased_threads = 0;
+
+#ifdef OS_LINUX
+extern int openblas_get_num_threads(void);  
+
+int openblas_setaffinity(int thread_idx, size_t cpusetsize, cpu_set_t* cpu_set) {
+  const int active_threads = openblas_get_num_threads();
+
+  if (thread_idx < 0 || thread_idx >= active_threads) {
+    errno = EINVAL;
+    return -1;
+  }
+
+  pthread_t thread = (thread_idx == active_threads - 1)
+      ? pthread_self()
+      : blas_threads[thread_idx];
+
+  return pthread_setaffinity_np(thread, cpusetsize, cpu_set);
+}
+#endif
 
 static void* blas_thread_server(void *arg){
 
@@ -312,20 +381,19 @@ blas_queue_t *tscq;
 
       last_tick = (unsigned int)rpcc();
 
-	pthread_mutex_lock  (&thread_status[cpu].lock);
-        tscq=thread_status[cpu].queue;
-	pthread_mutex_unlock  (&thread_status[cpu].lock);
+      tscq = atomic_load_queue(&thread_status[cpu].queue);
 
 	while(!tscq) {
 	YIELDING;
 
 	if ((unsigned int)rpcc() - last_tick > thread_timeout) {
 
-	  pthread_mutex_lock  (&thread_status[cpu].lock);
 
-	  if (!thread_status[cpu].queue) {
+	  if (!atomic_load_queue(&thread_status[cpu].queue)) {
+	    pthread_mutex_lock  (&thread_status[cpu].lock);
 	    thread_status[cpu].status = THREAD_STATUS_SLEEP;
-	    while (thread_status[cpu].status == THREAD_STATUS_SLEEP) {
+	    while (thread_status[cpu].status == THREAD_STATUS_SLEEP && 
+			    !atomic_load_queue(&thread_status[cpu].queue)) {
 
 #ifdef MONITOR
 	      main_status[cpu] = MAIN_SLEEPING;
@@ -333,19 +401,18 @@ blas_queue_t *tscq;
 
 	      pthread_cond_wait(&thread_status[cpu].wakeup, &thread_status[cpu].lock);
 	    }
+	    pthread_mutex_unlock(&thread_status[cpu].lock);
 	  }
-
-	  pthread_mutex_unlock(&thread_status[cpu].lock);
 
 	  last_tick = (unsigned int)rpcc();
 	}
-	pthread_mutex_lock  (&thread_status[cpu].lock);
-        tscq=thread_status[cpu].queue;
-	pthread_mutex_unlock  (&thread_status[cpu].lock);
+
+	tscq = atomic_load_queue(&thread_status[cpu].queue);
 
       }
 
-    queue = thread_status[cpu].queue;
+      queue = atomic_load_queue(&thread_status[cpu].queue);
+      MB;
 
     if ((long)queue == -1) break;
 
@@ -360,9 +427,7 @@ blas_queue_t *tscq;
     if (queue) {
       int (*routine)(blas_arg_t *, void *, void *, void *, void *, BLASLONG) = queue -> routine;
 
-      pthread_mutex_lock  (&thread_status[cpu].lock);
-      thread_status[cpu].queue = (blas_queue_t *)1;
-      pthread_mutex_unlock  (&thread_status[cpu].lock);
+      atomic_store_queue(&thread_status[cpu].queue, (blas_queue_t *)1);
 
       sa = queue -> sa;
       sb = queue -> sb;
@@ -388,33 +453,44 @@ blas_queue_t *tscq;
       if (sb == NULL) {
 	if (!(queue -> mode & BLAS_COMPLEX)){
 #ifdef EXPRECISION
-	  if (queue -> mode & BLAS_XDOUBLE){
+	  if ((queue -> mode & BLAS_PREC) == BLAS_XDOUBLE){
 	    sb = (void *)(((BLASLONG)sa + ((QGEMM_P * QGEMM_Q * sizeof(xdouble)
 					+ GEMM_ALIGN) & ~GEMM_ALIGN)) + GEMM_OFFSET_B);
 	  } else
 #endif
-	  if (queue -> mode & BLAS_DOUBLE){
+	  if ((queue -> mode & BLAS_PREC) == BLAS_DOUBLE) {
+#ifdef BUILD_DOUBLE
 	    sb = (void *)(((BLASLONG)sa + ((DGEMM_P * DGEMM_Q * sizeof(double)
 					+ GEMM_ALIGN) & ~GEMM_ALIGN)) + GEMM_OFFSET_B);
-
-	  } else {
+#endif
+	  } else if ((queue -> mode & BLAS_PREC) == BLAS_SINGLE) {
+#ifdef BUILD_SINGLE
 	    sb = (void *)(((BLASLONG)sa + ((SGEMM_P * SGEMM_Q * sizeof(float)
 					+ GEMM_ALIGN) & ~GEMM_ALIGN)) + GEMM_OFFSET_B);
-	  }
+#endif
+    } else {
+          /* Other types in future */
+      }
 	} else {
 #ifdef EXPRECISION
-	  if (queue -> mode & BLAS_XDOUBLE){
+	  if ((queue -> mode & BLAS_PREC) == BLAS_XDOUBLE){
 	    sb = (void *)(((BLASLONG)sa + ((XGEMM_P * XGEMM_Q * 2 * sizeof(xdouble)
 					+ GEMM_ALIGN) & ~GEMM_ALIGN)) + GEMM_OFFSET_B);
 	  } else
 #endif
-	  if (queue -> mode & BLAS_DOUBLE){
+	  if ((queue -> mode & BLAS_PREC) == BLAS_DOUBLE){
+#ifdef BUILD_COMPLEX16
 	    sb = (void *)(((BLASLONG)sa + ((ZGEMM_P * ZGEMM_Q * 2 * sizeof(double)
 					+ GEMM_ALIGN) & ~GEMM_ALIGN)) + GEMM_OFFSET_B);
-	  } else {
+#endif
+	  } else if ((queue -> mode & BLAS_PREC) == BLAS_SINGLE) {
+#ifdef BUILD_COMPLEX
 	    sb = (void *)(((BLASLONG)sa + ((CGEMM_P * CGEMM_Q * 2 * sizeof(float)
 					+ GEMM_ALIGN) & ~GEMM_ALIGN)) + GEMM_OFFSET_B);
-	  }
+#endif
+      } else {
+          /* Other types in future */
+      }
 	}
 	queue->sb=sb;
       }
@@ -442,13 +518,9 @@ blas_queue_t *tscq;
 
       // arm: make sure all results are written out _before_
       // thread is marked as done and other threads use them
-      WMB;
+      MB;
+      atomic_store_queue(&thread_status[cpu].queue, (blas_queue_t *)0);
 
-      pthread_mutex_lock  (&thread_status[cpu].lock);
-      thread_status[cpu].queue = (blas_queue_t * volatile) ((long)thread_status[cpu].queue & 0);  /* Need a trick */
-      pthread_mutex_unlock  (&thread_status[cpu].lock);
-      
-      WMB;
 
     }
 
@@ -566,7 +638,7 @@ int blas_thread_init(void){
 
     for(i = 0; i < blas_num_threads - 1; i++){
 
-      thread_status[i].queue  = (blas_queue_t *)NULL;
+      atomic_store_queue(&thread_status[i].queue, (blas_queue_t *)0);
       thread_status[i].status = THREAD_STATUS_WAKEUP;
 
       pthread_mutex_init(&thread_status[i].lock, NULL);
@@ -582,7 +654,7 @@ int blas_thread_init(void){
       if(ret!=0){
 	struct rlimit rlim;
         const char *msg = strerror(ret);
-        fprintf(STDERR, "OpenBLAS blas_thread_init: pthread_create failed for thread %ld of %ld: %s\n", i+1,blas_num_threads,msg);
+        fprintf(STDERR, "OpenBLAS blas_thread_init: pthread_create failed for thread %ld of %d: %s\n", i+1,blas_num_threads,msg);
 #ifdef RLIMIT_NPROC
         if(0 == getrlimit(RLIMIT_NPROC, &rlim)) {
           fprintf(STDERR, "OpenBLAS blas_thread_init: RLIMIT_NPROC "
@@ -655,7 +727,8 @@ int exec_blas_async(BLASLONG pos, blas_queue_t *queue){
       if (queue -> mode & BLAS_NODE) {
 
 	do {
-	  while((thread_status[i].node != node || thread_status[i].queue) && (i < blas_num_threads - 1)) i ++;
+      
+	  while((thread_status[i].node != node || atomic_load_queue(&thread_status[i].queue)) && (i < blas_num_threads - 1)) i ++;
 
 	  if (i < blas_num_threads - 1) break;
 
@@ -669,36 +742,26 @@ int exec_blas_async(BLASLONG pos, blas_queue_t *queue){
 	} while (1);
 
       } else {
-	pthread_mutex_lock (&thread_status[i].lock);
-	tsiq = thread_status[i].queue;
-	pthread_mutex_unlock (&thread_status[i].lock);      
+	tsiq = atomic_load_queue(&thread_status[i].queue);
 	while(tsiq) {
 	  i ++;
 	  if (i >= blas_num_threads - 1) i = 0;
-	  pthread_mutex_lock (&thread_status[i].lock);
-	  tsiq = thread_status[i].queue;
-	  pthread_mutex_unlock (&thread_status[i].lock);
+	  tsiq = atomic_load_queue(&thread_status[i].queue);
 	}
       }
 #else
-      pthread_mutex_lock  (&thread_status[i].lock);
-      tsiq=thread_status[i].queue ;
-      pthread_mutex_unlock  (&thread_status[i].lock);
+      tsiq = atomic_load_queue(&thread_status[i].queue);
       while(tsiq) {
 	i ++;
 	if (i >= blas_num_threads - 1) i = 0;
-        pthread_mutex_lock  (&thread_status[i].lock);
-        tsiq=thread_status[i].queue ;
-        pthread_mutex_unlock  (&thread_status[i].lock);
+        tsiq = atomic_load_queue(&thread_status[i].queue);
       }
 #endif
 
       queue -> assigned = i;
-      WMB;
-      pthread_mutex_lock  (&thread_status[i].lock);
-      thread_status[i].queue = queue;
-      pthread_mutex_unlock  (&thread_status[i].lock);
-      WMB;
+      MB;
+
+      atomic_store_queue(&thread_status[i].queue, queue);
 
       queue = queue -> next;
       pos ++;
@@ -718,9 +781,7 @@ int exec_blas_async(BLASLONG pos, blas_queue_t *queue){
 
       pos = current -> assigned;
 
-      pthread_mutex_lock  (&thread_status[pos].lock);
-      tspq=thread_status[pos].queue;
-      pthread_mutex_unlock  (&thread_status[pos].lock);
+      tspq = atomic_load_queue(&thread_status[pos].queue);
 
       if ((BLASULONG)tspq > 1) {
 	pthread_mutex_lock  (&thread_status[pos].lock);
@@ -752,23 +813,19 @@ int exec_blas_async_wait(BLASLONG num, blas_queue_t *queue){
 
     while ((num > 0) && queue) {
 
-      pthread_mutex_lock(&thread_status[queue->assigned].lock);
-      tsqq=thread_status[queue -> assigned].queue;
-      pthread_mutex_unlock(&thread_status[queue->assigned].lock);
+      tsqq = atomic_load_queue(&thread_status[queue->assigned].queue);
 
 
       while(tsqq) {
 	YIELDING;
-        pthread_mutex_lock(&thread_status[queue->assigned].lock);
-        tsqq=thread_status[queue -> assigned].queue;
-        pthread_mutex_unlock(&thread_status[queue->assigned].lock);
-
-
+        tsqq = atomic_load_queue(&thread_status[queue->assigned].queue);
       };
 
       queue = queue -> next;
       num --;
     }
+
+    MB;
 
 #ifdef SMP_DEBUG
   fprintf(STDERR, "Done.\n\n");
@@ -880,7 +937,7 @@ void goto_set_num_threads(int num_threads) {
 
     for(i = blas_num_threads - 1; i < num_threads - 1; i++){
 
-      thread_status[i].queue  = (blas_queue_t *)NULL;
+      atomic_store_queue(&thread_status[i].queue, (blas_queue_t *)0);
       thread_status[i].status = THREAD_STATUS_WAKEUP;
 
       pthread_mutex_init(&thread_status[i].lock, NULL);
@@ -910,8 +967,10 @@ void goto_set_num_threads(int num_threads) {
   blas_cpu_number  = num_threads;
 
 #if defined(ARCH_MIPS64)
+#ifndef DYNAMIC_ARCH
   //set parameters for different number of threads.
   blas_set_parameter();
+#endif
 #endif
 
 }
@@ -971,12 +1030,11 @@ int BLASFUNC(blas_thread_shutdown)(void){
 
   for (i = 0; i < blas_num_threads - 1; i++) {
 
+
     pthread_mutex_lock (&thread_status[i].lock);
 
-    thread_status[i].queue = (blas_queue_t *)-1;
-
+    atomic_store_queue(&thread_status[i].queue, (blas_queue_t *)-1);
     thread_status[i].status = THREAD_STATUS_WAKEUP;
-
     pthread_cond_signal (&thread_status[i].wakeup);
 
     pthread_mutex_unlock(&thread_status[i].lock);

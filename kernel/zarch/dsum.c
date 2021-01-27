@@ -86,9 +86,9 @@ static FLOAT dsum_kernel_32(BLASLONG n, FLOAT *x) {
     "vfadb   %%v24,%%v24,%%v31\n\t"
     "vrepg   %%v25,%%v24,1\n\t"
     "vfadb   %%v24,%%v24,%%v25\n\t"
-    "vsteg   %%v24,%[asum],0"
+    "vsteg   %%v24,%[sum],0"
     : [sum] "=Q"(sum),[n] "+&r"(n)
-    : "m"(*(const struct { FLOAT x[n]; } *) x),[x] "a"(x)
+    : "m"(*(const FLOAT (*)[n]) x),[x] "a"(x)
     : "cc", "r1", "v16", "v17", "v18", "v19", "v20", "v21", "v22", "v23",
        "v24", "v25", "v26", "v27", "v28", "v29", "v30", "v31");
 

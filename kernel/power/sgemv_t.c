@@ -24,6 +24,10 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
 USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *****************************************************************************/
+#if !defined(__VEC__) || !defined(__ALTIVEC__)
+#include "../arm/gemv_t.c"
+
+#else
 
 #include "common.h"
 
@@ -177,10 +181,9 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1, FLOAT alpha, FLOAT *a, BLASLO
     BLASLONG m1;
     BLASLONG m2;
     BLASLONG m3;
-    BLASLONG n2;
-
-    FLOAT ybuffer[8], *xbuffer;
-
+    BLASLONG n2; 
+    FLOAT ybuffer[8] __attribute__((aligned(16)));
+    FLOAT *xbuffer; 
     if (m < 1) return (0);
     if (n < 1) return (0);
 
@@ -478,3 +481,4 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1, FLOAT alpha, FLOAT *a, BLASLO
 
 }
 
+#endif

@@ -1,4 +1,4 @@
-
+ifneq ($(C_COMPILER), PGI)
 ifeq ($(CORE), ARMV8)
 CCOMMON_OPT += -march=armv8-a
 FCOMMON_OPT += -march=armv8-a
@@ -24,6 +24,23 @@ CCOMMON_OPT += -march=armv8-a -mtune=cortex-a73
 FCOMMON_OPT += -march=armv8-a -mtune=cortex-a73
 endif
 
+# Use a72 tunings because Neoverse-N1 is only available
+# in GCC>=9
+ifeq ($(CORE), NEOVERSEN1)
+ifeq ($(GCCVERSIONGTEQ7), 1)
+ifeq ($(GCCVERSIONGTEQ9), 1)
+CCOMMON_OPT += -march=armv8.2-a -mtune=neoverse-n1
+FCOMMON_OPT += -march=armv8.2-a -mtune=neoverse-n1
+else
+CCOMMON_OPT += -march=armv8.2-a -mtune=cortex-a72
+FCOMMON_OPT += -march=armv8.2-a -mtune=cortex-a72
+endif
+else
+CCOMMON_OPT += -march=armv8-a -mtune=cortex-a72
+FCOMMON_OPT += -march=armv8-a -mtune=cortex-a72
+endif
+endif
+
 ifeq ($(CORE), THUNDERX)
 CCOMMON_OPT += -march=armv8-a -mtune=thunderx
 FCOMMON_OPT += -march=armv8-a -mtune=thunderx
@@ -39,7 +56,25 @@ CCOMMON_OPT += -march=armv8.1-a -mtune=thunderx2t99
 FCOMMON_OPT += -march=armv8.1-a -mtune=thunderx2t99
 endif
 
+ifeq ($(CORE), THUNDERX3T110)
+ifeq ($(GCCVERSIONGTEQ10), 1)
+CCOMMON_OPT += -march=armv8.3-a -mtune=thunderx3t110
+FCOMMON_OPT += -march=armv8.3-a -mtune=thunderx3t110
+else
+CCOMMON_OPT += -march=armv8.1-a -mtune=thunderx2t99
+FCOMMON_OPT += -march=armv8.1-a -mtune=thunderx2t99
+endif
+endif
+
+ifeq ($(CORE), VORTEX)
+CCOMMON_OPT += -march=armv8.3-a
+FCOMMON_OPT += -march=armv8.3-a
+endif
+
+ifeq ($(GCCVERSIONGTEQ9), 1)
 ifeq ($(CORE), TSV110)
 CCOMMON_OPT += -march=armv8.2-a -mtune=tsv110
 FCOMMON_OPT += -march=armv8.2-a -mtune=tsv110
+endif
+endif
 endif

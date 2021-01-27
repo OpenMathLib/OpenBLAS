@@ -150,7 +150,7 @@
 *>          RTOL2 is REAL
 *>           Parameters for bisection.
 *>           An interval [LEFT,RIGHT] has converged if
-*>           RIGHT-LEFT.LT.MAX( RTOL1*GAP, RTOL2*MAX(|LEFT|,|RIGHT|) )
+*>           RIGHT-LEFT < MAX( RTOL1*GAP, RTOL2*MAX(|LEFT|,|RIGHT|) )
 *> \endverbatim
 *>
 *> \param[in] SPLTOL

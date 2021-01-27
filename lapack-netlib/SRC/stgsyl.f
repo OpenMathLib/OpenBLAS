@@ -88,20 +88,20 @@
 *> \param[in] TRANS
 *> \verbatim
 *>          TRANS is CHARACTER*1
-*>          = 'N', solve the generalized Sylvester equation (1).
-*>          = 'T', solve the 'transposed' system (3).
+*>          = 'N': solve the generalized Sylvester equation (1).
+*>          = 'T': solve the 'transposed' system (3).
 *> \endverbatim
 *>
 *> \param[in] IJOB
 *> \verbatim
 *>          IJOB is INTEGER
 *>          Specifies what kind of functionality to be performed.
-*>           =0: solve (1) only.
-*>           =1: The functionality of 0 and 3.
-*>           =2: The functionality of 0 and 4.
-*>           =3: Only an estimate of Dif[(A,D), (B,E)] is computed.
+*>          = 0: solve (1) only.
+*>          = 1: The functionality of 0 and 3.
+*>          = 2: The functionality of 0 and 4.
+*>          = 3: Only an estimate of Dif[(A,D), (B,E)] is computed.
 *>               (look ahead strategy IJOB  = 1 is used).
-*>           =4: Only an estimate of Dif[(A,D), (B,E)] is computed.
+*>          = 4: Only an estimate of Dif[(A,D), (B,E)] is computed.
 *>               ( SGECON on sub-systems is used ).
 *>          Not referenced if TRANS = 'T'.
 *> \endverbatim

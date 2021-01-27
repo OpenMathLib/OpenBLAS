@@ -39,8 +39,12 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #pragma GCC optimize "O1"
 
+#if defined(__VEC__) || defined(__ALTIVEC__)
 #if defined(POWER8) || defined(POWER9)
 #include "srot_microk_power8.c"
+#elif defined(POWER10)
+#include "srot_microk_power10.c"
+#endif
 #endif
 
 
@@ -113,6 +117,23 @@ int CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG inc_y, FLOAT 
 	if ( (inc_x == 1) && (inc_y == 1) )
 	{
 
+#if defined(POWER10)
+		if ( n >= 16 )
+		{
+			BLASLONG align = ((32 - ((uintptr_t)y & (uintptr_t)0x1F)) >> 2) & 0x7;
+			for (i = 0; i < align; i++) {
+				temp  = c*x[i] + s*y[i] ;
+				y[i]  = c*y[i] - s*x[i] ;
+				x[i]  = temp ;
+			}
+		}
+		BLASLONG n1 = (n-i) & -16;
+		if ( n1 > 0 )
+		{
+			srot_kernel_16(n1, &x1[i], &y1[i], c, s);
+			i+=n1;
+		}
+#else
 		BLASLONG n1 = n & -16;
 		if ( n1 > 0 )
 		{
@@ -120,6 +141,7 @@ int CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG inc_y, FLOAT 
 			i=n1;
 		}
 
+#endif
 		while(i < n)
 		{
 			temp  = c*x[i] + s*y[i] ;

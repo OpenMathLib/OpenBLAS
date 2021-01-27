@@ -35,11 +35,11 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #define MB   __asm__ __volatile__ ("dmb  ish" : : : "memory")
 #define WMB  __asm__ __volatile__ ("dmb  ishst" : : : "memory")
-
+#define RMB  __asm__ __volatile__ ("dmb  ishld" : : : "memory")
 
 #define INLINE inline
 
-#ifdef F_INTERFACE_FLANG
+#if defined( F_INTERFACE_FLANG) || defined(F_INTERFACE_PGI)
 #define RETURN_BY_STACK
 #else
 #define RETURN_BY_COMPLEX
@@ -53,16 +53,16 @@ static void __inline blas_lock(volatile BLASULONG *address){
   BLASULONG ret;
 
   do {
-    while (*address) {YIELDING;};
-
     __asm__ __volatile__(
 			 "mov	x4, #1							\n\t"
+			 "sevl								\n\t"
                          "1:                                                            \n\t"
+                         "wfe                                                           \n\t"
+			 "2:								\n\t"
                          "ldaxr x2, [%1]                                                \n\t"
                          "cbnz  x2, 1b                                                  \n\t"
-			 "2:								\n\t"
                          "stxr  w3, x4, [%1]                                            \n\t"
-                         "cbnz  w3, 1b                                                  \n\t"
+                         "cbnz  w3, 2b                                                  \n\t"
                          "mov   %0, #0                                                  \n\t"
                          : "=r"(ret), "=r"(address)
                          : "1"(address)
@@ -78,7 +78,20 @@ static void __inline blas_lock(volatile BLASULONG *address){
 
 #define BLAS_LOCK_DEFINED
 
+#if !defined(OS_DARWIN) && !defined (OS_ANDROID)
+static __inline BLASULONG rpcc(void){
+  BLASULONG ret = 0;
+  blasint shift;
+ 
+  __asm__ __volatile__ ("isb; mrs %0,cntvct_el0":"=r"(ret));
+  __asm__ __volatile__ ("mrs %0,cntfrq_el0; clz %w0, %w0":"=&r"(shift));
 
+  return ret << shift;
+}
+
+#define RPCC_DEFINED
+#define RPCC64BIT
+#endif 
 
 static inline int blas_quickdivide(blasint x, blasint y){
   return x / y;
@@ -103,12 +116,16 @@ static inline int blas_quickdivide(blasint x, blasint y){
 
 #if defined(ASSEMBLER) && !defined(NEEDPARAM)
 
-#define PROLOGUE \
-	.text ;\
-	.align	4 ;\
-	.global	REALNAME ;\
-	.type	REALNAME, %function ;\
+.macro PROLOGUE 
+	.text ;
+	.p2align 2 ;
+	.global	REALNAME ;
+#ifndef __APPLE__
+	.type	REALNAME, %function ;
+#endif
 REALNAME:
+.endm
+
 
 #define EPILOGUE
 
@@ -124,12 +141,11 @@ REALNAME:
 #endif
 #define HUGE_PAGESIZE   ( 4 << 20)
 
-#if defined(CORTEXA57)
-#define BUFFER_SIZE     (20 << 20)
+#ifndef BUFFERSIZE
+#define BUFFER_SIZE     (32 << 20)
 #else
-#define BUFFER_SIZE     (16 << 20)
+#define BUFFER_SIZE	(32 << BUFFERSIZE)
 #endif
-
 
 #define BASE_ADDRESS (START_ADDRESS - BUFFER_SIZE * MAX_CPU_NUMBER)
 

@@ -439,39 +439,39 @@ SHELL = /bin/sh
 \end{quote}
 and it will need to be modified to \texttt{SHELL = /sbin/sh} if you are
 installing LAPACK on an SGI architecture.
-Second, you will
-need to modify the \texttt{PLAT} definition, which is appended to all
-library names, to specify the architecture to which you are installing
-LAPACK.  This features avoids confusion in library names when you are
-installing LAPACK on more than one architecture.  Next, you will need
-to modify \texttt{FORTRAN}, \texttt{OPTS}, \texttt{DRVOPTS}, \texttt{NOOPT}, \texttt{LOADER},
-and \texttt{LOADOPTS} to specify
+Next, you will need to modify \texttt{FC}, \texttt{FFLAGS},
+\texttt{FFLAGS\_DRV}, \texttt{FFLAGS\_NOOPT}, and \texttt{LDFLAGS} to specify
 the compiler, compiler options, compiler options for the testing and
-timing\footnotemark[\value{footnote}] main programs, loader, loader options.
-Next you will have to choose which function you will use to time in the \texttt{SECOND} and \texttt{DSECND} routines.
+timing\footnotemark[\value{footnote}] main programs, and linker options.
+Next you will have to choose which function you will use to time in the
+\texttt{SECOND} and \texttt{DSECND} routines.
 \begin{verbatim}
-#The Default : SECOND and DSECND will use a call to the EXTERNAL FUNCTION ETIME
-TIMER    = EXT_ETIME
-# For RS6K : SECOND and DSECND will use a call to the EXTERNAL FUNCTION ETIME_
-# TIMER    = EXT_ETIME_
-# For gfortran compiler: SECOND and DSECND will use the INTERNAL FUNCTION ETIME
-# TIMER    = INT_ETIME
-# If your Fortran compiler does not provide etime (like Nag Fortran Compiler, etc...)
-# SECOND and DSECND will use a call to the INTERNAL FUNCTION CPU_TIME
-# TIMER    = INT_CPU_TIME
-# If neither of this works...you can use the NONE value...
-# In that case, SECOND and DSECND will always return 0
-# TIMER     = NONE
+#  Default:  SECOND and DSECND will use a call to the
+#  EXTERNAL FUNCTION ETIME
+#TIMER = EXT_ETIME
+#  For RS6K:  SECOND and DSECND will use a call to the
+#  EXTERNAL FUNCTION ETIME_
+#TIMER = EXT_ETIME_
+#  For gfortran compiler:  SECOND and DSECND will use a call to the
+#  INTERNAL FUNCTION ETIME
+TIMER = INT_ETIME
+#  If your Fortran compiler does not provide etime (like Nag Fortran
+#  Compiler, etc...) SECOND and DSECND will use a call to the
+#  INTERNAL FUNCTION CPU_TIME
+#TIMER = INT_CPU_TIME
+#  If none of these work, you can use the NONE value.
+#  In that case, SECOND and DSECND will always return 0.
+#TIMER = NONE
 \end{verbatim}
 Refer to the section~\ref{second} to get more information.
 
 
-Next, you will need to modify \texttt{ARCH}, \texttt{ARCHFLAGS}, and \texttt{RANLIB} to specify archiver,
+Next, you will need to modify \texttt{AR}, \texttt{ARFLAGS}, and \texttt{RANLIB} to specify archiver,
 archiver options, and ranlib for your machine.  If your architecture
 does not require \texttt{ranlib} to be run after each archive command (as
 is the case with CRAY computers running UNICOS, Hewlett Packard
 computers running HP-UX, or SUN SPARCstations running Solaris), set
-\texttt{ranlib=echo}.  And finally, you must
+\texttt{RANLIB = echo}.  And finally, you must
 modify the \texttt{BLASLIB} definition to specify the BLAS library to which
 you will be linking.  If an optimized version of the BLAS is available
 on your machine, you are highly recommended to link to that library.
@@ -721,24 +721,24 @@ The version that will be used depends on the value of the TIMER variable in the 
 
 \begin{itemize}
 \item If ETIME is available as an external function, set the value of the TIMER variable in your
-make.inc to \texttt{EXT\_ETIME}:\texttt{second\_EXT\_ETIME.f} and \texttt{dsecnd\_EXT\_ETIME.f} will be used.
+make.inc to \texttt{EXT\_ETIME}: \texttt{second\_EXT\_ETIME.f} and \texttt{dsecnd\_EXT\_ETIME.f} will be used.
 Usually on HPPA architectures,
-the compiler and loader flag \texttt{+U77} should be included to access
+the compiler and linker flag \texttt{+U77} should be included to access
 the function \texttt{ETIME}.
 
 \item If ETIME\_ is available as an external function, set the value of the TIMER variable in your make.inc
-to \texttt{EXT\_ETIME\_}:\texttt{second\_EXT\_ETIME\_.f} and \texttt{dsecnd\_EXT\_ETIME\_.f} will be used.
+to \texttt{EXT\_ETIME\_}: \texttt{second\_EXT\_ETIME\_.f} and \texttt{dsecnd\_EXT\_ETIME\_.f} will be used.
 It is the case on some IBM architectures such as IBM RS/6000s.
 
 \item If ETIME is available as an internal function, set the value of the TIMER variable in your make.inc
-to \texttt{INT\_ETIME}:\texttt{second\_INT\_ETIME.f}  and \texttt{dsecnd\_INT\_ETIME.f} will be used.
+to \texttt{INT\_ETIME}: \texttt{second\_INT\_ETIME.f}  and \texttt{dsecnd\_INT\_ETIME.f} will be used.
 This is the case with gfortan.
 
 \item If CPU\_TIME is available as an internal function, set the value of the TIMER variable in your make.inc
-to \texttt{INT\_CPU\_TIME}:\texttt{second\_INT\_CPU\_TIME.f} and \texttt{dsecnd\_INT\_CPU\_TIME.f} will be used.
+to \texttt{INT\_CPU\_TIME}: \texttt{second\_INT\_CPU\_TIME.f} and \texttt{dsecnd\_INT\_CPU\_TIME.f} will be used.
 
 \item If none of these function is available, set the value of the TIMER variable in your make.inc
-to \texttt{NONE:}\texttt{second\_NONE.f} and \texttt{dsecnd\_NONE.f} will be used.
+to \texttt{NONE}: \texttt{second\_NONE.f} and \texttt{dsecnd\_NONE.f} will be used.
 These routines will always return zero.
 \end{itemize}
 
@@ -829,8 +829,8 @@ data type to the library if necessary.
 \end{itemize}
 
 \noindent
-The BLAS library is created in \texttt{LAPACK/blas\_PLAT.a}, where
-\texttt{PLAT} is the user-defined architecture suffix specified in the file
+The BLAS library is created in \texttt{LAPACK/librefblas.a},
+or in the user-defined location specified by \texttt{BLASLIB} in the file
 \texttt{LAPACK/make.inc}.
 
 \subsection{Run the BLAS Test Programs}\label{testblas}
@@ -882,8 +882,8 @@ data type to the library if necessary.
 \end{itemize}
 
 \noindent
-The LAPACK library is created in \texttt{LAPACK/lapack\_PLAT.a}, where
-\texttt{PLAT} is the user-defined architecture suffix specified in the file
+The LAPACK library is created in \texttt{LAPACK/liblapack.a},
+or in the user-defined location specified by \texttt{LAPACKLIB} in the file
 \texttt{LAPACK/make.inc}.
 
 \subsection{Create the Test Matrix Generator Library}
@@ -902,9 +902,9 @@ data type to the library if necessary.
 \end{itemize}
 
 \noindent
-The test matrix generator library is created in \texttt{LAPACK/tmglib\_PLAT.a},
-where \texttt{PLAT} is the user-defined architecture suffix specified in the
-file \texttt{LAPACK/make.inc}.
+The test matrix generator library is created in \texttt{LAPACK/libtmglib.a},
+or in the user-defined location specified by \texttt{TMGLIB} in the file
+\texttt{LAPACK/make.inc}.
 
 \subsection{Run the LAPACK Test Programs}
 
@@ -1114,9 +1114,7 @@ To make a library of the instrumented LAPACK routines, first
 go to \texttt{LAPACK/TIMING/LIN/LINSRC} and type \texttt{make} followed
 by the data types desired, as in the examples of Section~\ref{toplevelmakefile}.
 The library of instrumented code is created in
-\texttt{LAPACK/TIMING/LIN/linsrc\_PLAT.a},
-where \texttt{PLAT} is the user-defined architecture suffix specified in the
-file \texttt{LAPACK/make.inc}.
+\texttt{LAPACK/TIMING/LIN/linsrc.a}.
 \end{sloppypar}
 
 \item[b)]
@@ -1251,9 +1249,7 @@ To make a library of the instrumented LAPACK routines, first
 go to \texttt{LAPACK/TIMING/EIG/EIGSRC} and type \texttt{make} followed
 by the data types desired, as in the examples of Section~\ref{toplevelmakefile}.
 The library of instrumented code is created in
-\texttt{LAPACK/TIMING/EIG/eigsrc\_PLAT.a},
-where \texttt{PLAT} is the user-defined architecture suffix specified in the
-file \texttt{LAPACK/make.inc}.
+\texttt{LAPACK/TIMING/EIG/eigsrc.a}.
 \end{sloppypar}
 
 \item[b)]
@@ -1389,7 +1385,7 @@ installing LAPACK on an SGI architecture.
 \section{ETIME}
 
 On HPPA architectures,
-the compiler and loader flag \texttt{+U77} should be included to access
+the compiler and linker flag \texttt{+U77} should be included to access
 the function \texttt{ETIME}.
 
 \section{ILAENV and IEEE-754 compliance}
@@ -1494,13 +1490,13 @@ has two options:  increase your stack size, or force all local variables
 to be allocated statically.
 
 On HPPA architectures, the
-compiler and loader flag \texttt{-K} should be used when compiling these testing
+compiler and linker flag \texttt{-K} should be used when compiling these testing
 and timing main programs to avoid such a stack overflow.  I.e., set
-\texttt{DRVOPTS = -K} in the \texttt{LAPACK/make.inc} file.
+\texttt{FFLAGS\_DRV = -K} in the \texttt{LAPACK/make.inc} file.
 
 For similar reasons,
-on SGI architectures, the compiler and loader flag \texttt{-static} should be
-used.  I.e., set \texttt{DRVOPTS = -static} in the \texttt{LAPACK/make.inc} file.
+on SGI architectures, the compiler and linker flag \texttt{-static} should be
+used.  I.e., set \texttt{FFLAGS\_DRV = -static} in the \texttt{LAPACK/make.inc} file.
 
 \section{IEEE arithmetic}
 

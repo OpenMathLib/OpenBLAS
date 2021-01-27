@@ -99,8 +99,8 @@ static void zswap_kernel_16(BLASLONG n, FLOAT *x, FLOAT *y) {
     "vst  %%v31, 240(%%r1,%[y])\n\t"
     "agfi   %%r1,256\n\t"
     "brctg  %[n],0b"
-    : "+m"(*(struct { FLOAT x[n * 2]; } *) x),
-       "+m"(*(struct { FLOAT x[n * 2]; } *) y),[n] "+&r"(n)
+    : "+m"(*(FLOAT (*)[n * 2]) x),
+       "+m"(*(FLOAT (*)[n * 2]) y),[n] "+&r"(n)
     : [x] "a"(x),[y] "a"(y)
     : "cc", "r1", "v0", "v1", "v2", "v3", "v4", "v5", "v6", "v7", "v16",
        "v17", "v18", "v19", "v20", "v21", "v22", "v23", "v24", "v25", "v26",

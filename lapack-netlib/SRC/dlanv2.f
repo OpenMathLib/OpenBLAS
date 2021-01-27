@@ -140,13 +140,16 @@
 *
 *     .. Parameters ..
       DOUBLE PRECISION   ZERO, HALF, ONE
-      PARAMETER          ( ZERO = 0.0D+0, HALF = 0.5D+0, ONE = 1.0D+0 )
+      PARAMETER          ( ZERO = 0.0D+0, HALF = 0.5D+0, ONE = 1.0D+0,
+     $                     TWO = 2.0D0 )
       DOUBLE PRECISION   MULTPL
       PARAMETER          ( MULTPL = 4.0D+0 )
 *     ..
 *     .. Local Scalars ..
       DOUBLE PRECISION   AA, BB, BCMAX, BCMIS, CC, CS1, DD, EPS, P, SAB,
-     $                   SAC, SCALE, SIGMA, SN1, TAU, TEMP, Z
+     $                   SAC, SCALE, SIGMA, SN1, TAU, TEMP, Z, SAFMIN, 
+     $                   SAFMN2, SAFMX2
+      INTEGER            COUNT
 *     ..
 *     .. External Functions ..
       DOUBLE PRECISION   DLAMCH, DLAPY2
@@ -157,11 +160,14 @@
 *     ..
 *     .. Executable Statements ..
 *
+      SAFMIN = DLAMCH( 'S' )
       EPS = DLAMCH( 'P' )
+      SAFMN2 = DLAMCH( 'B' )**INT( LOG( SAFMIN / EPS ) /
+     $            LOG( DLAMCH( 'B' ) ) / TWO )
+      SAFMX2 = ONE / SAFMN2
       IF( C.EQ.ZERO ) THEN
          CS = ONE
          SN = ZERO
-         GO TO 10
 *
       ELSE IF( B.EQ.ZERO ) THEN
 *
@@ -174,12 +180,12 @@
          A = TEMP
          B = -C
          C = ZERO
-         GO TO 10
+*
       ELSE IF( ( A-D ).EQ.ZERO .AND. SIGN( ONE, B ).NE.SIGN( ONE, C ) )
      $          THEN
          CS = ONE
          SN = ZERO
-         GO TO 10
+*
       ELSE
 *
          TEMP = A - D
@@ -207,12 +213,30 @@
             SN = C / TAU
             B = B - C
             C = ZERO
+*
          ELSE
 *
 *           Complex eigenvalues, or real (almost) equal eigenvalues.
 *           Make diagonal elements equal.
 *
+            COUNT = 0
             SIGMA = B + C
+   10       CONTINUE
+            COUNT = COUNT + 1
+            SCALE = MAX( ABS(TEMP), ABS(SIGMA) )
+            IF( SCALE.GE.SAFMX2 ) THEN
+               SIGMA = SIGMA * SAFMN2
+               TEMP = TEMP * SAFMN2
+               IF (COUNT .LE. 20)
+     $            GOTO 10
+            END IF
+            IF( SCALE.LE.SAFMN2 ) THEN
+               SIGMA = SIGMA * SAFMX2
+               TEMP = TEMP * SAFMX2
+               IF (COUNT .LE. 20)
+     $            GOTO 10
+            END IF
+            P = HALF*TEMP
             TAU = DLAPY2( SIGMA, TEMP )
             CS = SQRT( HALF*( ONE+ABS( SIGMA ) / TAU ) )
             SN = -( P / ( TAU*CS ) )*SIGN( ONE, SIGMA )
@@ -268,8 +292,6 @@
          END IF
 *
       END IF
-*
-   10 CONTINUE
 *
 *     Store eigenvalues in (RT1R,RT1I) and (RT2R,RT2I).
 *

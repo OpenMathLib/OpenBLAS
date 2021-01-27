@@ -77,7 +77,7 @@
 #define GEMM_MULTITHREAD_THRESHOLD 4
 #endif
 
-static int (*gemm[])(blas_arg_t *, BLASLONG *, BLASLONG *, FLOAT *, FLOAT *, BLASLONG) = {
+static int (*gemm[])(blas_arg_t *, BLASLONG *, BLASLONG *, IFLOAT *, IFLOAT *, BLASLONG) = {
 #ifndef GEMM3M
   GEMM_NN, GEMM_TN, GEMM_RN, GEMM_CN,
   GEMM_NT, GEMM_TT, GEMM_RT, GEMM_CT,
@@ -108,8 +108,8 @@ static int (*gemm[])(blas_arg_t *, BLASLONG *, BLASLONG *, FLOAT *, FLOAT *, BLA
 void NAME(char *TRANSA, char *TRANSB,
 	  blasint *M, blasint *N, blasint *K,
 	  FLOAT *alpha,
-	  FLOAT *a, blasint *ldA,
-	  FLOAT *b, blasint *ldB,
+	  IFLOAT *a, blasint *ldA,
+	  IFLOAT *b, blasint *ldB,
 	  FLOAT *beta,
 	  FLOAT *c, blasint *ldC){
 
@@ -119,8 +119,8 @@ void NAME(char *TRANSA, char *TRANSB,
   blasint info;
 
   char transA, transB;
-  FLOAT *buffer;
-  FLOAT *sa, *sb;
+  IFLOAT *buffer;
+  IFLOAT *sa, *sb;
 
 #ifdef SMP
   double MNK;
@@ -246,6 +246,7 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_TRANSPOSE TransA, enum CBLAS_TRANS
 
 #ifdef SMP
   double MNK;
+#if defined(USE_SIMPLE_THREADED_LEVEL3) || !defined(NO_AFFINITY)
 #ifndef COMPLEX
 #ifdef XDOUBLE
   int mode  =  BLAS_XDOUBLE | BLAS_REAL;
@@ -264,6 +265,7 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_TRANSPOSE TransA, enum CBLAS_TRANS
 #endif
 #endif
 #endif
+#endif
 
 #if defined(SMP) && !defined(NO_AFFINITY) && !defined(USE_SIMPLE_THREADED_LEVEL3)
   int nodes;
@@ -272,8 +274,11 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_TRANSPOSE TransA, enum CBLAS_TRANS
   PRINT_DEBUG_CNAME;
 
 #if !defined(COMPLEX) && !defined(DOUBLE) && defined(USE_SGEMM_KERNEL_DIRECT)
-  if (beta == 0 && alpha == 1.0 && order == CblasRowMajor && TransA == CblasNoTrans && TransB == CblasNoTrans && sgemm_kernel_direct_performant(m,n,k)) {
-	sgemm_kernel_direct(m, n, k, a, lda, b, ldb, c, ldc);
+#ifdef DYNAMIC_ARCH
+ if (support_avx512() )
+#endif  
+  if (beta == 0 && alpha == 1.0 && order == CblasRowMajor && TransA == CblasNoTrans && TransB == CblasNoTrans && SGEMM_DIRECT_PERFORMANT(m,n,k)) {
+	SGEMM_DIRECT(m, n, k, a, lda, b, ldb, c, ldc);
 	return;
   }
 
@@ -414,8 +419,10 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_TRANSPOSE TransA, enum CBLAS_TRANS
   sb = (XFLOAT *)(((BLASLONG)sa + ((GEMM_P * GEMM_Q * COMPSIZE * SIZE + GEMM_ALIGN) & ~GEMM_ALIGN)) + GEMM_OFFSET_B);
 
 #ifdef SMP
+#if defined(USE_SIMPLE_THREADED_LEVEL3) || !defined(NO_AFFINITY)
   mode |= (transa << BLAS_TRANSA_SHIFT);
   mode |= (transb << BLAS_TRANSB_SHIFT);
+#endif
 
   MNK = (double) args.m * (double) args.n * (double) args.k;
   if ( MNK <= (SMP_THRESHOLD_MIN  * (double) GEMM_MULTITHREAD_THRESHOLD)  )

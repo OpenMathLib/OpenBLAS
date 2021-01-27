@@ -37,11 +37,13 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #define MB
 #define WMB
+#define RMB
 
 #else
 
 #define MB   __asm__ __volatile__ ("dmb  ish" : : : "memory")
 #define WMB  __asm__ __volatile__ ("dmb  ishst" : : : "memory")
+#define RMB  __asm__ __volatile__ ("dmb  ish" : : : "memory")
 
 #endif
 
@@ -121,7 +123,7 @@ REALNAME:
 #endif
 #define HUGE_PAGESIZE   ( 4 << 20)
 
-#define BUFFER_SIZE     (16 << 20)
+#define BUFFER_SIZE     (32 << 20)
 
 
 #define BASE_ADDRESS (START_ADDRESS - BUFFER_SIZE * MAX_CPU_NUMBER)

@@ -32,7 +32,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  
 #define LOAD	ld
 #define STACKSIZE  (512 )  
-  
+#define FLINK_SAVE (STACKSIZE+16) /* 16($r12) */  
 #define	M	r3
 #define	N	r4
 #define	K	r5
@@ -91,7 +91,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	PROFCODE
 
 	addi	SP, SP, -STACKSIZE
-	li	r0, 0
+	mflr r0
+
 
 	stfd	f14,    0(SP)
 	stfd	f15,    8(SP)
@@ -137,19 +138,19 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	std	r14,  280(SP)
  
  
-	stxv    v20,  288(SP)
-	stxv    v21,  304(SP)
-	stxv    v22,  320(SP)
-	stxv    v23,  336(SP)
-	stxv    v24,  352(SP)
-	stxv    v25,  368(SP)
-	stxv    v26,  384(SP)
-	stxv    v27,  400(SP)
-	stxv    v28,  416(SP)
-	stxv    v29,  432(SP)
-	stxv    v30,  448(SP)
-	stxv    v31,  464(SP)
-
+  stxv    vs52,  288(SP)
+  stxv    vs53,  304(SP)
+  stxv    vs54,  320(SP)
+  stxv    vs55,  336(SP)
+  stxv    vs56,  352(SP)
+  stxv    vs57,  368(SP)
+  stxv    vs58,  384(SP)
+  stxv    vs59,  400(SP)
+  stxv    vs60,  416(SP)
+  stxv    vs61,  432(SP)
+  stxv    vs62,  448(SP)
+  stxv    vs63,  464(SP)
+  std     r0,   FLINK_SAVE(SP)
  
 
 #if defined(TRMMKERNEL) 
@@ -157,72 +158,54 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif
    slwi    LDC, LDC, 2
 
-
-/*	cmpwi	cr0, M, 0
-	ble	.L999_H1
-	cmpwi	cr0, N, 0
-	ble	.L999_H1
-	cmpwi	cr0, K, 0
-	ble	.L999_H1
-*/
  
  
 	/*alpha is stored in f1. convert to single and splat*/
   xscvdpspn alpha_r,vs1 
-	xxspltw   alpha_r,alpha_r,0
- 
+	xxspltw   alpha_r,alpha_r,0 
  
 /*load reverse permute mask for big endian
   uint128 = 0xc0d0e0f08090a0b0405060700010203
 */ 
 		
 	lis T2, perm_const2@highest
-	ori T2, T2, perm_const2@higher
-	rldicr T2, T2, 32, 31
-	oris T2, T2, perm_const2@h
-	ori T2, T2, perm_const2@l 
-
 	lis T1, perm_const1@highest
+	lis T3, save_permute_12@highest
+	lis T4, save_permute_11@highest
+	lis T5, save_permute_22@highest
+	lis T6, save_permute_21@highest
+	ori T2, T2, perm_const2@higher
 	ori T1, T1, perm_const1@higher
+	ori T3, T3, save_permute_12@higher
+	ori T4, T4, save_permute_11@higher
+	ori T5, T5, save_permute_22@higher
+	ori T6, T6, save_permute_21@higher
+	rldicr T2, T2, 32, 31
 	rldicr T1, T1, 32, 31
+	rldicr T3, T3, 32, 31
+	rldicr T4, T4, 32, 31
+	rldicr T5, T5, 32, 31
+	rldicr T6, T6, 32, 31
+	oris T2, T2, perm_const2@h
 	oris T1, T1, perm_const1@h
+	oris T3, T3, save_permute_12@h
+	oris T4, T4, save_permute_11@h
+	oris T5, T5, save_permute_22@h
+	oris T6, T6, save_permute_21@h
+	ori T2, T2, perm_const2@l  
 	ori T1, T1, perm_const1@l
-
+	ori T3, T3, save_permute_12@l  
+	ori T4, T4, save_permute_11@l
+	ori T5, T5, save_permute_22@l 
+	ori T6, T6, save_permute_21@l
+  li r0,0
 	mtvsrdd permute_mask,T2,T1
-
-	lis T2, save_permute_12@highest
-	ori T2, T2, save_permute_12@higher
-	rldicr T2, T2, 32, 31
-	oris T2, T2, save_permute_12@h
-	ori T2, T2, save_permute_12@l 
-
-	lis T1, save_permute_11@highest
-	ori T1, T1, save_permute_11@higher
-	rldicr T1, T1, 32, 31
-	oris T1, T1, save_permute_11@h
-	ori T1, T1, save_permute_11@l
-
-	mtvsrdd save_permute_1,T2,T1	
-
-	lis T2, save_permute_22@highest
-	ori T2, T2, save_permute_22@higher
-	rldicr T2, T2, 32, 31
-	oris T2, T2, save_permute_22@h
-	ori T2, T2, save_permute_22@l 
-
-	lis T1, save_permute_21@highest
-	ori T1, T1, save_permute_21@higher
-	rldicr T1, T1, 32, 31
-	oris T1, T1, save_permute_21@h
-	ori T1, T1, save_permute_21@l
-
-	mtvsrdd save_permute_2,T2,T1	
+	mtvsrdd save_permute_1,T3,T4	
+	mtvsrdd save_permute_2,T5,T6	
 
 #include "sgemm_logic_power9.S"
 
-.L999:
-	addi	r3, 0, 0
-
+.L999: 
 	lfd	f14,    0(SP)
 	lfd	f15,    8(SP)
 	lfd	f16,   16(SP)
@@ -264,23 +247,26 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	ld	r16,  264(SP)
 	ld	r15,  272(SP)
 	ld	r14,  280(SP)
- 
-	lxv    v20,  288(SP)
-	lxv    v21,  304(SP)
-	lxv    v22,  320(SP)
-	lxv    v23,  336(SP)
-	lxv    v24,  352(SP)
-	lxv    v25,  368(SP)
-	lxv    v26,  384(SP)
-	lxv    v27,  400(SP)
-	lxv    v28,  416(SP)
-	lxv    v29,  432(SP)
-	lxv    v30,  448(SP)
-	lxv    v31,  464(SP)
 
+	ld    r0, 	 FLINK_SAVE(SP)	
  
-	addi	SP, SP, STACKSIZE
+    lxv    vs52,  288(SP)
+    lxv    vs53,  304(SP)
+    lxv    vs54,  320(SP)
+    lxv    vs55,  336(SP)
+    lxv    vs56,  352(SP)
+    lxv    vs57,  368(SP)
+    lxv    vs58,  384(SP) 
+    lxv    vs59,  400(SP)
+	mtlr r0
+    lxv    vs60,  416(SP)
+    lxv    vs61,  432(SP) 
+    lxv    vs62,  448(SP)
+    lxv    vs63,  464(SP)
+
+	addi	SP, SP, STACKSIZE 
 	blr
+
 
 	EPILOGUE
 #endif

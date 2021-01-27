@@ -36,8 +36,12 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "common.h"
 
 
+#if defined(__VEC__) || defined(__ALTIVEC__)
 #if defined(POWER8)  || defined(POWER9)
 #include "cswap_microk_power8.c"
+#elif defined(POWER10)
+#include "cswap_microk_power10.c"
+#endif
 #endif
 
 

@@ -146,6 +146,18 @@ ifndef XDOTKERNEL
 XDOTKERNEL = zdot.S
 endif
 
+ifndef SBDOTKERNEL
+SBDOTKERNEL = sbdot.c
+endif
+
+ifndef TOBF16KERNEL
+TOBF16KERNEL = tobf16.c
+endif
+
+ifndef BF16TOKERNEL
+BF16TOKERNEL = bf16to.c
+endif
+
 ifndef ISAMAXKERNEL
 ISAMAXKERNEL = iamax_sse.S
 endif
@@ -372,6 +384,14 @@ endif
 
 GEMVDEP = ../l2param.h
 
+ifndef SBGEMVNKERNEL
+SBGEMVNKERNEL = sbgemv_n.c
+endif
+
+ifndef SBGEMVTKERNEL
+SBGEMVTKERNEL = sbgemv_t.c
+endif
+
 ifndef SGEMVNKERNEL
 SGEMVNKERNEL = sgemv_n.c
 endif
@@ -466,3 +486,6 @@ XTRSMKERNEL_RN	=  xtrsm_kernel_LT_1x1.S
 XTRSMKERNEL_RT	=  xtrsm_kernel_LT_1x1.S
 
 XGEMM3MKERNEL    =  xgemm3m_kernel_2x2.S
+
+SSUMKERNEL = ../arm/sum.c
+DSUMKERNEL = ../arm/sum.c

@@ -62,7 +62,7 @@
 	stfd	f31,    8(SP)
 	stw	r0,    16(SP)
 
-#ifdef linux
+#if defined(linux) || defined(__FreeBSD__)
 #ifndef __64BIT__
 	lwz	LDC,    FRAMESLOT(0) + STACKSIZE(SP)
 #else

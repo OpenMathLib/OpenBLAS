@@ -146,6 +146,7 @@
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
 *     December 2016
 *
+      IMPLICIT NONE
 *     .. Scalar Arguments ..
       CHARACTER          DIAG, NORM, UPLO
       INTEGER            K, LDAB, N
@@ -164,14 +165,17 @@
 *     .. Local Scalars ..
       LOGICAL            UDIAG
       INTEGER            I, J, L
-      DOUBLE PRECISION   SCALE, SUM, VALUE
+      DOUBLE PRECISION   SUM, VALUE
+*     ..
+*     .. Local Arrays ..
+      DOUBLE PRECISION   SSQ( 2 ), COLSSQ( 2 )
 *     ..
 *     .. External Functions ..
       LOGICAL            LSAME, DISNAN
       EXTERNAL           LSAME, DISNAN
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           ZLASSQ
+      EXTERNAL           ZLASSQ, DCOMBSSQ
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          ABS, MAX, MIN, SQRT
@@ -313,46 +317,61 @@
       ELSE IF( ( LSAME( NORM, 'F' ) ) .OR. ( LSAME( NORM, 'E' ) ) ) THEN
 *
 *        Find normF(A).
+*        SSQ(1) is scale
+*        SSQ(2) is sum-of-squares
+*        For better accuracy, sum each column separately.
 *
          IF( LSAME( UPLO, 'U' ) ) THEN
             IF( LSAME( DIAG, 'U' ) ) THEN
-               SCALE = ONE
-               SUM = N
+               SSQ( 1 ) = ONE
+               SSQ( 2 ) = N
                IF( K.GT.0 ) THEN
                   DO 280 J = 2, N
+                     COLSSQ( 1 ) = ZERO
+                     COLSSQ( 2 ) = ONE
                      CALL ZLASSQ( MIN( J-1, K ),
-     $                            AB( MAX( K+2-J, 1 ), J ), 1, SCALE,
-     $                            SUM )
+     $                            AB( MAX( K+2-J, 1 ), J ), 1,
+     $                            COLSSQ( 1 ), COLSSQ( 2 ) )
+                     CALL DCOMBSSQ( SSQ, COLSSQ )
   280             CONTINUE
                END IF
             ELSE
-               SCALE = ZERO
-               SUM = ONE
+               SSQ( 1 ) = ZERO
+               SSQ( 2 ) = ONE
                DO 290 J = 1, N
+                  COLSSQ( 1 ) = ZERO
+                  COLSSQ( 2 ) = ONE
                   CALL ZLASSQ( MIN( J, K+1 ), AB( MAX( K+2-J, 1 ), J ),
-     $                         1, SCALE, SUM )
+     $                         1, COLSSQ( 1 ), COLSSQ( 2 ) )
+                  CALL DCOMBSSQ( SSQ, COLSSQ )
   290          CONTINUE
             END IF
          ELSE
             IF( LSAME( DIAG, 'U' ) ) THEN
-               SCALE = ONE
-               SUM = N
+               SSQ( 1 ) = ONE
+               SSQ( 2 ) = N
                IF( K.GT.0 ) THEN
                   DO 300 J = 1, N - 1
-                     CALL ZLASSQ( MIN( N-J, K ), AB( 2, J ), 1, SCALE,
-     $                            SUM )
+                     COLSSQ( 1 ) = ZERO
+                     COLSSQ( 2 ) = ONE
+                     CALL ZLASSQ( MIN( N-J, K ), AB( 2, J ), 1,
+     $                            COLSSQ( 1 ), COLSSQ( 2 ) )
+                     CALL DCOMBSSQ( SSQ, COLSSQ )
   300             CONTINUE
                END IF
             ELSE
-               SCALE = ZERO
-               SUM = ONE
+               SSQ( 1 ) = ZERO
+               SSQ( 2 ) = ONE
                DO 310 J = 1, N
-                  CALL ZLASSQ( MIN( N-J+1, K+1 ), AB( 1, J ), 1, SCALE,
-     $                         SUM )
+                  COLSSQ( 1 ) = ZERO
+                  COLSSQ( 2 ) = ONE
+                  CALL ZLASSQ( MIN( N-J+1, K+1 ), AB( 1, J ), 1,
+     $                         COLSSQ( 1 ), COLSSQ( 2 ) )
+                  CALL DCOMBSSQ( SSQ, COLSSQ )
   310          CONTINUE
             END IF
          END IF
-         VALUE = SCALE*SQRT( SUM )
+         VALUE = SSQ( 1 )*SQRT( SSQ( 2 ) )
       END IF
 *
       ZLANTB = VALUE

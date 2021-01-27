@@ -400,7 +400,7 @@
          VL( I ) = VLW( IDXI )
    50 CONTINUE
 *
-*     Calculate the allowable deflation tolerence
+*     Calculate the allowable deflation tolerance
 *
       EPS = SLAMCH( 'Epsilon' )
       TOL = MAX( ABS( ALPHA ), ABS( BETA ) )

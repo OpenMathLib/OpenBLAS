@@ -73,6 +73,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #define MB  __sync_synchronize()
 #define WMB __sync_synchronize()
+#define RMB __sync_synchronize()
 
 #define INLINE inline
 
@@ -226,14 +227,9 @@ REALNAME: ;\
 
 #define SEEK_ADDRESS
 
-#define BUFFER_SIZE     ( 32 << 20)
+#define BUFFER_SIZE     ( 32 << 21)
 
-#if defined(LOONGSON3A)
-#define PAGESIZE	(16UL << 10)
-#define FIXED_PAGESIZE	(16UL << 10)
-#endif
-
-#if defined(LOONGSON3B)
+#if defined(LOONGSON3R3) || defined(LOONGSON3R4)
 #define PAGESIZE	(16UL << 10)
 #define FIXED_PAGESIZE	(16UL << 10)
 #endif
@@ -249,7 +245,7 @@ REALNAME: ;\
 #define MAP_ANONYMOUS MAP_ANON
 #endif
 
-#if defined(LOONGSON3A) || defined(LOONGSON3B)
+#if defined(LOONGSON3R3) || defined(LOONGSON3R4)
 #define PREFETCHD_(x) ld $0, x
 #define PREFETCHD(x)  PREFETCHD_(x)
 #else

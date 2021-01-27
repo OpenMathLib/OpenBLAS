@@ -1,11 +1,19 @@
 TOPDIR	= ../..
 include ../../Makefile.system
 
+ifeq ($(BUILD_SINGLE),1)
 SBLASOBJS = strti2_UU.$(SUFFIX) strti2_UN.$(SUFFIX) strti2_LU.$(SUFFIX) strti2_LN.$(SUFFIX)
+endif
+ifeq ($(BUILD_DOUBLE),1)
 DBLASOBJS = dtrti2_UU.$(SUFFIX) dtrti2_UN.$(SUFFIX) dtrti2_LU.$(SUFFIX) dtrti2_LN.$(SUFFIX)
+endif
 QBLASOBJS = qtrti2_UU.$(SUFFIX) qtrti2_UN.$(SUFFIX) qtrti2_LU.$(SUFFIX) qtrti2_LN.$(SUFFIX)
+ifeq ($(BUILD_COMPLEX),1)
 CBLASOBJS = ctrti2_UU.$(SUFFIX) ctrti2_UN.$(SUFFIX) ctrti2_LU.$(SUFFIX) ctrti2_LN.$(SUFFIX)
+endif
+ifeq ($(BUILD_COMPLEX16),1)
 ZBLASOBJS = ztrti2_UU.$(SUFFIX) ztrti2_UN.$(SUFFIX) ztrti2_LU.$(SUFFIX) ztrti2_LN.$(SUFFIX)
+endif
 XBLASOBJS = xtrti2_UU.$(SUFFIX) xtrti2_UN.$(SUFFIX) xtrti2_LU.$(SUFFIX) xtrti2_LN.$(SUFFIX)
 
 strti2_UU.$(SUFFIX) : trti2_U.c

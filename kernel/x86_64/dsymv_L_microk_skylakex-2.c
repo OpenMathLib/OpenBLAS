@@ -33,6 +33,12 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #define HAVE_KERNEL_4x4 1
 
+#if defined(__clang_patchlevel__) && __clang_major__ == 9 && __clang_minor__ == 0 && __clang_patchlevel__ == 0
+#pragma clang optimize off
+#endif
+#if defined(__apple_build_version__) && __clang_major__ == 11 && __clang_minor__ == 0 && __clang_patchlevel__ == 3
+#pragma clang optimize off
+#endif
 static void dsymv_kernel_4x4(BLASLONG from, BLASLONG to, FLOAT **a, FLOAT *x, FLOAT *y, FLOAT *temp1, FLOAT *temp2)
 {
 
@@ -155,7 +161,15 @@ static void dsymv_kernel_4x4(BLASLONG from, BLASLONG to, FLOAT **a, FLOAT *x, FL
 	temp2[1] += half_accum1[0];
 	temp2[2] += half_accum2[0];
 	temp2[3] += half_accum3[0];
-} 
+}
+
+#if defined(__clang_patchlevel__) && __clang_major__ == 9 && __clang_minor__ == 0 && __clang_patchlevel__ == 0
+#pragma clang optimize on
+#endif
+#if defined(__apple_build_version__) && __clang_major__ == 11 && __clang_minor__ == 0 && __clang_patchlevel__ == 3
+#pragma clang optimize on
+#endif
+
 #else
 #include "dsymv_L_microk_haswell-2.c"
 #endif

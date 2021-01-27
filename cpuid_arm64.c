@@ -26,6 +26,11 @@
   *****************************************************************************/
 
 #include <string.h>
+#ifdef OS_DARWIN
+#include <sys/sysctl.h>
+int32_t value;
+size_t length=sizeof(value);
+#endif
 
 #define CPU_UNKNOWN     	0
 #define CPU_ARMV8       	1
@@ -34,13 +39,19 @@
 #define CPU_CORTEXA57     3
 #define CPU_CORTEXA72     4
 #define CPU_CORTEXA73     5
+#define CPU_NEOVERSEN1    11
 // Qualcomm
 #define CPU_FALKOR        6
 // Cavium
 #define CPU_THUNDERX      7
 #define CPU_THUNDERX2T99  8
+#define CPU_THUNDERX3T110 12
 //Hisilicon
 #define CPU_TSV110        9
+// Ampere
+#define CPU_EMAG8180	 10
+// Apple
+#define CPU_VORTEX       13
 
 static char *cpuname[] = {
   "UNKNOWN",
@@ -52,7 +63,11 @@ static char *cpuname[] = {
   "FALKOR",
   "THUNDERX",
   "THUNDERX2T99",
-  "TSV110"
+  "TSV110",
+  "EMAG8180",
+  "NEOVERSEN1",
+  "THUNDERX3T110",
+  "VORTEX"	
 };
 
 static char *cpuname_lower[] = {
@@ -65,13 +80,17 @@ static char *cpuname_lower[] = {
   "falkor",
   "thunderx",
   "thunderx2t99",
-  "tsv110"
+  "tsv110",
+  "emag8180",
+  "neoversen1",
+  "thunderx3t110",
+  "vortex"	
 };
 
 int get_feature(char *search)
 {
 
-#ifdef linux
+#ifdef __linux
 	FILE *infile;
   	char buffer[2048], *p,*t;
   	p = (char *) NULL ;
@@ -94,7 +113,7 @@ int get_feature(char *search)
 	if( p == NULL ) return 0;
 
 	t = strtok(p," ");
-	while( t = strtok(NULL," "))
+	while( (t = strtok(NULL," ")))
 	{
 		if (!strcmp(t, search))   { return(1); }
 	}
@@ -107,7 +126,7 @@ int get_feature(char *search)
 int detect(void)
 {
 
-#ifdef linux
+#ifdef __linux
 
 	FILE *infile;
 	char buffer[512], *p, *cpu_part = NULL, *cpu_implementer = NULL;
@@ -140,6 +159,8 @@ int detect(void)
         return CPU_CORTEXA72;
       else if (strstr(cpu_part, "0xd09"))
         return CPU_CORTEXA73;
+      else if (strstr(cpu_part, "0xd0c"))
+        return CPU_NEOVERSEN1;
     }
     // Qualcomm
     else if (strstr(cpu_implementer, "0x51") && strstr(cpu_part, "0xc00"))
@@ -149,9 +170,14 @@ int detect(void)
 			return CPU_THUNDERX;
     else if (strstr(cpu_implementer, "0x43") && strstr(cpu_part, "0x0af"))
 			return CPU_THUNDERX2T99;
+    else if (strstr(cpu_implementer, "0x43") && strstr(cpu_part, "0x0b8"))
+			return CPU_THUNDERX3T110;
     // HiSilicon
     else if (strstr(cpu_implementer, "0x48") && strstr(cpu_part, "0xd01"))
                         return CPU_TSV110;
+    // Ampere
+    else if (strstr(cpu_implementer, "0x50") && strstr(cpu_part, "0x000"))
+                        return CPU_EMAG8180;
 	}
 
 	p = (char *) NULL ;
@@ -180,6 +206,12 @@ int detect(void)
 
 
 	}
+#else
+#ifdef DARWIN
+	sysctlbyname("hw.cpufamily",&value,&length,NULL,0);
+	if (value ==131287967) return CPU_VORTEX;
+#endif
+	return CPU_ARMV8;	
 #endif
 
 	return CPU_UNKNOWN;
@@ -205,6 +237,36 @@ void get_subdirname(void)
 {
 	printf("arm64");
 }
+
+void get_cpucount(void)
+{
+int n=0;
+
+#ifdef __linux
+	FILE *infile;
+  	char buffer[2048], *p,*t;
+  	p = (char *) NULL ;
+
+  	infile = fopen("/proc/cpuinfo", "r");
+
+	while (fgets(buffer, sizeof(buffer), infile))
+	{
+
+		if (!strncmp("processor", buffer, 9))
+		n++;
+  	}
+
+  	fclose(infile);
+
+	printf("#define NUM_CORES %d\n",n);
+#endif
+#ifdef DARWIN
+	sysctlbyname("hw.physicalcpu_max",&value,&length,NULL,0);
+	printf("#define NUM_CORES %d\n",value);
+#endif	
+}
+
+
 
 void get_cpuconfig(void)
 {
@@ -246,6 +308,20 @@ void get_cpuconfig(void)
 			printf("#define L1_DATA_LINESIZE 64\n");
 			printf("#define L1_DATA_ASSOCIATIVE 2\n");
       printf("#define L2_SIZE 524288\n");
+			printf("#define L2_LINESIZE 64\n");
+			printf("#define L2_ASSOCIATIVE 16\n");
+			printf("#define DTB_DEFAULT_ENTRIES 64\n");
+			printf("#define DTB_SIZE 4096\n");
+			break;
+		case CPU_NEOVERSEN1:
+			printf("#define %s\n", cpuname[d]);
+			printf("#define L1_CODE_SIZE 65536\n");
+			printf("#define L1_CODE_LINESIZE 64\n");
+			printf("#define L1_CODE_ASSOCIATIVE 4\n");
+			printf("#define L1_DATA_SIZE 65536\n");
+			printf("#define L1_DATA_LINESIZE 64\n");
+			printf("#define L1_DATA_ASSOCIATIVE 4\n");
+			printf("#define L2_SIZE 1048576\n");
 			printf("#define L2_LINESIZE 64\n");
 			printf("#define L2_ASSOCIATIVE 16\n");
 			printf("#define DTB_DEFAULT_ENTRIES 64\n");
@@ -308,7 +384,51 @@ void get_cpuconfig(void)
 			printf("#define DTB_DEFAULT_ENTRIES  64       \n");
 			printf("#define DTB_SIZE             4096     \n");
 			break;	
+
+		case CPU_EMAG8180:
+      // Minimum parameters for ARMv8 (based on A53)
+	printf("#define EMAG8180\n");
+    	printf("#define L1_CODE_SIZE 32768\n");
+    	printf("#define L1_DATA_SIZE 32768\n");
+    	printf("#define L1_DATA_LINESIZE 64\n");
+    	printf("#define L2_SIZE 262144\n");
+    	printf("#define L2_LINESIZE 64\n");
+    	printf("#define DTB_DEFAULT_ENTRIES 64\n");
+    	printf("#define DTB_SIZE 4096\n");
+			break;
+
+		case CPU_THUNDERX3T110:
+			printf("#define THUNDERX3T110                 \n");
+			printf("#define L1_CODE_SIZE         65536    \n");
+			printf("#define L1_CODE_LINESIZE     64       \n");
+			printf("#define L1_CODE_ASSOCIATIVE  8        \n");
+			printf("#define L1_DATA_SIZE         32768    \n");
+			printf("#define L1_DATA_LINESIZE     64       \n");
+			printf("#define L1_DATA_ASSOCIATIVE  8        \n");
+			printf("#define L2_SIZE              524288   \n");
+			printf("#define L2_LINESIZE          64       \n");
+			printf("#define L2_ASSOCIATIVE       8        \n");
+			printf("#define L3_SIZE              94371840 \n");
+			printf("#define L3_LINESIZE          64       \n");
+			printf("#define L3_ASSOCIATIVE       32       \n");
+			printf("#define DTB_DEFAULT_ENTRIES  64       \n");
+			printf("#define DTB_SIZE             4096     \n");
+			break;
+#ifdef DARWIN
+		case CPU_VORTEX:
+			printf("#define VORTEX			      \n");
+			sysctlbyname("hw.l1icachesize",&value,&length,NULL,0);
+			printf("#define L1_CODE_SIZE	     %d       \n",value);
+			sysctlbyname("hw.cachelinesize",&value,&length,NULL,0);
+			printf("#define L1_CODE_LINESIZE     %d       \n",value);
+			sysctlbyname("hw.l1dcachesize",&value,&length,NULL,0);
+			printf("#define L1_DATA_SIZE	     %d       \n",value);
+			sysctlbyname("hw.l2dcachesize",&value,&length,NULL,0);
+			printf("#define L2_SIZE	     %d       \n",value);
+			break;
+#endif			
 	}
+	get_cpucount();
 }
 
 
@@ -321,7 +441,7 @@ void get_libname(void)
 void get_features(void)
 {
 
-#ifdef linux
+#ifdef __linux
 	FILE *infile;
   	char buffer[2048], *p,*t;
   	p = (char *) NULL ;
@@ -344,12 +464,10 @@ void get_features(void)
 	if( p == NULL ) return;
 
 	t = strtok(p," ");
-	while( t = strtok(NULL," "))
+	while( (t = strtok(NULL," ")))
 	{
 	}
 
 #endif
 	return;
 }
-
-

@@ -82,7 +82,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifdef OS_WINDOWS
 #include <windows.h>
 #endif
-#if defined(__FreeBSD__) || defined(__OpenBSD__) || defined(__DragonFly__) || defined(__APPLE__)
+#if defined(__FreeBSD__) || defined(__OpenBSD__) || defined(__NetBSD__) || defined(__DragonFly__) || defined(__APPLE__)
 #include <sys/types.h>
 #include <sys/sysctl.h>
 #endif
@@ -90,10 +90,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <sys/sysinfo.h>
 #include <unistd.h>
 #endif
+#if defined(AIX)
+#include <sys/sysinfo.h>
+#endif
 
+#if defined(__x86_64__) || defined(_M_X64)
 #if (( defined(__GNUC__)  && __GNUC__   > 6 && defined(__AVX2__)) || (defined(__clang__) && __clang_major__ >= 6))
 #else
+#ifndef NO_AVX512
 #define NO_AVX512
+#endif
+#endif
 #endif
 /* #define FORCE_P2		*/
 /* #define FORCE_KATMAI		*/
@@ -133,8 +140,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /* #define FORCE_PPC440FP2	*/
 /* #define FORCE_CELL		*/
 /* #define FORCE_SICORTEX	*/
-/* #define FORCE_LOONGSON3A	*/
-/* #define FORCE_LOONGSON3B	*/
+/* #define FORCE_LOONGSON3R3	*/
+/* #define FORCE_LOONGSON3R4	*/
 /* #define FORCE_I6400		*/
 /* #define FORCE_P6600		*/
 /* #define FORCE_P5600		*/
@@ -319,15 +326,26 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define FORCE
 #define FORCE_INTEL
 #define ARCHITECTURE    "X86"
+#ifdef NO_AVX2
+#define SUBARCHITECTURE "SANDYBRIDGE"
+#define ARCHCONFIG   "-DSANDYBRIDGE " \
+		     "-DL1_DATA_SIZE=32768 -DL1_DATA_LINESIZE=64 " \
+		     "-DL2_SIZE=262144 -DL2_LINESIZE=64 " \
+		     "-DDTB_DEFAULT_ENTRIES=64 -DDTB_SIZE=4096 " \
+		     "-DHAVE_CMOV -DHAVE_MMX -DHAVE_SSE -DHAVE_SSE2 -DHAVE_SSE3 -DHAVE_SSSE3 -DHAVE_SSE4_1 -DHAVE_SSE4_2 -DHAVE_AVX"
+#define LIBNAME   "sandybridge"
+#define CORENAME  "SANDYBRIDGE"
+#else
 #define SUBARCHITECTURE "HASWELL"
 #define ARCHCONFIG   "-DHASWELL " \
 		     "-DL1_DATA_SIZE=32768 -DL1_DATA_LINESIZE=64 " \
 		     "-DL2_SIZE=262144 -DL2_LINESIZE=64 " \
 		     "-DDTB_DEFAULT_ENTRIES=64 -DDTB_SIZE=4096 " \
 		     "-DHAVE_CMOV -DHAVE_MMX -DHAVE_SSE -DHAVE_SSE2 -DHAVE_SSE3 -DHAVE_SSSE3 -DHAVE_SSE4_1 -DHAVE_SSE4_2 -DHAVE_AVX " \
-                     "-DFMA3"
+                     "-DHAVE_AVX2 -DHAVE_FMA3 -DFMA3"
 #define LIBNAME   "haswell"
 #define CORENAME  "HASWELL"
+#endif
 #endif
 
 #ifdef FORCE_SKYLAKEX
@@ -341,7 +359,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 		     "-DL2_SIZE=262144 -DL2_LINESIZE=64 " \
 		     "-DDTB_DEFAULT_ENTRIES=64 -DDTB_SIZE=4096 " \
 		     "-DHAVE_CMOV -DHAVE_MMX -DHAVE_SSE -DHAVE_SSE2 -DHAVE_SSE3 -DHAVE_SSSE3 -DHAVE_SSE4_1 -DHAVE_SSE4_2 -DHAVE_AVX " \
-                     "-DFMA3"
+                     "-DHAVE_AVX2 -DHAVE_FMA3 -DFMA3"
 #define LIBNAME   "haswell"
 #define CORENAME  "HASWELL"
 #else
@@ -354,9 +372,39 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 		     "-DL2_SIZE=262144 -DL2_LINESIZE=64 " \
 		     "-DDTB_DEFAULT_ENTRIES=64 -DDTB_SIZE=4096 " \
 		     "-DHAVE_CMOV -DHAVE_MMX -DHAVE_SSE -DHAVE_SSE2 -DHAVE_SSE3 -DHAVE_SSSE3 -DHAVE_SSE4_1 -DHAVE_SSE4_2 -DHAVE_AVX " \
-                     "-DFMA3 -DHAVE_AVX512VL -march=skylake-avx512"
+                     "-DHAVE_AVX2 -DHAVE_FMA3 -DFMA3 -DHAVE_AVX512VL -march=skylake-avx512"
 #define LIBNAME   "skylakex"
 #define CORENAME  "SKYLAKEX"
+#endif
+#endif
+
+#ifdef FORCE_COOPERLAKE
+#ifdef NO_AVX512
+#define FORCE
+#define FORCE_INTEL
+#define ARCHITECTURE    "X86"
+#define SUBARCHITECTURE "HASWELL"
+#define ARCHCONFIG   "-DHASWELL " \
+                     "-DL1_DATA_SIZE=32768 -DL1_DATA_LINESIZE=64 " \
+                     "-DL2_SIZE=262144 -DL2_LINESIZE=64 " \
+                     "-DDTB_DEFAULT_ENTRIES=64 -DDTB_SIZE=4096 " \
+                     "-DHAVE_CMOV -DHAVE_MMX -DHAVE_SSE -DHAVE_SSE2 -DHAVE_SSE3 -DHAVE_SSSE3 -DHAVE_SSE4_1 -DHAVE_SSE4_2 -DHAVE_AVX " \
+                     "-DHAVE_AVX2 -DHAVE_FMA3 -DFMA3"
+#define LIBNAME   "haswell"
+#define CORENAME  "HASWELL"
+#else
+#define FORCE
+#define FORCE_INTEL
+#define ARCHITECTURE    "X86"
+#define SUBARCHITECTURE "COOPERLAKE"
+#define ARCHCONFIG   "-DCOOPERLAKE " \
+                     "-DL1_DATA_SIZE=32768 -DL1_DATA_LINESIZE=64 " \
+                     "-DL2_SIZE=262144 -DL2_LINESIZE=64 " \
+                     "-DDTB_DEFAULT_ENTRIES=64 -DDTB_SIZE=4096 " \
+                     "-DHAVE_CMOV -DHAVE_MMX -DHAVE_SSE -DHAVE_SSE2 -DHAVE_SSE3 -DHAVE_SSSE3 -DHAVE_SSE4_1 -DHAVE_SSE4_2 -DHAVE_AVX " \
+                     "-DHAVE_AVX2 -DHAVE_FMA3 -DFMA3 -DHAVE_AVX512VL -DHAVE_AVX512BF16 -march=cooperlake"
+#define LIBNAME   "cooperlake"
+#define CORENAME  "COOPERLAKE"
 #endif
 #endif
 
@@ -457,7 +505,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 		     "-DDTB_DEFAULT_ENTRIES=32 -DDTB_SIZE=4096 " \
 		     "-DHAVE_MMX -DHAVE_SSE -DHAVE_SSE2 -DHAVE_SSE3 " \
 		     "-DHAVE_SSE4A -DHAVE_MISALIGNSSE -DHAVE_128BITFPU -DHAVE_FASTMOVU " \
-                     "-DHAVE_AVX -DHAVE_FMA4"
+                     "-DHAVE_AVX"
 #define LIBNAME   "bulldozer"
 #define CORENAME  "BULLDOZER"
 #endif
@@ -473,7 +521,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 		     "-DDTB_DEFAULT_ENTRIES=64 -DDTB_SIZE=4096 " \
 		     "-DHAVE_MMX -DHAVE_SSE -DHAVE_SSE2 -DHAVE_SSE3 -DHAVE_SSE4_1 -DHAVE_SSE4_2 " \
 		     "-DHAVE_SSE4A -DHAVE_MISALIGNSSE -DHAVE_128BITFPU -DHAVE_FASTMOVU -DHAVE_CFLUSH " \
-                     "-DHAVE_AVX -DHAVE_FMA4 -DHAVE_FMA3"
+                     "-DHAVE_AVX -DHAVE_FMA3"
 #define LIBNAME   "piledriver"
 #define CORENAME  "PILEDRIVER"
 #endif
@@ -489,7 +537,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 		     "-DDTB_DEFAULT_ENTRIES=64 -DDTB_SIZE=4096 " \
 		     "-DHAVE_MMX -DHAVE_SSE -DHAVE_SSE2 -DHAVE_SSE3 -DHAVE_SSE4_1 -DHAVE_SSE4_2 " \
 		     "-DHAVE_SSE4A -DHAVE_MISALIGNSSE -DHAVE_128BITFPU -DHAVE_FASTMOVU -DHAVE_CFLUSH " \
-                     "-DHAVE_AVX -DHAVE_FMA4 -DHAVE_FMA3"
+                     "-DHAVE_AVX -DHAVE_FMA3"
 #define LIBNAME   "steamroller"
 #define CORENAME  "STEAMROLLER"
 #endif
@@ -505,7 +553,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 		     "-DDTB_DEFAULT_ENTRIES=64 -DDTB_SIZE=4096 " \
 		     "-DHAVE_MMX -DHAVE_SSE -DHAVE_SSE2 -DHAVE_SSE3 -DHAVE_SSE4_1 -DHAVE_SSE4_2 " \
 		     "-DHAVE_SSE4A -DHAVE_MISALIGNSSE -DHAVE_128BITFPU -DHAVE_FASTMOVU -DHAVE_CFLUSH " \
-                     "-DHAVE_AVX -DHAVE_FMA4 -DHAVE_FMA3"
+                     "-DHAVE_AVX -DHAVE_FMA3"
 #define LIBNAME   "excavator"
 #define CORENAME  "EXCAVATOR"
 #endif
@@ -514,6 +562,16 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define FORCE
 #define FORCE_INTEL
 #define ARCHITECTURE    "X86"
+#ifdef NO_AVX2
+#define SUBARCHITECTURE "SANDYBRIDGE"
+#define ARCHCONFIG   "-DSANDYBRIDGE " \
+		     "-DL1_DATA_SIZE=32768 -DL1_DATA_LINESIZE=64 " \
+		     "-DL2_SIZE=262144 -DL2_LINESIZE=64 " \
+		     "-DDTB_DEFAULT_ENTRIES=64 -DDTB_SIZE=4096 " \
+		     "-DHAVE_CMOV -DHAVE_MMX -DHAVE_SSE -DHAVE_SSE2 -DHAVE_SSE3 -DHAVE_SSSE3 -DHAVE_SSE4_1 -DHAVE_SSE4_2 -DHAVE_AVX"
+#define LIBNAME   "sandybridge"
+#define CORENAME  "SANDYBRIDGE"
+#else
 #define SUBARCHITECTURE "ZEN"
 #define ARCHCONFIG   "-DZEN " \
 		     "-DL1_CODE_SIZE=32768 -DL1_CODE_LINESIZE=64 -DL1_CODE_ASSOCIATIVE=8 " \
@@ -524,9 +582,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 		     "-DDTB_DEFAULT_ENTRIES=64 -DDTB_SIZE=4096 " \
 		     "-DHAVE_MMX -DHAVE_SSE -DHAVE_SSE2 -DHAVE_SSE3 -DHAVE_SSE4_1 -DHAVE_SSE4_2 " \
 		     "-DHAVE_SSE4A -DHAVE_MISALIGNSSE -DHAVE_128BITFPU -DHAVE_FASTMOVU -DHAVE_CFLUSH " \
-		     "-DHAVE_AVX -DHAVE_FMA3 -DFMA3"
+		     "-DHAVE_AVX -DHAVE_AVX2 -DHAVE_FMA3 -DFMA3"
 #define LIBNAME   "zen"
 #define CORENAME  "ZEN"
+#endif
 #endif
 
 
@@ -650,6 +709,19 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define CORENAME  "POWER9"
 #endif
 
+#if defined(FORCE_POWER10)
+#define FORCE
+#define ARCHITECTURE    "POWER"
+#define SUBARCHITECTURE "POWER10"
+#define SUBDIRNAME      "power"
+#define ARCHCONFIG   "-DPOWER10 " \
+		     "-DL1_DATA_SIZE=32768 -DL1_DATA_LINESIZE=128 " \
+		     "-DL2_SIZE=4194304 -DL2_LINESIZE=128 " \
+		     "-DDTB_DEFAULT_ENTRIES=128 -DDTB_SIZE=4096 -DL2_ASSOCIATIVE=8 "
+#define LIBNAME   "power10"
+#define CORENAME  "POWER10"
+#endif
+
 #ifdef FORCE_PPCG4
 #define FORCE
 #define ARCHITECTURE    "POWER"
@@ -742,31 +814,31 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif
 
 
-#ifdef FORCE_LOONGSON3A
+#if defined FORCE_LOONGSON3R3 || defined FORCE_LOONGSON3A || defined FORCE_LOONGSON3B
 #define FORCE
 #define ARCHITECTURE    "MIPS"
-#define SUBARCHITECTURE "LOONGSON3A"
+#define SUBARCHITECTURE "LOONGSON3R3"
 #define SUBDIRNAME      "mips64"
-#define ARCHCONFIG   "-DLOONGSON3A " \
+#define ARCHCONFIG   "-DLOONGSON3R3 " \
        "-DL1_DATA_SIZE=65536 -DL1_DATA_LINESIZE=32 " \
        "-DL2_SIZE=512488 -DL2_LINESIZE=32 " \
        "-DDTB_DEFAULT_ENTRIES=64 -DDTB_SIZE=4096 -DL2_ASSOCIATIVE=4 "
-#define LIBNAME   "loongson3a"
-#define CORENAME  "LOONGSON3A"
+#define LIBNAME   "loongson3r3"
+#define CORENAME  "LOONGSON3R3"
 #else
 #endif
 
-#ifdef FORCE_LOONGSON3B
+#ifdef FORCE_LOONGSON3R4
 #define FORCE
 #define ARCHITECTURE    "MIPS"
-#define SUBARCHITECTURE "LOONGSON3B"
+#define SUBARCHITECTURE "LOONGSON3R4"
 #define SUBDIRNAME      "mips64"
-#define ARCHCONFIG   "-DLOONGSON3B " \
+#define ARCHCONFIG   "-DLOONGSON3R4 " \
        "-DL1_DATA_SIZE=65536 -DL1_DATA_LINESIZE=32 " \
        "-DL2_SIZE=512488 -DL2_LINESIZE=32 " \
        "-DDTB_DEFAULT_ENTRIES=64 -DDTB_SIZE=4096 -DL2_ASSOCIATIVE=4 "
-#define LIBNAME   "loongson3b"
-#define CORENAME  "LOONGSON3B"
+#define LIBNAME   "loongson3r4"
+#define CORENAME  "LOONGSON3R4"
 #else
 #endif
 
@@ -809,6 +881,34 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
        "-DDTB_DEFAULT_ENTRIES=64 -DDTB_SIZE=4096 -DL2_ASSOCIATIVE=8 "
 #define LIBNAME   "p5600"
 #define CORENAME  "P5600"
+#else
+#endif
+
+#ifdef FORCE_MIPS1004K
+#define FORCE
+#define ARCHITECTURE    "MIPS"
+#define SUBARCHITECTURE "MIPS1004K"
+#define SUBDIRNAME      "mips"
+#define ARCHCONFIG   "-DMIPS1004K " \
+       "-DL1_DATA_SIZE=32768 -DL1_DATA_LINESIZE=32 " \
+       "-DL2_SIZE=262144 -DL2_LINESIZE=32 " \
+       "-DDTB_DEFAULT_ENTRIES=64 -DDTB_SIZE=4096 -DL2_ASSOCIATIVE=8 "
+#define LIBNAME   "mips1004K"
+#define CORENAME  "MIPS1004K"
+#else
+#endif
+
+#ifdef FORCE_MIPS24K
+#define FORCE
+#define ARCHITECTURE    "MIPS"
+#define SUBARCHITECTURE "MIPS24K"
+#define SUBDIRNAME      "mips"
+#define ARCHCONFIG   "-DMIPS24K " \
+       "-DL1_DATA_SIZE=32768 -DL1_DATA_LINESIZE=32 " \
+       "-DL2_SIZE=32768 -DL2_LINESIZE=32 " \
+       "-DDTB_DEFAULT_ENTRIES=64 -DDTB_SIZE=4096 -DL2_ASSOCIATIVE=8 "
+#define LIBNAME   "mips24K"
+#define CORENAME  "MIPS24K"
 #else
 #endif
 
@@ -902,6 +1002,20 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
        "-DHAVE_VFPV3 -DHAVE_VFP -DHAVE_NEON"
 #define LIBNAME   "cortexa9"
 #define CORENAME  "CORTEXA9"
+#else
+#endif
+
+#ifdef FORCE_RISCV64_GENERIC
+#define FORCE
+#define ARCHITECTURE    "RISCV64"
+#define SUBARCHITECTURE "RISCV64_GENERIC"
+#define SUBDIRNAME      "riscv64"
+#define ARCHCONFIG   "-DRISCV64_GENERIC " \
+       "-DL1_DATA_SIZE=32768 -DL1_DATA_LINESIZE=32 " \
+       "-DL2_SIZE=1048576 -DL2_LINESIZE=32 " \
+       "-DDTB_DEFAULT_ENTRIES=128 -DDTB_SIZE=4096 -DL2_ASSOCIATIVE=4 "
+#define LIBNAME   "riscv64_generic"
+#define CORENAME  "RISCV64_GENERIC"
 #else
 #endif
 
@@ -1028,6 +1142,24 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #else
 #endif
 
+#ifdef FORCE_NEOVERSEN1
+#define FORCE
+#define ARCHITECTURE    "ARM64"
+#define SUBARCHITECTURE "NEOVERSEN1"
+#define SUBDIRNAME      "arm64"
+#define ARCHCONFIG   "-DNEOVERSEN1 " \
+       "-DL1_CODE_SIZE=65536 -DL1_CODE_LINESIZE=64 -DL1_CODE_ASSOCIATIVE=4 " \
+       "-DL1_DATA_SIZE=65536 -DL1_DATA_LINESIZE=64 -DL1_DATA_ASSOCIATIVE=4 " \
+       "-DL2_SIZE=1048576 -DL2_LINESIZE=64 -DL2_ASSOCIATIVE=16 " \
+       "-DDTB_DEFAULT_ENTRIES=64 -DDTB_SIZE=4096 " \
+       "-DHAVE_VFPV4 -DHAVE_VFPV3 -DHAVE_VFP -DHAVE_NEON -DARMV8 " \
+       "-march=armv8.2-a -mtune=cortex-a72"
+#define LIBNAME   "neoversen1"
+#define CORENAME  "NEOVERSEN1"
+#else
+#endif
+
+
 #ifdef FORCE_FALKOR
 #define FORCE
 #define ARCHITECTURE    "ARM64"
@@ -1093,6 +1225,54 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #else
 #endif
 
+#ifdef FORCE_EMAG8180
+#define ARMV8
+#define FORCE
+#define ARCHITECTURE    "ARM64"
+#define SUBARCHITECTURE "EMAG8180"
+#define SUBDIRNAME      "arm64"
+#define ARCHCONFIG   "-DEMAG8180 " \
+       "-DL1_CODE_SIZE=32768 -DL1_CODE_LINESIZE=64 -DL1_CODE_ASSOCIATIVE=8 " \
+       "-DL1_DATA_SIZE=32768 -DL1_DATA_LINESIZE=64 -DL1_DATA_ASSOCIATIVE=8 " \
+       "-DL2_SIZE=262144 -DL2_LINESIZE=64 -DL2_ASSOCIATIVE=8 " \
+       "-DL3_SIZE=33554432 -DL3_LINESIZE=64 -DL3_ASSOCIATIVE=32 " \
+       "-DDTB_DEFAULT_ENTRIES=64 -DDTB_SIZE=4096 " \
+       "-DHAVE_VFPV4 -DHAVE_VFPV3 -DHAVE_VFP -DHAVE_NEON -DARMV8"
+#define LIBNAME   "emag8180"
+#define CORENAME  "EMAG8180"
+#endif
+
+#ifdef FORCE_THUNDERX3T110
+#define ARMV8
+#define FORCE
+#define ARCHITECTURE    "ARM64"
+#define SUBARCHITECTURE "THUNDERX3T110"
+#define SUBDIRNAME      "arm64"
+#define ARCHCONFIG   "-DTHUNDERX3T110 " \
+       "-DL1_CODE_SIZE=65536 -DL1_CODE_LINESIZE=64 -DL1_CODE_ASSOCIATIVE=8 " \
+       "-DL1_DATA_SIZE=32768 -DL1_DATA_LINESIZE=64 -DL1_DATA_ASSOCIATIVE=8 " \
+       "-DL2_SIZE=524288 -DL2_LINESIZE=64 -DL2_ASSOCIATIVE=8 " \
+       "-DL3_SIZE=94371840 -DL3_LINESIZE=64 -DL3_ASSOCIATIVE=32 " \
+       "-DDTB_DEFAULT_ENTRIES=64 -DDTB_SIZE=4096 " \
+       "-DHAVE_VFPV4 -DHAVE_VFPV3 -DHAVE_VFP -DHAVE_NEON -DARMV8"
+#define LIBNAME   "thunderx3t110"
+#define CORENAME  "THUNDERX3T110"
+#else
+#endif
+
+#ifdef FORCE_VORTEX
+#define FORCE
+#define ARCHITECTURE    "ARM64"
+#define SUBARCHITECTURE "VORTEX"
+#define SUBDIRNAME      "arm64"
+#define ARCHCONFIG   "-DVORTEX " \
+       "-DL1_DATA_SIZE=32768 -DL1_DATA_LINESIZE=64 " \
+       "-DL2_SIZE=262144 -DL2_LINESIZE=64 " \
+       "-DDTB_DEFAULT_ENTRIES=64 -DDTB_SIZE=4096 -DL2_ASSOCIATIVE=32 " \
+       "-DHAVE_VFPV4 -DHAVE_VFPV3 -DHAVE_VFP -DHAVE_NEON -DARMV8"
+#define LIBNAME   "vortex"
+#define CORENAME  "VORTEX"
+#endif
 
 #ifdef FORCE_ZARCH_GENERIC
 #define FORCE
@@ -1123,6 +1303,21 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define LIBNAME   "z14"
 #define CORENAME  "Z14"
 #endif
+
+#ifdef FORCE_C910V
+#define FORCE
+#define ARCHITECTURE    "RISCV64"
+#define SUBARCHITECTURE "C910V"
+#define SUBDIRNAME      "riscv64"
+#define ARCHCONFIG   "-DC910V " \
+       "-DL1_DATA_SIZE=32768 -DL1_DATA_LINESIZE=32 " \
+       "-DL2_SIZE=1048576 -DL2_LINESIZE=32 " \
+       "-DDTB_DEFAULT_ENTRIES=128 -DDTB_SIZE=4096 -DL2_ASSOCIATIVE=4 "
+#define LIBNAME   "c910v"
+#define CORENAME  "C910V"
+#else
+#endif
+
 
 #ifndef FORCE
 
@@ -1178,6 +1373,11 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define OPENBLAS_SUPPORTED
 #endif
 
+#ifdef __riscv
+#include "cpuid_riscv64.c"
+#define OPENBLAS_SUPPORTED
+#endif
+
 #ifdef __arm__
 #include "cpuid_arm.c"
 #define OPENBLAS_SUPPORTED
@@ -1201,7 +1401,7 @@ static int get_num_cores(void) {
 
 #ifdef OS_WINDOWS
   SYSTEM_INFO sysinfo;
-#elif defined(__FreeBSD__) || defined(__OpenBSD__) || defined(__DragonFly__) || defined(__APPLE__)
+#elif defined(__FreeBSD__) || defined(__OpenBSD__) || defined(__NetBSD__) || defined(__DragonFly__) || defined(__APPLE__)
   int m[2], count;
   size_t len;
 #endif
@@ -1215,13 +1415,18 @@ static int get_num_cores(void) {
   GetSystemInfo(&sysinfo);
   return sysinfo.dwNumberOfProcessors;
 
-#elif defined(__FreeBSD__) || defined(__OpenBSD__) || defined(__DragonFly__) || defined(__APPLE__)
+#elif defined(__FreeBSD__) || defined(__OpenBSD__) || defined(__NetBSD__) || defined(__DragonFly__) || defined(__APPLE__)
   m[0] = CTL_HW;
   m[1] = HW_NCPU;
   len = sizeof(int);
   sysctl(m, 2, &count, &len, NULL, 0);
 
   return count;
+
+#elif defined(AIX)
+  //returns the number of processors which are currently online
+  return sysconf(_SC_NPROCESSORS_ONLN);
+
 #else
   return 2;
 #endif
@@ -1258,8 +1463,41 @@ int main(int argc, char *argv[]){
 
     printf("NUM_CORES=%d\n", get_num_cores());
 
-#if defined(__arm__) && !defined(FORCE)
+#if defined(__arm__) 
+#if !defined(FORCE)
+    fprintf(stderr,"get features!\n");
         get_features();
+#else
+    fprintf(stderr,"split archconfig!\n");
+    sprintf(buffer, "%s", ARCHCONFIG);
+
+    p = &buffer[0];
+
+    while (*p) {
+      if ((*p == '-') && (*(p + 1) == 'D')) {
+	p += 2;
+        if (*p != 'H') {
+		while( (*p != ' ') && (*p != '-') && (*p != '\0') && (*p != '\n')) {p++; }
+		if (*p == '-') continue;
+	}
+	while ((*p != ' ') && (*p != '\0')) {
+
+	  if (*p == '=') {
+	    printf("=");
+	    p ++;
+	    while ((*p != ' ') && (*p != '\0')) {
+	      printf("%c", *p);
+	      p ++;
+	    }
+	  } else {
+	    printf("%c", *p);
+	    p ++;
+	    if ((*p == ' ') || (*p =='\0')) printf("=1\n");
+	  }
+	}
+      } else p ++;
+    }
+#endif
 #endif
 
 
@@ -1296,6 +1534,15 @@ int main(int argc, char *argv[]){
       } else p ++;
     }
 #endif
+#endif
+
+#if defined(__BYTE_ORDER__) && __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__
+printf("__BYTE_ORDER__=__ORDER_BIG_ENDIAN__\n");
+#elif defined(__BIG_ENDIAN__) && __BIG_ENDIAN__ > 0
+printf("__BYTE_ORDER__=__ORDER_BIG_ENDIAN__\n");
+#endif
+#if defined(_CALL_ELF) && (_CALL_ELF == 2)
+printf("ELF_VERSION=2\n");
 #endif
 
 #ifdef MAKE_NB_JOBS

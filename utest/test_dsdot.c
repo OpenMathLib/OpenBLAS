@@ -32,7 +32,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 **********************************************************************************/
 
 #include "openblas_utest.h"
-
+#if defined(BUILD_SINGLE) && defined(BUILD_DOUBLE)
 CTEST(dsdot,dsdot_n_1)
 {
 	float x= 0.172555164F;
@@ -47,3 +47,4 @@ CTEST(dsdot,dsdot_n_1)
 	ASSERT_DBL_NEAR_TOL(res2, res1, DOUBLE_EPS);
 
 }
+#endif

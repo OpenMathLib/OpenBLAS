@@ -31,11 +31,11 @@ DAXPYKERNEL = daxpy.c
 CAXPYKERNEL = caxpy.c
 ZAXPYKERNEL = zaxpy.c
 
-STRMMKERNEL    =  sgemm_kernel_16x4_haswell.S
-SGEMMKERNEL    =  sgemm_kernel_16x4_haswell.S
+STRMMKERNEL    =  sgemm_kernel_8x4_haswell.c
+SGEMMKERNEL    =  sgemm_kernel_8x4_haswell_2.c
 SGEMM_BETA     =  sgemm_beta_skylakex.c
-SGEMMINCOPY    =  ../generic/gemm_ncopy_16.c
-SGEMMITCOPY    =  ../generic/gemm_tcopy_16.c
+SGEMMINCOPY    =  ../generic/gemm_ncopy_8.c
+SGEMMITCOPY    =  ../generic/gemm_tcopy_8.c
 SGEMMONCOPY    =  sgemm_ncopy_4_skylakex.c
 SGEMMOTCOPY    =  ../generic/gemm_tcopy_4.c
 SGEMMINCOPYOBJ =  sgemm_incopy$(TSUFFIX).$(SUFFIX)
@@ -56,7 +56,7 @@ DGEMMONCOPYOBJ =  dgemm_oncopy$(TSUFFIX).$(SUFFIX)
 DGEMMOTCOPYOBJ =  dgemm_otcopy$(TSUFFIX).$(SUFFIX)
 
 CTRMMKERNEL    =  cgemm_kernel_8x2_haswell.S
-CGEMMKERNEL    =  cgemm_kernel_8x2_haswell.S
+CGEMMKERNEL    =  cgemm_kernel_8x2_haswell.c
 CGEMMINCOPY    =  ../generic/zgemm_ncopy_8.c
 CGEMMITCOPY    =  ../generic/zgemm_tcopy_8.c
 CGEMMONCOPY    =  ../generic/zgemm_ncopy_2.c
@@ -67,7 +67,7 @@ CGEMMONCOPYOBJ =  cgemm_oncopy$(TSUFFIX).$(SUFFIX)
 CGEMMOTCOPYOBJ =  cgemm_otcopy$(TSUFFIX).$(SUFFIX)
 
 ZTRMMKERNEL    =  zgemm_kernel_4x2_haswell.S
-ZGEMMKERNEL    =  zgemm_kernel_4x2_haswell.S
+ZGEMMKERNEL    =  zgemm_kernel_4x2_haswell.c
 ZGEMMINCOPY    =  ../generic/zgemm_ncopy_4.c
 ZGEMMITCOPY    =  ../generic/zgemm_tcopy_4.c
 ZGEMMONCOPY    =  ../generic/zgemm_ncopy_2.c
@@ -77,10 +77,10 @@ ZGEMMITCOPYOBJ =  zgemm_itcopy$(TSUFFIX).$(SUFFIX)
 ZGEMMONCOPYOBJ =  zgemm_oncopy$(TSUFFIX).$(SUFFIX)
 ZGEMMOTCOPYOBJ =  zgemm_otcopy$(TSUFFIX).$(SUFFIX)
 
-STRSMKERNEL_LN	=  ../generic/trsm_kernel_LN.c
-STRSMKERNEL_LT	=  ../generic/trsm_kernel_LT.c
-STRSMKERNEL_RN	=  ../generic/trsm_kernel_RN.c
-STRSMKERNEL_RT	=  ../generic/trsm_kernel_RT.c
+STRSMKERNEL_LN	=  strsm_kernel_8x4_haswell_LN.c
+STRSMKERNEL_LT	=  strsm_kernel_8x4_haswell_LT.c
+STRSMKERNEL_RN	=  strsm_kernel_8x4_haswell_RN.c
+STRSMKERNEL_RT	=  strsm_kernel_8x4_haswell_RT.c
 
 DTRSMKERNEL_LN	= ../generic/trsm_kernel_LN.c
 DTRSMKERNEL_LT	= ../generic/trsm_kernel_LT.c
@@ -97,6 +97,11 @@ ZTRSMKERNEL_LT	= ../generic/trsm_kernel_LT.c
 ZTRSMKERNEL_RN	= ../generic/trsm_kernel_RN.c
 ZTRSMKERNEL_RT	= ../generic/trsm_kernel_RT.c
 
-CGEMM3MKERNEL    =  zgemm3m_kernel_4x8_nehalem.S
-ZGEMM3MKERNEL    =  zgemm3m_kernel_2x8_nehalem.S
+CGEMM3MKERNEL    =  cgemm3m_kernel_8x4_haswell.c
+ZGEMM3MKERNEL    =  zgemm3m_kernel_4x4_haswell.c
 
+SASUMKERNEL = sasum.c
+DASUMKERNEL = dasum.c
+
+SROTKERNEL = srot.c
+DROTKERNEL = drot.c

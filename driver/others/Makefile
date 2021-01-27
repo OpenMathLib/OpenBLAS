@@ -7,7 +7,7 @@ COMMONOBJS	 = memory.$(SUFFIX) xerbla.$(SUFFIX) c_abs.$(SUFFIX) z_abs.$(SUFFIX) 
 
 ifdef SMP
 COMMONOBJS	+= blas_server.$(SUFFIX) divtable.$(SUFFIX) blasL1thread.$(SUFFIX)
-ifndef NO_AFFINITY
+ifneq ($(NO_AFFINITY), 1)
 COMMONOBJS	+= init.$(SUFFIX)
 endif
 endif
@@ -21,18 +21,26 @@ else
 ifeq ($(ARCH),power)
 COMMONOBJS	+=  dynamic_power.$(SUFFIX)
 else
+ifeq ($(ARCH),zarch)
+COMMONOBJS += dynamic_zarch.$(SUFFIX)
+else
+ifeq ($(ARCH),mips64)
+COMMONOBJS += dynamic_mips64.$(SUFFIX)
+else
 COMMONOBJS	+=  dynamic.$(SUFFIX)
+endif
+endif
 endif
 endif
 else
 COMMONOBJS	+=  parameter.$(SUFFIX)
 endif
 
-ifdef EXPRECISION
+ifeq ($(EXPRECISION), 1)
 COMMONOBJS	+= x_abs.$(SUFFIX) qlamch.$(SUFFIX) qlamc3.$(SUFFIX)
 endif
 
-ifdef QUAD_PRECISION
+ifeq ($(QUAD_PRECISION), 1)
 COMMONOBJS	+= addx.$(SUFFIX) mulx.$(SUFFIX)
 endif
 
@@ -42,7 +50,7 @@ ifeq ($(C_COMPILER), PGI)
 endif
 endif
 
-ifdef USE_CUDA
+ifeq ($(USE_CUDA), 1)
 COMMONOBJS	+= cuda_init.$(SUFFIX)
 endif
 
@@ -85,7 +93,15 @@ else
 ifeq ($(ARCH),power)
 HPLOBJS = memory.$(SUFFIX) xerbla.$(SUFFIX) dynamic_power.$(SUFFIX)
 else
+ifeq ($(ARCH),zarch)
+HPLOBJS = memory.$(SUFFIX) xerbla.$(SUFFIX) dynamic_zarch.$(SUFFIX)
+else
+ifeq ($(ARCH),mips64)
+HPLOBJS = memory.$(SUFFIX) xerbla.$(SUFFIX) dynamic_mips64.$(SUFFIX)
+else
 HPLOBJS = memory.$(SUFFIX) xerbla.$(SUFFIX) dynamic.$(SUFFIX)
+endif
+endif
 endif
 endif
 else

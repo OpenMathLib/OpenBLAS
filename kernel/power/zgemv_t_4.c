@@ -28,10 +28,13 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "common.h"
 
 #define NBMAX 4096
+#if defined(__VEC__) || defined(__ALTIVEC__)
+
 #define HAVE_KERNEL_4x4_VEC 1
 #define HAVE_KERNEL_4x2_VEC 1
 #define HAVE_KERNEL_4x1_VEC 1
 
+#endif
 #if defined(HAVE_KERNEL_4x4_VEC) || defined(HAVE_KERNEL_4x2_VEC) || defined(HAVE_KERNEL_4x1_VEC)
 #include <altivec.h> 
 #endif
@@ -510,7 +513,7 @@ static void zgemv_kernel_4x1(BLASLONG n, FLOAT *ap, FLOAT *x, FLOAT *y, FLOAT al
 
 #endif
 
-static __attribute__((always_inline)) void copy_x(BLASLONG n, FLOAT *src, FLOAT *dest, BLASLONG inc_src) {
+static __attribute__((always_inline)) inline void copy_x(BLASLONG n, FLOAT *src, FLOAT *dest, BLASLONG inc_src) {
     BLASLONG i;
     for (i = 0; i < n; i++) {
         *dest = *src;
@@ -532,8 +535,8 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1, FLOAT alpha_r, FLOAT alpha_i,
     BLASLONG m2;
     BLASLONG m3;
     BLASLONG n2;
-
-    FLOAT ybuffer[8], *xbuffer;
+    FLOAT ybuffer[8] __attribute__((aligned(16)));
+    FLOAT *xbuffer;
 
     if (m < 1) return (0);
     if (n < 1) return (0);

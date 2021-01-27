@@ -70,7 +70,7 @@ lapack_int LAPACKE_dtrsen( int matrix_layout, char job, char compq,
     if( info != 0 ) {
         goto exit_level_0;
     }
-    liwork = (lapack_int)iwork_query;
+    liwork = iwork_query;
     lwork = (lapack_int)work_query;
     /* Allocate memory for work arrays */
     if( LAPACKE_lsame( job, 'b' ) || LAPACKE_lsame( job, 'v' ) ) {

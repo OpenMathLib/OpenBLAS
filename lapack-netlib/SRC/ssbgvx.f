@@ -261,11 +261,11 @@
 *> \param[out] INFO
 *> \verbatim
 *>          INFO is INTEGER
-*>          = 0 : successful exit
-*>          < 0 : if INFO = -i, the i-th argument had an illegal value
+*>          = 0:  successful exit
+*>          < 0:  if INFO = -i, the i-th argument had an illegal value
 *>          <= N: if INFO = i, then i eigenvectors failed to converge.
 *>                  Their indices are stored in IFAIL.
-*>          > N : SPBSTF returned an error code; i.e.,
+*>          > N:  SPBSTF returned an error code; i.e.,
 *>                if INFO = N + i, for 1 <= i <= N, then the leading
 *>                minor of order i of B is not positive definite.
 *>                The factorization of B could not be completed and

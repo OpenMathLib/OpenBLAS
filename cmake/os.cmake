@@ -8,7 +8,7 @@ if (${CMAKE_SYSTEM_NAME} STREQUAL "Linux")
   set(NO_EXPRECISION 1)
 endif ()
 
-if (${CMAKE_SYSTEM_NAME} MATCHES "FreeBSD|OpenBSD|NetBSD|DragonFly")
+if (${CMAKE_SYSTEM_NAME} MATCHES "FreeBSD|OpenBSD|NetBSD|DragonFly|Darwin")
   set(EXTRALIB "${EXTRALIB} -lm")
   set(NO_EXPRECISION 1)
 endif ()
@@ -82,6 +82,14 @@ endif ()
 
 if (X86)
   set(NO_EXPRECISION 1)
+endif ()
+
+if (DYNAMIC_ARCH)
+if (TARGET)
+if (${TARGET} STREQUAL "GENERIC")
+  set(NO_EXPRECISION 1)
+endif ()
+endif ()
 endif ()
 
 if (UTEST_CHECK)

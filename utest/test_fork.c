@@ -36,7 +36,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <cblas.h>
 #include "openblas_utest.h"
 
-void* xmalloc(size_t n)
+static void* xmalloc(size_t n)
 {
     void* tmp;
     tmp = malloc(n);
@@ -48,7 +48,8 @@ void* xmalloc(size_t n)
     }
 }
 
-void check_dgemm(double *a, double *b, double *result, double *expected, blasint n)
+#ifdef BUILD_DOUBLE
+static void check_dgemm(double *a, double *b, double *result, double *expected, blasint n)
 {
     char trans1 = 'T';
     char trans2 = 'N';
@@ -59,9 +60,13 @@ void check_dgemm(double *a, double *b, double *result, double *expected, blasint
         ASSERT_DBL_NEAR_TOL(expected[i], result[i], DOUBLE_EPS);
     }
 }
+#endif
 
 CTEST(fork, safety)
 {
+#ifndef BUILD_DOUBLE
+exit(0);
+#else
     blasint n = 1000;
     int i;
 
@@ -124,4 +129,5 @@ CTEST(fork, safety)
         ASSERT_EQUAL(wait_pid, fork_pid);
         ASSERT_EQUAL(0, WEXITSTATUS (child_status));
     }
+#endif
 }

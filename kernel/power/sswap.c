@@ -35,8 +35,12 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "common.h"
 
+#if defined(__VEC__) || defined(__ALTIVEC__)
 #if defined(POWER8) || defined(POWER9)
 #include "sswap_microk_power8.c"
+#elif defined(POWER10)
+#include "swap_microk_power10.c"
+#endif
 #endif
 
 #ifndef HAVE_KERNEL_32
@@ -113,12 +117,30 @@ int CNAME(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, FLOAT dummy3, FLOAT *x, 
 	if ( (inc_x == 1) && (inc_y == 1 ))
 	{
 
+#if defined(POWER10)
+		if ( n >= 64 )
+		{
+			BLASLONG align = ((32 - ((uintptr_t)y & (uintptr_t)0x1F)) >> 2) & 0x7;
+			for (i = 0; i < align; i++) {
+				temp = y[i];
+				y[i] = x[i];
+				x[i] = temp;
+			}
+		}
+		BLASLONG n1 = (n-i) & -64;
+		if ( n1 > 0 )
+		{
+			sswap_kernel_32(n1,&x[i], &y[i]);
+			i+=n1;
+		}
+#else
 		BLASLONG n1 = n & -32;
 		if ( n1 > 0 )
 		{
 			sswap_kernel_32(n1, x, y);
 			i=n1;
 		}
+#endif
 
 		while(i < n)
 		{

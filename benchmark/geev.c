@@ -36,13 +36,7 @@
 /* or implied, of The University of Texas at Austin.                 */
 /*********************************************************************/
 
-#include <stdio.h>
-#include <stdlib.h>
-#ifdef __CYGWIN32__
-#include <sys/time.h>
-#endif
-#include "common.h"
-
+#include "bench.h"
 
 #undef GEEV
 
@@ -74,71 +68,6 @@ extern void GEEV( char* jobvl, char* jobvr, blasint* n, FLOAT* a,
                 FLOAT* vr, blasint* ldvr, FLOAT* work, blasint* lwork, FLOAT *rwork, blasint* info );
 #endif
 
-#if defined(__WIN32__) || defined(__WIN64__)
-
-#ifndef DELTA_EPOCH_IN_MICROSECS
-#define DELTA_EPOCH_IN_MICROSECS 11644473600000000ULL
-#endif
-
-int gettimeofday(struct timeval *tv, void *tz){
-
-  FILETIME ft;
-  unsigned __int64 tmpres = 0;
-  static int tzflag;
-
-  if (NULL != tv)
-    {
-      GetSystemTimeAsFileTime(&ft);
-
-      tmpres |= ft.dwHighDateTime;
-      tmpres <<= 32;
-      tmpres |= ft.dwLowDateTime;
-
-      /*converting file time to unix epoch*/
-      tmpres /= 10;  /*convert into microseconds*/
-      tmpres -= DELTA_EPOCH_IN_MICROSECS;
-      tv->tv_sec = (long)(tmpres / 1000000UL);
-      tv->tv_usec = (long)(tmpres % 1000000UL);
-    }
-
-  return 0;
-}
-
-#endif
-
-#if !defined(__WIN32__) && !defined(__WIN64__) && !defined(__CYGWIN32__) && 0
-
-static void *huge_malloc(BLASLONG size){
-  int shmid;
-  void *address;
-
-#ifndef SHM_HUGETLB
-#define SHM_HUGETLB 04000
-#endif
-
-  if ((shmid =shmget(IPC_PRIVATE,
-		     (size + HUGE_PAGESIZE) & ~(HUGE_PAGESIZE - 1),
-		     SHM_HUGETLB | IPC_CREAT |0600)) < 0) {
-    printf( "Memory allocation failed(shmget).\n");
-    exit(1);
-  }
-
-  address = shmat(shmid, NULL, SHM_RND);
-
-  if ((BLASLONG)address == -1){
-    printf( "Memory allocation failed(shmat).\n");
-    exit(1);
-  }
-
-  shmctl(shmid, IPC_RMID, 0);
-
-  return address;
-}
-
-#define malloc huge_malloc
-
-#endif
-
 int main(int argc, char *argv[]){
 
   FLOAT *a,*vl,*vr,*wi,*wr,*work,*rwork;
@@ -154,7 +83,6 @@ int main(int argc, char *argv[]){
   int to   = 200;
   int step =   1;
 
-  struct timeval start, stop;
   double time1;
 
   argc--;argv++;
@@ -195,7 +123,7 @@ int main(int argc, char *argv[]){
 
     for(j = 0; j < to; j++){
       for(i = 0; i < to * COMPSIZE; i++){
-	a[i + j * to * COMPSIZE] = ((FLOAT) rand() / (FLOAT) RAND_MAX) - 0.5;
+	a[(long)i + (long)j * (long)to * COMPSIZE] = ((FLOAT) rand() / (FLOAT) RAND_MAX) - 0.5;
       }
     }
 
@@ -214,7 +142,7 @@ int main(int argc, char *argv[]){
   }
 
 
-#ifdef linux
+#ifdef __linux
   srandom(getpid());
 #endif
 
@@ -223,7 +151,7 @@ int main(int argc, char *argv[]){
   for(m = from; m <= to; m += step){
 
     fprintf(stderr, " %6d : ", (int)m);
-    gettimeofday( &start, (struct timezone *)0);
+    begin();
 
     lwork = -1;
 #ifndef COMPLEX
@@ -239,14 +167,14 @@ int main(int argc, char *argv[]){
     GEEV (&job, &jobr, &m, a, &m, wr, vl, &m, vr, &m, work, &lwork,rwork, &info);
 #endif
 
-    gettimeofday( &stop, (struct timezone *)0);
+    end();
 
     if (info) {
       fprintf(stderr, "failed to compute eigenvalues .. %d\n", info);
       exit(1);
     }
 
-    time1 = (double)(stop.tv_sec - start.tv_sec) + (double)((stop.tv_usec - start.tv_usec)) * 1.e-6;
+    time1 = getsec();
 
     fprintf(stderr,
 	    " %10.2f MFlops : %10.2f Sec : %d\n",

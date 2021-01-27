@@ -29,6 +29,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <stdio.h>
 #include "common.h"
 
+#if defined(__VEC__) || defined(__ALTIVEC__)
+
 #define HAVE_KERNEL_4x4_VEC 1
 #define HAVE_KERNEL_4x2_VEC 1
 #define HAVE_KERNEL_4x1_VEC 1
@@ -36,6 +38,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #if defined(HAVE_KERNEL_4x4_VEC) || defined(HAVE_KERNEL_4x2_VEC) || defined(HAVE_KERNEL_4x1_VEC)
 #include <altivec.h> 
+#endif
 #endif
 
 // 
@@ -614,8 +617,8 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1, FLOAT alpha_r, FLOAT alpha_i,
     BLASLONG m2;
     BLASLONG m3;
     BLASLONG n2;
-
-    FLOAT xbuffer[8], *ybuffer;
+    FLOAT xbuffer[8] __attribute__((aligned(16)));
+    FLOAT *ybuffer;
 
     if (m < 1) return (0);
     if (n < 1) return (0);

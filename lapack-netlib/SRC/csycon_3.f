@@ -19,7 +19,7 @@
 *  ===========
 *
 *       SUBROUTINE CSYCON_3( UPLO, N, A, LDA, E, IPIV, ANORM, RCOND,
-*                            WORK, IWORK, INFO )
+*                            WORK, INFO )
 *
 *       .. Scalar Arguments ..
 *       CHARACTER          UPLO
@@ -27,7 +27,7 @@
 *       REAL               ANORM, RCOND
 *       ..
 *       .. Array Arguments ..
-*       INTEGER            IPIV( * ), IWORK( * )
+*       INTEGER            IPIV( * )
 *       COMPLEX            A( LDA, * ), E ( * ), WORK( * )
 *       ..
 *
@@ -127,11 +127,6 @@
 *> \param[out] WORK
 *> \verbatim
 *>          WORK is COMPLEX array, dimension (2*N)
-*> \endverbatim
-*>
-*> \param[out] IWORK
-*> \verbatim
-*>          IWORK is INTEGER array, dimension (N)
 *> \endverbatim
 *>
 *> \param[out] INFO

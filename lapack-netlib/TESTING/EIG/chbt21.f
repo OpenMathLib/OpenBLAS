@@ -28,14 +28,16 @@
 *>
 *> CHBT21  generally checks a decomposition of the form
 *>
-*>         A = U S UC>
-*> where * means conjugate transpose, A is hermitian banded, U is
+*>         A = U S U**H
+*>
+*> where **H means conjugate transpose, A is hermitian banded, U is
 *> unitary, and S is diagonal (if KS=0) or symmetric
 *> tridiagonal (if KS=1).
 *>
 *> Specifically:
 *>
-*>         RESULT(1) = | A - U S U* | / ( |A| n ulp ) *andC>         RESULT(2) = | I - UU* | / ( n ulp )
+*>         RESULT(1) = | A - U S U**H | / ( |A| n ulp ) and
+*>         RESULT(2) = | I - U U**H | / ( n ulp )
 *> \endverbatim
 *
 *  Arguments:
@@ -220,7 +222,7 @@
 *
       ANORM = MAX( CLANHB( '1', CUPLO, N, IKA, A, LDA, RWORK ), UNFL )
 *
-*     Compute error matrix:    Error = A - U S U*
+*     Compute error matrix:    Error = A - U S U**H
 *
 *     Copy A from SB to SP storage format.
 *
@@ -271,7 +273,7 @@
 *
 *     Do Test 2
 *
-*     Compute  UU* - I
+*     Compute  U U**H - I
 *
       CALL CGEMM( 'N', 'C', N, N, N, CONE, U, LDU, U, LDU, CZERO, WORK,
      $            N )

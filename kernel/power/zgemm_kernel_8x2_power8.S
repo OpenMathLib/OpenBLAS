@@ -132,7 +132,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define	N	r4
 #define	K	r5
 
-#ifdef linux
+#if defined(linux) || defined(__FreeBSD__)
 #ifndef __64BIT__
 #define A	r6
 #define	B	r7
@@ -296,7 +296,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	stfd	f2,  ALPHA_I_SP
 	stw	r0,  FZERO
 
-#ifdef linux
+#if defined(linux) || defined(__FreeBSD__)
 #ifdef __64BIT__
 	ld	LDC, FRAMESLOT(0) + 0(FRAMEPOINTER)
 #endif
@@ -317,7 +317,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif
 
 #ifdef TRMMKERNEL
-#if defined(linux) && defined(__64BIT__)
+#if (defined(linux) || defined(__FreeBSD__)) && defined(__64BIT__)
 	ld	OFFSET,  FRAMESLOT(1) + 0(FRAMEPOINTER)
 #endif
 

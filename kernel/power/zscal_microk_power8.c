@@ -58,8 +58,8 @@ static void zscal_kernel_8 (long n, double *x, double alpha_r, double alpha_i)
        "dcbt		0, %2		\n\t"
 
        "xsnegdp		33, %x16	\n\t"	// -alpha_i
-       "xxspltd		32, %x15, 0	\n\t"	// alpha_r , alpha_r
-       "xxmrghd		33, 33, %x16	\n\t"	// -alpha_i , alpha_i
+       XXSPLTD_S(32,%x15,0)	// alpha_r , alpha_r
+       XXMRGHD_S(33,33,%x16)	// -alpha_i , alpha_i
 
        "lxvd2x		40, 0, %2	\n\t"	// x0_r, x0_i
        "lxvd2x		41, %17, %2	\n\t"
@@ -73,10 +73,10 @@ static void zscal_kernel_8 (long n, double *x, double alpha_r, double alpha_i)
        "addi		%2, %2, 128	\n\t"
 
        "addic.		%1, %1, -8	\n\t"
-       "ble		2f		\n\t"
+       "ble		two%=		\n\t"
 
-       ".p2align	5		\n"
-     "1:				\n\t"
+       ".align	5		\n"
+     "one%=:				\n\t"
 
        "xvmuldp		48, 40, 32	\n\t"	// x0_r * alpha_r, x0_i * alpha_r
        "xvmuldp		49, 41, 32	\n\t"
@@ -87,14 +87,14 @@ static void zscal_kernel_8 (long n, double *x, double alpha_r, double alpha_i)
        "xvmuldp		%x5, 46, 32	\n\t"
        "xvmuldp		%x6, 47, 32	\n\t"
 
-       "xxswapd		%x7, 40		\n\t"
-       "xxswapd		%x8, 41		\n\t"
-       "xxswapd		%x9, 42		\n\t"
-       "xxswapd		%x10, 43		\n\t"
-       "xxswapd		%x11, 44		\n\t"
-       "xxswapd		%x12, 45	\n\t"
-       "xxswapd		%x13, 46	\n\t"
-       "xxswapd		%x14, 47	\n\t"
+       XXSWAPD_S(%x7,40)
+       XXSWAPD_S(%x8,41)
+       XXSWAPD_S(%x9,42)
+       XXSWAPD_S(%x10,43)
+       XXSWAPD_S(%x11,44)
+       XXSWAPD_S(%x12,45)
+       XXSWAPD_S(%x13,46)
+       XXSWAPD_S(%x14,47)
 
        "xvmuldp		%x7, %x7, 33	\n\t"	// x0_i * -alpha_i, x0_r * alpha_i
        "xvmuldp		%x8, %x8, 33	\n\t"
@@ -147,9 +147,9 @@ static void zscal_kernel_8 (long n, double *x, double alpha_r, double alpha_i)
        "addi		%2, %2, 256	\n\t"
 
        "addic.		%1, %1, -8	\n\t"
-       "bgt		1b		\n"
+       "bgt		one%=		\n"
 
-     "2:				\n\t"
+     "two%=:				\n\t"
 
        "xvmuldp		48, 40, 32	\n\t"	// x0_r * alpha_r, x0_i * alpha_r
        "xvmuldp		49, 41, 32	\n\t"
@@ -160,14 +160,14 @@ static void zscal_kernel_8 (long n, double *x, double alpha_r, double alpha_i)
        "xvmuldp		%x5, 46, 32	\n\t"
        "xvmuldp		%x6, 47, 32	\n\t"
 
-       "xxswapd		%x7, 40		\n\t"
-       "xxswapd		%x8, 41		\n\t"
-       "xxswapd		%x9, 42		\n\t"
-       "xxswapd		%x10, 43		\n\t"
-       "xxswapd		%x11, 44		\n\t"
-       "xxswapd		%x12, 45	\n\t"
-       "xxswapd		%x13, 46	\n\t"
-       "xxswapd		%x14, 47	\n\t"
+       XXSWAPD_S(%x7,40)
+       XXSWAPD_S(%x8,41)
+       XXSWAPD_S(%x9,42)
+       XXSWAPD_S(%x10,43)
+       XXSWAPD_S(%x11,44)
+       XXSWAPD_S(%x12,45)
+       XXSWAPD_S(%x13,46)
+       XXSWAPD_S(%x14,47)
 
        "addi		%2, %2, -128	\n\t"
 

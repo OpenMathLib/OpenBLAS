@@ -39,7 +39,8 @@ set(SLINTST schkaa.f
    strt02.f strt03.f strt05.f strt06.f
    sgennd.f sqrt04.f sqrt05.f schkqrt.f serrqrt.f schkqrtp.f serrqrtp.f
    schklqt.f schklqtp.f schktsqr.f
-   serrlqt.f serrlqtp.f serrtsqr.f stsqr01.f slqt04.f slqt05.f)
+   serrlqt.f serrlqtp.f serrtsqr.f stsqr01.f slqt04.f slqt05.f
+   schkorhr_col.f serrorhr_col.f sorhr_col01.f)
 
 if(USE_XBLAS)
   list(APPEND SLINTST sdrvgbx.f sdrvgex.f sdrvsyx.f sdrvpox.f
@@ -94,7 +95,8 @@ set(CLINTST cchkaa.f
    sget06.f cgennd.f
    cqrt04.f cqrt05.f cchkqrt.f cerrqrt.f cchkqrtp.f cerrqrtp.f
    cchklqt.f cchklqtp.f cchktsqr.f
-   cerrlqt.f cerrlqtp.f cerrtsqr.f ctsqr01.f clqt04.f clqt05.f)
+   cerrlqt.f cerrlqtp.f cerrtsqr.f ctsqr01.f clqt04.f clqt05.f
+   cchkunhr_col.f cerrunhr_col.f cunhr_col01.f)
 
 if(USE_XBLAS)
   list(APPEND CLINTST cdrvgbx.f cdrvgex.f cdrvhex.f cdrvsyx.f cdrvpox.f
@@ -139,7 +141,8 @@ set(DLINTST dchkaa.f
    dgennd.f
    dqrt04.f dqrt05.f dchkqrt.f derrqrt.f dchkqrtp.f derrqrtp.f
    dchklq.f dchklqt.f dchklqtp.f dchktsqr.f
-   derrlqt.f derrlqtp.f derrtsqr.f dtsqr01.f dlqt04.f dlqt05.f)
+   derrlqt.f derrlqtp.f derrtsqr.f dtsqr01.f dlqt04.f dlqt05.f
+   dchkorhr_col.f derrorhr_col.f dorhr_col01.f)
 
 if(USE_XBLAS)
   list(APPEND DLINTST ddrvgbx.f ddrvgex.f ddrvsyx.f ddrvpox.f
@@ -194,7 +197,8 @@ set(ZLINTST zchkaa.f
    dget06.f zgennd.f
    zqrt04.f zqrt05.f zchkqrt.f zerrqrt.f zchkqrtp.f zerrqrtp.f
    zchklqt.f zchklqtp.f zchktsqr.f
-   zerrlqt.f zerrlqtp.f zerrtsqr.f ztsqr01.f zlqt04.f zlqt05.f)
+   zerrlqt.f zerrlqtp.f zerrtsqr.f ztsqr01.f zlqt04.f zlqt05.f
+   zchkunhr_col.f zerrunhr_col.f zunhr_col01.f)
 
 if(USE_XBLAS)
   list(APPEND ZLINTST zdrvgbx.f zdrvgex.f zdrvhex.f zdrvsyx.f zdrvpox.f
@@ -235,7 +239,8 @@ set(ZLINTSTRFP zchkrfp.f zdrvrfp.f zdrvrf1.f zdrvrf2.f zdrvrf3.f zdrvrf4.f zerrr
 
 macro(add_lin_executable name)
   add_executable(${name} ${ARGN})
-  target_link_libraries(${name} tmglib ${LAPACK_LIBRARIES} ${BLAS_LIBRARIES})
+  target_link_libraries(${name} openblas${SUFFIX64_UNDERSCORE})
+#${TMGLIB} ${LAPACK_LIBRARIES} ${BLAS_LIBRARIES})
 endmacro()
 
 if(BUILD_SINGLE)

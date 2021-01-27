@@ -1,0 +1,71 @@
+trigger:
+  # start a new build for every push
+  batch: False
+  branches:
+    include:
+      - develop
+
+jobs:
+# manylinux1 is useful to test because the
+# standard Docker container uses an old version
+# of gcc / glibc
+- job: manylinux1_gcc
+  pool:
+    vmImage: 'ubuntu-16.04'
+  steps:
+  - script: |
+      echo "FROM quay.io/pypa/manylinux1_x86_64
+        COPY . /tmp/openblas
+        RUN cd /tmp/openblas                                      &&  \
+            COMMON_FLAGS='DYNAMIC_ARCH=1 TARGET=NEHALEM NUM_THREADS=32' && \
+            BTYPE='BINARY=64' CC=gcc && \
+            make QUIET_MAKE=1 $COMMON_FLAGS $BTYPE && \
+            make -C test $COMMON_FLAGS $BTYPE && \
+            make -C ctest $COMMON_FLAGS $BTYPE && \
+            make -C utest $COMMON_FLAGS $BTYPE" > Dockerfile
+      docker build .
+    displayName: Run manylinux1 docker build
+- job: Intel_SDE_skx
+  pool:
+    vmImage: 'ubuntu-16.04'
+  steps:
+  - script: |
+      # at the time of writing the available Azure Ubuntu vm image
+      # does not support AVX512VL, so use more recent LTS version
+      echo "FROM ubuntu:bionic
+      COPY . /tmp/openblas
+      RUN apt-get -y update && apt-get -y install \\
+          cmake \\
+          gfortran \\
+          make \\
+          wget
+      RUN mkdir /tmp/SDE && cd /tmp/SDE && \\
+          mkdir sde-external-8.35.0-2019-03-11-lin && \\
+          wget --quiet -O sde-external-8.35.0-2019-03-11-lin.tar.bz2 https://www.dropbox.com/s/fopsnzj67572sj5/sde-external-8.35.0-2019-03-11-lin.tar.bz2?dl=0 && \\
+          tar -xjvf sde-external-8.35.0-2019-03-11-lin.tar.bz2 -C /tmp/SDE/sde-external-8.35.0-2019-03-11-lin --strip-components=1
+      RUN cd /tmp/openblas && CC=gcc make QUIET_MAKE=1 DYNAMIC_ARCH=1 NUM_THREADS=32 BINARY=64
+      CMD cd /tmp/openblas && echo 0 > /proc/sys/kernel/yama/ptrace_scope && CC=gcc OPENBLAS_VERBOSE=2 /tmp/SDE/sde-external-8.35.0-2019-03-11-lin/sde64 -cpuid_in /tmp/SDE/sde-external-8.35.0-2019-03-11-lin/misc/cpuid/skx/cpuid.def -- make -C utest DYNAMIC_ARCH=1 NUM_THREADS=32 BINARY=64" > Dockerfile
+      docker build -t intel_sde .
+      # we need a privileged docker run for sde process attachment
+      docker run --privileged intel_sde
+    displayName: 'Run AVX512 SkylakeX docker build / test'
+
+- job: Windows_cl
+  pool:
+     vmImage: 'windows-latest'
+  steps:   
+  - task: CMake@1
+    inputs:
+      workingDirectory: 'build' # Optional
+      cmakeArgs: '-G "Visual Studio 16 2019" ..'
+  - task: CMake@1
+    inputs:
+      cmakeArgs: '--build . --config Release'
+      workingDirectory: 'build'
+  - script: |
+      cd build
+      cd utest
+      dir
+      openblas_utest.exe
+  
+      

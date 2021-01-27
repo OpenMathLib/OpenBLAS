@@ -1,0 +1,103 @@
+name: continuous build
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+        fortran: [gfortran, flang]
+        build: [cmake, make]
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Compilation cache
+        uses: actions/cache@v2
+        with:
+          path: ~/.ccache
+          # We include the commit sha in the cache key, as new cache entries are
+          # only created if there is no existing entry for the key yet.
+          key: ${{ runner.os }}-ccache-${{ github.sha }}
+          # Restore any ccache cache entry, if none for
+          # ${{ runner.os }}-ccache-${{ github.sha }} exists
+          restore-keys: |
+            ${{ runner.os }}-ccache-
+
+      - name: Print system information
+        run: |
+          if [ "$RUNNER_OS" == "Linux" ]; then
+            cat /proc/cpuinfo
+          elif [ "$RUNNER_OS" == "macOS" ]; then
+            sysctl -a | grep machdep.cpu
+          else
+            echo "$RUNNER_OS not supported"
+            exit 1
+          fi
+
+      - name: Install Dependencies
+        run: |
+          if [ "$RUNNER_OS" == "Linux" ]; then
+            sudo apt-get install -y gfortran cmake ccache
+          elif [ "$RUNNER_OS" == "macOS" ]; then
+            brew install coreutils cmake ccache
+          else
+            echo "$RUNNER_OS not supported"
+            exit 1
+          fi
+          ccache -M 300M  # Limit the ccache size; Github's overall cache limit is 5GB
+
+      - name: gfortran build
+        if: matrix.build == 'make' && matrix.fortran == 'gfortran'
+        run: |
+          if [ "$RUNNER_OS" == "Linux" ]; then
+            export PATH="/usr/lib/ccache:${PATH}"
+          elif [ "$RUNNER_OS" == "macOS" ]; then
+            export PATH="$(brew --prefix)/opt/ccache/libexec:${PATH}"
+          else
+            echo "$RUNNER_OS not supported"
+            exit 1
+          fi
+
+          make -j$(nproc) DYNAMIC_ARCH=1 USE_OPENMP=0
+
+      - name: flang build
+        if: matrix.build == 'make' && matrix.fortran == 'flang'
+        run: |
+          if [ "$RUNNER_OS" == "Linux" ]; then
+            export PATH="/usr/lib/ccache:${PATH}"
+          elif [ "$RUNNER_OS" == "macOS" ]; then
+            exit 0
+          else
+            echo "$RUNNER_OS not supported"
+            exit 1
+          fi
+
+          cd /usr/
+          sudo wget -nv https://github.com/flang-compiler/flang/releases/download/flang_20190329/flang-20190329-x86-70.tgz
+          sudo tar xf flang-20190329-x86-70.tgz
+          sudo rm flang-20190329-x86-70.tgz
+          cd -
+
+          make -j$(nproc) DYNAMIC_ARCH=1 USE_OPENMP=0 FC=flang
+
+
+      - name: CMake gfortran build
+        if: matrix.build == 'cmake' && matrix.fortran == 'gfortran'
+        run: |
+          if [ "$RUNNER_OS" == "Linux" ]; then
+            export PATH="/usr/lib/ccache:${PATH}"
+          elif [ "$RUNNER_OS" == "macOS" ]; then
+            export PATH="$(brew --prefix)/opt/ccache/libexec:${PATH}"
+          else
+            echo "$RUNNER_OS not supported"
+            exit 1
+          fi
+
+          mkdir build
+          cd build
+          cmake -DDYNAMIC_ARCH=1 -DNOFORTRAN=0 -DBUILD_WITHOUT_LAPACK=0  -DCMAKE_VERBOSE_MAKEFILE=ON -DCMAKE_BUILD_TYPE=Release ..
+          make -j$(nproc)

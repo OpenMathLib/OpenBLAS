@@ -68,10 +68,10 @@ static double dasum_kernel_16 (long n, double *x)
        "addi		%2, %2, 128	\n\t"
 
        "addic.		%1, %1, -16	\n\t"
-       "ble		2f		\n\t"
+       "ble		two%=		\n\t"
 
-       ".p2align	5		\n"
-     "1:				\n\t"
+       ".align	5		\n"
+     "one%=:				\n\t"
 
        "xvabsdp		48, 40		\n\t"
        "xvabsdp		49, 41		\n\t"
@@ -108,9 +108,9 @@ static double dasum_kernel_16 (long n, double *x)
        "xvadddp		38, 38, %x5	\n\t"
        "xvadddp		39, 39, %x6	\n\t"
 
-       "bgt		1b		\n"
+       "bgt		one%=		\n"
 
-     "2:				\n\t"
+     "two%=:				\n\t"
 
        "xvabsdp		48, 40		\n\t"
        "xvabsdp		49, 41		\n\t"
@@ -140,7 +140,7 @@ static double dasum_kernel_16 (long n, double *x)
 
        "xvadddp		32, 32, 36	\n\t"
 
-       "xxswapd		33, 32		\n\t"
+       XXSWAPD_S(33,32)
        "xsadddp		%x0, 32, 33	\n"
 
      "#n=%1 x=%3=%2 sum=%0 o16=%8 o32=%9 o48=%10 o64=%11 o80=%12 o96=%13 o112=%14\n"

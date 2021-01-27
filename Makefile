@@ -34,7 +34,7 @@ endif
 
 LAPACK_NOOPT := $(filter-out -O0 -O1 -O2 -O3 -Ofast,$(LAPACK_FFLAGS))
 
-SUBDIRS_ALL = $(SUBDIRS) test ctest utest exports benchmark ../laswp ../bench
+SUBDIRS_ALL = $(SUBDIRS) test ctest utest exports benchmark ../laswp ../bench cpp_thread_test
 
 .PHONY : all libs netlib $(RELA) test ctest shared install
 .NOTPARALLEL : all libs $(RELA) prof lapack-test install blas-test
@@ -56,10 +56,27 @@ ifneq ($(INTERFACE64), 0)
 	@echo "  Use 64 bits int    (equivalent to \"-i8\" in Fortran)      "
 endif
 endif
-
-	@echo "  C compiler       ... $(C_COMPILER)  (command line : $(CC))"
+	@$(CC) --version > /dev/null 2>&1;\
+	if [ $$? -eq 0 ]; then \
+	   cverinfo=`$(CC) --version | sed -n '1p'`; \
+	   if [ -z "$${cverinfo}" ]; then \
+	   cverinfo=`$(CC) --version | sed -n '2p'`; \
+	   fi; \
+	   echo "  C compiler       ... $(C_COMPILER)  (cmd & version : $${cverinfo})";\
+	else  \
+	   echo "  C compiler       ... $(C_COMPILER)  (command line : $(CC))";\
+	fi
 ifeq ($(NOFORTRAN), $(filter 0,$(NOFORTRAN)))
-	@echo "  Fortran compiler ... $(F_COMPILER)  (command line : $(FC))"
+	@$(FC) --version > /dev/null 2>&1;\
+	if [ $$? -eq 0 ]; then \
+	   fverinfo=`$(FC) --version | sed -n '1p'`; \
+	   if [ -z "$${fverinfo}" ]; then \
+	   fverinfo=`$(FC) --version | sed -n '2p'`; \
+	   fi; \
+	   echo "  Fortran compiler ... $(F_COMPILER)  (cmd & version : $${fverinfo})";\
+	else \
+	   echo "  Fortran compiler ... $(F_COMPILER)  (command line : $(FC))";\
+	fi
 endif
 ifneq ($(OSNAME), AIX)
 	@echo -n "  Library Name     ... $(LIBNAME)"
@@ -68,9 +85,13 @@ else
 endif
 
 ifndef SMP
-	@echo " (Single threaded)  "
+	@echo " (Single-threading)  "
 else
-	@echo " (Multi threaded; Max num-threads is $(NUM_THREADS))"
+	@echo " (Multi-threading; Max num-threads is $(NUM_THREADS))"
+endif
+
+ifeq ($(DYNAMIC_ARCH), 1)
+	@echo "  Supporting multiple $(ARCH) cpu models with minimum requirement for the common code being $(CORE)"
 endif
 
 ifeq ($(USE_OPENMP), 1)
@@ -97,18 +118,19 @@ endif
 
 shared :
 ifneq ($(NO_SHARED), 1)
-ifeq ($(OSNAME), $(filter $(OSNAME),Linux SunOS Android Haiku))
+ifeq ($(OSNAME), $(filter $(OSNAME),Linux SunOS Android Haiku FreeBSD DragonFly))
 	@$(MAKE) -C exports so
 	@ln -fs $(LIBSONAME) $(LIBPREFIX).so
 	@ln -fs $(LIBSONAME) $(LIBPREFIX).so.$(MAJOR_VERSION)
 endif
-ifeq ($(OSNAME), $(filter $(OSNAME),FreeBSD OpenBSD NetBSD DragonFly))
+ifeq ($(OSNAME), $(filter $(OSNAME),OpenBSD NetBSD))
 	@$(MAKE) -C exports so
 	@ln -fs $(LIBSONAME) $(LIBPREFIX).so
 endif
 ifeq ($(OSNAME), Darwin)
 	@$(MAKE) -C exports dyn
 	@ln -fs $(LIBDYNNAME) $(LIBPREFIX).dylib
+	@ln -fs $(LIBDYNNAME) $(LIBPREFIX).$(MAJOR_VERSION).dylib
 endif
 ifeq ($(OSNAME), WINNT)
 	@$(MAKE) -C exports dll
@@ -123,10 +145,13 @@ ifeq ($(NOFORTRAN), $(filter 0,$(NOFORTRAN)))
 	touch $(LIBNAME)
 ifndef NO_FBLAS
 	$(MAKE) -C test all
-	$(MAKE) -C utest all
 endif
-ifndef NO_CBLAS
+	$(MAKE) -C utest all
+ifneq ($(NO_CBLAS), 1)
 	$(MAKE) -C ctest all
+ifeq ($(CPP_THREAD_SAFETY_TEST), 1)
+	$(MAKE) -C cpp_thread_test all
+endif
 endif
 endif
 
@@ -225,7 +250,7 @@ ifeq ($(NOFORTRAN), $(filter 0,$(NOFORTRAN)))
 	@$(MAKE) -C $(NETLIB_LAPACK_DIR) lapacklib
 	@$(MAKE) -C $(NETLIB_LAPACK_DIR) tmglib
 endif
-ifndef NO_LAPACKE
+ifneq ($(NO_LAPACKE), 1)
 	@$(MAKE) -C $(NETLIB_LAPACK_DIR) lapackelib
 endif
 endif
@@ -243,21 +268,26 @@ prof_lapack : lapack_prebuild
 
 lapack_prebuild :
 ifeq ($(NOFORTRAN), $(filter 0,$(NOFORTRAN)))
-	-@echo "FORTRAN     = $(FC)" > $(NETLIB_LAPACK_DIR)/make.inc
-	-@echo "OPTS        = $(LAPACK_FFLAGS)" >> $(NETLIB_LAPACK_DIR)/make.inc
+	-@echo "FC          = $(FC)" > $(NETLIB_LAPACK_DIR)/make.inc
+	-@echo "FFLAGS      = $(LAPACK_FFLAGS)" >> $(NETLIB_LAPACK_DIR)/make.inc
+	-@echo "FFLAGS_DRV  = $(LAPACK_FFLAGS)" >> $(NETLIB_LAPACK_DIR)/make.inc
 	-@echo "POPTS       = $(LAPACK_FPFLAGS)" >> $(NETLIB_LAPACK_DIR)/make.inc
-	-@echo "NOOPT       = -O0 $(LAPACK_NOOPT)" >> $(NETLIB_LAPACK_DIR)/make.inc
+	-@echo "FFLAGS_NOOPT       = -O0 $(LAPACK_NOOPT)" >> $(NETLIB_LAPACK_DIR)/make.inc
 	-@echo "PNOOPT      = $(LAPACK_FPFLAGS) -O0" >> $(NETLIB_LAPACK_DIR)/make.inc
-	-@echo "LOADOPTS    = $(FFLAGS) $(EXTRALIB)" >> $(NETLIB_LAPACK_DIR)/make.inc
+ifeq ($(C_COMPILER)$(F_COMPILER)$(USE_OPENMP), CLANGGFORTRAN1)
+	-@echo "LDFLAGS     = $(FFLAGS) $(EXTRALIB) -lomp" >> $(NETLIB_LAPACK_DIR)/make.inc
+else
+	-@echo "LDFLAGS     = $(FFLAGS) $(EXTRALIB)" >> $(NETLIB_LAPACK_DIR)/make.inc
+endif
 	-@echo "CC          = $(CC)" >> $(NETLIB_LAPACK_DIR)/make.inc
 	-@echo "override CFLAGS      = $(LAPACK_CFLAGS)" >> $(NETLIB_LAPACK_DIR)/make.inc
-	-@echo "override ARCH        = $(AR)" >> $(NETLIB_LAPACK_DIR)/make.inc
-	-@echo "ARCHFLAGS   = $(ARFLAGS) -ru" >> $(NETLIB_LAPACK_DIR)/make.inc
+	-@echo "AR          = $(AR)" >> $(NETLIB_LAPACK_DIR)/make.inc
+	-@echo "ARFLAGS     = $(ARFLAGS) -ru" >> $(NETLIB_LAPACK_DIR)/make.inc
 	-@echo "RANLIB      = $(RANLIB)" >> $(NETLIB_LAPACK_DIR)/make.inc
-	-@echo "LAPACKLIB   = ../$(LIBNAME)" >> $(NETLIB_LAPACK_DIR)/make.inc
-	-@echo "TMGLIB      = ../$(LIBNAME)" >> $(NETLIB_LAPACK_DIR)/make.inc
+	-@echo "LAPACKLIB   = ../../$(LIBNAME)" >> $(NETLIB_LAPACK_DIR)/make.inc
+	-@echo "TMGLIB      = ../../../$(LIBNAME)" >> $(NETLIB_LAPACK_DIR)/make.inc
 	-@echo "BLASLIB     = ../../../$(LIBNAME)" >> $(NETLIB_LAPACK_DIR)/make.inc
-	-@echo "LAPACKELIB  = ../$(LIBNAME)" >> $(NETLIB_LAPACK_DIR)/make.inc
+	-@echo "LAPACKELIB  = ../../../$(LIBNAME)" >> $(NETLIB_LAPACK_DIR)/make.inc
 	-@echo "LAPACKLIB_P = ../$(LIBNAME_P)" >> $(NETLIB_LAPACK_DIR)/make.inc
 	-@echo "SUFFIX      = $(SUFFIX)" >> $(NETLIB_LAPACK_DIR)/make.inc
 	-@echo "PSUFFIX     = $(PSUFFIX)" >> $(NETLIB_LAPACK_DIR)/make.inc
@@ -281,6 +311,18 @@ else
 endif
 ifeq ($(BUILD_LAPACK_DEPRECATED), 1)
 	-@echo "BUILD_DEPRECATED      = 1" >> $(NETLIB_LAPACK_DIR)/make.inc
+endif
+ifeq ($(BUILD_SINGLE), 1)
+	-@echo "BUILD_SINGLE      = 1" >> $(NETLIB_LAPACK_DIR)/make.inc
+endif
+ifeq ($(BUILD_DOUBLE), 1)
+	-@echo "BUILD_DOUBLE      = 1" >> $(NETLIB_LAPACK_DIR)/make.inc
+endif
+ifeq ($(BUILD_COMPLEX), 1)
+	-@echo "BUILD_COMPLEX      = 1" >> $(NETLIB_LAPACK_DIR)/make.inc
+endif
+ifeq ($(BUILD_COMPLEX16), 1)
+	-@echo "BUILD_COMPLEX16      = 1" >> $(NETLIB_LAPACK_DIR)/make.inc
 endif
 	-@echo "LAPACKE_WITH_TMG      = 1" >> $(NETLIB_LAPACK_DIR)/make.inc
 	-@cat  make.inc >> $(NETLIB_LAPACK_DIR)/make.inc
@@ -313,9 +355,9 @@ lapack-test :
 	$(MAKE) -j 1 -C $(NETLIB_LAPACK_DIR)/TESTING/EIG xeigtstc  xeigtstd  xeigtsts  xeigtstz 
 	$(MAKE) -j 1 -C $(NETLIB_LAPACK_DIR)/TESTING/LIN xlintstc  xlintstd  xlintstds  xlintstrfd  xlintstrfz  xlintsts  xlintstz  xlintstzc xlintstrfs xlintstrfc
 ifneq ($(CROSS), 1)
-	( cd $(NETLIB_LAPACK_DIR)/INSTALL; make all; ./testlsame; ./testslamch; ./testdlamch; \
+	( cd $(NETLIB_LAPACK_DIR)/INSTALL; $(MAKE) all; ./testlsame; ./testslamch; ./testdlamch; \
         ./testsecond; ./testdsecnd; ./testieee; ./testversion )
-	(cd $(NETLIB_LAPACK_DIR); ./lapack_testing.py -r )
+	(cd $(NETLIB_LAPACK_DIR); ./lapack_testing.py -r -b TESTING)
 endif
 
 lapack-runtest:
@@ -345,11 +387,12 @@ clean ::
 	@$(MAKE) -C kernel clean
 #endif
 	@$(MAKE) -C reference clean
-	@rm -f *.$(LIBSUFFIX) *.so *~ *.exe getarch getarch_2nd *.dll *.lib *.$(SUFFIX) *.dwf $(LIBPREFIX).$(LIBSUFFIX) $(LIBPREFIX)_p.$(LIBSUFFIX) $(LIBPREFIX).so.$(MAJOR_VERSION) *.lnk myconfig.h
+	@rm -f *.$(LIBSUFFIX) *.so *~ *.exe getarch getarch_2nd *.dll *.lib *.$(SUFFIX) *.dwf $(LIBPREFIX).$(LIBSUFFIX) $(LIBPREFIX)_p.$(LIBSUFFIX) $(LIBPREFIX).so.$(MAJOR_VERSION) *.lnk myconfig.h *.so.renamed *.a.renamed *.so.0
 ifeq ($(OSNAME), Darwin)
 	@rm -rf getarch.dSYM getarch_2nd.dSYM
 endif
 	@rm -f Makefile.conf config.h Makefile_kernel.conf config_kernel.h st* *.dylib
+	@rm -f cblas.tmp cblas.tmp2
 	@touch $(NETLIB_LAPACK_DIR)/make.inc
 	@$(MAKE) -C $(NETLIB_LAPACK_DIR) clean
 	@rm -f $(NETLIB_LAPACK_DIR)/make.inc $(NETLIB_LAPACK_DIR)/lapacke/include/lapacke_mangling.h

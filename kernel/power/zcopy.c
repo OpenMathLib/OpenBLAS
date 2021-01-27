@@ -35,8 +35,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "common.h"
 
-#if defined(POWER8) || defined(POWER9)
+#if defined(POWER8) || defined(POWER9) || defined(POWER10)
+#if defined(__VEC__) || defined(__ALTIVEC__)
 #include "zcopy_microk_power8.c"
+#endif
 #endif
 
 #ifndef HAVE_KERNEL_16

@@ -41,6 +41,7 @@
 
 #define MB	__asm__ __volatile__ ("nop")
 #define WMB	__asm__ __volatile__ ("nop")
+#define RMB	__asm__ __volatile__ ("nop")
 
 #ifndef ASSEMBLER
 
@@ -75,6 +76,12 @@ static __inline unsigned long rpcc(void){
 
 #ifndef __BIG_ENDIAN__
 #define __BIG_ENDIAN__
+#endif
+
+#ifdef C_SUN
+#ifndef __64BIT
+#define RETURN_BY_STACK
+#endif
 #endif
 
 #ifdef DOUBLE

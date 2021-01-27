@@ -36,7 +36,7 @@ void RELAPACK_dsytrf_rook(
         *info = -2;
     else if (*ldA < MAX(1, *n))
         *info = -4;
-    else if (*lWork < minlWork && *lWork != -1)
+    else if ((*lWork <1 || *lWork < minlWork) && *lWork != -1)
         *info = -7;
     else if (*lWork == -1) {
         // Work size query
@@ -56,7 +56,7 @@ void RELAPACK_dsytrf_rook(
 
     if (*info) {
         const blasint minfo = -*info;
-        LAPACK(xerbla)("DSYTRF", &minfo, strlen("DSYTRF"));
+        LAPACK(xerbla)("DSYTRF_ROOK", &minfo, strlen("DSYTRF_ROOK"));
         return;
     }
 

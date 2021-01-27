@@ -16,14 +16,44 @@ matrix:
       before_script: &common-before
         - COMMON_FLAGS="DYNAMIC_ARCH=1 TARGET=NEHALEM NUM_THREADS=32"
       script:
-        - set -e
-        - travis_wait 45 make QUIET_MAKE=1 $COMMON_FLAGS $BTYPE
+        - make QUIET_MAKE=1 $COMMON_FLAGS $BTYPE
         - make -C test $COMMON_FLAGS $BTYPE
         - make -C ctest $COMMON_FLAGS $BTYPE
         - make -C utest $COMMON_FLAGS $BTYPE
       env:
         - TARGET_BOX=LINUX64
         - BTYPE="BINARY=64"
+
+    - <<: *test-ubuntu
+      os: linux-ppc64le
+      before_script:
+        - COMMON_FLAGS="DYNAMIC_ARCH=1 TARGET=POWER8 NUM_THREADS=32"
+      env:
+        # for matrix annotation only
+        - TARGET_BOX=PPC64LE_LINUX
+        - BTYPE="BINARY=64 USE_OPENMP=1"
+
+    - <<: *test-ubuntu
+      os: linux
+      arch: s390x
+      before_script:
+        - COMMON_FLAGS="DYNAMIC_ARCH=1 TARGET=Z13 NUM_THREADS=32"
+      env:
+        # for matrix annotation only
+        - TARGET_BOX=IBMZ_LINUX
+        - BTYPE="BINARY=64 USE_OPENMP=1"
+
+    - <<: *test-ubuntu
+      os: linux
+      dist: focal
+      arch: s390x
+      compiler: clang
+      before_script:
+        - COMMON_FLAGS="DYNAMIC_ARCH=1 TARGET=Z13 NUM_THREADS=32"
+      env:
+        # for matrix annotation only
+        - TARGET_BOX=IBMZ_LINUX
+        - BTYPE="BINARY=64 USE_OPENMP=0 CC=clang"
 
     - <<: *test-ubuntu
       env:
@@ -58,6 +88,40 @@ matrix:
         - BTYPE="BINARY=32"
 
     - os: linux
+      arch: ppc64le
+      dist: bionic
+      compiler: gcc
+      before_script:
+        - sudo add-apt-repository 'ppa:ubuntu-toolchain-r/test' -y
+        - sudo apt-get update
+        - sudo apt-get install gcc-9 gfortran-9 -y
+      script:
+        - make QUIET_MAKE=1  BINARY=64 USE_OPENMP=1 CC=gcc-9 FC=gfortran-9
+        - make -C test $COMMON_FLAGS $BTYPE
+        - make -C ctest $COMMON_FLAGS $BTYPE
+        - make -C utest $COMMON_FLAGS $BTYPE 
+      env:
+        # for matrix annotation only
+        - TARGET_BOX=PPC64LE_LINUX_P9
+
+    - os: linux
+      arch: ppc64le
+      dist: bionic
+      compiler: gcc
+      before_script:
+        - sudo add-apt-repository 'ppa:ubuntu-toolchain-r/test' -y
+        - sudo apt-get update
+        - sudo apt-get install gcc-9 gfortran-9 -y
+      script:
+        - make QUIET_MAKE=1  BUILD_BFLOAT16=1 BINARY=64 USE_OPENMP=1 CC=gcc-9 FC=gfortran-9
+        - make -C test $COMMON_FLAGS $BTYPE
+        - make -C ctest $COMMON_FLAGS $BTYPE
+        - make -C utest $COMMON_FLAGS $BTYPE 
+      env:
+        # for matrix annotation only
+        - TARGET_BOX=PPC64LE_LINUX_P9
+
+    - os: linux
       compiler: gcc
       addons:
         apt:
@@ -89,7 +153,6 @@ matrix:
         - sudo sh alpine-chroot-install -p 'build-base gfortran perl linux-headers'
       before_script: *common-before
       script:
-        - set -e
         # XXX: Disable some warnings for now to avoid exceeding Travis limit for log size.
         - alpine make QUIET_MAKE=1 $COMMON_FLAGS $BTYPE
               CFLAGS="-Wno-misleading-indentation -Wno-sign-conversion -Wno-incompatible-pointer-types"
@@ -132,7 +195,6 @@ matrix:
       before_script:
         - COMMON_ARGS="-DTARGET=NEHALEM -DNUM_THREADS=32"
       script:
-        - set -e
         - mkdir build
         - CONFIG=Release
         - cmake -Bbuild -H. $CMAKE_ARGS $COMMON_ARGS -DCMAKE_BUILD_TYPE=$CONFIG
@@ -149,57 +211,64 @@ matrix:
 
     - &test-macos
       os: osx
-      osx_image: xcode10.1
+      osx_image: xcode11.5
       before_script:
-        - COMMON_FLAGS="DYNAMIC_ARCH=1 TARGET=NEHALEM NUM_THREADS=32"
-        - brew update
-        - brew install gcc # for gfortran
+        - COMMON_FLAGS="DYNAMIC_ARCH=1 NUM_THREADS=32"
       script:
         - travis_wait 45 make QUIET_MAKE=1 $COMMON_FLAGS $BTYPE
       env:
-        - BTYPE="BINARY=64 INTERFACE64=1"
+        - BTYPE="TARGET=NEHALEM BINARY=64 INTERFACE64=1 FC=gfortran-9"
 
     - <<: *test-macos
-      osx_image: xcode8.3
+      osx_image: xcode12
+      before_script:
+        - COMMON_FLAGS="DYNAMIC_ARCH=1 NUM_THREADS=32"
+        - brew update
+        - brew install gcc@10
+      script:
+        - travis_wait 45 make QUIET_MAKE=1 $COMMON_FLAGS $BTYPE
       env:
-        - BTYPE="BINARY=32"
+        - BTYPE="TARGET=NEHALEM BINARY=64 INTERFACE64=1 FC=gfortran-10"
+        
+  #  - <<: *test-macos
+  #    osx_image: xcode10
+  #    env:
+  #      - BTYPE="TARGET=NEHALEM BINARY=32 NOFORTRAN=1"
 
-    - &emulated-arm
-      dist: trusty
-      sudo: required
-      services: docker
-      env: IMAGE_ARCH=arm32 TARGET_ARCH=ARMV6 COMPILER=gcc
-      name: "Emulated Build for ARMV6 with gcc"
-      before_install: sudo docker run --rm --privileged multiarch/qemu-user-static:register --reset
-      script: |
-        echo "FROM openblas/alpine:${IMAGE_ARCH}
-        COPY . /tmp/openblas
-        RUN mkdir /tmp/openblas/build                             &&  \
-            cd /tmp/openblas/build                                &&  \
-            CC=${COMPILER} cmake -D DYNAMIC_ARCH=OFF                  \
-                                 -D TARGET=${TARGET_ARCH}             \
-                                 -D BUILD_SHARED_LIBS=ON              \
-                                 -D BUILD_WITHOUT_LAPACK=ON           \
-                                 -D BUILD_WITHOUT_CBLAS=ON            \
-                                 -D CMAKE_BUILD_TYPE=Release ../  &&  \
-            cmake --build ." > Dockerfile
-        docker build .
-    - <<: *emulated-arm
-      env: IMAGE_ARCH=arm32 TARGET_ARCH=ARMV6 COMPILER=clang
-      name: "Emulated Build for ARMV6 with clang"
-    - <<: *emulated-arm
-      env: IMAGE_ARCH=arm64 TARGET_ARCH=ARMV8 COMPILER=gcc
-      name: "Emulated Build for ARMV8 with gcc"
-    - <<: *emulated-arm
-      env: IMAGE_ARCH=arm64 TARGET_ARCH=ARMV8 COMPILER=clang
-      name: "Emulated Build for ARMV8 with clang"
+    - <<: *test-macos
+      osx_image: xcode11.5
+      before_script:
+        - COMMON_FLAGS="DYNAMIC_ARCH=1 NUM_THREADS=32"
+        - brew update
+      env:
+#        - CC="/Applications/Xcode-10.1.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang"
+#        - CFLAGS="-O2 -Wno-macro-redefined -isysroot /Applications/Xcode-10.1.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS12.1.sdk -arch arm64 -miphoneos-version-min=10.0"
+        - CC="/Applications/Xcode-11.5.GM.Seed.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang"
+        - CFLAGS="-O2 -Wno-macro-redefined -isysroot /Applications/Xcode-11.5.GM.Seed.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS13.5.sdk -arch arm64 -miphoneos-version-min=10.0"
+        - BTYPE="TARGET=ARMV8 BINARY=64 HOSTCC=clang NOFORTRAN=1"
+    - <<: *test-macos
+      osx_image: xcode11.5
+      env:
+#        - CC="/Applications/Xcode-10.1.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang"
+#        - CFLAGS="-O2 -mno-thumb -Wno-macro-redefined -isysroot /Applications/Xcode-10.1.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS12.1.sdk -arch armv7 -miphoneos-version-min=5.1"
+        - CC="/Applications/Xcode-11.5.GM.Seed.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang"
+        - CFLAGS="-O2 -mno-thumb -Wno-macro-redefined -isysroot /Applications/Xcode-11.5.GM.Seed.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS13.5.sdk -arch armv7 -miphoneos-version-min=5.1"
+        - BTYPE="TARGET=ARMV7 HOSTCC=clang NOFORTRAN=1"
 
-  allow_failures:
-    - env: IMAGE_ARCH=arm32 TARGET_ARCH=ARMV6 COMPILER=gcc
-    - env: IMAGE_ARCH=arm32 TARGET_ARCH=ARMV6 COMPILER=clang
-    - env: IMAGE_ARCH=arm64 TARGET_ARCH=ARMV8 COMPILER=gcc
-    - env: IMAGE_ARCH=arm64 TARGET_ARCH=ARMV8 COMPILER=clang
-
+    - &test-graviton2
+      os: linux
+      arch: arm64-graviton2
+      dist: focal
+      group: edge
+      virt: lxd
+      compiler: gcc
+      addons:
+        apt:
+          packages:
+            - gfortran
+      script:
+        - travis_wait 45 make && make lapack-test
+        
 # whitelist
 branches:
   only:

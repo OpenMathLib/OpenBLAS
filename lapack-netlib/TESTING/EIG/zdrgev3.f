@@ -389,7 +389,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date Febuary 2015
+*> \date February 2015
 *
 *> \ingroup complex16_eig
 *

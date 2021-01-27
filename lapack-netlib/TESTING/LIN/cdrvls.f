@@ -237,13 +237,13 @@
       REAL               EPS, NORMA, NORMB, RCOND
 *     ..
 *     .. Local Arrays ..
-      INTEGER            ISEED( 4 ), ISEEDY( 4 ), IWQ
-      REAL               RESULT( NTESTS ), RWQ
-      COMPLEX            WQ
+      INTEGER            ISEED( 4 ), ISEEDY( 4 ), IWQ( 1 )
+      REAL               RESULT( NTESTS ), RWQ( 1 )
+      COMPLEX            WQ( 1 )
 *     ..
 *     .. Allocatable Arrays ..
       COMPLEX, ALLOCATABLE :: WORK (:)
-      REAL, ALLOCATABLE :: RWORK (:)
+      REAL, ALLOCATABLE :: RWORK (:), WORK2 (:)
       INTEGER, ALLOCATABLE :: IWORK (:)
 *     ..
 *     .. External Functions ..
@@ -363,32 +363,32 @@
 *                             Compute workspace needed for CGELS
                               CALL CGELS( TRANS, M, N, NRHS, A, LDA,
      $                                    B, LDB, WQ, -1, INFO )
-                              LWORK_CGELS = INT( WQ )
+                              LWORK_CGELS = INT( WQ( 1 ) )
 *                             Compute workspace needed for CGETSLS
                               CALL CGETSLS( TRANS, M, N, NRHS, A, LDA,
      $                                      B, LDB, WQ, -1, INFO )
-                              LWORK_CGETSLS = INT( WQ )
+                              LWORK_CGETSLS = INT( WQ( 1 ) )
                            ENDDO
                         END IF
 *                       Compute workspace needed for CGELSY
                         CALL CGELSY( M, N, NRHS, A, LDA, B, LDB,
-     $                               IWQ, RCOND, CRANK, WQ, -1, RWORK,
+     $                               IWQ, RCOND, CRANK, WQ, -1, RWQ,
      $                               INFO )
-                        LWORK_CGELSY = INT( WQ )
+                        LWORK_CGELSY = INT( WQ( 1 ) )
                         LRWORK_CGELSY = 2*N
 *                       Compute workspace needed for CGELSS
                         CALL CGELSS( M, N, NRHS, A, LDA, B, LDB, S,
-     $                               RCOND, CRANK, WQ, -1, RWORK, INFO )
-                        LWORK_CGELSS = INT( WQ )
+     $                               RCOND, CRANK, WQ, -1, RWQ, INFO )
+                        LWORK_CGELSS = INT( WQ( 1 ) )
                         LRWORK_CGELSS = 5*MNMIN
 *                       Compute workspace needed for CGELSD
                         CALL CGELSD( M, N, NRHS, A, LDA, B, LDB, S,
      $                               RCOND, CRANK, WQ, -1, RWQ, IWQ,
      $                               INFO )
-                        LWORK_CGELSD = INT( WQ )
-                        LRWORK_CGELSD = INT( RWQ )
+                        LWORK_CGELSD = INT( WQ( 1 ) )
+                        LRWORK_CGELSD = INT( RWQ ( 1 ) )
 *                       Compute LIWORK workspace needed for CGELSY and CGELSD
-                        LIWORK = MAX( LIWORK, N, IWQ )
+                        LIWORK = MAX( LIWORK, N, IWQ ( 1 ) )
 *                       Compute LRWORK workspace needed for CGELSY, CGELSS and CGELSD
                         LRWORK = MAX( LRWORK, LRWORK_CGELSY,
      $                                LRWORK_CGELSS, LRWORK_CGELSD )
@@ -408,6 +408,7 @@
       ALLOCATE( WORK( LWORK ) )
       ALLOCATE( IWORK( LIWORK ) )
       ALLOCATE( RWORK( LRWORK ) )
+      ALLOCATE( WORK2( 2 * LWORK ) )
 *
       DO 140 IM = 1, NM
          M = MVAL( IM )
@@ -563,7 +564,7 @@
                                  CALL CLARNV( 2, ISEED, NCOLS*NRHS,
      $                                        WORK )
                                  CALL CSCAL( NCOLS*NRHS,
-     $                                       ONE / REAL( NCOLS ), WORK,
+     $                                       CONE / REAL( NCOLS ), WORK,
      $                                       1 )
                               END IF
                               CALL CGEMM( TRANS, 'No transpose', NROWS,
@@ -596,7 +597,7 @@
      $                           CALL CLACPY( 'Full', NROWS, NRHS,
      $                                        COPYB, LDB, C, LDB )
                               CALL CQRT16( TRANS, M, N, NRHS, COPYA,
-     $                                     LDA, B, LDB, C, LDB, WORK,
+     $                                     LDA, B, LDB, C, LDB, WORK2,
      $                                     RESULT( 15 ) )
 *
                               IF( ( ITRAN.EQ.1 .AND. M.GE.N ) .OR.

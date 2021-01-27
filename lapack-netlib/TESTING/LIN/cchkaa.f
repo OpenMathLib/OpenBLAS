@@ -74,6 +74,8 @@
 *> CEQ
 *> CQT
 *> CQX
+*> CTS
+*> CHH
 *> \endverbatim
 *
 *  Parameters:
@@ -108,14 +110,14 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date November 2017
+*> \date November 2019
 *
 *> \ingroup complex_lin
 *
 *  =====================================================================
       PROGRAM CCHKAA
 *
-*  -- LAPACK test routine (version 3.8.0) --
+*  -- LAPACK test routine (version 3.9.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
 *     November 2017
@@ -165,15 +167,16 @@
 *     ..
 *     .. External Subroutines ..
       EXTERNAL           ALAREQ, CCHKEQ, CCHKGB, CCHKGE, CCHKGT, CCHKHE,
-     $                   CCHKHE_ROOK, CCHKHE_RK, CCHKHE_AA, CCHKLQ,
-     $                   CCHKPB,CCHKPO, CCHKPS, CCHKPP, CCHKPT, CCHKQ3,
-     $                   CCHKQL, CCHKQR, CCHKRQ, CCHKSP, CCHKSY,
-     $                   CCHKSY_ROOK, CCHKSY_RK, CCHKSY_AA, CCHKTB, 
-     $                   CCHKTP, CCHKTR, CCHKTZ, CDRVGB, CDRVGE, CDRVGT,
-     $                   CDRVHE, CDRVHE_ROOK, CDRVHE_RK, CDRVHE_AA, 
-     $                   CDRVHP, CDRVLS, CDRVPB, CDRVPO, CDRVPP, CDRVPT,
-     $                   CDRVSP, CDRVSY, CDRVSY_ROOK, CDRVSY_RK,
-     $                   CDRVSY_AA, ILAVER, CCHKQRT, CCHKQRTP
+     $                   CCHKHE_ROOK, CCHKHE_RK, CCHKHE_AA, CCHKHP,
+     $                   CCHKLQ, CCHKUNHR_COL, CCHKPB, CCHKPO, CCHKPS,
+     $                   CCHKPP, CCHKPT, CCHKQ3, CCHKQL, CCHKQR, CCHKRQ,
+     $                   CCHKSP, CCHKSY, CCHKSY_ROOK, CCHKSY_RK,
+     $                   CCHKSY_AA, CCHKTB,  CCHKTP, CCHKTR, CCHKTZ,
+     $                   CDRVGB, CDRVGE, CDRVGT, CDRVHE, CDRVHE_ROOK,
+     $                   CDRVHE_RK, CDRVHE_AA, CDRVHP, CDRVLS, CDRVPB,
+     $                   CDRVPO, CDRVPP, CDRVPT, CDRVSP, CDRVSY,
+     $                   CDRVSY_ROOK, CDRVSY_RK, CDRVSY_AA, ILAVER,
+     $                   CCHKQRT, CCHKQRTP
 *     ..
 *     .. Scalars in Common ..
       LOGICAL            LERR, OK
@@ -678,7 +681,7 @@
 *
 *        HK:  Hermitian indefinite matrices,
 *             with bounded Bunch-Kaufman (rook) pivoting algorithm,
-*             differnet matrix storage format than HR path version.
+*             different matrix storage format than HR path version.
 *
          NTYPES = 10
          CALL ALAREQ( PATH, NMATS, DOTYPE, NTYPES, NIN, NOUT )
@@ -838,7 +841,7 @@
 *
 *        SK:  symmetric indefinite matrices,
 *             with bounded Bunch-Kaufman (rook) pivoting algorithm,
-*             differnet matrix storage format than SR path version.
+*             different matrix storage format than SR path version.
 *
          NTYPES = 11
          CALL ALAREQ( PATH, NMATS, DOTYPE, NTYPES, NIN, NOUT )
@@ -1164,6 +1167,17 @@
      $                     NBVAL, NOUT )
          ELSE
             WRITE( NOUT, FMT = 9989 )PATH
+         END IF
+*
+      ELSE IF( LSAMEN( 2, C2, 'HH' ) ) THEN
+*
+*        HH:  Householder reconstruction for tall-skinny matrices
+*
+         IF( TSTCHK ) THEN
+            CALL CCHKUNHR_COL( THRESH, TSTERR, NM, MVAL, NN, NVAL, NNB,
+     $                         NBVAL, NOUT )
+         ELSE
+            WRITE( NOUT, FMT = 9989 ) PATH
          END IF
 *
       ELSE

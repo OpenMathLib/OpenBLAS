@@ -37,7 +37,11 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 * Macros for N=4, M=16                                               *
 *********************************************************************/
 
+#if defined(_AIX)
+define(`LOAD4x16_1', `
+#else
 .macro LOAD4x16_1
+#endif
 
 	lxvd2x	vs0,	0,	AO
 	lxvd2x	vs1,	o16,	AO
@@ -58,10 +62,18 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	addi		AO, AO, 128
 	addi		BO, BO, 32
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
 
+#if defined(_AIX)
+define(`KERNEL4x16_I1', `
+#else
 .macro KERNEL4x16_I1
+#endif
 
 	xvmuldp		vs32,	vs0,	vs24
 	xvmuldp		vs33,	vs1,	vs24
@@ -125,11 +137,19 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	addi		AO, AO, 128
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
 
 
+#if defined(_AIX)
+define(`KERNEL4x16_1', `
+#else
 .macro KERNEL4x16_1
+#endif
 
 	xvmaddadp		vs32,	vs0,	vs24
 	xvmaddadp		vs33,	vs1,	vs24
@@ -194,9 +214,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	addi		AO, AO, 128
 	addi		BO, BO, 32
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
+#if defined(_AIX)
+define(`KERNEL4x16_2', `
+#else
 .macro KERNEL4x16_2
+#endif
 
 	xvmaddadp		vs32,	vs8,	vs28
 	xvmaddadp		vs33,	vs9,	vs28
@@ -260,9 +288,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	addi		AO, AO, 128
 	addi		BO, BO, 32
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
+#if defined(_AIX)
+define(`KERNEL4x16_L1', `
+#else
 .macro KERNEL4x16_L1
+#endif
 
 	xvmaddadp		vs32,	vs0,	vs24
 	xvmaddadp		vs33,	vs1,	vs24
@@ -326,9 +362,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	addi		AO, AO, 128
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
+#if defined(_AIX)
+define(`KERNEL4x16_L2', `
+#else
 .macro KERNEL4x16_L2
+#endif
 
 	xvmaddadp		vs32,	vs8,	vs28
 	xvmaddadp		vs33,	vs9,	vs28
@@ -392,10 +436,18 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	xvmaddadp		vs63,	vs15,	vs31
 
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
 
+#if defined(_AIX)
+define(`KERNEL4x16_E2', `
+#else
 .macro KERNEL4x16_E2
+#endif
 
 
 	xvmaddadp		vs32,	vs8,	vs28
@@ -434,9 +486,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	xvmaddadp		vs62,	vs14,	vs31
 	xvmaddadp		vs63,	vs15,	vs31
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
+#if defined(_AIX)
+define(`KERNEL4x16_SUBI1', `
+#else
 .macro KERNEL4x16_SUBI1
+#endif
 
 	lxvd2x	vs0,	0,	AO
 	lxvd2x	vs1,	o16,	AO
@@ -495,9 +555,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	xvmuldp			vs62,	vs6,	vs27
 	xvmuldp			vs63,	vs7,	vs27
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
+#if defined(_AIX)
+define(`KERNEL4x16_SUB1', `
+#else
 .macro KERNEL4x16_SUB1
+#endif
 
 	lxvd2x	vs0,	0,	AO
 	lxvd2x	vs1,	o16,	AO
@@ -555,9 +623,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	xvmaddadp		vs62,	vs6,	vs27
 	xvmaddadp		vs63,	vs7,	vs27
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
+#if defined(_AIX)
+define(`SAVE4x16', `
+#else
 .macro SAVE4x16
+#endif
 
 	add		T2,	CO,	LDC
 
@@ -680,13 +756,21 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	stxvd2x		vs39,	o112,	T4
 
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
 /*********************************************************************
 * Macros for N=4, M=8                                                *
 *********************************************************************/
 
+#if defined(_AIX)
+define(`LOAD4x8_1', `
+#else
 .macro LOAD4x8_1
+#endif
 
 	lxvd2x	vs0,	0,	AO
 	lxvd2x	vs1,	o16,	AO
@@ -703,9 +787,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	addi		AO, AO, 64
 	addi		BO, BO, 32
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
+#if defined(_AIX)
+define(`KERNEL4x8_I1', `
+#else
 .macro KERNEL4x8_I1
+#endif
 
 	xvmuldp			vs32,	vs0,	vs24
 	xvmuldp			vs33,	vs1,	vs24
@@ -744,9 +836,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	addi		AO, AO, 64
 	addi		BO, BO, 32
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
+#if defined(_AIX)
+define(`KERNEL4x8_1', `
+#else
 .macro KERNEL4x8_1
+#endif
 
 	xvmaddadp		vs32,	vs0,	vs24
 	xvmaddadp		vs33,	vs1,	vs24
@@ -784,9 +884,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	addi		AO, AO, 64
 	addi		BO, BO, 32
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
+#if defined(_AIX)
+define(`KERNEL4x8_2', `
+#else
 .macro KERNEL4x8_2
+#endif
 
 	xvmaddadp		vs32,	vs8,	vs28
 	xvmaddadp		vs33,	vs9,	vs28
@@ -824,9 +932,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	addi		AO, AO, 64
 	addi		BO, BO, 32
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
+#if defined(_AIX)
+define(`KERNEL4x8_E2', `
+#else
 .macro KERNEL4x8_E2
+#endif
 
 
 	xvmaddadp		vs32,	vs8,	vs28
@@ -849,9 +965,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	xvmaddadp		vs58,	vs10,	vs31
 	xvmaddadp		vs59,	vs11,	vs31
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
+#if defined(_AIX)
+define(`KERNEL4x8_SUBI1', `
+#else
 .macro KERNEL4x8_SUBI1
+#endif
 
 	lxvd2x	vs0,	0,	AO
 	lxvd2x	vs1,	o16,	AO
@@ -887,9 +1011,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	xvmuldp			vs58,	vs2,	vs27
 	xvmuldp			vs59,	vs3,	vs27
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
+#if defined(_AIX)
+define(`KERNEL4x8_SUB1', `
+#else
 .macro KERNEL4x8_SUB1
+#endif
 
 	lxvd2x	vs0,	0,	AO
 	lxvd2x	vs1,	o16,	AO
@@ -925,9 +1057,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	xvmaddadp		vs58,	vs2,	vs27
 	xvmaddadp		vs59,	vs3,	vs27
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
+#if defined(_AIX)
+define(`SAVE4x8', `
+#else
 .macro SAVE4x8
+#endif
 
 	mr		T1,	CO
 
@@ -1035,13 +1175,21 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	addi		CO,	CO,	64
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
 /*********************************************************************
 * Macros for N=4, M=4                                                *
 *********************************************************************/
 
+#if defined(_AIX)
+define(`LOAD4x4_1', `
+#else
 .macro LOAD4x4_1
+#endif
 
 	lxvd2x	vs0,	0,	AO
 	lxvd2x	vs1,	o16,	AO
@@ -1054,9 +1202,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	addi		AO, AO, 32
 	addi		BO, BO, 32
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
+#if defined(_AIX)
+define(`KERNEL4x4_I1', `
+#else
 .macro KERNEL4x4_I1
+#endif
 
 	lxvd2x	vs8,	0,	AO
 	lxvd2x	vs9,	o16,	AO
@@ -1082,9 +1238,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	xvmuldp			vs56,	vs0,	vs27
 	xvmuldp			vs57,	vs1,	vs27
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
+#if defined(_AIX)
+define(`KERNEL4x4_1', `
+#else
 .macro KERNEL4x4_1
+#endif
 
 	lxvd2x	vs8,	0,	AO
 	lxvd2x	vs9,	o16,	AO
@@ -1110,9 +1274,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	xvmaddadp		vs56,	vs0,	vs27
 	xvmaddadp		vs57,	vs1,	vs27
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
+#if defined(_AIX)
+define(`KERNEL4x4_2', `
+#else
 .macro KERNEL4x4_2
+#endif
 
 	lxvd2x	vs0,	0,	AO
 	lxvd2x	vs1,	o16,	AO
@@ -1138,9 +1310,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	xvmaddadp		vs56,	vs8,	vs31
 	xvmaddadp		vs57,	vs9,	vs31
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
+#if defined(_AIX)
+define(`KERNEL4x4_E2', `
+#else
 .macro KERNEL4x4_E2
+#endif
 
 
 	xvmaddadp		vs32,	vs8,	vs28
@@ -1155,9 +1335,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	xvmaddadp		vs56,	vs8,	vs31
 	xvmaddadp		vs57,	vs9,	vs31
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
+#if defined(_AIX)
+define(`KERNEL4x4_SUBI1', `
+#else
 .macro KERNEL4x4_SUBI1
+#endif
 
 	lxvd2x	vs0,	0,	AO
 	lxvd2x	vs1,	o16,	AO
@@ -1183,9 +1371,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	xvmuldp			vs56,	vs0,	vs27
 	xvmuldp			vs57,	vs1,	vs27
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
+#if defined(_AIX)
+define(`KERNEL4x4_SUB1', `
+#else
 .macro KERNEL4x4_SUB1
+#endif
 
 	lxvd2x	vs0,	0,	AO
 	lxvd2x	vs1,	o16,	AO
@@ -1211,9 +1407,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	xvmaddadp		vs56,	vs0,	vs27
 	xvmaddadp		vs57,	vs1,	vs27
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
+#if defined(_AIX)
+define(`SAVE4x4', `
+#else
 .macro SAVE4x4
+#endif
 
 	mr		T1,	CO
 
@@ -1289,13 +1493,21 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	addi		CO,	CO,	32
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
 /*********************************************************************
 * Macros for N=4, M=2                                                *
 *********************************************************************/
 
+#if defined(_AIX)
+define(`LOAD4x2_1', `
+#else
 .macro LOAD4x2_1
+#endif
 
 	lxvd2x	vs0,	0,	AO
 
@@ -1307,9 +1519,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	addi		AO, AO, 16
 	addi		BO, BO, 32
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
+#if defined(_AIX)
+define(`KERNEL4x2_I1', `
+#else
 .macro KERNEL4x2_I1
+#endif
 
 	lxvd2x	vs8,	0,	AO
 
@@ -1330,9 +1550,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	xvmuldp			vs56,	vs0,	vs27
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
+#if defined(_AIX)
+define(`KERNEL4x2_1', `
+#else
 .macro KERNEL4x2_1
+#endif
 
 	lxvd2x	vs8,	0,	AO
 
@@ -1353,9 +1581,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	xvmaddadp		vs56,	vs0,	vs27
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
+#if defined(_AIX)
+define(`KERNEL4x2_2', `
+#else
 .macro KERNEL4x2_2
+#endif
 
 	lxvd2x	vs0,	0,	AO
 
@@ -1376,9 +1612,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	xvmaddadp		vs56,	vs8,	vs31
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
+#if defined(_AIX)
+define(`KERNEL4x2_E2', `
+#else
 .macro KERNEL4x2_E2
+#endif
 
 
 	xvmaddadp		vs32,	vs8,	vs28
@@ -1389,9 +1633,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	xvmaddadp		vs56,	vs8,	vs31
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
+#if defined(_AIX)
+define(`KERNEL4x2_SUBI1', `
+#else
 .macro KERNEL4x2_SUBI1
+#endif
 
 	lxvd2x	vs0,	0,	AO
 
@@ -1412,9 +1664,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	xvmuldp			vs56,	vs0,	vs27
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
+#if defined(_AIX)
+define(`KERNEL4x2_SUB1', `
+#else
 .macro KERNEL4x2_SUB1
+#endif
 
 	lxvd2x	vs0,	0,	AO
 
@@ -1435,9 +1695,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	xvmaddadp		vs56,	vs0,	vs27
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
+#if defined(_AIX)
+define(`SAVE4x2', `
+#else
 .macro SAVE4x2
+#endif
 
 	mr		T1,	CO
 
@@ -1497,13 +1765,21 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	addi		CO,	CO,	16
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
 /*********************************************************************
 * Macros for N=4, M=1                                                *
 *********************************************************************/
 
+#if defined(_AIX)
+define(`LOAD4x1_1', `
+#else
 .macro LOAD4x1_1
+#endif
 
 	lxsdx	vs0,	0,	AO
 
@@ -1515,9 +1791,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	addi		AO, AO, 8
 	addi		BO, BO, 32
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
+#if defined(_AIX)
+define(`KERNEL4x1_I1', `
+#else
 .macro KERNEL4x1_I1
+#endif
 
 	lxsdx	vs8,	0,	AO
 
@@ -1538,9 +1822,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	xsmuldp			vs56,	vs0,	vs27
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
+#if defined(_AIX)
+define(`KERNEL4x1_1', `
+#else
 .macro KERNEL4x1_1
+#endif
 
 	lxsdx	vs8,	0,	AO
 
@@ -1561,9 +1853,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	xsmaddadp		vs56,	vs0,	vs27
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
+#if defined(_AIX)
+define(`KERNEL4x1_2', `
+#else
 .macro KERNEL4x1_2
+#endif
 
 	lxsdx	vs0,	0,	AO
 
@@ -1584,9 +1884,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	xsmaddadp		vs56,	vs8,	vs31
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
+#if defined(_AIX)
+define(`KERNEL4x1_E2', `
+#else
 .macro KERNEL4x1_E2
+#endif
 
 
 	xsmaddadp		vs32,	vs8,	vs28
@@ -1597,9 +1905,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	xsmaddadp		vs56,	vs8,	vs31
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
+#if defined(_AIX)
+define(`KERNEL4x1_SUBI1', `
+#else
 .macro KERNEL4x1_SUBI1
+#endif
 
 	lxsdx	vs0,	0,	AO
 
@@ -1620,9 +1936,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	xsmuldp			vs56,	vs0,	vs27
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
+#if defined(_AIX)
+define(`KERNEL4x1_SUB1', `
+#else
 .macro KERNEL4x1_SUB1
+#endif
 
 	lxsdx	vs0,	0,	AO
 
@@ -1643,9 +1967,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	xsmaddadp		vs56,	vs0,	vs27
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
+#if defined(_AIX)
+define(`SAVE4x1', `
+#else
 .macro SAVE4x1
+#endif
 
 	mr		T1,	CO
 
@@ -1705,13 +2037,21 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	addi		CO,	CO,	8
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
 /*********************************************************************
 * Macros for N=2, M=16                                               *
 *********************************************************************/
 
+#if defined(_AIX)
+define(`LOAD2x16_1', `
+#else
 .macro LOAD2x16_1
+#endif
 
 	lxvd2x	vs0,	0,	AO
 	lxvd2x	vs1,	o16,	AO
@@ -1731,9 +2071,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	addi		AO, AO, 64
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
+#if defined(_AIX)
+define(`KERNEL2x16_I1', `
+#else
 .macro KERNEL2x16_I1
+#endif
 
 	lxvd2x	vs8,	0,	AO
 	lxvd2x	vs9,	o16,	AO
@@ -1772,9 +2120,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	xvmuldp			vs46,	vs6,	vs25
 	xvmuldp			vs47,	vs7,	vs25
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
+#if defined(_AIX)
+define(`KERNEL2x16_1', `
+#else
 .macro KERNEL2x16_1
+#endif
 
 	lxvd2x	vs8,	0,	AO
 	lxvd2x	vs9,	o16,	AO
@@ -1813,9 +2169,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	xvmaddadp		vs46,	vs6,	vs25
 	xvmaddadp		vs47,	vs7,	vs25
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
+#if defined(_AIX)
+define(`KERNEL2x16_2', `
+#else
 .macro KERNEL2x16_2
+#endif
 
 	lxvd2x	vs0,	0,	AO
 	lxvd2x	vs1,	o16,	AO
@@ -1854,9 +2218,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	xvmaddadp		vs46,	vs14,	vs29
 	xvmaddadp		vs47,	vs15,	vs29
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
+#if defined(_AIX)
+define(`KERNEL2x16_E2', `
+#else
 .macro KERNEL2x16_E2
+#endif
 
 
 	xvmaddadp		vs32,	vs8,	vs28
@@ -1877,9 +2249,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	xvmaddadp		vs46,	vs14,	vs29
 	xvmaddadp		vs47,	vs15,	vs29
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
+#if defined(_AIX)
+define(`KERNEL2x16_SUBI1', `
+#else
 .macro KERNEL2x16_SUBI1
+#endif
 
 	lxvd2x	vs0,	0,	AO
 	lxvd2x	vs1,	o16,	AO
@@ -1918,9 +2298,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	xvmuldp			vs46,	vs6,	vs25
 	xvmuldp			vs47,	vs7,	vs25
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
+#if defined(_AIX)
+define(`KERNEL2x16_SUB1', `
+#else
 .macro KERNEL2x16_SUB1
+#endif
 
 	lxvd2x	vs0,	0,	AO
 	lxvd2x	vs1,	o16,	AO
@@ -1959,9 +2347,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	xvmaddadp		vs46,	vs6,	vs25
 	xvmaddadp		vs47,	vs7,	vs25
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
+#if defined(_AIX)
+define(`SAVE2x16', `
+#else
 .macro SAVE2x16
+#endif
 
 	mr		T1,	CO
 	addi		T2,	T1,	64
@@ -2055,13 +2451,21 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	addi		CO,	CO,	128
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
 /*********************************************************************
 * Macros for N=4, M=8                                                *
 *********************************************************************/
 
+#if defined(_AIX)
+define(`LOAD2x8_1', `
+#else
 .macro LOAD2x8_1
+#endif
 
 	lxvd2x	vs0,	0,	AO
 	lxvd2x	vs1,	o16,	AO
@@ -2074,9 +2478,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	addi		AO, AO, 64
 	addi		BO, BO, 16
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
+#if defined(_AIX)
+define(`KERNEL2x8_I1', `
+#else
 .macro KERNEL2x8_I1
+#endif
 
 	lxvd2x	vs8,	0,	AO
 	lxvd2x	vs9,	o16,	AO
@@ -2100,9 +2512,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	xvmuldp			vs42,	vs2,	vs25
 	xvmuldp			vs43,	vs3,	vs25
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
+#if defined(_AIX)
+define(`KERNEL2x8_1', `
+#else
 .macro KERNEL2x8_1
+#endif
 
 	lxvd2x	vs8,	0,	AO
 	lxvd2x	vs9,	o16,	AO
@@ -2126,9 +2546,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	xvmaddadp		vs42,	vs2,	vs25
 	xvmaddadp		vs43,	vs3,	vs25
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
+#if defined(_AIX)
+define(`KERNEL2x8_2', `
+#else
 .macro KERNEL2x8_2
+#endif
 
 	lxvd2x	vs0,	0,	AO
 	lxvd2x	vs1,	o16,	AO
@@ -2152,9 +2580,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	xvmaddadp		vs42,	vs10,	vs29
 	xvmaddadp		vs43,	vs11,	vs29
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
+#if defined(_AIX)
+define(`KERNEL2x8_E2', `
+#else
 .macro KERNEL2x8_E2
+#endif
 
 
 	xvmaddadp		vs32,	vs8,	vs28
@@ -2167,9 +2603,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	xvmaddadp		vs42,	vs10,	vs29
 	xvmaddadp		vs43,	vs11,	vs29
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
+#if defined(_AIX)
+define(`KERNEL2x8_SUBI1', `
+#else
 .macro KERNEL2x8_SUBI1
+#endif
 
 	lxvd2x	vs0,	0,	AO
 	lxvd2x	vs1,	o16,	AO
@@ -2193,9 +2637,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	xvmuldp			vs42,	vs2,	vs25
 	xvmuldp			vs43,	vs3,	vs25
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
+#if defined(_AIX)
+define(`KERNEL2x8_SUB1', `
+#else
 .macro KERNEL2x8_SUB1
+#endif
 
 	lxvd2x	vs0,	0,	AO
 	lxvd2x	vs1,	o16,	AO
@@ -2219,9 +2671,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	xvmaddadp		vs42,	vs2,	vs25
 	xvmaddadp		vs43,	vs3,	vs25
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
+#if defined(_AIX)
+define(`SAVE2x8', `
+#else
 .macro SAVE2x8
+#endif
 
 	mr		T1,	CO
 
@@ -2277,13 +2737,21 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	addi		CO,	CO,	64
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
 /*********************************************************************
 * Macros for N=2, M=4                                                *
 *********************************************************************/
 
+#if defined(_AIX)
+define(`LOAD2x4_1', `
+#else
 .macro LOAD2x4_1
+#endif
 
 	lxvd2x	vs0,	0,	AO
 	lxvd2x	vs1,	o16,	AO
@@ -2294,9 +2762,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	addi		AO, AO, 32
 	addi		BO, BO, 16
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
+#if defined(_AIX)
+define(`KERNEL2x4_I1', `
+#else
 .macro KERNEL2x4_I1
+#endif
 
 	lxvd2x	vs8,	0,	AO
 	lxvd2x	vs9,	o16,	AO
@@ -2314,9 +2790,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	xvmuldp			vs40,	vs0,	vs25
 	xvmuldp			vs41,	vs1,	vs25
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
+#if defined(_AIX)
+define(`KERNEL2x4_1', `
+#else
 .macro KERNEL2x4_1
+#endif
 
 	lxvd2x	vs8,	0,	AO
 	lxvd2x	vs9,	o16,	AO
@@ -2334,9 +2818,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	xvmaddadp		vs40,	vs0,	vs25
 	xvmaddadp		vs41,	vs1,	vs25
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
+#if defined(_AIX)
+define(`KERNEL2x4_2', `
+#else
 .macro KERNEL2x4_2
+#endif
 
 	lxvd2x	vs0,	0,	AO
 	lxvd2x	vs1,	o16,	AO
@@ -2354,9 +2846,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	xvmaddadp		vs40,	vs8,	vs29
 	xvmaddadp		vs41,	vs9,	vs29
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
+#if defined(_AIX)
+define(`KERNEL2x4_E2', `
+#else
 .macro KERNEL2x4_E2
+#endif
 
 
 	xvmaddadp		vs32,	vs8,	vs28
@@ -2365,9 +2865,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	xvmaddadp		vs40,	vs8,	vs29
 	xvmaddadp		vs41,	vs9,	vs29
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
+#if defined(_AIX)
+define(`KERNEL2x4_SUBI1', `
+#else
 .macro KERNEL2x4_SUBI1
+#endif
 
 	lxvd2x	vs0,	0,	AO
 	lxvd2x	vs1,	o16,	AO
@@ -2385,9 +2893,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	xvmuldp			vs40,	vs0,	vs25
 	xvmuldp			vs41,	vs1,	vs25
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
+#if defined(_AIX)
+define(`KERNEL2x4_SUB1', `
+#else
 .macro KERNEL2x4_SUB1
+#endif
 
 	lxvd2x	vs0,	0,	AO
 	lxvd2x	vs1,	o16,	AO
@@ -2405,9 +2921,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	xvmaddadp		vs40,	vs0,	vs25
 	xvmaddadp		vs41,	vs1,	vs25
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
+#if defined(_AIX)
+define(`SAVE2x4', `
+#else
 .macro SAVE2x4
+#endif
 
 	mr		T1,	CO
 
@@ -2447,13 +2971,21 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	addi		CO,	CO,	32
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
 /*********************************************************************
 * Macros for N=2, M=2                                                *
 *********************************************************************/
 
+#if defined(_AIX)
+define(`LOAD2x2_1', `
+#else
 .macro LOAD2x2_1
+#endif
 
 	lxvd2x	vs0,	0,	AO
 
@@ -2463,9 +2995,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	addi		AO, AO, 16
 	addi		BO, BO, 16
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
+#if defined(_AIX)
+define(`KERNEL2x2_I1', `
+#else
 .macro KERNEL2x2_I1
+#endif
 
 	lxvd2x	vs8,	0,	AO
 
@@ -2480,9 +3020,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	xvmuldp			vs40,	vs0,	vs25
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
+#if defined(_AIX)
+define(`KERNEL2x2_1', `
+#else
 .macro KERNEL2x2_1
+#endif
 
 	lxvd2x	vs8,	0,	AO
 
@@ -2497,9 +3045,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	xvmaddadp		vs40,	vs0,	vs25
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
+#if defined(_AIX)
+define(`KERNEL2x2_2', `
+#else
 .macro KERNEL2x2_2
+#endif
 
 	lxvd2x	vs0,	0,	AO
 
@@ -2514,18 +3070,34 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	xvmaddadp		vs40,	vs8,	vs29
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
+#if defined(_AIX)
+define(`KERNEL2x2_E2', `
+#else
 .macro KERNEL2x2_E2
+#endif
 
 
 	xvmaddadp		vs32,	vs8,	vs28
 
 	xvmaddadp		vs40,	vs8,	vs29
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
+#if defined(_AIX)
+define(`KERNEL2x2_SUBI1', `
+#else
 .macro KERNEL2x2_SUBI1
+#endif
 
 	lxvd2x	vs0,	0,	AO
 
@@ -2540,9 +3112,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	xvmuldp			vs40,	vs0,	vs25
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
+#if defined(_AIX)
+define(`KERNEL2x2_SUB1', `
+#else
 .macro KERNEL2x2_SUB1
+#endif
 
 	lxvd2x	vs0,	0,	AO
 
@@ -2557,9 +3137,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	xvmaddadp		vs40,	vs0,	vs25
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
+#if defined(_AIX)
+define(`SAVE2x2', `
+#else
 .macro SAVE2x2
+#endif
 
 	mr		T1,	CO
 
@@ -2591,13 +3179,21 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	addi		CO,	CO,	16
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
 /*********************************************************************
 * Macros for N=2, M=1                                                *
 *********************************************************************/
 
+#if defined(_AIX)
+define(`LOAD2x1_1', `
+#else
 .macro LOAD2x1_1
+#endif
 
 	lxsdx	vs0,	0,	AO
 
@@ -2607,9 +3203,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	addi		AO, AO, 8
 	addi		BO, BO, 16
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
+#if defined(_AIX)
+define(`KERNEL2x1_I1', `
+#else
 .macro KERNEL2x1_I1
+#endif
 
 	lxsdx	vs8,	0,	AO
 
@@ -2624,9 +3228,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	xsmuldp			vs40,	vs0,	vs25
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
+#if defined(_AIX)
+define(`KERNEL2x1_1', `
+#else
 .macro KERNEL2x1_1
+#endif
 
 	lxsdx	vs8,	0,	AO
 
@@ -2641,9 +3253,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	xsmaddadp		vs40,	vs0,	vs25
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
+#if defined(_AIX)
+define(`KERNEL2x1_2', `
+#else
 .macro KERNEL2x1_2
+#endif
 
 	lxsdx	vs0,	0,	AO
 
@@ -2658,18 +3278,34 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	xsmaddadp		vs40,	vs8,	vs29
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
+#if defined(_AIX)
+define(`KERNEL2x1_E2', `
+#else
 .macro KERNEL2x1_E2
+#endif
 
 
 	xsmaddadp		vs32,	vs8,	vs28
 
 	xsmaddadp		vs40,	vs8,	vs29
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
+#if defined(_AIX)
+define(`KERNEL2x1_SUBI1', `
+#else
 .macro KERNEL2x1_SUBI1
+#endif
 
 	lxsdx	vs0,	0,	AO
 
@@ -2684,9 +3320,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	xsmuldp			vs40,	vs0,	vs25
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
+#if defined(_AIX)
+define(`KERNEL2x1_SUB1', `
+#else
 .macro KERNEL2x1_SUB1
+#endif
 
 	lxsdx	vs0,	0,	AO
 
@@ -2701,9 +3345,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	xsmaddadp		vs40,	vs0,	vs25
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
+#if defined(_AIX)
+define(`SAVE2x1', `
+#else
 .macro SAVE2x1
+#endif
 
 	mr		T1,	CO
 
@@ -2735,13 +3387,21 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	addi		CO,	CO,	8
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
 /*********************************************************************
 * Macros for N=1, M=16                                               *
 *********************************************************************/
 
+#if defined(_AIX)
+define(`LOAD1x16_1', `
+#else
 .macro LOAD1x16_1
+#endif
 
 	lxvd2x	vs0,	0,	AO
 	lxvd2x	vs1,	o16,	AO
@@ -2760,9 +3420,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	addi		AO, AO, 64
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
+#if defined(_AIX)
+define(`KERNEL1x16_I1', `
+#else
 .macro KERNEL1x16_I1
+#endif
 
 	lxvd2x	vs8,	0,	AO
 	lxvd2x	vs9,	o16,	AO
@@ -2791,9 +3459,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	xvmuldp			vs38,	vs6,	vs24
 	xvmuldp			vs39,	vs7,	vs24
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
+#if defined(_AIX)
+define(`KERNEL1x16_1', `
+#else
 .macro KERNEL1x16_1
+#endif
 
 	lxvd2x	vs8,	0,	AO
 	lxvd2x	vs9,	o16,	AO
@@ -2822,9 +3498,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	xvmaddadp		vs38,	vs6,	vs24
 	xvmaddadp		vs39,	vs7,	vs24
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
+#if defined(_AIX)
+define(`KERNEL1x16_2', `
+#else
 .macro KERNEL1x16_2
+#endif
 
 	lxvd2x	vs0,	0,	AO
 	lxvd2x	vs1,	o16,	AO
@@ -2853,9 +3537,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	xvmaddadp		vs38,	vs14,	vs28
 	xvmaddadp		vs39,	vs15,	vs28
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
+#if defined(_AIX)
+define(`KERNEL1x16_E2', `
+#else
 .macro KERNEL1x16_E2
+#endif
 
 
 	xvmaddadp		vs32,	vs8,	vs28
@@ -2867,9 +3559,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	xvmaddadp		vs38,	vs14,	vs28
 	xvmaddadp		vs39,	vs15,	vs28
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
+#if defined(_AIX)
+define(`KERNEL1x16_SUBI1', `
+#else
 .macro KERNEL1x16_SUBI1
+#endif
 
 	lxvd2x	vs0,	0,	AO
 	lxvd2x	vs1,	o16,	AO
@@ -2898,9 +3598,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	xvmuldp			vs38,	vs6,	vs24
 	xvmuldp			vs39,	vs7,	vs24
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
+#if defined(_AIX)
+define(`KERNEL1x16_SUB1', `
+#else
 .macro KERNEL1x16_SUB1
+#endif
 
 	lxvd2x	vs0,	0,	AO
 	lxvd2x	vs1,	o16,	AO
@@ -2929,9 +3637,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	xvmaddadp		vs38,	vs6,	vs24
 	xvmaddadp		vs39,	vs7,	vs24
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
+#if defined(_AIX)
+define(`SAVE1x16', `
+#else
 .macro SAVE1x16
+#endif
 
 	mr		T1,	CO
 	addi		T2,	T1,	64
@@ -2980,13 +3696,21 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	addi		CO,	CO,	128
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
 /*********************************************************************
 * Macros for N=4, M=8                                                *
 *********************************************************************/
 
+#if defined(_AIX)
+define(`LOAD1x8_1', `
+#else
 .macro LOAD1x8_1
+#endif
 
 	lxvd2x	vs0,	0,	AO
 	lxvd2x	vs1,	o16,	AO
@@ -2998,9 +3722,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	addi		AO, AO, 64
 	addi		BO, BO, 8
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
+#if defined(_AIX)
+define(`KERNEL1x8_I1', `
+#else
 .macro KERNEL1x8_I1
+#endif
 
 	lxvd2x	vs8,	0,	AO
 	lxvd2x	vs9,	o16,	AO
@@ -3018,9 +3750,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	xvmuldp			vs34,	vs2,	vs24
 	xvmuldp			vs35,	vs3,	vs24
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
+#if defined(_AIX)
+define(`KERNEL1x8_1', `
+#else
 .macro KERNEL1x8_1
+#endif
 
 	lxvd2x	vs8,	0,	AO
 	lxvd2x	vs9,	o16,	AO
@@ -3038,9 +3778,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	xvmaddadp		vs34,	vs2,	vs24
 	xvmaddadp		vs35,	vs3,	vs24
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
+#if defined(_AIX)
+define(`KERNEL1x8_2', `
+#else
 .macro KERNEL1x8_2
+#endif
 
 	lxvd2x	vs0,	0,	AO
 	lxvd2x	vs1,	o16,	AO
@@ -3058,9 +3806,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	xvmaddadp		vs34,	vs10,	vs28
 	xvmaddadp		vs35,	vs11,	vs28
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
+#if defined(_AIX)
+define(`KERNEL1x8_E2', `
+#else
 .macro KERNEL1x8_E2
+#endif
 
 
 	xvmaddadp		vs32,	vs8,	vs28
@@ -3068,9 +3824,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	xvmaddadp		vs34,	vs10,	vs28
 	xvmaddadp		vs35,	vs11,	vs28
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
+#if defined(_AIX)
+define(`KERNEL1x8_SUBI1', `
+#else
 .macro KERNEL1x8_SUBI1
+#endif
 
 	lxvd2x	vs0,	0,	AO
 	lxvd2x	vs1,	o16,	AO
@@ -3088,9 +3852,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	xvmuldp			vs34,	vs2,	vs24
 	xvmuldp			vs35,	vs3,	vs24
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
+#if defined(_AIX)
+define(`KERNEL1x8_SUB1', `
+#else
 .macro KERNEL1x8_SUB1
+#endif
 
 	lxvd2x	vs0,	0,	AO
 	lxvd2x	vs1,	o16,	AO
@@ -3108,9 +3880,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	xvmaddadp		vs34,	vs2,	vs24
 	xvmaddadp		vs35,	vs3,	vs24
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
+#if defined(_AIX)
+define(`SAVE1x8', `
+#else
 .macro SAVE1x8
+#endif
 
 	mr		T1,	CO
 
@@ -3140,13 +3920,21 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	addi		CO,	CO,	64
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
 /*********************************************************************
 * Macros for N=1, M=4                                                *
 *********************************************************************/
 
+#if defined(_AIX)
+define(`LOAD1x4_1', `
+#else
 .macro LOAD1x4_1
+#endif
 
 	lxvd2x	vs0,	0,	AO
 	lxvd2x	vs1,	o16,	AO
@@ -3156,9 +3944,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	addi		AO, AO, 32
 	addi		BO, BO, 8
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
+#if defined(_AIX)
+define(`KERNEL1x4_I1', `
+#else
 .macro KERNEL1x4_I1
+#endif
 
 	lxvd2x	vs8,	0,	AO
 	lxvd2x	vs9,	o16,	AO
@@ -3172,9 +3968,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	xvmuldp			vs32,	vs0,	vs24
 	xvmuldp			vs33,	vs1,	vs24
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
+#if defined(_AIX)
+define(`KERNEL1x4_1', `
+#else
 .macro KERNEL1x4_1
+#endif
 
 	lxvd2x	vs8,	0,	AO
 	lxvd2x	vs9,	o16,	AO
@@ -3188,9 +3992,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	xvmaddadp		vs32,	vs0,	vs24
 	xvmaddadp		vs33,	vs1,	vs24
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
+#if defined(_AIX)
+define(`KERNEL1x4_2', `
+#else
 .macro KERNEL1x4_2
+#endif
 
 	lxvd2x	vs0,	0,	AO
 	lxvd2x	vs1,	o16,	AO
@@ -3204,17 +4016,33 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	xvmaddadp		vs32,	vs8,	vs28
 	xvmaddadp		vs33,	vs9,	vs28
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
+#if defined(_AIX)
+define(`KERNEL1x4_E2', `
+#else
 .macro KERNEL1x4_E2
+#endif
 
 
 	xvmaddadp		vs32,	vs8,	vs28
 	xvmaddadp		vs33,	vs9,	vs28
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
+#if defined(_AIX)
+define(`KERNEL1x4_SUBI1', `
+#else
 .macro KERNEL1x4_SUBI1
+#endif
 
 	lxvd2x	vs0,	0,	AO
 	lxvd2x	vs1,	o16,	AO
@@ -3228,9 +4056,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	xvmuldp			vs32,	vs0,	vs24
 	xvmuldp			vs33,	vs1,	vs24
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
+#if defined(_AIX)
+define(`KERNEL1x4_SUB1', `
+#else
 .macro KERNEL1x4_SUB1
+#endif
 
 	lxvd2x	vs0,	0,	AO
 	lxvd2x	vs1,	o16,	AO
@@ -3244,9 +4080,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	xvmaddadp		vs32,	vs0,	vs24
 	xvmaddadp		vs33,	vs1,	vs24
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
+#if defined(_AIX)
+define(`SAVE1x4', `
+#else
 .macro SAVE1x4
+#endif
 
 	mr		T1,	CO
 
@@ -3268,13 +4112,21 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	addi		CO,	CO,	32
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
 /*********************************************************************
 * Macros for N=1, M=2                                                *
 *********************************************************************/
 
+#if defined(_AIX)
+define(`LOAD1x2_1', `
+#else
 .macro LOAD1x2_1
+#endif
 
 	lxvd2x	vs0,	0,	AO
 
@@ -3283,9 +4135,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	addi		AO, AO, 16
 	addi		BO, BO, 8
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
+#if defined(_AIX)
+define(`KERNEL1x2_I1', `
+#else
 .macro KERNEL1x2_I1
+#endif
 
 	lxvd2x	vs8,	0,	AO
 
@@ -3297,9 +4157,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	xvmuldp			vs32,	vs0,	vs24
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
+#if defined(_AIX)
+define(`KERNEL1x2_1', `
+#else
 .macro KERNEL1x2_1
+#endif
 
 	lxvd2x	vs8,	0,	AO
 
@@ -3311,9 +4179,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	xvmaddadp		vs32,	vs0,	vs24
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
+#if defined(_AIX)
+define(`KERNEL1x2_2', `
+#else
 .macro KERNEL1x2_2
+#endif
 
 	lxvd2x	vs0,	0,	AO
 
@@ -3325,16 +4201,32 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	xvmaddadp		vs32,	vs8,	vs28
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
+#if defined(_AIX)
+define(`KERNEL1x2_E2', `
+#else
 .macro KERNEL1x2_E2
+#endif
 
 
 	xvmaddadp		vs32,	vs8,	vs28
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
+#if defined(_AIX)
+define(`KERNEL1x2_SUBI1', `
+#else
 .macro KERNEL1x2_SUBI1
+#endif
 
 	lxvd2x	vs0,	0,	AO
 
@@ -3346,9 +4238,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	xvmuldp			vs32,	vs0,	vs24
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
+#if defined(_AIX)
+define(`KERNEL1x2_SUB1', `
+#else
 .macro KERNEL1x2_SUB1
+#endif
 
 	lxvd2x	vs0,	0,	AO
 
@@ -3360,9 +4260,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	xvmaddadp		vs32,	vs0,	vs24
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
+#if defined(_AIX)
+define(`SAVE1x2', `
+#else
 .macro SAVE1x2
+#endif
 
 	mr		T1,	CO
 
@@ -3380,13 +4288,21 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	addi		CO,	CO,	16
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
 /*********************************************************************
 * Macros for N=1, M=1                                                *
 *********************************************************************/
 
+#if defined(_AIX)
+define(`LOAD1x1_1', `
+#else
 .macro LOAD1x1_1
+#endif
 
 	lxsdx	vs0,	0,	AO
 
@@ -3395,9 +4311,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	addi		AO, AO, 8
 	addi		BO, BO, 8
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
+#if defined(_AIX)
+define(`KERNEL1x1_I1', `
+#else
 .macro KERNEL1x1_I1
+#endif
 
 	lxsdx	vs8,	0,	AO
 
@@ -3409,9 +4333,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	xsmuldp			vs32,	vs0,	vs24
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
+#if defined(_AIX)
+define(`KERNEL1x1_1', `
+#else
 .macro KERNEL1x1_1
+#endif
 
 	lxsdx	vs8,	0,	AO
 
@@ -3423,9 +4355,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	xsmaddadp		vs32,	vs0,	vs24
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
+#if defined(_AIX)
+define(`KERNEL1x1_2', `
+#else
 .macro KERNEL1x1_2
+#endif
 
 	lxsdx	vs0,	0,	AO
 
@@ -3437,16 +4377,32 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	xsmaddadp		vs32,	vs8,	vs28
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
+#if defined(_AIX)
+define(`KERNEL1x1_E2', `
+#else
 .macro KERNEL1x1_E2
+#endif
 
 
 	xsmaddadp		vs32,	vs8,	vs28
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
+#if defined(_AIX)
+define(`KERNEL1x1_SUBI1', `
+#else
 .macro KERNEL1x1_SUBI1
+#endif
 
 	lxsdx	vs0,	0,	AO
 
@@ -3458,9 +4414,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	xsmuldp			vs32,	vs0,	vs24
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
+#if defined(_AIX)
+define(`KERNEL1x1_SUB1', `
+#else
 .macro KERNEL1x1_SUB1
+#endif
 
 	lxsdx	vs0,	0,	AO
 
@@ -3472,9 +4436,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	xsmaddadp		vs32,	vs0,	vs24
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
+#if defined(_AIX)
+define(`SAVE1x1', `
+#else
 .macro SAVE1x1
+#endif
 
 	mr		T1,	CO
 
@@ -3492,5 +4464,9 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	addi		CO,	CO,	8
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 

@@ -25,87 +25,14 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
 USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
 
-#include <stdio.h>
-#include <stdlib.h>
-#ifdef __CYGWIN32__
-#include <sys/time.h>
-#endif
-#include "common.h"
-
+#include "bench.h"
 
 #undef HEMV
-
 
 #ifdef DOUBLE
 #define HEMV   BLASFUNC(zhemv)
 #else
 #define HEMV   BLASFUNC(chemv)
-#endif
-
-
-#if defined(__WIN32__) || defined(__WIN64__)
-
-#ifndef DELTA_EPOCH_IN_MICROSECS
-#define DELTA_EPOCH_IN_MICROSECS 11644473600000000ULL
-#endif
-
-int gettimeofday(struct timeval *tv, void *tz){
-
-  FILETIME ft;
-  unsigned __int64 tmpres = 0;
-  static int tzflag;
-
-  if (NULL != tv)
-    {
-      GetSystemTimeAsFileTime(&ft);
-
-      tmpres |= ft.dwHighDateTime;
-      tmpres <<= 32;
-      tmpres |= ft.dwLowDateTime;
-
-      /*converting file time to unix epoch*/
-      tmpres /= 10;  /*convert into microseconds*/
-      tmpres -= DELTA_EPOCH_IN_MICROSECS;
-      tv->tv_sec = (long)(tmpres / 1000000UL);
-      tv->tv_usec = (long)(tmpres % 1000000UL);
-    }
-
-  return 0;
-}
-
-#endif
-
-#if !defined(__WIN32__) && !defined(__WIN64__) && !defined(__CYGWIN32__) && 0
-
-static void *huge_malloc(BLASLONG size){
-  int shmid;
-  void *address;
-
-#ifndef SHM_HUGETLB
-#define SHM_HUGETLB 04000
-#endif
-
-  if ((shmid =shmget(IPC_PRIVATE,
-		     (size + HUGE_PAGESIZE) & ~(HUGE_PAGESIZE - 1),
-		     SHM_HUGETLB | IPC_CREAT |0600)) < 0) {
-    printf( "Memory allocation failed(shmget).\n");
-    exit(1);
-  }
-
-  address = shmat(shmid, NULL, SHM_RND);
-
-  if ((BLASLONG)address == -1){
-    printf( "Memory allocation failed(shmat).\n");
-    exit(1);
-  }
-
-  shmctl(shmid, IPC_RMID, 0);
-
-  return address;
-}
-
-#define malloc huge_malloc
-
 #endif
 
 int main(int argc, char *argv[]){
@@ -124,7 +51,6 @@ int main(int argc, char *argv[]){
   int to   = 200;
   int step =   1;
 
-  struct timeval start, stop;
   double time1,timeg;
 
   argc--;argv++;
@@ -152,7 +78,7 @@ int main(int argc, char *argv[]){
     fprintf(stderr,"Out of Memory!!\n");exit(1);
   }
 
-#ifdef linux
+#ifdef __linux
   srandom(getpid());
 #endif
 
@@ -167,7 +93,7 @@ int main(int argc, char *argv[]){
 
    for(j = 0; j < m; j++){
       		for(i = 0; i < m * COMPSIZE; i++){
-			a[i + j * m * COMPSIZE] = ((FLOAT) rand() / (FLOAT) RAND_MAX) - 0.5;
+			a[(long)i + (long)j * (long)m * COMPSIZE] = ((FLOAT) rand() / (FLOAT) RAND_MAX) - 0.5;
       		}
    }
 
@@ -182,13 +108,13 @@ int main(int argc, char *argv[]){
    	for(i = 0; i < m * COMPSIZE * abs(inc_y); i++){
 			y[i] = ((FLOAT) rand() / (FLOAT) RAND_MAX) - 0.5;
    	}
-    	gettimeofday( &start, (struct timezone *)0);
+    	begin();
 
     	HEMV (&uplo, &m, alpha, a, &m, x, &inc_x, beta, y, &inc_y );
 
-    	gettimeofday( &stop, (struct timezone *)0);
+    	end();
 
-    	time1 = (double)(stop.tv_sec - start.tv_sec) + (double)((stop.tv_usec - start.tv_usec)) * 1.e-6;
+    	time1 = getsec();
 
 	timeg += time1;
 

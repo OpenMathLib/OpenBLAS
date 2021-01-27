@@ -47,6 +47,7 @@
 
 #define MB
 #define WMB
+#define RMB
 
 #ifdef __ECC
 #include <ia64intrin.h>

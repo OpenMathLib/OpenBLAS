@@ -129,6 +129,7 @@
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
 *     December 2016
 *
+      IMPLICIT NONE
 *     .. Scalar Arguments ..
       CHARACTER          NORM, UPLO
       INTEGER            LDA, N
@@ -146,14 +147,17 @@
 *     ..
 *     .. Local Scalars ..
       INTEGER            I, J
-      DOUBLE PRECISION   ABSA, SCALE, SUM, VALUE
+      DOUBLE PRECISION   ABSA, SUM, VALUE
+*     ..
+*     .. Local Arrays ..
+      DOUBLE PRECISION   SSQ( 2 ), COLSSQ( 2 )
 *     ..
 *     .. External Functions ..
       LOGICAL            LSAME, DISNAN
       EXTERNAL           LSAME, DISNAN
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           ZLASSQ
+      EXTERNAL           ZLASSQ, DCOMBSSQ
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          ABS, DBLE, SQRT
@@ -223,31 +227,48 @@
       ELSE IF( ( LSAME( NORM, 'F' ) ) .OR. ( LSAME( NORM, 'E' ) ) ) THEN
 *
 *        Find normF(A).
+*        SSQ(1) is scale
+*        SSQ(2) is sum-of-squares
+*        For better accuracy, sum each column separately.
 *
-         SCALE = ZERO
-         SUM = ONE
+         SSQ( 1 ) = ZERO
+         SSQ( 2 ) = ONE
+*
+*        Sum off-diagonals
+*
          IF( LSAME( UPLO, 'U' ) ) THEN
             DO 110 J = 2, N
-               CALL ZLASSQ( J-1, A( 1, J ), 1, SCALE, SUM )
+               COLSSQ( 1 ) = ZERO
+               COLSSQ( 2 ) = ONE
+               CALL ZLASSQ( J-1, A( 1, J ), 1,
+     $                      COLSSQ( 1 ), COLSSQ( 2 ) )
+               CALL DCOMBSSQ( SSQ, COLSSQ )
   110       CONTINUE
          ELSE
             DO 120 J = 1, N - 1
-               CALL ZLASSQ( N-J, A( J+1, J ), 1, SCALE, SUM )
+               COLSSQ( 1 ) = ZERO
+               COLSSQ( 2 ) = ONE
+               CALL ZLASSQ( N-J, A( J+1, J ), 1,
+     $                      COLSSQ( 1 ), COLSSQ( 2 ) )
+               CALL DCOMBSSQ( SSQ, COLSSQ )
   120       CONTINUE
          END IF
-         SUM = 2*SUM
+         SSQ( 2 ) = 2*SSQ( 2 )
+*
+*        Sum diagonal
+*
          DO 130 I = 1, N
             IF( DBLE( A( I, I ) ).NE.ZERO ) THEN
                ABSA = ABS( DBLE( A( I, I ) ) )
-               IF( SCALE.LT.ABSA ) THEN
-                  SUM = ONE + SUM*( SCALE / ABSA )**2
-                  SCALE = ABSA
+               IF( SSQ( 1 ).LT.ABSA ) THEN
+                  SSQ( 2 ) = ONE + SSQ( 2 )*( SSQ( 1 ) / ABSA )**2
+                  SSQ( 1 ) = ABSA
                ELSE
-                  SUM = SUM + ( ABSA / SCALE )**2
+                  SSQ( 2 ) = SSQ( 2 ) + ( ABSA / SSQ( 1 ) )**2
                END IF
             END IF
   130    CONTINUE
-         VALUE = SCALE*SQRT( SUM )
+         VALUE = SSQ( 1 )*SQRT( SSQ( 2 ) )
       END IF
 *
       ZLANHE = VALUE

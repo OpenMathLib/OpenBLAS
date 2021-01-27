@@ -35,6 +35,13 @@ void RELAPACK_sgbtrf(
         return;
     }
 
+    if (*m == 0 || *n == 0) return;
+
+    if (*ldAb == 1) {
+        LAPACK(sgbtf2)(m, n, kl, ku, Ab, ldAb, ipiv, info);
+	return;
+    }
+
     // Constant
     const float ZERO[] = { 0. };
 
@@ -82,8 +89,9 @@ static void RELAPACK_sgbtrf_rec(
     blasint *info
 ) {
 
+    if (*m == 0 || *n == 0) return;
 
-    if (*n <= MAX(CROSSOVER_SGBTRF, 1)) {
+    if ( *n <= MAX(CROSSOVER_SGBTRF, 1) || *n > *kl || *ldAb == 1) {
         // Unblocked
         LAPACK(sgbtf2)(m, n, kl, ku, Ab, ldAb, ipiv, info);
         return;
@@ -160,7 +168,7 @@ static void RELAPACK_sgbtrf_rec(
 
     // recursion(Ab_L, ipiv_T)
     RELAPACK_sgbtrf_rec(m, &n1, kl, ku, Ab_L, ldAb, ipiv_T, Workl, ldWorkl, Worku, ldWorku, info);
-
+    if (*info) return;
     // Workl = A_BLb
     LAPACK(slacpy)("U", &m22, &n1, A_BLb, ldA, Workl, ldWorkl);
 
@@ -222,8 +230,8 @@ static void RELAPACK_sgbtrf_rec(
 
     // recursion(Ab_BR, ipiv_B)
 //cause of infinite recursion here ?    
-//      RELAPACK_sgbtrf_rec(&m2, &n2, kl, ku, Ab_BR, ldAb, ipiv_B, Workl, ldWorkl, Worku, ldWorku, info);
-        LAPACK(sgbtf2)(&m2, &n2, kl, ku, Ab_BR, ldAb, ipiv_B, info);
+      RELAPACK_sgbtrf_rec(&m2, &n2, kl, ku, Ab_BR, ldAb, ipiv_B, Workl, ldWorkl, Worku, ldWorku, info);
+//        LAPACK(sgbtf2)(&m2, &n2, kl, ku, Ab_BR, ldAb, ipiv_B, info);
     if (*info)
         *info += n1;
     // shift pivots
