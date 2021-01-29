@@ -741,8 +741,8 @@
                TEMP = MAX( TEMP, ABS1( X ) )
                Y = TEMP*SQRT( ( X / TEMP )**2+( CTEMP / TEMP )**2 )
                IF( TEMP2.GT.ZERO ) THEN
-                  IF( DBLE( X / TEMP2 )*DBLE( Y )+
-     $                DIMAG( X / TEMP2 )*DIMAG( Y ).LT.ZERO )Y = -Y
+                  IF( REAL( X / TEMP2 )*REAL( Y )+
+     $                AIMAG( X / TEMP2 )*AIMAG( Y ).LT.ZERO )Y = -Y
                END IF
                SHIFT = SHIFT - CTEMP*CLADIV( CTEMP, ( X+Y ) )
             END IF
