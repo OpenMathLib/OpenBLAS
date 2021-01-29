@@ -320,12 +320,13 @@
      $                   C, SAFMIN, TEMP, TEMP2, TEMPR, ULP
       COMPLEX            ABI22, AD11, AD12, AD21, AD22, CTEMP, CTEMP2,
      $                   CTEMP3, ESHIFT, RTDISC, S, SHIFT, SIGNBC, T1,
-     $                   U12, X
+     $                   U12, X, ABI12, Y
 *     ..
 *     .. External Functions ..
+      COMPLEX            CLADIV
       LOGICAL            LSAME
       REAL               CLANHS, SLAMCH
-      EXTERNAL           LSAME, CLANHS, SLAMCH
+      EXTERNAL           CLADIV, LLSAME, CLANHS, SLAMCH
 *     ..
 *     .. External Subroutines ..
       EXTERNAL           CLARTG, CLASET, CROT, CSCAL, XERBLA
@@ -729,15 +730,21 @@
             AD22 = ( ASCALE*H( ILAST, ILAST ) ) /
      $             ( BSCALE*T( ILAST, ILAST ) )
             ABI22 = AD22 - U12*AD21
+            ABI12 = AD12 - U12*AD11
 *
-            T1 = HALF*( AD11+ABI22 )
-            RTDISC = SQRT( T1**2+AD12*AD21-AD11*AD22 )
-            TEMP = REAL( T1-ABI22 )*REAL( RTDISC ) +
-     $             AIMAG( T1-ABI22 )*AIMAG( RTDISC )
-            IF( TEMP.LE.ZERO ) THEN
-               SHIFT = T1 + RTDISC
-            ELSE
-               SHIFT = T1 - RTDISC
+            SHIFT = ABI22
+            CTEMP = SQRT( ABI12 )*SQRT( AD21 )
+            TEMP = ABS1( CTEMP )
+            IF( CTEMP.NE.ZERO ) THEN
+               X = HALF*( AD11-SHIFT )
+               TEMP2 = ABS1( X )
+               TEMP = MAX( TEMP, ABS1( X ) )
+               Y = TEMP*SQRT( ( X / TEMP )**2+( CTEMP / TEMP )**2 )
+               IF( TEMP2.GT.ZERO ) THEN
+                  IF( DBLE( X / TEMP2 )*DBLE( Y )+
+     $                DIMAG( X / TEMP2 )*DIMAG( Y ).LT.ZERO )Y = -Y
+               END IF
+               SHIFT = SHIFT - CTEMP*CLADIV( CTEMP, ( X+Y ) )
             END IF
          ELSE
 *
