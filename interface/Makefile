@@ -1634,10 +1634,10 @@ cblas_srotg.$(SUFFIX) cblas_srotg.$(PSUFFIX): rotg.c
 cblas_drotg.$(SUFFIX) cblas_drotg.$(PSUFFIX): rotg.c
 	$(CC) $(CFLAGS) -DCBLAS -c $< -o $(@F)
 
-cblas_crotg.$(SUFFIX) crotg.$(PSUFFIX): zrotg.c
+cblas_crotg.$(SUFFIX) cblas_crotg.$(PSUFFIX): zrotg.c
 	$(CC) -c $(CFLAGS) -DCBLAS $< -o $(@F)
 
-cblas_zrotg.$(SUFFIX) zrotg.$(PSUFFIX): zrotg.c
+cblas_zrotg.$(SUFFIX) cblas_zrotg.$(PSUFFIX): zrotg.c
 	$(CC) -c $(CFLAGS) -DCBLAS $< -o $(@F)
 
 cblas_srotm.$(SUFFIX) cblas_srotm.$(PSUFFIX): rotm.c
