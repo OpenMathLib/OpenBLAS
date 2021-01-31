@@ -212,7 +212,8 @@ Please note that it is not possible to combine support for different architectur
 - **Android**: Supported by the community. Please read <https://github.com/xianyi/OpenBLAS/wiki/How-to-build-OpenBLAS-for-Android>.
 - **AIX**: Supported on PPC up to POWER8
 - **Haiku**: Supported by the community. We don't actively test the library on this OS.
-- **SunOS**: Supported by the community. We don't actively test the library on this OS:
+- **SunOS**: Supported by the community. We don't actively test the library on this OS.
+- **Cortex-M**: Supported by the community. Please read <https://github.com/xianyi/OpenBLAS/wiki/How-to-use-OpenBLAS-on-Cortex-M>.
 
 ## Usage
 
