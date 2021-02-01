@@ -4,6 +4,13 @@
 ##
 set(NETLIB_LAPACK_DIR "${PROJECT_SOURCE_DIR}/lapack-netlib")
 
+1
+
+##
+
+2
+
+## Author: Hank Anderson <hank@statease.com>
 # System detection, via CMake.
 include("${PROJECT_SOURCE_DIR}/cmake/system_check.cmake")
 
@@ -150,12 +157,12 @@ if (DEFINED TARGET)
   if (${TARGET} STREQUAL COOPERLAKE AND NOT NO_AVX512)
     if (${CMAKE_C_COMPILER_ID} STREQUAL "GNU")
       execute_process(COMMAND ${CMAKE_C_COMPILER} -dumpversion OUTPUT_VARIABLE GCC_VERSION)
-        if (${CMAKE_C_COMPILER_VERSION} VERSION_GREATER 10.1 OR ${CMAKE_C_COMPILER_VERSION} VERSION_EQUAL 10.1)
+        if (${CMAKE_C_COMPILER_VERSION} VERSION_GREATER 10.09)
           set (KERNEL_DEFINITIONS "${KERNEL_DEFINITIONS} -march=cooperlake")
         else()
           set (KERNEL_DEFINITIONS "${KERNEL_DEFINITIONS} -march=skylake-avx512")
         endif()
-    elseif (${CMAKE_C_COMPILER_ID} STREQUAL "CLANG")
+    elseif (${CMAKE_C_COMPILER_ID} STREQUAL "CLANG" OR ${CMAKE_C_COMPILER_ID} STREQUAL "AppleClang")
          if (${CMAKE_C_COMPILER_VERSION} VERSION_GREATER 8.99)
           set (KERNEL_DEFINITIONS "${KERNEL_DEFINITIONS} -march=cooperlake")
         else()
