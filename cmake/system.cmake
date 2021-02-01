@@ -4,13 +4,6 @@
 ##
 set(NETLIB_LAPACK_DIR "${PROJECT_SOURCE_DIR}/lapack-netlib")
 
-1
-
-##
-
-2
-
-## Author: Hank Anderson <hank@statease.com>
 # System detection, via CMake.
 include("${PROJECT_SOURCE_DIR}/cmake/system_check.cmake")
 
