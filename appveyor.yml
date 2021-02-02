@@ -30,10 +30,11 @@ environment:
     CONDA_INSTALL_LOCN: C:\\Miniconda36-x64
   matrix:
     - COMPILER: clang-cl
-      WITH_FORTRAN: yes
+      WITH_FORTRAN: ON
+      USE_OPENMP: ON
     - COMPILER: clang-cl
       DYNAMIC_ARCH: ON
-      WITH_FORTRAN: no
+      WITH_FORTRAN: OFF
     - COMPILER: cl
     - COMPILER: MinGW64-gcc-7.2.0-mingw
       DYNAMIC_ARCH: OFF
@@ -47,12 +48,7 @@ environment:
 install:
   - if [%COMPILER%]==[clang-cl] call %CONDA_INSTALL_LOCN%\Scripts\activate.bat
   - if [%COMPILER%]==[clang-cl] conda config --add channels conda-forge --force
-  - if [%COMPILER%]==[clang-cl] conda install --yes --quiet clangdev cmake
-
-  - if [%WITH_FORTRAN%]==[no] conda install --yes --quiet ninja
-  - if [%WITH_FORTRAN%]==[yes] conda install --yes --quiet -c isuruf kitware-ninja
-  - if [%WITH_FORTRAN%]==[yes] conda install --yes --quiet flang
-
+  - if [%COMPILER%]==[clang-cl] conda install --yes --quiet clangdev cmake ninja flang=11.0.1
   - if [%COMPILER%]==[clang-cl] call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvarsall.bat" x64
   - if [%COMPILER%]==[clang-cl] set "LIB=%CONDA_INSTALL_LOCN%\Library\lib;%LIB%"
   - if [%COMPILER%]==[clang-cl] set "CPATH=%CONDA_INSTALL_LOCN%\Library\include;%CPATH%"
@@ -68,8 +64,9 @@ before_build:
   - if [%COMPILER%]==[MinGW64-gcc-7.2.0-mingw] cmake -G "MinGW Makefiles" -DNOFORTRAN=1 ..
   - if [%COMPILER%]==[MinGW-gcc-6.3.0-32] cmake -G "MSYS Makefiles" -DNOFORTRAN=1 ..
   - if [%COMPILER%]==[MinGW-gcc-5.3.0] cmake -G "MSYS Makefiles" -DNOFORTRAN=1 ..
-  - if [%WITH_FORTRAN%]==[no] cmake -G "Ninja" -DCMAKE_CXX_COMPILER=clang-cl -DCMAKE_C_COMPILER=clang-cl -DMSVC_STATIC_CRT=ON ..
-  - if [%WITH_FORTRAN%]==[yes] cmake -G "Ninja" -DCMAKE_CXX_COMPILER=clang-cl -DCMAKE_C_COMPILER=clang-cl -DCMAKE_Fortran_COMPILER=flang -DBUILD_WITHOUT_LAPACK=no -DNOFORTRAN=0 ..
+  - if [%WITH_FORTRAN%]==[OFF] cmake -G "Ninja" -DCMAKE_CXX_COMPILER=clang-cl -DCMAKE_C_COMPILER=clang-cl -DMSVC_STATIC_CRT=ON ..
+  - if [%WITH_FORTRAN%]==[ON] cmake -G "Ninja" -DCMAKE_CXX_COMPILER=clang-cl -DCMAKE_C_COMPILER=clang-cl -DCMAKE_Fortran_COMPILER=flang -DBUILD_WITHOUT_LAPACK=no -DNOFORTRAN=0 ..
+  - if [%USE_OPENMP%]==[ON] cmake -DUSE_OPENMP=ON ..
   - if [%DYNAMIC_ARCH%]==[ON] cmake -DDYNAMIC_ARCH=ON -DDYNAMIC_LIST='CORE2;NEHALEM;SANDYBRIDGE;BULLDOZER;HASWELL' ..
 
 build_script:
