@@ -6,7 +6,7 @@
 
 #if defined(SKYLAKEX)
 #include "dasum_microk_skylakex-2.c"
-#elif defined(HASWELL)
+#elif defined(HASWELL) || defined(ZEN)
 #include "dasum_microk_haswell-2.c"
 #endif
 
