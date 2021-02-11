@@ -11,7 +11,7 @@
 
 #if defined(SKYLAKEX)
 #include "sasum_microk_skylakex-2.c"
-#elif defined(HASWELL)
+#elif defined(HASWELL) || defined(ZEN)
 #include "sasum_microk_haswell-2.c"
 #endif
 
