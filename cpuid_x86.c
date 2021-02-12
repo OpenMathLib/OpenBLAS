@@ -1418,6 +1418,15 @@ int get_cpuname(void){
       case 9:
       case 8:      
         switch (model) {
+        case 12: // Tiger Lake
+          if(support_avx512())
+            return CPUTYPE_SKYLAKEX;
+          if(support_avx2())
+            return CPUTYPE_HASWELL;
+          if(support_avx())
+            return CPUTYPE_SANDYBRIDGE;
+          else
+          return CPUTYPE_NEHALEM;
 	case 14: // Kaby Lake and refreshes
           if(support_avx2())
             return CPUTYPE_HASWELL;
@@ -2124,6 +2133,16 @@ int get_coretype(void){
         break;    	
       case 9:
       case 8:
+       if (model == 12) { // Tiger Lake
+          if(support_avx512())
+            return CPUTYPE_SKYLAKEX;
+          if(support_avx2())
+            return CPUTYPE_HASWELL;
+          if(support_avx())
+            return CPUTYPE_SANDYBRIDGE;
+          else
+          return CPUTYPE_NEHALEM;
+        }
         if (model == 14) { // Kaby Lake 
 	  if(support_avx())
 #ifndef NO_AVX2
