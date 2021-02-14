@@ -32,6 +32,9 @@
 
 TOPSRCDIR = ../..
 include $(TOPSRCDIR)/make.inc
+FFLAGS := $(filter-out -frecursive -Mrecursive,$(FFLAGS))
+FFLAGS_DRV := $(filter-out -frecursive -Mrecursive,$(FFLAGS_DRV))
+LDFLAGS := $(filter-out -frecursive -Mrecursive,$(LDFLAGS))
 
 ifneq "$(or $(BUILD_SINGLE),$(BUILD_COMPLEX))" ""
 SCATGEN = slatm1.o slatm7.o slaran.o slarnd.o
