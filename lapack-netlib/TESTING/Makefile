@@ -14,7 +14,7 @@
 #  Some examples:
 #       make single
 #       make single complex
-#       make single double complex complex16
+#       make single double complex complex16 
 #  Alternatively, the command
 #       make
 #  without any arguments runs all eight test programs.
@@ -36,6 +36,9 @@
 
 TOPSRCDIR = ..
 include $(TOPSRCDIR)/make.inc
+FFLAGS := $(filter-out -frecursive -Mrecursive,$(FFLAGS))
+FFLAGS_DRV := $(filter-out -frecursive -Mrecursive,$(FFLAGS_DRV))
+LDFLAGS := $(filter-out -frecursive -Mrecursive,$(LDFLAGS))
 
 .PHONY: all
 all: single complex double complex16 singleproto doubleproto complexproto complex16proto
