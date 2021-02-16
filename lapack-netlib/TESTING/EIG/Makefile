@@ -33,9 +33,9 @@
 
 TOPSRCDIR = ../..
 include $(TOPSRCDIR)/make.inc
-#FFLAGS := $(filter-out -frecursive -Mrecursive,$(FFLAGS))
-#FFLAGS_DRV := $(filter-out -frecursive -Mrecursive,$(FFLAGS_DRV))
-#LDFLAGS := $(filter-out -frecursive -Mrecursive,$(LDFLAGS))
+FFLAGS := $(filter-out -frecursive -Mrecursive,$(FFLAGS))
+FFLAGS_DRV := $(filter-out -frecursive -Mrecursive,$(FFLAGS_DRV))
+LDFLAGS := $(filter-out -frecursive -Mrecursive,$(LDFLAGS))
 
 AEIGTST = \
    alahdg.o \
