@@ -222,11 +222,11 @@ int get_num_procs(void);
 #else
 int get_num_procs(void) {
   static int nums = 0;
+
+#if defined(__GLIBC_PREREQ)
   cpu_set_t cpuset,*cpusetp;
   size_t size;
   int ret;
-
-#if defined(__GLIBC_PREREQ)
 #if !__GLIBC_PREREQ(2, 7)
   int i;
 #if !__GLIBC_PREREQ(2, 6)
