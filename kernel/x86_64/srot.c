@@ -2,7 +2,7 @@
 
 #if defined(SKYLAKEX)
 #include "srot_microk_skylakex-2.c"
-#elif defined(HASWELL)
+#elif defined(HASWELL) || defined(ZEN)
 #include "srot_microk_haswell-2.c"
 #endif
 

@@ -1024,38 +1024,39 @@ int BLASFUNC(blas_thread_shutdown)(void){
 
   int i;
 
-  if (!blas_server_avail) return 0;
-
   LOCK_COMMAND(&server_lock);
 
-  for (i = 0; i < blas_num_threads - 1; i++) {
+  if (blas_server_avail) {
+
+    for (i = 0; i < blas_num_threads - 1; i++) {
 
 
-    pthread_mutex_lock (&thread_status[i].lock);
+      pthread_mutex_lock (&thread_status[i].lock);
 
-    atomic_store_queue(&thread_status[i].queue, (blas_queue_t *)-1);
-    thread_status[i].status = THREAD_STATUS_WAKEUP;
-    pthread_cond_signal (&thread_status[i].wakeup);
+      atomic_store_queue(&thread_status[i].queue, (blas_queue_t *)-1);
+      thread_status[i].status = THREAD_STATUS_WAKEUP;
+      pthread_cond_signal (&thread_status[i].wakeup);
 
-    pthread_mutex_unlock(&thread_status[i].lock);
+      pthread_mutex_unlock(&thread_status[i].lock);
 
-  }
+    }
 
-  for(i = 0; i < blas_num_threads - 1; i++){
-    pthread_join(blas_threads[i], NULL);
-  }
+    for(i = 0; i < blas_num_threads - 1; i++){
+      pthread_join(blas_threads[i], NULL);
+    }
 
-  for(i = 0; i < blas_num_threads - 1; i++){
-    pthread_mutex_destroy(&thread_status[i].lock);
-    pthread_cond_destroy (&thread_status[i].wakeup);
-  }
+    for(i = 0; i < blas_num_threads - 1; i++){
+      pthread_mutex_destroy(&thread_status[i].lock);
+      pthread_cond_destroy (&thread_status[i].wakeup);
+    }
 
 #ifdef NEED_STACKATTR
-  pthread_attr_destory(&attr);
+    pthread_attr_destroy(&attr);
 #endif
 
-  blas_server_avail = 0;
+    blas_server_avail = 0;
 
+  }
   UNLOCK_COMMAND(&server_lock);
 
   return 0;
