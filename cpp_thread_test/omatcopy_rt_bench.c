@@ -1,3 +1,4 @@
+#include "common.h"
 /* +r: %0 = src, %1 = dst, %2 = src_ld, %3 = dst_ld, %4 = dst_tmp */
 /* m: %5 = num_rows, %6 = alpha */
 /* xmm15 = alpha */
@@ -114,9 +115,7 @@
 #ifndef FLOAT
  #define FLOAT float
 #endif
-#ifdef CNAME
- #include "common.h"
-#endif
+
 #define ROWS_OF_BLOCK 384
 #ifndef BLASLONG
  #define BLASLONG long
