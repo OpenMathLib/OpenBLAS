@@ -28,7 +28,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "common.h"
 
 int CNAME(BLASLONG rows, BLASLONG cols, FLOAT alpha, FLOAT *a, BLASLONG lda, FLOAT *b, BLASLONG ldb)
-
+{
     BLASLONG i, j;
     FLOAT *a_offset, *a_offset1, *a_offset2, *a_offset3, *a_offset4;
     FLOAT *b_offset, *b_offset1, *b_offset2, *b_offset3, *b_offset4;
