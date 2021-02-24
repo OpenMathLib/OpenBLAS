@@ -29,7 +29,9 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #ifdef HAVE_AVX
 
-/* +r: %0 = src, %1 = dst, %2 = src_ld, %3 = dst_ld, %4 = dst_tmp */
+#define ROWS_OF_BLOCK 384
+
+  /* +r: %0 = src, %1 = dst, %2 = src_ld, %3 = dst_ld, %4 = dst_tmp */
 /* m: %5 = num_rows, %6 = alpha */
 /* xmm15 = alpha */
 #define TRANS_4x4(a1_no,a2_no,a3_no,a4_no,t1_no,t2_no,t3_no,t4_no)\
