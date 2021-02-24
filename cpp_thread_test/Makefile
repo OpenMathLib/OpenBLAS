@@ -11,7 +11,7 @@ dgemm_tester : dgemv_tester
 	./dgemm_tester
 
 omatcopy_rt_bench :
-	$(CC) $(COMMON_OPT) -Wall -Wextra -Wshadow omatcopy_rt_bench.c -o omatcopy_rt_bench
+	$(CC) $(COMMON_OPT) -I.. -Wall -Wextra -Wshadow omatcopy_rt_bench.c -o omatcopy_rt_bench
 	./omatcopy_rt_bench
 clean ::
 	rm -f dgemv_tester dgemm_tester omatcopy_rt_bench
