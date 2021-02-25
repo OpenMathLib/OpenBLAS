@@ -1619,10 +1619,12 @@ static int on_process_term(void)
 #else
 #pragma data_seg(".CRT$XLB")
 #endif
-static void (APIENTRY *dll_callback)(HINSTANCE h, DWORD ul_reason_for_call, PVOID pv) = DllMain;
+
 #ifdef _WIN64
+static const PIMAGE_TLS_CALLBACK dll_callback(HINSTANCE h, DWORD ul_reason_for_call, PVOID pv) = DllMain;
 #pragma const_seg()
 #else
+static void (APIENTRY *dll_callback)(HINSTANCE h, DWORD ul_reason_for_call, PVOID pv) = DllMain;
 #pragma data_seg()
 #endif
 
@@ -1631,10 +1633,12 @@ static void (APIENTRY *dll_callback)(HINSTANCE h, DWORD ul_reason_for_call, PVOI
 #else
 #pragma data_seg(".CRT$XTU")
 #endif
-static int(*p_process_term)(void) = on_process_term;
+
 #ifdef _WIN64
+static const int(*p_process_term)(void) = on_process_term;
 #pragma const_seg()
 #else
+static int(*p_process_term)(void) = on_process_term;
 #pragma data_seg()
 #endif
 #endif
