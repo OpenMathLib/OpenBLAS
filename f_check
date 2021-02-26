@@ -330,7 +330,7 @@ if ($link ne "") {
 	    $flags =~ s/\@/\,/g;
 	    $linker_L .= "-Wl,". $flags . " " ;
 	}
-	if ($flags =~ /-lgomp/ && $CC =~ /clang/) {
+	if ($flags =~ /-lgomp/ && $ENV{"CC"} =~ /clang/) {
 	    $flags = "-lomp";
 	}
 
