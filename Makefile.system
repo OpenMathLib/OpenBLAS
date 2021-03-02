@@ -904,8 +904,8 @@ CCOMMON_OPT += -DF_INTERFACE_FLANG
 FCOMMON_OPT += -Mrecursive -Kieee
 ifeq ($(OSNAME), Linux)
 ifeq ($(ARCH), x86_64)
-FLANG_VENDOR := $(shell `$(FC) --version|cut -f 1 -d "."|head -1`)
-ifeq ($(FLANG_VENDOR),AOCC)
+FLANG_VENDOR := $(shell $(FC) --version|head -1 |cut -f 1 -d " ")
+ifeq ($(FLANG_VENDOR), AMD)
 FCOMMON_OPT += -fno-unroll-loops
 endif
 endif
