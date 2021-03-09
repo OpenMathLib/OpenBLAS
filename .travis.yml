@@ -235,7 +235,6 @@ matrix:
       before_script:
         - COMMON_FLAGS="NUM_THREADS=32"
         - brew update
-        - brew install gcc@10
       script:
         - travis_wait 45 make QUIET_MAKE=1 $COMMON_FLAGS $BTYPE
       env:
