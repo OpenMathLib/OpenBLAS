@@ -230,7 +230,7 @@ matrix:
       env:
         - BTYPE="TARGET=NEHALEM BINARY=64 INTERFACE64=1 FC=gfortran-10"
     
-    - <<: *test-macos-clang
+    - <<: *test-macos
       osx_image: xcode12
       before_script:
         - COMMON_FLAGS="NUM_THREADS=32"
