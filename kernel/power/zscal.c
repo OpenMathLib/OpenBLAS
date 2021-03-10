@@ -45,7 +45,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif
 #elif defined(POWER10)
 #if defined(DOUBLE)
-#include "zscal_microk_power8.c"
+#include "zscal_microk_power10.c"
 #else
 #include "cscal_microk_power10.c"
 #endif
