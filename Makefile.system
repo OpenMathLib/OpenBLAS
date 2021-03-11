@@ -899,6 +899,18 @@ endif
 #  Fortran Compiler dependent settings
 #
 
+ifeq ($(F_COMPILER), NAG)
+FCOMMON_OPT += -dcfuns -recursive -ieee=full -w=obs -thread_safe
+ifdef INTERFACE64
+ifneq ($(INTERFACE64), 0)
+FCOMMON_OPT += -i8
+endif
+endif
+ifeq ($(USE_OPENMP), 1)
+FCOMMON_OPT += -openmp
+endif
+endif
+
 ifeq ($(F_COMPILER), FLANG)
 CCOMMON_OPT += -DF_INTERFACE_FLANG
 FCOMMON_OPT += -Mrecursive -Kieee
@@ -1207,6 +1219,8 @@ CCOMMON_OPT += -fPIC
 endif
 ifeq ($(F_COMPILER), SUN)
 FCOMMON_OPT  += -pic
+else ifeq ($(F_COMPILER), NAG)
+FCOMMON_OPT += -PIC
 else
 FCOMMON_OPT += -fPIC
 endif
@@ -1463,6 +1477,10 @@ LAPACK_FPFLAGS := $(filter-out -fopenmp -mp -openmp -xopenmp=parallel,$(FPFLAGS)
 else
 LAPACK_FFLAGS := $(FFLAGS)
 LAPACK_FPFLAGS := $(FPFLAGS)
+endif
+
+ifeq ($(F_COMPILER),NAG)
+LAPACK_FFLAGS := $(filter-out -msse3 -mssse3 -msse4.1 -mavx -mavx2 -mskylake-avx512 ,$(FFLAGS))
 endif
 
 LAPACK_CFLAGS = $(CFLAGS)
