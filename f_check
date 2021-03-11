@@ -303,7 +303,7 @@ if (!$?) {
     }
 }
 
-if ( $vendor == NAG) {
+if ( $vendor eq "NAG") {
 	    $link = `$compiler $openmp -dryrun ftest2.f 2>&1 && rm -f a.out a.exe`;
     }
 $linker_L = "";
