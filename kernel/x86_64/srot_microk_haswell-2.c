@@ -1,5 +1,4 @@
-/* need a new enough GCC for avx512 support */
-#if (( defined(__GNUC__)  && __GNUC__   > 6 && defined(__AVX512CD__)) || (defined(__clang__) && __clang_major__ >= 9))
+#if defined(HAVE_FMA3)  && defined(HAVE_AVX2)
 
 #define HAVE_SROT_KERNEL 1
 

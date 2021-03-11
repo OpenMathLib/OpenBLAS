@@ -1034,6 +1034,10 @@
 *  =====================================================================
       PROGRAM ZCHKEE
 *
+#if defined(_OPENMP)
+      use omp_lib
+#endif
+*
 *  -- LAPACK test routine (version 3.7.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
@@ -1071,7 +1075,7 @@
       CHARACTER*80       LINE
       INTEGER            I, I1, IC, INFO, ITMP, K, LENP, MAXTYP, NEWSD,
      $                   NK, NN, NPARMS, NRHS, NTYPES,
-     $                   VERS_MAJOR, VERS_MINOR, VERS_PATCH
+     $                   VERS_MAJOR, VERS_MINOR, VERS_PATCH, N_THREADS
       DOUBLE PRECISION   EPS, S1, S2, THRESH, THRSHN
 *     ..
 *     .. Local Arrays ..
@@ -1084,11 +1088,15 @@
       INTEGER            INMIN( MAXIN ), INWIN( MAXIN ), INIBL( MAXIN ),
      $                   ISHFTS( MAXIN ), IACC22( MAXIN )
       DOUBLE PRECISION   ALPHA( NMAX ), BETA( NMAX ), DR( NMAX, 12 ),
-     $                   RESULT( 500 ), RWORK( LWORK ), S( NMAX*NMAX )
-      COMPLEX*16         A( NMAX*NMAX, NEED ), B( NMAX*NMAX, 5 ),
-     $                   C( NCMAX*NCMAX, NCMAX*NCMAX ), DC( NMAX, 6 ),
-     $                   TAUA( NMAX ), TAUB( NMAX ), WORK( LWORK ),
+     $                   RESULT( 500 )
+      COMPLEX*16         DC( NMAX, 6 ), TAUA( NMAX ), TAUB( NMAX ),
      $                   X( 5*NMAX )
+*     ..
+*     .. Allocatable Arrays ..
+      INTEGER AllocateStatus
+      DOUBLE PRECISION, DIMENSION(:), ALLOCATABLE :: RWORK, S
+      COMPLEX*16, DIMENSION(:), ALLOCATABLE :: WORK
+      COMPLEX*16, DIMENSION(:,:), ALLOCATABLE :: A, B, C
 *     ..
 *     .. External Functions ..
       LOGICAL            LSAMEN
@@ -1129,6 +1137,21 @@
 *     .. Data statements ..
       DATA               INTSTR / '0123456789' /
       DATA               IOLDSD / 0, 0, 0, 1 /
+*     ..
+*     .. Allocate memory dynamically ..
+*
+      ALLOCATE ( S(NMAX*NMAX), STAT = AllocateStatus )
+      IF (AllocateStatus /= 0) STOP "*** Not enough memory ***"
+      ALLOCATE ( A(NMAX*NMAX,NEED), STAT = AllocateStatus )
+      IF (AllocateStatus /= 0) STOP "*** Not enough memory ***"
+      ALLOCATE ( B(NMAX*NMAX,5), STAT = AllocateStatus )
+      IF (AllocateStatus /= 0) STOP "*** Not enough memory ***"
+      ALLOCATE ( C(NCMAX*NCMAX,NCMAX*NCMAX), STAT = AllocateStatus )
+      IF (AllocateStatus /= 0) STOP "*** Not enough memory ***"
+      ALLOCATE ( RWORK(LWORK), STAT = AllocateStatus )
+      IF (AllocateStatus /= 0) STOP "*** Not enough memory ***"
+      ALLOCATE ( WORK(LWORK), STAT = AllocateStatus )
+      IF (AllocateStatus /= 0) STOP "*** Not enough memory ***"
 *     ..
 *     .. Executable Statements ..
 *
@@ -1846,8 +1869,16 @@
          CALL ALAREQ( C3, NTYPES, DOTYPE, MAXTYP, NIN, NOUT )
          CALL XLAENV( 1, 1 )
          CALL XLAENV( 9, 25 )
-         IF( TSTERR )
-     $      CALL ZERRST( 'ZST', NOUT )
+         IF( TSTERR ) THEN
+#if defined(_OPENMP)
+            N_THREADS = OMP_GET_NUM_THREADS()
+            CALL OMP_SET_NUM_THREADS(1)
+#endif
+            CALL ZERRST( 'ZST', NOUT )
+#if defined(_OPENMP)
+            CALL OMP_SET_NUM_THREADS(N_THREADS)
+#endif
+         END IF
          DO 290 I = 1, NPARMS
             CALL XLAENV( 1, NBVAL( I ) )
             CALL XLAENV( 2, NBMIN( I ) )
@@ -2303,8 +2334,16 @@
          MAXTYP = 15
          NTYPES = MIN( MAXTYP, NTYPES )
          CALL ALAREQ( C3, NTYPES, DOTYPE, MAXTYP, NIN, NOUT )
-         IF( TSTERR )
-     $      CALL ZERRST( 'ZHB', NOUT )
+         IF( TSTERR ) THEN
+#if defined(_OPENMP)
+            N_THREADS = OMP_GET_NUM_THREADS()
+            CALL OMP_SET_NUM_THREADS(1)
+#endif
+            CALL ZERRST( 'ZHB', NOUT )
+#if defined(_OPENMP)
+            CALL OMP_SET_NUM_THREADS(N_THREADS)
+#endif
+         END IF
 *         CALL ZCHKHB( NN, NVAL, NK, KVAL, MAXTYP, DOTYPE, ISEED, THRESH,
 *     $                NOUT, A( 1, 1 ), NMAX, DR( 1, 1 ), DR( 1, 2 ),
 *     $                A( 1, 2 ), NMAX, WORK, LWORK, RWORK, RESULT,
@@ -2435,6 +2474,13 @@
       WRITE( NOUT, FMT = 9994 )
       S2 = DSECND( )
       WRITE( NOUT, FMT = 9993 )S2 - S1
+*
+      DEALLOCATE (S, STAT = AllocateStatus)
+      DEALLOCATE (A, STAT = AllocateStatus)
+      DEALLOCATE (B, STAT = AllocateStatus)
+      DEALLOCATE (C, STAT = AllocateStatus)
+      DEALLOCATE (RWORK, STAT = AllocateStatus)
+      DEALLOCATE (WORK,  STAT = AllocateStatus)
 *
  9999 FORMAT( / ' Execution not attempted due to input errors' )
  9997 FORMAT( / / 1X, A3, ':  NB =', I4, ', NBMIN =', I4, ', NX =', I4 )
