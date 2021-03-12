@@ -1,8 +1,11 @@
 /* the direct sgemm code written by Arjan van der Ven */
+
+
+#if defined(SKYLAKEX) || defined (COOPERLAKE)
+
 #include <immintrin.h>
 #include "common.h"
 
-#if defined(SKYLAKEX) || defined (COOPERLAKE)
 /*
  * "Direct sgemm" code. This code operates directly on the inputs and outputs
  * of the sgemm call, avoiding the copies, memory realignments and threading,
