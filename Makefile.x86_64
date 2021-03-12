@@ -10,26 +10,36 @@ endif
 
 ifdef HAVE_SSE3
 CCOMMON_OPT += -msse3
+ifneq ($(F_COMPILER), NAG)
 FCOMMON_OPT += -msse3
+endif
 endif
 ifdef HAVE_SSSE3
 CCOMMON_OPT += -mssse3
+ifneq ($(F_COMPILER), NAG)
 FCOMMON_OPT += -mssse3
+endif
 endif
 ifdef HAVE_SSE4_1
 CCOMMON_OPT += -msse4.1
+ifneq ($(F_COMPILER), NAG)
 FCOMMON_OPT += -msse4.1
+endif
 endif
 ifndef OLDGCC
 ifdef HAVE_AVX
 CCOMMON_OPT += -mavx
+ifneq ($(F_COMPILER), NAG)
 FCOMMON_OPT += -mavx
+endif
 endif
 endif
 ifndef NO_AVX2
 ifdef HAVE_AVX2
 CCOMMON_OPT += -mavx2
+ifneq ($(F_COMPILER), NAG)
 FCOMMON_OPT += -mavx2
+endif
 endif
 endif
 
@@ -37,7 +47,9 @@ ifeq ($(CORE), SKYLAKEX)
 ifndef DYNAMIC_ARCH
 ifndef NO_AVX512
 CCOMMON_OPT += -march=skylake-avx512
+ifneq ($(F_COMPILER), NAG)
 FCOMMON_OPT += -march=skylake-avx512
+endif
 ifeq ($(OSNAME), CYGWIN_NT)
 CCOMMON_OPT += -fno-asynchronous-unwind-tables
 FCOMMON_OPT += -fno-asynchronous-unwind-tables
@@ -59,7 +71,9 @@ ifeq ($(C_COMPILER), GCC)
 # cooperlake support was added in 10.1
 ifeq ($(GCCVERSIONGTEQ10)$(GCCMINORVERSIONGTEQ1), 11)
 CCOMMON_OPT += -march=cooperlake
+ifneq ($(F_COMPILER), NAG)
 FCOMMON_OPT += -march=cooperlake
+endif
 endif
 endif
 ifeq ($(OSNAME), CYGWIN_NT)
