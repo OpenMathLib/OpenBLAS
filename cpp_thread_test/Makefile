@@ -11,7 +11,7 @@ dgemm_tester : dgemv_tester
 	./dgemm_tester
 
 dpotrf_bug2562 : dgemv_tester
-	$(CXX) $(COMMON_OPT) -Wall -Wextra -Wshadow  -std=c++11 dpotrf_bug2562.cpp ../libopenblas.a -lpthread -o dpotrf_bug2562
+	$(CXX) $(COMMON_OPT) -Wall -Wextra -Wshadow -fopenmp -std=c++11 dpotrf_bug2562.cpp ../libopenblas.a -lpthread -o dpotrf_bug2562
 	./dpotrf_bug2562
 
 clean ::
