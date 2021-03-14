@@ -89,6 +89,7 @@ build.*
 *.swp
 benchmark/*.goto
 benchmark/smallscaling
+.vscode
 CMakeCache.txt
 CMakeFiles/*
 .vscode
