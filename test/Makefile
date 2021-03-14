@@ -270,6 +270,9 @@ ifeq ($(C_COMPILER), CLANG)
 CEXTRALIB = -lomp
 endif
 endif
+ifeq ($(F_COMPILER), NAG)
+CEXTRALIB = -lgomp
+endif
 endif
 
 ifeq ($(BUILD_SINGLE),1)
