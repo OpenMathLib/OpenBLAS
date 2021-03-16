@@ -40,7 +40,14 @@ char *gotoblas_corename(void) {
 	return corename[0];
 }
 
-#ifdef C_PGI
+#if defined(__clang__)
+static int __builtin_cpu_supports(char* arg) 
+{
+	return 0;
+}
+#endif
+
+#if defined(C_PGI) || defined(__clang__)
 /*
  * NV HPC compilers do not yet implement __builtin_cpu_is().
  * Fake a version here for use in the CPU detection code below.
