@@ -31,7 +31,6 @@ environment:
   matrix:
     - COMPILER: clang-cl
       WITH_FORTRAN: ON
-      USE_OPENMP: ON
     - COMPILER: clang-cl
       DYNAMIC_ARCH: ON
       WITH_FORTRAN: OFF

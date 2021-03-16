@@ -4,7 +4,7 @@
 #else
 #include "config_kernel.h"
 #endif
-#include "param.h"
+#include "common.h"
 
 int main(int argc, char **argv) {
 
