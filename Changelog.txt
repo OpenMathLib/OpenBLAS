@@ -1,5 +1,53 @@
 OpenBLAS ChangeLog
 ====================================================================
+Version 0.3.14
+ 17-Mar-2021
+ 
+ common:
+	* Fixed a race condition on thread shutdown in non-OpenMP builds
+	* Fixed custom BUFFERSIZE option getting ignored in gmake builds
+	* Fixed CMAKE compilation of the TRMM kernels for GENERIC platforms
+	* Added CBLAS interfaces for CROTG, ZROTG, CSROT and ZDROT
+	* Improved performance of OMATCOPY_RT across all platforms
+	* Changed perl scripts to use env instead of a hardcoded /usr/bin/perl
+	* Fixed potential misreading of the GCC compiler version in the build scripts
+	* Fixed convergence problems in LAPACK complex GGEV/GGES (Reference-LAPACK #477)
+	* Reduced the stacksize requirements for running the LAPACK testsuite (Reference-LAPACK #335)
+
+ RISCV:
+ 	* Fixed compilation on RISCV (missing entry in getarch)
+	
+ POWER:
+ 	* Fixed compilation for DYNAMIC_ARCH with clang and with old gcc versions
+	* Added support for compilation on FreeBSD/ppc64le
+ 	* Added optimized POWER10 kernels for SSCAL, DSCAL, CSCAL, ZSCAL
+	* Added optimized POWER10 kernels for SROT, DROT, CDOT, SASUM, DASUM
+	* Improved SSWAP, DSWAP, CSWAP, ZSWAP performance on POWER10
+	* Improved SCOPY and CCOPY performance on POWER10
+	* Improved SGEMM and DGEMM performance on POWER10
+	* Added support for compilation with the NVIDIA HPC compiler
+
+ x86_64:
+	* Added an optimized bfloat16 GEMM kernel for Cooperlake
+	* Added CPUID autodetection for Intel Rocket Lake and Tiger Lake cpus
+	* Improved the performance of SASUM,DASUM,SROT,DROT on AMD Ryzen cpus
+	* Added support for compilation with the NAG Fortran compiler
+	* Fixed recognition of the AMD AOCC compiler
+	* Fixed compilation for DYNAMIC_ARCH with clang on Windows
+	* Added support for running the BLAS/CBLAS tests on Windows
+	* Fixed signatures of the tls callback functions for Windows x64
+	* Fixed various issues with fma intrinsics support handling 
+
+ ARM:
+	* Added support for embedded Cortex M targets via a new option EMBEDDED
+
+ ARMV8:
+ 	* Fixed the THUNDERX2T99 and NEOVERSEN1 DNRM2/ZNRM2 kernels for inputs with Inf
+	* Added support for the DYNAMIC_LIST option
+	* Added support for compilation with the NVIDIA HPC compiler
+ 	* Added support for compiling with the NAG Fortran compiler
+
+====================================================================
 Version 0.3.13
  12-Dec-2020
  
