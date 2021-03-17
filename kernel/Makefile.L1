@@ -1,3 +1,11 @@
+FMAFLAG=
+ifndef OLDGCC
+ifdef HAVE_FMA3
+FMAFLAG = -mfma
+endif
+endif
+
+
 ### AMAX ###
 
 ifndef SAMAXKERNEL
@@ -828,10 +836,10 @@ $(KDIR)xnrm2_k$(TSUFFIX).$(SUFFIX)  $(KDIR)xnrm2_k$(TPSUFFIX).$(PSUFFIX)  : $(KE
 	$(CC) $(CFLAGS) -DCOMPLEX -c -DXDOUBLE $< -o $@
 
 $(KDIR)srot_k$(TSUFFIX).$(SUFFIX)  $(KDIR)srot_k$(TPSUFFIX).$(PSUFFIX)  : $(KERNELDIR)/$(SROTKERNEL)
-	$(CC) -c $(CFLAGS) -UCOMPLEX -UCOMPLEX -UDOUBLE  $< -o $@
+	$(CC) -c $(CFLAGS) $(FMAFLAG) -UCOMPLEX -UCOMPLEX -UDOUBLE  $< -o $@
 
 $(KDIR)drot_k$(TSUFFIX).$(SUFFIX)  $(KDIR)drot_k$(TPSUFFIX).$(PSUFFIX)  : $(KERNELDIR)/$(DROTKERNEL)
-	$(CC) -c $(CFLAGS) -UCOMPLEX -UCOMPLEX -DDOUBLE  $< -o $@
+	$(CC) -c $(CFLAGS) $(FMAFLAG) -UCOMPLEX -UCOMPLEX -DDOUBLE  $< -o $@
 
 $(KDIR)qrot_k$(TSUFFIX).$(SUFFIX)  $(KDIR)qrot_k$(TPSUFFIX).$(PSUFFIX)  : $(KERNELDIR)/$(QROTKERNEL)
 	$(CC) -c $(CFLAGS) -UCOMPLEX -UCOMPLEX -DXDOUBLE $< -o $@

@@ -6,7 +6,7 @@
 
 #if defined(SKYLAKEX)
 #include "dasum_microk_skylakex-2.c"
-#elif defined(HASWELL)
+#elif defined(HASWELL) || defined(ZEN)
 #include "dasum_microk_haswell-2.c"
 #endif
 
@@ -93,7 +93,6 @@ FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x)
 #if defined(SMP)
     int nthreads;
     FLOAT dummy_alpha;
-    FLOAT * dummy_b;
 #endif
     FLOAT sumf = 0.0;
 
@@ -115,7 +114,7 @@ FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x)
 #else
         mode = BLAS_DOUBLE | BLAS_REAL;
 #endif
-        blas_level1_thread_with_return_value(mode, n, 0, 0, &dummy_alpha, x, inc_x, dummy_b, 0, result, 0, (void *)asum_thread_function, nthreads);
+        blas_level1_thread_with_return_value(mode, n, 0, 0, &dummy_alpha, x, inc_x, NULL, 0, result, 0, (void *)asum_thread_function, nthreads);
         ptr = (FLOAT *)result;
         for (i = 0; i < nthreads; i++) {
             sumf += (*ptr);

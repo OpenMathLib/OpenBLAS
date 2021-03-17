@@ -1,11 +1,11 @@
-#!/usr/bin/perl
+#!/usr/bin/env perl
 
 #use File::Basename;
 # use File::Temp qw(tempfile);
 
 # Checking cross compile
 $hostos   = `uname -s | sed -e s/\-.*//`;    chop($hostos);
-$hostarch = `uname -m | sed -e s/i.86/x86/`;chop($hostarch);
+$hostarch = `uname -m | sed -e s/i.86/x86/`;
 $hostarch = `uname -p` if ($hostos eq "AIX" || $hostos eq "SunOS");
 chop($hostarch);
 $hostarch = "x86_64" if ($hostarch eq "amd64");

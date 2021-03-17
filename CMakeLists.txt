@@ -6,7 +6,7 @@ cmake_minimum_required(VERSION 2.8.5)
 project(OpenBLAS C ASM)
 set(OpenBLAS_MAJOR_VERSION 0)
 set(OpenBLAS_MINOR_VERSION 3)
-set(OpenBLAS_PATCH_VERSION 13)
+set(OpenBLAS_PATCH_VERSION 14)
 set(OpenBLAS_VERSION "${OpenBLAS_MAJOR_VERSION}.${OpenBLAS_MINOR_VERSION}.${OpenBLAS_PATCH_VERSION}")
 
 # Adhere to GNU filesystem layout conventions
@@ -14,6 +14,9 @@ include(GNUInstallDirs)
 
 include(CMakePackageConfigHelpers)
 
+if(MSVC AND NOT DEFINED NOFORTRAN)
+  set(NOFORTRAN ON)
+endif()
 
 #######
 if(MSVC)
@@ -229,7 +232,7 @@ if (NOT NO_CBLAS)
   add_subdirectory(utest)
 endif()
 
-if (NOT MSVC AND NOT NOFORTRAN)
+if (NOT NOFORTRAN)
   # Build test and ctest
   add_subdirectory(test)
   if(NOT NO_CBLAS)

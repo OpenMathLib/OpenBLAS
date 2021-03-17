@@ -47,8 +47,13 @@ ZCOPYKERNEL  = copy.S
 
 SDOTKERNEL   = dot_thunderx.c
 DDOTKERNEL   = ddot_thunderx.c
+ifneq ($(C_COMPILER), PGI)
 CDOTKERNEL   = zdot.S
 ZDOTKERNEL   = zdot.S
+else
+CDOTKERNEL = ../arm/zdot.c
+ZDOTKERNEL = ../arm/zdot.c
+endif
 DSDOTKERNEL  = dot.S
 
 SNRM2KERNEL  = nrm2.S

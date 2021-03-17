@@ -316,7 +316,7 @@ CCBLAS1OBJS   = \
 	cblas_cscal.$(SUFFIX) cblas_csscal.$(SUFFIX) \
 	cblas_cswap.$(SUFFIX) cblas_scnrm2.$(SUFFIX) \
 	cblas_caxpby.$(SUFFIX) \
-	cblas_icmin.$(SUFFIX) cblas_icmax.$(SUFFIX) cblas_scsum.$(SUFFIX)
+	cblas_icmin.$(SUFFIX) cblas_icmax.$(SUFFIX) cblas_scsum.$(SUFFIX) cblas_csrot.$(SUFFIX) cblas_crotg.$(SUFFIX)
 
 CCBLAS2OBJS   = \
 	cblas_cgemv.$(SUFFIX) cblas_cgerc.$(SUFFIX) cblas_cgeru.$(SUFFIX) \
@@ -346,7 +346,7 @@ CZBLAS1OBJS   = \
 	cblas_zscal.$(SUFFIX) cblas_zdscal.$(SUFFIX) \
 	cblas_zswap.$(SUFFIX) cblas_dznrm2.$(SUFFIX) \
 	cblas_zaxpby.$(SUFFIX) \
-	cblas_izmin.$(SUFFIX) cblas_izmax.$(SUFFIX) cblas_dzsum.$(SUFFIX)
+	cblas_izmin.$(SUFFIX) cblas_izmax.$(SUFFIX) cblas_dzsum.$(SUFFIX) cblas_zdrot.$(SUFFIX) cblas_zrotg.$(SUFFIX)
 
 
 CZBLAS2OBJS   = \
@@ -1634,6 +1634,12 @@ cblas_srotg.$(SUFFIX) cblas_srotg.$(PSUFFIX): rotg.c
 cblas_drotg.$(SUFFIX) cblas_drotg.$(PSUFFIX): rotg.c
 	$(CC) $(CFLAGS) -DCBLAS -c $< -o $(@F)
 
+cblas_crotg.$(SUFFIX) cblas_crotg.$(PSUFFIX): zrotg.c
+	$(CC) -c $(CFLAGS) -DCBLAS $< -o $(@F)
+
+cblas_zrotg.$(SUFFIX) cblas_zrotg.$(PSUFFIX): zrotg.c
+	$(CC) -c $(CFLAGS) -DCBLAS $< -o $(@F)
+
 cblas_srotm.$(SUFFIX) cblas_srotm.$(PSUFFIX): rotm.c
 	$(CC) $(CFLAGS) -DCBLAS -c $< -o $(@F)
 
@@ -1663,6 +1669,12 @@ cblas_csscal.$(SUFFIX) cblas_csscal.$(PSUFFIX) : zscal.c
 
 cblas_zdscal.$(SUFFIX) cblas_zdscal.$(PSUFFIX) : zscal.c
 	$(CC) $(CFLAGS) -DCBLAS -c -DSSCAL $< -o $(@F)
+
+cblas_csrot.$(SUFFIX) cblas_csrot.$(PSUFFIX) : zrot.c
+	$(CC) $(CFLAGS) -DCBLAS -c $< -o $(@F)
+
+cblas_zdrot.$(SUFFIX) cblas_zdrot.$(PSUFFIX) : zrot.c
+	$(CC) $(CFLAGS) -DCBLAS -c $< -o $(@F)
 
 ifeq ($(BUILD_BFLOAT16),1)
 cblas_sbgemv.$(SUFFIX) cblas_sbgemv.$(PSUFFIX) : sbgemv.c

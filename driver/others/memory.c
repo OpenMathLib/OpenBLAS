@@ -222,11 +222,11 @@ int get_num_procs(void);
 #else
 int get_num_procs(void) {
   static int nums = 0;
+
+#if defined(__GLIBC_PREREQ)
   cpu_set_t cpuset,*cpusetp;
   size_t size;
   int ret;
-
-#if defined(__GLIBC_PREREQ)
 #if !__GLIBC_PREREQ(2, 7)
   int i;
 #if !__GLIBC_PREREQ(2, 6)
@@ -1241,7 +1241,7 @@ UNLOCK_COMMAND(&alloc_lock);
 
       func = &memoryalloc[0];
 
-      while ((func != NULL) && (map_address == (void *) -1)) {
+      while ((*func != NULL) && (map_address == (void *) -1)) {
 
         map_address = (*func)((void *)base_address);
 
@@ -1619,10 +1619,12 @@ static int on_process_term(void)
 #else
 #pragma data_seg(".CRT$XLB")
 #endif
-static void (APIENTRY *dll_callback)(HINSTANCE h, DWORD ul_reason_for_call, PVOID pv) = DllMain;
+
 #ifdef _WIN64
+static const PIMAGE_TLS_CALLBACK dll_callback(HINSTANCE h, DWORD ul_reason_for_call, PVOID pv) = DllMain;
 #pragma const_seg()
 #else
+static void (APIENTRY *dll_callback)(HINSTANCE h, DWORD ul_reason_for_call, PVOID pv) = DllMain;
 #pragma data_seg()
 #endif
 
@@ -1631,10 +1633,12 @@ static void (APIENTRY *dll_callback)(HINSTANCE h, DWORD ul_reason_for_call, PVOI
 #else
 #pragma data_seg(".CRT$XTU")
 #endif
-static int(*p_process_term)(void) = on_process_term;
+
 #ifdef _WIN64
+static const int(*p_process_term)(void) = on_process_term;
 #pragma const_seg()
 #else
+static int(*p_process_term)(void) = on_process_term;
 #pragma data_seg()
 #endif
 #endif
@@ -1668,16 +1672,23 @@ void gotoblas_dummy_for_PGI(void) {
 #ifndef MEM_LARGE_PAGES
 #define MEM_LARGE_PAGES  0x20000000
 #endif
-#else
+#elif !defined(OS_EMBEDDED)
 #define ALLOC_MMAP
 #define ALLOC_MALLOC
+#else
+#define ALLOC_MALLOC
+
+inline int puts(const char *str) { return 0; }
+inline int printf(const char *format, ...) { return 0; }
+inline char *getenv(const char *name) { return ""; }
+inline int atoi(const char *str) { return 0; }
 #endif
 
 #include <stdlib.h>
 #include <stdio.h>
 #include <fcntl.h>
 
-#if !defined(OS_WINDOWS) || defined(OS_CYGWIN_NT)
+#if (!defined(OS_WINDOWS) || defined(OS_CYGWIN_NT)) && !defined(OS_EMBEDDED)
 #include <sys/mman.h>
 #ifndef NO_SYSV_IPC
 #include <sys/shm.h>

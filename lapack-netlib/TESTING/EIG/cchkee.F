@@ -1,4 +1,4 @@
-*> \brief \b SCHKEE
+*> \brief \b CCHKEE
 *
 *  =========== DOCUMENTATION ===========
 *
@@ -8,7 +8,7 @@
 *  Definition:
 *  ===========
 *
-*       PROGRAM SCHKEE
+*       PROGRAM CCHKEE
 *
 *
 *> \par Purpose:
@@ -16,88 +16,87 @@
 *>
 *> \verbatim
 *>
-*> SCHKEE tests the REAL LAPACK subroutines for the matrix
+*> CCHKEE tests the COMPLEX LAPACK subroutines for the matrix
 *> eigenvalue problem.  The test paths in this version are
 *>
 *> NEP (Nonsymmetric Eigenvalue Problem):
-*>     Test SGEHRD, SORGHR, SHSEQR, STREVC, SHSEIN, and SORMHR
+*>     Test CGEHRD, CUNGHR, CHSEQR, CTREVC, CHSEIN, and CUNMHR
 *>
-*> SEP (Symmetric Eigenvalue Problem):
-*>     Test SSYTRD, SORGTR, SSTEQR, SSTERF, SSTEIN, SSTEDC,
-*>     and drivers SSYEV(X), SSBEV(X), SSPEV(X), SSTEV(X),
-*>                 SSYEVD,   SSBEVD,   SSPEVD,   SSTEVD
+*> SEP (Hermitian Eigenvalue Problem):
+*>     Test CHETRD, CUNGTR, CSTEQR, CSTERF, CSTEIN, CSTEDC,
+*>     and drivers CHEEV(X), CHBEV(X), CHPEV(X),
+*>                 CHEEVD,   CHBEVD,   CHPEVD
 *>
 *> SVD (Singular Value Decomposition):
-*>     Test SGEBRD, SORGBR, SBDSQR, SBDSDC
-*>     and the drivers SGESVD, SGESDD
+*>     Test CGEBRD, CUNGBR, and CBDSQR
+*>     and the drivers CGESVD, CGESDD
 *>
-*> SEV (Nonsymmetric Eigenvalue/eigenvector Driver):
-*>     Test SGEEV
+*> CEV (Nonsymmetric Eigenvalue/eigenvector Driver):
+*>     Test CGEEV
 *>
-*> SES (Nonsymmetric Schur form Driver):
-*>     Test SGEES
+*> CES (Nonsymmetric Schur form Driver):
+*>     Test CGEES
 *>
-*> SVX (Nonsymmetric Eigenvalue/eigenvector Expert Driver):
-*>     Test SGEEVX
+*> CVX (Nonsymmetric Eigenvalue/eigenvector Expert Driver):
+*>     Test CGEEVX
 *>
-*> SSX (Nonsymmetric Schur form Expert Driver):
-*>     Test SGEESX
+*> CSX (Nonsymmetric Schur form Expert Driver):
+*>     Test CGEESX
 *>
-*> SGG (Generalized Nonsymmetric Eigenvalue Problem):
-*>     Test SGGHD3, SGGBAL, SGGBAK, SHGEQZ, and STGEVC
+*> CGG (Generalized Nonsymmetric Eigenvalue Problem):
+*>     Test CGGHD3, CGGBAL, CGGBAK, CHGEQZ, and CTGEVC
 *>
-*> SGS (Generalized Nonsymmetric Schur form Driver):
-*>     Test SGGES
+*> CGS (Generalized Nonsymmetric Schur form Driver):
+*>     Test CGGES
 *>
-*> SGV (Generalized Nonsymmetric Eigenvalue/eigenvector Driver):
-*>     Test SGGEV
+*> CGV (Generalized Nonsymmetric Eigenvalue/eigenvector Driver):
+*>     Test CGGEV
 *>
-*> SGX (Generalized Nonsymmetric Schur form Expert Driver):
-*>     Test SGGESX
+*> CGX (Generalized Nonsymmetric Schur form Expert Driver):
+*>     Test CGGESX
 *>
-*> SXV (Generalized Nonsymmetric Eigenvalue/eigenvector Expert Driver):
-*>     Test SGGEVX
+*> CXV (Generalized Nonsymmetric Eigenvalue/eigenvector Expert Driver):
+*>     Test CGGEVX
 *>
-*> SSG (Symmetric Generalized Eigenvalue Problem):
-*>     Test SSYGST, SSYGV, SSYGVD, SSYGVX, SSPGST, SSPGV, SSPGVD,
-*>     SSPGVX, SSBGST, SSBGV, SSBGVD, and SSBGVX
+*> CSG (Hermitian Generalized Eigenvalue Problem):
+*>     Test CHEGST, CHEGV, CHEGVD, CHEGVX, CHPGST, CHPGV, CHPGVD,
+*>     CHPGVX, CHBGST, CHBGV, CHBGVD, and CHBGVX
 *>
-*> SSB (Symmetric Band Eigenvalue Problem):
-*>     Test SSBTRD
+*> CHB (Hermitian Band Eigenvalue Problem):
+*>     Test CHBTRD
 *>
-*> SBB (Band Singular Value Decomposition):
-*>     Test SGBBRD
+*> CBB (Band Singular Value Decomposition):
+*>     Test CGBBRD
 *>
-*> SEC (Eigencondition estimation):
-*>     Test SLALN2, SLASY2, SLAEQU, SLAEXC, STRSYL, STREXC, STRSNA,
-*>     STRSEN, and SLAQTR
+*> CEC (Eigencondition estimation):
+*>     Test CTRSYL, CTREXC, CTRSNA, and CTRSEN
 *>
-*> SBL (Balancing a general matrix)
-*>     Test SGEBAL
+*> CBL (Balancing a general matrix)
+*>     Test CGEBAL
 *>
-*> SBK (Back transformation on a balanced matrix)
-*>     Test SGEBAK
+*> CBK (Back transformation on a balanced matrix)
+*>     Test CGEBAK
 *>
-*> SGL (Balancing a matrix pair)
-*>     Test SGGBAL
+*> CGL (Balancing a matrix pair)
+*>     Test CGGBAL
 *>
-*> SGK (Back transformation on a matrix pair)
-*>     Test SGGBAK
+*> CGK (Back transformation on a matrix pair)
+*>     Test CGGBAK
 *>
 *> GLM (Generalized Linear Regression Model):
-*>     Tests SGGGLM
+*>     Tests CGGGLM
 *>
 *> GQR (Generalized QR and RQ factorizations):
-*>     Tests SGGQRF and SGGRQF
+*>     Tests CGGQRF and CGGRQF
 *>
 *> GSV (Generalized Singular Value Decomposition):
-*>     Tests SGGSVD, SGGSVP, STGSJA, SLAGS2, SLAPLL, and SLAPMT
+*>     Tests CGGSVD, CGGSVP, CTGSJA, CLAGS2, CLAPLL, and CLAPMT
 *>
 *> CSD (CS decomposition):
-*>     Tests SORCSD
+*>     Tests CUNCSD
 *>
 *> LSE (Constrained Linear Least Squares):
-*>     Tests SGGLSE
+*>     Tests CGGLSE
 *>
 *> Each test path has a different set of inputs, but the data sets for
 *> the driver routines xEV, xES, xVX, and xSX can be concatenated in a
@@ -111,33 +110,33 @@
 *>
 *> Path name(s)  Types    Test routine
 *>
-*> SHS or NEP      21     SCHKHS
-*> SST or SEP      21     SCHKST (routines)
-*>                 18     SDRVST (drivers)
-*> SBD or SVD      16     SCHKBD (routines)
-*>                  5     SDRVBD (drivers)
-*> SEV             21     SDRVEV
-*> SES             21     SDRVES
-*> SVX             21     SDRVVX
-*> SSX             21     SDRVSX
-*> SGG             26     SCHKGG (routines)
-*> SGS             26     SDRGES
-*> SGX              5     SDRGSX
-*> SGV             26     SDRGEV
-*> SXV              2     SDRGVX
-*> SSG             21     SDRVSG
-*> SSB             15     SCHKSB
-*> SBB             15     SCHKBB
-*> SEC              -     SCHKEC
-*> SBL              -     SCHKBL
-*> SBK              -     SCHKBK
-*> SGL              -     SCHKGL
-*> SGK              -     SCHKGK
-*> GLM              8     SCKGLM
-*> GQR              8     SCKGQR
-*> GSV              8     SCKGSV
-*> CSD              3     SCKCSD
-*> LSE              8     SCKLSE
+*> CHS or NEP      21     CCHKHS
+*> CST or SEP      21     CCHKST (routines)
+*>                 18     CDRVST (drivers)
+*> CBD or SVD      16     CCHKBD (routines)
+*>                  5     CDRVBD (drivers)
+*> CEV             21     CDRVEV
+*> CES             21     CDRVES
+*> CVX             21     CDRVVX
+*> CSX             21     CDRVSX
+*> CGG             26     CCHKGG (routines)
+*> CGS             26     CDRGES
+*> CGX              5     CDRGSX
+*> CGV             26     CDRGEV
+*> CXV              2     CDRGVX
+*> CSG             21     CDRVSG
+*> CHB             15     CCHKHB
+*> CBB             15     CCHKBB
+*> CEC              -     CCHKEC
+*> CBL              -     CCHKBL
+*> CBK              -     CCHKBK
+*> CGL              -     CCHKGL
+*> CGK              -     CCHKGK
+*> GLM              8     CCKGLM
+*> GQR              8     CCKGQR
+*> GSV              8     CCKGSV
+*> CSD              3     CCKCSD
+*> LSE              8     CCKLSE
 *>
 *>-----------------------------------------------------------------------
 *>
@@ -210,12 +209,12 @@
 *> 9 10 11 12
 *>          requests only matrices of type 9, 10, 11, and 12.
 *>
-*>          The valid 3-character path names are 'NEP' or 'SHS' for the
+*>          The valid 3-character path names are 'NEP' or 'CHS' for the
 *>          nonsymmetric eigenvalue routines.
 *>
 *>-----------------------------------------------------------------------
 *>
-*> SEP or SSG input file:
+*> SEP or CSG input file:
 *>
 *> line 2:  NN, INTEGER
 *>          Number of values of N.
@@ -263,9 +262,9 @@
 *>          Four integer values for the random number seed.
 *>
 *> lines 13-EOF:  Lines specifying matrix types, as for NEP.
-*>          The 3-character path names are 'SEP' or 'SST' for the
-*>          symmetric eigenvalue routines and driver routines, and
-*>          'SSG' for the routines for the symmetric generalized
+*>          The valid 3-character path names are 'SEP' or 'CST' for the
+*>          Hermitian eigenvalue routines and driver routines, and
+*>          'CSG' for the routines for the Hermitian generalized
 *>          eigenvalue problem.
 *>
 *>-----------------------------------------------------------------------
@@ -324,14 +323,14 @@
 *>          Four integer values for the random number seed.
 *>
 *> lines 15-EOF:  Lines specifying matrix types, as for NEP.
-*>          The 3-character path names are 'SVD' or 'SBD' for both the
+*>          The 3-character path names are 'SVD' or 'CBD' for both the
 *>          SVD routines and the SVD driver routines.
 *>
 *>-----------------------------------------------------------------------
 *>
-*> SEV and SES data files:
+*> CEV and CES data files:
 *>
-*> line 1:  'SEV' or 'SES' in columns 1 to 3.
+*> line 1:  'CEV' or 'CES' in columns 1 to 3.
 *>
 *> line 2:  NSIZES, INTEGER
 *>          Number of sizes of matrices to use. Should be at least 0
@@ -355,32 +354,29 @@
 *>          compared. Should generally be in the range from 10. to 20.
 *>          If it is 0., all test case data will be printed.
 *>
-*> line 6:  TSTERR, LOGICAL
-*>          Flag indicating whether or not to test the error exits.
-*>
-*> line 7:  NEWSD, INTEGER
+*> line 6:  NEWSD, INTEGER
 *>          A code indicating how to set the random number seed.
 *>          = 0:  Set the seed to a default value before each run
 *>          = 1:  Initialize the seed to a default value only before the
 *>                first run
 *>          = 2:  Like 1, but use the seed values on the next line
 *>
-*> If line 7 was 2:
+*> If line 6 was 2:
 *>
-*> line 8:  INTEGER array, dimension (4)
+*> line 7:  INTEGER array, dimension (4)
 *>          Four integer values for the random number seed.
 *>
-*> lines 9 and following:  Lines specifying matrix types, as for NEP.
-*>          The 3-character path name is 'SEV' to test SGEEV, or
-*>          'SES' to test SGEES.
+*> lines 8 and following:  Lines specifying matrix types, as for NEP.
+*>          The 3-character path name is 'CEV' to test CGEEV, or
+*>          'CES' to test CGEES.
 *>
 *>-----------------------------------------------------------------------
 *>
-*> The SVX data has two parts. The first part is identical to SEV,
+*> The CVX data has two parts. The first part is identical to CEV,
 *> and the second part consists of test matrices with precomputed
 *> solutions.
 *>
-*> line 1:  'SVX' in columns 1-3.
+*> line 1:  'CVX' in columns 1-3.
 *>
 *> line 2:  NSIZES, INTEGER
 *>          If NSIZES = 0, no testing of randomly generated examples
@@ -392,39 +388,40 @@
 *>
 *> line 5:  THRESH, REAL
 *>
-*> line 6:  TSTERR, LOGICAL
+*> line 6:  NEWSD, INTEGER
 *>
-*> line 7:  NEWSD, INTEGER
+*> If line 6 was 2:
 *>
-*> If line 7 was 2:
+*> line 7:  INTEGER array, dimension (4)
 *>
-*> line 8:  INTEGER array, dimension (4)
-*>
-*> lines 9 and following: The first line contains 'SVX' in columns 1-3
+*> lines 8 and following: The first line contains 'CVX' in columns 1-3
 *>          followed by the number of matrix types, possibly with
 *>          a second line to specify certain matrix types.
 *>          If the number of matrix types = 0, no testing of randomly
 *>          generated examples is done, but any precomputed examples
 *>          are tested.
 *>
-*> remaining lines : Each matrix is stored on 1+2*N lines, where N is
-*>          its dimension. The first line contains the dimension (a
-*>          single integer). The next N lines contain the matrix, one
-*>          row per line. The last N lines correspond to each
-*>          eigenvalue. Each of these last N lines contains 4 real
-*>          values: the real part of the eigenvalue, the imaginary
-*>          part of the eigenvalue, the reciprocal condition number of
-*>          the eigenvalues, and the reciprocal condition number of the
-*>          eigenvector.  The end of data is indicated by dimension N=0.
-*>          Even if no data is to be tested, there must be at least one
-*>          line containing N=0.
+*> remaining lines : Each matrix is stored on 1+N+N**2 lines, where N is
+*>          its dimension. The first line contains the dimension N and
+*>          ISRT (two integers). ISRT indicates whether the last N lines
+*>          are sorted by increasing real part of the eigenvalue
+*>          (ISRT=0) or by increasing imaginary part (ISRT=1). The next
+*>          N**2 lines contain the matrix rowwise, one entry per line.
+*>          The last N lines correspond to each eigenvalue. Each of
+*>          these last N lines contains 4 real values: the real part of
+*>          the eigenvalues, the imaginary part of the eigenvalue, the
+*>          reciprocal condition number of the eigenvalues, and the
+*>          reciprocal condition number of the vector eigenvector. The
+*>          end of data is indicated by dimension N=0. Even if no data
+*>          is to be tested, there must be at least one line containing
+*>          N=0.
 *>
 *>-----------------------------------------------------------------------
 *>
-*> The SSX data is like SVX. The first part is identical to SEV, and the
+*> The CSX data is like CVX. The first part is identical to CEV, and the
 *> second part consists of test matrices with precomputed solutions.
 *>
-*> line 1:  'SSX' in columns 1-3.
+*> line 1:  'CSX' in columns 1-3.
 *>
 *> line 2:  NSIZES, INTEGER
 *>          If NSIZES = 0, no testing of randomly generated examples
@@ -436,38 +433,37 @@
 *>
 *> line 5:  THRESH, REAL
 *>
-*> line 6:  TSTERR, LOGICAL
+*> line 6:  NEWSD, INTEGER
 *>
-*> line 7:  NEWSD, INTEGER
+*> If line 6 was 2:
 *>
-*> If line 7 was 2:
+*> line 7:  INTEGER array, dimension (4)
 *>
-*> line 8:  INTEGER array, dimension (4)
-*>
-*> lines 9 and following: The first line contains 'SSX' in columns 1-3
+*> lines 8 and following: The first line contains 'CSX' in columns 1-3
 *>          followed by the number of matrix types, possibly with
 *>          a second line to specify certain matrix types.
 *>          If the number of matrix types = 0, no testing of randomly
 *>          generated examples is done, but any precomputed examples
 *>          are tested.
 *>
-*> remaining lines : Each matrix is stored on 3+N lines, where N is its
-*>          dimension. The first line contains the dimension N and the
-*>          dimension M of an invariant subspace. The second line
-*>          contains M integers, identifying the eigenvalues in the
+*> remaining lines : Each matrix is stored on 3+N**2 lines, where N is
+*>          its dimension. The first line contains the dimension N, the
+*>          dimension M of an invariant subspace, and ISRT. The second
+*>          line contains M integers, identifying the eigenvalues in the
 *>          invariant subspace (by their position in a list of
-*>          eigenvalues ordered by increasing real part). The next N
-*>          lines contain the matrix. The last line contains the
+*>          eigenvalues ordered by increasing real part (if ISRT=0) or
+*>          by increasing imaginary part (if ISRT=1)). The next N**2
+*>          lines contain the matrix rowwise. The last line contains the
 *>          reciprocal condition number for the average of the selected
 *>          eigenvalues, and the reciprocal condition number for the
-*>          corresponding right invariant subspace. The end of data is
-*>          indicated by a line containing N=0 and M=0. Even if no data
-*>          is to be tested, there must be at least one line containing
-*>          N=0 and M=0.
+*>          corresponding right invariant subspace. The end of data in
+*>          indicated by a line containing N=0, M=0, and ISRT = 0.  Even
+*>          if no data is to be tested, there must be at least one line
+*>          containing N=0, M=0 and ISRT=0.
 *>
 *>-----------------------------------------------------------------------
 *>
-*> SGG input file:
+*> CGG input file:
 *>
 *> line 2:  NN, INTEGER
 *>          Number of values of N.
@@ -476,8 +472,8 @@
 *>          The values for the matrix dimension N.
 *>
 *> line 4:  NPARMS, INTEGER
-*>          Number of values of the parameters NB, NBMIN, NS, MAXB, and
-*>          NBCOL.
+*>          Number of values of the parameters NB, NBMIN, NBCOL, NS, and
+*>          MAXB.
 *>
 *> line 5:  NBVAL, INTEGER array, dimension (NPARMS)
 *>          The values for the blocksize NB.
@@ -526,14 +522,14 @@
 *>          Four integer values for the random number seed.
 *>
 *> lines 17-EOF:  Lines specifying matrix types, as for NEP.
-*>          The 3-character path name is 'SGG' for the generalized
+*>          The 3-character path name is 'CGG' for the generalized
 *>          eigenvalue problem routines and driver routines.
 *>
 *>-----------------------------------------------------------------------
 *>
-*> SGS and SGV input files:
+*> CGS and CGV input files:
 *>
-*> line 1:  'SGS' or 'SGV' in columns 1 to 3.
+*> line 1:  'CGS' or 'CGV' in columns 1 to 3.
 *>
 *> line 2:  NN, INTEGER
 *>          Number of values of N.
@@ -571,68 +567,13 @@
 *>          Four integer values for the random number seed.
 *>
 *> lines 7-EOF:  Lines specifying matrix types, as for NEP.
-*>          The 3-character path name is 'SGS' for the generalized
+*>          The 3-character path name is 'CGS' for the generalized
 *>          eigenvalue problem routines and driver routines.
 *>
 *>-----------------------------------------------------------------------
 *>
-*> SXV input files:
-*>
-*> line 1:  'SXV' in columns 1 to 3.
-*>
-*> line 2:  N, INTEGER
-*>          Value of N.
-*>
-*> line 3:  NB, NBMIN, NX, NS, NBCOL, INTEGERs
-*>          These integer parameters determine how blocking is done
-*>          (see ILAENV for details)
-*>          NB     : block size
-*>          NBMIN  : minimum block size
-*>          NX     : minimum dimension for blocking
-*>          NS     : number of shifts in xHGEQR
-*>          NBCOL  : minimum column dimension for blocking
-*>
-*> line 4:  THRESH, REAL
-*>          The test threshold against which computed residuals are
-*>          compared. Should generally be in the range from 10. to 20.
-*>          Information will be printed about each test for which the
-*>          test ratio is greater than or equal to the threshold.
-*>
-*> line 5:  TSTERR, LOGICAL
-*>          Flag indicating whether or not to test the error exits for
-*>          the LAPACK routines and driver routines.
-*>
-*> line 6:  NEWSD, INTEGER
-*>          A code indicating how to set the random number seed.
-*>          = 0:  Set the seed to a default value before each run
-*>          = 1:  Initialize the seed to a default value only before the
-*>                first run
-*>          = 2:  Like 1, but use the seed values on the next line
-*>
-*> If line 6 was 2:
-*>
-*> line 7: INTEGER array, dimension (4)
-*>          Four integer values for the random number seed.
-*>
-*> If line 2 was 0:
-*>
-*> line 7-EOF: Precomputed examples are tested.
-*>
-*> remaining lines : Each example is stored on 3+2*N lines, where N is
-*>          its dimension. The first line contains the dimension (a
-*>          single integer). The next N lines contain the matrix A, one
-*>          row per line. The next N lines contain the matrix B.  The
-*>          next line contains the reciprocals of the eigenvalue
-*>          condition numbers.  The last line contains the reciprocals of
-*>          the eigenvector condition numbers.  The end of data is
-*>          indicated by dimension N=0.  Even if no data is to be tested,
-*>          there must be at least one line containing N=0.
-*>
-*>-----------------------------------------------------------------------
-*>
-*> SGX input files:
-*>
-*> line 1:  'SGX' in columns 1 to 3.
+*> CGX input file:
+*> line 1:  'CGX' in columns 1 to 3.
 *>
 *> line 2:  N, INTEGER
 *>          Value of N.
@@ -672,13 +613,13 @@
 *>
 *> line 7-EOF: Precomputed examples are tested.
 *>
-*> remaining lines : Each example is stored on 3+2*N lines, where N is
+*> remaining lines : Each example is stored on 3+2*N*N lines, where N is
 *>          its dimension. The first line contains the dimension (a
 *>          single integer).  The next line contains an integer k such
 *>          that only the last k eigenvalues will be selected and appear
-*>          in the leading diagonal blocks of $A$ and $B$. The next N
-*>          lines contain the matrix A, one row per line.  The next N
-*>          lines contain the matrix B.  The last line contains the
+*>          in the leading diagonal blocks of $A$ and $B$. The next N*N
+*>          lines contain the matrix A, one element per line. The next N*N
+*>          lines contain the matrix B. The last line contains the
 *>          reciprocal of the eigenvalue cluster condition number and the
 *>          reciprocal of the deflating subspace (associated with the
 *>          selected eigencluster) condition number.  The end of data is
@@ -687,7 +628,60 @@
 *>
 *>-----------------------------------------------------------------------
 *>
-*> SSB input file:
+*> CXV input files:
+*> line 1:  'CXV' in columns 1 to 3.
+*>
+*> line 2:  N, INTEGER
+*>          Value of N.
+*>
+*> line 3:  NB, NBMIN, NX, NS, NBCOL, INTEGERs
+*>          These integer parameters determine how blocking is done
+*>          (see ILAENV for details)
+*>          NB     : block size
+*>          NBMIN  : minimum block size
+*>          NX     : minimum dimension for blocking
+*>          NS     : number of shifts in xHGEQR
+*>          NBCOL  : minimum column dimension for blocking
+*>
+*> line 4:  THRESH, REAL
+*>          The test threshold against which computed residuals are
+*>          compared. Should generally be in the range from 10. to 20.
+*>          Information will be printed about each test for which the
+*>          test ratio is greater than or equal to the threshold.
+*>
+*> line 5:  TSTERR, LOGICAL
+*>          Flag indicating whether or not to test the error exits for
+*>          the LAPACK routines and driver routines.
+*>
+*> line 6:  NEWSD, INTEGER
+*>          A code indicating how to set the random number seed.
+*>          = 0:  Set the seed to a default value before each run
+*>          = 1:  Initialize the seed to a default value only before the
+*>                first run
+*>          = 2:  Like 1, but use the seed values on the next line
+*>
+*> If line 6 was 2:
+*>
+*> line 7: INTEGER array, dimension (4)
+*>          Four integer values for the random number seed.
+*>
+*> If line 2 was 0:
+*>
+*> line 7-EOF: Precomputed examples are tested.
+*>
+*> remaining lines : Each example is stored on 3+2*N*N lines, where N is
+*>          its dimension. The first line contains the dimension (a
+*>          single integer). The next N*N lines contain the matrix A, one
+*>          element per line. The next N*N lines contain the matrix B.
+*>          The next line contains the reciprocals of the eigenvalue
+*>          condition numbers.  The last line contains the reciprocals of
+*>          the eigenvector condition numbers.  The end of data is
+*>          indicated by dimension N=0.  Even if no data is to be tested,
+*>          there must be at least one line containing N=0.
+*>
+*>-----------------------------------------------------------------------
+*>
+*> CHB input file:
 *>
 *> line 2:  NN, INTEGER
 *>          Number of values of N.
@@ -719,11 +713,11 @@
 *>          Four integer values for the random number seed.
 *>
 *> lines 8-EOF:  Lines specifying matrix types, as for NEP.
-*>          The 3-character path name is 'SSB'.
+*>          The 3-character path name is 'CHB'.
 *>
 *>-----------------------------------------------------------------------
 *>
-*> SBB input file:
+*> CBB input file:
 *>
 *> line 2:  NN, INTEGER
 *>          Number of values of M and N.
@@ -764,11 +758,11 @@
 *>          Four integer values for the random number seed.
 *>
 *> lines 10-EOF:  Lines specifying matrix types, as for SVD.
-*>          The 3-character path name is 'SBB'.
+*>          The 3-character path name is 'CBB'.
 *>
 *>-----------------------------------------------------------------------
 *>
-*> SEC input file:
+*> CEC input file:
 *>
 *> line  2: THRESH, REAL
 *>          Threshold value for the test ratios.  Information will be
@@ -783,19 +777,19 @@
 *>
 *>-----------------------------------------------------------------------
 *>
-*> SBL and SBK input files:
+*> CBL and CBK input files:
 *>
-*> line 1:  'SBL' in columns 1-3 to test SGEBAL, or 'SBK' in
-*>          columns 1-3 to test SGEBAK.
+*> line 1:  'CBL' in columns 1-3 to test CGEBAL, or 'CBK' in
+*>          columns 1-3 to test CGEBAK.
 *>
 *> The remaining lines consist of specially constructed test cases.
 *>
 *>-----------------------------------------------------------------------
 *>
-*> SGL and SGK input files:
+*> CGL and CGK input files:
 *>
-*> line 1:  'SGL' in columns 1-3 to test SGGBAL, or 'SGK' in
-*>          columns 1-3 to test SGGBAK.
+*> line 1:  'CGL' in columns 1-3 to test CGGBAL, or 'CGK' in
+*>          columns 1-3 to test CGGBAK.
 *>
 *> The remaining lines consist of specially constructed test cases.
 *>
@@ -1016,9 +1010,9 @@
 *>-----------------------------------------------------------------------
 *>
 *> NMAX is currently set to 132 and must be at least 12 for some of the
-*> precomputed examples, and LWORK = NMAX*(5*NMAX+5)+1 in the parameter
+*> precomputed examples, and LWORK = NMAX*(5*NMAX+20) in the parameter
 *> statements below.  For SVD, we assume NRHS may be as big as N.  The
-*> parameter NEED is set to 14 to allow for 14 N-by-N matrices for SGG.
+*> parameter NEED is set to 14 to allow for 14 N-by-N matrices for CGG.
 *> \endverbatim
 *
 *  Arguments:
@@ -1035,10 +1029,14 @@
 *
 *> \date June 2016
 *
-*> \ingroup single_eig
+*> \ingroup complex_eig
 *
 *  =====================================================================
-      PROGRAM SCHKEE
+      PROGRAM CCHKEE
+*
+#if defined(_OPENMP)
+      use omp_lib
+#endif
 *
 *  -- LAPACK test routine (version 3.7.0) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
@@ -1055,9 +1053,9 @@
       INTEGER            NEED
       PARAMETER          ( NEED = 14 )
       INTEGER            LWORK
-      PARAMETER          ( LWORK = NMAX*( 5*NMAX+5 )+1 )
+      PARAMETER          ( LWORK = NMAX*( 5*NMAX+20 ) )
       INTEGER            LIWORK
-      PARAMETER          ( LIWORK = NMAX*( 5*NMAX+20 ) )
+      PARAMETER          ( LIWORK = NMAX*( NMAX+20 ) )
       INTEGER            MAXIN
       PARAMETER          ( MAXIN = 20 )
       INTEGER            MAXT
@@ -1066,9 +1064,9 @@
       PARAMETER          ( NIN = 5, NOUT = 6 )
 *     ..
 *     .. Local Scalars ..
-      LOGICAL            CSD, FATAL, GLM, GQR, GSV, LSE, NEP, SBB, SBK,
-     $                   SBL, SEP, SES, SEV, SGG, SGK, SGL, SGS, SGV,
-     $                   SGX, SSB, SSX, SVD, SVX, SXV, TSTCHK, TSTDIF,
+      LOGICAL            CBB, CBK, CBL, CES, CEV, CGG, CGK, CGL, CGS,
+     $                   CGV, CGX, CHB, CSD, CSX, CVX, CXV, FATAL, GLM,
+     $                   GQR, GSV, LSE, NEP, SEP, SVD, TSTCHK, TSTDIF,
      $                   TSTDRV, TSTERR
       CHARACTER          C1
       CHARACTER*3        C3, PATH
@@ -1077,7 +1075,7 @@
       CHARACTER*80       LINE
       INTEGER            I, I1, IC, INFO, ITMP, K, LENP, MAXTYP, NEWSD,
      $                   NK, NN, NPARMS, NRHS, NTYPES,
-     $                   VERS_MAJOR, VERS_MINOR, VERS_PATCH
+     $                   VERS_MAJOR, VERS_MINOR, VERS_PATCH, N_THREADS
       REAL               EPS, S1, S2, THRESH, THRSHN
 *     ..
 *     .. Local Arrays ..
@@ -1089,10 +1087,16 @@
      $                   PVAL( MAXIN )
       INTEGER            INMIN( MAXIN ), INWIN( MAXIN ), INIBL( MAXIN ),
      $                   ISHFTS( MAXIN ), IACC22( MAXIN )
-      REAL               A( NMAX*NMAX, NEED ), B( NMAX*NMAX, 5 ),
-     $                   C( NCMAX*NCMAX, NCMAX*NCMAX ), D( NMAX, 12 ),
-     $                   RESULT( 500 ), TAUA( NMAX ), TAUB( NMAX ),
-     $                   WORK( LWORK ), X( 5*NMAX )
+      REAL               ALPHA( NMAX ), BETA( NMAX ), DR( NMAX, 12 ),
+     $                   RESULT( 500 )
+      COMPLEX            DC( NMAX, 6 ), TAUA( NMAX ), TAUB( NMAX ),
+     $                   X( 5*NMAX )
+*     ..
+*     .. Allocatable Arrays ..
+      INTEGER AllocateStatus
+      REAL, DIMENSION(:), ALLOCATABLE :: RWORK, S
+      COMPLEX, DIMENSION(:), ALLOCATABLE :: WORK
+      COMPLEX, DIMENSION(:,:), ALLOCATABLE :: A, B, C
 *     ..
 *     .. External Functions ..
       LOGICAL            LSAMEN
@@ -1100,14 +1104,14 @@
       EXTERNAL           LSAMEN, SECOND, SLAMCH
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           ALAREQ, SCHKBB, SCHKBD, SCHKBK, SCHKBL, SCHKEC,
-     $                   SCHKGG, SCHKGK, SCHKGL, SCHKHS, SCHKSB, SCHKST,
-     $                   SCKCSD, SCKGLM, SCKGQR, SCKGSV, SCKLSE, SDRGES,
-     $                   SDRGEV, SDRGSX, SDRGVX, SDRVBD, SDRVES, SDRVEV,
-     $                   SDRVSG, SDRVST, SDRVSX, SDRVVX, SERRBD,
-     $                   SERRED, SERRGG, SERRHS, SERRST, ILAVER, XLAENV,
-     $                   SDRGES3, SDRGEV3, 
-     $                   SCHKST2STG, SDRVST2STG, SCHKSB2STG, SDRVSG2STG
+      EXTERNAL           ALAREQ, CCHKBB, CCHKBD, CCHKBK, CCHKBL, CCHKEC,
+     $                   CCHKGG, CCHKGK, CCHKGL, CCHKHB, CCHKHS, CCHKST,
+     $                   CCKCSD, CCKGLM, CCKGQR, CCKGSV, CCKLSE, CDRGES,
+     $                   CDRGEV, CDRGSX, CDRGVX, CDRVBD, CDRVES, CDRVEV,
+     $                   CDRVSG, CDRVST, CDRVSX, CDRVVX, CERRBD,
+     $                   CERRED, CERRGG, CERRHS, CERRST, ILAVER, XLAENV,
+     $                   CDRGES3, CDRGEV3, 
+     $                   CCHKST2STG, CDRVST2STG, CCHKHB2STG
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          LEN, MIN
@@ -1134,12 +1138,27 @@
       DATA               INTSTR / '0123456789' /
       DATA               IOLDSD / 0, 0, 0, 1 /
 *     ..
+*     .. Allocate memory dynamically ..
+*
+      ALLOCATE ( S(NMAX*NMAX), STAT = AllocateStatus )
+      IF (AllocateStatus /= 0) STOP "*** Not enough memory ***"
+      ALLOCATE ( A(NMAX*NMAX,NEED), STAT = AllocateStatus )
+      IF (AllocateStatus /= 0) STOP "*** Not enough memory ***"
+      ALLOCATE ( B(NMAX*NMAX,5), STAT = AllocateStatus )
+      IF (AllocateStatus /= 0) STOP "*** Not enough memory ***"
+      ALLOCATE ( C(NCMAX*NCMAX,NCMAX*NCMAX), STAT = AllocateStatus )
+      IF (AllocateStatus /= 0) STOP "*** Not enough memory ***"
+      ALLOCATE ( RWORK(LWORK), STAT = AllocateStatus )
+      IF (AllocateStatus /= 0) STOP "*** Not enough memory ***"
+      ALLOCATE ( WORK(LWORK), STAT = AllocateStatus )
+      IF (AllocateStatus /= 0) STOP "*** Not enough memory ***"
+*     ..
 *     .. Executable Statements ..
 *
       A = 0.0
       B = 0.0
       C = 0.0
-      D = 0.0
+      DC = 0.0
       S1 = SECOND( )
       FATAL = .FALSE.
       NUNIT = NOUT
@@ -1152,31 +1171,30 @@
 *
       READ( NIN, FMT = '(A80)', END = 380 )LINE
       PATH = LINE( 1: 3 )
-      NEP = LSAMEN( 3, PATH, 'NEP' ) .OR. LSAMEN( 3, PATH, 'SHS' )
-      SEP = LSAMEN( 3, PATH, 'SEP' ) .OR. LSAMEN( 3, PATH, 'SST' ) .OR.
-     $      LSAMEN( 3, PATH, 'SSG' ) .OR. LSAMEN( 3, PATH, 'SE2' )
-      SVD = LSAMEN( 3, PATH, 'SVD' ) .OR. LSAMEN( 3, PATH, 'DBD' )
-      SVD = LSAMEN( 3, PATH, 'SVD' ) .OR. LSAMEN( 3, PATH, 'SBD' )
-      SEV = LSAMEN( 3, PATH, 'SEV' )
-      SES = LSAMEN( 3, PATH, 'SES' )
-      SVX = LSAMEN( 3, PATH, 'SVX' )
-      SSX = LSAMEN( 3, PATH, 'SSX' )
-      SGG = LSAMEN( 3, PATH, 'SGG' )
-      SGS = LSAMEN( 3, PATH, 'SGS' )
-      SGX = LSAMEN( 3, PATH, 'SGX' )
-      SGV = LSAMEN( 3, PATH, 'SGV' )
-      SXV = LSAMEN( 3, PATH, 'SXV' )
-      SSB = LSAMEN( 3, PATH, 'SSB' )
-      SBB = LSAMEN( 3, PATH, 'SBB' )
+      NEP = LSAMEN( 3, PATH, 'NEP' ) .OR. LSAMEN( 3, PATH, 'CHS' )
+      SEP = LSAMEN( 3, PATH, 'SEP' ) .OR. LSAMEN( 3, PATH, 'CST' ) .OR.
+     $      LSAMEN( 3, PATH, 'CSG' ) .OR. LSAMEN( 3, PATH, 'SE2' )
+      SVD = LSAMEN( 3, PATH, 'SVD' ) .OR. LSAMEN( 3, PATH, 'CBD' )
+      CEV = LSAMEN( 3, PATH, 'CEV' )
+      CES = LSAMEN( 3, PATH, 'CES' )
+      CVX = LSAMEN( 3, PATH, 'CVX' )
+      CSX = LSAMEN( 3, PATH, 'CSX' )
+      CGG = LSAMEN( 3, PATH, 'CGG' )
+      CGS = LSAMEN( 3, PATH, 'CGS' )
+      CGX = LSAMEN( 3, PATH, 'CGX' )
+      CGV = LSAMEN( 3, PATH, 'CGV' )
+      CXV = LSAMEN( 3, PATH, 'CXV' )
+      CHB = LSAMEN( 3, PATH, 'CHB' )
+      CBB = LSAMEN( 3, PATH, 'CBB' )
       GLM = LSAMEN( 3, PATH, 'GLM' )
       GQR = LSAMEN( 3, PATH, 'GQR' ) .OR. LSAMEN( 3, PATH, 'GRQ' )
       GSV = LSAMEN( 3, PATH, 'GSV' )
       CSD = LSAMEN( 3, PATH, 'CSD' )
       LSE = LSAMEN( 3, PATH, 'LSE' )
-      SBL = LSAMEN( 3, PATH, 'SBL' )
-      SBK = LSAMEN( 3, PATH, 'SBK' )
-      SGL = LSAMEN( 3, PATH, 'SGL' )
-      SGK = LSAMEN( 3, PATH, 'SGK' )
+      CBL = LSAMEN( 3, PATH, 'CBL' )
+      CBK = LSAMEN( 3, PATH, 'CBK' )
+      CGL = LSAMEN( 3, PATH, 'CGL' )
+      CGK = LSAMEN( 3, PATH, 'CGK' )
 *
 *     Report values of parameters.
 *
@@ -1188,27 +1206,27 @@
          WRITE( NOUT, FMT = 9986 )
       ELSE IF( SVD ) THEN
          WRITE( NOUT, FMT = 9985 )
-      ELSE IF( SEV ) THEN
+      ELSE IF( CEV ) THEN
          WRITE( NOUT, FMT = 9979 )
-      ELSE IF( SES ) THEN
+      ELSE IF( CES ) THEN
          WRITE( NOUT, FMT = 9978 )
-      ELSE IF( SVX ) THEN
+      ELSE IF( CVX ) THEN
          WRITE( NOUT, FMT = 9977 )
-      ELSE IF( SSX ) THEN
+      ELSE IF( CSX ) THEN
          WRITE( NOUT, FMT = 9976 )
-      ELSE IF( SGG ) THEN
+      ELSE IF( CGG ) THEN
          WRITE( NOUT, FMT = 9975 )
-      ELSE IF( SGS ) THEN
+      ELSE IF( CGS ) THEN
          WRITE( NOUT, FMT = 9964 )
-      ELSE IF( SGX ) THEN
+      ELSE IF( CGX ) THEN
          WRITE( NOUT, FMT = 9965 )
-      ELSE IF( SGV ) THEN
+      ELSE IF( CGV ) THEN
          WRITE( NOUT, FMT = 9963 )
-      ELSE IF( SXV ) THEN
+      ELSE IF( CXV ) THEN
          WRITE( NOUT, FMT = 9962 )
-      ELSE IF( SSB ) THEN
+      ELSE IF( CHB ) THEN
          WRITE( NOUT, FMT = 9974 )
-      ELSE IF( SBB ) THEN
+      ELSE IF( CBB ) THEN
          WRITE( NOUT, FMT = 9967 )
       ELSE IF( GLM ) THEN
          WRITE( NOUT, FMT = 9971 )
@@ -1220,47 +1238,43 @@
          WRITE( NOUT, FMT = 9960 )
       ELSE IF( LSE ) THEN
          WRITE( NOUT, FMT = 9968 )
-      ELSE IF( SBL ) THEN
+      ELSE IF( CBL ) THEN
 *
-*        SGEBAL:  Balancing
+*        CGEBAL:  Balancing
 *
-         CALL SCHKBL( NIN, NOUT )
-         GO TO 10
-      ELSE IF( SBK ) THEN
+         CALL CCHKBL( NIN, NOUT )
+         GO TO 380
+      ELSE IF( CBK ) THEN
 *
-*        SGEBAK:  Back transformation
+*        CGEBAK:  Back transformation
 *
-         CALL SCHKBK( NIN, NOUT )
-         GO TO 10
-      ELSE IF( SGL ) THEN
+         CALL CCHKBK( NIN, NOUT )
+         GO TO 380
+      ELSE IF( CGL ) THEN
 *
-*        SGGBAL:  Balancing
+*        CGGBAL:  Balancing
 *
-         CALL SCHKGL( NIN, NOUT )
-         GO TO 10
-      ELSE IF( SGK ) THEN
+         CALL CCHKGL( NIN, NOUT )
+         GO TO 380
+      ELSE IF( CGK ) THEN
 *
-*        SGGBAK:  Back transformation
+*        CGGBAK:  Back transformation
 *
-         CALL SCHKGK( NIN, NOUT )
-         GO TO 10
-      ELSE IF( LSAMEN( 3, PATH, 'SEC' ) ) THEN
+         CALL CCHKGK( NIN, NOUT )
+         GO TO 380
+      ELSE IF( LSAMEN( 3, PATH, 'CEC' ) ) THEN
 *
-*        SEC:  Eigencondition estimation
+*        CEC:  Eigencondition estimation
 *
          READ( NIN, FMT = * )THRESH
          CALL XLAENV( 1, 1 )
-         CALL XLAENV( 12, 11 )
-         CALL XLAENV( 13, 2 )
-         CALL XLAENV( 14, 0 )
-         CALL XLAENV( 15, 2 )
-         CALL XLAENV( 16, 2 )
+         CALL XLAENV( 12, 1 )
          TSTERR = .TRUE.
-         CALL SCHKEC( THRESH, TSTERR, NIN, NOUT )
-         GO TO 10
+         CALL CCHKEC( THRESH, TSTERR, NIN, NOUT )
+         GO TO 380
       ELSE
          WRITE( NOUT, FMT = 9992 )PATH
-         GO TO 10
+         GO TO 380
       END IF
       CALL ILAVER( VERS_MAJOR, VERS_MINOR, VERS_PATCH )
       WRITE( NOUT, FMT = 9972 ) VERS_MAJOR, VERS_MINOR, VERS_PATCH
@@ -1281,7 +1295,7 @@
 *
 *     Read the values of M
 *
-      IF( .NOT.( SGX .OR. SXV ) ) THEN
+      IF( .NOT.( CGX .OR. CXV ) ) THEN
          READ( NIN, FMT = * )( MVAL( I ), I = 1, NN )
          IF( SVD ) THEN
             VNAME = '    M '
@@ -1318,7 +1332,7 @@
 *
 *     Read the values of N
 *
-      IF( SVD .OR. SBB .OR. GLM .OR. GQR .OR. GSV .OR. CSD .OR.
+      IF( SVD .OR. CBB .OR. GLM .OR. GQR .OR. GSV .OR. CSD .OR.
      $    LSE ) THEN
          READ( NIN, FMT = * )( NVAL( I ), I = 1, NN )
          DO 40 I = 1, NN
@@ -1335,7 +1349,7 @@
             NVAL( I ) = MVAL( I )
    50    CONTINUE
       END IF
-      IF( .NOT.( SGX .OR. SXV ) ) THEN
+      IF( .NOT.( CGX .OR. CXV ) ) THEN
          WRITE( NOUT, FMT = 9983 )'N:    ', ( NVAL( I ), I = 1, NN )
       ELSE
          WRITE( NOUT, FMT = 9983 )'N:    ', NN
@@ -1343,7 +1357,7 @@
 *
 *     Read the number of values of K, followed by the values of K
 *
-      IF( SSB .OR. SBB ) THEN
+      IF( CHB .OR. CBB ) THEN
          READ( NIN, FMT = * )NK
          READ( NIN, FMT = * )( KVAL( I ), I = 1, NK )
          DO 60 I = 1, NK
@@ -1358,7 +1372,7 @@
          WRITE( NOUT, FMT = 9983 )'K:    ', ( KVAL( I ), I = 1, NK )
       END IF
 *
-      IF( SEV .OR. SES .OR. SVX .OR. SSX ) THEN
+      IF( CEV .OR. CES .OR. CVX .OR. CSX ) THEN
 *
 *        For the nonsymmetric QR driver routines, only one set of
 *        parameters is allowed.
@@ -1407,10 +1421,10 @@
          WRITE( NOUT, FMT = 9983 )'ISHFTS: ', ISHFTS( 1 )
          WRITE( NOUT, FMT = 9983 )'IACC22: ', IACC22( 1 )
 *
-      ELSE IF( SGS .OR. SGX .OR. SGV .OR. SXV ) THEN
+      ELSE IF( CGS .OR. CGX .OR. CGV .OR. CXV ) THEN
 *
-*        For the nonsymmetric generalized driver routines, only one set
-*        of parameters is allowed.
+*        For the nonsymmetric generalized driver routines, only one set of
+*        parameters is allowed.
 *
          READ( NIN, FMT = * )NBVAL( 1 ), NBMIN( 1 ), NXVAL( 1 ),
      $      NSVAL( 1 ), MXBVAL( 1 )
@@ -1440,8 +1454,7 @@
          WRITE( NOUT, FMT = 9983 )'NX:   ', NXVAL( 1 )
          WRITE( NOUT, FMT = 9983 )'NS:   ', NSVAL( 1 )
          WRITE( NOUT, FMT = 9983 )'MAXB: ', MXBVAL( 1 )
-*
-      ELSE IF( .NOT.SSB .AND. .NOT.GLM .AND. .NOT.GQR .AND. .NOT.
+      ELSE IF( .NOT.CHB .AND. .NOT.GLM .AND. .NOT.GQR .AND. .NOT.
      $         GSV .AND. .NOT.CSD .AND. .NOT.LSE ) THEN
 *
 *        For the other paths, the number of parameters can be varied
@@ -1460,7 +1473,7 @@
 *
 *        Read the values of NB
 *
-         IF( .NOT.SBB ) THEN
+         IF( .NOT.CBB ) THEN
             READ( NIN, FMT = * )( NBVAL( I ), I = 1, NPARMS )
             DO 70 I = 1, NPARMS
                IF( NBVAL( I ).LT.0 ) THEN
@@ -1477,7 +1490,7 @@
 *
 *        Read the values of NBMIN
 *
-         IF( NEP .OR. SEP .OR. SVD .OR. SGG ) THEN
+         IF( NEP .OR. SEP .OR. SVD .OR. CGG ) THEN
             READ( NIN, FMT = * )( NBMIN( I ), I = 1, NPARMS )
             DO 80 I = 1, NPARMS
                IF( NBMIN( I ).LT.0 ) THEN
@@ -1517,10 +1530,10 @@
   110       CONTINUE
          END IF
 *
-*        Read the values of NSHIFT (if SGG) or NRHS (if SVD
-*        or SBB).
+*        Read the values of NSHIFT (if CGG) or NRHS (if SVD
+*        or CBB).
 *
-         IF( SVD .OR. SBB .OR. SGG ) THEN
+         IF( SVD .OR. CBB .OR. CGG ) THEN
             READ( NIN, FMT = * )( NSVAL( I ), I = 1, NPARMS )
             DO 120 I = 1, NPARMS
                IF( NSVAL( I ).LT.0 ) THEN
@@ -1541,7 +1554,7 @@
 *
 *        Read the values for MAXB.
 *
-         IF( SGG ) THEN
+         IF( CGG ) THEN
             READ( NIN, FMT = * )( MXBVAL( I ), I = 1, NPARMS )
             DO 140 I = 1, NPARMS
                IF( MXBVAL( I ).LT.0 ) THEN
@@ -1634,7 +1647,7 @@
 *
 *        Read the values for IACC22.
 *
-         IF( NEP .OR. SGG ) THEN
+         IF( NEP .OR. CGG ) THEN
             READ( NIN, FMT = * )( IACC22( I ), I = 1, NPARMS )
             DO 620 I = 1, NPARMS
                IF( IACC22( I ).LT.0 ) THEN
@@ -1652,7 +1665,7 @@
 *
 *        Read the values for NBCOL.
 *
-         IF( SGG ) THEN
+         IF( CGG ) THEN
             READ( NIN, FMT = * )( NBCOL( I ), I = 1, NPARMS )
             DO 160 I = 1, NPARMS
                IF( NBCOL( I ).LT.0 ) THEN
@@ -1686,7 +1699,7 @@
 *
       READ( NIN, FMT = * )THRESH
       WRITE( NOUT, FMT = 9982 )THRESH
-      IF( SEP .OR. SVD .OR. SGG ) THEN
+      IF( SEP .OR. SVD .OR. CGG ) THEN
 *
 *        Read the flag that indicates whether to test LAPACK routines.
 *
@@ -1726,7 +1739,7 @@
 *
   190 CONTINUE
 *
-      IF( .NOT.( SGX .OR. SXV ) ) THEN
+      IF( .NOT.( CGX .OR. CXV ) ) THEN
 *
   200    CONTINUE
          READ( NIN, FMT = '(A80)', END = 380 )LINE
@@ -1772,17 +1785,17 @@
 *
 *     Skip the tests if NTYPES is <= 0.
 *
-         IF( .NOT.( SEV .OR. SES .OR. SVX .OR. SSX .OR. SGV .OR.
-     $       SGS ) .AND. NTYPES.LE.0 ) THEN
+         IF( .NOT.( CEV .OR. CES .OR. CVX .OR. CSX .OR. CGV .OR.
+     $       CGS ) .AND. NTYPES.LE.0 ) THEN
             WRITE( NOUT, FMT = 9990 )C3
             GO TO 200
          END IF
 *
       ELSE
-         IF( SXV )
-     $      C3 = 'SXV'
-         IF( SGX )
-     $      C3 = 'SGX'
+         IF( CGX )
+     $      C3 = 'CGX'
+         IF( CXV )
+     $      C3 = 'CXV'
       END IF
 *
 *     Reset the random number seed.
@@ -1793,7 +1806,7 @@
   250    CONTINUE
       END IF
 *
-      IF( LSAMEN( 3, C3, 'SHS' ) .OR. LSAMEN( 3, C3, 'NEP' ) ) THEN
+      IF( LSAMEN( 3, C3, 'CHS' ) .OR. LSAMEN( 3, C3, 'NEP' ) ) THEN
 *
 *        -------------------------------------
 *        NEP:  Nonsymmetric Eigenvalue Problem
@@ -1810,7 +1823,7 @@
          CALL ALAREQ( C3, NTYPES, DOTYPE, MAXTYP, NIN, NOUT )
          CALL XLAENV( 1, 1 )
          IF( TSTERR )
-     $      CALL SERRHS( 'SHSEQR', NOUT )
+     $      CALL CERRHS( 'CHSEQR', NOUT )
          DO 270 I = 1, NPARMS
             CALL XLAENV( 1, NBVAL( I ) )
             CALL XLAENV( 2, NBMIN( I ) )
@@ -1829,19 +1842,18 @@
             WRITE( NOUT, FMT = 9961 )C3, NBVAL( I ), NBMIN( I ),
      $         NXVAL( I ), MAX( 11, INMIN(I)),
      $         INWIN( I ), INIBL( I ), ISHFTS( I ), IACC22( I )
-            CALL SCHKHS( NN, NVAL, MAXTYP, DOTYPE, ISEED, THRESH, NOUT,
+            CALL CCHKHS( NN, NVAL, MAXTYP, DOTYPE, ISEED, THRESH, NOUT,
      $                   A( 1, 1 ), NMAX, A( 1, 2 ), A( 1, 3 ),
      $                   A( 1, 4 ), A( 1, 5 ), NMAX, A( 1, 6 ),
-     $                   A( 1, 7 ), D( 1, 1 ), D( 1, 2 ), D( 1, 3 ),
-     $                   D( 1, 4 ), D( 1, 5 ), D( 1, 6 ), A( 1, 8 ),
+     $                   A( 1, 7 ), DC( 1, 1 ), DC( 1, 2 ), A( 1, 8 ),
      $                   A( 1, 9 ), A( 1, 10 ), A( 1, 11 ), A( 1, 12 ),
-     $                   D( 1, 7 ), WORK, LWORK, IWORK, LOGWRK, RESULT,
-     $                   INFO )
+     $                   DC( 1, 3 ), WORK, LWORK, RWORK, IWORK, LOGWRK,
+     $                   RESULT, INFO )
             IF( INFO.NE.0 )
-     $         WRITE( NOUT, FMT = 9980 )'SCHKHS', INFO
+     $         WRITE( NOUT, FMT = 9980 )'CCHKHS', INFO
   270    CONTINUE
 *
-      ELSE IF( LSAMEN( 3, C3, 'SST' ) .OR. LSAMEN( 3, C3, 'SEP' )
+      ELSE IF( LSAMEN( 3, C3, 'CST' ) .OR. LSAMEN( 3, C3, 'SEP' )
      $                                .OR. LSAMEN( 3, C3, 'SE2' ) ) THEN
 *
 *        ----------------------------------
@@ -1857,8 +1869,16 @@
          CALL ALAREQ( C3, NTYPES, DOTYPE, MAXTYP, NIN, NOUT )
          CALL XLAENV( 1, 1 )
          CALL XLAENV( 9, 25 )
-         IF( TSTERR )
-     $      CALL SERRST( 'SST', NOUT )
+         IF( TSTERR ) THEN
+#if defined(_OPENMP)
+            N_THREADS = OMP_GET_NUM_THREADS()
+            CALL OMP_SET_NUM_THREADS(1)
+#endif
+            CALL CERRST( 'CST', NOUT )
+#if defined(_OPENMP)
+            CALL OMP_SET_NUM_THREADS(N_THREADS)
+#endif
+         END IF
          DO 290 I = 1, NPARMS
             CALL XLAENV( 1, NBVAL( I ) )
             CALL XLAENV( 2, NBMIN( I ) )
@@ -1873,50 +1893,54 @@
      $         NXVAL( I )
             IF( TSTCHK ) THEN
                IF( LSAMEN( 3, C3, 'SE2' ) ) THEN
-               CALL SCHKST2STG( NN, NVAL, MAXTYP, DOTYPE, ISEED, THRESH,
-     $                      NOUT, A( 1, 1 ), NMAX, A( 1, 2 ), D( 1, 1 ),
-     $                      D( 1, 2 ), D( 1, 3 ), D( 1, 4 ), D( 1, 5 ),
-     $                      D( 1, 6 ), D( 1, 7 ), D( 1, 8 ), D( 1, 9 ),
-     $                      D( 1, 10 ), D( 1, 11 ), A( 1, 3 ), NMAX,
-     $                      A( 1, 4 ), A( 1, 5 ), D( 1, 12 ), A( 1, 6 ),
-     $                      WORK, LWORK, IWORK, LIWORK, RESULT, INFO )
+               CALL CCHKST2STG( NN, NVAL, MAXTYP, DOTYPE, ISEED, THRESH,
+     $                      NOUT, A( 1, 1 ), NMAX, A( 1, 2 ),
+     $                      DR( 1, 1 ), DR( 1, 2 ), DR( 1, 3 ),
+     $                      DR( 1, 4 ), DR( 1, 5 ), DR( 1, 6 ),
+     $                      DR( 1, 7 ), DR( 1, 8 ), DR( 1, 9 ),
+     $                      DR( 1, 10 ), DR( 1, 11 ), A( 1, 3 ), NMAX,
+     $                      A( 1, 4 ), A( 1, 5 ), DC( 1, 1 ), A( 1, 6 ),
+     $                      WORK, LWORK, RWORK, LWORK, IWORK, LIWORK,
+     $                      RESULT, INFO )
                ELSE
-               CALL SCHKST( NN, NVAL, MAXTYP, DOTYPE, ISEED, THRESH,
-     $                      NOUT, A( 1, 1 ), NMAX, A( 1, 2 ), D( 1, 1 ),
-     $                      D( 1, 2 ), D( 1, 3 ), D( 1, 4 ), D( 1, 5 ),
-     $                      D( 1, 6 ), D( 1, 7 ), D( 1, 8 ), D( 1, 9 ),
-     $                      D( 1, 10 ), D( 1, 11 ), A( 1, 3 ), NMAX,
-     $                      A( 1, 4 ), A( 1, 5 ), D( 1, 12 ), A( 1, 6 ),
-     $                      WORK, LWORK, IWORK, LIWORK, RESULT, INFO )
+               CALL CCHKST( NN, NVAL, MAXTYP, DOTYPE, ISEED, THRESH,
+     $                      NOUT, A( 1, 1 ), NMAX, A( 1, 2 ),
+     $                      DR( 1, 1 ), DR( 1, 2 ), DR( 1, 3 ),
+     $                      DR( 1, 4 ), DR( 1, 5 ), DR( 1, 6 ),
+     $                      DR( 1, 7 ), DR( 1, 8 ), DR( 1, 9 ),
+     $                      DR( 1, 10 ), DR( 1, 11 ), A( 1, 3 ), NMAX,
+     $                      A( 1, 4 ), A( 1, 5 ), DC( 1, 1 ), A( 1, 6 ),
+     $                      WORK, LWORK, RWORK, LWORK, IWORK, LIWORK,
+     $                      RESULT, INFO )
                ENDIF
                IF( INFO.NE.0 )
-     $            WRITE( NOUT, FMT = 9980 )'SCHKST', INFO
+     $            WRITE( NOUT, FMT = 9980 )'CCHKST', INFO
             END IF
             IF( TSTDRV ) THEN
                IF( LSAMEN( 3, C3, 'SE2' ) ) THEN
-               CALL SDRVST2STG( NN, NVAL, 18, DOTYPE, ISEED, THRESH,
-     $                      NOUT, A( 1, 1 ), NMAX, D( 1, 3 ), D( 1, 4 ),
-     $                      D( 1, 5 ), D( 1, 6 ), D( 1, 8 ), D( 1, 9 ),
-     $                      D( 1, 10 ), D( 1, 11), A( 1, 2 ), NMAX,
-     $                      A( 1, 3 ), D( 1, 12 ), A( 1, 4 ), WORK,
-     $                      LWORK, IWORK, LIWORK, RESULT, INFO )
+               CALL CDRVST2STG( NN, NVAL, 18, DOTYPE, ISEED, THRESH,
+     $                    NOUT, A( 1, 1 ), NMAX, DR( 1, 3 ), DR( 1, 4 ),
+     $                    DR( 1, 5 ), DR( 1, 8 ), DR( 1, 9 ),
+     $                    DR( 1, 10 ), A( 1, 2 ), NMAX, A( 1, 3 ),
+     $                    DC( 1, 1 ), A( 1, 4 ), WORK, LWORK, RWORK,
+     $                    LWORK, IWORK, LIWORK, RESULT, INFO )
                ELSE
-               CALL SDRVST( NN, NVAL, 18, DOTYPE, ISEED, THRESH,
-     $                      NOUT, A( 1, 1 ), NMAX, D( 1, 3 ), D( 1, 4 ),
-     $                      D( 1, 5 ), D( 1, 6 ), D( 1, 8 ), D( 1, 9 ),
-     $                      D( 1, 10 ), D( 1, 11), A( 1, 2 ), NMAX,
-     $                      A( 1, 3 ), D( 1, 12 ), A( 1, 4 ), WORK,
-     $                      LWORK, IWORK, LIWORK, RESULT, INFO )
-               ENDIF
+               CALL CDRVST( NN, NVAL, 18, DOTYPE, ISEED, THRESH, NOUT,
+     $                    A( 1, 1 ), NMAX, DR( 1, 3 ), DR( 1, 4 ),
+     $                    DR( 1, 5 ), DR( 1, 8 ), DR( 1, 9 ),
+     $                    DR( 1, 10 ), A( 1, 2 ), NMAX, A( 1, 3 ),
+     $                    DC( 1, 1 ), A( 1, 4 ), WORK, LWORK, RWORK,
+     $                    LWORK, IWORK, LIWORK, RESULT, INFO )
+           ENDIF
                IF( INFO.NE.0 )
-     $            WRITE( NOUT, FMT = 9980 )'SDRVST', INFO
+     $            WRITE( NOUT, FMT = 9980 )'CDRVST', INFO
             END IF
   290    CONTINUE
 *
-      ELSE IF( LSAMEN( 3, C3, 'SSG' ) ) THEN
+      ELSE IF( LSAMEN( 3, C3, 'CSG' ) ) THEN
 *
 *        ----------------------------------------------
-*        SSG:  Symmetric Generalized Eigenvalue Problem
+*        CSG:  Hermitian Generalized Eigenvalue Problem
 *        ----------------------------------------------
 *        Vary the parameters
 *           NB    = block size
@@ -1940,23 +1964,24 @@
             WRITE( NOUT, FMT = 9997 )C3, NBVAL( I ), NBMIN( I ),
      $         NXVAL( I )
             IF( TSTCHK ) THEN
-*               CALL SDRVSG( NN, NVAL, MAXTYP, DOTYPE, ISEED, THRESH,
+*               CALL CDRVSG( NN, NVAL, MAXTYP, DOTYPE, ISEED, THRESH,
 *     $                      NOUT, A( 1, 1 ), NMAX, A( 1, 2 ), NMAX,
-*     $                      D( 1, 3 ), A( 1, 3 ), NMAX, A( 1, 4 ),
+*     $                      DR( 1, 3 ), A( 1, 3 ), NMAX, A( 1, 4 ),
 *     $                      A( 1, 5 ), A( 1, 6 ), A( 1, 7 ), WORK,
-*     $                      LWORK, IWORK, LIWORK, RESULT, INFO )
-               CALL SDRVSG2STG( NN, NVAL, MAXTYP, DOTYPE, ISEED, THRESH,
+*     $                      LWORK, RWORK, LWORK, IWORK, LIWORK, RESULT,
+*     $                      INFO )
+               CALL CDRVSG2STG( NN, NVAL, MAXTYP, DOTYPE, ISEED, THRESH,
      $                          NOUT, A( 1, 1 ), NMAX, A( 1, 2 ), NMAX,
-     $                          D( 1, 3 ), D( 1, 3 ), A( 1, 3 ), NMAX,
+     $                          DR( 1, 3 ), DR( 1, 4 ), A( 1, 3 ), NMAX,
      $                          A( 1, 4 ), A( 1, 5 ), A( 1, 6 ),
-     $                          A( 1, 7 ), WORK, LWORK, IWORK, LIWORK,
-     $                          RESULT, INFO )
+     $                          A( 1, 7 ), WORK, LWORK, RWORK, LWORK,
+     $                          IWORK, LIWORK, RESULT, INFO )
                IF( INFO.NE.0 )
-     $            WRITE( NOUT, FMT = 9980 )'SDRVSG', INFO
+     $            WRITE( NOUT, FMT = 9980 )'CDRVSG', INFO
             END IF
   310    CONTINUE
 *
-      ELSE IF( LSAMEN( 3, C3, 'SBD' ) .OR. LSAMEN( 3, C3, 'SVD' ) ) THEN
+      ELSE IF( LSAMEN( 3, C3, 'CBD' ) .OR. LSAMEN( 3, C3, 'SVD' ) ) THEN
 *
 *        ----------------------------------
 *        SVD:  Singular Value Decomposition
@@ -1970,15 +1995,15 @@
          MAXTYP = 16
          NTYPES = MIN( MAXTYP, NTYPES )
          CALL ALAREQ( C3, NTYPES, DOTYPE, MAXTYP, NIN, NOUT )
-         CALL XLAENV( 1, 1 )
          CALL XLAENV( 9, 25 )
 *
 *        Test the error exits
 *
+         CALL XLAENV( 1, 1 )
          IF( TSTERR .AND. TSTCHK )
-     $      CALL SERRBD( 'SBD', NOUT )
+     $      CALL CERRBD( 'CBD', NOUT )
          IF( TSTERR .AND. TSTDRV )
-     $      CALL SERRED( 'SBD', NOUT )
+     $      CALL CERRED( 'CBD', NOUT )
 *
          DO 330 I = 1, NPARMS
             NRHS = NSVAL( I )
@@ -1993,28 +2018,29 @@
             WRITE( NOUT, FMT = 9995 )C3, NBVAL( I ), NBMIN( I ),
      $         NXVAL( I ), NRHS
             IF( TSTCHK ) THEN
-               CALL SCHKBD( NN, MVAL, NVAL, MAXTYP, DOTYPE, NRHS, ISEED,
-     $                      THRESH, A( 1, 1 ), NMAX, D( 1, 1 ),
-     $                      D( 1, 2 ), D( 1, 3 ), D( 1, 4 ), A( 1, 2 ),
-     $                      NMAX, A( 1, 3 ), A( 1, 4 ), A( 1, 5 ), NMAX,
-     $                      A( 1, 6 ), NMAX, A( 1, 7 ), A( 1, 8 ), WORK,
-     $                      LWORK, IWORK, NOUT, INFO )
+               CALL CCHKBD( NN, MVAL, NVAL, MAXTYP, DOTYPE, NRHS, ISEED,
+     $                      THRESH, A( 1, 1 ), NMAX, DR( 1, 1 ),
+     $                      DR( 1, 2 ), DR( 1, 3 ), DR( 1, 4 ),
+     $                      A( 1, 2 ), NMAX, A( 1, 3 ), A( 1, 4 ),
+     $                      A( 1, 5 ), NMAX, A( 1, 6 ), NMAX, A( 1, 7 ),
+     $                      A( 1, 8 ), WORK, LWORK, RWORK, NOUT, INFO )
                IF( INFO.NE.0 )
-     $            WRITE( NOUT, FMT = 9980 )'SCHKBD', INFO
+     $            WRITE( NOUT, FMT = 9980 )'CCHKBD', INFO
             END IF
             IF( TSTDRV )
-     $         CALL SDRVBD( NN, MVAL, NVAL, MAXTYP, DOTYPE, ISEED,
+     $         CALL CDRVBD( NN, MVAL, NVAL, MAXTYP, DOTYPE, ISEED,
      $                      THRESH, A( 1, 1 ), NMAX, A( 1, 2 ), NMAX,
      $                      A( 1, 3 ), NMAX, A( 1, 4 ), A( 1, 5 ),
-     $                      A( 1, 6 ), D( 1, 1 ), D( 1, 2 ), D( 1, 3 ),
-     $                      WORK, LWORK, IWORK, NOUT, INFO )
+     $                      A( 1, 6 ), DR( 1, 1 ), DR( 1, 2 ),
+     $                      DR( 1, 3 ), WORK, LWORK, RWORK, IWORK, NOUT,
+     $                      INFO )
   330    CONTINUE
 *
-      ELSE IF( LSAMEN( 3, C3, 'SEV' ) ) THEN
+      ELSE IF( LSAMEN( 3, C3, 'CEV' ) ) THEN
 *
 *        --------------------------------------------
-*        SEV:  Nonsymmetric Eigenvalue Problem Driver
-*              SGEEV (eigenvalues and eigenvectors)
+*        CEV:  Nonsymmetric Eigenvalue Problem Driver
+*              CGEEV (eigenvalues and eigenvectors)
 *        --------------------------------------------
 *
          MAXTYP = 21
@@ -2023,24 +2049,24 @@
             WRITE( NOUT, FMT = 9990 )C3
          ELSE
             IF( TSTERR )
-     $         CALL SERRED( C3, NOUT )
+     $         CALL CERRED( C3, NOUT )
             CALL ALAREQ( C3, NTYPES, DOTYPE, MAXTYP, NIN, NOUT )
-            CALL SDRVEV( NN, NVAL, NTYPES, DOTYPE, ISEED, THRESH, NOUT,
-     $                   A( 1, 1 ), NMAX, A( 1, 2 ), D( 1, 1 ),
-     $                   D( 1, 2 ), D( 1, 3 ), D( 1, 4 ), A( 1, 3 ),
-     $                   NMAX, A( 1, 4 ), NMAX, A( 1, 5 ), NMAX, RESULT,
-     $                   WORK, LWORK, IWORK, INFO )
+            CALL CDRVEV( NN, NVAL, NTYPES, DOTYPE, ISEED, THRESH, NOUT,
+     $                   A( 1, 1 ), NMAX, A( 1, 2 ), DC( 1, 1 ),
+     $                   DC( 1, 2 ), A( 1, 3 ), NMAX, A( 1, 4 ), NMAX,
+     $                   A( 1, 5 ), NMAX, RESULT, WORK, LWORK, RWORK,
+     $                   IWORK, INFO )
             IF( INFO.NE.0 )
-     $         WRITE( NOUT, FMT = 9980 )'SGEEV', INFO
+     $         WRITE( NOUT, FMT = 9980 )'CGEEV', INFO
          END IF
          WRITE( NOUT, FMT = 9973 )
          GO TO 10
 *
-      ELSE IF( LSAMEN( 3, C3, 'SES' ) ) THEN
+      ELSE IF( LSAMEN( 3, C3, 'CES' ) ) THEN
 *
 *        --------------------------------------------
-*        SES:  Nonsymmetric Eigenvalue Problem Driver
-*              SGEES (Schur form)
+*        CES:  Nonsymmetric Eigenvalue Problem Driver
+*              CGEES (Schur form)
 *        --------------------------------------------
 *
          MAXTYP = 21
@@ -2049,78 +2075,77 @@
             WRITE( NOUT, FMT = 9990 )C3
          ELSE
             IF( TSTERR )
-     $         CALL SERRED( C3, NOUT )
+     $         CALL CERRED( C3, NOUT )
             CALL ALAREQ( C3, NTYPES, DOTYPE, MAXTYP, NIN, NOUT )
-            CALL SDRVES( NN, NVAL, NTYPES, DOTYPE, ISEED, THRESH, NOUT,
+            CALL CDRVES( NN, NVAL, NTYPES, DOTYPE, ISEED, THRESH, NOUT,
      $                   A( 1, 1 ), NMAX, A( 1, 2 ), A( 1, 3 ),
-     $                   D( 1, 1 ), D( 1, 2 ), D( 1, 3 ), D( 1, 4 ),
-     $                   A( 1, 4 ), NMAX, RESULT, WORK, LWORK, IWORK,
-     $                   LOGWRK, INFO )
-            IF( INFO.NE.0 )
-     $         WRITE( NOUT, FMT = 9980 )'SGEES', INFO
-         END IF
-         WRITE( NOUT, FMT = 9973 )
-         GO TO 10
-*
-      ELSE IF( LSAMEN( 3, C3, 'SVX' ) ) THEN
-*
-*        --------------------------------------------------------------
-*        SVX:  Nonsymmetric Eigenvalue Problem Expert Driver
-*              SGEEVX (eigenvalues, eigenvectors and condition numbers)
-*        --------------------------------------------------------------
-*
-         MAXTYP = 21
-         NTYPES = MIN( MAXTYP, NTYPES )
-         IF( NTYPES.LT.0 ) THEN
-            WRITE( NOUT, FMT = 9990 )C3
-         ELSE
-            IF( TSTERR )
-     $         CALL SERRED( C3, NOUT )
-            CALL ALAREQ( C3, NTYPES, DOTYPE, MAXTYP, NIN, NOUT )
-            CALL SDRVVX( NN, NVAL, NTYPES, DOTYPE, ISEED, THRESH, NIN,
-     $                   NOUT, A( 1, 1 ), NMAX, A( 1, 2 ), D( 1, 1 ),
-     $                   D( 1, 2 ), D( 1, 3 ), D( 1, 4 ), A( 1, 3 ),
-     $                   NMAX, A( 1, 4 ), NMAX, A( 1, 5 ), NMAX,
-     $                   D( 1, 5 ), D( 1, 6 ), D( 1, 7 ), D( 1, 8 ),
-     $                   D( 1, 9 ), D( 1, 10 ), D( 1, 11 ), D( 1, 12 ),
-     $                   RESULT, WORK, LWORK, IWORK, INFO )
-            IF( INFO.NE.0 )
-     $         WRITE( NOUT, FMT = 9980 )'SGEEVX', INFO
-         END IF
-         WRITE( NOUT, FMT = 9973 )
-         GO TO 10
-*
-      ELSE IF( LSAMEN( 3, C3, 'SSX' ) ) THEN
-*
-*        ---------------------------------------------------
-*        SSX:  Nonsymmetric Eigenvalue Problem Expert Driver
-*              SGEESX (Schur form and condition numbers)
-*        ---------------------------------------------------
-*
-         MAXTYP = 21
-         NTYPES = MIN( MAXTYP, NTYPES )
-         IF( NTYPES.LT.0 ) THEN
-            WRITE( NOUT, FMT = 9990 )C3
-         ELSE
-            IF( TSTERR )
-     $         CALL SERRED( C3, NOUT )
-            CALL ALAREQ( C3, NTYPES, DOTYPE, MAXTYP, NIN, NOUT )
-            CALL SDRVSX( NN, NVAL, NTYPES, DOTYPE, ISEED, THRESH, NIN,
-     $                   NOUT, A( 1, 1 ), NMAX, A( 1, 2 ), A( 1, 3 ),
-     $                   D( 1, 1 ), D( 1, 2 ), D( 1, 3 ), D( 1, 4 ),
-     $                   D( 1, 5 ), D( 1, 6 ), A( 1, 4 ), NMAX,
-     $                   A( 1, 5 ), RESULT, WORK, LWORK, IWORK, LOGWRK,
+     $                   DC( 1, 1 ), DC( 1, 2 ), A( 1, 4 ), NMAX,
+     $                   RESULT, WORK, LWORK, RWORK, IWORK, LOGWRK,
      $                   INFO )
             IF( INFO.NE.0 )
-     $         WRITE( NOUT, FMT = 9980 )'SGEESX', INFO
+     $         WRITE( NOUT, FMT = 9980 )'CGEES', INFO
          END IF
          WRITE( NOUT, FMT = 9973 )
          GO TO 10
 *
-      ELSE IF( LSAMEN( 3, C3, 'SGG' ) ) THEN
+      ELSE IF( LSAMEN( 3, C3, 'CVX' ) ) THEN
+*
+*        --------------------------------------------------------------
+*        CVX:  Nonsymmetric Eigenvalue Problem Expert Driver
+*              CGEEVX (eigenvalues, eigenvectors and condition numbers)
+*        --------------------------------------------------------------
+*
+         MAXTYP = 21
+         NTYPES = MIN( MAXTYP, NTYPES )
+         IF( NTYPES.LT.0 ) THEN
+            WRITE( NOUT, FMT = 9990 )C3
+         ELSE
+            IF( TSTERR )
+     $         CALL CERRED( C3, NOUT )
+            CALL ALAREQ( C3, NTYPES, DOTYPE, MAXTYP, NIN, NOUT )
+            CALL CDRVVX( NN, NVAL, NTYPES, DOTYPE, ISEED, THRESH, NIN,
+     $                   NOUT, A( 1, 1 ), NMAX, A( 1, 2 ), DC( 1, 1 ),
+     $                   DC( 1, 2 ), A( 1, 3 ), NMAX, A( 1, 4 ), NMAX,
+     $                   A( 1, 5 ), NMAX, DR( 1, 1 ), DR( 1, 2 ),
+     $                   DR( 1, 3 ), DR( 1, 4 ), DR( 1, 5 ), DR( 1, 6 ),
+     $                   DR( 1, 7 ), DR( 1, 8 ), RESULT, WORK, LWORK,
+     $                   RWORK, INFO )
+            IF( INFO.NE.0 )
+     $         WRITE( NOUT, FMT = 9980 )'CGEEVX', INFO
+         END IF
+         WRITE( NOUT, FMT = 9973 )
+         GO TO 10
+*
+      ELSE IF( LSAMEN( 3, C3, 'CSX' ) ) THEN
+*
+*        ---------------------------------------------------
+*        CSX:  Nonsymmetric Eigenvalue Problem Expert Driver
+*              CGEESX (Schur form and condition numbers)
+*        ---------------------------------------------------
+*
+         MAXTYP = 21
+         NTYPES = MIN( MAXTYP, NTYPES )
+         IF( NTYPES.LT.0 ) THEN
+            WRITE( NOUT, FMT = 9990 )C3
+         ELSE
+            IF( TSTERR )
+     $         CALL CERRED( C3, NOUT )
+            CALL ALAREQ( C3, NTYPES, DOTYPE, MAXTYP, NIN, NOUT )
+            CALL CDRVSX( NN, NVAL, NTYPES, DOTYPE, ISEED, THRESH, NIN,
+     $                   NOUT, A( 1, 1 ), NMAX, A( 1, 2 ), A( 1, 3 ),
+     $                   DC( 1, 1 ), DC( 1, 2 ), DC( 1, 3 ), A( 1, 4 ),
+     $                   NMAX, A( 1, 5 ), RESULT, WORK, LWORK, RWORK,
+     $                   LOGWRK, INFO )
+            IF( INFO.NE.0 )
+     $         WRITE( NOUT, FMT = 9980 )'CGEESX', INFO
+         END IF
+         WRITE( NOUT, FMT = 9973 )
+         GO TO 10
+*
+      ELSE IF( LSAMEN( 3, C3, 'CGG' ) ) THEN
 *
 *        -------------------------------------------------
-*        SGG:  Generalized Nonsymmetric Eigenvalue Problem
+*        CGG:  Generalized Nonsymmetric Eigenvalue Problem
 *        -------------------------------------------------
 *        Vary the parameters
 *           NB    = block size
@@ -2135,7 +2160,7 @@
          CALL ALAREQ( C3, NTYPES, DOTYPE, MAXTYP, NIN, NOUT )
          CALL XLAENV(1,1)
          IF( TSTCHK .AND. TSTERR )
-     &      CALL SERRGG( C3, NOUT )
+     $      CALL CERRGG( C3, NOUT )
          DO 350 I = 1, NPARMS
             CALL XLAENV( 1, NBVAL( I ) )
             CALL XLAENV( 2, NBMIN( I ) )
@@ -2154,25 +2179,24 @@
             TSTDIF = .FALSE.
             THRSHN = 10.
             IF( TSTCHK ) THEN
-               CALL SCHKGG( NN, NVAL, MAXTYP, DOTYPE, ISEED, THRESH,
+               CALL CCHKGG( NN, NVAL, MAXTYP, DOTYPE, ISEED, THRESH,
      $                      TSTDIF, THRSHN, NOUT, A( 1, 1 ), NMAX,
      $                      A( 1, 2 ), A( 1, 3 ), A( 1, 4 ), A( 1, 5 ),
      $                      A( 1, 6 ), A( 1, 7 ), A( 1, 8 ), A( 1, 9 ),
      $                      NMAX, A( 1, 10 ), A( 1, 11 ), A( 1, 12 ),
-     $                      D( 1, 1 ), D( 1, 2 ), D( 1, 3 ), D( 1, 4 ),
-     $                      D( 1, 5 ), D( 1, 6 ), A( 1, 13 ),
-     $                      A( 1, 14 ), WORK, LWORK, LOGWRK, RESULT,
-     $                      INFO )
+     $                      DC( 1, 1 ), DC( 1, 2 ), DC( 1, 3 ),
+     $                      DC( 1, 4 ), A( 1, 13 ), A( 1, 14 ), WORK,
+     $                      LWORK, RWORK, LOGWRK, RESULT, INFO )
                IF( INFO.NE.0 )
-     $            WRITE( NOUT, FMT = 9980 )'SCHKGG', INFO
+     $            WRITE( NOUT, FMT = 9980 )'CCHKGG', INFO
             END IF
   350    CONTINUE
 *
-      ELSE IF( LSAMEN( 3, C3, 'SGS' ) ) THEN
+      ELSE IF( LSAMEN( 3, C3, 'CGS' ) ) THEN
 *
 *        -------------------------------------------------
-*        SGS:  Generalized Nonsymmetric Eigenvalue Problem
-*              SGGES (Schur form)
+*        CGS:  Generalized Nonsymmetric Eigenvalue Problem
+*              CGGES (Schur form)
 *        -------------------------------------------------
 *
          MAXTYP = 26
@@ -2181,37 +2205,38 @@
             WRITE( NOUT, FMT = 9990 )C3
          ELSE
             IF( TSTERR )
-     $         CALL SERRGG( C3, NOUT )
+     $         CALL CERRGG( C3, NOUT )
             CALL ALAREQ( C3, NTYPES, DOTYPE, MAXTYP, NIN, NOUT )
-            CALL SDRGES( NN, NVAL, MAXTYP, DOTYPE, ISEED, THRESH, NOUT,
+            CALL CDRGES( NN, NVAL, MAXTYP, DOTYPE, ISEED, THRESH, NOUT,
      $                   A( 1, 1 ), NMAX, A( 1, 2 ), A( 1, 3 ),
      $                   A( 1, 4 ), A( 1, 7 ), NMAX, A( 1, 8 ),
-     $                   D( 1, 1 ), D( 1, 2 ), D( 1, 3 ), WORK, LWORK,
+     $                   DC( 1, 1 ), DC( 1, 2 ), WORK, LWORK, RWORK,
      $                   RESULT, LOGWRK, INFO )
 *
             IF( INFO.NE.0 )
-     $         WRITE( NOUT, FMT = 9980 )'SDRGES', INFO
+     $         WRITE( NOUT, FMT = 9980 )'CDRGES', INFO
 *
-*     Blocked version
+* Blocked version
 *
-            CALL XLAENV(16,1)
-            CALL SDRGES3( NN, NVAL, MAXTYP, DOTYPE, ISEED, THRESH, NOUT,
+            CALL XLAENV(16,2)
+            CALL CDRGES3( NN, NVAL, MAXTYP, DOTYPE, ISEED, THRESH, NOUT,
      $                    A( 1, 1 ), NMAX, A( 1, 2 ), A( 1, 3 ),
      $                    A( 1, 4 ), A( 1, 7 ), NMAX, A( 1, 8 ),
-     $                    D( 1, 1 ), D( 1, 2 ), D( 1, 3 ), WORK, LWORK,
+     $                    DC( 1, 1 ), DC( 1, 2 ), WORK, LWORK, RWORK,
      $                    RESULT, LOGWRK, INFO )
 *
             IF( INFO.NE.0 )
-     $         WRITE( NOUT, FMT = 9980 )'SDRGES3', INFO
+     $         WRITE( NOUT, FMT = 9980 )'CDRGES3', INFO
          END IF
          WRITE( NOUT, FMT = 9973 )
+
          GO TO 10
 *
-      ELSE IF( SGX ) THEN
+      ELSE IF( CGX ) THEN
 *
 *        -------------------------------------------------
-*        SGX:  Generalized Nonsymmetric Eigenvalue Problem
-*              SGGESX (Schur form and condition numbers)
+*        CGX  Generalized Nonsymmetric Eigenvalue Problem
+*              CGGESX (Schur form and condition numbers)
 *        -------------------------------------------------
 *
          MAXTYP = 5
@@ -2220,25 +2245,25 @@
             WRITE( NOUT, FMT = 9990 )C3
          ELSE
             IF( TSTERR )
-     $         CALL SERRGG( C3, NOUT )
+     $         CALL CERRGG( C3, NOUT )
             CALL ALAREQ( C3, NTYPES, DOTYPE, MAXTYP, NIN, NOUT )
             CALL XLAENV( 5, 2 )
-            CALL SDRGSX( NN, NCMAX, THRESH, NIN, NOUT, A( 1, 1 ), NMAX,
+            CALL CDRGSX( NN, NCMAX, THRESH, NIN, NOUT, A( 1, 1 ), NMAX,
      $                   A( 1, 2 ), A( 1, 3 ), A( 1, 4 ), A( 1, 5 ),
-     $                   A( 1, 6 ), D( 1, 1 ), D( 1, 2 ), D( 1, 3 ),
-     $                   C( 1, 1 ), NCMAX*NCMAX, A( 1, 12 ), WORK,
-     $                   LWORK, IWORK, LIWORK, LOGWRK, INFO )
+     $                   A( 1, 6 ), DC( 1, 1 ), DC( 1, 2 ), C,
+     $                   NCMAX*NCMAX, S, WORK, LWORK, RWORK, IWORK,
+     $                   LIWORK, LOGWRK, INFO )
             IF( INFO.NE.0 )
-     $         WRITE( NOUT, FMT = 9980 )'SDRGSX', INFO
+     $         WRITE( NOUT, FMT = 9980 )'CDRGSX', INFO
          END IF
          WRITE( NOUT, FMT = 9973 )
          GO TO 10
 *
-      ELSE IF( LSAMEN( 3, C3, 'SGV' ) ) THEN
+      ELSE IF( LSAMEN( 3, C3, 'CGV' ) ) THEN
 *
 *        -------------------------------------------------
-*        SGV:  Generalized Nonsymmetric Eigenvalue Problem
-*              SGGEV (Eigenvalue/vector form)
+*        CGV:  Generalized Nonsymmetric Eigenvalue Problem
+*              CGGEV (Eigenvalue/vector form)
 *        -------------------------------------------------
 *
          MAXTYP = 26
@@ -2247,36 +2272,37 @@
             WRITE( NOUT, FMT = 9990 )C3
          ELSE
             IF( TSTERR )
-     $         CALL SERRGG( C3, NOUT )
+     $         CALL CERRGG( C3, NOUT )
             CALL ALAREQ( C3, NTYPES, DOTYPE, MAXTYP, NIN, NOUT )
-            CALL SDRGEV( NN, NVAL, MAXTYP, DOTYPE, ISEED, THRESH, NOUT,
+            CALL CDRGEV( NN, NVAL, MAXTYP, DOTYPE, ISEED, THRESH, NOUT,
      $                   A( 1, 1 ), NMAX, A( 1, 2 ), A( 1, 3 ),
      $                   A( 1, 4 ), A( 1, 7 ), NMAX, A( 1, 8 ),
-     $                   A( 1, 9 ), NMAX, D( 1, 1 ), D( 1, 2 ),
-     $                   D( 1, 3 ), D( 1, 4 ), D( 1, 5 ), D( 1, 6 ),
-     $                   WORK, LWORK, RESULT, INFO )
+     $                   A( 1, 9 ), NMAX, DC( 1, 1 ), DC( 1, 2 ),
+     $                   DC( 1, 3 ), DC( 1, 4 ), WORK, LWORK, RWORK,
+     $                   RESULT, INFO )
             IF( INFO.NE.0 )
-     $         WRITE( NOUT, FMT = 9980 )'SDRGEV', INFO
+     $         WRITE( NOUT, FMT = 9980 )'CDRGEV', INFO
 *
 * Blocked version
 *
-            CALL SDRGEV3( NN, NVAL, MAXTYP, DOTYPE, ISEED, THRESH, NOUT,
+            CALL XLAENV(16,2)
+            CALL CDRGEV3( NN, NVAL, MAXTYP, DOTYPE, ISEED, THRESH, NOUT,
      $                    A( 1, 1 ), NMAX, A( 1, 2 ), A( 1, 3 ),
      $                    A( 1, 4 ), A( 1, 7 ), NMAX, A( 1, 8 ),
-     $                    A( 1, 9 ), NMAX, D( 1, 1 ), D( 1, 2 ),
-     $                    D( 1, 3 ), D( 1, 4 ), D( 1, 5 ), D( 1, 6 ),
-     $                    WORK, LWORK, RESULT, INFO )
+     $                    A( 1, 9 ), NMAX, DC( 1, 1 ), DC( 1, 2 ),
+     $                    DC( 1, 3 ), DC( 1, 4 ), WORK, LWORK, RWORK,
+     $                    RESULT, INFO )
             IF( INFO.NE.0 )
-     $         WRITE( NOUT, FMT = 9980 )'SDRGEV3', INFO
+     $           WRITE( NOUT, FMT = 9980 )'CDRGEV3', INFO
          END IF
          WRITE( NOUT, FMT = 9973 )
          GO TO 10
 *
-      ELSE IF( SXV ) THEN
+      ELSE IF( CXV ) THEN
 *
 *        -------------------------------------------------
-*        SXV:  Generalized Nonsymmetric Eigenvalue Problem
-*              SGGEVX (eigenvalue/vector with condition numbers)
+*        CXV:  Generalized Nonsymmetric Eigenvalue Problem
+*              CGGEVX (eigenvalue/vector with condition numbers)
 *        -------------------------------------------------
 *
          MAXTYP = 2
@@ -2285,47 +2311,57 @@
             WRITE( NOUT, FMT = 9990 )C3
          ELSE
             IF( TSTERR )
-     $         CALL SERRGG( C3, NOUT )
+     $         CALL CERRGG( C3, NOUT )
             CALL ALAREQ( C3, NTYPES, DOTYPE, MAXTYP, NIN, NOUT )
-            CALL SDRGVX( NN, THRESH, NIN, NOUT, A( 1, 1 ), NMAX,
-     $                   A( 1, 2 ), A( 1, 3 ), A( 1, 4 ), D( 1, 1 ),
-     $                   D( 1, 2 ), D( 1, 3 ), A( 1, 5 ), A( 1, 6 ),
-     $                   IWORK( 1 ), IWORK( 2 ), D( 1, 4 ), D( 1, 5 ),
-     $                   D( 1, 6 ), D( 1, 7 ), D( 1, 8 ), D( 1, 9 ),
-     $                   WORK, LWORK, IWORK( 3 ), LIWORK-2, RESULT,
+            CALL CDRGVX( NN, THRESH, NIN, NOUT, A( 1, 1 ), NMAX,
+     $                   A( 1, 2 ), A( 1, 3 ), A( 1, 4 ), DC( 1, 1 ),
+     $                   DC( 1, 2 ), A( 1, 5 ), A( 1, 6 ), IWORK( 1 ),
+     $                   IWORK( 2 ), DR( 1, 1 ), DR( 1, 2 ), DR( 1, 3 ),
+     $                   DR( 1, 4 ), DR( 1, 5 ), DR( 1, 6 ), WORK,
+     $                   LWORK, RWORK, IWORK( 3 ), LIWORK-2, RESULT,
      $                   LOGWRK, INFO )
 *
             IF( INFO.NE.0 )
-     $         WRITE( NOUT, FMT = 9980 )'SDRGVX', INFO
+     $         WRITE( NOUT, FMT = 9980 )'CDRGVX', INFO
          END IF
          WRITE( NOUT, FMT = 9973 )
          GO TO 10
 *
-      ELSE IF( LSAMEN( 3, C3, 'SSB' ) ) THEN
+      ELSE IF( LSAMEN( 3, C3, 'CHB' ) ) THEN
 *
 *        ------------------------------
-*        SSB:  Symmetric Band Reduction
+*        CHB:  Hermitian Band Reduction
 *        ------------------------------
 *
          MAXTYP = 15
          NTYPES = MIN( MAXTYP, NTYPES )
          CALL ALAREQ( C3, NTYPES, DOTYPE, MAXTYP, NIN, NOUT )
-         IF( TSTERR )
-     $      CALL SERRST( 'SSB', NOUT )
-*         CALL SCHKSB( NN, NVAL, NK, KVAL, MAXTYP, DOTYPE, ISEED, THRESH,
-*     $                NOUT, A( 1, 1 ), NMAX, D( 1, 1 ), D( 1, 2 ),
-*     $                A( 1, 2 ), NMAX, WORK, LWORK, RESULT, INFO )
-         CALL SCHKSB2STG( NN, NVAL, NK, KVAL, MAXTYP, DOTYPE, ISEED,
-     $                 THRESH, NOUT, A( 1, 1 ), NMAX, D( 1, 1 ), 
-     $                 D( 1, 2 ), D( 1, 3 ), D( 1, 4 ), D( 1, 5 ),
-     $                 A( 1, 2 ), NMAX, WORK, LWORK, RESULT, INFO )
+         IF( TSTERR ) THEN
+#if defined(_OPENMP)
+            N_THREADS = OMP_GET_NUM_THREADS()
+            CALL OMP_SET_NUM_THREADS(1)
+#endif
+            CALL CERRST( 'CHB', NOUT )
+#if defined(_OPENMP)
+            CALL OMP_SET_NUM_THREADS(N_THREADS)
+#endif
+         END IF
+*         CALL CCHKHB( NN, NVAL, NK, KVAL, MAXTYP, DOTYPE, ISEED, THRESH,
+*     $                NOUT, A( 1, 1 ), NMAX, DR( 1, 1 ), DR( 1, 2 ),
+*     $                A( 1, 2 ), NMAX, WORK, LWORK, RWORK, RESULT,
+*     $                INFO )
+         CALL CCHKHB2STG( NN, NVAL, NK, KVAL, MAXTYP, DOTYPE, ISEED,
+     $                 THRESH, NOUT, A( 1, 1 ), NMAX, DR( 1, 1 ), 
+     $                 DR( 1, 2 ), DR( 1, 3 ), DR( 1, 4 ), DR( 1, 5 ),
+     $                 A( 1, 2 ), NMAX, WORK, LWORK, RWORK, RESULT, 
+     $                 INFO )
          IF( INFO.NE.0 )
-     $      WRITE( NOUT, FMT = 9980 )'SCHKSB', INFO
+     $      WRITE( NOUT, FMT = 9980 )'CCHKHB', INFO
 *
-      ELSE IF( LSAMEN( 3, C3, 'SBB' ) ) THEN
+      ELSE IF( LSAMEN( 3, C3, 'CBB' ) ) THEN
 *
 *        ------------------------------
-*        SBB:  General Band Reduction
+*        CBB:  General Band Reduction
 *        ------------------------------
 *
          MAXTYP = 15
@@ -2340,13 +2376,14 @@
   360          CONTINUE
             END IF
             WRITE( NOUT, FMT = 9966 )C3, NRHS
-            CALL SCHKBB( NN, MVAL, NVAL, NK, KVAL, MAXTYP, DOTYPE, NRHS,
+            CALL CCHKBB( NN, MVAL, NVAL, NK, KVAL, MAXTYP, DOTYPE, NRHS,
      $                   ISEED, THRESH, NOUT, A( 1, 1 ), NMAX,
-     $                   A( 1, 2 ), 2*NMAX, D( 1, 1 ), D( 1, 2 ),
+     $                   A( 1, 2 ), 2*NMAX, DR( 1, 1 ), DR( 1, 2 ),
      $                   A( 1, 4 ), NMAX, A( 1, 5 ), NMAX, A( 1, 6 ),
-     $                   NMAX, A( 1, 7 ), WORK, LWORK, RESULT, INFO )
+     $                   NMAX, A( 1, 7 ), WORK, LWORK, RWORK, RESULT,
+     $                   INFO )
             IF( INFO.NE.0 )
-     $         WRITE( NOUT, FMT = 9980 )'SCHKBB', INFO
+     $         WRITE( NOUT, FMT = 9980 )'CCHKBB', INFO
   370    CONTINUE
 *
       ELSE IF( LSAMEN( 3, C3, 'GLM' ) ) THEN
@@ -2357,12 +2394,12 @@
 *
          CALL XLAENV( 1, 1 )
          IF( TSTERR )
-     $      CALL SERRGG( 'GLM', NOUT )
-         CALL SCKGLM( NN, MVAL, PVAL, NVAL, NTYPES, ISEED, THRESH, NMAX,
+     $      CALL CERRGG( 'GLM', NOUT )
+         CALL CCKGLM( NN, NVAL, MVAL, PVAL, NTYPES, ISEED, THRESH, NMAX,
      $                A( 1, 1 ), A( 1, 2 ), B( 1, 1 ), B( 1, 2 ), X,
-     $                WORK, D( 1, 1 ), NIN, NOUT, INFO )
+     $                WORK, DR( 1, 1 ), NIN, NOUT, INFO )
          IF( INFO.NE.0 )
-     $      WRITE( NOUT, FMT = 9980 )'SCKGLM', INFO
+     $      WRITE( NOUT, FMT = 9980 )'CCKGLM', INFO
 *
       ELSE IF( LSAMEN( 3, C3, 'GQR' ) ) THEN
 *
@@ -2372,14 +2409,14 @@
 *
          CALL XLAENV( 1, 1 )
          IF( TSTERR )
-     $      CALL SERRGG( 'GQR', NOUT )
-         CALL SCKGQR( NN, MVAL, NN, PVAL, NN, NVAL, NTYPES, ISEED,
+     $      CALL CERRGG( 'GQR', NOUT )
+         CALL CCKGQR( NN, MVAL, NN, PVAL, NN, NVAL, NTYPES, ISEED,
      $                THRESH, NMAX, A( 1, 1 ), A( 1, 2 ), A( 1, 3 ),
      $                A( 1, 4 ), TAUA, B( 1, 1 ), B( 1, 2 ), B( 1, 3 ),
-     $                B( 1, 4 ), B( 1, 5 ), TAUB, WORK, D( 1, 1 ), NIN,
+     $                B( 1, 4 ), B( 1, 5 ), TAUB, WORK, DR( 1, 1 ), NIN,
      $                NOUT, INFO )
          IF( INFO.NE.0 )
-     $      WRITE( NOUT, FMT = 9980 )'SCKGQR', INFO
+     $      WRITE( NOUT, FMT = 9980 )'CCKGQR', INFO
 *
       ELSE IF( LSAMEN( 3, C3, 'GSV' ) ) THEN
 *
@@ -2387,16 +2424,16 @@
 *        GSV:  Generalized Singular Value Decomposition
 *        ----------------------------------------------
 *
-         CALL XLAENV( 1, 1 )
+         CALL XLAENV(1,1)
          IF( TSTERR )
-     $      CALL SERRGG( 'GSV', NOUT )
-         CALL SCKGSV( NN, MVAL, PVAL, NVAL, NTYPES, ISEED, THRESH, NMAX,
+     $      CALL CERRGG( 'GSV', NOUT )
+         CALL CCKGSV( NN, MVAL, PVAL, NVAL, NTYPES, ISEED, THRESH, NMAX,
      $                A( 1, 1 ), A( 1, 2 ), B( 1, 1 ), B( 1, 2 ),
-     $                A( 1, 3 ), B( 1, 3 ), A( 1, 4 ), TAUA, TAUB,
-     $                B( 1, 4 ), IWORK, WORK, D( 1, 1 ), NIN, NOUT,
+     $                A( 1, 3 ), B( 1, 3 ), A( 1, 4 ), ALPHA, BETA,
+     $                B( 1, 4 ), IWORK, WORK, DR( 1, 1 ), NIN, NOUT,
      $                INFO )
          IF( INFO.NE.0 )
-     $      WRITE( NOUT, FMT = 9980 )'SCKGSV', INFO
+     $      WRITE( NOUT, FMT = 9980 )'CCKGSV', INFO
 *
       ELSE IF( LSAMEN( 3, C3, 'CSD' ) ) THEN
 *
@@ -2406,13 +2443,13 @@
 *
          CALL XLAENV(1,1)
          IF( TSTERR )
-     $      CALL SERRGG( 'CSD', NOUT )
-         CALL SCKCSD( NN, MVAL, PVAL, NVAL, NTYPES, ISEED, THRESH, NMAX,
+     $      CALL CERRGG( 'CSD', NOUT )
+         CALL CCKCSD( NN, MVAL, PVAL, NVAL, NTYPES, ISEED, THRESH, NMAX,
      $                A( 1, 1 ), A( 1, 2 ), A( 1, 3 ), A( 1, 4 ),
-     $                A( 1, 5 ), A( 1, 6 ), A( 1, 7 ), IWORK, WORK,
-     $                D( 1, 1 ), NIN, NOUT, INFO )
+     $                A( 1, 5 ), A( 1, 6 ), RWORK, IWORK, WORK,
+     $                DR( 1, 1 ), NIN, NOUT, INFO )
          IF( INFO.NE.0 )
-     $      WRITE( NOUT, FMT = 9980 )'SCKCSD', INFO
+     $      WRITE( NOUT, FMT = 9980 )'CCKCSD', INFO
 *
       ELSE IF( LSAMEN( 3, C3, 'LSE' ) ) THEN
 *
@@ -2422,24 +2459,30 @@
 *
          CALL XLAENV( 1, 1 )
          IF( TSTERR )
-     $      CALL SERRGG( 'LSE', NOUT )
-         CALL SCKLSE( NN, MVAL, PVAL, NVAL, NTYPES, ISEED, THRESH, NMAX,
+     $      CALL CERRGG( 'LSE', NOUT )
+         CALL CCKLSE( NN, MVAL, PVAL, NVAL, NTYPES, ISEED, THRESH, NMAX,
      $                A( 1, 1 ), A( 1, 2 ), B( 1, 1 ), B( 1, 2 ), X,
-     $                WORK, D( 1, 1 ), NIN, NOUT, INFO )
+     $                WORK, DR( 1, 1 ), NIN, NOUT, INFO )
          IF( INFO.NE.0 )
-     $      WRITE( NOUT, FMT = 9980 )'SCKLSE', INFO
-*
+     $      WRITE( NOUT, FMT = 9980 )'CCKLSE', INFO
       ELSE
          WRITE( NOUT, FMT = * )
          WRITE( NOUT, FMT = * )
          WRITE( NOUT, FMT = 9992 )C3
       END IF
-      IF( .NOT.( SGX .OR. SXV ) )
+      IF( .NOT.( CGX .OR. CXV ) )
      $   GO TO 190
   380 CONTINUE
       WRITE( NOUT, FMT = 9994 )
       S2 = SECOND( )
-      WRITE( NOUT, FMT = 9993 )S2 - S1
+      WRITE( NOUT, FMT = 9993 )S2 - S1    
+*
+      DEALLOCATE (S, STAT = AllocateStatus)
+      DEALLOCATE (A, STAT = AllocateStatus)
+      DEALLOCATE (B, STAT = AllocateStatus)
+      DEALLOCATE (C, STAT = AllocateStatus)
+      DEALLOCATE (RWORK, STAT = AllocateStatus)
+      DEALLOCATE (WORK,  STAT = AllocateStatus)
 *
  9999 FORMAT( / ' Execution not attempted due to input errors' )
  9997 FORMAT( / / 1X, A3, ':  NB =', I4, ', NBMIN =', I4, ', NX =', I4 )
@@ -2458,7 +2501,7 @@
  9988 FORMAT( ' Invalid input value: ', A, '=', I6, '; must be <=',
      $      I6 )
  9987 FORMAT( ' Tests of the Nonsymmetric Eigenvalue Problem routines' )
- 9986 FORMAT( ' Tests of the Symmetric Eigenvalue Problem routines' )
+ 9986 FORMAT( ' Tests of the Hermitian Eigenvalue Problem routines' )
  9985 FORMAT( ' Tests of the Singular Value Decomposition routines' )
  9984 FORMAT( / ' The following parameter values will be used:' )
  9983 FORMAT( 4X, A, 10I6, / 10X, 10I6 )
@@ -2467,19 +2510,19 @@
  9981 FORMAT( ' Relative machine ', A, ' is taken to be', E16.6 )
  9980 FORMAT( ' *** Error code from ', A, ' = ', I4 )
  9979 FORMAT( / ' Tests of the Nonsymmetric Eigenvalue Problem Driver',
-     $      / '    SGEEV (eigenvalues and eigevectors)' )
+     $      / '    CGEEV (eigenvalues and eigevectors)' )
  9978 FORMAT( / ' Tests of the Nonsymmetric Eigenvalue Problem Driver',
-     $      / '    SGEES (Schur form)' )
+     $      / '    CGEES (Schur form)' )
  9977 FORMAT( / ' Tests of the Nonsymmetric Eigenvalue Problem Expert',
-     $      ' Driver', / '    SGEEVX (eigenvalues, eigenvectors and',
+     $      ' Driver', / '    CGEEVX (eigenvalues, eigenvectors and',
      $      ' condition numbers)' )
  9976 FORMAT( / ' Tests of the Nonsymmetric Eigenvalue Problem Expert',
-     $      ' Driver', / '    SGEESX (Schur form and condition',
+     $      ' Driver', / '    CGEESX (Schur form and condition',
      $      ' numbers)' )
  9975 FORMAT( / ' Tests of the Generalized Nonsymmetric Eigenvalue ',
      $      'Problem routines' )
- 9974 FORMAT( ' Tests of SSBTRD', / ' (reduction of a symmetric band ',
-     $      'matrix to tridiagonal form)' )
+ 9974 FORMAT( ' Tests of CHBTRD', / ' (reduction of a Hermitian band ',
+     $      'matrix to real tridiagonal form)' )
  9973 FORMAT( / 1X, 71( '-' ) )
  9972 FORMAT( / ' LAPACK VERSION ', I1, '.', I1, '.', I1 )
  9971 FORMAT( / ' Tests of the Generalized Linear Regression Model ',
@@ -2488,23 +2531,23 @@
  9969 FORMAT( / ' Tests of the Generalized Singular Value',
      $      ' Decomposition routines' )
  9968 FORMAT( / ' Tests of the Linear Least Squares routines' )
- 9967 FORMAT( ' Tests of SGBBRD', / ' (reduction of a general band ',
+ 9967 FORMAT( ' Tests of CGBBRD', / ' (reduction of a general band ',
      $      'matrix to real bidiagonal form)' )
  9966 FORMAT( / / 1X, A3, ':  NRHS =', I4 )
  9965 FORMAT( / ' Tests of the Generalized Nonsymmetric Eigenvalue ',
-     $      'Problem Expert Driver SGGESX' )
+     $      'Problem Expert Driver CGGESX' )
  9964 FORMAT( / ' Tests of the Generalized Nonsymmetric Eigenvalue ',
-     $      'Problem Driver SGGES' )
+     $      'Problem Driver CGGES' )
  9963 FORMAT( / ' Tests of the Generalized Nonsymmetric Eigenvalue ',
-     $      'Problem Driver SGGEV' )
+     $      'Problem Driver CGGEV' )
  9962 FORMAT( / ' Tests of the Generalized Nonsymmetric Eigenvalue ',
-     $      'Problem Expert Driver SGGEVX' )
+     $      'Problem Expert Driver CGGEVX' )
  9961 FORMAT( / / 1X, A3, ':  NB =', I4, ', NBMIN =', I4, ', NX =', I4,
      $      ', INMIN=', I4,
      $      ', INWIN =', I4, ', INIBL =', I4, ', ISHFTS =', I4,
      $      ', IACC22 =', I4)
  9960 FORMAT( / ' Tests of the CS Decomposition routines' )
 *
-*     End of SCHKEE
+*     End of CCHKEE
 *
       END

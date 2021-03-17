@@ -21,6 +21,8 @@ ifeq ($(ARCH), amd64)
 override ARCH=x86_64
 else ifeq ($(ARCH), powerpc64)
 override ARCH=power
+else ifeq ($(ARCH), powerpc64le)
+override ARCH=power
 else ifeq ($(ARCH), powerpc)
 override ARCH=power
 else ifeq ($(ARCH), i386)
@@ -181,7 +183,7 @@ endif
 
 # On x86_64 build getarch with march=native unless the compiler is PGI. This is required to detect AVX512 support in getarch.
 ifeq ($(HOSTARCH), x86_64)
-ifeq ($(findstring pgcc,$(HOSTCC)),)
+ifeq ($(findstring pgcc,$(HOSTCC))$(findstring nvc,$(HOSTCC)),)
 GETARCH_FLAGS += -march=native
 endif
 endif
@@ -623,6 +625,11 @@ DYNAMIC_CORE += THUNDERX2T99
 DYNAMIC_CORE += TSV110
 DYNAMIC_CORE += EMAG8180
 DYNAMIC_CORE += THUNDERX3T110
+ifdef DYNAMIC_LIST
+override DYNAMIC_CORE = ARMV8 $(DYNAMIC_LIST)
+XCCOMMON_OPT = -DDYNAMIC_LIST -DDYN_ARMV8
+XCCOMMON_OPT += $(foreach dcore,$(DYNAMIC_LIST),-DDYN_$(dcore))
+endif
 endif
 
 ifeq ($(ARCH), mips64)
@@ -663,6 +670,7 @@ endif
 endif # ARCH zarch
 
 ifeq ($(ARCH), power)
+ifneq ($(C_COMPILER), PGI)
 DYNAMIC_CORE = POWER6
 DYNAMIC_CORE += POWER8
 ifneq ($(C_COMPILER), GCC)
@@ -688,6 +696,10 @@ endif
 else
 $(info, OpenBLAS: Your gcc version is too old to build the POWER10 kernels.)
 endif
+endif
+else
+DYNAMIC_CORE = POWER8
+DYNAMIC_CORE += POWER9
 endif
 endif
 
@@ -847,9 +859,19 @@ endif
 endif
 
 ifeq ($(C_COMPILER), PGI)
+PGCVERSIONGT20 := $(shell expr `$(CC) --version|sed -n "2p" |sed -e "s/[^0-9.]//g" |cut -d "." -f 1` \> 20)
+PGCVERSIONGTEQ20 := $(shell expr `$(CC) --version|sed -n "2p" |sed -e "s/[^0-9.]//g" |cut -d "." -f 1` \>= 20)
+PGCMINORVERSIONGE11 := $(shell expr `$(CC) --version|sed -n "2p" |sed -e "s/[^0-9.]//g" |cut -c 4-5` == 11)
+PGCVERSIONCHECK := $(PGCVERSIONGT20)$(PGCVERSIONEQ20)$(PGCMINORVERSIONGE11)
+ifeq ($(PGCVERSIONCHECK), $(filter $(PGCVERSIONCHECK), 110 111 011))
+NEWPGI := 1
+endif
 ifdef BINARY64
 ifeq ($(ARCH), x86_64)
-CCOMMON_OPT += -tp p7-64 -D__MMX__ -Mnollvm
+CCOMMON_OPT += -tp p7-64
+ifneq ($(NEWPGI),1)
+CCOMMON_OPT +=  -D__MMX__ -Mnollvm
+endif
 else
 ifeq ($(ARCH), power)
 ifeq ($(CORE), POWER8)
@@ -877,13 +899,25 @@ endif
 #  Fortran Compiler dependent settings
 #
 
+ifeq ($(F_COMPILER), NAG)
+FCOMMON_OPT += -dcfuns -recursive -ieee=full -w=obs -thread_safe
+ifdef INTERFACE64
+ifneq ($(INTERFACE64), 0)
+FCOMMON_OPT += -i8
+endif
+endif
+ifeq ($(USE_OPENMP), 1)
+FCOMMON_OPT += -openmp
+endif
+endif
+
 ifeq ($(F_COMPILER), FLANG)
 CCOMMON_OPT += -DF_INTERFACE_FLANG
 FCOMMON_OPT += -Mrecursive -Kieee
 ifeq ($(OSNAME), Linux)
 ifeq ($(ARCH), x86_64)
-FLANG_VENDOR := $(shell `$(FC) --version|cut -f 1 -d "."|head -1`)
-ifeq ($(FLANG_VENDOR),AOCC)
+FLANG_VENDOR := $(shell $(FC) --version|head -1 |cut -f 1 -d " ")
+ifeq ($(FLANG_VENDOR), AMD)
 FCOMMON_OPT += -fno-unroll-loops
 endif
 endif
@@ -1029,18 +1063,24 @@ ifeq ($(ARCH), x86_64)
 FCOMMON_OPT += -tp p7-64
 else
 ifeq ($(ARCH), power)
+ifeq ($(CORE), POWER6)
+$(warning NVIDIA HPC compilers do not support POWER6.)
+endif
 ifeq ($(CORE), POWER8)
 FCOMMON_OPT += -tp pwr8
 endif
 ifeq ($(CORE), POWER9)
 FCOMMON_OPT += -tp pwr9
 endif
+ifeq ($(CORE), POWER10)
+$(warning NVIDIA HPC compilers do not support POWER10.)
+endif
 endif
 endif
 else
 FCOMMON_OPT += -tp p7
 endif
-FCOMMON_OPT += -Mrecursive
+FCOMMON_OPT += -Mrecursive -Kieee
 ifeq ($(USE_OPENMP), 1)
 FCOMMON_OPT += -mp
 endif
@@ -1179,6 +1219,8 @@ CCOMMON_OPT += -fPIC
 endif
 ifeq ($(F_COMPILER), SUN)
 FCOMMON_OPT  += -pic
+else ifeq ($(F_COMPILER), NAG)
+FCOMMON_OPT += -PIC
 else
 FCOMMON_OPT += -fPIC
 endif
@@ -1254,6 +1296,10 @@ endif
 ifdef USE_PAPI
 CCOMMON_OPT	 += -DUSE_PAPI
 EXTRALIB	 += -lpapi -lperfctr
+endif
+
+ifdef BUFFERSIZE
+CCOMMON_OPT	 += -DBUFFERSIZE=$(BUFFERSIZE)
 endif
 
 ifdef DYNAMIC_THREADS
@@ -1431,6 +1477,10 @@ LAPACK_FPFLAGS := $(filter-out -fopenmp -mp -openmp -xopenmp=parallel,$(FPFLAGS)
 else
 LAPACK_FFLAGS := $(FFLAGS)
 LAPACK_FPFLAGS := $(FPFLAGS)
+endif
+
+ifeq ($(F_COMPILER),NAG)
+LAPACK_FFLAGS := $(filter-out -msse3 -mssse3 -msse4.1 -mavx -mavx2 -mskylake-avx512 ,$(FFLAGS))
 endif
 
 LAPACK_CFLAGS = $(CFLAGS)
