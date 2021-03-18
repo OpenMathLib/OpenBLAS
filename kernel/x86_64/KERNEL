@@ -491,4 +491,3 @@ SSUMKERNEL = ../arm/sum.c
 DSUMKERNEL = ../arm/sum.c
 
 SOMATCOPY_RT = omatcopy_rt.c
-DOMATCOPY_RT = omatcopy_rt.c
