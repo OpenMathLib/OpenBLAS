@@ -1,10 +1,10 @@
 /* the direct sgemm code written by Arjan van der Ven */
-
+#include "common.h"
 
 #if defined(SKYLAKEX) || defined (COOPERLAKE)
 
 #include <immintrin.h>
-#include "common.h"
+
 
 /*
  * "Direct sgemm" code. This code operates directly on the inputs and outputs
@@ -472,7 +472,7 @@ void CNAME (BLASLONG M, BLASLONG N, BLASLONG K, float * __restrict A, BLASLONG s
 	}
 }
 #else
-#include "common.h"
+
 void CNAME (BLASLONG M, BLASLONG N, BLASLONG K, float * __restrict A, BLASLONG strideA, float * __restrict B, BLASLONG strideB , float * __restrict R, BLASLONG strideR)
 {}
 #endif
