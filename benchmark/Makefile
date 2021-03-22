@@ -3434,7 +3434,7 @@ smallscaling: smallscaling.c ../$(LIBNAME)
 	$(CC) $(CFLAGS) -o $(@F) $^ $(EXTRALIB) -fopenmp -lm -lpthread
 
 sgemv_bench : sgemv_bench.c ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+	$(CC) $(CFLAGS) -I. -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 	./sgemv_bench
 	
 
