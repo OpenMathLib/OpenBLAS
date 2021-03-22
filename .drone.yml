@@ -166,6 +166,7 @@ steps:
     - make -C ctest $COMMON_FLAGS
     - make -C utest $COMMON_FLAGS
     - make -C cpp_thread_test dgemm_tester
+    - make -C benchmark $COMMON_FLAGS sgemv_bench
 ---
 kind: pipeline
 name: epyc_native_test
@@ -190,6 +191,7 @@ steps:
     - make -C ctest $COMMON_FLAGS
     - make -C utest $COMMON_FLAGS
     - make -C cpp_thread_test dgemm_tester
+    - make -C benchmark $COMMON_FLAGS sgemv_bench
 ---
 kind: pipeline
 name: arm64_gcc10
