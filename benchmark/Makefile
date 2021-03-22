@@ -3433,6 +3433,10 @@ dznrm2.$(SUFFIX) : nrm2.c
 smallscaling: smallscaling.c ../$(LIBNAME)
 	$(CC) $(CFLAGS) -o $(@F) $^ $(EXTRALIB) -fopenmp -lm -lpthread
 
+sgemv_bench : sgemv_bench.c ../$(LIBNAME)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+	
+
 clean ::
 	@rm -f *.goto *.mkl *.acml *.atlas *.veclib *.essl smallscaling
 
