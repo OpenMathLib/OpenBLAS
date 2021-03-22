@@ -220,7 +220,7 @@ void CNAME(enum CBLAS_ORDER order,
 #ifdef SMP
 
   //if ( 1L * m * n < 2304L * GEMM_MULTITHREAD_THRESHOLD * 1500 )
-#ifdef SINGLE
+#ifndef DOUBLE
   if ( 1L * m * n < 2304L * GEMM_MULTITHREAD_THRESHOLD * 1500 )
     nthreads = 1;
   else if ( 1L * m * n < 2304L * GEMM_MULTITHREAD_THRESHOLD * 5000 ) {
