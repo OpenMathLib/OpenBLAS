@@ -219,11 +219,21 @@ void CNAME(enum CBLAS_ORDER order,
 
 #ifdef SMP
 
+  //if ( 1L * m * n < 2304L * GEMM_MULTITHREAD_THRESHOLD * 1500 )
+#ifdef SINGLE
+  if ( 1L * m * n < 2304L * GEMM_MULTITHREAD_THRESHOLD * 1500 )
+    nthreads = 1;
+  else if ( 1L * m * n < 2304L * GEMM_MULTITHREAD_THRESHOLD * 5000 ) {
+    nthreads = 2;
+  } else {
+#else
   if ( 1L * m * n < 2304L * GEMM_MULTITHREAD_THRESHOLD )
     nthreads = 1;
-  else
+  else {
+#endif
     nthreads = num_cpu_avail(2);
-
+fprintf(stderr, "m %d n %d nthreads %d\n",m,n,nthreads);
+  }
   if (nthreads == 1) {
 #endif
 
