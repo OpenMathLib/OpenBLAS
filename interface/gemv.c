@@ -221,18 +221,13 @@ void CNAME(enum CBLAS_ORDER order,
 
   //if ( 1L * m * n < 2304L * GEMM_MULTITHREAD_THRESHOLD * 1500 )
 #ifndef DOUBLE
-  if ( 1L * m * n < 2304L * GEMM_MULTITHREAD_THRESHOLD * 1500 )
-    nthreads = 1;
-  else if ( 1L * m * n < 2304L * GEMM_MULTITHREAD_THRESHOLD * 5000 ) {
-    nthreads = 2;
-  } else {
+  if ( 1L * m * n < 2304L * GEMM_MULTITHREAD_THRESHOLD * 750 )
 #else
   if ( 1L * m * n < 2304L * GEMM_MULTITHREAD_THRESHOLD )
+#endif
     nthreads = 1;
   else {
-#endif
     nthreads = num_cpu_avail(2);
-fprintf(stderr, "m %d n %d nthreads %d\n",m,n,nthreads);
   }
   if (nthreads == 1) {
 #endif
