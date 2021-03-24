@@ -74,8 +74,7 @@ jobs:
   steps:   
   - script: |
       brew update
-      brew install gcc@10
-      make TARGET=CORE2 DYNAMIC_ARCH=1 USE_OPENMP=1 CC=gcc
+      make TARGET=CORE2 DYNAMIC_ARCH=1 USE_OPENMP=1 CC=gcc-10
       
       
        
