@@ -68,4 +68,10 @@ jobs:
       dir
       openblas_utest.exe
   
-      
+- job: OSX_OpenMP
+  pool:
+     vmImage: 'macOS-10.15'
+  steps:   
+  - script: |
+      make TARGET=CORE2 DYNAMIC_ARCH=1 USE_OPENMP=1
+       
