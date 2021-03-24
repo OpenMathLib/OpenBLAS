@@ -80,8 +80,8 @@ jobs:
   pool:
      vmImage: 'macOS-10.15'
   variables:
-     LD_LIBRARY_PATH=/usr/local/opt/llvm/lib
-     LIBRARY_PATH=/usr/local/opt/llvm/lib
+     LD_LIBRARY_PATH: /usr/local/opt/llvm/lib
+     LIBRARY_PATH: /usr/local/opt/llvm/lib
   steps:   
   - script: |
       brew update
