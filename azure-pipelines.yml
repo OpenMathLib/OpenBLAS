@@ -73,6 +73,9 @@ jobs:
      vmImage: 'macOS-10.15'
   steps:   
   - script: |
-      make TARGET=CORE2 DYNAMIC_ARCH=1 USE_OPENMP=1 CC=clang
+      brew update
+      brew install gcc@10
+      make TARGET=CORE2 DYNAMIC_ARCH=1 USE_OPENMP=1 CC=gcc
+      
       
        
