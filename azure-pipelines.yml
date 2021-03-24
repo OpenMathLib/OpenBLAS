@@ -76,7 +76,7 @@ jobs:
       brew update
       make TARGET=CORE2 DYNAMIC_ARCH=1 USE_OPENMP=1 CC=gcc-10 FC=gfortran-10
       
-    - job: OSX_OpenMP_Clang
+- job: OSX_OpenMP_Clang
   pool:
      vmImage: 'macOS-10.15'
   steps:   
