@@ -86,6 +86,6 @@ jobs:
   - script: |
       brew update
       brew install llvm libomp
-      make TARGET=CORE2 USE_OPENMP=1 INTERFACE64=1 DEBUG=1 CC=/usr/local/opt/llvm/bin/clang FC=gfortran-10
+      make TARGET=CORE2 USE_OPENMP=1 INTERFACE64=1 CC=/usr/local/opt/llvm/bin/clang FC=gfortran-10
         
        
