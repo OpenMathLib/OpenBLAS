@@ -270,11 +270,6 @@ All rights reserved.
 	ldr	s1, [A02]
 	ldr	s2, [A03]
 	ldr	s3, [A04]
-	
-	add	A01, A01, #4
-	add	A02, A02, #4
-	add	A03, A03, #4
-	add	A04, A04, #4
 
 	stp	s0, s1, [B04]
 	add	B04, B04, #8
@@ -285,11 +280,6 @@ All rights reserved.
 	ldr	s5, [A06]
 	ldr	s6, [A07]
 	ldr	s7, [A08]
-	
-	ldr	d4, [A05], #8
-	ldr	d5, [A06], #8
-	ldr	d6, [A07], #8
-	ldr	d7, [A08], #8
 
 	stp	s4, s5, [B04]
 	add	B04, B04, #8
