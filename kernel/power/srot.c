@@ -42,8 +42,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #if defined(__VEC__) || defined(__ALTIVEC__)
 #if defined(POWER8) || defined(POWER9)
 #include "srot_microk_power8.c"
-#elif defined(POWER10)
+#elif defined(POWER10) && (__BYTE_ORDER__ != __ORDER_BIG_ENDIAN__)
 #include "srot_microk_power10.c"
+#elif defined(POWER10)
+#include "srot_microk_power8.c"
 #endif
 #endif
 
@@ -117,7 +119,7 @@ int CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG inc_y, FLOAT 
 	if ( (inc_x == 1) && (inc_y == 1) )
 	{
 
-#if defined(POWER10)
+#if defined(POWER10) && (__BYTE_ORDER__ != __ORDER_BIG_ENDIAN__)
 		if ( n >= 16 )
 		{
 			BLASLONG align = ((32 - ((uintptr_t)y & (uintptr_t)0x1F)) >> 2) & 0x7;
