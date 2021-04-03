@@ -8,6 +8,20 @@ endif
 endif
 endif
 
+
+ifndef DYNAMIC_ARCH
+define ADD_CPUFLAGS
+1
+endef
+else
+ifdef TARGET_CORE
+define ADD_CPUFLAGS
+1
+endef
+endif
+endif
+
+ifdef ADD_CPUFLAGS
 ifdef HAVE_SSE3
 CCOMMON_OPT += -msse3
 ifneq ($(F_COMPILER), NAG)
@@ -44,7 +58,6 @@ endif
 endif
 
 ifeq ($(CORE), SKYLAKEX)
-ifndef DYNAMIC_ARCH
 ifndef NO_AVX512
 CCOMMON_OPT += -march=skylake-avx512
 ifneq ($(F_COMPILER), NAG)
@@ -62,10 +75,8 @@ endif
 endif
 endif
 endif
-endif
 
 ifeq ($(CORE), COOPERLAKE)
-ifndef DYNAMIC_ARCH
 ifndef NO_AVX512
 ifeq ($(C_COMPILER), GCC)
 # cooperlake support was added in 10.1
@@ -84,7 +95,6 @@ ifeq ($(OSNAME), WINNT)
 ifeq ($(C_COMPILER), GCC)
 CCOMMON_OPT += -fno-asynchronous-unwind-tables
 FCOMMON_OPT += -fno-asynchronous-unwind-tables
-endif
 endif
 endif
 endif
@@ -120,6 +130,7 @@ endif
 endif
 endif
 
+endif
 
 
 ifeq ($(OSNAME), Interix)
