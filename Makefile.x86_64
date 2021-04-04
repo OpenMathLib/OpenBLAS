@@ -10,14 +10,10 @@ endif
 
 
 ifndef DYNAMIC_ARCH
-define ADD_CPUFLAGS
-1
-endef
+ADD_CPUFLAGS = 1
 else
 ifdef TARGET_CORE
-define ADD_CPUFLAGS
-1
-endef
+ADD_CPUFLAGS = 1
 endif
 endif
 
