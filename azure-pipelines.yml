@@ -93,7 +93,7 @@ jobs:
   steps:   
   - script: |
       brew update
-      brew install llvm libomp
+      brew install llvm libomp valgrind
       make TARGET=CORE2 NO_AVX512=1 USE_OPENMP=1 INTERFACE64=1 DYNAMIC_ARCH=1 DEBUG=1 CC=/usr/local/opt/llvm/bin/clang FC=gfortran-10
-        
+      cd ctest; valgrind ./xscblat2 <sin2  
        
