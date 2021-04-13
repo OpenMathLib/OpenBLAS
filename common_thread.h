@@ -151,7 +151,7 @@ static __inline int num_cpu_avail(int level) {
       ) return 1;        
 
 #ifdef USE_OPENMP
-	openmp_nthreads = omp_get_max_threads();
+	openmp_nthreads = 2; //omp_get_max_threads();
   if (blas_cpu_number != openmp_nthreads) {
 	  goto_set_num_threads(openmp_nthreads);
   }
