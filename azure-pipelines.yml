@@ -94,5 +94,5 @@ jobs:
   - script: |
       brew update
       brew install llvm libomp
-      make TARGET=CORE2 NO_AVX512=1 USE_OPENMP=1 INTERFACE64=1 DYNAMIC_ARCH=1 DEBUG=1 CC=/usr/local/opt/llvm/bin/clang FC=gfortran-10
+      make TARGET=SANDYBRIDGE NO_AVX512=1 USE_OPENMP=1 INTERFACE64=1 DYNAMIC_ARCH=1 DEBUG=1 CC=/usr/local/opt/llvm/bin/clang FC=gfortran-10
     
