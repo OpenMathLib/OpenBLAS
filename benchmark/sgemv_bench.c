@@ -6,7 +6,7 @@
 #include <cblas.h>
 
 int main(int argc, char** argv)
-
+{
 
 double time1, timeg;
 
