@@ -125,7 +125,7 @@ free(data);
 }
 
 
-for (int j = 0; j < 16; ++j) {
+for (int j = 0; j < 12; ++j) {
 
 m = 16 << j;
 
