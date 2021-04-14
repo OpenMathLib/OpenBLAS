@@ -96,7 +96,7 @@ jobs:
       brew install llvm libomp
       brew tap LouisBrunner/valgrind
       brew install --HEAD LouisBrunner/valgrind/valgrind
-      make TARGET=SANDYBRIDGE NO_AVX512=1 USE_OPENMP=1 INTERFACE64=1 DYNAMIC_ARCH=1 DEBUG=1 CC=/usr/local/opt/llvm/bin/clang FC=gfortran-10
+      make TARGET=SANDYBRIDGE NO_AVX512=1 USE_OPENMP=1 INTERFACE64=1 DYNAMIC_ARCH=1 DEBUG=1 NO_PARALLEL_MAKE=1 CC=/usr/local/opt/llvm/bin/clang FC=gfortran-10
       ls libopenb*
       nm ./libopenblas.a|grep sgemm
       cd ctest; OMP_NUM_THREADS=2 valgrind ./xscblat2 <sin2; valgrind ./xscblat3 <sin3
