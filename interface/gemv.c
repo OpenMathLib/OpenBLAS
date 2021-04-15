@@ -141,7 +141,6 @@ void CNAME(enum CBLAS_ORDER order,
   int (*gemv[])(BLASLONG, BLASLONG, BLASLONG, FLOAT, FLOAT *, BLASLONG,  FLOAT * , BLASLONG, FLOAT *, BLASLONG, FLOAT *) = {
     GEMV_N, GEMV_T,
   };
-fprintf(stderr,"interface for CBLAS_?GEMV starting, order=%d trans=%d m=%ld n=%ld\n",order,trans,m,n);
   PRINT_DEBUG_CNAME;
 
   trans = -1;
@@ -186,10 +185,12 @@ fprintf(stderr,"interface for CBLAS_?GEMV starting, order=%d trans=%d m=%ld n=%l
   }
 
   if (info >= 0) {
+	  fprintf(stderr,"CBLAS_?GEMV trying to call XERBLA\n");
     BLASFUNC(xerbla)(ERROR_NAME, &info, sizeof(ERROR_NAME));
     return;
   }
 
+fprintf(stderr,"interface for CBLAS_?GEMV starting, order=%d trans=%d m=%ld n=%ld\n",order,trans,m,n);
 #endif
   if ((m==0) || (n==0)) return;
 
@@ -198,8 +199,11 @@ fprintf(stderr,"interface for CBLAS_?GEMV starting, order=%d trans=%d m=%ld n=%l
   if (trans) lenx = m;
   if (trans) leny = n;
 
-  if (beta != ONE) SCAL_K(leny, 0, 0, beta, y, blasabs(incy), NULL, 0, NULL, 0);
-
+  if (beta != ONE) {
+	  fprintf(stderr,"CBLAS_?GEMV calling SCAL_K\n");
+	  SCAL_K(leny, 0, 0, beta, y, blasabs(incy), NULL, 0, NULL, 0);
+	  fprintf(stderr,"CBLAS_?GEMV done calling SCAL_K\n");
+  }
   if (alpha == ZERO) return;
 
   IDEBUG_START;
@@ -223,17 +227,18 @@ fprintf(stderr,"interface for CBLAS_?GEMV starting, order=%d trans=%d m=%ld n=%l
     nthreads = 1;
   else
     nthreads = num_cpu_avail(2);
-
+fprintf(stderr,"CBLAS_?GEMV, nthreads=%d\n",nthreads);
   if (nthreads == 1) {
 #endif
-
+fprintf(stderr,"CBLAS_?GEMV singlethreaded, calling gemv[%d]\n",(int)trans);
     (gemv[(int)trans])(m, n, 0, alpha, a, lda, x, incx, y, incy, buffer);
-
+fprintf(stderr,"CBLAS_?GEMV done calling gemv\n");
 #ifdef SMP
   } else {
+fprintf(stderr,"CBLAS_?GEMV multithreaded, calling gemv_thread[%d]\n",(int)trans);
 
     (gemv_thread[(int)trans])(m, n, alpha, a, lda, x, incx, y, incy, buffer, nthreads);
-
+fprintf(stderr,"CBLAS_?GEMV done calling gemv_thread\n");
   }
 #endif
 
