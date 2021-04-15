@@ -5,6 +5,7 @@
  *     Modified by T. H. Do, 1/23/98, SGI/CRAY Research.
  */
 #include <stdlib.h>
+#include <stdio.h>
 #include "common.h"
 #include "cblas_test.h"
 
@@ -23,16 +24,23 @@ void F77_sgemv(blasint *order, char *transp, blasint *m, blasint *n, float *alph
      for( i=0; i<*m; i++ )
         for( j=0; j<*n; j++ )
            A[ LDA*i+j ]=a[ (*lda)*j+i ];
+   fprintf(stderr,"calling cblas_sgemv ROW from c_cblas2.c\n");	  
      cblas_sgemv( CblasRowMajor, trans,
 		  *m, *n, *alpha, A, LDA, x, *incx, *beta, y, *incy );
+	  fprintf(stderr,"calling cblas_sgemv ROW from c_cblas2.c done\n");
      free(A);
   }
-  else if (*order == TEST_COL_MJR)
+  else if (*order == TEST_COL_MJR) {
+	  fprintf(stderr,"calling cblas_sgemv COL from c_cblas2.c\n");
      cblas_sgemv( CblasColMajor, trans,
 		  *m, *n, *alpha, a, *lda, x, *incx, *beta, y, *incy );
-  else
+	  fprintf(stderr,"calling cblas_sgemv COL from c_cblas2.c done\n");
+  } else {
+	  fprintf(stderr,"calling cblas_sgemv UNDEF from c_cblas2.c\n");
      cblas_sgemv( UNDEFINED, trans,
 		  *m, *n, *alpha, a, *lda, x, *incx, *beta, y, *incy );
+	  fprintf(stderr,"calling cblas_sgemv UNDEF from c_cblas2.c done\n");
+  }
 }
 
 void F77_sger(blasint *order, blasint *m, blasint *n, float *alpha, float *x, blasint *incx,
