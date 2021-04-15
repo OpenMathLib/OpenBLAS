@@ -141,7 +141,7 @@ void CNAME(enum CBLAS_ORDER order,
   int (*gemv[])(BLASLONG, BLASLONG, BLASLONG, FLOAT, FLOAT *, BLASLONG,  FLOAT * , BLASLONG, FLOAT *, BLASLONG, FLOAT *) = {
     GEMV_N, GEMV_T,
   };
-
+fprintf(stderr,"interface for %s starting, order=%d trans=%d m=%ld n=%ld\n",CHAR_CNAME,order,trans,m,n);
   PRINT_DEBUG_CNAME;
 
   trans = -1;
