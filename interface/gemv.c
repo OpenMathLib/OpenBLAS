@@ -198,13 +198,13 @@ fprintf(stderr,"interface for CBLAS_?GEMV starting, order=%d trans=%d m=%ld n=%l
   leny = m;
   if (trans) lenx = m;
   if (trans) leny = n;
-
+  if (alpha == ZERO) return;
   if (beta != ONE) {
 	  fprintf(stderr,"CBLAS_?GEMV calling SCAL_K\n");
 	  SCAL_K(leny, 0, 0, beta, y, blasabs(incy), NULL, 0, NULL, 0);
 	  fprintf(stderr,"CBLAS_?GEMV done calling SCAL_K\n");
   }
-  if (alpha == ZERO) return;
+
 
   IDEBUG_START;
 
