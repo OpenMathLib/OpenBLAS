@@ -30,7 +30,9 @@ void F77_sgemv(blasint *order, char *transp, blasint *m, blasint *n, float *alph
      free(A);
   }
   else if (*order == TEST_COL_MJR) {
-	  fprintf(stderr,"calling cblas_sgemv COL %s %d %ld %ld %f a %ld x %ld %f y %ld from c_cblas2.c\n", transp,trans,*m,*n,alpha,lda,incx,beta,incy);
+	  fprintf(stderr,"calling cblas_sgemv COL %s %d %ld %ld ...\n",transp,trans,*m,*n);
+	  fprintf(stderr,"...	 alpha=%f (a) %ld (x) %ld ...\n",*alpha,*lda,*incx);
+	  fprintf(stderr,"...    beta=%f (y) %ld from c_cblas2.c\n", *alpha,*lda,*incx,*beta,*incy);
      cblas_sgemv( CblasColMajor, trans,
 		  *m, *n, *alpha, a, *lda, x, *incx, *beta, y, *incy );
 	  fprintf(stderr,"calling cblas_sgemv COL from c_cblas2.c done\n");
