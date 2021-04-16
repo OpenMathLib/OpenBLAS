@@ -39,7 +39,6 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 int CNAME(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, FLOAT da, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG inc_y, FLOAT *dummy, BLASLONG dummy2)
 {
 	BLASLONG i=0,j=0;
-fprintf(stderr,"arm/scal.c SCAL kernel starting, scale factor is %f\n", da);
 	if ( (n <= 0) || (inc_x <= 0))
 		return(0);
 	
