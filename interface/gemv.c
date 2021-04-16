@@ -201,6 +201,7 @@ fprintf(stderr,"interface for CBLAS_?GEMV starting, order=%d trans=%d m=%ld n=%l
 
   if (beta != ONE) {
 	  fprintf(stderr,"CBLAS_?GEMV calling SCAL_K with beta=%f incy=%d\n",beta,blasabs(incy));
+	  fprintf(stderr,"SCAL_K is %x SSCAL_K %x DSCAL_K %x\n",SCAL_K,SSCAL_K,DSCAL_K);
 	  SCAL_K(leny, 0, 0, beta, y, blasabs(incy), NULL, 0, NULL, 0);
 	  fprintf(stderr,"CBLAS_?GEMV done calling SCAL_K\n");
   }
