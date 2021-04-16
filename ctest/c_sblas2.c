@@ -8,12 +8,12 @@
 #include "common.h"
 #include "cblas_test.h"
 
-void F77_sgemv(blasint *order, char *transp, blasint *m, blasint *n, float *alpha,
-	       float *a, blasint *lda, float *x, blasint *incx, float *beta,
-	       float *y, blasint *incy ) {
+void F77_sgemv(int *order, char *transp, int *m, int *n, float *alpha,
+	       float *a, int *lda, float *x, int *incx, float *beta,
+	       float *y, int *incy ) {
 
   float *A;
-  blasint i,j,LDA;
+  int i,j,LDA;
   enum CBLAS_TRANSPOSE trans;
 
   get_transpose_type(transp, &trans);
