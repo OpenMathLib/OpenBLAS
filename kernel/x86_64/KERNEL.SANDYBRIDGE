@@ -1,5 +1,3 @@
-SSCALKERNEL = ../arm/scal.c
-
 DSCALKERNEL = dscal.c
 CSCALKERNEL = cscal.c
 
