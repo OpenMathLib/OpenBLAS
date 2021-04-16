@@ -191,6 +191,7 @@ void CNAME(enum CBLAS_ORDER order,
   }
 
 fprintf(stderr,"interface for CBLAS_?GEMV starting, order=%d trans=%d m=%ld n=%ld\n",order,trans,m,n);
+	fprintf(stderr,"SCAL_K is %x SSCAL_K %x DSCAL_K %x CSCAL_K %x ZSCAL_K %x\n",SCAL_K,SSCAL_K,DSCAL_K,CSCAL_K, ZSCAL_K);
 #endif
   if ((m==0) || (n==0)) return;
 
