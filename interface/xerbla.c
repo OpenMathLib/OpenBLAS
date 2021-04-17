@@ -5,7 +5,7 @@
 #include <string.h>
 #include <stdarg.h>
 #include "common.h"
-
+__attribute__((weak))
 void CNAME(blasint p, char *rout, char *form, ...)
 {
    va_list args;
