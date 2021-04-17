@@ -113,7 +113,8 @@ void NAME(char *TRANS, blasint *M, blasint *N,
   if (i < 0)          info = 1;
 
   trans = i;
-
+fprintf(stderr,"interface for ?GEMV starting, order=%d trans=%d m=%ld n=%ld\n",order,trans,m,n);
+	fprintf(stderr,"SCAL_K is %x SSCAL_K %x DSCAL_K %x CSCAL_K %x ZSCAL_K %x\n",SCAL_K,SSCAL_K,DSCAL_K,CSCAL_K, ZSCAL_K);
   if (info != 0){
     BLASFUNC(xerbla)(ERROR_NAME, &info, sizeof(ERROR_NAME));
     return;
@@ -183,15 +184,16 @@ void CNAME(enum CBLAS_ORDER order,
     if (trans < 0)        info = 1;
 
   }
-
+fprintf(stderr,"interface for CBLAS_?GEMV starting, order=%d trans=%d m=%ld n=%ld\n",order,trans,m,n);
+	fprintf(stderr,"SCAL_K is %x SSCAL_K %x DSCAL_K %x CSCAL_K %x ZSCAL_K %x\n",SCAL_K,SSCAL_K,DSCAL_K,CSCAL_K, ZSCAL_K);
+	
   if (info >= 0) {
 	  fprintf(stderr,"CBLAS_?GEMV trying to call XERBLA\n");
     BLASFUNC(xerbla)(ERROR_NAME, &info, sizeof(ERROR_NAME));
     return;
   }
 
-fprintf(stderr,"interface for CBLAS_?GEMV starting, order=%d trans=%d m=%ld n=%ld\n",order,trans,m,n);
-	fprintf(stderr,"SCAL_K is %x SSCAL_K %x DSCAL_K %x CSCAL_K %x ZSCAL_K %x\n",SCAL_K,SSCAL_K,DSCAL_K,CSCAL_K, ZSCAL_K);
+
 #endif
   if ((m==0) || (n==0)) return;
 
