@@ -33,13 +33,13 @@ void F77_s2chke(char *rout) {
    extern int cblas_info, cblas_lerr, cblas_ok;
    extern int RowMajorStrg;
    extern char *cblas_rout;
-
+/*
    if (link_xerbla) /* call these first to link */
    {
       cblas_xerbla(cblas_info,cblas_rout,"");
       F77_xerbla(cblas_rout,&cblas_info);
    }
-
+*/
    cblas_ok = TRUE ;
    cblas_lerr = PASSED ;
 
