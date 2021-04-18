@@ -189,7 +189,7 @@ fprintf(stderr,"interface for CBLAS_?GEMV starting, order=%d trans=%d m=%ld n=%l
 	
   if (info >= 0) {
 	  fprintf(stderr,"CBLAS_?GEMV trying to call XERBLA\n");
-    //BLASFUNC(xerbla)(ERROR_NAME, &info, sizeof(ERROR_NAME));
+    BLASFUNC(xerbla)(ERROR_NAME, &info, sizeof(ERROR_NAME));
 	  fprintf(stderr,"after xerbla, SCAL_K is %x SSCAL_K %x DSCAL_K %x CSCAL_K %x ZSCAL_K %x\n",SCAL_K,SSCAL_K,DSCAL_K,CSCAL_K, ZSCAL_K);
     return;
   }
