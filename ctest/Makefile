@@ -5,7 +5,7 @@
 TOPDIR = ..
 include $(TOPDIR)/Makefile.system
 
-override CFLAGS += -DADD$(BU) -DCBLAS
+override CFLAGS += -DADD$(BU) -DCBLAS -fsanitize=address
 override TARGET_ARCH=
 override TARGET_MACH=
 
