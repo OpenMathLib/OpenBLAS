@@ -15,7 +15,7 @@ void F77_sgemv(int *order, char *transp, int *m, int *n, float *alpha,
   float *A;
   int i,j,LDA;
   enum CBLAS_TRANSPOSE trans;
-	  fprintf(stderr,"F77_gemv start gotoblas->sscal is %x\n",gotoblas->sscal_k);
+	  fprintf(stderr,"F77_gemv start gotoblas->sscal is %x\n",SSCAL_K);
   get_transpose_type(transp, &trans);
   if (*order == TEST_ROW_MJR) {
      LDA = *n+1;
@@ -33,15 +33,15 @@ void F77_sgemv(int *order, char *transp, int *m, int *n, float *alpha,
 	  fprintf(stderr,"calling cblas_sgemv COL %s %d %ld %ld ...\n",transp,trans,*m,*n);
 	  fprintf(stderr,"...	 alpha=%f (a) %ld (x) %ld ...\n",*alpha,*lda,*incx);
 	  fprintf(stderr,"...    beta=%f (y) %ld from c_cblas2.c\n", *beta,*incy);
-	  fprintf(stderr,"gotoblas->sscal is %x\n",gotoblas->sscal_k);
+	  fprintf(stderr,"gotoblas->sscal is %x\n",SSCAL_K);
      cblas_sgemv( CblasColMajor, trans,
 		  *m, *n, *alpha, a, *lda, x, *incx, *beta, y, *incy );
-	  fprintf(stderr,"calling cblas_sgemv COL from c_cblas2.c done, gotoblas->sscal now %x\n",gotoblas->sscal_k);
+	  fprintf(stderr,"calling cblas_sgemv COL from c_cblas2.c done, gotoblas->sscal now %x\n",SSCAL_K);
   } else {
-	  fprintf(stderr,"calling cblas_sgemv UNDEF from c_cblas2.c, gotoblas->sscal is %x\n",gotoblas->sscal_k);
+	  fprintf(stderr,"calling cblas_sgemv UNDEF from c_cblas2.c, gotoblas->sscal is %x\n",SSCAL_K);
      cblas_sgemv( UNDEFINED, trans,
 		  *m, *n, *alpha, a, *lda, x, *incx, *beta, y, *incy );
-	  fprintf(stderr,"calling cblas_sgemv UNDEF from c_cblas2.c done, gotoblas->sscal now %x\n",gotoblas->sscal_k);
+	  fprintf(stderr,"calling cblas_sgemv UNDEF from c_cblas2.c done, gotoblas->sscal now %x\n",SSCAL_K);
   }
 }
 
