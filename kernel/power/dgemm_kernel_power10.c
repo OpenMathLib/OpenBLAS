@@ -190,10 +190,9 @@ CNAME (BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alpha, FLOAT * A, FLOAT * B,
 	  __vector_quad acc0, acc1, acc2, acc3, acc4,acc5,acc6,acc7;
 	  BLASLONG l = 0;
 	  vec_t *rowA = (vec_t *) & AO[0];
-	  vec_t *rb = (vec_t *) & BO[0];
 	  __vector_pair rowB, rowB1;
-	  __builtin_vsx_assemble_pair (&rowB, rb[1], rb[0]);
-	  __builtin_vsx_assemble_pair (&rowB1, rb[3], rb[2]);
+	  rowB = *((__vector_pair *)((void *)&BO[0]));
+	  rowB1 = *((__vector_pair *)((void *)&BO[4]));
 	  __builtin_mma_xvf64ger (&acc0, rowB, rowA[0]);
 	  __builtin_mma_xvf64ger (&acc1, rowB1, rowA[0]);
 	  __builtin_mma_xvf64ger (&acc2, rowB, rowA[1]);
@@ -205,9 +204,8 @@ CNAME (BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alpha, FLOAT * A, FLOAT * B,
 	  for (l = 1; l < temp; l++)
 	    {
 	      rowA = (vec_t *) & AO[l << 3];
-	      rb = (vec_t *) & BO[l << 3];
-	      __builtin_vsx_assemble_pair (&rowB, rb[1], rb[0]);
-	      __builtin_vsx_assemble_pair (&rowB1, rb[3], rb[2]);
+	      rowB = *((__vector_pair *)((void *)&BO[l << 3]));
+	      rowB1 = *((__vector_pair *)((void *)&BO[(l << 3) + 4]));
 	      __builtin_mma_xvf64gerpp (&acc0, rowB, rowA[0]);
 	      __builtin_mma_xvf64gerpp (&acc1, rowB1, rowA[0]);
 	      __builtin_mma_xvf64gerpp (&acc2, rowB, rowA[1]);
@@ -247,9 +245,8 @@ CNAME (BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alpha, FLOAT * A, FLOAT * B,
 	  BLASLONG l = 0;
 	  vec_t *rowA = (vec_t *) & AO[0];
 	  __vector_pair rowB, rowB1;
-	  vec_t *rb = (vec_t *) & BO[0];
-	  __builtin_vsx_assemble_pair (&rowB, rb[1], rb[0]);
-	  __builtin_vsx_assemble_pair (&rowB1, rb[3], rb[2]);
+	  rowB = *((__vector_pair *)((void *)&BO[0]));
+	  rowB1 = *((__vector_pair *)((void *)&BO[4]));
 	  __builtin_mma_xvf64ger (&acc0, rowB, rowA[0]);
 	  __builtin_mma_xvf64ger (&acc1, rowB1, rowA[0]);
 	  __builtin_mma_xvf64ger (&acc2, rowB, rowA[1]);
@@ -257,9 +254,8 @@ CNAME (BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alpha, FLOAT * A, FLOAT * B,
 	  for (l = 1; l < temp; l++)
 	    {
 	      rowA = (vec_t *) & AO[l << 2];
-	      rb = (vec_t *) & BO[l << 3];
-	      __builtin_vsx_assemble_pair (&rowB, rb[1], rb[0]);
-	      __builtin_vsx_assemble_pair (&rowB1, rb[3], rb[2]);
+	      rowB = *((__vector_pair *)((void *)&BO[l << 3]));
+	      rowB1 = *((__vector_pair *)((void *)&BO[(l << 3) + 4]));
 	      __builtin_mma_xvf64gerpp (&acc0, rowB, rowA[0]);
 	      __builtin_mma_xvf64gerpp (&acc1, rowB1, rowA[0]);
 	      __builtin_mma_xvf64gerpp (&acc2, rowB, rowA[1]);
@@ -291,17 +287,15 @@ CNAME (BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alpha, FLOAT * A, FLOAT * B,
 	  BLASLONG l = 0;
 	  vec_t *rowA = (vec_t *) & AO[0];
 	  __vector_pair rowB, rowB1;
-	  vec_t *rb = (vec_t *) & BO[0];
-	  __builtin_vsx_assemble_pair (&rowB, rb[1], rb[0]);
-	  __builtin_vsx_assemble_pair (&rowB1, rb[3], rb[2]);
+	  rowB = *((__vector_pair *)((void *)&BO[0]));
+	  rowB1 = *((__vector_pair *)((void *)&BO[4]));
 	  __builtin_mma_xvf64ger (&acc0, rowB, rowA[0]);
 	  __builtin_mma_xvf64ger (&acc1, rowB1, rowA[0]);
 	  for (l = 1; l < temp; l++)
 	    {
 	      rowA = (vec_t *) & AO[l << 1];
-	      rb = (vec_t *) & BO[l << 3];
-	      __builtin_vsx_assemble_pair (&rowB, rb[1], rb[0]);
-	      __builtin_vsx_assemble_pair (&rowB1, rb[3], rb[2]);
+	      rowB = *((__vector_pair *)((void *)&BO[l << 3]));
+	      rowB1 = *((__vector_pair *)((void *)&BO[(l << 3) + 4]));
 	      __builtin_mma_xvf64gerpp (&acc0, rowB, rowA[0]);
 	      __builtin_mma_xvf64gerpp (&acc1, rowB1, rowA[0]);
 	    }
@@ -403,8 +397,7 @@ CNAME (BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alpha, FLOAT * A, FLOAT * B,
 	  BLASLONG l = 0;
 	  vec_t *rowA = (vec_t *) & AO[0];
 	  __vector_pair rowB;
-	  vec_t *rb = (vec_t *) & BO[0];
-	  __builtin_vsx_assemble_pair (&rowB, rb[1], rb[0]);
+	  rowB = *((__vector_pair *)((void *)&BO[0]));
 	  __builtin_mma_xvf64ger (&acc0, rowB, rowA[0]);
 	  __builtin_mma_xvf64ger (&acc1, rowB, rowA[1]);
 	  __builtin_mma_xvf64ger (&acc2, rowB, rowA[2]);
@@ -412,8 +405,7 @@ CNAME (BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alpha, FLOAT * A, FLOAT * B,
 	  for (l = 1; l < temp; l++)
 	    {
 	      rowA = (vec_t *) & AO[l << 3];
-	      rb = (vec_t *) & BO[l << 2];
-	      __builtin_vsx_assemble_pair (&rowB, rb[1], rb[0]);
+	      rowB = *((__vector_pair *)((void *)&BO[l << 2]));
 	      __builtin_mma_xvf64gerpp (&acc0, rowB, rowA[0]);
 	      __builtin_mma_xvf64gerpp (&acc1, rowB, rowA[1]);
 	      __builtin_mma_xvf64gerpp (&acc2, rowB, rowA[2]);
@@ -445,15 +437,13 @@ CNAME (BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alpha, FLOAT * A, FLOAT * B,
 	  BLASLONG l = 0;
 	  vec_t *rowA = (vec_t *) & AO[0];
 	  __vector_pair rowB;
-	  vec_t *rb = (vec_t *) & BO[0];
-	  __builtin_vsx_assemble_pair (&rowB, rb[1], rb[0]);
+	  rowB = *((__vector_pair *)((void *)&BO[0]));
 	  __builtin_mma_xvf64ger (&acc0, rowB, rowA[0]);
 	  __builtin_mma_xvf64ger (&acc1, rowB, rowA[1]);
 	  for (l = 1; l < temp; l++)
 	    {
 	      rowA = (vec_t *) & AO[l << 2];
-	      rb = (vec_t *) & BO[l << 2];
-	      __builtin_vsx_assemble_pair (&rowB, rb[1], rb[0]);
+	      rowB = *((__vector_pair *)((void *)&BO[l << 2]));
 	      __builtin_mma_xvf64gerpp (&acc0, rowB, rowA[0]);
 	      __builtin_mma_xvf64gerpp (&acc1, rowB, rowA[1]);
 	    }
@@ -481,14 +471,12 @@ CNAME (BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alpha, FLOAT * A, FLOAT * B,
 	  BLASLONG l = 0;
 	  vec_t *rowA = (vec_t *) & AO[0];
 	  __vector_pair rowB;
-	  vec_t *rb = (vec_t *) & BO[0];
-	  __builtin_vsx_assemble_pair (&rowB, rb[1], rb[0]);
+	  rowB = *((__vector_pair *)((void *)&BO[0]));
 	  __builtin_mma_xvf64ger (&acc0, rowB, rowA[0]);
 	  for (l = 1; l < temp; l++)
 	    {
 	      rowA = (vec_t *) & AO[l << 1];
-	      rb = (vec_t *) & BO[l << 2];
-	      __builtin_vsx_assemble_pair (&rowB, rb[1], rb[0]);
+	      rowB = *((__vector_pair *)((void *)&BO[l << 2]));
 	      __builtin_mma_xvf64gerpp (&acc0, rowB, rowA[0]);
 	    }
 	  SAVE_ACC (&acc0, 0);
