@@ -118,7 +118,6 @@ jobs:
   - script: |
       brew update
       brew install llvm libomp
-  - script: |
       sudo mkdir -p /opt/intel
       sudo chown $USER /opt/intel
     displayName: prepare for cache restore
