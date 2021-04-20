@@ -127,7 +127,7 @@ jobs:
       path: /opt/intel/oneapi
       key: '"install" | "$(MACOS_HPCKIT_URL)" | "$(MACOS_FORTRAN_COMPONENTS)"'
       cacheHitVar: CACHE_RESTORED
-  - script: 
+  - script: | 
       curl --output webimage.dmg --url $(MACOS_HPCKIT_URL) --retry 5 --retry-delay 5
       hdiutil attach webimage.dmg
       sudo /Volumes/"$(basename "$(MACOS_HPCKIT_URL)" .dmg)"/bootstrapper.app/Contents/MacOS/bootstrapper -s --action install --components="$(MACOS_FORTRAN_COMPONENTS)" --eula=accept --continue-with-optional-error=yes --log-dir=.
