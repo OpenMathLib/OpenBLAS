@@ -4,7 +4,15 @@ trigger:
   branches:
     include:
       - develop
-
+resources:
+  containers:
+      - container: oneapi-hpckit
+        image: intel/oneapi-hpckit:latest
+        options: '-v /usr/bin/sudo:/usr/bin/sudo -v /usr/lib/sudo/libsudo_util.so.0:/usr/lib/sudo/libsudo_util.so.0 -v /usr/lib/sudo/sudoers.so:/usr/lib/sudo/sudoers.so'
+      - container: oneapi-basekit
+        image: intel/oneapi-basekit:latest
+        options: '-v /usr/bin/sudo:/usr/bin/sudo -v /usr/lib/sudo/libsudo_util.so.0:/usr/lib/sudo/libsudo_util.so.0 -v /usr/lib/sudo/sudoers.so:/usr/lib/sudo/sudoers.so'
+ 
 jobs:
 # manylinux1 is useful to test because the
 # standard Docker container uses an old version
@@ -97,7 +105,7 @@ jobs:
       brew tap LouisBrunner/valgrind
       brew install --HEAD LouisBrunner/valgrind/valgrind
       make TARGET=SANDYBRIDGE NO_AVX512=1 USE_OPENMP=1 INTERFACE64=1 DYNAMIC_ARCH=1 DYNAMIC_LIST=SANDYBRIDGE DEBUG=1 NO_PARALLEL_MAKE=1 CC=/usr/local/opt/llvm/bin/clang FC=gfortran-10
- 
+
 - job: OSX_Ifort_Clang
   pool:
      vmImage: 'macOS-10.15'
@@ -106,15 +114,7 @@ jobs:
      MACOS_HPCKIT_URL: https://registrationcenter-download.intel.com/akdlm/irc_nas/17643/m_HPCKit_p_2021.2.0.2903_offline.dmg
      LIBRARY_PATH: /usr/local/opt/llvm/lib
      MACOS_FORTRAN_COMPONENTS: intel.oneapi.mac.ifort-compiler
-  resources:
-    containers:
-      - container: oneapi-hpckit
-        image: intel/oneapi-hpckit:latest
-        options: '-v /usr/bin/sudo:/usr/bin/sudo -v /usr/lib/sudo/libsudo_util.so.0:/usr/lib/sudo/libsudo_util.so.0 -v /usr/lib/sudo/sudoers.so:/usr/lib/sudo/sudoers.so'
-      - container: oneapi-basekit
-        image: intel/oneapi-basekit:latest
-        options: '-v /usr/bin/sudo:/usr/bin/sudo -v /usr/lib/sudo/libsudo_util.so.0:/usr/lib/sudo/libsudo_util.so.0 -v /usr/lib/sudo/sudoers.so:/usr/lib/sudo/sudoers.so'
-  steps:   
+ steps:   
   - script: |
       brew update
       brew install llvm libomp
