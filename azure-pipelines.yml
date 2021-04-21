@@ -130,7 +130,9 @@ jobs:
       curl --output webimage.dmg --url $(MACOS_HPCKIT_URL) --retry 5 --retry-delay 5
       hdiutil attach webimage.dmg
       sudo /Volumes/"$(basename "$(MACOS_HPCKIT_URL)" .dmg)"/bootstrapper.app/Contents/MacOS/bootstrapper -s --action install --components="$(MACOS_FORTRAN_COMPONENTS)" --eula=accept --continue-with-optional-error=yes --log-dir=.
+      installer_exit_code=$?
       hdiutil detach /Volumes/"$(basename "$URL" .dmg)" -quiet
+      exit $installer_exit_code
     displayName: install
     condition: ne(variables.CACHE_RESTORED, 'true')
   - script: | 
