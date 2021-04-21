@@ -133,5 +133,6 @@ jobs:
       hdiutil detach /Volumes/"$(basename "$URL" .dmg)" -quiet
     displayName: install
     condition: ne(variables.CACHE_RESTORED, 'true')
+  - script: | 
       make CC=/usr/local/opt/llvm/bin/clang FC=ifort
  
