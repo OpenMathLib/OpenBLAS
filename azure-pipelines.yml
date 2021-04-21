@@ -114,7 +114,7 @@ jobs:
      MACOS_HPCKIT_URL: https://registrationcenter-download.intel.com/akdlm/irc_nas/17643/m_HPCKit_p_2021.2.0.2903_offline.dmg
      LIBRARY_PATH: /usr/local/opt/llvm/lib
      MACOS_FORTRAN_COMPONENTS: intel.oneapi.mac.ifort-compiler
- steps:   
+  steps:   
   - script: |
       brew update
       brew install llvm libomp
