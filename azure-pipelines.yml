@@ -102,9 +102,7 @@ jobs:
   - script: |
       brew update
       brew install llvm libomp
-      brew tap LouisBrunner/valgrind
-      brew install --HEAD LouisBrunner/valgrind/valgrind
-      make TARGET=SANDYBRIDGE NO_AVX512=1 USE_OPENMP=1 INTERFACE64=1 DYNAMIC_ARCH=1 DYNAMIC_LIST=SANDYBRIDGE DEBUG=1 NO_PARALLEL_MAKE=1 CC=/usr/local/opt/llvm/bin/clang FC=gfortran-10
+      make TARGET=CORE2 USE_OPENMP=1 INTERFACE64=1 DYNAMIC_ARCH=1 CC=/usr/local/opt/llvm/bin/clang FC=gfortran-10
 
 - job: OSX_Ifort_Clang
   pool:
