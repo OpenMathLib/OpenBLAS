@@ -391,10 +391,6 @@ if ($link ne "") {
 
 }
 
-if ($vendor eq "INTEL"){
-    $linker_a .= "-lgfortran"
-}
-
 if ($vendor eq "FLANG"){
     $linker_a .= "-lflang"
 }
