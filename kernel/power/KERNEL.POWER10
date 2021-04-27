@@ -34,12 +34,12 @@ SGEMMONCOPYOBJ =  sgemm_oncopy$(TSUFFIX).$(SUFFIX)
 SGEMMOTCOPYOBJ =  sgemm_otcopy$(TSUFFIX).$(SUFFIX)
 
 DGEMMKERNEL    =  dgemm_kernel_power10.c
-DGEMMINCOPY    = ../generic/gemm_ncopy_16.c
-DGEMMITCOPY    =  dgemm_tcopy_16_power8.S
-DGEMMONCOPY    =  dgemm_ncopy_4_power8.S
-DGEMMOTCOPY    =  ../generic/gemm_tcopy_4.c
-DGEMMINCOPYOBJ =  dgemm_incopy$(TSUFFIX).$(SUFFIX)
-DGEMMITCOPYOBJ =  dgemm_itcopy$(TSUFFIX).$(SUFFIX)
+DGEMMINCOPY    =
+DGEMMITCOPY    =
+DGEMMONCOPY    =  dgemm_ncopy_8_power10.c
+DGEMMOTCOPY    =  ../generic/gemm_tcopy_8.c
+DGEMMINCOPYOBJ =
+DGEMMITCOPYOBJ =
 DGEMMONCOPYOBJ =  dgemm_oncopy$(TSUFFIX).$(SUFFIX)
 DGEMMOTCOPYOBJ =  dgemm_otcopy$(TSUFFIX).$(SUFFIX)
 
@@ -63,15 +63,15 @@ ZGEMMOTCOPYOBJ =  zgemm_otcopy$(TSUFFIX).$(SUFFIX)
 ZGEMMINCOPYOBJ =  zgemm_incopy$(TSUFFIX).$(SUFFIX)
 ZGEMMITCOPYOBJ =  zgemm_itcopy$(TSUFFIX).$(SUFFIX)
 
-STRSMKERNEL_LN	=  ../generic/trsm_kernel_LN.c
-STRSMKERNEL_LT	=  ../generic/trsm_kernel_LT.c
-STRSMKERNEL_RN	=  ../generic/trsm_kernel_RN.c
-STRSMKERNEL_RT	=  ../generic/trsm_kernel_RT.c
+STRSMKERNEL_LN	= trsm_kernel_LN_power10.c
+STRSMKERNEL_LT	= trsm_kernel_LT_power10.c
+STRSMKERNEL_RN	= trsm_kernel_RN_power10.c
+STRSMKERNEL_RT	= trsm_kernel_RT_power10.c
 
-DTRSMKERNEL_LN	= ../generic/trsm_kernel_LN.c
-DTRSMKERNEL_LT	= dtrsm_kernel_LT_16x4_power8.S
-DTRSMKERNEL_RN	= ../generic/trsm_kernel_RN.c
-DTRSMKERNEL_RT	= ../generic/trsm_kernel_RT.c
+DTRSMKERNEL_LN	= trsm_kernel_LN_power10.c
+DTRSMKERNEL_LT	= trsm_kernel_LT_power10.c
+DTRSMKERNEL_RN	= trsm_kernel_RN_power10.c
+DTRSMKERNEL_RT	= trsm_kernel_RT_power10.c
 
 CTRSMKERNEL_LN	= ../generic/trsm_kernel_LN.c
 CTRSMKERNEL_LT	= ../generic/trsm_kernel_LT.c
@@ -141,28 +141,20 @@ DASUMKERNEL  = dasum.c
 CASUMKERNEL  = casum.c
 ZASUMKERNEL  = zasum.c
 #
-SAXPYKERNEL  = saxpy.c
+SAXPYKERNEL  = saxpy_power10.c
 DAXPYKERNEL  = daxpy_power10.c
-ifneq ($(GCCVERSIONGTEQ9),1)
-CAXPYKERNEL  = caxpy_power9.S
-else
-CAXPYKERNEL  = caxpy.c
-endif
+CAXPYKERNEL  = caxpy_power10.c
 ZAXPYKERNEL  = zaxpy_power10.c
 #
-SCOPYKERNEL  = scopy.c
+SCOPYKERNEL  = scopy_power10.c
 DCOPYKERNEL  = dcopy_power10.c
-CCOPYKERNEL  = ccopy.c
+CCOPYKERNEL  = ccopy_power10.c
 ZCOPYKERNEL  = zcopy_power10.c
 #
-SDOTKERNEL   =  sdot.c
-DDOTKERNEL   =  ddot.c
-DSDOTKERNEL  =  sdot.c
-ifneq ($(GCCVERSIONGTEQ9),1)
-CDOTKERNEL   =  cdot_power9.S
-else
+SDOTKERNEL   =  sdot_power10.c
+DDOTKERNEL   =  ddot_power10.c
+DSDOTKERNEL  =  sdot_power10.c
 CDOTKERNEL   =  cdot.c
-endif
 ZDOTKERNEL   =  zdot.c
 #
 SNRM2KERNEL  = ../arm/nrm2.c
@@ -177,8 +169,13 @@ ZROTKERNEL   = zrot.c
 #
 SSCALKERNEL  = sscal.c
 DSCALKERNEL  = dscal.c
+ifeq ($(C_COMPILER), PGI)
+CSCALKERNEL  = ../arm/zscal.c
+ZSCALKERNEL  = ../arm/zscal.c
+else
 CSCALKERNEL  = zscal.c
 ZSCALKERNEL  = zscal.c
+endif
 #
 SSWAPKERNEL  = sswap.c
 DSWAPKERNEL  = dswap.c
@@ -189,7 +186,7 @@ ZSWAPKERNEL  = zswap.c
 SGEMVNKERNEL = sgemv_n.c
 DGEMVNKERNEL = dgemv_n_power10.c
 CGEMVNKERNEL = cgemv_n.c
-ZGEMVNKERNEL = zgemv_n_4.c
+ZGEMVNKERNEL =  zgemv_n_power10.c
 #
 SGEMVTKERNEL = sgemv_t.c
 DGEMVTKERNEL = dgemv_t_power10.c

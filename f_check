@@ -1,4 +1,4 @@
-#!/usr/bin/perl
+#!/usr/bin/env perl
 
 $hostos   = `uname -s | sed -e s/\-.*//`;    chop($hostos);
 
@@ -32,9 +32,9 @@ if ($compiler eq "") {
               "xlf95", "xlf90", "xlf",
               "ppuf77", "ppuf95", "ppuf90", "ppuxlf",
 	      "pathf90", "pathf95",
-	      "pgf95", "pgf90", "pgf77",
-	      "flang",
-              "ifort");
+	      "pgf95", "pgf90", "pgf77", "pgfortran", "nvfortran",
+	      "flang", "egfortran",
+              "ifort", "nagfor");
 
 OUTER:
     foreach $lists (@lists) {
@@ -64,13 +64,21 @@ if ($compiler eq "") {
     if (!$?) {
 
 	$data = `$compiler -O2 -S ftest.f > /dev/null 2>&1 && cat ftest.s && rm -f ftest.s`;
-
+	if ($data eq "") {
+		$data = `$compiler -O2 -S ftest.f > /dev/null 2>&1 && cat ftest.c && rm -f ftest.c`;
+	}
 	if ($data =~ /zhoge_/) {
 	    $bu       = "_";
 	}
 
-	if ($data =~ /GNU/ || $data =~ /GCC/ ) {
+	if ($data =~ /Fujitsu/) {
 
+	    $vendor = FUJITSU;
+	    $openmp = "-Kopenmp";
+
+	} elsif ($data =~ /GNU/ || $data =~ /GCC/ ) {
+
+            $data =~ s/\(+.*?\)+//g;
 	    $data =~ /(\d+)\.(\d+).(\d+)/;
 	    $major = $1;
 	    $minor = $2;
@@ -82,7 +90,7 @@ if ($compiler eq "") {
 		if ($compiler =~ /flang/) {
 		    $vendor = FLANG;
 		    $openmp = "-fopenmp";
-	    } elsif ($compiler =~ /pgf/) {
+	    } elsif ($compiler =~ /pgf/ || $compiler =~ /nvf/) {
 		    $vendor = PGI;
 		    $openmp = "-mp";
 		} else {
@@ -118,7 +126,7 @@ if ($compiler eq "") {
 	    $openmp = "-mp";
 	}
 
-	if ($data =~ /PGF/) {
+	if ($data =~ /PGF/ || $data =~ /NVF/) {
 	    $vendor = PGI;
 	    $openmp = "-mp";
 	}
@@ -128,8 +136,16 @@ if ($compiler eq "") {
 	    $openmp = "-openmp";
 	}
 
+	if ($data =~ /NAG/) {
+	    $vendor = NAG;
+	    $openmp = "-openmp";
+	}
+
 	# for embedded underscore name, e.g. zho_ge, it may append 2 underscores.
 	$data = `$compiler -O2 -S ftest3.f > /dev/null 2>&1 && cat ftest3.s && rm -f ftest3.s`;
+	if ($data eq "") {
+		$data = `$compiler -O2 -S ftest3.f > /dev/null 2>&1 && cat ftest3.c && rm -f ftest3.c`;
+	}
 	if ($data =~ / zho_ge__/) {
 	    $need2bu       = 1;
 	}
@@ -172,7 +188,7 @@ if ($compiler eq "") {
 	    $openmp = "-mp";
 	}
 
-	if ($compiler =~ /pgf/) {
+	if ($compiler =~ /pgf/ || $compiler =~ /nvf/) {
 	    $vendor = PGI;
 	    $bu       = "_";
 	    $openmp = "-mp";
@@ -215,6 +231,12 @@ if ($compiler eq "") {
 	    $vendor = FLANG;
 	    $bu     = "_";
 	    $openmp = "-fopenmp";
+	}
+
+	if ($compiler =~ /nagfor/) {
+	    $vendor = NAG;
+	    $bu     = "_";
+	    $openmp = "-openmp";
 	}
 
 	if ($vendor eq "") {
@@ -270,14 +292,20 @@ if (!$?) {
 	if ($?) {
 	    $link = `$compiler $openmp -mabi=64 -v ftest2.f 2>&1 && rm -f a.out a.exe`;
 	}
+       #For nagfor
+	if ($?) {
+	    $link = `$compiler $openmp -dryrun ftest2.f 2>&1 && rm -f a.out a.exe`;
+        }
 	$binary = "" if ($?);
     }
-
     if ($binary eq "") {
 	$link = `$compiler $openmp -v ftest2.f 2>&1 && rm -f a.out a.exe`;
     }
 }
 
+if ( $vendor eq "NAG") {
+	    $link = `$compiler $openmp -dryrun ftest2.f 2>&1 && rm -f a.out a.exe`;
+    }
 $linker_L = "";
 $linker_l = "";
 $linker_a = "";
@@ -325,9 +353,13 @@ if ($link ne "") {
 	    $flags =~ s/\@/\,/g;
 	    $linker_L .= "-Wl,". $flags . " " ;
 	}
+	if ($flags =~ /-lgomp/ && $ENV{"CC"} =~ /clang/) {
+	    $flags = "-lomp";
+	}
 
 	if (
 	    ($flags =~ /^\-l/)
+	    && ($flags !~ /ibrary/)
 	    && ($flags !~ /gfortranbegin/)
 	    && ($flags !~ /frtbegin/)
 	    && ($flags !~ /pathfstart/)
@@ -337,20 +369,26 @@ if ($link ne "") {
 	    && ($flags !~ /kernel32/)
 	    && ($flags !~ /advapi32/)
 	    && ($flags !~ /shell32/)
-	    && ($flags !~ /omp/ || ($vendor !~ /PGI/ && $flags =~ /omp/))
-	    && ($flags !~ /[0-9]+/)
+	    && ($flags !~ /omp/ || ($vendor !~ /PGI/ && $vendor !~ /FUJITSU/ && $flags =~ /omp/))
+	    && ($flags !~ /[0-9]+/ || ($vendor == FUJITSU && $flags =~ /^-lfj90/))
 		&& ($flags !~ /^\-l$/)
 	    ) {
+	    $linker_l .= $flags . " ";
+	}
+
+	if ( $flags =~ /quickfit.o/ && $vendor == NAG) {
+	    $linker_l .= $flags . " ";
+	}
+	if ( $flags =~ /safefit.o/ && $vendor == NAG) {
+	    $linker_l .= $flags . " ";
+	}
+	if ( $flags =~ /thsafe.o/ && $vendor == NAG) {
 	    $linker_l .= $flags . " ";
 	}
 
 	$linker_a .= $flags . " " if $flags =~ /\.a$/;
     }
 
-}
-
-if ($vendor eq "INTEL"){
-    $linker_a .= "-lgfortran"
 }
 
 if ($vendor eq "FLANG"){

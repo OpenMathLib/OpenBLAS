@@ -56,11 +56,11 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     #if !defined(XCONJ)
         #define OP0  +=
         #define OP1  -=
-        #define OP2  -=
+        #define OP2  +=
     #else
         #define OP0  -=
         #define OP1  -=
-        #define OP2  +=
+        #define OP2  -=
     #endif
 #endif
 

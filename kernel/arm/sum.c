@@ -42,7 +42,30 @@ FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x)
 	n *= inc_x;
 	if (inc_x == 1)
 	{
-#if V_SIMD
+#if V_SIMD && (!defined(DOUBLE) || (defined(DOUBLE) && V_SIMD_F64 && V_SIMD > 128))
+#ifdef DOUBLE
+		const int vstep = v_nlanes_f64;
+		const int unrollx4 = n & (-vstep * 4);
+		const int unrollx = n & -vstep;
+		v_f64 vsum0 = v_zero_f64();
+		v_f64 vsum1 = v_zero_f64();
+		v_f64 vsum2 = v_zero_f64();
+		v_f64 vsum3 = v_zero_f64();
+		for (; i < unrollx4; i += vstep * 4)
+		{
+			vsum0 = v_add_f64(vsum0, v_loadu_f64(x + i));
+			vsum1 = v_add_f64(vsum1, v_loadu_f64(x + i + vstep));
+			vsum2 = v_add_f64(vsum2, v_loadu_f64(x + i + vstep * 2));
+			vsum3 = v_add_f64(vsum3, v_loadu_f64(x + i + vstep * 3));
+		}
+		vsum0 = v_add_f64(
+			v_add_f64(vsum0, vsum1), v_add_f64(vsum2, vsum3));
+		for (; i < unrollx; i += vstep)
+		{
+			vsum0 = v_add_f64(vsum0, v_loadu_f64(x + i));
+		}
+		sumf = v_sum_f64(vsum0);
+#else
 		const int vstep = v_nlanes_f32;
 		const int unrollx4 = n & (-vstep * 4);
 		const int unrollx = n & -vstep;
@@ -50,22 +73,21 @@ FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x)
 		v_f32 vsum1 = v_zero_f32();
 		v_f32 vsum2 = v_zero_f32();
 		v_f32 vsum3 = v_zero_f32();
-		while (i < unrollx4)
+		for (; i < unrollx4; i += vstep * 4)
 		{
-			vsum0 = v_add_f32(vsum0, v_loadu_f32(x));
-			vsum1 = v_add_f32(vsum1, v_loadu_f32(x + vstep));
-			vsum2 = v_add_f32(vsum2, v_loadu_f32(x + vstep * 2));
-			vsum3 = v_add_f32(vsum3, v_loadu_f32(x + vstep * 3));
-			i += vstep * 4;
+			vsum0 = v_add_f32(vsum0, v_loadu_f32(x + i));
+			vsum1 = v_add_f32(vsum1, v_loadu_f32(x + i + vstep));
+			vsum2 = v_add_f32(vsum2, v_loadu_f32(x + i + vstep * 2));
+			vsum3 = v_add_f32(vsum3, v_loadu_f32(x + i + vstep * 3));
 		}
 		vsum0 = v_add_f32(
 			v_add_f32(vsum0, vsum1), v_add_f32(vsum2, vsum3));
-		while (i < unrollx)
+		for (; i < unrollx; i += vstep)
 		{
 			vsum0 = v_add_f32(vsum0, v_loadu_f32(x + i));
-			i += vstep;
 		}
 		sumf = v_sum_f32(vsum0);
+#endif
 #else
 		int n1 = n & -4;
 		for (; i < n1; i += 4)

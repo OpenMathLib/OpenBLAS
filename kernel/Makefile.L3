@@ -25,7 +25,7 @@ ifeq ($(ARCH), arm64)
 USE_TRMM = 1
 endif
 
-ifeq ($(TARGET), LOONGSON3B)
+ifeq ($(ARCH), riscv64)
 USE_TRMM = 1
 endif
 

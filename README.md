@@ -13,9 +13,13 @@ Drone CI: [![Build Status](https://cloud.drone.io/api/badges/xianyi/OpenBLAS/sta
 
 ## Introduction
 
-OpenBLAS is an optimized BLAS library based on GotoBLAS2 1.13 BSD version.
+OpenBLAS is an optimized BLAS (Basic Linear Algebra Subprograms) library based on GotoBLAS2 1.13 BSD version.
 
 Please read the documentation on the OpenBLAS wiki pages: <https://github.com/xianyi/OpenBLAS/wiki>.
+
+For a general introduction to the BLAS routines, please refer to the extensive documentation of their reference implementation hosted at netlib:
+<https://www.netlib.org/blas>. On that site you will likewise find documentation for the reference implementation of the higher-level library LAPACK - the **L**inear **A**lgebra **Pack**age that comes included with OpenBLAS. If you are looking for a general primer or refresher on Linear Algebra, the set of six
+20-minute lecture videos by Prof. Gilbert Strang on either MIT OpenCourseWare <https://ocw.mit.edu/resources/res-18-010-a-2020-vision-of-linear-algebra-spring-2020/> or Youtube <https://www.youtube.com/playlist?list=PLUl4u3cNGP61iQEFiWLE21EJCxwmWvvek> may be helpful.
 
 ## Binary Packages
 
@@ -172,6 +176,13 @@ Please read `GotoBLAS_01Readme.txt` for older CPU models already supported by th
 - **Z13**: Optimized Level-3 BLAS and Level-1,2
 - **Z14**: Optimized Level-3 BLAS and (single precision) Level-1,2
 
+#### RISC-V
+
+- **C910V**: Optimized Leve-3 BLAS (real) and Level-1,2 by RISC-V Vector extension 0.7.1.
+  ```sh
+  make HOSTCC=gcc TARGET=C910V CC=riscv64-unknown-linux-gnu-gcc FC=riscv64-unknown-linux-gnu-gfortran
+  ```
+
 ### Support for multiple targets in a single library
 
 OpenBLAS can be built for multiple targets with runtime detection of the target cpu by specifiying `DYNAMIC_ARCH=1` in Makefile.rule, on the gmake command line or as `-DDYNAMIC_ARCH=TRUE` in cmake.
@@ -201,7 +212,8 @@ Please note that it is not possible to combine support for different architectur
 - **Android**: Supported by the community. Please read <https://github.com/xianyi/OpenBLAS/wiki/How-to-build-OpenBLAS-for-Android>.
 - **AIX**: Supported on PPC up to POWER8
 - **Haiku**: Supported by the community. We don't actively test the library on this OS.
-- **SunOS**: Supported by the community. We don't actively test the library on this OS:
+- **SunOS**: Supported by the community. We don't actively test the library on this OS.
+- **Cortex-M**: Supported by the community. Please read <https://github.com/xianyi/OpenBLAS/wiki/How-to-use-OpenBLAS-on-Cortex-M>.
 
 ## Usage
 

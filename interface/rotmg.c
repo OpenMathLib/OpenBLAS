@@ -107,7 +107,6 @@ void CNAME(FLOAT *dd1, FLOAT *dd2, FLOAT *dx1, FLOAT dy1, FLOAT *dparam){
 		dq1 =  dp1 * *dx1;
 		if(ABS(dq1) > ABS(dq2))
 		{
-			dflag = ZERO;
 			dh11  =  ONE;
 			dh22  =  ONE;
 			dh21 = -  dy1 / *dx1;

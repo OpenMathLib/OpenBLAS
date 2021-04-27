@@ -28,12 +28,12 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "common.h"
 
 #if defined(__VEC__) || defined(__ALTIVEC__)
-#include "dcopy_microk_power10.c"
+#include "copy_microk_power10.c"
 #endif
 
-#ifndef HAVE_KERNEL_64
+#ifndef HAVE_KERNEL
 
-static void dcopy_kernel_64(BLASLONG n, FLOAT *x, FLOAT *y)
+static void copy_kernel(BLASLONG n, FLOAT *x, FLOAT *y)
 {
 
 	BLASLONG i=0;
@@ -85,12 +85,18 @@ int CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG inc_y)
 
 	if ( (inc_x == 1) && (inc_y == 1 ))
 	{
-
-		BLASLONG n1 = n & -64;
-		if ( n1 > 0 )
+		if ( n >= 64 )
 		{
-			dcopy_kernel_64(n1, x, y);
-			i=n1;
+			BLASLONG align = ((32 - ((uintptr_t)y & (uintptr_t)0x1F)) >> 3) & 0x3;
+			for (i = 0; i < align; i++) {
+				y[i] = x[i] ;
+			}
+		}
+		BLASLONG n1 = (n-i) & -64;
+		if ( n1 )
+		{
+			copy_kernel(n1, &x[i], &y[i]);
+			i += n1;
 		}
 
 		while(i < n)

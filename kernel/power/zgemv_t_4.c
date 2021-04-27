@@ -43,6 +43,134 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #elif HAVE_KERNEL_4x4_VEC
 
+#if defined(POWER10) && (__BYTE_ORDER__ != __ORDER_BIG_ENDIAN__)
+typedef __vector unsigned char  vec_t;
+typedef FLOAT v4sf_t __attribute__ ((vector_size (16)));
+
+
+static void zgemv_kernel_4x4(BLASLONG n, BLASLONG lda, FLOAT *ap, FLOAT *x, FLOAT *y, FLOAT alpha_r, FLOAT alpha_i) {
+    BLASLONG i;
+    FLOAT *a0, *a1, *a2, *a3;
+    a0 = ap;
+    a1 = ap + lda;
+    a2 = a1 + lda;
+    a3 = a2 + lda;
+    __vector_quad acc0, acc1, acc2, acc3;;
+    __vector_quad acc4, acc5, acc6, acc7;
+    v4sf_t result[4];
+    __vector_pair *Va0, *Va1, *Va2, *Va3;
+    i = 0;
+    n = n << 1;
+    __builtin_mma_xxsetaccz (&acc0);
+    __builtin_mma_xxsetaccz (&acc1);
+    __builtin_mma_xxsetaccz (&acc2);
+    __builtin_mma_xxsetaccz (&acc3);
+    __builtin_mma_xxsetaccz (&acc4);
+    __builtin_mma_xxsetaccz (&acc5);
+    __builtin_mma_xxsetaccz (&acc6);
+    __builtin_mma_xxsetaccz (&acc7);
+    while (i < n) {
+
+	vec_t *rx = (vec_t *) & x[i];
+        Va0  = ((__vector_pair*)((void*)&a0[i]));
+        Va1  = ((__vector_pair*)((void*)&a1[i]));
+        Va2  = ((__vector_pair*)((void*)&a2[i]));
+        Va3  = ((__vector_pair*)((void*)&a3[i]));
+
+        __builtin_mma_xvf64gerpp (&acc0, Va0[0], rx[0]);
+        __builtin_mma_xvf64gerpp (&acc1, Va1[0], rx[0]);
+        __builtin_mma_xvf64gerpp (&acc2, Va2[0], rx[0]);
+        __builtin_mma_xvf64gerpp (&acc3, Va3[0], rx[0]);
+        __builtin_mma_xvf64gerpp (&acc4, Va0[0], rx[1]);
+        __builtin_mma_xvf64gerpp (&acc5, Va1[0], rx[1]);
+        __builtin_mma_xvf64gerpp (&acc6, Va2[0], rx[1]);
+        __builtin_mma_xvf64gerpp (&acc7, Va3[0], rx[1]);
+        __builtin_mma_xvf64gerpp (&acc0, Va0[1], rx[2]);
+        __builtin_mma_xvf64gerpp (&acc1, Va1[1], rx[2]);
+        __builtin_mma_xvf64gerpp (&acc2, Va2[1], rx[2]);
+        __builtin_mma_xvf64gerpp (&acc3, Va3[1], rx[2]);
+        __builtin_mma_xvf64gerpp (&acc4, Va0[1], rx[3]);
+        __builtin_mma_xvf64gerpp (&acc5, Va1[1], rx[3]);
+        __builtin_mma_xvf64gerpp (&acc6, Va2[1], rx[3]);
+        __builtin_mma_xvf64gerpp (&acc7, Va3[1], rx[3]);
+        i += 8;
+
+    }
+#if ( !defined(CONJ) && !defined(XCONJ) ) || ( defined(CONJ) && defined(XCONJ) )
+    __builtin_mma_disassemble_acc ((void *)result, &acc0);
+    register FLOAT temp_r0 = result[0][0] - result[1][1];
+    register FLOAT temp_i0 = result[0][1] + result[1][0];
+    __builtin_mma_disassemble_acc ((void *)result, &acc4);
+    temp_r0 += result[2][0] - result[3][1];
+    temp_i0 += result[2][1] + result[3][0];
+    __builtin_mma_disassemble_acc ((void *)result, &acc1);
+    register FLOAT temp_r1 = result[0][0] - result[1][1];
+    register FLOAT temp_i1 = result[0][1] + result[1][0];
+    __builtin_mma_disassemble_acc ((void *)result, &acc5);
+    temp_r1 += result[2][0] - result[3][1];
+    temp_i1 += result[2][1] + result[3][0];
+    __builtin_mma_disassemble_acc ((void *)result, &acc2);
+    register FLOAT temp_r2 = result[0][0] - result[1][1];
+    register FLOAT temp_i2 = result[0][1] + result[1][0];
+    __builtin_mma_disassemble_acc ((void *)result, &acc6);
+    temp_r2 += result[2][0] - result[3][1];
+    temp_i2 += result[2][1] + result[3][0];
+    __builtin_mma_disassemble_acc ((void *)result, &acc3);
+    register FLOAT temp_r3 = result[0][0] - result[1][1];
+    register FLOAT temp_i3 = result[0][1] + result[1][0];
+    __builtin_mma_disassemble_acc ((void *)result, &acc7);
+    temp_r3 += result[2][0] - result[3][1];
+    temp_i3 += result[2][1] + result[3][0];
+#else
+    __builtin_mma_disassemble_acc ((void *)result, &acc0);
+    register FLOAT temp_r0 = result[0][0] + result[1][1];
+    register FLOAT temp_i0 = result[0][1] - result[1][0];
+    __builtin_mma_disassemble_acc ((void *)result, &acc4);
+    temp_r0 += result[2][0] + result[3][1];
+    temp_i0 += result[2][1] - result[3][0];
+    __builtin_mma_disassemble_acc ((void *)result, &acc1);
+    register FLOAT temp_r1 = result[0][0] + result[1][1];
+    register FLOAT temp_i1 = result[0][1] - result[1][0];
+    __builtin_mma_disassemble_acc ((void *)result, &acc5);
+    temp_r1 += result[2][0] + result[3][1];
+    temp_i1 += result[2][1] - result[3][0];
+    __builtin_mma_disassemble_acc ((void *)result, &acc2);
+    register FLOAT temp_r2 = result[0][0] + result[1][1];
+    register FLOAT temp_i2 = result[0][1] - result[1][0];
+    __builtin_mma_disassemble_acc ((void *)result, &acc6);
+    temp_r2 += result[2][0] + result[3][1];
+    temp_i2 += result[2][1] - result[3][0];
+    __builtin_mma_disassemble_acc ((void *)result, &acc3);
+    register FLOAT temp_r3 = result[0][0] + result[1][1];
+    register FLOAT temp_i3 = result[0][1] - result[1][0];
+    __builtin_mma_disassemble_acc ((void *)result, &acc7);
+    temp_r3 += result[2][0] + result[3][1];
+    temp_i3 += result[2][1] - result[3][0];
+#endif
+#if !defined(XCONJ)
+
+    y[0] += alpha_r * temp_r0 - alpha_i * temp_i0;
+    y[1] += alpha_r * temp_i0 + alpha_i * temp_r0;
+    y[2] += alpha_r * temp_r1 - alpha_i * temp_i1;
+    y[3] += alpha_r * temp_i1 + alpha_i * temp_r1;
+    y[4] += alpha_r * temp_r2 - alpha_i * temp_i2;
+    y[5] += alpha_r * temp_i2 + alpha_i * temp_r2;
+    y[6] += alpha_r * temp_r3 - alpha_i * temp_i3;
+    y[7] += alpha_r * temp_i3 + alpha_i * temp_r3;
+
+#else
+
+    y[0] += alpha_r * temp_r0 + alpha_i * temp_i0;
+    y[1] -= alpha_r * temp_i0 - alpha_i * temp_r0;
+    y[2] += alpha_r * temp_r1 + alpha_i * temp_i1;
+    y[3] -= alpha_r * temp_i1 - alpha_i * temp_r1;
+    y[4] += alpha_r * temp_r2 + alpha_i * temp_i2;
+    y[5] -= alpha_r * temp_i2 - alpha_i * temp_r2;
+    y[6] += alpha_r * temp_r3 + alpha_i * temp_i3;
+    y[7] -= alpha_r * temp_i3 - alpha_i * temp_r3;
+#endif
+}
+#else
 static void zgemv_kernel_4x4(BLASLONG n, BLASLONG lda, FLOAT *ap, FLOAT *x, FLOAT *y, FLOAT alpha_r, FLOAT alpha_i) {
     BLASLONG i;
     FLOAT *a0, *a1, *a2, *a3;
@@ -198,6 +326,7 @@ static void zgemv_kernel_4x4(BLASLONG n, BLASLONG lda, FLOAT *ap, FLOAT *x, FLOA
 #endif
 }
 
+#endif
 #else
 
 static void zgemv_kernel_4x4(BLASLONG n, BLASLONG lda, FLOAT *ap, FLOAT *x, FLOAT *y, FLOAT alpha_r, FLOAT alpha_i) {
@@ -513,7 +642,7 @@ static void zgemv_kernel_4x1(BLASLONG n, FLOAT *ap, FLOAT *x, FLOAT *y, FLOAT al
 
 #endif
 
-static __attribute__((always_inline)) void copy_x(BLASLONG n, FLOAT *src, FLOAT *dest, BLASLONG inc_src) {
+static __attribute__((always_inline)) inline void copy_x(BLASLONG n, FLOAT *src, FLOAT *dest, BLASLONG inc_src) {
     BLASLONG i;
     for (i = 0; i < n; i++) {
         *dest = *src;

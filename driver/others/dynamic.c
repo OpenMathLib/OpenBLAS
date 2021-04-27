@@ -330,8 +330,8 @@ int support_avx2(){
   if (!support_avx())
     return 0;
   cpuid(7, &eax, &ebx, &ecx, &edx);
-  if((ebx & (1<<7)) != 0)
-      ret=1;  //OS supports AVX2
+  if((ebx & (1<<5)) != 0)
+      ret=1;  //AVX2 flag is set
   return ret;
 #else
   return 0;
@@ -346,13 +346,13 @@ int support_avx512(){
   if (!support_avx())
     return 0;
   cpuid(7, &eax, &ebx, &ecx, &edx);
-  if((ebx & (1<<7)) == 0){
-      ret=0;  //OS does not even support AVX2
+  if((ebx & (1<<5)) == 0){
+      ret=0;  //cpu does not have avx2 flag
   }
-  if((ebx & (1u<<31)) != 0){
+  if((ebx & (1<<31)) != 0){ //AVX512VL flag is set
     xgetbv(0, &eax, &edx);
     if((eax & 0xe0) == 0xe0)
-      ret=1;  //OS supports AVX512VL
+      ret=1;  //OS supports saving zmm register
   }
   return ret;
 #else
@@ -644,6 +644,21 @@ static gotoblas_t *get_coretype(void){
         return NULL;  
       case 9:
       case 8:
+        if (model == 12) { // Tiger Lake
+          if (support_avx512()) 
+            return &gotoblas_SKYLAKEX;
+          if(support_avx2()){
+            openblas_warning(FALLBACK_VERBOSE, HASWELL_FALLBACK);
+            return &gotoblas_HASWELL;
+          }
+          if(support_avx()) {
+            openblas_warning(FALLBACK_VERBOSE, SANDYBRIDGE_FALLBACK);
+            return &gotoblas_SANDYBRIDGE;
+          } else {
+          openblas_warning(FALLBACK_VERBOSE, NEHALEM_FALLBACK);
+          return &gotoblas_NEHALEM;
+          }
+        }
 	if (model == 14 ) { // Kaby Lake, Coffee Lake
 	  if(support_avx2())
 	    return &gotoblas_HASWELL;
@@ -656,7 +671,7 @@ static gotoblas_t *get_coretype(void){
 	  }
 	}
       case 10:
-    if (model == 5 || model == 6) {
+        if (model == 5 || model == 6) {
 	  if(support_avx2())
 	    return &gotoblas_HASWELL;
 	  if(support_avx()) {
@@ -666,7 +681,20 @@ static gotoblas_t *get_coretype(void){
 	    openblas_warning(FALLBACK_VERBOSE, NEHALEM_FALLBACK);
 	    return &gotoblas_NEHALEM; //OS doesn't support AVX. Use old kernels.
 	  }
-    }
+        }
+        if (model == 7) {
+	  if (support_avx512()) 
+	    return &gotoblas_SKYLAKEX;
+	  if(support_avx2())
+	    return &gotoblas_HASWELL;
+	  if(support_avx()) {
+	    openblas_warning(FALLBACK_VERBOSE, SANDYBRIDGE_FALLBACK);
+	    return &gotoblas_SANDYBRIDGE;
+	  } else {
+	    openblas_warning(FALLBACK_VERBOSE, NEHALEM_FALLBACK);
+	    return &gotoblas_NEHALEM; //OS doesn't support AVX. Use old kernels.
+	  }
+        }      
 	return NULL;
       }
       case 0xf:

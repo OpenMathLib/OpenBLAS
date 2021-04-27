@@ -4,6 +4,14 @@
 #else
 #include "config_kernel.h"
 #endif
+#if (defined(__WIN32__) || defined(__WIN64__) || defined(__CYGWIN32__) || defined(__CYGWIN64__) || defined(_WIN32) || defined(_WIN64)) && defined(__64BIT__)
+typedef long long BLASLONG;
+typedef unsigned long long BLASULONG;
+#else
+typedef long BLASLONG;
+typedef unsigned long BLASULONG;
+#endif
+
 #include "param.h"
 
 int main(int argc, char **argv) {

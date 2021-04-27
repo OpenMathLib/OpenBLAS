@@ -61,7 +61,7 @@ endif
 
 all1: $(all1targets)
 
-ifndef CROSS
+ifneq ($(CROSS), 1)
 ifeq ($(USE_OPENMP), 1)
 ifeq ($(BUILD_SINGLE),1)
 	OMP_NUM_THREADS=2 ./xscblat1
@@ -106,7 +106,7 @@ endif
 
 all2: $(all2targets)
 
-ifndef CROSS
+ifneq ($(CROSS), 1)
 ifeq ($(USE_OPENMP), 1)
 ifeq ($(BUILD_SINGLE),1)
 	OMP_NUM_THREADS=2 ./xscblat2 < sin2
@@ -152,7 +152,7 @@ endif
 
 all3: $(all3targets)
 
-ifndef CROSS
+ifneq ($(CROSS), 1)
 ifeq ($(USE_OPENMP), 1)
 ifeq ($(BUILD_SINGLE),1)
 	OMP_NUM_THREADS=2 ./xscblat3 < sin3
@@ -211,6 +211,9 @@ ifeq ($(F_COMPILER), GFORTRAN)
 ifeq ($(C_COMPILER), CLANG)
 CEXTRALIB = -lomp
 endif
+endif
+ifeq ($(F_COMPILER), NAG)
+CEXTRALIB = -lgomp
 endif
 endif
 

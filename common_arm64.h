@@ -39,7 +39,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #define INLINE inline
 
-#ifdef F_INTERFACE_FLANG
+#if defined( F_INTERFACE_FLANG) || defined(F_INTERFACE_PGI)
 #define RETURN_BY_STACK
 #else
 #define RETURN_BY_COMPLEX
@@ -142,13 +142,7 @@ REALNAME:
 #define HUGE_PAGESIZE   ( 4 << 20)
 
 #ifndef BUFFERSIZE
-#if defined(CORTEXA57)
-#define BUFFER_SIZE     (20 << 20)
-#elif defined(TSV110) || defined(EMAG8180)
 #define BUFFER_SIZE     (32 << 20)
-#else
-#define BUFFER_SIZE     (16 << 20)
-#endif
 #else
 #define BUFFER_SIZE	(32 << BUFFERSIZE)
 #endif

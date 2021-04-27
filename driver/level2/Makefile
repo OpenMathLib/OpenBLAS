@@ -413,7 +413,13 @@ XBLASOBJS   += \
 	xtbmv_thread_RUU.$(SUFFIX)	xtbmv_thread_RUN.$(SUFFIX) \
 	xtbmv_thread_RLU.$(SUFFIX)	xtbmv_thread_RLN.$(SUFFIX) \
 	xtbmv_thread_CUU.$(SUFFIX)	xtbmv_thread_CUN.$(SUFFIX) \
-	xtbmv_thread_CLU.$(SUFFIX)	xtbmv_thread_CLN.$(SUFFIX) \
+	xtbmv_thread_CLU.$(SUFFIX)	xtbmv_thread_CLN.$(SUFFIX)
+
+ifeq ($(BUILD_BFLOAT16),1)
+SBBLASOBJS     += \
+        sbgemv_thread_n$(TSUFFIX).$(SUFFIX) \
+        sbgemv_thread_t$(TSUFFIX).$(SUFFIX)
+endif
 
 endif
 
@@ -3692,5 +3698,13 @@ xtrsv_CUU.$(SUFFIX)  xtrsv_CUU.$(PSUFFIX)  : ztrsv_L.c ../../param.h
 
 xtrsv_CUN.$(SUFFIX)  xtrsv_CUN.$(PSUFFIX)  : ztrsv_L.c ../../param.h
 	$(CC) -c $(CFLAGS) -DXDOUBLE -DCOMPLEX -DTRANSA=4 -UUNIT $< -o $(@F)
+
+ifeq ($(BUILD_BFLOAT16),1)
+sbgemv_thread_n.$(SUFFIX) sbgemv_thread_n.$(PSUFFIX) : sbgemv_thread.c ../../common.h
+	$(CC) -c $(CFLAGS) -UCOMPLEX -UDOUBLE  -UTRANSA -UCONJ -UXCONJ $< -o $(@F)
+sbgemv_thread_t.$(SUFFIX) sbgemv_thread_t.$(PSUFFIX) : sbgemv_thread.c ../../common.h
+	$(CC) -c $(CFLAGS) -UCOMPLEX -UDOUBLE  -DTRANSA -UCONJ -UXCONJ $< -o $(@F)
+endif
+
 
 include ../../Makefile.tail

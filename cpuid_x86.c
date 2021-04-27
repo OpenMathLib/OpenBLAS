@@ -202,7 +202,7 @@ int support_avx(){
   if ((ecx & (1 << 28)) != 0 && (ecx & (1 << 27)) != 0 && (ecx & (1 << 26)) != 0){
     xgetbv(0, &eax, &edx);
     if((eax & 6) == 6){
-      ret=1;  //OS support AVX
+      ret=1;  //OS supports saving xmm and ymm registers (6 = (1<<1) | (1<<2))
     }
   }
   return ret;
@@ -219,8 +219,8 @@ int support_avx2(){
   if (!support_avx()) 
     return 0;
   cpuid(7, &eax, &ebx, &ecx, &edx);
-  if((ebx & (1<<7)) != 0)
-      ret=1;  //OS supports AVX2
+  if((ebx & (1<<5)) != 0)
+      ret=1;  //CPU supports AVX2
   return ret;
 #else
   return 0;
@@ -235,14 +235,14 @@ int support_avx512(){
   if (!support_avx()) 
     return 0;
   cpuid(7, &eax, &ebx, &ecx, &edx);
-  if((ebx & 32) != 32){
-      ret=0;  //OS does not even support AVX2
+  if((ebx & (1<<5)) == 0){
+      ret=0;  //cpu does not have avx2 flag
   }
-  if((ebx & (1<<31)) != 0){
+  if((ebx & (1<<31)) != 0){ //AVX512VL flag
     xgetbv(0, &eax, &edx); 
     if((eax & 0xe0) == 0xe0)
-      ret=1;  //OS supports AVX512VL
-  }
+      ret=1;  //OS supports saving zmm registers
+ }
   return ret;
 #else
   return 0;
@@ -1418,6 +1418,15 @@ int get_cpuname(void){
       case 9:
       case 8:      
         switch (model) {
+        case 12: // Tiger Lake
+          if(support_avx512())
+            return CPUTYPE_SKYLAKEX;
+          if(support_avx2())
+            return CPUTYPE_HASWELL;
+          if(support_avx())
+            return CPUTYPE_SANDYBRIDGE;
+          else
+          return CPUTYPE_NEHALEM;
 	case 14: // Kaby Lake and refreshes
           if(support_avx2())
             return CPUTYPE_HASWELL;
@@ -1436,6 +1445,15 @@ int get_cpuname(void){
         return CPUTYPE_SANDYBRIDGE;
           else
         return CPUTYPE_NEHALEM;
+    case 7: // Rocket Lake           
+	  if(support_avx512())
+            return CPUTYPE_SKYLAKEX;
+          if(support_avx2())
+            return CPUTYPE_HASWELL;
+          if(support_avx())
+	    return CPUTYPE_SANDYBRIDGE;
+	  else
+	  return CPUTYPE_NEHALEM;
 	}
 	break;    
       }
@@ -2014,6 +2032,19 @@ int get_coretype(void){
   #endif
             else
               return CORE_NEHALEM;
+	  case 7:// Rocket Lake
+#ifndef NO_AVX512
+	  if(support_avx512())
+            return CORE_SKYLAKEX;
+#endif
+#ifndef NO_AVX2
+	  if(support_avx2())
+            return CORE_HASWELL;
+#endif
+	  if(support_avx())
+	    return CORE_SANDYBRIDGE;
+	  else
+	  return CORE_NEHALEM;
         }
       case 5:
         switch (model) {
@@ -2102,6 +2133,16 @@ int get_coretype(void){
         break;    	
       case 9:
       case 8:
+       if (model == 12) { // Tiger Lake
+          if(support_avx512())
+            return CPUTYPE_SKYLAKEX;
+          if(support_avx2())
+            return CPUTYPE_HASWELL;
+          if(support_avx())
+            return CPUTYPE_SANDYBRIDGE;
+          else
+          return CPUTYPE_NEHALEM;
+        }
         if (model == 14) { // Kaby Lake 
 	  if(support_avx())
 #ifndef NO_AVX2

@@ -38,8 +38,18 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #pragma GCC optimize "O1"
 
-#if defined(POWER8) || defined(POWER9) || defined(POWER10)
 #if defined(__VEC__) || defined(__ALTIVEC__)
+#if defined(POWER8) || defined(POWER9)
+#if defined(DOUBLE)
+#include "zscal_microk_power8.c"
+#endif
+#elif defined(POWER10) && (__BYTE_ORDER__ != __ORDER_BIG_ENDIAN__)
+#if defined(DOUBLE)
+#include "zscal_microk_power10.c"
+#else
+#include "cscal_microk_power10.c"
+#endif
+#elif defined(POWER10)
 #if defined(DOUBLE)
 #include "zscal_microk_power8.c"
 #endif
@@ -145,7 +155,11 @@ int CNAME(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, FLOAT da_r,FLOAT da_i, F
 	{
 
 
+#if defined(DOUBLE)
 		n1 = n & -8;
+#else
+		n1 = n & -16;
+#endif
 		if ( n1 > 0 )
 		{
 			zscal_kernel_8(n1, x, da_r, da_i);

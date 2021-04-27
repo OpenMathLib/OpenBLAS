@@ -8,22 +8,57 @@ endif
 endif
 endif
 
-ifdef HAVE_SSE3
+
 ifndef DYNAMIC_ARCH
+ADD_CPUFLAGS = 1
+else
+ifdef TARGET_CORE
+ADD_CPUFLAGS = 1
+endif
+endif
+
+ifdef ADD_CPUFLAGS
+ifdef HAVE_SSE3
 CCOMMON_OPT += -msse3
+ifneq ($(F_COMPILER), NAG)
 FCOMMON_OPT += -msse3
+endif
+endif
 ifdef HAVE_SSSE3
 CCOMMON_OPT += -mssse3
+ifneq ($(F_COMPILER), NAG)
 FCOMMON_OPT += -mssse3
+endif
+endif
+ifdef HAVE_SSE4_1
+CCOMMON_OPT += -msse4.1
+ifneq ($(F_COMPILER), NAG)
+FCOMMON_OPT += -msse4.1
+endif
+endif
+ifndef OLDGCC
+ifdef HAVE_AVX
+CCOMMON_OPT += -mavx
+ifneq ($(F_COMPILER), NAG)
+FCOMMON_OPT += -mavx
+endif
+endif
+endif
+ifndef NO_AVX2
+ifdef HAVE_AVX2
+CCOMMON_OPT += -mavx2
+ifneq ($(F_COMPILER), NAG)
+FCOMMON_OPT += -mavx2
 endif
 endif
 endif
 
 ifeq ($(CORE), SKYLAKEX)
-ifndef DYNAMIC_ARCH
 ifndef NO_AVX512
 CCOMMON_OPT += -march=skylake-avx512
+ifneq ($(F_COMPILER), NAG)
 FCOMMON_OPT += -march=skylake-avx512
+endif
 ifeq ($(OSNAME), CYGWIN_NT)
 CCOMMON_OPT += -fno-asynchronous-unwind-tables
 FCOMMON_OPT += -fno-asynchronous-unwind-tables
@@ -32,22 +67,20 @@ ifeq ($(OSNAME), WINNT)
 ifeq ($(C_COMPILER), GCC)
 CCOMMON_OPT += -fno-asynchronous-unwind-tables
 FCOMMON_OPT += -fno-asynchronous-unwind-tables
-endif
 endif
 endif
 endif
 endif
 
 ifeq ($(CORE), COOPERLAKE)
-ifndef DYNAMIC_ARCH
 ifndef NO_AVX512
 ifeq ($(C_COMPILER), GCC)
 # cooperlake support was added in 10.1
-GCCVERSIONGTEQ10 := $(shell expr `$(CC) -dumpversion | cut -f1 -d.` \>= 10)
-GCCMINORVERSIONGTEQ1 := $(shell expr `$(CC) -dumpversion | cut -f2 -d.` \>= 1)
 ifeq ($(GCCVERSIONGTEQ10)$(GCCMINORVERSIONGTEQ1), 11)
 CCOMMON_OPT += -march=cooperlake
+ifneq ($(F_COMPILER), NAG)
 FCOMMON_OPT += -march=cooperlake
+endif
 endif
 endif
 ifeq ($(OSNAME), CYGWIN_NT)
@@ -62,31 +95,38 @@ endif
 endif
 endif
 endif
-endif
 
-ifeq ($(CORE), $(filter $(CORE), HASWELL ZEN SKYLAKEX COOPERLAKE))
-ifndef DYNAMIC_ARCH
+ifdef HAVE_AVX2
 ifndef NO_AVX2
 ifeq ($(C_COMPILER), GCC)
 # AVX2 support was added in 4.7.0
-GCCVERSIONGTEQ4 := $(shell expr `$(CC) -dumpversion | cut -f1 -d.` \>= 4)
-GCCMINORVERSIONGTEQ7 := $(shell expr `$(CC) -dumpversion | cut -f2 -d.` \>= 7)
-ifeq ($(GCCVERSIONGTEQ4)$(GCCMINORVERSIONGTEQ7), 11)
+GCCVERSIONCHECK := $(GCCVERSIONGT4)$(GCCVERSIONGTEQ4)$(GCCMINORVERSIONGTEQ7)
+ifeq ($(GCCVERSIONCHECK), $(filter $(GCCVERSIONCHECK), 011 110 111))
+CCOMMON_OPT += -mavx2
+endif
+else 
+ifeq ($(C_COMPILER), CLANG)
 CCOMMON_OPT += -mavx2
 endif
 endif
 ifeq ($(F_COMPILER), GFORTRAN)
 # AVX2 support was added in 4.7.0
 GCCVERSIONGTEQ4 := $(shell expr `$(FC) -dumpversion | cut -f1 -d.` \>= 4)
+GCCVERSIONGTEQ5 := $(shell expr `$(FC) -dumpversion | cut -f1 -d.` \>= 5)
 GCCMINORVERSIONGTEQ7 := $(shell expr `$(FC) -dumpversion | cut -f2 -d.` \>= 7)
-ifeq ($(GCCVERSIONGTEQ4)$(GCCMINORVERSIONGTEQ7), 11)
+GCCVERSIONCHECK := $(GCCVERSIONGTEQ5)$(GCCVERSIONGTEQ4)$(GCCMINORVERSIONGTEQ7)
+ifeq ($(GCCVERSIONCHECK), $(filter $(GCCVERSIONCHECK), 011 110 111))
+FCOMMON_OPT += -mavx2
+endif
+else
+ifeq ($(F_COMPILER), FLANG)
 FCOMMON_OPT += -mavx2
 endif
 endif
 endif
 endif
-endif
 
+endif
 
 
 ifeq ($(OSNAME), Interix)

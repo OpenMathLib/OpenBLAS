@@ -117,7 +117,9 @@ static void dgemv_kernel_4x4( BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y)
           "r" (ap[2]),  // 6
           "r" (ap[3])   // 7
 	: "cc", 
+	  "%xmm0", "%xmm1", "%xmm2", "%xmm3",
 	  "%xmm4", "%xmm5", "%xmm6", "%xmm7",
+	  "%xmm8", "%xmm9", "%xmm10", "%xmm11",
 	  "%xmm12", "%xmm13", "%xmm14", "%xmm15",
 	  "memory"
 	);

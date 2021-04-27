@@ -44,9 +44,7 @@ int CNAME(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, FLOAT da, FLOAT *x,
     {
         if (0.0 == da)
         {
-            v2f64 zero_v = __msa_cast_to_vector_double(0);
-            zero_v = (v2f64) __msa_insert_d((v2i64) zero_v, 0, 0.0);
-            zero_v = (v2f64) __msa_insert_d((v2i64) zero_v, 1, 0.0);
+            v2f64 zero_v = {0.0, 0.0};
 
             for (i = (n >> 5); i--;)
             {

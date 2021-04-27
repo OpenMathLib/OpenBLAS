@@ -416,6 +416,29 @@ endif ()
     set(ZGEMM_UNROLL_M 4)
     set(ZGEMM_UNROLL_N 4)
     set(SYMV_P 16)
+elseif ("${TCORE}" STREQUAL "VORTEX")
+    file(APPEND ${TARGET_CONF_TEMP}
+      "#define ARMV8\n"
+      "#define L1_CODE_SIZE\t32768\n"
+      "#define L1_CODE_LINESIZE\t64\n"
+      "#define L1_CODE_ASSOCIATIVE\t4\n"
+      "#define L1_DATA_SIZE\t32768\n"
+      "#define L1_DATA_LINESIZE\t64\n"
+      "#define L1_DATA_ASSOCIATIVE\t4\n"
+      "#define L2_SIZE\t5262144\n"
+      "#define L2_LINESIZE\t64\n"
+      "#define L2_ASSOCIATIVE\t8\n"
+      "#define DTB_DEFAULT_ENTRIES\t64\n"
+      "#define DTB_SIZE\t4096\n")
+    set(SGEMM_UNROLL_M 16)
+    set(SGEMM_UNROLL_N 4)
+    set(DGEMM_UNROLL_M 8)
+    set(DGEMM_UNROLL_N 4)
+    set(CGEMM_UNROLL_M 8)
+    set(CGEMM_UNROLL_N 4)
+    set(ZGEMM_UNROLL_M 4)
+    set(ZGEMM_UNROLL_N 4)
+    set(SYMV_P 16)
   elseif ("${TCORE}" STREQUAL "POWER6")
     file(APPEND ${TARGET_CONF_TEMP}
       "#define L1_DATA_SIZE 32768\n"
@@ -533,6 +556,21 @@ else(NOT CMAKE_CROSSCOMPILING)
       MESSAGE(FATAL_ERROR "Compiling getarch failed ${GETARCH_LOG}")
     endif ()
   endif ()
+  unset (HAVE_AVX2)
+  unset (HAVE_AVX)
+  unset (HAVE_FMA3)
+  unset (HAVE_MMX)
+  unset (HAVE_SSE)
+  unset (HAVE_SSE2)
+  unset (HAVE_SSE3)
+  unset (HAVE_SSSE3)
+  unset (HAVE_SSE4A)
+  unset (HAVE_SSE4_1)
+  unset (HAVE_SSE4_2)
+  unset (HAVE_NEON)
+  unset (HAVE_VFP)
+  unset (HAVE_VFPV3)
+  unset (HAVE_VFPV4)
   message(STATUS "Running getarch")
 
   # use the cmake binary w/ the -E param to run a shell command in a cross-platform way

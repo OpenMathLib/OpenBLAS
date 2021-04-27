@@ -59,6 +59,9 @@ endif
 	@$(CC) --version > /dev/null 2>&1;\
 	if [ $$? -eq 0 ]; then \
 	   cverinfo=`$(CC) --version | sed -n '1p'`; \
+	   if [ -z "$${cverinfo}" ]; then \
+	   cverinfo=`$(CC) --version | sed -n '2p'`; \
+	   fi; \
 	   echo "  C compiler       ... $(C_COMPILER)  (cmd & version : $${cverinfo})";\
 	else  \
 	   echo "  C compiler       ... $(C_COMPILER)  (command line : $(CC))";\
@@ -67,6 +70,9 @@ ifeq ($(NOFORTRAN), $(filter 0,$(NOFORTRAN)))
 	@$(FC) --version > /dev/null 2>&1;\
 	if [ $$? -eq 0 ]; then \
 	   fverinfo=`$(FC) --version | sed -n '1p'`; \
+	   if [ -z "$${fverinfo}" ]; then \
+	   fverinfo=`$(FC) --version | sed -n '2p'`; \
+	   fi; \
 	   echo "  Fortran compiler ... $(F_COMPILER)  (cmd & version : $${fverinfo})";\
 	else \
 	   echo "  Fortran compiler ... $(F_COMPILER)  (command line : $(FC))";\
@@ -268,7 +274,11 @@ ifeq ($(NOFORTRAN), $(filter 0,$(NOFORTRAN)))
 	-@echo "POPTS       = $(LAPACK_FPFLAGS)" >> $(NETLIB_LAPACK_DIR)/make.inc
 	-@echo "FFLAGS_NOOPT       = -O0 $(LAPACK_NOOPT)" >> $(NETLIB_LAPACK_DIR)/make.inc
 	-@echo "PNOOPT      = $(LAPACK_FPFLAGS) -O0" >> $(NETLIB_LAPACK_DIR)/make.inc
+ifeq ($(C_COMPILER)$(F_COMPILER)$(USE_OPENMP), CLANGGFORTRAN1)
+	-@echo "LDFLAGS     = $(FFLAGS) $(EXTRALIB) -lomp" >> $(NETLIB_LAPACK_DIR)/make.inc
+else
 	-@echo "LDFLAGS     = $(FFLAGS) $(EXTRALIB)" >> $(NETLIB_LAPACK_DIR)/make.inc
+endif
 	-@echo "CC          = $(CC)" >> $(NETLIB_LAPACK_DIR)/make.inc
 	-@echo "override CFLAGS      = $(LAPACK_CFLAGS)" >> $(NETLIB_LAPACK_DIR)/make.inc
 	-@echo "AR          = $(AR)" >> $(NETLIB_LAPACK_DIR)/make.inc

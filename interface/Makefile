@@ -19,7 +19,7 @@ ifeq ($(ARCH), MIPS)
 SUPPORT_GEMM3M = 1
 endif
 
-ifndef NO_FBLAS
+ifneq ($(NO_FBLAS), 1)
 
 SBLAS1OBJS    = \
 		saxpy.$(SUFFIX) sswap.$(SUFFIX) \
@@ -48,6 +48,7 @@ SBLAS3OBJS    = \
 
 ifeq ($(BUILD_BFLOAT16),1)
 SBBLAS1OBJS    = sbdot.$(SUFFIX)
+SBBLAS2OBJS    = sbgemv.$(SUFFIX)
 SBBLAS3OBJS    = sbgemm.$(SUFFIX)
 SBEXTOBJS      = sbstobf16.$(SUFFIX) sbdtobf16.$(SUFFIX) sbf16tos.$(SUFFIX) dbf16tod.$(SUFFIX)
 endif
@@ -145,7 +146,7 @@ ZBLAS3OBJS   +=  zgemm3m.$(SUFFIX)
 
 endif
 
-ifdef EXPRECISION
+ifeq ($(EXPRECISION), 1)
 
 QBLAS1OBJS    = \
 		qaxpy.$(SUFFIX) qswap.$(SUFFIX) \
@@ -284,6 +285,7 @@ CSBLAS3OBJS   = \
 
 ifeq ($(BUILD_BFLOAT16),1)
 CSBBLAS1OBJS = cblas_sbdot.$(SUFFIX)
+CSBBLAS2OBJS = cblas_sbgemv.$(SUFFIX)
 CSBBLAS3OBJS = cblas_sbgemm.$(SUFFIX)
 CSBEXTOBJS   = cblas_sbstobf16.$(SUFFIX) cblas_sbdtobf16.$(SUFFIX) cblas_sbf16tos.$(SUFFIX) cblas_dbf16tod.$(SUFFIX)
 endif
@@ -314,7 +316,7 @@ CCBLAS1OBJS   = \
 	cblas_cscal.$(SUFFIX) cblas_csscal.$(SUFFIX) \
 	cblas_cswap.$(SUFFIX) cblas_scnrm2.$(SUFFIX) \
 	cblas_caxpby.$(SUFFIX) \
-	cblas_icmin.$(SUFFIX) cblas_icmax.$(SUFFIX) cblas_scsum.$(SUFFIX)
+	cblas_icmin.$(SUFFIX) cblas_icmax.$(SUFFIX) cblas_scsum.$(SUFFIX) cblas_csrot.$(SUFFIX) cblas_crotg.$(SUFFIX)
 
 CCBLAS2OBJS   = \
 	cblas_cgemv.$(SUFFIX) cblas_cgerc.$(SUFFIX) cblas_cgeru.$(SUFFIX) \
@@ -344,7 +346,7 @@ CZBLAS1OBJS   = \
 	cblas_zscal.$(SUFFIX) cblas_zdscal.$(SUFFIX) \
 	cblas_zswap.$(SUFFIX) cblas_dznrm2.$(SUFFIX) \
 	cblas_zaxpby.$(SUFFIX) \
-	cblas_izmin.$(SUFFIX) cblas_izmax.$(SUFFIX) cblas_dzsum.$(SUFFIX)
+	cblas_izmin.$(SUFFIX) cblas_izmax.$(SUFFIX) cblas_dzsum.$(SUFFIX) cblas_zdrot.$(SUFFIX) cblas_zrotg.$(SUFFIX)
 
 
 CZBLAS2OBJS   = \
@@ -382,6 +384,7 @@ SBLAS1OBJS   += $(CSBLAS1OBJS)
 SBLAS2OBJS   += $(CSBLAS2OBJS)
 SBLAS3OBJS   += $(CSBLAS3OBJS)
 SBBLAS1OBJS  += $(CSBBLAS1OBJS)
+SBBLAS2OBJS  += $(CSBBLAS2OBJS)
 SBBLAS3OBJS  += $(CSBBLAS3OBJS)
 DBLAS1OBJS   += $(CDBLAS1OBJS)
 DBLAS2OBJS   += $(CDBLAS2OBJS)
@@ -399,7 +402,7 @@ CBAUXOBJS += $(CXERBLAOBJ)
 endif
 
 SBLASOBJS    = $(SBLAS1OBJS) $(SBLAS2OBJS) $(SBLAS3OBJS)
-SBBLASOBJS   = $(SBBLAS1OBJS) $(SBBLAS3OBJS)
+SBBLASOBJS   = $(SBBLAS1OBJS) $(SBBLAS2OBJS) $(SBBLAS3OBJS)
 DBLASOBJS    = $(DBLAS1OBJS) $(DBLAS2OBJS) $(DBLAS3OBJS)
 QBLASOBJS    = $(QBLAS1OBJS) $(QBLAS2OBJS) $(QBLAS3OBJS)
 CBLASOBJS    = $(CBLAS1OBJS) $(CBLAS2OBJS) $(CBLAS3OBJS)
@@ -507,12 +510,12 @@ ifneq ($(BUILD_COMPLEX16),1)
 endif
 
 FUNCOBJS    = $(SBEXTOBJS) $(CXERBLAOBJS) $(SBBLASOBJS) $(SBLASOBJS) $(DBLASOBJS) $(CBLASOBJS) $(ZBLASOBJS)
-$(info FUNCOBJS = {[$(FUNCOBJS)]} )
-ifdef EXPRECISION
+
+ifeq ($(EXPRECISION), 1)
 FUNCOBJS   += $(QBLASOBJS) $(XBLASOBJS)
 endif
 
-ifdef QUAD_PRECISION
+ifeq ($(QUAD_PRECISION), 1)
 FUNCOBJS   += $(QBLASOBJS) $(XBLASOBJS)
 endif
 
@@ -538,7 +541,7 @@ clean ::
 level1 : $(SBEXTOBJS) $(SBBLAS1OBJS) $(SBLAS1OBJS) $(DBLAS1OBJS) $(QBLAS1OBJS) $(CBLAS1OBJS) $(ZBLAS1OBJS) $(XBLAS1OBJS)
 	$(AR) $(ARFLAGS) -ru $(TOPDIR)/$(LIBNAME) $^
 
-level2 : $(SBLAS2OBJS) $(DBLAS2OBJS) $(QBLAS2OBJS) $(CBLAS2OBJS) $(ZBLAS2OBJS) $(XBLAS2OBJS)
+level2 : $(SBBLAS2OBJS) $(SBLAS2OBJS) $(DBLAS2OBJS) $(QBLAS2OBJS) $(CBLAS2OBJS) $(ZBLAS2OBJS) $(XBLAS2OBJS)
 	$(AR) $(ARFLAGS) -ru $(TOPDIR)/$(LIBNAME) $^
 
 level3 : $(SBBLAS3OBJS) $(SBLAS3OBJS) $(DBLAS3OBJS) $(QBLAS3OBJS) $(CBLAS3OBJS) $(ZBLAS3OBJS) $(XBLAS3OBJS) 
@@ -928,6 +931,11 @@ xgeru.$(SUFFIX) xgeru.$(PSUFFIX) : zger.c
 
 xgerc.$(SUFFIX) xgerc.$(PSUFFIX) : zger.c
 	$(CC) -c $(CFLAGS) -DCONJ $< -o $(@F)
+
+ifeq ($(BUILD_BFLOAT16),1)
+sbgemv.$(SUFFIX) sbgemv.$(PSUFFIX) : sbgemv.c
+	$(CC) $(CFLAGS) -c $< -o $(@F)
+endif
 
 ifndef USE_NETLIB_GEMV
 sgemv.$(SUFFIX) sgemv.$(PSUFFIX): gemv.c
@@ -1626,6 +1634,12 @@ cblas_srotg.$(SUFFIX) cblas_srotg.$(PSUFFIX): rotg.c
 cblas_drotg.$(SUFFIX) cblas_drotg.$(PSUFFIX): rotg.c
 	$(CC) $(CFLAGS) -DCBLAS -c $< -o $(@F)
 
+cblas_crotg.$(SUFFIX) cblas_crotg.$(PSUFFIX): zrotg.c
+	$(CC) -c $(CFLAGS) -DCBLAS $< -o $(@F)
+
+cblas_zrotg.$(SUFFIX) cblas_zrotg.$(PSUFFIX): zrotg.c
+	$(CC) -c $(CFLAGS) -DCBLAS $< -o $(@F)
+
 cblas_srotm.$(SUFFIX) cblas_srotm.$(PSUFFIX): rotm.c
 	$(CC) $(CFLAGS) -DCBLAS -c $< -o $(@F)
 
@@ -1655,6 +1669,17 @@ cblas_csscal.$(SUFFIX) cblas_csscal.$(PSUFFIX) : zscal.c
 
 cblas_zdscal.$(SUFFIX) cblas_zdscal.$(PSUFFIX) : zscal.c
 	$(CC) $(CFLAGS) -DCBLAS -c -DSSCAL $< -o $(@F)
+
+cblas_csrot.$(SUFFIX) cblas_csrot.$(PSUFFIX) : zrot.c
+	$(CC) $(CFLAGS) -DCBLAS -c $< -o $(@F)
+
+cblas_zdrot.$(SUFFIX) cblas_zdrot.$(PSUFFIX) : zrot.c
+	$(CC) $(CFLAGS) -DCBLAS -c $< -o $(@F)
+
+ifeq ($(BUILD_BFLOAT16),1)
+cblas_sbgemv.$(SUFFIX) cblas_sbgemv.$(PSUFFIX) : sbgemv.c
+	$(CC) -DCBLAS -c $(CFLAGS) $< -o $(@F)
+endif
 
 cblas_sgemv.$(SUFFIX) cblas_sgemv.$(PSUFFIX): gemv.c
 	$(CC) -DCBLAS -c $(CFLAGS) -o $(@F) $<

@@ -28,12 +28,12 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "common.h"
 
 #if defined(__VEC__) || defined(__ALTIVEC__)
-#include "zcopy_microk_power10.c"
+#include "copy_microk_power10.c"
 #endif
 
-#ifndef HAVE_KERNEL_32
+#ifndef HAVE_KERNEL
 
-static void zcopy_kernel_32(BLASLONG n, FLOAT *x, FLOAT *y)
+static void copy_kernel(BLASLONG n, FLOAT *x, FLOAT *y)
 {
 
 	BLASLONG i=0;
@@ -89,7 +89,7 @@ int CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG inc_y)
 		BLASLONG n1 = n & -32;
 		if ( n1 > 0 )
 		{
-			zcopy_kernel_32(n1, x, y);
+			copy_kernel(n1, x, y);
 			i=n1;
 			ix=n1*2;
 			iy=n1*2;

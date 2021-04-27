@@ -71,7 +71,7 @@ lapack_int LAPACKE_zgesvdq( int matrix_layout, char joba, char jobp,
         goto exit_level_0;
     }
     liwork = iwork_query;
-    lcwork = LAPACK_C2INT(cwork_query);
+    lcwork = LAPACK_Z2INT(cwork_query);
     lrwork = (lapack_int)rwork_query;
     /* Allocate memory for work arrays */
     iwork = (lapack_int*)LAPACKE_malloc( sizeof(lapack_int) * liwork );

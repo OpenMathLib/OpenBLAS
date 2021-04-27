@@ -80,7 +80,7 @@ int blas_level1_thread(int mode, BLASLONG m, BLASLONG n, BLASLONG k, void *alpha
     break;
   }
 
-  mode |= BLAS_LEGACY;
+  if(!(mode & BLAS_PTHREAD)) mode |= BLAS_LEGACY;
 
   for (i = 0; i < nthreads; i++) blas_queue_init(&queue[i]);
 
