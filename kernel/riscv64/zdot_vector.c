@@ -27,31 +27,35 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "common.h"
 #if !defined(DOUBLE)
-#define RVV_EFLOAT RVV_E32
-#define RVV_M RVV_M4
-#define FLOAT_V_T float32xm4_t
-#define VLEV_FLOAT vlev_float32xm4
-#define VLSEV_FLOAT vlsev_float32xm4
-#define VFREDSUM_FLOAT vfredsumvs_float32xm4
-#define VFMACCVV_FLOAT vfmaccvv_float32xm4
-#define VFMVVF_FLOAT vfmvvf_float32xm4
-#define VFDOTVV_FLOAT vfdotvv_float32xm4
-#define VFMULVV_FLOAT vfmulvv_float32xm4
-#define VFMSACVV_FLOAT vfmsacvv_float32xm4
-#define VFNMSACVV_FLOAT vfnmsacvv_float32xm4
+#define VSETVL(n) vsetvl_e32m4(n)
+#define VSETVL_MAX vsetvlmax_e32m1()
+#define FLOAT_V_T vfloat32m4_t
+#define FLOAT_V_T_M1 vfloat32m1_t
+#define VLEV_FLOAT vle_v_f32m4
+#define VLSEV_FLOAT vlse_v_f32m4
+#define VFREDSUM_FLOAT vfredsum_vs_f32m4_f32m1
+#define VFMACCVV_FLOAT vfmacc_vv_f32m4
+#define VFMVVF_FLOAT vfmv_v_f_f32m4
+#define VFMVVF_FLOAT_M1 vfmv_v_f_f32m1
+#define VFDOTVV_FLOAT vfdot_vv_f32m4
+#define VFMULVV_FLOAT vfmul_vv_f32m4
+#define VFMSACVV_FLOAT vfmsac_vv_f32m4
+#define VFNMSACVV_FLOAT vfnmsac_vv_f32m4
 #else
-#define RVV_EFLOAT RVV_E64
-#define RVV_M RVV_M4
-#define FLOAT_V_T float64xm4_t
-#define VLEV_FLOAT vlev_float64xm4
-#define VLSEV_FLOAT vlsev_float64xm4
-#define VFREDSUM_FLOAT vfredsumvs_float64xm4
-#define VFMACCVV_FLOAT vfmaccvv_float64xm4
-#define VFMVVF_FLOAT vfmvvf_float64xm4
-#define VFDOTVV_FLOAT vfdotvv_float64xm4
-#define VFMULVV_FLOAT vfmulvv_float64xm4
-#define VFMSACVV_FLOAT vfmsacvv_float64xm4
-#define VFNMSACVV_FLOAT vfnmsacvv_float64xm4
+#define VSETVL(n) vsetvl_e64m4(n)
+#define VSETVL_MAX vsetvlmax_e64m1()
+#define FLOAT_V_T vfloat64m4_t
+#define FLOAT_V_T_M1 vfloat64m1_t
+#define VLEV_FLOAT vle_v_f64m4
+#define VLSEV_FLOAT vlse_v_f64m4
+#define VFREDSUM_FLOAT vfredsum_vs_f64m4_f64m1
+#define VFMACCVV_FLOAT vfmacc_vv_f64m4
+#define VFMVVF_FLOAT vfmv_v_f_f64m4
+#define VFMVVF_FLOAT_M1 vfmv_v_f_f64m1
+#define VFDOTVV_FLOAT vfdot_vv_f64m4
+#define VFMULVV_FLOAT vfmul_vv_f64m4
+#define VFMSACVV_FLOAT vfmsac_vv_f64m4
+#define VFNMSACVV_FLOAT vfnmsac_vv_f64m4
 #endif
 
 OPENBLAS_COMPLEX_FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG inc_y)
@@ -70,9 +74,13 @@ OPENBLAS_COMPLEX_FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLA
         if ( n < 1 )  return(result);
 
         unsigned int gvl = 0;
+        FLOAT_V_T_M1 v_res, v_z0;
+        gvl = VSETVL_MAX;
+        v_res = VFMVVF_FLOAT_M1(0, gvl);
+        v_z0 = VFMVVF_FLOAT_M1(0, gvl);
 
         FLOAT_V_T vr0, vr1, vx0, vx1, vy0, vy1;
-        gvl = vsetvli(n, RVV_EFLOAT, RVV_M);
+        gvl = VSETVL(n);
         vr0 = VFMVVF_FLOAT(0, gvl);
         vr1 = VFMVVF_FLOAT(0, gvl);
         BLASLONG stride_x = inc_x * 2 * sizeof(FLOAT);
@@ -99,14 +107,13 @@ OPENBLAS_COMPLEX_FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLA
                 ix += inc_xv;
                 iy += inc_yv;
         }
-        vx0 = VFMVVF_FLOAT(0, gvl);
-        vr0 = VFREDSUM_FLOAT(vr0, vx0, gvl);
-        dot[0] += vr0[0];
-        vr1 = VFREDSUM_FLOAT(vr1, vx0, gvl);
-        dot[1] += vr1[0];
+        v_res = VFREDSUM_FLOAT(v_res, vr0, v_z0, gvl);
+        dot[0] += v_res[0];
+        v_res = VFREDSUM_FLOAT(v_res, vr1, v_z0, gvl);
+        dot[1] += v_res[0];
         //tail
         if(j < n){
-                gvl = vsetvli(n-j, RVV_EFLOAT, RVV_M);
+                gvl = VSETVL(n-j);
                 vx0 = VLSEV_FLOAT(&x[ix], stride_x, gvl);
                 vx1 = VLSEV_FLOAT(&x[ix+1], stride_x, gvl);
                 vy0 = VLSEV_FLOAT(&y[iy], stride_y, gvl);
@@ -123,11 +130,10 @@ OPENBLAS_COMPLEX_FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLA
                 vr1 = VFMULVV_FLOAT(vx1, vy0, gvl);
                 vr1 = VFMSACVV_FLOAT(vr1, vx0, vy1, gvl);
 #endif
-                vx0 = VFMVVF_FLOAT(0, gvl);
-                vr0 = VFREDSUM_FLOAT(vr0, vx0, gvl);
-                dot[0] += vr0[0];
-                vr1 = VFREDSUM_FLOAT(vr1, vx0, gvl);
-                dot[1] += vr1[0];
+                v_res = VFREDSUM_FLOAT(v_res, vr0, v_z0, gvl);
+                dot[0] += v_res[0];
+                v_res = VFREDSUM_FLOAT(v_res, vr1, v_z0, gvl);
+                dot[1] += v_res[0];
         }
         CREAL(result) = dot[0];
         CIMAG(result) = dot[1];
