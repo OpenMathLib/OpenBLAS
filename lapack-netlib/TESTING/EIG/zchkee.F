@@ -1871,7 +1871,7 @@
          CALL XLAENV( 9, 25 )
          IF( TSTERR ) THEN
 #if defined(_OPENMP)
-            N_THREADS = OMP_GET_NUM_THREADS()
+            N_THREADS = OMP_GET_MAX_THREADS()
             CALL OMP_SET_NUM_THREADS(1)
 #endif
             CALL ZERRST( 'ZST', NOUT )
@@ -2336,7 +2336,7 @@
          CALL ALAREQ( C3, NTYPES, DOTYPE, MAXTYP, NIN, NOUT )
          IF( TSTERR ) THEN
 #if defined(_OPENMP)
-            N_THREADS = OMP_GET_NUM_THREADS()
+            N_THREADS = OMP_GET_MAX_THREADS()
             CALL OMP_SET_NUM_THREADS(1)
 #endif
             CALL ZERRST( 'ZHB', NOUT )
