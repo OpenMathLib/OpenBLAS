@@ -79,8 +79,12 @@ void NAME(FLOAT *DA, FLOAT *DB, FLOAT *C, FLOAT *S){
       aa_i = fabs(da_r);
     }
 
-    scale = (aa_i / aa_r);
-    ada = aa_r * sqrt(ONE + scale * scale);
+    if (aa_r == ZERO) {
+	ada = 0.;
+    } else {
+        scale = (aa_i / aa_r);
+        ada = aa_r * sqrt(ONE + scale * scale);
+    }
 
     bb_r = fabs(db_r);
     bb_i = fabs(db_i);
@@ -90,9 +94,12 @@ void NAME(FLOAT *DA, FLOAT *DB, FLOAT *C, FLOAT *S){
       bb_i = fabs(bb_r);
     }
 
-    scale = (bb_i / bb_r);
-    adb = bb_r * sqrt(ONE + scale * scale);
-
+    if (bb_r == ZERO) {
+	adb = 0.;
+    } else {
+    	scale = (bb_i / bb_r);
+    	adb = bb_r * sqrt(ONE + scale * scale);
+    }
     scale = ada + adb;
 
     aa_r    = da_r / scale;
