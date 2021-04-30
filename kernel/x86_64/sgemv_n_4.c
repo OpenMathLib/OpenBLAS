@@ -42,8 +42,6 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "sgemv_n_microk_skylakex-8.c"
 #endif
 
-#endif
-
 #if defined(STEAMROLLER)  || defined(EXCAVATOR)
 #define NBMAX 2048
 #else
