@@ -4,7 +4,15 @@ trigger:
   branches:
     include:
       - develop
-
+resources:
+  containers:
+      - container: oneapi-hpckit
+        image: intel/oneapi-hpckit:latest
+        options: '-v /usr/bin/sudo:/usr/bin/sudo -v /usr/lib/sudo/libsudo_util.so.0:/usr/lib/sudo/libsudo_util.so.0 -v /usr/lib/sudo/sudoers.so:/usr/lib/sudo/sudoers.so'
+      - container: oneapi-basekit
+        image: intel/oneapi-basekit:latest
+        options: '-v /usr/bin/sudo:/usr/bin/sudo -v /usr/lib/sudo/libsudo_util.so.0:/usr/lib/sudo/libsudo_util.so.0 -v /usr/lib/sudo/sudoers.so:/usr/lib/sudo/sudoers.so'
+ 
 jobs:
 # manylinux1 is useful to test because the
 # standard Docker container uses an old version
@@ -94,7 +102,38 @@ jobs:
   - script: |
       brew update
       brew install llvm libomp
-      brew tap LouisBrunner/valgrind
-      brew install --HEAD LouisBrunner/valgrind/valgrind
-      make TARGET=SANDYBRIDGE NO_AVX512=1 USE_OPENMP=1 INTERFACE64=1 DYNAMIC_ARCH=1 DYNAMIC_LIST=SANDYBRIDGE DEBUG=1 NO_PARALLEL_MAKE=1 CC=/usr/local/opt/llvm/bin/clang FC=gfortran-10
-      cd ctest; OMP_NUM_THREADS=1 valgrind ./xscblat2 <sin2
+      make TARGET=CORE2 USE_OPENMP=1 INTERFACE64=1 DYNAMIC_ARCH=1 CC=/usr/local/opt/llvm/bin/clang FC=gfortran-10
+
+- job: OSX_Ifort_Clang
+  pool:
+     vmImage: 'macOS-10.15'
+  variables:
+     LD_LIBRARY_PATH: /usr/local/opt/llvm/lib
+     MACOS_HPCKIT_URL: https://registrationcenter-download.intel.com/akdlm/irc_nas/17643/m_HPCKit_p_2021.2.0.2903_offline.dmg
+     LIBRARY_PATH: /usr/local/opt/llvm/lib
+     MACOS_FORTRAN_COMPONENTS: intel.oneapi.mac.ifort-compiler
+  steps:   
+  - script: |
+      brew update
+      brew install llvm libomp
+      sudo mkdir -p /opt/intel
+      sudo chown $USER /opt/intel
+    displayName: prepare for cache restore
+  - task: Cache@2
+    inputs:
+      path: /opt/intel/oneapi
+      key: '"install" | "$(MACOS_HPCKIT_URL)" | "$(MACOS_FORTRAN_COMPONENTS)"'
+      cacheHitVar: CACHE_RESTORED
+  - script: | 
+      curl --output webimage.dmg --url $(MACOS_HPCKIT_URL) --retry 5 --retry-delay 5
+      hdiutil attach webimage.dmg
+      sudo /Volumes/"$(basename "$(MACOS_HPCKIT_URL)" .dmg)"/bootstrapper.app/Contents/MacOS/bootstrapper -s --action install --components="$(MACOS_FORTRAN_COMPONENTS)" --eula=accept --continue-with-optional-error=yes --log-dir=.
+      installer_exit_code=$?
+      hdiutil detach /Volumes/"$(basename "$URL" .dmg)" -quiet
+      exit $installer_exit_code
+    displayName: install
+    condition: ne(variables.CACHE_RESTORED, 'true')
+  - script: | 
+      source /opt/intel/oneapi/setvars.sh
+      make CC=/usr/local/opt/llvm/bin/clang FC=ifort
+ 
