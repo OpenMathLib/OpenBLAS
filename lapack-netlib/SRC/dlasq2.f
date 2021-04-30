@@ -184,10 +184,18 @@
 *
 *        2-by-2 case.
 *
-         IF( Z( 2 ).LT.ZERO .OR. Z( 3 ).LT.ZERO ) THEN
-            INFO = -2
+         IF( Z( 1 ).LT.ZERO ) THEN
+            INFO = -201
             CALL XERBLA( 'DLASQ2', 2 )
             RETURN
+         ELSE IF( Z( 2 ).LT.ZERO ) THEN
+            INFO = -202
+            CALL XERBLA( 'DLASQ2', 2 )
+            RETURN
+         ELSE IF( Z( 3 ).LT.ZERO ) THEN
+           INFO = -203
+           CALL XERBLA( 'DLASQ2', 2 )
+           RETURN
          ELSE IF( Z( 3 ).GT.Z( 1 ) ) THEN
             D = Z( 3 )
             Z( 3 ) = Z( 1 )
