@@ -416,6 +416,15 @@ please https://github.com/xianyi/OpenBLAS/issues/246
 #include "common_alpha.h"
 #endif
 
+#if (defined(ARCH_X86) || defined(ARCH_X86_64)) && defined(__CET__) && defined(__has_include)
+#if __has_include(<cet.h>)
+#include <cet.h>
+#endif
+#endif
+#ifndef _CET_ENDBR
+#define _CET_ENDBR
+#endif
+
 #ifdef ARCH_X86
 #include "common_x86.h"
 #endif
