@@ -79,7 +79,7 @@ lapack_int LAPACKE_zheevd_work( int matrix_layout, char jobz, char uplo,
             info = info - 1;
         }
         /* Transpose output matrices */
-        if ( jobz == 'V') {
+        if ( jobz == 'V' || jobz == 'v' ) {
             LAPACKE_zge_trans( LAPACK_COL_MAJOR, n, n, a_t, lda_t, a, lda );
         } else { 
             LAPACKE_zhe_trans( LAPACK_COL_MAJOR, uplo, n, a_t, lda_t, a, lda );
