@@ -451,7 +451,8 @@ REALNAME:
 	.align 512; \
 	.globl REALNAME ;\
        .type REALNAME, @function; \
-REALNAME:
+REALNAME: \
+	_CET_ENDBR
 
 #ifdef PROFILE
 #define PROFCODE call *mcount@GOTPCREL(%rip)
