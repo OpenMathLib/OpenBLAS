@@ -35,7 +35,7 @@
 
 lapack_int LAPACKE_zhegst( int matrix_layout, lapack_int itype, char uplo,
                            lapack_int n, lapack_complex_double* a,
-                           lapack_int lda, lapack_complex_double* b,
+                           lapack_int lda, const lapack_complex_double* b,
                            lapack_int ldb )
 {
     if( matrix_layout != LAPACK_COL_MAJOR && matrix_layout != LAPACK_ROW_MAJOR ) {

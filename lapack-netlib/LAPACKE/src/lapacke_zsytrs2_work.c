@@ -35,7 +35,7 @@
 
 lapack_int LAPACKE_zsytrs2_work( int matrix_layout, char uplo, lapack_int n,
                                  lapack_int nrhs,
-                                 lapack_complex_double* a, lapack_int lda,
+                                 const lapack_complex_double* a, lapack_int lda,
                                  const lapack_int* ipiv,
                                  lapack_complex_double* b, lapack_int ldb,
                                  lapack_complex_double* work )

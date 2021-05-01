@@ -56,6 +56,8 @@ lapack_int LAPACKE_zgesvd_work( int matrix_layout, char jobu, char jobvt,
                              ( LAPACKE_lsame( jobu, 's' ) ? MIN(m,n) : 1);
         lapack_int nrows_vt = LAPACKE_lsame( jobvt, 'a' ) ? n :
                               ( LAPACKE_lsame( jobvt, 's' ) ? MIN(m,n) : 1);
+        lapack_int ncols_vt = ( LAPACKE_lsame( jobvt, 'a' ) ||
+                               LAPACKE_lsame( jobvt, 's' ) ) ? n : 1;
         lapack_int lda_t = MAX(1,m);
         lapack_int ldu_t = MAX(1,nrows_u);
         lapack_int ldvt_t = MAX(1,nrows_vt);
@@ -73,7 +75,7 @@ lapack_int LAPACKE_zgesvd_work( int matrix_layout, char jobu, char jobvt,
             LAPACKE_xerbla( "LAPACKE_zgesvd_work", info );
             return info;
         }
-        if( ldvt < n ) {
+        if( ldvt < ncols_vt ) {
             info = -12;
             LAPACKE_xerbla( "LAPACKE_zgesvd_work", info );
             return info;
