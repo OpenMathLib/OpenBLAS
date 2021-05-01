@@ -4768,7 +4768,7 @@ void LAPACK_chegst(
     lapack_int const* itype, char const* uplo,
     lapack_int const* n,
     lapack_complex_float* A, lapack_int const* lda,
-    lapack_complex_float* B, lapack_int const* ldb,
+    const lapack_complex_float* B, lapack_int const* ldb,
     lapack_int* info );
 
 #define LAPACK_zhegst LAPACK_GLOBAL(zhegst,ZHEGST)
@@ -4776,7 +4776,7 @@ void LAPACK_zhegst(
     lapack_int const* itype, char const* uplo,
     lapack_int const* n,
     lapack_complex_double* A, lapack_int const* lda,
-    lapack_complex_double* B, lapack_int const* ldb,
+    const lapack_complex_double* B, lapack_int const* ldb,
     lapack_int* info );
 
 #define LAPACK_chegv LAPACK_GLOBAL(chegv,CHEGV)
@@ -11556,7 +11556,7 @@ void LAPACK_zsytrs(
 void LAPACK_csytrs2(
     char const* uplo,
     lapack_int const* n, lapack_int const* nrhs,
-    lapack_complex_float* A, lapack_int const* lda, lapack_int const* ipiv,
+    const lapack_complex_float* A, lapack_int const* lda, lapack_int const* ipiv,
     lapack_complex_float* B, lapack_int const* ldb,
     lapack_complex_float* work,
     lapack_int* info );
@@ -11565,7 +11565,7 @@ void LAPACK_csytrs2(
 void LAPACK_dsytrs2(
     char const* uplo,
     lapack_int const* n, lapack_int const* nrhs,
-    double* A, lapack_int const* lda, lapack_int const* ipiv,
+    const double* A, lapack_int const* lda, lapack_int const* ipiv,
     double* B, lapack_int const* ldb,
     double* work,
     lapack_int* info );
@@ -11574,7 +11574,7 @@ void LAPACK_dsytrs2(
 void LAPACK_ssytrs2(
     char const* uplo,
     lapack_int const* n, lapack_int const* nrhs,
-    float* A, lapack_int const* lda, lapack_int const* ipiv,
+    const float* A, lapack_int const* lda, lapack_int const* ipiv,
     float* B, lapack_int const* ldb,
     float* work,
     lapack_int* info );
@@ -11583,7 +11583,7 @@ void LAPACK_ssytrs2(
 void LAPACK_zsytrs2(
     char const* uplo,
     lapack_int const* n, lapack_int const* nrhs,
-    lapack_complex_double* A, lapack_int const* lda, lapack_int const* ipiv,
+    const lapack_complex_double* A, lapack_int const* lda, lapack_int const* ipiv,
     lapack_complex_double* B, lapack_int const* ldb,
     lapack_complex_double* work,
     lapack_int* info );
