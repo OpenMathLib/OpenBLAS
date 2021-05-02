@@ -1,4 +1,4 @@
-*> \brief \b DORHR_COL01
+*> \brief \b DORHR_COL02
 *
 *  =========== DOCUMENTATION ===========
 *
@@ -8,7 +8,7 @@
 *  Definition:
 *  ===========
 *
-*       SUBROUTINE DORHR_COL01( M, N, MB1, NB1, NB2, RESULT )
+*       SUBROUTINE DORHR_COL02( M, N, MB1, NB1, NB2, RESULT )
 *
 *       .. Scalar Arguments ..
 *       INTEGER           M, N, MB1, NB1, NB2
@@ -21,7 +21,8 @@
 *>
 *> \verbatim
 *>
-*> DORHR_COL01 tests DORGTSQR and DORHR_COL using DLATSQR, DGEMQRT.
+*> DORHR_COL02 tests DORGTSQR_ROW and DORHR_COL inside DGETSQRHRT
+*> (which calls DLATSQR, DORGTSQR_ROW and DORHR_COL) using DGEMQRT.
 *> Therefore, DLATSQR (part of DGEQR), DGEMQRT (part of DGEMQR)
 *> have to be tested before this test.
 *>
@@ -115,7 +116,7 @@
 *> \ingroup double_lin
 *
 *  =====================================================================
-      SUBROUTINE DORHR_COL01( M, N, MB1, NB1, NB2, RESULT )
+      SUBROUTINE DORHR_COL02( M, N, MB1, NB1, NB2, RESULT )
       IMPLICIT NONE
 *
 *  -- LAPACK test routine --
@@ -141,7 +142,7 @@
 *     ..
 *     .. Local Scalars ..
       LOGICAL            TESTZEROS
-      INTEGER            INFO, I, J, K, L, LWORK, NB1_UB, NB2_UB, NRB
+      INTEGER            INFO, J, K, L, LWORK, NB2_UB, NRB
       DOUBLE PRECISION   ANORM, EPS, RESID, CNORM, DNORM
 *     ..
 *     .. Local Arrays ..
@@ -153,8 +154,8 @@
       EXTERNAL           DLAMCH, DLANGE, DLANSY
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           DLACPY, DLARNV, DLASET, DLATSQR, DORHR_COL,
-     $                   DORGTSQR, DSCAL, DGEMM, DGEMQRT, DSYRK
+      EXTERNAL           DLACPY, DLARNV, DLASET, DGETSQRHRT,
+     $                   DSCAL, DGEMM, DGEMQRT, DSYRK
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          CEILING, DBLE, MAX, MIN
@@ -206,21 +207,15 @@
 *
 *     Begin determine LWORK for the array WORK and allocate memory.
 *
-*     DLATSQR requires NB1 to be bounded by N.
-*
-      NB1_UB = MIN( NB1, N)
-*
 *     DGEMQRT requires NB2 to be bounded by N.
 *
       NB2_UB = MIN( NB2, N)
 *
-      CALL DLATSQR( M, N, MB1, NB1_UB, AF, M, T1, NB1,
-     $              WORKQUERY, -1, INFO )
+*
+      CALL DGETSQRHRT( M, N, MB1, NB1, NB2, AF, M, T2, NB2,
+     $                 WORKQUERY, -1, INFO )
+*
       LWORK = INT( WORKQUERY( 1 ) )
-      CALL DORGTSQR( M, N, MB1, NB1, AF, M, T1, NB1, WORKQUERY, -1,
-     $               INFO )
-
-      LWORK = MAX( LWORK, INT( WORKQUERY( 1 ) ) )
 *
 *     In DGEMQRT, WORK is N*NB2_UB if SIDE = 'L',
 *                or  M*NB2_UB if SIDE = 'R'.
@@ -236,42 +231,9 @@
 *
 *     Factor the matrix A in the array AF.
 *
-      SRNAMT = 'DLATSQR'
-      CALL DLATSQR( M, N, MB1, NB1_UB, AF, M, T1, NB1, WORK, LWORK,
-     $              INFO )
-*
-*     Copy the factor R into the array R.
-*
-      SRNAMT = 'DLACPY'
-      CALL DLACPY( 'U', N, N, AF, M, R, M )
-*
-*     Reconstruct the orthogonal matrix Q.
-*
-      SRNAMT = 'DORGTSQR'
-      CALL DORGTSQR( M, N, MB1, NB1, AF, M, T1, NB1, WORK, LWORK,
-     $               INFO )
-*
-*     Perform the Householder reconstruction, the result is stored
-*     the arrays AF and T2.
-*
-      SRNAMT = 'DORHR_COL'
-      CALL DORHR_COL( M, N, NB2, AF, M, T2, NB2, DIAG, INFO )
-*
-*     Compute the factor R_hr corresponding to the Householder
-*     reconstructed Q_hr and place it in the upper triangle of AF to
-*     match the Q storage format in DGEQRT. R_hr = R_tsqr * S,
-*     this means changing the sign of I-th row of the matrix R_tsqr
-*     according to sign of of I-th diagonal element DIAG(I) of the
-*     matrix S.
-*
-      SRNAMT = 'DLACPY'
-      CALL DLACPY( 'U', N, N, R, M, AF, M )
-*
-      DO I = 1, N
-         IF( DIAG( I ).EQ.-ONE ) THEN
-            CALL DSCAL( N+1-I, -ONE, AF( I, I ), M )
-         END IF
-      END DO
+      SRNAMT = 'DGETSQRHRT'
+      CALL DGETSQRHRT( M, N, MB1, NB1, NB2, AF, M, T2, NB2,
+     $                 WORK, LWORK, INFO )
 *
 *     End Householder reconstruction routines.
 *
@@ -410,6 +372,6 @@
 *
       RETURN
 *
-*     End of DORHR_COL01
+*     End of DORHR_COL02
 *
       END

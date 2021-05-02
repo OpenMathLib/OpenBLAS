@@ -2598,6 +2598,15 @@ lapack_int LAPACKE_sorgtr( int matrix_layout, char uplo, lapack_int n, float* a,
 lapack_int LAPACKE_dorgtr( int matrix_layout, char uplo, lapack_int n, double* a,
                            lapack_int lda, const double* tau );
 
+lapack_int LAPACKE_sorgtsqr_row( int matrix_layout, lapack_int m, lapack_int n,
+                                 lapack_int mb, lapack_int nb,
+                                 float* a, lapack_int lda,
+                                 const float* t, lapack_int ldt );
+lapack_int LAPACKE_dorgtsqr_row( int matrix_layout, lapack_int m, lapack_int n,
+                                 lapack_int mb, lapack_int nb,
+                                 double* a, lapack_int lda,
+                                 const double* t, lapack_int ldt );
+
 lapack_int LAPACKE_sormbr( int matrix_layout, char vect, char side, char trans,
                            lapack_int m, lapack_int n, lapack_int k,
                            const float* a, lapack_int lda, const float* tau,
@@ -4576,6 +4585,15 @@ lapack_int LAPACKE_cungtr( int matrix_layout, char uplo, lapack_int n,
 lapack_int LAPACKE_zungtr( int matrix_layout, char uplo, lapack_int n,
                            lapack_complex_double* a, lapack_int lda,
                            const lapack_complex_double* tau );
+
+lapack_int LAPACKE_cungtsqr_row( int matrix_layout, lapack_int m, lapack_int n,
+                                 lapack_int mb, lapack_int nb,
+                                 lapack_complex_float* a, lapack_int lda,
+                                 const lapack_complex_float* t, lapack_int ldt );
+lapack_int LAPACKE_zungtsqr_row( int matrix_layout, lapack_int m, lapack_int n,
+                                 lapack_int mb, lapack_int nb,
+                                 lapack_complex_double* a, lapack_int lda,
+                                 const lapack_complex_double* t, lapack_int ldt );
 
 lapack_int LAPACKE_cunmbr( int matrix_layout, char vect, char side, char trans,
                            lapack_int m, lapack_int n, lapack_int k,
@@ -7880,6 +7898,19 @@ lapack_int LAPACKE_dorgtr_work( int matrix_layout, char uplo, lapack_int n,
                                 double* a, lapack_int lda, const double* tau,
                                 double* work, lapack_int lwork );
 
+lapack_int LAPACKE_sorgtsqr_row_work( int matrix_layout,
+                                      lapack_int m, lapack_int n,
+                                      lapack_int mb, lapack_int nb,
+                                      float* a, lapack_int lda,
+                                      const float* t, lapack_int ldt,
+                                      float* work, lapack_int lwork );
+lapack_int LAPACKE_dorgtsqr_row_work( int matrix_layout,
+                                      lapack_int m, lapack_int n,
+                                      lapack_int mb, lapack_int nb,
+                                      double* a, lapack_int lda,
+                                      const double* t, lapack_int ldt,
+                                      double* work, lapack_int lwork );
+
 lapack_int LAPACKE_sormbr_work( int matrix_layout, char vect, char side,
                                 char trans, lapack_int m, lapack_int n,
                                 lapack_int k, const float* a, lapack_int lda,
@@ -10281,6 +10312,19 @@ lapack_int LAPACKE_zungtr_work( int matrix_layout, char uplo, lapack_int n,
                                 const lapack_complex_double* tau,
                                 lapack_complex_double* work, lapack_int lwork );
 
+lapack_int LAPACKE_cungtsqr_row_work( int matrix_layout,
+                                      lapack_int m, lapack_int n,
+                                      lapack_int mb, lapack_int nb,
+                                      lapack_complex_float* a, lapack_int lda,
+                                      const lapack_complex_float* t, lapack_int ldt,
+                                      lapack_complex_float* work, lapack_int lwork );
+lapack_int LAPACKE_zungtsqr_row_work( int matrix_layout,
+                                      lapack_int m, lapack_int n,
+                                      lapack_int mb, lapack_int nb,
+                                      lapack_complex_double* a, lapack_int lda,
+                                      const lapack_complex_double* t, lapack_int ldt,
+                                      lapack_complex_double* work, lapack_int lwork );
+
 lapack_int LAPACKE_cunmbr_work( int matrix_layout, char vect, char side,
                                 char trans, lapack_int m, lapack_int n,
                                 lapack_int k, const lapack_complex_float* a,
@@ -12025,6 +12069,44 @@ lapack_int LAPACKE_zgetsls_work( int matrix_layout, char trans, lapack_int m,
                                  lapack_complex_double* a, lapack_int lda,
                                  lapack_complex_double* b, lapack_int ldb,
                                  lapack_complex_double* work, lapack_int lwork );
+
+lapack_int LAPACKE_sgetsqrhrt( int matrix_layout, lapack_int m, lapack_int n,
+                               lapack_int mb1, lapack_int nb1, lapack_int nb2,
+                               float* a, lapack_int lda,
+                               float* t, lapack_int ldt );
+lapack_int LAPACKE_dgetsqrhrt( int matrix_layout, lapack_int m, lapack_int n,
+                               lapack_int mb1, lapack_int nb1, lapack_int nb2,
+                               double* a, lapack_int lda,
+                               double* t, lapack_int ldt );
+lapack_int LAPACKE_cgetsqrhrt( int matrix_layout, lapack_int m, lapack_int n,
+                               lapack_int mb1, lapack_int nb1, lapack_int nb2,
+                               lapack_complex_float* a, lapack_int lda,
+                               lapack_complex_float* t, lapack_int ldt );
+lapack_int LAPACKE_zgetsqrhrt( int matrix_layout, lapack_int m, lapack_int n,
+                               lapack_int mb1, lapack_int nb1, lapack_int nb2,
+                               lapack_complex_double* a, lapack_int lda,
+                               lapack_complex_double* t, lapack_int ldt );
+
+lapack_int LAPACKE_sgetsqrhrt_work( int matrix_layout, lapack_int m, lapack_int n,
+                                    lapack_int mb1, lapack_int nb1, lapack_int nb2,
+                                    float* a, lapack_int lda,
+                                    float* t, lapack_int ldt,
+                                    float* work, lapack_int lwork );
+lapack_int LAPACKE_dgetsqrhrt_work( int matrix_layout, lapack_int m, lapack_int n,
+                                    lapack_int mb1, lapack_int nb1, lapack_int nb2,
+                                    double* a, lapack_int lda,
+                                    double* t, lapack_int ldt,
+                                    double* work, lapack_int lwork );
+lapack_int LAPACKE_cgetsqrhrt_work( int matrix_layout, lapack_int m, lapack_int n,
+                                    lapack_int mb1, lapack_int nb1, lapack_int nb2,
+                                    lapack_complex_float* a, lapack_int lda,
+                                    lapack_complex_float* t, lapack_int ldt,
+                                    lapack_complex_float* work, lapack_int lwork );
+lapack_int LAPACKE_zgetsqrhrt_work( int matrix_layout, lapack_int m, lapack_int n,
+                                    lapack_int mb1, lapack_int nb1, lapack_int nb2,
+                                    lapack_complex_double* a, lapack_int lda,
+                                    lapack_complex_double* t, lapack_int ldt,
+                                    lapack_complex_double* work, lapack_int lwork );
 
 lapack_int LAPACKE_ssyev_2stage( int matrix_layout, char jobz, char uplo, lapack_int n,
                           float* a, lapack_int lda, float* w );

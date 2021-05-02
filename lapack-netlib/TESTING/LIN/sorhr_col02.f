@@ -1,4 +1,4 @@
-*> \brief \b DORHR_COL01
+*> \brief \b SORHR_COL02
 *
 *  =========== DOCUMENTATION ===========
 *
@@ -8,12 +8,12 @@
 *  Definition:
 *  ===========
 *
-*       SUBROUTINE DORHR_COL01( M, N, MB1, NB1, NB2, RESULT )
+*       SUBROUTINE SORHR_COL02( M, N, MB1, NB1, NB2, RESULT )
 *
 *       .. Scalar Arguments ..
 *       INTEGER           M, N, MB1, NB1, NB2
 *       .. Return values ..
-*       DOUBLE PRECISION  RESULT(6)
+*       REAL              RESULT(6)
 *
 *
 *> \par Purpose:
@@ -21,8 +21,9 @@
 *>
 *> \verbatim
 *>
-*> DORHR_COL01 tests DORGTSQR and DORHR_COL using DLATSQR, DGEMQRT.
-*> Therefore, DLATSQR (part of DGEQR), DGEMQRT (part of DGEMQR)
+*> SORHR_COL02 tests SORGTSQR_ROW and SORHR_COL inside SGETSQRHRT
+*> (which calls SLATSQR, SORGTSQR_ROW and SORHR_COL) using SGEMQRT.
+*> Therefore, SLATSQR (part of SGEQR), SGEMQRT (part of SGEMQR)
 *> have to be tested before this test.
 *>
 *> \endverbatim
@@ -60,7 +61,7 @@
 *>
 *> \param[out] RESULT
 *> \verbatim
-*>          RESULT is DOUBLE PRECISION array, dimension (6)
+*>          RESULT is REAL array, dimension (6)
 *>          Results of each of the six tests below.
 *>
 *>            A is a m-by-n test input matrix to be factored.
@@ -69,7 +70,7 @@
 *>
 *>            Q_qr is an implicit m-by-m orthogonal Q matrix, the result
 *>            of factorization in blocked WY-representation,
-*>            stored in ZGEQRT output format.
+*>            stored in SGEQRT output format.
 *>
 *>            R is a n-by-n upper-triangular matrix,
 *>
@@ -98,10 +99,10 @@
 *>
 *>          where:
 *>            Q_qr * C, (Q_gr**H) * C, D * Q_qr, D * (Q_qr**H) are
-*>            computed using DGEMQRT,
+*>            computed using SGEMQRT,
 *>
 *>            Q * C, (Q**H) * C, D * Q, D * (Q**H)  are
-*>            computed using DGEMM.
+*>            computed using SGEMM.
 *> \endverbatim
 *
 *  Authors:
@@ -112,10 +113,10 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup double_lin
+*> \ingroup single_lin
 *
 *  =====================================================================
-      SUBROUTINE DORHR_COL01( M, N, MB1, NB1, NB2, RESULT )
+      SUBROUTINE SORHR_COL02( M, N, MB1, NB1, NB2, RESULT )
       IMPLICIT NONE
 *
 *  -- LAPACK test routine --
@@ -125,39 +126,39 @@
 *     .. Scalar Arguments ..
       INTEGER           M, N, MB1, NB1, NB2
 *     .. Return values ..
-      DOUBLE PRECISION  RESULT(6)
+      REAL              RESULT(6)
 *
 *  =====================================================================
 *
 *     ..
 *     .. Local allocatable arrays
-      DOUBLE PRECISION, ALLOCATABLE ::  A(:,:), AF(:,:), Q(:,:), R(:,:),
+      REAL            , ALLOCATABLE ::  A(:,:), AF(:,:), Q(:,:), R(:,:),
      $                   RWORK(:), WORK( : ), T1(:,:), T2(:,:), DIAG(:),
      $                   C(:,:), CF(:,:), D(:,:), DF(:,:)
 *
 *     .. Parameters ..
-      DOUBLE PRECISION   ONE, ZERO
-      PARAMETER          ( ZERO = 0.0D+0, ONE = 1.0D+0 )
+      REAL               ONE, ZERO
+      PARAMETER          ( ZERO = 0.0E+0, ONE = 1.0E+0 )
 *     ..
 *     .. Local Scalars ..
       LOGICAL            TESTZEROS
-      INTEGER            INFO, I, J, K, L, LWORK, NB1_UB, NB2_UB, NRB
-      DOUBLE PRECISION   ANORM, EPS, RESID, CNORM, DNORM
+      INTEGER            INFO, J, K, L, LWORK, NB2_UB, NRB
+      REAL               ANORM, EPS, RESID, CNORM, DNORM
 *     ..
 *     .. Local Arrays ..
       INTEGER            ISEED( 4 )
-      DOUBLE PRECISION   WORKQUERY( 1 )
+      REAL               WORKQUERY( 1 )
 *     ..
 *     .. External Functions ..
-      DOUBLE PRECISION   DLAMCH, DLANGE, DLANSY
-      EXTERNAL           DLAMCH, DLANGE, DLANSY
+      REAL               SLAMCH, SLANGE, SLANSY
+      EXTERNAL           SLAMCH, SLANGE, SLANSY
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           DLACPY, DLARNV, DLASET, DLATSQR, DORHR_COL,
-     $                   DORGTSQR, DSCAL, DGEMM, DGEMQRT, DSYRK
+      EXTERNAL           SLACPY, SLARNV, SLASET, SGETSQRHRT,
+     $                   SSCAL, SGEMM, SGEMQRT, SSYRK
 *     ..
 *     .. Intrinsic Functions ..
-      INTRINSIC          CEILING, DBLE, MAX, MIN
+      INTRINSIC          CEILING, REAL, MAX, MIN
 *     ..
 *     .. Scalars in Common ..
       CHARACTER(LEN=32)  SRNAMT
@@ -172,7 +173,7 @@
 *
       TESTZEROS = .FALSE.
 *
-      EPS = DLAMCH( 'Epsilon' )
+      EPS = SLAMCH( 'Epsilon' )
       K = MIN( M, N )
       L = MAX( M, N, 1)
 *
@@ -185,20 +186,20 @@
 *     Put random numbers into A and copy to AF
 *
       DO J = 1, N
-         CALL DLARNV( 2, ISEED, M, A( 1, J ) )
+         CALL SLARNV( 2, ISEED, M, A( 1, J ) )
       END DO
       IF( TESTZEROS ) THEN
          IF( M.GE.4 ) THEN
             DO J = 1, N
-               CALL DLARNV( 2, ISEED, M/2, A( M/4, J ) )
+               CALL SLARNV( 2, ISEED, M/2, A( M/4, J ) )
             END DO
          END IF
       END IF
-      CALL DLACPY( 'Full', M, N, A, M, AF, M )
+      CALL SLACPY( 'Full', M, N, A, M, AF, M )
 *
-*     Number of row blocks in DLATSQR
+*     Number of row blocks in SLATSQR
 *
-      NRB = MAX( 1, CEILING( DBLE( M - N ) / DBLE( MB1 - N ) ) )
+      NRB = MAX( 1, CEILING( REAL( M - N ) / REAL( MB1 - N ) ) )
 *
       ALLOCATE ( T1( NB1, N * NRB ) )
       ALLOCATE ( T2( NB2, N ) )
@@ -206,23 +207,16 @@
 *
 *     Begin determine LWORK for the array WORK and allocate memory.
 *
-*     DLATSQR requires NB1 to be bounded by N.
-*
-      NB1_UB = MIN( NB1, N)
-*
-*     DGEMQRT requires NB2 to be bounded by N.
+*     SGEMQRT requires NB2 to be bounded by N.
 *
       NB2_UB = MIN( NB2, N)
 *
-      CALL DLATSQR( M, N, MB1, NB1_UB, AF, M, T1, NB1,
-     $              WORKQUERY, -1, INFO )
-      LWORK = INT( WORKQUERY( 1 ) )
-      CALL DORGTSQR( M, N, MB1, NB1, AF, M, T1, NB1, WORKQUERY, -1,
-     $               INFO )
-
-      LWORK = MAX( LWORK, INT( WORKQUERY( 1 ) ) )
+      CALL SGETSQRHRT( M, N, MB1, NB1, NB2, AF, M, T2, NB2,
+     $                 WORKQUERY, -1, INFO )
 *
-*     In DGEMQRT, WORK is N*NB2_UB if SIDE = 'L',
+      LWORK = INT( WORKQUERY( 1 ) )
+*
+*     In SGEMQRT, WORK is N*NB2_UB if SIDE = 'L',
 *                or  M*NB2_UB if SIDE = 'R'.
 *
       LWORK = MAX( LWORK, NB2_UB * N, NB2_UB * M )
@@ -236,67 +230,34 @@
 *
 *     Factor the matrix A in the array AF.
 *
-      SRNAMT = 'DLATSQR'
-      CALL DLATSQR( M, N, MB1, NB1_UB, AF, M, T1, NB1, WORK, LWORK,
-     $              INFO )
-*
-*     Copy the factor R into the array R.
-*
-      SRNAMT = 'DLACPY'
-      CALL DLACPY( 'U', N, N, AF, M, R, M )
-*
-*     Reconstruct the orthogonal matrix Q.
-*
-      SRNAMT = 'DORGTSQR'
-      CALL DORGTSQR( M, N, MB1, NB1, AF, M, T1, NB1, WORK, LWORK,
-     $               INFO )
-*
-*     Perform the Householder reconstruction, the result is stored
-*     the arrays AF and T2.
-*
-      SRNAMT = 'DORHR_COL'
-      CALL DORHR_COL( M, N, NB2, AF, M, T2, NB2, DIAG, INFO )
-*
-*     Compute the factor R_hr corresponding to the Householder
-*     reconstructed Q_hr and place it in the upper triangle of AF to
-*     match the Q storage format in DGEQRT. R_hr = R_tsqr * S,
-*     this means changing the sign of I-th row of the matrix R_tsqr
-*     according to sign of of I-th diagonal element DIAG(I) of the
-*     matrix S.
-*
-      SRNAMT = 'DLACPY'
-      CALL DLACPY( 'U', N, N, R, M, AF, M )
-*
-      DO I = 1, N
-         IF( DIAG( I ).EQ.-ONE ) THEN
-            CALL DSCAL( N+1-I, -ONE, AF( I, I ), M )
-         END IF
-      END DO
+      SRNAMT = 'SGETSQRHRT'
+      CALL SGETSQRHRT( M, N, MB1, NB1, NB2, AF, M, T2, NB2,
+     $                 WORK, LWORK, INFO )
 *
 *     End Householder reconstruction routines.
 *
 *
 *     Generate the m-by-m matrix Q
 *
-      CALL DLASET( 'Full', M, M, ZERO, ONE, Q, M )
+      CALL SLASET( 'Full', M, M, ZERO, ONE, Q, M )
 *
-      SRNAMT = 'DGEMQRT'
-      CALL DGEMQRT( 'L', 'N', M, M, K, NB2_UB, AF, M, T2, NB2, Q, M,
+      SRNAMT = 'SGEMQRT'
+      CALL SGEMQRT( 'L', 'N', M, M, K, NB2_UB, AF, M, T2, NB2, Q, M,
      $              WORK, INFO )
 *
 *     Copy R
 *
-      CALL DLASET( 'Full', M, N, ZERO, ZERO, R, M )
+      CALL SLASET( 'Full', M, N, ZERO, ZERO, R, M )
 *
-      CALL DLACPY( 'Upper', M, N, AF, M, R, M )
+      CALL SLACPY( 'Upper', M, N, AF, M, R, M )
 *
 *     TEST 1
 *     Compute |R - (Q**T)*A| / ( eps * m * |A| ) and store in RESULT(1)
 *
-      CALL DGEMM( 'T', 'N', M, N, M, -ONE, Q, M, A, M, ONE, R, M )
+      CALL SGEMM( 'T', 'N', M, N, M, -ONE, Q, M, A, M, ONE, R, M )
 *
-      ANORM = DLANGE( '1', M, N, A, M, RWORK )
-      RESID = DLANGE( '1', M, N, R, M, RWORK )
+      ANORM = SLANGE( '1', M, N, A, M, RWORK )
+      RESID = SLANGE( '1', M, N, R, M, RWORK )
       IF( ANORM.GT.ZERO ) THEN
          RESULT( 1 ) = RESID / ( EPS * MAX( 1, M ) * ANORM )
       ELSE
@@ -306,30 +267,30 @@
 *     TEST 2
 *     Compute |I - (Q**T)*Q| / ( eps * m ) and store in RESULT(2)
 *
-      CALL DLASET( 'Full', M, M, ZERO, ONE, R, M )
-      CALL DSYRK( 'U', 'T', M, M, -ONE, Q, M, ONE, R, M )
-      RESID = DLANSY( '1', 'Upper', M, R, M, RWORK )
+      CALL SLASET( 'Full', M, M, ZERO, ONE, R, M )
+      CALL SSYRK( 'U', 'T', M, M, -ONE, Q, M, ONE, R, M )
+      RESID = SLANSY( '1', 'Upper', M, R, M, RWORK )
       RESULT( 2 ) = RESID / ( EPS * MAX( 1, M ) )
 *
 *     Generate random m-by-n matrix C
 *
       DO J = 1, N
-         CALL DLARNV( 2, ISEED, M, C( 1, J ) )
+         CALL SLARNV( 2, ISEED, M, C( 1, J ) )
       END DO
-      CNORM = DLANGE( '1', M, N, C, M, RWORK )
-      CALL DLACPY( 'Full', M, N, C, M, CF, M )
+      CNORM = SLANGE( '1', M, N, C, M, RWORK )
+      CALL SLACPY( 'Full', M, N, C, M, CF, M )
 *
 *     Apply Q to C as Q*C = CF
 *
-      SRNAMT = 'DGEMQRT'
-      CALL DGEMQRT( 'L', 'N', M, N, K, NB2_UB, AF, M, T2, NB2, CF, M,
+      SRNAMT = 'SGEMQRT'
+      CALL SGEMQRT( 'L', 'N', M, N, K, NB2_UB, AF, M, T2, NB2, CF, M,
      $               WORK, INFO )
 *
 *     TEST 3
 *     Compute |CF - Q*C| / ( eps *  m * |C| )
 *
-      CALL DGEMM( 'N', 'N', M, N, M, -ONE, Q, M, C, M, ONE, CF, M )
-      RESID = DLANGE( '1', M, N, CF, M, RWORK )
+      CALL SGEMM( 'N', 'N', M, N, M, -ONE, Q, M, C, M, ONE, CF, M )
+      RESID = SLANGE( '1', M, N, CF, M, RWORK )
       IF( CNORM.GT.ZERO ) THEN
          RESULT( 3 ) = RESID / ( EPS * MAX( 1, M ) * CNORM )
       ELSE
@@ -338,19 +299,19 @@
 *
 *     Copy C into CF again
 *
-      CALL DLACPY( 'Full', M, N, C, M, CF, M )
+      CALL SLACPY( 'Full', M, N, C, M, CF, M )
 *
 *     Apply Q to C as (Q**T)*C = CF
 *
-      SRNAMT = 'DGEMQRT'
-      CALL DGEMQRT( 'L', 'T', M, N, K, NB2_UB, AF, M, T2, NB2, CF, M,
+      SRNAMT = 'SGEMQRT'
+      CALL SGEMQRT( 'L', 'T', M, N, K, NB2_UB, AF, M, T2, NB2, CF, M,
      $               WORK, INFO )
 *
 *     TEST 4
 *     Compute |CF - (Q**T)*C| / ( eps * m * |C|)
 *
-      CALL DGEMM( 'T', 'N', M, N, M, -ONE, Q, M, C, M, ONE, CF, M )
-      RESID = DLANGE( '1', M, N, CF, M, RWORK )
+      CALL SGEMM( 'T', 'N', M, N, M, -ONE, Q, M, C, M, ONE, CF, M )
+      RESID = SLANGE( '1', M, N, CF, M, RWORK )
       IF( CNORM.GT.ZERO ) THEN
          RESULT( 4 ) = RESID / ( EPS * MAX( 1, M ) * CNORM )
       ELSE
@@ -360,22 +321,22 @@
 *     Generate random n-by-m matrix D and a copy DF
 *
       DO J = 1, M
-         CALL DLARNV( 2, ISEED, N, D( 1, J ) )
+         CALL SLARNV( 2, ISEED, N, D( 1, J ) )
       END DO
-      DNORM = DLANGE( '1', N, M, D, N, RWORK )
-      CALL DLACPY( 'Full', N, M, D, N, DF, N )
+      DNORM = SLANGE( '1', N, M, D, N, RWORK )
+      CALL SLACPY( 'Full', N, M, D, N, DF, N )
 *
 *     Apply Q to D as D*Q = DF
 *
-      SRNAMT = 'DGEMQRT'
-      CALL DGEMQRT( 'R', 'N', N, M, K, NB2_UB, AF, M, T2, NB2, DF, N,
+      SRNAMT = 'SGEMQRT'
+      CALL SGEMQRT( 'R', 'N', N, M, K, NB2_UB, AF, M, T2, NB2, DF, N,
      $               WORK, INFO )
 *
 *     TEST 5
 *     Compute |DF - D*Q| / ( eps * m * |D| )
 *
-      CALL DGEMM( 'N', 'N', N, M, M, -ONE, D, N, Q, M, ONE, DF, N )
-      RESID = DLANGE( '1', N, M, DF, N, RWORK )
+      CALL SGEMM( 'N', 'N', N, M, M, -ONE, D, N, Q, M, ONE, DF, N )
+      RESID = SLANGE( '1', N, M, DF, N, RWORK )
       IF( DNORM.GT.ZERO ) THEN
          RESULT( 5 ) = RESID / ( EPS * MAX( 1, M ) * DNORM )
       ELSE
@@ -384,19 +345,19 @@
 *
 *     Copy D into DF again
 *
-      CALL DLACPY( 'Full', N, M, D, N, DF, N )
+      CALL SLACPY( 'Full', N, M, D, N, DF, N )
 *
 *     Apply Q to D as D*QT = DF
 *
-      SRNAMT = 'DGEMQRT'
-      CALL DGEMQRT( 'R', 'T', N, M, K, NB2_UB, AF, M, T2, NB2, DF, N,
+      SRNAMT = 'SGEMQRT'
+      CALL SGEMQRT( 'R', 'T', N, M, K, NB2_UB, AF, M, T2, NB2, DF, N,
      $               WORK, INFO )
 *
 *     TEST 6
 *     Compute |DF - D*(Q**T)| / ( eps * m * |D| )
 *
-      CALL DGEMM( 'N', 'T', N, M, M, -ONE, D, N, Q, M, ONE, DF, N )
-      RESID = DLANGE( '1', N, M, DF, N, RWORK )
+      CALL SGEMM( 'N', 'T', N, M, M, -ONE, D, N, Q, M, ONE, DF, N )
+      RESID = SLANGE( '1', N, M, DF, N, RWORK )
       IF( DNORM.GT.ZERO ) THEN
          RESULT( 6 ) = RESID / ( EPS * MAX( 1, M ) * DNORM )
       ELSE
@@ -410,6 +371,6 @@
 *
       RETURN
 *
-*     End of DORHR_COL01
+*     End of SORHR_COL02
 *
       END

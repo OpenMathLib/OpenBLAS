@@ -24,9 +24,12 @@
 *>
 *> \verbatim
 *>
-*> CCHKUNHR_COL tests CUNHR_COL using CLATSQR and CGEMQRT. Therefore, CLATSQR
-*> (used in CGEQR) and CGEMQRT (used in CGEMQR) have to be tested
-*> before this test.
+*> CCHKUNHR_COL tests:
+*>   1) CUNGTSQR and CUNHR_COL using CLATSQR, CGEMQRT,
+*>   2) CUNGTSQR_ROW and CUNHR_COL inside CGETSQRHRT
+*>      (which calls CLATSQR, CUNGTSQR_ROW and CUNHR_COL) using CGEMQRT.
+*> Therefore, CLATSQR (part of CGEQR), CGEMQRT (part of CGEMQR)
+*> have to be tested before this test.
 *>
 *> \endverbatim
 *
@@ -97,19 +100,16 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date November 2019
-*
 *> \ingroup complex_lin
 *
 *  =====================================================================
-      SUBROUTINE CCHKUNHR_COL( THRESH, TSTERR, NM, MVAL, NN, NVAL, NNB,
-     $                         NBVAL, NOUT )
+      SUBROUTINE CCHKUNHR_COL( THRESH, TSTERR, NM, MVAL, NN, NVAL,
+     $                         NNB, NBVAL, NOUT )
       IMPLICIT NONE
 *
-*  -- LAPACK test routine (version 3.7.0) --
+*  -- LAPACK test routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
 *
 *     .. Scalar Arguments ..
       LOGICAL            TSTERR
@@ -135,10 +135,11 @@
       REAL               RESULT( NTESTS )
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           ALAHD, ALASUM, CERRUNHR_COL, CUNHR_COL01
+      EXTERNAL           ALAHD, ALASUM, CERRUNHR_COL, CUNHR_COL01,
+     $                   CUNHR_COL02
 *     ..
 *     .. Intrinsic Functions ..
-      INTRINSIC  MAX, MIN
+      INTRINSIC          MAX, MIN
 *     ..
 *     .. Scalars in Common ..
       LOGICAL            LERR, OK
@@ -201,8 +202,8 @@
 *
 *                             Test CUNHR_COL
 *
-                              CALL CUNHR_COL01( M, N, MB1, NB1, NB2,
-     $                                          RESULT )
+                              CALL CUNHR_COL01( M, N, MB1, NB1,
+     $                                          NB2, RESULT )
 *
 *                             Print information about the tests that did
 *                             not pass the threshold.
@@ -226,12 +227,78 @@
          END DO
       END DO
 *
+*     Do for each value of M in MVAL.
+*
+      DO I = 1, NM
+         M = MVAL( I )
+*
+*        Do for each value of N in NVAL.
+*
+         DO J = 1, NN
+            N = NVAL( J )
+*
+*           Only for M >= N
+*
+            IF ( MIN( M, N ).GT.0 .AND. M.GE.N ) THEN
+*
+*              Do for each possible value of MB1
+*
+               DO IMB1 = 1, NNB
+                  MB1 = NBVAL( IMB1 )
+*
+*                 Only for MB1 > N
+*
+                  IF ( MB1.GT.N ) THEN
+*
+*                    Do for each possible value of NB1
+*
+                     DO INB1 = 1, NNB
+                        NB1 = NBVAL( INB1 )
+*
+*                       Do for each possible value of NB2
+*
+                        DO INB2 = 1, NNB
+                           NB2 = NBVAL( INB2 )
+*
+                           IF( NB1.GT.0 .AND. NB2.GT.0 ) THEN
+*
+*                             Test CUNHR_COL
+*
+                              CALL CUNHR_COL02( M, N, MB1, NB1,
+     $                                          NB2, RESULT )
+*
+*                             Print information about the tests that did
+*                             not pass the threshold.
+*
+                              DO T = 1, NTESTS
+                                 IF( RESULT( T ).GE.THRESH ) THEN
+                                    IF( NFAIL.EQ.0 .AND. NERRS.EQ.0 )
+     $                              CALL ALAHD( NOUT, PATH )
+                                    WRITE( NOUT, FMT = 9998 ) M, N, MB1,
+     $                                     NB1, NB2, T, RESULT( T )
+                                    NFAIL = NFAIL + 1
+                                 END IF
+                              END DO
+                              NRUN = NRUN + NTESTS
+                           END IF
+                        END DO
+                     END DO
+                  END IF
+                END DO
+            END IF
+         END DO
+      END DO
+*
 *     Print a summary of the results.
 *
       CALL ALASUM( PATH, NOUT, NFAIL, NRUN, NERRS )
 *
- 9999 FORMAT( 'M=', I5, ', N=', I5, ', MB1=', I5,
-     $        ', NB1=', I5, ', NB2=', I5,' test(', I2, ')=', G12.5 )
+ 9999 FORMAT( 'CUNGTSQR and CUNHR_COL: M=', I5, ', N=', I5,
+     $        ', MB1=', I5, ', NB1=', I5, ', NB2=', I5,
+     $        ' test(', I2, ')=', G12.5 )
+ 9998 FORMAT( 'CUNGTSQR_ROW and CUNHR_COL: M=', I5, ', N=', I5,
+     $        ', MB1=', I5, ', NB1=', I5, ', NB2=', I5,
+     $        ' test(', I2, ')=', G12.5 )
       RETURN
 *
 *     End of CCHKUNHR_COL
