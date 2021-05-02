@@ -289,7 +289,7 @@ CLASRC_O = \
    cgeqrt.o cgeqrt2.o cgeqrt3.o cgemqrt.o \
    ctpqrt.o ctpqrt2.o ctpmqrt.o ctprfb.o \
    cgelqt.o cgelqt3.o cgemlqt.o \
-   cgetsls.o cgeqr.o clatsqr.o clamtsqr.o cgemqr.o \
+   cgetsls.o cgetsqrhrt.o cgeqr.o clatsqr.o clamtsqr.o cgemqr.o \
    cgelq.o claswlq.o clamswlq.o cgemlq.o \
    ctplqt.o ctplqt2.o ctpmlqt.o \
    cunhr_col.o claunhr_col_getrfnp.o claunhr_col_getrfnp2.o \
