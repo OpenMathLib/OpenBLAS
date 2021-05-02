@@ -1,5 +1,55 @@
 OpenBLAS ChangeLog
 ====================================================================
+Version 0.3.15
+  2-May-2021
+
+common:
+ - imported improvements and bugfixes from Reference-LAPACK 3.9.1
+ - imported LAPACKE interface fixes from Reference-LAPACK PRs 534 + 537
+ - fixed a problem in the cpu detection of 0.3.14 that prevented cross-compilation
+ - fixed a sequence problem in the generation of softlinks to the library in GMAKE
+
+RISC V:
+ - fixed compilation on RISCV (missing entry in getarch)
+ - fixed a potential division by zero in CROTG and ZROTG
+
+POWER:
+ - fixed LAPACK testsuite failures seen with the NVIDIA HPC compiler
+ - improved CGEMM, DGEMM and ZGEMM performance on POWER10
+ - added an optimized ZGEMV kernel for POWER10
+ - fixed a potential division by zero in CROTG and ZROTG
+
+x86_64:
+ - added support for Intel Control-flow Enforcement Technology (CET)
+ - reverted the DOMATCOPY_RT code to the generic C version
+ - fixed a bug in the AVX512 SGEMM kernel introduced in 0.3.14
+ - fixed misapplication of -msse flag to non-SSE cpus in DYNAMIC_ARCH
+ - added support for compilation of the benchmarks on older OSX versions
+ - fix propagation of the NO_AVX512 option in CMAKE builds
+ - fix compilation of the AVX512 SGEMM kernel with clang-cl on Windows
+ - fixed compilation of the CTESTs with INTERFACE64=1 (random faults on OSX)
+ - corrected the Haswell DROT kernel to require AVX2/FMA3 rather than AVX512
+
+ARM:
+ - fixed a potential division by zero in CROTG and ZROTG
+ - fixed a potential overflow in IMATCOPY/ZIMATCOPY and the CTESTs
+
+ARM64:
+ - fixed spurious reads outside the array in the SGEMM tcopy macro
+ - fixed a potential division by zero in CROTG and ZROTG
+ - fixed a segmentation fault in DYNAMIC_ARCH builds (reappeared in 0.3.14)
+
+MIPS
+ - fixed a potential division by zero in CROTG and ZROTG
+ - fixed a potential overflow in IMATCOPY/ZIMATCOPY and the CTESTs
+
+MIPS64:
+ - fixed a potential division by zero in CROTG and ZROTG
+
+SPARC:
+ - fixed a potential division by zero in CROTG and ZROTG
+
+====================================================================
 Version 0.3.14
  17-Mar-2021
  
