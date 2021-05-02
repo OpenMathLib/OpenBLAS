@@ -40,44 +40,46 @@ double LAPACKE_dlantr_work( int matrix_layout, char norm, char uplo,
     lapack_int info = 0;
     double res = 0.;
     if( matrix_layout == LAPACK_COL_MAJOR ) {
-        /* Call LAPACK function and adjust info */
+        /* Call LAPACK function */
         res = LAPACK_dlantr( &norm, &uplo, &diag, &m, &n, a, &lda, work );
     } else if( matrix_layout == LAPACK_ROW_MAJOR ) {
-        lapack_int lda_t = MAX(1,m);
-        double* a_t = NULL;
         double* work_lapack = NULL;
+        char norm_lapack;
+        char uplo_lapack;
         /* Check leading dimension(s) */
         if( lda < n ) {
             info = -8;
             LAPACKE_xerbla( "LAPACKE_dlantr_work", info );
             return info;
         }
-        /* Allocate memory for temporary array(s) */
-        a_t = (double*)LAPACKE_malloc( sizeof(double) * lda_t * MAX(1,MAX(m,n)) );
-        if( a_t == NULL ) {
-            info = LAPACK_TRANSPOSE_MEMORY_ERROR;
-            goto exit_level_0;
+        if( LAPACKE_lsame( norm, '1' ) || LAPACKE_lsame( norm, 'o' ) ) {
+            norm_lapack = 'i';
+        } else if( LAPACKE_lsame( norm, 'i' ) ) {
+            norm_lapack = '1';
+        } else {
+            norm_lapack = norm;
+        }
+        if( LAPACKE_lsame( uplo, 'u' ) ) {
+            uplo_lapack = 'l';
+        } else {
+            uplo_lapack = 'u';
         }
         /* Allocate memory for work array(s) */
-        if( LAPACKE_lsame( norm, 'i' ) ) {
-            work_lapack = (double*)LAPACKE_malloc( sizeof(double) * MAX(1,m) );
+        if( LAPACKE_lsame( norm_lapack, 'i' ) ) {
+            work_lapack = (double*)LAPACKE_malloc( sizeof(double) * MAX(1,n) );
             if( work_lapack == NULL ) {
                 info = LAPACK_WORK_MEMORY_ERROR;
-                goto exit_level_1;
+                goto exit_level_0;
             }
         }
-        /* Transpose input matrices */
-        LAPACKE_dtr_trans( matrix_layout, uplo, diag, MAX(m,n), a, lda, a_t, lda_t );
-        /* Call LAPACK function and adjust info */
-        res = LAPACK_dlantr( &norm, &uplo, &diag, &m, &n, a_t, &lda_t, work_lapack );
+        /* Call LAPACK function */
+        res = LAPACK_dlantr( &norm_lapack, &uplo_lapack, &diag, &n, &m, a, &lda, work_lapack );
         /* Release memory and exit */
         if( work_lapack ) {
             LAPACKE_free( work_lapack );
         }
-exit_level_1:
-        LAPACKE_free( a_t );
 exit_level_0:
-        if( info == LAPACK_TRANSPOSE_MEMORY_ERROR ) {
+        if( info == LAPACK_WORK_MEMORY_ERROR ) {
             LAPACKE_xerbla( "LAPACKE_dlantr_work", info );
         }
     } else {

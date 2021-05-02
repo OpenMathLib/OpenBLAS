@@ -45,7 +45,7 @@ lapack_int LAPACKE_zsyconv( int matrix_layout, char uplo, char way, lapack_int n
 #ifndef LAPACK_DISABLE_NAN_CHECK
     if( LAPACKE_get_nancheck() ) {
         /* Optionally check input matrices for NaNs */
-        if( LAPACKE_zge_nancheck( matrix_layout, n, n, a, lda ) ) {
+        if( LAPACKE_zsy_nancheck( matrix_layout, uplo, n, a, lda ) ) {
             return -5;
         }
     }

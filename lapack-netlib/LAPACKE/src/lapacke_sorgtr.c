@@ -47,7 +47,7 @@ lapack_int LAPACKE_sorgtr( int matrix_layout, char uplo, lapack_int n, float* a,
 #ifndef LAPACK_DISABLE_NAN_CHECK
     if( LAPACKE_get_nancheck() ) {
         /* Optionally check input matrices for NaNs */
-        if( LAPACKE_sge_nancheck( matrix_layout, n, n, a, lda ) ) {
+        if( LAPACKE_ssy_nancheck( matrix_layout, uplo, n, a, lda ) ) {
             return -4;
         }
         if( LAPACKE_s_nancheck( n-1, tau, 1 ) ) {

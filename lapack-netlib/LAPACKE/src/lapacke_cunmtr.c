@@ -52,7 +52,7 @@ lapack_int LAPACKE_cunmtr( int matrix_layout, char side, char uplo, char trans,
     if( LAPACKE_get_nancheck() ) {
         /* Optionally check input matrices for NaNs */
         r = LAPACKE_lsame( side, 'l' ) ? m : n;
-        if( LAPACKE_cge_nancheck( matrix_layout, r, r, a, lda ) ) {
+        if( LAPACKE_che_nancheck( matrix_layout, uplo, r, a, lda ) ) {
             return -7;
         }
         if( LAPACKE_cge_nancheck( matrix_layout, m, n, c, ldc ) ) {

@@ -20,7 +20,7 @@ void F77_zgemv(int *order, char *transp, int *m, int *n,
   get_transpose_type(transp, &trans);
   if (*order == TEST_ROW_MJR) {
      LDA = *n+1;
-     A  = (CBLAS_TEST_ZOMPLEX *)malloc( (*m)*LDA*sizeof( CBLAS_TEST_ZOMPLEX) );
+     A  = (CBLAS_TEST_ZOMPLEX *)malloc( (*m)*(size_t)LDA*sizeof( CBLAS_TEST_ZOMPLEX) );
      for( i=0; i<*m; i++ )
         for( j=0; j<*n; j++ ){
            A[ LDA*i+j ].real=a[ (*lda)*j+i ].real;
@@ -50,7 +50,7 @@ void F77_zgbmv(int *order, char *transp, int *m, int *n, int *kl, int *ku,
   get_transpose_type(transp, &trans);
   if (*order == TEST_ROW_MJR) {
      LDA = *ku+*kl+2;
-     A=( CBLAS_TEST_ZOMPLEX* )malloc((*n+*kl)*LDA*sizeof(CBLAS_TEST_ZOMPLEX));
+     A=( CBLAS_TEST_ZOMPLEX* )malloc((*n+*kl)*(size_t)LDA*sizeof(CBLAS_TEST_ZOMPLEX));
      for( i=0; i<*ku; i++ ){
         irow=*ku+*kl-i;
         jcol=(*ku)-i;
@@ -94,7 +94,7 @@ void F77_zgeru(int *order, int *m, int *n, CBLAS_TEST_ZOMPLEX *alpha,
 
   if (*order == TEST_ROW_MJR) {
      LDA = *n+1;
-     A=(CBLAS_TEST_ZOMPLEX*)malloc((*m)*LDA*sizeof(CBLAS_TEST_ZOMPLEX));
+     A=(CBLAS_TEST_ZOMPLEX*)malloc((*m)*(size_t)LDA*sizeof(CBLAS_TEST_ZOMPLEX));
      for( i=0; i<*m; i++ )
         for( j=0; j<*n; j++ ){
            A[ LDA*i+j ].real=a[ (*lda)*j+i ].real;
@@ -122,7 +122,7 @@ void F77_zgerc(int *order, int *m, int *n, CBLAS_TEST_ZOMPLEX *alpha,
 
   if (*order == TEST_ROW_MJR) {
      LDA = *n+1;
-     A=(CBLAS_TEST_ZOMPLEX* )malloc((*m)*LDA*sizeof(CBLAS_TEST_ZOMPLEX ) );
+     A=(CBLAS_TEST_ZOMPLEX* )malloc((*m)*(size_t)LDA*sizeof(CBLAS_TEST_ZOMPLEX ) );
      for( i=0; i<*m; i++ )
         for( j=0; j<*n; j++ ){
            A[ LDA*i+j ].real=a[ (*lda)*j+i ].real;
@@ -154,7 +154,7 @@ void F77_zhemv(int *order, char *uplow, int *n, CBLAS_TEST_ZOMPLEX *alpha,
 
   if (*order == TEST_ROW_MJR) {
      LDA = *n+1;
-     A = (CBLAS_TEST_ZOMPLEX *)malloc((*n)*LDA*sizeof(CBLAS_TEST_ZOMPLEX));
+     A = (CBLAS_TEST_ZOMPLEX *)malloc((*n)*(size_t)LDA*sizeof(CBLAS_TEST_ZOMPLEX));
      for( i=0; i<*n; i++ )
         for( j=0; j<*n; j++ ){
            A[ LDA*i+j ].real=a[ (*lda)*j+i ].real;
@@ -190,7 +190,7 @@ int i,irow,j,jcol,LDA;
 		 *incx, beta, y, *incy );
      else {
         LDA = *k+2;
-        A =(CBLAS_TEST_ZOMPLEX*)malloc((*n+*k)*LDA*sizeof(CBLAS_TEST_ZOMPLEX));
+        A =(CBLAS_TEST_ZOMPLEX*)malloc((*n+*k)*(size_t)LDA*sizeof(CBLAS_TEST_ZOMPLEX));
         if (uplo == CblasUpper) {
            for( i=0; i<*k; i++ ){
               irow=*k-i;
@@ -251,8 +251,8 @@ void F77_zhpmv(int *order, char *uplow, int *n, CBLAS_TEST_ZOMPLEX *alpha,
 	         beta, y, *incy);
      else {
         LDA = *n;
-        A = (CBLAS_TEST_ZOMPLEX* )malloc(LDA*LDA*sizeof(CBLAS_TEST_ZOMPLEX ));
-        AP = (CBLAS_TEST_ZOMPLEX* )malloc( (((LDA+1)*LDA)/2)*
+        A = (CBLAS_TEST_ZOMPLEX* )malloc((size_t)LDA*LDA*sizeof(CBLAS_TEST_ZOMPLEX ));
+        AP = (CBLAS_TEST_ZOMPLEX* )malloc( ((((size_t)LDA+1)*LDA)/2)*
 	        sizeof( CBLAS_TEST_ZOMPLEX ));
         if (uplo == CblasUpper) {
            for( j=0, k=0; j<*n; j++ )
@@ -311,7 +311,7 @@ void F77_ztbmv(int *order, char *uplow, char *transp, char *diagn,
 	x, *incx);
      else {
         LDA = *k+2;
-        A=(CBLAS_TEST_ZOMPLEX *)malloc((*n+*k)*LDA*sizeof(CBLAS_TEST_ZOMPLEX));
+        A=(CBLAS_TEST_ZOMPLEX *)malloc((*n+*k)*(size_t)LDA*sizeof(CBLAS_TEST_ZOMPLEX));
         if (uplo == CblasUpper) {
            for( i=0; i<*k; i++ ){
               irow=*k-i;
@@ -375,7 +375,7 @@ void F77_ztbsv(int *order, char *uplow, char *transp, char *diagn,
 	         *incx);
      else {
         LDA = *k+2;
-        A=(CBLAS_TEST_ZOMPLEX*)malloc((*n+*k)*LDA*sizeof(CBLAS_TEST_ZOMPLEX ));
+        A=(CBLAS_TEST_ZOMPLEX*)malloc((*n+*k)*(size_t)LDA*sizeof(CBLAS_TEST_ZOMPLEX ));
         if (uplo == CblasUpper) {
            for( i=0; i<*k; i++ ){
               irow=*k-i;
@@ -436,8 +436,8 @@ void F77_ztpmv(int *order, char *uplow, char *transp, char *diagn,
         cblas_ztpmv( CblasRowMajor, UNDEFINED, trans, diag, *n, ap, x, *incx );
      else {
         LDA = *n;
-        A=(CBLAS_TEST_ZOMPLEX*)malloc(LDA*LDA*sizeof(CBLAS_TEST_ZOMPLEX));
-        AP=(CBLAS_TEST_ZOMPLEX*)malloc((((LDA+1)*LDA)/2)*
+        A=(CBLAS_TEST_ZOMPLEX*)malloc((size_t)LDA*LDA*sizeof(CBLAS_TEST_ZOMPLEX));
+        AP=(CBLAS_TEST_ZOMPLEX*)malloc(((((size_t)LDA+1)*LDA)/2)*
 	 	sizeof(CBLAS_TEST_ZOMPLEX));
         if (uplo == CblasUpper) {
            for( j=0, k=0; j<*n; j++ )
@@ -491,8 +491,8 @@ void F77_ztpsv(int *order, char *uplow, char *transp, char *diagn,
         cblas_ztpsv( CblasRowMajor, UNDEFINED, trans, diag, *n, ap, x, *incx );
      else {
         LDA = *n;
-        A=(CBLAS_TEST_ZOMPLEX*)malloc(LDA*LDA*sizeof(CBLAS_TEST_ZOMPLEX));
-        AP=(CBLAS_TEST_ZOMPLEX*)malloc((((LDA+1)*LDA)/2)*
+        A=(CBLAS_TEST_ZOMPLEX*)malloc((size_t)LDA*LDA*sizeof(CBLAS_TEST_ZOMPLEX));
+        AP=(CBLAS_TEST_ZOMPLEX*)malloc(((((size_t)LDA+1)*LDA)/2)*
 		sizeof(CBLAS_TEST_ZOMPLEX));
      	if (uplo == CblasUpper) {
            for( j=0, k=0; j<*n; j++ )
@@ -544,7 +544,7 @@ void F77_ztrmv(int *order, char *uplow, char *transp, char *diagn,
 
   if (*order == TEST_ROW_MJR) {
      LDA=*n+1;
-     A=(CBLAS_TEST_ZOMPLEX*)malloc((*n)*LDA*sizeof(CBLAS_TEST_ZOMPLEX));
+     A=(CBLAS_TEST_ZOMPLEX*)malloc((*n)*(size_t)LDA*sizeof(CBLAS_TEST_ZOMPLEX));
      for( i=0; i<*n; i++ )
        for( j=0; j<*n; j++ ) {
 	  A[ LDA*i+j ].real=a[ (*lda)*j+i ].real;
@@ -573,7 +573,7 @@ void F77_ztrsv(int *order, char *uplow, char *transp, char *diagn,
 
   if (*order == TEST_ROW_MJR) {
      LDA = *n+1;
-     A =(CBLAS_TEST_ZOMPLEX* )malloc((*n)*LDA*sizeof(CBLAS_TEST_ZOMPLEX ) );
+     A =(CBLAS_TEST_ZOMPLEX* )malloc((*n)*(size_t)LDA*sizeof(CBLAS_TEST_ZOMPLEX ) );
      for( i=0; i<*n; i++ )
         for( j=0; j<*n; j++ ) {
            A[ LDA*i+j ].real=a[ (*lda)*j+i ].real;
@@ -601,8 +601,8 @@ void F77_zhpr(int *order, char *uplow, int *n, double *alpha,
         cblas_zhpr(CblasRowMajor, UNDEFINED, *n, *alpha, x, *incx, ap );
      else {
         LDA = *n;
-        A = (CBLAS_TEST_ZOMPLEX* )malloc(LDA*LDA*sizeof(CBLAS_TEST_ZOMPLEX ) );
-        AP = ( CBLAS_TEST_ZOMPLEX* )malloc( (((LDA+1)*LDA)/2)*
+        A = (CBLAS_TEST_ZOMPLEX* )malloc((size_t)LDA*LDA*sizeof(CBLAS_TEST_ZOMPLEX ) );
+        AP = ( CBLAS_TEST_ZOMPLEX* )malloc( ((((size_t)LDA+1)*LDA)/2)*
 		sizeof( CBLAS_TEST_ZOMPLEX ));
         if (uplo == CblasUpper) {
            for( j=0, k=0; j<*n; j++ )
@@ -678,8 +678,8 @@ void F77_zhpr2(int *order, char *uplow, int *n, CBLAS_TEST_ZOMPLEX *alpha,
 		     *incy, ap );
      else {
         LDA = *n;
-        A=(CBLAS_TEST_ZOMPLEX*)malloc( LDA*LDA*sizeof(CBLAS_TEST_ZOMPLEX ) );
-        AP=(CBLAS_TEST_ZOMPLEX*)malloc( (((LDA+1)*LDA)/2)*
+        A=(CBLAS_TEST_ZOMPLEX*)malloc( (size_t)LDA*LDA*sizeof(CBLAS_TEST_ZOMPLEX ) );
+        AP=(CBLAS_TEST_ZOMPLEX*)malloc( ((((size_t)LDA+1)*LDA)/2)*
 	sizeof( CBLAS_TEST_ZOMPLEX ));
         if (uplo == CblasUpper) {
            for( j=0, k=0; j<*n; j++ )
@@ -750,7 +750,7 @@ void F77_zher(int *order, char *uplow, int *n, double *alpha,
 
   if (*order == TEST_ROW_MJR) {
      LDA = *n+1;
-     A=(CBLAS_TEST_ZOMPLEX*)malloc((*n)*LDA*sizeof( CBLAS_TEST_ZOMPLEX ));
+     A=(CBLAS_TEST_ZOMPLEX*)malloc((*n)*(size_t)LDA*sizeof( CBLAS_TEST_ZOMPLEX ));
 
      for( i=0; i<*n; i++ )
        for( j=0; j<*n; j++ ) {
@@ -784,7 +784,7 @@ void F77_zher2(int *order, char *uplow, int *n, CBLAS_TEST_ZOMPLEX *alpha,
 
   if (*order == TEST_ROW_MJR) {
      LDA = *n+1;
-     A= ( CBLAS_TEST_ZOMPLEX* )malloc((*n)*LDA*sizeof(CBLAS_TEST_ZOMPLEX ) );
+     A= ( CBLAS_TEST_ZOMPLEX* )malloc((*n)*(size_t)LDA*sizeof(CBLAS_TEST_ZOMPLEX ) );
 
      for( i=0; i<*n; i++ )
        for( j=0; j<*n; j++ ) {

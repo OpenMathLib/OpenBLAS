@@ -47,7 +47,7 @@ lapack_int LAPACKE_ssygst( int matrix_layout, lapack_int itype, char uplo,
         if( LAPACKE_ssy_nancheck( matrix_layout, uplo, n, a, lda ) ) {
             return -5;
         }
-        if( LAPACKE_sge_nancheck( matrix_layout, n, n, b, ldb ) ) {
+        if( LAPACKE_ssy_nancheck( matrix_layout, uplo, n, b, ldb ) ) {
             return -7;
         }
     }
