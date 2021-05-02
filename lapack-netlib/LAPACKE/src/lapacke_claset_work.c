@@ -42,9 +42,6 @@ lapack_int LAPACKE_claset_work( int matrix_layout, char uplo, lapack_int m,
     if( matrix_layout == LAPACK_COL_MAJOR ) {
         /* Call LAPACK function and adjust info */
         LAPACK_claset( &uplo, &m, &n, &alpha, &beta, a, &lda );
-        if( info < 0 ) {
-            info = info - 1;
-        }
     } else if( matrix_layout == LAPACK_ROW_MAJOR ) {
         lapack_int lda_t = MAX(1,m);
         lapack_complex_float* a_t = NULL;

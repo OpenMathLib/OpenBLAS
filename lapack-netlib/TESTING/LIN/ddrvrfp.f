@@ -443,8 +443,7 @@
 *
                         CALL DPOTRI( UPLO, N, A, LDA, INFO )
 
-      					IF ( N .NE. 0 ) THEN
-
+                        IF ( N .NE. 0 ) THEN
 *
 *                          Compute the 1-norm condition number of A.
 *

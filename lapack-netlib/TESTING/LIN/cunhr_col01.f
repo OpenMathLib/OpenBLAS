@@ -13,7 +13,7 @@
 *       .. Scalar Arguments ..
 *       INTEGER           M, N, MB1, NB1, NB2
 *       .. Return values ..
-*       REAL              RESULT(6)
+*       DOUBLE PRECISION  RESULT(6)
 *
 *
 *> \par Purpose:
@@ -21,8 +21,8 @@
 *>
 *> \verbatim
 *>
-*> CUNHR_COL01 tests CUNHR_COL using CLATSQR, CGEMQRT and CUNGTSQR.
-*> Therefore, CLATSQR (part of CGEQR), CGEMQRT (part CGEMQR), CUNGTSQR
+*> CUNHR_COL01 tests CUNGTSQR and CUNHR_COL using CLATSQR, CGEMQRT.
+*> Therefore, CLATSQR (part of CGEQR), CGEMQRT (part of CGEMQR)
 *> have to be tested before this test.
 *>
 *> \endverbatim
@@ -62,14 +62,46 @@
 *> \verbatim
 *>          RESULT is REAL array, dimension (6)
 *>          Results of each of the six tests below.
-*>          ( C is a M-by-N random matrix, D is a N-by-M random matrix )
 *>
-*>          RESULT(1) = | A - Q * R | / (eps * m * |A|)
-*>          RESULT(2) = | I - (Q**H) * Q | / (eps * m )
-*>          RESULT(3) = | Q * C - Q * C | / (eps * m * |C|)
-*>          RESULT(4) = | (Q**H) * C - (Q**H) * C | / (eps * m * |C|)
-*>          RESULT(5) = | (D * Q) - D * Q | / (eps * m * |D|)
-*>          RESULT(6) = | D * (Q**H) - D * (Q**H) | / (eps * m * |D|)
+*>            A is a m-by-n test input matrix to be factored.
+*>            so that A = Q_gr * ( R )
+*>                               ( 0 ),
+*>
+*>            Q_qr is an implicit m-by-m unitary Q matrix, the result
+*>            of factorization in blocked WY-representation,
+*>            stored in CGEQRT output format.
+*>
+*>            R is a n-by-n upper-triangular matrix,
+*>
+*>            0 is a (m-n)-by-n zero matrix,
+*>
+*>            Q is an explicit m-by-m unitary matrix Q = Q_gr * I
+*>
+*>            C is an m-by-n random matrix,
+*>
+*>            D is an n-by-m random matrix.
+*>
+*>          The six tests are:
+*>
+*>          RESULT(1) = |R - (Q**H) * A| / ( eps * m * |A| )
+*>            is equivalent to test for | A - Q * R | / (eps * m * |A|),
+*>
+*>          RESULT(2) = |I - (Q**H) * Q| / ( eps * m ),
+*>
+*>          RESULT(3) = | Q_qr * C - Q * C | / (eps * m * |C|),
+*>
+*>          RESULT(4) = | (Q_gr**H) * C - (Q**H) * C | / (eps * m * |C|)
+*>
+*>          RESULT(5) = | D * Q_qr - D * Q | / (eps * m * |D|)
+*>
+*>          RESULT(6) = | D * (Q_qr**H) - D * (Q**H) | / (eps * m * |D|),
+*>
+*>          where:
+*>            Q_qr * C, (Q_gr**H) * C, D * Q_qr, D * (Q_qr**H) are
+*>            computed using CGEMQRT,
+*>
+*>            Q * C, (Q**H) * C, D * Q, D * (Q**H)  are
+*>            computed using CGEMM.
 *> \endverbatim
 *
 *  Authors:
@@ -80,18 +112,15 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date November 2019
-*
-*> \ingroup complex16_lin
+*> \ingroup complex_lin
 *
 *  =====================================================================
       SUBROUTINE CUNHR_COL01( M, N, MB1, NB1, NB2, RESULT )
       IMPLICIT NONE
 *
-*  -- LAPACK test routine (version 3.9.0) --
+*  -- LAPACK test routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2019
 *
 *     .. Scalar Arguments ..
       INTEGER           M, N, MB1, NB1, NB2
@@ -102,10 +131,10 @@
 *
 *     ..
 *     .. Local allocatable arrays
-      COMPLEX, ALLOCATABLE ::  A(:,:), AF(:,:), Q(:,:), R(:,:),
+      COMPLEX         , ALLOCATABLE ::  A(:,:), AF(:,:), Q(:,:), R(:,:),
      $                   WORK( : ), T1(:,:), T2(:,:), DIAG(:),
      $                   C(:,:), CF(:,:), D(:,:), DF(:,:)
-      REAL, ALLOCATABLE :: RWORK(:)
+      REAL            , ALLOCATABLE :: RWORK(:)
 *
 *     .. Parameters ..
       REAL               ZERO
@@ -218,7 +247,7 @@
 *     Copy the factor R into the array R.
 *
       SRNAMT = 'CLACPY'
-      CALL CLACPY( 'U', M, N, AF, M, R, M )
+      CALL CLACPY( 'U', N, N, AF, M, R, M )
 *
 *     Reconstruct the orthogonal matrix Q.
 *
@@ -240,7 +269,7 @@
 *     matrix S.
 *
       SRNAMT = 'CLACPY'
-      CALL CLACPY( 'U', M, N, R, M, AF, M )
+      CALL CLACPY( 'U', N, N, R, M, AF, M )
 *
       DO I = 1, N
          IF( DIAG( I ).EQ.-CONE ) THEN

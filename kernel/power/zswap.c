@@ -39,8 +39,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #if defined(__VEC__) || defined(__ALTIVEC__)
 #if defined(POWER8) || defined(POWER9)
 #include "zswap_microk_power8.c"
-#elif defined(POWER10)
+#elif defined(POWER10) && (__BYTE_ORDER__ != __ORDER_BIG_ENDIAN__)
 #include "cswap_microk_power10.c"
+#elif defined(POWER10)
+#include "zswap_microk_power8.c"
 #endif
 #endif
 

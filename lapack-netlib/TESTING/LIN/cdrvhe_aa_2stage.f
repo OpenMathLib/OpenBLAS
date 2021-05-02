@@ -449,11 +449,11 @@
 *                    Reconstruct matrix from factors and compute
 *                    residual.
 *
-c                     CALL CHET01_AA( UPLO, N, A, LDA, AFAC, LDA,
-c     $                                  IWORK, AINV, LDA, RWORK,
-c     $                                  RESULT( 2 ) )
-c                     NT = 2
-					  NT = 1
+c                    CALL CHET01_AA( UPLO, N, A, LDA, AFAC, LDA,
+c    $                                  IWORK, AINV, LDA, RWORK,
+c    $                                  RESULT( 2 ) )
+c                    NT = 2
+                     NT = 1
 *
 *                    Print information about the tests that did not pass
 *                    the threshold.

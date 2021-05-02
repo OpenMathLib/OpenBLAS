@@ -1876,7 +1876,7 @@
          CALL XLAENV( 9, 25 )
          IF( TSTERR ) THEN
 #if defined(_OPENMP)
-            N_THREADS = OMP_GET_NUM_THREADS()
+            N_THREADS = OMP_GET_MAX_THREADS()
             CALL OMP_SET_NUM_THREADS(1)
 #endif
             CALL DERRST( 'DST', NOUT )

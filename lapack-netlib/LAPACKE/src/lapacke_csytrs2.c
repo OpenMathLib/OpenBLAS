@@ -34,7 +34,7 @@
 #include "lapacke_utils.h"
 
 lapack_int LAPACKE_csytrs2( int matrix_layout, char uplo, lapack_int n,
-                            lapack_int nrhs, lapack_complex_float* a,
+                            lapack_int nrhs, const lapack_complex_float* a,
                             lapack_int lda, const lapack_int* ipiv,
                             lapack_complex_float* b, lapack_int ldb )
 {

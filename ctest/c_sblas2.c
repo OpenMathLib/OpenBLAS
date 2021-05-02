@@ -19,7 +19,7 @@ void F77_sgemv(int *order, char *transp, int *m, int *n, float *alpha,
   get_transpose_type(transp, &trans);
   if (*order == TEST_ROW_MJR) {
      LDA = *n+1;
-     A   = ( float* )malloc( (*m)*LDA*sizeof( float ) );
+     A   = ( float* )malloc( (*m)*(size_t)LDA*sizeof( float ) );
      for( i=0; i<*m; i++ )
         for( j=0; j<*n; j++ )
            A[ LDA*i+j ]=a[ (*lda)*j+i ];
@@ -43,7 +43,7 @@ void F77_sger(int *order, int *m, int *n, float *alpha, float *x, int *incx,
 
   if (*order == TEST_ROW_MJR) {
      LDA = *n+1;
-     A   = ( float* )malloc( (*m)*LDA*sizeof( float ) );
+     A   = ( float* )malloc( (*m)*(size_t)LDA*sizeof( float ) );
 
      for( i=0; i<*m; i++ ) {
        for( j=0; j<*n; j++ )
@@ -74,7 +74,7 @@ void F77_strmv(int *order, char *uplow, char *transp, char *diagn,
 
   if (*order == TEST_ROW_MJR) {
      LDA = *n+1;
-     A   = ( float* )malloc( (*n)*LDA*sizeof( float ) );
+     A   = ( float* )malloc( (*n)*(size_t)LDA*sizeof( float ) );
      for( i=0; i<*n; i++ )
        for( j=0; j<*n; j++ )
          A[ LDA*i+j ]=a[ (*lda)*j+i ];
@@ -102,7 +102,7 @@ void F77_strsv(int *order, char *uplow, char *transp, char *diagn,
 
   if (*order == TEST_ROW_MJR) {
      LDA = *n+1;
-     A   = ( float* )malloc( (*n)*LDA*sizeof( float ) );
+     A   = ( float* )malloc( (*n)*(size_t)LDA*sizeof( float ) );
      for( i=0; i<*n; i++ )
         for( j=0; j<*n; j++ )
            A[ LDA*i+j ]=a[ (*lda)*j+i ];
@@ -123,7 +123,7 @@ void F77_ssymv(int *order, char *uplow, int *n, float *alpha, float *a,
 
   if (*order == TEST_ROW_MJR) {
      LDA = *n+1;
-     A   = ( float* )malloc( (*n)*LDA*sizeof( float ) );
+     A   = ( float* )malloc( (*n)*(size_t)LDA*sizeof( float ) );
      for( i=0; i<*n; i++ )
         for( j=0; j<*n; j++ )
            A[ LDA*i+j ]=a[ (*lda)*j+i ];
@@ -146,7 +146,7 @@ void F77_ssyr(int *order, char *uplow, int *n, float *alpha, float *x,
 
   if (*order == TEST_ROW_MJR) {
      LDA = *n+1;
-     A   = ( float* )malloc( (*n)*LDA*sizeof( float ) );
+     A   = ( float* )malloc( (*n)*(size_t)LDA*sizeof( float ) );
      for( i=0; i<*n; i++ )
         for( j=0; j<*n; j++ )
            A[ LDA*i+j ]=a[ (*lda)*j+i ];
@@ -170,7 +170,7 @@ void F77_ssyr2(int *order, char *uplow, int *n, float *alpha, float *x,
 
   if (*order == TEST_ROW_MJR) {
      LDA = *n+1;
-     A   = ( float* )malloc( (*n)*LDA*sizeof( float ) );
+     A   = ( float* )malloc( (*n)*(size_t)LDA*sizeof( float ) );
      for( i=0; i<*n; i++ )
         for( j=0; j<*n; j++ )
            A[ LDA*i+j ]=a[ (*lda)*j+i ];
@@ -196,7 +196,7 @@ void F77_sgbmv(int *order, char *transp, int *m, int *n, int *kl, int *ku,
 
   if (*order == TEST_ROW_MJR) {
      LDA = *ku+*kl+2;
-     A   = ( float* )malloc( (*n+*kl)*LDA*sizeof( float ) );
+     A   = ( float* )malloc( (*n+*kl)*(size_t)LDA*sizeof( float ) );
      for( i=0; i<*ku; i++ ){
         irow=*ku+*kl-i;
         jcol=(*ku)-i;
@@ -236,7 +236,7 @@ void F77_stbmv(int *order, char *uplow, char *transp, char *diagn,
 
   if (*order == TEST_ROW_MJR) {
      LDA = *k+1;
-     A = ( float* )malloc( (*n+*k)*LDA*sizeof( float ) );
+     A = ( float* )malloc( (*n+*k)*(size_t)LDA*sizeof( float ) );
      if (uplo == CblasUpper) {
         for( i=0; i<*k; i++ ){
            irow=*k-i;
@@ -282,7 +282,7 @@ void F77_stbsv(int *order, char *uplow, char *transp, char *diagn,
 
   if (*order == TEST_ROW_MJR) {
      LDA = *k+1;
-     A = ( float* )malloc( (*n+*k)*LDA*sizeof( float ) );
+     A = ( float* )malloc( (*n+*k)*(size_t)LDA*sizeof( float ) );
      if (uplo == CblasUpper) {
         for( i=0; i<*k; i++ ){
         irow=*k-i;
@@ -325,7 +325,7 @@ void F77_ssbmv(int *order, char *uplow, int *n, int *k, float *alpha,
 
   if (*order == TEST_ROW_MJR) {
      LDA = *k+1;
-     A   = ( float* )malloc( (*n+*k)*LDA*sizeof( float ) );
+     A   = ( float* )malloc( (*n+*k)*(size_t)LDA*sizeof( float ) );
      if (uplo == CblasUpper) {
         for( i=0; i<*k; i++ ){
            irow=*k-i;
@@ -369,8 +369,8 @@ void F77_sspmv(int *order, char *uplow, int *n, float *alpha, float *ap,
 
   if (*order == TEST_ROW_MJR) {
      LDA = *n;
-     A   = ( float* )malloc( LDA*LDA*sizeof( float ) );
-     AP  = ( float* )malloc( (((LDA+1)*LDA)/2)*sizeof( float ) );
+     A   = ( float* )malloc( (size_t)LDA*LDA*sizeof( float ) );
+     AP  = ( float* )malloc( ((((size_t)LDA+1)*LDA)/2)*sizeof( float ) );
      if (uplo == CblasUpper) {
         for( j=0, k=0; j<*n; j++ )
            for( i=0; i<j+1; i++, k++ )
@@ -410,8 +410,8 @@ void F77_stpmv(int *order, char *uplow, char *transp, char *diagn,
 
   if (*order == TEST_ROW_MJR) {
      LDA = *n;
-     A   = ( float* )malloc( LDA*LDA*sizeof( float ) );
-     AP  = ( float* )malloc( (((LDA+1)*LDA)/2)*sizeof( float ) );
+     A   = ( float* )malloc( (size_t)LDA*LDA*sizeof( float ) );
+     AP  = ( float* )malloc( ((((size_t)LDA+1)*LDA)/2)*sizeof( float ) );
      if (uplo == CblasUpper) {
         for( j=0, k=0; j<*n; j++ )
            for( i=0; i<j+1; i++, k++ )
@@ -449,8 +449,8 @@ void F77_stpsv(int *order, char *uplow, char *transp, char *diagn,
 
   if (*order == TEST_ROW_MJR) {
      LDA = *n;
-     A   = ( float* )malloc( LDA*LDA*sizeof( float ) );
-     AP  = ( float* )malloc( (((LDA+1)*LDA)/2)*sizeof( float ) );
+     A   = ( float* )malloc( (size_t)LDA*LDA*sizeof( float ) );
+     AP  = ( float* )malloc( ((((size_t)LDA+1)*LDA)/2)*sizeof( float ) );
      if (uplo == CblasUpper) {
         for( j=0, k=0; j<*n; j++ )
            for( i=0; i<j+1; i++, k++ )
@@ -485,8 +485,8 @@ void F77_sspr(int *order, char *uplow, int *n, float *alpha, float *x,
 
   if (*order == TEST_ROW_MJR) {
      LDA = *n;
-     A   = ( float* )malloc( LDA*LDA*sizeof( float ) );
-     AP  = ( float* )malloc( (((LDA+1)*LDA)/2)*sizeof( float ) );
+     A   = ( float* )malloc( (size_t)LDA*LDA*sizeof( float ) );
+     AP  = ( float* )malloc( ((((size_t)LDA+1)*LDA)/2)*sizeof( float ) );
      if (uplo == CblasUpper) {
         for( j=0, k=0; j<*n; j++ )
            for( i=0; i<j+1; i++, k++ )
@@ -536,8 +536,8 @@ void F77_sspr2(int *order, char *uplow, int *n, float *alpha, float *x,
 
   if (*order == TEST_ROW_MJR) {
      LDA = *n;
-     A   = ( float* )malloc( LDA*LDA*sizeof( float ) );
-     AP  = ( float* )malloc( (((LDA+1)*LDA)/2)*sizeof( float ) );
+     A   = ( float* )malloc( (size_t)LDA*LDA*sizeof( float ) );
+     AP  = ( float* )malloc( ((((size_t)LDA+1)*LDA)/2)*sizeof( float ) );
      if (uplo == CblasUpper) {
         for( j=0, k=0; j<*n; j++ )
            for( i=0; i<j+1; i++, k++ )

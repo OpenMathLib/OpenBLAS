@@ -166,8 +166,13 @@ ZROTKERNEL   = zrot.c
 #
 SSCALKERNEL  = sscal.c
 DSCALKERNEL  = dscal.c
+ifeq ($(C_COMPILER), PGI)
+CSCALKERNEL  = ../arm/zscal.c
+ZSCALKERNEL  = ../arm/zscal.c
+else
 CSCALKERNEL  = zscal.c
 ZSCALKERNEL  = zscal.c
+endif
 #
 SSWAPKERNEL  = sswap.c
 DSWAPKERNEL  = dswap.c

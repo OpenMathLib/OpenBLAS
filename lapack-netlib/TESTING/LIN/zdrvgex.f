@@ -707,9 +707,10 @@
                      CALL ZLACPY( 'Full', N, NRHS, BSAV, LDA, B, LDA )
 
                      IF( .NOT.PREFAC )
-     $                  CALL ZLASET( 'Full', N, N, ZERO, ZERO, AFAC,
-     $                               LDA )
-                     CALL ZLASET( 'Full', N, NRHS, ZERO, ZERO, X, LDA )
+     $                  CALL ZLASET( 'Full', N, N, DCMPLX( ZERO ),
+     $                               DCMPLX( ZERO ), AFAC, LDA )
+                     CALL ZLASET( 'Full', N, NRHS, DCMPLX( ZERO ),
+     $                            DCMPLX( ZERO ), X, LDA )
                      IF( IEQUED.GT.1 .AND. N.GT.0 ) THEN
 *
 *                       Equilibrate the matrix if FACT = 'F' and

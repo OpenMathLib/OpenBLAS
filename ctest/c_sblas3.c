@@ -23,34 +23,34 @@ void F77_sgemm(int *order, char *transpa, char *transpb, int *m, int *n,
   if (*order == TEST_ROW_MJR) {
      if (transa == CblasNoTrans) {
         LDA = *k+1;
-        A = (float *)malloc( (*m)*LDA*sizeof( float ) );
+        A = (float *)malloc( (*m)*(size_t)LDA*sizeof( float ) );
         for( i=0; i<*m; i++ )
            for( j=0; j<*k; j++ )
               A[i*LDA+j]=a[j*(*lda)+i];
      }
      else {
         LDA = *m+1;
-        A   = ( float* )malloc( LDA*(*k)*sizeof( float ) );
+        A   = ( float* )malloc( (size_t)LDA*(*k)*sizeof( float ) );
         for( i=0; i<*k; i++ )
            for( j=0; j<*m; j++ )
               A[i*LDA+j]=a[j*(*lda)+i];
      }
      if (transb == CblasNoTrans) {
         LDB = *n+1;
-        B   = ( float* )malloc( (*k)*LDB*sizeof( float ) );
+        B   = ( float* )malloc( (*k)*(size_t)LDB*sizeof( float ) );
         for( i=0; i<*k; i++ )
            for( j=0; j<*n; j++ )
               B[i*LDB+j]=b[j*(*ldb)+i];
      }
      else {
         LDB = *k+1;
-        B   = ( float* )malloc( LDB*(*n)*sizeof( float ) );
+        B   = ( float* )malloc( (size_t)LDB*(*n)*sizeof( float ) );
         for( i=0; i<*n; i++ )
            for( j=0; j<*k; j++ )
               B[i*LDB+j]=b[j*(*ldb)+i];
      }
      LDC = *n+1;
-     C   = ( float* )malloc( (*m)*LDC*sizeof( float ) );
+     C   = ( float* )malloc( (*m)*(size_t)LDC*sizeof( float ) );
      for( j=0; j<*n; j++ )
         for( i=0; i<*m; i++ )
            C[i*LDC+j]=c[j*(*ldc)+i];
@@ -85,25 +85,25 @@ void F77_ssymm(int *order, char *rtlf, char *uplow, int *m, int *n,
   if (*order == TEST_ROW_MJR) {
      if (side == CblasLeft) {
         LDA = *m+1;
-        A   = ( float* )malloc( (*m)*LDA*sizeof( float ) );
+        A   = ( float* )malloc( (*m)*(size_t)LDA*sizeof( float ) );
         for( i=0; i<*m; i++ )
            for( j=0; j<*m; j++ )
               A[i*LDA+j]=a[j*(*lda)+i];
      }
      else{
         LDA = *n+1;
-        A   = ( float* )malloc( (*n)*LDA*sizeof( float ) );
+        A   = ( float* )malloc( (*n)*(size_t)LDA*sizeof( float ) );
         for( i=0; i<*n; i++ )
            for( j=0; j<*n; j++ )
               A[i*LDA+j]=a[j*(*lda)+i];
      }
      LDB = *n+1;
-     B   = ( float* )malloc( (*m)*LDB*sizeof( float ) );
+     B   = ( float* )malloc( (*m)*(size_t)LDB*sizeof( float ) );
      for( i=0; i<*m; i++ )
         for( j=0; j<*n; j++ )
            B[i*LDB+j]=b[j*(*ldb)+i];
      LDC = *n+1;
-     C   = ( float* )malloc( (*m)*LDC*sizeof( float ) );
+     C   = ( float* )malloc( (*m)*(size_t)LDC*sizeof( float ) );
      for( j=0; j<*n; j++ )
         for( i=0; i<*m; i++ )
            C[i*LDC+j]=c[j*(*ldc)+i];
@@ -139,20 +139,20 @@ void F77_ssyrk(int *order, char *uplow, char *transp, int *n, int *k,
   if (*order == TEST_ROW_MJR) {
      if (trans == CblasNoTrans) {
         LDA = *k+1;
-        A   = ( float* )malloc( (*n)*LDA*sizeof( float ) );
+        A   = ( float* )malloc( (*n)*(size_t)LDA*sizeof( float ) );
         for( i=0; i<*n; i++ )
            for( j=0; j<*k; j++ )
               A[i*LDA+j]=a[j*(*lda)+i];
      }
      else{
         LDA = *n+1;
-        A   = ( float* )malloc( (*k)*LDA*sizeof( float ) );
+        A   = ( float* )malloc( (*k)*(size_t)LDA*sizeof( float ) );
         for( i=0; i<*k; i++ )
            for( j=0; j<*n; j++ )
               A[i*LDA+j]=a[j*(*lda)+i];
      }
      LDC = *n+1;
-     C   = ( float* )malloc( (*n)*LDC*sizeof( float ) );
+     C   = ( float* )malloc( (*n)*(size_t)LDC*sizeof( float ) );
      for( i=0; i<*n; i++ )
         for( j=0; j<*n; j++ )
            C[i*LDC+j]=c[j*(*ldc)+i];
@@ -187,8 +187,8 @@ void F77_ssyr2k(int *order, char *uplow, char *transp, int *n, int *k,
      if (trans == CblasNoTrans) {
         LDA = *k+1;
         LDB = *k+1;
-        A   = ( float* )malloc( (*n)*LDA*sizeof( float ) );
-        B   = ( float* )malloc( (*n)*LDB*sizeof( float ) );
+        A   = ( float* )malloc( (*n)*(size_t)LDA*sizeof( float ) );
+        B   = ( float* )malloc( (*n)*(size_t)LDB*sizeof( float ) );
         for( i=0; i<*n; i++ )
            for( j=0; j<*k; j++ ) {
               A[i*LDA+j]=a[j*(*lda)+i];
@@ -198,8 +198,8 @@ void F77_ssyr2k(int *order, char *uplow, char *transp, int *n, int *k,
      else {
         LDA = *n+1;
         LDB = *n+1;
-        A   = ( float* )malloc( LDA*(*k)*sizeof( float ) );
-        B   = ( float* )malloc( LDB*(*k)*sizeof( float ) );
+        A   = ( float* )malloc( (size_t)LDA*(*k)*sizeof( float ) );
+        B   = ( float* )malloc( (size_t)LDB*(*k)*sizeof( float ) );
         for( i=0; i<*k; i++ )
            for( j=0; j<*n; j++ ){
               A[i*LDA+j]=a[j*(*lda)+i];
@@ -207,7 +207,7 @@ void F77_ssyr2k(int *order, char *uplow, char *transp, int *n, int *k,
            }
      }
      LDC = *n+1;
-     C   = ( float* )malloc( (*n)*LDC*sizeof( float ) );
+     C   = ( float* )malloc( (*n)*(size_t)LDC*sizeof( float ) );
      for( i=0; i<*n; i++ )
         for( j=0; j<*n; j++ )
            C[i*LDC+j]=c[j*(*ldc)+i];
@@ -245,20 +245,20 @@ void F77_strmm(int *order, char *rtlf, char *uplow, char *transp, char *diagn,
   if (*order == TEST_ROW_MJR) {
      if (side == CblasLeft) {
         LDA = *m+1;
-        A   = ( float* )malloc( (*m)*LDA*sizeof( float ) );
+        A   = ( float* )malloc( (*m)*(size_t)LDA*sizeof( float ) );
         for( i=0; i<*m; i++ )
            for( j=0; j<*m; j++ )
               A[i*LDA+j]=a[j*(*lda)+i];
      }
      else{
         LDA = *n+1;
-        A   = ( float* )malloc( (*n)*LDA*sizeof( float ) );
+        A   = ( float* )malloc( (*n)*(size_t)LDA*sizeof( float ) );
         for( i=0; i<*n; i++ )
            for( j=0; j<*n; j++ )
               A[i*LDA+j]=a[j*(*lda)+i];
      }
      LDB = *n+1;
-     B   = ( float* )malloc( (*m)*LDB*sizeof( float ) );
+     B   = ( float* )malloc( (*m)*(size_t)LDB*sizeof( float ) );
      for( i=0; i<*m; i++ )
         for( j=0; j<*n; j++ )
            B[i*LDB+j]=b[j*(*ldb)+i];
@@ -296,20 +296,20 @@ void F77_strsm(int *order, char *rtlf, char *uplow, char *transp, char *diagn,
   if (*order == TEST_ROW_MJR) {
      if (side == CblasLeft) {
         LDA = *m+1;
-        A   = ( float* )malloc( (*m)*LDA*sizeof( float ) );
+        A   = ( float* )malloc( (*m)*(size_t)LDA*sizeof( float ) );
         for( i=0; i<*m; i++ )
            for( j=0; j<*m; j++ )
               A[i*LDA+j]=a[j*(*lda)+i];
      }
      else{
         LDA = *n+1;
-        A   = ( float* )malloc( (*n)*LDA*sizeof( float ) );
+        A   = ( float* )malloc( (*n)*(size_t)LDA*sizeof( float ) );
         for( i=0; i<*n; i++ )
            for( j=0; j<*n; j++ )
               A[i*LDA+j]=a[j*(*lda)+i];
      }
      LDB = *n+1;
-     B   = ( float* )malloc( (*m)*LDB*sizeof( float ) );
+     B   = ( float* )malloc( (*m)*(size_t)LDB*sizeof( float ) );
      for( i=0; i<*m; i++ )
         for( j=0; j<*n; j++ )
            B[i*LDB+j]=b[j*(*ldb)+i];

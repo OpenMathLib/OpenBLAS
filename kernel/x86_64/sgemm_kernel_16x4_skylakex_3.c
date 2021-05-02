@@ -501,7 +501,11 @@ CNAME(BLASLONG m, BLASLONG n, BLASLONG k, float alpha, float * __restrict__ A, f
     int32_t permil[16] = {0,0,0,0,1,1,1,1,2,2,2,2,3,3,3,3};
     BLASLONG n_count = n;
     float *a_pointer = A,*b_pointer = B,*c_pointer = C,*ctemp = C,*next_b = B;
+#if defined(__clang__)
+    for(;n_count>23;n_count-=24) COMPUTE(24)
+#else
     for(;n_count>23;n_count-=24) COMPUTE_n24
+#endif    
     for(;n_count>19;n_count-=20) COMPUTE(20)
     for(;n_count>15;n_count-=16) COMPUTE(16)
     for(;n_count>11;n_count-=12) COMPUTE(12)

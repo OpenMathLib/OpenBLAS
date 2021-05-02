@@ -3,6 +3,8 @@
 #include <time.h>
 #ifdef __CYGWIN32__
 #include <sys/time.h>
+#elif defined(__APPLE__)
+#include <mach/mach_time.h>
 #endif
 #include "common.h"
 

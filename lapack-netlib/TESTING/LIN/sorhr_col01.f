@@ -8,12 +8,12 @@
 *  Definition:
 *  ===========
 *
-*       SUBROUTINE SORHR_COL01( M, N, MB1, NB1, NB2, RESULT)
+*       SUBROUTINE SORHR_COL01( M, N, MB1, NB1, NB2, RESULT )
 *
 *       .. Scalar Arguments ..
 *       INTEGER           M, N, MB1, NB1, NB2
 *       .. Return values ..
-*       REAL             RESULT(6)
+*       REAL              RESULT(6)
 *
 *
 *> \par Purpose:
@@ -21,8 +21,8 @@
 *>
 *> \verbatim
 *>
-*> SORHR_COL01 tests SORHR_COL using SLATSQR, SGEMQRT and SORGTSQR.
-*> Therefore, SLATSQR (part of SGEQR), SGEMQRT (part SGEMQR), SORGTSQR
+*> SORHR_COL01 tests SORGTSQR and SORHR_COL using SLATSQR, SGEMQRT.
+*> Therefore, SLATSQR (part of SGEQR), SGEMQRT (part of SGEMQR)
 *> have to be tested before this test.
 *>
 *> \endverbatim
@@ -62,14 +62,46 @@
 *> \verbatim
 *>          RESULT is REAL array, dimension (6)
 *>          Results of each of the six tests below.
-*>          ( C is a M-by-N random matrix, D is a N-by-M random matrix )
 *>
-*>          RESULT(1) = | A - Q * R | / (eps * m * |A|)
-*>          RESULT(2) = | I - (Q**H) * Q | / (eps * m )
-*>          RESULT(3) = | Q * C - Q * C | / (eps * m * |C|)
-*>          RESULT(4) = | (Q**H) * C - (Q**H) * C | / (eps * m * |C|)
-*>          RESULT(5) = | (D * Q) - D * Q | / (eps * m * |D|)
-*>          RESULT(6) = | D * (Q**H) - D * (Q**H) | / (eps * m * |D|)
+*>            A is a m-by-n test input matrix to be factored.
+*>            so that A = Q_gr * ( R )
+*>                               ( 0 ),
+*>
+*>            Q_qr is an implicit m-by-m orthogonal Q matrix, the result
+*>            of factorization in blocked WY-representation,
+*>            stored in SGEQRT output format.
+*>
+*>            R is a n-by-n upper-triangular matrix,
+*>
+*>            0 is a (m-n)-by-n zero matrix,
+*>
+*>            Q is an explicit m-by-m orthogonal matrix Q = Q_gr * I
+*>
+*>            C is an m-by-n random matrix,
+*>
+*>            D is an n-by-m random matrix.
+*>
+*>          The six tests are:
+*>
+*>          RESULT(1) = |R - (Q**H) * A| / ( eps * m * |A| )
+*>            is equivalent to test for | A - Q * R | / (eps * m * |A|),
+*>
+*>          RESULT(2) = |I - (Q**H) * Q| / ( eps * m ),
+*>
+*>          RESULT(3) = | Q_qr * C - Q * C | / (eps * m * |C|),
+*>
+*>          RESULT(4) = | (Q_gr**H) * C - (Q**H) * C | / (eps * m * |C|)
+*>
+*>          RESULT(5) = | D * Q_qr - D * Q | / (eps * m * |D|)
+*>
+*>          RESULT(6) = | D * (Q_qr**H) - D * (Q**H) | / (eps * m * |D|),
+*>
+*>          where:
+*>            Q_qr * C, (Q_gr**H) * C, D * Q_qr, D * (Q_qr**H) are
+*>            computed using SGEMQRT,
+*>
+*>            Q * C, (Q**H) * C, D * Q, D * (Q**H)  are
+*>            computed using SGEMM.
 *> \endverbatim
 *
 *  Authors:
@@ -80,18 +112,15 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date November 2019
-*
 *> \ingroup single_lin
 *
 *  =====================================================================
       SUBROUTINE SORHR_COL01( M, N, MB1, NB1, NB2, RESULT )
       IMPLICIT NONE
 *
-*  -- LAPACK test routine (version 3.9.0) --
+*  -- LAPACK test routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2019
 *
 *     .. Scalar Arguments ..
       INTEGER           M, N, MB1, NB1, NB2
@@ -102,7 +131,7 @@
 *
 *     ..
 *     .. Local allocatable arrays
-      REAL, ALLOCATABLE ::  A(:,:), AF(:,:), Q(:,:), R(:,:),
+      REAL            , ALLOCATABLE ::  A(:,:), AF(:,:), Q(:,:), R(:,:),
      $                   RWORK(:), WORK( : ), T1(:,:), T2(:,:), DIAG(:),
      $                   C(:,:), CF(:,:), D(:,:), DF(:,:)
 *
@@ -128,7 +157,7 @@
      $                   SORGTSQR, SSCAL, SGEMM, SGEMQRT, SSYRK
 *     ..
 *     .. Intrinsic Functions ..
-      INTRINSIC          CEILING, MAX, MIN, REAL
+      INTRINSIC          CEILING, REAL, MAX, MIN
 *     ..
 *     .. Scalars in Common ..
       CHARACTER(LEN=32)  SRNAMT
@@ -230,7 +259,7 @@
 *
 *     Compute the factor R_hr corresponding to the Householder
 *     reconstructed Q_hr and place it in the upper triangle of AF to
-*     match the Q storage format in DGEQRT. R_hr = R_tsqr * S,
+*     match the Q storage format in SGEQRT. R_hr = R_tsqr * S,
 *     this means changing the sign of I-th row of the matrix R_tsqr
 *     according to sign of of I-th diagonal element DIAG(I) of the
 *     matrix S.

@@ -38,8 +38,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #if defined(__VEC__) || defined(__ALTIVEC__)
 #if defined(POWER8) || defined(POWER9)
 #include "dscal_microk_power8.c"
-#elif defined(POWER10)
+#elif defined(POWER10) && (__BYTE_ORDER__ != __ORDER_BIG_ENDIAN__)
 #include "dscal_microk_power10.c"
+#elif defined(POWER10)
+#include "dscal_microk_power8.c"
 #endif
 #endif
 
@@ -102,7 +104,7 @@ int CNAME(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, FLOAT da, FLOAT *x, BLAS
 		if ( da == 0.0 )
 		{		
 
-#if defined(POWER10)
+#if defined(POWER10) && (__BYTE_ORDER__ != __ORDER_BIG_ENDIAN__)
 			if ( n >= 16 )
 			{
 				BLASLONG align = ((32 - ((uintptr_t)x & (uintptr_t)0x1F)) >> 3) & 0x3;
@@ -136,7 +138,7 @@ int CNAME(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, FLOAT da, FLOAT *x, BLAS
 		else
 		{
 
-#if defined(POWER10)
+#if defined(POWER10) && (__BYTE_ORDER__ != __ORDER_BIG_ENDIAN__)
 			if ( n >= 16 )
 			{
 				BLASLONG align = ((32 - ((uintptr_t)x & (uintptr_t)0x1F)) >> 3) & 0x3;

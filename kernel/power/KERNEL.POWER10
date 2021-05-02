@@ -169,8 +169,13 @@ ZROTKERNEL   = zrot.c
 #
 SSCALKERNEL  = sscal.c
 DSCALKERNEL  = dscal.c
+ifeq ($(C_COMPILER), PGI)
+CSCALKERNEL  = ../arm/zscal.c
+ZSCALKERNEL  = ../arm/zscal.c
+else
 CSCALKERNEL  = zscal.c
 ZSCALKERNEL  = zscal.c
+endif
 #
 SSWAPKERNEL  = sswap.c
 DSWAPKERNEL  = dswap.c
@@ -181,7 +186,7 @@ ZSWAPKERNEL  = zswap.c
 SGEMVNKERNEL = sgemv_n.c
 DGEMVNKERNEL = dgemv_n_power10.c
 CGEMVNKERNEL = cgemv_n.c
-ZGEMVNKERNEL = zgemv_n_4.c
+ZGEMVNKERNEL =  zgemv_n_power10.c
 #
 SGEMVTKERNEL = sgemv_t.c
 DGEMVTKERNEL = dgemv_t_power10.c
