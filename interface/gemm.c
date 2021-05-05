@@ -49,6 +49,8 @@
 #define ERROR_NAME "QGEMM "
 #elif defined(DOUBLE)
 #define ERROR_NAME "DGEMM "
+#elif defined(BFLOAT16)
+#define ERROR_NAME "SBGEMM "
 #else
 #define ERROR_NAME "SGEMM "
 #endif
