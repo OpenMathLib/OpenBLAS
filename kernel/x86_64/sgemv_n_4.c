@@ -417,7 +417,11 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1, FLOAT alpha, FLOAT *a, BLASLO
 
 			if ( n2 & 2 )
 			{
+#ifdef HAVE_SGEMV_N_SKYLAKE_KERNEL				
 				sgemv_kernel_n_64(NB, 2, alpha, a_ptr, lda, x_ptr, ybuffer);
+#else
+				sgemv_kernel_4x2(NB,ap,x_ptr,ybuffer,&alpha);
+#endif
 				a_ptr += lda*2;
 				x_ptr += 2;	
 			}
@@ -425,7 +429,11 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1, FLOAT alpha, FLOAT *a, BLASLO
 
 			if ( n2 & 1 )
 			{
+#ifdef HAVE_SGEMV_N_SKYLAKE_KERNEL
 				sgemv_kernel_n_64(NB, 1, alpha, a_ptr, lda, x_ptr, ybuffer);
+#else
+				sgemv_kernel_4x1(NB,a_ptr,x_ptr,ybuffer,&alpha);
+#endif
 				/* a_ptr += lda;
 				x_ptr += 1a; */
 
