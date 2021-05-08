@@ -140,8 +140,7 @@ jobs:
 - job: OSX_NDK_ARMV7
   pool:
      vmImage: 'macOS-10.15'
-  variables:
-steps:   
+  steps:   
   - script: | 
       brew update
       brew install --cask android-ndk
