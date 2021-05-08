@@ -143,12 +143,12 @@ jobs:
   variables:
      ANDROID_NDK_HOME: /usr/local/share/android-ndk
      LDFLAGS: -L$(ANDROID_NDK_HOME)/toolchains/arm-linux-androideabi-4.9/prebuilt/darwin-x86_64/lib/gcc/arm-linux-androideabi/4.9.x
-     CLANG_FLAGS: "-target arm-linux-androideabi -marm -mfpu=vfp -mfloat-abi=softfp --sysroot $(ANDROID_NDK_HOME)/platforms/android-23/arch-arm -gcc-toolchain $(ANDROID_NDK_HOME)/toolchains/arm-linux-androideabi-4.9/prebuilt/linux-x86_64/"
+     CLANG_FLAGS: "-target arm-linux-androideabi -marm -mfpu=vfp -mfloat-abi=softfp --sysroot $(ANDROID_NDK_HOME)/platforms/android-23/arch-arm -gcc-toolchain $(ANDROID_NDK_HOME)/toolchains/arm-linux-androideabi-4.9/prebuilt/darwin-x86_64/"
   steps:   
   - script: | 
       brew update
       brew install --cask android-ndk
-      ls /usr/local/share/android-ndk/toolchains/arm-linux-androideabi-4.9/prebuilt
-      export PATH=$(ANDROID_NDK_HOME)/toolchains/arm-linux-androideabi-4.9/prebuilt/linux-x86_64/bin:$(ANDROID_NDK_HOME)/toolchains/llvm/prebuilt/darwin-x86_64/bin:$PATH
+      ls /usr/local/share/android-ndk/toolchains/arm-linux-androideabi-4.9/prebuilt/darwin-x86_64/lib/gcc/arm-linux-androideabi
+      export PATH=$(ANDROID_NDK_HOME)/toolchains/arm-linux-androideabi-4.9/prebuilt/darwin-x86_64/bin:$(ANDROID_NDK_HOME)/toolchains/llvm/prebuilt/darwin-x86_64/bin:$PATH
       make TARGET=ARMV7 ONLY_CBLAS=1 AR=ar CC="clang ${CLANG_FLAGS}" HOSTCC=gcc ARM_SOFTFP_ABI=1 -j4
  
