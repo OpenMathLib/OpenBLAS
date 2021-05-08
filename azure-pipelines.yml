@@ -148,8 +148,7 @@ jobs:
   - script: | 
       brew update
       brew install --cask android-ndk
-      ls /usr/local/share/android-ndk/toolchains/arm-linux-androideabi-4.9/prebuilt/darwin-x86_64/lib/gcc/arm-linux-androideabi/4.9.x
-      ls -lR /usr/local/share/android-ndk/platforms/android-23
+      find /usr/local/share/android-ndk -name include
       export PATH=$(ANDROID_NDK_HOME)/toolchains/arm-linux-androideabi-4.9/prebuilt/darwin-x86_64/bin:$(ANDROID_NDK_HOME)/toolchains/llvm/prebuilt/darwin-x86_64/bin:$PATH
       make TARGET=ARMV7 ONLY_CBLAS=1 AR=ar CC="clang ${CLANG_FLAGS}" HOSTCC=gcc ARM_SOFTFP_ABI=1 -j4
  
