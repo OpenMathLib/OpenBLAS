@@ -137,3 +137,13 @@ jobs:
       source /opt/intel/oneapi/setvars.sh
       make CC=/usr/local/opt/llvm/bin/clang FC=ifort
  
+- job: OSX_NDK_ARMV7
+  pool:
+     vmImage: 'macOS-10.15'
+  steps:   
+  - script: | 
+      brew update
+      brew install --cask android-ndk
+      export ANDROID_NDK_HOME=/usr/local/share/android-ndk
+      make TARGET=ARMV7 ONLY_CBLAS=1 CC=$ANDROID_NDK_HOME/toolchains/llvm/prebuilt/darwin-x86_64/bin/armv7a-linux-androideabi21-clang AR=$ANDROID_NDK_HOME/toolchains/llvm/prebuilt/darwin-x86_64/bin/arm-linux-androideabi-ar HOSTCC=gcc ARM_SOFTFP_ABI=1 -j4
+ 
