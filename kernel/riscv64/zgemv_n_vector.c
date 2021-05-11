@@ -27,25 +27,23 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "common.h"
 #if !defined(DOUBLE)
-#define RVV_EFLOAT RVV_E32
-#define RVV_M RVV_M4
-#define FLOAT_V_T float32xm4_t
-#define VLEV_FLOAT vlev_float32xm4
-#define VLSEV_FLOAT vlsev_float32xm4
-#define VSEV_FLOAT vsev_float32xm4
-#define VSSEV_FLOAT vssev_float32xm4
-#define VFMACCVF_FLOAT vfmaccvf_float32xm4
-#define VFNMSACVF_FLOAT vfnmsacvf_float32xm4
+#define VSETVL(n) vsetvl_e32m4(n)
+#define FLOAT_V_T vfloat32m4_t
+#define VLEV_FLOAT vle_v_f32m4
+#define VLSEV_FLOAT vlse_v_f32m4
+#define VSEV_FLOAT vse_v_f32m4
+#define VSSEV_FLOAT vsse_v_f32m4
+#define VFMACCVF_FLOAT vfmacc_vf_f32m4
+#define VFNMSACVF_FLOAT vfnmsac_vf_f32m4
 #else
-#define RVV_EFLOAT RVV_E64
-#define RVV_M RVV_M4
-#define FLOAT_V_T float64xm4_t
-#define VLEV_FLOAT vlev_float64xm4
-#define VLSEV_FLOAT vlsev_float64xm4
-#define VSEV_FLOAT vsev_float64xm4
-#define VSSEV_FLOAT vssev_float64xm4
-#define VFMACCVF_FLOAT vfmaccvf_float64xm4
-#define VFNMSACVF_FLOAT vfnmsacvf_float64xm4
+#define VSETVL(n) vsetvl_e64m4(n)
+#define FLOAT_V_T vfloat64m4_t
+#define VLEV_FLOAT vle_v_f64m4
+#define VLSEV_FLOAT vlse_v_f64m4
+#define VSEV_FLOAT vse_v_f64m4
+#define VSSEV_FLOAT vsse_v_f64m4
+#define VFMACCVF_FLOAT vfmacc_vf_f64m4
+#define VFNMSACVF_FLOAT vfnmsac_vf_f64m4
 #endif
 
 int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1, FLOAT alpha_r, FLOAT alpha_i, FLOAT *a, BLASLONG lda, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG inc_y, FLOAT *buffer)
@@ -58,7 +56,7 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1, FLOAT alpha_r, FLOAT alpha_i,
         unsigned int gvl = 0;
         BLASLONG stride_a = sizeof(FLOAT) * 2;
         BLASLONG stride_y = inc_y * sizeof(FLOAT) * 2;
-        gvl = vsetvli(m, RVV_EFLOAT, RVV_M);
+        gvl = VSETVL(m);
         BLASLONG inc_yv = inc_y * gvl * 2;
         BLASLONG inc_x2 = inc_x * 2;
         BLASLONG lda2 = lda * 2;
@@ -117,7 +115,7 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1, FLOAT alpha_r, FLOAT alpha_i,
         }
         //tail
         if(j/2 < m){
-                gvl = vsetvli(m-j/2, RVV_EFLOAT, RVV_M);
+                gvl = VSETVL(m-j/2);
                 a_ptr = a;
                 ix = 0;
                 vy0 = VLSEV_FLOAT(&y[iy], stride_y, gvl);
