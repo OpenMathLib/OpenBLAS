@@ -57,10 +57,30 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define LOAD_KB_512(M, N) __m512 Bval##N = _mm512_loadu_ps(&B[(j + N)*ldb + k])
 #define MASK_LOAD_KA_512(M, N) __m512 Aval##M = _mm512_maskz_loadu_ps(mask, &mbuf[(mi + M)*K + k])
 #define MASK_LOAD_KB_512(M, N) __m512 Bval##N = _mm512_maskz_loadu_ps(mask, &B[(j + N)*ldb + k])
+#define REDUCE_M4(N) \
+	__m512 r0, r1, r2, r3, t0, t1, t2, t3;\
+	r0 = _mm512_unpacklo_ps(result0##N, result1##N); r1 = _mm512_unpackhi_ps(result0##N, result1##N); \
+	r2 = _mm512_unpacklo_ps(result2##N, result3##N); r3 = _mm512_unpackhi_ps(result2##N, result3##N); \
+	t0 = _mm512_shuffle_ps(r0, r2, _MM_SHUFFLE(1, 0, 1, 0)); t1 = _mm512_shuffle_ps(r0, r2, _MM_SHUFFLE(3, 2, 3, 2)); \
+	t2 = _mm512_shuffle_ps(r1, r3, _MM_SHUFFLE(1, 0, 1, 0)); t3 = _mm512_shuffle_ps(r1, r3, _MM_SHUFFLE(3, 2, 3, 2)); \
+	r0 = _mm512_add_ps(t0, t1); r1 = _mm512_add_ps(t2, t3); t0 = _mm512_add_ps(r0, r1); \
+	__m128 s0, s1, s2, s3; \
+	s0 = _mm512_extractf32x4_ps(t0, 0); s1 = _mm512_extractf32x4_ps(t0, 1); s2 = _mm512_extractf32x4_ps(t0, 2); s3 = _mm512_extractf32x4_ps(t0, 3); \
+	s0 = _mm_maskz_add_ps(mask8, s0, s1); s2 = _mm_maskz_add_ps(mask8, s2, s3); s0 = _mm_maskz_add_ps(mask8, s0, s2); \
+	s0 = _mm_maskz_mul_ps(mask8, alpha_128, s0);
 #if defined(B0)
 #define STORE_REDUCE(M, N) C[(j+N)*ldc + i + M] = alpha * _mm512_reduce_add_ps(result##M##N);
+#define STORE_REDUCE_M4(N) {\
+	REDUCE_M4(N) \
+	_mm_mask_storeu_ps(&C[(j + N)*ldc + i], mask8, s0); \
+}
 #else
 #define STORE_REDUCE(M, N) C[(j+N)*ldc + i + M] = alpha * _mm512_reduce_add_ps(result##M##N) + beta * C[(j+N)*ldc + i + M];
+#define STORE_REDUCE_M4(N) {\
+	REDUCE_M4(N) \
+	asm("vfmadd231ps (%1), %2, %0": "+v"(s0):"r"(&C[(j + N)*ldc + i]), "v"(beta_128)); \
+	_mm_mask_storeu_ps(&C[(j + N)*ldc + i], mask8, s0); \
+}
 #endif
 
 #if defined(B0)
@@ -75,14 +95,12 @@ int CNAME(BLASLONG M, BLASLONG N, BLASLONG K, FLOAT * A, BLASLONG lda, FLOAT alp
 	BLASLONG m64 = M & ~63;
 	BLASLONG m32 = M & ~31;
 	BLASLONG m16 = M & ~15;
-	BLASLONG m8 = M & ~7;
 	BLASLONG m4 = M & ~3;
 	BLASLONG m2 = M & ~1;
 
 	BLASLONG n4 = N & ~3;
 	BLASLONG n2 = N & ~1;
 
-	__mmask8 mask = 0xff;  // just use to avoid SSE instruction
 
 	__m512 alpha_512 = _mm512_broadcastss_ps(_mm_load_ss(&alpha));
 #if !defined(B0)
@@ -220,8 +238,10 @@ int CNAME(BLASLONG M, BLASLONG N, BLASLONG K, FLOAT * A, BLASLONG lda, FLOAT alp
 			STORE_512(0, 0);
 		}
 	}
-	if (M - i > 8) {
-		register __mmask16 mask asm("k1") = (1UL << (M - i)) - 1;
+	int mm = M - i;
+	if (!mm) return 0;
+	if (mm > 8 || K < 32) {
+		register __mmask16 mask asm("k1") = (1UL << mm) - 1;
 		for (j = 0; j < n4; j += 4) {
 			DECLARE_RESULT_512(0, 0);
 			DECLARE_RESULT_512(0, 1);
@@ -263,10 +283,20 @@ int CNAME(BLASLONG M, BLASLONG N, BLASLONG K, FLOAT * A, BLASLONG lda, FLOAT alp
 			}
 			MASK_STORE_512(0, 0);
 		}
-		return;
-	}
-	int mm = M - i;
-	if (mm) {
+	} else {
+		/* M => [1, 8]
+		 *
+		 * This kernel use dot-like style to calc a value - C(x, y):
+		 * C(x, y) = A(x, 0)*B(0, y) + A(x, 1)*B(1, y) +....+ A(x, K)*B(K, y)
+		 *
+		 * Alloc a buf to copy rest of A as row major,
+		 * so memory access from 0 to K is continuous for both A & B.
+		 *
+		 * Loading to zmm and FMA 16 of k at one loop,
+		 * finally reduce_add zmm to a single float result in C(x, y).
+		 *
+		 * Note: performance is bad when K is small.
+		 */
 		FLOAT *mbuf = (FLOAT *) malloc(sizeof(FLOAT)*mm*K);
 		__mmask8 mask8 = (1UL << mm) - 1;
 		__mmask16 mask;
@@ -328,6 +358,11 @@ int CNAME(BLASLONG M, BLASLONG N, BLASLONG K, FLOAT * A, BLASLONG lda, FLOAT alp
 			}
 		}
 		int mi = 0;
+		mask8 = 0xff;  // just use to avoid SSE instruction
+		__m128 alpha_128 = _mm_broadcast_ss(&alpha);
+#if !defined(B0)
+		__m128 beta_128 = _mm_broadcast_ss(&beta);
+#endif
 		for (; i < m4; i += 4, mi += 4) {
 			for (j = 0; j < n4; j += 4) {
 				DECLARE_RESULT_512(0, 0); DECLARE_RESULT_512(1, 0); DECLARE_RESULT_512(2, 0); DECLARE_RESULT_512(3, 0);
@@ -354,10 +389,7 @@ int CNAME(BLASLONG M, BLASLONG N, BLASLONG K, FLOAT * A, BLASLONG lda, FLOAT alp
 					MATMUL_512(0, 2); MATMUL_512(1, 2); MATMUL_512(2, 2); MATMUL_512(3, 2);
 					MATMUL_512(0, 3); MATMUL_512(1, 3); MATMUL_512(2, 3); MATMUL_512(3, 3);
 				}
-				STORE_REDUCE(0, 0); STORE_REDUCE(1, 0); STORE_REDUCE(2, 0); STORE_REDUCE(3, 0);
-				STORE_REDUCE(0, 1); STORE_REDUCE(1, 1); STORE_REDUCE(2, 1); STORE_REDUCE(3, 1);
-				STORE_REDUCE(0, 2); STORE_REDUCE(1, 2); STORE_REDUCE(2, 2); STORE_REDUCE(3, 2);
-				STORE_REDUCE(0, 3); STORE_REDUCE(1, 3); STORE_REDUCE(2, 3); STORE_REDUCE(3, 3);
+				STORE_REDUCE_M4(0); STORE_REDUCE_M4(1); STORE_REDUCE_M4(2); STORE_REDUCE_M4(3);
 			}
 			for (; j < n2; j += 2) {
 				DECLARE_RESULT_512(0, 0); DECLARE_RESULT_512(1, 0); DECLARE_RESULT_512(2, 0); DECLARE_RESULT_512(3, 0);
@@ -378,9 +410,7 @@ int CNAME(BLASLONG M, BLASLONG N, BLASLONG K, FLOAT * A, BLASLONG lda, FLOAT alp
 					MATMUL_512(0, 0); MATMUL_512(1, 0); MATMUL_512(2, 0); MATMUL_512(3, 0);
 					MATMUL_512(0, 1); MATMUL_512(1, 1); MATMUL_512(2, 1); MATMUL_512(3, 1);
 				}
-				STORE_REDUCE(0, 0); STORE_REDUCE(1, 0); STORE_REDUCE(2, 0); STORE_REDUCE(3, 0);
-				STORE_REDUCE(0, 1); STORE_REDUCE(1, 1); STORE_REDUCE(2, 1); STORE_REDUCE(3, 1);
-
+				STORE_REDUCE_M4(0); STORE_REDUCE_M4(1);
 			}
 			for (; j < N; j += 1) {
 				DECLARE_RESULT_512(0, 0); DECLARE_RESULT_512(1, 0); DECLARE_RESULT_512(2, 0); DECLARE_RESULT_512(3, 0);
@@ -398,7 +428,7 @@ int CNAME(BLASLONG M, BLASLONG N, BLASLONG K, FLOAT * A, BLASLONG lda, FLOAT alp
 
 					MATMUL_512(0, 0); MATMUL_512(1, 0); MATMUL_512(2, 0); MATMUL_512(3, 0);
 				}
-				STORE_REDUCE(0, 0); STORE_REDUCE(1, 0); STORE_REDUCE(2, 0); STORE_REDUCE(3, 0);
+				STORE_REDUCE_M4(0);
 			}
 
 		}
@@ -550,6 +580,6 @@ int CNAME(BLASLONG M, BLASLONG N, BLASLONG K, FLOAT * A, BLASLONG lda, FLOAT alp
 			}
 		}
 		free(mbuf);
-		return;
 	}
+	return 0;
 }
