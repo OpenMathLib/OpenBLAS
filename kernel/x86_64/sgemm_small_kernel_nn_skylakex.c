@@ -57,10 +57,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define LOAD_KB_512(M, N) __m512 Bval##N = _mm512_loadu_ps(&B[(j + N)*ldb + k])
 #define MASK_LOAD_KA_512(M, N) __m512 Aval##M = _mm512_maskz_loadu_ps(mask, &mbuf[(mi + M)*K + k])
 #define MASK_LOAD_KB_512(M, N) __m512 Bval##N = _mm512_maskz_loadu_ps(mask, &B[(j + N)*ldb + k])
-#define REDUCE_M4(N) \
+#define REDUCE_4(rr0, rr1, rr2, rr3) \
 	__m512 r0, r1, r2, r3, t0, t1, t2, t3;\
-	r0 = _mm512_unpacklo_ps(result0##N, result1##N); r1 = _mm512_unpackhi_ps(result0##N, result1##N); \
-	r2 = _mm512_unpacklo_ps(result2##N, result3##N); r3 = _mm512_unpackhi_ps(result2##N, result3##N); \
+	r0 = _mm512_unpacklo_ps(rr0, rr1); r1 = _mm512_unpackhi_ps(rr0, rr1); \
+	r2 = _mm512_unpacklo_ps(rr2, rr3); r3 = _mm512_unpackhi_ps(rr2, rr3); \
 	t0 = _mm512_shuffle_ps(r0, r2, _MM_SHUFFLE(1, 0, 1, 0)); t1 = _mm512_shuffle_ps(r0, r2, _MM_SHUFFLE(3, 2, 3, 2)); \
 	t2 = _mm512_shuffle_ps(r1, r3, _MM_SHUFFLE(1, 0, 1, 0)); t3 = _mm512_shuffle_ps(r1, r3, _MM_SHUFFLE(3, 2, 3, 2)); \
 	r0 = _mm512_add_ps(t0, t1); r1 = _mm512_add_ps(t2, t3); t0 = _mm512_add_ps(r0, r1); \
@@ -68,11 +68,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	s0 = _mm512_extractf32x4_ps(t0, 0); s1 = _mm512_extractf32x4_ps(t0, 1); s2 = _mm512_extractf32x4_ps(t0, 2); s3 = _mm512_extractf32x4_ps(t0, 3); \
 	s0 = _mm_maskz_add_ps(mask8, s0, s1); s2 = _mm_maskz_add_ps(mask8, s2, s3); s0 = _mm_maskz_add_ps(mask8, s0, s2); \
 	s0 = _mm_maskz_mul_ps(mask8, alpha_128, s0);
+#define REDUCE_M4(N) REDUCE_4(result0##N, result1##N, result2##N, result3##N)
+#define REDUCE_N4(M) REDUCE_4(result##M##0, result##M##1, result##M##2, result##M##3)
 #if defined(B0)
 #define STORE_REDUCE(M, N) C[(j+N)*ldc + i + M] = alpha * _mm512_reduce_add_ps(result##M##N);
 #define STORE_REDUCE_M4(N) {\
 	REDUCE_M4(N) \
 	_mm_mask_storeu_ps(&C[(j + N)*ldc + i], mask8, s0); \
+}
+#define STORE_REDUCE_N4(M) {\
+	REDUCE_N4(M) \
+	_mm_i32scatter_ps(&C[j*ldc + i + M], vindex_n, s0, 4); \
 }
 #else
 #define STORE_REDUCE(M, N) C[(j+N)*ldc + i + M] = alpha * _mm512_reduce_add_ps(result##M##N) + beta * C[(j+N)*ldc + i + M];
@@ -80,6 +86,12 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	REDUCE_M4(N) \
 	asm("vfmadd231ps (%1), %2, %0": "+v"(s0):"r"(&C[(j + N)*ldc + i]), "v"(beta_128)); \
 	_mm_mask_storeu_ps(&C[(j + N)*ldc + i], mask8, s0); \
+}
+#define STORE_REDUCE_N4(M) {\
+	REDUCE_N4(M) \
+	s1 = _mm_i32gather_ps(&C[j*ldc + i + M], vindex_n, 4); \
+	s0 = _mm_fmadd_ps(s1, beta_128, s0); \
+	_mm_i32scatter_ps(&C[j*ldc + i + M], vindex_n, s0, 4); \
 }
 #endif
 
@@ -363,6 +375,7 @@ int CNAME(BLASLONG M, BLASLONG N, BLASLONG K, FLOAT * A, BLASLONG lda, FLOAT alp
 #if !defined(B0)
 		__m128 beta_128 = _mm_broadcast_ss(&beta);
 #endif
+		__m128i vindex_n = _mm_set_epi32(ldc*3, ldc*2, ldc, 0);
 		for (; i < m4; i += 4, mi += 4) {
 			for (j = 0; j < n4; j += 4) {
 				DECLARE_RESULT_512(0, 0); DECLARE_RESULT_512(1, 0); DECLARE_RESULT_512(2, 0); DECLARE_RESULT_512(3, 0);
@@ -458,10 +471,7 @@ int CNAME(BLASLONG M, BLASLONG N, BLASLONG K, FLOAT * A, BLASLONG lda, FLOAT alp
 					MATMUL_512(0, 2); MATMUL_512(1, 2);
 					MATMUL_512(0, 3); MATMUL_512(1, 3);
 				}
-				STORE_REDUCE(0, 0); STORE_REDUCE(1, 0);
-				STORE_REDUCE(0, 1); STORE_REDUCE(1, 1);
-				STORE_REDUCE(0, 2); STORE_REDUCE(1, 2);
-				STORE_REDUCE(0, 3); STORE_REDUCE(1, 3);
+				STORE_REDUCE_N4(0); STORE_REDUCE_N4(1);
 			}
 			for (; j < n2; j += 2) {
 				DECLARE_RESULT_512(0, 0); DECLARE_RESULT_512(1, 0);
@@ -532,10 +542,7 @@ int CNAME(BLASLONG M, BLASLONG N, BLASLONG K, FLOAT * A, BLASLONG lda, FLOAT alp
 					MATMUL_512(0, 2);
 					MATMUL_512(0, 3);
 				}
-				STORE_REDUCE(0, 0);
-				STORE_REDUCE(0, 1);
-				STORE_REDUCE(0, 2);
-				STORE_REDUCE(0, 3);
+				STORE_REDUCE_N4(0);
 			}
 			for (; j < n2; j += 2) {
 				DECLARE_RESULT_512(0, 0);
