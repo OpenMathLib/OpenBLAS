@@ -1398,6 +1398,17 @@ int get_cpuname(void){
 	    return CPUTYPE_SANDYBRIDGE;
 	  else
 	  return CPUTYPE_NEHALEM;
+	case 10: // Ice Lake SP
+	  if(support_avx512_bf16())
+            return CPUTYPE_COOPERLAKE;	
+          if(support_avx512())
+            return CPUTYPE_SKYLAKEX;
+          if(support_avx2())
+            return CPUTYPE_HASWELL;
+          if(support_avx())
+	    return CPUTYPE_SANDYBRIDGE;
+	  else
+	  return CPUTYPE_NEHALEM;	
         }
       break;
       case 7: // family 6 exmodel 7
@@ -2112,7 +2123,22 @@ int get_coretype(void){
 #endif
 	  else
 	    return CORE_NEHALEM;
-#endif			
+#endif
+	if (model == 10)
+#ifndef NO_AVX512
+	  if(support_avx512_bf16())
+            return CORE_COOPERLAKE;
+	  return CORE_SKYLAKEX;
+#else
+	  if(support_avx())
+#ifndef NO_AVX2
+	    return CORE_HASWELL;
+#else
+	    return CORE_SANDYBRIDGE;
+#endif
+	  else
+	    return CORE_NEHALEM;
+#endif	
         break;    	
       case 7:
         if (model == 10) 
