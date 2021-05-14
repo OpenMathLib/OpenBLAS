@@ -621,6 +621,22 @@ static gotoblas_t *get_coretype(void){
 	    return &gotoblas_NEHALEM;
 	  }
         }
+	if (model == 10) {
+          // Ice Lake SP
+	   if(support_avx512_bf16())
+             return &gotoblas_COOPERLAKE;
+          if (support_avx512()) 
+	    return &gotoblas_SKYLAKEX;
+	  if(support_avx2())
+	    return &gotoblas_HASWELL;
+	  if(support_avx()) {
+	    openblas_warning(FALLBACK_VERBOSE, SANDYBRIDGE_FALLBACK);
+	    return &gotoblas_SANDYBRIDGE;
+	  } else {
+	    openblas_warning(FALLBACK_VERBOSE, NEHALEM_FALLBACK);
+	    return &gotoblas_NEHALEM;
+	  }
+        }      
         return NULL;  
       case 7:
 	if (model == 10) // Goldmont Plus
