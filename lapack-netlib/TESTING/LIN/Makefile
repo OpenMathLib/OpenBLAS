@@ -317,13 +317,13 @@ cleanobj:
 cleanexe:
 	rm -f xlintst*
 
-schkaa.o: schkaa.f
+schkaa.o: schkaa.F
 	$(FC) $(FFLAGS_DRV) -c -o $@ $<
-dchkaa.o: dchkaa.f
+dchkaa.o: dchkaa.F
 	$(FC) $(FFLAGS_DRV) -c -o $@ $<
-cchkaa.o: cchkaa.f
+cchkaa.o: cchkaa.F
 	$(FC) $(FFLAGS_DRV) -c -o $@ $<
-zchkaa.o: zchkaa.f
+zchkaa.o: zchkaa.F
 	$(FC) $(FFLAGS_DRV) -c -o $@ $<
 
 .NOTPARALLEL:

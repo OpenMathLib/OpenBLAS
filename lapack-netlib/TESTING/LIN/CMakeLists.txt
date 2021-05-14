@@ -6,7 +6,7 @@ set(SCLNTST slaord.f)
 
 set(DZLNTST dlaord.f)
 
-set(SLINTST schkaa.f
+set(SLINTST schkaa.F
    schkeq.f schkgb.f schkge.f schkgt.f
    schklq.f schkpb.f schkpo.f schkps.f schkpp.f
    schkpt.f schkq3.f schkql.f schkqr.f schkrq.f
@@ -51,7 +51,7 @@ else()
                       serrvx.f serrge.f serrsy.f serrpo.f)
 endif()
 
-set(CLINTST cchkaa.f
+set(CLINTST cchkaa.F
    cchkeq.f cchkgb.f cchkge.f cchkgt.f
    cchkhe.f cchkhe_rook.f cchkhe_rk.f 
    cchkhe_aa.f cchkhe_aa_2stage.f
@@ -107,7 +107,7 @@ else()
                       cerrvx.f cerrge.f cerrhe.f cerrsy.f cerrpo.f)
 endif()
 
-set(DLINTST dchkaa.f
+set(DLINTST dchkaa.F
    dchkeq.f dchkgb.f dchkge.f dchkgt.f
    dchklq.f dchkpb.f dchkpo.f dchkps.f dchkpp.f
    dchkpt.f dchkq3.f dchkql.f dchkqr.f dchkrq.f
@@ -153,7 +153,7 @@ else()
                       derrvx.f derrge.f derrsy.f derrpo.f)
 endif()
 
-set(ZLINTST zchkaa.f
+set(ZLINTST zchkaa.F
    zchkeq.f zchkgb.f zchkge.f zchkgt.f
    zchkhe.f zchkhe_rook.f zchkhe_rk.f 
    zchkhe_aa.f zchkhe_aa_2stage.f
