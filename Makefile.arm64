@@ -107,4 +107,13 @@ FCOMMON_OPT += -march=armv8.2-a -mtune=tsv110
 endif
 endif
 endif
+
+ifeq ($(GCCVERSIONGTEQ9), 1)
+ifeq ($(CORE), EMAG8180)
+CCOMMON_OPT += -march=armv8-a -mtune=emag
+ifneq ($(F_COMPILER), NAG)
+FCOMMON_OPT += -march=armv8-a -mtune=emag
+endif
+endif
+endif
 endif
