@@ -185,7 +185,7 @@
 *
          IF( Z( 1 ).LT.ZERO ) THEN
             INFO = -201
-            CALL XERBLA( 'DLASQ2', 2 )
+            CALL XERBLA( 'SLASQ2', 2 )
             RETURN
          ELSE IF( Z( 2 ).LT.ZERO ) THEN
             INFO = -202
