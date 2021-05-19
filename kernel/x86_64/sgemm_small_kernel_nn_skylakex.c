@@ -42,15 +42,13 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 			_mm512_mask_storeu_ps(&C[(j+N)*ldc + i + (M*16)], mask, result##M##N)
 #else
 #define STORE_512(M, N) \
-	BLASLONG offset##M##N = (j+N)*ldc + i + (M*16); \
 	result##M##N = _mm512_mul_ps(result##M##N, alpha_512); \
-	asm("vfmadd231ps (%1, %2, 4), %3, %0": "+v"(result##M##N):"r"(&C), "r"(offset##M##N), "v"(beta_512)); \
-	_mm512_storeu_ps(&C[offset##M##N], result##M##N)
+	asm("vfmadd231ps (%1), %2, %0": "+v"(result##M##N):"r"(&C[(j+N)*ldc + i + (M*16)]), "v"(beta_512)); \
+	_mm512_storeu_ps(&C[(j+N)*ldc + i + (M*16)], result##M##N)
 #define MASK_STORE_512(M, N) \
-	BLASLONG offset##M##N = (j+N)*ldc + i + (M*16); \
 	result##M##N = _mm512_mul_ps(result##M##N, alpha_512); \
-	asm("vfmadd231ps (%1, %2, 4), %3, %0 %{%4%}": "+v"(result##M##N):"r"(&C), "r"(offset##M##N), "v"(beta_512), "k"(mask)); \
-	_mm512_mask_storeu_ps(&C[offset##M##N], mask, result##M##N)
+	asm("vfmadd231ps (%1), %2, %0 %{%3%}": "+v"(result##M##N):"r"(&C[(j+N)*ldc + i + (M*16)]), "v"(beta_512), "k"(mask)); \
+	_mm512_mask_storeu_ps(&C[(j+N)*ldc + i + (M*16)], mask, result##M##N)
 #endif
 
 #define LOAD_KA_512(M, N) __m512 Aval##M = _mm512_loadu_ps(&mbuf[(mi + M)*K + k]);
