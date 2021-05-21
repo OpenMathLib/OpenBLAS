@@ -35,11 +35,19 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define MASK_LOAD_A_512(M, N) __m512 Aval##M = _mm512_maskz_loadu_ps(mask, &A[lda * k + i + (M*16)])
 #define BROADCAST_LOAD_B_512(M, N) __m512 Bval##N = _mm512_broadcastss_ps(_mm_load_ss(&B[ldb * k + j + N]))
 #define MATMUL_512(M, N) result##M##N = _mm512_fmadd_ps(Aval##M, Bval##N, result##M##N)
+
+#define BROADCAST_LOAD_A_512(M, N) __m512 Aval##M = _mm512_broadcastss_ps(_mm_load_ss(&A[lda * k + i + M]))
+#define LOAD_B_512(M, N) __m512 Bval##N = _mm512_loadu_ps(&B[ldb * k + j + (N*16)])
+#define MASK_LOAD_B_512(M, N) __m512 Bval##N = _mm512_maskz_loadu_ps(mask, &B[ldb * k + j + (N*16)])
 #if defined(B0)
 #define STORE_512(M, N) result##M##N = _mm512_mul_ps(result##M##N, alpha_512); \
 			_mm512_storeu_ps(&C[(j+N)*ldc + i + (M*16)], result##M##N)
 #define MASK_STORE_512(M, N) result##M##N = _mm512_mul_ps(result##M##N, alpha_512); \
 			_mm512_mask_storeu_ps(&C[(j+N)*ldc + i + (M*16)], mask, result##M##N)
+#define SCATTER_STORE_512(M, N) result##M##N = _mm512_mul_ps(result##M##N, alpha_512); \
+				_mm512_i32scatter_ps(&C[(j + N*16)*ldc + i + M], vindex_n, result##M##N, 4);
+#define MASK_SCATTER_STORE_512(M, N) result##M##N = _mm512_mul_ps(result##M##N, alpha_512); \
+				_mm512_mask_i32scatter_ps(&C[(j + N*16)*ldc + i + M], mask, vindex_n, result##M##N, 4)
 #else
 #define STORE_512(M, N) \
 	result##M##N = _mm512_mul_ps(result##M##N, alpha_512); \
@@ -49,6 +57,14 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	result##M##N = _mm512_mul_ps(result##M##N, alpha_512); \
 	asm("vfmadd231ps (%1), %2, %0 %{%3%}": "+v"(result##M##N):"r"(&C[(j+N)*ldc + i + (M*16)]), "v"(beta_512), "k"(mask)); \
 	_mm512_mask_storeu_ps(&C[(j+N)*ldc + i + (M*16)], mask, result##M##N)
+#define SCATTER_STORE_512(M, N) result##M##N = _mm512_mul_ps(result##M##N, alpha_512); \
+				__m512 tmp##M##N = _mm512_i32gather_ps(vindex_n, &C[(j + N*16)*ldc + i + M], 4); \
+				result##M##N = _mm512_fmadd_ps(tmp##M##N, beta_512, result##M##N); \
+				_mm512_i32scatter_ps(&C[(j + N*16)*ldc + i + M], vindex_n, result##M##N, 4);
+#define MASK_SCATTER_STORE_512(M, N) result##M##N = _mm512_mul_ps(result##M##N, alpha_512); \
+				__m512 tmp##M##N = _mm512_mask_i32gather_ps(_mm512_setzero_ps(), mask, vindex_n, &C[(j + N*16)*ldc + i + M], 4); \
+				result##M##N = _mm512_fmadd_ps(tmp##M##N, beta_512, result##M##N); \
+				_mm512_mask_i32scatter_ps(&C[(j + N*16)*ldc + i + M], mask, vindex_n, result##M##N, 4);
 #endif
 
 #if defined(B0)
@@ -66,6 +82,8 @@ int CNAME(BLASLONG M, BLASLONG N, BLASLONG K, FLOAT * A, BLASLONG lda, FLOAT alp
 	BLASLONG m4 = M & ~3;
 	BLASLONG m2 = M & ~1;
 
+	BLASLONG n64 = N & ~63;
+	BLASLONG n32 = N & ~31;
 	BLASLONG n8 = N & ~7;
 	BLASLONG n6 = N - (N % 6);
 	BLASLONG n4 = N & ~3;
@@ -284,7 +302,7 @@ int CNAME(BLASLONG M, BLASLONG N, BLASLONG K, FLOAT * A, BLASLONG lda, FLOAT alp
 		}
 	}
 	int mm = M - i;
-	if (mm > 0) {
+	if (mm >= 12) {
 		register __mmask16 mask asm("k1") = (1UL << mm) - 1;
 		for (j = 0; j < n8; j += 8) {
 			DECLARE_RESULT_512(0, 0);
@@ -362,5 +380,156 @@ int CNAME(BLASLONG M, BLASLONG N, BLASLONG K, FLOAT * A, BLASLONG lda, FLOAT alp
 			}
 			MASK_STORE_512(0, 0);
 		}
+	} else if (mm > 0) {
+		int index_n[16];
+		for (int ii = 0; ii < 16; ii++) {
+			index_n[ii] = ii * ldc;
+		}
+		__m512i vindex_n = _mm512_loadu_epi32(index_n);
+		for (; i < m4; i += 4) {
+			for (j = 0; j < n64; j += 64) {
+				DECLARE_RESULT_512(0, 0); DECLARE_RESULT_512(1, 0); DECLARE_RESULT_512(2, 0); DECLARE_RESULT_512(3, 0);
+				DECLARE_RESULT_512(0, 1); DECLARE_RESULT_512(1, 1); DECLARE_RESULT_512(2, 1); DECLARE_RESULT_512(3, 1);
+				DECLARE_RESULT_512(0, 2); DECLARE_RESULT_512(1, 2); DECLARE_RESULT_512(2, 2); DECLARE_RESULT_512(3, 2);
+				DECLARE_RESULT_512(0, 3); DECLARE_RESULT_512(1, 3); DECLARE_RESULT_512(2, 3); DECLARE_RESULT_512(3, 3);
+				for (k = 0; k < K; k++) {
+					BROADCAST_LOAD_A_512(0, x); BROADCAST_LOAD_A_512(1, x); BROADCAST_LOAD_A_512(2, x); BROADCAST_LOAD_A_512(3, x);
+					LOAD_B_512(x, 0);
+					LOAD_B_512(x, 1);
+					LOAD_B_512(x, 2);
+					LOAD_B_512(x, 3);
+					MATMUL_512(0, 0); MATMUL_512(1, 0); MATMUL_512(2, 0); MATMUL_512(3, 0);
+					MATMUL_512(0, 1); MATMUL_512(1, 1); MATMUL_512(2, 1); MATMUL_512(3, 1);
+					MATMUL_512(0, 2); MATMUL_512(1, 2); MATMUL_512(2, 2); MATMUL_512(3, 2);
+					MATMUL_512(0, 3); MATMUL_512(1, 3); MATMUL_512(2, 3); MATMUL_512(3, 3);
+				}
+				SCATTER_STORE_512(0, 0); SCATTER_STORE_512(1, 0); SCATTER_STORE_512(2, 0); SCATTER_STORE_512(3, 0);
+				SCATTER_STORE_512(0, 1); SCATTER_STORE_512(1, 1); SCATTER_STORE_512(2, 1); SCATTER_STORE_512(3, 1);
+				SCATTER_STORE_512(0, 2); SCATTER_STORE_512(1, 2); SCATTER_STORE_512(2, 2); SCATTER_STORE_512(3, 2);
+				SCATTER_STORE_512(0, 3); SCATTER_STORE_512(1, 3); SCATTER_STORE_512(2, 3); SCATTER_STORE_512(3, 3);
+			}
+			for (; j < n32; j += 32) {
+				DECLARE_RESULT_512(0, 0); DECLARE_RESULT_512(1, 0); DECLARE_RESULT_512(2, 0); DECLARE_RESULT_512(3, 0);
+				DECLARE_RESULT_512(0, 1); DECLARE_RESULT_512(1, 1); DECLARE_RESULT_512(2, 1); DECLARE_RESULT_512(3, 1);
+				for (k = 0; k < K; k++) {
+					BROADCAST_LOAD_A_512(0, x); BROADCAST_LOAD_A_512(1, x); BROADCAST_LOAD_A_512(2, x); BROADCAST_LOAD_A_512(3, x);
+					LOAD_B_512(x, 0);
+					LOAD_B_512(x, 1);
+					MATMUL_512(0, 0); MATMUL_512(1, 0); MATMUL_512(2, 0); MATMUL_512(3, 0);
+					MATMUL_512(0, 1); MATMUL_512(1, 1); MATMUL_512(2, 1); MATMUL_512(3, 1);
+				}
+				SCATTER_STORE_512(0, 0); SCATTER_STORE_512(1, 0); SCATTER_STORE_512(2, 0); SCATTER_STORE_512(3, 0);
+				SCATTER_STORE_512(0, 1); SCATTER_STORE_512(1, 1); SCATTER_STORE_512(2, 1); SCATTER_STORE_512(3, 1);
+			}
+			__mmask16 mask = 0xffff;
+			for (; j < N; j += 16) {
+				int remains = N - j;
+				if (remains < 16) mask = (1UL << remains) - 1;
+				DECLARE_RESULT_512(0, 0); DECLARE_RESULT_512(1, 0); DECLARE_RESULT_512(2, 0); DECLARE_RESULT_512(3, 0);
+				for (k = 0; k < K; k++) {
+					BROADCAST_LOAD_A_512(0, x); BROADCAST_LOAD_A_512(1, x); BROADCAST_LOAD_A_512(2, x); BROADCAST_LOAD_A_512(3, x);
+					MASK_LOAD_B_512(x, 0);
+					MATMUL_512(0, 0); MATMUL_512(1, 0); MATMUL_512(2, 0); MATMUL_512(3, 0);
+				}
+				MASK_SCATTER_STORE_512(0, 0); MASK_SCATTER_STORE_512(1, 0); MASK_SCATTER_STORE_512(2, 0); MASK_SCATTER_STORE_512(3, 0);
+			}
+		}
+		for (; i < m2; i += 2) {
+			for (j = 0; j < n64; j += 64) {
+				DECLARE_RESULT_512(0, 0); DECLARE_RESULT_512(1, 0);
+				DECLARE_RESULT_512(0, 1); DECLARE_RESULT_512(1, 1);
+				DECLARE_RESULT_512(0, 2); DECLARE_RESULT_512(1, 2);
+				DECLARE_RESULT_512(0, 3); DECLARE_RESULT_512(1, 3);
+				for (k = 0; k < K; k++) {
+					BROADCAST_LOAD_A_512(0, x); BROADCAST_LOAD_A_512(1, x);
+					LOAD_B_512(x, 0);
+					LOAD_B_512(x, 1);
+					LOAD_B_512(x, 2);
+					LOAD_B_512(x, 3);
+					MATMUL_512(0, 0); MATMUL_512(1, 0);
+					MATMUL_512(0, 1); MATMUL_512(1, 1);
+					MATMUL_512(0, 2); MATMUL_512(1, 2);
+					MATMUL_512(0, 3); MATMUL_512(1, 3);
+				}
+				SCATTER_STORE_512(0, 0); SCATTER_STORE_512(1, 0);
+				SCATTER_STORE_512(0, 1); SCATTER_STORE_512(1, 1);
+				SCATTER_STORE_512(0, 2); SCATTER_STORE_512(1, 2);
+				SCATTER_STORE_512(0, 3); SCATTER_STORE_512(1, 3);
+			}
+			for (; j < n32; j += 32) {
+				DECLARE_RESULT_512(0, 0); DECLARE_RESULT_512(1, 0);
+				DECLARE_RESULT_512(0, 1); DECLARE_RESULT_512(1, 1);
+				for (k = 0; k < K; k++) {
+					BROADCAST_LOAD_A_512(0, x); BROADCAST_LOAD_A_512(1, x);
+					LOAD_B_512(x, 0);
+					LOAD_B_512(x, 1);
+					MATMUL_512(0, 0); MATMUL_512(1, 0);
+					MATMUL_512(0, 1); MATMUL_512(1, 1);
+				}
+				SCATTER_STORE_512(0, 0); SCATTER_STORE_512(1, 0);
+				SCATTER_STORE_512(0, 1); SCATTER_STORE_512(1, 1);
+			}
+			__mmask16 mask = 0xffff;
+			for (; j < N; j += 16) {
+				int remains = N - j;
+				if (remains < 16) mask = (1UL << remains) - 1;
+				DECLARE_RESULT_512(0, 0); DECLARE_RESULT_512(1, 0);
+				for (k = 0; k < K; k++) {
+					BROADCAST_LOAD_A_512(0, x); BROADCAST_LOAD_A_512(1, x);
+					MASK_LOAD_B_512(x, 0);
+					MATMUL_512(0, 0); MATMUL_512(1, 0);
+				}
+				MASK_SCATTER_STORE_512(0, 0); MASK_SCATTER_STORE_512(1, 0);
+			}
+		}
+		for (; i < M; i += 1) {
+			for (j = 0; j < n64; j += 64) {
+				DECLARE_RESULT_512(0, 0);
+				DECLARE_RESULT_512(0, 1);
+				DECLARE_RESULT_512(0, 2);
+				DECLARE_RESULT_512(0, 3);
+				for (k = 0; k < K; k++) {
+					BROADCAST_LOAD_A_512(0, x);
+					LOAD_B_512(x, 0);
+					LOAD_B_512(x, 1);
+					LOAD_B_512(x, 2);
+					LOAD_B_512(x, 3);
+					MATMUL_512(0, 0);
+					MATMUL_512(0, 1);
+					MATMUL_512(0, 2);
+					MATMUL_512(0, 3);
+				}
+				SCATTER_STORE_512(0, 0);
+				SCATTER_STORE_512(0, 1);
+				SCATTER_STORE_512(0, 2);
+				SCATTER_STORE_512(0, 3);
+			}
+			for (; j < n32; j += 32) {
+				DECLARE_RESULT_512(0, 0);
+				DECLARE_RESULT_512(0, 1);
+				for (k = 0; k < K; k++) {
+					BROADCAST_LOAD_A_512(0, x);
+					LOAD_B_512(x, 0);
+					LOAD_B_512(x, 1);
+					MATMUL_512(0, 0);
+					MATMUL_512(0, 1);
+				}
+				SCATTER_STORE_512(0, 0);
+				SCATTER_STORE_512(0, 1);
+			}
+			__mmask16 mask = 0xffff;
+			for (; j < N; j += 16) {
+				int remains = N - j;
+				if (remains < 16) mask = (1UL << remains) - 1;
+				DECLARE_RESULT_512(0, 0);
+				for (k = 0; k < K; k++) {
+					BROADCAST_LOAD_A_512(0, x);
+					MASK_LOAD_B_512(x, 0);
+					MATMUL_512(0, 0);
+				}
+				MASK_SCATTER_STORE_512(0, 0);
+			}
+		}
 	}
+	return 0;
 }
