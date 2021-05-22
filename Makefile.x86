@@ -1,6 +1,6 @@
 # COMPILER_PREFIX = mingw32-
 
-ifndef DYNAMIC_ARCH
+ifneq ($(DYNAMIC_ARCH),1)
 ADD_CPUFLAGS = 1
 else
 ifdef TARGET_CORE
