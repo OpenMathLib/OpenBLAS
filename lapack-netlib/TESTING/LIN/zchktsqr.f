@@ -159,6 +159,8 @@
 *
 *     Test the error exits
 *
+      CALL XLAENV( 1, 0 )
+      CALL XLAENV( 2, 0 ) 
       IF( TSTERR ) CALL ZERRTSQR( PATH, NOUT )
       INFOT = 0
 *
