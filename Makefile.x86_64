@@ -36,14 +36,6 @@ ifneq ($(F_COMPILER), NAG)
 FCOMMON_OPT += -msse4.1
 endif
 endif
-ifndef OLDGCC
-ifdef HAVE_AVX
-CCOMMON_OPT += -mavx
-ifneq ($(F_COMPILER), NAG)
-FCOMMON_OPT += -mavx
-endif
-endif
-endif
 ifndef NO_AVX2
 ifdef HAVE_AVX2
 CCOMMON_OPT += -mavx2
