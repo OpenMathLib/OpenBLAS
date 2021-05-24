@@ -222,7 +222,7 @@ matrix:
     - <<: *test-macos
       osx_image: xcode12
       before_script:
-        - COMMON_FLAGS="DYNAMIC_ARCH=1 DYNAMIC_LIST='NEHALEM HASWELL' NUM_THREADS=32"
+        - COMMON_FLAGS="DYNAMIC_ARCH=1 DYNAMIC_LIST=HASWELL NUM_THREADS=32"
         - brew update
       script:
         - travis_wait 45 make QUIET_MAKE=1 $COMMON_FLAGS $BTYPE
@@ -279,15 +279,15 @@ matrix:
       script:
         - travis_wait 45 make && make lapack-test
         - pip install numpy
-        - echo -e "import numpy as np\nvalues = [-20, 2, 3, 4, 5, 4, 3, 2]\n \
-          values = values[int(non_zero[0]):int(np.non_zero[-1])+1]\n \
-          _, e = np.frexp(values[::-1])\n \
-          c = int(-0.5 * (np.max(e) + np.min(e)))\n \
-          p = values[::-1]\n \
-          p = np.ldexp(p, c)\n \
-          A = np.diag(np.full(p.size - 2, p[0]), k=-1)\n \
-          A[0,:] = -p[1:]\n \
-          eigenvalues = np.linalg.eigvals(A)\n \
+        - echo -e "import numpy as np\nvalues = [-20, 2, 3, 4, 5, 4, 3, 2]\n\
+          values = values[int(non_zero[0]):int(np.non_zero[-1])+1]\n\
+          _, e = np.frexp(values[::-1])\n\
+          c = int(-0.5 * (np.max(e) + np.min(e)))\n\
+          p = values[::-1]\n\
+          p = np.ldexp(p, c)\n\
+          A = np.diag(np.full(p.size - 2, p[0]), k=-1)\n\
+          A[0,:] = -p[1:]\n\
+          eigenvalues = np.linalg.eigvals(A)\n\
           print(eigenvalues)\n" >linalgtest.py
         - python3 linalgtest.py
 # whitelist
