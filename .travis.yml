@@ -279,7 +279,7 @@ matrix:
       script:
         - travis_wait 45 make && make lapack-test
         - pip install numpy
-        - echo -e "import numpy as np\nvalues = [-20, 2, 3, 4, 5, 4, 3, 2]\nvalues = values[int(non_zero[0]):int(np.non_zero[-1])+1]\n_, e = np.frexp(values[::-1])\nc = int(-0.5 * (np.max(e) + np.min(e)))\np = values[::-1]\np = np.ldexp(p, c)\nA = np.diag(np.full(p.size - 2, p[0]), k=-1)\nA[0,:] = -p[1:]\neigenvalues = np.linalg.eigvals(A)\nprint(eigenvalues)\n" >linalgtest.py
+        - echo -e "import numpy as np\nvalues = [-20, 2, 3, 4, 5, 4, 3, 2]\nvalues = values[int(np.non_zero[0]):int(np.non_zero[-1])+1]\n_, e = np.frexp(values[::-1])\nc = int(-0.5 * (np.max(e) + np.min(e)))\np = values[::-1]\np = np.ldexp(p, c)\nA = np.diag(np.full(p.size - 2, p[0]), k=-1)\nA[0,:] = -p[1:]\neigenvalues = np.linalg.eigvals(A)\nprint(eigenvalues)\n" >linalgtest.py
         - python3 linalgtest.py
 # whitelist
 branches:
