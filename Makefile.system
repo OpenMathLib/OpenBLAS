@@ -381,7 +381,7 @@ EXTRALIB	+= -lm
 endif
 
 ifeq ($(OSNAME), FreeBSD)
-ifeq ($(ARCH), $(filter ($ARCH),arm arm64))
+ifeq ($(ARCH), $(filter $(ARCH),arm arm64))
 EXTRALIB	+= -lm
 endif
 endif
