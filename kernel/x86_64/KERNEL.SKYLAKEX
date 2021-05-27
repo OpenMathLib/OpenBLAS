@@ -10,6 +10,7 @@ STRSMKERNEL_LN =  ../generic/trsm_kernel_LN.c
 STRSMKERNEL_LT =  ../generic/trsm_kernel_LT.c
 STRSMKERNEL_RN =  ../generic/trsm_kernel_RN.c
 STRSMKERNEL_RT =  ../generic/trsm_kernel_RT.c
+SGEMM_SMALL_M_PERMIT = sgemm_small_kernel_permit_skylakex.c
 SGEMM_SMALL_K_NN = sgemm_small_kernel_nn_skylakex.c
 SGEMM_SMALL_K_B0_NN = sgemm_small_kernel_b0_nn_skylakex.c
 SGEMM_SMALL_K_NT = sgemm_small_kernel_nt_skylakex.c
