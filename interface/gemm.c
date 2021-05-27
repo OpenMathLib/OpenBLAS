@@ -461,24 +461,25 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_TRANSPOSE TransA, enum CBLAS_TRANS
 #endif
 
 #ifdef SMALL_MATRIX_OPT
-  //need to tune small matrices cases.
-  if(MNK <= 100.0*100.0*100.0){
-	  
 #if !defined(COMPLEX)
+  if(GEMM_SMALL_MATRIX_PERMIT(transa, transb, args.m, args.n, args.k, *(FLOAT *)(args.alpha), *(FLOAT *)(args.beta))){
 	  if(*(FLOAT *)(args.beta) == 0.0){
 		  (gemm_small_kernel_b0[(transb << 2) | transa])(args.m, args.n, args.k, args.a, args.lda, *(FLOAT *)(args.alpha), args.b, args.ldb, args.c, args.ldc);
 	  }else{
 		  (gemm_small_kernel[(transb << 2) | transa])(args.m, args.n, args.k, args.a, args.lda, *(FLOAT *)(args.alpha), args.b, args.ldb, *(FLOAT *)(args.beta), args.c, args.ldc);
 	  }
+	  return;
+  }
 #else
+  if(GEMM_SMALL_MATRIX_PERMIT(transa, transb, args.m, args.n, args.k, alpha[0], alpha[1], beta[0], beta[1])){
 	  if(beta[0] == 0.0 && beta[1] == 0.0){
 		  (zgemm_small_kernel_b0[(transb << 2) | transa])(args.m, args.n, args.k, args.a, args.lda, alpha[0], alpha[1], args.b, args.ldb, args.c, args.ldc);
 	  }else{
 		  (zgemm_small_kernel[(transb << 2) | transa])(args.m, args.n, args.k, args.a, args.lda, alpha[0], alpha[1], args.b, args.ldb, beta[0], beta[1], args.c, args.ldc);
 	  }
-#endif	  
 	  return;
   }
+#endif
 #endif
   
 

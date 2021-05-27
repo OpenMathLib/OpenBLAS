@@ -409,18 +409,21 @@ endif
 ifeq ($(SMALL_MATRIX_OPT), 1)
 
 SBLASOBJS += \
+	sgemm_small_matrix_permit$(TSUFFIX).$(SUFFIX) \
 	sgemm_small_kernel_nn$(TSUFFIX).$(SUFFIX) sgemm_small_kernel_nt$(TSUFFIX).$(SUFFIX) \
 	sgemm_small_kernel_tn$(TSUFFIX).$(SUFFIX) sgemm_small_kernel_tt$(TSUFFIX).$(SUFFIX) \
 	sgemm_small_kernel_b0_nn$(TSUFFIX).$(SUFFIX) sgemm_small_kernel_b0_nt$(TSUFFIX).$(SUFFIX) \
 	sgemm_small_kernel_b0_tn$(TSUFFIX).$(SUFFIX) sgemm_small_kernel_b0_tt$(TSUFFIX).$(SUFFIX)
 
 DBLASOBJS += \
+	dgemm_small_matrix_permit$(TSUFFIX).$(SUFFIX) \
 	dgemm_small_kernel_nn$(TSUFFIX).$(SUFFIX) dgemm_small_kernel_nt$(TSUFFIX).$(SUFFIX) \
 	dgemm_small_kernel_tn$(TSUFFIX).$(SUFFIX) dgemm_small_kernel_tt$(TSUFFIX).$(SUFFIX) \
 	dgemm_small_kernel_b0_nn$(TSUFFIX).$(SUFFIX) dgemm_small_kernel_b0_nt$(TSUFFIX).$(SUFFIX) \
 	dgemm_small_kernel_b0_tn$(TSUFFIX).$(SUFFIX) dgemm_small_kernel_b0_tt$(TSUFFIX).$(SUFFIX)
 
 CBLASOBJS += \
+	cgemm_small_matrix_permit$(TSUFFIX).$(SUFFIX) \
 	cgemm_small_kernel_nn$(TSUFFIX).$(SUFFIX) cgemm_small_kernel_nt$(TSUFFIX).$(SUFFIX) \
 	cgemm_small_kernel_nr$(TSUFFIX).$(SUFFIX) cgemm_small_kernel_nc$(TSUFFIX).$(SUFFIX) \
 	cgemm_small_kernel_tn$(TSUFFIX).$(SUFFIX) cgemm_small_kernel_tt$(TSUFFIX).$(SUFFIX) \
@@ -439,6 +442,7 @@ CBLASOBJS += \
 	cgemm_small_kernel_b0_cr$(TSUFFIX).$(SUFFIX) cgemm_small_kernel_b0_cc$(TSUFFIX).$(SUFFIX)
 
 ZBLASOBJS += \
+	zgemm_small_matrix_permit$(TSUFFIX).$(SUFFIX) \
 	zgemm_small_kernel_nn$(TSUFFIX).$(SUFFIX) zgemm_small_kernel_nt$(TSUFFIX).$(SUFFIX) \
 	zgemm_small_kernel_nr$(TSUFFIX).$(SUFFIX) zgemm_small_kernel_nc$(TSUFFIX).$(SUFFIX) \
 	zgemm_small_kernel_tn$(TSUFFIX).$(SUFFIX) zgemm_small_kernel_tt$(TSUFFIX).$(SUFFIX) \
@@ -4194,6 +4198,10 @@ $(KDIR)zgeadd_k$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(ZGEADD_K)
 
 ######  BLAS small matrix optimization #####
 
+ifndef DGEMM_SMALL_M_PERMIT
+DGEMM_SMALL_M_PERMIT = ../generic/gemm_small_matrix_permit.c
+endif
+
 ifndef DGEMM_SMALL_K_NN
 DGEMM_SMALL_K_NN = ../generic/gemm_small_matrix_kernel_nn.c
 endif
@@ -4209,6 +4217,9 @@ endif
 ifndef DGEMM_SMALL_K_TT
 DGEMM_SMALL_K_TT = ../generic/gemm_small_matrix_kernel_tt.c
 endif
+
+$(KDIR)dgemm_small_matrix_permit$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(DGEMM_SMALL_M_PERMIT)
+	$(CC) $(CFLAGS) -c -DDOUBLE -UCOMPLEX $< -o $@
 
 $(KDIR)dgemm_small_kernel_nn$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(DGEMM_SMALL_K_NN)
 	$(CC) $(CFLAGS) -c -DDOUBLE -UCOMPLEX $< -o $@
@@ -4250,6 +4261,9 @@ $(KDIR)dgemm_small_kernel_b0_tn$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(DGEMM_SMALL
 $(KDIR)dgemm_small_kernel_b0_tt$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(DGEMM_SMALL_K_B0_TT)
 	$(CC) $(CFLAGS) -c -DDOUBLE -UCOMPLEX $< -o $@
 
+ifndef SGEMM_SMALL_M_PERMIT
+SGEMM_SMALL_M_PERMIT = ../generic/gemm_small_matrix_permit.c
+endif
 
 ifndef SGEMM_SMALL_K_NN
 SGEMM_SMALL_K_NN = ../generic/gemm_small_matrix_kernel_nn.c
@@ -4266,6 +4280,9 @@ endif
 ifndef SGEMM_SMALL_K_TT
 SGEMM_SMALL_K_TT = ../generic/gemm_small_matrix_kernel_tt.c
 endif
+
+$(KDIR)sgemm_small_matrix_permit$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(SGEMM_SMALL_M_PERMIT)
+	$(CC) $(CFLAGS) -c -UDOUBLE -UCOMPLEX $< -o $@
 
 $(KDIR)sgemm_small_kernel_nn$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(SGEMM_SMALL_K_NN)
 	$(CC) $(CFLAGS) -c -UDOUBLE -UCOMPLEX $< -o $@
@@ -4307,6 +4324,9 @@ $(KDIR)sgemm_small_kernel_b0_tn$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(SGEMM_SMALL
 $(KDIR)sgemm_small_kernel_b0_tt$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(SGEMM_SMALL_K_B0_TT)
 	$(CC) $(CFLAGS) -c -UDOUBLE -UCOMPLEX $< -o $@
 
+ifndef CGEMM_SMALL_M_PERMIT
+CGEMM_SMALL_M_PERMIT = ../generic/zgemm_small_matrix_permit.c
+endif
 
 ifndef CGEMM_SMALL_K_NN
 CGEMM_SMALL_K_NN = ../generic/zgemm_small_matrix_kernel_nn.c
@@ -4323,6 +4343,9 @@ endif
 ifndef CGEMM_SMALL_K_TT
 CGEMM_SMALL_K_TT = ../generic/zgemm_small_matrix_kernel_tt.c
 endif
+
+$(KDIR)cgemm_small_matrix_permit$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(CGEMM_SMALL_M_PERMIT)
+	$(CC) $(CFLAGS) -c -UDOUBLE -DCOMPLEX $< -o $@
 
 $(KDIR)cgemm_small_kernel_nn$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(CGEMM_SMALL_K_NN)
 	$(CC) $(CFLAGS) -c -UDOUBLE -DCOMPLEX -DNN $< -o $@
@@ -4436,6 +4459,10 @@ $(KDIR)cgemm_small_kernel_b0_ct$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(CGEMM_SMALL
 $(KDIR)cgemm_small_kernel_b0_cc$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(CGEMM_SMALL_K_B0_TT)
 	$(CC) $(CFLAGS) -c -UDOUBLE -DCOMPLEX -DCC $< -o $@
 
+ifndef ZGEMM_SMALL_M_PERMIT
+ZGEMM_SMALL_M_PERMIT = ../generic/zgemm_small_matrix_permit.c
+endif
+
 ifndef ZGEMM_SMALL_K_NN
 ZGEMM_SMALL_K_NN = ../generic/zgemm_small_matrix_kernel_nn.c
 endif
@@ -4451,6 +4478,10 @@ endif
 ifndef ZGEMM_SMALL_K_TT
 ZGEMM_SMALL_K_TT = ../generic/zgemm_small_matrix_kernel_tt.c
 endif
+
+$(KDIR)zgemm_small_matrix_permit$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(ZGEMM_SMALL_M_PERMIT)
+	$(CC) $(CFLAGS) -c -DDOUBLE -DCOMPLEX $< -o $@
+
 
 $(KDIR)zgemm_small_kernel_nn$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(ZGEMM_SMALL_K_NN)
 	$(CC) $(CFLAGS) -c -DDOUBLE -DCOMPLEX -DNN $< -o $@
