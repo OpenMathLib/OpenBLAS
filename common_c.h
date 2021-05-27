@@ -232,6 +232,8 @@
 
 #define CGEADD_K                cgeadd_k 
 
+#define CGEMM_SMALL_MATRIX_PERMIT	cgemm_small_matrix_permit
+
 #define CGEMM_SMALL_KERNEL_NN   cgemm_small_kernel_nn
 #define CGEMM_SMALL_KERNEL_NT   cgemm_small_kernel_nt
 #define CGEMM_SMALL_KERNEL_NR   cgemm_small_kernel_nr

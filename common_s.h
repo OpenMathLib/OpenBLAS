@@ -164,6 +164,8 @@
 
 #define SGEADD_K                sgeadd_k 
 
+#define SGEMM_SMALL_MATRIX_PERMIT	sgemm_small_matrix_permit
+
 #define SGEMM_SMALL_KERNEL_NN   sgemm_small_kernel_nn
 #define SGEMM_SMALL_KERNEL_NT   sgemm_small_kernel_nt
 #define SGEMM_SMALL_KERNEL_TN   sgemm_small_kernel_tn

@@ -232,6 +232,8 @@
 
 #define ZGEADD_K                zgeadd_k 
 
+#define ZGEMM_SMALL_MATRIX_PERMIT	zgemm_small_matrix_permit
+
 #define ZGEMM_SMALL_KERNEL_NN   zgemm_small_kernel_nn
 #define ZGEMM_SMALL_KERNEL_NT   zgemm_small_kernel_nt
 #define ZGEMM_SMALL_KERNEL_NR   zgemm_small_kernel_nr
