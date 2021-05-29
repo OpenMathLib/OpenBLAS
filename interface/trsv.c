@@ -188,6 +188,12 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_UPLO Uplo,
 
   if (n == 0) return;
 
+  if (incx == 1 && trans == 0 && n < 50) {
+    buffer = NULL;
+    (trsv[(trans<<2) | (uplo<<1) | unit])(n, a, lda, x, incx, buffer);
+    return;  
+  }
+
   IDEBUG_START;
 
   FUNCTION_PROFILE_START();
