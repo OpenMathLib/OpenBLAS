@@ -170,10 +170,6 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_UPLO Uplo, blasint n, FLOAT alpha,
 
   if (alpha == ZERO) return;
 
-  if (incx == 1 && incy == 1 && n*n < 2304 *GEMM_MULTITHREAD_THRESHOLD) {
-    (symv[uplo])(n, n, alpha, a, lda, x, incx, y, incy, buffer);
-    return;
-  }
   IDEBUG_START;
 
   FUNCTION_PROFILE_START();
