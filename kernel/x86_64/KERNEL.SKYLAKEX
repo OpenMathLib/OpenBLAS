@@ -17,6 +17,8 @@ SGEMM_SMALL_K_NT = sgemm_small_kernel_nt_skylakex.c
 SGEMM_SMALL_K_B0_NT = sgemm_small_kernel_b0_nt_skylakex.c
 SGEMM_SMALL_K_TN = sgemm_small_kernel_tn_skylakex.c
 SGEMM_SMALL_K_B0_TN = sgemm_small_kernel_b0_tn_skylakex.c
+SGEMM_SMALL_K_TT = sgemm_small_kernel_tt_skylakex.c
+SGEMM_SMALL_K_B0_TT = sgemm_small_kernel_b0_tt_skylakex.c
 
 DGEMMKERNEL    =  dgemm_kernel_16x2_skylakex.c
 DTRMMKERNEL    =  dgemm_kernel_16x2_skylakex.c
