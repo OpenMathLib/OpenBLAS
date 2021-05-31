@@ -35,8 +35,11 @@ int CNAME(int transa, int transb, BLASLONG M, BLASLONG N, BLASLONG K, FLOAT alph
 	// tuning for A transpose
 	if (transa) {
 		if (transb) {
-			return 0;  // TT kernel not support yet
-		} else {  // TN kernel
+			/* TT kernel perform not good when:
+			 * 1. K is too small.
+			 */
+			if (K < 4) return 0;
+		} else {
 			/* TN kernel perform not good when:
 			 * 1. C matrix is too big
 			 * 2. K is too small
