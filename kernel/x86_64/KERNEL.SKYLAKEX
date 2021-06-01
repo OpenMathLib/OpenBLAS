@@ -27,6 +27,8 @@ DGEMMITCOPY    =  dgemm_tcopy_16_skylakex.c
 DGEMMONCOPY    =  ../generic/gemm_ncopy_2.c
 DGEMMOTCOPY    =  ../generic/gemm_tcopy_2.c
 DTRSMKERNEL_RN =  ../generic/trsm_kernel_RN.c
+DGEMM_SMALL_K_NN = dgemm_small_kernel_nn_skylakex.c
+DGEMM_SMALL_K_B0_NN = dgemm_small_kernel_b0_nn_skylakex.c
 
 SGEMM_BETA = sgemm_beta_skylakex.c
 DGEMM_BETA = dgemm_beta_skylakex.c
