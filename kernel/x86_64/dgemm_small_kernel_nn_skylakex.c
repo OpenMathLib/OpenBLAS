@@ -372,8 +372,8 @@ int CNAME(BLASLONG M, BLASLONG N, BLASLONG K, FLOAT * A, BLASLONG lda, FLOAT alp
 			0, 1, 0|8, 1|8, 4, 5, 4|8, 5|8,
 			2, 3, 2|8, 3|8, 6, 7, 6|8, 7|8,
 		};
-		__m512i idx_lo = _mm512_loadu_epi32(permute_table);
-		__m512i idx_hi = _mm512_loadu_epi32(permute_table + 8);
+		__m512i idx_lo = _mm512_loadu_epi64(permute_table);
+		__m512i idx_hi = _mm512_loadu_epi64(permute_table + 8);
 		for (; i < m4; i += 4, mi += 4) {
 			for (j = 0; j < n4; j += 4) {
 				DECLARE_RESULT_512(0, 0); DECLARE_RESULT_512(1, 0); DECLARE_RESULT_512(2, 0); DECLARE_RESULT_512(3, 0);
