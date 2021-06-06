@@ -43,11 +43,6 @@ jobs:
       - name: Update Homebrew
         if: github.event_name != 'pull_request'
         run: brew update || true
-
-      - name: unlink installed gcc to allow updating
-        run: |
-          brew unlink gcc@8
-          brew unlink gcc@9
           
       - name: Install prerequisites
         run: brew install --fetch-HEAD --HEAD --only-dependencies --keep-tmp openblas
