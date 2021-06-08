@@ -183,13 +183,23 @@ steps:
   commands:
     - echo "MAKE_FLAGS:= $COMMON_FLAGS"
     - apt-get update -y
-    - apt-get install -y make $CC gfortran perl python g++
+    - apt-get install -y make $CC gfortran perl python g++ cmake
     - $CC --version
+    - pwd
     - make QUIET_MAKE=1 $COMMON_FLAGS
     - make -C test $COMMON_FLAGS
     - make -C ctest $COMMON_FLAGS
     - make -C utest $COMMON_FLAGS
-    - make -C cpp_thread_test dgemm_tester
+    - wget https://github.com/DrTimothyAldenDavis/SuiteSparse/release/tags/v5.10.1.tar.gz
+    - tar zvxf v5.10.1.tar.gz
+    - cd SuiteSparse-5.10.1
+    - make BLAS="-L ~/OpenBLAS-0.3.15.dev -lopenblas" LAPACK="-L ~/OpenBLAS-0.3.15.dev -lopenblas"
+    - cd CHOLMOD/Demo
+    - export LD_LIBRARY_PATH=~/OpenBLAS-0.3.15.dev
+    - ldd ./cholmod_l_demo
+    - wget https://suitesparse-collection-website.herokuapp.com/MM/ND/nd6k.tar.gz
+    - tar zxvf nd6k.tar.gz
+    - ./cholmod_l_demo <nd6k/nd6k.mtx
 ---
 kind: pipeline
 name: arm64_gcc10
