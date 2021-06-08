@@ -54,6 +54,7 @@ SDOTKERNEL   = ../riscv64/dot.c
 DDOTKERNEL   = ../riscv64/dot.c
 CDOTKERNEL   = ../riscv64/zdot.c
 ZDOTKERNEL   = ../riscv64/zdot.c
+DSDOTKERNEL  = ../generic/dot.c
 
 SNRM2KERNEL  = ../riscv64/nrm2.c
 DNRM2KERNEL  = ../riscv64/nrm2.c

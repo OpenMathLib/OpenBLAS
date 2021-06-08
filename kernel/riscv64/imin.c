@@ -53,7 +53,7 @@ BLASLONG CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x)
 
 	while(i < n)
 	{
-		if( x[ix] > minf )
+		if( x[ix] < minf )
 		{
 			min = i;
 			minf = x[ix];
