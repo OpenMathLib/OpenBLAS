@@ -200,6 +200,12 @@ steps:
     - wget https://suitesparse-collection-website.herokuapp.com/MM/ND/nd6k.tar.gz
     - tar zxvf nd6k.tar.gz
     - LD_LIBRARY_PATH=/drone/src ./cholmod_l_demo <nd6k/nd6k.mtx
+    - wget https://github.com/xianyi/OpenBLAS/archive/refs/tags/v0.3.5.tar.gz
+    - tar zxvf v0.3.5.tar.gz
+    - cd OpenBLAS-0.3.5
+    - make QUIET_MAKE=1 $COMMON_FLAGS
+    - cd ..
+    - LD_LIBRARY_PATH=OpenBLAS-0.3.5 ./cholmod_l_demo <nd6k/nd6k.mtx
 ---
 kind: pipeline
 name: arm64_gcc10
@@ -218,9 +224,18 @@ steps:
   commands:
     - echo "MAKE_FLAGS:= $COMMON_FLAGS"
     - apt-get update -y
-    - apt-get install -y make $CC gfortran-10 perl python g++
+    - apt-get install -y make $CC gfortran-10 perl python g++  cmake wget libgmp-dev libmpfr-dev
     - $CC --version
     - make QUIET_MAKE=1 $COMMON_FLAGS
     - make -C utest $COMMON_FLAGS
     - make -C test $COMMON_FLAGS
-    
+        - wget https://github.com/DrTimothyAldenDavis/SuiteSparse/archive/refs/tags/v5.10.1.tar.gz
+    - tar zvxf v5.10.1.tar.gz
+    - cd SuiteSparse-5.10.1
+    - export LD_LIBRARY_PATH=/drone/src
+    - make BLAS="-L /drone/src -lopenblas" LAPACK="-L /drone/src -lopenblas"
+    - cd CHOLMOD/Demo
+    - ldd ./cholmod_l_demo
+    - wget https://suitesparse-collection-website.herokuapp.com/MM/ND/nd6k.tar.gz
+    - tar zxvf nd6k.tar.gz
+    - LD_LIBRARY_PATH=/drone/src ./cholmod_l_demo <nd6k/nd6k.mtx
