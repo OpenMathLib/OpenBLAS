@@ -190,7 +190,7 @@ steps:
     - make -C test $COMMON_FLAGS
     - make -C ctest $COMMON_FLAGS
     - make -C utest $COMMON_FLAGS
-    - wget https://github.com/DrTimothyAldenDavis/SuiteSparse/release/tags/v5.10.1.tar.gz
+    - wget https://github.com/DrTimothyAldenDavis/SuiteSparse/archive/refs/tags/v5.10.1.tar.gz
     - tar zvxf v5.10.1.tar.gz
     - cd SuiteSparse-5.10.1
     - make BLAS="-L ~/OpenBLAS-0.3.15.dev -lopenblas" LAPACK="-L ~/OpenBLAS-0.3.15.dev -lopenblas"
