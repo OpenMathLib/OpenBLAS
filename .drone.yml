@@ -218,6 +218,7 @@ steps:
 - name: Build and Test
   image: ubuntu:20.04
   environment:
+    DEBIAN_FRONTEND: noninteractive
     CC: gcc-10
     FC: gfortran-10
     COMMON_FLAGS: 'TARGET=ARMV8 DYNAMIC_ARCH=1'
