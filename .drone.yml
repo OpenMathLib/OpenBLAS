@@ -183,7 +183,7 @@ steps:
   commands:
     - echo "MAKE_FLAGS:= $COMMON_FLAGS"
     - apt-get update -y
-    - apt-get install -y make $CC gfortran perl python g++ cmake wget
+    - apt-get install -y make $CC gfortran perl python g++ cmake wget libgmp-dev
     - $CC --version
     - pwd
     - make QUIET_MAKE=1 $COMMON_FLAGS
