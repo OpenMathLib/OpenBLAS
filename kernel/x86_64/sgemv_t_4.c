@@ -34,8 +34,11 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "sgemv_t_microk_bulldozer-4.c"
 #elif defined(SANDYBRIDGE)
 #include "sgemv_t_microk_sandy-4.c"
-#elif defined(HASWELL) || defined(ZEN) || defined (SKYLAKEX) || defined (COOPERLAKE)
+#elif defined(HASWELL) || defined(ZEN)
 #include "sgemv_t_microk_haswell-4.c"
+#elif defined (SKYLAKEX) || defined (COOPERLAKE)
+#include "sgemv_t_microk_haswell-4.c"
+#include "sgemv_t_microk_skylakex.c"
 #endif
 
 #if defined(STEAMROLLER) || defined(EXCAVATOR)
@@ -304,6 +307,37 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1, FLOAT alpha, FLOAT *a, BLASLO
 
         if ( m < 1 ) return(0);
         if ( n < 1 ) return(0);
+
+	#ifdef HAVE_SGEMV_T_SKYLAKE_KERNEL
+    if (lda == m && n <= 16384 && m <= 8)
+    {
+        FLOAT * xbuffer_align = x;
+        FLOAT * ybuffer_align = y;
+
+        if (inc_x != 1) {
+            xbuffer_align = buffer;
+            for(BLASLONG i=0; i<m; i++) {
+                 xbuffer_align[i] = x[i*inc_x];
+            }
+        }
+
+        if (inc_y != 1) {
+            ybuffer_align = buffer + m;
+            for(BLASLONG i=0; i<n; i++) {
+                ybuffer_align[i] = y[i*inc_y];
+            }
+        }
+        sgemv_kernel_t(m, n , alpha, a, xbuffer_align, ybuffer_align);
+
+        if(inc_y != 1) {
+            for(BLASLONG i=0; i<n; i++) {
+                   y[i*inc_y] = ybuffer_align[i];
+            }
+        }
+        return(0);
+    }
+
+    #endif
 
 	xbuffer = buffer;
 	ytemp   = buffer + (m < NBMAX ? m : NBMAX);
