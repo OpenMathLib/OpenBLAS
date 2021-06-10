@@ -230,7 +230,7 @@ steps:
     - make QUIET_MAKE=1 $COMMON_FLAGS
     - make -C utest $COMMON_FLAGS
     - make -C test $COMMON_FLAGS
-        - wget https://github.com/DrTimothyAldenDavis/SuiteSparse/archive/refs/tags/v5.10.1.tar.gz
+    - wget https://github.com/DrTimothyAldenDavis/SuiteSparse/archive/refs/tags/v5.10.1.tar.gz
     - tar zvxf v5.10.1.tar.gz
     - cd SuiteSparse-5.10.1
     - export LD_LIBRARY_PATH=/drone/src
