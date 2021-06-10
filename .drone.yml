@@ -159,13 +159,22 @@ steps:
   commands:
     - echo "MAKE_FLAGS:= $COMMON_FLAGS"
     - apt-get update -y
-    - apt-get install -y make $CC gfortran perl python g++
+    - apt-get install -y make $CC gfortran perl python g++  cmake wget libgmp-dev libmpfr-dev
     - $CC --version
     - make QUIET_MAKE=1 $COMMON_FLAGS
     - make -C test $COMMON_FLAGS
     - make -C ctest $COMMON_FLAGS
     - make -C utest $COMMON_FLAGS
-    - make -C cpp_thread_test dgemm_tester
+    - wget https://github.com/DrTimothyAldenDavis/SuiteSparse/archive/refs/tags/v5.10.1.tar.gz
+    - tar zvxf v5.10.1.tar.gz
+    - cd SuiteSparse-5.10.1
+    - export LD_LIBRARY_PATH=/drone/src
+    - make BLAS="-L /drone/src -lopenblas" LAPACK="-L /drone/src -lopenblas"
+    - cd CHOLMOD/Demo
+    - ldd ./cholmod_l_demo
+    - wget https://suitesparse-collection-website.herokuapp.com/MM/ND/nd6k.tar.gz
+    - tar zxvf nd6k.tar.gz
+    - LD_LIBRARY_PATH=/drone/src ./cholmod_l_demo <nd6k/nd6k.mtx
 ---
 kind: pipeline
 name: epyc_native_test
@@ -225,18 +234,9 @@ steps:
   commands:
     - echo "MAKE_FLAGS:= $COMMON_FLAGS"
     - apt-get update -y
-    - apt-get install -y make $CC gfortran-10 perl python g++  cmake wget libgmp-dev libmpfr-dev
+    - apt-get install -y make $CC gfortran-10 perl python g++ 
     - $CC --version
     - make QUIET_MAKE=1 $COMMON_FLAGS
     - make -C utest $COMMON_FLAGS
     - make -C test $COMMON_FLAGS
-    - wget https://github.com/DrTimothyAldenDavis/SuiteSparse/archive/refs/tags/v5.10.1.tar.gz
-    - tar zvxf v5.10.1.tar.gz
-    - cd SuiteSparse-5.10.1
-    - export LD_LIBRARY_PATH=/drone/src
-    - make BLAS="-L /drone/src -lopenblas" LAPACK="-L /drone/src -lopenblas"
-    - cd CHOLMOD/Demo
-    - ldd ./cholmod_l_demo
-    - wget https://suitesparse-collection-website.herokuapp.com/MM/ND/nd6k.tar.gz
-    - tar zxvf nd6k.tar.gz
-    - LD_LIBRARY_PATH=/drone/src ./cholmod_l_demo <nd6k/nd6k.mtx
+    
