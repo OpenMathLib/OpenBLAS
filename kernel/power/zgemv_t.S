@@ -129,6 +129,11 @@
 #define PREFETCHSIZE_C  16
 #endif
 
+#ifdef POWER3
+#define PREFETCHSIZE_A  34
+#define PREFETCHSIZE_C  16
+#endif
+
 #ifdef POWER4
 #define PREFETCHSIZE_A  34
 #define PREFETCHSIZE_C  16
