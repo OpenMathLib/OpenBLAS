@@ -211,13 +211,13 @@ steps:
     - tar zxvf nd6k.tar.gz
     - LD_LIBRARY_PATH=/drone/src ./cholmod_l_demo <nd6k/nd6k.mtx
     - LD_LIBRARY_PATH=/drone/src OMP_NUM_THREADS=1 ./cholmod_l_demo <nd6k/nd6k.mtx
-    - wget https://github.com/xianyi/OpenBLAS/archive/refs/tags/v0.3.8.tar.gz
-    - tar zxvf v0.3.8.tar.gz
-    - cd OpenBLAS-0.3.8
+    - wget https://github.com/xianyi/OpenBLAS/archive/refs/tags/v0.3.7.tar.gz
+    - tar zxvf v0.3.7.tar.gz
+    - cd OpenBLAS-0.3.7
     - make QUIET_MAKE=1 $COMMON_FLAGS
     - cd ..
-    - LD_LIBRARY_PATH=OpenBLAS-0.3.8 ./cholmod_l_demo <nd6k/nd6k.mtx
-    - LD_LIBRARY_PATH=OpenBLAS-0.3.8 OMP_NUM_THREADS=1 ./cholmod_l_demo <nd6k/nd6k.mtx
+    - LD_LIBRARY_PATH=OpenBLAS-0.3.7 ./cholmod_l_demo <nd6k/nd6k.mtx
+    - LD_LIBRARY_PATH=OpenBLAS-0.3.7 OMP_NUM_THREADS=1 ./cholmod_l_demo <nd6k/nd6k.mtx
 ---
 kind: pipeline
 name: arm64_gcc10
