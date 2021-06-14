@@ -321,7 +321,7 @@ static void nrm2_compute(BLASLONG n, FLOAT *x, BLASLONG inc_x,
 	: "cc",
 	  "memory",
 	  "x0", "x1", "x2", "x3", "x4", "x5", "x6",
-	  "d0", "d1", "d2", "d3", "d4", "d5", "d6", "d7", "d8"
+	  "d0", "d1", "d2", "d3", "d4", "d5", "d6", "d7", "d8", REGINF
 	);
 
 }
