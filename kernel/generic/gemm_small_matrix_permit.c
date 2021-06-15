@@ -29,9 +29,12 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 int CNAME(int transa, int transb, BLASLONG M, BLASLONG N, BLASLONG K, FLOAT alpha, FLOAT beta)
 {
+	return 0;
+/*
 	double MNK = (double) M * (double) N * (double) K;
 	if (MNK <= 100.0*100.0*100.0)
 		return 1;
 	else
 		return 0;
+*/
 }
