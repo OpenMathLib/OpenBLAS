@@ -98,6 +98,30 @@ typedef FLOAT v2sf_t __attribute__ ((vector_size (8)));
 	  rowC = (v2sf_t *) &CO[7* ldc+J]; \
           rowC[0] += result[6] * alpha;
 
+ #define  SAVE4x2_ACC_SCALAR(ACC) {                             \
+           __builtin_mma_disassemble_acc ((void *)result, ACC); \
+           res[0] = result[0] * alpha;                          \
+           res[1] = result[1] * alpha;                          \
+           res[2] = result[2] * alpha;                          \
+           res[3] = result[3] * alpha;                          \
+           CO[0 * ldc] += res[0][0];                            \
+           CO[1 * ldc] += res[1][0];                            \
+           CO[2 * ldc] += res[2][0];                            \
+           CO[3 * ldc] += res[3][0];                            \
+ }
+
+ #define  SAVE4x2_ACC1_SCALAR(ACC) {                            \
+           __builtin_mma_disassemble_acc ((void *)result, ACC); \
+           res[0] = result[0] * alpha;                          \
+           res[1] = result[1] * alpha;                          \
+           res[2] = result[2] * alpha;                          \
+           res[3] = result[3] * alpha;                          \
+           CO[4 * ldc] += res[0][0];                            \
+           CO[5 * ldc] += res[1][0];                            \
+           CO[6 * ldc] += res[2][0];                            \
+           CO[7 * ldc] += res[3][0];                            \
+}
+
 #define MMA __builtin_mma_xvbf16ger2pp
 
 #define  SAVE2x4_ACC(ACC, J)  \
@@ -313,7 +337,7 @@ CNAME (BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alpha, IFLOAT * A,
 	{
 	  IFLOAT *BO = B;
 	  v2sf_t *rowC;
-	  v2sf_t result[8];
+	  v4sf_t result[4], res[4];
 	  __vector_quad acc0, acc1;
 	  __builtin_mma_xxsetaccz (&acc0);
 	  __builtin_mma_xxsetaccz (&acc1);
@@ -335,8 +359,8 @@ CNAME (BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alpha, IFLOAT * A,
 	      MMA (&acc0, MERGE_HIGH (rowB[0], vzero), (vec_t) rowA);
 	      MMA (&acc1, MERGE_LOW (rowB[0], vzero), (vec_t) rowA);
 	    }
-	  SAVE4x2_ACC (&acc0, 0);
-	  SAVE4x2_ACC1 (&acc1, 0);
+	  SAVE4x2_ACC_SCALAR (&acc0);
+	  SAVE4x2_ACC1_SCALAR (&acc1);
 	  CO += 1;
 	  AO += k;
 	  BO += (k << 3);
@@ -547,7 +571,7 @@ CNAME (BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alpha, IFLOAT * A,
 	{
 	  IFLOAT *BO = B;
 	  v2sf_t *rowC;
-	  v2sf_t result[8];
+	  v4sf_t result[4], res[4];
 	  __vector_quad acc0;
 	  BLASLONG l = 0;
 	  __builtin_mma_xxsetaccz (&acc0);
@@ -571,7 +595,7 @@ CNAME (BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alpha, IFLOAT * A,
 	      };
 	      MMA (&acc0, (vec_t)(rowB_mrg), (vec_t) rowA);
 	    }
-	  SAVE4x2_ACC (&acc0, 0);
+	  SAVE4x2_ACC_SCALAR (&acc0);
 	  AO += k;
 	  BO += (k << 2);
 	  CO += 1;
