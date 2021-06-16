@@ -1991,7 +1991,7 @@ xgemm3m_rr.$(SUFFIX) : gemm3m.c gemm3m_level3.c ../../param.h
 	$(CC) $(CFLAGS) $(BLOCKS) -c -DXDOUBLE -DCOMPLEX -DRR $< -o $(@F)
 
 xgemm3m_rc.$(SUFFIX) : gemm3m.c gemm3m_level3.c ../../param.h
-	$(CC) $(CFLAGS) $(BLOCKS) -c -DXDOUBLE -DCOMPLEX -DRC)RC $< -o $(@F)
+	$(CC) $(CFLAGS) $(BLOCKS) -c -DXDOUBLE -DCOMPLEX -DRC=RC $< -o $(@F)
 
 xgemm3m_cn.$(SUFFIX) : gemm3m.c gemm3m_level3.c ../../param.h
 	$(CC) $(CFLAGS) $(BLOCKS) -c -DXDOUBLE -DCOMPLEX -DCN $< -o $(@F)
