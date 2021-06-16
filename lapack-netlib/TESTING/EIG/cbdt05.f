@@ -158,9 +158,8 @@
 *     .. External Functions ..
       LOGICAL            LSAME
       INTEGER            ISAMAX
-      REAL               SASUM, SLAMCH, CLANGE
-      EXTERNAL           LSAME, ISAMAX, SASUM, SLAMCH, CLANGE
-      REAL               SCASUM
+      REAL               SASUM, SCASUM, SLAMCH, CLANGE
+      EXTERNAL           LSAME, ISAMAX, SASUM, SCASUM, SLAMCH, CLANGE
 *     ..
 *     .. External Subroutines ..
       EXTERNAL           CGEMM
