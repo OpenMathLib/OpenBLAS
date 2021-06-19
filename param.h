@@ -2959,7 +2959,7 @@ is a big desktop or server with abundant cache rather than a phone or embedded d
 #define CGEMM_DEFAULT_R 4096
 #define ZGEMM_DEFAULT_R 2048
 
-#elif defined(CORTEXA53)
+#elif defined(CORTEXA53) || defined(CORTEXA55)
 
 #define SGEMM_DEFAULT_UNROLL_M  8
 #define SGEMM_DEFAULT_UNROLL_N  8
