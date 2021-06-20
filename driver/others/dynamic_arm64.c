@@ -102,7 +102,7 @@ extern gotoblas_t  gotoblas_NEOVERSEN1;
 #ifdef DYN_CORTEX_A55
 extern gotoblas_t  gotoblas_CORTEXA55;
 #else
-#define gotoblas_NEOVERSEN1 gotoblas_ARMV8
+#define gotoblas_CORTEXA55 gotoblas_ARMV8
 #endif
 #else
 extern gotoblas_t  gotoblas_CORTEXA53;
