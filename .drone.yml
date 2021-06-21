@@ -115,7 +115,7 @@ steps:
     - $CC --version
     - mkdir build && cd build
     - cmake $CMAKE_FLAGS ..
-    - make -j
+    - make -j `nproc`
     - ctest -V
 
 ---
@@ -135,11 +135,11 @@ steps:
   commands:
     - echo "CMAKE_FLAGS:= $CMAKE_FLAGS"
     - apt-get update -y
-    - apt-get install -y make $CC g++ perl cmake
+    - apt-get install -y make $CC perl cmake
     - $CC --version
     - mkdir build && cd build
     - cmake $CMAKE_FLAGS ..
-    - make -j
+    - make -j `nproc`
     - ctest -V
 
 ---
