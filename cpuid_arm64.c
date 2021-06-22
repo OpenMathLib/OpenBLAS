@@ -289,8 +289,6 @@ void get_cpuconfig(void)
       printf("#define %s\n", cpuname[d]);
       // Fall-through
 		case CPU_ARMV8:
-		// case CPU_CORTEXA53;
-		// case CPU_CORTEXA55;
       // Minimum parameters for ARMv8 (based on A53)
     	printf("#define L1_DATA_SIZE 32768\n");
     	printf("#define L1_DATA_LINESIZE 64\n");
