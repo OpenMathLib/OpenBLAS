@@ -286,6 +286,7 @@ void get_cpuconfig(void)
 	{
 
     case CPU_CORTEXA53:
+    case CPU_CORTEXA55:			
       printf("#define %s\n", cpuname[d]);
       // Fall-through
 		case CPU_ARMV8:
