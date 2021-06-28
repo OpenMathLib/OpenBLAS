@@ -72,13 +72,17 @@ int main(int argc, char *argv[]){
   FLOAT *a,*work;
   FLOAT wkopt[4];
   blasint *ipiv;
-  blasint m, i, j, info,lwork;
+  blasint m, i, j, l, info,lwork;
 
   int from =   1;
   int to   = 200;
   int step =   1;
+  int loops =  1;
 
-  double time1;
+  double time1,timeg;
+  
+  char *p;
+  char btest = 'I';
 
   argc--;argv++;
 
@@ -86,6 +90,9 @@ int main(int argc, char *argv[]){
   if (argc > 0) { to       = MAX(atol(*argv), from);	argc--; argv++;}
   if (argc > 0) { step     = atol(*argv);		argc--; argv++;}
 
+  if ((p = getenv("OPENBLAS_TEST"))) btest=*p;
+  
+  if ((p = getenv("OPENBLAS_LOOPS"))) loops=*p;
 
   fprintf(stderr, "From : %3d  To : %3d Step = %3d\n", from, to, step);
 
@@ -124,32 +131,41 @@ int main(int argc, char *argv[]){
   fprintf(stderr, "   SIZE           FLops           Time          Lwork\n");
 
   for(m = from; m <= to; m += step){
-
+    timeg = 0.;
     fprintf(stderr, " %6d : ", (int)m);
 
-    GETRF (&m, &m, a, &m, ipiv, &info);
+    for (l = 0; l < loops; l++) {
 
+    if (btest == 'F') begin();
+    GETRF (&m, &m, a, &m, ipiv, &info);
+    if (btest == 'F') {
+      end();
+      timeg += getsec();
+    }
     if (info) {
       fprintf(stderr, "Matrix is not singular .. %d\n", info);
       exit(1);
     }
 
-    begin();
+    if (btest == 'I') begin();
 
     lwork = -1;
     GETRI(&m, a, &m, ipiv, wkopt, &lwork, &info);
 
     lwork = (blasint)wkopt[0];
     GETRI(&m, a, &m, ipiv, work, &lwork, &info);
-    end();
+    if (btest == 'I') end();
 
     if (info) {
       fprintf(stderr, "failed compute inverse matrix .. %d\n", info);
       exit(1);
     }
 
-    time1 = getsec();
-
+    if (btest == 'I') 
+      timeg += getsec();
+    
+    } // loops
+    time1 = timeg/(double)loops;
     fprintf(stderr,
 	    " %10.2f MFlops : %10.2f Sec : %d\n",
 	    COMPSIZE * COMPSIZE * (4.0/3.0 * (double)m * (double)m *(double)m - (double)m *(double)m + 5.0/3.0* (double)m) / time1 * 1.e-6,time1,lwork);
