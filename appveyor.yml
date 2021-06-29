@@ -48,7 +48,7 @@ install:
   - if [%COMPILER%]==[clang-cl] call %CONDA_INSTALL_LOCN%\Scripts\activate.bat
   - if [%COMPILER%]==[clang-cl] conda config --add channels conda-forge --force
   - if [%COMPILER%]==[clang-cl] conda list conda
-  - if [%COMPILER%]==[clang-cl] conda install tqdm --yes
+  - if [%COMPILER%]==[clang-cl] conda install tqdm=4.31 --yes
   - if [%COMPILER%]==[clang-cl] conda update --force conda-env --yes
   - if [%COMPILER%]==[clang-cl] conda update --force conda --yes
   - if [%COMPILER%]==[clang-cl] conda install --yes --quiet clangdev cmake ninja flang=11.0.1
