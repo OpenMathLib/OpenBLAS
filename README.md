@@ -27,7 +27,7 @@ We provide official binary packages for the following platform:
 
   * Windows x86/x86_64
 
-You can download them from [file hosting on sourceforge.net](https://sourceforge.net/projects/openblas/files/).
+You can download them from [file hosting on sourceforge.net](https://sourceforge.net/projects/openblas/files/) or from the Releases section of the github project page, [https://github.com/xianyi/OpenBLAS/releases](https://github.com/xianyi/OpenBLAS/releases).
 
 ## Installation from Source
 
