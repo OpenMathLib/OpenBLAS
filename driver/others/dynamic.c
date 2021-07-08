@@ -824,6 +824,9 @@ static gotoblas_t *get_coretype(void){
     switch (family) {
     case 0x6:
       return &gotoblas_NANO;
+      break;
+    case 0x7:
+      return &gotoblas_NEHALEM;
     }
   }
 
