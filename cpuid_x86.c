@@ -283,6 +283,7 @@ int get_vendor(void){
   if (!strcmp(vendor, "CyrixInstead")) return VENDOR_CYRIX;
   if (!strcmp(vendor, "NexGenDriven")) return VENDOR_NEXGEN;
   if (!strcmp(vendor, "CentaurHauls")) return VENDOR_CENTAUR;
+  if (!strcmp(vendor, "  Shanghai  ")) return VENDOR_CENTAUR;
   if (!strcmp(vendor, "RiseRiseRise")) return VENDOR_RISE;
   if (!strcmp(vendor, " SiS SiS SiS")) return VENDOR_SIS;
   if (!strcmp(vendor, "GenuineTMx86")) return VENDOR_TRANSMETA;
