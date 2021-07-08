@@ -404,6 +404,7 @@ static int get_vendor(void){
   if (!strcmp(vendor.vchar, "GenuineIntel")) return VENDOR_INTEL;
   if (!strcmp(vendor.vchar, "AuthenticAMD")) return VENDOR_AMD;
   if (!strcmp(vendor.vchar, "CentaurHauls")) return VENDOR_CENTAUR;
+  if (!strcmp(vendor.vchar, "  Shanghai  ")) return VENDOR_CENTAUR;
   if (!strcmp(vendor.vchar, "HygonGenuine")) return VENDOR_HYGON;
 
   if ((eax == 0) || ((eax & 0x500) != 0)) return VENDOR_INTEL;
@@ -824,6 +825,9 @@ static gotoblas_t *get_coretype(void){
     switch (family) {
     case 0x6:
       return &gotoblas_NANO;
+      break;
+    case 0x7:
+      return &gotoblas_NEHALEM;
     }
   }
 
