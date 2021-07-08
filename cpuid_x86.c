@@ -1631,7 +1631,9 @@ int get_cpuname(void){
     case 0x6:
       return CPUTYPE_NANO;
       break;
-
+    case 0x7:
+      return CPUTYPE_NEHALEM;
+      break;
     }
     return CPUTYPE_VIAC3;
   }
@@ -2284,6 +2286,9 @@ int get_coretype(void){
     switch (family) {
     case 0x6:
       return CORE_NANO;
+      break;
+    case 0x7:
+      return CORE_NEHALEM;
       break;
     }
     return CORE_VIAC3;
