@@ -34,9 +34,9 @@ endif
 
 LAPACK_NOOPT := $(filter-out -O0 -O1 -O2 -O3 -Ofast,$(LAPACK_FFLAGS))
 
-SUBDIRS_ALL = $(SUBDIRS) test ctest utest exports benchmark ../laswp ../bench cpp_thread_test
+SUBDIRS_ALL = $(SUBDIRS) test ctest utest test_install exports benchmark ../laswp ../bench cpp_thread_test
 
-.PHONY : all libs netlib $(RELA) test ctest shared install
+.PHONY : all libs netlib $(RELA) test ctest test_install shared install
 .NOTPARALLEL : all libs $(RELA) prof lapack-test install blas-test
 
 all :: libs netlib $(RELA) tests shared
@@ -154,6 +154,11 @@ ifeq ($(CPP_THREAD_SAFETY_TEST), 1)
 endif
 endif
 endif
+
+test_install :
+	mkdir -p install
+	PREFIX=install $(MAKE) install
+	$(MAKE) -C test_install all
 
 libs :
 ifeq ($(CORE), UNKNOWN)
@@ -399,4 +404,5 @@ endif
 	@$(MAKE) -C relapack clean
 	@rm -f *.grd Makefile.conf_last config_last.h
 	@(cd $(NETLIB_LAPACK_DIR)/TESTING && rm -f x* *.out testing_results.txt)
+	@rm -rf install
 	@echo Done.
