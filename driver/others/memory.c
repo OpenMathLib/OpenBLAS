@@ -1702,7 +1702,6 @@ inline int atoi(const char *str) { return 0; }
 #include <sys/sysinfo.h>
 #include <sched.h>
 #include <errno.h>
-#include <linux/unistd.h>
 #include <sys/syscall.h>
 #include <sys/time.h>
 #include <sys/resource.h>
