@@ -149,9 +149,9 @@ jobs:
  
 - job: ALPINE_MUSL
   pool:
-     vmImage: 'ubuntu-16.04'
+     vmImage: 'ubuntu-latest'
   steps:
-  - script |
+  - script: |
         wget 'https://raw.githubusercontent.com/alpinelinux/alpine-chroot-install/v0.9.0/alpine-chroot-install' \
           && echo 'e5dfbbdc0c4b3363b99334510976c86bfa6cb251  alpine-chroot-install' | sha1sum -c || exit 1
         alpine() { /alpine/enter-chroot -u "$USER" "$@"; }
