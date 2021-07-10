@@ -2164,13 +2164,13 @@ int get_coretype(void){
       case 8:
        if (model == 12) { // Tiger Lake
           if(support_avx512())
-            return CPUTYPE_SKYLAKEX;
+            return CORE_SKYLAKEX;
           if(support_avx2())
-            return CPUTYPE_HASWELL;
+            return CORE_HASWELL;
           if(support_avx())
-            return CPUTYPE_SANDYBRIDGE;
+            return CORE_SANDYBRIDGE;
           else
-          return CPUTYPE_NEHALEM;
+          return CORE_NEHALEM;
         }
         if (model == 14) { // Kaby Lake 
 	  if(support_avx())
