@@ -157,5 +157,5 @@ jobs:
         alpine() { /alpine/enter-chroot -u "$USER" "$@"; }
         sudo sh alpine-chroot-install -p 'build-base gfortran perl linux-headers'
         alpine make DYNAMIC_ARCH=1 BINARY=64
-        alpine make DYNAMIC_ARCH=1 BINARY=64 install
+        alpine sudo make DYNAMIC_ARCH=1 BINARY=64 install
   
