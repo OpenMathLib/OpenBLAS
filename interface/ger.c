@@ -165,7 +165,7 @@ void CNAME(enum CBLAS_ORDER order,
   if (alpha == 0.) return;
 
   if (incx == 1 && incy == 1 && 1L*m*n <= 2048 *GEMM_MULTITHREAD_THRESHOLD) {
-    GER(m, n, 0, alpha, x, incx, y, incy, a, lda, buffer);
+    GER(m, n, 0, alpha, x, incx, y, incy, a, lda, NULL);
     return;
   }  
 
