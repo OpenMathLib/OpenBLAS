@@ -194,3 +194,6 @@ In chronological order:
 
 * PingTouGe Semiconductor Co., Ltd.
   * [2020-10] Add RISC-V Vector (0.7.1) support. Optimize BLAS kernels for Xuantie C910
+
+* River Dillon <oss@outerpassage.net>
+  * [2021-07-10] fix compilation with musl libc

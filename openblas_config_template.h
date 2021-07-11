@@ -99,5 +99,6 @@ typedef int blasint;
 
 /* Inclusion of Linux-specific header is needed for definition of cpu_set_t. */
 #ifdef OPENBLAS_OS_LINUX
+#define _GNU_SOURCE
 #include <sched.h>
 #endif
