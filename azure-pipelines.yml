@@ -161,6 +161,7 @@ jobs:
         alpine ls -l mytestdir/include
         alpine echo "// tests that inclusion of openblas_config.h works with musl" >test_install.c
         alpine echo "#include <openblas_config.h>" >>test_install.c
-        alpine echo "cpu_set_t* cpu_set = NULL;" >>test_install.c
+        alpine echo "int main(){" >> test_install.c
+        alpine echo "cpu_set_t* cpu_set = NULL;}" >>test_install.c
         alpine gcc -Imytestdir/include test_install.c -Lmytestdir/lib -lopenblas -lpthread -lgfortran -o test_install
         
