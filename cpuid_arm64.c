@@ -36,6 +36,7 @@ size_t length=sizeof(value);
 #define CPU_ARMV8       	1
 // Arm
 #define CPU_CORTEXA53     2
+#define CPU_CORTEXA55     14
 #define CPU_CORTEXA57     3
 #define CPU_CORTEXA72     4
 #define CPU_CORTEXA73     5
@@ -67,7 +68,8 @@ static char *cpuname[] = {
   "EMAG8180",
   "NEOVERSEN1",
   "THUNDERX3T110",
-  "VORTEX"	
+  "VORTEX",
+  "CORTEXA55"
 };
 
 static char *cpuname_lower[] = {
@@ -84,7 +86,8 @@ static char *cpuname_lower[] = {
   "emag8180",
   "neoversen1",
   "thunderx3t110",
-  "vortex"	
+  "vortex",
+  "cortexa55"
 };
 
 int get_feature(char *search)
@@ -161,6 +164,8 @@ int detect(void)
         return CPU_CORTEXA73;
       else if (strstr(cpu_part, "0xd0c"))
         return CPU_NEOVERSEN1;
+      else if (strstr(cpu_part, "0xd05"))
+	return CPU_CORTEXA55;
     }
     // Qualcomm
     else if (strstr(cpu_implementer, "0x51") && strstr(cpu_part, "0xc00"))
@@ -281,6 +286,7 @@ void get_cpuconfig(void)
 	{
 
     case CPU_CORTEXA53:
+    case CPU_CORTEXA55:			
       printf("#define %s\n", cpuname[d]);
       // Fall-through
 		case CPU_ARMV8:

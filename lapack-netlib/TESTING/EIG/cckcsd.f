@@ -228,7 +228,7 @@
 *     ..
 *     .. External Subroutines ..
       EXTERNAL           ALAHDG, ALAREQ, ALASUM, CCSDTS, CLACSG, CLAROR,
-     $                   CLASET
+     $                   CLASET, CSROT
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          ABS, MIN

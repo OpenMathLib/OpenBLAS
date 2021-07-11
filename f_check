@@ -314,11 +314,11 @@ if ($link ne "") {
 
     $link =~ s/\-Y\sP\,/\-Y/g;
     
-    $link =~ s/\-R\s*/\-rpath\@/g;
+    $link =~ s/\-R\s*/\-rpath\%/g;
 
-    $link =~ s/\-rpath\s+/\-rpath\@/g;
+    $link =~ s/\-rpath\s+/\-rpath\%/g;
 
-    $link =~ s/\-rpath-link\s+/\-rpath-link\@/g;
+    $link =~ s/\-rpath-link\s+/\-rpath-link\%/g;
 
     @flags = split(/[\s\,\n]/, $link);
     # remove leading and trailing quotes from each flag.
@@ -344,13 +344,13 @@ if ($link ne "") {
 	}
 
 
-	if ($flags =~ /^\-rpath\@/) {
-	    $flags =~ s/\@/\,/g;
+	if ($flags =~ /^\-rpath\%/) {
+	    $flags =~ s/\%/\,/g;
 	    $linker_L .= "-Wl,". $flags . " " ;
 	}
 
-	if ($flags =~ /^\-rpath-link\@/) {
-	    $flags =~ s/\@/\,/g;
+	if ($flags =~ /^\-rpath-link\%/) {
+	    $flags =~ s/\%/\,/g;
 	    $linker_L .= "-Wl,". $flags . " " ;
 	}
 	if ($flags =~ /-lgomp/ && $ENV{"CC"} =~ /clang/) {

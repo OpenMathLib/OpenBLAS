@@ -354,6 +354,17 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_UPLO Uplo, enum CBLAS_TRANSPOSE Tr
 #endif
 
   args.common = NULL;
+#ifndef COMPLEX
+#ifdef DOUBLE
+  if (args.n < 100)
+#else
+  if (args.n < 200)
+#endif
+#else
+  if (args.n < 65)
+#endif
+  args.nthreads = 1;
+  else
   args.nthreads = num_cpu_avail(3);
 
   if (args.nthreads == 1) {

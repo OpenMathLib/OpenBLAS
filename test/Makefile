@@ -259,10 +259,6 @@ endif
 
 FLDFLAGS = $(FFLAGS:-fPIC=) $(LDFLAGS)
 
-ifeq ($(CORE), C910V)
-EXTRALIB =
-CEXTRALIB =
-endif
 
 ifeq ($(USE_OPENMP), 1)
 ifeq ($(F_COMPILER), GFORTRAN)

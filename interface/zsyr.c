@@ -172,6 +172,32 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_UPLO Uplo, int n, FLOAT alpha, FLO
 
   if ((alpha_r == ZERO) && (alpha_i == ZERO)) return;
 
+  if (incx == 1 && n < 50) {
+    blasint i;
+    if (!uplo) {
+      for (i = 0; i < n; i++){
+        if ((x[i * 2 + 0] != ZERO) || (x[i * 2 + 1] != ZERO)) {
+          AXPYU_K(i + 1, 0, 0,
+              alpha_r * x[i * 2 + 0] - alpha_i * x[i * 2 + 1],
+              alpha_i * x[i * 2 + 0] + alpha_r * x[i * 2 + 1],
+              x,         1, a, 1, NULL, 0);
+        }
+        a += lda;
+      }
+    } else {
+      for (i = 0; i < n; i++){
+        if ((x[i * 2 + 0] != ZERO) || (x[i * 2 + 1] != ZERO)) {
+          AXPYU_K(n - i, 0, 0,
+              alpha_r * x[i * 2 + 0] - alpha_i * x[i * 2 + 1],
+              alpha_i * x[i * 2 + 0] + alpha_r * x[i * 2 + 1],
+              x + i * 2, 1, a, 1, NULL, 0);
+        }
+        a += 2 + lda;
+      }
+    }
+    return;
+  }
+
   IDEBUG_START;
 
   FUNCTION_PROFILE_START();

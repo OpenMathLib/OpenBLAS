@@ -333,6 +333,7 @@ GCCVERSIONGTEQ4 := $(shell expr `$(CC) -dumpversion | cut -f1 -d.` \>= 4)
 GCCVERSIONGT4 := $(shell expr `$(CC) -dumpversion | cut -f1 -d.` \> 4)
 GCCVERSIONGT5 := $(shell expr `$(CC) -dumpversion | cut -f1 -d.` \> 5)
 GCCVERSIONGTEQ7 := $(shell expr `$(CC) -dumpversion | cut -f1 -d.` \>= 7)
+GCCVERSIONGTEQ8 := $(shell expr `$(CC) -dumpversion | cut -f1 -d.` \>= 8)
 GCCVERSIONGTEQ9 := $(shell expr `$(CC) -dumpversion | cut -f1 -d.` \>= 9)
 GCCVERSIONGTEQ11 := $(shell expr `$(CC) -dumpversion | cut -f1 -d.` \>= 11)
 GCCVERSIONGTEQ10 := $(shell expr `$(CC) -dumpversion | cut -f1 -d.` \>= 10)
@@ -378,6 +379,12 @@ endif
 
 ifeq ($(OSNAME), AIX)
 EXTRALIB	+= -lm
+endif
+
+ifeq ($(OSNAME), FreeBSD)
+ifeq ($(ARCH), $(filter $(ARCH),arm arm64))
+EXTRALIB	+= -lm
+endif
 endif
 
 ifeq ($(OSNAME), WINNT)
@@ -619,6 +626,7 @@ DYNAMIC_CORE += CORTEXA57
 DYNAMIC_CORE += CORTEXA72
 DYNAMIC_CORE += CORTEXA73
 DYNAMIC_CORE += NEOVERSEN1
+DYNAMIC_CORE += CORTEXA55
 DYNAMIC_CORE += FALKOR
 DYNAMIC_CORE += THUNDERX
 DYNAMIC_CORE += THUNDERX2T99

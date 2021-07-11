@@ -137,3 +137,31 @@ jobs:
       source /opt/intel/oneapi/setvars.sh
       make CC=/usr/local/opt/llvm/bin/clang FC=ifort
  
+- job: OSX_NDK_ARMV7
+  pool:
+     vmImage: 'macOS-10.15'
+  steps:   
+  - script: | 
+      brew update
+      brew install --cask android-ndk
+      export ANDROID_NDK_HOME=/usr/local/share/android-ndk
+      make TARGET=ARMV7 ONLY_CBLAS=1 CC=$ANDROID_NDK_HOME/toolchains/llvm/prebuilt/darwin-x86_64/bin/armv7a-linux-androideabi21-clang AR=$ANDROID_NDK_HOME/toolchains/llvm/prebuilt/darwin-x86_64/bin/arm-linux-androideabi-ar HOSTCC=gcc ARM_SOFTFP_ABI=1 -j4
+ 
+- job: ALPINE_MUSL
+  pool:
+     vmImage: 'ubuntu-latest'
+  steps:
+  - script: |
+        wget 'https://raw.githubusercontent.com/alpinelinux/alpine-chroot-install/v0.9.0/alpine-chroot-install' \
+          && echo 'e5dfbbdc0c4b3363b99334510976c86bfa6cb251  alpine-chroot-install' | sha1sum -c || exit 1
+        alpine() { /alpine/enter-chroot -u "$USER" "$@"; }
+        sudo sh alpine-chroot-install -p 'build-base gfortran perl linux-headers sudo'
+        alpine make DYNAMIC_ARCH=1 BINARY=64
+        alpine make DYNAMIC_ARCH=1 BINARY=64 PREFIX=mytestdir install
+        alpine ls -l mytestdir/include
+        alpine echo "// tests that inclusion of openblas_config.h works with musl" >test_install.c
+        alpine echo "#include <openblas_config.h>" >>test_install.c
+        alpine echo "int main(){" >> test_install.c
+        alpine echo "cpu_set_t* cpu_set = NULL;}" >>test_install.c
+        alpine gcc -Imytestdir/include test_install.c -Lmytestdir/lib -lopenblas -lpthread -lgfortran -o test_install
+        

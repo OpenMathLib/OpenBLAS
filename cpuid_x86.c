@@ -283,6 +283,7 @@ int get_vendor(void){
   if (!strcmp(vendor, "CyrixInstead")) return VENDOR_CYRIX;
   if (!strcmp(vendor, "NexGenDriven")) return VENDOR_NEXGEN;
   if (!strcmp(vendor, "CentaurHauls")) return VENDOR_CENTAUR;
+  if (!strcmp(vendor, "  Shanghai  ")) return VENDOR_CENTAUR;
   if (!strcmp(vendor, "RiseRiseRise")) return VENDOR_RISE;
   if (!strcmp(vendor, " SiS SiS SiS")) return VENDOR_SIS;
   if (!strcmp(vendor, "GenuineTMx86")) return VENDOR_TRANSMETA;
@@ -1398,6 +1399,17 @@ int get_cpuname(void){
 	    return CPUTYPE_SANDYBRIDGE;
 	  else
 	  return CPUTYPE_NEHALEM;
+	case 10: // Ice Lake SP
+	  if(support_avx512_bf16())
+            return CPUTYPE_COOPERLAKE;	
+          if(support_avx512())
+            return CPUTYPE_SKYLAKEX;
+          if(support_avx2())
+            return CPUTYPE_HASWELL;
+          if(support_avx())
+	    return CPUTYPE_SANDYBRIDGE;
+	  else
+	  return CPUTYPE_NEHALEM;	
         }
       break;
       case 7: // family 6 exmodel 7
@@ -1620,7 +1632,9 @@ int get_cpuname(void){
     case 0x6:
       return CPUTYPE_NANO;
       break;
-
+    case 0x7:
+      return CPUTYPE_NEHALEM;
+      break;
     }
     return CPUTYPE_VIAC3;
   }
@@ -2112,7 +2126,22 @@ int get_coretype(void){
 #endif
 	  else
 	    return CORE_NEHALEM;
-#endif			
+#endif
+	if (model == 10)
+#ifndef NO_AVX512
+	  if(support_avx512_bf16())
+            return CORE_COOPERLAKE;
+	  return CORE_SKYLAKEX;
+#else
+	  if(support_avx())
+#ifndef NO_AVX2
+	    return CORE_HASWELL;
+#else
+	    return CORE_SANDYBRIDGE;
+#endif
+	  else
+	    return CORE_NEHALEM;
+#endif	
         break;    	
       case 7:
         if (model == 10) 
@@ -2135,13 +2164,13 @@ int get_coretype(void){
       case 8:
        if (model == 12) { // Tiger Lake
           if(support_avx512())
-            return CPUTYPE_SKYLAKEX;
+            return CORE_SKYLAKEX;
           if(support_avx2())
-            return CPUTYPE_HASWELL;
+            return CORE_HASWELL;
           if(support_avx())
-            return CPUTYPE_SANDYBRIDGE;
+            return CORE_SANDYBRIDGE;
           else
-          return CPUTYPE_NEHALEM;
+          return CORE_NEHALEM;
         }
         if (model == 14) { // Kaby Lake 
 	  if(support_avx())
@@ -2258,6 +2287,9 @@ int get_coretype(void){
     switch (family) {
     case 0x6:
       return CORE_NANO;
+      break;
+    case 0x7:
+      return CORE_NEHALEM;
       break;
     }
     return CORE_VIAC3;

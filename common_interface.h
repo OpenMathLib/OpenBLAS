@@ -709,6 +709,13 @@ int BLASFUNC(cpotrf)(char *, blasint *, float  *, blasint *, blasint *);
 int BLASFUNC(zpotrf)(char *, blasint *, double *, blasint *, blasint *);
 int BLASFUNC(xpotrf)(char *, blasint *, xdouble *, blasint *, blasint *);
 
+int BLASFUNC(spotri)(char *, blasint *, float  *, blasint *, blasint *);
+int BLASFUNC(dpotri)(char *, blasint *, double *, blasint *, blasint *);
+int BLASFUNC(qpotri)(char *, blasint *, xdouble *, blasint *, blasint *);
+int BLASFUNC(cpotri)(char *, blasint *, float  *, blasint *, blasint *);
+int BLASFUNC(zpotri)(char *, blasint *, double *, blasint *, blasint *);
+int BLASFUNC(xpotri)(char *, blasint *, xdouble *, blasint *, blasint *);
+
 int BLASFUNC(spotrs)(char *, blasint *, blasint *, float   *, blasint *, float   *, blasint *, blasint *);
 int BLASFUNC(dpotrs)(char *, blasint *, blasint *, double  *, blasint *, double  *, blasint *, blasint *);
 int BLASFUNC(qpotrs)(char *, blasint *, blasint *, xdouble *, blasint *, xdouble *, blasint *, blasint *);

@@ -27,17 +27,15 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "common.h"
 #if !defined(DOUBLE)
-#define RVV_EFLOAT RVV_E32
-#define RVV_M RVV_M4
-#define FLOAT_V_T float32xm4_t
-#define VLSEV_FLOAT vlsev_float32xm4
-#define VSSEV_FLOAT vssev_float32xm4
+#define VSETVL(n) vsetvl_e32m4(n)
+#define FLOAT_V_T vfloat32m4_t
+#define VLSEV_FLOAT vlse_v_f32m4
+#define VSSEV_FLOAT vsse_v_f32m4
 #else
-#define RVV_EFLOAT RVV_E64
-#define RVV_M RVV_M4
-#define FLOAT_V_T float64xm4_t
-#define VLSEV_FLOAT vlsev_float64xm4
-#define VSSEV_FLOAT vssev_float64xm4
+#define VSETVL(n) vsetvl_e64m4(n)
+#define FLOAT_V_T vfloat64m4_t
+#define VLSEV_FLOAT vlse_v_f64m4
+#define VSSEV_FLOAT vsse_v_f64m4
 #endif
 
 
@@ -52,7 +50,7 @@ int CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG inc_y)
                 memcpy(&y[0], &x[0], n * 2 * sizeof(FLOAT));
         }else{
                 FLOAT_V_T vx0, vx1, vx2, vx3;
-                gvl = vsetvli(n, RVV_EFLOAT, RVV_M);
+                gvl = VSETVL(n);
                 BLASLONG stride_x = inc_x * 2 * sizeof(FLOAT);
                 BLASLONG stride_y = inc_y * 2 * sizeof(FLOAT);
                 if(gvl <= n/2){
@@ -75,7 +73,7 @@ int CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG inc_y)
                         }
                 }
                 for(;j<n;){
-                        gvl = vsetvli(n-j, RVV_EFLOAT, RVV_M);
+                        gvl = VSETVL(n-j);
                         vx0 = VLSEV_FLOAT(&x[ix], stride_x, gvl);
                         vx1 = VLSEV_FLOAT(&x[ix+1], stride_x, gvl);
                         VSSEV_FLOAT(&y[iy], stride_y, vx0, gvl);

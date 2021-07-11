@@ -74,17 +74,17 @@ endif
 ifneq ($(OSNAME), AIX)
 ifndef NO_LAPACKE
 	@echo Copying LAPACKE header files to $(DESTDIR)$(OPENBLAS_INCLUDE_DIR)
-	@-install -pm644 $(NETLIB_LAPACK_DIR)/LAPACKE/include/lapack.h "$(DESTDIR)$(OPENBLAS_INCLUDE_DIR)/lapack.h"
-	@-install -pm644 $(NETLIB_LAPACK_DIR)/LAPACKE/include/lapacke.h "$(DESTDIR)$(OPENBLAS_INCLUDE_DIR)/lapacke.h"
-	@-install -pm644 $(NETLIB_LAPACK_DIR)/LAPACKE/include/lapacke_config.h "$(DESTDIR)$(OPENBLAS_INCLUDE_DIR)/lapacke_config.h"
-	@-install -pm644 $(NETLIB_LAPACK_DIR)/LAPACKE/include/lapacke_mangling_with_flags.h.in "$(DESTDIR)$(OPENBLAS_INCLUDE_DIR)/lapacke_mangling.h"
-	@-install -pm644 $(NETLIB_LAPACK_DIR)/LAPACKE/include/lapacke_utils.h "$(DESTDIR)$(OPENBLAS_INCLUDE_DIR)/lapacke_utils.h"
+	@-install -m644 $(NETLIB_LAPACK_DIR)/LAPACKE/include/lapack.h "$(DESTDIR)$(OPENBLAS_INCLUDE_DIR)/lapack.h"
+	@-install -m644 $(NETLIB_LAPACK_DIR)/LAPACKE/include/lapacke.h "$(DESTDIR)$(OPENBLAS_INCLUDE_DIR)/lapacke.h"
+	@-install -m644 $(NETLIB_LAPACK_DIR)/LAPACKE/include/lapacke_config.h "$(DESTDIR)$(OPENBLAS_INCLUDE_DIR)/lapacke_config.h"
+	@-install -m644 $(NETLIB_LAPACK_DIR)/LAPACKE/include/lapacke_mangling_with_flags.h.in "$(DESTDIR)$(OPENBLAS_INCLUDE_DIR)/lapacke_mangling.h"
+	@-install -m644 $(NETLIB_LAPACK_DIR)/LAPACKE/include/lapacke_utils.h "$(DESTDIR)$(OPENBLAS_INCLUDE_DIR)/lapacke_utils.h"
 endif
 
 #for install static library
 ifneq ($(NO_STATIC),1)
 	@echo Copying the static library to $(DESTDIR)$(OPENBLAS_LIBRARY_DIR)
-	@install -pm644 $(LIBNAME) "$(DESTDIR)$(OPENBLAS_LIBRARY_DIR)"
+	@install -m644 $(LIBNAME) "$(DESTDIR)$(OPENBLAS_LIBRARY_DIR)"
 	@cd "$(DESTDIR)$(OPENBLAS_LIBRARY_DIR)" ; \
 	ln -fs $(LIBNAME) $(LIBPREFIX).$(LIBSUFFIX)
 endif
@@ -92,7 +92,7 @@ endif
 ifneq ($(NO_SHARED),1)
 	@echo Copying the shared library to $(DESTDIR)$(OPENBLAS_LIBRARY_DIR)
 ifeq ($(OSNAME), $(filter $(OSNAME),Linux SunOS Android Haiku FreeBSD DragonFly))
-	@install -pm755 $(LIBSONAME) "$(DESTDIR)$(OPENBLAS_LIBRARY_DIR)"
+	@install -m755 $(LIBSONAME) "$(DESTDIR)$(OPENBLAS_LIBRARY_DIR)"
 	@cd "$(DESTDIR)$(OPENBLAS_LIBRARY_DIR)" ; \
 	ln -fs $(LIBSONAME) $(LIBPREFIX).so ; \
 	ln -fs $(LIBSONAME) $(LIBPREFIX).so.$(MAJOR_VERSION)

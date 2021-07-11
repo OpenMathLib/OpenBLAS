@@ -57,6 +57,28 @@ endif
 endif
 endif
 
+# Use a53 tunings because a55 is only available in GCC>=8.1
+ifeq ($(CORE), CORTEXA55)
+ifeq ($(GCCVERSIONGTEQ7), 1)
+ifeq ($(GCCVERSIONGTEQ8), 1)
+CCOMMON_OPT += -march=armv8.2-a -mtune=cortex-a55
+ifneq ($(F_COMPILER), NAG)
+FCOMMON_OPT += -march=armv8.2-a -mtune=cortex-a55
+endif
+else
+CCOMMON_OPT += -march=armv8.2-a -mtune=cortex-a53
+ifneq ($(F_COMPILER), NAG)
+FCOMMON_OPT += -march=armv8.2-a -mtune=cortex-a53
+endif
+endif
+else
+CCOMMON_OPT += -march=armv8-a -mtune=cortex-a53
+ifneq ($(F_COMPILER), NAG)
+FCOMMON_OPT += -march=armv8-a -mtune=cortex-a53
+endif
+endif
+endif
+
 ifeq ($(CORE), THUNDERX)
 CCOMMON_OPT += -march=armv8-a -mtune=thunderx
 ifneq ($(F_COMPILER), NAG)
@@ -104,6 +126,15 @@ ifeq ($(CORE), TSV110)
 CCOMMON_OPT += -march=armv8.2-a -mtune=tsv110
 ifneq ($(F_COMPILER), NAG)
 FCOMMON_OPT += -march=armv8.2-a -mtune=tsv110
+endif
+endif
+endif
+
+ifeq ($(GCCVERSIONGTEQ9), 1)
+ifeq ($(CORE), EMAG8180)
+CCOMMON_OPT += -march=armv8-a -mtune=emag
+ifneq ($(F_COMPILER), NAG)
+FCOMMON_OPT += -march=armv8-a -mtune=emag
 endif
 endif
 endif

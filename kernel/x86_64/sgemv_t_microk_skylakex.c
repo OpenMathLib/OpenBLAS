@@ -1,5 +1,5 @@
 /***************************************************************************
-Copyright (c) 2013, The OpenBLAS Project
+Copyright (c) 2014, The OpenBLAS Project
 All rights reserved.
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -25,43 +25,36 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
 USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
 
+/* need a new enough GCC for avx512 support */
+#if (( defined(__GNUC__)  && __GNUC__   >= 6 && defined(__AVX512CD__)) || (defined(__clang__) && __clang_major__ >= 6))
 
-/**************************************************************************************
-* 2013/08/19 Saar
-*	 BLASTEST float
-* 	 BLASTEST double
-*
-**************************************************************************************/
-
+#define HAVE_SGEMV_T_SKYLAKE_KERNEL 1
 #include "common.h"
-#include <math.h>
+#include <immintrin.h>
+#include "sgemv_t_microk_skylakex_template.c"
 
+//sgemv_t:
+// ----- m -----
+// |<-----------
+// |<-----------
+// n
+// |<-----------
+// |<-----------
 
-
-BLASLONG CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x)
-{
-	BLASLONG i=0;
-	BLASLONG ix=0;
-	FLOAT minf=0.0;
-	BLASLONG min=0;
-
-	if (n <= 0 || inc_x <= 0) return(min);
-
-	minf=x[0];
-	ix += inc_x;
-	i++;
-
-	while(i < n)
-	{
-		if( x[ix] < minf )
-		{
-			min = i;
-			minf = x[ix];
-		}
-		ix += inc_x;
-		i++;
-	}
-	return(min+1);
+static int sgemv_kernel_t(BLASLONG m, BLASLONG n, float alpha, float *a, float *x, float *y)
+{    
+    switch(m) {
+        case 1:  sgemv_kernel_t_1(n, alpha, a, x, y); break;
+        case 2:  sgemv_kernel_t_2(n, alpha, a, x, y); break;
+        case 3:  sgemv_kernel_t_3(n, alpha, a, x, y); break;
+        case 4:  sgemv_kernel_t_4(n, alpha, a, x, y); break;
+        case 5:  sgemv_kernel_t_5(n, alpha, a, x, y); break;
+        case 6:  sgemv_kernel_t_6(n, alpha, a, x, y); break;
+        case 7:  sgemv_kernel_t_7(n, alpha, a, x, y); break;
+        case 8:  sgemv_kernel_t_8(n, alpha, a, x, y); break;
+        default: break;
+    }
+    return 0;
 }
 
-
+#endif

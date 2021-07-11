@@ -49,17 +49,11 @@ typedef __vector unsigned char  vec_t;
 typedef FLOAT v4sf_t __attribute__ ((vector_size (16)));
 typedef FLOAT v2sf_t __attribute__ ((vector_size (8)));
 
-vector char mask =
-  { 0x0, 0x1, 0x8, 0x9, 0x2, 0x3, 0xa, 0xb, 0x4, 0x5, 0xc, 0xd, 0x6, 0x7, 0xe,
-  0xf
-};
-
 /* 
  * BFLOAT16 xvbf16ger2pp instruction needs 4×2 matrix of
  * bfloat16 floating-point values as input. Hence this
  * merging is needed on A and B matrices. 
  */
-#define MERGE_ROW(x) vec_perm(x, x, mask)
 #define MERGE_HIGH(x, y) (vec_t) vec_mergeh ((vector short)x, (vector short)y)
 #define MERGE_LOW(x, y) (vec_t) vec_mergel ((vector short)x, (vector short)y)
 
@@ -103,6 +97,30 @@ vector char mask =
           rowC[0] += result[4] * alpha; \
 	  rowC = (v2sf_t *) &CO[7* ldc+J]; \
           rowC[0] += result[6] * alpha;
+
+ #define  SAVE4x2_ACC_SCALAR(ACC) {                             \
+           __builtin_mma_disassemble_acc ((void *)result, ACC); \
+           res[0] = result[0] * alpha;                          \
+           res[1] = result[1] * alpha;                          \
+           res[2] = result[2] * alpha;                          \
+           res[3] = result[3] * alpha;                          \
+           CO[0 * ldc] += res[0][0];                            \
+           CO[1 * ldc] += res[1][0];                            \
+           CO[2 * ldc] += res[2][0];                            \
+           CO[3 * ldc] += res[3][0];                            \
+ }
+
+ #define  SAVE4x2_ACC1_SCALAR(ACC) {                            \
+           __builtin_mma_disassemble_acc ((void *)result, ACC); \
+           res[0] = result[0] * alpha;                          \
+           res[1] = result[1] * alpha;                          \
+           res[2] = result[2] * alpha;                          \
+           res[3] = result[3] * alpha;                          \
+           CO[4 * ldc] += res[0][0];                            \
+           CO[5 * ldc] += res[1][0];                            \
+           CO[6 * ldc] += res[2][0];                            \
+           CO[7 * ldc] += res[3][0];                            \
+}
 
 #define MMA __builtin_mma_xvbf16ger2pp
 
@@ -179,8 +197,8 @@ CNAME (BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alpha, IFLOAT * A,
 		l = (k / 2) << 4;
 	      vec_t *rowA = (vec_t *) & (AO[l << 1]);
 	      vec_t *rowB = (vec_t *) & (BO[l]);
-	      vec_t rowB_h = MERGE_HIGH (rowB[0], rowB[1]);
-	      vec_t rowB_l = MERGE_LOW (rowB[0], rowB[1]);
+	      vec_t rowB_h = MERGE_HIGH (rowB[0], vzero);
+	      vec_t rowB_l = MERGE_LOW (rowB[0], vzero);
 	      vec_t rowA_h = MERGE_HIGH (rowA[0], vzero);
 	      vec_t rowA_l = MERGE_LOW (rowA[0], vzero);
 	      vec_t rowA2_h = MERGE_HIGH (rowA[1], vzero);
@@ -231,8 +249,8 @@ CNAME (BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alpha, IFLOAT * A,
 		l = (k / 2) << 4;
 	      vec_t *rowA = (vec_t *) & (AO[l]);
 	      vec_t *rowB = (vec_t *) & (BO[l]);
-	      vec_t rowB_h = MERGE_HIGH (rowB[0], rowB[1]);
-	      vec_t rowB_l = MERGE_LOW (rowB[0], rowB[1]);
+	      vec_t rowB_h = MERGE_HIGH (rowB[0], vzero);
+	      vec_t rowB_l = MERGE_LOW (rowB[0], vzero);
 	      vec_t rowA_h = MERGE_HIGH (rowA[0], vzero);
 	      vec_t rowA_l = MERGE_LOW (rowA[0], vzero);
 	      MMA (&acc0, rowB_h, rowA_h);
@@ -271,8 +289,8 @@ CNAME (BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alpha, IFLOAT * A,
 	      vector short rowA =
 		{ AO[l + 0], 0, AO[l + 1], 0, AO[l + 2], 0, AO[l + 3], 0 };
 	      vec_t *rowB = (vec_t *) & (BO[l << 1]);
-	      MMA (&acc0, MERGE_HIGH (rowB[0], rowB[1]), (vec_t) rowA);
-	      MMA (&acc1, MERGE_LOW (rowB[0], rowB[1]), (vec_t) rowA);
+	      MMA (&acc0, MERGE_HIGH (rowB[0], vzero), (vec_t) rowA);
+	      MMA (&acc1, MERGE_LOW (rowB[0], vzero), (vec_t) rowA);
 	    }
 	  SAVE_ACC (&acc0, 0);
 	  SAVE_ACC1 (&acc1, 0);
@@ -306,8 +324,8 @@ CNAME (BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alpha, IFLOAT * A,
 		l = (k / 2) << 2;
 	      vector short rowA = { AO[l + 0], 0, AO[l + 1], 0, 0, 0, 0, 0 };
 	      vec_t *rowB = (vec_t *) & (BO[(l << 2)]);
-	      MMA (&acc0, MERGE_HIGH (rowB[0], rowB[1]), (vec_t) rowA);
-	      MMA (&acc1, MERGE_LOW (rowB[0], rowB[1]), (vec_t) rowA);
+	      MMA (&acc0, MERGE_HIGH (rowB[0], vzero), (vec_t) rowA);
+	      MMA (&acc1, MERGE_LOW (rowB[0], vzero), (vec_t) rowA);
 	    }
 	  SAVE4x2_ACC (&acc0, 0);
 	  SAVE4x2_ACC1 (&acc1, 0);
@@ -319,7 +337,7 @@ CNAME (BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alpha, IFLOAT * A,
 	{
 	  IFLOAT *BO = B;
 	  v2sf_t *rowC;
-	  v2sf_t result[8];
+	  v4sf_t result[4], res[4];
 	  __vector_quad acc0, acc1;
 	  __builtin_mma_xxsetaccz (&acc0);
 	  __builtin_mma_xxsetaccz (&acc1);
@@ -338,11 +356,11 @@ CNAME (BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alpha, IFLOAT * A,
 		l = (k / 2) << 1;
 	      vector short rowA = { AO[l], 0, 0, 0, 0, 0, 0, 0 };
 	      vec_t *rowB = (vec_t *) & (BO[(l << 3)]);
-	      MMA (&acc0, MERGE_HIGH (rowB[0], rowB[1]), (vec_t) rowA);
-	      MMA (&acc1, MERGE_LOW (rowB[0], rowB[1]), (vec_t) rowA);
+	      MMA (&acc0, MERGE_HIGH (rowB[0], vzero), (vec_t) rowA);
+	      MMA (&acc1, MERGE_LOW (rowB[0], vzero), (vec_t) rowA);
 	    }
-	  SAVE4x2_ACC (&acc0, 0);
-	  SAVE4x2_ACC1 (&acc1, 0);
+	  SAVE4x2_ACC_SCALAR (&acc0);
+	  SAVE4x2_ACC1_SCALAR (&acc1);
 	  CO += 1;
 	  AO += k;
 	  BO += (k << 3);
@@ -387,16 +405,16 @@ CNAME (BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alpha, IFLOAT * A,
 		l = (k / 2) << 3;
 	      vec_t *rowA = (vec_t *) & (AO[(l << 2)]);
 	      vec_t *rowA1 = (vec_t *) & (A1[(l << 2)]);
-	      vec_t *rowB = (vec_t *) & (BO[l]);
-	      vec_t rowB_mrg = MERGE_ROW (rowB[0]);
-	      MMA (&acc0, rowB_mrg, MERGE_HIGH (rowA[0], vzero));
-	      MMA (&acc1, rowB_mrg, MERGE_LOW (rowA[0], vzero));
-	      MMA (&acc2, rowB_mrg, MERGE_HIGH (rowA[1], vzero));
-	      MMA (&acc3, rowB_mrg, MERGE_LOW (rowA[1], vzero));
-	      MMA (&acc4, rowB_mrg, MERGE_HIGH (rowA1[0], vzero));
-	      MMA (&acc5, rowB_mrg, MERGE_LOW (rowA1[0], vzero));
-	      MMA (&acc6, rowB_mrg, MERGE_HIGH (rowA1[1], vzero));
-	      MMA (&acc7, rowB_mrg, MERGE_LOW (rowA1[1], vzero));
+	      vector short rowB_mrg =
+		{ BO[l], 0, BO[l + 1], 0, BO[l + 2], 0, BO[l + 3], 0 };
+	      MMA (&acc0, (vec_t)rowB_mrg, MERGE_HIGH (rowA[0], vzero));
+	      MMA (&acc1, (vec_t)rowB_mrg, MERGE_LOW (rowA[0], vzero));
+	      MMA (&acc2, (vec_t)rowB_mrg, MERGE_HIGH (rowA[1], vzero));
+	      MMA (&acc3, (vec_t)rowB_mrg, MERGE_LOW (rowA[1], vzero));
+	      MMA (&acc4, (vec_t)rowB_mrg, MERGE_HIGH (rowA1[0], vzero));
+	      MMA (&acc5, (vec_t)rowB_mrg, MERGE_LOW (rowA1[0], vzero));
+	      MMA (&acc6, (vec_t)rowB_mrg, MERGE_HIGH (rowA1[1], vzero));
+	      MMA (&acc7, (vec_t)rowB_mrg, MERGE_LOW (rowA1[1], vzero));
 	    }
 
 	  SAVE_ACC (&acc0, 0);
@@ -436,12 +454,12 @@ CNAME (BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alpha, IFLOAT * A,
 	      if (k > 1)
 		l = (k / 2) << 3;
 	      vec_t *rowA = (vec_t *) & (AO[(l << 2)]);
-	      vec_t *rowB = (vec_t *) & (BO[l]);
-	      vec_t rowB_mrg = MERGE_ROW (rowB[0]);
-	      MMA (&acc0, rowB_mrg, MERGE_HIGH (rowA[0], vzero));
-	      MMA (&acc1, rowB_mrg, MERGE_LOW (rowA[0], vzero));
-	      MMA (&acc2, rowB_mrg, MERGE_HIGH (rowA[1], vzero));
-	      MMA (&acc3, rowB_mrg, MERGE_LOW (rowA[1], vzero));
+	      vector short rowB_mrg =
+		{ BO[l], 0, BO[l + 1], 0, BO[l + 2], 0, BO[l + 3], 0 };
+	      MMA (&acc0, (vec_t)rowB_mrg, MERGE_HIGH (rowA[0], vzero));
+	      MMA (&acc1, (vec_t)rowB_mrg, MERGE_LOW (rowA[0], vzero));
+	      MMA (&acc2, (vec_t)rowB_mrg, MERGE_HIGH (rowA[1], vzero));
+	      MMA (&acc3, (vec_t)rowB_mrg, MERGE_LOW (rowA[1], vzero));
 	    }
 
 	  SAVE_ACC (&acc0, 0);
@@ -475,9 +493,10 @@ CNAME (BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alpha, IFLOAT * A,
 		l = (k / 2) << 3;
 	      vec_t *rowA = (vec_t *) & (AO[l << 1]);
 	      vec_t *rowB = (vec_t *) & (BO[l]);
-	      vec_t rowB_mrg = MERGE_ROW (rowB[0]);
-	      MMA (&acc0, rowB_mrg, MERGE_HIGH (rowA[0], vzero));
-	      MMA (&acc1, rowB_mrg, MERGE_LOW (rowA[0], vzero));
+	      vector short rowB_mrg =
+		{ BO[l], 0, BO[l + 1], 0, BO[l + 2], 0, BO[l + 3], 0 };
+	      MMA (&acc0, (vec_t)rowB_mrg, MERGE_HIGH (rowA[0], vzero));
+	      MMA (&acc1, (vec_t)rowB_mrg, MERGE_LOW (rowA[0], vzero));
 	    }
 	  SAVE_ACC (&acc0, 0);
 	  SAVE_ACC (&acc1, 4);
@@ -505,8 +524,9 @@ CNAME (BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alpha, IFLOAT * A,
 		l = (k / 2) << 3;
 	      vector short rowA =
 		{ AO[l], 0, AO[l + 1], 0, AO[l + 2], 0, AO[l + 3], 0 };
-	      vec_t *rowB = (vec_t *) & (BO[l]);
-	      MMA (&acc0, MERGE_ROW (rowB[0]), (vec_t) rowA);
+	      vector short rowB_mrg =
+		{ BO[l], 0, BO[l + 1], 0, BO[l + 2], 0, BO[l + 3], 0 };
+	      MMA (&acc0, (vec_t)(rowB_mrg), (vec_t) rowA);
 	    }
 	  SAVE_ACC (&acc0, 0);
 	  CO += 4;
@@ -536,8 +556,11 @@ CNAME (BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alpha, IFLOAT * A,
 	      if (k > 1)
 		l = (k / 2) << 2;
 	      vector short rowA = { AO[l], 0, AO[l + 1], 0, 0, 0, 0, 0 };
-	      vec_t *rowB = (vec_t *) & (BO[l << 1]);
-	      MMA (&acc0, MERGE_ROW (rowB[0]), (vec_t) rowA);
+	      vector short rowB_mrg =
+		{ BO[(l<<1)], 0, BO[(l<<1) + 1], 0, BO[(l<<1) + 2], 0,
+		BO[(l<<1) + 3], 0
+	      };
+	      MMA (&acc0, (vec_t)(rowB_mrg), (vec_t) rowA);
 	    }
 	  SAVE4x2_ACC (&acc0, 0);
 	  CO += 2;
@@ -548,7 +571,7 @@ CNAME (BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alpha, IFLOAT * A,
 	{
 	  IFLOAT *BO = B;
 	  v2sf_t *rowC;
-	  v2sf_t result[8];
+	  v4sf_t result[4], res[4];
 	  __vector_quad acc0;
 	  BLASLONG l = 0;
 	  __builtin_mma_xxsetaccz (&acc0);
@@ -566,10 +589,13 @@ CNAME (BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alpha, IFLOAT * A,
 	      if (k > 1)
 		l = (k / 2) << 1;
 	      vector short rowA = { AO[l], 0, 0, 0, 0, 0, 0, 0 };
-	      vec_t *rowB = (vec_t *) & (BO[l << 2]);
-	      MMA (&acc0, MERGE_ROW (rowB[0]), (vec_t) rowA);
+	      vector short rowB_mrg =
+		{ BO[(l<<2) + 0], 0, BO[(l<<2) + 1], 0, BO[(l <<2) + 2], 0,
+		BO[(l<<2) + 3], 0
+	      };
+	      MMA (&acc0, (vec_t)(rowB_mrg), (vec_t) rowA);
 	    }
-	  SAVE4x2_ACC (&acc0, 0);
+	  SAVE4x2_ACC_SCALAR (&acc0);
 	  AO += k;
 	  BO += (k << 2);
 	  CO += 1;
@@ -620,14 +646,14 @@ CNAME (BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alpha, IFLOAT * A,
 	      vector short rowB = { BO[l + 0], 0, BO[l + 1], 0, 0, 0, 0, 0 };
 	      vec_t *rowA = (vec_t *) & (AO[l << 3]);
 	      vec_t *rowA1 = (vec_t *) & (A1[l << 3]);
-	      MMA (&acc0, (vec_t) rowB, MERGE_HIGH (rowA[0], rowA[2]));
-	      MMA (&acc1, (vec_t) rowB, MERGE_LOW (rowA[0], rowA[2]));
-	      MMA (&acc2, (vec_t) rowB, MERGE_HIGH (rowA[1], rowA[3]));
-	      MMA (&acc3, (vec_t) rowB, MERGE_LOW (rowA[1], rowA[3]));
-	      MMA (&acc4, (vec_t) rowB, MERGE_HIGH (rowA1[0], rowA1[2]));
-	      MMA (&acc5, (vec_t) rowB, MERGE_LOW (rowA1[0], rowA1[2]));
-	      MMA (&acc6, (vec_t) rowB, MERGE_HIGH (rowA1[1], rowA1[3]));
-	      MMA (&acc7, (vec_t) rowB, MERGE_LOW (rowA1[1], rowA1[3]));
+	      MMA (&acc0, (vec_t) rowB, MERGE_HIGH (rowA[0], vzero));
+	      MMA (&acc1, (vec_t) rowB, MERGE_LOW (rowA[0], vzero));
+	      MMA (&acc2, (vec_t) rowB, MERGE_HIGH (rowA[1], vzero));
+	      MMA (&acc3, (vec_t) rowB, MERGE_LOW (rowA[1], vzero));
+	      MMA (&acc4, (vec_t) rowB, MERGE_HIGH (rowA1[0], vzero));
+	      MMA (&acc5, (vec_t) rowB, MERGE_LOW (rowA1[0], vzero));
+	      MMA (&acc6, (vec_t) rowB, MERGE_HIGH (rowA1[1], vzero));
+	      MMA (&acc7, (vec_t) rowB, MERGE_LOW (rowA1[1], vzero));
 	    }
 	  SAVE2x4_ACC (&acc0, 0);
 	  SAVE2x4_ACC (&acc1, 4);
@@ -669,10 +695,10 @@ CNAME (BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alpha, IFLOAT * A,
 		l = (k / 2) << 2;
 	      vector short rowB = { BO[l + 0], 0, BO[l + 1], 0, 0, 0, 0, 0 };
 	      vec_t *rowA = (vec_t *) & (AO[l << 3]);
-	      MMA (&acc0, (vec_t) rowB, MERGE_HIGH (rowA[0], rowA[2]));
-	      MMA (&acc1, (vec_t) rowB, MERGE_LOW (rowA[0], rowA[2]));
-	      MMA (&acc2, (vec_t) rowB, MERGE_HIGH (rowA[1], rowA[3]));
-	      MMA (&acc3, (vec_t) rowB, MERGE_LOW (rowA[1], rowA[3]));
+	      MMA (&acc0, (vec_t) rowB, MERGE_HIGH (rowA[0], vzero ));
+	      MMA (&acc1, (vec_t) rowB, MERGE_LOW (rowA[0], vzero));
+	      MMA (&acc2, (vec_t) rowB, MERGE_HIGH (rowA[1], vzero));
+	      MMA (&acc3, (vec_t) rowB, MERGE_LOW (rowA[1], vzero));
 	    }
 	  SAVE2x4_ACC (&acc0, 0);
 	  SAVE2x4_ACC (&acc1, 4);
@@ -708,8 +734,8 @@ CNAME (BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alpha, IFLOAT * A,
 		l = (k / 2) << 2;
 	      vector short rowB = { BO[l + 0], 0, BO[l + 1], 0, 0, 0, 0, 0 };
 	      vec_t *rowA = (vec_t *) & (AO[(l << 2)]);
-	      MMA (&acc0, (vec_t) rowB, MERGE_HIGH (rowA[0], rowA[1]));
-	      MMA (&acc1, (vec_t) rowB, MERGE_LOW (rowA[0], rowA[1]));
+	      MMA (&acc0, (vec_t) rowB, MERGE_HIGH (rowA[0], vzero));
+	      MMA (&acc1, (vec_t) rowB, MERGE_LOW (rowA[0], vzero));
 	    }
 	  SAVE2x4_ACC (&acc0, 0);
 	  SAVE2x4_ACC (&acc1, 4);
@@ -740,8 +766,10 @@ CNAME (BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alpha, IFLOAT * A,
 	      if (k > 1)
 		l = (k / 2) << 2;
 	      vector short rowB = { BO[l + 0], 0, BO[l + 1], 0, 0, 0, 0, 0 };
-	      vec_t *rowA = (vec_t *) & (AO[l << 1]);
-	      MMA (&acc0, (vec_t) rowB, MERGE_ROW (rowA[0]));
+	      vector short rowA =
+	        { AO[(l << 1)], 0, AO[(l << 1) + 1] , 0 , AO[(l<<1) + 2],
+	        0, AO[(l << 1) + 3], 0 };
+	      MMA (&acc0, (vec_t) rowB, (vec_t)(rowA));
 	    }
 	  SAVE2x4_ACC (&acc0, 0);
 	  CO += 4;
@@ -829,10 +857,10 @@ CNAME (BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alpha, IFLOAT * A,
 		l = (k / 2) << 1;
 	      vector short rowB = { BO[l], 0, 0, 0, 0, 0, 0, 0 };
 	      vec_t *rowA = (vec_t *) & (AO[(l << 4)]);
-	      MMA (&acc0, (vec_t) rowB, MERGE_HIGH (rowA[0], rowA[2]));
-	      MMA (&acc1, (vec_t) rowB, MERGE_LOW (rowA[0], rowA[2]));
-	      MMA (&acc2, (vec_t) rowB, MERGE_HIGH (rowA[1], rowA[3]));
-	      MMA (&acc3, (vec_t) rowB, MERGE_LOW (rowA[1], rowA[3]));
+	      MMA (&acc0, (vec_t) rowB, MERGE_HIGH (rowA[0], vzero));
+	      MMA (&acc1, (vec_t) rowB, MERGE_LOW (rowA[0], vzero));
+	      MMA (&acc2, (vec_t) rowB, MERGE_HIGH (rowA[1], vzero));
+	      MMA (&acc3, (vec_t) rowB, MERGE_LOW (rowA[1], vzero));
 	    }
 	  rowC = (v4sf_t *) &CO[0];
 	  __builtin_mma_disassemble_acc ((void *)result, &acc0);
@@ -871,8 +899,8 @@ CNAME (BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alpha, IFLOAT * A,
 		l = (k / 2) << 1;
 	      vector short rowB = { BO[l], 0, 0, 0, 0, 0, 0, 0 };
 	      vec_t *rowA = (vec_t *) & (AO[(l << 3)]);
-	      MMA (&acc0, (vec_t) rowB, MERGE_HIGH (rowA[0], rowA[1]));
-	      MMA (&acc1, (vec_t) rowB, MERGE_LOW (rowA[0], rowA[1]));
+	      MMA (&acc0, (vec_t) rowB, MERGE_HIGH (rowA[0], vzero));
+	      MMA (&acc1, (vec_t) rowB, MERGE_LOW (rowA[0], vzero));
 	    }
 	  rowC = (v4sf_t *) &CO[0];
 	  __builtin_mma_disassemble_acc ((void *)result, &acc0);
@@ -904,8 +932,10 @@ CNAME (BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alpha, IFLOAT * A,
 	      if (k > 1)
 		l = (k / 2) << 1;
 	      vector short rowB = { BO[l], 0, 0, 0, 0, 0, 0, 0 };
-	      vec_t *rowA = (vec_t *) & (AO[(l << 2)]);
-	      MMA (&acc0, (vec_t) rowB, MERGE_ROW (rowA[0]));
+	      vector short rowA =
+	        { AO[(l << 2)], 0, AO[(l << 2) + 1] , 0 ,
+		AO[(l << 2) + 2], 0, AO[(l << 2) + 3], 0 };
+	      MMA (&acc0, (vec_t) rowB, (vec_t)(rowA));
 	    }
 	  rowC = (v4sf_t *) &CO[0];
 	  __builtin_mma_disassemble_acc ((void *)result, &acc0);

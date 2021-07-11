@@ -149,6 +149,7 @@
  #define KERNEL_h_k1m16n2 \
   "vmovddup (%0),%%zmm1; vmovddup 8(%0),%%zmm2; vmovddup 64(%0),%%zmm3; vmovddup 72(%0),%%zmm4; addq $128,%0;"\
   unit_acc_m16n2(8,9,10,11,%1)
+
 #endif
 #define KERNEL_k1m16n2 KERNEL_h_k1m16n2 "addq $16,%1;"
 #define KERNEL_h_k1m16n4 KERNEL_h_k1m16n2 "prefetcht0 384(%0);" unit_acc_m16n2(12,13,14,15,%1,%%r12,1)
@@ -283,7 +284,32 @@
 #define KERNEL_h_k1m4n10 KERNEL_h_k1m4n8 unit_acc_m4n2(12,13,%%r15,%%r12,1)
 #define KERNEL_k1m4n10 KERNEL_h_k1m4n10 "addq $16,%%r15;"
 #define KERNEL_h_k1m4n12 KERNEL_h_k1m4n10 unit_acc_m4n2(14,15,%%r15,%%r12,2)
-#define KERNEL_k1m4n12 KERNEL_h_k1m4n12 "addq $16,%%r15;"
+//#define KERNEL_k1m4n12 KERNEL_h_k1m4n12 "addq $16,%%r15;"
+#define unit_acc_k2m4n2(c1_no,c2_no,...)\
+  "vbroadcastf64x4 ("#__VA_ARGS__"),%%zmm3; vpermpd %%zmm3,%%zmm30,%%zmm3;"\
+  "vfmadd231pd %%zmm1,%%zmm3,%%zmm"#c1_no"; vfmadd231pd %%zmm2,%%zmm3,%%zmm"#c2_no";"
+
+#define unit_merge_to_ymm(c1_no) \
+  "vextractf64x4 $1,%%zmm"#c1_no",%%ymm30; vaddpd %%ymm"#c1_no",%%ymm30,%%ymm"#c1_no";"
+
+#define KERNEL_k1m4n12 \
+  "cmpq $2, %5; jb 104912f;"\
+  "vmovupd 64+%11,%%zmm30;"\
+  "\n204912:"\
+  "vmovddup (%0),%%zmm1; vmovddup 8(%0),%%zmm2; addq $64,%0;" \
+  unit_acc_k2m4n2(4,5,%1) unit_acc_k2m4n2(6,7,%1,%%r12,1) unit_acc_k2m4n2(8, 9, %1, %%r12, 2) "addq $32,%1;" \
+  unit_acc_k2m4n2(10,11,%%r15) unit_acc_k2m4n2(12,13,%%r15,%%r12,1) unit_acc_k2m4n2(14,15,%%r15,%%r12,2) "addq $32,%%r15;" \
+  "subq $2, %5; cmpq $2, %5; jnb 204912b;"\
+  unit_merge_to_ymm(4) unit_merge_to_ymm(5) unit_merge_to_ymm(6) unit_merge_to_ymm(7) \
+  unit_merge_to_ymm(8) unit_merge_to_ymm(9) unit_merge_to_ymm(10) unit_merge_to_ymm(11) \
+  unit_merge_to_ymm(12) unit_merge_to_ymm(13) unit_merge_to_ymm(14) unit_merge_to_ymm(15) \
+  "testq %5, %5; jz 1004912f;"\
+  "\n104912:"\
+  KERNEL_h_k1m4n12 "addq $16,%%r15;"\
+  "decq %5; jnz 104912b;"\
+  "\n1004912:"\
+  "incq %5;"
+
 #if defined(TRMMKERNEL) && !defined(LEFT) && (BACKWARDS == 0)
   #define loada_kend_k1m4 "vmovddup (%0,%3,1),%%ymm1; vmovddup 8(%0,%3,1),%%ymm2; addq $32,%3;"
   #define acc_kend_nc2_k1m4(boff1) unit_acc_gen_m4n2(6,7,boff1,%1,%%r12,1)
@@ -336,7 +362,31 @@
 #define KERNEL_h_k1m2n10 KERNEL_h_k1m2n8 unit_acc_m2n2(12,13,%%r15,%%r12,1)
 #define KERNEL_k1m2n10 KERNEL_h_k1m2n10 "addq $16,%%r15;"
 #define KERNEL_h_k1m2n12 KERNEL_h_k1m2n10 unit_acc_m2n2(14,15,%%r15,%%r12,2)
-#define KERNEL_k1m2n12 KERNEL_h_k1m2n12 "addq $16,%%r15;"
+//#define KERNEL_k1m2n12 KERNEL_h_k1m2n12 "addq $16,%%r15;"
+
+#define unit_acc_k4m2n2(c1_no,c2_no,...) \
+  "vmovupd ("#__VA_ARGS__"),%%zmm3; vfmadd231pd %%zmm1,%%zmm3,%%zmm"#c1_no"; vfmadd231pd %%zmm2,%%zmm3,%%zmm"#c2_no";"
+
+#define unit_merge_to_xmm(c1_no) \
+  "vextractf64x2 $0,%%zmm"#c1_no",%%xmm20; vextractf64x2 $1,%%zmm"#c1_no",%%xmm21; vextractf64x2 $2,%%zmm"#c1_no",%%xmm22; vextractf64x2 $3,%%zmm"#c1_no",%%xmm23;"\
+  "vaddpd %%xmm20,%%xmm21,%%xmm20; vaddpd %%xmm22,%%xmm23,%%xmm22; vaddpd %%xmm20,%%xmm22,%%xmm"#c1_no";"
+
+#define KERNEL_k1m2n12 \
+  "cmpq $4,%5; jb 102912f;"\
+  "\n402912:"\
+  "vmovddup (%0),%%zmm1; vmovddup 8(%0),%%zmm2; addq $64,%0;" \
+  unit_acc_k4m2n2(4,5,%1) unit_acc_k4m2n2(6,7,%1,%%r12,1) unit_acc_k4m2n2(8,9,%1,%%r12,2) "addq $64,%1;" \
+  unit_acc_k4m2n2(10,11,%%r15) unit_acc_k4m2n2(12,13,%%r15,%%r12,1) unit_acc_k4m2n2(14,15,%%r15,%%r12,2) "addq $64,%%r15;" \
+  "subq $4,%5; cmpq $4,%5; jnb 402912b;"\
+  unit_merge_to_xmm(4) unit_merge_to_xmm(5) unit_merge_to_xmm(6) unit_merge_to_xmm(7) unit_merge_to_xmm(8) unit_merge_to_xmm(9) \
+  unit_merge_to_xmm(10) unit_merge_to_xmm(11) unit_merge_to_xmm(12) unit_merge_to_xmm(13) unit_merge_to_xmm(14) unit_merge_to_xmm(15) \
+  "testq %5,%5; jz 1002912f;"\
+  "\n102912:"\
+  KERNEL_h_k1m2n12 "addq $16,%%r15;" \
+  "decq %5; jnz 102912b;" \
+  "\n1002912:"\
+  "incq %5;"
+
 #if defined(TRMMKERNEL) && !defined(LEFT) && (BACKWARDS == 0)
   #define loada_kend_k1m2 "vmovddup (%0,%3,1),%%xmm1; vmovddup 8(%0,%3,1),%%xmm2; addq $16,%3;"
   #define acc_kend_nc2_k1m2(boff1) unit_acc_gen_m2n2(6,7,boff1,%1,%%r12,1)
@@ -387,7 +437,24 @@
 #define KERNEL_h_k1m1n10 KERNEL_h_k1m1n8 "vfmadd231pd (%%r15,%%r12,1),%%xmm1,%%xmm8;"
 #define KERNEL_k1m1n10 KERNEL_h_k1m1n10 "addq $16,%%r15;"
 #define KERNEL_h_k1m1n12 KERNEL_h_k1m1n10 "vfmadd231pd (%%r15,%%r12,2),%%xmm1,%%xmm9;"
-#define KERNEL_k1m1n12 KERNEL_h_k1m1n12 "addq $16,%%r15;"
+//#define KERNEL_k1m1n12 KERNEL_h_k1m1n12 "addq $16,%%r15;"
+#define KERNEL_k1m1n12 \
+  "cmpq $4,%5; jb 101912f;" \
+  "vmovupd %11,%%zmm2;"\
+  "\n401912:"\
+  "vmovupd (%0),%%ymm1; vpermpd %%zmm1,%%zmm2,%%zmm1; addq $32,%0;" \
+  "vfmadd231pd (%1),%%zmm1,%%zmm4; vfmadd231pd (%1,%%r12,1),%%zmm1,%%zmm5; vfmadd231pd (%1,%%r12,2),%%zmm1,%%zmm6; addq $64,%1;"\
+  "vfmadd231pd (%%r15),%%zmm1,%%zmm7; vfmadd231pd (%%r15,%%r12,1),%%zmm1,%%zmm8; vfmadd231pd (%%r15,%%r12,2),%%zmm1,%%zmm9; addq $64,%%r15;"\
+  "subq $4,%5; cmpq $4,%5; jnb 401912b;"\
+  unit_merge_to_xmm(4) unit_merge_to_xmm(5) unit_merge_to_xmm(6) \
+  unit_merge_to_xmm(7) unit_merge_to_xmm(8) unit_merge_to_xmm(9) \
+  "testq %5,%5; jz 1001912f;"\
+  "\n101912:"\
+  KERNEL_h_k1m1n12 "addq $16,%%r15;" \
+  "decq %5; jnz 101912b;" \
+  "\n1001912:"\
+  "incq %5;"
+
 #if defined(TRMMKERNEL) && !defined(LEFT) && (BACKWARDS == 0)
   #define loada_kend_k1m1 "vmovddup (%0,%3,1),%%xmm1; addq $8,%3;"
   #define acc_kend_nc2_k1m1(boff1) "vfmadd231pd "#boff1"(%1,%%r12,1),%%xmm1,%%xmm5;"
@@ -480,7 +547,7 @@
     COMPUTE_SIMPLE(1,ndim) "subq $1,%%r11;"\
     #ndim"33106:\n\t"\
     "movq %%r14,%1;"\
-  :"+r"(a_ptr),"+r"(b_ptr),"+r"(c_ptr),"+r"(c_tmp),"+r"(ldc_in_bytes),"+r"(k_count),"+r"(b_pref):"m"(M),"m"(ALPHA),"m"(off),"m"(K):"r10","r11","r12","r13","r14","r15","cc","memory",\
+  :"+r"(a_ptr),"+r"(b_ptr),"+r"(c_ptr),"+r"(c_tmp),"+r"(ldc_in_bytes),"+r"(k_count),"+r"(b_pref):"m"(M),"m"(ALPHA),"m"(off),"m"(K), "o"(permute_table):"r10","r11","r12","r13","r14","r15","cc","memory",\
     "zmm0","zmm1","zmm2","zmm3","zmm4","zmm5","zmm6","zmm7","zmm8","zmm9","zmm10","zmm11","zmm12","zmm13","zmm14","zmm15",\
     "zmm16","zmm17","zmm18","zmm19","zmm20","zmm21","zmm22","zmm23","zmm24","zmm25","zmm26","zmm27","zmm28","zmm29","zmm30","zmm31");\
   a_ptr -= M * K; b_ptr += ndim * K; c_ptr += ndim * ldc - M; TAIL_SET_OFF(ndim)\
@@ -501,6 +568,10 @@ CNAME(BLASLONG m, BLASLONG n, BLASLONG k, double alpha, double * __restrict__ A,
     int64_t M = (int64_t)m, K = (int64_t)k, k_count = 0;
     BLASLONG n_count = n, off = 0;
     double *a_ptr = A,*b_ptr = B,*c_ptr = C,*c_tmp = C,*b_pref = B;
+    int64_t permute_table[] = {
+	    0, 0, 1, 1, 2, 2, 3, 3,  // abcdxxxx -> aabbccdd
+	    0, 1, 0, 1, 2, 3, 2, 3,  // abcdxxxx -> ababcdcd
+    };
 #ifdef TRMMKERNEL
   #ifdef LEFT
     off = offset;

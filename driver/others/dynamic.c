@@ -404,6 +404,7 @@ static int get_vendor(void){
   if (!strcmp(vendor.vchar, "GenuineIntel")) return VENDOR_INTEL;
   if (!strcmp(vendor.vchar, "AuthenticAMD")) return VENDOR_AMD;
   if (!strcmp(vendor.vchar, "CentaurHauls")) return VENDOR_CENTAUR;
+  if (!strcmp(vendor.vchar, "  Shanghai  ")) return VENDOR_CENTAUR;
   if (!strcmp(vendor.vchar, "HygonGenuine")) return VENDOR_HYGON;
 
   if ((eax == 0) || ((eax & 0x500) != 0)) return VENDOR_INTEL;
@@ -621,6 +622,22 @@ static gotoblas_t *get_coretype(void){
 	    return &gotoblas_NEHALEM;
 	  }
         }
+	if (model == 10) {
+          // Ice Lake SP
+	   if(support_avx512_bf16())
+             return &gotoblas_COOPERLAKE;
+          if (support_avx512()) 
+	    return &gotoblas_SKYLAKEX;
+	  if(support_avx2())
+	    return &gotoblas_HASWELL;
+	  if(support_avx()) {
+	    openblas_warning(FALLBACK_VERBOSE, SANDYBRIDGE_FALLBACK);
+	    return &gotoblas_SANDYBRIDGE;
+	  } else {
+	    openblas_warning(FALLBACK_VERBOSE, NEHALEM_FALLBACK);
+	    return &gotoblas_NEHALEM;
+	  }
+        }      
         return NULL;  
       case 7:
 	if (model == 10) // Goldmont Plus
@@ -808,6 +825,9 @@ static gotoblas_t *get_coretype(void){
     switch (family) {
     case 0x6:
       return &gotoblas_NANO;
+      break;
+    case 0x7:
+      return &gotoblas_NEHALEM;
     }
   }
 

@@ -47,6 +47,7 @@ environment:
 install:
   - if [%COMPILER%]==[clang-cl] call %CONDA_INSTALL_LOCN%\Scripts\activate.bat
   - if [%COMPILER%]==[clang-cl] conda config --add channels conda-forge --force
+  - if [%COMPILER%]==[clang-cl] conda config --set auto_update_conda false
   - if [%COMPILER%]==[clang-cl] conda install --yes --quiet clangdev cmake ninja flang=11.0.1
   - if [%COMPILER%]==[clang-cl] call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvarsall.bat" x64
   - if [%COMPILER%]==[clang-cl] set "LIB=%CONDA_INSTALL_LOCN%\Library\lib;%LIB%"
