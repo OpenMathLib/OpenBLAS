@@ -126,6 +126,7 @@ void NAME(char *TRANSA, char *TRANSB,
 
 #ifdef SMP
   double MNK;
+#if defined(USE_SIMPLE_THREADED_LEVEL3) || !defined(NO_AFFINITY)
 #ifndef COMPLEX
 #ifdef XDOUBLE
   int mode  =  BLAS_XDOUBLE | BLAS_REAL;
@@ -141,6 +142,7 @@ void NAME(char *TRANSA, char *TRANSB,
   int mode  =  BLAS_DOUBLE  | BLAS_COMPLEX;
 #else
   int mode  =  BLAS_SINGLE  | BLAS_COMPLEX;
+#endif
 #endif
 #endif
 #endif
