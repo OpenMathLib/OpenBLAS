@@ -1,5 +1,53 @@
 OpenBLAS ChangeLog
 ====================================================================
+Version 0.3.16
+ 11-Jul-2021
+
+common:
+ - drastically reduced the stack size requirements for running the LAPACK
+   testsuite (Reference-LAPACK PR 553)
+ - fixed spurious test failures in the LAPACK testsuite (Reference-LAPACK
+   PR 564)
+ - expressly setting DYNAMIC_ARCH=0 no longer enables dynamic_arch mode 
+ - improved performance of xGER, xSPR, xSPR2, xSYR, xSYR2, xTRSV, SGEMV_N 
+   and DGEMV_N, for small input sizes and consecutive arguments
+ - improved performance of xGETRF, xPORTF and xPOTRI for small input sizes
+   by disabling multithreading
+ - fixed installing with BSD versions of the "install" utility
+
+RISCV:
+ - fixed the implementation of xIMIN
+ - improved the performance of DSDOT
+ - fixed linking of the tests on C910V with current vendor gcc
+
+POWER:
+- fixed SBGEMM computation for some odd value inputs
+- fixed compilation for PPCG4, PPC970, POWER3, POWER4 and POWER5
+
+x86_64:
+ - improved performance of SGEMV_N and SGEMV_T for small N on AVX512-capable cpus
+ - worked around a miscompilation of ZGEMM/ZTRMM on Sandybridge with old gcc
+   versions
+ - fixed compilation with MS Visual Studio versions older than 2017
+ - fixed macro name collision with winnt.h from the latest Win10 SDK
+ - added cpu type autodetection for Intel Ice Lake SP
+ - fixed cpu type autodetection for Intel Tiger Lake
+ - added cpu type autodetection for recent Centaur/Zhaoxin models
+ - fixed compilation with musl libc
+
+ARM64:
+- fixed compilation with gcc/gfortran on the Apple M1
+- fixed linking of the tests on FreeBSD
+- fixed missing restore of a register in the recently rewritten DNRM2 kernel
+  for ThunderX2 and Neoverse N1 that could cause spurious failures in e.g.
+  DGEEV
+- added compiler optimization flags for the EMAG8180
+- added initial support for Cortex A55
+
+ARM:
+- fixed linking of the tests on FreeBSD
+
+====================================================================
 Version 0.3.15
   2-May-2021
 
