@@ -54,6 +54,7 @@
 #define VENDOR_TRANSMETA  9
 #define VENDOR_NSC	 10
 #define VENDOR_HYGON	 11
+#define VENDOR_ZHAOXIN   12
 #define VENDOR_UNKNOWN   99
 
 #define BITMASK(a, b, c) ((((a) >> (b)) & (c)))
