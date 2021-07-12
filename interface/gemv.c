@@ -201,7 +201,7 @@ void CNAME(enum CBLAS_ORDER order,
   if (beta != ONE) SCAL_K(leny, 0, 0, beta, y, blasabs(incy), NULL, 0, NULL, 0);
 
   if (alpha == ZERO) return;
-#if 0
+#if 1
   if (trans == 0 && incx == 1 && incy == 1 && m*n < 2304 *GEMM_MULTITHREAD_THRESHOLD) {
     GEMV_N(m, n, 0, alpha, a, lda, x, incx, y, incy, NULL);
     return;
