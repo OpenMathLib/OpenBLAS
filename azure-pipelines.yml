@@ -83,7 +83,8 @@ jobs:
   - script: |
       brew update
       make TARGET=CORE2 DYNAMIC_ARCH=1 USE_OPENMP=1 INTERFACE64=1 CC=gcc-10 FC=gfortran-10
-     
+      make TARGET=CORE2 DYNAMIC_ARCH=1 USE_OPENMP=1 INTERFACE64=1 CC=gcc-10 FC=gfortran-10 lapack-test
+      
 - job: OSX_GCC_Nothreads
   pool:
      vmImage: 'macOS-10.15'
@@ -91,7 +92,8 @@ jobs:
   - script: |
       brew update
       make USE_THREADS=0 CC=gcc-10 FC=gfortran-10
-     
+      make USE_THREADS=0 CC=gcc-10 FC=gfortran-10 lapack-test
+
 - job: OSX_OpenMP_Clang
   pool:
      vmImage: 'macOS-10.15'
@@ -103,6 +105,7 @@ jobs:
       brew update
       brew install llvm libomp
       make TARGET=CORE2 USE_OPENMP=1 INTERFACE64=1 DYNAMIC_ARCH=1 CC=/usr/local/opt/llvm/bin/clang FC=gfortran-10
+      make TARGET=CORE2 USE_OPENMP=1 INTERFACE64=1 DYNAMIC_ARCH=1 CC=/usr/local/opt/llvm/bin/clang FC=gfortran-10 lapack-test
 
 - job: OSX_Ifort_Clang
   pool:
