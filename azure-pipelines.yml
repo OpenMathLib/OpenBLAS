@@ -80,7 +80,7 @@ jobs:
   pool:
      vmImage: 'macOS-10.15'
   variables:
-     OPENBLAS_VERBOSE: 1
+     OPENBLAS_VERBOSE: 2
   steps:   
   - script: |
       brew update
@@ -93,8 +93,8 @@ jobs:
   steps:   
   - script: |
       brew update
-      make USE_THREADS=0 CC=gcc-10 FC=gfortran-10 DEBUG=1 NO_AVX512=1
-      make USE_THREADS=0 CC=gcc-10 FC=gfortran-10 DEBUG=1 NO_AVX512=1 lapack-test
+      make USE_THREADS=0 CC=gcc-10 FC=gfortran-10 DEBUG=1 NO_AVX512=1 NO_AVX2=1
+      make USE_THREADS=0 CC=gcc-10 FC=gfortran-10 DEBUG=1 NO_AVX512=1 NO_AVX2=1 lapack-test
 
 - job: OSX_OpenMP_Clang
   pool:
