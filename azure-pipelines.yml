@@ -79,6 +79,8 @@ jobs:
 - job: OSX_OpenMP
   pool:
      vmImage: 'macOS-10.15'
+  variables:
+     OPENBLAS_VERBOSE: 1
   steps:   
   - script: |
       brew update
@@ -91,8 +93,8 @@ jobs:
   steps:   
   - script: |
       brew update
-      make USE_THREADS=0 CC=gcc-10 FC=gfortran-10 DEBUG=1 TARGET=HASWELL
-      make USE_THREADS=0 CC=gcc-10 FC=gfortran-10 DEBUG=1 TARGET=HASWELL lapack-test
+      make USE_THREADS=0 CC=gcc-10 FC=gfortran-10 DEBUG=1 NO_AVX512=1
+      make USE_THREADS=0 CC=gcc-10 FC=gfortran-10 DEBUG=1 NO_AVX512=1 lapack-test
 
 - job: OSX_OpenMP_Clang
   pool:
@@ -100,7 +102,7 @@ jobs:
   variables:
      LD_LIBRARY_PATH: /usr/local/opt/llvm/lib
      LIBRARY_PATH: /usr/local/opt/llvm/lib
-     OPENBLAS_CORETYPE: HASWELL
+     OPENBLAS_CORETYPE: NEHALEM
   steps:   
   - script: |
       brew update
@@ -140,7 +142,6 @@ jobs:
   - script: | 
       source /opt/intel/oneapi/setvars.sh
       make CC=/usr/local/opt/llvm/bin/clang FC=ifort
-      make CC=/usr/local/opt/llvm/bin/clang FC=ifort lapack-test
  
 - job: OSX_NDK_ARMV7
   pool:
