@@ -91,8 +91,8 @@ jobs:
   steps:   
   - script: |
       brew update
-      make USE_THREADS=0 CC=gcc-10 FC=gfortran-10 DEBUG=1
-      make USE_THREADS=0 CC=gcc-10 FC=gfortran-10 DEBUG=1 lapack-test
+      make USE_THREADS=0 CC=gcc-10 FC=gfortran-10 DEBUG=1 TARGET=HASWELL
+      make USE_THREADS=0 CC=gcc-10 FC=gfortran-10 DEBUG=1 TARGET=HASWELL lapack-test
 
 - job: OSX_OpenMP_Clang
   pool:
@@ -100,6 +100,7 @@ jobs:
   variables:
      LD_LIBRARY_PATH: /usr/local/opt/llvm/lib
      LIBRARY_PATH: /usr/local/opt/llvm/lib
+     OPENBLAS_CORETYPE: HASWELL
   steps:   
   - script: |
       brew update
