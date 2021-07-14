@@ -105,8 +105,8 @@ jobs:
   - script: |
       brew update
       brew install llvm libomp
-      make TARGET=CORE2 USE_OPENMP=1 INTERFACE64=1 DYNAMIC_ARCH=1 CC=/usr/local/opt/llvm/bin/clang FC=gfortran-10 DEBUG=1
-      make TARGET=CORE2 USE_OPENMP=1 INTERFACE64=1 DYNAMIC_ARCH=1 CC=/usr/local/opt/llvm/bin/clang FC=gfortran-10 DEBUG=1 lapack-test
+      make TARGET=CORE2 USE_OPENMP=1 INTERFACE64=1 DYNAMIC_ARCH=1 CC=/usr/local/opt/llvm/bin/clang FC=gfortran-10
+      make TARGET=CORE2 USE_OPENMP=1 INTERFACE64=1 DYNAMIC_ARCH=1 CC=/usr/local/opt/llvm/bin/clang FC=gfortran-10 lapack-test
 
 - job: OSX_Ifort_Clang
   pool:
@@ -140,6 +140,7 @@ jobs:
   - script: | 
       source /opt/intel/oneapi/setvars.sh
       make CC=/usr/local/opt/llvm/bin/clang FC=ifort
+      make CC=/usr/local/opt/llvm/bin/clang FC=ifort lapack-test
  
 - job: OSX_NDK_ARMV7
   pool:
