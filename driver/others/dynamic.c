@@ -292,6 +292,7 @@ extern gotoblas_t  gotoblas_COOPERLAKE;
 #define VENDOR_AMD        2
 #define VENDOR_CENTAUR    3
 #define VENDOR_HYGON	  4
+#define VENDOR_ZHAOXIN    5
 #define VENDOR_UNKNOWN   99
 
 #define BITMASK(a, b, c) ((((a) >> (b)) & (c)))
@@ -404,7 +405,7 @@ static int get_vendor(void){
   if (!strcmp(vendor.vchar, "GenuineIntel")) return VENDOR_INTEL;
   if (!strcmp(vendor.vchar, "AuthenticAMD")) return VENDOR_AMD;
   if (!strcmp(vendor.vchar, "CentaurHauls")) return VENDOR_CENTAUR;
-  if (!strcmp(vendor.vchar, "  Shanghai  ")) return VENDOR_CENTAUR;
+  if (!strcmp(vendor.vchar, "  Shanghai  ")) return VENDOR_ZHAOXIN;
   if (!strcmp(vendor.vchar, "HygonGenuine")) return VENDOR_HYGON;
 
   if ((eax == 0) || ((eax & 0x500) != 0)) return VENDOR_INTEL;
@@ -415,7 +416,7 @@ static int get_vendor(void){
 static gotoblas_t *get_coretype(void){
 
   int eax, ebx, ecx, edx;
-  int family, exfamily, model, vendor, exmodel;
+  int family, exfamily, model, vendor, exmodel, stepping;
 
   cpuid(1, &eax, &ebx, &ecx, &edx);
 
@@ -423,6 +424,7 @@ static gotoblas_t *get_coretype(void){
   exfamily = BITMASK(eax, 20, 0xff);
   model    = BITMASK(eax,  4, 0x0f);
   exmodel  = BITMASK(eax, 16, 0x0f);
+  stepping = BITMASK(eax,  0, 0x0f);
 
   vendor = get_vendor();
 
@@ -824,11 +826,17 @@ static gotoblas_t *get_coretype(void){
   if (vendor == VENDOR_CENTAUR) {
     switch (family) {
     case 0x6:
-      return &gotoblas_NANO;
-      break;
-    case 0x7:
+      if (model == 0xf && stepping < 0xe)
+        return &gotoblas_NANO;
       return &gotoblas_NEHALEM;
+    default:
+      if (family >= 0x7)
+        return &gotoblas_NEHALEM;
     }
+  }
+
+  if (vendor == VENDOR_ZHAOXIN) {
+      return &gotoblas_NEHALEM;
   }
 
   return NULL;
