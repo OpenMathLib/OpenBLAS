@@ -1,5 +1,20 @@
 OpenBLAS ChangeLog
 ====================================================================
+Version 0.3.17
+ 15-Jul-2021
+
+common:
+ - reverted the optimization of SGEMV_N/DGEMV_N for small input sizes
+   and consecutive arguments as it led to stack overflows on x86_64
+   with some operating systems (notably OSX and Windows)
+ 
+ x86_64:
+  - reverted the performance patch for SGEMV_T on AVX512 as it caused
+    wrong results in some applications
+    
+ SPARC:
+  - fixed compilation with compilers other than gcc
+====================================================================
 Version 0.3.16
  11-Jul-2021
 
