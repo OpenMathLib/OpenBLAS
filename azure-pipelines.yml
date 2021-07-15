@@ -103,16 +103,13 @@ jobs:
      LD_LIBRARY_PATH: /usr/local/opt/llvm/lib
      LIBRARY_PATH: /usr/local/opt/llvm/lib
      OPENBLAS_CORETYPE: NEHALEM
-     DYLD_PRINT_LIBRARIES: 1
-     DYLD_PRINT_LIBRARIES_POST_LAUNCH: 1
-     DYLD_PRINT_RPATHS: 1
   steps:   
   - script: |
       brew update
       brew install llvm libomp
       make TARGET=CORE2 USE_OPENMP=1 INTERFACE64=1 DYNAMIC_ARCH=1 CC=/usr/local/opt/llvm/bin/clang FC=gfortran-10
       make TARGET=CORE2 USE_OPENMP=1 INTERFACE64=1 DYNAMIC_ARCH=1 CC=/usr/local/opt/llvm/bin/clang FC=gfortran-10 lapack-test
-      lapack-netlib/TESTING/EIG/xeigtsts <lapack-netlib/TESTING/sep.in
+      otool -L lapack-netlib/TESTING/EIG/xeigtsts
       clang -v
 
 - job: OSX_Ifort_Clang
