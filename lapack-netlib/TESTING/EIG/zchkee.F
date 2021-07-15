@@ -1076,7 +1076,7 @@
       INTEGER            I, I1, IC, INFO, ITMP, K, LENP, MAXTYP, NEWSD,
      $                   NK, NN, NPARMS, NRHS, NTYPES,
      $                   VERS_MAJOR, VERS_MINOR, VERS_PATCH
-      INTEGER*4          N_THREADS
+      INTEGER*4          N_THREADS, ONE_THREAD
       DOUBLE PRECISION   EPS, S1, S2, THRESH, THRSHN
 *     ..
 *     .. Local Arrays ..
@@ -1873,7 +1873,8 @@
          IF( TSTERR ) THEN
 #if defined(_OPENMP)
             N_THREADS = OMP_GET_MAX_THREADS()
-            CALL OMP_SET_NUM_THREADS(1)
+            ONE_THREAD = 1
+            CALL OMP_SET_NUM_THREADS(ONE_THREAD)
 #endif
             CALL ZERRST( 'ZST', NOUT )
 #if defined(_OPENMP)
@@ -2338,7 +2339,8 @@
          IF( TSTERR ) THEN
 #if defined(_OPENMP)
             N_THREADS = OMP_GET_MAX_THREADS()
-            CALL OMP_SET_NUM_THREADS(1)
+            ONE_THREAD = 1
+            CALL OMP_SET_NUM_THREADS(ONE_THREAD)
 #endif
             CALL ZERRST( 'ZHB', NOUT )
 #if defined(_OPENMP)
