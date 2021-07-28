@@ -2691,6 +2691,52 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define SYMV_P	16
 #endif
 
+#if defined (LOONGSON3R5)
+#define SNUMOPT         2
+#define DNUMOPT         2
+
+#define GEMM_DEFAULT_OFFSET_A 0
+#define GEMM_DEFAULT_OFFSET_B 0
+#define GEMM_DEFAULT_ALIGN 0x0ffffUL
+
+#define SGEMM_DEFAULT_UNROLL_N 8
+#define DGEMM_DEFAULT_UNROLL_N 8
+#define QGEMM_DEFAULT_UNROLL_N 2
+#define CGEMM_DEFAULT_UNROLL_N 4
+#define ZGEMM_DEFAULT_UNROLL_N 4
+#define XGEMM_DEFAULT_UNROLL_N 1
+
+#define SGEMM_DEFAULT_UNROLL_M 2
+#define DGEMM_DEFAULT_UNROLL_M 2
+#define QGEMM_DEFAULT_UNROLL_M 2
+#define CGEMM_DEFAULT_UNROLL_M 1
+#define ZGEMM_DEFAULT_UNROLL_M 1
+#define XGEMM_DEFAULT_UNROLL_M 1
+
+#define SGEMM_DEFAULT_P sgemm_p
+#define DGEMM_DEFAULT_P dgemm_p
+#define QGEMM_DEFAULT_P qgemm_p
+#define CGEMM_DEFAULT_P cgemm_p
+#define ZGEMM_DEFAULT_P zgemm_p
+#define XGEMM_DEFAULT_P xgemm_p
+
+#define SGEMM_DEFAULT_R sgemm_r
+#define DGEMM_DEFAULT_R dgemm_r
+#define QGEMM_DEFAULT_R qgemm_r
+#define CGEMM_DEFAULT_R cgemm_r
+#define ZGEMM_DEFAULT_R zgemm_r
+#define XGEMM_DEFAULT_R xgemm_r
+
+#define SGEMM_DEFAULT_Q 128
+#define DGEMM_DEFAULT_Q 128
+#define QGEMM_DEFAULT_Q 128
+#define CGEMM_DEFAULT_Q 128
+#define ZGEMM_DEFAULT_Q 128
+#define XGEMM_DEFAULT_Q 128
+
+#define SYMV_P  16
+#endif
+
 #if defined(P5600) || defined(MIPS1004K) || defined(MIPS24K) || defined(I6400) || defined(P6600) || defined(I6500)
 #define SNUMOPT  2
 #define DNUMOPT  2

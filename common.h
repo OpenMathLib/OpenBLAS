@@ -449,7 +449,7 @@ please https://github.com/xianyi/OpenBLAS/issues/246
 #include "common_mips.h"
 #endif
 
-    
+
 #ifdef ARCH_RISCV64
 #include "common_riscv64.h"
 #endif
@@ -468,6 +468,10 @@ please https://github.com/xianyi/OpenBLAS/issues/246
 
 #ifdef ARCH_ZARCH
 #include "common_zarch.h"
+#endif
+
+#ifdef ARCH_LOONGARCH64
+#include "common_loongarch64.h"
 #endif
 
 #ifndef ASSEMBLER

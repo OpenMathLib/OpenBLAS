@@ -780,6 +780,11 @@ NO_BINARY_MODE  = 1
 BINARY_DEFINED  = 1
 endif
 
+ifeq ($(ARCH), loongarch64)
+NO_BINARY_MODE  = 1
+BINARY_DEFINED  = 1
+endif
+
 
 #
 #  C Compiler dependent settings
@@ -848,6 +853,13 @@ endif
 
 ifeq ($(OSNAME), AIX)
 BINARY_DEFINED = 1
+endif
+
+ifeq ($(ARCH), loongarch64)
+ifeq ($(CORE), LOONGSONG3R5)
+CCOMMON_OPT += -march=loongarch64 -mabi=lp64
+FCOMMON_OPT += -march=loongarch64 -mabi=lp64
+endif
 endif
 
 endif

@@ -142,6 +142,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /* #define FORCE_SICORTEX	*/
 /* #define FORCE_LOONGSON3R3	*/
 /* #define FORCE_LOONGSON3R4	*/
+/* #define FORCE_LOONGSON3R5	*/
 /* #define FORCE_I6400		*/
 /* #define FORCE_P6600		*/
 /* #define FORCE_P5600		*/
@@ -842,6 +843,20 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #else
 #endif
 
+#ifdef FORCE_LOONGSON3R5
+#define FORCE
+#define ARCHITECTURE    "LOONGARCH"
+#define SUBARCHITECTURE "LOONGSON3R5"
+#define SUBDIRNAME      "loongarch64"
+#define ARCHCONFIG   "-DLOONGSON3R5 " \
+       "-DL1_DATA_SIZE=65536 -DL1_DATA_LINESIZE=64 " \
+       "-DL2_SIZE=1048576 -DL2_LINESIZE=64 " \
+       "-DDTB_DEFAULT_ENTRIES=64 -DDTB_SIZE=4096 -DL2_ASSOCIATIVE=16 "
+#define LIBNAME   "loongson3r5"
+#define CORENAME  "LOONGSON3R5"
+#else
+#endif
+
 #ifdef FORCE_I6400
 #define FORCE
 #define ARCHITECTURE    "MIPS"
@@ -1388,6 +1403,11 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define OPENBLAS_SUPPORTED
 #endif
 
+#ifdef __loongarch64
+#include "cpuid_loongarch64.c"
+#define OPENBLAS_SUPPORTED
+#endif
+
 #ifdef __riscv
 #include "cpuid_riscv64.c"
 #define OPENBLAS_SUPPORTED
@@ -1463,7 +1483,7 @@ int main(int argc, char *argv[]){
 #ifdef FORCE
     printf("CORE=%s\n", CORENAME);
 #else
-#if defined(INTEL_AMD) || defined(POWER) || defined(__mips__) || defined(__arm__) || defined(__aarch64__) || defined(ZARCH) || defined(sparc)
+#if defined(INTEL_AMD) || defined(POWER) || defined(__mips__) || defined(__arm__) || defined(__aarch64__) || defined(ZARCH) || defined(sparc) || defined(__loongarch__)
     printf("CORE=%s\n", get_corename());
 #endif
 #endif
@@ -1611,7 +1631,7 @@ printf("ELF_VERSION=2\n");
 #ifdef FORCE
     printf("#define CHAR_CORENAME \"%s\"\n", CORENAME);
 #else
-#if defined(INTEL_AMD) || defined(POWER) || defined(__mips__) || defined(__arm__) || defined(__aarch64__) || defined(ZARCH) || defined(sparc)
+#if defined(INTEL_AMD) || defined(POWER) || defined(__mips__) || defined(__arm__) || defined(__aarch64__) || defined(ZARCH) || defined(sparc) || defined(__loongarch__)
     printf("#define CHAR_CORENAME \"%s\"\n", get_corename());
 #endif
 #endif
