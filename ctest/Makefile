@@ -6,6 +6,9 @@ TOPDIR = ..
 include $(TOPDIR)/Makefile.system
 
 override CFLAGS += -DADD$(BU) -DCBLAS
+ifeq ($(F_COMPILER),GFORTRAN)
+	override FFLAGS += -fno-tree-vectorize
+endif
 override TARGET_ARCH=
 override TARGET_MACH=
 
