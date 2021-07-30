@@ -856,7 +856,7 @@ BINARY_DEFINED = 1
 endif
 
 ifeq ($(ARCH), loongarch64)
-ifeq ($(CORE), LOONGSONG3R5)
+ifeq ($(CORE), LOONGSON3R5)
 CCOMMON_OPT += -march=loongarch64 -mabi=lp64
 FCOMMON_OPT += -march=loongarch64 -mabi=lp64
 endif

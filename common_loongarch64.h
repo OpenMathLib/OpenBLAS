@@ -186,7 +186,7 @@ REALNAME: ;\
 
 #define BUFFER_SIZE     ( 32 << 20)
 
-#define PAGESIZE        (16UL << 1)
+#define PAGESIZE        (16UL << 10)
 #define FIXED_PAGESIZE  (16UL << 10)
 #define HUGE_PAGESIZE   ( 2 << 20)
 
