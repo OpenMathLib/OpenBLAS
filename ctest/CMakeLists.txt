@@ -4,6 +4,9 @@ include_directories(${PROJECT_BINARY_DIR})
 enable_language(Fortran)
 
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DADD${BU} -DCBLAS")
+if (CMAKE_Fortran_COMPILER_ID STREQUAL GNU)
+	set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS} -fno-tree-vectorize")
+endif()
 
 if(WIN32)
 FILE(WRITE ${CMAKE_CURRENT_BINARY_DIR}/test_cblas_helper.ps1
