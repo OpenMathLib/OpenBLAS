@@ -1291,7 +1291,12 @@ UNLOCK_COMMAND(&alloc_lock);
   return (void *)(((char *)alloc_info) + sizeof(struct alloc_t));
 
  error:
-  printf("OpenBLAS : Program will terminate because you tried to allocate too many memory regions.\n");
+  printf("OpenBLAS : Program will terminate because you tried to allocate too many TLS memory regions.\n");
+  printf("This library was built to support a maximum of %d threads - either rebuild OpenBLAS\n", NUM_BUFFERS);
+  printf("with a larger NUM_THREADS value or set the environment variable OPENBLAS_NUM_THREADS to\n");
+  printf("a sufficiently small number. This error typically occurs when the software that relies on\n");
+  printf("OpenBLAS calls BLAS functions from many threads in parallel, or when your computer has more\n");
+  printf("cpu cores than what OpenBLAS was configured to handle.\n"); 
 
   return NULL;
 }
@@ -2878,8 +2883,12 @@ void *blas_memory_alloc(int procpos){
   return (void *)memory[position].addr;
 
  error:
-  printf("BLAS : Program is Terminated. Because you tried to allocate too many memory regions.\n");
-
+  printf("OpenBLAS : Program is Terminated. Because you tried to allocate too many memory regions.\n");
+  printf("This library was built to support a maximum of %d threads - either rebuild OpenBLAS\n", NUM_BUFFERS);
+  printf("with a larger NUM_THREADS value or set the environment variable OPENBLAS_NUM_THREADS to\n");
+  printf("a sufficiently small number. This error typically occurs when the software that relies on\n");
+  printf("OpenBLAS calls BLAS functions from many threads in parallel, or when your computer has more\n");
+  printf("cpu cores than what OpenBLAS was configured to handle.\n"); 
   return NULL;
 }
 
