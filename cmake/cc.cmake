@@ -29,6 +29,15 @@ if (${CMAKE_C_COMPILER_ID} STREQUAL "GNU" OR ${CMAKE_C_COMPILER_ID} STREQUAL "LS
       set(FCOMMON_OPT "${FCOMMON_OPT} -march=mips64")
     endif ()
 
+    if (LOONGARCH64)
+      if (BINARY64)
+        set(CCOMMON_OPT "${CCOMMON_OPT} -mabi=lp64")
+      else ()
+        set(CCOMMON_OPT "${CCOMMON_OPT} -mabi=lp32")
+      endif ()
+      set(BINARY_DEFINED 1)
+    endif ()
+
     if (CMAKE_SYSTEM_NAME STREQUAL "AIX")
       set(BINARY_DEFINED 1)
     endif ()

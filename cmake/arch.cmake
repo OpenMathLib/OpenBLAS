@@ -113,6 +113,10 @@ if (MIPS64)
   set(NO_BINARY_MODE 1)
 endif ()
 
+if (LOONGARCH64)
+  set(NO_BINARY_MODE 1)
+endif ()
+
 if (${ARCH} STREQUAL "alpha")
   set(NO_BINARY_MODE 1)
   set(BINARY_DEFINED 1)
