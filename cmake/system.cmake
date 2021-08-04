@@ -258,6 +258,10 @@ if (NEED_PIC)
   endif()
 endif ()
 
+if (SMALL_MATRIX_OPT)
+  set(CCOMMON_OPT "${CCOMMON_OPT} -DSMALL_MATRIX_OPT")
+endif ()
+
 if (DYNAMIC_ARCH)
   if (X86 OR X86_64 OR ARM64 OR PPC)
     set(CCOMMON_OPT "${CCOMMON_OPT} -DDYNAMIC_ARCH")
