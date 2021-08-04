@@ -234,46 +234,6 @@
 
 #define ZGEMM_SMALL_MATRIX_PERMIT	zgemm_small_matrix_permit
 
-#define ZGEMM_SMALL_KERNEL_NN   zgemm_small_kernel_nn
-#define ZGEMM_SMALL_KERNEL_NT   zgemm_small_kernel_nt
-#define ZGEMM_SMALL_KERNEL_NR   zgemm_small_kernel_nr
-#define ZGEMM_SMALL_KERNEL_NC   zgemm_small_kernel_nc
-
-#define ZGEMM_SMALL_KERNEL_TN   zgemm_small_kernel_tn
-#define ZGEMM_SMALL_KERNEL_TT   zgemm_small_kernel_tt
-#define ZGEMM_SMALL_KERNEL_TR   zgemm_small_kernel_tr
-#define ZGEMM_SMALL_KERNEL_TC   zgemm_small_kernel_tc
-
-#define ZGEMM_SMALL_KERNEL_RN   zgemm_small_kernel_rn
-#define ZGEMM_SMALL_KERNEL_RT   zgemm_small_kernel_rt
-#define ZGEMM_SMALL_KERNEL_RR   zgemm_small_kernel_rr
-#define ZGEMM_SMALL_KERNEL_RC   zgemm_small_kernel_rc
-
-#define ZGEMM_SMALL_KERNEL_CN   zgemm_small_kernel_cn
-#define ZGEMM_SMALL_KERNEL_CT   zgemm_small_kernel_ct
-#define ZGEMM_SMALL_KERNEL_CR   zgemm_small_kernel_cr
-#define ZGEMM_SMALL_KERNEL_CC   zgemm_small_kernel_cc
-
-#define ZGEMM_SMALL_KERNEL_B0_NN   zgemm_small_kernel_b0_nn
-#define ZGEMM_SMALL_KERNEL_B0_NT   zgemm_small_kernel_b0_nt
-#define ZGEMM_SMALL_KERNEL_B0_NR   zgemm_small_kernel_b0_nr
-#define ZGEMM_SMALL_KERNEL_B0_NC   zgemm_small_kernel_b0_nc
-
-#define ZGEMM_SMALL_KERNEL_B0_TN   zgemm_small_kernel_b0_tn
-#define ZGEMM_SMALL_KERNEL_B0_TT   zgemm_small_kernel_b0_tt
-#define ZGEMM_SMALL_KERNEL_B0_TR   zgemm_small_kernel_b0_tr
-#define ZGEMM_SMALL_KERNEL_B0_TC   zgemm_small_kernel_b0_tc
-
-#define ZGEMM_SMALL_KERNEL_B0_RN   zgemm_small_kernel_b0_rn
-#define ZGEMM_SMALL_KERNEL_B0_RT   zgemm_small_kernel_b0_rt
-#define ZGEMM_SMALL_KERNEL_B0_RR   zgemm_small_kernel_b0_rr
-#define ZGEMM_SMALL_KERNEL_B0_RC   zgemm_small_kernel_b0_rc
-
-#define ZGEMM_SMALL_KERNEL_B0_CN   zgemm_small_kernel_b0_cn
-#define ZGEMM_SMALL_KERNEL_B0_CT   zgemm_small_kernel_b0_ct
-#define ZGEMM_SMALL_KERNEL_B0_CR   zgemm_small_kernel_b0_cr
-#define ZGEMM_SMALL_KERNEL_B0_CC   zgemm_small_kernel_b0_cc
-
 #else
 
 #define	ZAMAX_K			gotoblas -> zamax_k
@@ -468,7 +428,50 @@
 
 #define ZGEADD_K                gotoblas -> zgeadd_k
 
+#define ZGEMM_SMALL_MATRIX_PERMIT	gotoblas -> zgemm_small_matrix_permit
+
 #endif
+
+#define ZGEMM_SMALL_KERNEL_NN		FUNC_OFFSET(zgemm_small_kernel_nn)
+#define ZGEMM_SMALL_KERNEL_NT		FUNC_OFFSET(zgemm_small_kernel_nt)
+#define ZGEMM_SMALL_KERNEL_NR		FUNC_OFFSET(zgemm_small_kernel_nr)
+#define ZGEMM_SMALL_KERNEL_NC		FUNC_OFFSET(zgemm_small_kernel_nc)
+
+#define ZGEMM_SMALL_KERNEL_TN		FUNC_OFFSET(zgemm_small_kernel_tn)
+#define ZGEMM_SMALL_KERNEL_TT		FUNC_OFFSET(zgemm_small_kernel_tt)
+#define ZGEMM_SMALL_KERNEL_TR		FUNC_OFFSET(zgemm_small_kernel_tr)
+#define ZGEMM_SMALL_KERNEL_TC		FUNC_OFFSET(zgemm_small_kernel_tc)
+
+#define ZGEMM_SMALL_KERNEL_RN		FUNC_OFFSET(zgemm_small_kernel_rn)
+#define ZGEMM_SMALL_KERNEL_RT		FUNC_OFFSET(zgemm_small_kernel_rt)
+#define ZGEMM_SMALL_KERNEL_RR		FUNC_OFFSET(zgemm_small_kernel_rr)
+#define ZGEMM_SMALL_KERNEL_RC		FUNC_OFFSET(zgemm_small_kernel_rc)
+
+#define ZGEMM_SMALL_KERNEL_CN		FUNC_OFFSET(zgemm_small_kernel_cn)
+#define ZGEMM_SMALL_KERNEL_CT		FUNC_OFFSET(zgemm_small_kernel_ct)
+#define ZGEMM_SMALL_KERNEL_CR		FUNC_OFFSET(zgemm_small_kernel_cr)
+#define ZGEMM_SMALL_KERNEL_CC		FUNC_OFFSET(zgemm_small_kernel_cc)
+
+#define ZGEMM_SMALL_KERNEL_B0_NN	FUNC_OFFSET(zgemm_small_kernel_b0_nn)
+#define ZGEMM_SMALL_KERNEL_B0_NT	FUNC_OFFSET(zgemm_small_kernel_b0_nt)
+#define ZGEMM_SMALL_KERNEL_B0_NR	FUNC_OFFSET(zgemm_small_kernel_b0_nr)
+#define ZGEMM_SMALL_KERNEL_B0_NC	FUNC_OFFSET(zgemm_small_kernel_b0_nc)
+
+#define ZGEMM_SMALL_KERNEL_B0_TN	FUNC_OFFSET(zgemm_small_kernel_b0_tn)
+#define ZGEMM_SMALL_KERNEL_B0_TT	FUNC_OFFSET(zgemm_small_kernel_b0_tt)
+#define ZGEMM_SMALL_KERNEL_B0_TR	FUNC_OFFSET(zgemm_small_kernel_b0_tr)
+#define ZGEMM_SMALL_KERNEL_B0_TC	FUNC_OFFSET(zgemm_small_kernel_b0_tc)
+
+#define ZGEMM_SMALL_KERNEL_B0_RN	FUNC_OFFSET(zgemm_small_kernel_b0_rn)
+#define ZGEMM_SMALL_KERNEL_B0_RT	FUNC_OFFSET(zgemm_small_kernel_b0_rt)
+#define ZGEMM_SMALL_KERNEL_B0_RR	FUNC_OFFSET(zgemm_small_kernel_b0_rr)
+#define ZGEMM_SMALL_KERNEL_B0_RC	FUNC_OFFSET(zgemm_small_kernel_b0_rc)
+
+#define ZGEMM_SMALL_KERNEL_B0_CN	FUNC_OFFSET(zgemm_small_kernel_b0_cn)
+#define ZGEMM_SMALL_KERNEL_B0_CT	FUNC_OFFSET(zgemm_small_kernel_b0_ct)
+#define ZGEMM_SMALL_KERNEL_B0_CR	FUNC_OFFSET(zgemm_small_kernel_b0_cr)
+#define ZGEMM_SMALL_KERNEL_B0_CC	FUNC_OFFSET(zgemm_small_kernel_b0_cc)
+
 
 #define	ZGEMM_NN		zgemm_nn
 #define	ZGEMM_CN		zgemm_cn
