@@ -29,6 +29,16 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <immintrin.h>
 
+#define _MM512_BROADCASTD_EPI32(addr, zmm)             \
+                    __asm__ ("vpbroadcastd (%1), %0;"  \
+                            : "=v" (zmm)               \
+                            : "r"  (addr) )
+
+#define PREFETCH_T0(addr)             \
+                    __asm__ ("prefetcht0 (%0);"  \
+                            :                    \
+                            : "r"  (addr) )
+
 #define EXTRACT_LOW_256_FROM_512_2X(reg256, reg512)   \
     reg256##_0 = _mm512_castps512_ps256(reg512##_0);  \
     reg256##_1 = _mm512_castps512_ps256(reg512##_1);
@@ -718,6 +728,48 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #define STORE4_MASK_COMPLETE_RESULT_ALPHA_ONE(regResult, targetAddr, mask)                                           \
     regResult = _mm_fmadd_ps(_mm512_castps512_ps128(ALPHAVECTOR), regResult, _mm_maskz_loadu_ps(mask, targetAddr));  \
+    _mm_mask_storeu_ps(targetAddr, mask, regResult);
+
+
+/* Store 16 (result + y) to y
+*/
+#define STORE16_COMPLETE_RESULT_ONE_ONE(regResult, targetAddr)          \
+    regResult = _mm512_add_ps(regResult, _mm512_loadu_ps(targetAddr));  \
+    _mm512_storeu_ps(targetAddr, regResult);
+
+
+/* Masked store 16 (result + y) to y
+*/
+#define STORE16_MASK_COMPLETE_RESULT_ONE_ONE(regResult, targetAddr, mask)           \
+    regResult = _mm512_add_ps(regResult, _mm512_maskz_loadu_ps(mask, targetAddr));  \
+    _mm512_mask_storeu_ps(targetAddr, mask, regResult);
+
+
+/* Store 8 (result + y) to y
+*/
+#define STORE8_COMPLETE_RESULT_ONE_ONE(regResult, targetAddr)           \
+    regResult = _mm256_add_ps(regResult, _mm256_loadu_ps(targetAddr));  \
+    _mm256_storeu_ps(targetAddr, regResult);
+
+
+/* Masked store 8 (result + y) to y
+*/
+#define STORE8_MASK_COMPLETE_RESULT_ONE_ONE(regResult, targetAddr, mask)            \
+    regResult = _mm256_add_ps(regResult, _mm256_maskz_loadu_ps(mask, targetAddr));  \
+    _mm256_mask_storeu_ps(targetAddr, mask, regResult);
+
+
+/* Store 4 (result + y) to y
+*/
+#define STORE4_COMPLETE_RESULT_ONE_ONE(regResult, targetAddr)     \
+    regResult = _mm_add_ps(regResult, _mm_loadu_ps(targetAddr));  \
+    _mm_storeu_ps(targetAddr, regResult);
+
+
+/* Masked store 4 (result + y) to y
+*/
+#define STORE4_MASK_COMPLETE_RESULT_ONE_ONE(regResult, targetAddr, mask)      \
+    regResult = _mm_add_ps(regResult, _mm_maskz_loadu_ps(mask, targetAddr));  \
     _mm_mask_storeu_ps(targetAddr, mask, regResult);
 
 
