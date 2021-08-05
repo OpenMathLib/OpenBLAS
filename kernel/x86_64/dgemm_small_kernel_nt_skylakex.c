@@ -385,7 +385,7 @@ int CNAME(BLASLONG M, BLASLONG N, BLASLONG K, FLOAT * A, BLASLONG lda, FLOAT alp
 		for (int ii = 0; ii < 8; ii++) {
 			index_n[ii] = ii * ldc;
 		}
-		__m512i vindex_n = _mm512_loadu_epi64(index_n);
+		__m512i vindex_n = _mm512_loadu_si512(index_n);
 		for (; i < m4; i += 4) {
 			for (j = 0; j < n32; j += 32) {
 				DECLARE_RESULT_512(0, 0); DECLARE_RESULT_512(1, 0); DECLARE_RESULT_512(2, 0); DECLARE_RESULT_512(3, 0);

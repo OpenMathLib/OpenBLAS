@@ -189,8 +189,8 @@ int CNAME(BLASLONG M, BLASLONG N, BLASLONG K, FLOAT * A, BLASLONG lda, FLOAT alp
 		0, 1, 4, 5, 0|8, 1|8, 4|8, 5|8,
 		2, 3, 6, 7, 2|8, 3|8, 6|8, 7|8,
 	};
-	__m512i idx_lo = _mm512_loadu_epi64(permute_table);
-	__m512i idx_hi = _mm512_loadu_epi64(permute_table + 8); 
+	__m512i idx_lo = _mm512_loadu_si512(permute_table);
+	__m512i idx_hi = _mm512_loadu_si512(permute_table + 8);
 
 	for (i = 0; i < m8; i += 8) {
 		for (j = 0; j < n16; j += 16) {
@@ -235,8 +235,8 @@ int CNAME(BLASLONG M, BLASLONG N, BLASLONG K, FLOAT * A, BLASLONG lda, FLOAT alp
 			0, 1, 0|8, 1|8, 4, 5, 4|8, 5|8,
 			2, 3, 2|8, 3|8, 6, 7, 6|8, 7|8,
 		};
-		idx_lo = _mm512_loadu_epi64(permute_table2);
-		idx_hi = _mm512_loadu_epi64(permute_table2 + 8); 
+		idx_lo = _mm512_loadu_si512(permute_table2);
+		idx_hi = _mm512_loadu_si512(permute_table2 + 8);
 
 		for (j = 0; j < n32; j += 32) {
 			DECLARE_RESULT_512(0, 0); DECLARE_RESULT_512(1, 0); DECLARE_RESULT_512(2, 0); DECLARE_RESULT_512(3, 0);
@@ -289,7 +289,7 @@ int CNAME(BLASLONG M, BLASLONG N, BLASLONG K, FLOAT * A, BLASLONG lda, FLOAT alp
 		for (int ii = 0; ii < 8; ii++) {
 			index_n[ii] = ii * ldc;
 		}
-		__m512i vindex_n = _mm512_loadu_epi64(index_n);
+		__m512i vindex_n = _mm512_loadu_si512(index_n);
 #if !defined(B0)
 		__m512d beta_512 = _mm512_broadcastsd_pd(_mm_load_sd(&beta));
 #endif
