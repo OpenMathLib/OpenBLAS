@@ -105,8 +105,13 @@ static int (*gemm[])(blas_arg_t *, BLASLONG *, BLASLONG *, IFLOAT *, IFLOAT *, B
 #endif
 };
 
-#ifndef GEMM3M
-#ifdef SMALL_MATRIX_OPT
+#if defined(SMALL_MATRIX_OPT) && !defined(GEMM3M) && !defined(XDOUBLE) && !defined(BFLOAT16)
+#define USE_SMALL_MATRIX_OPT 1
+#else
+#define USE_SMALL_MATRIX_OPT 0
+#endif
+
+#if USE_SMALL_MATRIX_OPT
 #ifndef DYNAMIC_ARCH
 #define SMALL_KERNEL_ADDR(table, idx) ((void *)(table[idx]))
 #else
@@ -146,7 +151,6 @@ static size_t zgemm_small_kernel_b0[] = {
 
 #define ZGEMM_SMALL_KERNEL(idx) (int (*)(BLASLONG, BLASLONG, BLASLONG, FLOAT *, BLASLONG, FLOAT , FLOAT, FLOAT *, BLASLONG, FLOAT , FLOAT, FLOAT *, BLASLONG)) SMALL_KERNEL_ADDR(zgemm_small_kernel, (idx))
 #define ZGEMM_SMALL_KERNEL_B0(idx) (int (*)(BLASLONG, BLASLONG, BLASLONG, FLOAT *, BLASLONG, FLOAT , FLOAT, FLOAT *, BLASLONG, FLOAT *, BLASLONG)) SMALL_KERNEL_ADDR(zgemm_small_kernel_b0, (idx))
-#endif
 #endif
 #endif
 
@@ -462,8 +466,7 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_TRANSPOSE TransA, enum CBLAS_TRANS
 
   FUNCTION_PROFILE_START();
 
-#ifndef GEMM3M
-#ifdef SMALL_MATRIX_OPT
+#if USE_SMALL_MATRIX_OPT
 #if !defined(COMPLEX)
   if(GEMM_SMALL_MATRIX_PERMIT(transa, transb, args.m, args.n, args.k, *(FLOAT *)(args.alpha), *(FLOAT *)(args.beta))){
 	  if(*(FLOAT *)(args.beta) == 0.0){
@@ -482,7 +485,6 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_TRANSPOSE TransA, enum CBLAS_TRANS
 	  }
 	  return;
   }
-#endif
 #endif
 #endif
 
