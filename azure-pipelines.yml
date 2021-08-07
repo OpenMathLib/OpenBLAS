@@ -116,7 +116,7 @@ jobs:
       brew install llvm libomp
       mkdir build
       cd build
-      cmake -DTARGET=CORE2 -DUSE_OPENMP=1 -DINTERFACE64=1 -DDYNAMIC_ARCH=1 -DCMAKE_C_COMPILER=/usr/local/opt/llvm/bin/clang -DNOFORTRAN=1 -DCMAKE_BUILD_TYPE=Debug ..
+      cmake -DTARGET=CORE2 -DUSE_OPENMP=1 -DINTERFACE64=1 -DDYNAMIC_ARCH=1 -DCMAKE_C_COMPILER=/usr/local/opt/llvm/bin/clang -DNOFORTRAN=1 -DNO_AVX512=1 ..
       make
       
 - job: OSX_Ifort_Clang
