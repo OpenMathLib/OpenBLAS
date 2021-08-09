@@ -166,6 +166,13 @@ steps:
     - make -C ctest $COMMON_FLAGS
     - make -C utest $COMMON_FLAGS
     - make -C cpp_thread_test dgemm_tester
+    - wget https://www.mkroeker.com/BLASTester-ARM.tgz
+    - tar zxvf BLASTester-ARM.tgz
+    - cd BLAS-Tester
+    - make
+    - cd bin
+    - ./xcl2blastst -R tbsv -U 1 U -A 1 N -D 2 U N -n 4 -X 2 2 1 -q 3
+
 ---
 kind: pipeline
 name: epyc_native_test
