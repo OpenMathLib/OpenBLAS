@@ -54,7 +54,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
    MTC  s1, $r0
    MTC  s2, $r0
    slli.d  INCX, INCX, BASE_SHIFT
-   li TEMP, SIZE
+   li.d TEMP, SIZE
    bge $r0,    N, .L999
    srai.d  I, N, 3
    bne INCX, TEMP, .L20
