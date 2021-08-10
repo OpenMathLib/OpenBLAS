@@ -172,6 +172,7 @@ steps:
     - make
     - cd bin
     - ./xcl2blastst -R tbsv -U 1 U -A 1 N -D 2 U N -n 4 -X 2 2 1 -q 3
+    - ./xcl2blastst -R all
 
 ---
 kind: pipeline
