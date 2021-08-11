@@ -181,7 +181,7 @@ function(GenerateNamedObjects sources_in)
     set(append_with ${ARGV5})
   endif ()
 
-  if ${ARGC} GREATER 6)
+  if (${ARGC} GREATER 6)
     set(no_float_type ${ARGV6})
   else ()
     set(no_float_type false)
