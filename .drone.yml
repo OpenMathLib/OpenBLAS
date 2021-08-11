@@ -155,7 +155,7 @@ steps:
   image: ubuntu:18.04
   environment:
     CC: gcc
-    COMMON_FLAGS: 'USE_OPENMP=1 TARGET=CORTEXA57'
+    COMMON_FLAGS: 'USE_OPENMP=1 TARGET=TSV110'
   commands:
     - echo "MAKE_FLAGS:= $COMMON_FLAGS"
     - apt-get update -y
