@@ -145,6 +145,19 @@ BLASLONG (*isbmin_k) (BLASLONG, float *, BLASLONG);
   int	 (*sbneg_tcopy)   (BLASLONG, BLASLONG, float *, BLASLONG, float *);
   int    (*sblaswp_ncopy) (BLASLONG, BLASLONG, BLASLONG, float *, BLASLONG, blasint *, float *);
 
+#ifdef SMALL_MATRIX_OPT
+  int    (*sbgemm_small_matrix_permit)(int transa, int transb, BLASLONG m, BLASLONG n, BLASLONG k, float alpha, float beta);
+
+  int    (*sbgemm_small_kernel_nn    )(BLASLONG m, BLASLONG n, BLASLONG k, bfloat16 * A, BLASLONG lda, float alpha, bfloat16 * B, BLASLONG ldb, float beta, float * C, BLASLONG ldc);
+  int    (*sbgemm_small_kernel_nt    )(BLASLONG m, BLASLONG n, BLASLONG k, bfloat16 * A, BLASLONG lda, float alpha, bfloat16 * B, BLASLONG ldb, float beta, float * C, BLASLONG ldc);
+  int    (*sbgemm_small_kernel_tn    )(BLASLONG m, BLASLONG n, BLASLONG k, bfloat16 * A, BLASLONG lda, float alpha, bfloat16 * B, BLASLONG ldb, float beta, float * C, BLASLONG ldc);
+  int    (*sbgemm_small_kernel_tt    )(BLASLONG m, BLASLONG n, BLASLONG k, bfloat16 * A, BLASLONG lda, float alpha, bfloat16 * B, BLASLONG ldb, float beta, float * C, BLASLONG ldc);
+
+  int    (*sbgemm_small_kernel_b0_nn )(BLASLONG m, BLASLONG n, BLASLONG k, bfloat16 * A, BLASLONG lda, float alpha, bfloat16 * B, BLASLONG ldb, float * C, BLASLONG ldc);
+  int    (*sbgemm_small_kernel_b0_nt )(BLASLONG m, BLASLONG n, BLASLONG k, bfloat16 * A, BLASLONG lda, float alpha, bfloat16 * B, BLASLONG ldb, float * C, BLASLONG ldc);
+  int    (*sbgemm_small_kernel_b0_tn )(BLASLONG m, BLASLONG n, BLASLONG k, bfloat16 * A, BLASLONG lda, float alpha, bfloat16 * B, BLASLONG ldb, float * C, BLASLONG ldc);
+  int    (*sbgemm_small_kernel_b0_tt )(BLASLONG m, BLASLONG n, BLASLONG k, bfloat16 * A, BLASLONG lda, float alpha, bfloat16 * B, BLASLONG ldb, float * C, BLASLONG ldc);
+#endif
 #endif
 
 #if defined(BUILD_SINGLE) || defined(BUILD_COMPLEX)
