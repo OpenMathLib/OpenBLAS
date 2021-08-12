@@ -159,7 +159,7 @@ steps:
   commands:
     - echo "MAKE_FLAGS:= $COMMON_FLAGS"
     - apt-get update -y
-    - apt-get install -y make $CC gfortran perl python g++ wget
+    - apt-get install -y make $CC=7.3.0 gfortran=7.3.0 perl python g++=7.3.0 wget
     - $CC --version
     - make QUIET_MAKE=1 $COMMON_FLAGS
     - make -C test $COMMON_FLAGS
