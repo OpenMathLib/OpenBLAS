@@ -56,7 +56,7 @@ platform:
 
 steps:
 - name: Build and Test
-  image: ubuntu:18.04
+  image: ubuntu:18.04  
   environment:
     CC: clang
     COMMON_FLAGS: 'DYNAMIC_ARCH=1 TARGET=ARMV8 NUM_THREADS=32'
@@ -159,7 +159,7 @@ steps:
   commands:
     - echo "MAKE_FLAGS:= $COMMON_FLAGS"
     - apt-get update -y
-    - apt-get install -y make gcc-7-base=7.3.0-16ubuntu3 cpp-7=7.3.0-16ubuntu3 libgcc-7-dev=7.3.0-16ubuntu3 gcc-7=7.3.0-16ubuntu3 libgfortran-7-dev=7.3.0-16ubuntu3 gfortran-7=7.3.0-16ubuntu3 perl python libstdc++-7-dev=7.3.0-16ubuntu3 g++-7=7.3.0-16ubuntu3 wget
+    - apt-get install -y make gcc-7-base=7.3.0-16ubuntu3 cpp-7=7.3.0-16ubuntu3 libgcc-7-dev=7.3.0-16ubuntu3 libasan4=7.3.0-16ubuntu3 libubsan0=7.3.0-16ubuntu3 gcc-7=7.3.0-16ubuntu3 libgfortran4=7.3.0-16ubuntu3 libgfortran-7-dev=7.3.0-16ubuntu3 gfortran-7=7.3.0-16ubuntu3 perl python libstdc++-7-dev=7.3.0-16ubuntu3 g++-7=7.3.0-16ubuntu3 wget
     - $CC --version
     - make QUIET_MAKE=1 $COMMON_FLAGS
     - make -C test $COMMON_FLAGS
