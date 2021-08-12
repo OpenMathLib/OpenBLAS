@@ -32,23 +32,25 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 int CNAME(BLASLONG m, BLASLONG n, IFLOAT *a, BLASLONG lda, IFLOAT *b){
   BLASLONG i, j;
 
-  IFLOAT *boffset;
+  IFLOAT *boffset0, *boffset1;
 
-  boffset   = b;
+  boffset0   = b;
 
   BLASLONG n32 = n & ~31;
   BLASLONG m4 = m & ~3;
   BLASLONG m2 = m & ~1;
 
   uint32_t permute_table = {
-    0, 0x10|0, 1, 0x10|1, 2, 0x10|2, 3, 0x10|3, 4, 0x10|4, 5, 0x10|5, 6, 0x10|6, 7, 0x10, 7,
-    8, 0x10|8, 9, 0x10|9, 10, 0x10|10, 11, 0x10|11, 12, 0x10|12, 13, 0x10|13, 14, 0x10|14, 15, 0x10|15,
+    0x00, 0x10, 0x01, 0x11, 0x02, 0x12, 0x03, 0x13, 0x04, 0x14, 0x05, 0x15, 0x06, 0x16, 0x07, 0x17,
+    0x08, 0x18, 0x09, 0x19, 0x0a, 0x1a, 0x0b, 0x1b, 0x0c, 0x1c, 0x0d, 0x1d, 0x0e, 0x1e, 0x0f, 0x1f,
   };
 
   __m512i idx_lo = _mm512_loadu_si512(permute_table);
   __m512i idx_hi = _mm512_loadu_si512(permute_table + 16);
 
   for (j = 0; j < n32; j += 32) {
+    /* process 2x16 n at the same time */
+    boffset1 = boffset0 + m * 16;
     for (i = 0; i < m4; i += 4) {
       /* bf16 fma need special memory layout:
        * for memory layout like below:
@@ -72,11 +74,12 @@ int CNAME(BLASLONG m, BLASLONG n, IFLOAT *a, BLASLONG lda, IFLOAT *b){
       a2 = _mm512_permutex2var_epi32(a10, idx_lo, a11);
       a3 = _mm512_permutex2var_epi32(a10, idx_hi, a11);
 
-      _mm512_storeu_si512(boffset, a0);
-      _mm512_storeu_si512(boffset + 32, a1);
-      _mm512_storeu_si512(boffset + 64, a2);
-      _mm512_storeu_si512(boffset + 96, a3);
-      boffset += 128;
+      _mm512_storeu_si512(boffset0, a0);
+      _mm512_storeu_si512(boffset1, a1);
+      _mm512_storeu_si512(boffset0 + 32, a2);
+      _mm512_storeu_si512(boffset1 + 32, a3);
+      boffset0 += 64;
+      boffset1 += 64;
     }
     for (; i < m2; i += 2) {
       __m512i a0 = _mm512_loadu_si512(&a[(i + 0)*lda + j]);
@@ -88,22 +91,29 @@ int CNAME(BLASLONG m, BLASLONG n, IFLOAT *a, BLASLONG lda, IFLOAT *b){
       a0 = _mm512_permutex2var_epi32(a00, idx_lo, a01);
       a1 = _mm512_permutex2var_epi32(a00, idx_hi, a01);
 
-      _mm512_storeu_si512(boffset, a0);
-      _mm512_storeu_si512(boffset + 32, a1);
-      boffset += 64;
+      _mm512_storeu_si512(boffset0, a0);
+      _mm512_storeu_si512(boffset1, a1);
+      boffset0 += 32;
+      boffset1 += 32;
     }
     for (; i < m; i++) {
       /* just copy the only remains row */
-      __m512i a0 = _mm512_loadu_si512(&a[(i + 0)*lda + j]);
-      _mm512_storeu_si512(boffset, a0);
-      boffset += 32;
+      __m256i a0 = _mm256_loadu_si256(&a[(i + 0)*lda + j]);
+      __m256i a1 = _mm256_loadu_si256(&a[(i + 0)*lda + j + 16]);
+      _mm256_storeu_si256(boffset0, a0);
+      _mm256_storeu_si256(boffset1, a1);
+      boffset0 += 16;
+      boffset1 += 16;
     }
+    boffset0 = boffset1;
   }
   if (j < n) {
     uint32_t remains = n - j;
     __mmask32 r_mask = (1UL << remains) - 1;
     if (remains > 16) {
-      __mmask16 w_mask = (1UL << (remains - 16)) - 1;
+      boffset1 = boffset0 + m * 16;
+      uint32_t tail1 = remains - 16;
+      __mmask16 w_mask1 = (1UL << tail1) - 1;
       for (i = 0; i < m2; i += 2) {
         __m512i a0 = _mm512_maskz_loadu_epi16(r_mask, &a[(i + 0)*lda + j]);
         __m512i a1 = _mm512_maskz_loadu_epi16(r_mask, &a[(i + 1)*lda + j]);
@@ -114,9 +124,19 @@ int CNAME(BLASLONG m, BLASLONG n, IFLOAT *a, BLASLONG lda, IFLOAT *b){
         a0 = _mm512_permutex2var_epi32(a00, idx_lo, a01);
         a1 = _mm512_permutex2var_epi32(a00, idx_hi, a01);
 
-        _mm512_storeu_si512(boffset, a0);
-        _mm512_mask_storeu_epi32(boffset + 32, w_mask, a1);
-        boffset += 2 * remains;
+        _mm512_storeu_si512(boffset0, a0);
+        _mm512_mask_storeu_epi32(boffset1, w_mask1, a1);
+
+        boffset0 += 32;
+        boffset1 += 2 * tail1;
+      }
+      for (; i < m; i++) {
+        __m256i a0 = _mm256_loadu_si256(&a[(i + 0)*lda + j]);
+        __m256i a1 = _mm256_maskz_loadu_epi16(w_mask1, &a[(i + 0)*lda + j + 16]);
+        _mm256_storeu_si256(boffset0, a0);
+        _mm256_mask_storeu_epi16(boffset1, w_mask1, a1);
+        boffset0 += 16;
+        boffset1 += tail1;
       }
     } else {
       __mmask16 w_mask = (1UL << remains ) - 1;
@@ -128,14 +148,15 @@ int CNAME(BLASLONG m, BLASLONG n, IFLOAT *a, BLASLONG lda, IFLOAT *b){
         __m512i a01 = _mm512_unpackhi_epi16(a0, a1);
 
         a0 = _mm512_permutex2var_epi32(a00, idx_lo, a01);
-        _mm512_mask_storeu_epi32(boffset, w_mask, a0);
-        boffset += 2 * remains;
+
+        _mm512_mask_storeu_epi32(boffset0, w_mask, a0);
+        boffset0 += 2 * remains;
       }
-    }
-    for (; i < m; i++) {
-        __m512i a0 = _mm512_maskz_loadu_epi16(r_mask, &a[(i + 0)*lda + j]);
-        _mm512_mask_storeu_epi16(boffset, r_mask, a0);
-        boffset += remains;
+      for (; i < m; i++) {
+        __m256i a0 = _mm256_maskz_loadu_epi16(w_mask, &a[(i + 0)*lda + j]);
+        _mm256_mask_storeu_epi16(boffset0, w_mask, a0);
+        boffset0 += remains;
+      }
     }
   }
 }
