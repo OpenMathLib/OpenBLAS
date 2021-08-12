@@ -1,8 +1,6 @@
-#include "sbgemm.h"
 #include "bf16_common_macros.h"
 #include <immintrin.h>
 
-/*  These macros are needed and should be placed at the right place
 #define BF16_BLOCK_STEP_N 8
 #define BF16_BLOCK_THRES_K 1024
 #define BF16_BLOCK_THRES_M 32
@@ -14,7 +12,6 @@
 
 #define ONE  1.e0f
 #define ZERO  0.e0f
-*/
 
 #undef STORE16_COMPLETE_RESULT
 #undef STORE16_MASK_COMPLETE_RESULT
@@ -1798,6 +1795,7 @@ void sbgemm_blocking_kernel_tt_one(blasint M, blasint N, blasint K, float alpha,
 }
 /* ----------------------------------------- End of TT kernels --------------------------------------- */
 
+/*
 #ifndef ONE_ALPHA      // ALPHA is not ONE
 void sbgemm_internal_kernel_alpha(OPENBLAS_CONST enum CBLAS_ORDER Order, OPENBLAS_CONST enum CBLAS_TRANSPOSE TransA, OPENBLAS_CONST enum CBLAS_TRANSPOSE TransB, OPENBLAS_CONST blasint M, OPENBLAS_CONST blasint N, OPENBLAS_CONST blasint K,
 		 OPENBLAS_CONST float alpha, OPENBLAS_CONST bfloat16 *A, OPENBLAS_CONST blasint lda, OPENBLAS_CONST bfloat16 *B, OPENBLAS_CONST blasint ldb, float *C, OPENBLAS_CONST blasint ldc)
@@ -1836,3 +1834,4 @@ void sbgemm_internal_kernel_one(OPENBLAS_CONST enum CBLAS_ORDER Order, OPENBLAS_
         }
     }
 }
+*/

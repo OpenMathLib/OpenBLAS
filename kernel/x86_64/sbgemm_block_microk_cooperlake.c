@@ -1,6 +1,5 @@
-//#include "sbgemm.h"
-
 #include <immintrin.h>
+
 // Walk around those intrinsics that missed by compiler
 #define MM256_LOADU_EPI16(addr)   \
             _mm256_maskz_loadu_epi16(~0, (addr))
@@ -1747,7 +1746,7 @@ void COL_MAJOR_OTCOPY_KERNEL_Kx8m(BLASLONG k, BLASLONG n, bfloat16 * B, BLASLONG
 }
 
 // Scale matrix C when beta is not ZERO or ONE
-void sbgemm_scal_operation(OPENBLAS_CONST enum CBLAS_ORDER Order, OPENBLAS_CONST blasint M, OPENBLAS_CONST blasint N, OPENBLAS_CONST float beta, float *C, OPENBLAS_CONST blasint ldc)
+void sbgemm_scal_operation(BLASLONG M, BLASLONG N, float beta, float *C, BLASLONG ldc)
 {
     float * C_addr0 = C;
     float * C_addr1 = C + ldc;
@@ -1758,12 +1757,6 @@ void sbgemm_scal_operation(OPENBLAS_CONST enum CBLAS_ORDER Order, OPENBLAS_CONST
 
     __m512 array_512_0, array_512_1, array_512_2, array_512_3;
     __m512 BETAVECTOR  = _mm512_set1_ps(beta);
-
-    if (Order == CblasRowMajor) {
-        blasint tmp = M;
-        M = N;
-        N = tmp;
-    }
 
     BLASLONG tag_n_Nx = N & (~3);
     BLASLONG tag_n_Mx = M & (~15);
@@ -1828,7 +1821,7 @@ void sbgemm_scal_operation(OPENBLAS_CONST enum CBLAS_ORDER Order, OPENBLAS_CONST
 }
 
 // Zero C matrix when Beta is 0
-void sbgemm_zero_operation(OPENBLAS_CONST enum CBLAS_ORDER Order, OPENBLAS_CONST blasint M, OPENBLAS_CONST blasint N, float *C, OPENBLAS_CONST blasint ldc)
+void sbgemm_zero_operation(BLASLONG M, BLASLONG N, float *C, BLASLONG ldc)
 {
     float * C_addr0 = C;
     float * C_addr1 = C + ldc;
@@ -1838,12 +1831,6 @@ void sbgemm_zero_operation(OPENBLAS_CONST enum CBLAS_ORDER Order, OPENBLAS_CONST
     BLASLONG LDC4x = ldc*4;
 
     __m512  ZEROVECTOR  = _mm512_setzero_ps();
-
-    if (Order == CblasRowMajor) {
-        blasint tmp = M;
-        M = N;
-        N = tmp;
-    }
 
     BLASLONG tag_n_Nx = N & (~3);
     BLASLONG tag_n_Mx = M & (~15);
