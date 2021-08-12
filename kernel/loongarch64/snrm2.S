@@ -57,7 +57,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif
 
    movgr2fr.d  s1, $r0
-   li  TEMP, SIZE
+   li.d  TEMP, SIZE
    fmov.d s2, s1
    bge $r0,    N, .L999
    slli.d INCX, INCX, BASE_SHIFT

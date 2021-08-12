@@ -116,7 +116,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
    bge $r0,    M, .L999
    slli.d INCY, INCY, ZBASE_SHIFT
    bge $r0,    N, .L999
-   li  I, 2 * SIZE
+   li.d  I, 2 * SIZE
    move   XORIG, X
    beq INCX, I, .L10
    srai.d  I,  M, 2

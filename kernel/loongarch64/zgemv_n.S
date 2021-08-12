@@ -123,7 +123,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
    bge $r0,    M, .L999
    slli.d INCY, INCY, ZBASE_SHIFT
    bge $r0,    N, .L999
-   li  I, 2 * SIZE
+   li.d  I, 2 * SIZE
    move   YORIG, Y
    beq INCY, I, .L10
    srai.d  I,  M, 2
@@ -576,7 +576,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
    .align 3
 
 .L900:
-   li  YORIG, 2 * SIZE
+   li.d  YORIG, 2 * SIZE
    srai.d I,  M, 2
    beq INCY, YORIG, .L999
    move   XX, BUFFER

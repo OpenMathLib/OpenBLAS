@@ -62,24 +62,24 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
    LDINT   INCX,  0(INCX)
 #endif
 
-   li x1, 0
+   li.d x1, 0
    bge $r0,    N, .L999
    slli.d INCX, INCX, BASE_SHIFT
    bge $r0,    INCX, .L999
    LD a1,  X,   0 * SIZE
    addi.d  N, N, -1
-   li x1, 1
+   li.d x1, 1
    bge $r0,    N, .L999
    FABS    s1, a1
    add.d   X, X, INCX
    FABS    s2, a1
-   li  x2, 1
+   li.d  x2, 1
    FABS    s3, a1
    srai.d  I, N, 3
    FABS    s4, a1
-   li  x3, 1
-   li  TEMP, 2
-   li x4, 1
+   li.d  x3, 1
+   li.d  TEMP, 2
+   li.d x4, 1
    bge $r0,    I, .L15
    LD a1,  X,   0 * SIZE
    add.d   X, X, INCX

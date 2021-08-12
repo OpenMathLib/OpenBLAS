@@ -62,7 +62,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
    MOV s3, s2
    MOV s4, s3
    slli.d  INCX, INCX, ZBASE_SHIFT
-   li  TEMP, 2 * SIZE
+   li.d  TEMP, 2 * SIZE
    slli.d INCY, INCY, ZBASE_SHIFT
    bge $r0,    N, .L999
    srai.d I, N, 2

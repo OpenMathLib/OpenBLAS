@@ -66,7 +66,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       LDINT   INCX,  0(INCX)
 #endif
 
-   li x1, 0
+   li.d x1, 0
    bge $r0,    N, .L999
    slli.d INCX, INCX, ZBASE_SHIFT
    bge $r0,    INCX, .L999
@@ -79,14 +79,14 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
    ADD s3, t1, t2
    ADD s4, t1, t2
    addi.d  N, N, -1
-   li x1, 1
+   li.d x1, 1
    bge $r0,    N, .L999
    add.d   X, X, INCX
-   li  x2, 1
+   li.d  x2, 1
    srai.d  I, N, 2
-   li  x3, 1
-   li  TEMP, 2
-   li x4, 1
+   li.d  x3, 1
+   li.d  TEMP, 2
+   li.d x4, 1
    bge $r0,    I, .L15
    LD a1,  X,   0 * SIZE
    LD a2,  X,   1 * SIZE
