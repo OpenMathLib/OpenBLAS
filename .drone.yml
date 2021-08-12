@@ -154,7 +154,8 @@ steps:
 - name: Build and Test
   image: ubuntu:18.04
   environment:
-    CC: gcc
+    CC: gcc-7
+    FC: gfortran-7
     COMMON_FLAGS: 'USE_OPENMP=1 TARGET=TSV110'
   commands:
     - echo "MAKE_FLAGS:= $COMMON_FLAGS"
