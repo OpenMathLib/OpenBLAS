@@ -273,8 +273,8 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_TRANSPOSE TransA, enum CBLAS_TRANS
 	   blasint m, blasint n, blasint k,
 #ifndef COMPLEX
 	   FLOAT alpha,
-	   FLOAT *a, blasint lda,
-	   FLOAT *b, blasint ldb,
+	   IFLOAT *a, blasint lda,
+	   IFLOAT *b, blasint ldb,
 	   FLOAT beta,
 	   FLOAT *c, blasint ldc) {
 #else
