@@ -166,7 +166,6 @@ steps:
     - make -C test $COMMON_FLAGS
     - make -C ctest $COMMON_FLAGS
     - make -C utest $COMMON_FLAGS
-    - make -C cpp_thread_test dgemm_tester
     - wget https://www.mkroeker.com/BLASTester-ARM.tgz
     - tar zxvf BLASTester-ARM.tgz
     - cd BLAS-Tester
