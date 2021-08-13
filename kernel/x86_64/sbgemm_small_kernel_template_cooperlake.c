@@ -59,6 +59,10 @@ extern void sbgemm_blocking_kernel_tt_one(blasint M, blasint N, blasint K, float
 #define BF16_BLOCK_THRES_M 32
 #define BF16_BLOCK_THRES_N 1024
 
+#define MALLOC_ALIGN64(ptr, size, raw_ptr) \
+	raw_ptr = malloc((size) + 63); \
+	ptr = (bfloat16 *)(((uintptr_t) raw_ptr + 63) & ~(uintptr_t)63)
+
 
 #if defined(B0)
 int CNAME(BLASLONG M, BLASLONG N, BLASLONG K, IFLOAT * A, BLASLONG lda, FLOAT alpha, IFLOAT * B, BLASLONG ldb, FLOAT * C, BLASLONG ldc)
@@ -68,9 +72,11 @@ int CNAME(BLASLONG M, BLASLONG N, BLASLONG K, IFLOAT * A, BLASLONG lda, FLOAT al
 {
 	bfloat16 * block_A;
 	bfloat16 * block_B;
+	void* raw_ptrA;
+	void* raw_ptrB;
 
-	block_A = (bfloat16 *) malloc(sizeof(bfloat16) * BF16_BLOCK_THRES_K * BF16_BLOCK_THRES_M);
-	block_B = (bfloat16 *) malloc(sizeof(bfloat16) * BF16_BLOCK_THRES_N * BF16_BLOCK_THRES_K);
+	MALLOC_ALIGN64(block_A, sizeof(bfloat16) * BF16_BLOCK_THRES_K * BF16_BLOCK_THRES_M, raw_ptrA);
+	MALLOC_ALIGN64(block_B, sizeof(bfloat16) * BF16_BLOCK_THRES_N * BF16_BLOCK_THRES_K, raw_ptrB);
 
 #if defined(B0)
 	sbgemm_zero_operation(M, N, C, ldc);
@@ -83,7 +89,8 @@ int CNAME(BLASLONG M, BLASLONG N, BLASLONG K, IFLOAT * A, BLASLONG lda, FLOAT al
 	} else {
 		SBGEMM_BLOCKING_KERNEL_ALPHA(M, N, K, alpha, A, lda, B, ldb, C, ldc, block_A, block_B);
 	}
-	free(block_A);
-	free(block_B);
+
+	free(raw_ptrA);
+	free(raw_ptrB);
 	return 0;
 }
