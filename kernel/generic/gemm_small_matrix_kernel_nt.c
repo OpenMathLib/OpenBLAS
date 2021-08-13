@@ -27,7 +27,11 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "common.h"
 
+#ifdef B0
+int CNAME(BLASLONG M, BLASLONG N, BLASLONG K, FLOAT * A, BLASLONG lda, FLOAT alpha, FLOAT * B, BLASLONG ldb, FLOAT * C, BLASLONG ldc)
+#else
 int CNAME(BLASLONG M, BLASLONG N, BLASLONG K, FLOAT * A, BLASLONG lda, FLOAT alpha, FLOAT * B, BLASLONG ldb, FLOAT beta, FLOAT * C, BLASLONG ldc)
+#endif
 {
 	//naive implemtation
 	//Column major
@@ -41,9 +45,12 @@ int CNAME(BLASLONG M, BLASLONG N, BLASLONG K, FLOAT * A, BLASLONG lda, FLOAT alp
 			for(k=0; k<K; k++){
 				result += A[i+k*lda] * B[k*ldb+j];
 			}
+#ifdef B0
+			C[i+j*ldc]=alpha * result;
+#else
 			C[i+j*ldc]=C[i+j*ldc] * beta + alpha * result;
+#endif
 		}
 	}
-	
 	return 0;
 }

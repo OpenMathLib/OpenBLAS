@@ -27,10 +27,16 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "common.h"
 
+#ifndef B0
 int CNAME(BLASLONG M, BLASLONG N, BLASLONG K, FLOAT * A, BLASLONG lda, FLOAT alpha0, FLOAT alpha1, FLOAT * B, BLASLONG ldb, FLOAT beta0, FLOAT beta1, FLOAT * C, BLASLONG ldc)
+#else
+int CNAME(BLASLONG M, BLASLONG N, BLASLONG K, FLOAT * A, BLASLONG lda, FLOAT alpha0, FLOAT alpha1, FLOAT * B, BLASLONG ldb, FLOAT * C, BLASLONG ldc)
+#endif
 {
 	FLOAT real, imag;
+#ifndef B0
 	FLOAT tmp0, tmp1;
+#endif
 	int i, j, l;
 	for(i = 0; i < M; i++){
 		for(j = 0; j < N; j++){
@@ -69,12 +75,17 @@ int CNAME(BLASLONG M, BLASLONG N, BLASLONG K, FLOAT * A, BLASLONG lda, FLOAT alp
 #endif
 			}
 
+#ifndef B0
 			tmp0 = beta0*C[j*2*ldc + 2*i] - beta1*C[j*2*ldc+ 2*i + 1];
 			tmp1 = beta0*C[j*2*ldc+ 2*i + 1] + beta1*C[j*2*ldc + 2*i];
 
 
 			C[j*2*ldc + 2*i] =tmp0+ alpha0*real - alpha1*imag;
 			C[j*2*ldc+ 2*i + 1] = tmp1+ alpha0*imag + real*alpha1;
+#else
+			C[j*2*ldc + 2*i] = alpha0*real - alpha1*imag;
+			C[j*2*ldc+ 2*i + 1] = alpha0*imag + real*alpha1;
+#endif
 		}
 	}
 	
