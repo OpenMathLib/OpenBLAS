@@ -186,7 +186,7 @@ jobs:
      vmImage: 'macOS-10.15'
   variables:
      CC: /Applications/Xcode_12.4.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang
-     CFLAGS: -O2 -Wno-macro-redefined -isysroot /Applications/Xcode_12.4.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS13.5.sdk -arch arm64 -miphoneos-version-min=10.0
+     CFLAGS: -O2 -Wno-macro-redefined -isysroot /Applications/Xcode_12.4.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS14.4.sdk -arch arm64 -miphoneos-version-min=10.0
   steps:
   - script: |
      make TARGET=ARMV8 DYNAMIC_ARCH=1 NUM_THREADS=32 HOSTCC=clang NOFORTRAN=1
@@ -196,7 +196,7 @@ jobs:
      vmImage: 'macOS-10.15'
   variables:
      CC: /Applications/Xcode_12.4.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang
-     CFLAGS: -O2 -mno-thumb -Wno-macro-redefined -isysroot /Applications/Xcode_12.4.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS13.5.sdk -arch armv7 -miphoneos-version-min=5.1
+     CFLAGS: -O2 -mno-thumb -Wno-macro-redefined -isysroot /Applications/Xcode_12.4.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS14.4.sdk -arch armv7 -miphoneos-version-min=5.1
   steps:
   - script: |
      make TARGET=ARMV7 DYNAMIC_ARCH=1 NUM_THREADS=32 HOSTCC=clang NOFORTRAN=1
