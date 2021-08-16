@@ -79,8 +79,8 @@ int CNAME(BLASLONG m, BLASLONG n, IFLOAT *a, BLASLONG lda, IFLOAT *b){
 	aoffset = a;
 	boffset = b;
 
-	BLASLONG m32 = n & ~31;
-	BLASLONG m8 = n & ~7;
+	BLASLONG m32 = m & ~31;
+	BLASLONG m8 = m & ~7;
 	BLASLONG n4 = n & ~3;
 
 	int permute_table[] = {
@@ -115,15 +115,15 @@ int CNAME(BLASLONG m, BLASLONG n, IFLOAT *a, BLASLONG lda, IFLOAT *b){
 			boffset += 32 * 4;
 		}
 		for (; i < m8; i += 8) {
-			__m128i r0 = _mm_loadu_si128(aoffset0 + i);
-			__m128i r1 = _mm_loadu_si128(aoffset1 + i);
-			__m128i r2 = _mm_loadu_si128(aoffset2 + i);
-			__m128i r3 = _mm_loadu_si128(aoffset3 + i);
+			__m128i r0 = _mm_loadu_si128((void *)(aoffset0 + i));
+			__m128i r1 = _mm_loadu_si128((void *)(aoffset1 + i));
+			__m128i r2 = _mm_loadu_si128((void *)(aoffset2 + i));
+			__m128i r3 = _mm_loadu_si128((void *)(aoffset3 + i));
 			REORDER_4x8(r0, r1, r2, r3);
-			_mm_storeu_si128(boffset + 8*0, r0);
-			_mm_storeu_si128(boffset + 8*1, r1);
-			_mm_storeu_si128(boffset + 8*2, r2);
-			_mm_storeu_si128(boffset + 8*3, r3);
+			_mm_storeu_si128((void *)(boffset + 8*0), r0);
+			_mm_storeu_si128((void *)(boffset + 8*1), r1);
+			_mm_storeu_si128((void *)(boffset + 8*2), r2);
+			_mm_storeu_si128((void *)(boffset + 8*3), r3);
 			boffset += 8 * 4;
 		}
 		if (i < m) {
@@ -138,9 +138,9 @@ int CNAME(BLASLONG m, BLASLONG n, IFLOAT *a, BLASLONG lda, IFLOAT *b){
 			// store should skip the tail odd line
 			int num_store = remain_m/2;
 			switch(num_store) {
-				case 3: _mm_storeu_si128(boffset + 8*2, r0);
-				case 2: _mm_storeu_si128(boffset + 8*1, r0);
-				case 1: _mm_storeu_si128(boffset + 8*0, r0);
+				case 3: _mm_storeu_si128((void *)(boffset + 8*2), r2);
+				case 2: _mm_storeu_si128((void *)(boffset + 8*1), r1);
+				case 1: _mm_storeu_si128((void *)(boffset + 8*0), r0);
 			}
 			boffset += 8 * num_store;
 
@@ -152,7 +152,7 @@ int CNAME(BLASLONG m, BLASLONG n, IFLOAT *a, BLASLONG lda, IFLOAT *b){
 				 * need to extract lo words of data and store
 				 */
 				tail = _mm_cvtepi32_epi16(tail);
-				_mm_store_sd(boffset, (__m128d) tail); // only lower 4 bfloat valid
+				_mm_store_sd((double *)boffset, (__m128d) tail); // only lower 4 bfloat valid
 				boffset += 4;
 			}
 		}
@@ -167,16 +167,16 @@ int CNAME(BLASLONG m, BLASLONG n, IFLOAT *a, BLASLONG lda, IFLOAT *b){
 		__m128i r0, r1, r2, r3;
 		for (i = 0; i < m8; i += 8) {
 			switch (remain_n) {
-				case 3: r2 = _mm_loadu_si128(aoffset2 + i);
-				case 2: r1 = _mm_loadu_si128(aoffset1 + i);
-				case 1: r0 = _mm_loadu_si128(aoffset0 + i);
+				case 3: r2 = _mm_loadu_si128((void *)(aoffset2 + i));
+				case 2: r1 = _mm_loadu_si128((void *)(aoffset1 + i));
+				case 1: r0 = _mm_loadu_si128((void *)(aoffset0 + i));
 			}
 			REORDER_4x8(r0, r1, r2, r3);
-			_mm_mask_storeu_epi16(boffset + remain_n * 0, nmask, r0);
-			_mm_mask_storeu_epi16(boffset + remain_n * 1, nmask, r1);
-			_mm_mask_storeu_epi16(boffset + remain_n * 2, nmask, r2);
-			_mm_mask_storeu_epi16(boffset + remain_n * 3, nmask, r3);
-			boffset += 4 * remain_n;
+			_mm_mask_storeu_epi32(boffset + remain_n * 0, nmask, r0);
+			_mm_mask_storeu_epi32(boffset + remain_n * 2, nmask, r1);
+			_mm_mask_storeu_epi32(boffset + remain_n * 4, nmask, r2);
+			_mm_mask_storeu_epi32(boffset + remain_n * 6, nmask, r3);
+			boffset += 8 * remain_n;
 		}
 		if (i < m) {
 			int remain_m = m - i;
@@ -190,9 +190,9 @@ int CNAME(BLASLONG m, BLASLONG n, IFLOAT *a, BLASLONG lda, IFLOAT *b){
 
 			int num_store = remain_m/2;
 			switch (num_store) {
-				case 3: _mm_mask_storeu_epi16(boffset + remain_n * 2, nmask, r2);
-				case 2: _mm_mask_storeu_epi16(boffset + remain_n * 1, nmask, r1);
-				case 1: _mm_mask_storeu_epi16(boffset + remain_n * 0, nmask, r0);
+				case 3: _mm_mask_storeu_epi32(boffset + remain_n * 4, nmask, r2);
+				case 2: _mm_mask_storeu_epi32(boffset + remain_n * 2, nmask, r1);
+				case 1: _mm_mask_storeu_epi32(boffset + remain_n * 0, nmask, r0);
 			}
 			boffset += 2 * num_store * remain_n;
 
@@ -204,4 +204,5 @@ int CNAME(BLASLONG m, BLASLONG n, IFLOAT *a, BLASLONG lda, IFLOAT *b){
 			}
 		}
 	}
+	return 0;
 }
