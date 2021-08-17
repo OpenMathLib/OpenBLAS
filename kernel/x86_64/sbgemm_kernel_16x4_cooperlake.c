@@ -306,9 +306,8 @@ int CNAME (BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alpha, IFLOAT * A, IFLOAT *
 			STORE_4X(0, 0, 1); STORE_4X(1, 0, 1);
 			STORE_4X(0, 0, 2); STORE_4X(1, 0, 2);
 			ptr_c += 16 * 2;
-		}
-		if (m > 31) {
 			ptr_a0 = ptr_a1;
+			ptr_a1 = ptr_a0 + 16 * k;
 		}
 		for (; m_count > 15; m_count -= 16) {
 			ptr_b0 = ptr_b00;
