@@ -203,27 +203,27 @@ int CNAME (BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alpha, IFLOAT * A, IFLOAT *
 			DECLARE_RESULT_4X(0, 1, 0); DECLARE_RESULT_4X(0, 1, 1); DECLARE_RESULT_4X(0, 1, 2);
 			for (k_count = k; k_count > 1; k_count -=2) {
 				LOAD_A_PAIR(0);
+				ptr_a0 += 16 * 2;
 				BROADCAST_B_PAIR(0, 0); MATMUL_4X(0, 0, 0);
 				BROADCAST_B_PAIR(0, 1); MATMUL_4X(0, 0, 1);
 				BROADCAST_B_PAIR(0, 2); MATMUL_4X(0, 0, 2);
+				ptr_b0 += 4 * 2;
 				BROADCAST_B_PAIR(1, 0); MATMUL_4X(0, 1, 0);
 				BROADCAST_B_PAIR(1, 1); MATMUL_4X(0, 1, 1);
 				BROADCAST_B_PAIR(1, 2); MATMUL_4X(0, 1, 2);
-				ptr_b0 += 4 * 2;
 				ptr_b1 += 4 * 2;
-				ptr_a0 += 16 * 2;
 			}
 			if (k_count > 0) {
 				LOAD_A_PAIR_TAIL(0);
+				ptr_a0 += 16;
 				BROADCAST_B_PAIR_TAIL(0, 0); MATMUL_4X(0, 0, 0);
 				BROADCAST_B_PAIR_TAIL(0, 1); MATMUL_4X(0, 0, 1);
 				BROADCAST_B_PAIR_TAIL(0, 2); MATMUL_4X(0, 0, 2);
+				ptr_b0 += 4;
 				BROADCAST_B_PAIR_TAIL(1, 0); MATMUL_4X(0, 1, 0);
 				BROADCAST_B_PAIR_TAIL(1, 1); MATMUL_4X(0, 1, 1);
 				BROADCAST_B_PAIR_TAIL(1, 2); MATMUL_4X(0, 1, 2);
-				ptr_b0 += 4;
 				ptr_b1 += 4;
-				ptr_a0 += 16;
 			}
 			ptr_c0 = ptr_c;
 			STORE_4X(0, 0, 0); STORE_4X(0, 0, 1); STORE_4X(0, 0, 2);
@@ -240,27 +240,27 @@ int CNAME (BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alpha, IFLOAT * A, IFLOAT *
 			DECLARE_RESULT_4X(0, 1, 0); DECLARE_RESULT_4X(0, 1, 1); DECLARE_RESULT_4X(0, 1, 2);
 			for (k_count = k; k_count > 1; k_count -=2) {
 				MASK_LOAD_A_PAIR(0);
+				ptr_a0 += m_count * 2;
 				BROADCAST_B_PAIR(0, 0); MATMUL_4X(0, 0, 0);
 				BROADCAST_B_PAIR(0, 1); MATMUL_4X(0, 0, 1);
 				BROADCAST_B_PAIR(0, 2); MATMUL_4X(0, 0, 2);
+				ptr_b0 += 4 * 2;
 				BROADCAST_B_PAIR(1, 0); MATMUL_4X(0, 1, 0);
 				BROADCAST_B_PAIR(1, 1); MATMUL_4X(0, 1, 1);
 				BROADCAST_B_PAIR(1, 2); MATMUL_4X(0, 1, 2);
-				ptr_b0 += 4 * 2;
 				ptr_b1 += 4 * 2;
-				ptr_a0 += m_count * 2;
 			}
 			if (k_count > 0) {
 				MASK_LOAD_A_PAIR_TAIL(0);
+				ptr_a0 += m_count;
 				BROADCAST_B_PAIR_TAIL(0, 0); MATMUL_4X(0, 0, 0);
 				BROADCAST_B_PAIR_TAIL(0, 1); MATMUL_4X(0, 0, 1);
 				BROADCAST_B_PAIR_TAIL(0, 2); MATMUL_4X(0, 0, 2);
+				ptr_b0 += 4;
 				BROADCAST_B_PAIR_TAIL(1, 0); MATMUL_4X(0, 1, 0);
 				BROADCAST_B_PAIR_TAIL(1, 1); MATMUL_4X(0, 1, 1);
 				BROADCAST_B_PAIR_TAIL(1, 2); MATMUL_4X(0, 1, 2);
-				ptr_b0 += 4;
 				ptr_b1 += 4;
-				ptr_a0 += m_count;
 			}
 			ptr_c0 = ptr_c;
 			MASK_STORE_4X(0, 0, 0); MASK_STORE_4X(0, 0, 1); MASK_STORE_4X(0, 0, 2);
@@ -284,21 +284,21 @@ int CNAME (BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alpha, IFLOAT * A, IFLOAT *
 			DECLARE_RESULT_4X(1, 0, 0); DECLARE_RESULT_4X(1, 0, 1); DECLARE_RESULT_4X(1, 0, 2);
 			for (k_count = k; k_count > 1; k_count -=2) {
 				LOAD_A_PAIR(0); LOAD_A_PAIR(1);
+				ptr_a0 += 16 * 2;
+				ptr_a1 += 16 * 2;
 				BROADCAST_B_PAIR(0, 0); MATMUL_4X(0, 0, 0); MATMUL_4X(1, 0, 0);
 				BROADCAST_B_PAIR(0, 1); MATMUL_4X(0, 0, 1); MATMUL_4X(1, 0, 1);
 				BROADCAST_B_PAIR(0, 2); MATMUL_4X(0, 0, 2); MATMUL_4X(1, 0, 2);
 				ptr_b0 += 4 * 2;
-				ptr_a0 += 16 * 2;
-				ptr_a1 += 16 * 2;
 			}
 			if (k_count > 0) {
 				LOAD_A_PAIR_TAIL(0); LOAD_A_PAIR_TAIL(1);
+				ptr_a0 += 16;
+				ptr_a1 += 16;
 				BROADCAST_B_PAIR_TAIL(0, 0); MATMUL_4X(0, 0, 0); MATMUL_4X(1, 0, 0);
 				BROADCAST_B_PAIR_TAIL(0, 1); MATMUL_4X(0, 0, 1); MATMUL_4X(1, 0, 1);
 				BROADCAST_B_PAIR_TAIL(0, 2); MATMUL_4X(0, 0, 2); MATMUL_4X(1, 0, 2);
 				ptr_b0 += 4;
-				ptr_a0 += 16;
-				ptr_a1 += 16;
 			}
 			ptr_c0 = ptr_c;
 			ptr_c1 = ptr_c + 16;
@@ -316,19 +316,19 @@ int CNAME (BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alpha, IFLOAT * A, IFLOAT *
 			DECLARE_RESULT_4X(0, 0, 0); DECLARE_RESULT_4X(0, 0, 1); DECLARE_RESULT_4X(0, 0, 2);
 			for (k_count = k; k_count > 1; k_count -=2) {
 				LOAD_A_PAIR(0);
+				ptr_a0 += 16 * 2;
 				BROADCAST_B_PAIR(0, 0); MATMUL_4X(0, 0, 0);
 				BROADCAST_B_PAIR(0, 1); MATMUL_4X(0, 0, 1);
 				BROADCAST_B_PAIR(0, 2); MATMUL_4X(0, 0, 2);
 				ptr_b0 += 4 * 2;
-				ptr_a0 += 16 * 2;
 			}
 			if (k_count > 0) {
 				LOAD_A_PAIR_TAIL(0);
+				ptr_a0 += 16;
 				BROADCAST_B_PAIR_TAIL(0, 0); MATMUL_4X(0, 0, 0);
 				BROADCAST_B_PAIR_TAIL(0, 1); MATMUL_4X(0, 0, 1);
 				BROADCAST_B_PAIR_TAIL(0, 2); MATMUL_4X(0, 0, 2);
 				ptr_b0 += 4;
-				ptr_a0 += 16;
 			}
 			ptr_c0 = ptr_c;
 			STORE_4X(0, 0, 0); STORE_4X(0, 0, 1); STORE_4X(0, 0, 2);
@@ -342,19 +342,19 @@ int CNAME (BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alpha, IFLOAT * A, IFLOAT *
 			DECLARE_RESULT_4X(0, 0, 0); DECLARE_RESULT_4X(0, 0, 1); DECLARE_RESULT_4X(0, 0, 2);
 			for (k_count = k; k_count > 1; k_count -=2) {
 				MASK_LOAD_A_PAIR(0);
+				ptr_a0 += m_count * 2;
 				BROADCAST_B_PAIR(0, 0); MATMUL_4X(0, 0, 0);
 				BROADCAST_B_PAIR(0, 1); MATMUL_4X(0, 0, 1);
 				BROADCAST_B_PAIR(0, 2); MATMUL_4X(0, 0, 2);
 				ptr_b0 += 4 * 2;
-				ptr_a0 += m_count * 2;
 			}
 			if (k_count > 0) {
 				MASK_LOAD_A_PAIR_TAIL(0);
+				ptr_a0 += m_count;
 				BROADCAST_B_PAIR_TAIL(0, 0); MATMUL_4X(0, 0, 0);
 				BROADCAST_B_PAIR_TAIL(0, 1); MATMUL_4X(0, 0, 1);
 				BROADCAST_B_PAIR_TAIL(0, 2); MATMUL_4X(0, 0, 2);
 				ptr_b0 += 4;
-				ptr_a0 += m_count;
 			}
 			ptr_c0 = ptr_c;
 			MASK_STORE_4X(0, 0, 0); MASK_STORE_4X(0, 0, 1); MASK_STORE_4X(0, 0, 2);
