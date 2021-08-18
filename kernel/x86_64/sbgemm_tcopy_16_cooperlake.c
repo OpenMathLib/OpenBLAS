@@ -160,4 +160,5 @@ int CNAME(BLASLONG m, BLASLONG n, IFLOAT *a, BLASLONG lda, IFLOAT *b){
 			}
 		}
 	}
+	return 0;
 }
