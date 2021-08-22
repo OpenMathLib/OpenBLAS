@@ -187,7 +187,7 @@ steps:
     - apt-get install -y make $CC gfortran perl python python-numpy wget
     - $CC --version
     - make QUIET_MAKE=1 $COMMON_FLAGS
-    - wget https://85.214.232.120:/numpycrash.py
+    - wget https://www.mkroeker.com/numpycrash.py
     - python numpycrash.py
 
 ---
