@@ -184,9 +184,10 @@ steps:
   commands:
     - echo "MAKE_FLAGS:= $COMMON_FLAGS"
     - apt-get update -y
-    - apt-get install -y make $CC gfortran perl python3 python3-pip cython wget
+    - apt-get install -y make $CC gfortran perl python3 python3-pip wget
     - $CC --version
     - make QUIET_MAKE=1 $COMMON_FLAGS
+    - pip3 install cython
     - pip3 install numpy
     - wget https://www.mkroeker.com/numpycrash.py
     - python3 numpycrash.py
