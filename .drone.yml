@@ -191,7 +191,7 @@ steps:
     - pip3 install numpy
     - pip3 install threadpoolctl
     - wget https://www.mkroeker.com/numpycrash.py
-    - cat numpycrash.py | python3 -i
+    - cat numpycrash.py \| python3 -i
 
 ---
 kind: pipeline
