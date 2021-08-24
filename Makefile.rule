@@ -95,7 +95,7 @@ VERSION = 0.3.17.dev
 # This flag defines how many instances of OpenBLAS's calculation API can actually
 # run in parallel. If more than NUM_PARALLEL threads call OpenBLAS's calculation API,
 # they need to wait for the preceding API calls to finish or risk data corruption.
-# NUM_PARALLEL = 2
+NUM_PARALLEL = 1
 
 # When multithreading, OpenBLAS needs to use a memory buffer for communicating
 # and collating results for individual subranges of the original matrix. Since
