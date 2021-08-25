@@ -120,7 +120,7 @@ static inline int blas_quickdivide(blasint x, blasint y){
 	.text ;
 	.p2align 2 ;
 	.global	REALNAME ;
-#ifndef __APPLE__
+#if !defined(__APPLE__) && !defined(_WIN32)
 	.type	REALNAME, %function ;
 #endif
 REALNAME:

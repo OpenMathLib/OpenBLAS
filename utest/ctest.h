@@ -65,8 +65,13 @@ struct ctest {
 #undef CTEST_SEGFAULT
 #endif
 
-#if defined(_WIN32) && defined(_MSC_VER)
+#if defined(_WIN32)
+#if defined(__clang__)
+#define __CTEST_NO_TIME
+#undef CTEST_SEGFAULT
+#elif defined(_MSC_VER)
 #define __CTEST_MSVC
+#endif
 #endif
 
 //config for MSVC compiler
@@ -286,7 +291,7 @@ void assert_dbl_far(double exp, double real, double tol, const char* caller, int
 #endif
 #include <stdint.h>
 
-#ifdef __CTEST_MSVC
+#ifdef _WIN32
 #include <io.h>
 #else
 #include <unistd.h>
