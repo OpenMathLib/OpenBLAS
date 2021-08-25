@@ -166,7 +166,7 @@ static int sgemv_kernel_t_2(BLASLONG m, float alpha, float *a, float *x, float *
             }
 
             if (tag_m_8x != m) {
-                unsigned short tail_mask_value = (((unsigned int)0xffff) >> (16-((m-tag_m_8x)*2)&15));
+                unsigned short tail_mask_value = (((unsigned int)0xffff) >> (16-(((m-tag_m_8x)*2)&15)));
                 __mmask16 a_mask = *((__mmask16*) &tail_mask_value);
                 unsigned char y_mask_value = (((unsigned char)0xff) >> (8-(m-tag_m_8x)));
                 __mmask8 y_mask = *((__mmask8*) &y_mask_value);
@@ -322,7 +322,7 @@ static int sgemv_kernel_t_4(BLASLONG m, float alpha, float *a, float *x, float *
 {
     BLASLONG tag_m_4x = m & (~3);
     BLASLONG tag_m_2x = m & (~1);
-    __m512 m0, m1, m2;
+    __m512 m0, m1;
     __m256 m256_0, m256_1, c256_1, c256_2;
     __m128 c1, c2, c3, c4, ret;
     __m128 xarray = _mm_maskz_loadu_ps(0x0f, x);

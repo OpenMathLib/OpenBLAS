@@ -302,9 +302,6 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1, FLOAT alpha, FLOAT *a, BLASLO
         FLOAT * xbuffer_align = x;
         FLOAT * ybuffer_align = y;
 
-        FLOAT * xbuffer = NULL;
-        FLOAT * ybuffer = NULL;
-
         if (inc_x != 1) {
             xbuffer_align = buffer;
             for(BLASLONG i=0; i<n; i++) {
