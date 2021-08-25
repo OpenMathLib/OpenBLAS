@@ -38,7 +38,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "sgemv_t_microk_haswell-4.c"
 #elif defined (SKYLAKEX) || defined (COOPERLAKE)
 #include "sgemv_t_microk_haswell-4.c"
-/*#include "sgemv_t_microk_skylakex.c"*/
+#include "sgemv_t_microk_skylakex.c"
 #endif
 
 #if defined(STEAMROLLER) || defined(EXCAVATOR)
