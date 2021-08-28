@@ -2060,6 +2060,7 @@ struct release_t {
 int hugetlb_allocated = 0;
 
 static struct release_t release_info[NUM_BUFFERS];
+static struct release_t *new_release_info;
 static int release_pos = 0;
 
 #if defined(OS_LINUX) && !defined(NO_WARMUP)
@@ -2110,8 +2111,13 @@ static void *alloc_mmap(void *address){
 #if (defined(SMP) || defined(USE_LOCKING)) && !defined(USE_OPENMP)
     LOCK_COMMAND(&alloc_lock);
 #endif
+    if (release_pos < NUM_BUFFERS) {
     release_info[release_pos].address = map_address;
     release_info[release_pos].func    = alloc_mmap_free;
+    } else {
+    new_release_info[release_pos-NUM_BUFFERS].address = map_address;
+    new_release_info[release_pos-NUM_BUFFERS].func    = alloc_mmap_free;
+    }
     release_pos ++;
 #if (defined(SMP) || defined(USE_LOCKING)) && !defined(USE_OPENMP)
     UNLOCK_COMMAND(&alloc_lock);
@@ -2274,8 +2280,13 @@ static void *alloc_mmap(void *address){
 #if (defined(SMP) || defined(USE_LOCKING)) && !defined(USE_OPENMP)
     LOCK_COMMAND(&alloc_lock);
 #endif
+    if (release_pos < NUM_BUFFERS) {
     release_info[release_pos].address = map_address;
     release_info[release_pos].func    = alloc_mmap_free;
+    { else {
+    new_release_info[release_pos-NUM_BUFFERS].address = map_address;
+    new_release_info[release_pos-NUM_BUFFERS].func    = alloc_mmap_free;
+    }
     release_pos ++;
 #if (defined(SMP) || defined(USE_LOCKING)) && !defined(USE_OPENMP)
     UNLOCK_COMMAND(&alloc_lock);
@@ -2307,8 +2318,13 @@ static void *alloc_malloc(void *address){
   if (map_address == (void *)NULL) map_address = (void *)-1;
 
   if (map_address != (void *)-1) {
+    if (release_pos < NUM_BUFFERS) {
     release_info[release_pos].address = map_address;
     release_info[release_pos].func    = alloc_malloc_free;
+    } else {
+    new_release_info[release_pos-NUM_BUFFERS].address = map_address;
+    new_release_info[release_pos-NUM_BUFFERS].func    = alloc_malloc_free;
+    }
     release_pos ++;
   }
 
@@ -2341,8 +2357,13 @@ static void *alloc_qalloc(void *address){
   if (map_address == (void *)NULL) map_address = (void *)-1;
 
   if (map_address != (void *)-1) {
+    if (release_pos < NUM_BUFFERS) {
     release_info[release_pos].address = map_address;
     release_info[release_pos].func    = alloc_qalloc_free;
+    } else {
+    new_release_info[release_pos-NUM_BUFFERS].address = map_address;
+    new_release_info[release_pos-NUM_BUFFERS].func    = alloc_qalloc_free;
+    }
     release_pos ++;
   }
 
@@ -2370,8 +2391,13 @@ static void *alloc_windows(void *address){
   if (map_address == (void *)NULL) map_address = (void *)-1;
 
   if (map_address != (void *)-1) {
+    if (release_pos < NUM_BUFFERS) {
     release_info[release_pos].address = map_address;
     release_info[release_pos].func    = alloc_windows_free;
+    } else {
+    new_release_info[release_pos-NUM_BUFFERS].address = map_address;
+    new_release_info[release_pos-NUM_BUFFERS].func    = alloc_windows_free;
+    }
     release_pos ++;
   }
 
@@ -2414,9 +2440,15 @@ static void *alloc_devicedirver(void *address){
                      fd, 0);
 
   if (map_address != (void *)-1) {
+    if (release_pos < NUM_BUFFERS) {
     release_info[release_pos].address = map_address;
     release_info[release_pos].attr    = fd;
     release_info[release_pos].func    = alloc_devicedirver_free;
+    } else {
+    new_release_info[release_pos-NUM_BUFFERS].address = map_address;
+    new_release_info[release_pos-NUM_BUFFERS].attr    = fd;
+    new_release_info[release_pos-NUM_BUFFERS].func    = alloc_devicedirver_free;
+    }
     release_pos ++;
   }
 
@@ -2450,9 +2482,15 @@ static void *alloc_shm(void *address){
 
     shmctl(shmid, IPC_RMID, 0);
 
+    if (release_pos < NUM_BUFFERS) {
     release_info[release_pos].address = map_address;
     release_info[release_pos].attr    = shmid;
     release_info[release_pos].func    = alloc_shm_free;
+    } else {
+    new_release_info[release_pos-NUM_BUFFERS].address = map_address;
+    new_release_info[release_pos-NUM_BUFFERS].attr    = shmid;
+    new_release_info[release_pos-NUM_BUFFERS].func    = alloc_shm_free;
+    }
     release_pos ++;
   }
 
@@ -2556,8 +2594,13 @@ static void *alloc_hugetlb(void *address){
 #endif
 
   if (map_address != (void *)-1){
+    if (release_pos < NUM_BUFFERS) {
     release_info[release_pos].address = map_address;
     release_info[release_pos].func    = alloc_hugetlb_free;
+    } else {
+    new_release_info[release_pos-NUM_BUFFERS].address = map_address;
+    new_release_info[release_pos-NUM_BUFFERS].func    = alloc_hugetlb_free;
+    }
     release_pos ++;
   }
 
@@ -2604,9 +2647,15 @@ static void *alloc_hugetlbfile(void *address){
                      fd, 0);
 
   if (map_address != (void *)-1) {
+    if (release_pos < NUM_BUFFERS) {
     release_info[release_pos].address = map_address;
     release_info[release_pos].attr    = fd;
     release_info[release_pos].func    = alloc_hugetlbfile_free;
+    } else {
+    new_release_info[release_pos-NUM_BUFFERS].address = map_address;
+    new_release_info[release_pos-NUM_BUFFERS].attr    = fd;
+    new_release_info[release_pos-NUM_BUFFERS].func    = alloc_hugetlbfile_free;
+    }
     release_pos ++;
   }
 
@@ -2663,6 +2712,8 @@ static int memory_overflowed = 0;
 
 void *blas_memory_alloc(int procpos){
 
+  int i;
+  
   int position;
 #if defined(WHEREAMI) && !defined(USE_OPENMP)
   int mypos = 0;
@@ -2926,8 +2977,9 @@ void *blas_memory_alloc(int procpos){
  if (memory_overflowed) goto terminate;
  printf("num_buffers exceeded, adding auxiliary array\n");
   memory_overflowed=1;
-  newmemory= (struct newmemstruct*) malloc(512*sizeof(struct newmemstruct));
-  for (int i=0;i<512;i++) {
+  new_release_info = (struct release_t*) malloc(512*sizeof(struct release_t));
+  newmemory = (struct newmemstruct*) malloc(512*sizeof(struct newmemstruct));
+  for (i = 0; i < 512; i++) {
   newmemory[i].addr   = (void *)0;
 #if defined(WHEREAMI) && !defined(USE_OPENMP)
   newmemory[i].pos    = -1;
@@ -3101,7 +3153,10 @@ void blas_shutdown(void){
   LOCK_COMMAND(&alloc_lock);
 
   for (pos = 0; pos < release_pos; pos ++) {
+    if (pos < NUM_BUFFERS)
     release_info[pos].func(&release_info[pos]);
+    else
+    new_release_info[pos-NUM_BUFFERS].func(&new_release_info[pos-NUM_BUFFERS]);
   }
 
 #ifdef SEEK_ADDRESS
@@ -3117,6 +3172,15 @@ void blas_shutdown(void){
     memory[pos].pos    = -1;
 #endif
     memory[pos].lock   = 0;
+  }
+  if (memory_overflowed)
+    for (pos = 0; pos < 512; pos ++){
+      newmemory[pos].addr   = (void *)0;
+      newmemory[pos].used   = 0;
+#if defined(WHEREAMI) && !defined(USE_OPENMP)
+      newmemory[pos].pos    = -1;
+#endif
+      newmemory[pos].lock   = 0;
   }
 
   UNLOCK_COMMAND(&alloc_lock);
