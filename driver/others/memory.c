@@ -2636,8 +2636,25 @@ static volatile struct {
 
 } memory[NUM_BUFFERS];
 
-static int memory_initialized = 0;
+static volatile struct newmemstruct 
+{
+  BLASULONG lock;
+  void *addr;
+#if defined(WHEREAMI) && !defined(USE_OPENMP)
+  int   pos;
+#endif
+  int used;
+#ifndef __64BIT__
+  char dummy[48];
+#else
+  char dummy[40];
+#endif
 
+};
+static volatile struct newmemstruct *newmemory;
+
+static int memory_initialized = 0;
+static int memory_overflowed = 0;
 /*       Memory allocation routine           */
 /* procpos ... indicates where it comes from */
 /*                0 : Level 3 functions      */
@@ -2779,6 +2796,29 @@ void *blas_memory_alloc(int procpos){
 #if (defined(SMP) || defined(USE_LOCKING)) && !defined(USE_OPENMP)
   UNLOCK_COMMAND(&alloc_lock);
 #endif
+  if (memory_overflowed) {
+#if (defined(SMP) || defined(USE_LOCKING)) && !defined(USE_OPENMP)
+  LOCK_COMMAND(&alloc_lock);
+#endif
+  do {
+    RMB;
+#if defined(USE_OPENMP)
+    if (!newmemory[position-NUM_BUFFERS].used) {
+      blas_lock(&newmemory[position-NUM_BUFFERS].lock);
+#endif
+      if (!newmemory[position-NUM_BUFFERS].used) goto allocation2;
+
+#if defined(USE_OPENMP)
+      blas_unlock(&newmemory[position-NUM_BUFFERS].lock);
+    }
+#endif
+    position ++;
+
+  } while (position < 512+NUM_BUFFERS);
+#if (defined(SMP) || defined(USE_LOCKING)) && !defined(USE_OPENMP)
+  UNLOCK_COMMAND(&alloc_lock);
+#endif
+} 
   goto error;
 
   allocation :
@@ -2883,6 +2923,90 @@ void *blas_memory_alloc(int procpos){
   return (void *)memory[position].addr;
 
  error:
+ if (memory_overflowed) goto terminate;
+ printf("num_buffers exceeded, adding auxiliary array\n");
+  memory_overflowed=1;
+  newmemory= (struct newmemstruct*) malloc(512*sizeof(struct newmemstruct));
+  for (int i=0;i<512;i++) {
+  newmemory[i].addr   = (void *)0;
+#if defined(WHEREAMI) && !defined(USE_OPENMP)
+  newmemory[i].pos    = -1;
+#endif
+  newmemory[i].used   = 0;
+  newmemory[i].lock   = 0;
+}
+  newmemory[position-NUM_BUFFERS].used = 1;
+  
+allocation2:
+  newmemory[position-NUM_BUFFERS].used = 1;
+#if (defined(SMP) || defined(USE_LOCKING)) && !defined(USE_OPENMP)
+  UNLOCK_COMMAND(&alloc_lock);
+#else
+  blas_unlock(&newmemory[position-NUM_BUFFERS].lock);
+#endif
+    do {
+#ifdef DEBUG
+      printf("Allocation Start : %lx\n", base_address);
+#endif
+
+      map_address = (void *)-1;
+
+      func = &memoryalloc[0];
+
+      while ((func != NULL) && (map_address == (void *) -1)) {
+
+        map_address = (*func)((void *)base_address);
+
+#ifdef ALLOC_DEVICEDRIVER
+        if ((*func ==  alloc_devicedirver) && (map_address == (void *)-1)) {
+            fprintf(stderr, "OpenBLAS Warning ... Physically contiguous allocation was failed.\n");
+        }
+#endif
+
+#ifdef ALLOC_HUGETLBFILE
+        if ((*func == alloc_hugetlbfile) && (map_address == (void *)-1)) {
+#ifndef OS_WINDOWS
+            fprintf(stderr, "OpenBLAS Warning ... HugeTLB(File) allocation was failed.\n");
+#endif
+        }
+#endif
+
+#if (defined ALLOC_SHM) && (defined OS_LINUX  || defined OS_AIX  || defined __sun__  || defined OS_WINDOWS)
+        if ((*func == alloc_hugetlb) && (map_address != (void *)-1)) hugetlb_allocated = 1;
+#endif
+
+        func ++;
+      }
+
+#ifdef DEBUG
+      printf("  Success -> %08lx\n", map_address);
+#endif
+      if (((BLASLONG) map_address) == -1) base_address = 0UL;
+
+      if (base_address) base_address += BUFFER_SIZE + FIXED_PAGESIZE;
+
+    } while ((BLASLONG)map_address == -1);
+
+#if (defined(SMP) || defined(USE_LOCKING)) && !defined(USE_OPENMP)
+    LOCK_COMMAND(&alloc_lock);
+#endif
+    newmemory[position-NUM_BUFFERS].addr = map_address;
+#if (defined(SMP) || defined(USE_LOCKING)) && !defined(USE_OPENMP)
+    UNLOCK_COMMAND(&alloc_lock);
+#endif
+
+//#ifdef DEBUG
+    printf("  Mapping Succeeded. %p(%d)\n", (void *)newmemory[position-NUM_BUFFERS].addr, position);
+//#endif
+
+#if defined(WHEREAMI) && !defined(USE_OPENMP)
+
+  if (newmemory[position-NUM_BUFFERS].pos == -1) newmemory[position-NUM_BUFFERS].pos = mypos;
+
+#endif
+  return (void *)newmemory[position-NUM_BUFFERS].addr;
+
+terminate:
   printf("OpenBLAS : Program is Terminated. Because you tried to allocate too many memory regions.\n");
   printf("This library was built to support a maximum of %d threads - either rebuild OpenBLAS\n", NUM_BUFFERS);
   printf("with a larger NUM_THREADS value or set the environment variable OPENBLAS_NUM_THREADS to\n");
@@ -2907,13 +3031,28 @@ void blas_memory_free(void *free_area){
   while ((position < NUM_BUFFERS) && (memory[position].addr != free_area))
     position++;
 
-  if (position >= NUM_BUFFERS) goto error;
+  if (position >= NUM_BUFFERS && !memory_overflowed) goto error;
 
 #ifdef DEBUG
   if (memory[position].addr != free_area) goto error;
   printf("  Position : %d\n", position);
 #endif
+  if (memory_overflowed) {
+    while ((position < NUM_BUFFERS+512) && (newmemory[position-NUM_BUFFERS].addr != free_area))
+      position++;
+  // arm: ensure all writes are finished before other thread takes this memory
+  WMB;
 
+  newmemory[position].used = 0;
+#if (defined(SMP) || defined(USE_LOCKING)) && !defined(USE_OPENMP)
+  UNLOCK_COMMAND(&alloc_lock);
+#endif
+
+//#ifdef DEBUG
+  printf("Unmap from overflow area succeeded.\n\n");
+//#endif
+  return;
+} else {
   // arm: ensure all writes are finished before other thread takes this memory
   WMB;
 
@@ -2927,7 +3066,7 @@ void blas_memory_free(void *free_area){
 #endif
 
   return;
-
+}
  error:
   printf("BLAS : Bad memory unallocation! : %4d  %p\n", position,  free_area);
 
