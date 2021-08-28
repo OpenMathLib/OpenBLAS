@@ -2283,7 +2283,7 @@ static void *alloc_mmap(void *address){
     if (release_pos < NUM_BUFFERS) {
     release_info[release_pos].address = map_address;
     release_info[release_pos].func    = alloc_mmap_free;
-    { else {
+    } else {
     new_release_info[release_pos-NUM_BUFFERS].address = map_address;
     new_release_info[release_pos-NUM_BUFFERS].func    = alloc_mmap_free;
     }
