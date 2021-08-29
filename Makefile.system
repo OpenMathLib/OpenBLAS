@@ -244,6 +244,14 @@ else
 ONLY_CBLAS = 0
 endif
 
+#For small matrix optimization
+ifeq ($(ARCH), x86_64)
+SMALL_MATRIX_OPT = 1
+endif
+ifeq ($(SMALL_MATRIX_OPT), 1)
+CCOMMON_OPT += -DSMALL_MATRIX_OPT
+endif
+
 # This operation is expensive, so execution should be once.
 ifndef GOTOBLAS_MAKEFILE
 export GOTOBLAS_MAKEFILE = 1
