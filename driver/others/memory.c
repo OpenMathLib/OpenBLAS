@@ -73,6 +73,14 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "common.h"
 
+#ifndef likely
+#ifdef __GNUC__
+#define likely(x) __builtin_expect(!!(x), 1)
+#else
+#define likely(x) (x)
+#endif
+#endif
+
 #if defined(USE_TLS) && defined(SMP)
 #define COMPILE_TLS
 
@@ -2111,7 +2119,7 @@ static void *alloc_mmap(void *address){
 #if (defined(SMP) || defined(USE_LOCKING)) && !defined(USE_OPENMP)
     LOCK_COMMAND(&alloc_lock);
 #endif
-    if (release_pos < NUM_BUFFERS) {
+    if (likely(release_pos < NUM_BUFFERS)) {
     release_info[release_pos].address = map_address;
     release_info[release_pos].func    = alloc_mmap_free;
     } else {
@@ -2280,7 +2288,7 @@ static void *alloc_mmap(void *address){
 #if (defined(SMP) || defined(USE_LOCKING)) && !defined(USE_OPENMP)
     LOCK_COMMAND(&alloc_lock);
 #endif
-    if (release_pos < NUM_BUFFERS) {
+    if (likely(release_pos < NUM_BUFFERS)) {
     release_info[release_pos].address = map_address;
     release_info[release_pos].func    = alloc_mmap_free;
     } else {
@@ -2318,7 +2326,7 @@ static void *alloc_malloc(void *address){
   if (map_address == (void *)NULL) map_address = (void *)-1;
 
   if (map_address != (void *)-1) {
-    if (release_pos < NUM_BUFFERS) {
+    if (likely(release_pos < NUM_BUFFERS)) {
     release_info[release_pos].address = map_address;
     release_info[release_pos].func    = alloc_malloc_free;
     } else {
@@ -2357,7 +2365,7 @@ static void *alloc_qalloc(void *address){
   if (map_address == (void *)NULL) map_address = (void *)-1;
 
   if (map_address != (void *)-1) {
-    if (release_pos < NUM_BUFFERS) {
+    if (likely(release_pos < NUM_BUFFERS)) {
     release_info[release_pos].address = map_address;
     release_info[release_pos].func    = alloc_qalloc_free;
     } else {
@@ -2391,7 +2399,7 @@ static void *alloc_windows(void *address){
   if (map_address == (void *)NULL) map_address = (void *)-1;
 
   if (map_address != (void *)-1) {
-    if (release_pos < NUM_BUFFERS) {
+    if (likely(release_pos < NUM_BUFFERS)) {
     release_info[release_pos].address = map_address;
     release_info[release_pos].func    = alloc_windows_free;
     } else {
@@ -2440,7 +2448,7 @@ static void *alloc_devicedirver(void *address){
                      fd, 0);
 
   if (map_address != (void *)-1) {
-    if (release_pos < NUM_BUFFERS) {
+    if (likely(release_pos < NUM_BUFFERS)) {
     release_info[release_pos].address = map_address;
     release_info[release_pos].attr    = fd;
     release_info[release_pos].func    = alloc_devicedirver_free;
@@ -2482,7 +2490,7 @@ static void *alloc_shm(void *address){
 
     shmctl(shmid, IPC_RMID, 0);
 
-    if (release_pos < NUM_BUFFERS) {
+    if (likely(release_pos < NUM_BUFFERS)) {
     release_info[release_pos].address = map_address;
     release_info[release_pos].attr    = shmid;
     release_info[release_pos].func    = alloc_shm_free;
@@ -2594,7 +2602,7 @@ static void *alloc_hugetlb(void *address){
 #endif
 
   if (map_address != (void *)-1){
-    if (release_pos < NUM_BUFFERS) {
+    if (likely(release_pos < NUM_BUFFERS)) {
     release_info[release_pos].address = map_address;
     release_info[release_pos].func    = alloc_hugetlb_free;
     } else {
@@ -2647,7 +2655,7 @@ static void *alloc_hugetlbfile(void *address){
                      fd, 0);
 
   if (map_address != (void *)-1) {
-    if (release_pos < NUM_BUFFERS) {
+    if (likely(release_pos < NUM_BUFFERS)) {
     release_info[release_pos].address = map_address;
     release_info[release_pos].attr    = fd;
     release_info[release_pos].func    = alloc_hugetlbfile_free;
@@ -3153,7 +3161,7 @@ void blas_shutdown(void){
   LOCK_COMMAND(&alloc_lock);
 
   for (pos = 0; pos < release_pos; pos ++) {
-    if (pos < NUM_BUFFERS)
+    if (likely(pos < NUM_BUFFERS))
     release_info[pos].func(&release_info[pos]);
     else
     new_release_info[pos-NUM_BUFFERS].func(&new_release_info[pos-NUM_BUFFERS]);
