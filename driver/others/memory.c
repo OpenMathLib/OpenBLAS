@@ -76,8 +76,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef likely
 #ifdef __GNUC__
 #define likely(x) __builtin_expect(!!(x), 1)
+#define unlikely(x) __builtin_expect(!!(x), 0)
 #else
 #define likely(x) (x)
+#define unlikely(x) (x)
 #endif
 #endif
 
@@ -3097,7 +3099,7 @@ void blas_memory_free(void *free_area){
   if (memory[position].addr != free_area) goto error;
   printf("  Position : %d\n", position);
 #endif
-  if (memory_overflowed) {
+  if (unlikely(memory_overflowed && position >= NUM_BUFFERS)) {
     while ((position < NUM_BUFFERS+512) && (newmemory[position-NUM_BUFFERS].addr != free_area))
       position++;
   // arm: ensure all writes are finished before other thread takes this memory
