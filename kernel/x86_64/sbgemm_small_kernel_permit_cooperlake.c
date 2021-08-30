@@ -1,5 +1,5 @@
 /***************************************************************************
-Copyright (c) 2020, The OpenBLAS Project
+Copyright (c) 2021, The OpenBLAS Project
 All rights reserved.
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -27,31 +27,16 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "common.h"
 
-#ifdef B0
-int CNAME(BLASLONG M, BLASLONG N, BLASLONG K, IFLOAT * A, BLASLONG lda, FLOAT alpha, IFLOAT * B, BLASLONG ldb, FLOAT * C, BLASLONG ldc)
-#else
-int CNAME(BLASLONG M, BLASLONG N, BLASLONG K, IFLOAT * A, BLASLONG lda, FLOAT alpha, IFLOAT * B, BLASLONG ldb, FLOAT beta, FLOAT * C, BLASLONG ldc)
-#endif
+#include "sbgemm_block_microk_cooperlake.c"
+// Define micro kernels for ALPHA not ONE scenarios
+#undef  ONE_ALPHA
+#include "sbgemm_microk_cooperlake_template.c"
+
+// Define micro kernels for ALPHA as ONE scenarios
+#define ONE_ALPHA 1
+#include "sbgemm_microk_cooperlake_template.c"
+
+int CNAME(int transa, int transb, BLASLONG M, BLASLONG N, BLASLONG K, FLOAT alpha, FLOAT beta)
 {
-	//naive implemtation
-	//Column major
-
-	BLASLONG i,j,k;
-	FLOAT result=0.0;
-
-	for(i=0; i<M; i++){
-		for(j=0; j<N; j++){
-			result=0.0;
-			for(k=0; k<K; k++){
-				result += A[i*lda+k] * B[k+j*ldb];
-			}
-#ifdef B0
-			C[i+j*ldc]=alpha * result;
-#else
-			C[i+j*ldc]=C[i+j*ldc] * beta + alpha * result;
-#endif
-		}
-	}
-
-	return 0;
+	return 1;
 }

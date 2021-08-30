@@ -112,6 +112,11 @@ gotoblas_t TABLE_NAME = {
 #else
   NULL,NULL,
 #endif
+#ifdef SMALL_MATRIX_OPT
+  sbgemm_small_matrix_permitTS,
+  sbgemm_small_kernel_nnTS, sbgemm_small_kernel_ntTS, sbgemm_small_kernel_tnTS, sbgemm_small_kernel_ttTS,
+  sbgemm_small_kernel_b0_nnTS, sbgemm_small_kernel_b0_ntTS, sbgemm_small_kernel_b0_tnTS, sbgemm_small_kernel_b0_ttTS,
+#endif
 #endif
 
 #if ( BUILD_SINGLE==1) || (BUILD_DOUBLE==1) || (BUILD_COMPLEX==1) || (BUILD_COMPLEX16==1)
