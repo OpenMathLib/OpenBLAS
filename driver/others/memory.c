@@ -2985,7 +2985,7 @@ void *blas_memory_alloc(int procpos){
 
  error:
  if (memory_overflowed) goto terminate;
- printf("num_buffers exceeded, adding auxiliary array\n");
+  fprintf(stderr,"OpenBLAS warning: precompiled NUM_THREADS exceeded, adding auxiliary array for thread metadata.\n")
   memory_overflowed=1;
   new_release_info = (struct release_t*) malloc(512*sizeof(struct release_t));
   newmemory = (struct newmemstruct*) malloc(512*sizeof(struct newmemstruct));
@@ -3057,9 +3057,9 @@ allocation2:
     UNLOCK_COMMAND(&alloc_lock);
 #endif
 
-//#ifdef DEBUG
+#ifdef DEBUG
     printf("  Mapping Succeeded. %p(%d)\n", (void *)newmemory[position-NUM_BUFFERS].addr, position);
-//#endif
+#endif
 
 #if defined(WHEREAMI) && !defined(USE_OPENMP)
 
@@ -3110,9 +3110,9 @@ void blas_memory_free(void *free_area){
   UNLOCK_COMMAND(&alloc_lock);
 #endif
 
-//#ifdef DEBUG
+#ifdef DEBUG
   printf("Unmap from overflow area succeeded.\n\n");
-//#endif
+#endif
   return;
 } else {
   // arm: ensure all writes are finished before other thread takes this memory
