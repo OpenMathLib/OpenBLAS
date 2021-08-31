@@ -2955,7 +2955,12 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #define GEMM_DEFAULT_OFFSET_A 0
 #define GEMM_DEFAULT_OFFSET_B 0
+#ifdef _WIN64
+/* Use explicit casting for win64 as LLP64 datamodel is used */
+#define GEMM_DEFAULT_ALIGN (BLASULONG)0x03fffUL
+#else
 #define GEMM_DEFAULT_ALIGN 0x03fffUL
+#endif
 
 #define SYMV_P	16
 
