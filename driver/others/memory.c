@@ -73,6 +73,16 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "common.h"
 
+#ifndef likely
+#ifdef __GNUC__
+#define likely(x) __builtin_expect(!!(x), 1)
+#define unlikely(x) __builtin_expect(!!(x), 0)
+#else
+#define likely(x) (x)
+#define unlikely(x) (x)
+#endif
+#endif
+
 #if defined(USE_TLS) && defined(SMP)
 #define COMPILE_TLS
 
@@ -2060,6 +2070,7 @@ struct release_t {
 int hugetlb_allocated = 0;
 
 static struct release_t release_info[NUM_BUFFERS];
+static struct release_t *new_release_info;
 static int release_pos = 0;
 
 #if defined(OS_LINUX) && !defined(NO_WARMUP)
@@ -2110,8 +2121,13 @@ static void *alloc_mmap(void *address){
 #if (defined(SMP) || defined(USE_LOCKING)) && !defined(USE_OPENMP)
     LOCK_COMMAND(&alloc_lock);
 #endif
+    if (likely(release_pos < NUM_BUFFERS)) {
     release_info[release_pos].address = map_address;
     release_info[release_pos].func    = alloc_mmap_free;
+    } else {
+    new_release_info[release_pos-NUM_BUFFERS].address = map_address;
+    new_release_info[release_pos-NUM_BUFFERS].func    = alloc_mmap_free;
+    }
     release_pos ++;
 #if (defined(SMP) || defined(USE_LOCKING)) && !defined(USE_OPENMP)
     UNLOCK_COMMAND(&alloc_lock);
@@ -2274,8 +2290,13 @@ static void *alloc_mmap(void *address){
 #if (defined(SMP) || defined(USE_LOCKING)) && !defined(USE_OPENMP)
     LOCK_COMMAND(&alloc_lock);
 #endif
+    if (likely(release_pos < NUM_BUFFERS)) {
     release_info[release_pos].address = map_address;
     release_info[release_pos].func    = alloc_mmap_free;
+    } else {
+    new_release_info[release_pos-NUM_BUFFERS].address = map_address;
+    new_release_info[release_pos-NUM_BUFFERS].func    = alloc_mmap_free;
+    }
     release_pos ++;
 #if (defined(SMP) || defined(USE_LOCKING)) && !defined(USE_OPENMP)
     UNLOCK_COMMAND(&alloc_lock);
@@ -2307,8 +2328,13 @@ static void *alloc_malloc(void *address){
   if (map_address == (void *)NULL) map_address = (void *)-1;
 
   if (map_address != (void *)-1) {
+    if (likely(release_pos < NUM_BUFFERS)) {
     release_info[release_pos].address = map_address;
     release_info[release_pos].func    = alloc_malloc_free;
+    } else {
+    new_release_info[release_pos-NUM_BUFFERS].address = map_address;
+    new_release_info[release_pos-NUM_BUFFERS].func    = alloc_malloc_free;
+    }
     release_pos ++;
   }
 
@@ -2341,8 +2367,13 @@ static void *alloc_qalloc(void *address){
   if (map_address == (void *)NULL) map_address = (void *)-1;
 
   if (map_address != (void *)-1) {
+    if (likely(release_pos < NUM_BUFFERS)) {
     release_info[release_pos].address = map_address;
     release_info[release_pos].func    = alloc_qalloc_free;
+    } else {
+    new_release_info[release_pos-NUM_BUFFERS].address = map_address;
+    new_release_info[release_pos-NUM_BUFFERS].func    = alloc_qalloc_free;
+    }
     release_pos ++;
   }
 
@@ -2370,8 +2401,13 @@ static void *alloc_windows(void *address){
   if (map_address == (void *)NULL) map_address = (void *)-1;
 
   if (map_address != (void *)-1) {
+    if (likely(release_pos < NUM_BUFFERS)) {
     release_info[release_pos].address = map_address;
     release_info[release_pos].func    = alloc_windows_free;
+    } else {
+    new_release_info[release_pos-NUM_BUFFERS].address = map_address;
+    new_release_info[release_pos-NUM_BUFFERS].func    = alloc_windows_free;
+    }
     release_pos ++;
   }
 
@@ -2414,9 +2450,15 @@ static void *alloc_devicedirver(void *address){
                      fd, 0);
 
   if (map_address != (void *)-1) {
+    if (likely(release_pos < NUM_BUFFERS)) {
     release_info[release_pos].address = map_address;
     release_info[release_pos].attr    = fd;
     release_info[release_pos].func    = alloc_devicedirver_free;
+    } else {
+    new_release_info[release_pos-NUM_BUFFERS].address = map_address;
+    new_release_info[release_pos-NUM_BUFFERS].attr    = fd;
+    new_release_info[release_pos-NUM_BUFFERS].func    = alloc_devicedirver_free;
+    }
     release_pos ++;
   }
 
@@ -2450,9 +2492,15 @@ static void *alloc_shm(void *address){
 
     shmctl(shmid, IPC_RMID, 0);
 
+    if (likely(release_pos < NUM_BUFFERS)) {
     release_info[release_pos].address = map_address;
     release_info[release_pos].attr    = shmid;
     release_info[release_pos].func    = alloc_shm_free;
+    } else {
+    new_release_info[release_pos-NUM_BUFFERS].address = map_address;
+    new_release_info[release_pos-NUM_BUFFERS].attr    = shmid;
+    new_release_info[release_pos-NUM_BUFFERS].func    = alloc_shm_free;
+    }
     release_pos ++;
   }
 
@@ -2556,8 +2604,13 @@ static void *alloc_hugetlb(void *address){
 #endif
 
   if (map_address != (void *)-1){
+    if (likely(release_pos < NUM_BUFFERS)) {
     release_info[release_pos].address = map_address;
     release_info[release_pos].func    = alloc_hugetlb_free;
+    } else {
+    new_release_info[release_pos-NUM_BUFFERS].address = map_address;
+    new_release_info[release_pos-NUM_BUFFERS].func    = alloc_hugetlb_free;
+    }
     release_pos ++;
   }
 
@@ -2604,9 +2657,15 @@ static void *alloc_hugetlbfile(void *address){
                      fd, 0);
 
   if (map_address != (void *)-1) {
+    if (likely(release_pos < NUM_BUFFERS)) {
     release_info[release_pos].address = map_address;
     release_info[release_pos].attr    = fd;
     release_info[release_pos].func    = alloc_hugetlbfile_free;
+    } else {
+    new_release_info[release_pos-NUM_BUFFERS].address = map_address;
+    new_release_info[release_pos-NUM_BUFFERS].attr    = fd;
+    new_release_info[release_pos-NUM_BUFFERS].func    = alloc_hugetlbfile_free;
+    }
     release_pos ++;
   }
 
@@ -2636,8 +2695,25 @@ static volatile struct {
 
 } memory[NUM_BUFFERS];
 
-static int memory_initialized = 0;
+static volatile struct newmemstruct 
+{
+  BLASULONG lock;
+  void *addr;
+#if defined(WHEREAMI) && !defined(USE_OPENMP)
+  int   pos;
+#endif
+  int used;
+#ifndef __64BIT__
+  char dummy[48];
+#else
+  char dummy[40];
+#endif
 
+};
+static volatile struct newmemstruct *newmemory;
+
+static int memory_initialized = 0;
+static int memory_overflowed = 0;
 /*       Memory allocation routine           */
 /* procpos ... indicates where it comes from */
 /*                0 : Level 3 functions      */
@@ -2646,6 +2722,8 @@ static int memory_initialized = 0;
 
 void *blas_memory_alloc(int procpos){
 
+  int i;
+  
   int position;
 #if defined(WHEREAMI) && !defined(USE_OPENMP)
   int mypos = 0;
@@ -2779,6 +2857,29 @@ void *blas_memory_alloc(int procpos){
 #if (defined(SMP) || defined(USE_LOCKING)) && !defined(USE_OPENMP)
   UNLOCK_COMMAND(&alloc_lock);
 #endif
+  if (memory_overflowed) {
+#if (defined(SMP) || defined(USE_LOCKING)) && !defined(USE_OPENMP)
+  LOCK_COMMAND(&alloc_lock);
+#endif
+  do {
+    RMB;
+#if defined(USE_OPENMP)
+    if (!newmemory[position-NUM_BUFFERS].used) {
+      blas_lock(&newmemory[position-NUM_BUFFERS].lock);
+#endif
+      if (!newmemory[position-NUM_BUFFERS].used) goto allocation2;
+
+#if defined(USE_OPENMP)
+      blas_unlock(&newmemory[position-NUM_BUFFERS].lock);
+    }
+#endif
+    position ++;
+
+  } while (position < 512+NUM_BUFFERS);
+#if (defined(SMP) || defined(USE_LOCKING)) && !defined(USE_OPENMP)
+  UNLOCK_COMMAND(&alloc_lock);
+#endif
+} 
   goto error;
 
   allocation :
@@ -2883,6 +2984,91 @@ void *blas_memory_alloc(int procpos){
   return (void *)memory[position].addr;
 
  error:
+ if (memory_overflowed) goto terminate;
+  fprintf(stderr,"OpenBLAS warning: precompiled NUM_THREADS exceeded, adding auxiliary array for thread metadata.\n");
+  memory_overflowed=1;
+  new_release_info = (struct release_t*) malloc(512*sizeof(struct release_t));
+  newmemory = (struct newmemstruct*) malloc(512*sizeof(struct newmemstruct));
+  for (i = 0; i < 512; i++) {
+  newmemory[i].addr   = (void *)0;
+#if defined(WHEREAMI) && !defined(USE_OPENMP)
+  newmemory[i].pos    = -1;
+#endif
+  newmemory[i].used   = 0;
+  newmemory[i].lock   = 0;
+}
+  newmemory[position-NUM_BUFFERS].used = 1;
+  
+allocation2:
+  newmemory[position-NUM_BUFFERS].used = 1;
+#if (defined(SMP) || defined(USE_LOCKING)) && !defined(USE_OPENMP)
+  UNLOCK_COMMAND(&alloc_lock);
+#else
+  blas_unlock(&newmemory[position-NUM_BUFFERS].lock);
+#endif
+    do {
+#ifdef DEBUG
+      printf("Allocation Start : %lx\n", base_address);
+#endif
+
+      map_address = (void *)-1;
+
+      func = &memoryalloc[0];
+
+      while ((func != NULL) && (map_address == (void *) -1)) {
+
+        map_address = (*func)((void *)base_address);
+
+#ifdef ALLOC_DEVICEDRIVER
+        if ((*func ==  alloc_devicedirver) && (map_address == (void *)-1)) {
+            fprintf(stderr, "OpenBLAS Warning ... Physically contiguous allocation was failed.\n");
+        }
+#endif
+
+#ifdef ALLOC_HUGETLBFILE
+        if ((*func == alloc_hugetlbfile) && (map_address == (void *)-1)) {
+#ifndef OS_WINDOWS
+            fprintf(stderr, "OpenBLAS Warning ... HugeTLB(File) allocation was failed.\n");
+#endif
+        }
+#endif
+
+#if (defined ALLOC_SHM) && (defined OS_LINUX  || defined OS_AIX  || defined __sun__  || defined OS_WINDOWS)
+        if ((*func == alloc_hugetlb) && (map_address != (void *)-1)) hugetlb_allocated = 1;
+#endif
+
+        func ++;
+      }
+
+#ifdef DEBUG
+      printf("  Success -> %08lx\n", map_address);
+#endif
+      if (((BLASLONG) map_address) == -1) base_address = 0UL;
+
+      if (base_address) base_address += BUFFER_SIZE + FIXED_PAGESIZE;
+
+    } while ((BLASLONG)map_address == -1);
+
+#if (defined(SMP) || defined(USE_LOCKING)) && !defined(USE_OPENMP)
+    LOCK_COMMAND(&alloc_lock);
+#endif
+    newmemory[position-NUM_BUFFERS].addr = map_address;
+#if (defined(SMP) || defined(USE_LOCKING)) && !defined(USE_OPENMP)
+    UNLOCK_COMMAND(&alloc_lock);
+#endif
+
+#ifdef DEBUG
+    printf("  Mapping Succeeded. %p(%d)\n", (void *)newmemory[position-NUM_BUFFERS].addr, position);
+#endif
+
+#if defined(WHEREAMI) && !defined(USE_OPENMP)
+
+  if (newmemory[position-NUM_BUFFERS].pos == -1) newmemory[position-NUM_BUFFERS].pos = mypos;
+
+#endif
+  return (void *)newmemory[position-NUM_BUFFERS].addr;
+
+terminate:
   printf("OpenBLAS : Program is Terminated. Because you tried to allocate too many memory regions.\n");
   printf("This library was built to support a maximum of %d threads - either rebuild OpenBLAS\n", NUM_BUFFERS);
   printf("with a larger NUM_THREADS value or set the environment variable OPENBLAS_NUM_THREADS to\n");
@@ -2907,13 +3093,28 @@ void blas_memory_free(void *free_area){
   while ((position < NUM_BUFFERS) && (memory[position].addr != free_area))
     position++;
 
-  if (position >= NUM_BUFFERS) goto error;
+  if (position >= NUM_BUFFERS && !memory_overflowed) goto error;
 
 #ifdef DEBUG
   if (memory[position].addr != free_area) goto error;
   printf("  Position : %d\n", position);
 #endif
+  if (unlikely(memory_overflowed && position >= NUM_BUFFERS)) {
+    while ((position < NUM_BUFFERS+512) && (newmemory[position-NUM_BUFFERS].addr != free_area))
+      position++;
+  // arm: ensure all writes are finished before other thread takes this memory
+  WMB;
 
+  newmemory[position].used = 0;
+#if (defined(SMP) || defined(USE_LOCKING)) && !defined(USE_OPENMP)
+  UNLOCK_COMMAND(&alloc_lock);
+#endif
+
+#ifdef DEBUG
+  printf("Unmap from overflow area succeeded.\n\n");
+#endif
+  return;
+} else {
   // arm: ensure all writes are finished before other thread takes this memory
   WMB;
 
@@ -2927,7 +3128,7 @@ void blas_memory_free(void *free_area){
 #endif
 
   return;
-
+}
  error:
   printf("BLAS : Bad memory unallocation! : %4d  %p\n", position,  free_area);
 
@@ -2962,7 +3163,10 @@ void blas_shutdown(void){
   LOCK_COMMAND(&alloc_lock);
 
   for (pos = 0; pos < release_pos; pos ++) {
+    if (likely(pos < NUM_BUFFERS))
     release_info[pos].func(&release_info[pos]);
+    else
+    new_release_info[pos-NUM_BUFFERS].func(&new_release_info[pos-NUM_BUFFERS]);
   }
 
 #ifdef SEEK_ADDRESS
@@ -2978,6 +3182,15 @@ void blas_shutdown(void){
     memory[pos].pos    = -1;
 #endif
     memory[pos].lock   = 0;
+  }
+  if (memory_overflowed)
+    for (pos = 0; pos < 512; pos ++){
+      newmemory[pos].addr   = (void *)0;
+      newmemory[pos].used   = 0;
+#if defined(WHEREAMI) && !defined(USE_OPENMP)
+      newmemory[pos].pos    = -1;
+#endif
+      newmemory[pos].lock   = 0;
   }
 
   UNLOCK_COMMAND(&alloc_lock);
