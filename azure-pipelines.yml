@@ -75,7 +75,14 @@ jobs:
       cd utest
       dir
       openblas_utest.exe
-  
+
+- job: Windows_mingw_gmake
+  pool:
+     vmImage: 'windows-latest'
+  steps:   
+  - script: |
+      mingw32-make CC=mingw-w64-x86_64-gcc FC=mingw-w64-x86_64-gfortran DYNAMIC_ARCH=1
+
 - job: OSX_OpenMP
   pool:
      vmImage: 'macOS-10.15'
