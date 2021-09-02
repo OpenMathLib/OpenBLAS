@@ -81,7 +81,7 @@ jobs:
      vmImage: 'windows-latest'
   steps:   
   - script: |
-      mingw32-make CC=mingw-w64-x86_64-gcc FC=mingw-w64-x86_64-gfortran DYNAMIC_ARCH=1
+      mingw32-make CC=gcc FC=gfortran DYNAMIC_ARCH=1
 
 - job: OSX_OpenMP
   pool:
