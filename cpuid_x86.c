@@ -266,6 +266,31 @@ int support_avx512_bf16(){
 #endif
 }
 
+#define BIT_AMX_TILE	0x01000000
+#define BIT_AMX_BF16	0x00400000
+#define BIT_AMX_ENBD	0x00060000
+
+int support_amx_bf16() {
+#if !defined(NO_AVX) && !defined(NO_AVX512)
+  int eax, ebx, ecx, edx;
+  int ret=0;
+
+  if (!support_avx512())
+    return 0;
+  // CPUID.7.0:EDX indicates AMX support
+  cpuid_count(7, 0, &eax, &ebx, &ecx, &edx);
+  if ((edx & BIT_AMX_TILE) && (edx & BIT_AMX_BF16)) {
+    // CPUID.D.0:EAX[17:18] indicates AMX enabled
+    cpuid_count(0xd, 0, &eax, &ebx, &ecx, &edx);
+    if ((eax & BIT_AMX_ENBD) == BIT_AMX_ENBD)
+      ret = 1;
+  }
+  return ret;
+#else
+  return 0;
+#endif
+}
+
 int get_vendor(void){
   int eax, ebx, ecx, edx;
   char vendor[13];
@@ -353,6 +378,7 @@ int get_cputype(int gettype){
     if (support_avx2()) feature |= HAVE_AVX2;
     if (support_avx512()) feature |= HAVE_AVX512VL;
     if (support_avx512_bf16()) feature |= HAVE_AVX512BF16;
+    if (support_amx_bf16()) feature |= HAVE_AMXBF16;
     if ((ecx & (1 << 12)) != 0) feature |= HAVE_FMA3;
 #endif
 
@@ -2389,6 +2415,7 @@ void get_cpuconfig(void){
     if (features & HAVE_AVX2 )    printf("#define HAVE_AVX2\n");
     if (features & HAVE_AVX512VL )    printf("#define HAVE_AVX512VL\n");
     if (features & HAVE_AVX512BF16 )    printf("#define HAVE_AVX512BF16\n");
+    if (features & HAVE_AMXBF16 )    printf("#define HAVE_AMXBF16\n");
     if (features & HAVE_3DNOWEX) printf("#define HAVE_3DNOWEX\n");
     if (features & HAVE_3DNOW)   printf("#define HAVE_3DNOW\n");
     if (features & HAVE_FMA4 )    printf("#define HAVE_FMA4\n");
@@ -2460,6 +2487,7 @@ void get_sse(void){
   if (features & HAVE_AVX2 )    printf("HAVE_AVX2=1\n");
   if (features & HAVE_AVX512VL )    printf("HAVE_AVX512VL=1\n");
   if (features & HAVE_AVX512BF16 )    printf("HAVE_AVX512BF16=1\n");
+  if (features & HAVE_AMXBF16 )    printf("HAVE_AMXBF16=1\n");
   if (features & HAVE_3DNOWEX) printf("HAVE_3DNOWEX=1\n");
   if (features & HAVE_3DNOW)   printf("HAVE_3DNOW=1\n");
   if (features & HAVE_FMA4 )    printf("HAVE_FMA4=1\n");

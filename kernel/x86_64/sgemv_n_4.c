@@ -37,7 +37,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "sgemv_n_microk_sandy-4.c"
 #elif defined(HASWELL) || defined(ZEN)
 #include "sgemv_n_microk_haswell-4.c"
-#elif defined (SKYLAKEX) || defined (COOPERLAKE)
+#elif defined (SKYLAKEX) || defined (COOPERLAKE) || defined (SAPPHIRERAPIDS)
 #include "sgemv_n_microk_haswell-4.c"
 #include "sgemv_n_microk_skylakex-8.c"
 #endif

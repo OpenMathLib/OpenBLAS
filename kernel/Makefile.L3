@@ -47,6 +47,10 @@ ifeq ($(CORE), COOPERLAKE)
 USE_TRMM = 1
 endif
 
+ifeq ($(CORE), SAPPHIRERAPIDS)
+USE_TRMM = 1
+endif
+
 ifeq ($(CORE), ZEN)
 USE_TRMM = 1
 endif

@@ -96,6 +96,30 @@ endif
 endif
 endif
 
+ifeq ($(CORE), SAPPHIRERAPIDS)
+ifndef NO_AVX512
+ifeq ($(C_COMPILER), GCC)
+# sapphire rapids support was added in 11
+ifeq ($(GCCVERSIONGTEQ11), 1)
+CCOMMON_OPT += -march=sapphirerapids
+ifneq ($(F_COMPILER), NAG)
+FCOMMON_OPT += -march=sapphirerapids
+endif
+endif
+endif
+ifeq ($(OSNAME), CYGWIN_NT)
+CCOMMON_OPT += -fno-asynchronous-unwind-tables
+FCOMMON_OPT += -fno-asynchronous-unwind-tables
+endif
+ifeq ($(OSNAME), WINNT)
+ifeq ($(C_COMPILER), GCC)
+CCOMMON_OPT += -fno-asynchronous-unwind-tables
+FCOMMON_OPT += -fno-asynchronous-unwind-tables
+endif
+endif
+endif
+endif
+
 ifdef HAVE_AVX2
 ifndef NO_AVX2
 ifeq ($(C_COMPILER), GCC)
