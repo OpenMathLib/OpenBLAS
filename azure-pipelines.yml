@@ -81,7 +81,7 @@ jobs:
      vmImage: 'windows-latest'
   steps:   
   - script: |
-      mingw32-make CC=gcc FC=gfortran DYNAMIC_ARCH=1 DYNAMIC_LIST='NEHALEM HASWELL SKYLAKEX'
+      mingw32-make CC=gcc FC=gfortran DYNAMIC_ARCH=1 DYNAMIC_LIST="NEHALEM HASWELL SKYLAKEX"
 
 - job: OSX_OpenMP
   pool:
