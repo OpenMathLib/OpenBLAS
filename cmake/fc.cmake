@@ -104,7 +104,7 @@ endif ()
 
 if (${F_COMPILER} STREQUAL "IBM")
   set(CCOMMON_OPT "${CCOMMON_OPT} -DF_INTERFACE_IBM")
-  # FCOMMON_OPT	+= -qarch=440
+  set(FCOMMON_OPT "${FCOMMON_OPT} -qrecur")
   if (BINARY64)
     set(FCOMMON_OPT "${FCOMMON_OPT} -q64")
     if (INTERFACE64)
