@@ -185,7 +185,9 @@ Please read `GotoBLAS_01Readme.txt` for older CPU models already supported by th
 
 ### Support for multiple targets in a single library
 
-OpenBLAS can be built for multiple targets with runtime detection of the target cpu by specifiying `DYNAMIC_ARCH=1` in Makefile.rule, on the gmake command line or as `-DDYNAMIC_ARCH=TRUE` in cmake.
+OpenBLAS can be built for multiple targets with runtime detection of the target cpu by specifiying `DYNAMIC_ARCH=1` in Makefile.rule, on the gmake command line or as `-DDYNAMIC_ARCH=TRUE` in cmake. The `TARGET` option should be used in conjunction with `DYNAMIC_ARCH=1` to specify which cpu model should be assumed for all the
+common code in the library, usually you will want to set `TARGET=GENERIC` to use the oldest cpu model. If `TARGET` is not set, OpenBLAS will only work on cpus
+that are newer than the host cpu.
 
 For **x86_64**, the list of targets this activates contains Prescott, Core2, Nehalem, Barcelona, Sandybridge, Bulldozer, Piledriver, Steamroller, Excavator, Haswell, Zen, SkylakeX. For cpu generations not included in this list, the corresponding older model is used. If you also specify `DYNAMIC_OLDER=1`, specific support for Penryn, Dunnington, Opteron, Opteron/SSE3, Bobcat, Atom and Nano is added. Finally there is an option `DYNAMIC_LIST` that allows to specify an individual list of targets to include instead of the default.
 
@@ -196,8 +198,6 @@ On **ARMV8**, it enables support for CortexA53, CortexA57, CortexA72, CortexA73,
 
 For **POWER**, the list encompasses POWER6, POWER8 and POWER9, on **ZARCH** it comprises Z13 and Z14.
 
-The `TARGET` option can be used in conjunction with `DYNAMIC_ARCH=1` to specify which cpu model should be assumed for all the
-common code in the library, usually you will want to set this to the oldest model you expect to encounter.
 Please note that it is not possible to combine support for different architectures, so no combined 32 and 64 bit or x86_64 and arm64 in the same library.
 
 ### Supported OS
