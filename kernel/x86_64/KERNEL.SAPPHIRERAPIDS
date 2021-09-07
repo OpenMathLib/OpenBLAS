@@ -1,1 +1,12 @@
 include $(KERNELDIR)/KERNEL.COOPERLAKE
+
+SBGEMM_BETA     = sgemm_beta_skylakex.c
+SBGEMMKERNEL    = sbgemm_kernel_16x16_spr.c
+SBGEMMINCOPY    = sbgemm_incopy_16_spr.c
+SBGEMMITCOPY    = sbgemm_itcopy_16_spr.c
+SBGEMMONCOPY    = sbgemm_oncopy_16_spr.c
+SBGEMMOTCOPY    = sbgemm_otcopy_16_spr.c
+SBGEMMINCOPYOBJ =  sbgemm_incopy$(TSUFFIX).$(SUFFIX)
+SBGEMMITCOPYOBJ =  sbgemm_itcopy$(TSUFFIX).$(SUFFIX)
+SBGEMMONCOPYOBJ =  sbgemm_oncopy$(TSUFFIX).$(SUFFIX)
+SBGEMMOTCOPYOBJ =  sbgemm_otcopy$(TSUFFIX).$(SUFFIX)
