@@ -38,5 +38,11 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 int CNAME(int transa, int transb, BLASLONG M, BLASLONG N, BLASLONG K, FLOAT alpha, FLOAT beta)
 {
-	return 1;
+	double MNK = (double) M * (double) N * (double) K;
+	if (MNK > 256.0*256.0*256.0)  // disable for big size matrix
+		return 0;
+	/* small matrix kernel works well for N = 8, 16, 32 */
+	if (N == 8 || N == 16 || N == 32)
+		return 1;
+	return 0;
 }
