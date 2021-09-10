@@ -104,6 +104,15 @@ endif ()
   GenerateNamedObjects("imax.c" "USE_ABS;USE_MIN" "i*amin" ${CBLAS_FLAG})
   GenerateNamedObjects("imax.c" "USE_MIN" "i*min" ${CBLAS_FLAG})
 
+if (BUILD_BFLOAT16)
+	GenerateNamedObjects("bf16dot.c" "" "sbdot" ${CBLAS_FLAG} "" "" true "BFLOAT16")
+	GenerateNamedObjects("gemm.c" "" "sbgemm" ${CBLAS_FLAG} "" "" true "BFLOAT16")
+	GenerateNamedObjects("sbgemv.c" "" "sbgemv" ${CBLAS_FLAG} "" "" true "BFLOAT16")
+	GenerateNamedObjects("tobf16.c" "SINGLE_PREC" "sbstobf16" ${CBLAS_FLAG} "" "" true "BFLOAT16")
+	GenerateNamedObjects("tobf16.c" "DOUBLE_PREC" "dbstobf16" ${CBLAS_FLAG} "" "" true "BFLOAT16")
+	GenerateNamedObjects("bf16to.c" "SINGLE_PREC" "sbf16tos" ${CBLAS_FLAG} "" "" true "BFLOAT16")
+	GenerateNamedObjects("bf16to.c" "DOUBLE_PREC" "dbf16tod" ${CBLAS_FLAG} "" "" true "BFLOAT16")
+endif ()
 
 # complex-specific sources
 foreach (float_type ${FLOAT_TYPES})
