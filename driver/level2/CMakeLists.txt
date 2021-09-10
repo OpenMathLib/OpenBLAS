@@ -76,11 +76,15 @@ foreach (float_type ${FLOAT_TYPES})
   if (USE_THREAD)
     GenerateNamedObjects("gemv_thread.c" "" "gemv_thread_n" false "" "" false ${float_type})
     GenerateNamedObjects("gemv_thread.c" "TRANSA" "gemv_thread_t" false "" "" false ${float_type})
-
+    if (BUILD_BFLOAT16)
+	    GenerateNamedObjects("sbgemv_thread.c" "" "gemv_thread_n" false "" "" false "BFLOAT16")
+	    GenerateNamedObjects("sbgemv_thread.c" "TRANSA" "gemv_thread_t" false "" "" false "BFLOAT16")
+    endif ()
     GenerateNamedObjects("gbmv_thread.c" "" "gbmv_thread_n" false "" "" false ${float_type})
     GenerateNamedObjects("gbmv_thread.c" "TRANSA" "gbmv_thread_t" false "" "" false ${float_type})
   endif ()
 
+# special defines for complex
   if (${float_type} STREQUAL "COMPLEX" OR ${float_type} STREQUAL "ZCOMPLEX")
 
     foreach (u_source ${U_SOURCES})
