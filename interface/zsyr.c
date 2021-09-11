@@ -119,7 +119,7 @@ void NAME(char *UPLO, blasint *N, FLOAT  *ALPHA,
 void CNAME(enum CBLAS_ORDER order, enum CBLAS_UPLO Uplo, int n, FLOAT alpha, FLOAT *x, int incx, FLOAT *a, int lda) {
 
   FLOAT *buffer;
-  int trans, uplo;
+  int uplo;
   blasint info;
   FLOAT * ALPHA = &alpha;
   FLOAT alpha_r	= ALPHA[0];
