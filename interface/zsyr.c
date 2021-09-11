@@ -130,7 +130,6 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_UPLO Uplo, int n, FLOAT alpha, FLO
 
   PRINT_DEBUG_CNAME;
 
-  trans = -1;
   uplo  = -1;
   info  =  0;
 
