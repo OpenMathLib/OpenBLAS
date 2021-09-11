@@ -115,6 +115,8 @@ static void sgemv_kernel_4x4(BLASLONG n, FLOAT **ap, FLOAT *xo, FLOAT *y, FLOAT 
 	
 #endif
 
+#ifndef HAVE_SGEMV_N_SKYLAKE_KERNEL				
+
 #ifndef HAVE_KERNEL_4x2
 
 static void sgemv_kernel_4x2( BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y, FLOAT *alpha) __attribute__ ((noinline));
@@ -243,6 +245,8 @@ static void sgemv_kernel_4x1(BLASLONG n, FLOAT *ap, FLOAT *x, FLOAT *y, FLOAT *a
         );
 
 }
+
+#endif
 
 #endif
 
