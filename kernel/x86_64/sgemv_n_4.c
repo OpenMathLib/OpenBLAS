@@ -173,6 +173,7 @@ static void sgemv_kernel_4x2( BLASLONG n, FLOAT **ap, FLOAT *x, FLOAT *y, FLOAT 
 } 
 
 #endif
+#endif
 
 #ifndef HAVE_KERNEL_4x1
 
@@ -245,8 +246,6 @@ static void sgemv_kernel_4x1(BLASLONG n, FLOAT *ap, FLOAT *x, FLOAT *y, FLOAT *a
         );
 
 }
-
-#endif
 
 #endif
 
