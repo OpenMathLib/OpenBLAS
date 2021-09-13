@@ -32,8 +32,8 @@
 #define MASK_COPY_32(N) _mm512_mask_storeu_epi16(boffset + tail_m * N, mmask, _mm512_maskz_loadu_epi16(mmask, aoffset##N + i))
 #define COPY_ODD_TAIL(N) *(boffset + N) = *(aoffset##N + i);
 
+
 int CNAME(BLASLONG m, BLASLONG n, IFLOAT *a, BLASLONG lda, IFLOAT *b) {
-	printf("ONCOPY: m %d, n %d, lda %d\n", m, n, lda);
 	BLASLONG i, j;
 	IFLOAT *aoffset, *boffset;
 	IFLOAT *aoffset0, *aoffset1, *aoffset2, *aoffset3;
