@@ -2695,7 +2695,7 @@ static volatile struct {
 
 } memory[NUM_BUFFERS];
 
-static volatile struct newmemstruct 
+struct newmemstruct 
 {
   BLASULONG lock;
   void *addr;
