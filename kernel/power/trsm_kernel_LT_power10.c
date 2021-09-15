@@ -390,7 +390,6 @@ static inline __attribute__ ((always_inline)) void solve16x8(FLOAT *a, FLOAT *b,
    vector FLOAT *Vc6 = (vector FLOAT *) c6;
    vector FLOAT *Vc7 = (vector FLOAT *) c7;
    vector FLOAT VbS0, VbS1, VbS2, VbS3, VbS4, VbS5, VbS6, VbS7;
-   int  j;
 
    b[0] = (c0[0] *= a[0]);
    b[1] = (c1[0] *= a[0]);

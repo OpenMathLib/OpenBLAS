@@ -110,8 +110,6 @@ int CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG inc_y, FLOAT 
 {
 	BLASLONG i=0;
 	BLASLONG ix=0,iy=0;
-	FLOAT *x1=x;
-	FLOAT *y1=y;
 	FLOAT temp;
 
 	if ( n <= 0     )  return(0);
@@ -139,7 +137,7 @@ int CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG inc_y, FLOAT 
 		BLASLONG n1 = n & -16;
 		if ( n1 > 0 )
 		{
-			drot_kernel_16(n1, x1, y1, c, s);
+			drot_kernel_16(n1, x, y, c, s);
 			i=n1;
 		}
 #endif
