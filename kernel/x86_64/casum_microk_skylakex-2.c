@@ -15,7 +15,7 @@ static FLOAT casum_kernel(BLASLONG n, FLOAT *x)
     
     if (n2 < 64) {
         __m128 accum_10, accum_11, accum_12, accum_13;
-        __m128 abs_mask1;
+        __m128 abs_mask1 = abs_mask1;
 
         accum_10 = _mm_setzero_ps();
         accum_11 = _mm_setzero_ps();
