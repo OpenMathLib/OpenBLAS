@@ -6,10 +6,6 @@ extern gotoblas_t gotoblas_POWER8;
 #if (!defined __GNUC__) || ( __GNUC__ >= 6)
 extern gotoblas_t gotoblas_POWER9;
 #endif
-//#if (!defined __GNUC__) || ( __GNUC__ >= 11) \
-//     || (__GNUC__ == 10 && __GNUC_MINOR__ >= 2)
-//#define HAVE_P10_SUPPORT 1
-//#endif
 #ifdef HAVE_P10_SUPPORT
 extern gotoblas_t gotoblas_POWER10;
 #endif
