@@ -134,6 +134,8 @@ if (BUILD_BFLOAT16)
   set(SHSWAPKERNEL ../arm/swap.c)
   set(TOBF16KERNEL ../x86_64/tobf16.c)
   set(BF16TOKERNEL ../x86_64/bf16to.c)
+  set(SBGEMVNKERNEL ../x86_64/sbgemv_n.c)
+  set(SBGEMVTKERNEL ../x86_64/sbgemv_t.c)
 endif ()
 endmacro ()
 

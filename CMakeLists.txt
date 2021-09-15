@@ -132,7 +132,7 @@ endif ()
 
 if (BUILD_BFLOAT16)
   message(STATUS "Building Half Precision")
-  list(APPEND FLOAT_TYPES "BFLOAT16") # defines nothing
+  #  list(APPEND FLOAT_TYPES "BFLOAT16") # defines nothing
 endif ()
 
 if (NOT DEFINED CORE OR "${CORE}" STREQUAL "UNKNOWN")
