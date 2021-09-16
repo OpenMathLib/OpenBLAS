@@ -49,27 +49,39 @@ int CNAME(BLASLONG m, BLASLONG n, IFLOAT *a, BLASLONG lda, IFLOAT *b) {
 	BLASLONG m2 = m & ~1;
 
 	for (j = 0; j < n16; j += 16) {
+		IFLOAT *boffset0 = boffset;
 		aoffset0  = aoffset;
 		aoffset1  = aoffset0 + lda;
 		aoffset2  = aoffset1 + lda;
 		aoffset3  = aoffset2 + lda;
+		for (i = 0; i < m32; i += 32) {
+			COPY_32(0); COPY_32(1); COPY_32(2); COPY_32(3);
+			boffset += 32 * 16;
+		}
 		aoffset4  = aoffset3 + lda;
 		aoffset5  = aoffset4 + lda;
 		aoffset6  = aoffset5 + lda;
 		aoffset7  = aoffset6 + lda;
+		boffset = boffset0;
+		for (i = 0; i < m32; i += 32) {
+			COPY_32(4); COPY_32(5); COPY_32(6); COPY_32(7);
+			boffset += 32 * 16;
+		}
 		aoffset8  = aoffset7 + lda;
 		aoffset9  = aoffset8 + lda;
 		aoffset10 = aoffset9 + lda;
 		aoffset11 = aoffset10 + lda;
+		boffset = boffset0;
+		for (i = 0; i < m32; i += 32) {
+			COPY_32(8); COPY_32(9); COPY_32(10); COPY_32(11);
+			boffset += 32 * 16;
+		}
 		aoffset12 = aoffset11 + lda;
 		aoffset13 = aoffset12 + lda;
 		aoffset14 = aoffset13 + lda;
 		aoffset15 = aoffset14 + lda;
-		aoffset += 16 * lda;
+		boffset = boffset0;
 		for (i = 0; i < m32; i += 32) {
-			COPY_32(0); COPY_32(1); COPY_32(2); COPY_32(3);
-			COPY_32(4); COPY_32(5); COPY_32(6); COPY_32(7);
-			COPY_32(8); COPY_32(9); COPY_32(10); COPY_32(11);
 			COPY_32(12); COPY_32(13); COPY_32(14); COPY_32(15);
 			boffset += 32 * 16;
 		}
@@ -91,6 +103,7 @@ int CNAME(BLASLONG m, BLASLONG n, IFLOAT *a, BLASLONG lda, IFLOAT *b) {
 			COPY_ODD_TAIL(12); COPY_ODD_TAIL(13); COPY_ODD_TAIL(14); COPY_ODD_TAIL(15);
 			boffset += 16;
 		}
+		aoffset += 16 * lda;
 	}
 	if (j < n) {
 		int remain_n = n - j;
