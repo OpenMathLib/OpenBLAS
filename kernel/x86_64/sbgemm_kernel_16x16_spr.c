@@ -317,17 +317,19 @@ tail_k:
 				n_count = n;
 				lda = remain_k2;
 				ldb = 32;
-				TCONF_TAIL(cfg, tail_m, 16, remain_k2);
-				for (; n_count > 15; n_count -= 16) {
-					ptr_b0 = ptr_b + 16 * k32;
-					ptr_b1 = ptr_b + 16 * k2;
-					LOAD_C(0, 0);
+				if (n_count > 15) {
+					TCONF_TAIL(cfg, tail_m, 16, remain_k2);
 					LOAD_A(0, x); MASK_LOAD_A_TAIL(1, x);
-					LOAD_B(x, 0); LOAD_B_TAIL(x, 1);
-					MATMUL(0, 0); MATMUL_TAIL(1, 1);
-					STORE_C(0, 0);
-					ptr_b += 16 * k;
-					ptr_c00 += 16;
+					for (; n_count > 15; n_count -= 16) {
+						ptr_b0 = ptr_b + 16 * k32;
+						ptr_b1 = ptr_b + 16 * k2;
+						LOAD_C(0, 0);
+						LOAD_B(x, 0); LOAD_B_TAIL(x, 1);
+						MATMUL(0, 0); MATMUL_TAIL(1, 1);
+						STORE_C(0, 0);
+						ptr_b += 16 * k;
+						ptr_c00 += 16;
+					}
 				}
 				if (n_count > 0) {
 					int tail_n = (n_count > 16) ? 16: n_count;
@@ -356,16 +358,18 @@ tail_k:
 				n_count = n;
 				lda = remain_k2;
 				ldb = 32;
-				TCONF(cfg, tail_m, 16, remain_k2);
-				for (; n_count > 15; n_count -= 16) {
-					ptr_b0 = ptr_b + 16 * k32;
-					LOAD_C(0, 0);
+				if (n_count > 15) {
+					TCONF(cfg, tail_m, 16, remain_k2);
 					LOAD_A(0, x);
-					LOAD_B(x, 0);
-					MATMUL(0, 0);
-					STORE_C(0, 0);
-					ptr_b += 16 * k;
-					ptr_c00 += 16;
+					for (; n_count > 15; n_count -= 16) {
+						ptr_b0 = ptr_b + 16 * k32;
+						LOAD_C(0, 0);
+						LOAD_B(x, 0);
+						MATMUL(0, 0);
+						STORE_C(0, 0);
+						ptr_b += 16 * k;
+						ptr_c00 += 16;
+					}
 				}
 				if (n_count > 0) {
 					int tail_n = (n_count > 16) ? 16: n_count;
@@ -390,16 +394,18 @@ tail_k:
 				ptr_c00 = ptr_c;
 				ptr_c += tail_m * ldc;
 				n_count = n;
-				TCONF(cfg, tail_m, 16, 2);
-				for (; n_count > 15; n_count -= 16) {
-					ptr_b0 = ptr_b + 16 * k2;
-					LOAD_C(0, 0);
+				if (n_count > 15) {
+					TCONF(cfg, tail_m, 16, 2);
 					MASK_LOAD_A_TAIL(0, x);
-					LOAD_B_TAIL(x, 0);
-					MATMUL(0, 0);
-					STORE_C(0, 0);
-					ptr_b += 16 * k;
-					ptr_c00 += 16;
+					for (; n_count > 15; n_count -= 16) {
+						ptr_b0 = ptr_b + 16 * k2;
+						LOAD_C(0, 0);
+						LOAD_B_TAIL(x, 0);
+						MATMUL(0, 0);
+						STORE_C(0, 0);
+						ptr_b += 16 * k;
+						ptr_c00 += 16;
+					}
 				}
 				if (n_count > 0) {
 					int tail_n = (n_count > 16) ? 16: n_count;
