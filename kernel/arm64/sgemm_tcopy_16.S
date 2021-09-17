@@ -30,7 +30,7 @@ All rights reserved.
 #define	B00		x22
 
 
-#define I		x18
+#define I		x21
 #define	J		x19
 
 #define TEMP1		x20
