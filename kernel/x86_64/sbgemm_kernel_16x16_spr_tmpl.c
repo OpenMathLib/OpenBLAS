@@ -170,11 +170,20 @@ int sbgemm_kernel_spr_alpha(BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alpha, IFL
 	BLASLONG n_count, k_count;
 
 #ifndef ALPHA_ONE
-	FLOAT *tmp_c = malloc(sizeof(FLOAT) * m * n);
-	memset(tmp_c, 0, sizeof(FLOAT) * m * n);
+	// make sure each row is 64 bytes aligned
+	BLASLONG cn = (n & 31) ? (n & ~31) + 32 : n;
+	FLOAT *raw_tmp_c;
+	if (k < 32) {
+		// only need to zero buff in this situation
+		raw_tmp_c = (FLOAT *)calloc(1, sizeof(FLOAT) * m * cn + 64);
+	} else {
+		raw_tmp_c = (FLOAT *)malloc(sizeof(FLOAT) * m * cn + 64);
+	}
+	// align buf to 64 byte boundary
+	FLOAT *tmp_c = (FLOAT *)(((uintptr_t) raw_tmp_c + 63) & ~(uintptr_t)63);
 	ptr_c = tmp_c;
 	BLASLONG ldc_o = ldc;
-	ldc = n;
+	ldc = cn;
 #endif
 	IFLOAT tail_a[32 * 2] __attribute__ ((aligned (64)));
 	IFLOAT tail_b[32 * 2] __attribute__ ((aligned (64)));
@@ -515,7 +524,7 @@ int sbgemm_kernel_spr_alpha(BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alpha, IFL
 			MASK_APLPHA_STORE(0);
 		}
 	}
-	free(tmp_c);
+	free(raw_tmp_c);
 #endif
 	return 0;
 }
