@@ -49,12 +49,13 @@ extern "C" {
 #endif /* __cplusplus */
 
 #include <stdlib.h>
+#include <stdint.h>
 
 #ifndef lapack_int
 #if defined(LAPACK_ILP64)
-#define lapack_int              long
+#define lapack_int              int64_t
 #else
-#define lapack_int              int
+#define lapack_int              int32_t
 #endif
 #endif
 
