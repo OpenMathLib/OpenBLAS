@@ -281,8 +281,10 @@ matrix:
           packages:
             - gfortran
       script:
-        - travis_wait 45 make && make lapack-test
-        
+        - travis_wait 45 make 
+# && make lapack-test
+        - cd benchmark; make; OPENBLAS_LOOPS=50 ./dgemm.goto 10 500
+ 
 # whitelist
 branches:
   only:
