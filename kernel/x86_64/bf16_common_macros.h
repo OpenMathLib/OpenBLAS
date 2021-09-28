@@ -56,25 +56,25 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 #define BF16_MATRIX_LOAD_8x16(regArray, a, lda, idx_m, idx_n)      \
-    regArray##_0 = _mm256_loadu_si256(&a[(idx_m+0)*lda + idx_n]);  \
-    regArray##_1 = _mm256_loadu_si256(&a[(idx_m+1)*lda + idx_n]);  \
-    regArray##_2 = _mm256_loadu_si256(&a[(idx_m+2)*lda + idx_n]);  \
-    regArray##_3 = _mm256_loadu_si256(&a[(idx_m+3)*lda + idx_n]);  \
-    regArray##_4 = _mm256_loadu_si256(&a[(idx_m+4)*lda + idx_n]);  \
-    regArray##_5 = _mm256_loadu_si256(&a[(idx_m+5)*lda + idx_n]);  \
-    regArray##_6 = _mm256_loadu_si256(&a[(idx_m+6)*lda + idx_n]);  \
-    regArray##_7 = _mm256_loadu_si256(&a[(idx_m+7)*lda + idx_n]);
+    regArray##_0 = _mm256_loadu_si256((__m256i *)(&a[(idx_m+0)*lda + idx_n]));  \
+    regArray##_1 = _mm256_loadu_si256((__m256i *)(&a[(idx_m+1)*lda + idx_n]));  \
+    regArray##_2 = _mm256_loadu_si256((__m256i *)(&a[(idx_m+2)*lda + idx_n]));  \
+    regArray##_3 = _mm256_loadu_si256((__m256i *)(&a[(idx_m+3)*lda + idx_n]));  \
+    regArray##_4 = _mm256_loadu_si256((__m256i *)(&a[(idx_m+4)*lda + idx_n]));  \
+    regArray##_5 = _mm256_loadu_si256((__m256i *)(&a[(idx_m+5)*lda + idx_n]));  \
+    regArray##_6 = _mm256_loadu_si256((__m256i *)(&a[(idx_m+6)*lda + idx_n]));  \
+    regArray##_7 = _mm256_loadu_si256((__m256i *)(&a[(idx_m+7)*lda + idx_n]));
 
 
 #define BF16_MATRIX_LOAD_8x8(regArray, a, lda, idx_m, idx_n)    \
-    regArray##_0 = _mm_loadu_si128(&a[(idx_m+0)*lda + idx_n]);  \
-    regArray##_1 = _mm_loadu_si128(&a[(idx_m+1)*lda + idx_n]);  \
-    regArray##_2 = _mm_loadu_si128(&a[(idx_m+2)*lda + idx_n]);  \
-    regArray##_3 = _mm_loadu_si128(&a[(idx_m+3)*lda + idx_n]);  \
-    regArray##_4 = _mm_loadu_si128(&a[(idx_m+4)*lda + idx_n]);  \
-    regArray##_5 = _mm_loadu_si128(&a[(idx_m+5)*lda + idx_n]);  \
-    regArray##_6 = _mm_loadu_si128(&a[(idx_m+6)*lda + idx_n]);  \
-    regArray##_7 = _mm_loadu_si128(&a[(idx_m+7)*lda + idx_n]);
+    regArray##_0 = _mm_loadu_si128((__m128i *)(&a[(idx_m+0)*lda + idx_n]));  \
+    regArray##_1 = _mm_loadu_si128((__m128i *)(&a[(idx_m+1)*lda + idx_n]));  \
+    regArray##_2 = _mm_loadu_si128((__m128i *)(&a[(idx_m+2)*lda + idx_n]));  \
+    regArray##_3 = _mm_loadu_si128((__m128i *)(&a[(idx_m+3)*lda + idx_n]));  \
+    regArray##_4 = _mm_loadu_si128((__m128i *)(&a[(idx_m+4)*lda + idx_n]));  \
+    regArray##_5 = _mm_loadu_si128((__m128i *)(&a[(idx_m+5)*lda + idx_n]));  \
+    regArray##_6 = _mm_loadu_si128((__m128i *)(&a[(idx_m+6)*lda + idx_n]));  \
+    regArray##_7 = _mm_loadu_si128((__m128i *)(&a[(idx_m+7)*lda + idx_n]));
 
 
 #define BF16_MATRIX_LOAD_1x32(regArray, a, lda, idx_m, idx_n)       \
@@ -153,11 +153,11 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 #define BF16_VECTOR_LOAD_1x16(reg, x, idx_n)     \
-    reg = _mm256_loadu_si256(x + idx_n);
+    reg = _mm256_loadu_si256((__m256i *)(x + idx_n));
 
 
 #define BF16_VECTOR_LOAD_1x8(reg, x, idx_n)      \
-    reg = _mm_loadu_si128(x + idx_n);
+    reg = _mm_loadu_si128((__m128i *)(x + idx_n));
 
 
 #define BF16_VECTOR_MASKZ_LOAD_1x32(reg, x, idx_n, mask)     \
