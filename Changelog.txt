@@ -18,7 +18,7 @@ general:
    LLVM's libomp
 
 x86_64:
- - added SkylakeX S/DGEMM kernels for small problem sizes (M*N*K<=100000)
+ - added SkylakeX S/DGEMM kernels for small problem sizes (M*N*K<=1000000)
  - added optimized SBGEMM for Intel Cooper Lake
  - reinstated the performance patch for AVX512 SGEMV_T with a proper fix
  - added a workaround for a gcc11 tree-vectorizer bug that caused spurious
