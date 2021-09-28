@@ -79,21 +79,21 @@ static float sbdot_accl_kernel(BLASLONG n, bfloat16 *x, bfloat16 *y)
         __m256 accum256_1 = _mm256_setzero_ps();
         int tail_index_32  = n&(~31);
         for (int j = 0; j < tail_index_32; j += 32) {
-            accum256   = _mm256_dpbf16_ps(accum256,   (__m256bh) _mm256_loadu_si256(&x[j+ 0]), (__m256bh) _mm256_loadu_si256(&y[j+ 0]));
-            accum256_1 = _mm256_dpbf16_ps(accum256_1, (__m256bh) _mm256_loadu_si256(&x[j+16]), (__m256bh) _mm256_loadu_si256(&y[j+16]));
+            accum256   = _mm256_dpbf16_ps(accum256,   (__m256bh) _mm256_loadu_si256((__m256i *)&x[j+ 0]), (__m256bh) _mm256_loadu_si256((__m256i *)&y[j+ 0]));
+            accum256_1 = _mm256_dpbf16_ps(accum256_1, (__m256bh) _mm256_loadu_si256((__m256i *)&x[j+16]), (__m256bh) _mm256_loadu_si256((__m256i *)&y[j+16]));
         }
         accum256 = _mm256_add_ps(accum256, accum256_1);
 
         /* Processing the remaining <32 chunk with 16-elements processing */
         if ((n&16) != 0) {
-            accum256 = _mm256_dpbf16_ps(accum256, (__m256bh) _mm256_loadu_si256(&x[tail_index_32]), (__m256bh) _mm256_loadu_si256(&y[tail_index_32]));
+            accum256 = _mm256_dpbf16_ps(accum256, (__m256bh) _mm256_loadu_si256((__m256i *)&x[tail_index_32]), (__m256bh) _mm256_loadu_si256((__m256i *)&y[tail_index_32]));
         }
         accum128 = _mm_add_ps(_mm256_castps256_ps128(accum256), _mm256_extractf128_ps(accum256, 1));
 
         /* Processing the remaining <16 chunk with 8-elements processing */
         if ((n&8) != 0) {
             int tail_index_16  = n&(~15);
-            accum128 = _mm_dpbf16_ps(accum128, (__m128bh) _mm_loadu_si128(&x[tail_index_16]), (__m128bh) _mm_loadu_si128(&y[tail_index_16]));
+            accum128 = _mm_dpbf16_ps(accum128, (__m128bh) _mm_loadu_si128((__m128i *)&x[tail_index_16]), (__m128bh) _mm_loadu_si128((__m128i *)&y[tail_index_16]));
         }
 
         /* Processing the remaining <8 chunk with masked 8-elements processing */
@@ -108,13 +108,13 @@ static float sbdot_accl_kernel(BLASLONG n, bfloat16 *x, bfloat16 *y)
     } else if (n > 15) { /* n range from 16 to 31 */
         /* Processing <32 chunk with 16-elements processing */
         __m256 accum256   = _mm256_setzero_ps();
-        accum256 = _mm256_dpbf16_ps(accum256, (__m256bh) _mm256_loadu_si256(&x[0]), (__m256bh) _mm256_loadu_si256(&y[0]));
+        accum256 = _mm256_dpbf16_ps(accum256, (__m256bh) _mm256_loadu_si256((__m256i *)&x[0]), (__m256bh) _mm256_loadu_si256((__m256i *)&y[0]));
         accum128 += _mm_add_ps(_mm256_castps256_ps128(accum256), _mm256_extractf128_ps(accum256, 1));
 
         /* Processing the remaining <16 chunk with 8-elements processing */
         if ((n&8) != 0) {
             int tail_index_16  = n&(~15);
-            accum128 = _mm_dpbf16_ps(accum128, (__m128bh) _mm_loadu_si128(&x[tail_index_16]), (__m128bh) _mm_loadu_si128(&y[tail_index_16]));
+            accum128 = _mm_dpbf16_ps(accum128, (__m128bh) _mm_loadu_si128((__m128i *)&x[tail_index_16]), (__m128bh) _mm_loadu_si128((__m128i *)&y[tail_index_16]));
         }
 
         /* Processing the remaining <8 chunk with masked 8-elements processing */
@@ -128,7 +128,7 @@ static float sbdot_accl_kernel(BLASLONG n, bfloat16 *x, bfloat16 *y)
         }
     } else if (n > 7) { /* n range from 8 to 15 */
         /* Processing <16 chunk with 8-elements processing */
-        accum128 = _mm_dpbf16_ps(accum128, (__m128bh) _mm_loadu_si128(&x[0]), (__m128bh) _mm_loadu_si128(&y[0]));
+        accum128 = _mm_dpbf16_ps(accum128, (__m128bh) _mm_loadu_si128((__m128i *)&x[0]), (__m128bh) _mm_loadu_si128((__m128i *)&y[0]));
 
         /* Processing the remaining <8 chunk with masked 8-elements processing */
         if ((n&7) != 0) {
