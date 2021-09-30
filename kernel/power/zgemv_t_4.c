@@ -43,7 +43,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #elif HAVE_KERNEL_4x4_VEC
 
-#if defined(POWER10) && (__BYTE_ORDER__ != __ORDER_BIG_ENDIAN__)
+#if defined(POWER10)
 typedef __vector unsigned char  vec_t;
 typedef FLOAT v4sf_t __attribute__ ((vector_size (16)));
 

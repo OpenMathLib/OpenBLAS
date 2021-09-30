@@ -41,23 +41,38 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef TRMMKERNEL 
   lxv	\VS_TEMP1,	DISPX(\LOFFSET)(\REG)
   lxv	\VS_TEMP2,	DISPX(\LOFFSET+16)(\REG)
+#if (__BYTE_ORDER__ == __ORDER_BIG_ENDIAN__) 
+  xxmrghd  \VS_OUT1,\VS_TEMP1,\VS_TEMP2
+  xxmrgld  \VS_OUT2,\VS_TEMP1,\VS_TEMP2
+#else
   xxmrgld  \VS_OUT1,\VS_TEMP1,\VS_TEMP2
   xxmrghd  \VS_OUT2,\VS_TEMP1,\VS_TEMP2	
+#endif
 #endif	
 .endm
 /*from 2 result {a0r*br,a0i*bi} and {a1r*br,a1i*bi} pack into {a0r*br,a1r*br} and {a0i*bi,a1i*bi}*/
 
 
 .macro RESULT_INTO_REALREAL_IMAGEIMAGE VSIN1,VSIN2,VSOUT1,VSOUT2
+#if (__BYTE_ORDER__ == __ORDER_BIG_ENDIAN__)
+    xxmrghd \VSOUT1, \VSIN1,\VSIN2 /*  real*real from 2 results*/
+    xxmrgld \VSOUT2, \VSIN1,\VSIN2 /*  imag*imag from 2 results*/
+#else
 	xxmrgld	\VSOUT1, \VSIN1,\VSIN2 /*  real*real from 2 results*/
 	xxmrghd	\VSOUT2, \VSIN1,\VSIN2 /*  imag*imag from 2 results*/
+#endif
 .endm 
 /*from 2 result {a0r*bi,a0i*br} and {a1r*bi,a1i*br} pack into {a0r*bi,a1r*bi} and {a0i*br,a1i*br}*/
 
 
 .macro RESULT_INTO_REALIMAG_IMAGREAL VSIN1,VSIN2,VSOUT1,VSOUT2 
+#if (__BYTE_ORDER__ == __ORDER_BIG_ENDIAN__)
+    xxmrghd \VSOUT1, \VSIN1,\VSIN2 /*  real*imag */
+    xxmrgld \VSOUT2, \VSIN1,\VSIN2 /*  imag*real*/
+#else
 	xxmrgld	\VSOUT1, \VSIN1,\VSIN2 /*  real*imag */
 	xxmrghd	\VSOUT2, \VSIN1,\VSIN2 /*  imag*real*/
+#endif
 .endm
 /* {a0r*br op a0i*bi ,a1r*br op a1i*bi} ~ {r0,r1}; {a0r*bi op a0i*br ,a1r*bi op a1i*br} ~ {i0,i1}*/
 
@@ -103,8 +118,13 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 .macro UNPACK_FOR_STORE VSIN1,VSIN2,VSOUT1,VSOUT2 
+#if (__BYTE_ORDER__ == __ORDER_BIG_ENDIAN__)
+    xxmrghd  \VSOUT1,\VSIN1,\VSIN2
+    xxmrgld  \VSOUT2,\VSIN1,\VSIN2
+#else
 	xxmrghd  \VSOUT1,\VSIN2,\VSIN1
 	xxmrgld  \VSOUT2,\VSIN2,\VSIN1
+#endif
 .endm
 
 
@@ -186,15 +206,22 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   RESULT_INTO_REALREAL_IMAGEIMAGE \VSRes1,\VSRes1,vs34,vs35
 #ifndef TRMMKERNEL 
   lxv	vs50,	(\LOFFSET)(\BASE_REG) 
+#if (__BYTE_ORDER__ == __ORDER_BIG_ENDIAN__)
+  xxmrghd  vs46,vs50,vs50
+  xxmrgld  vs47,vs50,vs50
+#else
   xxmrgld  vs46,vs50,vs50
   xxmrghd  vs47,vs50,vs50	
+#endif
 #endif	
   RESULT_INTO_REALIMAG_IMAGREAL	\VSRes2,\VSRes2,vs36,vs37	
   AGGREGATE_REALS_IMAGES	vs34,vs35,vs36,vs37	
   MULT_APLHA_PART1	vs34,vs36, vs46,vs47	
   MULT_APLHA_PART2	vs34,vs36, vs46,vs47  
   UNPACK_FOR_STORE	vs46,vs47,vs39,vs41 
+#if (__BYTE_ORDER__ != __ORDER_BIG_ENDIAN__)
   xxmrghd  vs39,vs47,vs46	
+#endif
   stxv	vs39,	(\LOFFSET)(\BASE_REG) 
 .endm
 
@@ -232,6 +259,16 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	lxvp	vs44,	DISP16(\Index,192)(AO)	// load real,imag from A
 	lxvp	vs46,	DISP16(\Index,224)(AO)	// load real,imag from A
  	lxvp	vs50,	DISP4(\Index,  32)(BO)	// load real,imag from B
+#if (__BYTE_ORDER__ == __ORDER_BIG_ENDIAN__)
+	xvf64gerpp  0,	vs32,	vs48
+	xvf64gerpp  1,  vs34,   vs48
+	xvf64gerpp  2,  vs36,   vs48
+	xvf64gerpp  3,  vs38,   vs48
+	xvf64gerpp  4,  vs32,   vs49
+	xvf64gerpp  5,  vs34,   vs49
+	xvf64gerpp  6,  vs36,   vs49
+	xvf64gerpp  7,  vs38,   vs49
+#else
 	xvf64gerpp	0,	vs32,	vs49
 	xvf64gerpp	1,	vs34,	vs49
 	xvf64gerpp	2,	vs36,	vs49
@@ -240,11 +277,22 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	xvf64gerpp	5,	vs34,	vs48
 	xvf64gerpp	6,	vs36,	vs48
 	xvf64gerpp	7,	vs38,	vs48
+#endif
 	lxvp	vs32,	DISP16(\Index, 256)(AO)	// load real,imag from A
 	lxvp	vs34,	DISP16(\Index, 288)(AO)	// load real,imag from A
 	lxvp	vs36,	DISP16(\Index, 320)(AO)	// load real,imag from A
 	lxvp	vs38,	DISP16(\Index, 352)(AO)	// load real,imag from A
 	lxvp	vs48,	DISP4(\Index,  64)(BO)	// load real imag from B
+#if (__BYTE_ORDER__ == __ORDER_BIG_ENDIAN__)
+	xvf64gerpp  0,  vs40,   vs50
+	xvf64gerpp  1,  vs42,   vs50
+	xvf64gerpp  2,  vs44,   vs50
+	xvf64gerpp  3,  vs46,   vs50
+	xvf64gerpp  4,  vs40,   vs51
+	xvf64gerpp  5,  vs42,   vs51
+	xvf64gerpp  6,  vs44,   vs51
+	xvf64gerpp  7,  vs46,   vs51
+#else
 	xvf64gerpp	0,	vs40,	vs51
 	xvf64gerpp	1,	vs42,	vs51
 	xvf64gerpp	2,	vs44,	vs51
@@ -253,6 +301,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	xvf64gerpp	5,	vs42,	vs50
 	xvf64gerpp	6,	vs44,	vs50
 	xvf64gerpp	7,	vs46,	vs50
+#endif
 .if \IsLast==1
 	addi	AO, AO,  DISP16(\Index,256)
 	addi	BO, BO,  DISP4(\Index,64)
@@ -261,6 +310,16 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 .macro LOAD_END_2x8  OffsetA,OffsetB
+#if (__BYTE_ORDER__ == __ORDER_BIG_ENDIAN__)
+	xvf64gerpp  0,  vs32,   vs48
+	xvf64gerpp  1,  vs34,   vs48
+	xvf64gerpp  2,  vs36,   vs48
+	xvf64gerpp  3,  vs38,   vs48
+	xvf64gerpp  4,  vs32,   vs49
+	xvf64gerpp  5,  vs34,   vs49
+	xvf64gerpp  6,  vs36,   vs49
+	xvf64gerpp  7,  vs38,   vs49	
+#else
 	xvf64gerpp	0,	vs32,	vs49
 	xvf64gerpp	1,	vs34,	vs49
 	xvf64gerpp	2,	vs36,	vs49
@@ -269,6 +328,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	xvf64gerpp	5,	vs34,	vs48
 	xvf64gerpp	6,	vs36,	vs48
 	xvf64gerpp	7,	vs38,	vs48
+#endif
 	addi	BO, BO, \OffsetB
 	addi	AO, AO, \OffsetA
 .endm
@@ -305,7 +365,24 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         xxpermdi vs45, vs12, vs13, 0b10
         xxpermdi vs46, vs14, vs15, 0b01
         xxpermdi vs47, vs14, vs15, 0b10
-
+#if (__BYTE_ORDER__ == __ORDER_BIG_ENDIAN__)
+	xxlor vs0, vs32, vs32
+	xxlor vs1, vs33, vs33
+	xxlor vs2, vs34, vs34
+	xxlor vs3, vs35, vs35
+	xxlor vs4, vs36, vs36
+	xxlor vs5, vs37, vs37
+	xxlor vs6, vs38, vs38
+	xxlor vs7, vs39, vs39
+	xxlor vs8, vs40, vs40
+	xxlor vs9, vs41, vs41
+	xxlor vs10, vs42, vs42
+	xxlor vs11, vs43, vs43
+	xxlor vs12, vs44, vs44
+	xxlor vs13, vs45, vs45
+	xxlor vs14, vs46, vs46
+	xxlor vs15, vs47, vs47
+#else
 	xxlor vs2, vs32, vs32
 	xxlor vs3, vs33, vs33
 	xxlor vs0, vs34, vs34
@@ -322,7 +399,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	xxlor vs15, vs45, vs45
 	xxlor vs12, vs46, vs46
 	xxlor vs13, vs47, vs47
-
+#endif
         xxpermdi vs32, vs16, vs17, 0b01
         xxpermdi vs33, vs16, vs17, 0b10
         xxpermdi vs34, vs18, vs19, 0b01
@@ -339,7 +416,24 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         xxpermdi vs45, vs28, vs29, 0b10
         xxpermdi vs46, vs30, vs31, 0b01
         xxpermdi vs47, vs30, vs31, 0b10
-       
+#if (__BYTE_ORDER__ == __ORDER_BIG_ENDIAN__)
+	xxlor vs16, vs32, vs32
+	xxlor vs17, vs33, vs33
+	xxlor vs18, vs34, vs34
+	xxlor vs19, vs35, vs35
+	xxlor vs20, vs36, vs36
+	xxlor vs21, vs37, vs37
+	xxlor vs22, vs38, vs38
+	xxlor vs23, vs39, vs39
+	xxlor vs24, vs40, vs40
+	xxlor vs25, vs41, vs41
+	xxlor vs26, vs42, vs42
+	xxlor vs27, vs43, vs43
+	xxlor vs28, vs44, vs44
+	xxlor vs29, vs45, vs45
+	xxlor vs30, vs46, vs46
+	xxlor vs31, vs47, vs47
+#else
 	xxlor vs18, vs32, vs32
 	xxlor vs19, vs33, vs33
 	xxlor vs16, vs34, vs34
@@ -356,7 +450,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	xxlor vs31, vs45, vs45
 	xxlor vs28, vs46, vs46
 	xxlor vs29, vs47, vs47
-
+#endif
 	SAVE8  vs0,vs1,vs2,vs3,vs4,vs5,vs6,vs7,vs8,vs9,vs10,vs11,vs12,vs13,vs14,vs15,CO,0
 	SAVE8  vs16,vs17,vs18,vs19,vs20,vs21,vs22,vs23,vs24,vs25,vs26,vs27,vs28,vs29,vs30,vs31,T1,0  
 	addi	CO, CO, 128
@@ -388,17 +482,31 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	lxvp	vs40,	DISP8(\Index,  64)(AO)	// load real,imag from A
 	lxvp	vs42,	DISP8(\Index,  96)(AO)	// load real,imag from A
  	lxvp	vs50,	DISP4(\Index,  32)(BO)  // load real,imag from B
-        xvf64gerpp      0,      vs32,   vs49
-        xvf64gerpp      1,      vs34,   vs49
-        xvf64gerpp      2,      vs32,   vs48
-        xvf64gerpp      3,      vs34,   vs48
+#if (__BYTE_ORDER__ == __ORDER_BIG_ENDIAN__)
+    xvf64gerpp      0,      vs32,   vs48
+    xvf64gerpp      1,      vs34,   vs48
+    xvf64gerpp      2,      vs32,   vs49
+    xvf64gerpp      3,      vs34,   vs49
+#else
+    xvf64gerpp      0,      vs32,   vs49
+    xvf64gerpp      1,      vs34,   vs49
+    xvf64gerpp      2,      vs32,   vs48
+    xvf64gerpp      3,      vs34,   vs48
+#endif
 	lxvp	vs32,	DISP8(\Index, 128)(AO)	// load real,imag from A
 	lxvp	vs34,	DISP8(\Index, 160)(AO)	// load real,imag from A
  	lxvp	vs48,	DISP4(\Index,  64)(BO)  // load real,imag from B
-        xvf64gerpp      0,      vs40,   vs51 
-        xvf64gerpp      1,      vs42,   vs51
-        xvf64gerpp      2,      vs40,   vs50
-        xvf64gerpp      3,      vs42,   vs50
+#if (__BYTE_ORDER__ == __ORDER_BIG_ENDIAN__)
+    xvf64gerpp      0,      vs40,   vs50
+    xvf64gerpp      1,      vs42,   vs50
+    xvf64gerpp      2,      vs40,   vs51
+    xvf64gerpp      3,      vs42,   vs51
+#else
+    xvf64gerpp      0,      vs40,   vs51 
+    xvf64gerpp      1,      vs42,   vs51
+    xvf64gerpp      2,      vs40,   vs50
+    xvf64gerpp      3,      vs42,   vs50
+#endif
 .if \IsLast==1
 	addi	AO, AO, DISP8(\Index,128)
 	addi	BO, BO, DISP4(\Index,64)
@@ -407,10 +515,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  
 
 .macro LOAD_END_2x4	OffsetA, OffsetB
-        xvf64gerpp      0,      vs32,   vs49
-        xvf64gerpp      1,      vs34,   vs49
-        xvf64gerpp      2,      vs32,   vs48
-        xvf64gerpp      3,      vs34,   vs48
+#if (__BYTE_ORDER__ == __ORDER_BIG_ENDIAN__)
+	xvf64gerpp      0,      vs32,   vs48
+	xvf64gerpp      1,      vs34,   vs48
+	xvf64gerpp      2,      vs32,   vs49
+	xvf64gerpp      3,      vs34,   vs49
+#else
+	xvf64gerpp      0,      vs32,   vs49
+	xvf64gerpp      1,      vs34,   vs49
+	xvf64gerpp      2,      vs32,   vs48
+	xvf64gerpp      3,      vs34,   vs48
+#endif
 	addi	BO, BO, \OffsetB
 	addi	AO, AO, \OffsetA
 .endm
@@ -443,7 +558,24 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         xxpermdi vs45, vs12, vs13, 0b10
         xxpermdi vs46, vs14, vs15, 0b01
         xxpermdi vs47, vs14, vs15, 0b10
-
+#if (__BYTE_ORDER__ == __ORDER_BIG_ENDIAN__)
+	xxlor vs0, vs32, vs32
+	xxlor vs1, vs33, vs33
+	xxlor vs2, vs34, vs34
+	xxlor vs3, vs35, vs35
+	xxlor vs4, vs36, vs36 
+	xxlor vs5, vs37, vs37
+	xxlor vs6, vs38, vs38
+	xxlor vs7, vs39, vs39
+	xxlor vs8, vs40, vs40
+	xxlor vs9, vs41, vs41
+	xxlor vs10, vs42, vs42
+	xxlor vs11, vs43, vs43
+	xxlor vs12, vs44, vs44
+	xxlor vs13, vs45, vs45
+	xxlor vs14, vs46, vs46
+	xxlor vs15, vs47, vs47
+#else
 	xxlor vs2, vs32, vs32
 	xxlor vs3, vs33, vs33
 	xxlor vs0, vs34, vs34
@@ -460,7 +592,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	xxlor vs15, vs45, vs45
 	xxlor vs12, vs46, vs46
 	xxlor vs13, vs47, vs47
-
+#endif
 	SAVE4  vs0,vs1,vs2,vs3,vs4,vs5,vs6,vs7,CO,0
 	SAVE4  vs8,vs9,vs10,vs11,vs12,vs13,vs14,vs15,T1,0  
 	addi	CO, CO, 64
@@ -488,12 +620,22 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .macro KERNEL2x2_2 Index, IsLast
 	lxvp	vs40,	DISP4(\Index, 32)(AO)	// load real,imag from A
  	lxvp	vs50,	DISP4(\Index, 32)(BO)	// load real,imag from B
-        xvf64gerpp      0,      vs32,   vs49
-        xvf64gerpp      1,      vs32,   vs48
+#if (__BYTE_ORDER__ == __ORDER_BIG_ENDIAN__)
+	xvf64gerpp	0,	vs32,	vs48
+	xvf64gerpp	1,	vs32,	vs49
+#else
+	xvf64gerpp      0,      vs32,   vs49
+	xvf64gerpp      1,      vs32,   vs48
+#endif
 	lxvp	vs32,	DISP4(\Index, 64)(AO)	// load real,imag from A
 	lxvp	vs48,	DISP4(\Index, 64)(BO)	// load real imag from B
-        xvf64gerpp      0,      vs40,   vs51
-        xvf64gerpp      1,      vs40,   vs50
+#if (__BYTE_ORDER__ == __ORDER_BIG_ENDIAN__)
+	xvf64gerpp	0,	vs40,	vs50
+	xvf64gerpp	1,	vs40,	vs51
+#else
+	xvf64gerpp      0,      vs40,   vs51
+	xvf64gerpp      1,      vs40,   vs50
+#endif
 .if \IsLast==1
 	addi	AO, AO, DISP4(\Index,64)
 	addi	BO, BO, DISP4(\Index,64)
@@ -502,8 +644,13 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
  
 .macro LOAD_END_2x2  OffsetA,OffsetB
-        xvf64gerpp      0,      vs32,   vs49
-        xvf64gerpp      1,      vs32,   vs48
+#if (__BYTE_ORDER__ == __ORDER_BIG_ENDIAN__)
+	xvf64gerpp	0,	vs32,	vs48
+	xvf64gerpp	1,	vs32,	vs49
+#else
+	xvf64gerpp      0,      vs32,   vs49
+	xvf64gerpp      1,      vs32,   vs48
+#endif
 	addi	BO, BO, \OffsetB
 	addi	AO, AO, \OffsetA
 .endm
@@ -526,7 +673,16 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         xxpermdi vs37, vs4, vs5, 0b10
         xxpermdi vs38, vs6, vs7, 0b01
         xxpermdi vs39, vs6, vs7, 0b10
-
+#if (__BYTE_ORDER__ == __ORDER_BIG_ENDIAN__)
+	xxlor vs0, vs32, vs32
+	xxlor vs1, vs33, vs33
+	xxlor vs2, vs34, vs34
+	xxlor vs3, vs35, vs35
+	xxlor vs4, vs36, vs36
+	xxlor vs5, vs37, vs37
+	xxlor vs6, vs38, vs38
+	xxlor vs7, vs39, vs39
+#else
 	xxlor vs2, vs32, vs32
 	xxlor vs3, vs33, vs33
 	xxlor vs0, vs34, vs34
@@ -535,7 +691,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	xxlor vs7, vs37, vs37
 	xxlor vs4, vs38, vs38
 	xxlor vs5, vs39, vs39
-
+#endif
 	SAVE2  vs0,vs1,vs2,vs3,CO,0
 	SAVE2  vs4,vs5,vs6,vs7,T1,0 
 	addi	CO, CO, 32 
@@ -702,14 +858,25 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	lxvp	vs44,	DISP16(\Index, 192)(AO)	// load real,imag from A
 	lxvp	vs46,	DISP16(\Index, 224)(AO)	// load real,imag from A
 	lxvp	vs48,	DISP2(\Index,    0)(BO)	// load real imag from B
-        xvf64gerpp      0,      vs32,   vs49
-        xvf64gerpp      1,      vs34,   vs49
-        xvf64gerpp      2,      vs36,   vs49
-        xvf64gerpp      3,      vs38,   vs49
-        xvf64gerpp      0,      vs40,   vs48
-        xvf64gerpp      1,      vs42,   vs48
-        xvf64gerpp      2,      vs44,   vs48
-        xvf64gerpp      3,      vs46,   vs48
+#if (__BYTE_ORDER__ == __ORDER_BIG_ENDIAN__)
+	xvf64gerpp	0,	vs32,	vs48
+	xvf64gerpp	1,	vs34,	vs48
+	xvf64gerpp	2,	vs36,	vs48
+	xvf64gerpp	3,	vs38,	vs48
+	xvf64gerpp	0,	vs40,	vs49
+	xvf64gerpp	1,	vs42,	vs49
+	xvf64gerpp	2,	vs44,	vs49
+	xvf64gerpp	3,	vs46,	vs49
+#else
+	xvf64gerpp      0,      vs32,   vs49
+	xvf64gerpp      1,      vs34,   vs49
+	xvf64gerpp      2,      vs36,   vs49
+	xvf64gerpp      3,      vs38,   vs49
+	xvf64gerpp      0,      vs40,   vs48
+	xvf64gerpp      1,      vs42,   vs48
+	xvf64gerpp      2,      vs44,   vs48
+	xvf64gerpp      3,      vs46,   vs48
+#endif
 .if \IsLast==1
 	addi	AO, AO, DISP16(\Index,256)
 	addi	BO, BO,  DISP2(\Index,32)
@@ -758,7 +925,24 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         xxpermdi vs45, vs12, vs13, 0b10
         xxpermdi vs46, vs14, vs15, 0b01
         xxpermdi vs47, vs14, vs15, 0b10
-
+#if (__BYTE_ORDER__ == __ORDER_BIG_ENDIAN__)
+	xxlor vs0, vs32, vs32
+	xxlor vs1, vs33, vs33
+	xxlor vs2, vs34, vs34
+	xxlor vs3, vs35, vs35
+	xxlor vs4, vs36, vs36
+	xxlor vs5, vs37, vs37
+	xxlor vs6, vs38, vs38
+	xxlor vs7, vs39, vs39
+	xxlor vs8, vs40, vs40
+	xxlor vs9, vs41, vs41
+	xxlor vs10, vs42, vs42
+	xxlor vs11, vs43, vs43
+	xxlor vs12, vs44, vs44
+	xxlor vs13, vs45, vs45
+	xxlor vs14, vs46, vs46
+	xxlor vs15, vs47, vs47
+#else
 	xxlor vs2, vs32, vs32
 	xxlor vs3, vs33, vs33
 	xxlor vs0, vs34, vs34
@@ -775,7 +959,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	xxlor vs15, vs45, vs45
 	xxlor vs12, vs46, vs46
 	xxlor vs13, vs47, vs47
-
+#endif
 	SAVE8  vs0,vs1,vs2,vs3,vs4,vs5,vs6,vs7,vs8,vs9,vs10,vs11,vs12,vs13,vs14,vs15,CO,0
 	addi	CO, CO, 128
 .endm
@@ -799,10 +983,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	lxvp	vs40,	DISP8(\Index, 64)(AO)	// load real,imag from A
 	lxvp	vs42,	DISP8(\Index, 96)(AO)	// load real,imag from A
 	lxvp	vs48,	DISP2(\Index,  0)(BO)	// load real imag from B
-        xvf64gerpp      0,      vs32,   vs49
-        xvf64gerpp      1,      vs34,   vs49
-        xvf64gerpp      0,      vs40,   vs48
-        xvf64gerpp      1,      vs42,   vs48
+#if (__BYTE_ORDER__ == __ORDER_BIG_ENDIAN__)
+	xvf64gerpp	0,	vs32,	vs48
+	xvf64gerpp	1,	vs34,	vs48
+	xvf64gerpp	0,	vs40,	vs49
+	xvf64gerpp	1,	vs42,	vs49
+#else
+	xvf64gerpp      0,      vs32,   vs49
+	xvf64gerpp      1,      vs34,   vs49
+	xvf64gerpp      0,      vs40,   vs48
+	xvf64gerpp      1,      vs42,   vs48
+#endif
 .if \IsLast==1
 	addi	AO, AO, DISP8(\Index,128)
 	addi	BO, BO,  DISP2(\Index,32)
@@ -837,7 +1028,16 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         xxpermdi vs37, vs4, vs5, 0b10
         xxpermdi vs38, vs6, vs7, 0b01
         xxpermdi vs39, vs6, vs7, 0b10
-
+#if (__BYTE_ORDER__ == __ORDER_BIG_ENDIAN__)
+	xxlor vs0, vs32, vs32
+	xxlor vs1, vs33, vs33
+	xxlor vs2, vs34, vs34
+	xxlor vs3, vs35, vs35
+	xxlor vs4, vs36, vs36
+	xxlor vs5, vs37, vs37
+	xxlor vs6, vs38, vs38
+	xxlor vs7, vs39, vs39
+#else
 	xxlor vs2, vs32, vs32
 	xxlor vs3, vs33, vs33
 	xxlor vs0, vs34, vs34
@@ -846,7 +1046,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	xxlor vs7, vs37, vs37
 	xxlor vs4, vs38, vs38
 	xxlor vs5, vs39, vs39
-
+#endif
 	SAVE4  vs0,vs1,vs2,vs3,vs4,vs5,vs6,vs7,CO,0
 	addi	CO, CO, 64
 .endm
@@ -867,8 +1067,13 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	lxvp	vs32,	DISP4(\Index,  0)(AO)	// load real,imag from A
 	lxvp	vs40,	DISP4(\Index, 32)(AO)	// load real,imag from A
 	lxvp	vs48,	DISP2(\Index,  0)(BO)	// load real imag from B
-        xvf64gerpp      0,      vs32,   vs49
-        xvf64gerpp      0,      vs40,   vs48
+#if (__BYTE_ORDER__ == __ORDER_BIG_ENDIAN__)
+	xvf64gerpp	0,	vs32,	vs48
+	xvf64gerpp	0,	vs40,	vs49
+#else
+	xvf64gerpp      0,      vs32,   vs49
+	xvf64gerpp      0,      vs40,   vs48
+#endif
 .if \IsLast==1
 	addi	AO, AO, DISP4(\Index,64)
 	addi	BO, BO, DISP2(\Index,32)
@@ -896,11 +1101,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         xxpermdi vs33, vs0, vs1, 0b10
         xxpermdi vs34, vs2, vs3, 0b01
         xxpermdi vs35, vs2, vs3, 0b10
-
+#if (__BYTE_ORDER__ == __ORDER_BIG_ENDIAN__)
+	xxlor vs0, vs32, vs32
+	xxlor vs1, vs33, vs33
+	xxlor vs2, vs34, vs34
+	xxlor vs3, vs35, vs35
+#else
 	xxlor vs2, vs32, vs32
 	xxlor vs3, vs33, vs33
 	xxlor vs0, vs34, vs34
 	xxlor vs1, vs35, vs35
+#endif
 
 	SAVE2  vs0,vs1,vs2,vs3,CO,0
 	addi	CO, CO, 32 

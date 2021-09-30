@@ -36,9 +36,12 @@ static void caxpy_kernel_8 (long n, float *x, float *y,
 #endif
   const float *mvecp = mvec;
   /* We have to load reverse mask for big endian.  */
-  /* __vector unsigned char mask={ 4,5,6,7,0,1,2,3,12,13,14,15,8,9,10,11}; */
-
+#if (__BYTE_ORDER__ == __ORDER_BIG_ENDIAN__)
+  __vector unsigned char mask={ 4,5,6,7,0,1,2,3,12,13,14,15,8,9,10,11}; 
+#else
   __vector unsigned char mask = { 11,10,9,8,15,14,13,12,3,2,1,0,7,6,5,4};
+#endif
+
   long ytmp;
 
   __asm__
@@ -112,6 +115,16 @@ static void caxpy_kernel_8 (long n, float *x, float *y,
        "xvmaddasp	38, 58, 33	\n\t"
        "xvmaddasp	39, 59, 33	\n\t"
 
+#if (__BYTE_ORDER__ == __ORDER_BIG_ENDIAN__)
+       "stxv        48, 0(%4)   \n\t"
+       "stxv        49, 16(%4)  \n\t"
+       "stxv        50, 32(%4)  \n\t"
+       "stxv        51, 48(%4)  \n\t"
+       "stxv        34, 64(%4)  \n\t"
+       "stxv        35, 80(%4)  \n\t"
+       "stxv        38, 96(%4)  \n\t"
+       "stxv        39, 112(%4) \n\t"
+#else 
        "stxv		49, 0(%4)	\n\t"
        "stxv		48, 16(%4)	\n\t"
        "stxv		51, 32(%4)	\n\t"
@@ -120,6 +133,7 @@ static void caxpy_kernel_8 (long n, float *x, float *y,
        "stxv		34, 80(%4)	\n\t"
        "stxv		39, 96(%4)	\n\t"
        "stxv		38, 112(%4)	\n\t"
+#endif
 
        "addi		%4, %4, 128	\n\t"
        "xxperm 52, 40, %x10 \n\t"       // exchange real and imag part
@@ -163,6 +177,16 @@ static void caxpy_kernel_8 (long n, float *x, float *y,
        "xvmaddasp	38, 58, 33	\n\t"
        "xvmaddasp	39, 59, 33	\n\t"
 
+#if (__BYTE_ORDER__ == __ORDER_BIG_ENDIAN__)
+       "stxv        48, 0(%4)   \n\t"
+       "stxv        49, 16(%4)  \n\t"
+       "stxv        50, 32(%4)  \n\t"
+       "stxv        51, 48(%4)  \n\t"
+       "stxv        34, 64(%4)  \n\t"
+       "stxv        35, 80(%4)  \n\t"
+       "stxv        38, 96(%4)  \n\t"
+       "stxv        39, 112(%4) \n\t"
+#else
        "stxv		49, 0(%4)	\n\t"
        "stxv		48, 16(%4)	\n\t"
        "stxv		51, 32(%4)	\n\t"
@@ -171,6 +195,7 @@ static void caxpy_kernel_8 (long n, float *x, float *y,
        "stxv		34, 80(%4)	\n\t"
        "stxv		39, 96(%4)	\n\t"
        "stxv		38, 112(%4)	\n\t"
+#endif
 
      "#n=%1 x=%5=%2 y=%0=%3 alpha=(%7,%8) mvecp=%6=%9 ytmp=%4\n"
      :

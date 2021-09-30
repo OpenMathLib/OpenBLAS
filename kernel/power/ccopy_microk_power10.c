@@ -46,7 +46,16 @@ static void copy_kernel (BLASLONG n, FLOAT *x, FLOAT *y)
 
        ".align	5		\n"
      "one%=:				\n\t"
-
+#if (__BYTE_ORDER__ == __ORDER_BIG_ENDIAN__) 
+       "stxv        32, 0(%3)   \n\t"
+       "stxv        33, 16(%3)  \n\t"
+       "stxv        34, 32(%3)  \n\t"
+       "stxv        35, 48(%3)  \n\t"
+       "stxv        36, 64(%3)  \n\t"
+       "stxv        37, 80(%3)  \n\t"
+       "stxv        38, 96(%3)  \n\t"
+       "stxv        39, 112(%3) \n\t"
+#else
        "stxv		33, 0(%3)	\n\t"
        "stxv		32, 16(%3)	\n\t"
        "stxv		35, 32(%3)	\n\t"
@@ -55,11 +64,21 @@ static void copy_kernel (BLASLONG n, FLOAT *x, FLOAT *y)
        "stxv		36, 80(%3)	\n\t"
        "stxv		39, 96(%3)	\n\t"
        "stxv		38, 112(%3)	\n\t"
+#endif
        "lxvp		32, 0(%2)	\n\t"
        "lxvp		34, 32(%2)	\n\t"
        "lxvp		36, 64(%2)	\n\t"
        "lxvp		38, 96(%2)	\n\t"
-
+#if (__BYTE_ORDER__ == __ORDER_BIG_ENDIAN__)
+       "stxv        40, 128(%3) \n\t"
+       "stxv        41, 144(%3) \n\t"
+       "stxv        42, 160(%3) \n\t"
+       "stxv        43, 176(%3) \n\t"
+       "stxv        44, 192(%3) \n\t"
+       "stxv        45, 208(%3) \n\t"
+       "stxv        46, 224(%3) \n\t"
+       "stxv        47, 240(%3) \n\t"
+#else
        "stxv		41, 128(%3)	\n\t"
        "stxv		40, 144(%3)	\n\t"
        "stxv		43, 160(%3)	\n\t"
@@ -68,6 +87,7 @@ static void copy_kernel (BLASLONG n, FLOAT *x, FLOAT *y)
        "stxv		44, 208(%3)	\n\t"
        "stxv		47, 224(%3)	\n\t"
        "stxv		46, 240(%3)	\n\t"
+#endif
        "lxvp		40, 128(%2)	\n\t"
        "lxvp		42, 160(%2)	\n\t"
        "lxvp		44, 192(%2)	\n\t"
@@ -81,7 +101,24 @@ static void copy_kernel (BLASLONG n, FLOAT *x, FLOAT *y)
        "bgt		one%=		\n"
 
      "two%=:				\n\t"
-
+#if (__BYTE_ORDER__ == __ORDER_BIG_ENDIAN__)
+       "stxv        32, 0(%3)   \n\t"
+       "stxv        33, 16(%3)  \n\t"
+       "stxv        34, 32(%3)  \n\t"
+       "stxv        35, 48(%3)  \n\t"
+       "stxv        36, 64(%3)  \n\t"
+       "stxv        37, 80(%3)  \n\t"
+       "stxv        38, 96(%3)  \n\t"
+       "stxv        39, 112(%3) \n\t"
+       "stxv        40, 128(%3) \n\t"
+       "stxv        41, 144(%3) \n\t"
+       "stxv        42, 160(%3) \n\t"
+       "stxv        43, 176(%3) \n\t"
+       "stxv        44, 192(%3) \n\t"
+       "stxv        45, 208(%3) \n\t"
+       "stxv        46, 224(%3) \n\t"
+       "stxv        47, 240(%3) \n\t"
+#else
        "stxv		33, 0(%3)	\n\t"
        "stxv		32, 16(%3)	\n\t"
        "stxv		35, 32(%3)	\n\t"
@@ -98,7 +135,7 @@ static void copy_kernel (BLASLONG n, FLOAT *x, FLOAT *y)
        "stxv		44, 208(%3)	\n\t"
        "stxv		47, 224(%3)	\n\t"
        "stxv		46, 240(%3)	\n\t"
-
+#endif
      "#n=%1 x=%4=%2 y=%0=%3"
      :
        "=m" (*y),
