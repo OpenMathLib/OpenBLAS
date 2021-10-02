@@ -353,7 +353,7 @@
 *
 *     Quick return if possible
 *
-      IF( N.LE.0 ) THEN
+      IF( (N.LE.0).OR.(M.LE.0) ) THEN
          RETURN
       END IF
 *
