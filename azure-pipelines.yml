@@ -19,7 +19,7 @@ jobs:
 # of gcc / glibc
 - job: manylinux1_gcc
   pool:
-    vmImage: 'ubuntu-16.04'
+    vmImage: 'ubuntu-latest'
   steps:
   - script: |
       echo "FROM quay.io/pypa/manylinux1_x86_64
@@ -35,7 +35,7 @@ jobs:
     displayName: Run manylinux1 docker build
 - job: Intel_SDE_skx
   pool:
-    vmImage: 'ubuntu-16.04'
+    vmImage: 'ubuntu-latest'
   steps:
   - script: |
       # at the time of writing the available Azure Ubuntu vm image
@@ -83,6 +83,8 @@ jobs:
   - script: |
       brew update
       make TARGET=CORE2 DYNAMIC_ARCH=1 USE_OPENMP=1 INTERFACE64=1 CC=gcc-10 FC=gfortran-10
+      make TARGET=CORE2 DYNAMIC_ARCH=1 USE_OPENMP=1 INTERFACE64=1 CC=gcc-10 FC=gfortran-10 PREFIX=../blasinst install
+      ls -lR ../blasinst
      
 - job: OSX_GCC_Nothreads
   pool:
@@ -104,6 +106,38 @@ jobs:
       brew install llvm libomp
       make TARGET=CORE2 USE_OPENMP=1 INTERFACE64=1 DYNAMIC_ARCH=1 CC=/usr/local/opt/llvm/bin/clang FC=gfortran-10
 
+- job: OSX_OpenMP_Clang_cmake
+  pool:
+     vmImage: 'macOS-10.15'
+  variables:
+     LD_LIBRARY_PATH: /usr/local/opt/llvm/lib
+     LIBRARY_PATH: /usr/local/opt/llvm/lib
+  steps:   
+  - script: |
+      brew update
+      brew install llvm libomp
+      mkdir build
+      cd build
+      cmake -DTARGET=CORE2 -DUSE_OPENMP=1 -DINTERFACE64=1 -DDYNAMIC_ARCH=1 -DCMAKE_C_COMPILER=/usr/local/opt/llvm/bin/clang -DNOFORTRAN=1 -DNO_AVX512=1 ..
+      make
+      ctest
+      
+- job: OSX_OpenMP_Clang_gf_cmake
+  pool:
+     vmImage: 'macOS-10.15'
+  variables:
+     LD_LIBRARY_PATH: /usr/local/opt/llvm/lib
+     LIBRARY_PATH: /usr/local/opt/llvm/lib
+  steps:   
+  - script: |
+      brew update
+      brew install llvm libomp
+      mkdir build
+      cd build
+      cmake -DTARGET=CORE2 -DUSE_OPENMP=1 -DINTERFACE64=1 -DDYNAMIC_ARCH=1 -DCMAKE_C_COMPILER=/usr/local/opt/llvm/bin/clang -DNO_AVX512=1 ..
+      make
+      ctest
+        
 - job: OSX_Ifort_Clang
   pool:
      vmImage: 'macOS-10.15'
@@ -146,14 +180,35 @@ jobs:
       brew install --cask android-ndk
       export ANDROID_NDK_HOME=/usr/local/share/android-ndk
       make TARGET=ARMV7 ONLY_CBLAS=1 CC=$ANDROID_NDK_HOME/toolchains/llvm/prebuilt/darwin-x86_64/bin/armv7a-linux-androideabi21-clang AR=$ANDROID_NDK_HOME/toolchains/llvm/prebuilt/darwin-x86_64/bin/arm-linux-androideabi-ar HOSTCC=gcc ARM_SOFTFP_ABI=1 -j4
- 
+
+- job: OSX_IOS_ARMV8
+  pool:
+     vmImage: 'macOS-10.15'
+  variables:
+     CC: /Applications/Xcode_12.4.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang
+     CFLAGS: -O2 -Wno-macro-redefined -isysroot /Applications/Xcode_12.4.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS14.4.sdk -arch arm64 -miphoneos-version-min=10.0
+  steps:
+  - script: |
+     make TARGET=ARMV8 DYNAMIC_ARCH=1 NUM_THREADS=32 HOSTCC=clang NOFORTRAN=1
+
+- job: OSX_IOS_ARMV7
+  pool:
+     vmImage: 'macOS-10.15'
+  variables:
+     CC: /Applications/Xcode_12.4.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang
+     CFLAGS: -O2 -mno-thumb -Wno-macro-redefined -isysroot /Applications/Xcode_12.4.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS14.4.sdk -arch armv7 -miphoneos-version-min=5.1
+  steps:
+  - script: |
+     make TARGET=ARMV7 DYNAMIC_ARCH=1 NUM_THREADS=32 HOSTCC=clang NOFORTRAN=1
+
 - job: ALPINE_MUSL
   pool:
      vmImage: 'ubuntu-latest'
   steps:
   - script: |
-        wget 'https://raw.githubusercontent.com/alpinelinux/alpine-chroot-install/v0.9.0/alpine-chroot-install' \
-          && echo 'e5dfbbdc0c4b3363b99334510976c86bfa6cb251  alpine-chroot-install' | sha1sum -c || exit 1
+        wget https://raw.githubusercontent.com/alpinelinux/alpine-chroot-install/v0.13.1/alpine-chroot-install \
+         && echo '7c7e3fa378e69aecc7f5f01bbc759e5f0a9d9b74  alpine-chroot-install' | sha1sum -c \
+         || exit 1
         alpine() { /alpine/enter-chroot -u "$USER" "$@"; }
         sudo sh alpine-chroot-install -p 'build-base gfortran perl linux-headers sudo'
         alpine make DYNAMIC_ARCH=1 BINARY=64

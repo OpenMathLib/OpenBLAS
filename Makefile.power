@@ -12,7 +12,11 @@ endif
 ifeq ($(CORE), POWER10)
 ifneq ($(C_COMPILER), PGI)
 CCOMMON_OPT += -Ofast -mcpu=power10 -mtune=power10 -mvsx -fno-fast-math
+ifeq ($(F_COMPILER), IBM)
+FCOMMON_OPT += -O2 -qrecur -qnosave
+else
 FCOMMON_OPT += -O2 -frecursive -mcpu=power10 -mtune=power10  -fno-fast-math
+endif
 endif
 endif
 
@@ -33,7 +37,11 @@ else
 CCOMMON_OPT += -fast -Mvect=simd -Mcache_align
 endif
 ifneq ($(F_COMPILER), PGI)
+ifeq ($(F_COMPILER), IBM)
+FCOMMON_OPT += -O2 -qrecur -qnosave
+else
 FCOMMON_OPT += -O2 -frecursive -fno-fast-math
+endif
 ifeq ($(C_COMPILER), GCC)
 ifneq ($(GCCVERSIONGT4), 1)
 $(warning your compiler is too old to fully support POWER9, getting a newer version of gcc is recommended)
@@ -57,7 +65,11 @@ CCOMMON_OPT += -fast -Mvect=simd -Mcache_align
 endif
 ifneq ($(F_COMPILER), PGI)
 ifeq ($(OSNAME), AIX)
+ifeq ($(F_COMPILER), IBM)
+FCOMMON_OPT += -O2 -qrecur -qnosave
+else
 FCOMMON_OPT += -O1 -frecursive -mcpu=power8 -mtune=power8  -fno-fast-math 
+endif
 else
 FCOMMON_OPT += -O2 -frecursive -mcpu=power8 -mtune=power8  -fno-fast-math 
 endif

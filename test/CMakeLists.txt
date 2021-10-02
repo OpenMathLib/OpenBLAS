@@ -2,6 +2,10 @@ include_directories(${PROJECT_SOURCE_DIR})
 include_directories(${PROJECT_BINARY_DIR})
 
 enable_language(Fortran)
+if (CMAKE_Fortran_COMPILER_ID STREQUAL GNU)
+        set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS} -fno-tree-vectorize")
+endif()
+
 
 if (BUILD_SINGLE)
 	list( APPEND OpenBLAS_Tests sblat1 sblat2 sblat3)

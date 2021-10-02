@@ -84,7 +84,7 @@ OS_AIX
 OS_OSF
 #endif
 
-#if defined(__WIN32) || defined(__WIN64) || defined(__WINNT)
+#if defined(__WIN32) || defined(__WIN64) || defined(_WIN32) || defined(_WIN64) || defined(__WINNT)
 OS_WINNT
 #endif
 
@@ -141,7 +141,7 @@ ARCH_SPARC
 ARCH_IA64
 #endif
 
-#if defined(__LP64) || defined(__LP64__) || defined(__ptr64) || defined(__x86_64__) || defined(__amd64__) || defined(__64BIT__)
+#if defined(__LP64) || defined(__LP64__) || defined(__ptr64) || defined(__x86_64__) || defined(__amd64__) || defined(__64BIT__) || defined(__aarch64__)
 BINARY_64
 #endif
 
@@ -155,6 +155,10 @@ ARCH_ARM64
 
 #if defined(__riscv)
 ARCH_RISCV64
+#endif
+
+#ifdef __loongarch64
+ARCH_LOONGARCH64
 #endif
 
 #if (defined(__STDC_VERSION__) && __STDC_VERSION__ >= 201112L)

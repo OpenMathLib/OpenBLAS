@@ -1,5 +1,48 @@
 OpenBLAS ChangeLog
 ====================================================================
+Version 0.3.18
+ 02-Oct-2021
+
+general:
+ - when the build-time number of preconfigured threads is exceeded
+   at runtime (typically by an external program calling BLAS functions
+   from a larger number of threads in parallel), OpenBLAS will now 
+   allocate an auxiliary control structure for up to 512 additional
+   threads instead of aborting
+ - added support for Loongson's LoongArch64 cpu architecture
+ - fixed building OpenBLAS with CMAKE and -DBUILD_BFLOAT16=ON
+ - added support for building OpenBLAS as a CMAKE subproject
+ - added support for building for Windows/ARM64 targets with clang
+ - improved support for building with the IBM xlf compiler
+ - imported Reference-LAPACK PR 625 (out-of-bounds reads in ?LARRV)
+ - imported Reference-LAPACK PR 597 for testsuite compatibility with
+   LLVM's libomp
+
+x86_64:
+ - added SkylakeX S/DGEMM kernels for small problem sizes (M*N*K<=1000000)
+ - added optimized SBGEMM for Intel Cooper Lake
+ - reinstated the performance patch for AVX512 SGEMV_T with a proper fix
+ - added a workaround for a gcc11 tree-vectorizer bug that caused spurious
+   failures in the test programs for complex BLAS3 when compiling at -O3
+   (the default for cmake "release" builds)
+ - added support for runtime cpu count detection under Haiku OS
+ - worked around a long-standing miscompilation issue of the Haswell DGEMV_T
+   kernel with gcc that could produce NaN output in some corner cases
+
+POWER:
+ - improved performance of DASUM on POWER10
+
+ARMV8:
+ - fixed crashes (use of reserved register x18) on Apple M1 under OSX
+ - fixed building with gcc releases earlier than 5.1
+
+MIPS:
+ - fixed building under BSD
+
+MIPS64:
+ - fixed building under BSD
+
+====================================================================
 Version 0.3.17
  15-Jul-2021
 

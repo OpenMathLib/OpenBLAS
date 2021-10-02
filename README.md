@@ -2,7 +2,7 @@
 
 [![Join the chat at https://gitter.im/xianyi/OpenBLAS](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/xianyi/OpenBLAS?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-Travis CI: [![Build Status](https://travis-ci.org/xianyi/OpenBLAS.svg?branch=develop)](https://travis-ci.org/xianyi/OpenBLAS)
+Travis CI: [![Build Status](https://travis-ci.com/xianyi/OpenBLAS.svg?branch=develop)](https://travis-ci.com/xianyi/OpenBLAS)
 
 AppVeyor: [![Build status](https://ci.appveyor.com/api/projects/status/09sohd35n8nkkx64/branch/develop?svg=true)](https://ci.appveyor.com/project/xianyi/openblas/branch/develop)
 
@@ -128,6 +128,7 @@ Please read `GotoBLAS_01Readme.txt` for older CPU models already supported by th
 - **Intel Sandy Bridge**: Optimized Level-3 and Level-2 BLAS with AVX on x86-64.
 - **Intel Haswell**: Optimized Level-3 and Level-2 BLAS with AVX2 and FMA on x86-64.
 - **Intel Skylake-X**: Optimized Level-3 and Level-2 BLAS with AVX512 and FMA on x86-64.
+- **Intel Cooper Lake**: as Skylake-X with improved BFLOAT16 support.
 - **AMD Bobcat**: Used GotoBLAS2 Barcelona codes.
 - **AMD Bulldozer**: x86-64 ?GEMM FMA4 kernels. (Thanks to Werner Saar)
 - **AMD PILEDRIVER**: Uses Bulldozer codes with some optimizations.
@@ -153,6 +154,7 @@ Please read `GotoBLAS_01Readme.txt` for older CPU models already supported by th
 
 - **ARMv8**: Basic ARMV8 with small caches, optimized Level-3 and Level-2 BLAS
 - **Cortex-A53**: same as ARMV8 (different cpu specifications)
+- **Cortex-A55**: same as ARMV8 (different cpu specifications)
 - **Cortex A57**: Optimized Level-3 and Level-2 functions
 - **Cortex A72**: same as A57 ( different cpu specifications)
 - **Cortex A73**: same as A57 (different cpu specifications)
@@ -178,10 +180,11 @@ Please read `GotoBLAS_01Readme.txt` for older CPU models already supported by th
 
 #### RISC-V
 
-- **C910V**: Optimized Leve-3 BLAS (real) and Level-1,2 by RISC-V Vector extension 0.7.1.
+- **C910V**: Optimized Level-3 BLAS (real) and Level-1,2 by RISC-V Vector extension 0.7.1.
   ```sh
   make HOSTCC=gcc TARGET=C910V CC=riscv64-unknown-linux-gnu-gcc FC=riscv64-unknown-linux-gnu-gfortran
   ```
+  (also known to work on C906)
 
 ### Support for multiple targets in a single library
 

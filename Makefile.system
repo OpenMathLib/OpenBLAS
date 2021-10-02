@@ -33,6 +33,10 @@ else ifeq ($(ARCH), armv7)
 override ARCH=arm
 else ifeq ($(ARCH), aarch64)
 override ARCH=arm64
+else ifeq ($(ARCH), mipsel)
+override ARCH=mips
+else ifeq ($(ARCH), mips64el)
+override ARCH=mips64
 else ifeq ($(ARCH), zarch)
 override ARCH=zarch
 endif
@@ -242,6 +246,14 @@ ifeq ($(ONLY_CBLAS), 1)
 NO_LAPACK = 1
 else
 ONLY_CBLAS = 0
+endif
+
+#For small matrix optimization
+ifeq ($(ARCH), x86_64)
+SMALL_MATRIX_OPT = 1
+endif
+ifeq ($(SMALL_MATRIX_OPT), 1)
+CCOMMON_OPT += -DSMALL_MATRIX_OPT
 endif
 
 # This operation is expensive, so execution should be once.
@@ -780,6 +792,11 @@ NO_BINARY_MODE  = 1
 BINARY_DEFINED  = 1
 endif
 
+ifeq ($(ARCH), loongarch64)
+NO_BINARY_MODE  = 1
+BINARY_DEFINED  = 1
+endif
+
 
 #
 #  C Compiler dependent settings
@@ -848,6 +865,13 @@ endif
 
 ifeq ($(OSNAME), AIX)
 BINARY_DEFINED = 1
+endif
+
+ifeq ($(ARCH), loongarch64)
+ifeq ($(CORE), LOONGSON3R5)
+CCOMMON_OPT += -march=loongarch64 -mabi=lp64
+FCOMMON_OPT += -march=loongarch64 -mabi=lp64
+endif
 endif
 
 endif

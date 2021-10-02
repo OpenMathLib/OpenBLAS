@@ -1,4 +1,15 @@
 ifneq ($(C_COMPILER), PGI)
+
+ifneq ($(GCCVERSIONGT4), 1)
+CCOMMON_OPT += -march=armv8-a
+ifneq ($(F_COMPILER), NAG)
+FCOMMON_OPT += -march=armv8-a
+endif
+
+
+else 
+
+
 ifeq ($(CORE), ARMV8)
 CCOMMON_OPT += -march=armv8-a
 ifneq ($(F_COMPILER), NAG)
@@ -138,4 +149,7 @@ FCOMMON_OPT += -march=armv8-a -mtune=emag
 endif
 endif
 endif
+
+endif
+
 endif

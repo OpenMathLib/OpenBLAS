@@ -1081,7 +1081,8 @@
       CHARACTER*80       LINE
       INTEGER            I, I1, IC, INFO, ITMP, K, LENP, MAXTYP, NEWSD,
      $                   NK, NN, NPARMS, NRHS, NTYPES,
-     $                   VERS_MAJOR, VERS_MINOR, VERS_PATCH, N_THREADS
+     $                   VERS_MAJOR, VERS_MINOR, VERS_PATCH
+      INTEGER*4          N_THREADS, ONE_THREAD
       REAL               EPS, S1, S2, THRESH, THRSHN
 *     ..
 *     .. Local Arrays ..
@@ -1878,7 +1879,8 @@
          IF( TSTERR ) THEN
 #if defined(_OPENMP)
             N_THREADS = OMP_GET_MAX_THREADS()
-            CALL OMP_SET_NUM_THREADS(1)
+            ONE_THREAD = 1
+            CALL OMP_SET_NUM_THREADS(ONE_THREAD)
 #endif
             CALL SERRST( 'SST', NOUT )
 #if defined(_OPENMP)

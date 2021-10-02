@@ -1,3 +1,10 @@
+FMAFLAG=
+ifndef OLDGCC
+ifdef HAVE_FMA3
+FMAFLAG = -mfma
+endif
+endif
+
 ### GEMV ###
 
 ifndef SGEMVNKERNEL
@@ -263,7 +270,7 @@ $(KDIR)dgemv_n$(TSUFFIX).$(SUFFIX)  $(KDIR)dgemv_n$(TSUFFIX).$(PSUFFIX)  : $(KER
 	$(CC) -c $(CFLAGS) -DDOUBLE -UCOMPLEX  -UTRANS $< -o $@
 
 $(KDIR)dgemv_t$(TSUFFIX).$(SUFFIX)  $(KDIR)dgemv_t$(TSUFFIX).$(PSUFFIX)  : $(KERNELDIR)/$(DGEMVTKERNEL) $(TOPDIR)/common.h $(GEMVDEP)
-	$(CC) -c $(CFLAGS) -DDOUBLE -UCOMPLEX  -DTRANS $< -o $@
+	$(CC) -c $(CFLAGS) $(FMAFLAG) -DDOUBLE -UCOMPLEX  -DTRANS $< -o $@
 endif
 
 $(KDIR)qgemv_n$(TSUFFIX).$(SUFFIX)  $(KDIR)qgemv_n$(TSUFFIX).$(PSUFFIX)  : $(KERNELDIR)/$(QGEMVNKERNEL)

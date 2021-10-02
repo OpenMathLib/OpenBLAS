@@ -115,14 +115,14 @@ FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x)
 	{
 
 #if defined(POWER10) && (__BYTE_ORDER__ != __ORDER_BIG_ENDIAN__)
-		if ( n >= 16 )
+		if ( n >= 32)
 		{
 			BLASLONG align = ((32 - ((uintptr_t)x & (uintptr_t)0x1F)) >> 3) & 0x3;
 			for (i = 0; i < align; i++) {
 				sumf += ABS(x[i]);
 			}
 		}
-		n1 = (n-i) & -16;
+		n1 = (n-i) & -32;
 		if ( n1 > 0 )
 		{
 			sumf += dasum_kernel_16(n1, &x[i]);

@@ -50,11 +50,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define	B03		x16
 #define	B04		x17
 
-#define I		x18
-#define	J		x19
+#define I		x19
+#define	J		x20
 
-#define TEMP1		x20
-#define TEMP2		x21
+#define TEMP1		x21
 
 #define A_PREFETCH	2560
 #define B_PREFETCH	256
