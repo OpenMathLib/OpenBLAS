@@ -307,7 +307,7 @@ else
 SMP = 1
 endif
 else
-ifeq ($(NUM_THREAD), 1)
+ifeq ($(NUM_THREADS), 1)
 SMP =
 else
 SMP = 1
