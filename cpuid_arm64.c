@@ -26,7 +26,7 @@
   *****************************************************************************/
 
 #include <string.h>
-#ifdef OS_DARWIN
+#ifdef __APPLE__
 #include <sys/sysctl.h>
 int32_t value;
 size_t length=sizeof(value);
@@ -212,9 +212,9 @@ int detect(void)
 
 	}
 #else
-#ifdef DARWIN
+#ifdef __APPLE__
 	sysctlbyname("hw.cpufamily",&value,&length,NULL,0);
-	if (value ==131287967) return CPU_VORTEX;
+	if (value ==131287967|| value == 458787763 ) return CPU_VORTEX;
 #endif
 	return CPU_ARMV8;	
 #endif
@@ -265,7 +265,7 @@ int n=0;
 
 	printf("#define NUM_CORES %d\n",n);
 #endif
-#ifdef DARWIN
+#ifdef __APPLE__
 	sysctlbyname("hw.physicalcpu_max",&value,&length,NULL,0);
 	printf("#define NUM_CORES %d\n",value);
 #endif	
@@ -420,7 +420,7 @@ void get_cpuconfig(void)
 			printf("#define DTB_DEFAULT_ENTRIES  64       \n");
 			printf("#define DTB_SIZE             4096     \n");
 			break;
-#ifdef DARWIN
+#ifdef __APPLE__
 		case CPU_VORTEX:
 			printf("#define VORTEX			      \n");
 			sysctlbyname("hw.l1icachesize",&value,&length,NULL,0);
@@ -431,6 +431,8 @@ void get_cpuconfig(void)
 			printf("#define L1_DATA_SIZE	     %d       \n",value);
 			sysctlbyname("hw.l2dcachesize",&value,&length,NULL,0);
 			printf("#define L2_SIZE	     %d       \n",value);
+			printf("#define DTB_DEFAULT_ENTRIES  64       \n");
+			printf("#define DTB_SIZE             4096     \n");
 			break;
 #endif			
 	}
