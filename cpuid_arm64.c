@@ -30,6 +30,8 @@
 #include <sys/sysctl.h>
 int32_t value;
 size_t length=sizeof(value);
+int64_t value64;
+size_t length64=sizeof(value64);
 #endif
 
 #define CPU_UNKNOWN     	0
@@ -423,14 +425,14 @@ void get_cpuconfig(void)
 #ifdef __APPLE__
 		case CPU_VORTEX:
 			printf("#define VORTEX			      \n");
-			sysctlbyname("hw.l1icachesize",&value,&length,NULL,0);
-			printf("#define L1_CODE_SIZE	     %d       \n",value);
-			sysctlbyname("hw.cachelinesize",&value,&length,NULL,0);
-			printf("#define L1_CODE_LINESIZE     %d       \n",value);
-			sysctlbyname("hw.l1dcachesize",&value,&length,NULL,0);
-			printf("#define L1_DATA_SIZE	     %d       \n",value);
-			sysctlbyname("hw.l2dcachesize",&value,&length,NULL,0);
-			printf("#define L2_SIZE	     %d       \n",value);
+			sysctlbyname("hw.l1icachesize",&value64,&length64,NULL,0);
+			printf("#define L1_CODE_SIZE	     %lld       \n",value64);
+			sysctlbyname("hw.cachelinesize",&value64,&length64,NULL,0);
+			printf("#define L1_CODE_LINESIZE     %lld       \n",value64);
+			sysctlbyname("hw.l1dcachesize",&value64,&length64,NULL,0);
+			printf("#define L1_DATA_SIZE	     %lld       \n",value64);
+			sysctlbyname("hw.l2cachesize",&value64,&length64,NULL,0);
+			printf("#define L2_SIZE	     %lld       \n",value64);
 			printf("#define DTB_DEFAULT_ENTRIES  64       \n");
 			printf("#define DTB_SIZE             4096     \n");
 			break;
