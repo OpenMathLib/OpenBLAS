@@ -30,7 +30,11 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 static void zscal_kernel_8 (long n, float *x, float alpha_r, float alpha_i)
 {
   __vector float t0 = {-alpha_i, alpha_i, -alpha_i, alpha_i};
+#if (__BYTE_ORDER__ == __ORDER_BIG_ENDIAN__)
+  __vector unsigned char mask = {4,5,6,7,0,1,2,3,12,13,14,15,8,9,10,11};
+#else
   __vector unsigned char mask = { 11,10,9,8,15,14,13,12,3,2,1,0,7,6,5,4};
+#endif
   __asm__
     (
        "dcbt		0, %2		\n\t"

@@ -49,13 +49,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #if defined(__VEC__) || defined(__ALTIVEC__)
 #if defined(POWER8) || defined(POWER9)
 #include "dasum_microk_power8.c"
-#elif defined(POWER10) && (__BYTE_ORDER__ != __ORDER_BIG_ENDIAN__)
-#include "dasum_microk_power10.c"
 #elif defined(POWER10)
-#include "dasum_microk_power8.c"
+#include "dasum_microk_power10.c"
 #endif
 #endif
-
 
 #ifndef HAVE_KERNEL_16
 
@@ -114,7 +111,7 @@ FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x)
 	if ( inc_x == 1 )
 	{
 
-#if defined(POWER10) && (__BYTE_ORDER__ != __ORDER_BIG_ENDIAN__)
+#if defined(POWER10)
 		if ( n >= 32)
 		{
 			BLASLONG align = ((32 - ((uintptr_t)x & (uintptr_t)0x1F)) >> 3) & 0x3;

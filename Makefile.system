@@ -16,6 +16,8 @@ else
 HOSTARCH = $(ARCH)
 endif
 
+HAVE_GAS := $(shell as -v < /dev/null 2>&1 | grep GNU 2>&1 >/dev/null)
+
 # Catch conflicting usage of ARCH in some BSD environments
 ifeq ($(ARCH), amd64)
 override ARCH=x86_64

@@ -147,13 +147,13 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     std    r0, FLINK_SAVE(SP)
  
 
-#if defined(linux) || defined(__FreeBSD__)
+#if defined(linux) || defined(__FreeBSD__) || defined(_AIX)
 	ld	LDC, FRAMESLOT(0) + 0(FRAMEPOINTER)
 #endif
 
 
 #ifdef TRMMKERNEL
-#if (defined(linux) || defined(__FreeBSD__)) && defined(__64BIT__)
+#if (defined(linux) || defined(__FreeBSD__) || defined(_AIX)) && defined(__64BIT__)
 	ld	OFFSET,  FRAMESLOT(1) + 0(FRAMEPOINTER)
 #endif 
 #endif

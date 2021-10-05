@@ -76,11 +76,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "cgemm_macros_power10.S"
 
+#if (_AIX)
+.set	perm_const1, 0x0405060700010203
+.set	perm_const2, 0x0c0d0e0f08090a0b
+.set	save_permute_12, 0x1011121300010203	
+.set	save_permute_11, 0x18191a1b08090a0b
+#else
 .equ    perm_const1, 0x0405060700010203
 .equ    perm_const2, 0x0c0d0e0f08090a0b
 .equ save_permute_12, 0x0c0d0e0f1c1d1e1f
 .equ save_permute_11, 0x0405060714151617
-
+#endif
 
 
 #ifndef NEEDPARAM
@@ -172,24 +178,44 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /*load reverse permute mask for big endian
   uint128 = 0xc0d0e0f08090a0b0405060700010203
 */ 
-		
+#if (_AIX)
+	lis	T2,	(perm_const2>>48 & 0xFFFF)
+	lis	T1,	(perm_const1>>48 & 0xFFFF)
+	lis	T3,	(save_permute_12>>48 & 0xFFFF)
+	lis	T4,	(save_permute_11>>48 & 0xFFFF)
+
+	ori	T2,	T2,	(perm_const2>>32 & 0xFFFF)
+	ori	T1,	T1,	(perm_const1>>32 & 0xFFFF)
+	ori	T3,	T3,	(save_permute_12>>32 & 0xFFFF)
+	ori	T4,	T4,	(save_permute_11>>32 & 0xFFFF)
+#else
 	lis T2, perm_const2@highest
 	lis T1, perm_const1@highest
 	lis T3, save_permute_12@highest
 	lis T4, save_permute_11@highest
-
 	
 	ori T2, T2, perm_const2@higher
 	ori T1, T1, perm_const1@higher
 	ori T3, T3, save_permute_12@higher
 	ori T4, T4, save_permute_11@higher
-
+#endif
 	
 	rldicr T2, T2, 32, 31
 	rldicr T1, T1, 32, 31
 	rldicr T3, T3, 32, 31
 	rldicr T4, T4, 32, 31 
 
+#if (_AIX)
+	oris	T2,	T2,	(perm_const2>>16 & 0xFFFF)
+	oris	T1, T1,	(perm_const1>>16 & 0xFFFF)
+	oris	T3, T3,	(save_permute_12>>16 & 0xFFFF)
+	oris	T4, T4,	(save_permute_11>>16 & 0xFFFF)
+
+	ori	T2, T2,	(perm_const2  & 0xFFFF)
+	ori	T1, T1,	(perm_const1 & 0xFFFF)
+	ori	T3, T3,	(save_permute_12 &  0xFFFF)
+	ori	T4, T4,	(save_permute_11 &  0xFFFF)	
+#else
 	oris T2, T2, perm_const2@h
 	oris T1, T1, perm_const1@h
 	oris T3, T3, save_permute_12@h
@@ -200,7 +226,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	ori T1, T1, perm_const1@l
 	ori T3, T3, save_permute_12@l  
 	ori T4, T4, save_permute_11@l
-
+#endif
 	
   li r0,0
   li PRE,512
