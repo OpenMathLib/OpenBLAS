@@ -282,12 +282,33 @@ matrix:
             - gfortran
       script:
         - travis_wait 45 make && make lapack-test
+
+    - os: linux
+      arch: arm64
+      dist: focal
+      group: edge
+      compiler: gcc
+      virt: lxd
+      addons:
+        apt:
+          packages:
+            - gfortran
+      before_script: &common-before
+        - COMMON_FLAGS="DYNAMIC_ARCH=1 NUM_THREADS=64"
+      script:
+        - make QUIET_MAKE=1 $COMMON_FLAGS $BTYPE
+        - make PREFIX=../build install
+      env:
+        # for matrix annotation only
+        - TARGET_BOX=ARM64_LINUX
+        - BTYPE="BINARY=64 USE_OPENMP=1"
         
 # whitelist
 branches:
   only:
     - master
     - develop
+    - tbbharaj/arm64-support
 
 notifications:
   webhooks:
