@@ -91,9 +91,9 @@ jobs:
     displayName: Add conda to PATH
  
   - script: |
-      conda config --add-channels conda-forge --force
+      conda config --add channels conda-forge --force
       conda config --set auto_update_conda false
-      conda install --yes --quiet ninja
+      conda install --yes ninja
       mkdir build
       cd build
       cmake -G "Ninja" -DCMAKE_C_COMPILER=clang-cl -DCMAKE_CXX_COMPILER=clang-cl -DMSVC_STATIC_CRT=ON ..
@@ -107,7 +107,7 @@ jobs:
     displayName: Add conda to PATH
 
   - script: |
-      conda config --add-channels conda-forge --force
+      conda config --add channels conda-forge --force
       conda config --set auto_update_conda false
       conda install --yes --quiet ninja flang
       mkdir build
