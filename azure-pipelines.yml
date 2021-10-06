@@ -92,7 +92,7 @@ jobs:
  
   - script: |
       conda config --add channels conda-forge --force
-      conda create -yyes --quiet --name buildenv
+      conda create -y -q -n buildenv
       call activate buildenv
       conda config --set auto_update_conda false
       conda install --yes --name buildenv ninja
