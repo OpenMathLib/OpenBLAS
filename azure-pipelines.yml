@@ -81,7 +81,32 @@ jobs:
      vmImage: 'windows-latest'
   steps:   
   - script: |
-      mingw32-make CC=gcc FC=gfortran DYNAMIC_ARCH=1 DYNAMIC_LIST="NEHALEM HASWELL SKYLAKEX"
+      mingw32-make CC=gcc FC=gfortran DYNAMIC_ARCH=1 DYNAMIC_LIST="NEHALEM SANDYBRIDGE HASWELL"
+
+- job: Windows_cmake_clang_cl
+  pool:
+     vmImage: 'windows-latest'
+  steps:   
+  - script: |
+      mkdir build
+      cd build
+      cmake -G "Ninja" -DCMAKE_C_COMPILER=clang-cl -DCMAKE_CXX_COMPILER=clang-cl -DMSVC_STATIC_CRT=ON ..
+      cmake --build .
+
+- job: Windows_cmake_clang_cl
+  pool:
+     vmImage: 'windows-latest'
+  steps:   
+  - script:
+      C\Miniconda\Scripts\activate.bat
+      conda config --add-channels conda-forge --force
+      conda config --set auto_update_conda false
+      conda install --yes --quiet flang
+      mkdir build
+      cd build
+      cmake -G "Ninja" -DCMAKE_C_COMPILER=clang-cl -DCMAKE_CXX_COMPILER=clang-cl -DCMAKE_Fortran_COMPILER=flang -DMSVC_STATIC_CRT=ON ..
+      cmake --build .
+
 
 - job: OSX_OpenMP
   pool:
