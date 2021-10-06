@@ -16,6 +16,8 @@ else
 HOSTARCH = $(ARCH)
 endif
 
+HAVE_GAS := $(shell as -v < /dev/null 2>&1 | grep GNU 2>&1 >/dev/null)
+
 # Catch conflicting usage of ARCH in some BSD environments
 ifeq ($(ARCH), amd64)
 override ARCH=x86_64
@@ -33,6 +35,10 @@ else ifeq ($(ARCH), armv7)
 override ARCH=arm
 else ifeq ($(ARCH), aarch64)
 override ARCH=arm64
+else ifeq ($(ARCH), mipsel)
+override ARCH=mips
+else ifeq ($(ARCH), mips64el)
+override ARCH=mips64
 else ifeq ($(ARCH), zarch)
 override ARCH=zarch
 endif
@@ -303,7 +309,7 @@ else
 SMP = 1
 endif
 else
-ifeq ($(NUM_THREAD), 1)
+ifeq ($(NUM_THREADS), 1)
 SMP =
 else
 SMP = 1

@@ -38,10 +38,10 @@ static FLOAT sasum_kernel(BLASLONG n, FLOAT *x1)
 
         __m256i abs_mask = _mm256_set1_epi32(0x7fffffff);
         for (i = 0; i < tail_index_AVX2; i += 32) {
-            accum_0 += (__m256)_mm256_and_si256(_mm256_load_si256(&x1[i+ 0]), abs_mask);
-            accum_1 += (__m256)_mm256_and_si256(_mm256_load_si256(&x1[i+ 8]), abs_mask);
-            accum_2 += (__m256)_mm256_and_si256(_mm256_load_si256(&x1[i+16]), abs_mask);
-            accum_3 += (__m256)_mm256_and_si256(_mm256_load_si256(&x1[i+24]), abs_mask);
+            accum_0 += (__m256)_mm256_and_si256(_mm256_load_si256((__m256i*)&x1[i+ 0]), abs_mask);
+            accum_1 += (__m256)_mm256_and_si256(_mm256_load_si256((__m256i*)&x1[i+ 8]), abs_mask);
+            accum_2 += (__m256)_mm256_and_si256(_mm256_load_si256((__m256i*)&x1[i+16]), abs_mask);
+            accum_3 += (__m256)_mm256_and_si256(_mm256_load_si256((__m256i*)&x1[i+24]), abs_mask);
         }
 
         accum_0 = accum_0 + accum_1 + accum_2 + accum_3;
@@ -62,8 +62,8 @@ static FLOAT sasum_kernel(BLASLONG n, FLOAT *x1)
 
         __m128i abs_mask2 = _mm_set1_epi32(0x7fffffff);
         for (i = tail_index_AVX2; i < tail_index_SSE; i += 8) {
-            accum_20 += (__m128)_mm_and_si128(_mm_loadu_si128(&x1[i + 0]), abs_mask2);
-            accum_21 += (__m128)_mm_and_si128(_mm_loadu_si128(&x1[i + 4]), abs_mask2);
+            accum_20 += (__m128)_mm_and_si128(_mm_loadu_si128((__m128i*)&x1[i + 0]), abs_mask2);
+            accum_21 += (__m128)_mm_and_si128(_mm_loadu_si128((__m128i*)&x1[i + 4]), abs_mask2);
         }
         
         accum_20 += accum_21;

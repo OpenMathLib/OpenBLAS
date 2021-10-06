@@ -269,7 +269,7 @@ prof_lapack : lapack_prebuild
 lapack_prebuild :
 ifeq ($(NOFORTRAN), $(filter 0,$(NOFORTRAN)))
 	-@echo "FC          = $(FC)" > $(NETLIB_LAPACK_DIR)/make.inc
-	-@echo "FFLAGS      = $(LAPACK_FFLAGS)" >> $(NETLIB_LAPACK_DIR)/make.inc
+	-@echo "override FFLAGS      = $(LAPACK_FFLAGS)" >> $(NETLIB_LAPACK_DIR)/make.inc
 	-@echo "FFLAGS_DRV  = $(LAPACK_FFLAGS)" >> $(NETLIB_LAPACK_DIR)/make.inc
 	-@echo "POPTS       = $(LAPACK_FPFLAGS)" >> $(NETLIB_LAPACK_DIR)/make.inc
 	-@echo "FFLAGS_NOOPT       = -O0 $(LAPACK_NOOPT)" >> $(NETLIB_LAPACK_DIR)/make.inc

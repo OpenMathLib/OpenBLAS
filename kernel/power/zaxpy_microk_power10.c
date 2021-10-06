@@ -30,9 +30,17 @@ static void zaxpy_kernel_4 (long n, double *x, double *y,
 			    double alpha_r, double alpha_i)
 {
 #if !defined(CONJ)
+#if (__BYTE_ORDER__ == __ORDER_BIG_ENDIAN__)
+  static const double mvec[2] = { -1.0, 1.0 };
+#else
+  static const double mvec[2] = { 1.0, -1.0 };
+#endif
+#else
+#if (__BYTE_ORDER__ == __ORDER_BIG_ENDIAN__)
   static const double mvec[2] = { 1.0, -1.0 };
 #else
   static const double mvec[2] = { -1.0, 1.0 };
+#endif
 #endif
   const double *mvecp = mvec;
 

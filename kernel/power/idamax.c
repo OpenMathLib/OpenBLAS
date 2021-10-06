@@ -330,10 +330,10 @@ BLASLONG CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x) {
 
     if (inc_x == 1) {
 
-        BLASLONG n1 = n & -32;
 #if defined(_CALL_ELF) && (_CALL_ELF == 2)
 #if defined(__VEC__) || defined(__ALTIVEC__)
 
+        BLASLONG n1 = n & -32;
 	if (n1 > 0) {
 
             max = diamax_kernel_32(n1, x, &maxf);

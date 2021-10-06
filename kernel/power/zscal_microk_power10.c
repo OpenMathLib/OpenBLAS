@@ -42,7 +42,11 @@ static void zscal_kernel_8 (long n, double *x, double alpha_r, double alpha_i)
 
        "xsnegdp		33, %x10	\n\t"	// -alpha_i
        XXSPLTD_S(32,%x9,0)	// alpha_r , alpha_r
+#if (__BYTE_ORDER__ == __ORDER_BIG_ENDIAN__)
+       XXMRGHD_S(33,33, %x10) // -alpha_i , alpha_i
+#else
        XXMRGHD_S(33,%x10, 33)	// -alpha_i , alpha_i
+#endif
 
        "lxvp		40, 0(%2)	\n\t"
        "lxvp		42, 32(%2)	\n\t"
@@ -97,10 +101,17 @@ static void zscal_kernel_8 (long n, double *x, double alpha_r, double alpha_i)
        "xvadddp		49, 49, 39	\n\t"
        "xvadddp		50, 50, %x3	\n\t"
        "xvadddp		51, 51, %x4	\n\t"
+#if (__BYTE_ORDER__ == __ORDER_BIG_ENDIAN__)
+       "stxv        48, 0(%2)   \n\t"
+       "stxv        49, 16(%2)  \n\t"
+       "stxv        50, 32(%2)  \n\t"
+       "stxv        51, 48(%2)  \n\t"
+#else
        "stxv		49, 0(%2)	\n\t"
        "stxv		48, 16(%2)	\n\t"
        "stxv		51, 32(%2)	\n\t"
        "stxv		50, 48(%2)	\n\t"
+#endif
 
 
        "xvadddp		34, 34, %x5	\n\t"
@@ -109,12 +120,17 @@ static void zscal_kernel_8 (long n, double *x, double alpha_r, double alpha_i)
 
        "xvadddp		36, 36, %x7	\n\t"
        "xvadddp		37, 37, %x8	\n\t"
-
+#if (__BYTE_ORDER__ == __ORDER_BIG_ENDIAN__)
+       "stxv        34, 64(%2)  \n\t"
+       "stxv        35, 80(%2)  \n\t"
+       "stxv        36, 96(%2)  \n\t"
+       "stxv        37, 112(%2) \n\t"
+#else
        "stxv		35, 64(%2)	\n\t"
        "stxv		34, 80(%2)	\n\t"
        "stxv		37, 96(%2)	\n\t"
        "stxv		36, 112(%2)	\n\t"
-
+#endif
        "addi		%2, %2, 128	\n\t"
 
        "addic.		%1, %1, -8	\n\t"
@@ -155,23 +171,34 @@ static void zscal_kernel_8 (long n, double *x, double alpha_r, double alpha_i)
 
        "xvadddp		50, 50, %x3	\n\t"
        "xvadddp		51, 51, %x4	\n\t"
+#if (__BYTE_ORDER__ == __ORDER_BIG_ENDIAN__)
+       "stxv        48, 0(%2)   \n\t"
+       "stxv        49, 16(%2)  \n\t"
+       "stxv        50, 32(%2)  \n\t"
+       "stxv        51, 48(%2)  \n\t"
+#else
        "stxv		49, 0(%2)	\n\t"
        "stxv		48, 16(%2)	\n\t"
        "stxv		51, 32(%2)	\n\t"
        "stxv		50, 48(%2)	\n\t"
-
+#endif
        "xvadddp		34, 34, %x5	\n\t"
        "xvadddp		35, 35, %x6	\n\t"
 
 
        "xvadddp		36, 36, %x7	\n\t"
        "xvadddp		37, 37, %x8	\n\t"
-
+#if (__BYTE_ORDER__ == __ORDER_BIG_ENDIAN__)
+       "stxv        34, 64(%2)  \n\t"
+       "stxv        35, 80(%2)  \n\t"
+       "stxv        36, 96(%2)  \n\t"
+       "stxv        37, 112(%2) \n\t"
+#else
        "stxv		35, 64(%2)	\n\t"
        "stxv		34, 80(%2)	\n\t"
        "stxv		37, 96(%2)	\n\t"
        "stxv		36, 112(%2)	\n\t"
-
+#endif
      "#n=%1 x=%0=%2 alpha=(%9,%10) \n"
      :
        "+m" (*x),

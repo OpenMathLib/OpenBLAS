@@ -1246,7 +1246,7 @@ void COL_MAJOR_ITCOPY_KERNEL_Kx16(BLASLONG k, bfloat16 * A, BLASLONG lda, bfloat
 // K=Any number but will be processed based on 32, M<=16
 void COL_MAJOR_ITCOPY_KERNEL_Kx16m(BLASLONG m, BLASLONG k, bfloat16 * A, BLASLONG lda, bfloat16 * block_A)
 {
-    bfloat16 * src_addr0, * src_addr1, * src_addr2, * src_addr3;
+    bfloat16 * src_addr0;
     bfloat16 * dst_addr0, * dst_addr1;
 
     BLASLONG tag_k_32x = k & (~31);

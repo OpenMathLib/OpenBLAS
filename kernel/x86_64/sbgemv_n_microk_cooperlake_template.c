@@ -30,6 +30,13 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // Include common macros for BF16 based operations with IA intrinsics
 #include "bf16_common_macros.h"
 
+#undef STORE16_COMPLETE_RESULT
+#undef STORE16_MASK_COMPLETE_RESULT
+#undef STORE8_COMPLETE_RESULT
+#undef STORE8_MASK_COMPLETE_RESULT
+#undef STORE4_COMPLETE_RESULT
+#undef STORE4_MASK_COMPLETE_RESULT
+
 #ifndef ZERO_BETA  // Beta is non-zero
 
 #ifndef ONE_BETA       // BETA is not ONE
@@ -103,7 +110,9 @@ static int sbgemv_kernel_32xN_lda_direct(BLASLONG m, BLASLONG n, float alpha, bf
     __m512  ALPHAVECTOR = _mm512_set1_ps(alpha);
 #endif
 #ifndef ZERO_BETA
+#ifndef ONE_BETA
     __m512  BETAVECTOR  = _mm512_set1_ps(beta);
+#endif
 #endif
 
     __m512i matrixArray_seed_0, matrixArray_seed_1, matrixArray_seed_2, matrixArray_seed_3;
@@ -202,7 +211,7 @@ static int sbgemv_kernel_32xN_lda_direct(BLASLONG m, BLASLONG n, float alpha, bf
         unsigned int tail_mask_value = (((unsigned int)0xffffffff) >> (32-(m&31)));
         __mmask32 tail_mask = *((__mmask32*) &tail_mask_value);
 
-        unsigned short store_tail_mask_value = (((unsigned int)0xffff) >> (16-(m&15)));
+        unsigned int store_tail_mask_value = (((unsigned int)0xffff) >> (16-(m&15)));
         __mmask32 store_tail_mask = *((__mmask32*) &store_tail_mask_value);
 
         accum512_0 = _mm512_setzero_ps();

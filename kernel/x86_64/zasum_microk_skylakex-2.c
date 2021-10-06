@@ -16,7 +16,7 @@ static FLOAT zasum_kernel(BLASLONG n, FLOAT *x)
 
     if (n2 < 32) {
         __m128d accum_10, accum_11, accum_12, accum_13;
-        __m128d abs_mask1;
+        __m128d abs_mask1 = abs_mask1;
 
         accum_10 = _mm_setzero_pd();
         accum_11 = _mm_setzero_pd();

@@ -29,7 +29,11 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 static void cdot_kernel_8 (long n, float *x, float *y, float *dot)
 {
+#if (__BYTE_ORDER__ == __ORDER_BIG_ENDIAN__)
+  __vector unsigned char mask = {4,5,6,7, 0,1,2,3, 12,13,14,15, 8,9,10,11};
+#else
   __vector unsigned char mask = { 11,10,9,8,15,14,13,12,3,2,1,0,7,6,5,4};
+#endif
   __asm__
     (
        "dcbt		0, %2		\n\t"
@@ -153,7 +157,11 @@ static void cdot_kernel_8 (long n, float *x, float *y, float *dot)
        "xxswapd		33, 34		\n\t"
        "xvaddsp		35, 35, 32	\n\t"
        "xvaddsp		34, 34, 33	\n\t"
+#if (__BYTE_ORDER__ == __ORDER_BIG_ENDIAN__)
+       "xxpermdi 	34, 35, 34, 0 	\n\t"
+#else
        "xxpermdi	34, 34, 35, 2	\n\t"
+#endif
        "stxv		34, 0(%6)       \n\t"
 
      "#n=%1 x=%4=%2 y=%5=%3 dot=%0=%6"

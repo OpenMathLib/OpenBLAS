@@ -1,33 +1,38 @@
 # XXX: Precise is already deprecated, new default is Trusty.
 # https://blog.travis-ci.com/2017-07-11-trusty-as-default-linux-is-coming
-dist: precise
+dist: focal
 sudo: true
 language: c
 
 matrix:
   include:
     - &test-ubuntu
-      os: linux
+#      os: linux
       compiler: gcc
       addons:
         apt:
           packages:
             - gfortran
+#      before_script: &common-before
+#        - COMMON_FLAGS="DYNAMIC_ARCH=1 TARGET=NEHALEM NUM_THREADS=32"
+#      script:
+#        - make QUIET_MAKE=1 $COMMON_FLAGS $BTYPE
+#        - make -C test $COMMON_FLAGS $BTYPE
+#        - make -C ctest $COMMON_FLAGS $BTYPE
+#        - make -C utest $COMMON_FLAGS $BTYPE
+#      env:
+#        - TARGET_BOX=LINUX64
+#        - BTYPE="BINARY=64"
+#
+#    - <<: *test-ubuntu
+      os: linux-ppc64le
       before_script: &common-before
-        - COMMON_FLAGS="DYNAMIC_ARCH=1 TARGET=NEHALEM NUM_THREADS=32"
+        - COMMON_FLAGS="DYNAMIC_ARCH=1 TARGET=POWER8 NUM_THREADS=32"
       script:
         - make QUIET_MAKE=1 $COMMON_FLAGS $BTYPE
         - make -C test $COMMON_FLAGS $BTYPE
         - make -C ctest $COMMON_FLAGS $BTYPE
         - make -C utest $COMMON_FLAGS $BTYPE
-      env:
-        - TARGET_BOX=LINUX64
-        - BTYPE="BINARY=64"
-
-    - <<: *test-ubuntu
-      os: linux-ppc64le
-      before_script:
-        - COMMON_FLAGS="DYNAMIC_ARCH=1 TARGET=POWER8 NUM_THREADS=32"
       env:
         # for matrix annotation only
         - TARGET_BOX=PPC64LE_LINUX

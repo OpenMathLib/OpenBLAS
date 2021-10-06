@@ -6,7 +6,7 @@ cmake_minimum_required(VERSION 2.8.5)
 project(OpenBLAS C ASM)
 set(OpenBLAS_MAJOR_VERSION 0)
 set(OpenBLAS_MINOR_VERSION 3)
-set(OpenBLAS_PATCH_VERSION 17.dev)
+set(OpenBLAS_PATCH_VERSION 18.dev)
 set(OpenBLAS_VERSION "${OpenBLAS_MAJOR_VERSION}.${OpenBLAS_MINOR_VERSION}.${OpenBLAS_PATCH_VERSION}")
 
 # Adhere to GNU filesystem layout conventions
@@ -132,7 +132,7 @@ endif ()
 
 if (BUILD_BFLOAT16)
   message(STATUS "Building Half Precision")
-  list(APPEND FLOAT_TYPES "BFLOAT16") # defines nothing
+  #  list(APPEND FLOAT_TYPES "BFLOAT16") # defines nothing
 endif ()
 
 if (NOT DEFINED CORE OR "${CORE}" STREQUAL "UNKNOWN")
