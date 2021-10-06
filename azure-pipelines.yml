@@ -88,6 +88,10 @@ jobs:
      vmImage: 'windows-latest'
   steps:   
   - script: |
+      C:\Miniconda\Scripts\activate.bat
+      conda config --add-channels conda-forge --force
+      conda config --set auto_update_conda false
+      conda install --yes --quiet ninja
       mkdir build
       cd build
       cmake -G "Ninja" -DCMAKE_C_COMPILER=clang-cl -DCMAKE_CXX_COMPILER=clang-cl -DMSVC_STATIC_CRT=ON ..
@@ -98,10 +102,10 @@ jobs:
      vmImage: 'windows-latest'
   steps:   
   - script:
-      C\Miniconda\Scripts\activate.bat
+      C:\Miniconda\Scripts\activate.bat
       conda config --add-channels conda-forge --force
       conda config --set auto_update_conda false
-      conda install --yes --quiet flang
+      conda install --yes --quiet ninja flang
       mkdir build
       cd build
       cmake -G "Ninja" -DCMAKE_C_COMPILER=clang-cl -DCMAKE_CXX_COMPILER=clang-cl -DCMAKE_Fortran_COMPILER=flang -DMSVC_STATIC_CRT=ON ..
