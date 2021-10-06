@@ -92,8 +92,10 @@ jobs:
  
   - script: |
       conda config --add channels conda-forge --force
+      conda create -yyes --quiet --name buildenv
+      call activate buildenv
       conda config --set auto_update_conda false
-      conda install --yes ninja
+      conda install --yes --name buildenv ninja
       mkdir build
       cd build
       cmake -G "Ninja" -DCMAKE_C_COMPILER=clang-cl -DCMAKE_CXX_COMPILER=clang-cl -DMSVC_STATIC_CRT=ON ..
