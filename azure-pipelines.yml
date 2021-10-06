@@ -93,7 +93,7 @@ jobs:
       cmake -G "Ninja" -DCMAKE_C_COMPILER=clang-cl -DCMAKE_CXX_COMPILER=clang-cl -DMSVC_STATIC_CRT=ON ..
       cmake --build .
 
-- job: Windows_cmake_clang_cl
+- job: Windows_clang_cl_flang
   pool:
      vmImage: 'windows-latest'
   steps:   
