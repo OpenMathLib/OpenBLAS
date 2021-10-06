@@ -86,21 +86,26 @@ jobs:
 - job: Windows_cmake_clang_cl
   pool:
      vmImage: 'windows-latest'
-  steps:   
+  steps:
+  - powershell: Write-Host "##vso[task.prependpath]$env:CONDA\Scripts"
+    displayName: Add conda to PATH
+ 
   - script: |
-      C:\Miniconda\Scripts\activate.bat;
-      conda config --add-channels conda-forge --force;
-      conda config --set auto_update_conda false;
-      conda install --yes --quiet ninja;
-      mkdir build;
-      cd build;
-      cmake -G "Ninja" -DCMAKE_C_COMPILER=clang-cl -DCMAKE_CXX_COMPILER=clang-cl -DMSVC_STATIC_CRT=ON ..;
+      conda config --add-channels conda-forge --force
+      conda config --set auto_update_conda false
+      conda install --yes --quiet ninja
+      mkdir build
+      cd build
+      cmake -G "Ninja" -DCMAKE_C_COMPILER=clang-cl -DCMAKE_CXX_COMPILER=clang-cl -DMSVC_STATIC_CRT=ON ..
       cmake --build .
 
 - job: Windows_clang_cl_flang
   pool:
      vmImage: 'windows-latest'
-  steps:   
+  steps:  
+  - powershell: Write-Host "##vso[task.prependpath]$env:CONDA\Scripts"
+    displayName: Add conda to PATH
+
   - script: |
       conda config --add-channels conda-forge --force
       conda config --set auto_update_conda false
