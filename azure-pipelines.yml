@@ -95,6 +95,9 @@ jobs:
       conda config --set auto_update_conda false
       conda install --yes ninja
       conda info
+      dir C:\Miniconda
+      dir ..
+      dir C:\Miniconda\bin
       mkdir build & cd build
       cmake -G Ninja -DCMAKE_C_COMPILER=clang-cl -DCMAKE_CXX_COMPILER=clang-cl -DMSVC_STATIC_CRT=ON ..
       cmake --build .
@@ -112,7 +115,7 @@ jobs:
       conda config --add channels conda-forge --force
       conda config --set auto_update_conda false
       conda install --yes --quiet ninja flang
-      conda activate
+      CALL conda.bat activate
       mkdir build & cd build
       cmake -G Ninja -DCMAKE_C_COMPILER=clang-cl -DCMAKE_CXX_COMPILER=clang-cl -DCMAKE_Fortran_COMPILER=flang -DMSVC_STATIC_CRT=ON ..
       cmake --build .
