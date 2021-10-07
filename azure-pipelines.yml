@@ -93,7 +93,7 @@ jobs:
   - powershell: Write-Host "##vso[task.prependpath]$env:CONDA\Library\bin"
     displayName: Add ninja to PATH
 
-- script: |
+  - script: |
       conda config --add channels conda-forge --force
       conda config --set auto_update_conda false
       conda install --yes ninja
