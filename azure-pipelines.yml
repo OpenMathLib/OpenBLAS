@@ -98,7 +98,6 @@ jobs:
       conda config --set auto_update_conda false
       conda install --yes ninja
       dir C:\Miniconda\Library\bin
-  - script: |
       mkdir build
       cd build
       set PATH=%PATH%;C:\Miniconda\Library\bin
