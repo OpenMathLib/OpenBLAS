@@ -87,22 +87,21 @@ jobs:
   pool:
      vmImage: 'windows-latest'
   steps:
-  - powershell: Write-Host "##vso[task.prependpath]$env:CONDA\Scripts"
-    displayName: Add conda to PATH
-    
-  - powershell: Write-Host "##vso[task.prependpath]$env:CONDA\Library\bin"
-    displayName: Add ninja to PATH
-
-  - script: |
+  - powershell: |
+      Write-Host "##vso[task.prependpath]$env:CONDA\Scripts"
+      Write-Host "##vso[task.prependpath]$env:CONDA\Library\bin"
       conda config --add channels conda-forge --force
       conda config --set auto_update_conda false
       conda install --yes ninja
       dir C:\Miniconda\Library\bin
-      mkdir build
-      cd build
-      set PATH=%PATH%;C:\Miniconda\Library\bin
-      cmake -G Ninja -DCMAKE_C_COMPILER=clang-cl -DCMAKE_CXX_COMPILER=clang-cl -DMSVC_STATIC_CRT=ON ..
-      cmake --build .
+  - task: CMake@1
+    inputs:
+      workingDirectory: 'build' # Optional
+      cmakeArgs: '-G "Ninja" ..'
+  - task: CMake@1
+    inputs:
+      cmakeArgs: '--build . --config Release'
+      workingDirectory: 'build'
 
 - job: Windows_clang_cl_flang
   pool:
