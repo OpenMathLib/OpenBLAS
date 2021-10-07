@@ -65,7 +65,8 @@ jobs:
   - task: CMake@1
     inputs:
       workingDirectory: 'build' # Optional
-      cmakeArgs: '-G "Visual Studio 16 2019" ..'
+      cmakeArgs: '-G "Ninja" -DCMAKE_C_COMPILER=clang-cl -DCMAKE_CXX_COMPILER=clang-cl -DMSVC_STATIC_CRT=ON ..'
+#      cmakeArgs: '-G "Visual Studio 16 2019" ..'
   - task: CMake@1
     inputs:
       cmakeArgs: '--build . --config Release'
