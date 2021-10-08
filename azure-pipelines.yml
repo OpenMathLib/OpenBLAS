@@ -90,13 +90,13 @@ jobs:
   - powershell: |
       Write-Host "##vso[task.prependpath]$env:CONDA\Scripts"
       Write-Host "##vso[task.prependpath]$env:CONDA\Library\bin"
-  - powershell: |
+  - script: |
       conda config --add channels conda-forge --force
       conda config --set auto_update_conda false
       conda install --yes ninja
       mkdir build 
       cd build
-      "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvarsall.bat" x86_amd64
+      call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvarsall.bat" x86_amd64
       cmake -G "Ninja" -DCMAKE_C_COMPILER=clang-cl -DCMAKE_CXX_COMPILER=clang-cl -DMSVC_STATIC_CRT=ON ..
       cmake --build . --config Release
       
