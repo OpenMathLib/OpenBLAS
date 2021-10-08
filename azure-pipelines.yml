@@ -104,7 +104,10 @@ jobs:
 - job: Windows_cflang
   pool:
      vmImage: 'windows-latest'
-  steps:  
+  steps:
+    - powershell: |
+      Write-Host "##vso[task.prependpath]$env:CONDA\Scripts"
+      Write-Host "##vso[task.prependpath]$env:CONDA\Library\bin"
   - script: |
       set PATH=C:\Miniconda\Scripts;C:\Miniconda\Library;%PATH%
       conda config --add channels conda-forge --force
