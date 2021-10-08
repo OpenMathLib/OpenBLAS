@@ -105,7 +105,7 @@ jobs:
   pool:
      vmImage: 'windows-latest'
   steps:
-    - powershell: |
+  - powershell: |
       Write-Host "##vso[task.prependpath]$env:CONDA\Scripts"
       Write-Host "##vso[task.prependpath]$env:CONDA\Library\bin"
   - script: |
