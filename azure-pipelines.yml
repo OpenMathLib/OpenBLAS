@@ -90,6 +90,7 @@ jobs:
   - powershell: |
       Write-Host "##vso[task.prependpath]$env:CONDA\Scripts"
       Write-Host "##vso[task.prependpath]$env:CONDA\Library\bin"
+      call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
   - powershell: |
       conda config --add channels conda-forge --force
       conda config --set auto_update_conda false
