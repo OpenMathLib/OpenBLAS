@@ -95,15 +95,11 @@ jobs:
       conda config --add channels conda-forge --force
       conda config --set auto_update_conda false
       conda install --yes ninja
-  - task: CMake@1
-    inputs:
-      workingDirectory: 'build' # Optional
-      cmakeArgs: '-G "Ninja" -DCMAKE_C_COMPILER=clang-cl -DCMAKE_CXX_COMPILER=clang-cl -DMSVC_STATIC_CRT=ON ..'
-  - task: CMake@1
-    inputs:
-      cmakeArgs: '--build . --config Release'
-      workingDirectory: 'build'
-
+      mkdir build 
+      cd build
+      cmake -G "Ninja" -DCMAKE_C_COMPILER=clang-cl -DCMAKE_CXX_COMPILER=clang-cl -DMSVC_STATIC_CRT=ON ..
+      cmake --build . --config Release
+      
 - job: Windows_clang_cl_flang
   pool:
      vmImage: 'windows-latest'
