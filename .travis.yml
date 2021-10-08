@@ -308,7 +308,6 @@ branches:
   only:
     - master
     - develop
-    - tbbharaj/arm64-support
 
 notifications:
   webhooks:
