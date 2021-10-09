@@ -94,6 +94,7 @@ jobs:
       set PATH=C:\Miniconda\Scripts;C:\Miniconda\Library\bin;%PATH%
       set LIB=C:\Miniconda\Library\lib;%LIB%
       set CPATH=C:\Miniconda\Library\include;%CPATH%
+      call C:\Miniconda\Scripts\activate.bat
       conda config --add channels conda-forge --force
       conda config --set auto_update_conda false
       conda install --yes ninja
@@ -115,11 +116,13 @@ jobs:
       set PATH=C:\Miniconda\Scripts;C:\Miniconda\Library\bin;%PATH%
       set LIB=C:\Miniconda\Library\lib;%LIB%
       set CPATH=C:\Miniconda\Library\include;%CPATH%
+      call C:\Miniconda\Scripts\activate.bat
       conda config --add channels conda-forge --force
       conda config --set auto_update_conda false
       conda install --yes ninja flang
       mkdir build 
       cd build
+      call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
       cmake -G "Ninja" -DCMAKE_C_COMPILER=clang-cl -DCMAKE_CXX_COMPILER=clang-cl -DCMAKE_Fortran_COMPILER=flang -DMSVC_STATIC_CRT=ON ..
       cmake --build . --config Release
       ctest
