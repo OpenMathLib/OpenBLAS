@@ -92,19 +92,16 @@ jobs:
       Write-Host "##vso[task.prependpath]$env:CONDA\Library\bin"
   - script: |
       set "PATH=C:\Miniconda\Scripts;C:\Miniconda\Library\bin;C:\Miniconda\Library\usr\bin;C:\Miniconda\condabin;%PATH%"
+      set "LIB=C:\Miniconda\Library\lib;%LIB%"
+      set "CPATH=C:\Miniconda\Library\include;%CPATH%
       conda config --add channels conda-forge --force
       conda config --set auto_update_conda false
       conda install --yes ninja
       call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
-      echo %LIB%
-      set "LIB=C:\Miniconda\Library\lib;%LIB%"
-      set "CPATH=C:\Miniconda\Library\include;%CPATH%"
-      echo %LIB%
       mkdir build 
       cd build
       cmake -G "Ninja" -DCMAKE_C_COMPILER=clang-cl -DCMAKE_CXX_COMPILER=clang-cl -DCMAKE_MT=mt -DCMAKE_BUILD_TYPE=Release -DMSVC_STATIC_CRT=ON ..
       cmake --build . --config Release
-      #dumpbin /symbols /exports lib/libopenblas.a
 
 - job: Windows_cflang
   pool:
@@ -120,11 +117,9 @@ jobs:
       conda config --add channels conda-forge --force
       conda config --set auto_update_conda false
       conda install --yes --quiet ninja flang
-      #call C:\Miniconda\Scripts\activate.bat
       mkdir build 
       cd build
       call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
-      echo %LIB%
       cmake -G "Ninja" -DCMAKE_C_COMPILER=clang-cl -DCMAKE_CXX_COMPILER=clang-cl -DCMAKE_Fortran_COMPILER=flang -DCMAKE_MT=mt -DCMAKE_BUILD_TYPE=Release -DMSVC_STATIC_CRT=ON ..
       cmake --build . --config Release
       ctest
