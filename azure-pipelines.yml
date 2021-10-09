@@ -100,7 +100,7 @@ jobs:
       call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
       mkdir build 
       cd build
-      cmake -G "Ninja" -DCMAKE_C_COMPILER=clang-cl -DCMAKE_CXX_COMPILER=clang-cl -DCMAKE_MT=mt -DCMAKE_BUILD_TYPE=Release -DMSVC_STATIC_CRT=ON ..
+      cmake -G "Ninja" -DCMAKE_C_COMPILER=clang-cl -DCMAKE_CXX_COMPILER=clang-cl -DCMAKE_MT=mt -DCMAKE_BUILD_TYPE=Release -DNOFORTRAN=1-DMSVC_STATIC_CRT=ON ..
       cmake --build . --config Release
 
 - job: Windows_cflang
