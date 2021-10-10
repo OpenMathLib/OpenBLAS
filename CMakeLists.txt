@@ -4,11 +4,11 @@
 
 cmake_minimum_required(VERSION 2.8.5)
 project(OpenBLAS C ASM)
-include(CheckLanguage)
-check_language(Fortran)
-if(CMAKE_Fortran_COMPILER)
-  enable_language(Fortran)
-endif()
+#include(CheckLanguage)
+#check_language(Fortran)
+#if(CMAKE_Fortran_COMPILER)
+#  enable_language(Fortran)
+#endif()
 
 set(OpenBLAS_MAJOR_VERSION 0)
 set(OpenBLAS_MINOR_VERSION 3)
