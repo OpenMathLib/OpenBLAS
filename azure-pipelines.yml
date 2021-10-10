@@ -83,13 +83,10 @@ jobs:
   - script: |
       mingw32-make CC=gcc FC=gfortran DYNAMIC_ARCH=1 DYNAMIC_LIST="NEHALEM SANDYBRIDGE HASWELL"
 
-- job: Windows_cmake_clang_cl
+- job: Windows_clang_cmake
   pool:
      vmImage: 'windows-latest'
   steps:
-# - powershell: |
-#      Write-Host "##vso[task.prependpath]$env:CONDA\Scripts"
-#     Write-Host "##vso[task.prependpath]$env:CONDA\Library\bin"
   - script: |
       set "PATH=C:\Miniconda\Scripts;C:\Miniconda\Library\bin;C:\Miniconda\Library\usr\bin;C:\Miniconda\condabin;%PATH%"
       set "LIB=C:\Miniconda\Library\lib;%LIB%"
@@ -102,14 +99,12 @@ jobs:
       cd build
       cmake -G "Ninja" -DCMAKE_C_COMPILER=clang-cl -DCMAKE_CXX_COMPILER=clang-cl -DCMAKE_MT=mt -DCMAKE_BUILD_TYPE=Release -DNOFORTRAN=1 -DMSVC_STATIC_CRT=ON ..
       cmake --build . --config Release
+      ctest
 
-- job: Windows_cflang
+- job: Windows_flang_clang
   pool:
      vmImage: 'windows-latest'
   steps:
-#  - powershell: |
-#      Write-Host "##vso[task.prependpath]$env:CONDA\Scripts"
-#      Write-Host "##vso[task.prependpath]$env:CONDA\Library\bin"
   - script: |
       set "PATH=C:\Miniconda\Scripts;C:\Miniconda\Library\bin;C:\Miniconda\Library\usr\bin;C:\Miniconda\condabin;%PATH%"
       set "LIB=C:\Miniconda\Library\lib;%LIB%"
