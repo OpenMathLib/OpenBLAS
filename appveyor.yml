@@ -29,15 +29,15 @@ environment:
   global:
     CONDA_INSTALL_LOCN: C:\\Miniconda36-x64
   matrix:
-    - COMPILER: clang-cl
-      WITH_FORTRAN: ON
-    - COMPILER: clang-cl
-      DYNAMIC_ARCH: ON
-      WITH_FORTRAN: OFF
-    - COMPILER: cl
-    - COMPILER: MinGW64-gcc-7.2.0-mingw
-      DYNAMIC_ARCH: OFF
-      WITH_FORTRAN: ignore
+#    - COMPILER: clang-cl
+#      WITH_FORTRAN: ON
+#    - COMPILER: clang-cl
+#      DYNAMIC_ARCH: ON
+#      WITH_FORTRAN: OFF
+#    - COMPILER: cl
+#    - COMPILER: MinGW64-gcc-7.2.0-mingw
+#      DYNAMIC_ARCH: OFF
+#      WITH_FORTRAN: ignore
     - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
       COMPILER: MinGW-gcc-6.3.0-32   
     - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
