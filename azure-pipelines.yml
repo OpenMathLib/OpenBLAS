@@ -87,9 +87,9 @@ jobs:
   pool:
      vmImage: 'windows-latest'
   steps:
-  - powershell: |
-      Write-Host "##vso[task.prependpath]$env:CONDA\Scripts"
-      Write-Host "##vso[task.prependpath]$env:CONDA\Library\bin"
+# - powershell: |
+#      Write-Host "##vso[task.prependpath]$env:CONDA\Scripts"
+#     Write-Host "##vso[task.prependpath]$env:CONDA\Library\bin"
   - script: |
       set "PATH=C:\Miniconda\Scripts;C:\Miniconda\Library\bin;C:\Miniconda\Library\usr\bin;C:\Miniconda\condabin;%PATH%"
       set "LIB=C:\Miniconda\Library\lib;%LIB%"
@@ -107,9 +107,9 @@ jobs:
   pool:
      vmImage: 'windows-latest'
   steps:
-  - powershell: |
-      Write-Host "##vso[task.prependpath]$env:CONDA\Scripts"
-      Write-Host "##vso[task.prependpath]$env:CONDA\Library\bin"
+#  - powershell: |
+#      Write-Host "##vso[task.prependpath]$env:CONDA\Scripts"
+#      Write-Host "##vso[task.prependpath]$env:CONDA\Library\bin"
   - script: |
       set "PATH=C:\Miniconda\Scripts;C:\Miniconda\Library\bin;C:\Miniconda\Library\usr\bin;C:\Miniconda\condabin;%PATH%"
       set "LIB=C:\Miniconda\Library\lib;%LIB%"
