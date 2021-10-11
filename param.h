@@ -3152,7 +3152,7 @@ is a big desktop or server with abundant cache rather than a phone or embedded d
 #define ZGEMM_DEFAULT_UNROLL_N  4
 
 #define SGEMM_DEFAULT_P	128
-#define DGEMM_DEFAULT_P	768
+#define DGEMM_DEFAULT_P 1024
 #define CGEMM_DEFAULT_P 128
 #define ZGEMM_DEFAULT_P 128
 
