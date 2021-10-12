@@ -81,6 +81,11 @@ CCOMMON_OPT += -march=cooperlake
 ifneq ($(F_COMPILER), NAG)
 FCOMMON_OPT += -march=cooperlake
 endif
+else  # gcc not support, fallback to avx512
+CCOMMON_OPT += -march=skylake-avx512
+ifneq ($(F_COMPILER), NAG)
+FCOMMON_OPT += -march=skylake-avx512
+endif
 endif
 endif
 ifeq ($(OSNAME), CYGWIN_NT)
@@ -104,6 +109,11 @@ ifeq ($(GCCVERSIONGTEQ11), 1)
 CCOMMON_OPT += -march=sapphirerapids
 ifneq ($(F_COMPILER), NAG)
 FCOMMON_OPT += -march=sapphirerapids
+endif
+else  # gcc not support, fallback to avx512
+CCOMMON_OPT += -march=skylake-avx512
+ifneq ($(F_COMPILER), NAG)
+FCOMMON_OPT += -march=skylake-avx512
 endif
 endif
 endif
