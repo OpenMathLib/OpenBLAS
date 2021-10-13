@@ -3152,12 +3152,12 @@ is a big desktop or server with abundant cache rather than a phone or embedded d
 #define ZGEMM_DEFAULT_UNROLL_N  4
 
 #define SGEMM_DEFAULT_P	128
-#define DGEMM_DEFAULT_P 256
+#define DGEMM_DEFAULT_P 128
 #define CGEMM_DEFAULT_P 128
 #define ZGEMM_DEFAULT_P 128
 
 #define SGEMM_DEFAULT_Q 352
-#define DGEMM_DEFAULT_Q 384
+#define DGEMM_DEFAULT_Q 256
 #define CGEMM_DEFAULT_Q 224
 #define ZGEMM_DEFAULT_Q 112
 
