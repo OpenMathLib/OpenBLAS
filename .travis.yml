@@ -284,11 +284,11 @@ matrix:
         - travis_wait 45 make 
 # && make lapack-test
         - cd benchmark; make; 
-        - OPENBLAS_LOOPS=250 ./dgemm.goto 10 10
-        - OPENBLAS_LOOPS=250 ./dgemm.goto 100 100
-        - OPENBLAS_LOOPS=250 ./dgemm.goto 200 200
-        - OPENBLAS_LOOPS=250 ./dgemm.goto 500 500
-        - OPENBLAS_LOOPS=250 ./dgemm.goto 1000 1000
+        - OPENBLAS_LOOPS=1000 ./dgemm.goto 10 10
+        - OPENBLAS_LOOPS=1000 ./dgemm.goto 100 100
+        - OPENBLAS_LOOPS=1000 ./dgemm.goto 200 200
+        - OPENBLAS_LOOPS=1000 ./dgemm.goto 500 500
+        - OPENBLAS_LOOPS=1000 ./dgemm.goto 1000 1000
  
 # whitelist
 branches:
