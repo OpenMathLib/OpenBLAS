@@ -3162,7 +3162,7 @@ is a big desktop or server with abundant cache rather than a phone or embedded d
 #define ZGEMM_DEFAULT_Q 112
 
 #define SGEMM_DEFAULT_R 4096
-#define DGEMM_DEFAULT_R 12288
+#define DGEMM_DEFAULT_R  12288
 #define CGEMM_DEFAULT_R 4096
 #define ZGEMM_DEFAULT_R 4096
 
