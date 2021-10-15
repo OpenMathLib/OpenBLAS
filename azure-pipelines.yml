@@ -174,10 +174,10 @@ jobs:
   steps:   
   - script: |
       brew update
-      brew install llvm libomp gfortran
+      brew install llvm libomp
       mkdir build
       cd build
-      cmake -DTARGET=CORE2 -DUSE_OPENMP=1 -DINTERFACE64=1 -DDYNAMIC_ARCH=1 -DCMAKE_C_COMPILER=/usr/local/opt/llvm/bin/clang -DNO_AVX512=1 ..
+      cmake -DTARGET=CORE2 -DUSE_OPENMP=1 -DINTERFACE64=1 -DDYNAMIC_ARCH=1 -DCMAKE_C_COMPILER=/usr/local/opt/llvm/bin/clang -DCMAKE_Fortran_COMPILER=gfortran-10 -DNO_AVX512=1 ..
       make
       ctest
         
