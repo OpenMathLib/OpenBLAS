@@ -165,7 +165,7 @@ jobs:
       make
       ctest
       
-- job: OSX_OpenMP_Clang_gf_cmake
+- job: OSX_Clang_gfortran_cmake
   pool:
      vmImage: 'macOS-10.15'
   variables:
@@ -177,7 +177,7 @@ jobs:
       brew install llvm
       mkdir build
       cd build
-      cmake -DTARGET=CORE2 -DUSE_OPENMP=1 -DINTERFACE64=1 -DDYNAMIC_ARCH=1 -DCMAKE_C_COMPILER=/usr/local/opt/llvm/bin/clang -DCMAKE_Fortran_COMPILER=gfortran-10 -DNO_AVX512=1 ..
+      cmake -DTARGET=CORE2 -DINTERFACE64=1 -DDYNAMIC_ARCH=1 -DCMAKE_C_COMPILER=/usr/local/opt/llvm/bin/clang -DCMAKE_Fortran_COMPILER=gfortran-10 -DNO_AVX512=1 ..
       make
       ctest
         
