@@ -176,7 +176,7 @@ jobs:
       mkdir build
       cd build
       cmake -DTARGET=CORE2 -DDYNAMIC_ARCH=1 -DDYNAMIC_OLDER=1 -DCMAKE_C_COMPILER=gcc-10 -DCMAKE_Fortran_COMPILER=gfortran-10 -DNO_AVX512=1 ..
-      make
+      cmake --build .
       ctest
         
 - job: OSX_Ifort_Clang
