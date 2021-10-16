@@ -165,7 +165,7 @@ jobs:
       make
       ctest
       
-- job: OSX_Clang_gfortran_cmake
+- job: OSX_dynarch_cmake
   pool:
      vmImage: 'macOS-10.15'
   variables:
@@ -173,11 +173,9 @@ jobs:
      LIBRARY_PATH: /usr/local/opt/llvm/lib
   steps:   
   - script: |
-      brew update
-      brew install llvm
       mkdir build
       cd build
-      cmake -DTARGET=CORE2 -DINTERFACE64=1 -DDYNAMIC_ARCH=1 -DCMAKE_C_COMPILER=/usr/local/opt/llvm/bin/clang -DCMAKE_Fortran_COMPILER=gfortran-10 -DNO_AVX512=1 ..
+      cmake -DTARGET=CORE2 -DDYNAMIC_ARCH=1 -DDYNAMIC_OLDER=1 -DCMAKE_C_COMPILER=gcc-10 -DCMAKE_Fortran_COMPILER=gfortran-10 -DNO_AVX512=1 ..
       make
       ctest
         
