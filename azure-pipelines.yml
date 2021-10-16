@@ -175,10 +175,9 @@ jobs:
   - script: |
       mkdir build
       cd build
-      cmake -DTARGET=CORE2 -DDYNAMIC_ARCH=1 -DDYNAMIC_OLDER=1 -DCMAKE_C_COMPILER=gcc-10 -DCMAKE_Fortran_COMPILER=gfortran-10 ..
+      cmake -DTARGET=CORE2 -DDYNAMIC_ARCH=1 -DDYNAMIC_OLDER=1 -DCMAKE_C_COMPILER=gcc-10 -DCMAKE_Fortran_COMPILER=gfortran-10 -DCMAKE_VERBOSE_MAKEFILE=ON ..
       cmake --build .
-      ctest
-        
+
 - job: OSX_Ifort_Clang
   pool:
      vmImage: 'macOS-10.15'
