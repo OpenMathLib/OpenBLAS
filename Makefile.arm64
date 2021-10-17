@@ -1,6 +1,9 @@
 ifneq ($(C_COMPILER), PGI)
 
-ifneq ($(GCCVERSIONGT4), 1)
+ifeq ($(C_COMPILER), CLANG)
+ISCLANG=1
+endif
+ifneq ($(filter 1,$(GCCVERSIONGT4) $(ISCLANG)))
 CCOMMON_OPT += -march=armv8-a
 ifneq ($(F_COMPILER), NAG)
 FCOMMON_OPT += -march=armv8-a
@@ -48,7 +51,7 @@ endif
 # Use a72 tunings because Neoverse-N1 is only available
 # in GCC>=9
 ifeq ($(CORE), NEOVERSEN1)
-ifeq ($(GCCVERSIONGTEQ7), 1)
+ifeq ($(filter 1,$(GCCVERSIONGTEQ7) $(ISCLANG)))
 ifeq ($(GCCVERSIONGTEQ9), 1)
 CCOMMON_OPT += -march=armv8.2-a -mtune=neoverse-n1
 ifneq ($(F_COMPILER), NAG)
@@ -70,7 +73,7 @@ endif
 
 # Use a53 tunings because a55 is only available in GCC>=8.1
 ifeq ($(CORE), CORTEXA55)
-ifeq ($(GCCVERSIONGTEQ7), 1)
+ifeq ($filter 1,$(GCCVERSIONGTEQ7) $(ISCLANG)))
 ifeq ($(GCCVERSIONGTEQ8), 1)
 CCOMMON_OPT += -march=armv8.2-a -mtune=cortex-a55
 ifneq ($(F_COMPILER), NAG)
@@ -132,7 +135,7 @@ FCOMMON_OPT += -march=armv8.3-a
 endif
 endif
 
-ifeq ($(GCCVERSIONGTEQ9), 1)
+ifeq ($filter 1,$(GCCVERSIONGTEQ9) $ISCLANG)))
 ifeq ($(CORE), TSV110)
 CCOMMON_OPT += -march=armv8.2-a -mtune=tsv110
 ifneq ($(F_COMPILER), NAG)
@@ -141,7 +144,7 @@ endif
 endif
 endif
 
-ifeq ($(GCCVERSIONGTEQ9), 1)
+ifeq ($filter 1,$(GCCVERSIONGTEQ9) $(ISCLANG)))
 ifeq ($(CORE), EMAG8180)
 CCOMMON_OPT += -march=armv8-a -mtune=emag
 ifneq ($(F_COMPILER), NAG)
