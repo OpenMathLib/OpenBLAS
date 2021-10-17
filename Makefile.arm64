@@ -135,7 +135,7 @@ FCOMMON_OPT += -march=armv8.3-a
 endif
 endif
 
-ifeq (1, $(filter 1,$(GCCVERSIONGTEQ9) $ISCLANG)))
+ifeq (1, $(filter 1,$(GCCVERSIONGTEQ9) $(ISCLANG)))
 ifeq ($(CORE), TSV110)
 CCOMMON_OPT += -march=armv8.2-a -mtune=tsv110
 ifneq ($(F_COMPILER), NAG)
@@ -144,7 +144,7 @@ endif
 endif
 endif
 
-ifeq (1, $(filter 1,$(GCCVERSIONGTEQ9) $(ISCLANG)))
+ifeq ($(GCCVERSIONGTEQ9), 1)
 ifeq ($(CORE), EMAG8180)
 CCOMMON_OPT += -march=armv8-a -mtune=emag
 ifneq ($(F_COMPILER), NAG)
