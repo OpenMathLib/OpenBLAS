@@ -33,7 +33,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "dscal_microk_sandy-2.c"
 #elif defined(HASWELL) || defined(ZEN)
 #include "dscal_microk_haswell-2.c"
-#elif  defined (SKYLAKEX) || defined (COOPERLAKE)
+#elif  defined (SKYLAKEX) || defined (COOPERLAKE) || defined (SAPPHIRERAPIDS)
 #include "dscal_microk_skylakex-2.c"
 #endif
 

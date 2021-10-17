@@ -81,6 +81,40 @@ CCOMMON_OPT += -march=cooperlake
 ifneq ($(F_COMPILER), NAG)
 FCOMMON_OPT += -march=cooperlake
 endif
+else  # gcc not support, fallback to avx512
+CCOMMON_OPT += -march=skylake-avx512
+ifneq ($(F_COMPILER), NAG)
+FCOMMON_OPT += -march=skylake-avx512
+endif
+endif
+endif
+ifeq ($(OSNAME), CYGWIN_NT)
+CCOMMON_OPT += -fno-asynchronous-unwind-tables
+FCOMMON_OPT += -fno-asynchronous-unwind-tables
+endif
+ifeq ($(OSNAME), WINNT)
+ifeq ($(C_COMPILER), GCC)
+CCOMMON_OPT += -fno-asynchronous-unwind-tables
+FCOMMON_OPT += -fno-asynchronous-unwind-tables
+endif
+endif
+endif
+endif
+
+ifeq ($(CORE), SAPPHIRERAPIDS)
+ifndef NO_AVX512
+ifeq ($(C_COMPILER), GCC)
+# sapphire rapids support was added in 11
+ifeq ($(GCCVERSIONGTEQ11), 1)
+CCOMMON_OPT += -march=sapphirerapids
+ifneq ($(F_COMPILER), NAG)
+FCOMMON_OPT += -march=sapphirerapids
+endif
+else  # gcc not support, fallback to avx512
+CCOMMON_OPT += -march=skylake-avx512
+ifneq ($(F_COMPILER), NAG)
+FCOMMON_OPT += -march=skylake-avx512
+endif
 endif
 endif
 ifeq ($(OSNAME), CYGWIN_NT)

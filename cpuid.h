@@ -120,6 +120,7 @@
 #define CORE_SKYLAKEX    28
 #define CORE_DHYANA	 29
 #define CORE_COOPERLAKE  30
+#define CORE_SAPPHIRERAPIDS  31
 
 #define HAVE_SSE      (1 <<  0)
 #define HAVE_SSE2     (1 <<  1)
@@ -145,6 +146,7 @@
 #define HAVE_AVX512VL (1 << 21)
 #define HAVE_AVX2     (1 << 22)
 #define HAVE_AVX512BF16  (1 << 23)
+#define HAVE_AMXBF16  (1 << 24)
 
 #define CACHE_INFO_L1_I     1
 #define CACHE_INFO_L1_D     2
@@ -222,6 +224,7 @@ typedef struct {
 #define CPUTYPE_SKYLAKEX		52
 #define CPUTYPE_DHYANA			53
 #define CPUTYPE_COOPERLAKE		54
+#define CPUTYPE_SAPPHIRERAPIDS		55
 
 #define CPUTYPE_HYGON_UNKNOWN		99
 

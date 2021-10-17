@@ -183,7 +183,7 @@ int get_L2_size(void){
     defined(CORE_PRESCOTT) || defined(CORE_CORE2)       || defined(PENRYN) || defined(DUNNINGTON) || \
     defined(CORE_NEHALEM)  || defined(CORE_SANDYBRIDGE) || defined(ATOM)   || defined(GENERIC)    || \
     defined(PILEDRIVER)    || defined(HASWELL)          || defined(STEAMROLLER) || defined(EXCAVATOR) || \
-    defined(ZEN)           || defined(SKYLAKEX)         || defined(COOPERLAKE)
+    defined(ZEN)           || defined(SKYLAKEX)         || defined(COOPERLAKE) || defined(SAPPHIRERAPIDS)
 
   cpuid(0x80000006, &eax, &ebx, &ecx, &edx);
 
@@ -269,7 +269,7 @@ void blas_set_parameter(void){
   int factor;
 #if defined(BULLDOZER) || defined(PILEDRIVER)  || defined(SANDYBRIDGE) || defined(NEHALEM) || \
     defined(HASWELL)   || defined(STEAMROLLER) || defined(EXCAVATOR)   || defined(ZEN)     || \
-    defined(SKYLAKEX)  || defined(COOPERLAKE)
+    defined(SKYLAKEX)  || defined(COOPERLAKE) || defined(SAPPHIRERAPIDS)
   int size = 16;
 #else
   int size = get_L2_size();
