@@ -56,7 +56,7 @@ size_t length64=sizeof(value64);
 // Apple
 #define CPU_VORTEX       13
 // Fujitsu
-#define CPU_A64FX	 158
+#define CPU_A64FX	 15
 
 static char *cpuname[] = {
   "UNKNOWN",
