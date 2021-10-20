@@ -50,9 +50,9 @@ endif
 ifeq ($(CORE), NEOVERSEN1)
 ifeq ($(GCCVERSIONGTEQ7), 1)
 ifeq ($(GCCVERSIONGTEQ9), 1)
-CCOMMON_OPT += -march=armv8.2-a -mtune=neoverse-n1
+CCOMMON_OPT += -march=neoverse-n1
 ifneq ($(F_COMPILER), NAG)
-FCOMMON_OPT += -march=armv8.2-a -mtune=neoverse-n1
+FCOMMON_OPT += -march=neoverse-n1
 endif
 else
 CCOMMON_OPT += -march=armv8.2-a -mtune=cortex-a72
