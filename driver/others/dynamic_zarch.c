@@ -1,38 +1,7 @@
 #include "common.h"
+#include "cpuid_zarch.h"
 #include <stdbool.h>
 
-// Guard the use of getauxval() on glibc version >= 2.16
-#ifdef __GLIBC__
-#include <features.h>
-#if __GLIBC_PREREQ(2, 16)
-#include <sys/auxv.h>
-#define HAVE_GETAUXVAL 1
-
-static unsigned long get_hwcap(void)
-{
-	unsigned long hwcap = getauxval(AT_HWCAP);
-	char *maskenv;
-
-	// honor requests for not using specific CPU features in LD_HWCAP_MASK
-	maskenv = getenv("LD_HWCAP_MASK");
-	if (maskenv)
-		hwcap &= strtoul(maskenv, NULL, 0);
-
-	return hwcap;
-	// note that a missing auxval is interpreted as no capabilities
-	// available, which is safe.
-}
-
-#else // __GLIBC_PREREQ(2, 16)
-#warn "Cannot detect SIMD support in Z13 or newer architectures since glibc is older than 2.16"
-
-static unsigned long get_hwcap(void) {
-	// treat missing support for getauxval() as no capabilities available,
-	// which is safe.
-	return 0;
-}
-#endif // __GLIBC_PREREQ(2, 16)
-#endif // __GLIBC
 
 extern gotoblas_t gotoblas_ZARCH_GENERIC;
 #ifdef DYN_Z13
@@ -46,23 +15,16 @@ extern gotoblas_t gotoblas_Z14;
 
 extern void openblas_warning(int verbose, const char* msg);
 
-static char* corename[] = {
-	"unknown",
-	"Z13",
-	"Z14",
-	"ZARCH_GENERIC",
-};
-
 char* gotoblas_corename(void) {
 #ifdef DYN_Z13
-	if (gotoblas == &gotoblas_Z13)	return corename[1];
+	if (gotoblas == &gotoblas_Z13)	return cpuname[CPU_Z13];
 #endif
 #ifdef DYN_Z14
-	if (gotoblas == &gotoblas_Z14)	return corename[2];
+	if (gotoblas == &gotoblas_Z14)	return cpuname[CPU_Z14];
 #endif
-	if (gotoblas == &gotoblas_ZARCH_GENERIC) return corename[3];
+	if (gotoblas == &gotoblas_ZARCH_GENERIC) return cpuname[CPU_GENERIC];
 
-	return corename[0];
+	return "unknown";
 }
 
 #ifndef HWCAP_S390_VXE
@@ -79,25 +41,28 @@ char* gotoblas_corename(void) {
  */
 static gotoblas_t* get_coretype(void) {
 
-	unsigned long hwcap __attribute__((unused)) = get_hwcap();
+	int cpu = detect();
 
-#ifdef DYN_Z14
+	switch(cpu) {
 	// z14 and z15 systems: exploit Vector Facility (SIMD) and
 	// Vector-Enhancements Facility 1 (float SIMD instructions), if present.
-	if ((hwcap & HWCAP_S390_VX) && (hwcap & HWCAP_S390_VXE))
+	case CPU_Z14:
+#ifdef DYN_Z14
 		return &gotoblas_Z14;
 #endif
 
-#ifdef DYN_Z13
 	// z13: Vector Facility (SIMD for double)
-	if (hwcap & HWCAP_S390_VX)
+	case CPU_Z13:
+#ifdef DYN_Z13
 		return &gotoblas_Z13;
 #endif
 
+	default:
 	// fallback in case of missing compiler support, systems before z13, or
 	// when the OS does not advertise support for the Vector Facility (e.g.,
 	// missing support in the OS kernel)
-	return &gotoblas_ZARCH_GENERIC;
+		return &gotoblas_ZARCH_GENERIC;
+	}
 }
 
 static gotoblas_t* force_coretype(char* coretype) {
@@ -108,28 +73,28 @@ static gotoblas_t* force_coretype(char* coretype) {
 
 	for (i = 0; i < NUM_CORETYPES; i++)
 	{
-		if (!strncasecmp(coretype, corename[i], 20))
+		if (!strncasecmp(coretype, cpuname[i], 20))
 		{
 			found = i;
 			break;
 		}
 	}
 
-	if (found == 1) {
+	if (found == CPU_Z13) {
 #ifdef DYN_Z13
 		return &gotoblas_Z13;
 #else
 		openblas_warning(1, "Z13 support not compiled in");
 		return NULL;
 #endif
-	} else if (found == 2) {
+	} else if (found == CPU_Z14) {
 #ifdef DYN_Z14
 		return &gotoblas_Z14;
 #else
 		openblas_warning(1, "Z14 support not compiled in");
 		return NULL;
 #endif
-	} else if (found == 3) {
+	} else if (found == CPU_GENERIC) {
 		return &gotoblas_ZARCH_GENERIC;
 	}
 
