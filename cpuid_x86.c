@@ -1459,6 +1459,7 @@ int get_cpuname(void){
       case 8:      
         switch (model) {
         case 12: // Tiger Lake
+        case 13: // Tiger Lake (11th Gen Intel(R) Core(TM) i7-11800H @ 2.30GHz)
           if(support_avx512())
             return CPUTYPE_SKYLAKEX;
           if(support_avx2())
@@ -2196,7 +2197,7 @@ int get_coretype(void){
         break;    	
       case 9:
       case 8:
-       if (model == 12) { // Tiger Lake
+       if (model == 12 || model == 13) { // Tiger Lake
           if(support_avx512())
             return CORE_SKYLAKEX;
           if(support_avx2())
