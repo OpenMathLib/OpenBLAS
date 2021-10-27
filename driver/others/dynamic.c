@@ -663,7 +663,7 @@ static gotoblas_t *get_coretype(void){
         return NULL;  
       case 9:
       case 8:
-        if (model == 12) { // Tiger Lake
+        if (model == 12 || model == 13) { // Tiger Lake
           if (support_avx512()) 
             return &gotoblas_SKYLAKEX;
           if(support_avx2()){
