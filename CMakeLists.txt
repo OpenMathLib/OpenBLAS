@@ -44,14 +44,6 @@ endif()
 option(CPP_THREAD_SAFETY_TEST "Run a massively parallel DGEMM test to confirm thread safety of the library (requires OpenMP and about 1.3GB of RAM)" OFF)
 
 option(CPP_THREAD_SAFETY_GEMV "Run a massively parallel DGEMV test to confirm thread safety of the library (requires OpenMP)" OFF)
-option(BUILD_STATIC_LIBS "Build static library" OFF)
-if(NOT BUILD_STATIC_LIBS AND NOT BUILD_SHARED_LIBS)
-  set(BUILD_STATIC_LIBS ON CACHE BOOL "Build static library" FORCE)
-endif()
-if((BUILD_STATIC_LIBS AND BUILD_SHARED_LIBS) AND MSVC)
-  message(WARNING "Could not enable both BUILD_STATIC_LIBS and BUILD_SHARED_LIBS with MSVC, Disable BUILD_SHARED_LIBS")
-  set(BUILD_SHARED_LIBS OFF CACHE BOOL "Build static library" FORCE)
-endif()
 
 # Add a prefix or suffix to all exported symbol names in the shared library.
 # Avoids conflicts with other BLAS libraries, especially when using
@@ -215,33 +207,12 @@ if(BUILD_RELAPACK)
   add_library(RELAPACK OBJECT ${RELA_SOURCES})
   list(APPEND TARGET_OBJS "$<TARGET_OBJECTS:RELAPACK>")
 endif()
-set(OpenBLAS_LIBS "")
-if(BUILD_STATIC_LIBS)
-  add_library(${OpenBLAS_LIBNAME}_static STATIC ${TARGET_OBJS} ${OpenBLAS_DEF_FILE})
-  target_include_directories(${OpenBLAS_LIBNAME}_static INTERFACE $<INSTALL_INTERFACE:include/openblas${SUFFIX64}>)
-  list(APPEND OpenBLAS_LIBS ${OpenBLAS_LIBNAME}_static)
-endif()
-if(BUILD_SHARED_LIBS)
-  add_library(${OpenBLAS_LIBNAME}_shared SHARED ${TARGET_OBJS} ${OpenBLAS_DEF_FILE})
-  target_include_directories(${OpenBLAS_LIBNAME}_shared INTERFACE $<INSTALL_INTERFACE:include/openblas${SUFFIX64}>)
-  list(APPEND OpenBLAS_LIBS ${OpenBLAS_LIBNAME}_shared)
-endif()
-if(BUILD_STATIC_LIBS)
-  add_library(${OpenBLAS_LIBNAME} ALIAS ${OpenBLAS_LIBNAME}_static)
-else()
-  add_library(${OpenBLAS_LIBNAME} ALIAS ${OpenBLAS_LIBNAME}_shared)
-endif()
-
-set_target_properties(${OpenBLAS_LIBS} PROPERTIES OUTPUT_NAME ${OpenBLAS_LIBNAME})
+add_library(${OpenBLAS_LIBNAME} ${TARGET_OBJS} ${OpenBLAS_DEF_FILE})
+target_include_directories(${OpenBLAS_LIBNAME} INTERFACE $<INSTALL_INTERFACE:include/openblas${SUFFIX64}>)
 
 # Android needs to explicitly link against libm
 if(ANDROID)
-  if(BUILD_STATIC_LIBS)
-    target_link_libraries(${OpenBLAS_LIBNAME}_static m)
-  endif()
-  if(BUILD_SHARED_LIBS)
-    target_link_libraries(${OpenBLAS_LIBNAME}_shared m)
-  endif()
+  target_link_libraries(${OpenBLAS_LIBNAME} m)
 endif()
 
 # Handle MSVC exports
@@ -250,21 +221,21 @@ if(MSVC AND BUILD_SHARED_LIBS)
     include("${PROJECT_SOURCE_DIR}/cmake/export.cmake")
   else()
     # Creates verbose .def file (51KB vs 18KB)
-    set_target_properties(${OpenBLAS_LIBNAME}_shared PROPERTIES WINDOWS_EXPORT_ALL_SYMBOLS true)
+    set_target_properties(${OpenBLAS_LIBNAME} PROPERTIES WINDOWS_EXPORT_ALL_SYMBOLS true)
   endif()
 endif()
 
 # Set output for libopenblas
-set_target_properties( ${OpenBLAS_LIBS} PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/lib)
-set_target_properties( ${OpenBLAS_LIBS} PROPERTIES LIBRARY_OUTPUT_NAME_DEBUG "${OpenBLAS_LIBNAME}_d")
-set_target_properties( ${OpenBLAS_LIBS} PROPERTIES EXPORT_NAME "OpenBLAS")
+set_target_properties( ${OpenBLAS_LIBNAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/lib)
+set_target_properties( ${OpenBLAS_LIBNAME} PROPERTIES LIBRARY_OUTPUT_NAME_DEBUG "${OpenBLAS_LIBNAME}_d")
+set_target_properties( ${OpenBLAS_LIBNAME} PROPERTIES EXPORT_NAME "OpenBLAS")
 
 foreach (OUTPUTCONFIG ${CMAKE_CONFIGURATION_TYPES})
   string( TOUPPER ${OUTPUTCONFIG} OUTPUTCONFIG )
 
-  set_target_properties( ${OpenBLAS_LIBS} PROPERTIES RUNTIME_OUTPUT_DIRECTORY_${OUTPUTCONFIG} ${PROJECT_BINARY_DIR}/lib/${OUTPUTCONFIG} )
-  set_target_properties( ${OpenBLAS_LIBS} PROPERTIES LIBRARY_OUTPUT_DIRECTORY_${OUTPUTCONFIG} ${PROJECT_BINARY_DIR}/lib/${OUTPUTCONFIG} )
-  set_target_properties( ${OpenBLAS_LIBS} PROPERTIES ARCHIVE_OUTPUT_DIRECTORY_${OUTPUTCONFIG} ${PROJECT_BINARY_DIR}/lib/${OUTPUTCONFIG} )
+  set_target_properties( ${OpenBLAS_LIBNAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY_${OUTPUTCONFIG} ${PROJECT_BINARY_DIR}/lib/${OUTPUTCONFIG} )
+  set_target_properties( ${OpenBLAS_LIBNAME} PROPERTIES LIBRARY_OUTPUT_DIRECTORY_${OUTPUTCONFIG} ${PROJECT_BINARY_DIR}/lib/${OUTPUTCONFIG} )
+  set_target_properties( ${OpenBLAS_LIBNAME} PROPERTIES ARCHIVE_OUTPUT_DIRECTORY_${OUTPUTCONFIG} ${PROJECT_BINARY_DIR}/lib/${OUTPUTCONFIG} )
 endforeach()
 
 enable_testing()
@@ -273,17 +244,12 @@ if (USE_THREAD)
   # Add threading library to linker
   find_package(Threads)
   if (THREADS_HAVE_PTHREAD_ARG)
-    set_target_properties(${OpenBLAS_LIBS} PROPERTIES
+    set_target_properties(${OpenBLAS_LIBNAME} PROPERTIES
       COMPILE_OPTIONS "-pthread"
       INTERFACE_COMPILE_OPTIONS "-pthread"
     )
   endif()
-  if(BUILD_STATIC_LIBS)
-    target_link_libraries(${OpenBLAS_LIBNAME}_static ${CMAKE_THREAD_LIBS_INIT})
-  endif()
-  if(BUILD_SHARED_LIBS)
-    target_link_libraries(${OpenBLAS_LIBNAME}_shared ${CMAKE_THREAD_LIBS_INIT})
-  endif()
+  target_link_libraries(${OpenBLAS_LIBNAME} ${CMAKE_THREAD_LIBS_INIT})
 endif()
 
 #if (MSVC OR NOT NOFORTRAN)
@@ -304,14 +270,14 @@ if (NOT NOFORTRAN)
   endif()
 endif()
 
-set_target_properties(${OpenBLAS_LIBS} PROPERTIES
+set_target_properties(${OpenBLAS_LIBNAME} PROPERTIES
   VERSION ${OpenBLAS_MAJOR_VERSION}.${OpenBLAS_MINOR_VERSION}
   SOVERSION ${OpenBLAS_MAJOR_VERSION}
 )
 
 if (BUILD_SHARED_LIBS AND BUILD_RELAPACK)
   if (NOT MSVC)
-    target_link_libraries(${OpenBLAS_LIBNAME}_shared "-Wl,-allow-multiple-definition")
+    target_link_libraries(${OpenBLAS_LIBNAME} "-Wl,-allow-multiple-definition")
   else()
     set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} /FORCE:MULTIPLE")
   endif()
@@ -374,8 +340,7 @@ if (BUILD_SHARED_LIBS AND NOT ${SYMBOLPREFIX}${SYMBOLSUFFIX} STREQUAL "")
   if (NOT ${SYMBOLSUFFIX} STREQUAL "")
     message(STATUS "adding suffix ${SYMBOLSUFFIX} to names of exported symbols in ${OpenBLAS_LIBNAME}")
   endif()
-
-  add_custom_command(TARGET ${OpenBLAS_LIBNAME}_shared POST_BUILD
+  add_custom_command(TARGET ${OpenBLAS_LIBNAME} POST_BUILD
     COMMAND perl  ${PROJECT_SOURCE_DIR}/exports/gensymbol "objcopy" "${ARCH}" "${BU}" "${EXPRECISION_IN}" "${NO_CBLAS_IN}" "${NO_LAPACK_IN}" "${NO_LAPACKE_IN}" "${NEED2UNDERSCORES_IN}" "${ONLY_CBLAS_IN}" \"${SYMBOLPREFIX}\" \"${SYMBOLSUFFIX}\" "${BUILD_LAPACK_DEPRECATED}" > ${PROJECT_BINARY_DIR}/objcopy.def
     COMMAND objcopy -v --redefine-syms ${PROJECT_BINARY_DIR}/objcopy.def  ${PROJECT_BINARY_DIR}/lib/lib${OpenBLAS_LIBNAME}.so
     COMMENT "renaming symbols"
@@ -386,7 +351,7 @@ endif()
 # Install project
 
 # Install libraries
-install(TARGETS ${OpenBLAS_LIBS}
+install(TARGETS ${OpenBLAS_LIBNAME}
   EXPORT "OpenBLAS${SUFFIX64}Targets"
   RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
   ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
@@ -448,12 +413,7 @@ endif()
 
 if(NOT NO_LAPACKE)
   message (STATUS "Copying LAPACKE header files to ${CMAKE_INSTALL_INCLUDEDIR}")
-  if(BUILD_STATIC_LIBS)
-    add_dependencies( ${OpenBLAS_LIBNAME}_static genlapacke)
-  endif()
-  if(BUILD_SHARED_LIBS)
-    add_dependencies( ${OpenBLAS_LIBNAME}_shared genlapacke)
-  endif()
+  add_dependencies( ${OpenBLAS_LIBNAME} genlapacke)
   FILE(GLOB_RECURSE INCLUDE_FILES "${CMAKE_CURRENT_SOURCE_DIR}/lapack-netlib/LAPACKE/*.h")
   install (FILES ${INCLUDE_FILES} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 
