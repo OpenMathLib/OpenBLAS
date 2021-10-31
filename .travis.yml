@@ -286,7 +286,7 @@ matrix:
     - &test-armv8sve
       os: linux
       arch: arm64-graviton2
-      dist: bionic
+      dist: focal
       group: edge
       virt: lxd
       compiler: gcc
