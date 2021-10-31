@@ -299,7 +299,9 @@ matrix:
       script:
         - wget https://developer.arm.com/-/media/Files/downloads/hpc/arm-instruction-emulator/21-0/ARM-Instruction-Emulator_21.0_AArch64_Ubuntu-18.04_aarch64.tar.gz
         - tar zxvf ARM-Instruction-Emulator_21.0_AArch64_Ubuntu-18.04_aarch64.tar.gz
+        - cd arm-instruction-emulator_21.0_Ubuntu-18.04_aarch64
         - ./arm-instruction-emulator-21.0*_aarch64-linux-rpm.sh -a
+        - cd ..
         - ls /opt/arm
         - export PATH=/opt/arm/arm-instruction-emulator-21.0_aarch64_Ubuntu-18.04_aarch64-linux/bin64:$PATH
         - travis_wait 45 make TARGET=A64FX CROSS=1 CC=gcc-11 FC=gfortran-11 HOSTCC=gcc-11
