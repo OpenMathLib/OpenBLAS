@@ -282,6 +282,9 @@ matrix:
             - gfortran
       script:
         - travis_wait 45 make && make lapack-test
+      env:
+        # for matrix annotation only
+        - TARGET_BOX=NEOVERSE-N1
         
     - &test-armv8sve
       os: linux
@@ -297,19 +300,22 @@ matrix:
             - gfortran-10
             - wget
       script:
-        - wget https://developer.arm.com/-/media/Files/downloads/hpc/arm-instruction-emulator/21-0/ARM-Instruction-Emulator_21.0_AArch64_Ubuntu-18.04_aarch64.tar.gz
+        - wget -q https://developer.arm.com/-/media/Files/downloads/hpc/arm-instruction-emulator/21-0/ARM-Instruction-Emulator_21.0_AArch64_Ubuntu-18.04_aarch64.tar.gz
         - tar zxvf ARM-Instruction-Emulator_21.0_AArch64_Ubuntu-18.04_aarch64.tar.gz
         - cd arm-instruction-emulator_21.0_Ubuntu-18.04_aarch64
-        - ./arm-instruction-emulator_21.0_Ubuntu-18.04.sh -a
+        - sudo ./arm-instruction-emulator_21.0_Ubuntu-18.04.sh -a
         - cd ..
         - ls /opt/arm
         - export PATH=/opt/arm/arm-instruction-emulator-21.0_aarch64_Ubuntu-18.04_aarch64-linux/bin64:$PATH
-        - travis_wait 45 make TARGET=A64FX CROSS=1 CC=gcc-11 FC=gfortran-11 HOSTCC=gcc-11
+        - travis_wait 45 make TARGET=A64FX CROSS=1 CC=gcc-10 FC=gfortran-10 HOSTCC=gcc-10
         - armie test/sblat1
         - armie test/dblat1
         - armie test/cblat1
         - armie test/zblat1
         - armie test/dblat3 <test/dblat3.dat
+      env:
+        # for matrix annotation only
+        - TARGET_BOX=ARMV8-SVE-ARMIE
 # whitelist
 branches:
   only:
