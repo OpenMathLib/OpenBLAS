@@ -38,7 +38,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define origPB		x4
 #define pC		x5
 #define LDC		x6
-#define temp		x7
+#define offset		x7
 #define counterL	x8
 #define counterI	x9
 #define counterJ	x10
@@ -50,6 +50,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define lanes		x15
 #define pA		x16
 #define alpha		x17
+//#define temp		x18
+#define tempOffset	x19
+#define tempK		x20
+#define temp		x21
 
 #define alpha0		d10
 #define alphaZ		z2.d
@@ -266,50 +270,42 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	prfm	PLDL2KEEP, [pCRow0, #C_PRE_SIZE]
 
 	add	pCRow1, pCRow0, LDC
-    ld1d  z24.d, p1/z, [pCRow0] 
-    fmla z24.d, p1/m, z16.d, alphaZ
-    st1d  z24.d, p1, [pCRow0]
+    fmul z16.d, p1/m, z16.d, alphaZ
+    st1d  z16.d, p1, [pCRow0]
 	prfm	PLDL2KEEP, [pCRow1, #C_PRE_SIZE]
 
 	add	pCRow2, pCRow1, LDC
-    ld1d  z25.d, p1/z, [pCRow1] 
-    fmla z25.d, p1/m, z17.d, alphaZ
-    st1d  z25.d, p1, [pCRow1]
+    fmul z17.d, p1/m, z17.d, alphaZ
+    st1d  z17.d, p1, [pCRow1]
 	prfm	PLDL2KEEP, [pCRow2, #C_PRE_SIZE]
 
 	add	pCRow1, pCRow2, LDC
-    ld1d  z26.d, p1/z, [pCRow2] 
-    fmla z26.d, p1/m, z18.d, alphaZ
-    st1d z26.d, p1, [pCRow2]
+    fmul z18.d, p1/m, z18.d, alphaZ
+    st1d z18.d, p1, [pCRow2]
 	prfm	PLDL2KEEP, [pCRow1, #C_PRE_SIZE]
 
 	add	pCRow2, pCRow1, LDC
-    ld1d  z27.d, p1/z, [pCRow1] 
-    fmla z27.d, p1/m, z19.d, alphaZ
-    st1d  z27.d, p1, [pCRow1]
+    fmul z19.d, p1/m, z19.d, alphaZ
+    st1d  z19.d, p1, [pCRow1]
 	prfm	PLDL2KEEP, [pCRow2, #C_PRE_SIZE]
 
 	add	pCRow1, pCRow2, LDC
-    ld1d  z28.d, p1/z, [pCRow2] 
-    fmla z28.d, p1/m, z20.d, alphaZ
-    st1d  z28.d, p1, [pCRow2]
+    fmul z20.d, p1/m, z20.d, alphaZ
+    st1d  z20.d, p1, [pCRow2]
 	prfm	PLDL2KEEP, [pCRow1, #C_PRE_SIZE]
 
 	add	pCRow2, pCRow1, LDC
-    ld1d  z29.d, p1/z, [pCRow1] 
-    fmla z29.d, p1/m, z21.d, alphaZ
-    st1d  z29.d, p1, [pCRow1]
+    fmul z21.d, p1/m, z21.d, alphaZ
+    st1d  z21.d, p1, [pCRow1]
 	prfm	PLDL2KEEP, [pCRow2, #C_PRE_SIZE]
 
 	add	pCRow1, pCRow2, LDC
-    ld1d  z30.d, p1/z, [pCRow2] 
-    fmla z30.d, p1/m, z22.d, alphaZ
-    st1d  z30.d, p1, [pCRow2]
+    fmul z22.d, p1/m, z22.d, alphaZ
+    st1d  z22.d, p1, [pCRow2]
 	prfm	PLDL2KEEP, [pCRow1, #C_PRE_SIZE]
 
-    ld1d  z31.d, p1/z, [pCRow1] 
-    fmla z31.d, p1/m, z23.d, alphaZ
-    st1d  z31.d, p1, [pCRow1]
+    fmul z23.d, p1/m, z23.d, alphaZ
+    st1d  z23.d, p1, [pCRow1]
 
 	add	pCRow0, pCRow0, lanes, lsl #3	// pC = pC + lanes  * 8
 
@@ -348,26 +344,22 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	prfm	PLDL2KEEP, [pCRow0, #C_PRE_SIZE]
 
 	add	pCRow1, pCRow0, LDC
-    ld1d  z24.d, p1/z, [pCRow0] 
-    fmla z24.d, p1/m, z16.d, alphaZ
-    st1d  z24.d, p1, [pCRow0]
+    fmla z16.d, p1/m, z16.d, alphaZ
+    st1d  z16.d, p1, [pCRow0]
 	prfm	PLDL2KEEP, [pCRow1, #C_PRE_SIZE]
 
 	add	pCRow2, pCRow1, LDC
-    ld1d  z25.d, p1/z, [pCRow1] 
-    fmla z25.d, p1/m, z17.d, alphaZ
-    st1d  z25.d, p1, [pCRow1]
+    fmla z17.d, p1/m, z17.d, alphaZ
+    st1d  z17.d, p1, [pCRow1]
 	prfm	PLDL2KEEP, [pCRow2, #C_PRE_SIZE]
 
 	add	pCRow1, pCRow2, LDC
-    ld1d  z26.d, p1/z, [pCRow2] 
-    fmla z26.d, p1/m, z18.d, alphaZ
-    st1d z26.d, p1, [pCRow2]
+    fmla z18.d, p1/m, z18.d, alphaZ
+    st1d z18.d, p1, [pCRow2]
 	prfm	PLDL2KEEP, [pCRow1, #C_PRE_SIZE]
 
-    ld1d  z27.d, p1/z, [pCRow1] 
-    fmla z27.d, p1/m, z19.d, alphaZ
-    st1d  z27.d, p1, [pCRow1]
+    fmla z19.d, p1/m, z19.d, alphaZ
+    st1d  z19.d, p1, [pCRow1]
 
 	add	pCRow0, pCRow0, lanes, lsl #3	// pC = pC + lanes  * 8
 
@@ -400,14 +392,12 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	prfm	PLDL2KEEP, [pCRow0, #C_PRE_SIZE]
 
 	add	pCRow1, pCRow0, LDC
-    ld1d  z24.d, p1/z, [pCRow0] 
-    fmla z24.d, p1/m, z16.d, alphaZ
-    st1d  z24.d, p1, [pCRow0]
+    fmla z16.d, p1/m, z16.d, alphaZ
+    st1d  z16.d, p1, [pCRow0]
 	prfm	PLDL2KEEP, [pCRow1, #C_PRE_SIZE]
 
-    ld1d  z25.d, p1/z, [pCRow1] 
-    fmla z25.d, p1/m, z17.d, alphaZ
-    st1d  z25.d, p1, [pCRow1]
+    fmla z17.d, p1/m, z17.d, alphaZ
+    st1d  z17.d, p1, [pCRow1]
 
 	add	pCRow0, pCRow0, lanes, lsl #3	// pC = pC + lanes  * 8
 
@@ -436,9 +426,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	prfm	PLDL2KEEP, [pCRow0, #C_PRE_SIZE]
 
-    ld1d  z24.d, p1/z, [pCRow0] 
-    fmla z24.d, p1/m, z16.d, alphaZ
-    st1d  z24.d, p1, [pCRow0]
+    fmla z16.d, p1/m, z16.d, alphaZ
+    st1d  z16.d, p1, [pCRow0]
 
 
 	add	pCRow0, pCRow0, lanes, lsl #3	// pC = pC + lanes  * 8
@@ -475,38 +464,63 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	lsl	LDC, LDC, #3			// ldc = ldc * 8
     ptrue p0.d                  // create true predicate 
 
+#if !defined(LEFT)
+	neg	tempOffset, offset
+#endif
+
 	mov	pB, origPB
 
 	mov	counterJ, origN
 	asr 	counterJ, counterJ, #3		// J = J / 8
 	cmp 	counterJ, #0
-	ble	.Ldgemm_kernel_L4_BEGIN
+	ble	.Ldtrmm_kernel_L4_BEGIN
 
 /******************************************************************************/
 
 	.align 5
-.Ldgemm_kernel_L8_BEGIN:
+.Ldtrmm_kernel_L8_BEGIN:
 	mov	pCRow0, pC
 
     add pC, pC, LDC, lsl #3 // add 8 x LDC
 
+#if defined(LEFT)
+	mov	tempOffset, offset
+#endif
+
 	mov	pA, origPA			// pA = start of A array
 
-.Ldgemm_kernel_L8_Mv1_BEGIN:
+.Ldtrmm_kernel_L8_Mv1_BEGIN:
 
     mov counterI, #0
     whilelt p1.d, counterI, origM               //SVE instruction
-    cntp lanes, p0, p1.d                        // lanes contain number of active SVE lanes in M dimension
+    cntp lanes, p0, p1.d
 
 	.align 5
-.Ldgemm_kernel_L8_Mv1_20:
+.Ldtrmm_kernel_L8_Mv1_20:
 
+#if (defined(LEFT) &&  defined(TRANSA)) || (!defined(LEFT) && !defined(TRANSA))
 	mov	pB, origPB
+#else
+	mov	pB, origPB
+	mul	temp, tempOffset, lanes
+	add	pA, pA, temp, lsl #3    // add tempOffset*lanes*8
+	lsl	temp, tempOffset, #6
+	add	pB, pB, temp
+#endif
+
+#if (defined(LEFT) && !defined(TRANSA)) || (!defined(LEFT) && defined(TRANSA))
+	sub	tempK, origK, tempOffset
+#elif defined(LEFT)
+	add	tempK, tempOffset, lanes
+#else
+	add	tempK, tempOffset, #8
+#endif
+
     INITv1x8                     // fill with zeros
 
-	asr 	counterL , origK, #3		// L = K / 8
+	asr 	counterL , tempK, #3		// L = K / 8
 	cmp	counterL , #2			// is there at least 4 to do?
-	blt	.Ldgemm_kernel_L8_Mv1_32
+	blt	.Ldtrmm_kernel_L8_Mv1_32
 
 	KERNELv1x8_I
 	KERNELv1x8_M2
@@ -518,10 +532,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	KERNELv1x8_M2
 
 	subs	counterL, counterL, #2		// subtract 2
-	ble	.Ldgemm_kernel_L8_Mv1_22a
+	ble	.Ldtrmm_kernel_L8_Mv1_22a
 
 	.align 5
-.Ldgemm_kernel_L8_Mv1_22:
+.Ldtrmm_kernel_L8_Mv1_22:
 
 	KERNELv1x8_M1
 	KERNELv1x8_M2
@@ -533,10 +547,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	KERNELv1x8_M2
 
 	subs	counterL, counterL, #1
-	bgt	.Ldgemm_kernel_L8_Mv1_22
+	bgt	.Ldtrmm_kernel_L8_Mv1_22
 
 	.align 5
-.Ldgemm_kernel_L8_Mv1_22a:
+.Ldtrmm_kernel_L8_Mv1_22a:
 
 	KERNELv1x8_M1
 	KERNELv1x8_M2
@@ -547,13 +561,13 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	KERNELv1x8_M1
 	KERNELv1x8_E
 
-	b	 .Ldgemm_kernel_L8_Mv1_44
+	b	 .Ldtrmm_kernel_L8_Mv1_44
 
 	.align 5
-.Ldgemm_kernel_L8_Mv1_32:
+.Ldtrmm_kernel_L8_Mv1_32:
 
 	tst	counterL, #1
-	ble	.Ldgemm_kernel_L8_Mv1_40
+	ble	.Ldtrmm_kernel_L8_Mv1_40
 
 	KERNELv1x8_I
 	KERNELv1x8_M2
@@ -565,57 +579,80 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	KERNELv1x8_E
 
 
-	b	.Ldgemm_kernel_L8_Mv1_44
+	b	.Ldtrmm_kernel_L8_Mv1_44
 
-.Ldgemm_kernel_L8_Mv1_40:
+.Ldtrmm_kernel_L8_Mv1_40:
 
 	INITv1x8
 
-.Ldgemm_kernel_L8_Mv1_44:
+.Ldtrmm_kernel_L8_Mv1_44:
 
-	ands	counterL , origK, #7
-	ble	.Ldgemm_kernel_L8_Mv1_100
+	ands	counterL , tempK, #7
+	ble	.Ldtrmm_kernel_L8_Mv1_100
 
 	.align 5
-.Ldgemm_kernel_L8_Mv1_46:
+.Ldtrmm_kernel_L8_Mv1_46:
 
 	KERNELv1x8_SUB
 
 	subs	counterL, counterL, #1
-	bne	.Ldgemm_kernel_L8_Mv1_46
+	bne	.Ldtrmm_kernel_L8_Mv1_46
 
-.Ldgemm_kernel_L8_Mv1_100:
+.Ldtrmm_kernel_L8_Mv1_100:
 	prfm	PLDL1KEEP, [pA]
 	prfm	PLDL1KEEP, [pA, #64]
 	prfm	PLDL1KEEP, [origPB]
 
 	SAVEv1x8
 
-.Ldgemm_kernel_L8_Mv1_END:
+#if (defined(LEFT) &&  defined(TRANSA)) || (!defined(LEFT) && !defined(TRANSA))
+	sub	tempK, origK, tempOffset
+#if defined(LEFT)
+	sub	tempK, tempK, lanes
+#else
+	sub	tempK, tempK, #8
+#endif
+	mul	temp, tempK, lanes
+	add	pA, pA, temp, lsl #3    // add tempOffset*lanes*8
+	lsl	temp, tempK, #6
+	add	pB, pB, temp
+#endif
+#if defined(LEFT)
+	add	tempOffset, tempOffset, lanes
+#endif
+
+.Ldtrmm_kernel_L8_Mv1_END:
 
     incd    counterI
     whilelt p1.d, counterI, origM             //SVE instruction
-    cntp lanes, p0, p1.d                        // lanes contain number of active SVE lanes in M dimension
-    b.any   .Ldgemm_kernel_L8_Mv1_20   
+    cntp lanes, p0, p1.d
+    b.any   .Ldtrmm_kernel_L8_Mv1_20   
 
-.Ldgemm_kernel_L8_END:
+.Ldtrmm_kernel_L8_END:
 
 	lsl	temp, origK, #6 
 	add	origPB, origPB, temp		// B = B + K * 8 * 8
 
+#if !defined(LEFT)
+	add	tempOffset, tempOffset, #8
+#endif
+
 	subs	counterJ, counterJ , #1		// j--
-	bgt	.Ldgemm_kernel_L8_BEGIN
+	bgt	.Ldtrmm_kernel_L8_BEGIN
 
 /******************************************************************************/
 /******************************************************************************/
 
 	.align 5
-.Ldgemm_kernel_L4_BEGIN:
+.Ldtrmm_kernel_L4_BEGIN:
 
 	mov	counterJ , origN
 	tst	counterJ , #4
-	ble	.Ldgemm_kernel_L2_BEGIN
+	ble	.Ldtrmm_kernel_L2_BEGIN
 
+#if defined(LEFT)
+	mov	tempOffset, offset
+#endif
 
 	mov	pCRow0, pC
 
@@ -623,191 +660,274 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	mov	pA, origPA			// pA = start of A array
 
-.Ldgemm_kernel_L4_Mv1_BEGIN:
+.Ldtrmm_kernel_L4_Mv1_BEGIN:
 
     mov counterI, #0
     whilelt p1.d, counterI, origM               //SVE instruction
     cntp lanes, p0, p1.d
 
 	.align 5
-.Ldgemm_kernel_L4_Mv1_20:
+.Ldtrmm_kernel_L4_Mv1_20:
 
+#if (defined(LEFT) &&  defined(TRANSA)) || (!defined(LEFT) && !defined(TRANSA))
 	mov	pB, origPB
+#else
+	mov	pB, origPB
+	mul	temp, tempOffset, lanes
+	add	pA, pA, temp, lsl #3    // add tempOffset*lanes*8
+	lsl	temp, tempOffset, #5
+	add	pB, pB, temp
+#endif
+
+#if (defined(LEFT) && !defined(TRANSA)) || (!defined(LEFT) && defined(TRANSA))
+	sub	tempK, origK, tempOffset
+#elif defined(LEFT)
+	add	tempK, tempOffset, lanes
+#else
+	add	tempK, tempOffset, #4
+#endif
+
     INITv1x4                     // fill with zeros
 
-	asr 	counterL , origK, #3		// L = K / 8
+	asr 	counterL , tempK, #3		// L = K / 8
 	cmp	counterL , #0			// is there at least 4 to do?
-	ble	.Ldgemm_kernel_L4_Mv1_44
+	ble	.Ldtrmm_kernel_L4_Mv1_44
 
 	.align 5
-.Ldgemm_kernel_L4_Mv1_22:
+.Ldtrmm_kernel_L4_Mv1_22:
 
-	prfm	PLDL1KEEP, [pB, #B_PRE_SIZE]
 	KERNELv1x4_SUB
 	KERNELv1x4_SUB
-	prfm	PLDL1KEEP, [pB, #B_PRE_SIZE]
 	KERNELv1x4_SUB
 	KERNELv1x4_SUB
-	prfm	PLDL1KEEP, [pB, #B_PRE_SIZE]
 	KERNELv1x4_SUB
 	KERNELv1x4_SUB
-	prfm	PLDL1KEEP, [pB, #B_PRE_SIZE]
 	KERNELv1x4_SUB
 	KERNELv1x4_SUB
 
 	subs	counterL, counterL, #1
-	bgt	.Ldgemm_kernel_L4_Mv1_22
+	bgt	.Ldtrmm_kernel_L4_Mv1_22
 
-.Ldgemm_kernel_L4_Mv1_44:
+.Ldtrmm_kernel_L4_Mv1_44:
 
-	ands	counterL , origK, #7
-	ble	.Ldgemm_kernel_L4_Mv1_100
+	ands	counterL , tempK, #7
+	ble	.Ldtrmm_kernel_L4_Mv1_100
 
 	.align 5
-.Ldgemm_kernel_L4_Mv1_46:
+.Ldtrmm_kernel_L4_Mv1_46:
 
-	prfm	PLDL1KEEP, [pB, #B_PRE_SIZE]
 	KERNELv1x4_SUB
 
 	subs	counterL, counterL, #1
-	bne	.Ldgemm_kernel_L4_Mv1_46
+	bne	.Ldtrmm_kernel_L4_Mv1_46
 
-.Ldgemm_kernel_L4_Mv1_100:
-	prfm	PLDL1KEEP, [pA]
-	prfm	PLDL1KEEP, [pA, #64]
-	prfm	PLDL1KEEP, [origPB]
+.Ldtrmm_kernel_L4_Mv1_100:
 
 	SAVEv1x4
 
-.Ldgemm_kernel_L4_Mv1_END:
+#if (defined(LEFT) &&  defined(TRANSA)) || (!defined(LEFT) && !defined(TRANSA))
+	sub	tempK, origK, tempOffset
+#if defined(LEFT)
+	sub	tempK, tempK, lanes
+#else
+	sub	tempK, tempK, #4
+#endif
+	mul	temp, tempK, lanes
+	add	pA, pA, temp, lsl #3    // add tempOffset*lanes*8
+	lsl	temp, tempK, #5
+	add	pB, pB, temp
+#endif
+#if defined(LEFT)
+	add	tempOffset, tempOffset, lanes
+#endif
+
+.Ldtrmm_kernel_L4_Mv1_END:
 
     incd    counterI
     whilelt p1.d, counterI, origM             //SVE instruction
     cntp lanes, p0, p1.d
-    b.any   .Ldgemm_kernel_L4_Mv1_20   
+    b.any   .Ldtrmm_kernel_L4_Mv1_20   
 
 
-.Ldgemm_kernel_L4_END:
+.Ldtrmm_kernel_L4_END:
 	lsl	temp, origK, #5 
 	add	origPB, origPB, temp	// B = B + K * 4 * 8
+#if !defined(LEFT)
+	add	tempOffset, tempOffset, #4
+#endif
 
 /******************************************************************************/
 /******************************************************************************/
 
 	.align 5
-.Ldgemm_kernel_L2_BEGIN:
+.Ldtrmm_kernel_L2_BEGIN:
 
 	mov	counterJ , origN
 	tst	counterJ , #2
-	ble	.Ldgemm_kernel_L1_BEGIN
+	ble	.Ldtrmm_kernel_L1_BEGIN
 
 	mov	pCRow0, pC
 
     add pC, pC, LDC, lsl #1 // add 2 x LDC
 
+#if defined(LEFT)
+	mov	tempOffset, offset
+#endif
+
 	mov	pA, origPA			// pA = start of A array
 
-.Ldgemm_kernel_L2_Mv1_BEGIN:
+.Ldtrmm_kernel_L2_Mv1_BEGIN:
 
     mov counterI, #0
     whilelt p1.d, counterI, origM               //SVE instruction
     cntp lanes, p0, p1.d
 
 	.align 5
-.Ldgemm_kernel_L2_Mv1_20:
+.Ldtrmm_kernel_L2_Mv1_20:
 
+#if (defined(LEFT) &&  defined(TRANSA)) || (!defined(LEFT) && !defined(TRANSA))
 	mov	pB, origPB
+#else
+	mov	pB, origPB
+	mul	temp, tempOffset, lanes
+	add	pA, pA, temp, lsl #3    // add tempOffset*lanes*8
+	lsl	temp, tempOffset, #4
+	add	pB, pB, temp
+#endif
+
+#if (defined(LEFT) && !defined(TRANSA)) || (!defined(LEFT) && defined(TRANSA))
+	sub	tempK, origK, tempOffset
+#elif defined(LEFT)
+	add	tempK, tempOffset, lanes
+#else
+	add	tempK, tempOffset, #2
+#endif
+
     INITv1x2                     // fill with zeros
 
-	asr 	counterL , origK, #3		// L = K / 8
+	asr 	counterL , tempK, #3		// L = K / 8
 	cmp	counterL , #0			// is there at least 4 to do?
-	ble	.Ldgemm_kernel_L2_Mv1_44
+	ble	.Ldtrmm_kernel_L2_Mv1_44
 
 	.align 5
-.Ldgemm_kernel_L2_Mv1_22:
+.Ldtrmm_kernel_L2_Mv1_22:
 
-	prfm	PLDL1KEEP, [pB, #B_PRE_SIZE]
 	KERNELv1x2_SUB
 	KERNELv1x2_SUB
 	KERNELv1x2_SUB
 	KERNELv1x2_SUB
-	prfm	PLDL1KEEP, [pB, #B_PRE_SIZE]
 	KERNELv1x2_SUB
 	KERNELv1x2_SUB
 	KERNELv1x2_SUB
 	KERNELv1x2_SUB
 
 	subs	counterL, counterL, #1
-	bgt	.Ldgemm_kernel_L2_Mv1_22
+	bgt	.Ldtrmm_kernel_L2_Mv1_22
 
-.Ldgemm_kernel_L2_Mv1_44:
+.Ldtrmm_kernel_L2_Mv1_44:
 
-	ands	counterL , origK, #7
-	ble	.Ldgemm_kernel_L2_Mv1_100
+	ands	counterL , tempK, #7
+	ble	.Ldtrmm_kernel_L2_Mv1_100
 
 	.align 5
-.Ldgemm_kernel_L2_Mv1_46:
+.Ldtrmm_kernel_L2_Mv1_46:
 
-	prfm	PLDL1KEEP, [pB, #B_PRE_SIZE]
 	KERNELv1x2_SUB
 
 	subs	counterL, counterL, #1
-	bne	.Ldgemm_kernel_L2_Mv1_46
+	bne	.Ldtrmm_kernel_L2_Mv1_46
 
-.Ldgemm_kernel_L2_Mv1_100:
-	prfm	PLDL1KEEP, [pA]
-	prfm	PLDL1KEEP, [pA, #64]
-	prfm	PLDL1KEEP, [origPB]
+.Ldtrmm_kernel_L2_Mv1_100:
 
 	SAVEv1x2
 
-.Ldgemm_kernel_L2_Mv1_END:
+#if (defined(LEFT) &&  defined(TRANSA)) || (!defined(LEFT) && !defined(TRANSA))
+	sub	tempK, origK, tempOffset
+#if defined(LEFT)
+	sub	tempK, tempK, lanes
+#else
+	sub	tempK, tempK, #2
+#endif
+	mul	temp, tempK, lanes
+	add	pA, pA, temp, lsl #3    // add tempOffset*lanes*8
+	lsl	temp, tempK, #4
+	add	pB, pB, temp
+#endif
+#if defined(LEFT)
+	add	tempOffset, tempOffset, lanes
+#endif
+
+
+.Ldtrmm_kernel_L2_Mv1_END:
 
     incd    counterI
     whilelt p1.d, counterI, origM             //SVE instruction
     cntp lanes, p0, p1.d
-    b.any   .Ldgemm_kernel_L2_Mv1_20   
+    b.any   .Ldtrmm_kernel_L2_Mv1_20   
 
 
-.Ldgemm_kernel_L2_END:
+.Ldtrmm_kernel_L2_END:
 	add	origPB, origPB, origK, lsl #4	// B = B + K * 2 * 8
+#if !defined(LEFT)
+	add	tempOffset, tempOffset, #2
+#endif
 
 /******************************************************************************/
 /******************************************************************************/
 
 	.align 5
-.Ldgemm_kernel_L1_BEGIN:
+.Ldtrmm_kernel_L1_BEGIN:
 
 	mov	counterJ , origN
 	tst	counterJ , #1
-	ble	.Ldgemm_kernel_L999 // done
+	ble	.Ldtrmm_kernel_L999 // done
 
 	mov	pCRow0, pC
 
     add pC, pC, LDC // add 1 x LDC
 
+#if defined(LEFT)
+	mov	tempOffset, offset
+#endif
+
 	mov	pA, origPA			// pA = start of A array
 
-.Ldgemm_kernel_L1_Mv1_BEGIN:
+.Ldtrmm_kernel_L1_Mv1_BEGIN:
 
     mov counterI, #0
     whilelt p1.d, counterI, origM               //SVE instruction
     cntp lanes, p0, p1.d
 
 	.align 5
-.Ldgemm_kernel_L1_Mv1_20:
+.Ldtrmm_kernel_L1_Mv1_20:
 
+#if (defined(LEFT) &&  defined(TRANSA)) || (!defined(LEFT) && !defined(TRANSA))
 	mov	pB, origPB
+#else
+	mov	pB, origPB
+	mul	temp, tempOffset, lanes
+	add	pA, pA, temp, lsl #3    // add tempOffset*lanes*8
+	lsl	temp, tempOffset, #3
+	add	pB, pB, temp
+#endif
+
+#if (defined(LEFT) && !defined(TRANSA)) || (!defined(LEFT) && defined(TRANSA))
+	sub	tempK, origK, tempOffset
+#elif defined(LEFT)
+	add	tempK, tempOffset, lanes
+#else
+	add	tempK, tempOffset, #1
+#endif
+
     INITv1x1                     // fill with zeros
 
-	asr 	counterL , origK, #3		// L = K / 8
+	asr 	counterL , tempK, #3		// L = K / 8
 	cmp	counterL , #0			// is there at least 8 to do?
-	ble	.Ldgemm_kernel_L1_Mv1_44
+	ble	.Ldtrmm_kernel_L1_Mv1_44
 
 	.align 5
-.Ldgemm_kernel_L1_Mv1_22:
+.Ldtrmm_kernel_L1_Mv1_22:
 
-	prfm	PLDL1KEEP, [pB, #B_PRE_SIZE]
 	KERNELv1x1_SUB
 	KERNELv1x1_SUB
 	KERNELv1x1_SUB
@@ -818,42 +938,56 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	KERNELv1x1_SUB
 
 	subs	counterL, counterL, #1
-	bgt	.Ldgemm_kernel_L1_Mv1_22
+	bgt	.Ldtrmm_kernel_L1_Mv1_22
 
-.Ldgemm_kernel_L1_Mv1_44:
+.Ldtrmm_kernel_L1_Mv1_44:
 
-	ands	counterL , origK, #7
-	ble	.Ldgemm_kernel_L1_Mv1_100
+	ands	counterL , tempK, #7
+	ble	.Ldtrmm_kernel_L1_Mv1_100
 
 	.align 5
-.Ldgemm_kernel_L1_Mv1_46:
+.Ldtrmm_kernel_L1_Mv1_46:
 
-	prfm	PLDL1KEEP, [pB, #B_PRE_SIZE]
 	KERNELv1x1_SUB
 
 	subs	counterL, counterL, #1
-	bgt	.Ldgemm_kernel_L1_Mv1_46
+	bgt	.Ldtrmm_kernel_L1_Mv1_46
 
-.Ldgemm_kernel_L1_Mv1_100:
-	prfm	PLDL1KEEP, [pA]
-	prfm	PLDL1KEEP, [pA, #64]
-	prfm	PLDL1KEEP, [origPB]
+.Ldtrmm_kernel_L1_Mv1_100:
 
 	SAVEv1x1
 
-.Ldgemm_kernel_L1_Mv1_END:
+#if (defined(LEFT) &&  defined(TRANSA)) || (!defined(LEFT) && !defined(TRANSA))
+	sub	tempK, origK, tempOffset
+#if defined(LEFT)
+	sub	tempK, tempK, lanes
+#else
+	sub	tempK, tempK, #1
+#endif
+	mul	temp, tempK, lanes
+	add	pA, pA, temp, lsl #3    // add tempOffset*lanes*8
+	lsl	temp, tempK, #3
+	add	pB, pB, temp
+#endif
+#if defined(LEFT)
+	add	tempOffset, tempOffset, lanes
+#endif
+
+
+
+.Ldtrmm_kernel_L1_Mv1_END:
 
     incd    counterI
     whilelt p1.d, counterI, origM             //SVE instruction
     cntp lanes, p0, p1.d
-    b.any   .Ldgemm_kernel_L1_Mv1_20   
+    b.any   .Ldtrmm_kernel_L1_Mv1_20   
 
 
-.Ldgemm_kernel_L1_END:
+.Ldtrmm_kernel_L1_END:
 
 /******************************************************************************/
 
-.Ldgemm_kernel_L999:
+.Ldtrmm_kernel_L999:
 	mov	x0, #0				// set return value
 	ldp	d8, d9, [sp, #(0 * 16)]
 	ldp	d10, d11, [sp, #(1 * 16)]
