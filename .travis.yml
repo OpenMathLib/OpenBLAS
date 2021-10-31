@@ -297,7 +297,7 @@ matrix:
             - gfortran-10
             - wget
       script:
-        - wget https://developer.arm.com/-/media/Files/downloads/hpc/arm-instruction-emulator/21-0/ARM-Instruction-Emulator_21.0_AArch64_Ubuntu-18.04_aarch64.tar.gz?revision=f2d90a6c-15c5-42b3-81aa-464f30efc954
+        - wget https://developer.arm.com/-/media/Files/downloads/hpc/arm-instruction-emulator/21-0/ARM-Instruction-Emulator_21.0_AArch64_Ubuntu-18.04_aarch64.tar.gz
         - tar zxvf ARM-Instruction-Emulator_21.0_AArch64_Ubuntu-18.04_aarch64.tar.gz
         - cd ARM-Instruction-Emulator_21.0_aarch64_Ubuntu-18.04_aarch64
         - sudo ./arm-instruction-emulator-21.0*_aarch64-linux-rpm.sh -a
