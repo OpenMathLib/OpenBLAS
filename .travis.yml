@@ -299,12 +299,14 @@ matrix:
             - gcc-10
             - gfortran-10
             - wget
+            - environment-modules
       script:
         - wget -q https://developer.arm.com/-/media/Files/downloads/hpc/arm-instruction-emulator/21-0/ARM-Instruction-Emulator_21.0_AArch64_Ubuntu-18.04_aarch64.tar.gz
         - tar zxvf ARM-Instruction-Emulator_21.0_AArch64_Ubuntu-18.04_aarch64.tar.gz
         - cd arm-instruction-emulator_21.0_Ubuntu-18.04_aarch64
         - sudo ./arm-instruction-emulator_21.0_Ubuntu-18.04.sh -a
         - cd ..
+        - module load armie21/21.0
         - ls /opt/arm/arm-instruction-emulator-21.0_Generic-AArch64_Ubuntu-18.04_aarch64-linux
         - export PATH=/opt/arm/arm-instruction-emulator-21.0_Generic-AArch64_Ubuntu-18.04_aarch64-linux/bin64:/opt/arm/arm-instruction-emulator-21.0_Generic-AArch64_Ubuntu-18.04_aarch64-linux/bin:$PATH
         - travis_wait 45 make TARGET=A64FX CROSS=1 CC=gcc-10 FC=gfortran-10 HOSTCC=gcc-10
