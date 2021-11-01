@@ -4,7 +4,15 @@
 #include "functable.h"
 #endif
 
+#ifndef CBLAS
 void NAME(FLOAT *DA, FLOAT *DB, FLOAT *C, FLOAT *S){
+
+#else
+void CNAME(void *VDA, void *VDB, FLOAT *C, void *VS) {
+    FLOAT *DA = (FLOAT*) VDA;
+    FLOAT *DB = (FLOAT*) VDB;
+    FLOAT *S  = (FLOAT*) VS;
+#endif /* CBLAS */
 
 #if defined(__i386__) || defined(__x86_64__) || defined(__ia64__) || defined(_M_X64) || defined(_M_IX86)
 
