@@ -307,6 +307,8 @@ matrix:
         - cd arm-instruction-emulator_21.0_Ubuntu-18.04_aarch64
         - sudo ./arm-instruction-emulator_21.0_Ubuntu-18.04.sh -a
         - cd ..
+        - ls /opt/arm
+        - export MODULEPATH=$MODULEPATH:/opt/arm/modulefiles/
         - . /usr/share/modules/init/sh
         - module avail
         - module load armie21/21.0
