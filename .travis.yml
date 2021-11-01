@@ -301,7 +301,7 @@ matrix:
             - wget
             - environment-modules
       script:
-        - apt install environment-modules
+        - sudo apt install environment-modules
         - wget -q https://developer.arm.com/-/media/Files/downloads/hpc/arm-instruction-emulator/21-0/ARM-Instruction-Emulator_21.0_AArch64_Ubuntu-18.04_aarch64.tar.gz
         - tar zxvf ARM-Instruction-Emulator_21.0_AArch64_Ubuntu-18.04_aarch64.tar.gz
         - cd arm-instruction-emulator_21.0_Ubuntu-18.04_aarch64
