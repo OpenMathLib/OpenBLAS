@@ -13,6 +13,7 @@ extern gotoblas_t gotoblas_Z14;
 
 #define NUM_CORETYPES 4
 
+extern int openblas_verbose();
 extern void openblas_warning(int verbose, const char* msg);
 
 char* gotoblas_corename(void) {
@@ -120,6 +121,11 @@ void gotoblas_dynamic_init(void) {
 	else
 	{
 		gotoblas = get_coretype();
+		if (openblas_verbose() >= 2) {
+			snprintf(coremsg, sizeof(coremsg), "Choosing kernels based on getauxval(AT_HWCAP)=0x%lx\n",
+				 getauxval(AT_HWCAP));
+			openblas_warning(2, coremsg);
+		}
 	}
 
 	if (gotoblas == NULL)
@@ -130,9 +136,11 @@ void gotoblas_dynamic_init(void) {
 	}
 
 	if (gotoblas && gotoblas->init) {
-		strncpy(coren, gotoblas_corename(), 20);
-		sprintf(coremsg, "Core: %s\n", coren);
-		openblas_warning(2, coremsg);
+		if (openblas_verbose() >= 2) {
+			strncpy(coren, gotoblas_corename(), 20);
+			sprintf(coremsg, "Core: %s\n", coren);
+			openblas_warning(2, coremsg);
+		}
 		gotoblas->init();
 	}
 	else {
