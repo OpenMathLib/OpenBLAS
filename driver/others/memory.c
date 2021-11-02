@@ -249,6 +249,10 @@ int get_num_procs(void) {
 #if !defined(OS_LINUX)
   return nums;
 #endif
+#if defined(USE_OPENMP)
+  if (omp_get_proc_bind() != omp_proc_bind_false)
+    return nums;
+#endif
 
 #if !defined(__GLIBC_PREREQ)
   return nums;
@@ -1808,6 +1812,10 @@ int get_num_procs(void) {
   if (!nums) nums = sysconf(_SC_NPROCESSORS_CONF);
 #if !defined(OS_LINUX)
   return nums;
+#endif
+#if defined(USE_OPENMP)
+  if (omp_get_proc_bind() != omp_proc_bind_false)
+    return nums;
 #endif
 
 #if !defined(__GLIBC_PREREQ)
