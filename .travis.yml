@@ -288,7 +288,7 @@ matrix:
         
     - &test-armv8sve
       os: linux
-      arch: arm64-graviton2
+      arch: arm64
       dist: focal
       group: edge
       virt: lxd
