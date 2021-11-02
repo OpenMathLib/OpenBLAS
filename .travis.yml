@@ -308,7 +308,7 @@ matrix:
         - sudo ./arm-instruction-emulator_21.0_Ubuntu-18.04.sh -a
         - cd ..
         - export MODULEPATH=$MODULEPATH:/opt/arm/modulefiles/
-        - . /usr/share/modules/init/sh
+        - . /usr/share/modules/init/bash
         - module load armie21/21.0
         - travis_wait 45 make TARGET=A64FX CROSS=1 CC=gcc-10 FC=gfortran-10 HOSTCC=gcc-10
         - armie -msve-vector-bits=256 -- test/sblat1
