@@ -253,7 +253,6 @@ int get_num_procs(void) {
 #endif
     return nums;
 #endif
-#endif
 
 #if !defined(OS_LINUX)
   return nums;
@@ -1822,7 +1821,6 @@ int get_num_procs(void) {
     nums = omp_get_num_places();	  
 #endif
     return nums;
-#endif
 #endif
 
 #if !defined(OS_LINUX)
