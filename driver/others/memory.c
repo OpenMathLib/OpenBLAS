@@ -250,7 +250,8 @@ int get_num_procs(void) {
   return nums;
 #endif
 #if defined(USE_OPENMP)
-  if (omp_get_proc_bind() != omp_proc_bind_false)
+/*  if (omp_get_proc_bind() != omp_proc_bind_false)*/
+    nums = omp_get_num_places();
     return nums;
 #endif
 
@@ -1814,7 +1815,8 @@ int get_num_procs(void) {
   return nums;
 #endif
 #if defined(USE_OPENMP)
-  if (omp_get_proc_bind() != omp_proc_bind_false)
+/*  if (omp_get_proc_bind() != omp_proc_bind_false) */
+    nums = omp_get_num_places();	  
     return nums;
 #endif
 
