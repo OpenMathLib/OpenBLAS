@@ -246,15 +246,17 @@ int get_num_procs(void) {
 #endif
 
   if (!nums) nums = sysconf(_SC_NPROCESSORS_CONF);
-#if !defined(OS_LINUX)
-  return nums;
-#endif
+
 #if defined(USE_OPENMP)
-/*  if (omp_get_proc_bind() != omp_proc_bind_false)*/
 #if _OPENMP >= 201307
     nums = omp_get_num_places();
 #endif
     return nums;
+#endif
+#endif
+
+#if !defined(OS_LINUX)
+  return nums;
 #endif
 
 #if !defined(__GLIBC_PREREQ)
@@ -1813,9 +1815,7 @@ int get_num_procs(void) {
 #endif
 
   if (!nums) nums = sysconf(_SC_NPROCESSORS_CONF);
-#if !defined(OS_LINUX)
-  return nums;
-#endif
+
 #if defined(USE_OPENMP)
 /*  if (omp_get_proc_bind() != omp_proc_bind_false) */
 #if_OPENMP >= 201307
@@ -1823,7 +1823,12 @@ int get_num_procs(void) {
 #endif
     return nums;
 #endif
+#endif
 
+#if !defined(OS_LINUX)
+  return nums;
+#endif
+	
 #if !defined(__GLIBC_PREREQ)
   return nums;
 #else
