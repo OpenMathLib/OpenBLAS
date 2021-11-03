@@ -251,7 +251,9 @@ int get_num_procs(void) {
 #endif
 #if defined(USE_OPENMP)
 /*  if (omp_get_proc_bind() != omp_proc_bind_false)*/
+#if _OPENMP >= 201307
     nums = omp_get_num_places();
+#endif
     return nums;
 #endif
 
@@ -1816,7 +1818,9 @@ int get_num_procs(void) {
 #endif
 #if defined(USE_OPENMP)
 /*  if (omp_get_proc_bind() != omp_proc_bind_false) */
+#if_OPENMP >= 201307
     nums = omp_get_num_places();	  
+#endif
     return nums;
 #endif
 
