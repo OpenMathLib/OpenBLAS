@@ -624,7 +624,7 @@ static gotoblas_t *get_coretype(void){
 	    return &gotoblas_NEHALEM;
 	  }
         }
-	if (model == 10) {
+	if (model == 10 || model == 12){
           // Ice Lake SP
 	   if(support_avx512_bf16())
              return &gotoblas_COOPERLAKE;
@@ -639,12 +639,12 @@ static gotoblas_t *get_coretype(void){
 	    openblas_warning(FALLBACK_VERBOSE, NEHALEM_FALLBACK);
 	    return &gotoblas_NEHALEM;
 	  }
-        }      
+        }
         return NULL;  
       case 7:
 	if (model == 10) // Goldmont Plus
 	   return &gotoblas_NEHALEM;
-        if (model == 14) {
+        if (model == 13 || model == 14) {
 	// Ice Lake
           if (support_avx512()) 
 	    return &gotoblas_SKYLAKEX;
@@ -661,7 +661,6 @@ static gotoblas_t *get_coretype(void){
           }
         }
         return NULL;  
-      case 9:
       case 8:
         if (model == 12 || model == 13) { // Tiger Lake
           if (support_avx512()) 
@@ -689,6 +688,50 @@ static gotoblas_t *get_coretype(void){
 	    return &gotoblas_NEHALEM; //OS doesn't support AVX. Use old kernels.
 	  }
 	}
+	if (model == 15){          // Sapphire Rapids
+	   if(support_avx512_bf16())
+             return &gotoblas_COOPERLAKE;
+          if (support_avx512()) 
+	    return &gotoblas_SKYLAKEX;
+	  if(support_avx2())
+	    return &gotoblas_HASWELL;
+	  if(support_avx()) {
+	    openblas_warning(FALLBACK_VERBOSE, SANDYBRIDGE_FALLBACK);
+	    return &gotoblas_SANDYBRIDGE;
+	  } else {
+	    openblas_warning(FALLBACK_VERBOSE, NEHALEM_FALLBACK);
+	    return &gotoblas_NEHALEM;
+	  }
+        }
+	return NULL;
+	
+	
+      case 9:
+        if (model == 7 || model == 10) { // Alder Lake
+          if(support_avx2()){
+            openblas_warning(FALLBACK_VERBOSE, HASWELL_FALLBACK);
+            return &gotoblas_HASWELL;
+          }
+          if(support_avx()) {
+            openblas_warning(FALLBACK_VERBOSE, SANDYBRIDGE_FALLBACK);
+            return &gotoblas_SANDYBRIDGE;
+          } else {
+          openblas_warning(FALLBACK_VERBOSE, NEHALEM_FALLBACK);
+          return &gotoblas_NEHALEM;
+          }
+        }
+	if (model == 14 ) { // Kaby Lake, Coffee Lake
+	  if(support_avx2())
+	    return &gotoblas_HASWELL;
+	  if(support_avx()) {
+	    openblas_warning(FALLBACK_VERBOSE, SANDYBRIDGE_FALLBACK);
+	    return &gotoblas_SANDYBRIDGE;
+	  } else {
+	    openblas_warning(FALLBACK_VERBOSE, NEHALEM_FALLBACK);
+	    return &gotoblas_NEHALEM; //OS doesn't support AVX. Use old kernels.
+	  }
+	}
+	return NULL;
       case 10:
         if (model == 5 || model == 6) {
 	  if(support_avx2())
