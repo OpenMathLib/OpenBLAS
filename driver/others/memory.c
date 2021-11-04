@@ -248,7 +248,7 @@ int get_num_procs(void) {
   if (!nums) nums = sysconf(_SC_NPROCESSORS_CONF);
 
 #if defined(USE_OPENMP)
-#if _OPENMP >= 201307
+#if _OPENMP >= 201511
     nums = omp_get_num_places();
 #endif
     return nums;
@@ -1817,7 +1817,7 @@ int get_num_procs(void) {
 
 #if defined(USE_OPENMP)
 /*  if (omp_get_proc_bind() != omp_proc_bind_false) */
-#if _OPENMP >= 201307
+#if _OPENMP >= 201511
     nums = omp_get_num_places();	  
 #endif
     return nums;
