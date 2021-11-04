@@ -125,7 +125,7 @@ int main(int argc, char *argv[]){
    		fprintf(stderr, " %6dx%d : ", (int)m,(int)n);
    		for(j = 0; j < m; j++){
       			for(i = 0; i < n * COMPSIZE; i++){
-				a[(long)j + (long)i * (long)m * COMPSIZE] = ((FLOAT) rand() / (FLOAT) RAND_MAX) - 0.5;
+				a[(long)i + (long)j * (long)m * COMPSIZE] = ((FLOAT) rand() / (FLOAT) RAND_MAX) - 0.5;
       			}
    		}
 
@@ -162,7 +162,7 @@ int main(int argc, char *argv[]){
    		fprintf(stderr, " %6dx%d : ", (int)m,(int)n);
    		for(j = 0; j < m; j++){
       			for(i = 0; i < n * COMPSIZE; i++){
-				a[(long)j + (long)i * (long)m * COMPSIZE] = ((FLOAT) rand() / (FLOAT) RAND_MAX) - 0.5;
+				a[(long)i + (long)j * (long)m * COMPSIZE] = ((FLOAT) rand() / (FLOAT) RAND_MAX) - 0.5;
       			}
    		}
 
