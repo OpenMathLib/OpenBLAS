@@ -104,7 +104,7 @@ GETARCH_FLAGS += -DUSER_TARGET
 ifeq ($(TARGET), GENERIC)
 ifeq ($(DYNAMIC_ARCH), 1)
 override NO_EXPRECISION=1
-export NO_EXPRECiSION
+export NO_EXPRECISION
 endif
 endif
 endif
@@ -900,15 +900,25 @@ endif
 
 ifeq ($(C_COMPILER), PGI)
 PGCVERSIONGT20 := $(shell expr `$(CC) --version|sed -n "2p" |sed -e "s/[^0-9.]//g" |cut -d "." -f 1` \> 20)
-PGCVERSIONGTEQ20 := $(shell expr `$(CC) --version|sed -n "2p" |sed -e "s/[^0-9.]//g" |cut -d "." -f 1` \>= 20)
-PGCMINORVERSIONGE11 := $(shell expr `$(CC) --version|sed -n "2p" |sed -e "s/[^0-9.]//g" |cut -c 4-5` == 11)
+PGCVERSIONEQ20 := $(shell expr `$(CC) --version|sed -n "2p" |sed -e "s/[^0-9.]//g" |cut -d "." -f 1` == 20)
+PGCMINORVERSIONGE11 := $(shell expr `$(CC) --version|sed -n "2p" |cut -d "-" -f 1 |sed -e "s/[^0-9.]//g" |cut -c 4-5` \>= 11)
 PGCVERSIONCHECK := $(PGCVERSIONGT20)$(PGCVERSIONEQ20)$(PGCMINORVERSIONGE11)
-ifeq ($(PGCVERSIONCHECK), $(filter $(PGCVERSIONCHECK), 110 111 011))
+ifeq ($(PGCVERSIONCHECK), $(filter $(PGCVERSIONCHECK), 100 101 011))
 NEWPGI := 1
+PGCVERSIONGT21 := $(shell expr `$(CC) --version|sed -n "2p" |sed -e "s/[^0-9.]//g" |cut -d "." -f 1` \> 21)
+PGCVERSIONEQ21 := $(shell expr `$(CC) --version|sed -n "2p" |sed -e "s/[^0-9.]//g" |cut -d "." -f 1` == 21)
+PGCVERSIONCHECK2 := $(PGCVERSIONGT21)$(PGCVERSIONEQ21)$(PGCMINORVERSIONGE11)
+ifeq ($(PGCVERSIONCHECK2), $(filter $(PGCVERSIONCHECK2), 100 101 011))
+NEWPGI2 := 1
+endif
 endif
 ifdef BINARY64
 ifeq ($(ARCH), x86_64)
+ifneq ($(NEWPGI2),1)
 CCOMMON_OPT += -tp p7-64
+else
+CCOMMON_OPT += -tp px
+endif
 ifneq ($(NEWPGI),1)
 CCOMMON_OPT +=  -D__MMX__ -Mnollvm
 endif
@@ -923,7 +933,11 @@ endif
 endif
 endif
 else
+ifneq ($(NEWPGI2),1)
 CCOMMON_OPT += -tp p7
+else
+CCOMMON_OPT += -tp px
+endif
 endif
 endif
 
