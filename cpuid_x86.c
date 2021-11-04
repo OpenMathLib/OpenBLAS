@@ -1,3 +1,4 @@
+//{
 /*********************************************************************/
 /* Copyright 2009, 2010 The University of Texas at Austin.           */
 /* All rights reserved.                                              */
@@ -1455,7 +1456,6 @@ int get_cpuname(void){
 	  return CPUTYPE_NEHALEM;
         }
       break;
-      case 9:
       case 8:      
         switch (model) {
         case 12: // Tiger Lake
@@ -1475,30 +1475,70 @@ int get_cpuname(void){
 	    return CPUTYPE_SANDYBRIDGE;
           else
 	    return CPUTYPE_NEHALEM;
-    }
-      case 10: //family 6 exmodel 10
-        switch (model) {
-    case 5: // Comet Lake H and S
-    case 6: // Comet Lake U
-          if(support_avx2())
-            return CPUTYPE_HASWELL;
-          if(support_avx())
-        return CPUTYPE_SANDYBRIDGE;
-          else
-        return CPUTYPE_NEHALEM;
-    case 7: // Rocket Lake           
-	  if(support_avx512())
+	case 15: // Sapphire Rapids
+	  if(support_avx512_bf16())
+            return CPUTYPE_COOPERLAKE;	
+          if(support_avx512())
             return CPUTYPE_SKYLAKEX;
           if(support_avx2())
             return CPUTYPE_HASWELL;
           if(support_avx())
 	    return CPUTYPE_SANDYBRIDGE;
 	  else
-	  return CPUTYPE_NEHALEM;
-	}
-	break;    
-      }
+	  return CPUTYPE_NEHALEM;	
+        }
       break;
+      case 9:
+        switch (model) {
+        case 7: // Alder Lake desktop
+        case 10: // Alder Lake mobile
+          if(support_avx2())
+            return CPUTYPE_HASWELL;
+          if(support_avx())
+            return CPUTYPE_SANDYBRIDGE;
+          else
+          return CPUTYPE_NEHALEM;
+        case 13: // Ice Lake NNPI
+          if(support_avx512())
+            return CPUTYPE_SKYLAKEX;
+          if(support_avx2())
+            return CPUTYPE_HASWELL;
+          if(support_avx())
+            return CPUTYPE_SANDYBRIDGE;
+          else
+          return CPUTYPE_NEHALEM;
+	case 14: // Kaby Lake and refreshes
+          if(support_avx2())
+            return CPUTYPE_HASWELL;
+          if(support_avx())
+	    return CPUTYPE_SANDYBRIDGE;
+          else
+	    return CPUTYPE_NEHALEM;
+        }
+      break;
+      case 10: //family 6 exmodel 10
+        switch (model) {
+          case 5: // Comet Lake H and S
+          case 6: // Comet Lake U
+            if(support_avx2())
+              return CPUTYPE_HASWELL;
+            if(support_avx())
+              return CPUTYPE_SANDYBRIDGE;
+            else
+              return CPUTYPE_NEHALEM;
+          case 7: // Rocket Lake           
+	    if(support_avx512())
+              return CPUTYPE_SKYLAKEX;
+            if(support_avx2())
+              return CPUTYPE_HASWELL;
+            if(support_avx())
+	      return CPUTYPE_SANDYBRIDGE;
+	    else
+	    return CPUTYPE_NEHALEM;
+        }
+        break;
+      }
+      break;    
     case 0x7:
       return CPUTYPE_ITANIUM;
     case 0xf:
@@ -2069,32 +2109,7 @@ int get_coretype(void){
 	    return CORE_NEHALEM;
         }
         break;
-      case 10:
-        switch (model) {
-	  case 5: // Comet Lake H and S
-    	  case 6: // Comet Lake U
-            if(support_avx())
-  #ifndef NO_AVX2
-              return CORE_HASWELL;
-  #else
-              return CORE_SANDYBRIDGE;
-  #endif
-            else
-              return CORE_NEHALEM;
-	  case 7:// Rocket Lake
-#ifndef NO_AVX512
-	  if(support_avx512())
-            return CORE_SKYLAKEX;
-#endif
-#ifndef NO_AVX2
-	  if(support_avx2())
-            return CORE_HASWELL;
-#endif
-	  if(support_avx())
-	    return CORE_SANDYBRIDGE;
-	  else
-	  return CORE_NEHALEM;
-        }
+
       case 5:
         switch (model) {
 	case 6:
@@ -2148,6 +2163,7 @@ int get_coretype(void){
 	    return CORE_NEHALEM;
         }
 	break;
+
       case 6:
         if (model == 6)
 #ifndef NO_AVX512
@@ -2162,7 +2178,7 @@ int get_coretype(void){
 	  else
 	    return CORE_NEHALEM;
 #endif
-	if (model == 10)
+	if (model == 10 || model == 12)
 #ifndef NO_AVX512
 	  if(support_avx512_bf16())
             return CORE_COOPERLAKE;
@@ -2178,10 +2194,11 @@ int get_coretype(void){
 	    return CORE_NEHALEM;
 #endif	
         break;    	
+
       case 7:
         if (model == 10) 
             return CORE_NEHALEM;
-        if (model == 14)
+        if (model == 13 || model == 14) // Ice Lake
 #ifndef NO_AVX512
 	    return CORE_SKYLAKEX;
 #else
@@ -2195,9 +2212,9 @@ int get_coretype(void){
 	    return CORE_NEHALEM;
 #endif			
         break;    	
-      case 9:
+
       case 8:
-       if (model == 12 || model == 13) { // Tiger Lake
+        if (model == 12 || model == 13) { // Tiger Lake
           if(support_avx512())
             return CORE_SKYLAKEX;
           if(support_avx2())
@@ -2207,7 +2224,7 @@ int get_coretype(void){
           else
           return CORE_NEHALEM;
         }
-        if (model == 14) { // Kaby Lake 
+        if (model == 14) { // Kaby Lake mobile
 	  if(support_avx())
 #ifndef NO_AVX2
 	    return CORE_HASWELL;
@@ -2217,12 +2234,82 @@ int get_coretype(void){
 	  else
             return CORE_NEHALEM;
 	}
-      }
+        if (model == 15) { // Sapphire Rapids
+	  if(support_avx512_bf16())
+            return CPUTYPE_COOPERLAKE;	
+          if(support_avx512())
+            return CPUTYPE_SKYLAKEX;
+          if(support_avx2())
+            return CPUTYPE_HASWELL;
+          if(support_avx())
+	    return CPUTYPE_SANDYBRIDGE;
+	  else
+	  return CPUTYPE_NEHALEM;	
+        }
       break;
+
+      case 9:
+        if (model == 7 || model == 10) { // Alder Lake
+          if(support_avx2())
+            return CORE_HASWELL;
+          if(support_avx())
+            return CORE_SANDYBRIDGE;
+          else
+          return CORE_NEHALEM;
+        }
+        if (model == 13) { // Ice Lake NNPI
+          if(support_avx512())
+            return CORE_SKYLAKEX;
+          if(support_avx2())
+            return CORE_HASWELL;
+          if(support_avx())
+            return CORE_SANDYBRIDGE;
+          else
+          return CORE_NEHALEM;
+        }
+        if (model == 14) { // Kaby Lake desktop
+	  if(support_avx())
+#ifndef NO_AVX2
+	    return CORE_HASWELL;
+#else
+	    return CORE_SANDYBRIDGE;
+#endif
+	  else
+            return CORE_NEHALEM;
+	}
+      break;
+
+      case 10:
+        switch (model) {
+	  case 5: // Comet Lake H and S
+    	  case 6: // Comet Lake U
+            if(support_avx())
+  #ifndef NO_AVX2
+              return CORE_HASWELL;
+  #else
+              return CORE_SANDYBRIDGE;
+  #endif
+            else
+              return CORE_NEHALEM;
+	  case 7:// Rocket Lake
+#ifndef NO_AVX512
+	  if(support_avx512())
+            return CORE_SKYLAKEX;
+#endif
+#ifndef NO_AVX2
+	  if(support_avx2())
+            return CORE_HASWELL;
+#endif
+	  if(support_avx())
+	    return CORE_SANDYBRIDGE;
+	  else
+	  return CORE_NEHALEM;
+        }
 
       case 15:
 	if (model <= 0x2) return CORE_NORTHWOOD;
 	else return CORE_PRESCOTT;
+      }
     }
   }
 
@@ -2495,3 +2582,4 @@ void get_sse(void){
   if (features & HAVE_FMA3 )    printf("HAVE_FMA3=1\n");
 
 }
+//}
