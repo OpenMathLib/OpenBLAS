@@ -2921,7 +2921,7 @@ void *blas_memory_alloc(int procpos){
 
       func = &memoryalloc[0];
 
-      while ((func != NULL) && (map_address == (void *) -1)) {
+      while ((*func != NULL) && (map_address == (void *) -1)) {
 
         map_address = (*func)((void *)base_address);
 
@@ -3032,7 +3032,7 @@ allocation2:
 
       func = &memoryalloc[0];
 
-      while ((func != NULL) && (map_address == (void *) -1)) {
+      while ((*func != NULL) && (map_address == (void *) -1)) {
 
         map_address = (*func)((void *)base_address);
 
