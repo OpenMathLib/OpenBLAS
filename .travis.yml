@@ -312,11 +312,13 @@ matrix:
         - . /usr/share/modules/init/bash
         - module load armie21/21.0
         - travis_wait 45 make TARGET=A64FX CROSS=1 CC=gcc-10 FC=gfortran-10 HOSTCC=gcc-10 DEBUG=1
+        - free
         - echo "	set auto-load safe-path /" >> $HOME/.gdbinit
-        - OPENBLAS_NUM_THREADS=2  armie -msve-vector-bits=256 -- gdb -batch -ex "run" -ex "bt" test/sblat1
-        - armie -msve-vector-bits=128 -- test/dblat1
-        - armie -msve-vector-bits=512 -- test/zblat1
-        - armie -msve-vector-bits=128 -- test/dblat3 <test/dblat3.dat
+        - armie -msve-vector-bits=128 -- echo hello
+#        - OPENBLAS_NUM_THREADS=2  armie -msve-vector-bits=256 -- gdb -batch -ex "run" -ex "bt" test/sblat1
+#        - armie -msve-vector-bits=128 -- test/dblat1
+#        - armie -msve-vector-bits=512 -- test/zblat1
+#        - armie -msve-vector-bits=128 -- test/dblat3 <test/dblat3.dat
       env:
         # for matrix annotation only
         - TARGET_BOX=ARMV8-SVE-ARMIE
