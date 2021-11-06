@@ -299,6 +299,7 @@ matrix:
             - gcc-10
             - gfortran-10
             - wget
+            - gdb
             - environment-modules
       script:
         - sudo apt install environment-modules
@@ -307,12 +308,11 @@ matrix:
         - cd arm-instruction-emulator_21.0_Ubuntu-18.04_aarch64
         - sudo ./arm-instruction-emulator_21.0_Ubuntu-18.04.sh -a >/dev/null 2>&1
         - cd ..
-        - echo $SHELL
         - export MODULEPATH=$MODULEPATH:/opt/arm/modulefiles/
         - . /usr/share/modules/init/bash
         - module load armie21/21.0
         - travis_wait 45 make TARGET=A64FX CROSS=1 CC=gcc-10 FC=gfortran-10 HOSTCC=gcc-10
-        - OPENBLAS_NUM_THREADS=2 armie -msve-vector-bits=256 -- test/sblat1
+        - OPENBLAS_NUM_THREADS=2 gdb -args armie -msve-vector-bits=256 -- test/sblat1
         - armie -msve-vector-bits=128 -- test/dblat1
         - armie -msve-vector-bits=512 -- test/zblat1
         - armie -msve-vector-bits=128 -- test/dblat3 <test/dblat3.dat
