@@ -305,8 +305,9 @@ matrix:
         - wget -q https://developer.arm.com/-/media/Files/downloads/hpc/arm-instruction-emulator/21-0/ARM-Instruction-Emulator_21.0_AArch64_Ubuntu-18.04_aarch64.tar.gz
         - tar zxvf ARM-Instruction-Emulator_21.0_AArch64_Ubuntu-18.04_aarch64.tar.gz
         - cd arm-instruction-emulator_21.0_Ubuntu-18.04_aarch64
-        - sudo ./arm-instruction-emulator_21.0_Ubuntu-18.04.sh -a
+        - sudo ./arm-instruction-emulator_21.0_Ubuntu-18.04.sh -a >/dev/null 2>&1
         - cd ..
+        - echo $SHELL
         - export MODULEPATH=$MODULEPATH:/opt/arm/modulefiles/
         - . /usr/share/modules/init/bash
         - module load armie21/21.0
