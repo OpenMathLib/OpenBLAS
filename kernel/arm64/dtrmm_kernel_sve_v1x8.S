@@ -344,21 +344,21 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	prfm	PLDL2KEEP, [pCRow0, #C_PRE_SIZE]
 
 	add	pCRow1, pCRow0, LDC
-    fmla z16.d, p1/m, z16.d, alphaZ
+    fmul z16.d, p1/m, z16.d, alphaZ
     st1d  z16.d, p1, [pCRow0]
 	prfm	PLDL2KEEP, [pCRow1, #C_PRE_SIZE]
 
 	add	pCRow2, pCRow1, LDC
-    fmla z17.d, p1/m, z17.d, alphaZ
+    fmul z17.d, p1/m, z17.d, alphaZ
     st1d  z17.d, p1, [pCRow1]
 	prfm	PLDL2KEEP, [pCRow2, #C_PRE_SIZE]
 
 	add	pCRow1, pCRow2, LDC
-    fmla z18.d, p1/m, z18.d, alphaZ
+    fmul z18.d, p1/m, z18.d, alphaZ
     st1d z18.d, p1, [pCRow2]
 	prfm	PLDL2KEEP, [pCRow1, #C_PRE_SIZE]
 
-    fmla z19.d, p1/m, z19.d, alphaZ
+    fmul z19.d, p1/m, z19.d, alphaZ
     st1d  z19.d, p1, [pCRow1]
 
 	add	pCRow0, pCRow0, lanes, lsl #3	// pC = pC + lanes  * 8
@@ -392,11 +392,11 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	prfm	PLDL2KEEP, [pCRow0, #C_PRE_SIZE]
 
 	add	pCRow1, pCRow0, LDC
-    fmla z16.d, p1/m, z16.d, alphaZ
+    fmul z16.d, p1/m, z16.d, alphaZ
     st1d  z16.d, p1, [pCRow0]
 	prfm	PLDL2KEEP, [pCRow1, #C_PRE_SIZE]
 
-    fmla z17.d, p1/m, z17.d, alphaZ
+    fmul z17.d, p1/m, z17.d, alphaZ
     st1d  z17.d, p1, [pCRow1]
 
 	add	pCRow0, pCRow0, lanes, lsl #3	// pC = pC + lanes  * 8
@@ -426,7 +426,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	prfm	PLDL2KEEP, [pCRow0, #C_PRE_SIZE]
 
-    fmla z16.d, p1/m, z16.d, alphaZ
+    fmul z16.d, p1/m, z16.d, alphaZ
     st1d  z16.d, p1, [pCRow0]
 
 
