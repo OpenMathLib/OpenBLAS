@@ -195,8 +195,8 @@ if (APPLE)
   set (CMAKE_C_USE_RESPONSE_FILE_FOR_OBJECTS 1)
   set (CMAKE_Fortran_USE_RESPONSE_FILE_FOR_OBJECTS 1)
   set (CMAKE_C_LINK_EXECUTABLE
-  "${CMAKE_COMMAND} cat CMakeFiles/openblas.rsp | xargs -n1024 ar -ur libopenblas.a"
-  "${CMAKE_COMMAND} echo "" | <CMAKE_Fortran_COMPILER> -o dummy.o -c -x f95-cpp-input -"
+  "${CMAKE_COMMAND} -E cat CMakeFiles/openblas.rsp | xargs -n1024 ar -ur libopenblas.a"
+  "${CMAKE_COMMAND} -E echo "" | <CMAKE_Fortran_COMPILER> -o dummy.o -c -x f95-cpp-input -"
   "<CMAKE_Fortran_COMPILER> <FLAGS> -Wl,-force_load,${OpenBLAS_LIBNAME} dummy.o")
 endif()
 
