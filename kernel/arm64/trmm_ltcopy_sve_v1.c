@@ -47,7 +47,8 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, BLASLONG posX, BLASLON
 
     BLASLONG i, js;
     BLASLONG X;
-    //printf("Using trmm_ut.\n");
+
+    //printf("Using trmm_lt.\n");
 
     int sve_len = svcntd();
 
@@ -60,9 +61,9 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, BLASLONG posX, BLASLON
         X = posX;
 
         if (posX <= posY) {
-            ao = a + posX + posY * lda;
-        } else {
             ao = a + posY + posX * lda;
+        } else {
+            ao = a + posX + posY * lda;
         }
 
         i = 0;
@@ -70,13 +71,13 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, BLASLONG posX, BLASLON
         /* int m_active = svcntp_b64(svptrue_b64(), pm); */
         do 
         {
-            if (X < posY) { // optimize this: unroll over DGEMM_UNROLL_M: vl
+            if (X > posY) { // optimize this: unroll over DGEMM_UNROLL_M: vl
                 ao ++;
                 b += n_active;
                 X ++;
                 i ++;
             } else 
-                if (X > posY) {
+                if (X < posY) {
                     svfloat64_t aj_vec = svld1(pn, ao);
                     svst1(pn, b, aj_vec);
                     ao += lda;
@@ -88,21 +89,21 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, BLASLONG posX, BLASLON
                     int temp = 0;
                     for (int j = 0; j < n_active; j++) {
                         for (int k = 0 ; k < j; k++) {
-                            b[temp++] = *(ao+j*lda+k);
+                            b[temp++] = ZERO;
                         }
                         b[temp++] = ONE;
                         for (int k = j+1; k < n_active; k++) {
-                            b[temp++] = ZERO;
+                            b[temp++] = *(ao+j*lda+k);
                         }
                     }
 #else 
                     int temp = 0;
                     for (int j = 0; j < n_active; j++) {
-                        for (int k = 0 ; k <= j; k++) {
-                            b[temp++] = *(ao+j*lda+k);
-                        }
-                        for (int k = j+1; k < n_active; k++) {
+                        for (int k = 0 ; k < j; k++) {
                             b[temp++] = ZERO;
+                        }
+                        for (int k = j; k < n_active; k++) {
+                            b[temp++] = *(ao+j*lda+k);
                         }
                     }
 #endif
@@ -121,6 +122,7 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, BLASLONG posX, BLASLON
         pn = svwhilelt_b64(js, n);
         n_active = svcntp_b64(svptrue_b64(), pn);
     } while (svptest_any(svptrue_b64(), pn));
+
 
     return 0;
 }

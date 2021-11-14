@@ -47,9 +47,10 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, BLASLONG posX, BLASLON
 
     BLASLONG i, js;
     BLASLONG X;
-    //printf("Using trmm_ut.\n");
+    //printf("Using trmm_ln.\n");
 
     int sve_len = svcntd();
+    svint64_t index = svindex_s64(0LL, lda);
 
     FLOAT *ao;
     js = 0;
@@ -60,9 +61,9 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, BLASLONG posX, BLASLON
         X = posX;
 
         if (posX <= posY) {
-            ao = a + posX + posY * lda;
-        } else {
             ao = a + posY + posX * lda;
+        } else {
+            ao = a + posX + posY * lda;
         }
 
         i = 0;
@@ -70,15 +71,15 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, BLASLONG posX, BLASLON
         /* int m_active = svcntp_b64(svptrue_b64(), pm); */
         do 
         {
-            if (X < posY) { // optimize this: unroll over DGEMM_UNROLL_M: vl
+            if (X > posY) { // optimize this: unroll over DGEMM_UNROLL_M: vl
+                svfloat64_t aj_vec = svld1_gather_index(pn, ao, index);
+                svst1(pn, b, aj_vec);
                 ao ++;
                 b += n_active;
                 X ++;
                 i ++;
             } else 
-                if (X > posY) {
-                    svfloat64_t aj_vec = svld1(pn, ao);
-                    svst1(pn, b, aj_vec);
+                if (X < posY) {
                     ao += lda;
                     b += n_active;
                     X ++;
@@ -88,7 +89,7 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, BLASLONG posX, BLASLON
                     int temp = 0;
                     for (int j = 0; j < n_active; j++) {
                         for (int k = 0 ; k < j; k++) {
-                            b[temp++] = *(ao+j*lda+k);
+                            b[temp++] = *(ao+k*lda+j);
                         }
                         b[temp++] = ONE;
                         for (int k = j+1; k < n_active; k++) {
@@ -99,14 +100,14 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, BLASLONG posX, BLASLON
                     int temp = 0;
                     for (int j = 0; j < n_active; j++) {
                         for (int k = 0 ; k <= j; k++) {
-                            b[temp++] = *(ao+j*lda+k);
+                            b[temp++] = *(ao+k*lda+j);
                         }
                         for (int k = j+1; k < n_active; k++) {
                             b[temp++] = ZERO;
                         }
                     }
 #endif
-                    ao += n_active * lda;
+                    ao += n_active;
                     b += n_active*n_active;
                     X += n_active;
                     i += n_active;
