@@ -1664,8 +1664,10 @@ export HAVE_VFP
 export HAVE_VFPV3
 export HAVE_VFPV4
 export HAVE_NEON
-export HAVE_MSA
-export MSA_FLAGS
+ifndef NO_MSA
+  export HAVE_MSA
+  export MSA_FLAGS
+endif
 export KERNELDIR
 export FUNCTION_PROFILE
 export TARGET_CORE
