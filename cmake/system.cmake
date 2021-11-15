@@ -239,6 +239,11 @@ include("${PROJECT_SOURCE_DIR}/cmake/arch.cmake")
 # C Compiler dependent settings
 include("${PROJECT_SOURCE_DIR}/cmake/cc.cmake")
 
+if (INTERFACE64)
+  set(SUFFIX64 64)
+  set(SUFFIX64_UNDERSCORE _64)
+endif()
+
 if (NOT NOFORTRAN)
   # Fortran Compiler dependent settings
   include("${PROJECT_SOURCE_DIR}/cmake/fc.cmake")
