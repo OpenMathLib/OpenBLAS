@@ -258,6 +258,8 @@ endif
 #For small matrix optimization
 ifeq ($(ARCH), x86_64)
 SMALL_MATRIX_OPT = 1
+else ifeq ($(CORE), POWER10)
+SMALL_MATRIX_OPT = 1
 endif
 ifeq ($(SMALL_MATRIX_OPT), 1)
 CCOMMON_OPT += -DSMALL_MATRIX_OPT
