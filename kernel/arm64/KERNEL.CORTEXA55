@@ -141,7 +141,7 @@ SGEMMONCOPY    =  sgemm_ncopy_$(SGEMM_UNROLL_N).S
 SGEMMONCOPYOBJ =  sgemm_oncopy$(TSUFFIX).$(SUFFIX)
 SGEMMOTCOPYOBJ =  sgemm_otcopy$(TSUFFIX).$(SUFFIX)
 
-DGEMMKERNEL    =  dgemm_kernel_$(DGEMM_UNROLL_M)x$(DGEMM_UNROLL_N).S
+DGEMMKERNEL    =  dgemm_kernel_$(DGEMM_UNROLL_M)x$(DGEMM_UNROLL_N)_cortexa53.c
 DTRMMKERNEL    =  dtrmm_kernel_$(DGEMM_UNROLL_M)x$(DGEMM_UNROLL_N).S
 
 ifneq ($(DGEMM_UNROLL_M), $(DGEMM_UNROLL_N))
