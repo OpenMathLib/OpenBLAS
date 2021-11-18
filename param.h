@@ -2876,7 +2876,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define SYMV_P  16
 #endif
 
-#if defined(P5600) || defined(MIPS1004K) || defined(MIPS24K) || defined(I6400) || defined(P6600) || defined(I6500) 
+#if defined(P5600) || defined(MIPS1004K) || defined(MIPS24K) || defined(I6400) || defined(P6600) || defined(I6500)
 #define SNUMOPT  2
 #define DNUMOPT  2
 
@@ -3154,7 +3154,7 @@ is a big desktop or server with abundant cache rather than a phone or embedded d
 #define SGEMM_DEFAULT_UNROLL_M  8
 #define SGEMM_DEFAULT_UNROLL_N  8
 
-#define DGEMM_DEFAULT_UNROLL_M  8
+#define DGEMM_DEFAULT_UNROLL_M  4
 #define DGEMM_DEFAULT_UNROLL_N  4
 
 #define CGEMM_DEFAULT_UNROLL_M  8
@@ -3602,20 +3602,6 @@ is a big desktop or server with abundant cache rather than a phone or embedded d
 #define XGEMM_DEFAULT_UNROLL_M 1
 #endif
 
-#ifdef ARCH_MIPS
-#define SGEMM_DEFAULT_P  128
-#define DGEMM_DEFAULT_P  128
-#define CGEMM_DEFAULT_P  96
-#define ZGEMM_DEFAULT_P  64
-#define SGEMM_DEFAULT_Q  240
-#define DGEMM_DEFAULT_Q  120
-#define CGEMM_DEFAULT_Q  120
-#define ZGEMM_DEFAULT_Q  120
-#define SGEMM_DEFAULT_R  12288
-#define DGEMM_DEFAULT_R  8192
-#define CGEMM_DEFAULT_R  4096
-#define ZGEMM_DEFAULT_R  4096
-#else
 #define SGEMM_DEFAULT_P sgemm_p
 #define DGEMM_DEFAULT_P dgemm_p
 #define QGEMM_DEFAULT_P qgemm_p
@@ -3636,7 +3622,6 @@ is a big desktop or server with abundant cache rather than a phone or embedded d
 #define CGEMM_DEFAULT_Q 128
 #define ZGEMM_DEFAULT_Q 128
 #define XGEMM_DEFAULT_Q 128
-#endif
 
 #define SYMV_P	16
 
