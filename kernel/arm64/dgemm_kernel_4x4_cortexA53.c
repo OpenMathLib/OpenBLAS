@@ -81,7 +81,7 @@ static inline void dgemm_kernel_arm_cortex_a53_4x4_m4n12(
     /** register v0-v3 for loading A, v4-v7 for loading B, x0 for transporting data */
     "ldp q0,q1,[%[sa]]; ldp q4,q5,[%[b1_]]\n\t"
     "ldr d6,[%[b2_]]; ldr x0,[%[b2_],#8]\n\t"
-    "blt 3f; beq 2f;\n\t"
+    "blt 3f; beq 2f; .p2align 2;\n\t"
     "1:\n\t"
     /** main loop with unroll_k = 2, specially designed for cortex-A53 NEON pipeline */
     "ldr d7,[%[b2_],#16]; fmov v6.d[1],x0\n\t"
@@ -212,7 +212,8 @@ static inline void dgemm_kernel_arm_cortex_a53_4x4_m4n12(
     "fmla v29.2d,v3.2d,v7.d[0]\n\t"
     "fmla v30.2d,v2.2d,v7.d[1]\n\t"
     "fmla v31.2d,v3.2d,v7.d[1]\n\t"
-    "b 4f; 3:\n\t"
+    "b 4f;\n\t"
+    "3:\n\t"
     /** tail part with k = 1 */
     "ldr d7,[%[b2_],#16]; fmov v6.d[1],x0\n\t"
     "fmla v8.2d,v0.2d,v4.d[0]; ldr x0,[%[b2_],#24]\n\t"
