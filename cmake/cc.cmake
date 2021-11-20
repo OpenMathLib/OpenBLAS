@@ -15,6 +15,11 @@ if (${CMAKE_C_COMPILER_ID} STREQUAL "GNU" OR ${CMAKE_C_COMPILER_ID} STREQUAL "LS
 
   if (NO_BINARY_MODE)
 
+    if (MIPS32)
+        set(CCOMMON_OPT "${CCOMMON_OPT} -mabi=32")
+      set(BINARY_DEFINED 1)
+    endif ()
+
     if (MIPS64)
       if (BINARY64)
         set(CCOMMON_OPT "${CCOMMON_OPT} -mabi=64")

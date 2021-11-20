@@ -416,7 +416,7 @@ endif ()
     set(ZGEMM_UNROLL_M 4)
     set(ZGEMM_UNROLL_N 4)
     set(SYMV_P 16)
-elseif ("${TCORE}" STREQUAL "VORTEX")
+  elseif ("${TCORE}" STREQUAL "VORTEX")
     file(APPEND ${TARGET_CONF_TEMP}
       "#define ARMV8\n"
       "#define L1_CODE_SIZE\t32768\n"
@@ -438,6 +438,34 @@ elseif ("${TCORE}" STREQUAL "VORTEX")
     set(CGEMM_UNROLL_N 4)
     set(ZGEMM_UNROLL_M 4)
     set(ZGEMM_UNROLL_N 4)
+    set(SYMV_P 16)
+  elseif ("${TCORE}" STREQUAL "P5600")
+    file(APPEND ${TARGET_CONF_TEMP}
+      "#define L2_SIZE 1048576\n"
+      "#define DTB_SIZE 4096\n"
+      "#define DTB_DEFAULT_ENTRIES 64\n")
+    set(SGEMM_UNROLL_M 2)
+    set(SGEMM_UNROLL_N 2)
+    set(DGEMM_UNROLL_M 2)
+    set(DGEMM_UNROLL_N 2)
+    set(CGEMM_UNROLL_M 2)
+    set(CGEMM_UNROLL_N 2)
+    set(ZGEMM_UNROLL_M 2)
+    set(ZGEMM_UNROLL_N 2)
+    set(SYMV_P 16)
+  elseif ("${TCORE}" MATCHES "MIPS")
+    file(APPEND ${TARGET_CONF_TEMP}
+      "#define L2_SIZE 262144\n"
+      "#define DTB_SIZE 4096\n"
+      "#define DTB_DEFAULT_ENTRIES 64\n")
+    set(SGEMM_UNROLL_M 2)
+    set(SGEMM_UNROLL_N 2)
+    set(DGEMM_UNROLL_M 2)
+    set(DGEMM_UNROLL_N 2)
+    set(CGEMM_UNROLL_M 2)
+    set(CGEMM_UNROLL_N 2)
+    set(ZGEMM_UNROLL_M 2)
+    set(ZGEMM_UNROLL_N 2)
     set(SYMV_P 16)
   elseif ("${TCORE}" STREQUAL "POWER6")
     file(APPEND ${TARGET_CONF_TEMP}
