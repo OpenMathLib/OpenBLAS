@@ -2876,7 +2876,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define SYMV_P  16
 #endif
 
-#if defined(P5600) || defined(MIPS1004K) || defined(MIPS24K) || defined(I6400) || defined(P6600) || defined(I6500) 
+#if defined(P5600) || defined(MIPS1004K) || defined(MIPS24K) || defined(I6400) || defined(P6600) || defined(I6500)
 #define SNUMOPT  2
 #define DNUMOPT  2
 
@@ -3154,7 +3154,7 @@ is a big desktop or server with abundant cache rather than a phone or embedded d
 #define SGEMM_DEFAULT_UNROLL_M  8
 #define SGEMM_DEFAULT_UNROLL_N  8
 
-#define DGEMM_DEFAULT_UNROLL_M  8
+#define DGEMM_DEFAULT_UNROLL_M  4
 #define DGEMM_DEFAULT_UNROLL_N  4
 
 #define CGEMM_DEFAULT_UNROLL_M  8
