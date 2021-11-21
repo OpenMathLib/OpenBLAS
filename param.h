@@ -3294,12 +3294,14 @@ is a big desktop or server with abundant cache rather than a phone or embedded d
 #define CGEMM_DEFAULT_R 4096
 #define ZGEMM_DEFAULT_R 4096
 
-#elif defined(ARMV8SVE)
+#elif defined(ARMV8SVE) || defined(A64FX)
 
 #define SGEMM_DEFAULT_UNROLL_M  16
 #define SGEMM_DEFAULT_UNROLL_N  4
 
-#define DGEMM_DEFAULT_UNROLL_M  4
+/* When all BLAS3 routines are implemeted with SVE, DGEMM_DEFAULT_UNROLL_M should be "sve_vl".
+Until then, just keep it different than DGEMM_DEFAULT_UNROLL_N to keep copy routines in both directions seperated. */
+#define DGEMM_DEFAULT_UNROLL_M  4 
 #define DGEMM_DEFAULT_UNROLL_N  8
 
 #define CGEMM_DEFAULT_UNROLL_M  8
