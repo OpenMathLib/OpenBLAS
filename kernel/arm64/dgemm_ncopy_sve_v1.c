@@ -40,40 +40,40 @@
 #include "common.h"
 #include <arm_sve.h>
 
-// TODO: write in assembly with proper unrolling
+// TODO: write in assembly with proper unrolling of inner loop
 int CNAME(BLASLONG m, BLASLONG n, IFLOAT *a, BLASLONG lda, IFLOAT *b){
 
-  BLASLONG j;
-  IFLOAT *aoffset, *aoffset1, *boffset;
+    BLASLONG j;
+    IFLOAT *aoffset, *aoffset1, *boffset;
 
-  svint64_t lda_vec = svindex_s64(0LL, lda);
-  uint64_t sve_size = svcntd();
+    svint64_t lda_vec = svindex_s64(0LL, lda);
+    uint64_t sve_size = svcntd();
 
-  aoffset = a;
-  boffset = b;
+    aoffset = a;
+    boffset = b;
 
-  j = 0;
-  svbool_t pg = svwhilelt_b64(j, n);
-  uint64_t active = svcntp_b64(svptrue_b64(), pg);
-  do {
+    j = 0;
+    svbool_t pg = svwhilelt_b64(j, n);
+    uint64_t active = svcntp_b64(svptrue_b64(), pg);
+    do {
 
-      aoffset1 = aoffset;
+        aoffset1 = aoffset;
 
-      uint64_t i_cnt = m;
-      while (i_cnt--) {
-          svfloat64_t a_vec = svld1_gather_index(pg, (double *) aoffset1, lda_vec);
-          svst1_f64(pg, (double *) boffset, a_vec);
-          aoffset1++;
-          boffset += active;
-      }
-      aoffset += sve_size * lda;
+        uint64_t i_cnt = m;
+        while (i_cnt--) {
+            svfloat64_t a_vec = svld1_gather_index(pg, (double *) aoffset1, lda_vec);
+            svst1_f64(pg, (double *) boffset, a_vec);
+            aoffset1++;
+            boffset += active;
+        }
+        aoffset += sve_size * lda;
 
-      j += svcntd();
-      pg = svwhilelt_b64(j, n);
-      active = svcntp_b64(svptrue_b64(), pg);
+        j += svcntd();
+        pg = svwhilelt_b64(j, n);
+        active = svcntp_b64(svptrue_b64(), pg);
 
 
-  } while (svptest_any(svptrue_b64(), pg));
+    } while (svptest_any(svptrue_b64(), pg));
 
-  return 0;
+    return 0;
 }

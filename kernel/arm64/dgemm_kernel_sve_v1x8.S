@@ -54,7 +54,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define alpha0		d10
 #define alphaZ		z2.d
 
-#define A_PRE_SIZE	2560
+#define A_PRE_SIZE	1536
 #define B_PRE_SIZE	512
 #define C_PRE_SIZE	128
 
@@ -134,7 +134,6 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .macro KERNELv1x8_I
     ld1d  z0.d, p1/z, [pA] 
     ld1d  z1.d, p1/z, [pA, lanes, lsl #3]   // next one
-    //incb  pA, all, mul #2
 	add	pA, pA, lanes, lsl #4	// pA = pA + lanes * 2 * 8
 
     ld1rd  z8.d, p0/z,  [pB]
@@ -476,13 +475,14 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     ptrue p0.d                  // create true predicate 
 
 	mov	pB, origPB
-
+// Loop over N
 	mov	counterJ, origN
 	asr 	counterJ, counterJ, #3		// J = J / 8
 	cmp 	counterJ, #0
 	ble	.Ldgemm_kernel_L4_BEGIN
 
 /******************************************************************************/
+/* Repeat this as long as there are 8 left in N */
 
 	.align 5
 .Ldgemm_kernel_L8_BEGIN:
@@ -494,8 +494,9 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .Ldgemm_kernel_L8_Mv1_BEGIN:
 
+/* Loop over M is done in an SVE fashion. This has the benefit of the last M%SVE_LEN iterations being done in a single sweep */
     mov counterI, #0
-    whilelt p1.d, counterI, origM               //SVE instruction
+    whilelt p1.d, counterI, origM   
     cntp lanes, p0, p1.d                        // lanes contain number of active SVE lanes in M dimension
 
 	.align 5
@@ -607,7 +608,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	bgt	.Ldgemm_kernel_L8_BEGIN
 
 /******************************************************************************/
-/******************************************************************************/
+/* Repeat the same thing if 4 left in N */
 
 	.align 5
 .Ldgemm_kernel_L4_BEGIN:
@@ -692,7 +693,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	add	origPB, origPB, temp	// B = B + K * 4 * 8
 
 /******************************************************************************/
-/******************************************************************************/
+/* Repeat the same thing if 2 left in N */
 
 	.align 5
 .Ldgemm_kernel_L2_BEGIN:
@@ -773,7 +774,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	add	origPB, origPB, origK, lsl #4	// B = B + K * 2 * 8
 
 /******************************************************************************/
-/******************************************************************************/
+/* Repeat the same thing if 1 left in N */
 
 	.align 5
 .Ldgemm_kernel_L1_BEGIN:

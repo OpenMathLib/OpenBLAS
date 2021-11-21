@@ -25,6 +25,11 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
 USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *******************************************************************************/
 
+/* This is an SVE dgemm kernel with size 2*SVE_LEN x 8.
+However, the data layout is the same as for the kernel 1*SVE_LEN x 8.
+This means that we sweep two panels of packed A when iterating in a loop over K.
+With this approach, we can reuse dgemm_n|tcopy_sve_v1.c packing functions. */
+
 #define ASSEMBLER
 #include "common.h"
 
@@ -57,7 +62,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define alpha0		d10
 #define alphaZ		z7.d
 
-#define A_PRE_SIZE	2560
+#define A_PRE_SIZE	1536
 #define B_PRE_SIZE	512
 #define C_PRE_SIZE	128
 
@@ -96,8 +101,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 //v00 ALPHA -> pA10_0
 //v01 pA10_1
-//v02 
-//v03 
+//v02 pA20_0
+//v03 pA20_1
 //v04 
 //v05 
 //v06 
@@ -118,6 +123,14 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //v21 must save C5
 //v22 must save C6
 //v23 must save C7
+//v24 must save C8
+//v25 must save C9
+//v26 must save C10
+//v27 must save C11
+//v28 must save C12
+//v29 must save C13
+//v30 must save C14
+//v31 must save C15
 
 /*******************************************************************************
 * Macro definitions
@@ -583,7 +596,6 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .macro KERNELv1x8_I
     ld1d  z0.d, p1/z, [pA1] 
     ld1d  z1.d, p1/z, [pA1, lanes, lsl #3]   // next one
-    //incb  pA1, all, mul #2
 	add	pA1, pA1, lanes, lsl #4	// pA1 = pA1 + lanes * 2 * 8
 
     ld1rd  z8.d, p0/z,  [pB]
@@ -928,13 +940,14 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     ptrue p0.d                  // create true predicate 
 
 	mov	pB, origPB
-
+// Loop over N
 	mov	counterJ, origN
 	asr 	counterJ, counterJ, #3		// J = J / 8
 	cmp 	counterJ, #0
 	ble	.Ldgemm_kernel_L4_BEGIN
 
 /******************************************************************************/
+/* Repeat this as long as there are 8 left in N */
 
 	.align 5
 .Ldgemm_kernel_L8_BEGIN:
@@ -947,11 +960,12 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .Ldgemm_kernel_L8_Mv2_BEGIN:
 
     mov counterI, #0
-    cmp origM, vec_lenx2
+    cmp origM, vec_lenx2        // Check if M < 2*SVE_LEN
     blt .Ldgemm_kernel_L8_Mv1_BEGIN
 
     mov counterI, origM
 
+/* Until we have at least 2*SVE_LEN iters left in M, we do them with V2*8 kernel */
     mul temp, vec_len, origK                // generate address of pA2
 	add	pA2, pA1, temp, lsl #3			// pA1 = start of A array
 	prfm	PLDL1KEEP, [pA2]
@@ -1063,7 +1077,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     cmp counterI, origM
     beq .Ldgemm_kernel_L8_END
 
-//////////////////////////////////
+//////////////////////////////////////////
+// We have less than 2*SVE_LEN left. We do this with V1x8 kernel.
 .Ldgemm_kernel_L8_Mv1_BEGIN:
 
     whilelt p1.d, counterI, origM               //SVE instruction
@@ -1178,7 +1193,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	bgt	.Ldgemm_kernel_L8_BEGIN
 
 /******************************************************************************/
-/******************************************************************************/
+/* Repeat the same thing if 4 left in N */
 
 	.align 5
 .Ldgemm_kernel_L4_BEGIN:
@@ -1270,6 +1285,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     beq .Ldgemm_kernel_L4_END
 
 //////////////////////////////////
+// We have less than 2*SVE_LEN left. We do this with V1x4 kernel.
 .Ldgemm_kernel_L4_Mv1_BEGIN:
 
     whilelt p1.d, counterI, origM               //SVE instruction
@@ -1338,7 +1354,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	add	origPB, origPB, temp	// B = B + K * 4 * 8
 
 /******************************************************************************/
-/******************************************************************************/
+/* Repeat the same thing if 2 left in N */
 
 	.align 5
 .Ldgemm_kernel_L2_BEGIN:
@@ -1428,6 +1444,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 //////////////////////////////////
+// We have less than 2*SVE_LEN left. We do this with V1x2 kernel.
 .Ldgemm_kernel_L2_Mv1_BEGIN:
 
     whilelt p1.d, counterI, origM               //SVE instruction
@@ -1493,7 +1510,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	add	origPB, origPB, origK, lsl #4	// B = B + K * 2 * 8
 
 /******************************************************************************/
-/******************************************************************************/
+/* Repeat the same thing if 1 left in N */
 
 	.align 5
 .Ldgemm_kernel_L1_BEGIN:
@@ -1581,6 +1598,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 //////////////////////////////////
+// We have less than 2*SVE_LEN left. We do this with V1x1 kernel.
 .Ldgemm_kernel_L1_Mv1_BEGIN:
 
     whilelt p1.d, counterI, origM               //SVE instruction

@@ -47,7 +47,6 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, BLASLONG posX, BLASLON
 
     BLASLONG i, js;
     BLASLONG X;
-    //printf("Using trmm_ln.\n");
 
     int sve_len = svcntd();
     svint64_t index = svindex_s64(0LL, lda);
@@ -67,11 +66,9 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, BLASLONG posX, BLASLON
         }
 
         i = 0;
-        /* svbool_t pm = svwhilelt_b64(i, m); */
-        /* int m_active = svcntp_b64(svptrue_b64(), pm); */
         do 
         {
-            if (X > posY) { // optimize this: unroll over DGEMM_UNROLL_M: vl
+            if (X > posY) {
                 svfloat64_t aj_vec = svld1_gather_index(pn, ao, index);
                 svst1(pn, b, aj_vec);
                 ao ++;
@@ -85,6 +82,7 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, BLASLONG posX, BLASLON
                     X ++;
                     i ++;
                 } else {
+                    /* I did not find a way to unroll this while preserving vector-length-agnostic code. */
 #ifdef UNIT
                     int temp = 0;
                     for (int j = 0; j < n_active; j++) {
@@ -113,9 +111,6 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, BLASLONG posX, BLASLON
                     i += n_active;
                 }
         } while (i < m);
-
-        //printf("\n");
-
 
         posY += n_active;
         js += n_active;
