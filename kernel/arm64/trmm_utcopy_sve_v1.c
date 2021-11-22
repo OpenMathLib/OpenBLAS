@@ -48,8 +48,6 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, BLASLONG posX, BLASLON
     BLASLONG i, js;
     BLASLONG X;
 
-    int sve_len = svcntd();
-
     FLOAT *ao;
     js = 0;
     svbool_t pn = svwhilelt_b64(js, n);

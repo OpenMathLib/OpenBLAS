@@ -42,12 +42,9 @@
 
 int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, BLASLONG posX, BLASLONG posY, FLOAT *b){
 
-  BLASLONG i, js, offset;
-
-  FLOAT data01, data02, data03, data04;
+  BLASLONG i, offset;
 
   uint64_t sve_size = svcntd();
-  svfloat64_t ao_vec;
   svint64_t posY_vec = svdup_s64(posY);
   svint64_t posX_vec = svdup_s64(posX);
   svint64_t lda_vec = svdup_s64(lda);

@@ -48,7 +48,6 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, BLASLONG posX, BLASLON
     BLASLONG i, js;
     BLASLONG X;
 
-    int sve_len = svcntd();
     svint64_t index = svindex_s64(0LL, lda);
 
     FLOAT *ao;
