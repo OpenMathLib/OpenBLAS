@@ -77,14 +77,6 @@ ifeq ($(CORE), Z14)
 USE_TRMM = 1
 endif
 
-ifeq ($(CORE), A64FX)
-HAVE_SVE = 1
-endif
-
-ifeq ($(CORE), ARMV8SVE)
-HAVE_SVE = 1
-endif
-
 ifdef USE_DIRECT_SGEMM
 ifndef SGEMMDIRECTKERNEL
 SGEMMDIRECTKERNEL = sgemm_direct_skylakex.c
@@ -1539,49 +1531,55 @@ $(KDIR)strmm_oltucopy$(TSUFFIX).$(SUFFIX) : generic/trmm_ltcopy_$(SGEMM_UNROLL_N
 $(KDIR)strmm_oltncopy$(TSUFFIX).$(SUFFIX) : generic/trmm_ltcopy_$(SGEMM_UNROLL_N).c
 	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -UDOUBLE -UCOMPLEX -DOUTER -DLOWER -UUNIT $< -o $@
 
-ifdef HAVE_SVE
-$(KDIR)dtrmm_iunucopy$(TSUFFIX).$(SUFFIX) : arm64/trmm_uncopy_sve_v1.c
+ifdef DTRMMUNCOPY_M
+$(KDIR)dtrmm_iunucopy$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(DTRMMUNCOPY_M)
 	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -DDOUBLE -UCOMPLEX -UOUTER -ULOWER -DUNIT $< -o $@
 
-$(KDIR)dtrmm_iunncopy$(TSUFFIX).$(SUFFIX) : arm64/trmm_uncopy_sve_v1.c
+$(KDIR)dtrmm_iunncopy$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(DTRMMUNCOPY_M)
 	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -DDOUBLE -UCOMPLEX -UOUTER -ULOWER -UUNIT $< -o $@
-
-$(KDIR)dtrmm_ilnucopy$(TSUFFIX).$(SUFFIX) : arm64/trmm_lncopy_sve_v1.c
-	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -DDOUBLE -UCOMPLEX -UOUTER -DLOWER -DUNIT $< -o $@
-
-$(KDIR)dtrmm_ilnncopy$(TSUFFIX).$(SUFFIX) : arm64/trmm_lncopy_sve_v1.c
-	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -DDOUBLE -UCOMPLEX -UOUTER -DLOWER -UUNIT $< -o $@
-
-$(KDIR)dtrmm_iutucopy$(TSUFFIX).$(SUFFIX) : arm64/trmm_utcopy_sve_v1.c
-	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -DDOUBLE -UCOMPLEX -UOUTER -ULOWER -DUNIT $< -o $@
-
-$(KDIR)dtrmm_iutncopy$(TSUFFIX).$(SUFFIX) : arm64/trmm_utcopy_sve_v1.c
-	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -DDOUBLE -UCOMPLEX -UOUTER -ULOWER -UUNIT $< -o $@
-
-$(KDIR)dtrmm_iltucopy$(TSUFFIX).$(SUFFIX) : arm64/trmm_ltcopy_sve_v1.c
-	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -DDOUBLE -UCOMPLEX -UOUTER -DLOWER -DUNIT $< -o $@
-
-$(KDIR)dtrmm_iltncopy$(TSUFFIX).$(SUFFIX) : arm64/trmm_ltcopy_sve_v1.c
-	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -DDOUBLE -UCOMPLEX -UOUTER -DLOWER -UUNIT $< -o $@
 else
 $(KDIR)dtrmm_iunucopy$(TSUFFIX).$(SUFFIX) : generic/trmm_uncopy_$(DGEMM_UNROLL_M).c
 	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -DDOUBLE -UCOMPLEX -UOUTER -ULOWER -DUNIT $< -o $@
 
 $(KDIR)dtrmm_iunncopy$(TSUFFIX).$(SUFFIX) : generic/trmm_uncopy_$(DGEMM_UNROLL_M).c
 	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -DDOUBLE -UCOMPLEX -UOUTER -ULOWER -UUNIT $< -o $@
+endif
 
+ifdef DTRMMLNCOPY_M
+$(KDIR)dtrmm_ilnucopy$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(DTRMMLNCOPY_M)
+	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -DDOUBLE -UCOMPLEX -UOUTER -DLOWER -DUNIT $< -o $@
+
+$(KDIR)dtrmm_ilnncopy$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(DTRMMLNCOPY_M)
+	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -DDOUBLE -UCOMPLEX -UOUTER -DLOWER -UUNIT $< -o $@
+else
 $(KDIR)dtrmm_ilnucopy$(TSUFFIX).$(SUFFIX) : generic/trmm_lncopy_$(DGEMM_UNROLL_M).c
 	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -DDOUBLE -UCOMPLEX -UOUTER -DLOWER -DUNIT $< -o $@
 
 $(KDIR)dtrmm_ilnncopy$(TSUFFIX).$(SUFFIX) : generic/trmm_lncopy_$(DGEMM_UNROLL_M).c
 	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -DDOUBLE -UCOMPLEX -UOUTER -DLOWER -UUNIT $< -o $@
+endif
 
+ifdef DTRMMUTCOPY_M
+$(KDIR)dtrmm_iutucopy$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(DTRMMUTCOPY_M)
+	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -DDOUBLE -UCOMPLEX -UOUTER -ULOWER -DUNIT $< -o $@
+
+$(KDIR)dtrmm_iutncopy$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(DTRMMUTCOPY_M)
+	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -DDOUBLE -UCOMPLEX -UOUTER -ULOWER -UUNIT $< -o $@
+else
 $(KDIR)dtrmm_iutucopy$(TSUFFIX).$(SUFFIX) : generic/trmm_utcopy_$(DGEMM_UNROLL_M).c
 	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -DDOUBLE -UCOMPLEX -UOUTER -ULOWER -DUNIT $< -o $@
 
 $(KDIR)dtrmm_iutncopy$(TSUFFIX).$(SUFFIX) : generic/trmm_utcopy_$(DGEMM_UNROLL_M).c
 	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -DDOUBLE -UCOMPLEX -UOUTER -ULOWER -UUNIT $< -o $@
+endif
 
+ifdef DTRMMLTCOPY_M
+$(KDIR)dtrmm_iltucopy$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(DTRMMLTCOPY_M)
+	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -DDOUBLE -UCOMPLEX -UOUTER -DLOWER -DUNIT $< -o $@
+
+$(KDIR)dtrmm_iltncopy$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(DTRMMLTCOPY_M)
+	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -DDOUBLE -UCOMPLEX -UOUTER -DLOWER -UUNIT $< -o $@
+else
 $(KDIR)dtrmm_iltucopy$(TSUFFIX).$(SUFFIX) : generic/trmm_ltcopy_$(DGEMM_UNROLL_M).c
 	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -DDOUBLE -UCOMPLEX -UOUTER -DLOWER -DUNIT $< -o $@
 
@@ -1823,16 +1821,18 @@ $(KDIR)dsymm_outcopy$(TSUFFIX).$(SUFFIX) : generic/symm_ucopy_$(DGEMM_UNROLL_N).
 $(KDIR)dsymm_oltcopy$(TSUFFIX).$(SUFFIX) : generic/symm_lcopy_$(DGEMM_UNROLL_N).c
 	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -DDOUBLE -UCOMPLEX -DOUTER -DLOWER $< -o $@
 
-ifdef HAVE_SVE
-$(KDIR)dsymm_iutcopy$(TSUFFIX).$(SUFFIX) : arm64/symm_ucopy_sve.c
+ifdef DSYMMUCOPY_M
+$(KDIR)dsymm_iutcopy$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(DSYMMUCOPY_M)
 	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -DDOUBLE -UCOMPLEX -UOUTER -ULOWER $< -o $@
-
-$(KDIR)dsymm_iltcopy$(TSUFFIX).$(SUFFIX) : arm64/symm_lcopy_sve.c
-	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -DDOUBLE -UCOMPLEX -UOUTER -DLOWER $< -o $@
 else
 $(KDIR)dsymm_iutcopy$(TSUFFIX).$(SUFFIX) : generic/symm_ucopy_$(DGEMM_UNROLL_M).c
 	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -DDOUBLE -UCOMPLEX -UOUTER -ULOWER $< -o $@
+endif
 
+ifdef DSYMMLCOPY_M
+$(KDIR)dsymm_iltcopy$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(DSYMMLCOPY_M)
+	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -DDOUBLE -UCOMPLEX -UOUTER -DLOWER $< -o $@
+else
 $(KDIR)dsymm_iltcopy$(TSUFFIX).$(SUFFIX) : generic/symm_lcopy_$(DGEMM_UNROLL_M).c
 	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -DDOUBLE -UCOMPLEX -UOUTER -DLOWER $< -o $@
 endif

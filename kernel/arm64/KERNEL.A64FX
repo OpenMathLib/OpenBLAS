@@ -157,7 +157,13 @@ DGEMMITCOPYOBJ =  dgemm_itcopy$(TSUFFIX).$(SUFFIX)
 DGEMMONCOPYOBJ =  dgemm_oncopy$(TSUFFIX).$(SUFFIX)
 DGEMMOTCOPYOBJ =  dgemm_otcopy$(TSUFFIX).$(SUFFIX)
 
+DTRMMUNCOPY_M  =  trmm_uncopy_sve_v1.c
+DTRMMLNCOPY_M  =  trmm_lncopy_sve_v1.c
+DTRMMUTCOPY_M  =  trmm_utcopy_sve_v1.c
+DTRMMLTCOPY_M  =  trmm_ltcopy_sve_v1.c
 
+DSYMMUCOPY_M    =  symm_ucopy_sve.c
+DSYMMLCOPY_M    =  symm_lcopy_sve.c
 
 CGEMMKERNEL    =  cgemm_kernel_$(CGEMM_UNROLL_M)x$(CGEMM_UNROLL_N).S
 CTRMMKERNEL    =  ctrmm_kernel_$(CGEMM_UNROLL_M)x$(CGEMM_UNROLL_N).S
