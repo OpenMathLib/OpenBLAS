@@ -3301,7 +3301,7 @@ is a big desktop or server with abundant cache rather than a phone or embedded d
 
 /* When all BLAS3 routines are implemeted with SVE, DGEMM_DEFAULT_UNROLL_M should be "sve_vl".
 Until then, just keep it different than DGEMM_DEFAULT_UNROLL_N to keep copy routines in both directions seperated. */
-#define DGEMM_DEFAULT_UNROLL_M  4 
+#define DGEMM_DEFAULT_UNROLL_M  2 
 #define DGEMM_DEFAULT_UNROLL_N  8
 
 #define CGEMM_DEFAULT_UNROLL_M  8
