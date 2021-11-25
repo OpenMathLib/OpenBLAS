@@ -249,7 +249,7 @@ jobs:
      vmImage: 'ubuntu-latest'
   steps:
   - script: |
-        wget https://raw.githubusercontent.com/alpinelinux/alpine-chroot-install/v0.13.1/alpine-chroot-install \
+        wget https://raw.githubusercontent.com/alpinelinux/alpine-chroot-install/master/alpine-chroot-install \
          && echo '7c7e3fa378e69aecc7f5f01bbc759e5f0a9d9b74  alpine-chroot-install' | sha1sum -c \
          || exit 1
         alpine() { /alpine/enter-chroot -u "$USER" "$@"; }
