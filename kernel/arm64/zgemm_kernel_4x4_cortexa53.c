@@ -25,9 +25,120 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
 USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
 
-#include <common.h>
+#include "common.h"
 #include <arm_neon.h>
 
+/*******************************************************************************
+  The complex GEMM kernels in OpenBLAS use static configuration of conjugation
+modes via specific macros:
+
+  MACRO_NAME | conjugation on matrix A | conjugation on matrix B |
+  ---------- | ----------------------- | ----------------------- |
+ NN/NT/TN/TT |            No           |            No           |
+ NR/NC/TR/TC |            No           |           Yes           |
+ RN/RT/CN/CT |           Yes           |            No           |
+ RR/RC/CR/CC |           Yes           |           Yes           |
+
+  "conjugation on matrix A" means the complex conjugates of elements from
+matrix A are used for matmul (rather than the original elements). "conjugation
+on matrix B" means the complex conjugate of each element from matrix B is taken
+for matrix multiplication, respectively.
+
+  Complex numbers in arrays or matrices are usually packed together as an
+array of struct (without padding):
+  struct complex_number {
+    FLOAT real_part;
+    FLOAT imag_part;
+  };
+
+  For a double complex array ARR[] which is usually DEFINED AS AN ARRAY OF
+DOUBLE, the real part of its Kth complex number can be accessed as
+ARR[K * 2], the imaginary part of the Kth complex number is ARR[2 * K + 1].
+
+  This file uses 2 ways to vectorize matrix multiplication of complex numbers:
+
+(1) Expanded-form
+
+  During accumulation along direction K:
+
+                                        Σk(a[0][k].real b[k][n].real)
+                  accumulate            Σk(a[0][k].imag b[k][n].real)
+             ------------------->                     .
+             |   * b[k][n].real                       .
+             |     (broadcasted)                      .
+    a[0][k].real                        Σk(a[v-1][k].real b[k][n].real)
+    a[0][k].imag                        Σk(a[v-1][k].imag b[k][n].real)
+         .                                         VECTOR I
+(vec_a)  .
+         .
+    a[v-1][k].real                      Σk(a[0][k].real b[k][n].imag)
+    a[v-1][k].imag                      Σk(a[0][k].imag b[k][n].imag)
+             |                                        .
+             |   accumulate                           .
+             ------------------->                     .
+                 * b[k][n].imag         Σk(a[v-1][k].real b[k][n].imag)
+                  (broadcasted)         Σk(a[v-1][k].imag b[k][n].imag)
+                                                   VECTOR II
+
+  After accumulation, prior to storage:
+
+                                    -1     -Σk(a[0][k].imag b[k][n].imag)
+                                     1      Σk(a[0][k].real b[k][n].imag)
+                                     .                 .
+    VECTOR II permute and multiply   .  to get         .
+                                     .                 .
+                                    -1     -Σk(a[v-1][k].imag b[k][n].imag)
+                                     1      Σk(a[v-1][k].real b[k][n].imag)
+
+    then add with VECTOR I to get the result vector of elements of C.
+
+  2 vector registers are needed for every v elements of C, with
+v == sizeof(vector) / sizeof(complex)
+
+(2) Contracted-form
+
+  During accumulation along direction K:
+
+   (the K coordinate is not shown, since the operation is identical for each k)
+
+        (load vector in mem)                       (load vector in mem)
+  a[0].r a[0].i ... a[v-1].r a[v-1].i     a[v].r a[v].i ... a[2v-1].r a[2v-1]i
+              |                                                   |
+              |      unzip operation (or VLD2 in arm neon)        |
+              -----------------------------------------------------
+                                            |
+                                            |
+                --------------------------------------------------
+                |                                                |
+                |                                                |
+                v                                                v
+   a[0].real ... a[2v-1].real                     a[0].imag ... a[2v-1].imag
+               |         |                            |          | 
+               |         | * b[i].imag(broadcast)     |          |
+   * b[i].real |         -----------------------------|----      | * b[i].real
+   (broadcast) |                                      |   |      | (broadcast)
+               |        ------------------------------    |      |
+             + |      - |       * b[i].imag(broadcast)  + |    + |
+               v        v                                 v      v
+              (accumulate)                              (accumulate)
+        c[0].real ... c[2v-1].real                 c[0].imag ... c[2v-1].imag
+               VECTOR_REAL                                VECTOR_IMAG
+
+  After accumulation, VECTOR_REAL and VECTOR_IMAG are zipped (interleaved)
+then stored to matrix C directly.
+
+  For 2v elements of C, only 2 vector registers are needed, while
+4 registers are required for expanded-form.
+(v == sizeof(vector) / sizeof(complex))
+
+  For AArch64 zgemm, 4x4 kernel needs 32 128-bit NEON registers
+to store elements of C when using expanded-form calculation, where
+the register spilling will occur. So contracted-form operation is
+selected for 4x4 kernel. As for all other combinations of unroll parameters
+(2x4, 4x2, 2x2, and so on), expanded-form mode is used to bring more
+NEON registers into usage to hide latency of multiply-add instructions.
+******************************************************************************/
+ 
 static inline float64x2_t set_f64x2(double lo, double hi) {
   float64x2_t ret = vdupq_n_f64(0);
   ret = vsetq_lane_f64(lo, ret, 0);
