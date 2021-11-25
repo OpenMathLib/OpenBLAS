@@ -250,8 +250,8 @@ jobs:
   steps:
   - script: |
         wget https://raw.githubusercontent.com/alpinelinux/alpine-chroot-install/master/alpine-chroot-install
-#         && echo '7c7e3fa378e69aecc7f5f01bbc759e5f0a9d9b74  alpine-chroot-install' | sha1sum -c \
-#         || exit 1
+         && echo '484fbf313f311da93e913bfdd81ef4df934aa907  alpine-chroot-install' | sha1sum -c \
+         || exit 1
         alpine() { /alpine/enter-chroot -u "$USER" "$@"; }
         sudo sh alpine-chroot-install -p 'build-base gfortran perl linux-headers sudo'
         alpine make DYNAMIC_ARCH=1 BINARY=64
