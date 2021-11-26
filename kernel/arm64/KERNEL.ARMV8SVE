@@ -143,14 +143,13 @@ endif
 SGEMMONCOPYOBJ =  sgemm_oncopy$(TSUFFIX).$(SUFFIX)
 SGEMMOTCOPYOBJ =  sgemm_otcopy$(TSUFFIX).$(SUFFIX)
 
-
 DGEMMKERNEL    =  dgemm_kernel_sve_v2x$(DGEMM_UNROLL_N).S
 DTRMMKERNEL    =  dtrmm_kernel_sve_v1x$(DGEMM_UNROLL_N).S
 
 DGEMMINCOPY    =  dgemm_ncopy_sve_v1.c
 DGEMMITCOPY    =  dgemm_tcopy_sve_v1.c
-DGEMMONCOPY    =  dgemm_ncopy_$(DGEMM_UNROLL_N).S
-DGEMMOTCOPY    =  dgemm_tcopy_$(DGEMM_UNROLL_N).S
+DGEMMONCOPY    =  ../generic/gemm_ncopy_$(DGEMM_UNROLL_N).c
+DGEMMOTCOPY    =  ../generic/gemm_tcopy_$(DGEMM_UNROLL_N).c
 
 DGEMMINCOPYOBJ =  dgemm_incopy$(TSUFFIX).$(SUFFIX)
 DGEMMITCOPYOBJ =  dgemm_itcopy$(TSUFFIX).$(SUFFIX)
