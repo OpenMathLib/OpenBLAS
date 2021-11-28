@@ -196,7 +196,7 @@ if(ANDROID)
   target_link_libraries(${OpenBLAS_LIBNAME} m)
 endif()
 
-#if (APPLE)
+if (APPLE)
 #  set (CMAKE_C_USE_RESPONSE_FILE_FOR_OBJECTS 1)
 #  set (CMAKE_Fortran_USE_RESPONSE_FILE_FOR_OBJECTS 1)
 #  set (CMAKE_Fortran_LINK_EXECUTABLE
@@ -208,7 +208,13 @@ endif()
 #  "${CMAKE_COMMAND} -E cat CMakeFiles/openblas.rsp | xargs -n1024 ar -ur libopenblas.a"
 #  "${CMAKE_COMMAND} -E echo "" | <CMAKE_Fortran_COMPILER> -o dummy.o -c -x f95-cpp-input -"
 #  "<CMAKE_Fortran_COMPILER> <FLAGS> -Wl,-force_load,${OpenBLAS_LIBNAME} dummy.o")
-#endif()
+  set (CMAKE_C_USE_RESPONSE_FILE_FOR_OBJECTS 1)
+  set (CMAKE_Fortran_USE_RESPONSE_FILE_FOR_OBJECTS 1)
+  set (CMAKE_Fortran_CREATE_SHARED_LIBRARY
+ "sh -c 'cat ${CMAKE_BINARY_DIR}/CMakeFiles/openblas_shared.dir/objects*.rsp | xargs -n 1024 ar -ru libopenblas.a && exit 0' "
+ "<CMAKE_Fortran_COMPILER>  -fpic -shared -Wl,-force_load,libopenblas.a -o ${OPENBLAS_LIBNAME}")
+
+endif()
 
 # Handle MSVC exports
 if(MSVC AND BUILD_SHARED_LIBS)
