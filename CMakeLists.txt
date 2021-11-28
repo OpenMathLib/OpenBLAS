@@ -212,7 +212,7 @@ if (APPLE)
   set (CMAKE_Fortran_USE_RESPONSE_FILE_FOR_OBJECTS 1)
   set (CMAKE_Fortran_CREATE_SHARED_LIBRARY
  "sh -c 'cat ${CMAKE_BINARY_DIR}/CMakeFiles/openblas_shared.dir/objects*.rsp | xargs -n 1024 ar -ru libopenblas.a && exit 0' "
- "<CMAKE_Fortran_COMPILER>  -fpic -shared -Wl,-force_load,libopenblas.a -o ${OPENBLAS_LIBNAME}")
+ "<CMAKE_Fortran_COMPILER>  -fpic -shared -Wl,-force_load,libopenblas.a -o ${OpenBLAS_LIBNAME}")
 
 endif()
 
