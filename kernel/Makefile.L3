@@ -1809,11 +1809,21 @@ $(KDIR)ssymm_outcopy$(TSUFFIX).$(SUFFIX) : generic/symm_ucopy_$(SGEMM_UNROLL_N).
 $(KDIR)ssymm_oltcopy$(TSUFFIX).$(SUFFIX) : generic/symm_lcopy_$(SGEMM_UNROLL_N).c
 	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -UDOUBLE -UCOMPLEX -DOUTER -DLOWER $< -o $@
 
+ifdef SSYMMUCOPY_M
+$(KDIR)ssymm_iutcopy$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(SSYMMUCOPY_M)
+	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -UDOUBLE -UCOMPLEX -UOUTER -ULOWER $< -o $@
+else
 $(KDIR)ssymm_iutcopy$(TSUFFIX).$(SUFFIX) : generic/symm_ucopy_$(SGEMM_UNROLL_M).c
 	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -UDOUBLE -UCOMPLEX -UOUTER -ULOWER $< -o $@
+endif
 
+ifdef SSYMMLCOPY_M
+$(KDIR)ssymm_iltcopy$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(SSYMMLCOPY_M)
+	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -UDOUBLE -UCOMPLEX -UOUTER -DLOWER $< -o $@
+else
 $(KDIR)ssymm_iltcopy$(TSUFFIX).$(SUFFIX) : generic/symm_lcopy_$(SGEMM_UNROLL_M).c
 	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -UDOUBLE -UCOMPLEX -UOUTER -DLOWER $< -o $@
+endif
 
 $(KDIR)dsymm_outcopy$(TSUFFIX).$(SUFFIX) : generic/symm_ucopy_$(DGEMM_UNROLL_N).c
 	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -DDOUBLE -UCOMPLEX -DOUTER -ULOWER $< -o $@
