@@ -197,23 +197,12 @@ if(ANDROID)
 endif()
 
 if (APPLE)
-#  set (CMAKE_C_USE_RESPONSE_FILE_FOR_OBJECTS 1)
-#  set (CMAKE_Fortran_USE_RESPONSE_FILE_FOR_OBJECTS 1)
-#  set (CMAKE_Fortran_LINK_EXECUTABLE
-#  "${CMAKE_COMMAND} -E cat CMakeFiles/openblas.rsp | xargs -n1024 ar -ur libopenblas.a"
-#  "${CMAKE_COMMAND} -E echo "" | <CMAKE_Fortran_COMPILER> -o dummy.o -c -x f95-cpp-input -"
-#  "<CMAKE_Fortran_COMPILER> <FLAGS> -Wl,-force_load,${OpenBLAS_LIBNAME} dummy.o")
-#  set (CMAKE_C_USE_RESPONSE_FILE_FOR_OBJECTS 1)
-#  set (CMAKE_C_LINK_EXECUTABLE
-#  "${CMAKE_COMMAND} -E cat CMakeFiles/openblas.rsp | xargs -n1024 ar -ur libopenblas.a"
-#  "${CMAKE_COMMAND} -E echo "" | <CMAKE_Fortran_COMPILER> -o dummy.o -c -x f95-cpp-input -"
-#  "<CMAKE_Fortran_COMPILER> <FLAGS> -Wl,-force_load,${OpenBLAS_LIBNAME} dummy.o")
   set (CMAKE_C_USE_RESPONSE_FILE_FOR_OBJECTS 1)
   set (CMAKE_Fortran_USE_RESPONSE_FILE_FOR_OBJECTS 1)
   set (CMAKE_Fortran_CREATE_SHARED_LIBRARY
  "sh -c 'cat ${CMAKE_BINARY_DIR}/CMakeFiles/openblas_shared.dir/objects*.rsp | xargs -n 1024 ar -ru libopenblas.a && exit 0' "
- "<CMAKE_Fortran_COMPILER>  -fpic -shared -Wl,-force_load,libopenblas.a -o ${OpenBLAS_LIBNAME}")
-
+ "sh -c 'echo \"\" | ${CMAKE_Fortran_COMPILER} -o dummy.o -c -x f95-cpp-input - '"
+ "sh -c '${CMAKE_Fortran_COMPILER} -fpic -shared -Wl,--whole-archive -Wl,-force_load,libopenblas.a -Wl,--no-whole-archive dummy.o -o ${CMAKE_BINARY_DIR}/lib/lib${OpenBLAS_LIBNAME}.so.0.3'")
 endif()
 
 # Handle MSVC exports
