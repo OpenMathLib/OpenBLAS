@@ -50,8 +50,13 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, BLASLONG posX, BLASLON
 
     FLOAT *ao;
     js = 0;
+#ifdef DOUBLE
     svbool_t pn = svwhilelt_b64(js, n);
     int n_active = svcntp_b64(svptrue_b64(), pn);
+#else
+    svbool_t pn = svwhilelt_b32(js, n);
+    int n_active = svcntp_b32(svptrue_b32(), pn);
+#endif
     do
     {
         X = posX;
@@ -72,7 +77,11 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, BLASLONG posX, BLASLON
                 i ++;
             } else 
                 if (X < posY) {
+#ifdef DOUBLE
                     svfloat64_t aj_vec = svld1(pn, ao);
+#else
+                    svfloat32_t aj_vec = svld1(pn, ao);
+#endif
                     svst1(pn, b, aj_vec);
                     ao += lda;
                     b += n_active;
@@ -112,9 +121,15 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, BLASLONG posX, BLASLON
 
         posY += n_active;
         js += n_active;
+#ifdef DOUBLE
         pn = svwhilelt_b64(js, n);
         n_active = svcntp_b64(svptrue_b64(), pn);
     } while (svptest_any(svptrue_b64(), pn));
+#else
+        pn = svwhilelt_b32(js, n);
+        n_active = svcntp_b32(svptrue_b32(), pn);
+    } while (svptest_any(svptrue_b32(), pn));
+#endif
 
 
     return 0;
