@@ -198,11 +198,17 @@ endif()
 
 if (APPLE)
   set (CMAKE_C_USE_RESPONSE_FILE_FOR_OBJECTS 1)
+  ifndef(NOFORTRAN)  
   set (CMAKE_Fortran_USE_RESPONSE_FILE_FOR_OBJECTS 1)
   set (CMAKE_Fortran_CREATE_SHARED_LIBRARY
  "sh -c 'cat ${CMAKE_BINARY_DIR}/CMakeFiles/openblas_shared.dir/objects*.rsp | xargs -n 1024 ar -ru libopenblas.a && exit 0' "
  "sh -c 'echo \"\" | ${CMAKE_Fortran_COMPILER} -o dummy.o -c -x f95-cpp-input - '"
  "sh -c '${CMAKE_Fortran_COMPILER} -fpic -shared -Wl,--whole-archive -Wl,-force_load,libopenblas.a -Wl,--no-whole-archive dummy.o -o ${CMAKE_BINARY_DIR}/lib/lib${OpenBLAS_LIBNAME}.so.0.3'")
+  else ()
+  set (CMAKE_C_CREATE_SHARED_LIBRARY
+   "sh -c 'cat ${CMAKE_BINARY_DIR}/CMakeFiles/openblas_shared.dir/objects*.rsp | xargs -n 1024 ar -ru libopenblas.a && exit 0' "
+   "sh -c '${CMAKE_C_COMPILER} -fpic -shared -Wl,--whole-archive -Wl,-force_load,libopenblas.a -Wl,--no-whole-archive -o ${CMAKE_BINARY_DIR}/lib/lib${OpenBLAS_LIBNAME}.so.0.3'")
+  endif ()
 endif()
 
 # Handle MSVC exports
