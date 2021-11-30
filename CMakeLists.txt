@@ -198,7 +198,7 @@ endif()
 
 if (APPLE)
   set (CMAKE_C_USE_RESPONSE_FILE_FOR_OBJECTS 1)
-  ifndef(NOFORTRAN)  
+  if (NOT NOFORTRAN)  
   set (CMAKE_Fortran_USE_RESPONSE_FILE_FOR_OBJECTS 1)
   set (CMAKE_Fortran_CREATE_SHARED_LIBRARY
  "sh -c 'cat ${CMAKE_BINARY_DIR}/CMakeFiles/openblas_shared.dir/objects*.rsp | xargs -n 1024 ar -ru libopenblas.a && exit 0' "
