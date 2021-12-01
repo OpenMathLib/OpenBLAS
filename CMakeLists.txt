@@ -203,7 +203,8 @@ if (APPLE)
   set (CMAKE_Fortran_CREATE_SHARED_LIBRARY
  "sh -c 'cat ${CMAKE_BINARY_DIR}/CMakeFiles/openblas_shared.dir/objects*.rsp | xargs -n 1024 ar -ru libopenblas.a && exit 0' "
  "sh -c 'echo \"\" | ${CMAKE_Fortran_COMPILER} -o dummy.o -c -x f95-cpp-input - '"
- "sh -c '${CMAKE_Fortran_COMPILER} -fpic -shared -Wl,-all_load -Wl,-force_load,libopenblas.a -Wl,-noall_load dummy.o -o ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/${LIBPREFIX}${REVISION}.dylib'")
+ "sh -c '${CMAKE_Fortran_COMPILER} -fpic -shared -Wl,-all_load -Wl,-force_load,libopenblas.a -Wl,-noall_load dummy.o -o ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/libopenblas.0.3.dylib'"
+ "sh -c 'ls -l ${CMAKE_BINARY_DIR}/lib'")
   else ()
   set (CMAKE_C_CREATE_SHARED_LIBRARY
    "sh -c 'cat ${CMAKE_BINARY_DIR}/CMakeFiles/openblas_shared.dir/objects*.rsp | xargs -n 1024 ar -ru libopenblas.a && exit 0' "
