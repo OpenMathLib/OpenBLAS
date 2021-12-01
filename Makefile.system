@@ -15,7 +15,7 @@ ifeq ($(HOSTARCH), amd64)
 HOSTARCH=x86_64
 endif
 
-HAVE_GAS := $(shell as -v < /dev/null 2>&1 | grep GNU 2>&1 >/dev/null)
+HAVE_GAS := $(shell as -v < /dev/null 2>&1 | grep GNU 2>&1 >/dev/null ; echo $$?)
 
 # Catch conflicting usage of ARCH in some BSD environments
 ifeq ($(ARCH), amd64)
