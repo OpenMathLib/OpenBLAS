@@ -15,8 +15,6 @@ ifeq ($(HOSTARCH), amd64)
 HOSTARCH=x86_64
 endif
 
-HAVE_GAS := $(shell as -v < /dev/null 2>&1 | grep GNU 2>&1 >/dev/null)
-
 # Catch conflicting usage of ARCH in some BSD environments
 ifeq ($(ARCH), amd64)
 override ARCH=x86_64
@@ -367,6 +365,8 @@ GCCMINORVERSIONGTEQ1 := $(shell expr `$(CC) $(GCCDUMPVERSION_PARAM) | cut -f2 -d
 GCCMINORVERSIONGTEQ2 := $(shell expr `$(CC) $(GCCDUMPVERSION_PARAM) | cut -f2 -d.` \>= 2)
 GCCMINORVERSIONGTEQ7 := $(shell expr `$(CC) $(GCCDUMPVERSION_PARAM) | cut -f2 -d.` \>= 7)
 endif
+
+HAVE_GAS := $(shell $(AS) -v < /dev/null 2>&1 | grep GNU 2>&1 >/dev/null ; echo $$?)
 
 #
 #  OS dependent settings
