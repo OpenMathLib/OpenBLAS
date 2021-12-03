@@ -32,6 +32,16 @@ SGEMMITCOPYOBJ =  sgemm_itcopy$(TSUFFIX).$(SUFFIX)
 SGEMMONCOPYOBJ =  sgemm_oncopy$(TSUFFIX).$(SUFFIX)
 SGEMMOTCOPYOBJ =  sgemm_otcopy$(TSUFFIX).$(SUFFIX)
 
+SGEMM_SMALL_M_PERMIT = gemm_small_kernel_permit_power10.c
+SGEMM_SMALL_K_NN = sgemm_small_kernel_nn_power10.c
+SGEMM_SMALL_K_B0_NN = sgemm_small_kernel_nn_power10.c
+SGEMM_SMALL_K_NT = sgemm_small_kernel_nt_power10.c
+SGEMM_SMALL_K_B0_NT = sgemm_small_kernel_nt_power10.c
+SGEMM_SMALL_K_TN = sgemm_small_kernel_tn_power10.c
+SGEMM_SMALL_K_B0_TN = sgemm_small_kernel_tn_power10.c
+SGEMM_SMALL_K_TT = sgemm_small_kernel_tt_power10.c
+SGEMM_SMALL_K_B0_TT = sgemm_small_kernel_tt_power10.c
+
 DGEMMKERNEL    =  dgemm_kernel_power10.c
 DGEMMINCOPY    =
 DGEMMITCOPY    =
@@ -41,6 +51,16 @@ DGEMMINCOPYOBJ =
 DGEMMITCOPYOBJ =
 DGEMMONCOPYOBJ =  dgemm_oncopy$(TSUFFIX).$(SUFFIX)
 DGEMMOTCOPYOBJ =  dgemm_otcopy$(TSUFFIX).$(SUFFIX)
+
+DGEMM_SMALL_M_PERMIT = gemm_small_kernel_permit_power10.c
+DGEMM_SMALL_K_NT = dgemm_small_kernel_nt_power10.c
+DGEMM_SMALL_K_B0_NT = dgemm_small_kernel_nt_power10.c
+DGEMM_SMALL_K_NN = dgemm_small_kernel_nn_power10.c
+DGEMM_SMALL_K_B0_NN = dgemm_small_kernel_nn_power10.c
+DGEMM_SMALL_K_TT = dgemm_small_kernel_tt_power10.c
+DGEMM_SMALL_K_B0_TT = dgemm_small_kernel_tt_power10.c
+DGEMM_SMALL_K_TN = dgemm_small_kernel_tn_power10.c
+DGEMM_SMALL_K_B0_TN = dgemm_small_kernel_tn_power10.c
 
 CGEMMKERNEL    = cgemm_kernel_power10.S
 #CGEMMKERNEL     = cgemm_kernel_8x4_power8.S
