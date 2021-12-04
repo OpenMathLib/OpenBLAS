@@ -165,7 +165,7 @@ jobs:
       make
       ctest
       
-- job: OSX_OpenMP_Clang_gf_cmake
+- job: OSX_dynarch_cmake
   pool:
      vmImage: 'macOS-10.15'
   variables:
@@ -173,14 +173,12 @@ jobs:
      LIBRARY_PATH: /usr/local/opt/llvm/lib
   steps:   
   - script: |
-      brew update
-      brew install llvm libomp
       mkdir build
       cd build
-      cmake -DTARGET=CORE2 -DUSE_OPENMP=1 -DINTERFACE64=1 -DDYNAMIC_ARCH=1 -DCMAKE_C_COMPILER=/usr/local/opt/llvm/bin/clang -DNO_AVX512=1 ..
-      make
+      cmake -DTARGET=CORE2 -DDYNAMIC_ARCH=1 -DCMAKE_C_COMPILER=gcc-10 -DCMAKE_Fortran_COMPILER=gfortran-10 -DBUILD_SHARED_LIBS=ON ..
+      cmake --build .
       ctest
-        
+      
 - job: OSX_Ifort_Clang
   pool:
      vmImage: 'macOS-10.15'
