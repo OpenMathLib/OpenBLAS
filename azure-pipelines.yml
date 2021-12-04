@@ -175,9 +175,9 @@ jobs:
   - script: |
       mkdir build
       cd build
-      cmake -DTARGET=CORE2 -DDYNAMIC_ARCH=1 -DCMAKE_C_COMPILER=gcc-10 -DCMAKE_Fortran_COMPILER=gfortran-10 -DBUILD_SHARED_LIBS=ON -DCMAKE_Fortran_USE_RESPONSE_FILE_FOR_OBJECTS=1 -DNO_AVX512=1 ..
+      cmake -DTARGET=CORE2 -DDYNAMIC_ARCH=1 -DCMAKE_C_COMPILER=gcc-10 -DCMAKE_Fortran_COMPILER=gfortran-10 -DBUILD_SHARED_LIBS=ON ..
       cmake --build .
-      find . -name "*.rsp"
+      ctest
       
 - job: OSX_Ifort_Clang
   pool:
