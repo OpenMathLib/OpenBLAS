@@ -145,8 +145,13 @@ endif
 ifeq ($(TARGET), POWER8)
 GETARCH_FLAGS := -DFORCE_POWER6
 endif
+ifeq ($(TARGET), POWER9)
+GETARCH_FLAGS := -DFORCE_POWER6
 endif
-
+ifeq ($(TARGET), POWER10)
+GETARCH_FLAGS := -DFORCE_POWER6
+endif
+endif
 
 #TARGET_CORE will override TARGET which is used in DYNAMIC_ARCH=1.
 #
@@ -267,6 +272,10 @@ endif
 ifndef GOTOBLAS_MAKEFILE
 export GOTOBLAS_MAKEFILE = 1
 
+# Determine if the assembler is GNU Assembler
+HAVE_GAS := $(shell $(AS) -v < /dev/null 2>&1 | grep GNU 2>&1 >/dev/null ; echo $$?)
+GETARCH_FLAGS += -DHAVE_GAS=$(HAVE_GAS)
+
 # Generating Makefile.conf and config.h
 DUMMY := $(shell $(MAKE) -C $(TOPDIR) -f Makefile.prebuild CC="$(CC)" FC="$(FC)" HOSTCC="$(HOSTCC)" HOST_CFLAGS="$(GETARCH_FLAGS)" CFLAGS="$(CFLAGS)" BINARY=$(BINARY) USE_OPENMP=$(USE_OPENMP) TARGET_CORE=$(TARGET_CORE) ONLY_CBLAS=$(ONLY_CBLAS) TARGET=$(TARGET) all)
 
@@ -367,8 +376,6 @@ GCCMINORVERSIONGTEQ1 := $(shell expr `$(CC) $(GCCDUMPVERSION_PARAM) | cut -f2 -d
 GCCMINORVERSIONGTEQ2 := $(shell expr `$(CC) $(GCCDUMPVERSION_PARAM) | cut -f2 -d.` \>= 2)
 GCCMINORVERSIONGTEQ7 := $(shell expr `$(CC) $(GCCDUMPVERSION_PARAM) | cut -f2 -d.` \>= 7)
 endif
-
-HAVE_GAS := $(shell $(AS) -v < /dev/null 2>&1 | grep GNU 2>&1 >/dev/null ; echo $$?)
 
 #
 #  OS dependent settings
