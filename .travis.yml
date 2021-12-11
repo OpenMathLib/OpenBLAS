@@ -311,10 +311,10 @@ matrix:
         - export MODULEPATH=$MODULEPATH:/opt/arm/modulefiles/
         - . /usr/share/modules/init/bash
         - module load armie21/21.0
-        - travis_wait 45 make TARGET=A64FX CROSS=1 CC=gcc-10 FC=gfortran-10 HOSTCC=gcc-10 DEBUG=1
+#        - travis_wait 45 make TARGET=A64FX CROSS=1 CC=gcc-10 FC=gfortran-10 HOSTCC=gcc-10 DEBUG=1
         - free
-        - echo "	set auto-load safe-path /" >> $HOME/.gdbinit
-        - armie -msve-vector-bits=128 -- echo hello
+#        - echo "	set auto-load safe-path /" >> $HOME/.gdbinit
+        - armie -msve-vector-bits=256 -- echo hello
 #        - OPENBLAS_NUM_THREADS=2  armie -msve-vector-bits=256 -- gdb -batch -ex "run" -ex "bt" test/sblat1
 #        - armie -msve-vector-bits=128 -- test/dblat1
 #        - armie -msve-vector-bits=512 -- test/zblat1
