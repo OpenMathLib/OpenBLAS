@@ -38,97 +38,40 @@
 
 #include <stdio.h>
 #include "common.h"
-
-#ifdef __ARM_FEATURE_SVE
 #include <arm_sve.h>
-#endif
 
-int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, BLASLONG posX, BLASLONG posY, FLOAT *b){
+// TODO: write in assembly with proper unrolling of inner loop
+int CNAME(BLASLONG m, BLASLONG n, IFLOAT *a, BLASLONG lda, IFLOAT *b){
 
-    BLASLONG i, js;
-    BLASLONG X;
+    BLASLONG j;
+    IFLOAT *aoffset, *aoffset1, *boffset;
 
-    FLOAT *ao;
-    js = 0;
-#ifdef DOUBLE
-    svbool_t pn = svwhilelt_b64(js, n);
-    int n_active = svcntp_b64(svptrue_b64(), pn);
-#else
-    svbool_t pn = svwhilelt_b32(js, n);
-    int n_active = svcntp_b32(svptrue_b32(), pn);
-#endif
-    do
-    {
-        X = posX;
+    uint32_t sve_size = svcntw();
 
-        if (posX <= posY) {
-            ao = a + posX + posY * lda;
-        } else {
-            ao = a + posY + posX * lda;
+    aoffset = a;
+    boffset = b;
+
+    j = 0;
+    svbool_t pg = svwhilelt_b32(j, n);
+    uint32_t active = svcntp_b32(svptrue_b32(), pg);
+    do {
+
+        aoffset1 = aoffset;
+
+        uint32_t i_cnt = m;
+        while (i_cnt--) {
+            svfloat32_t a_vec = svld1(pg, (float *) aoffset1);
+            svst1_f32(pg, (float *) boffset, a_vec);
+            aoffset1 += lda;
+            boffset += active;
         }
+        aoffset += sve_size;
 
-        i = 0;
-        do 
-        {
-            if (X < posY) {
-                ao ++;
-                b += n_active;
-                X ++;
-                i ++;
-            } else 
-                if (X > posY) {
-#ifdef DOUBLE
-                    svfloat64_t aj_vec = svld1(pn, ao);
-#else
-                    svfloat32_t aj_vec = svld1(pn, ao);
-#endif
-                    svst1(pn, b, aj_vec);
-                    ao += lda;
-                    b += n_active;
-                    X ++;
-                    i ++;
-                } else { 
-                    /* I did not find a way to unroll this while preserving vector-length-agnostic code. */
-#ifdef UNIT
-                    int temp = 0;
-                    for (int j = 0; j < n_active; j++) {
-                        for (int k = 0 ; k < j; k++) {
-                            b[temp++] = *(ao+j*lda+k);
-                        }
-                        b[temp++] = ONE;
-                        for (int k = j+1; k < n_active; k++) {
-                            b[temp++] = ZERO;
-                        }
-                    }
-#else 
-                    int temp = 0;
-                    for (int j = 0; j < n_active; j++) {
-                        for (int k = 0 ; k <= j; k++) {
-                            b[temp++] = *(ao+j*lda+k);
-                        }
-                        for (int k = j+1; k < n_active; k++) {
-                            b[temp++] = ZERO;
-                        }
-                    }
-#endif
-                    ao += n_active * lda;
-                    b += n_active*n_active;
-                    X += n_active;
-                    i += n_active;
-                }
-        } while (i < m);
+        j += svcntw();
+        pg = svwhilelt_b32(j, n);
+        active = svcntp_b32(svptrue_b32(), pg);
 
-        posY += n_active;
-        js += n_active;
-#ifdef DOUBLE
-        pn = svwhilelt_b64(js, n);
-        n_active = svcntp_b64(svptrue_b64(), pn);
-    } while (svptest_any(svptrue_b64(), pn));
-#else
-        pn = svwhilelt_b32(js, n);
-        n_active = svcntp_b32(svptrue_b32(), pn);
-    } while (svptest_any(svptrue_b32(), pn));
-#endif
+    } while (svptest_any(svptrue_b32(), pg));
 
     return 0;
 }

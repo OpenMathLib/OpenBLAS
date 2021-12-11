@@ -114,35 +114,26 @@ DSDOTKERNEL    = dot.S
 DGEMM_BETA     = dgemm_beta.S
 SGEMM_BETA     = sgemm_beta.S
 
-SGEMMKERNEL    =  sgemm_kernel_$(SGEMM_UNROLL_M)x$(SGEMM_UNROLL_N).S
-STRMMKERNEL    =  strmm_kernel_$(SGEMM_UNROLL_M)x$(SGEMM_UNROLL_N).S
-ifneq ($(SGEMM_UNROLL_M), $(SGEMM_UNROLL_N))
-ifeq ($(SGEMM_UNROLL_M), 16)
-SGEMMITCOPY    =  sgemm_tcopy_$(SGEMM_UNROLL_M).S
-else
-SGEMMITCOPY    =  ../generic/gemm_tcopy_$(SGEMM_UNROLL_M).c
-endif
-ifeq ($(SGEMM_UNROLL_M), 4)
-SGEMMINCOPY    =  sgemm_ncopy_$(SGEMM_UNROLL_M).S
-else
-SGEMMINCOPY    =  ../generic/gemm_ncopy_$(SGEMM_UNROLL_M).c
-endif
+SGEMMKERNEL    =  sgemm_kernel_sve_v2x$(SGEMM_UNROLL_N).S
+STRMMKERNEL    =  strmm_kernel_sve_v1x$(SGEMM_UNROLL_N).S
+
+SGEMMINCOPY    =  sgemm_ncopy_sve_v1.c
+SGEMMITCOPY    =  sgemm_tcopy_sve_v1.c
+SGEMMONCOPY    =  sgemm_ncopy_$(DGEMM_UNROLL_N).S
+SGEMMOTCOPY    =  sgemm_tcopy_$(DGEMM_UNROLL_N).S
+
 SGEMMINCOPYOBJ =  sgemm_incopy$(TSUFFIX).$(SUFFIX)
 SGEMMITCOPYOBJ =  sgemm_itcopy$(TSUFFIX).$(SUFFIX)
-endif
-ifeq ($(SGEMM_UNROLL_N), 16)
-SGEMMOTCOPY    =  sgemm_tcopy_$(SGEMM_UNROLL_N).S
-else
-SGEMMOTCOPY    =  ../generic/gemm_tcopy_$(SGEMM_UNROLL_N).c
-endif
-ifeq ($(SGEMM_UNROLL_N), 4)
-SGEMMONCOPY    =  sgemm_ncopy_$(SGEMM_UNROLL_N).S
-else
-SGEMMONCOPY    =  ../generic/gemm_ncopy_$(SGEMM_UNROLL_N).c
-endif
 SGEMMONCOPYOBJ =  sgemm_oncopy$(TSUFFIX).$(SUFFIX)
 SGEMMOTCOPYOBJ =  sgemm_otcopy$(TSUFFIX).$(SUFFIX)
 
+STRMMUNCOPY_M  =  trmm_uncopy_sve_v1.c
+STRMMLNCOPY_M  =  trmm_lncopy_sve_v1.c
+STRMMUTCOPY_M  =  trmm_utcopy_sve_v1.c
+STRMMLTCOPY_M  =  trmm_ltcopy_sve_v1.c
+
+SSYMMUCOPY_M    =  symm_ucopy_sve.c
+SSYMMLCOPY_M    =  symm_lcopy_sve.c
 
 DGEMMKERNEL    =  dgemm_kernel_sve_v2x$(DGEMM_UNROLL_N).S
 DTRMMKERNEL    =  dtrmm_kernel_sve_v1x$(DGEMM_UNROLL_N).S

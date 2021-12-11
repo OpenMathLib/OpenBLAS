@@ -44,6 +44,7 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, BLASLONG posX, BLASLON
 
   BLASLONG i, offset;
 
+#if defined(DOUBLE)
   uint64_t sve_size = svcntd();
   svint64_t posY_vec = svdup_s64(posY);
   svint64_t posX_vec = svdup_s64(posX);
@@ -88,6 +89,55 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, BLASLONG posX, BLASLON
     pg = svwhilelt_b64(j, n);
     active = svcntp_b64(svptrue_b64(), pg);
   } while (svptest_any(svptrue_b64(), pg));
+
+#else
+  uint32_t sve_size = svcntw();
+  svint32_t posY_vec = svdup_s32(posY);
+  svint32_t posX_vec = svdup_s32(posX);
+  svint32_t lda_vec = svdup_s32(lda);
+  svint32_t one_vec = svdup_s32(1);
+
+  int32_t N = n;
+  int32_t j = 0;
+  svbool_t pg = svwhilelt_b32(j, N);
+  int32_t active = svcntp_b32(svptrue_b32(), pg);
+  svint32_t index_neg = svindex_s32(0, -1);
+  svint32_t index = svindex_s32(0, 1);
+  do {
+    offset = posX - posY;
+    svint32_t vec_off = svdup_s32(offset);
+    svbool_t cmp = svcmpgt(pg, vec_off, index_neg);
+
+    svint32_t temp = svadd_z(pg, posX_vec, index);
+    svint32_t temp1 = svmla_z(pg, temp, posY_vec, lda_vec);
+    svint32_t temp2 = svmla_z(pg, posY_vec, temp, lda);
+    svint32_t gat_ind = svsel(cmp, temp2, temp1);
+
+    i = m;
+    while (i>0) {
+        svfloat32_t data_vec = svld1_gather_index(pg, a, gat_ind);
+
+        gat_ind = svadd_m(cmp, gat_ind, one_vec);
+        gat_ind = svadd_m(svnot_z(pg, cmp) , gat_ind, lda_vec);
+
+        svst1(pg, b, data_vec);
+
+        b += active;
+        offset --;
+        vec_off = svsub_z(pg, vec_off, one_vec);
+        cmp = svcmpgt(pg, vec_off, index_neg);
+        
+        i--;
+    }
+
+    posX += sve_size;
+    posX_vec = svdup_s32(posX);
+    j += sve_size;
+    pg = svwhilelt_b32(j, N);
+    active = svcntp_b32(svptrue_b32(), pg);
+  } while (svptest_any(svptrue_b32(), pg));
+
+#endif
 
   return 0;
 }
