@@ -282,7 +282,7 @@ matrix:
             - gfortran
       script:
         - travis_wait 45 make && make lapack-test
-       
+   
 # whitelist
 branches:
   only:
