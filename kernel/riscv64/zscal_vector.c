@@ -35,6 +35,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define VFMACCVF_FLOAT vfmacc_vf_f32m4
 #define VFMULVF_FLOAT vfmul_vf_f32m4
 #define VFNMSACVF_FLOAT vfnmsac_vf_f32m4
+#define VFMVVF_FLOAT vfmv_v_f_f32m4
 #else
 #define VSETVL(n) vsetvl_e64m4(n)
 #define VSETVL_MAX vsetvlmax_e64m1()
@@ -44,6 +45,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define VFMACCVF_FLOAT vfmacc_vf_f64m4
 #define VFMULVF_FLOAT vfmul_vf_f64m4
 #define VFNMSACVF_FLOAT vfnmsac_vf_f64m4
+#define VFMVVF_FLOAT vfmv_v_f_f64m4
 #endif
 
 int CNAME(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, FLOAT da_r,FLOAT da_i, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG inc_y, FLOAT *dummy, BLASLONG dummy2)
@@ -58,7 +60,26 @@ int CNAME(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, FLOAT da_r,FLOAT da_i, F
         unsigned int gvl = 0;
         FLOAT_V_T vt, v0, v1;
         if(da_r == 0.0 && da_i == 0.0){
-                memset(&x[0], 0, n * 2 * sizeof(FLOAT));
+                gvl = VSETVL(n);
+                BLASLONG stride_x = inc_x * 2 * sizeof(FLOAT);
+                BLASLONG inc_xv = inc_x * 2 * gvl;
+                vt = VFMVVF_FLOAT(0.0, gvl);
+                for(i=0,j=0; i < n/(gvl*2); i++){
+                        VSSEV_FLOAT(&x[ix], stride_x, vt, gvl);
+                        VSSEV_FLOAT(&x[ix+1], stride_x, vt, gvl);
+                        VSSEV_FLOAT(&x[ix+inc_xv], stride_x, vt, gvl);
+                        VSSEV_FLOAT(&x[ix+inc_xv+1], stride_x, vt, gvl);
+
+                        j += gvl*2;
+                        ix += inc_xv*2;
+                }
+                for(; j < n; ){
+                        gvl = VSETVL(n-j);
+                        VSSEV_FLOAT(&x[ix], stride_x, vt, gvl);
+                        VSSEV_FLOAT(&x[ix+1], stride_x, vt, gvl);
+                        j += gvl;
+                        ix += inc_xv;
+                }
         }else if(da_r == 0.0){
                 gvl = VSETVL(n);
                 BLASLONG stride_x = inc_x * 2 * sizeof(FLOAT);
