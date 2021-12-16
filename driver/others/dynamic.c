@@ -1061,7 +1061,13 @@ void gotoblas_dynamic_init(void) {
 #ifdef ARCH_X86
   if (gotoblas == NULL) gotoblas = &gotoblas_KATMAI;
 #else
-  if (gotoblas == NULL) gotoblas = &gotoblas_PRESCOTT;
+  if (gotoblas == NULL) {
+   if (support_avx512_bf16()) gotoblas = &gotoblas_COOPERLAKE;
+   else if (support_avx512()) gotoblas = &gotoblas_SKYLAKEX;
+   else if   (support_avx2()) gotoblas = &gotoblas_HASWELL;
+   else if    (support_avx()) gotoblas = &gotoblas_SANDYBRIDGE;
+   else                       gotoblas = &gotoblas_PRESCOTT;
+  }
   /* sanity check, if 64bit pointer we can't have a 32 bit cpu */
   if (sizeof(void*) == 8) {
       if (gotoblas == &gotoblas_KATMAI ||
