@@ -40,7 +40,7 @@
 #include <stdlib.h>
 #include "common.h"
 
-#if defined(OS_CYGWIN_NT) && !defined(unlikely)
+#if !defined(unlikely)
 #ifdef __GNUC__
 #define unlikely(x) __builtin_expect(!!(x), 0)
 #else
