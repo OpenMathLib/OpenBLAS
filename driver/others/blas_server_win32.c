@@ -391,8 +391,9 @@ int blas_thread_init(void){
 
 int exec_blas_async(BLASLONG pos, blas_queue_t *queue){
 
-#if defined(SMP_SERVER) && defined(OS_CYGWIN_NT)
+#if defined(SMP_SERVER)
   // Handle lazy re-init of the thread-pool after a POSIX fork
+  // on Cygwin or as delayed init when a static library	is used
   if (unlikely(blas_server_avail == 0)) blas_thread_init();
 #endif
 
