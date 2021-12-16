@@ -104,17 +104,17 @@ int detect(void){
     }
   }
   fclose(infile);
-  if(p != NULL){
-  if (strstr(p, "Loongson-3A3000") || strstr(p, "Loongson-3B3000")){
-    return CPU_LOONGSON3R3;
-  }else if(strstr(p, "Loongson-3A4000") || strstr(p, "Loongson-3B4000")){
-    return CPU_LOONGSON3R4;
-  } else{
-    return CPU_SICORTEX;
+  if (p != NULL){
+    if (strstr(p, "Loongson-3A3000") || strstr(p, "Loongson-3B3000")){
+      return CPU_LOONGSON3R3;
+    } else if (strstr(p, "Loongson-3A4000") || strstr(p, "Loongson-3B4000")){
+      return CPU_LOONGSON3R4;
+    } else{
+      return CPU_SICORTEX;
+    }
   }
 #endif
     return CPU_UNKNOWN;
-  }
 }
 
 char *get_corename(void){
