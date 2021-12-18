@@ -1122,7 +1122,11 @@ FCOMMON_OPT += -i8
 endif
 endif
 ifeq ($(ARCH), x86_64)
+ifneq ($(NEWPGI2),1)
 FCOMMON_OPT += -tp p7-64
+else
+FCOMMON_OPT += -tp px
+endif
 else
 ifeq ($(ARCH), power)
 ifeq ($(CORE), POWER6)
