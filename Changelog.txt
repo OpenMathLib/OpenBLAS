@@ -1,5 +1,52 @@
 OpenBLAS ChangeLog
 ====================================================================
+Version 0.3.19
+ 19-Dec-2021
+ 
+ general:
+ - reverted unsafe TRSV/ZRSV optimizations introduced in 0.3.16
+ - fixed a potential thread race in the thread buffer reallocation routines
+   that were introduced in 0.3.18
+ - fixed miscounting of thread pool size on Linux with OMP_PROC_BIND=TRUE
+ - fixed CBLAS interfaces for CSROT/ZSROT and CROTG/ZROTG
+ - made automatic library suffix for CMAKE builds with INTERFACE64 available
+   to CBLAS-only builds
+
+x86_64:
+ - DYNAMIC_ARCH builds now fall back to the cpu with most similar capabilities
+   when an unknown CPUID is encountered, instead of defaulting to Prescott
+ - added cpu detection for Intel Alder Lake
+ - added cpu detection for Intel Sapphire Rapids
+ - added an optimized SBGEMM kernel for Sapphire Rapids
+ - fixed DYNAMIC_ARCH builds on OSX with CMAKE
+ - worked around DYNAMIC_ARCH builds made on Sandybridge failing on SkylakeX
+ - fixed missing thread initialization for static builds on Windows/MSVC
+ - fixed an excessive read in ZSYMV
+
+POWER:
+ - added support for POWER10 in big-endian mode
+ - added support for building with CMAKE
+ - added optimized SGEMM and DGEMM kernels for small matrix sizes
+
+ARMV8:
+ - added basic support and cputype detection for Fujitsu A64FX
+ - added a generic ARMV8SVE target  
+ - added SVE-enabled SGEMM and DGEMM kernels for ARMV8SVE and A64FX
+ - added optimized CGEMM and ZGEMM kernels for Cortex A53 and A55 cpus
+ - fixed cpuid detection for Apple M1 and improved performance
+ - improved compiler flag setting in CMAKE builds
+
+RISCV64:
+ - fixed improper initialization in CSCAL/ZSCAL for strided access patterns
+
+MIPS:
+ - added a GENERIC target for MIPS32
+ - added support for cross-compiling to MIPS32 on x86_64 using CMAKE
+
+MIPS64:
+ - fixed misdetection of MSA capability
+
+====================================================================
 Version 0.3.18
  02-Oct-2021
 
