@@ -9,11 +9,10 @@ ifndef TOPDIR
 TOPDIR = . 
 endif
 
- # If ARCH is not set, we use the host system's architecture for getarch compile options.
-ifndef ARCH
+# we need to use the host system's architecture for getarch compile options even especially when cross-compiling
 HOSTARCH := $(shell uname -m)
-else
-HOSTARCH = $(ARCH)
+ifeq ($(HOSTARCH), amd64)
+HOSTARCH=x86_64
 endif
 
 # Catch conflicting usage of ARCH in some BSD environments
@@ -102,7 +101,7 @@ GETARCH_FLAGS += -DUSER_TARGET
 ifeq ($(TARGET), GENERIC)
 ifeq ($(DYNAMIC_ARCH), 1)
 override NO_EXPRECISION=1
-export NO_EXPRECiSION
+export NO_EXPRECISION
 endif
 endif
 endif
@@ -117,6 +116,9 @@ ifeq ($(TARGET), SKYLAKEX)
 GETARCH_FLAGS := -DFORCE_NEHALEM
 endif
 ifeq ($(TARGET), COOPERLAKE)
+GETARCH_FLAGS := -DFORCE_NEHALEM
+endif
+ifeq ($(TARGET), SAPPHIRERAPIDS)
 GETARCH_FLAGS := -DFORCE_NEHALEM
 endif
 ifeq ($(TARGET), SANDYBRIDGE)
@@ -143,8 +145,13 @@ endif
 ifeq ($(TARGET), POWER8)
 GETARCH_FLAGS := -DFORCE_POWER6
 endif
+ifeq ($(TARGET), POWER9)
+GETARCH_FLAGS := -DFORCE_POWER6
 endif
-
+ifeq ($(TARGET), POWER10)
+GETARCH_FLAGS := -DFORCE_POWER6
+endif
+endif
 
 #TARGET_CORE will override TARGET which is used in DYNAMIC_ARCH=1.
 #
@@ -162,6 +169,9 @@ ifeq ($(TARGET_CORE), SKYLAKEX)
 GETARCH_FLAGS := -DFORCE_NEHALEM
 endif
 ifeq ($(TARGET_CORE), COOPERLAKE)
+GETARCH_FLAGS := -DFORCE_NEHALEM
+endif
+ifeq ($(TARGET_CORE), SAPPHIRERAPIDS)
 GETARCH_FLAGS := -DFORCE_NEHALEM
 endif
 ifeq ($(TARGET_CORE), SANDYBRIDGE)
@@ -251,6 +261,8 @@ endif
 #For small matrix optimization
 ifeq ($(ARCH), x86_64)
 SMALL_MATRIX_OPT = 1
+else ifeq ($(CORE), POWER10)
+SMALL_MATRIX_OPT = 1
 endif
 ifeq ($(SMALL_MATRIX_OPT), 1)
 CCOMMON_OPT += -DSMALL_MATRIX_OPT
@@ -259,6 +271,10 @@ endif
 # This operation is expensive, so execution should be once.
 ifndef GOTOBLAS_MAKEFILE
 export GOTOBLAS_MAKEFILE = 1
+
+# Determine if the assembler is GNU Assembler
+HAVE_GAS := $(shell $(AS) -v < /dev/null 2>&1 | grep GNU 2>&1 >/dev/null ; echo $$?)
+GETARCH_FLAGS += -DHAVE_GAS=$(HAVE_GAS)
 
 # Generating Makefile.conf and config.h
 DUMMY := $(shell $(MAKE) -C $(TOPDIR) -f Makefile.prebuild CC="$(CC)" FC="$(FC)" HOSTCC="$(HOSTCC)" HOST_CFLAGS="$(GETARCH_FLAGS)" CFLAGS="$(CFLAGS)" BINARY=$(BINARY) USE_OPENMP=$(USE_OPENMP) TARGET_CORE=$(TARGET_CORE) ONLY_CBLAS=$(ONLY_CBLAS) TARGET=$(TARGET) all)
@@ -307,7 +323,7 @@ else
 SMP = 1
 endif
 else
-ifeq ($(NUM_THREAD), 1)
+ifeq ($(NUM_THREADS), 1)
 SMP =
 else
 SMP = 1
@@ -892,15 +908,25 @@ endif
 
 ifeq ($(C_COMPILER), PGI)
 PGCVERSIONGT20 := $(shell expr `$(CC) --version|sed -n "2p" |sed -e "s/[^0-9.]//g" |cut -d "." -f 1` \> 20)
-PGCVERSIONGTEQ20 := $(shell expr `$(CC) --version|sed -n "2p" |sed -e "s/[^0-9.]//g" |cut -d "." -f 1` \>= 20)
-PGCMINORVERSIONGE11 := $(shell expr `$(CC) --version|sed -n "2p" |sed -e "s/[^0-9.]//g" |cut -c 4-5` == 11)
+PGCVERSIONEQ20 := $(shell expr `$(CC) --version|sed -n "2p" |sed -e "s/[^0-9.]//g" |cut -d "." -f 1` == 20)
+PGCMINORVERSIONGE11 := $(shell expr `$(CC) --version|sed -n "2p" |cut -d "-" -f 1 |sed -e "s/[^0-9.]//g" |cut -c 4-5` \>= 11)
 PGCVERSIONCHECK := $(PGCVERSIONGT20)$(PGCVERSIONEQ20)$(PGCMINORVERSIONGE11)
-ifeq ($(PGCVERSIONCHECK), $(filter $(PGCVERSIONCHECK), 110 111 011))
+ifeq ($(PGCVERSIONCHECK), $(filter $(PGCVERSIONCHECK), 100 101 011))
 NEWPGI := 1
+PGCVERSIONGT21 := $(shell expr `$(CC) --version|sed -n "2p" |sed -e "s/[^0-9.]//g" |cut -d "." -f 1` \> 21)
+PGCVERSIONEQ21 := $(shell expr `$(CC) --version|sed -n "2p" |sed -e "s/[^0-9.]//g" |cut -d "." -f 1` == 21)
+PGCVERSIONCHECK2 := $(PGCVERSIONGT21)$(PGCVERSIONEQ21)$(PGCMINORVERSIONGE11)
+ifeq ($(PGCVERSIONCHECK2), $(filter $(PGCVERSIONCHECK2), 100 101 011))
+NEWPGI2 := 1
+endif
 endif
 ifdef BINARY64
 ifeq ($(ARCH), x86_64)
+ifneq ($(NEWPGI2),1)
 CCOMMON_OPT += -tp p7-64
+else
+CCOMMON_OPT += -tp px
+endif
 ifneq ($(NEWPGI),1)
 CCOMMON_OPT +=  -D__MMX__ -Mnollvm
 endif
@@ -915,7 +941,11 @@ endif
 endif
 endif
 else
+ifneq ($(NEWPGI2),1)
 CCOMMON_OPT += -tp p7
+else
+CCOMMON_OPT += -tp px
+endif
 endif
 endif
 
@@ -1092,7 +1122,11 @@ FCOMMON_OPT += -i8
 endif
 endif
 ifeq ($(ARCH), x86_64)
+ifneq ($(NEWPGI2),1)
 FCOMMON_OPT += -tp p7-64
+else
+FCOMMON_OPT += -tp px
+endif
 else
 ifeq ($(ARCH), power)
 ifeq ($(CORE), POWER6)
@@ -1643,8 +1677,10 @@ export HAVE_VFP
 export HAVE_VFPV3
 export HAVE_VFPV4
 export HAVE_NEON
-export HAVE_MSA
-export MSA_FLAGS
+ifndef NO_MSA
+  export HAVE_MSA
+  export MSA_FLAGS
+endif
 export KERNELDIR
 export FUNCTION_PROFILE
 export TARGET_CORE

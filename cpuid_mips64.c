@@ -104,17 +104,17 @@ int detect(void){
     }
   }
   fclose(infile);
-  if(p != NULL){
-  if (strstr(p, "Loongson-3A3000") || strstr(p, "Loongson-3B3000")){
-    return CPU_LOONGSON3R3;
-  }else if(strstr(p, "Loongson-3A4000") || strstr(p, "Loongson-3B4000")){
-    return CPU_LOONGSON3R4;
-  } else{
-    return CPU_SICORTEX;
+  if (p != NULL){
+    if (strstr(p, "Loongson-3A3000") || strstr(p, "Loongson-3B3000")){
+      return CPU_LOONGSON3R3;
+    } else if (strstr(p, "Loongson-3A4000") || strstr(p, "Loongson-3B4000")){
+      return CPU_LOONGSON3R4;
+    } else{
+      return CPU_SICORTEX;
+    }
   }
 #endif
     return CPU_UNKNOWN;
-  }
 }
 
 char *get_corename(void){
@@ -201,6 +201,7 @@ void get_cpuconfig(void){
     printf("#define DTB_SIZE 4096\n");
     printf("#define L2_ASSOCIATIVE 8\n");
   }
+  if (!get_feature(msa)) printf("#define NO_MSA\n");
 }
 
 void get_libname(void){
@@ -218,3 +219,38 @@ void get_libname(void){
     printf("mips64\n");
   }
 }
+
+int get_feature(char *search)
+{
+
+#ifdef __linux
+        FILE *infile;
+        char buffer[2048], *p,*t;
+        p = (char *) NULL ;
+
+        infile = fopen("/proc/cpuinfo", "r");
+
+        while (fgets(buffer, sizeof(buffer), infile))
+        {
+
+                if (!strncmp("Features", buffer, 8))
+                {
+                        p = strchr(buffer, ':') + 2;
+                        break;
+                }
+        }
+
+        fclose(infile);
+
+        if( p == NULL ) return 0;
+
+        t = strtok(p," ");
+        while( t = strtok(NULL," "))
+        {
+                if (!strcmp(t, search))   { return(1); }
+        }
+
+#endif
+        return(0);
+}
+

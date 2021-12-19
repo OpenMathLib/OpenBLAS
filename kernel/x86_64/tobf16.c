@@ -35,7 +35,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #else
 #endif
 
-#if defined(COOPERLAKE)
+#if defined(COOPERLAKE) || defined(SAPPHIRERAPIDS)
 #if defined(DOUBLE)
 #include "dtobf16_microk_cooperlake.c"
 #elif defined(SINGLE)

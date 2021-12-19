@@ -26,10 +26,12 @@
   *****************************************************************************/
 
 #include <string.h>
-#ifdef OS_DARWIN
+#ifdef __APPLE__
 #include <sys/sysctl.h>
 int32_t value;
 size_t length=sizeof(value);
+int64_t value64;
+size_t length64=sizeof(value64);
 #endif
 
 #define CPU_UNKNOWN     	0
@@ -53,6 +55,8 @@ size_t length=sizeof(value);
 #define CPU_EMAG8180	 10
 // Apple
 #define CPU_VORTEX       13
+// Fujitsu
+#define CPU_A64FX	 15
 
 static char *cpuname[] = {
   "UNKNOWN",
@@ -69,7 +73,8 @@ static char *cpuname[] = {
   "NEOVERSEN1",
   "THUNDERX3T110",
   "VORTEX",
-  "CORTEXA55"
+  "CORTEXA55",
+  "A64FX"
 };
 
 static char *cpuname_lower[] = {
@@ -87,7 +92,8 @@ static char *cpuname_lower[] = {
   "neoversen1",
   "thunderx3t110",
   "vortex",
-  "cortexa55"
+  "cortexa55",
+  "a64fx"
 };
 
 int get_feature(char *search)
@@ -183,6 +189,9 @@ int detect(void)
     // Ampere
     else if (strstr(cpu_implementer, "0x50") && strstr(cpu_part, "0x000"))
                         return CPU_EMAG8180;
+    // Fujitsu
+    else if (strstr(cpu_implementer, "0x46") && strstr(cpu_part, "0x001"))
+                        return CPU_A64FX;
 	}
 
 	p = (char *) NULL ;
@@ -212,9 +221,9 @@ int detect(void)
 
 	}
 #else
-#ifdef DARWIN
+#ifdef __APPLE__
 	sysctlbyname("hw.cpufamily",&value,&length,NULL,0);
-	if (value ==131287967) return CPU_VORTEX;
+	if (value ==131287967|| value == 458787763 ) return CPU_VORTEX;
 #endif
 	return CPU_ARMV8;	
 #endif
@@ -265,7 +274,7 @@ int n=0;
 
 	printf("#define NUM_CORES %d\n",n);
 #endif
-#ifdef DARWIN
+#ifdef __APPLE__
 	sysctlbyname("hw.physicalcpu_max",&value,&length,NULL,0);
 	printf("#define NUM_CORES %d\n",value);
 #endif	
@@ -285,154 +294,166 @@ void get_cpuconfig(void)
 	switch (d)
 	{
 
-    case CPU_CORTEXA53:
-    case CPU_CORTEXA55:			
-      printf("#define %s\n", cpuname[d]);
-      // Fall-through
-		case CPU_ARMV8:
-      // Minimum parameters for ARMv8 (based on A53)
-    	printf("#define L1_DATA_SIZE 32768\n");
-    	printf("#define L1_DATA_LINESIZE 64\n");
-    	printf("#define L2_SIZE 262144\n");
-    	printf("#define L2_LINESIZE 64\n");
-    	printf("#define DTB_DEFAULT_ENTRIES 64\n");
-    	printf("#define DTB_SIZE 4096\n");
-    	printf("#define L2_ASSOCIATIVE 4\n");
+	    case CPU_CORTEXA53:
+	    case CPU_CORTEXA55:
+	        printf("#define %s\n", cpuname[d]);
+	      // Fall-through
+	    case CPU_ARMV8:
+	      // Minimum parameters for ARMv8 (based on A53)
+	    	printf("#define L1_DATA_SIZE 32768\n");
+	    	printf("#define L1_DATA_LINESIZE 64\n");
+ 	   	printf("#define L2_SIZE 262144\n");
+	    	printf("#define L2_LINESIZE 64\n");
+	    	printf("#define DTB_DEFAULT_ENTRIES 64\n");
+ 	   	printf("#define DTB_SIZE 4096\n");
+ 	   	printf("#define L2_ASSOCIATIVE 4\n");
 			break;
 
-		case CPU_CORTEXA57:
-		case CPU_CORTEXA72:
-		case CPU_CORTEXA73:
+	    case CPU_CORTEXA57:
+	    case CPU_CORTEXA72:
+	    case CPU_CORTEXA73:
       // Common minimum settings for these Arm cores
       // Can change a lot, but we need to be conservative
       // TODO: detect info from /sys if possible
-      printf("#define %s\n", cpuname[d]);
-			printf("#define L1_CODE_SIZE 49152\n");
-			printf("#define L1_CODE_LINESIZE 64\n");
-			printf("#define L1_CODE_ASSOCIATIVE 3\n");
-			printf("#define L1_DATA_SIZE 32768\n");
-			printf("#define L1_DATA_LINESIZE 64\n");
-			printf("#define L1_DATA_ASSOCIATIVE 2\n");
-      printf("#define L2_SIZE 524288\n");
-			printf("#define L2_LINESIZE 64\n");
-			printf("#define L2_ASSOCIATIVE 16\n");
-			printf("#define DTB_DEFAULT_ENTRIES 64\n");
-			printf("#define DTB_SIZE 4096\n");
-			break;
-		case CPU_NEOVERSEN1:
-			printf("#define %s\n", cpuname[d]);
-			printf("#define L1_CODE_SIZE 65536\n");
-			printf("#define L1_CODE_LINESIZE 64\n");
-			printf("#define L1_CODE_ASSOCIATIVE 4\n");
-			printf("#define L1_DATA_SIZE 65536\n");
-			printf("#define L1_DATA_LINESIZE 64\n");
-			printf("#define L1_DATA_ASSOCIATIVE 4\n");
-			printf("#define L2_SIZE 1048576\n");
-			printf("#define L2_LINESIZE 64\n");
-			printf("#define L2_ASSOCIATIVE 16\n");
-			printf("#define DTB_DEFAULT_ENTRIES 64\n");
-			printf("#define DTB_SIZE 4096\n");
-			break;
+      		printf("#define %s\n", cpuname[d]);
+		printf("#define L1_CODE_SIZE 49152\n");
+		printf("#define L1_CODE_LINESIZE 64\n");
+		printf("#define L1_CODE_ASSOCIATIVE 3\n");
+		printf("#define L1_DATA_SIZE 32768\n");
+		printf("#define L1_DATA_LINESIZE 64\n");
+		printf("#define L1_DATA_ASSOCIATIVE 2\n");
+		printf("#define L2_SIZE 524288\n");
+		printf("#define L2_LINESIZE 64\n");
+		printf("#define L2_ASSOCIATIVE 16\n");
+		printf("#define DTB_DEFAULT_ENTRIES 64\n");
+		printf("#define DTB_SIZE 4096\n");
+		break;
+	    case CPU_NEOVERSEN1:
+		printf("#define %s\n", cpuname[d]);
+		printf("#define L1_CODE_SIZE 65536\n");
+		printf("#define L1_CODE_LINESIZE 64\n");
+		printf("#define L1_CODE_ASSOCIATIVE 4\n");
+		printf("#define L1_DATA_SIZE 65536\n");
+		printf("#define L1_DATA_LINESIZE 64\n");
+		printf("#define L1_DATA_ASSOCIATIVE 4\n");
+		printf("#define L2_SIZE 1048576\n");
+		printf("#define L2_LINESIZE 64\n");
+		printf("#define L2_ASSOCIATIVE 16\n");
+		printf("#define DTB_DEFAULT_ENTRIES 64\n");
+		printf("#define DTB_SIZE 4096\n");
+		break;
 
-    case CPU_FALKOR:
-      printf("#define FALKOR\n");
-      printf("#define L1_CODE_SIZE 65536\n");
-      printf("#define L1_CODE_LINESIZE 64\n");
-      printf("#define L1_DATA_SIZE 32768\n");
-      printf("#define L1_DATA_LINESIZE 128\n");
-      printf("#define L2_SIZE 524288\n");
-      printf("#define L2_LINESIZE 64\n");
-      printf("#define DTB_DEFAULT_ENTRIES 64\n");
-      printf("#define DTB_SIZE 4096\n");
-      printf("#define L2_ASSOCIATIVE 16\n");
-      break;
+	    case CPU_FALKOR:
+	        printf("#define FALKOR\n");
+	        printf("#define L1_CODE_SIZE 65536\n");
+	        printf("#define L1_CODE_LINESIZE 64\n");
+	        printf("#define L1_DATA_SIZE 32768\n");
+	        printf("#define L1_DATA_LINESIZE 128\n");
+	        printf("#define L2_SIZE 524288\n");
+	        printf("#define L2_LINESIZE 64\n");
+	        printf("#define DTB_DEFAULT_ENTRIES 64\n");
+	        printf("#define DTB_SIZE 4096\n");
+	        printf("#define L2_ASSOCIATIVE 16\n");
+	        break;
 
-		case CPU_THUNDERX:
-			printf("#define THUNDERX\n");
-			printf("#define L1_DATA_SIZE 32768\n");
-			printf("#define L1_DATA_LINESIZE 128\n");
-			printf("#define L2_SIZE 16777216\n");
-			printf("#define L2_LINESIZE 128\n");
-			printf("#define DTB_DEFAULT_ENTRIES 64\n");
-			printf("#define DTB_SIZE 4096\n");
-			printf("#define L2_ASSOCIATIVE 16\n");
-			break;
+	    case CPU_THUNDERX:
+		printf("#define THUNDERX\n");
+		printf("#define L1_DATA_SIZE 32768\n");
+		printf("#define L1_DATA_LINESIZE 128\n");
+		printf("#define L2_SIZE 16777216\n");
+		printf("#define L2_LINESIZE 128\n");
+		printf("#define DTB_DEFAULT_ENTRIES 64\n");
+		printf("#define DTB_SIZE 4096\n");
+		printf("#define L2_ASSOCIATIVE 16\n");
+		break;
 
-		case CPU_THUNDERX2T99:
-			printf("#define THUNDERX2T99                  \n");
-			printf("#define L1_CODE_SIZE         32768    \n");
-			printf("#define L1_CODE_LINESIZE     64       \n");
-			printf("#define L1_CODE_ASSOCIATIVE  8        \n");
-			printf("#define L1_DATA_SIZE         32768    \n");
-			printf("#define L1_DATA_LINESIZE     64       \n");
-			printf("#define L1_DATA_ASSOCIATIVE  8        \n");
-			printf("#define L2_SIZE              262144   \n");
-			printf("#define L2_LINESIZE          64       \n");
-			printf("#define L2_ASSOCIATIVE       8        \n");
-			printf("#define L3_SIZE              33554432 \n");
-			printf("#define L3_LINESIZE          64       \n");
-			printf("#define L3_ASSOCIATIVE       32       \n");
-			printf("#define DTB_DEFAULT_ENTRIES  64       \n");
-			printf("#define DTB_SIZE             4096     \n");
-			break;
+	    case CPU_THUNDERX2T99:
+		printf("#define THUNDERX2T99                  \n");
+		printf("#define L1_CODE_SIZE         32768    \n");
+		printf("#define L1_CODE_LINESIZE     64       \n");
+		printf("#define L1_CODE_ASSOCIATIVE  8        \n");
+		printf("#define L1_DATA_SIZE         32768    \n");
+		printf("#define L1_DATA_LINESIZE     64       \n");
+		printf("#define L1_DATA_ASSOCIATIVE  8        \n");
+		printf("#define L2_SIZE              262144   \n");
+		printf("#define L2_LINESIZE          64       \n");
+		printf("#define L2_ASSOCIATIVE       8        \n");
+		printf("#define L3_SIZE              33554432 \n");
+		printf("#define L3_LINESIZE          64       \n");
+		printf("#define L3_ASSOCIATIVE       32       \n");
+		printf("#define DTB_DEFAULT_ENTRIES  64       \n");
+		printf("#define DTB_SIZE             4096     \n");
+		break;
 			
-		case CPU_TSV110:
-			printf("#define TSV110                        \n");
-			printf("#define L1_CODE_SIZE         65536    \n");
-			printf("#define L1_CODE_LINESIZE     64       \n");
-			printf("#define L1_CODE_ASSOCIATIVE  4        \n");
-			printf("#define L1_DATA_SIZE         65536    \n");
-			printf("#define L1_DATA_LINESIZE     64       \n");
-			printf("#define L1_DATA_ASSOCIATIVE  4        \n");
-			printf("#define L2_SIZE              524228   \n");
-			printf("#define L2_LINESIZE          64       \n");
-			printf("#define L2_ASSOCIATIVE       8        \n");
-			printf("#define DTB_DEFAULT_ENTRIES  64       \n");
-			printf("#define DTB_SIZE             4096     \n");
-			break;	
+	    case CPU_TSV110:
+		printf("#define TSV110                        \n");
+		printf("#define L1_CODE_SIZE         65536    \n");
+		printf("#define L1_CODE_LINESIZE     64       \n");
+		printf("#define L1_CODE_ASSOCIATIVE  4        \n");
+		printf("#define L1_DATA_SIZE         65536    \n");
+		printf("#define L1_DATA_LINESIZE     64       \n");
+		printf("#define L1_DATA_ASSOCIATIVE  4        \n");
+		printf("#define L2_SIZE              524228   \n");
+		printf("#define L2_LINESIZE          64       \n");
+		printf("#define L2_ASSOCIATIVE       8        \n");
+		printf("#define DTB_DEFAULT_ENTRIES  64       \n");
+		printf("#define DTB_SIZE             4096     \n");
+		break;	
 
-		case CPU_EMAG8180:
-      // Minimum parameters for ARMv8 (based on A53)
-	printf("#define EMAG8180\n");
-    	printf("#define L1_CODE_SIZE 32768\n");
-    	printf("#define L1_DATA_SIZE 32768\n");
-    	printf("#define L1_DATA_LINESIZE 64\n");
-    	printf("#define L2_SIZE 262144\n");
-    	printf("#define L2_LINESIZE 64\n");
-    	printf("#define DTB_DEFAULT_ENTRIES 64\n");
-    	printf("#define DTB_SIZE 4096\n");
-			break;
+	    case CPU_EMAG8180:
+     		 // Minimum parameters for ARMv8 (based on A53)
+		printf("#define EMAG8180\n");
+    		printf("#define L1_CODE_SIZE 32768\n");
+    		printf("#define L1_DATA_SIZE 32768\n");
+    		printf("#define L1_DATA_LINESIZE 64\n");
+    		printf("#define L2_SIZE 262144\n");
+    		printf("#define L2_LINESIZE 64\n");
+	    	printf("#define DTB_DEFAULT_ENTRIES 64\n");
+	    	printf("#define DTB_SIZE 4096\n");
+		break;
 
-		case CPU_THUNDERX3T110:
-			printf("#define THUNDERX3T110                 \n");
-			printf("#define L1_CODE_SIZE         65536    \n");
-			printf("#define L1_CODE_LINESIZE     64       \n");
-			printf("#define L1_CODE_ASSOCIATIVE  8        \n");
-			printf("#define L1_DATA_SIZE         32768    \n");
-			printf("#define L1_DATA_LINESIZE     64       \n");
-			printf("#define L1_DATA_ASSOCIATIVE  8        \n");
-			printf("#define L2_SIZE              524288   \n");
-			printf("#define L2_LINESIZE          64       \n");
-			printf("#define L2_ASSOCIATIVE       8        \n");
-			printf("#define L3_SIZE              94371840 \n");
-			printf("#define L3_LINESIZE          64       \n");
-			printf("#define L3_ASSOCIATIVE       32       \n");
-			printf("#define DTB_DEFAULT_ENTRIES  64       \n");
-			printf("#define DTB_SIZE             4096     \n");
-			break;
-#ifdef DARWIN
-		case CPU_VORTEX:
-			printf("#define VORTEX			      \n");
-			sysctlbyname("hw.l1icachesize",&value,&length,NULL,0);
-			printf("#define L1_CODE_SIZE	     %d       \n",value);
-			sysctlbyname("hw.cachelinesize",&value,&length,NULL,0);
-			printf("#define L1_CODE_LINESIZE     %d       \n",value);
-			sysctlbyname("hw.l1dcachesize",&value,&length,NULL,0);
-			printf("#define L1_DATA_SIZE	     %d       \n",value);
-			sysctlbyname("hw.l2dcachesize",&value,&length,NULL,0);
-			printf("#define L2_SIZE	     %d       \n",value);
-			break;
+	    case CPU_THUNDERX3T110:
+		printf("#define THUNDERX3T110                 \n");
+		printf("#define L1_CODE_SIZE         65536    \n");
+		printf("#define L1_CODE_LINESIZE     64       \n");
+		printf("#define L1_CODE_ASSOCIATIVE  8        \n");
+		printf("#define L1_DATA_SIZE         32768    \n");
+		printf("#define L1_DATA_LINESIZE     64       \n");
+		printf("#define L1_DATA_ASSOCIATIVE  8        \n");
+		printf("#define L2_SIZE              524288   \n");
+		printf("#define L2_LINESIZE          64       \n");
+		printf("#define L2_ASSOCIATIVE       8        \n");
+		printf("#define L3_SIZE              94371840 \n");
+		printf("#define L3_LINESIZE          64       \n");
+		printf("#define L3_ASSOCIATIVE       32       \n");
+		printf("#define DTB_DEFAULT_ENTRIES  64       \n");
+		printf("#define DTB_SIZE             4096     \n");
+		break;
+#ifdef __APPLE__
+	    case CPU_VORTEX:
+		printf("#define VORTEX			      \n");
+		sysctlbyname("hw.l1icachesize",&value64,&length64,NULL,0);
+		printf("#define L1_CODE_SIZE	     %lld       \n",value64);
+		sysctlbyname("hw.cachelinesize",&value64,&length64,NULL,0);
+		printf("#define L1_CODE_LINESIZE     %lld       \n",value64);
+		sysctlbyname("hw.l1dcachesize",&value64,&length64,NULL,0);
+		printf("#define L1_DATA_SIZE	     %lld       \n",value64);
+		sysctlbyname("hw.l2cachesize",&value64,&length64,NULL,0);
+		printf("#define L2_SIZE	     %lld       \n",value64);
+		printf("#define DTB_DEFAULT_ENTRIES  64       \n");
+		printf("#define DTB_SIZE             4096     \n");
+		break;
 #endif			
+	    case CPU_A64FX:
+		printf("#define A64FX\n");
+    		printf("#define L1_CODE_SIZE 65535\n");
+    		printf("#define L1_DATA_SIZE 65535\n");
+    		printf("#define L1_DATA_LINESIZE 256\n");
+    		printf("#define L2_SIZE 8388608\n");
+    		printf("#define L2_LINESIZE 256\n");
+	    	printf("#define DTB_DEFAULT_ENTRIES 64\n");
+	    	printf("#define DTB_SIZE 4096\n");
+		break;
 	}
 	get_cpucount();
 }

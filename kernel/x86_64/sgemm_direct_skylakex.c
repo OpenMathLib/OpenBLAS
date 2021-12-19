@@ -1,7 +1,7 @@
 /* the direct sgemm code written by Arjan van der Ven */
 #include "common.h"
 
-#if defined(SKYLAKEX) || defined (COOPERLAKE)
+#if defined(SKYLAKEX) || defined (COOPERLAKE) || defined (SAPPHIRERAPIDS)
 
 #include <immintrin.h>
 

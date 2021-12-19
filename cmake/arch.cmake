@@ -109,7 +109,7 @@ if (${ARCH} STREQUAL "ia64")
   endif ()
 endif ()
 
-if (MIPS64)
+if (MIPS32 OR MIPS64)
   set(NO_BINARY_MODE 1)
 endif ()
 

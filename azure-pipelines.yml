@@ -75,7 +75,50 @@ jobs:
       cd utest
       dir
       openblas_utest.exe
-  
+
+- job: Windows_mingw_gmake
+  pool:
+     vmImage: 'windows-latest'
+  steps:   
+  - script: |
+      mingw32-make CC=gcc FC=gfortran DYNAMIC_ARCH=1 DYNAMIC_LIST="NEHALEM SANDYBRIDGE HASWELL"
+
+- job: Windows_clang_cmake
+  pool:
+     vmImage: 'windows-latest'
+  steps:
+  - script: |
+      set "PATH=C:\Miniconda\Scripts;C:\Miniconda\Library\bin;C:\Miniconda\Library\usr\bin;C:\Miniconda\condabin;%PATH%"
+      set "LIB=C:\Miniconda\Library\lib;%LIB%"
+      set "CPATH=C:\Miniconda\Library\include;%CPATH%
+      conda config --add channels conda-forge --force
+      conda config --set auto_update_conda false
+      conda install --yes ninja
+      call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
+      mkdir build 
+      cd build
+      cmake -G "Ninja" -DCMAKE_C_COMPILER=clang-cl -DCMAKE_CXX_COMPILER=clang-cl -DCMAKE_MT=mt -DCMAKE_BUILD_TYPE=Release -DNOFORTRAN=1 -DMSVC_STATIC_CRT=ON ..
+      cmake --build . --config Release
+      ctest
+
+- job: Windows_flang_clang
+  pool:
+     vmImage: 'windows-latest'
+  steps:
+  - script: |
+      set "PATH=C:\Miniconda\Scripts;C:\Miniconda\Library\bin;C:\Miniconda\Library\usr\bin;C:\Miniconda\condabin;%PATH%"
+      set "LIB=C:\Miniconda\Library\lib;%LIB%"
+      set "CPATH=C:\Miniconda\Library\include;%CPATH%"
+      conda config --add channels conda-forge --force
+      conda config --set auto_update_conda false
+      conda install --yes --quiet ninja flang
+      mkdir build 
+      cd build
+      call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
+      cmake -G "Ninja" -DCMAKE_C_COMPILER=clang-cl -DCMAKE_CXX_COMPILER=clang-cl -DCMAKE_Fortran_COMPILER=flang -DCMAKE_MT=mt -DCMAKE_BUILD_TYPE=Release -DMSVC_STATIC_CRT=ON ..
+      cmake --build . --config Release
+      ctest
+
 - job: OSX_OpenMP
   pool:
      vmImage: 'macOS-10.15'
@@ -122,7 +165,7 @@ jobs:
       make
       ctest
       
-- job: OSX_OpenMP_Clang_gf_cmake
+- job: OSX_dynarch_cmake
   pool:
      vmImage: 'macOS-10.15'
   variables:
@@ -130,14 +173,12 @@ jobs:
      LIBRARY_PATH: /usr/local/opt/llvm/lib
   steps:   
   - script: |
-      brew update
-      brew install llvm libomp
       mkdir build
       cd build
-      cmake -DTARGET=CORE2 -DUSE_OPENMP=1 -DINTERFACE64=1 -DDYNAMIC_ARCH=1 -DCMAKE_C_COMPILER=/usr/local/opt/llvm/bin/clang -DNO_AVX512=1 ..
-      make
+      cmake -DTARGET=CORE2 -DDYNAMIC_ARCH=1 -DCMAKE_C_COMPILER=gcc-10 -DCMAKE_Fortran_COMPILER=gfortran-10 -DBUILD_SHARED_LIBS=ON ..
+      cmake --build .
       ctest
-        
+      
 - job: OSX_Ifort_Clang
   pool:
      vmImage: 'macOS-10.15'
@@ -179,7 +220,7 @@ jobs:
       brew update
       brew install --cask android-ndk
       export ANDROID_NDK_HOME=/usr/local/share/android-ndk
-      make TARGET=ARMV7 ONLY_CBLAS=1 CC=$ANDROID_NDK_HOME/toolchains/llvm/prebuilt/darwin-x86_64/bin/armv7a-linux-androideabi21-clang AR=$ANDROID_NDK_HOME/toolchains/llvm/prebuilt/darwin-x86_64/bin/arm-linux-androideabi-ar HOSTCC=gcc ARM_SOFTFP_ABI=1 -j4
+      make TARGET=ARMV7 ONLY_CBLAS=1 CC=$ANDROID_NDK_HOME/toolchains/llvm/prebuilt/darwin-x86_64/bin/armv7a-linux-androideabi21-clang AR=$ANDROID_NDK_HOME/toolchains/llvm/prebuilt/darwin-x86_64/bin/llvm-ar HOSTCC=gcc ARM_SOFTFP_ABI=1 -j4
 
 - job: OSX_IOS_ARMV8
   pool:
@@ -206,9 +247,9 @@ jobs:
      vmImage: 'ubuntu-latest'
   steps:
   - script: |
-        wget https://raw.githubusercontent.com/alpinelinux/alpine-chroot-install/v0.13.1/alpine-chroot-install \
-         && echo '7c7e3fa378e69aecc7f5f01bbc759e5f0a9d9b74  alpine-chroot-install' | sha1sum -c \
-         || exit 1
+        wget https://raw.githubusercontent.com/alpinelinux/alpine-chroot-install/v0.13.2/alpine-chroot-install \
+          && echo '60c7e0b5d82e21d1a549fc9a46ba3b36688c09dc  alpine-chroot-install' | sha1sum -c \
+          || exit 1
         alpine() { /alpine/enter-chroot -u "$USER" "$@"; }
         sudo sh alpine-chroot-install -p 'build-base gfortran perl linux-headers sudo'
         alpine make DYNAMIC_ARCH=1 BINARY=64

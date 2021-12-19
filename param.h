@@ -1669,14 +1669,22 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #else
 
 #define SGEMM_DEFAULT_UNROLL_M 16
+#ifndef DYNAMIC_ARCH
 #define DGEMM_DEFAULT_UNROLL_M 16
+#else
+#define DGEMM_DEFAULT_UNROLL_M 4
+#endif
 #define QGEMM_DEFAULT_UNROLL_M 2
 #define CGEMM_DEFAULT_UNROLL_M 8
 #define ZGEMM_DEFAULT_UNROLL_M 4
 #define XGEMM_DEFAULT_UNROLL_M 1
 
 #define SGEMM_DEFAULT_UNROLL_N 4
+#ifndef DYNAMIC_ARCH
 #define DGEMM_DEFAULT_UNROLL_N 2
+#else
+#define DGEMM_DEFAULT_UNROLL_N 8
+#endif
 #define QGEMM_DEFAULT_UNROLL_N 2
 #define CGEMM_DEFAULT_UNROLL_N 2
 #define ZGEMM_DEFAULT_UNROLL_N 2
@@ -1749,6 +1757,139 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif
 
 
+#endif
+
+#ifdef SAPPHIRERAPIDS
+
+#define SNUMOPT         16
+#define DNUMOPT         8
+
+#define GEMM_DEFAULT_OFFSET_A     0
+#define GEMM_DEFAULT_OFFSET_B     0
+#define GEMM_DEFAULT_ALIGN 0x03fffUL
+
+#define SYMV_P  8
+
+#if defined(XDOUBLE) || defined(DOUBLE)
+#define SWITCH_RATIO           8
+#define GEMM_PREFERED_SIZE     8
+#else
+#define SWITCH_RATIO           16
+#define GEMM_PREFERED_SIZE     16
+#endif
+#define USE_SGEMM_KERNEL_DIRECT 1
+
+#undef SBGEMM_DEFAULT_UNROLL_N
+#undef SBGEMM_DEFAULT_UNROLL_M
+#undef SBGEMM_DEFAULT_P
+#undef SBGEMM_DEFAULT_R
+#undef SBGEMM_DEFAULT_Q
+// FIXME: actually UNROLL_M = UNROLL_N = 16
+// If M and N is equal, OpenBLAS will reuse OCOPY as ICOPY.
+// But for AMX, they are not the same, set UNROLL_M = 32 to workaround
+#define SBGEMM_DEFAULT_UNROLL_N 16
+#define SBGEMM_DEFAULT_UNROLL_M 32
+#define SBGEMM_DEFAULT_P 256
+#define SBGEMM_DEFAULT_Q 1024
+#define SBGEMM_DEFAULT_R sbgemm_r
+
+#ifdef ARCH_X86
+
+#define SGEMM_DEFAULT_UNROLL_M 4
+#define DGEMM_DEFAULT_UNROLL_M 2
+#define QGEMM_DEFAULT_UNROLL_M 2
+#define CGEMM_DEFAULT_UNROLL_M 2
+#define ZGEMM_DEFAULT_UNROLL_M 1
+#define XGEMM_DEFAULT_UNROLL_M 1
+
+#define SGEMM_DEFAULT_UNROLL_N 4
+#define DGEMM_DEFAULT_UNROLL_N 4
+#define QGEMM_DEFAULT_UNROLL_N 2
+#define CGEMM_DEFAULT_UNROLL_N 2
+#define ZGEMM_DEFAULT_UNROLL_N 2
+#define XGEMM_DEFAULT_UNROLL_N 1
+
+#else
+
+#define SGEMM_DEFAULT_UNROLL_M 16
+#define DGEMM_DEFAULT_UNROLL_M 16
+#define QGEMM_DEFAULT_UNROLL_M 2
+#define CGEMM_DEFAULT_UNROLL_M 8
+#define ZGEMM_DEFAULT_UNROLL_M 4
+#define XGEMM_DEFAULT_UNROLL_M 1
+
+#define SGEMM_DEFAULT_UNROLL_N 4
+#define DGEMM_DEFAULT_UNROLL_N 2
+#define QGEMM_DEFAULT_UNROLL_N 2
+#define CGEMM_DEFAULT_UNROLL_N 2
+#define ZGEMM_DEFAULT_UNROLL_N 2
+#define XGEMM_DEFAULT_UNROLL_N 1
+
+#define SGEMM_DEFAULT_UNROLL_MN 32
+#define DGEMM_DEFAULT_UNROLL_MN 32
+#endif
+
+#ifdef ARCH_X86
+
+#define SGEMM_DEFAULT_P 512
+#define SGEMM_DEFAULT_R sgemm_r
+#define DGEMM_DEFAULT_P 512
+#define DGEMM_DEFAULT_R dgemm_r
+#define QGEMM_DEFAULT_P 504
+#define QGEMM_DEFAULT_R qgemm_r
+#define CGEMM_DEFAULT_P 128
+#define CGEMM_DEFAULT_R 1024
+#define ZGEMM_DEFAULT_P 512
+#define ZGEMM_DEFAULT_R zgemm_r
+#define XGEMM_DEFAULT_P 252
+#define XGEMM_DEFAULT_R xgemm_r
+#define SGEMM_DEFAULT_Q 256
+#define DGEMM_DEFAULT_Q 256
+#define QGEMM_DEFAULT_Q 128
+#define CGEMM_DEFAULT_Q 256
+#define ZGEMM_DEFAULT_Q 192
+#define XGEMM_DEFAULT_Q 128
+
+#else
+
+#define SGEMM_DEFAULT_P 640
+#define DGEMM_DEFAULT_P 192
+#define CGEMM_DEFAULT_P 384
+#define ZGEMM_DEFAULT_P 256
+
+#define SGEMM_DEFAULT_Q 320
+#define DGEMM_DEFAULT_Q 384
+#define CGEMM_DEFAULT_Q 192
+#define ZGEMM_DEFAULT_Q 128
+
+#define SGEMM_DEFAULT_R sgemm_r
+#define DGEMM_DEFAULT_R 8640
+#define CGEMM_DEFAULT_R cgemm_r
+#define ZGEMM_DEFAULT_R zgemm_r
+
+#define QGEMM_DEFAULT_Q 128
+#define QGEMM_DEFAULT_P 504
+#define QGEMM_DEFAULT_R qgemm_r
+#define XGEMM_DEFAULT_P 252
+#define XGEMM_DEFAULT_R xgemm_r
+#define XGEMM_DEFAULT_Q 128
+
+#define CGEMM3M_DEFAULT_UNROLL_N 4
+#define CGEMM3M_DEFAULT_UNROLL_M 8
+#define ZGEMM3M_DEFAULT_UNROLL_N 4
+#define ZGEMM3M_DEFAULT_UNROLL_M 4
+
+#define CGEMM3M_DEFAULT_P 320
+#define ZGEMM3M_DEFAULT_P 256
+#define XGEMM3M_DEFAULT_P 112
+#define CGEMM3M_DEFAULT_Q 320
+#define ZGEMM3M_DEFAULT_Q 256
+#define XGEMM3M_DEFAULT_Q 224
+#define CGEMM3M_DEFAULT_R 12288
+#define ZGEMM3M_DEFAULT_R 12288
+#define XGEMM3M_DEFAULT_R 12288
+
+#endif
 #endif
 
 #ifdef COOPERLAKE
@@ -2465,7 +2606,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #define SGEMM_DEFAULT_UNROLL_M 16
 #define SGEMM_DEFAULT_UNROLL_N 8
-#if defined(__BYTE_ORDER__) && (__BYTE_ORDER__ == __ORDER_BIG_ENDIAN__)
+#if defined(HAVE_GAS) && (HAVE_GAS == 1) 
 #define DGEMM_DEFAULT_UNROLL_M 16
 #define DGEMM_DEFAULT_UNROLL_N 4
 #else
@@ -2756,7 +2897,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define GEMM_DEFAULT_OFFSET_B  0
 #define GEMM_DEFAULT_ALIGN (BLASLONG) 0x03fffUL
 
-#ifdef HAVE_MSA
+#if defined(HAVE_MSA) && !defined(NO_MSA)
 #define SGEMM_DEFAULT_UNROLL_M  8
 #define SGEMM_DEFAULT_UNROLL_N  8
 
@@ -2977,7 +3118,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #if defined(CORTEXA57) || \
     defined(CORTEXA72) || defined(CORTEXA73) || \
-    defined(FALKOR)    || defined(TSV110) || defined(EMAG8180)
+    defined(FALKOR)    || defined(TSV110) || defined(EMAG8180) || defined(VORTEX)
 
 #define SGEMM_DEFAULT_UNROLL_M  16
 #define SGEMM_DEFAULT_UNROLL_N  4
@@ -2994,7 +3135,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /*FIXME: this should be using the cache size, but there is currently no easy way to
 query that on ARM. So if getarch counted more than 8 cores we simply assume the host
 is a big desktop or server with abundant cache rather than a phone or embedded device */ 
-#if NUM_CORES > 8 || defined(TSV110) || defined(EMAG8180)
+#if NUM_CORES > 8 || defined(TSV110) || defined(EMAG8180) || defined(VORTEX)
   #define SGEMM_DEFAULT_P 512
   #define DGEMM_DEFAULT_P 256
   #define CGEMM_DEFAULT_P 256
@@ -3026,7 +3167,7 @@ is a big desktop or server with abundant cache rather than a phone or embedded d
 #define SGEMM_DEFAULT_UNROLL_M  8
 #define SGEMM_DEFAULT_UNROLL_N  8
 
-#define DGEMM_DEFAULT_UNROLL_M  8
+#define DGEMM_DEFAULT_UNROLL_M  4
 #define DGEMM_DEFAULT_UNROLL_N  4
 
 #define CGEMM_DEFAULT_UNROLL_M  8
@@ -3166,13 +3307,52 @@ is a big desktop or server with abundant cache rather than a phone or embedded d
 #define CGEMM_DEFAULT_R 4096
 #define ZGEMM_DEFAULT_R 4096
 
+#elif defined(ARMV8SVE) || defined(A64FX)
+
+/* When all BLAS3 routines are implemeted with SVE, SGEMM_DEFAULT_UNROLL_M should be "sve_vl".
+Until then, just keep it different than DGEMM_DEFAULT_UNROLL_N to keep copy routines in both directions seperated. */
+#define SGEMM_DEFAULT_UNROLL_M  4
+#define SGEMM_DEFAULT_UNROLL_N  8
+/* SGEMM_UNROLL_MN is calculated as max(SGEMM_UNROLL_M, SGEMM_UNROLL_N)
+ * Since we don't define SGEMM_UNROLL_M correctly we have to manually set this macro.
+ * If SVE size is ever more than 1024, this should be increased also. */
+#define SGEMM_DEFAULT_UNROLL_MN  32
+
+/* When all BLAS3 routines are implemeted with SVE, DGEMM_DEFAULT_UNROLL_M should be "sve_vl".
+Until then, just keep it different than DGEMM_DEFAULT_UNROLL_N to keep copy routines in both directions seperated. */
+#define DGEMM_DEFAULT_UNROLL_M  2 
+#define DGEMM_DEFAULT_UNROLL_N  8
+
+#define DGEMM_DEFAULT_UNROLL_MN  32
+
+#define CGEMM_DEFAULT_UNROLL_M  8
+#define CGEMM_DEFAULT_UNROLL_N  4
+
+#define ZGEMM_DEFAULT_UNROLL_M  4
+#define ZGEMM_DEFAULT_UNROLL_N  4
+
+#define SGEMM_DEFAULT_P	128
+#define DGEMM_DEFAULT_P	160
+#define CGEMM_DEFAULT_P 128
+#define ZGEMM_DEFAULT_P 128
+
+#define SGEMM_DEFAULT_Q 352
+#define DGEMM_DEFAULT_Q 128
+#define CGEMM_DEFAULT_Q 224
+#define ZGEMM_DEFAULT_Q 112
+
+#define SGEMM_DEFAULT_R 4096
+#define DGEMM_DEFAULT_R 4096
+#define CGEMM_DEFAULT_R 4096
+#define ZGEMM_DEFAULT_R 4096
+
 #else /* Other/undetected ARMv8 cores */
 
 #define SGEMM_DEFAULT_UNROLL_M  16
 #define SGEMM_DEFAULT_UNROLL_N  4
 
-#define DGEMM_DEFAULT_UNROLL_M  8
-#define DGEMM_DEFAULT_UNROLL_N  4
+#define DGEMM_DEFAULT_UNROLL_M  4
+#define DGEMM_DEFAULT_UNROLL_N  8
 
 #define CGEMM_DEFAULT_UNROLL_M  8
 #define CGEMM_DEFAULT_UNROLL_N  4
@@ -3196,6 +3376,7 @@ is a big desktop or server with abundant cache rather than a phone or embedded d
 #define ZGEMM_DEFAULT_R 4096
 
 #endif /* Cores */
+
 
 #endif /* ARMv8 */
 
@@ -3474,6 +3655,20 @@ is a big desktop or server with abundant cache rather than a phone or embedded d
 #define XGEMM_DEFAULT_UNROLL_M 1
 #endif
 
+#ifdef ARCH_MIPS
+#define SGEMM_DEFAULT_P  128
+#define DGEMM_DEFAULT_P  128
+#define CGEMM_DEFAULT_P  96
+#define ZGEMM_DEFAULT_P  64
+#define SGEMM_DEFAULT_Q  240
+#define DGEMM_DEFAULT_Q  120
+#define CGEMM_DEFAULT_Q  120
+#define ZGEMM_DEFAULT_Q  120
+#define SGEMM_DEFAULT_R  12288
+#define DGEMM_DEFAULT_R  8192
+#define CGEMM_DEFAULT_R  4096
+#define ZGEMM_DEFAULT_R  4096
+#else
 #define SGEMM_DEFAULT_P sgemm_p
 #define DGEMM_DEFAULT_P dgemm_p
 #define QGEMM_DEFAULT_P qgemm_p
@@ -3494,6 +3689,7 @@ is a big desktop or server with abundant cache rather than a phone or embedded d
 #define CGEMM_DEFAULT_Q 128
 #define ZGEMM_DEFAULT_Q 128
 #define XGEMM_DEFAULT_Q 128
+#endif
 
 #define SYMV_P	16
 

@@ -197,3 +197,7 @@ In chronological order:
 
 * River Dillon <oss@outerpassage.net>
   * [2021-07-10] fix compilation with musl libc
+
+* Bine Brank <https://github.com/binebrank>
+  * [2021-10-27] Add vector-length-agnostic DGEMM kernels for Arm SVE
+  * [2021-11-20] Vector-length-agnostic Arm SVE copy routines for DGEMM, DTRMM, DSYMM

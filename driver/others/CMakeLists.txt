@@ -49,6 +49,8 @@ GenerateNamedObjects("openblas_get_config.c;openblas_get_parallel.c" "" "" 0 "" 
 if (DYNAMIC_ARCH)
   if (ARM64)
     list(APPEND COMMON_SOURCES dynamic_arm64.c)
+  elseif (POWER)
+    list(APPEND COMMON_SOURCES dynamic_power.c)
   else ()  
     list(APPEND COMMON_SOURCES dynamic.c)
   endif ()  

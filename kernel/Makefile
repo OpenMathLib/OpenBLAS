@@ -31,7 +31,22 @@ ifdef NO_AVX2
 endif
 
 ifdef TARGET_CORE
-ifeq ($(TARGET_CORE), COOPERLAKE)
+ifeq ($(TARGET_CORE), SAPPHIRERAPIDS)
+ override CFLAGS += -DBUILD_KERNEL -DTABLE_NAME=gotoblas_$(TARGET_CORE)
+ ifeq ($(GCCVERSIONGTEQ10), 1) 
+  override CFLAGS += -march=sapphirerapids
+ else 
+  override CFLAGS += -march=skylake-avx512 -mavx512f
+ endif 
+ ifeq ($(OSNAME), CYGWIN_NT)
+  override CFLAGS += -fno-asynchronous-unwind-tables
+ endif
+ ifeq ($(OSNAME), WINNT)
+  ifeq ($(C_COMPILER), GCC)
+   override CFLAGS += -fno-asynchronous-unwind-tables
+  endif
+ endif
+else ifeq ($(TARGET_CORE), COOPERLAKE)
  override CFLAGS += -DBUILD_KERNEL -DTABLE_NAME=gotoblas_$(TARGET_CORE)
  ifeq ($(GCCVERSIONGTEQ10), 1) 
   override CFLAGS += -march=cooperlake
