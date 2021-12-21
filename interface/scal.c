@@ -102,7 +102,7 @@ void CNAME(blasint n, FLOAT alpha, FLOAT *x, blasint incx){
 #else
 		       &alpha,
 #endif
-		       x, incx, NULL, 0, NULL, 0, (void *)SCAL_K, nthreads);
+		       x, incx, NULL, 0, NULL, 0,  (int (*)(void))SCAL_K, nthreads);
 
   }
 #endif
