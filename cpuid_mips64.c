@@ -201,7 +201,7 @@ void get_cpuconfig(void){
     printf("#define DTB_SIZE 4096\n");
     printf("#define L2_ASSOCIATIVE 8\n");
   }
-  if (!get_feature(msa)) printf("#define NO_MSA\n");
+  if (!get_feature("msa")) printf("#define NO_MSA\n");
 }
 
 void get_libname(void){
@@ -233,7 +233,7 @@ int get_feature(char *search)
         while (fgets(buffer, sizeof(buffer), infile))
         {
 
-                if (!strncmp("Features", buffer, 8))
+                if (!strncmp("Features", buffer, 8) || !strncmp("ASEs implemented", buffer, 16))
                 {
                         p = strchr(buffer, ':') + 2;
                         break;
@@ -247,7 +247,7 @@ int get_feature(char *search)
         t = strtok(p," ");
         while( t = strtok(NULL," "))
         {
-                if (!strcmp(t, search))   { return(1); }
+                if (strstr(t, search))   { return(1); }
         }
 
 #endif
