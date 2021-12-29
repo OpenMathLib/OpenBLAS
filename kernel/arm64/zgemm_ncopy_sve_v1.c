@@ -65,7 +65,7 @@ int CNAME(BLASLONG m, BLASLONG n, IFLOAT *a, BLASLONG lda, IFLOAT *b){
             svfloat64_t a_vec_imag = svld1_gather_index(pg, ((double *) aoffset1) + 1, lda_vec);
             svst2_f64(pg, (double *) boffset, svcreate2(a_vec_real, a_vec_imag));
             aoffset1 += 2;
-            boffset += active;
+            boffset += active * 2;
         }
         aoffset += sve_size * lda * 2;
 

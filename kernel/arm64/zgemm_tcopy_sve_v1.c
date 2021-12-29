@@ -65,7 +65,7 @@ int CNAME(BLASLONG m, BLASLONG n, IFLOAT *a, BLASLONG lda, IFLOAT *b){
             aoffset1 += lda * 2;
             boffset += active * 2;
         }
-        aoffset += sve_size * 2;
+        aoffset += active * 2;
 
         j += svcntd();
         pg = svwhilelt_b64(j, n);

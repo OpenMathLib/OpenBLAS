@@ -53,12 +53,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define alphaR		x19
 #define alphaI		x20
 
-#define alphaz_R	z10.d
-#define alphaz_I	z11.d
-#define alpha0_R	d10
-#define alphaV0_R	v10.d[0]
-#define alpha0_I	d11
-#define alphaV0_I	v11.d[0]
+#define alphaz_R	z6.d
+#define alphaz_I	z7.d
+#define alpha0_R	d6
+#define alpha0_I	d7
 
 
 #define A_PRE_SIZE	2560
@@ -170,8 +168,9 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .macro KERNELv1x4_I
 	ld2d	{z0.d, z1.d}, p1/z, [pA]
-	ld2d	{z2.d, z3.d}, p1/z, [pA, #2, mul vl] // next one
-	add	pA, pA, lanes, lsl #5    // pA += lanes*2*2*8
+	add	pA, pA, lanes, lsl #4    // pA += lanes*2*8
+	ld2d	{z2.d, z3.d}, p1/z, [pA] // next one
+	add	pA, pA, lanes, lsl #4    // pA += lanes*2*8
 
     ld1rd  z8.d, p0/z,  [pB]
     ld1rd  z9.d, p0/z,  [pB, 8]
@@ -283,7 +282,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .endm
 
 .macro KERNELv1x4_M2
-	ld2d	{z2.d, z3.d}, p1/z, [pA]
+	ld2d	{z0.d, z1.d}, p1/z, [pA]
 	add	pA, pA, lanes, lsl #4	// pA = pA + lanes *2 * 8
 
 	OP_rr	z16.d, p1/m, z2.d, z8.d
@@ -396,39 +395,39 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	fmls	z24.d, p1/m, z17.d, alphaz_I
 	fmla	z25.d, p1/m, z16.d, alphaz_I
 	fmla	z25.d, p1/m, z17.d, alphaz_R
-	st2d 	{z25.d, z26.d}, p1, [pCRow0]
+	st2d 	{z24.d, z25.d}, p1, [pCRow0]
 
-	add	pCRow0, pCRow0, #32
+	add	pCRow0, pCRow0, lanes, lsl #4
 
-	ld2d	{z26.d, z27.d}, p1/z, [pCRow0]
+	ld2d	{z26.d, z27.d}, p1/z, [pCRow1]
 	fmla	z26.d, p1/m, z18.d, alphaz_R
 	fmls	z26.d, p1/m, z19.d, alphaz_I
 	fmla	z27.d, p1/m, z18.d, alphaz_I
 	fmla	z27.d, p1/m, z19.d, alphaz_R
-	st2d 	{z26.d, z27.d}, p1, [pCRow0]
+	st2d 	{z26.d, z27.d}, p1, [pCRow1]
 
-	add	pCRow0, pCRow0, #32
+	add	pCRow1, pCRow1, lanes, lsl #4
 	prfm	PLDL2KEEP, [pCRow1, #C_PRE_SIZE]
 
-	ld2d	{z28.d, z29.d}, p1/z, [pCRow1]
+	ld2d	{z28.d, z29.d}, p1/z, [pCRow2]
 	fmla	z28.d, p1/m, z20.d, alphaz_R
 	fmls	z28.d, p1/m, z21.d, alphaz_I
 	fmla	z29.d, p1/m, z20.d, alphaz_I
 	fmla	z29.d, p1/m, z21.d, alphaz_R
-	st2d 	{z28.d, z29.d}, p1, [pCRow1]
+	st2d 	{z28.d, z29.d}, p1, [pCRow2]
 
-	add	pCRow1, pCRow1, #32
+	add	pCRow2, pCRow2, lanes, lsl #4
 
-	ld2d	{z30.d, z31.d}, p1/z, [pCRow1]
+	ld2d	{z30.d, z31.d}, p1/z, [pCRow3]
 	fmla	z30.d, p1/m, z22.d, alphaz_R
 	fmls	z30.d, p1/m, z23.d, alphaz_I
 	fmla	z31.d, p1/m, z22.d, alphaz_I
 	fmla	z31.d, p1/m, z23.d, alphaz_R
-	st2d 	{z30.d, z31.d}, p1, [pCRow1]
+	st2d 	{z30.d, z31.d}, p1, [pCRow3]
 
-	prfm	PLDL2KEEP, [pCRow2, #C_PRE_SIZE]
+	prfm	PLDL2KEEP, [pCRow3, #C_PRE_SIZE]
 
-	add	pCRow0, pCRow0, lanes, lsl #4	// pC = pC + lanes  * 2 *8
+	add	pCRow3, pCRow3, lanes, lsl #4	// pC = pC + lanes  * 2 *8
 
 	prfm	PLDL2KEEP, [pCRow3, #C_PRE_SIZE]
 
@@ -474,23 +473,21 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	fmls	z24.d, p1/m, z17.d, alphaz_I
 	fmla	z25.d, p1/m, z16.d, alphaz_I
 	fmla	z25.d, p1/m, z17.d, alphaz_R
-	st2d 	{z25.d, z26.d}, p1, [pCRow0]
+	st2d 	{z24.d, z25.d}, p1, [pCRow0]
 
-	add	pCRow0, pCRow0, #32
+	add	pCRow0, pCRow0, lanes, lsl #4
 
-	ld2d	{z26.d, z27.d}, p1/z, [pCRow0]
+	ld2d	{z26.d, z27.d}, p1/z, [pCRow1]
 	fmla	z26.d, p1/m, z18.d, alphaz_R
 	fmls	z26.d, p1/m, z19.d, alphaz_I
 	fmla	z27.d, p1/m, z18.d, alphaz_I
 	fmla	z27.d, p1/m, z19.d, alphaz_R
-	st2d 	{z26.d, z27.d}, p1, [pCRow0]
+	st2d 	{z26.d, z27.d}, p1, [pCRow1]
 
-	add	pCRow0, pCRow0, #32
+	add	pCRow1, pCRow1, lanes, lsl #4
 	prfm	PLDL2KEEP, [pCRow1, #C_PRE_SIZE]
 
 	prfm	PLDL2KEEP, [pCRow2, #C_PRE_SIZE]
-
-	add	pCRow0, pCRow0, lanes, lsl #4	// pC = pC + lanes * 2 *8
 
 .endm
 
@@ -526,10 +523,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	fmls	z24.d, p1/m, z17.d, alphaz_I
 	fmla	z25.d, p1/m, z16.d, alphaz_I
 	fmla	z25.d, p1/m, z17.d, alphaz_R
-	st2d 	{z25.d, z26.d}, p1, [pCRow0]
-
-	add	pCRow0, pCRow0, #32
-
+	st2d 	{z24.d, z25.d}, p1, [pCRow0]
 
 	add	pCRow0, pCRow0, lanes, lsl #4	// pC = pC + lanes  * 2 *8
 
@@ -718,6 +712,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	ble	.Lzgemm_kernel_L1_BEGIN
 
 	mov	pCRow0, pC			// pCRow0 = pC
+	add	pCRow1, pCRow0, LDC
 
 	add	pC,pC,LDC, lsl #1
 
