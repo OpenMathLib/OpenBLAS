@@ -127,6 +127,10 @@ if (DEFINED CORE AND CMAKE_CROSSCOMPILING AND NOT (${HOST_OS} STREQUAL "WINDOWSS
       "#define DLOCAL_BUFFER_SIZE\t16384\n"
       "#define CLOCAL_BUFFER_SIZE\t16384\n"
       "#define ZLOCAL_BUFFER_SIZE\t16384\n")
+      set(HAVE_SSE 1)
+      set(HAVE_SSE2 1)
+      set(HAVE_SSE3 1)
+      set(HAVE_SSSE3 1)
       set(SGEMM_UNROLL_M 8)
       set(SGEMM_UNROLL_N 4)
       set(DGEMM_UNROLL_M 4)
