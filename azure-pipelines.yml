@@ -58,6 +58,15 @@ jobs:
       docker run --privileged intel_sde
     displayName: 'Run AVX512 SkylakeX docker build / test'
 
+- job: Intel_skx
+  pool:
+    vmImage: 'ubuntu-latest'
+  variables:
+    OPENBLAS_VERBOSE: 2
+  steps:
+  - script: |
+      make CC=gcc FC=gfortran QUIET_MAKE=1 DYNAMIC_ARCH=1 NUM_THREADS=32 BINARY=64
+
 - job: Windows_cl
   pool:
      vmImage: 'windows-latest'
