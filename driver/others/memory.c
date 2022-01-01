@@ -232,11 +232,11 @@ int get_num_procs(void);
 #else
 int get_num_procs(void) {
   static int nums = 0;
-
+  int ret;
 #if defined(__GLIBC_PREREQ)
   cpu_set_t cpuset,*cpusetp;
   size_t size;
-  int ret;
+
 #if !__GLIBC_PREREQ(2, 7)
   int i;
 #if !__GLIBC_PREREQ(2, 6)
@@ -249,7 +249,8 @@ int get_num_procs(void) {
 
 #if defined(USE_OPENMP)
 #if _OPENMP >= 201511
-    nums = omp_get_num_places();
+    ret = omp_get_num_places();
+    if (ret >0 ) nums = ret;
 #endif
     return nums;
 #endif
@@ -1800,11 +1801,12 @@ int get_num_procs(void);
 int get_num_procs(void) {
 
   static int nums = 0;
-
+  int ret;
+	
 #if defined(__GLIBC_PREREQ)
   cpu_set_t cpuset,*cpusetp;
   size_t size;
-  int ret;
+
 #if !__GLIBC_PREREQ(2, 7)
   int i;
 #if !__GLIBC_PREREQ(2, 6)
@@ -1818,7 +1820,8 @@ int get_num_procs(void) {
 #if defined(USE_OPENMP)
 /*  if (omp_get_proc_bind() != omp_proc_bind_false) */
 #if _OPENMP >= 201511
-    nums = omp_get_num_places();	  
+    ret = omp_get_num_places();
+    if (ret >0 ) nums = ret;
 #endif
     return nums;
 #endif
