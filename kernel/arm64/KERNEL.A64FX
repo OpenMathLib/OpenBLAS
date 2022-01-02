@@ -182,11 +182,11 @@ ZGEMMITCOPYOBJ =  zgemm_itcopy$(TSUFFIX).$(SUFFIX)
 ZGEMMONCOPYOBJ =  zgemm_oncopy$(TSUFFIX).$(SUFFIX)
 ZGEMMOTCOPYOBJ =  zgemm_otcopy$(TSUFFIX).$(SUFFIX)
 
-DTRMMUNCOPY_M  =  trmm_uncopy_sve_v1.c
-DTRMMLNCOPY_M  =  trmm_lncopy_sve_v1.c
-DTRMMUTCOPY_M  =  trmm_utcopy_sve_v1.c
-DTRMMLTCOPY_M  =  trmm_ltcopy_sve_v1.c
+ZTRMMUNCOPY_M  =  ztrmm_uncopy_sve_v1.c
+ZTRMMLNCOPY_M  =  ztrmm_lncopy_sve_v1.c
+ZTRMMUTCOPY_M  =  ztrmm_utcopy_sve_v1.c
+ZTRMMLTCOPY_M  =  ztrmm_ltcopy_sve_v1.c
 
-DSYMMUCOPY_M    =  symm_ucopy_sve.c
-DSYMMLCOPY_M    =  symm_lcopy_sve.c
+ZSYMMUCOPY_M    =  symm_ucopy_sve.c
+ZSYMMLCOPY_M    =  symm_lcopy_sve.c
 
