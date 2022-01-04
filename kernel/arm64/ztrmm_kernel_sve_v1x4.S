@@ -723,7 +723,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	add	pB, pB, temp
 #endif
 #if defined(LEFT)
-	add	tempOffset, tempOffset, #4
+	add	tempOffset, tempOffset, lanes
 #endif
 
 	prfm	PLDL1KEEP, [pA]
@@ -856,7 +856,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	add	pB, pB, temp
 #endif
 #if defined(LEFT)
-	add	tempOffset, tempOffset, #4
+	add	tempOffset, tempOffset, lanes
 #endif
 
 .Lztrmm_kernel_L2_Mv1_END:
@@ -923,7 +923,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	add	tempK, tempOffset, #1
 #endif
 
-	asr	counterL , temp, #3		// counterL = counterL / 8
+	asr	counterL , tempK, #3		// counterL = counterL / 8
 	cmp	counterL , #0
 	ble	.Lztrmm_kernel_L1_Mv1_40
 	.align 5
@@ -972,7 +972,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	add	pB, pB, temp
 #endif
 #if defined(LEFT)
-	add	tempOffset, tempOffset, #4
+	add	tempOffset, tempOffset, lanes
 #endif
 
 .Lztrmm_kernel_L1_Mv1_END:
