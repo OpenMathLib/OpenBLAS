@@ -85,7 +85,7 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, BLASLONG posX, BLASLON
                     svfloat32x2_t aj_vec = svld2(pn, ao);
 #endif
                     svst2(pn, b, aj_vec);
-                    ao += lda * 2;
+                    ao += lda;
                     b += n_active * 2;
                     X ++;
                     i ++;
@@ -101,8 +101,8 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, BLASLONG posX, BLASLON
                         b[temp++] = ONE;
                         b[temp++] = ZERO;
                         for (int k = j+1; k < n_active; k++) {
-                            b[temp++] = *(ao+j*lda+k);
-                            b[temp++] = *(ao+j*lda+k+1);
+                            b[temp++] = *(ao+j*lda+k*2);
+                            b[temp++] = *(ao+j*lda+k*2+1);
                         }
                     }
 #else 
@@ -113,12 +113,12 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, BLASLONG posX, BLASLON
                             b[temp++] = ZERO;
                         }
                         for (int k = j; k < n_active; k++) {
-                            b[temp++] = *(ao+j*lda+k);
-                            b[temp++] = *(ao+j*lda+k+1);
+                            b[temp++] = *(ao+j*lda+k*2);
+                            b[temp++] = *(ao+j*lda+k*2+1);
                         }
                     }
 #endif
-                    ao += n_active * lda * 2;
+                    ao += n_active * lda;
                     b += n_active*n_active * 2;
                     X += n_active;
                     i += n_active;
