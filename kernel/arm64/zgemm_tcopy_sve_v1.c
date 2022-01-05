@@ -46,8 +46,6 @@ int CNAME(BLASLONG m, BLASLONG n, IFLOAT *a, BLASLONG lda, IFLOAT *b){
     BLASLONG j;
     IFLOAT *aoffset, *aoffset1, *boffset;
 
-    uint64_t sve_size = svcntd();
-
     aoffset = a;
     boffset = b;
 
