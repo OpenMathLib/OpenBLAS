@@ -174,8 +174,8 @@ CTRMMLNCOPY_M  =  ztrmm_lncopy_sve_v1.c
 CTRMMUTCOPY_M  =  ztrmm_utcopy_sve_v1.c
 CTRMMLTCOPY_M  =  ztrmm_ltcopy_sve_v1.c
 
-CHEMMLTCOPY_M    =  chemm_ltcopy_sve.c
-CHEMMUTCOPY_M    =  chemm_utcopy_sve.c
+CHEMMLTCOPY_M    =  zhemm_ltcopy_sve.c
+CHEMMUTCOPY_M    =  zhemm_utcopy_sve.c
 
 CSYMMUCOPY_M    =  zsymm_ucopy_sve.c
 CSYMMLCOPY_M    =  zsymm_lcopy_sve.c
