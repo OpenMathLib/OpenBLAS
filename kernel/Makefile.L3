@@ -1712,10 +1712,10 @@ $(KDIR)ctrmm_ilnucopy$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(CTRMMLNCOPY_M)
 $(KDIR)ctrmm_ilnncopy$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(CTRMMLNCOPY_M)
 	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -UDOUBLE -DCOMPLEX -UOUTER -DLOWER -UUNIT $< -o $@
 else
-$(KDIR)ctrmm_iunucopy$(TSUFFIX).$(SUFFIX) : generic/ztrmm_uncopy_$(CGEMM_UNROLL_M).c
+$(KDIR)ctrmm_ilnucopy$(TSUFFIX).$(SUFFIX) : generic/ztrmm_lncopy_$(CGEMM_UNROLL_M).c
 	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -UDOUBLE -DCOMPLEX -UOUTER -ULOWER -DUNIT $< -o $@
 
-$(KDIR)ctrmm_iunncopy$(TSUFFIX).$(SUFFIX) : generic/ztrmm_uncopy_$(CGEMM_UNROLL_M).c
+$(KDIR)ctrmm_ilnncopy$(TSUFFIX).$(SUFFIX) : generic/ztrmm_lncopy_$(CGEMM_UNROLL_M).c
 	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -UDOUBLE -DCOMPLEX -UOUTER -ULOWER -UUNIT $< -o $@
 endif
 
@@ -1726,10 +1726,10 @@ $(KDIR)ctrmm_iutucopy$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(CTRMMUTCOPY_M)
 $(KDIR)ctrmm_iutncopy$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(CTRMMUTCOPY_M)
 	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -UDOUBLE -DCOMPLEX -UOUTER -ULOWER -UUNIT $< -o $@
 else
-$(KDIR)ctrmm_iunucopy$(TSUFFIX).$(SUFFIX) : generic/ztrmm_uncopy_$(CGEMM_UNROLL_M).c
+$(KDIR)ctrmm_iutucopy$(TSUFFIX).$(SUFFIX) : generic/ztrmm_utcopy_$(CGEMM_UNROLL_M).c
 	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -UDOUBLE -DCOMPLEX -UOUTER -ULOWER -DUNIT $< -o $@
 
-$(KDIR)ctrmm_iunncopy$(TSUFFIX).$(SUFFIX) : generic/ztrmm_uncopy_$(CGEMM_UNROLL_M).c
+$(KDIR)ctrmm_iutncopy$(TSUFFIX).$(SUFFIX) : generic/ztrmm_utcopy_$(CGEMM_UNROLL_M).c
 	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -UDOUBLE -DCOMPLEX -UOUTER -ULOWER -UUNIT $< -o $@
 endif
 
@@ -1740,10 +1740,10 @@ $(KDIR)ctrmm_iltucopy$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(CTRMMLTCOPY_M)
 $(KDIR)ctrmm_iltncopy$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(CTRMMLTCOPY_M)
 	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -UDOUBLE -DCOMPLEX -UOUTER -DLOWER -UUNIT $< -o $@
 else
-$(KDIR)ctrmm_iunucopy$(TSUFFIX).$(SUFFIX) : generic/ztrmm_uncopy_$(CGEMM_UNROLL_M).c
+$(KDIR)ctrmm_iltucopy$(TSUFFIX).$(SUFFIX) : generic/ztrmm_ltcopy_$(CGEMM_UNROLL_M).c
 	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -UDOUBLE -DCOMPLEX -UOUTER -ULOWER -DUNIT $< -o $@
 
-$(KDIR)ctrmm_iunncopy$(TSUFFIX).$(SUFFIX) : generic/ztrmm_uncopy_$(CGEMM_UNROLL_M).c
+$(KDIR)ctrmm_iltncopy$(TSUFFIX).$(SUFFIX) : generic/ztrmm_ltcopy_$(CGEMM_UNROLL_M).c
 	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -UDOUBLE -DCOMPLEX -UOUTER -ULOWER -UUNIT $< -o $@
 endif
 
