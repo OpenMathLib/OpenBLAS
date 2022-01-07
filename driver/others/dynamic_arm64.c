@@ -147,6 +147,8 @@ static char *corename[] = {
   "tsv110",
   "emag8180",
   "neoversen1",
+  "neoversev1",
+  "neoversen2",
   "thunderx3t110",
   "cortexa55",
   "unknown"
