@@ -3,6 +3,10 @@
 export BINARY
 export USE_OPENMP
 
+ifdef DYNAMIC_ARCH
+override HOST_CFLAGS += -DDYNAMIC_ARCH
+endif
+
 ifdef TARGET_CORE
 TARGET_MAKE = Makefile_kernel.conf
 TARGET_CONF = config_kernel.h
