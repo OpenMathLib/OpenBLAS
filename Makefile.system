@@ -277,7 +277,7 @@ HAVE_GAS := $(shell $(AS) -v < /dev/null 2>&1 | grep GNU 2>&1 >/dev/null ; echo 
 GETARCH_FLAGS += -DHAVE_GAS=$(HAVE_GAS)
 
 # Generating Makefile.conf and config.h
-DUMMY := $(shell $(MAKE) -C $(TOPDIR) -f Makefile.prebuild CC="$(CC)" FC="$(FC)" HOSTCC="$(HOSTCC)" HOST_CFLAGS="$(GETARCH_FLAGS)" CFLAGS="$(CFLAGS)" BINARY=$(BINARY) USE_OPENMP=$(USE_OPENMP) TARGET_CORE=$(TARGET_CORE) ONLY_CBLAS=$(ONLY_CBLAS) TARGET=$(TARGET) all)
+DUMMY := $(shell $(MAKE) -C $(TOPDIR) -f Makefile.prebuild CC="$(CC)" FC="$(FC)" HOSTCC="$(HOSTCC)" HOST_CFLAGS="$(GETARCH_FLAGS)" CFLAGS="$(CFLAGS)" BINARY=$(BINARY) USE_OPENMP=$(USE_OPENMP) DYNAMIC_ARCH=$(DYNAMIC_ARCH) TARGET_CORE=$(TARGET_CORE) ONLY_CBLAS=$(ONLY_CBLAS) TARGET=$(TARGET) all)
 
 ifndef TARGET_CORE
 include $(TOPDIR)/Makefile.conf
