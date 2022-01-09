@@ -37,7 +37,6 @@
 /*********************************************************************/
 
 #include "common.h"
-#include "arm_sve.h"
 
 static FLOAT dm1 = -1.;
 
@@ -71,14 +70,11 @@ static FLOAT dm1 = -1.;
 
 static inline void solve(BLASLONG m, BLASLONG n, FLOAT *a, FLOAT *b, FLOAT *c, BLASLONG ldc) {
 
-  FLOAT aa,  bb;
+  FLOAT aa, bb;
 
   int i, j, k;
 
-  a += (m - 1) * m;
-  b += (m - 1) * n;
-
-  for (i = m - 1; i >= 0; i--) {
+  for (i = 0; i < m; i++) {
 
     aa = *(a + i);
 
@@ -89,15 +85,13 @@ static inline void solve(BLASLONG m, BLASLONG n, FLOAT *a, FLOAT *b, FLOAT *c, B
       *(c + i + j * ldc) = bb;
       b ++;
 
-      for (k = 0; k < i; k ++){
-        *(c + k + j * ldc) -= bb * *(a + k);
+      for (k = i + 1; k < m; k ++){
+	*(c + k + j * ldc) -= bb * *(a + k);
       }
 
     }
-    a -= m;
-    b -= 2 * n;
+    a += m;
   }
-
 }
 
 #else
@@ -111,10 +105,8 @@ static inline void solve(BLASLONG m, BLASLONG n, FLOAT *a, FLOAT *b, FLOAT *c, B
   int i, j, k;
 
   ldc *= 2;
-  a += (m - 1) * m * 2;
-  b += (m - 1) * n * 2;
 
-  for (i = m - 1; i >= 0; i--) {
+  for (i = 0; i < m; i++) {
 
     aa1 = *(a + i * 2 + 0);
     aa2 = *(a + i * 2 + 1);
@@ -131,114 +123,103 @@ static inline void solve(BLASLONG m, BLASLONG n, FLOAT *a, FLOAT *b, FLOAT *c, B
       cc2 = aa1 * bb2 - aa2 * bb1;
 #endif
 
-
       *(b + 0) = cc1;
       *(b + 1) = cc2;
       *(c + i * 2 + 0 + j * ldc) = cc1;
       *(c + i * 2 + 1 + j * ldc) = cc2;
       b += 2;
 
-      for (k = 0; k < i; k ++){
+      for (k = i + 1; k < m; k ++){
 #ifndef CONJ
-        *(c + k * 2 + 0 + j * ldc) -= cc1 * *(a + k * 2 + 0) - cc2 * *(a + k * 2 + 1);
-        *(c + k * 2 + 1 + j * ldc) -= cc1 * *(a + k * 2 + 1) + cc2 * *(a + k * 2 + 0);
+	*(c + k * 2 + 0 + j * ldc) -= cc1 * *(a + k * 2 + 0) - cc2 * *(a + k * 2 + 1);
+	*(c + k * 2 + 1 + j * ldc) -= cc1 * *(a + k * 2 + 1) + cc2 * *(a + k * 2 + 0);
 #else
-        *(c + k * 2 + 0 + j * ldc) -=   cc1 * *(a + k * 2 + 0) + cc2 * *(a + k * 2 + 1);
-        *(c + k * 2 + 1 + j * ldc) -= - cc1 * *(a + k * 2 + 1) + cc2 * *(a + k * 2 + 0);
+	*(c + k * 2 + 0 + j * ldc) -= cc1 * *(a + k * 2 + 0) + cc2 * *(a + k * 2 + 1);
+	*(c + k * 2 + 1 + j * ldc) -= -cc1 * *(a + k * 2 + 1) + cc2 * *(a + k * 2 + 0);
 #endif
       }
 
     }
-    a -= m * 2;
-    b -= 4 * n;
+    a += m * 2;
   }
-
 }
 
 #endif
 
 
-int CNAME(BLASLONG m, BLASLONG n, BLASLONG k,  FLOAT dummy1,
+int CNAME(BLASLONG m, BLASLONG n, BLASLONG k, FLOAT dummy1,
 #ifdef COMPLEX
-    FLOAT dummy2,
+	   FLOAT dummy2,
 #endif
-    FLOAT *a, FLOAT *b, FLOAT *c, BLASLONG ldc, BLASLONG offset){
+	   FLOAT *a, FLOAT *b, FLOAT *c, BLASLONG ldc, BLASLONG offset){
 
-  BLASLONG i, j;
   FLOAT *aa, *cc;
   BLASLONG  kk;
+  BLASLONG i, j, jj;
   int sve_size = svcntd();
 
 #if 0
-  fprintf(stderr, "TRSM KERNEL LN : m = %3ld  n = %3ld  k = %3ld offset = %3ld\n",
-      m, n, k, offset);
+  fprintf(stderr, "TRSM KERNEL LT : m = %3ld  n = %3ld  k = %3ld offset = %3ld\n",
+	  m, n, k, offset);
 #endif
+
+  jj = 0;
 
   j = (n >> GEMM_UNROLL_N_SHIFT);
 
   while (j > 0) {
 
-    kk = m + offset;
+    kk = offset;
+    aa = a;
+    cc = c;
 
-    i = m % sve_size;
-    if (i) {
-      aa = a + ((m & ~(i - 1)) - i) * k * COMPSIZE;
-      cc = c + ((m & ~(i - 1)) - i)     * COMPSIZE;
+    i = sve_size;
 
-      if (k - kk > 0) {
-        GEMM_KERNEL(i, GEMM_UNROLL_N, k - kk, dm1,
+    while (i <= m) {
+
+      if (kk > 0) {
+        GEMM_KERNEL(sve_size, GEMM_UNROLL_N, kk, dm1,
 #ifdef COMPLEX
             ZERO,
 #endif
-            aa + i             * kk * COMPSIZE,
-            b  + GEMM_UNROLL_N * kk * COMPSIZE,
-            cc,
-            ldc);
+            aa, b, cc, ldc);
       }
 
-      solve(i, GEMM_UNROLL_N,
-          aa + (kk - i) * i             * COMPSIZE,
-          b  + (kk - i) * GEMM_UNROLL_N * COMPSIZE,
+      solve(sve_size, GEMM_UNROLL_N,
+          aa + kk * sve_size * COMPSIZE,
+          b  + kk * GEMM_UNROLL_N * COMPSIZE,
           cc, ldc);
 
-      kk -= i;
-
+      aa += sve_size * k * COMPSIZE;
+      cc += sve_size     * COMPSIZE;
+      kk += sve_size;
+      i += sve_size;
     }
 
-    i = sve_size;
-    if (i <= m) {
-      aa = a + ((m & ~(sve_size - 1)) - sve_size) * k * COMPSIZE;
-      cc = c + ((m & ~(sve_size - 1)) - sve_size)     * COMPSIZE;
-
-      do {
-        if (k - kk > 0) {
-          GEMM_KERNEL(sve_size, GEMM_UNROLL_N, k - kk, dm1,
+    i = m % sve_size;
+    if (i) {
+      if (kk > 0) {
+        GEMM_KERNEL(i, GEMM_UNROLL_N, kk, dm1,
 #ifdef COMPLEX
-              ZERO,
+            ZERO,
 #endif
-              aa + sve_size * kk * COMPSIZE,
-              b +  sve_size * kk * COMPSIZE,
-              cc,
-              ldc);
-        }
+            aa, b, cc, ldc);
+      }
+      solve(i, GEMM_UNROLL_N,
+          aa + kk * i             * COMPSIZE,
+          b  + kk * GEMM_UNROLL_N * COMPSIZE,
+          cc, ldc);
 
-        solve(sve_size, GEMM_UNROLL_N,
-            aa + (kk - sve_size) * sve_size * COMPSIZE,
-            b  + (kk - sve_size) * GEMM_UNROLL_N * COMPSIZE,
-            cc, ldc);
+      aa += i * k * COMPSIZE;
+      cc += i     * COMPSIZE;
+      kk += i;
 
-        aa -= sve_size * k * COMPSIZE;
-        cc -= sve_size     * COMPSIZE;
-        kk -= sve_size;
-
-        i += sve_size;
-      } while (i <= m);
     }
 
-
-    b += GEMM_UNROLL_N * k * COMPSIZE;
+    b += GEMM_UNROLL_N * k   * COMPSIZE;
     c += GEMM_UNROLL_N * ldc * COMPSIZE;
     j --;
+    jj += sve_size;
   }
 
   if (n & (GEMM_UNROLL_N - 1)) {
@@ -247,60 +228,55 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG k,  FLOAT dummy1,
     while (j > 0) {
       if (n & j) {
 
-        kk = m + offset;
+        kk = offset;
+        aa = a;
+        cc = c;
 
-        i = m % sve_size;
-        if (i) {
-          aa = a + ((m & ~(i - 1)) - i) * k * COMPSIZE;
-          cc = c + ((m & ~(i - 1)) - i)     * COMPSIZE;
+        i = sve_size;
 
-          if (k - kk > 0) {
-            GEMM_KERNEL(i, j, k - kk, dm1,
+        while (i <= m) {
+          if (kk > 0) {
+            GEMM_KERNEL(sve_size, j, kk, dm1,
 #ifdef COMPLEX
                 ZERO,
 #endif
-                aa + i * kk * COMPSIZE,
-                b  + j * kk * COMPSIZE,
-                cc, ldc);
+                aa,
+                b,
+                cc,
+                ldc);
+          }
+
+          solve(sve_size, j,
+              aa + kk * sve_size * COMPSIZE,
+              b  + kk * j             * COMPSIZE, cc, ldc);
+
+          aa += sve_size * k * COMPSIZE;
+          cc += sve_size     * COMPSIZE;
+          kk += sve_size;
+          i += sve_size;
+        }
+
+        i = sve_size % m;
+        if (i) {
+          if (kk > 0) {
+            GEMM_KERNEL(i, j, kk, dm1,
+#ifdef COMPLEX
+                ZERO,
+#endif
+                aa,
+                b,
+                cc,
+                ldc);
           }
 
           solve(i, j,
-              aa + (kk - i) * i * COMPSIZE,
-              b  + (kk - i) * j * COMPSIZE,
-              cc, ldc);
+              aa + kk * i * COMPSIZE,
+              b  + kk * j * COMPSIZE, cc, ldc);
 
-          kk -= i;
+          aa += i * k * COMPSIZE;
+          cc += i     * COMPSIZE;
+          kk += i;
 
-        }
-
-        i = sve_size;
-        if (i <= m) {
-          aa = a + ((m & ~(sve_size - 1)) - sve_size) * k * COMPSIZE;
-          cc = c + ((m & ~(sve_size - 1)) - sve_size)     * COMPSIZE;
-
-          do {
-            if (k - kk > 0) {
-              GEMM_KERNEL(sve_size, j, k - kk, dm1,
-#ifdef COMPLEX
-                  ZERO,
-#endif
-                  aa + sve_size * kk * COMPSIZE,
-                  b +  j             * kk * COMPSIZE,
-                  cc,
-                  ldc);
-            }
-
-            solve(sve_size, j,
-                aa + (kk - sve_size) * sve_size * COMPSIZE,
-                b  + (kk - sve_size) * j             * COMPSIZE,
-                cc, ldc);
-
-            aa -= sve_size * k * COMPSIZE;
-            cc -= sve_size     * COMPSIZE;
-            kk -= sve_size;
-
-            i += sve_size;
-          } while (i <= m);
         }
 
         b += j * k   * COMPSIZE;
