@@ -258,23 +258,23 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG k,  FLOAT dummy1,
       if (i <= m) {
 	do {
 	  if (k - kk > 0) {
-	    GEMM_KERNEL(GEMM_UNROLL_M, GEMM_UNROLL_N, k - kk, dm1,
+	    GEMM_KERNEL(sve_size, GEMM_UNROLL_N, k - kk, dm1,
 #ifdef COMPLEX
 			ZERO,
 #endif
-			aa + GEMM_UNROLL_M * kk * COMPSIZE,
+			aa + sve_size * kk * COMPSIZE,
 			b  + GEMM_UNROLL_N * kk * COMPSIZE,
 			cc,
 			ldc);
 	  }
 
-	  solve(GEMM_UNROLL_M, GEMM_UNROLL_N,
-		aa + (kk - GEMM_UNROLL_N) * GEMM_UNROLL_M * COMPSIZE,
+	  solve(sve_size, GEMM_UNROLL_N,
+		aa + (kk - GEMM_UNROLL_N) * sve_size * COMPSIZE,
 		b  + (kk - GEMM_UNROLL_N) * GEMM_UNROLL_N * COMPSIZE,
 		cc, ldc);
 
-	  aa += GEMM_UNROLL_M * k * COMPSIZE;
-	  cc += GEMM_UNROLL_M     * COMPSIZE;
+	  aa += sve_size * k * COMPSIZE;
+	  cc += sve_size     * COMPSIZE;
 	  i += sve_size;
 	} while (i <= m);
       }

@@ -48,18 +48,17 @@
 
 int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, BLASLONG offset, FLOAT *b){
 
-  BLASLONG i, ii, j, jj;
+  BLASLONG i, ii, jj;
 
   FLOAT *ao;
 
   jj = offset;
-  int js = 0;
 #ifdef DOUBLE
-  svint64_t index = svindex_s64(0LL, lda);
+  int64_t js = 0;
   svbool_t pn = svwhilelt_b64(js, n);
   int n_active = svcntp_b64(svptrue_b64(), pn);
 #else
-  svint32_t index = svindex_s32(0, lda);
+  int32_t js = 0;
   svbool_t pn = svwhilelt_b32(js, n);
   int n_active = svcntp_b32(svptrue_b32(), pn);
 #endif
@@ -74,25 +73,24 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, BLASLONG offset, FLOAT
       if (ii == jj) {
         for (int j = 0; j < n_active; j++) {
           for (int k = 0; k < j; k++) {
-            *(b + j * n_active + k) = *(a + j * lda + k);
+            *(b + j * n_active + k) = *(ao + j * lda + k);
           }
-          *(b + j * n_active + j) = INV(*(a + j * lda + j));
+          *(b + j * n_active + j) = INV(*(ao + j * lda + j));
         }
-      }
-
-      if (ii > jj) {
-        for (int j = 0; j < n_active; j++) {
+        ao += lda * n_active;
+        b += n_active * n_active;
+        i += n_active;
+        ii += n_active;
+      } else {
+        if (ii > jj) {
           svfloat64_t aj_vec = svld1(pn, ao);
           svst1(pn, b, aj_vec);
-          ao += lda;
         }
-
-      }
-
-      b += n_active * n_active;
-
-      i += n_active;
-      ii += n_active;
+        ao += lda;
+        b += n_active;
+        i ++;
+        ii ++;
+      } 
     } while (i < m);
 
 

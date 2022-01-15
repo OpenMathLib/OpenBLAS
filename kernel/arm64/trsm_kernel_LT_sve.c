@@ -257,7 +257,7 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG k, FLOAT dummy1,
           i += sve_size;
         }
 
-        i = sve_size % m;
+        i = m % sve_size;
         if (i) {
           if (kk > 0) {
             GEMM_KERNEL(i, j, kk, dm1,

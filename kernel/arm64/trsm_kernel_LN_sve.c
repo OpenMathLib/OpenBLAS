@@ -182,8 +182,8 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG k,  FLOAT dummy1,
 
     i = m % sve_size;
     if (i) {
-      aa = a + ((m & ~(i - 1)) - i) * k * COMPSIZE;
-      cc = c + ((m & ~(i - 1)) - i)     * COMPSIZE;
+      aa = a + (m - i) * k * COMPSIZE;
+      cc = c + (m - i)     * COMPSIZE;
 
       if (k - kk > 0) {
         GEMM_KERNEL(i, GEMM_UNROLL_N, k - kk, dm1,
@@ -205,10 +205,11 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG k,  FLOAT dummy1,
 
     }
 
+    int mod = i;
     i = sve_size;
     if (i <= m) {
-      aa = a + ((m & ~(sve_size - 1)) - sve_size) * k * COMPSIZE;
-      cc = c + ((m & ~(sve_size - 1)) - sve_size)     * COMPSIZE;
+      aa = a + (m - mod - sve_size) * k * COMPSIZE;
+      cc = c + (m - mod - sve_size)     * COMPSIZE;
 
       do {
         if (k - kk > 0) {
@@ -217,7 +218,7 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG k,  FLOAT dummy1,
               ZERO,
 #endif
               aa + sve_size * kk * COMPSIZE,
-              b +  sve_size * kk * COMPSIZE,
+              b +  GEMM_UNROLL_N * kk * COMPSIZE,
               cc,
               ldc);
         }
@@ -251,8 +252,8 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG k,  FLOAT dummy1,
 
         i = m % sve_size;
         if (i) {
-          aa = a + ((m & ~(i - 1)) - i) * k * COMPSIZE;
-          cc = c + ((m & ~(i - 1)) - i)     * COMPSIZE;
+          aa = a + (m - i) * k * COMPSIZE;
+          cc = c + (m - i)     * COMPSIZE;
 
           if (k - kk > 0) {
             GEMM_KERNEL(i, j, k - kk, dm1,
@@ -273,10 +274,11 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG k,  FLOAT dummy1,
 
         }
 
+        int mod = i;
         i = sve_size;
         if (i <= m) {
-          aa = a + ((m & ~(sve_size - 1)) - sve_size) * k * COMPSIZE;
-          cc = c + ((m & ~(sve_size - 1)) - sve_size)     * COMPSIZE;
+          aa = a + (m - mod - sve_size) * k * COMPSIZE;
+          cc = c + (m - mod - sve_size)     * COMPSIZE;
 
           do {
             if (k - kk > 0) {
