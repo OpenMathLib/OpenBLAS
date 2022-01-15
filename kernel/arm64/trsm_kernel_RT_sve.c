@@ -169,7 +169,11 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG k,  FLOAT dummy1,
   BLASLONG i, j;
   FLOAT *aa, *cc;
   BLASLONG  kk;
+#ifdef DOUBLE
   int sve_size = svcntd();
+#else
+  int sve_size = svcntw();
+#endif
 
 #if 0
   fprintf(stderr, "TRSM RT KERNEL m = %3ld  n = %3ld  k = %3ld offset = %3ld\n",

@@ -40,17 +40,13 @@
 #include "common.h"
 #include "arm_sve.h"
 
-#ifndef UNIT
-#define INV(a) (ONE / (a))
-#else
-#define INV(a) (ONE)
-#endif
-
 int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, BLASLONG offset, FLOAT *b){
 
   BLASLONG i, ii, jj;
 
   FLOAT *ao;
+
+  lda *= 2;
 
   jj = offset;
 #ifdef DOUBLE
@@ -74,32 +70,34 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, BLASLONG offset, FLOAT
       if (ii == jj) {
         for (int j = 0; j < n_active; j++) {
           for (int k = 0; k < j; k++) {
-            *(b + j * n_active + k) = *(ao + j * lda + k);
+            *(b + 2*j * n_active + 2*k) = *(ao + j * lda + 2*k);
+            *(b + 2*j * n_active + 2*k + 1) = *(ao + j * lda + 2*k + 1);
           }
-          *(b + j * n_active + j) = INV(*(ao + j * lda + j));
+          compinv(b + 2*j * n_active + 2*j, *(ao + j * lda + 2*j), *(ao + j * lda + 2*j+1));
+          //*(b + j * n_active + j) = INV(*(ao + j * lda + j));
         }
-        ao += lda * n_active;
-        b += n_active * n_active;
+        ao += lda * n_active * 2;
+        b += n_active * n_active * 2;
         i += n_active;
         ii += n_active;
       } else {
         if (ii > jj) {
 #ifdef DOUBLE
-          svfloat64_t aj_vec = svld1(pn, ao);
+          svfloat64x2_t aj_vec = svld2(pn, ao);
 #else
-          svfloat32_t aj_vec = svld1(pn, ao);
+          svfloat32x2_t aj_vec = svld2(pn, ao);
 #endif
-          svst1(pn, b, aj_vec);
+          svst2(pn, b, aj_vec);
         }
         ao += lda;
-        b += n_active;
+        b += n_active * 2;
         i ++;
         ii ++;
       } 
     } while (i < m);
 
 
-    a += n_active;
+    a += n_active * 2;
     jj += n_active;
 
     js += n_active;

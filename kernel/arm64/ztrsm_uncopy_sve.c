@@ -40,26 +40,24 @@
 #include "common.h"
 #include "arm_sve.h"
 
-#ifndef UNIT
-#define INV(a) (ONE / (a))
-#else
-#define INV(a) (ONE)
-#endif
-
 int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, BLASLONG offset, FLOAT *b){
 
   BLASLONG i, ii, jj;
 
   FLOAT *ao;
 
+  lda *= 2;
+
   jj = offset;
 #ifdef DOUBLE
   int64_t js = 0;
+  svint64_t index = svindex_s64(0LL, lda);
   svbool_t pn = svwhilelt_b64(js, n);
   int n_active = svcntp_b64(svptrue_b64(), pn);
 #else
   int32_t N = n;
   int32_t js = 0;
+  svint32_t index = svindex_s32(0, lda);
   svbool_t pn = svwhilelt_b32(js, N);
   int n_active = svcntp_b32(svptrue_b32(), pn);
 #endif
@@ -73,33 +71,37 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, BLASLONG offset, FLOAT
 
       if (ii == jj) {
         for (int j = 0; j < n_active; j++) {
-          for (int k = 0; k < j; k++) {
-            *(b + j * n_active + k) = *(ao + j * lda + k);
+          compinv(b + 2*j * n_active + 2*j, *(ao + j * lda + 2*j), *(ao + j * lda + 2*j+1));
+          //*(b + j * n_active + j) = INV(*(ao + j * lda + j));
+          for (int k = j+1; k < n_active; k++) {
+            *(b + 2*j * n_active + 2*k) = *(ao + k * lda + 2*j);
+            *(b + 2*j * n_active + 2*k + 1) = *(ao + k * lda + 2*j + 1);
           }
-          *(b + j * n_active + j) = INV(*(ao + j * lda + j));
         }
-        ao += lda * n_active;
-        b += n_active * n_active;
+        ao += n_active * 2;
+        b += n_active * n_active * 2;
         i += n_active;
         ii += n_active;
       } else {
-        if (ii > jj) {
+        if (ii < jj) {
 #ifdef DOUBLE
-          svfloat64_t aj_vec = svld1(pn, ao);
+          svfloat64_t aj_vec_real = svld1_gather_index(pn, ao, index);
+          svfloat64_t aj_vec_imag = svld1_gather_index(pn, ao+1, index);
 #else
-          svfloat32_t aj_vec = svld1(pn, ao);
+          svfloat32_t aj_vec_real = svld1_gather_index(pn, ao, index);
+          svfloat32_t aj_vec_imag = svld1_gather_index(pn, ao+1, index);
 #endif
-          svst1(pn, b, aj_vec);
+          svst2(pn, b, svcreate2(aj_vec_real, aj_vec_imag));
         }
-        ao += lda;
-        b += n_active;
-        i ++;
-        ii ++;
-      } 
+        ao += 2;
+        b += n_active * 2;
+        i++;
+        ii++;
+      }
     } while (i < m);
 
 
-    a += n_active;
+    a += n_active * lda;
     jj += n_active;
 
     js += n_active;

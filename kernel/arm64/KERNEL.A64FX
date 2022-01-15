@@ -20,25 +20,36 @@ IDMAXKERNEL  = ../arm/imax.c
 ISMINKERNEL  = ../arm/imin.c
 IDMINKERNEL  = ../arm/imin.c
 
-STRSMKERNEL_LN	=  ../generic/trsm_kernel_LN.c
-STRSMKERNEL_LT	=  ../generic/trsm_kernel_LT.c
-STRSMKERNEL_RN	=  ../generic/trsm_kernel_RN.c
-STRSMKERNEL_RT	=  ../generic/trsm_kernel_RT.c
+STRSMKERNEL_LN	= trsm_kernel_LN_sve.c
+STRSMKERNEL_LT	= trsm_kernel_LT_sve.c
+STRSMKERNEL_RN	= trsm_kernel_RN_sve.c
+STRSMKERNEL_RT	= trsm_kernel_RT_sve.c
 
-DTRSMKERNEL_LN	= ../generic/trsm_kernel_LN.c
-DTRSMKERNEL_LT	= ../generic/trsm_kernel_LT.c
-DTRSMKERNEL_RN	= ../generic/trsm_kernel_RN.c
-DTRSMKERNEL_RT	= ../generic/trsm_kernel_RT.c
+DTRSMKERNEL_LN	= trsm_kernel_LN_sve.c
+DTRSMKERNEL_LT	= trsm_kernel_LT_sve.c
+DTRSMKERNEL_RN	= trsm_kernel_RN_sve.c
+DTRSMKERNEL_RT	= trsm_kernel_RT_sve.c
 
-CTRSMKERNEL_LN	= ../generic/trsm_kernel_LN.c
-CTRSMKERNEL_LT	= ../generic/trsm_kernel_LT.c
-CTRSMKERNEL_RN	= ../generic/trsm_kernel_RN.c
-CTRSMKERNEL_RT	= ../generic/trsm_kernel_RT.c
+TRSMCOPYLN_M    = trsm_lncopy_sve.c
+TRSMCOPYLT_M    = trsm_ltcopy_sve.c
+TRSMCOPYUN_M    = trsm_uncopy_sve.c
+TRSMCOPYUT_M    = trsm_utcopy_sve.c
 
-ZTRSMKERNEL_LN	= ../generic/trsm_kernel_LN.c
-ZTRSMKERNEL_LT	= ../generic/trsm_kernel_LT.c
-ZTRSMKERNEL_RN	= ../generic/trsm_kernel_RN.c
-ZTRSMKERNEL_RT	= ../generic/trsm_kernel_RT.c
+CTRSMKERNEL_LN	= trsm_kernel_LN_sve.c
+CTRSMKERNEL_LT	= trsm_kernel_LT_sve.c
+CTRSMKERNEL_RN	= trsm_kernel_RN_sve.c
+CTRSMKERNEL_RT	= trsm_kernel_RT_sve.c
+
+ZTRSMKERNEL_LN	= trsm_kernel_LN_sve.c
+ZTRSMKERNEL_LT	= trsm_kernel_LT_sve.c
+ZTRSMKERNEL_RN	= trsm_kernel_RN_sve.c
+ZTRSMKERNEL_RT	= trsm_kernel_RT_sve.c
+
+ZTRSMCOPYLN_M    = ztrsm_lncopy_sve.c
+ZTRSMCOPYLT_M    = ztrsm_ltcopy_sve.c
+ZTRSMCOPYUN_M    = ztrsm_uncopy_sve.c
+ZTRSMCOPYUT_M    = ztrsm_utcopy_sve.c
+
 
 SAMAXKERNEL  = amax.S
 DAMAXKERNEL  = amax.S
