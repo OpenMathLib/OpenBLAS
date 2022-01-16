@@ -76,7 +76,7 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, BLASLONG offset, FLOAT
           compinv(b + 2*j * n_active + 2*j, *(ao + j * lda + 2*j), *(ao + j * lda + 2*j+1));
           //*(b + j * n_active + j) = INV(*(ao + j * lda + j));
         }
-        ao += lda * n_active * 2;
+        ao += lda * n_active;
         b += n_active * n_active * 2;
         i += n_active;
         ii += n_active;

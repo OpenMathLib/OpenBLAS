@@ -77,7 +77,7 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, BLASLONG offset, FLOAT
           }
         }
         b += n_active * n_active * 2;
-        ao += lda * n_active * 2;
+        ao += lda * n_active;
         i += n_active;
         ii += n_active;
       } else {
