@@ -59,10 +59,9 @@ int CNAME(BLASLONG n, BLASLONG k1, BLASLONG k2, FLOAT dummy1, FLOAT dummy4,
   lda *= 2;
   k1 --;
 
-#ifndef MINUS
  ipiv += k1;
-#else
-  ipiv -= (k2 - 1) * incx;
+#ifdef MINUS
+  ipiv -= (k2 - k1 - 1) * incx;
 #endif
 
   if (n  <= 0) return 0;
