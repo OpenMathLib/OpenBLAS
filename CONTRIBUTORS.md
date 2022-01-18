@@ -201,3 +201,6 @@ In chronological order:
 * Bine Brank <https://github.com/binebrank>
   * [2021-10-27] Add vector-length-agnostic DGEMM kernels for Arm SVE
   * [2021-11-20] Vector-length-agnostic Arm SVE copy routines for DGEMM, DTRMM, DSYMM
+  * [2021-11-12] SVE kernels for SGEMM, STRMM and corresponding SVE copy functions
+  * [2022-01-06] SVE kernels for CGEMM, ZGEMM, CTRMM, ZTRMM and corresponding SVE copy functions
+  * [2022-01-18] SVE kernels and copy functions for TRSM
