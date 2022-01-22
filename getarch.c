@@ -1536,6 +1536,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif
 
 
+#if defined(FORCE_E2K) || defined(__e2k__)
+#define FORCE
+#define ARCHITECTURE "E2K"
+#define ARCHCONFIG   "-DGENERIC " \
+		     "-DL1_DATA_SIZE=16384 -DL1_DATA_LINESIZE=64 " \
+		     "-DL2_SIZE=524288 -DL2_LINESIZE=64 " \
+		     "-DDTB_DEFAULT_ENTRIES=64 -DDTB_SIZE=4096 -DL2_ASSOCIATIVE=8 "
+#define LIBNAME   "generic"
+#define CORENAME  "generic"
+#endif
+
 #ifndef FORCE
 
 #ifdef USER_TARGET
