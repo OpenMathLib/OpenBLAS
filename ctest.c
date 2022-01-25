@@ -165,3 +165,7 @@ ARCH_LOONGARCH64
 HAVE_C11
 #endif
 
+#if defined(__e2k__)
+ARCH_E2K
+#endif
+
