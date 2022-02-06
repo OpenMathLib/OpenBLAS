@@ -1495,6 +1495,10 @@ int get_cpuname(void){
         switch (model) {
         case 7: // Alder Lake desktop
         case 10: // Alder Lake mobile
+	  if(support_avx512_bf16())
+            return CPUTYPE_COOPERLAKE;	
+          if(support_avx512())
+            return CPUTYPE_SKYLAKEX;
           if(support_avx2())
             return CPUTYPE_HASWELL;
           if(support_avx())
