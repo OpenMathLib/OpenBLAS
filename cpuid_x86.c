@@ -323,9 +323,11 @@ int get_vendor(void){
 
 int get_cputype(int gettype){
   int eax, ebx, ecx, edx;
+/*
   int extend_family, family;
   int extend_model, model;
   int type, stepping;
+*/
   int feature = 0;
 
   cpuid(1, &eax, &ebx, &ecx, &edx);
@@ -428,7 +430,8 @@ int get_cacheinfo(int type, cache_info_t *cacheinfo){
   cpuid(0, &cpuid_level, &ebx, &ecx, &edx);
 
   if (cpuid_level > 1) {
-    int numcalls =0 ;
+    int numcalls;
+    
     cpuid(2, &eax, &ebx, &ecx, &edx);
     numcalls = BITMASK(eax, 0, 0xff); //FIXME some systems may require repeated calls to read all entries
     info[ 0] = BITMASK(eax,  8, 0xff);
@@ -1637,7 +1640,6 @@ int get_cpuname(void){
 	  else
 	    return CPUTYPE_BARCELONA;
         }
-	break;	      
       case 10: // Zen3		      
 	if(support_avx())
 #ifndef NO_AVX2
@@ -2193,7 +2195,6 @@ int get_coretype(void){
 	  else
 	    return CORE_NEHALEM;
 #endif	
-        break;    	
 
       case 7:
         if (model == 10) 

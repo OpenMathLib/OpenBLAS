@@ -108,7 +108,7 @@ void CNAME(blasint n, FLOAT alpha_r, void *vx, blasint incx){
     mode  =  BLAS_SINGLE | BLAS_COMPLEX;
 #endif
 
-    blas_level1_thread(mode, n, 0, 0,  alpha, x, incx, NULL, 0, NULL, 0, (void *)SCAL_K, nthreads);
+    blas_level1_thread(mode, n, 0, 0,  alpha, x, incx, NULL, 0, NULL, 0, (int (*)(void))SCAL_K, nthreads);
 
   }
 #endif

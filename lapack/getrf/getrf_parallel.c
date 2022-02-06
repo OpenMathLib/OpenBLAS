@@ -662,7 +662,7 @@ blasint CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa,
 
     blas_level1_thread(mode, bk, is + bk + offset + 1, mn + offset, (void *)dummyalpha,
 		       a + (- offset + is * lda) * COMPSIZE, lda, NULL, 0,
-		       ipiv, 1, (void *)LASWP_PLUS, args -> nthreads);
+		       ipiv, 1, (int (*)(void))LASWP_PLUS, args -> nthreads);
 
     is += bk;
   }
