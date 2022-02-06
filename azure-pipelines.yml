@@ -231,6 +231,7 @@ jobs:
   steps:
   - script: |
      make TARGET=ARMV8 DYNAMIC_ARCH=1 NUM_THREADS=32 HOSTCC=clang NOFORTRAN=1
+     $(xcrun --sdk iphoneos --find clang) --print-supported-cpus
 
 - job: OSX_IOS_ARMV7
   pool:
