@@ -708,8 +708,11 @@ static gotoblas_t *get_coretype(void){
 	
       case 9:
         if (model == 7 || model == 10) { // Alder Lake
+	   if(support_avx512_bf16())
+             return &gotoblas_COOPERLAKE;
+          if (support_avx512()) 
+	    return &gotoblas_SKYLAKEX;
           if(support_avx2()){
-            openblas_warning(FALLBACK_VERBOSE, HASWELL_FALLBACK);
             return &gotoblas_HASWELL;
           }
           if(support_avx()) {
