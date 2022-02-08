@@ -188,8 +188,13 @@ jobs:
   steps:   
   - script: |
       brew update
-      brew install llvm
-      brew install carlocab/personal/flang
+      brew install llvm wget stow
+      cd /usr/local
+      mkdir stow
+      cd stow
+      wget https://github.com/meow464/flang/releases/download/flang_20210324/flang.tar
+      tar xf flang.tar
+      stow flang
       make  CC=clang FC=flang
       
 - job: OSX_Ifort_Clang
