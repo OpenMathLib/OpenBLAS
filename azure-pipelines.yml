@@ -179,6 +179,18 @@ jobs:
       cmake --build .
       ctest
       
+- job: OSX_flang
+  pool:
+     vmImage: 'macOS-11'
+  variables:
+     LD_LIBRARY_PATH: /usr/local/opt/llvm/lib
+     LIBRARY_PATH: /usr/local/opt/llvm/lib
+  steps:   
+  - script: |
+      brew update
+      brew install llvm flang
+      make  CC=clang FC=flang
+      
 - job: OSX_Ifort_Clang
   pool:
      vmImage: 'macOS-10.15'
