@@ -190,11 +190,12 @@ jobs:
       brew update
       brew install llvm wget stow
       cd /usr/local
-      mkdir stow
+      sudo mkdir stow
       cd stow
-      wget https://github.com/meow464/flang/releases/download/flang_20210324/flang.tar
-      tar xf flang.tar
-      stow flang
+      sudo wget https://github.com/meow464/flang/releases/download/flang_20210324/flang.tar
+      sudo tar xf flang.tar
+      sudo stow flang
+      cd
       make  CC=clang FC=flang
       
 - job: OSX_Ifort_Clang
