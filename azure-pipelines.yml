@@ -188,7 +188,8 @@ jobs:
   steps:   
   - script: |
       brew update
-      brew install llvm flang
+      brew install llvm
+      brew install carlocab/personal/flang
       make  CC=clang FC=flang
       
 - job: OSX_Ifort_Clang
