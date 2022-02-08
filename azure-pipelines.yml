@@ -188,7 +188,7 @@ jobs:
   steps:   
   - script: |
       brew update
-      brew install llvm wget stow
+      brew install stow
       cd /usr/local
       sudo mkdir stow
       cd stow
@@ -196,6 +196,8 @@ jobs:
       sudo tar xf flang.tar
       sudo stow flang
       cd
+      pwd
+      ls
       make  CC=clang FC=flang
       
 - job: OSX_Ifort_Clang
