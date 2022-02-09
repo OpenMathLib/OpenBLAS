@@ -183,19 +183,18 @@ jobs:
   pool:
      vmImage: 'macOS-11'
   variables:
-     LD_LIBRARY_PATH: /usr/local/opt/llvm/lib
-     LIBRARY_PATH: /usr/local/opt/llvm/lib
+     LD_LIBRARY_PATH: /usr/local/opt/llvm/lib:$(LD_LIBRARY_PATH)
+     LIBRARY_PATH: /usr/local/opt/llvm/lib:$(LIBRARY_PATH)
   steps:   
   - script: |
       brew update
       brew install llvm stow libpthread-stubs
       sudo mkdir /usr/local/stow
-      sudo wget -P /usr/local/stow https://github.com/meow464/flang/releases/download/flang_20210324/flang.tar
+      sudo wget -q -P /usr/local/stow https://github.com/meow464/flang/releases/download/flang_20210324/flang.tar
       cd /usr/local/stow
       sudo tar xf flang.tar
       sudo stow flang
       cd -
-      find / -name "libpthread.*"
       make  CC=/usr/local/opt/llvm/bin/clang FC=/usr/local/bin/flang
       
 - job: OSX_Ifort_Clang
