@@ -188,7 +188,7 @@ jobs:
   steps:   
   - script: |
       brew update
-      brew install llvm stow libpthread libpthread-stubs
+      brew install llvm stow libpthread-stubs
       sudo mkdir /usr/local/stow
       sudo wget -P /usr/local/stow https://github.com/meow464/flang/releases/download/flang_20210324/flang.tar
       cd /usr/local/stow
