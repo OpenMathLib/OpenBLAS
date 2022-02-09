@@ -189,15 +189,12 @@ jobs:
   - script: |
       brew update
       brew install stow
-      cd /usr/local
-      sudo mkdir stow
-      cd stow
-      sudo wget https://github.com/meow464/flang/releases/download/flang_20210324/flang.tar
+      sudo mkdir /usr/local/stow
+      sudo wget -P /usr/local/stow https://github.com/meow464/flang/releases/download/flang_20210324/flang.tar
+      cd /usr/local/stow
       sudo tar xf flang.tar
       sudo stow flang
-      cd
-      pwd
-      ls
+      cd -
       make  CC=clang FC=flang
       
 - job: OSX_Ifort_Clang
