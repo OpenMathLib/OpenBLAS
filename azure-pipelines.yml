@@ -195,7 +195,7 @@ jobs:
       sudo tar xf flang.tar
       sudo stow flang
       cd -
-      make  CC=clang FC=flang
+      make  CC=/usr/local/opt/llvm/bin/clang FC=flang
       
 - job: OSX_Ifort_Clang
   pool:
