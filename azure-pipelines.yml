@@ -186,6 +186,7 @@ jobs:
      LD_LIBRARY_PATH: /usr/local/opt/llvm/lib:$LD_LIBRARY_PATH
      DYLD_LIBRARY_PATH: $LD_LIBRARY_PATH
      LIBRARY_PATH: /usr/local/opt/llvm/lib
+     LDFLAGS: -L/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/lib
   steps:   
   - script: |
       brew update
