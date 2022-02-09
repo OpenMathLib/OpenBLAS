@@ -183,8 +183,9 @@ jobs:
   pool:
      vmImage: 'macOS-11'
   variables:
-     LD_LIBRARY_PATH: /usr/local/opt/llvm/lib:$(LD_LIBRARY_PATH)
-     LIBRARY_PATH: /usr/local/opt/llvm/lib:$(LIBRARY_PATH)
+     LD_LIBRARY_PATH: /usr/local/opt/llvm/lib:$LD_LIBRARY_PATH
+     DYLD_LIBRARY_PATH: $LD_LIBRARY_PATH
+     LIBRARY_PATH: /usr/local/opt/llvm/lib
   steps:   
   - script: |
       brew update
