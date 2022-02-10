@@ -143,7 +143,11 @@ else
 ifeq ($(F_COMPILER), INTEL)
 	$(FC) $(FFLAGS) $(LDFLAGS) -all-load -headerpad_max_install_names -install_name "$(CURDIR)/../$(INTERNALNAME)" -dynamiclib -o ../$(LIBDYNNAME) $< -Wl,-exported_symbols_list,osx.def
 else
+ifeq ($(F_COMPILER), FLANG)
+	$(FC) $(FFLAGS) $(LDFLAGS) -fno-fortran-main -Mnomain -all_load -headerpad_max_install_names -install_name "$(CURDIR)/../$(INTERNALNAME)" -dynamiclib -o ../$(LIBDYNNAME) $< -Wl,-exported_symbols_list,osx.def  $(FEXTRALIB)
+else
 	$(FC) $(FFLAGS) $(LDFLAGS) -all_load -headerpad_max_install_names -install_name "$(CURDIR)/../$(INTERNALNAME)" -dynamiclib -o ../$(LIBDYNNAME) $< -Wl,-exported_symbols_list,osx.def  $(FEXTRALIB)
+endif
 endif
 endif
 
