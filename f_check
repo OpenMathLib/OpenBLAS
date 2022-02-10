@@ -393,7 +393,7 @@ if ($link ne "") {
 }
 
 if ($vendor eq "FLANG"){
-    $linker_a .= "-lflang"
+    $linker_a .= "-fno-fortran-main -Mnomain -lflang"
 }
 
 open(MAKEFILE, ">> $makefile") || die "Can't append $makefile";
