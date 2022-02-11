@@ -361,6 +361,7 @@ if ($link ne "") {
 	    ($flags =~ /^\-l/)
 	    && ($flags !~ /ibrary/)
 	    && ($flags !~ /gfortranbegin/)
+	    && ($flags !~ /flangmain/)
 	    && ($flags !~ /frtbegin/)
 	    && ($flags !~ /pathfstart/)
 	    && ($flags !~ /crt[0-9]/)
