@@ -20,25 +20,36 @@ IDMAXKERNEL  = ../arm/imax.c
 ISMINKERNEL  = ../arm/imin.c
 IDMINKERNEL  = ../arm/imin.c
 
-STRSMKERNEL_LN	=  ../generic/trsm_kernel_LN.c
-STRSMKERNEL_LT	=  ../generic/trsm_kernel_LT.c
-STRSMKERNEL_RN	=  ../generic/trsm_kernel_RN.c
-STRSMKERNEL_RT	=  ../generic/trsm_kernel_RT.c
+STRSMKERNEL_LN	= trsm_kernel_LN_sve.c
+STRSMKERNEL_LT	= trsm_kernel_LT_sve.c
+STRSMKERNEL_RN	= trsm_kernel_RN_sve.c
+STRSMKERNEL_RT	= trsm_kernel_RT_sve.c
 
-DTRSMKERNEL_LN	= ../generic/trsm_kernel_LN.c
-DTRSMKERNEL_LT	= ../generic/trsm_kernel_LT.c
-DTRSMKERNEL_RN	= ../generic/trsm_kernel_RN.c
-DTRSMKERNEL_RT	= ../generic/trsm_kernel_RT.c
+DTRSMKERNEL_LN	= trsm_kernel_LN_sve.c
+DTRSMKERNEL_LT	= trsm_kernel_LT_sve.c
+DTRSMKERNEL_RN	= trsm_kernel_RN_sve.c
+DTRSMKERNEL_RT	= trsm_kernel_RT_sve.c
 
-CTRSMKERNEL_LN	= ../generic/trsm_kernel_LN.c
-CTRSMKERNEL_LT	= ../generic/trsm_kernel_LT.c
-CTRSMKERNEL_RN	= ../generic/trsm_kernel_RN.c
-CTRSMKERNEL_RT	= ../generic/trsm_kernel_RT.c
+TRSMCOPYLN_M    = trsm_lncopy_sve.c
+TRSMCOPYLT_M    = trsm_ltcopy_sve.c
+TRSMCOPYUN_M    = trsm_uncopy_sve.c
+TRSMCOPYUT_M    = trsm_utcopy_sve.c
 
-ZTRSMKERNEL_LN	= ../generic/trsm_kernel_LN.c
-ZTRSMKERNEL_LT	= ../generic/trsm_kernel_LT.c
-ZTRSMKERNEL_RN	= ../generic/trsm_kernel_RN.c
-ZTRSMKERNEL_RT	= ../generic/trsm_kernel_RT.c
+CTRSMKERNEL_LN	= trsm_kernel_LN_sve.c
+CTRSMKERNEL_LT	= trsm_kernel_LT_sve.c
+CTRSMKERNEL_RN	= trsm_kernel_RN_sve.c
+CTRSMKERNEL_RT	= trsm_kernel_RT_sve.c
+
+ZTRSMKERNEL_LN	= trsm_kernel_LN_sve.c
+ZTRSMKERNEL_LT	= trsm_kernel_LT_sve.c
+ZTRSMKERNEL_RN	= trsm_kernel_RN_sve.c
+ZTRSMKERNEL_RT	= trsm_kernel_RT_sve.c
+
+ZTRSMCOPYLN_M    = ztrsm_lncopy_sve.c
+ZTRSMCOPYLT_M    = ztrsm_ltcopy_sve.c
+ZTRSMCOPYUN_M    = ztrsm_uncopy_sve.c
+ZTRSMCOPYUT_M    = ztrsm_utcopy_sve.c
+
 
 SAMAXKERNEL  = amax.S
 DAMAXKERNEL  = amax.S
@@ -140,8 +151,8 @@ DTRMMKERNEL    =  dtrmm_kernel_sve_v1x$(DGEMM_UNROLL_N).S
 
 DGEMMINCOPY    =  dgemm_ncopy_sve_v1.c
 DGEMMITCOPY    =  dgemm_tcopy_sve_v1.c
-DGEMMONCOPY    =  ../generic/gemm_ncopy_$(DGEMM_UNROLL_N).c
-DGEMMOTCOPY    =  ../generic/gemm_tcopy_$(DGEMM_UNROLL_N).c
+DGEMMONCOPY    =  dgemm_ncopy_$(DGEMM_UNROLL_N).S
+DGEMMOTCOPY    =  dgemm_tcopy_$(DGEMM_UNROLL_N).S
 
 DGEMMINCOPYOBJ =  dgemm_incopy$(TSUFFIX).$(SUFFIX)
 DGEMMITCOPYOBJ =  dgemm_itcopy$(TSUFFIX).$(SUFFIX)
@@ -156,28 +167,50 @@ DTRMMLTCOPY_M  =  trmm_ltcopy_sve_v1.c
 DSYMMUCOPY_M    =  symm_ucopy_sve.c
 DSYMMLCOPY_M    =  symm_lcopy_sve.c
 
-CGEMMKERNEL    =  cgemm_kernel_$(CGEMM_UNROLL_M)x$(CGEMM_UNROLL_N).S
-CTRMMKERNEL    =  ctrmm_kernel_$(CGEMM_UNROLL_M)x$(CGEMM_UNROLL_N).S
-ifneq ($(CGEMM_UNROLL_M), $(CGEMM_UNROLL_N))
-CGEMMINCOPY    =  ../generic/zgemm_ncopy_$(CGEMM_UNROLL_M).c
-CGEMMITCOPY    =  ../generic/zgemm_tcopy_$(CGEMM_UNROLL_M).c
+CGEMMKERNEL    =  cgemm_kernel_sve_v1x$(ZGEMM_UNROLL_N).S
+CTRMMKERNEL    =  ctrmm_kernel_sve_v1x$(ZGEMM_UNROLL_N).S
+
+CGEMMINCOPY    =  cgemm_ncopy_sve_v1.c
+CGEMMITCOPY    =  cgemm_tcopy_sve_v1.c
+CGEMMONCOPY    =  ../generic/zgemm_ncopy_$(ZGEMM_UNROLL_N).c
+CGEMMOTCOPY    =  ../generic/zgemm_tcopy_$(ZGEMM_UNROLL_N).c
+
 CGEMMINCOPYOBJ =  cgemm_incopy$(TSUFFIX).$(SUFFIX)
 CGEMMITCOPYOBJ =  cgemm_itcopy$(TSUFFIX).$(SUFFIX)
-endif
-CGEMMONCOPY    =  ../generic/zgemm_ncopy_$(CGEMM_UNROLL_N).c
-CGEMMOTCOPY    =  ../generic/zgemm_tcopy_$(CGEMM_UNROLL_N).c
 CGEMMONCOPYOBJ =  cgemm_oncopy$(TSUFFIX).$(SUFFIX)
 CGEMMOTCOPYOBJ =  cgemm_otcopy$(TSUFFIX).$(SUFFIX)
 
-ZGEMMKERNEL    =  zgemm_kernel_$(ZGEMM_UNROLL_M)x$(ZGEMM_UNROLL_N).S
-ZTRMMKERNEL    =  ztrmm_kernel_$(ZGEMM_UNROLL_M)x$(ZGEMM_UNROLL_N).S
-ifneq ($(ZGEMM_UNROLL_M), $(ZGEMM_UNROLL_N))
-ZGEMMINCOPY    =  ../generic/zgemm_ncopy_$(ZGEMM_UNROLL_M).c
-ZGEMMITCOPY    =  ../generic/zgemm_tcopy_$(ZGEMM_UNROLL_M).c
-ZGEMMINCOPYOBJ =  zgemm_incopy$(TSUFFIX).$(SUFFIX)
-ZGEMMITCOPYOBJ =  zgemm_itcopy$(TSUFFIX).$(SUFFIX)
-endif
+CTRMMUNCOPY_M  =  ztrmm_uncopy_sve_v1.c
+CTRMMLNCOPY_M  =  ztrmm_lncopy_sve_v1.c
+CTRMMUTCOPY_M  =  ztrmm_utcopy_sve_v1.c
+CTRMMLTCOPY_M  =  ztrmm_ltcopy_sve_v1.c
+
+CHEMMLTCOPY_M    =  zhemm_ltcopy_sve.c
+CHEMMUTCOPY_M    =  zhemm_utcopy_sve.c
+
+CSYMMUCOPY_M    =  zsymm_ucopy_sve.c
+CSYMMLCOPY_M    =  zsymm_lcopy_sve.c
+
+ZGEMMKERNEL    =  zgemm_kernel_sve_v1x$(ZGEMM_UNROLL_N).S
+ZTRMMKERNEL    =  ztrmm_kernel_sve_v1x$(ZGEMM_UNROLL_N).S
+
+ZGEMMINCOPY    =  zgemm_ncopy_sve_v1.c
+ZGEMMITCOPY    =  zgemm_tcopy_sve_v1.c
 ZGEMMONCOPY    =  ../generic/zgemm_ncopy_$(ZGEMM_UNROLL_N).c
 ZGEMMOTCOPY    =  ../generic/zgemm_tcopy_$(ZGEMM_UNROLL_N).c
+
+ZGEMMINCOPYOBJ =  zgemm_incopy$(TSUFFIX).$(SUFFIX)
+ZGEMMITCOPYOBJ =  zgemm_itcopy$(TSUFFIX).$(SUFFIX)
 ZGEMMONCOPYOBJ =  zgemm_oncopy$(TSUFFIX).$(SUFFIX)
 ZGEMMOTCOPYOBJ =  zgemm_otcopy$(TSUFFIX).$(SUFFIX)
+
+ZTRMMUNCOPY_M  =  ztrmm_uncopy_sve_v1.c
+ZTRMMLNCOPY_M  =  ztrmm_lncopy_sve_v1.c
+ZTRMMUTCOPY_M  =  ztrmm_utcopy_sve_v1.c
+ZTRMMLTCOPY_M  =  ztrmm_ltcopy_sve_v1.c
+
+ZHEMMLTCOPY_M    =  zhemm_ltcopy_sve.c
+ZHEMMUTCOPY_M    =  zhemm_utcopy_sve.c
+
+ZSYMMUCOPY_M    =  zsymm_ucopy_sve.c
+ZSYMMLCOPY_M    =  zsymm_lcopy_sve.c

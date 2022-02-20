@@ -209,7 +209,8 @@ static void legacy_exec(void *func, int mode, blas_arg_t *args, void *sb){
 	    /* REAL / Double */
 	    void (*afunc)(BLASLONG, BLASLONG, BLASLONG, double,
 			  double *, BLASLONG, double *, BLASLONG,
-			  double *, BLASLONG, void *) = func;
+			  double *, BLASLONG, void *) =  (void (*)(BLASLONG, BLASLONG, BLASLONG, double, double *, BLASLONG, 
+			  double *, BLASLONG, double *, BLASLONG, void *)) func;
 
 	    afunc(args -> m, args -> n, args -> k,
 		  ((double *)args -> alpha)[0],
@@ -220,7 +221,10 @@ static void legacy_exec(void *func, int mode, blas_arg_t *args, void *sb){
             /* REAL / Single */
             void (*afunc)(BLASLONG, BLASLONG, BLASLONG, float,
                           float *, BLASLONG, float *, BLASLONG,
-                          float *, BLASLONG, void *) = func;
+                          float *, BLASLONG, void *) = (void (*)
+                          (BLASLONG, BLASLONG, BLASLONG, float,
+                          float *, BLASLONG, float *, BLASLONG,
+                          float *, BLASLONG, void *)) func;
 
             afunc(args -> m, args -> n, args -> k,
                   ((float *)args -> alpha)[0],
@@ -232,7 +236,9 @@ static void legacy_exec(void *func, int mode, blas_arg_t *args, void *sb){
             /* REAL / BFLOAT16 */
             void (*afunc)(BLASLONG, BLASLONG, BLASLONG, bfloat16,
                           bfloat16 *, BLASLONG, bfloat16 *, BLASLONG,
-                          bfloat16 *, BLASLONG, void *) = func;
+                          bfloat16 *, BLASLONG, void *) = (void (*)(BLASLONG, BLASLONG, BLASLONG, bfloat16,
+                          bfloat16 *, BLASLONG, bfloat16 *, BLASLONG,
+                          bfloat16 *, BLASLONG, void *)) func;
 
             afunc(args -> m, args -> n, args -> k,
                   ((bfloat16 *)args -> alpha)[0],
@@ -243,7 +249,9 @@ static void legacy_exec(void *func, int mode, blas_arg_t *args, void *sb){
             /* REAL / BLAS_STOBF16 */
             void (*afunc)(BLASLONG, BLASLONG, BLASLONG, float,
                           float *, BLASLONG, bfloat16 *, BLASLONG,
-                          float *, BLASLONG, void *) = func;
+                          float *, BLASLONG, void *) = (void (*)(BLASLONG, BLASLONG, BLASLONG, float,
+                          float *, BLASLONG, bfloat16 *, BLASLONG,
+                          float *, BLASLONG, void *)) func;
 
             afunc(args -> m, args -> n, args -> k,
                   ((float *)args -> alpha)[0],
@@ -254,7 +262,9 @@ static void legacy_exec(void *func, int mode, blas_arg_t *args, void *sb){
             /* REAL / BLAS_DTOBF16 */
             void (*afunc)(BLASLONG, BLASLONG, BLASLONG, double,
                           double *, BLASLONG, bfloat16 *, BLASLONG,
-                          double *, BLASLONG, void *) = func;
+                          double *, BLASLONG, void *) = (void (*)(BLASLONG, BLASLONG, BLASLONG, double,
+                          double *, BLASLONG, bfloat16 *, BLASLONG,
+                          double *, BLASLONG, void *)) func;
 
             afunc(args -> m, args -> n, args -> k,
                   ((double *)args -> alpha)[0],
@@ -271,7 +281,9 @@ static void legacy_exec(void *func, int mode, blas_arg_t *args, void *sb){
 	  /* COMPLEX / Extended Double */
 	  void (*afunc)(BLASLONG, BLASLONG, BLASLONG, xdouble, xdouble,
 			xdouble *, BLASLONG, xdouble *, BLASLONG,
-			xdouble *, BLASLONG, void *) = func;
+			xdouble *, BLASLONG, void *) = (void (*)(BLASLONG, BLASLONG, BLASLONG, xdouble, xdouble,
+                        xdouble *, BLASLONG, xdouble *, BLASLONG,
+                        xdouble *, BLASLONG, void *)) func;
 
 	  afunc(args -> m, args -> n, args -> k,
 		((xdouble *)args -> alpha)[0],
@@ -285,7 +297,9 @@ static void legacy_exec(void *func, int mode, blas_arg_t *args, void *sb){
 	    /* COMPLEX / Double */
 	  void (*afunc)(BLASLONG, BLASLONG, BLASLONG, double, double,
 			double *, BLASLONG, double *, BLASLONG,
-			double *, BLASLONG, void *) = func;
+			double *, BLASLONG, void *) = (void (*)(BLASLONG, BLASLONG, BLASLONG, double, double,
+                        double *, BLASLONG, double *, BLASLONG,
+                        double *, BLASLONG, void *)) func;
 
 	  afunc(args -> m, args -> n, args -> k,
 		((double *)args -> alpha)[0],
@@ -297,7 +311,9 @@ static void legacy_exec(void *func, int mode, blas_arg_t *args, void *sb){
 	    /* COMPLEX / Single */
 	  void (*afunc)(BLASLONG, BLASLONG, BLASLONG, float, float,
 			float *, BLASLONG, float *, BLASLONG,
-			float *, BLASLONG, void *) = func;
+			float *, BLASLONG, void *) = (void (*)(BLASLONG, BLASLONG, BLASLONG, float, float,
+                        float *, BLASLONG, float *, BLASLONG,
+                        float *, BLASLONG, void *)) func;
 
 	  afunc(args -> m, args -> n, args -> k,
 		((float *)args -> alpha)[0],
@@ -425,7 +441,7 @@ blas_queue_t *tscq;
 #endif
 
     if (queue) {
-      int (*routine)(blas_arg_t *, void *, void *, void *, void *, BLASLONG) = queue -> routine;
+      int (*routine)(blas_arg_t *, void *, void *, void *, void *, BLASLONG) = (int (*)(blas_arg_t *, void *, void *, void *, void *, BLASLONG))queue -> routine;
 
       atomic_store_queue(&thread_status[cpu].queue, (blas_queue_t *)1);
 
@@ -503,7 +519,7 @@ blas_queue_t *tscq;
 	legacy_exec(routine, queue -> mode, queue -> args, sb);
       } else
 	if (queue -> mode & BLAS_PTHREAD) {
-	  void (*pthreadcompat)(void *) = queue -> routine;
+	  void (*pthreadcompat)(void *) = (void(*)(void*))queue -> routine;
 	  (pthreadcompat)(queue -> args);
 	} else
 	  (routine)(queue -> args, queue -> range_m, queue -> range_n, sa, sb, queue -> position);
@@ -871,13 +887,13 @@ int exec_blas(BLASLONG num, blas_queue_t *queue){
   fprintf(STDERR, "\n");
 #endif
 
-  routine = queue -> routine;
+  routine = (int (*)(blas_arg_t *, void *, void *, double *, double *, BLASLONG))queue -> routine;
 
   if (queue -> mode & BLAS_LEGACY) {
     legacy_exec(routine, queue -> mode, queue -> args, queue -> sb);
   } else
     if (queue -> mode & BLAS_PTHREAD) {
-      void (*pthreadcompat)(void *) = queue -> routine;
+      void (*pthreadcompat)(void *) = (void (*)(void*))queue -> routine;
       (pthreadcompat)(queue -> args);
     } else
       (routine)(queue -> args, queue -> range_m, queue -> range_n,

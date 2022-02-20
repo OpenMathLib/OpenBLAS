@@ -215,7 +215,7 @@ OPENBLAS_COMPLEX_FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLA
 
 		blas_level1_thread_with_return_value(mode, n, 0, 0, &dummy_alpha,
 				   x, inc_x, y, inc_y, result, 0,
-				   ( void *)zdot_thread_function, nthreads);
+				   (int (*)(void))zdot_thread_function, nthreads);
 
 		ptr = (OPENBLAS_COMPLEX_FLOAT *)result;
 		for (i = 0; i < nthreads; i++) {

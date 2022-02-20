@@ -84,6 +84,7 @@ $os = Haiku           if ($data =~ /OS_HAIKU/);
 
 $architecture = x86          if ($data =~ /ARCH_X86/);
 $architecture = x86_64       if ($data =~ /ARCH_X86_64/);
+$architecture = e2k          if ($data =~ /ARCH_E2K/);
 $architecture = power        if ($data =~ /ARCH_POWER/);
 $architecture = mips         if ($data =~ /ARCH_MIPS/);
 $architecture = mips64       if ($data =~ /ARCH_MIPS64/);
@@ -120,6 +121,11 @@ if (($architecture eq "arm") || ($architecture eq "arm64")) {
 }
 
 if ($architecture eq "zarch") {
+    $defined = 1;
+    $binary = 64;
+}
+
+if ($architecture eq "e2k") {
     $defined = 1;
     $binary = 64;
 }
@@ -223,6 +229,7 @@ if (($architecture eq "mips") || ($architecture eq "mips64")) {
 
 $architecture = x86          if ($data =~ /ARCH_X86/);
 $architecture = x86_64       if ($data =~ /ARCH_X86_64/);
+$architecture = e2k          if ($data =~ /ARCH_E2K/);
 $architecture = power        if ($data =~ /ARCH_POWER/);
 $architecture = mips         if ($data =~ /ARCH_MIPS/);
 $architecture = mips64       if ($data =~ /ARCH_MIPS64/);

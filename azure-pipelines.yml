@@ -224,7 +224,7 @@ jobs:
 
 - job: OSX_IOS_ARMV8
   pool:
-     vmImage: 'macOS-10.15'
+     vmImage: 'macOS-11'
   variables:
      CC: /Applications/Xcode_12.4.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang
      CFLAGS: -O2 -Wno-macro-redefined -isysroot /Applications/Xcode_12.4.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS14.4.sdk -arch arm64 -miphoneos-version-min=10.0

@@ -64,9 +64,9 @@ CBLASOBJS += \
 	chpmv_U.$(SUFFIX) chpmv_L.$(SUFFIX) chpmv_V.$(SUFFIX) chpmv_M.$(SUFFIX) \
 	chpr_U.$(SUFFIX)  chpr_L.$(SUFFIX)  chpr_V.$(SUFFIX)  chpr_M.$(SUFFIX) \
 	chpr2_U.$(SUFFIX) chpr2_L.$(SUFFIX) chpr2_V.$(SUFFIX) chpr2_M.$(SUFFIX) \
-	csbmv_U.$(SUFFIX) csbmv_L.$(SUFFIX) cspmv_U.$(SUFFIX) cspmv_L.$(SUFFIX) \
-	cspr_U.$(SUFFIX)  cspr_L.$(SUFFIX)  cspr2_U.$(SUFFIX) cspr2_L.$(SUFFIX) \
-	csyr_U.$(SUFFIX)  csyr_L.$(SUFFIX)  csyr2_U.$(SUFFIX) csyr2_L.$(SUFFIX) \
+	csbmv_U.$(SUFFIX) csbmv_L.$(SUFFIX) \
+	cspr2_U.$(SUFFIX) cspr2_L.$(SUFFIX) \
+	csyr2_U.$(SUFFIX) csyr2_L.$(SUFFIX) \
 	ctbmv_NUU.$(SUFFIX) ctbmv_NUN.$(SUFFIX) ctbmv_NLU.$(SUFFIX) ctbmv_NLN.$(SUFFIX) \
 	ctbmv_TUU.$(SUFFIX) ctbmv_TUN.$(SUFFIX) ctbmv_TLU.$(SUFFIX) ctbmv_TLN.$(SUFFIX) \
 	ctbmv_RUU.$(SUFFIX) ctbmv_RUN.$(SUFFIX) ctbmv_RLU.$(SUFFIX) ctbmv_RLN.$(SUFFIX) \
@@ -91,6 +91,13 @@ CBLASOBJS += \
 	ctrsv_TUU.$(SUFFIX) ctrsv_TUN.$(SUFFIX) ctrsv_TLU.$(SUFFIX) ctrsv_TLN.$(SUFFIX) \
 	ctrsv_RUU.$(SUFFIX) ctrsv_RUN.$(SUFFIX) ctrsv_RLU.$(SUFFIX) ctrsv_RLN.$(SUFFIX) \
 	ctrsv_CUU.$(SUFFIX) ctrsv_CUN.$(SUFFIX) ctrsv_CLU.$(SUFFIX) ctrsv_CLN.$(SUFFIX)
+
+ifndef NO_LAPACK
+CBLASOBJS += \
+	cspmv_U.$(SUFFIX) cspmv_L.$(SUFFIX) \
+	cspr_U.$(SUFFIX)  cspr_L.$(SUFFIX)  \
+	csyr_U.$(SUFFIX)  csyr_L.$(SUFFIX)  
+endif
 
 ZBLASOBJS += \
 	zgbmv_n.$(SUFFIX) zgbmv_t.$(SUFFIX) zgbmv_r.$(SUFFIX) zgbmv_c.$(SUFFIX) \

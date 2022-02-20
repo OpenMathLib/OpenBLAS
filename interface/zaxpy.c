@@ -128,9 +128,9 @@ void CNAME(blasint n, FLOAT *ALPHA, FLOAT *x, blasint incx, FLOAT *y, blasint in
 
     blas_level1_thread(mode, n, 0, 0, ALPHA, x, incx, y, incy, NULL, 0,
 #ifndef CONJ
-		       (void *)AXPYU_K,
+                       (int (*)(void))AXPYU_K,
 #else
-		       (void *)AXPYC_K,
+                       (int (*)(void))AXPYC_K,
 #endif
 		       nthreads);
   }

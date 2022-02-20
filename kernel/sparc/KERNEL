@@ -39,11 +39,19 @@ IZAMINKERNEL = izamax.S
 endif
 
 ifndef ISMINKERNEL
-ISMINKERNEL = iamax.S
+ISMINKERNEL = imax.S
 endif
 
 ifndef IDMINKERNEL
-IDMINKERNEL = iamax.S
+IDMINKERNEL = imax.S
+endif
+
+ifndef ISMAXKERNEL
+ISMAXKERNEL = imax.S
+endif
+
+ifndef IDMAXKERNEL
+IDMAXKERNEL = imax.S
 endif
 
 ifndef SNRM2KERNEL

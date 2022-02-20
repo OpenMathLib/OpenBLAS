@@ -20,19 +20,16 @@
 # NEEDBUNDERSCORE
 # NEED2UNDERSCORES
 
-if (NOT NO_LAPACK)
-  include(CheckLanguage)
-  check_language(Fortran)
-  if(CMAKE_Fortran_COMPILER)
-    enable_language(Fortran)
-  else()
-  message(STATUS "No Fortran compiler found, can build only BLAS but not LAPACK")
+include(CheckLanguage)
+check_language(Fortran)
+if(CMAKE_Fortran_COMPILER)
+  enable_language(Fortran)
+else()
+  if (NOT NO_LAPACK)
+    message(STATUS "No Fortran compiler found, can build only BLAS but not LAPACK")
+  endif()
   set (NOFORTRAN 1)
   set (NO_LAPACK 1)
-  endif()
-else()
-  include(CMakeForceCompiler)
-  CMAKE_FORCE_Fortran_COMPILER(gfortran GNU)
 endif()
 
 if (NOT ONLY_CBLAS)

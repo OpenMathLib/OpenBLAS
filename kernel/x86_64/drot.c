@@ -196,7 +196,7 @@ int CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG inc_y, FLOAT 
 #else
 	    int mode = BLAS_SINGLE | BLAS_REAL | BLAS_PTHREAD;
 #endif
-	    blas_level1_thread(mode, n, 0, 0, alpha, x, inc_x, y, inc_y, &dummy_c, 0, (void *)rot_thread_function, nthreads);
+	    blas_level1_thread(mode, n, 0, 0, alpha, x, inc_x, y, inc_y, &dummy_c, 0, (int (*)(void))rot_thread_function, nthreads);
     }
 #else	
     rot_compute(n, x, inc_x, y, inc_y, c, s);

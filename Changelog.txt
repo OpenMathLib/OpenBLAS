@@ -1,5 +1,40 @@
 OpenBLAS ChangeLog
 ====================================================================
+Version 0.3.20
+ 20-Feb-2022
+
+general:
+ - some code cleanup, with added casts etc.
+ - fixed obtaining the cpu count with OpenMP and OMP_PROC_BIND unset
+ - fixed pivot index calculation by ?LASWP for negative increments other than one
+ - fixed input argument check in LAPACK ? GEQRT2
+ - improved the check for a Fortran compiler in CMAKE builds
+ - disabled building OpenBLAS' optimized versions of LAPACK complex SPMV,SPR,SYMV,SYR with NO_LAPACK=1
+ - fixed building of LAPACK on certain distributed filesystems with parallel gmake
+ - fixed building the shared library on MacOS with classic flang
+
+x86_64:
+ - fixed cross-compilation with CMAKE for CORE2 target
+ - fixed miscompilation of AVX512 code in DYNAMIC_ARCH builds
+ - added support for the "incidental" AVX512 hardware in Alder Lake when enabled in BIOS
+
+E2K:
+ - add new architecture (Russian Elbrus E2000 family)
+
+SPARC:
+ - fix IMIN/IMAX
+
+ARMV8:
+ - added SVE-enabled CGEMM and ZGEMM kernels for ARMV8SVE and A64FX
+ - added support for Neoverse N2 and V1 cpus
+
+MIPS,MIPS64:
+ - fixed autodetection of MSA capability
+
+LOONGARCH64:
+ - added an optimized DGEMM kernel
+
+====================================================================
 Version 0.3.19
  19-Dec-2021
  

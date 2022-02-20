@@ -1016,11 +1016,13 @@ dsymv.$(SUFFIX) dsymv.$(PSUFFIX) : symv.c
 qsymv.$(SUFFIX) qsymv.$(PSUFFIX) : symv.c
 	$(CC) -c $(CFLAGS) $< -o $(@F)
 
+ifndef NO_LAPACK
 csymv.$(SUFFIX) csymv.$(PSUFFIX) : zsymv.c
 	$(CC) -c $(CFLAGS) $< -o $(@F)
 
 zsymv.$(SUFFIX) zsymv.$(PSUFFIX) : zsymv.c
 	$(CC) -c $(CFLAGS) $< -o $(@F)
+endif
 
 xsymv.$(SUFFIX) xsymv.$(PSUFFIX) : zsymv.c
 	$(CC) -c $(CFLAGS) $< -o $(@F)
@@ -1034,11 +1036,13 @@ dsyr.$(SUFFIX) dsyr.$(PSUFFIX) : syr.c
 qsyr.$(SUFFIX) qsyr.$(PSUFFIX) : syr.c
 	$(CC) -c $(CFLAGS) $< -o $(@F)
 
+ifndef NO_LAPACK
 csyr.$(SUFFIX) csyr.$(PSUFFIX) : zsyr.c
 	$(CC) -c $(CFLAGS) $< -o $(@F)
 
 zsyr.$(SUFFIX) zsyr.$(PSUFFIX) : zsyr.c
 	$(CC) -c $(CFLAGS) $< -o $(@F)
+endif
 
 xsyr.$(SUFFIX) xsyr.$(PSUFFIX) : zsyr.c
 	$(CC) -c $(CFLAGS) $< -o $(@F)
@@ -1106,11 +1110,13 @@ dspmv.$(SUFFIX) dspmv.$(PSUFFIX) : spmv.c
 qspmv.$(SUFFIX) qspmv.$(PSUFFIX) : spmv.c
 	$(CC) -c $(CFLAGS) $< -o $(@F)
 
+ifndef NO_LAPACK
 cspmv.$(SUFFIX) cspmv.$(PSUFFIX) : zspmv.c
 	$(CC) -c $(CFLAGS) $< -o $(@F)
 
 zspmv.$(SUFFIX) zspmv.$(PSUFFIX) : zspmv.c
 	$(CC) -c $(CFLAGS) $< -o $(@F)
+endif
 
 xspmv.$(SUFFIX) xspmv.$(PSUFFIX) : zspmv.c
 	$(CC) -c $(CFLAGS) $< -o $(@F)
@@ -1124,11 +1130,13 @@ dspr.$(SUFFIX) dspr.$(PSUFFIX) : spr.c
 qspr.$(SUFFIX) qspr.$(PSUFFIX) : spr.c
 	$(CC) -c $(CFLAGS) $< -o $(@F)
 
+ifndef NO_LAPACK
 cspr.$(SUFFIX) cspr.$(PSUFFIX) : zspr.c
 	$(CC) -c $(CFLAGS) $< -o $(@F)
 
 zspr.$(SUFFIX) zspr.$(PSUFFIX) : zspr.c
 	$(CC) -c $(CFLAGS) $< -o $(@F)
+endif
 
 xspr.$(SUFFIX) xspr.$(PSUFFIX) : zspr.c
 	$(CC) -c $(CFLAGS) $< -o $(@F)
