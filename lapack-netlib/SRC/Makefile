@@ -57,9 +57,21 @@
 TOPSRCDIR = ..
 include $(TOPSRCDIR)/make.inc
 
+ifneq ($(C_LAPACK), 1)
+$(info fortran... C_LAPACK ist $(C_LAPACK))
+.SUFFIXES:
+.SUFFIXES: .f .o
+.f.o:
+	$(FC) $(FFLAGS) -c -o $@ $<
 .SUFFIXES: .F .o
 .F.o:
 	$(FC) $(FFLAGS) -c -o $@ $<
+else
+$(info C_LAPACK ist $(C_LAPACK))
+.SUFFIXES: .c .o
+.c.o:
+	$(CC) $(CFLAGS) -c -o $@ $<
+endif
 
 ALLAUX_O = ilaenv.o ilaenv2stage.o ieeeck.o lsamen.o xerbla.o xerbla_array.o \
    iparmq.o iparam2stage.o \
@@ -549,24 +561,23 @@ ALL_AUX_OBJS = xerbla.o ../INSTALL/lsame.o
 
 SLAPACKOBJS     = \
         sgetrf.o sgetrs.o spotrf.o sgetf2.o \
-        spotf2.o slaswp.o sgesv.o slauu2.o  \
+        spotf2.o sgesv.o slauu2.o  \
         slauum.o strti2.o strtri.o strtrs.o
 
 DLAPACKOBJS     = \
         dgetrf.o dgetrs.o dpotrf.o dgetf2.o \
-        dpotf2.o dlaswp.o dgesv.o dlauu2.o  \
+        dpotf2.o  dgesv.o dlauu2.o  \
         dlauum.o dtrti2.o dtrtri.o dtrtrs.o
 
 CLAPACKOBJS     = \
         cgetrf.o cgetrs.o cpotrf.o cgetf2.o \
-        cpotf2.o claswp.o cgesv.o clauu2.o \
-        clauum.o ctrti2.o ctrtri.o ctrtrs.o
+        cpotf2.o  cgesv.o clauu2.o \
+        clauum.o ctrti2.o ctrtri.o ctrtrs.o 
 
 ZLAPACKOBJS     = \
         zgetrf.o zgetrs.o zpotrf.o zgetf2.o \
-        zpotf2.o zlaswp.o zgesv.o  zlauu2.o \
+        zpotf2.o  zgesv.o  zlauu2.o \
         zlauum.o ztrti2.o ztrtri.o ztrtrs.o
-
 
 ALLAUX = $(filter-out $(ALL_AUX_OBJS),$(ALLAUX_O))
 SLASRC = $(filter-out $(SLAPACKOBJS),$(SLASRC_O))
@@ -643,9 +654,19 @@ cleanobj:
 cleanlib:
 	rm -f $(LAPACKLIB)
 
+ifneq ($(C_LAPACK), 1)
 slaruv.o: slaruv.f ; $(FC) $(FFLAGS_NOOPT) -c -o $@ $<
 dlaruv.o: dlaruv.f ; $(FC) $(FFLAGS_NOOPT) -c -o $@ $<
 sla_wwaddw.o: sla_wwaddw.f ; $(FC) $(FFLAGS_NOOPT) -c -o $@ $<
 dla_wwaddw.o: dla_wwaddw.f ; $(FC) $(FFLAGS_NOOPT) -c -o $@ $<
 cla_wwaddw.o: cla_wwaddw.f ; $(FC) $(FFLAGS_NOOPT) -c -o $@ $<
 zla_wwaddw.o: zla_wwaddw.f ; $(FC) $(FFLAGS_NOOPT) -c -o $@ $<
+else
+slaruv.o: slaruv.c ; $(CC) $(CFLAGS) -c -o $@ $<
+dlaruv.o: dlaruv.c ; $(CC) $(CFLAGS) -c -o $@ $<
+sla_wwaddw.o: sla_wwaddw.c ; $(CC) $(CFLAGS) -c -o $@ $<
+dla_wwaddw.o: dla_wwaddw.c ; $(CC) $(CFLAGS) -c -o $@ $<
+cla_wwaddw.o: cla_wwaddw.c ; $(CC) $(CFLAGS) -c -o $@ $<
+zla_wwaddw.o: zla_wwaddw.c ; $(CC) $(CFLAGS) -c -o $@ $<
+endif
+
