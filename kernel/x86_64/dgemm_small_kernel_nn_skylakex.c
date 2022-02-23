@@ -590,6 +590,6 @@ int CNAME(BLASLONG M, BLASLONG N, BLASLONG K, FLOAT * A, BLASLONG lda, FLOAT alp
 	return 0;
 }
 #else
-#include ../generic/gemm_small_matrix_kernel_nn.c
+#include "../generic/gemm_small_matrix_kernel_nn.c"
 #endif
 
