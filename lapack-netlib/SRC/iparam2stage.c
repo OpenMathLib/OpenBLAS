@@ -11,6 +11,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
+#include <ctype.h>
 #include <complex.h>
 #ifdef complex
 #undef complex
