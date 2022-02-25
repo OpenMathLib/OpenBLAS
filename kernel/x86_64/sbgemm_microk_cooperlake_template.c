@@ -13,6 +13,8 @@
 #define ONE  1.e0f
 #define ZERO  0.e0f
 
+#define SHUFFLE_MAGIC_NO (const int) 0x39
+
 #undef STORE16_COMPLETE_RESULT
 #undef STORE16_MASK_COMPLETE_RESULT
 #undef SBGEMM_BLOCK_KERNEL_NN_32x8xK
@@ -356,7 +358,6 @@ void sbgemm_block_kernel_nn_32xNx32_one(BLASLONG m, BLASLONG n, BLASLONG k, floa
     bfloat16 * B_addr = B;
     float    * C_addr = C;
 
-    int  SHUFFLE_MAGIC_NO = 0x39;
     BLASLONG tag_k_32x = k & (~31);
 
 #ifndef ONE_ALPHA
@@ -465,7 +466,6 @@ void sbgemm_block_kernel_nn_16xNx32_one(BLASLONG m, BLASLONG n, BLASLONG k, floa
     bfloat16 * B_addr = B;
     float    * C_addr = C;
 
-    int  SHUFFLE_MAGIC_NO = 0x39;
     BLASLONG tag_k_32x = k & (~31);
 
 #ifndef ONE_ALPHA
@@ -1192,7 +1192,6 @@ void sbgemm_block_kernel_tn_32xNx32_one(BLASLONG m, BLASLONG n, BLASLONG k, floa
     bfloat16 * B_addr = B;
     float    * C_addr = C;
 
-    int  SHUFFLE_MAGIC_NO = 0x39;
     BLASLONG tag_k_32x = k & (~31);
 
 #ifndef ONE_ALPHA
@@ -1291,7 +1290,6 @@ void sbgemm_block_kernel_tn_16xNx32_one(BLASLONG m, BLASLONG n, BLASLONG k, floa
     bfloat16 * B_addr = B;
     float    * C_addr = C;
 
-    int  SHUFFLE_MAGIC_NO = 0x39;
     BLASLONG tag_k_32x = k & (~31);
 
 #ifndef ONE_ALPHA

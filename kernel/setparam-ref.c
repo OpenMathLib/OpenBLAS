@@ -1824,6 +1824,13 @@ static void init_parameter(void) {
   fprintf(stderr, "L2 = %8d DGEMM_P  .. %d\n", l2, TABLE_NAME.dgemm_p);
 #endif
 
+#if BUILD_BFLOAT16==1
+  TABLE_NAME.sbgemm_r = (((BUFFER_SIZE -
+			       ((TABLE_NAME.sbgemm_p * TABLE_NAME.sbgemm_q *  4 + TABLE_NAME.offsetA
+				 + TABLE_NAME.align) & ~TABLE_NAME.align)
+			       ) / (TABLE_NAME.sbgemm_q *  4) - 15) & ~15);
+#endif
+
 #if BUILD_SINGLE==1
   TABLE_NAME.sgemm_r = (((BUFFER_SIZE -
 			       ((TABLE_NAME.sgemm_p * TABLE_NAME.sgemm_q *  4 + TABLE_NAME.offsetA
