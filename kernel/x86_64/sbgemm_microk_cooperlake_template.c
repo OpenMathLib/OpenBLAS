@@ -356,7 +356,7 @@ void sbgemm_block_kernel_nn_32xNx32_one(BLASLONG m, BLASLONG n, BLASLONG k, floa
     bfloat16 * B_addr = B;
     float    * C_addr = C;
 
-    int  SHUFFLE_MAGIC_NO = 0x39;
+    const int  SHUFFLE_MAGIC_NO = 0x39;
     BLASLONG tag_k_32x = k & (~31);
 
 #ifndef ONE_ALPHA
