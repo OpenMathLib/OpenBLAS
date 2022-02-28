@@ -1,5 +1,5 @@
 #include "common.h"
-#include <riscv-vector.h>
+#include <riscv_vector.h>
 
 #define KERNEL8x4_I \
 	"addi       t1,    %[PB], 1*8  \n\t"\

@@ -35,6 +35,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define VSETVL_MAX vsetvlmax_e64m1()
 #define FLOAT_V_T vfloat64m8_t
 #define FLOAT_V_T_M1 vfloat64m1_t
+#define VFMVFS_FLOAT vfmv_f_s_f64m1_f64
 #define VLSEV_FLOAT vlse_v_f64m8
 #define VFREDMINVS_FLOAT vfredmin_vs_f64m8_f64m1
 #define MASK_T vbool8_t
@@ -47,6 +48,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define VMFLEVF_FLOAT vmfle_vf_f64m8_b8
 #define VMFIRSTM vmfirst_m_b8
 #define UINT_V_T vuint64m8_t
+#define VSEVU_UINT vse64_v_u64m8
+#define UINT_T long unsigned int
 #define VIDV_MASK_UINT vid_v_u64m8_m
 #define VIDV_UINT vid_v_u64m8
 #define VADDVX_MASK_UINT vadd_vx_u64m8_m
@@ -60,6 +63,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define VSETVL_MAX vsetvlmax_e32m1()
 #define FLOAT_V_T vfloat32m8_t
 #define FLOAT_V_T_M1 vfloat32m1_t
+#define VFMVFS_FLOAT vfmv_f_s_f32m1_f32
 #define VLSEV_FLOAT vlse_v_f32m8
 #define VFREDMINVS_FLOAT vfredmin_vs_f32m8_f32m1
 #define MASK_T vbool4_t
@@ -72,6 +76,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define VMFLEVF_FLOAT vmfle_vf_f32m8_b4
 #define VMFIRSTM vmfirst_m_b4
 #define UINT_V_T vuint32m8_t
+#define UINT_T unsigned int
+#define VSEVU_UINT vse32_v_u32m8
 #define VIDV_MASK_UINT vid_v_u32m8_m
 #define VIDV_UINT vid_v_u32m8
 #define VADDVX_MASK_UINT vadd_vx_u32m8_m
@@ -98,6 +104,7 @@ BLASLONG CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x)
         v_max = VFMVVF_FLOAT_M1(FLT_MAX, gvl);
 
         gvl = VSETVL(n);
+		UINT_T temp_uint[gvl];
         v_min_index = VMVVX_UINT(0, gvl);
         v_min = VFMVVF_FLOAT(FLT_MAX, gvl);
         BLASLONG stride_x = inc_x * 2 * sizeof(FLOAT);
@@ -182,10 +189,11 @@ asm volatile(
                 ix += inc_xv;
         }
         v_res = VFREDMINVS_FLOAT(v_res, v_min, v_max, gvl);
-        minf = v_res[0];
+        minf = VFMVFS_FLOAT(v_res);
         mask0 = VMFLEVF_FLOAT(v_min, minf, gvl);
         min_index = VMFIRSTM(mask0,gvl);
-        min_index = v_min_index[min_index];
+                 VSEVU_UINT(temp_uint,v_min_index,gvl);
+        min_index = temp_uint[min_index];
 
         if(j < n){
                 gvl = VSETVL(n-j);
@@ -238,7 +246,7 @@ asm volatile(
 */
                 v_min = VFADDVV_FLOAT(vx0, vx1, gvl);
                 v_res = VFREDMINVS_FLOAT(v_res, v_min, v_max, gvl);
-                FLOAT cur_minf = v_res[0];
+                FLOAT cur_minf = VFMVFS_FLOAT(v_res);
                 if(cur_minf < minf){
                         //tail index
                         v_min_index = VIDV_UINT(gvl);
@@ -246,7 +254,9 @@ asm volatile(
 
                         mask0 = VMFLEVF_FLOAT(v_min, cur_minf, gvl);
                         min_index = VMFIRSTM(mask0,gvl);
-                        min_index = v_min_index[min_index];
+                              VSEVU_UINT(temp_uint,v_min_index,gvl);
+                                       min_index = temp_uint[min_index];
+
                 }
         }
 	return(min_index+1);

@@ -31,9 +31,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define VSETVL_MAX vsetvlmax_e32m1()
 #define FLOAT_V_T vfloat32m8_t
 #define FLOAT_V_T_M1 vfloat32m1_t
+#define VFMVFS_FLOAT vfmv_f_s_f32m1_f32
 #define VLEV_FLOAT vle_v_f32m8
 #define VLSEV_FLOAT vlse_v_f32m8
-#define VFREDSUM_FLOAT vfredsum_vs_f32m8_f32m1
+#define VFREDSUM_FLOAT vfredusum_vs_f32m8_f32m1
 #define VFMACCVV_FLOAT vfmacc_vv_f32m8
 #define VFMVVF_FLOAT vfmv_v_f_f32m8
 #define VFMVVF_FLOAT_M1 vfmv_v_f_f32m1
@@ -44,9 +45,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define VSETVL_MAX vsetvlmax_e64m1()
 #define FLOAT_V_T vfloat64m8_t
 #define FLOAT_V_T_M1 vfloat64m1_t
+#define VFMVFS_FLOAT vfmv_f_s_f64m1_f64
 #define VLEV_FLOAT vle_v_f64m8
 #define VLSEV_FLOAT vlse_v_f64m8
-#define VFREDSUM_FLOAT vfredsum_vs_f64m8_f64m1
+#define VFREDSUM_FLOAT vfredusum_vs_f64m8_f64m1
 #define VFMACCVV_FLOAT vfmacc_vv_f64m8
 #define VFMVVF_FLOAT vfmv_v_f_f64m8
 #define VFMVVF_FLOAT_M1 vfmv_v_f_f64m1
@@ -83,7 +85,7 @@ FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x)
                                 j += gvl;
                         }
                         v_res = VFREDSUM_FLOAT(v_res, vr, v_z0, gvl);
-                        len += v_res[0];
+                        len += VFMVFS_FLOAT(v_res);
                 }
                 //tail
                 for(;j < n;){
@@ -94,7 +96,7 @@ FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x)
                         //vr = VFDOTVV_FLOAT(v0, v0, gvl);
                         vr = VFMACCVV_FLOAT(v1, v0, v0, gvl);
                         v_res = VFREDSUM_FLOAT(v_res, vr, v_z0, gvl);
-                        len += v_res[0];
+                        len += VFMVFS_FLOAT(v_res);
 
                         j += gvl;
                 }
@@ -113,7 +115,7 @@ FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x)
                                 j += gvl;
                         }
                         v_res = VFREDSUM_FLOAT(v_res, vr, v_z0, gvl);
-                        len += v_res[0];
+                        len += VFMVFS_FLOAT(v_res);
                 }
                 //tail
                 for(;j < n;){
@@ -124,7 +126,7 @@ FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x)
                         //vr = VFDOTVV_FLOAT(v0, v0, gvl);
                         vr = VFMACCVV_FLOAT(v1, v0, v0, gvl);
                         v_res = VFREDSUM_FLOAT(v_res, vr, v_z0, gvl);
-                        len += v_res[0];
+                        len += VFMVFS_FLOAT(v_res);
 
                         j += gvl;
                 }

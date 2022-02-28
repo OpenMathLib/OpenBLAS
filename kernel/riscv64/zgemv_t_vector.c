@@ -31,8 +31,9 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define VSETVL_MAX vsetvlmax_e32m1()
 #define FLOAT_V_T vfloat32m4_t
 #define FLOAT_V_T_M1 vfloat32m1_t
+#define VFMVFS_FLOAT vfmv_f_s_f32m1_f32
 #define VLSEV_FLOAT vlse_v_f32m4
-#define VFREDSUM_FLOAT vfredsum_vs_f32m4_f32m1
+#define VFREDSUM_FLOAT vfredusum_vs_f32m4_f32m1
 #define VFMACCVV_FLOAT vfmacc_vv_f32m4
 #define VFNMSACVV_FLOAT vfnmsac_vv_f32m4
 #define VFMVVF_FLOAT vfmv_v_f_f32m4
@@ -43,8 +44,9 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define VSETVL_MAX vsetvlmax_e64m1()
 #define FLOAT_V_T vfloat64m4_t
 #define FLOAT_V_T_M1 vfloat64m1_t
+#define VFMVFS_FLOAT vfmv_f_s_f64m1_f64
 #define VLSEV_FLOAT vlse_v_f64m4
-#define VFREDSUM_FLOAT vfredsum_vs_f64m4_f64m1
+#define VFREDSUM_FLOAT vfredusum_vs_f64m4_f64m1
 #define VFMACCVV_FLOAT vfmacc_vv_f64m4
 #define VFNMSACVV_FLOAT vfnmsac_vv_f64m4
 #define VFMVVF_FLOAT vfmv_v_f_f64m4
@@ -100,9 +102,9 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1, FLOAT alpha_r, FLOAT alpha_i,
                         ix += inc_xv;
                 }
                 v_res = VFREDSUM_FLOAT(v_res, vr, v_z0, gvl);
-                temp_r = v_res[0];
+                temp_r = VFMVFS_FLOAT(v_res);
                 v_res = VFREDSUM_FLOAT(v_res, vi, v_z0, gvl);
-                temp_i = v_res[0];
+                temp_i = VFMVFS_FLOAT(v_res);
                 if(j/2 < m){
                         gvl = VSETVL(m-j/2);
                         va0 = VLSEV_FLOAT(&a_ptr[j], stride_a, gvl);
@@ -122,9 +124,9 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1, FLOAT alpha_r, FLOAT alpha_i,
 
 #endif
                         v_res = VFREDSUM_FLOAT(v_res, vr, v_z0, gvl);
-                        temp_r += v_res[0];
+                        temp_r += VFMVFS_FLOAT(v_res);
                         v_res = VFREDSUM_FLOAT(v_res, vi, v_z0, gvl);
-                        temp_i += v_res[0];
+                        temp_i += VFMVFS_FLOAT(v_res);
                 }
 #if !defined(XCONJ)
                 y[iy]   += alpha_r * temp_r - alpha_i * temp_i;

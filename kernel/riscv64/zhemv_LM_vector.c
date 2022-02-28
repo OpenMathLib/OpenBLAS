@@ -31,9 +31,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define VSETVL_MAX vsetvlmax_e32m1()
 #define FLOAT_V_T vfloat32m4_t
 #define FLOAT_V_T_M1 vfloat32m1_t
+#define VFMVFS_FLOAT vfmv_f_s_f32m1_f32
 #define VLSEV_FLOAT vlse_v_f32m4
 #define VSSEV_FLOAT vsse_v_f32m4
-#define VFREDSUM_FLOAT vfredsum_vs_f32m4_f32m1
+#define VFREDSUM_FLOAT vfredusum_vs_f32m4_f32m1
 #define VFMACCVV_FLOAT vfmacc_vv_f32m4
 #define VFMACCVF_FLOAT vfmacc_vf_f32m4
 #define VFMVVF_FLOAT vfmv_v_f_f32m4
@@ -46,9 +47,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define VSETVL_MAX vsetvlmax_e64m1()
 #define FLOAT_V_T vfloat64m4_t
 #define FLOAT_V_T_M1 vfloat64m1_t
+#define VFMVFS_FLOAT vfmv_f_s_f64m1_f64
 #define VLSEV_FLOAT vlse_v_f64m4
 #define VSSEV_FLOAT vsse_v_f64m4
-#define VFREDSUM_FLOAT vfredsum_vs_f64m4_f64m1
+#define VFREDSUM_FLOAT vfredusum_vs_f64m4_f64m1
 #define VFMACCVV_FLOAT vfmacc_vv_f64m4
 #define VFMACCVF_FLOAT vfmacc_vf_f64m4
 #define VFMVVF_FLOAT vfmv_v_f_f64m4
@@ -142,9 +144,9 @@ int CNAME(BLASLONG m, BLASLONG offset, FLOAT alpha_r, FLOAT alpha_i, FLOAT *a, B
                                 ia += inc_av;
                         }
                         v_res = VFREDSUM_FLOAT(v_res, vr0, v_z0, gvl);
-                        temp_r2 = v_res[0];
+                        temp_r2 = VFMVFS_FLOAT(v_res);
                         v_res = VFREDSUM_FLOAT(v_res, vr1, v_z0, gvl);
-                        temp_i2 = v_res[0];
+                        temp_i2 = VFMVFS_FLOAT(v_res);
                         if(i < m){
 				                gvl = VSETVL(m-i);
                                 va0 = VLSEV_FLOAT(&a_ptr[ia], stride_a, gvl);
@@ -180,9 +182,9 @@ int CNAME(BLASLONG m, BLASLONG offset, FLOAT alpha_r, FLOAT alpha_i, FLOAT *a, B
 #endif
 
                                 v_res = VFREDSUM_FLOAT(v_res, vr0, v_z0, gvl);
-                                temp_r2 += v_res[0];
+                                temp_r2 += VFMVFS_FLOAT(v_res);
                                 v_res = VFREDSUM_FLOAT(v_res, vr1, v_z0, gvl);
-                                temp_i2 += v_res[0];
+                                temp_i2 += VFMVFS_FLOAT(v_res);
                         }
                 }
 		y[jy] += alpha_r * temp_r2 - alpha_i * temp_i2;
