@@ -2,7 +2,7 @@
 
 #if defined(SKYLAKEX)
 #include "srot_microk_skylakex-2.c"
-#elif defined(HASWELL)
+#elif defined(HASWELL) || defined(ZEN)
 #include "srot_microk_haswell-2.c"
 #endif
 
@@ -13,7 +13,7 @@ static void srot_kernel(BLASLONG n, FLOAT *x, FLOAT *y, FLOAT c, FLOAT s)
 {
     BLASLONG i = 0;
     
-#if V_SIMD && (defined(HAVE_FMA3) || V_SIMD > 128)
+#if V_SIMD && !defined(C_PGI) && (defined(HAVE_FMA3) || V_SIMD > 128)
     const int vstep = v_nlanes_f32;
     const int unrollx4 = n & (-vstep * 4);
     const int unrollx = n & -vstep;
@@ -198,7 +198,7 @@ int CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG inc_y, FLOAT 
 #else
 	    int mode = BLAS_SINGLE | BLAS_REAL | BLAS_PTHREAD;
 #endif
-	    blas_level1_thread(mode, n, 0, 0, alpha, x, inc_x, y, inc_y, &dummy_c, 0, (void *)rot_thread_function, nthreads);
+	    blas_level1_thread(mode, n, 0, 0, alpha, x, inc_x, y, inc_y, &dummy_c, 0, (int (*)(void))rot_thread_function, nthreads);
     }
 #else	
     rot_compute(n, x, inc_x, y, inc_y, c, s);

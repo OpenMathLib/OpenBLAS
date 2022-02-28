@@ -3,6 +3,8 @@
 #include <time.h>
 #ifdef __CYGWIN32__
 #include <sys/time.h>
+#elif defined(__APPLE__)
+#include <mach/mach_time.h>
 #endif
 #include "common.h"
 
@@ -74,6 +76,9 @@ static void *huge_malloc(BLASLONG size){
 
 #if defined(__WIN32__) || defined(__WIN64__) || !defined(_POSIX_TIMERS)
   struct timeval start, stop;
+#elif defined(__APPLE__)
+ mach_timebase_info_data_t info;
+ uint64_t start = 0, stop = 0;
 #else
   struct timespec start = { 0, 0 }, stop = { 0, 0 };
 #endif
@@ -82,6 +87,9 @@ double getsec()
 {
 #if defined(__WIN32__) || defined(__WIN64__) || !defined(_POSIX_TIMERS)
     return (double)(stop.tv_sec - start.tv_sec) + (double)((stop.tv_usec - start.tv_usec)) * 1.e-6;
+#elif defined(__APPLE__)
+    mach_timebase_info(&info);
+    return (double)(((stop - start) * info.numer)/info.denom) * 1.e-9;
 #else
     return (double)(stop.tv_sec - start.tv_sec) + (double)((stop.tv_nsec - start.tv_nsec)) * 1.e-9;
 #endif
@@ -90,6 +98,8 @@ double getsec()
 void begin() {
 #if defined(__WIN32__) || defined(__WIN64__) || !defined(_POSIX_TIMERS)
     gettimeofday( &start, (struct timezone *)0);
+#elif defined(__APPLE__)
+    start = clock_gettime_nsec_np(CLOCK_UPTIME_RAW);
 #else
     clock_gettime(CLOCK_REALTIME, &start);
 #endif
@@ -98,6 +108,8 @@ void begin() {
 void end() {
 #if defined(__WIN32__) || defined(__WIN64__) || !defined(_POSIX_TIMERS)
     gettimeofday( &stop, (struct timezone *)0);
+#elif defined(__APPLE__)
+    stop = clock_gettime_nsec_np(CLOCK_UPTIME_RAW);
 #else
     clock_gettime(CLOCK_REALTIME, &stop);
 #endif

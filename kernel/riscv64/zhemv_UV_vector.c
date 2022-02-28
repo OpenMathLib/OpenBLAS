@@ -27,31 +27,35 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "common.h"
 #if !defined(DOUBLE)
-#define RVV_EFLOAT RVV_E32
-#define RVV_M RVV_M4
-#define FLOAT_V_T float32xm4_t
-#define VLSEV_FLOAT vlsev_float32xm4
-#define VSSEV_FLOAT vssev_float32xm4
-#define VFREDSUM_FLOAT vfredsumvs_float32xm4
-#define VFMACCVV_FLOAT vfmaccvv_float32xm4
-#define VFMACCVF_FLOAT vfmaccvf_float32xm4
-#define VFMVVF_FLOAT vfmvvf_float32xm4
-#define VFMULVV_FLOAT vfmulvv_float32xm4
-#define VFNMSACVF_FLOAT vfnmsacvf_float32xm4
-#define VFNMSACVV_FLOAT vfnmsacvv_float32xm4
+#define VSETVL(n) vsetvl_e32m4(n)
+#define VSETVL_MAX vsetvlmax_e32m1()
+#define FLOAT_V_T vfloat32m4_t
+#define FLOAT_V_T_M1 vfloat32m1_t
+#define VLSEV_FLOAT vlse_v_f32m4
+#define VSSEV_FLOAT vsse_v_f32m4
+#define VFREDSUM_FLOAT vfredsum_vs_f32m4_f32m1
+#define VFMACCVV_FLOAT vfmacc_vv_f32m4
+#define VFMACCVF_FLOAT vfmacc_vf_f32m4
+#define VFMVVF_FLOAT vfmv_v_f_f32m4
+#define VFMVVF_FLOAT_M1 vfmv_v_f_f32m1
+#define VFMULVV_FLOAT vfmul_vv_f32m4
+#define VFNMSACVF_FLOAT vfnmsac_vf_f32m4
+#define VFNMSACVV_FLOAT vfnmsac_vv_f32m4
 #else
-#define RVV_EFLOAT RVV_E64
-#define RVV_M RVV_M4
-#define FLOAT_V_T float64xm4_t
-#define VLSEV_FLOAT vlsev_float64xm4
-#define VSSEV_FLOAT vssev_float64xm4
-#define VFREDSUM_FLOAT vfredsumvs_float64xm4
-#define VFMACCVV_FLOAT vfmaccvv_float64xm4
-#define VFMACCVF_FLOAT vfmaccvf_float64xm4
-#define VFMVVF_FLOAT vfmvvf_float64xm4
-#define VFMULVV_FLOAT vfmulvv_float64xm4
-#define VFNMSACVF_FLOAT vfnmsacvf_float64xm4
-#define VFNMSACVV_FLOAT vfnmsacvv_float64xm4
+#define VSETVL(n) vsetvl_e64m4(n)
+#define VSETVL_MAX vsetvlmax_e64m1()
+#define FLOAT_V_T vfloat64m4_t
+#define FLOAT_V_T_M1 vfloat64m1_t
+#define VLSEV_FLOAT vlse_v_f64m4
+#define VSSEV_FLOAT vsse_v_f64m4
+#define VFREDSUM_FLOAT vfredsum_vs_f64m4_f64m1
+#define VFMACCVV_FLOAT vfmacc_vv_f64m4
+#define VFMACCVF_FLOAT vfmacc_vf_f64m4
+#define VFMVVF_FLOAT vfmv_v_f_f64m4
+#define VFMVVF_FLOAT_M1 vfmv_v_f_f64m1
+#define VFMULVV_FLOAT vfmul_vv_f64m4
+#define VFNMSACVF_FLOAT vfnmsac_vf_f64m4
+#define VFNMSACVV_FLOAT vfnmsac_vv_f64m4
 #endif
 
 int CNAME(BLASLONG m, BLASLONG offset, FLOAT alpha_r, FLOAT alpha_i, FLOAT *a, BLASLONG lda, FLOAT *x, BLASLONG incx, FLOAT *y, BLASLONG incy, FLOAT *buffer){
@@ -62,7 +66,10 @@ int CNAME(BLASLONG m, BLASLONG offset, FLOAT alpha_r, FLOAT alpha_i, FLOAT *a, B
         FLOAT temp_r2, temp_i2;
         FLOAT *a_ptr = a;
         unsigned int gvl = 0;
-
+        FLOAT_V_T_M1 v_res, v_z0;
+        gvl = VSETVL_MAX;
+        v_res = VFMVVF_FLOAT_M1(0, gvl);
+        v_z0 = VFMVVF_FLOAT_M1(0, gvl);
 
         FLOAT_V_T va0, va1, vx0, vx1, vy0, vy1, vr0, vr1;
         BLASLONG stride_x, stride_y, stride_a, inc_xv, inc_yv, inc_av, lda2;
@@ -89,7 +96,7 @@ int CNAME(BLASLONG m, BLASLONG offset, FLOAT alpha_r, FLOAT alpha_i, FLOAT *a, B
                 ia = 0;
                 i = 0;
                 if(j > 0){
-                        gvl = vsetvli(j, RVV_EFLOAT, RVV_M);
+                        gvl = VSETVL(j);
                         inc_xv = incx * gvl * 2;
                         inc_yv = incy * gvl * 2;
                         inc_av = gvl * 2;
@@ -133,13 +140,12 @@ int CNAME(BLASLONG m, BLASLONG offset, FLOAT alpha_r, FLOAT alpha_i, FLOAT *a, B
                                 iy += inc_yv;
                                 ia += inc_av;
                         }
-                        va0 = VFMVVF_FLOAT(0, gvl);
-                        vx0 = VFREDSUM_FLOAT(vr0, va0, gvl);
-                        temp_r2 = vx0[0];
-                        vx1 = VFREDSUM_FLOAT(vr1, va0, gvl);
-                        temp_i2 = vx1[0];
+                        v_res = VFREDSUM_FLOAT(v_res, vr0, v_z0, gvl);
+                        temp_r2 = v_res[0];
+                        v_res = VFREDSUM_FLOAT(v_res, vr1, v_z0, gvl);
+                        temp_i2 = v_res[0];
                         if(i < j){
-				gvl = vsetvli(j-i, RVV_EFLOAT, RVV_M);
+				                gvl = VSETVL(j-i);
                                 va0 = VLSEV_FLOAT(&a_ptr[ia], stride_a, gvl);
                                 va1 = VLSEV_FLOAT(&a_ptr[ia+1], stride_a, gvl);
                                 vy0 = VLSEV_FLOAT(&y[iy], stride_y, gvl);
@@ -172,11 +178,10 @@ int CNAME(BLASLONG m, BLASLONG offset, FLOAT alpha_r, FLOAT alpha_i, FLOAT *a, B
                                 vr1 = VFMACCVV_FLOAT(vr1, vx0, va1, gvl);
 #endif
 
-                                va0 = VFMVVF_FLOAT(0, gvl);
-                                vx0 = VFREDSUM_FLOAT(vr0, va0, gvl);
-                                temp_r2 += vx0[0];
-                                vx1 = VFREDSUM_FLOAT(vr1, va0, gvl);
-                                temp_i2 += vx1[0];
+                                v_res = VFREDSUM_FLOAT(v_res, vr0, v_z0, gvl);
+                                temp_r2 += v_res[0];
+                                v_res = VFREDSUM_FLOAT(v_res, vr1, v_z0, gvl);
+                                temp_i2 += v_res[0];
                         }
                 }
                 y[jy] += temp_r1 * a_ptr[ja];

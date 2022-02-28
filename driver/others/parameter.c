@@ -183,7 +183,7 @@ int get_L2_size(void){
     defined(CORE_PRESCOTT) || defined(CORE_CORE2)       || defined(PENRYN) || defined(DUNNINGTON) || \
     defined(CORE_NEHALEM)  || defined(CORE_SANDYBRIDGE) || defined(ATOM)   || defined(GENERIC)    || \
     defined(PILEDRIVER)    || defined(HASWELL)          || defined(STEAMROLLER) || defined(EXCAVATOR) || \
-    defined(ZEN)           || defined(SKYLAKEX)         || defined(COOPERLAKE)
+    defined(ZEN)           || defined(SKYLAKEX)         || defined(COOPERLAKE) || defined(SAPPHIRERAPIDS)
 
   cpuid(0x80000006, &eax, &ebx, &ecx, &edx);
 
@@ -269,7 +269,7 @@ void blas_set_parameter(void){
   int factor;
 #if defined(BULLDOZER) || defined(PILEDRIVER)  || defined(SANDYBRIDGE) || defined(NEHALEM) || \
     defined(HASWELL)   || defined(STEAMROLLER) || defined(EXCAVATOR)   || defined(ZEN)     || \
-    defined(SKYLAKEX)  || defined(COOPERLAKE)
+    defined(SKYLAKEX)  || defined(COOPERLAKE) || defined(SAPPHIRERAPIDS)
   int size = 16;
 #else
   int size = get_L2_size();
@@ -524,6 +524,9 @@ void blas_set_parameter(void){
   xgemm_p = ((xgemm_p + XGEMM_UNROLL_M - 1)/XGEMM_UNROLL_M) * XGEMM_UNROLL_M;
 #endif
 
+#ifdef BUILD_BFLOAT16
+  sbgemm_r = (((BUFFER_SIZE - ((SBGEMM_P * SBGEMM_Q *  4 + GEMM_OFFSET_A + GEMM_ALIGN) & ~GEMM_ALIGN)) / (SBGEMM_Q *  4)) - 15) & ~15;
+#endif
   sgemm_r = (((BUFFER_SIZE - ((SGEMM_P * SGEMM_Q *  4 + GEMM_OFFSET_A + GEMM_ALIGN) & ~GEMM_ALIGN)) / (SGEMM_Q *  4)) - 15) & ~15;
   dgemm_r = (((BUFFER_SIZE - ((DGEMM_P * DGEMM_Q *  8 + GEMM_OFFSET_A + GEMM_ALIGN) & ~GEMM_ALIGN)) / (DGEMM_Q *  8)) - 15) & ~15;
   cgemm_r = (((BUFFER_SIZE - ((CGEMM_P * CGEMM_Q *  8 + GEMM_OFFSET_A + GEMM_ALIGN) & ~GEMM_ALIGN)) / (CGEMM_Q *  8)) - 15) & ~15;
@@ -629,7 +632,9 @@ void blas_set_parameter(void){
   xgemm_p =  16 * (size + 1);
 #endif
 
+#ifdef BUILD_BFLOAT16
   sbgemm_r = (((BUFFER_SIZE - ((SBGEMM_P * SBGEMM_Q *  4 + GEMM_OFFSET_A + GEMM_ALIGN) & ~GEMM_ALIGN)) / (SBGEMM_Q *  4)) - 15) & ~15;
+#endif
   sgemm_r = (((BUFFER_SIZE - ((SGEMM_P * SGEMM_Q *  4 + GEMM_OFFSET_A + GEMM_ALIGN) & ~GEMM_ALIGN)) / (SGEMM_Q *  4)) - 15) & ~15;
   dgemm_r = (((BUFFER_SIZE - ((DGEMM_P * DGEMM_Q *  8 + GEMM_OFFSET_A + GEMM_ALIGN) & ~GEMM_ALIGN)) / (DGEMM_Q *  8)) - 15) & ~15;
   cgemm_r = (((BUFFER_SIZE - ((CGEMM_P * CGEMM_Q *  8 + GEMM_OFFSET_A + GEMM_ALIGN) & ~GEMM_ALIGN)) / (CGEMM_Q *  8)) - 15) & ~15;
@@ -717,7 +722,7 @@ void blas_set_parameter(void){
 
 #if defined(ARCH_MIPS64)
 void blas_set_parameter(void){
-#if defined(LOONGSON3A)
+#if defined(LOONGSON3R3) || defined(LOONGSON3R4)
 #ifdef SMP
   if(blas_num_threads == 1){
 #endif
@@ -727,20 +732,6 @@ void blas_set_parameter(void){
   }else{
     //multi thread
     dgemm_r = 200;
-  }
-#endif
-#endif
-
-#if defined(LOONGSON3B)
-#ifdef SMP
-  if(blas_num_threads == 1 || blas_num_threads == 2){
-#endif
-    //single thread
-    dgemm_r = 640;
-#ifdef SMP
-  }else{
-    //multi thread
-    dgemm_r = 160;
   }
 #endif
 #endif

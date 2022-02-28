@@ -1,10 +1,21 @@
 # COMPILER_PREFIX = mingw32-
 
-ifdef HAVE_SSE
-CCOMMON_OPT += -msse
-FCOMMON_OPT += -msse
+ifneq ($(DYNAMIC_ARCH),1)
+ADD_CPUFLAGS = 1
+else
+ifdef TARGET_CORE
+ADD_CPUFLAGS = 1
+endif
 endif
 
+ifdef ADD_CPUFLAGS
+ifdef HAVE_SSE
+CCOMMON_OPT += -msse
+ifneq ($(F_COMPILER), NAG)
+FCOMMON_OPT += -msse
+endif
+endif
+endif
 
 ifeq ($(OSNAME), Interix)
 ARFLAGS		= -m x86

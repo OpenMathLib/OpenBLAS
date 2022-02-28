@@ -42,13 +42,19 @@
 #include "functable.h"
 #endif
 
+#ifndef CBLAS
 void NAME(blasint *N, FLOAT *x, blasint *INCX, FLOAT *y, blasint *INCY, FLOAT *C, FLOAT *S){
-
   BLASLONG n    = *N;
   BLASLONG incx = *INCX;
   BLASLONG incy = *INCY;
   FLOAT c = *C;
   FLOAT s = *S;
+
+#else
+void CNAME(blasint n, void *VX, blasint incx, void *VY, blasint incy, FLOAT c, FLOAT s) {
+    FLOAT *x = (FLOAT*) VX;
+    FLOAT *y = (FLOAT*) VY;
+#endif /* CBLAS */
 
   PRINT_DEBUG_NAME;
 

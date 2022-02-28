@@ -95,7 +95,14 @@ int NAME(blasint *M, blasint *N, FLOAT *a, blasint *ldA, blasint *ipiv, blasint 
 
 #ifdef SMP
   args.common = NULL;
-  args.nthreads = num_cpu_avail(4);
+#ifndef DOUBLE
+  if (args.m*args.n < 40000)
+#else
+  if (args.m*args.n < 10000)
+#endif
+	args.nthreads=1;
+  else
+	args.nthreads = num_cpu_avail(4);
 
   if (args.nthreads == 1) {
 #endif

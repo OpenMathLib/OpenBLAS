@@ -29,10 +29,6 @@ ifeq ($(ARCH), riscv64)
 USE_TRMM = 1
 endif
 
-ifeq ($(TARGET), LOONGSON3B)
-USE_TRMM = 1
-endif
-
 ifneq ($(DYNAMIC_ARCH), 1)
 ifeq ($(TARGET), GENERIC)
 USE_TRMM = 1
@@ -48,6 +44,10 @@ USE_TRMM = 1
 endif
 
 ifeq ($(CORE), COOPERLAKE)
+USE_TRMM = 1
+endif
+
+ifeq ($(CORE), SAPPHIRERAPIDS)
 USE_TRMM = 1
 endif
 
@@ -451,6 +451,72 @@ XBLASOBJS += \
 
 endif
 
+######  BLAS small matrix optimization #####
+ifeq ($(SMALL_MATRIX_OPT), 1)
+
+ifeq ($(BUILD_BFLOAT16),1)
+SBBLASOBJS += \
+	sbgemm_small_matrix_permit$(TSUFFIX).$(SUFFIX) \
+	sbgemm_small_kernel_nn$(TSUFFIX).$(SUFFIX) sbgemm_small_kernel_nt$(TSUFFIX).$(SUFFIX) \
+	sbgemm_small_kernel_tn$(TSUFFIX).$(SUFFIX) sbgemm_small_kernel_tt$(TSUFFIX).$(SUFFIX) \
+	sbgemm_small_kernel_b0_nn$(TSUFFIX).$(SUFFIX) sbgemm_small_kernel_b0_nt$(TSUFFIX).$(SUFFIX) \
+	sbgemm_small_kernel_b0_tn$(TSUFFIX).$(SUFFIX) sbgemm_small_kernel_b0_tt$(TSUFFIX).$(SUFFIX)
+endif
+
+SBLASOBJS += \
+	sgemm_small_matrix_permit$(TSUFFIX).$(SUFFIX) \
+	sgemm_small_kernel_nn$(TSUFFIX).$(SUFFIX) sgemm_small_kernel_nt$(TSUFFIX).$(SUFFIX) \
+	sgemm_small_kernel_tn$(TSUFFIX).$(SUFFIX) sgemm_small_kernel_tt$(TSUFFIX).$(SUFFIX) \
+	sgemm_small_kernel_b0_nn$(TSUFFIX).$(SUFFIX) sgemm_small_kernel_b0_nt$(TSUFFIX).$(SUFFIX) \
+	sgemm_small_kernel_b0_tn$(TSUFFIX).$(SUFFIX) sgemm_small_kernel_b0_tt$(TSUFFIX).$(SUFFIX)
+
+DBLASOBJS += \
+	dgemm_small_matrix_permit$(TSUFFIX).$(SUFFIX) \
+	dgemm_small_kernel_nn$(TSUFFIX).$(SUFFIX) dgemm_small_kernel_nt$(TSUFFIX).$(SUFFIX) \
+	dgemm_small_kernel_tn$(TSUFFIX).$(SUFFIX) dgemm_small_kernel_tt$(TSUFFIX).$(SUFFIX) \
+	dgemm_small_kernel_b0_nn$(TSUFFIX).$(SUFFIX) dgemm_small_kernel_b0_nt$(TSUFFIX).$(SUFFIX) \
+	dgemm_small_kernel_b0_tn$(TSUFFIX).$(SUFFIX) dgemm_small_kernel_b0_tt$(TSUFFIX).$(SUFFIX)
+
+CBLASOBJS += \
+	cgemm_small_matrix_permit$(TSUFFIX).$(SUFFIX) \
+	cgemm_small_kernel_nn$(TSUFFIX).$(SUFFIX) cgemm_small_kernel_nt$(TSUFFIX).$(SUFFIX) \
+	cgemm_small_kernel_nr$(TSUFFIX).$(SUFFIX) cgemm_small_kernel_nc$(TSUFFIX).$(SUFFIX) \
+	cgemm_small_kernel_tn$(TSUFFIX).$(SUFFIX) cgemm_small_kernel_tt$(TSUFFIX).$(SUFFIX) \
+	cgemm_small_kernel_tr$(TSUFFIX).$(SUFFIX) cgemm_small_kernel_tc$(TSUFFIX).$(SUFFIX) \
+	cgemm_small_kernel_rn$(TSUFFIX).$(SUFFIX) cgemm_small_kernel_rt$(TSUFFIX).$(SUFFIX) \
+	cgemm_small_kernel_rr$(TSUFFIX).$(SUFFIX) cgemm_small_kernel_rc$(TSUFFIX).$(SUFFIX) \
+	cgemm_small_kernel_cn$(TSUFFIX).$(SUFFIX) cgemm_small_kernel_ct$(TSUFFIX).$(SUFFIX) \
+	cgemm_small_kernel_cr$(TSUFFIX).$(SUFFIX) cgemm_small_kernel_cc$(TSUFFIX).$(SUFFIX) \
+	cgemm_small_kernel_b0_nn$(TSUFFIX).$(SUFFIX) cgemm_small_kernel_b0_nt$(TSUFFIX).$(SUFFIX) \
+	cgemm_small_kernel_b0_nr$(TSUFFIX).$(SUFFIX) cgemm_small_kernel_b0_nc$(TSUFFIX).$(SUFFIX) \
+	cgemm_small_kernel_b0_tn$(TSUFFIX).$(SUFFIX) cgemm_small_kernel_b0_tt$(TSUFFIX).$(SUFFIX) \
+	cgemm_small_kernel_b0_tr$(TSUFFIX).$(SUFFIX) cgemm_small_kernel_b0_tc$(TSUFFIX).$(SUFFIX) \
+	cgemm_small_kernel_b0_rn$(TSUFFIX).$(SUFFIX) cgemm_small_kernel_b0_rt$(TSUFFIX).$(SUFFIX) \
+	cgemm_small_kernel_b0_rr$(TSUFFIX).$(SUFFIX) cgemm_small_kernel_b0_rc$(TSUFFIX).$(SUFFIX) \
+	cgemm_small_kernel_b0_cn$(TSUFFIX).$(SUFFIX) cgemm_small_kernel_b0_ct$(TSUFFIX).$(SUFFIX) \
+	cgemm_small_kernel_b0_cr$(TSUFFIX).$(SUFFIX) cgemm_small_kernel_b0_cc$(TSUFFIX).$(SUFFIX)
+
+ZBLASOBJS += \
+	zgemm_small_matrix_permit$(TSUFFIX).$(SUFFIX) \
+	zgemm_small_kernel_nn$(TSUFFIX).$(SUFFIX) zgemm_small_kernel_nt$(TSUFFIX).$(SUFFIX) \
+	zgemm_small_kernel_nr$(TSUFFIX).$(SUFFIX) zgemm_small_kernel_nc$(TSUFFIX).$(SUFFIX) \
+	zgemm_small_kernel_tn$(TSUFFIX).$(SUFFIX) zgemm_small_kernel_tt$(TSUFFIX).$(SUFFIX) \
+	zgemm_small_kernel_tr$(TSUFFIX).$(SUFFIX) zgemm_small_kernel_tc$(TSUFFIX).$(SUFFIX) \
+	zgemm_small_kernel_rn$(TSUFFIX).$(SUFFIX) zgemm_small_kernel_rt$(TSUFFIX).$(SUFFIX) \
+	zgemm_small_kernel_rr$(TSUFFIX).$(SUFFIX) zgemm_small_kernel_rc$(TSUFFIX).$(SUFFIX) \
+	zgemm_small_kernel_cn$(TSUFFIX).$(SUFFIX) zgemm_small_kernel_ct$(TSUFFIX).$(SUFFIX) \
+	zgemm_small_kernel_cr$(TSUFFIX).$(SUFFIX) zgemm_small_kernel_cc$(TSUFFIX).$(SUFFIX) \
+	zgemm_small_kernel_b0_nn$(TSUFFIX).$(SUFFIX) zgemm_small_kernel_b0_nt$(TSUFFIX).$(SUFFIX) \
+	zgemm_small_kernel_b0_nr$(TSUFFIX).$(SUFFIX) zgemm_small_kernel_b0_nc$(TSUFFIX).$(SUFFIX) \
+	zgemm_small_kernel_b0_tn$(TSUFFIX).$(SUFFIX) zgemm_small_kernel_b0_tt$(TSUFFIX).$(SUFFIX) \
+	zgemm_small_kernel_b0_tr$(TSUFFIX).$(SUFFIX) zgemm_small_kernel_b0_tc$(TSUFFIX).$(SUFFIX) \
+	zgemm_small_kernel_b0_rn$(TSUFFIX).$(SUFFIX) zgemm_small_kernel_b0_rt$(TSUFFIX).$(SUFFIX) \
+	zgemm_small_kernel_b0_rr$(TSUFFIX).$(SUFFIX) zgemm_small_kernel_b0_rc$(TSUFFIX).$(SUFFIX) \
+	zgemm_small_kernel_b0_cn$(TSUFFIX).$(SUFFIX) zgemm_small_kernel_b0_ct$(TSUFFIX).$(SUFFIX) \
+	zgemm_small_kernel_b0_cr$(TSUFFIX).$(SUFFIX) zgemm_small_kernel_b0_cc$(TSUFFIX).$(SUFFIX)
+
+endif
+
 ######  BLAS extensions #####
 
 ifeq ($(BUILD_SINGLE),1)
@@ -550,6 +616,10 @@ $(KDIR)zgemm_beta$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(ZGEMM_BETA)
 
 $(KDIR)xgemm_beta$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(XGEMM_BETA)
 	$(CC) $(CFLAGS) -c -DXDOUBLE -DCOMPLEX $< -o $@
+
+ifeq ($(ARCH), E2K)
+USE_TRMM = 1
+endif
 
 
 ifeq ($(BUILD_BFLOAT16), 1)
@@ -822,6 +892,8 @@ ifeq ($(OS), AIX)
 	m4 zgemm_kernel_n.s > zgemm_kernel_n_nomacros.s
 	$(CC) $(CFLAGS) -c -DDOUBLE -DCOMPLEX -DNN zgemm_kernel_n_nomacros.s -o $@
 	rm zgemm_kernel_n.s zgemm_kernel_n_nomacros.s
+else ifeq ($(CORE),SANDYBRIDGE)
+	$(CC) $(filter-out -mavx,$(CFLAGS)) -c -DDOUBLE -DCOMPLEX -DNN $< -o $@
 else
 	$(CC) $(CFLAGS) -c -DDOUBLE -DCOMPLEX -DNN $< -o $@
 endif
@@ -832,6 +904,8 @@ ifeq ($(OS), AIX)
 	m4 zgemm_kernel_l.s > zgemm_kernel_l_nomacros.s
 	$(CC) $(CFLAGS) -c -DDOUBLE -DCOMPLEX -DCN zgemm_kernel_l_nomacros.s -o $@
 	rm zgemm_kernel_l.s zgemm_kernel_l_nomacros.s
+else ifeq ($(CORE),SANDYBRIDGE)
+	$(CC) $(filter-out -mavx,$(CFLAGS)) -c -DDOUBLE -DCOMPLEX -DCN $< -o $@
 else
 	$(CC) $(CFLAGS) -c -DDOUBLE -DCOMPLEX -DCN $< -o $@
 endif
@@ -842,6 +916,8 @@ ifeq ($(OS), AIX)
 	m4 zgemm_kernel_r.s > zgemm_kernel_r_nomacros.s
 	$(CC) $(CFLAGS) -c -DDOUBLE -DCOMPLEX -DNC zgemm_kernel_r_nomacros.s -o $@
 	rm zgemm_kernel_r.s zgemm_kernel_r_nomacros.s
+else ifeq ($(CORE),SANDYBRIDGE)
+	$(CC) $(filter-out -mavx,$(CFLAGS)) -c -DDOUBLE -DCOMPLEX -DNC $< -o $@
 else
 	$(CC) $(CFLAGS) -c -DDOUBLE -DCOMPLEX -DNC $< -o $@
 endif
@@ -852,6 +928,8 @@ ifeq ($(OS), AIX)
 	m4 zgemm_kernel_b.s > zgemm_kernel_b_nomacros.s
 	$(CC) $(CFLAGS) -c -DDOUBLE -DCOMPLEX -DCC zgemm_kernel_b_nomacros.s -o $@
 	rm zgemm_kernel_b.s zgemm_kernel_b_nomacros.s
+else ifeq ($(CORE),SANDYBRIDGE)
+	$(CC) $(filter-out -mavx,$(CFLAGS)) -c -DDOUBLE -DCOMPLEX -DCC $< -o $@
 else
 	$(CC) $(CFLAGS) -c -DDOUBLE -DCOMPLEX -DCC $< -o $@
 endif
@@ -1048,6 +1126,8 @@ ifeq ($(OS), AIX)
 	m4 ztrmm_kernel_ln.s > ztrmm_kernel_ln_nomacros.s
 	$(CC) $(CFLAGS) -c -DTRMMKERNEL -DDOUBLE -DCOMPLEX -DLEFT -UTRANSA -UCONJ -DNN ztrmm_kernel_ln_nomacros.s -o $@
 	rm ztrmm_kernel_ln.s ztrmm_kernel_ln_nomacros.s
+else ifeq ($(CORE), SANDYBRIDGE)
+	$(CC) $(filter-out -mavx,$(CFLAGS)) -c -DTRMMKERNEL -DDOUBLE -DCOMPLEX -DLEFT -UTRANSA -UCONJ -DNN $< -o $@
 else
 	$(CC) $(CFLAGS) -c -DTRMMKERNEL -DDOUBLE -DCOMPLEX -DLEFT -UTRANSA -UCONJ -DNN $< -o $@
 endif
@@ -1058,6 +1138,8 @@ ifeq ($(OS), AIX)
 	m4 ztrmm_kernel_lt.s > ztrmm_kernel_lt_nomacros.s
 	$(CC) $(CFLAGS) -c -DTRMMKERNEL -DDOUBLE -DCOMPLEX -DLEFT -DTRANSA -UCONJ -DNN ztrmm_kernel_lt_nomacros.s -o $@
 	rm ztrmm_kernel_lt.s ztrmm_kernel_lt_nomacros.s
+else ifeq ($(CORE), SANDYBRIDGE)
+	$(CC) $(filter-out -mavx,$(CFLAGS)) -c -DTRMMKERNEL -DDOUBLE -DCOMPLEX -DLEFT -DTRANSA -UCONJ -DNN $< -o $@
 else
 	$(CC) $(CFLAGS) -c -DTRMMKERNEL -DDOUBLE -DCOMPLEX -DLEFT -DTRANSA -UCONJ -DNN $< -o $@
 endif
@@ -1068,6 +1150,8 @@ ifeq ($(OS), AIX)
 	m4 ztrmm_kernel_lr.s > ztrmm_kernel_lr_nomacros.s
 	$(CC) $(CFLAGS) -c -DTRMMKERNEL -DDOUBLE -DCOMPLEX -DLEFT -UTRANSA -DCONJ -DCN ztrmm_kernel_lr_nomacros.s -o $@
 	rm ztrmm_kernel_lr.s ztrmm_kernel_lr_nomacros.s
+else ifeq ($(CORE), SANDYBRIDGE)
+	$(CC) $(filter-out -mavx,$(CFLAGS)) -c -DTRMMKERNEL -DDOUBLE -DCOMPLEX -DLEFT -UTRANSA -DCONJ -DCN $< -o $@
 else
 	$(CC) $(CFLAGS) -c -DTRMMKERNEL -DDOUBLE -DCOMPLEX -DLEFT -UTRANSA -DCONJ -DCN $< -o $@
 endif
@@ -1078,6 +1162,8 @@ ifeq ($(OS), AIX)
 	m4 ztrmm_kernel_lc.s >ztrmm_kernel_lc_nomacros.s
 	$(CC) $(CFLAGS) -c -DTRMMKERNEL -DDOUBLE -DCOMPLEX -DLEFT -DTRANSA -DCONJ -DCN ztrmm_kernel_lc_nomacros.s -o $@
 	rm ztrmm_kernel_lc.s ztrmm_kernel_lc_nomacros.s 
+else ifeq ($(CORE), SANDYBRIDGE)
+	$(CC) $(filter-out -mavx,$(CFLAGS)) -c -DTRMMKERNEL -DDOUBLE -DCOMPLEX -DLEFT -DTRANSA -DCONJ -DCN $< -o $@
 else
 	$(CC) $(CFLAGS) -c -DTRMMKERNEL -DDOUBLE -DCOMPLEX -DLEFT -DTRANSA -DCONJ -DCN $< -o $@
 endif
@@ -1088,6 +1174,8 @@ ifeq ($(OS), AIX)
 	m4 ztrmm_kernel_rn.s > ztrmm_kernel_rn_nomacros.s
 	$(CC) $(CFLAGS) -c -DTRMMKERNEL -DDOUBLE -DCOMPLEX -ULEFT -UTRANSA -UCONJ -DNN ztrmm_kernel_rn_nomacros.s -o $@
 	rm ztrmm_kernel_rn.s ztrmm_kernel_rn_nomacros.s
+else ifeq ($(CORE), SANDYBRIDGE)
+	$(CC) $(filter-out -mavx,$(CFLAGS)) -c -DTRMMKERNEL -DDOUBLE -DCOMPLEX -ULEFT -UTRANSA -UCONJ -DNN $< -o $@
 else
 	$(CC) $(CFLAGS) -c -DTRMMKERNEL -DDOUBLE -DCOMPLEX -ULEFT -UTRANSA -UCONJ -DNN $< -o $@
 endif
@@ -1098,6 +1186,8 @@ ifeq ($(OS), AIX)
 	m4 ztrmm_kernel_rt.s > ztrmm_kernel_rt_nomacros.s
 	$(CC) $(CFLAGS) -c -DTRMMKERNEL -DDOUBLE -DCOMPLEX -ULEFT -DTRANSA -UCONJ -DNN ztrmm_kernel_rt_nomacros.s -o $@
 	rm ztrmm_kernel_rt.s ztrmm_kernel_rt_nomacros.s
+else ifeq ($(CORE), SANDYBRIDGE)
+	$(CC) $(filter-out -mavx,$(CFLAGS)) -c -DTRMMKERNEL -DDOUBLE -DCOMPLEX -ULEFT -DTRANSA -UCONJ -DNN $< -o $@
 else
 	$(CC) $(CFLAGS) -c -DTRMMKERNEL -DDOUBLE -DCOMPLEX -ULEFT -DTRANSA -UCONJ -DNN $< -o $@
 endif
@@ -1108,6 +1198,8 @@ ifeq ($(OS), AIX)
 	m4 ztrmm_kernel_rr.s > ztrmm_kernel_rr_nomacros.s
 	$(CC) $(CFLAGS) -c -DTRMMKERNEL -DDOUBLE -DCOMPLEX -ULEFT -UTRANSA -DCONJ -DNC ztrmm_kernel_rr_nomacros.s -o $@
 	rm ztrmm_kernel_rr.s ztrmm_kernel_rr_nomacros.s
+else ifeq ($(CORE), SANDYBRIDGE)
+	$(CC) $(filter-out -mavx,$(CFLAGS)) -c -DTRMMKERNEL -DDOUBLE -DCOMPLEX -ULEFT -UTRANSA -DCONJ -DNC $< -o $@
 else
 	$(CC) $(CFLAGS) -c -DTRMMKERNEL -DDOUBLE -DCOMPLEX -ULEFT -UTRANSA -DCONJ -DNC $< -o $@
 endif
@@ -1118,6 +1210,8 @@ ifeq ($(OS), AIX)
 	m4 ztrmm_kernel_rc.s > ztrmm_kernel_rc_nomacros.s
 	$(CC) $(CFLAGS) -c -DTRMMKERNEL -DDOUBLE -DCOMPLEX -ULEFT -DTRANSA -DCONJ -DNC ztrmm_kernel_rc_nomacros.s -o $@
 	rm ztrmm_kernel_rc.s ztrmm_kernel_rc_nomacros.s
+else ifeq ($(CORE), SANDYBRIDGE)
+	$(CC) $(filter-out -mavx,$(CFLAGS)) -c -DTRMMKERNEL -DDOUBLE -DCOMPLEX -ULEFT -DTRANSA -DCONJ -DNC $< -o $@
 else
 	$(CC) $(CFLAGS) -c -DTRMMKERNEL -DDOUBLE -DCOMPLEX -ULEFT -DTRANSA -DCONJ -DNC $< -o $@
 endif
@@ -1191,28 +1285,54 @@ $(KDIR)ctrmm_kernel_RC$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(CGEMMKERNEL)
 	$(CC) $(CFLAGS) -c -DTRMMKERNEL -UDOUBLE -DCOMPLEX -ULEFT -DTRANSA -DCONJ -DNC $< -o $@
 
 $(KDIR)ztrmm_kernel_LN$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(ZGEMMKERNEL)
+ifeq ($(CORE),SANDYBRIDGE)
+	$(CC) $(filter-out -mavx,$(CFLAGS)) -c -DTRMMKERNEL -DDOUBLE -DCOMPLEX -DLEFT -UTRANSA -UCONJ -DNN $< -o $@
+else
 	$(CC) $(CFLAGS) -c -DTRMMKERNEL -DDOUBLE -DCOMPLEX -DLEFT -UTRANSA -UCONJ -DNN $< -o $@
+endif
 
 $(KDIR)ztrmm_kernel_LT$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(ZGEMMKERNEL)
+ifeq ($(CORE),SANDYBRIDGE)
+	$(CC) $(filter-out -mavx,$(CFLAGS)) -c -DTRMMKERNEL -DDOUBLE -DCOMPLEX -DLEFT -DTRANSA -UCONJ -DNN $< -o $@
+else
 	$(CC) $(CFLAGS) -c -DTRMMKERNEL -DDOUBLE -DCOMPLEX -DLEFT -DTRANSA -UCONJ -DNN $< -o $@
-
+endif
 $(KDIR)ztrmm_kernel_LR$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(ZGEMMKERNEL)
+ifeq ($(CORE),SANDYBRIDGE)
+	$(CC) $(filter-out -mavx,$(CFLAGS)) -c -DTRMMKERNEL -DDOUBLE -DCOMPLEX -DLEFT -UTRANSA -DCONJ -DCN $< -o $@
+else
 	$(CC) $(CFLAGS) -c -DTRMMKERNEL -DDOUBLE -DCOMPLEX -DLEFT -UTRANSA -DCONJ -DCN $< -o $@
-
+endif
 $(KDIR)ztrmm_kernel_LC$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(ZGEMMKERNEL)
+ifeq ($(CORE),SANDYBRIDGE)
+	$(CC) $(filter-out -mavx,$(CFLAGS)) -c -DTRMMKERNEL -DDOUBLE -DCOMPLEX -DLEFT -DTRANSA -DCONJ -DCN $< -o $@
+else
 	$(CC) $(CFLAGS) -c -DTRMMKERNEL -DDOUBLE -DCOMPLEX -DLEFT -DTRANSA -DCONJ -DCN $< -o $@
-
+endif
 $(KDIR)ztrmm_kernel_RN$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(ZGEMMKERNEL)
+ifeq ($(CORE),SANDYBRIDGE)
+	$(CC) $(filter-out -mavx,$(CFLAGS)) -c -DTRMMKERNEL -DDOUBLE -DCOMPLEX -ULEFT -UTRANSA -UCONJ -DNN $< -o $@
+else
 	$(CC) $(CFLAGS) -c -DTRMMKERNEL -DDOUBLE -DCOMPLEX -ULEFT -UTRANSA -UCONJ -DNN $< -o $@
-
+endif
 $(KDIR)ztrmm_kernel_RT$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(ZGEMMKERNEL)
+ifeq ($(CORE),SANDYBRIDGE)
+	$(CC) $(filter-out -mavx,$(CFLAGS)) -c -DTRMMKERNEL -DDOUBLE -DCOMPLEX -ULEFT -DTRANSA -UCONJ -DNN $< -o $@
+else
 	$(CC) $(CFLAGS) -c -DTRMMKERNEL -DDOUBLE -DCOMPLEX -ULEFT -DTRANSA -UCONJ -DNN $< -o $@
-
+endif
 $(KDIR)ztrmm_kernel_RR$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(ZGEMMKERNEL)
+ifeq ($(CORE),SANDYBRIDGE)
+	$(CC) $(filter-out -mavx,$(CFLAGS)) -c -DTRMMKERNEL -DDOUBLE -DCOMPLEX -ULEFT -UTRANSA -DCONJ -DNC $< -o $@
+else
 	$(CC) $(CFLAGS) -c -DTRMMKERNEL -DDOUBLE -DCOMPLEX -ULEFT -UTRANSA -DCONJ -DNC $< -o $@
-
+endif
 $(KDIR)ztrmm_kernel_RC$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(ZGEMMKERNEL)
+ifeq ($(CORE),SANDYBRIDGE)
+	$(CC) $(filter-out -mavx,$(CFLAGS)) -c -DTRMMKERNEL -DDOUBLE -DCOMPLEX -ULEFT -DTRANSA -DCONJ -DNC $< -o $@
+else
 	$(CC) $(CFLAGS) -c -DTRMMKERNEL -DDOUBLE -DCOMPLEX -ULEFT -DTRANSA -DCONJ -DNC $< -o $@
+endif
 endif
 
 
@@ -1367,29 +1487,61 @@ $(KDIR)xtrsm_kernel_RC$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(XTRSMKERNEL_RT) $(XT
 	$(CC) -c $(CFLAGS) -DTRSMKERNEL -DCOMPLEX -DXDOUBLE -UUPPER -DRT -DCONJ $< -o $@
 
 
+ifdef STRMMUNCOPY_M
+$(KDIR)strmm_iunucopy$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(STRMMUNCOPY_M)
+	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -UDOUBLE -UCOMPLEX -UOUTER -ULOWER -DUNIT $< -o $@
+
+$(KDIR)strmm_iunncopy$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(STRMMUNCOPY_M)
+	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -UDOUBLE -UCOMPLEX -UOUTER -ULOWER -UUNIT $< -o $@
+else
 $(KDIR)strmm_iunucopy$(TSUFFIX).$(SUFFIX) : generic/trmm_uncopy_$(SGEMM_UNROLL_M).c
 	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -UDOUBLE -UCOMPLEX -UOUTER -ULOWER -DUNIT $< -o $@
 
 $(KDIR)strmm_iunncopy$(TSUFFIX).$(SUFFIX) : generic/trmm_uncopy_$(SGEMM_UNROLL_M).c
 	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -UDOUBLE -UCOMPLEX -UOUTER -ULOWER -UUNIT $< -o $@
+endif
 
+ifdef STRMMLNCOPY_M
+$(KDIR)strmm_ilnucopy$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(STRMMLNCOPY_M)
+	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -UDOUBLE -UCOMPLEX -UOUTER -DLOWER -DUNIT $< -o $@
+
+$(KDIR)strmm_ilnncopy$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(STRMMLNCOPY_M)
+	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -UDOUBLE -UCOMPLEX -UOUTER -DLOWER -UUNIT $< -o $@
+else
 $(KDIR)strmm_ilnucopy$(TSUFFIX).$(SUFFIX) : generic/trmm_lncopy_$(SGEMM_UNROLL_M).c
 	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -UDOUBLE -UCOMPLEX -UOUTER -DLOWER -DUNIT $< -o $@
 
 $(KDIR)strmm_ilnncopy$(TSUFFIX).$(SUFFIX) : generic/trmm_lncopy_$(SGEMM_UNROLL_M).c
 	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -UDOUBLE -UCOMPLEX -UOUTER -DLOWER -UUNIT $< -o $@
+endif
 
+ifdef STRMMUTCOPY_M
+$(KDIR)strmm_iutucopy$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(STRMMUTCOPY_M)
+	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -UDOUBLE -UCOMPLEX -UOUTER -ULOWER -DUNIT $< -o $@
+
+$(KDIR)strmm_iutncopy$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(STRMMUTCOPY_M)
+	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -UDOUBLE -UCOMPLEX -UOUTER -ULOWER -UUNIT $< -o $@
+else
 $(KDIR)strmm_iutucopy$(TSUFFIX).$(SUFFIX) : generic/trmm_utcopy_$(SGEMM_UNROLL_M).c
 	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -UDOUBLE -UCOMPLEX -UOUTER -ULOWER -DUNIT $< -o $@
 
 $(KDIR)strmm_iutncopy$(TSUFFIX).$(SUFFIX) : generic/trmm_utcopy_$(SGEMM_UNROLL_M).c
 	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -UDOUBLE -UCOMPLEX -UOUTER -ULOWER -UUNIT $< -o $@
+endif
 
+ifdef STRMMLTCOPY_M
+$(KDIR)strmm_iltucopy$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(STRMMLTCOPY_M)
+	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -UDOUBLE -UCOMPLEX -UOUTER -DLOWER -DUNIT $< -o $@
+
+$(KDIR)strmm_iltncopy$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(STRMMLTCOPY_M)
+	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -UDOUBLE -UCOMPLEX -UOUTER -DLOWER -UUNIT $< -o $@
+else
 $(KDIR)strmm_iltucopy$(TSUFFIX).$(SUFFIX) : generic/trmm_ltcopy_$(SGEMM_UNROLL_M).c
 	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -UDOUBLE -UCOMPLEX -UOUTER -DLOWER -DUNIT $< -o $@
 
 $(KDIR)strmm_iltncopy$(TSUFFIX).$(SUFFIX) : generic/trmm_ltcopy_$(SGEMM_UNROLL_M).c
 	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -UDOUBLE -UCOMPLEX -UOUTER -DLOWER -UUNIT $< -o $@
+endif
 
 $(KDIR)strmm_ounucopy$(TSUFFIX).$(SUFFIX) : generic/trmm_uncopy_$(SGEMM_UNROLL_N).c
 	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -UDOUBLE -UCOMPLEX -DOUTER -ULOWER -DUNIT $< -o $@
@@ -1415,29 +1567,61 @@ $(KDIR)strmm_oltucopy$(TSUFFIX).$(SUFFIX) : generic/trmm_ltcopy_$(SGEMM_UNROLL_N
 $(KDIR)strmm_oltncopy$(TSUFFIX).$(SUFFIX) : generic/trmm_ltcopy_$(SGEMM_UNROLL_N).c
 	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -UDOUBLE -UCOMPLEX -DOUTER -DLOWER -UUNIT $< -o $@
 
+ifdef DTRMMUNCOPY_M
+$(KDIR)dtrmm_iunucopy$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(DTRMMUNCOPY_M)
+	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -DDOUBLE -UCOMPLEX -UOUTER -ULOWER -DUNIT $< -o $@
+
+$(KDIR)dtrmm_iunncopy$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(DTRMMUNCOPY_M)
+	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -DDOUBLE -UCOMPLEX -UOUTER -ULOWER -UUNIT $< -o $@
+else
 $(KDIR)dtrmm_iunucopy$(TSUFFIX).$(SUFFIX) : generic/trmm_uncopy_$(DGEMM_UNROLL_M).c
 	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -DDOUBLE -UCOMPLEX -UOUTER -ULOWER -DUNIT $< -o $@
 
 $(KDIR)dtrmm_iunncopy$(TSUFFIX).$(SUFFIX) : generic/trmm_uncopy_$(DGEMM_UNROLL_M).c
 	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -DDOUBLE -UCOMPLEX -UOUTER -ULOWER -UUNIT $< -o $@
+endif
 
+ifdef DTRMMLNCOPY_M
+$(KDIR)dtrmm_ilnucopy$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(DTRMMLNCOPY_M)
+	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -DDOUBLE -UCOMPLEX -UOUTER -DLOWER -DUNIT $< -o $@
+
+$(KDIR)dtrmm_ilnncopy$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(DTRMMLNCOPY_M)
+	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -DDOUBLE -UCOMPLEX -UOUTER -DLOWER -UUNIT $< -o $@
+else
 $(KDIR)dtrmm_ilnucopy$(TSUFFIX).$(SUFFIX) : generic/trmm_lncopy_$(DGEMM_UNROLL_M).c
 	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -DDOUBLE -UCOMPLEX -UOUTER -DLOWER -DUNIT $< -o $@
 
 $(KDIR)dtrmm_ilnncopy$(TSUFFIX).$(SUFFIX) : generic/trmm_lncopy_$(DGEMM_UNROLL_M).c
 	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -DDOUBLE -UCOMPLEX -UOUTER -DLOWER -UUNIT $< -o $@
+endif
 
+ifdef DTRMMUTCOPY_M
+$(KDIR)dtrmm_iutucopy$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(DTRMMUTCOPY_M)
+	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -DDOUBLE -UCOMPLEX -UOUTER -ULOWER -DUNIT $< -o $@
+
+$(KDIR)dtrmm_iutncopy$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(DTRMMUTCOPY_M)
+	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -DDOUBLE -UCOMPLEX -UOUTER -ULOWER -UUNIT $< -o $@
+else
 $(KDIR)dtrmm_iutucopy$(TSUFFIX).$(SUFFIX) : generic/trmm_utcopy_$(DGEMM_UNROLL_M).c
 	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -DDOUBLE -UCOMPLEX -UOUTER -ULOWER -DUNIT $< -o $@
 
 $(KDIR)dtrmm_iutncopy$(TSUFFIX).$(SUFFIX) : generic/trmm_utcopy_$(DGEMM_UNROLL_M).c
 	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -DDOUBLE -UCOMPLEX -UOUTER -ULOWER -UUNIT $< -o $@
+endif
 
+ifdef DTRMMLTCOPY_M
+$(KDIR)dtrmm_iltucopy$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(DTRMMLTCOPY_M)
+	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -DDOUBLE -UCOMPLEX -UOUTER -DLOWER -DUNIT $< -o $@
+
+$(KDIR)dtrmm_iltncopy$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(DTRMMLTCOPY_M)
+	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -DDOUBLE -UCOMPLEX -UOUTER -DLOWER -UUNIT $< -o $@
+else
 $(KDIR)dtrmm_iltucopy$(TSUFFIX).$(SUFFIX) : generic/trmm_ltcopy_$(DGEMM_UNROLL_M).c
 	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -DDOUBLE -UCOMPLEX -UOUTER -DLOWER -DUNIT $< -o $@
 
 $(KDIR)dtrmm_iltncopy$(TSUFFIX).$(SUFFIX) : generic/trmm_ltcopy_$(DGEMM_UNROLL_M).c
 	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -DDOUBLE -UCOMPLEX -UOUTER -DLOWER -UUNIT $< -o $@
+endif
 
 $(KDIR)dtrmm_ounucopy$(TSUFFIX).$(SUFFIX) : generic/trmm_uncopy_$(DGEMM_UNROLL_N).c
 	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -DDOUBLE -UCOMPLEX -DOUTER -ULOWER -DUNIT $< -o $@
@@ -1511,29 +1695,61 @@ $(KDIR)qtrmm_oltucopy$(TSUFFIX).$(SUFFIX) : generic/trmm_ltcopy_$(QGEMM_UNROLL_N
 $(KDIR)qtrmm_oltncopy$(TSUFFIX).$(SUFFIX) : generic/trmm_ltcopy_$(QGEMM_UNROLL_N).c
 	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -DXDOUBLE -UCOMPLEX -DOUTER -DLOWER -UUNIT $< -o $@
 
+ifdef CTRMMUNCOPY_M
+$(KDIR)ctrmm_iunucopy$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(CTRMMUNCOPY_M)
+	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -UDOUBLE -DCOMPLEX -UOUTER -ULOWER -DUNIT $< -o $@
+
+$(KDIR)ctrmm_iunncopy$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(CTRMMUNCOPY_M)
+	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -UDOUBLE -DCOMPLEX -UOUTER -ULOWER -UUNIT $< -o $@
+else
 $(KDIR)ctrmm_iunucopy$(TSUFFIX).$(SUFFIX) : generic/ztrmm_uncopy_$(CGEMM_UNROLL_M).c
 	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -UDOUBLE -DCOMPLEX -UOUTER -ULOWER -DUNIT $< -o $@
 
 $(KDIR)ctrmm_iunncopy$(TSUFFIX).$(SUFFIX) : generic/ztrmm_uncopy_$(CGEMM_UNROLL_M).c
 	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -UDOUBLE -DCOMPLEX -UOUTER -ULOWER -UUNIT $< -o $@
+endif
 
-$(KDIR)ctrmm_ilnucopy$(TSUFFIX).$(SUFFIX) : generic/ztrmm_lncopy_$(CGEMM_UNROLL_M).c
+ifdef CTRMMLNCOPY_M
+$(KDIR)ctrmm_ilnucopy$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(CTRMMLNCOPY_M)
 	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -UDOUBLE -DCOMPLEX -UOUTER -DLOWER -DUNIT $< -o $@
 
-$(KDIR)ctrmm_ilnncopy$(TSUFFIX).$(SUFFIX) : generic/ztrmm_lncopy_$(CGEMM_UNROLL_M).c
+$(KDIR)ctrmm_ilnncopy$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(CTRMMLNCOPY_M)
 	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -UDOUBLE -DCOMPLEX -UOUTER -DLOWER -UUNIT $< -o $@
+else
+$(KDIR)ctrmm_ilnucopy$(TSUFFIX).$(SUFFIX) : generic/ztrmm_lncopy_$(CGEMM_UNROLL_M).c
+	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -UDOUBLE -DCOMPLEX -UOUTER -ULOWER -DUNIT $< -o $@
 
+$(KDIR)ctrmm_ilnncopy$(TSUFFIX).$(SUFFIX) : generic/ztrmm_lncopy_$(CGEMM_UNROLL_M).c
+	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -UDOUBLE -DCOMPLEX -UOUTER -ULOWER -UUNIT $< -o $@
+endif
+
+ifdef CTRMMUTCOPY_M
+$(KDIR)ctrmm_iutucopy$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(CTRMMUTCOPY_M)
+	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -UDOUBLE -DCOMPLEX -UOUTER -ULOWER -DUNIT $< -o $@
+
+$(KDIR)ctrmm_iutncopy$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(CTRMMUTCOPY_M)
+	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -UDOUBLE -DCOMPLEX -UOUTER -ULOWER -UUNIT $< -o $@
+else
 $(KDIR)ctrmm_iutucopy$(TSUFFIX).$(SUFFIX) : generic/ztrmm_utcopy_$(CGEMM_UNROLL_M).c
 	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -UDOUBLE -DCOMPLEX -UOUTER -ULOWER -DUNIT $< -o $@
 
 $(KDIR)ctrmm_iutncopy$(TSUFFIX).$(SUFFIX) : generic/ztrmm_utcopy_$(CGEMM_UNROLL_M).c
 	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -UDOUBLE -DCOMPLEX -UOUTER -ULOWER -UUNIT $< -o $@
+endif
 
-$(KDIR)ctrmm_iltucopy$(TSUFFIX).$(SUFFIX) : generic/ztrmm_ltcopy_$(CGEMM_UNROLL_M).c
+ifdef CTRMMLTCOPY_M
+$(KDIR)ctrmm_iltucopy$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(CTRMMLTCOPY_M)
 	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -UDOUBLE -DCOMPLEX -UOUTER -DLOWER -DUNIT $< -o $@
 
-$(KDIR)ctrmm_iltncopy$(TSUFFIX).$(SUFFIX) : generic/ztrmm_ltcopy_$(CGEMM_UNROLL_M).c
+$(KDIR)ctrmm_iltncopy$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(CTRMMLTCOPY_M)
 	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -UDOUBLE -DCOMPLEX -UOUTER -DLOWER -UUNIT $< -o $@
+else
+$(KDIR)ctrmm_iltucopy$(TSUFFIX).$(SUFFIX) : generic/ztrmm_ltcopy_$(CGEMM_UNROLL_M).c
+	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -UDOUBLE -DCOMPLEX -UOUTER -ULOWER -DUNIT $< -o $@
+
+$(KDIR)ctrmm_iltncopy$(TSUFFIX).$(SUFFIX) : generic/ztrmm_ltcopy_$(CGEMM_UNROLL_M).c
+	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -UDOUBLE -DCOMPLEX -UOUTER -ULOWER -UUNIT $< -o $@
+endif
 
 $(KDIR)ctrmm_ounucopy$(TSUFFIX).$(SUFFIX) : generic/ztrmm_uncopy_$(CGEMM_UNROLL_N).c
 	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -UDOUBLE -DCOMPLEX -DOUTER -ULOWER -DUNIT $< -o $@
@@ -1559,29 +1775,61 @@ $(KDIR)ctrmm_oltucopy$(TSUFFIX).$(SUFFIX) : generic/ztrmm_ltcopy_$(CGEMM_UNROLL_
 $(KDIR)ctrmm_oltncopy$(TSUFFIX).$(SUFFIX) : generic/ztrmm_ltcopy_$(CGEMM_UNROLL_N).c
 	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -UDOUBLE -DCOMPLEX -DOUTER -DLOWER -UUNIT $< -o $@
 
+ifdef ZTRMMUNCOPY_M
+$(KDIR)ztrmm_iunucopy$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(ZTRMMUNCOPY_M)
+	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -DDOUBLE -DCOMPLEX -UOUTER -ULOWER -DUNIT $< -o $@
+
+$(KDIR)ztrmm_iunncopy$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(ZTRMMUNCOPY_M)
+	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -DDOUBLE -DCOMPLEX -UOUTER -ULOWER -UUNIT $< -o $@
+else
 $(KDIR)ztrmm_iunucopy$(TSUFFIX).$(SUFFIX) : generic/ztrmm_uncopy_$(ZGEMM_UNROLL_M).c
 	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -DDOUBLE -DCOMPLEX -UOUTER -ULOWER -DUNIT $< -o $@
 
 $(KDIR)ztrmm_iunncopy$(TSUFFIX).$(SUFFIX) : generic/ztrmm_uncopy_$(ZGEMM_UNROLL_M).c
 	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -DDOUBLE -DCOMPLEX -UOUTER -ULOWER -UUNIT $< -o $@
+endif
 
+ifdef ZTRMMLNCOPY_M
+$(KDIR)ztrmm_ilnucopy$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(ZTRMMLNCOPY_M)
+	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -DDOUBLE -DCOMPLEX -UOUTER -DLOWER -DUNIT $< -o $@
+
+$(KDIR)ztrmm_ilnncopy$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(ZTRMMLNCOPY_M)
+	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -DDOUBLE -DCOMPLEX -UOUTER -DLOWER -UUNIT $< -o $@
+else
 $(KDIR)ztrmm_ilnucopy$(TSUFFIX).$(SUFFIX) : generic/ztrmm_lncopy_$(ZGEMM_UNROLL_M).c
 	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -DDOUBLE -DCOMPLEX -UOUTER -DLOWER -DUNIT $< -o $@
 
 $(KDIR)ztrmm_ilnncopy$(TSUFFIX).$(SUFFIX) : generic/ztrmm_lncopy_$(ZGEMM_UNROLL_M).c
 	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -DDOUBLE -DCOMPLEX -UOUTER -DLOWER -UUNIT $< -o $@
+endif
 
+ifdef ZTRMMUTCOPY_M
+$(KDIR)ztrmm_iutucopy$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(ZTRMMUTCOPY_M)
+	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -DDOUBLE -DCOMPLEX -UOUTER -ULOWER -DUNIT $< -o $@
+
+$(KDIR)ztrmm_iutncopy$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(ZTRMMUTCOPY_M)
+	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -DDOUBLE -DCOMPLEX -UOUTER -ULOWER -UUNIT $< -o $@
+else
 $(KDIR)ztrmm_iutucopy$(TSUFFIX).$(SUFFIX) : generic/ztrmm_utcopy_$(ZGEMM_UNROLL_M).c
 	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -DDOUBLE -DCOMPLEX -UOUTER -ULOWER -DUNIT $< -o $@
 
 $(KDIR)ztrmm_iutncopy$(TSUFFIX).$(SUFFIX) : generic/ztrmm_utcopy_$(ZGEMM_UNROLL_M).c
 	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -DDOUBLE -DCOMPLEX -UOUTER -ULOWER -UUNIT $< -o $@
+endif
 
+ifdef ZTRMMLTCOPY_M
+$(KDIR)ztrmm_iltucopy$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(ZTRMMLTCOPY_M)
+	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -DDOUBLE -DCOMPLEX -UOUTER -DLOWER -DUNIT $< -o $@
+
+$(KDIR)ztrmm_iltncopy$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(ZTRMMLTCOPY_M)
+	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -DDOUBLE -DCOMPLEX -UOUTER -DLOWER -UUNIT $< -o $@
+else
 $(KDIR)ztrmm_iltucopy$(TSUFFIX).$(SUFFIX) : generic/ztrmm_ltcopy_$(ZGEMM_UNROLL_M).c
 	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -DDOUBLE -DCOMPLEX -UOUTER -DLOWER -DUNIT $< -o $@
 
 $(KDIR)ztrmm_iltncopy$(TSUFFIX).$(SUFFIX) : generic/ztrmm_ltcopy_$(ZGEMM_UNROLL_M).c
 	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -DDOUBLE -DCOMPLEX -UOUTER -DLOWER -UUNIT $< -o $@
+endif
 
 $(KDIR)ztrmm_ounucopy$(TSUFFIX).$(SUFFIX) : generic/ztrmm_uncopy_$(ZGEMM_UNROLL_N).c
 	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -DDOUBLE -DCOMPLEX -DOUTER -ULOWER -DUNIT $< -o $@
@@ -1661,11 +1909,21 @@ $(KDIR)ssymm_outcopy$(TSUFFIX).$(SUFFIX) : generic/symm_ucopy_$(SGEMM_UNROLL_N).
 $(KDIR)ssymm_oltcopy$(TSUFFIX).$(SUFFIX) : generic/symm_lcopy_$(SGEMM_UNROLL_N).c
 	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -UDOUBLE -UCOMPLEX -DOUTER -DLOWER $< -o $@
 
+ifdef SSYMMUCOPY_M
+$(KDIR)ssymm_iutcopy$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(SSYMMUCOPY_M)
+	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -UDOUBLE -UCOMPLEX -UOUTER -ULOWER $< -o $@
+else
 $(KDIR)ssymm_iutcopy$(TSUFFIX).$(SUFFIX) : generic/symm_ucopy_$(SGEMM_UNROLL_M).c
 	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -UDOUBLE -UCOMPLEX -UOUTER -ULOWER $< -o $@
+endif
 
+ifdef SSYMMLCOPY_M
+$(KDIR)ssymm_iltcopy$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(SSYMMLCOPY_M)
+	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -UDOUBLE -UCOMPLEX -UOUTER -DLOWER $< -o $@
+else
 $(KDIR)ssymm_iltcopy$(TSUFFIX).$(SUFFIX) : generic/symm_lcopy_$(SGEMM_UNROLL_M).c
 	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -UDOUBLE -UCOMPLEX -UOUTER -DLOWER $< -o $@
+endif
 
 $(KDIR)dsymm_outcopy$(TSUFFIX).$(SUFFIX) : generic/symm_ucopy_$(DGEMM_UNROLL_N).c
 	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -DDOUBLE -UCOMPLEX -DOUTER -ULOWER $< -o $@
@@ -1673,11 +1931,21 @@ $(KDIR)dsymm_outcopy$(TSUFFIX).$(SUFFIX) : generic/symm_ucopy_$(DGEMM_UNROLL_N).
 $(KDIR)dsymm_oltcopy$(TSUFFIX).$(SUFFIX) : generic/symm_lcopy_$(DGEMM_UNROLL_N).c
 	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -DDOUBLE -UCOMPLEX -DOUTER -DLOWER $< -o $@
 
+ifdef DSYMMUCOPY_M
+$(KDIR)dsymm_iutcopy$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(DSYMMUCOPY_M)
+	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -DDOUBLE -UCOMPLEX -UOUTER -ULOWER $< -o $@
+else
 $(KDIR)dsymm_iutcopy$(TSUFFIX).$(SUFFIX) : generic/symm_ucopy_$(DGEMM_UNROLL_M).c
 	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -DDOUBLE -UCOMPLEX -UOUTER -ULOWER $< -o $@
+endif
 
+ifdef DSYMMLCOPY_M
+$(KDIR)dsymm_iltcopy$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(DSYMMLCOPY_M)
+	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -DDOUBLE -UCOMPLEX -UOUTER -DLOWER $< -o $@
+else
 $(KDIR)dsymm_iltcopy$(TSUFFIX).$(SUFFIX) : generic/symm_lcopy_$(DGEMM_UNROLL_M).c
 	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -DDOUBLE -UCOMPLEX -UOUTER -DLOWER $< -o $@
+endif
 
 $(KDIR)qsymm_outcopy$(TSUFFIX).$(SUFFIX) : generic/symm_ucopy_$(QGEMM_UNROLL_N).c
 	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -DXDOUBLE -UCOMPLEX -DOUTER -ULOWER $< -o $@
@@ -1697,11 +1965,21 @@ $(KDIR)csymm_outcopy$(TSUFFIX).$(SUFFIX) : generic/zsymm_ucopy_$(CGEMM_UNROLL_N)
 $(KDIR)csymm_oltcopy$(TSUFFIX).$(SUFFIX) : generic/zsymm_lcopy_$(CGEMM_UNROLL_N).c
 	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -UDOUBLE -DCOMPLEX -DOUTER -DLOWER $< -o $@
 
+ifdef CSYMMUCOPY_M
+$(KDIR)csymm_iutcopy$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(CSYMMUCOPY_M)
+	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -UDOUBLE -DCOMPLEX -UOUTER -ULOWER $< -o $@
+else
 $(KDIR)csymm_iutcopy$(TSUFFIX).$(SUFFIX) : generic/zsymm_ucopy_$(CGEMM_UNROLL_M).c
 	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -UDOUBLE -DCOMPLEX -UOUTER -ULOWER $< -o $@
+endif
 
+ifdef CSYMMLCOPY_M
+$(KDIR)csymm_iltcopy$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(CSYMMLCOPY_M)
+	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -UDOUBLE -DCOMPLEX -UOUTER -DLOWER $< -o $@
+else
 $(KDIR)csymm_iltcopy$(TSUFFIX).$(SUFFIX) : generic/zsymm_lcopy_$(CGEMM_UNROLL_M).c
 	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -UDOUBLE -DCOMPLEX -UOUTER -DLOWER $< -o $@
+endif
 
 $(KDIR)zsymm_outcopy$(TSUFFIX).$(SUFFIX) : generic/zsymm_ucopy_$(ZGEMM_UNROLL_N).c
 	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -DDOUBLE -DCOMPLEX -DOUTER -ULOWER $< -o $@
@@ -1709,11 +1987,21 @@ $(KDIR)zsymm_outcopy$(TSUFFIX).$(SUFFIX) : generic/zsymm_ucopy_$(ZGEMM_UNROLL_N)
 $(KDIR)zsymm_oltcopy$(TSUFFIX).$(SUFFIX) : generic/zsymm_lcopy_$(ZGEMM_UNROLL_N).c
 	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -DDOUBLE -DCOMPLEX -DOUTER -DLOWER $< -o $@
 
+ifdef ZSYMMUCOPY_M
+$(KDIR)zsymm_iutcopy$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(ZSYMMUCOPY_M)
+	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -DDOUBLE -DCOMPLEX -UOUTER -ULOWER $< -o $@
+else
 $(KDIR)zsymm_iutcopy$(TSUFFIX).$(SUFFIX) : generic/zsymm_ucopy_$(ZGEMM_UNROLL_M).c
 	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -DDOUBLE -DCOMPLEX -UOUTER -ULOWER $< -o $@
+endif
 
+ifdef ZSYMMLCOPY_M
+$(KDIR)zsymm_iltcopy$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(ZSYMMLCOPY_M)
+	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -DDOUBLE -DCOMPLEX -UOUTER -DLOWER $< -o $@
+else
 $(KDIR)zsymm_iltcopy$(TSUFFIX).$(SUFFIX) : generic/zsymm_lcopy_$(ZGEMM_UNROLL_M).c
 	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -DDOUBLE -DCOMPLEX -UOUTER -DLOWER $< -o $@
+endif
 
 $(KDIR)xsymm_outcopy$(TSUFFIX).$(SUFFIX) : generic/zsymm_ucopy_$(XGEMM_UNROLL_N).c
 	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -DXDOUBLE -DCOMPLEX -DOUTER -ULOWER $< -o $@
@@ -1733,11 +2021,21 @@ $(KDIR)chemm_outcopy$(TSUFFIX).$(SUFFIX) : generic/zhemm_utcopy_$(CGEMM_UNROLL_N
 $(KDIR)chemm_oltcopy$(TSUFFIX).$(SUFFIX) : generic/zhemm_ltcopy_$(CGEMM_UNROLL_N).c
 	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -UDOUBLE -DCOMPLEX -DOUTER $< -DLOWER -o $@
 
+ifdef CHEMMUTCOPY_M
+$(KDIR)chemm_iutcopy$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(CHEMMUTCOPY_M)
+	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -UDOUBLE -DCOMPLEX -UOUTER $< -ULOWER -o $@
+else
 $(KDIR)chemm_iutcopy$(TSUFFIX).$(SUFFIX) : generic/zhemm_utcopy_$(CGEMM_UNROLL_M).c
 	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -UDOUBLE -DCOMPLEX -UOUTER $< -ULOWER -o $@
+endif
 
+ifdef CHEMMLTCOPY_M
+$(KDIR)chemm_iltcopy$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(CHEMMLTCOPY_M)
+	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -UDOUBLE -DCOMPLEX -UOUTER $< -DLOWER -o $@
+else
 $(KDIR)chemm_iltcopy$(TSUFFIX).$(SUFFIX) : generic/zhemm_ltcopy_$(CGEMM_UNROLL_M).c
 	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -UDOUBLE -DCOMPLEX -UOUTER $< -DLOWER -o $@
+endif
 
 $(KDIR)zhemm_outcopy$(TSUFFIX).$(SUFFIX) : generic/zhemm_utcopy_$(ZGEMM_UNROLL_N).c
 	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -DDOUBLE -DCOMPLEX -DOUTER $< -ULOWER -o $@
@@ -1745,11 +2043,21 @@ $(KDIR)zhemm_outcopy$(TSUFFIX).$(SUFFIX) : generic/zhemm_utcopy_$(ZGEMM_UNROLL_N
 $(KDIR)zhemm_oltcopy$(TSUFFIX).$(SUFFIX) : generic/zhemm_ltcopy_$(ZGEMM_UNROLL_N).c
 	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -DDOUBLE -DCOMPLEX -DOUTER $< -DLOWER -o $@
 
+ifdef ZHEMMUTCOPY_M
+$(KDIR)zhemm_iutcopy$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(ZHEMMUTCOPY_M)
+	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -DDOUBLE -DCOMPLEX -UOUTER $< -ULOWER -o $@
+else
 $(KDIR)zhemm_iutcopy$(TSUFFIX).$(SUFFIX) : generic/zhemm_utcopy_$(ZGEMM_UNROLL_M).c
 	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -DDOUBLE -DCOMPLEX -UOUTER $< -ULOWER -o $@
+endif
 
+ifdef ZHEMMLTCOPY_M
+$(KDIR)zhemm_iltcopy$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(ZHEMMLTCOPY_M)
+	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -DDOUBLE -DCOMPLEX -UOUTER $< -DLOWER -o $@
+else
 $(KDIR)zhemm_iltcopy$(TSUFFIX).$(SUFFIX) : generic/zhemm_ltcopy_$(ZGEMM_UNROLL_M).c
 	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -DDOUBLE -DCOMPLEX -UOUTER $< -DLOWER -o $@
+endif
 
 $(KDIR)xhemm_outcopy$(TSUFFIX).$(SUFFIX) : generic/zhemm_utcopy_$(XGEMM_UNROLL_N).c
 	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -DXDOUBLE -DCOMPLEX -DOUTER $< -ULOWER -o $@
@@ -2087,29 +2395,61 @@ $(KDIR)xhemm3m_iucopyi$(TSUFFIX).$(SUFFIX) : generic/zhemm3m_ucopy_$(XGEMM3M_UNR
 $(KDIR)xhemm3m_ilcopyi$(TSUFFIX).$(SUFFIX) : generic/zhemm3m_lcopy_$(XGEMM3M_UNROLL_M).c
 	$(CC) $(CFLAGS) $(NO_UNINITIALIZED_WARN) -c -DXDOUBLE -DCOMPLEX -UUSE_ALPHA -DIMAGE_ONLY $< -o $@
 
+ifdef TRSMCOPYUN_M
+$(KDIR)strsm_iunucopy$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(TRSMCOPYUN_M)
+	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -UDOUBLE -UCOMPLEX -UOUTER -ULOWER -DUNIT $< -o $@
+
+$(KDIR)strsm_iunncopy$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(TRSMCOPYUN_M)
+	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -UDOUBLE -UCOMPLEX -UOUTER -ULOWER -UUNIT $< -o $@
+else
 $(KDIR)strsm_iunucopy$(TSUFFIX).$(SUFFIX) : generic/trsm_uncopy_$(SGEMM_UNROLL_M).c
 	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -UDOUBLE -UCOMPLEX -UOUTER -ULOWER -DUNIT $< -o $@
 
 $(KDIR)strsm_iunncopy$(TSUFFIX).$(SUFFIX) : generic/trsm_uncopy_$(SGEMM_UNROLL_M).c
 	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -UDOUBLE -UCOMPLEX -UOUTER -ULOWER -UUNIT $< -o $@
+endif
 
+ifdef TRSMCOPYLN_M
+$(KDIR)strsm_ilnucopy$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(TRSMCOPYLN_M)
+	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -UDOUBLE -UCOMPLEX -UOUTER -DLOWER -DUNIT $< -o $@
+
+$(KDIR)strsm_ilnncopy$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(TRSMCOPYLN_M)
+	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -UDOUBLE -UCOMPLEX -UOUTER -DLOWER -UUNIT $< -o $@
+else
 $(KDIR)strsm_ilnucopy$(TSUFFIX).$(SUFFIX) : generic/trsm_lncopy_$(SGEMM_UNROLL_M).c
 	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -UDOUBLE -UCOMPLEX -UOUTER -DLOWER -DUNIT $< -o $@
 
 $(KDIR)strsm_ilnncopy$(TSUFFIX).$(SUFFIX) : generic/trsm_lncopy_$(SGEMM_UNROLL_M).c
 	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -UDOUBLE -UCOMPLEX -UOUTER -DLOWER -UUNIT $< -o $@
+endif
 
+ifdef TRSMCOPYUT_M
+$(KDIR)strsm_iutucopy$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(TRSMCOPYUT_M)
+	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -UDOUBLE -UCOMPLEX -UOUTER -ULOWER -DUNIT $< -o $@
+
+$(KDIR)strsm_iutncopy$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(TRSMCOPYUT_M)
+	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -UDOUBLE -UCOMPLEX -UOUTER -ULOWER -UUNIT $< -o $@
+else
 $(KDIR)strsm_iutucopy$(TSUFFIX).$(SUFFIX) : generic/trsm_utcopy_$(SGEMM_UNROLL_M).c
 	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -UDOUBLE -UCOMPLEX -UOUTER -ULOWER -DUNIT $< -o $@
 
 $(KDIR)strsm_iutncopy$(TSUFFIX).$(SUFFIX) : generic/trsm_utcopy_$(SGEMM_UNROLL_M).c
 	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -UDOUBLE -UCOMPLEX -UOUTER -ULOWER -UUNIT $< -o $@
+endif
 
+ifdef TRSMCOPYLT_M
+$(KDIR)strsm_iltucopy$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(TRSMCOPYLT_M)
+	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -UDOUBLE -UCOMPLEX -UOUTER -DLOWER -DUNIT $< -o $@
+
+$(KDIR)strsm_iltncopy$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(TRSMCOPYLT_M)
+	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -UDOUBLE -UCOMPLEX -UOUTER -DLOWER -UUNIT $< -o $@
+else
 $(KDIR)strsm_iltucopy$(TSUFFIX).$(SUFFIX) : generic/trsm_ltcopy_$(SGEMM_UNROLL_M).c
 	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -UDOUBLE -UCOMPLEX -UOUTER -DLOWER -DUNIT $< -o $@
 
 $(KDIR)strsm_iltncopy$(TSUFFIX).$(SUFFIX) : generic/trsm_ltcopy_$(SGEMM_UNROLL_M).c
 	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -UDOUBLE -UCOMPLEX -UOUTER -DLOWER -UUNIT $< -o $@
+endif
 
 $(KDIR)strsm_ounucopy$(TSUFFIX).$(SUFFIX) : generic/trsm_uncopy_$(SGEMM_UNROLL_N).c
 	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -UDOUBLE -UCOMPLEX -DOUTER -ULOWER -DUNIT $< -o $@
@@ -2135,29 +2475,61 @@ $(KDIR)strsm_oltucopy$(TSUFFIX).$(SUFFIX) : generic/trsm_ltcopy_$(SGEMM_UNROLL_N
 $(KDIR)strsm_oltncopy$(TSUFFIX).$(SUFFIX) : generic/trsm_ltcopy_$(SGEMM_UNROLL_N).c
 	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -UDOUBLE -UCOMPLEX -DOUTER -DLOWER -UUNIT $< -o $@
 
+ifdef TRSMCOPYUN_M
+$(KDIR)dtrsm_iunucopy$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(TRSMCOPYUN_M)
+	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -DDOUBLE -UCOMPLEX -UOUTER -ULOWER -DUNIT $< -o $@
+
+$(KDIR)dtrsm_iunncopy$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(TRSMCOPYUN_M)
+	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -DDOUBLE -UCOMPLEX -UOUTER -ULOWER -UUNIT $< -o $@
+else
 $(KDIR)dtrsm_iunucopy$(TSUFFIX).$(SUFFIX) : generic/trsm_uncopy_$(DGEMM_UNROLL_M).c
 	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -DDOUBLE -UCOMPLEX -UOUTER -ULOWER -DUNIT $< -o $@
 
 $(KDIR)dtrsm_iunncopy$(TSUFFIX).$(SUFFIX) : generic/trsm_uncopy_$(DGEMM_UNROLL_M).c
 	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -DDOUBLE -UCOMPLEX -UOUTER -ULOWER -UUNIT $< -o $@
+endif
 
+ifdef TRSMCOPYLN_M
+$(KDIR)dtrsm_ilnucopy$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(TRSMCOPYLN_M)
+	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -DDOUBLE -UCOMPLEX -UOUTER -DLOWER -DUNIT $< -o $@
+
+$(KDIR)dtrsm_ilnncopy$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(TRSMCOPYLN_M)
+	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -DDOUBLE -UCOMPLEX -UOUTER -DLOWER -UUNIT $< -o $@
+else
 $(KDIR)dtrsm_ilnucopy$(TSUFFIX).$(SUFFIX) : generic/trsm_lncopy_$(DGEMM_UNROLL_M).c
 	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -DDOUBLE -UCOMPLEX -UOUTER -DLOWER -DUNIT $< -o $@
 
 $(KDIR)dtrsm_ilnncopy$(TSUFFIX).$(SUFFIX) : generic/trsm_lncopy_$(DGEMM_UNROLL_M).c
 	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -DDOUBLE -UCOMPLEX -UOUTER -DLOWER -UUNIT $< -o $@
+endif
 
+ifdef TRSMCOPYUT_M
+$(KDIR)dtrsm_iutucopy$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(TRSMCOPYUT_M)
+	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -DDOUBLE -UCOMPLEX -UOUTER -ULOWER -DUNIT $< -o $@
+
+$(KDIR)dtrsm_iutncopy$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(TRSMCOPYUT_M)
+	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -DDOUBLE -UCOMPLEX -UOUTER -ULOWER -UUNIT $< -o $@
+else
 $(KDIR)dtrsm_iutucopy$(TSUFFIX).$(SUFFIX) : generic/trsm_utcopy_$(DGEMM_UNROLL_M).c
 	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -DDOUBLE -UCOMPLEX -UOUTER -ULOWER -DUNIT $< -o $@
 
 $(KDIR)dtrsm_iutncopy$(TSUFFIX).$(SUFFIX) : generic/trsm_utcopy_$(DGEMM_UNROLL_M).c
 	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -DDOUBLE -UCOMPLEX -UOUTER -ULOWER -UUNIT $< -o $@
+endif
 
+ifdef TRSMCOPYLT_M
+$(KDIR)dtrsm_iltucopy$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(TRSMCOPYLT_M)
+	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -DDOUBLE -UCOMPLEX -UOUTER -DLOWER -DUNIT $< -o $@
+
+$(KDIR)dtrsm_iltncopy$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(TRSMCOPYLT_M)
+	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -DDOUBLE -UCOMPLEX -UOUTER -DLOWER -UUNIT $< -o $@
+else
 $(KDIR)dtrsm_iltucopy$(TSUFFIX).$(SUFFIX) : generic/trsm_ltcopy_$(DGEMM_UNROLL_M).c
 	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -DDOUBLE -UCOMPLEX -UOUTER -DLOWER -DUNIT $< -o $@
 
 $(KDIR)dtrsm_iltncopy$(TSUFFIX).$(SUFFIX) : generic/trsm_ltcopy_$(DGEMM_UNROLL_M).c
 	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -DDOUBLE -UCOMPLEX -UOUTER -DLOWER -UUNIT $< -o $@
+endif
 
 $(KDIR)dtrsm_ounucopy$(TSUFFIX).$(SUFFIX) : generic/trsm_uncopy_$(DGEMM_UNROLL_N).c
 	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -DDOUBLE -UCOMPLEX -DOUTER -ULOWER -DUNIT $< -o $@
@@ -2231,29 +2603,61 @@ $(KDIR)qtrsm_oltucopy$(TSUFFIX).$(SUFFIX) : generic/trsm_ltcopy_$(QGEMM_UNROLL_N
 $(KDIR)qtrsm_oltncopy$(TSUFFIX).$(SUFFIX) : generic/trsm_ltcopy_$(QGEMM_UNROLL_N).c
 	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -DXDOUBLE -UCOMPLEX -DOUTER -DLOWER -UUNIT $< -o $@
 
+ifdef ZTRSMCOPYUN_M
+$(KDIR)ctrsm_iunucopy$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(ZTRSMCOPYUN_M)
+	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -UDOUBLE -DCOMPLEX -UOUTER -ULOWER -DUNIT $< -o $@
+
+$(KDIR)ctrsm_iunncopy$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(ZTRSMCOPYUN_M)
+	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -UDOUBLE -DCOMPLEX -UOUTER -ULOWER -UUNIT $< -o $@
+else
 $(KDIR)ctrsm_iunucopy$(TSUFFIX).$(SUFFIX) : generic/ztrsm_uncopy_$(CGEMM_UNROLL_M).c
 	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -UDOUBLE -DCOMPLEX -UOUTER -ULOWER -DUNIT $< -o $@
 
 $(KDIR)ctrsm_iunncopy$(TSUFFIX).$(SUFFIX) : generic/ztrsm_uncopy_$(CGEMM_UNROLL_M).c
 	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -UDOUBLE -DCOMPLEX -UOUTER -ULOWER -UUNIT $< -o $@
+endif
 
+ifdef ZTRSMCOPYLN_M
+$(KDIR)ctrsm_ilnucopy$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(ZTRSMCOPYLN_M)
+	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -UDOUBLE -DCOMPLEX -UOUTER -DLOWER -DUNIT $< -o $@
+
+$(KDIR)ctrsm_ilnncopy$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(ZTRSMCOPYLN_M)
+	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -UDOUBLE -DCOMPLEX -UOUTER -DLOWER -UUNIT $< -o $@
+else
 $(KDIR)ctrsm_ilnucopy$(TSUFFIX).$(SUFFIX) : generic/ztrsm_lncopy_$(CGEMM_UNROLL_M).c
 	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -UDOUBLE -DCOMPLEX -UOUTER -DLOWER -DUNIT $< -o $@
 
 $(KDIR)ctrsm_ilnncopy$(TSUFFIX).$(SUFFIX) : generic/ztrsm_lncopy_$(CGEMM_UNROLL_M).c
 	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -UDOUBLE -DCOMPLEX -UOUTER -DLOWER -UUNIT $< -o $@
+endif
 
+ifdef ZTRSMCOPYUT_M
+$(KDIR)ctrsm_iutucopy$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(ZTRSMCOPYUT_M)
+	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -UDOUBLE -DCOMPLEX -UOUTER -ULOWER -DUNIT $< -o $@
+
+$(KDIR)ctrsm_iutncopy$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(ZTRSMCOPYUT_M)
+	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -UDOUBLE -DCOMPLEX -UOUTER -ULOWER -UUNIT $< -o $@
+else
 $(KDIR)ctrsm_iutucopy$(TSUFFIX).$(SUFFIX) : generic/ztrsm_utcopy_$(CGEMM_UNROLL_M).c
 	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -UDOUBLE -DCOMPLEX -UOUTER -ULOWER -DUNIT $< -o $@
 
 $(KDIR)ctrsm_iutncopy$(TSUFFIX).$(SUFFIX) : generic/ztrsm_utcopy_$(CGEMM_UNROLL_M).c
 	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -UDOUBLE -DCOMPLEX -UOUTER -ULOWER -UUNIT $< -o $@
+endif
 
+ifdef ZTRSMCOPYLT_M
+$(KDIR)ctrsm_iltucopy$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(ZTRSMCOPYLT_M)
+	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -UDOUBLE -DCOMPLEX -UOUTER -DLOWER -DUNIT $< -o $@
+
+$(KDIR)ctrsm_iltncopy$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(ZTRSMCOPYLT_M)
+	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -UDOUBLE -DCOMPLEX -UOUTER -DLOWER -UUNIT $< -o $@
+else
 $(KDIR)ctrsm_iltucopy$(TSUFFIX).$(SUFFIX) : generic/ztrsm_ltcopy_$(CGEMM_UNROLL_M).c
 	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -UDOUBLE -DCOMPLEX -UOUTER -DLOWER -DUNIT $< -o $@
 
 $(KDIR)ctrsm_iltncopy$(TSUFFIX).$(SUFFIX) : generic/ztrsm_ltcopy_$(CGEMM_UNROLL_M).c
 	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -UDOUBLE -DCOMPLEX -UOUTER -DLOWER -UUNIT $< -o $@
+endif
 
 $(KDIR)ctrsm_ounucopy$(TSUFFIX).$(SUFFIX) : generic/ztrsm_uncopy_$(CGEMM_UNROLL_N).c
 	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -UDOUBLE -DCOMPLEX -DOUTER -ULOWER -DUNIT $< -o $@
@@ -2279,29 +2683,61 @@ $(KDIR)ctrsm_oltucopy$(TSUFFIX).$(SUFFIX) : generic/ztrsm_ltcopy_$(CGEMM_UNROLL_
 $(KDIR)ctrsm_oltncopy$(TSUFFIX).$(SUFFIX) : generic/ztrsm_ltcopy_$(CGEMM_UNROLL_N).c
 	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -UDOUBLE -DCOMPLEX -DOUTER -DLOWER -UUNIT $< -o $@
 
+ifdef ZTRSMCOPYUN_M
+$(KDIR)ztrsm_iunucopy$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(ZTRSMCOPYUN_M)
+	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -DDOUBLE -DCOMPLEX -UOUTER -ULOWER -DUNIT $< -o $@
+
+$(KDIR)ztrsm_iunncopy$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(ZTRSMCOPYUN_M)
+	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -DDOUBLE -DCOMPLEX -UOUTER -ULOWER -UUNIT $< -o $@
+else
 $(KDIR)ztrsm_iunucopy$(TSUFFIX).$(SUFFIX) : generic/ztrsm_uncopy_$(ZGEMM_UNROLL_M).c
 	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -DDOUBLE -DCOMPLEX -UOUTER -ULOWER -DUNIT $< -o $@
 
 $(KDIR)ztrsm_iunncopy$(TSUFFIX).$(SUFFIX) : generic/ztrsm_uncopy_$(ZGEMM_UNROLL_M).c
 	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -DDOUBLE -DCOMPLEX -UOUTER -ULOWER -UUNIT $< -o $@
+endif
 
+ifdef ZTRSMCOPYLN_M
+$(KDIR)ztrsm_ilnucopy$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(ZTRSMCOPYLN_M)
+	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -DDOUBLE -DCOMPLEX -UOUTER -DLOWER -DUNIT $< -o $@
+
+$(KDIR)ztrsm_ilnncopy$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(ZTRSMCOPYLN_M)
+	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -DDOUBLE -DCOMPLEX -UOUTER -DLOWER -UUNIT $< -o $@
+else
 $(KDIR)ztrsm_ilnucopy$(TSUFFIX).$(SUFFIX) : generic/ztrsm_lncopy_$(ZGEMM_UNROLL_M).c
 	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -DDOUBLE -DCOMPLEX -UOUTER -DLOWER -DUNIT $< -o $@
 
 $(KDIR)ztrsm_ilnncopy$(TSUFFIX).$(SUFFIX) : generic/ztrsm_lncopy_$(ZGEMM_UNROLL_M).c
 	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -DDOUBLE -DCOMPLEX -UOUTER -DLOWER -UUNIT $< -o $@
+endif
 
+ifdef ZTRSMCOPYUT_M
+$(KDIR)ztrsm_iutucopy$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(ZTRSMCOPYUT_M)
+	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -DDOUBLE -DCOMPLEX -UOUTER -ULOWER -DUNIT $< -o $@
+
+$(KDIR)ztrsm_iutncopy$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(ZTRSMCOPYUT_M)
+	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -DDOUBLE -DCOMPLEX -UOUTER -ULOWER -UUNIT $< -o $@
+else
 $(KDIR)ztrsm_iutucopy$(TSUFFIX).$(SUFFIX) : generic/ztrsm_utcopy_$(ZGEMM_UNROLL_M).c
 	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -DDOUBLE -DCOMPLEX -UOUTER -ULOWER -DUNIT $< -o $@
 
 $(KDIR)ztrsm_iutncopy$(TSUFFIX).$(SUFFIX) : generic/ztrsm_utcopy_$(ZGEMM_UNROLL_M).c
 	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -DDOUBLE -DCOMPLEX -UOUTER -ULOWER -UUNIT $< -o $@
+endif
 
+ifdef ZTRSMCOPYLT_M
+$(KDIR)ztrsm_iltucopy$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(ZTRSMCOPYLT_M)
+	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -DDOUBLE -DCOMPLEX -UOUTER -DLOWER -DUNIT $< -o $@
+
+$(KDIR)ztrsm_iltncopy$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(ZTRSMCOPYLT_M)
+	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -DDOUBLE -DCOMPLEX -UOUTER -DLOWER -UUNIT $< -o $@
+else
 $(KDIR)ztrsm_iltucopy$(TSUFFIX).$(SUFFIX) : generic/ztrsm_ltcopy_$(ZGEMM_UNROLL_M).c
 	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -DDOUBLE -DCOMPLEX -UOUTER -DLOWER -DUNIT $< -o $@
 
 $(KDIR)ztrsm_iltncopy$(TSUFFIX).$(SUFFIX) : generic/ztrsm_ltcopy_$(ZGEMM_UNROLL_M).c
 	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -DDOUBLE -DCOMPLEX -UOUTER -DLOWER -UUNIT $< -o $@
+endif
 
 $(KDIR)ztrsm_ounucopy$(TSUFFIX).$(SUFFIX) : generic/ztrsm_uncopy_$(ZGEMM_UNROLL_N).c
 	$(CC) -c $(CFLAGS) $(NO_UNINITIALIZED_WARN) -DDOUBLE -DCOMPLEX -DOUTER -ULOWER -DUNIT $< -o $@
@@ -4191,3 +4627,469 @@ endif
 $(KDIR)zgeadd_k$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(ZGEADD_K)
 	$(CC) $(CFLAGS) -c -DDOUBLE -DCOMPLEX -UROWM $< -o $@
 
+
+
+######  BLAS small matrix optimization #####
+
+ifndef DGEMM_SMALL_M_PERMIT
+DGEMM_SMALL_M_PERMIT = ../generic/gemm_small_matrix_permit.c
+endif
+
+ifndef DGEMM_SMALL_K_NN
+DGEMM_SMALL_K_NN = ../generic/gemm_small_matrix_kernel_nn.c
+endif
+
+ifndef DGEMM_SMALL_K_NT
+DGEMM_SMALL_K_NT = ../generic/gemm_small_matrix_kernel_nt.c
+endif
+
+ifndef DGEMM_SMALL_K_TN
+DGEMM_SMALL_K_TN = ../generic/gemm_small_matrix_kernel_tn.c
+endif
+
+ifndef DGEMM_SMALL_K_TT
+DGEMM_SMALL_K_TT = ../generic/gemm_small_matrix_kernel_tt.c
+endif
+
+$(KDIR)dgemm_small_matrix_permit$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(DGEMM_SMALL_M_PERMIT)
+	$(CC) $(CFLAGS) -c -DDOUBLE -UCOMPLEX $< -o $@
+
+$(KDIR)dgemm_small_kernel_nn$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(DGEMM_SMALL_K_NN)
+	$(CC) $(CFLAGS) -c -DDOUBLE -UCOMPLEX $< -o $@
+
+$(KDIR)dgemm_small_kernel_nt$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(DGEMM_SMALL_K_NT)
+	$(CC) $(CFLAGS) -c -DDOUBLE -UCOMPLEX $< -o $@
+
+$(KDIR)dgemm_small_kernel_tn$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(DGEMM_SMALL_K_TN)
+	$(CC) $(CFLAGS) -c -DDOUBLE -UCOMPLEX $< -o $@
+
+$(KDIR)dgemm_small_kernel_tt$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(DGEMM_SMALL_K_TT)
+	$(CC) $(CFLAGS) -c -DDOUBLE -UCOMPLEX $< -o $@
+
+ifndef DGEMM_SMALL_K_B0_NN
+DGEMM_SMALL_K_B0_NN = ../generic/gemm_small_matrix_kernel_nn.c
+endif
+
+ifndef DGEMM_SMALL_K_B0_NT
+DGEMM_SMALL_K_B0_NT = ../generic/gemm_small_matrix_kernel_nt.c
+endif
+
+ifndef DGEMM_SMALL_K_B0_TN
+DGEMM_SMALL_K_B0_TN = ../generic/gemm_small_matrix_kernel_tn.c
+endif
+
+ifndef DGEMM_SMALL_K_B0_TT
+DGEMM_SMALL_K_B0_TT = ../generic/gemm_small_matrix_kernel_tt.c
+endif
+
+$(KDIR)dgemm_small_kernel_b0_nn$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(DGEMM_SMALL_K_B0_NN)
+	$(CC) $(CFLAGS) -c -DDOUBLE -UCOMPLEX -DB0 $< -o $@
+
+$(KDIR)dgemm_small_kernel_b0_nt$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(DGEMM_SMALL_K_B0_NT)
+	$(CC) $(CFLAGS) -c -DDOUBLE -UCOMPLEX -DB0 $< -o $@
+
+$(KDIR)dgemm_small_kernel_b0_tn$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(DGEMM_SMALL_K_B0_TN)
+	$(CC) $(CFLAGS) -c -DDOUBLE -UCOMPLEX -DB0 $< -o $@
+
+$(KDIR)dgemm_small_kernel_b0_tt$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(DGEMM_SMALL_K_B0_TT)
+	$(CC) $(CFLAGS) -c -DDOUBLE -UCOMPLEX -DB0 $< -o $@
+
+ifndef SGEMM_SMALL_M_PERMIT
+SGEMM_SMALL_M_PERMIT = ../generic/gemm_small_matrix_permit.c
+endif
+
+ifndef SGEMM_SMALL_K_NN
+SGEMM_SMALL_K_NN = ../generic/gemm_small_matrix_kernel_nn.c
+endif
+
+ifndef SGEMM_SMALL_K_NT
+SGEMM_SMALL_K_NT = ../generic/gemm_small_matrix_kernel_nt.c
+endif
+
+ifndef SGEMM_SMALL_K_TN
+SGEMM_SMALL_K_TN = ../generic/gemm_small_matrix_kernel_tn.c
+endif
+
+ifndef SGEMM_SMALL_K_TT
+SGEMM_SMALL_K_TT = ../generic/gemm_small_matrix_kernel_tt.c
+endif
+
+$(KDIR)sgemm_small_matrix_permit$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(SGEMM_SMALL_M_PERMIT)
+	$(CC) $(CFLAGS) -c -UDOUBLE -UCOMPLEX $< -o $@
+
+$(KDIR)sgemm_small_kernel_nn$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(SGEMM_SMALL_K_NN)
+	$(CC) $(CFLAGS) -c -UDOUBLE -UCOMPLEX $< -o $@
+
+$(KDIR)sgemm_small_kernel_nt$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(SGEMM_SMALL_K_NT)
+	$(CC) $(CFLAGS) -c -UDOUBLE -UCOMPLEX $< -o $@
+
+$(KDIR)sgemm_small_kernel_tn$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(SGEMM_SMALL_K_TN)
+	$(CC) $(CFLAGS) -c -UDOUBLE -UCOMPLEX $< -o $@
+
+$(KDIR)sgemm_small_kernel_tt$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(SGEMM_SMALL_K_TT)
+	$(CC) $(CFLAGS) -c -UDOUBLE -UCOMPLEX $< -o $@
+
+ifndef SGEMM_SMALL_K_B0_NN
+SGEMM_SMALL_K_B0_NN = ../generic/gemm_small_matrix_kernel_nn.c
+endif
+
+ifndef SGEMM_SMALL_K_B0_NT
+SGEMM_SMALL_K_B0_NT = ../generic/gemm_small_matrix_kernel_nt.c
+endif
+
+ifndef SGEMM_SMALL_K_B0_TN
+SGEMM_SMALL_K_B0_TN = ../generic/gemm_small_matrix_kernel_tn.c
+endif
+
+ifndef SGEMM_SMALL_K_B0_TT
+SGEMM_SMALL_K_B0_TT = ../generic/gemm_small_matrix_kernel_tt.c
+endif
+
+$(KDIR)sgemm_small_kernel_b0_nn$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(SGEMM_SMALL_K_B0_NN)
+	$(CC) $(CFLAGS) -c -UDOUBLE -UCOMPLEX -DB0 $< -o $@
+
+$(KDIR)sgemm_small_kernel_b0_nt$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(SGEMM_SMALL_K_B0_NT)
+	$(CC) $(CFLAGS) -c -UDOUBLE -UCOMPLEX -DB0 $< -o $@
+
+$(KDIR)sgemm_small_kernel_b0_tn$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(SGEMM_SMALL_K_B0_TN)
+	$(CC) $(CFLAGS) -c -UDOUBLE -UCOMPLEX -DB0 $< -o $@
+
+$(KDIR)sgemm_small_kernel_b0_tt$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(SGEMM_SMALL_K_B0_TT)
+	$(CC) $(CFLAGS) -c -UDOUBLE -UCOMPLEX -DB0 $< -o $@
+
+
+ifeq ($(BUILD_BFLOAT16), 1)
+ifndef SBGEMM_SMALL_M_PERMIT
+SBGEMM_SMALL_M_PERMIT = ../generic/gemm_small_matrix_permit.c
+endif
+
+ifndef SBGEMM_SMALL_K_NN
+SBGEMM_SMALL_K_NN = ../generic/gemm_small_matrix_kernel_nn.c
+endif
+
+ifndef SBGEMM_SMALL_K_NT
+SBGEMM_SMALL_K_NT = ../generic/gemm_small_matrix_kernel_nt.c
+endif
+
+ifndef SBGEMM_SMALL_K_TN
+SBGEMM_SMALL_K_TN = ../generic/gemm_small_matrix_kernel_tn.c
+endif
+
+ifndef SBGEMM_SMALL_K_TT
+SBGEMM_SMALL_K_TT = ../generic/gemm_small_matrix_kernel_tt.c
+endif
+
+$(KDIR)sbgemm_small_matrix_permit$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(SBGEMM_SMALL_M_PERMIT)
+	$(CC) $(CFLAGS) -c -DBFLOAT16 -UDOUBLE -UCOMPLEX $< -o $@
+
+$(KDIR)sbgemm_small_kernel_nn$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(SBGEMM_SMALL_K_NN)
+	$(CC) $(CFLAGS) -c -DBFLOAT16 -UDOUBLE -UCOMPLEX $< -o $@
+
+$(KDIR)sbgemm_small_kernel_nt$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(SBGEMM_SMALL_K_NT)
+	$(CC) $(CFLAGS) -c -DBFLOAT16 -UDOUBLE -UCOMPLEX $< -o $@
+
+$(KDIR)sbgemm_small_kernel_tn$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(SBGEMM_SMALL_K_TN)
+	$(CC) $(CFLAGS) -c -DBFLOAT16 -UDOUBLE -UCOMPLEX $< -o $@
+
+$(KDIR)sbgemm_small_kernel_tt$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(SBGEMM_SMALL_K_TT)
+	$(CC) $(CFLAGS) -c -DBFLOAT16 -UDOUBLE -UCOMPLEX $< -o $@
+
+ifndef SBGEMM_SMALL_K_B0_NN
+SBGEMM_SMALL_K_B0_NN = ../generic/gemm_small_matrix_kernel_nn.c
+endif
+
+ifndef SBGEMM_SMALL_K_B0_NT
+SBGEMM_SMALL_K_B0_NT = ../generic/gemm_small_matrix_kernel_nt.c
+endif
+
+ifndef SBGEMM_SMALL_K_B0_TN
+SBGEMM_SMALL_K_B0_TN = ../generic/gemm_small_matrix_kernel_tn.c
+endif
+
+ifndef SBGEMM_SMALL_K_B0_TT
+SBGEMM_SMALL_K_B0_TT = ../generic/gemm_small_matrix_kernel_tt.c
+endif
+
+$(KDIR)sbgemm_small_kernel_b0_nn$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(SBGEMM_SMALL_K_B0_NN)
+	$(CC) $(CFLAGS) -c -DBFLOAT16 -UDOUBLE -UCOMPLEX -DB0 $< -o $@
+
+$(KDIR)sbgemm_small_kernel_b0_nt$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(SBGEMM_SMALL_K_B0_NT)
+	$(CC) $(CFLAGS) -c -DBFLOAT16 -UDOUBLE -UCOMPLEX -DB0 $< -o $@
+
+$(KDIR)sbgemm_small_kernel_b0_tn$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(SBGEMM_SMALL_K_B0_TN)
+	$(CC) $(CFLAGS) -c -DBFLOAT16 -UDOUBLE -UCOMPLEX -DB0 $< -o $@
+
+$(KDIR)sbgemm_small_kernel_b0_tt$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(SBGEMM_SMALL_K_B0_TT)
+	$(CC) $(CFLAGS) -c -DBFLOAT16 -UDOUBLE -UCOMPLEX -DB0 $< -o $@
+endif
+
+ifndef CGEMM_SMALL_M_PERMIT
+CGEMM_SMALL_M_PERMIT = ../generic/zgemm_small_matrix_permit.c
+endif
+
+ifndef CGEMM_SMALL_K_NN
+CGEMM_SMALL_K_NN = ../generic/zgemm_small_matrix_kernel_nn.c
+endif
+
+ifndef CGEMM_SMALL_K_NT
+CGEMM_SMALL_K_NT = ../generic/zgemm_small_matrix_kernel_nt.c
+endif
+
+ifndef CGEMM_SMALL_K_TN
+CGEMM_SMALL_K_TN = ../generic/zgemm_small_matrix_kernel_tn.c
+endif
+
+ifndef CGEMM_SMALL_K_TT
+CGEMM_SMALL_K_TT = ../generic/zgemm_small_matrix_kernel_tt.c
+endif
+
+$(KDIR)cgemm_small_matrix_permit$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(CGEMM_SMALL_M_PERMIT)
+	$(CC) $(CFLAGS) -c -UDOUBLE -DCOMPLEX $< -o $@
+
+$(KDIR)cgemm_small_kernel_nn$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(CGEMM_SMALL_K_NN)
+	$(CC) $(CFLAGS) -c -UDOUBLE -DCOMPLEX -DNN $< -o $@
+	
+$(KDIR)cgemm_small_kernel_nr$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(CGEMM_SMALL_K_NN)
+	$(CC) $(CFLAGS) -c -UDOUBLE -DCOMPLEX -DNR $< -o $@
+
+$(KDIR)cgemm_small_kernel_rn$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(CGEMM_SMALL_K_NN)
+	$(CC) $(CFLAGS) -c -UDOUBLE -DCOMPLEX -DRN $< -o $@
+
+$(KDIR)cgemm_small_kernel_rr$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(CGEMM_SMALL_K_NN)
+	$(CC) $(CFLAGS) -c -UDOUBLE -DCOMPLEX -DRR $< -o $@
+
+$(KDIR)cgemm_small_kernel_nt$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(CGEMM_SMALL_K_NT)
+	$(CC) $(CFLAGS) -c -UDOUBLE -DCOMPLEX -DNT $< -o $@
+
+$(KDIR)cgemm_small_kernel_nc$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(CGEMM_SMALL_K_NT)
+	$(CC) $(CFLAGS) -c -UDOUBLE -DCOMPLEX -DNC $< -o $@
+
+$(KDIR)cgemm_small_kernel_rt$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(CGEMM_SMALL_K_NT)
+	$(CC) $(CFLAGS) -c -UDOUBLE -DCOMPLEX -DRT $< -o $@
+
+$(KDIR)cgemm_small_kernel_rc$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(CGEMM_SMALL_K_NT)
+	$(CC) $(CFLAGS) -c -UDOUBLE -DCOMPLEX -DRC=RC $< -o $@
+
+$(KDIR)cgemm_small_kernel_tn$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(CGEMM_SMALL_K_TN)
+	$(CC) $(CFLAGS) -c -UDOUBLE -DCOMPLEX -DTN $< -o $@
+
+$(KDIR)cgemm_small_kernel_tr$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(CGEMM_SMALL_K_TN)
+	$(CC) $(CFLAGS) -c -UDOUBLE -DCOMPLEX -DTR $< -o $@
+
+$(KDIR)cgemm_small_kernel_cn$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(CGEMM_SMALL_K_TN)
+	$(CC) $(CFLAGS) -c -UDOUBLE -DCOMPLEX -DCN $< -o $@
+
+$(KDIR)cgemm_small_kernel_cr$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(CGEMM_SMALL_K_TN)
+	$(CC) $(CFLAGS) -c -UDOUBLE -DCOMPLEX -DCR=CR $< -o $@
+
+$(KDIR)cgemm_small_kernel_tt$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(CGEMM_SMALL_K_TT)
+	$(CC) $(CFLAGS) -c -UDOUBLE -DCOMPLEX -DTT $< -o $@
+
+$(KDIR)cgemm_small_kernel_tc$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(CGEMM_SMALL_K_TT)
+	$(CC) $(CFLAGS) -c -UDOUBLE -DCOMPLEX -DTC $< -o $@
+
+$(KDIR)cgemm_small_kernel_ct$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(CGEMM_SMALL_K_TT)
+	$(CC) $(CFLAGS) -c -UDOUBLE -DCOMPLEX -DCT $< -o $@
+
+$(KDIR)cgemm_small_kernel_cc$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(CGEMM_SMALL_K_TT)
+	$(CC) $(CFLAGS) -c -UDOUBLE -DCOMPLEX -DCC $< -o $@
+
+ifndef CGEMM_SMALL_K_B0_NN
+CGEMM_SMALL_K_B0_NN = ../generic/zgemm_small_matrix_kernel_nn.c
+endif
+
+ifndef CGEMM_SMALL_K_B0_NT
+CGEMM_SMALL_K_B0_NT = ../generic/zgemm_small_matrix_kernel_nt.c
+endif
+
+ifndef CGEMM_SMALL_K_B0_TN
+CGEMM_SMALL_K_B0_TN = ../generic/zgemm_small_matrix_kernel_tn.c
+endif
+
+ifndef CGEMM_SMALL_K_B0_TT
+CGEMM_SMALL_K_B0_TT = ../generic/zgemm_small_matrix_kernel_tt.c
+endif
+
+$(KDIR)cgemm_small_kernel_b0_nn$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(CGEMM_SMALL_K_B0_NN)
+	$(CC) $(CFLAGS) -c -UDOUBLE -DCOMPLEX -DNN -DB0 $< -o $@
+	
+$(KDIR)cgemm_small_kernel_b0_nr$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(CGEMM_SMALL_K_B0_NN)
+	$(CC) $(CFLAGS) -c -UDOUBLE -DCOMPLEX -DNR -DB0 $< -o $@
+
+$(KDIR)cgemm_small_kernel_b0_rn$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(CGEMM_SMALL_K_B0_NN)
+	$(CC) $(CFLAGS) -c -UDOUBLE -DCOMPLEX -DRN -DB0 $< -o $@
+
+$(KDIR)cgemm_small_kernel_b0_rr$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(CGEMM_SMALL_K_B0_NN)
+	$(CC) $(CFLAGS) -c -UDOUBLE -DCOMPLEX -DRR -DB0 $< -o $@
+
+$(KDIR)cgemm_small_kernel_b0_nt$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(CGEMM_SMALL_K_B0_NT)
+	$(CC) $(CFLAGS) -c -UDOUBLE -DCOMPLEX -DNT -DB0 $< -o $@
+
+$(KDIR)cgemm_small_kernel_b0_nc$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(CGEMM_SMALL_K_B0_NT)
+	$(CC) $(CFLAGS) -c -UDOUBLE -DCOMPLEX -DNC -DB0 $< -o $@
+
+$(KDIR)cgemm_small_kernel_b0_rt$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(CGEMM_SMALL_K_B0_NT)
+	$(CC) $(CFLAGS) -c -UDOUBLE -DCOMPLEX -DRT -DB0 $< -o $@
+
+$(KDIR)cgemm_small_kernel_b0_rc$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(CGEMM_SMALL_K_B0_NT)
+	$(CC) $(CFLAGS) -c -UDOUBLE -DCOMPLEX -DRC=RC -DB0 $< -o $@
+
+$(KDIR)cgemm_small_kernel_b0_tn$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(CGEMM_SMALL_K_B0_TN)
+	$(CC) $(CFLAGS) -c -UDOUBLE -DCOMPLEX -DTN -DB0 $< -o $@
+
+$(KDIR)cgemm_small_kernel_b0_tr$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(CGEMM_SMALL_K_B0_TN)
+	$(CC) $(CFLAGS) -c -UDOUBLE -DCOMPLEX -DTR -DB0 $< -o $@
+
+$(KDIR)cgemm_small_kernel_b0_cn$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(CGEMM_SMALL_K_B0_TN)
+	$(CC) $(CFLAGS) -c -UDOUBLE -DCOMPLEX -DCN -DB0 $< -o $@
+
+$(KDIR)cgemm_small_kernel_b0_cr$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(CGEMM_SMALL_K_B0_TN)
+	$(CC) $(CFLAGS) -c -UDOUBLE -DCOMPLEX -DCR=CR -DB0 $< -o $@
+
+$(KDIR)cgemm_small_kernel_b0_tt$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(CGEMM_SMALL_K_B0_TT)
+	$(CC) $(CFLAGS) -c -UDOUBLE -DCOMPLEX -DTT -DB0 $< -o $@
+
+$(KDIR)cgemm_small_kernel_b0_tc$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(CGEMM_SMALL_K_B0_TT)
+	$(CC) $(CFLAGS) -c -UDOUBLE -DCOMPLEX -DTC -DB0 $< -o $@
+
+$(KDIR)cgemm_small_kernel_b0_ct$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(CGEMM_SMALL_K_B0_TT)
+	$(CC) $(CFLAGS) -c -UDOUBLE -DCOMPLEX -DCT -DB0 $< -o $@
+
+$(KDIR)cgemm_small_kernel_b0_cc$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(CGEMM_SMALL_K_B0_TT)
+	$(CC) $(CFLAGS) -c -UDOUBLE -DCOMPLEX -DCC -DB0 $< -o $@
+
+ifndef ZGEMM_SMALL_M_PERMIT
+ZGEMM_SMALL_M_PERMIT = ../generic/zgemm_small_matrix_permit.c
+endif
+
+ifndef ZGEMM_SMALL_K_NN
+ZGEMM_SMALL_K_NN = ../generic/zgemm_small_matrix_kernel_nn.c
+endif
+
+ifndef ZGEMM_SMALL_K_NT
+ZGEMM_SMALL_K_NT = ../generic/zgemm_small_matrix_kernel_nt.c
+endif
+
+ifndef ZGEMM_SMALL_K_TN
+ZGEMM_SMALL_K_TN = ../generic/zgemm_small_matrix_kernel_tn.c
+endif
+
+ifndef ZGEMM_SMALL_K_TT
+ZGEMM_SMALL_K_TT = ../generic/zgemm_small_matrix_kernel_tt.c
+endif
+
+$(KDIR)zgemm_small_matrix_permit$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(ZGEMM_SMALL_M_PERMIT)
+	$(CC) $(CFLAGS) -c -DDOUBLE -DCOMPLEX $< -o $@
+
+
+$(KDIR)zgemm_small_kernel_nn$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(ZGEMM_SMALL_K_NN)
+	$(CC) $(CFLAGS) -c -DDOUBLE -DCOMPLEX -DNN $< -o $@
+	
+$(KDIR)zgemm_small_kernel_nr$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(ZGEMM_SMALL_K_NN)
+	$(CC) $(CFLAGS) -c -DDOUBLE -DCOMPLEX -DNR $< -o $@
+
+$(KDIR)zgemm_small_kernel_rn$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(ZGEMM_SMALL_K_NN)
+	$(CC) $(CFLAGS) -c -DDOUBLE -DCOMPLEX -DRN $< -o $@
+
+$(KDIR)zgemm_small_kernel_rr$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(ZGEMM_SMALL_K_NN)
+	$(CC) $(CFLAGS) -c -DDOUBLE -DCOMPLEX -DRR $< -o $@
+
+$(KDIR)zgemm_small_kernel_nt$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(ZGEMM_SMALL_K_NT)
+	$(CC) $(CFLAGS) -c -DDOUBLE -DCOMPLEX -DNT $< -o $@
+
+$(KDIR)zgemm_small_kernel_nc$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(ZGEMM_SMALL_K_NT)
+	$(CC) $(CFLAGS) -c -DDOUBLE -DCOMPLEX -DNC $< -o $@
+
+$(KDIR)zgemm_small_kernel_rt$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(ZGEMM_SMALL_K_NT)
+	$(CC) $(CFLAGS) -c -DDOUBLE -DCOMPLEX -DRT $< -o $@
+
+$(KDIR)zgemm_small_kernel_rc$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(ZGEMM_SMALL_K_NT)
+	$(CC) $(CFLAGS) -c -DDOUBLE -DCOMPLEX -DRC=RC $< -o $@
+
+$(KDIR)zgemm_small_kernel_tn$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(ZGEMM_SMALL_K_TN)
+	$(CC) $(CFLAGS) -c -DDOUBLE -DCOMPLEX -DTN $< -o $@
+
+$(KDIR)zgemm_small_kernel_tr$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(ZGEMM_SMALL_K_TN)
+	$(CC) $(CFLAGS) -c -DDOUBLE -DCOMPLEX -DTR $< -o $@
+
+$(KDIR)zgemm_small_kernel_cn$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(ZGEMM_SMALL_K_TN)
+	$(CC) $(CFLAGS) -c -DDOUBLE -DCOMPLEX -DCN $< -o $@
+
+$(KDIR)zgemm_small_kernel_cr$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(ZGEMM_SMALL_K_TN)
+	$(CC) $(CFLAGS) -c -DDOUBLE -DCOMPLEX -DCR=CR $< -o $@
+
+$(KDIR)zgemm_small_kernel_tt$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(ZGEMM_SMALL_K_TT)
+	$(CC) $(CFLAGS) -c -DDOUBLE -DCOMPLEX -DTT $< -o $@
+
+$(KDIR)zgemm_small_kernel_tc$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(ZGEMM_SMALL_K_TT)
+	$(CC) $(CFLAGS) -c -DDOUBLE -DCOMPLEX -DTC $< -o $@
+
+$(KDIR)zgemm_small_kernel_ct$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(ZGEMM_SMALL_K_TT)
+	$(CC) $(CFLAGS) -c -DDOUBLE -DCOMPLEX -DCT $< -o $@
+
+$(KDIR)zgemm_small_kernel_cc$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(ZGEMM_SMALL_K_TT)
+	$(CC) $(CFLAGS) -c -DDOUBLE -DCOMPLEX -DCC $< -o $@
+
+ifndef ZGEMM_SMALL_K_B0_NN
+ZGEMM_SMALL_K_B0_NN = ../generic/zgemm_small_matrix_kernel_nn.c
+endif
+
+ifndef ZGEMM_SMALL_K_B0_NT
+ZGEMM_SMALL_K_B0_NT = ../generic/zgemm_small_matrix_kernel_nt.c
+endif
+
+ifndef ZGEMM_SMALL_K_B0_TN
+ZGEMM_SMALL_K_B0_TN = ../generic/zgemm_small_matrix_kernel_tn.c
+endif
+
+ifndef ZGEMM_SMALL_K_B0_TT
+ZGEMM_SMALL_K_B0_TT = ../generic/zgemm_small_matrix_kernel_tt.c
+endif
+
+$(KDIR)zgemm_small_kernel_b0_nn$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(ZGEMM_SMALL_K_B0_NN)
+	$(CC) $(CFLAGS) -c -DDOUBLE -DCOMPLEX -DNN -DB0 $< -o $@
+	
+$(KDIR)zgemm_small_kernel_b0_nr$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(ZGEMM_SMALL_K_B0_NN)
+	$(CC) $(CFLAGS) -c -DDOUBLE -DCOMPLEX -DNR -DB0 $< -o $@
+
+$(KDIR)zgemm_small_kernel_b0_rn$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(ZGEMM_SMALL_K_B0_NN)
+	$(CC) $(CFLAGS) -c -DDOUBLE -DCOMPLEX -DRN -DB0 $< -o $@
+
+$(KDIR)zgemm_small_kernel_b0_rr$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(ZGEMM_SMALL_K_B0_NN)
+	$(CC) $(CFLAGS) -c -DDOUBLE -DCOMPLEX -DRR -DB0 $< -o $@
+
+$(KDIR)zgemm_small_kernel_b0_nt$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(ZGEMM_SMALL_K_B0_NT)
+	$(CC) $(CFLAGS) -c -DDOUBLE -DCOMPLEX -DNT -DB0 $< -o $@
+
+$(KDIR)zgemm_small_kernel_b0_nc$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(ZGEMM_SMALL_K_B0_NT)
+	$(CC) $(CFLAGS) -c -DDOUBLE -DCOMPLEX -DNC -DB0 $< -o $@
+
+$(KDIR)zgemm_small_kernel_b0_rt$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(ZGEMM_SMALL_K_B0_NT)
+	$(CC) $(CFLAGS) -c -DDOUBLE -DCOMPLEX -DRT -DB0 $< -o $@
+
+$(KDIR)zgemm_small_kernel_b0_rc$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(ZGEMM_SMALL_K_B0_NT)
+	$(CC) $(CFLAGS) -c -DDOUBLE -DCOMPLEX -DRC=RC -DB0 $< -o $@
+
+$(KDIR)zgemm_small_kernel_b0_tn$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(ZGEMM_SMALL_K_B0_TN)
+	$(CC) $(CFLAGS) -c -DDOUBLE -DCOMPLEX -DTN -DB0 $< -o $@
+
+$(KDIR)zgemm_small_kernel_b0_tr$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(ZGEMM_SMALL_K_B0_TN)
+	$(CC) $(CFLAGS) -c -DDOUBLE -DCOMPLEX -DTR -DB0 $< -o $@
+
+$(KDIR)zgemm_small_kernel_b0_cn$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(ZGEMM_SMALL_K_B0_TN)
+	$(CC) $(CFLAGS) -c -DDOUBLE -DCOMPLEX -DCN -DB0 $< -o $@
+
+$(KDIR)zgemm_small_kernel_b0_cr$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(ZGEMM_SMALL_K_B0_TN)
+	$(CC) $(CFLAGS) -c -DDOUBLE -DCOMPLEX -DCR=CR -DB0 $< -o $@
+
+$(KDIR)zgemm_small_kernel_b0_tt$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(ZGEMM_SMALL_K_B0_TT)
+	$(CC) $(CFLAGS) -c -DDOUBLE -DCOMPLEX -DTT -DB0 $< -o $@
+
+$(KDIR)zgemm_small_kernel_b0_tc$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(ZGEMM_SMALL_K_B0_TT)
+	$(CC) $(CFLAGS) -c -DDOUBLE -DCOMPLEX -DTC -DB0 $< -o $@
+
+$(KDIR)zgemm_small_kernel_b0_ct$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(ZGEMM_SMALL_K_B0_TT)
+	$(CC) $(CFLAGS) -c -DDOUBLE -DCOMPLEX -DCT -DB0 $< -o $@
+
+$(KDIR)zgemm_small_kernel_b0_cc$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(ZGEMM_SMALL_K_B0_TT)
+	$(CC) $(CFLAGS) -c -DDOUBLE -DCOMPLEX -DCC -DB0 $< -o $@

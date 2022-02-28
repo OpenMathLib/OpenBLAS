@@ -157,11 +157,11 @@ cleanobj:
 cleanexe:
 	rm -f xeigtst*
 
-schkee.o: schkee.f
+schkee.o: schkee.F
 	$(FC) $(FFLAGS_DRV) -c -o $@ $<
-dchkee.o: dchkee.f
+dchkee.o: dchkee.F
 	$(FC) $(FFLAGS_DRV) -c -o $@ $<
-cchkee.o: cchkee.f
+cchkee.o: cchkee.F
 	$(FC) $(FFLAGS_DRV) -c -o $@ $<
-zchkee.o: zchkee.f
+zchkee.o: zchkee.F
 	$(FC) $(FFLAGS_DRV) -c -o $@ $<

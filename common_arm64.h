@@ -39,7 +39,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #define INLINE inline
 
-#ifdef F_INTERFACE_FLANG
+#if defined( F_INTERFACE_FLANG) || defined(F_INTERFACE_PGI)
 #define RETURN_BY_STACK
 #else
 #define RETURN_BY_COMPLEX
@@ -120,7 +120,7 @@ static inline int blas_quickdivide(blasint x, blasint y){
 	.text ;
 	.p2align 2 ;
 	.global	REALNAME ;
-#ifndef __APPLE__
+#if !defined(__APPLE__) && !defined(_WIN32)
 	.type	REALNAME, %function ;
 #endif
 REALNAME:

@@ -29,29 +29,33 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <math.h>
 
 #if !defined(DOUBLE)
-#define RVV_EFLOAT RVV_E32
-#define RVV_M RVV_M8
-#define FLOAT_V_T float32xm8_t
-#define VLSEV_FLOAT vlsev_float32xm8
-#define VFREDMAXVS_FLOAT vfredmaxvs_float32xm8
-#define MASK_T e32xm8_t
-#define VMFLTVF_FLOAT vmfltvf_e32xm8_float32xm8
-#define VFMVVF_FLOAT vfmvvf_float32xm8
-#define VFRSUBVF_MASK_FLOAT vfrsubvf_mask_float32xm8
-#define VFMAXVV_FLOAT vfmaxvv_float32xm8
-#define VFADDVV_FLOAT vfaddvv_float32xm8
+#define VSETVL(n) vsetvl_e32m8(n)
+#define VSETVL_MAX vsetvlmax_e32m1()
+#define FLOAT_V_T vfloat32m8_t
+#define FLOAT_V_T_M1 vfloat32m1_t
+#define VLSEV_FLOAT vlse_v_f32m8
+#define VFREDMAXVS_FLOAT vfredmax_vs_f32m8_f32m1
+#define MASK_T vbool4_t
+#define VMFLTVF_FLOAT vmflt_vf_f32m8_b4
+#define VFMVVF_FLOAT vfmv_v_f_f32m8
+#define VFMVVF_FLOAT_M1 vfmv_v_f_f32m1
+#define VFRSUBVF_MASK_FLOAT vfrsub_vf_f32m8_m
+#define VFMAXVV_FLOAT vfmax_vv_f32m8
+#define VFADDVV_FLOAT vfadd_vv_f32m8
 #else
-#define RVV_EFLOAT RVV_E64
-#define RVV_M RVV_M8
-#define FLOAT_V_T float64xm8_t
-#define VLSEV_FLOAT vlsev_float64xm8
-#define VFREDMAXVS_FLOAT vfredmaxvs_float64xm8
-#define MASK_T e64xm8_t
-#define VMFLTVF_FLOAT vmfltvf_e64xm8_float64xm8
-#define VFMVVF_FLOAT vfmvvf_float64xm8
-#define VFRSUBVF_MASK_FLOAT vfrsubvf_mask_float64xm8
-#define VFMAXVV_FLOAT vfmaxvv_float64xm8
-#define VFADDVV_FLOAT vfaddvv_float64xm8
+#define VSETVL(n) vsetvl_e64m8(n)
+#define VSETVL_MAX vsetvlmax_e64m1()
+#define FLOAT_V_T vfloat64m8_t
+#define FLOAT_V_T_M1 vfloat64m1_t
+#define VLSEV_FLOAT vlse_v_f64m8
+#define VFREDMAXVS_FLOAT vfredmax_vs_f64m8_f64m1
+#define MASK_T vbool8_t
+#define VMFLTVF_FLOAT vmflt_vf_f64m8_b8
+#define VFMVVF_FLOAT vfmv_v_f_f64m8
+#define VFMVVF_FLOAT_M1 vfmv_v_f_f64m1
+#define VFRSUBVF_MASK_FLOAT vfrsub_vf_f64m8_m
+#define VFMAXVV_FLOAT vfmax_vv_f64m8
+#define VFADDVV_FLOAT vfadd_vv_f64m8
 #endif
 
 FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x)
@@ -62,19 +66,23 @@ FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x)
 	if (n <= 0 || inc_x <= 0) return(maxf);
         unsigned int gvl = 0;
         FLOAT_V_T v0, v1, v_max;
+        FLOAT_V_T_M1 v_res, v_z0;
+        gvl = VSETVL_MAX;
+        v_res = VFMVVF_FLOAT_M1(0, gvl);
+        v_z0 = VFMVVF_FLOAT_M1(0, gvl);
 
         MASK_T mask0, mask1;
         BLASLONG stride_x = inc_x * sizeof(FLOAT) * 2;
-        gvl = vsetvli(n, RVV_EFLOAT, RVV_M);
+        gvl = VSETVL(n);
         v_max = VFMVVF_FLOAT(0, gvl);
         BLASLONG inc_xv = inc_x * gvl * 2;
         for(; i<n/gvl; i++){
                 v0 = VLSEV_FLOAT(&x[ix], stride_x, gvl);
                 v1 = VLSEV_FLOAT(&x[ix+1], stride_x, gvl);
                 mask0 = VMFLTVF_FLOAT(v0, 0, gvl);
-                v0 = VFRSUBVF_MASK_FLOAT(v0, v0, 0, mask0, gvl);
+                v0 = VFRSUBVF_MASK_FLOAT(mask0, v0, v0, 0, gvl);
                 mask1 = VMFLTVF_FLOAT(v1, 0, gvl);
-                v1 = VFRSUBVF_MASK_FLOAT(v1, v1, 0, mask1, gvl);
+                v1 = VFRSUBVF_MASK_FLOAT(mask1, v1, v1, 0, gvl);
 
                 v0 = VFADDVV_FLOAT(v0, v1, gvl);
                 v_max = VFMAXVV_FLOAT(v_max, v0, gvl);
@@ -82,23 +90,21 @@ FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x)
                 j += gvl;
                 ix += inc_xv;
         }
-        v0 = VFMVVF_FLOAT(0, gvl);
-        v_max = VFREDMAXVS_FLOAT(v_max, v0, gvl);
-        maxf = v_max[0];
+        v_res = VFREDMAXVS_FLOAT(v_res, v_max, v_z0, gvl);
+        maxf = v_res[0];
 
         if(j<n){
-                gvl = vsetvli(n-j, RVV_EFLOAT, RVV_M);
+                gvl = VSETVL(n-j);
                 v0 = VLSEV_FLOAT(&x[ix], stride_x, gvl);
                 v1 = VLSEV_FLOAT(&x[ix+1], stride_x, gvl);
                 mask0 = VMFLTVF_FLOAT(v0, 0, gvl);
-                v0 = VFRSUBVF_MASK_FLOAT(v0, v0, 0, mask0, gvl);
+                v0 = VFRSUBVF_MASK_FLOAT(mask0, v0, v0, 0, gvl);
                 mask1 = VMFLTVF_FLOAT(v1, 0, gvl);
-                v1 = VFRSUBVF_MASK_FLOAT(v1, v1, 0, mask1, gvl);
+                v1 = VFRSUBVF_MASK_FLOAT(mask1, v1, v1, 0, gvl);
                 v1 = VFADDVV_FLOAT(v0, v1, gvl);
-                v0 = VFMVVF_FLOAT(0, gvl);
-                v_max = VFREDMAXVS_FLOAT(v1, v0, gvl);
-                if(v_max[0] > maxf)
-                        maxf = v_max[0];
+                v_res = VFREDMAXVS_FLOAT(v_res, v1, v_z0, gvl);
+                if(v_res[0] > maxf)
+                        maxf = v_res[0];
         }
         return(maxf);
 }

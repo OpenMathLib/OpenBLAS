@@ -28,12 +28,19 @@ set(BLAS1_MANGLED_SOURCES
 # these all have 'z' sources for complex versions
 set(BLAS2_SOURCES
   gemv.c ger.c
-  trsv.c trmv.c symv.c
-  syr.c syr2.c gbmv.c
-  sbmv.c spmv.c
-  spr.c spr2.c
+  trsv.c trmv.c 
+  syr2.c gbmv.c
+  sbmv.c 
+  spr2.c
   tbsv.c tbmv.c
   tpsv.c tpmv.c
+)
+
+set(BLAS2_REAL_ONLY_SOURCES
+  symv.c syr.c spmv.c spr.c
+)
+set(BLAS2_COMPLEX_LAPACK_SOURCES
+  symv.c syr.c spmv.c spr.c
 )
 
 set(BLAS2_COMPLEX_ONLY_MANGLED_SOURCES
@@ -78,10 +85,15 @@ foreach (CBLAS_FLAG ${CBLAS_FLAGS})
   GenerateNamedObjects("${BLAS1_REAL_ONLY_SOURCES}" "" "" ${CBLAS_FLAG} "" "" false 1)
   GenerateNamedObjects("${BLAS1_MANGLED_SOURCES}" "" "" ${CBLAS_FLAG} "" "" false ${MANGLE_COMPLEX})
   GenerateNamedObjects("${BLAS2_SOURCES}" "" "" ${CBLAS_FLAG} "" "" false ${MANGLE_COMPLEX})
+  GenerateNamedObjects("${BLAS2_REAL_ONLY_SOURCES}" "" "" ${CBLAS_FLAG} "" "" false 1)
+  if (NOT DEFINED NO_LAPACK)
+  GenerateNamedObjects("${BLAS2_COMPLEX_LAPACK_SOURCES}" "" "" ${CBLAS_FLAG} "" "" false ${MANGLE_COMPLEX})
+  endif ()
   GenerateNamedObjects("${BLAS2_COMPLEX_ONLY_MANGLED_SOURCES}" "" "" ${CBLAS_FLAG} "" "" false 4)
   GenerateNamedObjects("${BLAS3_SOURCES}" "" "" ${CBLAS_FLAG} "" "" false ${DISABLE_COMPLEX})
   GenerateNamedObjects("${BLAS3_MANGLED_SOURCES}" "" "" ${CBLAS_FLAG} "" "" false ${MANGLE_COMPLEX})
 
+  GenerateNamedObjects("xerbla.c" "" "xerbla" ${CBLAS_FLAG} "" "" true)
   #sdsdot, dsdot
   if (BUILD_SINGLE OR BUILD_DOUBLE)
   GenerateNamedObjects("sdsdot.c" "" "sdsdot" ${CBLAS_FLAG} "" "" true "SINGLE")
@@ -104,6 +116,15 @@ endif ()
   GenerateNamedObjects("imax.c" "USE_ABS;USE_MIN" "i*amin" ${CBLAS_FLAG})
   GenerateNamedObjects("imax.c" "USE_MIN" "i*min" ${CBLAS_FLAG})
 
+if (BUILD_BFLOAT16)
+	GenerateNamedObjects("bf16dot.c" "" "sbdot" ${CBLAS_FLAG} "" "" true "BFLOAT16")
+	GenerateNamedObjects("gemm.c" "" "sbgemm" ${CBLAS_FLAG} "" "" true "BFLOAT16")
+	GenerateNamedObjects("sbgemv.c" "" "sbgemv" ${CBLAS_FLAG} "" "" true "BFLOAT16")
+	GenerateNamedObjects("tobf16.c" "SINGLE_PREC" "sbstobf16" ${CBLAS_FLAG} "" "" true "BFLOAT16")
+	GenerateNamedObjects("tobf16.c" "DOUBLE_PREC" "sbdtobf16" ${CBLAS_FLAG} "" "" true "BFLOAT16")
+	GenerateNamedObjects("bf16to.c" "SINGLE_PREC" "sbf16tos" ${CBLAS_FLAG} "" "" true "BFLOAT16")
+	GenerateNamedObjects("bf16to.c" "DOUBLE_PREC" "dbf16tod" ${CBLAS_FLAG} "" "" true "BFLOAT16")
+endif ()
 
 # complex-specific sources
 foreach (float_type ${FLOAT_TYPES})

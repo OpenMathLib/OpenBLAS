@@ -20,7 +20,7 @@ void F77_cgemv(int *order, char *transp, int *m, int *n,
   get_transpose_type(transp, &trans);
   if (*order == TEST_ROW_MJR) {
      LDA = *n+1;
-     A  = (CBLAS_TEST_COMPLEX *)malloc( (*m)*LDA*sizeof( CBLAS_TEST_COMPLEX) );
+     A  = (CBLAS_TEST_COMPLEX *)malloc( (*m)*(size_t)LDA*sizeof( CBLAS_TEST_COMPLEX) );
      for( i=0; i<*m; i++ )
         for( j=0; j<*n; j++ ){
            A[ LDA*i+j ].real=a[ (*lda)*j+i ].real;
@@ -50,7 +50,7 @@ void F77_cgbmv(int *order, char *transp, int *m, int *n, int *kl, int *ku,
   get_transpose_type(transp, &trans);
   if (*order == TEST_ROW_MJR) {
      LDA = *ku+*kl+2;
-     A=( CBLAS_TEST_COMPLEX* )malloc((*n+*kl)*LDA*sizeof(CBLAS_TEST_COMPLEX));
+     A=( CBLAS_TEST_COMPLEX* )malloc((*n+*kl)*(size_t)LDA*sizeof(CBLAS_TEST_COMPLEX));
      for( i=0; i<*ku; i++ ){
         irow=*ku+*kl-i;
         jcol=(*ku)-i;
@@ -94,7 +94,7 @@ void F77_cgeru(int *order, int *m, int *n, CBLAS_TEST_COMPLEX *alpha,
 
   if (*order == TEST_ROW_MJR) {
      LDA = *n+1;
-     A=(CBLAS_TEST_COMPLEX*)malloc((*m)*LDA*sizeof(CBLAS_TEST_COMPLEX));
+     A=(CBLAS_TEST_COMPLEX*)malloc((*m)*(size_t)LDA*sizeof(CBLAS_TEST_COMPLEX));
      for( i=0; i<*m; i++ )
         for( j=0; j<*n; j++ ){
            A[ LDA*i+j ].real=a[ (*lda)*j+i ].real;
@@ -122,7 +122,7 @@ void F77_cgerc(int *order, int *m, int *n, CBLAS_TEST_COMPLEX *alpha,
 
   if (*order == TEST_ROW_MJR) {
      LDA = *n+1;
-     A=(CBLAS_TEST_COMPLEX* )malloc((*m)*LDA*sizeof(CBLAS_TEST_COMPLEX ) );
+     A=(CBLAS_TEST_COMPLEX* )malloc((*m)*(size_t)LDA*sizeof(CBLAS_TEST_COMPLEX ) );
      for( i=0; i<*m; i++ )
         for( j=0; j<*n; j++ ){
            A[ LDA*i+j ].real=a[ (*lda)*j+i ].real;
@@ -154,7 +154,7 @@ void F77_chemv(int *order, char *uplow, int *n, CBLAS_TEST_COMPLEX *alpha,
 
   if (*order == TEST_ROW_MJR) {
      LDA = *n+1;
-     A = (CBLAS_TEST_COMPLEX *)malloc((*n)*LDA*sizeof(CBLAS_TEST_COMPLEX));
+     A = (CBLAS_TEST_COMPLEX *)malloc((*n)*(size_t)LDA*sizeof(CBLAS_TEST_COMPLEX));
      for( i=0; i<*n; i++ )
         for( j=0; j<*n; j++ ){
            A[ LDA*i+j ].real=a[ (*lda)*j+i ].real;
@@ -190,7 +190,7 @@ int i,irow,j,jcol,LDA;
 		 *incx, beta, y, *incy );
      else {
         LDA = *k+2;
-        A =(CBLAS_TEST_COMPLEX*)malloc((*n+*k)*LDA*sizeof(CBLAS_TEST_COMPLEX));
+        A =(CBLAS_TEST_COMPLEX*)malloc((*n+*k)*(size_t)LDA*sizeof(CBLAS_TEST_COMPLEX));
         if (uplo == CblasUpper) {
            for( i=0; i<*k; i++ ){
               irow=*k-i;
@@ -251,8 +251,8 @@ void F77_chpmv(int *order, char *uplow, int *n, CBLAS_TEST_COMPLEX *alpha,
 	         beta, y, *incy);
      else {
         LDA = *n;
-        A = (CBLAS_TEST_COMPLEX* )malloc(LDA*LDA*sizeof(CBLAS_TEST_COMPLEX ));
-        AP = (CBLAS_TEST_COMPLEX* )malloc( (((LDA+1)*LDA)/2)*
+        A = (CBLAS_TEST_COMPLEX* )malloc((size_t)LDA*LDA*sizeof(CBLAS_TEST_COMPLEX ));
+        AP = (CBLAS_TEST_COMPLEX* )malloc( ((((size_t)LDA+1)*LDA)/2)*
 	        sizeof( CBLAS_TEST_COMPLEX ));
         if (uplo == CblasUpper) {
            for( j=0, k=0; j<*n; j++ )
@@ -311,7 +311,7 @@ void F77_ctbmv(int *order, char *uplow, char *transp, char *diagn,
 	x, *incx);
      else {
         LDA = *k+2;
-        A=(CBLAS_TEST_COMPLEX *)malloc((*n+*k)*LDA*sizeof(CBLAS_TEST_COMPLEX));
+        A=(CBLAS_TEST_COMPLEX *)malloc((*n+*k)*(size_t)LDA*sizeof(CBLAS_TEST_COMPLEX));
         if (uplo == CblasUpper) {
            for( i=0; i<*k; i++ ){
               irow=*k-i;
@@ -375,7 +375,7 @@ void F77_ctbsv(int *order, char *uplow, char *transp, char *diagn,
 	         *incx);
      else {
         LDA = *k+2;
-        A=(CBLAS_TEST_COMPLEX*)malloc((*n+*k)*LDA*sizeof(CBLAS_TEST_COMPLEX ));
+        A=(CBLAS_TEST_COMPLEX*)malloc((*n+*k)*(size_t)LDA*sizeof(CBLAS_TEST_COMPLEX ));
         if (uplo == CblasUpper) {
            for( i=0; i<*k; i++ ){
               irow=*k-i;
@@ -436,8 +436,8 @@ void F77_ctpmv(int *order, char *uplow, char *transp, char *diagn,
         cblas_ctpmv( CblasRowMajor, UNDEFINED, trans, diag, *n, ap, x, *incx );
      else {
         LDA = *n;
-        A=(CBLAS_TEST_COMPLEX*)malloc(LDA*LDA*sizeof(CBLAS_TEST_COMPLEX));
-        AP=(CBLAS_TEST_COMPLEX*)malloc((((LDA+1)*LDA)/2)*
+        A=(CBLAS_TEST_COMPLEX*)malloc((size_t)LDA*LDA*sizeof(CBLAS_TEST_COMPLEX));
+        AP=(CBLAS_TEST_COMPLEX*)malloc(((((size_t)LDA+1)*LDA)/2)*
 	 	sizeof(CBLAS_TEST_COMPLEX));
         if (uplo == CblasUpper) {
            for( j=0, k=0; j<*n; j++ )
@@ -491,8 +491,8 @@ void F77_ctpsv(int *order, char *uplow, char *transp, char *diagn,
         cblas_ctpsv( CblasRowMajor, UNDEFINED, trans, diag, *n, ap, x, *incx );
      else {
         LDA = *n;
-        A=(CBLAS_TEST_COMPLEX*)malloc(LDA*LDA*sizeof(CBLAS_TEST_COMPLEX));
-        AP=(CBLAS_TEST_COMPLEX*)malloc((((LDA+1)*LDA)/2)*
+        A=(CBLAS_TEST_COMPLEX*)malloc((size_t)LDA*LDA*sizeof(CBLAS_TEST_COMPLEX));
+        AP=(CBLAS_TEST_COMPLEX*)malloc(((((size_t)LDA+1)*LDA)/2)*
 		sizeof(CBLAS_TEST_COMPLEX));
      	if (uplo == CblasUpper) {
            for( j=0, k=0; j<*n; j++ )
@@ -544,7 +544,7 @@ void F77_ctrmv(int *order, char *uplow, char *transp, char *diagn,
 
   if (*order == TEST_ROW_MJR) {
      LDA=*n+1;
-     A=(CBLAS_TEST_COMPLEX*)malloc((*n)*LDA*sizeof(CBLAS_TEST_COMPLEX));
+     A=(CBLAS_TEST_COMPLEX*)malloc((*n)*(size_t)LDA*sizeof(CBLAS_TEST_COMPLEX));
      for( i=0; i<*n; i++ )
        for( j=0; j<*n; j++ ) {
 	  A[ LDA*i+j ].real=a[ (*lda)*j+i ].real;
@@ -573,7 +573,7 @@ void F77_ctrsv(int *order, char *uplow, char *transp, char *diagn,
 
   if (*order == TEST_ROW_MJR) {
      LDA = *n+1;
-     A =(CBLAS_TEST_COMPLEX* )malloc((*n)*LDA*sizeof(CBLAS_TEST_COMPLEX ) );
+     A =(CBLAS_TEST_COMPLEX* )malloc((*n)*(size_t)LDA*sizeof(CBLAS_TEST_COMPLEX ) );
      for( i=0; i<*n; i++ )
         for( j=0; j<*n; j++ ) {
            A[ LDA*i+j ].real=a[ (*lda)*j+i ].real;
@@ -601,8 +601,8 @@ void F77_chpr(int *order, char *uplow, int *n, float *alpha,
         cblas_chpr(CblasRowMajor, UNDEFINED, *n, *alpha, x, *incx, ap );
      else {
         LDA = *n;
-        A = (CBLAS_TEST_COMPLEX* )malloc(LDA*LDA*sizeof(CBLAS_TEST_COMPLEX ) );
-        AP = ( CBLAS_TEST_COMPLEX* )malloc( (((LDA+1)*LDA)/2)*
+        A = (CBLAS_TEST_COMPLEX* )malloc((size_t)LDA*LDA*sizeof(CBLAS_TEST_COMPLEX ) );
+        AP = ( CBLAS_TEST_COMPLEX* )malloc( ((((size_t)LDA+1)*LDA)/2)*
 		sizeof( CBLAS_TEST_COMPLEX ));
         if (uplo == CblasUpper) {
            for( j=0, k=0; j<*n; j++ )
@@ -678,8 +678,8 @@ void F77_chpr2(int *order, char *uplow, int *n, CBLAS_TEST_COMPLEX *alpha,
 		     *incy, ap );
      else {
         LDA = *n;
-        A=(CBLAS_TEST_COMPLEX*)malloc( LDA*LDA*sizeof(CBLAS_TEST_COMPLEX ) );
-        AP=(CBLAS_TEST_COMPLEX*)malloc( (((LDA+1)*LDA)/2)*
+        A=(CBLAS_TEST_COMPLEX*)malloc( (size_t)LDA*LDA*sizeof(CBLAS_TEST_COMPLEX ) );
+        AP=(CBLAS_TEST_COMPLEX*)malloc( ((((size_t)LDA+1)*LDA)/2)*
 	sizeof( CBLAS_TEST_COMPLEX ));
         if (uplo == CblasUpper) {
            for( j=0, k=0; j<*n; j++ )
@@ -750,7 +750,7 @@ void F77_cher(int *order, char *uplow, int *n, float *alpha,
 
   if (*order == TEST_ROW_MJR) {
      LDA = *n+1;
-     A=(CBLAS_TEST_COMPLEX*)malloc((*n)*LDA*sizeof( CBLAS_TEST_COMPLEX ));
+     A=(CBLAS_TEST_COMPLEX*)malloc((*n)*(size_t)LDA*sizeof( CBLAS_TEST_COMPLEX ));
 
      for( i=0; i<*n; i++ )
        for( j=0; j<*n; j++ ) {
@@ -784,7 +784,7 @@ void F77_cher2(int *order, char *uplow, int *n, CBLAS_TEST_COMPLEX *alpha,
 
   if (*order == TEST_ROW_MJR) {
      LDA = *n+1;
-     A= ( CBLAS_TEST_COMPLEX* )malloc((*n)*LDA*sizeof(CBLAS_TEST_COMPLEX ) );
+     A= ( CBLAS_TEST_COMPLEX* )malloc((*n)*(size_t)LDA*sizeof(CBLAS_TEST_COMPLEX ) );
 
      for( i=0; i<*n; i++ )
        for( j=0; j<*n; j++ ) {

@@ -222,8 +222,8 @@
                CALL CUNGQR( M, N, K, A, LDA, TAU, WORK, -1, IINFO )
             ELSE
                IF( M.GT.1 ) THEN
-                  CALL CUNGQR( M-1, M-1, M-1, A( 2, 2 ), LDA, TAU, WORK,
-     $                         -1, IINFO )
+                  CALL CUNGQR( M-1, M-1, M-1, A, LDA, TAU, WORK, -1,
+     $                         IINFO )
                END IF
             END IF
          ELSE
@@ -231,8 +231,8 @@
                CALL CUNGLQ( M, N, K, A, LDA, TAU, WORK, -1, IINFO )
             ELSE
                IF( N.GT.1 ) THEN
-                  CALL CUNGLQ( N-1, N-1, N-1, A( 2, 2 ), LDA, TAU, WORK,
-     $                         -1, IINFO )
+                  CALL CUNGLQ( N-1, N-1, N-1, A, LDA, TAU, WORK, -1,
+     $                         IINFO )
                END IF
             END IF
          END IF

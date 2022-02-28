@@ -449,19 +449,19 @@
 *                       Form the inverse of A.
 *
                         CALL CPOTRI( UPLO, N, A, LDA, INFO )
+
+                        IF ( N .NE. 0 ) THEN
 *
-*                       Compute the 1-norm condition number of A.
+*                          Compute the 1-norm condition number of A.
 *
-      					IF ( N .NE. 0 ) THEN
                            AINVNM = CLANHE( '1', UPLO, N, A, LDA,
      +                           S_WORK_CLANHE )
                            RCONDC = ( ONE / ANORM ) / AINVNM
 *
 *                          Restore the matrix A.
 *
-                        CALL CLACPY( UPLO, N, N, ASAV, LDA, A, LDA )
+                           CALL CLACPY( UPLO, N, N, ASAV, LDA, A, LDA )
                         END IF
-
 *
                      END IF
 *

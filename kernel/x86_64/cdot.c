@@ -27,14 +27,13 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 #include "common.h"
-#include <complex.h>
 
 
 #if defined(BULLDOZER)
 #include "cdot_microk_bulldozer-2.c"
 #elif defined(STEAMROLLER) || defined(PILEDRIVER)  || defined(EXCAVATOR)
 #include "cdot_microk_steamroller-2.c"
-#elif defined(HASWELL) || defined(ZEN) || defined (SKYLAKEX) || defined (COOPERLAKE)
+#elif defined(HASWELL) || defined(ZEN) || defined (SKYLAKEX) || defined (COOPERLAKE) || defined (SAPPHIRERAPIDS)
 #include "cdot_microk_haswell-2.c"
 #elif defined(SANDYBRIDGE)
 #include "cdot_microk_sandy-2.c"

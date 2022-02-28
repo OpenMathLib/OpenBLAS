@@ -222,8 +222,8 @@
                CALL ZUNGQR( M, N, K, A, LDA, TAU, WORK, -1, IINFO )
             ELSE
                IF( M.GT.1 ) THEN
-                  CALL ZUNGQR( M-1, M-1, M-1, A( 2, 2 ), LDA, TAU, WORK,
-     $                         -1, IINFO )
+                  CALL ZUNGQR( M-1, M-1, M-1, A, LDA, TAU, WORK, -1,
+     $                         IINFO )
                END IF
             END IF
          ELSE
@@ -231,8 +231,8 @@
                CALL ZUNGLQ( M, N, K, A, LDA, TAU, WORK, -1, IINFO )
             ELSE
                IF( N.GT.1 ) THEN
-                  CALL ZUNGLQ( N-1, N-1, N-1, A( 2, 2 ), LDA, TAU, WORK,
-     $                         -1, IINFO )
+                  CALL ZUNGLQ( N-1, N-1, N-1, A, LDA, TAU, WORK, -1,
+     $                         IINFO )
                END IF
             END IF
          END IF

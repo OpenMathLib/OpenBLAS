@@ -52,15 +52,15 @@ ZGEMMOTCOPYOBJ =  zgemm_otcopy$(TSUFFIX).$(SUFFIX)
 ZGEMMINCOPYOBJ =  zgemm_incopy$(TSUFFIX).$(SUFFIX)
 ZGEMMITCOPYOBJ =  zgemm_itcopy$(TSUFFIX).$(SUFFIX)
 
-STRSMKERNEL_LN	=  ../generic/trsm_kernel_LN.c
-STRSMKERNEL_LT	=  ../generic/trsm_kernel_LT.c
-STRSMKERNEL_RN	=  ../generic/trsm_kernel_RN.c
-STRSMKERNEL_RT	=  ../generic/trsm_kernel_RT.c
+STRSMKERNEL_LN	= trsm_kernel_LN_power10.c
+STRSMKERNEL_LT	= trsm_kernel_LT_power10.c
+STRSMKERNEL_RN	= trsm_kernel_RN_power10.c
+STRSMKERNEL_RT	= trsm_kernel_RT_power10.c
 
-DTRSMKERNEL_LN	= ../generic/trsm_kernel_LN.c
+DTRSMKERNEL_LN	= trsm_kernel_LN_power10.c
 DTRSMKERNEL_LT	= dtrsm_kernel_LT_16x4_power8.S
-DTRSMKERNEL_RN	= ../generic/trsm_kernel_RN.c
-DTRSMKERNEL_RT	= ../generic/trsm_kernel_RT.c
+DTRSMKERNEL_RN	= trsm_kernel_RN_power10.c
+DTRSMKERNEL_RT	= trsm_kernel_RT_power10.c
 
 CTRSMKERNEL_LN	= ../generic/trsm_kernel_LN.c
 CTRSMKERNEL_LT	= ../generic/trsm_kernel_LT.c
@@ -166,8 +166,13 @@ ZROTKERNEL   = zrot.c
 #
 SSCALKERNEL  = sscal.c
 DSCALKERNEL  = dscal.c
+ifeq ($(C_COMPILER), PGI)
+CSCALKERNEL  = ../arm/zscal.c
+ZSCALKERNEL  = ../arm/zscal.c
+else
 CSCALKERNEL  = zscal.c
 ZSCALKERNEL  = zscal.c
+endif
 #
 SSWAPKERNEL  = sswap.c
 DSWAPKERNEL  = dswap.c

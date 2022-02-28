@@ -2,7 +2,7 @@
 
 [![Join the chat at https://gitter.im/xianyi/OpenBLAS](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/xianyi/OpenBLAS?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-Travis CI: [![Build Status](https://travis-ci.org/xianyi/OpenBLAS.svg?branch=develop)](https://travis-ci.org/xianyi/OpenBLAS)
+Travis CI: [![Build Status](https://travis-ci.com/xianyi/OpenBLAS.svg?branch=develop)](https://travis-ci.com/xianyi/OpenBLAS)
 
 AppVeyor: [![Build status](https://ci.appveyor.com/api/projects/status/09sohd35n8nkkx64/branch/develop?svg=true)](https://ci.appveyor.com/project/xianyi/openblas/branch/develop)
 
@@ -13,9 +13,13 @@ Drone CI: [![Build Status](https://cloud.drone.io/api/badges/xianyi/OpenBLAS/sta
 
 ## Introduction
 
-OpenBLAS is an optimized BLAS library based on GotoBLAS2 1.13 BSD version.
+OpenBLAS is an optimized BLAS (Basic Linear Algebra Subprograms) library based on GotoBLAS2 1.13 BSD version.
 
 Please read the documentation on the OpenBLAS wiki pages: <https://github.com/xianyi/OpenBLAS/wiki>.
+
+For a general introduction to the BLAS routines, please refer to the extensive documentation of their reference implementation hosted at netlib:
+<https://www.netlib.org/blas>. On that site you will likewise find documentation for the reference implementation of the higher-level library LAPACK - the **L**inear **A**lgebra **Pack**age that comes included with OpenBLAS. If you are looking for a general primer or refresher on Linear Algebra, the set of six
+20-minute lecture videos by Prof. Gilbert Strang on either MIT OpenCourseWare <https://ocw.mit.edu/resources/res-18-010-a-2020-vision-of-linear-algebra-spring-2020/> or Youtube <https://www.youtube.com/playlist?list=PLUl4u3cNGP61iQEFiWLE21EJCxwmWvvek> may be helpful.
 
 ## Binary Packages
 
@@ -23,7 +27,7 @@ We provide official binary packages for the following platform:
 
   * Windows x86/x86_64
 
-You can download them from [file hosting on sourceforge.net](https://sourceforge.net/projects/openblas/files/).
+You can download them from [file hosting on sourceforge.net](https://sourceforge.net/projects/openblas/files/) or from the Releases section of the github project page, [https://github.com/xianyi/OpenBLAS/releases](https://github.com/xianyi/OpenBLAS/releases).
 
 ## Installation from Source
 
@@ -124,6 +128,7 @@ Please read `GotoBLAS_01Readme.txt` for older CPU models already supported by th
 - **Intel Sandy Bridge**: Optimized Level-3 and Level-2 BLAS with AVX on x86-64.
 - **Intel Haswell**: Optimized Level-3 and Level-2 BLAS with AVX2 and FMA on x86-64.
 - **Intel Skylake-X**: Optimized Level-3 and Level-2 BLAS with AVX512 and FMA on x86-64.
+- **Intel Cooper Lake**: as Skylake-X with improved BFLOAT16 support.
 - **AMD Bobcat**: Used GotoBLAS2 Barcelona codes.
 - **AMD Bulldozer**: x86-64 ?GEMM FMA4 kernels. (Thanks to Werner Saar)
 - **AMD PILEDRIVER**: Uses Bulldozer codes with some optimizations.
@@ -149,6 +154,7 @@ Please read `GotoBLAS_01Readme.txt` for older CPU models already supported by th
 
 - **ARMv8**: Basic ARMV8 with small caches, optimized Level-3 and Level-2 BLAS
 - **Cortex-A53**: same as ARMV8 (different cpu specifications)
+- **Cortex-A55**: same as ARMV8 (different cpu specifications)
 - **Cortex A57**: Optimized Level-3 and Level-2 functions
 - **Cortex A72**: same as A57 ( different cpu specifications)
 - **Cortex A73**: same as A57 (different cpu specifications)
@@ -174,10 +180,11 @@ Please read `GotoBLAS_01Readme.txt` for older CPU models already supported by th
 
 #### RISC-V
 
-- **C910V**: Optimized Leve-3 BLAS (real) and Level-1,2 by RISC-V Vector extension 0.7.1.
+- **C910V**: Optimized Level-3 BLAS (real) and Level-1,2 by RISC-V Vector extension 0.7.1.
   ```sh
   make HOSTCC=gcc TARGET=C910V CC=riscv64-unknown-linux-gnu-gcc FC=riscv64-unknown-linux-gnu-gfortran
   ```
+  (also known to work on C906)
 
 ### Support for multiple targets in a single library
 
@@ -208,7 +215,8 @@ Please note that it is not possible to combine support for different architectur
 - **Android**: Supported by the community. Please read <https://github.com/xianyi/OpenBLAS/wiki/How-to-build-OpenBLAS-for-Android>.
 - **AIX**: Supported on PPC up to POWER8
 - **Haiku**: Supported by the community. We don't actively test the library on this OS.
-- **SunOS**: Supported by the community. We don't actively test the library on this OS:
+- **SunOS**: Supported by the community. We don't actively test the library on this OS.
+- **Cortex-M**: Supported by the community. Please read <https://github.com/xianyi/OpenBLAS/wiki/How-to-use-OpenBLAS-on-Cortex-M>.
 
 ## Usage
 

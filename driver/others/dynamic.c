@@ -292,6 +292,7 @@ extern gotoblas_t  gotoblas_COOPERLAKE;
 #define VENDOR_AMD        2
 #define VENDOR_CENTAUR    3
 #define VENDOR_HYGON	  4
+#define VENDOR_ZHAOXIN    5
 #define VENDOR_UNKNOWN   99
 
 #define BITMASK(a, b, c) ((((a) >> (b)) & (c)))
@@ -404,6 +405,7 @@ static int get_vendor(void){
   if (!strcmp(vendor.vchar, "GenuineIntel")) return VENDOR_INTEL;
   if (!strcmp(vendor.vchar, "AuthenticAMD")) return VENDOR_AMD;
   if (!strcmp(vendor.vchar, "CentaurHauls")) return VENDOR_CENTAUR;
+  if (!strcmp(vendor.vchar, "  Shanghai  ")) return VENDOR_ZHAOXIN;
   if (!strcmp(vendor.vchar, "HygonGenuine")) return VENDOR_HYGON;
 
   if ((eax == 0) || ((eax & 0x500) != 0)) return VENDOR_INTEL;
@@ -414,7 +416,7 @@ static int get_vendor(void){
 static gotoblas_t *get_coretype(void){
 
   int eax, ebx, ecx, edx;
-  int family, exfamily, model, vendor, exmodel;
+  int family, exfamily, model, vendor, exmodel, stepping;
 
   cpuid(1, &eax, &ebx, &ecx, &edx);
 
@@ -422,6 +424,7 @@ static gotoblas_t *get_coretype(void){
   exfamily = BITMASK(eax, 20, 0xff);
   model    = BITMASK(eax,  4, 0x0f);
   exmodel  = BITMASK(eax, 16, 0x0f);
+  stepping = BITMASK(eax,  0, 0x0f);
 
   vendor = get_vendor();
 
@@ -621,11 +624,27 @@ static gotoblas_t *get_coretype(void){
 	    return &gotoblas_NEHALEM;
 	  }
         }
+	if (model == 10 || model == 12){
+          // Ice Lake SP
+	   if(support_avx512_bf16())
+             return &gotoblas_COOPERLAKE;
+          if (support_avx512()) 
+	    return &gotoblas_SKYLAKEX;
+	  if(support_avx2())
+	    return &gotoblas_HASWELL;
+	  if(support_avx()) {
+	    openblas_warning(FALLBACK_VERBOSE, SANDYBRIDGE_FALLBACK);
+	    return &gotoblas_SANDYBRIDGE;
+	  } else {
+	    openblas_warning(FALLBACK_VERBOSE, NEHALEM_FALLBACK);
+	    return &gotoblas_NEHALEM;
+	  }
+        }
         return NULL;  
       case 7:
 	if (model == 10) // Goldmont Plus
 	   return &gotoblas_NEHALEM;
-        if (model == 14) {
+        if (model == 13 || model == 14) {
 	// Ice Lake
           if (support_avx512()) 
 	    return &gotoblas_SKYLAKEX;
@@ -642,8 +661,22 @@ static gotoblas_t *get_coretype(void){
           }
         }
         return NULL;  
-      case 9:
       case 8:
+        if (model == 12 || model == 13) { // Tiger Lake
+          if (support_avx512()) 
+            return &gotoblas_SKYLAKEX;
+          if(support_avx2()){
+            openblas_warning(FALLBACK_VERBOSE, HASWELL_FALLBACK);
+            return &gotoblas_HASWELL;
+          }
+          if(support_avx()) {
+            openblas_warning(FALLBACK_VERBOSE, SANDYBRIDGE_FALLBACK);
+            return &gotoblas_SANDYBRIDGE;
+          } else {
+          openblas_warning(FALLBACK_VERBOSE, NEHALEM_FALLBACK);
+          return &gotoblas_NEHALEM;
+          }
+        }
 	if (model == 14 ) { // Kaby Lake, Coffee Lake
 	  if(support_avx2())
 	    return &gotoblas_HASWELL;
@@ -655,8 +688,42 @@ static gotoblas_t *get_coretype(void){
 	    return &gotoblas_NEHALEM; //OS doesn't support AVX. Use old kernels.
 	  }
 	}
-      case 10:
-    if (model == 5 || model == 6) {
+	if (model == 15){          // Sapphire Rapids
+	   if(support_avx512_bf16())
+             return &gotoblas_COOPERLAKE;
+          if (support_avx512()) 
+	    return &gotoblas_SKYLAKEX;
+	  if(support_avx2())
+	    return &gotoblas_HASWELL;
+	  if(support_avx()) {
+	    openblas_warning(FALLBACK_VERBOSE, SANDYBRIDGE_FALLBACK);
+	    return &gotoblas_SANDYBRIDGE;
+	  } else {
+	    openblas_warning(FALLBACK_VERBOSE, NEHALEM_FALLBACK);
+	    return &gotoblas_NEHALEM;
+	  }
+        }
+	return NULL;
+	
+	
+      case 9:
+        if (model == 7 || model == 10) { // Alder Lake
+	   if(support_avx512_bf16())
+             return &gotoblas_COOPERLAKE;
+          if (support_avx512()) 
+	    return &gotoblas_SKYLAKEX;
+          if(support_avx2()){
+            return &gotoblas_HASWELL;
+          }
+          if(support_avx()) {
+            openblas_warning(FALLBACK_VERBOSE, SANDYBRIDGE_FALLBACK);
+            return &gotoblas_SANDYBRIDGE;
+          } else {
+          openblas_warning(FALLBACK_VERBOSE, NEHALEM_FALLBACK);
+          return &gotoblas_NEHALEM;
+          }
+        }
+	if (model == 14 ) { // Kaby Lake, Coffee Lake
 	  if(support_avx2())
 	    return &gotoblas_HASWELL;
 	  if(support_avx()) {
@@ -666,7 +733,33 @@ static gotoblas_t *get_coretype(void){
 	    openblas_warning(FALLBACK_VERBOSE, NEHALEM_FALLBACK);
 	    return &gotoblas_NEHALEM; //OS doesn't support AVX. Use old kernels.
 	  }
-    }
+	}
+	return NULL;
+      case 10:
+        if (model == 5 || model == 6) {
+	  if(support_avx2())
+	    return &gotoblas_HASWELL;
+	  if(support_avx()) {
+	    openblas_warning(FALLBACK_VERBOSE, SANDYBRIDGE_FALLBACK);
+	    return &gotoblas_SANDYBRIDGE;
+	  } else {
+	    openblas_warning(FALLBACK_VERBOSE, NEHALEM_FALLBACK);
+	    return &gotoblas_NEHALEM; //OS doesn't support AVX. Use old kernels.
+	  }
+        }
+        if (model == 7) {
+	  if (support_avx512()) 
+	    return &gotoblas_SKYLAKEX;
+	  if(support_avx2())
+	    return &gotoblas_HASWELL;
+	  if(support_avx()) {
+	    openblas_warning(FALLBACK_VERBOSE, SANDYBRIDGE_FALLBACK);
+	    return &gotoblas_SANDYBRIDGE;
+	  } else {
+	    openblas_warning(FALLBACK_VERBOSE, NEHALEM_FALLBACK);
+	    return &gotoblas_NEHALEM; //OS doesn't support AVX. Use old kernels.
+	  }
+        }      
 	return NULL;
       }
       case 0xf:
@@ -779,8 +872,17 @@ static gotoblas_t *get_coretype(void){
   if (vendor == VENDOR_CENTAUR) {
     switch (family) {
     case 0x6:
-      return &gotoblas_NANO;
+      if (model == 0xf && stepping < 0xe)
+        return &gotoblas_NANO;
+      return &gotoblas_NEHALEM;
+    default:
+      if (family >= 0x7)
+        return &gotoblas_NEHALEM;
     }
+  }
+
+  if (vendor == VENDOR_ZHAOXIN) {
+      return &gotoblas_NEHALEM;
   }
 
   return NULL;
@@ -962,7 +1064,13 @@ void gotoblas_dynamic_init(void) {
 #ifdef ARCH_X86
   if (gotoblas == NULL) gotoblas = &gotoblas_KATMAI;
 #else
-  if (gotoblas == NULL) gotoblas = &gotoblas_PRESCOTT;
+  if (gotoblas == NULL) {
+   if (support_avx512_bf16()) gotoblas = &gotoblas_COOPERLAKE;
+   else if (support_avx512()) gotoblas = &gotoblas_SKYLAKEX;
+   else if   (support_avx2()) gotoblas = &gotoblas_HASWELL;
+   else if    (support_avx()) gotoblas = &gotoblas_SANDYBRIDGE;
+   else                       gotoblas = &gotoblas_PRESCOTT;
+  }
   /* sanity check, if 64bit pointer we can't have a 32 bit cpu */
   if (sizeof(void*) == 8) {
       if (gotoblas == &gotoblas_KATMAI ||

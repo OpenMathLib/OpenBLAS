@@ -599,10 +599,10 @@
 *                 Restore the matrices A and B.
 *
                   IF( IFACT.EQ.2 )
-     $               CALL ZLASET( UPLO, N, N, CMPLX( ZERO ),
-     $                 CMPLX( ZERO ), AFAC, LDA )
-                  CALL ZLASET( 'Full', N, NRHS, CMPLX( ZERO ),
-     $                 CMPLX( ZERO ), X, LDA )
+     $               CALL ZLASET( UPLO, N, N, DCMPLX( ZERO ),
+     $                 DCMPLX( ZERO ), AFAC, LDA )
+                  CALL ZLASET( 'Full', N, NRHS, DCMPLX( ZERO ),
+     $                 DCMPLX( ZERO ), X, LDA )
 *
 *                 Solve the system and compute the condition number
 *                 and error bounds using ZHESVXX.

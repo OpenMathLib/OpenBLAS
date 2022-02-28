@@ -32,7 +32,7 @@ export NOFORTRAN
 export NO_LAPACK
 endif
 
-LAPACK_NOOPT := $(filter-out -O0 -O1 -O2 -O3 -Ofast,$(LAPACK_FFLAGS))
+LAPACK_NOOPT := $(filter-out -O0 -O1 -O2 -O3 -Ofast -O -Og -Os,$(LAPACK_FFLAGS))
 
 SUBDIRS_ALL = $(SUBDIRS) test ctest utest exports benchmark ../laswp ../bench cpp_thread_test
 
@@ -59,6 +59,9 @@ endif
 	@$(CC) --version > /dev/null 2>&1;\
 	if [ $$? -eq 0 ]; then \
 	   cverinfo=`$(CC) --version | sed -n '1p'`; \
+	   if [ -z "$${cverinfo}" ]; then \
+	   cverinfo=`$(CC) --version | sed -n '2p'`; \
+	   fi; \
 	   echo "  C compiler       ... $(C_COMPILER)  (cmd & version : $${cverinfo})";\
 	else  \
 	   echo "  C compiler       ... $(C_COMPILER)  (command line : $(CC))";\
@@ -67,6 +70,9 @@ ifeq ($(NOFORTRAN), $(filter 0,$(NOFORTRAN)))
 	@$(FC) --version > /dev/null 2>&1;\
 	if [ $$? -eq 0 ]; then \
 	   fverinfo=`$(FC) --version | sed -n '1p'`; \
+	   if [ -z "$${fverinfo}" ]; then \
+	   fverinfo=`$(FC) --version | sed -n '2p'`; \
+	   fi; \
 	   echo "  Fortran compiler ... $(F_COMPILER)  (cmd & version : $${fverinfo})";\
 	else \
 	   echo "  Fortran compiler ... $(F_COMPILER)  (command line : $(FC))";\
@@ -161,7 +167,6 @@ ifeq ($(NO_SHARED), 1)
 	$(error OpenBLAS: neither static nor shared are enabled.)
 endif
 endif
-	@-ln -fs $(LIBNAME) $(LIBPREFIX).$(LIBSUFFIX)
 	@for d in $(SUBDIRS) ; \
 	do if test -d $$d; then \
 	  $(MAKE) -C $$d $(@F) || exit 1 ; \
@@ -190,6 +195,7 @@ endif
 ifdef USE_THREAD
 	@echo USE_THREAD=$(USE_THREAD) >>  Makefile.conf_last
 endif
+	@-ln -fs $(LIBNAME) $(LIBPREFIX).$(LIBSUFFIX)
 	@touch lib.grd
 
 prof : prof_blas prof_lapack
@@ -263,7 +269,7 @@ prof_lapack : lapack_prebuild
 lapack_prebuild :
 ifeq ($(NOFORTRAN), $(filter 0,$(NOFORTRAN)))
 	-@echo "FC          = $(FC)" > $(NETLIB_LAPACK_DIR)/make.inc
-	-@echo "FFLAGS      = $(LAPACK_FFLAGS)" >> $(NETLIB_LAPACK_DIR)/make.inc
+	-@echo "override FFLAGS      = $(LAPACK_FFLAGS)" >> $(NETLIB_LAPACK_DIR)/make.inc
 	-@echo "FFLAGS_DRV  = $(LAPACK_FFLAGS)" >> $(NETLIB_LAPACK_DIR)/make.inc
 	-@echo "POPTS       = $(LAPACK_FPFLAGS)" >> $(NETLIB_LAPACK_DIR)/make.inc
 	-@echo "FFLAGS_NOOPT       = -O0 $(LAPACK_NOOPT)" >> $(NETLIB_LAPACK_DIR)/make.inc

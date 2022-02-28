@@ -40,18 +40,27 @@ static void dgemv_kernel_4x4 (long n, double *ap, long lda, double *x, double *y
        XXSPLTD_S(32,%x9,0)	// alpha, alpha
 
        "sldi		%6, %13, 3	\n\t"	// lda * sizeof (double)
-
+#if (__BYTE_ORDER__ == __ORDER_BIG_ENDIAN__)
+       "xvmuldp     34, 40, 32  \n\t"   // x0 * alpha, x1 * alpha
+       "xvmuldp     35, 41, 32  \n\t"	// x2 * alpha, x3 * alpha
+#else
        "xvmuldp		34, 41, 32	\n\t"	// x0 * alpha, x1 * alpha
        "xvmuldp		35, 40, 32	\n\t"	// x2 * alpha, x3 * alpha
+#endif
 
        "add		%4, %3, %6	\n\t"	// a0 = ap, a1 = a0 + lda
        "add		%6, %6, %6	\n\t"	// 2 * lda
-
+#if (__BYTE_ORDER__ == __ORDER_BIG_ENDIAN__)
+       XXSPLTD_S(32,34,0)   // x0 * alpha, x0 * alpha
+       XXSPLTD_S(33,34,1)   // x1 * alpha, x1 * alpha
+       XXSPLTD_S(34,35,0)   // x2 * alpha, x2 * alpha
+       XXSPLTD_S(35,35,1)   // x3 * alpha, x3 * alpha
+#else
        XXSPLTD_S(32,34,1)	// x0 * alpha, x0 * alpha
        XXSPLTD_S(33,34,0)	// x1 * alpha, x1 * alpha
        XXSPLTD_S(34,35,1)	// x2 * alpha, x2 * alpha
        XXSPLTD_S(35,35,0)	// x3 * alpha, x3 * alpha
-
+#endif
        "add		%5, %3, %6	\n\t"	// a2 = a0 + 2 * lda
        "add		%6, %4, %6	\n\t"	// a3 = a1 + 2 * lda
 
@@ -286,6 +295,16 @@ static void dgemv_kernel_4x8 (long n, double *ap, long lda, double *x, double *y
 
        "add		%4, %3, %10	\n\t"	// a0 = ap, a1 = a0 + lda
        "add		%10, %10, %10	\n\t"	// 2 * lda
+#if (__BYTE_ORDER__ == __ORDER_BIG_ENDIAN__)
+       XXSPLTD_S(32,34,0)       // x0 * alpha, x0 * alpha
+       XXSPLTD_S(33,34,1)       // x1 * alpha, x1 * alpha
+       XXSPLTD_S(34,35,0)       // x2 * alpha, x2 * alpha
+       XXSPLTD_S(35,35,1)       // x3 * alpha, x3 * alpha
+       XXSPLTD_S(48,39,0)       // x6 * alpha, x6 * alpha
+       XXSPLTD_S(49,39,1)       // x7 * alpha, x7 * alpha
+       XXSPLTD_S(39,38,1)       // x5 * alpha, x5 * alpha
+       XXSPLTD_S(38,38,0)       // x4 * alpha, x4 * alpha
+#else
        XXSPLTD_S(32,34,1)       // x0 * alpha, x0 * alpha
        XXSPLTD_S(33,34,0)       // x1 * alpha, x1 * alpha
        XXSPLTD_S(34,35,1)       // x2 * alpha, x2 * alpha
@@ -294,6 +313,7 @@ static void dgemv_kernel_4x8 (long n, double *ap, long lda, double *x, double *y
        XXSPLTD_S(49,39,0)       // x7 * alpha, x7 * alpha
        XXSPLTD_S(39,38,0)       // x5 * alpha, x5 * alpha
        XXSPLTD_S(38,38,1)       // x4 * alpha, x4 * alpha
+#endif
 
        "add		%5, %3, %10	\n\t"	// a2 = a0 + 2 * lda
        "add		%6, %4, %10	\n\t"	// a3 = a1 + 2 * lda
@@ -319,30 +339,69 @@ static void dgemv_kernel_4x8 (long n, double *ap, long lda, double *x, double *y
      "one%=:				\n\t"
 
        "lxvp		36, 0( %2)	\n\t"	// y0, y1
-
+#if (__BYTE_ORDER__ == __ORDER_BIG_ENDIAN__)
+       "xvmaddadp       36, 40, 32      \n\t"
+       "xvmaddadp       37, 41, 32      \n\t"
+#else
        "xvmaddadp       36, 40, 34      \n\t"
        "xvmaddadp       37, 41, 34      \n\t"
+#endif
        "lxvpx		40, %3, %11	\n\t"	// a0[0], a0[1]
+#if (__BYTE_ORDER__ == __ORDER_BIG_ENDIAN__)
+       "xvmaddadp       36, 42, 33      \n\t"
+       "xvmaddadp       37, 43, 33      \n\t"
+#else
        "xvmaddadp       36, 42, 35      \n\t"
        "xvmaddadp       37, 43, 35      \n\t"
+#endif
        "lxvpx		42, %4, %11	\n\t"	// a1[0], a1[1]
+#if (__BYTE_ORDER__ == __ORDER_BIG_ENDIAN__)
+       "xvmaddadp       36, 44, 34      \n\t"
+       "xvmaddadp       37, 45, 34      \n\t"
+#else
        "xvmaddadp       36, 44, 32      \n\t"
        "xvmaddadp       37, 45, 32      \n\t"
+#endif
        "lxvpx		44, %5, %11	\n\t"	// a2[0], a2[1]
+#if (__BYTE_ORDER__ == __ORDER_BIG_ENDIAN__)
+       "xvmaddadp       36, 46, 35      \n\t"
+       "xvmaddadp       37, 47, 35      \n\t"
+#else
        "xvmaddadp       36, 46, 33      \n\t"
        "xvmaddadp       37, 47, 33      \n\t"
+#endif
        "lxvpx		46, %6, %11	\n\t"	// a3[0], a3[1]
+#if (__BYTE_ORDER__ == __ORDER_BIG_ENDIAN__)
+       "xvmaddadp       36, 50, 38      \n\t"
+       "xvmaddadp       37, 51, 38      \n\t"
+#else
        "xvmaddadp       36, 50, 48      \n\t"
        "xvmaddadp       37, 51, 48      \n\t"
+#endif
        "lxvpx		50, %7, %11	\n\t"	// a4[0]
+#if (__BYTE_ORDER__ == __ORDER_BIG_ENDIAN__)
+       "xvmaddadp       36, 52, 39      \n\t"
+       "xvmaddadp       37, 53, 39      \n\t"
+#else
        "xvmaddadp       36, 52, 49      \n\t"
        "xvmaddadp       37, 53, 49      \n\t"
+#endif
        "lxvpx		52, %8, %11	\n\t"	// a5[0]
+#if (__BYTE_ORDER__ == __ORDER_BIG_ENDIAN__)
+       "xvmaddadp       36, 54, 48      \n\t"
+       "xvmaddadp       37, 55, 48      \n\t"
+#else
        "xvmaddadp       36, 54, 38      \n\t"
        "xvmaddadp       37, 55, 38      \n\t"
+#endif
        "lxvpx		54, %9, %11	\n\t"	// a6[0]
+#if (__BYTE_ORDER__ == __ORDER_BIG_ENDIAN__)
+       "xvmaddadp       36, 56, 49      \n\t"
+       "xvmaddadp       37, 57, 49      \n\t"
+#else
        "xvmaddadp       36, 56, 39      \n\t"
        "xvmaddadp       37, 57, 39      \n\t"
+#endif
        "lxvpx		56, %10, %11	\n\t"	// a7[0]
        "addi		%11, %11, 32    \n\t"
 
@@ -355,6 +414,24 @@ static void dgemv_kernel_4x8 (long n, double *ap, long lda, double *x, double *y
      "two%=:				\n\t"
 
        "lxvp		36, 0( %2)	\n\t"	// y0, y1
+#if  (__BYTE_ORDER__ == __ORDER_BIG_ENDIAN__)
+       "xvmaddadp       36, 40, 32      \n\t"
+       "xvmaddadp       37, 41, 32      \n\t"
+       "xvmaddadp       36, 42, 33      \n\t"
+       "xvmaddadp       37, 43, 33      \n\t"
+       "xvmaddadp       36, 44, 34      \n\t"
+       "xvmaddadp       37, 45, 34      \n\t"
+       "xvmaddadp       36, 46, 35      \n\t"
+       "xvmaddadp       37, 47, 35      \n\t"
+       "xvmaddadp       36, 50, 38      \n\t"
+       "xvmaddadp       37, 51, 38      \n\t"
+       "xvmaddadp       36, 52, 39      \n\t"
+       "xvmaddadp       37, 53, 39      \n\t"
+       "xvmaddadp       36, 54, 48      \n\t"
+       "xvmaddadp       37, 55, 48      \n\t"
+       "xvmaddadp       36, 56, 49      \n\t"
+       "xvmaddadp       37, 57, 49      \n\t"
+#else
        "xvmaddadp       36, 40, 34      \n\t"
        "xvmaddadp       37, 41, 34      \n\t"
        "xvmaddadp       36, 42, 35      \n\t"
@@ -371,6 +448,7 @@ static void dgemv_kernel_4x8 (long n, double *ap, long lda, double *x, double *y
        "xvmaddadp       37, 55, 38      \n\t"
        "xvmaddadp       36, 56, 39      \n\t"
        "xvmaddadp       37, 57, 39      \n\t"
+#endif
        "stxvp		36, 0( %2)	\n\t"	// y0, y1
 
      :

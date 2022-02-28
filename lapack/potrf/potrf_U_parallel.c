@@ -110,7 +110,7 @@ blasint CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa,
       newarg.b = a + (i + (i + bk) * lda) * COMPSIZE;
 
       gemm_thread_n(mode | BLAS_TRANSA_T,
-		    &newarg, NULL, NULL, (void *)TRSM_LCUN, sa, sb, args -> nthreads);
+		    &newarg, NULL, NULL, (int (*)(void))TRSM_LCUN, sa, sb, args -> nthreads);
 
       newarg.n = n - i - bk;
       newarg.k = bk;
@@ -121,7 +121,7 @@ blasint CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa,
       HERK_THREAD_UC(&newarg, NULL, NULL, sa, sb, 0);
 #else
       syrk_thread(mode | BLAS_TRANSA_N | BLAS_TRANSB_T,
-		  &newarg, NULL, NULL, (void *)HERK_UC, sa, sb, args -> nthreads);
+		  &newarg, NULL, NULL, (int (*)(void))HERK_UC, sa, sb, args -> nthreads);
 #endif
     }
   }

@@ -1,8 +1,11 @@
 /* the direct sgemm code written by Arjan van der Ven */
-#include <immintrin.h>
 #include "common.h"
 
-#if defined(SKYLAKEX) || defined (COOPERLAKE)
+#if defined(SKYLAKEX) || defined (COOPERLAKE) || defined (SAPPHIRERAPIDS)
+
+#include <immintrin.h>
+
+
 /*
  * "Direct sgemm" code. This code operates directly on the inputs and outputs
  * of the sgemm call, avoiding the copies, memory realignments and threading,
@@ -469,7 +472,7 @@ void CNAME (BLASLONG M, BLASLONG N, BLASLONG K, float * __restrict A, BLASLONG s
 	}
 }
 #else
-#include "common.h"
+
 void CNAME (BLASLONG M, BLASLONG N, BLASLONG K, float * __restrict A, BLASLONG strideA, float * __restrict B, BLASLONG strideB , float * __restrict R, BLASLONG strideR)
 {}
 #endif

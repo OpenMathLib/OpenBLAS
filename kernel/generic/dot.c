@@ -47,7 +47,6 @@ FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG inc_y)
 
 	if ( (inc_x == 1) && (inc_y == 1) )
 	{
-        int n1 = n & -4;
 #if V_SIMD && !defined(DSDOT)
         const int vstep = v_nlanes_f32;
         const int unrollx4 = n & (-vstep * 4);
@@ -84,6 +83,7 @@ FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG inc_y)
         }
         dot = v_sum_f32(vsum0);
 #elif defined(DSDOT)
+        int n1 = n & -4;
 		for (; i < n1; i += 4)
 		{
 			dot += (double) y[i] * (double) x[i]
@@ -92,6 +92,7 @@ FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG inc_y)
 			    + (double) y[i+3] * (double) x[i+3] ;
 		}
 #else
+        int n1 = n & -4;
 		for (; i < n1; i += 4)
 		{
 			dot += y[i] * x[i]

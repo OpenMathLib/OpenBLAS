@@ -1,80 +1,234 @@
+ifneq ($(C_COMPILER), PGI)
+
+ifeq ($(C_COMPILER), CLANG)
+ISCLANG=1
+endif
+ifneq (1, $(filter 1,$(GCCVERSIONGT4) $(ISCLANG)))
+CCOMMON_OPT += -march=armv8-a
+ifneq ($(F_COMPILER), NAG)
+FCOMMON_OPT += -march=armv8-a
+endif
+
+
+else 
+
 
 ifeq ($(CORE), ARMV8)
 CCOMMON_OPT += -march=armv8-a
+ifneq ($(F_COMPILER), NAG)
 FCOMMON_OPT += -march=armv8-a
+endif
+endif
+
+ifeq ($(CORE), ARMV8SVE)
+CCOMMON_OPT += -march=armv8-a+sve
+ifneq ($(F_COMPILER), NAG)
+FCOMMON_OPT += -march=armv8-a+sve
+endif
 endif
 
 ifeq ($(CORE), CORTEXA53)
 CCOMMON_OPT += -march=armv8-a -mtune=cortex-a53
+ifneq ($(F_COMPILER), NAG)
 FCOMMON_OPT += -march=armv8-a -mtune=cortex-a53
+endif
 endif
 
 ifeq ($(CORE), CORTEXA57)
 CCOMMON_OPT += -march=armv8-a -mtune=cortex-a57
+ifneq ($(F_COMPILER), NAG)
 FCOMMON_OPT += -march=armv8-a -mtune=cortex-a57
+endif
 endif
 
 ifeq ($(CORE), CORTEXA72)
 CCOMMON_OPT += -march=armv8-a -mtune=cortex-a72
+ifneq ($(F_COMPILER), NAG)
 FCOMMON_OPT += -march=armv8-a -mtune=cortex-a72
+endif
 endif
 
 ifeq ($(CORE), CORTEXA73)
 CCOMMON_OPT += -march=armv8-a -mtune=cortex-a73
+ifneq ($(F_COMPILER), NAG)
 FCOMMON_OPT += -march=armv8-a -mtune=cortex-a73
+endif
 endif
 
 # Use a72 tunings because Neoverse-N1 is only available
 # in GCC>=9
 ifeq ($(CORE), NEOVERSEN1)
-ifeq ($(GCCVERSIONGTEQ7), 1)
+ifeq (1, $(filter 1,$(GCCVERSIONGTEQ7) $(ISCLANG)))
 ifeq ($(GCCVERSIONGTEQ9), 1)
 CCOMMON_OPT += -march=armv8.2-a -mtune=neoverse-n1
+ifneq ($(F_COMPILER), NAG)
 FCOMMON_OPT += -march=armv8.2-a -mtune=neoverse-n1
+endif
 else
 CCOMMON_OPT += -march=armv8.2-a -mtune=cortex-a72
+ifneq ($(F_COMPILER), NAG)
 FCOMMON_OPT += -march=armv8.2-a -mtune=cortex-a72
+endif
 endif
 else
 CCOMMON_OPT += -march=armv8-a -mtune=cortex-a72
+ifneq ($(F_COMPILER), NAG)
 FCOMMON_OPT += -march=armv8-a -mtune=cortex-a72
+endif
+endif
+endif
+
+# Use a72 tunings because Neoverse-V1 is only available
+# in GCC>=9.4
+ifeq ($(CORE), NEOVERSEV1)
+ifeq (1, $(filter 1,$(GCCVERSIONGTEQ7) $(ISCLANG)))
+ifeq ($(GCCVERSIONGTEQ9), 1)
+ifeq (1, $(filter 1,$(GCCMINORVERSIONGTEQ4) $(GCCVERSIONGTEQ10)))
+CCOMMON_OPT += -march=armv8.4-a -mtune=neoverse-v1
+ifneq ($(F_COMPILER), NAG)
+FCOMMON_OPT += -march=armv8.4-a -mtune=neoverse-v1
+endif
+else
+CCOMMON_OPT += -march=armv8.4-a -mtune=native
+ifneq ($(F_COMPILER), NAG)
+FCOMMON_OPT += -march=armv8.4-a -mtune=native
+endif
+endif
+else
+CCOMMON_OPT += -march=armv8.2-a -mtune=cortex-a72
+ifneq ($(F_COMPILER), NAG)
+FCOMMON_OPT += -march=armv8.2-a -mtune=cortex-a72
+endif
+endif
+else
+CCOMMON_OPT += -march=armv8-a -mtune=cortex-a72
+ifneq ($(F_COMPILER), NAG)
+FCOMMON_OPT += -march=armv8-a -mtune=cortex-a72
+endif
+endif
+endif
+
+# Use a72 tunings because Neoverse-N2 is only available
+# in GCC>=9.4
+ifeq ($(CORE), NEOVERSEN2)
+ifeq (1, $(filter 1,$(GCCVERSIONGTEQ7) $(ISCLANG)))
+ifeq ($(GCCVERSIONGTEQ9), 1)
+ifeq (1, $(filter 1,$(GCCMINORVERSIONGTEQ4) $(GCCVERSIONGTEQ10)))
+CCOMMON_OPT += -march=armv8.5-a -mtune=neoverse-n2
+ifneq ($(F_COMPILER), NAG)
+FCOMMON_OPT += -march=armv8.5-a -mtune=neoverse-n2
+endif
+else
+CCOMMON_OPT += -march=armv8.5-a -mtune=native
+ifneq ($(F_COMPILER), NAG)
+FCOMMON_OPT += -march=armv8.5-a -mtune=native
+endif
+endif
+else
+CCOMMON_OPT += -march=armv8.2-a -mtune=cortex-a72
+ifneq ($(F_COMPILER), NAG)
+FCOMMON_OPT += -march=armv8.2-a -mtune=cortex-a72
+endif
+endif
+else
+CCOMMON_OPT += -march=armv8-a -mtune=cortex-a72
+ifneq ($(F_COMPILER), NAG)
+FCOMMON_OPT += -march=armv8-a -mtune=cortex-a72
+endif
+endif
+endif
+
+# Use a53 tunings because a55 is only available in GCC>=8.1
+ifeq ($(CORE), CORTEXA55)
+ifeq (1, $(filter 1,$(GCCVERSIONGTEQ7) $(ISCLANG)))
+ifeq ($(GCCVERSIONGTEQ8), 1)
+CCOMMON_OPT += -march=armv8.2-a -mtune=cortex-a55
+ifneq ($(F_COMPILER), NAG)
+FCOMMON_OPT += -march=armv8.2-a -mtune=cortex-a55
+endif
+else
+CCOMMON_OPT += -march=armv8.2-a -mtune=cortex-a53
+ifneq ($(F_COMPILER), NAG)
+FCOMMON_OPT += -march=armv8.2-a -mtune=cortex-a53
+endif
+endif
+else
+CCOMMON_OPT += -march=armv8-a -mtune=cortex-a53
+ifneq ($(F_COMPILER), NAG)
+FCOMMON_OPT += -march=armv8-a -mtune=cortex-a53
+endif
 endif
 endif
 
 ifeq ($(CORE), THUNDERX)
 CCOMMON_OPT += -march=armv8-a -mtune=thunderx
+ifneq ($(F_COMPILER), NAG)
 FCOMMON_OPT += -march=armv8-a -mtune=thunderx
+endif
 endif
 
 ifeq ($(CORE), FALKOR)
 CCOMMON_OPT += -march=armv8-a -mtune=falkor
+ifneq ($(F_COMPILER), NAG)
 FCOMMON_OPT += -march=armv8-a -mtune=falkor
+endif
 endif
 
 ifeq ($(CORE), THUNDERX2T99)
 CCOMMON_OPT += -march=armv8.1-a -mtune=thunderx2t99
+ifneq ($(F_COMPILER), NAG)
 FCOMMON_OPT += -march=armv8.1-a -mtune=thunderx2t99
+endif
 endif
 
 ifeq ($(CORE), THUNDERX3T110)
 ifeq ($(GCCVERSIONGTEQ10), 1)
 CCOMMON_OPT += -march=armv8.3-a -mtune=thunderx3t110
+ifneq ($(F_COMPILER), NAG)
 FCOMMON_OPT += -march=armv8.3-a -mtune=thunderx3t110
+endif
 else
 CCOMMON_OPT += -march=armv8.1-a -mtune=thunderx2t99
+ifneq ($(F_COMPILER), NAG)
 FCOMMON_OPT += -march=armv8.1-a -mtune=thunderx2t99
+endif
 endif
 endif
 
 ifeq ($(CORE), VORTEX)
 CCOMMON_OPT += -march=armv8.3-a
+ifneq ($(F_COMPILER), NAG)
 FCOMMON_OPT += -march=armv8.3-a
 endif
+endif
 
-ifeq ($(GCCVERSIONGTEQ9), 1)
+ifeq (1, $(filter 1,$(GCCVERSIONGTEQ9) $(ISCLANG)))
 ifeq ($(CORE), TSV110)
 CCOMMON_OPT += -march=armv8.2-a -mtune=tsv110
+ifneq ($(F_COMPILER), NAG)
 FCOMMON_OPT += -march=armv8.2-a -mtune=tsv110
 endif
 endif
+endif
 
+ifeq ($(GCCVERSIONGTEQ9), 1)
+ifeq ($(CORE), EMAG8180)
+CCOMMON_OPT += -march=armv8-a -mtune=emag
+ifneq ($(F_COMPILER), NAG)
+FCOMMON_OPT += -march=armv8-a -mtune=emag
+endif
+endif
+endif
+
+ifeq (1, $(filter 1,$(GCCVERSIONGTEQ11) $(ISCLANG)))
+ifeq ($(CORE), A64FX)
+CCOMMON_OPT += -march=armv8.2-a+sve -mtune=a64fx
+ifneq ($(F_COMPILER), NAG)
+FCOMMON_OPT += -march=armv8.2-a+sve -mtune=a64fx
+endif
+endif
+endif
+
+endif
+
+endif

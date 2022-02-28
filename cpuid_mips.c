@@ -165,6 +165,7 @@ void get_cpuconfig(void){
   }else{
     printf("#define UNKNOWN\n");
   }
+  if (!get_feature("msa")) printf("#define NO_MSA\n");
 }
 
 void get_libname(void){
@@ -178,3 +179,38 @@ void get_libname(void){
     printf("mips\n");
   }
 }
+
+int get_feature(char *search)
+{
+
+#ifdef __linux
+        FILE *infile;
+        char buffer[2048], *p,*t;
+        p = (char *) NULL ;
+
+        infile = fopen("/proc/cpuinfo", "r");
+
+        while (fgets(buffer, sizeof(buffer), infile))
+        {
+
+                if (!strncmp("Features", buffer, 8) || !strncmp("ASEs implemented", buffer, 16))
+                {
+                        p = strchr(buffer, ':') + 2;
+                        break;
+                }
+        }
+
+        fclose(infile);
+
+        if( p == NULL ) return 0;
+
+        t = strtok(p," ");
+        while( t = strtok(NULL," "))
+        {
+                if (strstr(t, search))   { return(1); }
+        }
+
+#endif
+        return(0);
+}
+

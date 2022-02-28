@@ -112,6 +112,11 @@ gotoblas_t TABLE_NAME = {
 #else
   NULL,NULL,
 #endif
+#ifdef SMALL_MATRIX_OPT
+  sbgemm_small_matrix_permitTS,
+  sbgemm_small_kernel_nnTS, sbgemm_small_kernel_ntTS, sbgemm_small_kernel_tnTS, sbgemm_small_kernel_ttTS,
+  sbgemm_small_kernel_b0_nnTS, sbgemm_small_kernel_b0_ntTS, sbgemm_small_kernel_b0_tnTS, sbgemm_small_kernel_b0_ttTS,
+#endif
 #endif
 
 #if ( BUILD_SINGLE==1) || (BUILD_DOUBLE==1) || (BUILD_COMPLEX==1) || (BUILD_COMPLEX16==1)
@@ -169,6 +174,14 @@ gotoblas_t TABLE_NAME = {
   sgemm_oncopyTS, sgemm_otcopyTS,
 #endif
   sgemm_oncopyTS, sgemm_otcopyTS,
+#endif
+
+#if BUILD_SINGLE == 1
+#ifdef SMALL_MATRIX_OPT
+  sgemm_small_matrix_permitTS,
+  sgemm_small_kernel_nnTS, sgemm_small_kernel_ntTS, sgemm_small_kernel_tnTS, sgemm_small_kernel_ttTS,
+  sgemm_small_kernel_b0_nnTS, sgemm_small_kernel_b0_ntTS, sgemm_small_kernel_b0_tnTS, sgemm_small_kernel_b0_ttTS,
+#endif
 #endif
 
 #if (BUILD_SINGLE==1) || (BUILD_DOUBLE==1) 
@@ -257,6 +270,11 @@ gotoblas_t TABLE_NAME = {
 #endif
 
 #if  (BUILD_DOUBLE==1)  
+#ifdef SMALL_MATRIX_OPT
+  dgemm_small_matrix_permitTS,
+  dgemm_small_kernel_nnTS, dgemm_small_kernel_ntTS, dgemm_small_kernel_tnTS, dgemm_small_kernel_ttTS,
+  dgemm_small_kernel_b0_nnTS, dgemm_small_kernel_b0_ntTS, dgemm_small_kernel_b0_tnTS, dgemm_small_kernel_b0_ttTS,
+#endif
   dtrsm_kernel_LNTS, dtrsm_kernel_LTTS, dtrsm_kernel_RNTS, dtrsm_kernel_RTTS,
 #if DGEMM_DEFAULT_UNROLL_M != DGEMM_DEFAULT_UNROLL_N
   dtrsm_iunucopyTS, dtrsm_iunncopyTS, dtrsm_iutucopyTS, dtrsm_iutncopyTS,
@@ -388,6 +406,18 @@ gotoblas_t TABLE_NAME = {
   cgemm_oncopyTS, cgemm_otcopyTS,
 #endif
   cgemm_oncopyTS, cgemm_otcopyTS,
+
+#ifdef SMALL_MATRIX_OPT
+  cgemm_small_matrix_permitTS,
+  cgemm_small_kernel_nnTS, cgemm_small_kernel_ntTS, cgemm_small_kernel_nrTS, cgemm_small_kernel_ncTS,
+  cgemm_small_kernel_tnTS, cgemm_small_kernel_ttTS, cgemm_small_kernel_trTS, cgemm_small_kernel_tcTS,
+  cgemm_small_kernel_rnTS, cgemm_small_kernel_rtTS, cgemm_small_kernel_rrTS, cgemm_small_kernel_rcTS,
+  cgemm_small_kernel_cnTS, cgemm_small_kernel_ctTS, cgemm_small_kernel_crTS, cgemm_small_kernel_ccTS,
+  cgemm_small_kernel_b0_nnTS, cgemm_small_kernel_b0_ntTS, cgemm_small_kernel_b0_nrTS, cgemm_small_kernel_b0_ncTS,
+  cgemm_small_kernel_b0_tnTS, cgemm_small_kernel_b0_ttTS, cgemm_small_kernel_b0_trTS, cgemm_small_kernel_b0_tcTS,
+  cgemm_small_kernel_b0_rnTS, cgemm_small_kernel_b0_rtTS, cgemm_small_kernel_b0_rrTS, cgemm_small_kernel_b0_rcTS,
+  cgemm_small_kernel_b0_cnTS, cgemm_small_kernel_b0_ctTS, cgemm_small_kernel_b0_crTS, cgemm_small_kernel_b0_ccTS,
+#endif
 
   ctrsm_kernel_LNTS, ctrsm_kernel_LTTS, ctrsm_kernel_LRTS, ctrsm_kernel_LCTS,
   ctrsm_kernel_RNTS, ctrsm_kernel_RTTS, ctrsm_kernel_RRTS, ctrsm_kernel_RCTS,
@@ -532,6 +562,18 @@ gotoblas_t TABLE_NAME = {
   zgemm_oncopyTS, zgemm_otcopyTS,
 #endif
   zgemm_oncopyTS, zgemm_otcopyTS,
+
+#ifdef SMALL_MATRIX_OPT
+  zgemm_small_matrix_permitTS,
+  zgemm_small_kernel_nnTS, zgemm_small_kernel_ntTS, zgemm_small_kernel_nrTS, zgemm_small_kernel_ncTS,
+  zgemm_small_kernel_tnTS, zgemm_small_kernel_ttTS, zgemm_small_kernel_trTS, zgemm_small_kernel_tcTS,
+  zgemm_small_kernel_rnTS, zgemm_small_kernel_rtTS, zgemm_small_kernel_rrTS, zgemm_small_kernel_rcTS,
+  zgemm_small_kernel_cnTS, zgemm_small_kernel_ctTS, zgemm_small_kernel_crTS, zgemm_small_kernel_ccTS,
+  zgemm_small_kernel_b0_nnTS, zgemm_small_kernel_b0_ntTS, zgemm_small_kernel_b0_nrTS, zgemm_small_kernel_b0_ncTS,
+  zgemm_small_kernel_b0_tnTS, zgemm_small_kernel_b0_ttTS, zgemm_small_kernel_b0_trTS, zgemm_small_kernel_b0_tcTS,
+  zgemm_small_kernel_b0_rnTS, zgemm_small_kernel_b0_rtTS, zgemm_small_kernel_b0_rrTS, zgemm_small_kernel_b0_rcTS,
+  zgemm_small_kernel_b0_cnTS, zgemm_small_kernel_b0_ctTS, zgemm_small_kernel_b0_crTS, zgemm_small_kernel_b0_ccTS,
+#endif
 
   ztrsm_kernel_LNTS, ztrsm_kernel_LTTS, ztrsm_kernel_LRTS, ztrsm_kernel_LCTS,
   ztrsm_kernel_RNTS, ztrsm_kernel_RTTS, ztrsm_kernel_RRTS, ztrsm_kernel_RCTS,
@@ -933,6 +975,77 @@ static void init_parameter(void) {
 
 }
 #else // (ARCH_ARM64)
+#if defined(ARCH_MIPS64)
+static void init_parameter(void) {
+  TABLE_NAME.sgemm_p = SGEMM_DEFAULT_P;
+  TABLE_NAME.dgemm_p = DGEMM_DEFAULT_P;
+  TABLE_NAME.cgemm_p = CGEMM_DEFAULT_P;
+  TABLE_NAME.zgemm_p = ZGEMM_DEFAULT_P;
+
+  TABLE_NAME.sgemm_q = SGEMM_DEFAULT_Q;
+  TABLE_NAME.dgemm_q = DGEMM_DEFAULT_Q;
+  TABLE_NAME.cgemm_q = CGEMM_DEFAULT_Q;
+  TABLE_NAME.zgemm_q = ZGEMM_DEFAULT_Q;
+
+  TABLE_NAME.sgemm_r = SGEMM_DEFAULT_R;
+  TABLE_NAME.dgemm_r = 640;
+  TABLE_NAME.cgemm_r = CGEMM_DEFAULT_R;
+  TABLE_NAME.zgemm_r = ZGEMM_DEFAULT_R;
+
+#ifdef EXPRECISION
+  TABLE_NAME.qgemm_p = QGEMM_DEFAULT_P;
+  TABLE_NAME.xgemm_p = XGEMM_DEFAULT_P;
+  TABLE_NAME.qgemm_q = QGEMM_DEFAULT_Q;
+  TABLE_NAME.xgemm_q = XGEMM_DEFAULT_Q;
+  TABLE_NAME.qgemm_r = QGEMM_DEFAULT_R;
+  TABLE_NAME.xgemm_r = XGEMM_DEFAULT_R;
+#endif
+
+#if defined(USE_GEMM3M)
+#ifdef CGEMM3M_DEFAULT_P
+  TABLE_NAME.cgemm3m_p = CGEMM3M_DEFAULT_P;
+#else
+  TABLE_NAME.cgemm3m_p = TABLE_NAME.sgemm_p;
+#endif
+
+#ifdef ZGEMM3M_DEFAULT_P
+  TABLE_NAME.zgemm3m_p = ZGEMM3M_DEFAULT_P;
+#else
+  TABLE_NAME.zgemm3m_p = TABLE_NAME.dgemm_p;
+#endif
+
+#ifdef CGEMM3M_DEFAULT_Q
+  TABLE_NAME.cgemm3m_q = CGEMM3M_DEFAULT_Q;
+#else
+  TABLE_NAME.cgemm3m_q = TABLE_NAME.sgemm_q;
+#endif
+
+#ifdef ZGEMM3M_DEFAULT_Q
+  TABLE_NAME.zgemm3m_q = ZGEMM3M_DEFAULT_Q;
+#else
+  TABLE_NAME.zgemm3m_q = TABLE_NAME.dgemm_q;
+#endif
+
+#ifdef CGEMM3M_DEFAULT_R
+  TABLE_NAME.cgemm3m_r = CGEMM3M_DEFAULT_R;
+#else
+  TABLE_NAME.cgemm3m_r = TABLE_NAME.sgemm_r;
+#endif
+
+#ifdef ZGEMM3M_DEFAULT_R
+  TABLE_NAME.zgemm3m_r = ZGEMM3M_DEFAULT_R;
+#else
+  TABLE_NAME.zgemm3m_r = TABLE_NAME.dgemm_r;
+#endif
+
+#ifdef EXPRECISION
+  TABLE_NAME.xgemm3m_p = TABLE_NAME.qgemm_p;
+  TABLE_NAME.xgemm3m_q = TABLE_NAME.qgemm_q;
+  TABLE_NAME.xgemm3m_r = TABLE_NAME.qgemm_r;
+#endif
+#endif
+}
+#else // (ARCH_MIPS64)
 #if (ARCH_POWER)
 static void init_parameter(void) {
 
@@ -1405,7 +1518,7 @@ static void init_parameter(void) {
 #endif
 #endif
 
-#if defined(SKYLAKEX) || defined(COOPERLAKE)
+#if defined(SKYLAKEX) || defined(COOPERLAKE) || defined(SAPPHIRERAPIDS)
 
 #ifdef DEBUG
   fprintf(stderr, "SkylakeX\n");
@@ -1711,6 +1824,13 @@ static void init_parameter(void) {
   fprintf(stderr, "L2 = %8d DGEMM_P  .. %d\n", l2, TABLE_NAME.dgemm_p);
 #endif
 
+#if BUILD_BFLOAT16==1
+  TABLE_NAME.sbgemm_r = (((BUFFER_SIZE -
+			       ((TABLE_NAME.sbgemm_p * TABLE_NAME.sbgemm_q *  4 + TABLE_NAME.offsetA
+				 + TABLE_NAME.align) & ~TABLE_NAME.align)
+			       ) / (TABLE_NAME.sbgemm_q *  4) - 15) & ~15);
+#endif
+
 #if BUILD_SINGLE==1
   TABLE_NAME.sgemm_r = (((BUFFER_SIZE -
 			       ((TABLE_NAME.sgemm_p * TABLE_NAME.sgemm_q *  4 + TABLE_NAME.offsetA
@@ -1780,4 +1900,5 @@ static void init_parameter(void) {
 }
 #endif //POWER
 #endif //ZARCH
+#endif //(ARCH_MIPS64)
 #endif //(ARCH_ARM64)

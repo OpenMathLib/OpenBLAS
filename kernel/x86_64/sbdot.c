@@ -27,7 +27,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "common.h"
 
-#if defined(COOPERLAKE)
+#if defined(COOPERLAKE) || defined(SAPPHIRERAPIDS)
 #include "sbdot_microk_cooperlake.c"
 #endif
 

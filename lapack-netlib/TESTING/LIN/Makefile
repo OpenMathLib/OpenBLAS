@@ -74,7 +74,7 @@ SLINTST = schkaa.o \
    sgennd.o sqrt04.o sqrt05.o schkqrt.o serrqrt.o schkqrtp.o serrqrtp.o \
    schklqt.o schklqtp.o schktsqr.o \
    serrlqt.o serrlqtp.o serrtsqr.o stsqr01.o slqt04.o slqt05.o \
-   schkorhr_col.o serrorhr_col.o sorhr_col01.o
+   schkorhr_col.o serrorhr_col.o sorhr_col01.o sorhr_col02.o
 
 ifdef USEXBLAS
 SLINTST += sdrvgbx.o sdrvgex.o sdrvsyx.o sdrvpox.o \
@@ -123,7 +123,7 @@ CLINTST = cchkaa.o \
    cqrt04.o cqrt05.o cchkqrt.o cerrqrt.o cchkqrtp.o cerrqrtp.o \
    cchklqt.o cchklqtp.o cchktsqr.o \
    cerrlqt.o cerrlqtp.o cerrtsqr.o ctsqr01.o clqt04.o clqt05.o \
-   cchkunhr_col.o cerrunhr_col.o cunhr_col01.o
+   cchkunhr_col.o cerrunhr_col.o cunhr_col01.o cunhr_col02.o
 
 ifdef USEXBLAS
 CLINTST += cdrvgbx.o cdrvgex.o cdrvhex.o cdrvsyx.o cdrvpox.o \
@@ -167,7 +167,7 @@ DLINTST = dchkaa.o \
    dqrt04.o dqrt05.o dchkqrt.o derrqrt.o dchkqrtp.o derrqrtp.o \
    dchklq.o dchklqt.o dchklqtp.o dchktsqr.o \
    derrlqt.o derrlqtp.o derrtsqr.o dtsqr01.o dlqt04.o dlqt05.o \
-   dchkorhr_col.o derrorhr_col.o dorhr_col01.o
+   dchkorhr_col.o derrorhr_col.o dorhr_col01.o dorhr_col02.o
 
 ifdef USEXBLAS
 DLINTST += ddrvgbx.o ddrvgex.o ddrvsyx.o ddrvpox.o \
@@ -215,7 +215,7 @@ ZLINTST = zchkaa.o \
    zqrt04.o zqrt05.o zchkqrt.o zerrqrt.o zchkqrtp.o zerrqrtp.o \
    zchklqt.o zchklqtp.o zchktsqr.o \
    zerrlqt.o zerrlqtp.o zerrtsqr.o ztsqr01.o zlqt04.o zlqt05.o \
-   zchkunhr_col.o zerrunhr_col.o zunhr_col01.o
+   zchkunhr_col.o zerrunhr_col.o zunhr_col01.o zunhr_col02.o
 
 ifdef USEXBLAS
 ZLINTST += zdrvgbx.o zdrvgex.o zdrvhex.o zdrvsyx.o zdrvpox.o \
@@ -317,13 +317,13 @@ cleanobj:
 cleanexe:
 	rm -f xlintst*
 
-schkaa.o: schkaa.f
+schkaa.o: schkaa.F
 	$(FC) $(FFLAGS_DRV) -c -o $@ $<
-dchkaa.o: dchkaa.f
+dchkaa.o: dchkaa.F
 	$(FC) $(FFLAGS_DRV) -c -o $@ $<
-cchkaa.o: cchkaa.f
+cchkaa.o: cchkaa.F
 	$(FC) $(FFLAGS_DRV) -c -o $@ $<
-zchkaa.o: zchkaa.f
+zchkaa.o: zchkaa.F
 	$(FC) $(FFLAGS_DRV) -c -o $@ $<
 
 .NOTPARALLEL:

@@ -279,34 +279,58 @@ static void dgemv_kernel_4x8(BLASLONG n, BLASLONG lda, double *ap, double *x, do
             "lxvp 40, 32(%[y]) \n\t"
 
  
+#if (__BYTE_ORDER__ == __ORDER_BIG_ENDIAN__)
+            XXMRGHD_S(42,34,35)
+            XXMRGLD_S(43,34,35)
 
+            XXMRGHD_S(44,4,5)
+            XXMRGLD_S(45,4,5)
+#else
             XXMRGLD_S(42,35,34)
             XXMRGHD_S(43,35,34)
 
             XXMRGLD_S(44,5,4)
             XXMRGHD_S(45,5,4)
+#endif
 
             "xvadddp 42,42,43 \n\t"
 
+#if (__BYTE_ORDER__ == __ORDER_BIG_ENDIAN__)
+            XXMRGHD_S(46,6,7)
+            XXMRGLD_S(47,6,7)
+#else
             XXMRGLD_S(46,7,6)
             XXMRGHD_S(47,7,6)
-
+#endif
             "xvadddp 44,44,45 \n\t"
 
+#if (__BYTE_ORDER__ == __ORDER_BIG_ENDIAN__)
+            XXMRGHD_S(48,8,9)
+            XXMRGLD_S(49,8,9)
+#else
             XXMRGLD_S(48,9,8)
             XXMRGHD_S(49,9,8)
-
+#endif
             "xvadddp 46,46,47 \n\t"
-            
+#if (__BYTE_ORDER__ == __ORDER_BIG_ENDIAN__)
+            "xvmaddadp  38,42,36  \n\t"
+            "xvmaddadp  39,44,36  \n\t"
+#else
             "xvmaddadp  39,42,36  \n\t"
             "xvmaddadp  38,44,36  \n\t"
-            
+#endif
             "xvadddp 48,48,49 \n\t"
-
+#if (__BYTE_ORDER__ == __ORDER_BIG_ENDIAN__)
+            "xvmaddadp  41,48,36  \n\t"
+#else
             "xvmaddadp  41,46,36  \n\t"
-
+#endif
             "stxvp 38, 0(%[y]) \n\t"
+#if (__BYTE_ORDER__ == __ORDER_BIG_ENDIAN__)
+            "xvmaddadp  40,46,36  \n\t"
+#else
             "xvmaddadp  40,48,36  \n\t" 
+#endif
             "stxvp 40, 32(%[y])  \n\t"
                  
             : [memy] "+m" (*(double (*)[8])y),

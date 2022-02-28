@@ -34,7 +34,7 @@
 #include "lapacke_utils.h"
 
 lapack_int LAPACKE_dsytrs2( int matrix_layout, char uplo, lapack_int n,
-                            lapack_int nrhs, double* a, lapack_int lda,
+                            lapack_int nrhs, const double* a, lapack_int lda,
                             const lapack_int* ipiv, double* b, lapack_int ldb )
 {
     lapack_int info = 0;

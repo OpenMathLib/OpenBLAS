@@ -43,7 +43,7 @@ jobs:
       - name: Update Homebrew
         if: github.event_name != 'pull_request'
         run: brew update || true
-
+          
       - name: Install prerequisites
         run: brew install --fetch-HEAD --HEAD --only-dependencies --keep-tmp openblas
 

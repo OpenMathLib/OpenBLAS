@@ -72,17 +72,21 @@ int main(int argc, char *argv[]){
   FLOAT *a, *b;
   blasint *ipiv;
 
-  blasint m, i, j, info;
+  blasint m, i, j, l, info;
   blasint unit =   1;
 
   int from =   1;
   int to   = 200;
   int step =   1;
+  int loops =  1;
 
   FLOAT maxerr;
 
-  double time1, time2;
+  double time1, time2, timeg1,timeg2;
 
+  char *p;
+  if ((p = getenv("OPENBLAS_LOOPS"))) loops=*p;
+  
   argc--;argv++;
 
   if (argc > 0) { from     = atol(*argv);		argc--; argv++;}
@@ -110,9 +114,9 @@ int main(int argc, char *argv[]){
   fprintf(stderr, "   SIZE       Residual     Decompose            Solve           Total\n");
 
   for(m = from; m <= to; m += step){
-
+    timeg1 = timeg2 = 0.;
     fprintf(stderr, " %6d : ", (int)m);
-
+    for (l = 0; l < loops; l++) {
     for(j = 0; j < m; j++){
       for(i = 0; i < m * COMPSIZE; i++){
 	a[(long)i + (long)j * (long)m * COMPSIZE] = ((FLOAT) rand() / (FLOAT) RAND_MAX) - 0.5;
@@ -138,7 +142,7 @@ int main(int argc, char *argv[]){
       exit(1);
     }
 
-    time1 = getsec();
+    timeg1 += getsec();
 
     begin();
 
@@ -151,8 +155,10 @@ int main(int argc, char *argv[]){
       exit(1);
     }
 
-    time2 = getsec();
-
+    timeg2 += getsec();
+    } //loops
+    time1=timeg1/(double)loops;
+    time2=timeg2/(double)loops;
     maxerr = 0.;
 
     for(i = 0; i < m; i++){

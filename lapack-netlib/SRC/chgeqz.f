@@ -319,13 +319,14 @@
       REAL               ABSB, ANORM, ASCALE, ATOL, BNORM, BSCALE, BTOL,
      $                   C, SAFMIN, TEMP, TEMP2, TEMPR, ULP
       COMPLEX            ABI22, AD11, AD12, AD21, AD22, CTEMP, CTEMP2,
-     $                   CTEMP3, ESHIFT, RTDISC, S, SHIFT, SIGNBC, T1,
-     $                   U12, X
+     $                   CTEMP3, ESHIFT, S, SHIFT, SIGNBC,
+     $                   U12, X, ABI12, Y
 *     ..
 *     .. External Functions ..
+      COMPLEX            CLADIV
       LOGICAL            LSAME
       REAL               CLANHS, SLAMCH
-      EXTERNAL           LSAME, CLANHS, SLAMCH
+      EXTERNAL           CLADIV, LSAME, CLANHS, SLAMCH
 *     ..
 *     .. External Subroutines ..
       EXTERNAL           CLARTG, CLASET, CROT, CSCAL, XERBLA
@@ -350,6 +351,7 @@
          ILSCHR = .TRUE.
          ISCHUR = 2
       ELSE
+         ILSCHR = .TRUE.
          ISCHUR = 0
       END IF
 *
@@ -363,6 +365,7 @@
          ILQ = .TRUE.
          ICOMPQ = 3
       ELSE
+         ILQ = .TRUE.
          ICOMPQ = 0
       END IF
 *
@@ -376,6 +379,7 @@
          ILZ = .TRUE.
          ICOMPZ = 3
       ELSE
+         ILZ = .TRUE.
          ICOMPZ = 0
       END IF
 *
@@ -729,22 +733,34 @@
             AD22 = ( ASCALE*H( ILAST, ILAST ) ) /
      $             ( BSCALE*T( ILAST, ILAST ) )
             ABI22 = AD22 - U12*AD21
+            ABI12 = AD12 - U12*AD11
 *
-            T1 = HALF*( AD11+ABI22 )
-            RTDISC = SQRT( T1**2+AD12*AD21-AD11*AD22 )
-            TEMP = REAL( T1-ABI22 )*REAL( RTDISC ) +
-     $             AIMAG( T1-ABI22 )*AIMAG( RTDISC )
-            IF( TEMP.LE.ZERO ) THEN
-               SHIFT = T1 + RTDISC
-            ELSE
-               SHIFT = T1 - RTDISC
+            SHIFT = ABI22
+            CTEMP = SQRT( ABI12 )*SQRT( AD21 )
+            TEMP = ABS1( CTEMP )
+            IF( CTEMP.NE.ZERO ) THEN
+               X = HALF*( AD11-SHIFT )
+               TEMP2 = ABS1( X )
+               TEMP = MAX( TEMP, ABS1( X ) )
+               Y = TEMP*SQRT( ( X / TEMP )**2+( CTEMP / TEMP )**2 )
+               IF( TEMP2.GT.ZERO ) THEN
+                  IF( REAL( X / TEMP2 )*REAL( Y )+
+     $                AIMAG( X / TEMP2 )*AIMAG( Y ).LT.ZERO )Y = -Y
+               END IF
+               SHIFT = SHIFT - CTEMP*CLADIV( CTEMP, ( X+Y ) )
             END IF
          ELSE
 *
 *           Exceptional shift.  Chosen for no particularly good reason.
 *
-            ESHIFT = ESHIFT + (ASCALE*H(ILAST,ILAST-1))/
-     $                        (BSCALE*T(ILAST-1,ILAST-1))
+            IF( ( IITER / 20 )*20.EQ.IITER .AND. 
+     $         BSCALE*ABS1(T( ILAST, ILAST )).GT.SAFMIN ) THEN
+               ESHIFT = ESHIFT + ( ASCALE*H( ILAST,
+     $            ILAST ) )/( BSCALE*T( ILAST, ILAST ) )
+            ELSE
+               ESHIFT = ESHIFT + ( ASCALE*H( ILAST,
+     $            ILAST-1 ) )/( BSCALE*T( ILAST-1, ILAST-1 ) )
+            END IF
             SHIFT = ESHIFT
          END IF
 *

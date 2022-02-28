@@ -24,8 +24,11 @@
 *>
 *> \verbatim
 *>
-*> SCHKORHR_COL tests SORHR_COL using SLATSQR, SGEMQRT and SORGTSQR.
-*> Therefore, SLATSQR (part of SGEQR), SGEMQRT (part SGEMQR), SORGTSQR
+*> SCHKORHR_COL tests:
+*>   1) SORGTSQR and SORHR_COL using SLATSQR, SGEMQRT,
+*>   2) SORGTSQR_ROW and SORHR_COL inside DGETSQRHRT
+*>      (which calls SLATSQR, SORGTSQR_ROW and SORHR_COL) using SGEMQRT.
+*> Therefore, SLATSQR (part of SGEQR), SGEMQRT (part of SGEMQR)
 *> have to be tested before this test.
 *>
 *> \endverbatim
@@ -97,19 +100,16 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date November 2019
-*
-*> \ingroup sigle_lin
+*> \ingroup single_lin
 *
 *  =====================================================================
-      SUBROUTINE SCHKORHR_COL( THRESH, TSTERR, NM, MVAL, NN, NVAL, NNB,
-     $                         NBVAL, NOUT )
+      SUBROUTINE SCHKORHR_COL( THRESH, TSTERR, NM, MVAL, NN, NVAL,
+     $                         NNB, NBVAL, NOUT )
       IMPLICIT NONE
 *
-*  -- LAPACK test routine (version 3.9.0) --
+*  -- LAPACK test routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     June 2019
 *
 *     .. Scalar Arguments ..
       LOGICAL            TSTERR
@@ -135,7 +135,8 @@
       REAL               RESULT( NTESTS )
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           ALAHD, ALASUM, SERRORHR_COL, SORHR_COL01
+      EXTERNAL           ALAHD, ALASUM, SERRORHR_COL, SORHR_COL01,
+     $                   SORHR_COL02
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          MAX, MIN
@@ -201,8 +202,8 @@
 *
 *                             Test SORHR_COL
 *
-                              CALL SORHR_COL01( M, N, MB1, NB1, NB2,
-     $                                          RESULT )
+                              CALL SORHR_COL01( M, N, MB1, NB1,
+     $                                          NB2, RESULT )
 *
 *                             Print information about the tests that did
 *                             not pass the threshold.
@@ -226,12 +227,78 @@
          END DO
       END DO
 *
+*     Do for each value of M in MVAL.
+*
+      DO I = 1, NM
+         M = MVAL( I )
+*
+*        Do for each value of N in NVAL.
+*
+         DO J = 1, NN
+            N = NVAL( J )
+*
+*           Only for M >= N
+*
+            IF ( MIN( M, N ).GT.0 .AND. M.GE.N ) THEN
+*
+*              Do for each possible value of MB1
+*
+               DO IMB1 = 1, NNB
+                  MB1 = NBVAL( IMB1 )
+*
+*                 Only for MB1 > N
+*
+                  IF ( MB1.GT.N ) THEN
+*
+*                    Do for each possible value of NB1
+*
+                     DO INB1 = 1, NNB
+                        NB1 = NBVAL( INB1 )
+*
+*                       Do for each possible value of NB2
+*
+                        DO INB2 = 1, NNB
+                           NB2 = NBVAL( INB2 )
+*
+                           IF( NB1.GT.0 .AND. NB2.GT.0 ) THEN
+*
+*                             Test SORHR_COL
+*
+                              CALL SORHR_COL02( M, N, MB1, NB1,
+     $                                          NB2, RESULT )
+*
+*                             Print information about the tests that did
+*                             not pass the threshold.
+*
+                              DO T = 1, NTESTS
+                                 IF( RESULT( T ).GE.THRESH ) THEN
+                                    IF( NFAIL.EQ.0 .AND. NERRS.EQ.0 )
+     $                              CALL ALAHD( NOUT, PATH )
+                                    WRITE( NOUT, FMT = 9998 ) M, N, MB1,
+     $                                     NB1, NB2, T, RESULT( T )
+                                    NFAIL = NFAIL + 1
+                                 END IF
+                              END DO
+                              NRUN = NRUN + NTESTS
+                           END IF
+                        END DO
+                     END DO
+                  END IF
+                END DO
+            END IF
+         END DO
+      END DO
+*
 *     Print a summary of the results.
 *
       CALL ALASUM( PATH, NOUT, NFAIL, NRUN, NERRS )
 *
- 9999 FORMAT( 'M=', I5, ', N=', I5, ', MB1=', I5,
-     $        ', NB1=', I5, ', NB2=', I5,' test(', I2, ')=', G12.5 )
+ 9999 FORMAT( 'SORGTSQR and SORHR_COL: M=', I5, ', N=', I5,
+     $        ', MB1=', I5, ', NB1=', I5, ', NB2=', I5,
+     $        ' test(', I2, ')=', G12.5 )
+ 9998 FORMAT( 'SORGTSQR_ROW and SORHR_COL: M=', I5, ', N=', I5,
+     $        ', MB1=', I5, ', NB1=', I5, ', NB2=', I5,
+     $        ' test(', I2, ')=', G12.5 )
       RETURN
 *
 *     End of SCHKORHR_COL
