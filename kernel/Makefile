@@ -124,7 +124,7 @@ COMMONOBJS	+= lsame.$(SUFFIX) scabs1.$(SUFFIX) dcabs1.$(SUFFIX)
 
 ifeq ($(DYNAMIC_ARCH), 1)
 SBLASOBJS	+= setparam$(TSUFFIX).$(SUFFIX)
-CCOMMON_OPT	+= -DTS=$(TSUFFIX)
+CCOMMON_OPT	+= -DTS=$(TSUFFIX) -DKERNEL_CONFIG=\"config_kernel$(TSUFFIX).h\"
 endif
 
 KERNEL_INTERFACE = ../common_level1.h ../common_level2.h ../common_level3.h

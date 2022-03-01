@@ -8,11 +8,19 @@ override HOST_CFLAGS += -DDYNAMIC_ARCH
 endif
 
 ifdef TARGET_CORE
+ifdef DYNAMIC_ARCH
+TARGET_MAKE = Makefile_kernel_$(TARGET_CORE).conf
+TARGET_CONF = config_kernel_$(TARGET_CORE).h
+GETARCH_FLAVOR = -$(TARGET_CORE)
+else
 TARGET_MAKE = Makefile_kernel.conf
 TARGET_CONF = config_kernel.h
+GETARCH_FLAVOR = -$(TARGET_CORE)
+endif
 else
 TARGET_MAKE = Makefile.conf
 TARGET_CONF = config.h
+GETARCH_FLAVOR =
 endif
 
 # CPUIDEMU = ../../cpuid/table.o
@@ -49,11 +57,11 @@ ifeq ($(TARGET), C910V)
 TARGET_FLAGS = -march=rv64gcvxthead -mabi=lp64v
 endif
 
-all: getarch_2nd
-	./getarch_2nd  0 >> $(TARGET_MAKE)
-	./getarch_2nd  1 >> $(TARGET_CONF)
+all: getarch_2nd$(GETARCH_FLAVOR)
+	./getarch_2nd$(GETARCH_FLAVOR)  0 >> $(TARGET_MAKE)
+	./getarch_2nd$(GETARCH_FLAVOR)  1 >> $(TARGET_CONF)
 
-config.h : c_check f_check getarch
+config.h : c_check f_check getarch$(GETARCH_FLAVOR)
 	perl ./c_check $(TARGET_MAKE) $(TARGET_CONF) $(CC) $(TARGET_FLAGS) $(CFLAGS)
 ifneq ($(ONLY_CBLAS), 1)
 	perl ./f_check $(TARGET_MAKE) $(TARGET_CONF) $(FC) $(TARGET_FLAGS)
@@ -66,18 +74,18 @@ else
 	echo "#define BUNDERSCORE _" >> $(TARGET_CONF)
 	echo "#define NEEDBUNDERSCORE 1" >> $(TARGET_CONF)
 endif
-	./getarch 0 >> $(TARGET_MAKE)
-	./getarch 1 >> $(TARGET_CONF)
+	./getarch$(GETARCH_FLAVOR) 0 >> $(TARGET_MAKE)
+	./getarch$(GETARCH_FLAVOR) 1 >> $(TARGET_CONF)
 
 
-getarch : getarch.c cpuid.S dummy $(CPUIDEMU)
+getarch$(GETARCH_FLAVOR) : getarch.c cpuid.S dummy $(CPUIDEMU)
 	$(HOSTCC) $(HOST_CFLAGS) $(EXFLAGS) -o $(@F) getarch.c cpuid.S $(CPUIDEMU)
 
-getarch_2nd : getarch_2nd.c config.h dummy
+getarch_2nd$(GETARCH_FLAVOR) : getarch_2nd.c config.h dummy
 ifndef TARGET_CORE
 	$(HOSTCC) -I. $(HOST_CFLAGS) -o $(@F) getarch_2nd.c
 else
-	$(HOSTCC) -I. $(HOST_CFLAGS) -DBUILD_KERNEL -o $(@F) getarch_2nd.c
+	$(HOSTCC) -I. $(HOST_CFLAGS) -DBUILD_KERNEL -DKERNEL_CONFIG=\"$(TARGET_CONF)\" -o $(@F) getarch_2nd.c
 endif
 
 dummy:

@@ -57,7 +57,11 @@ extern "C" {
 #endif
 
 #ifdef BUILD_KERNEL
+#ifdef KERNEL_CONFIG
+#include KERNEL_CONFIG
+#else
 #include "config_kernel.h"
+#endif
 #else
 #include "config.h"
 #endif
