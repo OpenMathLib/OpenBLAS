@@ -387,11 +387,11 @@ clean ::
 	@$(MAKE) -C kernel clean
 #endif
 	@$(MAKE) -C reference clean
-	@rm -f *.$(LIBSUFFIX) *.so *~ *.exe getarch getarch_2nd *.dll *.lib *.$(SUFFIX) *.dwf $(LIBPREFIX).$(LIBSUFFIX) $(LIBPREFIX)_p.$(LIBSUFFIX) $(LIBPREFIX).so.$(MAJOR_VERSION) *.lnk myconfig.h *.so.renamed *.a.renamed *.so.0
+	@rm -f *.$(LIBSUFFIX) *.so *~ *.exe getarch getarch-* getarch_2nd getarch_2nd-* *.dll *.lib *.$(SUFFIX) *.dwf $(LIBPREFIX).$(LIBSUFFIX) $(LIBPREFIX)_p.$(LIBSUFFIX) $(LIBPREFIX).so.$(MAJOR_VERSION) *.lnk myconfig.h *.so.renamed *.a.renamed *.so.0
 ifeq ($(OSNAME), Darwin)
 	@rm -rf getarch.dSYM getarch_2nd.dSYM
 endif
-	@rm -f Makefile.conf config.h Makefile_kernel.conf config_kernel.h st* *.dylib
+	@rm -f Makefile.conf config.h Makefile_kernel*.conf config_kernel*.h st* *.dylib
 	@rm -f cblas.tmp cblas.tmp2
 	@touch $(NETLIB_LAPACK_DIR)/make.inc
 	@$(MAKE) -C $(NETLIB_LAPACK_DIR) clean

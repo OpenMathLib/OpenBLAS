@@ -2,7 +2,11 @@
 #ifndef BUILD_KERNEL
 #include "config.h"
 #else
+#ifdef KERNEL_CONFIG
+#include KERNEL_CONFIG
+#else
 #include "config_kernel.h"
+#endif
 #endif
 #if (defined(__WIN32__) || defined(__WIN64__) || defined(__CYGWIN32__) || defined(__CYGWIN64__) || defined(_WIN32) || defined(_WIN64)) && defined(__64BIT__)
 typedef long long BLASLONG;

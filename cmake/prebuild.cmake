@@ -629,7 +629,11 @@ else(NOT CMAKE_CROSSCOMPILING)
   endif ()
 
   set(GETARCH_DIR "${PROJECT_BINARY_DIR}/getarch_build")
-  set(GETARCH_BIN "getarch${CMAKE_EXECUTABLE_SUFFIX}")
+  if (DEFINED TARGET_CORE)
+    set(GETARCH_BIN "getarch-${TARGET_CORE}${CMAKE_EXECUTABLE_SUFFIX}")
+  else ()
+    set(GETARCH_BIN "getarch${CMAKE_EXECUTABLE_SUFFIX}")
+  endif ()
   file(MAKE_DIRECTORY ${GETARCH_DIR})
   configure_file(${TARGET_CONF_TEMP} ${GETARCH_DIR}/${TARGET_CONF} COPYONLY)
   if (NOT "${CMAKE_SYSTEM_NAME}" STREQUAL "WindowsStore")
@@ -659,7 +663,7 @@ else(NOT CMAKE_CROSSCOMPILING)
   unset (HAVE_VFP)
   unset (HAVE_VFPV3)
   unset (HAVE_VFPV4)
-  message(STATUS "Running getarch")
+  message(STATUS "Running getarch (${GETARCH_BIN})")
 
   # use the cmake binary w/ the -E param to run a shell command in a cross-platform way
 execute_process(COMMAND "${PROJECT_BINARY_DIR}/${GETARCH_BIN}" 0 OUTPUT_VARIABLE GETARCH_MAKE_OUT)
@@ -672,7 +676,11 @@ execute_process(COMMAND "${PROJECT_BINARY_DIR}/${GETARCH_BIN}" 1 OUTPUT_VARIABLE
   ParseGetArchVars(${GETARCH_MAKE_OUT})
 
   set(GETARCH2_DIR "${PROJECT_BINARY_DIR}/getarch2_build")
-  set(GETARCH2_BIN "getarch_2nd${CMAKE_EXECUTABLE_SUFFIX}")
+  if (DEFINED TARGET_CORE)
+     set(GETARCH2_BIN "getarch_2nd-${TARGET_CORE}${CMAKE_EXECUTABLE_SUFFIX}")
+  else ()
+     set(GETARCH2_BIN "getarch_2nd${CMAKE_EXECUTABLE_SUFFIX}")
+  endif ()
   file(MAKE_DIRECTORY ${GETARCH2_DIR})
   configure_file(${TARGET_CONF_TEMP} ${GETARCH2_DIR}/${TARGET_CONF} COPYONLY)
   if (NOT "${CMAKE_SYSTEM_NAME}" STREQUAL "WindowsStore")
@@ -684,7 +692,7 @@ execute_process(COMMAND "${PROJECT_BINARY_DIR}/${GETARCH_BIN}" 1 OUTPUT_VARIABLE
     )
 
     if (NOT ${GETARCH2_RESULT})
-      MESSAGE(FATAL_ERROR "Compiling getarch_2nd failed ${GETARCH2_LOG}")
+      MESSAGE(FATAL_ERROR "Compiling getarch_2nd (${GETARCH2_BIN}) failed ${GETARCH2_LOG}")
     endif ()
   endif ()
 

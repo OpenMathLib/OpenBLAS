@@ -298,7 +298,11 @@ HAVE_SSE5=
 HAVE_AVX=
 HAVE_AVX2=
 HAVE_FMA3=
+ifeq ($(DYNAMIC_ARCH), 1)
+include $(TOPDIR)/Makefile_kernel_$(TARGET_CORE).conf
+else
 include $(TOPDIR)/Makefile_kernel.conf
+endif
 endif
 
 endif
