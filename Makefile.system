@@ -197,9 +197,17 @@ endif
 
 # On x86_64 build getarch with march=native unless the compiler is PGI. This is required to detect AVX512 support in getarch.
 ifeq ($(HOSTARCH), x86_64)
-ifeq ($(findstring pgcc,$(HOSTCC))$(findstring nvc,$(HOSTCC)),)
-GETARCH_FLAGS += -march=native
-endif
+ ifeq ($(findstring pgcc,$(HOSTCC))$(findstring nvc,$(HOSTCC)),)
+  ifdef TARGET
+GETARCH_NOPROBE=1
+  endif
+  ifdef TARGET_CORE
+GETARCH_NOPROBE=1
+  endif
+  ifndef GETARCH_NOPROBE
+GETARCH_FLAGS += -march=native -DAUTOPROBE
+  endif
+ endif
 endif
 
 ifdef INTERFACE64

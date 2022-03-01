@@ -94,7 +94,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <sys/sysinfo.h>
 #endif
 
-#if defined(__x86_64__) || defined(_M_X64)
+#if defined (AUTOPROBE) && (defined(__x86_64__) || defined(_M_X64))
 #if (( defined(__GNUC__)  && __GNUC__   > 6 && defined(__AVX2__)) || (defined(__clang__) && __clang_major__ >= 6))
 #else
 #ifndef NO_AVX512
