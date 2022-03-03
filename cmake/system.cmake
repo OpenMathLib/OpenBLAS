@@ -284,8 +284,8 @@ if (NOT NOFORTRAN)
   # Fortran Compiler dependent settings
   include("${PROJECT_SOURCE_DIR}/cmake/fc.cmake")
 else ()
-set(NO_LAPACK 1)
-set(NO_LAPACKE 1)
+set(C_LAPACK 1)
+#set(NO_LAPACKE 1)
 endif ()
 
 if (BINARY64)
