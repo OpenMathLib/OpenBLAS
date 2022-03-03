@@ -204,6 +204,3 @@ In chronological order:
   * [2021-11-12] SVE kernels for SGEMM, STRMM and corresponding SVE copy functions
   * [2022-01-06] SVE kernels for CGEMM, ZGEMM, CTRMM, ZTRMM and corresponding SVE copy functions
   * [2022-01-18] SVE kernels and copy functions for TRSM
-
-* Ilya Kurdyukov <https://github.com/ilyakurdyukov>
-  * [2021-02-21] Add basic support for the Elbrus E2000 architecture

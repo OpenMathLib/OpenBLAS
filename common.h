@@ -474,10 +474,6 @@ please https://github.com/xianyi/OpenBLAS/issues/246
 #include "common_loongarch64.h"
 #endif
 
-#ifdef ARCH_E2K
-#include "common_e2k.h"
-#endif
-
 #ifndef ASSEMBLER
 #ifdef OS_WINDOWSSTORE
 typedef char env_var_t[MAX_PATH];

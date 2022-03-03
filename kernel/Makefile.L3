@@ -617,10 +617,6 @@ $(KDIR)zgemm_beta$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(ZGEMM_BETA)
 $(KDIR)xgemm_beta$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(XGEMM_BETA)
 	$(CC) $(CFLAGS) -c -DXDOUBLE -DCOMPLEX $< -o $@
 
-ifeq ($(ARCH), E2K)
-USE_TRMM = 1
-endif
-
 
 ifeq ($(BUILD_BFLOAT16), 1)
 
