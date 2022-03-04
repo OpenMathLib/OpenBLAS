@@ -19,6 +19,7 @@ include(CMakePackageConfigHelpers)
 
 if(MSVC AND NOT DEFINED NOFORTRAN)
   set(NOFORTRAN ON)
+  set(TIMER "NONE")
 endif()
 
 #######
