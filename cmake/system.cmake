@@ -285,6 +285,7 @@ if (NOT NOFORTRAN)
   include("${PROJECT_SOURCE_DIR}/cmake/fc.cmake")
 else ()
 set(C_LAPACK 1)
+set(TIMER "NONE")
 #set(NO_LAPACKE 1)
 endif ()
 
