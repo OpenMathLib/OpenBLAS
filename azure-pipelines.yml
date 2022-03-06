@@ -177,7 +177,8 @@ jobs:
       cd build
       cmake -DTARGET=CORE2 -DDYNAMIC_ARCH=1 -DCMAKE_C_COMPILER=gcc-10 -DCMAKE_Fortran_COMPILER=gfortran-10 -DBUILD_SHARED_LIBS=ON ..
       cmake --build .
-      ctest
+      ctest --verbose
+      cat /Users/runner/work/1/s/build/Testing/Temporary/LastTest.log
       
 - job: OSX_Ifort_Clang
   pool:
