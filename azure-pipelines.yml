@@ -119,7 +119,7 @@ jobs:
       cmake --build . --config Release
       ctest --verbose
       cd test
-      ./dblat2 <../../test/dblat2.dat
+      dblat2 <..\..\test\dblat2.dat
       cat DBLAT2.SUMM
 
 - job: OSX_OpenMP
