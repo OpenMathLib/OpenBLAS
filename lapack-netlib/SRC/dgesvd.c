@@ -12,7 +12,7 @@
 #include <string.h>
 #include <stdio.h>
 #include <complex.h>
-#include "common.h"
+#include "../../common.h"
 #ifdef complex
 #undef complex
 #endif
