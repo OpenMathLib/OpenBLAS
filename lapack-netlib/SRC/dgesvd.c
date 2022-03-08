@@ -12,6 +12,7 @@
 #include <string.h>
 #include <stdio.h>
 #include <complex.h>
+#include "common.h"
 #ifdef complex
 #undef complex
 #endif
@@ -19,7 +20,7 @@
 #undef I
 #endif
 
-typedef int integer;
+typedef blasint integer;
 typedef unsigned int uinteger;
 typedef char *address;
 typedef short int shortint;
