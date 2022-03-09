@@ -18,8 +18,28 @@
 #ifdef I
 #undef I
 #endif
+#if defined(OS_WINDOWS) && defined(__64BIT__)
+typedef long long BLASLONG;
+typedef unsigned long long BLASULONG;
+#else
+typedef long BLASLONG;
+typedef unsigned long BLASULONG;
+#endif
 
-typedef int integer;
+#ifdef LAPACK_ILP64
+typedef BLASLONG blasint;
+#if defined(OS_WINDOWS) && defined(__64BIT__)
+#define blasabs(x) llabs(x)
+#else
+#define blasabs(x) labs(x)
+#endif
+#else
+typedef int blasint;
+#define blasabs(x) abs(x)
+#endif
+
+typedef blasint integer;
+
 typedef unsigned int uinteger;
 typedef char *address;
 typedef short int shortint;
