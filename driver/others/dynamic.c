@@ -875,14 +875,37 @@ static gotoblas_t *get_coretype(void){
       if (model == 0xf && stepping < 0xe)
         return &gotoblas_NANO;
       return &gotoblas_NEHALEM;
+	case 0x7:
+      switch (exmodel) {
+      case 5:
+        if (support_avx2())
+          return &gotoblas_ZEN;
+        else
+          return &gotoblas_DUNNINGTON;
+      default:
+        return &gotoblas_NEHALEM;
+      }
     default:
-      if (family >= 0x7)
+      if (family >= 0x8)
         return &gotoblas_NEHALEM;
     }
   }
 
   if (vendor == VENDOR_ZHAOXIN) {
-      return &gotoblas_NEHALEM;
+    switch (family) {
+      case 0x7:
+        switch (exmodel) {
+        case 5:
+          if (support_avx2())
+            return &gotoblas_ZEN;
+          else
+            return &gotoblas_DUNNINGTON;
+        default:
+          return &gotoblas_NEHALEM;
+        }
+      default:
+        return &gotoblas_NEHALEM;
+    }
   }
 
   return NULL;
