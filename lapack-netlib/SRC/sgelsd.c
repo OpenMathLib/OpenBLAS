@@ -19,7 +19,28 @@
 #undef I
 #endif
 
-typedef int integer;
+#if defined(OS_WINDOWS) && defined(__64BIT__)
+typedef long long BLASLONG;
+typedef unsigned long long BLASULONG;
+#else
+typedef long BLASLONG;
+typedef unsigned long BLASULONG;
+#endif
+
+#ifdef LAPACK_ILP64
+typedef BLASLONG blasint;
+#if defined(OS_WINDOWS) && defined(__64BIT__)
+#define blasabs(x) llabs(x)
+#else
+#define blasabs(x) labs(x)
+#endif
+#else
+typedef int blasint;
+#define blasabs(x) abs(x)
+#endif
+
+typedef blasint integer;
+
 typedef unsigned int uinteger;
 typedef char *address;
 typedef short int shortint;
@@ -668,15 +689,15 @@ f"> */
 
     /* Parameter adjustments */
     a_dim1 = *lda;
-    a_offset = 1 + a_dim1 * 1;
+    a_offset = 1 + a_dim1;
     a -= a_offset;
     b_dim1 = *ldb;
-    b_offset = 1 + b_dim1 * 1;
+    b_offset = 1 + b_dim1;
     b -= b_offset;
     --s;
     --work;
     --iwork;
-
+fprintf(stdout,"start of SGELSD\n");
     /* Function Body */
     *info = 0;
     minmn = f2cmin(*m,*n);
@@ -859,6 +880,7 @@ f"> */
 /*     Quick return if possible. */
 
     if (*m == 0 || *n == 0) {
+	    fprintf(stdout,"SGELSD quickreturn rank=0\n");
 	*rank = 0;
 	return 0;
     }
@@ -869,6 +891,9 @@ f"> */
     sfmin = slamch_("S");
     smlnum = sfmin / eps;
     bignum = 1.f / smlnum;
+//    FILE *bla=fopen("/tmp/bla","w");
+//fprintf(bla,"SGELSD eps=%g sfmin=%g smlnum=%g bignum=%g\n",eps,sfmin,smlnum,bignum);
+//fclose(bla);
     slabad_(&smlnum, &bignum);
 
 /*     Scale A if f2cmax entry outside range [SMLNUM,BIGNUM]. */
@@ -878,7 +903,7 @@ f"> */
     if (anrm > 0.f && anrm < smlnum) {
 
 /*        Scale matrix norm up to SMLNUM. */
-
+fprintf(stdout,"scaling A up to SML\n");
 	slascl_("G", &c__0, &c__0, &anrm, &smlnum, m, n, &a[a_offset], lda, 
 		info);
 	iascl = 1;
@@ -886,6 +911,7 @@ f"> */
 
 /*        Scale matrix norm down to BIGNUM. */
 
+fprintf(stdout,"scaling A down to BIG\n");
 	slascl_("G", &c__0, &c__0, &anrm, &bignum, m, n, &a[a_offset], lda, 
 		info);
 	iascl = 2;
@@ -893,6 +919,7 @@ f"> */
 
 /*        Matrix all zero. Return zero solution. */
 
+fprintf(stdout,"A is zero soln\n");
 	i__1 = f2cmax(*m,*n);
 	slaset_("F", &i__1, nrhs, &c_b81, &c_b81, &b[b_offset], ldb);
 	slaset_("F", &minmn, &c__1, &c_b81, &c_b81, &s[1], &c__1);
@@ -907,6 +934,7 @@ f"> */
     if (bnrm > 0.f && bnrm < smlnum) {
 
 /*        Scale matrix norm up to SMLNUM. */
+fprintf(stdout,"scaling B up to SML\n");
 
 	slascl_("G", &c__0, &c__0, &bnrm, &smlnum, m, nrhs, &b[b_offset], ldb,
 		 info);
@@ -914,6 +942,7 @@ f"> */
     } else if (bnrm > bignum) {
 
 /*        Scale matrix norm down to BIGNUM. */
+fprintf(stdout,"scaling B down to BIG\n");
 
 	slascl_("G", &c__0, &c__0, &bnrm, &bignum, m, nrhs, &b[b_offset], ldb,
 		 info);
@@ -924,12 +953,14 @@ f"> */
 
     if (*m < *n) {
 	i__1 = *n - *m;
+fprintf(stdout,"zeroing parts of B \n");
 	slaset_("F", &i__1, nrhs, &c_b81, &c_b81, &b[*m + 1 + b_dim1], ldb);
     }
 
 /*     Overdetermined case. */
 
     if (*m >= *n) {
+fprintf(stdout,"overdetermined, path 1 \n");
 
 /*        Path 1 - overdetermined or exactly determined. */
 
@@ -937,6 +968,7 @@ f"> */
 	if (*m >= mnthr) {
 
 /*           Path 1a - overdetermined, with many more rows than columns. */
+fprintf(stdout,"overdetermined, path 1a \n");
 
 	    mm = *n;
 	    itau = 1;
@@ -990,6 +1022,7 @@ f"> */
 	slalsd_("U", &smlsiz, n, nrhs, &s[1], &work[ie], &b[b_offset], ldb, 
 		rcond, rank, &work[nwork], &iwork[1], info);
 	if (*info != 0) {
+		fprintf(stdout,"info !=0 nach slalsd\n");
 	    goto L10;
 	}
 
@@ -1000,6 +1033,7 @@ f"> */
 		b[b_offset], ldb, &work[nwork], &i__1, info);
 
     } else /* if(complicated condition) */ {
+fprintf(stdout,"not overdetermined \n");
 /* Computing MAX */
 	i__1 = *m, i__2 = (*m << 1) - 4, i__1 = f2cmax(i__1,i__2), i__1 = f2cmax(
 		i__1,*nrhs), i__2 = *n - *m * 3, i__1 = f2cmax(i__1,i__2);
@@ -1007,6 +1041,8 @@ f"> */
 
 /*        Path 2a - underdetermined, with many more columns than rows */
 /*        and sufficient workspace for an efficient algorithm. */
+
+fprintf(stdout,"not overdetermined, path 2a\n");
 
 	    ldwork = *m;
 /* Computing MAX */
@@ -1087,6 +1123,7 @@ f"> */
 	} else {
 
 /*        Path 2 - remaining underdetermined cases. */
+fprintf(stdout,"other underdetermined, path 2");
 
 	    ie = 1;
 	    itauq = ie + *m;
@@ -1127,20 +1164,24 @@ f"> */
 /*     Undo scaling. */
 
     if (iascl == 1) {
+	    fprintf(stdout," unscaling a1\n");
 	slascl_("G", &c__0, &c__0, &anrm, &smlnum, n, nrhs, &b[b_offset], ldb,
 		 info);
 	slascl_("G", &c__0, &c__0, &smlnum, &anrm, &minmn, &c__1, &s[1], &
 		minmn, info);
     } else if (iascl == 2) {
+	    fprintf(stdout," unscaling a2\n");
 	slascl_("G", &c__0, &c__0, &anrm, &bignum, n, nrhs, &b[b_offset], ldb,
 		 info);
 	slascl_("G", &c__0, &c__0, &bignum, &anrm, &minmn, &c__1, &s[1], &
 		minmn, info);
     }
     if (ibscl == 1) {
+	    fprintf(stdout," unscaling b1\n");
 	slascl_("G", &c__0, &c__0, &smlnum, &bnrm, n, nrhs, &b[b_offset], ldb,
 		 info);
     } else if (ibscl == 2) {
+	    fprintf(stdout," unscaling b2\n");
 	slascl_("G", &c__0, &c__0, &bignum, &bnrm, n, nrhs, &b[b_offset], ldb,
 		 info);
     }
@@ -1148,6 +1189,7 @@ f"> */
 L10:
     work[1] = (real) maxwrk;
     iwork[1] = liwork;
+fprintf(stdout, "end of SGELSD\n");
     return 0;
 
 /*     End of SGELSD */
