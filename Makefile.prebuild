@@ -71,7 +71,11 @@ endif
 
 
 getarch : getarch.c cpuid.S dummy $(CPUIDEMU)
-	$(HOSTCC) $(HOST_CFLAGS) $(EXFLAGS) -o $(@F) getarch.c cpuid.S $(CPUIDEMU)
+ifneq (,$(findstring NO_AVX512,$(file < $(TARGET_MAKE))))
+	$(HOSTCC) $(HOST_CFLAGS) $(EXFLAGS) -DNO_AVX512=1 -v -o $(@F) getarch.c cpuid.S $(CPUIDEMU) >getarchlog 2>&1
+else
+	$(HOSTCC) $(HOST_CFLAGS) $(EXFLAGS) -v -o $(@F) getarch.c cpuid.S $(CPUIDEMU) >getarchlog 2>&1
+endif
 
 getarch_2nd : getarch_2nd.c config.h dummy
 ifndef TARGET_CORE
