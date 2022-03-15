@@ -94,14 +94,18 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <sys/sysinfo.h>
 #endif
 
-#if defined(__x86_64__) || defined(_M_X64)
+/*#if defined(__x86_64__) || defined(_M_X64)
 #if (( defined(__GNUC__)  && __GNUC__   > 6 && defined(__AVX2__)) || (defined(__clang__) && __clang_major__ >= 6))
 #else
 #ifndef NO_AVX512
 #define NO_AVX512
 #endif
 #endif
+#endif*/
+#ifdef NO_AVX512
+#error("getarch compiled with NO_AVX512")
 #endif
+
 /* #define FORCE_P2		*/
 /* #define FORCE_KATMAI		*/
 /* #define FORCE_COPPERMINE	*/
