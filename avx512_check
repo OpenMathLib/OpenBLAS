@@ -125,7 +125,7 @@ if (($architecture eq "x86") || ($architecture eq "x86_64")) {
     if ($@){ 
 	$no_avx512 = 0;
     } else {
-	($fh,$tmpf) = tempfile( SUFFIX => '.c' , UNLINK => 0 );
+	($fh,$tmpf) = tempfile( SUFFIX => '.c' , UNLINK => 1 );
 	$code = '"vbroadcastss -4 * 4(%rsi), %zmm2"';
 	print $fh "#include <immintrin.h>\n\nint main(void){ __asm__ volatile($code); }\n";
 	$args = " -march=skylake-avx512 -v -c -o $tmpf.o $tmpf";
