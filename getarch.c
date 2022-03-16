@@ -102,9 +102,6 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif
 #endif
 #endif*/
-#ifdef NO_AVX512
-#error("getarch compiled with NO_AVX512")
-#endif
 
 /* #define FORCE_P2		*/
 /* #define FORCE_KATMAI		*/
