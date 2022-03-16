@@ -1,0 +1,147 @@
+#!/usr/bin/env perl
+
+#use File::Basename;
+# use File::Temp qw(tempfile);
+
+# Checking cross compile
+$hostos   = `uname -s | sed -e s/\-.*//`;    chop($hostos);
+$hostarch = `uname -m | sed -e s/i.86/x86/`;
+$hostarch = `uname -p` if ($hostos eq "AIX" || $hostos eq "SunOS");
+chop($hostarch);
+$hostarch = "x86_64" if ($hostarch eq "amd64");
+$hostarch = "arm" if ($hostarch ne "arm64" && $hostarch =~ /^arm.*/);
+$hostarch = "arm64" if ($hostarch eq "aarch64");
+$hostarch = "power" if ($hostarch =~ /^(powerpc|ppc).*/);
+$hostarch = "zarch" if ($hostarch eq "s390x");
+
+#$tmpf = new File::Temp( UNLINK => 1 );
+$binary = $ENV{"BINARY"};
+
+$compiler_name = shift(@ARGV);
+$flags = join(" ", @ARGV);
+
+# First, we need to know the target OS and compiler name
+
+$data = `$compiler_name $flags -E ctest.c`;
+
+$compiler = "";
+$compiler = LSB       if ($data =~ /COMPILER_LSB/);
+$compiler = CLANG     if ($data =~ /COMPILER_CLANG/);
+$compiler = PGI       if ($data =~ /COMPILER_PGI/);
+$compiler = PATHSCALE if ($data =~ /COMPILER_PATHSCALE/);
+$compiler = INTEL     if ($data =~ /COMPILER_INTEL/);
+$compiler = OPEN64    if ($data =~ /COMPILER_OPEN64/);
+$compiler = SUN       if ($data =~ /COMPILER_SUN/);
+$compiler = IBM       if ($data =~ /COMPILER_IBM/);
+$compiler = DEC       if ($data =~ /COMPILER_DEC/);
+$compiler = GCC       if ($compiler eq "");
+
+$os = Linux           if ($data =~ /OS_LINUX/);
+$os = FreeBSD         if ($data =~ /OS_FREEBSD/);
+$os = NetBSD          if ($data =~ /OS_NETBSD/);
+$os = OpenBSD         if ($data =~ /OS_OPENBSD/);
+$os = DragonFly       if ($data =~ /OS_DRAGONFLY/);
+$os = Darwin          if ($data =~ /OS_DARWIN/);
+$os = SunOS           if ($data =~ /OS_SUNOS/);
+$os = AIX             if ($data =~ /OS_AIX/);
+$os = osf             if ($data =~ /OS_OSF/);
+$os = WINNT           if ($data =~ /OS_WINNT/);
+$os = CYGWIN_NT       if ($data =~ /OS_CYGWIN_NT/);
+$os = Interix         if ($data =~ /OS_INTERIX/);
+$os = Android         if ($data =~ /OS_ANDROID/);
+$os = Haiku           if ($data =~ /OS_HAIKU/);
+
+$architecture = x86          if ($data =~ /ARCH_X86/);
+$architecture = x86_64       if ($data =~ /ARCH_X86_64/);
+$architecture = e2k          if ($data =~ /ARCH_E2K/);
+$architecture = power        if ($data =~ /ARCH_POWER/);
+$architecture = mips         if ($data =~ /ARCH_MIPS/);
+$architecture = mips64       if ($data =~ /ARCH_MIPS64/);
+$architecture = alpha        if ($data =~ /ARCH_ALPHA/);
+$architecture = sparc        if ($data =~ /ARCH_SPARC/);
+$architecture = ia64         if ($data =~ /ARCH_IA64/);
+$architecture = arm          if ($data =~ /ARCH_ARM/);
+$architecture = arm64        if ($data =~ /ARCH_ARM64/);
+$architecture = zarch        if ($data =~ /ARCH_ZARCH/);
+$architecture = riscv64      if ($data =~ /ARCH_RISCV64/);
+$architecture = loongarch64  if ($data =~ /ARCH_LOONGARCH64/);
+
+$defined = 0;
+
+if ($os eq "AIX") {
+    $compiler_name .= " -maix32" if ($binary eq "32");
+    $compiler_name .= " -maix64" if ($binary eq "64");
+    $defined = 1;
+}
+
+if ($compiler eq "PGI") {
+    $compiler_name .= " -tp p7"    if ($binary eq "32");
+    $compiler_name .= " -tp p7-64" if ($binary eq "64");
+    $openmp = "-mp";
+    $defined = 1;
+}
+
+if ($compiler eq "IBM") {
+    $compiler_name .= " -q32"  if ($binary eq "32");
+    $compiler_name .= " -q64"  if ($binary eq "64");
+    $openmp = "-qsmp=omp";
+    $defined = 1;
+}
+
+if ($compiler eq "INTEL") {
+    $openmp = "-openmp";
+}
+
+if ($compiler eq "PATHSCALE") {
+    $openmp = "-mp";
+}
+
+if ($compiler eq "OPEN64") {
+    $openmp = "-mp";
+}
+
+if ($compiler eq "CLANG") {
+    $openmp = "-fopenmp";
+}
+
+if ($compiler eq "GCC" || $compiler eq "LSB") {
+    $openmp = "-fopenmp";
+}
+
+if ($defined == 0) {
+    $compiler_name .= " -m32" if ($binary eq "32");
+    $compiler_name .= " -m64" if ($binary eq "64");
+}
+
+# Do again
+
+$data = `$compiler_name $flags -E ctest.c`;
+
+$architecture = x86          if ($data =~ /ARCH_X86/);
+$architecture = x86_64       if ($data =~ /ARCH_X86_64/);
+$no_avx512= 0;
+if (($architecture eq "x86") || ($architecture eq "x86_64")) {
+    eval "use File::Temp qw(tempfile)";
+    if ($@){ 
+	$no_avx512 = 0;
+    } else {
+	($fh,$tmpf) = tempfile( SUFFIX => '.c' , UNLINK => 0 );
+	$code = '"vbroadcastss -4 * 4(%rsi), %zmm2"';
+	print $fh "#include <immintrin.h>\n\nint main(void){ __asm__ volatile($code); }\n";
+	$args = " -march=skylake-avx512 -v -c -o $tmpf.o $tmpf";
+	if ($compiler eq "PGI") {
+	    $args = " -tp skylake -c -o $tmpf.o $tmpf";
+	}
+	my @cmd = ("$compiler_name $flags $args >null 2>noll");
+	system(@cmd) == 0;
+	if ($? != 0) {
+	    $no_avx512 = 1;
+	} else {
+	    $no_avx512 = 0;
+	}
+	unlink("$tmpf.o");
+    }
+print $no_avx512;
+}
+exit $no_avx512;
+
