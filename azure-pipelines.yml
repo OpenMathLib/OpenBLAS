@@ -119,10 +119,10 @@ jobs:
       cmake --build . --config Release
       ctest
       dir D:\a\1\s\build\test\
-#      ctest --rerun-failed --output-on-failure
-#      cd test
-#      dblat2 <..\..\test\dblat2.dat
-#      cat DBLAT2.SUMM
+      ctest --rerun-failed --output-on-failure
+      cd test
+      dblat2 <..\..\test\dblat2.dat
+      cat DBLAT2.SUMM
 
 - job: OSX_OpenMP
   pool:
