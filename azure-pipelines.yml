@@ -117,10 +117,7 @@ jobs:
       call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
       cmake -G "Ninja" -DCMAKE_C_COMPILER=clang-cl -DCMAKE_CXX_COMPILER=clang-cl -DCMAKE_Fortran_COMPILER=flang -DCMAKE_MT=mt -DCMAKE_BUILD_TYPE=Release -DMSVC_STATIC_CRT=ON ..
       cmake --build . --config Release
-      #ctest
       file ..\test\sblat2.dat
-      #dir D:\a\1\s\build\test\
-      #ctest --rerun-failed --output-on-failure
       cd test
       dblat2 <..\..\test\dblat2.dat
       cat DBLAT2.SUMM
