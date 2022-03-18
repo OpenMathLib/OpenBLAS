@@ -103,7 +103,7 @@ jobs:
 
 - job: Windows_flang_clang
   pool:
-     vmImage: 'windows-latest'
+     vmImage: 'windows-2019'
   steps:
   - script: |
       set "PATH=C:\Miniconda\Scripts;C:\Miniconda\Library\bin;C:\Miniconda\Library\usr\bin;C:\Miniconda\condabin;%PATH%"
