@@ -28,6 +28,7 @@ endforeach()
 # $1 exec, $2 input, $3 output_result
 if(WIN32)
 FILE(WRITE ${CMAKE_CURRENT_BINARY_DIR}/test_helper.ps1
+"$PSDefaultParameterValues['*:Encoding'] = 'ascii'\n"
 "if (Test-Path $args[2]) { Remove-Item -Force $args[2] } \n"
 "$ErrorActionPreference = \"Stop\"\n"
 "Get-Content $args[1] -Raw | & $args[0]\n"
