@@ -31,7 +31,7 @@ FILE(WRITE ${CMAKE_CURRENT_BINARY_DIR}/test_helper.ps1
 "$PSDefaultParameterValues['*:Encoding'] = 'ascii'\n"
 "if (Test-Path $args[2]) { Remove-Item -Force $args[2] } \n"
 "$ErrorActionPreference = \"Stop\"\n"
-"Get-Content $args[1] -Raw | & $args[0]\n"
+"Get-Content $args[1] -Encoding [System.Text.Encoding]::GetEncoding(1252) | & $args[0]\n"
 "If ((Get-Content $args[2] | %{$_ -match \"FATAL\"}) -contains $true) {\n"
 "echo Error\n"
 "exit 1\n"
