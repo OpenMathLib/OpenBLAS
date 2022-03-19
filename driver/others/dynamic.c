@@ -96,7 +96,7 @@ extern gotoblas_t gotoblas_BARCELONA;
 #endif
 #ifdef DYN_ATOM
 extern gotoblas_t gotoblas_ATOM;
-elif defined(DYN_NEHALEM)
+#elif defined(DYN_NEHALEM)
 #define gotoblas_ATOM gotoblas_NEHALEM
 #else
 #define gotoblas_ATOM gotoblas_PRESCOTT
