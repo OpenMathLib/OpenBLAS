@@ -33,6 +33,8 @@ FILE(WRITE ${CMAKE_CURRENT_BINARY_DIR}/test_helper.ps1
 "$ErrorActionPreference = \"Stop\"\n"
 "$OutputEncoding = [Text.UTF8Encoding]::new($false)\n"
 "$OutputEncoding\n"
+"Get-Content $args[1]\n"
+"Get-Content $args[1] | & file -\n"
 "Get-Content $args[1] | & $args[0]\n"
 "If ((Get-Content $args[2] | %{$_ -match \"FATAL\"}) -contains $true) {\n"
 "echo Error\n"
