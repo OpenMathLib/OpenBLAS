@@ -31,7 +31,7 @@ FILE(WRITE ${CMAKE_CURRENT_BINARY_DIR}/test_helper.ps1
 "if (Test-Path $args[2]) { Remove-Item -Force $args[2] } \n"
 "$ErrorActionPreference = \"Stop\"\n"
 "If ((Get-Content $args[1] | & file - | %{$_ -match \"BOM\"}) -contains $true) {\n"
-"echo Skipped due to wrong input encoding\n"
+"echo 'Skipped due to wrong input encoding'\n"
 "exit 0\n"
 "}\n"
 "Get-Content $args[1] | & $args[0]\n"
