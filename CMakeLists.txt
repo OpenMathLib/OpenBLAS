@@ -17,14 +17,8 @@ include(GNUInstallDirs)
 
 include(CMakePackageConfigHelpers)
 
-if(MSVC AND NOT DEFINED NOFORTRAN)
-  set(NOFORTRAN ON)
-endif()
-
 #######
-if(MSVC)
-  option(BUILD_WITHOUT_LAPACK "Do not build LAPACK and LAPACKE (Only BLAS or CBLAS)" ON)
-endif()
+option(BUILD_WITHOUT_LAPACK "Do not build LAPACK and LAPACKE (Only BLAS or CBLAS)" OFF)
 
 option(BUILD_WITHOUT_CBLAS "Do not build the C interface (CBLAS) to the BLAS functions" OFF)
 
