@@ -1239,7 +1239,6 @@ static void init_parameter(void) {
   
 #ifdef BUILD_BFLOAT16
   TABLE_NAME.sbgemm_p = SBGEMM_DEFAULT_P;
-  TABLE_NAME.sbgemm_r = SBGEMM_DEFAULT_R;
   TABLE_NAME.sbgemm_q = SBGEMM_DEFAULT_Q;
 #endif
 #if  (BUILD_SINGLE==1) || (BUILD_COMPLEX==1)
