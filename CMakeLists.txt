@@ -20,6 +20,8 @@ include(CMakePackageConfigHelpers)
 #######
 option(BUILD_WITHOUT_LAPACK "Do not build LAPACK and LAPACKE (Only BLAS or CBLAS)" OFF)
 
+option(BUILD_TESTING "Build LAPACK testsuite when building LAPACK" ON)
+
 option(BUILD_WITHOUT_CBLAS "Do not build the C interface (CBLAS) to the BLAS functions" OFF)
 
 option(DYNAMIC_ARCH "Include support for multiple CPU targets, with automatic selection at runtime (x86/x86_64, aarch64 or ppc only)" OFF)
@@ -311,7 +313,9 @@ if (NOT NOFORTRAN)
   if(NOT NO_CBLAS)
     add_subdirectory(ctest)
   endif()
-  add_subdirectory(lapack-netlib/TESTING)
+  if (BUILD_TESTING)
+    add_subdirectory(lapack-netlib/TESTING)
+  endif()
   if (CPP_THREAD_SAFETY_TEST OR CPP_THREAD_SAFETY_GEMV)
     add_subdirectory(cpp_thread_test)
   endif()
