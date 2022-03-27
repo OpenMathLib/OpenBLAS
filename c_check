@@ -316,6 +316,7 @@ if ($architecture ne $hostarch) {
 }
 
 $cross = 1 if ($os ne $hostos);
+$cross = 0 if (($os eq "Android") && ($hostos eq "Linux") && ($ENV{TERMUX_APP_PID} != ""));
 
 $openmp = "" if $ENV{USE_OPENMP} != 1;
 
