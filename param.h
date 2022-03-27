@@ -3423,8 +3423,8 @@ Until then, just keep it different than DGEMM_DEFAULT_UNROLL_N to keep copy rout
 #define SGEMM_DEFAULT_UNROLL_M  16
 #define SGEMM_DEFAULT_UNROLL_N  4
 
-#define DGEMM_DEFAULT_UNROLL_M  4
-#define DGEMM_DEFAULT_UNROLL_N  8
+#define DGEMM_DEFAULT_UNROLL_M  8
+#define DGEMM_DEFAULT_UNROLL_N  4
 
 #define CGEMM_DEFAULT_UNROLL_M  8
 #define CGEMM_DEFAULT_UNROLL_N  4
