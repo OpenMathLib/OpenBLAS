@@ -3615,8 +3615,7 @@ lapack_embeded_underscore_objs_z="
     zlaunhr_col_getrfnp zlaunhr_col_getrfnp2 zunhr_col
 "
 
-
-dirname="$(dirname "$(dirname "$(readlink -f "${0}")")")/lapack-netlib"
+dirname="$(dirname "$(dirname "$( cd -- "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )")/lapack-netlib"
 
 if [ "${13}" -eq 1 ]; then
 	blasobjs="$blasobjs $bfblasobjs"
