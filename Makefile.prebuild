@@ -71,7 +71,7 @@ endif
 
 
 getarch : getarch.c cpuid.S dummy $(CPUIDEMU)
-	avx512=$$(perl c_check - - gcc | grep NO_AVX512); \
+	avx512=$$(perl c_check - - $(CC) $(TARGET_FLAGS) $(CFLAGS) | grep NO_AVX512); \
 	$(HOSTCC) $(HOST_CFLAGS) $(EXFLAGS) $${avx512:+-D$${avx512}} -o $(@F) getarch.c cpuid.S $(CPUIDEMU)
 
 getarch_2nd : getarch_2nd.c config.h dummy
