@@ -3128,7 +3128,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #define SYMV_P	16
 
-#if defined(CORTEXA57) || defined(CORTEXX1) \
+#if defined(CORTEXA57) || defined(CORTEXX1) || \
     defined(CORTEXA72) || defined(CORTEXA73) || \
     defined(FALKOR)    || defined(TSV110) || defined(EMAG8180) || defined(VORTEX) || defined(FT2000)
 
