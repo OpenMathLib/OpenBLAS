@@ -175,7 +175,7 @@ endif ()
 
 if (${CORE} STREQUAL CORTEXX1)
   if (NOT DYNAMIC_ARCH)
-    set (CCOMMON_OPT "${CCOMMON_OPT} -march=armv8-a+sve")
+    set (CCOMMON_OPT "${CCOMMON_OPT} -march=armv8.2-a")
   endif ()
 endif ()
 
