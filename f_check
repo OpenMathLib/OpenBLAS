@@ -84,13 +84,10 @@ else
                 ;;
             *GNU*|*GCC*)
 
-                v="${data##*\(GNU\) }"
+                v="${data##*GCC: *\) }"
                 v="${v%%\"*}"
 
                 major="${v%%.*}"
-                # Uncomment both for checks using minor
-                #minor="${v#*.}"
-                #minor="${v%.*}"
 
                 if [ "$major" -ge 4 ]; then
                     vendor=GFORTRAN

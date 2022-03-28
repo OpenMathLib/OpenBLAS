@@ -274,6 +274,8 @@ if [ "$architecture" != "$hostarch" ]; then
 fi
 
 [ "$os" != "$hostos" ] && cross=1
+[ "$os" = "Android" ] && [ "$hostos" = "Linux" ] && [ -n "$TERMUX_APP_PID" ] \
+    && cross=0
 
 [ "$USE_OPENMP" != 1 ] && openmp=''
 
@@ -285,7 +287,7 @@ link="$($compiler_name $flags -c ctest2.c -o ctest2.o 2>&1 && $compiler_name $fl
 
 link="$(echo "$link" | sed 's/\-Y[[:space:]]P\,/\-Y/g')"
 
-flags="$(echo "$link" | tr '[[:space:],\n]' ' ')"
+flags="$(echo "$link" | tr '[:space:],\n' ' ')"
 
 # Strip trailing quotes
 old_flags="$flags"
@@ -362,8 +364,8 @@ compiler="$(echo "$compiler" | tr '[:lower:]' '[:upper:]' )"
     [ "$binformat" = "bin32" ] && printf "#define __32BIT__\t1\n"
     [ "$binformat" = "bin64" ] && printf "#define __64BIT__\t1\n"
     [ -n "$need_fu" ] && printf "#define FUNDERSCORE\t%s\n" "$need_fu"
-    [ "$have_msa" -eq 1 ] && printf "#define HAVE_MSA\t1\n"
-    [ "$c11_atomics" -eq 1 ] && printf "#define HAVE_C11\t1\n"
+    ! [ "$have_msa" -eq 1 ] || printf "#define HAVE_MSA\t1\n"
+    ! [ "$c11_atomics" -eq 1 ] || printf "#define HAVE_C11\t1\n"
 } >> "$config"
 
 
