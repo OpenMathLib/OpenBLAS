@@ -3751,7 +3751,7 @@ hplobjs="daxpy dcopy dscal idamax dgemv dtrsv dger dgemm dtrsm"
 
 bu="$3"
 
-if [ "$bu" -eq 0 ] || [ "$bu" -eq 1 ]; then
+if [ "$bu" = "0" ] || [ "$bu" = "1" ]; then
     bu=""
 fi
 
