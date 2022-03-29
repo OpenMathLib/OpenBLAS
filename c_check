@@ -349,9 +349,9 @@ printf "CEXTRALIB=%s %s %s\n" "$linker_L" "$linker_l" "$linker_a" >> "$makefile"
     printf "HAVE_MSA=1\n"                                        >> "$makefile"
     printf "MSA_FLAGS=%s\n" "$msa_flags"                         >> "$makefile"
 }
-[ "$no_avx512" -eq 1 ] && printf "NO_AVX512=1\n"                 >> "$makefile"
-[ "$no_avx2" -eq 1 ] && printf "NO_AVX2=1\n"                     >> "$makefile"
-[ "$oldgcc" -eq 1 ] && printf "OLDGCC=1\n"                      >> "$makefile"
+! [ "$no_avx512" -eq 1 ] || printf "NO_AVX512=1\n"               >> "$makefile"
+! [ "$no_avx2" -eq 1 ] || printf "NO_AVX2=1\n"                   >> "$makefile"
+! [ "$oldgcc" -eq 1 ] || printf "OLDGCC=1\n"                     >> "$makefile"
 
 os="$(echo "$os" | tr '[:lower:]' '[:upper:]'/ )"
 architecture="$(echo "$architecture" | tr '[:lower:]' '[:upper:]' )"
