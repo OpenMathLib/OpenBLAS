@@ -238,18 +238,18 @@ endif
 
 ifeq (1, $(filter 1,$(GCCVERSIONGTEQ11) $(ISCLANG)))
 ifeq ($(CORE), CORTEXX1)
-CCOMMON_OPT += -march=armv9 -mtune=cortexx1
+CCOMMON_OPT += -march=armv8.2-a -mtune=cortexa72
 ifneq ($(F_COMPILER), NAG)
-FCOMMON_OPT += -march=armv9 -mtune=cortexx1
+FCOMMON_OPT += -march=armv8.2-a -mtune=cortexa72
 endif
 endif
 endif
 
 ifeq (1, $(filter 1,$(GCCVERSIONGTEQ11) $(ISCLANG)))
 ifeq ($(CORE), CORTEXX2)
-CCOMMON_OPT += -march=armv9 -mtune=cortexx2
+CCOMMON_OPT += -march=armv8.4-a+sve
 ifneq ($(F_COMPILER), NAG)
-FCOMMON_OPT += -march=armv9 -mtune=cortexx2
+FCOMMON_OPT += -march=armv8.4-a+sve
 endif
 endif
 endif
@@ -266,9 +266,9 @@ endif
 
 ifeq (1, $(filter 1,$(GCCVERSIONGTEQ11) $(ISCLANG)))
 ifeq ($(CORE), CORTEXA710)
-CCOMMON_OPT += -march=armv8.2-a+sve -mtune=cortexa710
+CCOMMON_OPT += -march=armv8.4-a+sve
 ifneq ($(F_COMPILER), NAG)
-FCOMMON_OPT += -march=armv8.2-a+sve -mtune=cortexa710
+FCOMMON_OPT += -march=armv8.4-a+sve
 endif
 endif
 endif
