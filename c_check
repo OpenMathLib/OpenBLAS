@@ -56,22 +56,20 @@ if [ -z "$compiler" ]; then
     compiler=GCC
 fi
 
-case "$data" in
-    *OS_LINUX*) os=Linux ;;
-    *OS_FREEBSD*) os=FreeBSD ;;
-    *OS_NETBSD*) os=NetBSD ;;
-    *OS_OPENBSD*) os=OpenBSD ;;
-    *OS_DRAGONFLY*) os=DragonFly ;;
-    *OS_DARWIN*) os=Darwin ;;
-    *OS_SUNOS*) os=SunOS ;;
-    *OS_AIX*) os=AIX ;;
-    *OS_OSF*) os=osf ;;
-    *OS_WINNT*) os=WINNT ;;
-    *OS_CYGWIN_NT*) os=CYGWIN_NT ;;
-    *OS_INTERIX*) os=Interix ;;
-    *OS_ANDROID*) os=Android ;;
-    *OS_HAIKU*) os=Haiku ;;
-esac
+case "$data" in *OS_LINUX*) os=Linux ;; esac
+case "$data" in *OS_FREEBSD*) os=FreeBSD ;; esac
+case "$data" in *OS_NETBSD*) os=NetBSD ;; esac
+case "$data" in *OS_OPENBSD*) os=OpenBSD ;; esac
+case "$data" in *OS_DRAGONFLY*) os=DragonFly ;; esac
+case "$data" in *OS_DARWIN*) os=Darwin ;; esac
+case "$data" in *OS_SUNOS*) os=SunOS ;; esac
+case "$data" in *OS_AIX*) os=AIX ;; esac
+case "$data" in *OS_OSF*) os=osf ;; esac
+case "$data" in *OS_WINNT*) os=WINNT ;; esac
+case "$data" in *OS_CYGWIN_NT*) os=CYGWIN_NT ;; esac
+case "$data" in *OS_INTERIX*) os=Interix ;; esac
+case "$data" in *OS_ANDROID*) os=Android ;; esac
+case "$data" in *OS_HAIKU*) os=Haiku ;; esac
 
 case "$data" in
     *ARCH_X86_64*) architecture=x86_64 ;;
