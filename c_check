@@ -331,25 +331,27 @@ done
 
 # print $data, "\n";
 
-printf "OSNAME=%s\n" "$os" >> "$makefile"
-printf "ARCH=%s\n" "$architecture" >> "$makefile"
-printf "C_COMPILER=%s\n" "$compiler" >> "$makefile"
-[ "$binformat" = "bin32" ] && printf "BINARY32=\n"            >> "$makefile"
-[ "$binformat" = "bin64" ] && printf "BINARY64=\n"            >> "$makefile"
-[ "$binformat" = "bin32" ] && printf "BINARY32=1\n"           >> "$makefile"
-[ "$binformat" = "bin64" ] && printf "BINARY64=1\n"           >> "$makefile"
-[ -n "$need_fu" ] && printf 'FU=%s\n' "$need_fu"                 >> "$makefile"
-[ "$cross" -ne 0 ] && [ -n "$cross_suffix" ] && \
-    printf "CROSS_SUFFIX=%s\n" "$cross_suffix"                   >> "$makefile"
-[ "$cross" -ne 0 ] && printf "CROSS=1\n"                         >> "$makefile"
-printf "CEXTRALIB=%s %s %s\n" "$linker_L" "$linker_l" "$linker_a" >> "$makefile"
-[ "$have_msa" -eq 1 ] && {
-    printf "HAVE_MSA=1\n"                                        >> "$makefile"
-    printf "MSA_FLAGS=%s\n" "$msa_flags"                         >> "$makefile"
-}
-! [ "$no_avx512" -eq 1 ] || printf "NO_AVX512=1\n"               >> "$makefile"
-! [ "$no_avx2" -eq 1 ] || printf "NO_AVX2=1\n"                   >> "$makefile"
-! [ "$oldgcc" -eq 1 ] || printf "OLDGCC=1\n"                     >> "$makefile"
+{
+    printf "OSNAME=%s\n" "$os"
+    printf "ARCH=%s\n" "$architecture"
+    printf "C_COMPILER=%s\n" "$compiler"
+    [ "$binformat" != "bin32" ] && printf "BINARY32=\n"
+    [ "$binformat" != "bin64" ] && printf "BINARY64=\n"
+    [ "$binformat" = "bin32" ] && printf "BINARY32=1\n"
+    [ "$binformat" = "bin64" ] && printf "BINARY64=1\n"
+    [ -n "$need_fu" ] && printf 'FU=%s\n' "$need_fu"
+    [ "$cross" -ne 0 ] && [ -n "$cross_suffix" ] && \
+        printf "CROSS_SUFFIX=%s\n" "$cross_suffix"
+    [ "$cross" -ne 0 ] && printf "CROSS=1\n"
+    printf "CEXTRALIB=%s %s %s\n" "$linker_L" "$linker_l" "$linker_a"
+    [ "$have_msa" -eq 1 ] && {
+        printf "HAVE_MSA=1\n"
+        printf "MSA_FLAGS=%s\n" "$msa_flags"
+    }
+    ! [ "$no_avx512" -eq 1 ] || printf "NO_AVX512=1\n"
+    ! [ "$no_avx2" -eq 1 ] || printf "NO_AVX2=1\n"
+    ! [ "$oldgcc" -eq 1 ] || printf "OLDGCC=1\n"
+} >> "$makefile"
 
 os="$(echo "$os" | tr '[:lower:]' '[:upper:]'/ )"
 architecture="$(echo "$architecture" | tr '[:lower:]' '[:upper:]' )"
