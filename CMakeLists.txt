@@ -23,9 +23,9 @@ if(MSVC AND NOT DEFINED NOFORTRAN)
 endif()
 
 #######
-if(MSVC)
-  option(BUILD_WITHOUT_LAPACK "Do not build LAPACK and LAPACKE (Only BLAS or CBLAS)" ON)
-endif()
+option(BUILD_WITHOUT_LAPACK "Do not build LAPACK and LAPACKE (Only BLAS or CBLAS)" OFF)
+
+option(BUILD_TESTING "Build LAPACK testsuite when building LAPACK" ON)
 
 option(C_LAPACK "Build LAPACK from C sources instead of the original Fortran" OFF)
 
@@ -320,7 +320,9 @@ if (NOT NOFORTRAN)
   if(NOT NO_CBLAS)
     add_subdirectory(ctest)
   endif()
-  add_subdirectory(lapack-netlib/TESTING)
+  if (BUILD_TESTING)
+    add_subdirectory(lapack-netlib/TESTING)
+  endif()
   if (CPP_THREAD_SAFETY_TEST OR CPP_THREAD_SAFETY_GEMV)
     add_subdirectory(cpp_thread_test)
   endif()

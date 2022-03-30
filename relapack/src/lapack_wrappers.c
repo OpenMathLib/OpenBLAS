@@ -566,7 +566,8 @@ void LAPACK(sgemmt)(
     const float *B, const blasint *ldB,
     const float *beta, float *C, const blasint *ldC
 ) {
-    RELAPACK_sgemmt(uplo, n, A, ldA, info);
+	blasint info;
+    RELAPACK_sgemmt(uplo, transA, transB, n, k, alpha, A, ldA, B, ldB, beta, C, info);
 }
 #endif
 
@@ -578,7 +579,8 @@ void LAPACK(dgemmt)(
     const double *B, const blasint *ldB,
     const double *beta, double *C, const blasint *ldC
 ) {
-    RELAPACK_dgemmt(uplo, n, A, ldA, info);
+	blasint info;
+    RELAPACK_dgemmt(uplo, transA, transB, n, k, alpha, A, ldA, B, ldB, beta, C, info);
 }
 #endif
 
@@ -590,7 +592,8 @@ void LAPACK(cgemmt)(
     const float *B, const blasint *ldB,
     const float *beta, float *C, const blasint *ldC
 ) {
-    RELAPACK_cgemmt(uplo, n, A, ldA, info);
+	blasint info;
+    RELAPACK_cgemmt(uplo, transA, transB, n, k, alpha, A, ldA, B, ldB, beta, C, info);
 }
 #endif
 
@@ -602,6 +605,7 @@ void LAPACK(zgemmt)(
     const double *B, const blasint *ldB,
     const double *beta, double *C, const blasint *ldC
 ) {
-    RELAPACK_zgemmt(uplo, n, A, ldA, info);
+	blasint info;
+    RELAPACK_zgemmt(uplo, transA, transB, n, k, alpha, A, ldA, B, ldB, beta, C, info);
 }
 #endif

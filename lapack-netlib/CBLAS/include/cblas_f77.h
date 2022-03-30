@@ -9,6 +9,8 @@
 #ifndef CBLAS_F77_H
 #define CBLAS_F77_H
 
+#include <stdint.h>
+
 #ifdef CRAY
    #include <fortran.h>
    #define F77_CHAR _fcd
@@ -17,8 +19,12 @@
    #define F77_STRLEN(a) (_fcdlen)
 #endif
 
+#ifndef F77_INT
 #ifdef WeirdNEC
-   #define F77_INT long
+   #define F77_INT int64_t
+#else
+   #define F77_INT int32_t
+#endif
 #endif
 
 #ifdef  F77_CHAR

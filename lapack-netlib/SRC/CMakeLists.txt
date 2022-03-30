@@ -500,21 +500,21 @@ if(BUILD_COMPLEX16)
 endif()
 list(REMOVE_DUPLICATES SOURCES)
 
-add_library(lapack ${SOURCES})
+add_library(${LAPACKLIB} ${SOURCES})
 set_target_properties(
-  lapack PROPERTIES
+  ${LAPACKLIB} PROPERTIES
   VERSION ${LAPACK_VERSION}
   SOVERSION ${LAPACK_MAJOR_VERSION}
   )
 
 if(USE_XBLAS)
-  target_link_libraries(lapack PRIVATE ${XBLAS_LIBRARY})
+  target_link_libraries(${LAPACKLIB} PRIVATE ${XBLAS_LIBRARY})
 endif()
-target_link_libraries(lapack PRIVATE ${BLAS_LIBRARIES})
+target_link_libraries(${LAPACKLIB} PRIVATE ${BLAS_LIBRARIES})
 
 if(_is_coverage_build)
-  target_link_libraries(lapack PRIVATE gcov)
-  add_coverage(lapack)
+  target_link_libraries(${LAPACKLIB} PRIVATE gcov)
+  add_coverage(${LAPACKLIB})
 endif()
 
-lapack_install_library(lapack)
+lapack_install_library(${LAPACKLIB})

@@ -254,7 +254,7 @@ if (($architecture eq "x86") || ($architecture eq "x86_64")) {
 #	$tmpf = new File::Temp( UNLINK => 1 );
 	($fh,$tmpf) = tempfile( SUFFIX => '.c' , UNLINK => 1 );
 	$code = '"vbroadcastss -4 * 4(%rsi), %zmm2"';
-	print $tmpf "#include <immintrin.h>\n\nint main(void){ __asm__ volatile($code); }\n";
+	print $fh "#include <immintrin.h>\n\nint main(void){ __asm__ volatile($code); }\n";
 	$args = " -march=skylake-avx512 -c -o $tmpf.o $tmpf";
 	if ($compiler eq "PGI") {
 	    $args = " -tp skylake -c -o $tmpf.o $tmpf";
@@ -278,7 +278,7 @@ if ($data =~ /HAVE_C11/) {
        $c11_atomics = 0;
     } else {
        ($fh,$tmpf) = tempfile( SUFFIX => '.c' , UNLINK => 1 );
-       print $tmpf "#include <stdatomic.h>\nint main(void){}\n";
+       print $fh "#include <stdatomic.h>\nint main(void){}\n";
        $args = " -c -o $tmpf.o $tmpf";
        my @cmd = ("$compiler_name $flags $args >/dev/null 2>/dev/null");
        system(@cmd) == 0;
@@ -316,6 +316,7 @@ if ($architecture ne $hostarch) {
 }
 
 $cross = 1 if ($os ne $hostos);
+$cross = 0 if (($os eq "Android") && ($hostos eq "Linux") && ($ENV{TERMUX_APP_PID} != ""));
 
 $openmp = "" if $ENV{USE_OPENMP} != 1;
 

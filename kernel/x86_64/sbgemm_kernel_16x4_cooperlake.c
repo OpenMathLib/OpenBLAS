@@ -114,10 +114,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	asm("vmovups %0, (%1, %2, 4)": : "v"(val1), "r"(addr), "r"(ldc))
 
 #define _MASK_STORE_C_2nx16(addr, val0, val1) \
-	asm("vfmadd213ps (%1), %2, %0 %{%3%} ": "+v"(val0) : "r"(addr), "v"(alpha_512), "k"(mmask)); \
-	asm("vfmadd213ps (%1, %3, 4), %2, %0 %{%4%}": "+v"(val1) : "r"(addr), "v"(alpha_512), "r"(ldc), "k"(mmask)); \
-	asm("vmovups %0, (%1) %{%2%}": : "v"(val0), "r"(addr), "k"(mmask)); \
-	asm("vmovups %0, (%1, %2, 4) %{%3%}": : "v"(val1), "r"(addr), "r"(ldc), "k"(mmask))
+	asm("vfmadd213ps (%1), %2, %0 %{%3%} ": "+v"(val0) : "r"(addr), "v"(alpha_512), "Yk"(mmask)); \
+	asm("vfmadd213ps (%1, %3, 4), %2, %0 %{%4%}": "+v"(val1) : "r"(addr), "v"(alpha_512), "r"(ldc), "Yk"(mmask)); \
+	asm("vmovups %0, (%1) %{%2%}": : "v"(val0), "r"(addr), "Yk"(mmask)); \
+	asm("vmovups %0, (%1, %2, 4) %{%3%}": : "v"(val1), "r"(addr), "r"(ldc), "Yk"(mmask))
 
 #define _REORDER_C_2X(result_0, result_1) { \
 	__m512 tmp0, tmp1; \
@@ -154,8 +154,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	asm("vmovups %0, (%1)": : "v"(val0), "r"(addr));
 
 #define _MASK_STORE_C_16(addr, val0) \
-	asm("vfmadd213ps (%1), %2, %0 %{%3%} ": "+v"(val0) : "r"(addr), "v"(alpha_512), "k"(mmask)); \
-	asm("vmovups %0, (%1) %{%2%}": : "v"(val0), "r"(addr), "k"(mmask));
+	asm("vfmadd213ps (%1), %2, %0 %{%3%} ": "+v"(val0) : "r"(addr), "v"(alpha_512), "Yk"(mmask)); \
+	asm("vmovups %0, (%1) %{%2%}": : "v"(val0), "r"(addr), "Yk"(mmask));
 
 #define N_STORE_4X(A, Bx, By) { \
 	_REORDER_C_2X(result_00_##A##Bx##By, result_01_##A##Bx##By); \
