@@ -48,10 +48,17 @@ typedef float real;
 typedef double doublereal;
 typedef struct { real r, i; } complex;
 typedef struct { doublereal r, i; } doublecomplex;
+#ifdef MSVC
+static inline _Fcomplex Cf(complex *z) {return z->r + z->i*I;}
+static inline _Dcomplex Cd(doublecomplex *z) {return z->r + z->i*I;}
+static inline _Fcomplex * _pCf(complex *z) {return (_Fcomplex*)z;}
+static inline _Dcomplex * _pCd(doublecomplex *z) {return (_DComplex*)z;}
+#else
 static inline _Complex float Cf(complex *z) {return z->r + z->i*_Complex_I;}
 static inline _Complex double Cd(doublecomplex *z) {return z->r + z->i*_Complex_I;}
 static inline _Complex float * _pCf(complex *z) {return (_Complex float*)z;}
 static inline _Complex double * _pCd(doublecomplex *z) {return (_Complex double*)z;}
+#endif
 #define pCf(z) (*_pCf(z))
 #define pCd(z) (*_pCd(z))
 typedef int logical;
@@ -345,7 +352,11 @@ static integer smaxloc_(float *w, integer s, integer e, integer *n)
 }
 static inline void cdotc_(complex *z, integer *n_, complex *x, integer *incx_, complex *y, integer *incy_) {
 	integer n = *n_, incx = *incx_, incy = *incy_, i;
+#ifdef MSVC
+	_Fcomplex zdotc = 0.0;
+#else
 	_Complex float zdotc = 0.0;
+#endif
 	if (incx == 1 && incy == 1) {
 		for (i=0;i<n;i++) { /* zdotc = zdotc + dconjg(x(i))* y(i) */
 			zdotc += conjf(Cf(&x[i])) * Cf(&y[i]);
@@ -359,7 +370,11 @@ static inline void cdotc_(complex *z, integer *n_, complex *x, integer *incx_, c
 }
 static inline void zdotc_(doublecomplex *z, integer *n_, doublecomplex *x, integer *incx_, doublecomplex *y, integer *incy_) {
 	integer n = *n_, incx = *incx_, incy = *incy_, i;
+#ifdef MSVC
+	_Dcomplex zdotc = 0.0;
+#else
 	_Complex double zdotc = 0.0;
+#endif
 	if (incx == 1 && incy == 1) {
 		for (i=0;i<n;i++) { /* zdotc = zdotc + dconjg(x(i))* y(i) */
 			zdotc += conj(Cd(&x[i])) * Cd(&y[i]);
@@ -373,7 +388,11 @@ static inline void zdotc_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 }	
 static inline void cdotu_(complex *z, integer *n_, complex *x, integer *incx_, complex *y, integer *incy_) {
 	integer n = *n_, incx = *incx_, incy = *incy_, i;
+#ifdef MSVC
+	_Fcomplex zdotc = 0.0;
+#else
 	_Complex float zdotc = 0.0;
+#endif
 	if (incx == 1 && incy == 1) {
 		for (i=0;i<n;i++) { /* zdotc = zdotc + dconjg(x(i))* y(i) */
 			zdotc += Cf(&x[i]) * Cf(&y[i]);
@@ -387,7 +406,11 @@ static inline void cdotu_(complex *z, integer *n_, complex *x, integer *incx_, c
 }
 static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integer *incx_, doublecomplex *y, integer *incy_) {
 	integer n = *n_, incx = *incx_, incy = *incy_, i;
+#ifdef MSVC
+	_Dcomplex zdotc = 0.0;
+#else
 	_Complex double zdotc = 0.0;
+#endif	
 	if (incx == 1 && incy == 1) {
 		for (i=0;i<n;i++) { /* zdotc = zdotc + dconjg(x(i))* y(i) */
 			zdotc += Cd(&x[i]) * Cd(&y[i]);
