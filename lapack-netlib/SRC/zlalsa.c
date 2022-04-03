@@ -19,7 +19,7 @@
 #undef I
 #endif
 
-#if defined(OS_WINDOWS) && defined(__64BIT__)
+#if defined(_WIN64)
 typedef long long BLASLONG;
 typedef unsigned long long BLASULONG;
 #else
@@ -29,7 +29,7 @@ typedef unsigned long BLASULONG;
 
 #ifdef LAPACK_ILP64
 typedef BLASLONG blasint;
-#if defined(OS_WINDOWS) && defined(__64BIT__)
+#if defined(_WIN64)
 #define blasabs(x) llabs(x)
 #else
 #define blasabs(x) labs(x)
