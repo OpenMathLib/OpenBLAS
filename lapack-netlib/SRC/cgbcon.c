@@ -48,7 +48,7 @@ typedef float real;
 typedef double doublereal;
 typedef struct { real r, i; } complex;
 typedef struct { doublereal r, i; } doublecomplex;
-#ifdef MSVC
+#ifdef _MSC_VER
 static inline _Fcomplex Cf(complex *z) {return z->r + z->i*I;}
 static inline _Dcomplex Cd(doublecomplex *z) {return z->r + z->i*I;}
 static inline _Fcomplex * _pCf(complex *z) {return (_Fcomplex*)z;}
@@ -307,8 +307,13 @@ static _Complex float cpow_ui(_Complex float x, integer n) {
 	}
 	return pow;
 }
+#ifdef _MSC_VER
+static _Dcomplex zpow_ui(_Dcomplex x, integer n) {
+	_Dcomplex pow=1.0, unsigned long int u;
+#else
 static _Complex double zpow_ui(_Complex double x, integer n) {
 	_Complex double pow=1.0; unsigned long int u;
+#endif
 	if(n != 0) {
 		if(n < 0) n = -n, x = 1/x;
 		for(u = n; ; ) {
@@ -352,7 +357,7 @@ static integer smaxloc_(float *w, integer s, integer e, integer *n)
 }
 static inline void cdotc_(complex *z, integer *n_, complex *x, integer *incx_, complex *y, integer *incy_) {
 	integer n = *n_, incx = *incx_, incy = *incy_, i;
-#ifdef MSVC
+#ifdef _MSC_VER
 	_Fcomplex zdotc = 0.0;
 #else
 	_Complex float zdotc = 0.0;
@@ -370,7 +375,7 @@ static inline void cdotc_(complex *z, integer *n_, complex *x, integer *incx_, c
 }
 static inline void zdotc_(doublecomplex *z, integer *n_, doublecomplex *x, integer *incx_, doublecomplex *y, integer *incy_) {
 	integer n = *n_, incx = *incx_, incy = *incy_, i;
-#ifdef MSVC
+#ifdef _MSC_VER
 	_Dcomplex zdotc = 0.0;
 #else
 	_Complex double zdotc = 0.0;
@@ -388,7 +393,7 @@ static inline void zdotc_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 }	
 static inline void cdotu_(complex *z, integer *n_, complex *x, integer *incx_, complex *y, integer *incy_) {
 	integer n = *n_, incx = *incx_, incy = *incy_, i;
-#ifdef MSVC
+#ifdef _MSC_VER
 	_Fcomplex zdotc = 0.0;
 #else
 	_Complex float zdotc = 0.0;
@@ -406,7 +411,7 @@ static inline void cdotu_(complex *z, integer *n_, complex *x, integer *incx_, c
 }
 static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integer *incx_, doublecomplex *y, integer *incy_) {
 	integer n = *n_, incx = *incx_, incy = *incy_, i;
-#ifdef MSVC
+#ifdef _MSC_VER
 	_Dcomplex zdotc = 0.0;
 #else
 	_Complex double zdotc = 0.0;
