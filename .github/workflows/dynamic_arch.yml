@@ -101,3 +101,120 @@ jobs:
           cd build
           cmake -DDYNAMIC_ARCH=1 -DNOFORTRAN=0 -DBUILD_WITHOUT_LAPACK=0  -DCMAKE_VERBOSE_MAKEFILE=ON -DCMAKE_BUILD_TYPE=Release ..
           make -j$(nproc)
+
+
+  msys2:
+    runs-on: windows-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        msystem: [MINGW64, MINGW32, CLANG64]
+        idx: [int32, int64]
+        include:
+          - msystem: MINGW64
+            idx: int32
+            target-prefix: mingw-w64-x86_64
+            fc-pkg: mingw-w64-x86_64-gcc-fortran
+          - msystem: MINGW32
+            idx: int32
+            target-prefix: mingw-w64-i686
+            fc-pkg: mingw-w64-i686-gcc-fortran
+          - msystem: CLANG64
+            idx: int32
+            target-prefix: mingw-w64-clang-x86_64
+            c-lapack-flags: -DC_LAPACK=ON
+          - msystem: MINGW64
+            idx: int64
+            idx64-flags: -DBINARY=64 -DINTERFACE64=1
+            target-prefix: mingw-w64-x86_64
+            fc-pkg: mingw-w64-x86_64-gcc-fortran
+          - msystem: CLANG64
+            idx: int64
+            idx64-flags: -DBINARY=64 -DINTERFACE64=1
+            target-prefix: mingw-w64-clang-x86_64
+            c-lapack-flags: -DC_LAPACK=ON
+        exclude:
+          - msystem: MINGW32
+            idx: int64
+
+    defaults:
+      run:
+        # Use MSYS2 bash as default shell
+        shell: msys2 {0}
+
+    env:
+      CHERE_INVOKING: 1
+
+    steps:
+      - name: Get CPU name
+        shell: pwsh
+        run : |
+          Get-CIMInstance -Class Win32_Processor | Select-Object -Property Name
+
+      - name: Install build dependencies
+        uses: msys2/setup-msys2@v2
+        with:
+          msystem: ${{ matrix.msystem }}
+          update: true
+          release: false  # Use pre-installed version
+          install: >-
+            base-devel
+            ${{ matrix.target-prefix }}-cc
+            ${{ matrix.fc-pkg }}
+            ${{ matrix.target-prefix }}-cmake
+            ${{ matrix.target-prefix }}-ninja
+            ${{ matrix.target-prefix }}-ccache
+
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Compilation cache
+        uses: actions/cache@v2
+        with:
+          # It looks like this path needs to be hard-coded.
+          path: C:/msys64/home/runneradmin/.ccache
+          # We include the commit sha in the cache key, as new cache entries are
+          # only created if there is no existing entry for the key yet.
+          key: ccache-msys2-${{ matrix.msystem }}-${{ matrix.idx }}-${{ github.ref }}-${{ github.sha }}
+          # Restore a matching ccache cache entry. Prefer same branch.
+          restore-keys: |
+            ccache-msys2-${{ matrix.msystem }}-${{ matrix.idx }}-${{ github.ref }}
+            ccache-msys2-${{ matrix.msystem }}-${{ matrix.idx }}
+
+      - name: Configure ccache
+        # Limit the maximum size and switch on compression to avoid exceeding the total disk or cache quota.
+        run: |
+          which ccache
+          test -d ~/.ccache || mkdir -p ~/.ccache
+          echo "max_size = 250M" > ~/.ccache/ccache.conf
+          echo "compression = true" >> ~/.ccache/ccache.conf
+          ccache -s
+          echo $HOME
+          cygpath -w $HOME
+
+      - name: Configure OpenBLAS
+        run: |
+          mkdir build && cd build
+          cmake -DBUILD_SHARED_LIBS=ON \
+                -DBUILD_STATIC_LIBS=ON \
+                -DDYNAMIC_ARCH=ON \
+                -DUSE_THREAD=ON \
+                -DNUM_THREADS=64 \
+                -DTARGET=CORE2 \
+                ${{ matrix.idx64-flags }} \
+                ${{ matrix.c-lapack-flags }} \
+                -DCMAKE_C_COMPILER_LAUNCHER=ccache \
+                -DCMAKE_Fortran_COMPILER_LAUNCHER=ccache \
+                ..
+
+      - name: Build OpenBLAS
+        run: cd build && cmake --build .
+
+      - name: Show ccache status
+        continue-on-error: true
+        run: ccache -s
+
+      - name: Run tests
+        timeout-minutes: 60
+        run: cd build && ctest
