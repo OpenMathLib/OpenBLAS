@@ -15,8 +15,10 @@
 #ifdef complex
 #undef complex
 #endif
+#ifndef _MSC_VER
 #ifdef I
 #undef I
+#endif
 #endif
 
 #if defined(_WIN64)
@@ -52,7 +54,7 @@ typedef struct { doublereal r, i; } doublecomplex;
 static inline _Fcomplex Cf(complex *z) {return z->r + z->i*I;}
 static inline _Dcomplex Cd(doublecomplex *z) {return z->r + z->i*I;}
 static inline _Fcomplex * _pCf(complex *z) {return (_Fcomplex*)z;}
-static inline _Dcomplex * _pCd(doublecomplex *z) {return (_DComplex*)z;}
+static inline _Dcomplex * _pCd(doublecomplex *z) {return (_Dcomplex*)z;}
 #else
 static inline _Complex float Cf(complex *z) {return z->r + z->i*_Complex_I;}
 static inline _Complex double Cd(doublecomplex *z) {return z->r + z->i*_Complex_I;}
@@ -295,6 +297,20 @@ static double dpow_ui(double x, integer n) {
 	}
 	return pow;
 }
+#ifdef _MSC_VER
+static _Fcomplex cpow_ui(complex x, integer n) {
+	complex pow={1.0,0.0}; unsigned long int u;
+		if(n != 0) {
+		if(n < 0) n = -n, x->r = 1/x->r;
+		for(u = n; ; ) {
+			if(u & 01) pow *= x;
+			if(u >>= 1) x *= x;
+			else break;
+		}
+	}
+	return _Fcomplex(pow->r,pow->i);
+}
+#else
 static _Complex float cpow_ui(_Complex float x, integer n) {
 	_Complex float pow=1.0; unsigned long int u;
 	if(n != 0) {
@@ -307,6 +323,7 @@ static _Complex float cpow_ui(_Complex float x, integer n) {
 	}
 	return pow;
 }
+#endif
 #ifdef _MSC_VER
 static _Dcomplex zpow_ui(_Dcomplex x, integer n) {
 	_Dcomplex pow=1.0, unsigned long int u;
