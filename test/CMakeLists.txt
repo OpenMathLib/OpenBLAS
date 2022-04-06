@@ -30,6 +30,7 @@ if(WIN32)
 FILE(WRITE ${CMAKE_CURRENT_BINARY_DIR}/test_helper.ps1
 "if (Test-Path $args[2]) { Remove-Item -Force $args[2] } \n"
 "$ErrorActionPreference = \"Stop\"\n"
+"Get-Content $args[1] | %{$_ -replace \"\\xEF\\xBB\\xBF\", \"\"}\n"
 "Get-Content $args[1] | %{$_ -replace \"\\xEF\\xBB\\xBF\", \"\"} | & $args[0]\n"
 "If ((Get-Content $args[2] | %{$_ -match \"FATAL\"}) -contains $true) {\n"
 "echo Error\n"
