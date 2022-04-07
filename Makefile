@@ -248,7 +248,7 @@ netlib : lapack_prebuild
 ifneq ($(NO_LAPACK), 1)
 	@$(MAKE) -C $(NETLIB_LAPACK_DIR) lapacklib
 	@$(MAKE) -C $(NETLIB_LAPACK_DIR) tmglib
-#endif
+endif
 ifneq ($(NO_LAPACKE), 1)
 	@$(MAKE) -C $(NETLIB_LAPACK_DIR) lapackelib
 endif
