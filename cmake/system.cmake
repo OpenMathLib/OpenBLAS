@@ -290,6 +290,8 @@ else ()
       set (CCOMMON_OPT "${CCOMMON_OPT} -DLAPACK_ILP64")
     endif ()
     set(TIMER "NONE")
+  else ()
+    set (NO_LAPACK 1)
   endif ()
 endif ()
 
