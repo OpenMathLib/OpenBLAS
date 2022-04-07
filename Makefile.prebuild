@@ -53,7 +53,7 @@ all: getarch_2nd
 	./getarch_2nd  0 >> $(TARGET_MAKE)
 	./getarch_2nd  1 >> $(TARGET_CONF)
 
-config.h : c_check f_check getarch
+$(TARGET_CONF): c_check f_check getarch
 	perl ./c_check $(TARGET_MAKE) $(TARGET_CONF) $(CC) $(TARGET_FLAGS) $(CFLAGS)
 ifneq ($(ONLY_CBLAS), 1)
 	perl ./f_check $(TARGET_MAKE) $(TARGET_CONF) $(FC) $(TARGET_FLAGS)
@@ -74,7 +74,7 @@ getarch : getarch.c cpuid.S dummy $(CPUIDEMU)
 	avx512=$$(perl c_check - - $(CC) $(TARGET_FLAGS) $(CFLAGS) | grep NO_AVX512); \
 	$(HOSTCC) $(HOST_CFLAGS) $(EXFLAGS) $${avx512:+-D$${avx512}} -o $(@F) getarch.c cpuid.S $(CPUIDEMU)
 
-getarch_2nd : getarch_2nd.c config.h dummy
+getarch_2nd : getarch_2nd.c $(TARGET_CONF) dummy
 ifndef TARGET_CORE
 	$(HOSTCC) -I. $(HOST_CFLAGS) -o $(@F) getarch_2nd.c
 else
@@ -82,3 +82,5 @@ else
 endif
 
 dummy:
+
+.PHONY: dummy
