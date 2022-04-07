@@ -28,10 +28,10 @@ endforeach()
 # $1 exec, $2 input, $3 output_result
 if(WIN32)
 FILE(WRITE ${CMAKE_CURRENT_BINARY_DIR}/test_helper.ps1
+"[Console]::InputEncoding = New-Object Text.UTF8Encoding $false\n"
 "if (Test-Path $args[2]) { Remove-Item -Force $args[2] } \n"
 "$ErrorActionPreference = \"Stop\"\n"
-"Get-Content $args[1] | %{$_ -replace \"\\xEF\\xBB\\xBF\", \"\"}\n"
-"Get-Content $args[1] | %{$_ -replace \"\\xEF\\xBB\\xBF\", \"\"} | & $args[0]\n"
+"Get-Content $args[1] | & $args[0]\n" 
 "If ((Get-Content $args[2] | %{$_ -match \"FATAL\"}) -contains $true) {\n"
 "echo Error\n"
 "exit 1\n"
