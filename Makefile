@@ -244,18 +244,13 @@ hpl_p :
 	fi; \
 	done
 
-ifeq ($(NO_LAPACK), 1)
-netlib :
-
-else
 netlib : lapack_prebuild
-#ifeq ($(NOFORTRAN), $(filter 0,$(NOFORTRAN)))
+ifneq ($(NO_LAPACK), 1)
 	@$(MAKE) -C $(NETLIB_LAPACK_DIR) lapacklib
 	@$(MAKE) -C $(NETLIB_LAPACK_DIR) tmglib
 #endif
 ifneq ($(NO_LAPACKE), 1)
 	@$(MAKE) -C $(NETLIB_LAPACK_DIR) lapackelib
-endif
 endif
 
 ifeq ($(NO_LAPACK), 1)
