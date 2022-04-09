@@ -118,9 +118,6 @@ jobs:
       cmake -G "Ninja" -DCMAKE_C_COMPILER=clang-cl -DCMAKE_CXX_COMPILER=clang-cl -DCMAKE_Fortran_COMPILER=flang -DBUILD_TESTING=OFF -DCMAKE_MT=mt -DCMAKE_BUILD_TYPE=Release -DMSVC_STATIC_CRT=ON ..
       cmake --build . --config Release
       ctest
-      cd test 
-      .\sblat3.exe <..\..\test\sblat3.dat
-      type SBLAT3.SUMM
 
 - job: OSX_OpenMP
   pool:
