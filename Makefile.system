@@ -352,7 +352,7 @@ OBJCONV = $(CROSS_SUFFIX)objconv
 
 # When fortran support was either not detected or actively deselected, only build BLAS.
 ifeq ($(NOFORTRAN), 1)
-NO_LAPACK = 1
+C_LAPACK = 1
 override FEXTRALIB = 
 endif
 
@@ -1303,6 +1303,10 @@ ifeq ($(DYNAMIC_OLDER), 1)
 CCOMMON_OPT	+= -DDYNAMIC_OLDER
 endif
 
+ifeq ($(C_LAPACK), 1)
+CCOMMON_OPT	+= -DC_LAPACK
+endif
+
 ifeq ($(NO_LAPACK), 1)
 CCOMMON_OPT	+= -DNO_LAPACK
 #Disable LAPACK C interface
@@ -1661,6 +1665,7 @@ export USE_OPENMP
 export CROSS
 export CROSS_SUFFIX
 export NOFORTRAN
+export C_LAPACK
 export NO_FBLAS
 export EXTRALIB
 export CEXTRALIB

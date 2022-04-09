@@ -33,6 +33,13 @@
 TOPSRCDIR = ../..
 include $(TOPSRCDIR)/make.inc
 
+ifneq ($(C_LAPACK), 1)
+.SUFFIXES:
+.SUFFIXES: .f .o
+.f.o:
+	$(FC) $(FFLAGS) -c -o $@ $<
+endif
+
 ifneq "$(or $(BUILD_SINGLE),$(BUILD_COMPLEX))" ""
 SCATGEN = slatm1.o slatm7.o slaran.o slarnd.o
 endif
