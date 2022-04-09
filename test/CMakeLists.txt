@@ -6,7 +6,7 @@ if (CMAKE_Fortran_COMPILER_ID STREQUAL GNU)
         set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS} -fno-tree-vectorize")
 endif()
 if (CMAKE_Fortran_COMPILER_ID STREQUAL Flang)
-	set(CMAKE_Fortran_FLAGS "$CMAKE_Fortran_FLAGS -O2")
+	set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS} -O2")
 endif()
 
 if (BUILD_SINGLE)
