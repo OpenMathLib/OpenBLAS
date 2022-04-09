@@ -22,6 +22,8 @@ option(BUILD_WITHOUT_LAPACK "Do not build LAPACK and LAPACKE (Only BLAS or CBLAS
 
 option(BUILD_TESTING "Build LAPACK testsuite when building LAPACK" ON)
 
+option(C_LAPACK "Build LAPACK from C sources instead of the original Fortran" OFF)
+
 option(BUILD_WITHOUT_CBLAS "Do not build the C interface (CBLAS) to the BLAS functions" OFF)
 
 option(DYNAMIC_ARCH "Include support for multiple CPU targets, with automatic selection at runtime (x86/x86_64, aarch64 or ppc only)" OFF)
@@ -175,7 +177,7 @@ endforeach ()
 
 # Can't just use lapack-netlib's CMake files, since they are set up to search for BLAS, build and install a binary. We just want to build a couple of lib files out of lapack and lapacke.
 # Not using add_subdirectory here because lapack-netlib already has its own CMakeLists.txt. Instead include a cmake script with the sources we want.
-if (NOT NOFORTRAN AND NOT NO_LAPACK)
+if (NOT NO_LAPACK)
   include("${PROJECT_SOURCE_DIR}/cmake/lapack.cmake")
   if (NOT NO_LAPACKE)
     include("${PROJECT_SOURCE_DIR}/cmake/lapacke.cmake")
