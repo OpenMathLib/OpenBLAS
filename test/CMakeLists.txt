@@ -5,7 +5,7 @@ enable_language(Fortran)
 if (CMAKE_Fortran_COMPILER_ID STREQUAL GNU)
         set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS} -fno-tree-vectorize")
 endif()
-if (CMAKE_Fortran_COMPILER_ID STREQUAL FLANG)
+if (CMAKE_Fortran_COMPILER_ID STREQUAL flang)
 	set(CMAKE_Fortran_FLAGS "$CMAKE_Fortran_FLAGS -fno-vectorize -fno-slp-vectorize")
 endif()
 
