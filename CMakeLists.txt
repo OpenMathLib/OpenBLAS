@@ -178,7 +178,7 @@ endforeach ()
 # Can't just use lapack-netlib's CMake files, since they are set up to search for BLAS, build and install a binary. We just want to build a couple of lib files out of lapack and lapacke.
 # Not using add_subdirectory here because lapack-netlib already has its own CMakeLists.txt. Instead include a cmake script with the sources we want.
 if (NOT NO_LAPACK)
-    include("${PROJECT_SOURCE_DIR}/cmake/lapack.cmake")
+  include("${PROJECT_SOURCE_DIR}/cmake/lapack.cmake")
   if (NOT NO_LAPACKE)
     include("${PROJECT_SOURCE_DIR}/cmake/lapacke.cmake")
   endif ()
