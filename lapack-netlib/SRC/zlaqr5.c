@@ -252,11 +252,11 @@ static char junk[] = "\n@(#)LIBF77 VERSION 19990503\n";
 #define z_exp(R, Z) {pCd(R) = cexp(Cd(Z));}
 #define z_sqrt(R, Z) {pCd(R) = csqrt(Cd(Z));}
 #define myexit_() break;
-#define mycycle() continue;
-#define myceiling(w) {ceil(w)}
-#define myhuge(w) {HUGE_VAL}
+#define mycycle_() continue;
+#define myceiling_(w) {ceil(w)}
+#define myhuge_(w) {HUGE_VAL}
 //#define mymaxloc_(w,s,e,n) {if (sizeof(*(w)) == sizeof(double)) dmaxloc_((w),*(s),*(e),n); else dmaxloc_((w),*(s),*(e),n);}
-#define mymaxloc(w,s,e,n) {dmaxloc_(w,*(s),*(e),n)}
+#define mymaxloc_(w,s,e,n) {dmaxloc_(w,*(s),*(e),n)}
 
 /* procedure parameter types for -A and -C++ */
 
@@ -506,6 +506,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
    You must link the resulting object file with the libraries:
 	-lf2c -lm   (in that order)
 */
+
 
 
 

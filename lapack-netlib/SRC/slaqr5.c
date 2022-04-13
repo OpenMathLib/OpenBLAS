@@ -191,7 +191,7 @@ typedef struct Namelist Namelist;
 #define c_cos(R,Z) { pCf(R)=ccos(Cf(Z)); }
 #ifdef _MSC_VER
 #define c_div(c, a, b) {Cf(c)._Val[0] = (Cf(a)._Val[0]/Cf(b)._Val[0]); Cf(c)._Val[1]=(Cf(a)._Val[1]/Cf(b)._Val[1]);}
-#define z_div(c, a, b) {Cd(c)._Val[0] = (Cd(a)._Val[0]/Cd(b)._Val[0]); Cd(c)._Val[1]=(Cd(a)._Val[1]/df(b)._Val[1]);}
+#define z_div(c, a, b) {Cd(c)._Val[0] = (Cd(a)._Val[0]/Cd(b)._Val[0]); Cd(c)._Val[1]=(Cd(a)._Val[1]/Cd(b)._Val[1]);}
 #else
 #define c_div(c, a, b) {pCf(c) = Cf(a)/Cf(b);}
 #define z_div(c, a, b) {pCd(c) = Cd(a)/Cd(b);}
@@ -252,11 +252,11 @@ static char junk[] = "\n@(#)LIBF77 VERSION 19990503\n";
 #define z_exp(R, Z) {pCd(R) = cexp(Cd(Z));}
 #define z_sqrt(R, Z) {pCd(R) = csqrt(Cd(Z));}
 #define myexit_() break;
-#define mycycle() continue;
-#define myceiling(w) {ceil(w)}
-#define myhuge(w) {HUGE_VAL}
+#define mycycle_() continue;
+#define myceiling_(w) {ceil(w)}
+#define myhuge_(w) {HUGE_VAL}
 //#define mymaxloc_(w,s,e,n) {if (sizeof(*(w)) == sizeof(double)) dmaxloc_((w),*(s),*(e),n); else dmaxloc_((w),*(s),*(e),n);}
-#define mymaxloc(w,s,e,n) {dmaxloc_(w,*(s),*(e),n)}
+#define mymaxloc_(w,s,e,n) {dmaxloc_(w,*(s),*(e),n)}
 
 /* procedure parameter types for -A and -C++ */
 
