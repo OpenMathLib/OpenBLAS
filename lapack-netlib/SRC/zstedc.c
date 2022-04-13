@@ -325,13 +325,12 @@ static _Dcomplex zpow_ui(_Dcomplex x, integer n) {
 	if(n != 0) {
 		if(n < 0) n = -n, x._Val[0] = 1/x._Val[0], x._Val[1] =1/x._Val[1];
 		for(u = n; ; ) {
-			if(u & 01) pow._Val[0] *= x._Val[0], pow._Val[1] *= x._Val[1];
-			if(u >>= 1) x._Val[0] *= x._Val[0], x._Val[1] *= x._Val[1];
+			if(u & 01) pow = _Cmulcc(pow, x);
+			if(u >>= 1) x = _Cmulcc(x, x);
 			else break;
 		}
 	}
-	_Dcomplex p = {pow._Val[0], pow._Val[1]};
-	return p;
+	return pow;
 }
 #else
 static _Complex double zpow_ui(_Complex double x, integer n) {

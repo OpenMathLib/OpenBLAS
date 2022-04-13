@@ -292,18 +292,17 @@ static double dpow_ui(double x, integer n) {
 	return pow;
 }
 #ifdef _MSC_VER
-static _Fcomplex cpow_ui(complex x, integer n) {
-	complex pow={1.0,0.0}; unsigned long int u;
+static _Fcomplex cpow_ui(_Fcomplex x, integer n) {
+	_Fcomplex pow={1.0,0.0}; unsigned long int u;
 		if(n != 0) {
 		if(n < 0) n = -n, x.r = 1/x.r, x.i=1/x.i;
 		for(u = n; ; ) {
-			if(u & 01) pow.r *= x.r, pow.i *= x.i;
-			if(u >>= 1) x.r *= x.r, x.i *= x.i;
+			if(u & 01) pow = _FCmulcc (pow,x);
+			if(u >>= 1) x = _FCmulcc (x,x);
 			else break;
 		}
 	}
-	_Fcomplex p={pow.r, pow.i};
-	return p;
+	return pow;
 }
 #else
 static _Complex float cpow_ui(_Complex float x, integer n) {
