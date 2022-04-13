@@ -199,6 +199,7 @@ typedef struct Namelist Namelist;
 #define c_exp(R, Z) {pCf(R) = cexpf(Cf(Z));}
 #define c_log(R, Z) {pCf(R) = clogf(Cf(Z));}
 #define c_sin(R, Z) {pCf(R) = csinf(Cf(Z));}
+#define z_sin(R, Z) {pCd(R) = csin(Cd(Z));}
 //#define c_sqrt(R, Z) {*(R) = csqrtf(Cf(Z));}
 #define c_sqrt(R, Z) {pCf(R) = csqrtf(Cf(Z));}
 #define d_abs(x) (fabs(*(x)))
