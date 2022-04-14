@@ -295,7 +295,7 @@ static double dpow_ui(double x, integer n) {
 static _Fcomplex cpow_ui(_Fcomplex x, integer n) {
 	_Fcomplex pow={1.0,0.0}; unsigned long int u;
 		if(n != 0) {
-		if(n < 0) n = -n, x.r = 1/x.r, x.i=1/x.i;
+		if(n < 0) n = -n, x._Val[0] = 1./x._Val[0], x._Val[1]=1./x._Val[1];
 		for(u = n; ; ) {
 			if(u & 01) pow = _FCmulcc (pow,x);
 			if(u >>= 1) x = _FCmulcc (x,x);
