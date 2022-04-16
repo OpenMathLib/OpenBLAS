@@ -131,6 +131,10 @@
 
 #define alpha  f27
 
+#if defined(PPC440)
+#define PREFETCHSIZE_A  (3 * 4)
+#endif
+
 #if defined(PPCG4)
 #define PREFETCHSIZE_A  (3 * 4)
 #endif
