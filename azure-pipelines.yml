@@ -119,6 +119,26 @@ jobs:
       cmake --build . --config Release
       ctest
 
+- job: Windows_cl_flang
+  pool:
+     vmImage: 'windows-2022'
+  steps:
+  - script: |
+      set "PATH=C:\Miniconda\Scripts;C:\Miniconda\Library\bin;C:\Miniconda\Library\usr\bin;C:\Miniconda\condabin;%PATH%"
+      set "LIB=C:\Miniconda\Library\lib;%LIB%"
+      set "CPATH=C:\Miniconda\Library\include;%CPATH%"
+      conda config --add channels conda-forge --force
+      conda config --set auto_update_conda false
+      conda install --yes --quiet ninja flang
+      mkdir build 
+      cd build
+      call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
+      cmake -G "Ninja" -DCMAKE_C_COMPILER=cl -DCMAKE_Fortran_COMPILER=flang -DC_LAPACK=1 -DCMAKE_MT=mt -DCMAKE_BUILD_TYPE=Release -DMSVC_STATIC_CRT=ON ..
+      cmake --build . --config Release
+      ctest
+
+
+
 - job: OSX_OpenMP
   pool:
      vmImage: 'macOS-10.15'
