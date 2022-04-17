@@ -284,7 +284,7 @@ if (NOT NOFORTRAN)
   # Fortran Compiler dependent settings
   include("${PROJECT_SOURCE_DIR}/cmake/fc.cmake")
 else ()
-  if (NOT MSVC)
+  if (NOT XXXX)
     set(C_LAPACK 1)
     if (INTERFACE64)
       set (CCOMMON_OPT "${CCOMMON_OPT} -DLAPACK_ILP64")
