@@ -63,7 +63,7 @@ ALLMOD = la_xisnan.mod la_constants.mod
 
 .SUFFIXES:
 .SUFFIXES: .f .F .f90 .F90 .o .mod
-%.o: %.f $(ALLMOD)
+%.o: %.f
 	$(FC) $(FFLAGS) -c -o $@ $<
 %.o: %.F $(ALLMOD)
 	$(FC) $(FFLAGS) -c -o $@ $<
@@ -73,6 +73,7 @@ ALLMOD = la_xisnan.mod la_constants.mod
 	$(FC) $(FFLAGS) -c -o $@ $<
 .o.mod:
 	@true
+
 else
 $(info C_LAPACK ist $(C_LAPACK))
 .SUFFIXES: .c .o
@@ -102,7 +103,7 @@ SCLAUX = \
    slaset.o slasq1.o slasq2.o slasq3.o slasq4.o slasq5.o slasq6.o \
    slasr.o  slasrt.o slassq.o slasv2.o spttrf.o sstebz.o sstedc.o \
    ssteqr.o ssterf.o slaisnan.o sisnan.o \
-   slartgp.o slartgs.o scombssq.o \
+   slartgp.o slartgs.o scombssq.o ../INSTALL/sroundup_lwork.o \
    ../INSTALL/second_$(TIMER).o
 endif
 
@@ -124,7 +125,7 @@ DZLAUX = \
    dlaset.o dlasq1.o dlasq2.o dlasq3.o dlasq4.o dlasq5.o dlasq6.o \
    dlasr.o  dlasrt.o dlassq.o dlasv2.o dpttrf.o dstebz.o dstedc.o \
    dsteqr.o dsterf.o dlaisnan.o disnan.o \
-   dlartgp.o dlartgs.o \
+   dlartgp.o dlartgs.o ../INSTALL/droundup_lwork.o \
    ../INSTALL/dlamch.o ../INSTALL/dsecnd_$(TIMER).o
 endif
 
@@ -672,6 +673,11 @@ sla_wwaddw.o: sla_wwaddw.f ; $(FC) $(FFLAGS_NOOPT) -c -o $@ $<
 dla_wwaddw.o: dla_wwaddw.f ; $(FC) $(FFLAGS_NOOPT) -c -o $@ $<
 cla_wwaddw.o: cla_wwaddw.f ; $(FC) $(FFLAGS_NOOPT) -c -o $@ $<
 zla_wwaddw.o: zla_wwaddw.f ; $(FC) $(FFLAGS_NOOPT) -c -o $@ $<
+# Modules
+la_xisnan.o: la_xisnan.F90 la_constants.mod
+	$(FC) $(FFLAGS) -c -o $@ $<
+la_constants.o: la_constants.f90
+	$(FC) $(FFLAGS) -c -o $@ $<
 else
 slaruv.o: slaruv.c ; $(CC) $(CFLAGS) -c -o $@ $<
 dlaruv.o: dlaruv.c ; $(CC) $(CFLAGS) -c -o $@ $<
