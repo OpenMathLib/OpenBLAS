@@ -208,8 +208,6 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
-*
 *> \ingroup complexHEcomputational
 *
 *> \par Further Details:
@@ -241,10 +239,9 @@
 *  =====================================================================
       SUBROUTINE CHETF2_RK( UPLO, N, A, LDA, E, IPIV, INFO )
 *
-*  -- LAPACK computational routine (version 3.7.0) --
+*  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
 *
 *     .. Scalar Arguments ..
       CHARACTER          UPLO
@@ -611,8 +608,8 @@
 *                 D = |A12|
                   D = SLAPY2( REAL( A( K-1, K ) ),
      $                AIMAG( A( K-1, K ) ) )
-                  D11 = A( K, K ) / D
-                  D22 = A( K-1, K-1 ) / D
+                  D11 = REAL( A( K, K ) / D )
+                  D22 = REAL( A( K-1, K-1 ) / D )
                   D12 = A( K-1, K ) / D
                   TT = ONE / ( D11*D22-ONE )
 *

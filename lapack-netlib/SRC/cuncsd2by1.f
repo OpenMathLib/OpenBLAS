@@ -190,9 +190,10 @@
 *>          The dimension of the array WORK.
 *>
 *>          If LWORK = -1, then a workspace query is assumed; the routine
-*>          only calculates the optimal size of the WORK array, returns
-*>          this value as the first entry of the work array, and no error
-*>          message related to LWORK is issued by XERBLA.
+*>          only calculates the optimal size of the WORK and RWORK
+*>          arrays, returns this value as the first entry of the WORK
+*>          and RWORK array, respectively, and no error message related
+*>          to LWORK or LRWORK is issued by XERBLA.
 *> \endverbatim
 *>
 *> \param[out] RWORK
@@ -212,9 +213,10 @@
 *>          The dimension of the array RWORK.
 *>
 *>          If LRWORK = -1, then a workspace query is assumed; the routine
-*>          only calculates the optimal size of the RWORK array, returns
-*>          this value as the first entry of the work array, and no error
-*>          message related to LRWORK is issued by XERBLA.
+*>          only calculates the optimal size of the WORK and RWORK
+*>          arrays, returns this value as the first entry of the WORK
+*>          and RWORK array, respectively, and no error message related
+*>          to LWORK or LRWORK is issued by XERBLA.
 *> \endverbatim
 *
 *> \param[out] IWORK
@@ -245,8 +247,6 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date June 2016
-*
 *> \ingroup complexOTHERcomputational
 *
 *  =====================================================================
@@ -255,10 +255,9 @@
      $                       LDV1T, WORK, LWORK, RWORK, LRWORK, IWORK,
      $                       INFO )
 *
-*  -- LAPACK computational routine (version 3.7.1) --
+*  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     June 2016
 *
 *     .. Scalar Arguments ..
       CHARACTER          JOBU1, JOBU2, JOBV1T
@@ -313,7 +312,7 @@
       WANTU1 = LSAME( JOBU1, 'Y' )
       WANTU2 = LSAME( JOBU2, 'Y' )
       WANTV1T = LSAME( JOBV1T, 'Y' )
-      LQUERY = LWORK .EQ. -1
+      LQUERY = ( LWORK.EQ.-1 ) .OR. ( LRWORK.EQ.-1 )
 *
       IF( M .LT. 0 ) THEN
          INFO = -4
@@ -513,6 +512,9 @@
          IF( LWORK .LT. LWORKMIN .AND. .NOT.LQUERY ) THEN
             INFO = -19
          END IF
+         IF( LRWORK .LT. LRWORKMIN .AND. .NOT.LQUERY ) THEN
+            INFO = -21
+         END IF
       END IF
       IF( INFO .NE. 0 ) THEN
          CALL XERBLA( 'CUNCSD2BY1', -INFO )
@@ -566,8 +568,8 @@
      $                RWORK(IPHI), U1, LDU1, U2, LDU2, V1T, LDV1T, CDUM,
      $                1, RWORK(IB11D), RWORK(IB11E), RWORK(IB12D),
      $                RWORK(IB12E), RWORK(IB21D), RWORK(IB21E),
-     $                RWORK(IB22D), RWORK(IB22E), RWORK(IBBCSD), LBBCSD,
-     $                CHILDINFO )
+     $                RWORK(IB22D), RWORK(IB22E), RWORK(IBBCSD),
+     $                LRWORK-IBBCSD+1, CHILDINFO )
 *
 *        Permute rows and columns to place zero submatrices in
 *        preferred positions
@@ -708,6 +710,10 @@
 *
 *        Accumulate Householder reflectors
 *
+
+         IF( WANTU2 .AND. M-P .GT. 0 ) THEN
+            CALL CCOPY( M-P, WORK(IORBDB+P), 1, U2, 1 )
+         END IF
          IF( WANTU1 .AND. P .GT. 0 ) THEN
             CALL CCOPY( P, WORK(IORBDB), 1, U1, 1 )
             DO J = 2, P
@@ -719,7 +725,6 @@
      $                   WORK(IORGQR), LORGQR, CHILDINFO )
          END IF
          IF( WANTU2 .AND. M-P .GT. 0 ) THEN
-            CALL CCOPY( M-P, WORK(IORBDB+P), 1, U2, 1 )
             DO J = 2, M-P
                U2(1,J) = ZERO
             END DO

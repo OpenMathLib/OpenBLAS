@@ -138,7 +138,7 @@
 *> \verbatim
 *>          AFB is REAL array, dimension (LDAFB,N)
 *>     Details of the LU factorization of the band matrix A, as
-*>     computed by DGBTRF.  U is stored as an upper triangular band
+*>     computed by SGBTRF.  U is stored as an upper triangular band
 *>     matrix with KL+KU superdiagonals in rows 1 to KL+KU+1, and
 *>     the multipliers used during the factorization are stored in
 *>     rows KL+KU+2 to 2*KL+KU+1.
@@ -429,8 +429,6 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date April 2012
-*
 *> \ingroup realGBcomputational
 *
 *  =====================================================================
@@ -440,10 +438,9 @@
      $                    ERR_BNDS_COMP, NPARAMS, PARAMS, WORK, IWORK,
      $                    INFO )
 *
-*  -- LAPACK computational routine (version 3.7.0) --
+*  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     April 2012
 *
 *     .. Scalar Arguments ..
       CHARACTER          TRANS, EQUED

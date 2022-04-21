@@ -113,6 +113,8 @@ lapacke_cgetrs.c
 lapacke_cgetrs_work.c
 lapacke_cgetsls.c
 lapacke_cgetsls_work.c
+lapacke_cgetsqrhrt.c
+lapacke_cgetsqrhrt_work.c
 lapacke_cggbak.c
 lapacke_cggbak_work.c
 lapacke_cggbal.c
@@ -585,6 +587,8 @@ lapacke_cungrq.c
 lapacke_cungrq_work.c
 lapacke_cungtr.c
 lapacke_cungtr_work.c
+lapacke_cungtsqr_row.c
+lapacke_cungtsqr_row_work.c
 lapacke_cunmbr.c
 lapacke_cunmbr_work.c
 lapacke_cunmhr.c
@@ -727,6 +731,8 @@ lapacke_dgetrs.c
 lapacke_dgetrs_work.c
 lapacke_dgetsls.c
 lapacke_dgetsls_work.c
+lapacke_dgetsqrhrt.c
+lapacke_dgetsqrhrt_work.c
 lapacke_dggbak.c
 lapacke_dggbak_work.c
 lapacke_dggbal.c
@@ -849,6 +855,8 @@ lapacke_dorgrq.c
 lapacke_dorgrq_work.c
 lapacke_dorgtr.c
 lapacke_dorgtr_work.c
+lapacke_dorgtsqr_row.c
+lapacke_dorgtsqr_row_work.c
 lapacke_dormbr.c
 lapacke_dormbr_work.c
 lapacke_dormhr.c
@@ -1298,6 +1306,8 @@ lapacke_sgetrs.c
 lapacke_sgetrs_work.c
 lapacke_sgetsls.c
 lapacke_sgetsls_work.c
+lapacke_sgetsqrhrt.c
+lapacke_sgetsqrhrt_work.c
 lapacke_sggbak.c
 lapacke_sggbak_work.c
 lapacke_sggbal.c
@@ -1420,6 +1430,8 @@ lapacke_sorgrq.c
 lapacke_sorgrq_work.c
 lapacke_sorgtr.c
 lapacke_sorgtr_work.c
+lapacke_sorgtsqr_row.c
+lapacke_sorgtsqr_row_work.c
 lapacke_sormbr.c
 lapacke_sormbr_work.c
 lapacke_sormhr.c
@@ -1858,6 +1870,8 @@ lapacke_zgetrs.c
 lapacke_zgetrs_work.c
 lapacke_zgetsls.c
 lapacke_zgetsls_work.c
+lapacke_zgetsqrhrt.c
+lapacke_zgetsqrhrt_work.c
 lapacke_zggbak.c
 lapacke_zggbak_work.c
 lapacke_zggbal.c
@@ -2330,6 +2344,8 @@ lapacke_zungrq.c
 lapacke_zungrq_work.c
 lapacke_zungtr.c
 lapacke_zungtr_work.c
+lapacke_zungtsqr_row.c
+lapacke_zungtsqr_row_work.c
 lapacke_zunmbr.c
 lapacke_zunmbr_work.c
 lapacke_zunmhr.c

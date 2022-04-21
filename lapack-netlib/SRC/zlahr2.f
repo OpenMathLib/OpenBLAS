@@ -123,8 +123,6 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
-*
 *> \ingroup complex16OTHERauxiliary
 *
 *> \par Further Details:
@@ -164,11 +162,11 @@
 *>  modified element of the upper Hessenberg matrix H, and vi denotes an
 *>  element of the vector defining H(i).
 *>
-*>  This subroutine is a slight modification of LAPACK-3.0's DLAHRD
+*>  This subroutine is a slight modification of LAPACK-3.0's ZLAHRD
 *>  incorporating improvements proposed by Quintana-Orti and Van de
 *>  Gejin. Note that the entries of A(1:K,2:NB) differ from those
-*>  returned by the original LAPACK-3.0's DLAHRD routine. (This
-*>  subroutine is not backward compatible with LAPACK-3.0's DLAHRD.)
+*>  returned by the original LAPACK-3.0's ZLAHRD routine. (This
+*>  subroutine is not backward compatible with LAPACK-3.0's ZLAHRD.)
 *> \endverbatim
 *
 *> \par References:
@@ -181,10 +179,9 @@
 *  =====================================================================
       SUBROUTINE ZLAHR2( N, K, NB, A, LDA, TAU, T, LDT, Y, LDY )
 *
-*  -- LAPACK auxiliary routine (version 3.7.0) --
+*  -- LAPACK auxiliary routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
 *
 *     .. Scalar Arguments ..
       INTEGER            K, LDA, LDT, LDY, N, NB

@@ -128,17 +128,14 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
-*
 *> \ingroup complex16OTHERauxiliary
 *
 *  =====================================================================
       SUBROUTINE ZLAIC1( JOB, J, X, SEST, W, GAMMA, SESTPR, S, C )
 *
-*  -- LAPACK auxiliary routine (version 3.7.0) --
+*  -- LAPACK auxiliary routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
 *
 *     .. Scalar Arguments ..
       INTEGER            J, JOB
@@ -194,7 +191,7 @@
             ELSE
                S = ALPHA / S1
                C = GAMMA / S1
-               TMP = SQRT( S*DCONJG( S )+C*DCONJG( C ) )
+               TMP = DBLE( SQRT( S*DCONJG( S )+C*DCONJG( C ) ) )
                S = S / TMP
                C = C / TMP
                SESTPR = S1*TMP
@@ -248,14 +245,16 @@
             B = ( ONE-ZETA1*ZETA1-ZETA2*ZETA2 )*HALF
             C = ZETA1*ZETA1
             IF( B.GT.ZERO ) THEN
-               T = C / ( B+SQRT( B*B+C ) )
+               T = DBLE( C / ( B+SQRT( B*B+C ) ) )
             ELSE
-               T = SQRT( B*B+C ) - B
+               T = DBLE( SQRT( B*B+C ) - B )
             END IF
 *
             SINE = -( ALPHA / ABSEST ) / T
             COSINE = -( GAMMA / ABSEST ) / ( ONE+T )
-            TMP = SQRT( SINE*DCONJG( SINE )+COSINE*DCONJG( COSINE ) )
+            TMP = DBLE( SQRT( SINE * DCONJG( SINE )
+     $        + COSINE * DCONJG( COSINE ) ) )
+
             S = SINE / TMP
             C = COSINE / TMP
             SESTPR = SQRT( T+ONE )*ABSEST
@@ -280,7 +279,7 @@
             S1 = MAX( ABS( SINE ), ABS( COSINE ) )
             S = SINE / S1
             C = COSINE / S1
-            TMP = SQRT( S*DCONJG( S )+C*DCONJG( C ) )
+            TMP = DBLE( SQRT( S*DCONJG( S )+C*DCONJG( C ) ) )
             S = S / TMP
             C = C / TMP
             RETURN
@@ -338,7 +337,7 @@
 *
                B = ( ZETA1*ZETA1+ZETA2*ZETA2+ONE )*HALF
                C = ZETA2*ZETA2
-               T = C / ( B+SQRT( ABS( B*B-C ) ) )
+               T = DBLE( C / ( B+SQRT( ABS( B*B-C ) ) ) )
                SINE = ( ALPHA / ABSEST ) / ( ONE-T )
                COSINE = -( GAMMA / ABSEST ) / T
                SESTPR = SQRT( T+FOUR*EPS*EPS*NORMA )*ABSEST
@@ -357,7 +356,8 @@
                COSINE = -( GAMMA / ABSEST ) / ( ONE+T )
                SESTPR = SQRT( ONE+T+FOUR*EPS*EPS*NORMA )*ABSEST
             END IF
-            TMP = SQRT( SINE*DCONJG( SINE )+COSINE*DCONJG( COSINE ) )
+            TMP = DBLE( SQRT( SINE * DCONJG( SINE )
+     $        + COSINE * DCONJG( COSINE ) ) )
             S = SINE / TMP
             C = COSINE / TMP
             RETURN

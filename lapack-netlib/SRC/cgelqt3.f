@@ -43,7 +43,7 @@
 *> \param[in,out] A
 *> \verbatim
 *>          A is COMPLEX array, dimension (LDA,N)
-*>          On entry, the real M-by-N matrix A.  On exit, the elements on and
+*>          On entry, the complex M-by-N matrix A.  On exit, the elements on and
 *>          below the diagonal contain the N-by-N lower triangular matrix L; the
 *>          elements above the diagonal are the rows of V.  See below for
 *>          further details.
@@ -85,8 +85,6 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date November 2017
-*
 *> \ingroup doubleGEcomputational
 *
 *> \par Further Details:
@@ -116,10 +114,9 @@
 *  =====================================================================
       RECURSIVE SUBROUTINE CGELQT3( M, N, A, LDA, T, LDT, INFO )
 *
-*  -- LAPACK computational routine (version 3.8.0) --
+*  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2017
 *
 *     .. Scalar Arguments ..
       INTEGER   INFO, LDA, M, N, LDT
@@ -160,7 +157,7 @@
 *
       IF( M.EQ.1 ) THEN
 *
-*        Compute Householder transform when N=1
+*        Compute Householder transform when M=1
 *
          CALL CLARFG( N, A, A( 1, MIN( 2, N ) ), LDA, T )
          T(1,1)=CONJG(T(1,1))

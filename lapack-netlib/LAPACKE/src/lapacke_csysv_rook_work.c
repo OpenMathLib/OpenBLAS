@@ -28,7 +28,6 @@
 ******************************************************************************
 * Contents: Native middle-level C interface to LAPACK function csysv_rook
 * Author: Intel Corporation
-* Generated January, 2012
 *****************************************************************************/
 
 #include "lapacke_utils.h"

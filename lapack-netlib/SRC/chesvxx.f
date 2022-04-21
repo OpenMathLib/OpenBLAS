@@ -185,12 +185,12 @@
 *>     If FACT = 'F', then AF is an input argument and on entry
 *>     contains the block diagonal matrix D and the multipliers
 *>     used to obtain the factor U or L from the factorization A =
-*>     U*D*U**T or A = L*D*L**T as computed by SSYTRF.
+*>     U*D*U**H or A = L*D*L**H as computed by CHETRF.
 *>
 *>     If FACT = 'N', then AF is an output argument and on exit
 *>     returns the block diagonal matrix D and the multipliers
 *>     used to obtain the factor U or L from the factorization A =
-*>     U*D*U**T or A = L*D*L**T.
+*>     U*D*U**H or A = L*D*L**H.
 *> \endverbatim
 *>
 *> \param[in] LDAF
@@ -499,8 +499,6 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date April 2012
-*
 *> \ingroup complexHEsolve
 *
 *  =====================================================================
@@ -509,10 +507,9 @@
      $                    N_ERR_BNDS, ERR_BNDS_NORM, ERR_BNDS_COMP,
      $                    NPARAMS, PARAMS, WORK, RWORK, INFO )
 *
-*  -- LAPACK driver routine (version 3.7.0) --
+*  -- LAPACK driver routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     April 2012
 *
 *     .. Scalar Arguments ..
       CHARACTER          EQUED, FACT, UPLO
@@ -649,7 +646,7 @@
 *
       IF( NOFACT .OR. EQUIL ) THEN
 *
-*        Compute the LDL^T or UDU^T factorization of A.
+*        Compute the LDL^H or UDU^H factorization of A.
 *
          CALL CLACPY( UPLO, N, N, A, LDA, AF, LDAF )
          CALL CHETRF( UPLO, N, AF, LDAF, IPIV, WORK, 5*MAX(1,N), INFO )

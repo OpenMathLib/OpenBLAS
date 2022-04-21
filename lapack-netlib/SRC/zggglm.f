@@ -177,18 +177,15 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
-*
 *> \ingroup complex16OTHEReigen
 *
 *  =====================================================================
       SUBROUTINE ZGGGLM( N, M, P, A, LDA, B, LDB, D, X, Y, WORK, LWORK,
      $                   INFO )
 *
-*  -- LAPACK driver routine (version 3.7.0) --
+*  -- LAPACK driver routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
 *
 *     .. Scalar Arguments ..
       INTEGER            INFO, LDA, LDB, LWORK, M, N, P
@@ -292,7 +289,7 @@
 *
       CALL ZGGQRF( N, M, P, A, LDA, WORK, B, LDB, WORK( M+1 ),
      $             WORK( M+NP+1 ), LWORK-M-NP, INFO )
-      LOPT = WORK( M+NP+1 )
+      LOPT = DBLE( WORK( M+NP+1 ) )
 *
 *     Update left-hand-side vector d = Q**H*d = ( d1 ) M
 *                                               ( d2 ) N-M

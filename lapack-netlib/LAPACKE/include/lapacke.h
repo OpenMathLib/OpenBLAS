@@ -28,7 +28,6 @@
 ******************************************************************************
 * Contents: Native C interface to LAPACK
 * Author: Intel Corporation
-* Generated August, 2015
 *****************************************************************************/
 
 #ifndef _LAPACKE_H_

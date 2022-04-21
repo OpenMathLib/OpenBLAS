@@ -173,8 +173,6 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
-*
 *> \ingroup complex16OTHERcomputational
 *
 *> \par Further Details:
@@ -215,10 +213,9 @@
       SUBROUTINE ZGGQRF( N, M, P, A, LDA, TAUA, B, LDB, TAUB, WORK,
      $                   LWORK, INFO )
 *
-*  -- LAPACK computational routine (version 3.7.0) --
+*  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
 *
 *     .. Scalar Arguments ..
       INTEGER            INFO, LDA, LDB, LWORK, M, N, P
@@ -279,7 +276,7 @@
 *     QR factorization of N-by-M matrix A: A = Q*R
 *
       CALL ZGEQRF( N, M, A, LDA, TAUA, WORK, LWORK, INFO )
-      LOPT = WORK( 1 )
+      LOPT = DBLE( WORK( 1 ) )
 *
 *     Update B := Q**H*B.
 *

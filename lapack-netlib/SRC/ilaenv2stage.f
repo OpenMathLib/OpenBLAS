@@ -122,8 +122,6 @@
 *> \author NAG Ltd.
 *> \author Nick R. Papior
 *
-*> \date July 2017
-*
 *> \ingroup OTHERauxiliary
 *
 *> \par Further Details:
@@ -149,7 +147,7 @@
 *  =====================================================================
       INTEGER FUNCTION ILAENV2STAGE( ISPEC, NAME, OPTS, N1, N2, N3, N4 )
 *
-*  -- LAPACK auxiliary routine (version 3.8.0) --
+*  -- LAPACK auxiliary routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
 *     July 2017

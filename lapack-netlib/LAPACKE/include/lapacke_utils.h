@@ -28,7 +28,6 @@
 ******************************************************************************
 * Contents: Native C interface to LAPACK utility functions
 * Author: Intel Corporation
-* Created in January, 2010
 *****************************************************************************/
 
 #ifndef _LAPACKE_UTILS_H_

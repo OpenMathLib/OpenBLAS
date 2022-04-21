@@ -28,7 +28,6 @@
 *****************************************************************************
 * Contents: Native middle-level C interface to LAPACK function zgghd3
 * Author: Intel Corporation
-* Generated January, 2015
 *****************************************************************************/
 
 #include "lapacke_utils.h"

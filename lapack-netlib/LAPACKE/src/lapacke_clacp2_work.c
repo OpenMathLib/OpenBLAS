@@ -28,7 +28,6 @@
 ******************************************************************************
 * Contents: Native middle-level C interface to LAPACK function clacp2
 * Author: Intel Corporation
-* Generated January, 2013
 *****************************************************************************/
 
 #include "lapacke_utils.h"

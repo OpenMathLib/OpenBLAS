@@ -28,7 +28,6 @@
 *****************************************************************************
 * Contents: Native middle-level C interface to LAPACK function zheevx
 * Author: Intel Corporation
-* Generated June 2017
 *****************************************************************************/
 
 #include "lapacke_utils.h"

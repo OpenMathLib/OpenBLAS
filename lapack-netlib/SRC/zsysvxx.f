@@ -185,7 +185,7 @@
 *>     If FACT = 'F', then AF is an input argument and on entry
 *>     contains the block diagonal matrix D and the multipliers
 *>     used to obtain the factor U or L from the factorization A =
-*>     U*D*U**T or A = L*D*L**T as computed by DSYTRF.
+*>     U*D*U**T or A = L*D*L**T as computed by ZSYTRF.
 *>
 *>     If FACT = 'N', then AF is an output argument and on exit
 *>     returns the block diagonal matrix D and the multipliers
@@ -204,7 +204,7 @@
 *>          IPIV is INTEGER array, dimension (N)
 *>     If FACT = 'F', then IPIV is an input argument and on entry
 *>     contains details of the interchanges and the block
-*>     structure of D, as determined by DSYTRF.  If IPIV(k) > 0,
+*>     structure of D, as determined by ZSYTRF.  If IPIV(k) > 0,
 *>     then rows and columns k and IPIV(k) were interchanged and
 *>     D(k,k) is a 1-by-1 diagonal block.  If UPLO = 'U' and
 *>     IPIV(k) = IPIV(k-1) < 0, then rows and columns k-1 and
@@ -215,7 +215,7 @@
 *>
 *>     If FACT = 'N', then IPIV is an output argument and on exit
 *>     contains details of the interchanges and the block
-*>     structure of D, as determined by DSYTRF.
+*>     structure of D, as determined by ZSYTRF.
 *> \endverbatim
 *>
 *> \param[in,out] EQUED
@@ -496,8 +496,6 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date April 2012
-*
 *> \ingroup complex16SYsolve
 *
 *  =====================================================================
@@ -506,10 +504,9 @@
      $                    N_ERR_BNDS, ERR_BNDS_NORM, ERR_BNDS_COMP,
      $                    NPARAMS, PARAMS, WORK, RWORK, INFO )
 *
-*  -- LAPACK driver routine (version 3.7.0) --
+*  -- LAPACK driver routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     April 2012
 *
 *     .. Scalar Arguments ..
       CHARACTER          EQUED, FACT, UPLO

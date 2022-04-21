@@ -814,6 +814,28 @@ zpotri,
     zgesvdq,
     zungtsqr
 );
+    # functions added for lapack-3.10.1
+#@lapackobjs2d = (@lapackobjs2d,
+#    dlaqz0,
+#    dlaqz1,
+#    dlaqz2,
+#    dlaqz3,
+#    dlaqz4
+#    );
+#@lapackobjs2s = (@lapackobjs2s,
+#    slaqz0,
+#    slaqz1,
+#    slaqz2,
+#    slaqz3,
+#    slaqz4
+#    );
+#@lapackobjs2z = (@lapackobjs2z,
+#    zlaqz0,
+#    zlaqz1,
+#    zlaqz2,
+#    zlaqz3,
+#    zlaqz4
+#);
 
 @lapack_extendedprecision_objs = (
     zposvxx, clagge, clatms, chesvxx, cposvxx, cgesvxx, ssyrfssx, csyrfsx,

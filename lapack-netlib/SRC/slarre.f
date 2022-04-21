@@ -276,8 +276,6 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date June 2016
-*
 *> \ingroup OTHERauxiliary
 *
 *> \par Further Details:
@@ -305,10 +303,9 @@
      $                    W, WERR, WGAP, IBLOCK, INDEXW, GERS, PIVMIN,
      $                    WORK, IWORK, INFO )
 *
-*  -- LAPACK auxiliary routine (version 3.8.0) --
+*  -- LAPACK auxiliary routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     June 2016
 *
 *     .. Scalar Arguments ..
       CHARACTER          RANGE
@@ -903,6 +900,6 @@
 
       RETURN
 *
-*     end of SLARRE
+*     End of SLARRE
 *
       END

@@ -170,18 +170,15 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date June 2016
-*
 *> \ingroup complexGEsolve
 *
 *  =====================================================================
       SUBROUTINE CGELSS( M, N, NRHS, A, LDA, B, LDB, S, RCOND, RANK,
      $                   WORK, LWORK, RWORK, INFO )
 *
-*  -- LAPACK driver routine (version 3.7.0) --
+*  -- LAPACK driver routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     June 2016
 *
 *     .. Scalar Arguments ..
       INTEGER            INFO, LDA, LDB, LWORK, M, N, NRHS, RANK
@@ -269,11 +266,11 @@
 *
 *              Compute space needed for CGEQRF
                CALL CGEQRF( M, N, A, LDA, DUM(1), DUM(1), -1, INFO )
-               LWORK_CGEQRF=DUM(1)
+               LWORK_CGEQRF = REAL( DUM(1) )
 *              Compute space needed for CUNMQR
                CALL CUNMQR( 'L', 'C', M, NRHS, N, A, LDA, DUM(1), B,
      $                   LDB, DUM(1), -1, INFO )
-               LWORK_CUNMQR=DUM(1)
+               LWORK_CUNMQR = REAL( DUM(1) )
                MM = N
                MAXWRK = MAX( MAXWRK, N + N*ILAENV( 1, 'CGEQRF', ' ', M,
      $                       N, -1, -1 ) )
@@ -287,15 +284,15 @@
 *              Compute space needed for CGEBRD
                CALL CGEBRD( MM, N, A, LDA, S, S, DUM(1), DUM(1), DUM(1),
      $                      -1, INFO )
-               LWORK_CGEBRD=DUM(1)
+               LWORK_CGEBRD = REAL( DUM(1) )
 *              Compute space needed for CUNMBR
                CALL CUNMBR( 'Q', 'L', 'C', MM, NRHS, N, A, LDA, DUM(1),
      $                B, LDB, DUM(1), -1, INFO )
-               LWORK_CUNMBR=DUM(1)
+               LWORK_CUNMBR = REAL( DUM(1) )
 *              Compute space needed for CUNGBR
                CALL CUNGBR( 'P', N, N, N, A, LDA, DUM(1),
      $                   DUM(1), -1, INFO )
-               LWORK_CUNGBR=DUM(1)
+               LWORK_CUNGBR = REAL( DUM(1) )
 *              Compute total workspace needed
                MAXWRK = MAX( MAXWRK, 2*N + LWORK_CGEBRD )
                MAXWRK = MAX( MAXWRK, 2*N + LWORK_CUNMBR )
@@ -313,23 +310,23 @@
 *                 Compute space needed for CGELQF
                   CALL CGELQF( M, N, A, LDA, DUM(1), DUM(1),
      $                -1, INFO )
-                  LWORK_CGELQF=DUM(1)
+                  LWORK_CGELQF = REAL( DUM(1) )
 *                 Compute space needed for CGEBRD
                   CALL CGEBRD( M, M, A, LDA, S, S, DUM(1), DUM(1),
      $                         DUM(1), -1, INFO )
-                  LWORK_CGEBRD=DUM(1)
+                  LWORK_CGEBRD = REAL( DUM(1) )
 *                 Compute space needed for CUNMBR
                   CALL CUNMBR( 'Q', 'L', 'C', M, NRHS, N, A, LDA,
      $                DUM(1), B, LDB, DUM(1), -1, INFO )
-                  LWORK_CUNMBR=DUM(1)
+                  LWORK_CUNMBR = REAL( DUM(1) )
 *                 Compute space needed for CUNGBR
                   CALL CUNGBR( 'P', M, M, M, A, LDA, DUM(1),
      $                   DUM(1), -1, INFO )
-                  LWORK_CUNGBR=DUM(1)
+                  LWORK_CUNGBR = REAL( DUM(1) )
 *                 Compute space needed for CUNMLQ
                   CALL CUNMLQ( 'L', 'C', N, NRHS, M, A, LDA, DUM(1),
      $                 B, LDB, DUM(1), -1, INFO )
-                  LWORK_CUNMLQ=DUM(1)
+                  LWORK_CUNMLQ = REAL( DUM(1) )
 *                 Compute total workspace needed
                   MAXWRK = M + LWORK_CGELQF
                   MAXWRK = MAX( MAXWRK, 3*M + M*M + LWORK_CGEBRD )
@@ -348,15 +345,15 @@
 *                 Compute space needed for CGEBRD
                   CALL CGEBRD( M, N, A, LDA, S, S, DUM(1), DUM(1),
      $                         DUM(1), -1, INFO )
-                  LWORK_CGEBRD=DUM(1)
+                  LWORK_CGEBRD = REAL( DUM(1) )
 *                 Compute space needed for CUNMBR
                   CALL CUNMBR( 'Q', 'L', 'C', M, NRHS, M, A, LDA,
      $                DUM(1), B, LDB, DUM(1), -1, INFO )
-                  LWORK_CUNMBR=DUM(1)
+                  LWORK_CUNMBR = REAL( DUM(1) )
 *                 Compute space needed for CUNGBR
                   CALL CUNGBR( 'P', M, N, M, A, LDA, DUM(1),
      $                   DUM(1), -1, INFO )
-                  LWORK_CUNGBR=DUM(1)
+                  LWORK_CUNGBR = REAL( DUM(1) )
                   MAXWRK = 2*M + LWORK_CGEBRD
                   MAXWRK = MAX( MAXWRK, 2*M + LWORK_CUNMBR )
                   MAXWRK = MAX( MAXWRK, 2*M + LWORK_CUNGBR )

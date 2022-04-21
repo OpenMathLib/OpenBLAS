@@ -208,8 +208,6 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
-*
 *> \ingroup complex16HEcomputational
 *
 *> \par Further Details:
@@ -241,10 +239,9 @@
 *  =====================================================================
       SUBROUTINE ZHETF2_RK( UPLO, N, A, LDA, E, IPIV, INFO )
 *
-*  -- LAPACK computational routine (version 3.7.0) --
+*  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
 *
 *     .. Scalar Arguments ..
       CHARACTER          UPLO
@@ -420,7 +417,7 @@
 *
 *                 Case(2)
 *                 Equivalent to testing for
-*                 ABS( REAL( W( IMAX,KW-1 ) ) ).GE.ALPHA*ROWMAX
+*                 ABS( DBLE( W( IMAX,KW-1 ) ) ).GE.ALPHA*ROWMAX
 *                 (used to handle NaN and Inf)
 *
                   IF( .NOT.( ABS( DBLE( A( IMAX, IMAX ) ) )
@@ -611,8 +608,8 @@
 *                 D = |A12|
                   D = DLAPY2( DBLE( A( K-1, K ) ),
      $                DIMAG( A( K-1, K ) ) )
-                  D11 = A( K, K ) / D
-                  D22 = A( K-1, K-1 ) / D
+                  D11 = DBLE( A( K, K ) / D )
+                  D22 = DBLE( A( K-1, K-1 ) / D )
                   D12 = A( K-1, K ) / D
                   TT = ONE / ( D11*D22-ONE )
 *
@@ -773,7 +770,7 @@
 *
 *                 Case(2)
 *                 Equivalent to testing for
-*                 ABS( REAL( W( IMAX,KW-1 ) ) ).GE.ALPHA*ROWMAX
+*                 ABS( DBLE( W( IMAX,KW-1 ) ) ).GE.ALPHA*ROWMAX
 *                 (used to handle NaN and Inf)
 *
                   IF( .NOT.( ABS( DBLE( A( IMAX, IMAX ) ) )

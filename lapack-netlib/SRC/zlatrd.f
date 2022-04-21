@@ -140,8 +140,6 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
-*
 *> \ingroup complex16OTHERauxiliary
 *
 *> \par Further Details:
@@ -199,10 +197,9 @@
 *  =====================================================================
       SUBROUTINE ZLATRD( UPLO, N, NB, A, LDA, E, TAU, W, LDW )
 *
-*  -- LAPACK auxiliary routine (version 3.7.0) --
+*  -- LAPACK auxiliary routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
 *
 *     .. Scalar Arguments ..
       CHARACTER          UPLO
@@ -271,7 +268,7 @@
 *
                ALPHA = A( I-1, I )
                CALL ZLARFG( I-1, ALPHA, A( 1, I ), 1, TAU( I-1 ) )
-               E( I-1 ) = ALPHA
+               E( I-1 ) = DBLE( ALPHA )
                A( I-1, I ) = ONE
 *
 *              Compute W(1:i-1,i)
@@ -325,7 +322,7 @@
                ALPHA = A( I+1, I )
                CALL ZLARFG( N-I, ALPHA, A( MIN( I+2, N ), I ), 1,
      $                      TAU( I ) )
-               E( I ) = ALPHA
+               E( I ) = DBLE( ALPHA )
                A( I+1, I ) = ONE
 *
 *              Compute W(i+1:n,i)

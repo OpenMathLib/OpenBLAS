@@ -95,8 +95,6 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
-*
 *> \ingroup auxOTHERcomputational
 *
 *> \par Further Details:
@@ -112,10 +110,9 @@
 *  =====================================================================
       SUBROUTINE SLASQ2( N, Z, INFO )
 *
-*  -- LAPACK computational routine (version 3.7.0) --
+*  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
 *
 *     .. Scalar Arguments ..
       INTEGER            INFO, N
@@ -274,8 +271,7 @@
 *
 *     Check whether the machine is IEEE conformable.
 *
-*     IEEE = ILAENV( 10, 'SLASQ2', 'N', 1, 2, 3, 4 ).EQ.1 .AND.
-*    $       ILAENV( 11, 'SLASQ2', 'N', 1, 2, 3, 4 ).EQ.1
+*     IEEE = ( ILAENV( 10, 'SLASQ2', 'N', 1, 2, 3, 4 ).EQ.1 )
 *
 *     [11/15/2008] The case IEEE=.TRUE. has a problem in single precision with
 *     some the test matrices of type 16. The double precision code is fine.

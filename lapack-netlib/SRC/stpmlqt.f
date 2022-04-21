@@ -1,4 +1,4 @@
-*> \brief \b DTPMLQT
+*> \brief \b STPMLQT
 *
 *  =========== DOCUMENTATION ===========
 *
@@ -6,7 +6,7 @@
 *            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download DTPMQRT + dependencies
+*> Download STPMLQT + dependencies
 *> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/stpmlqt.f">
 *> [TGZ]</a>
 *> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/stpmlqt.f">
@@ -36,7 +36,7 @@
 *>
 *> \verbatim
 *>
-*> DTPMQRT applies a real orthogonal matrix Q obtained from a
+*> STPMLQT applies a real orthogonal matrix Q obtained from a
 *> "triangular-pentagonal" real block reflector H to a general
 *> real matrix C, which consists of two blocks A and B.
 *> \endverbatim
@@ -89,7 +89,7 @@
 *>          MB is INTEGER
 *>          The block size used for the storage of T.  K >= MB >= 1.
 *>          This must be the same value of MB used to generate T
-*>          in DTPLQT.
+*>          in STPLQT.
 *> \endverbatim
 *>
 *> \param[in] V
@@ -97,22 +97,20 @@
 *>          V is REAL array, dimension (LDV,K)
 *>          The i-th row must contain the vector which defines the
 *>          elementary reflector H(i), for i = 1,2,...,k, as returned by
-*>          DTPLQT in B.  See Further Details.
+*>          STPLQT in B.  See Further Details.
 *> \endverbatim
 *>
 *> \param[in] LDV
 *> \verbatim
 *>          LDV is INTEGER
-*>          The leading dimension of the array V.
-*>          If SIDE = 'L', LDV >= max(1,M);
-*>          if SIDE = 'R', LDV >= max(1,N).
+*>          The leading dimension of the array V. LDV >= K.
 *> \endverbatim
 *>
 *> \param[in] T
 *> \verbatim
 *>          T is REAL array, dimension (LDT,K)
 *>          The upper triangular factors of the block reflectors
-*>          as returned by DTPLQT, stored as a MB-by-K matrix.
+*>          as returned by STPLQT, stored as a MB-by-K matrix.
 *> \endverbatim
 *>
 *> \param[in] LDT
@@ -135,8 +133,8 @@
 *> \verbatim
 *>          LDA is INTEGER
 *>          The leading dimension of the array A.
-*>          If SIDE = 'L', LDC >= max(1,K);
-*>          If SIDE = 'R', LDC >= max(1,M).
+*>          If SIDE = 'L', LDA >= max(1,K);
+*>          If SIDE = 'R', LDA >= max(1,M).
 *> \endverbatim
 *>
 *> \param[in,out] B
@@ -174,8 +172,6 @@
 *> \author Univ. of California Berkeley
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
-*
-*> \date November 2017
 *
 *> \ingroup doubleOTHERcomputational
 *
@@ -216,10 +212,9 @@
       SUBROUTINE STPMLQT( SIDE, TRANS, M, N, K, L, MB, V, LDV, T, LDT,
      $                    A, LDA, B, LDB, WORK, INFO )
 *
-*  -- LAPACK computational routine (version 3.8.0) --
+*  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2017
 *
 *     .. Scalar Arguments ..
       CHARACTER SIDE, TRANS
@@ -242,7 +237,7 @@
       EXTERNAL           LSAME
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           SLARFB, STPRFB, XERBLA
+      EXTERNAL           XERBLA, STPRFB
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          MAX, MIN

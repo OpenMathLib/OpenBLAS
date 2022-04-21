@@ -28,7 +28,6 @@
 *****************************************************************************
 * Contents: Native middle-level C interface to LAPACK function ssytrf_aa
 * Author: Intel Corporation
-* Generated November 2017
 *****************************************************************************/
 
 #include "lapacke_utils.h"

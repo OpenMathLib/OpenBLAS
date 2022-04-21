@@ -88,7 +88,8 @@
 *> \param[in] LWORK
 *> \verbatim
 *>          LWORK is INTEGER
-*>          The dimension of the array WORK.  LWORK >= max(1,M).
+*>          The dimension of the array WORK.
+*>          LWORK >= 1, if MIN(M,N) = 0, and LWORK >= M, otherwise.
 *>          For optimum performance LWORK >= M*NB, where NB is
 *>          the optimal blocksize.
 *>
@@ -113,8 +114,6 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
-*
 *> \ingroup realGEcomputational
 *
 *> \par Further Details:
@@ -138,10 +137,9 @@
 *  =====================================================================
       SUBROUTINE SGERQF( M, N, A, LDA, TAU, WORK, LWORK, INFO )
 *
-*  -- LAPACK computational routine (version 3.7.0) --
+*  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
 *
 *     .. Scalar Arguments ..
       INTEGER            INFO, LDA, LWORK, M, N
@@ -179,8 +177,6 @@
          INFO = -2
       ELSE IF( LDA.LT.MAX( 1, M ) ) THEN
          INFO = -4
-      ELSE IF( LWORK.LT.MAX( 1, M ) .AND. .NOT.LQUERY ) THEN
-         INFO = -7
       END IF
 *
       IF( INFO.EQ.0 ) THEN
@@ -190,12 +186,12 @@
          ELSE
             NB = ILAENV( 1, 'SGERQF', ' ', M, N, -1, -1 )
             LWKOPT = M*NB
-            WORK( 1 ) = LWKOPT
          END IF
          WORK( 1 ) = LWKOPT
 *
-         IF( LWORK.LT.MAX( 1, M ) .AND. .NOT.LQUERY ) THEN
-            INFO = -7
+         IF ( .NOT.LQUERY ) THEN
+            IF( LWORK.LE.0 .OR. ( N.GT.0 .AND. LWORK.LT.MAX( 1, M ) ) )
+     $         INFO = -7
          END IF
       END IF
 *

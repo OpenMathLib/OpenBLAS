@@ -124,7 +124,7 @@
 *>     The factored form of the matrix A.  AF contains the block
 *>     diagonal matrix D and the multipliers used to obtain the
 *>     factor U or L from the factorization A = U*D*U**T or A =
-*>     L*D*L**T as computed by SSYTRF.
+*>     L*D*L**T as computed by CSYTRF.
 *> \endverbatim
 *>
 *> \param[in] LDAF
@@ -137,7 +137,7 @@
 *> \verbatim
 *>          IPIV is INTEGER array, dimension (N)
 *>     Details of the interchanges and the block structure of D
-*>     as determined by SSYTRF.
+*>     as determined by CSYTRF.
 *> \endverbatim
 *>
 *> \param[in,out] S
@@ -171,7 +171,7 @@
 *> \param[in,out] X
 *> \verbatim
 *>          X is COMPLEX array, dimension (LDX,NRHS)
-*>     On entry, the solution matrix X, as computed by SGETRS.
+*>     On entry, the solution matrix X, as computed by CGETRS.
 *>     On exit, the improved solution matrix X.
 *> \endverbatim
 *>
@@ -392,8 +392,6 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date April 2012
-*
 *> \ingroup complexSYcomputational
 *
 *  =====================================================================
@@ -402,10 +400,9 @@
      $                    ERR_BNDS_NORM, ERR_BNDS_COMP, NPARAMS, PARAMS,
      $                    WORK, RWORK, INFO )
 *
-*  -- LAPACK computational routine (version 3.7.0) --
+*  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     April 2012
 *
 *     .. Scalar Arguments ..
       CHARACTER          UPLO, EQUED

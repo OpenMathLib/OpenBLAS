@@ -28,7 +28,6 @@
 ******************************************************************************
 * Contents: Native high-level C interface to LAPACK function zsyr
 * Author: Intel Corporation
-* Generated March, 2012
 *****************************************************************************/
 
 #include "lapacke_utils.h"

@@ -28,7 +28,6 @@
 ******************************************************************************
 * Contents: Native C interface to LAPACK lsame
 * Author: Intel Corporation
-* Created in January, 2010
 *****************************************************************************/
 
 #include <stdio.h>

@@ -28,7 +28,6 @@
 *****************************************************************************
 * Contents: Native high-level C interface to LAPACK function sgesvdq
 * Author: Intel Corporation
-* Generated November 2018
 *****************************************************************************/
 
 #include "lapacke_utils.h"

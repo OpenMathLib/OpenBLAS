@@ -58,10 +58,9 @@ C> \ingroup variantsOTHERcomputational
 *  =====================================================================
       REAL FUNCTION SCEIL( A )
 *
-*  -- LAPACK computational routine (version 3.1) --
+*  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
 *
 *     .. Scalar Arguments ..*
       REAL A

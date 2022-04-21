@@ -49,7 +49,7 @@
 *> eigenvalues.
 *>
 *> ZSTEGR is a compatibility wrapper around the improved ZSTEMR routine.
-*> See DSTEMR for further details.
+*> See ZSTEMR for further details.
 *>
 *> One important change is that the ABSTOL parameter no longer provides any
 *> benefit and hence is no longer used.
@@ -249,8 +249,6 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date June 2016
-*
 *> \ingroup complex16OTHERcomputational
 *
 *> \par Contributors:
@@ -265,10 +263,9 @@
      $           ABSTOL, M, W, Z, LDZ, ISUPPZ, WORK, LWORK, IWORK,
      $           LIWORK, INFO )
 *
-*  -- LAPACK computational routine (version 3.7.1) --
+*  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     June 2016
 *
 *     .. Scalar Arguments ..
       CHARACTER          JOBZ, RANGE

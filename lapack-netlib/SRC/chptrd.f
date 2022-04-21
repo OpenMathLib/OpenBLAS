@@ -112,8 +112,6 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
-*
 *> \ingroup complexOTHERcomputational
 *
 *> \par Further Details:
@@ -151,10 +149,9 @@
 *  =====================================================================
       SUBROUTINE CHPTRD( UPLO, N, AP, D, E, TAU, INFO )
 *
-*  -- LAPACK computational routine (version 3.7.0) --
+*  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
 *
 *     .. Scalar Arguments ..
       CHARACTER          UPLO
@@ -224,7 +221,7 @@
 *
             ALPHA = AP( I1+I-1 )
             CALL CLARFG( I, ALPHA, AP( I1 ), 1, TAUI )
-            E( I ) = ALPHA
+            E( I ) = REAL( ALPHA )
 *
             IF( TAUI.NE.ZERO ) THEN
 *
@@ -249,11 +246,11 @@
 *
             END IF
             AP( I1+I-1 ) = E( I )
-            D( I+1 ) = AP( I1+I )
+            D( I+1 ) = REAL( AP( I1+I ) )
             TAU( I ) = TAUI
             I1 = I1 - I
    10    CONTINUE
-         D( 1 ) = AP( 1 )
+         D( 1 ) = REAL( AP( 1 ) )
       ELSE
 *
 *        Reduce the lower triangle of A. II is the index in AP of
@@ -269,7 +266,7 @@
 *
             ALPHA = AP( II+1 )
             CALL CLARFG( N-I, ALPHA, AP( II+2 ), 1, TAUI )
-            E( I ) = ALPHA
+            E( I ) = REAL( ALPHA )
 *
             IF( TAUI.NE.ZERO ) THEN
 *
@@ -296,11 +293,11 @@
 *
             END IF
             AP( II+1 ) = E( I )
-            D( I ) = AP( II )
+            D( I ) = REAL( AP( II ) )
             TAU( I ) = TAUI
             II = I1I1
    20    CONTINUE
-         D( N ) = AP( II )
+         D( N ) = REAL( AP( II ) )
       END IF
 *
       RETURN

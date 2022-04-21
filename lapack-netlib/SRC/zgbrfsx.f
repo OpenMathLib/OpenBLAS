@@ -138,7 +138,7 @@
 *> \verbatim
 *>          AFB is COMPLEX*16 array, dimension (LDAFB,N)
 *>     Details of the LU factorization of the band matrix A, as
-*>     computed by DGBTRF.  U is stored as an upper triangular band
+*>     computed by ZGBTRF.  U is stored as an upper triangular band
 *>     matrix with KL+KU superdiagonals in rows 1 to KL+KU+1, and
 *>     the multipliers used during the factorization are stored in
 *>     rows KL+KU+2 to 2*KL+KU+1.
@@ -153,7 +153,7 @@
 *> \param[in] IPIV
 *> \verbatim
 *>          IPIV is INTEGER array, dimension (N)
-*>     The pivot indices from DGETRF; for 1<=i<=N, row i of the
+*>     The pivot indices from ZGETRF; for 1<=i<=N, row i of the
 *>     matrix was interchanged with row IPIV(i).
 *> \endverbatim
 *>
@@ -208,7 +208,7 @@
 *> \param[in,out] X
 *> \verbatim
 *>          X is COMPLEX*16 array, dimension (LDX,NRHS)
-*>     On entry, the solution matrix X, as computed by DGETRS.
+*>     On entry, the solution matrix X, as computed by ZGETRS.
 *>     On exit, the improved solution matrix X.
 *> \endverbatim
 *>
@@ -429,8 +429,6 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date April 2012
-*
 *> \ingroup complex16GBcomputational
 *
 *  =====================================================================
@@ -440,10 +438,9 @@
      $                    ERR_BNDS_COMP, NPARAMS, PARAMS, WORK, RWORK,
      $                    INFO )
 *
-*  -- LAPACK computational routine (version 3.7.0) --
+*  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     April 2012
 *
 *     .. Scalar Arguments ..
       CHARACTER          TRANS, EQUED

@@ -153,8 +153,6 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date June 2017
-*
 *> \ingroup complex16GEauxiliary
 *
 *> \par Further Details:
@@ -190,10 +188,9 @@
       SUBROUTINE ZTGEX2( WANTQ, WANTZ, N, A, LDA, B, LDB, Q, LDQ, Z,
      $                   LDZ, J1, INFO )
 *
-*  -- LAPACK auxiliary routine (version 3.7.1) --
+*  -- LAPACK auxiliary routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     June 2017
 *
 *     .. Scalar Arguments ..
       LOGICAL            WANTQ, WANTZ
@@ -218,10 +215,10 @@
       PARAMETER          ( WANDS = .TRUE. )
 *     ..
 *     .. Local Scalars ..
-      LOGICAL            DTRONG, WEAK
+      LOGICAL            STRONG, WEAK
       INTEGER            I, M
-      DOUBLE PRECISION   CQ, CZ, EPS, SA, SB, SCALE, SMLNUM, SS, SUM,
-     $                   THRESH, WS
+      DOUBLE PRECISION   CQ, CZ, EPS, SA, SB, SCALE, SMLNUM, SUM,
+     $                   THRESHA, THRESHB
       COMPLEX*16         CDUM, F, G, SQ, SZ
 *     ..
 *     .. Local Arrays ..
@@ -248,7 +245,7 @@
 *
       M = LDST
       WEAK = .FALSE.
-      DTRONG = .FALSE.
+      STRONG = .FALSE.
 *
 *     Make a local copy of selected block in (A, B)
 *
@@ -263,8 +260,12 @@
       SUM = DBLE( CONE )
       CALL ZLACPY( 'Full', M, M, S, LDST, WORK, M )
       CALL ZLACPY( 'Full', M, M, T, LDST, WORK( M*M+1 ), M )
-      CALL ZLASSQ( 2*M*M, WORK, 1, SCALE, SUM )
+      CALL ZLASSQ( M*M, WORK, 1, SCALE, SUM )
       SA = SCALE*SQRT( SUM )
+      SCALE = DBLE( CZERO )
+      SUM = DBLE( CONE )
+      CALL ZLASSQ( M*M, WORK(M*M+1), 1, SCALE, SUM )
+      SB = SCALE*SQRT( SUM )
 *
 *     THRES has been changed from
 *        THRESH = MAX( TEN*EPS*SA, SMLNUM )
@@ -274,15 +275,16 @@
 *     "Bug" reported by Ondra Kamenik, confirmed by Julie Langou, fixed by
 *     Jim Demmel and Guillaume Revy. See forum post 1783.
 *
-      THRESH = MAX( TWENTY*EPS*SA, SMLNUM )
+      THRESHA = MAX( TWENTY*EPS*SA, SMLNUM )
+      THRESHB = MAX( TWENTY*EPS*SB, SMLNUM )
 *
 *     Compute unitary QL and RQ that swap 1-by-1 and 1-by-1 blocks
 *     using Givens rotations and perform the swap tentatively.
 *
       F = S( 2, 2 )*T( 1, 1 ) - T( 2, 2 )*S( 1, 1 )
       G = S( 2, 2 )*T( 1, 2 ) - T( 2, 2 )*S( 1, 2 )
-      SA = ABS( S( 2, 2 ) )
-      SB = ABS( T( 2, 2 ) )
+      SA = ABS( S( 2, 2 ) ) * ABS( T( 1, 1 ) )
+      SB = ABS( S( 1, 1 ) ) * ABS( T( 2, 2 ) )
       CALL ZLARTG( G, F, CZ, SZ, CDUM )
       SZ = -SZ
       CALL ZROT( 2, S( 1, 1 ), 1, S( 1, 2 ), 1, CZ, DCONJG( SZ ) )
@@ -295,17 +297,20 @@
       CALL ZROT( 2, S( 1, 1 ), LDST, S( 2, 1 ), LDST, CQ, SQ )
       CALL ZROT( 2, T( 1, 1 ), LDST, T( 2, 1 ), LDST, CQ, SQ )
 *
-*     Weak stability test: |S21| + |T21| <= O(EPS F-norm((S, T)))
+*     Weak stability test: |S21| <= O(EPS F-norm((A)))
+*                          and  |T21| <= O(EPS F-norm((B)))
 *
-      WS = ABS( S( 2, 1 ) ) + ABS( T( 2, 1 ) )
-      WEAK = WS.LE.THRESH
+      WEAK = ABS( S( 2, 1 ) ).LE.THRESHA .AND. 
+     $ ABS( T( 2, 1 ) ).LE.THRESHB
       IF( .NOT.WEAK )
      $   GO TO 20
 *
       IF( WANDS ) THEN
 *
 *        Strong stability test:
-*           F-norm((A-QL**H*S*QR, B-QL**H*T*QR)) <= O(EPS*F-norm((A, B)))
+*           F-norm((A-QL**H*S*QR)) <= O(EPS*F-norm((A)))
+*           and
+*           F-norm((B-QL**H*T*QR)) <= O(EPS*F-norm((B)))
 *
          CALL ZLACPY( 'Full', M, M, S, LDST, WORK, M )
          CALL ZLACPY( 'Full', M, M, T, LDST, WORK( M*M+1 ), M )
@@ -321,10 +326,14 @@
    10    CONTINUE
          SCALE = DBLE( CZERO )
          SUM = DBLE( CONE )
-         CALL ZLASSQ( 2*M*M, WORK, 1, SCALE, SUM )
-         SS = SCALE*SQRT( SUM )
-         DTRONG = SS.LE.THRESH
-         IF( .NOT.DTRONG )
+         CALL ZLASSQ( M*M, WORK, 1, SCALE, SUM )
+         SA = SCALE*SQRT( SUM )
+         SCALE = DBLE( CZERO )
+         SUM = DBLE( CONE )
+         CALL ZLASSQ( M*M, WORK(M*M+1), 1, SCALE, SUM )
+         SB = SCALE*SQRT( SUM )
+         STRONG = SA.LE.THRESHA .AND. SB.LE.THRESHB
+         IF( .NOT.STRONG )
      $      GO TO 20
       END IF
 *

@@ -188,8 +188,6 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date November 2017
-*
 *> \ingroup real16OTHERcomputational
 *
 *> \par Further Details:
@@ -236,10 +234,9 @@
 *
       IMPLICIT NONE
 *
-*  -- LAPACK computational routine (version 3.8.0) --
+*  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2017
 *
 *     .. Scalar Arguments ..
       CHARACTER          STAGE1, UPLO, VECT
@@ -392,7 +389,7 @@
 *     For that, for real precision just copy the diag and offdiag 
 *     to D and E while for the COMPLEX case the bulge chasing is  
 *     performed to convert the hermetian tridiagonal to symmetric 
-*     tridiagonal. A simpler coversion formula might be used, but then 
+*     tridiagonal. A simpler conversion formula might be used, but then 
 *     updating the Q matrix will be required and based if Q is generated
 *     or not this might complicate the story. 
 *      
