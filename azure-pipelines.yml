@@ -137,8 +137,19 @@ jobs:
       cmake --build . --config Release
       ctest
 
-
-
+- job: OSX_docker
+  pool:
+     vmImage: 'macOS-10.15'
+  steps:
+  - script: |
+      echo "FROM python:2.7.16
+        COPY . /tmp/openblas
+        RUN apt-get update \
+        && apt-get install -y swig gfortran llvm cmake ncurses-dev \
+        libreadline7 libreadline-dev nano git
+        RUN cd /tmp/openblas && make FC=gfortran" > Dockerfile
+      docker build .
+      
 - job: OSX_OpenMP
   pool:
      vmImage: 'macOS-10.15'
