@@ -146,6 +146,7 @@ jobs:
       brew install docker
       brew install docker-machine
       brew install --cask virtualbox
+      sysctl -n machdep.cpu.brand_string
       export DOCKER_HOST="tcp://192.168.56.1"
       docker-machine create --driver virtualbox --virtualbox-hostonly-cidr "192.168.56.1/24" default
       docker-machine ls
