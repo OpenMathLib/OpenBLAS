@@ -146,7 +146,10 @@ jobs:
       brew install docker
       brew install docker-machine
       brew install --cask virtualbox
+      export DOCKER_HOST="tcp://192.168.56.1"
       docker-machine create --driver virtualbox --virtualbox-hostonly-cidr "192.168.56.1/24" default
+      docker-machine ls
+      docker-machine env default
       eval $(docker-machine env default)
       echo "FROM python:2.7.16
         COPY . /tmp/openblas
