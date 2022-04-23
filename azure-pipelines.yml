@@ -142,6 +142,11 @@ jobs:
      vmImage: 'macOS-10.15'
   steps:
   - script: |
+      brew update
+      brew install docker
+      brew install docker-machine
+      brew install --cask virtualbox
+      docker-machine create --driver virtualbox default
       echo "FROM python:2.7.16
         COPY . /tmp/openblas
         RUN apt-get update \
