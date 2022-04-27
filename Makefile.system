@@ -1041,8 +1041,10 @@ FCOMMON_OPT += -frecursive
 # work around ABI problem with passing single-character arguments
 FCOMMON_OPT += -fno-optimize-sibling-calls
 #Don't include -lgfortran, when NO_LAPACK=1 or lsbcc
+ifneq ($(NOFORTRAN), 1)
 ifneq ($(NO_LAPACK), 1)
 EXTRALIB += -lgfortran
+endif
 endif
 ifdef NO_BINARY_MODE
 ifeq ($(ARCH), $(filter $(ARCH),mips64))
