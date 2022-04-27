@@ -1,10 +1,10 @@
 #!/bin/sh
 
 # Checking cross compile
-hostos="$(uname -s | sed -e 's/\-.*//')"
-hostarch="$(uname -m | sed -e 's/i.86/x86/')"
+hostos=`uname -s | sed -e 's/\-.*//'`
+hostarch=`uname -m | sed -e 's/i.86/x86/'`
 if [ "$hostos" = "AIX" ] || [ "$hostos" = "SunOS" ]; then
-    hostarch="$(uname -p)"
+    hostarch=`uname -p`
 fi
 case "$hostarch" in
     amd64) hostarch=x86_64 ;;
@@ -23,7 +23,7 @@ flags="$*"
 
 # First, we need to know the target OS and compiler name
 {
-    data=$($compiler_name $flags -E ctest.c)
+    data=`$compiler_name $flags -E ctest.c`
 } || {
     printf '%s\n' "C Compiler ($compiler_name) is something wrong." >&2
     exit 1
@@ -31,11 +31,11 @@ flags="$*"
 
 cross_suffix=""
 
-if [ "$(dirname $compiler_name)" != '.' ]; then
-    cross_suffix="$cross_suffix$(dirname $compiler_name)/"
+if [ "`dirname $compiler_name`" != '.' ]; then
+    cross_suffix="$cross_suffix`dirname $compiler_name`/"
 fi
 
-bn="$(basename $compiler_name)"
+bn=`basename $compiler_name`
 case "$bn" in
     *-*) cross_suffix="$cross_suffix${bn%-*}-"
 esac
@@ -154,7 +154,7 @@ fi
 
 # Do again
 {
-    data=$($compiler_name $flags -E ctest.c)
+    data="$($compiler_name $flags -E ctest.c)"
 } || {
     printf '%s\n' "C Compiler ($compiler_name) is something wrong." >&2
     exit 1
@@ -162,7 +162,7 @@ fi
 
 have_msa=0
 if [ "$architecture" = "mips" ] || [ "$architecture" = "mips64" ]; then
-    tmpd=$(mktemp -d)
+    tmpd="$(mktemp -d)"
     tmpf="$tmpd/a.c"
     code='"addvi.b $w0, $w1, 1"'
     msa_flags='-mmsa -mfp64 -mload-store-pairs'
@@ -203,7 +203,7 @@ esac
 
 no_avx512=0
 if [ "$architecture" = "x86" ] || [ "$architecture" = "x86_64" ]; then
-    tmpd=$(mktemp -d)
+    tmpd=`mktemp -d`
     tmpf="$tmpd/a.c"
     code='"vbroadcastss -4 * 4(%rsi), %zmm2"'
     printf "#include <immintrin.h>\n\nint main(void){ __asm__ volatile(%s); }\n" "$code" >> "$tmpf"
@@ -225,7 +225,7 @@ fi
 c11_atomics=0
 case "$data" in
     *HAVE_C11*)
-        tmpd=$(mktemp -d)
+        tmpd=`mktemp -d`
         tmpf="$tmpd/a.c"
         printf "#include <stdatomic.h>\nint main(void){}\n" >> "$tmpf"
         args=' -c -o $tmpf.o $tmpf'
@@ -244,7 +244,7 @@ if [ "$compiler" = "GCC" ]; then
     case "$architecture" in x86|x86_64)
         no_avx2=0
         oldgcc=0
-        data=$($compiler_name -dumpversion)
+        data=`$compiler_name -dumpversion`
         case "$data" in *.*.*)
             data="${data%.*}"
         esac
@@ -255,10 +255,10 @@ if [ "$compiler" = "GCC" ]; then
     esac
 fi
 
-data="$($compiler_name $flags -S ctest1.c && grep globl ctest1.s | head -n 1 && rm -f ctest1.s)"
+data=`$compiler_name $flags -S ctest1.c && grep globl ctest1.s | head -n 1 && rm -f ctest1.s`
 
 need_fu=''
-if echo "$data" | grep -q 'globl[[:space:]][_\.]'; then
+if echo "$data" | grep 'globl[[:space:]][_\.]'; then
     need_fu="${data##*globl[[:space:]]}"
     need_fu="${need_fu%%[!_\.]*}"
 fi
@@ -281,18 +281,20 @@ linker_L=""
 linker_l=""
 linker_a=""
 
-link="$($compiler_name $flags -c ctest2.c -o ctest2.o 2>&1 && $compiler_name $flags $openmp -v ctest2.o -o ctest2 2>&1 && rm -f ctest2.o ctest2 ctest2.exe)"
+link=`$compiler_name $flags -c ctest2.c -o ctest2.o 2>&1 && $compiler_name $flags $openmp -v ctest2.o -o ctest2 2>&1 && rm -f ctest2.o ctest2 ctest2.exe`
 
-link="$(echo "$link" | sed 's/\-Y[[:space:]]P\,/\-Y/g')"
+link=`echo "$link" | sed 's/\-Y[[:space:]]P\,/\-Y/g'`
 
-flags="$(echo "$link" | tr '[:space:],\n' ' ')"
+
+flags=`echo $link | tr '[[:space:]],\n' ' '`
 
 # Strip trailing quotes
 old_flags="$flags"
 flags=''
+
+
 for flag in $old_flags; do
-    f="${flag#\"}"
-    f="${flag%\"}"
+    f=`echo "$flag" | tr '"' ' '`
     flags="$flags $f"
 done
 
@@ -329,14 +331,15 @@ done
 :> "$makefile" || exit 1
 :> "$config" || exit 1
 
+
 # print $data, "\n";
 
 {
     printf "OSNAME=%s\n" "$os"
     printf "ARCH=%s\n" "$architecture"
     printf "C_COMPILER=%s\n" "$compiler"
-    [ "$binformat" != "bin32" ] && printf "BINARY32=\n"
-    [ "$binformat" != "bin64" ] && printf "BINARY64=\n"
+    [ $binformat != bin32 ] && printf "BINARY32=\n"
+    [ $binformat != 'bin64' ] && printf "BINARY64=\n"
     [ "$binformat" = "bin32" ] && printf "BINARY32=1\n"
     [ "$binformat" = "bin64" ] && printf "BINARY64=1\n"
     [ -n "$need_fu" ] && printf 'FU=%s\n' "$need_fu"
@@ -348,14 +351,14 @@ done
         printf "HAVE_MSA=1\n"
         printf "MSA_FLAGS=%s\n" "$msa_flags"
     }
-    ! [ "$no_avx512" -eq 1 ] || printf "NO_AVX512=1\n"
-    ! [ "$no_avx2" -eq 1 ] || printf "NO_AVX2=1\n"
-    ! [ "$oldgcc" -eq 1 ] || printf "OLDGCC=1\n"
+    [ "$no_avx512" -eq 1 ] && printf "NO_AVX512=1\n"
+    [ "$no_avx2" -eq 1 ] && printf "NO_AVX2=1\n"
+    [ "$oldgcc" -eq 1 ] && printf "OLDGCC=1\n"
 } >> "$makefile"
 
-os="$(echo "$os" | tr '[:lower:]' '[:upper:]'/ )"
-architecture="$(echo "$architecture" | tr '[:lower:]' '[:upper:]' )"
-compiler="$(echo "$compiler" | tr '[:lower:]' '[:upper:]' )"
+os=`echo "$os" | tr '[[:lower:]]' '[[:upper:]]'/ `
+architecture=`echo "$architecture" | tr '[[:lower:]]' '[[:upper:]]' `
+compiler=`echo "$compiler" | tr '[[:lower:]]' '[[:upper:]]' `
 
 {
     printf "#define OS_%s\t1\n" "$os"
@@ -364,8 +367,8 @@ compiler="$(echo "$compiler" | tr '[:lower:]' '[:upper:]' )"
     [ "$binformat" = "bin32" ] && printf "#define __32BIT__\t1\n"
     [ "$binformat" = "bin64" ] && printf "#define __64BIT__\t1\n"
     [ -n "$need_fu" ] && printf "#define FUNDERSCORE\t%s\n" "$need_fu"
-    ! [ "$have_msa" -eq 1 ] || printf "#define HAVE_MSA\t1\n"
-    ! [ "$c11_atomics" -eq 1 ] || printf "#define HAVE_C11\t1\n"
+    [ "$have_msa" -eq 1 ] && printf "#define HAVE_MSA\t1\n"
+    [ "$c11_atomics" -eq 1 ] && printf "#define HAVE_C11\t1\n"
 } >> "$config"
 
 

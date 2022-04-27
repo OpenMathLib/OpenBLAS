@@ -3615,14 +3615,40 @@ lapack_embeded_underscore_objs_z="
     zlaunhr_col_getrfnp zlaunhr_col_getrfnp2 zunhr_col
 "
 
-dirname="$(dirname "$(dirname "$( cd -- "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )")")/lapack-netlib"
+dirname=`pwd`/lapack-netlib
 
-if [ "${13}" -eq 1 ]; then
+p1=$1
+p2=$2
+p3=$3
+p4=$4
+p5=$5
+p6=$6
+p7=$7
+p8=$8
+p9=$9
+shift
+p10=$9
+shift
+p11=$9
+shift
+p12=$9
+shift
+p13=$9
+shift
+p14=$9
+shift
+p15=$9
+shift
+p16=$9
+shift
+p17=$9
+
+if [ $p13 -eq 1 ]; then
 	blasobjs="$blasobjs $bfblasobjs"
 	cblasobjs="$cblasobjs $bfcblasobjs"
 fi
 
-if [ "${14}" -eq 1 ]; then
+if [ $p14 -eq 1 ]; then
 	blasobjs="$blasobjs $blasobjss"
 	cblasobjs="$cblasobjs $cblasobjss"
 	lapackobjs="$lapackobjs $lapackobjss"
@@ -3635,11 +3661,11 @@ if [ "${14}" -eq 1 ]; then
 	lapackeobjs="$lapackeobjs $lapackeobjss"
 fi
 
-if [ "${15}" -eq 1 ]; then
+if [ $p15 -eq 1 ]; then
 	blasobjs="$blasobjs $blasobjsd"
 	cblasobjs="$cblasobjs $cblasobjsd"
 	lapackobjs="$lapackobjs $lapackobjsd"
-    if [ "${14}" -eq 0 ]; then
+    if [ $p14 -eq 0 ]; then
 		lapackobjs2="$lapackobjs2 $lapackobjs2ds"
 	fi
 	lapackobjs2="$lapackobjs2 $lapackobjs2d $lapackobjs2dz"
@@ -3649,14 +3675,14 @@ if [ "${15}" -eq 1 ]; then
 	lapackeobjs="$lapackeobjs $lapackeobjsd"
 fi
 
-if [ "${16}" -eq 1 ]; then
+if [ $p16 -eq 1 ]; then
 	blasobjs="$blasobjs $blasobjsc"
 	cblasobjs="$cblasobjs $cblasobjsc"
 	gemm3mobjs="$gemm3mobjs $gemm3mobjsc"
 	cblasgemm3mobjs="$cblasgemm3mobjs $cblasgemm3mobjsc"
 	lapackobjs="$lapackobjs $lapackobjsc"
 	lapackobjs2="$lapackobjs2 $lapackobjs2c $lapackobjs2zc"
-    if [ "${14}" -eq 0 ]; then
+    if [ $p14 -eq 0 ]; then
 		lapackobjs2="$lapackobjs2 $lapackobjs2sc"
 	fi
 	lapack_deprecated_objs="$lapack_deprecated_objs $lapack_deprecated_objsc"
@@ -3665,17 +3691,17 @@ if [ "${16}" -eq 1 ]; then
 	lapackeobjs="$lapackeobjs $lapackeobjsc"
 fi
 
-if [ "${17}" -eq 1 ]; then
+if [ $p17 -eq 1 ]; then
 	blasobjs="$blasobjs $blasobjsz"
 	cblasobjs="$cblasobjs $cblasobjsz"
 	gemm3mobjs="$gemm3mobjs $gemm3mobjsz"
 	cblasgemm3mobjs="$cblasgemm3mobjs $cblasgemm3mobjsz"
 	lapackobjs="$lapackobjs $lapackobjsz"
 	lapackobjs2="$lapackobjs2 $lapackobjs2z"
-	if [ "${16}" -eq 0 ]; then
+	if [ $p16 -eq 0 ]; then
 		lapackobjs2="$lapackobjs2 $lapackobjs2zc"
 	fi
-	if [ "${15}" -eq 0 ]; then
+	if [ $p15 -eq 0 ]; then
 		lapackobjs2="$lapackobjs2 $lapackobjs2dz"
 	fi
 	lapack_deprecated_objs="$lapack_deprecated_objs $lapack_deprecated_objsz"
@@ -3684,14 +3710,14 @@ if [ "${17}" -eq 1 ]; then
 	lapackeobjs="$lapackeobjs $lapackeobjsz"
 fi
 
-if [ "$9" -eq 1 ]; then
+if [ $p9 -eq 1 ]; then
     #ONLY_CBLAS=1
     underscore_objs="$misc_underscore_objs"
-elif [ "$6" -eq 1 ]; then
+elif [ $p6 -eq 1 ]; then
     #NO_LAPACK=1
     underscore_objs="$blasobjs $misc_underscore_objs"
 elif [ -d "$dirname" ]; then
-    if [ "$8" -eq 0 ]; then
+    if [ $p8 -eq 0 ]; then
         # NEED2UNDERSCORES=0
         # Don't need 2 underscores
         underscore_objs="$blasobjs $lapackobjs $lapackobjs2 $misc_underscore_objs $lapack_embeded_underscore_objs"
@@ -3701,7 +3727,7 @@ elif [ -d "$dirname" ]; then
         need_2underscore_objs="$lapack_embeded_underscore_objs"
     fi
 
-    if [ "${12}" -eq 1 ]; then
+    if [ $p12 -eq 1 ]; then
         #BUILD_LAPACK_DEPRECATED=1
         underscore_objs="$underscore_objs $lapack_deprecated_objs"
     fi
@@ -3709,25 +3735,25 @@ else
     underscore_objs="$blasobjs $lapackobjs $misc_underscore_objs"
 fi
 
-if [ "$9" -eq 1 ]; then
+if [ $p9 -eq 1 ]; then
     # ONLY_CBLAS=1
     gemm3mobjs=''
     exblasobjs=''
 fi
 
-if [ "$4" -eq 1 ]; then
+if [ $p4 -eq 1 ]; then
     underscore_objs="$underscore_objs $exblasobjs"
 fi
 
-case "$2" in
+case $p2 in
     x86_64|x86|ia64|MIPS)
         underscore_objs="$underscore_objs $gemm3mobjs"
     ;;
 esac
 
-if [ "$5" -eq 0 ]; then
+if [ $p5 -eq 0 ]; then
     no_underscore_objs="$cblasobjs $misc_no_underscore_objs"
-    case "$2" in
+    case $p2 in
         x86_64|x86|ia64|MIPS)
             no_underscore_objs="$no_underscore_objs $cblasgemm3mobjs"
         ;;
@@ -3737,8 +3763,8 @@ else
     no_underscore_objs="$misc_no_underscore_objs"
 fi
 
-if [ "$7" -ne 1 ]; then
-    if [ "${12}" -eq 1 ]; then
+if [ $p7 -ne 1 ]; then
+    if [ $p12 -eq 1 ]; then
         # BUILD_LAPACK_DEPRECATED=1
         no_underscore_objs="$no_underscore_objs $lapackeobjs $lapacke_deprecated_objs"
     else
@@ -3749,16 +3775,16 @@ fi
 hplobjs="daxpy dcopy dscal idamax dgemv dtrsv dger dgemm dtrsm"
 #hplobjs2="HPL_dlaswp00N HPL_dlaswp01N HPL_dlaswp01T"
 
-bu="$3"
+bu="$p3"
 
 if [ "$bu" = "0" ] || [ "$bu" = "1" ]; then
     bu=""
 fi
 
-symbolprefix="${10}"
-symbolsuffix="${11}"
+symbolprefix=$p10
+symbolsuffix=$p11
 
-case "$1" in
+case "$p1" in
     osx)
         underscore_objs="$underscore_objs $misc_common_objs"
         no_underscore_objs="$no_underscore_objs $misc_common_objs"
@@ -3839,45 +3865,45 @@ case "$1" in
         no_underscore_objs="$no_underscore_objs $misc_common_objs"
 
         for obj in $underscore_objs; do
-            uppercase="$(echo "$obj" | tr '[:lower:]' '[:upper:]')"
+            uppercase=`echo "$obj" | tr '[[:lower:]]' '[[:upper:]]'`
             printf '\t%s%s%s=%s_ @%s\n' \
                 "$symbolprefix" "$obj" "$symbolsuffix" "$obj" "$count"
-            count=$((count + 1))
+            count=`expr $count + 1`
             printf '\t%s%s_%s=%s_ @%s\n' \
                 "$symbolprefix" "$obj" "$symbolsuffix" "$obj" "$count"
-            count=$((count + 1))
+#            count=$((count + 1))
             printf '\t%s%s%s=%s_ @%s\n' \
                 "$symbolprefix" "$uppercase" "$symbolsuffix" "$obj" "$count"
-            count=$((count + 1))
+#            count=$((count + 1))
         done
 
         for obj in $need_2underscore_objs; do
-            uppercase="$(echo "$obj" | tr '[:lower:]' '[:upper:]')"
+            uppercase=`echo "$obj" | tr '[[:lower:]]' '[[:upper:]]'`
             printf '\t%s%s%s=%s__ @%s\n' \
                 "$symbolprefix" "$obj" "$symbolsuffix" "$obj" "$count"
-            count=$((count+1))
+#            count=$((count+1))
             printf '\t%s%s__%s=%s__ @%s\n' \
                 "$symbolprefix" "$obj" "$symbolsuffix" "$obj" "$count"
-            count=$((count+1))
+#            count=$((count+1))
             printf '\t%s%s%s=%s__ @%s\n' \
                 "$symbolprefix" "$uppercase" "$symbolsuffix" "$obj" "$count"
-            count=$((count+1))
+#            count=$((count+1))
         done
 
         for obj in $misc_common_objs; do
-            uppercase="$(echo "$obj" | tr '[:lower:]' '[:upper:]')"
+            uppercase=`echo "$obj" | tr '[[:lower:]]' '[[:upper:]]'`
             printf '\t%s%s_%s=%s_ @%s\n' \
                 "$symbolprefix" "$obj" "$symbolsuffix" "$obj" "$count"
-            count=$((count+1))
+#            count=$((count+1))
             printf '\t%s%s%s=%s_ @%s\n' \
                 "$symbolprefix" "$uppercase" "$symbolsuffix" "$obj" "$count"
-            count=$((count+1))
+#            count=$((count+1))
         done
 
         for obj in $no_underscore_objs; do
             printf '\t%s%s%s=%s  @%s\n' \
                 "$symbolprefix" "$obj" "$symbolsuffix" "$obj" "$count"
-            count=$((count+1))
+#            count=$((count+1))
         done
     ;;
 
@@ -3885,16 +3911,16 @@ case "$1" in
         printf 'EXPORTS\n'
         count=1
         for obj in $hplobjs; do
-            uppercase="$(echo "$obj" | tr '[:lower:]' '[:upper:]')"
+            uppercase=`echo "$obj" | tr '[[:lower:]]' '[[:upper:]]'`
             printf '\t%s%s%s=%s_  @%s\n' \
                 "$symbolprefix" "$obj" "$symbolsuffix" "$obj" "$count"
-            count=$((count+1))
+#            count=$((count+1))
             printf '\t%s%s_%s=%s_  @%s\n' \
                 "$symbolprefix" "$obj" "$symbolsuffix" "$obj" "$count"
-            count=$((count+1))
+#            count=$((count+1))
             printf '\t%s%s%s=%s_  @%s\n' \
                 "$symbolprefix" "$uppercase" "$symbolsuffix" "$obj" "$count"
-            count=$((count+1))
+#            count=$((count+1))
         done
     ;;
 
@@ -3904,36 +3930,37 @@ case "$1" in
         printf 'EXPORTS\n'
         count=1
         for obj in $underscore_objs; do
-            uppercase="$(echo "$obj" | tr '[:lower:]' '[:upper:]')"
+            uppercase=`echo "$obj" | tr '[[:lower:]]' '[[:upper:]]'`
             printf '\t%s%s%s = %s_\n' \
                 "$symbolprefix" "$obj" "$symbolsuffix" "$obj"
-            count=$((count+1))
+#            count=$((count+1))
             printf '\t%s%s_%s = %s_\n' \
                 "$symbolprefix" "$obj" "$symbolsuffix" "$obj"
-            count=$((count+1))
+#            count=$((count+1))
             printf '\t%s%s%s = %s_\n' \
                 "$symbolprefix" "$uppercase" "$symbolsuffix" "$obj"
-            count=$((count+1))
+#            count=$((count+1))
             printf '\t%s%s_%s = %s_\n' \
                 "$symbolprefix" "$uppercase" "$symbolsuffix" "$obj"
-            count=$((count+1))
+#            count=$((count+1))
         done
 
         for obj in $need_2underscore_objs; do
-            uppercase="$(echo "$obj" | tr '[:lower:]' '[:upper:]')"
+            uppercase=`echo "$obj" | tr '[[:lower:]]' '[[:upper:]]'`
             printf '\t%s%s%s=%s__  @%s\n' \
                 "$symbolprefix" "$obj" "$symbolsuffix" "$obj" "$count"
-            count=$((count+1))
+#            count=$((count+1))
             printf '\t%s%s__%s=%s__  @%s\n' \
                 "$symbolprefix" "$obj" "$symbolsuffix" "$obj" "$count"
-            count=$((count+1))
+#            count=$((count+1))
             printf '\t%s%s%s=%s__  @%s\n' \
                 "$symbolprefix" "$uppercase" "$symbolsuffix" "$obj" "$count"
-            count=$((count+1))
+#            count=$((count+1))
         done
     ;;
 
     linktest)
+
         underscore_objs="$underscore_objs $misc_common_objs"
         no_underscore_objs="$no_underscore_objs $misc_common_objs"
 

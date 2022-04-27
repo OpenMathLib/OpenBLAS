@@ -34,7 +34,7 @@ compiler_bin="$1"
 # f77 is too ambiguous
 [ "$compiler" = "f77" ] && compiler=''
 
-path=$(split "$PATH" ':')
+path=`split "$PATH" ':'`
 
 if [ -z "$compiler" ]; then
 
@@ -70,9 +70,9 @@ else
         data="$(command -v "$compiler_bin" >/dev/null 2>&1)"
         vendor=""
     } && {
-    	data=$($compiler -O2 -S ftest.f > /dev/null 2>&1 && cat ftest.s && rm -f ftest.s)
+    	data=`$compiler -O2 -S ftest.f > /dev/null 2>&1 && cat ftest.s && rm -f ftest.s`
     	if [ -z "$data" ]; then
-    		data=$($compiler -O2 -S ftest.f > /dev/null 2>&1 && cat ftest.c && rm -f ftest.c)
+    		data=`$compiler -O2 -S ftest.f > /dev/null 2>&1 && cat ftest.c && rm -f ftest.c`
     	fi
 
         case "$data" in *zhoge_*) bu=_ ;; esac
@@ -144,10 +144,10 @@ else
         esac
 
     	# for embedded underscore name, e.g. zho_ge, it may append 2 underscores.
-    	data=$($compiler -O2 -S ftest3.f >/dev/null 2>&1 && cat ftest3.s && rm -f ftest3.s)
+    	data=`$compiler -O2 -S ftest3.f >/dev/null 2>&1 && cat ftest3.s && rm -f ftest3.s`
 
     	[ -z "$data" ] && {
-    		data=$($compiler -O2 -S ftest3.f >/dev/null 2>&1 && cat ftest3.c && rm -f ftest3.c)
+    		data=`$compiler -O2 -S ftest3.f >/dev/null 2>&1 && cat ftest3.c && rm -f ftest3.c`
     	}
 
     	case "$data" in *' zho_ge__'*) need2bu=1 ;; esac
@@ -232,7 +232,7 @@ else
 fi
 
 {
-    data="$(command -v $compiler_bin >/dev/null 2>&1)"
+    data=`command -v $compiler_bin >/dev/null 2>&1`
 } && {
 
     binary=$BINARY
@@ -242,21 +242,21 @@ fi
     case "$binary" in
         32)
             {
-                link=$($compiler $openmp -m32 -v ftest2.f 2>&1 && rm -f a.out a.exe)
+                link=`$compiler $openmp -m32 -v ftest2.f 2>&1 && rm -f a.out a.exe`
             } || {
-                link=$($compiler $openmp -q32 -v ftest2.f 2>&1 && rm -f a.out a.exe)
+                link=`$compiler $openmp -q32 -v ftest2.f 2>&1 && rm -f a.out a.exe`
             } || {
                 # for AIX
-                link=$($compiler $openmp -maix32 -v ftest2.f 2>&1 && rm -f a.out a.exe)
+                link=`$compiler $openmp -maix32 -v ftest2.f 2>&1 && rm -f a.out a.exe`
             } || {
                 # for gfortran MIPS
-                mips_data=$($compiler_bin -E -dM - < /dev/null)
+                mips_data=`$compiler_bin -E -dM - < /dev/null`
                 case "$mips_data" in
                     *_MIPS_ISA_MIPS64*)
-                        link=$($compiler $openmp -mabi=n32 -v ftest2.f 2>&1 && rm -f a.out a.exe)
+                        link=`$compiler $openmp -mabi=n32 -v ftest2.f 2>&1 && rm -f a.out a.exe`
                         ;;
                     *)
-                        link=$($compiler $openmp -mabi=32 -v ftest2.f 2>&1 && rm -f a.out a.exe)
+                        link=`$compiler $openmp -mabi=32 -v ftest2.f 2>&1 && rm -f a.out a.exe`
                         ;;
                 esac
             } || {
@@ -265,18 +265,18 @@ fi
             ;;
         64)
             {
-                link=$($compiler $openmp -m64 -v ftest2.f 2>&1 && rm -f a.out a.exe)
+                link=`$compiler $openmp -m64 -v ftest2.f 2>&1 && rm -f a.out a.exe`
             } || {
-                link=$($compiler $openmp -q64 -v ftest2.f 2>&1 && rm -f a.out a.exe)
+                link=`$compiler $openmp -q64 -v ftest2.f 2>&1 && rm -f a.out a.exe`
             } || {
                 # for AIX
-                link=$($compiler $openmp -maix64 -v ftest2.f 2>&1 && rm -f a.out a.exe)
+                link=`$compiler $openmp -maix64 -v ftest2.f 2>&1 && rm -f a.out a.exe`
             } || {
                 # for gfortran MIPS
-                link=$($compiler $openmp -mabi=64 -v ftest2.f 2>&1 && rm -f a.out a.exe)
+                link=`$compiler $openmp -mabi=64 -v ftest2.f 2>&1 && rm -f a.out a.exe`
             } || {
                 # for nagfor
-                link=$($compiler $openmp -dryrun ftest2.f 2>&1 && rm -f a.out a.exe)
+                link=`$compiler $openmp -dryrun ftest2.f 2>&1 && rm -f a.out a.exe`
             } || {
                 binary=''
             }
@@ -284,12 +284,12 @@ fi
     esac
 
     if [ -z "$binary" ]; then
-        link=$($compiler $openmp -v ftest2.f 2>&1 && rm -f a.out a.exe)
+        link=`$compiler $openmp -v ftest2.f 2>&1 && rm -f a.out a.exe`
     fi
 }
 
 if [ "$vendor" = "NAG" ]; then
-    link="$($compiler $openmp -dryrun ftest2.f 2>&1 && rm -f a.out a.exe)"
+    link=`$compiler $openmp -dryrun ftest2.f 2>&1 && rm -f a.out a.exe`
 fi
 linker_L=""
 linker_l=""
@@ -297,15 +297,15 @@ linker_a=""
 
 if [ -n "$link" ]; then
 
-    link="$(echo "$link" | sed 's/\-Y[[:space:]]P\,/\-Y/g')"
+    link=`echo "$link" | sed 's/\-Y[[:space:]]P\,/\-Y/g'`
 
-    link="$(echo "$link" | sed 's/\-R[[:space:]]*/\-rpath\%/g')"
+    link=`echo "$link" | sed 's/\-R[[:space:]]*/\-rpath\%/g'`
 
-    link="$(echo "$link" | sed 's/\-rpath[[:space:]]+/\-rpath\%/g')"
+    link=`echo "$link" | sed 's/\-rpath[[:space:]]+/\-rpath\%/g'`
 
-    link="$(echo "$link" | sed 's/\-rpath-link[[:space:]]+/\-rpath-link\%/g')"
+    link=`echo "$link" | sed 's/\-rpath-link[[:space:]]+/\-rpath-link\%/g'`
 
-    flags="$(echo "$link" | tr ',\n' ' ')"
+    flags=`echo "$link" | tr ',\n' ' '`
     # remove leading and trailing quotes from each flag.
     #@flags = map {s/^['"]|['"]$//g; $_} @flags;
 
@@ -330,12 +330,12 @@ if [ -n "$link" ]; then
         esac
 
     	case "$flag" in -rpath%*)
-    	    flag="$(echo "$flag" | sed 's/\%/\,/g')"
+    	    flag=`echo "$flag" | sed 's/\%/\,/g'`
     	    linker_L="$linker_L -Wl,$flag"
         esac
 
     	case "$flag" in -rpath-link%*)
-    	    flag="$(echo "$flag" | sed 's/\%/\,/g')"
+    	    flag=`echo "$flag" | sed 's/\%/\,/g'`
     	    linker_L="$linker_L -Wl,$flag"
     	    ;;
     	esac
