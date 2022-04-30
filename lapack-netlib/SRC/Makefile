@@ -58,7 +58,6 @@ TOPSRCDIR = ..
 include $(TOPSRCDIR)/make.inc
 
 ifneq ($(C_LAPACK), 1)
-$(info fortran... C_LAPACK ist $(C_LAPACK))
 .SUFFIXES:
 .SUFFIXES: .f .o
 .f.o:
@@ -67,7 +66,6 @@ $(info fortran... C_LAPACK ist $(C_LAPACK))
 .F.o:
 	$(FC) $(FFLAGS) -c -o $@ $<
 else
-$(info C_LAPACK ist $(C_LAPACK))
 .SUFFIXES: .c .o
 .c.o:
 	$(CC) $(CFLAGS) -c -o $@ $<
