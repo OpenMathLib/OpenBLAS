@@ -44,7 +44,7 @@ matrix:
       arch: s390x
       before_script:
         - COMMON_FLAGS="DYNAMIC_ARCH=1 TARGET=Z13 NUM_THREADS=32"
-        - apt-get install --only-upgrade binutils
+        - sudo apt-get install --only-upgrade binutils
       env:
         # for matrix annotation only
         - TARGET_BOX=IBMZ_LINUX
@@ -57,7 +57,7 @@ matrix:
       compiler: clang
       before_script:
         - COMMON_FLAGS="DYNAMIC_ARCH=1 TARGET=Z13 NUM_THREADS=32"
-        - apt-get install --only-upgrade binutils
+        - sudo apt-get install --only-upgrade binutils
       env:
         # for matrix annotation only
         - TARGET_BOX=IBMZ_LINUX
