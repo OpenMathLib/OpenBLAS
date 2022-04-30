@@ -203,8 +203,8 @@ endif ()
 
 # add objects to the openblas lib
 if(NOT NO_LAPACK)
-  add_library(LAPACK OBJECT ${LA_SOURCES})
-  list(APPEND TARGET_OBJS "$<TARGET_OBJECTS:LAPACK>")
+  add_library(LAPACK_OVERRIDES OBJECT ${LA_SOURCES})
+  list(APPEND TARGET_OBJS "$<TARGET_OBJECTS:LAPACK_OVERRIDES>")
 endif()
 if(NOT NO_LAPACKE)
   add_library(LAPACKE OBJECT ${LAPACKE_SOURCES})
