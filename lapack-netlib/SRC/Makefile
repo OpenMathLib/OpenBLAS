@@ -58,7 +58,6 @@ TOPSRCDIR = ..
 include $(TOPSRCDIR)/make.inc
 
 ifneq ($(C_LAPACK), 1)
-$(info fortran... C_LAPACK ist $(C_LAPACK))
 ALLMOD = la_xisnan.mod la_constants.mod
 
 .SUFFIXES:
@@ -75,7 +74,6 @@ ALLMOD = la_xisnan.mod la_constants.mod
 	@true
 
 else
-$(info C_LAPACK ist $(C_LAPACK))
 .SUFFIXES: .c .o
 .c.o:
 	$(CC) $(CFLAGS) -c -o $@ $<
