@@ -270,6 +270,29 @@ if (($architecture eq "x86") || ($architecture eq "x86_64")) {
     }
 }
 
+$no_rv64gv= 0;
+if (($architecture eq "riscv64")) {
+    eval "use File::Temp qw(tempfile)";
+    if ($@){ 
+	warn "could not load PERL module File::Temp, so could not check compiler compatibility with the RISCV vector extension";
+	$no_rv64gv = 0;
+    } else {
+#	$tmpf = new File::Temp( UNLINK => 1 );
+	($fh,$tmpf) = tempfile( SUFFIX => '.c' , UNLINK => 1 );
+	$code = '"vsetvli    zero, zero, e8, m1\n"';
+	print $fh "int main(void){ __asm__ volatile($code); }\n";
+	$args = " -march=rv64gv -c -o $tmpf.o $tmpf";
+	my @cmd = ("$compiler_name $flags $args >/dev/null 2>/dev/null");
+	system(@cmd) == 0;
+	if ($? != 0) {
+	    $no_rv64gv = 1;
+	} else {
+	    $no_rv64gv = 0;
+	}
+	unlink("$tmpf.o");
+    }
+}
+
 $c11_atomics = 0;
 if ($data =~ /HAVE_C11/) {
     eval "use File::Temp qw(tempfile)";
@@ -392,6 +415,7 @@ print MAKEFILE "CROSS=1\n" if $cross != 0;
 print MAKEFILE "CEXTRALIB=$linker_L $linker_l $linker_a\n";
 print MAKEFILE "HAVE_MSA=1\n" if $have_msa eq 1;
 print MAKEFILE "MSA_FLAGS=$msa_flags\n" if $have_msa eq 1;
+print MAKEFILE "NO_RV64GV=1\n" if $no_rv64gv eq 1;
 print MAKEFILE "NO_AVX512=1\n" if $no_avx512 eq 1;
 print MAKEFILE "NO_AVX2=1\n" if $no_avx2 eq 1;
 print MAKEFILE "OLDGCC=1\n" if $oldgcc eq 1;
