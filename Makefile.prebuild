@@ -72,7 +72,8 @@ endif
 
 getarch : getarch.c cpuid.S dummy $(CPUIDEMU)
 	avx512=$$(perl c_check - - $(CC) $(TARGET_FLAGS) $(CFLAGS) | grep NO_AVX512); \
-	$(HOSTCC) $(HOST_CFLAGS) $(EXFLAGS) $${avx512:+-D$${avx512}} -o $(@F) getarch.c cpuid.S $(CPUIDEMU)
+	rv64gv=$$(perl c_check - - $(CC) $(TARGET_FLAGS) $(CFLAGS) | grep NO_RV64GV); \
+	$(HOSTCC) $(HOST_CFLAGS) $(EXFLAGS) $${avx512:+-D$${avx512}} $${rv64gv:+-D$${rv64gv}} -o $(@F) getarch.c cpuid.S $(CPUIDEMU)
 
 getarch_2nd : getarch_2nd.c $(TARGET_CONF) dummy
 ifndef TARGET_CORE
