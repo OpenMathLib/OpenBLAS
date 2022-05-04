@@ -847,7 +847,7 @@ CCOMMON_OPT += -mabi=32
 BINARY_DEFINED = 1
 endif
 
-ifeq ($(CORE), $(filter $(CORE),LOONGSON3R3 LOONGSON3R4))
+ifneq (, $(filter $(CORE),LOONGSON3R3 LOONGSON3R4))
 CCOMMON_OPT += -march=loongson3a
 FCOMMON_OPT += -march=loongson3a
 endif

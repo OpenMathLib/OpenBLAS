@@ -1,5 +1,5 @@
 /*****************************************************************************
-Copyright (c) 2011-2014, The OpenBLAS Project
+Copyright (c) 2011-2022, The OpenBLAS Project
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -13,9 +13,9 @@ met:
       notice, this list of conditions and the following disclaimer in
       the documentation and/or other materials provided with the
       distribution.
-   3. Neither the name of the OpenBLAS project nor the names of 
-      its contributors may be used to endorse or promote products 
-      derived from this software without specific prior written 
+   3. Neither the name of the OpenBLAS project nor the names of
+      its contributors may be used to endorse or promote products
+      derived from this software without specific prior written
       permission.
 
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -70,16 +70,16 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /* or implied, of The University of Texas at Austin.                 */
 /*********************************************************************/
 
-#define CPU_UNKNOWN     0
-#define CPU_C910V       1
+#define CPU_GENERIC   0
+#define CPU_C910V     1
 
 static char *cpuname[] = {
-  "UNKOWN",
+  "RISCV64_GENERIC",
   "C910V"
 };
 
 int detect(void){
-    return CPU_UNKNOWN;
+  return CPU_GENERIC;
 }
 
 char *get_corename(void){
@@ -98,7 +98,7 @@ void get_subdirname(void){
 }
 
 void get_cpuconfig(void){
-  printf("#define UNKNOWN\n");
+  printf("#define %s\n", cpuname[detect()]);
   printf("#define L1_DATA_SIZE 65536\n");
   printf("#define L1_DATA_LINESIZE 32\n");
   printf("#define L2_SIZE 512488\n");

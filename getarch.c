@@ -1742,7 +1742,7 @@ int main(int argc, char *argv[]){
 #ifdef FORCE
     printf("CORE=%s\n", CORENAME);
 #else
-#if defined(INTEL_AMD) || defined(POWER) || defined(__mips__) || defined(__arm__) || defined(__aarch64__) || defined(ZARCH) || defined(sparc) || defined(__loongarch__)
+#if defined(INTEL_AMD) || defined(POWER) || defined(__mips__) || defined(__arm__) || defined(__aarch64__) || defined(ZARCH) || defined(sparc) || defined(__loongarch__) || defined(__riscv)
     printf("CORE=%s\n", get_corename());
 #endif
 #endif
@@ -1890,7 +1890,7 @@ printf("ELF_VERSION=2\n");
 #ifdef FORCE
     printf("#define CHAR_CORENAME \"%s\"\n", CORENAME);
 #else
-#if defined(INTEL_AMD) || defined(POWER) || defined(__mips__) || defined(__arm__) || defined(__aarch64__) || defined(ZARCH) || defined(sparc) || defined(__loongarch__)
+#if defined(INTEL_AMD) || defined(POWER) || defined(__mips__) || defined(__arm__) || defined(__aarch64__) || defined(ZARCH) || defined(sparc) || defined(__loongarch__) || defined(__riscv)
     printf("#define CHAR_CORENAME \"%s\"\n", get_corename());
 #endif
 #endif
