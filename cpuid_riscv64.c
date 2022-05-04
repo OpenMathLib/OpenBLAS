@@ -13,9 +13,9 @@ met:
       notice, this list of conditions and the following disclaimer in
       the documentation and/or other materials provided with the
       distribution.
-   3. Neither the name of the OpenBLAS project nor the names of 
-      its contributors may be used to endorse or promote products 
-      derived from this software without specific prior written 
+   3. Neither the name of the OpenBLAS project nor the names of
+      its contributors may be used to endorse or promote products
+      derived from this software without specific prior written
       permission.
 
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -79,7 +79,30 @@ static char *cpuname[] = {
 };
 
 int detect(void){
-    return CPU_UNKNOWN;
+#ifdef __linux
+  FILE *infile;
+  char buffer[512], *p;
+
+  p = (char *)NULL;
+  infile = fopen("/proc/cpuinfo", "r");
+  while (fgets(buffer, sizeof(buffer), infile)){
+    if (!strncmp("isa", buffer, 3)){
+        p = strchr(buffer, '4') + 1; /* the 4 in rv64ima... */
+#if 0
+        fprintf(stderr, "%s\n", p);
+#endif
+        break;
+      }
+  }
+
+  fclose(infile);
+
+  if (strchr(p, 'v')) return CPU_C910V;
+
+  return CPU_GENERIC;
+#endif
+
+  return CPU_GENERIC;
 }
 
 char *get_corename(void){
@@ -91,6 +114,7 @@ void get_architecture(void){
 }
 
 void get_subarchitecture(void){
+  printf("%s",cpuname[detect()]);
 }
 
 void get_subdirname(void){
