@@ -98,7 +98,8 @@ set(ZEIGTST zchkee.F
 
 macro(add_eig_executable name)
   add_executable(${name} ${ARGN})
-  target_link_libraries(${name} ${TMGLIB} ${LAPACK_LIBRARIES} ${BLAS_LIBRARIES})
+  target_link_libraries(${name} openblas${SUFFIX64_UNDERSCORE})
+#${TMGLIB} ../${LAPACK_LIBRARIES} ${BLAS_LIBRARIES})
 endmacro()
 
 if(BUILD_SINGLE)

@@ -128,16 +128,16 @@ double: xeigtstd
 complex16: xeigtstz
 
 xeigtsts: $(SEIGTST) $(SCIGTST) $(AEIGTST) $(TMGLIB) ../$(LAPACKLIB) $(BLASLIB)
-	$(FC) $(FFLAGS) $(LDFLAGS) -o $@ $^
+	$(LOADER) $(FFLAGS) $(LDFLAGS) -o $@ $^
 
 xeigtstc: $(CEIGTST) $(SCIGTST) $(AEIGTST) $(TMGLIB) ../$(LAPACKLIB) $(BLASLIB)
-	$(FC) $(FFLAGS) $(LDFLAGS) -o $@ $^
+	$(LOADER) $(FFLAGS) $(LDFLAGS) -o $@ $^
 
 xeigtstd: $(DEIGTST) $(DZIGTST) $(AEIGTST) $(TMGLIB) ../$(LAPACKLIB) $(BLASLIB)
-	$(FC) $(FFLAGS) $(LDFLAGS) -o $@ $^
+	$(LOADER) $(FFLAGS) $(LDFLAGS) -o $@ $^
 
 xeigtstz: $(ZEIGTST) $(DZIGTST) $(AEIGTST) $(TMGLIB) ../$(LAPACKLIB) $(BLASLIB)
-	$(FC) $(FFLAGS) $(LDFLAGS) -o $@ $^
+	$(LOADER) $(FFLAGS) $(LDFLAGS) -o $@ $^
 
 $(AEIGTST): $(FRC)
 $(SCIGTST): $(FRC)
