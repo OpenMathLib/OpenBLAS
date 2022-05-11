@@ -144,10 +144,6 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date November 2017
-*
-*  @generated from LIN/ddrvsy_aa.f, fortran d -> c, Thu Nov 17 12:14:51 2016
-*
 *> \ingroup complex_lin
 *
 *  =====================================================================
@@ -155,10 +151,9 @@
      $                      NMAX, A, AFAC, AINV, B, X, XACT, WORK,
      $                      RWORK, IWORK, NOUT )
 *
-*  -- LAPACK test routine (version 3.8.0) --
+*  -- LAPACK test routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2017
 *
 *     .. Scalar Arguments ..
       LOGICAL            TSTERR

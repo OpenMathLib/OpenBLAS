@@ -203,11 +203,6 @@
 *>          D_TEMP_DPOT03 is DOUBLE PRECISION array, dimension ( NMAX*NMAX )
 *> \endverbatim
 *>
-*> \param[out] D_WORK_DLATMS
-*> \verbatim
-*>          D_WORK_DLATMS is DOUBLE PRECISION array, dimension ( NMAX )
-*> \endverbatim
-*>
 *> \param[out] D_WORK_DLANSY
 *> \verbatim
 *>          D_WORK_DLANSY is DOUBLE PRECISION array, dimension ( NMAX )
@@ -231,8 +226,6 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
-*
 *> \ingroup double_lin
 *
 *  =====================================================================
@@ -243,10 +236,9 @@
      +              D_TEMP_DPOT03, D_WORK_DLANSY,
      +              D_WORK_DPOT02, D_WORK_DPOT03 )
 *
-*  -- LAPACK test routine (version 3.7.0) --
+*  -- LAPACK test routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
 *
 *     .. Scalar Arguments ..
       INTEGER            NN, NNS, NNT, NOUT

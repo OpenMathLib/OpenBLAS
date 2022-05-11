@@ -203,11 +203,6 @@
 *>          S_TEMP_SPOT03 is REAL array, dimension ( NMAX*NMAX )
 *> \endverbatim
 *>
-*> \param[out] S_WORK_SLATMS
-*> \verbatim
-*>          S_WORK_SLATMS is REAL array, dimension ( NMAX )
-*> \endverbatim
-*>
 *> \param[out] S_WORK_SLANSY
 *> \verbatim
 *>          S_WORK_SLANSY is REAL array, dimension ( NMAX )
@@ -231,8 +226,6 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
-*
 *> \ingroup single_lin
 *
 *  =====================================================================
@@ -243,10 +236,9 @@
      +              S_TEMP_SPOT03, S_WORK_SLANSY,
      +              S_WORK_SPOT02, S_WORK_SPOT03 )
 *
-*  -- LAPACK test routine (version 3.7.0) --
+*  -- LAPACK test routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
 *
 *     .. Scalar Arguments ..
       INTEGER            NN, NNS, NNT, NOUT

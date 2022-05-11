@@ -9,7 +9,7 @@
 *  ===========
 *
 *       SUBROUTINE ZGBT02( TRANS, M, N, KL, KU, NRHS, A, LDA, X, LDX, B,
-*                          LDB, RESID )
+*                          LDB, RWORK, RESID )
 *
 *       .. Scalar Arguments ..
 *       CHARACTER          TRANS
@@ -17,6 +17,7 @@
 *       DOUBLE PRECISION   RESID
 *       ..
 *       .. Array Arguments ..
+*       DOUBLE PRECISION   RWORK( * )
 *       COMPLEX*16         A( LDA, * ), B( LDB, * ), X( LDX, * )
 *       ..
 *
@@ -27,9 +28,10 @@
 *> \verbatim
 *>
 *> ZGBT02 computes the residual for a solution of a banded system of
-*> equations  A*x = b  or  A'*x = b:
-*>    RESID = norm( B - A*X ) / ( norm(A) * norm(X) * EPS).
-*> where EPS is the machine precision.
+*> equations op(A)*X = B:
+*>    RESID = norm(B - op(A)*X) / ( norm(op(A)) * norm(X) * EPS ),
+*> where op(A) = A, A**T, or A**H, depending on TRANS, and EPS is the
+*> machine epsilon.
 *> \endverbatim
 *
 *  Arguments:
@@ -39,9 +41,9 @@
 *> \verbatim
 *>          TRANS is CHARACTER*1
 *>          Specifies the form of the system of equations:
-*>          = 'N':  A *x = b
-*>          = 'T':  A'*x = b, where A' is the transpose of A
-*>          = 'C':  A'*x = b, where A' is the transpose of A
+*>          = 'N':  A    * X = B  (No transpose)
+*>          = 'T':  A**T * X = B  (Transpose)
+*>          = 'C':  A**H * X = B  (Conjugate transpose)
 *> \endverbatim
 *>
 *> \param[in] M
@@ -116,11 +118,18 @@
 *>          LDB >= max(1,M); if TRANS = 'T' or 'C', LDB >= max(1,N).
 *> \endverbatim
 *>
+*> \param[out] RWORK
+*> \verbatim
+*>          RWORK is DOUBLE PRECISION array, dimension (MAX(1,LRWORK)),
+*>          where LRWORK >= M when TRANS = 'T' or 'C'; otherwise, RWORK
+*>          is not referenced.
+*> \endverbatim
+*
 *> \param[out] RESID
 *> \verbatim
 *>          RESID is DOUBLE PRECISION
 *>          The maximum over the number of right hand sides of
-*>          norm(B - A*X) / ( norm(A) * norm(X) * EPS ).
+*>          norm(B - op(A)*X) / ( norm(op(A)) * norm(X) * EPS ).
 *> \endverbatim
 *
 *  Authors:
@@ -131,18 +140,15 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
-*
 *> \ingroup complex16_lin
 *
 *  =====================================================================
       SUBROUTINE ZGBT02( TRANS, M, N, KL, KU, NRHS, A, LDA, X, LDX, B,
-     $                   LDB, RESID )
+     $                   LDB, RWORK, RESID )
 *
-*  -- LAPACK test routine (version 3.7.0) --
+*  -- LAPACK test routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
 *
 *     .. Scalar Arguments ..
       CHARACTER          TRANS
@@ -150,6 +156,7 @@
       DOUBLE PRECISION   RESID
 *     ..
 *     .. Array Arguments ..
+      DOUBLE PRECISION   RWORK( * )
       COMPLEX*16         A( LDA, * ), B( LDB, * ), X( LDX, * )
 *     ..
 *
@@ -163,18 +170,25 @@
 *     ..
 *     .. Local Scalars ..
       INTEGER            I1, I2, J, KD, N1
-      DOUBLE PRECISION   ANORM, BNORM, EPS, XNORM
+      DOUBLE PRECISION   ANORM, BNORM, EPS, TEMP, XNORM
+      COMPLEX*16         ZDUM
 *     ..
 *     .. External Functions ..
-      LOGICAL            LSAME
+      LOGICAL            DISNAN, LSAME
       DOUBLE PRECISION   DLAMCH, DZASUM
-      EXTERNAL           LSAME, DLAMCH, DZASUM
+      EXTERNAL           DISNAN, DLAMCH, DZASUM, LSAME
 *     ..
 *     .. External Subroutines ..
       EXTERNAL           ZGBMV
 *     ..
+*     .. Statement Functions ..
+      DOUBLE PRECISION   CABS1
+*     ..
 *     .. Intrinsic Functions ..
-      INTRINSIC          MAX, MIN
+      INTRINSIC          ABS, DBLE, DIMAG, MAX, MIN
+*     ..
+*     .. Statement Function definitions ..
+      CABS1( ZDUM ) = ABS( DBLE( ZDUM ) ) + ABS( DIMAG( ZDUM ) )
 *     ..
 *     .. Executable Statements ..
 *
@@ -188,13 +202,38 @@
 *     Exit with RESID = 1/EPS if ANORM = 0.
 *
       EPS = DLAMCH( 'Epsilon' )
-      KD = KU + 1
       ANORM = ZERO
+      IF( LSAME( TRANS, 'N' ) ) THEN
+*
+*        Find norm1(A).
+*
+         KD = KU + 1
       DO 10 J = 1, N
          I1 = MAX( KD+1-J, 1 )
          I2 = MIN( KD+M-J, KL+KD )
-         ANORM = MAX( ANORM, DZASUM( I2-I1+1, A( I1, J ), 1 ) )
+            IF( I2.GE.I1 ) THEN
+               TEMP = DZASUM( I2-I1+1, A( I1, J ), 1 )
+               IF( ANORM.LT.TEMP .OR. DISNAN( TEMP ) ) ANORM = TEMP
+            END IF
    10 CONTINUE
+      ELSE
+*
+*        Find normI(A).
+*
+         DO 12 I1 = 1, M
+            RWORK( I1 ) = ZERO
+   12    CONTINUE
+         DO 16 J = 1, N
+            KD = KU + 1 - J
+            DO 14 I1 = MAX( 1, J-KU ), MIN( M, J+KL )
+               RWORK( I1 ) = RWORK( I1 ) + CABS1( A( KD+I1, J ) )
+   14       CONTINUE
+   16    CONTINUE
+         DO 18 I1 = 1, M
+            TEMP = RWORK( I1 )
+            IF( ANORM.LT.TEMP .OR. DISNAN( TEMP ) ) ANORM = TEMP
+   18    CONTINUE
+      END IF
       IF( ANORM.LE.ZERO ) THEN
          RESID = ONE / EPS
          RETURN
@@ -206,7 +245,7 @@
          N1 = M
       END IF
 *
-*     Compute  B - A*X (or  B - A'*X )
+*     Compute B - op(A)*X
 *
       DO 20 J = 1, NRHS
          CALL ZGBMV( TRANS, M, N, KL, KU, -CONE, A, LDA, X( 1, J ), 1,
@@ -214,7 +253,7 @@
    20 CONTINUE
 *
 *     Compute the maximum over the number of right hand sides of
-*        norm(B - A*X) / ( norm(A) * norm(X) * EPS ).
+*        norm(B - op(A)*X) / ( norm(op(A)) * norm(X) * EPS ).
 *
       RESID = ZERO
       DO 30 J = 1, NRHS

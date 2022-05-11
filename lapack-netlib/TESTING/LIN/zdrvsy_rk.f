@@ -149,8 +149,6 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
-*
 *> \ingroup complex16_lin
 *
 *  =====================================================================
@@ -158,10 +156,9 @@
      $                      NMAX, A, AFAC, E, AINV, B, X, XACT, WORK,
      $                      RWORK, IWORK, NOUT )
 *
-*  -- LAPACK test routine (version 3.7.0) --
+*  -- LAPACK test routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
 *
 *     .. Scalar Arguments ..
       LOGICAL            TSTERR
@@ -422,7 +419,7 @@
                      CALL ZLACPY( UPLO, N, N, AFAC, LDA, AINV, LDA )
                      LWORK = (N+NB+1)*(NB+3)
 *
-*                    We need to copute the invesrse to compute
+*                    We need to compute the inverse to compute
 *                    RCONDC that is used later in TEST3.
 *
                      CALL ZSYTRI_3( UPLO, N, AINV, LDA, E, IWORK,

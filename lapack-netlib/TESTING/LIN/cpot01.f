@@ -67,10 +67,10 @@
 *> \param[in,out] AFAC
 *> \verbatim
 *>          AFAC is COMPLEX array, dimension (LDAFAC,N)
-*>          On entry, the factor L or U from the L*L' or U'*U
+*>          On entry, the factor L or U from the L * L**H or U**H * U
 *>          factorization of A.
-*>          Overwritten with the reconstructed matrix, and then with the
-*>          difference L*L' - A (or U'*U - A).
+*>          Overwritten with the reconstructed matrix, and then with
+*>          the difference L * L**H - A (or U**H * U - A).
 *> \endverbatim
 *>
 *> \param[in] LDAFAC
@@ -87,8 +87,8 @@
 *> \param[out] RESID
 *> \verbatim
 *>          RESID is REAL
-*>          If UPLO = 'L', norm(L*L' - A) / ( N * norm(A) * EPS )
-*>          If UPLO = 'U', norm(U'*U - A) / ( N * norm(A) * EPS )
+*>          If UPLO = 'L', norm(L * L**H - A) / ( N * norm(A) * EPS )
+*>          If UPLO = 'U', norm(U**H * U - A) / ( N * norm(A) * EPS )
 *> \endverbatim
 *
 *  Authors:
@@ -99,17 +99,14 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
-*
 *> \ingroup complex_lin
 *
 *  =====================================================================
       SUBROUTINE CPOT01( UPLO, N, A, LDA, AFAC, LDAFAC, RWORK, RESID )
 *
-*  -- LAPACK test routine (version 3.7.0) --
+*  -- LAPACK test routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
 *
 *     .. Scalar Arguments ..
       CHARACTER          UPLO
@@ -172,7 +169,7 @@
          END IF
    10 CONTINUE
 *
-*     Compute the product U'*U, overwriting U.
+*     Compute the product U**H * U, overwriting U.
 *
       IF( LSAME( UPLO, 'U' ) ) THEN
          DO 20 K = N, 1, -1
@@ -189,7 +186,7 @@
 *
    20    CONTINUE
 *
-*     Compute the product L*L', overwriting L.
+*     Compute the product L * L**H, overwriting L.
 *
       ELSE
          DO 30 K = N, 1, -1
@@ -209,7 +206,7 @@
    30    CONTINUE
       END IF
 *
-*     Compute the difference  L*L' - A (or U'*U - A).
+*     Compute the difference L * L**H - A (or U**H * U - A).
 *
       IF( LSAME( UPLO, 'U' ) ) THEN
          DO 50 J = 1, N

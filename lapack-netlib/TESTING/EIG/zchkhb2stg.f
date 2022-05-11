@@ -1,4 +1,4 @@
-*> \brief \b ZCHKHBSTG
+*> \brief \b ZCHKHB2STG
 *
 *  =========== DOCUMENTATION ===========
 *
@@ -8,7 +8,7 @@
 *  Definition:
 *  ===========
 *
-*       SUBROUTINE ZCHKHBSTG( NSIZES, NN, NWDTHS, KK, NTYPES, DOTYPE,
+*       SUBROUTINE ZCHKHB2STG( NSIZES, NN, NWDTHS, KK, NTYPES, DOTYPE,
 *                          ISEED, THRESH, NOUNIT, A, LDA, SD, SE, D1,
 *                          D2, D3, U, LDU, WORK, LWORK, RWORK RESULT, 
 *                          INFO )
@@ -21,7 +21,8 @@
 *       .. Array Arguments ..
 *       LOGICAL            DOTYPE( * )
 *       INTEGER            ISEED( 4 ), KK( * ), NN( * )
-*       DOUBLE PRECISION   RESULT( * ), RWORK( * ), SD( * ), SE( * )
+*       DOUBLE PRECISION   RESULT( * ), RWORK( * ), SD( * ), SE( * ),
+*      $                   D1( * ), D2( * ), D3( * )
 *       COMPLEX*16         A( LDA, * ), U( LDU, * ), WORK( * )
 *       ..
 *
@@ -31,18 +32,18 @@
 *>
 *> \verbatim
 *>
-*> ZCHKHBSTG tests the reduction of a Hermitian band matrix to tridiagonal
+*> ZCHKHB2STG tests the reduction of a Hermitian band matrix to tridiagonal
 *> from, used with the Hermitian eigenvalue problem.
 *>
 *> ZHBTRD factors a Hermitian band matrix A as  U S U* , where * means
 *> conjugate transpose, S is symmetric tridiagonal, and U is unitary.
 *> ZHBTRD can use either just the lower or just the upper triangle
-*> of A; ZCHKHBSTG checks both cases.
+*> of A; ZCHKHB2STG checks both cases.
 *>
 *> ZHETRD_HB2ST factors a Hermitian band matrix A as  U S U* , 
 *> where * means conjugate transpose, S is symmetric tridiagonal, and U is
 *> unitary. ZHETRD_HB2ST can use either just the lower or just
-*> the upper triangle of A; ZCHKHBSTG checks both cases.
+*> the upper triangle of A; ZCHKHB2STG checks both cases.
 *>
 *> DSTEQR factors S as  Z D1 Z'.  
 *> D1 is the matrix of eigenvalues computed when Z is not computed
@@ -52,7 +53,7 @@
 *> D3 is the matrix of eigenvalues computed when Z is not computed
 *> and from the S resulting of DSYTRD_SB2ST "L".
 *>
-*> When ZCHKHBSTG is called, a number of matrix "sizes" ("n's"), a number
+*> When ZCHKHB2STG is called, a number of matrix "sizes" ("n's"), a number
 *> of bandwidths ("k's"), and a number of matrix "types" are
 *> specified.  For each size ("n"), each bandwidth ("k") less than or
 *> equal to "n", and each type of matrix, one matrix will be generated
@@ -126,7 +127,7 @@
 *> \verbatim
 *>          NSIZES is INTEGER
 *>          The number of sizes of matrices to use.  If it is zero,
-*>          ZCHKHBSTG does nothing.  It must be at least zero.
+*>          ZCHKHB2STG does nothing.  It must be at least zero.
 *> \endverbatim
 *>
 *> \param[in] NN
@@ -141,7 +142,7 @@
 *> \verbatim
 *>          NWDTHS is INTEGER
 *>          The number of bandwidths to use.  If it is zero,
-*>          ZCHKHBSTG does nothing.  It must be at least zero.
+*>          ZCHKHB2STG does nothing.  It must be at least zero.
 *> \endverbatim
 *>
 *> \param[in] KK
@@ -154,7 +155,7 @@
 *> \param[in] NTYPES
 *> \verbatim
 *>          NTYPES is INTEGER
-*>          The number of elements in DOTYPE.   If it is zero, ZCHKHBSTG
+*>          The number of elements in DOTYPE.   If it is zero, ZCHKHB2STG
 *>          does nothing.  It must be at least zero.  If it is MAXTYP+1
 *>          and NSIZES is 1, then an additional type, MAXTYP+1 is
 *>          defined, which is to use whatever matrix is in A.  This
@@ -184,7 +185,7 @@
 *>          congruential sequence limited to small integers, and so
 *>          should produce machine independent random numbers. The
 *>          values of ISEED are changed on exit, and can be used in the
-*>          next call to ZCHKHBSTG to continue the same random number
+*>          next call to ZCHKHB2STG to continue the same random number
 *>          sequence.
 *> \endverbatim
 *>
@@ -233,6 +234,20 @@
 *>          SE is DOUBLE PRECISION array, dimension (max(NN))
 *>          Used to hold the off-diagonal of the tridiagonal matrix
 *>          computed by ZHBTRD.
+*> \endverbatim
+*>
+*> \param[out] D1
+*> \verbatim
+*>          D1 is DOUBLE PRECISION array, dimension (max(NN))
+*> \endverbatim
+*>
+*> \param[out] D2
+*> \verbatim
+*>          D2 is DOUBLE PRECISION array, dimension (max(NN))
+*> \endverbatim
+*>*> \param[out] D3
+*> \verbatim
+*>          D3 is DOUBLE PRECISION array, dimension (max(NN))
 *> \endverbatim
 *>
 *> \param[out] U
@@ -313,8 +328,6 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date June 2017
-*
 *> \ingroup complex16_eig
 *
 *  =====================================================================
@@ -323,10 +336,9 @@
      $                   D2, D3, U, LDU, WORK, LWORK, RWORK, RESULT, 
      $                   INFO )
 *
-*  -- LAPACK test routine (version 3.7.1) --
+*  -- LAPACK test routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     June 2017
 *
 *     .. Scalar Arguments ..
       INTEGER            INFO, LDA, LDU, LWORK, NOUNIT, NSIZES, NTYPES,
@@ -432,7 +444,7 @@
       END IF
 *
       IF( INFO.NE.0 ) THEN
-         CALL XERBLA( 'ZCHKHBSTG', -INFO )
+         CALL XERBLA( 'ZCHKHB2STG', -INFO )
          RETURN
       END IF
 *
@@ -837,7 +849,7 @@
       CALL DLASUM( 'ZHB', NOUNIT, NERRS, NTESTT )
       RETURN
 *
- 9999 FORMAT( ' ZCHKHBSTG: ', A, ' returned INFO=', I6, '.', / 9X, 'N=',
+ 9999 FORMAT( ' ZCHKHB2STG: ', A, ' returned INFO=', I6, '.', / 9X, 'N=',
      $      I6, ', JTYPE=', I6, ', ISEED=(', 3( I5, ',' ), I5, ')' )
  9998 FORMAT( / 1X, A3,
      $     ' -- Complex Hermitian Banded Tridiagonal Reduction Routines'
@@ -873,6 +885,6 @@
  9993 FORMAT( ' N=', I5, ', K=', I4, ', seed=', 4( I4, ',' ), ' type ',
      $      I2, ', test(', I2, ')=', G10.3 )
 *
-*     End of ZCHKHBSTG
+*     End of ZCHKHB2STG
 *
       END

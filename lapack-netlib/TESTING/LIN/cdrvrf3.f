@@ -111,18 +111,15 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date June 2017
-*
 *> \ingroup complex_lin
 *
 *  =====================================================================
       SUBROUTINE CDRVRF3( NOUT, NN, NVAL, THRESH, A, LDA, ARF, B1, B2,
      +                    S_WORK_CLANGE, C_WORK_CGEQRF, TAU )
 *
-*  -- LAPACK test routine (version 3.7.1) --
+*  -- LAPACK test routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     June 2017
 *
 *     .. Scalar Arguments ..
       INTEGER            LDA, NN, NOUT
@@ -259,8 +256,8 @@
 *                             Generate A our NA--by--NA triangular
 *                             matrix.
 *                             Our test is based on forward error so we
-*                             do want A to be well conditionned! To get
-*                             a well-conditionned triangular matrix, we
+*                             do want A to be well conditioned! To get
+*                             a well-conditioned triangular matrix, we
 *                             take the R factor of the QR/LQ factorization
 *                             of a random matrix.
 *

@@ -106,18 +106,15 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
-*
 *> \ingroup complex_lin
 *
 *  =====================================================================
       SUBROUTINE CLATB5( PATH, IMAT, N, TYPE, KL, KU, ANORM, MODE,
      $                   CNDNUM, DIST )
 *
-*  -- LAPACK test routine (version 3.7.0) --
+*  -- LAPACK test routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
 *
 *     .. Scalar Arguments ..
       REAL               ANORM, CNDNUM
@@ -229,6 +226,6 @@
 *
       RETURN
 *
-*     End of SLATB5
+*     End of CLATB5
 *
       END

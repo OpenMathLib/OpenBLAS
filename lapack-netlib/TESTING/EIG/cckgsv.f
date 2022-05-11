@@ -189,8 +189,6 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
-*
 *> \ingroup complex_eig
 *
 *  =====================================================================
@@ -198,10 +196,9 @@
      $                   NMAX, A, AF, B, BF, U, V, Q, ALPHA, BETA, R,
      $                   IWORK, WORK, RWORK, NIN, NOUT, INFO )
 *
-*  -- LAPACK test routine (version 3.7.0) --
+*  -- LAPACK test routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
 *
 *     .. Scalar Arguments ..
       INTEGER            INFO, NIN, NM, NMATS, NMAX, NOUT
@@ -229,7 +226,7 @@
       CHARACTER*3        PATH
       INTEGER            I, IINFO, IM, IMAT, KLA, KLB, KUA, KUB, LDA,
      $                   LDB, LDQ, LDR, LDU, LDV, LWORK, M, MODEA,
-     $                   MODEB, N, NFAIL, NRUN, NT, P
+     $                   MODEB, N, NFAIL, NRUN, NT, P, K, L
       REAL               ANORM, BNORM, CNDNMA, CNDNMB
 *     ..
 *     .. Local Arrays ..
@@ -259,6 +256,43 @@
       LDQ = NMAX
       LDR = NMAX
       LWORK = NMAX*NMAX
+*
+*     Specific cases
+*
+*     Test: https://github.com/Reference-LAPACK/lapack/issues/411#issue-608776973
+*
+      M = 6
+      P = 6
+      N = 6
+      A(1:M*N) = CMPLX(1.E0, 0.E0)
+      B(1:M*N) = CMPLX(0.E0, 0.E0)
+      B(1+0*M) = CMPLX(9.E19, 0.E0)
+      B(2+1*M) = CMPLX(9.E18, 0.E0)
+      B(3+2*M) = CMPLX(9.E17, 0.E0)
+      B(4+3*M) = CMPLX(9.E16, 0.E0)
+      B(5+4*M) = CMPLX(9.E15, 0.E0)
+      B(6+5*M) = CMPLX(9.E14, 0.E0)
+      CALL CGGSVD3('N','N','N', M, P, N, K, L, A, M, B, M,
+     $              ALPHA, BETA, U, 1, V, 1, Q, 1,
+     $              WORK, M*N, RWORK, IWORK, INFO)
+*
+*     Print information there is a NAN in BETA
+      DO 40 I = 1, L
+         IF( BETA(I).NE.BETA(I) ) THEN
+            INFO = -I
+            EXIT
+         END IF
+   40 CONTINUE
+      IF( INFO.LT.0 ) THEN
+         IF( NFAIL.EQ.0 .AND. FIRSTT ) THEN
+            FIRSTT = .FALSE.
+            CALL ALAHDG( NOUT, PATH )
+         END IF
+         WRITE( NOUT, FMT = 9997 ) -INFO
+         NFAIL = NFAIL + 1
+      END IF
+      NRUN = NRUN + 1
+      INFO = 0
 *
 *     Do for each value of M in MVAL.
 *
@@ -335,6 +369,7 @@
  9999 FORMAT( ' CLATMS in CCKGSV   INFO = ', I5 )
  9998 FORMAT( ' M=', I4, ' P=', I4, ', N=', I4, ', type ', I2,
      $      ', test ', I2, ', ratio=', G13.6 )
+ 9997 FORMAT( ' FOUND NaN in BETA(', I4,')' )
       RETURN
 *
 *     End of CCKGSV

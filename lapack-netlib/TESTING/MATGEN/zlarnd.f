@@ -58,8 +58,6 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
-*
 *> \ingroup complex16_matgen
 *
 *> \par Further Details:
@@ -75,10 +73,9 @@
 *  =====================================================================
       COMPLEX*16   FUNCTION ZLARND( IDIST, ISEED )
 *
-*  -- LAPACK auxiliary routine (version 3.7.0) --
+*  -- LAPACK auxiliary routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
 *
 *     .. Scalar Arguments ..
       INTEGER            IDIST
@@ -93,7 +90,7 @@
       DOUBLE PRECISION   ZERO, ONE, TWO
       PARAMETER          ( ZERO = 0.0D+0, ONE = 1.0D+0, TWO = 2.0D+0 )
       DOUBLE PRECISION   TWOPI
-      PARAMETER          ( TWOPI = 6.2831853071795864769252867663D+0 )
+      PARAMETER  ( TWOPI = 6.28318530717958647692528676655900576839D+0 )
 *     ..
 *     .. Local Scalars ..
       DOUBLE PRECISION   T1, T2

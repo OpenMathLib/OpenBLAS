@@ -220,8 +220,6 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
-*
 *> \ingroup double_eig
 *
 *  =====================================================================
@@ -229,10 +227,9 @@
      $                   LDV1T, V2T, LDV2T, THETA, IWORK, WORK, LWORK,
      $                   RWORK, RESULT )
 *
-*  -- LAPACK test routine (version 3.7.0) --
+*  -- LAPACK test routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
 *
 *     .. Scalar Arguments ..
       INTEGER            LDX, LDU1, LDU2, LDV1T, LDV2T, LWORK, M, P, Q
@@ -248,11 +245,12 @@
 *  =====================================================================
 *
 *     .. Parameters ..
-      DOUBLE PRECISION   PIOVER2, REALONE, REALZERO
-      PARAMETER          ( PIOVER2 = 1.57079632679489662D0,
-     $                     REALONE = 1.0D0, REALZERO = 0.0D0 )
+      DOUBLE PRECISION   REALONE, REALZERO
+      PARAMETER          ( REALONE = 1.0D0, REALZERO = 0.0D0 )
       DOUBLE PRECISION   ZERO, ONE
       PARAMETER          ( ZERO = 0.0D0, ONE = 1.0D0 )
+      DOUBLE PRECISION   PIOVER2
+      PARAMETER ( PIOVER2 = 1.57079632679489661923132169163975144210D0 )
 *     ..
 *     .. Local Scalars ..
       INTEGER            I, INFO, R

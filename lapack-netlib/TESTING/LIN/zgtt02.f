@@ -29,7 +29,7 @@
 *>
 *> ZGTT02 computes the residual for the solution to a tridiagonal
 *> system of equations:
-*>    RESID = norm(B - op(A)*X) / (norm(A) * norm(X) * EPS),
+*>    RESID = norm(B - op(A)*X) / (norm(op(A)) * norm(X) * EPS),
 *> where EPS is the machine epsilon.
 *> \endverbatim
 *
@@ -105,7 +105,7 @@
 *> \param[out] RESID
 *> \verbatim
 *>          RESID is DOUBLE PRECISION
-*>          norm(B - op(A)*X) / (norm(A) * norm(X) * EPS)
+*>          norm(B - op(A)*X) / (norm(op(A)) * norm(X) * EPS)
 *> \endverbatim
 *
 *  Authors:
@@ -116,18 +116,15 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
-*
 *> \ingroup complex16_lin
 *
 *  =====================================================================
       SUBROUTINE ZGTT02( TRANS, N, NRHS, DL, D, DU, X, LDX, B, LDB,
      $                   RESID )
 *
-*  -- LAPACK test routine (version 3.7.0) --
+*  -- LAPACK test routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
 *
 *     .. Scalar Arguments ..
       CHARACTER          TRANS
@@ -169,7 +166,7 @@
      $   RETURN
 *
 *     Compute the maximum over the number of right hand sides of
-*        norm(B - op(A)*X) / ( norm(A) * norm(X) * EPS ).
+*        norm(B - op(A)*X) / ( norm(op(A)) * norm(X) * EPS ).
 *
       IF( LSAME( TRANS, 'N' ) ) THEN
          ANORM = ZLANGT( '1', N, DL, D, DU )
@@ -185,7 +182,7 @@
          RETURN
       END IF
 *
-*     Compute B - op(A)*X.
+*     Compute B - op(A)*X and store in B.
 *
       CALL ZLAGTM( TRANS, N, NRHS, -ONE, DL, D, DU, X, LDX, ONE, B,
      $             LDB )

@@ -614,8 +614,6 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
-*
 *> \ingroup complex_eig
 *
 *  =====================================================================
@@ -625,10 +623,9 @@
      $                   LWORK, RWORK, LRWORK, IWORK, LIWORK, RESULT,
      $                   INFO )
 *
-*  -- LAPACK test routine (version 3.7.0) --
+*  -- LAPACK test routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
 *
 *     .. Scalar Arguments ..
       INTEGER            INFO, LDA, LDU, LIWORK, LRWORK, LWORK, NOUNIT,
@@ -690,7 +687,7 @@
      $                   XERBLA, CCOPY, CHET21, CHETRD, CHPT21, CHPTRD,
      $                   CLACPY, CLASET, CLATMR, CLATMS, CPTEQR, CSTEDC,
      $                   CSTEMR, CSTEIN, CSTEQR, CSTT21, CSTT22, CUNGTR,
-     $                   CUPGTR, CHETRD_2STAGE
+     $                   CUPGTR, CHETRD_2STAGE, SLASET
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          ABS, REAL, CONJG, INT, LOG, MAX, MIN, SQRT
@@ -1014,8 +1011,8 @@
 *           the one from above. Compare it with D1 computed 
 *           using the 1-stage.
 *
-            CALL DLASET( 'Full', N, 1, ZERO, ZERO, SD, N )
-            CALL DLASET( 'Full', N, 1, ZERO, ZERO, SE, N )
+            CALL SLASET( 'Full', N, 1, ZERO, ZERO, SD, N )
+            CALL SLASET( 'Full', N, 1, ZERO, ZERO, SE, N )
             CALL CLACPY( 'U', N, N, A, LDA, V, LDU )
             LH = MAX(1, 4*N)
             LW = LWORK - LH
@@ -1048,8 +1045,8 @@
 *           the one from above. Compare it with D1 computed 
 *           using the 1-stage. 
 *
-            CALL DLASET( 'Full', N, 1, ZERO, ZERO, SD, N )
-            CALL DLASET( 'Full', N, 1, ZERO, ZERO, SE, N )
+            CALL SLASET( 'Full', N, 1, ZERO, ZERO, SD, N )
+            CALL SLASET( 'Full', N, 1, ZERO, ZERO, SE, N )
             CALL CLACPY( 'L', N, N, A, LDA, V, LDU )
             CALL CHETRD_2STAGE( 'N', "L", N, V, LDU, SD, SE, TAU, 
      $                   WORK, LH, WORK( LH+1 ), LW, IINFO )
@@ -1074,7 +1071,6 @@
                   GO TO 280
                END IF
             END IF
-*
 *
 *           Do Tests 3 and 4 which are similar to 11 and 12 but with the
 *           D1 computed using the standard 1-stage reduction as reference
@@ -1738,7 +1734,6 @@
                         END IF
                      END IF
 *
-*
 *                 Do test 28
 *
                      TEMP2 = TWO*( TWO*N-ONE )*ULP*
@@ -1795,7 +1790,6 @@
 *
 *           Do Tests 29 and 30
 *
-*
 *           Call CSTEMR to compute D2, do tests.
 *
 *           Compute D2
@@ -1834,7 +1828,6 @@
 *
                   RESULT( 31 ) = TEMP2 / MAX( UNFL,
      $                           ULP*MAX( TEMP1, TEMP2 ) )
-*
 *
 *           Call CSTEMR(V,V) to compute D1 and Z, do tests.
 *
@@ -1937,7 +1930,6 @@
                   RESULT( 34 ) = ZERO
                END IF
 *
-*
 *           Call CSTEMR(V,A) to compute D1 and Z, do tests.
 *
 *           Compute D1 and Z
@@ -1994,7 +1986,7 @@
                   END IF
                END IF
 *
-*           Do Test 34
+*           Do Test 37
 *
                TEMP1 = ZERO
                TEMP2 = ZERO
@@ -2012,7 +2004,6 @@
             NTESTT = NTESTT + NTEST
 *
 *           End of Loop -- Check for RESULT(j) > THRESH
-*
 *
 *           Print out tests which fail.
 *
@@ -2088,6 +2079,7 @@
      $      4( I4, ',' ), ' result ', I3, ' is', 1P, E10.3 )
 *
  9987 FORMAT( / 'Test performed:  see CCHKST2STG for details.', / )
+*
 *     End of CCHKST2STG
 *
       END

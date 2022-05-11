@@ -287,8 +287,6 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date June 2016
-*
 *> \ingroup complex16_eig
 *
 *  =====================================================================
@@ -297,10 +295,9 @@
      $                   S, DTRU, DIF, DIFTRU, WORK, LWORK, RWORK,
      $                   IWORK, LIWORK, RESULT, BWORK, INFO )
 *
-*  -- LAPACK test routine (version 3.7.0) --
+*  -- LAPACK test routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     June 2016
 *
 *     .. Scalar Arguments ..
       INTEGER            IHI, ILO, INFO, LDA, LIWORK, LWORK, NIN, NOUT,

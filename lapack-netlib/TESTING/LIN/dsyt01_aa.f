@@ -116,20 +116,15 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
-*
-*  @precisions fortran d -> z c
-*
 *> \ingroup double_lin
 *
 *  =====================================================================
       SUBROUTINE DSYT01_AA( UPLO, N, A, LDA, AFAC, LDAFAC, IPIV, C,
      $                         LDC, RWORK, RESID )
 *
-*  -- LAPACK test routine (version 3.7.0) --
+*  -- LAPACK test routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
 *
 *     .. Scalar Arguments ..
       CHARACTER          UPLO
@@ -258,6 +253,6 @@
 *
       RETURN
 *
-*     End of DSYT01
+*     End of DSYT01_AA
 *
       END

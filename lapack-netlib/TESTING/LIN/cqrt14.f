@@ -108,18 +108,15 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
-*
 *> \ingroup complex_lin
 *
 *  =====================================================================
       REAL             FUNCTION CQRT14( TRANS, M, N, NRHS, A, LDA, X,
      $                 LDX, WORK, LWORK )
 *
-*  -- LAPACK test routine (version 3.7.0) --
+*  -- LAPACK test routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
 *
 *     .. Scalar Arguments ..
       CHARACTER          TRANS
@@ -200,7 +197,6 @@
          IF( XNRM.NE.ZERO )
      $      CALL CLASCL( 'G', 0, 0, XNRM, ONE, M, NRHS,
      $                   WORK( N*LDWORK+1 ), LDWORK, INFO )
-         ANRM = CLANGE( 'One-norm', M, N+NRHS, WORK, LDWORK, RWORK )
 *
 *        Compute QR factorization of X
 *
