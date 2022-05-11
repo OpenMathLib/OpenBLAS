@@ -1041,8 +1041,10 @@ FCOMMON_OPT += -frecursive
 # work around ABI problem with passing single-character arguments
 FCOMMON_OPT += -fno-optimize-sibling-calls
 #Don't include -lgfortran, when NO_LAPACK=1 or lsbcc
+ifneq ($(NOFORTRAN), 1)
 ifneq ($(NO_LAPACK), 1)
 EXTRALIB += -lgfortran
+endif
 endif
 ifdef NO_BINARY_MODE
 ifeq ($(ARCH), $(filter $(ARCH),mips64))
@@ -1536,7 +1538,7 @@ override FFLAGS     += $(COMMON_OPT) $(FCOMMON_OPT)
 override FPFLAGS    += $(FCOMMON_OPT) $(COMMON_PROF)
 #MAKEOVERRIDES =
 
-ifdef NEED_PIC
+ifeq ($(NEED_PIC), 1)
 ifeq (,$(findstring PIC,$(FFLAGS)))
 override FFLAGS += -fPIC
 endif
@@ -1566,6 +1568,7 @@ endif
 
 ifdef OS_WINDOWS
 LAPACK_CFLAGS +=  -DOPENBLAS_OS_WINDOWS
+LAPACK_CFLAGS +=  -DLAPACK_COMPLEX_STRUCTURE
 endif
 ifeq ($(C_COMPILER), LSB)
 LAPACK_CFLAGS +=  -DLAPACK_COMPLEX_STRUCTURE

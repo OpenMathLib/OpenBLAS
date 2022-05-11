@@ -25,7 +25,8 @@ matrix:
 #        - BTYPE="BINARY=64"
 #
 #    - <<: *test-ubuntu
-      os: linux-ppc64le
+      os: linux
+      arch: ppc64le
       before_script: &common-before
         - COMMON_FLAGS="DYNAMIC_ARCH=1 TARGET=POWER8 NUM_THREADS=32"
       script:
@@ -43,6 +44,7 @@ matrix:
       arch: s390x
       before_script:
         - COMMON_FLAGS="DYNAMIC_ARCH=1 TARGET=Z13 NUM_THREADS=32"
+        - sudo apt-get install --only-upgrade binutils
       env:
         # for matrix annotation only
         - TARGET_BOX=IBMZ_LINUX
@@ -55,6 +57,7 @@ matrix:
       compiler: clang
       before_script:
         - COMMON_FLAGS="DYNAMIC_ARCH=1 TARGET=Z13 NUM_THREADS=32"
+        - sudo apt-get install --only-upgrade binutils
       env:
         # for matrix annotation only
         - TARGET_BOX=IBMZ_LINUX
@@ -269,9 +272,9 @@ matrix:
 #        - CFLAGS="-O2 -mno-thumb -Wno-macro-redefined -isysroot /Applications/Xcode-11.5.GM.Seed.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS13.5.sdk -arch armv7 -miphoneos-version-min=5.1"
 #        - BTYPE="TARGET=ARMV7 HOSTCC=clang NOFORTRAN=1"
 
-    - &test-graviton2
+    - &test-neoversen1
       os: linux
-      arch: arm64-graviton2
+      arch: arm64
       dist: focal
       group: edge
       virt: lxd
