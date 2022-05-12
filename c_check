@@ -222,6 +222,23 @@ if [ "$architecture" = "x86" ] || [ "$architecture" = "x86_64" ]; then
     rm -rf "$tmpd"
 fi
 
+no_rv64gv= 0;
+if [ "$architecture" = "riscv64" ]; then
+    tmpd=`mktemp -d`
+    tmpf="$tmpd/a.c
+    code = '"vsetvli    zero, zero, e8, m1\n"'
+    printf "int main(void){ __asm__ volatile(%s); }\n" "$code" >> "$tmpf"
+    args = " -march=rv64gv -c -o $tmpf.o $tmpf"
+    no_rv64gv=0
+    {
+    	$compiler_name $flags $args >/dev/null 2>&1
+    } || {
+    	no_rv64gv=1
+    }
+
+    rm -rf "$tmpd"
+fi
+
 c11_atomics=0
 case "$data" in
     *HAVE_C11*)
@@ -240,6 +257,8 @@ case "$data" in
         ;;
 esac
 
+oldgcc=0
+no_avx2=0
 if [ "$compiler" = "GCC" ]; then
     case "$architecture" in x86|x86_64)
         no_avx2=0
