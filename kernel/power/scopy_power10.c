@@ -88,7 +88,7 @@ int CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG inc_y)
 
 		if ( n >= 128 )
 		{
-			BLASLONG align = ((32 - ((uintptr_t)y & (uintptr_t)0x1F)) >> 2) & 0x7;
+			BLASLONG align = ((32 - ((uintptr_t)x & (uintptr_t)0x1F)) >> 2) & 0x7;
 			for (i = 0; i < align; i++) {
 				y[i] = x[i] ;
 			}

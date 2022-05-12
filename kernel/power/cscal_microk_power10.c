@@ -95,18 +95,38 @@ static void zscal_kernel_8 (long n, float *x, float alpha_r, float alpha_i)
        "xvaddsp		50, 50, 36	\n\t"
        "xvaddsp		51, 51, 37	\n\t"
 
-       "stxvp		48, 0(%2)	\n\t"
-
+#if (__BYTE_ORDER__ == __ORDER_BIG_ENDIAN__)
+       "stxv		48, 0(%2)   \n\t"
+       "stxv		49, 16(%2)  \n\t"
+#else
+       "stxv		49, 0(%2)	\n\t"
+       "stxv		48, 16(%2)	\n\t"
+#endif
        "xvaddsp		52, 52, 38	\n\t"
        "xvaddsp		53, 53, 39	\n\t"
 
-       "stxvp		50, 32(%2)	\n\t"
+#if (__BYTE_ORDER__ == __ORDER_BIG_ENDIAN__)
+       "stxv		50, 32(%2)  \n\t"
+       "stxv		51, 48(%2)  \n\t"
+#else
+       "stxv		51, 32(%2)	\n\t"
+       "stxv		50, 48(%2)	\n\t"
+#endif
 
        "xvaddsp		54, 54, 56	\n\t"
        "xvaddsp		55, 55, 57	\n\t"
 
-       "stxvp		52, 64(%2)	\n\t"
-       "stxvp		54, 96(%2)	\n\t"
+#if (__BYTE_ORDER__ == __ORDER_BIG_ENDIAN__)
+       "stxv		52, 64(%2)	\n\t"
+       "stxv		53, 80(%2)	\n\t"
+       "stxv		54, 96(%2)	\n\t"
+       "stxv		55, 112(%2)	\n\t"
+#else
+       "stxv		53, 64(%2)	\n\t"
+       "stxv		52, 80(%2)	\n\t"
+       "stxv		55, 96(%2)	\n\t"
+       "stxv		54, 112(%2)	\n\t"
+#endif
 
        "addi		%2, %2, 128	\n\t"
 
@@ -148,18 +168,39 @@ static void zscal_kernel_8 (long n, float *x, float alpha_r, float alpha_i)
        "xvaddsp		50, 50, 36	\n\t"
        "xvaddsp		51, 51, 37	\n\t"
 
-       "stxvp		48, 0(%2)	\n\t"
+#if (__BYTE_ORDER__ == __ORDER_BIG_ENDIAN__)
+       "stxv		48, 0(%2)   \n\t"
+       "stxv		49, 16(%2)  \n\t"
+#else
+       "stxv		49, 0(%2)	\n\t"
+       "stxv		48, 16(%2)	\n\t"
+#endif
 
        "xvaddsp		52, 52, 38	\n\t"
        "xvaddsp		53, 53, 39	\n\t"
 
-       "stxvp		50, 32(%2)	\n\t"
+#if (__BYTE_ORDER__ == __ORDER_BIG_ENDIAN__)
+       "stxv		50, 32(%2)  \n\t"
+       "stxv		51, 48(%2)  \n\t"
+#else
+       "stxv		51, 32(%2)	\n\t"
+       "stxv		50, 48(%2)	\n\t"
+#endif
 
        "xvaddsp		54, 54, 56	\n\t"
        "xvaddsp		55, 55, 57	\n\t"
 
-       "stxvp		52, 64(%2)	\n\t"
-       "stxvp		54, 96(%2)	\n\t"
+#if (__BYTE_ORDER__ == __ORDER_BIG_ENDIAN__)
+       "stxv		52, 64(%2)	\n\t"
+       "stxv		53, 80(%2)	\n\t"
+       "stxv		54, 96(%2)	\n\t"
+       "stxv		55, 112(%2)	\n\t"
+#else
+       "stxv		53, 64(%2)	\n\t"
+       "stxv		52, 80(%2)	\n\t"
+       "stxv		55, 96(%2)	\n\t"
+       "stxv		54, 112(%2)	\n\t"
+#endif
 
      "#n=%1 x=%0=%2 alpha=(%3,%4)\n"
      :

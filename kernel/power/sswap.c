@@ -120,7 +120,7 @@ int CNAME(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, FLOAT dummy3, FLOAT *x, 
 #if defined(POWER10)
 		if ( n >= 64 )
 		{
-			BLASLONG align = ((32 - ((uintptr_t)y & (uintptr_t)0x1F)) >> 2) & 0x7;
+			BLASLONG align = ((32 - ((uintptr_t)x & (uintptr_t)0x1F)) >> 2) & 0x7;
 			for (i = 0; i < align; i++) {
 				temp = y[i];
 				y[i] = x[i];
