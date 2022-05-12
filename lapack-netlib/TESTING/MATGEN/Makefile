@@ -110,6 +110,6 @@ ifneq ($(C_LAPACK), 1)
 slaran.o: slaran.f ; $(FC) $(FFLAGS_NOOPT) -c -o $@ $<
 dlaran.o: dlaran.f ; $(FC) $(FFLAGS_NOOPT) -c -o $@ $<
 else
-slaran.o: slaran.c ; $(CC) $(CFLAGS_NOOPT) -c -o $@ $<
-dlaran.o: dlaran.c ; $(CC) $(CFLAGS_NOOPT) -c -o $@ $<
+slaran.o: slaran.c ; $(CC) $(CFLAGS) -O0 -c -o $@ $<
+dlaran.o: dlaran.c ; $(CC) $(CFLAGS) -O0 -c -o $@ $<
 endif

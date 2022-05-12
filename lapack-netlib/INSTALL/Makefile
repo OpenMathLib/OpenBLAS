@@ -78,6 +78,6 @@ dlamch.o: dlamch.f ; $(FC) $(FFLAGS_NOOPT) -c -o $@ $<
 sroundup_lwork.o: sroundup_lwork.f ; $(FC) $(FFLAGS_NOOPT) -c -o $@ $<
 droundup_lwork.o: droundup_lwork.f ; $(FC) $(FFLAGS_NOOPT) -c -o $@ $<
 else
-slamch.o: slamch.c ; $(CC) $(CFLAGS) -c -o $@ $<
-dlamch.o: dlamch.c ; $(CC) $(CFLAGS) -c -o $@ $<
+slamch.o: slamch.c ; $(CC) $(CFLAGS) -O0 -c -o $@ $<
+dlamch.o: dlamch.c ; $(CC) $(CFLAGS) -O0 -c -o $@ $<
 endif
