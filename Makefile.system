@@ -895,11 +895,6 @@ ifeq ($(OSNAME), AIX)
 BINARY_DEFINED = 1
 endif
 
-ifeq ($(ARCH), loongarch64)
-CCOMMON_OPT += -march=loongarch64 -mabi=lp64
-FCOMMON_OPT += -march=loongarch64 -mabi=lp64
-endif
-
 endif
 
 ifndef BINARY_DEFINED

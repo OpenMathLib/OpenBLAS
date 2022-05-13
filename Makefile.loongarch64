@@ -1,3 +1,4 @@
-ifdef BINARY64
-else
+ifeq ($(CORE), LOONGSON3R5)
+CCOMMON_OPT += -march=loongarch64 -mabi=lp64
+FCOMMON_OPT += -march=loongarch64 -mabi=lp64
 endif
