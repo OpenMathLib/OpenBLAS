@@ -1,3 +1,7 @@
+ifeq ($(NO_LASX), 1)
+# No LASX support in compiler, unable to consume the optimized version
+# leave out DGEMMKERNEL to pull in the generic version
+else
 DGEMMKERNEL    = dgemm_kernel_16x4.S
 DGEMMINCOPY    = dgemm_ncopy_16.S
 DGEMMITCOPY    = dgemm_tcopy_16.S
@@ -7,6 +11,7 @@ DGEMMINCOPYOBJ = dgemm_incopy$(TSUFFIX).$(SUFFIX)
 DGEMMITCOPYOBJ = dgemm_itcopy$(TSUFFIX).$(SUFFIX)
 DGEMMONCOPYOBJ = dgemm_oncopy$(TSUFFIX).$(SUFFIX)
 DGEMMOTCOPYOBJ = dgemm_otcopy$(TSUFFIX).$(SUFFIX)
+endif
 
 DTRSMKERNEL_LN  = ../generic/trsm_kernel_LN.c
 DTRSMKERNEL_LT  = ../generic/trsm_kernel_LT.c

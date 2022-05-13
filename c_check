@@ -112,7 +112,7 @@ case "$architecture" in
     	defined=1
     	;;
     arm|arm64) defined=1 ;;
-    zarch|e2k|alpha|ia64|riscv64|loonarch64)
+    zarch|e2k|alpha|ia64|riscv64|loongarch64)
     	defined=1
     	BINARY=64
     	;;
@@ -240,6 +240,29 @@ if [ "$architecture" = "riscv64" ]; then
     rm -rf "$tmpd"
 fi
 
+no_lasx=0
+if [ "$architecture" = "loongarch64" ]; then
+    tmpd=`mktemp -d`
+    tmpf="$tmpd/a.c"
+    # Old-world assembly flavor: LASX registers named "$xrNN", different
+    # from the ISA manual which suggests "$xNN". This is the flavor we
+    # currently support.
+    #
+    # As the LASX ISA manual is not out yet, we cannot predict what the
+    # new-world flavor would look like, so do not probe flavor for now.
+    # The compiler flags are also unsuitable for new-world gcc.
+    code='"xvld $xr0, $a0, 0\n"'
+    printf "int main(void){ __asm__ volatile(%s); }\n" "$code" >> "$tmpf"
+    args=" -march=loongarch64 -mabi=lp64 -mlasx -c -o $tmpf.o $tmpf"
+    no_lasx=0
+    {
+        $compiler_name $flags $args >/dev/null 2>&1
+    } || {
+        no_lasx=1
+    }
+    rm -rf "$tmpd"
+fi
+
 c11_atomics=0
 case "$data" in
     *HAVE_C11*)
@@ -350,6 +373,7 @@ done
 
  [ "$makefile" = "-" ] && {
     [ "$no_rv64gv" -eq 1 ] && printf "NO_RV64GV=1\n"
+    [ "$no_lasx" -eq 1 ] && printf "NO_LASX=1\n"
     [ "$no_avx512" -eq 1 ] && printf "NO_AVX512=1\n"
     [ "$no_avx2" -eq 1 ] && printf "NO_AVX2=1\n"
     [ "$oldgcc" -eq 1 ] && printf "OLDGCC=1\n"
@@ -380,6 +404,7 @@ done
         printf "MSA_FLAGS=%s\n" "$msa_flags"
     }
     [ "$no_rv64gv" -eq 1 ] && printf "NO_RV64GV=1\n"
+    [ "$no_lasx" -eq 1 ] && printf "NO_LASX=1\n"
     [ "$no_avx512" -eq 1 ] && printf "NO_AVX512=1\n"
     [ "$no_avx2" -eq 1 ] && printf "NO_AVX2=1\n"
     [ "$oldgcc" -eq 1 ] && printf "OLDGCC=1\n"
