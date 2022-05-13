@@ -240,8 +240,19 @@ if [ "$architecture" = "riscv64" ]; then
     rm -rf "$tmpd"
 fi
 
+loongarch_cc_flavor=""
 no_lasx=0
 if [ "$architecture" = "loongarch64" ]; then
+    # Currently there are only 2 flavors: new-world and old-world.
+    # They differ in ABI names accepted, so check it to avoid creating temp
+    # files.
+    loongarch_cc_flavor="NEW"
+    {
+        $compiler_name -mabi=lp64d -E -o - /dev/null >/dev/null 2>&1
+    } || {
+        loongarch_cc_flavor="OLD"
+    }
+
     tmpd=`mktemp -d`
     tmpf="$tmpd/a.c"
     # Old-world assembly flavor: LASX registers named "$xrNN", different
@@ -260,6 +271,7 @@ if [ "$architecture" = "loongarch64" ]; then
     } || {
         no_lasx=1
     }
+
     rm -rf "$tmpd"
 fi
 
@@ -377,6 +389,7 @@ done
     [ "$no_avx512" -eq 1 ] && printf "NO_AVX512=1\n"
     [ "$no_avx2" -eq 1 ] && printf "NO_AVX2=1\n"
     [ "$oldgcc" -eq 1 ] && printf "OLDGCC=1\n"
+    [ -n "$loongarch_cc_flavor" ] && printf "LOONGARCH_CC_FLAVOR=%s\n" "$loongarch_cc_flavor"
     exit 0
 }
 
@@ -408,6 +421,7 @@ done
     [ "$no_avx512" -eq 1 ] && printf "NO_AVX512=1\n"
     [ "$no_avx2" -eq 1 ] && printf "NO_AVX2=1\n"
     [ "$oldgcc" -eq 1 ] && printf "OLDGCC=1\n"
+    [ -n "$loongarch_cc_flavor" ] && printf "LOONGARCH_CC_FLAVOR=%s\n" "$loongarch_cc_flavor"
 } >> "$makefile"
 
 os=`echo "$os" | tr '[[:lower:]]' '[[:upper:]]'/ `
