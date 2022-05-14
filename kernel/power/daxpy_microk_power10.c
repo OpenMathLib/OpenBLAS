@@ -60,14 +60,25 @@ static void daxpy_kernel_8 (long n, double *x, double *y, double alpha)
        "xvmaddadp	37, 33, %x4	\n\t"
 
        "lxvp		32, 0(%2)	\n\t"
-       "stxvp		36, 0(%3)	\n\t"
+#if (__BYTE_ORDER__ == __ORDER_BIG_ENDIAN__)
+       "stxv		36, 0(%3)	\n\t"
+       "stxv		37, 16(%3)	\n\t"
+#else
+       "stxv		37, 0(%3)	\n\t"
+       "stxv		36, 16(%3)	\n\t"
+#endif
 
        "xvmaddadp	38, 34, %x4	\n\t"
        "xvmaddadp	39, 35, %x4	\n\t"
 
        "lxvp		34, 32(%2)	\n\t"
-       "stxvp		38, 32(%3)	\n\t"
-
+#if (__BYTE_ORDER__ == __ORDER_BIG_ENDIAN__)
+       "stxv		38, 32(%3)	\n\t"
+       "stxv		39, 48(%3)	\n\t"
+#else
+       "stxv		39, 32(%3)	\n\t"
+       "stxv		38, 48(%3)	\n\t"
+#endif
 
        "lxvp		36, 128(%3)	\n\t"
        "lxvp		38, 160(%3)	\n\t"
@@ -76,13 +87,25 @@ static void daxpy_kernel_8 (long n, double *x, double *y, double alpha)
        "xvmaddadp	45, 41, %x4	\n\t"
 
        "lxvp		40, 64(%2)	\n\t"
-       "stxvp		44, 64(%3)	\n\t"
+#if (__BYTE_ORDER__ == __ORDER_BIG_ENDIAN__)
+       "stxv		44, 64(%3)	\n\t"
+       "stxv		45, 80(%3)	\n\t"
+#else
+       "stxv		45, 64(%3)	\n\t"
+       "stxv		44, 80(%3)	\n\t"
+#endif
 
        "xvmaddadp	46, 42, %x4	\n\t"
        "xvmaddadp	47, 43, %x4	\n\t"
 
        "lxvp		42, 96(%2)	\n\t"
-       "stxvp		46, 96(%3)	\n\t"
+#if (__BYTE_ORDER__ == __ORDER_BIG_ENDIAN__)
+       "stxv		46, 96(%3)	\n\t"
+       "stxv		47, 112(%3)	\n\t"
+#else
+       "stxv		47, 96(%3)	\n\t"
+       "stxv		46, 112(%3)	\n\t"
+#endif
 
        "addi		%2, %2, 128	\n\t"
        "addi		%3, %3, 128	\n\t"
@@ -105,10 +128,25 @@ static void daxpy_kernel_8 (long n, double *x, double *y, double alpha)
        "xvmaddadp	46, 42, %x4	\n\t"
        "xvmaddadp	47, 43, %x4	\n\t"
 
-       "stxvp		36, 0(%3)	\n\t"
-       "stxvp		38, 32(%3)	\n\t"
-       "stxvp		44, 64(%3)	\n\t"
-       "stxvp		46, 96(%3)	\n\t"
+#if (__BYTE_ORDER__ == __ORDER_BIG_ENDIAN__)
+       "stxv		36, 0(%3)	\n\t"
+       "stxv		37, 16(%3)	\n\t"
+       "stxv		38, 32(%3)	\n\t"
+       "stxv		39, 48(%3)	\n\t"
+       "stxv		44, 64(%3)	\n\t"
+       "stxv		45, 80(%3)	\n\t"
+       "stxv		46, 96(%3)	\n\t"
+       "stxv		47, 112(%3)	\n\t"
+#else
+       "stxv		37, 0(%3)	\n\t"
+       "stxv		36, 16(%3)	\n\t"
+       "stxv		39, 32(%3)	\n\t"
+       "stxv		38, 48(%3)	\n\t"
+       "stxv		45, 64(%3)	\n\t"
+       "stxv		44, 80(%3)	\n\t"
+       "stxv		47, 96(%3)	\n\t"
+       "stxv		46, 112(%3)	\n\t"
+#endif
 
      "#n=%1 x=%5=%2 y=%0=%3 alpha=%6 t0=%x4\n"
      :
