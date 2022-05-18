@@ -855,7 +855,11 @@ static gotoblas_t *get_coretype(void){
 	    openblas_warning(FALLBACK_VERBOSE, BARCELONA_FALLBACK);
 	    return &gotoblas_BARCELONA; //OS doesn't support AVX. Use old kernels.
           }
-      } else if (exfamily == 10) {  
+      } else if (exfamily == 10) {
+	  if(support_avx512_bf16())
+	    return &gotoblas_COOPERLAKE;
+	  if(support_avx512())
+	    return &gotoblas_SKYLAKEX;
 	  if(support_avx())
 	    return &gotoblas_ZEN;
 	  else{
@@ -863,7 +867,7 @@ static gotoblas_t *get_coretype(void){
 	    return &gotoblas_BARCELONA; //OS doesn't support AVX. Use old kernels.
           }
       }else {
-	return &gotoblas_BARCELONA;
+	return NULL;
       }
    
     }
