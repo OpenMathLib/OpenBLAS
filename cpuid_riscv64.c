@@ -81,23 +81,27 @@ static char *cpuname[] = {
 int detect(void){
 #ifdef __linux
   FILE *infile;
-  char buffer[512], *p;
+  char buffer[512],isa_buffer[512],model_buffer[512];
+  const char* check_c910_str = "T-HEAD C910";
+  char *pmodel = NULL, *pisa = NULL;
 
-  p = (char *)NULL;
   infile = fopen("/proc/cpuinfo", "r");
   while (fgets(buffer, sizeof(buffer), infile)){
-    if (!strncmp("isa", buffer, 3)){
-        p = strchr(buffer, '4') + 1; /* the 4 in rv64ima... */
-#if 0
-        fprintf(stderr, "%s\n", p);
-#endif
-        break;
-      }
+    if(!strncmp(buffer, "model name", 10)){
+      strcpy(model_buffer, buffer)
+      pmodel = strchr(isa_buffer, ':') + 1;
+    }
+
+    if(!strncmp(buffer, "isa", 3)){
+      strcpy(isa_buffer, buffer)
+      pisa = strchr(isa_buffer, '4') + 1;
+    }
   }
 
   fclose(infile);
 
-  if (strchr(p, 'v')) return CPU_C910V;
+  if (strstr(pmodel, check_c910_str) && strchr(p, 'v'))
+    return CPU_C910V;
 
   return CPU_GENERIC;
 #endif
