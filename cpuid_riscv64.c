@@ -100,7 +100,7 @@ int detect(void){
 
   fclose(infile);
 
-  if (strstr(pmodel, check_c910_str) && strchr(p, 'v'))
+  if (strstr(pmodel, check_c910_str) && strchr(pisa, 'v'))
     return CPU_C910V;
 
   return CPU_GENERIC;
