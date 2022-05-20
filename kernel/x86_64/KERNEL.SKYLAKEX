@@ -20,7 +20,6 @@ SGEMM_SMALL_K_B0_TN = sgemm_small_kernel_tn_skylakex.c
 SGEMM_SMALL_K_TT = sgemm_small_kernel_tt_skylakex.c
 SGEMM_SMALL_K_B0_TT = sgemm_small_kernel_tt_skylakex.c
 
-ifndef DYNAMIC_ARCH
 DGEMMKERNEL    =  dgemm_kernel_16x2_skylakex.c
 DTRMMKERNEL    =  dgemm_kernel_16x2_skylakex.c
 DGEMMINCOPY    =  ../generic/gemm_ncopy_16.c
@@ -28,11 +27,7 @@ DGEMMITCOPY    =  dgemm_tcopy_16_skylakex.c
 DGEMMONCOPY    =  ../generic/gemm_ncopy_2.c
 DGEMMOTCOPY    =  ../generic/gemm_tcopy_2.c
 DTRSMKERNEL_RN =  ../generic/trsm_kernel_RN.c
-else
-DGEMMKERNEL    =  dgemm_kernel_4x8_skylakex_2.c
-DGEMMONCOPY    =  dgemm_ncopy_8_skylakex.c
-DGEMMOTCOPY    =  dgemm_tcopy_8_skylakex.c
-endif
+
 DGEMM_SMALL_M_PERMIT = dgemm_small_kernel_permit_skylakex.c
 DGEMM_SMALL_K_NN = dgemm_small_kernel_nn_skylakex.c
 DGEMM_SMALL_K_B0_NN = dgemm_small_kernel_nn_skylakex.c
