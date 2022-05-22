@@ -531,8 +531,11 @@ $(BLASOBJS) $(BLASOBJS_P) : functable.h
 $(BLASOBJS) $(BLASOBJS_P) : override CFLAGS += -DPROFILE_FUNC_NAME=interface_$(*F)
 
 functable.h : Makefile
+ifndef USE_PERL
 	./create $(FUNCALLFILES) > functable.h
-
+else
+	./create.pl $(FUNCALLFILES) > functable.h
+endif
 endif
 
 clean ::
