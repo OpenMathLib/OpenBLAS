@@ -34,6 +34,8 @@ option(BUILD_RELAPACK "Build with ReLAPACK (recursive implementation of several 
 
 option(USE_LOCKING "Use locks even in single-threaded builds to make them callable from multiple threads" OFF)
 
+option(USE_PERL "Use the older PERL scripts for build preparation instead of universal shell scripts" OFF)
+
 if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
   option(NO_AFFINITY "Disable support for CPU affinity masks to avoid binding processes from e.g. R or numpy/scipy to a single core" ON)
 else()
@@ -394,12 +396,21 @@ if (BUILD_SHARED_LIBS AND NOT ${SYMBOLPREFIX}${SYMBOLSUFFIX} STREQUAL "")
     message(STATUS "adding suffix ${SYMBOLSUFFIX} to names of exported symbols in ${OpenBLAS_LIBNAME}")
   endif()
 
+  if (NOT DEFINED USE_PERL)
   add_custom_command(TARGET ${OpenBLAS_LIBNAME}_shared POST_BUILD
     COMMAND  ${PROJECT_SOURCE_DIR}/exports/gensymbol "objcopy" "${ARCH}" "${BU}" "${EXPRECISION_IN}" "${NO_CBLAS_IN}" "${NO_LAPACK_IN}" "${NO_LAPACKE_IN}" "${NEED2UNDERSCORES_IN}" "${ONLY_CBLAS_IN}" \"${SYMBOLPREFIX}\" \"${SYMBOLSUFFIX}\" "${BUILD_LAPACK_DEPRECATED}" > ${PROJECT_BINARY_DIR}/objcopy.def
     COMMAND objcopy -v --redefine-syms ${PROJECT_BINARY_DIR}/objcopy.def  ${PROJECT_BINARY_DIR}/lib/lib${OpenBLAS_LIBNAME}.so
     COMMENT "renaming symbols"
     )
+  else()
+  add_custom_command(TARGET ${OpenBLAS_LIBNAME}_shared POST_BUILD
+    COMMAND perl ${PROJECT_SOURCE_DIR}/exports/gensymbol.pl "objcopy" "${ARCH}" "${BU}" "${EXPRECISION_IN}" "${NO_CBLAS_IN}" "${NO_LAPACK_IN}" "${NO_LAPACKE_IN}" "${NEED2UNDERSCORES_IN}" "${ONLY_CBLAS_IN}" \"${SYMBOLPREFIX}\" \"${SYMBOLSUFFIX}\" "${BUILD_LAPACK_DEPRECATED}" > ${PROJECT_BINARY_DIR}/objcopy.def
+    COMMAND objcopy -v --redefine-syms ${PROJECT_BINARY_DIR}/objcopy.def  ${PROJECT_BINARY_DIR}/lib/lib${OpenBLAS_LIBNAME}.so
+    COMMENT "renaming symbols"
+    )
+  endif()
 endif()
+
 
 
 # Install project
