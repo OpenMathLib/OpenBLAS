@@ -199,12 +199,12 @@ if (DEFINED CORE AND CMAKE_CROSSCOMPILING AND NOT (${HOST_OS} STREQUAL "WINDOWSS
       "#define HAVE_VFP\n"
       "#define HAVE_NEON\n"
       "#define ARMV8\n")
-if ("${TCORE}" STREQUAL "CORTEXA57")     
+if ("${TCORE}" STREQUAL "CORTEXA57")
     set(SGEMM_UNROLL_M 16)
     set(SGEMM_UNROLL_N 4)
 else ()
     set(SGEMM_UNROLL_M 8)
-    set(SGEMM_UNROLL_N 8) 
+    set(SGEMM_UNROLL_N 8)
 endif ()
     set(DGEMM_UNROLL_M 8)
     set(DGEMM_UNROLL_N 4)
@@ -603,7 +603,7 @@ endif ()
     "#define GEMM_MULTITHREAD_THRESHOLD\t${GEMM_MULTITHREAD_THRESHOLD}\n")
   # Move to where gen_config_h would place it
   file(MAKE_DIRECTORY ${TARGET_CONF_DIR})
-  file(RENAME ${TARGET_CONF_TEMP} "${TARGET_CONF_DIR}/${TARGET_CONF}")  
+  file(RENAME ${TARGET_CONF_TEMP} "${TARGET_CONF_DIR}/${TARGET_CONF}")
 
 else(NOT CMAKE_CROSSCOMPILING)
   # compile getarch
@@ -639,7 +639,7 @@ else(NOT CMAKE_CROSSCOMPILING)
       OUTPUT_VARIABLE GETARCH_LOG
       COPY_FILE ${PROJECT_BINARY_DIR}/${GETARCH_BIN}
     )
-  
+
     if (NOT ${GETARCH_RESULT})
       MESSAGE(FATAL_ERROR "Compiling getarch failed ${GETARCH_LOG}")
     endif ()
