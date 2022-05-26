@@ -34,7 +34,7 @@ if ($compiler eq "") {
 	      "pathf90", "pathf95",
 	      "pgf95", "pgf90", "pgf77", "pgfortran", "nvfortran",
 	      "flang", "egfortran",
-              "ifort", "nagfor");
+              "ifort", "nagfor", "ifx");
 
 OUTER:
     foreach $lists (@lists) {
@@ -89,6 +89,9 @@ if ($compiler eq "") {
 	    } else {
 		if ($compiler =~ /flang/) {
 		    $vendor = FLANG;
+		    $openmp = "-fopenmp";
+	    } elsif ($compiler =~ /ifx/) {
+		    $vendor = INTEL;
 		    $openmp = "-fopenmp";
 	    } elsif ($compiler =~ /pgf/ || $compiler =~ /nvf/) {
 		    $vendor = PGI;
@@ -176,7 +179,7 @@ if ($compiler eq "") {
 	    $openmp = "-fopenmp";
 	}
 
-	if ($compiler =~ /ifort/) {
+	if ($compiler =~ /ifort/ || $compiler =~ /ifx/) {
 	    $vendor = INTEL;
 	    $bu       = "_";
 	    $openmp = "-fopenmp";
