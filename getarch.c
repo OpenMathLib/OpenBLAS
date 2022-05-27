@@ -1693,17 +1693,20 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 static int get_num_cores(void) {
 
+  int count;
 #ifdef OS_WINDOWS
   SYSTEM_INFO sysinfo;
 #elif defined(__FreeBSD__) || defined(__OpenBSD__) || defined(__NetBSD__) || defined(__DragonFly__) || defined(__APPLE__)
-  int m[2], count;
+  int m[2];
   size_t len;
 #endif
 
 #if defined(linux) || defined(__sun__)
   //returns the number of processors which are currently online
-  return sysconf(_SC_NPROCESSORS_CONF);
-
+  count = sysconf(_SC_NPROCESSORS_CONF);
+  if (count <= 0) count = 2;
+  return count;
+  
 #elif defined(OS_WINDOWS)
 
   GetSystemInfo(&sysinfo);
@@ -1714,13 +1717,15 @@ static int get_num_cores(void) {
   m[1] = HW_NCPU;
   len = sizeof(int);
   sysctl(m, 2, &count, &len, NULL, 0);
-
+  if (count <= 0) count = 2;
+  
   return count;
 
 #elif defined(AIX)
   //returns the number of processors which are currently online
-  return sysconf(_SC_NPROCESSORS_ONLN);
-
+  count = sysconf(_SC_NPROCESSORS_ONLN);
+  if (count <= 0) count = 2;
+  
 #else
   return 2;
 #endif
