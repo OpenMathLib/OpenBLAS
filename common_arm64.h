@@ -33,9 +33,16 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef COMMON_ARM64
 #define COMMON_ARM64
 
+#ifdef C_MSVC
+#include <intrin.h>
+#define MB do {} while (0)
+#define WMB do {} while (0)
+#define RMB
+#else
 #define MB   __asm__ __volatile__ ("dmb  ish" : : : "memory")
 #define WMB  __asm__ __volatile__ ("dmb  ishst" : : : "memory")
 #define RMB  __asm__ __volatile__ ("dmb  ishld" : : : "memory")
+#endif
 
 #define INLINE inline
 
@@ -53,6 +60,7 @@ static void __inline blas_lock(volatile BLASULONG *address){
   BLASULONG ret;
 
   do {
+    #ifndef C_MSVC
     __asm__ __volatile__(
 			 "mov	x4, #1							\n\t"
 			 "sevl								\n\t"
@@ -70,7 +78,10 @@ static void __inline blas_lock(volatile BLASULONG *address){
 
 
     );
-
+    #else
+      while (*address) {YIELDING;}
+      ret=InterlockedExchange64((volatile LONG64 *)(address), 1);
+    #endif
 
   } while (ret);
 
@@ -80,6 +91,9 @@ static void __inline blas_lock(volatile BLASULONG *address){
 
 #if !defined(OS_DARWIN) && !defined (OS_ANDROID)
 static __inline BLASULONG rpcc(void){
+  #ifdef C_MSVC
+  return __rdtsc();
+  #else
   BLASULONG ret = 0;
   blasint shift;
  
@@ -87,6 +101,7 @@ static __inline BLASULONG rpcc(void){
   __asm__ __volatile__ ("mrs %0,cntfrq_el0; clz %w0, %w0":"=&r"(shift));
 
   return ret << shift;
+  #endif
 }
 
 #define RPCC_DEFINED

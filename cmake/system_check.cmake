@@ -31,7 +31,11 @@ endif()
 
 # Pretty thorough determination of arch. Add more if needed
 if(CMAKE_CL_64 OR MINGW64)
-  set(X86_64 1)
+  if (CMAKE_SYSTEM_PROCESSOR MATCHES "^(aarch64.*|AARCH64.*|arm64.*|ARM64.*)")
+    set(ARM64 1)
+  else()
+    set(X86_64 1)
+  endif()
 elseif(MINGW OR (MSVC AND NOT CMAKE_CROSSCOMPILING))
   set(X86 1)
 elseif(CMAKE_SYSTEM_PROCESSOR MATCHES "ppc.*|power.*|Power.*")
