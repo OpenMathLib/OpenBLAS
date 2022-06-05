@@ -304,7 +304,7 @@ link=`$compiler_name $flags -c ctest2.c -o ctest2.o 2>&1 && $compiler_name $flag
 link=`echo "$link" | sed 's/\-Y[[:space:]]P\,/\-Y/g'`
 
 
-flags=`echo $link | tr '[[:space:]],\n' ' '`
+flags=`echo $link | tr "'[[:space:]],\n" " "`
 
 # Strip trailing quotes
 old_flags="$flags"

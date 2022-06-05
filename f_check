@@ -84,7 +84,7 @@ else
                 ;;
             *GNU*|*GCC*)
 
-                v="${data##*GCC: *\) }"
+                v="${data#*GCC: *\) }"
                 v="${v%%\"*}"
 
                 major="${v%%.*}"
@@ -309,7 +309,7 @@ if [ -n "$link" ]; then
 
     link=`echo "$link" | sed 's/\-rpath-link[[:space:]]+/\-rpath-link\%/g'`
 
-    flags=`echo "$link" | tr ',\n' ' '`
+    flags=`echo "$link" | tr "',\n" " "`
     # remove leading and trailing quotes from each flag.
     #@flags = map {s/^['"]|['"]$//g; $_} @flags;
 
