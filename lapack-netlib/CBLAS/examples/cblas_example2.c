@@ -9,7 +9,7 @@
 
 int main (int argc, char **argv )
 {
-   int rout=-1,info=0,m,n,k,lda,ldb,ldc;
+   CBLAS_INDEX rout=-1,info=0,m,n,k,lda,ldb,ldc;
    double A[2] = {0.0,0.0},
           B[2] = {0.0,0.0},
           C[2] = {0.0,0.0},

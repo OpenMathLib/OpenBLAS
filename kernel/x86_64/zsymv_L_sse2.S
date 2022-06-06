@@ -452,11 +452,6 @@
 
 	MOVDDUP(4 * SIZE, A1, a1)
 
-	movsd	 0 * SIZE(YY), yy1
-	movhpd	 1 * SIZE(YY), yy1
-	movsd	 2 * SIZE(YY), yy2
-	movhpd	 3 * SIZE(YY), yy2
-
 	movapd	 8 * SIZE(XX), xtemp1
 	movapd	10 * SIZE(XX), xtemp2
 	movapd	12 * SIZE(XX), xtemp3
@@ -474,6 +469,12 @@
 
 	MOVDDUP(6 * SIZE - (4 * SIZE), A2, a2)
 	ALIGN_3
+
+.L12_prep:
+	movsd   0 * SIZE(YY), yy1
+	movhpd  1 * SIZE(YY), yy1
+	movsd   2 * SIZE(YY), yy2
+	movhpd  3 * SIZE(YY), yy2
 
 .L12:
 	movapd	  xtemp1, xt1
@@ -608,8 +609,6 @@
 
 	movlpd	 yy2, 6 * SIZE(YY)
 	movhpd	 yy2, 7 * SIZE(YY)
-	movsd	10 * SIZE(YY), yy2
-	movhpd	11 * SIZE(YY), yy2
 
 	movapd	  xtemp2, xt1
 	movapd	18 * SIZE(XX), xtemp2
@@ -621,8 +620,6 @@
 
 	movlpd	 yy1, 4 * SIZE(YY)
 	movhpd	 yy1, 5 * SIZE(YY)
-	movsd	 8 * SIZE(YY), yy1
-	movhpd	 9 * SIZE(YY), yy1
 
 	subq	 $-16 * SIZE, XX
 	addq	 $  8 * SIZE, YY
@@ -630,7 +627,8 @@
 	addq	 $  8 * SIZE, A2
 
 	decq	 I
-	jg	 .L12
+	jg	 .L12_prep
+	jmp	 .L15
 	ALIGN_3
 
 .L14:
@@ -641,7 +639,6 @@
 	jle     .L16
 
 	MOVDDUP(6 * SIZE - (4 * SIZE), A2, a2)
-	jmp     .L15_pastcheck
 
 .L15:
 	movq	 M, I
@@ -649,6 +646,11 @@
 	subq	$2, I
 	testq	$2, I
 	jle	.L16
+
+	movsd   0 * SIZE(YY), yy1
+	movhpd  1 * SIZE(YY), yy1
+	movsd   2 * SIZE(YY), yy2
+	movhpd  3 * SIZE(YY), yy2
 
 .L15_pastcheck:
 	movapd	  xtemp1, xt1
@@ -705,8 +707,6 @@
 
 	movlpd	 yy2, 2 * SIZE(YY)
 	movhpd	 yy2, 3 * SIZE(YY)
-	movsd	 6 * SIZE(YY), yy2
-	movhpd	 7 * SIZE(YY), yy2
 
 	movapd	  xtemp2, xt1
 	movapd	10 * SIZE(XX), xtemp2
@@ -717,8 +717,6 @@
 
 	movlpd	 yy1, 0 * SIZE(YY)
 	movhpd	 yy1, 1 * SIZE(YY)
-	movsd	 4 * SIZE(YY), yy1
-	movhpd	 5 * SIZE(YY), yy1
 
 	addq	 $4 * SIZE, YY
 	addq	 $4 * SIZE, A1
@@ -730,6 +728,9 @@
 	jle	.L18
 
 	MOVDDUP(1 * SIZE, A1, a2)
+
+	movsd    0 * SIZE(YY), yy1
+	movhpd   1 * SIZE(YY), yy1
 
 	movapd	  xtemp1, xt1
 	mulpd	  a1,     xt1

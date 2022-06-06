@@ -67,13 +67,25 @@ static void saxpy_kernel_64(long n, float *x, float *y, float alpha)
        "xvmaddasp	37, 33, %x4	\n\t"
 
        "lxvp		32, 0(%2)	\n\t"
-       "stxvp		36, 0(%3)	\n\t"
+#if (__BYTE_ORDER__ == __ORDER_BIG_ENDIAN__)
+       "stxv		36, 0(%3)	\n\t"
+       "stxv		37, 16(%3)	\n\t"
+#else
+       "stxv		37, 0(%3)	\n\t"
+       "stxv		36, 16(%3)	\n\t"
+#endif
 
        "xvmaddasp	38, 34, %x4	\n\t"
        "xvmaddasp	39, 35, %x4	\n\t"
 
        "lxvp		34, 32(%2)	\n\t"
-       "stxvp		38, 32(%3)	\n\t"
+#if (__BYTE_ORDER__ == __ORDER_BIG_ENDIAN__)
+       "stxv		38, 32(%3)	\n\t"
+       "stxv		39, 48(%3)	\n\t"
+#else
+       "stxv		39, 32(%3)	\n\t"
+       "stxv		38, 48(%3)	\n\t"
+#endif
 
        "lxvp		36, 256(%3)	\n\t"
        "lxvp		38, 288(%3)	\n\t"
@@ -82,13 +94,25 @@ static void saxpy_kernel_64(long n, float *x, float *y, float alpha)
        "xvmaddasp	45, 41, %x4	\n\t"
 
        "lxvp		40, 64(%2)	\n\t"
-       "stxvp		44, 64(%3)	\n\t"
+#if (__BYTE_ORDER__ == __ORDER_BIG_ENDIAN__)
+       "stxv		44, 64(%3)	\n\t"
+       "stxv		45, 80(%3)	\n\t"
+#else
+       "stxv		45, 64(%3)	\n\t"
+       "stxv		44, 80(%3)	\n\t"
+#endif
 
        "xvmaddasp	46, 42, %x4	\n\t"
        "xvmaddasp	47, 43, %x4	\n\t"
 
        "lxvp		42, 96(%2)	\n\t"
-       "stxvp		46, 96(%3)	\n\t"
+#if (__BYTE_ORDER__ == __ORDER_BIG_ENDIAN__)
+       "stxv		46, 96(%3)	\n\t"
+       "stxv		47, 112(%3)	\n\t"
+#else
+       "stxv		47, 96(%3)	\n\t"
+       "stxv		46, 112(%3)	\n\t"
+#endif
 
        "lxvp		44, 320(%3)	\n\t"
        "lxvp		46, 352(%3)	\n\t"
@@ -97,13 +121,25 @@ static void saxpy_kernel_64(long n, float *x, float *y, float alpha)
        "xvmaddasp	57, 49, %x4	\n\t"
 
        "lxvp		48, 128(%2)	\n\t"
-       "stxvp		56, 128(%3)	\n\t"
+#if (__BYTE_ORDER__ == __ORDER_BIG_ENDIAN__)
+       "stxv		56, 128(%3)	\n\t"
+       "stxv		57, 144(%3)	\n\t"
+#else
+       "stxv		57, 128(%3)	\n\t"
+       "stxv		56, 144(%3)	\n\t"
+#endif
 
        "xvmaddasp	58, 50, %x4	\n\t"
        "xvmaddasp	59, 51, %x4	\n\t"
 
        "lxvp		50, 160(%2)	\n\t"
-       "stxvp		58, 160(%3)	\n\t"
+#if (__BYTE_ORDER__ == __ORDER_BIG_ENDIAN__)
+       "stxv		58, 160(%3)	\n\t"
+       "stxv		59, 176(%3)	\n\t"
+#else
+       "stxv		59, 160(%3)	\n\t"
+       "stxv		58, 176(%3)	\n\t"
+#endif
 
        "lxvp		56, 384(%3)	\n\t"
        "lxvp		58, 416(%3)	\n\t"
@@ -112,13 +148,25 @@ static void saxpy_kernel_64(long n, float *x, float *y, float alpha)
        "xvmaddasp	61, 53, %x4	\n\t"
 
        "lxvp		52, 192(%2)	\n\t"
-       "stxvp		60, 192(%3)	\n\t"
+#if (__BYTE_ORDER__ == __ORDER_BIG_ENDIAN__)
+       "stxv		60, 192(%3)	\n\t"
+       "stxv		61, 208(%3)	\n\t"
+#else
+       "stxv		61, 192(%3)	\n\t"
+       "stxv		60, 208(%3)	\n\t"
+#endif
 
        "xvmaddasp	62, 54, %x4	\n\t"
        "xvmaddasp	63, 55, %x4	\n\t"
 
        "lxvp		54, 224(%2)	\n\t"
-       "stxvp		62, 224(%3)	\n\t"
+#if (__BYTE_ORDER__ == __ORDER_BIG_ENDIAN__)
+       "stxv		62, 224(%3)	\n\t"
+       "stxv		63, 240(%3)	\n\t"
+#else
+       "stxv		63, 224(%3)	\n\t"
+       "stxv		62, 240(%3)	\n\t"
+#endif
 
        "lxvp		60, 448(%3)	\n\t"
        "lxvp		62, 480(%3)	\n\t"
@@ -150,14 +198,43 @@ static void saxpy_kernel_64(long n, float *x, float *y, float alpha)
        "xvmaddasp	61, 53, %x4	\n\t"
        "xvmaddasp	62, 54, %x4	\n\t"
        "xvmaddasp	63, 55, %x4	\n\t"
-       "stxvp		36, 0(%3)	\n\t"
-       "stxvp		38, 32(%3)	\n\t"
-       "stxvp		44, 64(%3)	\n\t"
-       "stxvp		46, 96(%3)	\n\t"
-       "stxvp		56, 128(%3)	\n\t"
-       "stxvp		58, 160(%3)	\n\t"
-       "stxvp		60, 192(%3)	\n\t"
-       "stxvp		62, 224(%3)	\n\t"
+#if (__BYTE_ORDER__ == __ORDER_BIG_ENDIAN__)
+       "stxv		36, 0(%3)	\n\t"
+       "stxv		37, 16(%3)	\n\t"
+       "stxv		38, 32(%3)	\n\t"
+       "stxv		39, 48(%3)	\n\t"
+       "stxv		44, 64(%3)	\n\t"
+       "stxv		45, 80(%3)	\n\t"
+       "stxv		46, 96(%3)	\n\t"
+       "stxv		47, 112(%3)	\n\t"
+
+       "stxv		56, 128(%3)	\n\t"
+       "stxv		57, 144(%3)	\n\t"
+       "stxv		58, 160(%3)	\n\t"
+       "stxv		59, 176(%3)	\n\t"
+       "stxv		60, 192(%3)	\n\t"
+       "stxv		61, 208(%3)	\n\t"
+       "stxv		62, 224(%3)	\n\t"
+       "stxv		63, 240(%3)	\n\t"
+#else
+       "stxv		37, 0(%3)	\n\t"
+       "stxv		36, 16(%3)	\n\t"
+       "stxv		39, 32(%3)	\n\t"
+       "stxv		38, 48(%3)	\n\t"
+       "stxv		45, 64(%3)	\n\t"
+       "stxv		44, 80(%3)	\n\t"
+       "stxv		47, 96(%3)	\n\t"
+       "stxv		46, 112(%3)	\n\t"
+
+       "stxv		57, 128(%3)	\n\t"
+       "stxv		56, 144(%3)	\n\t"
+       "stxv		59, 160(%3)	\n\t"
+       "stxv		58, 176(%3)	\n\t"
+       "stxv		61, 192(%3)	\n\t"
+       "stxv		60, 208(%3)	\n\t"
+       "stxv		63, 224(%3)	\n\t"
+       "stxv		62, 240(%3)	\n\t"
+#endif
 
      "#n=%1 x=%5=%2 y=%0=%3 t0=%x4\n"
      :

@@ -60,6 +60,9 @@ static char* openblas_config_str=""
 #ifdef USE_OPENMP
   "USE_OPENMP "
 #endif
+#ifdef USE_TLS
+  "USE_TLS "
+#endif
 #ifndef DYNAMIC_ARCH
   CHAR_CORENAME
 #endif

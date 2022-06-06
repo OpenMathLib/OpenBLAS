@@ -113,16 +113,16 @@ if(BUILD_COMPLEX16)
 endif()
 list(REMOVE_DUPLICATES SOURCES)
 
-add_library(cblas ${SOURCES})
+add_library(${CBLASLIB} ${SOURCES})
 set_target_properties(
-  cblas PROPERTIES
+  ${CBLASLIB} PROPERTIES
   LINKER_LANGUAGE C
   VERSION ${LAPACK_VERSION}
   SOVERSION ${LAPACK_MAJOR_VERSION}
   )
-target_include_directories(cblas PUBLIC
+target_include_directories(${CBLASLIB} PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../include>
   $<INSTALL_INTERFACE:include>
 )
-target_link_libraries(cblas PRIVATE ${BLAS_LIBRARIES})
-lapack_install_library(cblas)
+target_link_libraries(${CBLASLIB} PRIVATE ${BLAS_LIBRARIES})
+lapack_install_library(${CBLASLIB})

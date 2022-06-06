@@ -96,6 +96,11 @@
 #define	X1	r22
 
 
+#if defined(PPC440)
+#define PREFETCHSIZE_A  42
+#define PREFETCHSIZE_C   7
+#endif
+
 #if defined(PPCG4)
 #define PREFETCHSIZE_A  42
 #define PREFETCHSIZE_C   7

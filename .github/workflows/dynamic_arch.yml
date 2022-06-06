@@ -5,27 +5,20 @@ on: [push, pull_request]
 jobs:
   build:
     runs-on: ${{ matrix.os }}
+
     strategy:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, macos-latest]
         fortran: [gfortran, flang]
         build: [cmake, make]
+        exclude:
+          - os: macos-latest
+            fortran: flang
+
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
-
-      - name: Compilation cache
-        uses: actions/cache@v2
-        with:
-          path: ~/.ccache
-          # We include the commit sha in the cache key, as new cache entries are
-          # only created if there is no existing entry for the key yet.
-          key: ${{ runner.os }}-ccache-${{ github.sha }}
-          # Restore any ccache cache entry, if none for
-          # ${{ runner.os }}-ccache-${{ github.sha }} exists
-          restore-keys: |
-            ${{ runner.os }}-ccache-
+        uses: actions/checkout@v3
 
       - name: Print system information
         run: |
@@ -34,7 +27,7 @@ jobs:
           elif [ "$RUNNER_OS" == "macOS" ]; then
             sysctl -a | grep machdep.cpu
           else
-            echo "$RUNNER_OS not supported"
+            echo "::error::$RUNNER_OS not supported"
             exit 1
           fi
 
@@ -43,61 +36,224 @@ jobs:
           if [ "$RUNNER_OS" == "Linux" ]; then
             sudo apt-get install -y gfortran cmake ccache
           elif [ "$RUNNER_OS" == "macOS" ]; then
+            # It looks like "gfortran" isn't working correctly unless "gcc" is re-installed.
+            brew reinstall gcc
             brew install coreutils cmake ccache
           else
-            echo "$RUNNER_OS not supported"
+            echo "::error::$RUNNER_OS not supported"
             exit 1
           fi
-          ccache -M 300M  # Limit the ccache size; Github's overall cache limit is 5GB
 
-      - name: gfortran build
-        if: matrix.build == 'make' && matrix.fortran == 'gfortran'
+      - name: Compilation cache
+        uses: actions/cache@v3
+        with:
+          path: ~/.ccache
+          # We include the commit sha in the cache key, as new cache entries are
+          # only created if there is no existing entry for the key yet.
+          # GNU make and cmake call the compilers differently. It looks like
+          # that causes the cache to mismatch. Keep the ccache for both build
+          # tools separate to avoid polluting each other.
+          key: ccache-${{ runner.os }}-${{ matrix.build }}-${{ matrix.fortran }}-${{ github.ref }}-${{ github.sha }}
+          # Restore a matching ccache cache entry. Prefer same branch and same Fortran compiler.
+          restore-keys: |
+            ccache-${{ runner.os }}-${{ matrix.build }}-${{ matrix.fortran }}-${{ github.ref }}
+            ccache-${{ runner.os }}-${{ matrix.build }}-${{ matrix.fortran }}
+            ccache-${{ runner.os }}-${{ matrix.build }}
+
+      - name: Configure ccache
         run: |
-          if [ "$RUNNER_OS" == "Linux" ]; then
-            export PATH="/usr/lib/ccache:${PATH}"
-          elif [ "$RUNNER_OS" == "macOS" ]; then
-            export PATH="$(brew --prefix)/opt/ccache/libexec:${PATH}"
-          else
-            echo "$RUNNER_OS not supported"
-            exit 1
+          if [ "${{ matrix.build }}" = "make" ]; then
+            # Add ccache to path
+            if [ "$RUNNER_OS" = "Linux" ]; then
+              echo "/usr/lib/ccache" >> $GITHUB_PATH
+            elif [ "$RUNNER_OS" = "macOS" ]; then
+              echo "$(brew --prefix)/opt/ccache/libexec" >> $GITHUB_PATH
+            else
+              echo "::error::$RUNNER_OS not supported"
+              exit 1
+            fi
           fi
+          # Limit the maximum size and switch on compression to avoid exceeding the total disk or cache quota (5 GB).
+          test -d ~/.ccache || mkdir -p ~/.ccache
+          echo "max_size = 300M" > ~/.ccache/ccache.conf
+          echo "compression = true" >> ~/.ccache/ccache.conf
+          ccache -s
 
-          make -j$(nproc) DYNAMIC_ARCH=1 USE_OPENMP=0
-
-      - name: flang build
-        if: matrix.build == 'make' && matrix.fortran == 'flang'
+      - name: Build OpenBLAS
         run: |
-          if [ "$RUNNER_OS" == "Linux" ]; then
-            export PATH="/usr/lib/ccache:${PATH}"
-          elif [ "$RUNNER_OS" == "macOS" ]; then
-            exit 0
-          else
-            echo "$RUNNER_OS not supported"
-            exit 1
+          if [ "${{ matrix.fortran }}" = "flang" ]; then
+            # download and install classic flang
+            cd /usr/
+            sudo wget -nv https://github.com/flang-compiler/flang/releases/download/flang_20190329/flang-20190329-x86-70.tgz
+            sudo tar xf flang-20190329-x86-70.tgz
+            sudo rm flang-20190329-x86-70.tgz
+            cd -
           fi
+          case "${{ matrix.build }}" in
+            "make")
+              make -j$(nproc) DYNAMIC_ARCH=1 USE_OPENMP=0 FC="ccache ${{ matrix.fortran }}"
+              ;;
+            "cmake")
+              mkdir build && cd build
+              cmake -DDYNAMIC_ARCH=1 \
+                    -DNOFORTRAN=0 \
+                    -DBUILD_WITHOUT_LAPACK=0 \
+                    -DCMAKE_VERBOSE_MAKEFILE=ON \
+                    -DCMAKE_BUILD_TYPE=Release \
+                    -DCMAKE_Fortran_COMPILER=${{ matrix.fortran }} \
+                    -DCMAKE_C_COMPILER_LAUNCHER=ccache \
+                    -DCMAKE_Fortran_COMPILER_LAUNCHER=ccache \
+                    ..
+              cmake --build .
+              ;;
+            *)
+              echo "::error::Configuration not supported"
+              exit 1
+              ;;
+          esac
 
-          cd /usr/
-          sudo wget -nv https://github.com/flang-compiler/flang/releases/download/flang_20190329/flang-20190329-x86-70.tgz
-          sudo tar xf flang-20190329-x86-70.tgz
-          sudo rm flang-20190329-x86-70.tgz
-          cd -
+      - name: Show ccache status
+        continue-on-error: true
+        run: ccache -s
 
-          make -j$(nproc) DYNAMIC_ARCH=1 USE_OPENMP=0 FC=flang
-
-
-      - name: CMake gfortran build
-        if: matrix.build == 'cmake' && matrix.fortran == 'gfortran'
+      - name: Run tests
+        timeout-minutes: 60
         run: |
-          if [ "$RUNNER_OS" == "Linux" ]; then
-            export PATH="/usr/lib/ccache:${PATH}"
-          elif [ "$RUNNER_OS" == "macOS" ]; then
-            export PATH="$(brew --prefix)/opt/ccache/libexec:${PATH}"
-          else
-            echo "$RUNNER_OS not supported"
-            exit 1
-          fi
+          case "${{ matrix.build }}" in
+            "make")
+              MAKE_FLAGS='DYNAMIC_ARCH=1 USE_OPENMP=0'
+              echo "::group::Tests in 'test' directory"
+              make -C test $MAKE_FLAGS FC="ccache ${{ matrix.fortran }}"
+              echo "::endgroup::"
+              echo "::group::Tests in 'ctest' directory"
+              make -C ctest $MAKE_FLAGS FC="ccache ${{ matrix.fortran }}"
+              echo "::endgroup::"
+              echo "::group::Tests in 'utest' directory"
+              make -C utest $MAKE_FLAGS FC="ccache ${{ matrix.fortran }}"
+              echo "::endgroup::"
+              ;;
+            "cmake")
+              cd build && ctest
+              ;;
+            *)
+              echo "::error::Configuration not supported"
+              exit 1
+              ;;
+          esac
 
-          mkdir build
-          cd build
-          cmake -DDYNAMIC_ARCH=1 -DNOFORTRAN=0 -DBUILD_WITHOUT_LAPACK=0  -DCMAKE_VERBOSE_MAKEFILE=ON -DCMAKE_BUILD_TYPE=Release ..
-          make -j$(nproc)
+
+  msys2:
+    runs-on: windows-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        msystem: [MINGW64, MINGW32, CLANG64]
+        idx: [int32, int64]
+        include:
+          - msystem: MINGW64
+            idx: int32
+            target-prefix: mingw-w64-x86_64
+            fc-pkg: mingw-w64-x86_64-gcc-fortran
+          - msystem: MINGW32
+            idx: int32
+            target-prefix: mingw-w64-i686
+            fc-pkg: mingw-w64-i686-gcc-fortran
+          - msystem: CLANG64
+            idx: int32
+            target-prefix: mingw-w64-clang-x86_64
+            c-lapack-flags: -DC_LAPACK=ON
+          - msystem: MINGW64
+            idx: int64
+            idx64-flags: -DBINARY=64 -DINTERFACE64=1
+            target-prefix: mingw-w64-x86_64
+            fc-pkg: mingw-w64-x86_64-gcc-fortran
+          - msystem: CLANG64
+            idx: int64
+            idx64-flags: -DBINARY=64 -DINTERFACE64=1
+            target-prefix: mingw-w64-clang-x86_64
+            c-lapack-flags: -DC_LAPACK=ON
+        exclude:
+          - msystem: MINGW32
+            idx: int64
+
+    defaults:
+      run:
+        # Use MSYS2 bash as default shell
+        shell: msys2 {0}
+
+    env:
+      CHERE_INVOKING: 1
+
+    steps:
+      - name: Get CPU name
+        shell: pwsh
+        run : |
+          Get-CIMInstance -Class Win32_Processor | Select-Object -Property Name
+
+      - name: Install build dependencies
+        uses: msys2/setup-msys2@v2
+        with:
+          msystem: ${{ matrix.msystem }}
+          update: true
+          release: false  # Use pre-installed version
+          install: >-
+            base-devel
+            ${{ matrix.target-prefix }}-cc
+            ${{ matrix.fc-pkg }}
+            ${{ matrix.target-prefix }}-cmake
+            ${{ matrix.target-prefix }}-ninja
+            ${{ matrix.target-prefix }}-ccache
+
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Compilation cache
+        uses: actions/cache@v3
+        with:
+          # It looks like this path needs to be hard-coded.
+          path: C:/msys64/home/runneradmin/.ccache
+          # We include the commit sha in the cache key, as new cache entries are
+          # only created if there is no existing entry for the key yet.
+          key: ccache-msys2-${{ matrix.msystem }}-${{ matrix.idx }}-${{ github.ref }}-${{ github.sha }}
+          # Restore a matching ccache cache entry. Prefer same branch.
+          restore-keys: |
+            ccache-msys2-${{ matrix.msystem }}-${{ matrix.idx }}-${{ github.ref }}
+            ccache-msys2-${{ matrix.msystem }}-${{ matrix.idx }}
+
+      - name: Configure ccache
+        # Limit the maximum size and switch on compression to avoid exceeding the total disk or cache quota.
+        run: |
+          which ccache
+          test -d ~/.ccache || mkdir -p ~/.ccache
+          echo "max_size = 250M" > ~/.ccache/ccache.conf
+          echo "compression = true" >> ~/.ccache/ccache.conf
+          ccache -s
+          echo $HOME
+          cygpath -w $HOME
+
+      - name: Configure OpenBLAS
+        run: |
+          mkdir build && cd build
+          cmake -DBUILD_SHARED_LIBS=ON \
+                -DBUILD_STATIC_LIBS=ON \
+                -DDYNAMIC_ARCH=ON \
+                -DUSE_THREAD=ON \
+                -DNUM_THREADS=64 \
+                -DTARGET=CORE2 \
+                ${{ matrix.idx64-flags }} \
+                ${{ matrix.c-lapack-flags }} \
+                -DCMAKE_C_COMPILER_LAUNCHER=ccache \
+                -DCMAKE_Fortran_COMPILER_LAUNCHER=ccache \
+                ..
+
+      - name: Build OpenBLAS
+        run: cd build && cmake --build .
+
+      - name: Show ccache status
+        continue-on-error: true
+        run: ccache -s
+
+      - name: Run tests
+        timeout-minutes: 60
+        run: cd build && ctest

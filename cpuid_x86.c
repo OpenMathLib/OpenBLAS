@@ -1707,8 +1707,18 @@ int get_cpuname(void){
       if (model == 0xf && stepping < 0xe)
         return CPUTYPE_NANO;
       return CPUTYPE_NEHALEM;
+    case 0x7:
+      switch (exmodel) {
+      case 5:
+        if (support_avx2())
+          return CPUTYPE_ZEN;
+        else
+          return CPUTYPE_DUNNINGTON;
+      default:
+        return CPUTYPE_NEHALEM;
+      }
     default:
-      if (family >= 0x7)
+      if (family >= 0x8)
         return CPUTYPE_NEHALEM;
       else
         return CPUTYPE_VIAC3;
@@ -1716,7 +1726,20 @@ int get_cpuname(void){
   }
 
   if (vendor == VENDOR_ZHAOXIN){
-    return CPUTYPE_NEHALEM;
+    switch (family) {
+      case 0x7:
+        switch (exmodel) {
+        case 5:
+          if (support_avx2())
+            return CPUTYPE_ZEN;
+          else
+            return CPUTYPE_DUNNINGTON;
+        default:
+          return CPUTYPE_NEHALEM;
+        }
+      default:
+        return CPUTYPE_NEHALEM;
+    }
   }
 
   if (vendor == VENDOR_RISE){
@@ -2416,8 +2439,18 @@ int get_coretype(void){
       if (model == 0xf && stepping < 0xe)
         return CORE_NANO;
       return CORE_NEHALEM;
+    case 0x7:
+      switch (exmodel) {
+      case 5:
+        if (support_avx2())
+          return CORE_ZEN;
+        else
+          return CORE_DUNNINGTON;
+      default:
+        return CORE_NEHALEM;
+      }
     default:
-      if (family >= 0x7)
+      if (family >= 0x8)
         return CORE_NEHALEM;
       else
         return CORE_VIAC3;
@@ -2425,7 +2458,20 @@ int get_coretype(void){
   }
 
   if (vendor == VENDOR_ZHAOXIN) {
-     return CORE_NEHALEM;
+    switch (family) {
+      case 0x7:
+        switch (exmodel) {
+        case 5:
+          if (support_avx2())
+            return CORE_ZEN;
+          else
+            return CORE_DUNNINGTON;
+        default:
+          return CORE_NEHALEM;
+        }
+      default:
+        return CORE_NEHALEM;
+    }
   }
 
   return CORE_UNKNOWN;

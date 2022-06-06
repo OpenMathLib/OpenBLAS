@@ -59,10 +59,25 @@ static void dscal_kernel_8 (long n, double *x, double alpha)
        "lxvp		36, 192(%2)	\n\t"
        "lxvp		38, 224(%2)	\n\t"
 
-       "stxvp		40, 0(%2)	\n\t"
-       "stxvp		42, 32(%2)	\n\t"
-       "stxvp		44, 64(%2)	\n\t"
-       "stxvp		46, 96(%2)	\n\t"
+#if (__BYTE_ORDER__ == __ORDER_BIG_ENDIAN__)
+       "stxv		40, 0(%2)   \n\t"
+       "stxv		41, 16(%2)  \n\t"
+       "stxv		42, 32(%2)  \n\t"
+       "stxv		43, 48(%2)  \n\t"
+       "stxv		44, 64(%2)   \n\t"
+       "stxv		45, 80(%2)  \n\t"
+       "stxv		46, 96(%2)  \n\t"
+       "stxv		47, 112(%2)  \n\t"
+#else
+       "stxv		41, 0(%2)   \n\t"
+       "stxv		40, 16(%2)  \n\t"
+       "stxv		43, 32(%2)  \n\t"
+       "stxv		42, 48(%2)  \n\t"
+       "stxv		45, 64(%2)   \n\t"
+       "stxv		44, 80(%2)  \n\t"
+       "stxv		47, 96(%2)  \n\t"
+       "stxv		46, 112(%2)  \n\t"
+#endif
 
        "addi		%2, %2, 128	\n\t"
 
@@ -81,10 +96,25 @@ static void dscal_kernel_8 (long n, double *x, double alpha)
        "xvmuldp		46, 38, 48	\n\t"
        "xvmuldp		47, 39, 48	\n\t"
 
-       "stxvp		40, 0(%2)	\n\t"
-       "stxvp		42, 32(%2)	\n\t"
-       "stxvp		44, 64(%2)	\n\t"
-       "stxvp		46, 96(%2)	\n\t"
+#if (__BYTE_ORDER__ == __ORDER_BIG_ENDIAN__)
+       "stxv		40, 0(%2)   \n\t"
+       "stxv		41, 16(%2)  \n\t"
+       "stxv		42, 32(%2)  \n\t"
+       "stxv		43, 48(%2)  \n\t"
+       "stxv		44, 64(%2)   \n\t"
+       "stxv		45, 80(%2)  \n\t"
+       "stxv		46, 96(%2)  \n\t"
+       "stxv		47, 112(%2)  \n\t"
+#else
+       "stxv		41, 0(%2)   \n\t"
+       "stxv		40, 16(%2)  \n\t"
+       "stxv		43, 32(%2)  \n\t"
+       "stxv		42, 48(%2)  \n\t"
+       "stxv		45, 64(%2)   \n\t"
+       "stxv		44, 80(%2)  \n\t"
+       "stxv		47, 96(%2)  \n\t"
+       "stxv		46, 112(%2)  \n\t"
+#endif
 
      "#n=%1 alpha=%3 x=%0=%2"
      :
@@ -112,10 +142,14 @@ static void dscal_kernel_8_zero (long n, double *x)
        ".align	5		\n"
      "one%=:				\n\t"
 
-       "stxvp		32, 0(%2)	\n\t"
-       "stxvp		32, 32(%2)	\n\t"
-       "stxvp		32, 64(%2)	\n\t"
-       "stxvp		32, 96(%2)	\n\t"
+       "stxv		32, 0(%2)	\n\t"
+       "stxv		32, 16(%2)	\n\t"
+       "stxv		32, 32(%2)	\n\t"
+       "stxv		32, 48(%2)	\n\t"
+       "stxv		32, 64(%2)	\n\t"
+       "stxv		32, 80(%2)	\n\t"
+       "stxv		32, 96(%2)	\n\t"
+       "stxv		32, 112(%2)	\n\t"
 
        "addi		%2, %2, 128	\n\t"
 
