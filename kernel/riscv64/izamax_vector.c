@@ -34,6 +34,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define VSETVL_MAX vsetvlmax_e64m1()
 #define FLOAT_V_T vfloat64m8_t
 #define FLOAT_V_T_M1 vfloat64m1_t
+#define VFMVFS_FLOAT vfmv_f_s_f64m1_f64
 #define VLSEV_FLOAT vlse_v_f64m8
 #define VFREDMAXVS_FLOAT vfredmax_vs_f64m8_f64m1
 #define MASK_T vbool8_t
@@ -46,6 +47,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define VMFGEVF_FLOAT vmfge_vf_f64m8_b8
 #define VMFIRSTM vmfirst_m_b8
 #define UINT_V_T vuint64m8_t
+#define VSEVU_UINT vse64_v_u64m8
+#define UINT_T long unsigned int
 #define VIDV_MASK_UINT vid_v_u64m8_m
 #define VIDV_UINT vid_v_u64m8
 #define VADDVX_MASK_UINT vadd_vx_u64m8_m
@@ -59,6 +62,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define VSETVL_MAX vsetvlmax_e32m1()
 #define FLOAT_V_T vfloat32m8_t
 #define FLOAT_V_T_M1 vfloat32m1_t
+#define VFMVFS_FLOAT vfmv_f_s_f32m1_f32
 #define VLSEV_FLOAT vlse_v_f32m8
 #define VFREDMAXVS_FLOAT vfredmax_vs_f32m8_f32m1
 #define MASK_T vbool4_t
@@ -71,6 +75,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define VMFGEVF_FLOAT vmfge_vf_f32m8_b4
 #define VMFIRSTM vmfirst_m_b4
 #define UINT_V_T vuint32m8_t
+#define UINT_T unsigned int
+#define VSEVU_UINT vse32_v_u32m8
 #define VIDV_MASK_UINT vid_v_u32m8_m
 #define VIDV_UINT vid_v_u32m8
 #define VADDVX_MASK_UINT vadd_vx_u32m8_m
@@ -98,6 +104,7 @@ BLASLONG CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x)
         v_z0 = VFMVVF_FLOAT_M1(0, gvl);
 
         gvl = VSETVL(n);
+                UINT_T temp_uint[gvl];
         v_max_index = VMVVX_UINT(0, gvl);
         v_max = VFMVVF_FLOAT(-1, gvl);
         BLASLONG stride_x = inc_x * 2 * sizeof(FLOAT);
@@ -183,10 +190,12 @@ asm volatile(
         }
         vx0 = VFMVVF_FLOAT(0, gvl);
         v_res = VFREDMAXVS_FLOAT(v_res, v_max, v_z0, gvl);
-        maxf = v_res[0];
+        maxf = VFMVFS_FLOAT(v_res);
         mask0 = VMFGEVF_FLOAT(v_max, maxf, gvl);
         max_index = VMFIRSTM(mask0,gvl);
-        max_index = v_max_index[max_index];
+        VSEVU_UINT(temp_uint,v_max_index,gvl);
+        max_index = temp_uint[max_index];
+
 
         if(j < n){
                 gvl = VSETVL(n-j);
@@ -239,7 +248,7 @@ asm volatile(
 */
                 v_max = VFADDVV_FLOAT(vx0, vx1, gvl);
                 v_res = VFREDMAXVS_FLOAT(v_res, v_max, v_z0, gvl);
-                FLOAT cur_maxf = v_res[0];
+                FLOAT cur_maxf = VFMVFS_FLOAT(v_res);
                 if(cur_maxf > maxf){
                         //tail index
                         v_max_index = VIDV_UINT(gvl);
@@ -247,7 +256,9 @@ asm volatile(
 
                         mask0 = VMFGEVF_FLOAT(v_max, cur_maxf, gvl);
                         max_index = VMFIRSTM(mask0,gvl);
-                        max_index = v_max_index[max_index];
+                        VSEVU_UINT(temp_uint,v_max_index,gvl);
+                                         max_index = temp_uint[max_index];
+
                 }
         }
 	return(max_index+1);

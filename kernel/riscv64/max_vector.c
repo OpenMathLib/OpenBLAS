@@ -77,14 +77,14 @@ FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x)
                                 j += gvl * 2;
                         }
                         v_res = VFREDMAXVS_FLOAT(v_res, v_max, v_min, gvl);
-                        maxf = v_res[0];
+                        maxf = *((FLOAT*)&v_res);
                 }
                 for(;j<n;){
                         gvl = VSETVL(n-j);
                         v0 = VLEV_FLOAT(&x[j], gvl);
                         v_res = VFREDMAXVS_FLOAT(v_res, v0, v_min, gvl);
-                        if(v_res[0] > maxf)
-                                maxf = v_res[0];
+                        if(*((FLOAT*)&v_res) > maxf)
+                                maxf = *((FLOAT*)&v_res);
                         j += gvl;
                 }
         }else{
@@ -103,14 +103,14 @@ FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x)
                                 idx += inc_xv * 2;
                         }
                         v_res = VFREDMAXVS_FLOAT(v_res, v_max, v_min, gvl);
-                        maxf = v_res[0];
+                        maxf = *((FLOAT*)&v_res);
                 }
                 for(;j<n;){
                         gvl = VSETVL(n-j);
                         v0 = VLSEV_FLOAT(&x[j*inc_x], stride_x, gvl);
                         v_res = VFREDMAXVS_FLOAT(v_res, v0, v_min, gvl);
-                        if(v_res[0] > maxf)
-                                maxf = v_res[0];
+                        if(*((FLOAT*)&v_res) > maxf)
+                                maxf = *((FLOAT*)&v_res);
                         j += gvl;
                 }
         }

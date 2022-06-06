@@ -31,9 +31,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define VSETVL_MAX vsetvlmax_e32m1()
 #define FLOAT_V_T vfloat32m4_t
 #define FLOAT_V_T_M1 vfloat32m1_t
+#define VFMVFS_FLOAT vfmv_f_s_f32m1_f32
 #define VLEV_FLOAT vle_v_f32m4
 #define VLSEV_FLOAT vlse_v_f32m4
-#define VFREDSUM_FLOAT vfredsum_vs_f32m4_f32m1
+#define VFREDSUM_FLOAT vfredusum_vs_f32m4_f32m1
 #define VFMACCVV_FLOAT vfmacc_vv_f32m4
 #define VFMVVF_FLOAT vfmv_v_f_f32m4
 #define VFMVVF_FLOAT_M1 vfmv_v_f_f32m1
@@ -51,9 +52,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define VSETVL_MAX vsetvlmax_e64m1()
 #define FLOAT_V_T vfloat64m4_t
 #define FLOAT_V_T_M1 vfloat64m1_t
+#define VFMVFS_FLOAT vfmv_f_s_f64m1_f64
 #define VLEV_FLOAT vle_v_f64m4
 #define VLSEV_FLOAT vlse_v_f64m4
-#define VFREDSUM_FLOAT vfredsum_vs_f64m4_f64m1
+#define VFREDSUM_FLOAT vfredusum_vs_f64m4_f64m1
 #define VFMACCVV_FLOAT vfmacc_vv_f64m4
 #define VFMVVF_FLOAT vfmv_v_f_f64m4
 #define VFMVVF_FLOAT_M1 vfmv_v_f_f64m1
@@ -107,13 +109,13 @@ FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x)
                                 //ssq in vector vr: vr[0]
                                 v_res = VFREDSUM_FLOAT(v_res, vr, v_z0, gvl);
                                 //total ssq before current vector
-                                ssq += v_res[0];
+                                ssq += VFMVFS_FLOAT(v_res);
                                 //find max
                                 v_res = VFREDMAXVS_FLOAT(v_res, v0, v_z0, gvl);
                                 //update ssq before max_index
-                                ssq = ssq * (scale/v_res[0])*(scale/v_res[0]);
+                                ssq = ssq * (scale/VFMVFS_FLOAT(v_res))*(scale/VFMVFS_FLOAT(v_res));
                                 //update scale
-                                scale = v_res[0];
+                                scale = VFMVFS_FLOAT(v_res);
                                 //ssq in vector vr
                                 v0 = VFDIVVF_FLOAT(v0, scale, gvl);
                                 vr = VFMACCVV_FLOAT(v_zero, v0, v0, gvl);
@@ -123,7 +125,7 @@ FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x)
                 //ssq in vector vr: vr[0]
                 v_res = VFREDSUM_FLOAT(v_res, vr, v_z0, gvl);
                 //total ssq now
-                ssq += v_res[0];
+                ssq += VFMVFS_FLOAT(v_res);
 
                 //tail
                 if(j < n2){
@@ -142,16 +144,16 @@ FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x)
                                 //find max
                                 v_res = VFREDMAXVS_FLOAT(v_res, v0, v_z0, gvl);
                                 //update ssq before max_index
-                                ssq = ssq * (scale/v_res[0])*(scale/v_res[0]);
+                                ssq = ssq * (scale/VFMVFS_FLOAT(v_res))*(scale/VFMVFS_FLOAT(v_res));
                                 //update scale
-                                scale = v_res[0];
+                                scale = VFMVFS_FLOAT(v_res);
                                 v0 = VFDIVVF_FLOAT(v0, scale, gvl);
                         }
                         vr = VFMACCVV_FLOAT(v_zero, v0, v0, gvl);
                         //ssq in vector vr: vr[0]
                         v_res = VFREDSUM_FLOAT(v_res, vr, v_z0, gvl);
                         //total ssq now
-                        ssq += v_res[0];
+                        ssq += VFMVFS_FLOAT(v_res);
                 }
         }else{
                 gvl = VSETVL(n);
@@ -176,13 +178,13 @@ FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x)
                                 //ssq in vector vr: vr[0]
                                 v_res = VFREDSUM_FLOAT(v_res, vr, v_z0, gvl);
                                 //total ssq before current vector
-                                ssq += v_res[0];
+                                ssq += VFMVFS_FLOAT(v_res);
                                 //find max
                                 v_res = VFREDMAXVS_FLOAT(v_res, v0, v_z0, gvl);
                                 //update ssq before max_index
-                                ssq = ssq * (scale/v_res[0])*(scale/v_res[0]);
+                                ssq = ssq * (scale/VFMVFS_FLOAT(v_res))*(scale/VFMVFS_FLOAT(v_res));
                                 //update scale
-                                scale = v_res[0];
+                                scale = VFMVFS_FLOAT(v_res);
                                 //ssq in vector vr
                                 v0 = VFDIVVF_FLOAT(v0, scale, gvl);
                                 vr = VFMACCVV_FLOAT(v_zero, v0, v0, gvl);
@@ -204,13 +206,13 @@ FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x)
                                 //ssq in vector vr: vr[0]
                                 v_res = VFREDSUM_FLOAT(v_res, vr, v_z0, gvl);
                                 //total ssq before current vector
-                                ssq += v_res[0];
+                                ssq += VFMVFS_FLOAT(v_res);
                                 //find max
                                 v_res = VFREDMAXVS_FLOAT(v_res, v0, v_z0, gvl);
                                 //update ssq before max_index
-                                ssq = ssq * (scale/v_res[0])*(scale/v_res[0]);
+                                ssq = ssq * (scale/VFMVFS_FLOAT(v_res))*(scale/VFMVFS_FLOAT(v_res));
                                 //update scale
-                                scale = v_res[0];
+                                scale = VFMVFS_FLOAT(v_res);
                                 //ssq in vector vr
                                 v0 = VFDIVVF_FLOAT(v0, scale, gvl);
                                 vr = VFMACCVV_FLOAT(v_zero, v0, v0, gvl);
@@ -221,7 +223,7 @@ FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x)
                 //ssq in vector vr: vr[0]
                 v_res = VFREDSUM_FLOAT(v_res, vr, v_z0, gvl);
                 //total ssq now
-                ssq += v_res[0];
+                ssq += VFMVFS_FLOAT(v_res);
 
                 //tail
                 if(j < n){
@@ -242,9 +244,9 @@ FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x)
                                 //find max
                                 v_res = VFREDMAXVS_FLOAT(v_res, v0, v_z0, gvl);
                                 //update ssq before max_index
-                                ssq = ssq * (scale/v_res[0])*(scale/v_res[0]);
+                                ssq = ssq * (scale/VFMVFS_FLOAT(v_res))*(scale/VFMVFS_FLOAT(v_res));
                                 //update scale
-                                scale = v_res[0];
+                                scale = VFMVFS_FLOAT(v_res);
                                 v0 = VFDIVVF_FLOAT(v0, scale, gvl);
                                 vr = VFMACCVV_FLOAT(v_zero, v0, v0, gvl);
                         }
@@ -265,20 +267,20 @@ FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x)
                                 //ssq in vector vr: vr[0]
                                 v_res = VFREDSUM_FLOAT(v_res, vr, v_z0, gvl);
                                 //total ssq before current vector
-                                ssq += v_res[0];
+                                ssq += VFMVFS_FLOAT(v_res);
                                 //find max
                                 v_res = VFREDMAXVS_FLOAT(v_res, v0, v_z0, gvl);
                                 //update ssq before max_index
-                                ssq = ssq * (scale/v_res[0])*(scale/v_res[0]);
+                                ssq = ssq * (scale/VFMVFS_FLOAT(v_res))*(scale/VFMVFS_FLOAT(v_res));
                                 //update scale
-                                scale = v_res[0];
+                                scale = VFMVFS_FLOAT(v_res);
                                 v0 = VFDIVVF_FLOAT(v0, scale, gvl);
                                 vr = VFMACCVV_FLOAT(v_zero, v0, v0, gvl);
                         }
                         //ssq in vector vr: vr[0]
                         v_res = VFREDSUM_FLOAT(v_res, vr, v_z0, gvl);
                         //total ssq now
-                        ssq += v_res[0];
+                        ssq += VFMVFS_FLOAT(v_res);
                 }
         }
 	return(scale * sqrt(ssq));

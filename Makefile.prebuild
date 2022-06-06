@@ -46,7 +46,7 @@ TARGET_FLAGS = -mips64r6
 endif
 
 ifeq ($(TARGET), C910V)
-TARGET_FLAGS = -march=rv64gcvxthead -mabi=lp64v
+TARGET_FLAGS = -march=rv64gcv0p7_zfh_xtheadc -mabi=lp64d
 endif
 
 all: getarch_2nd

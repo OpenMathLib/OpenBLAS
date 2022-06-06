@@ -31,9 +31,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define VSETVL_MAX vsetvlmax_e32m1()
 #define FLOAT_V_T vfloat32m4_t
 #define FLOAT_V_T_M1 vfloat32m1_t
+#define VFMVFS_FLOAT vfmv_f_s_f32m1_f32
 #define VLEV_FLOAT vle_v_f32m4
 #define VLSEV_FLOAT vlse_v_f32m4
-#define VFREDSUM_FLOAT vfredsum_vs_f32m4_f32m1
+#define VFREDSUM_FLOAT vfredusum_vs_f32m4_f32m1
 #define VFMACCVV_FLOAT vfmacc_vv_f32m4
 #define VFMVVF_FLOAT vfmv_v_f_f32m4
 #define VFMVVF_FLOAT_M1 vfmv_v_f_f32m1
@@ -46,9 +47,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define VSETVL_MAX vsetvlmax_e64m1()
 #define FLOAT_V_T vfloat64m4_t
 #define FLOAT_V_T_M1 vfloat64m1_t
+#define VFMVFS_FLOAT vfmv_f_s_f64m1_f64
 #define VLEV_FLOAT vle_v_f64m4
 #define VLSEV_FLOAT vlse_v_f64m4
-#define VFREDSUM_FLOAT vfredsum_vs_f64m4_f64m1
+#define VFREDSUM_FLOAT vfredusum_vs_f64m4_f64m1
 #define VFMACCVV_FLOAT vfmacc_vv_f64m4
 #define VFMVVF_FLOAT vfmv_v_f_f64m4
 #define VFMVVF_FLOAT_M1 vfmv_v_f_f64m1
@@ -108,9 +110,9 @@ OPENBLAS_COMPLEX_FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLA
                 iy += inc_yv;
         }
         v_res = VFREDSUM_FLOAT(v_res, vr0, v_z0, gvl);
-        dot[0] += v_res[0];
+        dot[0] += VFMVFS_FLOAT(v_res);
         v_res = VFREDSUM_FLOAT(v_res, vr1, v_z0, gvl);
-        dot[1] += v_res[0];
+        dot[1] += VFMVFS_FLOAT(v_res);
         //tail
         if(j < n){
                 gvl = VSETVL(n-j);
@@ -131,9 +133,9 @@ OPENBLAS_COMPLEX_FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLA
                 vr1 = VFMSACVV_FLOAT(vr1, vx0, vy1, gvl);
 #endif
                 v_res = VFREDSUM_FLOAT(v_res, vr0, v_z0, gvl);
-                dot[0] += v_res[0];
+                dot[0] += VFMVFS_FLOAT(v_res);
                 v_res = VFREDSUM_FLOAT(v_res, vr1, v_z0, gvl);
-                dot[1] += v_res[0];
+                dot[1] += VFMVFS_FLOAT(v_res);
         }
         CREAL(result) = dot[0];
         CIMAG(result) = dot[1];
