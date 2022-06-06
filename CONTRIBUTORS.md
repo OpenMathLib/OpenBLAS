@@ -207,3 +207,8 @@ In chronological order:
 
 * Ilya Kurdyukov <https://github.com/ilyakurdyukov>
   * [2021-02-21] Add basic support for the Elbrus E2000 architecture
+
+* PLCT Lab, Institute of Software Chinese Academy of Sciences
+  * [2022-03] Support RISC-V Vector Intrinisc 1.0 version.
+  
+  
