@@ -244,7 +244,7 @@ case "$data" in
         tmpd=`mktemp -d`
         tmpf="$tmpd/a.c"
         printf "#include <stdatomic.h>\nint main(void){}\n" >> "$tmpf"
-        args=' -c -o $tmpf.o $tmpf'
+        args=" -c -o $tmpf.o $tmpf"
         c11_atomics=1
         {
             $compiler_name $flags $args >/dev/null 2>&1
