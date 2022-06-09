@@ -35,9 +35,9 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #ifdef C_MSVC
 #include <intrin.h>
-#define MB do {} while (0)
-#define WMB do {} while (0)
-#define RMB
+#define MB __dmb(_ARM64_BARRIER_ISH)
+#define WMB __dmb(_ARM64_BARRIER_ISHST)
+#define RMB __dmb(_ARM64_BARRIER_ISHLD)
 #else
 #define MB   __asm__ __volatile__ ("dmb  ish" : : : "memory")
 #define WMB  __asm__ __volatile__ ("dmb  ishst" : : : "memory")
@@ -92,7 +92,12 @@ static void __inline blas_lock(volatile BLASULONG *address){
 #if !defined(OS_DARWIN) && !defined (OS_ANDROID)
 static __inline BLASULONG rpcc(void){
   #ifdef C_MSVC
-  return __rdtsc();
+    const int64_t pmccntr_el0 = (((3 & 1) << 14) |  // op0
+        ((3 & 7) << 11) |  // op1
+        ((9 & 15) << 7) |  // crn
+        ((13 & 15) << 3) | // crm
+        ((0 & 7) << 0));   // op2
+    return _ReadStatusReg(pmccntr_el0);
   #else
   BLASULONG ret = 0;
   blasint shift;
