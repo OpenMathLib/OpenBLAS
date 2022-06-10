@@ -814,6 +814,23 @@ zpotri,
     zgesvdq,
     zungtsqr
 );
+    #functions added for lapack-3.10
+@lapackobjs2c = (@lapackobjs2c,
+    cgetsqrhrt,
+    cungtsqr_row
+    );
+@lapackobjs2d = (@lapackobjs2d,
+    dgetsqrhrt,
+    dorgtsqr_row
+    );
+@lapackobjs2s = (@lapackobjs2s,
+    sgetsqrhrt,
+    sorgtsqr_row
+    );
+@lapackobjs2z = (@lapackobjs2z,
+    zgetsqrhrt,
+    zungtsqr_row
+    );
 
 @lapack_extendedprecision_objs = (
     zposvxx, clagge, clatms, chesvxx, cposvxx, cgesvxx, ssyrfssx, csyrfsx,
@@ -1562,6 +1579,13 @@ zpotri,
     LAPACKE_csytrf_aa_2stage_work,
     LAPACKE_csytrs_aa_2stage,
     LAPACKE_csytrs_aa_2stage_work,
+    LAPACKE_cgesvdq,
+    LAPACKE_cgesvdq_work,
+    LAPACKE_cgetsqrhrt,
+    LAPACKE_cgetsqrhrt_work,
+    LAPACKE_cungtsqr_row,
+    LAPACKE_cungtsqr_row_work
+
 );
 @lapackeobjsd = (
     LAPACKE_dgb_nancheck,
@@ -2170,6 +2194,11 @@ zpotri,
     LAPACKE_dgesvdq_work,
     LAPACKE_slag2d,
     LAPACKE_slag2d_work,
+    LAPACKE_dgetsqrhrt,
+    LAPACKE_dgetsqrhrt_work,
+    LAPACKE_dorgtsqr_row,
+    LAPACKE_dorgtsqr_row_work
+
 );
 @lapackeobjss = (
     LAPACKE_sgb_nancheck,
@@ -2770,6 +2799,11 @@ zpotri,
     LAPACKE_ssytrs_aa_2stage_work,
     LAPACKE_sgesvdq,
     LAPACKE_sgesvdq_work,
+    LAPACKE_sgetsqrhrt,
+    LAPACKE_sgetsqrhrt_work,
+    LAPACKE_sorgtsqr_row,
+    LAPACKE_sorgtsqr_row_work
+
 );
 @lapackeobjsz = (    
     LAPACKE_zgb_nancheck,
@@ -3308,6 +3342,11 @@ zpotri,
     LAPACKE_zupmtr_work,
     LAPACKE_zsyr,
     LAPACKE_zsyr_work,
+    LAPACKE_zgetsqrhrt,
+    LAPACKE_zgetsqrhrt_work,
+    LAPACKE_zungtsqr_row,
+    LAPACKE_zungtsqr_row_work
+
     ## @(SRCX_OBJ) from `lapack-3.4.1/lapacke/src/Makefile`
     ## Not exported: requires LAPACKE_EXTENDED to be set and depends on the
     ##               corresponding LAPACK extended precision routines.
