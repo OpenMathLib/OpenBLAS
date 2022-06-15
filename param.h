@@ -3330,6 +3330,9 @@ is a big desktop or server with abundant cache rather than a phone or embedded d
 
 #elif defined(NEOVERSEN2)
 
+#define SBGEMM_DEFAULT_UNROOL_M 8
+#define SBGEMM_DEFAULT_UNROOL_N 4
+
 #define SGEMM_DEFAULT_UNROLL_M  16
 #define SGEMM_DEFAULT_UNROLL_N  4
 
