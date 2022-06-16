@@ -240,6 +240,8 @@ If you compile this library with `USE_OPENMP=1`, you should set the `OMP_NUM_THR
 environment variable; OpenBLAS ignores `OPENBLAS_NUM_THREADS` and `GOTO_NUM_THREADS` when
 compiled with `USE_OPENMP=1`.
 
+On newer versions of Xcode and on arm64, you might need to compile with a newer macOS target (11.0) than the default (10.8) with `MACOSX_DEPLOYMENT_TARGET=11.0`, or switch your command-line tools to use an older SDK (e.g., [13.1](https://developer.apple.com/download/all/?q=Xcode%2013)).
+
 ### Setting the number of threads at runtime
 
 We provide the following functions to control the number of threads at runtime:
