@@ -97,7 +97,7 @@ int CNAME(BLASLONG m, BLASLONG n, IFLOAT *a, BLASLONG lda, IFLOAT *b) {
             *(b_offset + 6) = 0;
             *(b_offset + 7) = 0;
             a_offset += 4;
-            b_offset += 8;
+            b_offset += 4;
         }
         if (i < m) {
             *(b_offset + 4) = 0;

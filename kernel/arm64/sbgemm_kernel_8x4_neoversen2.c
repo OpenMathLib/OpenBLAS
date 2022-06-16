@@ -27,15 +27,16 @@
  * *****************************************************************************/
 
 #include <arm_sve.h>
+
 #include "common.h"
 
-int CNAME(BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alpha, IFLOAT *A, IFLOAT *B,
-          FLOAT *C, BLASLONG ldc) {
+int CNAME(BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alpha, IFLOAT *A, IFLOAT *B, FLOAT *C,
+          BLASLONG ldc) {
     // printf("m: %d, n: %d, k: %d\n", m, n, k);
     BLASLONG padk = (k + 3) & ~3;
     BLASLONG padm = (m + 1) & ~1;
     BLASLONG padn = (n + 1) & ~1;
-    FLOAT *RC = (FLOAT *) calloc(padm * padn, sizeof(float));
+    FLOAT *RC = (FLOAT *)calloc(padm * padn, sizeof(float));
     BLASLONG nldc = padm;
 
     IFLOAT *ptr_a = A;
@@ -52,10 +53,10 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alpha, IFLOAT *A, IFLOAT *B,
     svbool_t pg32 = svptrue_b32();
     svfloat32_t svalpha = svdup_f32(alpha);
 
-    uint32_t off_c[] = {0, (uint32_t) nldc, 1, (uint32_t) nldc + 1}; // 00 01 10 11
+    uint32_t off_c[] = {0, (uint32_t)nldc, 1, (uint32_t)nldc + 1};  // 00 01 10 11
     svuint32_t off_vc = svld1_u32(pg32, off_c);
 
-    for (BLASLONG j = 0; j < padn/4; j++) {
+    for (BLASLONG j = 0; j < padn / 4; j++) {
         ptr_c00 = ptr_c;
         ptr_c10 = ptr_c00 + 2;
         ptr_c20 = ptr_c10 + 2;
@@ -68,7 +69,7 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alpha, IFLOAT *A, IFLOAT *B,
 
         ptr_a = A;
 
-        for (BLASLONG i = 0; i < padm/8; i++) {
+        for (BLASLONG i = 0; i < padm / 8; i++) {
             ptr_a0 = ptr_a;
             ptr_a1 = ptr_a0 + 2 * padk;
             ptr_a2 = ptr_a1 + 2 * padk;
@@ -78,18 +79,22 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alpha, IFLOAT *A, IFLOAT *B,
             ptr_b0 = ptr_b;
             ptr_b1 = ptr_b0 + 2 * padk;
 
-            mc00 = svdup_f32(0); mc01 = svdup_f32(0); 
-            mc10 = svdup_f32(0); mc11 = svdup_f32(0);
-            mc20 = svdup_f32(0); mc21 = svdup_f32(0);
-            mc30 = svdup_f32(0); mc31 = svdup_f32(0);
-            
-            for (BLASLONG p = 0; p < padk/4; p++) {
-                ma0 = svld1_bf16(pg16, (bfloat16_t *) ptr_a0);
-                ma1 = svld1_bf16(pg16, (bfloat16_t *) ptr_a1);
-                ma2 = svld1_bf16(pg16, (bfloat16_t *) ptr_a2);
-                ma3 = svld1_bf16(pg16, (bfloat16_t *) ptr_a3);
-                mb0 = svld1_bf16(pg16, (bfloat16_t *) ptr_b0);
-                mb1 = svld1_bf16(pg16, (bfloat16_t *) ptr_b1);
+            mc00 = svdup_f32(0);
+            mc01 = svdup_f32(0);
+            mc10 = svdup_f32(0);
+            mc11 = svdup_f32(0);
+            mc20 = svdup_f32(0);
+            mc21 = svdup_f32(0);
+            mc30 = svdup_f32(0);
+            mc31 = svdup_f32(0);
+
+            for (BLASLONG p = 0; p < padk / 4; p++) {
+                ma0 = svld1_bf16(pg16, (bfloat16_t *)ptr_a0);
+                ma1 = svld1_bf16(pg16, (bfloat16_t *)ptr_a1);
+                ma2 = svld1_bf16(pg16, (bfloat16_t *)ptr_a2);
+                ma3 = svld1_bf16(pg16, (bfloat16_t *)ptr_a3);
+                mb0 = svld1_bf16(pg16, (bfloat16_t *)ptr_b0);
+                mb1 = svld1_bf16(pg16, (bfloat16_t *)ptr_b1);
 
                 mc00 = svbfmmla(mc00, ma0, mb0);
                 mc10 = svbfmmla(mc10, ma1, mb0);
@@ -135,13 +140,15 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alpha, IFLOAT *A, IFLOAT *B,
             ptr_b0 = ptr_b;
             ptr_b1 = ptr_b0 + 2 * padk;
 
-            mc00 = svdup_f32(0); mc01 = svdup_f32(0);
-            mc10 = svdup_f32(0); mc11 = svdup_f32(0);
-            for (BLASLONG p = 0; p < padk/4; p++) {
-                ma0 = svld1_bf16(pg16, (bfloat16_t *) ptr_a0);
-                ma1 = svld1_bf16(pg16, (bfloat16_t *) ptr_a1);
-                mb0 = svld1_bf16(pg16, (bfloat16_t *) ptr_b0);
-                mb1 = svld1_bf16(pg16, (bfloat16_t *) ptr_b1);
+            mc00 = svdup_f32(0);
+            mc01 = svdup_f32(0);
+            mc10 = svdup_f32(0);
+            mc11 = svdup_f32(0);
+            for (BLASLONG p = 0; p < padk / 4; p++) {
+                ma0 = svld1_bf16(pg16, (bfloat16_t *)ptr_a0);
+                ma1 = svld1_bf16(pg16, (bfloat16_t *)ptr_a1);
+                mb0 = svld1_bf16(pg16, (bfloat16_t *)ptr_b0);
+                mb1 = svld1_bf16(pg16, (bfloat16_t *)ptr_b1);
 
                 mc00 = svbfmmla(mc00, ma0, mb0);
                 mc10 = svbfmmla(mc10, ma1, mb0);
@@ -171,11 +178,12 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alpha, IFLOAT *A, IFLOAT *B,
             ptr_b0 = ptr_b;
             ptr_b1 = ptr_b0 + 2 * padk;
 
-            mc00 = svdup_f32(0); mc01 = svdup_f32(0);
-            for (BLASLONG p = 0; p < padk/4; p++) {
-                ma0 = svld1_bf16(pg16, (bfloat16_t *) ptr_a0);
-                mb0 = svld1_bf16(pg16, (bfloat16_t *) ptr_b0);
-                mb1 = svld1_bf16(pg16, (bfloat16_t *) ptr_b1);
+            mc00 = svdup_f32(0);
+            mc01 = svdup_f32(0);
+            for (BLASLONG p = 0; p < padk / 4; p++) {
+                ma0 = svld1_bf16(pg16, (bfloat16_t *)ptr_a0);
+                mb0 = svld1_bf16(pg16, (bfloat16_t *)ptr_b0);
+                mb1 = svld1_bf16(pg16, (bfloat16_t *)ptr_b1);
                 mc00 = svbfmmla(mc00, ma0, mb0);
                 mc01 = svbfmmla(mc01, ma0, mb1);
                 ptr_a0 += 8;
@@ -189,7 +197,6 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alpha, IFLOAT *A, IFLOAT *B,
         }
 
         ptr_b += 4 * padk;
-
     }
 
     if (padn & 2) {
@@ -202,7 +209,7 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alpha, IFLOAT *A, IFLOAT *B,
 
         ptr_a = A;
 
-        for (BLASLONG i = 0; i < padm/8; i++) {
+        for (BLASLONG i = 0; i < padm / 8; i++) {
             ptr_a0 = ptr_a;
             ptr_a1 = ptr_a0 + 2 * padk;
             ptr_a2 = ptr_a1 + 2 * padk;
@@ -216,12 +223,12 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alpha, IFLOAT *A, IFLOAT *B,
             mc20 = svdup_f32(0);
             mc30 = svdup_f32(0);
 
-            for (BLASLONG p = 0; p < padk/4; p++) {
-                ma0 = svld1_bf16(pg16, (bfloat16_t *) ptr_a0);
-                ma1 = svld1_bf16(pg16, (bfloat16_t *) ptr_a1);
-                ma2 = svld1_bf16(pg16, (bfloat16_t *) ptr_a2);
-                ma3 = svld1_bf16(pg16, (bfloat16_t *) ptr_a3);
-                mb0 = svld1_bf16(pg16, (bfloat16_t *) ptr_b0);
+            for (BLASLONG p = 0; p < padk / 4; p++) {
+                ma0 = svld1_bf16(pg16, (bfloat16_t *)ptr_a0);
+                ma1 = svld1_bf16(pg16, (bfloat16_t *)ptr_a1);
+                ma2 = svld1_bf16(pg16, (bfloat16_t *)ptr_a2);
+                ma3 = svld1_bf16(pg16, (bfloat16_t *)ptr_a3);
+                mb0 = svld1_bf16(pg16, (bfloat16_t *)ptr_b0);
                 mc00 = svbfmmla(mc00, ma0, mb0);
                 mc10 = svbfmmla(mc10, ma1, mb0);
                 mc20 = svbfmmla(mc20, ma2, mb0);
@@ -251,10 +258,10 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alpha, IFLOAT *A, IFLOAT *B,
 
             mc00 = svdup_f32(0);
             mc10 = svdup_f32(0);
-            for (BLASLONG p = 0; p < padk/4; p++) {
-                ma0 = svld1_bf16(pg16, (bfloat16_t *) ptr_a0);
-                ma1 = svld1_bf16(pg16, (bfloat16_t *) ptr_a1);
-                mb0 = svld1_bf16(pg16, (bfloat16_t *) ptr_b0);
+            for (BLASLONG p = 0; p < padk / 4; p++) {
+                ma0 = svld1_bf16(pg16, (bfloat16_t *)ptr_a0);
+                ma1 = svld1_bf16(pg16, (bfloat16_t *)ptr_a1);
+                mb0 = svld1_bf16(pg16, (bfloat16_t *)ptr_b0);
                 mc00 = svbfmmla(mc00, ma0, mb0);
                 mc10 = svbfmmla(mc10, ma1, mb0);
                 ptr_a0 += 8;
@@ -272,9 +279,9 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alpha, IFLOAT *A, IFLOAT *B,
             ptr_a += 2 * padk;
             ptr_b0 = ptr_b;
             mc00 = svdup_f32(0);
-            for (BLASLONG p = 0; p < padk/4; p++) {
-                ma0 = svld1_bf16(pg16, (bfloat16_t *) ptr_a0);
-                mb0 = svld1_bf16(pg16, (bfloat16_t *) ptr_b0);
+            for (BLASLONG p = 0; p < padk / 4; p++) {
+                ma0 = svld1_bf16(pg16, (bfloat16_t *)ptr_a0);
+                mb0 = svld1_bf16(pg16, (bfloat16_t *)ptr_b0);
                 mc00 = svbfmmla(mc00, ma0, mb0);
                 ptr_a0 += 8;
                 ptr_b0 += 8;
@@ -296,10 +303,11 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alpha, IFLOAT *A, IFLOAT *B,
         org_c += ldc;
         raw_c += nldc;
         BLASLONG i;
-        for (i = 0; i < m/4; i++) {
+        for (i = 0; i < m / 4; i++) {
             org_vc0 = svld1_f32(pg32, org_c0);
             raw_vc0 = svld1_f32(pg32, raw_c0);
-            org_vc0 = svmad_z(pg32, svalpha, raw_vc0, org_vc0); // alpha * raw + org, raw -> a * b
+            org_vc0 = svmad_z(pg32, svalpha, raw_vc0,
+                              org_vc0);  // alpha * raw + org, raw -> a * b
             svst1_f32(pg32, org_c0, org_vc0);
             org_c0 += 4;
             raw_c0 += 4;
@@ -310,5 +318,6 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alpha, IFLOAT *A, IFLOAT *B,
             raw_c0++;
         }
     }
+
     return 0;
 }

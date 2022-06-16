@@ -87,7 +87,7 @@ int CNAME(BLASLONG m, BLASLONG n, IFLOAT *a, BLASLONG lda, IFLOAT *b) {
             b_offset += 8;
         }
     }
-    if (j < n) { // padding 2
+    if (j < n) {  // rest 1
         BLASLONG i = 0;
         for (; i < m4; i += 4) {
             *(b_offset + 0) = *(a_offset + 0);
@@ -98,7 +98,7 @@ int CNAME(BLASLONG m, BLASLONG n, IFLOAT *a, BLASLONG lda, IFLOAT *b) {
             *(b_offset + 5) = 0;
             *(b_offset + 6) = 0;
             *(b_offset + 7) = 0;
-            b_offset += 8;
+            b_offset += 4;
             a_offset += 4 * lda;
         }
         if (i < m) {
@@ -113,5 +113,6 @@ int CNAME(BLASLONG m, BLASLONG n, IFLOAT *a, BLASLONG lda, IFLOAT *b) {
             *(b_offset + 3) = 0;
         }
     }
+
     return 0;
 }
