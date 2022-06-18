@@ -1,7 +1,9 @@
 include_directories(${PROJECT_SOURCE_DIR})
 include_directories(${PROJECT_BINARY_DIR})
 
+if (NOT NOFORTRAN)
 enable_language(Fortran)
+endif()
 
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DADD${BU} -DCBLAS")
 if (CMAKE_Fortran_COMPILER_ID STREQUAL GNU)
@@ -28,14 +30,24 @@ foreach(float_type ${FLOAT_TYPES})
    continue()
   endif()
   #level1
+if (NOT NOFORTRAN)
   add_executable(x${float_char}cblat1
     c_${float_char}blat1.f
     c_${float_char}blas1.c)
+else()
+  add_executable(x${float_char}cblat1
+    c_${float_char}blat1c.c
+    c_${float_char}blas1.c)
+endif()
   target_link_libraries(x${float_char}cblat1 ${OpenBLAS_LIBNAME})
+  if(${CMAKE_SYSTEM_NAME} MATCHES "Linux" OR ${CMAKE_SYSTEM_NAME} MATCHES "FreeBSD")
+      target_link_libraries(x${float_char}cblat1 m)
+  endif()
   add_test(NAME "x${float_char}cblat1"
     COMMAND $<TARGET_FILE:x${float_char}cblat1>)
 
   #level2
+if (NOT NOFORTRAN)
   add_executable(x${float_char}cblat2
     c_${float_char}blat2.f
     c_${float_char}blas2.c
@@ -43,11 +55,24 @@ foreach(float_type ${FLOAT_TYPES})
     auxiliary.c
     c_xerbla.c
     constant.c)
+else()
+  add_executable(x${float_char}cblat2
+    c_${float_char}blat2c.c
+    c_${float_char}blas2.c
+    c_${float_char}2chke.c
+    auxiliary.c
+    c_xerbla.c
+    constant.c)
+endif()
   target_link_libraries(x${float_char}cblat2 ${OpenBLAS_LIBNAME})
+  if(${CMAKE_SYSTEM_NAME} MATCHES "Linux" OR ${CMAKE_SYSTEM_NAME} MATCHES "FreeBSD")
+    target_link_libraries(x${float_char}cblat2 m)
+  endif()
   add_test(NAME "x${float_char}cblat2"
     COMMAND ${test_helper} $<TARGET_FILE:x${float_char}cblat2> "${PROJECT_SOURCE_DIR}/ctest/${float_char}in2")
 
   #level3
+if (NOT NOFORTRAN)
   add_executable(x${float_char}cblat3
     c_${float_char}blat3.f
     c_${float_char}blas3.c
@@ -55,7 +80,19 @@ foreach(float_type ${FLOAT_TYPES})
     auxiliary.c
     c_xerbla.c
     constant.c)
+else()
+  add_executable(x${float_char}cblat3
+    c_${float_char}blat3c.c
+    c_${float_char}blas3.c
+    c_${float_char}3chke.c
+    auxiliary.c
+    c_xerbla.c
+    constant.c)
+endif()
   target_link_libraries(x${float_char}cblat3 ${OpenBLAS_LIBNAME})
+  if(${CMAKE_SYSTEM_NAME} MATCHES "Linux" OR ${CMAKE_SYSTEM_NAME} MATCHES "FreeBSD")
+    target_link_libraries(x${float_char}cblat3 m)
+  endif()
   add_test(NAME "x${float_char}cblat3"
     COMMAND ${test_helper} $<TARGET_FILE:x${float_char}cblat3> "${PROJECT_SOURCE_DIR}/ctest/${float_char}in3")
 
