@@ -314,16 +314,16 @@ endif()
 if (NOT NOFORTRAN)
   # Build test and ctest
   add_subdirectory(test)
-  if(NOT NO_CBLAS)
-    add_subdirectory(ctest)
-  endif()
   if (BUILD_TESTING)
     add_subdirectory(lapack-netlib/TESTING)
+  endif()
+endif()
+  if(NOT NO_CBLAS)
+    add_subdirectory(ctest)
   endif()
   if (CPP_THREAD_SAFETY_TEST OR CPP_THREAD_SAFETY_GEMV)
     add_subdirectory(cpp_thread_test)
   endif()
-endif()
 
 set_target_properties(${OpenBLAS_LIBS} PROPERTIES
   VERSION ${OpenBLAS_MAJOR_VERSION}.${OpenBLAS_MINOR_VERSION}
@@ -398,13 +398,13 @@ if (BUILD_SHARED_LIBS AND NOT ${SYMBOLPREFIX}${SYMBOLSUFFIX} STREQUAL "")
 
   if (NOT DEFINED USE_PERL)
   add_custom_command(TARGET ${OpenBLAS_LIBNAME}_shared POST_BUILD
-    COMMAND  ${PROJECT_SOURCE_DIR}/exports/gensymbol "objcopy" "${ARCH}" "${BU}" "${EXPRECISION_IN}" "${NO_CBLAS_IN}" "${NO_LAPACK_IN}" "${NO_LAPACKE_IN}" "${NEED2UNDERSCORES_IN}" "${ONLY_CBLAS_IN}" \"${SYMBOLPREFIX}\" \"${SYMBOLSUFFIX}\" "${BUILD_LAPACK_DEPRECATED}" > ${PROJECT_BINARY_DIR}/objcopy.def
+    COMMAND  ${PROJECT_SOURCE_DIR}/exports/gensymbol "objcopy" "${ARCH}" "${BU}" "${EXPRECISION_IN}" "${NO_CBLAS_IN}" "${NO_LAPACK_IN}" "${NO_LAPACKE_IN}" "${NEED2UNDERSCORES_IN}" "${ONLY_CBLAS_IN}" \"${SYMBOLPREFIX}\" \"${SYMBOLSUFFIX}\" "${BUILD_LAPACK_DEPRECATED}" "${BUILD_BFLOAT16}" "${BUILD_SINGLE}" "${BUILD_DOUBLE}" "${BUILD_COMPLEX}" "${BUILD_COMPLEX16}" > ${PROJECT_BINARY_DIR}/objcopy.def
     COMMAND objcopy -v --redefine-syms ${PROJECT_BINARY_DIR}/objcopy.def  ${PROJECT_BINARY_DIR}/lib/lib${OpenBLAS_LIBNAME}.so
     COMMENT "renaming symbols"
     )
   else()
   add_custom_command(TARGET ${OpenBLAS_LIBNAME}_shared POST_BUILD
-    COMMAND perl ${PROJECT_SOURCE_DIR}/exports/gensymbol.pl "objcopy" "${ARCH}" "${BU}" "${EXPRECISION_IN}" "${NO_CBLAS_IN}" "${NO_LAPACK_IN}" "${NO_LAPACKE_IN}" "${NEED2UNDERSCORES_IN}" "${ONLY_CBLAS_IN}" \"${SYMBOLPREFIX}\" \"${SYMBOLSUFFIX}\" "${BUILD_LAPACK_DEPRECATED}" > ${PROJECT_BINARY_DIR}/objcopy.def
+    COMMAND perl ${PROJECT_SOURCE_DIR}/exports/gensymbol.pl "objcopy" "${ARCH}" "${BU}" "${EXPRECISION_IN}" "${NO_CBLAS_IN}" "${NO_LAPACK_IN}" "${NO_LAPACKE_IN}" "${NEED2UNDERSCORES_IN}" "${ONLY_CBLAS_IN}" \"${SYMBOLPREFIX}\" \"${SYMBOLSUFFIX}\" "${BUILD_LAPACK_DEPRECATED}" "${BUILD_BFLOAT16}" "${BUILD_SINGLE}" "${BUILD_DOUBLE}" "${BUILD_COMPLEX}" "${BUILD_COMPLEX16}" > ${PROJECT_BINARY_DIR}/objcopy.def
     COMMAND objcopy -v --redefine-syms ${PROJECT_BINARY_DIR}/objcopy.def  ${PROJECT_BINARY_DIR}/lib/lib${OpenBLAS_LIBNAME}.so
     COMMENT "renaming symbols"
     )
