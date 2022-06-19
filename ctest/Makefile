@@ -227,11 +227,11 @@ xscblat3: $(stestl3o) c_sblat3.o $(TOPDIR)/$(LIBNAME)
 	$(FC) $(FLDFLAGS) -o xscblat3 c_sblat3.o $(stestl3o) $(LIB) $(EXTRALIB) $(CEXTRALIB)
 else
 xscblat1: $(stestl1o) c_sblat1c.o $(TOPDIR)/$(LIBNAME)
-	$(CC) $(LDFLAGS) -o xscblat1 c_sblat1c.o $(stestl1o) $(LIB) $(EXTRALIB) $(CEXTRALIB)
+	$(CC) $(CFLAGS) -o xscblat1 c_sblat1c.o $(stestl1o) $(LIB) $(EXTRALIB) $(CEXTRALIB)
 xscblat2: $(stestl2o) c_sblat2c.o $(TOPDIR)/$(LIBNAME)
-	$(CC) $(LDFLAGS) -o xscblat2 c_sblat2c.o $(stestl2o) $(LIB) $(EXTRALIB) $(CEXTRALIB)
+	$(CC) $(CFLAGS) -o xscblat2 c_sblat2c.o $(stestl2o) $(LIB) $(EXTRALIB) $(CEXTRALIB)
 xscblat3: $(stestl3o) c_sblat3c.o $(TOPDIR)/$(LIBNAME)
-	$(CC) $(LDFLAGS) -o xscblat3 c_sblat3c.o $(stestl3o) $(LIB) $(EXTRALIB) $(CEXTRALIB)
+	$(CC) $(CFLAGS) -o xscblat3 c_sblat3c.o $(stestl3o) $(LIB) $(EXTRALIB) $(CEXTRALIB)
 endif
 endif
 
@@ -246,11 +246,11 @@ xdcblat3: $(dtestl3o) c_dblat3.o $(TOPDIR)/$(LIBNAME)
 	$(FC) $(FLDFLAGS) -o xdcblat3 c_dblat3.o $(dtestl3o) $(LIB) $(EXTRALIB) $(CEXTRALIB)
 else
 xdcblat1: $(dtestl1o) c_dblat1c.o $(TOPDIR)/$(LIBNAME)
-	$(CC) $(LDFLAGS) -o xdcblat1 c_dblat1c.o $(dtestl1o) $(LIB) $(EXTRALIB) $(CEXTRALIB)
+	$(CC) $(CFLAGS) -o xdcblat1 c_dblat1c.o $(dtestl1o) $(LIB) $(EXTRALIB) $(CEXTRALIB)
 xdcblat2: $(dtestl2o) c_dblat2c.o $(TOPDIR)/$(LIBNAME)
-	$(CC) $(LDFLAGS) -o xdcblat2 c_dblat2c.o $(dtestl2o) $(LIB) $(EXTRALIB) $(CEXTRALIB)
+	$(CC) $(CFLAGS) -o xdcblat2 c_dblat2c.o $(dtestl2o) $(LIB) $(EXTRALIB) $(CEXTRALIB)
 xdcblat3: $(dtestl3o) c_dblat3c.o $(TOPDIR)/$(LIBNAME)
-	$(CC) $(LDFLAGS) -o xdcblat3 c_dblat3c.o $(dtestl3o) $(LIB) $(EXTRALIB) $(CEXTRALIB)
+	$(CC) $(CFLAGS) -o xdcblat3 c_dblat3c.o $(dtestl3o) $(LIB) $(EXTRALIB) $(CEXTRALIB)
 endif
 endif
 
@@ -267,11 +267,11 @@ xccblat3_3m: $(ctestl3o_3m) c_cblat3_3m.o $(TOPDIR)/$(LIBNAME)
 	$(FC) $(FLDFLAGS) -o xccblat3_3m c_cblat3_3m.o $(ctestl3o_3m) $(LIB) $(EXTRALIB) $(CEXTRALIB)
 else
 xccblat1: $(ctestl1o) c_cblat1c.o $(TOPDIR)/$(LIBNAME)
-	$(CC) $(LDFLAGS) -o xccblat1 c_cblat1c.o $(ctestl1o) $(LIB) $(EXTRALIB) $(CEXTRALIB)
+	$(CC) $(CFLAGS) -o xccblat1 c_cblat1c.o $(ctestl1o) $(LIB) $(EXTRALIB) $(CEXTRALIB)
 xccblat2: $(ctestl2o) c_cblat2c.o $(TOPDIR)/$(LIBNAME)
-	$(CC) $(LDFLAGS) -o xccblat2 c_cblat2c.o $(ctestl2o) $(LIB) $(EXTRALIB) $(CEXTRALIB)
+	$(CC) $(CFLAGS) -o xccblat2 c_cblat2c.o $(ctestl2o) $(LIB) $(EXTRALIB) $(CEXTRALIB)
 xccblat3: $(ctestl3o) c_cblat3c.o $(TOPDIR)/$(LIBNAME)
-	$(CC) $(LDFLAGS) -o xccblat3 c_cblat3c.o $(ctestl3o) $(LIB) $(EXTRALIB) $(CEXTRALIB)
+	$(CC) $(CFLAGS) -o xccblat3 c_cblat3c.o $(ctestl3o) $(LIB) $(EXTRALIB) $(CEXTRALIB)
 endif
 endif
 
