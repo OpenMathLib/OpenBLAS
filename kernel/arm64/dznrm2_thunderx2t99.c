@@ -84,6 +84,7 @@ static void nrm2_compute(BLASLONG n, FLOAT *x, BLASLONG inc_x,
 	"	fmov	"REGZERO", xzr				\n"
 	"	fmov	"REGONE", #1.0				\n"
 	"	fmov	"REGINF", x6				\n"
+	"	fmov     x6, 1.0 \n" 
 	"	lsl	"INC_X", "INC_X", #"INC_SHIFT"		\n"
 	"	mov	"J", "N"				\n"
 	"	cmp	"J", xzr				\n"
@@ -321,7 +322,7 @@ static void nrm2_compute(BLASLONG n, FLOAT *x, BLASLONG inc_x,
 	: "cc",
 	  "memory",
 	  "x0", "x1", "x2", "x3", "x4", "x5", "x6",
-	  "d0", "d1", "d2", "d3", "d4", "d5", "d6", "d7", "d8", REGINF
+	  "d0", "d1", "d2", "d3", "d4", "d5", "d6", "d7", "d8", "d9"
 	);
 
 }
