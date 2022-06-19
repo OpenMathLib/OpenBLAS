@@ -45,7 +45,7 @@ const static FLOAT dm1 = -1.;
 #undef GEMV_UNROLL
 #define GEMV_UNROLL DTB_ENTRIES
 
-int CNAME(BLASLONG m, FLOAT *a, BLASLONG lda, FLOAT *b, BLASLONG incb, void *buffer){
+int __attribute__((visibility("hidden"))) CNAME(BLASLONG m, FLOAT *a, BLASLONG lda, FLOAT *b, BLASLONG incb, void *buffer){
 
   BLASLONG i, is, min_i;
   FLOAT *gemvbuffer = (FLOAT *)buffer;
