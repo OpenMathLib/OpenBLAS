@@ -285,7 +285,7 @@ matrix:
             - gfortran
       script:
         - travis_wait 45 make && make lapack-test
-        - wget https://85.214.232.120/gesdd.f .
+        - wget https://www.mkroeker.com/gesdd.f .
         - gfortran -ffree-form gesdd.f libopenblas.a -lpthread -o gesdd
         - ./gesdd
         
