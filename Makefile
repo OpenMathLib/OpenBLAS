@@ -154,7 +154,9 @@ ifneq ($(ONLY_CBLAS), 1)
 	$(MAKE) -C utest all
 endif
 ifneq ($(NO_CBLAS), 1)
+Cifneq ($(ONLY_CBLAS), 1)
 	$(MAKE) -C ctest all
+endif
 ifeq ($(CPP_THREAD_SAFETY_TEST), 1)
 	$(MAKE) -C cpp_thread_test all
 endif
