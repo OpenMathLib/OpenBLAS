@@ -43,7 +43,7 @@
 const static FLOAT dm1 = -1.;
 
 int
-#ifndef MSVC
+#ifndef C_MSVC
 __attribute__((visibility("hidden")))
 #endif
 	CNAME(BLASLONG m, FLOAT *a, BLASLONG lda, FLOAT *b, BLASLONG incb, void *buffer){
