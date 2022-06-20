@@ -150,7 +150,9 @@ ifndef NO_FBLAS
 	$(MAKE) -C test all
 endif
 endif
+ifneq ($(ONLY_CBLAS), 1)
 	$(MAKE) -C utest all
+endif
 ifneq ($(NO_CBLAS), 1)
 	$(MAKE) -C ctest all
 ifeq ($(CPP_THREAD_SAFETY_TEST), 1)
