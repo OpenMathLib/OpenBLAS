@@ -289,11 +289,11 @@ xzcblat3_3m: $(ztestl3o_3m) c_zblat3_3m.o $(TOPDIR)/$(LIBNAME)
 	$(FC) $(FLDFLAGS) -o xzcblat3_3m c_zblat3_3m.o $(ztestl3o_3m) $(LIB) $(EXTRALIB) $(CEXTRALIB)
 else
 xzcblat1: $(ztestl1o) c_zblat1c.o $(TOPDIR)/$(LIBNAME)
-	$(CC) $(LDFLAGS) -o xzcblat1 c_zblat1c.o $(ztestl1o) $(LIB) $(EXTRALIB) $(CEXTRALIB)
+	$(CC) $(CFLAGS) -o xzcblat1 c_zblat1c.o $(ztestl1o) $(LIB) $(EXTRALIB) $(CEXTRALIB)
 xzcblat2: $(ztestl2o) c_zblat2c.o $(TOPDIR)/$(LIBNAME)
-	$(CC) $(LDFLAGS) -o xzcblat2 c_zblat2c.o $(ztestl2o) $(LIB) $(EXTRALIB) $(CEXTRALIB)
+	$(CC) $(CFLAGS) -o xzcblat2 c_zblat2c.o $(ztestl2o) $(LIB) $(EXTRALIB) $(CEXTRALIB)
 xzcblat3: $(ztestl3o) c_zblat3c.o $(TOPDIR)/$(LIBNAME)
-	$(CC) $(LDFLAGS) -o xzcblat3 c_zblat3c.o $(ztestl3o) $(LIB) $(EXTRALIB) $(CEXTRALIB)
+	$(CC) $(CFLAGS) -o xzcblat3 c_zblat3c.o $(ztestl3o) $(LIB) $(EXTRALIB) $(CEXTRALIB)
 endif
 endif
 
