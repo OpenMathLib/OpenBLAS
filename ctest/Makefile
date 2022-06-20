@@ -218,7 +218,7 @@ endif
 
 ifeq ($(BUILD_SINGLE),1)
 # Single real
-ifneq ($(NOFORTRAN),1)
+ifeq ($(NOFORTRAN),0)
 xscblat1: $(stestl1o) c_sblat1.o $(TOPDIR)/$(LIBNAME)
 	$(FC) $(FLDFLAGS) -o xscblat1 c_sblat1.o $(stestl1o) $(LIB) $(EXTRALIB) $(CEXTRALIB)
 xscblat2: $(stestl2o) c_sblat2.o $(TOPDIR)/$(LIBNAME)
@@ -237,7 +237,7 @@ endif
 
 ifeq ($(BUILD_DOUBLE),1)
 # Double real
-ifneq ($(NOFORTRAN),1)
+ifeq ($(NOFORTRAN),0)
 xdcblat1: $(dtestl1o) c_dblat1.o $(TOPDIR)/$(LIBNAME)
 	$(FC) $(FLDFLAGS) -o xdcblat1 c_dblat1.o $(dtestl1o) $(LIB) $(EXTRALIB) $(CEXTRALIB)
 xdcblat2: $(dtestl2o) c_dblat2.o $(TOPDIR)/$(LIBNAME)
@@ -256,7 +256,7 @@ endif
 
 ifeq ($(BUILD_COMPLEX),1)
 # Single complex
-ifneq ($(NOFORTRAN),1)
+ifeq ($(NOFORTRAN),0)
 xccblat1: $(ctestl1o) c_cblat1.o $(TOPDIR)/$(LIBNAME)
 	$(FC) $(FLDFLAGS) -o xccblat1 c_cblat1.o $(ctestl1o) $(LIB) $(EXTRALIB) $(CEXTRALIB)
 xccblat2: $(ctestl2o) c_cblat2.o $(TOPDIR)/$(LIBNAME)
@@ -278,7 +278,7 @@ endif
 
 ifeq ($(BUILD_COMPLEX16),1)
 # Double complex
-ifneq ($(NOFORTRAN),1)
+ifeq ($(NOFORTRAN),0)
 xzcblat1: $(ztestl1o) c_zblat1.o $(TOPDIR)/$(LIBNAME)
 	$(FC) $(FLDFLAGS) -o xzcblat1 c_zblat1.o $(ztestl1o) $(LIB) $(EXTRALIB) $(CEXTRALIB)
 xzcblat2: $(ztestl2o) c_zblat2.o $(TOPDIR)/$(LIBNAME)
