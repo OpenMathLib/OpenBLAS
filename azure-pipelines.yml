@@ -163,6 +163,7 @@ jobs:
   variables:
      LD_LIBRARY_PATH: /usr/local/opt/llvm/lib
      LIBRARY_PATH: /usr/local/opt/llvm/lib
+     MACOSX_DEPLOYMENT_TARGET: 11.0
   steps:   
   - script: |
       brew update
