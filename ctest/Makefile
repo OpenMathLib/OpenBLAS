@@ -227,11 +227,12 @@ xscblat3: $(stestl3o) c_sblat3.o $(TOPDIR)/$(LIBNAME)
 	$(FC) $(FLDFLAGS) -o xscblat3 c_sblat3.o $(stestl3o) $(LIB) $(EXTRALIB) $(CEXTRALIB)
 else
 xscblat1: $(stestl1o) c_sblat1c.o $(TOPDIR)/$(LIBNAME)
-	$(CC) $(CFLAGS) -o xscblat1 c_sblat1c.o $(stestl1o) $(LIB) $(EXTRALIB) $(CEXTRALIB)
+	$(CC) $(CFLAGS) -o xscblat1 c_sblat1c.o $(stestl1o) $(LIB) $(EXTRALIB) 
+#$(CEXTRALIB)
 xscblat2: $(stestl2o) c_sblat2c.o $(TOPDIR)/$(LIBNAME)
-	$(CC) $(CFLAGS) -o xscblat2 c_sblat2c.o $(stestl2o) $(LIB) $(EXTRALIB) $(CEXTRALIB)
+	$(CC) $(CFLAGS) -o xscblat2 c_sblat2c.o $(stestl2o) $(LIB) $(EXTRALIB)
 xscblat3: $(stestl3o) c_sblat3c.o $(TOPDIR)/$(LIBNAME)
-	$(CC) $(CFLAGS) -o xscblat3 c_sblat3c.o $(stestl3o) $(LIB) $(EXTRALIB) $(CEXTRALIB)
+	$(CC) $(CFLAGS) -o xscblat3 c_sblat3c.o $(stestl3o) $(LIB) $(EXTRALIB)
 endif
 endif
 
