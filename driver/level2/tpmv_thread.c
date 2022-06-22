@@ -234,7 +234,11 @@ static int tpmv_kernel(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, F
   return 0;
 }
 
-int CNAME(BLASLONG m, FLOAT *a, FLOAT *x, BLASLONG incx, FLOAT *buffer, int nthreads){
+int
+#ifndef C_MSVC
+__attribute__((visibility("hidden")))
+#endif
+	CNAME(BLASLONG m, FLOAT *a, FLOAT *x, BLASLONG incx, FLOAT *buffer, int nthreads){
 
   blas_arg_t args;
   blas_queue_t queue[MAX_CPU_NUMBER];
