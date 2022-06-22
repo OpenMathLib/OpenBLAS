@@ -1463,6 +1463,9 @@ ifneq ($(ARCH), x86)
 NO_AFFINITY = 1
 endif
 endif
+ifdef ARMV8
+NO_AFFINITY = 1
+endif
 
 ifdef NO_AFFINITY
 ifeq ($(NO_AFFINITY), 0)
