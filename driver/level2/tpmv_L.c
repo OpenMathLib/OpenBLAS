@@ -42,7 +42,11 @@
 
 // const static FLOAT dp1 = 1.;
 
-int CNAME(BLASLONG m, FLOAT *a, FLOAT *b, BLASLONG incb, void *buffer){
+int
+#ifndef C_MSVC
+__attribute__((visibility("hidden")))
+#endif
+      CNAME(BLASLONG m, FLOAT *a, FLOAT *b, BLASLONG incb, void *buffer){
 
   BLASLONG i;
   FLOAT *B = b;
