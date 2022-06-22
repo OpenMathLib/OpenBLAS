@@ -731,7 +731,11 @@ EnterCriticalSection((PCRITICAL_SECTION)&level3_lock);
   return 0;
 }
 
-int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, IFLOAT *sa, IFLOAT *sb, BLASLONG mypos){
+int
+#ifndef C_MSVC
+__attribute__((visibility("hidden")))
+#endif
+	CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, IFLOAT *sa, IFLOAT *sb, BLASLONG mypos){
 
   BLASLONG m = args -> m;
   BLASLONG n = args -> n;

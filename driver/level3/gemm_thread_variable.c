@@ -40,7 +40,11 @@
 #include <stdlib.h>
 #include "common.h"
 
-int CNAME(int mode,
+int
+#ifndef C_MSVC
+__attribute__((visibility("hidden")))
+#endif
+	CNAME(int mode,
 	  blas_arg_t *arg, BLASLONG *range_m, BLASLONG *range_n,
 	  int (*function)(), void *sa, void *sb, BLASLONG divM, BLASLONG divN) {
 

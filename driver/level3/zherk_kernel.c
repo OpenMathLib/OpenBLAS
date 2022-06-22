@@ -47,7 +47,11 @@
 #define GEMM_KERNEL_B0	GEMM_KERNEL_L_B0
 #endif
 
-int CNAME(BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alpha_r,
+int
+#ifndef C_MSVC
+__attribute__((visibility("hidden")))
+#endif
+	CNAME(BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alpha_r,
 	   FLOAT *a, FLOAT *b, FLOAT *c, BLASLONG ldc, BLASLONG offset){
 
   BLASLONG i, j;

@@ -53,7 +53,11 @@
 #endif
 #endif
 
-int CNAME(BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alpha_r,
+int
+#ifndef C_MSVC
+__attribute__((visibility("hidden")))
+#endif
+	CNAME(BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alpha_r,
 #ifdef COMPLEX
 	   FLOAT alpha_i,
 #endif

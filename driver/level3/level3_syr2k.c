@@ -102,7 +102,11 @@
 #define LDC	args -> ldc
 #endif
 
-int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa, FLOAT *sb, BLASLONG dummy) {
+int
+#ifndef C_MSVC
+__attribute__((visibility("hidden")))
+#endif
+	CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa, FLOAT *sb, BLASLONG dummy) {
 
   BLASLONG m_from, m_to, n_from, n_to, k, lda, ldb, ldc;
   FLOAT *a, *b, *c, *alpha, *beta;

@@ -169,7 +169,11 @@
 #define STOP_RPCC(COUNTER)
 #endif
 
-int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n,
+int
+#ifndef C_MSVC
+__attribute__((visibility("hidden")))
+#endif
+	CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n,
 		  XFLOAT *sa, XFLOAT *sb, BLASLONG dummy){
   BLASLONG k, lda, ldb, ldc;
   FLOAT *alpha, *beta;

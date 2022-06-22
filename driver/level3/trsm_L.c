@@ -68,7 +68,11 @@ const static FLOAT dm1 = -1.;
 #define GEMM_R 1600
 #endif
 
-int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa, FLOAT *sb, BLASLONG dummy) {
+int
+#ifndef C_MSVC
+__attribute__((visibility("hidden")))
+#endif
+	CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa, FLOAT *sb, BLASLONG dummy) {
 
   BLASLONG m, n, lda, ldb;
   FLOAT *beta, *a, *b;
