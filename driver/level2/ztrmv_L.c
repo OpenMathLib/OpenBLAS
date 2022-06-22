@@ -42,7 +42,11 @@
 
 static FLOAT dp1 = 1.;
 
-int CNAME(BLASLONG m, FLOAT *a, BLASLONG lda, FLOAT *b, BLASLONG incb, FLOAT *buffer){
+int
+#ifndef C_MSVC
+__attribute__((visibility("hidden")))
+#endif
+	CNAME(BLASLONG m, FLOAT *a, BLASLONG lda, FLOAT *b, BLASLONG incb, FLOAT *buffer){
 
   BLASLONG i, is, min_i;
 #if (TRANSA == 2) || (TRANSA == 4)
