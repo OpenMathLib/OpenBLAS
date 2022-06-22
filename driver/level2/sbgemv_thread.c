@@ -82,7 +82,11 @@ static int sbgemv_kernel(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n,
     return 0;
 }
 
-int CNAME(BLASLONG m, BLASLONG n, float alpha, bfloat16 *a, BLASLONG lda, bfloat16 *x, BLASLONG incx, float beta, float *y, BLASLONG incy, int threads)
+int
+#ifndef C_MSVC
+__attribute__((visibility("hidden")))
+#endif
+	CNAME(BLASLONG m, BLASLONG n, float alpha, bfloat16 *a, BLASLONG lda, bfloat16 *x, BLASLONG incx, float beta, float *y, BLASLONG incy, int threads)
 {
     blas_arg_t args;
     blas_queue_t queue[MAX_CPU_NUMBER];

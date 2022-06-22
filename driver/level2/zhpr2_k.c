@@ -40,7 +40,11 @@
 #include <ctype.h>
 #include "common.h"
 
-int CNAME(BLASLONG m, FLOAT alpha_r, FLOAT alpha_i,
+int
+#ifndef C_MSVC
+__attribute__((visibility("hidden")))
+#endif
+	CNAME(BLASLONG m, FLOAT alpha_r, FLOAT alpha_i,
 	 FLOAT *x, BLASLONG incx,
 	 FLOAT *y, BLASLONG incy, FLOAT *a, FLOAT *buffer){
 

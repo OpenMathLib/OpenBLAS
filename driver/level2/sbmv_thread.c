@@ -171,9 +171,17 @@ static int sbmv_kernel(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, F
 }
 
 #ifndef COMPLEX
-int CNAME(BLASLONG n, BLASLONG k, FLOAT  alpha, FLOAT *a, BLASLONG lda, FLOAT *x, BLASLONG incx, FLOAT *y, BLASLONG incy, FLOAT *buffer, int nthreads){
+int
+#ifndef C_MSVC
+__attribute__((visibility("hidden")))
+#endif
+	CNAME(BLASLONG n, BLASLONG k, FLOAT  alpha, FLOAT *a, BLASLONG lda, FLOAT *x, BLASLONG incx, FLOAT *y, BLASLONG incy, FLOAT *buffer, int nthreads){
 #else
-int CNAME(BLASLONG n, BLASLONG k, FLOAT *alpha, FLOAT *a, BLASLONG lda, FLOAT *x, BLASLONG incx, FLOAT *y, BLASLONG incy, FLOAT *buffer, int nthreads){
+int
+#ifndef C_MSVC
+__attribute__((visibility("hidden")))
+#endif
+       	CNAME(BLASLONG n, BLASLONG k, FLOAT *alpha, FLOAT *a, BLASLONG lda, FLOAT *x, BLASLONG incx, FLOAT *y, BLASLONG incy, FLOAT *buffer, int nthreads){
 #endif
 
   blas_arg_t args;

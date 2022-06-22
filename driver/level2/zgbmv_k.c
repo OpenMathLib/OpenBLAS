@@ -66,7 +66,11 @@
 #define M n
 #endif
 
-void CNAME(BLASLONG m, BLASLONG n, BLASLONG ku, BLASLONG kl, FLOAT alpha_r, FLOAT alpha_i,
+void
+#ifndef C_MSVC
+__attribute__((visibility("hidden")))
+#endif
+	CNAME(BLASLONG m, BLASLONG n, BLASLONG ku, BLASLONG kl, FLOAT alpha_r, FLOAT alpha_i,
 	  FLOAT *a, BLASLONG lda,
 	  FLOAT *x, BLASLONG incx, FLOAT *y, BLASLONG incy, void *buffer){
 

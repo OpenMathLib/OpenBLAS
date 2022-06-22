@@ -150,9 +150,17 @@ static int syr_kernel(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FL
 }
 
 #if !defined(COMPLEX) || defined(HEMV) || defined(HEMVREV)
-int CNAME(BLASLONG m, FLOAT  alpha, FLOAT *x, BLASLONG incx, FLOAT *a, FLOAT *buffer, int nthreads){
+int
+#ifndef C_MSVC
+__attribute__((visibility("hidden")))
+#endif
+	CNAME(BLASLONG m, FLOAT  alpha, FLOAT *x, BLASLONG incx, FLOAT *a, FLOAT *buffer, int nthreads){
 #else
-int CNAME(BLASLONG m, FLOAT *alpha, FLOAT *x, BLASLONG incx, FLOAT *a, FLOAT *buffer, int nthreads){
+int
+#ifndef C_MSVC
+__attribute__((visibility("hidden")))
+#endif
+       	CNAME(BLASLONG m, FLOAT *alpha, FLOAT *x, BLASLONG incx, FLOAT *a, FLOAT *buffer, int nthreads){
 #endif
 
   blas_arg_t args;

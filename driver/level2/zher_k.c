@@ -38,7 +38,11 @@
 
 #include "common.h"
 
-int CNAME(BLASLONG m, FLOAT alpha, FLOAT *x,
+int
+#ifndef C_MSVC
+__attribute__((visibility("hidden")))
+#endif
+	CNAME(BLASLONG m, FLOAT alpha, FLOAT *x,
 		      BLASLONG incx, FLOAT *a, BLASLONG lda, FLOAT *buffer){
 
   BLASLONG i;

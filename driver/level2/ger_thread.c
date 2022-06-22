@@ -111,9 +111,17 @@ static int ger_kernel(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FL
 }
 
 #ifndef COMPLEX
-int CNAME(BLASLONG m, BLASLONG n, FLOAT  alpha, FLOAT *x, BLASLONG incx, FLOAT *y, BLASLONG incy, FLOAT *a, BLASLONG lda, FLOAT *buffer, int nthreads){
+int
+#ifndef C_MSVC
+__attribute__((visibility("hidden")))
+#endif
+	CNAME(BLASLONG m, BLASLONG n, FLOAT  alpha, FLOAT *x, BLASLONG incx, FLOAT *y, BLASLONG incy, FLOAT *a, BLASLONG lda, FLOAT *buffer, int nthreads){
 #else
-int CNAME(BLASLONG m, BLASLONG n, FLOAT *alpha, FLOAT *x, BLASLONG incx, FLOAT *y, BLASLONG incy, FLOAT *a, BLASLONG lda, FLOAT *buffer, int nthreads){
+int
+#ifndef C_MSVC
+__attribute__((visibility("hidden")))
+#endif 
+	CNAME(BLASLONG m, BLASLONG n, FLOAT *alpha, FLOAT *x, BLASLONG incx, FLOAT *y, BLASLONG incy, FLOAT *a, BLASLONG lda, FLOAT *buffer, int nthreads){
 #endif
 
   blas_arg_t args;
