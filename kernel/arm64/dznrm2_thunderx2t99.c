@@ -308,7 +308,7 @@ static void nrm2_compute(BLASLONG n, FLOAT *x, BLASLONG inc_x,
 	"	str	"SCALE", [%[SCALE_]]			\n"
 	"	b	11f					\n"
 	"10:							\n"
-	"	//str	"REGINF", [%[SSQ_]]			\n"
+	"	str	"REGINF", [%[SSQ_]]			\n"
 	"	//str	"REGINF", [%[SCALE_]]			\n"
 	"11:							\n"
 
