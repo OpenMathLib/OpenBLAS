@@ -35,17 +35,11 @@ int CNAME(BLASLONG m, BLASLONG n, IFLOAT *a, BLASLONG lda, IFLOAT *b) {
     a_offset = a;
     b_offset = b;
 
-    BLASLONG m4 = m & ~3;
-    BLASLONG n2 = n & ~1;
-
-    BLASLONG j = 0;
-    for (; j < n2; j += 2) {
+    for (BLASLONG j = 0; j < n / 2; j++) {
         a_offset1 = a_offset;
         a_offset2 = a_offset1 + lda;
         a_offset += 2 * lda;
-
-        BLASLONG i = 0;
-        for (; i < m4; i += 4) {
+        for (BLASLONG i = 0; i < m / 4; i++) {
             *(b_offset + 0) = *(a_offset1 + 0);
             *(b_offset + 1) = *(a_offset1 + 1);
             *(b_offset + 2) = *(a_offset1 + 2);
@@ -59,57 +53,49 @@ int CNAME(BLASLONG m, BLASLONG n, IFLOAT *a, BLASLONG lda, IFLOAT *b) {
             a_offset2 += 4;
             b_offset += 8;
         }
-        if (i < m) {
+        BLASLONG rest = m & 3;
+        if (rest == 3) {
             *(b_offset + 0) = *(a_offset1 + 0);
-            *(b_offset + 4) = *(a_offset2 + 0);
-
-            if (i + 1 < m) {
-                *(b_offset + 1) = *(a_offset1 + 1);
-                *(b_offset + 5) = *(a_offset2 + 1);
-            } else {
-                *(b_offset + 1) = 0;
-                *(b_offset + 5) = 0;
-            }
-
-            if (i + 2 < m) {
-                *(b_offset + 2) = *(a_offset1 + 2);
-                *(b_offset + 6) = *(a_offset2 + 2);
-            } else {
-                *(b_offset + 2) = 0;
-                *(b_offset + 6) = 0;
-            }
-
-            *(b_offset + 3) = 0;
-            *(b_offset + 7) = 0;
-
-            b_offset += 8;
+            *(b_offset + 1) = *(a_offset1 + 1);
+            *(b_offset + 2) = *(a_offset1 + 2);
+            *(b_offset + 3) = *(a_offset2 + 0);
+            *(b_offset + 4) = *(a_offset2 + 1);
+            *(b_offset + 5) = *(a_offset2 + 2);
+            b_offset += 6;
+        } else if (rest == 2) {
+            *(b_offset + 0) = *(a_offset1 + 0);
+            *(b_offset + 1) = *(a_offset1 + 1);
+            *(b_offset + 2) = *(a_offset2 + 0);
+            *(b_offset + 3) = *(a_offset2 + 1);
+            b_offset += 4;
+        } else if (rest == 1) {
+            *(b_offset + 0) = *(a_offset1 + 0);
+            *(b_offset + 1) = *(a_offset2 + 0);
+            b_offset += 2;
         }
     }
-    if (j < n) {
-        BLASLONG i = 0;
-        for (; i < m4; i += 4) {
+    if (n & 1) {
+        for (BLASLONG i = 0; i < m / 4; i++) {
             *(b_offset + 0) = *(a_offset + 0);
             *(b_offset + 1) = *(a_offset + 1);
             *(b_offset + 2) = *(a_offset + 2);
             *(b_offset + 3) = *(a_offset + 3);
-            *(b_offset + 4) = 0;
-            *(b_offset + 5) = 0;
-            *(b_offset + 6) = 0;
-            *(b_offset + 7) = 0;
-            a_offset += 4;
-            b_offset += 4;
-        }
-        if (i < m) {
-            *(b_offset + 4) = 0;
-            *(b_offset + 5) = 0;
-            *(b_offset + 6) = 0;
-            *(b_offset + 7) = 0;
 
+            b_offset += 4;
+            a_offset += 4;
+        }
+        BLASLONG rest = m & 3;
+        if (rest == 3) {
             *(b_offset + 0) = *(a_offset + 0);
-            *(b_offset + 1) = (i + 1 < m) ? *(a_offset + 1) : 0;
-            *(b_offset + 2) = (i + 2 < m) ? *(a_offset + 2) : 0;
-            *(b_offset + 3) = 0;
+            *(b_offset + 1) = *(a_offset + 1);
+            *(b_offset + 2) = *(a_offset + 2);
+        } else if (rest == 2) {
+            *(b_offset + 0) = *(a_offset + 0);
+            *(b_offset + 1) = *(a_offset + 1);
+        } else if (rest == 1) {
+            *(b_offset + 0) = *(a_offset + 0);
         }
     }
+
     return 0;
 }

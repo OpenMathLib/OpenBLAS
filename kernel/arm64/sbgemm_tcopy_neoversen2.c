@@ -28,25 +28,21 @@
 
 #include "common.h"
 
+
 int CNAME(BLASLONG m, BLASLONG n, IFLOAT *a, BLASLONG lda, IFLOAT *b) {
     IFLOAT *a_offset, *a_offset1, *a_offset2, *a_offset3, *a_offset4;
     IFLOAT *b_offset;
     a_offset = a;
     b_offset = b;
 
-    BLASLONG m4 = m & ~3;
-    BLASLONG n2 = n & ~1;
-
-    BLASLONG j = 0;
-    for (; j < n2; j += 2) {
+    for (BLASLONG j = 0; j < n / 2; j++) {
         a_offset1 = a_offset;
         a_offset2 = a_offset1 + lda;
         a_offset3 = a_offset2 + lda;
         a_offset4 = a_offset3 + lda;
         a_offset += 2;
 
-        BLASLONG i = 0;
-        for (; i < m4; i += 4) {
+        for (BLASLONG i = 0; i < m / 4; i++) {
             *(b_offset + 0) = *(a_offset1 + 0);
             *(b_offset + 1) = *(a_offset2 + 0);
             *(b_offset + 2) = *(a_offset3 + 0);
@@ -62,55 +58,50 @@ int CNAME(BLASLONG m, BLASLONG n, IFLOAT *a, BLASLONG lda, IFLOAT *b) {
             a_offset3 += 4 * lda;
             a_offset4 += 4 * lda;
         }
-        if (i < m) {  // padding 4
-            *(b_offset + 0) = *(a_offset1 + 0);
-            *(b_offset + 4) = *(a_offset1 + 1);
-
-            if (i + 1 < m) {
+        
+        if (m & 3) {
+            BLASLONG rest = m & 3;
+            if (rest == 3) {
+                *(b_offset + 0) = *(a_offset1 + 0);
                 *(b_offset + 1) = *(a_offset2 + 0);
-                *(b_offset + 5) = *(a_offset2 + 1);
-            } else {
-                *(b_offset + 1) = 0;
-                *(b_offset + 5) = 0;
-            }
-
-            if (i + 2 < m) {
                 *(b_offset + 2) = *(a_offset3 + 0);
-                *(b_offset + 6) = *(a_offset3 + 1);
-            } else {
-                *(b_offset + 2) = 0;
-                *(b_offset + 6) = 0;
+                *(b_offset + 3) = *(a_offset1 + 1);
+                *(b_offset + 4) = *(a_offset2 + 1);
+                *(b_offset + 5) = *(a_offset3 + 1);
+                b_offset += 6;
+            } else if (rest == 2) {
+                *(b_offset + 0) = *(a_offset1 + 0);
+                *(b_offset + 1) = *(a_offset2 + 0);
+                *(b_offset + 2) = *(a_offset1 + 1);
+                *(b_offset + 3) = *(a_offset2 + 1);
+                b_offset += 4;
+            } else if (rest == 1) {
+                *(b_offset + 0) = *(a_offset1 + 0);
+                *(b_offset + 1) = *(a_offset1 + 1);
+                b_offset += 2;
             }
-
-            *(b_offset + 3) = 0;
-            *(b_offset + 7) = 0;
-            b_offset += 8;
         }
     }
-    if (j < n) {  // rest 1
-        BLASLONG i = 0;
-        for (; i < m4; i += 4) {
-            *(b_offset + 0) = *(a_offset + 0);
-            *(b_offset + 1) = *(a_offset + 1 * lda);
-            *(b_offset + 2) = *(a_offset + 2 * lda);
-            *(b_offset + 3) = *(a_offset + 3 * lda);
-            *(b_offset + 4) = 0;
-            *(b_offset + 5) = 0;
-            *(b_offset + 6) = 0;
-            *(b_offset + 7) = 0;
+    if (n & 1) {
+        for (BLASLONG i = 0; i < m / 4; i++) {
+            *(b_offset + 0) = *(a_offset);
+            *(b_offset + 1) = *(a_offset + lda);
+            *(b_offset + 2) = *(a_offset + lda * 2);
+            *(b_offset + 3) = *(a_offset + lda * 3);
+
             b_offset += 4;
             a_offset += 4 * lda;
         }
-        if (i < m) {
-            *(b_offset + 4) = 0;
-            *(b_offset + 5) = 0;
-            *(b_offset + 6) = 0;
-            *(b_offset + 7) = 0;
-
-            *(b_offset + 0) = *(a_offset + 0);
-            *(b_offset + 1) = (i + 1 < m) ? *(a_offset + 1 * lda) : 0;
-            *(b_offset + 2) = (i + 2 < m) ? *(a_offset + 2 * lda) : 0;
-            *(b_offset + 3) = 0;
+        BLASLONG rest = m & 3;
+        if (rest == 3) {
+            *(b_offset + 0) = *(a_offset);
+            *(b_offset + 1) = *(a_offset + lda);
+            *(b_offset + 2) = *(a_offset + lda * 2);
+        } else if (rest == 2) {
+            *(b_offset + 0) = *(a_offset);
+            *(b_offset + 1) = *(a_offset + lda);
+        } else if (rest == 1) {
+            *(b_offset + 0) = *(a_offset);
         }
     }
 
