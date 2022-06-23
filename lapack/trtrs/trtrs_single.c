@@ -65,7 +65,11 @@
 #define TRSV TRSV_TLN
 #endif
 
-blasint CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa, FLOAT *sb, BLASLONG mypos) {
+blasint
+#ifndef C_MSVC
+__attribute__((visibility("hidden")))
+#endif
+	CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa, FLOAT *sb, BLASLONG mypos) {
 
     if (args -> n == 1){
         TRSV (args -> m, args -> a, args -> lda, args -> b, 1, sb);
