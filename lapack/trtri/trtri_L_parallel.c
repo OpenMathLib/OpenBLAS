@@ -49,7 +49,11 @@
 #define TRSM	TRSM_RNLN
 #endif
 
-blasint CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa, FLOAT *sb, BLASLONG mypos) {
+blasint
+#ifndef C_MSVC
+__attribute__((visibility("hidden")))
+#endif
+	CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa, FLOAT *sb, BLASLONG mypos) {
 
   BLASLONG n, info;
   BLASLONG bk, i, blocking, start_i;
