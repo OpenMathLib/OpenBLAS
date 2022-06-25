@@ -261,7 +261,7 @@ endif
 #For small matrix optimization
 ifeq ($(ARCH), x86_64)
 SMALL_MATRIX_OPT = 1
-else ifeq ($(CORE), POWER10)
+else ifeq ($(ARCH), power)
 SMALL_MATRIX_OPT = 1
 endif
 ifeq ($(SMALL_MATRIX_OPT), 1)
