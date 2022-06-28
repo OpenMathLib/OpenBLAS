@@ -81,7 +81,7 @@ jobs:
      vmImage: 'windows-latest'
   steps:   
   - script: |
-      mingw32-make CC=gcc FC=gfortran DYNAMIC_ARCH=1 DYNAMIC_LIST="SANDYBRIDGE HASWELL"
+      mingw32-make CC=gcc FC=gfortran DYNAMIC_ARCH=1 DYNAMIC_LIST="SANDYBRIDGE"
 
 - job: Windows_clang_cmake
   pool:
