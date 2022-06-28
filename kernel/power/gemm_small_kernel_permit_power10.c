@@ -69,6 +69,7 @@ int CNAME(int transa, int transb, BLASLONG M, BLASLONG N, BLASLONG K, FLOAT alph
 
 #endif
 
+#ifdef SMP
   // Multi-threading execution outperforms (or approaches) the execution of the
   // small kernel.
   if (num_cpu_avail(3) > 1) {
@@ -77,6 +78,9 @@ int CNAME(int transa, int transb, BLASLONG M, BLASLONG N, BLASLONG K, FLOAT alph
   } else {
     return 1;
   }
+#else
+  return 1;
+#endif
 
 #endif
 
