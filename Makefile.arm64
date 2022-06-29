@@ -123,7 +123,7 @@ ifeq ($(GCCVERSIONGTEQ9), 1)
 ifeq (1, $(filter 1,$(GCCMINORVERSIONGTEQ4) $(GCCVERSIONGTEQ10)))
 CCOMMON_OPT += -march=armv8.5-a+sve+sve2+bf16 -mtune=neoverse-n2
 ifneq ($(F_COMPILER), NAG)
-FCOMMON_OPT += -march=armv8.5-a -mtune=neoverse-n2
+FCOMMON_OPT += -march=armv8.5-a+sve+sve2+bf16 -mtune=neoverse-n2
 endif
 else
 CCOMMON_OPT += -march=armv8.5-a -mtune=native
