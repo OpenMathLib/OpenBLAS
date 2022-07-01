@@ -187,3 +187,14 @@ ZGEMMONCOPY    =  ../generic/zgemm_ncopy_$(ZGEMM_UNROLL_N).c
 ZGEMMOTCOPY    =  ../generic/zgemm_tcopy_$(ZGEMM_UNROLL_N).c
 ZGEMMONCOPYOBJ =  zgemm_oncopy$(TSUFFIX).$(SUFFIX)
 ZGEMMOTCOPYOBJ =  zgemm_otcopy$(TSUFFIX).$(SUFFIX)
+
+SBGEMM_BETA    =  sbgemm_beta_neoversen2.c
+SBGEMMKERNEL    = sbgemm_kernel_$(SBGEMM_UNROLL_M)x$(SBGEMM_UNROLL_N)_neoversen2.c
+SBGEMMINCOPY    = sbgemm_ncopy_neoversen2.c
+SBGEMMITCOPY    = sbgemm_tcopy_neoversen2.c
+SBGEMMONCOPY    = sbgemm_ncopy_neoversen2.c
+SBGEMMOTCOPY    = sbgemm_tcopy_neoversen2.c
+SBGEMMINCOPYOBJ =  sbgemm_incopy$(TSUFFIX).$(SUFFIX)
+SBGEMMITCOPYOBJ =  sbgemm_itcopy$(TSUFFIX).$(SUFFIX)
+SBGEMMONCOPYOBJ =  sbgemm_oncopy$(TSUFFIX).$(SUFFIX)
+SBGEMMOTCOPYOBJ =  sbgemm_otcopy$(TSUFFIX).$(SUFFIX)
