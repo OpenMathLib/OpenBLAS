@@ -33,6 +33,11 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "openblas_utest.h"
 #if defined(BUILD_DOUBLE)
+
+#ifndef INFINITY
+#define INFINITY HUGE_VALF
+#endif
+
 CTEST(dnrm2,dnrm2_inf)
 {
 	double x[29];
