@@ -35,17 +35,18 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #if defined(BUILD_DOUBLE)
 
 #ifndef INFINITY
-#define INFINITY HUGE_VALF
+#define INFINITY HUGE_VAL
 #endif
 
 CTEST(dnrm2,dnrm2_inf)
 {
+	int i;
 	double x[29];
 	blasint incx=1;
 	blasint n=28;
 	double res1=0.0f, res2=INFINITY;
 
-	for (int i=0;i<n;i++)x[i]=0.0f;
+	for (i=0;i<n;i++)x[i]=0.0f;
 	x[10]=-INFINITY;
 	res1=BLASFUNC(dnrm2)(&n, x, &incx);
 	ASSERT_DBL_NEAR_TOL(res2, res1, DOUBLE_EPS);
@@ -53,12 +54,13 @@ CTEST(dnrm2,dnrm2_inf)
 }
 CTEST(dnrm2,dnrm2_tiny)
 {
+	int i;
 	double x[29];
 	blasint incx=1;
 	blasint n=28;
 	double res1=0.0f, res2=0.0f;
 
-	for (int i=0;i<n;i++)x[i]=7.457008414e-310;
+	for (i=0;i<n;i++)x[i]=7.457008414e-310;
 	res1=BLASFUNC(dnrm2)(&n, x, &incx);
 	ASSERT_DBL_NEAR_TOL(res2, res1, DOUBLE_EPS);
 }
