@@ -606,6 +606,7 @@ int main(int argc, const char ** argv){
   CTEST_ADD (zdotu,zdotu_n_1);
   CTEST_ADD (zdotu,zdotu_offset_1);
   CTEST_ADD (dsdot,dsdot_n_1);
+  CTEST_ADD (dnrm2,dnrm2_tiny);
   CTEST_ADD (rot,drot_inc_0);
   CTEST_ADD (rot,zdrot_inc_0);
   CTEST_ADD (rot,srot_inc_0);

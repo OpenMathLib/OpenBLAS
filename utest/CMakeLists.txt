@@ -13,6 +13,7 @@ else ()
     test_rot.c
     test_axpy.c
     test_dsdot.c
+    test_dnrm2.c
     test_swap.c
   )
 endif ()
