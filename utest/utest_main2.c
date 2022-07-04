@@ -369,6 +369,38 @@ CTEST(dsdot,dsdot_n_1)
 
 }
 
+#if defined(BUILD_DOUBLE)
+CTEST(dnrm2,dnrm2_inf)
+{
+#ifndef INFINITY
+#define INFINITY HUGE_VAL
+#endif
+	int i;
+	double x[29];
+	blasint incx=1;
+	blasint n=28;
+	double res1=0.0f, res2=INFINITY;
+
+	for (i=0;i<n;i++)x[i]=0.0f;
+	x[10]=-INFINITY;
+	res1=BLASFUNC(dnrm2)(&n, x, &incx);
+	ASSERT_DBL_NEAR_TOL(res2, res1, DOUBLE_EPS);
+
+}
+CTEST(dnrm2,dnrm2_tiny)
+{
+	int i;
+	double x[29];
+	blasint incx=1;
+	blasint n=28;
+	double res1=0.0f, res2=0.0f;
+
+	for (i=0;i<n;i++)x[i]=7.457008414e-310;
+	res1=BLASFUNC(dnrm2)(&n, x, &incx);
+	ASSERT_DBL_NEAR_TOL(res2, res1, DOUBLE_EPS);
+}
+#endif
+
 CTEST(rot,drot_inc_0)
 {
 	blasint i=0;
@@ -606,6 +638,8 @@ int main(int argc, const char ** argv){
   CTEST_ADD (zdotu,zdotu_n_1);
   CTEST_ADD (zdotu,zdotu_offset_1);
   CTEST_ADD (dsdot,dsdot_n_1);
+  CTEST_ADD (dnrm2,dnrm2_inf);
+  CTEST_ADD (dnrm2,dnrm2_tiny);
   CTEST_ADD (rot,drot_inc_0);
   CTEST_ADD (rot,zdrot_inc_0);
   CTEST_ADD (rot,srot_inc_0);
