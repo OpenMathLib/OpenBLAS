@@ -10,25 +10,7 @@
 #undef I
 #endif
 
-#if defined(_WIN64)
-typedef long long BLASLONG;
-typedef unsigned long long BLASULONG;
-#else
-typedef long BLASLONG;
-typedef unsigned long BLASULONG;
-#endif
-
-#ifdef LAPACK_ILP64
-typedef BLASLONG blasint;
-#if defined(_WIN64)
-#define blasabs(x) llabs(x)
-#else
-#define blasabs(x) labs(x)
-#endif
-#else
-typedef int blasint;
-#define blasabs(x) abs(x)
-#endif
+#include "common.h"
 
 typedef blasint integer;
 
@@ -378,6 +360,7 @@ static integer smaxloc_(float *w, integer s, integer e, integer *n)
 	return mi-s+1;
 }
 #endif
+#if 0
 static inline void cdotc_(complex *z, integer *n_, complex *x, integer *incx_, complex *y, integer *incy_) {
 	integer n = *n_, incx = *incx_, incy = *incy_, i;
 #ifdef _MSC_VER
@@ -502,7 +485,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 	pCd(z) = zdotc;
 }
 #endif
-
+#endif
 
 
 /* Common Block Declarations */
@@ -867,7 +850,7 @@ real *sfac;
 
     /* Local variables */
     static integer lenx, leny;
-    extern doublereal sdottest_();
+    extern real sdottest_();
     static integer i__, j, ksize;
     extern /* Subroutine */ int stest_(), scopytest_(), sswaptest_(), 
 	    saxpytest_();
@@ -986,9 +969,9 @@ real *sfac;
 	    1.17 };
 
     /* Local variables */
-    extern /* Subroutine */ int srot_(), srottest_();
+    extern /* Subroutine */ srottest_();
     static integer i__, k, ksize;
-    extern /* Subroutine */ int stest_(), srotm_(), srotmtest_();
+    extern /* Subroutine */ int stest_(), srotmtest_();
     static integer ki, kn;
     static real sx[19], sy[19], sparam[5], stx[19], sty[19];
 
@@ -1211,7 +1194,7 @@ L40:
     return 0;
 
 } /* itest1_ */
-
+#if 0
 /* Subroutine */ int srot_(n, sx, incx, sy, incy, c__, s)
 integer *n;
 real *sx;
@@ -1418,3 +1401,4 @@ real *sparam;
     return 0;
 } /* srotm_ */
 
+#endif

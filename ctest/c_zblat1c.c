@@ -10,25 +10,7 @@
 #undef I
 #endif
 
-#if defined(_WIN64)
-typedef long long BLASLONG;
-typedef unsigned long long BLASULONG;
-#else
-typedef long BLASLONG;
-typedef unsigned long BLASULONG;
-#endif
-
-#ifdef LAPACK_ILP64
-typedef BLASLONG blasint;
-#if defined(_WIN64)
-#define blasabs(x) llabs(x)
-#else
-#define blasabs(x) labs(x)
-#endif
-#else
-typedef int blasint;
-#define blasabs(x) abs(x)
-#endif
+#include "common.h"
 
 typedef blasint integer;
 
@@ -378,6 +360,7 @@ static integer smaxloc_(float *w, integer s, integer e, integer *n)
 	return mi-s+1;
 }
 #endif
+#if 0
 static inline void cdotc_(complex *z, integer *n_, complex *x, integer *incx_, complex *y, integer *incy_) {
 	integer n = *n_, incx = *incx_, incy = *incy_, i;
 #ifdef _MSC_VER
@@ -502,6 +485,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 	pCd(z) = zdotc;
 }
 #endif
+#endif
 
 /* Common Block Declarations */
 
@@ -581,7 +565,7 @@ static doublereal c_b43 = 1.;
 /*     .. Common blocks .. */
 /*     .. Data statements .. */
 /*     .. Executable Statements .. */
-    printf("Test of subprogram number %3d         %15s\n", combla_1.icase, l[combla_1.icase-1]);
+    printf("Test of subprogram number %3d         %15s", combla_1.icase, l[combla_1.icase-1]);
     return 0;
 
 } /* header_ */

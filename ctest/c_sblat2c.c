@@ -10,25 +10,7 @@
 #undef I
 #endif
 
-#if defined(_WIN64)
-typedef long long BLASLONG;
-typedef unsigned long long BLASULONG;
-#else
-typedef long BLASLONG;
-typedef unsigned long BLASULONG;
-#endif
-
-#ifdef LAPACK_ILP64
-typedef BLASLONG blasint;
-#if defined(_WIN64)
-#define blasabs(x) llabs(x)
-#else
-#define blasabs(x) labs(x)
-#endif
-#else
-typedef int blasint;
-#define blasabs(x) abs(x)
-#endif
+#include "common.h"
 
 typedef blasint integer;
 
@@ -378,6 +360,7 @@ static integer smaxloc_(float *w, integer s, integer e, integer *n)
 	return mi-s+1;
 }
 #endif
+#if 0
 static inline void cdotc_(complex *z, integer *n_, complex *x, integer *incx_, complex *y, integer *incy_) {
 	integer n = *n_, incx = *incx_, incy = *incy_, i;
 #ifdef _MSC_VER
@@ -501,6 +484,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 	}
 	pCd(z) = zdotc;
 }
+#endif
 #endif
 /*  -- translated by f2c (version 20000121).
    You must link the resulting object file with the libraries:
@@ -671,7 +655,11 @@ static logical c_false = FALSE_;
     fgets(line,80,stdin);
     sscanf(line,"'%s'",snaps);
     fgets(line,80,stdin);
+#ifdef USE64BITINT
+    sscanf(line,"%ld",&ntra);
+#else
     sscanf(line,"%d",&ntra);
+#endif
     trace = ntra >= 0;
 
     if (trace) {
@@ -712,15 +700,23 @@ static logical c_false = FALSE_;
 
 /*     Values of N */
    fgets(line,80,stdin);
+#ifdef USE64BITINT
+   sscanf(line,"%ld",&nidim);
+#else
    sscanf(line,"%d",&nidim);
-
+#endif
     if (nidim < 1 || nidim > 9) {
         fprintf(stderr,"NUMBER OF VALUES OF N IS LESS THAN 1 OR GREATER THAN 9");
         goto L220;
     }
    fgets(line,80,stdin);
+#ifdef USE64BITINT
+   sscanf(line,"%ld %ld %ld %ld %ld %ld %ld %ld %ld",&idim[0],&idim[1],&idim[2],
+    &idim[3],&idim[4],&idim[5],&idim[6],&idim[7],&idim[8]);
+#else
    sscanf(line,"%d %d %d %d %d %d %d %d %d",&idim[0],&idim[1],&idim[2],
     &idim[3],&idim[4],&idim[5],&idim[6],&idim[7],&idim[8]);
+#endif
     i__1 = nidim;
     for (i__ = 1; i__ <= i__1; ++i__) {
         if (idim[i__ - 1] < 0 || idim[i__ - 1] > 65) {
@@ -731,14 +727,21 @@ static logical c_false = FALSE_;
     }
 /*     Values of K */
    fgets(line,80,stdin);
+#ifdef USE64BITINT
+   sscanf(line,"%ld",&nkb);
+#else
    sscanf(line,"%d",&nkb);
-
+#endif
     if (nkb < 1 || nkb > 7) {
         fprintf(stderr,"NUMBER OF VALUES OF K IS LESS THAN 1 OR GREATER THAN 7");
         goto L220;
     }
    fgets(line,80,stdin);
+#ifdef USE64BITINT
+   sscanf(line,"%ld %ld %ld %ld %ld %ld %ld",&kb[0],&kb[1],&kb[2],&kb[3],&kb[4],&kb[5],&kb[6]);
+#else
    sscanf(line,"%d %d %d %d %d %d %d",&kb[0],&kb[1],&kb[2],&kb[3],&kb[4],&kb[5],&kb[6]);
+#endif
     i__1 = nkb;
     for (i__ = 1; i__ <= i__1; ++i__) {
         if (kb[i__ - 1] < 0 ) {
@@ -749,15 +752,22 @@ static logical c_false = FALSE_;
     }
 /*     Values of INCX and INCY */
    fgets(line,80,stdin);
+#ifdef USE64BITINT
+   sscanf(line,"%ld",&ninc);
+#else
    sscanf(line,"%d",&ninc);
-
+#endif
     if (ninc < 1 || ninc > 7) {
         fprintf(stderr,"NUMBER OF VALUES OF INCX AND INCY IS LESS THAN 1 OR GREATER THAN 7");
         goto L230;
     }
 
    fgets(line,80,stdin);
+#ifdef USE64BITINT
+   sscanf(line,"%ld %ld %ld %ld %ld %ld %ld",&inc[0],&inc[1],&inc[2],&inc[3],&inc[4],&inc[5],&inc[6]);
+#else
    sscanf(line,"%d %d %d %d %d %d %d",&inc[0],&inc[1],&inc[2],&inc[3],&inc[4],&inc[5],&inc[6]);
+#endif
     i__1 = ninc;
     for (i__ = 1; i__ <= i__1; ++i__) {
 	if (inc[i__ - 1] == 0 || (i__2 = inc[i__ - 1], abs(i__2)) > 2) {
