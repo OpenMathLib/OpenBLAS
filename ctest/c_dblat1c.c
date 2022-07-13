@@ -10,25 +10,7 @@
 #undef I
 #endif
 
-#if defined(_WIN64)
-typedef long long BLASLONG;
-typedef unsigned long long BLASULONG;
-#else
-typedef long BLASLONG;
-typedef unsigned long BLASULONG;
-#endif
-
-#ifdef LAPACK_ILP64
-typedef BLASLONG blasint;
-#if defined(_WIN64)
-#define blasabs(x) llabs(x)
-#else
-#define blasabs(x) labs(x)
-#endif
-#else
-typedef int blasint;
-#define blasabs(x) abs(x)
-#endif
+#include "common.h"
 
 typedef blasint integer;
 
@@ -378,130 +360,6 @@ static integer smaxloc_(float *w, integer s, integer e, integer *n)
 	return mi-s+1;
 }
 #endif
-static inline void cdotc_(complex *z, integer *n_, complex *x, integer *incx_, complex *y, integer *incy_) {
-	integer n = *n_, incx = *incx_, incy = *incy_, i;
-#ifdef _MSC_VER
-	_Fcomplex zdotc = {0.0, 0.0};
-	if (incx == 1 && incy == 1) {
-		for (i=0;i<n;i++) { /* zdotc = zdotc + dconjg(x(i))* y(i) */
-			zdotc._Val[0] += conjf(Cf(&x[i]))._Val[0] * Cf(&y[i])._Val[0];
-			zdotc._Val[1] += conjf(Cf(&x[i]))._Val[1] * Cf(&y[i])._Val[1];
-		}
-	} else {
-		for (i=0;i<n;i++) { /* zdotc = zdotc + dconjg(x(i))* y(i) */
-			zdotc._Val[0] += conjf(Cf(&x[i*incx]))._Val[0] * Cf(&y[i*incy])._Val[0];
-			zdotc._Val[1] += conjf(Cf(&x[i*incx]))._Val[1] * Cf(&y[i*incy])._Val[1];
-		}
-	}
-	pCf(z) = zdotc;
-}
-#else
-	_Complex float zdotc = 0.0;
-	if (incx == 1 && incy == 1) {
-		for (i=0;i<n;i++) { /* zdotc = zdotc + dconjg(x(i))* y(i) */
-			zdotc += conjf(Cf(&x[i])) * Cf(&y[i]);
-		}
-	} else {
-		for (i=0;i<n;i++) { /* zdotc = zdotc + dconjg(x(i))* y(i) */
-			zdotc += conjf(Cf(&x[i*incx])) * Cf(&y[i*incy]);
-		}
-	}
-	pCf(z) = zdotc;
-}
-#endif
-static inline void zdotc_(doublecomplex *z, integer *n_, doublecomplex *x, integer *incx_, doublecomplex *y, integer *incy_) {
-	integer n = *n_, incx = *incx_, incy = *incy_, i;
-#ifdef _MSC_VER
-	_Dcomplex zdotc = {0.0, 0.0};
-	if (incx == 1 && incy == 1) {
-		for (i=0;i<n;i++) { /* zdotc = zdotc + dconjg(x(i))* y(i) */
-			zdotc._Val[0] += conj(Cd(&x[i]))._Val[0] * Cd(&y[i])._Val[0];
-			zdotc._Val[1] += conj(Cd(&x[i]))._Val[1] * Cd(&y[i])._Val[1];
-		}
-	} else {
-		for (i=0;i<n;i++) { /* zdotc = zdotc + dconjg(x(i))* y(i) */
-			zdotc._Val[0] += conj(Cd(&x[i*incx]))._Val[0] * Cd(&y[i*incy])._Val[0];
-			zdotc._Val[1] += conj(Cd(&x[i*incx]))._Val[1] * Cd(&y[i*incy])._Val[1];
-		}
-	}
-	pCd(z) = zdotc;
-}
-#else
-	_Complex double zdotc = 0.0;
-	if (incx == 1 && incy == 1) {
-		for (i=0;i<n;i++) { /* zdotc = zdotc + dconjg(x(i))* y(i) */
-			zdotc += conj(Cd(&x[i])) * Cd(&y[i]);
-		}
-	} else {
-		for (i=0;i<n;i++) { /* zdotc = zdotc + dconjg(x(i))* y(i) */
-			zdotc += conj(Cd(&x[i*incx])) * Cd(&y[i*incy]);
-		}
-	}
-	pCd(z) = zdotc;
-}
-#endif	
-static inline void cdotu_(complex *z, integer *n_, complex *x, integer *incx_, complex *y, integer *incy_) {
-	integer n = *n_, incx = *incx_, incy = *incy_, i;
-#ifdef _MSC_VER
-	_Fcomplex zdotc = {0.0, 0.0};
-	if (incx == 1 && incy == 1) {
-		for (i=0;i<n;i++) { /* zdotc = zdotc + dconjg(x(i))* y(i) */
-			zdotc._Val[0] += Cf(&x[i])._Val[0] * Cf(&y[i])._Val[0];
-			zdotc._Val[1] += Cf(&x[i])._Val[1] * Cf(&y[i])._Val[1];
-		}
-	} else {
-		for (i=0;i<n;i++) { /* zdotc = zdotc + dconjg(x(i))* y(i) */
-			zdotc._Val[0] += Cf(&x[i*incx])._Val[0] * Cf(&y[i*incy])._Val[0];
-			zdotc._Val[1] += Cf(&x[i*incx])._Val[1] * Cf(&y[i*incy])._Val[1];
-		}
-	}
-	pCf(z) = zdotc;
-}
-#else
-	_Complex float zdotc = 0.0;
-	if (incx == 1 && incy == 1) {
-		for (i=0;i<n;i++) { /* zdotc = zdotc + dconjg(x(i))* y(i) */
-			zdotc += Cf(&x[i]) * Cf(&y[i]);
-		}
-	} else {
-		for (i=0;i<n;i++) { /* zdotc = zdotc + dconjg(x(i))* y(i) */
-			zdotc += Cf(&x[i*incx]) * Cf(&y[i*incy]);
-		}
-	}
-	pCf(z) = zdotc;
-}
-#endif
-static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integer *incx_, doublecomplex *y, integer *incy_) {
-	integer n = *n_, incx = *incx_, incy = *incy_, i;
-#ifdef _MSC_VER
-	_Dcomplex zdotc = {0.0, 0.0};
-	if (incx == 1 && incy == 1) {
-		for (i=0;i<n;i++) { /* zdotc = zdotc + dconjg(x(i))* y(i) */
-			zdotc._Val[0] += Cd(&x[i])._Val[0] * Cd(&y[i])._Val[0];
-			zdotc._Val[1] += Cd(&x[i])._Val[1] * Cd(&y[i])._Val[1];
-		}
-	} else {
-		for (i=0;i<n;i++) { /* zdotc = zdotc + dconjg(x(i))* y(i) */
-			zdotc._Val[0] += Cd(&x[i*incx])._Val[0] * Cd(&y[i*incy])._Val[0];
-			zdotc._Val[1] += Cd(&x[i*incx])._Val[1] * Cd(&y[i*incy])._Val[1];
-		}
-	}
-	pCd(z) = zdotc;
-}
-#else
-	_Complex double zdotc = 0.0;
-	if (incx == 1 && incy == 1) {
-		for (i=0;i<n;i++) { /* zdotc = zdotc + dconjg(x(i))* y(i) */
-			zdotc += Cd(&x[i]) * Cd(&y[i]);
-		}
-	} else {
-		for (i=0;i<n;i++) { /* zdotc = zdotc + dconjg(x(i))* y(i) */
-			zdotc += Cd(&x[i*incx]) * Cd(&y[i*incy]);
-		}
-	}
-	pCd(z) = zdotc;
-}
-#endif
 
 /* Common Block Declarations */
 
@@ -587,7 +445,7 @@ static doublereal c_b34 = 1.;
 /*     .. Common blocks .. */
 /*     .. Data statements .. */
 /*     .. Executable Statements .. */
-    printf("Test of subprogram number %3d         %15s\n", combla_1.icase, l[combla_1.icase -1]);
+    printf("Test of subprogram number %3d         %15s", combla_1.icase, l[combla_1.icase -1]);
     return 0;
 
 } /* header_ */
@@ -895,9 +753,9 @@ doublereal *sfac;
 	    ;
 
     /* Local variables */
-    extern /* Subroutine */ int drot_(), drottest_();
+    extern /* Subroutine */ int drottest_();
     static integer i__, k, ksize;
-    extern /* Subroutine */ int drotm_(), stest_(), drotmtest_();
+    extern /* Subroutine */int stest_(), drotmtest_();
     static integer ki, kn;
     static doublereal dparam[5], sx[10], sy[10], stx[10], sty[10];
 
@@ -1121,6 +979,7 @@ L40:
 
 } /* itest1_ */
 
+#if 0
 /* Subroutine */ int drot_(n, dx, incx, dy, incy, c__, s)
 integer *n;
 doublereal *dx;
@@ -1329,3 +1188,4 @@ doublereal *dparam;
     return 0;
 } /* drotm_ */
 
+#endif

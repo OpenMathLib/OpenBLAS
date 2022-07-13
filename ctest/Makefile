@@ -218,7 +218,7 @@ endif
 
 ifeq ($(BUILD_SINGLE),1)
 # Single real
-ifeq ($(NOFORTRAN),0)
+ifeq ($(NOFORTRAN), $(filter 0 2,$(NOFORTRAN)))
 xscblat1: $(stestl1o) c_sblat1.o $(TOPDIR)/$(LIBNAME)
 	$(FC) $(FLDFLAGS) -o xscblat1 c_sblat1.o $(stestl1o) $(LIB) $(EXTRALIB) $(CEXTRALIB)
 xscblat2: $(stestl2o) c_sblat2.o $(TOPDIR)/$(LIBNAME)
