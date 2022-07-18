@@ -38,6 +38,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #if defined(POWER8) || defined(POWER9) || defined(POWER10)
 #if defined(__VEC__) || defined(__ALTIVEC__)
+#pragma GCC optimize "O1"
 #include "zdot_microk_power8.c"
 #endif
 #endif
