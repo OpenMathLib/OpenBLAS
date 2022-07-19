@@ -35,6 +35,9 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 #if defined(HAVE_KERNEL4x8_ASM)
+#if !__has_builtin(__builtin_vsx_disassemble_pair)
+#define __builtin_vsx_disassemble_pair __builtin_mma_disassemble_pair
+#endif
 typedef __vector unsigned char vec_t;
 static void dgemv_kernel_4x8(BLASLONG n, BLASLONG lda, FLOAT *ap, FLOAT *x, FLOAT *y, FLOAT alpha) {
     BLASLONG i;
