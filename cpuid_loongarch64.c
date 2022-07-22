@@ -33,30 +33,53 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <stdint.h>
 
-#define CPU_UNKNOWN     0
-#define CPU_LOONGSON3R5 1
+/*  If LASX extension instructions supported,
+ *  using core LOONGSON3R5
+ *  If only LSX extension instructions supported,
+ *  using core LOONGSON2K1000
+ *  If neither LASX nor LSX extension instructions supported,
+ *  using core LOONGSONGENERIC (As far as I know, there is no such
+ *  CPU yet)
+ */
+
+#define CPU_GENERIC        0
+#define CPU_LOONGSON3R5    1
+#define CPU_LOONGSON2K1000 2
 
 #define LOONGARCH_CFG2  0x02
 #define LOONGARCH_LASX  1<<7
+#define LOONGARCH_LSX   1<<6
 
 static char *cpuname[] = {
-  "UNKNOWN",
-  "LOONGSON3R5"
+  "LOONGSONGENERIC",
+  "LOONGSON3R5",
+  "LOONGSON2K1000"
+};
+
+static char *cpuname_lower[] = {
+  "loongsongeneric",
+  "loongson3r5",
+  "loongson2k1000"
 };
 
 int detect(void) {
-    uint32_t reg = 0;
+#ifdef __linux
+  uint32_t reg = 0;
 
-    __asm__ volatile (
-        "cpucfg %0, %1 \n\t"
-        : "+&r"(reg)
-        : "r"(LOONGARCH_CFG2)
-    );
+  __asm__ volatile (
+    "cpucfg %0, %1 \n\t"
+    : "+&r"(reg)
+    : "r"(LOONGARCH_CFG2)
+  );
 
-    if (reg & LOONGARCH_LASX)
-        return CPU_LOONGSON3R5;
-    else
-        return CPU_UNKNOWN;
+  if (reg & LOONGARCH_LASX)
+    return CPU_LOONGSON3R5;
+  else if (reg & LOONGARCH_LSX)
+    return CPU_LOONGSON2K1000;
+  else
+    return CPU_GENERIC;
+#endif
+  return CPU_GENERIC;
 }
 
 char *get_corename(void) {
@@ -68,11 +91,8 @@ void get_architecture(void) {
 }
 
 void get_subarchitecture(void) {
-  if (detect() == CPU_LOONGSON3R5) {
-    printf("LOONGSON3R5");
-  } else {
-    printf("UNKNOWN");
-  }
+  int d = detect();
+  printf("%s", cpuname[d]);
 }
 
 void get_subdirname(void) {
@@ -80,31 +100,44 @@ void get_subdirname(void) {
 }
 
 void get_cpuconfig(void) {
-  if (detect() == CPU_LOONGSON3R5) {
-    printf("#define LOONGSON3R5\n");
-    printf("#define L1_DATA_SIZE 65536\n");
-    printf("#define L1_DATA_LINESIZE 64\n");
-    printf("#define L2_SIZE 1048576\n");
-    printf("#define L2_LINESIZE 64\n");
-    printf("#define DTB_DEFAULT_ENTRIES 64\n");
-    printf("#define DTB_SIZE 4096\n");
-    printf("#define L2_ASSOCIATIVE 16\n");
-  } else {
-    printf("#define LOONGSON3R5\n");
-    printf("#define L1_DATA_SIZE 65536\n");
-    printf("#define L1_DATA_LINESIZE 64\n");
-    printf("#define L2_SIZE 1048576\n");
-    printf("#define L2_LINESIZE 64\n");
-    printf("#define DTB_DEFAULT_ENTRIES 64\n");
-    printf("#define DTB_SIZE 4096\n");
-    printf("#define L2_ASSOCIATIVE 16\n");
+  int d = detect();
+  switch (d) {
+    case CPU_LOONGSON3R5:
+      printf("#define LOONGSON3R5\n");
+      printf("#define L1_DATA_SIZE 65536\n");
+      printf("#define L1_DATA_LINESIZE 64\n");
+      printf("#define L2_SIZE 1048576\n");
+      printf("#define L2_LINESIZE 64\n");
+      printf("#define DTB_DEFAULT_ENTRIES 64\n");
+      printf("#define DTB_SIZE 4096\n");
+      printf("#define L2_ASSOCIATIVE 16\n");
+    break;
+
+    case CPU_LOONGSON2K1000:
+      printf("#define LOONGSON2K1000\n");
+      printf("#define L1_DATA_SIZE 65536\n");
+      printf("#define L1_DATA_LINESIZE 64\n");
+      printf("#define L2_SIZE 262144\n");
+      printf("#define L2_LINESIZE 64\n");
+      printf("#define DTB_DEFAULT_ENTRIES 64\n");
+      printf("#define DTB_SIZE 4096\n");
+      printf("#define L2_ASSOCIATIVE 16\n");
+    break;
+
+    default:
+      printf("#define LOONGSONGENERIC\n");
+      printf("#define L1_DATA_SIZE 65536\n");
+      printf("#define L1_DATA_LINESIZE 64\n");
+      printf("#define L2_SIZE 262144\n");
+      printf("#define L2_LINESIZE 64\n");
+      printf("#define DTB_DEFAULT_ENTRIES 64\n");
+      printf("#define DTB_SIZE 4096\n");
+      printf("#define L2_ASSOCIATIVE 16\n");
+    break;
   }
 }
 
 void get_libname(void){
-  if (detect() == CPU_LOONGSON3R5) {
-    printf("loongson3r5\n");
-  } else {
-    printf("loongarch64\n");
-  }
+  int d = detect();
+  printf("%s", cpuname_lower[d]);
 }
