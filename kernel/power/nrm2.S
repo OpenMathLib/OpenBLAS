@@ -50,8 +50,8 @@
 #define FZERO	144(SP)
 #define FONE	148(SP)
 #define FMAX	152(SP)
-
-#define STACKSIZE 160
+#define FINF    160(SP)
+#define STACKSIZE 168
 
 	PROLOGUE
 	PROFCODE
@@ -87,6 +87,16 @@
 	stw	r10,  FZERO
 	stw	r11,  FONE
 	stw	r12,  FMAX
+
+#ifdef DOUBLE
+	lis r12, 0x7ff0
+	ori r12, r12, 0x0
+	sldi r12, r12, 32
+	oris r12, r12,0x0
+	ori r12, r12, 0x0
+	std r12, FINF
+#endif
+
 	stw	r10,  4 + FMAX
 
 	lfs	f1,   FZERO
@@ -334,9 +344,16 @@ LL(100):
 	lfs	f0,  FONE
 
 	fcmpu	cr0, f1, f31
+nop
 	beq-	cr0, LL(9999)
-
 	fdiv	f30, f0, f31
+
+#ifdef DOUBLE
+	lfd f1, FINF
+	fcmpu cr0, f1, f30
+	lfs	f1,  FZERO
+	beq- cr0, LL(9999)
+#endif
 
 	fmr	f0, f1
 	fmr	f2, f1
@@ -712,9 +729,16 @@ LL(1999):
 
 	fcmpu	cr0, f1, f31
 	beq-	cr0, LL(9999)
-
+	
 	fdiv	f30, f0, f31
 
+#ifdef DOUBLE
+	lfd f1, FINF
+	fcmpu cr0, f1, f30
+	lfs	f1,  FZERO
+	beq- cr0, LL(9999)
+#endif
+	
 	fmr	f0, f1
 	fmr	f2, f1
 	fmr	f3, f1
@@ -875,6 +899,7 @@ LL(2170):
 	fadd   f0, f0, f4
 
 	fsqrt  f0, f0
+
 	fmul   f1, f31, f0
 	.align 4
 
