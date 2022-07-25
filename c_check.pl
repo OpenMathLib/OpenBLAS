@@ -65,6 +65,7 @@ $compiler = OPEN64    if ($data =~ /COMPILER_OPEN64/);
 $compiler = SUN       if ($data =~ /COMPILER_SUN/);
 $compiler = IBM       if ($data =~ /COMPILER_IBM/);
 $compiler = DEC       if ($data =~ /COMPILER_DEC/);
+$compiler = FUJITSU   if ($data =~ /COMPILER_FUJITSU/);
 $compiler = GCC       if ($compiler eq "");
 
 $os = Linux           if ($data =~ /OS_LINUX/);
@@ -187,6 +188,10 @@ if ($compiler eq "CLANG") {
 
 if ($compiler eq "GCC" || $compiler eq "LSB") {
     $openmp = "-fopenmp";
+}
+
+if ($compiler eq "FUJITSU") {
+    $openmp = "-Kopenmp";
 }
 
 if ($defined == 0) {
