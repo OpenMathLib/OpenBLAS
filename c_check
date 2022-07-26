@@ -51,6 +51,7 @@ case "$data" in
     *COMPILER_SUN*) compiler=SUN ;;
     *COMPILER_IBM*) compiler=IBM ;;
     *COMPILER_DEC*) compiler=DEC ;;
+    *COMPILER_FUJITSU*) compiler=FUJITSU ;;
 esac
 if [ -z "$compiler" ]; then
     compiler=GCC
@@ -143,6 +144,7 @@ case "$compiler" in
     INTEL) openmp='-openmp' ;;
     PATHSCALE|OPEN64) openmp='-mp' ;;
     CLANG|GCC|LSB) openmp='-fopenmp' ;;
+    FUJITSU) openmp='-Kopenmp' ;;
 esac
 
 if [ "$defined" -eq 0 ]; then
