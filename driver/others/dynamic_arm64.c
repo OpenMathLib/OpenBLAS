@@ -172,6 +172,7 @@ char *gotoblas_corename(void) {
   if (gotoblas == &gotoblas_TSV110)       return corename[ 8];
   if (gotoblas == &gotoblas_EMAG8180)     return corename[ 9];
   if (gotoblas == &gotoblas_NEOVERSEN1)   return corename[10];
+  if (gotoblas == &gotoblas_NEOVERSEV1)   return corename[11];
   if (gotoblas == &gotoblas_NEOVERSEN2)   return corename[12];
   if (gotoblas == &gotoblas_THUNDERX3T110) return corename[13];
   if (gotoblas == &gotoblas_CORTEXA55)    return corename[14];
@@ -205,8 +206,10 @@ static gotoblas_t *force_coretype(char *coretype) {
     case  8: return (&gotoblas_TSV110);
     case  9: return (&gotoblas_EMAG8180);
     case 10: return (&gotoblas_NEOVERSEN1);
-    case 11: return (&gotoblas_THUNDERX3T110);
-    case 12: return (&gotoblas_CORTEXA55);
+    case 11: return (&gotoblas_NEOVERSEV1);
+    case 12: return (&gotoblas_NEOVERSEN2);
+    case 13: return (&gotoblas_THUNDERX3T110);
+    case 14: return (&gotoblas_CORTEXA55);
   }
   snprintf(message, 128, "Core not found: %s\n", coretype);
   openblas_warning(1, message);
@@ -267,6 +270,8 @@ static gotoblas_t *get_coretype(void) {
           return &gotoblas_NEOVERSEN1;
         case 0xd49:
           return &gotoblas_NEOVERSEN2;
+	case 0xd40:
+	  return &gotoblas_NEOVERSEV1;
 	case 0xd05: // Cortex A55
 	  return &gotoblas_CORTEXA55;
       }
