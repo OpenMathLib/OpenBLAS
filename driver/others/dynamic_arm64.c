@@ -125,6 +125,7 @@ extern gotoblas_t  gotoblas_THUNDERX2T99;
 extern gotoblas_t  gotoblas_TSV110;
 extern gotoblas_t  gotoblas_EMAG8180;
 extern gotoblas_t  gotoblas_NEOVERSEN1;
+extern gotoblas_t  gotoblas_NEOVERSEV1;
 extern gotoblas_t  gotoblas_NEOVERSEN2;
 extern gotoblas_t  gotoblas_THUNDERX3T110;
 extern gotoblas_t  gotoblas_CORTEXA55;
