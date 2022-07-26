@@ -99,6 +99,11 @@ extern gotoblas_t  gotoblas_NEOVERSEN1;
 #else
 #define gotoblas_NEOVERSEN1 gotoblas_ARMV8
 #endif
+#ifdef DYN_NEOVERSEV1
+extern gotoblas_t  gotoblas_NEOVERSEV1;
+#else
+#define gotoblas_NEOVERSEV1 gotoblas_ARMV8
+#endif
 #ifdef DYN_NEOVERSEN2
 extern gotoblas_t gotoblas_NEOVERSEN2;
 #else
