@@ -352,6 +352,20 @@ int openblas_setaffinity(int thread_idx, size_t cpusetsize, cpu_set_t* cpu_set) 
 
   return pthread_setaffinity_np(thread, cpusetsize, cpu_set);
 }
+int openblas_getaffinity(int thread_idx, size_t cpusetsize, cpu_set_t* cpu_set) {
+  const int active_threads = openblas_get_num_threads();
+
+  if (thread_idx < 0 || thread_idx >= active_threads) {
+    errno = EINVAL;
+    return -1;
+  }
+
+  pthread_t thread = (thread_idx == active_threads - 1)
+      ? pthread_self()
+      : blas_threads[thread_idx];
+
+  return pthread_getaffinity_np(thread, cpusetsize, cpu_set);
+}
 #endif
 
 static void* blas_thread_server(void *arg){
