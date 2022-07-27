@@ -403,6 +403,7 @@ int exec_blas(BLASLONG num, blas_queue_t *queue){
       break;
   }
 
+if (openblas_omp_adaptive_env() != 0) {
 #pragma omp parallel for num_threads(num) schedule(OMP_SCHED)
   for (i = 0; i < num; i ++) {
 
@@ -412,6 +413,17 @@ int exec_blas(BLASLONG num, blas_queue_t *queue){
 
     exec_threads(&queue[i], buf_index);
   }
+} else {
+#pragma omp parallel for schedule(OMP_SCHED)
+  for (i = 0; i < num; i ++) {
+
+#ifndef USE_SIMPLE_THREADED_LEVEL3
+    queue[i].position = i;
+#endif
+
+    exec_threads(&queue[i], buf_index);
+  }
+}
 
 #ifdef HAVE_C11
   atomic_store(&blas_buffer_inuse[buf_index], false);
