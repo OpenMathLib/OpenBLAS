@@ -2857,26 +2857,20 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define ZGEMM_DEFAULT_UNROLL_M 1
 #define XGEMM_DEFAULT_UNROLL_M 1
 
-#define SGEMM_DEFAULT_P sgemm_p
+#define SGEMM_DEFAULT_P 512
 #define DGEMM_DEFAULT_P 32
-#define QGEMM_DEFAULT_P qgemm_p
-#define CGEMM_DEFAULT_P cgemm_p
-#define ZGEMM_DEFAULT_P zgemm_p
-#define XGEMM_DEFAULT_P xgemm_p
+#define CGEMM_DEFAULT_P 128
+#define ZGEMM_DEFAULT_P 128
 
-#define SGEMM_DEFAULT_R sgemm_r
+#define SGEMM_DEFAULT_R 12288
 #define DGEMM_DEFAULT_R 858
-#define QGEMM_DEFAULT_R qgemm_r
-#define CGEMM_DEFAULT_R cgemm_r
-#define ZGEMM_DEFAULT_R zgemm_r
-#define XGEMM_DEFAULT_R xgemm_r
+#define CGEMM_DEFAULT_R 4096
+#define ZGEMM_DEFAULT_R 4096
 
 #define SGEMM_DEFAULT_Q 128
 #define DGEMM_DEFAULT_Q 152
-#define QGEMM_DEFAULT_Q 128
 #define CGEMM_DEFAULT_Q 128
 #define ZGEMM_DEFAULT_Q 128
-#define XGEMM_DEFAULT_Q 128
 
 #define SYMV_P  16
 #endif
@@ -3795,6 +3789,21 @@ Until then, just keep it different than DGEMM_DEFAULT_UNROLL_N to keep copy rout
 #define DGEMM_DEFAULT_R  8192
 #define CGEMM_DEFAULT_R  4096
 #define ZGEMM_DEFAULT_R  4096
+#elif defined(ARCH_LOONGARCH64)
+#define SGEMM_DEFAULT_P 128
+#define DGEMM_DEFAULT_P 128
+#define CGEMM_DEFAULT_P 96
+#define ZGEMM_DEFAULT_P 64
+
+#define SGEMM_DEFAULT_Q 240
+#define DGEMM_DEFAULT_Q 120
+#define CGEMM_DEFAULT_Q 120
+#define ZGEMM_DEFAULT_Q 120
+
+#define SGEMM_DEFAULT_R 12288
+#define DGEMM_DEFAULT_R 8192
+#define CGEMM_DEFAULT_R 4096
+#define ZGEMM_DEFAULT_R 4096
 #else
 #define SGEMM_DEFAULT_P sgemm_p
 #define DGEMM_DEFAULT_P dgemm_p
