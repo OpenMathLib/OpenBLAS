@@ -88,18 +88,21 @@ int detect(void){
   infile = fopen("/proc/cpuinfo", "r");
   while (fgets(buffer, sizeof(buffer), infile)){
     if(!strncmp(buffer, "model name", 10)){
-      strcpy(model_buffer, buffer)
+      strcpy(model_buffer, buffer);
       pmodel = strchr(isa_buffer, ':') + 1;
     }
 
     if(!strncmp(buffer, "isa", 3)){
-      strcpy(isa_buffer, buffer)
+      strcpy(isa_buffer, buffer);
       pisa = strchr(isa_buffer, '4') + 1;
     }
   }
 
   fclose(infile);
 
+  if (!pmodel)
+   return(CPU_GENERIC);
+   
   if (strstr(pmodel, check_c910_str) && strchr(pisa, 'v'))
     return CPU_C910V;
 
