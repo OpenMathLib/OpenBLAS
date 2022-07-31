@@ -97,13 +97,16 @@ static gotoblas_t *force_coretype(char *coretype) {
 static gotoblas_t *get_coretype_from_cpucfg(void) {
     int flag = 0;
     __asm__ volatile(
+        ".set push                 \n\t"
+        ".set noat                 \n\t"
         ".insn                     \n\t"
-        "dli    $8,    0x01        \n\t"
-        ".word (0xc9084918)        \n\t"
-        "usw    $9,    0x00(%0)    \n\t"
+        "dli    $1,    0x01        \n\t"
+        ".word (0xc8080118)        \n\t"
+        "move   %0,    $1          \n\t"
+        ".set pop                  \n\t"
+        : "=r"(flag)
         :
-        : "r"(&flag)
-        : "memory"
+        :
     );
     if (flag & MSA_MASK)
         return (&gotoblas_LOONGSON3R4);
