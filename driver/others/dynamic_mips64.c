@@ -49,20 +49,23 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 extern gotoblas_t  gotoblas_LOONGSON3R3;
 extern gotoblas_t  gotoblas_LOONGSON3R4;
+extern gotoblas_t  gotoblas_MIPS64_GENERIC;
 
 extern void openblas_warning(int verbose, const char * msg);
 
-#define NUM_CORETYPES    2
+#define NUM_CORETYPES    3
 
 static char *corename[] = {
+  "MIPS64_GENERIC"
   "loongson3r3",
   "loongson3r4",
   "UNKNOWN"
 };
 
 char *gotoblas_corename(void) {
-  if (gotoblas == &gotoblas_LOONGSON3R3)    return corename[0];
-  if (gotoblas == &gotoblas_LOONGSON3R4)    return corename[1];
+  if (gotoblas == &gotoblas_MIPS64_GENERIC) return corename[0];
+  if (gotoblas == &gotoblas_LOONGSON3R3)    return corename[1];
+  if (gotoblas == &gotoblas_LOONGSON3R4)    return corename[2];
   return corename[NUM_CORETYPES];
 }
 
@@ -82,8 +85,9 @@ static gotoblas_t *force_coretype(char *coretype) {
 
   switch (found)
   {
-    case  0: return (&gotoblas_LOONGSON3R3);
-    case  1: return (&gotoblas_LOONGSON3R4);
+    case  0: return (&gotoblas_MIPS64_GENERIC);
+    case  1: return (&gotoblas_LOONGSON3R3);
+    case  2: return (&gotoblas_LOONGSON3R4);
   }
   snprintf(message, 128, "Core not found: %s\n", coretype);
   openblas_warning(1, message);
@@ -173,9 +177,9 @@ void gotoblas_dynamic_init(void) {
 
   if (gotoblas == NULL)
   {
-    snprintf(coremsg, 128, "Falling back to loongson3r3 core\n");
+    snprintf(coremsg, 128, "Falling back to MIPS64_GENEIRC\n");
     openblas_warning(1, coremsg);
-    gotoblas = &gotoblas_LOONGSON3R3;
+    gotoblas = &gotoblas_MIPS64_GENERIC;
   }
 
   if (gotoblas && gotoblas->init) {
