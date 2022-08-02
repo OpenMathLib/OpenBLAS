@@ -27,25 +27,25 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "common.h"
 
-extern gotoblas_t  gotoblas_LOONGSON3R5;
-extern gotoblas_t  gotoblas_LOONGSON2K1000;
-extern gotoblas_t  gotoblas_LOONGSONGENERIC;
+extern gotoblas_t  gotoblas_LA464;
+extern gotoblas_t  gotoblas_LA264;
+extern gotoblas_t  gotoblas_LA64_GENERIC;
 
 extern void openblas_warning(int verbose, const char * msg);
 
 #define NUM_CORETYPES    3
 
 static char *corename[] = {
-  "loongson3r5",
-  "loongson2k1000",
-  "loongsongeneric",
+  "la464",
+  "la264",
+  "la64_generic",
   "unknown"
 };
 
 char *gotoblas_corename(void) {
-  if (gotoblas == &gotoblas_LOONGSON3R5)     return corename[0];
-  if (gotoblas == &gotoblas_LOONGSON2K1000)  return corename[1];
-  if (gotoblas == &gotoblas_LOONGSONGENERIC) return corename[2];
+  if (gotoblas == &gotoblas_LA464)        return corename[0];
+  if (gotoblas == &gotoblas_LA264)        return corename[1];
+  if (gotoblas == &gotoblas_LA64_GENERIC) return corename[2];
   return corename[NUM_CORETYPES];
 }
 
@@ -65,33 +65,82 @@ static gotoblas_t *force_coretype(char *coretype) {
 
   switch (found)
   {
-    case  0: return (&gotoblas_LOONGSON3R5);
-    case  1: return (&gotoblas_LOONGSON2K1000);
-    case  2: return (&gotoblas_LOONGSONGENERIC);
+    case  0: return (&gotoblas_LA464);
+    case  1: return (&gotoblas_LA264);
+    case  2: return (&gotoblas_LA64_GENERIC);
   }
   snprintf(message, 128, "Core not found: %s\n", coretype);
   openblas_warning(1, message);
   return NULL;
 }
 
-#define LASX_MASK       1<<7
-#define LSX_MASK        1<<6
-#define LOONGARCH_CFG2  0x02
+#define LASX_MASK           1<<7
+#define LSX_MASK            1<<6
+#define LOONGARCH_CFG0      0x00
+#define LOONGARCH_CFG2      0x02
+#define PRID_SERIES_MASK    0xf000
+#define PRID_SERIES_LA464   0xc000
+#define PRID_SERIES_LA264   0xa000
 
-static gotoblas_t *get_coretype(void) {
-  int ret = 0;
+static uint32_t get_prid() {
+  uint32_t reg = 0;
   __asm__ volatile (
     "cpucfg %0, %1 \n\t"
-    : "+&r"(ret)
+    : "+&r"(reg)
+    : "r"(LOONGARCH_CFG0)
+  );
+  return reg;
+}
+
+static int support_lasx() {
+  uint32_t reg = 0;
+  __asm__ volatile (
+    "cpucfg %0, %1 \n\t"
+    : "+&r"(reg)
     : "r"(LOONGARCH_CFG2)
   );
 
-  if (ret & LASX_MASK)
-    return &gotoblas_LOONGSON3R5;
-  else if (ret & LSX_MASK)
-    return &gotoblas_LOONGSON2K1000;
-  else
-    return &gotoblas_LOONGSONGENERIC;
+  if (reg & LASX_MASK)
+    return 1;
+  return 0;
+}
+
+static int support_lsx() {
+  uint32_t reg = 0;
+  __asm__ volatile (
+    "cpucfg %0, %1 \n\t"
+    : "+&r"(reg)
+    : "r"(LOONGARCH_CFG2)
+  );
+
+  if (reg & LSX_MASK)
+    return 1;
+  return 0;
+}
+
+static gotoblas_t *get_coretype(void) {
+#ifdef __linux
+  uint32_t prid = get_prid();
+  switch (prid & PRID_SERIES_MASK) {
+    case (PRID_SERIES_LA464):
+      if (support_lasx())
+        return &gotoblas_LA464;
+      else
+        return &gotoblas_LA64_GENERIC;
+    break;
+
+    case (PRID_SERIES_LA264):
+      if (support_lsx())
+        return &gotoblas_LA264;
+      else
+        return &gotoblas_LA64_GENERIC;
+    break;
+
+    default:
+      return &gotoblas_LA64_GENERIC;
+  }
+#endif
+  return &gotoblas_LA64_GENERIC;
 }
 
 void gotoblas_dynamic_init(void) {
