@@ -1191,6 +1191,19 @@ endif
 endif
 endif
 
+ifeq ($(F_COMPILER), CRAY)
+CCOMMON_OPT += -DF_INTERFACE_INTEL
+FCOMMON_OPT += -hnopattern
+ifdef INTERFACE64
+ifneq ($(INTERFACE64), 0)
+FCOMMON_OPT += -s integer64
+endif
+endif
+ifneq ($(USE_OPENMP), 1)
+FCOMMON_OPT += -O noomp
+endif
+endif
+
 ifeq ($(ARCH), $(filter $(ARCH),mips64 mips))
 ifndef BINARY64
 FCOMMON_OPT += -n32
