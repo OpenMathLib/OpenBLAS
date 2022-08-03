@@ -222,6 +222,17 @@ if (${F_COMPILER} STREQUAL "COMPAQ")
   endif ()
 endif ()
 
+if (${F_COMPILER} STREQUAL "CRAY")
+  set(CCOMMON_OPT "${CCOMMON_OPT} -DF_INTERFACE_INTEL")
+  set(FCOMMON_OPT "${FCOMMON_OPT} -hnopattern")
+  if (INTERFACE64)
+    set (FCOMMON_OPT "${FCOMMON_OPT} -s integer64")
+  endif ()
+  if (NOT USE_OPENMP)
+    set(FCOMMON_OPT "${FCOMMON_OPT} -O noomp")
+  endif ()
+endif ()
+
 # from the root Makefile - this is for lapack-netlib to compile the correct secnd file.
 if (${F_COMPILER} STREQUAL "GFORTRAN")
   set(TIMER "INT_ETIME")
