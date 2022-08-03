@@ -34,7 +34,7 @@ if ($compiler eq "") {
 	      "pathf90", "pathf95",
 	      "pgf95", "pgf90", "pgf77", "pgfortran", "nvfortran",
 	      "flang", "egfortran",
-              "ifort", "nagfor", "ifx");
+              "ifort", "nagfor", "ifx", "ftn", "crayftn");
 
 OUTER:
     foreach $lists (@lists) {
@@ -75,6 +75,11 @@ if ($compiler eq "") {
 
 	    $vendor = FUJITSU;
 	    $openmp = "-Kopenmp";
+
+	} elsif ($data =~ /Cray/) {
+
+	    $vendor = CRAY;
+	    $openmp = "-fopenmp";
 
 	} elsif ($data =~ /GNU/ || $data =~ /GCC/ ) {
 
