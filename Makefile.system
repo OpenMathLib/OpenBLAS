@@ -1580,6 +1580,10 @@ ifeq ($(F_COMPILER),NAG)
 LAPACK_FFLAGS := $(filter-out -msse3 -mssse3 -msse4.1 -mavx -mavx2 -mskylake-avx512 ,$(FFLAGS))
 endif
 
+ifeq ($(F_COMPILER),CRAY)
+LAPACK_FFLAGS := $(filter-out -msse3 -mssse3 -msse4.1 -mavx -mavx2 -mskylake-avx512 ,$(FFLAGS))
+endif
+
 LAPACK_CFLAGS = $(CFLAGS)
 LAPACK_CFLAGS += -DHAVE_LAPACK_CONFIG_H
 ifdef INTERFACE64
