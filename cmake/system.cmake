@@ -559,6 +559,14 @@ if (${CMAKE_SYSTEM_NAME} STREQUAL "Windows")
   endforeach ()
 endif ()
 
+if ("${F_COMPILER}" STREQUAL "NAG" OR "${F_COMPILER}" STREQUAL "CRAY")
+  set(FILTER_FLAGS "-msse3;-mssse3;-msse4.1;-mavx;-mavx2,-mskylake-avx512")
+  foreach (FILTER_FLAG ${FILTER_FLAGS})
+    string(REPLACE ${FILTER_FLAG} "" LAPACK_FFLAGS ${LAPACK_FFLAGS})
+    string(REPLACE ${FILTER_FLAG} "" LAPACK_FPFLAGS ${LAPACK_FPFLAGS})
+  endforeach ()
+endif ()
+
 if ("${F_COMPILER}" STREQUAL "GFORTRAN")
   # lapack-netlib is rife with uninitialized warnings -hpa
   set(LAPACK_FFLAGS "${LAPACK_FFLAGS} -Wno-maybe-uninitialized")

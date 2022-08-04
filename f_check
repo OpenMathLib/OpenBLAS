@@ -45,7 +45,7 @@ if [ -z "$compiler" ]; then
 	      pathf90 pathf95
 	      pgf95 pgf90 pgf77 pgfortran nvfortran
 	      flang egfortran
-              ifort nagfor ifx"
+              ifort nagfor ifx ftn crayftn"
 
     for list in $lists; do
         for p in $path; do
@@ -82,6 +82,10 @@ else
                 vendor=FUJITSU
                 openmp='-Kopenmp'
                 ;;
+	    *Cray*)
+		vendor=CRAY
+		openmp='-fopenmp'
+		;;
             *GNU*|*GCC*)
 
                 v="${data#*GCC: *\) }"
@@ -294,6 +298,9 @@ fi
 
 if [ "$vendor" = "NAG" ]; then
     link=`$compiler $openmp -dryrun ftest2.f 2>&1 && rm -f a.out a.exe`
+fi
+if [ "$vendor" = "CRAY" ]; then
+    link=`$compiler $openmp -hnopattern ftest2.f 2>&1 && rm -f a.out a.exe`
 fi
 linker_L=""
 linker_l=""
