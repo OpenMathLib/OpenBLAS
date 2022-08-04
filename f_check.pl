@@ -314,6 +314,9 @@ if (!$?) {
 if ( $vendor eq "NAG") {
 	    $link = `$compiler $openmp -dryrun ftest2.f 2>&1 && rm -f a.out a.exe`;
     }
+if ( $vendor eq "CRAY") {
+	    $link = `$compiler $openmp -hnopattern ftest2.f 2>&1 && rm -f a.out a.exe`;
+    }
 $linker_L = "";
 $linker_l = "";
 $linker_a = "";
