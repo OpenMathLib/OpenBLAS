@@ -263,6 +263,7 @@ ifeq ($(ARCH), x86_64)
 SMALL_MATRIX_OPT = 1
 else ifeq ($(ARCH), power)
 SMALL_MATRIX_OPT = 1
+BUILD_BFLOAT16 = 1
 endif
 ifeq ($(SMALL_MATRIX_OPT), 1)
 CCOMMON_OPT += -DSMALL_MATRIX_OPT
@@ -677,6 +678,10 @@ endif
 
 ifeq ($(ARCH), mips64)
 DYNAMIC_CORE = LOONGSON3R3 LOONGSON3R4
+endif
+
+ifeq ($(ARCH), loongarch64)
+DYNAMIC_CORE = LOONGSON3R5 LOONGSON2K1000 LOONGSONGENERIC
 endif
 
 ifeq ($(ARCH), zarch)
@@ -1570,7 +1575,6 @@ endif
 ifeq ($(F_COMPILER),CRAY)
 LAPACK_FFLAGS := $(filter-out -msse3 -mssse3 -msse4.1 -mavx -mavx2 -mskylake-avx512 ,$(FFLAGS))
 FFLAGS := $(filter-out -msse3 -mssse3 -msse4.1 -mavx -mavx2 -mskylake-avx512 ,$(FFLAGS))
-endif
 endif
 
 LAPACK_CFLAGS = $(CFLAGS)
