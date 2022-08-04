@@ -299,6 +299,9 @@ fi
 if [ "$vendor" = "NAG" ]; then
     link=`$compiler $openmp -dryrun ftest2.f 2>&1 && rm -f a.out a.exe`
 fi
+if [ "$vendor" = "CRAY" ]; then
+    link=`$compiler $openmp -hnopattern ftest2.f 2>&1 && rm -f a.out a.exe`
+fi
 linker_L=""
 linker_l=""
 linker_a=""
