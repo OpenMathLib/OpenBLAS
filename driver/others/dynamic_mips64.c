@@ -47,9 +47,23 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif
 #endif
 
+#ifdef DYNAMIC_LIST
+extern gotoblas_t  gotoblas_MIPS64_GENERIC;
+#ifdef DYN_LOONGSON3R3
+extern gotoblas_t  gotoblas_LOONGSON3R3;
+#else
+#define  gotoblas_LOONGSON3R3 gotoblas_MIPS64_GENERIC
+#endif
+#ifdef DYN_LOONGSON3R4
+extern gotoblas_t  gotoblas_LOONGSON3R4;
+#else
+#define  gotoblas_LOONGSON3R4 gotoblas_MIPS64_GENERIC
+#endif
+#else
 extern gotoblas_t  gotoblas_LOONGSON3R3;
 extern gotoblas_t  gotoblas_LOONGSON3R4;
 extern gotoblas_t  gotoblas_MIPS64_GENERIC;
+#endif
 
 extern void openblas_warning(int verbose, const char * msg);
 
