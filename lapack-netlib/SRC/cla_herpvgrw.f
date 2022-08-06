@@ -102,7 +102,7 @@
 *>     as determined by CHETRF.
 *> \endverbatim
 *>
-*> \param[in] WORK
+*> \param[out] WORK
 *> \verbatim
 *>          WORK is REAL array, dimension (2*N)
 *> \endverbatim
@@ -115,18 +115,15 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date June 2016
-*
 *> \ingroup complexHEcomputational
 *
 *  =====================================================================
       REAL FUNCTION CLA_HERPVGRW( UPLO, N, INFO, A, LDA, AF, LDAF, IPIV,
      $                            WORK )
 *
-*  -- LAPACK computational routine (version 3.7.0) --
+*  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     June 2016
 *
 *     .. Scalar Arguments ..
       CHARACTER*1        UPLO
@@ -327,4 +324,7 @@
       END IF
 
       CLA_HERPVGRW = RPVGRW
+*
+*     End of CLA_HERPVGRW
+*
       END

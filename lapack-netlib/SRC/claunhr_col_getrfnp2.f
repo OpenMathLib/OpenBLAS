@@ -84,7 +84,7 @@
 *>
 *> CLAUNHR_COL_GETRFNP2 is called to factorize a block by the blocked
 *> routine CLAUNHR_COL_GETRFNP, which uses blocked code calling
-*. Level 3 BLAS to update the submatrix. However, CLAUNHR_COL_GETRFNP2
+*> Level 3 BLAS to update the submatrix. However, CLAUNHR_COL_GETRFNP2
 *> is self-sufficient and can be used without CLAUNHR_COL_GETRFNP.
 *>
 *> [1] "Reconstructing Householder vectors from tall-skinny QR",
@@ -149,8 +149,6 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date November 2019
-*
 *> \ingroup complexGEcomputational
 *
 *> \par Contributors:
@@ -168,10 +166,9 @@
       RECURSIVE SUBROUTINE CLAUNHR_COL_GETRFNP2( M, N, A, LDA, D, INFO )
       IMPLICIT NONE
 *
-*  -- LAPACK computational routine (version 3.9.0) --
+*  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2019
 *
 *     .. Scalar Arguments ..
       INTEGER            INFO, LDA, M, N

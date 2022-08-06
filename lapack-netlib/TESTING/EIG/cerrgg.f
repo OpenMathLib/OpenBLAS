@@ -50,17 +50,14 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date June 2016
-*
 *> \ingroup complex_eig
 *
 *  =====================================================================
       SUBROUTINE CERRGG( PATH, NUNIT )
 *
-*  -- LAPACK test routine (version 3.7.0) --
+*  -- LAPACK test routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     June 2016
 *
 *     .. Scalar Arguments ..
       CHARACTER*3        PATH
@@ -100,7 +97,7 @@
      $                   CGGLSE, CGGQRF, CGGRQF, CHGEQZ,
      $                   CHKXER, CTGEVC, CTGEXC, CTGSEN, CTGSJA, CTGSNA,
      $                   CTGSYL, CUNCSD, CGGES3, CGGEV3, CGGHD3,
-     $                   CGGSVD3, CGGSVP3
+     $                   CGGSVD3, CGGSVP3, XLAENV
 *     ..
 *     .. Scalars in Common ..
       LOGICAL            LERR, OK
@@ -137,6 +134,14 @@
       ILST = 1
       NT = 0
       LWORK = 1
+*
+*     Call XLAENV to set the parameters used in CLAQZ0
+*
+      CALL XLAENV( 12, 10 )
+      CALL XLAENV( 13, 12 )
+      CALL XLAENV( 14, 13 )
+      CALL XLAENV( 15, 2 )
+      CALL XLAENV( 17, 10 )
 *
 *     Test error exits for the GG path.
 *

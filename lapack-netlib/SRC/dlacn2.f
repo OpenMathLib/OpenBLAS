@@ -101,8 +101,6 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
-*
 *> \ingroup doubleOTHERauxiliary
 *
 *> \par Further Details:
@@ -136,10 +134,9 @@
 *  =====================================================================
       SUBROUTINE DLACN2( N, V, X, ISGN, EST, KASE, ISAVE )
 *
-*  -- LAPACK auxiliary routine (version 3.7.0) --
+*  -- LAPACK auxiliary routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
 *
 *     .. Scalar Arguments ..
       INTEGER            KASE, N
@@ -160,7 +157,7 @@
 *     ..
 *     .. Local Scalars ..
       INTEGER            I, JLAST
-      DOUBLE PRECISION   ALTSGN, ESTOLD, TEMP
+      DOUBLE PRECISION   ALTSGN, ESTOLD, TEMP, XS
 *     ..
 *     .. External Functions ..
       INTEGER            IDAMAX
@@ -171,7 +168,7 @@
       EXTERNAL           DCOPY
 *     ..
 *     .. Intrinsic Functions ..
-      INTRINSIC          ABS, DBLE, NINT, SIGN
+      INTRINSIC          ABS, DBLE, NINT
 *     ..
 *     .. Executable Statements ..
 *
@@ -199,7 +196,11 @@
       EST = DASUM( N, X, 1 )
 *
       DO 30 I = 1, N
-         X( I ) = SIGN( ONE, X( I ) )
+         IF( X(I).GE.ZERO ) THEN
+            X(I) = ONE
+         ELSE
+            X(I) = -ONE
+         END IF
          ISGN( I ) = NINT( X( I ) )
    30 CONTINUE
       KASE = 2
@@ -232,7 +233,12 @@
       ESTOLD = EST
       EST = DASUM( N, V, 1 )
       DO 80 I = 1, N
-         IF( NINT( SIGN( ONE, X( I ) ) ).NE.ISGN( I ) )
+         IF( X(I).GE.ZERO ) THEN
+            XS = ONE
+         ELSE
+            XS = -ONE
+         END IF
+         IF( NINT( XS ).NE.ISGN( I ) )
      $      GO TO 90
    80 CONTINUE
 *     REPEATED SIGN VECTOR DETECTED, HENCE ALGORITHM HAS CONVERGED.
@@ -244,7 +250,11 @@
      $   GO TO 120
 *
       DO 100 I = 1, N
-         X( I ) = SIGN( ONE, X( I ) )
+         IF( X(I).GE.ZERO ) THEN
+            X(I) = ONE
+         ELSE
+            X(I) = -ONE
+         END IF
          ISGN( I ) = NINT( X( I ) )
   100 CONTINUE
       KASE = 2

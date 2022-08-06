@@ -131,18 +131,15 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date November 2017
-*
 *> \ingroup complexSYcomputational
 *
 *  =====================================================================
       SUBROUTINE CSYTRS_AA_2STAGE( UPLO, N, NRHS, A, LDA, TB, LTB,
      $                             IPIV, IPIV2, B, LDB, INFO )
 *
-*  -- LAPACK computational routine (version 3.8.0) --
+*  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2017
 *
       IMPLICIT NONE
 *

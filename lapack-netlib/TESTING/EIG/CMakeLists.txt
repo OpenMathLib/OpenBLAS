@@ -36,7 +36,7 @@ set(SEIGTST schkee.F
    serrbd.f serrec.f serred.f serrgg.f serrhs.f serrst.f
    sget02.f sget10.f sget22.f sget23.f sget24.f sget31.f
    sget32.f sget33.f sget34.f sget35.f sget36.f
-   sget37.f sget38.f sget39.f sget51.f sget52.f sget53.f
+   sget37.f sget38.f sget39.f sget40.f sget51.f sget52.f sget53.f
    sget54.f sglmts.f sgqrts.f sgrqts.f sgsvts3.f
    shst01.f slarfy.f slarhs.f slatm4.f slctes.f slctsx.f slsets.f sort01.f
    sort03.f ssbt21.f ssgt01.f sslect.f sspt21.f sstt21.f
@@ -73,7 +73,7 @@ set(DEIGTST dchkee.F
    derrbd.f derrec.f derred.f derrgg.f derrhs.f derrst.f
    dget02.f dget10.f dget22.f dget23.f dget24.f dget31.f
    dget32.f dget33.f dget34.f dget35.f dget36.f
-   dget37.f dget38.f dget39.f dget51.f dget52.f dget53.f
+   dget37.f dget38.f dget39.f dget40.f dget51.f dget52.f dget53.f
    dget54.f dglmts.f dgqrts.f dgrqts.f dgsvts3.f
    dhst01.f dlarfy.f dlarhs.f dlatm4.f dlctes.f dlctsx.f dlsets.f dort01.f
    dort03.f dsbt21.f dsgt01.f dslect.f dspt21.f dstt21.f
@@ -99,6 +99,7 @@ set(ZEIGTST zchkee.F
 macro(add_eig_executable name)
   add_executable(${name} ${ARGN})
   target_link_libraries(${name} openblas${SUFFIX64_UNDERSCORE})
+#${TMGLIB} ../${LAPACK_LIBRARIES} ${BLAS_LIBRARIES})
 endmacro()
 
 if(BUILD_SINGLE)

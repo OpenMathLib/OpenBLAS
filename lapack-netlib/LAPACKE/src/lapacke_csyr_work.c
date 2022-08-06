@@ -28,7 +28,6 @@
 ******************************************************************************
 * Contents: Native middle-level C interface to LAPACK function csyr
 * Author: Intel Corporation
-* Generated March, 2012
 *****************************************************************************/
 
 #include "lapacke_utils.h"

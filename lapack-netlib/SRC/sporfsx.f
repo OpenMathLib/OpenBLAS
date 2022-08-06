@@ -384,8 +384,6 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date April 2012
-*
 *> \ingroup realPOcomputational
 *
 *  =====================================================================
@@ -394,10 +392,9 @@
      $                    ERR_BNDS_NORM, ERR_BNDS_COMP, NPARAMS, PARAMS,
      $                    WORK, IWORK, INFO )
 *
-*  -- LAPACK computational routine (version 3.7.0) --
+*  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     April 2012
 *
 *     .. Scalar Arguments ..
       CHARACTER          UPLO, EQUED

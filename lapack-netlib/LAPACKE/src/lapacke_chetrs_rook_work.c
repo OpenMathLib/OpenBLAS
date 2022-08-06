@@ -28,7 +28,6 @@
 *****************************************************************************
 * Contents: Native middle-level C interface to LAPACK function chetrs_rook
 * Author: Intel Corporation
-* Generated November, 2011
 *****************************************************************************/
 
 #include "lapacke_utils.h"

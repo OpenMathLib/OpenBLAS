@@ -25,7 +25,7 @@
 *>                 SIDE = 'L'     SIDE = 'R'
 *> TRANS = 'N':      Q * C          C * Q
 *> TRANS = 'C':      Q**H * C       C * Q**H
-*>      where Q is a real orthogonal matrix defined as the product
+*>      where Q is a complex unitary matrix defined as the product
 *>      of blocked elementary reflectors computed by tall skinny
 *>      QR factorization (ZLATSQR)
 *> \endverbatim
@@ -56,15 +56,14 @@
 *> \param[in] N
 *> \verbatim
 *>          N is INTEGER
-*>          The number of columns of the matrix C. M >= N >= 0.
+*>          The number of columns of the matrix C. N >= 0.
 *> \endverbatim
 *>
 *> \param[in] K
 *> \verbatim
 *>          K is INTEGER
 *>          The number of elementary reflectors whose product defines
-*>          the matrix Q.
-*>          N >= K >= 0;
+*>          the matrix Q. M >= K >= 0;
 *>
 *> \endverbatim
 *>
@@ -72,7 +71,7 @@
 *> \verbatim
 *>          MB is INTEGER
 *>          The block size to be used in the blocked QR.
-*>          MB > N. (must be the same as DLATSQR)
+*>          MB > N. (must be the same as ZLATSQR)
 *> \endverbatim
 *>
 *> \param[in] NB
@@ -87,7 +86,7 @@
 *>          A is COMPLEX*16 array, dimension (LDA,K)
 *>          The i-th column must contain the vector which defines the
 *>          blockedelementary reflector H(i), for i = 1,2,...,k, as
-*>          returned by DLATSQR in the first k columns of
+*>          returned by ZLATSQR in the first k columns of
 *>          its array argument A.
 *> \endverbatim
 *>
@@ -164,8 +163,8 @@
 *  =====================
 *>
 *> \verbatim
-*> Tall-Skinny QR (TSQR) performs QR by a sequence of orthogonal transformations,
-*> representing Q as a product of other orthogonal matrices
+*> Tall-Skinny QR (TSQR) performs QR by a sequence of unitary transformations,
+*> representing Q as a product of other unitary matrices
 *>   Q = Q(1) * Q(2) * . . . * Q(k)
 *> where each Q(i) zeros out subdiagonal entries of a block of MB rows of A:
 *>   Q(1) zeros out the subdiagonal entries of rows 1:MB of A
@@ -196,10 +195,9 @@
       SUBROUTINE ZLAMTSQR( SIDE, TRANS, M, N, K, MB, NB, A, LDA, T,
      $        LDT, C, LDC, WORK, LWORK, INFO )
 *
-*  -- LAPACK computational routine (version 3.7.1) --
+*  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     June 2017
 *
 *     .. Scalar Arguments ..
       CHARACTER         SIDE, TRANS
@@ -215,7 +213,7 @@
 *     ..
 *     .. Local Scalars ..
       LOGICAL    LEFT, RIGHT, TRAN, NOTRAN, LQUERY
-      INTEGER    I, II, KK, LW, CTR
+      INTEGER    I, II, KK, LW, CTR, Q
 *     ..
 *     .. External Functions ..
       LOGICAL            LSAME
@@ -234,8 +232,10 @@
       RIGHT   = LSAME( SIDE, 'R' )
       IF (LEFT) THEN
         LW = N * NB
+        Q = M
       ELSE
         LW = M * NB
+        Q = N
       END IF
 *
       INFO = 0
@@ -243,13 +243,15 @@
          INFO = -1
       ELSE IF( .NOT.TRAN .AND. .NOT.NOTRAN ) THEN
          INFO = -2
-      ELSE IF( M.LT.0 ) THEN
+      ELSE IF( M.LT.K ) THEN
         INFO = -3
       ELSE IF( N.LT.0 ) THEN
         INFO = -4
       ELSE IF( K.LT.0 ) THEN
         INFO = -5
-      ELSE IF( LDA.LT.MAX( 1, K ) ) THEN
+      ELSE IF( K.LT.NB .OR. NB.LT.1 ) THEN
+        INFO = -7
+      ELSE IF( LDA.LT.MAX( 1, Q ) ) THEN
         INFO = -9
       ELSE IF( LDT.LT.MAX( 1, NB) ) THEN
         INFO = -11

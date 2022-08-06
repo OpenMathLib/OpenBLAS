@@ -184,8 +184,6 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date July 2012
-*
 *> \ingroup realOTHERcomputational
 *
 *> \par Further Details:
@@ -214,10 +212,9 @@
      $                    TAUP1, TAUP2, TAUQ1, PHANTOM, WORK, LWORK,
      $                    INFO )
 *
-*  -- LAPACK computational routine (version 3.7.1) --
+*  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     July 2012
 *
 *     .. Scalar Arguments ..
       INTEGER            INFO, LWORK, M, P, Q, LDX11, LDX21

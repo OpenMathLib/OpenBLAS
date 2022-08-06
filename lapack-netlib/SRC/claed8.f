@@ -1,4 +1,4 @@
-*> \brief \b CLAED8 used by sstedc. Merges eigenvalues and deflates secular equation. Used when the original matrix is dense.
+*> \brief \b CLAED8 used by CSTEDC. Merges eigenvalues and deflates secular equation. Used when the original matrix is dense.
 *
 *  =========== DOCUMENTATION ===========
 *
@@ -219,8 +219,6 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
-*
 *> \ingroup complexOTHERcomputational
 *
 *  =====================================================================
@@ -228,10 +226,9 @@
      $                   Q2, LDQ2, W, INDXP, INDX, INDXQ, PERM, GIVPTR,
      $                   GIVCOL, GIVNUM, INFO )
 *
-*  -- LAPACK computational routine (version 3.7.0) --
+*  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
 *
 *     .. Scalar Arguments ..
       INTEGER            CUTPNT, GIVPTR, INFO, K, LDQ, LDQ2, N, QSIZ

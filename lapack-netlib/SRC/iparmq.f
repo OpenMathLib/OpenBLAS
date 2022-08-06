@@ -100,6 +100,10 @@
 *>                        IPARMQ(ISPEC=16)=1 may be more efficient than
 *>                        IPARMQ(ISPEC=16)=2 despite the greater level of
 *>                        arithmetic work implied by the latter choice.)
+*>
+*>              ISPEC=17: (ICOST) An estimate of the relative cost of flops
+*>                        within the near-the-diagonal shift chase compared
+*>                        to flops within the BLAS calls of a QZ sweep.
 *> \endverbatim
 *>
 *> \param[in] NAME
@@ -146,8 +150,6 @@
 *> \author Univ. of California Berkeley
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
-*
-*> \date June 2017
 *
 *> \ingroup OTHERauxiliary
 *
@@ -217,15 +219,18 @@
 *>       IPARMQ(ISPEC=16) Select structured matrix multiply.
 *>                        (See ISPEC=16 above for details.)
 *>                        Default: 3.
+*>
+*>       IPARMQ(ISPEC=17) Relative cost heuristic for blocksize selection.
+*>                        Expressed as a percentage.
+*>                        Default: 10.
 *> \endverbatim
 *>
 *  =====================================================================
       INTEGER FUNCTION IPARMQ( ISPEC, NAME, OPTS, N, ILO, IHI, LWORK )
 *
-*  -- LAPACK auxiliary routine (version 3.7.1) --
+*  -- LAPACK auxiliary routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     June 2017
 *
 *     .. Scalar Arguments ..
       INTEGER            IHI, ILO, ISPEC, LWORK, N
@@ -233,12 +238,12 @@
 *
 *  ================================================================
 *     .. Parameters ..
-      INTEGER            INMIN, INWIN, INIBL, ISHFTS, IACC22
+      INTEGER            INMIN, INWIN, INIBL, ISHFTS, IACC22, ICOST
       PARAMETER          ( INMIN = 12, INWIN = 13, INIBL = 14,
-     $                   ISHFTS = 15, IACC22 = 16 )
-      INTEGER            NMIN, K22MIN, KACMIN, NIBBLE, KNWSWP
+     $                   ISHFTS = 15, IACC22 = 16, ICOST = 17 )
+      INTEGER            NMIN, K22MIN, KACMIN, NIBBLE, KNWSWP, RCOST
       PARAMETER          ( NMIN = 75, K22MIN = 14, KACMIN = 14,
-     $                   NIBBLE = 14, KNWSWP = 500 )
+     $                   NIBBLE = 14, KNWSWP = 500, RCOST = 10 )
       REAL               TWO
       PARAMETER          ( TWO = 2.0 )
 *     ..
@@ -384,6 +389,12 @@
      $         IPARMQ = 2
          END IF
 *
+      ELSE IF( ISPEC.EQ.ICOST ) THEN
+*
+*        === Relative cost of near-the-diagonal chase vs
+*            BLAS updates ===
+*
+         IPARMQ = RCOST
       ELSE
 *        ===== invalid value of ispec =====
          IPARMQ = -1

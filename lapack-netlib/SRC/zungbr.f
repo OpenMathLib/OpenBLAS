@@ -150,17 +150,14 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date April 2012
-*
 *> \ingroup complex16GBcomputational
 *
 *  =====================================================================
       SUBROUTINE ZUNGBR( VECT, M, N, K, A, LDA, TAU, WORK, LWORK, INFO )
 *
-*  -- LAPACK computational routine (version 3.7.0) --
+*  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     April 2012
 *
 *     .. Scalar Arguments ..
       CHARACTER          VECT
@@ -236,7 +233,7 @@
                END IF
             END IF
          END IF
-         LWKOPT = WORK( 1 )
+         LWKOPT = DBLE( WORK( 1 ) )
          LWKOPT = MAX (LWKOPT, MN)
       END IF
 *

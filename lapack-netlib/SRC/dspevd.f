@@ -170,18 +170,15 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date June 2017
-*
 *> \ingroup doubleOTHEReigen
 *
 *  =====================================================================
       SUBROUTINE DSPEVD( JOBZ, UPLO, N, AP, W, Z, LDZ, WORK, LWORK,
      $                   IWORK, LIWORK, INFO )
 *
-*  -- LAPACK driver routine (version 3.7.1) --
+*  -- LAPACK driver routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     June 2017
 *
 *     .. Scalar Arguments ..
       CHARACTER          JOBZ, UPLO

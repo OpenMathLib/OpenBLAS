@@ -25,7 +25,8 @@
 *>
 *> \verbatim
 *>
-*> DBDT02 tests the change of basis C = U' * B by computing the residual
+*> DBDT02 tests the change of basis C = U**H * B by computing the
+*> residual
 *>
 *>    RESID = norm( B - U * C ) / ( max(m,n) * norm(B) * EPS ),
 *>
@@ -64,7 +65,7 @@
 *> \param[in] C
 *> \verbatim
 *>          C is DOUBLE PRECISION array, dimension (LDC,N)
-*>          The m by n matrix C, assumed to contain U' * B.
+*>          The m by n matrix C, assumed to contain U**H * B.
 *> \endverbatim
 *>
 *> \param[in] LDC
@@ -104,17 +105,14 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
-*
 *> \ingroup double_eig
 *
 *  =====================================================================
       SUBROUTINE DBDT02( M, N, B, LDB, C, LDC, U, LDU, WORK, RESID )
 *
-*  -- LAPACK test routine (version 3.7.0) --
+*  -- LAPACK test routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
 *
 *     .. Scalar Arguments ..
       INTEGER            LDB, LDC, LDU, M, N

@@ -31,7 +31,7 @@
 *>
 *>       Q = H(1) H(2) . . . H(K) = I - V T V**T
 *>
-*> generated using the compact WY representation as returned by DGELQT.
+*> generated using the compact WY representation as returned by SGELQT.
 *>
 *> Q is of order M if SIDE = 'L' and of order N  if SIDE = 'R'.
 *> \endverbatim
@@ -79,7 +79,7 @@
 *>          MB is INTEGER
 *>          The block size used for the storage of T.  K >= MB >= 1.
 *>          This must be the same value of MB used to generate T
-*>          in DGELQT.
+*>          in SGELQT.
 *> \endverbatim
 *>
 *> \param[in] V
@@ -89,7 +89,7 @@
 *>                               (LDV,N) if SIDE = 'R'
 *>          The i-th row must contain the vector which defines the
 *>          elementary reflector H(i), for i = 1,2,...,k, as returned by
-*>          DGELQT in the first K rows of its array argument A.
+*>          SGELQT in the first K rows of its array argument A.
 *> \endverbatim
 *>
 *> \param[in] LDV
@@ -102,7 +102,7 @@
 *> \verbatim
 *>          T is REAL array, dimension (LDT,K)
 *>          The upper triangular factors of the block reflectors
-*>          as returned by DGELQT, stored as a MB-by-K matrix.
+*>          as returned by SGELQT, stored as a MB-by-K matrix.
 *> \endverbatim
 *>
 *> \param[in] LDT
@@ -145,18 +145,15 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date November 2017
-*
 *> \ingroup doubleGEcomputational
 *
 *  =====================================================================
       SUBROUTINE SGEMLQT( SIDE, TRANS, M, N, K, MB, V, LDV, T, LDT,
      $                   C, LDC, WORK, INFO )
 *
-*  -- LAPACK computational routine (version 3.8.0) --
+*  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2017
 *
 *     .. Scalar Arguments ..
       CHARACTER SIDE, TRANS
@@ -171,7 +168,7 @@
 *     ..
 *     .. Local Scalars ..
       LOGICAL            LEFT, RIGHT, TRAN, NOTRAN
-      INTEGER            I, IB, LDWORK, KF
+      INTEGER            I, IB, LDWORK, KF, Q
 *     ..
 *     .. External Functions ..
       LOGICAL            LSAME
@@ -195,8 +192,10 @@
 *
       IF( LEFT ) THEN
          LDWORK = MAX( 1, N )
+         Q = M
       ELSE IF ( RIGHT ) THEN
          LDWORK = MAX( 1, M )
+         Q = N
       END IF
       IF( .NOT.LEFT .AND. .NOT.RIGHT ) THEN
          INFO = -1
@@ -206,7 +205,7 @@
          INFO = -3
       ELSE IF( N.LT.0 ) THEN
          INFO = -4
-      ELSE IF( K.LT.0) THEN
+      ELSE IF( K.LT.0 .OR. K.GT.Q ) THEN
          INFO = -5
       ELSE IF( MB.LT.1 .OR. (MB.GT.K .AND. K.GT.0)) THEN
          INFO = -6

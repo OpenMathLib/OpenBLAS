@@ -222,8 +222,6 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date June 2017
-*
 *> \ingroup complexOTHERauxiliary
 *
 *> \par Contributors:
@@ -248,10 +246,9 @@
       SUBROUTINE CLAQR4( WANTT, WANTZ, N, ILO, IHI, H, LDH, W, ILOZ,
      $                   IHIZ, Z, LDZ, WORK, LWORK, INFO )
 *
-*  -- LAPACK auxiliary routine (version 3.7.1) --
+*  -- LAPACK auxiliary routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     June 2017
 *
 *     .. Scalar Arguments ..
       INTEGER            IHI, IHIZ, ILO, ILOZ, INFO, LDH, LDZ, LWORK, N

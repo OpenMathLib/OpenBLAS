@@ -199,9 +199,10 @@
 *> \param[out] INFO
 *> \verbatim
 *>          INFO is INTEGER
-*>          = 0:  successful exit.
 *>          < 0:  if INFO = -i, the i-th argument had an illegal value.
+*>          = -4:  if A had a NAN entry.
 *>          > 0:  The updating process of DBDSDC did not converge.
+*>          =  0:  successful exit.
 *> \endverbatim
 *
 *  Authors:
@@ -211,8 +212,6 @@
 *> \author Univ. of California Berkeley
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
-*
-*> \date June 2016
 *
 *> \ingroup complex16GEsing
 *
@@ -227,10 +226,9 @@
      $                   WORK, LWORK, RWORK, IWORK, INFO )
       implicit none
 *
-*  -- LAPACK driver routine (version 3.7.0) --
+*  -- LAPACK driver routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     June 2016
 *
 *     .. Scalar Arguments ..
       CHARACTER          JOBZ
@@ -282,8 +280,9 @@
 *     ..
 *     .. External Functions ..
       LOGICAL            LSAME, DISNAN
-      DOUBLE PRECISION   DLAMCH, ZLANGE
-      EXTERNAL           LSAME, DLAMCH, ZLANGE, DISNAN
+      DOUBLE PRECISION   DLAMCH, ZLANGE, DROUNDUP_LWORK
+      EXTERNAL           LSAME, DLAMCH, ZLANGE, DISNAN, 
+     $                   DROUNDUP_LWORK
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          INT, MAX, MIN, SQRT
@@ -619,7 +618,7 @@
          MAXWRK = MAX( MAXWRK, MINWRK )
       END IF
       IF( INFO.EQ.0 ) THEN
-         WORK( 1 ) = MAXWRK
+         WORK( 1 ) = DROUNDUP_LWORK( MAXWRK )
          IF( LWORK.LT.MINWRK .AND. .NOT. LQUERY ) THEN
             INFO = -12
          END IF
@@ -2215,7 +2214,7 @@
 *
 *     Return optimal workspace in WORK(1)
 *
-      WORK( 1 ) = MAXWRK
+      WORK( 1 ) = DROUNDUP_LWORK( MAXWRK )
 *
       RETURN
 *

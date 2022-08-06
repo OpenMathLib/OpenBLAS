@@ -28,8 +28,8 @@
 *> where:
 *>
 *>    Q is a M-by-M orthogonal matrix, stored on exit in an implicit
-*>    form in the elements below the digonal of the array A and in
-*>    the elemenst of the array T;
+*>    form in the elements below the diagonal of the array A and in
+*>    the elements of the array T;
 *>
 *>    R is an upper-triangular N-by-N matrix, stored on exit in
 *>    the elements on and above the diagonal of the array A.
@@ -57,7 +57,7 @@
 *> \verbatim
 *>          MB is INTEGER
 *>          The row block size to be used in the blocked QR.
-*>          MB > N.
+*>          MB > 0.
 *> \endverbatim
 *>
 *> \param[in] NB
@@ -164,10 +164,9 @@
       SUBROUTINE DLATSQR( M, N, MB, NB, A, LDA, T, LDT, WORK,
      $                    LWORK, INFO)
 *
-*  -- LAPACK computational routine (version 3.9.0) --
+*  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd. --
-*     November 2019
 *
 *     .. Scalar Arguments ..
       INTEGER           INFO, LDA, M, N, MB, NB, LDT, LWORK
@@ -203,12 +202,12 @@
         INFO = -1
       ELSE IF( N.LT.0 .OR. M.LT.N ) THEN
         INFO = -2
-      ELSE IF( MB.LE.N ) THEN
+      ELSE IF( MB.LT.1 ) THEN
         INFO = -3
       ELSE IF( NB.LT.1 .OR. ( NB.GT.N .AND. N.GT.0 )) THEN
         INFO = -4
       ELSE IF( LDA.LT.MAX( 1, M ) ) THEN
-        INFO = -5
+        INFO = -6
       ELSE IF( LDT.LT.NB ) THEN
         INFO = -8
       ELSE IF( LWORK.LT.(N*NB) .AND. (.NOT.LQUERY) ) THEN

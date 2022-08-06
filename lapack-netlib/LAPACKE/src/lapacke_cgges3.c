@@ -28,7 +28,6 @@
 *****************************************************************************
 * Contents: Native high-level C interface to LAPACK function cgges3
 * Author: Intel Corporation
-* Generated March, 2015
 *****************************************************************************/
 
 #include "lapacke_utils.h"

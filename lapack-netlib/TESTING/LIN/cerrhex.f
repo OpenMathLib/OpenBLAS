@@ -51,17 +51,14 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
-*
 *> \ingroup complex_lin
 *
 *  =====================================================================
       SUBROUTINE CERRHE( PATH, NUNIT )
 *
-*  -- LAPACK test routine (version 3.7.0) --
+*  -- LAPACK test routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
 *
 *     .. Scalar Arguments ..
       CHARACTER*3        PATH
@@ -609,6 +606,6 @@
 *
       RETURN
 *
-*     End of CERRHE
+*     End of CERRHEX
 *
       END

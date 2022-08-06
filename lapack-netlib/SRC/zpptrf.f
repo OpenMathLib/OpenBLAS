@@ -92,8 +92,6 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
-*
 *> \ingroup complex16OTHERcomputational
 *
 *> \par Further Details:
@@ -119,10 +117,9 @@
 *  =====================================================================
       SUBROUTINE ZPPTRF( UPLO, N, AP, INFO )
 *
-*  -- LAPACK computational routine (version 3.7.0) --
+*  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
 *
 *     .. Scalar Arguments ..
       CHARACTER          UPLO
@@ -192,8 +189,8 @@
 *
 *           Compute U(J,J) and test for non-positive-definiteness.
 *
-            AJJ = DBLE( AP( JJ ) ) - ZDOTC( J-1, AP( JC ), 1, AP( JC ),
-     $            1 )
+            AJJ = DBLE( AP( JJ ) ) - DBLE( ZDOTC( J-1,
+     $            AP( JC ), 1, AP( JC ), 1 ) )
             IF( AJJ.LE.ZERO ) THEN
                AP( JJ ) = AJJ
                GO TO 30

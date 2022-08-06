@@ -319,8 +319,6 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
-*
 *> \ingroup realOTHERsing
 *
 *> \par Contributors:
@@ -334,10 +332,9 @@
      $                   LDB, ALPHA, BETA, U, LDU, V, LDV, Q, LDQ, WORK,
      $                   IWORK, INFO )
 *
-*  -- LAPACK driver routine (version 3.7.0) --
+*  -- LAPACK driver routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
 *
 *     .. Scalar Arguments ..
       CHARACTER          JOBQ, JOBU, JOBV

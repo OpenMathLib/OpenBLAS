@@ -398,8 +398,6 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date February 2015
-*
 *> \ingroup double_eig
 *
 *  =====================================================================
@@ -408,10 +406,9 @@
      $                   ALPHAR, ALPHAI, BETA, ALPHR1, ALPHI1, BETA1,
      $                   WORK, LWORK, RESULT, INFO )
 *
-*  -- LAPACK test routine (version 3.6.1) --
+*  -- LAPACK test routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     February 2015
 *
 *     .. Scalar Arguments ..
       INTEGER            INFO, LDA, LDQ, LDQE, LWORK, NOUNIT, NSIZES,
@@ -434,7 +431,7 @@
       DOUBLE PRECISION   ZERO, ONE
       PARAMETER          ( ZERO = 0.0D+0, ONE = 1.0D+0 )
       INTEGER            MAXTYP
-      PARAMETER          ( MAXTYP = 26 )
+      PARAMETER          ( MAXTYP = 27 )
 *     ..
 *     .. Local Scalars ..
       LOGICAL            BADNN
@@ -465,26 +462,26 @@
       INTRINSIC          ABS, DBLE, MAX, MIN, SIGN
 *     ..
 *     .. Data statements ..
-      DATA               KCLASS / 15*1, 10*2, 1*3 /
+      DATA               KCLASS / 15*1, 10*2, 1*3, 1*4 /
       DATA               KZ1 / 0, 1, 2, 1, 3, 3 /
       DATA               KZ2 / 0, 0, 1, 2, 1, 1 /
       DATA               KADD / 0, 0, 0, 0, 3, 2 /
       DATA               KATYPE / 0, 1, 0, 1, 2, 3, 4, 1, 4, 4, 1, 1, 4,
-     $                   4, 4, 2, 4, 5, 8, 7, 9, 4*4, 0 /
+     $                   4, 4, 2, 4, 5, 8, 7, 9, 4*4, 0, 0 /
       DATA               KBTYPE / 0, 0, 1, 1, 2, -3, 1, 4, 1, 1, 4, 4,
-     $                   1, 1, -4, 2, -4, 8*8, 0 /
+     $                   1, 1, -4, 2, -4, 8*8, 0, 0 /
       DATA               KAZERO / 6*1, 2, 1, 2*2, 2*1, 2*2, 3, 1, 3,
-     $                   4*5, 4*3, 1 /
+     $                   4*5, 4*3, 1, 1 /
       DATA               KBZERO / 6*1, 1, 2, 2*1, 2*2, 2*1, 4, 1, 4,
-     $                   4*6, 4*4, 1 /
+     $                   4*6, 4*4, 1, 1 /
       DATA               KAMAGN / 8*1, 2, 3, 2, 3, 2, 3, 7*1, 2, 3, 3,
-     $                   2, 1 /
+     $                   2, 1, 3 /
       DATA               KBMAGN / 8*1, 3, 2, 3, 2, 2, 3, 7*1, 3, 2, 3,
-     $                   2, 1 /
-      DATA               KTRIAN / 16*0, 10*1 /
+     $                   2, 1, 3 /
+      DATA               KTRIAN / 16*0, 11*1 /
       DATA               IASIGN / 6*0, 2, 0, 2*2, 2*0, 3*2, 0, 2, 3*0,
-     $                   5*2, 0 /
-      DATA               IBSIGN / 7*0, 2, 2*0, 2*2, 2*0, 2, 0, 2, 9*0 /
+     $                   5*2, 2*0 /
+      DATA               IBSIGN / 7*0, 2, 2*0, 2*2, 2*0, 2, 0, 2, 10*0 /
 *     ..
 *     .. Executable Statements ..
 *
@@ -591,7 +588,8 @@
 *           Description of control parameters:
 *
 *           KZLASS: =1 means w/o rotation, =2 means w/ rotation,
-*                   =3 means random.
+*                   =3 means random, =4 means random generalized
+*                   upper Hessenberg.
 *           KATYPE: the "type" to be passed to DLATM4 for computing A.
 *           KAZERO: the pattern of zeros on the diagonal for A:
 *                   =1: ( xxx ), =2: (0, xxx ) =3: ( 0, 0, xxx, 0 ),
@@ -705,7 +703,7 @@
                   IF( IERR.NE.0 )
      $               GO TO 90
                END IF
-            ELSE
+            ELSE IF (KCLASS( JTYPE ).EQ.3) THEN
 *
 *              Random matrices
 *
@@ -717,6 +715,32 @@
      $                             DLARND( 2, ISEED )
    70             CONTINUE
    80          CONTINUE
+            ELSE
+*
+*              Random upper Hessenberg pencil with singular B
+*
+               DO 81 JC = 1, N
+                  DO 71 JR = 1, min( JC + 1, N)
+                     A( JR, JC ) = RMAGN( KAMAGN( JTYPE ) )*
+     $                             DLARND( 2, ISEED )
+   71             CONTINUE
+                  DO 72 JR = JC + 2, N
+                     A( JR, JC ) = ZERO
+   72             CONTINUE
+   81          CONTINUE
+               DO 82 JC = 1, N
+                  DO 73 JR = 1, JC
+                     B( JR, JC ) = RMAGN( KAMAGN( JTYPE ) )*
+     $                             DLARND( 2, ISEED )
+   73             CONTINUE
+                  DO 74 JR = JC + 1, N
+                     B( JR, JC ) = ZERO
+   74             CONTINUE
+   82          CONTINUE
+               DO 83 JC = 1, N, 4
+                  B( JC, JC ) = ZERO
+   83          CONTINUE
+               
             END IF
 *
    90       CONTINUE
@@ -733,6 +757,14 @@
             DO 110 I = 1, 7
                RESULT( I ) = -ONE
   110       CONTINUE
+*
+*           Call XLAENV to set the parameters used in DLAQZ0
+*
+            CALL XLAENV( 12, 10 )
+            CALL XLAENV( 13, 12 )
+            CALL XLAENV( 14, 13 )
+            CALL XLAENV( 15, 2 )
+            CALL XLAENV( 17, 10 )
 *
 *           Call DGGEV3 to compute eigenvalues and eigenvectors.
 *

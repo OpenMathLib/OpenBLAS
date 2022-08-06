@@ -104,8 +104,6 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date June 2017
-*
 *> \ingroup doubleOTHERcomputational
 *
 *> \par Further Details:
@@ -162,10 +160,9 @@
 *  =====================================================================
       SUBROUTINE CTPLQT2( M, N, L, A, LDA, B, LDB, T, LDT, INFO )
 *
-*  -- LAPACK computational routine (version 3.7.1) --
+*  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     June 2017
 *
 *     .. Scalar Arguments ..
       INTEGER        INFO, LDA, LDB, LDT, N, M, L

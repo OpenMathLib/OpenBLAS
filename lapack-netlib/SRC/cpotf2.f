@@ -102,17 +102,14 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
-*
 *> \ingroup complexPOcomputational
 *
 *  =====================================================================
       SUBROUTINE CPOTF2( UPLO, N, A, LDA, INFO )
 *
-*  -- LAPACK computational routine (version 3.7.0) --
+*  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
 *
 *     .. Scalar Arguments ..
       CHARACTER          UPLO
@@ -177,8 +174,8 @@
 *
 *           Compute U(J,J) and test for non-positive-definiteness.
 *
-            AJJ = REAL( A( J, J ) ) - CDOTC( J-1, A( 1, J ), 1,
-     $            A( 1, J ), 1 )
+            AJJ = REAL( REAL( A( J, J ) ) - CDOTC( J-1, A( 1, J ), 1,
+     $            A( 1, J ), 1 ) )
             IF( AJJ.LE.ZERO.OR.SISNAN( AJJ ) ) THEN
                A( J, J ) = AJJ
                GO TO 30
@@ -204,8 +201,8 @@
 *
 *           Compute L(J,J) and test for non-positive-definiteness.
 *
-            AJJ = REAL( A( J, J ) ) - CDOTC( J-1, A( J, 1 ), LDA,
-     $            A( J, 1 ), LDA )
+            AJJ = REAL( REAL( A( J, J ) ) - CDOTC( J-1, A( J, 1 ), LDA,
+     $            A( J, 1 ), LDA ) )
             IF( AJJ.LE.ZERO.OR.SISNAN( AJJ ) ) THEN
                A( J, J ) = AJJ
                GO TO 30

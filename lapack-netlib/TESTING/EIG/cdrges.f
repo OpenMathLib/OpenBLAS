@@ -372,8 +372,6 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date June 2016
-*
 *> \ingroup complex_eig
 *
 *  =====================================================================
@@ -381,10 +379,9 @@
      $                   NOUNIT, A, LDA, B, S, T, Q, LDQ, Z, ALPHA,
      $                   BETA, WORK, LWORK, RWORK, RESULT, BWORK, INFO )
 *
-*  -- LAPACK test routine (version 3.7.0) --
+*  -- LAPACK test routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     June 2016
 *
 *     .. Scalar Arguments ..
       INTEGER            INFO, LDA, LDQ, LWORK, NOUNIT, NSIZES, NTYPES

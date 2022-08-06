@@ -86,17 +86,14 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
-*
 *> \ingroup complexOTHERcomputational
 *
 *  =====================================================================
       SUBROUTINE CPPTRI( UPLO, N, AP, INFO )
 *
-*  -- LAPACK computational routine (version 3.7.0) --
+*  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
 *
 *     .. Scalar Arguments ..
       CHARACTER          UPLO
@@ -164,7 +161,7 @@
             JJ = JJ + J
             IF( J.GT.1 )
      $         CALL CHPR( 'Upper', J-1, ONE, AP( JC ), 1, AP )
-            AJJ = AP( JJ )
+            AJJ = REAL( AP( JJ ) )
             CALL CSSCAL( J, AJJ, AP( JC ), 1 )
    10    CONTINUE
 *

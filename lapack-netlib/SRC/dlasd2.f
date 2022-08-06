@@ -254,8 +254,6 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date June 2017
-*
 *> \ingroup OTHERauxiliary
 *
 *> \par Contributors:
@@ -269,10 +267,9 @@
      $                   LDVT, DSIGMA, U2, LDU2, VT2, LDVT2, IDXP, IDX,
      $                   IDXC, IDXQ, COLTYP, INFO )
 *
-*  -- LAPACK auxiliary routine (version 3.7.1) --
+*  -- LAPACK auxiliary routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     June 2017
 *
 *     .. Scalar Arguments ..
       INTEGER            INFO, K, LDU, LDU2, LDVT, LDVT2, NL, NR, SQRE

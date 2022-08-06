@@ -154,18 +154,15 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date June 2017
-*
 *> \ingroup complex16GEsolve
 *
 *  =====================================================================
       SUBROUTINE ZGETSLS( TRANS, M, N, NRHS, A, LDA, B, LDB,
      $                    WORK, LWORK, INFO )
 *
-*  -- LAPACK driver routine (version 3.7.1) --
+*  -- LAPACK driver routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     June 2017
 *
 *     .. Scalar Arguments ..
       CHARACTER          TRANS
@@ -186,17 +183,16 @@
 *     ..
 *     .. Local Scalars ..
       LOGICAL            LQUERY, TRAN
-      INTEGER            I, IASCL, IBSCL, J, MINMN, MAXMN, BROW,
-     $                   SCLLEN, MNK, TSZO, TSZM, LWO, LWM, LW1, LW2,
+      INTEGER            I, IASCL, IBSCL, J, MAXMN, BROW,
+     $                   SCLLEN, TSZO, TSZM, LWO, LWM, LW1, LW2,
      $                   WSIZEO, WSIZEM, INFO2
       DOUBLE PRECISION   ANRM, BIGNUM, BNRM, SMLNUM, DUM( 1 )
       COMPLEX*16         TQ( 5 ), WORKQ( 1 )
 *     ..
 *     .. External Functions ..
       LOGICAL            LSAME
-      INTEGER            ILAENV
       DOUBLE PRECISION   DLAMCH, ZLANGE
-      EXTERNAL           LSAME, ILAENV, DLABAD, DLAMCH, ZLANGE
+      EXTERNAL           LSAME, DLABAD, DLAMCH, ZLANGE
 *     ..
 *     .. External Subroutines ..
       EXTERNAL           ZGEQR, ZGEMQR, ZLASCL, ZLASET,
@@ -210,9 +206,7 @@
 *     Test the input arguments.
 *
       INFO = 0
-      MINMN = MIN( M, N )
       MAXMN = MAX( M, N )
-      MNK   = MAX( MINMN, NRHS )
       TRAN  = LSAME( TRANS, 'C' )
 *
       LQUERY = ( LWORK.EQ.-1 .OR. LWORK.EQ.-2 )
@@ -233,7 +227,7 @@
 *
       IF( INFO.EQ.0 ) THEN
 *
-*     Determine the block size and minimum LWORK
+*     Determine the optimum and minimum LWORK
 *
        IF( M.GE.N ) THEN
          CALL ZGEQR( M, N, A, LDA, TQ, -1, WORKQ, -1, INFO2 )
@@ -271,16 +265,16 @@
           INFO = -10
        END IF
 *
+       WORK( 1 ) = DBLE( WSIZEO )
+*
       END IF
 *
       IF( INFO.NE.0 ) THEN
         CALL XERBLA( 'ZGETSLS', -INFO )
-        WORK( 1 ) = DBLE( WSIZEO )
         RETURN
       END IF
       IF( LQUERY ) THEN
-        IF( LWORK.EQ.-1 ) WORK( 1 ) = REAL( WSIZEO )
-        IF( LWORK.EQ.-2 ) WORK( 1 ) = REAL( WSIZEM )
+        IF( LWORK.EQ.-2 ) WORK( 1 ) = DBLE( WSIZEM )
         RETURN
       END IF
       IF( LWORK.LT.WSIZEO ) THEN

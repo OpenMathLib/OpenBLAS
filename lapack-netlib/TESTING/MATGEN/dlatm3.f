@@ -217,8 +217,6 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date June 2016
-*
 *> \ingroup double_matgen
 *
 *  =====================================================================
@@ -226,10 +224,9 @@
      $                 IDIST, ISEED, D, IGRADE, DL, DR, IPVTNG, IWORK,
      $                 SPARSE )
 *
-*  -- LAPACK auxiliary routine (version 3.7.0) --
+*  -- LAPACK auxiliary routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     June 2016
 *
 *     .. Scalar Arguments ..
 *

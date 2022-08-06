@@ -27,9 +27,9 @@
 *> where:
 *>
 *>    Q is a n-by-N orthogonal matrix, stored on exit in an implicit
-*>    form in the elements above the digonal of the array A and in
-*>    the elemenst of the array T;
-*>    L is an lower-triangular M-by-M matrix stored on exit in
+*>    form in the elements above the diagonal of the array A and in
+*>    the elements of the array T;
+*>    L is a lower-triangular M-by-M matrix stored on exit in
 *>    the elements on and below the diagonal of the array A.
 *>    0 is a M-by-(N-M) zero matrix, if M < N, and is not stored.
 *>
@@ -60,7 +60,7 @@
 *> \verbatim
 *>          NB is INTEGER
 *>          The column block size to be used in the blocked QR.
-*>          NB > M.
+*>          NB > 0.
 *> \endverbatim
 *>
 *> \param[in,out] A
@@ -162,10 +162,9 @@
       SUBROUTINE ZLASWLQ( M, N, MB, NB, A, LDA, T, LDT, WORK, LWORK,
      $                  INFO)
 *
-*  -- LAPACK computational routine (version 3.9.0) --
+*  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd. --
-*     June 2017
 *
 *     .. Scalar Arguments ..
       INTEGER           INFO, LDA, M, N, MB, NB, LWORK, LDT
@@ -203,10 +202,10 @@
         INFO = -2
       ELSE IF( MB.LT.1 .OR. ( MB.GT.M .AND. M.GT.0 )) THEN
         INFO = -3
-      ELSE IF( NB.LE.M ) THEN
+      ELSE IF( NB.LE.0 ) THEN
         INFO = -4
       ELSE IF( LDA.LT.MAX( 1, M ) ) THEN
-        INFO = -5
+        INFO = -6
       ELSE IF( LDT.LT.MB ) THEN
         INFO = -8
       ELSE IF( ( LWORK.LT.M*MB) .AND. (.NOT.LQUERY) ) THEN

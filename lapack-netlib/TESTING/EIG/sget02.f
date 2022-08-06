@@ -28,9 +28,11 @@
 *> \verbatim
 *>
 *> SGET02 computes the residual for a solution of a system of linear
-*> equations  A*x = b  or  A'*x = b:
-*>    RESID = norm(B - A*X) / ( norm(A) * norm(X) * EPS ),
-*> where EPS is the machine epsilon.
+*> equations op(A)*X = B:
+*>    RESID = norm(B - op(A)*X) / ( norm(op(A)) * norm(X) * EPS ),
+*> where op(A) = A or A**T, depending on TRANS, and EPS is the
+*> machine epsilon.
+*> The norm used is the 1-norm.
 *> \endverbatim
 *
 *  Arguments:
@@ -40,9 +42,9 @@
 *> \verbatim
 *>          TRANS is CHARACTER*1
 *>          Specifies the form of the system of equations:
-*>          = 'N':  A *x = b
-*>          = 'T':  A'*x = b, where A' is the transpose of A
-*>          = 'C':  A'*x = b, where A' is the transpose of A
+*>          = 'N':  A    * X = B  (No transpose)
+*>          = 'T':  A**T * X = B  (Transpose)
+*>          = 'C':  A**H * X = B  (Conjugate transpose = Transpose)
 *> \endverbatim
 *>
 *> \param[in] M
@@ -114,7 +116,7 @@
 *> \verbatim
 *>          RESID is REAL
 *>          The maximum over the number of right hand sides of
-*>          norm(B - A*X) / ( norm(A) * norm(X) * EPS ).
+*>          norm(B - op(A)*X) / ( norm(op(A)) * norm(X) * EPS ).
 *> \endverbatim
 *
 *  Authors:
@@ -125,18 +127,15 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date June 2017
-*
 *> \ingroup single_eig
 *
 *  =====================================================================
       SUBROUTINE SGET02( TRANS, M, N, NRHS, A, LDA, X, LDX, B, LDB,
      $                   RWORK, RESID )
 *
-*  -- LAPACK test routine (version 3.7.1) --
+*  -- LAPACK test routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     June 2017
 *
 *     .. Scalar Arguments ..
       CHARACTER          TRANS
@@ -189,19 +188,23 @@
 *     Exit with RESID = 1/EPS if ANORM = 0.
 *
       EPS = SLAMCH( 'Epsilon' )
+      IF( LSAME( TRANS, 'N' ) ) THEN
       ANORM = SLANGE( '1', M, N, A, LDA, RWORK )
+      ELSE
+         ANORM = SLANGE( 'I', M, N, A, LDA, RWORK )
+      END IF
       IF( ANORM.LE.ZERO ) THEN
          RESID = ONE / EPS
          RETURN
       END IF
 *
-*     Compute  B - A*X  (or  B - A'*X ) and store in B.
+*     Compute B - op(A)*X and store in B.
 *
       CALL SGEMM( TRANS, 'No transpose', N1, NRHS, N2, -ONE, A, LDA, X,
      $            LDX, ONE, B, LDB )
 *
 *     Compute the maximum over the number of right hand sides of
-*        norm(B - A*X) / ( norm(A) * norm(X) * EPS ) .
+*        norm(B - op(A)*X) / ( norm(op(A)) * norm(X) * EPS ) .
 *
       RESID = ZERO
       DO 10 J = 1, NRHS

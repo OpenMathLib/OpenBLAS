@@ -30,7 +30,7 @@
 *> SLARHS chooses a set of NRHS random solution vectors and sets
 *> up the right hand sides for the linear system
 *>    op( A ) * X = B,
-*> where op( A ) may be A or A' (transpose of A).
+*> where op(A) = A or A**T, depending on TRANS.
 *> \endverbatim
 *
 *  Arguments:
@@ -79,10 +79,11 @@
 *> \param[in] TRANS
 *> \verbatim
 *>          TRANS is CHARACTER*1
-*>          Specifies the operation applied to the matrix A.
-*>          = 'N':  System is  A * x = b
-*>          = 'T':  System is  A'* x = b
-*>          = 'C':  System is  A'* x = b
+*>          Used only if A is nonsymmetric; specifies the operation
+*>          applied to the matrix A.
+*>          = 'N':  B := A    * X  (No transpose)
+*>          = 'T':  B := A**T * X  (Transpose)
+*>          = 'C':  B := A**H * X  (Conjugate transpose = Transpose)
 *> \endverbatim
 *>
 *> \param[in] M
@@ -196,18 +197,15 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
-*
 *> \ingroup single_lin
 *
 *  =====================================================================
       SUBROUTINE SLARHS( PATH, XTYPE, UPLO, TRANS, M, N, KL, KU, NRHS,
      $                   A, LDA, X, LDX, B, LDB, ISEED, INFO )
 *
-*  -- LAPACK test routine (version 3.7.0) --
+*  -- LAPACK test routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
 *
 *     .. Scalar Arguments ..
       CHARACTER          TRANS, UPLO, XTYPE

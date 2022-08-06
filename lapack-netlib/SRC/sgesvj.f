@@ -260,8 +260,6 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date June 2017
-*
 *> \ingroup realGEcomputational
 *
 *> \par Further Details:
@@ -279,7 +277,7 @@
 *> spectral condition number. The best performance of this Jacobi SVD
 *> procedure is achieved if used in an  accelerated version of Drmac and
 *> Veselic [5,6], and it is the kernel routine in the SIGMA library [7].
-*> Some tunning parameters (marked with [TP]) are available for the
+*> Some tuning parameters (marked with [TP]) are available for the
 *> implementer. \n
 *> The computational range for the nonzero singular values is the  machine
 *> number interval ( UNDERFLOW , OVERFLOW ). In extreme cases, even
@@ -323,10 +321,9 @@
       SUBROUTINE SGESVJ( JOBA, JOBU, JOBV, M, N, A, LDA, SVA, MV, V,
      $                   LDV, WORK, LWORK, INFO )
 *
-*  -- LAPACK computational routine (version 3.7.1) --
+*  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     June 2017
 *
 *     .. Scalar Arguments ..
       INTEGER            INFO, LDA, LDV, LWORK, M, MV, N

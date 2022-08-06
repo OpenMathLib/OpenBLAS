@@ -120,8 +120,6 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date June 2016
-*
 *> \ingroup OTHERauxiliary
 *
 *> \par Contributors:
@@ -137,10 +135,9 @@
       SUBROUTINE DLARRC( JOBT, N, VL, VU, D, E, PIVMIN,
      $                            EIGCNT, LCNT, RCNT, INFO )
 *
-*  -- LAPACK auxiliary routine (version 3.7.1) --
+*  -- LAPACK auxiliary routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     June 2016
 *
 *     .. Scalar Arguments ..
       CHARACTER          JOBT
@@ -246,6 +243,6 @@
 
       RETURN
 *
-*     end of DLARRC
+*     End of DLARRC
 *
       END

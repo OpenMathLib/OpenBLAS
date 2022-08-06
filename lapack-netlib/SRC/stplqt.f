@@ -6,7 +6,7 @@
 *            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download DTPQRT + dependencies
+*> Download STPLQT + dependencies
 *> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/stplqt.f">
 *> [TGZ]</a>
 *> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/stplqt.f">
@@ -34,7 +34,7 @@
 *>
 *> \verbatim
 *>
-*> DTPLQT computes a blocked LQ factorization of a real
+*> STPLQT computes a blocked LQ factorization of a real
 *> "triangular-pentagonal" matrix C, which is composed of a
 *> triangular block A and pentagonal block B, using the compact
 *> WY representation for Q.
@@ -132,8 +132,6 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date June 2017
-*
 *> \ingroup doubleOTHERcomputational
 *
 *> \par Further Details:
@@ -189,10 +187,9 @@
       SUBROUTINE STPLQT( M, N, L, MB, A, LDA, B, LDB, T, LDT, WORK,
      $                   INFO )
 *
-*  -- LAPACK computational routine (version 3.7.1) --
+*  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     June 2017
 *
 *     .. Scalar Arguments ..
       INTEGER INFO, LDA, LDB, LDT, N, M, L, MB

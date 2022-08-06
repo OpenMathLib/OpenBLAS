@@ -112,17 +112,14 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
-*
 *> \ingroup complex16POcomputational
 *
 *  =====================================================================
       SUBROUTINE ZPOEQUB( N, A, LDA, S, SCOND, AMAX, INFO )
 *
-*  -- LAPACK computational routine (version 3.7.0) --
+*  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
 *
 *     .. Scalar Arguments ..
       INTEGER            INFO, LDA, N
@@ -183,11 +180,11 @@
 *
 *     Find the minimum and maximum diagonal elements.
 *
-      S( 1 ) = A( 1, 1 )
+      S( 1 ) = DBLE( A( 1, 1 ) )
       SMIN = S( 1 )
       AMAX = S( 1 )
       DO 10 I = 2, N
-         S( I ) = A( I, I )
+         S( I ) = DBLE( A( I, I ) )
          SMIN = MIN( SMIN, S( I ) )
          AMAX = MAX( AMAX, S( I ) )
    10 CONTINUE

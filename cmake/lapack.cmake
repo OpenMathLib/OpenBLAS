@@ -2,12 +2,13 @@
 if (NOT C_LAPACK)
 	message (STATUS "fortran lapack")
 set(ALLAUX ilaenv.f ilaenv2stage.f ieeeck.f lsamen.f iparmq.f iparam2stage.F
-   ilaprec.f ilatrans.f ilauplo.f iladiag.f chla_transtype.f dlaset.f
+   ilaprec.f ilatrans.f ilauplo.f iladiag.f chla_transtype.f dlaset.f la_xisnan.F90
    ../INSTALL/ilaver.f xerbla_array.f
    ../INSTALL/slamch.f)
 
 set(SCLAUX
 	scombssq.f sbdsvdx.f sstevx.f sstein.f
+   la_constants.f90
    sbdsdc.f
    sbdsqr.f sdisna.f slabad.f slacpy.f sladiv.f slae2.f  slaebz.f
    slaed0.f slaed1.f slaed2.f slaed3.f slaed4.f slaed5.f slaed6.f
@@ -16,16 +17,17 @@ set(SCLAUX
    slapy2.f slapy3.f slarnv.f
    slarra.f slarrb.f slarrc.f slarrd.f slarre.f slarrf.f slarrj.f
    slarrk.f slarrr.f slaneg.f
-   slartg.f slaruv.f slas2.f  slascl.f
+   slartg.f90 slaruv.f slas2.f  slascl.f
    slasd0.f slasd1.f slasd2.f slasd3.f slasd4.f slasd5.f slasd6.f
    slasd7.f slasd8.f slasda.f slasdq.f slasdt.f
    slaset.f slasq1.f slasq2.f slasq3.f slasq4.f slasq5.f slasq6.f
-   slasr.f  slasrt.f slassq.f slasv2.f spttrf.f sstebz.f sstedc.f
+   slasr.f  slasrt.f slassq.f90 slasv2.f spttrf.f sstebz.f sstedc.f
    ssteqr.f ssterf.f slaisnan.f sisnan.f
-   slartgp.f slartgs.f
+   slartgp.f slartgs.f ../INSTALL/sroundup_lwork.f
    ../INSTALL/second_${TIMER}.f)
 
 set(DZLAUX
+   la_constants.f90
    dbdsdc.f
    dbdsvdx.f dstevx.f dstein.f
    dbdsqr.f ddisna.f dlabad.f dlacpy.f dladiv.f dlae2.f  dlaebz.f
@@ -35,13 +37,13 @@ set(DZLAUX
    dlapy2.f dlapy3.f dlarnv.f
    dlarra.f dlarrb.f dlarrc.f dlarrd.f dlarre.f dlarrf.f dlarrj.f
    dlarrk.f dlarrr.f dlaneg.f
-   dlartg.f dlaruv.f dlas2.f  dlascl.f
+   dlartg.f90 dlaruv.f dlas2.f  dlascl.f
    dlasd0.f dlasd1.f dlasd2.f dlasd3.f dlasd4.f dlasd5.f dlasd6.f
    dlasd7.f dlasd8.f dlasda.f dlasdq.f dlasdt.f
    dlasq1.f dlasq2.f dlasq3.f dlasq4.f dlasq5.f dlasq6.f
-   dlasr.f  dlasrt.f dlassq.f dlasv2.f dpttrf.f dstebz.f dstedc.f
+   dlasr.f  dlasrt.f dlassq.f90 dlasv2.f dpttrf.f dstebz.f dstedc.f
    dsteqr.f dsterf.f dlaisnan.f disnan.f
-   dlartgp.f dlartgs.f
+   dlartgp.f dlartgs.f ../INSTALL/droundup_lwork.f
    ../INSTALL/dlamch.f ../INSTALL/dsecnd_${TIMER}.f)
 
 set(SLASRC
@@ -59,6 +61,7 @@ set(SLASRC
    sggrqf.f sggsvd3.f sggsvp3.f sgtcon.f sgtrfs.f sgtsv.f
    sgtsvx.f sgttrf.f sgttrs.f sgtts2.f shgeqz.f
    shsein.f shseqr.f slabrd.f slacon.f slacn2.f
+   slaqz0.f slaqz1.f slaqz2.f slaqz3.f slaqz4.f
    slaein.f slaexc.f slag2.f  slags2.f slagtm.f slagv2.f slahqr.f
    slahr2.f slaic1.f slaln2.f slals0.f slalsa.f slalsd.f
    slangb.f slange.f slangt.f slanhs.f slansb.f slansp.f
@@ -171,10 +174,11 @@ set(CLASRC
    clantp.f clantr.f clapll.f clapmt.f clarcm.f claqgb.f claqge.f
    claqhb.f claqhe.f claqhp.f claqp2.f claqps.f claqsb.f
    claqr0.f claqr1.f claqr2.f claqr3.f claqr4.f claqr5.f
+   claqz0.f claqz1.f claqz2.f claqz3.f
    claqsp.f claqsy.f clar1v.f clar2v.f ilaclr.f ilaclc.f
    clarf.f  clarfb.f clarfb_gett.f clarfg.f clarfgp.f clarft.f
-   clarfx.f clarfy.f clargv.f clarnv.f clarrv.f clartg.f clartv.f
-   clarz.f  clarzb.f clarzt.f clascl.f claset.f clasr.f  classq.f
+   clarfx.f clarfy.f clargv.f clarnv.f clarrv.f clartg.f90 clartv.f
+   clarz.f  clarzb.f clarzt.f clascl.f claset.f clasr.f  classq.f90
    clasyf.f clasyf_rook.f clasyf_rk.f clasyf_aa.f
    clatbs.f clatdf.f clatps.f clatrd.f clatrs.f clatrz.f
    cpbcon.f cpbequ.f cpbrfs.f cpbstf.f cpbsv.f
@@ -245,6 +249,7 @@ set(DLASRC
    dggglm.f dgghrd.f dgghd3.f dgglse.f dggqrf.f
    dggrqf.f dggsvd3.f dggsvp3.f dgtcon.f dgtrfs.f dgtsv.f
    dgtsvx.f dgttrf.f dgttrs.f dgtts2.f dhgeqz.f
+   dlaqz0.f dlaqz1.f dlaqz2.f dlaqz3.f dlaqz4.f
    dhsein.f dhseqr.f dlabrd.f dlacon.f dlacn2.f
    dlaein.f dlaexc.f dlag2.f  dlags2.f dlagtm.f dlagv2.f dlahqr.f
    dlahr2.f dlaic1.f dlaln2.f dlals0.f dlalsa.f dlalsd.f
@@ -346,6 +351,7 @@ set(ZLASRC
    zhetrs_3.f zhecon_3.f zhesv_rk.f
    zhesv_aa.f zhesv_aa_2stage.f zhetrf_aa.f zhetrf_aa_2stage.f zhetrs_aa.f zhetrs_aa_2stage.f
    zhgeqz.f zhpcon.f zhpev.f  zhpevd.f
+   zlaqz0.f zlaqz1.f zlaqz2.f zlaqz3.f
    zhpevx.f zhpgst.f zhpgv.f  zhpgvd.f zhpgvx.f zhprfs.f zhpsv.f
    zhpsvx.f
    zhptrd.f zhptrf.f zhptri.f zhptrs.f zhsein.f zhseqr.f zlabrd.f
@@ -363,9 +369,9 @@ set(ZLASRC
    zlaqsp.f zlaqsy.f zlar1v.f zlar2v.f ilazlr.f ilazlc.f
    zlarcm.f zlarf.f  zlarfb.f zlarfb_gett.f
    zlarfg.f zlarfgp.f zlarft.f
-   zlarfx.f zlarfy.f zlargv.f zlarnv.f zlarrv.f zlartg.f zlartv.f
+   zlarfx.f zlarfy.f zlargv.f zlarnv.f zlarrv.f zlartg.f90 zlartv.f
    zlarz.f  zlarzb.f zlarzt.f zlascl.f zlaset.f zlasr.f
-   zlassq.f zlasyf.f zlasyf_rook.f zlasyf_rk.f zlasyf_aa.f
+   zlassq.f90 zlasyf.f zlasyf_rook.f zlasyf_rk.f zlasyf_aa.f
    zlatbs.f zlatdf.f zlatps.f zlatrd.f zlatrs.f zlatrz.f
    zpbcon.f zpbequ.f zpbrfs.f zpbstf.f zpbsv.f
    zpbsvx.f zpbtf2.f zpbtrf.f zpbtrs.f zpocon.f zpoequ.f zporfs.f

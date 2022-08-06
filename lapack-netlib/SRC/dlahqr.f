@@ -183,8 +183,6 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
-*
 *> \ingroup doubleOTHERauxiliary
 *
 *> \par Further Details:
@@ -206,11 +204,11 @@
 *  =====================================================================
       SUBROUTINE DLAHQR( WANTT, WANTZ, N, ILO, IHI, H, LDH, WR, WI,
      $                   ILOZ, IHIZ, Z, LDZ, INFO )
+      IMPLICIT NONE
 *
-*  -- LAPACK auxiliary routine (version 3.7.0) --
+*  -- LAPACK auxiliary routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
 *
 *     .. Scalar Arguments ..
       INTEGER            IHI, IHIZ, ILO, ILOZ, INFO, LDH, LDZ, N
@@ -227,13 +225,16 @@
       PARAMETER          ( ZERO = 0.0d0, ONE = 1.0d0, TWO = 2.0d0 )
       DOUBLE PRECISION   DAT1, DAT2
       PARAMETER          ( DAT1 = 3.0d0 / 4.0d0, DAT2 = -0.4375d0 )
+      INTEGER            KEXSH
+      PARAMETER          ( KEXSH = 10 )
 *     ..
 *     .. Local Scalars ..
       DOUBLE PRECISION   AA, AB, BA, BB, CS, DET, H11, H12, H21, H21S,
      $                   H22, RT1I, RT1R, RT2I, RT2R, RTDISC, S, SAFMAX,
      $                   SAFMIN, SMLNUM, SN, SUM, T1, T2, T3, TR, TST,
      $                   ULP, V2, V3
-      INTEGER            I, I1, I2, ITS, ITMAX, J, K, L, M, NH, NR, NZ
+      INTEGER            I, I1, I2, ITS, ITMAX, J, K, L, M, NH, NR, NZ,
+     $                   KDEFL 
 *     ..
 *     .. Local Arrays ..
       DOUBLE PRECISION   V( 3 )
@@ -294,6 +295,10 @@
 *
       ITMAX = 30 * MAX( 10, NH )
 *
+*     KDEFL counts the number of iterations since a deflation
+*
+      KDEFL = 0
+*
 *     The main loop begins here. I is the loop index and decreases from
 *     IHI to ILO in steps of 1 or 2. Each iteration of the loop works
 *     with the active submatrix in rows and columns L to I.
@@ -353,6 +358,7 @@
 *
          IF( L.GE.I-1 )
      $      GO TO 150
+         KDEFL = KDEFL + 1
 *
 *        Now the active submatrix is in rows and columns L to I. If
 *        eigenvalues only are being computed, only the active submatrix
@@ -363,21 +369,21 @@
             I2 = I
          END IF
 *
-         IF( ITS.EQ.10 ) THEN
-*
-*           Exceptional shift.
-*
-            S = ABS( H( L+1, L ) ) + ABS( H( L+2, L+1 ) )
-            H11 = DAT1*S + H( L, L )
-            H12 = DAT2*S
-            H21 = S
-            H22 = H11
-         ELSE IF( ITS.EQ.20 ) THEN
+         IF( MOD(KDEFL,2*KEXSH).EQ.0 ) THEN
 *
 *           Exceptional shift.
 *
             S = ABS( H( I, I-1 ) ) + ABS( H( I-1, I-2 ) )
             H11 = DAT1*S + H( I, I )
+            H12 = DAT2*S
+            H21 = S
+            H22 = H11
+         ELSE IF( MOD(KDEFL,KEXSH).EQ.0 ) THEN
+*
+*           Exceptional shift.
+*
+            S = ABS( H( L+1, L ) ) + ABS( H( L+2, L+1 ) )
+            H11 = DAT1*S + H( L, L )
             H12 = DAT2*S
             H21 = S
             H22 = H11
@@ -599,6 +605,8 @@
             CALL DROT( NZ, Z( ILOZ, I-1 ), 1, Z( ILOZ, I ), 1, CS, SN )
          END IF
       END IF
+*     reset deflation counter
+      KDEFL = 0
 *
 *     return to start of the main loop with new value of I.
 *

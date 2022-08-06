@@ -174,8 +174,6 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date July 2012
-*
 *> \ingroup complex16OTHERcomputational
 *
 *> \par Further Details:
@@ -203,10 +201,9 @@
       SUBROUTINE ZUNBDB1( M, P, Q, X11, LDX11, X21, LDX21, THETA, PHI,
      $                    TAUP1, TAUP2, TAUQ1, WORK, LWORK, INFO )
 *
-*  -- LAPACK computational routine (version 3.7.1) --
+*  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     July 2012
 *
 *     .. Scalar Arguments ..
       INTEGER            INFO, LWORK, M, P, Q, LDX11, LDX21

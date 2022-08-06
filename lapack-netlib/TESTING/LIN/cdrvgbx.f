@@ -144,7 +144,7 @@
 *> \param[out] RWORK
 *> \verbatim
 *>          RWORK is REAL array, dimension
-*>                      (max(NMAX,2*NRHS))
+*>                      (max(2*NMAX,NMAX+2*NRHS))
 *> \endverbatim
 *>
 *> \param[out] IWORK
@@ -166,8 +166,6 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
-*
 *> \ingroup complex_lin
 *
 *  =====================================================================
@@ -175,10 +173,9 @@
      $                   AFB, LAFB, ASAV, B, BSAV, X, XACT, S, WORK,
      $                   RWORK, IWORK, NOUT )
 *
-*  -- LAPACK test routine (version 3.7.0) --
+*  -- LAPACK test routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
 *
 *     .. Scalar Arguments ..
       LOGICAL            TSTERR
@@ -593,7 +590,8 @@
      $                                        WORK, LDB )
                                  CALL CGBT02( 'No transpose', N, N, KL,
      $                                        KU, NRHS, A, LDA, X, LDB,
-     $                                        WORK, LDB, RESULT( 2 ) )
+     $                                        WORK, LDB, RWORK,
+     $                                        RESULT( 2 ) )
 *
 *                                Check solution from generated exact
 *                                solution.
@@ -711,6 +709,7 @@
      $                                     WORK, LDB )
                               CALL CGBT02( TRANS, N, N, KL, KU, NRHS,
      $                                     ASAV, LDA, X, LDB, WORK, LDB,
+     $                                     RWORK( 2*NRHS+1 ),
      $                                     RESULT( 2 ) )
 *
 *                             Check solution from generated exact
@@ -900,7 +899,8 @@ c                     write(*,*) 'begin cgbsvxx testing'
                         CALL CLACPY( 'Full', N, NRHS, BSAV, LDB, WORK,
      $                               LDB )
                         CALL CGBT02( TRANS, N, N, KL, KU, NRHS, ASAV,
-     $                       LDA, X, LDB, WORK, LDB, RESULT( 2 ) )
+     $                               LDA, X, LDB, WORK, LDB, RWORK,
+     $                               RESULT( 2 ) )
 *
 *                       Check solution from generated exact solution.
 *
@@ -1030,6 +1030,6 @@ c                     write(*,*) 'begin cgbsvxx testing'
 *
       RETURN
 *
-*     End of CDRVGB
+*     End of CDRVGBX
 *
       END

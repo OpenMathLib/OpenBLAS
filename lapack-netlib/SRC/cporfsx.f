@@ -122,7 +122,7 @@
 *> \verbatim
 *>          AF is COMPLEX array, dimension (LDAF,N)
 *>     The triangular factor U or L from the Cholesky factorization
-*>     A = U**T*U or A = L*L**T, as computed by SPOTRF.
+*>     A = U**H*U or A = L*L**H, as computed by CPOTRF.
 *> \endverbatim
 *>
 *> \param[in] LDAF
@@ -383,8 +383,6 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date April 2012
-*
 *> \ingroup complexPOcomputational
 *
 *  =====================================================================
@@ -393,10 +391,9 @@
      $                    ERR_BNDS_NORM, ERR_BNDS_COMP, NPARAMS, PARAMS,
      $                    WORK, RWORK, INFO )
 *
-*  -- LAPACK computational routine (version 3.7.0) --
+*  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     April 2012
 *
 *     .. Scalar Arguments ..
       CHARACTER          UPLO, EQUED

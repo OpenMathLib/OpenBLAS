@@ -1,4 +1,4 @@
-*> \brief \b DLAED5 used by sstedc. Solves the 2-by-2 secular equation.
+*> \brief \b DLAED5 used by DSTEDC. Solves the 2-by-2 secular equation.
 *
 *  =========== DOCUMENTATION ===========
 *
@@ -95,8 +95,6 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
-*
 *> \ingroup auxOTHERcomputational
 *
 *> \par Contributors:
@@ -108,10 +106,9 @@
 *  =====================================================================
       SUBROUTINE DLAED5( I, D, Z, DELTA, RHO, DLAM )
 *
-*  -- LAPACK computational routine (version 3.7.0) --
+*  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
 *
 *     .. Scalar Arguments ..
       INTEGER            I
@@ -184,6 +181,6 @@
       END IF
       RETURN
 *
-*     End OF DLAED5
+*     End of DLAED5
 *
       END

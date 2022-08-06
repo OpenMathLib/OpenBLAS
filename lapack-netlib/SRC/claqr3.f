@@ -251,8 +251,6 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date June 2016
-*
 *> \ingroup complexOTHERauxiliary
 *
 *> \par Contributors:
@@ -266,10 +264,9 @@
      $                   IHIZ, Z, LDZ, NS, ND, SH, V, LDV, NH, T, LDT,
      $                   NV, WV, LDWV, WORK, LWORK )
 *
-*  -- LAPACK auxiliary routine (version 3.7.1) --
+*  -- LAPACK auxiliary routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     June 2016
 *
 *     .. Scalar Arguments ..
       INTEGER            IHIZ, ILOZ, KBOT, KTOP, LDH, LDT, LDV, LDWV,

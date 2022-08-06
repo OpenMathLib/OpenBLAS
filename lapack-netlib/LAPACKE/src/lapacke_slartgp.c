@@ -28,7 +28,6 @@
 *****************************************************************************
 * Contents: Native high-level C interface to LAPACK function slartgp
 * Author: Intel Corporation
-* Generated November, 2011
 *****************************************************************************/
 
 #include "lapacke_utils.h"

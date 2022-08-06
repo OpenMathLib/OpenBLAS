@@ -218,18 +218,15 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date June 2016
-*
 *> \ingroup doubleOTHEReigen
 *
 *  =====================================================================
       SUBROUTINE DBDSVDX( UPLO, JOBZ, RANGE, N, D, E, VL, VU, IL, IU,
      $                    NS, S, Z, LDZ, WORK, IWORK, INFO)
 *
-*  -- LAPACK driver routine (version 3.8.0) --
+*  -- LAPACK driver routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2017
 *
 *     .. Scalar Arguments ..
       CHARACTER          JOBZ, RANGE, UPLO

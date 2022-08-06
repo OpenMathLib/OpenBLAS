@@ -50,17 +50,14 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date June 2016
-*
 *> \ingroup double_eig
 *
 *  =====================================================================
       SUBROUTINE DERRGG( PATH, NUNIT )
 *
-*  -- LAPACK test routine (version 3.7.0) --
+*  -- LAPACK test routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     June 2016
 *
 *     .. Scalar Arguments ..
       CHARACTER*3        PATH
@@ -99,7 +96,7 @@
      $                   DGGHRD, DGGLSE, DGGQRF, DGGRQF,
      $                   DHGEQZ, DORCSD, DTGEVC, DTGEXC, DTGSEN, DTGSJA,
      $                   DTGSNA, DTGSYL, DGGHD3, DGGES3, DGGEV3,
-     $                   DGGSVD3, DGGSVP3
+     $                   DGGSVD3, DGGSVP3, XLAENV
 *     ..
 *     .. Scalars in Common ..
       LOGICAL            LERR, OK
@@ -136,6 +133,14 @@
       ILST = 1
       NT = 0
       LWORK = 1
+*
+*     Call XLAENV to set the parameters used in CLAQZ0
+*
+      CALL XLAENV( 12, 10 )
+      CALL XLAENV( 13, 12 )
+      CALL XLAENV( 14, 13 )
+      CALL XLAENV( 15, 2 )
+      CALL XLAENV( 17, 10 )
 *
 *     Test error exits for the GG path.
 *
@@ -872,6 +877,11 @@
 *
 *        DGGEV3
 *
+         CALL XLAENV( 12, 20 )
+         CALL XLAENV( 13, 4 )
+         CALL XLAENV( 14, 13 )
+         CALL XLAENV( 15, 2 )
+         CALL XLAENV( 17, 10 )
          SRNAMT = 'DGGEV3 '
          INFOT = 1
          CALL DGGEV3( '/', 'N', 1, A, 1, B, 1, R1, R2, R3, Q, 1, U, 1,

@@ -6,7 +6,7 @@
 *            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download DGEMLQT + dependencies
+*> Download ZGEMLQT + dependencies
 *> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/zgemlqt.f">
 *> [TGZ]</a>
 *> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/zgemlqt.f">
@@ -35,13 +35,13 @@
 *>
 *> \verbatim
 *>
-*> ZGEMLQT overwrites the general real M-by-N matrix C with
+*> ZGEMLQT overwrites the general complex M-by-N matrix C with
 *>
 *>                 SIDE = 'L'     SIDE = 'R'
 *> TRANS = 'N':      Q C            C Q
 *> TRANS = 'C':   Q**H C            C Q**H
 *>
-*> where Q is a complex orthogonal matrix defined as the product of K
+*> where Q is a complex unitary matrix defined as the product of K
 *> elementary reflectors:
 *>
 *>       Q = H(1) H(2) . . . H(K) = I - V T V**H
@@ -65,7 +65,7 @@
 *> \verbatim
 *>          TRANS is CHARACTER*1
 *>          = 'N':  No transpose, apply Q;
-*>          = 'C':  Transpose, apply Q**H.
+*>          = 'C':  Conjugate transpose, apply Q**H.
 *> \endverbatim
 *>
 *> \param[in] M
@@ -94,7 +94,7 @@
 *>          MB is INTEGER
 *>          The block size used for the storage of T.  K >= MB >= 1.
 *>          This must be the same value of MB used to generate T
-*>          in DGELQT.
+*>          in ZGELQT.
 *> \endverbatim
 *>
 *> \param[in] V
@@ -104,7 +104,7 @@
 *>                               (LDV,N) if SIDE = 'R'
 *>          The i-th row must contain the vector which defines the
 *>          elementary reflector H(i), for i = 1,2,...,k, as returned by
-*>          DGELQT in the first K rows of its array argument A.
+*>          ZGELQT in the first K rows of its array argument A.
 *> \endverbatim
 *>
 *> \param[in] LDV
@@ -117,7 +117,7 @@
 *> \verbatim
 *>          T is COMPLEX*16 array, dimension (LDT,K)
 *>          The upper triangular factors of the block reflectors
-*>          as returned by DGELQT, stored as a MB-by-K matrix.
+*>          as returned by ZGELQT, stored as a MB-by-K matrix.
 *> \endverbatim
 *>
 *> \param[in] LDT
@@ -160,18 +160,15 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date November 2017
-*
 *> \ingroup doubleGEcomputational
 *
 *  =====================================================================
       SUBROUTINE ZGEMLQT( SIDE, TRANS, M, N, K, MB, V, LDV, T, LDT,
      $                   C, LDC, WORK, INFO )
 *
-*  -- LAPACK computational routine (version 3.8.0) --
+*  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2017
 *
 *     .. Scalar Arguments ..
       CHARACTER SIDE, TRANS
@@ -186,7 +183,7 @@
 *     ..
 *     .. Local Scalars ..
       LOGICAL            LEFT, RIGHT, TRAN, NOTRAN
-      INTEGER            I, IB, LDWORK, KF
+      INTEGER            I, IB, LDWORK, KF, Q
 *     ..
 *     .. External Functions ..
       LOGICAL            LSAME
@@ -210,8 +207,10 @@
 *
       IF( LEFT ) THEN
          LDWORK = MAX( 1, N )
+         Q = M
       ELSE IF ( RIGHT ) THEN
          LDWORK = MAX( 1, M )
+         Q = N
       END IF
       IF( .NOT.LEFT .AND. .NOT.RIGHT ) THEN
          INFO = -1
@@ -221,7 +220,7 @@
          INFO = -3
       ELSE IF( N.LT.0 ) THEN
          INFO = -4
-      ELSE IF( K.LT.0) THEN
+      ELSE IF( K.LT.0 .OR. K.GT.Q ) THEN
          INFO = -5
       ELSE IF( MB.LT.1 .OR. (MB.GT.K .AND. K.GT.0)) THEN
          INFO = -6

@@ -94,8 +94,6 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date June 2017
-*
 *> \ingroup complex16OTHERauxiliary
 *
 *> \par Contributors:
@@ -107,10 +105,9 @@
 *  =====================================================================
       SUBROUTINE ZLAQR1( N, H, LDH, S1, S2, V )
 *
-*  -- LAPACK auxiliary routine (version 3.7.1) --
+*  -- LAPACK auxiliary routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     June 2017
 *
 *     .. Scalar Arguments ..
       COMPLEX*16         S1, S2

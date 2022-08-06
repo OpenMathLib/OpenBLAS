@@ -220,7 +220,7 @@
 *>          left singular vectors in the case JOBU = 'F'.
 *>
 *>          If LIWORK, LCWORK, or LRWORK = -1, then on exit, if INFO = 0,
-*>          LIWORK(1) returns the minimal LIWORK.
+*>          IWORK(1) returns the minimal LIWORK.
 *> \endverbatim
 *>
 *> \param[in] LIWORK
@@ -315,7 +315,7 @@
 *>          N^(-1/4) * RWORK(1) <= ||pinv(C)||_2 <= N^(1/4) * RWORK(1).
 *>          Otherwise, RWORK(1) = -1.
 *>          2. RWORK(2) contains the number of singular values computed as
-*>          exact zeros in CGESVD applied to the upper triangular or trapeziodal
+*>          exact zeros in CGESVD applied to the upper triangular or trapezoidal
 *>          R (from the initial QR factorization). In case of early exit (no call to
 *>          CGESVD, such as in the case of zero matrix) RWORK(2) = -1.
 *>
@@ -403,8 +403,6 @@
 *> \author Univ. of California Berkeley
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
-*
-*> \date November 2018
 *
 *> \ingroup complexGEsing
 *
@@ -640,7 +638,7 @@
                  IF ( WNTVA ) THEN
 *                   .. minimal workspace length for N x N/2 CGEQRF
                     LWQRF  = MAX( N/2, 1 )
-*                   .. minimal workspace lengt for N/2 x N/2 CGESVD
+*                   .. minimal workspace length for N/2 x N/2 CGESVD
                     LWSVD2 = MAX( 3 * (N/2), 1 )
                     LWUNQ2 = MAX( N, 1 )
                     MINWRK2 = MAX( LWQP3, N/2+LWQRF, N/2+LWSVD2,

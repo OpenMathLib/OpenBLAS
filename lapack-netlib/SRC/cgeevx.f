@@ -276,7 +276,6 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date June 2016
 *
 *  @generated from zgeevx.f, fortran z -> c, Tue Apr 19 01:47:44 2016
 *
@@ -288,10 +287,9 @@
      $                   RCONDV, WORK, LWORK, RWORK, INFO )
       implicit none
 *
-*  -- LAPACK driver routine (version 3.7.1) --
+*  -- LAPACK driver routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     June 2016
 *
 *     .. Scalar Arguments ..
       CHARACTER          BALANC, JOBVL, JOBVR, SENSE

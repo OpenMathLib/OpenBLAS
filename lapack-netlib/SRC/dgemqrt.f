@@ -94,7 +94,7 @@
 *>          NB is INTEGER
 *>          The block size used for the storage of T.  K >= NB >= 1.
 *>          This must be the same value of NB used to generate T
-*>          in CGEQRT.
+*>          in DGEQRT.
 *> \endverbatim
 *>
 *> \param[in] V
@@ -102,7 +102,7 @@
 *>          V is DOUBLE PRECISION array, dimension (LDV,K)
 *>          The i-th column must contain the vector which defines the
 *>          elementary reflector H(i), for i = 1,2,...,k, as returned by
-*>          CGEQRT in the first K columns of its array argument A.
+*>          DGEQRT in the first K columns of its array argument A.
 *> \endverbatim
 *>
 *> \param[in] LDV
@@ -117,7 +117,7 @@
 *> \verbatim
 *>          T is DOUBLE PRECISION array, dimension (LDT,K)
 *>          The upper triangular factors of the block reflectors
-*>          as returned by CGEQRT, stored as a NB-by-N matrix.
+*>          as returned by DGEQRT, stored as a NB-by-N matrix.
 *> \endverbatim
 *>
 *> \param[in] LDT
@@ -160,18 +160,15 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
-*
 *> \ingroup doubleGEcomputational
 *
 *  =====================================================================
       SUBROUTINE DGEMQRT( SIDE, TRANS, M, N, K, NB, V, LDV, T, LDT,
      $                   C, LDC, WORK, INFO )
 *
-*  -- LAPACK computational routine (version 3.7.0) --
+*  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
 *
 *     .. Scalar Arguments ..
       CHARACTER SIDE, TRANS

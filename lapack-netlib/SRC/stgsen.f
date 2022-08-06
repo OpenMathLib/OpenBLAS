@@ -304,8 +304,6 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date June 2016
-*
 *> \ingroup realOTHERcomputational
 *
 *> \par Further Details:
@@ -451,10 +449,9 @@
      $                   ALPHAR, ALPHAI, BETA, Q, LDQ, Z, LDZ, M, PL,
      $                   PR, DIF, WORK, LWORK, IWORK, LIWORK, INFO )
 *
-*  -- LAPACK computational routine (version 3.7.0) --
+*  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     June 2016
 *
 *     .. Scalar Arguments ..
       LOGICAL            WANTQ, WANTZ

@@ -193,8 +193,6 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date November 2017
-*
 *> \ingroup doubleOTHERcomputational
 *
 *> \par Further Details:
@@ -218,10 +216,9 @@
       SUBROUTINE DGSVJ0( JOBV, M, N, A, LDA, D, SVA, MV, V, LDV, EPS,
      $                   SFMIN, TOL, NSWEEP, WORK, LWORK, INFO )
 *
-*  -- LAPACK computational routine (version 3.8.0) --
+*  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2017
 *
 *     .. Scalar Arguments ..
       INTEGER            INFO, LDA, LDV, LWORK, M, MV, N, NSWEEP
@@ -392,7 +389,7 @@
 *        Some BLAS implementations compute DNRM2(M,A(1,p),1)
 *        as DSQRT(DDOT(M,A(1,p),1,A(1,p),1)), which may result in
 *        overflow for ||A(:,p)||_2 > DSQRT(overflow_threshold), and
-*        undeflow for ||A(:,p)||_2 < DSQRT(underflow_threshold).
+*        underflow for ||A(:,p)||_2 < DSQRT(underflow_threshold).
 *        Hence, DNRM2 cannot be trusted, not even in the case when
 *        the true norm is far from the under(over)flow boundaries.
 *        If properly implemented DNRM2 is available, the IF-THEN-ELSE

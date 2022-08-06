@@ -118,19 +118,15 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
-*
 *> \ingroup complexOTHERauxiliary
 *
 *  =====================================================================
       REAL             FUNCTION CLANTP( NORM, UPLO, DIAG, N, AP, WORK )
 *
-*  -- LAPACK auxiliary routine (version 3.7.0) --
+*  -- LAPACK auxiliary routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
 *
-      IMPLICIT NONE
 *     .. Scalar Arguments ..
       CHARACTER          DIAG, NORM, UPLO
       INTEGER            N
@@ -149,17 +145,14 @@
 *     .. Local Scalars ..
       LOGICAL            UDIAG
       INTEGER            I, J, K
-      REAL               SUM, VALUE
-*     ..
-*     .. Local Arrays ..
-      REAL               SSQ( 2 ), COLSSQ( 2 )
+      REAL               SCALE, SUM, VALUE
 *     ..
 *     .. External Functions ..
       LOGICAL            LSAME, SISNAN
       EXTERNAL           LSAME, SISNAN
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           CLASSQ, SCOMBSSQ
+      EXTERNAL           CLASSQ
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          ABS, SQRT
@@ -312,64 +305,45 @@
       ELSE IF( ( LSAME( NORM, 'F' ) ) .OR. ( LSAME( NORM, 'E' ) ) ) THEN
 *
 *        Find normF(A).
-*        SSQ(1) is scale
-*        SSQ(2) is sum-of-squares
-*        For better accuracy, sum each column separately.
 *
          IF( LSAME( UPLO, 'U' ) ) THEN
             IF( LSAME( DIAG, 'U' ) ) THEN
-               SSQ( 1 ) = ONE
-               SSQ( 2 ) = N
+               SCALE = ONE
+               SUM = N
                K = 2
                DO 280 J = 2, N
-                  COLSSQ( 1 ) = ZERO
-                  COLSSQ( 2 ) = ONE
-                  CALL CLASSQ( J-1, AP( K ), 1,
-     $                         COLSSQ( 1 ), COLSSQ( 2 ) )
-                  CALL SCOMBSSQ( SSQ, COLSSQ )
+                  CALL CLASSQ( J-1, AP( K ), 1, SCALE, SUM )
                   K = K + J
   280          CONTINUE
             ELSE
-               SSQ( 1 ) = ZERO
-               SSQ( 2 ) = ONE
+               SCALE = ZERO
+               SUM = ONE
                K = 1
                DO 290 J = 1, N
-                  COLSSQ( 1 ) = ZERO
-                  COLSSQ( 2 ) = ONE
-                  CALL CLASSQ( J, AP( K ), 1,
-     $                         COLSSQ( 1 ), COLSSQ( 2 ) )
-                  CALL SCOMBSSQ( SSQ, COLSSQ )
+                  CALL CLASSQ( J, AP( K ), 1, SCALE, SUM )
                   K = K + J
   290          CONTINUE
             END IF
          ELSE
             IF( LSAME( DIAG, 'U' ) ) THEN
-               SSQ( 1 ) = ONE
-               SSQ( 2 ) = N
+               SCALE = ONE
+               SUM = N
                K = 2
                DO 300 J = 1, N - 1
-                  COLSSQ( 1 ) = ZERO
-                  COLSSQ( 2 ) = ONE
-                  CALL CLASSQ( N-J, AP( K ), 1,
-     $                         COLSSQ( 1 ), COLSSQ( 2 ) )
-                  CALL SCOMBSSQ( SSQ, COLSSQ )
+                  CALL CLASSQ( N-J, AP( K ), 1, SCALE, SUM )
                   K = K + N - J + 1
   300          CONTINUE
             ELSE
-               SSQ( 1 ) = ZERO
-               SSQ( 2 ) = ONE
+               SCALE = ZERO
+               SUM = ONE
                K = 1
                DO 310 J = 1, N
-                  COLSSQ( 1 ) = ZERO
-                  COLSSQ( 2 ) = ONE
-                  CALL CLASSQ( N-J+1, AP( K ), 1,
-     $                         COLSSQ( 1 ), COLSSQ( 2 ) )
-                  CALL SCOMBSSQ( SSQ, COLSSQ )
+                  CALL CLASSQ( N-J+1, AP( K ), 1, SCALE, SUM )
                   K = K + N - J + 1
   310          CONTINUE
             END IF
          END IF
-         VALUE = SSQ( 1 )*SQRT( SSQ( 2 ) )
+         VALUE = SCALE*SQRT( SUM )
       END IF
 *
       CLANTP = VALUE

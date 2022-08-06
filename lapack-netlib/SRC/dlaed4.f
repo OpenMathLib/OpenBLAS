@@ -1,4 +1,4 @@
-*> \brief \b DLAED4 used by sstedc. Finds a single root of the secular equation.
+*> \brief \b DLAED4 used by DSTEDC. Finds a single root of the secular equation.
 *
 *  =========== DOCUMENTATION ===========
 *
@@ -132,8 +132,6 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
-*
 *> \ingroup auxOTHERcomputational
 *
 *> \par Contributors:
@@ -145,10 +143,9 @@
 *  =====================================================================
       SUBROUTINE DLAED4( N, I, D, Z, DELTA, RHO, DLAM, INFO )
 *
-*  -- LAPACK computational routine (version 3.7.0) --
+*  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
 *
 *     .. Scalar Arguments ..
       INTEGER            I, INFO, N

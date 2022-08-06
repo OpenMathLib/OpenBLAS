@@ -147,8 +147,6 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
-*
 *> \ingroup complexOTHERcomputational
 *
 *> \par Further Details:
@@ -163,10 +161,9 @@
       SUBROUTINE CHBTRD( VECT, UPLO, N, KD, AB, LDAB, D, E, Q, LDQ,
      $                   WORK, INFO )
 *
-*  -- LAPACK computational routine (version 3.7.0) --
+*  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
 *
 *     .. Scalar Arguments ..
       CHARACTER          UPLO, VECT
@@ -459,7 +456,7 @@
 *        copy diagonal elements to D
 *
          DO 120 I = 1, N
-            D( I ) = AB( KD1, I )
+            D( I ) = REAL( AB( KD1, I ) )
   120    CONTINUE
 *
       ELSE
@@ -666,7 +663,7 @@
 *        copy diagonal elements to D
 *
          DO 240 I = 1, N
-            D( I ) = AB( 1, I )
+            D( I ) = REAL( AB( 1, I ) )
   240    CONTINUE
       END IF
 *

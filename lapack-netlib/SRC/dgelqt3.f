@@ -6,7 +6,7 @@
 *            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download DGEQRT3 + dependencies
+*> Download DGELQT3 + dependencies
 *> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/dgelqt3.f">
 *> [TGZ]</a>
 *> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/dgelqt3.f">
@@ -100,8 +100,6 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date November 2017
-*
 *> \ingroup doubleGEcomputational
 *
 *> \par Further Details:
@@ -131,10 +129,9 @@
 *  =====================================================================
       RECURSIVE SUBROUTINE DGELQT3( M, N, A, LDA, T, LDT, INFO )
 *
-*  -- LAPACK computational routine (version 3.8.0) --
+*  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2017
 *
 *     .. Scalar Arguments ..
       INTEGER   INFO, LDA, M, N, LDT
@@ -174,7 +171,7 @@
 *
       IF( M.EQ.1 ) THEN
 *
-*        Compute Householder transform when N=1
+*        Compute Householder transform when M=1
 *
          CALL DLARFG( N, A, A( 1, MIN( 2, N ) ), LDA, T )
 *

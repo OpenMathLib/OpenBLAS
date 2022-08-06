@@ -28,7 +28,6 @@
 ******************************************************************************
 * Contents: Native high-level C interface to LAPACK function slacn2
 * Author: Intel Corporation
-* Generated October, 2012
 *****************************************************************************/
 
 #include "lapacke_utils.h"

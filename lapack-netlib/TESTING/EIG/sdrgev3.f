@@ -398,8 +398,6 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date February 2015
-*
 *> \ingroup single_eig
 *
 *  =====================================================================
@@ -408,10 +406,9 @@
      $                    ALPHAR, ALPHAI, BETA, ALPHR1, ALPHI1, BETA1,
      $                    WORK, LWORK, RESULT, INFO )
 *
-*  -- LAPACK test routine (version 3.6.1) --
+*  -- LAPACK test routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     February 2015
 *
 *     .. Scalar Arguments ..
       INTEGER            INFO, LDA, LDQ, LDQE, LWORK, NOUNIT, NSIZES,
@@ -733,6 +730,14 @@
             DO 110 I = 1, 7
                RESULT( I ) = -ONE
   110       CONTINUE
+*
+*           Call XLAENV to set the parameters used in SLAQZ0
+*
+            CALL XLAENV( 12, 10 )
+            CALL XLAENV( 13, 12 )
+            CALL XLAENV( 14, 13 )
+            CALL XLAENV( 15, 2 )
+            CALL XLAENV( 17, 10 )
 *
 *           Call SGGEV3 to compute eigenvalues and eigenvectors.
 *

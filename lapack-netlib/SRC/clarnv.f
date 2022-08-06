@@ -81,8 +81,6 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
-*
 *> \ingroup complexOTHERauxiliary
 *
 *> \par Further Details:
@@ -99,10 +97,9 @@
 *  =====================================================================
       SUBROUTINE CLARNV( IDIST, ISEED, N, X )
 *
-*  -- LAPACK auxiliary routine (version 3.7.0) --
+*  -- LAPACK auxiliary routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
 *
 *     .. Scalar Arguments ..
       INTEGER            IDIST, N
@@ -120,7 +117,7 @@
       INTEGER            LV
       PARAMETER          ( LV = 128 )
       REAL               TWOPI
-      PARAMETER          ( TWOPI = 6.2831853071795864769252867663E+0 )
+      PARAMETER  ( TWOPI = 6.28318530717958647692528676655900576839E+0 )
 *     ..
 *     .. Local Scalars ..
       INTEGER            I, IL, IV

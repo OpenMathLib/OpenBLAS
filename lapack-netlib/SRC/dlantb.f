@@ -132,20 +132,16 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
-*
 *> \ingroup doubleOTHERauxiliary
 *
 *  =====================================================================
       DOUBLE PRECISION FUNCTION DLANTB( NORM, UPLO, DIAG, N, K, AB,
      $                 LDAB, WORK )
 *
-*  -- LAPACK auxiliary routine (version 3.7.0) --
+*  -- LAPACK auxiliary routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
 *
-      IMPLICIT NONE
 *     .. Scalar Arguments ..
       CHARACTER          DIAG, NORM, UPLO
       INTEGER            K, LDAB, N
@@ -163,17 +159,14 @@
 *     .. Local Scalars ..
       LOGICAL            UDIAG
       INTEGER            I, J, L
-      DOUBLE PRECISION   SUM, VALUE
+      DOUBLE PRECISION   SCALE, SUM, VALUE
 *     ..
-*     .. Local Arrays ..
-      DOUBLE PRECISION   SSQ( 2 ), COLSSQ( 2 )
+*     .. External Subroutines ..
+      EXTERNAL           DLASSQ
 *     ..
 *     .. External Functions ..
       LOGICAL            LSAME, DISNAN
       EXTERNAL           LSAME, DISNAN
-*     ..
-*     .. External Subroutines ..
-      EXTERNAL           DLASSQ, DCOMBSSQ
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          ABS, MAX, MIN, SQRT
@@ -315,61 +308,46 @@
       ELSE IF( ( LSAME( NORM, 'F' ) ) .OR. ( LSAME( NORM, 'E' ) ) ) THEN
 *
 *        Find normF(A).
-*        SSQ(1) is scale
-*        SSQ(2) is sum-of-squares
-*        For better accuracy, sum each column separately.
 *
          IF( LSAME( UPLO, 'U' ) ) THEN
             IF( LSAME( DIAG, 'U' ) ) THEN
-               SSQ( 1 ) = ONE
-               SSQ( 2 ) = N
+               SCALE = ONE
+               SUM = N
                IF( K.GT.0 ) THEN
                   DO 280 J = 2, N
-                     COLSSQ( 1 ) = ZERO
-                     COLSSQ( 2 ) = ONE
                      CALL DLASSQ( MIN( J-1, K ),
-     $                            AB( MAX( K+2-J, 1 ), J ), 1,
-     $                            COLSSQ( 1 ), COLSSQ( 2 ) )
-                     CALL DCOMBSSQ( SSQ, COLSSQ )
+     $                            AB( MAX( K+2-J, 1 ), J ), 1, SCALE,
+     $                            SUM )
   280             CONTINUE
                END IF
             ELSE
-               SSQ( 1 ) = ZERO
-               SSQ( 2 ) = ONE
+               SCALE = ZERO
+               SUM = ONE
                DO 290 J = 1, N
-                  COLSSQ( 1 ) = ZERO
-                  COLSSQ( 2 ) = ONE
                   CALL DLASSQ( MIN( J, K+1 ), AB( MAX( K+2-J, 1 ), J ),
-     $                         1, COLSSQ( 1 ), COLSSQ( 2 ) )
-                  CALL DCOMBSSQ( SSQ, COLSSQ )
+     $                         1, SCALE, SUM )
   290          CONTINUE
             END IF
          ELSE
             IF( LSAME( DIAG, 'U' ) ) THEN
-               SSQ( 1 ) = ONE
-               SSQ( 2 ) = N
+               SCALE = ONE
+               SUM = N
                IF( K.GT.0 ) THEN
                   DO 300 J = 1, N - 1
-                     COLSSQ( 1 ) = ZERO
-                     COLSSQ( 2 ) = ONE
-                     CALL DLASSQ( MIN( N-J, K ), AB( 2, J ), 1,
-     $                            COLSSQ( 1 ), COLSSQ( 2 ) )
-                     CALL DCOMBSSQ( SSQ, COLSSQ )
+                     CALL DLASSQ( MIN( N-J, K ), AB( 2, J ), 1, SCALE,
+     $                            SUM )
   300             CONTINUE
                END IF
             ELSE
-               SSQ( 1 ) = ZERO
-               SSQ( 2 ) = ONE
+               SCALE = ZERO
+               SUM = ONE
                DO 310 J = 1, N
-                  COLSSQ( 1 ) = ZERO
-                  COLSSQ( 2 ) = ONE
-                  CALL DLASSQ( MIN( N-J+1, K+1 ), AB( 1, J ), 1,
-     $                         COLSSQ( 1 ), COLSSQ( 2 ) )
-                  CALL DCOMBSSQ( SSQ, COLSSQ )
+                  CALL DLASSQ( MIN( N-J+1, K+1 ), AB( 1, J ), 1, SCALE,
+     $                         SUM )
   310          CONTINUE
             END IF
          END IF
-         VALUE = SSQ( 1 )*SQRT( SSQ( 2 ) )
+         VALUE = SCALE*SQRT( SUM )
       END IF
 *
       DLANTB = VALUE

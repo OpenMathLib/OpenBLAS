@@ -18,7 +18,7 @@
 *>
 *> \verbatim
 *>
-*> DGELQT3 recursively computes a LQ factorization of a real M-by-N
+*> SGELQT3 recursively computes a LQ factorization of a real M-by-N
 *> matrix A, using the compact WY representation of Q.
 *>
 *> Based on the algorithm of Elmroth and Gustavson,
@@ -85,8 +85,6 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date November 2017
-*
 *> \ingroup doubleGEcomputational
 *
 *> \par Further Details:
@@ -116,10 +114,9 @@
 *  =====================================================================
       RECURSIVE SUBROUTINE SGELQT3( M, N, A, LDA, T, LDT, INFO )
 *
-*  -- LAPACK computational routine (version 3.8.0) --
+*  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2017
 *
 *     .. Scalar Arguments ..
       INTEGER   INFO, LDA, M, N, LDT
@@ -159,7 +156,7 @@
 *
       IF( M.EQ.1 ) THEN
 *
-*        Compute Householder transform when N=1
+*        Compute Householder transform when M=1
 *
          CALL SLARFG( N, A, A( 1, MIN( 2, N ) ), LDA, T )
 *

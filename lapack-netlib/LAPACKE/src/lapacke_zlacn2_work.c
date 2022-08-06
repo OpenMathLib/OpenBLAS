@@ -28,7 +28,6 @@
 ******************************************************************************
 * Contents: Native middle-level C interface to LAPACK function zlacn2
 * Author: Intel Corporation
-* Generated October, 2012
 *****************************************************************************/
 
 #include "lapacke_utils.h"

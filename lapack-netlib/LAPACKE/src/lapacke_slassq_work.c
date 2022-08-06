@@ -28,7 +28,6 @@
 *****************************************************************************
 * Contents: Native middle-level C interface to LAPACK function slassq
 * Author: Julien Langou
-* Generated February, 2017
 *****************************************************************************/
 
 #include "lapacke_utils.h"

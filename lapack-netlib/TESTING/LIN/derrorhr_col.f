@@ -22,7 +22,7 @@
 *> \verbatim
 *>
 *> DERRORHR_COL tests the error exits for DORHR_COL that does
-*> Householder reconstruction from the ouput of tall-skinny
+*> Householder reconstruction from the output of tall-skinny
 *> factorization DLATSQR.
 *> \endverbatim
 *
@@ -49,18 +49,15 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date November 2019
-*
 *> \ingroup double_lin
 *
 *  =====================================================================
       SUBROUTINE DERRORHR_COL( PATH, NUNIT )
       IMPLICIT NONE
 *
-*  -- LAPACK test routine (version 3.9.0) --
+*  -- LAPACK test routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2019
 *
 *     .. Scalar Arguments ..
       CHARACTER(LEN=3)   PATH

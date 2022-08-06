@@ -144,8 +144,6 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date June 2017
-*
 *> \ingroup complex16HEcomputational
 *
 *> \par Contributors:
@@ -166,10 +164,9 @@
       SUBROUTINE ZHECON_3( UPLO, N, A, LDA, E, IPIV, ANORM, RCOND,
      $                     WORK, INFO )
 *
-*  -- LAPACK computational routine (version 3.7.1) --
+*  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     June 2017
 *
 *     .. Scalar Arguments ..
       CHARACTER          UPLO

@@ -1,3 +1,20 @@
+*> \brief \b STPLQT
+*
+*  =========== DOCUMENTATION ===========
+*
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
+*
+*> \htmlonly
+*> Download STPLQT + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/stplqt.f">
+*> [TGZ]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/stplqt.f">
+*> [ZIP]</a>
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/stplqt.f">
+*> [TXT]</a>
+*> \endhtmlonly
+*
 *  Definition:
 *  ===========
 *
@@ -115,8 +132,6 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
-*
 *> \ingroup doubleOTHERcomputational
 *
 *> \par Further Details:
@@ -172,10 +187,9 @@
       SUBROUTINE STPLQT( M, N, L, MB, A, LDA, B, LDB, T, LDT, WORK,
      $                   INFO )
 *
-*  -- LAPACK computational routine (version 3.7.0) --
+*  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
 *
 *     .. Scalar Arguments ..
       INTEGER INFO, LDA, LDB, LDT, N, M, L, MB
