@@ -3,6 +3,9 @@ ifneq ($(C_COMPILER), PGI)
 ifeq ($(C_COMPILER), CLANG)
 ISCLANG=1
 endif
+ifeq ($(C_COMPILER), FUJITSU)
+ISCLANG=1
+endif
 ifneq (1, $(filter 1,$(GCCVERSIONGT4) $(ISCLANG)))
 CCOMMON_OPT += -march=armv8-a
 ifneq ($(F_COMPILER), NAG)
@@ -52,6 +55,13 @@ ifeq ($(CORE), CORTEXA73)
 CCOMMON_OPT += -march=armv8-a -mtune=cortex-a73
 ifneq ($(F_COMPILER), NAG)
 FCOMMON_OPT += -march=armv8-a -mtune=cortex-a73
+endif
+endif
+
+ifeq ($(CORE), FT2000)
+CCOMMON_OPT += -march=armv8-a -mtune=cortex-a72
+ifneq ($(F_COMPILER), NAG)
+FCOMMON_OPT += -march=armv8-a -mtune=cortex-a72
 endif
 endif
 
@@ -114,9 +124,9 @@ ifeq ($(CORE), NEOVERSEN2)
 ifeq (1, $(filter 1,$(GCCVERSIONGTEQ7) $(ISCLANG)))
 ifeq ($(GCCVERSIONGTEQ9), 1)
 ifeq (1, $(filter 1,$(GCCMINORVERSIONGTEQ4) $(GCCVERSIONGTEQ10)))
-CCOMMON_OPT += -march=armv8.5-a -mtune=neoverse-n2
+CCOMMON_OPT += -march=armv8.5-a+sve+sve2+bf16 -mtune=neoverse-n2
 ifneq ($(F_COMPILER), NAG)
-FCOMMON_OPT += -march=armv8.5-a -mtune=neoverse-n2
+FCOMMON_OPT += -march=armv8.5-a+sve+sve2+bf16 -mtune=neoverse-n2
 endif
 else
 CCOMMON_OPT += -march=armv8.5-a -mtune=native
@@ -225,6 +235,43 @@ ifeq ($(CORE), A64FX)
 CCOMMON_OPT += -march=armv8.2-a+sve -mtune=a64fx
 ifneq ($(F_COMPILER), NAG)
 FCOMMON_OPT += -march=armv8.2-a+sve -mtune=a64fx
+endif
+endif
+endif
+
+ifeq (1, $(filter 1,$(GCCVERSIONGTEQ11) $(ISCLANG)))
+ifeq ($(CORE), CORTEXX1)
+CCOMMON_OPT += -march=armv8.2-a -mtune=cortexa72
+ifneq ($(F_COMPILER), NAG)
+FCOMMON_OPT += -march=armv8.2-a -mtune=cortexa72
+endif
+endif
+endif
+
+ifeq (1, $(filter 1,$(GCCVERSIONGTEQ11) $(ISCLANG)))
+ifeq ($(CORE), CORTEXX2)
+CCOMMON_OPT += -march=armv8.4-a+sve
+ifneq ($(F_COMPILER), NAG)
+FCOMMON_OPT += -march=armv8.4-a+sve
+endif
+endif
+endif
+
+#ifeq (1, $(filter 1,$(ISCLANG)))
+ifeq (1, $(filter 1,$(GCCVERSIONGTEQ11) $(ISCLANG)))
+ifeq ($(CORE), CORTEXA510)
+CCOMMON_OPT += -march=armv8.4-a+sve
+ifneq ($(F_COMPILER), NAG)
+FCOMMON_OPT += -march=armv8.4-a+sve
+endif
+endif
+endif
+
+ifeq (1, $(filter 1,$(GCCVERSIONGTEQ11) $(ISCLANG)))
+ifeq ($(CORE), CORTEXA710)
+CCOMMON_OPT += -march=armv8.4-a+sve
+ifneq ($(F_COMPILER), NAG)
+FCOMMON_OPT += -march=armv8.4-a+sve
 endif
 endif
 endif

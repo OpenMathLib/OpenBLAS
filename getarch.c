@@ -94,14 +94,6 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <sys/sysinfo.h>
 #endif
 
-#if defined(__x86_64__) || defined(_M_X64)
-#if (( defined(__GNUC__)  && __GNUC__   > 6 && defined(__AVX2__)) || (defined(__clang__) && __clang_major__ >= 6))
-#else
-#ifndef NO_AVX512
-#define NO_AVX512
-#endif
-#endif
-#endif
 /* #define FORCE_P2		*/
 /* #define FORCE_KATMAI		*/
 /* #define FORCE_COPPERMINE	*/
@@ -140,9 +132,11 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /* #define FORCE_PPC440FP2	*/
 /* #define FORCE_CELL		*/
 /* #define FORCE_SICORTEX	*/
-/* #define FORCE_LOONGSON3R3	*/
-/* #define FORCE_LOONGSON3R4	*/
-/* #define FORCE_LOONGSON3R5	*/
+/* #define FORCE_LOONGSON3R3     */
+/* #define FORCE_LOONGSON3R4     */
+/* #define FORCE_LOONGSON3R5     */
+/* #define FORCE_LOONGSON2K1000  */
+/* #define FORCE_LOONGSONGENERIC */
 /* #define FORCE_I6400		*/
 /* #define FORCE_P6600		*/
 /* #define FORCE_P5600		*/
@@ -977,6 +971,34 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #else
 #endif
 
+#ifdef FORCE_LOONGSON2K1000
+#define FORCE
+#define ARCHITECTURE    "LOONGARCH"
+#define SUBARCHITECTURE "LOONGSON2K1000"
+#define SUBDIRNAME      "loongarch64"
+#define ARCHCONFIG   "-DLOONGSON2K1000 " \
+       "-DL1_DATA_SIZE=65536 -DL1_DATA_LINESIZE=64 " \
+       "-DL2_SIZE=262144 -DL2_LINESIZE=64 " \
+       "-DDTB_DEFAULT_ENTRIES=64 -DDTB_SIZE=4096 -DL2_ASSOCIATIVE=16 "
+#define LIBNAME   "loongson2k1000"
+#define CORENAME  "LOONGSON2K1000"
+#else
+#endif
+
+#ifdef FORCE_LOONGSONGENERIC
+#define FORCE
+#define ARCHITECTURE    "LOONGARCH"
+#define SUBARCHITECTURE "LOONGSONGENERIC"
+#define SUBDIRNAME      "loongarch64"
+#define ARCHCONFIG   "-DLOONGSONGENERIC " \
+       "-DL1_DATA_SIZE=65536 -DL1_DATA_LINESIZE=64 " \
+       "-DL2_SIZE=262144 -DL2_LINESIZE=64 " \
+       "-DDTB_DEFAULT_ENTRIES=64 -DDTB_SIZE=4096 -DL2_ASSOCIATIVE=16 "
+#define LIBNAME   "loongsongeneric"
+#define CORENAME  "LOONGSONGENERIC"
+#else
+#endif
+
 #ifdef FORCE_I6400
 #define FORCE
 #define ARCHITECTURE    "MIPS"
@@ -1240,7 +1262,6 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
        "-DHAVE_VFPV4 -DHAVE_VFPV3 -DHAVE_VFP -DHAVE_NEON -DARMV8"
 #define LIBNAME   "cortexa53"
 #define CORENAME  "CORTEXA53"
-#else
 #endif
 
 #ifdef FORCE_CORTEXA57
@@ -1256,7 +1277,6 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
        "-DHAVE_VFPV4 -DHAVE_VFPV3 -DHAVE_VFP -DHAVE_NEON -DARMV8"
 #define LIBNAME   "cortexa57"
 #define CORENAME  "CORTEXA57"
-#else
 #endif
 
 #ifdef FORCE_CORTEXA72
@@ -1272,7 +1292,6 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
        "-DHAVE_VFPV4 -DHAVE_VFPV3 -DHAVE_VFP -DHAVE_NEON -DARMV8"
 #define LIBNAME   "cortexa72"
 #define CORENAME  "CORTEXA72"
-#else
 #endif
 
 #ifdef FORCE_CORTEXA73
@@ -1288,7 +1307,62 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
        "-DHAVE_VFPV4 -DHAVE_VFPV3 -DHAVE_VFP -DHAVE_NEON -DARMV8"
 #define LIBNAME   "cortexa73"
 #define CORENAME  "CORTEXA73"
-#else
+#endif
+
+#ifdef FORCE_CORTEXX1
+#define FORCE
+#define ARCHITECTURE    "ARM64"
+#define SUBARCHITECTURE "CORTEXX1"
+#define SUBDIRNAME      "arm64"
+#define ARCHCONFIG   "-DCORTEXX1 " \
+       "-DL1_DATA_SIZE=32768 -DL1_DATA_LINESIZE=64 " \
+       "-DL2_SIZE=262144 -DL2_LINESIZE=64 " \
+       "-DDTB_DEFAULT_ENTRIES=64 -DDTB_SIZE=4096 -DL2_ASSOCIATIVE=32 " \
+       "-DHAVE_VFPV4 -DHAVE_VFPV3 -DHAVE_VFP -DHAVE_NEON -DARMV8"
+#define LIBNAME   "cortexx1"
+#define CORENAME  "CORTEXX1"
+#endif
+
+#ifdef FORCE_CORTEXX2
+#define FORCE
+#define ARCHITECTURE    "ARM64"
+#define SUBARCHITECTURE "CORTEXX2"
+#define SUBDIRNAME      "arm64"
+#define ARCHCONFIG   "-DCORTEXX2 " \
+       "-DL1_DATA_SIZE=32768 -DL1_DATA_LINESIZE=64 " \
+       "-DL2_SIZE=262144 -DL2_LINESIZE=64 " \
+       "-DDTB_DEFAULT_ENTRIES=64 -DDTB_SIZE=4096 -DL2_ASSOCIATIVE=32 " \
+       "-DHAVE_VFPV4 -DHAVE_VFPV3 -DHAVE_VFP -DHAVE_NEON -DHAVE_SVE -DARMV8 -DARMV9"
+#define LIBNAME   "cortexx2"
+#define CORENAME  "CORTEXX2"
+#endif
+
+#ifdef FORCE_CORTEXA510
+#define FORCE
+#define ARCHITECTURE    "ARM64"
+#define SUBARCHITECTURE "CORTEXA510"
+#define SUBDIRNAME      "arm64"
+#define ARCHCONFIG   "-DCORTEXA510 " \
+       "-DL1_DATA_SIZE=32768 -DL1_DATA_LINESIZE=64 " \
+       "-DL2_SIZE=262144 -DL2_LINESIZE=64 " \
+       "-DDTB_DEFAULT_ENTRIES=64 -DDTB_SIZE=4096 -DL2_ASSOCIATIVE=32 " \
+       "-DHAVE_VFPV4 -DHAVE_VFPV3 -DHAVE_VFP -DHAVE_NEON -DHAVE_SVE -DARMV8 -DARMV9"
+#define LIBNAME   "cortexa510"
+#define CORENAME  "CORTEXA510"
+#endif
+
+#ifdef FORCE_CORTEXA710
+#define FORCE
+#define ARCHITECTURE    "ARM64"
+#define SUBARCHITECTURE "CORTEXA710"
+#define SUBDIRNAME      "arm64"
+#define ARCHCONFIG   "-DCORTEXA710 " \
+       "-DL1_DATA_SIZE=32768 -DL1_DATA_LINESIZE=64 " \
+       "-DL2_SIZE=262144 -DL2_LINESIZE=64 " \
+       "-DDTB_DEFAULT_ENTRIES=64 -DDTB_SIZE=4096 -DL2_ASSOCIATIVE=32 " \
+       "-DHAVE_VFPV4 -DHAVE_VFPV3 -DHAVE_VFP -DHAVE_NEON -DHAVE_SVE -DARMV8 -DARMV9"
+#define LIBNAME   "cortexa710"
+#define CORENAME  "CORTEXA710"
 #endif
 
 #ifdef FORCE_NEOVERSEN1
@@ -1305,7 +1379,6 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
        "-march=armv8.2-a -mtune=neoverse-n1"
 #define LIBNAME   "neoversen1"
 #define CORENAME  "NEOVERSEN1"
-#else
 #endif
 
 #ifdef FORCE_NEOVERSEV1
@@ -1322,7 +1395,6 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
        "-march=armv8.4-a -mtune=neoverse-v1"
 #define LIBNAME   "neoversev1"
 #define CORENAME  "NEOVERSEV1"
-#else
 #endif
 
 
@@ -1340,7 +1412,6 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
        "-march=armv8.5-a -mtune=neoverse-n2"
 #define LIBNAME   "neoversen2"
 #define CORENAME  "NEOVERSEN2"
-#else
 #endif
 
 #ifdef FORCE_CORTEXA55
@@ -1356,7 +1427,6 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
        "-DHAVE_VFPV4 -DHAVE_VFPV3 -DHAVE_VFP -DHAVE_NEON -DARMV8"
 #define LIBNAME   "cortexa55"
 #define CORENAME  "CORTEXA55"
-#else
 #endif
 
 #ifdef FORCE_FALKOR
@@ -1372,7 +1442,6 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
        "-DHAVE_VFPV4 -DHAVE_VFPV3 -DHAVE_VFP -DHAVE_NEON -DARMV8"
 #define LIBNAME   "falkor"
 #define CORENAME  "FALKOR"
-#else
 #endif
 
 #ifdef FORCE_THUNDERX
@@ -1387,7 +1456,6 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
        "-DHAVE_VFPV4 -DHAVE_VFPV3 -DHAVE_VFP -DHAVE_NEON -DARMV8"
 #define LIBNAME   "thunderx"
 #define CORENAME  "THUNDERX"
-#else
 #endif
 
 #ifdef FORCE_THUNDERX2T99
@@ -1405,7 +1473,6 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
        "-DHAVE_VFPV4 -DHAVE_VFPV3 -DHAVE_VFP -DHAVE_NEON -DARMV8"
 #define LIBNAME   "thunderx2t99"
 #define CORENAME  "THUNDERX2T99"
-#else
 #endif
 
 #ifdef FORCE_TSV110
@@ -1421,7 +1488,6 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
        "-DHAVE_VFPV4 -DHAVE_VFPV3 -DHAVE_VFP -DHAVE_NEON -DARMV8"
 #define LIBNAME   "tsv110"
 #define CORENAME  "TSV110"
-#else
 #endif
 
 #ifdef FORCE_EMAG8180
@@ -1456,7 +1522,6 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
        "-DHAVE_VFPV4 -DHAVE_VFPV3 -DHAVE_VFP -DHAVE_NEON -DARMV8"
 #define LIBNAME   "thunderx3t110"
 #define CORENAME  "THUNDERX3T110"
-#else
 #endif
 
 #ifdef FORCE_VORTEX
@@ -1488,7 +1553,22 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
        "-DHAVE_VFPV4 -DHAVE_VFPV3 -DHAVE_VFP -DHAVE_NEON -DHAVE_SVE -DARMV8"
 #define LIBNAME   "a64fx"
 #define CORENAME  "A64FX"
-#else
+#endif
+
+#ifdef FORCE_FT2000
+#define ARMV8
+#define FORCE
+#define ARCHITECTURE    "ARM64"
+#define SUBARCHITECTURE "FT2000"
+#define SUBDIRNAME      "arm64"
+#define ARCHCONFIG   "-DFT2000 " \
+       "-DL1_CODE_SIZE=32768 -DL1_CODE_LINESIZE=64 -DL1_CODE_ASSOCIATIVE=8 " \
+       "-DL1_DATA_SIZE=32768 -DL1_DATA_LINESIZE=64 -DL1_DATA_ASSOCIATIVE=8 " \
+       "-DL2_SIZE=33554426-DL2_LINESIZE=64 -DL2_ASSOCIATIVE=8 " \
+       "-DDTB_DEFAULT_ENTRIES=64 -DDTB_SIZE=4096 " \
+       "-DHAVE_VFPV4 -DHAVE_VFPV3 -DHAVE_VFP -DHAVE_NEON -DARMV8"
+#define LIBNAME   "ft2000"
+#define CORENAME  "FT2000"
 #endif
 
 #ifdef FORCE_ZARCH_GENERIC
@@ -1524,6 +1604,16 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifdef FORCE_C910V
 #define FORCE
 #define ARCHITECTURE    "RISCV64"
+#ifdef NO_RV64GV
+#define SUBARCHITECTURE "RISCV64_GENERIC"
+#define SUBDIRNAME      "riscv64"
+#define ARCHCONFIG   "-DRISCV64_GENERIC " \
+       "-DL1_DATA_SIZE=32768 -DL1_DATA_LINESIZE=32 " \
+       "-DL2_SIZE=1048576 -DL2_LINESIZE=32 " \
+       "-DDTB_DEFAULT_ENTRIES=128 -DDTB_SIZE=4096 -DL2_ASSOCIATIVE=4 "
+#define LIBNAME   "riscv64_generic"
+#define CORENAME  "RISCV64_GENERIC"
+#else
 #define SUBARCHITECTURE "C910V"
 #define SUBDIRNAME      "riscv64"
 #define ARCHCONFIG   "-DC910V " \
@@ -1532,6 +1622,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
        "-DDTB_DEFAULT_ENTRIES=128 -DDTB_SIZE=4096 -DL2_ASSOCIATIVE=4 "
 #define LIBNAME   "c910v"
 #define CORENAME  "C910V"
+#endif
 #else
 #endif
 
@@ -1632,17 +1723,20 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 static int get_num_cores(void) {
 
+  int count;
 #ifdef OS_WINDOWS
   SYSTEM_INFO sysinfo;
 #elif defined(__FreeBSD__) || defined(__OpenBSD__) || defined(__NetBSD__) || defined(__DragonFly__) || defined(__APPLE__)
-  int m[2], count;
+  int m[2];
   size_t len;
 #endif
 
 #if defined(linux) || defined(__sun__)
   //returns the number of processors which are currently online
-  return sysconf(_SC_NPROCESSORS_CONF);
-
+  count = sysconf(_SC_NPROCESSORS_CONF);
+  if (count <= 0) count = 2;
+  return count;
+  
 #elif defined(OS_WINDOWS)
 
   GetSystemInfo(&sysinfo);
@@ -1653,13 +1747,15 @@ static int get_num_cores(void) {
   m[1] = HW_NCPU;
   len = sizeof(int);
   sysctl(m, 2, &count, &len, NULL, 0);
-
+  if (count <= 0) count = 2;
+  
   return count;
 
 #elif defined(AIX)
   //returns the number of processors which are currently online
-  return sysconf(_SC_NPROCESSORS_ONLN);
-
+  count = sysconf(_SC_NPROCESSORS_ONLN);
+  if (count <= 0) count = 2;
+  
 #else
   return 2;
 #endif
@@ -1681,7 +1777,7 @@ int main(int argc, char *argv[]){
 #ifdef FORCE
     printf("CORE=%s\n", CORENAME);
 #else
-#if defined(INTEL_AMD) || defined(POWER) || defined(__mips__) || defined(__arm__) || defined(__aarch64__) || defined(ZARCH) || defined(sparc) || defined(__loongarch__)
+#if defined(INTEL_AMD) || defined(POWER) || defined(__mips__) || defined(__arm__) || defined(__aarch64__) || defined(ZARCH) || defined(sparc) || defined(__loongarch__) || defined(__riscv)
     printf("CORE=%s\n", get_corename());
 #endif
 #endif
@@ -1829,7 +1925,7 @@ printf("ELF_VERSION=2\n");
 #ifdef FORCE
     printf("#define CHAR_CORENAME \"%s\"\n", CORENAME);
 #else
-#if defined(INTEL_AMD) || defined(POWER) || defined(__mips__) || defined(__arm__) || defined(__aarch64__) || defined(ZARCH) || defined(sparc) || defined(__loongarch__)
+#if defined(INTEL_AMD) || defined(POWER) || defined(__mips__) || defined(__arm__) || defined(__aarch64__) || defined(ZARCH) || defined(sparc) || defined(__loongarch__) || defined(__riscv)
     printf("#define CHAR_CORENAME \"%s\"\n", get_corename());
 #endif
 #endif

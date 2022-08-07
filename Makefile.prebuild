@@ -15,6 +15,12 @@ TARGET_MAKE = Makefile.conf
 TARGET_CONF = config.h
 endif
 
+ifdef USE_PERL
+SCRIPTSUFFIX = .pl
+else
+SCRIPTSUFFIX =
+endif
+
 # CPUIDEMU = ../../cpuid/table.o
 
 ifdef CPUIDEMU
@@ -46,17 +52,17 @@ TARGET_FLAGS = -mips64r6
 endif
 
 ifeq ($(TARGET), C910V)
-TARGET_FLAGS = -march=rv64gcvxthead -mabi=lp64v
+TARGET_FLAGS = -march=rv64gcv0p7_zfh_xtheadc -mabi=lp64d
 endif
 
 all: getarch_2nd
 	./getarch_2nd  0 >> $(TARGET_MAKE)
 	./getarch_2nd  1 >> $(TARGET_CONF)
 
-config.h : c_check f_check getarch
-	perl ./c_check $(TARGET_MAKE) $(TARGET_CONF) $(CC) $(TARGET_FLAGS) $(CFLAGS)
+$(TARGET_CONF): c_check$(SCRIPTSUFFIX) f_check$(SCRIPTSUFFIX) getarch
+	./c_check$(SCRIPTSUFFIX) $(TARGET_MAKE) $(TARGET_CONF) $(CC) $(TARGET_FLAGS) $(CFLAGS)
 ifneq ($(ONLY_CBLAS), 1)
-	perl ./f_check $(TARGET_MAKE) $(TARGET_CONF) $(FC) $(TARGET_FLAGS)
+	./f_check$(SCRIPTSUFFIX) $(TARGET_MAKE) $(TARGET_CONF) $(FC) $(TARGET_FLAGS)
 else
 #When we only build CBLAS, we set NOFORTRAN=2
 	echo "NOFORTRAN=2" >> $(TARGET_MAKE)
@@ -71,9 +77,11 @@ endif
 
 
 getarch : getarch.c cpuid.S dummy $(CPUIDEMU)
-	$(HOSTCC) $(HOST_CFLAGS) $(EXFLAGS) -o $(@F) getarch.c cpuid.S $(CPUIDEMU)
+	avx512=$$(./c_check$(SCRIPTSUFFIX) - - $(CC) $(TARGET_FLAGS) $(CFLAGS) | grep NO_AVX512); \
+	rv64gv=$$(./c_check$(SCRIPTSUFFIX) - - $(CC) $(TARGET_FLAGS) $(CFLAGS) | grep NO_RV64GV); \
+	$(HOSTCC) $(HOST_CFLAGS) $(EXFLAGS) $${avx512:+-D$${avx512}} $${rv64gv:+-D$${rv64gv}} -o $(@F) getarch.c cpuid.S $(CPUIDEMU)
 
-getarch_2nd : getarch_2nd.c config.h dummy
+getarch_2nd : getarch_2nd.c $(TARGET_CONF) dummy
 ifndef TARGET_CORE
 	$(HOSTCC) -I. $(HOST_CFLAGS) -o $(@F) getarch_2nd.c
 else
@@ -81,3 +89,5 @@ else
 endif
 
 dummy:
+
+.PHONY: dummy

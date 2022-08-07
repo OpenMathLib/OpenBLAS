@@ -1,4 +1,4 @@
-*> \brief \b CLAED7 used by sstedc. Computes the updated eigensystem of a diagonal matrix after modification by a rank-one symmetric matrix. Used when the original matrix is dense.
+*> \brief \b CLAED7 used by CSTEDC. Computes the updated eigensystem of a diagonal matrix after modification by a rank-one symmetric matrix. Used when the original matrix is dense.
 *
 *  =========== DOCUMENTATION ===========
 *
@@ -239,8 +239,6 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date June 2016
-*
 *> \ingroup complexOTHERcomputational
 *
 *  =====================================================================
@@ -249,10 +247,9 @@
      $                   GIVPTR, GIVCOL, GIVNUM, WORK, RWORK, IWORK,
      $                   INFO )
 *
-*  -- LAPACK computational routine (version 3.7.0) --
+*  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     June 2016
 *
 *     .. Scalar Arguments ..
       INTEGER            CURLVL, CURPBM, CUTPNT, INFO, LDQ, N, QSIZ,

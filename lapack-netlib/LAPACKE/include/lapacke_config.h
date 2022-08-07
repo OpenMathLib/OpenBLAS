@@ -28,18 +28,10 @@
 ******************************************************************************
 * Contents: Native C interface to LAPACK
 * Author: Intel Corporation
-* Generated May, 2011
 *****************************************************************************/
 
 #ifndef _LAPACKE_CONFIG_H_
 #define _LAPACKE_CONFIG_H_
-
-// For Android prior to API 21 (no <complex> include)
-#if defined(__ANDROID__)
-#if __ANDROID_API__ < 21
-#define LAPACK_COMPLEX_STRUCTURE
-#endif
-#endif
 
 #ifdef __cplusplus
 #if defined(LAPACK_COMPLEX_CPP)
@@ -49,12 +41,13 @@ extern "C" {
 #endif /* __cplusplus */
 
 #include <stdlib.h>
+#include <stdint.h>
 
 #ifndef lapack_int
 #if defined(LAPACK_ILP64)
-#define lapack_int              long
+#define lapack_int              int64_t
 #else
-#define lapack_int              int
+#define lapack_int              int32_t
 #endif
 #endif
 

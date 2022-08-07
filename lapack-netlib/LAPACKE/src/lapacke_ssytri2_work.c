@@ -28,7 +28,6 @@
 *****************************************************************************
 * Contents: Native middle-level C interface to LAPACK function ssytri2
 * Author: Intel Corporation
-* Generated June 2016
 *****************************************************************************/
 
 #include "lapacke_utils.h"

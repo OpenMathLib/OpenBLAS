@@ -28,12 +28,15 @@
 *>
 *> ZQRT17 computes the ratio
 *>
-*>    || R'*op(A) ||/(||A||*alpha*max(M,N,NRHS)*eps)
+*>    norm(R**H * op(A)) / ( norm(A) * alpha * max(M,N,NRHS) * EPS ),
 *>
-*> where R = op(A)*X - B, op(A) is A or A', and
+*> where R = B - op(A)*X, op(A) is A or A**H, depending on TRANS, EPS
+*> is the machine epsilon, and
 *>
-*>    alpha = ||B|| if IRESID = 1 (zero-residual problem)
-*>    alpha = ||R|| if IRESID = 2 (otherwise).
+*>    alpha = norm(B) if IRESID = 1 (zero-residual problem)
+*>    alpha = norm(R) if IRESID = 2 (otherwise).
+*>
+*> The norm used is the 1-norm.
 *> \endverbatim
 *
 *  Arguments:
@@ -44,7 +47,7 @@
 *>          TRANS is CHARACTER*1
 *>          Specifies whether or not the transpose of A is used.
 *>          = 'N':  No transpose, op(A) = A.
-*>          = 'C':  Conjugate transpose, op(A) = A'.
+*>          = 'C':  Conjugate transpose, op(A) = A**H.
 *> \endverbatim
 *>
 *> \param[in] IRESID
@@ -142,18 +145,15 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
-*
 *> \ingroup complex16_lin
 *
 *  =====================================================================
       DOUBLE PRECISION FUNCTION ZQRT17( TRANS, IRESID, M, N, NRHS, A,
      $                 LDA, X, LDX, B, LDB, C, WORK, LWORK )
 *
-*  -- LAPACK test routine (version 3.7.0) --
+*  -- LAPACK test routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
 *
 *     .. Scalar Arguments ..
       CHARACTER          TRANS
@@ -172,7 +172,7 @@
 *     ..
 *     .. Local Scalars ..
       INTEGER            INFO, ISCL, NCOLS, NROWS
-      DOUBLE PRECISION   BIGNUM, ERR, NORMA, NORMB, NORMRS, SMLNUM
+      DOUBLE PRECISION   ERR, NORMA, NORMB, NORMRS, SMLNUM
 *     ..
 *     .. Local Arrays ..
       DOUBLE PRECISION   RWORK( 1 )
@@ -213,7 +213,6 @@
 *
       NORMA = ZLANGE( 'One-norm', M, N, A, LDA, RWORK )
       SMLNUM = DLAMCH( 'Safe minimum' ) / DLAMCH( 'Precision' )
-      BIGNUM = ONE / SMLNUM
       ISCL = 0
 *
 *     compute residual and scale it
@@ -229,7 +228,7 @@
      $                INFO )
       END IF
 *
-*     compute R'*A
+*     compute R**H * op(A)
 *
       CALL ZGEMM( 'Conjugate transpose', TRANS, NRHS, NCOLS, NROWS,
      $            DCMPLX( ONE ), C, LDB, A, LDA, DCMPLX( ZERO ), WORK,

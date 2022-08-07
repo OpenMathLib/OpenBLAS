@@ -134,8 +134,6 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
-*
 *> \ingroup complex16GEcomputational
 *
 *  =====================================================================
@@ -143,10 +141,9 @@
      $                                         LDAF, IPIV, C, CAPPLY,
      $                                         INFO, WORK, RWORK )
 *
-*  -- LAPACK computational routine (version 3.7.0) --
+*  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
 *
 *     .. Scalar Arguments ..
       CHARACTER          TRANS
@@ -314,5 +311,7 @@
      $   ZLA_GERCOND_C = 1.0D+0 / AINVNM
 *
       RETURN
+*
+*     End of ZLA_GERCOND_C
 *
       END

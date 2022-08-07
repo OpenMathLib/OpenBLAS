@@ -25,11 +25,14 @@ ifeq ($(NO_FORTRAN), 1)
 define NOFORTRAN
 1
 endef
-define NO_LAPACK
+ifneq ($(NO_LAPACK), 1)
+define C_LAPACK
 1
 endef
+endif
 export NOFORTRAN
 export NO_LAPACK
+export C_LAPACK
 endif
 
 LAPACK_NOOPT := $(filter-out -O0 -O1 -O2 -O3 -Ofast -O -Og -Os,$(LAPACK_FFLAGS))
@@ -146,12 +149,16 @@ ifeq ($(NOFORTRAN), $(filter 0,$(NOFORTRAN)))
 ifndef NO_FBLAS
 	$(MAKE) -C test all
 endif
+endif
+ifneq ($(ONLY_CBLAS), 1)
 	$(MAKE) -C utest all
+endif
 ifneq ($(NO_CBLAS), 1)
+ifneq ($(ONLY_CBLAS), 1)
 	$(MAKE) -C ctest all
+endif
 ifeq ($(CPP_THREAD_SAFETY_TEST), 1)
 	$(MAKE) -C cpp_thread_test all
-endif
 endif
 endif
 
@@ -160,7 +167,7 @@ ifeq ($(CORE), UNKNOWN)
 	$(error OpenBLAS: Detecting CPU failed. Please set TARGET explicitly, e.g. make TARGET=your_cpu_target. Please read README for the detail.)
 endif
 ifeq ($(NOFORTRAN), 1)
-	$(info OpenBLAS: Detecting fortran compiler failed. Cannot compile LAPACK. Only compile BLAS.)
+	$(info OpenBLAS: Detecting fortran compiler failed. Can only compile BLAS and f2c-converted LAPACK.)
 endif
 ifeq ($(NO_STATIC), 1)
 ifeq ($(NO_SHARED), 1)
@@ -241,18 +248,13 @@ hpl_p :
 	fi; \
 	done
 
-ifeq ($(NO_LAPACK), 1)
-netlib :
-
-else
 netlib : lapack_prebuild
-ifeq ($(NOFORTRAN), $(filter 0,$(NOFORTRAN)))
+ifneq ($(NO_LAPACK), 1)
 	@$(MAKE) -C $(NETLIB_LAPACK_DIR) lapacklib
 	@$(MAKE) -C $(NETLIB_LAPACK_DIR) tmglib
 endif
 ifneq ($(NO_LAPACKE), 1)
 	@$(MAKE) -C $(NETLIB_LAPACK_DIR) lapackelib
-endif
 endif
 
 ifeq ($(NO_LAPACK), 1)
@@ -267,7 +269,7 @@ prof_lapack : lapack_prebuild
 	@$(MAKE) -C $(NETLIB_LAPACK_DIR) lapack_prof
 
 lapack_prebuild :
-ifeq ($(NOFORTRAN), $(filter 0,$(NOFORTRAN)))
+ifeq ($(NO_LAPACK), $(filter 0,$(NO_LAPACK)))
 	-@echo "FC          = $(FC)" > $(NETLIB_LAPACK_DIR)/make.inc
 	-@echo "override FFLAGS      = $(LAPACK_FFLAGS)" >> $(NETLIB_LAPACK_DIR)/make.inc
 	-@echo "FFLAGS_DRV  = $(LAPACK_FFLAGS)" >> $(NETLIB_LAPACK_DIR)/make.inc

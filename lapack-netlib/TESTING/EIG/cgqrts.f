@@ -168,18 +168,15 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
-*
 *> \ingroup complex_eig
 *
 *  =====================================================================
       SUBROUTINE CGQRTS( N, M, P, A, AF, Q, R, LDA, TAUA, B, BF, Z, T,
      $                   BWK, LDB, TAUB, WORK, LWORK, RWORK, RESULT )
 *
-*  -- LAPACK test routine (version 3.7.0) --
+*  -- LAPACK test routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
 *
 *     .. Scalar Arguments ..
       INTEGER            LDA, LDB, LWORK, M, P, N

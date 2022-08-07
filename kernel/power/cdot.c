@@ -29,6 +29,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "common.h"
 #if defined(POWER10)
+#pragma GCC optimize "O1"
 #include "cdot_microk_power10.c"
 #else
 #ifndef HAVE_KERNEL_8

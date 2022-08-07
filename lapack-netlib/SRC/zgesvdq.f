@@ -40,7 +40,7 @@
 *>
 *> \verbatim
 *>
-* ZCGESVDQ computes the singular value decomposition (SVD) of a complex
+*> ZCGESVDQ computes the singular value decomposition (SVD) of a complex
 *> M-by-N matrix A, where M >= N. The SVD of A is written as
 *>                                    [++]   [xx]   [x0]   [xx]
 *>              A = U * SIGMA * V^*,  [++] = [xx] * [ox] * [xx]
@@ -218,9 +218,9 @@
 *>          If JOBP = 'P', IWORK(N+1:N+M-1) contains the indices of the sequence
 *>          of row swaps used in row pivoting. These can be used to restore the
 *>          left singular vectors in the case JOBU = 'F'.
-*
+*>
 *>          If LIWORK, LCWORK, or LRWORK = -1, then on exit, if INFO = 0,
-*>          LIWORK(1) returns the minimal LIWORK.
+*>          IWORK(1) returns the minimal LIWORK.
 *> \endverbatim
 *>
 *> \param[in] LIWORK
@@ -242,7 +242,7 @@
 *>          On exit, if, on entry, LCWORK.NE.-1, CWORK(1:N) contains parameters
 *>          needed to recover the Q factor from the QR factorization computed by
 *>          ZGEQP3.
-*
+*>
 *>          If LIWORK, LCWORK, or LRWORK = -1, then on exit, if INFO = 0,
 *>          CWORK(1) returns the optimal LCWORK, and
 *>          CWORK(2) returns the minimal LCWORK.
@@ -315,10 +315,10 @@
 *>          N^(-1/4) * RWORK(1) <= ||pinv(C)||_2 <= N^(1/4) * RWORK(1).
 *>          Otherwise, RWORK(1) = -1.
 *>          2. RWORK(2) contains the number of singular values computed as
-*>          exact zeros in ZGESVD applied to the upper triangular or trapeziodal
+*>          exact zeros in ZGESVD applied to the upper triangular or trapezoidal
 *>          R (from the initial QR factorization). In case of early exit (no call to
 *>          ZGESVD, such as in the case of zero matrix) RWORK(2) = -1.
-*
+*>
 *>          If LIWORK, LCWORK, or LRWORK = -1, then on exit, if INFO = 0,
 *>          RWORK(1) returns the minimal LRWORK.
 *> \endverbatim
@@ -329,7 +329,7 @@
 *>          The dimension of the array RWORK.
 *>          If JOBP ='P', then LRWORK >= MAX(2, M, 5*N);
 *>          Otherwise, LRWORK >= MAX(2, 5*N).
-*
+*>
 *>          If LRWORK = -1, then a workspace query is assumed; the routine
 *>          only calculates and returns the optimal and minimal sizes
 *>          for the CWORK, IWORK, and RWORK arrays, and no error
@@ -403,8 +403,6 @@
 *> \author Univ. of California Berkeley
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
-*
-*> \date November 2018
 *
 *> \ingroup complex16GEsing
 *
@@ -638,7 +636,7 @@
                  IF ( WNTVA ) THEN
 *                   .. minimal workspace length for N x N/2 ZGEQRF
                     LWQRF  = MAX( N/2, 1 )
-*                   .. minimal workspace lengt for N/2 x N/2 ZGESVD
+*                   .. minimal workspace length for N/2 x N/2 ZGESVD
                     LWSVD2 = MAX( 3 * (N/2), 1 )
                     LWUNQ2 = MAX( N, 1 )
                     MINWRK2 = MAX( LWQP3, N/2+LWQRF, N/2+LWSVD2,

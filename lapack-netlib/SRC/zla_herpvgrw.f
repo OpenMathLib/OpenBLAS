@@ -115,18 +115,15 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date June 2016
-*
 *> \ingroup complex16HEcomputational
 *
 *  =====================================================================
       DOUBLE PRECISION FUNCTION ZLA_HERPVGRW( UPLO, N, INFO, A, LDA, AF,
      $                                        LDAF, IPIV, WORK )
 *
-*  -- LAPACK computational routine (version 3.7.0) --
+*  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     June 2016
 *
 *     .. Scalar Arguments ..
       CHARACTER*1        UPLO
@@ -327,4 +324,7 @@
       END IF
 
       ZLA_HERPVGRW = RPVGRW
+*
+*     End of ZLA_HERPVGRW
+*
       END

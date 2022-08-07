@@ -28,7 +28,6 @@
 *****************************************************************************
 * Contents: Native high-level C interface to LAPACK function dlapmt
 * Author: Intel Corporation
-* Generated November, 2011
 *****************************************************************************/
 
 #include "lapacke_utils.h"

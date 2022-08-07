@@ -250,8 +250,6 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date June 2016
-*
 *> \ingroup complex16HEeigen
 *
 *  =====================================================================
@@ -259,10 +257,9 @@
      $                   ABSTOL, M, W, Z, LDZ, WORK, LWORK, RWORK,
      $                   IWORK, IFAIL, INFO )
 *
-*  -- LAPACK driver routine (version 3.7.0) --
+*  -- LAPACK driver routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     June 2016
 *
 *     .. Scalar Arguments ..
       CHARACTER          JOBZ, RANGE, UPLO
@@ -381,12 +378,12 @@
       IF( N.EQ.1 ) THEN
          IF( ALLEIG .OR. INDEIG ) THEN
             M = 1
-            W( 1 ) = A( 1, 1 )
+            W( 1 ) = DBLE( A( 1, 1 ) )
          ELSE IF( VALEIG ) THEN
             IF( VL.LT.DBLE( A( 1, 1 ) ) .AND. VU.GE.DBLE( A( 1, 1 ) ) )
      $           THEN
                M = 1
-               W( 1 ) = A( 1, 1 )
+               W( 1 ) = DBLE( A( 1, 1 ) )
             END IF
          END IF
          IF( WANTZ )

@@ -252,23 +252,23 @@ int get_num_procs(void) {
     ret = omp_get_num_places();
     if (ret >0 ) nums = ret;
 #endif
-    return nums;
+    return (nums > 0 ? nums : 2);
 #endif
 
 #if !defined(OS_LINUX)
-  return nums;
+  return (nums > 0 ? nums : 2);
 #endif
 
 #if !defined(__GLIBC_PREREQ)
-  return nums;
+  return (nums > 0 ? nums :2);
 #else
  #if !__GLIBC_PREREQ(2, 3)
-  return nums;
+  return (nums > 0 ? nums :2);
  #endif
 
  #if !__GLIBC_PREREQ(2, 7)
   ret = sched_getaffinity(0,sizeof(cpuset), &cpuset);
-  if (ret!=0) return nums;
+  if (ret!=0) return (nums > 0 ? nums :2);
   n=0;
   #if !__GLIBC_PREREQ(2, 6)
   for (i=0;i<nums;i++)
@@ -277,31 +277,31 @@ int get_num_procs(void) {
   #else
   nums = CPU_COUNT(sizeof(cpuset),&cpuset);
   #endif
-  return nums;
+  return (nums > 0 ? nums :2);
  #else
   if (nums >= CPU_SETSIZE) {
     cpusetp = CPU_ALLOC(nums);
       if (cpusetp == NULL) {
-        return nums;
+        return (nums > 0 ? nums :2);
       }
     size = CPU_ALLOC_SIZE(nums);
     ret = sched_getaffinity(0,size,cpusetp);
     if (ret!=0) {
       CPU_FREE(cpusetp);
-      return nums;
+      return (nums > 0 ? nums :2);
     }
     ret = CPU_COUNT_S(size,cpusetp);
     if (ret > 0 && ret < nums) nums = ret;
     CPU_FREE(cpusetp);
-    return nums;
+    return (nums > 0 ? nums :2);
   } else {
     ret = sched_getaffinity(0,sizeof(cpuset),&cpuset);
     if (ret!=0) {
-      return nums;
+      return (nums > 0 ? nums :2);
     }
     ret = CPU_COUNT(&cpuset);
     if (ret > 0 && ret < nums) nums = ret;
-    return nums;
+    return (nums > 0 ? nums :2);
   }
  #endif
 #endif
@@ -1823,56 +1823,56 @@ int get_num_procs(void) {
     ret = omp_get_num_places();
     if (ret >0 ) nums = ret;
 #endif
-    return nums;
+    return (nums > 0 ? nums :2);
 #endif
 
 #if !defined(OS_LINUX)
-  return nums;
+  return (nums > 0 ? nums :2);
 #endif
 	
 #if !defined(__GLIBC_PREREQ)
-  return nums;
+  return (nums > 0 ? nums :2);
 #else
  #if !__GLIBC_PREREQ(2, 3)
-  return nums;
+  return (nums > 0 ? nums :2);
  #endif
 
  #if !__GLIBC_PREREQ(2, 7)
   ret = sched_getaffinity(0,sizeof(cpuset), &cpuset);
-  if (ret!=0) return nums;
+  if (ret!=0) return (nums > 0 ? nums :2);
   n=0;
   #if !__GLIBC_PREREQ(2, 6)
-  for (i=0;i<nums;i++)
+  for (i=0;i<(nums > 0 ? nums :2);i++)
      if (CPU_ISSET(i,&cpuset)) n++;
   nums=n;
   #else
   nums = CPU_COUNT(sizeof(cpuset),&cpuset);
   #endif
-  return nums;
+  return (nums > 0 ? nums :2);
  #else
   if (nums >= CPU_SETSIZE) {
     cpusetp = CPU_ALLOC(nums);
       if (cpusetp == NULL) {
-        return nums;
+        return (nums > 0 ? nums :2);
       }
     size = CPU_ALLOC_SIZE(nums);
     ret = sched_getaffinity(0,size,cpusetp);
     if (ret!=0) {
       CPU_FREE(cpusetp);
-      return nums;
+      return (nums > 0 ? nums :2);
     }
     ret = CPU_COUNT_S(size,cpusetp);
     if (ret > 0 && ret < nums) nums = ret;
     CPU_FREE(cpusetp);
-    return nums;
+    return (nums > 0 ? nums :2);
   } else {
     ret = sched_getaffinity(0,sizeof(cpuset),&cpuset);
     if (ret!=0) {
-      return nums;
+      return (nums > 0 ? nums :2);
     }
     ret = CPU_COUNT(&cpuset);
     if (ret > 0 && ret < nums) nums = ret;
-    return nums;
+    return (nums > 0 ? nums :2);
   }
  #endif
 #endif

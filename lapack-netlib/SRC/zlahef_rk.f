@@ -239,8 +239,6 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
-*
 *> \ingroup complex16HEcomputational
 *
 *> \par Contributors:
@@ -262,10 +260,9 @@
       SUBROUTINE ZLAHEF_RK( UPLO, N, NB, KB, A, LDA, E, IPIV, W, LDW,
      $                      INFO )
 *
-*  -- LAPACK computational routine (version 3.7.0) --
+*  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
 *
 *     .. Scalar Arguments ..
       CHARACTER          UPLO
@@ -463,7 +460,7 @@
 *
 *                 Case(2)
 *                 Equivalent to testing for
-*                 ABS( REAL( W( IMAX,KW-1 ) ) ).GE.ALPHA*ROWMAX
+*                 ABS( DBLE( W( IMAX,KW-1 ) ) ).GE.ALPHA*ROWMAX
 *                 (used to handle NaN and Inf)
 *
                   IF( .NOT.( ABS( DBLE( W( IMAX,KW-1 ) ) )
@@ -602,7 +599,7 @@
 *                 A(1:k-1,k) := U(1:k-1,k) = W(1:k-1,kw)/D(k,k)
 *
 *              (NOTE: No need to use for Hermitian matrix
-*              A( K, K ) = REAL( W( K, K) ) to separately copy diagonal
+*              A( K, K ) = DBLE( W( K, K) ) to separately copy diagonal
 *              element D(k,k) from W (potentially saves only one load))
                CALL ZCOPY( K, W( 1, KW ), 1, A( 1, K ), 1 )
                IF( K.GT.1 ) THEN
@@ -915,7 +912,7 @@
 *
 *                 Case(2)
 *                 Equivalent to testing for
-*                 ABS( REAL( W( IMAX,K+1 ) ) ).GE.ALPHA*ROWMAX
+*                 ABS( DBLE( W( IMAX,K+1 ) ) ).GE.ALPHA*ROWMAX
 *                 (used to handle NaN and Inf)
 *
                   IF( .NOT.( ABS( DBLE( W( IMAX,K+1 ) ) )
@@ -1045,7 +1042,7 @@
 *                 A(k+1:N,k) := L(k+1:N,k) = W(k+1:N,k)/D(k,k)
 *
 *              (NOTE: No need to use for Hermitian matrix
-*              A( K, K ) = REAL( W( K, K) ) to separately copy diagonal
+*              A( K, K ) = DBLE( W( K, K) ) to separately copy diagonal
 *              element D(k,k) from W (potentially saves only one load))
                CALL ZCOPY( N-K+1, W( K, K ), 1, A( K, K ), 1 )
                IF( K.LT.N ) THEN

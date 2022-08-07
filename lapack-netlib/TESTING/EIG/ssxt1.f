@@ -98,18 +98,15 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
-*
 *> \ingroup single_eig
 *
 *  =====================================================================
       REAL             FUNCTION SSXT1( IJOB, D1, N1, D2, N2, ABSTOL,
      $                 ULP, UNFL )
 *
-*  -- LAPACK test routine (version 3.7.0) --
+*  -- LAPACK test routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
 *
 *     .. Scalar Arguments ..
       INTEGER            IJOB, N1, N2

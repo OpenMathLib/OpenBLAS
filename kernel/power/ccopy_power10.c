@@ -28,7 +28,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "common.h"
 
 #if defined(__VEC__) || defined(__ALTIVEC__)
-#include "ccopy_microk_power10.c"
+#include "copy_microk_power10.c"
 #endif
 
 #ifndef HAVE_KERNEL
@@ -86,7 +86,7 @@ int CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG inc_y)
 	if ( (inc_x == 1) && (inc_y == 1 ))
 	{
 
-		BLASLONG n1 = n & -32;
+		BLASLONG n1 = n & -64;
 		if ( n1 > 0 )
 		{
 			copy_kernel(n1, x, y);

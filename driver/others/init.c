@@ -877,21 +877,21 @@ void gotoblas_affinity_init(void) {
     nums = sysconf(_SC_NPROCESSORS_CONF);
 
 #if !defined(__GLIBC_PREREQ)
-    common->num_procs = nums;
+    common->num_procs = nums >0 ? nums : 2;
 #else
 
 #if !__GLIBC_PREREQ(2, 3)
-    common->num_procs = nums;
+    common->num_procs = nums >0 ? nums : 2;
 #elif __GLIBC_PREREQ(2, 7)
-    cpusetp = CPU_ALLOC(nums);
+    cpusetp = CPU_ALLOC(nums>0? nums:1024);
     if (cpusetp == NULL) {
-        common->num_procs = nums;
+        common->num_procs = nums>0 ? nums: 2;
     } else {
         size_t size;
-        size = CPU_ALLOC_SIZE(nums);
+        size = CPU_ALLOC_SIZE(nums>0? nums: 1024);
         ret = sched_getaffinity(0,size,cpusetp);
         if (ret!=0)
-            common->num_procs = nums;
+            common->num_procs = nums >0 ? nums : 1;
         else
             common->num_procs = CPU_COUNT_S(size,cpusetp);
     }
@@ -899,12 +899,12 @@ void gotoblas_affinity_init(void) {
 #else
     ret = sched_getaffinity(0,sizeof(cpu_set_t), &cpuset);
     if (ret!=0) {
-        common->num_procs = nums;
+        common->num_procs = nums >0 ? nums : 2;
     } else {
 #if !__GLIBC_PREREQ(2, 6)
     int i;
     int n = 0;
-    for (i=0;i<nums;i++)
+    for (i=0;i<(nums >0 ?nums:1024) ;i++)
         if (CPU_ISSET(i,&cpuset)) n++;
     common->num_procs = n;
     }
@@ -1022,7 +1022,7 @@ void gotoblas_set_affinity2(int threads) {};
 
 void gotoblas_affinity_reschedule(void) {};
 
-int get_num_procs(void) { return sysconf(_SC_NPROCESSORS_CONF); }
+int get_num_procs(void) { int num = sysconf(_SC_NPROCESSORS_CONF); return (nums >0 ? nums : 2); }
 
 int get_num_nodes(void) { return 1; }
 

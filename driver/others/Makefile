@@ -27,7 +27,11 @@ else
 ifeq ($(ARCH),mips64)
 COMMONOBJS += dynamic_mips64.$(SUFFIX)
 else
+ifeq ($(ARCH),loongarch64)
+COMMONOBJS += dynamic_loongarch64.$(SUFFIX)
+else
 COMMONOBJS	+=  dynamic.$(SUFFIX)
+endif
 endif
 endif
 endif
@@ -99,7 +103,11 @@ else
 ifeq ($(ARCH),mips64)
 HPLOBJS = memory.$(SUFFIX) xerbla.$(SUFFIX) dynamic_mips64.$(SUFFIX)
 else
+ifeq ($(ARCH),loongarch64)
+HPLOBJS = memory.$(SUFFIX) xerbla.$(SUFFIX) dynamic_loongarch64.$(SUFFIX)
+else
 HPLOBJS = memory.$(SUFFIX) xerbla.$(SUFFIX) dynamic.$(SUFFIX)
+endif
 endif
 endif
 endif

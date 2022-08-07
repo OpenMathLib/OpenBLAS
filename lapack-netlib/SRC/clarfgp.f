@@ -97,17 +97,14 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date November 2017
-*
 *> \ingroup complexOTHERauxiliary
 *
 *  =====================================================================
       SUBROUTINE CLARFGP( N, ALPHA, X, INCX, TAU )
 *
-*  -- LAPACK auxiliary routine (version 3.8.0) --
+*  -- LAPACK auxiliary routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2017
 *
 *     .. Scalar Arguments ..
       INTEGER            INCX, N
@@ -238,7 +235,7 @@
                   DO J = 1, N-1
                      X( 1 + (J-1)*INCX ) = ZERO
                   END DO
-                  BETA = -SAVEALPHA
+                  BETA = REAL( -SAVEALPHA )
                END IF
             ELSE
                XNORM = SLAPY2( ALPHR, ALPHI )

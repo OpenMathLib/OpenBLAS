@@ -28,7 +28,6 @@
 *****************************************************************************
 * Contents: Native high-level C interface to LAPACK function sggsvd3
 * Author: Intel Corporation
-* Generated August, 2015
 *****************************************************************************/
 
 #include "lapacke_utils.h"

@@ -95,8 +95,6 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
-*
 *> \ingroup realOTHERauxiliary
 *
 *> \par Contributors:
@@ -115,10 +113,9 @@
 *  =====================================================================
       SUBROUTINE SLACON( N, V, X, ISGN, EST, KASE )
 *
-*  -- LAPACK auxiliary routine (version 3.7.0) --
+*  -- LAPACK auxiliary routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
 *
 *     .. Scalar Arguments ..
       INTEGER            KASE, N

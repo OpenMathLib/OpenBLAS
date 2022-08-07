@@ -115,18 +115,15 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
-*
 *> \ingroup complexSYcomputational
 *
 *  =====================================================================
       REAL FUNCTION CLA_SYRPVGRW( UPLO, N, INFO, A, LDA, AF, LDAF, IPIV,
      $                            WORK )
 *
-*  -- LAPACK computational routine (version 3.7.0) --
+*  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
 *
 *     .. Scalar Arguments ..
       CHARACTER*1        UPLO
@@ -328,4 +325,7 @@
       END IF
 
       CLA_SYRPVGRW = RPVGRW
+*
+*     End of CLA_SYRPVGRW
+*
       END

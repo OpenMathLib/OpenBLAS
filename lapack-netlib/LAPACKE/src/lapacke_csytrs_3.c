@@ -28,7 +28,6 @@
 *****************************************************************************
 * Contents: Native high-level C interface to LAPACK function csytrs_3
 * Author: Intel Corporation
-* Generated December 2016
 *****************************************************************************/
 
 #include "lapacke_utils.h"

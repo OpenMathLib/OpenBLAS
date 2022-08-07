@@ -58,7 +58,7 @@ SEIGTST = schkee.o \
    serrbd.o serrec.o serred.o serrgg.o serrhs.o serrst.o \
    sget02.o sget10.o sget22.o sget23.o sget24.o sget31.o \
    sget32.o sget33.o sget34.o sget35.o sget36.o \
-   sget37.o sget38.o sget39.o sget51.o sget52.o sget53.o \
+   sget37.o sget38.o sget39.o sget40.o sget51.o sget52.o sget53.o \
    sget54.o sglmts.o sgqrts.o sgrqts.o sgsvts3.o \
    shst01.o slarfy.o slarhs.o slatm4.o slctes.o slctsx.o slsets.o sort01.o \
    sort03.o ssbt21.o ssgt01.o sslect.o sspt21.o sstt21.o \
@@ -95,7 +95,7 @@ DEIGTST = dchkee.o \
    derrbd.o derrec.o derred.o derrgg.o derrhs.o derrst.o \
    dget02.o dget10.o dget22.o dget23.o dget24.o dget31.o \
    dget32.o dget33.o dget34.o dget35.o dget36.o \
-   dget37.o dget38.o dget39.o dget51.o dget52.o dget53.o \
+   dget37.o dget38.o dget39.o dget40.o dget51.o dget52.o dget53.o \
    dget54.o dglmts.o dgqrts.o dgrqts.o dgsvts3.o \
    dhst01.o dlarfy.o dlarhs.o dlatm4.o dlctes.o dlctsx.o dlsets.o dort01.o \
    dort03.o dsbt21.o dsgt01.o dslect.o dspt21.o dstt21.o \

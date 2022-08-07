@@ -65,7 +65,7 @@ jobs:
   - task: CMake@1
     inputs:
       workingDirectory: 'build' # Optional
-      cmakeArgs: '-G "Visual Studio 16 2019" ..'
+      cmakeArgs: '-G "Visual Studio 17 2022" ..'
   - task: CMake@1
     inputs:
       cmakeArgs: '--build . --config Release'
@@ -81,7 +81,7 @@ jobs:
      vmImage: 'windows-latest'
   steps:   
   - script: |
-      mingw32-make CC=gcc FC=gfortran DYNAMIC_ARCH=1 DYNAMIC_LIST="NEHALEM SANDYBRIDGE HASWELL"
+      mingw32-make CC=gcc FC=gfortran DYNAMIC_ARCH=1 DYNAMIC_LIST="SANDYBRIDGE"
 
 - job: Windows_clang_cmake
   pool:
@@ -103,7 +103,7 @@ jobs:
 
 - job: Windows_flang_clang
   pool:
-     vmImage: 'windows-latest'
+     vmImage: 'windows-2022'
   steps:
   - script: |
       set "PATH=C:\Miniconda\Scripts;C:\Miniconda\Library\bin;C:\Miniconda\Library\usr\bin;C:\Miniconda\condabin;%PATH%"
@@ -114,10 +114,30 @@ jobs:
       conda install --yes --quiet ninja flang
       mkdir build 
       cd build
-      call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
-      cmake -G "Ninja" -DCMAKE_C_COMPILER=clang-cl -DCMAKE_CXX_COMPILER=clang-cl -DCMAKE_Fortran_COMPILER=flang -DCMAKE_MT=mt -DCMAKE_BUILD_TYPE=Release -DMSVC_STATIC_CRT=ON ..
+      call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
+      cmake -G "Ninja" -DCMAKE_C_COMPILER=clang-cl -DCMAKE_CXX_COMPILER=clang-cl -DCMAKE_Fortran_COMPILER=flang -DBUILD_TESTING=OFF -DCMAKE_MT=mt -DCMAKE_BUILD_TYPE=Release -DMSVC_STATIC_CRT=ON ..
       cmake --build . --config Release
       ctest
+
+- job: Windows_cl_flang
+  pool:
+     vmImage: 'windows-2022'
+  steps:
+  - script: |
+      set "PATH=C:\Miniconda\Scripts;C:\Miniconda\Library\bin;C:\Miniconda\Library\usr\bin;C:\Miniconda\condabin;%PATH%"
+      set "LIB=C:\Miniconda\Library\lib;%LIB%"
+      set "CPATH=C:\Miniconda\Library\include;%CPATH%"
+      conda config --add channels conda-forge --force
+      conda config --set auto_update_conda false
+      conda install --yes --quiet ninja flang
+      mkdir build 
+      cd build
+      call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
+      cmake -G "Ninja" -DCMAKE_C_COMPILER=cl -DCMAKE_Fortran_COMPILER=flang -DC_LAPACK=1 -DCMAKE_MT=mt -DCMAKE_BUILD_TYPE=Release -DMSVC_STATIC_CRT=ON ..
+      cmake --build . --config Release
+      ctest
+
+
 
 - job: OSX_OpenMP
   pool:
@@ -143,11 +163,12 @@ jobs:
   variables:
      LD_LIBRARY_PATH: /usr/local/opt/llvm/lib
      LIBRARY_PATH: /usr/local/opt/llvm/lib
+     MACOSX_DEPLOYMENT_TARGET: 11.0
   steps:   
   - script: |
       brew update
       brew install llvm libomp
-      make TARGET=CORE2 USE_OPENMP=1 INTERFACE64=1 DYNAMIC_ARCH=1 CC=/usr/local/opt/llvm/bin/clang FC=gfortran-10
+      make TARGET=CORE2 USE_OPENMP=1 DYNAMIC_ARCH=1 CC=/usr/local/opt/llvm/bin/clang NOFORTRAN=1
 
 - job: OSX_OpenMP_Clang_cmake
   pool:
@@ -178,7 +199,7 @@ jobs:
       cmake -DTARGET=CORE2 -DDYNAMIC_ARCH=1 -DCMAKE_C_COMPILER=gcc-10 -DCMAKE_Fortran_COMPILER=gfortran-10 -DBUILD_SHARED_LIBS=ON ..
       cmake --build .
       ctest
-      
+
 - job: OSX_Ifort_Clang
   pool:
      vmImage: 'macOS-10.15'

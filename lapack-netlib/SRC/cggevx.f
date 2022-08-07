@@ -335,8 +335,6 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date April 2012
-*
 *> \ingroup complexGEeigen
 *
 *> \par Further Details:
@@ -374,10 +372,9 @@
      $                   LSCALE, RSCALE, ABNRM, BBNRM, RCONDE, RCONDV,
      $                   WORK, LWORK, RWORK, IWORK, BWORK, INFO )
 *
-*  -- LAPACK driver routine (version 3.7.0) --
+*  -- LAPACK driver routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     April 2012
 *
 *     .. Scalar Arguments ..
       CHARACTER          BALANC, JOBVL, JOBVR, SENSE
@@ -710,8 +707,8 @@
 *
          IF( .NOT.WANTSN ) THEN
 *
-*           compute eigenvectors (STGEVC) and estimate condition
-*           numbers (STGSNA). Note that the definition of the condition
+*           compute eigenvectors (CTGEVC) and estimate condition
+*           numbers (CTGSNA). Note that the definition of the condition
 *           number is not invariant under transformation (u,v) to
 *           (Q*u, Z*v), where (u,v) are eigenvectors of the generalized
 *           Schur form (S,T), Q and Z are orthogonal matrices. In order

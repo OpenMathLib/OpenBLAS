@@ -75,7 +75,7 @@
 *> The desired accuracy of the output can be specified by the input
 *> parameter ABSTOL.
 *>
-*> For more details, see DSTEMR's documentation and:
+*> For more details, see ZSTEMR's documentation and:
 *> - Inderjit S. Dhillon and Beresford N. Parlett: "Multiple representations
 *>   to compute orthogonal eigenvectors of symmetric tridiagonal matrices,"
 *>   Linear Algebra and its Applications, 387(1), pp. 1-28, August 2004.
@@ -338,8 +338,6 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date June 2016
-*
 *> \ingroup complex16HEeigen
 *
 *> \par Contributors:
@@ -357,10 +355,9 @@
      $                   ABSTOL, M, W, Z, LDZ, ISUPPZ, WORK, LWORK,
      $                   RWORK, LRWORK, IWORK, LIWORK, INFO )
 *
-*  -- LAPACK driver routine (version 3.7.0) --
+*  -- LAPACK driver routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     June 2016
 *
 *     .. Scalar Arguments ..
       CHARACTER          JOBZ, RANGE, UPLO

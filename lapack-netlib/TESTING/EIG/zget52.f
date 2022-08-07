@@ -154,18 +154,15 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
-*
 *> \ingroup complex16_eig
 *
 *  =====================================================================
       SUBROUTINE ZGET52( LEFT, N, A, LDA, B, LDB, E, LDE, ALPHA, BETA,
      $                   WORK, RWORK, RESULT )
 *
-*  -- LAPACK test routine (version 3.7.0) --
+*  -- LAPACK test routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
 *
 *     .. Scalar Arguments ..
       LOGICAL            LEFT
@@ -238,7 +235,7 @@
       BETMAX = SAFMAX / MAX( ONE, ANORM )
 *
 *     Compute error matrix.
-*     Column i = ( b(i) A - a(i) B ) E(i) / max( |a(i) B| |b(i) A| )
+*     Column i = ( b(i) A - a(i) B ) E(i) / max( |a(i) B|, |b(i) A| )
 *
       DO 10 JVEC = 1, N
          ALPHAI = ALPHA( JVEC )
@@ -278,7 +275,7 @@
          DO 20 J = 1, N
             TEMP1 = MAX( TEMP1, ABS1( E( J, JVEC ) ) )
    20    CONTINUE
-         ENRMER = MAX( ENRMER, TEMP1-ONE )
+         ENRMER = MAX( ENRMER, ABS( TEMP1-ONE ) )
    30 CONTINUE
 *
 *     Compute RESULT(2) : the normalization error in E.

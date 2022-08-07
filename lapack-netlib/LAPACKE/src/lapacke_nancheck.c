@@ -28,7 +28,6 @@
 *****************************************************************************
 * Contents: Native C interface to control NaN checking
 * Author: Intel Corporation
-* Generated July, 2017
 *****************************************************************************/
 
 #include "lapacke_utils.h"

@@ -34,6 +34,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define VSETVL_MAX vsetvlmax_e32m1()
 #define FLOAT_V_T vfloat32m8_t
 #define FLOAT_V_T_M1 vfloat32m1_t
+#define VFMVFS_FLOAT vfmv_f_s_f32m1_f32
 #define VLSEV_FLOAT vlse_v_f32m8
 #define VFREDMINVS_FLOAT vfredmin_vs_f32m8_f32m1
 #define MASK_T vbool4_t
@@ -48,6 +49,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define VSETVL_MAX vsetvlmax_e32m1()
 #define FLOAT_V_T vfloat64m8_t
 #define FLOAT_V_T_M1 vfloat64m1_t
+#define VFMVFS_FLOAT vfmv_f_s_f64m1_f64
 #define VLSEV_FLOAT vlse_v_f64m8
 #define VFREDMINVS_FLOAT vfredmin_vs_f64m8_f64m1
 #define MASK_T vbool8_t
@@ -92,7 +94,7 @@ FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x)
                 ix += inc_xv;
         }
         v_res = VFREDMINVS_FLOAT(v_res, v_min, v_max, gvl);
-        minf = v_res[0];
+        minf = VFMVFS_FLOAT(v_res);
 
         if(j<n){
                 gvl = VSETVL(n-j);
@@ -104,8 +106,8 @@ FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x)
                 v1 = VFRSUBVF_MASK_FLOAT(mask1, v1, v1, 0, gvl);
                 v1 = VFADDVV_FLOAT(v0, v1, gvl);
                 v_res = VFREDMINVS_FLOAT(v_res, v1, v_max, gvl);
-                if(v_res[0] < minf)
-                        minf = v_res[0];
+                if(VFMVFS_FLOAT(v_res) < minf)
+                        minf = VFMVFS_FLOAT(v_res);
         }
         return(minf);
 }

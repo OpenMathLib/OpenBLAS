@@ -28,7 +28,6 @@
 *****************************************************************************
 * Contents: Native high-level C interface to LAPACK function chetrf_rk
 * Author: Intel Corporation
-* Generated June 2017
 *****************************************************************************/
 
 #include "lapacke_utils.h"

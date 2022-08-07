@@ -128,8 +128,6 @@
 *> \verbatim
 *>          WORK is REAL array. Workspace of size nb.
 *> \endverbatim
-*> @param[in] n
-*>          The order of the matrix A.
 *>
 *>
 *> \par Further Details:
@@ -173,10 +171,9 @@
 *
       IMPLICIT NONE
 *
-*  -- LAPACK computational routine (version 3.7.1) --
+*  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     June 2017
 *
 *     .. Scalar Arguments ..
       CHARACTER          UPLO
@@ -375,6 +372,6 @@
 *
       RETURN
 *
-*     END OF SSB2ST_KERNELS
+*     End of SSB2ST_KERNELS
 *
       END

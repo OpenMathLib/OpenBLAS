@@ -69,8 +69,6 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date February 2014
-*
 *> \ingroup complexOTHERauxiliary
 *
 *> \par Contributors:
@@ -81,10 +79,9 @@
 *  =====================================================================
       INTEGER FUNCTION IZMAX1( N, ZX, INCX )
 *
-*  -- LAPACK auxiliary routine (version 3.7.0) --
+*  -- LAPACK auxiliary routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     February 2014
 *
 *     .. Scalar Arguments ..
       INTEGER            INCX, N

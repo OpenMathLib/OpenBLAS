@@ -85,19 +85,24 @@ int CNAME(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, FLOAT da, FLOAT *x, BLAS
         }else{
                 if(da == 0.0){
                         gvl = VSETVL(n);
+						BLASLONG stride_x = inc_x * sizeof(FLOAT);
+						BLASLONG ix = 0;
                         if(gvl <= n / 2){
+							    long int inc_xv = gvl * inc_x;
                                 v0 = VFMVVF_FLOAT(0, gvl);
                                 for(i = 0, j = 0; i < n/(2*gvl); i++, j+=2*gvl){
-                                        VSEV_FLOAT(&x[j], v0, gvl);
-                                        VSEV_FLOAT(&x[j+gvl], v0, gvl);
+									VSSEV_FLOAT(&x[ix], stride_x, v0, gvl);
+									VSSEV_FLOAT(&x[ix + inc_xv], stride_x, v0, gvl);
+									ix += inc_xv * 2;
                                 }
                         }
                         //tail
                         for(; j <n; ){
                                 gvl = VSETVL(n-j);
                                 v0 = VFMVVF_FLOAT(0, gvl);
-                                VSEV_FLOAT(&x[j], v0, gvl);
+								VSSEV_FLOAT(&x[ix], stride_x, v0, gvl);
                                 j += gvl;
+								ix += inc_x * gvl;
                         }
                 }else{
                         gvl = VSETVL(n);

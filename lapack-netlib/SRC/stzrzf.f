@@ -116,8 +116,6 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date April 2012
-*
 *> \ingroup realOTHERcomputational
 *
 *> \par Contributors:
@@ -143,7 +141,7 @@
 *>     V = ( I   A(:,M+1:N) )
 *>
 *>  I is the M-by-M identity matrix, A(:,M+1:N)
-*>  is the output stored in A on exit from DTZRZF,
+*>  is the output stored in A on exit from STZRZF,
 *>  and tau(k) is the kth element of the array TAU.
 *>
 *> \endverbatim
@@ -151,10 +149,9 @@
 *  =====================================================================
       SUBROUTINE STZRZF( M, N, A, LDA, TAU, WORK, LWORK, INFO )
 *
-*  -- LAPACK computational routine (version 3.7.0) --
+*  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     April 2012
 *
 *     .. Scalar Arguments ..
       INTEGER            INFO, LDA, LWORK, M, N

@@ -161,8 +161,6 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date June 2013
-*
 *> \ingroup doubleOTHERauxiliary
 *
 *> \par Further Details:
@@ -197,10 +195,9 @@
       SUBROUTINE DLARFB( SIDE, TRANS, DIRECT, STOREV, M, N, K, V, LDV,
      $                   T, LDT, C, LDC, WORK, LDWORK )
 *
-*  -- LAPACK auxiliary routine (version 3.7.0) --
+*  -- LAPACK auxiliary routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     June 2013
 *
 *     .. Scalar Arguments ..
       CHARACTER          DIRECT, SIDE, STOREV, TRANS

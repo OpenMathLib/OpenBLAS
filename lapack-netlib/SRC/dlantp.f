@@ -117,19 +117,15 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
-*
 *> \ingroup doubleOTHERauxiliary
 *
 *  =====================================================================
       DOUBLE PRECISION FUNCTION DLANTP( NORM, UPLO, DIAG, N, AP, WORK )
 *
-*  -- LAPACK auxiliary routine (version 3.7.0) --
+*  -- LAPACK auxiliary routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
 *
-      IMPLICIT NONE
 *     .. Scalar Arguments ..
       CHARACTER          DIAG, NORM, UPLO
       INTEGER            N
@@ -147,17 +143,14 @@
 *     .. Local Scalars ..
       LOGICAL            UDIAG
       INTEGER            I, J, K
-      DOUBLE PRECISION   SUM, VALUE
+      DOUBLE PRECISION   SCALE, SUM, VALUE
 *     ..
-*     .. Local Arrays ..
-      DOUBLE PRECISION   SSQ( 2 ), COLSSQ( 2 )
+*     .. External Subroutines ..
+      EXTERNAL           DLASSQ
 *     ..
 *     .. External Functions ..
       LOGICAL            LSAME, DISNAN
       EXTERNAL           LSAME, DISNAN
-*     ..
-*     .. External Subroutines ..
-      EXTERNAL           DLASSQ, DCOMBSSQ
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          ABS, SQRT
@@ -310,64 +303,45 @@
       ELSE IF( ( LSAME( NORM, 'F' ) ) .OR. ( LSAME( NORM, 'E' ) ) ) THEN
 *
 *        Find normF(A).
-*        SSQ(1) is scale
-*        SSQ(2) is sum-of-squares
-*        For better accuracy, sum each column separately.
 *
          IF( LSAME( UPLO, 'U' ) ) THEN
             IF( LSAME( DIAG, 'U' ) ) THEN
-               SSQ( 1 ) = ONE
-               SSQ( 2 ) = N
+               SCALE = ONE
+               SUM = N
                K = 2
                DO 280 J = 2, N
-                  COLSSQ( 1 ) = ZERO
-                  COLSSQ( 2 ) = ONE
-                  CALL DLASSQ( J-1, AP( K ), 1,
-     $                         COLSSQ( 1 ), COLSSQ( 2 ) )
-                  CALL DCOMBSSQ( SSQ, COLSSQ )
+                  CALL DLASSQ( J-1, AP( K ), 1, SCALE, SUM )
                   K = K + J
   280          CONTINUE
             ELSE
-               SSQ( 1 ) = ZERO
-               SSQ( 2 ) = ONE
+               SCALE = ZERO
+               SUM = ONE
                K = 1
                DO 290 J = 1, N
-                  COLSSQ( 1 ) = ZERO
-                  COLSSQ( 2 ) = ONE
-                  CALL DLASSQ( J, AP( K ), 1,
-     $                         COLSSQ( 1 ), COLSSQ( 2 ) )
-                  CALL DCOMBSSQ( SSQ, COLSSQ )
+                  CALL DLASSQ( J, AP( K ), 1, SCALE, SUM )
                   K = K + J
   290          CONTINUE
             END IF
          ELSE
             IF( LSAME( DIAG, 'U' ) ) THEN
-               SSQ( 1 ) = ONE
-               SSQ( 2 ) = N
+               SCALE = ONE
+               SUM = N
                K = 2
                DO 300 J = 1, N - 1
-                  COLSSQ( 1 ) = ZERO
-                  COLSSQ( 2 ) = ONE
-                  CALL DLASSQ( N-J, AP( K ), 1,
-     $                         COLSSQ( 1 ), COLSSQ( 2 ) )
-                  CALL DCOMBSSQ( SSQ, COLSSQ )
+                  CALL DLASSQ( N-J, AP( K ), 1, SCALE, SUM )
                   K = K + N - J + 1
   300          CONTINUE
             ELSE
-               SSQ( 1 ) = ZERO
-               SSQ( 2 ) = ONE
+               SCALE = ZERO
+               SUM = ONE
                K = 1
                DO 310 J = 1, N
-                  COLSSQ( 1 ) = ZERO
-                  COLSSQ( 2 ) = ONE
-                  CALL DLASSQ( N-J+1, AP( K ), 1,
-     $                         COLSSQ( 1 ), COLSSQ( 2 ) )
-                  CALL DCOMBSSQ( SSQ, COLSSQ )
+                  CALL DLASSQ( N-J+1, AP( K ), 1, SCALE, SUM )
                   K = K + N - J + 1
   310          CONTINUE
             END IF
          END IF
-         VALUE = SSQ( 1 )*SQRT( SSQ( 2 ) )
+         VALUE = SCALE*SQRT( SUM )
       END IF
 *
       DLANTP = VALUE

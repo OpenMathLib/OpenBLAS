@@ -230,7 +230,7 @@
 *>          IPIV is INTEGER array, dimension (N)
 *>     If FACT = 'F', then IPIV is an input argument and on entry
 *>     contains the pivot indices from the factorization A = P*L*U
-*>     as computed by DGETRF; row i of the matrix was interchanged
+*>     as computed by ZGETRF; row i of the matrix was interchanged
 *>     with row IPIV(i).
 *>
 *>     If FACT = 'N', then IPIV is an output argument and on exit
@@ -349,8 +349,8 @@
 *>     This also means that the solution X, estimated condition numbers,
 *>     and error bounds could be unreliable. If factorization fails with
 *>     0<INFO<=N, then this contains the reciprocal pivot growth factor
-*>     for the leading INFO columns of A.  In DGESVX, this quantity is
-*>     returned in WORK(1).
+*>     for the leading INFO columns of A.  In ZGESVX, this quantity is
+*>     returned in RWORK(1).
 *> \endverbatim
 *>
 *> \param[out] BERR
@@ -549,8 +549,6 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date April 2012
-*
 *> \ingroup complex16GBsolve
 *
 *  =====================================================================
@@ -560,10 +558,9 @@
      $                    ERR_BNDS_NORM, ERR_BNDS_COMP, NPARAMS, PARAMS,
      $                    WORK, RWORK, INFO )
 *
-*  -- LAPACK driver routine (version 3.7.0) --
+*  -- LAPACK driver routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     April 2012
 *
 *     .. Scalar Arguments ..
       CHARACTER          EQUED, FACT, TRANS
@@ -635,7 +632,7 @@
 *
       RPVGRW = ZERO
 *
-*     Test the input parameters.  PARAMS is not tested until DGERFSX.
+*     Test the input parameters.  PARAMS is not tested until ZGERFSX.
 *
       IF( .NOT.NOFACT .AND. .NOT.EQUIL .AND. .NOT.
      $     LSAME( FACT, 'F' ) ) THEN

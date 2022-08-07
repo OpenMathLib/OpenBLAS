@@ -142,18 +142,15 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
-*
 *> \ingroup realGEcomputational
 *
 *  =====================================================================
       REAL FUNCTION SLA_GERCOND ( TRANS, N, A, LDA, AF, LDAF, IPIV,
      $                            CMODE, C, INFO, WORK, IWORK )
 *
-*  -- LAPACK computational routine (version 3.7.0) --
+*  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
 *
 *     .. Scalar Arguments ..
       CHARACTER          TRANS
@@ -323,5 +320,7 @@
      $   SLA_GERCOND = ( 1.0 / AINVNM )
 *
       RETURN
+*
+*     End of SLA_GERCOND
 *
       END

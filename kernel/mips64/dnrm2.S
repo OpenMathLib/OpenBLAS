@@ -68,6 +68,7 @@
 
 #define ALPHA	$f16
 #define max	$f17
+#define INF	$f18
 
 
 	PROLOGUE
@@ -85,6 +86,11 @@
 
 	move	XX, X
 	NOP
+
+	//Init INF
+	lui     TEMP, 0x7FF0
+	dsll    TEMP, TEMP, 32
+	MTC1    TEMP, INF
 
 	LD	a1,  0 * SIZE(X)
 	daddiu	N, N, -1
@@ -254,6 +260,9 @@
 
 	div.d	ALPHA, ALPHA, s1
 	MOV	max, s1
+
+	CMPEQ  $fcc0, ALPHA, INF
+	bc1t   $fcc0, .L999
 
 	MOV	s1, a1
 	MOV	s2, a1

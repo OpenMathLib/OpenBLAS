@@ -94,17 +94,14 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date June 2016
-*
 *> \ingroup complex16OTHERcomputational
 *
 *  =====================================================================
       SUBROUTINE ZLA_LIN_BERR ( N, NZ, NRHS, RES, AYB, BERR )
 *
-*  -- LAPACK computational routine (version 3.7.0) --
+*  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     June 2016
 *
 *     .. Scalar Arguments ..
       INTEGER            N, NZ, NRHS
@@ -157,4 +154,7 @@
 *
          END DO
       END DO
+*
+*     End of ZLA_LIN_BERR
+*
       END

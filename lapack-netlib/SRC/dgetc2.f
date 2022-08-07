@@ -98,8 +98,6 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date June 2016
-*
 *> \ingroup doubleGEauxiliary
 *
 *> \par Contributors:
@@ -111,10 +109,9 @@
 *  =====================================================================
       SUBROUTINE DGETC2( N, A, LDA, IPIV, JPIV, INFO )
 *
-*  -- LAPACK auxiliary routine (version 3.8.0) --
+*  -- LAPACK auxiliary routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     June 2016
 *
 *     .. Scalar Arguments ..
       INTEGER            INFO, LDA, N

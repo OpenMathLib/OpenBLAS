@@ -117,18 +117,15 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date November 2013
-*
 *> \ingroup complex_lin
 *
 *  =====================================================================
       SUBROUTINE CSYT01( UPLO, N, A, LDA, AFAC, LDAFAC, IPIV, C, LDC,
      $                   RWORK, RESID )
 *
-*  -- LAPACK test routine (version 3.5.0) --
+*  -- LAPACK test routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2013
 *
 *     .. Scalar Arguments ..
       CHARACTER          UPLO

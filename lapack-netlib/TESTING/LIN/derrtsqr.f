@@ -48,18 +48,15 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
-*
 *> \ingroup double_lin
 *
 *  =====================================================================
       SUBROUTINE DERRTSQR( PATH, NUNIT )
       IMPLICIT NONE
 *
-*  -- LAPACK test routine (version 3.7.0) --
+*  -- LAPACK test routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
 *
 *     .. Scalar Arguments ..
       CHARACTER*3        PATH
@@ -73,7 +70,7 @@
       PARAMETER          ( NMAX = 2 )
 *     ..
 *     .. Local Scalars ..
-      INTEGER            I, INFO, J, NB
+      INTEGER            I, INFO, J, MB, NB
 *     ..
 *     .. Local Arrays ..
       DOUBLE PRECISION   A( NMAX, NMAX ), T( NMAX, NMAX ), W( NMAX ),
@@ -132,6 +129,35 @@
       INFOT = 8
       CALL DGEQR( 3, 2, A, 3, TAU, 7, W, 0, INFO )
       CALL CHKXER( 'DGEQR', INFOT, NOUT, LERR, OK )
+*
+*     DLATSQR
+*
+      MB = 1
+      NB = 1
+      SRNAMT = 'DLATSQR'
+      INFOT = 1
+      CALL DLATSQR( -1, 0, MB, NB, A, 1, TAU, 1, W, 1, INFO )
+      CALL CHKXER( 'DLATSQR', INFOT, NOUT, LERR, OK )
+      INFOT = 2
+      CALL DLATSQR( 1, 2, MB, NB, A, 1, TAU, 1, W, 1, INFO )
+      CALL CHKXER( 'DLATSQR', INFOT, NOUT, LERR, OK )
+      CALL DLATSQR( 0, -1, MB, NB, A, 1, TAU, 1, W, 1, INFO )
+      CALL CHKXER( 'DLATSQR', INFOT, NOUT, LERR, OK )
+      INFOT = 3
+      CALL DLATSQR( 2, 1, -1, NB, A, 2, TAU, 1, W, 1, INFO )
+      CALL CHKXER( 'DLATSQR', INFOT, NOUT, LERR, OK )
+      INFOT = 4
+      CALL DLATSQR( 2, 1, MB, 2, A, 2, TAU, 1, W, 1, INFO )
+      CALL CHKXER( 'DLATSQR', INFOT, NOUT, LERR, OK )
+      INFOT = 6
+      CALL DLATSQR( 2, 1, MB, NB, A, 1, TAU, 1, W, 1, INFO )
+      CALL CHKXER( 'DLATSQR', INFOT, NOUT, LERR, OK )
+      INFOT = 8
+      CALL DLATSQR( 2, 1, MB, NB, A, 2, TAU, 0, W, 1, INFO )
+      CALL CHKXER( 'DLATSQR', INFOT, NOUT, LERR, OK )
+      INFOT = 10
+      CALL DLATSQR( 2, 1, MB, NB, A, 2, TAU, 2, W, 0, INFO )
+      CALL CHKXER( 'DLATSQR', INFOT, NOUT, LERR, OK )
 *
 *     DGEMQR
 *
@@ -193,6 +219,37 @@
       INFOT = 8
       CALL DGELQ( 2, 3, A, 3, TAU, 7, W, 0, INFO )
       CALL CHKXER( 'DGELQ', INFOT, NOUT, LERR, OK )
+*
+*     DLASWLQ
+*
+      MB = 1
+      NB = 1
+      SRNAMT = 'DLASWLQ'
+      INFOT = 1
+      CALL DLASWLQ( -1, 0, MB, NB, A, 1, TAU, 1, W, 1, INFO )
+      CALL CHKXER( 'DLASWLQ', INFOT, NOUT, LERR, OK )
+      INFOT = 2
+      CALL DLASWLQ( 2, 1, MB, NB, A, 1, TAU, 1, W, 1, INFO )
+      CALL CHKXER( 'DLASWLQ', INFOT, NOUT, LERR, OK )
+      CALL DLASWLQ( 0, -1, MB, NB, A, 1, TAU, 1, W, 1, INFO )
+      CALL CHKXER( 'DLASWLQ', INFOT, NOUT, LERR, OK )
+      INFOT = 3
+      CALL DLASWLQ( 1, 2, -1, NB, A, 1, TAU, 1, W, 1, INFO )
+      CALL CHKXER( 'DLASWLQ', INFOT, NOUT, LERR, OK )
+      CALL DLASWLQ( 1, 1, 2, NB, A, 1, TAU, 1, W, 1, INFO )
+      CALL CHKXER( 'DLASWLQ', INFOT, NOUT, LERR, OK )
+      INFOT = 4
+      CALL DLASWLQ( 1, 2, MB, -1, A, 1, TAU, 1, W, 1, INFO )
+      CALL CHKXER( 'DLASWLQ', INFOT, NOUT, LERR, OK )
+      INFOT = 6
+      CALL DLASWLQ( 1, 2, MB, NB, A, 0, TAU, 1, W, 1, INFO )
+      CALL CHKXER( 'DLASWLQ', INFOT, NOUT, LERR, OK )
+      INFOT = 8
+      CALL DLASWLQ( 1, 2, MB, NB, A, 1, TAU, 0, W, 1, INFO )
+      CALL CHKXER( 'DLASWLQ', INFOT, NOUT, LERR, OK )
+      INFOT = 10
+      CALL DLASWLQ( 1, 2, MB, NB, A, 1, TAU, 1, W, 0, INFO )
+      CALL CHKXER( 'DLASWLQ', INFOT, NOUT, LERR, OK )
 *
 *     DGEMLQ
 *

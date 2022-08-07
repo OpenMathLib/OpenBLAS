@@ -13,7 +13,8 @@
 *> [ZIP]</a>
 *> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/zungtsqr.f">
 *> [TXT]</a>
-*>
+*> \endhtmlonly
+*
 *  Definition:
 *  ===========
 *
@@ -59,7 +60,7 @@
 *> \param[in] MB
 *> \verbatim
 *>          MB is INTEGER
-*>          The row block size used by DLATSQR to return
+*>          The row block size used by ZLATSQR to return
 *>          arrays A and T. MB > N.
 *>          (Note that if MB > M, then M is used instead of MB
 *>          as the row block size).
@@ -155,9 +156,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date November 2019
-*
-*> \ingroup comlex16OTHERcomputational
+*> \ingroup complex16OTHERcomputational
 *
 *> \par Contributors:
 *  ==================
@@ -175,10 +174,9 @@
      $                     INFO )
       IMPLICIT NONE
 *
-*  -- LAPACK computational routine (version 3.9.0) --
+*  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2019
 *
 *     .. Scalar Arguments ..
       INTEGER           INFO, LDA, LDT, LWORK, M, N, MB, NB

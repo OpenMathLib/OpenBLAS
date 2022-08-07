@@ -404,6 +404,7 @@ FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x)
 #else
 	nrm2_compute(n, x, inc_x, &ssq, &scale);
 #endif
+	if (fabs(scale) <1.e-300) return 0.;
 	ssq = sqrt(ssq) * scale;
 
 	return ssq;

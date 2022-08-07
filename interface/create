@@ -1,22 +1,22 @@
-#!/usr/bin/env perl
+#!/bin/sh
 
-$count = 0;
+count=0
 
-foreach (@ARGV) {
-    print "#define\tinterface_", $_, "\t\t", $count, "\n";
-    $count ++;
-}
+for arg in "$@"; do
+    printf "#define\tinterface_%s\t\t%d\n" "$arg" "$count"
+    count=`expr $count + 1`
+done
 
-print "#ifdef USE_FUNCTABLE\n";
+printf "#ifdef USE_FUNCTABLE\n"
 
-print "#define MAX_PROF_TABLE ", $count, "\n";
+printf "#define MAX_PROF_TABLE %d\n" "$count"
 
-print "static char *func_table[] = {\n";
+printf "static char *func_table[] = {\n"
 
-foreach (@ARGV) {
-    print "\"", $_, "\",\n";
-}
+for arg in "$@"; do
+    printf "\"%s\",\n" "$arg"
+done
 
-print "};\n";
-print "#endif\n";
+printf "};\n"
+printf "#endif\n"
 

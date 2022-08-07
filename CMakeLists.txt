@@ -17,14 +17,12 @@ include(GNUInstallDirs)
 
 include(CMakePackageConfigHelpers)
 
-if(MSVC AND NOT DEFINED NOFORTRAN)
-  set(NOFORTRAN ON)
-endif()
-
 #######
-if(MSVC)
-  option(BUILD_WITHOUT_LAPACK "Do not build LAPACK and LAPACKE (Only BLAS or CBLAS)" ON)
-endif()
+option(BUILD_WITHOUT_LAPACK "Do not build LAPACK and LAPACKE (Only BLAS or CBLAS)" OFF)
+
+option(BUILD_TESTING "Build LAPACK testsuite when building LAPACK" ON)
+
+option(C_LAPACK "Build LAPACK from C sources instead of the original Fortran" OFF)
 
 option(BUILD_WITHOUT_CBLAS "Do not build the C interface (CBLAS) to the BLAS functions" OFF)
 
@@ -35,6 +33,8 @@ option(DYNAMIC_OLDER "Include specific support for older x86 cpu models (Penryn,
 option(BUILD_RELAPACK "Build with ReLAPACK (recursive implementation of several LAPACK functions on top of standard LAPACK)" OFF)
 
 option(USE_LOCKING "Use locks even in single-threaded builds to make them callable from multiple threads" OFF)
+
+option(USE_PERL "Use the older PERL scripts for build preparation instead of universal shell scripts" OFF)
 
 if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
   option(NO_AFFINITY "Disable support for CPU affinity masks to avoid binding processes from e.g. R or numpy/scipy to a single core" ON)
@@ -179,7 +179,7 @@ endforeach ()
 
 # Can't just use lapack-netlib's CMake files, since they are set up to search for BLAS, build and install a binary. We just want to build a couple of lib files out of lapack and lapacke.
 # Not using add_subdirectory here because lapack-netlib already has its own CMakeLists.txt. Instead include a cmake script with the sources we want.
-if (NOT NOFORTRAN AND NOT NO_LAPACK)
+if (NOT NO_LAPACK)
   include("${PROJECT_SOURCE_DIR}/cmake/lapack.cmake")
   if (NOT NO_LAPACKE)
     include("${PROJECT_SOURCE_DIR}/cmake/lapacke.cmake")
@@ -205,8 +205,8 @@ endif ()
 
 # add objects to the openblas lib
 if(NOT NO_LAPACK)
-  add_library(LAPACK OBJECT ${LA_SOURCES})
-  list(APPEND TARGET_OBJS "$<TARGET_OBJECTS:LAPACK>")
+  add_library(LAPACK_OVERRIDES OBJECT ${LA_SOURCES})
+  list(APPEND TARGET_OBJS "$<TARGET_OBJECTS:LAPACK_OVERRIDES>")
 endif()
 if(NOT NO_LAPACKE)
   add_library(LAPACKE OBJECT ${LAPACKE_SOURCES})
@@ -247,7 +247,7 @@ endif()
 
 if (APPLE AND DYNAMIC_ARCH AND BUILD_SHARED_LIBS)
   set (CMAKE_C_USE_RESPONSE_FILE_FOR_OBJECTS 1)
-  if (NOT NOFORTRAN)  
+  if (NOT NOFORTRAN)
   set (CMAKE_Fortran_USE_RESPONSE_FILE_FOR_OBJECTS 1)
   set (CMAKE_Fortran_CREATE_SHARED_LIBRARY
  "sh -c 'cat ${CMAKE_BINARY_DIR}/CMakeFiles/openblas_shared.dir/objects*.rsp | xargs -n 1024 ar -ru libopenblas.a && exit 0' "
@@ -314,14 +314,16 @@ endif()
 if (NOT NOFORTRAN)
   # Build test and ctest
   add_subdirectory(test)
+  if (BUILD_TESTING)
+    add_subdirectory(lapack-netlib/TESTING)
+  endif()
+endif()
   if(NOT NO_CBLAS)
     add_subdirectory(ctest)
   endif()
-  add_subdirectory(lapack-netlib/TESTING)
   if (CPP_THREAD_SAFETY_TEST OR CPP_THREAD_SAFETY_GEMV)
     add_subdirectory(cpp_thread_test)
   endif()
-endif()
 
 set_target_properties(${OpenBLAS_LIBS} PROPERTIES
   VERSION ${OpenBLAS_MAJOR_VERSION}.${OpenBLAS_MINOR_VERSION}
@@ -394,12 +396,21 @@ if (BUILD_SHARED_LIBS AND NOT ${SYMBOLPREFIX}${SYMBOLSUFFIX} STREQUAL "")
     message(STATUS "adding suffix ${SYMBOLSUFFIX} to names of exported symbols in ${OpenBLAS_LIBNAME}")
   endif()
 
+  if (NOT DEFINED USE_PERL)
   add_custom_command(TARGET ${OpenBLAS_LIBNAME}_shared POST_BUILD
-    COMMAND perl  ${PROJECT_SOURCE_DIR}/exports/gensymbol "objcopy" "${ARCH}" "${BU}" "${EXPRECISION_IN}" "${NO_CBLAS_IN}" "${NO_LAPACK_IN}" "${NO_LAPACKE_IN}" "${NEED2UNDERSCORES_IN}" "${ONLY_CBLAS_IN}" \"${SYMBOLPREFIX}\" \"${SYMBOLSUFFIX}\" "${BUILD_LAPACK_DEPRECATED}" > ${PROJECT_BINARY_DIR}/objcopy.def
+    COMMAND  ${PROJECT_SOURCE_DIR}/exports/gensymbol "objcopy" "${ARCH}" "${BU}" "${EXPRECISION_IN}" "${NO_CBLAS_IN}" "${NO_LAPACK_IN}" "${NO_LAPACKE_IN}" "${NEED2UNDERSCORES_IN}" "${ONLY_CBLAS_IN}" \"${SYMBOLPREFIX}\" \"${SYMBOLSUFFIX}\" "${BUILD_LAPACK_DEPRECATED}" "${BUILD_BFLOAT16}" "${BUILD_SINGLE}" "${BUILD_DOUBLE}" "${BUILD_COMPLEX}" "${BUILD_COMPLEX16}" > ${PROJECT_BINARY_DIR}/objcopy.def
     COMMAND objcopy -v --redefine-syms ${PROJECT_BINARY_DIR}/objcopy.def  ${PROJECT_BINARY_DIR}/lib/lib${OpenBLAS_LIBNAME}.so
     COMMENT "renaming symbols"
     )
+  else()
+  add_custom_command(TARGET ${OpenBLAS_LIBNAME}_shared POST_BUILD
+    COMMAND perl ${PROJECT_SOURCE_DIR}/exports/gensymbol.pl "objcopy" "${ARCH}" "${BU}" "${EXPRECISION_IN}" "${NO_CBLAS_IN}" "${NO_LAPACK_IN}" "${NO_LAPACKE_IN}" "${NEED2UNDERSCORES_IN}" "${ONLY_CBLAS_IN}" \"${SYMBOLPREFIX}\" \"${SYMBOLSUFFIX}\" "${BUILD_LAPACK_DEPRECATED}" "${BUILD_BFLOAT16}" "${BUILD_SINGLE}" "${BUILD_DOUBLE}" "${BUILD_COMPLEX}" "${BUILD_COMPLEX16}" > ${PROJECT_BINARY_DIR}/objcopy.def
+    COMMAND objcopy -v --redefine-syms ${PROJECT_BINARY_DIR}/objcopy.def  ${PROJECT_BINARY_DIR}/lib/lib${OpenBLAS_LIBNAME}.so
+    COMMENT "renaming symbols"
+    )
+  endif()
 endif()
+
 
 
 # Install project

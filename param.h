@@ -1669,22 +1669,14 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #else
 
 #define SGEMM_DEFAULT_UNROLL_M 16
-#ifdef DYNAMIC_ARCH
-#define DGEMM_DEFAULT_UNROLL_M 4
-#else
 #define DGEMM_DEFAULT_UNROLL_M 16
-#endif
 #define QGEMM_DEFAULT_UNROLL_M 2
 #define CGEMM_DEFAULT_UNROLL_M 8
 #define ZGEMM_DEFAULT_UNROLL_M 4
 #define XGEMM_DEFAULT_UNROLL_M 1
 
 #define SGEMM_DEFAULT_UNROLL_N 4
-#ifdef DYNAMIC_ARCH
-#define DGEMM_DEFAULT_UNROLL_N 8
-#else
 #define DGEMM_DEFAULT_UNROLL_N 2
-#endif
 #define QGEMM_DEFAULT_UNROLL_N 2
 #define CGEMM_DEFAULT_UNROLL_N 2
 #define ZGEMM_DEFAULT_UNROLL_N 2
@@ -1718,29 +1710,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #else
 
 #define SGEMM_DEFAULT_P 448
-#ifndef DYNAMIC_ARCH
 #define DGEMM_DEFAULT_P 192
-#else
-#define DGEMM_DEFAULT_P 384
-#endif
 #define CGEMM_DEFAULT_P 384
 #define ZGEMM_DEFAULT_P 256
 
 #define SGEMM_DEFAULT_Q 448
-#ifndef DYNAMIC_ARCH
 #define DGEMM_DEFAULT_Q 384
-#else
-#define DGEMM_DEFAULT_Q 168
-#endif
 #define CGEMM_DEFAULT_Q 192
 #define ZGEMM_DEFAULT_Q 128
 
 #define SGEMM_DEFAULT_R sgemm_r
-#ifndef DYNAMIC_ARCH
 #define DGEMM_DEFAULT_R 8640
-#else
-#define DGEMM_DEFAULT_R 13824
-#endif
 #define CGEMM_DEFAULT_R cgemm_r
 #define ZGEMM_DEFAULT_R zgemm_r
 
@@ -2877,28 +2857,92 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define ZGEMM_DEFAULT_UNROLL_M 1
 #define XGEMM_DEFAULT_UNROLL_M 1
 
-#define SGEMM_DEFAULT_P sgemm_p
+#define SGEMM_DEFAULT_P 512
 #define DGEMM_DEFAULT_P 32
-#define QGEMM_DEFAULT_P qgemm_p
-#define CGEMM_DEFAULT_P cgemm_p
-#define ZGEMM_DEFAULT_P zgemm_p
-#define XGEMM_DEFAULT_P xgemm_p
+#define CGEMM_DEFAULT_P 128
+#define ZGEMM_DEFAULT_P 128
 
-#define SGEMM_DEFAULT_R sgemm_r
+#define SGEMM_DEFAULT_R 12288
 #define DGEMM_DEFAULT_R 858
-#define QGEMM_DEFAULT_R qgemm_r
-#define CGEMM_DEFAULT_R cgemm_r
-#define ZGEMM_DEFAULT_R zgemm_r
-#define XGEMM_DEFAULT_R xgemm_r
+#define CGEMM_DEFAULT_R 4096
+#define ZGEMM_DEFAULT_R 4096
 
 #define SGEMM_DEFAULT_Q 128
 #define DGEMM_DEFAULT_Q 152
-#define QGEMM_DEFAULT_Q 128
 #define CGEMM_DEFAULT_Q 128
 #define ZGEMM_DEFAULT_Q 128
-#define XGEMM_DEFAULT_Q 128
 
 #define SYMV_P  16
+#endif
+
+#ifdef LOONGSON2K1000
+#define GEMM_DEFAULT_OFFSET_A 0
+#define GEMM_DEFAULT_OFFSET_B 0
+#define GEMM_DEFAULT_ALIGN (BLASLONG)0x03fffUL
+
+#define SGEMM_DEFAULT_UNROLL_M  2
+#define SGEMM_DEFAULT_UNROLL_N  8
+
+#define DGEMM_DEFAULT_UNROLL_M  2
+#define DGEMM_DEFAULT_UNROLL_N  8
+
+#define CGEMM_DEFAULT_UNROLL_M  1
+#define CGEMM_DEFAULT_UNROLL_N  4
+
+#define ZGEMM_DEFAULT_UNROLL_M  1
+#define ZGEMM_DEFAULT_UNROLL_N  4
+
+#define SGEMM_DEFAULT_P	128
+#define DGEMM_DEFAULT_P	128
+#define CGEMM_DEFAULT_P 96
+#define ZGEMM_DEFAULT_P 64
+
+#define SGEMM_DEFAULT_Q 240
+#define DGEMM_DEFAULT_Q 120
+#define CGEMM_DEFAULT_Q 120
+#define ZGEMM_DEFAULT_Q 120
+
+#define SGEMM_DEFAULT_R 12288
+#define DGEMM_DEFAULT_R 8192
+#define CGEMM_DEFAULT_R 4096
+#define ZGEMM_DEFAULT_R 4096
+
+#define SYMV_P	16
+#endif
+
+#ifdef LOONGSONGENERIC
+#define GEMM_DEFAULT_OFFSET_A 0
+#define GEMM_DEFAULT_OFFSET_B 0
+#define GEMM_DEFAULT_ALIGN (BLASLONG)0x03fffUL
+
+#define SGEMM_DEFAULT_UNROLL_M  2
+#define SGEMM_DEFAULT_UNROLL_N  8
+
+#define DGEMM_DEFAULT_UNROLL_M  2
+#define DGEMM_DEFAULT_UNROLL_N  8
+
+#define CGEMM_DEFAULT_UNROLL_M  1
+#define CGEMM_DEFAULT_UNROLL_N  4
+
+#define ZGEMM_DEFAULT_UNROLL_M  1
+#define ZGEMM_DEFAULT_UNROLL_N  4
+
+#define SGEMM_DEFAULT_P	128
+#define DGEMM_DEFAULT_P	128
+#define CGEMM_DEFAULT_P 96
+#define ZGEMM_DEFAULT_P 64
+
+#define SGEMM_DEFAULT_Q 240
+#define DGEMM_DEFAULT_Q 120
+#define CGEMM_DEFAULT_Q 120
+#define ZGEMM_DEFAULT_Q 120
+
+#define SGEMM_DEFAULT_R 12288
+#define DGEMM_DEFAULT_R 8192
+#define CGEMM_DEFAULT_R 4096
+#define ZGEMM_DEFAULT_R 4096
+
+#define SYMV_P	16
 #endif
 
 #if defined(P5600) || defined(MIPS1004K) || defined(MIPS24K) || defined(I6400) || defined(P6600) || defined(I6500)
@@ -3128,9 +3172,9 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #define SYMV_P	16
 
-#if defined(CORTEXA57) || \
+#if defined(CORTEXA57) || defined(CORTEXX1) || \
     defined(CORTEXA72) || defined(CORTEXA73) || \
-    defined(FALKOR)    || defined(TSV110) || defined(EMAG8180) || defined(VORTEX)
+    defined(FALKOR)    || defined(TSV110) || defined(EMAG8180) || defined(VORTEX) || defined(FT2000)
 
 #define SGEMM_DEFAULT_UNROLL_M  16
 #define SGEMM_DEFAULT_UNROLL_N  4
@@ -3147,7 +3191,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /*FIXME: this should be using the cache size, but there is currently no easy way to
 query that on ARM. So if getarch counted more than 8 cores we simply assume the host
 is a big desktop or server with abundant cache rather than a phone or embedded device */ 
-#if NUM_CORES > 8 || defined(TSV110) || defined(EMAG8180) || defined(VORTEX)
+#if NUM_CORES > 8 || defined(TSV110) || defined(EMAG8180) || defined(VORTEX)|| defined(CORTEXX1)
   #define SGEMM_DEFAULT_P 512
   #define DGEMM_DEFAULT_P 256
   #define CGEMM_DEFAULT_P 256
@@ -3350,6 +3394,11 @@ is a big desktop or server with abundant cache rather than a phone or embedded d
 
 #elif defined(NEOVERSEN2)
 
+#undef SBGEMM_DEFAULT_UNROLL_M
+#undef SBGEMM_DEFAULT_UNROLL_N
+#define SBGEMM_DEFAULT_UNROLL_M 8
+#define SBGEMM_DEFAULT_UNROLL_N 4
+
 #define SGEMM_DEFAULT_UNROLL_M  16
 #define SGEMM_DEFAULT_UNROLL_N  4
 
@@ -3377,7 +3426,7 @@ is a big desktop or server with abundant cache rather than a phone or embedded d
 #define CGEMM_DEFAULT_R 4096
 #define ZGEMM_DEFAULT_R 4096
 
-#elif defined(ARMV8SVE) || defined(A64FX)
+#elif defined(ARMV8SVE) || defined(A64FX) || defined(ARMV9) || defined(CORTEXA510)|| defined(CORTEXA710) || defined(CORTEXX2)
 
 /* When all BLAS3 routines are implemeted with SVE, SGEMM_DEFAULT_UNROLL_M should be "sve_vl".
 Until then, just keep it different than DGEMM_DEFAULT_UNROLL_N to keep copy routines in both directions seperated. */
@@ -3423,8 +3472,8 @@ Until then, just keep it different than DGEMM_DEFAULT_UNROLL_N to keep copy rout
 #define SGEMM_DEFAULT_UNROLL_M  16
 #define SGEMM_DEFAULT_UNROLL_N  4
 
-#define DGEMM_DEFAULT_UNROLL_M  4
-#define DGEMM_DEFAULT_UNROLL_N  8
+#define DGEMM_DEFAULT_UNROLL_M  8
+#define DGEMM_DEFAULT_UNROLL_N  4
 
 #define CGEMM_DEFAULT_UNROLL_M  8
 #define CGEMM_DEFAULT_UNROLL_N  4
@@ -3740,6 +3789,21 @@ Until then, just keep it different than DGEMM_DEFAULT_UNROLL_N to keep copy rout
 #define DGEMM_DEFAULT_R  8192
 #define CGEMM_DEFAULT_R  4096
 #define ZGEMM_DEFAULT_R  4096
+#elif defined(ARCH_LOONGARCH64)
+#define SGEMM_DEFAULT_P 128
+#define DGEMM_DEFAULT_P 128
+#define CGEMM_DEFAULT_P 96
+#define ZGEMM_DEFAULT_P 64
+
+#define SGEMM_DEFAULT_Q 240
+#define DGEMM_DEFAULT_Q 120
+#define CGEMM_DEFAULT_Q 120
+#define ZGEMM_DEFAULT_Q 120
+
+#define SGEMM_DEFAULT_R 12288
+#define DGEMM_DEFAULT_R 8192
+#define CGEMM_DEFAULT_R 4096
+#define ZGEMM_DEFAULT_R 4096
 #else
 #define SGEMM_DEFAULT_P sgemm_p
 #define DGEMM_DEFAULT_P dgemm_p

@@ -1,4 +1,4 @@
-*> \brief \b CHBTRD_HB2ST reduces a complex Hermitian band matrix A to real symmetric tridiagonal form T
+*> \brief \b CHETRD_HB2ST reduces a complex Hermitian band matrix A to real symmetric tridiagonal form T
 *
 *  =========== DOCUMENTATION ===========
 *
@@ -6,12 +6,12 @@
 *            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download CHBTRD_HB2ST + dependencies
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/chbtrd_hb2st.f">
+*> Download CHETRD_HB2ST + dependencies
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/chetrd_hb2st.f">
 *> [TGZ]</a>
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/chbtrd_hb2st.f">
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/chetrd_hb2st.f">
 *> [ZIP]</a>
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/chbtrd_hb2st.f">
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/chetrd_hb2st.f">
 *> [TXT]</a>
 *> \endhtmlonly
 *
@@ -188,8 +188,6 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date November 2017
-*
 *> \ingroup complexOTHERcomputational
 *
 *> \par Further Details:
@@ -237,10 +235,9 @@
 *
       IMPLICIT NONE
 *
-*  -- LAPACK computational routine (version 3.8.0) --
+*  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2017
 *
 *     .. Scalar Arguments ..
       CHARACTER          STAGE1, UPLO, VECT
@@ -395,7 +392,7 @@
 *     For that, for real precision just copy the diag and offdiag 
 *     to D and E while for the COMPLEX case the bulge chasing is  
 *     performed to convert the hermetian tridiagonal to symmetric 
-*     tridiagonal. A simpler coversion formula might be used, but then 
+*     tridiagonal. A simpler conversion formula might be used, but then 
 *     updating the Q matrix will be required and based if Q is generated
 *     or not this might complicate the story. 
 *      

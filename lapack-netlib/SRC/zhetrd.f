@@ -139,8 +139,6 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
-*
 *> \ingroup complex16HEcomputational
 *
 *> \par Further Details:
@@ -192,10 +190,9 @@
 *  =====================================================================
       SUBROUTINE ZHETRD( UPLO, N, A, LDA, D, E, TAU, WORK, LWORK, INFO )
 *
-*  -- LAPACK computational routine (version 3.7.0) --
+*  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
 *
 *     .. Scalar Arguments ..
       CHARACTER          UPLO
@@ -328,7 +325,7 @@
 *
             DO 10 J = I, I + NB - 1
                A( J-1, J ) = E( J-1 )
-               D( J ) = A( J, J )
+               D( J ) = DBLE( A( J, J ) )
    10       CONTINUE
    20    CONTINUE
 *
@@ -360,7 +357,7 @@
 *
             DO 30 J = I, I + NB - 1
                A( J+1, J ) = E( J )
-               D( J ) = A( J, J )
+               D( J ) = DBLE( A( J, J ) )
    30       CONTINUE
    40    CONTINUE
 *

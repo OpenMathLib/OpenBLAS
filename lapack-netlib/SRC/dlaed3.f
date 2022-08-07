@@ -1,4 +1,4 @@
-*> \brief \b DLAED3 used by sstedc. Finds the roots of the secular equation and updates the eigenvectors. Used when the original matrix is tridiagonal.
+*> \brief \b DLAED3 used by DSTEDC. Finds the roots of the secular equation and updates the eigenvectors. Used when the original matrix is tridiagonal.
 *
 *  =========== DOCUMENTATION ===========
 *
@@ -170,8 +170,6 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date June 2017
-*
 *> \ingroup auxOTHERcomputational
 *
 *> \par Contributors:
@@ -185,10 +183,9 @@
       SUBROUTINE DLAED3( K, N, N1, D, Q, LDQ, RHO, DLAMDA, Q2, INDX,
      $                   CTOT, W, S, INFO )
 *
-*  -- LAPACK computational routine (version 3.7.1) --
+*  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     June 2017
 *
 *     .. Scalar Arguments ..
       INTEGER            INFO, K, LDQ, N, N1

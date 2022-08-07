@@ -28,7 +28,6 @@
 *****************************************************************************
 * Contents: Native high-level C interface to LAPACK function classq
 * Author: Julien Langou
-* Generated February, 2017
 *****************************************************************************/
 
 #include "lapacke_utils.h"

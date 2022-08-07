@@ -387,6 +387,14 @@
 	FMUL	fmax, c1, c1
 
 .LL99:
+#ifdef DOUBLE
+	set 0x000010C6F7A0B5ED8, %g1
+
+	st %g1,  [%fp-8]
+	ld [%fp-8], a8
+	FCMP    %fcc0, a8, fmax
+	fmovdg  %fcc0, fzero, c1
+#endif
 	return	%i7 + 8
 	clr	%g0
 

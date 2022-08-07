@@ -35,327 +35,75 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 #if defined(HAVE_KERNEL4x8_ASM)
-static void dgemv_kernel_4x8(BLASLONG n, BLASLONG lda, double *ap, double *x, double *y, double alpha) {
-
+#if !__has_builtin(__builtin_vsx_disassemble_pair)
+#define __builtin_vsx_disassemble_pair __builtin_mma_disassemble_pair
+#endif
+typedef __vector unsigned char vec_t;
+static void dgemv_kernel_4x8(BLASLONG n, BLASLONG lda, FLOAT *ap, FLOAT *x, FLOAT *y, FLOAT alpha) {
+    BLASLONG i;
     FLOAT *a0, *a1, *a2, *a3, *a4, *a5, *a6, *a7;
-    BLASLONG off2;
-    BLASLONG tempR;
-    __asm__(
-         
-            "sldi   %[temp],%[off], 4 \n\t" // lda * sizeof (double) *2
-            "sldi   %[off], %[off], 3 \n\t" // lda * sizeof (double)    
-            "xxlxor 34,34,34  \n\t"
-            "xxlxor 35,34,34  \n\t"
-            "add    %[a2], %[a0], %[temp]    \n\t"
-            "add    %[a1], %[a0], %[off]     \n\t"
-            "xxlxor 4,34,34 \n\t"
-            "xxlxor 5,34,34 \n\t"
-            "xxlxor 6,34,34 \n\t"
-            "xxlxor 7,34,34 \n\t"            
-            "add    %[a3], %[a2], %[off]     \n\t"
-            "add    %[a4], %[a2], %[temp]    \n\t"            
- 
-            "xxlxor 8,34,34 \n\t"
-            "xxlxor 9,34,34 \n\t"              
-            "add    %[a5], %[a3], %[temp]    \n\t"
-            "li     %[off],0    \n\t"
-            "li     %[off2],16  \n\t" 
-  
-            "add    %[a6], %[a4], %[temp]    \n\t" 
-            "add    %[a7], %[a5], %[temp]    \n\t"
-    
-
-
-
-            "lxvp 32, 0(%[x])   \n\t"
-            "lxvp 36, 0(%[a0])  \n\t"
-            "lxvp 38, 0(%[a1])  \n\t"
-            "lxvp 40, 0(%[a2])  \n\t"
-            "lxvp 42, 0(%[a3])  \n\t"
-            "lxvp 44, 0(%[a4])  \n\t"
-            "lxvp 46, 0(%[a5])  \n\t"
-            "lxvp 48, 0(%[a6])  \n\t"
-            "lxvp 50, 0(%[a7])  \n\t"
-#if defined(PREFETCH)    
-            "li     %[temp],896  \n\t"
-#endif    
-            "addic. %[n],%[n],-4 \n\t"
-
-            "li       %[off],32 \n\t" 
-
-
-            "ble-     two%=      \n\t"
-
-            //--------------------------------------------------           
-            ".align   5           \n\t"
-            "one%=:                     \n\t"
-            "xvmaddadp   34,36,32  \n\t"
-            "xvmaddadp   35,38,32  \n\t"
-            "addi   %[off2],  %[off2],32 \n\t"
-            "xvmaddadp   4,40,32  \n\t"
-            "xvmaddadp   5,42,32  \n\t"
-            "xvmaddadp   6,44,32  \n\t"
-            "xvmaddadp   7,46,32  \n\t" 
-            "xvmaddadp   8,48,32  \n\t"
-            "xvmaddadp   9,50,32  \n\t"
-
-            "xvmaddadp  34,37,33  \n\t"
-            "xvmaddadp  35,39,33  \n\t"            
-            "lxvp 36, 32(%[a0])  \n\t"
-            "lxvp 38, 32(%[a1])  \n\t"
-            "xvmaddadp  4,41,33  \n\t"
-            "xvmaddadp  5,43,33  \n\t"            
-            "addi       %[off],  %[off],32 \n\t"
-            "lxvp 40, 32(%[a2])  \n\t"
-            "lxvp 42, 32(%[a3])  \n\t"
-            "xvmaddadp  6,45,33  \n\t"
-            "xvmaddadp  7,47,33  \n\t"            
-            "lxvp 44, 32(%[a4])  \n\t"
-            "lxvp 46, 32(%[a5])  \n\t"
-            "xvmaddadp  8,49,33  \n\t"
-            "xvmaddadp  9,51,33  \n\t" 
-            
-            "addic. %[n],%[n],-4 \n\t"                        
-            "lxvp 48, 32(%[a6])  \n\t"
-            "lxvp 50, 32(%[a7])  \n\t"
-            "lxvp 32, 32(%[x])   \n\t"
-            "ble- two%=  \n\t"
-            "xvmaddadp   34,36,32  \n\t"
-            "xvmaddadp   35,38,32  \n\t"
-            "addi   %[off2],  %[off2],32 \n\t" 
-            "xvmaddadp   4,40,32  \n\t"
-            "xvmaddadp   5,42,32  \n\t"
-            "xvmaddadp   6,44,32  \n\t"
-            "xvmaddadp   7,46,32  \n\t" 
-            "xvmaddadp   8,48,32  \n\t"
-            "xvmaddadp   9,50,32  \n\t"
-
-            "xvmaddadp  34,37,33  \n\t"
-            "xvmaddadp  35,39,33  \n\t"            
-            "lxvp 36, 64(%[a0])  \n\t"
-            "lxvp 38, 64(%[a1])  \n\t"
-            "xvmaddadp  4,41,33  \n\t"
-            "xvmaddadp  5,43,33  \n\t"            
-            "addi       %[off],  %[off],32 \n\t"
-            "lxvp 40, 64(%[a2])  \n\t"
-            "lxvp 42, 64(%[a3])  \n\t"
-            "xvmaddadp  6,45,33  \n\t"
-            "xvmaddadp  7,47,33  \n\t"            
-            "lxvp 44, 64(%[a4])  \n\t"
-            "lxvp 46, 64(%[a5])  \n\t"
-            "xvmaddadp  8,49,33  \n\t"
-            "xvmaddadp  9,51,33  \n\t" 
-            
-            "addic. %[n],%[n],-4 \n\t"                        
-            "lxvp 48, 64(%[a6])  \n\t"
-            "lxvp 50, 64(%[a7])  \n\t"
-            "lxvp 32, 64(%[x])   \n\t"
-            "ble- two%=  \n\t"
-            "xvmaddadp   34,36,32  \n\t"
-            "xvmaddadp   35,38,32  \n\t"
-#if defined(PREFETCH)            
-            "addi    %[temp],%[temp],128 \n\t"   
-#endif                                             
-            "addi   %[off2],  %[off2],32 \n\t" 
-            "xvmaddadp   4,40,32  \n\t"
-            "xvmaddadp   5,42,32  \n\t"
-            "xvmaddadp   6,44,32  \n\t"
-            "xvmaddadp   7,46,32  \n\t" 
-            "xvmaddadp   8,48,32  \n\t"
-            "xvmaddadp   9,50,32  \n\t"
-#if defined(PREFETCH)
-            "dcbt   %[temp],%[a0]  \n\t"
-#endif            
-
-            "xvmaddadp  34,37,33  \n\t"
-            "xvmaddadp  35,39,33  \n\t"            
-            "lxvp 36, 96(%[a0])  \n\t"
-            "lxvp 38, 96(%[a1])  \n\t"
-            "xvmaddadp  4,41,33  \n\t"
-            "xvmaddadp  5,43,33  \n\t"            
-#if defined(PREFETCH)
-            "dcbt   %[temp],%[a1]  \n\t"
-#endif            
-            "lxvp 40, 96(%[a2])  \n\t"
-            "lxvp 42, 96(%[a3])  \n\t"
-            "addi       %[off],  %[off],32 \n\t"
-            "xvmaddadp  6,45,33  \n\t"
-            "xvmaddadp  7,47,33  \n\t"            
-            "lxvp 44, 96(%[a4])  \n\t"
-            "lxvp 46, 96(%[a5])  \n\t"
-            "xvmaddadp  8,49,33  \n\t"
-            "xvmaddadp  9,51,33  \n\t" 
-#if defined(PREFETCH)
-            "dcbt   %[temp],%[a3]  \n\t"
-#endif            
-            "lxvp 48, 96(%[a6])  \n\t"
-            "lxvp 50, 96(%[a7])  \n\t"
-            "lxvp 32, 96(%[x])   \n\t"
-           
-            "addic. %[n],%[n],-4 \n\t"                        
-            "ble- two%=  \n\t"            
- 
-            "addi   %[off2],  %[off2],32 \n\t" 
-#if defined(PREFETCH)
-            "dcbt   %[temp],%[a2]  \n\t"
-#endif            
-            "xvmaddadp   34,36,32  \n\t"
-            "xvmaddadp   35,38,32  \n\t"
-            "xvmaddadp   4,40,32  \n\t"
-            "xvmaddadp   5,42,32  \n\t"
-#if defined(PREFETCH)
-            "dcbt   %[temp],%[a4]  \n\t"                         
-#endif            
-            "xvmaddadp   6,44,32  \n\t"
-            "xvmaddadp   7,46,32  \n\t" 
-            "xvmaddadp   8,48,32  \n\t"
-            "xvmaddadp   9,50,32  \n\t"
-
-#if defined(PREFETCH)
-          "dcbt   %[temp],%[a5]  \n\t"
-#endif              
-            "xvmaddadp  34,37,33  \n\t"
-            "xvmaddadp  35,39,33  \n\t"            
-            "lxvp 36, 128(%[a0])  \n\t"
-            "lxvp 38, 128(%[a1])  \n\t"
-            "xvmaddadp  4,41,33  \n\t"
-            "xvmaddadp  5,43,33  \n\t"            
-            "addi       %[off],  %[off],32 \n\t"
-            "lxvp 40, 128(%[a2])  \n\t"
-            "lxvp 42, 128(%[a3])  \n\t"
-#if defined(PREFETCH)
-            "dcbt   %[temp],%[a6]  \n\t"  
-#endif            
-            "xvmaddadp  6,45,33  \n\t"
-            "xvmaddadp  7,47,33  \n\t"            
-            "lxvp 44, 128(%[a4])  \n\t"
-            "lxvp 46, 128(%[a5])  \n\t"
-            "xvmaddadp  8,49,33  \n\t"
-            "xvmaddadp  9,51,33  \n\t" 
-            
-#if defined(PREFETCH)
-            "dcbt   %[temp],%[a7]  \n\t"  
-#endif            
-            "addic. %[n],%[n],-4 \n\t"
-            "lxvp 48, 128(%[a6])  \n\t"
-            "lxvp 50, 128(%[a7])  \n\t"
-            "lxvp 32, 128(%[x])   \n\t"
-#if defined(PREFETCH)
-            "dcbt   %[temp],%[x]  \n\t" 
-#endif            
-	    "addi    %[a0], %[a0], 128     \n\t"
-	    "addi    %[a1], %[a1], 128     \n\t"
-	    "addi    %[a2], %[a2], 128     \n\t"
-	    "addi    %[a3], %[a3], 128     \n\t"
-	    "addi    %[a4], %[a4], 128     \n\t"
-	    "addi    %[a5], %[a5], 128    \n\t"
-	    "addi    %[a6], %[a6], 128     \n\t"
-	    "addi    %[a7], %[a7], 128     \n\t"
-	    "addi    %[x], %[x], 128     \n\t"
-            "bgt+ one%=  \n\t"
-            ".align   5           \n\t"
-            "two%=: \n\t"
-            //--------------------------------------------
-
-            "xvmaddadp   34,36,32  \n\t"
-            "xvmaddadp   35,38,32  \n\t"
-            "xvmaddadp   4,40,32  \n\t"
-            "xvmaddadp   5,42,32  \n\t"
-            "xvmaddadp   6,44,32  \n\t"
-            "xvmaddadp   7,46,32  \n\t" 
-            "xvmaddadp   8,48,32  \n\t"
-            "xvmaddadp   9,50,32  \n\t" 
-            XXSPLTD_S(36,%x[alpha],0)
-            "xvmaddadp  34,37,33  \n\t"
-            "xvmaddadp  35,39,33  \n\t"            
-            "xvmaddadp  4,41,33  \n\t"
-            "xvmaddadp  5,43,33  \n\t"            
-            "xvmaddadp  6,45,33  \n\t"
-            "xvmaddadp  7,47,33  \n\t"            
-            "xvmaddadp  8,49,33  \n\t"
-            "xvmaddadp  9,51,33  \n\t"  
-
-            "lxvp 38, 0(%[y]) \n\t"
-            "lxvp 40, 32(%[y]) \n\t"
-
- 
-#if (__BYTE_ORDER__ == __ORDER_BIG_ENDIAN__)
-            XXMRGHD_S(42,34,35)
-            XXMRGLD_S(43,34,35)
-
-            XXMRGHD_S(44,4,5)
-            XXMRGLD_S(45,4,5)
-#else
-            XXMRGLD_S(42,35,34)
-            XXMRGHD_S(43,35,34)
-
-            XXMRGLD_S(44,5,4)
-            XXMRGHD_S(45,5,4)
-#endif
-
-            "xvadddp 42,42,43 \n\t"
-
-#if (__BYTE_ORDER__ == __ORDER_BIG_ENDIAN__)
-            XXMRGHD_S(46,6,7)
-            XXMRGLD_S(47,6,7)
-#else
-            XXMRGLD_S(46,7,6)
-            XXMRGHD_S(47,7,6)
-#endif
-            "xvadddp 44,44,45 \n\t"
-
-#if (__BYTE_ORDER__ == __ORDER_BIG_ENDIAN__)
-            XXMRGHD_S(48,8,9)
-            XXMRGLD_S(49,8,9)
-#else
-            XXMRGLD_S(48,9,8)
-            XXMRGHD_S(49,9,8)
-#endif
-            "xvadddp 46,46,47 \n\t"
-#if (__BYTE_ORDER__ == __ORDER_BIG_ENDIAN__)
-            "xvmaddadp  38,42,36  \n\t"
-            "xvmaddadp  39,44,36  \n\t"
-#else
-            "xvmaddadp  39,42,36  \n\t"
-            "xvmaddadp  38,44,36  \n\t"
-#endif
-            "xvadddp 48,48,49 \n\t"
-#if (__BYTE_ORDER__ == __ORDER_BIG_ENDIAN__)
-            "xvmaddadp  41,48,36  \n\t"
-#else
-            "xvmaddadp  41,46,36  \n\t"
-#endif
-            "stxvp 38, 0(%[y]) \n\t"
-#if (__BYTE_ORDER__ == __ORDER_BIG_ENDIAN__)
-            "xvmaddadp  40,46,36  \n\t"
-#else
-            "xvmaddadp  40,48,36  \n\t" 
-#endif
-            "stxvp 40, 32(%[y])  \n\t"
-                 
-            : [memy] "+m" (*(double (*)[8])y),
-            [n] "+&r" (n),
-            [a0] "=b" (a0),
-            [a1] "=&b" (a1),
-            [a2] "=&b" (a2),
-            [a3] "=&b" (a3),
-            [a4] "=&b" (a4),
-            [a5] "=&b" (a5),
-            [a6] "=&b" (a6),
-            [a7] "=&b" (a7),            
-            [off] "+&b" (lda),
-            [off2]"=&b" (off2),
-            [temp] "=&b" (tempR)
-            : [memx] "m" (*(const double (*)[n])x),
-            [mem_ap] "m" (*(const double (*)[n*8]) ap),
-            [alpha] "d" (alpha),
-            "[a0]" (ap),
-            [x] "b" (x),
-            [y] "b" (y)
-            : "cc","vs4","vs5","vs6","vs7","vs8","vs9" ,"vs32","vs33","vs34","vs35", "vs36", "vs37", "vs38", "vs39",
-            "vs40", "vs41", "vs42", "vs43", "vs44", "vs45", "vs46", "vs47", "vs48", "vs49", "vs50", "vs51"
-            );
-    return;
+    __vector_pair vx, vp;
+    vec_t res[2],res1[2];
+    register __vector double temp0 = {0, 0};
+    register __vector double temp1 = {0, 0};
+    register __vector double temp2 = {0, 0};
+    register __vector double temp3 = {0, 0};
+    register __vector double temp4 = {0, 0};
+    register __vector double temp5 = {0, 0};
+    register __vector double temp6 = {0, 0};
+    register __vector double temp7 = {0, 0};
+    a0 = ap;
+    a1 = ap + lda;
+    a2 = a1 + lda;
+    a3 = a2 + lda;
+    a4 = a3 + lda;
+    a5 = a4 + lda;
+    a6 = a5 + lda;
+    a7 = a6 + lda;
+    for (i = 0; i < n/2; i += 2) {
+        vp = *((__vector_pair *)((void *)&a0[i*2]));
+        vx = *((__vector_pair *)((void *)&x[i*2]));
+        __builtin_vsx_disassemble_pair (res, &vx);
+        __builtin_vsx_disassemble_pair (res1, &vp);
+        temp0 = vec_madd ((__vector double)res[0], (__vector double)res1[0], temp0);
+        temp0 = vec_madd ((__vector double)res[1], (__vector double)res1[1], temp0);
+        vp = *((__vector_pair *)((void *)&a1[i*2]));
+        __builtin_vsx_disassemble_pair (res1, &vp);
+        temp1 = vec_madd ((__vector double)res[0], (__vector double)res1[0], temp1);
+        temp1 = vec_madd ((__vector double)res[1], (__vector double)res1[1], temp1);
+        vp = *((__vector_pair *)((void *)&a2[i*2]));
+        __builtin_vsx_disassemble_pair (res1, &vp);
+        temp2 = vec_madd ((__vector double)res[0], (__vector double)res1[0], temp2);
+        temp2 = vec_madd ((__vector double)res[1], (__vector double)res1[1], temp2);
+        vp = *((__vector_pair *)((void *)&a3[i*2]));
+        __builtin_vsx_disassemble_pair (res1, &vp);
+        temp3 = vec_madd ((__vector double)res[0], (__vector double)res1[0], temp3);
+        temp3 = vec_madd ((__vector double)res[1], (__vector double)res1[1], temp3);
+        vp = *((__vector_pair *)((void *)&a4[i*2]));
+        __builtin_vsx_disassemble_pair (res1, &vp);
+        temp4 = vec_madd ((__vector double)res[0], (__vector double)res1[0], temp4);
+        temp4 = vec_madd ((__vector double)res[1], (__vector double)res1[1], temp4);
+        vp = *((__vector_pair *)((void *)&a5[i*2]));
+        __builtin_vsx_disassemble_pair (res1, &vp);
+        temp5 = vec_madd ((__vector double)res[0], (__vector double)res1[0], temp5);
+        temp5 = vec_madd ((__vector double)res[1], (__vector double)res1[1], temp5);
+        vp = *((__vector_pair *)((void *)&a6[i*2]));
+        __builtin_vsx_disassemble_pair (res1, &vp);
+        temp6 = vec_madd ((__vector double)res[0], (__vector double)res1[0], temp6);
+        temp6 = vec_madd ((__vector double)res[1], (__vector double)res1[1], temp6);
+        vp = *((__vector_pair *)((void *)&a7[i*2]));
+        __builtin_vsx_disassemble_pair (res1, &vp);
+        temp7 = vec_madd ((__vector double)res[0], (__vector double)res1[0], temp7);
+        temp7 = vec_madd ((__vector double)res[1], (__vector double)res1[1], temp7);
+    }
+    y[0] += alpha * (temp0[0] + temp0[1]);
+    y[1] += alpha * (temp1[0] + temp1[1]);
+    y[2] += alpha * (temp2[0] + temp2[1]);
+    y[3] += alpha * (temp3[0] + temp3[1]);
+    y[4] += alpha * (temp4[0] + temp4[1]);
+    y[5] += alpha * (temp5[0] + temp5[1]);
+    y[6] += alpha * (temp6[0] + temp6[1]);
+    y[7] += alpha * (temp7[0] + temp7[1]);
 }
 #else
 static void dgemv_kernel_4x8(BLASLONG n, BLASLONG lda, FLOAT *ap, FLOAT *x, FLOAT *y, FLOAT alpha) {

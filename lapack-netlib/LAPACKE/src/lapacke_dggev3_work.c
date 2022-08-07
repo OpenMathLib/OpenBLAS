@@ -28,7 +28,6 @@
 *****************************************************************************
 * Contents: Native middle-level C interface to LAPACK function dggev3
 * Author: Intel Corporation
-* Generated February, 2015
 *****************************************************************************/
 
 #include "lapacke_utils.h"

@@ -68,7 +68,7 @@ int CNAME(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, FLOAT da, FLOAT *x, BLAS
 
                 if ( n >= 16 )
                 {
-                       BLASLONG align = ((32 - ((uintptr_t)y & (uintptr_t)0x1F)) >> 3) & 0x3;
+                       BLASLONG align = ((32 - ((uintptr_t)x & (uintptr_t)0x1F)) >> 3) & 0x3;
                         for (i = 0; i < align; i++) {
                           y[i] += da * x[i] ;
                         }

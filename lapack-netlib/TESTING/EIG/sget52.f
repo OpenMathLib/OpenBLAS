@@ -191,18 +191,15 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
-*
 *> \ingroup single_eig
 *
 *  =====================================================================
       SUBROUTINE SGET52( LEFT, N, A, LDA, B, LDB, E, LDE, ALPHAR,
      $                   ALPHAI, BETA, WORK, RESULT )
 *
-*  -- LAPACK test routine (version 3.7.0) --
+*  -- LAPACK test routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
 *
 *     .. Scalar Arguments ..
       LOGICAL            LEFT
@@ -266,7 +263,7 @@
       BETMAX = SAFMAX / MAX( ONE, ANORM )
 *
 *     Compute error matrix.
-*     Column i = ( b(i) A - a(i) B ) E(i) / max( |a(i) B| |b(i) A| )
+*     Column i = ( b(i) A - a(i) B ) E(i) / max( |a(i) B|, |b(i) A| )
 *
       ILCPLX = .FALSE.
       DO 10 JVEC = 1, N
@@ -360,14 +357,14 @@
                DO 20 J = 1, N
                   TEMP1 = MAX( TEMP1, ABS( E( J, JVEC ) ) )
    20          CONTINUE
-               ENRMER = MAX( ENRMER, TEMP1-ONE )
+               ENRMER = MAX( ENRMER, ABS( TEMP1-ONE ) )
             ELSE
                ILCPLX = .TRUE.
                DO 30 J = 1, N
                   TEMP1 = MAX( TEMP1, ABS( E( J, JVEC ) )+
      $                    ABS( E( J, JVEC+1 ) ) )
    30          CONTINUE
-               ENRMER = MAX( ENRMER, TEMP1-ONE )
+               ENRMER = MAX( ENRMER, ABS( TEMP1-ONE ) )
             END IF
          END IF
    40 CONTINUE

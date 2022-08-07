@@ -258,8 +258,6 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date June 2017
-*
 *> \ingroup OTHERauxiliary
 *
 *> \par Contributors:
@@ -273,10 +271,9 @@
      $                   DIFL, DIFR, Z, POLES, GIVPTR, GIVCOL, LDGCOL,
      $                   PERM, GIVNUM, C, S, WORK, IWORK, INFO )
 *
-*  -- LAPACK auxiliary routine (version 3.7.1) --
+*  -- LAPACK auxiliary routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     June 2017
 *
 *     .. Scalar Arguments ..
       INTEGER            ICOMPQ, INFO, LDGCOL, LDU, N, SMLSIZ, SQRE

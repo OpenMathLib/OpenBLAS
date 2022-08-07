@@ -86,6 +86,8 @@
 *>             _QS:  QR variants
 *>             _QT:  QRT (general matrices)
 *>             _QX:  QRT (triangular-pentagonal matrices)
+*>             _TS:  QR routines for tall-skinny and short-wide matrices
+*>             _HH:  Householder reconstruction for tall-skinny matrices
 *>          The first character must be one of S, D, C, or Z (C or Z only
 *>          if complex).
 *> \endverbatim
@@ -98,17 +100,14 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
-*
 *> \ingroup aux_lin
 *
 *  =====================================================================
       SUBROUTINE ALAHD( IOUNIT, PATH )
 *
-*  -- LAPACK test routine (version 3.7.0) --
+*  -- LAPACK test routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
 *
 *     .. Scalar Arguments ..
       CHARACTER*3        PATH
@@ -708,7 +707,7 @@
 *
       ELSE IF( LSAMEN( 2, P2, 'TS' ) ) THEN
 *
-*        QRT (triangular-pentagonal)
+*        TS:  QR routines for tall-skinny and short-wide matrices
 *
          WRITE( IOUNIT, FMT = 8004 ) PATH
          WRITE( IOUNIT, FMT = '( '' Test ratios:'' )' )
@@ -718,6 +717,19 @@
          WRITE( IOUNIT, FMT = 8038 ) 4
          WRITE( IOUNIT, FMT = 8039 ) 5
          WRITE( IOUNIT, FMT = 8040 ) 6
+*
+      ELSE IF( LSAMEN( 2, P2, 'HH' ) ) THEN
+*
+*        HH:  Householder reconstruction for tall-skinny matrices
+*
+         WRITE( IOUNIT, FMT = 8005 ) PATH
+         WRITE( IOUNIT, FMT = '( '' Test ratios:'' )' )
+         WRITE( IOUNIT, FMT = 8050 ) 1
+         WRITE( IOUNIT, FMT = 8051 ) 2
+         WRITE( IOUNIT, FMT = 8052 ) 3
+         WRITE( IOUNIT, FMT = 8053 ) 4
+         WRITE( IOUNIT, FMT = 8054 ) 5
+         WRITE( IOUNIT, FMT = 8055 ) 6
 *
       ELSE
 *
@@ -763,7 +775,9 @@
  8003 FORMAT( / 1X, A3, ':  LQT factorization for ',
      $       'triangular-pentagonal matrices' )
  8004 FORMAT( / 1X, A3, ':  TS factorization for ',
-     $       'tall-skiny or short-wide matrices' )
+     $       'tall-skinny or short-wide matrices' )
+ 8005 FORMAT( / 1X, A3, ':  Householder recostruction from TSQR',
+     $       ' factorization output ', /,' for tall-skinny matrices.' )
 *
 *     GE matrix types
 *
@@ -1036,7 +1050,7 @@
  9929 FORMAT( ' Test ratios (1-3: ', A1, 'TZRZF):' )
  9920 FORMAT( 3X, ' 7-10: same as 3-6', 3X, ' 11-14: same as 3-6' )
  9921 FORMAT( ' Test ratios:', / '    (1-2: ', A1, 'GELS, 3-6: ', A1,
-     $      'GELSY, 7-10: ', A1, 'GELSS, 11-14: ', A1, 'GELSD, 15-16: '
+     $      'GELSY, 7-10: ', A1, 'GELSS, 11-14: ', A1, 'GELSD, 15-16: ',
      $        A1, 'GETSLS)')
  9928 FORMAT( 7X, 'where ALPHA = ( 1 + SQRT( 17 ) ) / 8' )
  9927 FORMAT( 3X, I2, ': ABS( Largest element in L )', / 12X,
@@ -1081,6 +1095,14 @@
  8039 FORMAT(3X,I2,': norm( C*Q - C*Q ) / ( (M+N) * norm(C) * EPS )' )
  8040 FORMAT(3X,I2,
      $ ': norm( C*Q'' - C*Q'' ) / ( (M+N) * norm(C) * EPS )')
+*
+ 8050 FORMAT(3X,I2,': norm( R - Q''*A ) / ( M * norm(A) * EPS )' )
+ 8051 FORMAT(3X,I2,': norm( I - Q''*Q ) / ( M * EPS )' )
+ 8052 FORMAT(3X,I2,': norm( Q*C - Q*C ) / ( M * norm(C) * EPS )' )
+ 8053 FORMAT(3X,I2,': norm( Q''*C - Q''*C ) / ( M * norm(C) * EPS )')
+ 8054 FORMAT(3X,I2,': norm( C*Q - C*Q ) / ( M * norm(C) * EPS )' )
+ 8055 FORMAT(3X,I2,': norm( C*Q'' - C*Q'' ) / ( M * norm(C) * EPS )')
+
 *
       RETURN
 *

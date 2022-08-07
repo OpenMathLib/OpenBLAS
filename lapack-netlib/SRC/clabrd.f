@@ -157,8 +157,6 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date June 2017
-*
 *> \ingroup complexOTHERauxiliary
 *
 *> \par Further Details:
@@ -212,10 +210,9 @@
       SUBROUTINE CLABRD( M, N, NB, A, LDA, D, E, TAUQ, TAUP, X, LDX, Y,
      $                   LDY )
 *
-*  -- LAPACK auxiliary routine (version 3.7.1) --
+*  -- LAPACK auxiliary routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     June 2017
 *
 *     .. Scalar Arguments ..
       INTEGER            LDA, LDX, LDY, M, N, NB
@@ -270,7 +267,7 @@
             ALPHA = A( I, I )
             CALL CLARFG( M-I+1, ALPHA, A( MIN( I+1, M ), I ), 1,
      $                   TAUQ( I ) )
-            D( I ) = ALPHA
+            D( I ) = REAL( ALPHA )
             IF( I.LT.N ) THEN
                A( I, I ) = ONE
 *
@@ -310,7 +307,7 @@
                ALPHA = A( I, I+1 )
                CALL CLARFG( N-I, ALPHA, A( I, MIN( I+2, N ) ),
      $                      LDA, TAUP( I ) )
-               E( I ) = ALPHA
+               E( I ) = REAL( ALPHA )
                A( I, I+1 ) = ONE
 *
 *              Compute X(i+1:m,i)
@@ -354,7 +351,7 @@
             ALPHA = A( I, I )
             CALL CLARFG( N-I+1, ALPHA, A( I, MIN( I+1, N ) ), LDA,
      $                   TAUP( I ) )
-            D( I ) = ALPHA
+            D( I ) = REAL( ALPHA )
             IF( I.LT.M ) THEN
                A( I, I ) = ONE
 *
@@ -388,7 +385,7 @@
                ALPHA = A( I+1, I )
                CALL CLARFG( M-I, ALPHA, A( MIN( I+2, M ), I ), 1,
      $                      TAUQ( I ) )
-               E( I ) = ALPHA
+               E( I ) = REAL( ALPHA )
                A( I+1, I ) = ONE
 *
 *              Compute Y(i+1:n,i)

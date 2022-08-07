@@ -28,7 +28,6 @@
 ******************************************************************************
 * Contents: Native C interface to LAPACK utility functions
 * Author: Intel Corporation
-* Created in January, 2010
 *****************************************************************************/
 
 #ifndef _LAPACKE_UTILS_H_
@@ -67,7 +66,11 @@ extern "C" {
 void LAPACKE_xerbla( const char *name, lapack_int info );
 
 /* Compare two chars (case-insensitive) */
-lapack_logical LAPACKE_lsame( char ca,  char cb );
+lapack_logical LAPACKE_lsame( char ca,  char cb )
+#if defined __GNUC__
+	__attribute__((const))
+#endif
+	;
 
 /* Functions to convert column-major to row-major 2d arrays and vice versa. */
 void LAPACKE_cgb_trans( int matrix_layout, lapack_int m, lapack_int n,

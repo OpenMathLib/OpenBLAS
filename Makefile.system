@@ -261,8 +261,9 @@ endif
 #For small matrix optimization
 ifeq ($(ARCH), x86_64)
 SMALL_MATRIX_OPT = 1
-else ifeq ($(CORE), POWER10)
+else ifeq ($(ARCH), power)
 SMALL_MATRIX_OPT = 1
+BUILD_BFLOAT16 = 1
 endif
 ifeq ($(SMALL_MATRIX_OPT), 1)
 CCOMMON_OPT += -DSMALL_MATRIX_OPT
@@ -352,7 +353,7 @@ OBJCONV = $(CROSS_SUFFIX)objconv
 
 # When fortran support was either not detected or actively deselected, only build BLAS.
 ifeq ($(NOFORTRAN), 1)
-NO_LAPACK = 1
+C_LAPACK = 1
 override FEXTRALIB = 
 endif
 
@@ -384,7 +385,11 @@ endif
 
 ifeq ($(OSNAME), Darwin)
 ifndef MACOSX_DEPLOYMENT_TARGET
+ifeq ($(ARCH), arm64)
+export MACOSX_DEPLOYMENT_TARGET=11.0
+else
 export MACOSX_DEPLOYMENT_TARGET=10.8
+endif
 endif
 MD5SUM = md5 -r
 endif
@@ -675,6 +680,10 @@ ifeq ($(ARCH), mips64)
 DYNAMIC_CORE = LOONGSON3R3 LOONGSON3R4
 endif
 
+ifeq ($(ARCH), loongarch64)
+DYNAMIC_CORE = LOONGSON3R5 LOONGSON2K1000 LOONGSONGENERIC
+endif
+
 ifeq ($(ARCH), zarch)
 DYNAMIC_CORE = ZARCH_GENERIC
 
@@ -847,7 +856,7 @@ CCOMMON_OPT += -mabi=32
 BINARY_DEFINED = 1
 endif
 
-ifeq ($(CORE), $(filter $(CORE),LOONGSON3R3 LOONGSON3R4))
+ifneq (, $(filter $(CORE),LOONGSON3R3 LOONGSON3R4))
 CCOMMON_OPT += -march=loongson3a
 FCOMMON_OPT += -march=loongson3a
 endif
@@ -887,10 +896,8 @@ BINARY_DEFINED = 1
 endif
 
 ifeq ($(ARCH), loongarch64)
-ifeq ($(CORE), LOONGSON3R5)
 CCOMMON_OPT += -march=loongarch64 -mabi=lp64
 FCOMMON_OPT += -march=loongarch64 -mabi=lp64
-endif
 endif
 
 endif
@@ -1041,8 +1048,12 @@ FCOMMON_OPT += -frecursive
 # work around ABI problem with passing single-character arguments
 FCOMMON_OPT += -fno-optimize-sibling-calls
 #Don't include -lgfortran, when NO_LAPACK=1 or lsbcc
+ifneq ($(NOFORTRAN), 1)
+ifneq ($(NOFORTRAN), 2)
 ifneq ($(NO_LAPACK), 1)
 EXTRALIB += -lgfortran
+endif
+endif
 endif
 ifdef NO_BINARY_MODE
 ifeq ($(ARCH), $(filter $(ARCH),mips64))
@@ -1179,7 +1190,6 @@ FCOMMON_OPT += -i8
 endif
 endif
 endif
-
 ifeq ($(ARCH), $(filter $(ARCH),mips64 mips))
 ifndef BINARY64
 FCOMMON_OPT += -n32
@@ -1189,11 +1199,9 @@ endif
 ifeq ($(CORE), LOONGSON3R3)
 FCOMMON_OPT += -loongson3 -static
 endif
-
 ifeq ($(CORE), LOONGSON3R4)
 FCOMMON_OPT += -loongson3 -static
 endif
-
 else
 ifndef BINARY64
 FCOMMON_OPT += -m32
@@ -1201,7 +1209,6 @@ else
 FCOMMON_OPT += -m64
 endif
 endif
-
 ifeq ($(USE_OPENMP), 1)
 FEXTRALIB   += -lstdc++
 FCOMMON_OPT += -mp
@@ -1209,7 +1216,6 @@ endif
 endif
 
 ifeq ($(C_COMPILER), OPEN64)
-
 ifeq ($(ARCH), $(filter $(ARCH),mips64 mips))
 ifndef BINARY64
 CCOMMON_OPT += -n32
@@ -1219,13 +1225,10 @@ endif
 ifeq ($(CORE), LOONGSON3R3)
 CCOMMON_OPT += -loongson3 -static
 endif
-
 ifeq ($(CORE), LOONGSON3R4)
 CCOMMON_OPT += -loongson3 -static
 endif
-
 else
-
 ifndef BINARY64
 CCOMMON_OPT += -m32
 else
@@ -1271,6 +1274,19 @@ FCOMMON_OPT += -openmp
 endif
 endif
 
+ifeq ($(F_COMPILER), CRAY)
+CCOMMON_OPT += -DF_INTERFACE_INTEL
+FCOMMON_OPT += -hnopattern
+ifdef INTERFACE64
+ifneq ($(INTERFACE64), 0)
+FCOMMON_OPT += -s integer64
+endif
+endif
+ifneq ($(USE_OPENMP), 1)
+FCOMMON_OPT += -O noomp
+endif
+endif
+
 ifdef BINARY64
 ifdef INTERFACE64
 ifneq ($(INTERFACE64), 0)
@@ -1301,6 +1317,10 @@ endif
 
 ifeq ($(DYNAMIC_OLDER), 1)
 CCOMMON_OPT	+= -DDYNAMIC_OLDER
+endif
+
+ifeq ($(C_LAPACK), 1)
+CCOMMON_OPT	+= -DC_LAPACK
 endif
 
 ifeq ($(NO_LAPACK), 1)
@@ -1532,7 +1552,7 @@ override FFLAGS     += $(COMMON_OPT) $(FCOMMON_OPT)
 override FPFLAGS    += $(FCOMMON_OPT) $(COMMON_PROF)
 #MAKEOVERRIDES =
 
-ifdef NEED_PIC
+ifeq ($(NEED_PIC), 1)
 ifeq (,$(findstring PIC,$(FFLAGS)))
 override FFLAGS += -fPIC
 endif
@@ -1550,6 +1570,11 @@ endif
 
 ifeq ($(F_COMPILER),NAG)
 LAPACK_FFLAGS := $(filter-out -msse3 -mssse3 -msse4.1 -mavx -mavx2 -mskylake-avx512 ,$(FFLAGS))
+FFLAGS := $(filter-out -msse3 -mssse3 -msse4.1 -mavx -mavx2 -mskylake-avx512 ,$(FFLAGS))
+endif
+ifeq ($(F_COMPILER),CRAY)
+LAPACK_FFLAGS := $(filter-out -msse3 -mssse3 -msse4.1 -mavx -mavx2 -mskylake-avx512 ,$(FFLAGS))
+FFLAGS := $(filter-out -msse3 -mssse3 -msse4.1 -mavx -mavx2 -mskylake-avx512 ,$(FFLAGS))
 endif
 
 LAPACK_CFLAGS = $(CFLAGS)
@@ -1562,6 +1587,7 @@ endif
 
 ifdef OS_WINDOWS
 LAPACK_CFLAGS +=  -DOPENBLAS_OS_WINDOWS
+LAPACK_CFLAGS +=  -DLAPACK_COMPLEX_STRUCTURE
 endif
 ifeq ($(C_COMPILER), LSB)
 LAPACK_CFLAGS +=  -DLAPACK_COMPLEX_STRUCTURE
@@ -1661,6 +1687,7 @@ export USE_OPENMP
 export CROSS
 export CROSS_SUFFIX
 export NOFORTRAN
+export C_LAPACK
 export NO_FBLAS
 export EXTRALIB
 export CEXTRALIB

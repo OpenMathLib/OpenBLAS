@@ -201,8 +201,6 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date August 2015
-*
 *> \ingroup single_eig
 *
 *  =====================================================================
@@ -210,10 +208,9 @@
      $                    LDV, Q, LDQ, ALPHA, BETA, R, LDR, IWORK, WORK,
      $                    LWORK, RWORK, RESULT )
 *
-*  -- LAPACK test routine (version 3.7.0) --
+*  -- LAPACK test routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     August 2015
 *
 *     .. Scalar Arguments ..
       INTEGER            LDA, LDB, LDQ, LDR, LDU, LDV, LWORK, M, N, P

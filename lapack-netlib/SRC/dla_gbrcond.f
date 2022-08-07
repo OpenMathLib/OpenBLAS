@@ -161,8 +161,6 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
-*
 *> \ingroup doubleGBcomputational
 *
 *  =====================================================================
@@ -170,10 +168,9 @@
      $                                       AFB, LDAFB, IPIV, CMODE, C,
      $                                       INFO, WORK, IWORK )
 *
-*  -- LAPACK computational routine (version 3.7.0) --
+*  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
 *
 *     .. Scalar Arguments ..
       CHARACTER          TRANS
@@ -349,5 +346,7 @@
      $   DLA_GBRCOND = ( 1.0D+0 / AINVNM )
 *
       RETURN
+*
+*     End of DLA_GBRCOND
 *
       END

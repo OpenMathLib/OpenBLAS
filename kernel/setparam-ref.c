@@ -1046,6 +1046,34 @@ static void init_parameter(void) {
 #endif
 }
 #else // (ARCH_MIPS64)
+#if (ARCH_LOONGARCH64)
+static void init_parameter(void) {
+
+#ifdef BUILD_BFLOAT16
+  TABLE_NAME.sbgemm_p = SBGEMM_DEFAULT_P;
+#endif
+  TABLE_NAME.sgemm_p = SGEMM_DEFAULT_P;
+  TABLE_NAME.dgemm_p = DGEMM_DEFAULT_P;
+  TABLE_NAME.cgemm_p = CGEMM_DEFAULT_P;
+  TABLE_NAME.zgemm_p = ZGEMM_DEFAULT_P;
+
+#ifdef BUILD_BFLOAT16
+  TABLE_NAME.sbgemm_r = SBGEMM_DEFAULT_R;
+#endif
+  TABLE_NAME.sgemm_r = SGEMM_DEFAULT_R;
+  TABLE_NAME.dgemm_r = DGEMM_DEFAULT_R;
+  TABLE_NAME.cgemm_r = CGEMM_DEFAULT_R;
+  TABLE_NAME.zgemm_r = ZGEMM_DEFAULT_R;
+
+#ifdef BUILD_BFLOAT16
+  TABLE_NAME.sbgemm_q = SBGEMM_DEFAULT_Q;
+#endif
+  TABLE_NAME.sgemm_q = SGEMM_DEFAULT_Q;
+  TABLE_NAME.dgemm_q = DGEMM_DEFAULT_Q;
+  TABLE_NAME.cgemm_q = CGEMM_DEFAULT_Q;
+  TABLE_NAME.zgemm_q = ZGEMM_DEFAULT_Q;
+}
+#else // (ARCH_LOONGARCH64)
 #if (ARCH_POWER)
 static void init_parameter(void) {
 
@@ -1239,7 +1267,6 @@ static void init_parameter(void) {
   
 #ifdef BUILD_BFLOAT16
   TABLE_NAME.sbgemm_p = SBGEMM_DEFAULT_P;
-  TABLE_NAME.sbgemm_r = SBGEMM_DEFAULT_R;
   TABLE_NAME.sbgemm_q = SBGEMM_DEFAULT_Q;
 #endif
 #if  (BUILD_SINGLE==1) || (BUILD_COMPLEX==1)
@@ -1824,6 +1851,13 @@ static void init_parameter(void) {
   fprintf(stderr, "L2 = %8d DGEMM_P  .. %d\n", l2, TABLE_NAME.dgemm_p);
 #endif
 
+#if BUILD_BFLOAT16==1
+  TABLE_NAME.sbgemm_r = (((BUFFER_SIZE -
+			       ((TABLE_NAME.sbgemm_p * TABLE_NAME.sbgemm_q *  4 + TABLE_NAME.offsetA
+				 + TABLE_NAME.align) & ~TABLE_NAME.align)
+			       ) / (TABLE_NAME.sbgemm_q *  4) - 15) & ~15);
+#endif
+
 #if BUILD_SINGLE==1
   TABLE_NAME.sgemm_r = (((BUFFER_SIZE -
 			       ((TABLE_NAME.sgemm_p * TABLE_NAME.sgemm_q *  4 + TABLE_NAME.offsetA
@@ -1893,5 +1927,6 @@ static void init_parameter(void) {
 }
 #endif //POWER
 #endif //ZARCH
+#endif //(ARCH_LOONGARCH64)
 #endif //(ARCH_MIPS64)
 #endif //(ARCH_ARM64)

@@ -28,7 +28,6 @@
 *****************************************************************************
 * Contents: Native middle-level C interface to LAPACK function sgeqrfp
 * Author: Intel Corporation
-* Generated November 2015
 *****************************************************************************/
 
 #include "lapacke_utils.h"

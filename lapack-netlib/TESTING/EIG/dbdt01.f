@@ -27,13 +27,13 @@
 *> \verbatim
 *>
 *> DBDT01 reconstructs a general matrix A from its bidiagonal form
-*>    A = Q * B * P'
-*> where Q (m by min(m,n)) and P' (min(m,n) by n) are orthogonal
+*>    A = Q * B * P**T
+*> where Q (m by min(m,n)) and P**T (min(m,n) by n) are orthogonal
 *> matrices and B is bidiagonal.
 *>
 *> The test ratio to test the reduction is
-*>    RESID = norm( A - Q * B * PT ) / ( n * norm(A) * EPS )
-*> where PT = P' and EPS is the machine precision.
+*>    RESID = norm(A - Q * B * P**T) / ( n * norm(A) * EPS )
+*> where EPS is the machine precision.
 *> \endverbatim
 *
 *  Arguments:
@@ -48,7 +48,7 @@
 *> \param[in] N
 *> \verbatim
 *>          N is INTEGER
-*>          The number of columns of the matrices A and P'.
+*>          The number of columns of the matrices A and P**T.
 *> \endverbatim
 *>
 *> \param[in] KD
@@ -77,7 +77,7 @@
 *> \verbatim
 *>          Q is DOUBLE PRECISION array, dimension (LDQ,N)
 *>          The m by min(m,n) orthogonal matrix Q in the reduction
-*>          A = Q * B * P'.
+*>          A = Q * B * P**T.
 *> \endverbatim
 *>
 *> \param[in] LDQ
@@ -102,8 +102,8 @@
 *> \param[in] PT
 *> \verbatim
 *>          PT is DOUBLE PRECISION array, dimension (LDPT,N)
-*>          The min(m,n) by n orthogonal matrix P' in the reduction
-*>          A = Q * B * P'.
+*>          The min(m,n) by n orthogonal matrix P**T in the reduction
+*>          A = Q * B * P**T.
 *> \endverbatim
 *>
 *> \param[in] LDPT
@@ -121,7 +121,8 @@
 *> \param[out] RESID
 *> \verbatim
 *>          RESID is DOUBLE PRECISION
-*>          The test ratio:  norm(A - Q * B * P') / ( n * norm(A) * EPS )
+*>          The test ratio:
+*>          norm(A - Q * B * P**T) / ( n * norm(A) * EPS )
 *> \endverbatim
 *
 *  Authors:
@@ -132,18 +133,15 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
-*
 *> \ingroup double_eig
 *
 *  =====================================================================
       SUBROUTINE DBDT01( M, N, KD, A, LDA, Q, LDQ, D, E, PT, LDPT, WORK,
      $                   RESID )
 *
-*  -- LAPACK test routine (version 3.7.0) --
+*  -- LAPACK test routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
 *
 *     .. Scalar Arguments ..
       INTEGER            KD, LDA, LDPT, LDQ, M, N
@@ -183,7 +181,7 @@
          RETURN
       END IF
 *
-*     Compute A - Q * B * P' one column at a time.
+*     Compute A - Q * B * P**T one column at a time.
 *
       RESID = ZERO
       IF( KD.NE.0 ) THEN
@@ -261,7 +259,7 @@
          END IF
       END IF
 *
-*     Compute norm(A - Q * B * P') / ( n * norm(A) * EPS )
+*     Compute norm(A - Q * B * P**T) / ( n * norm(A) * EPS )
 *
       ANORM = DLANGE( '1', M, N, A, LDA, WORK )
       EPS = DLAMCH( 'Precision' )

@@ -1,4 +1,4 @@
-*> \brief \b DLAED2 used by sstedc. Merges eigenvalues and deflates secular equation. Used when the original matrix is tridiagonal.
+*> \brief \b DLAED2 used by DSTEDC. Merges eigenvalues and deflates secular equation. Used when the original matrix is tridiagonal.
 *
 *  =========== DOCUMENTATION ===========
 *
@@ -197,8 +197,6 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
-*
 *> \ingroup auxOTHERcomputational
 *
 *> \par Contributors:
@@ -212,10 +210,9 @@
       SUBROUTINE DLAED2( K, N, N1, D, Q, LDQ, INDXQ, RHO, Z, DLAMDA, W,
      $                   Q2, INDX, INDXC, INDXP, COLTYP, INFO )
 *
-*  -- LAPACK computational routine (version 3.7.0) --
+*  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
 *
 *     .. Scalar Arguments ..
       INTEGER            INFO, K, LDQ, N, N1

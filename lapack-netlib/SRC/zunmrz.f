@@ -168,8 +168,6 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
-*
 *> \ingroup complex16OTHERcomputational
 *
 *> \par Contributors:
@@ -187,10 +185,9 @@
       SUBROUTINE ZUNMRZ( SIDE, TRANS, M, N, K, L, A, LDA, TAU, C, LDC,
      $                   WORK, LWORK, INFO )
 *
-*  -- LAPACK computational routine (version 3.7.0) --
+*  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
 *
 *     .. Scalar Arguments ..
       CHARACTER          SIDE, TRANS
@@ -298,7 +295,7 @@
       NBMIN = 2
       LDWORK = NW
       IF( NB.GT.1 .AND. NB.LT.K ) THEN
-         IF( LWORK.LT.NW*NB+TSIZE ) THEN
+         IF( LWORK.LT.LWKOPT ) THEN
             NB = (LWORK-TSIZE) / LDWORK
             NBMIN = MAX( 2, ILAENV( 2, 'ZUNMRQ', SIDE // TRANS, M, N, K,
      $              -1 ) )

@@ -34,17 +34,14 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
-*
 *> \ingroup complex_eig
 *
 *  =====================================================================
       SUBROUTINE CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
 *
-*  -- LAPACK test routine (version 3.7.0) --
+*  -- LAPACK test routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
 *
 *     .. Scalar Arguments ..
       LOGICAL            LERR, OK
@@ -66,6 +63,6 @@
  9999 FORMAT( ' *** Illegal value of parameter number ', I2,
      $      ' not detected by ', A6, ' ***' )
 *
-*     End of CHKXER.
+*     End of CHKXER
 *
       END

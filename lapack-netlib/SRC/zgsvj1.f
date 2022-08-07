@@ -7,11 +7,11 @@
 *
 *> \htmlonly
 *> Download ZGSVJ1 + dependencies
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/dgsvj1.f">
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/zgsvj1.f">
 *> [TGZ]</a>
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/dgsvj1.f">
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/zgsvj1.f">
 *> [ZIP]</a>
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/dgsvj1.f">
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/zgsvj1.f">
 *> [TXT]</a>
 *> \endhtmlonly
 *
@@ -40,7 +40,7 @@
 *> ZGSVJ1 is called from ZGESVJ as a pre-processor and that is its main
 *> purpose. It applies Jacobi rotations in the same way as ZGESVJ does, but
 *> it targets only particular pivots and it does not check convergence
-*> (stopping criterion). Few tunning parameters (marked by [TP]) are
+*> (stopping criterion). Few tuning parameters (marked by [TP]) are
 *> available for the implementer.
 *>
 *> Further Details
@@ -61,7 +61,7 @@
 *> In terms of the columns of A, the first N1 columns are rotated 'against'
 *> the remaining N-N1 columns, trying to increase the angle between the
 *> corresponding subspaces. The off-diagonal block is N1-by(N-N1) and it is
-*> tiled using quadratic tiles of side KBL. Here, KBL is a tunning parameter.
+*> tiled using quadratic tiles of side KBL. Here, KBL is a tuning parameter.
 *> The number of sweeps is given in NSWEEP and the orthogonality threshold
 *> is given in TOL.
 *> \endverbatim
@@ -223,8 +223,6 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date June 2016
-*
 *> \ingroup complex16OTHERcomputational
 *
 *> \par Contributor:
@@ -236,10 +234,9 @@
       SUBROUTINE ZGSVJ1( JOBV, M, N, N1, A, LDA, D, SVA, MV, V, LDV,
      $                   EPS, SFMIN, TOL, NSWEEP, WORK, LWORK, INFO )
 *
-*  -- LAPACK computational routine (version 3.8.0) --
+*  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     June 2016
 *
       IMPLICIT NONE
 *     .. Scalar Arguments ..

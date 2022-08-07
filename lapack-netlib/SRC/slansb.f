@@ -121,20 +121,16 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
-*
 *> \ingroup realOTHERauxiliary
 *
 *  =====================================================================
       REAL             FUNCTION SLANSB( NORM, UPLO, N, K, AB, LDAB,
      $                 WORK )
 *
-*  -- LAPACK auxiliary routine (version 3.7.0) --
+*  -- LAPACK auxiliary routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
 *
-      IMPLICIT NONE
 *     .. Scalar Arguments ..
       CHARACTER          NORM, UPLO
       INTEGER            K, LDAB, N
@@ -151,17 +147,14 @@
 *     ..
 *     .. Local Scalars ..
       INTEGER            I, J, L
-      REAL               ABSA, SUM, VALUE
+      REAL               ABSA, SCALE, SUM, VALUE
 *     ..
-*     .. Local Arrays ..
-      REAL               SSQ( 2 ), COLSSQ( 2 )
+*     .. External Subroutines ..
+      EXTERNAL           SLASSQ
 *     ..
 *     .. External Functions ..
       LOGICAL            LSAME, SISNAN
       EXTERNAL           LSAME, SISNAN
-*     ..
-*     .. External Subroutines ..
-      EXTERNAL           SLASSQ, SCOMBSSQ
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          ABS, MAX, MIN, SQRT
@@ -229,47 +222,29 @@
       ELSE IF( ( LSAME( NORM, 'F' ) ) .OR. ( LSAME( NORM, 'E' ) ) ) THEN
 *
 *        Find normF(A).
-*        SSQ(1) is scale
-*        SSQ(2) is sum-of-squares
-*        For better accuracy, sum each column separately.
 *
-         SSQ( 1 ) = ZERO
-         SSQ( 2 ) = ONE
-*
-*        Sum off-diagonals
-*
+         SCALE = ZERO
+         SUM = ONE
          IF( K.GT.0 ) THEN
             IF( LSAME( UPLO, 'U' ) ) THEN
                DO 110 J = 2, N
-                  COLSSQ( 1 ) = ZERO
-                  COLSSQ( 2 ) = ONE
                   CALL SLASSQ( MIN( J-1, K ), AB( MAX( K+2-J, 1 ), J ),
-     $                         1, COLSSQ( 1 ), COLSSQ( 2 ) )
-                  CALL SCOMBSSQ( SSQ, COLSSQ )
+     $                         1, SCALE, SUM )
   110          CONTINUE
                L = K + 1
             ELSE
                DO 120 J = 1, N - 1
-                  COLSSQ( 1 ) = ZERO
-                  COLSSQ( 2 ) = ONE
-                  CALL SLASSQ( MIN( N-J, K ), AB( 2, J ), 1,
-     $                         COLSSQ( 1 ), COLSSQ( 2 ) )
-                  CALL SCOMBSSQ( SSQ, COLSSQ )
+                  CALL SLASSQ( MIN( N-J, K ), AB( 2, J ), 1, SCALE,
+     $                         SUM )
   120          CONTINUE
                L = 1
             END IF
-            SSQ( 2 ) = 2*SSQ( 2 )
+            SUM = 2*SUM
          ELSE
             L = 1
          END IF
-*
-*        Sum diagonal
-*
-         COLSSQ( 1 ) = ZERO
-         COLSSQ( 2 ) = ONE
-         CALL SLASSQ( N, AB( L, 1 ), LDAB, COLSSQ( 1 ), COLSSQ( 2 ) )
-         CALL SCOMBSSQ( SSQ, COLSSQ )
-         VALUE = SSQ( 1 )*SQRT( SSQ( 2 ) )
+         CALL SLASSQ( N, AB( L, 1 ), LDAB, SCALE, SUM )
+         VALUE = SCALE*SQRT( SUM )
       END IF
 *
       SLANSB = VALUE

@@ -155,18 +155,15 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date January 2015
-*
 *> \ingroup complexOTHERcomputational
 *
 *  =====================================================================
       SUBROUTINE DORM22( SIDE, TRANS, M, N, N1, N2, Q, LDQ, C, LDC,
      $                   WORK, LWORK, INFO )
 *
-*  -- LAPACK computational routine (version 3.7.1) --
+*  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     January 2015
 *
       IMPLICIT NONE
 *

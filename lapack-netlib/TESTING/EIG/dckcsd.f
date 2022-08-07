@@ -175,8 +175,6 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
-*
 *> \ingroup double_eig
 *
 *  =====================================================================
@@ -184,10 +182,9 @@
      $                   MMAX, X, XF, U1, U2, V1T, V2T, THETA, IWORK,
      $                   WORK, RWORK, NIN, NOUT, INFO )
 *
-*  -- LAPACK test routine (version 3.7.0) --
+*  -- LAPACK test routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
 *
 *     .. Scalar Arguments ..
       INTEGER            INFO, NIN, NM, NMATS, MMAX, NOUT
@@ -208,11 +205,12 @@
       PARAMETER          ( NTESTS = 15 )
       INTEGER            NTYPES
       PARAMETER          ( NTYPES = 4 )
-      DOUBLE PRECISION   GAPDIGIT, ONE, ORTH, PIOVER2, TEN, ZERO
+      DOUBLE PRECISION   GAPDIGIT, ONE, ORTH, TEN, ZERO
       PARAMETER          ( GAPDIGIT = 18.0D0, ONE = 1.0D0,
      $                     ORTH = 1.0D-12,
-     $                     PIOVER2 = 1.57079632679489662D0,
      $                     TEN = 10.0D0, ZERO = 0.0D0 )
+      DOUBLE PRECISION   PIOVER2
+      PARAMETER ( PIOVER2 = 1.57079632679489661923132169163975144210D0 )
 *     ..
 *     .. Local Scalars ..
       LOGICAL            FIRSTT

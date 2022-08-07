@@ -181,8 +181,6 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date April 2012
-*
 *> \ingroup complexSYsolve
 *
 *> \par Contributors:
@@ -204,10 +202,9 @@
       SUBROUTINE CSYSV_ROOK( UPLO, N, NRHS, A, LDA, IPIV, B, LDB, WORK,
      $                  LWORK, INFO )
 *
-*  -- LAPACK driver routine (version 3.7.0) --
+*  -- LAPACK driver routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     April 2012
 *
 *     .. Scalar Arguments ..
       CHARACTER          UPLO
@@ -259,7 +256,7 @@
             LWKOPT = 1
          ELSE
             CALL CSYTRF_ROOK( UPLO, N, A, LDA, IPIV, WORK, -1, INFO )
-            LWKOPT = WORK(1)
+            LWKOPT = REAL( WORK(1) )
          END IF
          WORK( 1 ) = LWKOPT
       END IF

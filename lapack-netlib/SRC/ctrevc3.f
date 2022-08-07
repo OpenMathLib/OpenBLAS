@@ -222,10 +222,6 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date November 2017
-*
-*  @generated from ztrevc3.f, fortran z -> c, Tue Apr 19 01:47:44 2016
-*
 *> \ingroup complexOTHERcomputational
 *
 *> \par Further Details:
@@ -247,10 +243,9 @@
      $                    LDVR, MM, M, WORK, LWORK, RWORK, LRWORK, INFO)
       IMPLICIT NONE
 *
-*  -- LAPACK computational routine (version 3.8.0) --
+*  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2017
 *
 *     .. Scalar Arguments ..
       CHARACTER          HOWMNY, SIDE

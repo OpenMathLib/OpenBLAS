@@ -92,18 +92,15 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date June 2016
-*
 *> \ingroup complex16GEcomputational
 *
 *  =====================================================================
       DOUBLE PRECISION FUNCTION ZLA_GERPVGRW( N, NCOLS, A, LDA, AF,
      $         LDAF )
 *
-*  -- LAPACK computational routine (version 3.7.0) --
+*  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     June 2016
 *
 *     .. Scalar Arguments ..
       INTEGER            N, NCOLS, LDA, LDAF
@@ -146,4 +143,7 @@
          END IF
       END DO
       ZLA_GERPVGRW = RPVGRW
+*
+*     End of ZLA_GERPVGRW
+*
       END

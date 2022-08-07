@@ -1,4 +1,4 @@
-*> \brief \b SLAED6 used by sstedc. Computes one Newton step in solution of the secular equation.
+*> \brief \b SLAED6 used by SSTEDC. Computes one Newton step in solution of the secular equation.
 *
 *  =========== DOCUMENTATION ===========
 *
@@ -115,8 +115,6 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
-*
 *> \ingroup auxOTHERcomputational
 *
 *> \par Further Details:
@@ -140,10 +138,9 @@
 *  =====================================================================
       SUBROUTINE SLAED6( KNITER, ORGATI, RHO, D, Z, FINIT, TAU, INFO )
 *
-*  -- LAPACK computational routine (version 3.7.0) --
+*  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
 *
 *     .. Scalar Arguments ..
       LOGICAL            ORGATI

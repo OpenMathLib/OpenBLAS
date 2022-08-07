@@ -51,9 +51,15 @@ typedef union
   float v;
   struct
   {
+#if __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__
+    uint32_t s:1;
+    uint32_t e:8;
+    uint32_t m:23;
+#else
     uint32_t m:23;
     uint32_t e:8;
     uint32_t s:1;
+#endif
   } bits;
 } float32_bits;
 

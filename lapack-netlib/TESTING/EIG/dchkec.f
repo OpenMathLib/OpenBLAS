@@ -24,7 +24,7 @@
 *>
 *> DCHKEC tests eigen- condition estimation routines
 *>        DLALN2, DLASY2, DLANV2, DLAQTR, DLAEXC,
-*>        DTRSYL, DTREXC, DTRSNA, DTRSEN
+*>        DTRSYL, DTREXC, DTRSNA, DTRSEN, DTGEXC
 *>
 *> In all cases, the routine runs through a fixed set of numerical
 *> examples, subjects them to various tests, and compares the test
@@ -69,17 +69,14 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
-*
 *> \ingroup double_eig
 *
 *  =====================================================================
       SUBROUTINE DCHKEC( THRESH, TSTERR, NIN, NOUT )
 *
-*  -- LAPACK test routine (version 3.7.0) --
+*  -- LAPACK test routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
 *
 *     .. Scalar Arguments ..
       LOGICAL            TSTERR
@@ -95,9 +92,9 @@
       INTEGER            KLAEXC, KLALN2, KLANV2, KLAQTR, KLASY2, KTREXC,
      $                   KTRSEN, KTRSNA, KTRSYL, LLAEXC, LLALN2, LLANV2,
      $                   LLAQTR, LLASY2, LTREXC, LTRSYL, NLANV2, NLAQTR,
-     $                   NLASY2, NTESTS, NTRSYL
+     $                   NLASY2, NTESTS, NTRSYL, KTGEXC, NTGEXC, LTGEXC
       DOUBLE PRECISION   EPS, RLAEXC, RLALN2, RLANV2, RLAQTR, RLASY2,
-     $                   RTREXC, RTRSYL, SFMIN
+     $                   RTREXC, RTRSYL, SFMIN, RTGEXC
 *     ..
 *     .. Local Arrays ..
       INTEGER            LTRSEN( 3 ), LTRSNA( 3 ), NLAEXC( 2 ),
@@ -107,7 +104,7 @@
 *     ..
 *     .. External Subroutines ..
       EXTERNAL           DERREC, DGET31, DGET32, DGET33, DGET34, DGET35,
-     $                   DGET36, DGET37, DGET38, DGET39
+     $                   DGET36, DGET37, DGET38, DGET39, DGET40
 *     ..
 *     .. External Functions ..
       DOUBLE PRECISION   DLAMCH
@@ -190,8 +187,14 @@
          WRITE( NOUT, FMT = 9991 )RLAQTR, LLAQTR, NLAQTR, KLAQTR
       END IF
 *
+      CALL DGET40( RTGEXC, LTGEXC, NTGEXC, KTGEXC, NIN )
+      IF( RTGEXC.GT.THRESH ) THEN
+         OK = .FALSE.
+         WRITE( NOUT, FMT = 9986 )RTGEXC, LTGEXC, NTGEXC, KTGEXC
+      END IF
+*
       NTESTS = KLALN2 + KLASY2 + KLANV2 + KLAEXC + KTRSYL + KTREXC +
-     $         KTRSNA + KTRSEN + KLAQTR
+     $         KTRSNA + KTRSEN + KLAQTR + KTGEXC
       IF( OK )
      $   WRITE( NOUT, FMT = 9990 )PATH, NTESTS
 *
@@ -218,11 +221,13 @@
      $      'old ( ', I6, ' tests run)' )
  9989 FORMAT( ' Tests of the Nonsymmetric eigenproblem condition estim',
      $      'ation routines', / ' DLALN2, DLASY2, DLANV2, DLAEXC, DTRS',
-     $      'YL, DTREXC, DTRSNA, DTRSEN, DLAQTR', / )
+     $      'YL, DTREXC, DTRSNA, DTRSEN, DLAQTR, DTGEXC', / )
  9988 FORMAT( ' Relative machine precision (EPS) = ', D16.6, / ' Safe ',
      $      'minimum (SFMIN)             = ', D16.6, / )
  9987 FORMAT( ' Routines pass computational tests if test ratio is les',
      $      's than', F8.2, / / )
+ 9986 FORMAT( ' Error in DTGEXC: RMAX =', D12.3, / ' LMAX = ', I8, ' N',
+     $      'INFO=', I8, ' KNT=', I8 )
 *
 *     End of DCHKEC
 *

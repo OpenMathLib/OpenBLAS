@@ -44,6 +44,10 @@ COMPILER_DEC
 COMPILER_GNU
 #endif
 
+#if defined(__fcc_version__) || defined(__FCC_version__)
+COMPILER_FUJITSU
+#endif
+
 #if defined(__ANDROID__)
 OS_ANDROID
 #endif

@@ -509,8 +509,6 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date June 2016
-*
 *> \ingroup single_eig
 *
 *  =====================================================================
@@ -520,10 +518,9 @@
      $                   RCDVIN, RCONDE, RCNDE1, RCDEIN, SCALE, SCALE1,
      $                   RESULT, WORK, NWORK, IWORK, INFO )
 *
-*  -- LAPACK test routine (version 3.7.0) --
+*  -- LAPACK test routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     June 2016
 *
 *     .. Scalar Arguments ..
       INTEGER            INFO, LDA, LDLRE, LDVL, LDVR, NIUNIT, NOUNIT,

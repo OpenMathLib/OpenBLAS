@@ -220,7 +220,7 @@
 *>          left singular vectors in the case JOBU = 'F'.
 *>
 *>          If LIWORK, LWORK, or LRWORK = -1, then on exit, if INFO = 0,
-*>          LIWORK(1) returns the minimal LIWORK.
+*>          IWORK(1) returns the minimal LIWORK.
 *> \endverbatim
 *>
 *> \param[in] LIWORK
@@ -231,7 +231,7 @@
 *>          LIWORK >= N              if JOBP = 'N' and JOBA .NE. 'E';
 *>          LIWORK >= N + M - 1 + N, if JOBP = 'P' and JOBA = 'E';
 *>          LIWORK >= N + N          if JOBP = 'N' and JOBA = 'E'.
-*
+*>
 *>          If LIWORK = -1, then a workspace query is assumed; the routine
 *>          only calculates and returns the optimal and minimal sizes
 *>          for the WORK, IWORK, and RWORK arrays, and no error
@@ -317,7 +317,7 @@
 *>          N^(-1/4) * RWORK(1) <= ||pinv(C)||_2 <= N^(1/4) * RWORK(1).
 *>          Otherwise, RWORK(1) = -1.
 *>          2. RWORK(2) contains the number of singular values computed as
-*>          exact zeros in DGESVD applied to the upper triangular or trapeziodal
+*>          exact zeros in DGESVD applied to the upper triangular or trapezoidal
 *>          R (from the initial QR factorization). In case of early exit (no call to
 *>          DGESVD, such as in the case of zero matrix) RWORK(2) = -1.
 *>
@@ -331,7 +331,7 @@
 *>          The dimension of the array RWORK.
 *>          If JOBP ='P', then LRWORK >= MAX(2, M).
 *>          Otherwise, LRWORK >= 2
-*
+*>
 *>          If LRWORK = -1, then a workspace query is assumed; the routine
 *>          only calculates and returns the optimal and minimal sizes
 *>          for the WORK, IWORK, and RWORK arrays, and no error
@@ -405,8 +405,6 @@
 *> \author Univ. of California Berkeley
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
-*
-*> \date November 2018
 *
 *> \ingroup doubleGEsing
 *
@@ -641,7 +639,7 @@
                  IF ( WNTVA ) THEN
 *                   .. minimal workspace length for N x N/2 DGEQRF
                     LWQRF  = MAX( N/2, 1 )
-*                   .. minimal workspace lengt for N/2 x N/2 DGESVD
+*                   .. minimal workspace length for N/2 x N/2 DGESVD
                     LWSVD2 = MAX( 5 * (N/2), 1 )
                     LWORQ2 = MAX( N, 1 )
                     MINWRK2 = MAX( LWQP3, N/2+LWQRF, N/2+LWSVD2,

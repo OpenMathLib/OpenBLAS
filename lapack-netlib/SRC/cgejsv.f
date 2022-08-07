@@ -359,7 +359,7 @@
 *>          RWORK(3) = SCONDA is an estimate for the condition number of
 *>                    column equilibrated A. (If JOBA = 'E' or 'G')
 *>                    SCONDA is an estimate of SQRT(||(R^* * R)^(-1)||_1).
-*>                    It is computed using SPOCON. It holds
+*>                    It is computed using CPOCON. It holds
 *>                    N^(-1/4) * SCONDA <= ||R^(-1)||_2 <= N^(1/4) * SCONDA
 *>                    where R is the triangular factor from the QRF of A.
 *>                    However, if R is truncated and the numerical rank is
@@ -368,7 +368,7 @@
 *>                    singular values might be lost.
 *>
 *>          If full SVD is needed, the following two condition numbers are
-*>          useful for the analysis of the algorithm. They are provied for
+*>          useful for the analysis of the algorithm. They are provided for
 *>          a developer/implementer who is familiar with the details of
 *>          the method.
 *>
@@ -484,8 +484,6 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date June 2016
-*
 *> \ingroup complexGEsing
 *
 *> \par Further Details:
@@ -568,10 +566,9 @@
      $                   M, N, A, LDA, SVA, U, LDU, V, LDV,
      $                   CWORK, LWORK, RWORK, LRWORK, IWORK, INFO )
 *
-*  -- LAPACK computational routine (version 3.7.1) --
+*  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     June 2017
 *
 *     .. Scalar Arguments ..
       IMPLICIT    NONE
@@ -707,11 +704,11 @@
           IF ( LQUERY ) THEN 
               CALL CGEQP3( M, N, A, LDA, IWORK, CDUMMY, CDUMMY, -1, 
      $             RDUMMY, IERR )
-              LWRK_CGEQP3 = CDUMMY(1)
+              LWRK_CGEQP3 = REAL( CDUMMY(1) )
               CALL CGEQRF( N, N, A, LDA, CDUMMY, CDUMMY,-1, IERR )
-              LWRK_CGEQRF = CDUMMY(1)
+              LWRK_CGEQRF = REAL( CDUMMY(1) )
               CALL CGELQF( N, N, A, LDA, CDUMMY, CDUMMY,-1, IERR )
-              LWRK_CGELQF = CDUMMY(1)             
+              LWRK_CGELQF = REAL( CDUMMY(1) )
           END IF
           MINWRK  = 2
           OPTWRK  = 2
@@ -727,7 +724,7 @@
               IF ( LQUERY ) THEN 
                   CALL CGESVJ( 'L', 'N', 'N', N, N, A, LDA, SVA, N, V, 
      $                 LDV, CDUMMY, -1, RDUMMY, -1, IERR )
-                  LWRK_CGESVJ = CDUMMY(1)
+                  LWRK_CGESVJ = REAL( CDUMMY(1) )
                   IF ( ERREST ) THEN 
                       OPTWRK = MAX( N+LWRK_CGEQP3, N**2+LWCON, 
      $                              N+LWRK_CGEQRF, LWRK_CGESVJ )
@@ -763,10 +760,10 @@
              IF ( LQUERY ) THEN
                  CALL CGESVJ( 'L', 'U', 'N', N,N, U, LDU, SVA, N, A,
      $                LDA, CDUMMY, -1, RDUMMY, -1, IERR )
-                 LWRK_CGESVJ = CDUMMY(1)
+                 LWRK_CGESVJ = REAL( CDUMMY(1) )
                  CALL CUNMLQ( 'L', 'C', N, N, N, A, LDA, CDUMMY,
      $                V, LDV, CDUMMY, -1, IERR )
-                 LWRK_CUNMLQ = CDUMMY(1)                
+                 LWRK_CUNMLQ = REAL( CDUMMY(1) )
                  IF ( ERREST ) THEN 
                  OPTWRK = MAX( N+LWRK_CGEQP3, LWCON, LWRK_CGESVJ, 
      $                         N+LWRK_CGELQF, 2*N+LWRK_CGEQRF,
@@ -802,10 +799,10 @@
              IF ( LQUERY ) THEN
                  CALL CGESVJ( 'L', 'U', 'N', N,N, U, LDU, SVA, N, A,
      $                LDA, CDUMMY, -1, RDUMMY, -1, IERR )
-                 LWRK_CGESVJ = CDUMMY(1)
+                 LWRK_CGESVJ = REAL( CDUMMY(1) )
                  CALL CUNMQR( 'L', 'N', M, N, N, A, LDA, CDUMMY, U,
      $               LDU, CDUMMY, -1, IERR )
-                 LWRK_CUNMQRM = CDUMMY(1)
+                 LWRK_CUNMQRM = REAL( CDUMMY(1) )
                  IF ( ERREST ) THEN
                  OPTWRK = N + MAX( LWRK_CGEQP3, LWCON, N+LWRK_CGEQRF,
      $                             LWRK_CGESVJ, LWRK_CUNMQRM )
@@ -864,26 +861,26 @@
              IF ( LQUERY ) THEN
                  CALL CUNMQR( 'L', 'N', M, N, N, A, LDA, CDUMMY, U,
      $                LDU, CDUMMY, -1, IERR )
-                 LWRK_CUNMQRM = CDUMMY(1)
+                 LWRK_CUNMQRM = REAL( CDUMMY(1) )
                  CALL CUNMQR( 'L', 'N', N, N, N, A, LDA, CDUMMY, U,
      $                LDU, CDUMMY, -1, IERR )
-                 LWRK_CUNMQR = CDUMMY(1)
+                 LWRK_CUNMQR = REAL( CDUMMY(1) )
                  IF ( .NOT. JRACC ) THEN
                      CALL CGEQP3( N,N, A, LDA, IWORK, CDUMMY,CDUMMY, -1,
      $                    RDUMMY, IERR )
-                     LWRK_CGEQP3N = CDUMMY(1)
+                     LWRK_CGEQP3N = REAL( CDUMMY(1) )
                      CALL CGESVJ( 'L', 'U', 'N', N, N, U, LDU, SVA,
      $                    N, V, LDV, CDUMMY, -1, RDUMMY, -1, IERR )
-                     LWRK_CGESVJ = CDUMMY(1)
+                     LWRK_CGESVJ = REAL( CDUMMY(1) )
                      CALL CGESVJ( 'U', 'U', 'N', N, N, U, LDU, SVA,
      $                    N, V, LDV, CDUMMY, -1, RDUMMY, -1, IERR )
-                     LWRK_CGESVJU = CDUMMY(1)
+                     LWRK_CGESVJU = REAL( CDUMMY(1) )
                      CALL CGESVJ( 'L', 'U', 'V', N, N, U, LDU, SVA,
      $                    N, V, LDV, CDUMMY, -1, RDUMMY, -1, IERR )
-                     LWRK_CGESVJV = CDUMMY(1)
+                     LWRK_CGESVJV = REAL( CDUMMY(1) )
                      CALL CUNMLQ( 'L', 'C', N, N, N, A, LDA, CDUMMY,
      $                    V, LDV, CDUMMY, -1, IERR )
-                     LWRK_CUNMLQ = CDUMMY(1)
+                     LWRK_CUNMLQ = REAL( CDUMMY(1) )
                      IF ( ERREST ) THEN 
                        OPTWRK = MAX( N+LWRK_CGEQP3, N+LWCON, 
      $                          2*N+N**2+LWCON, 2*N+LWRK_CGEQRF, 
@@ -912,13 +909,13 @@
                  ELSE
                      CALL CGESVJ( 'L', 'U', 'V', N, N, U, LDU, SVA,
      $                    N, V, LDV, CDUMMY, -1, RDUMMY, -1, IERR )
-                     LWRK_CGESVJV = CDUMMY(1)
+                     LWRK_CGESVJV = REAL( CDUMMY(1) )
                      CALL CUNMQR( 'L', 'N', N, N, N, CDUMMY, N, CDUMMY,
      $                    V, LDV, CDUMMY, -1, IERR )
-                     LWRK_CUNMQR = CDUMMY(1)
+                     LWRK_CUNMQR = REAL( CDUMMY(1) )
                      CALL CUNMQR( 'L', 'N', M, N, N, A, LDA, CDUMMY, U,
      $                    LDU, CDUMMY, -1, IERR )
-                     LWRK_CUNMQRM = CDUMMY(1)   
+                     LWRK_CUNMQRM = REAL( CDUMMY(1) )
                      IF ( ERREST ) THEN 
                         OPTWRK = MAX( N+LWRK_CGEQP3, N+LWCON,   
      $                           2*N+LWRK_CGEQRF, 2*N+N**2,  
@@ -1314,7 +1311,7 @@
 *     (eg speed by replacing global with restricted window pivoting, such
 *     as in xGEQPX from TOMS # 782). Good results will be obtained using
 *     xGEQPX with properly (!) chosen numerical parameters.
-*     Any improvement of CGEQP3 improves overal performance of CGEJSV.
+*     Any improvement of CGEQP3 improves overall performance of CGEJSV.
 *
 *     A * P1 = Q1 * [ R1^* 0]^*:
       DO 1963 p = 1, N

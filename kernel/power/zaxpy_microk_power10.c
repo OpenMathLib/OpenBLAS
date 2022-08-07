@@ -125,10 +125,25 @@ static void zaxpy_kernel_4 (long n, double *x, double *y,
        "xvmaddadp	38, %x10, 33	\n\t"
        "xvmaddadp	39, %x11, 33	\n\t"
 
-       "stxvp		48, 0(%12)	\n\t"
-       "stxvp		50, 32(%12)	\n\t"
-       "stxvp		34, 64(%12)	\n\t"
-       "stxvp		38, 96(%12)	\n\t"
+#if (__BYTE_ORDER__ == __ORDER_BIG_ENDIAN__)
+       "stxv		48, 0(%12)	\n\t"
+       "stxv		49, 16(%12)	\n\t"
+       "stxv		50, 32(%12)	\n\t"
+       "stxv		51, 48(%12)	\n\t"
+       "stxv		34, 64(%12)	\n\t"
+       "stxv		35, 80(%12)	\n\t"
+       "stxv		38, 96(%12)	\n\t"
+       "stxv		39, 112(%12)	\n\t"
+#else
+       "stxv		49, 0(%12)	\n\t"
+       "stxv		48, 16(%12)	\n\t"
+       "stxv		51, 32(%12)	\n\t"
+       "stxv		50, 48(%12)	\n\t"
+       "stxv		35, 64(%12)	\n\t"
+       "stxv		34, 80(%12)	\n\t"
+       "stxv		39, 96(%12)	\n\t"
+       "stxv		38, 112(%12)	\n\t"
+#endif
 
        "addi		%12, %12, 128	\n\t"
 
@@ -172,10 +187,25 @@ static void zaxpy_kernel_4 (long n, double *x, double *y,
        "xvmaddadp	38, %x10, 33	\n\t"
        "xvmaddadp	39, %x11, 33	\n\t"
 
-       "stxvp		48, 0(%12)	\n\t"
-       "stxvp		50, 32(%12)	\n\t"
-       "stxvp		34, 64(%12)	\n\t"
-       "stxvp		38, 96(%12)	\n\t"
+#if (__BYTE_ORDER__ == __ORDER_BIG_ENDIAN__)
+       "stxv		48, 0(%12)	\n\t"
+       "stxv		49, 16(%12)	\n\t"
+       "stxv		50, 32(%12)	\n\t"
+       "stxv		51, 48(%12)	\n\t"
+       "stxv		34, 64(%12)	\n\t"
+       "stxv		35, 80(%12)	\n\t"
+       "stxv		38, 96(%12)	\n\t"
+       "stxv		39, 112(%12)	\n\t"
+#else
+       "stxv		49, 0(%12)	\n\t"
+       "stxv		48, 16(%12)	\n\t"
+       "stxv		51, 32(%12)	\n\t"
+       "stxv		50, 48(%12)	\n\t"
+       "stxv		35, 64(%12)	\n\t"
+       "stxv		34, 80(%12)	\n\t"
+       "stxv		39, 96(%12)	\n\t"
+       "stxv		38, 112(%12)	\n\t"
+#endif
 
      "#n=%1 x=%13=%2 y=%0=%3 alpha=(%15,%16) mvecp=%14=%17 ytmp=%12\n"
      "#t0=%x4 t1=%x5 t2=%x6 t3=%x7 t4=%x8 t5=%x9 t6=%x10 t7=%x11"

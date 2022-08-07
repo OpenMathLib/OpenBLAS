@@ -108,8 +108,6 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	stfd	f30,  128(SP)
 	stfd	f31,  136(SP)
 
-    xxspltd  alpha_r,vs1,0  /*copy from register f1 */
-    xxspltd  alpha_i,vs2,0  /*copy from register f2 */
  
 	std	r31,  144(SP)
 	std	r30,  152(SP)
@@ -131,20 +129,22 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	std	r14,  280(SP)
  
  
-    stxv    vs20,  288(SP)
-    stxv    vs21,  304(SP)
-    stxv    vs22,  320(SP)
-    stxv    vs23,  336(SP)
-    stxv    vs24,  352(SP)
-    stxv    vs25,  368(SP)
-    stxv    vs26,  384(SP)
-    stxv    vs27,  400(SP)
-    stxv    vs28,  416(SP)
-    stxv    vs29,  432(SP)
-    stxv    vs30,  448(SP)
-    stxv    vs31,  464(SP)
+    stxv    vs52,  288(SP)
+    stxv    vs53,  304(SP)
+    stxv    vs54,  320(SP)
+    stxv    vs55,  336(SP)
+    stxv    vs56,  352(SP)
+    stxv    vs57,  368(SP)
+    stxv    vs58,  384(SP)
+    stxv    vs59,  400(SP)
+    stxv    vs60,  416(SP)
+    stxv    vs61,  432(SP)
+    stxv    vs62,  448(SP)
+    stxv    vs63,  464(SP)
 
     std    r0, FLINK_SAVE(SP)
+    xxspltd  alpha_r,vs1,0  /*copy from register f1 */
+    xxspltd  alpha_i,vs2,0  /*copy from register f2 */
  
 
 #if defined(linux) || defined(__FreeBSD__) || defined(_AIX)
@@ -224,19 +224,19 @@ L999:
 
 	ld    r0, 	 FLINK_SAVE(SP)	
  
-    lxv    vs20,  288(SP)
-    lxv    vs21,  304(SP)
-    lxv    vs22,  320(SP)
-    lxv    vs23,  336(SP)
-    lxv    vs24,  352(SP)
-    lxv    vs25,  368(SP)
-    lxv    vs26,  384(SP) 
-    lxv    vs27,  400(SP)
+    lxv    vs52,  288(SP)
+    lxv    vs53,  304(SP)
+    lxv    vs54,  320(SP)
+    lxv    vs55,  336(SP)
+    lxv    vs56,  352(SP)
+    lxv    vs57,  368(SP)
+    lxv    vs58,  384(SP)
+    lxv    vs59,  400(SP)
 	mtlr r0
-    lxv    vs28,  416(SP)
-    lxv    vs29,  432(SP) 
-    lxv    vs30,  448(SP)
-    lxv    vs31,  464(SP)
+    lxv    vs60,  416(SP)
+    lxv    vs61,  432(SP)
+    lxv    vs62,  448(SP)
+    lxv    vs63,  464(SP)
 
 	addi	SP, SP, STACKSIZE 
 	blr

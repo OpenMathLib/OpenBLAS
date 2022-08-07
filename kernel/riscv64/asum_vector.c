@@ -35,7 +35,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define FLOAT_V_T_M1 vfloat32m1_t
 #define VLEV_FLOAT vle_v_f32m8
 #define VLSEV_FLOAT vlse_v_f32m8
-#define VFREDSUMVS_FLOAT vfredsum_vs_f32m8_f32m1
+#define VFREDSUMVS_FLOAT vfredosum_vs_f32m8_f32m1
 #define MASK_T vbool4_t
 #define VMFLTVF_FLOAT vmflt_vf_f32m8_b4
 #define VFMVVF_FLOAT vfmv_v_f_f32m8
@@ -49,7 +49,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define FLOAT_V_T_M1 vfloat64m1_t
 #define VLEV_FLOAT vle_v_f64m8
 #define VLSEV_FLOAT vlse_v_f64m8
-#define VFREDSUMVS_FLOAT vfredsum_vs_f64m8_f64m1
+#define VFREDSUMVS_FLOAT vfredusum_vs_f64m8_f64m1
 #define MASK_T vbool8_t
 #define VMFLTVF_FLOAT vmflt_vf_f64m8_b8
 #define VFMVVF_FLOAT vfmv_v_f_f64m8
@@ -89,7 +89,7 @@ FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x)
                                 j += gvl * 2;
                         }
                         v_res = VFREDSUMVS_FLOAT(v_res, v_sum, v_z0, gvl);
-                        asumf += v_res[0];
+                        asumf += *((FLOAT*)&v_res);
                 }
                 for(;j<n;){
                         gvl = VSETVL(n-j);
@@ -97,7 +97,7 @@ FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x)
                         mask0 = VMFLTVF_FLOAT(v0, 0, gvl);
                         v0 = VFRSUBVF_MASK_FLOAT(mask0, v0, v0, 0, gvl);
                         v_res = VFREDSUMVS_FLOAT(v_res, v0, v_z0, gvl);
-                        asumf += v_res[0];
+                        asumf += *((FLOAT*)&v_res);
                         j += gvl;
                 }
         }else{
@@ -121,7 +121,7 @@ FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x)
                                 inc_xv += inc_xv * 2;
                         }
                         v_res = VFREDSUMVS_FLOAT(v_res, v_sum, v_z0, gvl);
-                        asumf += v_res[0];
+                        asumf += *((FLOAT*)&v_res);
                 }
                 for(;j<n;){
                         gvl = VSETVL(n-j);
@@ -129,7 +129,7 @@ FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x)
                         mask0 = VMFLTVF_FLOAT(v0, 0, gvl);
                         v0 = VFRSUBVF_MASK_FLOAT(mask0, v0, v0, 0, gvl);
                         v_res = VFREDSUMVS_FLOAT(v_res, v0, v_z0, gvl);
-                        asumf += v_res[0];
+                        asumf += *((FLOAT*)&v_res);
                         j += gvl;
                 }
         }
