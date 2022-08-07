@@ -1,5 +1,87 @@
 OpenBLAS ChangeLog
 ====================================================================
+Version 0.3.21
+ 07-Aug-2022
+
+general:
+ - Updated the included LAPACK to Reference-LAPACK release 3.10.1
+ - when no Fortran compiler is available, OpenBLAS builds will now automatically
+   build LAPACK from an f2c-converted copy of LAPACK 3.9.0 unless the NO_LAPACK option
+   is specified
+ - similarly added C versions of the BLAS and CBLAS tests
+ - enabled building of the ReLAPACK GEMMT kernels when ReLAPACK is built
+ - function LAPACKE_lsame is now annotated with the GCC attribute "const" to aid static analyzers
+ - added USE_TLS to the list of options reported by the openblas_get_config() function
+ - CMAKE builds now support the BUILD_TESTING keyword (to disable the LAPACK testsuite) of Reference-LAPACK
+ - fixed CMAKE builds of the laswp_ncopy and neg_tcopy kernels
+ - removed the build system requirements for PERL (while keeping the original perl scripts as backup)
+ - handle building and running OpenBLAS on systems that report zero available cpu cores
+ - added SYMBOLPREFIX/SYMBOLSUFFIX handling for LAPACK 3.10.0 functions added in 0.3.20
+ - fixed linking of the utests on QNX
+ - Added support for compilation with the Intel ifx compiler
+ - Added support for compilation with the Fujitsu FCC compiler for Fugaku
+ - Added support for compilation with the Cray C and Fortran compilers
+ - reverted OpenMP threadpool behaviour in the exec_blas call to its state before 0.3.11, that is
+   the threadpool will no longer grow or shrink on demand as the overhead for this is too big at least with
+   GNU OpenMP. The adaptive behaviour introduced in 0.3.11 can still be requested at runtime by setting
+   the environment variable OMP_ADAPTIVE
+ - worked around spurious STFSM/CTFSM errors reported by the LAPACK testsuite
+
+x86_64:
+ - fixed determination of compiler support for AVX512 and removed the 0.3.19
+   workaround for building SKYLAKEX kernels on Sandybridge hardware
+ - fixed compilation for the SKYLAKEX target with gcc 6
+ - fixed compilation of the CooperLake SBGEMM kernel with LLVM
+ - fixed compilation of the SkyLakeX small matrix GEMM kernels with LLVM or ICC
+ - fixed compilation of some BFLOAT16 kernels with CMAKE
+ - added support for the Zhaoxin/Centaur KH40000 cpu
+ - fixed a potential crash in the ZSYMV kernel used for all targets except generic
+ - fixed gmake compilation for DYNAMIC_ARCH with a DYNAMIC_LIST including ATOM
+ - fixed compilation of LAPACKE with the INTEGER64 option on Windows
+ - added support for cross-compiling to individual Intel or AMD targets using CMAKE
+   (previously only CORE2 supported, added targets are ATOM, PRESCOTT, NEHALEM, SANDYBRIDGE,
+   HASWELL,SKYLAKEX, COOPERLAKE, SAPPHIRERAPIDS, OPTERON, BARCELONA, BULLDOZER, PILEDRIVER,
+   STEAMROLLER,EXCAVATOR, ZEN)
+
+SPARC:
+ - worked around an overflow error in the DNRM2 kernel
+
+POWER:
+ - worked around an overflow error in the POWER6 DNRM2 kernel
+ - fixed compilation on PPC440
+ - fixed a performance regression in the level1 BLAS on POWER10
+ - fixed the POWER10 ZGEMM kernel
+ - fixed singlethreaded builds for POWER10
+ - fixed compilation of the POWER10 DGEMV kernel with older gcc versions
+ - enabled compilation of the BFLOAT16 kernels by default
+ - enabled the small matrix kernels by default for DYNAMIC_ARCH builds
+ - added a workaround for a miscompilation of the CDOT and ZDOT kernels by GCC 12
+
+- RISCV:
+ - fixed cpu autodetection logic
+
+ARMV8:
+ - added an SBGEMM kernel for Neoverse N2
+ - worked around an overflow error in the DNRM2 kernel used on M1, NeoverseN1, ThunderX2T99
+ - added support for ARM64 systems running MS Windows
+ - added support for cross-compiling to the GENERIC ARMV8 target under CMAKE (Windows/MSVC)
+ - fixed a performance regression in the generic ARMV8 DGEMM kernel introduced in 0.3.19
+ - added initial support for the Apple M1 cpu under Linux
+ - added initial support for the Phytium FT2000 cpu
+ - added initial support for the Cortex A510, A710, X1 and X2 cpu
+ - fixed an accidental mixup of cpu identifiers in the autodetection code introduced in 0.3.20
+ - fixed linking of Apple M1 builds on macOS 12 and later with recent XCode
+ - made Neoverse N2 available in DYNAMIC_ARCH builds
+
+MIPS,MIPS64:
+ - worked around an overflow error in the DNRM2 kernel
+
+LOONGARCH64:
+ - worked around an overflow error in the DNRM2 kernel
+ - added preliminary support for the LOONGSON2K1000 cpu
+ - added DYNAMIC_ARCH support
+
+====================================================================
 Version 0.3.20
  20-Feb-2022
 
