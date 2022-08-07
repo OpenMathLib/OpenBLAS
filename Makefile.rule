@@ -3,7 +3,7 @@
 #
 
 # This library's version
-VERSION = 0.3.20
+VERSION = 0.3.21.dev
 
 # If you set the suffix, the library name will be libopenblas_$(LIBNAMESUFFIX).a
 # and libopenblas_$(LIBNAMESUFFIX).so. Meanwhile, the soname in shared library
