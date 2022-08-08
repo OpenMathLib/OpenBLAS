@@ -76,9 +76,9 @@ float16to32 (bfloat16_bits f16)
 int
 main (int argc, char *argv[])
 {
-  int m, n, k;
+  blasint m, n, k;
   int i, j, l;
-  int x;
+  blasint x;
   int ret = 0;
   int loop = 100;
   char transA = 'N', transB = 'N';
