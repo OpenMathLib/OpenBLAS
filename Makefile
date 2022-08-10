@@ -110,6 +110,10 @@ ifeq ($(OSNAME), Darwin)
 	@echo "\"make PREFIX=/your_installation_path/ install\"."
 	@echo
 	@echo "(or set PREFIX in Makefile.rule and run make install."
+	@echo
+	@echo "Note that any flags passed to make during build should also be passed to make install"
+	@echo "to circumvent any install errors."
+	@echo
 	@echo "If you want to move the .dylib to a new location later, make sure you change"
 	@echo "the internal name of the dylib with:"
 	@echo
@@ -117,6 +121,9 @@ ifeq ($(OSNAME), Darwin)
 endif
 	@echo
 	@echo "To install the library, you can run \"make PREFIX=/path/to/your/installation install\"."
+	@echo
+	@echo "Note that any flags passed to make during build should also be passed to make install"
+	@echo "to circumvent any install errors."
 	@echo
 
 shared :
