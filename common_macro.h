@@ -2612,7 +2612,7 @@
 #ifndef ASSEMBLER
 #if !defined(DYNAMIC_ARCH) \
   && (defined(ARCH_X86) || defined(ARCH_X86_64) || defined(ARCH_IA64) || defined(ARCH_MIPS64) || defined(ARCH_ARM64) \
-      || defined(ARCH_LOONGARCH64) || defined(ARCH_E2K))
+      || defined(ARCH_LOONGARCH64) || defined(ARCH_E2K) || defined(ARCH_ALPHA))
 extern BLASLONG gemm_offset_a;
 extern BLASLONG gemm_offset_b;
 extern BLASLONG sbgemm_p;
