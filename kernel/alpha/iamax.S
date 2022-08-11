@@ -38,7 +38,7 @@
 
 #define ASSEMBLER
 #include "common.h"
-#include "version.h"
+
 
 #define N	$16
 #define X	$17
