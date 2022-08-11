@@ -1,42 +1,24 @@
-CPP	= $(CC) -E
-RANLIB  = ranlib
-
-ifeq ($(LIBSUBARCH), EV4)
-LIBNAME		= $(LIBPREFIX)_ev4.a
-LIBNAME_P	= $(LIBPREFIX)_ev4_p.a
-endif
-
-ifeq ($(LIBSUBARCH), EV5)
-LIBNAME		= $(LIBPREFIX)_ev5.a
-LIBNAME_P	= $(LIBPREFIX)_ev5_p.a
-endif
-
-ifeq ($(LIBSUBARCH), EV6)
-LIBNAME		= $(LIBPREFIX)_ev6.a
-LIBNAME_P	= $(LIBPREFIX)_ev6_p.a
-endif
-
 ifneq ($(COMPILER), NATIVE)
 # GCC User
-ifeq ($(LIBSUBARCH), EV4)
-OPTION += -DEV4 -mcpu=ev4
+ifeq ($(CORE), EV4)
+CCOMMON_OPT += -mcpu=ev4
 endif
-ifeq ($(LIBSUBARCH), EV5)
-OPTION += -DEV5 -mcpu=ev5
+ifeq ($(CORE), EV5)
+CCOMMON_OPT += -mcpu=ev5
 endif
-ifeq ($(LIBSUBARCH), EV6)
-OPTION += -DEV6 -mcpu=ev6
+ifeq ($(CORE), EV6)
+CCOMMON_OPT += -mcpu=ev6
 endif
 else
 # Compaq Compiler User
-ifeq ($(LIBSUBARCH), EV4)
-OPTION += -DEV4 -tune ev4 -arch ev4
+ifeq ($(CORE), EV4)
+CCOMMON_OPT += -tune ev4 -arch ev4
 endif
-ifeq ($(LIBSUBARCH), EV5)
-OPTION += -DEV5 -tune ev5 -arch ev5
+ifeq ($(CORE), EV5)
+CCOMMON_OPT += -tune ev5 -arch ev5
 endif
-ifeq ($(LIBSUBARCH), EV6)
-OPTION += -DEV6 -tune ev6 -arch ev6
+ifeq ($(CORE), EV6)
+CCOMMON_OPT += -tune ev6 -arch ev6
 endif
 endif
 

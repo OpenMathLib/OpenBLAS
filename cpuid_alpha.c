@@ -59,6 +59,11 @@ void get_subarchitecture(void){
   printf("ev%d", implver() + 4);
 }
 
+
+void get_corename(void){
+  printf("EV%d", implver() + 4);
+}
+
 void get_subdirname(void){
   printf("alpha");
 }
