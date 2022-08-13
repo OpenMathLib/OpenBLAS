@@ -4001,6 +4001,22 @@ case "$p1" in
 
         printf 'int main(void){\n'
         for obj in $underscore_objs; do
+            [ "$obj" != "xerbla" ] && printf 'extern void %s%s%s%s();\n' \
+                "$symbolprefix" "$obj" "$bu" "$symbolsuffix"
+        done
+
+        for obj in $need_2underscore_objs; do
+            printf 'extern void %s%s%s%s%s();\n' \
+                "$symbolprefix" "$obj" "$bu" "$bu" "$symbolsuffix"
+        done
+
+        for obj in $no_underscore_objs; do
+            printf 'extern void %s%s%s();\n' \
+                "$symbolprefix" "$obj" "$symbolsuffix"
+        done
+
+        printf '\n'
+        for obj in $underscore_objs; do
             [ "$obj" != "xerbla" ] && printf '%s%s%s%s();\n' \
                 "$symbolprefix" "$obj" "$bu" "$symbolsuffix"
         done

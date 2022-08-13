@@ -3956,6 +3956,18 @@ if ($ARGV[0] eq "linktest") {
 
     print "int main(void){\n";
     foreach $objs (@underscore_objs) {
+        print "extern void ", $symbolprefix, $objs, $bu, $symbolsuffix, "();\n" if $objs ne "xerbla";
+    }
+
+    foreach $objs (@need_2underscore_objs) {
+        print "extern void ", $symbolprefix, $objs, $bu, $bu, $symbolsuffix, "();\n";
+    }
+
+    foreach $objs (@no_underscore_objs) {
+        print "extern void ", $symbolprefix, $objs, $symbolsuffix, "();\n";
+    }
+
+    foreach $objs (@underscore_objs) {
         print $symbolprefix, $objs, $bu, $symbolsuffix, "();\n" if $objs ne "xerbla";
     }
 
