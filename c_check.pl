@@ -232,6 +232,47 @@ if (($architecture eq "mips") || ($architecture eq "mips64")) {
     }
 }
 
+$have_lsx = 0;
+$have_lasx = 0;
+if (($architecture eq "loongarch64")) {
+    eval "use File::Temp qw(tempfile)";
+    if ($@){
+	warn "could not load PERL module File::Temp, so could not check LSX and LASX capatibility";
+    } else {
+	$tmplsx = new File::Temp( SUFFIX => '.c' , UNLINK => 1 );
+	$codelsx = '"vadd.b $vr0, $vr0, $vr0"';
+	$lsx_flags = "-march=loongarch64 -mlsx -mabi=lp64d";
+	print $tmplsx "#include <lsxintrin.h>\n\n";
+	print $tmplsx "void main(void){ __asm__ volatile($codelsx); }\n";
+
+	$args = "$lsx_flags -o $tmplsx.o $tmplsx";
+	my @cmd = ("$compiler_name $flags $args >/dev/null 2>/dev/null");
+	system(@cmd) == 0;
+	if ($? != 0) {
+	    $have_lsx = 0;
+	} else {
+	    $have_lsx = 1;
+	}
+	unlink("$tmplsx.o");
+
+	$tmplasx = new File::Temp( SUFFIX => '.c' , UNLINK => 1 );
+	$codelasx = '"xvadd.b $xr0, $xr0, $xr0"';
+	$lasx_flags = "-march=loongarch64 -mlasx -mabi=lp64d";
+	print $tmplasx "#include <lasxintrin.h>\n\n";
+	print $tmplasx "void main(void){ __asm__ volatile($codelasx); }\n";
+
+	$args = "$lasx_flags -o $tmplasx.o $tmplasx";
+	my @cmd = ("$compiler_name $flags $args >/dev/null 2>/dev/null");
+	system(@cmd) == 0;
+	if ($? != 0) {
+	    $have_lasx = 0;
+	} else {
+	    $have_lasx = 1;
+	}
+	unlink("$tmplasx.o");
+    }
+}
+
 $architecture = x86          if ($data =~ /ARCH_X86/);
 $architecture = x86_64       if ($data =~ /ARCH_X86_64/);
 $architecture = e2k          if ($data =~ /ARCH_E2K/);
@@ -419,6 +460,8 @@ print MAKEFILE "CROSS_SUFFIX=$cross_suffix\n" if $cross != 0 && $cross_suffix ne
 print MAKEFILE "CROSS=1\n" if $cross != 0;
 print MAKEFILE "CEXTRALIB=$linker_L $linker_l $linker_a\n";
 print MAKEFILE "HAVE_MSA=1\n" if $have_msa eq 1;
+print MAKEFILE "HAVE_LSX=1\n" if $have_lsx eq 1;
+print MAKEFILE "HAVE_LASX=1\n" if $have_lasx eq 1;
 print MAKEFILE "MSA_FLAGS=$msa_flags\n" if $have_msa eq 1;
 print MAKEFILE "NO_RV64GV=1\n" if $no_rv64gv eq 1;
 print MAKEFILE "NO_AVX512=1\n" if $no_avx512 eq 1;
@@ -436,6 +479,8 @@ print CONFFILE "#define __32BIT__\t1\n"  if $binformat eq bin32;
 print CONFFILE "#define __64BIT__\t1\n"  if $binformat eq bin64;
 print CONFFILE "#define FUNDERSCORE\t$need_fu\n" if $need_fu ne "";
 print CONFFILE "#define HAVE_MSA\t1\n"  if $have_msa eq 1;
+print CONFFILE "#define HAVE_LSX\t1\n"  if $have_lsx eq 1;
+print CONFFILE "#define HAVE_LASX\t1\n"  if $have_lasx eq 1;
 print CONFFILE "#define HAVE_C11\t1\n" if $c11_atomics eq 1;
 
 

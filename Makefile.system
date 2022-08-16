@@ -1711,6 +1711,8 @@ ifndef NO_MSA
   export HAVE_MSA
   export MSA_FLAGS
 endif
+export HAVE_LSX
+export HAVE_LASX
 export KERNELDIR
 export FUNCTION_PROFILE
 export TARGET_CORE
