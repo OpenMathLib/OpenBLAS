@@ -124,14 +124,24 @@ static gotoblas_t *get_coretype(void) {
   switch (prid & PRID_SERIES_MASK) {
     case (PRID_SERIES_LA464):
       if (support_lasx())
-        return &gotoblas_LA464;
+        /* TODO: Temporarily disable LASX optimization by default.
+         * When other upstream like kernel and gcc support LASX,
+         * return &gotoblas_LA464.
+         */
+        //return &gotoblas_LA464;
+        return &gotoblas_LA64_GENERIC;
       else
         return &gotoblas_LA64_GENERIC;
     break;
 
     case (PRID_SERIES_LA264):
       if (support_lsx())
-        return &gotoblas_LA264;
+        /* TODO: Temporarily disable LSX optimization by default.
+         * When other upstream like kernel and gcc support LSX,
+         * return &gotoblas_LA264.
+         */
+        //return &gotoblas_LA264;
+        return &gotoblas_LA64_GENERIC;
       else
         return &gotoblas_LA64_GENERIC;
     break;
