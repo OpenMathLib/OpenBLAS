@@ -306,4 +306,4 @@ jobs:
 
       - name: Build OpenBLAS
         run: |
-          make -j$(nproc) HOSTCC=gcc CC="ccache ${{ matrix.triple }}-gcc" FC="ccache ${{ matrix.triple }}-gfortran" ${{ matrix.opts }}
+          make -j$(nproc) HOSTCC=gcc CC="${{ matrix.triple }}-gcc" FC="${{ matrix.triple }}-gfortran" ${{ matrix.opts }}
