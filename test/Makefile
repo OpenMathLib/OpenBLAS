@@ -2,7 +2,7 @@ TOPDIR	= ..
 include ../Makefile.system
 override CFLAGS += -fno-tree-vectorize
 ifeq ($(F_COMPILER),GFORTRAN)
-        override FFLAGS += -fno-tree-vectorize
+        override FFLAGS += -fno-tree-vectorize -fno-tree-loop-vectorize -fno-tree-slp-vectorize
 endif
 
 ifeq ($(NOFORTRAN),1)
