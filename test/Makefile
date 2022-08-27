@@ -1,7 +1,6 @@
 TOPDIR	= ..
 include ../Makefile.system
 override CFLAGS += -fno-tree-vectorize
-endif
 ifeq ($(F_COMPILER),GFORTRAN)
         override FFLAGS += -fno-tree-vectorize
 endif
