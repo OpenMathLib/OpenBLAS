@@ -163,7 +163,7 @@ jobs:
   steps:   
   - script: |
       brew update
-      make CC=gcc-12 FC=gfortran-12 #'COMMON_OPT=-O1
+      make CC=gcc-12 FC=gfortran-12 COMMON_OPT="-O2 -fno-tree-vectorize"
      
 - job: OSX_OpenMP_Clang
   pool:
