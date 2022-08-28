@@ -163,7 +163,7 @@ jobs:
   steps:   
   - script: |
       brew update
-      make CC=gcc-12 FC=gfortran-12 DEBUG=1
+      make CC=gcc-12 FC=gfortran-12 COMMON_OPT="-O2 -g"
      
 - job: OSX_OpenMP_Clang
   pool:
