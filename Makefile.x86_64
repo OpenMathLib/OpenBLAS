@@ -143,6 +143,7 @@ ifeq ($(C_COMPILER), CLANG)
 CCOMMON_OPT += -mavx2
 endif
 endif
+ifeq ($(NOFORTRAN), $(filter 0,$(NOFORTRAN)))
 ifeq ($(F_COMPILER), GFORTRAN)
 # AVX2 support was added in 4.7.0
 GCCVERSIONGTEQ4 := $(shell expr `$(FC) -dumpversion | cut -f1 -d.` \>= 4)
@@ -155,6 +156,7 @@ endif
 else
 ifeq ($(F_COMPILER), FLANG)
 FCOMMON_OPT += -mavx2
+endif
 endif
 endif
 endif
