@@ -717,11 +717,12 @@ integer iparam2stage_(integer *ispec, char *name__, char *opts, integer *ni,
 	ret_val = -1;
 
 //	s_copy(subnam, name__, (ftnlen)12, name_len);
-strncpy(subnam,name__,13);
-subnam[13]='\0';
-for (int i=0;i<13;i++) subnam[i]=toupper(subnam[i]);
-	//fprintf(stderr,"iparam2stage, name__ gelesen #%s#\n",name__);
-//fprintf(stderr,"iparam2stage, subnam gelesen #%s#\n",subnam);
+	strncpy(subnam,name__,13);
+	subnam[13]='\0';
+	{
+	    int i;
+	    for (i=0;i<13;i++) subnam[i]=toupper(subnam[i]);
+	}	
 
 #if 0
 

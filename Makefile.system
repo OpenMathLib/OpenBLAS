@@ -677,7 +677,12 @@ endif
 endif
 
 ifeq ($(ARCH), mips64)
-DYNAMIC_CORE = LOONGSON3R3 LOONGSON3R4
+DYNAMIC_CORE = LOONGSON3R3 LOONGSON3R4 MIPS64_GENERIC
+ifdef DYNAMIC_LIST
+override DYNAMIC_CORE = MIPS64_GENERIC $(DYNAMIC_LIST)
+XCCOMMON_OPT = -DDYNAMIC_LIST -DDYN_MIPS64_GENERIC
+XCCOMMON_OPT += $(foreach dcore,$(DYNAMIC_LIST),-DDYN_$(dcore))
+endif
 endif
 
 ifeq ($(ARCH), loongarch64)
@@ -854,6 +859,11 @@ BINARY_DEFINED = 1
 else ifeq ($(ARCH), $(filter $(ARCH),mips))
 CCOMMON_OPT += -mabi=32
 BINARY_DEFINED = 1
+endif
+
+ifneq (, $(filter $(CORE), MIPS64_GENERIC))
+CCOMMON_OPT += -DNO_MSA
+FCOMMON_OPT += -DNO_MSA
 endif
 
 ifneq (, $(filter $(CORE),LOONGSON3R3 LOONGSON3R4))

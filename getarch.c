@@ -131,6 +131,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /* #define FORCE_PPC440		*/
 /* #define FORCE_PPC440FP2	*/
 /* #define FORCE_CELL		*/
+/* #define FORCE_MIPS64_GENERIC	*/
 /* #define FORCE_SICORTEX	*/
 /* #define FORCE_LOONGSON3R3     */
 /* #define FORCE_LOONGSON3R4     */
@@ -146,6 +147,9 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /* #define FORCE_SPARCV7	*/
 /* #define FORCE_ZARCH_GENERIC	*/
 /* #define FORCE_Z13		*/
+/* #define FORCE_EV4		*/
+/* #define FORCE_EV5		*/
+/* #define FORCE_EV6		*/
 /* #define FORCE_GENERIC	*/
 
 #ifdef FORCE_P2
@@ -915,6 +919,20 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define CORENAME  "CELL"
 #endif
 
+#ifdef FORCE_MIPS64_GENERIC
+#define FORCE
+#define ARCHITECTURE    "MIPS"
+#define SUBARCHITECTURE "MIPS64_GENERIC"
+#define SUBDIRNAME      "mips64"
+#define ARCHCONFIG   "-DMIPS64_GENERIC " \
+       "-DL1_DATA_SIZE=65536 -DL1_DATA_LINESIZE=32 " \
+       "-DL2_SIZE=1048576 -DL2_LINESIZE=32 " \
+       "-DDTB_DEFAULT_ENTRIES=64 -DDTB_SIZE=4096 -DL2_ASSOCIATIVE=8 "
+#define LIBNAME   "mips64_generic"
+#define CORENAME  "MIPS64_GENERIC"
+#else
+#endif
+
 #ifdef FORCE_SICORTEX
 #define FORCE
 #define ARCHITECTURE    "MIPS"
@@ -1601,6 +1619,42 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define CORENAME  "Z14"
 #endif
 
+#ifdef FORCE_EV4
+#define FORCE
+#define ARCHITECTURE    "ALPHA"
+#define SUBARCHITECTURE "ev4"
+#define ARCHCONFIG   "-DEV4 " \
+		     "-DL1_DATA_SIZE=16384 -DL1_DATA_LINESIZE=32 " \
+		     "-DL2_SIZE=2097152 -DL2_LINESIZE=32 " \
+		     "-DDTB_DEFAULT_ENTRIES=32 -DDTB_SIZE=8192 "
+#define LIBNAME   "ev4"
+#define CORENAME  "EV4"
+#endif
+
+#ifdef FORCE_EV5
+#define FORCE
+#define ARCHITECTURE    "ALPHA"
+#define SUBARCHITECTURE "ev5"
+#define ARCHCONFIG   "-DEV5 " \
+		     "-DL1_DATA_SIZE=16384 -DL1_DATA_LINESIZE=32 " \
+		     "-DL2_SIZE=2097152 -DL2_LINESIZE=64 " \
+		     "-DDTB_DEFAULT_ENTRIES=64 -DDTB_SIZE=8192 "
+#define LIBNAME   "ev5"
+#define CORENAME  "EV5"
+#endif
+
+#ifdef FORCE_EV6
+#define FORCE
+#define ARCHITECTURE    "ALPHA"
+#define SUBARCHITECTURE "ev6"
+#define ARCHCONFIG   "-DEV6 " \
+		     "-DL1_DATA_SIZE=32768 -DL1_DATA_LINESIZE=64 " \
+		     "-DL2_SIZE=4194304 -DL2_LINESIZE=64 " \
+		     "-DDTB_DEFAULT_ENTRIES=64 -DDTB_SIZE=8192 "
+#define LIBNAME   "ev6"
+#define CORENAME  "EV6"
+#endif
+
 #ifdef FORCE_C910V
 #define FORCE
 #define ARCHITECTURE    "RISCV64"
@@ -1777,7 +1831,7 @@ int main(int argc, char *argv[]){
 #ifdef FORCE
     printf("CORE=%s\n", CORENAME);
 #else
-#if defined(INTEL_AMD) || defined(POWER) || defined(__mips__) || defined(__arm__) || defined(__aarch64__) || defined(ZARCH) || defined(sparc) || defined(__loongarch__) || defined(__riscv)
+#if defined(INTEL_AMD) || defined(POWER) || defined(__mips__) || defined(__arm__) || defined(__aarch64__) || defined(ZARCH) || defined(sparc) || defined(__loongarch__) || defined(__riscv) || defined(__alpha__)
     printf("CORE=%s\n", get_corename());
 #endif
 #endif

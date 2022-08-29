@@ -36,7 +36,7 @@
 /* or implied, of The University of Texas at Austin.                 */
 /*********************************************************************/
 
-#include "version.h"
+
 
 	.set noat
 	.set noreorder

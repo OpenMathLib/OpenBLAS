@@ -42,7 +42,7 @@
 #define ASSEMBLER
 
 #include "common.h"
-#include "version.h"
+
 
 	.globl NAME
 	.ent   NAME

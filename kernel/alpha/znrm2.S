@@ -39,7 +39,7 @@
 #define ASSEMBLER
 
 #include "common.h"
-#include "version.h"
+
 
 #define PREFETCH_SIZE 80
 

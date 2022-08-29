@@ -43,7 +43,7 @@
 
 #define MB  asm("mb")
 #define WMB asm("wmb")
-#define RMB asm("rmb")
+#define RMB asm("mb")
 
 static void __inline blas_lock(unsigned long *address){
 #ifndef __DECC

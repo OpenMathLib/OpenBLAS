@@ -31,8 +31,8 @@ flags="$*"
 
 cross_suffix=""
 
-if [ "`dirname $compiler_name`" != '.' ]; then
-    cross_suffix="$cross_suffix`dirname $compiler_name`/"
+if [ "`dirname \"$compiler_name\"`" != '.' ]; then
+    cross_suffix="$cross_suffix`dirname \"$compiler_name\"`/"
 fi
 
 bn=`basename $compiler_name`

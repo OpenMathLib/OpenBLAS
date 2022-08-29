@@ -30,7 +30,7 @@ matrix:
       before_script: &common-before
         - COMMON_FLAGS="DYNAMIC_ARCH=1 TARGET=POWER8 NUM_THREADS=32"
       script:
-        - travis_wait 20 make QUIET_MAKE=1 $COMMON_FLAGS $BTYPE
+        - travis_wait 40 make QUIET_MAKE=1 $COMMON_FLAGS $BTYPE
         - make -C test $COMMON_FLAGS $BTYPE
         - make -C ctest $COMMON_FLAGS $BTYPE
         - make -C utest $COMMON_FLAGS $BTYPE
@@ -104,7 +104,7 @@ matrix:
         - sudo apt-get update
         - sudo apt-get install gcc-9 gfortran-9 -y
       script:
-        - travis_wait 20 make QUIET_MAKE=1  BINARY=64 USE_OPENMP=1 CC=gcc-9 FC=gfortran-9
+        - travis_wait 40 make QUIET_MAKE=1  BINARY=64 USE_OPENMP=1 CC=gcc-9 FC=gfortran-9
         - make -C test $COMMON_FLAGS $BTYPE
         - make -C ctest $COMMON_FLAGS $BTYPE
         - make -C utest $COMMON_FLAGS $BTYPE 
@@ -121,7 +121,7 @@ matrix:
         - sudo apt-get update
         - sudo apt-get install gcc-9 gfortran-9 -y
       script:
-        - travis_wait 20 make QUIET_MAKE=1  BUILD_BFLOAT16=1 BINARY=64 USE_OPENMP=1 CC=gcc-9 FC=gfortran-9
+        - travis_wait 40 make QUIET_MAKE=1  BUILD_BFLOAT16=1 BINARY=64 USE_OPENMP=1 CC=gcc-9 FC=gfortran-9
         - make -C test $COMMON_FLAGS $BTYPE
         - make -C ctest $COMMON_FLAGS $BTYPE
         - make -C utest $COMMON_FLAGS $BTYPE 
