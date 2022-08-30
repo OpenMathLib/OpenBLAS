@@ -16,7 +16,7 @@ ifeq ($(C_COMPILER), GCC)
 # AVX2 support was added in 4.7.0
 GCCVERSIONCHECK := $(GCCVERSIONGT4)$(GCCVERSIONGTEQ4)$(GCCMINORVERSIONGTEQ7)
 ifeq ($(GCCVERSIONCHECK), $(filter $(GCCVERSIONCHECK), 011 110 111))
-   AVX2OPT = -mavx2
+   AVX2OPT = -mavx2 -fno-tree-vectorize
   endif
 endif
 ifeq ($(C_COMPILER), CLANG)
