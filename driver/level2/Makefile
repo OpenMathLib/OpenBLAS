@@ -1,6 +1,6 @@
 TOPDIR	= ../..
 include ../../Makefile.system
-override CFLAGS += -fno-tree-vectorize
+
 SBLASOBJS = \
 	sgbmv_n.$(SUFFIX) sgbmv_t.$(SUFFIX) \
 	ssbmv_U.$(SUFFIX) ssbmv_L.$(SUFFIX) sspmv_U.$(SUFFIX) sspmv_L.$(SUFFIX) \
