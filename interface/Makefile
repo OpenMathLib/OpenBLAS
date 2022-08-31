@@ -1,6 +1,8 @@
 TOPDIR	= ..
 include $(TOPDIR)/Makefile.system
 
+override CFLAGS += -fno-tree-vectorize
+
 SUPPORT_GEMM3M = 0
 
 ifeq ($(ARCH), x86)
