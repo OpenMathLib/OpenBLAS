@@ -5,7 +5,7 @@ FMAFLAG = -mfma
 endif
 endif
 
-override CFLAGS += -fno-tree-vectorize
+#override CFLAGS += -fno-tree-vectorize
 
 ### GEMV ###
 
