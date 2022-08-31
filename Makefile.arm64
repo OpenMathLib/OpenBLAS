@@ -124,7 +124,11 @@ ifeq ($(CORE), NEOVERSEN2)
 ifeq (1, $(filter 1,$(GCCVERSIONGTEQ7) $(ISCLANG)))
 ifeq ($(GCCVERSIONGTEQ9), 1)
 ifeq (1, $(filter 1,$(GCCMINORVERSIONGTEQ4) $(GCCVERSIONGTEQ10)))
+ifneq ($(OSNAME), Darwin)
 CCOMMON_OPT += -march=armv8.5-a+sve+sve2+bf16 -mtune=neoverse-n2
+else
+CCOMMON_OPT += -march=armv8.2-a -mtune=cortex-a72
+endif
 ifneq ($(F_COMPILER), NAG)
 FCOMMON_OPT += -march=armv8.5-a+sve+sve2+bf16 -mtune=neoverse-n2
 endif
