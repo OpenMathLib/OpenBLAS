@@ -162,9 +162,6 @@ endif
 
 endif
 
-
-FCOMMON_OPT += -fno-tree-vectorize
-
 ifeq ($(OSNAME), Interix)
 ARFLAGS		= -m x64
 endif
