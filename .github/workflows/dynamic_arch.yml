@@ -235,7 +235,8 @@ jobs:
       - name: Configure OpenBLAS
         run: |
           mkdir build && cd build
-          cmake -DBUILD_SHARED_LIBS=ON \
+          cmake -DCMAKE_BUILD_TYPE=Release \
+                -DBUILD_SHARED_LIBS=ON \
                 -DBUILD_STATIC_LIBS=ON \
                 -DDYNAMIC_ARCH=ON \
                 -DUSE_THREAD=ON \
@@ -257,6 +258,7 @@ jobs:
       - name: Run tests
         timeout-minutes: 60
         run: cd build && ctest
+
 
   cross_build:
     runs-on: ubuntu-22.04
