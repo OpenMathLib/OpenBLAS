@@ -267,7 +267,7 @@ jobs:
         include:
           - target: mips64el
             triple: mips64el-linux-gnuabi64
-            opts: DYNAMIC_ARCH=1
+            opts: DYNAMIC_ARCH=1 TARGET=GENERIC
           - target: riscv64
             triple: riscv64-linux-gnu
             opts: TARGET=RISCV64_GENERIC
