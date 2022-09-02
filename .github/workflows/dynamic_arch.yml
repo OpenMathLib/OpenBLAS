@@ -150,6 +150,7 @@ jobs:
       matrix:
         msystem: [MINGW64, MINGW32, CLANG64]
         idx: [int32, int64]
+        build-type: [Release]
         include:
           - msystem: MINGW64
             idx: int32
@@ -173,6 +174,11 @@ jobs:
             idx64-flags: -DBINARY=64 -DINTERFACE64=1
             target-prefix: mingw-w64-clang-x86_64
             c-lapack-flags: -DC_LAPACK=ON
+          - msystem: MINGW64
+            idx: int32
+            target-prefix: mingw-w64-x86_64
+            fc-pkg: mingw-w64-x86_64-gcc-fortran
+            build-type: None
         exclude:
           - msystem: MINGW32
             idx: int64
@@ -215,11 +221,11 @@ jobs:
           path: C:/msys64/home/runneradmin/.ccache
           # We include the commit sha in the cache key, as new cache entries are
           # only created if there is no existing entry for the key yet.
-          key: ccache-msys2-${{ matrix.msystem }}-${{ matrix.idx }}-${{ github.ref }}-${{ github.sha }}
+          key: ccache-msys2-${{ matrix.msystem }}-${{ matrix.idx }}-${{ matrix.build-type }}-${{ github.ref }}-${{ github.sha }}
           # Restore a matching ccache cache entry. Prefer same branch.
           restore-keys: |
-            ccache-msys2-${{ matrix.msystem }}-${{ matrix.idx }}-${{ github.ref }}
-            ccache-msys2-${{ matrix.msystem }}-${{ matrix.idx }}
+            ccache-msys2-${{ matrix.msystem }}-${{ matrix.idx }}-${{ matrix.build-type }}-${{ github.ref }}
+            ccache-msys2-${{ matrix.msystem }}-${{ matrix.idx }}-${{ matrix.build-type }}
 
       - name: Configure ccache
         # Limit the maximum size and switch on compression to avoid exceeding the total disk or cache quota.
@@ -235,7 +241,8 @@ jobs:
       - name: Configure OpenBLAS
         run: |
           mkdir build && cd build
-          cmake -DBUILD_SHARED_LIBS=ON \
+          cmake -DCMAKE_BUILD_TYPE=${{ matrix.build-type }} \
+                -DBUILD_SHARED_LIBS=ON \
                 -DBUILD_STATIC_LIBS=ON \
                 -DDYNAMIC_ARCH=ON \
                 -DUSE_THREAD=ON \
@@ -257,6 +264,7 @@ jobs:
       - name: Run tests
         timeout-minutes: 60
         run: cd build && ctest
+
 
   cross_build:
     runs-on: ubuntu-22.04
