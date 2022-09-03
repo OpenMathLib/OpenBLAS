@@ -5,7 +5,6 @@ FMAFLAG = -mfma
 endif
 endif
 
-#override CFLAGS += -fno-tree-vectorize
 
 ### AMAX ###
 
