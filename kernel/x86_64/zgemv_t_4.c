@@ -24,12 +24,12 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
 USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
-#if (defined(OS_DARWIN) || defined(OS_WINDOWS)) && (defined(__GNUC__) && __GNUC__ > 11) 
-#pragma GCC optimize("no-tree-vectorize")
-#endif
 
 #include "common.h"
 
+#if (defined(OS_DARWIN) || defined(OS_WINDOWS)) && (defined(__GNUC__) && __GNUC__ > 11) 
+#pragma GCC optimize("no-tree-vectorize")
+#endif
 
 #if defined(BULLDOZER) || defined(PILEDRIVER) || defined(STEAMROLLER)  || defined(EXCAVATOR)
 #include "zgemv_t_microk_bulldozer-4.c"
