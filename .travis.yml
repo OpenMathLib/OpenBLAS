@@ -13,6 +13,8 @@ matrix:
         apt:
           packages:
             - gfortran
+            - g++
+            - conda
 #      before_script: &common-before
 #        - COMMON_FLAGS="DYNAMIC_ARCH=1 TARGET=NEHALEM NUM_THREADS=32"
 #      script:
@@ -28,12 +30,20 @@ matrix:
       os: linux
       arch: ppc64le
       before_script: &common-before
-        - COMMON_FLAGS="DYNAMIC_ARCH=1 TARGET=POWER8 NUM_THREADS=32"
+        - COMMON_FLAGS="DYNAMIC_ARCH=1 TARGET=POWER8"
       script:
         - travis_wait 40 make QUIET_MAKE=1 $COMMON_FLAGS $BTYPE
-        - make -C test $COMMON_FLAGS $BTYPE
-        - make -C ctest $COMMON_FLAGS $BTYPE
-        - make -C utest $COMMON_FLAGS $BTYPE
+        - conda install  astunparse numpy ninja pyyaml setuptools cmake cffi typing_extensions future six requests dataclasses
+        - conda init bash
+        - conda create condas
+        - conda activate condas
+        - git clone --recursive https://github.com/pytorch/pytorch
+        - export CMAKE_PREFIX_PATH=${CONDA_PREFIX:-"$(dirname $(which conda))/../"}
+        - cd pytorch
+        - python setup.py install
+        - cd test
+        - sed -i -e "s/@onlyCUDA//g" -e "s/@largeTensorTest('12GB')//g" test_nn.py
+        - python test_nn.py TestNNDeviceTypeCPU.test_conv_large_cpu
       env:
         # for matrix annotation only
         - TARGET_BOX=PPC64LE_LINUX
