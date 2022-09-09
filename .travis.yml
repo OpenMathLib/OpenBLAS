@@ -34,7 +34,7 @@ matrix:
       script:
         - travis_wait 40 make QUIET_MAKE=1 $COMMON_FLAGS $BTYPE
         - wget https://repo.anaconda.com/archive/Anaconda3-2022.05-Linux-ppc64le.sh
-        - ./Anaconda3-2022.05-Linux-ppc64le.sh
+        - sh ./Anaconda3-2022.05-Linux-ppc64le.sh
         - conda install  astunparse numpy ninja pyyaml setuptools cmake cffi typing_extensions future six requests dataclasses
         - conda init bash
         - conda create condas
