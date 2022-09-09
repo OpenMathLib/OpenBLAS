@@ -35,11 +35,11 @@ matrix:
         - travis_wait 40 make QUIET_MAKE=1 $COMMON_FLAGS $BTYPE
         - wget https://repo.anaconda.com/archive/Anaconda3-2022.05-Linux-ppc64le.sh
         - sh ./Anaconda3-2022.05-Linux-ppc64le.sh -b -p $HOME/conda
-        - eval ${$HOME/conda/bin/conda shell.bash hook}
-        - conda install  astunparse numpy ninja pyyaml setuptools cmake cffi typing_extensions future six requests dataclasses
-        - conda init bash
+        - eval "$($HOME/conda/bin/conda shell.bash hook)"
+        - conda init
         - conda create condas
         - conda activate condas
+        - conda install  astunparse numpy ninja pyyaml setuptools cmake cffi typing_extensions future six requests dataclasses
         - git clone --recursive https://github.com/pytorch/pytorch
         - export CMAKE_PREFIX_PATH=${CONDA_PREFIX:-"$(dirname $(which conda))/../"}
         - cd pytorch
