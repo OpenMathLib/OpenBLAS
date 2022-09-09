@@ -34,7 +34,8 @@ matrix:
       script:
         - travis_wait 40 make QUIET_MAKE=1 $COMMON_FLAGS $BTYPE
         - wget https://repo.anaconda.com/archive/Anaconda3-2022.05-Linux-ppc64le.sh
-        - sh ./Anaconda3-2022.05-Linux-ppc64le.sh -b
+        - sh ./Anaconda3-2022.05-Linux-ppc64le.sh -b -p $HOME/conda
+        - eval ${$HOME/conda/bin/conda shell.bash hook}
         - conda install  astunparse numpy ninja pyyaml setuptools cmake cffi typing_extensions future six requests dataclasses
         - conda init bash
         - conda create condas
@@ -42,10 +43,10 @@ matrix:
         - git clone --recursive https://github.com/pytorch/pytorch
         - export CMAKE_PREFIX_PATH=${CONDA_PREFIX:-"$(dirname $(which conda))/../"}
         - cd pytorch
-        - python setup.py install
+        - python3 setup.py install
         - cd test
         - sed -i -e "s/@onlyCUDA//g" -e "s/@largeTensorTest('12GB')//g" test_nn.py
-        - python test_nn.py TestNNDeviceTypeCPU.test_conv_large_cpu
+        - python3 test_nn.py TestNNDeviceTypeCPU.test_conv_large_cpu
       env:
         # for matrix annotation only
         - TARGET_BOX=PPC64LE_LINUX
