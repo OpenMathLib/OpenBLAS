@@ -14,7 +14,7 @@ matrix:
           packages:
             - gfortran
             - g++
-            - conda
+            - wget
 #      before_script: &common-before
 #        - COMMON_FLAGS="DYNAMIC_ARCH=1 TARGET=NEHALEM NUM_THREADS=32"
 #      script:
@@ -33,6 +33,8 @@ matrix:
         - COMMON_FLAGS="DYNAMIC_ARCH=1 TARGET=POWER8"
       script:
         - travis_wait 40 make QUIET_MAKE=1 $COMMON_FLAGS $BTYPE
+        - wget https://repo.anaconda.com/archive/Anaconda3-2022.05-Linux-ppc64le.sh
+        - ./Anaconda3-2022.05-Linux-ppc64le.sh
         - conda install  astunparse numpy ninja pyyaml setuptools cmake cffi typing_extensions future six requests dataclasses
         - conda init bash
         - conda create condas
