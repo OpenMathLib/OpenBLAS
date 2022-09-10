@@ -48,7 +48,9 @@ matrix:
         - #mv test test.orig
         - wget https://www.mkroeker.com/pytorch.tbz
         - tar jxf pytorch.tbz
-        - cd pytorch
+        - cd pytorch/build
+        - wget https://www.mkroeker.com/CMakeCache.txt
+        - cd ..
         - python3 setup.py install
         - cd test
         - sed -i -e "s/@onlyCUDA//g" -e "s/@largeTensorTest('12GB')//g" test_nn.py
