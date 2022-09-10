@@ -39,13 +39,16 @@ matrix:
         - conda init
         - #conda create condas
         - conda activate #condas
-        - conda install -y astunparse numpy ninja pyyaml setuptools cmake cffi typing_extensions future six requests dataclasses
+        - conda install -y astunparse numpy ninja pyyaml setuptools cmake cffi typing_extensions future six requests dataclasses torch hypothesis
         - git clone --recursive https://github.com/pytorch/pytorch
-        - export CMAKE_PREFIX_PATH=${CONDA_PREFIX:-"$(dirname $(which conda))/../"}
+        - #export CMAKE_PREFIX_PATH=${CONDA_PREFIX:-"$(dirname $(which conda))/../"}
         - cd pytorch
-        - python3 setup.py install
+        - #python3 setup.py install
         - cd test
         - sed -i -e "s/@onlyCUDA//g" -e "s/@largeTensorTest('12GB')//g" test_nn.py
+        - python3 test_nn.py TestNNDeviceTypeCPU.test_conv_large_cpu
+        - cp ../../libopenblas.so $HOME/conda/lib
+        - cp ../../libopenblas.so.0 $HOME/conda/lib
         - python3 test_nn.py TestNNDeviceTypeCPU.test_conv_large_cpu
       env:
         # for matrix annotation only
