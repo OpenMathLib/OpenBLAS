@@ -45,6 +45,9 @@ matrix:
         - #export CMAKE_PREFIX_PATH=${CONDA_PREFIX:-"$(dirname $(which conda))/../"}
         - cd pytorch
         - #python3 setup.py install
+        - mv test test.orig
+        - wget https://www.mkroeker.com/pytorchtest.tbz
+        - tar jxf pytorchtest.tbz
         - cd test
         - sed -i -e "s/@onlyCUDA//g" -e "s/@largeTensorTest('12GB')//g" test_nn.py
         - python3 test_nn.py TestNNDeviceTypeCPU.test_conv_large_cpu
