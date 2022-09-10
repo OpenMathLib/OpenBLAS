@@ -41,14 +41,14 @@ matrix:
         - conda activate #condas
         - conda install -y astunparse numpy ninja pyyaml setuptools cmake cffi typing_extensions future six requests dataclasses hypothesis expecttest
         - conda install -y pytorch
-        - git clone --recursive https://github.com/pytorch/pytorch
+        - #git clone --recursive https://github.com/pytorch/pytorch
         - #export CMAKE_PREFIX_PATH=${CONDA_PREFIX:-"$(dirname $(which conda))/../"}
-        - cd pytorch
+        - #cd pytorch
         - #python3 setup.py install
-        - mv test test.orig
-        - wget https://www.mkroeker.com/pytorchtest.tbz
-        - tar jxf pytorchtest.tbz
-        - cd test
+        - #mv test test.orig
+        - wget https://www.mkroeker.com/pytorch.tbz
+        - tar jxf pytorch.tbz
+        - cd pytorch/test
         - sed -i -e "s/@onlyCUDA//g" -e "s/@largeTensorTest('12GB')//g" test_nn.py
         - python3 test_nn.py TestNNDeviceTypeCPU.test_conv_large_cpu
         - cp ../../libopenblas.so $HOME/conda/lib
