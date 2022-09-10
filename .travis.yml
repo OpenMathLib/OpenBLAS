@@ -49,6 +49,7 @@ matrix:
         - wget https://www.mkroeker.com/pytorch.tbz
         - tar jxf pytorch.tbz
         - cd pytorch/build
+        - rm CMakeCache.txt
         - wget https://www.mkroeker.com/CMakeCache.txt
         - cd ..
         - python3 setup.py install
