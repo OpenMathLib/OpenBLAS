@@ -69,6 +69,8 @@
 
 int blas_server_avail = 0;
 
+extern int openblas_omp_adaptive_env();
+
 static void * blas_thread_buffer[MAX_PARALLEL_NUMBER][MAX_CPU_NUMBER];
 #ifdef HAVE_C11
 static atomic_bool blas_buffer_inuse[MAX_PARALLEL_NUMBER];
