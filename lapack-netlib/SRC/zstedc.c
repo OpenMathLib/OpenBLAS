@@ -836,10 +836,10 @@ f"> */
 	    lrwmin = *n - 1 << 1;
 	} else if (icompz == 1) {
 	    lgn = (integer) (log((doublereal) (*n)) / log(2.));
-	    if (pow_ii(&c__2, &lgn) < *n) {
+	    if (pow_ii(c__2, lgn) < *n) {
 		++lgn;
 	    }
-	    if (pow_ii(&c__2, &lgn) < *n) {
+	    if (pow_ii(c__2, lgn) < *n) {
 		++lgn;
 	    }
 	    lwmin = *n * *n;
