@@ -951,7 +951,7 @@ f"> */
 /*     Finally go through the left singular vector matrices of all */
 /*     the other subproblems bottom-up on the tree. */
 
-    j = pow_ii(&c__2, &nlvl);
+    j = pow_ii(c__2, nlvl);
     sqre = 0;
 
     for (lvl = nlvl; lvl >= 1; --lvl) {
@@ -965,7 +965,7 @@ f"> */
 	    ll = 1;
 	} else {
 	    i__1 = lvl - 1;
-	    lf = pow_ii(&c__2, &i__1);
+	    lf = pow_ii(c__2, i__1);
 	    ll = (lf << 1) - 1;
 	}
 	i__1 = ll;
@@ -1010,7 +1010,7 @@ L50:
 	    ll = 1;
 	} else {
 	    i__2 = lvl - 1;
-	    lf = pow_ii(&c__2, &i__2);
+	    lf = pow_ii(c__2, i__2);
 	    ll = (lf << 1) - 1;
 	}
 	i__2 = lf;
