@@ -387,6 +387,10 @@ typedef int blasint;
 #endif
 */
 
+#ifdef __EMSCRIPTEN__
+#define YIELDING
+#endif
+
 #ifndef YIELDING
 #define YIELDING	sched_yield()
 #endif
