@@ -23,7 +23,7 @@ ifeq ($(C_COMPILER), CLANG)
 # Any clang posing as gcc 4.2 should be new enough (3.4 or later)
   GCCVERSIONCHECK := $(GCCVERSIONGT4)$(GCCVERSIONGTEQ4)$(GCCMINORVERSIONGTEQ2)
   ifeq ($(GCCVERSIONCHECK), $(filter $(GCCVERSIONCHECK), 011 110 111))
-   AVX2OPT = -mavx2
+   AVX2OPT = -mavx2 -mfma
   endif
 endif
 ifdef NO_AVX2
@@ -72,6 +72,8 @@ else ifeq ($(TARGET_CORE), SKYLAKEX)
   endif
  endif
 else ifeq ($(TARGET_CORE), HASWELL)
+ override CFLAGS += -DBUILD_KERNEL -DTABLE_NAME=gotoblas_$(TARGET_CORE) $(AVX2OPT)
+else ifeq ($(TARGET_CORE), ZEN)
  override CFLAGS += -DBUILD_KERNEL -DTABLE_NAME=gotoblas_$(TARGET_CORE) $(AVX2OPT)
 else ifeq ($(TARGET_CORE), LOONGSON3R4)
  override CFLAGS += -DBUILD_KERNEL -DTABLE_NAME=gotoblas_$(TARGET_CORE) $(MSA_FLAGS)
