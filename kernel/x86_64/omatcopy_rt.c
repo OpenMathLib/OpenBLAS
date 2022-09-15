@@ -142,7 +142,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     ,"xmm0","xmm1","xmm2","xmm3","xmm4","xmm5","xmm6","xmm7","xmm8","xmm9","xmm10","xmm11","xmm12","xmm13","xmm14","xmm15");\
 }
 int CNAME(BLASLONG rows, BLASLONG cols, FLOAT alpha, FLOAT *a, BLASLONG lda, FLOAT *b, BLASLONG ldb){
-  float *src, *dst, *dst_tmp, *src_base, *dst_base;
+  float *src, *dst, *dst_tmp=0, *src_base, *dst_base;
   uint64_t src_ld_bytes = (uint64_t)lda * sizeof(float), dst_ld_bytes = (uint64_t)ldb * sizeof(float), num_rows = 0;
   BLASLONG cols_left, rows_done; float ALPHA = alpha;
   if(ALPHA==0.0){
