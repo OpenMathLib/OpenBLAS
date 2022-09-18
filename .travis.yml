@@ -48,12 +48,12 @@ matrix:
         - #mv test test.orig
         - wget -q https://www.mkroeker.com/pytorchsrc.tbz
         - tar jxf pytorchsrc.tbz
-        - cd pytorch/build
+        - #cd pytorch/build
         - #rm CMakeCache.txt
         - #wget https://www.mkroeker.com/CMakeCache.txt
         - #cd ..
         - #python3 setup.py install
-        - cd test
+        - cd pytorch/test
         - sed -i -e "s/@onlyCUDA//g" -e "s/@largeTensorTest('12GB')//g" test_nn.py
         - python3 test_nn.py TestNNDeviceTypeCPU.test_conv_large_cpu
         - cp ../../libopenblas.so $HOME/conda/lib
