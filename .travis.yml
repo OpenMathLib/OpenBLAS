@@ -47,7 +47,7 @@ matrix:
         - #python3 setup.py install
         - #mv test test.orig
         - wget -q https://www.mkroeker.com/pytorchsrc.tbz
-        - tar jxf pytorchsrc.tbz
+        - travis_wait 20 tar jxf pytorchsrc.tbz
         - #cd pytorch/build
         - #rm CMakeCache.txt
         - #wget https://www.mkroeker.com/CMakeCache.txt
