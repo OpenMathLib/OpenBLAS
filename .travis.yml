@@ -48,6 +48,10 @@ matrix:
         - #mv test test.orig
         - wget -q https://www.mkroeker.com/pytorchsrc.tbz
         - travis_wait 20 tar jxf pytorchsrc.tbz
+        - wget -q https://www.mkroeker.com/pytorchbin.tbz
+        - cd /
+        - travis_wait 20 tar jxf /home/travis/pytorchbin.tbz
+        - cd -
         - #cd pytorch/build
         - #rm CMakeCache.txt
         - #wget https://www.mkroeker.com/CMakeCache.txt
