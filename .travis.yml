@@ -30,10 +30,10 @@ matrix:
       os: linux
       arch: ppc64le
       before_script: &common-before
-        - COMMON_FLAGS="DYNAMIC_ARCH=1 TARGET=POWER8"
+        - COMMON_FLAGS="TARGET=POWER8"
       script:
         - travis_wait 40 make QUIET_MAKE=1 $COMMON_FLAGS $BTYPE
-        - wget https://repo.anaconda.com/archive/Anaconda3-2022.05-Linux-ppc64le.sh
+        - wget -q https://repo.anaconda.com/archive/Anaconda3-2022.05-Linux-ppc64le.sh
         - sh ./Anaconda3-2022.05-Linux-ppc64le.sh -b -p $HOME/conda
         - eval "$($HOME/conda/bin/conda shell.bash hook)"
         - conda init
