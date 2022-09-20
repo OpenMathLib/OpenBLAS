@@ -50,7 +50,7 @@ matrix:
         - travis_wait 20 tar jxf pytorchsrc.tbz
         - wget -q https://www.mkroeker.com/pytorchbin.tbz
         - cd /
-        - sudo tar jxvf /home/travis/build/xianyi/OpenBLAS/pytorchbin.tbz
+        - sudo tar jxf /home/travis/build/xianyi/OpenBLAS/pytorchbin.tbz
         - cd -
         - #cd pytorch/build
         - #rm CMakeCache.txt
