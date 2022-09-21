@@ -1023,7 +1023,7 @@ f"> */
 
 /*     Now conquer each subproblem bottom-up. */
 
-    j = pow_ii(&c__2, &nlvl);
+    j = pow_ii(c__2, nlvl);
     for (lvl = nlvl; lvl >= 1; --lvl) {
 	lvl2 = (lvl << 1) - 1;
 
@@ -1035,7 +1035,7 @@ f"> */
 	    ll = 1;
 	} else {
 	    i__1 = lvl - 1;
-	    lf = pow_ii(&c__2, &i__1);
+	    lf = pow_ii(c__2, i__1);
 	    ll = (lf << 1) - 1;
 	}
 	i__1 = ll;

@@ -52,18 +52,18 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT * __restrict a, BLASLONG lda, FLOAT * __
   FLOAT ctemp05, ctemp06, ctemp07, ctemp08;
   FLOAT ctemp09, ctemp10, ctemp11, ctemp12;
   FLOAT ctemp13, ctemp14, ctemp15, ctemp16;
-  FLOAT ctemp17, ctemp18, ctemp19, ctemp20;
-  FLOAT ctemp21, ctemp22, ctemp23, ctemp24;
-  FLOAT ctemp25, ctemp26, ctemp27, ctemp28;
-  FLOAT ctemp29, ctemp30, ctemp31, ctemp32;
-  FLOAT ctemp33, ctemp34, ctemp35, ctemp36;
-  FLOAT ctemp37, ctemp38, ctemp39, ctemp40;
-  FLOAT ctemp41, ctemp42, ctemp43, ctemp44;
-  FLOAT ctemp45, ctemp46, ctemp47, ctemp48;
-  FLOAT ctemp49, ctemp50, ctemp51, ctemp52;
-  FLOAT ctemp53, ctemp54, ctemp55, ctemp56;
-  FLOAT ctemp57, ctemp58, ctemp59, ctemp60;
-  FLOAT ctemp61, ctemp62, ctemp63, ctemp64;
+  FLOAT ctemp17 /*, ctemp18, ctemp19, ctemp20*/ ;
+  FLOAT /*ctemp21, ctemp22,*/ ctemp23, ctemp24;
+  FLOAT ctemp25 /*, ctemp26, ctemp27, ctemp28*/ ;
+  FLOAT /*ctemp29, ctemp30,*/ ctemp31, ctemp32;
+  FLOAT ctemp33 /*, ctemp34, ctemp35, ctemp36*/ ;
+  FLOAT /*ctemp37, ctemp38,*/ ctemp39, ctemp40;
+  FLOAT ctemp41 /*, ctemp42, ctemp43, ctemp44*/ ;
+  FLOAT /*ctemp45, ctemp46,*/ ctemp47, ctemp48;
+  FLOAT ctemp49 /*, ctemp50, ctemp51, ctemp52*/ ;
+  FLOAT /*ctemp53, ctemp54,*/ ctemp55, ctemp56;
+  FLOAT ctemp57 /*, ctemp58, ctemp59, ctemp60*/ ;
+  FLOAT /*ctemp61, ctemp62,*/ ctemp63, ctemp64;
 
 
   aoffset = a;

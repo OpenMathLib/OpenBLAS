@@ -804,10 +804,10 @@ f"> */
 	    lwmin = *n - 1 << 1;
 	} else {
 	    lgn = (integer) (log((real) (*n)) / log(2.f));
-	    if (pow_ii(&c__2, &lgn) < *n) {
+	    if (pow_ii(c__2, lgn) < *n) {
 		++lgn;
 	    }
-	    if (pow_ii(&c__2, &lgn) < *n) {
+	    if (pow_ii(c__2, lgn) < *n) {
 		++lgn;
 	    }
 	    if (icompz == 1) {
