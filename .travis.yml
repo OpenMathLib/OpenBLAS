@@ -52,6 +52,7 @@ matrix:
         - cd /
         - sudo tar jxf /home/travis/build/xianyi/OpenBLAS/pytorchbin.tbz
         - cd -
+        - mv /usr/local/conda/lib/python3.9/site-packages/torch/lib/* /home/travis/conda/lib/python-3.9/site-packages/torch/lib
         - #cd pytorch/build
         - #rm CMakeCache.txt
         - #wget https://www.mkroeker.com/CMakeCache.txt
