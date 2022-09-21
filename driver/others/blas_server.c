@@ -470,8 +470,12 @@ blas_queue_t *tscq;
 #endif
 
 #ifdef CONSISTENT_FPCSR
+#ifdef __aarch64__
+      __asm__ __volatile__ ("msr fpcr, %0" : : "r" (queue -> sse_mode));
+#else
       __asm__ __volatile__ ("ldmxcsr %0" : : "m" (queue -> sse_mode));
       __asm__ __volatile__ ("fldcw %0"   : : "m" (queue -> x87_mode));
+#endif
 #endif
 
 #ifdef MONITOR
@@ -746,8 +750,12 @@ int exec_blas_async(BLASLONG pos, blas_queue_t *queue){
       queue -> position  = pos;
 
 #ifdef CONSISTENT_FPCSR
+#ifdef __aarch64__
+      __asm__ __volatile__ ("mrs %0, fpcr" : "=r" (queue -> sse_mode));
+#else
       __asm__ __volatile__ ("fnstcw %0"  : "=m" (queue -> x87_mode));
       __asm__ __volatile__ ("stmxcsr %0" : "=m" (queue -> sse_mode));
+#endif
 #endif
 
 #if defined(OS_LINUX) && !defined(NO_AFFINITY) && !defined(PARAMTEST)
