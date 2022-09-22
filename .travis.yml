@@ -39,32 +39,20 @@ matrix:
         - #conda init
         - #conda create condas
         - #conda activate #condas
-        - #conda install -y astunparse numpy ninja pyyaml setuptools cmake cffi typing_extensions future six requests dataclasses hypothesis expecttest
-        - #conda install -y pytorch
-        - #git clone --recursive https://github.com/pytorch/pytorch
-        - #export CMAKE_PREFIX_PATH=${CONDA_PREFIX:-"$(dirname $(which conda))/../"}
-        - #cd pytorch
-        - #python3 setup.py install
-        - #mv test test.orig
         - wget -q https://www.mkroeker.com/pytorchsrc.tbz
         - travis_wait 20 tar jxf pytorchsrc.tbz
         - wget -q https://www.mkroeker.com/pytorchbin.tbz
         - cd /
         - sudo tar jxf /home/travis/build/xianyi/OpenBLAS/pytorchbin.tbz
         - cd -
-        - /usr/local/conda/bin/conda shell.bash hook
-        - /usr/local/conda/bin/conda init
+        - . /usr/local/conda/bin/conda shell.bash hook
+        - #/usr/local/conda/bin/conda init
         - /usr/local/conda/bin/conda activate
-        - #cd pytorch/build
-        - #rm CMakeCache.txt
-        - #wget https://www.mkroeker.com/CMakeCache.txt
-        - #cd ..
-        - #python3 setup.py install
         - cd pytorch/test
         - sed -i -e "s/@onlyCUDA//g" -e "s/@largeTensorTest('12GB')//g" test_nn.py
         - python3 test_nn.py TestNNDeviceTypeCPU.test_conv_large_cpu
-        - cp ../../libopenblas.so $HOME/conda/lib
-        - cp ../../libopenblas.so.0 $HOME/conda/lib
+        - cp ../../libopenblas.so /usr/local/conda/lib
+        - cp ../../libopenblas.so.0 /usr/local/conda/lib
         - python3 test_nn.py TestNNDeviceTypeCPU.test_conv_large_cpu
       env:
         # for matrix annotation only
