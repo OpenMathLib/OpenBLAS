@@ -67,9 +67,15 @@ void openblas_read_env() {
   openblas_env_thread_timeout=(unsigned int)ret;
 
   ret=0;
-  if (readenv(p,"OPENBLAS_NUM_THREADS")) ret = atoi(p);
+  if (readenv(p,"OPENBLAS_DEFAULT_NUM_THREADS")) ret = atoi(p);
   if(ret<0) ret=0;
   openblas_env_openblas_num_threads=ret;
+
+  ret=0;
+  if (readenv(p,"OPENBLAS_NUM_THREADS")) ret = atoi(p);
+  if(ret<0) ret=0;
+  if(ret != 0 || openblas_env_openblas_num_threads == 0)
+    openblas_env_openblas_num_threads=ret;
 
   ret=0;
   if (readenv(p,"GOTO_NUM_THREADS")) ret = atoi(p);
