@@ -2,6 +2,9 @@ name: continuous build
 
 on: [push, pull_request]
 
+permissions:
+  contents: read # to fetch code (actions/checkout)
+
 jobs:
   build:
     runs-on: ${{ matrix.os }}
