@@ -19,7 +19,7 @@ matrix:
 #        - COMMON_FLAGS="DYNAMIC_ARCH=1 TARGET=NEHALEM NUM_THREADS=32"
 #      script:
 #        - make QUIET_MAKE=1 $COMMON_FLAGS $BTYPE
-#        - make -C test $COMMON_FLAGS $BTYPE
+#        - make -C test $COMMON_FLAGS $BTYPE 
 #        - make -C ctest $COMMON_FLAGS $BTYPE
 #        - make -C utest $COMMON_FLAGS $BTYPE
 #      env:
@@ -48,7 +48,7 @@ matrix:
         - #. /usr/local/conda/bin/conda shell.bash hook
         - #/usr/local/conda/bin/conda init
         - #/usr/local/conda/bin/conda activate
-        - /usr/local/conda/etc/profile.d/conda.sh
+        - . /usr/local/conda/etc/profile.d/conda.sh
         - export PATH="/usr/local/conda/bin:$PATH"
         - cd pytorch/test
         - sed -i -e "s/@onlyCUDA//g" -e "s/@largeTensorTest('12GB')//g" test_nn.py
