@@ -48,17 +48,8 @@ matrix:
         - #. /usr/local/conda/bin/conda shell.bash hook
         - #/usr/local/conda/bin/conda init
         - #/usr/local/conda/bin/conda activate
-        - __conda_setup="$('/usr/local/conda/bin/conda' 'shell.bash' 'hook' 2> /dev/null)" \
-          if [ $? -eq 0 ]; then \
-          eval "$__conda_setup" \
-          else \
-          if [ -f "/usr/local/conda/etc/profile.d/conda.sh" ]; then \
-        . "/usr/local/conda/etc/profile.d/conda.sh" \
-          else \
-          export PATH="/usr/local/conda/bin:$PATH" \
-          fi \
-          fi \
-          unset __conda_setup
+        - /usr/local/conda/etc/profile.d/conda.sh
+        - export PATH="/usr/local/conda/bin:$PATH"
         - cd pytorch/test
         - sed -i -e "s/@onlyCUDA//g" -e "s/@largeTensorTest('12GB')//g" test_nn.py
         - python3 test_nn.py TestNNDeviceTypeCPU.test_conv_large_cpu
