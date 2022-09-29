@@ -17,6 +17,10 @@ on:
 # it only makes sense to test if this file has been changed
 
 name: Nightly-Homebrew-Build
+
+permissions:
+  contents: read # to fetch code (actions/checkout)
+
 jobs:
   build-OpenBLAS-with-Homebrew:
     runs-on: macos-latest
