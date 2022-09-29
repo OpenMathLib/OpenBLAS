@@ -49,12 +49,16 @@ matrix:
         - #/usr/local/conda/bin/conda init
         - #/usr/local/conda/bin/conda activate
         - . /usr/local/conda/etc/profile.d/conda.sh
-        - export PATH="/usr/local/conda/bin:$PATH"
+        - export PATH="/usr/local/conda/bin:/usr/local/conda/condabin:$PATH"
+        - export CONDA_DEFAULT_ENV=base
+        - export CONDA_EXE=/usr/local/conda/bin/conda
+        - export CONDA_PREFIX=/usr/local/conda
+        - export CONDA_PYTHON_EXE=/usr/local/conda/bin/python
         - cd pytorch/test
         - sed -i -e "s/@onlyCUDA//g" -e "s/@largeTensorTest('12GB')//g" test_nn.py
         - python3 test_nn.py TestNNDeviceTypeCPU.test_conv_large_cpu
-        - cp ../../libopenblas.so /usr/local/conda/lib
-        - cp ../../libopenblas.so.0 /usr/local/conda/lib
+        - sudo cp ../../libopenblas.so /usr/local/conda/lib
+        - sudo cp ../../libopenblas.so.0 /usr/local/conda/lib
         - python3 test_nn.py TestNNDeviceTypeCPU.test_conv_large_cpu
       env:
         # for matrix annotation only
