@@ -58,7 +58,7 @@ matrix:
         - sed -i -e "s/@onlyCUDA//g" -e "s/@largeTensorTest('12GB')//g" test_nn.py
         - python3 test_nn.py TestNNDeviceTypeCPU.test_conv_large_cpu
         - conda config --add channels conda-forge
-        - conda install xmlrunner
+        - conda install -y xmlrunner
         - sudo cp ../../libopenblas.so /usr/local/conda/lib
         - sudo cp ../../libopenblas.so.0 /usr/local/conda/lib
         - python3 test_nn.py TestNNDeviceTypeCPU.test_conv_large_cpu
