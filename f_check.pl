@@ -76,11 +76,6 @@ if ($compiler eq "") {
 	    $vendor = FUJITSU;
 	    $openmp = "-Kopenmp";
 
-	} elsif ($data =~ /Cray/) {
-
-	    $vendor = CRAY;
-	    $openmp = "-fopenmp";
-
 	} elsif ($data =~ /GNU/ || $data =~ /GCC/ ) {
 
             $data =~ s/\(+.*?\)+//g;
@@ -106,6 +101,10 @@ if ($compiler eq "") {
 		    $openmp = "";
 		}
 	    }
+	} elsif ($data =~ /Cray/) {
+
+	    $vendor = CRAY;
+	    $openmp = "-fopenmp";
 
 	}
 
