@@ -82,10 +82,6 @@ else
                 vendor=FUJITSU
                 openmp='-Kopenmp'
                 ;;
-	    *Cray*)
-		vendor=CRAY
-		openmp='-fopenmp'
-		;;
             *GNU*|*GCC*)
 
                 v="${data#*GCC: *\) }"
@@ -117,6 +113,10 @@ else
                     esac
                 fi
                 ;;
+	    *Cray*)
+		vendor=CRAY
+		openmp='-fopenmp'
+		;;		
             *g95*)
                 vendor=G95
                 openmp=''
