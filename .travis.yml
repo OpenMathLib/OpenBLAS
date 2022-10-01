@@ -57,6 +57,7 @@ matrix:
         - cd pytorch/test
         - conda config --add channels conda-forge
         - sudo /usr/local/conda/bin/conda install -y xmlrunner
+        - sudo /usr/local/conda/bin/conda install -y unittest-xml-reporting
         - sed -i -e "s/@onlyCUDA//g" -e "s/@largeTensorTest('12GB')//g" test_nn.py
         - python3 test_nn.py TestNNDeviceTypeCPU.test_conv_large_cpu
         - sudo cp ../../libopenblas.so /usr/local/conda/lib
