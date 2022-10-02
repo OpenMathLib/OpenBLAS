@@ -12,7 +12,7 @@ endif
 override TARGET_ARCH=
 override TARGET_MACH=
 
-LIB = $(TOPDIR)/$(LIBNAME)
+LIB = "-L $(TOPDIR) -l$(LIBSONAME) -lpthread -lm
 
 stestl1o = c_sblas1.o
 
@@ -63,29 +63,29 @@ all1: $(all1targets)
 ifneq ($(CROSS), 1)
 ifeq ($(USE_OPENMP), 1)
 ifeq ($(BUILD_SINGLE),1)
-	OMP_NUM_THREADS=2 ./xscblat1
+	LD_LIBRARY_PATH=.. OMP_NUM_THREADS=2 ./xscblat1
 endif
 ifeq ($(BUILD_DOUBLE),1)
-	OMP_NUM_THREADS=2 ./xdcblat1
+	LD_LIBRARY_PATH=.. OMP_NUM_THREADS=2 ./xdcblat1
 endif	
 ifeq ($(BUILD_COMPLEX),1)
-	OMP_NUM_THREADS=2 ./xccblat1
+	LD_LIBRARY_PATH=.. OMP_NUM_THREADS=2 ./xccblat1
 endif
 ifeq ($(BUILD_COMPLEX16),1)
-	OMP_NUM_THREADS=2 ./xzcblat1
+	LD_LIBRARY_PATH=.. OMP_NUM_THREADS=2 ./xzcblat1
 endif
 else
 ifeq ($(BUILD_SINGLE),1)
-	OPENBLAS_NUM_THREADS=2 ./xscblat1
+	LD_LIBRARY_PATH=.. OPENBLAS_NUM_THREADS=2 ./xscblat1
 endif
 ifeq ($(BUILD_DOUBLE),1)
-	OPENBLAS_NUM_THREADS=2 ./xdcblat1
+	LD_LIBRARY_PATH=.. OPENBLAS_NUM_THREADS=2 ./xdcblat1
 endif
 ifeq ($(BUILD_COMPLEX),1)
-	OPENBLAS_NUM_THREADS=2 ./xccblat1
+	LD_LIBRARY_PATH=.. OPENBLAS_NUM_THREADS=2 ./xccblat1
 endif
 ifeq ($(BUILD_COMPLEX16),1)
-	OPENBLAS_NUM_THREADS=2 ./xzcblat1
+	LD_LIBRARY_PATH=.. OPENBLAS_NUM_THREADS=2 ./xzcblat1
 endif
 endif
 endif
@@ -108,29 +108,29 @@ all2: $(all2targets)
 ifneq ($(CROSS), 1)
 ifeq ($(USE_OPENMP), 1)
 ifeq ($(BUILD_SINGLE),1)
-	OMP_NUM_THREADS=2 ./xscblat2 < sin2
+	OMLD_LIBRARY_PATH=.. P_NUM_THREADS=2 ./xscblat2 < sin2
 endif
 ifeq ($(BUILD_DOUBLE),1)
-	OMP_NUM_THREADS=2 ./xdcblat2 < din2
+	LD_LIBRARY_PATH=.. OMP_NUM_THREADS=2 ./xdcblat2 < din2
 endif
 ifeq ($(BUILD_COMPLEX),1)
-	OMP_NUM_THREADS=2 ./xccblat2 < cin2
+	LD_LIBRARY_PATH=.. OMP_NUM_THREADS=2 ./xccblat2 < cin2
 endif
 ifeq ($(BUILD_COMPLEX16),1)
-	OMP_NUM_THREADS=2 ./xzcblat2 < zin2
+	LD_LIBRARY_PATH=.. OMP_NUM_THREADS=2 ./xzcblat2 < zin2
 endif
 else
 ifeq ($(BUILD_SINGLE),1)
-	OPENBLAS_NUM_THREADS=2 ./xscblat2 < sin2
+	LD_LIBRARY_PATH=.. OPENBLAS_NUM_THREADS=2 ./xscblat2 < sin2
 endif
 ifeq ($(BUILD_DOUBLE),1)
-	OPENBLAS_NUM_THREADS=2 ./xdcblat2 < din2
+	LD_LIBRARY_PATH=.. OPENBLAS_NUM_THREADS=2 ./xdcblat2 < din2
 endif
 ifeq ($(BUILD_COMPLEX),1)
-	OPENBLAS_NUM_THREADS=2 ./xccblat2 < cin2
+	LD_LIBRARY_PATH=.. OPENBLAS_NUM_THREADS=2 ./xccblat2 < cin2
 endif
 ifeq ($(BUILD_COMPLEX16),1)
-	OPENBLAS_NUM_THREADS=2 ./xzcblat2 < zin2
+	LD_LIBRARY_PATH=.. OPENBLAS_NUM_THREADS=2 ./xzcblat2 < zin2
 endif
 endif
 endif
@@ -154,29 +154,29 @@ all3: $(all3targets)
 ifneq ($(CROSS), 1)
 ifeq ($(USE_OPENMP), 1)
 ifeq ($(BUILD_SINGLE),1)
-	OMP_NUM_THREADS=2 ./xscblat3 < sin3
+	LD_LIBRARY_PATH=.. OMP_NUM_THREADS=2 ./xscblat3 < sin3
 endif
 ifeq ($(BUILD_DOUBLE),1)
-	OMP_NUM_THREADS=2 ./xdcblat3 < din3
+	LD_LIBRARY_PATH=.. OMP_NUM_THREADS=2 ./xdcblat3 < din3
 endif
 ifeq ($(BUILD_COMPLEX),1)
-	OMP_NUM_THREADS=2 ./xccblat3 < cin3
+	LD_LIBRARY_PATH=.. OMP_NUM_THREADS=2 ./xccblat3 < cin3
 endif
 ifeq ($(BUILD_COMPLEX16),1)
-	OMP_NUM_THREADS=2 ./xzcblat3 < zin3
+	LD_LIBRARY_PATH=.. OMP_NUM_THREADS=2 ./xzcblat3 < zin3
 endif
 else
 ifeq ($(BUILD_SINGLE),1)
-	OPENBLAS_NUM_THREADS=2 ./xscblat3 < sin3
+	LD_LIBRARY_PATH=.. OPENBLAS_NUM_THREADS=2 ./xscblat3 < sin3
 endif
 ifeq ($(BUILD_DOUBLE),1)
-	OPENBLAS_NUM_THREADS=2 ./xdcblat3 < din3
+	LD_LIBRARY_PATH=.. OPENBLAS_NUM_THREADS=2 ./xdcblat3 < din3
 endif
 ifeq ($(BUILD_COMPLEX),1)
-	OPENBLAS_NUM_THREADS=2 ./xccblat3 < cin3
+	LD_LIBRARY_PATH=.. OPENBLAS_NUM_THREADS=2 ./xccblat3 < cin3
 endif
 ifeq ($(BUILD_COMPLEX16),1)
-	OPENBLAS_NUM_THREADS=2 ./xzcblat3 < zin3
+	LD_LIBRARY_PATH=.. OPENBLAS_NUM_THREADS=2 ./xzcblat3 < zin3
 endif
 endif
 endif
@@ -184,17 +184,17 @@ endif
 all3_3m: xzcblat3_3m xccblat3_3m
 ifeq ($(USE_OPENMP), 1)
 ifeq ($(BUILD_SINGLE),1)
-	OMP_NUM_THREADS=2 ./xccblat3_3m < cin3_3m
+	LD_LIBRARY_PATH=.. OMP_NUM_THREADS=2 ./xccblat3_3m < cin3_3m
 endif
 ifeq ($(BUILD_COMPLEX16),1)
-	OMP_NUM_THREADS=2 ./xzcblat3_3m < zin3_3m
+	LD_LIBRARY_PATH=.. OMP_NUM_THREADS=2 ./xzcblat3_3m < zin3_3m
 endif
 else
 ifeq ($(BUILD_COMPLEX),1)
-	OPENBLAS_NUM_THREADS=2 ./xccblat3_3m < cin3_3m
+	LD_LIBRARY_PATH=.. OPENBLAS_NUM_THREADS=2 ./xccblat3_3m < cin3_3m
 endif
 ifeq ($(BUILD_COMPLEX16),1)
-	OPENBLAS_NUM_THREADS=2 ./xzcblat3_3m < zin3_3m
+	LD_LIBRARY_PATH=.. OPENBLAS_NUM_THREADS=2 ./xzcblat3_3m < zin3_3m
 endif
 endif
 
