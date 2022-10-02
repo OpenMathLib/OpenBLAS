@@ -59,6 +59,11 @@ matrix:
         - sudo /usr/local/conda/bin/conda install -y xmlrunner
         - sudo /usr/local/conda/bin/conda install -y unittest-xml-reporting
         - sed -i -e "s/@onlyCUDA//g" -e "s/@largeTensorTest('12GB')//g" test_nn.py
+        - free
+        - df
+        - dd if=/dev/zero of=swapfile bs=10k count=200000
+        - mkswap swapfile
+        - sudo swapon swapfile
         - python3 test_nn.py TestNNDeviceTypeCPU.test_conv_large_cpu
         - sudo cp ../../libopenblas.so /usr/local/conda/lib
         - sudo cp ../../libopenblas.so.0 /usr/local/conda/lib
