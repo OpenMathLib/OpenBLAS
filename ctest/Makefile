@@ -12,7 +12,7 @@ endif
 override TARGET_ARCH=
 override TARGET_MACH=
 
-LIB = "-L $(TOPDIR) -l$(LIBSONAME) -lpthread -lm
+LIB = -L $(TOPDIR) -l$(LIBSONAME) -lpthread -lm
 
 stestl1o = c_sblas1.o
 
