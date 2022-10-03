@@ -83,7 +83,14 @@ jobs:
   - script: |
       mingw32-make CC=gcc FC=gfortran DYNAMIC_ARCH=1 DYNAMIC_LIST="SANDYBRIDGE"
       cd ctest
-      mingw32-make CC=gcc FC=gfortran all
+      LD_LIBRARY_PATH=.. ./xscblat1
+      cp ../libopenblas.dll .
+      ./xdcblat1
+      ./xscblat2 <sin2
+      ./xdcblat2 <din2
+      ./xccblat2 <cin2
+      ./xccblat3 <cin3
+      ./xzcblat3 <zin3
 
 - job: Windows_clang_cmake
   pool:
