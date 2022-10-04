@@ -58,6 +58,7 @@ jobs:
   steps:   
   - script: |
       mingw32-make CC=gcc FC=gfortran
+      make -C ctest all
       cd ctest
       cp ../libopenblas.dll .
       dir
