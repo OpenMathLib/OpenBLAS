@@ -81,9 +81,10 @@ jobs:
      vmImage: 'windows-latest'
   steps:   
   - script: |
-      mingw32-make CC=gcc FC=gfortran DYNAMIC_ARCH=1 DYNAMIC_LIST="SANDYBRIDGE"
+      mingw32-make CC=gcc FC=gfortran # DYNAMIC_ARCH=1 DYNAMIC_LIST="SANDYBRIDGE"
       cd ctest
       cp ../libopenblas.dll .
+      dir
       xdcblat1
       xscblat2 <sin2
       xdcblat2 <din2
