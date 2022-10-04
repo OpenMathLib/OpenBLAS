@@ -160,7 +160,7 @@ endif
 ifneq ($(ONLY_CBLAS), 1)
 	$(MAKE) -C utest all
 endif
-#ifneq ($(NO_CBLAS), 1)
+ifneq ($(NO_CBLAS), 1)
 #ifneq ($(ONLY_CBLAS), 1)
 #	$(MAKE) -C ctest all
 #endif
