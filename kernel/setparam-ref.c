@@ -866,8 +866,9 @@ gotoblas_t TABLE_NAME = {
   cgeadd_kTS,
 #endif
 #if BUILD_COMPLEX16==1
-  zgeadd_kTS
+  zgeadd_kTS,
 #endif
+  0,  // padding_k
 };
 
 #if (ARCH_ARM64)
@@ -971,6 +972,12 @@ static void init_parameter(void) {
   TABLE_NAME.xgemm3m_q = TABLE_NAME.qgemm_q;
   TABLE_NAME.xgemm3m_r = TABLE_NAME.qgemm_r;
 #endif
+#endif
+  
+#if defined(NEOVERSEN2) && BUILD_BFLOAT16 == 1
+  TABLE_NAME.align_k = 4;
+#else
+  TABLE_NAME.align_k = 1;
 #endif
 
 }

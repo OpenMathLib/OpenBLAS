@@ -324,6 +324,16 @@ static int inner_thread(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, 
     } else {
       if (min_l > GEMM_Q) min_l = (min_l + 1) / 2;
     }
+    
+    BLASLONG pad_min_l = min_l;
+
+#if defined(HALF) && defined(DYNAMIC_ARCH)
+    pad_min_l = (min_l + gotoblas->align_k - 1) & ~(gotoblas->align_k-1);
+#endif
+
+#if defined(HALF) && !defined(DYNAMIC_ARCH) && defined(NEOVERSEN2)
+    pad_min_l = (min_l + 3) & ~3;
+#endif
 
     /* Determine step size in m
      * Note: We are currently on the first step in m
@@ -382,13 +392,13 @@ static int inner_thread(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, 
         /* Copy part of local region of B into workspace */
 	START_RPCC();
 	OCOPY_OPERATION(min_l, min_jj, b, ldb, ls, jjs,
-			buffer[bufferside] + min_l * (jjs - js) * COMPSIZE * l1stride);
+			buffer[bufferside] + pad_min_l * (jjs - js) * COMPSIZE * l1stride);
 	STOP_RPCC(copy_B);
 
         /* Apply kernel with local region of A and part of local region of B */
 	START_RPCC();
 	KERNEL_OPERATION(min_i, min_jj, min_l, alpha,
-			 sa, buffer[bufferside] + min_l * (jjs - js) * COMPSIZE * l1stride,
+			 sa, buffer[bufferside] + pad_min_l * (jjs - js) * COMPSIZE * l1stride,
 			 c, ldc, m_from, jjs);
 	STOP_RPCC(kernel);
 

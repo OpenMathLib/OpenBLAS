@@ -1193,6 +1193,7 @@ BLASLONG (*ixamin_k)(BLASLONG, xdouble *, BLASLONG);
 #ifdef BUILD_COMPLEX16
   int    (*zgeadd_k) (BLASLONG, BLASLONG, double, double, double *, BLASLONG, double, double, double *, BLASLONG); 
 #endif
+  int align_k;  // must be 2^n
 } gotoblas_t;
 
 extern gotoblas_t *gotoblas;
