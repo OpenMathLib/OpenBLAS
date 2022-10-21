@@ -26,11 +26,12 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
 
 
+#define HAVE_KERNEL 1
 #define HAVE_KERNEL_16 1
 
-static void cscal_kernel_16( BLASLONG n, FLOAT *alpha, FLOAT *x) __attribute__ ((noinline));
+static void cscal_kernel( BLASLONG n, FLOAT *alpha, FLOAT *x) __attribute__ ((noinline));
 
-static void cscal_kernel_16( BLASLONG n, FLOAT *alpha, FLOAT *x)
+static void cscal_kernel( BLASLONG n, FLOAT *alpha, FLOAT *x)
 {
 
 
@@ -38,6 +39,9 @@ static void cscal_kernel_16( BLASLONG n, FLOAT *alpha, FLOAT *x)
 	(
 	"vbroadcastss		(%2), %%ymm0		    \n\t"  // da_r	
 	"vbroadcastss          4(%2), %%ymm1		    \n\t"  // da_i 	
+
+	"cmpq	        $16, %0			            \n\t"
+	"jb	3f					    \n\t"
 
 	"addq	$128, %1				    \n\t"
 
@@ -52,7 +56,8 @@ static void cscal_kernel_16( BLASLONG n, FLOAT *alpha, FLOAT *x)
 	"vpermilps	$0xb1 , %%ymm7, %%ymm15		    \n\t"
 
 	"subq	        $16, %0			            \n\t"		
-	"jz	2f					    \n\t"
+	"cmpq	        $16, %0			            \n\t"
+	"jb	2f					    \n\t"
 
 	".p2align 4				            \n\t"
 	"1:				            	    \n\t"
@@ -60,23 +65,19 @@ static void cscal_kernel_16( BLASLONG n, FLOAT *alpha, FLOAT *x)
 	//"prefetcht0     128(%1)				    \n\t"
 	// ".align 2				            \n\t"
 
-	"vmulps		%%ymm0, %%ymm4 , %%ymm8		    \n\t" // da_r*x0 , da_r *x1
-	"vmovups	   0(%1), %%ymm4		    \n\t"
-	"vmulps		%%ymm0, %%ymm5 , %%ymm9		    \n\t"
-	"vmovups	  32(%1), %%ymm5		    \n\t"
-	"vmulps		%%ymm0, %%ymm6 , %%ymm10	    \n\t" 
-	"vmovups	  64(%1), %%ymm6		    \n\t"
-	"vmulps		%%ymm0, %%ymm7 , %%ymm11	    \n\t" 
-	"vmovups	  96(%1), %%ymm7		    \n\t"
+	"vmulps		%%ymm1, %%ymm12, %%ymm8		    \n\t" // da_i*x1 , da_i *x0
+	"vmulps		%%ymm1, %%ymm13, %%ymm9		    \n\t"
+	"vmulps		%%ymm1, %%ymm14, %%ymm10	    \n\t"
+	"vmulps		%%ymm1, %%ymm15, %%ymm11	    \n\t"
 
-	"vmulps		%%ymm1, %%ymm12, %%ymm12	    \n\t" // da_i*x1 , da_i *x0
-	"vaddsubps	%%ymm12 , %%ymm8 , %%ymm8	    \n\t"
-	"vmulps		%%ymm1, %%ymm13, %%ymm13	    \n\t" 
-	"vaddsubps	%%ymm13 , %%ymm9 , %%ymm9	    \n\t"
-	"vmulps		%%ymm1, %%ymm14, %%ymm14	    \n\t" 
-	"vaddsubps	%%ymm14 , %%ymm10, %%ymm10	    \n\t"
-	"vmulps		%%ymm1, %%ymm15, %%ymm15	    \n\t" 
-	"vaddsubps	%%ymm15 , %%ymm11, %%ymm11	    \n\t"
+	"vfmaddsub231ps	%%ymm0, %%ymm4 , %%ymm8		    \n\t" // da_r*x0 , da_r *x1
+	"vmovups	   0(%1), %%ymm4		    \n\t"
+	"vfmaddsub231ps	%%ymm0, %%ymm5 , %%ymm9		    \n\t"
+	"vmovups	  32(%1), %%ymm5		    \n\t"
+	"vfmaddsub231ps	%%ymm0, %%ymm6 , %%ymm10	    \n\t"
+	"vmovups	  64(%1), %%ymm6		    \n\t"
+	"vfmaddsub231ps	%%ymm0, %%ymm7 , %%ymm11	    \n\t"
+	"vmovups	  96(%1), %%ymm7		    \n\t"
 
 	"vmovups	%%ymm8 , -128(%1)		    \n\t"
 	"vpermilps	$0xb1 , %%ymm4, %%ymm12		    \n\t"
@@ -89,30 +90,75 @@ static void cscal_kernel_16( BLASLONG n, FLOAT *alpha, FLOAT *x)
 
 	"addq		$128 ,%1  	 	            \n\t"
 	"subq	        $16, %0			            \n\t"		
-	"jnz		1b		             	    \n\t"
+	"cmpq	        $16, %0			            \n\t"
+	"jae		1b		             	    \n\t"
 
 	"2:				            	    \n\t"
 
 
-	"vmulps		%%ymm0, %%ymm4 , %%ymm8		    \n\t" // da_r*x0 , da_r *x1
-	"vmulps		%%ymm0, %%ymm5 , %%ymm9		    \n\t"
-	"vmulps		%%ymm0, %%ymm6 , %%ymm10	    \n\t" 
-	"vmulps		%%ymm0, %%ymm7 , %%ymm11	    \n\t" 
+	"vmulps		%%ymm1, %%ymm12, %%ymm8		    \n\t" // da_i*x1 , da_i *x0
+	"vmulps		%%ymm1, %%ymm13, %%ymm9		    \n\t"
+	"vmulps		%%ymm1, %%ymm14, %%ymm10	    \n\t"
+	"vmulps		%%ymm1, %%ymm15, %%ymm11	    \n\t"
 
-	"vmulps		%%ymm1, %%ymm12, %%ymm12	    \n\t" // da_i*x1 , da_i *x0
-	"vaddsubps	%%ymm12 , %%ymm8 , %%ymm8	    \n\t"
-	"vmulps		%%ymm1, %%ymm13, %%ymm13	    \n\t" 
-	"vaddsubps	%%ymm13 , %%ymm9 , %%ymm9	    \n\t"
-	"vmulps		%%ymm1, %%ymm14, %%ymm14	    \n\t" 
-	"vaddsubps	%%ymm14 , %%ymm10, %%ymm10	    \n\t"
-	"vmulps		%%ymm1, %%ymm15, %%ymm15	    \n\t" 
-	"vaddsubps	%%ymm15 , %%ymm11, %%ymm11	    \n\t"
+	"vfmaddsub231ps	%%ymm0, %%ymm4 , %%ymm8		    \n\t" // da_r*x0 , da_r *x1
+	"vfmaddsub231ps	%%ymm0, %%ymm5 , %%ymm9		    \n\t"
+	"vfmaddsub231ps	%%ymm0, %%ymm6 , %%ymm10	    \n\t"
+	"vfmaddsub231ps	%%ymm0, %%ymm7 , %%ymm11	    \n\t"
 
 	"vmovups	%%ymm8 , -128(%1)		    \n\t"
 	"vmovups	%%ymm9 ,  -96(%1)		    \n\t"
 	"vmovups	%%ymm10,  -64(%1)		    \n\t"
 	"vmovups	%%ymm11,  -32(%1)		    \n\t"
 
+	"testq		$15, %0			            \n\t"
+	"jz		7f			            \n\t"
+
+	"3:				            	    \n\t"
+	"testq		$8, %0			            \n\t"
+	"jz		4f			            \n\t"
+	"vmovups	   0(%1), %%ymm4		    \n\t"
+	"vmovups	  32(%1), %%ymm5		    \n\t"
+	"vpermilps	$0xb1 , %%ymm4 , %%ymm12	    \n\t"
+	"vpermilps	$0xb1 , %%ymm5 , %%ymm13	    \n\t"
+	"vmulps		%%ymm1, %%ymm12, %%ymm8		    \n\t" // da_i*x1 , da_i *x0
+	"vmulps		%%ymm1, %%ymm13, %%ymm9		    \n\t"
+	"vfmaddsub231ps	%%ymm0, %%ymm4 , %%ymm8		    \n\t" // da_r*x0 , da_r *x1
+	"vfmaddsub231ps	%%ymm0, %%ymm5 , %%ymm9		    \n\t"
+	"vmovups	%%ymm8,    0(%1)		    \n\t"
+	"vmovups	%%ymm9,   32(%1)		    \n\t"
+	"addq		$64, %1  	 	            \n\t"
+
+	"4:				            	    \n\t"
+	"testq		$4, %0			            \n\t"
+	"jz		5f			            \n\t"
+	"vmovups	   0(%1), %%ymm4		    \n\t"
+	"vpermilps	$0xb1 , %%ymm4 , %%ymm12	    \n\t"
+	"vmulps		%%ymm1, %%ymm12, %%ymm8		    \n\t" // da_i*x1 , da_i *x0
+	"vfmaddsub231ps	%%ymm0, %%ymm4 , %%ymm8		    \n\t" // da_r*x0 , da_r *x1
+	"vmovups	%%ymm8,    0(%1)		    \n\t"
+	"addq		$32, %1  	 	            \n\t"
+
+	"5:				            	    \n\t"
+	"testq		$2, %0			            \n\t"
+	"jz		6f			            \n\t"
+	"vmovups	   0(%1), %%xmm4		    \n\t"
+	"vpermilps	$0xb1 , %%xmm4 , %%xmm12	    \n\t"
+	"vmulps		%%xmm1, %%xmm12, %%xmm8		    \n\t" // da_i*x1 , da_i *x0
+	"vfmaddsub231ps	%%xmm0, %%xmm4 , %%xmm8		    \n\t" // da_r*x0 , da_r *x1
+	"vmovups	%%xmm8,    0(%1)		    \n\t"
+	"addq		$16, %1  	 	            \n\t"
+
+	"6:				            	    \n\t"
+	"testq		$1, %0			            \n\t"
+	"jz		7f			            \n\t"
+	"vmovsd		   0(%1), %%xmm4		    \n\t"
+	"vpermilps	$0x1  , %%xmm4 , %%xmm12	    \n\t"
+	"vmulps		%%xmm1, %%xmm12, %%xmm8		    \n\t" // da_i*x1 , da_i *x0
+	"vfmaddsub231ps	%%xmm0, %%xmm4 , %%xmm8		    \n\t" // da_r*x0 , da_r *x1
+	"vmovsd		%%xmm8,    0(%1)		    \n\t"
+
+	"7:				            	    \n\t"
 	"vzeroupper					    \n\t"
 
 	:

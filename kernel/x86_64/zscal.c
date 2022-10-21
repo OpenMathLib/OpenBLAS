@@ -335,6 +335,15 @@ int CNAME(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, FLOAT da_r, FLOAT da_i, 
 	}
 
 
+#ifdef HAVE_KERNEL
+	if ( da_r != 0.0 && da_i != 0.0 ) {
+		alpha[0] = da_r;
+		alpha[1] = da_i;
+		zscal_kernel(n , alpha, x);
+		return(0);
+	}
+#endif
+
 	BLASLONG n1 = n & -8;
 	if ( n1 > 0 )
 	{
@@ -350,8 +359,10 @@ int CNAME(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, FLOAT da_r, FLOAT da_i, 
 		else
 			if ( da_i == 0 )
 				zscal_kernel_8_zero_i(n1 , alpha , x);
+#ifndef HAVE_KERNEL
 			else
 				zscal_kernel_8(n1 , alpha , x);
+#endif
 
 		i = n1 << 1;
 		j = n1;
