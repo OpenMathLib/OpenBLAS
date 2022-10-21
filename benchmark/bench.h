@@ -74,6 +74,24 @@ static void *huge_malloc(BLASLONG size){
 
 #endif
 
+/* Benchmarks should allocate with cacheline (often 64 bytes) alignment
+   to avoid unreliable results. This technique, storing the allocated
+   pointer value just before the aligned memory, doesn't require
+   C11's aligned_alloc for compatibility with older compilers. */
+static void *aligned_alloc_cacheline(size_t n)
+{
+  void *p = malloc((size_t)(void *) + n + L1_DATA_LINESIZE - 1);
+  if (p) {
+    void **newp = (void **)
+      (((uintptr_t)p + L1_DATA_LINESIZE) & (uintptr_t)-L1_DATA_LINESIZE);
+    newp[-1] = p;
+    p = newp;
+  }
+  return p;
+}
+#define malloc aligned_alloc_cacheline
+#define free(p) free((p) ? ((void **)(p))[-1] : (p))
+
 #if defined(__WIN32__) || defined(__WIN64__) || !defined(_POSIX_TIMERS)
   struct timeval start, stop;
 #elif defined(__APPLE__)
