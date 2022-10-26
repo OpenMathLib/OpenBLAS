@@ -868,7 +868,7 @@ gotoblas_t TABLE_NAME = {
 #if BUILD_COMPLEX16==1
   zgeadd_kTS,
 #endif
-  0,  // padding_k
+  1,  // align_k
 };
 
 #if (ARCH_ARM64)
