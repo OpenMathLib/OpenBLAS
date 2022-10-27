@@ -305,13 +305,12 @@ int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n,
       }
 
       BLASLONG pad_min_l = min_l;
-      
-#if defined(HALF) && defined(DYNAMIC_ARCH)
-      pad_min_l = (min_l + gotoblas->align_k - 1) & ~(gotoblas->align_k-1);
+#if defined(HALF)
+#if defined(DYNAMIC_ARCH)
+      pad_min_l = (min_l + gotoblas->sbgemm_align_k - 1) & ~(gotoblas->sbgemm_align_k-1);
+#else
+      pad_min_l = (min_l + SBGEMM_ALIGN_K - 1) & ~(SBGEMM_ALIGN_K - 1);;
 #endif
-
-#if defined(HALF) && !defined(DYNAMIC_ARCH) && defined(NEOVERSEN2)
-      pad_min_l = (min_l + 3) & ~3;
 #endif
 
       /* First, we have to move data A to L2 cache */

@@ -50,6 +50,7 @@ typedef struct {
 #ifdef BUILD_BFLOAT16
   int sbgemm_p, sbgemm_q, sbgemm_r;
   int sbgemm_unroll_m, sbgemm_unroll_n, sbgemm_unroll_mn;
+  int sbgemm_align_k;
 
   void   (*sbstobf16_k) (BLASLONG, float    *, BLASLONG, bfloat16 *, BLASLONG);
   void   (*sbdtobf16_k) (BLASLONG, double   *, BLASLONG, bfloat16 *, BLASLONG);
@@ -1193,7 +1194,6 @@ BLASLONG (*ixamin_k)(BLASLONG, xdouble *, BLASLONG);
 #ifdef BUILD_COMPLEX16
   int    (*zgeadd_k) (BLASLONG, BLASLONG, double, double, double *, BLASLONG, double, double, double *, BLASLONG); 
 #endif
-  int align_k;  // must be 2^n
 } gotoblas_t;
 
 extern gotoblas_t *gotoblas;

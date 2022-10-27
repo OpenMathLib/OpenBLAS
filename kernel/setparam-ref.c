@@ -62,6 +62,8 @@ gotoblas_t TABLE_NAME = {
  MAX(SBGEMM_DEFAULT_UNROLL_M, SBGEMM_DEFAULT_UNROLL_N),
 #endif
 
+  SBGEMM_ALIGN_K,
+
   sbstobf16_kTS, sbdtobf16_kTS, sbf16tos_kTS, dbf16tod_kTS,
 
   samax_kTS,  samin_kTS,  smax_kTS,  smin_kTS,
@@ -972,12 +974,6 @@ static void init_parameter(void) {
   TABLE_NAME.xgemm3m_q = TABLE_NAME.qgemm_q;
   TABLE_NAME.xgemm3m_r = TABLE_NAME.qgemm_r;
 #endif
-#endif
-  
-#if defined(NEOVERSEN2) && BUILD_BFLOAT16 == 1
-  TABLE_NAME.align_k = 4;
-#else
-  TABLE_NAME.align_k = 1;
 #endif
 
 }
