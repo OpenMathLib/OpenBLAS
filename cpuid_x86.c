@@ -1544,6 +1544,13 @@ int get_cpuname(void){
 	    return CPUTYPE_NEHALEM;
         }
         break;
+      case 11: //family 6 exmodel 11
+        switch (model) {
+          case 7: // Raptor Lake
+            if(support_avx2())
+              return CPUTYPE_HASWELL;
+        }
+        break;
       }
       break;    
     case 0x7:
@@ -2334,6 +2341,12 @@ int get_coretype(void){
 	  return CORE_NEHALEM;
         }
 
+      case 11:
+	switch (model) {
+	  case 7: // Raptor Lake
+          if(support_avx2())
+            return CORE_HASWELL;
+	}
       case 15:
 	if (model <= 0x2) return CORE_NORTHWOOD;
 	else return CORE_PRESCOTT;
