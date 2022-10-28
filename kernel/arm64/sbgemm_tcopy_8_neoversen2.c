@@ -43,15 +43,6 @@ int CNAME(BLASLONG m, BLASLONG n, IFLOAT *a, BLASLONG lda, IFLOAT *b) {
 
     for (BLASLONG i = 0; i < m / 4; i++) {
       for (BLASLONG line = 0; line < 8; line++) {
-#if 0
-        float fv0 = 0, fv1 = 0, fv2 = 0, fv3 = 0;
-        *((bfloat16 *)(&fv0) + 1) = a_offset0[line];
-        *((bfloat16 *)(&fv1) + 1) = a_offset1[line];
-        *((bfloat16 *)(&fv2) + 1) = a_offset2[line];
-        *((bfloat16 *)(&fv3) + 1) = a_offset3[line];
-        printf("%f %f %f %f\n", fv0, fv1, fv2, fv3);
-#endif
-
         b_offset[line * 4] = a_offset0[line];
         b_offset[line * 4 + 1] = a_offset1[line];
         b_offset[line * 4 + 2] = a_offset2[line];

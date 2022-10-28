@@ -58,17 +58,6 @@ int CNAME(BLASLONG m, BLASLONG n, IFLOAT *a, BLASLONG lda, IFLOAT *b) {
       svst1_bf16(pg16, (bfloat16_t *)b_offset + 8, v2);
       svst1_bf16(pg16, (bfloat16_t *)b_offset + 12, v3);
 
-#if 0
-      for (int line = 0; line < 4; line++) {
-        for (int p = 0; p < 4; p++) {
-          float tmp = 0;
-          *((bfloat16 *)(&tmp) + 1) = b_offset[line * 4 + p];
-          printf("%f ", tmp);
-        }
-        printf("\n");
-      }
-#endif
-
       b_offset += 16;
       a_offsetx[0] += 4;
       a_offsetx[1] += 4;
