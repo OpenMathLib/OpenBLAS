@@ -79,6 +79,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define SBGEMM_DEFAULT_P 256
 #define SBGEMM_DEFAULT_R 256
 #define SBGEMM_DEFAULT_Q 256
+#define SBGEMM_ALIGN_K 1  // must be 2^x
+
 #ifdef OPTERON
 
 #define SNUMOPT		4
@@ -3393,6 +3395,9 @@ is a big desktop or server with abundant cache rather than a phone or embedded d
 #define ZGEMM_DEFAULT_R 4096
 
 #elif defined(NEOVERSEN2)
+
+#undef SBGEMM_ALIGN_K
+#define SBGEMM_ALIGN_K 4
 
 #undef SBGEMM_DEFAULT_UNROLL_M
 #undef SBGEMM_DEFAULT_UNROLL_N

@@ -37,9 +37,9 @@
 
 int CNAME(BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alpha, IFLOAT *A, IFLOAT *B,
           FLOAT *C, BLASLONG ldc) {
-    if (alpha == 1.0f)
-        return sbgemm_kernel_neoversen2_alpha_one(m, n, k, alpha, A, B, C, ldc);
-    else
-        return sbgemm_kernel_neoversen2_alpha(m, n, k, alpha, A, B, C, ldc);
-    return 0;
+  if (alpha == 1.0f)
+    return sbgemm_kernel_neoversen2_alpha_one(m, n, k, alpha, A, B, C, ldc);
+  else
+    return sbgemm_kernel_neoversen2_alpha(m, n, k, alpha, A, B, C, ldc);
+  return 0;
 }

@@ -62,6 +62,8 @@ gotoblas_t TABLE_NAME = {
  MAX(SBGEMM_DEFAULT_UNROLL_M, SBGEMM_DEFAULT_UNROLL_N),
 #endif
 
+  SBGEMM_ALIGN_K,
+
   sbstobf16_kTS, sbdtobf16_kTS, sbf16tos_kTS, dbf16tod_kTS,
 
   samax_kTS,  samin_kTS,  smax_kTS,  smin_kTS,
@@ -866,8 +868,9 @@ gotoblas_t TABLE_NAME = {
   cgeadd_kTS,
 #endif
 #if BUILD_COMPLEX16==1
-  zgeadd_kTS
+  zgeadd_kTS,
 #endif
+  1,  // align_k
 };
 
 #if (ARCH_ARM64)
