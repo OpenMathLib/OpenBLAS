@@ -25,6 +25,19 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
 USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
 
+/*
+ * Avoid contraction of floating point operations, specifically fused
+ * multiply-add, because they can cause unexpected results in complex
+ * multiplication.
+ */
+#if defined(__GNUC__) && !defined(__clang__)
+#pragma GCC optimize ("fp-contract=off")
+#endif
+
+#if defined(__clang__)
+#pragma clang fp contract(off)
+#endif
+
 #include "common.h"
 
 
