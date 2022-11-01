@@ -1337,7 +1337,7 @@ cgemmt.$(SUFFIX) cgemmt.$(PSUFFIX) : gemmt.c ../param.h
 zgemmt.$(SUFFIX) zgemmt.$(PSUFFIX) : gemmt.c ../param.h
 	$(CC) -c $(CFLAGS) $< -o $(@F)
 
-xgemmt.$(SUFFIX) xgemm.$(PSUFFIX) : gemmt.c ../param.h
+xgemmt.$(SUFFIX) xgemmt.$(PSUFFIX) : gemmt.c ../param.h
 	$(CC) -c $(CFLAGS) $< -o $(@F)
 
 ssymm.$(SUFFIX) ssymm.$(PSUFFIX) : symm.c
