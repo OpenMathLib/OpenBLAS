@@ -210,7 +210,7 @@ NO_AFFINITY = 1
 # to the user space. If bigphysarea is enabled, it will use it.
 # DEVICEDRIVER_ALLOCATION = 1
 
-# If you need to synchronize FP CSR between threads (for x86/x86_64 only).
+# If you need to synchronize FP CSR between threads (for x86/x86_64 and aarch64 only).
 # CONSISTENT_FPCSR = 1
 
 # If any gemm argument m, n or k is less or equal this threshold, gemm will be execute
