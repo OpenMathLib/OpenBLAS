@@ -53,7 +53,7 @@ set(BLAS2_COMPLEX_ONLY_MANGLED_SOURCES
 # these do not have separate 'z' sources
 set(BLAS3_SOURCES
   gemm.c symm.c
-  trsm.c syrk.c syr2k.c gemmt.c
+  trsm.c syrk.c syr2k.c
 )
 
 set(BLAS3_MANGLED_SOURCES
