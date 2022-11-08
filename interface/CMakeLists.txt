@@ -53,7 +53,7 @@ set(BLAS2_COMPLEX_ONLY_MANGLED_SOURCES
 # these do not have separate 'z' sources
 set(BLAS3_SOURCES
   gemm.c symm.c
-  trsm.c syrk.c syr2k.c
+  trsm.c syrk.c syr2k.c gemmt.c
 )
 
 set(BLAS3_MANGLED_SOURCES
@@ -189,7 +189,16 @@ if (NOT DEFINED NO_LAPACK)
   )
 
   GenerateNamedObjects("${LAPACK_SOURCES}")
+  if (NOT RELAPACK_REPLACE)
   GenerateNamedObjects("${LAPACK_MANGLED_SOURCES}" "" "" 0 "" "" 0 3)
+  else ()
+  GenerateNamedObjects("lapack/getrs.c" "" "" 0 "" "" 0 3)
+  GenerateNamedObjects("lapack/getf2.c" "" "" 0 "" "" 0 3)
+  GenerateNamedObjects("lapack/potf2.c" "" "" 0 "" "" 0 3)
+  GenerateNamedObjects("lapack/laswp.c" "" "" 0 "" "" 0 3)
+  GenerateNamedObjects("lapack/lauu2.c" "" "" 0 "" "" 0 3)
+  GenerateNamedObjects("lapack/trti2.c" "" "" 0 "" "" 0 3)
+  endif()
 endif ()
 
 if ( BUILD_COMPLEX AND NOT  BUILD_SINGLE)
