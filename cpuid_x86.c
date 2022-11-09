@@ -1549,6 +1549,10 @@ int get_cpuname(void){
           case 7: // Raptor Lake
             if(support_avx2())
               return CPUTYPE_HASWELL;
+	    if(support_avx())
+	      return CPUTYPE_SANDYBRIDGE;
+            else
+	      return CPUTYPE_NEHALEM;
         }
         break;
       }
@@ -2344,8 +2348,14 @@ int get_coretype(void){
       case 11:
 	switch (model) {
 	  case 7: // Raptor Lake
-          if(support_avx2())
+#ifndef NO_AVX2
+	  if(support_avx2())
             return CORE_HASWELL;
+#endif
+	  if(support_avx())
+	    return CORE_SANDYBRIDGE;
+	  else
+	  return CORE_NEHALEM;
 	}
       case 15:
 	if (model <= 0x2) return CORE_NORTHWOOD;
