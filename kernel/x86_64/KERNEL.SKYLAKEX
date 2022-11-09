@@ -44,8 +44,5 @@ DGEMM_BETA = dgemm_beta_skylakex.c
 CGEMMKERNEL    =  cgemm_kernel_8x2_skylakex.c
 ZGEMMKERNEL    =  zgemm_kernel_4x2_skylakex.c
 
-CSCALKERNEL    = ../arm/zscal.c
-ZSCALKERNEL    = ../arm/zscal.c
-
 CASUMKERNEL = casum.c
 ZASUMKERNEL = zasum.c
