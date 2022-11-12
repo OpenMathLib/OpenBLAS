@@ -9,6 +9,10 @@ ifndef TOPDIR
 TOPDIR = . 
 endif
 
+ifndef RELAPACK_REPLACE
+RELAPACK_REPLACE=0
+endif
+
 # we need to use the host system's architecture for getarch compile options even especially when cross-compiling
 HOSTARCH := $(shell uname -m)
 ifeq ($(HOSTARCH), amd64)

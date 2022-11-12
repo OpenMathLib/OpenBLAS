@@ -1,53 +1,61 @@
 TOPDIR  = ..
 include $(TOPDIR)/Makefile.system
 
-
+ifeq ($(RELAPACK_REPLACE),0)
+RELAPREFIX=RELAPACK_
+INCLALL=-DINCLUDE_ALL=0
+else
+INCLALL=-DINCLUDE_ALL=1
+endif
 
 SRC = $(wildcard src/*.c)
 
 SRC1 = \
-	src/slauum.c src/clauum.c src/dlauum.c src/zlauum.c \
-	src/strtri.c src/dtrtri.c src/ctrtri.c src/ztrtri.c \
-	src/spotrf.c src/dpotrf.c src/cpotrf.c src/zpotrf.c \
-	src/sgetrf.c src/dgetrf.c src/cgetrf.c src/zgetrf.c
+	slauum.c clauum.c dlauum.c zlauum.c \
+	strtri.c dtrtri.c ctrtri.c ztrtri.c \
+	spotrf.c dpotrf.c cpotrf.c zpotrf.c \
+	sgetrf.c dgetrf.c cgetrf.c zgetrf.c
 
 SRC2 = \
-	src/cgbtrf.c src/cpbtrf.c src/dsytrf_rec2.c src/sgbtrf.c src/ssytrf_rook.c src/zhegst.c src/zsytrf_rec2.c \
-	src/cgemmt.c src/dgbtrf.c src/dsytrf_rook.c src/sgemmt.c src/ssytrf_rook_rec2.c src/zhetrf.c src/zsytrf_rook.c \
-	src/csytrf.c src/dgemmt.c src/dsytrf_rook_rec2.c src/stgsyl.c src/zhetrf_rec2.c src/zsytrf_rook_rec2.c \
-	src/chegst.c src/csytrf_rec2.c src/dtgsyl.c src/strsyl.c src/zhetrf_rook.c src/ztgsyl.c \
-	src/chetrf.c src/csytrf_rook.c src/dtrsyl.c src/spbtrf.c src/strsyl_rec2.c src/zhetrf_rook_rec2.c src/ztrsyl.c \
-	src/chetrf_rec2.c src/csytrf_rook_rec2.c src/dpbtrf.c  src/dtrsyl_rec2.c  src/ztrsyl_rec2.c \
-	src/chetrf_rook.c src/ctgsyl.c src/ssygst.c src/zgbtrf.c src/zpbtrf.c  \
-	src/chetrf_rook_rec2.c src/ctrsyl.c src/dsygst.c src/f2c.c src/ssytrf.c src/zgemmt.c \
-	src/ctrsyl_rec2.c src/dsytrf.c src/lapack_wrappers.c src/ssytrf_rec2.c src/zsytrf.c
+	cgbtrf.c cpbtrf.c dsytrf_rec2.c sgbtrf.c ssytrf_rook.c zhegst.c zsytrf_rec2.c \
+	cgemmt.c dgbtrf.c dsytrf_rook.c sgemmt.c ssytrf_rook_rec2.c zhetrf.c zsytrf_rook.c \
+	csytrf.c dgemmt.c dsytrf_rook_rec2.c stgsyl.c zhetrf_rec2.c zsytrf_rook_rec2.c \
+	chegst.c csytrf_rec2.c dtgsyl.c strsyl.c zhetrf_rook.c ztgsyl.c \
+	chetrf.c csytrf_rook.c dtrsyl.c spbtrf.c strsyl_rec2.c zhetrf_rook_rec2.c ztrsyl.c \
+	chetrf_rec2.c csytrf_rook_rec2.c dpbtrf.c dtrsyl_rec2.c ztrsyl_rec2.c \
+	chetrf_rook.c ctgsyl.c ssygst.c zgbtrf.c zpbtrf.c  \
+	chetrf_rook_rec2.c ctrsyl.c dsygst.c f2c.c ssytrf.c zgemmt.c \
+	ctrsyl_rec2.c dsytrf.c lapack_wrappers.c ssytrf_rec2.c zsytrf.c
 
 SRCX = \
-	src/cgbtrf.c src/cpbtrf.c src/ctrtri.c src/dsytrf_rec2.c src/sgbtrf.c src/ssytrf_rook.c src/zhegst.c src/zsytrf_rec2.c \
-	src/cgemmt.c src/cpotrf.c src/dgbtrf.c src/dsytrf_rook.c src/sgemmt.c src/ssytrf_rook_rec2.c src/zhetrf.c src/zsytrf_rook.c \
-	src/cgetrf.c src/csytrf.c src/dgemmt.c src/dsytrf_rook_rec2.c src/sgetrf.c src/stgsyl.c src/zhetrf_rec2.c src/zsytrf_rook_rec2.c \
-	src/chegst.c src/csytrf_rec2.c src/dgetrf.c src/dtgsyl.c src/slauum.c src/strsyl.c src/zhetrf_rook.c src/ztgsyl.c \
-	src/chetrf.c src/csytrf_rook.c src/dlauum.c src/dtrsyl.c src/spbtrf.c src/strsyl_rec2.c src/zhetrf_rook_rec2.c src/ztrsyl.c \
-	src/chetrf_rec2.c src/csytrf_rook_rec2.c src/dpbtrf.c  src/dtrsyl_rec2.c src/spotrf.c src/strtri.c src/zlauum.c src/ztrsyl_rec2.c \
-	src/chetrf_rook.c src/ctgsyl.c src/dpotrf.c src/dtrtri.c src/ssygst.c src/zgbtrf.c src/zpbtrf.c src/ztrtri.c \
-	src/chetrf_rook_rec2.c src/ctrsyl.c src/dsygst.c src/f2c.c src/ssytrf.c src/zgemmt.c src/zpotrf.c \
-	src/clauum.c src/ctrsyl_rec2.c src/dsytrf.c src/lapack_wrappers.c src/ssytrf_rec2.c src/zgetrf.c src/zsytrf.c
+	cgbtrf.c cpbtrf.c ctrtri.c dsytrf_rec2.c sgbtrf.c ssytrf_rook.c zhegst.c zsytrf_rec2.c \
+	cgemmt.c cpotrf.c dgbtrf.c dsytrf_rook.c sgemmt.c ssytrf_rook_rec2.c zhetrf.c zsytrf_rook.c \
+	cgetrf.c csytrf.c dgemmt.c dsytrf_rook_rec2.c sgetrf.c stgsyl.c zhetrf_rec2.c zsytrf_rook_rec2.c \
+	chegst.c csytrf_rec2.c dgetrf.c dtgsyl.c slauum.c strsyl.c zhetrf_rook.c ztgsyl.c \
+	chetrf.c csytrf_rook.c dlauum.c dtrsyl.c spbtrf.c strsyl_rec2.c zhetrf_rook_rec2.c ztrsyl.c \
+	chetrf_rec2.c csytrf_rook_rec2.c dpbtrf.c dtrsyl_rec2.c spotrf.c strtri.c zlauum.c ztrsyl_rec2.c \
+	chetrf_rook.c ctgsyl.c dpotrf.c dtrtri.c ssygst.c zgbtrf.c zpbtrf.c ztrtri.c \
+	chetrf_rook_rec2.c ctrsyl.c dsygst.c f2c.c ssytrf.c zgemmt.c zpotrf.c \
+	clauum.c ctrsyl_rec2.c dsytrf.c lapack_wrappers.c ssytrf_rec2.c zgetrf.c zsytrf.c
 
-OBJS1 = $(SRC1:%.c=%.$(SUFFIX))
-OBJS2 = $(SRC2:%.c=%.o)
+
+OBJS1 = $(SRC1:%.c=src/$(RELAPREFIX)%.$(SUFFIX))
+OBJS2 = $(SRC2:%.c=src/$(RELAPREFIX)%.o)
 OBJS = $(OBJS1) $(OBJS2)
 
 TEST_SUITS = \
-	slauum dlauum clauum zlauum \
-	spotrf dpotrf cpotrf zpotrf \
-	spbtrf dpbtrf cpbtrf zpbtrf \
-	ssygst dsygst chegst zhegst \
-	ssytrf dsytrf csytrf chetrf zsytrf zhetrf \
-	sgetrf dgetrf cgetrf zgetrf \
-	sgbtrf dgbtrf cgbtrf zgbtrf \
-	strsyl dtrsyl ctrsyl ztrsyl \
-	stgsyl dtgsyl ctgsyl ztgsyl \
 	sgemmt dgemmt cgemmt zgemmt
+
+	#	slauum dlauum clauum zlauum \
+	#	spotrf dpotrf cpotrf zpotrf \
+	#	spbtrf dpbtrf cpbtrf zpbtrf \
+	#	ssygst dsygst chegst zhegst \
+	#	ssytrf dsytrf csytrf chetrf zsytrf zhetrf \
+	#	sgetrf dgetrf cgetrf zgetrf \
+	#	sgbtrf dgbtrf cgbtrf zgbtrf \
+	#	strsyl dtrsyl ctrsyl ztrsyl \
+	#	stgsyl dtgsyl ctgsyl ztgsyl \
+
 TESTS = $(TEST_SUITS:%=test/%.pass)  # dummies
 TEST_EXES = $(TEST_SUITS:%=test/%.x)
 
@@ -63,11 +71,11 @@ libs:	$(OBJS)
 	$(AR) -r  $(TOPDIR)/$(LIBNAME) $(OBJS)
 	$(RANLIB) $(TOPDIR)/$(LIBNAME)
 
-%.$(SUFFIX): %.c config.h
-	$(CC) $(CFLAGS) -c $< -o $@
+src/$(RELAPREFIX)%.$(SUFFIX): src/%.c relapack_config.h
+	$(CC) -v $(CFLAGS) -I. $(INCLALL) -c $< -o $@
 
-%.o: %.c config.h
-	$(CC) $(CFLAGS) -c $< -o $@
+src/$(RELAPREFIX)%.o: src/%.c relapack_config.h
+	$(CC) -v $(CFLAGS) -I. $(INCLALL) -c $< -o $@
 
 
 # ReLAPACK testing

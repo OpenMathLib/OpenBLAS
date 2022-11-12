@@ -45,7 +45,7 @@
 // The following macros specify which routines are included in the library under
 // LAPACK's symbol names: 1 included, 0 not included
 
-#define INCLUDE_ALL 1
+// #define INCLUDE_ALL 1
 
 #define INCLUDE_XLAUUM INCLUDE_ALL
 #define INCLUDE_SLAUUM INCLUDE_XLAUUM
@@ -115,7 +115,7 @@
 #define INCLUDE_CTGSYL INCLUDE_XTGSYL
 #define INCLUDE_ZTGSYL INCLUDE_XTGSYL
 
-#define INCLUDE_XGEMMT 1
+#define INCLUDE_XGEMMT INCLUDE_ALL
 #define INCLUDE_SGEMMT INCLUDE_XGEMMT
 #define INCLUDE_DGEMMT INCLUDE_XGEMMT
 #define INCLUDE_CGEMMT INCLUDE_XGEMMT
