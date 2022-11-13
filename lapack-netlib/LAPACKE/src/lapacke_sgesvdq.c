@@ -48,7 +48,6 @@ lapack_int LAPACKE_sgesvdq( int matrix_layout, char joba, char jobp,
     lapack_int lrwork = -1;
     float* rwork = NULL;
     float rwork_query;
-    lapack_int i;
     if( matrix_layout != LAPACK_COL_MAJOR && matrix_layout != LAPACK_ROW_MAJOR ) {
         LAPACKE_xerbla( "LAPACKE_sgesvdq", -1 );
         return -1;
