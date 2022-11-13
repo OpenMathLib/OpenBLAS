@@ -23,7 +23,7 @@
 *>
 *> CERREC tests the error exits for the routines for eigen- condition
 *> estimation for REAL matrices:
-*>    CTRSYL, CTREXC, CTRSNA and CTRSEN.
+*>    CTRSYL, CTRSYL3, CTREXC, CTRSNA and CTRSEN.
 *> \endverbatim
 *
 *  Arguments:
@@ -77,12 +77,12 @@
 *     ..
 *     .. Local Arrays ..
       LOGICAL            SEL( NMAX )
-      REAL               RW( LW ), S( NMAX ), SEP( NMAX )
+      REAL               RW( LW ), S( NMAX ), SEP( NMAX ), SWORK( NMAX )
       COMPLEX            A( NMAX, NMAX ), B( NMAX, NMAX ),
      $                   C( NMAX, NMAX ), WORK( LW ), X( NMAX )
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           CHKXER, CTREXC, CTRSEN, CTRSNA, CTRSYL
+      EXTERNAL           CHKXER, CTREXC, CTRSEN, CTRSNA, CTRSYL, CTRSYL3
 *     ..
 *     .. Scalars in Common ..
       LOGICAL            LERR, OK
@@ -139,6 +139,43 @@
       INFOT = 11
       CALL CTRSYL( 'N', 'N', 1, 2, 0, A, 2, B, 1, C, 1, SCALE, INFO )
       CALL CHKXER( 'CTRSYL', INFOT, NOUT, LERR, OK )
+      NT = NT + 8
+*
+*     Test CTRSYL3
+*
+      SRNAMT = 'CTRSYL3'
+      INFOT = 1
+      CALL CTRSYL3( 'X', 'N', 1, 0, 0, A, 1, B, 1, C, 1, SCALE,
+     $              SWORK, NMAX, INFO )
+      CALL CHKXER( 'CTRSYL3', INFOT, NOUT, LERR, OK )
+      INFOT = 2
+      CALL CTRSYL3( 'N', 'X', 1, 0, 0, A, 1, B, 1, C, 1, SCALE,
+     $              SWORK, NMAX, INFO )
+      CALL CHKXER( 'CTRSYL3', INFOT, NOUT, LERR, OK )
+      INFOT = 3
+      CALL CTRSYL3( 'N', 'N', 0, 0, 0, A, 1, B, 1, C, 1, SCALE,
+     $              SWORK, NMAX, INFO )
+      CALL CHKXER( 'CTRSYL3', INFOT, NOUT, LERR, OK )
+      INFOT = 4
+      CALL CTRSYL3( 'N', 'N', 1, -1, 0, A, 1, B, 1, C, 1, SCALE,
+     $              SWORK, NMAX, INFO )
+      CALL CHKXER( 'CTRSYL3', INFOT, NOUT, LERR, OK )
+      INFOT = 5
+      CALL CTRSYL3( 'N', 'N', 1, 0, -1, A, 1, B, 1, C, 1, SCALE,
+     $              SWORK, NMAX, INFO )
+      CALL CHKXER( 'CTRSYL3', INFOT, NOUT, LERR, OK )
+      INFOT = 7
+      CALL CTRSYL3( 'N', 'N', 1, 2, 0, A, 1, B, 1, C, 2, SCALE,
+     $              SWORK, NMAX, INFO )
+      CALL CHKXER( 'CTRSYL3', INFOT, NOUT, LERR, OK )
+      INFOT = 9
+      CALL CTRSYL3( 'N', 'N', 1, 0, 2, A, 1, B, 1, C, 1, SCALE,
+     $              SWORK, NMAX, INFO )
+      CALL CHKXER( 'CTRSYL3', INFOT, NOUT, LERR, OK )
+      INFOT = 11
+      CALL CTRSYL3( 'N', 'N', 1, 2, 0, A, 2, B, 1, C, 1, SCALE,
+     $              SWORK, NMAX, INFO )
+      CALL CHKXER( 'CTRSYL3', INFOT, NOUT, LERR, OK )
       NT = NT + 8
 *
 *     Test CTREXC

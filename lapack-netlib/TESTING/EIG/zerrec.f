@@ -23,7 +23,7 @@
 *>
 *> ZERREC tests the error exits for the routines for eigen- condition
 *> estimation for DOUBLE PRECISION matrices:
-*>    ZTRSYL, ZTREXC, ZTRSNA and ZTRSEN.
+*>    ZTRSYL, ZTRSYL3, ZTREXC, ZTRSNA and ZTRSEN.
 *> \endverbatim
 *
 *  Arguments:
@@ -77,7 +77,7 @@
 *     ..
 *     .. Local Arrays ..
       LOGICAL            SEL( NMAX )
-      DOUBLE PRECISION   RW( LW ), S( NMAX ), SEP( NMAX )
+      DOUBLE PRECISION   RW( LW ), S( NMAX ), SEP( NMAX ), SWORK( NMAX )
       COMPLEX*16         A( NMAX, NMAX ), B( NMAX, NMAX ),
      $                   C( NMAX, NMAX ), WORK( LW ), X( NMAX )
 *     ..
@@ -139,6 +139,43 @@
       INFOT = 11
       CALL ZTRSYL( 'N', 'N', 1, 2, 0, A, 2, B, 1, C, 1, SCALE, INFO )
       CALL CHKXER( 'ZTRSYL', INFOT, NOUT, LERR, OK )
+      NT = NT + 8
+*
+*     Test ZTRSYL3
+*
+      SRNAMT = 'ZTRSYL3'
+      INFOT = 1
+      CALL ZTRSYL3( 'X', 'N', 1, 0, 0, A, 1, B, 1, C, 1, SCALE,
+     $              SWORK, NMAX, INFO )
+      CALL CHKXER( 'ZTRSYL3', INFOT, NOUT, LERR, OK )
+      INFOT = 2
+      CALL ZTRSYL3( 'N', 'X', 1, 0, 0, A, 1, B, 1, C, 1, SCALE,
+     $              SWORK, NMAX, INFO )
+      CALL CHKXER( 'ZTRSYL3', INFOT, NOUT, LERR, OK )
+      INFOT = 3
+      CALL ZTRSYL3( 'N', 'N', 0, 0, 0, A, 1, B, 1, C, 1, SCALE,
+     $              SWORK, NMAX, INFO )
+      CALL CHKXER( 'ZTRSYL3', INFOT, NOUT, LERR, OK )
+      INFOT = 4
+      CALL ZTRSYL3( 'N', 'N', 1, -1, 0, A, 1, B, 1, C, 1, SCALE,
+     $              SWORK, NMAX, INFO )
+      CALL CHKXER( 'ZTRSYL3', INFOT, NOUT, LERR, OK )
+      INFOT = 5
+      CALL ZTRSYL3( 'N', 'N', 1, 0, -1, A, 1, B, 1, C, 1, SCALE,
+     $              SWORK, NMAX, INFO )
+      CALL CHKXER( 'ZTRSYL3', INFOT, NOUT, LERR, OK )
+      INFOT = 7
+      CALL ZTRSYL3( 'N', 'N', 1, 2, 0, A, 1, B, 1, C, 2, SCALE,
+     $              SWORK, NMAX, INFO )
+      CALL CHKXER( 'ZTRSYL3', INFOT, NOUT, LERR, OK )
+      INFOT = 9
+      CALL ZTRSYL3( 'N', 'N', 1, 0, 2, A, 1, B, 1, C, 1, SCALE,
+     $              SWORK, NMAX, INFO )
+      CALL CHKXER( 'ZTRSYL3', INFOT, NOUT, LERR, OK )
+      INFOT = 11
+      CALL ZTRSYL3( 'N', 'N', 1, 2, 0, A, 2, B, 1, C, 1, SCALE,
+     $              SWORK, NMAX, INFO )
+      CALL CHKXER( 'ZTRSYL3', INFOT, NOUT, LERR, OK )
       NT = NT + 8
 *
 *     Test ZTREXC
