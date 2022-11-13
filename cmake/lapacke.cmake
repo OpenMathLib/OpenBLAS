@@ -2481,6 +2481,8 @@ set(Utils_SRC
   lapacke_ctp_nancheck.c          lapacke_dtr_trans.c             lapacke_str_trans.c             lapacke_ztp_trans.c
   lapacke_ctp_trans.c             lapacke_lsame.c                 lapacke_xerbla.c                lapacke_ztr_nancheck.c
   lapacke_ctr_nancheck.c          lapacke_make_complex_double.c   lapacke_z_nancheck.c            lapacke_ztr_trans.c
+  lapacke_ctz_nancheck.c          lapacke_ctz_trans.c             lapacke_dtz_nancheck.c          lapacke_dtz_trans.c
+  lapacke_stz_nancheck.c          lapacke_stz_trans.c             lapacke_ztz_nancheck.c          lapacke_ztz_trans.c
 )
 
 set(LAPACKE_REL_SRC "")

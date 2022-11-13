@@ -33,8 +33,8 @@
 #include "lapacke_utils.h"
 
 float LAPACKE_clantr( int matrix_layout, char norm, char uplo, char diag,
-                           lapack_int m, lapack_int n, const lapack_complex_float* a,
-                           lapack_int lda )
+                      lapack_int m, lapack_int n, const lapack_complex_float* a,
+                      lapack_int lda )
 {
     lapack_int info = 0;
     float res = 0.;
@@ -46,7 +46,7 @@ float LAPACKE_clantr( int matrix_layout, char norm, char uplo, char diag,
 #ifndef LAPACK_DISABLE_NAN_CHECK
     if( LAPACKE_get_nancheck() ) {
         /* Optionally check input matrices for NaNs */
-        if( LAPACKE_ctr_nancheck( matrix_layout, uplo, diag, MIN(m,n), a, lda ) ) {
+        if( LAPACKE_ctz_nancheck( matrix_layout, 'f', uplo, diag, m, n, a, lda ) ) {
             return -7;
         }
     }
