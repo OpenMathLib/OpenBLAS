@@ -204,7 +204,7 @@
       END IF
 *
 *     Quick return if possible
-*
+*     
       IF( K.EQ.0 ) THEN
          WORK( 1 ) = 1
          RETURN
