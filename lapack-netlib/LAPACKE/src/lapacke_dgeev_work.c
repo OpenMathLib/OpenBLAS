@@ -59,12 +59,12 @@ lapack_int LAPACKE_dgeev_work( int matrix_layout, char jobvl, char jobvr,
             LAPACKE_xerbla( "LAPACKE_dgeev_work", info );
             return info;
         }
-        if( ldvl < n ) {
+        if( ldvl < 1 || ( LAPACKE_lsame( jobvl, 'v' ) && ldvl < n ) ) {
             info = -10;
             LAPACKE_xerbla( "LAPACKE_dgeev_work", info );
             return info;
         }
-        if( ldvr < n ) {
+        if( ldvr < 1 || ( LAPACKE_lsame( jobvr, 'v' ) && ldvr < n ) ) {
             info = -12;
             LAPACKE_xerbla( "LAPACKE_dgeev_work", info );
             return info;
