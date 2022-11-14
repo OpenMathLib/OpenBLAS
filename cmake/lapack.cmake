@@ -419,7 +419,7 @@ set(ZLASRC
    zhbev_2stage.f zhbevx_2stage.f zhbevd_2stage.f zhegv_2stage.f
    zgesvdq.f zlaunhr_col_getrfnp.f zlaunhr_col_getrfnp2.f
    zungtsqr.f zungtsqr_row.f zunhr_col.f
-   zlarts3.f ztrsyl3.f)
+   zlatrs3.f ztrsyl3.f)
 
 set(ZXLASRC zgesvxx.f zgerfsx.f zla_gerfsx_extended.f zla_geamv.f
    zla_gercond_c.f zla_gercond_x.f zla_gerpvgrw.f zsysvxx.f zsyrfsx.f
