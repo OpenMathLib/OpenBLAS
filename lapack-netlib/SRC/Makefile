@@ -207,7 +207,7 @@ SLASRC_O = \
    ssytrd_2stage.o ssytrd_sy2sb.o ssytrd_sb2st.o ssb2st_kernels.o \
    ssyevd_2stage.o ssyev_2stage.o ssyevx_2stage.o ssyevr_2stage.o \
    ssbev_2stage.o ssbevx_2stage.o ssbevd_2stage.o ssygv_2stage.o \
-   sgesvdq.o slarmm.o slarts3.o strsyl3.o 
+   sgesvdq.o slarmm.o slatrs3.o strsyl3.o 
    
 endif
 
@@ -316,7 +316,7 @@ CLASRC_O = \
    chetrd_2stage.o chetrd_he2hb.o chetrd_hb2st.o chb2st_kernels.o \
    cheevd_2stage.o cheev_2stage.o cheevx_2stage.o cheevr_2stage.o \
    chbev_2stage.o chbevx_2stage.o chbevd_2stage.o chegv_2stage.o \
-   cgesvdq.o clarts3.o ctrsyl3.o
+   cgesvdq.o clatrs3.o ctrsyl3.o
 endif
 
 ifdef USEXBLAS
