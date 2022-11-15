@@ -2,3 +2,11 @@ ifeq ($(CORE), C910V)
 CCOMMON_OPT += -march=rv64imafdcv0p7_zfh_xtheadc -mabi=lp64d -mtune=c920
 FCOMMON_OPT += -march=rv64imafdcv0p7_zfh_xtheadc -mabi=lp64d -mtune=c920 -static
 endif
+ifeq ($(CORE), x280)
+CCOMMON_OPT += -march=rv64imafdcv_zba_zbb_zfh_xsfvqmaccqoq_xsfvfhbfmin -mabi=lp64d -menable-experimental-extensions -mllvm --riscv-v-vector-bits-min=512 -mcpu=sifive-x280 -ffast-math
+FCOMMON_OPT += -march=rv64imafdcv_zba_zbb_zfh_xsfvqmaccqoq_xsfvfhbfmin -mabi=lp64d -menable-experimental-extensions -static
+endif
+ifeq ($(CORE), RISCV64_GENERIC)
+CCOMMON_OPT += -march=rv64imafdc -mabi=lp64d
+FCOMMON_OPT += -march=rv64imafdc -mabi=lp64d -static
+endif

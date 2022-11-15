@@ -8,6 +8,7 @@ PREFIX ?= /opt/OpenBLAS
 OPENBLAS_INCLUDE_DIR := $(PREFIX)/include
 OPENBLAS_LIBRARY_DIR := $(PREFIX)/lib
 OPENBLAS_BINARY_DIR := $(PREFIX)/bin
+OPENBLAS_RELEASE_DIR := $(PREFIX)/release
 OPENBLAS_BUILD_DIR := $(CURDIR)
 OPENBLAS_CMAKE_DIR := $(OPENBLAS_LIBRARY_DIR)/cmake/$(LIBSONAMEBASE)
 OPENBLAS_CMAKE_CONFIG := OpenBLASConfig.cmake
@@ -38,6 +39,7 @@ install : 	lib.grd
 	@-mkdir -p "$(DESTDIR)$(OPENBLAS_INCLUDE_DIR)"
 	@-mkdir -p "$(DESTDIR)$(OPENBLAS_LIBRARY_DIR)"
 	@-mkdir -p "$(DESTDIR)$(OPENBLAS_BINARY_DIR)"
+	@-mkdir -p "$(DESTDIR)$(OPENBLAS_RELEASE_DIR)"
 	@-mkdir -p "$(DESTDIR)$(OPENBLAS_CMAKE_DIR)"
 	@-mkdir -p "$(DESTDIR)$(OPENBLAS_PKGCONFIG_DIR)"
 	@echo Generating openblas_config.h in $(DESTDIR)$(OPENBLAS_INCLUDE_DIR)
@@ -202,3 +204,8 @@ endif
 	@echo "  endif ()" >> "$(DESTDIR)$(OPENBLAS_CMAKE_DIR)/$(OPENBLAS_CMAKE_CONFIG_VERSION)"
 	@echo "endif ()" >> "$(DESTDIR)$(OPENBLAS_CMAKE_DIR)/$(OPENBLAS_CMAKE_CONFIG_VERSION)"
 	@echo Install OK!
+#Generating release tar
+	@echo Generating $(OPENBLAS_RELEASE_DIR)/$(basename $(LIBNAME)).tar.gz
+	@tar -cvz --file=$(OPENBLAS_RELEASE_DIR)/$(basename $(LIBNAME)).tar.gz --directory=$(PREFIX) --exclude=release .
+
+	
