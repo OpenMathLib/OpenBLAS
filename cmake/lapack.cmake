@@ -621,7 +621,8 @@ set(SLASRC
    ssyevd_2stage.c ssyev_2stage.c ssyevx_2stage.c ssyevr_2stage.c
    ssbev_2stage.c ssbevx_2stage.c ssbevd_2stage.c ssygv_2stage.c
    sgesvdq.c slaorhr_col_getrfnp.c
-   slaorhr_col_getrfnp2.c sorgtsqr.c sorgtsqr_row.c sorhr_col.c )
+   slaorhr_col_getrfnp2.c sorgtsqr.c sorgtsqr_row.c sorhr_col.c 
+   slarmm.c slatrs3.c strsyl3.c)
 
 set(SXLASRC sgesvxx.c sgerfsx.c sla_gerfsx_extended.c sla_geamv.c
    sla_gercond.c sla_gerpvgrw.c ssysvxx.c ssyrfsx.c
@@ -718,7 +719,8 @@ set(CLASRC
    cheevd_2stage.c cheev_2stage.c cheevx_2stage.c cheevr_2stage.c
    chbev_2stage.c chbevx_2stage.c chbevd_2stage.c chegv_2stage.c
    cgesvdq.c claunhr_col_getrfnp.c claunhr_col_getrfnp2.c 
-   cungtsqr.c cungtsqr_row.c cunhr_col.c )
+   cungtsqr.c cungtsqr_row.c cunhr_col.c 
+   clatrs3.c ctrsyl3.c)
 
 set(CXLASRC cgesvxx.c cgerfsx.c cla_gerfsx_extended.c cla_geamv.c
    cla_gercond_c.c cla_gercond_x.c cla_gerpvgrw.c
@@ -809,7 +811,8 @@ set(DLASRC
    dsyevd_2stage.c dsyev_2stage.c dsyevx_2stage.c dsyevr_2stage.c
    dsbev_2stage.c dsbevx_2stage.c dsbevd_2stage.c dsygv_2stage.c
    dcombssq.c dgesvdq.c dlaorhr_col_getrfnp.c
-   dlaorhr_col_getrfnp2.c dorgtsqr.c dorgtsqr_row.c dorhr_col.c )
+   dlaorhr_col_getrfnp2.c dorgtsqr.c dorgtsqr_row.c dorhr_col.c 
+   dlarmm.c dlatrs3.c dtrsyl3.c)
 
 set(DXLASRC dgesvxx.c dgerfsx.c dla_gerfsx_extended.c dla_geamv.c
    dla_gercond.c dla_gerpvgrw.c dsysvxx.c dsyrfsx.c
@@ -910,7 +913,7 @@ set(ZLASRC
    zheevd_2stage.c zheev_2stage.c zheevx_2stage.c zheevr_2stage.c
    zhbev_2stage.c zhbevx_2stage.c zhbevd_2stage.c zhegv_2stage.c
    zgesvdq.c zlaunhr_col_getrfnp.c zlaunhr_col_getrfnp2.c
-   zungtsqr.c zungtsqr_row.c zunhr_col.c)
+   zungtsqr.c zungtsqr_row.c zunhr_col.c zlatrs3.c ztrsyl3.c)
 
 set(ZXLASRC zgesvxx.c zgerfsx.c zla_gerfsx_extended.c zla_geamv.c
    zla_gercond_c.c zla_gercond_x.c zla_gerpvgrw.c zsysvxx.c zsyrfsx.c
