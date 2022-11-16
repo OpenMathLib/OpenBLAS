@@ -219,7 +219,7 @@
 *
 *           Compute the (K,K) element of the result.
 *
-            TR = CDOTC( K, AFAC( 1, K ), 1, AFAC( 1, K ), 1 )
+            TR = REAL( CDOTC( K, AFAC( 1, K ), 1, AFAC( 1, K ), 1 ) )
             AFAC( K, K ) = TR
 *
 *           Compute the rest of column K.

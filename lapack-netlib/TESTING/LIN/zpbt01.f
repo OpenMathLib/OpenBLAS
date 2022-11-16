@@ -201,7 +201,8 @@
 *
 *           Compute the (K,K) element of the result.
 *
-            AKK = ZDOTC( KLEN+1, AFAC( KC, K ), 1, AFAC( KC, K ), 1 )
+            AKK = DBLE(
+     $         ZDOTC( KLEN+1, AFAC( KC, K ), 1, AFAC( KC, K ), 1 ) )
             AFAC( KD+1, K ) = AKK
 *
 *           Compute the rest of column K.
@@ -228,7 +229,7 @@
 *
 *           Scale column K by the diagonal element.
 *
-            AKK = AFAC( 1, K )
+            AKK = DBLE( AFAC( 1, K ) )
             CALL ZDSCAL( KLEN+1, AKK, AFAC( 1, K ), 1 )
 *
    40    CONTINUE

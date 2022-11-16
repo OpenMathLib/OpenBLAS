@@ -319,15 +319,15 @@
 *                 elements.
 *
                   IF( IZERO.EQ.1 ) THEN
-                     D( 1 ) = Z( 2 )
+                     D( 1 ) = REAL( Z( 2 ) )
                      IF( N.GT.1 )
      $                  E( 1 ) = Z( 3 )
                   ELSE IF( IZERO.EQ.N ) THEN
                      E( N-1 ) = Z( 1 )
-                     D( N ) = Z( 2 )
+                     D( N ) = REAL( Z( 2 ) )
                   ELSE
                      E( IZERO-1 ) = Z( 1 )
-                     D( IZERO ) = Z( 2 )
+                     D( IZERO ) = REAL( Z( 2 ) )
                      E( IZERO ) = Z( 3 )
                   END IF
                END IF

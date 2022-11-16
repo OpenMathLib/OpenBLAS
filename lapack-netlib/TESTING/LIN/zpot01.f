@@ -176,7 +176,7 @@
 *
 *           Compute the (K,K) element of the result.
 *
-            TR = ZDOTC( K, AFAC( 1, K ), 1, AFAC( 1, K ), 1 )
+            TR = DBLE( ZDOTC( K, AFAC( 1, K ), 1, AFAC( 1, K ), 1 ) )
             AFAC( K, K ) = TR
 *
 *           Compute the rest of column K.
@@ -224,7 +224,7 @@
    70    CONTINUE
       END IF
 *
-*     Compute norm( L*U - A ) / ( N * norm(A) * EPS )
+*     Compute norm(L*U - A) / ( N * norm(A) * EPS )
 *
       RESID = ZLANHE( '1', UPLO, N, AFAC, LDAFAC, RWORK )
 *
