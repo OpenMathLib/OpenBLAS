@@ -122,23 +122,7 @@ CTRMMKERNEL	= ztrmmkernel_2x2_rvv.c
 ZTRMMKERNEL	= ztrmmkernel_2x2_rvv.c
 
 # SGEMM_UNROLL_N set in params.h
-ifeq ($(SGEMM_UNROLL_N), 2)
-SGEMMKERNEL    =  gemmkernel_2x2_rvv.c
-SGEMMONCOPY    =  gemm_ncopy_2_rvv.c
-SGEMMOTCOPY    =  gemm_tcopy_2_rvv.c
-SGEMMONCOPYOBJ =  sgemm_oncopy.o
-SGEMMOTCOPYOBJ =  sgemm_otcopy.o
-
-STRMMKERNEL	= trmmkernel_2x2_rvv.c
-else ifeq ($(SGEMM_UNROLL_N), 4)
-SGEMMKERNEL    =  gemmkernel_4x4_rvv.c
-SGEMMONCOPY    =  gemm_ncopy_4_rvv.c
-SGEMMOTCOPY    =  ../generic/gemm_tcopy_4.c
-SGEMMONCOPYOBJ =  sgemm_oncopy.o
-SGEMMOTCOPYOBJ =  sgemm_otcopy.o
-
-STRMMKERNEL	= trmmkernel_4x4_rvv.c
-else ifeq ($(SGEMM_UNROLL_N), 8)
+ifeq ($(SGEMM_UNROLL_N), 8)
 # UNROLL_M is VLMAX
 SGEMMKERNEL    =  gemmkernel_rvv_v1x8.c
 SGEMMINCOPY    =  gemm_ncopy_rvv_v1.c
@@ -162,23 +146,7 @@ SSYMMLCOPY_M   =  symm_lcopy_rvv_v1.c
 endif
 
 # SGEMM_UNROLL_N set in params.h
-ifeq ($(DGEMM_UNROLL_N), 2)
-DGEMMKERNEL    = gemmkernel_2x2_rvv.c
-DGEMMONCOPY    = gemm_ncopy_2_rvv.c
-DGEMMOTCOPY    = gemm_tcopy_2_rvv.c
-DGEMMONCOPYOBJ = dgemm_oncopy.o
-DGEMMOTCOPYOBJ = dgemm_otcopy.o
-
-DTRMMKERNEL	= trmmkernel_2x2_rvv.c
-else ifeq ($(DGEMM_UNROLL_N), 4)
-DGEMMKERNEL    =  gemmkernel_4x4_rvv.c
-DGEMMONCOPY    =  gemm_ncopy_4_rvv.c
-DGEMMOTCOPY    =  ../generic/gemm_tcopy_4.c
-DGEMMONCOPYOBJ =  dgemm_oncopy.o
-DGEMMOTCOPYOBJ =  dgemm_otcopy.o
-
-DTRMMKERNEL	= trmmkernel_4x4_rvv.c
-else ifeq ($(DGEMM_UNROLL_N), 8)
+ifeq ($(DGEMM_UNROLL_N), 8)
 # UNROLL_M is VLMAX
 DGEMMKERNEL    =  gemmkernel_rvv_v1x8.c
 DGEMMINCOPY    =  gemm_ncopy_rvv_v1.c
