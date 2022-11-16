@@ -23,7 +23,7 @@
 *>
 *> SERREC tests the error exits for the routines for eigen- condition
 *> estimation for REAL matrices:
-*>    STRSYL, STREXC, STRSNA and STRSEN.
+*>    STRSYL, STRSYL3, STREXC, STRSNA and STRSEN.
 *> \endverbatim
 *
 *  Arguments:
@@ -82,7 +82,7 @@
      $                   WI( NMAX ), WORK( NMAX ), WR( NMAX )
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           CHKXER, STREXC, STRSEN, STRSNA, STRSYL
+      EXTERNAL           CHKXER, STREXC, STRSEN, STRSNA, STRSYL, STRSYL3
 *     ..
 *     .. Scalars in Common ..
       LOGICAL            LERR, OK
@@ -139,6 +139,43 @@
       INFOT = 11
       CALL STRSYL( 'N', 'N', 1, 2, 0, A, 2, B, 1, C, 1, SCALE, INFO )
       CALL CHKXER( 'STRSYL', INFOT, NOUT, LERR, OK )
+      NT = NT + 8
+*
+*     Test STRSYL3
+*
+      SRNAMT = 'STRSYL3'
+      INFOT = 1
+      CALL STRSYL3( 'X', 'N', 1, 0, 0, A, 1, B, 1, C, 1, SCALE,
+     $              IWORK, NMAX, WORK, NMAX, INFO )
+      CALL CHKXER( 'STRSYL3', INFOT, NOUT, LERR, OK )
+      INFOT = 2
+      CALL STRSYL3( 'N', 'X', 1, 0, 0, A, 1, B, 1, C, 1, SCALE,
+     $              IWORK, NMAX, WORK, NMAX, INFO )
+      CALL CHKXER( 'STRSYL3', INFOT, NOUT, LERR, OK )
+      INFOT = 3
+      CALL STRSYL3( 'N', 'N', 0, 0, 0, A, 1, B, 1, C, 1, SCALE,
+     $              IWORK, NMAX, WORK, NMAX, INFO )
+      CALL CHKXER( 'STRSYL3', INFOT, NOUT, LERR, OK )
+      INFOT = 4
+      CALL STRSYL3( 'N', 'N', 1, -1, 0, A, 1, B, 1, C, 1, SCALE,
+     $              IWORK, NMAX, WORK, NMAX, INFO )
+      CALL CHKXER( 'STRSYL3', INFOT, NOUT, LERR, OK )
+      INFOT = 5
+      CALL STRSYL3( 'N', 'N', 1, 0, -1, A, 1, B, 1, C, 1, SCALE,
+     $              IWORK, NMAX, WORK, NMAX, INFO )
+      CALL CHKXER( 'STRSYL3', INFOT, NOUT, LERR, OK )
+      INFOT = 7
+      CALL STRSYL3( 'N', 'N', 1, 2, 0, A, 1, B, 1, C, 2, SCALE,
+     $              IWORK, NMAX, WORK, NMAX, INFO )
+      CALL CHKXER( 'STRSYL3', INFOT, NOUT, LERR, OK )
+      INFOT = 9
+      CALL STRSYL3( 'N', 'N', 1, 0, 2, A, 1, B, 1, C, 1, SCALE,
+     $              IWORK, NMAX, WORK, NMAX, INFO )
+      CALL CHKXER( 'STRSYL3', INFOT, NOUT, LERR, OK )
+      INFOT = 11
+      CALL STRSYL3( 'N', 'N', 1, 2, 0, A, 2, B, 1, C, 1, SCALE,
+     $              IWORK, NMAX, WORK, NMAX, INFO )
+      CALL CHKXER( 'STRSYL3', INFOT, NOUT, LERR, OK )
       NT = NT + 8
 *
 *     Test STREXC
