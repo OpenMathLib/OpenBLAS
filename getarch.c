@@ -1410,7 +1410,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
        "-DL2_SIZE=1048576 -DL2_LINESIZE=64 -DL2_ASSOCIATIVE=16 " \
        "-DDTB_DEFAULT_ENTRIES=64 -DDTB_SIZE=4096 " \
        "-DHAVE_VFPV4 -DHAVE_VFPV3 -DHAVE_VFP -DHAVE_NEON -DHAVE_SVE -DARMV8 " \
-       "-march=armv8.4-a -mtune=neoverse-v1"
+       "-march=armv8.4-a+sve -mtune=neoverse-v1"
 #define LIBNAME   "neoversev1"
 #define CORENAME  "NEOVERSEV1"
 #endif
