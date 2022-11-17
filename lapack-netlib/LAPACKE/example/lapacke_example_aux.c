@@ -28,6 +28,6 @@ void print_matrix_colmajor( char* desc, lapack_int m, lapack_int n, double* mat,
 void print_vector( char* desc, lapack_int n, lapack_int* vec ) {
         lapack_int j;
         printf( "\n %s\n", desc );
-        for( j = 0; j < n; j++ ) printf( " %6i", vec[j] );
+        for( j = 0; j < n; j++ ) printf( " %6" LAPACK_IFMT, vec[j] );
         printf( "\n" );
 }

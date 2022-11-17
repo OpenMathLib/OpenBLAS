@@ -25,11 +25,9 @@
 
    LAPACKE_dgesv (row-major, high-level) Example Program Results
 
-  -- LAPACKE Example routine (version 3.7.0) --
+  -- LAPACKE Example routine --
   -- LAPACK is a software package provided by Univ. of Tennessee,    --
   -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-     December 2016
-
 */
 #include <stdlib.h>
 #include <stdio.h>
@@ -91,7 +89,7 @@ int main(int argc, char **argv) {
         /* Check for the exact singularity */
         if( info > 0 ) {
                 printf( "The diagonal element of the triangular factor of A,\n" );
-                printf( "U(%i,%i) is zero, so that A is singular;\n", info, info );
+                printf( "U(%" LAPACK_IFMT ",%" LAPACK_IFMT ") is zero, so that A is singular;\n", info, info );
                 printf( "the solution could not be computed.\n" );
                 exit( 1 );
         }
