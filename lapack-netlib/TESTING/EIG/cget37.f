@@ -265,7 +265,7 @@
   100       CONTINUE
             WSRT( KMIN ) = WSRT( I )
             WSRT( I ) = VMIN
-            VCMIN = WTMP( I )
+            VCMIN = REAL( WTMP( I ) )
             WTMP( I ) = W( KMIN )
             WTMP( KMIN ) = VCMIN
             VMIN = STMP( KMIN )

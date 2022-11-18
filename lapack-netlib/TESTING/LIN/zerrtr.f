@@ -82,9 +82,10 @@
       EXTERNAL           LSAMEN
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           ALAESM, CHKXER, ZLATBS, ZLATPS, ZLATRS, ZTBCON,
-     $                   ZTBRFS, ZTBTRS, ZTPCON, ZTPRFS, ZTPTRI, ZTPTRS,
-     $                   ZTRCON, ZTRRFS, ZTRTI2, ZTRTRI, ZTRTRS
+      EXTERNAL           ALAESM, CHKXER, ZLATBS, ZLATPS, ZLATRS,
+     $                   ZLATRS3, ZTBCON, ZTBRFS, ZTBTRS, ZTPCON,
+     $                   ZTPRFS, ZTPTRI, ZTPTRS, ZTRCON, ZTRRFS, ZTRTI2,
+     $                   ZTRTRI, ZTRTRS
 *     ..
 *     .. Scalars in Common ..
       LOGICAL            LERR, OK
@@ -239,6 +240,46 @@
          INFOT = 7
          CALL ZLATRS( 'U', 'N', 'N', 'N', 2, A, 1, X, SCALE, RW, INFO )
          CALL CHKXER( 'ZLATRS', INFOT, NOUT, LERR, OK )
+*
+*        ZLATRS3
+*
+         SRNAMT = 'ZLATRS3'
+         INFOT = 1
+         CALL ZLATRS3( '/', 'N', 'N', 'N', 0, 0, A, 1, X, 1, SCALE, RW,
+     $                 RW( 2 ), 1, INFO )
+         CALL CHKXER( 'ZLATRS3', INFOT, NOUT, LERR, OK )
+         INFOT = 2
+         CALL ZLATRS3( 'U', '/', 'N', 'N', 0, 0, A, 1, X, 1, SCALE, RW,
+     $                 RW( 2 ), 1, INFO )
+         CALL CHKXER( 'ZLATRS3', INFOT, NOUT, LERR, OK )
+         INFOT = 3
+         CALL ZLATRS3( 'U', 'N', '/', 'N', 0, 0, A, 1, X, 1, SCALE, RW,
+     $                 RW( 2 ), 1, INFO )
+         CALL CHKXER( 'ZLATRS3', INFOT, NOUT, LERR, OK )
+         INFOT = 4
+         CALL ZLATRS3( 'U', 'N', 'N', '/', 0, 0, A, 1, X, 1, SCALE, RW,
+     $                 RW( 2 ), 1, INFO )
+         CALL CHKXER( 'ZLATRS3', INFOT, NOUT, LERR, OK )
+         INFOT = 5
+         CALL ZLATRS3( 'U', 'N', 'N', 'N', -1, 0, A, 1, X, 1, SCALE, RW,
+     $                 RW( 2 ), 1, INFO )
+         CALL CHKXER( 'ZLATRS3', INFOT, NOUT, LERR, OK )
+         INFOT = 6
+         CALL ZLATRS3( 'U', 'N', 'N', 'N', 0, -1, A, 1, X, 1, SCALE, RW,
+     $                 RW( 2 ), 1, INFO )
+         CALL CHKXER( 'ZLATRS3', INFOT, NOUT, LERR, OK )
+         INFOT = 8
+         CALL ZLATRS3( 'U', 'N', 'N', 'N', 2, 0, A, 1, X, 1, SCALE, RW,
+     $                 RW( 2 ), 1, INFO )
+         CALL CHKXER( 'ZLATRS3', INFOT, NOUT, LERR, OK )
+         INFOT = 10
+         CALL ZLATRS3( 'U', 'N', 'N', 'N', 2, 0, A, 2, X, 1, SCALE, RW,
+     $                 RW( 2 ), 1, INFO )
+         CALL CHKXER( 'ZLATRS3', INFOT, NOUT, LERR, OK )
+         INFOT = 14
+         CALL ZLATRS3( 'U', 'N', 'N', 'N', 1, 0, A, 1, X, 1, SCALE, RW,
+     $                 RW( 2 ), 0, INFO )
+         CALL CHKXER( 'ZLATRS3', INFOT, NOUT, LERR, OK )
 *
 *     Test error exits for the packed triangular routines.
 *

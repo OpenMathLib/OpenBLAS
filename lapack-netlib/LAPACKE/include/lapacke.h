@@ -2313,6 +2313,19 @@ lapack_int LAPACKE_zlagge( int matrix_layout, lapack_int m, lapack_int n,
 float LAPACKE_slamch( char cmach );
 double LAPACKE_dlamch( char cmach );
 
+float LAPACKE_slangb( int matrix_layout, char norm, lapack_int n,
+                      lapack_int kl, lapack_int ku, const float* ab,
+                      lapack_int ldab );
+double LAPACKE_dlangb( int matrix_layout, char norm, lapack_int n,
+                       lapack_int kl, lapack_int ku, const double* ab,
+                       lapack_int ldab );
+float LAPACKE_clangb( int matrix_layout, char norm, lapack_int n,
+                      lapack_int kl, lapack_int ku,
+                      const lapack_complex_float* ab, lapack_int ldab );
+double LAPACKE_zlangb( int matrix_layout, char norm, lapack_int n,
+                       lapack_int kl, lapack_int ku,
+                       const lapack_complex_double* ab, lapack_int ldab );
+
 float LAPACKE_slange( int matrix_layout, char norm, lapack_int m,
                            lapack_int n, const float* a, lapack_int lda );
 double LAPACKE_dlange( int matrix_layout, char norm, lapack_int m,
@@ -4476,6 +4489,23 @@ lapack_int LAPACKE_ztrsyl( int matrix_layout, char trana, char tranb,
                            const lapack_complex_double* b, lapack_int ldb,
                            lapack_complex_double* c, lapack_int ldc,
                            double* scale );
+
+lapack_int LAPACKE_strsyl3( int matrix_layout, char trana, char tranb,
+                            lapack_int isgn, lapack_int m, lapack_int n,
+                            const float* a, lapack_int lda, const float* b,
+                            lapack_int ldb, float* c, lapack_int ldc,
+                            float* scale );
+lapack_int LAPACKE_dtrsyl3( int matrix_layout, char trana, char tranb,
+                            lapack_int isgn, lapack_int m, lapack_int n,
+                            const double* a, lapack_int lda, const double* b,
+                            lapack_int ldb, double* c, lapack_int ldc,
+                            double* scale );
+lapack_int LAPACKE_ztrsyl3( int matrix_layout, char trana, char tranb,
+                            lapack_int isgn, lapack_int m, lapack_int n,
+                            const lapack_complex_double* a, lapack_int lda,
+                            const lapack_complex_double* b, lapack_int ldb,
+                            lapack_complex_double* c, lapack_int ldc,
+                            double* scale );
 
 lapack_int LAPACKE_strtri( int matrix_layout, char uplo, char diag, lapack_int n,
                            float* a, lapack_int lda );
@@ -7576,6 +7606,21 @@ double LAPACKE_dlapy3_work( double x, double y, double z );
 float LAPACKE_slamch_work( char cmach );
 double LAPACKE_dlamch_work( char cmach );
 
+float LAPACKE_slangb_work( int matrix_layout, char norm, lapack_int n,
+                           lapack_int kl, lapack_int ku, const float* ab,
+                           lapack_int ldab, float* work );
+double LAPACKE_dlangb_work( int matrix_layout, char norm, lapack_int n,
+                            lapack_int kl, lapack_int ku, const double* ab,
+                            lapack_int ldab, double* work );
+float LAPACKE_clangb_work( int matrix_layout, char norm, lapack_int n,
+                           lapack_int kl, lapack_int ku,
+                           const lapack_complex_float* ab, lapack_int ldab,
+                           float* work );
+double LAPACKE_zlangb_work( int matrix_layout, char norm, lapack_int n,
+                            lapack_int kl, lapack_int ku,
+                            const lapack_complex_double* ab, lapack_int ldab,
+                            double* work );
+
 float LAPACKE_slange_work( int matrix_layout, char norm, lapack_int m,
                                 lapack_int n, const float* a, lapack_int lda,
                                 float* work );
@@ -10173,6 +10218,35 @@ lapack_int LAPACKE_ztrsyl_work( int matrix_layout, char trana, char tranb,
                                 const lapack_complex_double* b, lapack_int ldb,
                                 lapack_complex_double* c, lapack_int ldc,
                                 double* scale );
+
+lapack_int LAPACKE_strsyl3_work( int matrix_layout, char trana, char tranb,
+                                 lapack_int isgn, lapack_int m, lapack_int n,
+                                 const float* a, lapack_int lda,
+                                 const float* b, lapack_int ldb,
+                                 float* c, lapack_int ldc, float* scale,
+                                 lapack_int* iwork, lapack_int liwork,
+                                 float* swork, lapack_int ldswork );
+lapack_int LAPACKE_dtrsyl3_work( int matrix_layout, char trana, char tranb,
+                                 lapack_int isgn, lapack_int m, lapack_int n,
+                                 const double* a, lapack_int lda,
+                                 const double* b, lapack_int ldb,
+                                 double* c, lapack_int ldc, double* scale,
+                                 lapack_int* iwork, lapack_int liwork,
+                                 double* swork, lapack_int ldswork );
+lapack_int LAPACKE_ctrsyl3_work( int matrix_layout, char trana, char tranb,
+                                 lapack_int isgn, lapack_int m, lapack_int n,
+                                 const lapack_complex_float* a, lapack_int lda,
+                                 const lapack_complex_float* b, lapack_int ldb,
+                                 lapack_complex_float* c, lapack_int ldc,
+                                 float* scale, float* swork,
+                                 lapack_int ldswork );
+lapack_int LAPACKE_ztrsyl3_work( int matrix_layout, char trana, char tranb,
+                                 lapack_int isgn, lapack_int m, lapack_int n,
+                                 const lapack_complex_double* a, lapack_int lda,
+                                 const lapack_complex_double* b, lapack_int ldb,
+                                 lapack_complex_double* c, lapack_int ldc,
+                                 double* scale, double* swork,
+                                 lapack_int ldswork );
 
 lapack_int LAPACKE_strtri_work( int matrix_layout, char uplo, char diag,
                                 lapack_int n, float* a, lapack_int lda );

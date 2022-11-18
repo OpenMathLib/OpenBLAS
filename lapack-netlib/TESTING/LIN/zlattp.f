@@ -336,7 +336,7 @@
                WORK( J+1 ) = PLUS2
                WORK( N+J+1 ) = ZERO
                PLUS1 = STAR1 / PLUS2
-               REXP = ZLARND( 2, ISEED )
+               REXP = DBLE( ZLARND( 2, ISEED ) )
                IF( REXP.LT.ZERO ) THEN
                   STAR1 = -SFAC**( ONE-REXP )*ZLARND( 5, ISEED )
                ELSE
@@ -790,7 +790,7 @@
             DO 460 J = 1, N / 2
                JL = JJ
                DO 450 I = J, N - J
-                  T = AP( JR-I+J )
+                  T = DBLE( AP( JR-I+J ) )
                   AP( JR-I+J ) = AP( JL )
                   AP( JL ) = T
                   JL = JL + I
@@ -804,7 +804,7 @@
             DO 480 J = 1, N / 2
                JR = JJ
                DO 470 I = J, N - J
-                  T = AP( JL+I-J )
+                  T = DBLE( AP( JL+I-J ) )
                   AP( JL+I-J ) = AP( JR )
                   AP( JR ) = T
                   JR = JR - I
