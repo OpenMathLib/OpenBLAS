@@ -289,7 +289,7 @@
 *
       CALL CGGQRF( N, M, P, A, LDA, WORK, B, LDB, WORK( M+1 ),
      $             WORK( M+NP+1 ), LWORK-M-NP, INFO )
-      LOPT = REAL( WORK( M+NP+1 ) )
+      LOPT = INT( WORK( M+NP+1 ) )
 *
 *     Update left-hand-side vector d = Q**H*d = ( d1 ) M
 *                                               ( d2 ) N-M

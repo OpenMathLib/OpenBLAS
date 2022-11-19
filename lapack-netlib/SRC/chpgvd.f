@@ -335,9 +335,9 @@
       CALL CHPGST( ITYPE, UPLO, N, AP, BP, INFO )
       CALL CHPEVD( JOBZ, UPLO, N, AP, W, Z, LDZ, WORK, LWORK, RWORK,
      $             LRWORK, IWORK, LIWORK, INFO )
-      LWMIN = MAX( REAL( LWMIN ), REAL( WORK( 1 ) ) )
-      LRWMIN = MAX( REAL( LRWMIN ), REAL( RWORK( 1 ) ) )
-      LIWMIN = MAX( REAL( LIWMIN ), REAL( IWORK( 1 ) ) )
+      LWMIN = INT( MAX( REAL( LWMIN ), REAL( WORK( 1 ) ) ) )
+      LRWMIN = INT( MAX( REAL( LRWMIN ), REAL( RWORK( 1 ) ) ) )
+      LIWMIN = INT( MAX( REAL( LIWMIN ), REAL( IWORK( 1 ) ) ) )
 *
       IF( WANTZ ) THEN
 *

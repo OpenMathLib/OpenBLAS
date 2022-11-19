@@ -134,6 +134,9 @@
       LOGICAL            LSAME
       EXTERNAL           SLAMCH, LSAME
 *     ..
+*     .. Intrinsic Functions ..
+      INTRINSIC          REAL
+*     ..
 *     .. Executable Statements ..
 *
       RMAX = SLAMCH( 'O' )
@@ -146,7 +149,7 @@
                   INFO = 1
                   GO TO 50
                END IF
-               SA( I, J ) = A( I, J )
+               SA( I, J ) = REAL( A( I, J ) )
    10       CONTINUE
    20    CONTINUE
       ELSE
@@ -157,7 +160,7 @@
                   INFO = 1
                   GO TO 50
                END IF
-               SA( I, J ) = A( I, J )
+               SA( I, J ) = REAL( A( I, J ) )
    30       CONTINUE
    40    CONTINUE
       END IF

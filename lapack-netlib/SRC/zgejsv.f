@@ -707,11 +707,11 @@
           IF ( LQUERY ) THEN 
               CALL ZGEQP3( M, N, A, LDA, IWORK, CDUMMY, CDUMMY, -1, 
      $             RDUMMY, IERR )
-              LWRK_ZGEQP3 = DBLE( CDUMMY(1) )
+              LWRK_ZGEQP3 = INT( CDUMMY(1) )
               CALL ZGEQRF( N, N, A, LDA, CDUMMY, CDUMMY,-1, IERR )
-              LWRK_ZGEQRF = DBLE( CDUMMY(1) )
+              LWRK_ZGEQRF = INT( CDUMMY(1) )
               CALL ZGELQF( N, N, A, LDA, CDUMMY, CDUMMY,-1, IERR )
-              LWRK_ZGELQF = DBLE( CDUMMY(1) )
+              LWRK_ZGELQF = INT( CDUMMY(1) )
           END IF
           MINWRK  = 2
           OPTWRK  = 2
@@ -727,7 +727,7 @@
               IF ( LQUERY ) THEN 
                   CALL ZGESVJ( 'L', 'N', 'N', N, N, A, LDA, SVA, N, V, 
      $                 LDV, CDUMMY, -1, RDUMMY, -1, IERR )
-                  LWRK_ZGESVJ = DBLE( CDUMMY(1) )
+                  LWRK_ZGESVJ = INT( CDUMMY(1) )
                   IF ( ERREST ) THEN 
                       OPTWRK = MAX( N+LWRK_ZGEQP3, N**2+LWCON, 
      $                              N+LWRK_ZGEQRF, LWRK_ZGESVJ )
@@ -763,10 +763,10 @@
              IF ( LQUERY ) THEN
                  CALL ZGESVJ( 'L', 'U', 'N', N,N, U, LDU, SVA, N, A,
      $                LDA, CDUMMY, -1, RDUMMY, -1, IERR )
-                 LWRK_ZGESVJ = DBLE( CDUMMY(1) )
+                 LWRK_ZGESVJ = INT( CDUMMY(1) )
                  CALL ZUNMLQ( 'L', 'C', N, N, N, A, LDA, CDUMMY,
      $                V, LDV, CDUMMY, -1, IERR )
-                 LWRK_ZUNMLQ = DBLE( CDUMMY(1) )
+                 LWRK_ZUNMLQ = INT( CDUMMY(1) )
                  IF ( ERREST ) THEN 
                  OPTWRK = MAX( N+LWRK_ZGEQP3, LWCON, LWRK_ZGESVJ, 
      $                         N+LWRK_ZGELQF, 2*N+LWRK_ZGEQRF,
@@ -802,10 +802,10 @@
              IF ( LQUERY ) THEN
                  CALL ZGESVJ( 'L', 'U', 'N', N,N, U, LDU, SVA, N, A,
      $                LDA, CDUMMY, -1, RDUMMY, -1, IERR )
-                 LWRK_ZGESVJ = DBLE( CDUMMY(1) )
+                 LWRK_ZGESVJ = INT( CDUMMY(1) )
                  CALL ZUNMQR( 'L', 'N', M, N, N, A, LDA, CDUMMY, U,
      $               LDU, CDUMMY, -1, IERR )
-                 LWRK_ZUNMQRM = DBLE( CDUMMY(1) )
+                 LWRK_ZUNMQRM = INT( CDUMMY(1) )
                  IF ( ERREST ) THEN
                  OPTWRK = N + MAX( LWRK_ZGEQP3, LWCON, N+LWRK_ZGEQRF,
      $                             LWRK_ZGESVJ, LWRK_ZUNMQRM )
@@ -864,26 +864,26 @@
              IF ( LQUERY ) THEN
                  CALL ZUNMQR( 'L', 'N', M, N, N, A, LDA, CDUMMY, U,
      $                LDU, CDUMMY, -1, IERR )
-                 LWRK_ZUNMQRM = DBLE( CDUMMY(1) )
+                 LWRK_ZUNMQRM = INT( CDUMMY(1) )
                  CALL ZUNMQR( 'L', 'N', N, N, N, A, LDA, CDUMMY, U,
      $                LDU, CDUMMY, -1, IERR )
-                 LWRK_ZUNMQR = DBLE( CDUMMY(1) )
+                 LWRK_ZUNMQR = INT( CDUMMY(1) )
                  IF ( .NOT. JRACC ) THEN
                      CALL ZGEQP3( N,N, A, LDA, IWORK, CDUMMY,CDUMMY, -1,
      $                    RDUMMY, IERR )
-                     LWRK_ZGEQP3N = DBLE( CDUMMY(1) )
+                     LWRK_ZGEQP3N = INT( CDUMMY(1) )
                      CALL ZGESVJ( 'L', 'U', 'N', N, N, U, LDU, SVA,
      $                    N, V, LDV, CDUMMY, -1, RDUMMY, -1, IERR )
-                     LWRK_ZGESVJ = DBLE( CDUMMY(1) )
+                     LWRK_ZGESVJ = INT( CDUMMY(1) )
                      CALL ZGESVJ( 'U', 'U', 'N', N, N, U, LDU, SVA,
      $                    N, V, LDV, CDUMMY, -1, RDUMMY, -1, IERR )
-                     LWRK_ZGESVJU = DBLE( CDUMMY(1) )
+                     LWRK_ZGESVJU = INT( CDUMMY(1) )
                      CALL ZGESVJ( 'L', 'U', 'V', N, N, U, LDU, SVA,
      $                    N, V, LDV, CDUMMY, -1, RDUMMY, -1, IERR )
-                     LWRK_ZGESVJV = DBLE( CDUMMY(1) )
+                     LWRK_ZGESVJV = INT( CDUMMY(1) )
                      CALL ZUNMLQ( 'L', 'C', N, N, N, A, LDA, CDUMMY,
      $                    V, LDV, CDUMMY, -1, IERR )
-                     LWRK_ZUNMLQ = DBLE( CDUMMY(1) )
+                     LWRK_ZUNMLQ = INT( CDUMMY(1) )
                      IF ( ERREST ) THEN 
                        OPTWRK = MAX( N+LWRK_ZGEQP3, N+LWCON, 
      $                          2*N+N**2+LWCON, 2*N+LWRK_ZGEQRF, 
@@ -912,13 +912,13 @@
                  ELSE
                      CALL ZGESVJ( 'L', 'U', 'V', N, N, U, LDU, SVA,
      $                    N, V, LDV, CDUMMY, -1, RDUMMY, -1, IERR )
-                     LWRK_ZGESVJV = DBLE( CDUMMY(1) )
+                     LWRK_ZGESVJV = INT( CDUMMY(1) )
                      CALL ZUNMQR( 'L', 'N', N, N, N, CDUMMY, N, CDUMMY,
      $                    V, LDV, CDUMMY, -1, IERR )
-                     LWRK_ZUNMQR = DBLE( CDUMMY(1) )
+                     LWRK_ZUNMQR = INT( CDUMMY(1) )
                      CALL ZUNMQR( 'L', 'N', M, N, N, A, LDA, CDUMMY, U,
      $                    LDU, CDUMMY, -1, IERR )
-                     LWRK_ZUNMQRM = DBLE( CDUMMY(1) )
+                     LWRK_ZUNMQRM = INT( CDUMMY(1) )
                      IF ( ERREST ) THEN 
                         OPTWRK = MAX( N+LWRK_ZGEQP3, N+LWCON,   
      $                           2*N+LWRK_ZGEQRF, 2*N+N**2,  
