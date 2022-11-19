@@ -256,7 +256,7 @@
             LWKOPT = 1
          ELSE
             CALL ZSYTRF_ROOK( UPLO, N, A, LDA, IPIV, WORK, -1, INFO )
-            LWKOPT = DBLE( WORK(1) )
+            LWKOPT = INT( DBLE( WORK( 1 ) ) )
          END IF
          WORK( 1 ) = LWKOPT
       END IF

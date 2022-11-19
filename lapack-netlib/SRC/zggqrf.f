@@ -276,7 +276,7 @@
 *     QR factorization of N-by-M matrix A: A = Q*R
 *
       CALL ZGEQRF( N, M, A, LDA, TAUA, WORK, LWORK, INFO )
-      LOPT = DBLE( WORK( 1 ) )
+      LOPT = INT( WORK( 1 ) )
 *
 *     Update B := Q**H*B.
 *

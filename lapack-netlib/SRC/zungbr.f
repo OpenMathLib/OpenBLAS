@@ -233,7 +233,7 @@
                END IF
             END IF
          END IF
-         LWKOPT = DBLE( WORK( 1 ) )
+         LWKOPT = INT( DBLE( WORK( 1 ) ) )
          LWKOPT = MAX (LWKOPT, MN)
       END IF
 *

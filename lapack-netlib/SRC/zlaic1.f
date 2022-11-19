@@ -348,9 +348,9 @@
                B = ( ZETA2*ZETA2+ZETA1*ZETA1-ONE )*HALF
                C = ZETA1*ZETA1
                IF( B.GE.ZERO ) THEN
-                  T = -C / ( B+SQRT( B*B+C ) )
+                  T = DBLE( -C / ( B+SQRT( B*B+C ) ) )
                ELSE
-                  T = B - SQRT( B*B+C )
+                  T = DBLE( B - SQRT( B*B+C ) )
                END IF
                SINE = -( ALPHA / ABSEST ) / T
                COSINE = -( GAMMA / ABSEST ) / ( ONE+T )

@@ -276,7 +276,7 @@
 *
       CALL ZGGRQF( P, M, N, B, LDB, WORK, A, LDA, WORK( P+1 ),
      $             WORK( P+MN+1 ), LWORK-P-MN, INFO )
-      LOPT = DBLE( WORK( P+MN+1 ) )
+      LOPT = INT( WORK( P+MN+1 ) )
 *
 *     Update c = Z**H *c = ( c1 ) N-P
 *                       ( c2 ) M+P-N
