@@ -275,7 +275,7 @@
 *     RQ factorization of M-by-N matrix A: A = R*Q
 *
       CALL SGERQF( M, N, A, LDA, TAUA, WORK, LWORK, INFO )
-      LOPT = WORK( 1 )
+      LOPT = INT( WORK( 1 ) )
 *
 *     Update B := B*Q**T
 *
