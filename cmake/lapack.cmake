@@ -638,7 +638,7 @@ set(CLASRC
    cgecon.c cgeequ.c cgees.c  cgeesx.c cgeev.c  cgeevx.c
    cgehd2.c cgehrd.c cgelq2.c cgelqf.c
    cgels.c  cgelsd.c cgelss.c cgelsy.c cgeql2.c cgeqlf.c cgeqp3.c
-   cgeqr2.c cgeqr2p.c cgeqrf.c fcgeqrfp.c cgerfs.c cgerq2.c cgerqf.c
+   cgeqr2.c cgeqr2p.c cgeqrf.c cgeqrfp.c cgerfs.c cgerq2.c cgerqf.c
    cgesc2.c cgesdd.c cgesvd.c cgesvdx.c
    cgesvj.c cgejsv.c cgsvj0.c cgsvj1.c
    cgesvx.c cgetc2.c cgetrf2.c
