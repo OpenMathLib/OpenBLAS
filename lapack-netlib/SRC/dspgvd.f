@@ -307,8 +307,8 @@
       CALL DSPGST( ITYPE, UPLO, N, AP, BP, INFO )
       CALL DSPEVD( JOBZ, UPLO, N, AP, W, Z, LDZ, WORK, LWORK, IWORK,
      $             LIWORK, INFO )
-      LWMIN = MAX( DBLE( LWMIN ), DBLE( WORK( 1 ) ) )
-      LIWMIN = MAX( DBLE( LIWMIN ), DBLE( IWORK( 1 ) ) )
+      LWMIN = INT( MAX( DBLE( LWMIN ), DBLE( WORK( 1 ) ) ) )
+      LIWMIN = INT( MAX( DBLE( LIWMIN ), DBLE( IWORK( 1 ) ) ) )
 *
       IF( WANTZ ) THEN
 *
