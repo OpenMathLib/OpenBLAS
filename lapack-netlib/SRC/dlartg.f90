@@ -11,7 +11,7 @@
 !       SUBROUTINE DLARTG( F, G, C, S, R )
 !
 !       .. Scalar Arguments ..
-!       REAL(wp)      C, F, G, R, S
+!       REAL(wp)          C, F, G, R, S
 !       ..
 !
 !> \par Purpose:
@@ -44,8 +44,6 @@
 !>    If F=0 and (G .ne. 0), then C=0 and S=sign(1,G) without doing any
 !>       floating point operations (saves work in DBDSQR when
 !>       there are zeros on the diagonal).
-!>
-!> If F exceeds G in magnitude, C will be positive.
 !>
 !> Below, wp=>dp stands for double precision from LA_CONSTANTS module.
 !> \endverbatim
@@ -112,7 +110,7 @@
 subroutine DLARTG( f, g, c, s, r )
    use LA_CONSTANTS, &
    only: wp=>dp, zero=>dzero, half=>dhalf, one=>done, &
-         rtmin=>drtmin, rtmax=>drtmax, safmin=>dsafmin, safmax=>dsafmax
+         safmin=>dsafmin, safmax=>dsafmax
 !
 !  -- LAPACK auxiliary routine --
 !  -- LAPACK is a software package provided by Univ. of Tennessee,    --
@@ -123,10 +121,14 @@ subroutine DLARTG( f, g, c, s, r )
    real(wp) :: c, f, g, r, s
 !  ..
 !  .. Local Scalars ..
-   real(wp) :: d, f1, fs, g1, gs, p, u, uu
+   real(wp) :: d, f1, fs, g1, gs, u, rtmin, rtmax
 !  ..
 !  .. Intrinsic Functions ..
    intrinsic :: abs, sign, sqrt
+!  ..
+!  .. Constants ..
+   rtmin = sqrt( safmin )
+   rtmax = sqrt( safmax/2 )
 !  ..
 !  .. Executable Statements ..
 !
@@ -143,20 +145,18 @@ subroutine DLARTG( f, g, c, s, r )
    else if( f1 > rtmin .and. f1 < rtmax .and. &
             g1 > rtmin .and. g1 < rtmax ) then
       d = sqrt( f*f + g*g )
-      p = one / d
-      c = f1*p
-      s = g*sign( p, f )
+      c = f1 / d
       r = sign( d, f )
+      s = g / r
    else
       u = min( safmax, max( safmin, f1, g1 ) )
-      uu = one / u
-      fs = f*uu
-      gs = g*uu
+      fs = f / u
+      gs = g / u
       d = sqrt( fs*fs + gs*gs )
-      p = one / d
-      c = abs( fs )*p
-      s = gs*sign( p, f )
-      r = sign( d, f )*u
+      c = abs( fs ) / d
+      r = sign( d, f )
+      s = gs / r
+      r = r*u
    end if
    return
 end subroutine
