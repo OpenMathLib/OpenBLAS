@@ -278,7 +278,7 @@
      $                   ZDOTU, ZLADIV
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           DSCAL, XERBLA, ZAXPY, ZDSCAL, ZTBSV, DLABAD
+      EXTERNAL           DSCAL, XERBLA, ZAXPY, ZDSCAL, ZTBSV
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          ABS, DBLE, DCMPLX, DCONJG, DIMAG, MAX, MIN
@@ -324,17 +324,14 @@
 *
 *     Quick return if possible
 *
+      SCALE = ONE
       IF( N.EQ.0 )
      $   RETURN
 *
 *     Determine machine dependent parameters to control overflow.
 *
-      SMLNUM = DLAMCH( 'Safe minimum' )
+      SMLNUM = DLAMCH( 'Safe minimum' ) / DLAMCH( 'Precision' )
       BIGNUM = ONE / SMLNUM
-      CALL DLABAD( SMLNUM, BIGNUM )
-      SMLNUM = SMLNUM / DLAMCH( 'Precision' )
-      BIGNUM = ONE / SMLNUM
-      SCALE = ONE
 *
       IF( LSAME( NORMIN, 'N' ) ) THEN
 *
