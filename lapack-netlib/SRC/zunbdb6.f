@@ -41,10 +41,16 @@
 *> with respect to the columns of
 *>      Q = [ Q1 ] .
 *>          [ Q2 ]
-*> The columns of Q must be orthonormal.
+*> The Euclidean norm of X must be one and the columns of Q must be
+*> orthonormal. The orthogonalized vector will be zero if and only if it
+*> lies entirely in the range of Q.
 *>
-*> If the projection is zero according to Kahan's "twice is enough"
-*> criterion, then the zero vector is returned.
+*> The projection is computed with at most two iterations of the
+*> classical Gram-Schmidt algorithm, see
+*> * L. Giraud, J. Langou, M. Rozložník. "On the round-off error
+*>   analysis of the Gram-Schmidt algorithm with reorthogonalization."
+*>   2002. CERFACS Technical Report No. TR/PA/02/33. URL:
+*>   https://www.cerfacs.fr/algor/reports/2002/TR_PA_02_33.pdf
 *>
 *>\endverbatim
 *
@@ -167,16 +173,19 @@
 *  =====================================================================
 *
 *     .. Parameters ..
-      DOUBLE PRECISION   ALPHASQ, REALONE, REALZERO
-      PARAMETER          ( ALPHASQ = 0.01D0, REALONE = 1.0D0,
+      DOUBLE PRECISION   ALPHA, REALONE, REALZERO
+      PARAMETER          ( ALPHA = 0.01D0, REALONE = 1.0D0,
      $                     REALZERO = 0.0D0 )
       COMPLEX*16         NEGONE, ONE, ZERO
       PARAMETER          ( NEGONE = (-1.0D0,0.0D0), ONE = (1.0D0,0.0D0),
      $                     ZERO = (0.0D0,0.0D0) )
 *     ..
 *     .. Local Scalars ..
-      INTEGER            I
-      DOUBLE PRECISION   NORMSQ1, NORMSQ2, SCL1, SCL2, SSQ1, SSQ2
+      INTEGER            I, IX
+      DOUBLE PRECISION   EPS, NORM, NORM_NEW, SCL, SSQ
+*     ..
+*     .. External Functions ..
+      DOUBLE PRECISION   DLAMCH
 *     ..
 *     .. External Subroutines ..
       EXTERNAL           ZGEMV, ZLASSQ, XERBLA
@@ -212,16 +221,16 @@
          RETURN
       END IF
 *
+      EPS = DLAMCH( 'Precision' )
+*
 *     First, project X onto the orthogonal complement of Q's column
 *     space
 *
-      SCL1 = REALZERO
-      SSQ1 = REALONE
-      CALL ZLASSQ( M1, X1, INCX1, SCL1, SSQ1 )
-      SCL2 = REALZERO
-      SSQ2 = REALONE
-      CALL ZLASSQ( M2, X2, INCX2, SCL2, SSQ2 )
-      NORMSQ1 = SCL1**2*SSQ1 + SCL2**2*SSQ2
+*     Christoph Conrads: In debugging mode the norm should be computed
+*     and an assertion added comparing the norm with one. Alas, Fortran
+*     never made it into 1989 when assert() was introduced into the C
+*     programming language.
+      NORM = REALONE
 *
       IF( M1 .EQ. 0 ) THEN
          DO I = 1, N
@@ -239,27 +248,31 @@
       CALL ZGEMV( 'N', M2, N, NEGONE, Q2, LDQ2, WORK, 1, ONE, X2,
      $            INCX2 )
 *
-      SCL1 = REALZERO
-      SSQ1 = REALONE
-      CALL ZLASSQ( M1, X1, INCX1, SCL1, SSQ1 )
-      SCL2 = REALZERO
-      SSQ2 = REALONE
-      CALL ZLASSQ( M2, X2, INCX2, SCL2, SSQ2 )
-      NORMSQ2 = SCL1**2*SSQ1 + SCL2**2*SSQ2
+      SCL = REALZERO
+      SSQ = REALZERO
+      CALL ZLASSQ( M1, X1, INCX1, SCL, SSQ )
+      CALL ZLASSQ( M2, X2, INCX2, SCL, SSQ )
+      NORM_NEW = SCL * SQRT(SSQ)
 *
 *     If projection is sufficiently large in norm, then stop.
 *     If projection is zero, then stop.
 *     Otherwise, project again.
 *
-      IF( NORMSQ2 .GE. ALPHASQ*NORMSQ1 ) THEN
+      IF( NORM_NEW .GE. ALPHA * NORM ) THEN
          RETURN
       END IF
 *
-      IF( NORMSQ2 .EQ. ZERO ) THEN
+      IF( NORM_NEW .LE. N * EPS * NORM ) THEN
+         DO IX = 1, 1 + (M1-1)*INCX1, INCX1
+           X1( IX ) = ZERO
+         END DO
+         DO IX = 1, 1 + (M2-1)*INCX2, INCX2
+           X2( IX ) = ZERO
+         END DO
          RETURN
       END IF
 *
-      NORMSQ1 = NORMSQ2
+      NORM = NORM_NEW
 *
       DO I = 1, N
          WORK(I) = ZERO
@@ -281,24 +294,22 @@
       CALL ZGEMV( 'N', M2, N, NEGONE, Q2, LDQ2, WORK, 1, ONE, X2,
      $            INCX2 )
 *
-      SCL1 = REALZERO
-      SSQ1 = REALONE
-      CALL ZLASSQ( M1, X1, INCX1, SCL1, SSQ1 )
-      SCL2 = REALZERO
-      SSQ2 = REALONE
-      CALL ZLASSQ( M1, X1, INCX1, SCL1, SSQ1 )
-      NORMSQ2 = SCL1**2*SSQ1 + SCL2**2*SSQ2
+      SCL = REALZERO
+      SSQ = REALZERO
+      CALL ZLASSQ( M1, X1, INCX1, SCL, SSQ )
+      CALL ZLASSQ( M2, X2, INCX2, SCL, SSQ )
+      NORM_NEW = SCL * SQRT(SSQ)
 *
 *     If second projection is sufficiently large in norm, then do
 *     nothing more. Alternatively, if it shrunk significantly, then
 *     truncate it to zero.
 *
-      IF( NORMSQ2 .LT. ALPHASQ*NORMSQ1 ) THEN
-         DO I = 1, M1
-            X1(I) = ZERO
+      IF( NORM_NEW .LT. ALPHA * NORM ) THEN
+         DO IX = 1, 1 + (M1-1)*INCX1, INCX1
+            X1(IX) = ZERO
          END DO
-         DO I = 1, M2
-            X2(I) = ZERO
+         DO IX = 1, 1 + (M2-1)*INCX2, INCX2
+            X2(IX) = ZERO
          END DO
       END IF
 *
@@ -307,4 +318,3 @@
 *     End of ZUNBDB6
 *
       END
-

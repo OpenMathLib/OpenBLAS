@@ -122,14 +122,14 @@
 *>
 *> \param[out] TAUP1
 *> \verbatim
-*>          TAUP1 is DOUBLE PRECISION array, dimension (P)
+*>          TAUP1 is DOUBLE PRECISION array, dimension (P-1)
 *>           The scalar factors of the elementary reflectors that define
 *>           P1.
 *> \endverbatim
 *>
 *> \param[out] TAUP2
 *> \verbatim
-*>          TAUP2 is DOUBLE PRECISION array, dimension (M-P)
+*>          TAUP2 is DOUBLE PRECISION array, dimension (Q)
 *>           The scalar factors of the elementary reflectors that define
 *>           P2.
 *> \endverbatim
