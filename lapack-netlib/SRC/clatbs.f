@@ -278,7 +278,7 @@
      $                   CDOTU, CLADIV
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           CAXPY, CSSCAL, CTBSV, SLABAD, SSCAL, XERBLA
+      EXTERNAL           CAXPY, CSSCAL, CTBSV, SSCAL, XERBLA
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          ABS, AIMAG, CMPLX, CONJG, MAX, MIN, REAL
@@ -324,17 +324,14 @@
 *
 *     Quick return if possible
 *
+      SCALE = ONE
       IF( N.EQ.0 )
      $   RETURN
 *
 *     Determine machine dependent parameters to control overflow.
 *
-      SMLNUM = SLAMCH( 'Safe minimum' )
+      SMLNUM = SLAMCH( 'Safe minimum' ) / SLAMCH( 'Precision' )
       BIGNUM = ONE / SMLNUM
-      CALL SLABAD( SMLNUM, BIGNUM )
-      SMLNUM = SMLNUM / SLAMCH( 'Precision' )
-      BIGNUM = ONE / SMLNUM
-      SCALE = ONE
 *
       IF( LSAME( NORMIN, 'N' ) ) THEN
 *
