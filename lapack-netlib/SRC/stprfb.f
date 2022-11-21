@@ -1,4 +1,4 @@
-*> \brief \b STPRFB applies a real or complex "triangular-pentagonal" blocked reflector to a real or complex matrix, which is composed of two blocks.
+*> \brief \b STPRFB applies a real "triangular-pentagonal" block reflector to a real matrix, which is composed of two blocks.
 *
 *  =========== DOCUMENTATION ===========
 *
@@ -37,7 +37,7 @@
 *> \verbatim
 *>
 *> STPRFB applies a real "triangular-pentagonal" block reflector H or its
-*> conjugate transpose H^H to a real matrix C, which is composed of two
+*> transpose H**T to a real matrix C, which is composed of two
 *> blocks A and B, either from the left or right.
 *>
 *> \endverbatim
@@ -48,15 +48,15 @@
 *> \param[in] SIDE
 *> \verbatim
 *>          SIDE is CHARACTER*1
-*>          = 'L': apply H or H^H from the Left
-*>          = 'R': apply H or H^H from the Right
+*>          = 'L': apply H or H**T from the Left
+*>          = 'R': apply H or H**T from the Right
 *> \endverbatim
 *>
 *> \param[in] TRANS
 *> \verbatim
 *>          TRANS is CHARACTER*1
 *>          = 'N': apply H (No transpose)
-*>          = 'C': apply H^H (Conjugate transpose)
+*>          = 'T': apply H**T (Transpose)
 *> \endverbatim
 *>
 *> \param[in] DIRECT
@@ -145,7 +145,7 @@
 *>          (LDA,N) if SIDE = 'L' or (LDA,K) if SIDE = 'R'
 *>          On entry, the K-by-N or M-by-K matrix A.
 *>          On exit, A is overwritten by the corresponding block of
-*>          H*C or H^H*C or C*H or C*H^H.  See Further Details.
+*>          H*C or H**T*C or C*H or C*H**T.  See Further Details.
 *> \endverbatim
 *>
 *> \param[in] LDA
@@ -161,7 +161,7 @@
 *>          B is REAL array, dimension (LDB,N)
 *>          On entry, the M-by-N matrix B.
 *>          On exit, B is overwritten by the corresponding block of
-*>          H*C or H^H*C or C*H or C*H^H.  See Further Details.
+*>          H*C or H**T*C or C*H or C*H**T.  See Further Details.
 *> \endverbatim
 *>
 *> \param[in] LDB
@@ -327,13 +327,13 @@
 *        Let  W =  [ I ]    (K-by-K)
 *                  [ V ]    (M-by-K)
 *
-*        Form  H C  or  H^H C  where  C = [ A ]  (K-by-N)
-*                                         [ B ]  (M-by-N)
+*        Form  H C  or  H**T C  where  C = [ A ]  (K-by-N)
+*                                          [ B ]  (M-by-N)
 *
-*        H = I - W T W^H          or  H^H = I - W T^H W^H
+*        H = I - W T W**T          or  H**T = I - W T**T W**T
 *
-*        A = A -   T (A + V^H B)  or  A = A -   T^H (A + V^H B)
-*        B = B - V T (A + V^H B)  or  B = B - V T^H (A + V^H B)
+*        A = A -   T (A + V**T B)  or  A = A -   T**T (A + V**T B)
+*        B = B - V T (A + V**T B)  or  B = B - V T**T (A + V**T B)
 *
 * ---------------------------------------------------------------------------
 *
@@ -388,12 +388,12 @@
 *        Let  W =  [ I ]    (K-by-K)
 *                  [ V ]    (N-by-K)
 *
-*        Form  C H or  C H^H  where  C = [ A B ] (A is M-by-K, B is M-by-N)
+*        Form  C H or  C H**T  where  C = [ A B ] (A is M-by-K, B is M-by-N)
 *
-*        H = I - W T W^H          or  H^H = I - W T^H W^H
+*        H = I - W T W**T          or  H**T = I - W T**T W**T
 *
-*        A = A - (A + B V) T      or  A = A - (A + B V) T^H
-*        B = B - (A + B V) T V^H  or  B = B - (A + B V) T^H V^H
+*        A = A - (A + B V) T       or  A = A - (A + B V) T**T
+*        B = B - (A + B V) T V**T  or  B = B - (A + B V) T**T V**T
 *
 * ---------------------------------------------------------------------------
 *
@@ -448,13 +448,13 @@
 *        Let  W =  [ V ]    (M-by-K)
 *                  [ I ]    (K-by-K)
 *
-*        Form  H C  or  H^H C  where  C = [ B ]  (M-by-N)
-*                                         [ A ]  (K-by-N)
+*        Form  H C  or  H**T C  where  C = [ B ]  (M-by-N)
+*                                          [ A ]  (K-by-N)
 *
-*        H = I - W T W^H          or  H^H = I - W T^H W^H
+*        H = I - W T W**T         or  H**T = I - W T**T W**T
 *
-*        A = A -   T (A + V^H B)  or  A = A -   T^H (A + V^H B)
-*        B = B - V T (A + V^H B)  or  B = B - V T^H (A + V^H B)
+*        A = A -   T (A + V**T B)  or  A = A -   T**T (A + V**T B)
+*        B = B - V T (A + V**T B)  or  B = B - V T**T (A + V**T B)
 *
 * ---------------------------------------------------------------------------
 *
@@ -510,12 +510,12 @@
 *        Let  W =  [ V ]    (N-by-K)
 *                  [ I ]    (K-by-K)
 *
-*        Form  C H  or  C H^H  where  C = [ B A ] (B is M-by-N, A is M-by-K)
+*        Form  C H  or  C H**T  where  C = [ B A ] (B is M-by-N, A is M-by-K)
 *
-*        H = I - W T W^H          or  H^H = I - W T^H W^H
+*        H = I - W T W**T          or  H**T = I - W T**T W**T
 *
-*        A = A - (A + B V) T      or  A = A - (A + B V) T^H
-*        B = B - (A + B V) T V^H  or  B = B - (A + B V) T^H V^H
+*        A = A - (A + B V) T       or  A = A - (A + B V) T**T
+*        B = B - (A + B V) T V**T  or  B = B - (A + B V) T**T V**T
 *
 * ---------------------------------------------------------------------------
 *
@@ -569,13 +569,13 @@
 *
 *        Let  W =  [ I V ] ( I is K-by-K, V is K-by-M )
 *
-*        Form  H C  or  H^H C  where  C = [ A ]  (K-by-N)
-*                                         [ B ]  (M-by-N)
+*        Form  H C  or  H**T C  where  C = [ A ]  (K-by-N)
+*                                          [ B ]  (M-by-N)
 *
-*        H = I - W^H T W          or  H^H = I - W^H T^H W
+*        H = I - W**T T W          or  H**T = I - W**T T**T W
 *
-*        A = A -     T (A + V B)  or  A = A -     T^H (A + V B)
-*        B = B - V^H T (A + V B)  or  B = B - V^H T^H (A + V B)
+*        A = A -      T (A + V B)  or  A = A -      T**T (A + V B)
+*        B = B - V**T T (A + V B)  or  B = B - V**T T**T (A + V B)
 *
 * ---------------------------------------------------------------------------
 *
@@ -629,12 +629,12 @@
 *
 *        Let  W =  [ I V ] ( I is K-by-K, V is K-by-N )
 *
-*        Form  C H  or  C H^H  where  C = [ A B ] (A is M-by-K, B is M-by-N)
+*        Form  C H  or  C H**T  where  C = [ A B ] (A is M-by-K, B is M-by-N)
 *
-*        H = I - W^H T W            or  H^H = I - W^H T^H W
+*        H = I - W**T T W            or  H**T = I - W**T T**T W
 *
-*        A = A - (A + B V^H) T      or  A = A - (A + B V^H) T^H
-*        B = B - (A + B V^H) T V    or  B = B - (A + B V^H) T^H V
+*        A = A - (A + B V**T) T      or  A = A - (A + B V**T) T**T
+*        B = B - (A + B V**T) T V    or  B = B - (A + B V**T) T**T V
 *
 * ---------------------------------------------------------------------------
 *
@@ -688,13 +688,13 @@
 *
 *        Let  W =  [ V I ] ( I is K-by-K, V is K-by-M )
 *
-*        Form  H C  or  H^H C  where  C = [ B ]  (M-by-N)
-*                                         [ A ]  (K-by-N)
+*        Form  H C  or  H**T C  where  C = [ B ]  (M-by-N)
+*                                          [ A ]  (K-by-N)
 *
-*        H = I - W^H T W          or  H^H = I - W^H T^H W
+*        H = I - W**T T W          or  H**T = I - W**T T**T W
 *
-*        A = A -     T (A + V B)  or  A = A -     T^H (A + V B)
-*        B = B - V^H T (A + V B)  or  B = B - V^H T^H (A + V B)
+*        A = A -      T (A + V B)  or  A = A -      T**T (A + V B)
+*        B = B - V**T T (A + V B)  or  B = B - V**T T**T (A + V B)
 *
 * ---------------------------------------------------------------------------
 *
@@ -748,12 +748,12 @@
 *
 *        Let  W =  [ V I ] ( I is K-by-K, V is K-by-N )
 *
-*        Form  C H  or  C H^H  where  C = [ B A ] (A is M-by-K, B is M-by-N)
+*        Form  C H  or  C H**T  where  C = [ B A ] (A is M-by-K, B is M-by-N)
 *
-*        H = I - W^H T W            or  H^H = I - W^H T^H W
+*        H = I - W**T T W            or  H**T = I - W**T T**T W
 *
-*        A = A - (A + B V^H) T      or  A = A - (A + B V^H) T^H
-*        B = B - (A + B V^H) T V    or  B = B - (A + B V^H) T^H V
+*        A = A - (A + B V**T) T      or  A = A - (A + B V**T) T**T
+*        B = B - (A + B V**T) T V    or  B = B - (A + B V**T) T**T V
 *
 * ---------------------------------------------------------------------------
 *
