@@ -573,7 +573,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 
 /*  ===================================================================== */
     *vers_major__ = 3;
-    *vers_minor__ = 9;
+    *vers_minor__ = 11;
     *vers_patch__ = 0;
 /*  ===================================================================== */
 
