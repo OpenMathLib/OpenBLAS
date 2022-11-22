@@ -39,9 +39,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define VFMACCVV_FLOAT vfmacc_vv_f32m8
 #define VFMVVF_FLOAT vfmv_v_f_f32m8
 #define VFMVVF_FLOAT_M1 vfmv_v_f_f32m1
-#define VFREDMAXVS_FLOAT vfredmax_vs_f32m8_f32m1
 #define VFMVFS_FLOAT_M1 vfmv_f_s_f32m1_f32
-#define VFABSV_FLOAT vfabs_v_f32m8
 #define ABS fabsf
 #else
 #define VSETVL(n) vsetvl_e64m8(n)
@@ -54,9 +52,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define VFMACCVV_FLOAT vfmacc_vv_f64m8
 #define VFMVVF_FLOAT vfmv_v_f_f64m8
 #define VFMVVF_FLOAT_M1 vfmv_v_f_f64m1
-#define VFREDMAXVS_FLOAT vfredmax_vs_f64m8_f64m1
 #define VFMVFS_FLOAT_M1 vfmv_f_s_f64m1_f64
-#define VFABSV_FLOAT vfabs_v_f64m8
 #define ABS fabs
 #endif
 
@@ -68,12 +64,11 @@ FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x)
     if(n == 1) return (ABS(x[0]));
 
     FLOAT_V_T vr, v0;
-    FLOAT_V_T_M1 v_max, v_res;
-    FLOAT scale = 0.0, ssq = 0.0;
+    FLOAT_V_T_M1 v_res;
+    FLOAT ssq = 0.0;
 
     size_t vlmax = VSETVL_MAX;
     v_res = VFMVVF_FLOAT_M1(0, vlmax);
-    v_max = VFMVVF_FLOAT_M1(0, vlmax);
 
     vr = VFMVVF_FLOAT(0, vlmax);
  
@@ -83,9 +78,6 @@ FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x)
             vl = VSETVL(n);
 
             v0 = VLEV_FLOAT(x, vl);
-            v0 = VFABSV_FLOAT(v0, vl);
-
-            v_max = VFREDMAXVS_FLOAT(v_max, v0, v_max, vl);
 
             vr = VFMACCVV_FLOAT(vr, v0, v0, vl);
         }
@@ -98,20 +90,14 @@ FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x)
             vl = VSETVL(n);
 
             v0 = VLSEV_FLOAT(x, stride_x, vl);
-            v0 = VFABSV_FLOAT(v0, vl);
-
-            v_max = VFREDMAXVS_FLOAT(v_max, v0, v_max, vl);
 
             vr = VFMACCVV_FLOAT(vr, v0, v0, vl);
         }
-
     }
 
     v_res = VFREDSUM_FLOAT(v_res, vr, v_res, vlmax);
 
     ssq = VFMVFS_FLOAT_M1(v_res);
-    scale = VFMVFS_FLOAT_M1(v_max);
-    ssq = ssq / (scale*scale);
 
-    return(scale * sqrt(ssq));
+    return sqrt(ssq);
 }
