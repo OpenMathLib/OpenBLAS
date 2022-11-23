@@ -124,7 +124,7 @@
      $                   C( MAXM, MAXN ), CC( MAXM, MAXN ),
      $                   X( MAXM, MAXN ),
      $                   DUML( MAXM ), DUMR( MAXN ),
-     $                   D( MIN( MAXM, MAXN ) )
+     $                   D( MAX( MAXM, MAXN ) )
       REAL               SWORK( LDSWORK, 54 ), DUM( MAXN ), VM( 2 )
       INTEGER            ISEED( 4 ), IWORK( MAXM + MAXN + 2 )
 *     ..
