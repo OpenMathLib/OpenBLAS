@@ -147,7 +147,7 @@ void LAPACKE_ztz_trans( int matrix_layout, char direct, char uplo,
     }
 
     /* Copy & transpose triangular part */
-    return LAPACKE_ztr_trans( matrix_layout, uplo, diag, tri_n,
-                              &in[tri_in_offset], ldin,
-                              &out[tri_out_offset], ldout );
+        LAPACKE_ztr_trans( matrix_layout, uplo, diag, tri_n,
+                            &in[tri_in_offset], ldin,
+                            &out[tri_out_offset], ldout );
 }
