@@ -541,7 +541,7 @@
 *
                   SRNAMT = 'CLATRS3'
                   CALL CCOPY( N, X, 1, B, 1 )
-                  CALL CCOPY( N, X, 1, B, 1 )
+                  CALL CCOPY( N, X, 1, B( N+1 ), 1 )
                   CALL CSCAL( N, BIGNUM, B( N+1 ), 1 )
                   CALL CLATRS3( UPLO, TRANS, DIAG, 'N', N, 2, A, LDA,
      $                          B, MAX(1, N), SCALE3, RWORK, WORK, NMAX,
@@ -551,7 +551,7 @@
 *
                   IF( INFO.NE.0 )
      $               CALL ALAERH( PATH, 'CLATRS3', INFO, 0,
-     $                            UPLO // TRANS // DIAG // 'Y', N, N,
+     $                            UPLO // TRANS // DIAG // 'N', N, N,
      $                            -1, -1, -1, IMAT, NFAIL, NERRS, NOUT )
                   CALL CTRT03( UPLO, TRANS, DIAG, N, 1, A, LDA,
      $                         SCALE3( 1 ), RWORK, ONE, B( 1 ), LDA,
@@ -559,7 +559,7 @@
                   CALL CSSCAL( N, BIGNUM, X, 1 )
                   CALL CTRT03( UPLO, TRANS, DIAG, N, 1, A, LDA,
      $                         SCALE3( 2 ), RWORK, ONE, B( N+1 ), LDA,
-     $                         X, LDA, WORK, RESULT( 10 ) )
+     $                         X, LDA, WORK, RES )
                   RESULT( 10 ) = MAX( RESULT( 10 ), RES )
 *
 *                 Print information about the tests that did not pass

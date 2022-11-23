@@ -555,11 +555,11 @@
 *
                   IF( INFO.NE.0 )
      $               CALL ALAERH( PATH, 'SLATRS3', INFO, 0,
-     $                            UPLO // TRANS // DIAG // 'Y', N, N,
+     $                            UPLO // TRANS // DIAG // 'N', N, N,
      $                            -1, -1, -1, IMAT, NFAIL, NERRS, NOUT )
 *
                   CALL STRT03( UPLO, TRANS, DIAG, N, 1, A, LDA,
-     $                         SCALE3 ( 1 ), RWORK, ONE, B( N+1 ), LDA,
+     $                         SCALE3( 1 ), RWORK, ONE, B( 1 ), LDA,
      $                         X, LDA, WORK, RESULT( 10 ) )
                   CALL SSCAL( N, BIGNUM, X, 1 )
                   CALL STRT03( UPLO, TRANS, DIAG, N, 1, A, LDA,
