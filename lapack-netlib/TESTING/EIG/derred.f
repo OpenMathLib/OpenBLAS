@@ -99,7 +99,7 @@
 *     ..
 *     .. External Subroutines ..
       EXTERNAL           CHKXER, DGEES, DGEESX, DGEEV, DGEEVX, DGEJSV,
-     $                   DGESDD, DGESVD, DGESVDX, DGESVQ
+     $                   DGESDD, DGESVD, DGESVDX, DGESVDQ
 *     ..
 *     .. External Functions ..
       LOGICAL            DSLECT, LSAMEN
