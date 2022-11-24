@@ -1,5 +1,6 @@
 /*********************************************************************/
 /* Copyright 2009, 2010 The University of Texas at Austin.           */
+/* Copyright 2023 The OpenBLAS Project.                              */
 /* All rights reserved.                                              */
 /*                                                                   */
 /* Redistribution and use in source and binary forms, with or        */
@@ -49,7 +50,9 @@
 static void init_parameter(void);
 
 gotoblas_t TABLE_NAME = {
-  DTB_DEFAULT_ENTRIES ,
+  DTB_DEFAULT_ENTRIES,
+
+  SWITCH_RATIO,
 
   GEMM_DEFAULT_OFFSET_A, GEMM_DEFAULT_OFFSET_B, GEMM_DEFAULT_ALIGN,
 

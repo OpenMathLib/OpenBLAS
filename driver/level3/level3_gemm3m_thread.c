@@ -1,5 +1,6 @@
 /*********************************************************************/
 /* Copyright 2009, 2010 The University of Texas at Austin.           */
+/* Copyright 2023 The OpenBLAS Project.                              */
 /* All rights reserved.                                              */
 /*                                                                   */
 /* Redistribution and use in source and binary forms, with or        */
@@ -42,10 +43,6 @@
 
 #ifndef DIVIDE_RATE
 #define DIVIDE_RATE 2
-#endif
-
-#ifndef SWITCH_RATIO
-#define SWITCH_RATIO 2
 #endif
 
 //The array of job_t may overflow the stack.
@@ -1015,6 +1012,12 @@ int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa, FLO
   BLASLONG divN, divT;
   int mode;
 
+#if defined(DYNAMIC_ARCH)
+  int switch_ratio = gotoblas->switch_ratio;
+#else
+  int switch_ratio = SWITCH_RATIO;
+#endif
+
   if (range_m) {
     BLASLONG m_from = *(((BLASLONG *)range_m) + 0);
     BLASLONG m_to   = *(((BLASLONG *)range_m) + 1);
@@ -1030,7 +1033,7 @@ int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa, FLO
   }
 */
 
-  if ((args -> m < nthreads * SWITCH_RATIO) || (args -> n < nthreads * SWITCH_RATIO)) {
+  if ((args -> m < nthreads * switch_ratio) || (args -> n < nthreads * switch_ratio)) {
     GEMM3M_LOCAL(args, range_m, range_n, sa, sb, 0);
     return 0;
   }
@@ -1038,7 +1041,7 @@ int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa, FLO
   divT = nthreads;
   divN = 1;
 
-  while ((GEMM3M_P * divT > m * SWITCH_RATIO) && (divT > 1)) {
+  while ((GEMM3M_P * divT > m * switch_ratio) && (divT > 1)) {
     do {
       divT --;
       divN = 1;
