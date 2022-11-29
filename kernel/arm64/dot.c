@@ -29,7 +29,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "common.h"
 
+// Some compilers will report feature support for SVE without the appropriate
+// header available
 #ifdef HAVE_SVE
+#if defined __has_include 
+#if __has_include(<arm_sve.h>) && __ARM_FEATURE_SVE
+#define USE_SVE
+#endif 
+#endif
+#endif
+
+#ifdef USE_SVE
 #include "dot_kernel_sve.c"
 #endif
 #include "dot_kernel_asimd.c"
@@ -46,7 +56,7 @@ static RETURN_TYPE dot_compute(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, B
 
 	if ( n <= 0 ) return dot;
 
-#ifdef HAVE_SVE
+#ifdef USE_SVE
 	if (inc_x == 1 && inc_y == 1) {
 		return dot_kernel_sve(n, x, y);
 	}
