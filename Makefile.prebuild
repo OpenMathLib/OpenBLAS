@@ -56,7 +56,7 @@ TARGET_FLAGS = -march=rv64gcv0p7_zfh_xtheadc -mabi=lp64d
 endif
 
 ifeq ($(TARGET), x280)
-TARGET_FLAGS = -march=rv64imafdcv_zba_zbb_zfh_xsfvqmaccqoq_xsfvfhbfmin -mabi=lp64d -mcpu=sifive-x280
+TARGET_FLAGS = -march=rv64imafdcv_zba_zbb_zfh -mabi=lp64d
 endif
 
 ifeq ($(TARGET), RISCV64_GENERIC)
