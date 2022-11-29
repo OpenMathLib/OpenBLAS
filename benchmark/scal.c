@@ -45,7 +45,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 int main(int argc, char *argv[]){
 
-  FLOAT *x, *y;
+  FLOAT *x;
   FLOAT alpha[2] = { 2.0, 2.0 };
   blasint m, i;
   blasint inc_x=1,inc_y=1;
@@ -74,10 +74,6 @@ int main(int argc, char *argv[]){
     fprintf(stderr,"Out of Memory!!\n");exit(1);
   }
 
-  if (( y = (FLOAT *)malloc(sizeof(FLOAT) * to * abs(inc_y) * COMPSIZE)) == NULL){
-    fprintf(stderr,"Out of Memory!!\n");exit(1);
-  }
-
 #ifdef __linux
   srandom(getpid());
 #endif
@@ -91,30 +87,20 @@ int main(int argc, char *argv[]){
 
    fprintf(stderr, " %6d : ", (int)m);
 
+   for(i = 0; i < m * COMPSIZE * abs(inc_x); i++){
+	x[i] = ((FLOAT) rand() / (FLOAT) RAND_MAX) - 0.5;
+   }
 
+   begin();
    for (l=0; l<loops; l++)
    {
-
-   	for(i = 0; i < m * COMPSIZE * abs(inc_x); i++){
-			x[i] = ((FLOAT) rand() / (FLOAT) RAND_MAX) - 0.5;
-   	}
-
-   	for(i = 0; i < m * COMPSIZE * abs(inc_y); i++){
-			y[i] = ((FLOAT) rand() / (FLOAT) RAND_MAX) - 0.5;
-   	}
-    	begin();
-
     	SCAL (&m, alpha, x, &inc_x);
+   }
+   end();
 
-    	end();
+   time1 = getsec();
 
-    	time1 = getsec();
-
-	timeg += time1;
-
-    }
-
-    timeg /= loops;
+   timeg = time1 / loops;
 
 #ifdef COMPLEX
     fprintf(stderr, " %10.2f MFlops %10.6f sec\n", 6. * (double)m / timeg * 1.e-6, timeg);
