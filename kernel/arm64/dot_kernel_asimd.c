@@ -260,18 +260,9 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	"	faddp	"OUT", v0.2d			\n"
 #endif /* !defined(DOUBLE) */
 
-#if defined(SMP)
-extern int blas_level1_thread_with_return_value(int mode, BLASLONG m, BLASLONG n,
-	BLASLONG k, void *alpha, void *a, BLASLONG lda, void *b, BLASLONG ldb,
-	void *c, BLASLONG ldc, int (*function)(), int nthreads);
-#endif
-
-static RETURN_TYPE dot_compute(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG inc_y)
+static RETURN_TYPE dot_kernel_asimd(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG inc_y)
 {
 	RETURN_TYPE  dot = 0.0;
-
-	if ( n < 0 ) return dot;
-
 	BLASLONG j = 0;
 
 	__asm__ __volatile__ (
@@ -349,61 +340,6 @@ static RETURN_TYPE dot_compute(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, B
 	  "memory",
 	  "d1", "d2", "d3", "d4", "d5", "d6", "d7"
 	);
-
-	return dot;
-}
-
-#if defined(SMP)
-static int dot_thread_function(BLASLONG n, BLASLONG dummy0,
-	BLASLONG dummy1, FLOAT dummy2, FLOAT *x, BLASLONG inc_x, FLOAT *y,
-	BLASLONG inc_y, FLOAT *result, BLASLONG dummy3)
-{
-	*(RETURN_TYPE *)result = dot_compute(n, x, inc_x, y, inc_y);
-
-	return 0;
-}
-#endif
-
-RETURN_TYPE CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG inc_y)
-{
-#if defined(SMP)
-	int nthreads;
-	FLOAT dummy_alpha;
-#endif
-	RETURN_TYPE dot = 0.0;
-
-#if defined(SMP)
-	if (inc_x == 0 || inc_y == 0 || n <= 10000)
-		nthreads = 1;
-	else
-		nthreads = num_cpu_avail(1);
-
-	if (nthreads == 1) {
-		dot = dot_compute(n, x, inc_x, y, inc_y);
-	} else {
-		int mode, i;
-		char result[MAX_CPU_NUMBER * sizeof(double) * 2];
-		RETURN_TYPE *ptr;
-
-#if !defined(DOUBLE)
-		mode = BLAS_SINGLE  | BLAS_REAL;
-#else
-		mode = BLAS_DOUBLE  | BLAS_REAL;
-#endif
-
-		blas_level1_thread_with_return_value(mode, n, 0, 0, &dummy_alpha,
-				   x, inc_x, y, inc_y, result, 0,
-				   ( void *)dot_thread_function, nthreads);
-
-		ptr = (RETURN_TYPE *)result;
-		for (i = 0; i < nthreads; i++) {
-			dot = dot + (*ptr);
-			ptr = (RETURN_TYPE *)(((char *)ptr) + sizeof(double) * 2);
-		}
-	}
-#else
-	dot = dot_compute(n, x, inc_x, y, inc_y);
-#endif
 
 	return dot;
 }
