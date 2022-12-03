@@ -335,9 +335,9 @@
       CALL ZHPGST( ITYPE, UPLO, N, AP, BP, INFO )
       CALL ZHPEVD( JOBZ, UPLO, N, AP, W, Z, LDZ, WORK, LWORK, RWORK,
      $             LRWORK, IWORK, LIWORK, INFO )
-      LWMIN = MAX( DBLE( LWMIN ), DBLE( WORK( 1 ) ) )
-      LRWMIN = MAX( DBLE( LRWMIN ), DBLE( RWORK( 1 ) ) )
-      LIWMIN = MAX( DBLE( LIWMIN ), DBLE( IWORK( 1 ) ) )
+      LWMIN = INT( MAX( DBLE( LWMIN ), DBLE( WORK( 1 ) ) ) )
+      LRWMIN = INT( MAX( DBLE( LRWMIN ), DBLE( RWORK( 1 ) ) ) )
+      LIWMIN = INT( MAX( DBLE( LIWMIN ), DBLE( IWORK( 1 ) ) ) )
 *
       IF( WANTZ ) THEN
 *

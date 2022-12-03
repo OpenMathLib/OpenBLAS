@@ -40,7 +40,7 @@ set(SEIGTST schkee.F
    sget54.f sglmts.f sgqrts.f sgrqts.f sgsvts3.f
    shst01.f slarfy.f slarhs.f slatm4.f slctes.f slctsx.f slsets.f sort01.f
    sort03.f ssbt21.f ssgt01.f sslect.f sspt21.f sstt21.f
-   sstt22.f ssyt21.f ssyt22.f)
+   sstt22.f ssyl01.f ssyt21.f ssyt22.f)
 
 set(CEIGTST cchkee.F
    cbdt01.f cbdt02.f cbdt03.f cbdt05.f
@@ -56,7 +56,7 @@ set(CEIGTST cchkee.F
    cget54.f cglmts.f cgqrts.f cgrqts.f cgsvts3.f
    chbt21.f chet21.f chet22.f chpt21.f chst01.f
    clarfy.f clarhs.f clatm4.f clctes.f clctsx.f clsets.f csbmv.f
-   csgt01.f cslect.f
+   csgt01.f cslect.f csyl01.f
    cstt21.f cstt22.f cunt01.f cunt03.f)
 
 set(DZIGTST dlafts.f dlahd2.f dlasum.f dlatb9.f dstech.f dstect.f
@@ -77,7 +77,7 @@ set(DEIGTST dchkee.F
    dget54.f dglmts.f dgqrts.f dgrqts.f dgsvts3.f
    dhst01.f dlarfy.f dlarhs.f dlatm4.f dlctes.f dlctsx.f dlsets.f dort01.f
    dort03.f dsbt21.f dsgt01.f dslect.f dspt21.f dstt21.f
-   dstt22.f dsyt21.f dsyt22.f)
+   dstt22.f dsyl01.f dsyt21.f dsyt22.f)
 
 set(ZEIGTST zchkee.F
    zbdt01.f zbdt02.f zbdt03.f zbdt05.f
@@ -93,7 +93,7 @@ set(ZEIGTST zchkee.F
    zget54.f zglmts.f zgqrts.f zgrqts.f zgsvts3.f
    zhbt21.f zhet21.f zhet22.f zhpt21.f zhst01.f
    zlarfy.f zlarhs.f zlatm4.f zlctes.f zlctsx.f zlsets.f zsbmv.f
-   zsgt01.f zslect.f
+   zsgt01.f zslect.f zsyl01.f
    zstt21.f zstt22.f zunt01.f zunt03.f)
 
 macro(add_eig_executable name)

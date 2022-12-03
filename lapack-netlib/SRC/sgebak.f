@@ -236,7 +236,7 @@
      $            GO TO 40
                IF( I.LT.ILO )
      $            I = ILO - II
-               K = SCALE( I )
+               K = INT( SCALE( I ) )
                IF( K.EQ.I )
      $            GO TO 40
                CALL SSWAP( M, V( I, 1 ), LDV, V( K, 1 ), LDV )
@@ -250,7 +250,7 @@
      $            GO TO 50
                IF( I.LT.ILO )
      $            I = ILO - II
-               K = SCALE( I )
+               K = INT( SCALE( I ) )
                IF( K.EQ.I )
      $            GO TO 50
                CALL SSWAP( M, V( I, 1 ), LDV, V( K, 1 ), LDV )

@@ -821,7 +821,7 @@ f"> */
 	    ll = 1;
 	} else {
 	    i__1 = lvl - 1;
-	    lf = pow_ii(&c__2, &i__1);
+	    lf = pow_ii(c__2, i__1);
 	    ll = (lf << 1) - 1;
 	}
 	i__1 = ll;

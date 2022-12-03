@@ -130,7 +130,7 @@
       LOGICAL            UPPER
 *     ..
 *     .. Intrinsic Functions ..
-      INTRINSIC          DBLE, DIMAG
+      INTRINSIC          DBLE, DIMAG, CMPLX
 *     ..
 *     .. External Functions ..
       REAL               SLAMCH
@@ -151,7 +151,7 @@
                   INFO = 1
                   GO TO 50
                END IF
-               SA( I, J ) = A( I, J )
+               SA( I, J ) = CMPLX( A( I, J ) )
    10       CONTINUE
    20    CONTINUE
       ELSE
@@ -164,7 +164,7 @@
                   INFO = 1
                   GO TO 50
                END IF
-               SA( I, J ) = A( I, J )
+               SA( I, J ) = CMPLX( A( I, J ) )
    30       CONTINUE
    40    CONTINUE
       END IF

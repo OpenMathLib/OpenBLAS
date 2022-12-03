@@ -274,7 +274,7 @@
      $                   ZDOTU, ZLADIV
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           DSCAL, XERBLA, ZAXPY, ZDSCAL, ZTRSV, DLABAD
+      EXTERNAL           DSCAL, XERBLA, ZAXPY, ZDSCAL, ZTRSV
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          ABS, DBLE, DCMPLX, DCONJG, DIMAG, MAX, MIN
@@ -318,17 +318,14 @@
 *
 *     Quick return if possible
 *
+      SCALE = ONE
       IF( N.EQ.0 )
      $   RETURN
 *
 *     Determine machine dependent parameters to control overflow.
 *
-      SMLNUM = DLAMCH( 'Safe minimum' )
+      SMLNUM = DLAMCH( 'Safe minimum' ) / DLAMCH( 'Precision' )
       BIGNUM = ONE / SMLNUM
-      CALL DLABAD( SMLNUM, BIGNUM )
-      SMLNUM = SMLNUM / DLAMCH( 'Precision' )
-      BIGNUM = ONE / SMLNUM
-      SCALE = ONE
 *
       IF( LSAME( NORMIN, 'N' ) ) THEN
 *
@@ -360,8 +357,74 @@
       IF( TMAX.LE.BIGNUM*HALF ) THEN
          TSCAL = ONE
       ELSE
-         TSCAL = HALF / ( SMLNUM*TMAX )
-         CALL DSCAL( N, TSCAL, CNORM, 1 )
+*
+*        Avoid NaN generation if entries in CNORM exceed the
+*        overflow threshold
+*
+         IF ( TMAX.LE.DLAMCH('Overflow') ) THEN
+*           Case 1: All entries in CNORM are valid floating-point numbers
+            TSCAL = HALF / ( SMLNUM*TMAX )
+            CALL DSCAL( N, TSCAL, CNORM, 1 )
+         ELSE
+*           Case 2: At least one column norm of A cannot be
+*           represented as a floating-point number. Find the
+*           maximum offdiagonal absolute value
+*           max( |Re(A(I,J))|, |Im(A(I,J)| ). If this entry is
+*           not +/- Infinity, use this value as TSCAL.
+            TMAX = ZERO
+            IF( UPPER ) THEN
+*
+*              A is upper triangular.
+*
+               DO J = 2, N
+                  DO I = 1, J - 1
+                     TMAX = MAX( TMAX, ABS( DBLE( A( I, J ) ) ),
+     $                           ABS( DIMAG(A ( I, J ) ) ) )
+                  END DO
+               END DO
+            ELSE
+*
+*              A is lower triangular.
+*
+               DO J = 1, N - 1
+                  DO I = J + 1, N
+                     TMAX = MAX( TMAX, ABS( DBLE( A( I, J ) ) ),
+     $                           ABS( DIMAG(A ( I, J ) ) ) )
+                  END DO
+               END DO
+            END IF
+*
+            IF( TMAX.LE.DLAMCH('Overflow') ) THEN
+               TSCAL = ONE / ( SMLNUM*TMAX )
+               DO J = 1, N
+                  IF( CNORM( J ).LE.DLAMCH('Overflow') ) THEN
+                     CNORM( J ) = CNORM( J )*TSCAL
+                  ELSE
+*                    Recompute the 1-norm of each column without
+*                    introducing Infinity in the summation.
+                     TSCAL = TWO * TSCAL
+                     CNORM( J ) = ZERO
+                     IF( UPPER ) THEN
+                        DO I = 1, J - 1
+                           CNORM( J ) = CNORM( J ) +
+     $                                  TSCAL * CABS2( A( I, J ) )
+                        END DO
+                     ELSE
+                        DO I = J + 1, N
+                           CNORM( J ) = CNORM( J ) +
+     $                                  TSCAL * CABS2( A( I, J ) )
+                        END DO
+                     END IF
+                     TSCAL = TSCAL * HALF
+                  END IF
+               END DO
+            ELSE
+*              At least one entry of A is not a valid floating-point
+*              entry. Rely on TRSV to propagate Inf and NaN.
+               CALL ZTRSV( UPLO, TRANS, DIAG, N, A, LDA, X, 1 )
+               RETURN
+            END IF
+         END IF
       END IF
 *
 *     Compute a bound on the computed solution vector to see if the

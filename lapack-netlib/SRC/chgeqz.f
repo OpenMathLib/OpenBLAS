@@ -523,9 +523,7 @@
             END IF
          END IF
 *
-         IF( ABS( T( ILAST, ILAST ) ).LE.MAX( SAFMIN, ULP*( 
-     $         ABS( T( ILAST - 1, ILAST ) ) + ABS( T( ILAST-1, ILAST-1 )
-     $          ) ) ) ) THEN
+         IF( ABS( T( ILAST, ILAST ) ).LE.BTOL ) THEN
             T( ILAST, ILAST ) = CZERO
             GO TO 50
          END IF
@@ -551,10 +549,7 @@
 *
 *           Test 2: for T(j,j)=0
 *
-            TEMP = ABS ( T( J, J + 1 ) )
-            IF ( J .GT. ILO )
-     $           TEMP = TEMP + ABS ( T( J - 1, J ) )
-            IF( ABS( T( J, J ) ).LT.MAX( SAFMIN,ULP*TEMP ) ) THEN
+            IF( ABS( T( J, J ) ).LT.BTOL ) THEN
                T( J, J ) = CZERO
 *
 *              Test 1a: Check for 2 consecutive small subdiagonals in A

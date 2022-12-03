@@ -279,7 +279,7 @@
       PARAMETER          ( RZERO = 0.0e0, RONE = 1.0e0 )
 *     ..
 *     .. Local Scalars ..
-      COMPLEX            ALPHA, BETA, CDUM, REFSUM
+      COMPLEX            ALPHA, BETA, CDUM, REFSUM, T1, T2, T3
       REAL               H11, H12, H21, H22, SAFMAX, SAFMIN, SCL,
      $                   SMLNUM, TST1, TST2, ULP
       INTEGER            I2, I4, INCOL, J, JBOT, JCOL, JLEN,
@@ -424,12 +424,12 @@
 *              ==== Perform update from right within 
 *              .    computational window. ====
 *
+               T1 = V( 1, M22 )
+               T2 = T1*CONJG( V( 2, M22 ) )
                DO 30 J = JTOP, MIN( KBOT, K+3 )
-                  REFSUM = V( 1, M22 )*( H( J, K+1 )+V( 2, M22 )*
-     $                     H( J, K+2 ) )
-                  H( J, K+1 ) = H( J, K+1 ) - REFSUM
-                  H( J, K+2 ) = H( J, K+2 ) -
-     $                          REFSUM*CONJG( V( 2, M22 ) )
+                  REFSUM = H( J, K+1 ) + V( 2, M22 )*H( J, K+2 )
+                  H( J, K+1 ) = H( J, K+1 ) - REFSUM*T1
+                  H( J, K+2 ) = H( J, K+2 ) - REFSUM*T2
    30          CONTINUE
 *
 *              ==== Perform update from left within 
@@ -442,12 +442,13 @@
                ELSE
                   JBOT = KBOT
                END IF
+               T1 = CONJG( V( 1, M22 ) )
+               T2 = T1*V( 2, M22 )
                DO 40 J = K+1, JBOT
-                  REFSUM = CONJG( V( 1, M22 ) )*
-     $                     ( H( K+1, J )+CONJG( V( 2, M22 ) )*
-     $                     H( K+2, J ) )
-                  H( K+1, J ) = H( K+1, J ) - REFSUM
-                  H( K+2, J ) = H( K+2, J ) - REFSUM*V( 2, M22 )
+                  REFSUM = H( K+1, J ) +
+     $                     CONJG( V( 2, M22 ) )*H( K+2, J )
+                  H( K+1, J ) = H( K+1, J ) - REFSUM*T1
+                  H( K+2, J ) = H( K+2, J ) - REFSUM*T2
    40          CONTINUE
 *
 *              ==== The following convergence test requires that
@@ -610,25 +611,28 @@
 *              .     deflation check. We still delay most of the
 *              .     updates from the left for efficiency. ====
 *
+               T1 = V( 1, M )
+               T2 = T1*CONJG( V( 2, M ) )
+               T3 = T1*CONJG( V( 3, M ) )
                DO 70 J = JTOP, MIN( KBOT, K+3 )
-                  REFSUM = V( 1, M )*( H( J, K+1 )+V( 2, M )*
-     $                     H( J, K+2 )+V( 3, M )*H( J, K+3 ) )
-                  H( J, K+1 ) = H( J, K+1 ) - REFSUM
-                  H( J, K+2 ) = H( J, K+2 ) -
-     $                          REFSUM*CONJG( V( 2, M ) )
-                  H( J, K+3 ) = H( J, K+3 ) -
-     $                          REFSUM*CONJG( V( 3, M ) )
+                  REFSUM = H( J, K+1 ) + V( 2, M )*H( J, K+2 )
+     $                     + V( 3, M )*H( J, K+3 )
+                  H( J, K+1 ) = H( J, K+1 ) - REFSUM*T1
+                  H( J, K+2 ) = H( J, K+2 ) - REFSUM*T2
+                  H( J, K+3 ) = H( J, K+3 ) - REFSUM*T3
    70          CONTINUE
 *
 *              ==== Perform update from left for subsequent
 *              .    column. ====
 *
-               REFSUM =  CONJG( V( 1, M ) )*( H( K+1, K+1 )
-     $                  +CONJG( V( 2, M ) )*H( K+2, K+1 )
-     $                  +CONJG( V( 3, M ) )*H( K+3, K+1 ) )
-               H( K+1, K+1 ) = H( K+1, K+1 ) - REFSUM
-               H( K+2, K+1 ) = H( K+2, K+1 ) - REFSUM*V( 2, M )
-               H( K+3, K+1 ) = H( K+3, K+1 ) - REFSUM*V( 3, M )
+               T1 = CONJG( V( 1, M ) )
+               T2 = T1*V( 2, M )
+               T3 = T1*V( 3, M )
+               REFSUM = H( K+1, K+1 ) + CONJG( V( 2, M ) )*H( K+2, K+1 )
+     $                  + CONJG( V( 3, M ) )*H( K+3, K+1 )
+               H( K+1, K+1 ) = H( K+1, K+1 ) - REFSUM*T1
+               H( K+2, K+1 ) = H( K+2, K+1 ) - REFSUM*T2
+               H( K+3, K+1 ) = H( K+3, K+1 ) - REFSUM*T3
 *
 *              ==== The following convergence test requires that
 *              .    the tradition small-compared-to-nearby-diagonals
@@ -688,13 +692,15 @@
 *
             DO 100 M = MBOT, MTOP, -1
                K = KRCOL + 2*( M-1 )
+               T1 = CONJG( V( 1, M ) )
+               T2 = T1*V( 2, M )
+               T3 = T1*V( 3, M )
                DO 90 J = MAX( KTOP, KRCOL + 2*M ), JBOT
-                  REFSUM = CONJG( V( 1, M ) )*
-     $                     ( H( K+1, J )+CONJG( V( 2, M ) )*
-     $                     H( K+2, J )+CONJG( V( 3, M ) )*H( K+3, J ) )
-                  H( K+1, J ) = H( K+1, J ) - REFSUM
-                  H( K+2, J ) = H( K+2, J ) - REFSUM*V( 2, M )
-                  H( K+3, J ) = H( K+3, J ) - REFSUM*V( 3, M )
+                  REFSUM = H( K+1, J ) + CONJG( V( 2, M ) )*
+     $                     H( K+2, J ) + CONJG( V( 3, M ) )*H( K+3, J )
+                  H( K+1, J ) = H( K+1, J ) - REFSUM*T1
+                  H( K+2, J ) = H( K+2, J ) - REFSUM*T2
+                  H( K+3, J ) = H( K+3, J ) - REFSUM*T3
    90          CONTINUE
   100       CONTINUE
 *
@@ -712,14 +718,15 @@
                   I2 = MAX( 1, KTOP-INCOL )
                   I2 = MAX( I2, KMS-(KRCOL-INCOL)+1 )
                   I4 = MIN( KDU, KRCOL + 2*( MBOT-1 ) - INCOL + 5 )
+                  T1 = V( 1, M )
+                  T2 = T1*CONJG( V( 2, M ) )
+                  T3 = T1*CONJG( V( 3, M ) )
                   DO 110 J = I2, I4
-                     REFSUM = V( 1, M )*( U( J, KMS+1 )+V( 2, M )*
-     $                        U( J, KMS+2 )+V( 3, M )*U( J, KMS+3 ) )
-                     U( J, KMS+1 ) = U( J, KMS+1 ) - REFSUM
-                     U( J, KMS+2 ) = U( J, KMS+2 ) -
-     $                               REFSUM*CONJG( V( 2, M ) )
-                     U( J, KMS+3 ) = U( J, KMS+3 ) -
-     $                               REFSUM*CONJG( V( 3, M ) )
+                     REFSUM = U( J, KMS+1 ) + V( 2, M )*U( J, KMS+2 )
+     $                        + V( 3, M )*U( J, KMS+3 )
+                     U( J, KMS+1 ) = U( J, KMS+1 ) - REFSUM*T1
+                     U( J, KMS+2 ) = U( J, KMS+2 ) - REFSUM*T2
+                     U( J, KMS+3 ) = U( J, KMS+3 ) - REFSUM*T3
   110             CONTINUE
   120          CONTINUE
             ELSE IF( WANTZ ) THEN
@@ -730,14 +737,15 @@
 *
                DO 140 M = MBOT, MTOP, -1
                   K = KRCOL + 2*( M-1 )
+                  T1 = V( 1, M )
+                  T2 = T1*CONJG( V( 2, M ) )
+                  T3 = T1*CONJG( V( 3, M ) )
                   DO 130 J = ILOZ, IHIZ
-                     REFSUM = V( 1, M )*( Z( J, K+1 )+V( 2, M )*
-     $                        Z( J, K+2 )+V( 3, M )*Z( J, K+3 ) )
-                     Z( J, K+1 ) = Z( J, K+1 ) - REFSUM
-                     Z( J, K+2 ) = Z( J, K+2 ) -
-     $                             REFSUM*CONJG( V( 2, M ) )
-                     Z( J, K+3 ) = Z( J, K+3 ) -
-     $                             REFSUM*CONJG( V( 3, M ) )
+                     REFSUM = Z( J, K+1 ) + V( 2, M )*Z( J, K+2 )
+     $                        + V( 3, M )*Z( J, K+3 )
+                     Z( J, K+1 ) = Z( J, K+1 ) - REFSUM*T1
+                     Z( J, K+2 ) = Z( J, K+2 ) - REFSUM*T2
+                     Z( J, K+3 ) = Z( J, K+3 ) - REFSUM*T3
   130             CONTINUE
   140          CONTINUE
             END IF

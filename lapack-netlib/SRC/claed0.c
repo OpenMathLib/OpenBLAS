@@ -796,10 +796,10 @@ L10:
 
     temp = log((real) (*n)) / log(2.f);
     lgn = (integer) temp;
-    if (pow_ii(&c__2, &lgn) < *n) {
+    if (pow_ii(c__2, lgn) < *n) {
 	++lgn;
     }
-    if (pow_ii(&c__2, &lgn) < *n) {
+    if (pow_ii(c__2, lgn) < *n) {
 	++lgn;
     }
     iprmpt = indxq + *n + 1;

@@ -124,7 +124,7 @@
       DOUBLE PRECISION   RMAX
 *     ..
 *     .. Intrinsic Functions ..
-      INTRINSIC          DBLE, DIMAG
+      INTRINSIC          DBLE, DIMAG, CMPLX
 *     ..
 *     .. External Functions ..
       REAL               SLAMCH
@@ -142,7 +142,7 @@
                INFO = 1
                GO TO 30
             END IF
-            SA( I, J ) = A( I, J )
+            SA( I, J ) = CMPLX( A( I, J ) )
    10    CONTINUE
    20 CONTINUE
       INFO = 0

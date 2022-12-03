@@ -580,7 +580,7 @@
 *        Simultaneously diagonalize X11 and X21.
 *
          CALL DBBCSD( JOBV1T, 'N', JOBU1, JOBU2, 'T', M, Q, P, THETA,
-     $                WORK(IPHI), V1T, LDV1T, DUM2, 1, U1, LDU1, U2,
+     $                WORK(IPHI), V1T, LDV1T, DUM1, 1, U1, LDU1, U2,
      $                LDU2, WORK(IB11D), WORK(IB11E), WORK(IB12D),
      $                WORK(IB12E), WORK(IB21D), WORK(IB21E),
      $                WORK(IB22D), WORK(IB22E), WORK(IBBCSD), LBBCSD,
@@ -635,7 +635,7 @@
 *        Simultaneously diagonalize X11 and X21.
 *
          CALL DBBCSD( 'N', JOBV1T, JOBU2, JOBU1, 'T', M, M-Q, M-P,
-     $                THETA, WORK(IPHI), DUM2, 1, V1T, LDV1T, U2,
+     $                THETA, WORK(IPHI), DUM1, 1, V1T, LDV1T, U2,
      $                LDU2, U1, LDU1, WORK(IB11D), WORK(IB11E),
      $                WORK(IB12D), WORK(IB12E), WORK(IB21D),
      $                WORK(IB21E), WORK(IB22D), WORK(IB22E),
@@ -706,7 +706,7 @@
 *        Simultaneously diagonalize X11 and X21.
 *
          CALL DBBCSD( JOBU2, JOBU1, 'N', JOBV1T, 'N', M, M-P, M-Q,
-     $                THETA, WORK(IPHI), U2, LDU2, U1, LDU1, DUM2,
+     $                THETA, WORK(IPHI), U2, LDU2, U1, LDU1, DUM1,
      $                1, V1T, LDV1T, WORK(IB11D), WORK(IB11E),
      $                WORK(IB12D), WORK(IB12E), WORK(IB21D),
      $                WORK(IB21E), WORK(IB22D), WORK(IB22E),

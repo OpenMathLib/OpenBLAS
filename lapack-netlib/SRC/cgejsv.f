@@ -704,11 +704,11 @@
           IF ( LQUERY ) THEN 
               CALL CGEQP3( M, N, A, LDA, IWORK, CDUMMY, CDUMMY, -1, 
      $             RDUMMY, IERR )
-              LWRK_CGEQP3 = REAL( CDUMMY(1) )
+              LWRK_CGEQP3 = INT( CDUMMY(1) )
               CALL CGEQRF( N, N, A, LDA, CDUMMY, CDUMMY,-1, IERR )
-              LWRK_CGEQRF = REAL( CDUMMY(1) )
+              LWRK_CGEQRF = INT( CDUMMY(1) )
               CALL CGELQF( N, N, A, LDA, CDUMMY, CDUMMY,-1, IERR )
-              LWRK_CGELQF = REAL( CDUMMY(1) )
+              LWRK_CGELQF = INT( CDUMMY(1) )
           END IF
           MINWRK  = 2
           OPTWRK  = 2
@@ -724,7 +724,7 @@
               IF ( LQUERY ) THEN 
                   CALL CGESVJ( 'L', 'N', 'N', N, N, A, LDA, SVA, N, V, 
      $                 LDV, CDUMMY, -1, RDUMMY, -1, IERR )
-                  LWRK_CGESVJ = REAL( CDUMMY(1) )
+                  LWRK_CGESVJ = INT( CDUMMY(1) )
                   IF ( ERREST ) THEN 
                       OPTWRK = MAX( N+LWRK_CGEQP3, N**2+LWCON, 
      $                              N+LWRK_CGEQRF, LWRK_CGESVJ )
@@ -760,10 +760,10 @@
              IF ( LQUERY ) THEN
                  CALL CGESVJ( 'L', 'U', 'N', N,N, U, LDU, SVA, N, A,
      $                LDA, CDUMMY, -1, RDUMMY, -1, IERR )
-                 LWRK_CGESVJ = REAL( CDUMMY(1) )
+                 LWRK_CGESVJ = INT( CDUMMY(1) )
                  CALL CUNMLQ( 'L', 'C', N, N, N, A, LDA, CDUMMY,
      $                V, LDV, CDUMMY, -1, IERR )
-                 LWRK_CUNMLQ = REAL( CDUMMY(1) )
+                 LWRK_CUNMLQ = INT( CDUMMY(1) )
                  IF ( ERREST ) THEN 
                  OPTWRK = MAX( N+LWRK_CGEQP3, LWCON, LWRK_CGESVJ, 
      $                         N+LWRK_CGELQF, 2*N+LWRK_CGEQRF,
@@ -799,10 +799,10 @@
              IF ( LQUERY ) THEN
                  CALL CGESVJ( 'L', 'U', 'N', N,N, U, LDU, SVA, N, A,
      $                LDA, CDUMMY, -1, RDUMMY, -1, IERR )
-                 LWRK_CGESVJ = REAL( CDUMMY(1) )
+                 LWRK_CGESVJ = INT( CDUMMY(1) )
                  CALL CUNMQR( 'L', 'N', M, N, N, A, LDA, CDUMMY, U,
      $               LDU, CDUMMY, -1, IERR )
-                 LWRK_CUNMQRM = REAL( CDUMMY(1) )
+                 LWRK_CUNMQRM = INT( CDUMMY(1) )
                  IF ( ERREST ) THEN
                  OPTWRK = N + MAX( LWRK_CGEQP3, LWCON, N+LWRK_CGEQRF,
      $                             LWRK_CGESVJ, LWRK_CUNMQRM )
@@ -861,26 +861,26 @@
              IF ( LQUERY ) THEN
                  CALL CUNMQR( 'L', 'N', M, N, N, A, LDA, CDUMMY, U,
      $                LDU, CDUMMY, -1, IERR )
-                 LWRK_CUNMQRM = REAL( CDUMMY(1) )
+                 LWRK_CUNMQRM = INT( CDUMMY(1) )
                  CALL CUNMQR( 'L', 'N', N, N, N, A, LDA, CDUMMY, U,
      $                LDU, CDUMMY, -1, IERR )
-                 LWRK_CUNMQR = REAL( CDUMMY(1) )
+                 LWRK_CUNMQR = INT( CDUMMY(1) )
                  IF ( .NOT. JRACC ) THEN
                      CALL CGEQP3( N,N, A, LDA, IWORK, CDUMMY,CDUMMY, -1,
      $                    RDUMMY, IERR )
-                     LWRK_CGEQP3N = REAL( CDUMMY(1) )
+                     LWRK_CGEQP3N = INT( CDUMMY(1) )
                      CALL CGESVJ( 'L', 'U', 'N', N, N, U, LDU, SVA,
      $                    N, V, LDV, CDUMMY, -1, RDUMMY, -1, IERR )
-                     LWRK_CGESVJ = REAL( CDUMMY(1) )
+                     LWRK_CGESVJ = INT( CDUMMY(1) )
                      CALL CGESVJ( 'U', 'U', 'N', N, N, U, LDU, SVA,
      $                    N, V, LDV, CDUMMY, -1, RDUMMY, -1, IERR )
-                     LWRK_CGESVJU = REAL( CDUMMY(1) )
+                     LWRK_CGESVJU = INT( CDUMMY(1) )
                      CALL CGESVJ( 'L', 'U', 'V', N, N, U, LDU, SVA,
      $                    N, V, LDV, CDUMMY, -1, RDUMMY, -1, IERR )
-                     LWRK_CGESVJV = REAL( CDUMMY(1) )
+                     LWRK_CGESVJV = INT( CDUMMY(1) )
                      CALL CUNMLQ( 'L', 'C', N, N, N, A, LDA, CDUMMY,
      $                    V, LDV, CDUMMY, -1, IERR )
-                     LWRK_CUNMLQ = REAL( CDUMMY(1) )
+                     LWRK_CUNMLQ = INT( CDUMMY(1) )
                      IF ( ERREST ) THEN 
                        OPTWRK = MAX( N+LWRK_CGEQP3, N+LWCON, 
      $                          2*N+N**2+LWCON, 2*N+LWRK_CGEQRF, 
@@ -909,13 +909,13 @@
                  ELSE
                      CALL CGESVJ( 'L', 'U', 'V', N, N, U, LDU, SVA,
      $                    N, V, LDV, CDUMMY, -1, RDUMMY, -1, IERR )
-                     LWRK_CGESVJV = REAL( CDUMMY(1) )
+                     LWRK_CGESVJV = INT( CDUMMY(1) )
                      CALL CUNMQR( 'L', 'N', N, N, N, CDUMMY, N, CDUMMY,
      $                    V, LDV, CDUMMY, -1, IERR )
-                     LWRK_CUNMQR = REAL( CDUMMY(1) )
+                     LWRK_CUNMQR = INT( CDUMMY(1) )
                      CALL CUNMQR( 'L', 'N', M, N, N, A, LDA, CDUMMY, U,
      $                    LDU, CDUMMY, -1, IERR )
-                     LWRK_CUNMQRM = REAL( CDUMMY(1) )
+                     LWRK_CUNMQRM = INT( CDUMMY(1) )
                      IF ( ERREST ) THEN 
                         OPTWRK = MAX( N+LWRK_CGEQP3, N+LWCON,   
      $                           2*N+LWRK_CGEQRF, 2*N+N**2,  

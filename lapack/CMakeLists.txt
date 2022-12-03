@@ -39,8 +39,12 @@ set(UNIT_SOURCES2
   trti2/trti2_L.c
 )
 
+if (NOT RELAPACK_REPLACE)
 GenerateNamedObjects("${LAPACK_SOURCES}")
 GenerateNamedObjects("${LAPACK_MANGLED_SOURCES}" "" "" false "" "" false 3)
+else()
+GenerateNamedObjects("${LAPACK_MANGLED_SOURCES}" "" "" false "" "" false 3)
+endif()
 
 GenerateNamedObjects("laswp/generic/laswp_k_4.c" "" "laswp_plus" false "" ""  false 3)
 GenerateNamedObjects("laswp/generic/laswp_k_4.c" "MINUS" "laswp_minus" false "" ""  false 3)
@@ -113,4 +117,3 @@ GenerateCombinationObjects("${UNIT_SOURCES}" "UNIT" "N" "" 4)
 GenerateCombinationObjects("${UNIT_SOURCES2}" "UNIT" "N" "" 0 "" "" 3)
 
 add_library(lapack OBJECT ${OPENBLAS_SRC})
-

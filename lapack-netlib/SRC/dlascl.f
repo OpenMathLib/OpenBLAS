@@ -272,6 +272,8 @@
          ELSE
             MUL = CTOC / CFROMC
             DONE = .TRUE.
+            IF (MUL .EQ. ONE)
+     $         RETURN
          END IF
       END IF
 *

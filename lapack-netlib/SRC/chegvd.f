@@ -360,9 +360,9 @@
       CALL CHEGST( ITYPE, UPLO, N, A, LDA, B, LDB, INFO )
       CALL CHEEVD( JOBZ, UPLO, N, A, LDA, W, WORK, LWORK, RWORK, LRWORK,
      $             IWORK, LIWORK, INFO )
-      LOPT = MAX( REAL( LOPT ), REAL( WORK( 1 ) ) )
-      LROPT = MAX( REAL( LROPT ), REAL( RWORK( 1 ) ) )
-      LIOPT = MAX( REAL( LIOPT ), REAL( IWORK( 1 ) ) )
+      LOPT = INT( MAX( REAL( LOPT ), REAL( WORK( 1 ) ) ) )
+      LROPT = INT( MAX( REAL( LROPT ), REAL( RWORK( 1 ) ) ) )
+      LIOPT = INT( MAX( REAL( LIOPT ), REAL( IWORK( 1 ) ) ) )
 *
       IF( WANTZ .AND. INFO.EQ.0 ) THEN
 *

@@ -178,7 +178,7 @@
 *
 *           Compute the (K,K) element of the result.
 *
-            TR = CDOTC( K, AFAC( KC ), 1, AFAC( KC ), 1 )
+            TR = REAL( CDOTC( K, AFAC( KC ), 1, AFAC( KC ), 1 ) )
             AFAC( KC+K-1 ) = TR
 *
 *           Compute the rest of column K.

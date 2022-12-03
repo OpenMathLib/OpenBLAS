@@ -823,6 +823,8 @@ void gotoblas_affinity_init(void) {
 
   if (numprocs == 0) numprocs = readenv_atoi("OMP_NUM_THREADS");
 
+  if (numprocs == 0) numprocs = readenv_atoi("OPENBLAS_DEFAULT_NUM_THREADS");
+
   numnodes = 1;
 
   if (numprocs == 1) {

@@ -90,7 +90,7 @@
 	//Init INF
 	lui     TEMP, 0x7FF0
 	dsll    TEMP, TEMP, 32
-	MTC1    TEMP, INF
+	MTC     TEMP, INF
 
 	LD	a1,  0 * SIZE(X)
 	daddiu	N, N, -1

@@ -68,7 +68,7 @@ void LAPACKE_xerbla( const char *name, lapack_int info );
 /* Compare two chars (case-insensitive) */
 lapack_logical LAPACKE_lsame( char ca,  char cb )
 #if defined __GNUC__
-	__attribute__((const))
+  __attribute__((const))
 #endif
 	;
 
@@ -128,6 +128,10 @@ void LAPACKE_ctp_trans( int matrix_layout, char uplo, char diag,
 void LAPACKE_ctr_trans( int matrix_layout, char uplo, char diag, lapack_int n,
                         const lapack_complex_float *in, lapack_int ldin,
                         lapack_complex_float *out, lapack_int ldout );
+void LAPACKE_ctz_trans( int matrix_layout, char direct, char uplo,
+                        char diag, lapack_int m, lapack_int n,
+                        const lapack_complex_float *in, lapack_int ldin,
+                        lapack_complex_float *out, lapack_int ldout );
 
 void LAPACKE_dgb_trans( int matrix_layout, lapack_int m, lapack_int n,
                         lapack_int kl, lapack_int ku,
@@ -178,6 +182,10 @@ void LAPACKE_dtp_trans( int matrix_layout, char uplo, char diag,
 void LAPACKE_dtr_trans( int matrix_layout, char uplo, char diag, lapack_int n,
                         const double *in, lapack_int ldin,
                         double *out, lapack_int ldout );
+void LAPACKE_dtz_trans( int matrix_layout, char direct, char uplo,
+                        char diag, lapack_int m, lapack_int n,
+                        const double *in, lapack_int ldin,
+                        double *out, lapack_int ldout );
 
 void LAPACKE_sgb_trans( int matrix_layout, lapack_int m, lapack_int n,
                         lapack_int kl, lapack_int ku,
@@ -226,6 +234,10 @@ void LAPACKE_stp_trans( int matrix_layout, char uplo, char diag,
                         lapack_int n, const float *in,
                         float *out );
 void LAPACKE_str_trans( int matrix_layout, char uplo, char diag, lapack_int n,
+                        const float *in, lapack_int ldin,
+                        float *out, lapack_int ldout );
+void LAPACKE_stz_trans( int matrix_layout, char direct, char uplo,
+                        char diag, lapack_int m, lapack_int n,
                         const float *in, lapack_int ldin,
                         float *out, lapack_int ldout );
 
@@ -282,6 +294,10 @@ void LAPACKE_ztp_trans( int matrix_layout, char uplo, char diag,
                         lapack_int n, const lapack_complex_double *in,
                         lapack_complex_double *out );
 void LAPACKE_ztr_trans( int matrix_layout, char uplo, char diag, lapack_int n,
+                        const lapack_complex_double *in, lapack_int ldin,
+                        lapack_complex_double *out, lapack_int ldout );
+void LAPACKE_ztz_trans( int matrix_layout, char direct, char uplo,
+                        char diag, lapack_int m, lapack_int n,
                         const lapack_complex_double *in, lapack_int ldin,
                         lapack_complex_double *out, lapack_int ldout );
 
@@ -376,6 +392,10 @@ lapack_logical LAPACKE_ctr_nancheck( int matrix_layout, char uplo, char diag,
                                       lapack_int n,
                                       const lapack_complex_float *a,
                                       lapack_int lda );
+lapack_logical LAPACKE_ctz_nancheck( int matrix_layout, char direct, char uplo,
+                                     char diag, lapack_int m, lapack_int n,
+                                     const lapack_complex_float *a,
+                                     lapack_int lda );
 
 lapack_logical LAPACKE_dgb_nancheck( int matrix_layout, lapack_int m,
                                       lapack_int n, lapack_int kl,
@@ -440,6 +460,9 @@ lapack_logical LAPACKE_dtr_nancheck( int matrix_layout, char uplo, char diag,
                                       lapack_int n,
                                       const double *a,
                                       lapack_int lda );
+lapack_logical LAPACKE_dtz_nancheck( int matrix_layout, char direct, char uplo,
+                                     char diag, lapack_int m, lapack_int n,
+                                     const double *a, lapack_int lda );
 
 lapack_logical LAPACKE_sgb_nancheck( int matrix_layout, lapack_int m,
                                       lapack_int n, lapack_int kl,
@@ -504,6 +527,9 @@ lapack_logical LAPACKE_str_nancheck( int matrix_layout, char uplo, char diag,
                                       lapack_int n,
                                       const float *a,
                                       lapack_int lda );
+lapack_logical LAPACKE_stz_nancheck( int matrix_layout, char direct, char uplo,
+                                     char diag, lapack_int m, lapack_int n,
+                                     const float *a, lapack_int lda );
 
 lapack_logical LAPACKE_zgb_nancheck( int matrix_layout, lapack_int m,
                                       lapack_int n, lapack_int kl,
@@ -574,6 +600,10 @@ lapack_logical LAPACKE_ztr_nancheck( int matrix_layout, char uplo, char diag,
                                       lapack_int n,
                                       const lapack_complex_double *a,
                                       lapack_int lda );
+lapack_logical LAPACKE_ztz_nancheck( int matrix_layout, char direct, char uplo,
+                                     char diag, lapack_int m, lapack_int n,
+                                     const lapack_complex_double *a,
+                                     lapack_int lda );
 
 #ifdef __cplusplus
 }

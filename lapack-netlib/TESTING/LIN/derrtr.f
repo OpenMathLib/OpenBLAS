@@ -83,9 +83,10 @@
       EXTERNAL           LSAMEN
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           ALAESM, CHKXER, DLATBS, DLATPS, DLATRS, DTBCON,
-     $                   DTBRFS, DTBTRS, DTPCON, DTPRFS, DTPTRI, DTPTRS,
-     $                   DTRCON, DTRRFS, DTRTI2, DTRTRI, DTRTRS
+      EXTERNAL           ALAESM, CHKXER, DLATBS, DLATPS, DLATRS,
+     $                   DLATRS3, DTBCON, DTBRFS, DTBTRS, DTPCON,
+     $                   DTPRFS, DTPTRI, DTPTRS, DTRCON, DTRRFS,
+     $                   DTRTI2, DTRTRI, DTRTRS
 *     ..
 *     .. Scalars in Common ..
       LOGICAL            LERR, OK
@@ -244,6 +245,46 @@
          INFOT = 7
          CALL DLATRS( 'U', 'N', 'N', 'N', 2, A, 1, X, SCALE, W, INFO )
          CALL CHKXER( 'DLATRS', INFOT, NOUT, LERR, OK )
+*
+*        DLATRS3
+*
+         SRNAMT = 'DLATRS3'
+         INFOT = 1
+         CALL DLATRS3( '/', 'N', 'N', 'N', 0, 0, A, 1, X, 1, SCALE, W,
+     $                 W( 2 ), 1, INFO )
+         CALL CHKXER( 'DLATRS3', INFOT, NOUT, LERR, OK )
+         INFOT = 2
+         CALL DLATRS3( 'U', '/', 'N', 'N', 0, 0, A, 1, X, 1, SCALE, W,
+     $                 W( 2 ), 1, INFO )
+         CALL CHKXER( 'DLATRS3', INFOT, NOUT, LERR, OK )
+         INFOT = 3
+         CALL DLATRS3( 'U', 'N', '/', 'N', 0, 0, A, 1, X, 1, SCALE, W,
+     $                 W( 2 ), 1, INFO )
+         CALL CHKXER( 'DLATRS3', INFOT, NOUT, LERR, OK )
+         INFOT = 4
+         CALL DLATRS3( 'U', 'N', 'N', '/', 0, 0, A, 1, X, 1, SCALE, W,
+     $                 W( 2 ), 1, INFO )
+         CALL CHKXER( 'DLATRS3', INFOT, NOUT, LERR, OK )
+         INFOT = 5
+         CALL DLATRS3( 'U', 'N', 'N', 'N', -1, 0, A, 1, X, 1, SCALE, W,
+     $                 W( 2 ), 1, INFO )
+         CALL CHKXER( 'DLATRS3', INFOT, NOUT, LERR, OK )
+         INFOT = 6
+         CALL DLATRS3( 'U', 'N', 'N', 'N', 0, -1, A, 1, X, 1, SCALE, W,
+     $                 W( 2 ), 1, INFO )
+         CALL CHKXER( 'DLATRS3', INFOT, NOUT, LERR, OK )
+         INFOT = 8
+         CALL DLATRS3( 'U', 'N', 'N', 'N', 2, 0, A, 1, X, 1, SCALE, W,
+     $                 W( 2 ), 1, INFO )
+         CALL CHKXER( 'DLATRS3', INFOT, NOUT, LERR, OK )
+         INFOT = 10
+         CALL DLATRS3( 'U', 'N', 'N', 'N', 2, 0, A, 2, X, 1, SCALE, W,
+     $                 W( 2 ), 1, INFO )
+         CALL CHKXER( 'DLATRS3', INFOT, NOUT, LERR, OK )
+         INFOT = 14
+         CALL DLATRS3( 'U', 'N', 'N', 'N', 1, 0, A, 1, X, 1, SCALE, W,
+     $                 W( 2 ), 0, INFO )
+         CALL CHKXER( 'DLATRS3', INFOT, NOUT, LERR, OK )
 *
       ELSE IF( LSAMEN( 2, C2, 'TP' ) ) THEN
 *

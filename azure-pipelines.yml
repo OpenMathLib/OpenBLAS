@@ -141,7 +141,7 @@ jobs:
 
 - job: OSX_OpenMP
   pool:
-     vmImage: 'macOS-10.15'
+     vmImage: 'macOS-11'
   steps:   
   - script: |
       brew update
@@ -151,15 +151,23 @@ jobs:
      
 - job: OSX_GCC_Nothreads
   pool:
-     vmImage: 'macOS-10.15'
+     vmImage: 'macOS-11'
   steps:   
   - script: |
       brew update
       make USE_THREADS=0 CC=gcc-10 FC=gfortran-10
      
+- job: OSX_GCC12
+  pool:
+     vmImage: 'macOS-latest'
+  steps:   
+  - script: |
+      brew update
+      make CC=gcc-12 FC=gfortran-12
+     
 - job: OSX_OpenMP_Clang
   pool:
-     vmImage: 'macOS-10.15'
+     vmImage: 'macOS-11'
   variables:
      LD_LIBRARY_PATH: /usr/local/opt/llvm/lib
      LIBRARY_PATH: /usr/local/opt/llvm/lib
@@ -172,7 +180,7 @@ jobs:
 
 - job: OSX_OpenMP_Clang_cmake
   pool:
-     vmImage: 'macOS-10.15'
+     vmImage: 'macOS-11'
   variables:
      LD_LIBRARY_PATH: /usr/local/opt/llvm/lib
      LIBRARY_PATH: /usr/local/opt/llvm/lib
@@ -188,7 +196,7 @@ jobs:
       
 - job: OSX_dynarch_cmake
   pool:
-     vmImage: 'macOS-10.15'
+     vmImage: 'macOS-11'
   variables:
      LD_LIBRARY_PATH: /usr/local/opt/llvm/lib
      LIBRARY_PATH: /usr/local/opt/llvm/lib
@@ -196,13 +204,13 @@ jobs:
   - script: |
       mkdir build
       cd build
-      cmake -DTARGET=CORE2 -DDYNAMIC_ARCH=1 -DCMAKE_C_COMPILER=gcc-10 -DCMAKE_Fortran_COMPILER=gfortran-10 -DBUILD_SHARED_LIBS=ON ..
+      cmake -DTARGET=CORE2 -DDYNAMIC_ARCH=1 -DDYNAMIC_LIST='NEHALEM HASWELL SKYLAKEX' -DCMAKE_C_COMPILER=gcc-10 -DCMAKE_Fortran_COMPILER=gfortran-10 -DBUILD_SHARED_LIBS=ON ..
       cmake --build .
       ctest
 
 - job: OSX_Ifort_Clang
   pool:
-     vmImage: 'macOS-10.15'
+     vmImage: 'macOS-11'
   variables:
      LD_LIBRARY_PATH: /usr/local/opt/llvm/lib
      MACOS_HPCKIT_URL: https://registrationcenter-download.intel.com/akdlm/irc_nas/17643/m_HPCKit_p_2021.2.0.2903_offline.dmg
@@ -235,7 +243,7 @@ jobs:
  
 - job: OSX_NDK_ARMV7
   pool:
-     vmImage: 'macOS-10.15'
+     vmImage: 'macOS-11'
   steps:   
   - script: | 
       brew update
@@ -255,7 +263,7 @@ jobs:
 
 - job: OSX_IOS_ARMV7
   pool:
-     vmImage: 'macOS-10.15'
+     vmImage: 'macOS-11'
   variables:
      CC: /Applications/Xcode_12.4.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang
      CFLAGS: -O2 -mno-thumb -Wno-macro-redefined -isysroot /Applications/Xcode_12.4.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS14.4.sdk -arch armv7 -miphoneos-version-min=5.1

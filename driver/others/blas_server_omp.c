@@ -69,6 +69,8 @@
 
 int blas_server_avail = 0;
 
+extern int openblas_omp_adaptive_env();
+
 static void * blas_thread_buffer[MAX_PARALLEL_NUMBER][MAX_CPU_NUMBER];
 #ifdef HAVE_C11
 static atomic_bool blas_buffer_inuse[MAX_PARALLEL_NUMBER];
@@ -282,8 +284,12 @@ static void exec_threads(blas_queue_t *queue, int buf_index){
   sb = queue -> sb;
 
 #ifdef CONSISTENT_FPCSR
+#ifdef __aarch64__
+  __asm__ __volatile__ ("msr fpcr, %0" : : "r" (queue -> sse_mode));
+#else
   __asm__ __volatile__ ("ldmxcsr %0" : : "m" (queue -> sse_mode));
   __asm__ __volatile__ ("fldcw %0"   : : "m" (queue -> x87_mode));
+#endif
 #endif
 
   if ((sa == NULL) && (sb == NULL) && ((queue -> mode & BLAS_PTHREAD) == 0)) {
@@ -381,8 +387,12 @@ int exec_blas(BLASLONG num, blas_queue_t *queue){
 
 #ifdef CONSISTENT_FPCSR
   for (i = 0; i < num; i ++) {
+#ifdef __aarch64__
+    __asm__ __volatile__ ("mrs %0, fpcr" : "=r" (queue[i].sse_mode));
+#else
     __asm__ __volatile__ ("fnstcw %0"  : "=m" (queue[i].x87_mode));
     __asm__ __volatile__ ("stmxcsr %0" : "=m" (queue[i].sse_mode));
+#endif
   }
 #endif
 

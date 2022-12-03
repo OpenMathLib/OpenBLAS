@@ -469,6 +469,15 @@
             ELSE
                NB = 64
             END IF
+         ELSE IF( C3.EQ.'SYL' ) THEN
+*           The upper bound is to prevent overly aggressive scaling.
+            IF( SNAME ) THEN
+               NB = MIN( MAX( 48, INT( ( MIN( N1, N2 ) * 16 ) / 100) ),
+     $                   240 )
+            ELSE
+               NB = MIN( MAX( 24, INT( ( MIN( N1, N2 ) * 8 ) / 100) ),
+     $                   80 )
+            END IF
          END IF
       ELSE IF( C2.EQ.'LA' ) THEN
          IF( C3.EQ.'UUM' ) THEN
@@ -476,6 +485,12 @@
                NB = 64
             ELSE
                NB = 64
+            END IF
+         ELSE IF( C3.EQ.'TRS' ) THEN
+            IF( SNAME ) THEN
+               NB = 32
+            ELSE
+               NB = 32
             END IF
          END IF
       ELSE IF( SNAME .AND. C2.EQ.'ST' ) THEN

@@ -96,8 +96,8 @@ DNRM2KERNEL    = dznrm2_thunderx2t99.c
 CNRM2KERNEL    = scnrm2_thunderx2t99.c
 ZNRM2KERNEL    = dznrm2_thunderx2t99.c
 
-DDOTKERNEL     = dot_thunderx2t99.c
-SDOTKERNEL     = dot_thunderx2t99.c
+DDOTKERNEL     = dot.c
+SDOTKERNEL     = dot.c
 CDOTKERNEL     = zdot_thunderx2t99.c
 ZDOTKERNEL     = zdot_thunderx2t99.c
 DSDOTKERNEL    = dot.S
@@ -190,10 +190,10 @@ ZGEMMOTCOPYOBJ =  zgemm_otcopy$(TSUFFIX).$(SUFFIX)
 
 SBGEMM_BETA    =  sbgemm_beta_neoversen2.c
 SBGEMMKERNEL    = sbgemm_kernel_$(SBGEMM_UNROLL_M)x$(SBGEMM_UNROLL_N)_neoversen2.c
-SBGEMMINCOPY    = sbgemm_ncopy_neoversen2.c
-SBGEMMITCOPY    = sbgemm_tcopy_neoversen2.c
-SBGEMMONCOPY    = sbgemm_ncopy_neoversen2.c
-SBGEMMOTCOPY    = sbgemm_tcopy_neoversen2.c
+SBGEMMINCOPY    = sbgemm_ncopy_$(SBGEMM_UNROLL_N)_neoversen2.c
+SBGEMMITCOPY    = sbgemm_tcopy_$(SBGEMM_UNROLL_M)_neoversen2.c
+SBGEMMONCOPY    = sbgemm_ncopy_$(SBGEMM_UNROLL_N)_neoversen2.c
+SBGEMMOTCOPY    = sbgemm_tcopy_$(SBGEMM_UNROLL_M)_neoversen2.c
 SBGEMMINCOPYOBJ =  sbgemm_incopy$(TSUFFIX).$(SUFFIX)
 SBGEMMITCOPYOBJ =  sbgemm_itcopy$(TSUFFIX).$(SUFFIX)
 SBGEMMONCOPYOBJ =  sbgemm_oncopy$(TSUFFIX).$(SUFFIX)

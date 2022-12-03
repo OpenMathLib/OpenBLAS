@@ -22,7 +22,7 @@
 *> \verbatim
 *>
 *> CERRLS tests the error exits for the COMPLEX least squares
-*> driver routines (CGELS, CGELSS, CGELSY, CGELSD).
+*> driver routines (CGELS, CGELST, CGETSLS, CGELSS, CGELSY, CGELSD).
 *> \endverbatim
 *
 *  Arguments:
@@ -83,7 +83,8 @@
       EXTERNAL           LSAMEN
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           ALAESM, CGELS, CGELSD, CGELSS, CGELSY, CHKXER
+      EXTERNAL           ALAESM, CHKXER, CGELS, CGELSD, CGELSS, CGELST,
+     $                   CGELSY, CGETSLS
 *     ..
 *     .. Scalars in Common ..
       LOGICAL            LERR, OK
@@ -130,9 +131,65 @@
          INFOT = 8
          CALL CGELS( 'N', 2, 0, 0, A, 2, B, 1, W, 2, INFO )
          CALL CHKXER( 'CGELS ', INFOT, NOUT, LERR, OK )
+         INFOT = 8
+         CALL CGELS( 'N', 0, 2, 0, A, 1, B, 1, W, 2, INFO )
+         CALL CHKXER( 'CGELS', INFOT, NOUT, LERR, OK )
          INFOT = 10
          CALL CGELS( 'N', 1, 1, 0, A, 1, B, 1, W, 1, INFO )
          CALL CHKXER( 'CGELS ', INFOT, NOUT, LERR, OK )
+*
+*        CGELST
+*
+         SRNAMT = 'CGELST'
+         INFOT = 1
+         CALL CGELST( '/', 0, 0, 0, A, 1, B, 1, W, 1, INFO )
+         CALL CHKXER( 'CGELST', INFOT, NOUT, LERR, OK )
+         INFOT = 2
+         CALL CGELST( 'N', -1, 0, 0, A, 1, B, 1, W, 1, INFO )
+         CALL CHKXER( 'CGELST', INFOT, NOUT, LERR, OK )
+         INFOT = 3
+         CALL CGELST( 'N', 0, -1, 0, A, 1, B, 1, W, 1, INFO )
+         CALL CHKXER( 'CGELST', INFOT, NOUT, LERR, OK )
+         INFOT = 4
+         CALL CGELST( 'N', 0, 0, -1, A, 1, B, 1, W, 1, INFO )
+         CALL CHKXER( 'CGELST', INFOT, NOUT, LERR, OK )
+         INFOT = 6
+         CALL CGELST( 'N', 2, 0, 0, A, 1, B, 2, W, 2, INFO )
+         CALL CHKXER( 'CGELST', INFOT, NOUT, LERR, OK )
+         INFOT = 8
+         CALL CGELST( 'N', 2, 0, 0, A, 2, B, 1, W, 2, INFO )
+         CALL CHKXER( 'CGELST', INFOT, NOUT, LERR, OK )
+         INFOT = 8
+         CALL CGELST( 'N', 0, 2, 0, A, 1, B, 1, W, 2, INFO )
+         CALL CHKXER( 'CGELST', INFOT, NOUT, LERR, OK )
+         INFOT = 10
+         CALL CGELST( 'N', 1, 1, 0, A, 1, B, 1, W, 1, INFO )
+         CALL CHKXER( 'CGELST', INFOT, NOUT, LERR, OK )
+*
+*        CGETSLS
+*
+         SRNAMT = 'CGETSLS'
+         INFOT = 1
+         CALL CGETSLS( '/', 0, 0, 0, A, 1, B, 1, W, 1, INFO )
+         CALL CHKXER( 'CGETSLS', INFOT, NOUT, LERR, OK )
+         INFOT = 2
+         CALL CGETSLS( 'N', -1, 0, 0, A, 1, B, 1, W, 1, INFO )
+         CALL CHKXER( 'CGETSLS', INFOT, NOUT, LERR, OK )
+         INFOT = 3
+         CALL CGETSLS( 'N', 0, -1, 0, A, 1, B, 1, W, 1, INFO )
+         CALL CHKXER( 'CGETSLS', INFOT, NOUT, LERR, OK )
+         INFOT = 4
+         CALL CGETSLS( 'N', 0, 0, -1, A, 1, B, 1, W, 1, INFO )
+         CALL CHKXER( 'CGETSLS', INFOT, NOUT, LERR, OK )
+         INFOT = 6
+         CALL CGETSLS( 'N', 2, 0, 0, A, 1, B, 2, W, 2, INFO )
+         CALL CHKXER( 'CGETSLS', INFOT, NOUT, LERR, OK )
+         INFOT = 8
+         CALL CGETSLS( 'N', 2, 0, 0, A, 2, B, 1, W, 2, INFO )
+         CALL CHKXER( 'CGETSLS', INFOT, NOUT, LERR, OK )
+         INFOT = 8
+         CALL CGETSLS( 'N', 0, 2, 0, A, 1, B, 1, W, 2, INFO )
+         CALL CHKXER( 'CGETSLS', INFOT, NOUT, LERR, OK )
 *
 *        CGELSS
 *

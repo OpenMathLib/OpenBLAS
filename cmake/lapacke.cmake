@@ -318,6 +318,8 @@ set(CSRC
   lapacke_clacn2.c
   lapacke_clag2z.c
   lapacke_clag2z_work.c
+  lapacke_clangb.c
+  lapacke_clangb_work.c
   lapacke_clange.c
   lapacke_clange_work.c
   lapacke_clanhe.c
@@ -803,6 +805,8 @@ set(DSRC
   lapacke_dlag2s_work.c
   lapacke_dlamch.c
   lapacke_dlamch_work.c
+  lapacke_dlangb.c
+  lapacke_dlangb_work.c
   lapacke_dlange.c
   lapacke_dlange_work.c
   lapacke_dlansy.c
@@ -1381,6 +1385,8 @@ set(SSRC
   lapacke_slag2d_work.c
   lapacke_slamch.c
   lapacke_slamch_work.c
+  lapacke_slangb.c
+  lapacke_slangb_work.c
   lapacke_slange.c
   lapacke_slange_work.c
   lapacke_slansy.c
@@ -2089,6 +2095,8 @@ set(ZSRC
   lapacke_zlacrm_work.c
   lapacke_zlag2c.c
   lapacke_zlag2c_work.c
+  lapacke_zlangb.c
+  lapacke_zlangb_work.c
   lapacke_zlange.c
   lapacke_zlange_work.c
   lapacke_zlanhe.c
@@ -2481,6 +2489,8 @@ set(Utils_SRC
   lapacke_ctp_nancheck.c          lapacke_dtr_trans.c             lapacke_str_trans.c             lapacke_ztp_trans.c
   lapacke_ctp_trans.c             lapacke_lsame.c                 lapacke_xerbla.c                lapacke_ztr_nancheck.c
   lapacke_ctr_nancheck.c          lapacke_make_complex_double.c   lapacke_z_nancheck.c            lapacke_ztr_trans.c
+  lapacke_ctz_nancheck.c          lapacke_ctz_trans.c             lapacke_dtz_nancheck.c          lapacke_dtz_trans.c
+  lapacke_stz_nancheck.c          lapacke_stz_trans.c             lapacke_ztz_nancheck.c          lapacke_ztz_trans.c
 )
 
 set(LAPACKE_REL_SRC "")

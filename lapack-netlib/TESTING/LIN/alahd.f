@@ -608,17 +608,18 @@
       ELSE IF( LSAMEN( 2, P2, 'LS' ) ) THEN
 *
 *        LS:  Least Squares driver routines for
-*             LS, LSD, LSS, LSX and LSY.
+*             LS, LST, TSLS, LSD, LSS, LSX and LSY.
 *
          WRITE( IOUNIT, FMT = 9984 )PATH
          WRITE( IOUNIT, FMT = 9967 )
-         WRITE( IOUNIT, FMT = 9921 )C1, C1, C1, C1
+         WRITE( IOUNIT, FMT = 9921 )C1, C1, C1, C1, C1, C1
          WRITE( IOUNIT, FMT = 9935 )1
          WRITE( IOUNIT, FMT = 9931 )2
-         WRITE( IOUNIT, FMT = 9933 )3
-         WRITE( IOUNIT, FMT = 9935 )4
-         WRITE( IOUNIT, FMT = 9934 )5
-         WRITE( IOUNIT, FMT = 9932 )6
+         WRITE( IOUNIT, FMT = 9919 )
+         WRITE( IOUNIT, FMT = 9933 )7
+         WRITE( IOUNIT, FMT = 9935 )8
+         WRITE( IOUNIT, FMT = 9934 )9
+         WRITE( IOUNIT, FMT = 9932 )10
          WRITE( IOUNIT, FMT = 9920 )
          WRITE( IOUNIT, FMT = '( '' Messages:'' )' )
 *
@@ -1048,10 +1049,11 @@
      $      'check if X is in the row space of A or A'' ',
      $      '(overdetermined case)' )
  9929 FORMAT( ' Test ratios (1-3: ', A1, 'TZRZF):' )
- 9920 FORMAT( 3X, ' 7-10: same as 3-6', 3X, ' 11-14: same as 3-6' )
- 9921 FORMAT( ' Test ratios:', / '    (1-2: ', A1, 'GELS, 3-6: ', A1,
-     $      'GELSY, 7-10: ', A1, 'GELSS, 11-14: ', A1, 'GELSD, 15-16: ',
-     $        A1, 'GETSLS)')
+ 9919 FORMAT( 3X, ' 3-4: same as 1-2', 3X, ' 5-6: same as 1-2' )
+ 9920 FORMAT( 3X, ' 11-14: same as 7-10', 3X, ' 15-18: same as 7-10' )
+ 9921 FORMAT( ' Test ratios:', / '    (1-2: ', A1, 'GELS, 3-4: ', A1,
+     $      'GELST, 5-6: ', A1, 'GETSLS, 7-10: ', A1, 'GELSY, 11-14: ',
+     $        A1, 'GETSS, 15-18: ', A1, 'GELSD)' )
  9928 FORMAT( 7X, 'where ALPHA = ( 1 + SQRT( 17 ) ) / 8' )
  9927 FORMAT( 3X, I2, ': ABS( Largest element in L )', / 12X,
      $      ' - ( 1 / ( 1 - ALPHA ) ) + THRESH' )

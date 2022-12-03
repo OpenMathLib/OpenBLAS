@@ -1,4 +1,4 @@
-*> \brief \b CLASCL2 performs diagonal scaling on a vector.
+*> \brief \b CLASCL2 performs diagonal scaling on a matrix.
 *
 *  =========== DOCUMENTATION ===========
 *
@@ -34,9 +34,9 @@
 *>
 *> \verbatim
 *>
-*> CLASCL2 performs a diagonal scaling on a vector:
+*> CLASCL2 performs a diagonal scaling on a matrix:
 *>   x <-- D * x
-*> where the diagonal REAL matrix D is stored as a vector.
+*> where the diagonal REAL matrix D is stored as a matrix.
 *>
 *> Eventually to be replaced by BLAS_cge_diag_scale in the new BLAS
 *> standard.
@@ -66,14 +66,14 @@
 *> \param[in,out] X
 *> \verbatim
 *>          X is COMPLEX array, dimension (LDX,N)
-*>     On entry, the vector X to be scaled by D.
-*>     On exit, the scaled vector.
+*>     On entry, the matrix X to be scaled by D.
+*>     On exit, the scaled matrix.
 *> \endverbatim
 *>
 *> \param[in] LDX
 *> \verbatim
 *>          LDX is INTEGER
-*>     The leading dimension of the vector X. LDX >= M.
+*>     The leading dimension of the matrix X. LDX >= M.
 *> \endverbatim
 *
 *  Authors:

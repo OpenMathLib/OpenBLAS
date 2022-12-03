@@ -25,10 +25,11 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
 USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
 
-#include <stdlib.h>
-#include <stdio.h>
 #include "common.h"
 
+#if (defined(OS_DARWIN) || defined(OS_WINDOWS)) && (defined(__GNUC__) && __GNUC__ > 11) 
+#pragma GCC optimize("no-tree-vectorize")
+#endif
 
 #if defined(HASWELL) || defined(ZEN) || defined (SKYLAKEX) || defined (COOPERLAKE) || defined (SAPPHIRERAPIDS)
 #include "zgemv_n_microk_haswell-4.c"
@@ -230,10 +231,6 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1, FLOAT alpha_r,FLOAT alpha_i, 
 	BLASLONG lda4;
 	FLOAT xbuffer[8],*ybuffer;
 
-
-#if 0
-printf("%s %d %d %.16f %.16f %d %d %d\n","zgemv_n",m,n,alpha_r,alpha_i,lda,inc_x,inc_y);
-#endif
 
 	if ( m < 1 ) return(0);
 	if ( n < 1 ) return(0);

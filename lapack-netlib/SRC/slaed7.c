@@ -883,11 +883,11 @@ f"> */
 /*     Form the z-vector which consists of the last row of Q_1 and the */
 /*     first row of Q_2. */
 
-    ptr = pow_ii(&c__2, tlvls) + 1;
+    ptr = pow_ii(c__2, *tlvls) + 1;
     i__1 = *curlvl - 1;
     for (i__ = 1; i__ <= i__1; ++i__) {
 	i__2 = *tlvls - i__;
-	ptr += pow_ii(&c__2, &i__2);
+	ptr += pow_ii(c__2, i__2);
 /* L10: */
     }
     curr = ptr + *curpbm;
