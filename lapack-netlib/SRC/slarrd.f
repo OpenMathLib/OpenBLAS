@@ -381,6 +381,7 @@
 *     .. Executable Statements ..
 *
       INFO = 0
+      M = 0
 *
 *     Quick return if possible
 *
@@ -424,13 +425,8 @@
       END IF
 
 *     Initialize error flags
-      INFO = 0
       NCNVRG = .FALSE.
       TOOFEW = .FALSE.
-
-*     Quick return if possible
-      M = 0
-      IF( N.EQ.0 ) RETURN
 
 *     Simplification:
       IF( IRANGE.EQ.INDRNG .AND. IL.EQ.1 .AND. IU.EQ.N ) IRANGE = 1
