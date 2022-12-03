@@ -72,10 +72,12 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #define CPU_GENERIC   0
 #define CPU_C910V     1
+#define CPU_x280        2
 
 static char *cpuname[] = {
   "RISCV64_GENERIC",
   "C910V"
+  "x280"
 };
 
 int detect(void){

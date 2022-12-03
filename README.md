@@ -186,6 +186,11 @@ Please read `GotoBLAS_01Readme.txt` for older CPU models already supported by th
   ```
   (also known to work on C906)
 
+- **x280**: LLVM auto-vectorization using RISC-V Vector extension 1.0.
+  ```sh
+  make HOSTCC=gcc TARGET=x280 NUM_THREADS=8 CC=riscv64-unknown-linux-gnu-clang FC=riscv64-unknown-linux-gnu-gfortran
+  ```
+
 ### Support for multiple targets in a single library
 
 OpenBLAS can be built for multiple targets with runtime detection of the target cpu by specifiying `DYNAMIC_ARCH=1` in Makefile.rule, on the gmake command line or as `-DDYNAMIC_ARCH=TRUE` in cmake.
