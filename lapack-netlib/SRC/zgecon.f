@@ -106,6 +106,7 @@
 *>          INFO is INTEGER
 *>          = 0:  successful exit
 *>          < 0:  if INFO = -i, the i-th argument had an illegal value
+*>          =-5:  if ANORM is NAN or negative.
 *> \endverbatim
 *
 *  Authors:
@@ -153,10 +154,10 @@
       INTEGER            ISAVE( 3 )
 *     ..
 *     .. External Functions ..
-      LOGICAL            LSAME
+      LOGICAL            LSAME, DISNAN
       INTEGER            IZAMAX
       DOUBLE PRECISION   DLAMCH
-      EXTERNAL           LSAME, IZAMAX, DLAMCH
+      EXTERNAL           LSAME, IZAMAX, DLAMCH, DISNAN
 *     ..
 *     .. External Subroutines ..
       EXTERNAL           XERBLA, ZDRSCL, ZLACN2, ZLATRS
@@ -182,7 +183,7 @@
          INFO = -2
       ELSE IF( LDA.LT.MAX( 1, N ) ) THEN
          INFO = -4
-      ELSE IF( ANORM.LT.ZERO ) THEN
+      ELSE IF( ANORM.LT.ZERO .OR. DISNAN( ANORM ) ) THEN
          INFO = -5
       END IF
       IF( INFO.NE.0 ) THEN
