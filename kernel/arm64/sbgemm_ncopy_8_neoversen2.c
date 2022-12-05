@@ -83,13 +83,13 @@ int CNAME(BLASLONG m, BLASLONG n, IFLOAT *a, BLASLONG lda, IFLOAT *b) {
 
     if (m & 3) {
       BLASLONG rest = m & 3;
-      for (BLASLONG col = 0; col < 4; col++) {
+      for (BLASLONG col = 0; col < 8; col++) {
         b_offset[4 * col] = a_offsetx[col][0];
         b_offset[4 * col + 1] = rest == 1 ? 0 : a_offsetx[col][1];
         b_offset[4 * col + 2] = rest <= 2 ? 0 : a_offsetx[col][2];
         b_offset[4 * col + 3] = rest <= 3 ? 0 : a_offsetx[col][3];
       }
-      b_offset += 16;
+      b_offset += 32;
     }
   }
 
