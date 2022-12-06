@@ -82,5 +82,5 @@ static void sscal_kernel_16_zero( BLASLONG n, FLOAT *alpha, FLOAT *x)
 }
 
 #else
-#include "dscal_microk_haswell-2.c"
+#include "sscal_microk_haswell-2.c"
 #endif
