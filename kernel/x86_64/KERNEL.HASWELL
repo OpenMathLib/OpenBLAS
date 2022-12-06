@@ -1,3 +1,4 @@
+SSCALKERNEL = sscal.c
 DSCALKERNEL = dscal.c
 CSCALKERNEL = cscal.c
 ZSCALKERNEL = zscal.c
