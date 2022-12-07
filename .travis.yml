@@ -285,6 +285,25 @@ matrix:
             - gfortran
       script:
         - travis_wait 45 make && make lapack-test
+      env:
+        - TARGET_BOX=NEOVERSE_N1 
+  
+    - &test-neon1-gcc8
+      os: linux
+      arch: arm64
+      dist: focal
+      group: edge
+      virt: lxd
+      compiler: gcc
+      addons:
+        apt:
+          packages:
+            - gcc-8
+            - gfortran-8
+      script:
+        - travis_wait 45 make QUIET_MAKE=1 CC=gcc-8 FC=gfortran-8 DYNAMIC_ARCH=1 
+      env:
+        - TARGET_BOX=NEOVERSE_N1-GCC8
         
 # whitelist
 branches:
