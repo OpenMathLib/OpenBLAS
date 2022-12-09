@@ -181,7 +181,7 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_UPLO Uplo, int n, FLOAT alpha, FLO
               alpha_i * x[i * 2 + 0] + alpha_r * x[i * 2 + 1],
               x,         1, a, 1, NULL, 0);
         }
-        a += lda;
+        a += lda * 2;
       }
     } else {
       for (i = 0; i < n; i++){
@@ -191,7 +191,7 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_UPLO Uplo, int n, FLOAT alpha, FLO
               alpha_i * x[i * 2 + 0] + alpha_r * x[i * 2 + 1],
               x + i * 2, 1, a, 1, NULL, 0);
         }
-        a += 2 + lda;
+        a += 2 + lda * 2;
       }
     }
     return;
