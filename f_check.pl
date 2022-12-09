@@ -90,7 +90,7 @@ if ($compiler eq "") {
 		if ($compiler =~ /flang/) {
 		    $vendor = FLANG;
 		    $openmp = "-fopenmp";
-	    } elsif ($compiler =~ /ifx/) {
+	    } elsif ($compiler =~ /ifort/ || $compiler =~ /ifx/) {
 		    $vendor = INTEL;
 		    $openmp = "-fopenmp";
 	    } elsif ($compiler =~ /pgf/ || $compiler =~ /nvf/) {

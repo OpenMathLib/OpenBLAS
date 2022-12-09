@@ -98,7 +98,7 @@ else
                             vendor=FLANG
                             openmp='-fopenmp'
                             ;;
-                        *ifx*)
+                        *ifort*|*ifx*)
                             vendor=INTEL
                             openmp='-fopenmp'
                             ;;
