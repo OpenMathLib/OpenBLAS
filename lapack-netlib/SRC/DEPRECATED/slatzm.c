@@ -665,7 +665,7 @@ f"> */
 /* > \ingroup realOTHERcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int slatzm_(char *side, integer *m, integer *n, real *v, 
+/* Subroutine */ void slatzm_(char *side, integer *m, integer *n, real *v, 
 	integer *incv, real *tau, real *c1, real *c2, integer *ldc, real *
 	work)
 {
@@ -674,10 +674,10 @@ f"> */
     real r__1;
 
     /* Local variables */
-    extern /* Subroutine */ int sger_(integer *, integer *, real *, real *, 
+    extern /* Subroutine */ void sger_(integer *, integer *, real *, real *, 
 	    integer *, real *, integer *, real *, integer *);
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int sgemv_(char *, integer *, integer *, real *, 
+    extern /* Subroutine */ void sgemv_(char *, integer *, integer *, real *, 
 	    real *, integer *, real *, integer *, real *, real *, integer *), scopy_(integer *, real *, integer *, real *, integer *), 
 	    saxpy_(integer *, real *, real *, integer *, real *, integer *);
 
@@ -703,7 +703,7 @@ f"> */
 
     /* Function Body */
     if (f2cmin(*m,*n) == 0 || *tau == 0.f) {
-	return 0;
+	return;
     }
 
     if (lsame_(side, "L")) {
@@ -744,7 +744,7 @@ f"> */
 		ldc);
     }
 
-    return 0;
+    return;
 
 /*     End of SLATZM */
 

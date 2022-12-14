@@ -666,7 +666,7 @@ f"> */
 /* > \ingroup complexOTHERcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int clatzm_(char *side, integer *m, integer *n, complex *v, 
+/* Subroutine */ void clatzm_(char *side, integer *m, integer *n, complex *v, 
 	integer *incv, complex *tau, complex *c1, complex *c2, integer *ldc, 
 	complex *work)
 {
@@ -675,12 +675,12 @@ f"> */
     complex q__1;
 
     /* Local variables */
-    extern /* Subroutine */ int cgerc_(integer *, integer *, complex *, 
+    extern /* Subroutine */ void cgerc_(integer *, integer *, complex *, 
 	    complex *, integer *, complex *, integer *, complex *, integer *),
 	     cgemv_(char *, integer *, integer *, complex *, complex *, 
 	    integer *, complex *, integer *, complex *, complex *, integer *);
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int cgeru_(integer *, integer *, complex *, 
+    extern /* Subroutine */ void cgeru_(integer *, integer *, complex *, 
 	    complex *, integer *, complex *, integer *, complex *, integer *),
 	     ccopy_(integer *, complex *, integer *, complex *, integer *), 
 	    caxpy_(integer *, complex *, complex *, integer *, complex *, 
@@ -708,7 +708,7 @@ f"> */
 
     /* Function Body */
     if (f2cmin(*m,*n) == 0 || tau->r == 0.f && tau->i == 0.f) {
-	return 0;
+	return;
     }
 
     if (lsame_(side, "L")) {
@@ -751,7 +751,7 @@ f"> */
 		ldc);
     }
 
-    return 0;
+    return;
 
 /*     End of CLATZM */
 

@@ -822,7 +822,7 @@ rices</b> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int sgegv_(char *jobvl, char *jobvr, integer *n, real *a, 
+/* Subroutine */ void sgegv_(char *jobvl, char *jobvr, integer *n, real *a, 
 	integer *lda, real *b, integer *ldb, real *alphar, real *alphai, real 
 	*beta, real *vl, integer *ldvl, real *vr, integer *ldvr, real *work, 
 	integer *lwork, integer *info)
@@ -842,7 +842,7 @@ rices</b> */
     extern logical lsame_(char *, char *);
     integer ileft, iinfo, icols, iwork, irows, jc, nb, in, jr;
     real salfai;
-    extern /* Subroutine */ int sggbak_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void sggbak_(char *, char *, integer *, integer *, 
 	    integer *, real *, real *, integer *, real *, integer *, integer *
 	    ), sggbal_(char *, integer *, real *, integer *, 
 	    real *, integer *, integer *, integer *, real *, real *, real *, 
@@ -851,22 +851,23 @@ rices</b> */
     extern real slamch_(char *), slange_(char *, integer *, integer *,
 	     real *, integer *, real *);
     real safmin;
-    extern /* Subroutine */ int sgghrd_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void sgghrd_(char *, char *, integer *, integer *, 
 	    integer *, real *, integer *, real *, integer *, real *, integer *
 	    , real *, integer *, integer *);
     real safmax;
     char chtemp[1];
     logical ldumma[1];
-    extern /* Subroutine */ int slascl_(char *, integer *, integer *, real *, 
-	    real *, integer *, integer *, real *, integer *, integer *), xerbla_(char *, integer *);
+    extern /* Subroutine */ void slascl_(char *, integer *, integer *, real *, 
+	    real *, integer *, integer *, real *, integer *, integer *); 
+    extern int xerbla_(char *, integer *, ftnlen);
     extern integer ilaenv_(integer *, char *, char *, integer *, integer *, 
 	    integer *, integer *, ftnlen, ftnlen);
     integer ijobvl, iright;
     logical ilimit;
-    extern /* Subroutine */ int sgeqrf_(integer *, integer *, real *, integer 
+    extern /* Subroutine */ void sgeqrf_(integer *, integer *, real *, integer 
 	    *, real *, real *, integer *, integer *);
     integer ijobvr;
-    extern /* Subroutine */ int slacpy_(char *, integer *, integer *, real *, 
+    extern /* Subroutine */ void slacpy_(char *, integer *, integer *, real *, 
 	    integer *, real *, integer *), slaset_(char *, integer *, 
 	    integer *, real *, real *, real *, integer *), stgevc_(
 	    char *, char *, logical *, integer *, real *, integer *, real *, 
@@ -874,7 +875,7 @@ rices</b> */
 	    integer *, real *, integer *);
     real onepls;
     integer lwkmin, nb1, nb2, nb3;
-    extern /* Subroutine */ int shgeqz_(char *, char *, char *, integer *, 
+    extern /* Subroutine */ void shgeqz_(char *, char *, char *, integer *, 
 	    integer *, integer *, real *, integer *, real *, integer *, real *
 	    , real *, real *, real *, integer *, real *, integer *, real *, 
 	    integer *, integer *), sorgqr_(integer *, 
@@ -882,7 +883,7 @@ rices</b> */
 	    , integer *);
     integer lwkopt;
     logical lquery;
-    extern /* Subroutine */ int sormqr_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void sormqr_(char *, char *, integer *, integer *, 
 	    integer *, real *, integer *, real *, real *, integer *, real *, 
 	    integer *, integer *);
     integer ihi, ilo;
@@ -988,16 +989,16 @@ rices</b> */
 
     if (*info != 0) {
 	i__1 = -(*info);
-	xerbla_("SGEGV ", &i__1);
-	return 0;
+	xerbla_("SGEGV ", &i__1, 6);
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /*     Get machine constants */
@@ -1025,7 +1026,7 @@ rices</b> */
 		iinfo);
 	if (iinfo != 0) {
 	    *info = *n + 10;
-	    return 0;
+	    return;
 	}
     }
 
@@ -1046,7 +1047,7 @@ rices</b> */
 		iinfo);
 	if (iinfo != 0) {
 	    *info = *n + 10;
-	    return 0;
+	    return;
 	}
     }
 
@@ -1417,7 +1418,7 @@ L100:
 L120:
     work[1] = (real) lwkopt;
 
-    return 0;
+    return;
 
 /*     End of SGEGV */
 

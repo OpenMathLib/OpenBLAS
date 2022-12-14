@@ -652,7 +652,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int dtzrqf_(integer *m, integer *n, doublereal *a, integer *
+/* Subroutine */ void dtzrqf_(integer *m, integer *n, doublereal *a, integer *
 	lda, doublereal *tau, integer *info)
 {
     /* System generated locals */
@@ -660,19 +660,20 @@ f"> */
     doublereal d__1;
 
     /* Local variables */
-    extern /* Subroutine */ int dger_(integer *, integer *, doublereal *, 
+    extern /* Subroutine */ void dger_(integer *, integer *, doublereal *, 
 	    doublereal *, integer *, doublereal *, integer *, doublereal *, 
 	    integer *);
     integer i__, k;
-    extern /* Subroutine */ int dgemv_(char *, integer *, integer *, 
+    extern /* Subroutine */ void dgemv_(char *, integer *, integer *, 
 	    doublereal *, doublereal *, integer *, doublereal *, integer *, 
 	    doublereal *, doublereal *, integer *), dcopy_(integer *, 
 	    doublereal *, integer *, doublereal *, integer *), daxpy_(integer 
 	    *, doublereal *, doublereal *, integer *, doublereal *, integer *)
 	    ;
     integer m1;
-    extern /* Subroutine */ int dlarfg_(integer *, doublereal *, doublereal *,
-	     integer *, doublereal *), xerbla_(char *, integer *);
+    extern /* Subroutine */ void dlarfg_(integer *, doublereal *, doublereal *,
+	     integer *, doublereal *);
+    extern int xerbla_(char *, integer *, ftnlen);
 
 
 /*  -- LAPACK computational routine (version 3.7.0) -- */
@@ -703,14 +704,14 @@ f"> */
     }
     if (*info != 0) {
 	i__1 = -(*info);
-	xerbla_("DTZRQF", &i__1);
-	return 0;
+	xerbla_("DTZRQF", &i__1, 6);
+	return;
     }
 
 /*     Perform the factorization. */
 
     if (*m == 0) {
-	return 0;
+	return;
     }
     if (*m == *n) {
 	i__1 = *n;
@@ -768,7 +769,7 @@ f"> */
 	}
     }
 
-    return 0;
+    return;
 
 /*     End of DTZRQF */
 

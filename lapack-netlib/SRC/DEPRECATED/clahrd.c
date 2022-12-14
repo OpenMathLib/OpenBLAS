@@ -684,7 +684,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int clahrd_(integer *n, integer *k, integer *nb, complex *a, 
+/* Subroutine */ void clahrd_(integer *n, integer *k, integer *nb, complex *a, 
 	integer *lda, complex *tau, complex *t, integer *ldt, complex *y, 
 	integer *ldy)
 {
@@ -695,7 +695,7 @@ f"> */
 
     /* Local variables */
     integer i__;
-    extern /* Subroutine */ int cscal_(integer *, complex *, complex *, 
+    extern /* Subroutine */ void cscal_(integer *, complex *, complex *, 
 	    integer *), cgemv_(char *, integer *, integer *, complex *, 
 	    complex *, integer *, complex *, integer *, complex *, complex *, 
 	    integer *), ccopy_(integer *, complex *, integer *, 
@@ -703,7 +703,7 @@ f"> */
 	    integer *, complex *, integer *), ctrmv_(char *, char *, char *, 
 	    integer *, complex *, integer *, complex *, integer *);
     complex ei;
-    extern /* Subroutine */ int clarfg_(integer *, complex *, complex *, 
+    extern /* Subroutine */ void clarfg_(integer *, complex *, complex *, 
 	    integer *, complex *), clacgv_(integer *, complex *, integer *);
 
 
@@ -732,7 +732,7 @@ f"> */
 
     /* Function Body */
     if (*n <= 1) {
-	return 0;
+	return;
     }
 
     i__1 = *nb;
@@ -856,7 +856,7 @@ f"> */
     i__1 = *k + *nb + *nb * a_dim1;
     a[i__1].r = ei.r, a[i__1].i = ei.i;
 
-    return 0;
+    return;
 
 /*     End of CLAHRD */
 

@@ -700,7 +700,7 @@ f"> */
 /* > \ingroup complex16GEsolve */
 
 /*  ===================================================================== */
-/* Subroutine */ int zgelsx_(integer *m, integer *n, integer *nrhs, 
+/* Subroutine */ void zgelsx_(integer *m, integer *n, integer *nrhs, 
 	doublecomplex *a, integer *lda, doublecomplex *b, integer *ldb, 
 	integer *jpvt, doublereal *rcond, integer *rank, doublecomplex *work, 
 	doublereal *rwork, integer *info)
@@ -713,7 +713,7 @@ f"> */
     doublereal anrm, bnrm, smin, smax;
     integer i__, j, k, iascl, ibscl, ismin, ismax;
     doublecomplex c1, c2, s1, s2, t1, t2;
-    extern /* Subroutine */ int ztrsm_(char *, char *, char *, char *, 
+    extern /* Subroutine */ void ztrsm_(char *, char *, char *, char *, 
 	    integer *, integer *, doublecomplex *, doublecomplex *, integer *,
 	     doublecomplex *, integer *), 
 	    zlaic1_(integer *, integer *, doublecomplex *, doublereal *, 
@@ -721,13 +721,14 @@ f"> */
 	    doublecomplex *), dlabad_(doublereal *, doublereal *);
     extern doublereal dlamch_(char *);
     integer mn;
-    extern /* Subroutine */ int zunm2r_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void zunm2r_(char *, char *, integer *, integer *, 
 	    integer *, doublecomplex *, integer *, doublecomplex *, 
-	    doublecomplex *, integer *, doublecomplex *, integer *), xerbla_(char *, integer *);
+	    doublecomplex *, integer *, doublecomplex *, integer *);
+    extern int xerbla_(char *, integer *, ftnlen);
     extern doublereal zlange_(char *, integer *, integer *, doublecomplex *, 
 	    integer *, doublereal *);
     doublereal bignum;
-    extern /* Subroutine */ int zlascl_(char *, integer *, integer *, 
+    extern /* Subroutine */ void zlascl_(char *, integer *, integer *, 
 	    doublereal *, doublereal *, integer *, integer *, doublecomplex *,
 	     integer *, integer *), zgeqpf_(integer *, integer *, 
 	    doublecomplex *, integer *, integer *, doublecomplex *, 
@@ -735,7 +736,7 @@ f"> */
 	    integer *, integer *, doublecomplex *, doublecomplex *, 
 	    doublecomplex *, integer *);
     doublereal sminpr, smaxpr, smlnum;
-    extern /* Subroutine */ int zlatzm_(char *, integer *, integer *, 
+    extern /* Subroutine */ void zlatzm_(char *, integer *, integer *, 
 	    doublecomplex *, integer *, doublecomplex *, doublecomplex *, 
 	    doublecomplex *, integer *, doublecomplex *), ztzrqf_(
 	    integer *, integer *, doublecomplex *, integer *, doublecomplex *,
@@ -788,8 +789,8 @@ f"> */
 
     if (*info != 0) {
 	i__1 = -(*info);
-	xerbla_("ZGELSX", &i__1);
-	return 0;
+	xerbla_("ZGELSX", &i__1, 6);
+	return;
     }
 
 /*     Quick return if possible */
@@ -798,7 +799,7 @@ f"> */
     i__1 = f2cmin(*m,*n);
     if (f2cmin(i__1,*nrhs) == 0) {
 	*rank = 0;
-	return 0;
+	return;
     }
 
 /*     Get machine parameters */
@@ -1030,7 +1031,7 @@ L70:
 
 L100:
 
-    return 0;
+    return;
 
 /*     End of ZGELSX */
 

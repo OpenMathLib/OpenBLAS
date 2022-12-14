@@ -694,7 +694,7 @@ f"> */
 /* > \ingroup doubleGEsolve */
 
 /*  ===================================================================== */
-/* Subroutine */ int dgelsx_(integer *m, integer *n, integer *nrhs, 
+/* Subroutine */ void dgelsx_(integer *m, integer *n, integer *nrhs, 
 	doublereal *a, integer *lda, doublereal *b, integer *ldb, integer *
 	jpvt, doublereal *rcond, integer *rank, doublereal *work, integer *
 	info)
@@ -707,32 +707,32 @@ f"> */
     doublereal anrm, bnrm, smin, smax;
     integer i__, j, k, iascl, ibscl, ismin, ismax;
     doublereal c1, c2;
-    extern /* Subroutine */ int dtrsm_(char *, char *, char *, char *, 
+    extern /* Subroutine */ void dtrsm_(char *, char *, char *, char *, 
 	    integer *, integer *, doublereal *, doublereal *, integer *, 
 	    doublereal *, integer *), dlaic1_(
 	    integer *, integer *, doublereal *, doublereal *, doublereal *, 
 	    doublereal *, doublereal *, doublereal *, doublereal *);
     doublereal s1, s2, t1, t2;
-    extern /* Subroutine */ int dorm2r_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void dorm2r_(char *, char *, integer *, integer *, 
 	    integer *, doublereal *, integer *, doublereal *, doublereal *, 
 	    integer *, doublereal *, integer *), dlabad_(
 	    doublereal *, doublereal *);
     extern doublereal dlamch_(char *), dlange_(char *, integer *, 
 	    integer *, doublereal *, integer *, doublereal *);
     integer mn;
-    extern /* Subroutine */ int dlascl_(char *, integer *, integer *, 
+    extern /* Subroutine */ void dlascl_(char *, integer *, integer *, 
 	    doublereal *, doublereal *, integer *, integer *, doublereal *, 
 	    integer *, integer *), dgeqpf_(integer *, integer *, 
 	    doublereal *, integer *, integer *, doublereal *, doublereal *, 
 	    integer *), dlaset_(char *, integer *, integer *, doublereal *, 
-	    doublereal *, doublereal *, integer *), xerbla_(char *, 
-	    integer *);
+	    doublereal *, doublereal *, integer *);
+    extern int xerbla_(char *, integer *, ftnlen);
     doublereal bignum;
-    extern /* Subroutine */ int dlatzm_(char *, integer *, integer *, 
+    extern /* Subroutine */ void dlatzm_(char *, integer *, integer *, 
 	    doublereal *, integer *, doublereal *, doublereal *, doublereal *,
 	     integer *, doublereal *);
     doublereal sminpr, smaxpr, smlnum;
-    extern /* Subroutine */ int dtzrqf_(integer *, integer *, doublereal *, 
+    extern /* Subroutine */ void dtzrqf_(integer *, integer *, doublereal *, 
 	    integer *, doublereal *, integer *);
 
 
@@ -781,8 +781,8 @@ f"> */
 
     if (*info != 0) {
 	i__1 = -(*info);
-	xerbla_("DGELSX", &i__1);
-	return 0;
+	xerbla_("DGELSX", &i__1, 6);
+	return;
     }
 
 /*     Quick return if possible */
@@ -791,7 +791,7 @@ f"> */
     i__1 = f2cmin(*m,*n);
     if (f2cmin(i__1,*nrhs) == 0) {
 	*rank = 0;
-	return 0;
+	return;
     }
 
 /*     Get machine parameters */
@@ -999,7 +999,7 @@ L70:
 
 L100:
 
-    return 0;
+    return;
 
 /*     End of DGELSX */
 

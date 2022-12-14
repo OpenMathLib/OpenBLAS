@@ -774,7 +774,7 @@ f"> */
 /* >  a matrix. It may be replaced by a better rank determination strategy. */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int cggsvp_(char *jobu, char *jobv, char *jobq, integer *m, 
+/* Subroutine */ void cggsvp_(char *jobu, char *jobv, char *jobq, integer *m, 
 	integer *p, integer *n, complex *a, integer *lda, complex *b, integer 
 	*ldb, real *tola, real *tolb, integer *k, integer *l, complex *u, 
 	integer *ldu, complex *v, integer *ldv, complex *q, integer *ldq, 
@@ -790,7 +790,7 @@ f"> */
     integer i__, j;
     extern logical lsame_(char *, char *);
     logical wantq, wantu, wantv;
-    extern /* Subroutine */ int cgeqr2_(integer *, integer *, complex *, 
+    extern /* Subroutine */ void cgeqr2_(integer *, integer *, complex *, 
 	    integer *, complex *, complex *, integer *), cgerq2_(integer *, 
 	    integer *, complex *, integer *, complex *, complex *, integer *),
 	     cung2r_(integer *, integer *, integer *, complex *, integer *, 
@@ -802,8 +802,9 @@ f"> */
 	    integer *, complex *, complex *, real *, integer *), clacpy_(char 
 	    *, integer *, integer *, complex *, integer *, complex *, integer 
 	    *), claset_(char *, integer *, integer *, complex *, 
-	    complex *, complex *, integer *), xerbla_(char *, integer 
-	    *), clapmt_(logical *, integer *, integer *, complex *, 
+	    complex *, complex *, integer *);
+    extern int xerbla_(char *, integer *, ftnlen);
+    extern void clapmt_(logical *, integer *, integer *, complex *, 
 	    integer *, integer *);
     logical forwrd;
 
@@ -872,8 +873,8 @@ f"> */
     }
     if (*info != 0) {
 	i__1 = -(*info);
-	xerbla_("CGGSVP", &i__1);
-	return 0;
+	xerbla_("CGGSVP", &i__1, 6);
+	return;
     }
 
 /*     QR with column pivoting of B: B*P = V*( S11 S12 ) */
@@ -1131,7 +1132,7 @@ f"> */
 
     }
 
-    return 0;
+    return;
 
 /*     End of CGGSVP */
 

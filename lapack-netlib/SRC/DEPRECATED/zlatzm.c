@@ -666,7 +666,7 @@ f"> */
 /* > \ingroup complex16OTHERcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int zlatzm_(char *side, integer *m, integer *n, 
+/* Subroutine */ void zlatzm_(char *side, integer *m, integer *n, 
 	doublecomplex *v, integer *incv, doublecomplex *tau, doublecomplex *
 	c1, doublecomplex *c2, integer *ldc, doublecomplex *work)
 {
@@ -676,7 +676,7 @@ f"> */
 
     /* Local variables */
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int zgerc_(integer *, integer *, doublecomplex *, 
+    extern /* Subroutine */ void zgerc_(integer *, integer *, doublecomplex *, 
 	    doublecomplex *, integer *, doublecomplex *, integer *, 
 	    doublecomplex *, integer *), zgemv_(char *, integer *, integer *, 
 	    doublecomplex *, doublecomplex *, integer *, doublecomplex *, 
@@ -710,7 +710,7 @@ f"> */
 
     /* Function Body */
     if (f2cmin(*m,*n) == 0 || tau->r == 0. && tau->i == 0.) {
-	return 0;
+	return;
     }
 
     if (lsame_(side, "L")) {
@@ -753,7 +753,7 @@ f"> */
 		ldc);
     }
 
-    return 0;
+    return;
 
 /*     End of ZLATZM */
 

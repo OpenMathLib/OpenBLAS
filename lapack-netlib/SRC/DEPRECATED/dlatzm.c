@@ -665,7 +665,7 @@ f"> */
 /* > \ingroup doubleOTHERcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int dlatzm_(char *side, integer *m, integer *n, doublereal *
+/* Subroutine */ void dlatzm_(char *side, integer *m, integer *n, doublereal *
 	v, integer *incv, doublereal *tau, doublereal *c1, doublereal *c2, 
 	integer *ldc, doublereal *work)
 {
@@ -674,11 +674,11 @@ f"> */
     doublereal d__1;
 
     /* Local variables */
-    extern /* Subroutine */ int dger_(integer *, integer *, doublereal *, 
+    extern /* Subroutine */ void dger_(integer *, integer *, doublereal *, 
 	    doublereal *, integer *, doublereal *, integer *, doublereal *, 
 	    integer *);
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int dgemv_(char *, integer *, integer *, 
+    extern /* Subroutine */ void dgemv_(char *, integer *, integer *, 
 	    doublereal *, doublereal *, integer *, doublereal *, integer *, 
 	    doublereal *, doublereal *, integer *), dcopy_(integer *, 
 	    doublereal *, integer *, doublereal *, integer *), daxpy_(integer 
@@ -707,7 +707,7 @@ f"> */
 
     /* Function Body */
     if (f2cmin(*m,*n) == 0 || *tau == 0.) {
-	return 0;
+	return;
     }
 
     if (lsame_(side, "L")) {
@@ -748,7 +748,7 @@ f"> */
 		ldc);
     }
 
-    return 0;
+    return;
 
 /*     End of DLATZM */
 

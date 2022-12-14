@@ -655,7 +655,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int sgeqpf_(integer *m, integer *n, real *a, integer *lda, 
+/* Subroutine */ void sgeqpf_(integer *m, integer *n, real *a, integer *lda, 
 	integer *jpvt, real *tau, real *work, integer *info)
 {
     /* System generated locals */
@@ -667,19 +667,20 @@ f"> */
     extern real snrm2_(integer *, real *, integer *);
     integer i__, j;
     real tol3z;
-    extern /* Subroutine */ int slarf_(char *, integer *, integer *, real *, 
+    extern /* Subroutine */ void slarf_(char *, integer *, integer *, real *, 
 	    integer *, real *, real *, integer *, real *);
     integer itemp;
-    extern /* Subroutine */ int sswap_(integer *, real *, integer *, real *, 
+    extern /* Subroutine */ void sswap_(integer *, real *, integer *, real *, 
 	    integer *), sgeqr2_(integer *, integer *, real *, integer *, real 
 	    *, real *, integer *);
     integer ma;
-    extern /* Subroutine */ int sorm2r_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void sorm2r_(char *, char *, integer *, integer *, 
 	    integer *, real *, integer *, real *, real *, integer *, real *, 
 	    integer *);
     integer mn;
     extern real slamch_(char *);
-    extern /* Subroutine */ int xerbla_(char *, integer *), slarfg_(
+    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
+    extern void slarfg_(
 	    integer *, real *, real *, integer *, real *);
     extern integer isamax_(integer *, real *, integer *);
     real aii;
@@ -716,8 +717,8 @@ f"> */
     }
     if (*info != 0) {
 	i__1 = -(*info);
-	xerbla_("SGEQPF", &i__1);
-	return 0;
+	xerbla_("SGEQPF", &i__1, 6);
+	return;
     }
 
     mn = f2cmin(*m,*n);
@@ -851,7 +852,7 @@ f"> */
 /* L40: */
 	}
     }
-    return 0;
+    return;
 
 /*     End of SGEQPF */
 

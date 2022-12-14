@@ -694,7 +694,7 @@ f"> */
 /* > \ingroup realGEsolve */
 
 /*  ===================================================================== */
-/* Subroutine */ int sgelsx_(integer *m, integer *n, integer *nrhs, real *a, 
+/* Subroutine */ void sgelsx_(integer *m, integer *n, integer *nrhs, real *a, 
 	integer *lda, real *b, integer *ldb, integer *jpvt, real *rcond, 
 	integer *rank, real *work, integer *info)
 {
@@ -706,7 +706,7 @@ f"> */
     real anrm, bnrm, smin, smax;
     integer i__, j, k, iascl, ibscl, ismin, ismax;
     real c1, c2, s1, s2, t1, t2;
-    extern /* Subroutine */ int strsm_(char *, char *, char *, char *, 
+    extern /* Subroutine */ void strsm_(char *, char *, char *, char *, 
 	    integer *, integer *, real *, real *, integer *, real *, integer *
 	    ), slaic1_(integer *, integer *, 
 	    real *, real *, real *, real *, real *, real *, real *), sorm2r_(
@@ -716,14 +716,14 @@ f"> */
     integer mn;
     extern real slamch_(char *), slange_(char *, integer *, integer *,
 	     real *, integer *, real *);
-    extern /* Subroutine */ int xerbla_(char *, integer *);
+    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     real bignum;
-    extern /* Subroutine */ int slascl_(char *, integer *, integer *, real *, 
+    extern /* Subroutine */ void slascl_(char *, integer *, integer *, real *, 
 	    real *, integer *, integer *, real *, integer *, integer *), sgeqpf_(integer *, integer *, real *, integer *, integer 
 	    *, real *, real *, integer *), slaset_(char *, integer *, integer 
 	    *, real *, real *, real *, integer *);
     real sminpr, smaxpr, smlnum;
-    extern /* Subroutine */ int slatzm_(char *, integer *, integer *, real *, 
+    extern /* Subroutine */ void slatzm_(char *, integer *, integer *, real *, 
 	    integer *, real *, real *, real *, integer *, real *), 
 	    stzrqf_(integer *, integer *, real *, integer *, real *, integer *
 	    );
@@ -774,8 +774,8 @@ f"> */
 
     if (*info != 0) {
 	i__1 = -(*info);
-	xerbla_("SGELSX", &i__1);
-	return 0;
+	xerbla_("SGELSX", &i__1, 6);
+	return;
     }
 
 /*     Quick return if possible */
@@ -784,7 +784,7 @@ f"> */
     i__1 = f2cmin(*m,*n);
     if (f2cmin(i__1,*nrhs) == 0) {
 	*rank = 0;
-	return 0;
+	return;
     }
 
 /*     Get machine parameters */
@@ -992,7 +992,7 @@ L70:
 
 L100:
 
-    return 0;
+    return;
 
 /*     End of SGELSX */
 

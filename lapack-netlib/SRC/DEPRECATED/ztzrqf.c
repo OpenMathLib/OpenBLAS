@@ -652,7 +652,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int ztzrqf_(integer *m, integer *n, doublecomplex *a, 
+/* Subroutine */ void ztzrqf_(integer *m, integer *n, doublecomplex *a, 
 	integer *lda, doublecomplex *tau, integer *info)
 {
     /* System generated locals */
@@ -662,16 +662,17 @@ f"> */
     /* Local variables */
     integer i__, k;
     doublecomplex alpha;
-    extern /* Subroutine */ int zgerc_(integer *, integer *, doublecomplex *, 
+    extern /* Subroutine */ void zgerc_(integer *, integer *, doublecomplex *, 
 	    doublecomplex *, integer *, doublecomplex *, integer *, 
 	    doublecomplex *, integer *), zgemv_(char *, integer *, integer *, 
 	    doublecomplex *, doublecomplex *, integer *, doublecomplex *, 
 	    integer *, doublecomplex *, doublecomplex *, integer *);
     integer m1;
-    extern /* Subroutine */ int zcopy_(integer *, doublecomplex *, integer *, 
+    extern /* Subroutine */ void zcopy_(integer *, doublecomplex *, integer *, 
 	    doublecomplex *, integer *), zaxpy_(integer *, doublecomplex *, 
-	    doublecomplex *, integer *, doublecomplex *, integer *), xerbla_(
-	    char *, integer *), zlarfg_(integer *, doublecomplex *, 
+	    doublecomplex *, integer *, doublecomplex *, integer *);
+    extern int xerbla_(char *, integer *, ftnlen);
+    extern void zlarfg_(integer *, doublecomplex *, 
 	    doublecomplex *, integer *, doublecomplex *), zlacgv_(integer *, 
 	    doublecomplex *, integer *);
 
@@ -704,14 +705,14 @@ f"> */
     }
     if (*info != 0) {
 	i__1 = -(*info);
-	xerbla_("ZTZRQF", &i__1);
-	return 0;
+	xerbla_("ZTZRQF", &i__1, 6);
+	return;
     }
 
 /*     Perform the factorization. */
 
     if (*m == 0) {
-	return 0;
+	return;
     }
     if (*m == *n) {
 	i__1 = *n;
@@ -784,7 +785,7 @@ f"> */
 	}
     }
 
-    return 0;
+    return;
 
 /*     End of ZTZRQF */
 
