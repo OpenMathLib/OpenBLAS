@@ -710,7 +710,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int ssytrd_(char *uplo, integer *n, real *a, integer *lda, 
+/* Subroutine */ void ssytrd_(char *uplo, integer *n, real *a, integer *lda, 
 	real *d__, real *e, real *tau, real *work, integer *lwork, integer *
 	info)
 {
@@ -723,7 +723,7 @@ f"> */
     integer nbmin, iinfo;
     logical upper;
     integer nb, kk;
-    extern /* Subroutine */ int ssytd2_(char *, integer *, real *, integer *, 
+    extern /* Subroutine */ void ssytd2_(char *, integer *, real *, integer *, 
 	    real *, real *, real *, integer *), ssyr2k_(char *, char *
 	    , integer *, integer *, real *, real *, integer *, real *, 
 	    integer *, real *, real *, integer *);
@@ -731,7 +731,7 @@ f"> */
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     extern integer ilaenv_(integer *, char *, char *, integer *, integer *, 
 	    integer *, integer *, ftnlen, ftnlen);
-    extern /* Subroutine */ int slatrd_(char *, integer *, integer *, real *, 
+    extern /* Subroutine */ void slatrd_(char *, integer *, integer *, real *, 
 	    integer *, real *, real *, real *, integer *);
     integer ldwork, lwkopt;
     logical lquery;
@@ -785,16 +785,16 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("SSYTRD", &i__1,(ftnlen)6);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
 	work[1] = 1.f;
-	return 0;
+	return;
     }
 
     nx = *n;
@@ -921,7 +921,7 @@ f"> */
     }
 
     work[1] = (real) lwkopt;
-    return 0;
+    return;
 
 /*     End of SSYTRD */
 

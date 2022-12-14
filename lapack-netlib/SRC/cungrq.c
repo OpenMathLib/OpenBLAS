@@ -644,7 +644,7 @@ f"> */
 /* > \ingroup complexOTHERcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int cungrq_(integer *m, integer *n, integer *k, complex *a, 
+/* Subroutine */ void cungrq_(integer *m, integer *n, integer *k, complex *a, 
 	integer *lda, complex *tau, complex *work, integer *lwork, integer *
 	info)
 {
@@ -653,15 +653,16 @@ f"> */
 
     /* Local variables */
     integer i__, j, l, nbmin, iinfo;
-    extern /* Subroutine */ int cungr2_(integer *, integer *, integer *, 
+    extern /* Subroutine */ void cungr2_(integer *, integer *, integer *, 
 	    complex *, integer *, complex *, complex *, integer *);
     integer ib, nb, ii, kk;
-    extern /* Subroutine */ int clarfb_(char *, char *, char *, char *, 
+    extern /* Subroutine */ void clarfb_(char *, char *, char *, char *, 
 	    integer *, integer *, integer *, complex *, integer *, complex *, 
 	    integer *, complex *, integer *, complex *, integer *);
     integer nx;
-    extern /* Subroutine */ int clarft_(char *, char *, integer *, integer *, 
-	    complex *, integer *, complex *, complex *, integer *), xerbla_(char *, integer *, ftnlen);
+    extern /* Subroutine */ void clarft_(char *, char *, integer *, integer *, 
+	    complex *, integer *, complex *, complex *, integer *);
+    extern int xerbla_(char *, integer *, ftnlen);
     extern integer ilaenv_(integer *, char *, char *, integer *, integer *, 
 	    integer *, integer *, ftnlen, ftnlen);
     integer ldwork, lwkopt;
@@ -718,15 +719,15 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CUNGRQ", &i__1, (ftnlen)6);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*m <= 0) {
-	return 0;
+	return;
     }
 
     nbmin = 2;
@@ -846,7 +847,7 @@ f"> */
     }
 
     work[1].r = (real) iws, work[1].i = 0.f;
-    return 0;
+    return;
 
 /*     End of CUNGRQ */
 

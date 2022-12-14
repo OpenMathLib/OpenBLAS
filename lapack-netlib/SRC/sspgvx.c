@@ -783,7 +783,7 @@ f"> */
 /* >     Mark Fahey, Department of Mathematics, Univ. of Kentucky, USA */
 
 /*  ===================================================================== */
-/* Subroutine */ int sspgvx_(integer *itype, char *jobz, char *range, char *
+/* Subroutine */ void sspgvx_(integer *itype, char *jobz, char *range, char *
 	uplo, integer *n, real *ap, real *bp, real *vl, real *vu, integer *il,
 	 integer *iu, real *abstol, integer *m, real *w, real *z__, integer *
 	ldz, real *work, integer *iwork, integer *ifail, integer *info)
@@ -796,11 +796,12 @@ f"> */
     extern logical lsame_(char *, char *);
     char trans[1];
     logical upper, wantz;
-    extern /* Subroutine */ int stpmv_(char *, char *, char *, integer *, 
+    extern /* Subroutine */ void stpmv_(char *, char *, char *, integer *, 
 	    real *, real *, integer *), stpsv_(char *,
 	     char *, char *, integer *, real *, real *, integer *);
     logical alleig, indeig, valeig;
-    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen), spptrf_(
+    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
+    extern void spptrf_(
 	    char *, integer *, real *, integer *), sspgst_(integer *, 
 	    char *, integer *, real *, real *, integer *), sspevx_(
 	    char *, char *, char *, integer *, real *, real *, real *, 
@@ -871,14 +872,14 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("SSPGVX", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     *m = 0;
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /*     Form a Cholesky factorization of B. */
@@ -886,7 +887,7 @@ f"> */
     spptrf_(uplo, n, &bp[1], info);
     if (*info != 0) {
 	*info = *n + *info;
-	return 0;
+	return;
     }
 
 /*     Transform problem to standard eigenvalue problem and solve. */
@@ -940,7 +941,7 @@ f"> */
 	}
     }
 
-    return 0;
+    return;
 
 /*     End of SSPGVX */
 

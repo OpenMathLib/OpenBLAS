@@ -649,7 +649,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int slatrz_(integer *m, integer *n, integer *l, real *a, 
+/* Subroutine */ void slatrz_(integer *m, integer *n, integer *l, real *a, 
 	integer *lda, real *tau, real *work)
 {
     /* System generated locals */
@@ -657,7 +657,7 @@ f"> */
 
     /* Local variables */
     integer i__;
-    extern /* Subroutine */ int slarz_(char *, integer *, integer *, integer *
+    extern /* Subroutine */ void slarz_(char *, integer *, integer *, integer *
 	    , real *, integer *, real *, real *, integer *, real *), 
 	    slarfg_(integer *, real *, real *, integer *, real *);
 
@@ -684,14 +684,14 @@ f"> */
 
     /* Function Body */
     if (*m == 0) {
-	return 0;
+	return;
     } else if (*m == *n) {
 	i__1 = *n;
 	for (i__ = 1; i__ <= i__1; ++i__) {
 	    tau[i__] = 0.f;
 /* L10: */
 	}
-	return 0;
+	return;
     }
 
     for (i__ = *m; i__ >= 1; --i__) {
@@ -713,7 +713,7 @@ f"> */
 /* L20: */
     }
 
-    return 0;
+    return;
 
 /*     End of SLATRZ */
 

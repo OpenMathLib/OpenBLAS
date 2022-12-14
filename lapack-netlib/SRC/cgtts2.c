@@ -638,7 +638,7 @@ f"> */
 /* > \ingroup complexGTcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int cgtts2_(integer *itrans, integer *n, integer *nrhs, 
+/* Subroutine */ void cgtts2_(integer *itrans, integer *n, integer *nrhs, 
 	complex *dl, complex *d__, complex *du, complex *du2, integer *ipiv, 
 	complex *b, integer *ldb)
 {
@@ -674,7 +674,7 @@ f"> */
 
     /* Function Body */
     if (*n == 0 || *nrhs == 0) {
-	return 0;
+	return;
     }
 
     if (*itrans == 0) {
@@ -1142,6 +1142,6 @@ L130:
 
 /*     End of CGTTS2 */
 
-    return 0;
+    return;
 } /* cgtts2_ */
 

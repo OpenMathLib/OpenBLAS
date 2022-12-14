@@ -699,7 +699,7 @@ f"> */
 /* >  Modified description of INFO. Sven, 16 Feb 05. \n */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int ssyevd_(char *jobz, char *uplo, integer *n, real *a, 
+/* Subroutine */ void ssyevd_(char *jobz, char *uplo, integer *n, real *a, 
 	integer *lda, real *w, real *work, integer *lwork, integer *iwork, 
 	integer *liwork, integer *info)
 {
@@ -714,7 +714,7 @@ f"> */
     real sigma;
     extern logical lsame_(char *, char *);
     integer iinfo;
-    extern /* Subroutine */ int sscal_(integer *, real *, real *, integer *);
+    extern /* Subroutine */ void sscal_(integer *, real *, real *, integer *);
     integer lwmin, liopt;
     logical lower, wantz;
     integer indwk2, llwrk2, iscale;
@@ -724,20 +724,20 @@ f"> */
 	    integer *, integer *, ftnlen, ftnlen);
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     real bignum;
-    extern /* Subroutine */ int slascl_(char *, integer *, integer *, real *, 
+    extern /* Subroutine */ void slascl_(char *, integer *, integer *, real *, 
 	    real *, integer *, integer *, real *, integer *, integer *);
     integer indtau;
-    extern /* Subroutine */ int sstedc_(char *, integer *, real *, real *, 
+    extern /* Subroutine */ void sstedc_(char *, integer *, real *, real *, 
 	    real *, integer *, real *, integer *, integer *, integer *, 
 	    integer *), slacpy_(char *, integer *, integer *, real *, 
 	    integer *, real *, integer *);
     integer indwrk, liwmin;
-    extern /* Subroutine */ int ssterf_(integer *, real *, real *, integer *);
+    extern /* Subroutine */ void ssterf_(integer *, real *, real *, integer *);
     extern real slansy_(char *, char *, integer *, real *, integer *, real *);
     integer llwork;
     real smlnum;
     logical lquery;
-    extern /* Subroutine */ int sormtr_(char *, char *, char *, integer *, 
+    extern /* Subroutine */ void sormtr_(char *, char *, char *, integer *, 
 	    integer *, real *, integer *, real *, real *, integer *, real *, 
 	    integer *, integer *), ssytrd_(char *, 
 	    integer *, real *, integer *, real *, real *, real *, real *, 
@@ -816,15 +816,15 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("SSYEVD", &i__1, (ftnlen)6);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
     if (*n == 1) {
@@ -832,7 +832,7 @@ f"> */
 	if (wantz) {
 	    a[a_dim1 + 1] = 1.f;
 	}
-	return 0;
+	return;
     }
 
 /*     Get machine constants. */
@@ -897,7 +897,7 @@ f"> */
     work[1] = (real) lopt;
     iwork[1] = liopt;
 
-    return 0;
+    return;
 
 /*     End of SSYEVD */
 

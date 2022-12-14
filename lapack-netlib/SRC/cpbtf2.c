@@ -657,7 +657,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int cpbtf2_(char *uplo, integer *n, integer *kd, complex *ab,
+/* Subroutine */ void cpbtf2_(char *uplo, integer *n, integer *kd, complex *ab,
 	 integer *ldab, integer *info)
 {
     /* System generated locals */
@@ -665,15 +665,15 @@ f"> */
     real r__1;
 
     /* Local variables */
-    extern /* Subroutine */ int cher_(char *, integer *, real *, complex *, 
+    extern /* Subroutine */ void cher_(char *, integer *, real *, complex *, 
 	    integer *, complex *, integer *);
     integer j;
     extern logical lsame_(char *, char *);
     logical upper;
     integer kn;
-    extern /* Subroutine */ int clacgv_(integer *, complex *, integer *), 
-	    csscal_(integer *, real *, complex *, integer *), xerbla_(char *, 
-	    integer *, ftnlen);
+    extern /* Subroutine */ void clacgv_(integer *, complex *, integer *), 
+	    csscal_(integer *, real *, complex *, integer *);
+    extern int xerbla_(char *, integer *, ftnlen);
     real ajj;
     integer kld;
 
@@ -709,13 +709,13 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CPBTF2", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /* Computing MAX */
@@ -793,11 +793,11 @@ f"> */
 /* L20: */
 	}
     }
-    return 0;
+    return;
 
 L30:
     *info = j;
-    return 0;
+    return;
 
 /*     End of CPBTF2 */
 

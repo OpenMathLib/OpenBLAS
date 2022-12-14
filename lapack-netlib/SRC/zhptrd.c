@@ -665,7 +665,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int zhptrd_(char *uplo, integer *n, doublecomplex *ap, 
+/* Subroutine */ void zhptrd_(char *uplo, integer *n, doublecomplex *ap, 
 	doublereal *d__, doublereal *e, doublecomplex *tau, integer *info)
 {
     /* System generated locals */
@@ -675,7 +675,7 @@ f"> */
 
     /* Local variables */
     doublecomplex taui;
-    extern /* Subroutine */ int zhpr2_(char *, integer *, doublecomplex *, 
+    extern /* Subroutine */ void zhpr2_(char *, integer *, doublecomplex *, 
 	    doublecomplex *, integer *, doublecomplex *, integer *, 
 	    doublecomplex *);
     integer i__;
@@ -685,13 +685,14 @@ f"> */
 	    doublecomplex *, integer *, doublecomplex *, integer *);
     integer i1;
     logical upper;
-    extern /* Subroutine */ int zhpmv_(char *, integer *, doublecomplex *, 
+    extern /* Subroutine */ void zhpmv_(char *, integer *, doublecomplex *, 
 	    doublecomplex *, doublecomplex *, integer *, doublecomplex *, 
 	    doublecomplex *, integer *), zaxpy_(integer *, 
 	    doublecomplex *, doublecomplex *, integer *, doublecomplex *, 
 	    integer *);
     integer ii;
-    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen), zlarfg_(
+    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
+    extern void zlarfg_(
 	    integer *, doublecomplex *, doublecomplex *, integer *, 
 	    doublecomplex *);
     integer i1i1;
@@ -725,13 +726,13 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZHPTRD", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n <= 0) {
-	return 0;
+	return;
     }
 
     if (upper) {
@@ -871,7 +872,7 @@ f"> */
 	d__[i__1] = ap[i__2].r;
     }
 
-    return 0;
+    return;
 
 /*     End of ZHPTRD */
 

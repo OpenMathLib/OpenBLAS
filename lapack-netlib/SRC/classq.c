@@ -615,7 +615,7 @@ f"> */
 /* > \ingroup complexOTHERauxiliary */
 
 /*  ===================================================================== */
-/* Subroutine */ int classq_(integer *n, complex *x, integer *incx, real *
+/* Subroutine */ void classq_(integer *n, complex *x, integer *incx, real *
 	scale, real *sumsq)
 {
     /* System generated locals */
@@ -676,7 +676,7 @@ f"> */
 	}
     }
 
-    return 0;
+    return;
 
 /*     End of CLASSQ */
 

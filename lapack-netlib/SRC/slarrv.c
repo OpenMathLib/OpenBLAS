@@ -804,7 +804,7 @@ f"> */
 /* > Christof Voemel, University of California, Berkeley, USA */
 
 /*  ===================================================================== */
-/* Subroutine */ int slarrv_(integer *n, real *vl, real *vu, real *d__, real *
+/* Subroutine */ void slarrv_(integer *n, real *vl, real *vu, real *d__, real *
 	l, real *pivmin, integer *isplit, integer *m, integer *dol, integer *
 	dou, real *minrgp, real *rtol1, real *rtol2, real *w, real *werr, 
 	real *wgap, integer *iblock, integer *indexw, real *gers, real *z__, 
@@ -829,15 +829,15 @@ f"> */
     real sigma;
     integer iinfo, iindr;
     real resid;
-    extern /* Subroutine */ int sscal_(integer *, real *, real *, integer *);
+    extern /* Subroutine */ void sscal_(integer *, real *, real *, integer *);
     logical eskip;
     real right;
     integer nclus, zfrom;
-    extern /* Subroutine */ int scopy_(integer *, real *, integer *, real *, 
+    extern /* Subroutine */ void scopy_(integer *, real *, integer *, real *, 
 	    integer *);
     real rqtol;
     integer iindc1, iindc2, miniwsize;
-    extern /* Subroutine */ int slar1v_(integer *, integer *, integer *, real 
+    extern /* Subroutine */ void slar1v_(integer *, integer *, integer *, real 
 	    *, real *, real *, real *, real *, real *, real *, real *, 
 	    logical *, integer *, real *, real *, integer *, integer *, real *
 	    , real *, real *, real *);
@@ -861,7 +861,7 @@ f"> */
     logical usedbs;
     integer iindwk, offset;
     real gaptol;
-    extern /* Subroutine */ int slarrb_(integer *, real *, real *, integer *, 
+    extern /* Subroutine */ void slarrb_(integer *, real *, real *, integer *, 
 	    integer *, real *, real *, integer *, real *, real *, real *, 
 	    real *, integer *, real *, real *, integer *, integer *), slarrf_(
 	    integer *, real *, real *, real *, integer *, integer *, real *, 
@@ -875,7 +875,7 @@ f"> */
     logical tryrqc;
     integer isupmx;
     real rqcorr;
-    extern /* Subroutine */ int slaset_(char *, integer *, integer *, real *, 
+    extern /* Subroutine */ void slaset_(char *, integer *, integer *, real *, 
 	    real *, real *, integer *);
     real gap, eps, tau, tol, tmp;
     integer zto;
@@ -913,7 +913,7 @@ f"> */
 /*     Quick return if possible */
 
     if (*n <= 0 || *m <= 0) {
-	return 0;
+	return;
     }
 
 /*     The first N entries of WORK are reserved for the eigenvalues */
@@ -1063,7 +1063,7 @@ L40:
 /*           This is a crude protection against infinitely deep trees */
 	    if (ndepth > *m) {
 		*info = -2;
-		return 0;
+		return;
 	    }
 /*           breadth first processing of the current level of the representation */
 /*           tree: OLDNCL = number of clusters on current level */
@@ -1143,7 +1143,7 @@ L40:
 			    iindwk], pivmin, &spdiam, &in, &iinfo);
 		    if (iinfo != 0) {
 			*info = -1;
-			return 0;
+			return;
 		    }
 /*                 We also recompute the extremal gaps. W holds all eigenvalues */
 /*                 of the unshifted matrix and must be used for computation */
@@ -1310,7 +1310,7 @@ L40:
 			    iwork[k] = newlst;
 			} else {
 			    *info = -2;
-			    return 0;
+			    return;
 			}
 		    } else {
 
@@ -1414,7 +1414,7 @@ L120:
 				    iindwk], pivmin, &spdiam, &itmp1, &iinfo);
 			    if (iinfo != 0) {
 				*info = -3;
-				return 0;
+				return;
 			    }
 			    lambda = work[windex];
 /*                       Reset twist index from inaccurate LAMBDA to */
@@ -1509,7 +1509,7 @@ L120:
 				goto L120;
 			    } else {
 				*info = 5;
-				return 0;
+				return;
 			    }
 			} else {
 			    stp2ii = FALSE_;
@@ -1602,7 +1602,7 @@ L170:
 	;
     }
 
-    return 0;
+    return;
 
 /*     End of SLARRV */
 

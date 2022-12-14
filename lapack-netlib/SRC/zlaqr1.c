@@ -617,7 +617,7 @@ f"> */
 /* >       University of Kansas, USA */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int zlaqr1_(integer *n, doublecomplex *h__, integer *ldh, 
+/* Subroutine */ void zlaqr1_(integer *n, doublecomplex *h__, integer *ldh, 
 	doublecomplex *s1, doublecomplex *s2, doublecomplex *v)
 {
     /* System generated locals */
@@ -649,7 +649,7 @@ f"> */
 
     /* Function Body */
     if (*n != 2 && *n != 3) {
-	return 0;
+	return;
     }
 
     if (*n == 2) {
@@ -754,6 +754,6 @@ f"> */
 	    v[3].r = z__1.r, v[3].i = z__1.i;
 	}
     }
-    return 0;
+    return;
 } /* zlaqr1_ */
 

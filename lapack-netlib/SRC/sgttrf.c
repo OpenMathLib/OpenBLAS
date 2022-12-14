@@ -633,7 +633,7 @@ f"> */
 /* > \ingroup realGTcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int sgttrf_(integer *n, real *dl, real *d__, real *du, real *
+/* Subroutine */ void sgttrf_(integer *n, real *dl, real *d__, real *du, real *
 	du2, integer *ipiv, integer *info)
 {
     /* System generated locals */
@@ -668,13 +668,13 @@ f"> */
 	*info = -1;
 	i__1 = -(*info);
 	xerbla_("SGTTRF", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /*     Initialize IPIV(i) = i and DU2(I) = 0 */
@@ -748,7 +748,7 @@ f"> */
     }
 L50:
 
-    return 0;
+    return;
 
 /*     End of SGTTRF */
 

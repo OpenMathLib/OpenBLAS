@@ -607,7 +607,7 @@ f"> */
 /* > \ingroup complexOTHERcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int cpptri_(char *uplo, integer *n, complex *ap, integer *
+/* Subroutine */ void cpptri_(char *uplo, integer *n, complex *ap, integer *
 	info)
 {
     /* System generated locals */
@@ -616,18 +616,20 @@ f"> */
     complex q__1;
 
     /* Local variables */
-    extern /* Subroutine */ int chpr_(char *, integer *, real *, complex *, 
+    extern /* Subroutine */ void chpr_(char *, integer *, real *, complex *, 
 	    integer *, complex *);
     integer j;
     extern /* Complex */ VOID cdotc_(complex *, integer *, complex *, integer 
 	    *, complex *, integer *);
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int ctpmv_(char *, char *, char *, integer *, 
+    extern /* Subroutine */ void ctpmv_(char *, char *, char *, integer *, 
 	    complex *, complex *, integer *);
     logical upper;
     integer jc, jj;
-    extern /* Subroutine */ int csscal_(integer *, real *, complex *, integer 
-	    *), xerbla_(char *, integer *, ftnlen), ctptri_(char *, char *, 
+    extern /* Subroutine */ void csscal_(integer *, real *, complex *, integer 
+	    *);
+    extern int xerbla_(char *, integer *, ftnlen);
+    extern void ctptri_(char *, char *, 
 	    integer *, complex *, integer *);
     real ajj;
     integer jjn;
@@ -658,20 +660,20 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CPPTRI", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /*     Invert the triangular Cholesky factor U or L. */
 
     ctptri_(uplo, "Non-unit", n, &ap[1], info);
     if (*info > 0) {
-	return 0;
+	return;
     }
     if (upper) {
 
@@ -715,7 +717,7 @@ f"> */
 	}
     }
 
-    return 0;
+    return;
 
 /*     End of CPPTRI */
 

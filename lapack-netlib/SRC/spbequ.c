@@ -638,7 +638,7 @@ f"> */
 /* > \ingroup realOTHERcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int spbequ_(char *uplo, integer *n, integer *kd, real *ab, 
+/* Subroutine */ void spbequ_(char *uplo, integer *n, integer *kd, real *ab, 
 	integer *ldab, real *s, real *scond, real *amax, integer *info)
 {
     /* System generated locals */
@@ -685,7 +685,7 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("SPBEQU", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
@@ -693,7 +693,7 @@ f"> */
     if (*n == 0) {
 	*scond = 1.f;
 	*amax = 0.f;
-	return 0;
+	return;
     }
 
     if (upper) {
@@ -730,7 +730,7 @@ f"> */
 	for (i__ = 1; i__ <= i__1; ++i__) {
 	    if (s[i__] <= 0.f) {
 		*info = i__;
-		return 0;
+		return;
 	    }
 /* L20: */
 	}
@@ -749,7 +749,7 @@ f"> */
 
 	*scond = sqrt(smin) / sqrt(*amax);
     }
-    return 0;
+    return;
 
 /*     End of SPBEQU */
 

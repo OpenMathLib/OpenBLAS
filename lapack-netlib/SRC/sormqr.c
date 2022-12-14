@@ -683,7 +683,7 @@ f"> */
 /* > \ingroup realOTHERcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int sormqr_(char *side, char *trans, integer *m, integer *n, 
+/* Subroutine */ void sormqr_(char *side, char *trans, integer *m, integer *n, 
 	integer *k, real *a, integer *lda, real *tau, real *c__, integer *ldc,
 	 real *work, integer *lwork, integer *info)
 {
@@ -698,16 +698,17 @@ f"> */
     integer i__;
     extern logical lsame_(char *, char *);
     integer nbmin, iinfo, i1, i2, i3, ib, ic, jc, nb;
-    extern /* Subroutine */ int sorm2r_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void sorm2r_(char *, char *, integer *, integer *, 
 	    integer *, real *, integer *, real *, real *, integer *, real *, 
 	    integer *);
     integer mi, ni, nq, nw;
-    extern /* Subroutine */ int slarfb_(char *, char *, char *, char *, 
+    extern /* Subroutine */ void slarfb_(char *, char *, char *, char *, 
 	    integer *, integer *, integer *, real *, integer *, real *, 
-	    integer *, real *, integer *, real *, integer *), xerbla_(char *, integer *, ftnlen);
+	    integer *, real *, integer *, real *, integer *);
+    extern int xerbla_(char *, integer *, ftnlen);
     extern integer ilaenv_(integer *, char *, char *, integer *, integer *, 
 	    integer *, integer *, ftnlen, ftnlen);
-    extern /* Subroutine */ int slarft_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void slarft_(char *, char *, integer *, integer *, 
 	    real *, integer *, real *, real *, integer *);
     logical notran;
     integer ldwork, lwkopt;
@@ -788,16 +789,16 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("SORMQR", &i__1, (ftnlen)6);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*m == 0 || *n == 0 || *k == 0) {
 	work[1] = 1.f;
-	return 0;
+	return;
     }
 
     nbmin = 2;
@@ -881,7 +882,7 @@ f"> */
 	}
     }
     work[1] = (real) lwkopt;
-    return 0;
+    return;
 
 /*     End of SORMQR */
 

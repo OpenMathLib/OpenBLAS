@@ -699,7 +699,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int slarzt_(char *direct, char *storev, integer *n, integer *
+/* Subroutine */ void slarzt_(char *direct, char *storev, integer *n, integer *
 	k, real *v, integer *ldv, real *tau, real *t, integer *ldt)
 {
     /* System generated locals */
@@ -709,9 +709,10 @@ f"> */
     /* Local variables */
     integer info, i__, j;
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int sgemv_(char *, integer *, integer *, real *, 
+    extern /* Subroutine */ void sgemv_(char *, integer *, integer *, real *, 
 	    real *, integer *, real *, integer *, real *, real *, integer *), strmv_(char *, char *, char *, integer *, real *, 
-	    integer *, real *, integer *), xerbla_( char *, integer *, ftnlen);
+	    integer *, real *, integer *);
+    extern int xerbla_( char *, integer *, ftnlen);
 
 
 /*  -- LAPACK computational routine (version 3.7.0) -- */
@@ -744,7 +745,7 @@ f"> */
     if (info != 0) {
 	i__1 = -info;
 	xerbla_("SLARZT", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
     for (i__ = *k; i__ >= 1; --i__) {
@@ -782,7 +783,7 @@ f"> */
 	}
 /* L20: */
     }
-    return 0;
+    return;
 
 /*     End of SLARZT */
 

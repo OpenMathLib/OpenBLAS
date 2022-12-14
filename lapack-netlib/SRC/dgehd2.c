@@ -663,7 +663,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int dgehd2_(integer *n, integer *ilo, integer *ihi, 
+/* Subroutine */ void dgehd2_(integer *n, integer *ilo, integer *ihi, 
 	doublereal *a, integer *lda, doublereal *tau, doublereal *work, 
 	integer *info)
 {
@@ -672,10 +672,11 @@ f"> */
 
     /* Local variables */
     integer i__;
-    extern /* Subroutine */ int dlarf_(char *, integer *, integer *, 
+    extern /* Subroutine */ void dlarf_(char *, integer *, integer *, 
 	    doublereal *, integer *, doublereal *, doublereal *, integer *, 
 	    doublereal *), dlarfg_(integer *, doublereal *, 
-	    doublereal *, integer *, doublereal *), xerbla_(char *, integer *, ftnlen);
+	    doublereal *, integer *, doublereal *);
+    extern int xerbla_(char *, integer *, ftnlen);
     doublereal aii;
 
 
@@ -711,7 +712,7 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DGEHD2", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
     i__1 = *ihi - 1;
@@ -744,7 +745,7 @@ f"> */
 /* L10: */
     }
 
-    return 0;
+    return;
 
 /*     End of DGEHD2 */
 

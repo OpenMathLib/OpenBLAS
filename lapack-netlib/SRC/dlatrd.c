@@ -715,7 +715,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int dlatrd_(char *uplo, integer *n, integer *nb, doublereal *
+/* Subroutine */ void dlatrd_(char *uplo, integer *n, integer *nb, doublereal *
 	a, integer *lda, doublereal *e, doublereal *tau, doublereal *w, 
 	integer *ldw)
 {
@@ -727,10 +727,10 @@ f"> */
 	    integer *);
     integer i__;
     doublereal alpha;
-    extern /* Subroutine */ int dscal_(integer *, doublereal *, doublereal *, 
+    extern /* Subroutine */ void dscal_(integer *, doublereal *, doublereal *, 
 	    integer *);
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int dgemv_(char *, integer *, integer *, 
+    extern /* Subroutine */ void dgemv_(char *, integer *, integer *, 
 	    doublereal *, doublereal *, integer *, doublereal *, integer *, 
 	    doublereal *, doublereal *, integer *), daxpy_(integer *, 
 	    doublereal *, doublereal *, integer *, doublereal *, integer *), 
@@ -763,7 +763,7 @@ f"> */
 
     /* Function Body */
     if (*n <= 0) {
-	return 0;
+	return;
     }
 
     if (lsame_(uplo, "U")) {
@@ -909,7 +909,7 @@ f"> */
 	}
     }
 
-    return 0;
+    return;
 
 /*     End of DLATRD */
 

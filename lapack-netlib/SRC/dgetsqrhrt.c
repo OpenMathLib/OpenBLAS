@@ -689,7 +689,7 @@ hrt.f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int dgetsqrhrt_(integer *m, integer *n, integer *mb1, 
+/* Subroutine */ void dgetsqrhrt_(integer *m, integer *n, integer *mb1, 
 	integer *nb1, integer *nb2, doublereal *a, integer *lda, doublereal *
 	t, integer *ldt, doublereal *work, integer *lwork, integer *info)
 {
@@ -699,17 +699,18 @@ hrt.f"> */
 
     /* Local variables */
     integer ldwt, lworkopt, i__, j;
-    extern /* Subroutine */ int dorgtsqr_row_(integer *, integer *, integer *
+    extern /* Subroutine */ void dorgtsqr_row_(integer *, integer *, integer *
 	    , integer *, doublereal *, integer *, doublereal *, integer *, 
 	    doublereal *, integer *, integer *);
     integer iinfo;
-    extern /* Subroutine */ int dcopy_(integer *, doublereal *, integer *, 
+    extern /* Subroutine */ void dcopy_(integer *, doublereal *, integer *, 
 	    doublereal *, integer *), dorhr_col_(integer *, integer *, 
 	    integer *, doublereal *, integer *, doublereal *, integer *, 
-	    doublereal *, integer *), xerbla_(char *, integer *, ftnlen);
+	    doublereal *, integer *);
+    extern int xerbla_(char *, integer *, ftnlen);
     logical lquery;
     integer lw1, lw2, num_all_row_blocks__, lwt;
-    extern /* Subroutine */ int dlatsqr_(integer *, integer *, integer *, 
+    extern /* Subroutine */ void dlatsqr_(integer *, integer *, integer *, 
 	    integer *, doublereal *, integer *, doublereal *, integer *, 
 	    doublereal *, integer *, integer *);
     integer nb1local, nb2local;
@@ -812,17 +813,17 @@ hrt.f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DGETSQRHRT", &i__1, (ftnlen)10);
-	return 0;
+	return;
     } else if (lquery) {
 	work[1] = (doublereal) lworkopt;
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (f2cmin(*m,*n) == 0) {
 	work[1] = (doublereal) lworkopt;
-	return 0;
+	return;
     }
 
     nb2local = f2cmin(*nb2,*n);
@@ -884,7 +885,7 @@ hrt.f"> */
     }
 
     work[1] = (doublereal) lworkopt;
-    return 0;
+    return;
 
 /*     End of DGETSQRHRT */
 

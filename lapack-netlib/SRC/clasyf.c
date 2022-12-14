@@ -692,7 +692,7 @@ f"> */
 /* > \endverbatim */
 
 /*  ===================================================================== */
-/* Subroutine */ int clasyf_(char *uplo, integer *n, integer *nb, integer *kb,
+/* Subroutine */ void clasyf_(char *uplo, integer *n, integer *nb, integer *kb,
 	 complex *a, integer *lda, integer *ipiv, complex *w, integer *ldw, 
 	integer *info)
 {
@@ -705,12 +705,12 @@ f"> */
     integer imax, jmax, j, k;
     complex t;
     real alpha;
-    extern /* Subroutine */ int cscal_(integer *, complex *, complex *, 
+    extern /* Subroutine */ void cscal_(integer *, complex *, complex *, 
 	    integer *), cgemm_(char *, char *, integer *, integer *, integer *
 	    , complex *, complex *, integer *, complex *, integer *, complex *
 	    , complex *, integer *);
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int cgemv_(char *, integer *, integer *, complex *
+    extern /* Subroutine */ void cgemv_(char *, integer *, integer *, complex *
 	    , complex *, integer *, complex *, integer *, complex *, complex *
 	    , integer *), ccopy_(integer *, complex *, integer *, 
 	    complex *, integer *), cswap_(integer *, complex *, integer *, 
@@ -1538,7 +1538,7 @@ L120:
 	*kb = k - 1;
 
     }
-    return 0;
+    return;
 
 /*     End of CLASYF */
 

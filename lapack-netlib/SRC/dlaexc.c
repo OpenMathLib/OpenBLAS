@@ -656,7 +656,7 @@ f"> */
 /* > \ingroup doubleOTHERauxiliary */
 
 /*  ===================================================================== */
-/* Subroutine */ int dlaexc_(logical *wantq, integer *n, doublereal *t, 
+/* Subroutine */ void dlaexc_(logical *wantq, integer *n, doublereal *t, 
 	integer *ldt, doublereal *q, integer *ldq, integer *j1, integer *n1, 
 	integer *n2, doublereal *work, integer *info)
 {
@@ -667,14 +667,14 @@ f"> */
     /* Local variables */
     integer ierr;
     doublereal temp;
-    extern /* Subroutine */ int drot_(integer *, doublereal *, integer *, 
+    extern /* Subroutine */ void drot_(integer *, doublereal *, integer *, 
 	    doublereal *, integer *, doublereal *, doublereal *);
     doublereal d__[16]	/* was [4][4] */;
     integer k;
     doublereal u[3], scale, x[4]	/* was [2][2] */, dnorm;
     integer j2, j3, j4;
     doublereal xnorm, u1[3], u2[3];
-    extern /* Subroutine */ int dlanv2_(doublereal *, doublereal *, 
+    extern /* Subroutine */ void dlanv2_(doublereal *, doublereal *, 
 	    doublereal *, doublereal *, doublereal *, doublereal *, 
 	    doublereal *, doublereal *, doublereal *, doublereal *), dlasy2_(
 	    logical *, logical *, integer *, integer *, integer *, doublereal 
@@ -686,10 +686,10 @@ f"> */
     doublereal t33;
     extern doublereal dlange_(char *, integer *, integer *, doublereal *, 
 	    integer *, doublereal *);
-    extern /* Subroutine */ int dlarfg_(integer *, doublereal *, doublereal *,
+    extern /* Subroutine */ void dlarfg_(integer *, doublereal *, doublereal *,
 	     integer *, doublereal *);
     doublereal sn;
-    extern /* Subroutine */ int dlacpy_(char *, integer *, integer *, 
+    extern /* Subroutine */ void dlacpy_(char *, integer *, integer *, 
 	    doublereal *, integer *, doublereal *, integer *), 
 	    dlartg_(doublereal *, doublereal *, doublereal *, doublereal *, 
 	    doublereal *), dlarfx_(char *, integer *, integer *, doublereal *,
@@ -721,10 +721,10 @@ f"> */
 /*     Quick return if possible */
 
     if (*n == 0 || *n1 == 0 || *n2 == 0) {
-	return 0;
+	return;
     }
     if (*j1 + *n1 > *n) {
-	return 0;
+	return;
     }
 
     j2 = *j1 + 1;
@@ -1010,13 +1010,13 @@ L40:
 	}
 
     }
-    return 0;
+    return;
 
 /*     Exit with INFO = 1 if swap was rejected. */
 
 L50:
     *info = 1;
-    return 0;
+    return;
 
 /*     End of DLAEXC */
 

@@ -677,7 +677,7 @@ static real c_b9 = 1.f;
 /* > \endverbatim */
 
 /*  ==================================================================== */
-/* Subroutine */ int ssytrs_3_(char *uplo, integer *n, integer *nrhs, real *
+/* Subroutine */ void ssytrs_3_(char *uplo, integer *n, integer *nrhs, real *
 	a, integer *lda, real *e, integer *ipiv, real *b, integer *ldb, 
 	integer *info)
 {
@@ -690,9 +690,9 @@ static real c_b9 = 1.f;
     integer i__, j, k;
     extern logical lsame_(char *, char *);
     real denom;
-    extern /* Subroutine */ int sscal_(integer *, real *, real *, integer *);
+    extern /* Subroutine */ void sscal_(integer *, real *, real *, integer *);
     logical upper;
-    extern /* Subroutine */ int sswap_(integer *, real *, integer *, real *, 
+    extern /* Subroutine */ void sswap_(integer *, real *, integer *, real *, 
 	    integer *), strsm_(char *, char *, char *, char *, integer *, 
 	    integer *, real *, real *, integer *, real *, integer *);
     real ak, bk;
@@ -737,13 +737,13 @@ static real c_b9 = 1.f;
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("SSYTRS_3", &i__1, (ftnlen)8);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0 || *nrhs == 0) {
-	return 0;
+	return;
     }
 
     if (upper) {
@@ -895,7 +895,7 @@ static real c_b9 = 1.f;
 
     }
 
-    return 0;
+    return;
 
 /*     End of SSYTRS_3 */
 

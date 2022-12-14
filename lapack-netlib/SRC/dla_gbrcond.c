@@ -694,10 +694,11 @@ doublereal dla_gbrcond_(char *trans, integer *n, integer *kl, integer *ku,
     integer kase, i__, j;
     extern logical lsame_(char *, char *);
     integer isave[3];
-    extern /* Subroutine */ int dlacn2_(integer *, doublereal *, doublereal *,
+    extern /* Subroutine */ void dlacn2_(integer *, doublereal *, doublereal *,
 	     integer *, doublereal *, integer *, integer *);
     integer kd, ke;
-    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen), dgbtrs_(
+    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
+    extern void dgbtrs_(
 	    char *, integer *, integer *, integer *, integer *, doublereal *, 
 	    integer *, integer *, doublereal *, integer *, integer *);
     doublereal ainvnm, tmp;

@@ -650,7 +650,7 @@ f"> */
 /* > \ingroup complex16OTHERcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int zsteqr_(char *compz, integer *n, doublereal *d__, 
+/* Subroutine */ void zsteqr_(char *compz, integer *n, doublereal *d__, 
 	doublereal *e, doublecomplex *z__, integer *ldz, doublereal *work, 
 	integer *info)
 {
@@ -660,17 +660,17 @@ f"> */
 
     /* Local variables */
     integer lend, jtot;
-    extern /* Subroutine */ int dlae2_(doublereal *, doublereal *, doublereal 
+    extern /* Subroutine */ void dlae2_(doublereal *, doublereal *, doublereal 
 	    *, doublereal *, doublereal *);
     doublereal b, c__, f, g;
     integer i__, j, k, l, m;
     doublereal p, r__, s;
     extern logical lsame_(char *, char *);
     doublereal anorm;
-    extern /* Subroutine */ int zlasr_(char *, char *, char *, integer *, 
+    extern /* Subroutine */ void zlasr_(char *, char *, char *, integer *, 
 	    integer *, doublereal *, doublereal *, doublecomplex *, integer *);
     integer l1;
-    extern /* Subroutine */ int zswap_(integer *, doublecomplex *, integer *, 
+    extern /* Subroutine */ void zswap_(integer *, doublecomplex *, integer *, 
 	    doublecomplex *, integer *), dlaev2_(doublereal *, doublereal *, 
 	    doublereal *, doublereal *, doublereal *, doublereal *, 
 	    doublereal *);
@@ -679,22 +679,22 @@ f"> */
     integer ii;
     extern doublereal dlamch_(char *);
     integer mm, iscale;
-    extern /* Subroutine */ int dlascl_(char *, integer *, integer *, 
+    extern /* Subroutine */ void dlascl_(char *, integer *, integer *, 
 	    doublereal *, doublereal *, integer *, integer *, doublereal *, 
 	    integer *, integer *);
     doublereal safmin;
-    extern /* Subroutine */ int dlartg_(doublereal *, doublereal *, 
+    extern /* Subroutine */ void dlartg_(doublereal *, doublereal *, 
 	    doublereal *, doublereal *, doublereal *);
     doublereal safmax;
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     extern doublereal dlanst_(char *, integer *, doublereal *, doublereal *);
-    extern /* Subroutine */ int dlasrt_(char *, integer *, doublereal *, 
+    extern /* Subroutine */ void dlasrt_(char *, integer *, doublereal *, 
 	    integer *);
     integer lendsv;
     doublereal ssfmin;
     integer nmaxit, icompz;
     doublereal ssfmax;
-    extern /* Subroutine */ int zlaset_(char *, integer *, integer *, 
+    extern /* Subroutine */ void zlaset_(char *, integer *, integer *, 
 	    doublecomplex *, doublecomplex *, doublecomplex *, integer *);
     integer lm1, mm1, nm1;
     doublereal rt1, rt2, eps;
@@ -743,13 +743,13 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZSTEQR", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
     if (*n == 1) {
@@ -757,7 +757,7 @@ f"> */
 	    i__1 = z_dim1 + 1;
 	    z__[i__1].r = 1., z__[i__1].i = 0.;
 	}
-	return 0;
+	return;
     }
 
 /*     Determine the unit roundoff and over/underflow thresholds. */
@@ -1130,7 +1130,7 @@ L140:
 	    }
 /* L150: */
 	}
-	return 0;
+	return;
     }
     goto L10;
 
@@ -1169,7 +1169,7 @@ L160:
 /* L180: */
 	}
     }
-    return 0;
+    return;
 
 /*     End of ZSTEQR */
 

@@ -625,7 +625,7 @@ f"> */
 /* > \ingroup doubleOTHERcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int dppequ_(char *uplo, integer *n, doublereal *ap, 
+/* Subroutine */ void dppequ_(char *uplo, integer *n, doublereal *ap, 
 	doublereal *s, doublereal *scond, doublereal *amax, integer *info)
 {
     /* System generated locals */
@@ -667,7 +667,7 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DPPEQU", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
@@ -675,7 +675,7 @@ f"> */
     if (*n == 0) {
 	*scond = 1.;
 	*amax = 0.;
-	return 0;
+	return;
     }
 
 /*     Initialize SMIN and AMAX. */
@@ -731,7 +731,7 @@ f"> */
 	for (i__ = 1; i__ <= i__1; ++i__) {
 	    if (s[i__] <= 0.) {
 		*info = i__;
-		return 0;
+		return;
 	    }
 /* L30: */
 	}
@@ -750,7 +750,7 @@ f"> */
 
 	*scond = sqrt(smin) / sqrt(*amax);
     }
-    return 0;
+    return;
 
 /*     End of DPPEQU */
 

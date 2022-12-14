@@ -667,7 +667,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int dtzrzf_(integer *m, integer *n, doublereal *a, integer *
+/* Subroutine */ void dtzrzf_(integer *m, integer *n, doublereal *a, integer *
 	lda, doublereal *tau, doublereal *work, integer *lwork, integer *info)
 {
     /* System generated locals */
@@ -675,16 +675,17 @@ f"> */
 
     /* Local variables */
     integer i__, nbmin, m1, ib, nb, ki, kk, mu, nx;
-    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen), dlarzb_(
+    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
+    extern void dlarzb_(
 	    char *, char *, char *, char *, integer *, integer *, integer *, 
 	    integer *, doublereal *, integer *, doublereal *, integer *, 
 	    doublereal *, integer *, doublereal *, integer *);
     extern integer ilaenv_(integer *, char *, char *, integer *, integer *, 
 	    integer *, integer *, ftnlen, ftnlen);
-    extern /* Subroutine */ int dlarzt_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void dlarzt_(char *, char *, integer *, integer *, 
 	    doublereal *, integer *, doublereal *, doublereal *, integer *);
     integer lwkmin, ldwork;
-    extern /* Subroutine */ int dlatrz_(integer *, integer *, integer *, 
+    extern /* Subroutine */ void dlatrz_(integer *, integer *, integer *, 
 	    doublereal *, integer *, doublereal *, doublereal *);
     integer lwkopt;
     logical lquery;
@@ -743,22 +744,22 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DTZRZF", &i__1, (ftnlen)6);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*m == 0) {
-	return 0;
+	return;
     } else if (*m == *n) {
 	i__1 = *n;
 	for (i__ = 1; i__ <= i__1; ++i__) {
 	    tau[i__] = 0.;
 /* L10: */
 	}
-	return 0;
+	return;
     }
 
     nbmin = 2;
@@ -856,7 +857,7 @@ f"> */
 
     work[1] = (doublereal) lwkopt;
 
-    return 0;
+    return;
 
 /*     End of DTZRZF */
 

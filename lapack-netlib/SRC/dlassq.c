@@ -612,7 +612,7 @@ f"> */
 /* > \ingroup OTHERauxiliary */
 
 /*  ===================================================================== */
-/* Subroutine */ int dlassq_(integer *n, doublereal *x, integer *incx, 
+/* Subroutine */ void dlassq_(integer *n, doublereal *x, integer *incx, 
 	doublereal *scale, doublereal *sumsq)
 {
     /* System generated locals */
@@ -658,7 +658,7 @@ f"> */
 /* L10: */
 	}
     }
-    return 0;
+    return;
 
 /*     End of DLASSQ */
 

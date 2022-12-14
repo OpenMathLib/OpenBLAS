@@ -740,7 +740,7 @@ f"> */
 /* >     Mark Fahey, Department of Mathematics, Univ. of Kentucky, USA */
 
 /*  ===================================================================== */
-/* Subroutine */ int dsbgvd_(char *jobz, char *uplo, integer *n, integer *ka, 
+/* Subroutine */ void dsbgvd_(char *jobz, char *uplo, integer *n, integer *ka, 
 	integer *kb, doublereal *ab, integer *ldab, doublereal *bb, integer *
 	ldbb, doublereal *w, doublereal *z__, integer *ldz, doublereal *work, 
 	integer *lwork, integer *iwork, integer *liwork, integer *info)
@@ -751,17 +751,19 @@ f"> */
     /* Local variables */
     integer inde;
     char vect[1];
-    extern /* Subroutine */ int dgemm_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void dgemm_(char *, char *, integer *, integer *, 
 	    integer *, doublereal *, doublereal *, integer *, doublereal *, 
 	    integer *, doublereal *, doublereal *, integer *);
     extern logical lsame_(char *, char *);
     integer iinfo, lwmin;
     logical upper, wantz;
     integer indwk2, llwrk2;
-    extern /* Subroutine */ int dstedc_(char *, integer *, doublereal *, 
+    extern /* Subroutine */ void dstedc_(char *, integer *, doublereal *, 
 	    doublereal *, doublereal *, integer *, doublereal *, integer *, 
 	    integer *, integer *, integer *), dlacpy_(char *, integer 
-	    *, integer *, doublereal *, integer *, doublereal *, integer *), xerbla_(char *, integer *, ftnlen), dpbstf_(char *, 
+	    *, integer *, doublereal *, integer *, doublereal *, integer *);
+    extern int xerbla_(char *, integer *, ftnlen);
+    extern void dpbstf_(char *, 
 	    integer *, integer *, doublereal *, integer *, integer *),
 	     dsbtrd_(char *, char *, integer *, integer *, doublereal *, 
 	    integer *, doublereal *, doublereal *, doublereal *, integer *, 
@@ -850,15 +852,15 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DSBGVD", &i__1, (ftnlen)6);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /*     Form a split Cholesky factorization of B. */
@@ -866,7 +868,7 @@ f"> */
     dpbstf_(uplo, n, kb, &bb[bb_offset], ldbb, info);
     if (*info != 0) {
 	*info = *n + *info;
-	return 0;
+	return;
     }
 
 /*     Transform problem to standard eigenvalue problem. */
@@ -903,7 +905,7 @@ f"> */
     work[1] = (doublereal) lwmin;
     iwork[1] = liwmin;
 
-    return 0;
+    return;
 
 /*     End of DSBGVD */
 

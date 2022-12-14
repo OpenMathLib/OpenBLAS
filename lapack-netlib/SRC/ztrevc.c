@@ -731,7 +731,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int ztrevc_(char *side, char *howmny, logical *select, 
+/* Subroutine */ void ztrevc_(char *side, char *howmny, logical *select, 
 	integer *n, doublecomplex *t, integer *ldt, doublecomplex *vl, 
 	integer *ldvl, doublecomplex *vr, integer *ldvr, integer *mm, integer 
 	*m, doublecomplex *work, doublereal *rwork, integer *info)
@@ -751,22 +751,23 @@ f"> */
     extern logical lsame_(char *, char *);
     doublereal remax;
     logical leftv, bothv;
-    extern /* Subroutine */ int zgemv_(char *, integer *, integer *, 
+    extern /* Subroutine */ void zgemv_(char *, integer *, integer *, 
 	    doublecomplex *, doublecomplex *, integer *, doublecomplex *, 
 	    integer *, doublecomplex *, doublecomplex *, integer *);
     logical somev;
-    extern /* Subroutine */ int zcopy_(integer *, doublecomplex *, integer *, 
+    extern /* Subroutine */ void zcopy_(integer *, doublecomplex *, integer *, 
 	    doublecomplex *, integer *), dlabad_(doublereal *, doublereal *);
     integer ii, ki;
     extern doublereal dlamch_(char *);
     integer is;
-    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen), zdscal_(
+    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
+    extern void zdscal_(
 	    integer *, doublereal *, doublecomplex *, integer *);
     extern integer izamax_(integer *, doublecomplex *, integer *);
     logical rightv;
     extern doublereal dzasum_(integer *, doublecomplex *, integer *);
     doublereal smlnum;
-    extern /* Subroutine */ int zlatrs_(char *, char *, char *, char *, 
+    extern /* Subroutine */ void zlatrs_(char *, char *, char *, char *, 
 	    integer *, doublecomplex *, integer *, doublecomplex *, 
 	    doublereal *, doublereal *, integer *);
     doublereal ulp;
@@ -841,13 +842,13 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZTREVC", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible. */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /*     Set the constants to control overflow. */
@@ -1101,7 +1102,7 @@ L130:
 	}
     }
 
-    return 0;
+    return;
 
 /*     End of ZTREVC */
 

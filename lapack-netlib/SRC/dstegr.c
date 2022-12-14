@@ -772,7 +772,7 @@ f"> */
 /* > Christof Voemel, LBNL/NERSC, USA \n */
 
 /*  ===================================================================== */
-/* Subroutine */ int dstegr_(char *jobz, char *range, integer *n, doublereal *
+/* Subroutine */ void dstegr_(char *jobz, char *range, integer *n, doublereal *
 	d__, doublereal *e, doublereal *vl, doublereal *vu, integer *il, 
 	integer *iu, doublereal *abstol, integer *m, doublereal *w, 
 	doublereal *z__, integer *ldz, integer *isuppz, doublereal *work, 
@@ -782,7 +782,7 @@ f"> */
     integer z_dim1, z_offset;
 
     /* Local variables */
-    extern /* Subroutine */ int dstemr_(char *, char *, integer *, doublereal 
+    extern /* Subroutine */ void dstemr_(char *, char *, integer *, doublereal 
 	    *, doublereal *, doublereal *, doublereal *, integer *, integer *,
 	     integer *, doublereal *, doublereal *, integer *, integer *, 
 	    integer *, logical *, doublereal *, integer *, integer *, integer 
@@ -818,6 +818,6 @@ f"> */
 
 /*     End of DSTEGR */
 
-    return 0;
+    return;
 } /* dstegr_ */
 

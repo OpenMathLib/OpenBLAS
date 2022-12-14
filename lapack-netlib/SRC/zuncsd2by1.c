@@ -766,7 +766,7 @@ by1.f"> */
 /* > \ingroup complex16OTHERcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int zuncsd2by1_(char *jobu1, char *jobu2, char *jobv1t, 
+/* Subroutine */ void zuncsd2by1_(char *jobu1, char *jobu2, char *jobv1t, 
 	integer *m, integer *p, integer *q, doublecomplex *x11, integer *
 	ldx11, doublecomplex *x21, integer *ldx21, doublereal *theta, 
 	doublecomplex *u1, integer *ldu1, doublecomplex *u2, integer *ldu2, 
@@ -784,30 +784,31 @@ by1.f"> */
     integer iphi, lworkmin, lworkopt, i__, j, r__;
     extern logical lsame_(char *, char *);
     integer childinfo;
-    extern /* Subroutine */ int zcopy_(integer *, doublecomplex *, integer *, 
+    extern /* Subroutine */ void zcopy_(integer *, doublecomplex *, integer *, 
 	    doublecomplex *, integer *);
     integer lorglqmin, lorgqrmin, lorglqopt, lrworkmin, itaup1, itaup2, 
 	    itauq1, lorgqropt;
     logical wantu1, wantu2;
     integer lrworkopt, ibbcsd, lbbcsd, iorbdb, lorbdb;
-    extern /* Subroutine */ int zbbcsd_(char *, char *, char *, char *, char *
+    extern /* Subroutine */ void zbbcsd_(char *, char *, char *, char *, char *
 	    , integer *, integer *, integer *, doublereal *, doublereal *, 
 	    doublecomplex *, integer *, doublecomplex *, integer *, 
 	    doublecomplex *, integer *, doublecomplex *, integer *, 
 	    doublereal *, doublereal *, doublereal *, doublereal *, 
 	    doublereal *, doublereal *, doublereal *, doublereal *, 
-	    doublereal *, integer *, integer *), xerbla_(char *, integer *, ftnlen);
+	    doublereal *, integer *, integer *);
+    extern int xerbla_(char *, integer *, ftnlen);
     integer iorglq, lorglq;
-    extern /* Subroutine */ int zlacpy_(char *, integer *, integer *, 
+    extern /* Subroutine */ void zlacpy_(char *, integer *, integer *, 
 	    doublecomplex *, integer *, doublecomplex *, integer *);
     integer iorgqr;
-    extern /* Subroutine */ int zlapmr_(logical *, integer *, integer *, 
+    extern /* Subroutine */ void zlapmr_(logical *, integer *, integer *, 
 	    doublecomplex *, integer *, integer *);
     integer lorgqr;
-    extern /* Subroutine */ int zlapmt_(logical *, integer *, integer *, 
+    extern /* Subroutine */ void zlapmt_(logical *, integer *, integer *, 
 	    doublecomplex *, integer *, integer *);
     logical lquery;
-    extern /* Subroutine */ int zunglq_(integer *, integer *, integer *, 
+    extern /* Subroutine */ void zunglq_(integer *, integer *, integer *, 
 	    doublecomplex *, integer *, doublecomplex *, doublecomplex *, 
 	    integer *, integer *), zungqr_(integer *, integer *, integer *, 
 	    doublecomplex *, integer *, doublecomplex *, doublecomplex *, 
@@ -1155,9 +1156,9 @@ by1.f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZUNCSD2BY1", &i__1, (ftnlen)10);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
     lorgqr = *lwork - iorgqr + 1;
     lorglq = *lwork - iorglq + 1;
@@ -1481,7 +1482,7 @@ by1.f"> */
 	}
     }
 
-    return 0;
+    return;
 
 /*     End of ZUNCSD2BY1 */
 

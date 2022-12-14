@@ -667,7 +667,7 @@ f"> */
 /* >    X. Sun, Computer Science Dept., Duke University, USA */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int sgeqp3_(integer *m, integer *n, real *a, integer *lda, 
+/* Subroutine */ void sgeqp3_(integer *m, integer *n, real *a, integer *lda, 
 	integer *jpvt, real *tau, real *work, integer *lwork, integer *info)
 {
     /* System generated locals */
@@ -677,22 +677,22 @@ f"> */
     integer nfxd;
     extern real snrm2_(integer *, real *, integer *);
     integer j, nbmin, minmn, minws;
-    extern /* Subroutine */ int sswap_(integer *, real *, integer *, real *, 
+    extern /* Subroutine */ void sswap_(integer *, real *, integer *, real *, 
 	    integer *), slaqp2_(integer *, integer *, integer *, real *, 
 	    integer *, integer *, real *, real *, real *, real *);
     integer jb, na, nb, sm, sn, nx;
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     extern integer ilaenv_(integer *, char *, char *, integer *, integer *, 
 	    integer *, integer *, ftnlen, ftnlen);
-    extern /* Subroutine */ int sgeqrf_(integer *, integer *, real *, integer 
+    extern /* Subroutine */ void sgeqrf_(integer *, integer *, real *, integer 
 	    *, real *, real *, integer *, integer *);
     integer topbmn, sminmn;
-    extern /* Subroutine */ int slaqps_(integer *, integer *, integer *, 
+    extern /* Subroutine */ void slaqps_(integer *, integer *, integer *, 
 	    integer *, integer *, real *, integer *, integer *, real *, real *
 	    , real *, real *, real *, integer *);
     integer lwkopt;
     logical lquery;
-    extern /* Subroutine */ int sormqr_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void sormqr_(char *, char *, integer *, integer *, 
 	    integer *, real *, integer *, real *, real *, integer *, real *, 
 	    integer *, integer *);
     integer fjb, iws;
@@ -749,9 +749,9 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("SGEQP3", &i__1, (ftnlen)6);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Move initial columns up front. */
@@ -905,7 +905,7 @@ L30:
     }
 
     work[1] = (real) iws;
-    return 0;
+    return;
 
 /*     End of SGEQP3 */
 

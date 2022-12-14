@@ -626,7 +626,7 @@ f"> */
 /* > \ingroup doubleOTHERcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int dtrtri_(char *uplo, char *diag, integer *n, doublereal *
+/* Subroutine */ void dtrtri_(char *uplo, char *diag, integer *n, doublereal *
 	a, integer *lda, integer *info)
 {
     /* System generated locals */
@@ -637,13 +637,13 @@ f"> */
     /* Local variables */
     integer j;
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int dtrmm_(char *, char *, char *, char *, 
+    extern /* Subroutine */ void dtrmm_(char *, char *, char *, char *, 
 	    integer *, integer *, doublereal *, doublereal *, integer *, 
 	    doublereal *, integer *), dtrsm_(
 	    char *, char *, char *, char *, integer *, integer *, doublereal *
 	    , doublereal *, integer *, doublereal *, integer *);
     logical upper;
-    extern /* Subroutine */ int dtrti2_(char *, char *, integer *, doublereal 
+    extern /* Subroutine */ void dtrti2_(char *, char *, integer *, doublereal 
 	    *, integer *, integer *);
     integer jb, nb, nn;
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
@@ -684,13 +684,13 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DTRTRI", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /*     Check for singularity if non-unit. */
@@ -699,7 +699,7 @@ f"> */
 	i__1 = *n;
 	for (*info = 1; *info <= i__1; ++(*info)) {
 	    if (a[*info + *info * a_dim1] == 0.) {
-		return 0;
+		return;
 	    }
 /* L10: */
 	}
@@ -781,7 +781,7 @@ f"> */
 	}
     }
 
-    return 0;
+    return;
 
 /*     End of DTRTRI */
 

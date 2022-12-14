@@ -695,7 +695,7 @@ static integer c_n1 = -1;
 /* > \ingroup complex16HEeigen */
 
 /*  ===================================================================== */
-/* Subroutine */ int zhegv_(integer *itype, char *jobz, char *uplo, integer *
+/* Subroutine */ void zhegv_(integer *itype, char *jobz, char *uplo, integer *
 	n, doublecomplex *a, integer *lda, doublecomplex *b, integer *ldb, 
 	doublereal *w, doublecomplex *work, integer *lwork, doublereal *rwork,
 	 integer *info)
@@ -706,12 +706,12 @@ static integer c_n1 = -1;
     /* Local variables */
     integer neig;
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int zheev_(char *, char *, integer *, 
+    extern /* Subroutine */ void zheev_(char *, char *, integer *, 
 	    doublecomplex *, integer *, doublereal *, doublecomplex *, 
 	    integer *, doublereal *, integer *);
     char trans[1];
     logical upper, wantz;
-    extern /* Subroutine */ int ztrmm_(char *, char *, char *, char *, 
+    extern /* Subroutine */ void ztrmm_(char *, char *, char *, char *, 
 	    integer *, integer *, doublecomplex *, doublecomplex *, integer *,
 	     doublecomplex *, integer *), 
 	    ztrsm_(char *, char *, char *, char *, integer *, integer *, 
@@ -721,7 +721,7 @@ static integer c_n1 = -1;
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     extern integer ilaenv_(integer *, char *, char *, integer *, integer *, 
 	    integer *, integer *, ftnlen, ftnlen);
-    extern /* Subroutine */ int zhegst_(integer *, char *, integer *, 
+    extern /* Subroutine */ void zhegst_(integer *, char *, integer *, 
 	    doublecomplex *, integer *, doublecomplex *, integer *, integer *);
     integer lwkopt;
     logical lquery;
@@ -789,15 +789,15 @@ static integer c_n1 = -1;
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZHEGV ", &i__1, (ftnlen)6);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /*     Form a Cholesky factorization of B. */
@@ -805,7 +805,7 @@ static integer c_n1 = -1;
     zpotrf_(uplo, n, &b[b_offset], ldb, info);
     if (*info != 0) {
 	*info = *n + *info;
-	return 0;
+	return;
     }
 
 /*     Transform problem to standard eigenvalue problem and solve. */
@@ -854,7 +854,7 @@ static integer c_n1 = -1;
 
     work[1].r = (doublereal) lwkopt, work[1].i = 0.;
 
-    return 0;
+    return;
 
 /*     End of ZHEGV */
 

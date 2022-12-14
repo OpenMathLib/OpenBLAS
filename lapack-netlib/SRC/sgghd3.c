@@ -748,7 +748,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int sgghd3_(char *compq, char *compz, integer *n, integer *
+/* Subroutine */ void sgghd3_(char *compq, char *compz, integer *n, integer *
 	ilo, integer *ihi, real *a, integer *lda, real *b, integer *ldb, real 
 	*q, integer *ldq, real *z__, integer *ldz, real *work, integer *lwork,
 	 integer *info)
@@ -763,14 +763,14 @@ f"> */
     integer cola, jcol, ierr;
     real temp;
     integer jrow, topq, ppwo;
-    extern /* Subroutine */ int srot_(integer *, real *, integer *, real *, 
+    extern /* Subroutine */ void srot_(integer *, real *, integer *, real *, 
 	    integer *, real *, real *);
     real temp1, temp2, temp3, c__;
     integer kacc22, i__, j, k;
     real s;
     extern logical lsame_(char *, char *);
     integer nbmin;
-    extern /* Subroutine */ int sgemm_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void sgemm_(char *, char *, integer *, integer *, 
 	    integer *, real *, real *, integer *, real *, integer *, real *, 
 	    real *, integer *), sgemv_(char *, integer *, 
 	    integer *, real *, real *, integer *, real *, integer *, real *, 
@@ -778,21 +778,21 @@ f"> */
     integer nblst;
     logical initq;
     real c1, c2;
-    extern /* Subroutine */ int sorm22_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void sorm22_(char *, char *, integer *, integer *, 
 	    integer *, integer *, real *, integer *, real *, integer *, real *
 	    , integer *, integer *);
     logical wantq;
     integer j0;
     logical initz, wantz;
     real s1, s2;
-    extern /* Subroutine */ int strmv_(char *, char *, char *, integer *, 
+    extern /* Subroutine */ void strmv_(char *, char *, char *, integer *, 
 	    real *, integer *, real *, integer *);
     char compq2[1], compz2[1];
     integer nb, jj, nh, nx, pw;
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     extern integer ilaenv_(integer *, char *, char *, integer *, integer *, 
 	    integer *, integer *, ftnlen, ftnlen);
-    extern /* Subroutine */ int sgghrd_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void sgghrd_(char *, char *, integer *, integer *, 
 	    integer *, real *, integer *, real *, integer *, real *, integer *
 	    , real *, integer *, integer *), slaset_(char *, 
 	    integer *, integer *, real *, real *, real *, integer *), 
@@ -868,9 +868,9 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("SGGHD3", &i__1, (ftnlen)6);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Initialize Q and Z if desired. */
@@ -895,7 +895,7 @@ f"> */
     nh = *ihi - *ilo + 1;
     if (nh <= 1) {
 	work[1] = 1.f;
-	return 0;
+	return;
     }
 
 /*     Determine the blocksize. */
@@ -1568,7 +1568,7 @@ f"> */
     }
     work[1] = (real) lwkopt;
 
-    return 0;
+    return;
 
 /*     End of SGGHD3 */
 

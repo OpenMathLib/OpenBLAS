@@ -628,7 +628,7 @@ f"> */
 /* > \ingroup doubleOTHERcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int dorg2l_(integer *m, integer *n, integer *k, doublereal *
+/* Subroutine */ void dorg2l_(integer *m, integer *n, integer *k, doublereal *
 	a, integer *lda, doublereal *tau, doublereal *work, integer *info)
 {
     /* System generated locals */
@@ -637,7 +637,7 @@ f"> */
 
     /* Local variables */
     integer i__, j, l;
-    extern /* Subroutine */ int dscal_(integer *, doublereal *, doublereal *, 
+    extern /* Subroutine */ void dscal_(integer *, doublereal *, doublereal *, 
 	    integer *), dlarf_(char *, integer *, integer *, doublereal *, 
 	    integer *, doublereal *, doublereal *, integer *, doublereal *);
     integer ii;
@@ -676,13 +676,13 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DORG2L", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n <= 0) {
-	return 0;
+	return;
     }
 
 /*     Initialise columns 1:n-k to columns of the unit matrix */
@@ -723,7 +723,7 @@ f"> */
 	}
 /* L40: */
     }
-    return 0;
+    return;
 
 /*     End of DORG2L */
 

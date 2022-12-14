@@ -727,7 +727,7 @@ f"> */
 /* >     Osni Marques, LBNL/NERSC, USA \n */
 
 /*  ===================================================================== */
-/* Subroutine */ int dgelsd_(integer *m, integer *n, integer *nrhs, 
+/* Subroutine */ void dgelsd_(integer *m, integer *n, integer *nrhs, 
 	doublereal *a, integer *lda, doublereal *b, integer *ldb, doublereal *
 	s, doublereal *rcond, integer *rank, doublereal *work, integer *lwork,
 	 integer *iwork, integer *info)
@@ -740,16 +740,16 @@ f"> */
     integer itau, nlvl, iascl, ibscl;
     doublereal sfmin;
     integer minmn, maxmn, itaup, itauq, mnthr, nwork;
-    extern /* Subroutine */ int dlabad_(doublereal *, doublereal *);
+    extern /* Subroutine */ void dlabad_(doublereal *, doublereal *);
     integer ie, il;
-    extern /* Subroutine */ int dgebrd_(integer *, integer *, doublereal *, 
+    extern /* Subroutine */ void dgebrd_(integer *, integer *, doublereal *, 
 	    integer *, doublereal *, doublereal *, doublereal *, doublereal *,
 	     doublereal *, integer *, integer *);
     extern doublereal dlamch_(char *);
     integer mm;
     extern doublereal dlange_(char *, integer *, integer *, doublereal *, 
 	    integer *, doublereal *);
-    extern /* Subroutine */ int dgelqf_(integer *, integer *, doublereal *, 
+    extern /* Subroutine */ void dgelqf_(integer *, integer *, doublereal *, 
 	    integer *, doublereal *, doublereal *, integer *, integer *), 
 	    dlalsd_(char *, integer *, integer *, integer *, doublereal *, 
 	    doublereal *, doublereal *, integer *, doublereal *, integer *, 
@@ -759,20 +759,20 @@ f"> */
 	    integer *, integer *, doublereal *, integer *, doublereal *, 
 	    doublereal *, integer *, integer *), dlacpy_(char *, integer *, 
 	    integer *, doublereal *, integer *, doublereal *, integer *), dlaset_(char *, integer *, integer *, doublereal *, 
-	    doublereal *, doublereal *, integer *), xerbla_(char *, 
-	    integer *, ftnlen);
+	    doublereal *, doublereal *, integer *);
+    extern int xerbla_(char *, integer *, ftnlen);
     extern integer ilaenv_(integer *, char *, char *, integer *, integer *, 
 	    integer *, integer *, ftnlen, ftnlen);
     doublereal bignum;
-    extern /* Subroutine */ int dormbr_(char *, char *, char *, integer *, 
+    extern /* Subroutine */ void dormbr_(char *, char *, char *, integer *, 
 	    integer *, integer *, doublereal *, integer *, doublereal *, 
 	    doublereal *, integer *, doublereal *, integer *, integer *);
     integer wlalsd;
-    extern /* Subroutine */ int dormlq_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void dormlq_(char *, char *, integer *, integer *, 
 	    integer *, doublereal *, integer *, doublereal *, doublereal *, 
 	    integer *, doublereal *, integer *, integer *);
     integer ldwork;
-    extern /* Subroutine */ int dormqr_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void dormqr_(char *, char *, integer *, integer *, 
 	    integer *, doublereal *, integer *, doublereal *, doublereal *, 
 	    integer *, doublereal *, integer *, integer *);
     integer liwork, minwrk, maxwrk;
@@ -972,7 +972,7 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DGELSD", &i__1, (ftnlen)6);
-	return 0;
+	return;
     } else if (lquery) {
 	goto L10;
     }
@@ -981,7 +981,7 @@ f"> */
 
     if (*m == 0 || *n == 0) {
 	*rank = 0;
-	return 0;
+	return;
     }
 
 /*     Get machine parameters. */
@@ -1269,7 +1269,7 @@ f"> */
 L10:
     work[1] = (doublereal) maxwrk;
     iwork[1] = liwork;
-    return 0;
+    return;
 
 /*     End of DGELSD */
 

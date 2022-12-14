@@ -694,7 +694,7 @@ f"> */
 /* > \ingroup complex16OTHERcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int ztrrfs_(char *uplo, char *trans, char *diag, integer *n, 
+/* Subroutine */ void ztrrfs_(char *uplo, char *trans, char *diag, integer *n, 
 	integer *nrhs, doublecomplex *a, integer *lda, doublecomplex *b, 
 	integer *ldb, doublecomplex *x, integer *ldx, doublereal *ferr, 
 	doublereal *berr, doublecomplex *work, doublereal *rwork, integer *
@@ -714,7 +714,7 @@ f"> */
     extern logical lsame_(char *, char *);
     integer isave[3];
     logical upper;
-    extern /* Subroutine */ int zcopy_(integer *, doublecomplex *, integer *, 
+    extern /* Subroutine */ void zcopy_(integer *, doublecomplex *, integer *, 
 	    doublecomplex *, integer *), zaxpy_(integer *, doublecomplex *, 
 	    doublecomplex *, integer *, doublecomplex *, integer *), ztrmv_(
 	    char *, char *, char *, integer *, doublecomplex *, integer *, 
@@ -787,7 +787,7 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZTRRFS", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
@@ -799,7 +799,7 @@ f"> */
 	    berr[j] = 0.;
 /* L10: */
 	}
-	return 0;
+	return;
     }
 
     if (notran) {
@@ -1127,7 +1127,7 @@ L210:
 /* L250: */
     }
 
-    return 0;
+    return;
 
 /*     End of ZTRRFS */
 

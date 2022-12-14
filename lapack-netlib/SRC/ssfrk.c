@@ -674,7 +674,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 /* > \ingroup realOTHERcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int ssfrk_(char *transr, char *uplo, char *trans, integer *n,
+/* Subroutine */ void ssfrk_(char *transr, char *uplo, char *trans, integer *n,
 	 integer *k, real *alpha, real *a, integer *lda, real *beta, real *
 	c__)
 {
@@ -685,13 +685,13 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
     integer info, j;
     logical normaltransr;
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int sgemm_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void sgemm_(char *, char *, integer *, integer *, 
 	    integer *, real *, real *, integer *, real *, integer *, real *, 
 	    real *, integer *);
     integer nrowa;
     logical lower;
     integer n1, n2;
-    extern /* Subroutine */ int ssyrk_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void ssyrk_(char *, char *, integer *, integer *, 
 	    real *, real *, integer *, real *, real *, integer *);
     integer nk;
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
@@ -743,7 +743,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
     if (info != 0) {
 	i__1 = -info;
 	xerbla_("SSFRK ", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible. */
@@ -752,7 +752,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 /*     done (it is in SSYRK for example) and left in the general case. */
 
     if (*n == 0 || (*alpha == 0.f || *k == 0) && *beta == 1.f) {
-	return 0;
+	return;
     }
 
     if (*alpha == 0.f && *beta == 0.f) {
@@ -760,7 +760,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 	for (j = 1; j <= i__1; ++j) {
 	    c__[j] = 0.f;
 	}
-	return 0;
+	return;
     }
 
 /*     C is N-by-N. */
@@ -1066,7 +1066,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 
     }
 
-    return 0;
+    return;
 
 /*     End of SSFRK */
 

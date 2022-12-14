@@ -798,7 +798,7 @@ f"> */
 /* >      Algorithms, 50(1):33-65, 2009. */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int cunbdb_(char *trans, char *signs, integer *m, integer *p,
+/* Subroutine */ void cunbdb_(char *trans, char *signs, integer *m, integer *p,
 	 integer *q, complex *x11, integer *ldx11, complex *x12, integer *
 	ldx12, complex *x21, integer *ldx21, complex *x22, integer *ldx22, 
 	real *theta, real *phi, complex *taup1, complex *taup2, complex *
@@ -813,18 +813,18 @@ f"> */
     /* Local variables */
     logical colmajor;
     integer lworkmin, lworkopt, i__;
-    extern /* Subroutine */ int cscal_(integer *, complex *, complex *, 
+    extern /* Subroutine */ void cscal_(integer *, complex *, complex *, 
 	    integer *), clarf_(char *, integer *, integer *, complex *, 
 	    integer *, complex *, complex *, integer *, complex *);
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int caxpy_(integer *, complex *, complex *, 
+    extern /* Subroutine */ void caxpy_(integer *, complex *, complex *, 
 	    integer *, complex *, integer *);
     real z1, z2, z3, z4;
     extern real scnrm2_(integer *, complex *, integer *);
-    extern /* Subroutine */ int clacgv_(integer *, complex *, integer *), 
-	    xerbla_(char *, integer *, ftnlen);
+    extern /* Subroutine */ void clacgv_(integer *, complex *, integer *); 
+    extern int xerbla_(char *, integer *, ftnlen);
     logical lquery;
-    extern /* Subroutine */ int clarfgp_(integer *, complex *, complex *, 
+    extern /* Subroutine */ void clarfgp_(integer *, complex *, complex *, 
 	    integer *, complex *);
 
 
@@ -930,9 +930,9 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("xORBDB", &i__1, (ftnlen)6);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Handle column-major and row-major separately */
@@ -1421,7 +1421,7 @@ f"> */
 
     }
 
-    return 0;
+    return;
 
 /*     End of CUNBDB */
 

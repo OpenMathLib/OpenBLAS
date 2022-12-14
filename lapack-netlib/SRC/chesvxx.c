@@ -1015,7 +1015,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 /* > \ingroup complexHEsolve */
 
 /*  ===================================================================== */
-/* Subroutine */ int chesvxx_(char *fact, char *uplo, integer *n, integer *
+/* Subroutine */ void chesvxx_(char *fact, char *uplo, integer *n, integer *
 	nrhs, complex *a, integer *lda, complex *af, integer *ldaf, integer *
 	ipiv, char *equed, real *s, complex *b, integer *ldb, complex *x, 
 	integer *ldx, real *rcond, real *rpvgrw, real *berr, integer *
@@ -1036,20 +1036,21 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
     extern logical lsame_(char *, char *);
     real scond;
     logical equil, rcequ;
-    extern /* Subroutine */ int claqhe_(char *, integer *, complex *, integer 
+    extern /* Subroutine */ void claqhe_(char *, integer *, complex *, integer 
 	    *, real *, real *, real *, char *);
     extern real slamch_(char *);
     logical nofact;
-    extern /* Subroutine */ int chetrf_(char *, integer *, complex *, integer 
+    extern /* Subroutine */ void chetrf_(char *, integer *, complex *, integer 
 	    *, integer *, complex *, integer *, integer *), clacpy_(
 	    char *, integer *, integer *, complex *, integer *, complex *, 
-	    integer *), xerbla_(char *, integer *, ftnlen);
+	    integer *);
+    extern int xerbla_(char *, integer *, ftnlen);
     real bignum;
     integer infequ;
-    extern /* Subroutine */ int chetrs_(char *, integer *, integer *, complex 
+    extern /* Subroutine */ void chetrs_(char *, integer *, integer *, complex 
 	    *, integer *, integer *, complex *, integer *, integer *);
     real smlnum;
-    extern /* Subroutine */ int clascl2_(integer *, integer *, real *, 
+    extern /* Subroutine */ void clascl2_(integer *, integer *, real *, 
 	    complex *, integer *), cheequb_(char *, integer *, complex *, 
 	    integer *, real *, real *, real *, complex *, integer *), 
 	    cherfsx_(char *, char *, integer *, integer *, complex *, integer 
@@ -1164,7 +1165,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CHESVXX", &i__1, (ftnlen)7);
-	return 0;
+	return;
     }
 
     if (equil) {
@@ -1209,7 +1210,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 		*rpvgrw = cla_herpvgrw_(uplo, n, info, &a[a_offset], lda, &
 			af[af_offset], ldaf, &ipiv[1], &rwork[1]);
 	    }
-	    return 0;
+	    return;
 	}
     }
 
@@ -1241,7 +1242,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 	clascl2_(n, nrhs, &s[1], &x[x_offset], ldx);
     }
 
-    return 0;
+    return;
 
 /*     End of CHESVXX */
 

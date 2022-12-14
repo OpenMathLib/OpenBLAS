@@ -668,7 +668,7 @@ f"> */
 /* > \ingroup realOTHERcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int sormr2_(char *side, char *trans, integer *m, integer *n, 
+/* Subroutine */ void sormr2_(char *side, char *trans, integer *m, integer *n, 
 	integer *k, real *a, integer *lda, real *tau, real *c__, integer *ldc,
 	 real *work, integer *info)
 {
@@ -679,7 +679,7 @@ f"> */
     logical left;
     integer i__;
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int slarf_(char *, integer *, integer *, real *, 
+    extern /* Subroutine */ void slarf_(char *, integer *, integer *, real *, 
 	    integer *, real *, real *, integer *, real *);
     integer i1, i2, i3, mi, ni, nq;
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
@@ -738,13 +738,13 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("SORMR2", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*m == 0 || *n == 0 || *k == 0) {
-	return 0;
+	return;
     }
 
     if (left && ! notran || ! left && notran) {
@@ -787,7 +787,7 @@ f"> */
 	a[i__ + (nq - *k + i__) * a_dim1] = aii;
 /* L10: */
     }
-    return 0;
+    return;
 
 /*     End of SORMR2 */
 

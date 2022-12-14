@@ -673,7 +673,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int sgemlq_(char *side, char *trans, integer *m, integer *n, 
+/* Subroutine */ void sgemlq_(char *side, char *trans, integer *m, integer *n, 
 	integer *k, real *a, integer *lda, real *t, integer *tsize, real *c__,
 	 integer *ldc, real *work, integer *lwork, integer *info)
 {
@@ -682,7 +682,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 
     /* Local variables */
     logical left, tran;
-    extern /* Subroutine */ int slamswlq_(char *, char *, integer *, integer *
+    extern /* Subroutine */ void slamswlq_(char *, char *, integer *, integer *
 	    , integer *, integer *, integer *, real *, integer *, real *, 
 	    integer *, real *, integer *, real *, integer *, integer *);
     extern logical lsame_(char *, char *);
@@ -690,7 +690,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
     integer mb, nb, mn, lw, nblcks;
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     logical notran, lquery;
-    extern /* Subroutine */ int sgemlqt_(char *, char *, integer *, integer *,
+    extern /* Subroutine */ void sgemlqt_(char *, char *, integer *, integer *,
 	     integer *, integer *, real *, integer *, real *, integer *, real 
 	    *, integer *, real *, integer *);
 
@@ -771,9 +771,9 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("SGEMLQ", &i__1, (ftnlen)6);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
@@ -781,7 +781,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 /* Computing MIN */
     i__1 = f2cmin(*m,*n);
     if (f2cmin(i__1,*k) == 0) {
-	return 0;
+	return;
     }
 
 /* Computing MAX */
@@ -797,7 +797,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 
     work[1] = (real) lw;
 
-    return 0;
+    return;
 
 /*     End of SGEMLQ */
 

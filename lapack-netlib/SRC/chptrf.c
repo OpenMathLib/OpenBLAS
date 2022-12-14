@@ -672,7 +672,7 @@ f"> */
 /* >  J. Lewis, Boeing Computer Services Company */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int chptrf_(char *uplo, integer *n, complex *ap, integer *
+/* Subroutine */ void chptrf_(char *uplo, integer *n, complex *ap, integer *
 	ipiv, integer *info)
 {
     /* System generated locals */
@@ -681,7 +681,7 @@ f"> */
     complex q__1, q__2, q__3, q__4, q__5, q__6;
 
     /* Local variables */
-    extern /* Subroutine */ int chpr_(char *, integer *, real *, complex *, 
+    extern /* Subroutine */ void chpr_(char *, integer *, real *, complex *, 
 	    integer *, complex *);
     integer imax, jmax;
     real d__;
@@ -689,7 +689,7 @@ f"> */
     complex t;
     real alpha;
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int cswap_(integer *, complex *, integer *, 
+    extern /* Subroutine */ void cswap_(integer *, complex *, integer *, 
 	    complex *, integer *);
     integer kstep;
     logical upper;
@@ -704,8 +704,9 @@ f"> */
     integer kx;
     extern integer icamax_(integer *, complex *, integer *);
     real tt;
-    extern /* Subroutine */ int csscal_(integer *, real *, complex *, integer 
-	    *), xerbla_(char *, integer *, ftnlen);
+    extern /* Subroutine */ void csscal_(integer *, real *, complex *, integer 
+	    *);
+    extern int xerbla_(char *, integer *, ftnlen);
     real colmax, rowmax;
     integer knc, kpc, npp;
     complex wkm1, wkp1;
@@ -737,7 +738,7 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CHPTRF", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Initialize ALPHA for use in choosing pivot block size. */
@@ -1355,7 +1356,7 @@ L60:
     }
 
 L110:
-    return 0;
+    return;
 
 /*     End of CHPTRF */
 

@@ -604,7 +604,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int dlaruv_(integer *iseed, integer *n, doublereal *x)
+/* Subroutine */ void dlaruv_(integer *iseed, integer *n, doublereal *x)
 {
     /* Initialized data */
 
@@ -726,7 +726,7 @@ L20:
     iseed[2] = it2;
     iseed[3] = it3;
     iseed[4] = it4;
-    return 0;
+    return;
 
 /*     End of DLARUV */
 

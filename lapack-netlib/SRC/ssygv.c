@@ -689,7 +689,7 @@ static real c_b16 = 1.f;
 /* > \ingroup realSYeigen */
 
 /*  ===================================================================== */
-/* Subroutine */ int ssygv_(integer *itype, char *jobz, char *uplo, integer *
+/* Subroutine */ void ssygv_(integer *itype, char *jobz, char *uplo, integer *
 	n, real *a, integer *lda, real *b, integer *ldb, real *w, real *work, 
 	integer *lwork, integer *info)
 {
@@ -701,11 +701,11 @@ static real c_b16 = 1.f;
     extern logical lsame_(char *, char *);
     char trans[1];
     logical upper;
-    extern /* Subroutine */ int strmm_(char *, char *, char *, char *, 
+    extern /* Subroutine */ void strmm_(char *, char *, char *, char *, 
 	    integer *, integer *, real *, real *, integer *, real *, integer *
 	    );
     logical wantz;
-    extern /* Subroutine */ int strsm_(char *, char *, char *, char *, 
+    extern /* Subroutine */ void strsm_(char *, char *, char *, char *, 
 	    integer *, integer *, real *, real *, integer *, real *, integer *
 	    ), ssyev_(char *, char *, integer 
 	    *, real *, integer *, real *, real *, integer *, integer *);
@@ -718,7 +718,7 @@ static real c_b16 = 1.f;
 	    integer *);
     integer lwkopt;
     logical lquery;
-    extern /* Subroutine */ int ssygst_(integer *, char *, integer *, real *, 
+    extern /* Subroutine */ void ssygst_(integer *, char *, integer *, real *, 
 	    integer *, real *, integer *, integer *);
 
 
@@ -782,15 +782,15 @@ static real c_b16 = 1.f;
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("SSYGV ", &i__1, (ftnlen)6);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /*     Form a Cholesky factorization of B. */
@@ -798,7 +798,7 @@ static real c_b16 = 1.f;
     spotrf_(uplo, n, &b[b_offset], ldb, info);
     if (*info != 0) {
 	*info = *n + *info;
-	return 0;
+	return;
     }
 
 /*     Transform problem to standard eigenvalue problem and solve. */
@@ -845,7 +845,7 @@ static real c_b16 = 1.f;
     }
 
     work[1] = (real) lwkopt;
-    return 0;
+    return;
 
 /*     End of SSYGV */
 

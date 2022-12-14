@@ -820,7 +820,7 @@ f"> */
 /* >     Mark Fahey, Department of Mathematics, Univ. of Kentucky, USA */
 
 /*  ===================================================================== */
-/* Subroutine */ int chegvx_(integer *itype, char *jobz, char *range, char *
+/* Subroutine */ void chegvx_(integer *itype, char *jobz, char *range, char *
 	uplo, integer *n, complex *a, integer *lda, complex *b, integer *ldb, 
 	real *vl, real *vu, integer *il, integer *iu, real *abstol, integer *
 	m, real *w, complex *z__, integer *ldz, complex *work, integer *lwork,
@@ -831,25 +831,27 @@ f"> */
 
     /* Local variables */
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int ctrmm_(char *, char *, char *, char *, 
+    extern /* Subroutine */ void ctrmm_(char *, char *, char *, char *, 
 	    integer *, integer *, complex *, complex *, integer *, complex *, 
 	    integer *);
     char trans[1];
-    extern /* Subroutine */ int ctrsm_(char *, char *, char *, char *, 
+    extern /* Subroutine */ void ctrsm_(char *, char *, char *, char *, 
 	    integer *, integer *, complex *, complex *, integer *, complex *, 
 	    integer *);
     logical upper, wantz;
     integer nb;
     logical alleig, indeig, valeig;
-    extern /* Subroutine */ int chegst_(integer *, char *, integer *, complex 
+    extern /* Subroutine */ void chegst_(integer *, char *, integer *, complex 
 	    *, integer *, complex *, integer *, integer *);
     extern integer ilaenv_(integer *, char *, char *, integer *, integer *, 
 	    integer *, integer *, ftnlen, ftnlen);
-    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen), cheevx_(
+    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
+    extern void cheevx_(
 	    char *, char *, char *, integer *, complex *, integer *, real *, 
 	    real *, integer *, integer *, real *, integer *, real *, complex *
 	    , integer *, complex *, integer *, real *, integer *, integer *, 
-	    integer *), cpotrf_(char *, integer *, 
+	    integer *);
+    extern int cpotrf_(char *, integer *, 
 	    complex *, integer *, integer *);
     integer lwkopt;
     logical lquery;
@@ -942,16 +944,16 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CHEGVX", &i__1, (ftnlen)6);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     *m = 0;
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /*     Form a Cholesky factorization of B. */
@@ -959,7 +961,7 @@ f"> */
     cpotrf_(uplo, n, &b[b_offset], ldb, info);
     if (*info != 0) {
 	*info = *n + *info;
-	return 0;
+	return;
     }
 
 /*     Transform problem to standard eigenvalue problem and solve. */
@@ -1010,7 +1012,7 @@ f"> */
 
     work[1].r = (real) lwkopt, work[1].i = 0.f;
 
-    return 0;
+    return;
 
 /*     End of CHEGVX */
 

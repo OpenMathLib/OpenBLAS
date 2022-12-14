@@ -658,7 +658,7 @@ f"> */
 /* > \ingroup doubleOTHERcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int dpstf2_(char *uplo, integer *n, doublereal *a, integer *
+/* Subroutine */ void dpstf2_(char *uplo, integer *n, doublereal *a, integer *
 	lda, integer *piv, integer *rank, doublereal *tol, doublereal *work, 
 	integer *info)
 {
@@ -669,15 +669,15 @@ f"> */
     /* Local variables */
     
     integer i__, j;
-    extern /* Subroutine */ int dscal_(integer *, doublereal *, doublereal *, 
+    extern /* Subroutine */ void dscal_(integer *, doublereal *, doublereal *, 
 	    integer *);
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int dgemv_(char *, integer *, integer *, 
+    extern /* Subroutine */ void dgemv_(char *, integer *, integer *, 
 	    doublereal *, doublereal *, integer *, doublereal *, integer *, 
 	    doublereal *, doublereal *, integer *);
     doublereal dtemp;
     integer itemp;
-    extern /* Subroutine */ int dswap_(integer *, doublereal *, integer *, 
+    extern /* Subroutine */ void dswap_(integer *, doublereal *, integer *, 
 	    doublereal *, integer *);
     doublereal dstop;
     logical upper;
@@ -719,13 +719,13 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DPSTF2", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /*     Initialize PIV */
@@ -948,7 +948,7 @@ L160:
     *info = 1;
 
 L170:
-    return 0;
+    return;
 
 /*     End of DPSTF2 */
 

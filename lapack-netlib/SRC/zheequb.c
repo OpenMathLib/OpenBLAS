@@ -645,7 +645,7 @@ static integer c__1 = 1;
 /* >  Tech report version: http://citeseerx.ist.psu.edu/viewdoc/summary?doi=10.1.1.3.1679 */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int zheequb_(char *uplo, integer *n, doublecomplex *a, 
+/* Subroutine */ void zheequb_(char *uplo, integer *n, doublecomplex *a, 
 	integer *lda, doublereal *s, doublereal *scond, doublereal *amax, 
 	doublecomplex *work, integer *info)
 {
@@ -667,7 +667,7 @@ static integer c__1 = 1;
     logical up;
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     doublereal bignum, smlnum;
-    extern /* Subroutine */ int zlassq_(integer *, doublecomplex *, integer *,
+    extern /* Subroutine */ void zlassq_(integer *, doublecomplex *, integer *,
 	     doublereal *, doublereal *);
     doublereal avg, std, tol;
 
@@ -702,7 +702,7 @@ static integer c__1 = 1;
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZHEEQUB", &i__1, (ftnlen)7);
-	return 0;
+	return;
     }
     up = lsame_(uplo, "U");
     *amax = 0.;
@@ -711,7 +711,7 @@ static integer c__1 = 1;
 
     if (*n == 0) {
 	*scond = 1.;
-	return 0;
+	return;
     }
     i__1 = *n;
     for (i__ = 1; i__ <= i__1; ++i__) {
@@ -906,7 +906,7 @@ static integer c__1 = 1;
 	    d__ = c1 * c1 - c0 * 4 * c2;
 	    if (d__ <= 0.) {
 		*info = -1;
-		return 0;
+		return;
 	    }
 	    si = c0 * -2 / (c1 + sqrt(d__));
 	    d__ = si - s[i__];
@@ -993,6 +993,6 @@ L999:
     }
     *scond = f2cmax(smin,smlnum) / f2cmin(smax,bignum);
 
-    return 0;
+    return;
 } /* zheequb_ */
 

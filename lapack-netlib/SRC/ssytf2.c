@@ -709,7 +709,7 @@ f"> */
 /* > \endverbatim */
 
 /*  ===================================================================== */
-/* Subroutine */ int ssytf2_(char *uplo, integer *n, real *a, integer *lda, 
+/* Subroutine */ void ssytf2_(char *uplo, integer *n, real *a, integer *lda, 
 	integer *ipiv, integer *info)
 {
     /* System generated locals */
@@ -718,15 +718,15 @@ f"> */
 
     /* Local variables */
     integer imax, jmax;
-    extern /* Subroutine */ int ssyr_(char *, integer *, real *, real *, 
+    extern /* Subroutine */ void ssyr_(char *, integer *, real *, real *, 
 	    integer *, real *, integer *);
     integer i__, j, k;
     real t, alpha;
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int sscal_(integer *, real *, real *, integer *);
+    extern /* Subroutine */ void sscal_(integer *, real *, real *, integer *);
     integer kstep;
     logical upper;
-    extern /* Subroutine */ int sswap_(integer *, real *, integer *, real *, 
+    extern /* Subroutine */ void sswap_(integer *, real *, integer *, real *, 
 	    integer *);
     real r1, d11, d12, d21, d22;
     integer kk, kp;
@@ -768,7 +768,7 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("SSYTF2", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Initialize ALPHA for use in choosing pivot block size. */
@@ -1169,7 +1169,7 @@ L40:
 
 L70:
 
-    return 0;
+    return;
 
 /*     End of SSYTF2 */
 

@@ -643,7 +643,7 @@ f"> */
 /* > \ingroup doubleSYcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int dsygs2_(integer *itype, char *uplo, integer *n, 
+/* Subroutine */ void dsygs2_(integer *itype, char *uplo, integer *n, 
 	doublereal *a, integer *lda, doublereal *b, integer *ldb, integer *
 	info)
 {
@@ -652,17 +652,17 @@ f"> */
     doublereal d__1;
 
     /* Local variables */
-    extern /* Subroutine */ int dsyr2_(char *, integer *, doublereal *, 
+    extern /* Subroutine */ void dsyr2_(char *, integer *, doublereal *, 
 	    doublereal *, integer *, doublereal *, integer *, doublereal *, 
 	    integer *);
     integer k;
-    extern /* Subroutine */ int dscal_(integer *, doublereal *, doublereal *, 
+    extern /* Subroutine */ void dscal_(integer *, doublereal *, doublereal *, 
 	    integer *);
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int daxpy_(integer *, doublereal *, doublereal *, 
+    extern /* Subroutine */ void daxpy_(integer *, doublereal *, doublereal *, 
 	    integer *, doublereal *, integer *);
     logical upper;
-    extern /* Subroutine */ int dtrmv_(char *, char *, char *, integer *, 
+    extern /* Subroutine */ void dtrmv_(char *, char *, char *, integer *, 
 	    doublereal *, integer *, doublereal *, integer *), dtrsv_(char *, char *, char *, integer *, doublereal *, 
 	    integer *, doublereal *, integer *);
     doublereal ct;
@@ -706,7 +706,7 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DSYGS2", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
     if (*itype == 1) {
@@ -848,7 +848,7 @@ f"> */
 	    }
 	}
     }
-    return 0;
+    return;
 
 /*     End of DSYGS2 */
 

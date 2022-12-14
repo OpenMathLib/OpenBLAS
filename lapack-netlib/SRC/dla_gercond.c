@@ -675,11 +675,11 @@ doublereal dla_gercond_(char *trans, integer *n, doublereal *a, integer *lda,
     integer kase, i__, j;
     extern logical lsame_(char *, char *);
     integer isave[3];
-    extern /* Subroutine */ int dlacn2_(integer *, doublereal *, doublereal *,
-	     integer *, doublereal *, integer *, integer *), xerbla_(char *, 
-	    integer *, ftnlen);
+    extern /* Subroutine */ void dlacn2_(integer *, doublereal *, doublereal *,
+	     integer *, doublereal *, integer *, integer *);
+    extern int xerbla_(char *, integer *, ftnlen);
     doublereal ainvnm;
-    extern /* Subroutine */ int dgetrs_(char *, integer *, integer *, 
+    extern /* Subroutine */ void dgetrs_(char *, integer *, integer *, 
 	    doublereal *, integer *, integer *, doublereal *, integer *, 
 	    integer *);
     doublereal tmp;

@@ -688,7 +688,7 @@ mv.f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int zla_syamv_(integer *uplo, integer *n, doublereal *alpha,
+/* Subroutine */ void zla_syamv_(integer *uplo, integer *n, doublereal *alpha,
 	 doublecomplex *a, integer *lda, doublecomplex *x, integer *incx, 
 	doublereal *beta, doublereal *y, integer *incy)
 {
@@ -741,13 +741,13 @@ mv.f"> */
     }
     if (info != 0) {
 	xerbla_("ZLA_SYAMV", &info, (ftnlen)9);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible. */
 
     if (*n == 0 || *alpha == 0. && *beta == 1.) {
-	return 0;
+	return;
     }
 
 /*     Set up the start points in  X  and  Y. */
@@ -960,7 +960,7 @@ mv.f"> */
 	}
     }
 
-    return 0;
+    return;
 
 /*     End of ZLA_SYAMV */
 

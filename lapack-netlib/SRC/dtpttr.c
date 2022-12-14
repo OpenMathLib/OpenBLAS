@@ -614,7 +614,7 @@ f"> */
 /* > \ingroup doubleOTHERcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int dtpttr_(char *uplo, integer *n, doublereal *ap, 
+/* Subroutine */ void dtpttr_(char *uplo, integer *n, doublereal *ap, 
 	doublereal *a, integer *lda, integer *info)
 {
     /* System generated locals */
@@ -657,7 +657,7 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DTPTTR", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
     if (lower) {
@@ -683,7 +683,7 @@ f"> */
     }
 
 
-    return 0;
+    return;
 
 /*     End of DTPTTR */
 

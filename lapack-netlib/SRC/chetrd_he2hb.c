@@ -760,7 +760,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int chetrd_he2hb_(char *uplo, integer *n, integer *kd, 
+/* Subroutine */ void chetrd_he2hb_(char *uplo, integer *n, integer *kd, 
 	complex *a, integer *lda, complex *ab, integer *ldab, complex *tau, 
 	complex *work, integer *lwork, integer *info)
 {
@@ -773,29 +773,30 @@ f"> */
     extern integer ilaenv2stage_(integer *, char *, char *, integer *, 
 	    integer *, integer *, integer *);
     integer tpos, wpos, s1pos, s2pos, i__, j;
-    extern /* Subroutine */ int cgemm_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void cgemm_(char *, char *, integer *, integer *, 
 	    integer *, complex *, complex *, integer *, complex *, integer *, 
 	    complex *, complex *, integer *), chemm_(char *, 
 	    char *, integer *, integer *, complex *, complex *, integer *, 
 	    complex *, integer *, complex *, complex *, integer *);
     extern logical lsame_(char *, char *);
     integer iinfo;
-    extern /* Subroutine */ int ccopy_(integer *, complex *, integer *, 
+    extern /* Subroutine */ void ccopy_(integer *, complex *, integer *, 
 	    complex *, integer *);
     integer lwmin;
     logical upper;
-    extern /* Subroutine */ int cher2k_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void cher2k_(char *, char *, integer *, integer *, 
 	    complex *, complex *, integer *, complex *, integer *, real *, 
 	    complex *, integer *);
     integer lk, pk, pn, lt;
-    extern /* Subroutine */ int cgelqf_(integer *, integer *, complex *, 
+    extern /* Subroutine */ void cgelqf_(integer *, integer *, complex *, 
 	    integer *, complex *, complex *, integer *, integer *);
     integer lw;
-    extern /* Subroutine */ int cgeqrf_(integer *, integer *, complex *, 
+    extern /* Subroutine */ void cgeqrf_(integer *, integer *, complex *, 
 	    integer *, complex *, complex *, integer *, integer *), clarft_(
 	    char *, char *, integer *, integer *, complex *, integer *, 
 	    complex *, complex *, integer *), claset_(char *, 
-	    integer *, integer *, complex *, complex *, complex *, integer *), xerbla_(char *, integer *, ftnlen);
+	    integer *, integer *, complex *, complex *, complex *, integer *);
+    extern int xerbla_(char *, integer *, ftnlen);
     integer ls1;
     logical lquery;
     integer ls2, ldt, ldw, lds1, lds2;
@@ -850,10 +851,10 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CHETRD_HE2HB", &i__1, (ftnlen)12);
-	return 0;
+	return;
     } else if (lquery) {
 	work[1].r = (real) lwmin, work[1].i = 0.f;
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
@@ -882,7 +883,7 @@ f"> */
 	    }
 	}
 	work[1].r = 1.f, work[1].i = 0.f;
-	return 0;
+	return;
     }
 
 /*     Determine the pointer position for the workspace */
@@ -1078,7 +1079,7 @@ f"> */
     }
 
     work[1].r = (real) lwmin, work[1].i = 0.f;
-    return 0;
+    return;
 
 /*     End of CHETRD_HE2HB */
 

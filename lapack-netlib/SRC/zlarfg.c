@@ -619,7 +619,7 @@ f"> */
 /* > \ingroup complex16OTHERauxiliary */
 
 /*  ===================================================================== */
-/* Subroutine */ int zlarfg_(integer *n, doublecomplex *alpha, doublecomplex *
+/* Subroutine */ void zlarfg_(integer *n, doublecomplex *alpha, doublecomplex *
 	x, integer *incx, doublecomplex *tau)
 {
     /* System generated locals */
@@ -631,13 +631,13 @@ f"> */
     doublereal beta;
     integer j;
     doublereal alphi, alphr;
-    extern /* Subroutine */ int zscal_(integer *, doublecomplex *, 
+    extern /* Subroutine */ void zscal_(integer *, doublecomplex *, 
 	    doublecomplex *, integer *);
     doublereal xnorm;
     extern doublereal dlapy3_(doublereal *, doublereal *, doublereal *), 
 	    dznrm2_(integer *, doublecomplex *, integer *), dlamch_(char *);
     doublereal safmin;
-    extern /* Subroutine */ int zdscal_(integer *, doublereal *, 
+    extern /* Subroutine */ void zdscal_(integer *, doublereal *, 
 	    doublecomplex *, integer *);
     doublereal rsafmn;
     extern /* Double Complex */ VOID zladiv_(doublecomplex *, doublecomplex *,
@@ -660,7 +660,7 @@ f"> */
     /* Function Body */
     if (*n <= 0) {
 	tau->r = 0., tau->i = 0.;
-	return 0;
+	return;
     }
 
     i__1 = *n - 1;
@@ -727,7 +727,7 @@ L10:
 	alpha->r = beta, alpha->i = 0.;
     }
 
-    return 0;
+    return;
 
 /*     End of ZLARFG */
 

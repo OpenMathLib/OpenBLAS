@@ -710,7 +710,7 @@ f"> */
 /* > \endverbatim */
 
 /*  ===================================================================== */
-/* Subroutine */ int zgelst_(char *trans, integer *m, integer *n, integer *
+/* Subroutine */ void zgelst_(char *trans, integer *m, integer *n, integer *
 	nrhs, doublecomplex *a, integer *lda, doublecomplex *b, integer *ldb, 
 	doublecomplex *work, integer *lwork, integer *info)
 {
@@ -727,34 +727,35 @@ f"> */
     integer nbmin;
     doublereal rwork[1];
     integer lwopt;
-    extern /* Subroutine */ int dlabad_(doublereal *, doublereal *);
+    extern /* Subroutine */ void dlabad_(doublereal *, doublereal *);
     integer nb;
     extern doublereal dlamch_(char *);
     integer mn;
-    extern /* Subroutine */ int xerbla_(char *, integer *);
+    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     extern integer ilaenv_(integer *, char *, char *, integer *, integer *, 
 	    integer *, integer *, ftnlen, ftnlen);
     integer scllen;
     doublereal bignum;
     extern doublereal zlange_(char *, integer *, integer *, doublecomplex *, 
 	    integer *, doublereal *);
-    extern /* Subroutine */ int zlascl_(char *, integer *, integer *, 
+    extern /* Subroutine */ void zlascl_(char *, integer *, integer *, 
 	    doublereal *, doublereal *, integer *, integer *, doublecomplex *,
 	     integer *, integer *), zlaset_(char *, integer *, 
 	    integer *, doublecomplex *, doublecomplex *, doublecomplex *, 
 	    integer *);
     integer mnnrhs;
-    extern /* Subroutine */ int zgelqt_(integer *, integer *, integer *, 
+    extern /* Subroutine */ void zgelqt_(integer *, integer *, integer *, 
 	    doublecomplex *, integer *, doublecomplex *, integer *, 
 	    doublecomplex *, integer *);
     doublereal smlnum;
-    extern /* Subroutine */ int zgeqrt_(integer *, integer *, integer *, 
+    extern /* Subroutine */ void zgeqrt_(integer *, integer *, integer *, 
 	    doublecomplex *, integer *, doublecomplex *, integer *, 
 	    doublecomplex *, integer *);
     logical lquery;
     extern /* Subroutine */ int ztrtrs_(char *, char *, char *, integer *, 
 	    integer *, doublecomplex *, integer *, doublecomplex *, integer *,
-	     integer *), zgemlqt_(char *, char *, 
+	     integer *);
+    extern void zgemlqt_(char *, char *, 
 	    integer *, integer *, integer *, integer *, doublecomplex *, 
 	    integer *, doublecomplex *, integer *, doublecomplex *, integer *,
 	     doublecomplex *, integer *), zgemqrt_(char *, 
@@ -833,10 +834,10 @@ f"> */
 
     if (*info != 0) {
 	i__1 = -(*info);
-	xerbla_("ZGELST ", &i__1);
-	return 0;
+	xerbla_("ZGELST ", &i__1, 6);
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
@@ -848,7 +849,7 @@ f"> */
 	zlaset_("Full", &i__1, nrhs, &c_b1, &c_b1, &b[b_offset], ldb);
 	d__1 = (doublereal) lwopt;
 	work[1].r = d__1, work[1].i = 0.;
-	return 0;
+	return;
     }
 
 /*     *GEQRT and *GELQT routines cannot accept NB larger than f2cmin(M,N) */
@@ -908,7 +909,7 @@ f"> */
 	zlaset_("Full", &i__1, nrhs, &c_b1, &c_b1, &b[b_offset], ldb);
 	d__1 = (doublereal) lwopt;
 	work[1].r = d__1, work[1].i = 0.;
-	return 0;
+	return;
     }
 
     brow = *m;
@@ -963,7 +964,7 @@ f"> */
 		    , lda, &b[b_offset], ldb, info);
 
 	    if (*info > 0) {
-		return 0;
+		return;
 	    }
 
 	    scllen = *n;
@@ -982,7 +983,7 @@ f"> */
 		    a_offset], lda, &b[b_offset], ldb, info);
 
 	    if (*info > 0) {
-		return 0;
+		return;
 	    }
 
 /*           Block 2: Zero out all rows below the N-th row in B: */
@@ -1033,7 +1034,7 @@ f"> */
 		    , lda, &b[b_offset], ldb, info);
 
 	    if (*info > 0) {
-		return 0;
+		return;
 	    }
 
 /*           Block 2: Zero out all rows below the M-th row in B: */
@@ -1078,7 +1079,7 @@ f"> */
 		    a_offset], lda, &b[b_offset], ldb, info);
 
 	    if (*info > 0) {
-		return 0;
+		return;
 	    }
 
 	    scllen = *m;
@@ -1107,7 +1108,7 @@ f"> */
     d__1 = (doublereal) lwopt;
     work[1].r = d__1, work[1].i = 0.;
 
-    return 0;
+    return;
 
 /*     End of ZGELST */
 

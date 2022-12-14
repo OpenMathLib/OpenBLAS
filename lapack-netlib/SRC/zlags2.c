@@ -668,7 +668,7 @@ f"> */
 /* > \ingroup complex16OTHERauxiliary */
 
 /*  ===================================================================== */
-/* Subroutine */ int zlags2_(logical *upper, doublereal *a1, doublecomplex *
+/* Subroutine */ void zlags2_(logical *upper, doublereal *a1, doublecomplex *
 	a2, doublereal *a3, doublereal *b1, doublecomplex *b2, doublereal *b3,
 	 doublereal *csu, doublecomplex *snu, doublereal *csv, doublecomplex *
 	snv, doublereal *csq, doublecomplex *snq)
@@ -684,11 +684,11 @@ f"> */
     doublereal d__;
     doublecomplex r__, d1;
     doublereal s1, s2;
-    extern /* Subroutine */ int dlasv2_(doublereal *, doublereal *, 
+    extern /* Subroutine */ void dlasv2_(doublereal *, doublereal *, 
 	    doublereal *, doublereal *, doublereal *, doublereal *, 
 	    doublereal *, doublereal *, doublereal *);
     doublereal fb, fc;
-    extern /* Subroutine */ int zlartg_(doublecomplex *, doublecomplex *, 
+    extern /* Subroutine */ void zlartg_(doublecomplex *, doublecomplex *, 
 	    doublereal *, doublecomplex *, doublecomplex *);
     doublecomplex ua11, ua12, ua21, ua22, vb11, vb12, vb21, vb22;
     doublereal csl, csr, snl, snr;
@@ -1032,7 +1032,7 @@ f"> */
 
     }
 
-    return 0;
+    return;
 
 /*     End of ZLAGS2 */
 

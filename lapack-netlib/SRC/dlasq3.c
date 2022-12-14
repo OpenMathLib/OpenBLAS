@@ -689,7 +689,7 @@ f"> */
 /* > \ingroup auxOTHERcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int dlasq3_(integer *i0, integer *n0, doublereal *z__, 
+/* Subroutine */ void dlasq3_(integer *i0, integer *n0, doublereal *z__, 
 	integer *pp, doublereal *dmin__, doublereal *sigma, doublereal *desig,
 	 doublereal *qmax, integer *nfail, integer *iter, integer *ndiv, 
 	logical *ieee, integer *ttype, doublereal *dmin1, doublereal *dmin2, 
@@ -703,7 +703,7 @@ f"> */
     /* Local variables */
     doublereal temp, s, t;
     integer j4;
-    extern /* Subroutine */ int dlasq4_(integer *, integer *, doublereal *, 
+    extern /* Subroutine */ void dlasq4_(integer *, integer *, doublereal *, 
 	    integer *, integer *, doublereal *, doublereal *, doublereal *, 
 	    doublereal *, doublereal *, doublereal *, doublereal *, integer *,
 	     doublereal *), dlasq5_(integer *, integer *, doublereal *, 
@@ -745,7 +745,7 @@ f"> */
 L10:
 
     if (*n0 < *i0) {
-	return 0;
+	return;
     }
     if (*n0 == *i0) {
 	goto L20;
@@ -941,7 +941,7 @@ L90:
     }
     *sigma = t;
 
-    return 0;
+    return;
 
 /*     End of DLASQ3 */
 

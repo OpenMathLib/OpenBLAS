@@ -643,7 +643,7 @@ f"> */
 /* > \ingroup complex16OTHERcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int zunglq_(integer *m, integer *n, integer *k, 
+/* Subroutine */ void zunglq_(integer *m, integer *n, integer *k, 
 	doublecomplex *a, integer *lda, doublecomplex *tau, doublecomplex *
 	work, integer *lwork, integer *info)
 {
@@ -652,19 +652,19 @@ f"> */
 
     /* Local variables */
     integer i__, j, l, nbmin, iinfo, ib, nb;
-    extern /* Subroutine */ int zungl2_(integer *, integer *, integer *, 
+    extern /* Subroutine */ void zungl2_(integer *, integer *, integer *, 
 	    doublecomplex *, integer *, doublecomplex *, doublecomplex *, 
 	    integer *);
     integer ki, kk, nx;
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     extern integer ilaenv_(integer *, char *, char *, integer *, integer *, 
 	    integer *, integer *, ftnlen, ftnlen);
-    extern /* Subroutine */ int zlarfb_(char *, char *, char *, char *, 
+    extern /* Subroutine */ void zlarfb_(char *, char *, char *, char *, 
 	    integer *, integer *, integer *, doublecomplex *, integer *, 
 	    doublecomplex *, integer *, doublecomplex *, integer *, 
 	    doublecomplex *, integer *);
     integer ldwork;
-    extern /* Subroutine */ int zlarft_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void zlarft_(char *, char *, integer *, integer *, 
 	    doublecomplex *, integer *, doublecomplex *, doublecomplex *, 
 	    integer *);
     logical lquery;
@@ -709,16 +709,16 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZUNGLQ", &i__1, (ftnlen)6);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*m <= 0) {
 	work[1].r = 1., work[1].i = 0.;
-	return 0;
+	return;
     }
 
     nbmin = 2;
@@ -839,7 +839,7 @@ f"> */
     }
 
     work[1].r = (doublereal) iws, work[1].i = 0.;
-    return 0;
+    return;
 
 /*     End of ZUNGLQ */
 

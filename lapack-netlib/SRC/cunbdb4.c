@@ -724,7 +724,7 @@ static integer c__1 = 1;
 /* >      Algorithms, 50(1):33-65, 2009. */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int cunbdb4_(integer *m, integer *p, integer *q, complex *
+/* Subroutine */ void cunbdb4_(integer *m, integer *p, integer *q, complex *
 	x11, integer *ldx11, complex *x21, integer *ldx21, real *theta, real *
 	phi, complex *taup1, complex *taup2, complex *tauq1, complex *phantom,
 	 complex *work, integer *lwork, integer *info)
@@ -740,21 +740,21 @@ static integer c__1 = 1;
     real c__;
     integer i__, j;
     real s;
-    extern /* Subroutine */ int cscal_(integer *, complex *, complex *, 
+    extern /* Subroutine */ void cscal_(integer *, complex *, complex *, 
 	    integer *), clarf_(char *, integer *, integer *, complex *, 
 	    integer *, complex *, complex *, integer *, complex *);
     integer ilarf, llarf, childinfo;
-    extern /* Subroutine */ int csrot_(integer *, complex *, integer *, 
+    extern /* Subroutine */ void csrot_(integer *, complex *, integer *, 
 	    complex *, integer *, real *, real *);
     extern real scnrm2_(integer *, complex *, integer *);
-    extern /* Subroutine */ int clacgv_(integer *, complex *, integer *), 
-	    xerbla_(char *, integer *, ftnlen);
+    extern /* Subroutine */ void clacgv_(integer *, complex *, integer *); 
+    extern int xerbla_(char *, integer *, ftnlen);
     logical lquery;
-    extern /* Subroutine */ int cunbdb5_(integer *, integer *, integer *, 
+    extern /* Subroutine */ void cunbdb5_(integer *, integer *, integer *, 
 	    complex *, integer *, complex *, integer *, complex *, integer *, 
 	    complex *, integer *, complex *, integer *, integer *);
     integer iorbdb5, lorbdb5;
-    extern /* Subroutine */ int clarfgp_(integer *, complex *, complex *, 
+    extern /* Subroutine */ void clarfgp_(integer *, complex *, complex *, 
 	    integer *, complex *);
 
 
@@ -827,9 +827,9 @@ static integer c__1 = 1;
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CUNBDB4", &i__1, (ftnlen)7);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Reduce columns 1, ..., M-Q of X11 and X21 */
@@ -980,7 +980,7 @@ static integer c__1 = 1;
 	clacgv_(&i__2, &x21[*m - *q + i__ - *p + i__ * x21_dim1], ldx21);
     }
 
-    return 0;
+    return;
 
 /*     End of CUNBDB4 */
 

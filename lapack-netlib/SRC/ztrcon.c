@@ -649,7 +649,7 @@ f"> */
 /* > \ingroup complex16OTHERcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int ztrcon_(char *norm, char *uplo, char *diag, integer *n, 
+/* Subroutine */ void ztrcon_(char *norm, char *uplo, char *diag, integer *n, 
 	doublecomplex *a, integer *lda, doublereal *rcond, doublecomplex *
 	work, doublereal *rwork, integer *info)
 {
@@ -665,7 +665,7 @@ f"> */
     doublereal anorm;
     logical upper;
     doublereal xnorm;
-    extern /* Subroutine */ int zlacn2_(integer *, doublecomplex *, 
+    extern /* Subroutine */ void zlacn2_(integer *, doublecomplex *, 
 	    doublecomplex *, doublereal *, integer *, integer *);
     extern doublereal dlamch_(char *);
     integer ix;
@@ -673,14 +673,14 @@ f"> */
     doublereal ainvnm;
     extern integer izamax_(integer *, doublecomplex *, integer *);
     logical onenrm;
-    extern /* Subroutine */ int zdrscl_(integer *, doublereal *, 
+    extern /* Subroutine */ void zdrscl_(integer *, doublereal *, 
 	    doublecomplex *, integer *);
     char normin[1];
     extern doublereal zlantr_(char *, char *, char *, integer *, integer *, 
 	    doublecomplex *, integer *, doublereal *);
     doublereal smlnum;
     logical nounit;
-    extern /* Subroutine */ int zlatrs_(char *, char *, char *, char *, 
+    extern /* Subroutine */ void zlatrs_(char *, char *, char *, char *, 
 	    integer *, doublecomplex *, integer *, doublecomplex *, 
 	    doublereal *, doublereal *, integer *);
 
@@ -723,14 +723,14 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZTRCON", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
 	*rcond = 1.;
-	return 0;
+	return;
     }
 
     *rcond = 0.;
@@ -795,7 +795,7 @@ L10:
     }
 
 L20:
-    return 0;
+    return;
 
 /*     End of ZTRCON */
 

@@ -683,7 +683,7 @@ static integer c__2 = 2;
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int cgeqr_(integer *m, integer *n, complex *a, integer *lda, 
+/* Subroutine */ void cgeqr_(integer *m, integer *n, complex *a, integer *lda, 
 	complex *t, integer *tsize, complex *work, integer *lwork, integer *
 	info)
 {
@@ -696,11 +696,11 @@ static integer c__2 = 2;
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     extern integer ilaenv_(integer *, char *, char *, integer *, integer *, 
 	    integer *, integer *, ftnlen, ftnlen);
-    extern /* Subroutine */ int cgeqrt_(integer *, integer *, integer *, 
+    extern /* Subroutine */ void cgeqrt_(integer *, integer *, integer *, 
 	    complex *, integer *, complex *, integer *, complex *, integer *);
     logical lminws, lquery;
     integer mintsz;
-    extern /* Subroutine */ int clatsqr_(integer *, integer *, integer *, 
+    extern /* Subroutine */ void clatsqr_(integer *, integer *, integer *, 
 	    integer *, complex *, integer *, complex *, integer *, complex *, 
 	    integer *, integer *);
 
@@ -829,15 +829,15 @@ static integer c__2 = 2;
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CGEQR", &i__1, (ftnlen)5);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (f2cmin(*m,*n) == 0) {
-	return 0;
+	return;
     }
 
 /*     The QR Decomposition */
@@ -854,7 +854,7 @@ static integer c__2 = 2;
     i__1 = f2cmax(i__2,i__3);
     work[1].r = (real) i__1, work[1].i = 0.f;
 
-    return 0;
+    return;
 
 /*     End of CGEQR */
 

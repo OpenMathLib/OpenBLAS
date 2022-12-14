@@ -648,7 +648,7 @@ aa.f"> */
 /* > \ingroup doubleSYcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int dsytrf_aa_(char *uplo, integer *n, doublereal *a, 
+/* Subroutine */ void dsytrf_aa_(char *uplo, integer *n, doublereal *a, 
 	integer *lda, integer *ipiv, doublereal *work, integer *lwork, 
 	integer *info)
 {
@@ -658,12 +658,12 @@ aa.f"> */
     /* Local variables */
     integer j;
     doublereal alpha;
-    extern /* Subroutine */ int dscal_(integer *, doublereal *, doublereal *, 
+    extern /* Subroutine */ void dscal_(integer *, doublereal *, doublereal *, 
 	    integer *), dgemm_(char *, char *, integer *, integer *, integer *
 	    , doublereal *, doublereal *, integer *, doublereal *, integer *, 
 	    doublereal *, doublereal *, integer *);
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int dlasyf_aa_(char *, integer *, integer *, 
+    extern /* Subroutine */ void dlasyf_aa_(char *, integer *, integer *, 
 	    integer *, doublereal *, integer *, integer *, doublereal *, 
 	    integer *, doublereal *), dgemv_(char *, integer *, 
 	    integer *, doublereal *, doublereal *, integer *, doublereal *, 
@@ -730,19 +730,19 @@ aa.f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DSYTRF_AA", &i__1, (ftnlen)9);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
     ipiv[1] = 1;
     if (*n == 1) {
-	return 0;
+	return;
     }
 
 /*     Adjust block size based on the workspace size */
@@ -1030,7 +1030,7 @@ L11:
     }
 
 L20:
-    return 0;
+    return;
 
 /*     End of DSYTRF_AA */
 

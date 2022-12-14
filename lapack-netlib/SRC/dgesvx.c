@@ -856,7 +856,7 @@ f"> */
 /* > \ingroup doubleGEsolve */
 
 /*  ===================================================================== */
-/* Subroutine */ int dgesvx_(char *fact, char *trans, integer *n, integer *
+/* Subroutine */ void dgesvx_(char *fact, char *trans, integer *n, integer *
 	nrhs, doublereal *a, integer *lda, doublereal *af, integer *ldaf, 
 	integer *ipiv, char *equed, doublereal *r__, doublereal *c__, 
 	doublereal *b, integer *ldb, doublereal *x, integer *ldx, doublereal *
@@ -877,23 +877,24 @@ f"> */
     logical equil;
     extern doublereal dlamch_(char *), dlange_(char *, integer *, 
 	    integer *, doublereal *, integer *, doublereal *);
-    extern /* Subroutine */ int dlaqge_(integer *, integer *, doublereal *, 
+    extern /* Subroutine */ void dlaqge_(integer *, integer *, doublereal *, 
 	    integer *, doublereal *, doublereal *, doublereal *, doublereal *,
 	     doublereal *, char *), dgecon_(char *, integer *, 
 	    doublereal *, integer *, doublereal *, doublereal *, doublereal *,
 	     integer *, integer *);
     doublereal colcnd;
     logical nofact;
-    extern /* Subroutine */ int dgeequ_(integer *, integer *, doublereal *, 
+    extern /* Subroutine */ void dgeequ_(integer *, integer *, doublereal *, 
 	    integer *, doublereal *, doublereal *, doublereal *, doublereal *,
 	     doublereal *, integer *), dgerfs_(char *, integer *, integer *, 
 	    doublereal *, integer *, doublereal *, integer *, integer *, 
 	    doublereal *, integer *, doublereal *, integer *, doublereal *, 
-	    doublereal *, doublereal *, integer *, integer *), 
-	    dgetrf_(integer *, integer *, doublereal *, integer *, integer *, 
-	    integer *), dlacpy_(char *, integer *, integer *, doublereal *, 
-	    integer *, doublereal *, integer *), xerbla_(char *, 
-	    integer *, ftnlen);
+	    doublereal *, doublereal *, integer *, integer *); 
+    extern int dgetrf_(integer *, integer *, doublereal *, integer *, integer *,
+	    integer *);
+    extern void dlacpy_(char *, integer *, integer *, doublereal *, 
+	    integer *, doublereal *, integer *);
+    extern int xerbla_(char *, integer *, ftnlen);
     doublereal bignum;
     extern doublereal dlantr_(char *, char *, char *, integer *, integer *, 
 	    doublereal *, integer *, doublereal *);
@@ -1030,7 +1031,7 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DGESVX", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
     if (equil) {
@@ -1101,7 +1102,7 @@ f"> */
 	    }
 	    work[1] = rpvgrw;
 	    *rcond = 0.;
-	    return 0;
+	    return;
 	}
     }
 
@@ -1184,7 +1185,7 @@ f"> */
     if (*rcond < dlamch_("Epsilon")) {
 	*info = *n + 1;
     }
-    return 0;
+    return;
 
 /*     End of DGESVX */
 

@@ -673,7 +673,7 @@ static real c_b14 = 0.f;
 /* > \endverbatim */
 
 /*  ===================================================================== */
-/* Subroutine */ int ssytri_3x_(char *uplo, integer *n, real *a, integer *
+/* Subroutine */ void ssytri_3x_(char *uplo, integer *n, real *a, integer *
 	lda, real *e, integer *ipiv, real *work, integer *nb, integer *info)
 {
     /* System generated locals */
@@ -683,15 +683,15 @@ static real c_b14 = 0.f;
     integer invd;
     real akkp1, d__;
     integer i__, j, k;
-    extern /* Subroutine */ int ssyswapr_(char *, integer *, real *, integer *
+    extern /* Subroutine */ void ssyswapr_(char *, integer *, real *, integer *
 	    , integer *, integer *);
     real t;
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int sgemm_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void sgemm_(char *, char *, integer *, integer *, 
 	    integer *, real *, real *, integer *, real *, integer *, real *, 
 	    real *, integer *);
     logical upper;
-    extern /* Subroutine */ int strmm_(char *, char *, char *, char *, 
+    extern /* Subroutine */ void strmm_(char *, char *, char *, char *, 
 	    integer *, integer *, real *, real *, integer *, real *, integer *
 	    );
     real ak, u01_i_j__;
@@ -743,10 +743,10 @@ static real c_b14 = 0.f;
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("SSYTRI_3X", &i__1, (ftnlen)9);
-	return 0;
+	return;
     }
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /*     Workspace got Non-diag elements of D */
@@ -764,7 +764,7 @@ static real c_b14 = 0.f;
 
 	for (*info = *n; *info >= 1; --(*info)) {
 	    if (ipiv[*info] > 0 && a[*info + *info * a_dim1] == 0.f) {
-		return 0;
+		return;
 	    }
 	}
     } else {
@@ -774,7 +774,7 @@ static real c_b14 = 0.f;
 	i__1 = *n;
 	for (*info = 1; *info <= i__1; ++(*info)) {
 	    if (ipiv[*info] > 0 && a[*info + *info * a_dim1] == 0.f) {
-		return 0;
+		return;
 	    }
 	}
     }
@@ -1257,7 +1257,7 @@ static real c_b14 = 0.f;
 
     }
 
-    return 0;
+    return;
 
 /*     End of SSYTRI_3X */
 

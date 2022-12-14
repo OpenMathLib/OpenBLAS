@@ -662,7 +662,7 @@ f"> */
 /* > \ingroup complexOTHERcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int cupmtr_(char *side, char *uplo, char *trans, integer *m, 
+/* Subroutine */ void cupmtr_(char *side, char *uplo, char *trans, integer *m, 
 	integer *n, complex *ap, complex *tau, complex *c__, integer *ldc, 
 	complex *work, integer *info)
 {
@@ -674,7 +674,7 @@ f"> */
     logical left;
     complex taui;
     integer i__;
-    extern /* Subroutine */ int clarf_(char *, integer *, integer *, complex *
+    extern /* Subroutine */ void clarf_(char *, integer *, integer *, complex *
 	    , integer *, complex *, complex *, integer *, complex *);
     extern logical lsame_(char *, char *);
     integer i1;
@@ -733,13 +733,13 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CUPMTR", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*m == 0 || *n == 0) {
-	return 0;
+	return;
     }
 
     if (upper) {
@@ -875,7 +875,7 @@ f"> */
 /* L20: */
 	}
     }
-    return 0;
+    return;
 
 /*     End of CUPMTR */
 

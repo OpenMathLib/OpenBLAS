@@ -614,7 +614,7 @@ f"> */
 /* > \ingroup complexOTHERcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int ctpttr_(char *uplo, integer *n, complex *ap, complex *a, 
+/* Subroutine */ void ctpttr_(char *uplo, integer *n, complex *ap, complex *a, 
 	integer *lda, integer *info)
 {
     /* System generated locals */
@@ -657,7 +657,7 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CTPTTR", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
     if (lower) {
@@ -687,7 +687,7 @@ f"> */
     }
 
 
-    return 0;
+    return;
 
 /*     End of CTPTTR */
 

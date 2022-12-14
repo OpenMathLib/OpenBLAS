@@ -633,7 +633,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int cpptrf_(char *uplo, integer *n, complex *ap, integer *
+/* Subroutine */ void cpptrf_(char *uplo, integer *n, complex *ap, integer *
 	info)
 {
     /* System generated locals */
@@ -642,18 +642,19 @@ f"> */
     complex q__1, q__2;
 
     /* Local variables */
-    extern /* Subroutine */ int chpr_(char *, integer *, real *, complex *, 
+    extern /* Subroutine */ void chpr_(char *, integer *, real *, complex *, 
 	    integer *, complex *);
     integer j;
     extern /* Complex */ VOID cdotc_(complex *, integer *, complex *, integer 
 	    *, complex *, integer *);
     extern logical lsame_(char *, char *);
     logical upper;
-    extern /* Subroutine */ int ctpsv_(char *, char *, char *, integer *, 
+    extern /* Subroutine */ void ctpsv_(char *, char *, char *, integer *, 
 	    complex *, complex *, integer *);
     integer jc, jj;
-    extern /* Subroutine */ int csscal_(integer *, real *, complex *, integer 
-	    *), xerbla_(char *, integer *, ftnlen);
+    extern /* Subroutine */ void csscal_(integer *, real *, complex *, integer 
+	    *);
+    extern int xerbla_(char *, integer *, ftnlen);
     real ajj;
 
 
@@ -682,13 +683,13 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CPPTRF", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
     if (upper) {
@@ -769,7 +770,7 @@ L30:
     *info = j;
 
 L40:
-    return 0;
+    return;
 
 /*     End of CPPTRF */
 

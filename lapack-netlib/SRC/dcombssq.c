@@ -568,7 +568,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 /* > \ingroup OTHERauxiliary */
 
 /*  ===================================================================== */
-/* Subroutine */ int dcombssq_(doublereal *v1, doublereal *v2)
+/* Subroutine */ void dcombssq_(doublereal *v1, doublereal *v2)
 {
     /* System generated locals */
     doublereal d__1;
@@ -602,7 +602,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 	v1[2] = v2[2] + d__1 * d__1 * v1[2];
 	v1[1] = v2[1];
     }
-    return 0;
+    return;
 
 /*     End of DCOMBSSQ */
 

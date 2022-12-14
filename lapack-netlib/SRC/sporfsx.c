@@ -803,7 +803,7 @@ static integer c__1 = 1;
 /* > \ingroup realPOcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int sporfsx_(char *uplo, char *equed, integer *n, integer *
+/* Subroutine */ void sporfsx_(char *uplo, char *equed, integer *n, integer *
 	nrhs, real *a, integer *lda, real *af, integer *ldaf, real *s, real *
 	b, integer *ldb, real *x, integer *ldx, real *rcond, real *berr, 
 	integer *n_err_bnds__, real *err_bnds_norm__, real *err_bnds_comp__, 
@@ -818,7 +818,7 @@ static integer c__1 = 1;
 
     /* Local variables */
     real illrcond_thresh__, unstable_thresh__;
-    extern /* Subroutine */ int sla_porfsx_extended_(integer *, char *, 
+    extern /* Subroutine */ void sla_porfsx_extended_(integer *, char *, 
 	    integer *, integer *, real *, integer *, real *, integer *, 
 	    logical *, real *, real *, integer *, real *, integer *, real *, 
 	    integer *, real *, real *, real *, real *, real *, real *, real *,
@@ -834,7 +834,8 @@ static integer c__1 = 1;
     real rcond_tmp__;
     integer prec_type__;
     extern real slamch_(char *);
-    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen), spocon_(
+    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
+    extern void spocon_(
 	    char *, integer *, real *, integer *, real *, real *, real *, 
 	    integer *, integer *);
     extern real slansy_(char *, char *, integer *, real *, integer *, real *);
@@ -951,7 +952,7 @@ static integer c__1 = 1;
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("SPORFSX", &i__1, (ftnlen)7);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible. */
@@ -974,7 +975,7 @@ static integer c__1 = 1;
 		err_bnds_comp__[j + err_bnds_comp_dim1 * 3] = 1.f;
 	    }
 	}
-	return 0;
+	return;
     }
 
 /*     Default to failure. */
@@ -1113,7 +1114,7 @@ static integer c__1 = 1;
 	}
     }
 
-    return 0;
+    return;
 
 /*     End of SPORFSX */
 

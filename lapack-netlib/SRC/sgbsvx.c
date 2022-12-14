@@ -879,7 +879,7 @@ f"> */
 /* > \ingroup realGBsolve */
 
 /*  ===================================================================== */
-/* Subroutine */ int sgbsvx_(char *fact, char *trans, integer *n, integer *kl,
+/* Subroutine */ void sgbsvx_(char *fact, char *trans, integer *n, integer *kl,
 	 integer *ku, integer *nrhs, real *ab, integer *ldab, real *afb, 
 	integer *ldafb, integer *ipiv, char *equed, real *r__, real *c__, 
 	real *b, integer *ldb, real *x, integer *ldx, real *rcond, real *ferr,
@@ -898,27 +898,28 @@ f"> */
     real rcmin, rcmax, anorm;
     logical equil;
     integer j1, j2;
-    extern /* Subroutine */ int scopy_(integer *, real *, integer *, real *, 
+    extern /* Subroutine */ void scopy_(integer *, real *, integer *, real *, 
 	    integer *);
     real colcnd;
     extern real slangb_(char *, integer *, integer *, integer *, real *, 
 	    integer *, real *), slamch_(char *);
-    extern /* Subroutine */ int slaqgb_(integer *, integer *, integer *, 
+    extern /* Subroutine */ void slaqgb_(integer *, integer *, integer *, 
 	    integer *, real *, integer *, real *, real *, real *, real *, 
 	    real *, char *);
     logical nofact;
-    extern /* Subroutine */ int sgbcon_(char *, integer *, integer *, integer 
+    extern /* Subroutine */ void sgbcon_(char *, integer *, integer *, integer 
 	    *, real *, integer *, integer *, real *, real *, real *, integer *
-	    , integer *), xerbla_(char *, integer *, ftnlen);
+	    , integer *);
+    extern int xerbla_(char *, integer *, ftnlen);
     real bignum;
     extern real slantb_(char *, char *, char *, integer *, integer *, real *, 
 	    integer *, real *);
-    extern /* Subroutine */ int sgbequ_(integer *, integer *, integer *, 
+    extern /* Subroutine */ void sgbequ_(integer *, integer *, integer *, 
 	    integer *, real *, integer *, real *, real *, real *, real *, 
 	    real *, integer *);
     integer infequ;
     logical colequ;
-    extern /* Subroutine */ int sgbrfs_(char *, integer *, integer *, integer 
+    extern /* Subroutine */ void sgbrfs_(char *, integer *, integer *, integer 
 	    *, integer *, real *, integer *, real *, integer *, integer *, 
 	    real *, integer *, real *, integer *, real *, real *, real *, 
 	    integer *, integer *), sgbtrf_(integer *, integer *, 
@@ -927,7 +928,7 @@ f"> */
 	    integer *);
     real rowcnd;
     logical notran;
-    extern /* Subroutine */ int sgbtrs_(char *, integer *, integer *, integer 
+    extern /* Subroutine */ void sgbtrs_(char *, integer *, integer *, integer 
 	    *, integer *, real *, integer *, integer *, real *, integer *, 
 	    integer *);
     real smlnum;
@@ -1063,7 +1064,7 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("SGBSVX", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
     if (equil) {
@@ -1169,7 +1170,7 @@ f"> */
 	    }
 	    work[1] = rpvgrw;
 	    *rcond = 0.f;
-	    return 0;
+	    return;
 	}
     }
 
@@ -1253,7 +1254,7 @@ f"> */
     }
 
     work[1] = rpvgrw;
-    return 0;
+    return;
 
 /*     End of SGBSVX */
 

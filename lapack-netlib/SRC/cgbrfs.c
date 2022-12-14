@@ -730,7 +730,7 @@ f"> */
 /* > \ingroup complexGBcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int cgbrfs_(char *trans, integer *n, integer *kl, integer *
+/* Subroutine */ void cgbrfs_(char *trans, integer *n, integer *kl, integer *
 	ku, integer *nrhs, complex *ab, integer *ldab, complex *afb, integer *
 	ldafb, integer *ipiv, complex *b, integer *ldb, complex *x, integer *
 	ldx, real *ferr, real *berr, complex *work, real *rwork, integer *
@@ -747,23 +747,24 @@ f"> */
     real safe1, safe2;
     integer i__, j, k;
     real s;
-    extern /* Subroutine */ int cgbmv_(char *, integer *, integer *, integer *
+    extern /* Subroutine */ void cgbmv_(char *, integer *, integer *, integer *
 	    , integer *, complex *, complex *, integer *, complex *, integer *
 	    , complex *, complex *, integer *);
     extern logical lsame_(char *, char *);
     integer isave[3];
-    extern /* Subroutine */ int ccopy_(integer *, complex *, integer *, 
+    extern /* Subroutine */ void ccopy_(integer *, complex *, integer *, 
 	    complex *, integer *), caxpy_(integer *, complex *, complex *, 
 	    integer *, complex *, integer *);
     integer count;
-    extern /* Subroutine */ int clacn2_(integer *, complex *, complex *, real 
+    extern /* Subroutine */ void clacn2_(integer *, complex *, complex *, real 
 	    *, integer *, integer *);
     integer kk;
     real xk;
     extern real slamch_(char *);
     integer nz;
     real safmin;
-    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen), cgbtrs_(
+    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
+    extern void cgbtrs_(
 	    char *, integer *, integer *, integer *, integer *, complex *, 
 	    integer *, integer *, complex *, integer *, integer *);
     logical notran;
@@ -827,7 +828,7 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CGBRFS", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
@@ -839,7 +840,7 @@ f"> */
 	    berr[j] = 0.f;
 /* L10: */
 	}
-	return 0;
+	return;
     }
 
     if (notran) {
@@ -1078,7 +1079,7 @@ L100:
 /* L140: */
     }
 
-    return 0;
+    return;
 
 /*     End of CGBRFS */
 

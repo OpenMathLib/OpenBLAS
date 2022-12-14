@@ -812,7 +812,7 @@ f"> */
 /* >      July 1989, pp 745-751. */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int ctgsyl_(char *trans, integer *ijob, integer *m, integer *
+/* Subroutine */ void ctgsyl_(char *trans, integer *ijob, integer *m, integer *
 	n, complex *a, integer *lda, complex *b, integer *ldb, complex *c__, 
 	integer *ldc, complex *d__, integer *ldd, complex *e, integer *lde, 
 	complex *f, integer *ldf, real *scale, real *dif, complex *work, 
@@ -827,14 +827,14 @@ f"> */
     /* Local variables */
     real dsum;
     integer i__, j, k, p, q;
-    extern /* Subroutine */ int cscal_(integer *, complex *, complex *, 
+    extern /* Subroutine */ void cscal_(integer *, complex *, complex *, 
 	    integer *), cgemm_(char *, char *, integer *, integer *, integer *
 	    , complex *, complex *, integer *, complex *, integer *, complex *
 	    , complex *, integer *);
     extern logical lsame_(char *, char *);
     integer ifunc, linfo, lwmin;
     real scale2;
-    extern /* Subroutine */ int ctgsy2_(char *, integer *, integer *, integer 
+    extern /* Subroutine */ void ctgsy2_(char *, integer *, integer *, integer 
 	    *, complex *, integer *, complex *, integer *, complex *, integer 
 	    *, complex *, integer *, complex *, integer *, complex *, integer 
 	    *, real *, real *, real *, integer *);
@@ -842,9 +842,10 @@ f"> */
     real dscale;
     integer is, js, pq;
     real scaloc;
-    extern /* Subroutine */ int clacpy_(char *, integer *, integer *, complex 
+    extern /* Subroutine */ void clacpy_(char *, integer *, integer *, complex 
 	    *, integer *, complex *, integer *), claset_(char *, 
-	    integer *, integer *, complex *, complex *, complex *, integer *), xerbla_(char *, integer *, ftnlen);
+	    integer *, integer *, complex *, complex *, complex *, integer *);
+    extern int xerbla_(char *, integer *, ftnlen);
     extern integer ilaenv_(integer *, char *, char *, integer *, integer *, 
 	    integer *, integer *, ftnlen, ftnlen);
     integer iround;
@@ -942,9 +943,9 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CTGSYL", &i__1, (ftnlen)6);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
@@ -956,7 +957,7 @@ f"> */
 		*dif = 0.f;
 	    }
 	}
-	return 0;
+	return;
     }
 
 /*     Determine  optimal block sizes MB and NB */
@@ -1018,7 +1019,7 @@ f"> */
 /* L30: */
 	}
 
-	return 0;
+	return;
 
     }
 
@@ -1288,7 +1289,7 @@ L70:
 
     work[1].r = (real) lwmin, work[1].i = 0.f;
 
-    return 0;
+    return;
 
 /*     End of CTGSYL */
 

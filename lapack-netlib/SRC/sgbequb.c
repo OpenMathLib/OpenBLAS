@@ -668,7 +668,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 /* > \ingroup realGBcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int sgbequb_(integer *m, integer *n, integer *kl, integer *
+/* Subroutine */ void sgbequb_(integer *m, integer *n, integer *kl, integer *
 	ku, real *ab, integer *ldab, real *r__, real *c__, real *rowcnd, real 
 	*colcnd, real *amax, integer *info)
 {
@@ -719,7 +719,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("SGBEQUB", &i__1, (ftnlen)7);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible. */
@@ -728,7 +728,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 	*rowcnd = 1.f;
 	*colcnd = 1.f;
 	*amax = 0.f;
-	return 0;
+	return;
     }
 
 /*     Get machine constants.  Assume SMLNUM is a power of the radix. */
@@ -797,7 +797,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 	for (i__ = 1; i__ <= i__1; ++i__) {
 	    if (r__[i__] == 0.f) {
 		*info = i__;
-		return 0;
+		return;
 	    }
 /* L50: */
 	}
@@ -875,7 +875,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 	for (j = 1; j <= i__1; ++j) {
 	    if (c__[j] == 0.f) {
 		*info = *m + j;
-		return 0;
+		return;
 	    }
 /* L110: */
 	}
@@ -898,7 +898,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 	*colcnd = f2cmax(rcmin,smlnum) / f2cmin(rcmax,bignum);
     }
 
-    return 0;
+    return;
 
 /*     End of SGBEQUB */
 

@@ -991,7 +991,7 @@ f"> */
 /* >  drmac@math.hr. Thank you. */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int dgejsv_(char *joba, char *jobu, char *jobv, char *jobr, 
+/* Subroutine */ void dgejsv_(char *joba, char *jobu, char *jobv, char *jobr, 
 	char *jobt, char *jobp, integer *m, integer *n, doublereal *a, 
 	integer *lda, doublereal *sva, doublereal *u, integer *ldu, 
 	doublereal *v, integer *ldv, doublereal *work, integer *lwork, 
@@ -1011,63 +1011,65 @@ f"> */
     doublereal temp1;
     integer p, q;
     logical jracc;
-    extern /* Subroutine */ int dscal_(integer *, doublereal *, doublereal *, 
+    extern /* Subroutine */ void dscal_(integer *, doublereal *, doublereal *, 
 	    integer *);
     extern logical lsame_(char *, char *);
     doublereal small, entra, sfmin;
     logical lsvec;
-    extern /* Subroutine */ int dcopy_(integer *, doublereal *, integer *, 
+    extern /* Subroutine */ void dcopy_(integer *, doublereal *, integer *, 
 	    doublereal *, integer *), dswap_(integer *, doublereal *, integer 
 	    *, doublereal *, integer *);
     doublereal epsln;
     logical rsvec;
-    extern /* Subroutine */ int dtrsm_(char *, char *, char *, char *, 
+    extern /* Subroutine */ void dtrsm_(char *, char *, char *, char *, 
 	    integer *, integer *, doublereal *, doublereal *, integer *, 
 	    doublereal *, integer *);
     integer n1;
     logical l2aber;
-    extern /* Subroutine */ int dgeqp3_(integer *, integer *, doublereal *, 
+    extern /* Subroutine */ void dgeqp3_(integer *, integer *, doublereal *, 
 	    integer *, integer *, doublereal *, doublereal *, integer *, 
 	    integer *);
     doublereal condr1, condr2, uscal1, uscal2;
     logical l2kill, l2rank, l2tran, l2pert;
     extern doublereal dlamch_(char *);
     integer nr;
-    extern /* Subroutine */ int dgelqf_(integer *, integer *, doublereal *, 
+    extern /* Subroutine */ void dgelqf_(integer *, integer *, doublereal *, 
 	    integer *, doublereal *, doublereal *, integer *, integer *);
     extern integer idamax_(integer *, doublereal *, integer *);
     doublereal scalem;
-    extern /* Subroutine */ int dlascl_(char *, integer *, integer *, 
+    extern /* Subroutine */ void dlascl_(char *, integer *, integer *, 
 	    doublereal *, doublereal *, integer *, integer *, doublereal *, 
 	    integer *, integer *);
     doublereal sconda;
     logical goscal;
     doublereal aatmin;
-    extern /* Subroutine */ int dgeqrf_(integer *, integer *, doublereal *, 
+    extern /* Subroutine */ void dgeqrf_(integer *, integer *, doublereal *, 
 	    integer *, doublereal *, doublereal *, integer *, integer *);
     doublereal aatmax;
-    extern /* Subroutine */ int dlacpy_(char *, integer *, integer *, 
+    extern /* Subroutine */ void dlacpy_(char *, integer *, integer *, 
 	    doublereal *, integer *, doublereal *, integer *), 
 	    dlaset_(char *, integer *, integer *, doublereal *, doublereal *, 
-	    doublereal *, integer *), xerbla_(char *, integer *, ftnlen);
+	    doublereal *, integer *);
+    extern int xerbla_(char *, integer *, ftnlen);
     logical noscal;
-    extern /* Subroutine */ int dpocon_(char *, integer *, doublereal *, 
+    extern /* Subroutine */ void dpocon_(char *, integer *, doublereal *, 
 	    integer *, doublereal *, doublereal *, doublereal *, integer *, 
 	    integer *), dgesvj_(char *, char *, char *, integer *, 
 	    integer *, doublereal *, integer *, doublereal *, integer *, 
 	    doublereal *, integer *, doublereal *, integer *, integer *), dlassq_(integer *, doublereal *, integer 
-	    *, doublereal *, doublereal *), dlaswp_(integer *, doublereal *, 
+	    *, doublereal *, doublereal *);
+    extern int dlaswp_(integer *, doublereal *, 
 	    integer *, integer *, integer *, integer *, integer *);
     doublereal entrat;
     logical almort;
-    extern /* Subroutine */ int dorgqr_(integer *, integer *, integer *, 
+    extern /* Subroutine */ void dorgqr_(integer *, integer *, integer *, 
 	    doublereal *, integer *, doublereal *, doublereal *, integer *, 
 	    integer *), dormlq_(char *, char *, integer *, integer *, integer 
 	    *, doublereal *, integer *, doublereal *, doublereal *, integer *,
 	     doublereal *, integer *, integer *);
     doublereal maxprj;
     logical errest;
-    extern /* Subroutine */ int dormqr_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void dormqr_(char *, char *, integer *, integer *, 
 	    integer *, doublereal *, integer *, doublereal *, doublereal *, 
 	    integer *, doublereal *, integer *, integer *);
     logical transp, rowpiv;
@@ -1173,7 +1175,7 @@ f"> */
 /*       #:( */
 	i__1 = -(*info);
 	xerbla_("DGEJSV", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return for void matrix (Y3K safe) */
@@ -1189,7 +1191,7 @@ f"> */
 	work[5] = 0.;
 	work[6] = 0.;
 	work[7] = 0.;
-	return 0;
+	return;
     }
 
 /*     Determine whether the matrix U should be M x N or M x M */
@@ -1229,7 +1231,7 @@ f"> */
 	    *info = -9;
 	    i__2 = -(*info);
 	    xerbla_("DGEJSV", &i__2, (ftnlen)6);
-	    return 0;
+	    return;
 	}
 	aaqq = sqrt(aaqq);
 	if (aapp < big / aaqq && noscal) {
@@ -1291,7 +1293,7 @@ f"> */
 	iwork[1] = 0;
 	iwork[2] = 0;
 	iwork[3] = 0;
-	return 0;
+	return;
     }
 
 /*     Issue warning if denormalized column norms detected. Override the */
@@ -1356,7 +1358,7 @@ f"> */
 	    work[6] = 0.;
 	    work[7] = 0.;
 	}
-	return 0;
+	return;
 
     }
 
@@ -2801,6 +2803,6 @@ L3302:
     iwork[2] = numrank;
     iwork[3] = warning;
 
-    return 0;
+    return;
 } /* dgejsv_ */
 

@@ -617,7 +617,7 @@ static doublecomplex c_b5 = {1.,0.};
 /* > \ingroup complex16OTHERauxiliary */
 
 /*  ===================================================================== */
-/* Subroutine */ int zlarfgp_(integer *n, doublecomplex *alpha, doublecomplex 
+/* Subroutine */ void zlarfgp_(integer *n, doublecomplex *alpha, doublecomplex 
 	*x, integer *incx, doublecomplex *tau)
 {
     /* System generated locals */
@@ -629,14 +629,14 @@ static doublecomplex c_b5 = {1.,0.};
     doublereal beta;
     integer j;
     doublereal alphi, alphr;
-    extern /* Subroutine */ int zscal_(integer *, doublecomplex *, 
+    extern /* Subroutine */ void zscal_(integer *, doublecomplex *, 
 	    doublecomplex *, integer *);
     doublecomplex savealpha;
     doublereal xnorm;
     extern doublereal dlapy2_(doublereal *, doublereal *), dlapy3_(doublereal 
 	    *, doublereal *, doublereal *), dznrm2_(integer *, doublecomplex *
 	    , integer *), dlamch_(char *);
-    extern /* Subroutine */ int zdscal_(integer *, doublereal *, 
+    extern /* Subroutine */ void zdscal_(integer *, doublereal *, 
 	    doublecomplex *, integer *);
     doublereal bignum;
     extern /* Double Complex */ VOID zladiv_(doublecomplex *, doublecomplex *,
@@ -660,7 +660,7 @@ static doublecomplex c_b5 = {1.,0.};
     /* Function Body */
     if (*n <= 0) {
 	tau->r = 0., tau->i = 0.;
-	return 0;
+	return;
     }
 
     i__1 = *n - 1;
@@ -817,7 +817,7 @@ L10:
 	alpha->r = beta, alpha->i = 0.;
     }
 
-    return 0;
+    return;
 
 /*     End of ZLARFGP */
 

@@ -658,7 +658,7 @@ f"> */
 /* > \ingroup realOTHERcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int stbtrs_(char *uplo, char *trans, char *diag, integer *n, 
+/* Subroutine */ void stbtrs_(char *uplo, char *trans, char *diag, integer *n, 
 	integer *kd, integer *nrhs, real *ab, integer *ldab, real *b, integer 
 	*ldb, integer *info)
 {
@@ -669,8 +669,9 @@ f"> */
     integer j;
     extern logical lsame_(char *, char *);
     logical upper;
-    extern /* Subroutine */ int stbsv_(char *, char *, char *, integer *, 
-	    integer *, real *, integer *, real *, integer *), xerbla_(char *, integer *, ftnlen);
+    extern /* Subroutine */ void stbsv_(char *, char *, char *, integer *, 
+	    integer *, real *, integer *, real *, integer *);
+    extern int xerbla_(char *, integer *, ftnlen);
     logical nounit;
 
 
@@ -718,13 +719,13 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("STBTRS", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /*     Check for singularity. */
@@ -734,7 +735,7 @@ f"> */
 	    i__1 = *n;
 	    for (*info = 1; *info <= i__1; ++(*info)) {
 		if (ab[*kd + 1 + *info * ab_dim1] == 0.f) {
-		    return 0;
+		    return;
 		}
 /* L10: */
 	    }
@@ -742,7 +743,7 @@ f"> */
 	    i__1 = *n;
 	    for (*info = 1; *info <= i__1; ++(*info)) {
 		if (ab[*info * ab_dim1 + 1] == 0.f) {
-		    return 0;
+		    return;
 		}
 /* L20: */
 	    }
@@ -759,7 +760,7 @@ f"> */
 /* L30: */
     }
 
-    return 0;
+    return;
 
 /*     End of STBTRS */
 

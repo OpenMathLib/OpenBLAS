@@ -676,7 +676,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 /* > \ingroup doubleGEcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int dgemlqt_(char *side, char *trans, integer *m, integer *n,
+/* Subroutine */ void dgemlqt_(char *side, char *trans, integer *m, integer *n,
 	 integer *k, integer *mb, doublereal *v, integer *ldv, doublereal *t, 
 	integer *ldt, doublereal *c__, integer *ldc, doublereal *work, 
 	integer *info)
@@ -691,11 +691,11 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
     extern logical lsame_(char *, char *);
     logical right;
     integer ib, kf;
-    extern /* Subroutine */ int dlarfb_(char *, char *, char *, char *, 
+    extern /* Subroutine */ void dlarfb_(char *, char *, char *, char *, 
 	    integer *, integer *, integer *, doublereal *, integer *, 
 	    doublereal *, integer *, doublereal *, integer *, doublereal *, 
-	    integer *), xerbla_(char *, 
-	    integer *, ftnlen);
+	    integer *);
+    extern int xerbla_(char *, integer *, ftnlen);
     logical notran;
     integer ldwork;
 
@@ -757,12 +757,12 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DGEMLQT", &i__1, (ftnlen)7);
-	return 0;
+	return;
     }
 
 
     if (*m == 0 || *n == 0 || *k == 0) {
-	return 0;
+	return;
     }
 
     if (left && notran) {
@@ -823,7 +823,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 
     }
 
-    return 0;
+    return;
 
 /*     End of DGEMLQT */
 

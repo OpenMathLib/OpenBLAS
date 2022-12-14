@@ -932,7 +932,7 @@ static logical c_false = FALSE_;
 /* > \ingroup complexGEsing */
 
 /*  ===================================================================== */
-/* Subroutine */ int cgesvdq_(char *joba, char *jobp, char *jobr, char *jobu, 
+/* Subroutine */ void cgesvdq_(char *joba, char *jobp, char *jobr, char *jobu, 
 	char *jobv, integer *m, integer *n, complex *a, integer *lda, real *s,
 	 complex *u, integer *ldu, complex *v, integer *ldv, integer *numrank,
 	 integer *iwork, integer *liwork, complex *cwork, integer *lcwork, 
@@ -965,7 +965,7 @@ static logical c_false = FALSE_;
     logical dntwu, dntwv, wntuf, wntva;
     integer lwunq;
     logical wntur, wntus, wntvr;
-    extern /* Subroutine */ int cgeqp3_(integer *, integer *, complex *, 
+    extern /* Subroutine */ void cgeqp3_(integer *, integer *, complex *, 
 	    integer *, integer *, complex *, complex *, integer *, real *, 
 	    integer *);
     extern real scnrm2_(integer *, complex *, integer *);
@@ -973,21 +973,22 @@ static logical c_false = FALSE_;
     extern real clange_(char *, integer *, integer *, complex *, integer *, 
 	    real *);
     integer nr;
-    extern /* Subroutine */ int cgelqf_(integer *, integer *, complex *, 
+    extern /* Subroutine */ void cgelqf_(integer *, integer *, complex *, 
 	    integer *, complex *, complex *, integer *, integer *), clascl_(
 	    char *, integer *, integer *, real *, real *, integer *, integer *
 	    , complex *, integer *, integer *);
     real sconda;
-    extern /* Subroutine */ int cgeqrf_(integer *, integer *, complex *, 
+    extern /* Subroutine */ void cgeqrf_(integer *, integer *, complex *, 
 	    integer *, complex *, complex *, integer *, integer *), csscal_(
 	    integer *, real *, complex *, integer *);
     extern real slamch_(char *);
-    extern /* Subroutine */ int cgesvd_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void cgesvd_(char *, char *, integer *, integer *, 
 	    complex *, integer *, real *, complex *, integer *, complex *, 
 	    integer *, complex *, integer *, real *, integer *), clacpy_(char *, integer *, integer *, complex *, integer 
 	    *, complex *, integer *), claset_(char *, integer *, 
-	    integer *, complex *, complex *, complex *, integer *), 
-	    xerbla_(char *, integer *, ftnlen), clapmt_(logical *, integer *, 
+	    integer *, complex *, complex *, complex *, integer *); 
+    extern int xerbla_(char *, integer *, ftnlen);
+    extern void clapmt_(logical *, integer *, 
 	    integer *, complex *, integer *, integer *), slascl_(char *, 
 	    integer *, integer *, real *, real *, integer *, integer *, real *
 	    , integer *, integer *), cpocon_(char *, integer *, 
@@ -995,10 +996,11 @@ static logical c_false = FALSE_;
 	    );
     extern integer isamax_(integer *, real *, integer *);
     extern /* Subroutine */ int claswp_(integer *, complex *, integer *, 
-	    integer *, integer *, integer *, integer *), slaset_(char *, 
+	    integer *, integer *, integer *, integer *);
+    extern void slaset_(char *, 
 	    integer *, integer *, real *, real *, real *, integer *);
     complex cdummy[1];
-    extern /* Subroutine */ int cunmlq_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void cunmlq_(char *, char *, integer *, integer *, 
 	    integer *, complex *, integer *, complex *, complex *, integer *, 
 	    complex *, integer *, integer *), cunmqr_(char *, 
 	    char *, integer *, integer *, integer *, complex *, integer *, 
@@ -1380,7 +1382,7 @@ static logical c_false = FALSE_;
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CGESVDQ", &i__1, (ftnlen)7);
-	return 0;
+	return;
     } else if (lquery) {
 
 /*     Return optimal workspace */
@@ -1389,13 +1391,13 @@ static logical c_false = FALSE_;
 	cwork[1].r = (real) optwrk, cwork[1].i = 0.f;
 	cwork[2].r = (real) minwrk, cwork[2].i = 0.f;
 	rwork[1] = (real) rminwrk;
-	return 0;
+	return;
     }
 
 /*     Quick return if the matrix is void. */
 
     if (*m == 0 || *n == 0) {
-	return 0;
+	return;
     }
 
     big = slamch_("O");
@@ -1412,7 +1414,7 @@ static logical c_false = FALSE_;
 		*info = -8;
 		i__2 = -(*info);
 		xerbla_("CGESVDQ", &i__2, (ftnlen)7);
-		return 0;
+		return;
 	    }
 /* L1904: */
 	}
@@ -1466,7 +1468,7 @@ static logical c_false = FALSE_;
 		rwork[1] = -1.f;
 	    }
 	    rwork[2] = -1.f;
-	    return 0;
+	    return;
 	}
 
 	if (rwork[1] > big / sqrt((real) (*m))) {
@@ -1490,7 +1492,7 @@ static logical c_false = FALSE_;
 	    *info = -8;
 	    i__1 = -(*info);
 	    xerbla_("CGESVDQ", &i__1, (ftnlen)7);
-	    return 0;
+	    return;
 	}
 	if (rtmp > big / sqrt((real) (*m))) {
 /*             matrix by 1/sqrt(M) if too large entry detected */
@@ -2317,7 +2319,7 @@ L4002:
 /*     full row rank triangular (trapezoidal) factor of A. */
     *numrank = nr;
 
-    return 0;
+    return;
 
 /*     End of CGESVDQ */
 

@@ -790,7 +790,7 @@ static doublereal c_b27 = 1.;
 /* > \endverbatim */
 
 /*  ===================================================================== */
-/* Subroutine */ int dtfsm_(char *transr, char *side, char *uplo, char *trans,
+/* Subroutine */ void dtfsm_(char *transr, char *side, char *uplo, char *trans,
 	 char *diag, integer *m, integer *n, doublereal *alpha, doublereal *a,
 	 doublereal *b, integer *ldb)
 {
@@ -800,13 +800,13 @@ static doublereal c_b27 = 1.;
     /* Local variables */
     integer info, i__, j, k;
     logical normaltransr;
-    extern /* Subroutine */ int dgemm_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void dgemm_(char *, char *, integer *, integer *, 
 	    integer *, doublereal *, doublereal *, integer *, doublereal *, 
 	    integer *, doublereal *, doublereal *, integer *);
     logical lside;
     extern logical lsame_(char *, char *);
     logical lower;
-    extern /* Subroutine */ int dtrsm_(char *, char *, char *, char *, 
+    extern /* Subroutine */ void dtrsm_(char *, char *, char *, char *, 
 	    integer *, integer *, doublereal *, doublereal *, integer *, 
 	    doublereal *, integer *);
     integer m1, m2, n1, n2;
@@ -857,13 +857,13 @@ static doublereal c_b27 = 1.;
     if (info != 0) {
 	i__1 = -info;
 	xerbla_("DTFSM ", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return when ( (N.EQ.0).OR.(M.EQ.0) ) */
 
     if (*m == 0 || *n == 0) {
-	return 0;
+	return;
     }
 
 /*     Quick return when ALPHA.EQ.(0D+0) */
@@ -878,7 +878,7 @@ static doublereal c_b27 = 1.;
 	    }
 /* L20: */
 	}
-	return 0;
+	return;
     }
 
     if (lside) {
@@ -1528,7 +1528,7 @@ static doublereal c_b27 = 1.;
 	}
     }
 
-    return 0;
+    return;
 
 /*     End of DTFSM */
 

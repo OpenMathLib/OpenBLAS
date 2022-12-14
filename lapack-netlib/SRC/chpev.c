@@ -651,7 +651,7 @@ atrices</b> */
 /* > \ingroup complexOTHEReigen */
 
 /*  ===================================================================== */
-/* Subroutine */ int chpev_(char *jobz, char *uplo, integer *n, complex *ap, 
+/* Subroutine */ void chpev_(char *jobz, char *uplo, integer *n, complex *ap, 
 	real *w, complex *z__, integer *ldz, complex *work, real *rwork, 
 	integer *info)
 {
@@ -666,20 +666,20 @@ atrices</b> */
     real rmin, rmax, sigma;
     extern logical lsame_(char *, char *);
     integer iinfo;
-    extern /* Subroutine */ int sscal_(integer *, real *, real *, integer *);
+    extern /* Subroutine */ void sscal_(integer *, real *, real *, integer *);
     logical wantz;
     integer iscale;
     extern real clanhp_(char *, char *, integer *, complex *, real *), slamch_(char *);
-    extern /* Subroutine */ int csscal_(integer *, real *, complex *, integer 
+    extern /* Subroutine */ void csscal_(integer *, real *, complex *, integer 
 	    *);
     real safmin;
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     real bignum;
     integer indtau;
-    extern /* Subroutine */ int chptrd_(char *, integer *, complex *, real *, 
+    extern /* Subroutine */ void chptrd_(char *, integer *, complex *, real *, 
 	    real *, complex *, integer *);
     integer indrwk, indwrk;
-    extern /* Subroutine */ int csteqr_(char *, integer *, real *, real *, 
+    extern /* Subroutine */ void csteqr_(char *, integer *, real *, real *, 
 	    complex *, integer *, real *, integer *), cupgtr_(char *, 
 	    integer *, complex *, complex *, complex *, integer *, complex *, 
 	    integer *), ssterf_(integer *, real *, real *, integer *);
@@ -724,13 +724,13 @@ atrices</b> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CHPEV ", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
     if (*n == 1) {
@@ -740,7 +740,7 @@ atrices</b> */
 	    i__1 = z_dim1 + 1;
 	    z__[i__1].r = 1.f, z__[i__1].i = 0.f;
 	}
-	return 0;
+	return;
     }
 
 /*     Get machine constants. */
@@ -800,7 +800,7 @@ atrices</b> */
 	sscal_(&imax, &r__1, &w[1], &c__1);
     }
 
-    return 0;
+    return;
 
 /*     End of CHPEV */
 

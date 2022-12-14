@@ -696,7 +696,7 @@ f"> */
 /* > \ingroup complex16PTcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int zptrfs_(char *uplo, integer *n, integer *nrhs, 
+/* Subroutine */ void zptrfs_(char *uplo, integer *n, integer *nrhs, 
 	doublereal *d__, doublecomplex *e, doublereal *df, doublecomplex *ef, 
 	doublecomplex *b, integer *ldb, doublecomplex *x, integer *ldx, 
 	doublereal *ferr, doublereal *berr, doublecomplex *work, doublereal *
@@ -716,7 +716,7 @@ f"> */
     extern logical lsame_(char *, char *);
     integer count;
     logical upper;
-    extern /* Subroutine */ int zaxpy_(integer *, doublecomplex *, 
+    extern /* Subroutine */ void zaxpy_(integer *, doublecomplex *, 
 	    doublecomplex *, integer *, doublecomplex *, integer *);
     doublecomplex bi;
     extern doublereal dlamch_(char *);
@@ -727,7 +727,7 @@ f"> */
     doublereal safmin;
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     doublereal lstres;
-    extern /* Subroutine */ int zpttrs_(char *, integer *, integer *, 
+    extern /* Subroutine */ void zpttrs_(char *, integer *, integer *, 
 	    doublereal *, doublecomplex *, doublecomplex *, integer *, 
 	    integer *);
     doublereal eps;
@@ -777,7 +777,7 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZPTRFS", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
@@ -789,7 +789,7 @@ f"> */
 	    berr[j] = 0.;
 /* L10: */
 	}
-	return 0;
+	return;
     }
 
 /*     NZ = maximum number of nonzero elements in each row of A, plus 1 */
@@ -1146,7 +1146,7 @@ L20:
 /* L100: */
     }
 
-    return 0;
+    return;
 
 /*     End of ZPTRFS */
 

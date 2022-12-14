@@ -665,7 +665,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int ssptrd_(char *uplo, integer *n, real *ap, real *d__, 
+/* Subroutine */ void ssptrd_(char *uplo, integer *n, real *ap, real *d__, 
 	real *e, real *tau, integer *info)
 {
     /* System generated locals */
@@ -675,17 +675,18 @@ f"> */
     real taui;
     extern real sdot_(integer *, real *, integer *, real *, integer *);
     integer i__;
-    extern /* Subroutine */ int sspr2_(char *, integer *, real *, real *, 
+    extern /* Subroutine */ void sspr2_(char *, integer *, real *, real *, 
 	    integer *, real *, integer *, real *);
     real alpha;
     extern logical lsame_(char *, char *);
     integer i1;
     logical upper;
-    extern /* Subroutine */ int saxpy_(integer *, real *, real *, integer *, 
+    extern /* Subroutine */ void saxpy_(integer *, real *, real *, integer *, 
 	    real *, integer *), sspmv_(char *, integer *, real *, real *, 
 	    real *, integer *, real *, real *, integer *);
     integer ii;
-    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen), slarfg_(
+    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
+    extern void slarfg_(
 	    integer *, real *, real *, integer *, real *);
     integer i1i1;
 
@@ -718,13 +719,13 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("SSPTRD", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n <= 0) {
-	return 0;
+	return;
     }
 
     if (upper) {
@@ -826,7 +827,7 @@ f"> */
 	d__[*n] = ap[ii];
     }
 
-    return 0;
+    return;
 
 /*     End of SSPTRD */
 

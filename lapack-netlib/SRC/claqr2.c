@@ -785,7 +785,7 @@ f"> */
 /* >       University of Kansas, USA */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int claqr2_(logical *wantt, logical *wantz, integer *n, 
+/* Subroutine */ void claqr2_(logical *wantt, logical *wantz, integer *n, 
 	integer *ktop, integer *kbot, integer *nw, complex *h__, integer *ldh,
 	 integer *iloz, integer *ihiz, complex *z__, integer *ldz, integer *
 	ns, integer *nd, complex *sh, complex *v, integer *ldv, integer *nh, 
@@ -802,26 +802,26 @@ f"> */
     complex beta;
     integer kcol, info, ifst, ilst, ltop, krow, i__, j;
     complex s;
-    extern /* Subroutine */ int clarf_(char *, integer *, integer *, complex *
+    extern /* Subroutine */ void clarf_(char *, integer *, integer *, complex *
 	    , integer *, complex *, complex *, integer *, complex *), 
 	    cgemm_(char *, char *, integer *, integer *, integer *, complex *,
 	     complex *, integer *, complex *, integer *, complex *, complex *,
 	     integer *), ccopy_(integer *, complex *, integer 
 	    *, complex *, integer *);
     integer infqr, kwtop;
-    extern /* Subroutine */ int slabad_(real *, real *), cgehrd_(integer *, 
+    extern /* Subroutine */ void slabad_(real *, real *), cgehrd_(integer *, 
 	    integer *, integer *, complex *, integer *, complex *, complex *, 
 	    integer *, integer *), clarfg_(integer *, complex *, complex *, 
 	    integer *, complex *);
     integer jw;
     extern real slamch_(char *);
-    extern /* Subroutine */ int clahqr_(logical *, logical *, integer *, 
+    extern /* Subroutine */ void clahqr_(logical *, logical *, integer *, 
 	    integer *, integer *, complex *, integer *, complex *, integer *, 
 	    integer *, complex *, integer *, integer *), clacpy_(char *, 
 	    integer *, integer *, complex *, integer *, complex *, integer *), claset_(char *, integer *, integer *, complex *, complex 
 	    *, complex *, integer *);
     real safmin, safmax;
-    extern /* Subroutine */ int ctrexc_(char *, integer *, complex *, integer 
+    extern /* Subroutine */ void ctrexc_(char *, integer *, complex *, integer 
 	    *, complex *, integer *, integer *, integer *, integer *),
 	     cunmhr_(char *, char *, integer *, integer *, integer *, integer 
 	    *, complex *, integer *, complex *, complex *, integer *, complex 
@@ -899,7 +899,7 @@ f"> */
 	r__1 = (real) lwkopt;
 	q__1.r = r__1, q__1.i = 0.f;
 	work[1].r = q__1.r, work[1].i = q__1.i;
-	return 0;
+	return;
     }
 
 /*     ==== Nothing to do ... */
@@ -908,11 +908,11 @@ f"> */
     *nd = 0;
     work[1].r = 1.f, work[1].i = 0.f;
     if (*ktop > *kbot) {
-	return 0;
+	return;
     }
 /*     ... nor for an empty deflation window. ==== */
     if (*nw < 1) {
-	return 0;
+	return;
     }
 
 /*     ==== Machine constants ==== */
@@ -959,7 +959,7 @@ f"> */
 	    }
 	}
 	work[1].r = 1.f, work[1].i = 0.f;
-	return 0;
+	return;
     }
 
 /*     ==== Convert to spike-triangular form.  (In case of a */
@@ -1205,6 +1205,6 @@ f"> */
 
 /*     ==== End of CLAQR2 ==== */
 
-    return 0;
+    return;
 } /* claqr2_ */
 

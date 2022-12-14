@@ -640,7 +640,7 @@ static doublecomplex c_b1 = {1.,0.};
 /* > \ingroup complex16HEcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int zhetrs2_(char *uplo, integer *n, integer *nrhs, 
+/* Subroutine */ void zhetrs2_(char *uplo, integer *n, integer *nrhs, 
 	doublecomplex *a, integer *lda, integer *ipiv, doublecomplex *b, 
 	integer *ldb, doublecomplex *work, integer *info)
 {
@@ -656,16 +656,17 @@ static doublecomplex c_b1 = {1.,0.};
     doublecomplex denom;
     integer iinfo;
     logical upper;
-    extern /* Subroutine */ int zswap_(integer *, doublecomplex *, integer *, 
+    extern /* Subroutine */ void zswap_(integer *, doublecomplex *, integer *, 
 	    doublecomplex *, integer *), ztrsm_(char *, char *, char *, char *
 	    , integer *, integer *, doublecomplex *, doublecomplex *, integer 
 	    *, doublecomplex *, integer *);
     doublecomplex ak, bk;
     integer kp;
-    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen), zdscal_(
+    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
+    extern void zdscal_(
 	    integer *, doublereal *, doublecomplex *, integer *);
     doublecomplex akm1, bkm1;
-    extern /* Subroutine */ int zsyconv_(char *, char *, integer *, 
+    extern /* Subroutine */ void zsyconv_(char *, char *, integer *, 
 	    doublecomplex *, integer *, integer *, doublecomplex *, integer *);
 
 
@@ -705,13 +706,13 @@ static doublecomplex c_b1 = {1.,0.};
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZHETRS2", &i__1, (ftnlen)7);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0 || *nrhs == 0) {
-	return 0;
+	return;
     }
 
 /*     Convert A */
@@ -938,7 +939,7 @@ static doublecomplex c_b1 = {1.,0.};
 
     zsyconv_(uplo, "R", n, &a[a_offset], lda, &ipiv[1], &work[1], &iinfo);
 
-    return 0;
+    return;
 
 /*     End of ZHETRS2 */
 

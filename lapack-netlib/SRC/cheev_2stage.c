@@ -708,7 +708,7 @@ stage.f"> */
 /* > \endverbatim */
 
 /*  ===================================================================== */
-/* Subroutine */ int cheev_2stage_(char *jobz, char *uplo, integer *n, 
+/* Subroutine */ void cheev_2stage_(char *jobz, char *uplo, integer *n, 
 	complex *a, integer *lda, real *w, complex *work, integer *lwork, 
 	real *rwork, integer *info)
 {
@@ -723,13 +723,13 @@ stage.f"> */
     real anrm;
     integer imax;
     real rmin, rmax;
-    extern /* Subroutine */ int chetrd_2stage_(char *, char *, integer *, 
+    extern /* Subroutine */ void chetrd_2stage_(char *, char *, integer *, 
 	    complex *, integer *, real *, real *, complex *, complex *, 
 	    integer *, complex *, integer *, integer *);
     real sigma;
     extern logical lsame_(char *, char *);
     integer iinfo;
-    extern /* Subroutine */ int sscal_(integer *, real *, real *, integer *);
+    extern /* Subroutine */ void sscal_(integer *, real *, real *, integer *);
     integer lhtrd, lwmin;
     logical lower;
     integer lwtrd;
@@ -738,14 +738,14 @@ stage.f"> */
     extern real clanhe_(char *, char *, integer *, complex *, integer *, real 
 	    *);
     integer iscale;
-    extern /* Subroutine */ int clascl_(char *, integer *, integer *, real *, 
+    extern /* Subroutine */ void clascl_(char *, integer *, integer *, real *, 
 	    real *, integer *, integer *, complex *, integer *, integer *);
     extern real slamch_(char *);
     real safmin;
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     real bignum;
     integer indtau, indwrk;
-    extern /* Subroutine */ int csteqr_(char *, integer *, real *, real *, 
+    extern /* Subroutine */ void csteqr_(char *, integer *, real *, real *, 
 	    complex *, integer *, real *, integer *), cungtr_(char *, 
 	    integer *, complex *, integer *, complex *, complex *, integer *, 
 	    integer *), ssterf_(integer *, real *, real *, integer *);
@@ -811,15 +811,15 @@ stage.f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CHEEV_2STAGE ", &i__1, (ftnlen)13);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
     if (*n == 1) {
@@ -830,7 +830,7 @@ stage.f"> */
 	    i__1 = a_dim1 + 1;
 	    a[i__1].r = 1.f, a[i__1].i = 0.f;
 	}
-	return 0;
+	return;
     }
 
 /*     Get machine constants. */
@@ -899,7 +899,7 @@ stage.f"> */
 
     work[1].r = (real) lwmin, work[1].i = 0.f;
 
-    return 0;
+    return;
 
 /*     End of CHEEV_2STAGE */
 

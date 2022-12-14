@@ -743,7 +743,7 @@ static real c_b36 = 1.f;
 /*   Angelika Schwarz, Umea University, Sweden. */
 
 /*  ===================================================================== */
-/* Subroutine */ int slatrs3_(char *uplo, char *trans, char *diag, char *
+/* Subroutine */ void slatrs3_(char *uplo, char *trans, char *diag, char *
 	normin, integer *n, integer *nrhs, real *a, integer *lda, real *x, 
 	integer *ldx, real *scale, real *cnorm, real *work, integer *lwork, 
 	integer *info)
@@ -762,7 +762,7 @@ static real c_b36 = 1.f;
     real w[64];
     extern logical lsame_(char *, char *);
     real rscal;
-    extern /* Subroutine */ int sscal_(integer *, real *, real *, integer *), 
+    extern /* Subroutine */ void sscal_(integer *, real *, real *, integer *), 
 	    sgemm_(char *, char *, integer *, integer *, integer *, real *, 
 	    real *, integer *, real *, integer *, real *, real *, integer *);
     integer lanrm, ilast, jlast, i1;
@@ -772,7 +772,7 @@ static real c_b36 = 1.f;
     extern real slamch_(char *), slange_(char *, integer *, integer *,
 	     real *, integer *, real *);
     real scamin;
-    extern /* Subroutine */ int xerbla_(char *, integer *);
+    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen );
     extern integer ilaenv_(integer *, char *, char *, integer *, integer *, 
 	    integer *, integer *, ftnlen, ftnlen);
     real bignum;
@@ -780,7 +780,7 @@ static real c_b36 = 1.f;
     integer ifirst;
     logical notran;
     integer jfirst;
-    extern /* Subroutine */ int slatrs_(char *, char *, char *, char *, 
+    extern /* Subroutine */ void slatrs_(char *, char *, char *, char *, 
 	    integer *, real *, integer *, real *, real *, real *, integer *);
     real smlnum;
     logical nounit, lquery;
@@ -868,10 +868,10 @@ static real c_b36 = 1.f;
     }
     if (*info != 0) {
 	i__1 = -(*info);
-	xerbla_("SLATRS3", &i__1);
-	return 0;
+	xerbla_("SLATRS3", &i__1, 7);
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Initialize scaling factors */
@@ -884,7 +884,7 @@ static real c_b36 = 1.f;
 /*     Quick return if possible */
 
     if (f2cmin(*n,*nrhs) == 0) {
-	return 0;
+	return;
     }
 
 /*     Determine machine dependent constant to control overflow. */
@@ -902,7 +902,7 @@ static real c_b36 = 1.f;
 	    slatrs_(uplo, trans, diag, "Y", n, &a[a_offset], lda, &x[k * 
 		    x_dim1 + 1], &scale[k], &cnorm[1], info);
 	}
-	return 0;
+	return;
     }
 
 /*     Compute norms of blocks of A excluding diagonal blocks and find */
@@ -962,7 +962,7 @@ static real c_b36 = 1.f;
 	    slatrs_(uplo, trans, diag, "N", n, &a[a_offset], lda, &x[k * 
 		    x_dim1 + 1], &scale[k], &cnorm[1], info);
 	}
-	return 0;
+	return;
     }
 
 /*     Every right-hand side requires workspace to store NBA local scale */
@@ -1254,7 +1254,7 @@ static real c_b36 = 1.f;
 	    }
 	}
     }
-    return 0;
+    return;
 
 /*     End of SLATRS3 */
 

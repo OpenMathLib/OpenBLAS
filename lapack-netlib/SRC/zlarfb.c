@@ -710,7 +710,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int zlarfb_(char *side, char *trans, char *direct, char *
+/* Subroutine */ void zlarfb_(char *side, char *trans, char *direct, char *
 	storev, integer *m, integer *n, integer *k, doublecomplex *v, integer 
 	*ldv, doublecomplex *t, integer *ldt, doublecomplex *c__, integer *
 	ldc, doublecomplex *work, integer *ldwork)
@@ -723,7 +723,7 @@ f"> */
     /* Local variables */
     integer i__, j;
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int zgemm_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void zgemm_(char *, char *, integer *, integer *, 
 	    integer *, doublecomplex *, doublecomplex *, integer *, 
 	    doublecomplex *, integer *, doublecomplex *, doublecomplex *, 
 	    integer *), zcopy_(integer *, doublecomplex *, 
@@ -761,7 +761,7 @@ f"> */
 
     /* Function Body */
     if (*m <= 0 || *n <= 0) {
-	return 0;
+	return;
     }
 
     if (lsame_(trans, "N")) {
@@ -1382,7 +1382,7 @@ f"> */
 	}
     }
 
-    return 0;
+    return;
 
 /*     End of ZLARFB */
 

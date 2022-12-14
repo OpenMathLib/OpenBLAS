@@ -653,7 +653,7 @@ f"> */
 /* > \ingroup complex16GTcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int zgtcon_(char *norm, integer *n, doublecomplex *dl, 
+/* Subroutine */ void zgtcon_(char *norm, integer *n, doublecomplex *dl, 
 	doublecomplex *d__, doublecomplex *du, doublecomplex *du2, integer *
 	ipiv, doublereal *anorm, doublereal *rcond, doublecomplex *work, 
 	integer *info)
@@ -665,12 +665,12 @@ f"> */
     integer kase, kase1, i__;
     extern logical lsame_(char *, char *);
     integer isave[3];
-    extern /* Subroutine */ int zlacn2_(integer *, doublecomplex *, 
-	    doublecomplex *, doublereal *, integer *, integer *), xerbla_(
-	    char *, integer *, ftnlen);
+    extern /* Subroutine */ void zlacn2_(integer *, doublecomplex *, 
+	    doublecomplex *, doublereal *, integer *, integer *);
+    extern int xerbla_(char *, integer *, ftnlen);
     doublereal ainvnm;
     logical onenrm;
-    extern /* Subroutine */ int zgttrs_(char *, integer *, integer *, 
+    extern /* Subroutine */ void zgttrs_(char *, integer *, integer *, 
 	    doublecomplex *, doublecomplex *, doublecomplex *, doublecomplex *
 	    , integer *, doublecomplex *, integer *, integer *);
 
@@ -707,7 +707,7 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZGTCON", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
@@ -715,9 +715,9 @@ f"> */
     *rcond = 0.;
     if (*n == 0) {
 	*rcond = 1.;
-	return 0;
+	return;
     } else if (*anorm == 0.) {
-	return 0;
+	return;
     }
 
 /*     Check that D(1:N) is non-zero. */
@@ -726,7 +726,7 @@ f"> */
     for (i__ = 1; i__ <= i__1; ++i__) {
 	i__2 = i__;
 	if (d__[i__2].r == 0. && d__[i__2].i == 0.) {
-	    return 0;
+	    return;
 	}
 /* L10: */
     }
@@ -763,7 +763,7 @@ L20:
 	*rcond = 1. / ainvnm / *anorm;
     }
 
-    return 0;
+    return;
 
 /*     End of ZGTCON */
 

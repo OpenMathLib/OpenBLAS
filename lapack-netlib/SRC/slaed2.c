@@ -726,7 +726,7 @@ f"> */
 /* >  Modified by Francoise Tisseur, University of Tennessee */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int slaed2_(integer *k, integer *n, integer *n1, real *d__, 
+/* Subroutine */ void slaed2_(integer *k, integer *n, integer *n1, real *d__, 
 	real *q, integer *ldq, integer *indxq, real *rho, real *z__, real *
 	dlamda, real *w, real *q2, integer *indx, integer *indxc, integer *
 	indxp, integer *coltyp, integer *info)
@@ -737,14 +737,14 @@ f"> */
 
     /* Local variables */
     integer imax, jmax, ctot[4];
-    extern /* Subroutine */ int srot_(integer *, real *, integer *, real *, 
+    extern /* Subroutine */ void srot_(integer *, real *, integer *, real *, 
 	    integer *, real *, real *);
     real c__;
     integer i__, j;
     real s, t;
-    extern /* Subroutine */ int sscal_(integer *, real *, real *, integer *);
+    extern /* Subroutine */ void sscal_(integer *, real *, real *, integer *);
     integer k2;
-    extern /* Subroutine */ int scopy_(integer *, real *, integer *, real *, 
+    extern /* Subroutine */ void scopy_(integer *, real *, integer *, real *, 
 	    integer *);
     integer n2;
     extern real slapy2_(real *, real *);
@@ -752,7 +752,7 @@ f"> */
     extern real slamch_(char *);
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     extern integer isamax_(integer *, real *, integer *);
-    extern /* Subroutine */ int slamrg_(integer *, integer *, real *, integer 
+    extern /* Subroutine */ void slamrg_(integer *, integer *, real *, integer 
 	    *, integer *, integer *), slacpy_(char *, integer *, integer *, 
 	    real *, integer *, real *, integer *);
     integer iq1, iq2, n1p1;
@@ -803,13 +803,13 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("SLAED2", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
     n2 = *n - *n1;
@@ -1110,7 +1110,7 @@ L100:
     }
 
 L190:
-    return 0;
+    return;
 
 /*     End of SLAED2 */
 

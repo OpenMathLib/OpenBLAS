@@ -709,7 +709,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int zhetrd_(char *uplo, integer *n, doublecomplex *a, 
+/* Subroutine */ void zhetrd_(char *uplo, integer *n, doublecomplex *a, 
 	integer *lda, doublereal *d__, doublereal *e, doublecomplex *tau, 
 	doublecomplex *work, integer *lwork, integer *info)
 {
@@ -722,7 +722,7 @@ f"> */
     extern logical lsame_(char *, char *);
     integer nbmin, iinfo;
     logical upper;
-    extern /* Subroutine */ int zhetd2_(char *, integer *, doublecomplex *, 
+    extern /* Subroutine */ void zhetd2_(char *, integer *, doublecomplex *, 
 	    integer *, doublereal *, doublereal *, doublecomplex *, integer *), zher2k_(char *, char *, integer *, integer *, 
 	    doublecomplex *, doublecomplex *, integer *, doublecomplex *, 
 	    integer *, doublereal *, doublecomplex *, integer *);
@@ -730,7 +730,7 @@ f"> */
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     extern integer ilaenv_(integer *, char *, char *, integer *, integer *, 
 	    integer *, integer *, ftnlen, ftnlen);
-    extern /* Subroutine */ int zlatrd_(char *, integer *, integer *, 
+    extern /* Subroutine */ void zlatrd_(char *, integer *, integer *, 
 	    doublecomplex *, integer *, doublereal *, doublecomplex *, 
 	    doublecomplex *, integer *);
     integer ldwork, lwkopt;
@@ -785,16 +785,16 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZHETRD", &i__1, (ftnlen)6);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
 	work[1].r = 1., work[1].i = 0.;
-	return 0;
+	return;
     }
 
     nx = *n;
@@ -931,7 +931,7 @@ f"> */
     }
 
     work[1].r = (doublereal) lwkopt, work[1].i = 0.;
-    return 0;
+    return;
 
 /*     End of ZHETRD */
 

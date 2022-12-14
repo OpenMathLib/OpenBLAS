@@ -634,7 +634,7 @@ x.f"> */
 /* > \ingroup complexHEcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int chetri2x_(char *uplo, integer *n, complex *a, integer *
+/* Subroutine */ void chetri2x_(char *uplo, integer *n, complex *a, integer *
 	lda, integer *ipiv, complex *work, integer *nb, integer *info)
 {
     /* System generated locals */
@@ -645,17 +645,17 @@ x.f"> */
 
     /* Local variables */
     integer invd;
-    extern /* Subroutine */ int cheswapr_(char *, integer *, complex *, 
+    extern /* Subroutine */ void cheswapr_(char *, integer *, complex *, 
 	    integer *, integer *, integer *);
     complex akkp1, d__;
     integer i__, j, k;
     complex t;
-    extern /* Subroutine */ int cgemm_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void cgemm_(char *, char *, integer *, integer *, 
 	    integer *, complex *, complex *, integer *, complex *, integer *, 
 	    complex *, complex *, integer *);
     extern logical lsame_(char *, char *);
     integer iinfo;
-    extern /* Subroutine */ int ctrmm_(char *, char *, char *, char *, 
+    extern /* Subroutine */ void ctrmm_(char *, char *, char *, char *, 
 	    integer *, integer *, complex *, complex *, integer *, complex *, 
 	    integer *);
     integer count;
@@ -664,11 +664,12 @@ x.f"> */
     integer u11;
     complex u11_i_j__;
     integer ip;
-    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen), ctrtri_(
+    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
+    extern int ctrtri_(
 	    char *, char *, integer *, complex *, integer *, integer *);
     integer nnb, cut;
     complex akp1;
-    extern /* Subroutine */ int csyconv_(char *, char *, integer *, complex *,
+    extern /* Subroutine */ void csyconv_(char *, char *, integer *, complex *,
 	     integer *, integer *, complex *, integer *);
     complex u01_ip1_j__, u11_ip1_j__;
 
@@ -710,10 +711,10 @@ x.f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CHETRI2X", &i__1, (ftnlen)8);
-	return 0;
+	return;
     }
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /*     Convert A */
@@ -731,7 +732,7 @@ x.f"> */
 	for (*info = *n; *info >= 1; --(*info)) {
 	    i__1 = *info + *info * a_dim1;
 	    if (ipiv[*info] > 0 && (a[i__1].r == 0.f && a[i__1].i == 0.f)) {
-		return 0;
+		return;
 	    }
 	}
     } else {
@@ -742,7 +743,7 @@ x.f"> */
 	for (*info = 1; *info <= i__1; ++(*info)) {
 	    i__2 = *info + *info * a_dim1;
 	    if (ipiv[*info] > 0 && (a[i__2].r == 0.f && a[i__2].i == 0.f)) {
-		return 0;
+		return;
 	    }
 	}
     }
@@ -1385,7 +1386,7 @@ x.f"> */
 	}
     }
 
-    return 0;
+    return;
 
 /*     End of CHETRI2X */
 

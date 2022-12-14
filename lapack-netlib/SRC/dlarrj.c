@@ -675,7 +675,7 @@ f"> */
 /* > Christof Voemel, University of California, Berkeley, USA */
 
 /*  ===================================================================== */
-/* Subroutine */ int dlarrj_(integer *n, doublereal *d__, doublereal *e2, 
+/* Subroutine */ void dlarrj_(integer *n, doublereal *d__, doublereal *e2, 
 	integer *ifirst, integer *ilast, doublereal *rtol, integer *offset, 
 	doublereal *w, doublereal *werr, doublereal *work, integer *iwork, 
 	doublereal *pivmin, doublereal *spdiam, integer *info)
@@ -718,7 +718,7 @@ f"> */
 /*     Quick return if possible */
 
     if (*n <= 0) {
-	return 0;
+	return;
     }
 
     maxitr = (integer) ((log(*spdiam + *pivmin) - log(*pivmin)) / log(2.)) + 
@@ -910,7 +910,7 @@ L100:
 /* L110: */
     }
 
-    return 0;
+    return;
 
 /*     End of DLARRJ */
 

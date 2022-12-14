@@ -740,7 +740,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int stgex2_(logical *wantq, logical *wantz, integer *n, real 
+/* Subroutine */ void stgex2_(logical *wantq, logical *wantz, integer *n, real 
 	*a, integer *lda, real *b, integer *ldb, real *q, integer *ldq, real *
 	z__, integer *ldz, integer *j1, integer *n1, integer *n2, real *work, 
 	integer *lwork, integer *info)
@@ -756,49 +756,49 @@ f"> */
     integer idum;
     real taul[4], dsum, taur[4], scpy[16]	/* was [4][4] */, tcpy[16]	
 	    /* was [4][4] */;
-    extern /* Subroutine */ int srot_(integer *, real *, integer *, real *, 
+    extern /* Subroutine */ void srot_(integer *, real *, integer *, real *, 
 	    integer *, real *, real *);
     real f, g;
     integer i__, m;
     real s[16]	/* was [4][4] */, t[16]	/* was [4][4] */, scale, bqra21, 
 	    brqa21;
-    extern /* Subroutine */ int sscal_(integer *, real *, real *, integer *);
+    extern /* Subroutine */ void sscal_(integer *, real *, real *, integer *);
     real licop[16]	/* was [4][4] */;
     integer linfo;
-    extern /* Subroutine */ int sgemm_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void sgemm_(char *, char *, integer *, integer *, 
 	    integer *, real *, real *, integer *, real *, integer *, real *, 
 	    real *, integer *);
     real ircop[16]	/* was [4][4] */, dnorm;
     integer iwork[4];
-    extern /* Subroutine */ int slagv2_(real *, integer *, real *, integer *, 
+    extern /* Subroutine */ void slagv2_(real *, integer *, real *, integer *, 
 	    real *, real *, real *, real *, real *, real *, real *), sgeqr2_(
 	    integer *, integer *, real *, integer *, real *, real *, integer *
 	    ), sgerq2_(integer *, integer *, real *, integer *, real *, real *
 	    , integer *);
     real be[2], ai[2];
-    extern /* Subroutine */ int sorg2r_(integer *, integer *, integer *, real 
+    extern /* Subroutine */ void sorg2r_(integer *, integer *, integer *, real 
 	    *, integer *, real *, real *, integer *), sorgr2_(integer *, 
 	    integer *, integer *, real *, integer *, real *, real *, integer *
 	    );
     real ar[2], sa, sb, li[16]	/* was [4][4] */;
-    extern /* Subroutine */ int sorm2r_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void sorm2r_(char *, char *, integer *, integer *, 
 	    integer *, real *, integer *, real *, real *, integer *, real *, 
 	    integer *), sormr2_(char *, char *, integer *, 
 	    integer *, integer *, real *, integer *, real *, real *, integer *
 	    , real *, integer *);
     real dscale, ir[16]	/* was [4][4] */;
-    extern /* Subroutine */ int stgsy2_(char *, integer *, integer *, integer 
+    extern /* Subroutine */ void stgsy2_(char *, integer *, integer *, integer 
 	    *, real *, integer *, real *, integer *, real *, integer *, real *
 	    , integer *, real *, integer *, real *, integer *, real *, real *,
 	     real *, integer *, integer *, integer *);
     real ss;
     extern real slamch_(char *);
     real ws;
-    extern /* Subroutine */ int slacpy_(char *, integer *, integer *, real *, 
+    extern /* Subroutine */ void slacpy_(char *, integer *, integer *, real *, 
 	    integer *, real *, integer *), slartg_(real *, real *, 
 	    real *, real *, real *);
     real thresh;
-    extern /* Subroutine */ int slaset_(char *, integer *, integer *, real *, 
+    extern /* Subroutine */ void slaset_(char *, integer *, integer *, real *, 
 	    real *, real *, integer *), slassq_(integer *, real *, 
 	    integer *, real *, real *);
     real smlnum;
@@ -838,10 +838,10 @@ f"> */
 /*     Quick return if possible */
 
     if (*n <= 1 || *n1 <= 0 || *n2 <= 0) {
-	return 0;
+	return;
     }
     if (*n1 > *n || *j1 + *n1 > *n) {
-	return 0;
+	return;
     }
     m = *n1 + *n2;
 /* Computing MAX */
@@ -851,7 +851,7 @@ f"> */
 /* Computing MAX */
 	i__1 = *n * m, i__2 = m * m << 1;
 	work[1] = (real) f2cmax(i__1,i__2);
-	return 0;
+	return;
     }
 
     weak = FALSE_;
@@ -990,7 +990,7 @@ f"> */
 
 /*        Exit with INFO = 0 if swap was successfully performed. */
 
-	return 0;
+	return;
 
     } else {
 
@@ -1288,7 +1288,7 @@ f"> */
 
 /*        Exit with INFO = 0 if swap was successfully performed. */
 
-	return 0;
+	return;
 
     }
 
@@ -1297,7 +1297,7 @@ f"> */
 L70:
 
     *info = 1;
-    return 0;
+    return;
 
 /*     End of STGEX2 */
 

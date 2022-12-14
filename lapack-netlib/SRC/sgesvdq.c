@@ -932,7 +932,7 @@ static logical c_false = FALSE_;
 /* > \ingroup realGEsing */
 
 /*  ===================================================================== */
-/* Subroutine */ int sgesvdq_(char *joba, char *jobp, char *jobr, char *jobu, 
+/* Subroutine */ void sgesvdq_(char *joba, char *jobp, char *jobr, char *jobu, 
 	char *jobv, integer *m, integer *n, real *a, integer *lda, real *s, 
 	real *u, integer *ldu, real *v, integer *ldv, integer *numrank, 
 	integer *iwork, integer *liwork, real *work, integer *lwork, real *
@@ -954,7 +954,7 @@ static logical c_false = FALSE_;
     integer p, q;
     logical conda;
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int sscal_(integer *, real *, real *, integer *);
+    extern /* Subroutine */ void sscal_(integer *, real *, real *, integer *);
     integer iwoff;
     logical lsvec;
     real sfmin, epsln;
@@ -964,18 +964,19 @@ static logical c_false = FALSE_;
     logical dntwu, dntwv, wntua;
     integer lworq;
     logical wntuf, wntva, wntur, wntus, wntvr;
-    extern /* Subroutine */ int sgeqp3_(integer *, integer *, real *, integer 
+    extern /* Subroutine */ void sgeqp3_(integer *, integer *, real *, integer 
 	    *, integer *, real *, real *, integer *, integer *);
     integer lwsvd2, lworq2, nr;
     real sconda;
     extern real slamch_(char *), slange_(char *, integer *, integer *,
 	     real *, integer *, real *);
-    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen), sgelqf_(
+    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
+    extern void sgelqf_(
 	    integer *, integer *, real *, integer *, real *, real *, integer *
 	    , integer *), slascl_(char *, integer *, integer *, real *, real *
 	    , integer *, integer *, real *, integer *, integer *);
     extern integer isamax_(integer *, real *, integer *);
-    extern /* Subroutine */ int sgeqrf_(integer *, integer *, real *, integer 
+    extern /* Subroutine */ void sgeqrf_(integer *, integer *, real *, integer 
 	    *, real *, real *, integer *, integer *), sgesvd_(char *, char *, 
 	    integer *, integer *, real *, integer *, real *, real *, integer *
 	    , real *, integer *, real *, integer *, integer *)
@@ -990,12 +991,12 @@ static logical c_false = FALSE_;
     extern /* Subroutine */ int slaswp_(integer *, real *, integer *, integer 
 	    *, integer *, integer *, integer *);
     real rdummy[1];
-    extern /* Subroutine */ int sormlq_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void sormlq_(char *, char *, integer *, integer *, 
 	    integer *, real *, integer *, real *, real *, integer *, real *, 
 	    integer *, integer *);
     logical lquery;
     integer lwunlq;
-    extern /* Subroutine */ int sormqr_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void sormqr_(char *, char *, integer *, integer *, 
 	    integer *, real *, integer *, real *, real *, integer *, real *, 
 	    integer *, integer *);
     integer optwrk;
@@ -1376,7 +1377,7 @@ static logical c_false = FALSE_;
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("SGESVDQ", &i__1, (ftnlen)7);
-	return 0;
+	return;
     } else if (lquery) {
 
 /*     Return optimal workspace */
@@ -1385,13 +1386,13 @@ static logical c_false = FALSE_;
 	work[1] = (real) optwrk;
 	work[2] = (real) minwrk;
 	rwork[1] = (real) rminwrk;
-	return 0;
+	return;
     }
 
 /*     Quick return if the matrix is void. */
 
     if (*m == 0 || *n == 0) {
-	return 0;
+	return;
     }
 
     big = slamch_("O");
@@ -1410,7 +1411,7 @@ static logical c_false = FALSE_;
 		*info = -8;
 		i__2 = -(*info);
 		xerbla_("SGESVDQ", &i__2, (ftnlen)7);
-		return 0;
+		return;
 	    }
 /* L1904: */
 	}
@@ -1461,7 +1462,7 @@ static logical c_false = FALSE_;
 		rwork[1] = -1.f;
 	    }
 	    rwork[2] = -1.f;
-	    return 0;
+	    return;
 	}
 
 	if (rwork[1] > big / sqrt((real) (*m))) {
@@ -1485,7 +1486,7 @@ static logical c_false = FALSE_;
 	    *info = -8;
 	    i__1 = -(*info);
 	    xerbla_("SGESVDQ", &i__1, (ftnlen)7);
-	    return 0;
+	    return;
 	}
 	if (rtmp > big / sqrt((real) (*m))) {
 /*             matrix by 1/sqrt(M) if too large entry detected */
@@ -2240,7 +2241,7 @@ L4002:
 /*     full row rank triangular (trapezoidal) factor of A. */
     *numrank = nr;
 
-    return 0;
+    return;
 
 /*     End of SGESVDQ */
 

@@ -741,7 +741,7 @@ f"> */
 /* > \ingroup complex16OTHERcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int zlaed8_(integer *k, integer *n, integer *qsiz, 
+/* Subroutine */ void zlaed8_(integer *k, integer *n, integer *qsiz, 
 	doublecomplex *q, integer *ldq, doublereal *d__, doublereal *rho, 
 	integer *cutpnt, doublereal *z__, doublereal *dlamda, doublecomplex *
 	q2, integer *ldq2, doublereal *w, integer *indxp, integer *indx, 
@@ -757,19 +757,21 @@ f"> */
     doublereal c__;
     integer i__, j;
     doublereal s, t;
-    extern /* Subroutine */ int dscal_(integer *, doublereal *, doublereal *, 
+    extern /* Subroutine */ void dscal_(integer *, doublereal *, doublereal *, 
 	    integer *), dcopy_(integer *, doublereal *, integer *, doublereal 
 	    *, integer *);
     integer k2, n1, n2;
-    extern /* Subroutine */ int zdrot_(integer *, doublecomplex *, integer *, 
+    extern /* Subroutine */ void zdrot_(integer *, doublecomplex *, integer *, 
 	    doublecomplex *, integer *, doublereal *, doublereal *), zcopy_(
 	    integer *, doublecomplex *, integer *, doublecomplex *, integer *)
 	    ;
     extern doublereal dlapy2_(doublereal *, doublereal *), dlamch_(char *);
     integer jp;
     extern integer idamax_(integer *, doublereal *, integer *);
-    extern /* Subroutine */ int dlamrg_(integer *, integer *, doublereal *, 
-	    integer *, integer *, integer *), xerbla_(char *, integer *, ftnlen), zlacpy_(char *, integer *, integer *, doublecomplex *, 
+    extern /* Subroutine */ void dlamrg_(integer *, integer *, doublereal *, 
+	    integer *, integer *, integer *);
+    extern int xerbla_(char *, integer *, ftnlen);
+    extern void zlacpy_(char *, integer *, integer *, doublecomplex *, 
 	    integer *, doublecomplex *, integer *);
     integer n1p1;
     doublereal eps, tau, tol;
@@ -821,7 +823,7 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZLAED8", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Need to initialize GIVPTR to O here in case of quick exit */
@@ -834,7 +836,7 @@ f"> */
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
     n1 = *cutpnt;
@@ -900,7 +902,7 @@ f"> */
 /* L50: */
 	}
 	zlacpy_("A", qsiz, n, &q2[q2_dim1 + 1], ldq2, &q[q_dim1 + 1], ldq);
-	return 0;
+	return;
     }
 
 /*     If there are multiple eigenvalues then the problem deflates.  Here */
@@ -1034,7 +1036,7 @@ L100:
 		1) * q_dim1 + 1], ldq);
     }
 
-    return 0;
+    return;
 
 /*     End of ZLAED8 */
 

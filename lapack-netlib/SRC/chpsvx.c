@@ -789,7 +789,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int chpsvx_(char *fact, char *uplo, integer *n, integer *
+/* Subroutine */ void chpsvx_(char *fact, char *uplo, integer *n, integer *
 	nrhs, complex *ap, complex *afp, integer *ipiv, complex *b, integer *
 	ldb, complex *x, integer *ldx, real *rcond, real *ferr, real *berr, 
 	complex *work, real *rwork, integer *info)
@@ -800,13 +800,15 @@ f"> */
     /* Local variables */
     extern logical lsame_(char *, char *);
     real anorm;
-    extern /* Subroutine */ int ccopy_(integer *, complex *, integer *, 
+    extern /* Subroutine */ void ccopy_(integer *, complex *, integer *, 
 	    complex *, integer *);
     extern real clanhp_(char *, char *, integer *, complex *, real *), slamch_(char *);
     logical nofact;
-    extern /* Subroutine */ int chpcon_(char *, integer *, complex *, integer 
+    extern /* Subroutine */ void chpcon_(char *, integer *, complex *, integer 
 	    *, real *, real *, complex *, integer *), clacpy_(char *, 
-	    integer *, integer *, complex *, integer *, complex *, integer *), xerbla_(char *, integer *, ftnlen), chprfs_(char *, 
+	    integer *, integer *, complex *, integer *, complex *, integer *);
+    extern int xerbla_(char *, integer *, ftnlen);
+    extern void chprfs_(char *, 
 	    integer *, integer *, complex *, complex *, integer *, complex *, 
 	    integer *, complex *, integer *, real *, real *, complex *, real *
 	    , integer *), chptrf_(char *, integer *, complex *, 
@@ -860,7 +862,7 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CHPSVX", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
     if (nofact) {
@@ -875,7 +877,7 @@ f"> */
 
 	if (*info > 0) {
 	    *rcond = 0.f;
-	    return 0;
+	    return;
 	}
     }
 
@@ -904,7 +906,7 @@ f"> */
 	*info = *n + 1;
     }
 
-    return 0;
+    return;
 
 /*     End of CHPSVX */
 

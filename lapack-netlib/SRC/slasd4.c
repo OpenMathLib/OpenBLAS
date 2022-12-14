@@ -663,7 +663,7 @@ f"> */
 /* >     at Berkeley, USA */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int slasd4_(integer *n, integer *i__, real *d__, real *z__, 
+/* Subroutine */ void slasd4_(integer *n, integer *i__, real *d__, real *z__, 
 	real *delta, real *rho, real *sigma, real *work, integer *info)
 {
     /* System generated locals */
@@ -680,10 +680,10 @@ f"> */
     real dtisq;
     logical swtch;
     real dtnsq;
-    extern /* Subroutine */ int slaed6_(integer *, logical *, real *, real *, 
+    extern /* Subroutine */ void slaed6_(integer *, logical *, real *, real *, 
 	    real *, real *, real *, integer *);
     real delsq2;
-    extern /* Subroutine */ int slasd5_(integer *, real *, real *, real *, 
+    extern /* Subroutine */ void slasd5_(integer *, real *, real *, real *, 
 	    real *, real *, real *);
     real dd[3], dtnsq1;
     logical swtch3;
@@ -729,11 +729,11 @@ f"> */
 	*sigma = sqrt(d__[1] * d__[1] + *rho * z__[1] * z__[1]);
 	delta[1] = 1.f;
 	work[1] = 1.f;
-	return 0;
+	return;
     }
     if (*n == 2) {
 	slasd5_(i__, &d__[1], &z__[1], &delta[1], rho, sigma, &work[1]);
-	return 0;
+	return;
     }
 
 /*     Compute machine epsilon */
@@ -1663,7 +1663,7 @@ f"> */
     }
 
 L240:
-    return 0;
+    return;
 
 /*     End of SLASD4 */
 

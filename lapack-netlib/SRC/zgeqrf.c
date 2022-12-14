@@ -661,7 +661,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int zgeqrf_(integer *m, integer *n, doublecomplex *a, 
+/* Subroutine */ void zgeqrf_(integer *m, integer *n, doublecomplex *a, 
 	integer *lda, doublecomplex *tau, doublecomplex *work, integer *lwork,
 	 integer *info)
 {
@@ -670,18 +670,18 @@ f"> */
 
     /* Local variables */
     integer i__, k, nbmin, iinfo;
-    extern /* Subroutine */ int zgeqr2_(integer *, integer *, doublecomplex *,
+    extern /* Subroutine */ void zgeqr2_(integer *, integer *, doublecomplex *,
 	     integer *, doublecomplex *, doublecomplex *, integer *);
     integer ib, nb, nx;
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     extern integer ilaenv_(integer *, char *, char *, integer *, integer *, 
 	    integer *, integer *, ftnlen, ftnlen);
-    extern /* Subroutine */ int zlarfb_(char *, char *, char *, char *, 
+    extern /* Subroutine */ void zlarfb_(char *, char *, char *, char *, 
 	    integer *, integer *, integer *, doublecomplex *, integer *, 
 	    doublecomplex *, integer *, doublecomplex *, integer *, 
 	    doublecomplex *, integer *);
     integer ldwork;
-    extern /* Subroutine */ int zlarft_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void zlarft_(char *, char *, integer *, integer *, 
 	    doublecomplex *, integer *, doublecomplex *, doublecomplex *, 
 	    integer *);
     integer lwkopt;
@@ -726,9 +726,9 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZGEQRF", &i__1, (ftnlen)6);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
@@ -736,7 +736,7 @@ f"> */
     k = f2cmin(*m,*n);
     if (k == 0) {
 	work[1].r = 1., work[1].i = 0.;
-	return 0;
+	return;
     }
 
     nbmin = 2;
@@ -821,7 +821,7 @@ f"> */
     }
 
     work[1].r = (doublereal) iws, work[1].i = 0.;
-    return 0;
+    return;
 
 /*     End of ZGEQRF */
 

@@ -696,7 +696,7 @@ f"> */
 /* > \ingroup complexPTcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int cptrfs_(char *uplo, integer *n, integer *nrhs, real *d__,
+/* Subroutine */ void cptrfs_(char *uplo, integer *n, integer *nrhs, real *d__,
 	 complex *e, real *df, complex *ef, complex *b, integer *ldb, complex 
 	*x, integer *ldx, real *ferr, real *berr, complex *work, real *rwork, 
 	integer *info)
@@ -713,7 +713,7 @@ f"> */
     integer i__, j;
     real s;
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int caxpy_(integer *, complex *, complex *, 
+    extern /* Subroutine */ void caxpy_(integer *, complex *, complex *, 
 	    integer *, complex *, integer *);
     integer count;
     logical upper;
@@ -725,7 +725,7 @@ f"> */
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     extern integer isamax_(integer *, real *, integer *);
     real lstres;
-    extern /* Subroutine */ int cpttrs_(char *, integer *, integer *, real *, 
+    extern /* Subroutine */ void cpttrs_(char *, integer *, integer *, real *, 
 	    complex *, complex *, integer *, integer *);
     real eps;
 
@@ -774,7 +774,7 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CPTRFS", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
@@ -786,7 +786,7 @@ f"> */
 	    berr[j] = 0.f;
 /* L10: */
 	}
-	return 0;
+	return;
     }
 
 /*     NZ = maximum number of nonzero elements in each row of A, plus 1 */
@@ -1143,7 +1143,7 @@ L20:
 /* L100: */
     }
 
-    return 0;
+    return;
 
 /*     End of CPTRFS */
 

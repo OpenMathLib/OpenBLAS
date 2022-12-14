@@ -637,7 +637,7 @@ f"> */
 /* > \ingroup doubleOTHERcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int dspcon_(char *uplo, integer *n, doublereal *ap, integer *
+/* Subroutine */ void dspcon_(char *uplo, integer *n, doublereal *ap, integer *
 	ipiv, doublereal *anorm, doublereal *rcond, doublereal *work, integer 
 	*iwork, integer *info)
 {
@@ -649,12 +649,12 @@ f"> */
     extern logical lsame_(char *, char *);
     integer isave[3];
     logical upper;
-    extern /* Subroutine */ int dlacn2_(integer *, doublereal *, doublereal *,
+    extern /* Subroutine */ void dlacn2_(integer *, doublereal *, doublereal *,
 	     integer *, doublereal *, integer *, integer *);
     integer ip;
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     doublereal ainvnm;
-    extern /* Subroutine */ int dsptrs_(char *, integer *, integer *, 
+    extern /* Subroutine */ void dsptrs_(char *, integer *, integer *, 
 	    doublereal *, integer *, doublereal *, integer *, integer *);
 
 
@@ -688,7 +688,7 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DSPCON", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
@@ -696,9 +696,9 @@ f"> */
     *rcond = 0.;
     if (*n == 0) {
 	*rcond = 1.;
-	return 0;
+	return;
     } else if (*anorm <= 0.) {
-	return 0;
+	return;
     }
 
 /*     Check that the diagonal matrix D is nonsingular. */
@@ -710,7 +710,7 @@ f"> */
 	ip = *n * (*n + 1) / 2;
 	for (i__ = *n; i__ >= 1; --i__) {
 	    if (ipiv[i__] > 0 && ap[ip] == 0.) {
-		return 0;
+		return;
 	    }
 	    ip -= i__;
 /* L10: */
@@ -723,7 +723,7 @@ f"> */
 	i__1 = *n;
 	for (i__ = 1; i__ <= i__1; ++i__) {
 	    if (ipiv[i__] > 0 && ap[ip] == 0.) {
-		return 0;
+		return;
 	    }
 	    ip = ip + *n - i__ + 1;
 /* L20: */
@@ -749,7 +749,7 @@ L30:
 	*rcond = 1. / ainvnm / *anorm;
     }
 
-    return 0;
+    return;
 
 /*     End of DSPCON */
 

@@ -663,7 +663,7 @@ f"> */
 /* > \ingroup doubleOTHERauxiliary */
 
 /*  ===================================================================== */
-/* Subroutine */ int dlags2_(logical *upper, doublereal *a1, doublereal *a2, 
+/* Subroutine */ void dlags2_(logical *upper, doublereal *a1, doublereal *a2, 
 	doublereal *a3, doublereal *b1, doublereal *b2, doublereal *b3, 
 	doublereal *csu, doublereal *snu, doublereal *csv, doublereal *snv, 
 	doublereal *csq, doublereal *snq)
@@ -674,7 +674,7 @@ f"> */
     /* Local variables */
     doublereal aua11, aua12, aua21, aua22, avb11, avb12, avb21, avb22, ua11r, 
 	    ua22r, vb11r, vb22r, a, b, c__, d__, r__, s1, s2;
-    extern /* Subroutine */ int dlasv2_(doublereal *, doublereal *, 
+    extern /* Subroutine */ void dlasv2_(doublereal *, doublereal *, 
 	    doublereal *, doublereal *, doublereal *, doublereal *, 
 	    doublereal *, doublereal *, doublereal *), dlartg_(doublereal *, 
 	    doublereal *, doublereal *, doublereal *, doublereal *);
@@ -867,7 +867,7 @@ f"> */
 
     }
 
-    return 0;
+    return;
 
 /*     End of DLAGS2 */
 

@@ -688,7 +688,7 @@ r.f"> */
 /* > \endverbatim */
 
 /*  ===================================================================== */
-/* Subroutine */ int zungtsqr_(integer *m, integer *n, integer *mb, integer *
+/* Subroutine */ void zungtsqr_(integer *m, integer *n, integer *mb, integer *
 	nb, doublecomplex *a, integer *lda, doublecomplex *t, integer *ldt, 
 	doublecomplex *work, integer *lwork, integer *info)
 {
@@ -697,15 +697,16 @@ r.f"> */
     doublecomplex z__1;
 
     /* Local variables */
-    extern /* Subroutine */ int zlamtsqr_(char *, char *, integer *, integer *
+    extern /* Subroutine */ void zlamtsqr_(char *, char *, integer *, integer *
 	    , integer *, integer *, integer *, doublecomplex *, integer *, 
 	    doublecomplex *, integer *, doublecomplex *, integer *, 
 	    doublecomplex *, integer *, integer *);
     integer lworkopt, j, iinfo;
-    extern /* Subroutine */ int zcopy_(integer *, doublecomplex *, integer *, 
+    extern /* Subroutine */ void zcopy_(integer *, doublecomplex *, integer *, 
 	    doublecomplex *, integer *);
     integer lc, lw;
-    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen), zlaset_(
+    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
+    extern void zlaset_(
 	    char *, integer *, integer *, doublecomplex *, doublecomplex *, 
 	    doublecomplex *, integer *);
     logical lquery;
@@ -787,11 +788,11 @@ r.f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZUNGTSQR", &i__1, (ftnlen)8);
-	return 0;
+	return;
     } else if (lquery) {
 	z__1.r = (doublereal) lworkopt, z__1.i = 0.;
 	work[1].r = z__1.r, work[1].i = z__1.i;
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
@@ -799,7 +800,7 @@ r.f"> */
     if (f2cmin(*m,*n) == 0) {
 	z__1.r = (doublereal) lworkopt, z__1.i = 0.;
 	work[1].r = z__1.r, work[1].i = z__1.i;
-	return 0;
+	return;
     }
 
 /*     (1) Form explicitly the tall-skinny M-by-N left submatrix Q1_in */
@@ -834,7 +835,7 @@ r.f"> */
 
     z__1.r = (doublereal) lworkopt, z__1.i = 0.;
     work[1].r = z__1.r, work[1].i = z__1.i;
-    return 0;
+    return;
 
 /*     End of ZUNGTSQR */
 

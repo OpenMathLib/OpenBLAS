@@ -671,7 +671,7 @@ static integer c__0 = 0;
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int zlaswlq_(integer *m, integer *n, integer *mb, integer *
+/* Subroutine */ void zlaswlq_(integer *m, integer *n, integer *mb, integer *
 	nb, doublecomplex *a, integer *lda, doublecomplex *t, integer *ldt, 
 	doublecomplex *work, integer *lwork, integer *info)
 {
@@ -680,11 +680,12 @@ static integer c__0 = 0;
 
     /* Local variables */
     integer i__, ii, kk;
-    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen), zgelqt_(
+    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
+    extern void zgelqt_(
 	    integer *, integer *, integer *, doublecomplex *, integer *, 
 	    doublecomplex *, integer *, doublecomplex *, integer *);
     logical lquery;
-    extern /* Subroutine */ int ztplqt_(integer *, integer *, integer *, 
+    extern /* Subroutine */ void ztplqt_(integer *, integer *, integer *, 
 	    integer *, doublecomplex *, integer *, doublecomplex *, integer *,
 	     doublecomplex *, integer *, doublecomplex *, integer *);
     integer ctr;
@@ -738,15 +739,15 @@ static integer c__0 = 0;
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZLASWLQ", &i__1, (ftnlen)7);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (f2cmin(*m,*n) == 0) {
-	return 0;
+	return;
     }
 
 /*     The LQ Decomposition */
@@ -754,7 +755,7 @@ static integer c__0 = 0;
     if (*m >= *n || *nb <= *m || *nb >= *n) {
 	zgelqt_(m, n, mb, &a[a_offset], lda, &t[t_offset], ldt, &work[1], 
 		info);
-	return 0;
+	return;
     }
 
     kk = (*n - *m) % (*nb - *m);
@@ -787,7 +788,7 @@ static integer c__0 = 0;
 
     i__2 = *m * *mb;
     work[1].r = (doublereal) i__2, work[1].i = 0.;
-    return 0;
+    return;
 
 /*     End of ZLASWLQ */
 

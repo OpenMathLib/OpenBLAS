@@ -738,7 +738,7 @@ f"> */
 /* > Christof Voemel, University of California, Berkeley, USA */
 
 /*  ===================================================================== */
-/* Subroutine */ int dlar1v_(integer *n, integer *b1, integer *bn, doublereal 
+/* Subroutine */ void dlar1v_(integer *n, integer *b1, integer *bn, doublereal 
 	*lambda, doublereal *d__, doublereal *l, doublereal *ld, doublereal *
 	lld, doublereal *pivmin, doublereal *gaptol, doublereal *z__, logical 
 	*wantnc, integer *negcnt, doublereal *ztz, doublereal *mingma, 
@@ -1031,7 +1031,7 @@ L280:
     *rqcorr = *mingma * tmp;
 
 
-    return 0;
+    return;
 
 /*     End of DLAR1V */
 

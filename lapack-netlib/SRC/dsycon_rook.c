@@ -656,7 +656,7 @@ rook.f"> */
 /* > \endverbatim */
 
 /*  ===================================================================== */
-/* Subroutine */ int dsycon_rook_(char *uplo, integer *n, doublereal *a, 
+/* Subroutine */ void dsycon_rook_(char *uplo, integer *n, doublereal *a, 
 	integer *lda, integer *ipiv, doublereal *anorm, doublereal *rcond, 
 	doublereal *work, integer *iwork, integer *info)
 {
@@ -664,16 +664,16 @@ rook.f"> */
     integer a_dim1, a_offset, i__1;
 
     /* Local variables */
-    extern /* Subroutine */ int dsytrs_rook_(char *, integer *, integer *, 
+    extern /* Subroutine */ void dsytrs_rook_(char *, integer *, integer *, 
 	    doublereal *, integer *, integer *, doublereal *, integer *, 
 	    integer *);
     integer kase, i__;
     extern logical lsame_(char *, char *);
     integer isave[3];
     logical upper;
-    extern /* Subroutine */ int dlacn2_(integer *, doublereal *, doublereal *,
-	     integer *, doublereal *, integer *, integer *), xerbla_(char *, 
-	    integer *, ftnlen);
+    extern /* Subroutine */ void dlacn2_(integer *, doublereal *, doublereal *,
+	     integer *, doublereal *, integer *, integer *);
+    extern int xerbla_(char *, integer *, ftnlen);
     doublereal ainvnm;
 
 
@@ -711,7 +711,7 @@ rook.f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DSYCON_ROOK", &i__1, (ftnlen)11);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
@@ -719,9 +719,9 @@ rook.f"> */
     *rcond = 0.;
     if (*n == 0) {
 	*rcond = 1.;
-	return 0;
+	return;
     } else if (*anorm <= 0.) {
-	return 0;
+	return;
     }
 
 /*     Check that the diagonal matrix D is nonsingular. */
@@ -732,7 +732,7 @@ rook.f"> */
 
 	for (i__ = *n; i__ >= 1; --i__) {
 	    if (ipiv[i__] > 0 && a[i__ + i__ * a_dim1] == 0.) {
-		return 0;
+		return;
 	    }
 /* L10: */
 	}
@@ -743,7 +743,7 @@ rook.f"> */
 	i__1 = *n;
 	for (i__ = 1; i__ <= i__1; ++i__) {
 	    if (ipiv[i__] > 0 && a[i__ + i__ * a_dim1] == 0.) {
-		return 0;
+		return;
 	    }
 /* L20: */
 	}
@@ -769,7 +769,7 @@ L30:
 	*rcond = 1. / ainvnm / *anorm;
     }
 
-    return 0;
+    return;
 
 /*     End of DSYCON_ROOK */
 

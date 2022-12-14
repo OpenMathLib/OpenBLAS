@@ -799,7 +799,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int zhgeqz_(char *job, char *compq, char *compz, integer *n, 
+/* Subroutine */ void zhgeqz_(char *job, char *compq, char *compz, integer *n, 
 	integer *ilo, integer *ihi, doublecomplex *h__, integer *ldh, 
 	doublecomplex *t, integer *ldt, doublecomplex *alpha, doublecomplex *
 	beta, doublecomplex *q, integer *ldq, doublecomplex *z__, integer *
@@ -814,7 +814,7 @@ f"> */
 
     /* Local variables */
     doublereal absb, atol, btol, temp;
-    extern /* Subroutine */ int zrot_(integer *, doublecomplex *, integer *, 
+    extern /* Subroutine */ void zrot_(integer *, doublecomplex *, integer *, 
 	    doublecomplex *, integer *, doublereal *, doublecomplex *);
     doublereal temp2, c__;
     integer j;
@@ -825,7 +825,7 @@ f"> */
     doublereal anorm, bnorm;
     integer maxit;
     doublecomplex shift;
-    extern /* Subroutine */ int zscal_(integer *, doublecomplex *, 
+    extern /* Subroutine */ void zscal_(integer *, doublecomplex *, 
 	    doublecomplex *, integer *);
     doublereal tempr;
     doublecomplex ctemp2, ctemp3;
@@ -848,10 +848,10 @@ f"> */
 	    doublereal *);
     logical ilazro;
     integer icompz, ifirst;
-    extern /* Subroutine */ int zlartg_(doublecomplex *, doublecomplex *, 
+    extern /* Subroutine */ void zlartg_(doublecomplex *, doublecomplex *, 
 	    doublereal *, doublecomplex *, doublecomplex *);
     integer ifrstm;
-    extern /* Subroutine */ int zlaset_(char *, integer *, integer *, 
+    extern /* Subroutine */ void zlaset_(char *, integer *, integer *, 
 	    doublecomplex *, doublecomplex *, doublecomplex *, integer *);
     integer istart;
     logical lquery;
@@ -963,9 +963,9 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZHGEQZ", &i__1, (ftnlen)6);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
@@ -973,7 +973,7 @@ f"> */
 /*     WORK( 1 ) = CMPLX( 1 ) */
     if (*n <= 0) {
 	work[1].r = 1., work[1].i = 0.;
-	return 0;
+	return;
     }
 
 /*     Initialize Q and Z */
@@ -1751,7 +1751,7 @@ L190:
 L210:
     z__1.r = (doublereal) (*n), z__1.i = 0.;
     work[1].r = z__1.r, work[1].i = z__1.i;
-    return 0;
+    return;
 
 /*     End of ZHGEQZ */
 

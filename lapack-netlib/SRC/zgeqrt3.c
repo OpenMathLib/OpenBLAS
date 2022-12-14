@@ -647,7 +647,7 @@ ompact WY representation of Q. */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int zgeqrt3_(integer *m, integer *n, doublecomplex *a, 
+/* Subroutine */ void zgeqrt3_(integer *m, integer *n, doublecomplex *a, 
 	integer *lda, doublecomplex *t, integer *ldt, integer *info)
 {
     /* System generated locals */
@@ -656,15 +656,16 @@ ompact WY representation of Q. */
 
     /* Local variables */
     integer i__, j, iinfo;
-    extern /* Subroutine */ int zgemm_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void zgemm_(char *, char *, integer *, integer *, 
 	    integer *, doublecomplex *, doublecomplex *, integer *, 
 	    doublecomplex *, integer *, doublecomplex *, doublecomplex *, 
 	    integer *);
     integer i1, j1, n1, n2;
-    extern /* Subroutine */ int ztrmm_(char *, char *, char *, char *, 
+    extern /* Subroutine */ void ztrmm_(char *, char *, char *, char *, 
 	    integer *, integer *, doublecomplex *, doublecomplex *, integer *,
-	     doublecomplex *, integer *), 
-	    xerbla_(char *, integer *, ftnlen), zlarfg_(integer *, 
+	     doublecomplex *, integer *); 
+    extern int xerbla_(char *, integer *, ftnlen);
+    extern void zlarfg_(integer *, 
 	    doublecomplex *, doublecomplex *, integer *, doublecomplex *);
 
 
@@ -699,7 +700,7 @@ ompact WY representation of Q. */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZGEQRT3", &i__1, (ftnlen)7);
-	return 0;
+	return;
     }
 
     if (*n == 1) {
@@ -809,7 +810,7 @@ ompact WY representation of Q. */
 
     }
 
-    return 0;
+    return;
 
 /*     End of ZGEQRT3 */
 

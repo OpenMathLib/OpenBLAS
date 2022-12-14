@@ -602,7 +602,7 @@ f"> */
 /* > \ingroup realOTHERauxiliary */
 
 /*  ===================================================================== */
-/* Subroutine */ int sladiv_(real *a, real *b, real *c__, real *d__, real *p, 
+/* Subroutine */ void sladiv_(real *a, real *b, real *c__, real *d__, real *p, 
 	real *q)
 {
     /* System generated locals */
@@ -611,7 +611,7 @@ f"> */
     /* Local variables */
     real s, aa, ab, bb, cc, cd, dd, be, un, ov;
     extern real slamch_(char *);
-    extern /* Subroutine */ int sladiv1_(real *, real *, real *, real *, real 
+    extern /* Subroutine */ void sladiv1_(real *, real *, real *, real *, real 
 	    *, real *);
     real eps;
 
@@ -670,14 +670,14 @@ f"> */
     *p *= s;
     *q *= s;
 
-    return 0;
+    return;
 
 /*     End of SLADIV */
 
 } /* sladiv_ */
 
 /* > \ingroup realOTHERauxiliary */
-/* Subroutine */ int sladiv1_(real *a, real *b, real *c__, real *d__, real *p,
+/* Subroutine */ void sladiv1_(real *a, real *b, real *c__, real *d__, real *p,
 	 real *q)
 {
     real r__, t;
@@ -700,7 +700,7 @@ f"> */
     *a = -(*a);
     *q = sladiv2_(b, a, c__, d__, &r__, &t);
 
-    return 0;
+    return;
 
 /*     End of SLADIV1 */
 

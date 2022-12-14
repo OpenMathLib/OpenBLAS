@@ -653,7 +653,7 @@ aa_2stage.f"> */
 /* > \ingroup complex16SYcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int zsytrs_aa_2stage_(char *uplo, integer *n, integer *nrhs,
+/* Subroutine */ void zsytrs_aa_2stage_(char *uplo, integer *n, integer *nrhs,
 	 doublecomplex *a, integer *lda, doublecomplex *tb, integer *ltb, 
 	integer *ipiv, integer *ipiv2, doublecomplex *b, integer *ldb, 
 	integer *info)
@@ -665,13 +665,15 @@ aa_2stage.f"> */
     integer ldtb;
     extern logical lsame_(char *, char *);
     logical upper;
-    extern /* Subroutine */ int ztrsm_(char *, char *, char *, char *, 
+    extern /* Subroutine */ void ztrsm_(char *, char *, char *, char *, 
 	    integer *, integer *, doublecomplex *, doublecomplex *, integer *,
 	     doublecomplex *, integer *);
     integer nb;
-    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen), zgbtrs_(
+    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
+    extern void zgbtrs_(
 	    char *, integer *, integer *, integer *, integer *, doublecomplex 
-	    *, integer *, integer *, doublecomplex *, integer *, integer *), zlaswp_(integer *, doublecomplex *, integer *, integer *,
+	    *, integer *, integer *, doublecomplex *, integer *, integer *);
+    extern int zlaswp_(integer *, doublecomplex *, integer *, integer *,
 	     integer *, integer *, integer *);
 
 
@@ -715,13 +717,13 @@ aa_2stage.f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZSYTRS_AA_2STAGE", &i__1, (ftnlen)16);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0 || *nrhs == 0) {
-	return 0;
+	return;
     }
 
 /*     Read NB and compute LDTB */
@@ -806,7 +808,7 @@ aa_2stage.f"> */
 	}
     }
 
-    return 0;
+    return;
 
 /*     End of ZSYTRS_AA_2STAGE */
 

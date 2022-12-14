@@ -772,7 +772,7 @@ static real c_b28 = 1.f;
 /* > \endverbatim */
 
 /*  ===================================================================== */
-/* Subroutine */ int cheevd_2stage_(char *jobz, char *uplo, integer *n, 
+/* Subroutine */ void cheevd_2stage_(char *jobz, char *uplo, integer *n, 
 	complex *a, integer *lda, real *w, complex *work, integer *lwork, 
 	real *rwork, integer *lrwork, integer *iwork, integer *liwork, 
 	integer *info)
@@ -788,13 +788,13 @@ static real c_b28 = 1.f;
     real anrm;
     integer imax;
     real rmin, rmax;
-    extern /* Subroutine */ int chetrd_2stage_(char *, char *, integer *, 
+    extern /* Subroutine */ void chetrd_2stage_(char *, char *, integer *, 
 	    complex *, integer *, real *, real *, complex *, complex *, 
 	    integer *, complex *, integer *, integer *);
     real sigma;
     extern logical lsame_(char *, char *);
     integer iinfo;
-    extern /* Subroutine */ int sscal_(integer *, real *, real *, integer *);
+    extern /* Subroutine */ void sscal_(integer *, real *, real *, integer *);
     integer lhtrd, lwmin;
     logical lower;
     integer llrwk, lwtrd;
@@ -803,20 +803,20 @@ static real c_b28 = 1.f;
     extern real clanhe_(char *, char *, integer *, complex *, integer *, real 
 	    *);
     integer iscale;
-    extern /* Subroutine */ int clascl_(char *, integer *, integer *, real *, 
+    extern /* Subroutine */ void clascl_(char *, integer *, integer *, real *, 
 	    real *, integer *, integer *, complex *, integer *, integer *), cstedc_(char *, integer *, real *, real *, complex *, 
 	    integer *, complex *, integer *, real *, integer *, integer *, 
 	    integer *, integer *);
     extern real slamch_(char *);
-    extern /* Subroutine */ int clacpy_(char *, integer *, integer *, complex 
+    extern /* Subroutine */ void clacpy_(char *, integer *, integer *, complex 
 	    *, integer *, complex *, integer *);
     real safmin;
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     real bignum;
     integer indtau, indrwk, indwrk, liwmin;
-    extern /* Subroutine */ int ssterf_(integer *, real *, real *, integer *);
+    extern /* Subroutine */ void ssterf_(integer *, real *, real *, integer *);
     integer lrwmin;
-    extern /* Subroutine */ int cunmtr_(char *, char *, char *, integer *, 
+    extern /* Subroutine */ void cunmtr_(char *, char *, char *, integer *, 
 	    integer *, complex *, integer *, complex *, complex *, integer *, 
 	    complex *, integer *, integer *);
     integer llwork;
@@ -905,15 +905,15 @@ static real c_b28 = 1.f;
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CHEEVD_2STAGE", &i__1, (ftnlen)13);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
     if (*n == 1) {
@@ -923,7 +923,7 @@ static real c_b28 = 1.f;
 	    i__1 = a_dim1 + 1;
 	    a[i__1].r = 1.f, a[i__1].i = 0.f;
 	}
-	return 0;
+	return;
     }
 
 /*     Get machine constants. */
@@ -999,7 +999,7 @@ static real c_b28 = 1.f;
     rwork[1] = (real) lrwmin;
     iwork[1] = liwmin;
 
-    return 0;
+    return;
 
 /*     End of CHEEVD_2STAGE */
 

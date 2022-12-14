@@ -740,7 +740,7 @@ f"> */
 /* >     Mark Fahey, Department of Mathematics, Univ. of Kentucky, USA */
 
 /*  ===================================================================== */
-/* Subroutine */ int ssbgvd_(char *jobz, char *uplo, integer *n, integer *ka, 
+/* Subroutine */ void ssbgvd_(char *jobz, char *uplo, integer *n, integer *ka, 
 	integer *kb, real *ab, integer *ldab, real *bb, integer *ldbb, real *
 	w, real *z__, integer *ldz, real *work, integer *lwork, integer *
 	iwork, integer *liwork, integer *info)
@@ -753,18 +753,19 @@ f"> */
     char vect[1];
     extern logical lsame_(char *, char *);
     integer iinfo;
-    extern /* Subroutine */ int sgemm_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void sgemm_(char *, char *, integer *, integer *, 
 	    integer *, real *, real *, integer *, real *, integer *, real *, 
 	    real *, integer *);
     integer lwmin;
     logical upper, wantz;
     integer indwk2, llwrk2;
-    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen), sstedc_(
+    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
+    extern void sstedc_(
 	    char *, integer *, real *, real *, real *, integer *, real *, 
 	    integer *, integer *, integer *, integer *), slacpy_(char 
 	    *, integer *, integer *, real *, integer *, real *, integer *);
     integer indwrk, liwmin;
-    extern /* Subroutine */ int spbstf_(char *, integer *, integer *, real *, 
+    extern /* Subroutine */ void spbstf_(char *, integer *, integer *, real *, 
 	    integer *, integer *), ssbtrd_(char *, char *, integer *, 
 	    integer *, real *, integer *, real *, real *, real *, integer *, 
 	    real *, integer *), ssbgst_(char *, char *, 
@@ -850,15 +851,15 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("SSBGVD", &i__1, (ftnlen)6);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /*     Form a split Cholesky factorization of B. */
@@ -866,7 +867,7 @@ f"> */
     spbstf_(uplo, n, kb, &bb[bb_offset], ldbb, info);
     if (*info != 0) {
 	*info = *n + *info;
-	return 0;
+	return;
     }
 
 /*     Transform problem to standard eigenvalue problem. */
@@ -903,7 +904,7 @@ f"> */
     work[1] = (real) lwmin;
     iwork[1] = liwmin;
 
-    return 0;
+    return;
 
 /*     End of SSBGVD */
 

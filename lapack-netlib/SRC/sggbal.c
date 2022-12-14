@@ -691,7 +691,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int sggbal_(char *job, integer *n, real *a, integer *lda, 
+/* Subroutine */ void sggbal_(char *job, integer *n, real *a, integer *lda, 
 	real *b, integer *ldb, integer *ilo, integer *ihi, real *lscale, real 
 	*rscale, real *work, integer *info)
 {
@@ -709,13 +709,13 @@ f"> */
     integer i__, j, k, l, m;
     real gamma, t, alpha;
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int sscal_(integer *, real *, real *, integer *);
+    extern /* Subroutine */ void sscal_(integer *, real *, real *, integer *);
     real sfmin, sfmax;
     integer iflow;
-    extern /* Subroutine */ int sswap_(integer *, real *, integer *, real *, 
+    extern /* Subroutine */ void sswap_(integer *, real *, integer *, real *, 
 	    integer *);
     integer kount;
-    extern /* Subroutine */ int saxpy_(integer *, real *, real *, integer *, 
+    extern /* Subroutine */ void saxpy_(integer *, real *, real *, integer *, 
 	    real *, integer *);
     integer jc;
     real ta, tb, tc;
@@ -768,7 +768,7 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("SGGBAL", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
@@ -776,7 +776,7 @@ f"> */
     if (*n == 0) {
 	*ilo = 1;
 	*ihi = *n;
-	return 0;
+	return;
     }
 
     if (*n == 1) {
@@ -784,7 +784,7 @@ f"> */
 	*ihi = *n;
 	lscale[1] = 1.f;
 	rscale[1] = 1.f;
-	return 0;
+	return;
     }
 
     if (lsame_(job, "N")) {
@@ -796,7 +796,7 @@ f"> */
 	    rscale[i__] = 1.f;
 /* L10: */
 	}
-	return 0;
+	return;
     }
 
     k = 1;
@@ -929,11 +929,11 @@ L190:
 	    rscale[i__] = 1.f;
 /* L195: */
 	}
-	return 0;
+	return;
     }
 
     if (*ilo == *ihi) {
-	return 0;
+	return;
     }
 
 /*     Balance the submatrix in rows ILO to IHI. */
@@ -1185,7 +1185,7 @@ L350:
 /* L380: */
     }
 
-    return 0;
+    return;
 
 /*     End of SGGBAL */
 

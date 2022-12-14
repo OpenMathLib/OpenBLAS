@@ -611,7 +611,7 @@ f"> */
 /* > \ingroup doubleOTHERauxiliary */
 
 /*  ===================================================================== */
-/* Subroutine */ int dlapll_(integer *n, doublereal *x, integer *incx, 
+/* Subroutine */ void dlapll_(integer *n, doublereal *x, integer *incx, 
 	doublereal *y, integer *incy, doublereal *ssmin)
 {
     /* System generated locals */
@@ -620,13 +620,13 @@ f"> */
     /* Local variables */
     extern doublereal ddot_(integer *, doublereal *, integer *, doublereal *, 
 	    integer *);
-    extern /* Subroutine */ int dlas2_(doublereal *, doublereal *, doublereal 
+    extern /* Subroutine */ void dlas2_(doublereal *, doublereal *, doublereal 
 	    *, doublereal *, doublereal *);
     doublereal c__;
-    extern /* Subroutine */ int daxpy_(integer *, doublereal *, doublereal *, 
+    extern /* Subroutine */ void daxpy_(integer *, doublereal *, doublereal *, 
 	    integer *, doublereal *, integer *);
     doublereal ssmax, a11, a12, a22;
-    extern /* Subroutine */ int dlarfg_(integer *, doublereal *, doublereal *,
+    extern /* Subroutine */ void dlarfg_(integer *, doublereal *, doublereal *,
 	     integer *, doublereal *);
     doublereal tau;
 
@@ -649,7 +649,7 @@ f"> */
     /* Function Body */
     if (*n <= 1) {
 	*ssmin = 0.;
-	return 0;
+	return;
     }
 
 /*     Compute the QR factorization of the N-by-2 matrix ( X Y ) */
@@ -671,7 +671,7 @@ f"> */
 
     dlas2_(&a11, &a12, &a22, ssmin, &ssmax);
 
-    return 0;
+    return;
 
 /*     End of DLAPLL */
 

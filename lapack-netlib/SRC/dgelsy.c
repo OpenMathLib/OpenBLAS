@@ -721,7 +721,7 @@ f"> */
 /* >    G. Quintana-Orti, Depto. de Informatica, Universidad Jaime I, Spain \n */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int dgelsy_(integer *m, integer *n, integer *nrhs, 
+/* Subroutine */ void dgelsy_(integer *m, integer *n, integer *nrhs, 
 	doublereal *a, integer *lda, doublereal *b, integer *ldb, integer *
 	jpvt, doublereal *rcond, integer *rank, doublereal *work, integer *
 	lwork, integer *info)
@@ -733,42 +733,42 @@ f"> */
     /* Local variables */
     doublereal anrm, bnrm, smin, smax;
     integer i__, j, iascl, ibscl;
-    extern /* Subroutine */ int dcopy_(integer *, doublereal *, integer *, 
+    extern /* Subroutine */ void dcopy_(integer *, doublereal *, integer *, 
 	    doublereal *, integer *);
     integer ismin, ismax;
     doublereal c1, c2;
-    extern /* Subroutine */ int dtrsm_(char *, char *, char *, char *, 
+    extern /* Subroutine */ void dtrsm_(char *, char *, char *, char *, 
 	    integer *, integer *, doublereal *, doublereal *, integer *, 
 	    doublereal *, integer *), dlaic1_(
 	    integer *, integer *, doublereal *, doublereal *, doublereal *, 
 	    doublereal *, doublereal *, doublereal *, doublereal *);
     doublereal wsize, s1, s2;
-    extern /* Subroutine */ int dgeqp3_(integer *, integer *, doublereal *, 
+    extern /* Subroutine */ void dgeqp3_(integer *, integer *, doublereal *, 
 	    integer *, integer *, doublereal *, doublereal *, integer *, 
 	    integer *), dlabad_(doublereal *, doublereal *);
     integer nb;
     extern doublereal dlamch_(char *), dlange_(char *, integer *, 
 	    integer *, doublereal *, integer *, doublereal *);
     integer mn;
-    extern /* Subroutine */ int dlascl_(char *, integer *, integer *, 
+    extern /* Subroutine */ void dlascl_(char *, integer *, integer *, 
 	    doublereal *, doublereal *, integer *, integer *, doublereal *, 
 	    integer *, integer *), dlaset_(char *, integer *, integer 
-	    *, doublereal *, doublereal *, doublereal *, integer *), 
-	    xerbla_(char *, integer *, ftnlen);
+	    *, doublereal *, doublereal *, doublereal *, integer *); 
+    extern int xerbla_(char *, integer *, ftnlen);
     extern integer ilaenv_(integer *, char *, char *, integer *, integer *, 
 	    integer *, integer *, ftnlen, ftnlen);
     doublereal bignum;
     integer lwkmin, nb1, nb2, nb3, nb4;
-    extern /* Subroutine */ int dormqr_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void dormqr_(char *, char *, integer *, integer *, 
 	    integer *, doublereal *, integer *, doublereal *, doublereal *, 
 	    integer *, doublereal *, integer *, integer *);
     doublereal sminpr, smaxpr, smlnum;
-    extern /* Subroutine */ int dormrz_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void dormrz_(char *, char *, integer *, integer *, 
 	    integer *, integer *, doublereal *, integer *, doublereal *, 
 	    doublereal *, integer *, doublereal *, integer *, integer *);
     integer lwkopt;
     logical lquery;
-    extern /* Subroutine */ int dtzrzf_(integer *, integer *, doublereal *, 
+    extern /* Subroutine */ void dtzrzf_(integer *, integer *, doublereal *, 
 	    integer *, doublereal *, doublereal *, integer *, integer *);
 
 
@@ -853,16 +853,16 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DGELSY", &i__1, (ftnlen)6);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (mn == 0 || *nrhs == 0) {
 	*rank = 0;
-	return 0;
+	return;
     }
 
 /*     Get machine parameters */
@@ -1061,7 +1061,7 @@ L10:
 L70:
     work[1] = (doublereal) lwkopt;
 
-    return 0;
+    return;
 
 /*     End of DGELSY */
 

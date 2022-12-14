@@ -658,7 +658,7 @@ f"> */
 /* > \ingroup complex16OTHERcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int zpstf2_(char *uplo, integer *n, doublecomplex *a, 
+/* Subroutine */ void zpstf2_(char *uplo, integer *n, doublecomplex *a, 
 	integer *lda, integer *piv, integer *rank, doublereal *tol, 
 	doublereal *work, integer *info)
 {
@@ -673,17 +673,18 @@ f"> */
     extern logical lsame_(char *, char *);
     doublereal dtemp;
     integer itemp;
-    extern /* Subroutine */ int zgemv_(char *, integer *, integer *, 
+    extern /* Subroutine */ void zgemv_(char *, integer *, integer *, 
 	    doublecomplex *, doublecomplex *, integer *, doublecomplex *, 
 	    integer *, doublecomplex *, doublecomplex *, integer *);
     doublereal dstop;
     logical upper;
     doublecomplex ztemp;
-    extern /* Subroutine */ int zswap_(integer *, doublecomplex *, integer *, 
+    extern /* Subroutine */ void zswap_(integer *, doublecomplex *, integer *, 
 	    doublecomplex *, integer *);
     extern doublereal dlamch_(char *);
     extern logical disnan_(doublereal *);
-    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen), zdscal_(
+    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
+    extern void zdscal_(
 	    integer *, doublereal *, doublecomplex *, integer *), zlacgv_(
 	    integer *, doublecomplex *, integer *);
     doublereal ajj;
@@ -721,13 +722,13 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZPSTF2", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /*     Initialize PIV */
@@ -996,7 +997,7 @@ L190:
     *info = 1;
 
 L200:
-    return 0;
+    return;
 
 /*     End of ZPSTF2 */
 

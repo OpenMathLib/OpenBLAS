@@ -676,7 +676,7 @@ aa_2stage.f"> */
 /* > \ingroup realSYcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int ssytrf_aa_2stage_(char *uplo, integer *n, real *a, 
+/* Subroutine */ void ssytrf_aa_2stage_(char *uplo, integer *n, real *a, 
 	integer *lda, real *tb, integer *ltb, integer *ipiv, integer *ipiv2, 
 	real *work, integer *lwork, integer *info)
 {
@@ -687,13 +687,13 @@ aa_2stage.f"> */
     integer ldtb, i__, j, k;
     extern logical lsame_(char *, char *);
     integer iinfo;
-    extern /* Subroutine */ int sgemm_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void sgemm_(char *, char *, integer *, integer *, 
 	    integer *, real *, real *, integer *, real *, integer *, real *, 
 	    real *, integer *);
     integer i1;
     logical upper;
     integer i2;
-    extern /* Subroutine */ int scopy_(integer *, real *, integer *, real *, 
+    extern /* Subroutine */ void scopy_(integer *, real *, integer *, real *, 
 	    integer *), sswap_(integer *, real *, integer *, real *, integer *
 	    ), strsm_(char *, char *, char *, char *, integer *, integer *, 
 	    real *, real *, integer *, real *, integer *);
@@ -701,14 +701,15 @@ aa_2stage.f"> */
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     extern integer ilaenv_(integer *, char *, char *, integer *, integer *, 
 	    integer *, integer *, ftnlen, ftnlen);
-    extern /* Subroutine */ int sgbtrf_(integer *, integer *, integer *, 
-	    integer *, real *, integer *, integer *, integer *), sgetrf_(
-	    integer *, integer *, real *, integer *, integer *, integer *), 
-	    slacpy_(char *, integer *, integer *, real *, integer *, real *, 
+    extern /* Subroutine */ void sgbtrf_(integer *, integer *, integer *, 
+	    integer *, real *, integer *, integer *, integer *);
+    extern int sgetrf_(
+	    integer *, integer *, real *, integer *, integer *, integer *); 
+    extern void slacpy_(char *, integer *, integer *, real *, integer *, real *, 
 	    integer *), slaset_(char *, integer *, integer *, real *, 
 	    real *, real *, integer *);
     logical tquery, wquery;
-    extern /* Subroutine */ int ssygst_(integer *, char *, integer *, real *, 
+    extern /* Subroutine */ void ssygst_(integer *, char *, integer *, real *, 
 	    integer *, real *, integer *, integer *);
     real piv;
 
@@ -754,7 +755,7 @@ aa_2stage.f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("SSYTRF_AA_2STAGE", &i__1, (ftnlen)16);
-	return 0;
+	return;
     }
 
 /*     Answer the query */
@@ -770,13 +771,13 @@ aa_2stage.f"> */
 	}
     }
     if (tquery || wquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /*     Determine the number of the block size */
@@ -1231,7 +1232,7 @@ aa_2stage.f"> */
 /*     Factor the band matrix */
     sgbtrf_(n, n, &nb, &nb, &tb[1], &ldtb, &ipiv2[1], info);
 
-    return 0;
+    return;
 
 /*     End of SSYTRF_AA_2STAGE */
 

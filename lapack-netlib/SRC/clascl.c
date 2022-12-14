@@ -652,7 +652,7 @@ f"> */
 /* > \ingroup complexOTHERauxiliary */
 
 /*  ===================================================================== */
-/* Subroutine */ int clascl_(char *type__, integer *kl, integer *ku, real *
+/* Subroutine */ void clascl_(char *type__, integer *kl, integer *ku, real *
 	cfrom, real *cto, integer *m, integer *n, complex *a, integer *lda, 
 	integer *info)
 {
@@ -745,13 +745,13 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CLASCL", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0 || *m == 0) {
-	return 0;
+	return;
     }
 
 /*     Get machine parameters */
@@ -935,7 +935,7 @@ L10:
 	goto L10;
     }
 
-    return 0;
+    return;
 
 /*     End of CLASCL */
 

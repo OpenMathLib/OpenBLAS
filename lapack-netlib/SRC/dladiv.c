@@ -602,7 +602,7 @@ f"> */
 /* > \ingroup doubleOTHERauxiliary */
 
 /*  ===================================================================== */
-/* Subroutine */ int dladiv_(doublereal *a, doublereal *b, doublereal *c__, 
+/* Subroutine */ void dladiv_(doublereal *a, doublereal *b, doublereal *c__, 
 	doublereal *d__, doublereal *p, doublereal *q)
 {
     /* System generated locals */
@@ -612,7 +612,7 @@ f"> */
     doublereal s, aa, ab, bb, cc, cd, dd, be;
     extern doublereal dlamch_(char *);
     doublereal un, ov;
-    extern /* Subroutine */ int dladiv1_(doublereal *, doublereal *, 
+    extern /* Subroutine */ void dladiv1_(doublereal *, doublereal *, 
 	    doublereal *, doublereal *, doublereal *, doublereal *);
     doublereal eps;
 
@@ -671,14 +671,14 @@ f"> */
     *p *= s;
     *q *= s;
 
-    return 0;
+    return;
 
 /*     End of DLADIV */
 
 } /* dladiv_ */
 
 /* > \ingroup doubleOTHERauxiliary */
-/* Subroutine */ int dladiv1_(doublereal *a, doublereal *b, doublereal *c__, 
+/* Subroutine */ void dladiv1_(doublereal *a, doublereal *b, doublereal *c__, 
 	doublereal *d__, doublereal *p, doublereal *q)
 {
     doublereal r__, t;
@@ -702,7 +702,7 @@ f"> */
     *a = -(*a);
     *q = dladiv2_(b, a, c__, d__, &r__, &t);
 
-    return 0;
+    return;
 
 /*     End of DLADIV1 */
 

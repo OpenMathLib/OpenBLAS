@@ -740,7 +740,7 @@ k.f"> */
 /* > \endverbatim */
 
 /*  ===================================================================== */
-/* Subroutine */ int ssysv_rk_(char *uplo, integer *n, integer *nrhs, real *
+/* Subroutine */ void ssysv_rk_(char *uplo, integer *n, integer *nrhs, real *
 	a, integer *lda, real *e, integer *ipiv, real *b, integer *ldb, real *
 	work, integer *lwork, integer *info)
 {
@@ -748,11 +748,12 @@ k.f"> */
     integer a_dim1, a_offset, b_dim1, b_offset, i__1;
 
     /* Local variables */
-    extern /* Subroutine */ int ssytrs_3_(char *, integer *, integer *, real 
+    extern /* Subroutine */ void ssytrs_3_(char *, integer *, integer *, real 
 	    *, integer *, real *, integer *, real *, integer *, integer *);
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int ssytrf_rk_(char *, integer *, real *, 
-	    integer *, real *, integer *, real *, integer *, integer *), xerbla_(char *, integer *, ftnlen);
+    extern /* Subroutine */ void ssytrf_rk_(char *, integer *, real *, 
+	    integer *, real *, integer *, real *, integer *, integer *);
+    extern int xerbla_(char *, integer *, ftnlen);
     integer lwkopt;
     logical lquery;
 
@@ -810,9 +811,9 @@ k.f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("SSYSV_RK ", &i__1, (ftnlen)9);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Compute the factorization A = P*U*D*(U**T)*(P**T) or */
@@ -832,7 +833,7 @@ k.f"> */
 
     work[1] = (real) lwkopt;
 
-    return 0;
+    return;
 
 /*     End of SSYSV_RK */
 

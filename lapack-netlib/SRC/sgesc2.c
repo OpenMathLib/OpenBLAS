@@ -629,7 +629,7 @@ f"> */
 /* >     Umea University, S-901 87 Umea, Sweden. */
 
 /*  ===================================================================== */
-/* Subroutine */ int sgesc2_(integer *n, real *a, integer *lda, real *rhs, 
+/* Subroutine */ void sgesc2_(integer *n, real *a, integer *lda, real *rhs, 
 	integer *ipiv, integer *jpiv, real *scale)
 {
     /* System generated locals */
@@ -639,7 +639,7 @@ f"> */
     /* Local variables */
     real temp;
     integer i__, j;
-    extern /* Subroutine */ int sscal_(integer *, real *, real *, integer *), 
+    extern /* Subroutine */ void sscal_(integer *, real *, real *, integer *), 
 	    slabad_(real *, real *);
     extern real slamch_(char *);
     real bignum;
@@ -720,7 +720,7 @@ f"> */
 
     i__1 = *n - 1;
     slaswp_(&c__1, &rhs[1], lda, &c__1, &i__1, &jpiv[1], &c_n1);
-    return 0;
+    return;
 
 /*     End of SGESC2 */
 

@@ -676,7 +676,7 @@ aa_2stage.f"> */
 /* > \ingroup doubleSYcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int dsytrf_aa_2stage_(char *uplo, integer *n, doublereal *a,
+/* Subroutine */ void dsytrf_aa_2stage_(char *uplo, integer *n, doublereal *a,
 	 integer *lda, doublereal *tb, integer *ltb, integer *ipiv, integer *
 	ipiv2, doublereal *work, integer *lwork, integer *info)
 {
@@ -685,12 +685,12 @@ aa_2stage.f"> */
 
     /* Local variables */
     integer ldtb, i__, j, k;
-    extern /* Subroutine */ int dgemm_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void dgemm_(char *, char *, integer *, integer *, 
 	    integer *, doublereal *, doublereal *, integer *, doublereal *, 
 	    integer *, doublereal *, doublereal *, integer *);
     extern logical lsame_(char *, char *);
     integer iinfo;
-    extern /* Subroutine */ int dcopy_(integer *, doublereal *, integer *, 
+    extern /* Subroutine */ void dcopy_(integer *, doublereal *, integer *, 
 	    doublereal *, integer *), dswap_(integer *, doublereal *, integer 
 	    *, doublereal *, integer *), dtrsm_(char *, char *, char *, char *
 	    , integer *, integer *, doublereal *, doublereal *, integer *, 
@@ -698,15 +698,16 @@ aa_2stage.f"> */
     integer i1;
     logical upper;
     integer i2, jb, kb, nb, td, nt;
-    extern /* Subroutine */ int dgbtrf_(integer *, integer *, integer *, 
-	    integer *, doublereal *, integer *, integer *, integer *), 
-	    dgetrf_(integer *, integer *, doublereal *, integer *, integer *, 
-	    integer *), dlacpy_(char *, integer *, integer *, doublereal *, 
-	    integer *, doublereal *, integer *), xerbla_(char *, 
-	    integer *, ftnlen);
+    extern /* Subroutine */ void dgbtrf_(integer *, integer *, integer *, 
+	    integer *, doublereal *, integer *, integer *, integer *); 
+    extern int dgetrf_(integer *, integer *, doublereal *, integer *, integer *, 
+	    integer *);
+    extern void dlacpy_(char *, integer *, integer *, doublereal *, 
+	    integer *, doublereal *, integer *);
+    extern int xerbla_(char *, integer *, ftnlen);
     extern integer ilaenv_(integer *, char *, char *, integer *, integer *, 
 	    integer *, integer *, ftnlen, ftnlen);
-    extern /* Subroutine */ int dlaset_(char *, integer *, integer *, 
+    extern /* Subroutine */ void dlaset_(char *, integer *, integer *, 
 	    doublereal *, doublereal *, doublereal *, integer *), 
 	    dsygst_(integer *, char *, integer *, doublereal *, integer *, 
 	    doublereal *, integer *, integer *);
@@ -755,7 +756,7 @@ aa_2stage.f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DSYTRF_AA_2STAGE", &i__1, (ftnlen)16);
-	return 0;
+	return;
     }
 
 /*     Answer the query */
@@ -771,13 +772,13 @@ aa_2stage.f"> */
 	}
     }
     if (tquery || wquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /*     Determine the number of the block size */
@@ -1232,7 +1233,7 @@ aa_2stage.f"> */
 /*     Factor the band matrix */
     dgbtrf_(n, n, &nb, &nb, &tb[1], &ldtb, &ipiv2[1], info);
 
-    return 0;
+    return;
 
 /*     End of DSYTRF_AA_2STAGE */
 

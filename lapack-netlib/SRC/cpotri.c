@@ -604,7 +604,7 @@ f"> */
 /* > \ingroup complexPOcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int cpotri_(char *uplo, integer *n, complex *a, integer *lda,
+/* Subroutine */ void cpotri_(char *uplo, integer *n, complex *a, integer *lda,
 	 integer *info)
 {
     /* System generated locals */
@@ -612,9 +612,10 @@ f"> */
 
     /* Local variables */
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen), clauum_(
-	    char *, integer *, complex *, integer *, integer *), 
-	    ctrtri_(char *, char *, integer *, complex *, integer *, integer *
+    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
+    extern int clauum_(
+	    char *, integer *, complex *, integer *, integer *); 
+    extern int ctrtri_(char *, char *, integer *, complex *, integer *, integer *
 	    );
 
 
@@ -646,27 +647,27 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CPOTRI", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /*     Invert the triangular Cholesky factor U or L. */
 
     ctrtri_(uplo, "Non-unit", n, &a[a_offset], lda, info);
     if (*info > 0) {
-	return 0;
+	return;
     }
 
 /*     Form inv(U) * inv(U)**H or inv(L)**H * inv(L). */
 
     clauum_(uplo, n, &a[a_offset], lda, info);
 
-    return 0;
+    return;
 
 /*     End of CPOTRI */
 

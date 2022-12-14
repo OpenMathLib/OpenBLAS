@@ -813,7 +813,7 @@ f"> */
 /* >     Mark Fahey, Department of Mathematics, Univ. of Kentucky, USA */
 
 /*  ===================================================================== */
-/* Subroutine */ int zhbgvx_(char *jobz, char *range, char *uplo, integer *n, 
+/* Subroutine */ void zhbgvx_(char *jobz, char *range, char *uplo, integer *n, 
 	integer *ka, integer *kb, doublecomplex *ab, integer *ldab, 
 	doublecomplex *bb, integer *ldbb, doublecomplex *q, integer *ldq, 
 	doublereal *vl, doublereal *vu, integer *il, integer *iu, doublereal *
@@ -833,12 +833,12 @@ f"> */
     extern logical lsame_(char *, char *);
     integer iinfo;
     char order[1];
-    extern /* Subroutine */ int dcopy_(integer *, doublereal *, integer *, 
+    extern /* Subroutine */ void dcopy_(integer *, doublereal *, integer *, 
 	    doublereal *, integer *), zgemv_(char *, integer *, integer *, 
 	    doublecomplex *, doublecomplex *, integer *, doublecomplex *, 
 	    integer *, doublecomplex *, doublecomplex *, integer *);
     logical upper, wantz;
-    extern /* Subroutine */ int zcopy_(integer *, doublecomplex *, integer *, 
+    extern /* Subroutine */ void zcopy_(integer *, doublecomplex *, integer *, 
 	    doublecomplex *, integer *), zswap_(integer *, doublecomplex *, 
 	    integer *, doublecomplex *, integer *);
     integer jj;
@@ -847,7 +847,7 @@ f"> */
     logical valeig;
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     integer indiwk, indisp;
-    extern /* Subroutine */ int dsterf_(integer *, doublereal *, doublereal *,
+    extern /* Subroutine */ void dsterf_(integer *, doublereal *, doublereal *,
 	     integer *), dstebz_(char *, char *, integer *, doublereal *, 
 	    doublereal *, integer *, integer *, doublereal *, doublereal *, 
 	    doublereal *, integer *, integer *, doublereal *, integer *, 
@@ -856,13 +856,13 @@ f"> */
 	    integer *, doublereal *, doublereal *, doublecomplex *, integer *,
 	     doublecomplex *, integer *);
     integer indrwk, indwrk;
-    extern /* Subroutine */ int zhbgst_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void zhbgst_(char *, char *, integer *, integer *, 
 	    integer *, doublecomplex *, integer *, doublecomplex *, integer *,
 	     doublecomplex *, integer *, doublecomplex *, doublereal *, 
 	    integer *), zlacpy_(char *, integer *, integer *, 
 	    doublecomplex *, integer *, doublecomplex *, integer *);
     integer nsplit;
-    extern /* Subroutine */ int zpbstf_(char *, integer *, integer *, 
+    extern /* Subroutine */ void zpbstf_(char *, integer *, integer *, 
 	    doublecomplex *, integer *, integer *), zstein_(integer *,
 	     doublereal *, doublereal *, integer *, doublereal *, integer *, 
 	    integer *, doublecomplex *, integer *, doublereal *, integer *, 
@@ -949,14 +949,14 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZHBGVX", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     *m = 0;
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /*     Form a split Cholesky factorization of B. */
@@ -964,7 +964,7 @@ f"> */
     zpbstf_(uplo, n, kb, &bb[bb_offset], ldbb, info);
     if (*info != 0) {
 	*info = *n + *info;
-	return 0;
+	return;
     }
 
 /*     Transform problem to standard eigenvalue problem. */
@@ -1092,7 +1092,7 @@ L30:
 	}
     }
 
-    return 0;
+    return;
 
 /*     End of ZHBGVX */
 

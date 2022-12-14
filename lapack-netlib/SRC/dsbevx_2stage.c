@@ -840,7 +840,7 @@ static doublereal c_b45 = 0.;
 /* > \endverbatim */
 
 /*  ===================================================================== */
-/* Subroutine */ int dsbevx_2stage_(char *jobz, char *range, char *uplo, 
+/* Subroutine */ void dsbevx_2stage_(char *jobz, char *range, char *uplo, 
 	integer *n, integer *kd, doublereal *ab, integer *ldab, doublereal *q,
 	 integer *ldq, doublereal *vl, doublereal *vu, integer *il, integer *
 	iu, doublereal *abstol, integer *m, doublereal *w, doublereal *z__, 
@@ -860,22 +860,22 @@ static doublereal c_b45 = 0.;
     integer imax;
     doublereal rmin, rmax;
     logical test;
-    extern /* Subroutine */ int dsytrd_sb2st_(char *, char *, char *, 
+    extern /* Subroutine */ void dsytrd_sb2st_(char *, char *, char *, 
 	    integer *, integer *, doublereal *, integer *, doublereal *, 
 	    doublereal *, doublereal *, integer *, doublereal *, integer *, 
 	    integer *);
     integer itmp1, i__, j, indee;
-    extern /* Subroutine */ int dscal_(integer *, doublereal *, doublereal *, 
+    extern /* Subroutine */ void dscal_(integer *, doublereal *, doublereal *, 
 	    integer *);
     doublereal sigma;
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int dgemv_(char *, integer *, integer *, 
+    extern /* Subroutine */ void dgemv_(char *, integer *, integer *, 
 	    doublereal *, doublereal *, integer *, doublereal *, integer *, 
 	    doublereal *, doublereal *, integer *);
     integer iinfo;
     char order[1];
     integer lhtrd;
-    extern /* Subroutine */ int dcopy_(integer *, doublereal *, integer *, 
+    extern /* Subroutine */ void dcopy_(integer *, doublereal *, integer *, 
 	    doublereal *, integer *), dswap_(integer *, doublereal *, integer 
 	    *, doublereal *, integer *);
     integer lwmin;
@@ -888,27 +888,27 @@ static doublereal c_b45 = 0.;
     integer iscale, indibl;
     extern doublereal dlansb_(char *, char *, integer *, integer *, 
 	    doublereal *, integer *, doublereal *);
-    extern /* Subroutine */ int dlascl_(char *, integer *, integer *, 
+    extern /* Subroutine */ void dlascl_(char *, integer *, integer *, 
 	    doublereal *, doublereal *, integer *, integer *, doublereal *, 
 	    integer *, integer *);
     logical valeig;
-    extern /* Subroutine */ int dlacpy_(char *, integer *, integer *, 
+    extern /* Subroutine */ void dlacpy_(char *, integer *, integer *, 
 	    doublereal *, integer *, doublereal *, integer *);
     doublereal safmin;
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     doublereal abstll, bignum;
     integer indisp;
-    extern /* Subroutine */ int dstein_(integer *, doublereal *, doublereal *,
+    extern /* Subroutine */ void dstein_(integer *, doublereal *, doublereal *,
 	     integer *, doublereal *, integer *, integer *, doublereal *, 
 	    integer *, doublereal *, integer *, integer *, integer *), 
 	    dsterf_(integer *, doublereal *, doublereal *, integer *);
     integer indiwo;
-    extern /* Subroutine */ int dstebz_(char *, char *, integer *, doublereal 
+    extern /* Subroutine */ void dstebz_(char *, char *, integer *, doublereal 
 	    *, doublereal *, integer *, integer *, doublereal *, doublereal *,
 	     doublereal *, integer *, integer *, doublereal *, integer *, 
 	    integer *, doublereal *, integer *, integer *);
     integer indwrk;
-    extern /* Subroutine */ int dsteqr_(char *, integer *, doublereal *, 
+    extern /* Subroutine */ void dsteqr_(char *, integer *, doublereal *, 
 	    doublereal *, doublereal *, integer *, doublereal *, integer *);
     integer nsplit, llwork;
     doublereal smlnum;
@@ -1010,16 +1010,16 @@ static doublereal c_b45 = 0.;
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DSBEVX_2STAGE ", &i__1, (ftnlen)13);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     *m = 0;
     if (*n == 0) {
-	return 0;
+	return;
     }
 
     if (*n == 1) {
@@ -1040,7 +1040,7 @@ static doublereal c_b45 = 0.;
 		z__[z_dim1 + 1] = 1.;
 	    }
 	}
-	return 0;
+	return;
     }
 
 /*     Get machine constants. */
@@ -1223,7 +1223,7 @@ L30:
 
     work[1] = (doublereal) lwmin;
 
-    return 0;
+    return;
 
 /*     End of DSBEVX_2STAGE */
 

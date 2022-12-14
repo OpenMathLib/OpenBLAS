@@ -739,7 +739,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int strevc_(char *side, char *howmny, logical *select, 
+/* Subroutine */ void strevc_(char *side, char *howmny, logical *select, 
 	integer *n, real *t, integer *ldt, real *vl, integer *ldvl, real *vr, 
 	integer *ldvr, integer *mm, integer *m, real *work, integer *info)
 {
@@ -759,25 +759,25 @@ f"> */
     integer jnxt, i__, j, k;
     real scale, x[4]	/* was [2][2] */;
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int sscal_(integer *, real *, real *, integer *);
+    extern /* Subroutine */ void sscal_(integer *, real *, real *, integer *);
     real remax;
     logical leftv;
-    extern /* Subroutine */ int sgemv_(char *, integer *, integer *, real *, 
+    extern /* Subroutine */ void sgemv_(char *, integer *, integer *, real *, 
 	    real *, integer *, real *, integer *, real *, real *, integer *);
     logical bothv;
     real vcrit;
     logical somev;
     integer j1, j2;
-    extern /* Subroutine */ int scopy_(integer *, real *, integer *, real *, 
+    extern /* Subroutine */ void scopy_(integer *, real *, integer *, real *, 
 	    integer *);
     integer n2;
     real xnorm;
-    extern /* Subroutine */ int saxpy_(integer *, real *, real *, integer *, 
+    extern /* Subroutine */ void saxpy_(integer *, real *, real *, integer *, 
 	    real *, integer *), slaln2_(logical *, integer *, integer *, real 
 	    *, real *, real *, integer *, real *, real *, real *, integer *, 
 	    real *, real *, real *, integer *, real *, real *, integer *);
     integer ii, ki;
-    extern /* Subroutine */ int slabad_(real *, real *);
+    extern /* Subroutine */ void slabad_(real *, real *);
     integer ip, is;
     real wi;
     extern real slamch_(char *);
@@ -881,13 +881,13 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("STREVC", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible. */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /*     Set the constants to control overflow. */
@@ -1790,7 +1790,7 @@ L250:
 
     }
 
-    return 0;
+    return;
 
 /*     End of STREVC */
 

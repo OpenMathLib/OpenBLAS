@@ -639,7 +639,7 @@ f"> */
 /* > \ingroup complex16GTcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int zgtts2_(integer *itrans, integer *n, integer *nrhs, 
+/* Subroutine */ void zgtts2_(integer *itrans, integer *n, integer *nrhs, 
 	doublecomplex *dl, doublecomplex *d__, doublecomplex *du, 
 	doublecomplex *du2, integer *ipiv, doublecomplex *b, integer *ldb)
 {
@@ -675,7 +675,7 @@ f"> */
 
     /* Function Body */
     if (*n == 0 || *nrhs == 0) {
-	return 0;
+	return;
     }
 
     if (*itrans == 0) {
@@ -1143,6 +1143,6 @@ L130:
 
 /*     End of ZGTTS2 */
 
-    return 0;
+    return;
 } /* zgtts2_ */
 

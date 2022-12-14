@@ -617,7 +617,7 @@ f"> */
 /* > \ingroup complexOTHERauxiliary */
 
 /*  ===================================================================== */
-/* Subroutine */ int clartv_(integer *n, complex *x, integer *incx, complex *
+/* Subroutine */ void clartv_(integer *n, complex *x, integer *incx, complex *
 	y, integer *incy, real *c__, complex *s, integer *incc)
 {
     /* System generated locals */
@@ -675,7 +675,7 @@ f"> */
 	ic += *incc;
 /* L10: */
     }
-    return 0;
+    return;
 
 /*     End of CLARTV */
 

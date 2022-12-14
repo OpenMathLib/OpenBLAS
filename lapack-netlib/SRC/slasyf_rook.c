@@ -699,7 +699,7 @@ rook.f"> */
 /* > \endverbatim */
 
 /*  ===================================================================== */
-/* Subroutine */ int slasyf_rook_(char *uplo, integer *n, integer *nb, 
+/* Subroutine */ void slasyf_rook_(char *uplo, integer *n, integer *nb, 
 	integer *kb, real *a, integer *lda, integer *ipiv, real *w, integer *
 	ldw, integer *info)
 {
@@ -712,16 +712,16 @@ rook.f"> */
     integer imax, jmax, j, k, p;
     real t, alpha;
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int sscal_(integer *, real *, real *, integer *), 
+    extern /* Subroutine */ void sscal_(integer *, real *, real *, integer *), 
 	    sgemm_(char *, char *, integer *, integer *, integer *, real *, 
 	    real *, integer *, real *, integer *, real *, real *, integer *);
     real sfmin;
     integer itemp;
-    extern /* Subroutine */ int sgemv_(char *, integer *, integer *, real *, 
+    extern /* Subroutine */ void sgemv_(char *, integer *, integer *, real *, 
 	    real *, integer *, real *, integer *, real *, real *, integer *);
     integer kstep;
     real stemp;
-    extern /* Subroutine */ int scopy_(integer *, real *, integer *, real *, 
+    extern /* Subroutine */ void scopy_(integer *, real *, integer *, real *, 
 	    integer *), sswap_(integer *, real *, integer *, real *, integer *
 	    );
     real r1, d11, d12, d21, d22;
@@ -1518,7 +1518,7 @@ L120:
 	*kb = k - 1;
 
     }
-    return 0;
+    return;
 
 /*     End of SLASYF_ROOK */
 

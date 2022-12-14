@@ -718,7 +718,7 @@ f"> */
 /* > \ingroup realGBcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int sgbrfs_(char *trans, integer *n, integer *kl, integer *
+/* Subroutine */ void sgbrfs_(char *trans, integer *n, integer *kl, integer *
 	ku, integer *nrhs, real *ab, integer *ldab, real *afb, integer *ldafb,
 	 integer *ipiv, real *b, integer *ldb, real *x, integer *ldx, real *
 	ferr, real *berr, real *work, integer *iwork, integer *info)
@@ -735,11 +735,11 @@ f"> */
     real s;
     extern logical lsame_(char *, char *);
     integer isave[3];
-    extern /* Subroutine */ int sgbmv_(char *, integer *, integer *, integer *
+    extern /* Subroutine */ void sgbmv_(char *, integer *, integer *, integer *
 	    , integer *, real *, real *, integer *, real *, integer *, real *,
 	     real *, integer *);
     integer count;
-    extern /* Subroutine */ int scopy_(integer *, real *, integer *, real *, 
+    extern /* Subroutine */ void scopy_(integer *, real *, integer *, real *, 
 	    integer *), saxpy_(integer *, real *, real *, integer *, real *, 
 	    integer *), slacn2_(integer *, real *, real *, integer *, real *, 
 	    integer *, integer *);
@@ -750,7 +750,7 @@ f"> */
     real safmin;
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     logical notran;
-    extern /* Subroutine */ int sgbtrs_(char *, integer *, integer *, integer 
+    extern /* Subroutine */ void sgbtrs_(char *, integer *, integer *, integer 
 	    *, integer *, real *, integer *, integer *, real *, integer *, 
 	    integer *);
     char transt[1];
@@ -813,7 +813,7 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("SGBRFS", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
@@ -825,7 +825,7 @@ f"> */
 	    berr[j] = 0.f;
 /* L10: */
 	}
-	return 0;
+	return;
     }
 
     if (notran) {
@@ -1034,7 +1034,7 @@ L100:
 /* L140: */
     }
 
-    return 0;
+    return;
 
 /*     End of SGBRFS */
 

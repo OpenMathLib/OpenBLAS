@@ -614,7 +614,7 @@ f"> */
 /* > \ingroup complex16OTHERcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int ztpttr_(char *uplo, integer *n, doublecomplex *ap, 
+/* Subroutine */ void ztpttr_(char *uplo, integer *n, doublecomplex *ap, 
 	doublecomplex *a, integer *lda, integer *info)
 {
     /* System generated locals */
@@ -657,7 +657,7 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZTPTTR", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
     if (lower) {
@@ -687,7 +687,7 @@ f"> */
     }
 
 
-    return 0;
+    return;
 
 /*     End of ZTPTTR */
 

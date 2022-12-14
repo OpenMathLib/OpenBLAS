@@ -689,7 +689,7 @@ hrt.f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int cgetsqrhrt_(integer *m, integer *n, integer *mb1, 
+/* Subroutine */ void cgetsqrhrt_(integer *m, integer *n, integer *mb1, 
 	integer *nb1, integer *nb2, complex *a, integer *lda, complex *t, 
 	integer *ldt, complex *work, integer *lwork, integer *info)
 {
@@ -700,17 +700,18 @@ hrt.f"> */
 
     /* Local variables */
     integer ldwt, lworkopt, i__, j;
-    extern /* Subroutine */ int cungtsqr_row_(integer *, integer *, integer *
+    extern /* Subroutine */ void cungtsqr_row_(integer *, integer *, integer *
 	    , integer *, complex *, integer *, complex *, integer *, complex *
 	    , integer *, integer *);
     integer iinfo;
-    extern /* Subroutine */ int ccopy_(integer *, complex *, integer *, 
+    extern /* Subroutine */ void ccopy_(integer *, complex *, integer *, 
 	    complex *, integer *), cunhr_col_(integer *, integer *, integer *
 	    , complex *, integer *, complex *, integer *, complex *, integer *
-	    ), xerbla_(char *, integer *, ftnlen);
+	    );
+    extern int xerbla_(char *, integer *, ftnlen);
     logical lquery;
     integer lw1, lw2, num_all_row_blocks__, lwt;
-    extern /* Subroutine */ int clatsqr_(integer *, integer *, integer *, 
+    extern /* Subroutine */ void clatsqr_(integer *, integer *, integer *, 
 	    integer *, complex *, integer *, complex *, integer *, complex *, 
 	    integer *, integer *);
     integer nb1local, nb2local;
@@ -812,11 +813,11 @@ hrt.f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CGETSQRHRT", &i__1, (ftnlen)10);
-	return 0;
+	return;
     } else if (lquery) {
 	q__1.r = (real) lworkopt, q__1.i = 0.f;
 	work[1].r = q__1.r, work[1].i = q__1.i;
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
@@ -824,7 +825,7 @@ hrt.f"> */
     if (f2cmin(*m,*n) == 0) {
 	q__1.r = (real) lworkopt, q__1.i = 0.f;
 	work[1].r = q__1.r, work[1].i = q__1.i;
-	return 0;
+	return;
     }
 
     nb2local = f2cmin(*nb2,*n);
@@ -895,7 +896,7 @@ hrt.f"> */
 
     q__1.r = (real) lworkopt, q__1.i = 0.f;
     work[1].r = q__1.r, work[1].i = q__1.i;
-    return 0;
+    return;
 
 /*     End of CGETSQRHRT */
 

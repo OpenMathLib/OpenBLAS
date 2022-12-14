@@ -823,7 +823,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int cppsvx_(char *fact, char *uplo, integer *n, integer *
+/* Subroutine */ void cppsvx_(char *fact, char *uplo, integer *n, integer *
 	nrhs, complex *ap, complex *afp, char *equed, real *s, complex *b, 
 	integer *ldb, complex *x, integer *ldx, real *rcond, real *ferr, real 
 	*berr, complex *work, real *rwork, integer *info)
@@ -838,27 +838,27 @@ f"> */
     integer i__, j;
     extern logical lsame_(char *, char *);
     real scond, anorm;
-    extern /* Subroutine */ int ccopy_(integer *, complex *, integer *, 
+    extern /* Subroutine */ void ccopy_(integer *, complex *, integer *, 
 	    complex *, integer *);
     logical equil, rcequ;
     extern real clanhp_(char *, char *, integer *, complex *, real *), slamch_(char *);
-    extern /* Subroutine */ int claqhp_(char *, integer *, complex *, real *, 
+    extern /* Subroutine */ void claqhp_(char *, integer *, complex *, real *, 
 	    real *, real *, char *);
     logical nofact;
-    extern /* Subroutine */ int clacpy_(char *, integer *, integer *, complex 
-	    *, integer *, complex *, integer *), xerbla_(char *, 
-	    integer *, ftnlen);
+    extern /* Subroutine */ void clacpy_(char *, integer *, integer *, complex 
+	    *, integer *, complex *, integer *);
+    extern int xerbla_(char *, integer *, ftnlen);
     real bignum;
-    extern /* Subroutine */ int cppcon_(char *, integer *, complex *, real *, 
+    extern /* Subroutine */ void cppcon_(char *, integer *, complex *, real *, 
 	    real *, complex *, real *, integer *);
     integer infequ;
-    extern /* Subroutine */ int cppequ_(char *, integer *, complex *, real *, 
+    extern /* Subroutine */ void cppequ_(char *, integer *, complex *, real *, 
 	    real *, real *, integer *), cpprfs_(char *, integer *, 
 	    integer *, complex *, complex *, complex *, integer *, complex *, 
 	    integer *, real *, real *, complex *, real *, integer *), 
 	    cpptrf_(char *, integer *, complex *, integer *);
     real smlnum;
-    extern /* Subroutine */ int cpptrs_(char *, integer *, integer *, complex 
+    extern /* Subroutine */ void cpptrs_(char *, integer *, integer *, complex 
 	    *, complex *, integer *, integer *);
 
 
@@ -947,7 +947,7 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CPPSVX", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
     if (equil) {
@@ -994,7 +994,7 @@ f"> */
 
 	if (*info > 0) {
 	    *rcond = 0.f;
-	    return 0;
+	    return;
 	}
     }
 
@@ -1047,7 +1047,7 @@ f"> */
 	*info = *n + 1;
     }
 
-    return 0;
+    return;
 
 /*     End of CPPSVX */
 

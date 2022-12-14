@@ -739,7 +739,7 @@ f"> */
 /* >     Mark Fahey, Department of Mathematics, Univ. of Kentucky, USA */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int dsygvd_(integer *itype, char *jobz, char *uplo, integer *
+/* Subroutine */ void dsygvd_(integer *itype, char *jobz, char *uplo, integer *
 	n, doublereal *a, integer *lda, doublereal *b, integer *ldb, 
 	doublereal *w, doublereal *work, integer *lwork, integer *iwork, 
 	integer *liwork, integer *info)
@@ -751,20 +751,21 @@ f"> */
     /* Local variables */
     integer lopt;
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int dtrmm_(char *, char *, char *, char *, 
+    extern /* Subroutine */ void dtrmm_(char *, char *, char *, char *, 
 	    integer *, integer *, doublereal *, doublereal *, integer *, 
 	    doublereal *, integer *);
     integer lwmin;
     char trans[1];
     integer liopt;
-    extern /* Subroutine */ int dtrsm_(char *, char *, char *, char *, 
+    extern /* Subroutine */ void dtrsm_(char *, char *, char *, char *, 
 	    integer *, integer *, doublereal *, doublereal *, integer *, 
 	    doublereal *, integer *);
     logical upper, wantz;
-    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen), dpotrf_(
+    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
+    extern int dpotrf_(
 	    char *, integer *, doublereal *, integer *, integer *);
     integer liwmin;
-    extern /* Subroutine */ int dsyevd_(char *, char *, integer *, doublereal 
+    extern /* Subroutine */ void dsyevd_(char *, char *, integer *, doublereal 
 	    *, integer *, doublereal *, doublereal *, integer *, integer *, 
 	    integer *, integer *), dsygst_(integer *, char *, 
 	    integer *, doublereal *, integer *, doublereal *, integer *, 
@@ -842,15 +843,15 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DSYGVD", &i__1, (ftnlen)6);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /*     Form a Cholesky factorization of B. */
@@ -858,7 +859,7 @@ f"> */
     dpotrf_(uplo, n, &b[b_offset], ldb, info);
     if (*info != 0) {
 	*info = *n + *info;
-	return 0;
+	return;
     }
 
 /*     Transform problem to standard eigenvalue problem and solve. */
@@ -910,7 +911,7 @@ f"> */
     work[1] = (doublereal) lopt;
     iwork[1] = liopt;
 
-    return 0;
+    return;
 
 /*     End of DSYGVD */
 

@@ -664,7 +664,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 /* > \ingroup complex16OTHERcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int zunbdb5_(integer *m1, integer *m2, integer *n, 
+/* Subroutine */ void zunbdb5_(integer *m1, integer *m2, integer *n, 
 	doublecomplex *x1, integer *incx1, doublecomplex *x2, integer *incx2, 
 	doublecomplex *q1, integer *ldq1, doublecomplex *q2, integer *ldq2, 
 	doublecomplex *work, integer *lwork, integer *info)
@@ -676,7 +676,8 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
     /* Local variables */
     integer i__, j, childinfo;
     extern doublereal dznrm2_(integer *, doublecomplex *, integer *);
-    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen), zunbdb6_(
+    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
+    extern void zunbdb6_(
 	    integer *, integer *, integer *, doublecomplex *, integer *, 
 	    doublecomplex *, integer *, doublecomplex *, integer *, 
 	    doublecomplex *, integer *, doublecomplex *, integer *, integer *)
@@ -728,7 +729,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZUNBDB5", &i__1, (ftnlen)7);
-	return 0;
+	return;
     }
 
 /*     Project X onto the orthogonal complement of Q */
@@ -741,7 +742,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
     d__1 = dznrm2_(m1, &x1[1], incx1);
     d__2 = dznrm2_(m2, &x2[1], incx2);
     if (d__1 != 0. || d__2 != 0.) {
-	return 0;
+	return;
     }
 
 /*     Project each standard basis vector e_1,...,e_M1 in turn, stopping */
@@ -766,7 +767,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 	d__1 = dznrm2_(m1, &x1[1], incx1);
 	d__2 = dznrm2_(m2, &x2[1], incx2);
 	if (d__1 != 0. || d__2 != 0.) {
-	    return 0;
+	    return;
 	}
     }
 
@@ -792,11 +793,11 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 	d__1 = dznrm2_(m1, &x1[1], incx1);
 	d__2 = dznrm2_(m2, &x2[1], incx2);
 	if (d__1 != 0. || d__2 != 0.) {
-	    return 0;
+	    return;
 	}
     }
 
-    return 0;
+    return;
 
 /*     End of ZUNBDB5 */
 

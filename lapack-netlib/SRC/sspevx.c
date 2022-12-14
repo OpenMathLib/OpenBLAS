@@ -746,7 +746,7 @@ f"> */
 /* > \ingroup realOTHEReigen */
 
 /*  ===================================================================== */
-/* Subroutine */ int sspevx_(char *jobz, char *range, char *uplo, integer *n, 
+/* Subroutine */ void sspevx_(char *jobz, char *range, char *uplo, integer *n, 
 	real *ap, real *vl, real *vu, integer *il, integer *iu, real *abstol, 
 	integer *m, real *w, real *z__, integer *ldz, real *work, integer *
 	iwork, integer *ifail, integer *info)
@@ -765,9 +765,9 @@ f"> */
     real sigma;
     extern logical lsame_(char *, char *);
     integer iinfo;
-    extern /* Subroutine */ int sscal_(integer *, real *, real *, integer *);
+    extern /* Subroutine */ void sscal_(integer *, real *, real *, integer *);
     char order[1];
-    extern /* Subroutine */ int scopy_(integer *, real *, integer *, real *, 
+    extern /* Subroutine */ void scopy_(integer *, real *, integer *, real *, 
 	    integer *), sswap_(integer *, real *, integer *, real *, integer *
 	    );
     logical wantz;
@@ -781,17 +781,17 @@ f"> */
     real abstll, bignum;
     integer indtau, indisp, indiwo, indwrk;
     extern real slansp_(char *, char *, integer *, real *, real *);
-    extern /* Subroutine */ int sstein_(integer *, real *, real *, integer *, 
+    extern /* Subroutine */ void sstein_(integer *, real *, real *, integer *, 
 	    real *, integer *, integer *, real *, integer *, real *, integer *
 	    , integer *, integer *), ssterf_(integer *, real *, real *, 
 	    integer *);
     integer nsplit;
-    extern /* Subroutine */ int sstebz_(char *, char *, integer *, real *, 
+    extern /* Subroutine */ void sstebz_(char *, char *, integer *, real *, 
 	    real *, integer *, integer *, real *, real *, real *, integer *, 
 	    integer *, real *, integer *, integer *, real *, integer *, 
 	    integer *);
     real smlnum;
-    extern /* Subroutine */ int sopgtr_(char *, integer *, real *, real *, 
+    extern /* Subroutine */ void sopgtr_(char *, integer *, real *, real *, 
 	    real *, integer *, real *, integer *), ssptrd_(char *, 
 	    integer *, real *, real *, real *, real *, integer *), 
 	    ssteqr_(char *, integer *, real *, real *, real *, integer *, 
@@ -860,14 +860,14 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("SSPEVX", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     *m = 0;
     if (*n == 0) {
-	return 0;
+	return;
     }
 
     if (*n == 1) {
@@ -883,7 +883,7 @@ f"> */
 	if (wantz) {
 	    z__[z_dim1 + 1] = 1.f;
 	}
-	return 0;
+	return;
     }
 
 /*     Get machine constants. */
@@ -1049,7 +1049,7 @@ L20:
 	}
     }
 
-    return 0;
+    return;
 
 /*     End of SSPEVX */
 

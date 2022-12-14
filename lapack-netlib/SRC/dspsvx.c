@@ -788,7 +788,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int dspsvx_(char *fact, char *uplo, integer *n, integer *
+/* Subroutine */ void dspsvx_(char *fact, char *uplo, integer *n, integer *
 	nrhs, doublereal *ap, doublereal *afp, integer *ipiv, doublereal *b, 
 	integer *ldb, doublereal *x, integer *ldx, doublereal *rcond, 
 	doublereal *ferr, doublereal *berr, doublereal *work, integer *iwork, 
@@ -800,16 +800,16 @@ f"> */
     /* Local variables */
     extern logical lsame_(char *, char *);
     doublereal anorm;
-    extern /* Subroutine */ int dcopy_(integer *, doublereal *, integer *, 
+    extern /* Subroutine */ void dcopy_(integer *, doublereal *, integer *, 
 	    doublereal *, integer *);
     extern doublereal dlamch_(char *);
     logical nofact;
-    extern /* Subroutine */ int dlacpy_(char *, integer *, integer *, 
-	    doublereal *, integer *, doublereal *, integer *), 
-	    xerbla_(char *, integer *, ftnlen);
+    extern /* Subroutine */ void dlacpy_(char *, integer *, integer *, 
+	    doublereal *, integer *, doublereal *, integer *); 
+    extern int xerbla_(char *, integer *, ftnlen);
     extern doublereal dlansp_(char *, char *, integer *, doublereal *, 
 	    doublereal *);
-    extern /* Subroutine */ int dspcon_(char *, integer *, doublereal *, 
+    extern /* Subroutine */ void dspcon_(char *, integer *, doublereal *, 
 	    integer *, doublereal *, doublereal *, doublereal *, integer *, 
 	    integer *), dsprfs_(char *, integer *, integer *, 
 	    doublereal *, doublereal *, integer *, doublereal *, integer *, 
@@ -866,7 +866,7 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DSPSVX", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
     if (nofact) {
@@ -881,7 +881,7 @@ f"> */
 
 	if (*info > 0) {
 	    *rcond = 0.;
-	    return 0;
+	    return;
 	}
     }
 
@@ -911,7 +911,7 @@ f"> */
 	*info = *n + 1;
     }
 
-    return 0;
+    return;
 
 /*     End of DSPSVX */
 

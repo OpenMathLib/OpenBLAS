@@ -623,7 +623,7 @@ f"> */
 /* > \ingroup complexGEcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int cgetf2_(integer *m, integer *n, complex *a, integer *lda,
+/* Subroutine */ void cgetf2_(integer *m, integer *n, complex *a, integer *lda,
 	 integer *ipiv, integer *info)
 {
     /* System generated locals */
@@ -632,11 +632,11 @@ f"> */
 
     /* Local variables */
     integer i__, j;
-    extern /* Subroutine */ int cscal_(integer *, complex *, complex *, 
+    extern /* Subroutine */ void cscal_(integer *, complex *, complex *, 
 	    integer *), cgeru_(integer *, integer *, complex *, complex *, 
 	    integer *, complex *, integer *, complex *, integer *);
     real sfmin;
-    extern /* Subroutine */ int cswap_(integer *, complex *, integer *, 
+    extern /* Subroutine */ void cswap_(integer *, complex *, integer *, 
 	    complex *, integer *);
     integer jp;
     extern integer icamax_(integer *, complex *, integer *);
@@ -673,13 +673,13 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CGETF2", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*m == 0 || *n == 0) {
-	return 0;
+	return;
     }
 
 /*     Compute machine safe minimum */
@@ -740,7 +740,7 @@ f"> */
 	}
 /* L10: */
     }
-    return 0;
+    return;
 
 /*     End of CGETF2 */
 

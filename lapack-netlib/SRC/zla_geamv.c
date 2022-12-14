@@ -683,7 +683,7 @@ mv.f"> */
 /* > \ingroup complex16GEcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int zla_geamv_(integer *trans, integer *m, integer *n, 
+/* Subroutine */ void zla_geamv_(integer *trans, integer *m, integer *n, 
 	doublereal *alpha, doublecomplex *a, integer *lda, doublecomplex *x, 
 	integer *incx, doublereal *beta, doublereal *y, integer *incy)
 {
@@ -739,13 +739,13 @@ mv.f"> */
     }
     if (info != 0) {
 	xerbla_("ZLA_GEAMV ", &info, (ftnlen)10);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible. */
 
     if (*m == 0 || *n == 0 || *alpha == 0. && *beta == 1.) {
-	return 0;
+	return;
     }
 
 /*     Set  LENX  and  LENY, the lengths of the vectors x and y, and set */
@@ -916,7 +916,7 @@ mv.f"> */
 	}
     }
 
-    return 0;
+    return;
 
 /*     End of ZLA_GEAMV */
 

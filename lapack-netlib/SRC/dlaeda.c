@@ -682,7 +682,7 @@ f"> */
 /* > at Berkeley, USA */
 
 /*  ===================================================================== */
-/* Subroutine */ int dlaeda_(integer *n, integer *tlvls, integer *curlvl, 
+/* Subroutine */ void dlaeda_(integer *n, integer *tlvls, integer *curlvl, 
 	integer *curpbm, integer *prmptr, integer *perm, integer *givptr, 
 	integer *givcol, doublereal *givnum, doublereal *q, integer *qptr, 
 	doublereal *z__, doublereal *ztemp, integer *info)
@@ -691,14 +691,14 @@ f"> */
     integer i__1, i__2, i__3;
 
     /* Local variables */
-    extern /* Subroutine */ int drot_(integer *, doublereal *, integer *, 
+    extern /* Subroutine */ void drot_(integer *, doublereal *, integer *, 
 	    doublereal *, integer *, doublereal *, doublereal *);
     integer curr, bsiz1, bsiz2, psiz1, psiz2, i__, k, zptr1;
-    extern /* Subroutine */ int dgemv_(char *, integer *, integer *, 
+    extern /* Subroutine */ void dgemv_(char *, integer *, integer *, 
 	    doublereal *, doublereal *, integer *, doublereal *, integer *, 
 	    doublereal *, doublereal *, integer *), dcopy_(integer *, 
-	    doublereal *, integer *, doublereal *, integer *), xerbla_(char *,
-	     integer *, ftnlen);
+	    doublereal *, integer *, doublereal *, integer *);
+    extern int xerbla_(char *, integer *, ftnlen);
     integer mid, ptr;
 
 
@@ -733,13 +733,13 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DLAEDA", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /*     Determine location of first number in second half. */
@@ -851,7 +851,7 @@ f"> */
 /* L70: */
     }
 
-    return 0;
+    return;
 
 /*     End of DLAEDA */
 

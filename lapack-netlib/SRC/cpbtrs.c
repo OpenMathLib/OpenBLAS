@@ -634,7 +634,7 @@ f"> */
 /* > \ingroup complexOTHERcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int cpbtrs_(char *uplo, integer *n, integer *kd, integer *
+/* Subroutine */ void cpbtrs_(char *uplo, integer *n, integer *kd, integer *
 	nrhs, complex *ab, integer *ldab, complex *b, integer *ldb, integer *
 	info)
 {
@@ -644,7 +644,7 @@ f"> */
     /* Local variables */
     integer j;
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int ctbsv_(char *, char *, char *, integer *, 
+    extern /* Subroutine */ void ctbsv_(char *, char *, char *, integer *, 
 	    integer *, complex *, integer *, complex *, integer *);
     logical upper;
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
@@ -688,13 +688,13 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CPBTRS", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0 || *nrhs == 0) {
-	return 0;
+	return;
     }
 
     if (upper) {
@@ -735,7 +735,7 @@ f"> */
 	}
     }
 
-    return 0;
+    return;
 
 /*     End of CPBTRS */
 

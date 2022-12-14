@@ -690,7 +690,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int zhetd2_(char *uplo, integer *n, doublecomplex *a, 
+/* Subroutine */ void zhetd2_(char *uplo, integer *n, doublecomplex *a, 
 	integer *lda, doublereal *d__, doublereal *e, doublecomplex *tau, 
 	integer *info)
 {
@@ -701,7 +701,7 @@ f"> */
 
     /* Local variables */
     doublecomplex taui;
-    extern /* Subroutine */ int zher2_(char *, integer *, doublecomplex *, 
+    extern /* Subroutine */ void zher2_(char *, integer *, doublecomplex *, 
 	    doublecomplex *, integer *, doublecomplex *, integer *, 
 	    doublecomplex *, integer *);
     integer i__;
@@ -709,13 +709,14 @@ f"> */
     extern logical lsame_(char *, char *);
     extern /* Double Complex */ VOID zdotc_(doublecomplex *, integer *, 
 	    doublecomplex *, integer *, doublecomplex *, integer *);
-    extern /* Subroutine */ int zhemv_(char *, integer *, doublecomplex *, 
+    extern /* Subroutine */ void zhemv_(char *, integer *, doublecomplex *, 
 	    doublecomplex *, integer *, doublecomplex *, integer *, 
 	    doublecomplex *, doublecomplex *, integer *);
     logical upper;
-    extern /* Subroutine */ int zaxpy_(integer *, doublecomplex *, 
-	    doublecomplex *, integer *, doublecomplex *, integer *), xerbla_(
-	    char *, integer *, ftnlen), zlarfg_(integer *, doublecomplex *, 
+    extern /* Subroutine */ void zaxpy_(integer *, doublecomplex *, 
+	    doublecomplex *, integer *, doublecomplex *, integer *);
+    extern int xerbla_(char *, integer *, ftnlen);
+    extern void zlarfg_(integer *, doublecomplex *, 
 	    doublecomplex *, integer *, doublecomplex *);
 
 
@@ -751,13 +752,13 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZHETD2", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n <= 0) {
-	return 0;
+	return;
     }
 
     if (upper) {
@@ -912,7 +913,7 @@ f"> */
 	d__[i__1] = a[i__2].r;
     }
 
-    return 0;
+    return;
 
 /*     End of ZHETD2 */
 

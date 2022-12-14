@@ -702,7 +702,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int sormrz_(char *side, char *trans, integer *m, integer *n, 
+/* Subroutine */ void sormrz_(char *side, char *trans, integer *m, integer *n, 
 	integer *k, integer *l, real *a, integer *lda, real *tau, real *c__, 
 	integer *ldc, real *work, integer *lwork, integer *info)
 {
@@ -717,20 +717,20 @@ f"> */
     integer i__;
     extern logical lsame_(char *, char *);
     integer nbmin, iinfo, i1, i2, i3, ib, ic, ja, jc, nb;
-    extern /* Subroutine */ int sormr3_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void sormr3_(char *, char *, integer *, integer *, 
 	    integer *, integer *, real *, integer *, real *, real *, integer *
 	    , real *, integer *);
     integer mi, ni, nq, nw;
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     extern integer ilaenv_(integer *, char *, char *, integer *, integer *, 
 	    integer *, integer *, ftnlen, ftnlen);
-    extern /* Subroutine */ int slarzb_(char *, char *, char *, char *, 
+    extern /* Subroutine */ void slarzb_(char *, char *, char *, char *, 
 	    integer *, integer *, integer *, integer *, real *, integer *, 
 	    real *, integer *, real *, integer *, real *, integer *);
     logical notran;
     integer ldwork;
     char transt[1];
-    extern /* Subroutine */ int slarzt_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void slarzt_(char *, char *, integer *, integer *, 
 	    real *, integer *, real *, real *, integer *);
     integer lwkopt;
     logical lquery;
@@ -816,15 +816,15 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("SORMRZ", &i__1, (ftnlen)6);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*m == 0 || *n == 0) {
-	return 0;
+	return;
     }
 
     nbmin = 2;
@@ -919,7 +919,7 @@ f"> */
 
     work[1] = (real) lwkopt;
 
-    return 0;
+    return;
 
 /*     End of SORMRZ */
 

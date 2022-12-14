@@ -674,7 +674,7 @@ a.f"> */
 /* > \ingroup complexHEsolve */
 
 /*  ===================================================================== */
-/* Subroutine */ int chesv_aa_(char *uplo, integer *n, integer *nrhs, 
+/* Subroutine */ void chesv_aa_(char *uplo, integer *n, integer *nrhs, 
 	complex *a, integer *lda, integer *ipiv, complex *b, integer *ldb, 
 	complex *work, integer *lwork, integer *info)
 {
@@ -683,12 +683,13 @@ a.f"> */
 
     /* Local variables */
     integer lwkopt_hetrf__, lwkopt_hetrs__;
-    extern /* Subroutine */ int chetrf_aa_(char *, integer *, complex *, 
+    extern /* Subroutine */ void chetrf_aa_(char *, integer *, complex *, 
 	    integer *, integer *, complex *, integer *, integer *);
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int chetrs_aa_(char *, integer *, integer *, 
+    extern /* Subroutine */ void chetrs_aa_(char *, integer *, integer *, 
 	    complex *, integer *, integer *, complex *, integer *, complex *, 
-	    integer *, integer *), xerbla_(char *, integer *, ftnlen);
+	    integer *, integer *);
+    extern int xerbla_(char *, integer *, ftnlen);
     integer lwkopt;
     logical lquery;
 
@@ -749,9 +750,9 @@ a.f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CHESV_AA ", &i__1, (ftnlen)9);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Compute the factorization A = U**H*T*U or A = L*T*L**H. */
@@ -768,7 +769,7 @@ a.f"> */
 
     work[1].r = (real) lwkopt, work[1].i = 0.f;
 
-    return 0;
+    return;
 
 /*     End of CHESV_AA */
 

@@ -670,7 +670,7 @@ real sla_syrcond_(char *uplo, integer *n, real *a, integer *lda, real *af,
     integer kase, i__, j;
     extern logical lsame_(char *, char *);
     integer isave[3];
-    extern /* Subroutine */ int slacn2_(integer *, real *, real *, integer *, 
+    extern /* Subroutine */ void slacn2_(integer *, real *, real *, integer *, 
 	    real *, integer *, integer *);
     logical up;
     extern real slamch_(char *);
@@ -678,7 +678,7 @@ real sla_syrcond_(char *uplo, integer *n, real *a, integer *lda, real *af,
     real ainvnm;
     char normin[1];
     real smlnum;
-    extern /* Subroutine */ int ssytrs_(char *, integer *, integer *, real *, 
+    extern /* Subroutine */ void ssytrs_(char *, integer *, integer *, real *, 
 	    integer *, integer *, real *, integer *, integer *);
     real tmp;
 

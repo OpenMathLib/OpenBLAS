@@ -629,7 +629,7 @@ f"> */
 /* >     Umea University, S-901 87 Umea, Sweden. */
 
 /*  ===================================================================== */
-/* Subroutine */ int dgesc2_(integer *n, doublereal *a, integer *lda, 
+/* Subroutine */ void dgesc2_(integer *n, doublereal *a, integer *lda, 
 	doublereal *rhs, integer *ipiv, integer *jpiv, doublereal *scale)
 {
     /* System generated locals */
@@ -639,7 +639,7 @@ f"> */
     /* Local variables */
     doublereal temp;
     integer i__, j;
-    extern /* Subroutine */ int dscal_(integer *, doublereal *, doublereal *, 
+    extern /* Subroutine */ void dscal_(integer *, doublereal *, doublereal *, 
 	    integer *), dlabad_(doublereal *, doublereal *);
     extern doublereal dlamch_(char *);
     extern integer idamax_(integer *, doublereal *, integer *);
@@ -720,7 +720,7 @@ f"> */
 
     i__1 = *n - 1;
     dlaswp_(&c__1, &rhs[1], lda, &c__1, &i__1, &jpiv[1], &c_n1);
-    return 0;
+    return;
 
 /*     End of DGESC2 */
 

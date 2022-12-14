@@ -944,7 +944,7 @@ f"> */
 /* >      1996. */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int ctgsen_(integer *ijob, logical *wantq, logical *wantz, 
+/* Subroutine */ void ctgsen_(integer *ijob, logical *wantq, logical *wantz, 
 	logical *select, integer *n, complex *a, integer *lda, complex *b, 
 	integer *ldb, complex *alpha, complex *beta, complex *q, integer *ldq,
 	 complex *z__, integer *ldz, integer *m, real *pl, real *pr, real *
@@ -962,30 +962,31 @@ f"> */
     logical swap;
     complex temp1, temp2;
     integer i__, k;
-    extern /* Subroutine */ int cscal_(integer *, complex *, complex *, 
+    extern /* Subroutine */ void cscal_(integer *, complex *, complex *, 
 	    integer *);
     integer isave[3];
     logical wantd;
     integer lwmin;
     logical wantp;
     integer n1, n2;
-    extern /* Subroutine */ int clacn2_(integer *, complex *, complex *, real 
+    extern /* Subroutine */ void clacn2_(integer *, complex *, complex *, real 
 	    *, integer *, integer *);
     logical wantd1, wantd2;
     real dscale;
     integer ks;
     extern real slamch_(char *);
     real rdscal;
-    extern /* Subroutine */ int clacpy_(char *, integer *, integer *, complex 
+    extern /* Subroutine */ void clacpy_(char *, integer *, integer *, complex 
 	    *, integer *, complex *, integer *);
     real safmin;
-    extern /* Subroutine */ int ctgexc_(logical *, logical *, integer *, 
+    extern /* Subroutine */ void ctgexc_(logical *, logical *, integer *, 
 	    complex *, integer *, complex *, integer *, complex *, integer *, 
-	    complex *, integer *, integer *, integer *, integer *), xerbla_(
-	    char *, integer *, ftnlen), classq_(integer *, complex *, integer 
+	    complex *, integer *, integer *, integer *, integer *);
+    extern int xerbla_(char *, integer *, ftnlen);
+    extern void classq_(integer *, complex *, integer 
 	    *, real *, real *);
     integer liwmin;
-    extern /* Subroutine */ int ctgsyl_(char *, integer *, integer *, integer 
+    extern /* Subroutine */ void ctgsyl_(char *, integer *, integer *, integer 
 	    *, complex *, integer *, complex *, integer *, complex *, integer 
 	    *, complex *, integer *, complex *, integer *, complex *, integer 
 	    *, real *, real *, complex *, integer *, integer *, integer *);
@@ -1046,7 +1047,7 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CTGSEN", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
     ierr = 0;
@@ -1114,9 +1115,9 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CTGSEN", &i__1, (ftnlen)6);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible. */
@@ -1371,7 +1372,7 @@ L70:
     work[1].r = (real) lwmin, work[1].i = 0.f;
     iwork[1] = liwmin;
 
-    return 0;
+    return;
 
 /*     End of CTGSEN */
 

@@ -702,7 +702,7 @@ SY matrices</b> */
 /* > \endverbatim */
 
 /*  ===================================================================== */
-/* Subroutine */ int dsyev_2stage_(char *jobz, char *uplo, integer *n, 
+/* Subroutine */ void dsyev_2stage_(char *jobz, char *uplo, integer *n, 
 	doublereal *a, integer *lda, doublereal *w, doublereal *work, integer 
 	*lwork, integer *info)
 {
@@ -716,12 +716,12 @@ SY matrices</b> */
 	    integer *, integer *, integer *);
     integer imax;
     doublereal anrm, rmin, rmax;
-    extern /* Subroutine */ int dscal_(integer *, doublereal *, doublereal *, 
+    extern /* Subroutine */ void dscal_(integer *, doublereal *, doublereal *, 
 	    integer *);
     doublereal sigma;
     extern logical lsame_(char *, char *);
     integer iinfo;
-    extern /* Subroutine */ int dsytrd_2stage_(char *, char *, integer *, 
+    extern /* Subroutine */ void dsytrd_2stage_(char *, char *, integer *, 
 	    doublereal *, integer *, doublereal *, doublereal *, doublereal *,
 	     doublereal *, integer *, doublereal *, integer *, integer *);
     integer lhtrd, lwmin;
@@ -731,19 +731,19 @@ SY matrices</b> */
     integer ib, kd;
     extern doublereal dlamch_(char *);
     integer iscale;
-    extern /* Subroutine */ int dlascl_(char *, integer *, integer *, 
+    extern /* Subroutine */ void dlascl_(char *, integer *, integer *, 
 	    doublereal *, doublereal *, integer *, integer *, doublereal *, 
 	    integer *, integer *);
     doublereal safmin;
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     doublereal bignum;
     integer indtau;
-    extern /* Subroutine */ int dsterf_(integer *, doublereal *, doublereal *,
+    extern /* Subroutine */ void dsterf_(integer *, doublereal *, doublereal *,
 	     integer *);
     extern doublereal dlansy_(char *, char *, integer *, doublereal *, 
 	    integer *, doublereal *);
     integer indwrk;
-    extern /* Subroutine */ int dorgtr_(char *, integer *, doublereal *, 
+    extern /* Subroutine */ void dorgtr_(char *, integer *, doublereal *, 
 	    integer *, doublereal *, doublereal *, integer *, integer *), dsteqr_(char *, integer *, doublereal *, doublereal *, 
 	    doublereal *, integer *, doublereal *, integer *);
     integer llwork;
@@ -807,15 +807,15 @@ SY matrices</b> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DSYEV_2STAGE ", &i__1, (ftnlen)13);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
     if (*n == 1) {
@@ -824,7 +824,7 @@ SY matrices</b> */
 	if (wantz) {
 	    a[a_dim1 + 1] = 1.;
 	}
-	return 0;
+	return;
     }
 
 /*     Get machine constants. */
@@ -872,7 +872,7 @@ SY matrices</b> */
     } else {
 /*        Not available in this release, and argument checking should not */
 /*        let it getting here */
-	return 0;
+	return;
 	dorgtr_(uplo, n, &a[a_offset], lda, &work[indtau], &work[indwrk], &
 		llwork, &iinfo);
 	dsteqr_(jobz, n, &w[1], &work[inde], &a[a_offset], lda, &work[indtau],
@@ -895,7 +895,7 @@ SY matrices</b> */
 
     work[1] = (doublereal) lwmin;
 
-    return 0;
+    return;
 
 /*     End of DSYEV_2STAGE */
 

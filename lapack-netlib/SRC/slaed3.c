@@ -700,7 +700,7 @@ f"> */
 /* >  Modified by Francoise Tisseur, University of Tennessee */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int slaed3_(integer *k, integer *n, integer *n1, real *d__, 
+/* Subroutine */ void slaed3_(integer *k, integer *n, integer *n1, real *d__, 
 	real *q, integer *ldq, real *rho, real *dlamda, real *q2, integer *
 	indx, integer *ctot, real *w, real *s, integer *info)
 {
@@ -712,16 +712,17 @@ f"> */
     real temp;
     extern real snrm2_(integer *, real *, integer *);
     integer i__, j;
-    extern /* Subroutine */ int sgemm_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void sgemm_(char *, char *, integer *, integer *, 
 	    integer *, real *, real *, integer *, real *, integer *, real *, 
 	    real *, integer *), scopy_(integer *, real *, 
 	    integer *, real *, integer *);
     integer n2;
-    extern /* Subroutine */ int slaed4_(integer *, integer *, real *, real *, 
+    extern /* Subroutine */ void slaed4_(integer *, integer *, real *, real *, 
 	    real *, real *, real *, integer *);
     extern real slamc3_(real *, real *);
     integer n12, ii, n23;
-    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen), slacpy_(
+    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
+    extern void slacpy_(
 	    char *, integer *, integer *, real *, integer *, real *, integer *
 	    ), slaset_(char *, integer *, integer *, real *, real *, 
 	    real *, integer *);
@@ -764,13 +765,13 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("SLAED3", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*k == 0) {
-	return 0;
+	return;
     }
 
 /*     Modify values DLAMDA(i) to make sure all DLAMDA(i)-DLAMDA(j) can */
@@ -901,7 +902,7 @@ L110:
 
 
 L120:
-    return 0;
+    return;
 
 /*     End of SLAED3 */
 

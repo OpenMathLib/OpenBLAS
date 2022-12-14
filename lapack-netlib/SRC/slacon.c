@@ -630,7 +630,7 @@ f"> */
 /* >  ACM Trans. Math. Soft., vol. 14, no. 4, pp. 381-396, December 1988. */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int slacon_(integer *n, real *v, real *x, integer *isgn, 
+/* Subroutine */ void slacon_(integer *n, real *v, real *x, integer *isgn, 
 	real *est, integer *kase)
 {
     /* System generated locals */
@@ -642,7 +642,7 @@ f"> */
     static real temp;
     static integer jump, i__, j, jlast;
     extern real sasum_(integer *, real *, integer *);
-    extern /* Subroutine */ int scopy_(integer *, real *, integer *, real *, 
+    extern /* Subroutine */ void scopy_(integer *, real *, integer *, real *, 
 	    integer *);
     extern integer isamax_(integer *, real *, integer *);
     static real altsgn, estold;
@@ -671,7 +671,7 @@ f"> */
 	}
 	*kase = 1;
 	jump = 1;
-	return 0;
+	return;
     }
 
     switch (jump) {
@@ -702,7 +702,7 @@ L20:
     }
     *kase = 2;
     jump = 2;
-    return 0;
+    return;
 
 /*     ................ ENTRY   (JUMP = 2) */
 /*     FIRST ITERATION.  X HAS BEEN OVERWRITTEN BY TRANSPOSE(A)*X. */
@@ -722,7 +722,7 @@ L50:
     x[j] = 1.f;
     *kase = 1;
     jump = 3;
-    return 0;
+    return;
 
 /*     ................ ENTRY   (JUMP = 3) */
 /*     X HAS BEEN OVERWRITTEN BY A*X. */
@@ -756,7 +756,7 @@ L90:
     }
     *kase = 2;
     jump = 4;
-    return 0;
+    return;
 
 /*     ................ ENTRY   (JUMP = 4) */
 /*     X HAS BEEN OVERWRITTEN BY TRANSPOSE(A)*X. */
@@ -781,7 +781,7 @@ L120:
     }
     *kase = 1;
     jump = 5;
-    return 0;
+    return;
 
 /*     ................ ENTRY   (JUMP = 5) */
 /*     X HAS BEEN OVERWRITTEN BY A*X. */
@@ -795,7 +795,7 @@ L140:
 
 L150:
     *kase = 0;
-    return 0;
+    return;
 
 /*     End of SLACON */
 

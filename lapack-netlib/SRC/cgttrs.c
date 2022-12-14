@@ -651,7 +651,7 @@ f"> */
 /* > \ingroup complexGTcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int cgttrs_(char *trans, integer *n, integer *nrhs, complex *
+/* Subroutine */ void cgttrs_(char *trans, integer *n, integer *nrhs, complex *
 	dl, complex *d__, complex *du, complex *du2, integer *ipiv, complex *
 	b, integer *ldb, integer *info)
 {
@@ -660,7 +660,7 @@ f"> */
 
     /* Local variables */
     integer j;
-    extern /* Subroutine */ int cgtts2_(integer *, integer *, integer *, 
+    extern /* Subroutine */ void cgtts2_(integer *, integer *, integer *, 
 	    complex *, complex *, complex *, complex *, integer *, complex *, 
 	    integer *);
     integer jb, nb;
@@ -707,13 +707,13 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CGTTRS", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0 || *nrhs == 0) {
-	return 0;
+	return;
     }
 
 /*     Decode TRANS */
@@ -756,6 +756,6 @@ f"> */
 
 /*     End of CGTTRS */
 
-    return 0;
+    return;
 } /* cgttrs_ */
 

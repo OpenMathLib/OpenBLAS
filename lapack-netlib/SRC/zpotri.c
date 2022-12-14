@@ -604,7 +604,7 @@ f"> */
 /* > \ingroup complex16POcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int zpotri_(char *uplo, integer *n, doublecomplex *a, 
+/* Subroutine */ void zpotri_(char *uplo, integer *n, doublecomplex *a, 
 	integer *lda, integer *info)
 {
     /* System generated locals */
@@ -612,9 +612,10 @@ f"> */
 
     /* Local variables */
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen), zlauum_(
-	    char *, integer *, doublecomplex *, integer *, integer *),
-	     ztrtri_(char *, char *, integer *, doublecomplex *, integer *, 
+    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
+    extern int zlauum_(
+	    char *, integer *, doublecomplex *, integer *, integer *);
+    extern int ztrtri_(char *, char *, integer *, doublecomplex *, integer *, 
 	    integer *);
 
 
@@ -646,27 +647,27 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZPOTRI", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /*     Invert the triangular Cholesky factor U or L. */
 
     ztrtri_(uplo, "Non-unit", n, &a[a_offset], lda, info);
     if (*info > 0) {
-	return 0;
+	return;
     }
 
 /*     Form inv(U) * inv(U)**H or inv(L)**H * inv(L). */
 
     zlauum_(uplo, n, &a[a_offset], lda, info);
 
-    return 0;
+    return;
 
 /*     End of ZPOTRI */
 

@@ -893,7 +893,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int dtgsja_(char *jobu, char *jobv, char *jobq, integer *m, 
+/* Subroutine */ void dtgsja_(char *jobu, char *jobv, char *jobq, integer *m, 
 	integer *p, integer *n, integer *k, integer *l, doublereal *a, 
 	integer *lda, doublereal *b, integer *ldb, doublereal *tola, 
 	doublereal *tolb, doublereal *alpha, doublereal *beta, doublereal *u, 
@@ -906,14 +906,14 @@ f"> */
     doublereal d__1;
 
     /* Local variables */
-    extern /* Subroutine */ int drot_(integer *, doublereal *, integer *, 
+    extern /* Subroutine */ void drot_(integer *, doublereal *, integer *, 
 	    doublereal *, integer *, doublereal *, doublereal *);
     integer kcallmycycle, i__, j;
     doublereal gamma;
-    extern /* Subroutine */ int dscal_(integer *, doublereal *, doublereal *, 
+    extern /* Subroutine */ void dscal_(integer *, doublereal *, doublereal *, 
 	    integer *);
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int dcopy_(integer *, doublereal *, integer *, 
+    extern /* Subroutine */ void dcopy_(integer *, doublereal *, integer *, 
 	    doublereal *, integer *);
     doublereal a1;
     logical initq;
@@ -922,15 +922,15 @@ f"> */
     doublereal b2, b3;
     logical wantu, wantv;
     doublereal error, ssmin;
-    extern /* Subroutine */ int dlags2_(logical *, doublereal *, doublereal *,
+    extern /* Subroutine */ void dlags2_(logical *, doublereal *, doublereal *,
 	     doublereal *, doublereal *, doublereal *, doublereal *, 
 	    doublereal *, doublereal *, doublereal *, doublereal *, 
 	    doublereal *, doublereal *), dlapll_(integer *, doublereal *, 
 	    integer *, doublereal *, integer *, doublereal *), dlartg_(
 	    doublereal *, doublereal *, doublereal *, doublereal *, 
 	    doublereal *), dlaset_(char *, integer *, integer *, doublereal *,
-	     doublereal *, doublereal *, integer *), xerbla_(char *, 
-	    integer *, ftnlen);
+	     doublereal *, doublereal *, integer *);
+     extern int xerbla_(char *, integer *, ftnlen);
 //    extern integer myhuge_(doublereal *);
     doublereal csq, csu, csv, snq, rwk, snu, snv;
 
@@ -1006,7 +1006,7 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DTGSJA", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Initialize U, V and Q, if necessary */
@@ -1245,7 +1245,7 @@ L50:
 
 L100:
     *ncallmycycle = kcallmycycle;
-    return 0;
+    return;
 
 /*     End of DTGSJA */
 

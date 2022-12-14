@@ -682,7 +682,7 @@ f"> */
 /* > at Berkeley, USA */
 
 /*  ===================================================================== */
-/* Subroutine */ int slaeda_(integer *n, integer *tlvls, integer *curlvl, 
+/* Subroutine */ void slaeda_(integer *n, integer *tlvls, integer *curlvl, 
 	integer *curpbm, integer *prmptr, integer *perm, integer *givptr, 
 	integer *givcol, real *givnum, real *q, integer *qptr, real *z__, 
 	real *ztemp, integer *info)
@@ -692,12 +692,12 @@ f"> */
 
     /* Local variables */
     integer curr;
-    extern /* Subroutine */ int srot_(integer *, real *, integer *, real *, 
+    extern /* Subroutine */ void srot_(integer *, real *, integer *, real *, 
 	    integer *, real *, real *);
     integer bsiz1, bsiz2, psiz1, psiz2, i__, k, zptr1;
-    extern /* Subroutine */ int sgemv_(char *, integer *, integer *, real *, 
-	    real *, integer *, real *, integer *, real *, real *, integer *), scopy_(integer *, real *, integer *, real *, integer *), 
-	    xerbla_(char *, integer *, ftnlen);
+    extern /* Subroutine */ void sgemv_(char *, integer *, integer *, real *, 
+	    real *, integer *, real *, integer *, real *, real *, integer *), scopy_(integer *, real *, integer *, real *, integer *); 
+    extern int xerbla_(char *, integer *, ftnlen);
     integer mid, ptr;
 
 
@@ -732,13 +732,13 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("SLAEDA", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /*     Determine location of first number in second half. */
@@ -848,7 +848,7 @@ f"> */
 /* L70: */
     }
 
-    return 0;
+    return;
 
 /*     End of SLAEDA */
 

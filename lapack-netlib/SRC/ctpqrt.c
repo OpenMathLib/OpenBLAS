@@ -697,7 +697,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int ctpqrt_(integer *m, integer *n, integer *l, integer *nb, 
+/* Subroutine */ void ctpqrt_(integer *m, integer *n, integer *l, integer *nb, 
 	complex *a, integer *lda, complex *b, integer *ldb, complex *t, 
 	integer *ldt, complex *work, integer *info)
 {
@@ -707,7 +707,8 @@ f"> */
 
     /* Local variables */
     integer i__, iinfo, ib, lb, mb;
-    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen), ctprfb_(
+    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
+    extern void ctprfb_(
 	    char *, char *, char *, char *, integer *, integer *, integer *, 
 	    integer *, complex *, integer *, complex *, integer *, complex *, 
 	    integer *, complex *, integer *, complex *, integer *), ctpqrt2_(integer *, integer *, integer *,
@@ -758,13 +759,13 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CTPQRT", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*m == 0 || *n == 0) {
-	return 0;
+	return;
     }
 
     i__1 = *n;
@@ -798,7 +799,7 @@ f"> */
 		    , &ib);
 	}
     }
-    return 0;
+    return;
 
 /*     End of CTPQRT */
 

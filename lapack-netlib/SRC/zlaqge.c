@@ -652,7 +652,7 @@ f"> */
 /* > \ingroup complex16GEauxiliary */
 
 /*  ===================================================================== */
-/* Subroutine */ int zlaqge_(integer *m, integer *n, doublecomplex *a, 
+/* Subroutine */ void zlaqge_(integer *m, integer *n, doublecomplex *a, 
 	integer *lda, doublereal *r__, doublereal *c__, doublereal *rowcnd, 
 	doublereal *colcnd, doublereal *amax, char *equed)
 {
@@ -688,7 +688,7 @@ f"> */
     /* Function Body */
     if (*m <= 0 || *n <= 0) {
 	*(unsigned char *)equed = 'N';
-	return 0;
+	return;
     }
 
 /*     Initialize LARGE and SMALL. */
@@ -764,7 +764,7 @@ f"> */
 	*(unsigned char *)equed = 'B';
     }
 
-    return 0;
+    return;
 
 /*     End of ZLAQGE */
 

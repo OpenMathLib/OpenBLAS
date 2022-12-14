@@ -664,7 +664,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 /* > \ingroup doubleOTHERcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int dorbdb5_(integer *m1, integer *m2, integer *n, 
+/* Subroutine */ void dorbdb5_(integer *m1, integer *m2, integer *n, 
 	doublereal *x1, integer *incx1, doublereal *x2, integer *incx2, 
 	doublereal *q1, integer *ldq1, doublereal *q2, integer *ldq2, 
 	doublereal *work, integer *lwork, integer *info)
@@ -675,7 +675,8 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
     /* Local variables */
     extern doublereal dnrm2_(integer *, doublereal *, integer *);
     integer i__, j, childinfo;
-    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen), dorbdb6_(
+    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
+    extern void dorbdb6_(
 	    integer *, integer *, integer *, doublereal *, integer *, 
 	    doublereal *, integer *, doublereal *, integer *, doublereal *, 
 	    integer *, doublereal *, integer *, integer *);
@@ -726,7 +727,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DORBDB5", &i__1, (ftnlen)7);
-	return 0;
+	return;
     }
 
 /*     Project X onto the orthogonal complement of Q */
@@ -737,7 +738,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 /*     If the projection is nonzero, then return */
 
     if (dnrm2_(m1, &x1[1], incx1) != 0. || dnrm2_(m2, &x2[1], incx2) != 0.) {
-	return 0;
+	return;
     }
 
 /*     Project each standard basis vector e_1,...,e_M1 in turn, stopping */
@@ -758,7 +759,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 		ldq1, &q2[q2_offset], ldq2, &work[1], lwork, &childinfo);
 	if (dnrm2_(m1, &x1[1], incx1) != 0. || dnrm2_(m2, &x2[1], incx2) != 
 		0.) {
-	    return 0;
+	    return;
 	}
     }
 
@@ -780,11 +781,11 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 		ldq1, &q2[q2_offset], ldq2, &work[1], lwork, &childinfo);
 	if (dnrm2_(m1, &x1[1], incx1) != 0. || dnrm2_(m2, &x2[1], incx2) != 
 		0.) {
-	    return 0;
+	    return;
 	}
     }
 
-    return 0;
+    return;
 
 /*     End of DORBDB5 */
 

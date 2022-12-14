@@ -782,7 +782,7 @@ f"> */
 /* > \ingroup complex16OTHEReigen */
 
 /*  ===================================================================== */
-/* Subroutine */ int zhbevx_(char *jobz, char *range, char *uplo, integer *n, 
+/* Subroutine */ void zhbevx_(char *jobz, char *range, char *uplo, integer *n, 
 	integer *kd, doublecomplex *ab, integer *ldab, doublecomplex *q, 
 	integer *ldq, doublereal *vl, doublereal *vu, integer *il, integer *
 	iu, doublereal *abstol, integer *m, doublereal *w, doublecomplex *z__,
@@ -802,20 +802,20 @@ f"> */
     logical test;
     doublecomplex ctmp1;
     integer itmp1, i__, j, indee;
-    extern /* Subroutine */ int dscal_(integer *, doublereal *, doublereal *, 
+    extern /* Subroutine */ void dscal_(integer *, doublereal *, doublereal *, 
 	    integer *);
     doublereal sigma;
     extern logical lsame_(char *, char *);
     integer iinfo;
     char order[1];
-    extern /* Subroutine */ int dcopy_(integer *, doublereal *, integer *, 
+    extern /* Subroutine */ void dcopy_(integer *, doublereal *, integer *, 
 	    doublereal *, integer *);
     logical lower;
-    extern /* Subroutine */ int zgemv_(char *, integer *, integer *, 
+    extern /* Subroutine */ void zgemv_(char *, integer *, integer *, 
 	    doublecomplex *, doublecomplex *, integer *, doublecomplex *, 
 	    integer *, doublecomplex *, doublecomplex *, integer *);
     logical wantz;
-    extern /* Subroutine */ int zcopy_(integer *, doublecomplex *, integer *, 
+    extern /* Subroutine */ void zcopy_(integer *, doublecomplex *, integer *, 
 	    doublecomplex *, integer *), zswap_(integer *, doublecomplex *, 
 	    integer *, doublecomplex *, integer *);
     integer jj;
@@ -829,7 +829,7 @@ f"> */
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     doublereal abstll, bignum;
     integer indiwk, indisp;
-    extern /* Subroutine */ int dsterf_(integer *, doublereal *, doublereal *,
+    extern /* Subroutine */ void dsterf_(integer *, doublereal *, doublereal *,
 	     integer *), zlascl_(char *, integer *, integer *, doublereal *, 
 	    doublereal *, integer *, integer *, doublecomplex *, integer *, 
 	    integer *), dstebz_(char *, char *, integer *, doublereal 
@@ -840,11 +840,11 @@ f"> */
 	    integer *, doublereal *, doublereal *, doublecomplex *, integer *,
 	     doublecomplex *, integer *);
     integer indrwk, indwrk;
-    extern /* Subroutine */ int zlacpy_(char *, integer *, integer *, 
+    extern /* Subroutine */ void zlacpy_(char *, integer *, integer *, 
 	    doublecomplex *, integer *, doublecomplex *, integer *);
     integer nsplit;
     doublereal smlnum;
-    extern /* Subroutine */ int zstein_(integer *, doublereal *, doublereal *,
+    extern /* Subroutine */ void zstein_(integer *, doublereal *, doublereal *,
 	     integer *, doublereal *, integer *, integer *, doublecomplex *, 
 	    integer *, doublereal *, integer *, integer *, integer *), 
 	    zsteqr_(char *, integer *, doublereal *, doublereal *, 
@@ -923,14 +923,14 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZHBEVX", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     *m = 0;
     if (*n == 0) {
-	return 0;
+	return;
     }
 
     if (*n == 1) {
@@ -955,7 +955,7 @@ f"> */
 		z__[i__1].r = 1., z__[i__1].i = 0.;
 	    }
 	}
-	return 0;
+	return;
     }
 
 /*     Get machine constants. */
@@ -1131,7 +1131,7 @@ L30:
 	}
     }
 
-    return 0;
+    return;
 
 /*     End of ZHBEVX */
 

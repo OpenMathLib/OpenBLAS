@@ -610,7 +610,7 @@ _berr.f"> */
 /* > \ingroup complexOTHERcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int cla_lin_berr_(integer *n, integer *nz, integer *nrhs, 
+/* Subroutine */ void cla_lin_berr_(integer *n, integer *nz, integer *nrhs, 
 	complex *res, real *ayb, real *berr)
 {
     /* System generated locals */
@@ -675,6 +675,6 @@ _berr.f"> */
 
 	}
     }
-    return 0;
+    return;
 } /* cla_lin_berr__ */
 

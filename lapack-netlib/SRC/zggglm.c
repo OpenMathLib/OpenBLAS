@@ -699,7 +699,7 @@ f"> */
 /* > \ingroup complex16OTHEReigen */
 
 /*  ===================================================================== */
-/* Subroutine */ int zggglm_(integer *n, integer *m, integer *p, 
+/* Subroutine */ void zggglm_(integer *n, integer *m, integer *p, 
 	doublecomplex *a, integer *lda, doublecomplex *b, integer *ldb, 
 	doublecomplex *d__, doublecomplex *x, doublecomplex *y, doublecomplex 
 	*work, integer *lwork, integer *info)
@@ -710,7 +710,7 @@ f"> */
 
     /* Local variables */
     integer lopt, i__;
-    extern /* Subroutine */ int zgemv_(char *, integer *, integer *, 
+    extern /* Subroutine */ void zgemv_(char *, integer *, integer *, 
 	    doublecomplex *, doublecomplex *, integer *, doublecomplex *, 
 	    integer *, doublecomplex *, doublecomplex *, integer *), 
 	    zcopy_(integer *, doublecomplex *, integer *, doublecomplex *, 
@@ -719,17 +719,18 @@ f"> */
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     extern integer ilaenv_(integer *, char *, char *, integer *, integer *, 
 	    integer *, integer *, ftnlen, ftnlen);
-    extern /* Subroutine */ int zggqrf_(integer *, integer *, integer *, 
+    extern /* Subroutine */ void zggqrf_(integer *, integer *, integer *, 
 	    doublecomplex *, integer *, doublecomplex *, doublecomplex *, 
 	    integer *, doublecomplex *, doublecomplex *, integer *, integer *)
 	    ;
     integer lwkmin, nb1, nb2, nb3, nb4, lwkopt;
     logical lquery;
-    extern /* Subroutine */ int zunmqr_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void zunmqr_(char *, char *, integer *, integer *, 
 	    integer *, doublecomplex *, integer *, doublecomplex *, 
 	    doublecomplex *, integer *, doublecomplex *, integer *, integer *), zunmrq_(char *, char *, integer *, integer *, 
 	    integer *, doublecomplex *, integer *, doublecomplex *, 
-	    doublecomplex *, integer *, doublecomplex *, integer *, integer *), ztrtrs_(char *, char *, char *, integer *, 
+	    doublecomplex *, integer *, doublecomplex *, integer *, integer *);
+    extern int ztrtrs_(char *, char *, char *, integer *, 
 	    integer *, doublecomplex *, integer *, doublecomplex *, integer *,
 	     integer *);
 
@@ -804,9 +805,9 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZGGGLM", &i__1, (ftnlen)6);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
@@ -822,7 +823,7 @@ f"> */
 	    i__2 = i__;
 	    y[i__2].r = 0., y[i__2].i = 0.;
 	}
-	return 0;
+	return;
     }
 
 /*     Compute the GQR factorization of matrices A and B: */
@@ -863,7 +864,7 @@ f"> */
 
 	if (*info > 0) {
 	    *info = 1;
-	    return 0;
+	    return;
 	}
 
 	i__1 = *n - *m;
@@ -894,7 +895,7 @@ f"> */
 
 	if (*info > 0) {
 	    *info = 2;
-	    return 0;
+	    return;
 	}
 
 /*        Copy D to X */
@@ -917,7 +918,7 @@ f"> */
     i__1 = *m + np + f2cmax(i__2,i__3);
     work[1].r = (doublereal) i__1, work[1].i = 0.;
 
-    return 0;
+    return;
 
 /*     End of ZGGGLM */
 

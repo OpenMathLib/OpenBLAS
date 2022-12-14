@@ -659,7 +659,7 @@ f"> */
 /* >  Peter Mayes and Giuseppe Radicati, IBM ECSEC, Rome, March 23, 1989 */
 
 /*  ===================================================================== */
-/* Subroutine */ int spbtrf_(char *uplo, integer *n, integer *kd, real *ab, 
+/* Subroutine */ void spbtrf_(char *uplo, integer *n, integer *kd, real *ab, 
 	integer *ldab, integer *info)
 {
     /* System generated locals */
@@ -669,11 +669,11 @@ f"> */
     real work[1056]	/* was [33][32] */;
     integer i__, j;
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int sgemm_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void sgemm_(char *, char *, integer *, integer *, 
 	    integer *, real *, real *, integer *, real *, integer *, real *, 
 	    real *, integer *);
     integer i2, i3;
-    extern /* Subroutine */ int strsm_(char *, char *, char *, char *, 
+    extern /* Subroutine */ void strsm_(char *, char *, char *, char *, 
 	    integer *, integer *, real *, real *, integer *, real *, integer *
 	    ), ssyrk_(char *, char *, integer 
 	    *, integer *, real *, real *, integer *, real *, real *, integer *
@@ -718,13 +718,13 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("SPBTRF", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /*     Determine the block size for this environment */
@@ -1016,10 +1016,10 @@ f"> */
 	    }
 	}
     }
-    return 0;
+    return;
 
 L150:
-    return 0;
+    return;
 
 /*     End of SPBTRF */
 

@@ -636,7 +636,7 @@ f"> */
 /* > \ingroup complexGEcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int cgetrs_(char *trans, integer *n, integer *nrhs, complex *
+/* Subroutine */ void cgetrs_(char *trans, integer *n, integer *nrhs, complex *
 	a, integer *lda, integer *ipiv, complex *b, integer *ldb, integer *
 	info)
 {
@@ -645,10 +645,11 @@ f"> */
 
     /* Local variables */
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int ctrsm_(char *, char *, char *, char *, 
+    extern /* Subroutine */ void ctrsm_(char *, char *, char *, char *, 
 	    integer *, integer *, complex *, complex *, integer *, complex *, 
-	    integer *), xerbla_(char *, 
-	    integer *, ftnlen), claswp_(integer *, complex *, integer *, 
+	    integer *);
+    extern int xerbla_(char *, integer *, ftnlen);
+    extern void claswp_(integer *, complex *, integer *, 
 	    integer *, integer *, integer *, integer *);
     logical notran;
 
@@ -691,13 +692,13 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CGETRS", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0 || *nrhs == 0) {
-	return 0;
+	return;
     }
 
     if (notran) {
@@ -736,7 +737,7 @@ f"> */
 	claswp_(nrhs, &b[b_offset], ldb, &c__1, n, &ipiv[1], &c_n1);
     }
 
-    return 0;
+    return;
 
 /*     End of CGETRS */
 

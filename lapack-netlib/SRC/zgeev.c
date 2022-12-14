@@ -694,7 +694,7 @@ ices</b> */
 /* > \ingroup complex16GEeigen */
 
 /*  ===================================================================== */
-/* Subroutine */ int zgeev_(char *jobvl, char *jobvr, integer *n, 
+/* Subroutine */ void zgeev_(char *jobvl, char *jobvr, integer *n, 
 	doublecomplex *a, integer *lda, doublecomplex *w, doublecomplex *vl, 
 	integer *ldvl, doublecomplex *vr, integer *ldvr, doublecomplex *work, 
 	integer *lwork, doublereal *rwork, integer *info)
@@ -711,13 +711,13 @@ ices</b> */
     doublereal anrm;
     integer ierr, itau, iwrk, nout, i__, k;
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int zscal_(integer *, doublecomplex *, 
+    extern /* Subroutine */ void zscal_(integer *, doublecomplex *, 
 	    doublecomplex *, integer *), dlabad_(doublereal *, doublereal *);
     extern doublereal dznrm2_(integer *, doublecomplex *, integer *);
     logical scalea;
     extern doublereal dlamch_(char *);
     doublereal cscale;
-    extern /* Subroutine */ int zgebak_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void zgebak_(char *, char *, integer *, integer *, 
 	    integer *, doublereal *, integer *, doublecomplex *, integer *, 
 	    integer *), zgebal_(char *, integer *, 
 	    doublecomplex *, integer *, integer *, integer *, doublereal *, 
@@ -727,12 +727,12 @@ ices</b> */
     extern integer ilaenv_(integer *, char *, char *, integer *, integer *, 
 	    integer *, integer *, ftnlen, ftnlen);
     logical select[1];
-    extern /* Subroutine */ int zdscal_(integer *, doublereal *, 
+    extern /* Subroutine */ void zdscal_(integer *, doublereal *, 
 	    doublecomplex *, integer *);
     doublereal bignum;
     extern doublereal zlange_(char *, integer *, integer *, doublecomplex *, 
 	    integer *, doublereal *);
-    extern /* Subroutine */ int zgehrd_(integer *, integer *, integer *, 
+    extern /* Subroutine */ void zgehrd_(integer *, integer *, integer *, 
 	    doublecomplex *, integer *, doublecomplex *, doublecomplex *, 
 	    integer *, integer *), zlascl_(char *, integer *, integer *, 
 	    doublereal *, doublereal *, integer *, integer *, doublecomplex *,
@@ -742,14 +742,14 @@ ices</b> */
     logical wantvl;
     doublereal smlnum;
     integer hswork, irwork;
-    extern /* Subroutine */ int zhseqr_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void zhseqr_(char *, char *, integer *, integer *, 
 	    integer *, doublecomplex *, integer *, doublecomplex *, 
 	    doublecomplex *, integer *, doublecomplex *, integer *, integer *), zunghr_(integer *, integer *, integer *, 
 	    doublecomplex *, integer *, doublecomplex *, doublecomplex *, 
 	    integer *, integer *);
     logical lquery, wantvr;
     integer ihi;
-    extern /* Subroutine */ int ztrevc3_(char *, char *, logical *, integer *,
+    extern /* Subroutine */ void ztrevc3_(char *, char *, logical *, integer *,
 	     doublecomplex *, integer *, doublecomplex *, integer *, 
 	    doublecomplex *, integer *, integer *, integer *, doublecomplex *,
 	     integer *, doublereal *, integer *, integer *);
@@ -870,15 +870,15 @@ ices</b> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZGEEV ", &i__1, (ftnlen)6);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /*     Get machine constants */
@@ -1115,7 +1115,7 @@ L50:
     }
 
     work[1].r = (doublereal) maxwrk, work[1].i = 0.;
-    return 0;
+    return;
 
 /*     End of ZGEEV */
 

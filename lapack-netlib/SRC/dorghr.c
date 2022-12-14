@@ -640,7 +640,7 @@ f"> */
 /* > \ingroup doubleOTHERcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int dorghr_(integer *n, integer *ilo, integer *ihi, 
+/* Subroutine */ void dorghr_(integer *n, integer *ilo, integer *ihi, 
 	doublereal *a, integer *lda, doublereal *tau, doublereal *work, 
 	integer *lwork, integer *info)
 {
@@ -652,7 +652,7 @@ f"> */
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     extern integer ilaenv_(integer *, char *, char *, integer *, integer *, 
 	    integer *, integer *, ftnlen, ftnlen);
-    extern /* Subroutine */ int dorgqr_(integer *, integer *, integer *, 
+    extern /* Subroutine */ void dorgqr_(integer *, integer *, integer *, 
 	    doublereal *, integer *, doublereal *, doublereal *, integer *, 
 	    integer *);
     integer lwkopt;
@@ -703,16 +703,16 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DORGHR", &i__1, (ftnlen)6);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
 	work[1] = 1.;
-	return 0;
+	return;
     }
 
 /*     Shift the vectors which define the elementary reflectors one */
@@ -767,7 +767,7 @@ f"> */
 		ilo], &work[1], lwork, &iinfo);
     }
     work[1] = (doublereal) lwkopt;
-    return 0;
+    return;
 
 /*     End of DORGHR */
 

@@ -674,7 +674,7 @@ f"> */
 /* >    X. Sun, Computer Science Dept., Duke University, USA */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int zgeqp3_(integer *m, integer *n, doublecomplex *a, 
+/* Subroutine */ void zgeqp3_(integer *m, integer *n, doublecomplex *a, 
 	integer *lda, integer *jpvt, doublecomplex *tau, doublecomplex *work, 
 	integer *lwork, doublereal *rwork, integer *info)
 {
@@ -684,7 +684,7 @@ f"> */
 
     /* Local variables */
     integer nfxd, j, nbmin, minmn, minws;
-    extern /* Subroutine */ int zswap_(integer *, doublecomplex *, integer *, 
+    extern /* Subroutine */ void zswap_(integer *, doublecomplex *, integer *, 
 	    doublecomplex *, integer *), zlaqp2_(integer *, integer *, 
 	    integer *, doublecomplex *, integer *, integer *, doublecomplex *,
 	     doublereal *, doublereal *, doublecomplex *);
@@ -694,17 +694,17 @@ f"> */
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     extern integer ilaenv_(integer *, char *, char *, integer *, integer *, 
 	    integer *, integer *, ftnlen, ftnlen);
-    extern /* Subroutine */ int zgeqrf_(integer *, integer *, doublecomplex *,
+    extern /* Subroutine */ void zgeqrf_(integer *, integer *, doublecomplex *,
 	     integer *, doublecomplex *, doublecomplex *, integer *, integer *
 	    );
     integer topbmn, sminmn;
-    extern /* Subroutine */ int zlaqps_(integer *, integer *, integer *, 
+    extern /* Subroutine */ void zlaqps_(integer *, integer *, integer *, 
 	    integer *, integer *, doublecomplex *, integer *, integer *, 
 	    doublecomplex *, doublereal *, doublereal *, doublecomplex *, 
 	    doublecomplex *, integer *);
     integer lwkopt;
     logical lquery;
-    extern /* Subroutine */ int zunmqr_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void zunmqr_(char *, char *, integer *, integer *, 
 	    integer *, doublecomplex *, integer *, doublecomplex *, 
 	    doublecomplex *, integer *, doublecomplex *, integer *, integer *);
     integer fjb, iws;
@@ -764,9 +764,9 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZGEQP3", &i__1, (ftnlen)6);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Move initial columns up front. */
@@ -922,7 +922,7 @@ L30:
 
     z__1.r = (doublereal) lwkopt, z__1.i = 0.;
     work[1].r = z__1.r, work[1].i = z__1.i;
-    return 0;
+    return;
 
 /*     End of ZGEQP3 */
 

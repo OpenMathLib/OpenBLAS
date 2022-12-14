@@ -658,7 +658,7 @@ f"> */
 /* > \ingroup complexOTHERcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int cpstf2_(char *uplo, integer *n, complex *a, integer *lda,
+/* Subroutine */ void cpstf2_(char *uplo, integer *n, complex *a, integer *lda,
 	 integer *piv, integer *rank, real *tol, real *work, integer *info)
 {
     /* System generated locals */
@@ -670,20 +670,21 @@ f"> */
     
     integer i__, j;
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int cgemv_(char *, integer *, integer *, complex *
+    extern /* Subroutine */ void cgemv_(char *, integer *, integer *, complex *
 	    , complex *, integer *, complex *, integer *, complex *, complex *
 	    , integer *);
     complex ctemp;
-    extern /* Subroutine */ int cswap_(integer *, complex *, integer *, 
+    extern /* Subroutine */ void cswap_(integer *, complex *, integer *, 
 	    complex *, integer *);
     integer itemp;
     real stemp;
     logical upper;
     real sstop;
-    extern /* Subroutine */ int clacgv_(integer *, complex *, integer *);
+    extern /* Subroutine */ void clacgv_(integer *, complex *, integer *);
     extern real slamch_(char *);
-    extern /* Subroutine */ int csscal_(integer *, real *, complex *, integer 
-	    *), xerbla_(char *, integer *, ftnlen);
+    extern /* Subroutine */ void csscal_(integer *, real *, complex *, integer 
+	    *);
+    extern int xerbla_(char *, integer *, ftnlen);
     extern logical sisnan_(real *);
     real ajj;
     integer pvt;
@@ -720,13 +721,13 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CPSTF2", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /*     Initialize PIV */
@@ -995,7 +996,7 @@ L190:
     *info = 1;
 
 L200:
-    return 0;
+    return;
 
 /*     End of CPSTF2 */
 

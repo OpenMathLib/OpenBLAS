@@ -781,7 +781,7 @@ f"> */
 /* >       ACM Trans. Math. Softw. 40, 2, Article 12 (February 2014). */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int dlaqr5_(logical *wantt, logical *wantz, integer *kacc22, 
+/* Subroutine */ void dlaqr5_(logical *wantt, logical *wantz, integer *kacc22, 
 	integer *n, integer *ktop, integer *kbot, integer *nshfts, doublereal 
 	*sr, doublereal *si, doublereal *h__, integer *ldh, integer *iloz, 
 	integer *ihiz, doublereal *z__, integer *ldz, doublereal *v, integer *
@@ -802,24 +802,24 @@ f"> */
     integer jtop, jrow, mtop, i__, j, k, m;
     doublereal alpha;
     logical accum;
-    extern /* Subroutine */ int dgemm_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void dgemm_(char *, char *, integer *, integer *, 
 	    integer *, doublereal *, doublereal *, integer *, doublereal *, 
 	    integer *, doublereal *, doublereal *, integer *);
     integer ndcol, incol, krcol, nbmps, i2, k1, i4;
-    extern /* Subroutine */ int dlaqr1_(integer *, doublereal *, integer *, 
+    extern /* Subroutine */ void dlaqr1_(integer *, doublereal *, integer *, 
 	    doublereal *, doublereal *, doublereal *, doublereal *, 
 	    doublereal *), dlabad_(doublereal *, doublereal *);
     doublereal h11, h12, h21, h22;
     integer m22;
     extern doublereal dlamch_(char *);
-    extern /* Subroutine */ int dlarfg_(integer *, doublereal *, doublereal *,
+    extern /* Subroutine */ void dlarfg_(integer *, doublereal *, doublereal *,
 	     integer *, doublereal *);
     integer ns, nu;
     doublereal vt[3];
-    extern /* Subroutine */ int dlacpy_(char *, integer *, integer *, 
+    extern /* Subroutine */ void dlacpy_(char *, integer *, integer *, 
 	    doublereal *, integer *, doublereal *, integer *);
     doublereal safmin, safmax;
-    extern /* Subroutine */ int dlaset_(char *, integer *, integer *, 
+    extern /* Subroutine */ void dlaset_(char *, integer *, integer *, 
 	    doublereal *, doublereal *, doublereal *, integer *);
     doublereal refsum, smlnum, scl;
     integer kdu, kms;
@@ -862,14 +862,14 @@ f"> */
 
     /* Function Body */
     if (*nshfts < 2) {
-	return 0;
+	return;
     }
 
 /*     ==== If the active block is empty or 1-by-1, then there */
 /*     .    is nothing to do. ==== */
 
     if (*ktop >= *kbot) {
-	return 0;
+	return;
     }
 
 /*     ==== Shuffle shifts into pairs of real shifts and pairs */
@@ -1527,6 +1527,6 @@ f"> */
 
 /*     ==== End of DLAQR5 ==== */
 
-    return 0;
+    return;
 } /* dlaqr5_ */
 

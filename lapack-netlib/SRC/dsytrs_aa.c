@@ -644,7 +644,7 @@ aa.f"> */
 /* > \ingroup doubleSYcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int dsytrs_aa_(char *uplo, integer *n, integer *nrhs, 
+/* Subroutine */ void dsytrs_aa_(char *uplo, integer *n, integer *nrhs, 
 	doublereal *a, integer *lda, integer *ipiv, doublereal *b, integer *
 	ldb, doublereal *work, integer *lwork, integer *info)
 {
@@ -654,16 +654,16 @@ aa.f"> */
     /* Local variables */
     integer k;
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int dswap_(integer *, doublereal *, integer *, 
+    extern /* Subroutine */ void dswap_(integer *, doublereal *, integer *, 
 	    doublereal *, integer *), dgtsv_(integer *, integer *, doublereal 
 	    *, doublereal *, doublereal *, doublereal *, integer *, integer *)
 	    , dtrsm_(char *, char *, char *, char *, integer *, integer *, 
 	    doublereal *, doublereal *, integer *, doublereal *, integer *);
     logical upper;
     integer kp;
-    extern /* Subroutine */ int dlacpy_(char *, integer *, integer *, 
-	    doublereal *, integer *, doublereal *, integer *), 
-	    xerbla_(char *, integer *, ftnlen);
+    extern /* Subroutine */ void dlacpy_(char *, integer *, integer *, 
+	    doublereal *, integer *, doublereal *, integer *); 
+    extern int xerbla_(char *, integer *, ftnlen);
     integer lwkopt;
     logical lquery;
 
@@ -712,17 +712,17 @@ aa.f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DSYTRS_AA", &i__1, (ftnlen)9);
-	return 0;
+	return;
     } else if (lquery) {
 	lwkopt = *n * 3 - 2;
 	work[1] = (doublereal) lwkopt;
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0 || *nrhs == 0) {
-	return 0;
+	return;
     }
 
     if (upper) {
@@ -854,7 +854,7 @@ aa.f"> */
 
     }
 
-    return 0;
+    return;
 
 /*     End of DSYTRS_AA */
 

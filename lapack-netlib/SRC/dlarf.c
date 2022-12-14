@@ -639,7 +639,7 @@ static integer c__1 = 1;
 /* > \ingroup doubleOTHERauxiliary */
 
 /*  ===================================================================== */
-/* Subroutine */ int dlarf_(char *side, integer *m, integer *n, doublereal *v,
+/* Subroutine */ void dlarf_(char *side, integer *m, integer *n, doublereal *v,
 	 integer *incv, doublereal *tau, doublereal *c__, integer *ldc, 
 	doublereal *work)
 {
@@ -648,12 +648,12 @@ static integer c__1 = 1;
     doublereal d__1;
 
     /* Local variables */
-    extern /* Subroutine */ int dger_(integer *, integer *, doublereal *, 
+    extern /* Subroutine */ void dger_(integer *, integer *, doublereal *, 
 	    doublereal *, integer *, doublereal *, integer *, doublereal *, 
 	    integer *);
     integer i__;
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int dgemv_(char *, integer *, integer *, 
+    extern /* Subroutine */ void dgemv_(char *, integer *, integer *, 
 	    doublereal *, doublereal *, integer *, doublereal *, integer *, 
 	    doublereal *, doublereal *, integer *);
     integer lastc, lastv;
@@ -745,7 +745,7 @@ static integer c__1 = 1;
 		    c_offset], ldc);
 	}
     }
-    return 0;
+    return;
 
 /*     End of DLARF */
 

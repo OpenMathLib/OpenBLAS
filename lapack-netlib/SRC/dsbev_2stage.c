@@ -722,7 +722,7 @@ stage.f"> */
 /* > \endverbatim */
 
 /*  ===================================================================== */
-/* Subroutine */ int dsbev_2stage_(char *jobz, char *uplo, integer *n, 
+/* Subroutine */ void dsbev_2stage_(char *jobz, char *uplo, integer *n, 
 	integer *kd, doublereal *ab, integer *ldab, doublereal *w, doublereal 
 	*z__, integer *ldz, doublereal *work, integer *lwork, integer *info)
 {
@@ -737,7 +737,7 @@ stage.f"> */
     doublereal anrm;
     integer imax;
     doublereal rmin, rmax;
-    extern /* Subroutine */ int dsytrd_sb2st_(char *, char *, char *, 
+    extern /* Subroutine */ void dsytrd_sb2st_(char *, char *, char *, 
 	    integer *, integer *, doublereal *, integer *, doublereal *, 
 	    doublereal *, doublereal *, integer *, doublereal *, integer *, 
 	    integer *), dscal_(integer *, doublereal *
@@ -751,7 +751,7 @@ stage.f"> */
     integer ib;
     extern doublereal dlamch_(char *);
     integer iscale;
-    extern /* Subroutine */ int dlascl_(char *, integer *, integer *, 
+    extern /* Subroutine */ void dlascl_(char *, integer *, integer *, 
 	    doublereal *, doublereal *, integer *, integer *, doublereal *, 
 	    integer *, integer *);
     extern doublereal dlansb_(char *, char *, integer *, integer *, 
@@ -759,10 +759,10 @@ stage.f"> */
     doublereal safmin;
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     doublereal bignum;
-    extern /* Subroutine */ int dsterf_(integer *, doublereal *, doublereal *,
+    extern /* Subroutine */ void dsterf_(integer *, doublereal *, doublereal *,
 	     integer *);
     integer indwrk;
-    extern /* Subroutine */ int dsteqr_(char *, integer *, doublereal *, 
+    extern /* Subroutine */ void dsteqr_(char *, integer *, doublereal *, 
 	    doublereal *, doublereal *, integer *, doublereal *, integer *);
     integer llwork;
     doublereal smlnum;
@@ -836,15 +836,15 @@ stage.f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DSBEV_2STAGE ", &i__1, (ftnlen)13);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
     if (*n == 1) {
@@ -856,7 +856,7 @@ stage.f"> */
 	if (wantz) {
 	    z__[z_dim1 + 1] = 1.;
 	}
-	return 0;
+	return;
     }
 
 /*     Get machine constants. */
@@ -924,7 +924,7 @@ stage.f"> */
 
     work[1] = (doublereal) lwmin;
 
-    return 0;
+    return;
 
 /*     End of DSBEV_2STAGE */
 

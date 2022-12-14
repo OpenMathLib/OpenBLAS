@@ -641,7 +641,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 /* > \ingroup complex16OTHERauxiliary */
 
 /*  ===================================================================== */
-/* Subroutine */ int zspr_(char *uplo, integer *n, doublecomplex *alpha, 
+/* Subroutine */ void zspr_(char *uplo, integer *n, doublecomplex *alpha, 
 	doublecomplex *x, integer *incx, doublecomplex *ap)
 {
     /* System generated locals */
@@ -683,13 +683,13 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
     }
     if (info != 0) {
 	xerbla_("ZSPR  ", &info, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible. */
 
     if (*n == 0 || alpha->r == 0. && alpha->i == 0.) {
-	return 0;
+	return;
     }
 
 /*     Set the start point in X if the increment is not unity. */
@@ -884,7 +884,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 	}
     }
 
-    return 0;
+    return;
 
 /*     End of ZSPR */
 

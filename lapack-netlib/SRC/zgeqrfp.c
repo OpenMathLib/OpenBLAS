@@ -665,7 +665,7 @@ static integer c__2 = 2;
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int zgeqrfp_(integer *m, integer *n, doublecomplex *a, 
+/* Subroutine */ void zgeqrfp_(integer *m, integer *n, doublecomplex *a, 
 	integer *lda, doublecomplex *tau, doublecomplex *work, integer *lwork,
 	 integer *info)
 {
@@ -677,17 +677,17 @@ static integer c__2 = 2;
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     extern integer ilaenv_(integer *, char *, char *, integer *, integer *, 
 	    integer *, integer *, ftnlen, ftnlen);
-    extern /* Subroutine */ int zlarfb_(char *, char *, char *, char *, 
+    extern /* Subroutine */ void zlarfb_(char *, char *, char *, char *, 
 	    integer *, integer *, integer *, doublecomplex *, integer *, 
 	    doublecomplex *, integer *, doublecomplex *, integer *, 
 	    doublecomplex *, integer *);
     integer ldwork;
-    extern /* Subroutine */ int zlarft_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void zlarft_(char *, char *, integer *, integer *, 
 	    doublecomplex *, integer *, doublecomplex *, doublecomplex *, 
 	    integer *);
     integer lwkopt;
     logical lquery;
-    extern /* Subroutine */ int zgeqr2p_(integer *, integer *, doublecomplex *
+    extern /* Subroutine */ void zgeqr2p_(integer *, integer *, doublecomplex *
 	    , integer *, doublecomplex *, doublecomplex *, integer *);
     integer iws;
 
@@ -729,9 +729,9 @@ static integer c__2 = 2;
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZGEQRFP", &i__1, (ftnlen)7);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
@@ -739,7 +739,7 @@ static integer c__2 = 2;
     k = f2cmin(*m,*n);
     if (k == 0) {
 	work[1].r = 1., work[1].i = 0.;
-	return 0;
+	return;
     }
 
     nbmin = 2;
@@ -824,7 +824,7 @@ static integer c__2 = 2;
     }
 
     work[1].r = (doublereal) iws, work[1].i = 0.;
-    return 0;
+    return;
 
 /*     End of ZGEQRFP */
 

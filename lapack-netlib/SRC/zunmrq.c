@@ -682,7 +682,7 @@ f"> */
 /* > \ingroup complex16OTHERcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int zunmrq_(char *side, char *trans, integer *m, integer *n, 
+/* Subroutine */ void zunmrq_(char *side, char *trans, integer *m, integer *n, 
 	integer *k, doublecomplex *a, integer *lda, doublecomplex *tau, 
 	doublecomplex *c__, integer *ldc, doublecomplex *work, integer *lwork,
 	 integer *info)
@@ -698,20 +698,20 @@ f"> */
     integer i__;
     extern logical lsame_(char *, char *);
     integer nbmin, iinfo, i1, i2, i3, ib, nb, mi, ni;
-    extern /* Subroutine */ int zunmr2_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void zunmr2_(char *, char *, integer *, integer *, 
 	    integer *, doublecomplex *, integer *, doublecomplex *, 
 	    doublecomplex *, integer *, doublecomplex *, integer *);
     integer nq, nw;
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     extern integer ilaenv_(integer *, char *, char *, integer *, integer *, 
 	    integer *, integer *, ftnlen, ftnlen);
-    extern /* Subroutine */ int zlarfb_(char *, char *, char *, char *, 
+    extern /* Subroutine */ void zlarfb_(char *, char *, char *, char *, 
 	    integer *, integer *, integer *, doublecomplex *, integer *, 
 	    doublecomplex *, integer *, doublecomplex *, integer *, 
 	    doublecomplex *, integer *);
     logical notran;
     integer ldwork;
-    extern /* Subroutine */ int zlarft_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void zlarft_(char *, char *, integer *, integer *, 
 	    doublecomplex *, integer *, doublecomplex *, doublecomplex *, 
 	    integer *);
     char transt[1];
@@ -797,15 +797,15 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZUNMRQ", &i__1, (ftnlen)6);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*m == 0 || *n == 0) {
-	return 0;
+	return;
     }
 
     nbmin = 2;
@@ -891,7 +891,7 @@ f"> */
 	}
     }
     work[1].r = (doublereal) lwkopt, work[1].i = 0.;
-    return 0;
+    return;
 
 /*     End of ZUNMRQ */
 

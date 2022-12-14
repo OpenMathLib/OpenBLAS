@@ -604,7 +604,7 @@ f"> */
 /* > \ingroup doublePOcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int dpotri_(char *uplo, integer *n, doublereal *a, integer *
+/* Subroutine */ void dpotri_(char *uplo, integer *n, doublereal *a, integer *
 	lda, integer *info)
 {
     /* System generated locals */
@@ -612,9 +612,10 @@ f"> */
 
     /* Local variables */
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen), dlauum_(
-	    char *, integer *, doublereal *, integer *, integer *), 
-	    dtrtri_(char *, char *, integer *, doublereal *, integer *, 
+    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
+    extern int dlauum_(
+	    char *, integer *, doublereal *, integer *, integer *); 
+    extern int dtrtri_(char *, char *, integer *, doublereal *, integer *, 
 	    integer *);
 
 
@@ -646,27 +647,27 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DPOTRI", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /*     Invert the triangular Cholesky factor U or L. */
 
     dtrtri_(uplo, "Non-unit", n, &a[a_offset], lda, info);
     if (*info > 0) {
-	return 0;
+	return;
     }
 
 /*     Form inv(U) * inv(U)**T or inv(L)**T * inv(L). */
 
     dlauum_(uplo, n, &a[a_offset], lda, info);
 
-    return 0;
+    return;
 
 /*     End of DPOTRI */
 

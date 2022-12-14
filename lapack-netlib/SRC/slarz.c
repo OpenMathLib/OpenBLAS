@@ -659,7 +659,7 @@ static real c_b5 = 1.f;
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int slarz_(char *side, integer *m, integer *n, integer *l, 
+/* Subroutine */ void slarz_(char *side, integer *m, integer *n, integer *l, 
 	real *v, integer *incv, real *tau, real *c__, integer *ldc, real *
 	work)
 {
@@ -668,10 +668,10 @@ static real c_b5 = 1.f;
     real r__1;
 
     /* Local variables */
-    extern /* Subroutine */ int sger_(integer *, integer *, real *, real *, 
+    extern /* Subroutine */ void sger_(integer *, integer *, real *, real *, 
 	    integer *, real *, integer *, real *, integer *);
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int sgemv_(char *, integer *, integer *, real *, 
+    extern /* Subroutine */ void sgemv_(char *, integer *, integer *, real *, 
 	    real *, integer *, real *, integer *, real *, real *, integer *), scopy_(integer *, real *, integer *, real *, integer *), 
 	    saxpy_(integer *, real *, real *, integer *, real *, integer *);
 
@@ -752,7 +752,7 @@ static real c_b5 = 1.f;
 
     }
 
-    return 0;
+    return;
 
 /*     End of SLARZ */
 

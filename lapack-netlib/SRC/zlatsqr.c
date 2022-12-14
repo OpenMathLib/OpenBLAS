@@ -673,7 +673,7 @@ static integer c__0 = 0;
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int zlatsqr_(integer *m, integer *n, integer *mb, integer *
+/* Subroutine */ void zlatsqr_(integer *m, integer *n, integer *mb, integer *
 	nb, doublecomplex *a, integer *lda, doublecomplex *t, integer *ldt, 
 	doublecomplex *work, integer *lwork, integer *info)
 {
@@ -682,11 +682,12 @@ static integer c__0 = 0;
 
     /* Local variables */
     integer i__, ii, kk;
-    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen), zgeqrt_(
+    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
+    extern void zgeqrt_(
 	    integer *, integer *, integer *, doublecomplex *, integer *, 
 	    doublecomplex *, integer *, doublecomplex *, integer *);
     logical lquery;
-    extern /* Subroutine */ int ztpqrt_(integer *, integer *, integer *, 
+    extern /* Subroutine */ void ztpqrt_(integer *, integer *, integer *, 
 	    integer *, doublecomplex *, integer *, doublecomplex *, integer *,
 	     doublecomplex *, integer *, doublecomplex *, integer *);
     integer ctr;
@@ -739,15 +740,15 @@ static integer c__0 = 0;
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZLATSQR", &i__1, (ftnlen)7);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (f2cmin(*m,*n) == 0) {
-	return 0;
+	return;
     }
 
 /*     The QR Decomposition */
@@ -755,7 +756,7 @@ static integer c__0 = 0;
     if (*mb <= *n || *mb >= *m) {
 	zgeqrt_(m, n, nb, &a[a_offset], lda, &t[t_offset], ldt, &work[1], 
 		info);
-	return 0;
+	return;
     }
     kk = (*m - *n) % (*mb - *n);
     ii = *m - kk + 1;
@@ -787,7 +788,7 @@ static integer c__0 = 0;
 
     i__2 = *n * *nb;
     work[1].r = (doublereal) i__2, work[1].i = 0.;
-    return 0;
+    return;
 
 /*     End of ZLATSQR */
 

@@ -674,7 +674,7 @@ a.f"> */
 /* > \ingroup complex16SYsolve */
 
 /*  ===================================================================== */
-/* Subroutine */ int zsysv_aa_(char *uplo, integer *n, integer *nrhs, 
+/* Subroutine */ void zsysv_aa_(char *uplo, integer *n, integer *nrhs, 
 	doublecomplex *a, integer *lda, integer *ipiv, doublecomplex *b, 
 	integer *ldb, doublecomplex *work, integer *lwork, integer *info)
 {
@@ -684,10 +684,11 @@ a.f"> */
     /* Local variables */
     extern logical lsame_(char *, char *);
     integer lwkopt_sytrf__, lwkopt_sytrs__;
-    extern /* Subroutine */ int zsytrf_aa_(char *, integer *, doublecomplex *
+    extern /* Subroutine */ void zsytrf_aa_(char *, integer *, doublecomplex *
 	    , integer *, integer *, doublecomplex *, integer *, integer *), zsytrs_aa_(char *, integer *, integer *, doublecomplex *
 	    , integer *, integer *, doublecomplex *, integer *, doublecomplex 
-	    *, integer *, integer *), xerbla_(char *, integer *, ftnlen);
+	    *, integer *, integer *);
+    extern int xerbla_(char *, integer *, ftnlen);
     integer lwkopt;
     logical lquery;
 
@@ -748,9 +749,9 @@ a.f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZSYSV_AA ", &i__1, (ftnlen)9);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Compute the factorization A = U**T*T*U or A = L*T*L**T. */
@@ -767,7 +768,7 @@ a.f"> */
 
     work[1].r = (doublereal) lwkopt, work[1].i = 0.;
 
-    return 0;
+    return;
 
 /*     End of ZSYSV_AA */
 

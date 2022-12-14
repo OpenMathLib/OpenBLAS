@@ -615,7 +615,7 @@ f"> */
 /* > \ingroup doubleOTHERauxiliary */
 
 /*  ===================================================================== */
-/* Subroutine */ int dlarfg_(integer *n, doublereal *alpha, doublereal *x, 
+/* Subroutine */ void dlarfg_(integer *n, doublereal *alpha, doublereal *x, 
 	integer *incx, doublereal *tau)
 {
     /* System generated locals */
@@ -626,7 +626,7 @@ f"> */
     doublereal beta;
     extern doublereal dnrm2_(integer *, doublereal *, integer *);
     integer j;
-    extern /* Subroutine */ int dscal_(integer *, doublereal *, doublereal *, 
+    extern /* Subroutine */ void dscal_(integer *, doublereal *, doublereal *, 
 	    integer *);
     doublereal xnorm;
     extern doublereal dlapy2_(doublereal *, doublereal *), dlamch_(char *);
@@ -649,7 +649,7 @@ f"> */
     /* Function Body */
     if (*n <= 1) {
 	*tau = 0.;
-	return 0;
+	return;
     }
 
     i__1 = *n - 1;
@@ -705,7 +705,7 @@ L10:
 	*alpha = beta;
     }
 
-    return 0;
+    return;
 
 /*     End of DLARFG */
 

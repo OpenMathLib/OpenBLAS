@@ -757,7 +757,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int zhsein_(char *side, char *eigsrc, char *initv, logical *
+/* Subroutine */ void zhsein_(char *side, char *eigsrc, char *initv, logical *
 	select, integer *n, doublecomplex *h__, integer *ldh, doublecomplex *
 	w, doublecomplex *vl, integer *ldvl, doublecomplex *vr, integer *ldvr,
 	 integer *mm, integer *m, doublecomplex *work, doublereal *rwork, 
@@ -781,7 +781,8 @@ f"> */
     integer kr, ks;
     doublecomplex wk;
     extern logical disnan_(doublereal *);
-    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen), zlaein_(
+    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
+    extern void zlaein_(
 	    logical *, logical *, integer *, doublecomplex *, integer *, 
 	    doublecomplex *, doublecomplex *, doublecomplex *, integer *, 
 	    doublereal *, doublereal *, doublereal *, integer *);
@@ -865,13 +866,13 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZHSEIN", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible. */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /*     Set machine-dependent constants. */
@@ -945,7 +946,7 @@ L50:
 			rwork[1]);
 		if (disnan_(&hnorm)) {
 		    *info = -6;
-		    return 0;
+		    return;
 		} else if (hnorm > 0.) {
 		    eps3 = hnorm * ulp;
 		} else {
@@ -1022,7 +1023,7 @@ L60:
 /* L100: */
     }
 
-    return 0;
+    return;
 
 /*     End of ZHSEIN */
 

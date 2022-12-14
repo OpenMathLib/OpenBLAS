@@ -843,7 +843,7 @@ f"> */
 /* > \ingroup complex16GEeigen */
 
 /*  ===================================================================== */
-/* Subroutine */ int zggesx_(char *jobvsl, char *jobvsr, char *sort, L_fp 
+/* Subroutine */ void zggesx_(char *jobvsl, char *jobvsr, char *sort, L_fp 
 	selctg, char *sense, integer *n, doublecomplex *a, integer *lda, 
 	doublecomplex *b, integer *ldb, integer *sdim, doublecomplex *alpha, 
 	doublecomplex *beta, doublecomplex *vsl, integer *ldvsl, 
@@ -863,10 +863,10 @@ f"> */
     integer ileft, icols;
     logical cursl, ilvsl, ilvsr;
     integer irwrk, irows;
-    extern /* Subroutine */ int dlabad_(doublereal *, doublereal *);
+    extern /* Subroutine */ void dlabad_(doublereal *, doublereal *);
     extern doublereal dlamch_(char *);
     doublereal pl, pr;
-    extern /* Subroutine */ int zggbak_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void zggbak_(char *, char *, integer *, integer *, 
 	    integer *, doublereal *, doublereal *, integer *, doublecomplex *,
 	     integer *, integer *), zggbal_(char *, integer *,
 	     doublecomplex *, integer *, doublecomplex *, integer *, integer *
@@ -879,7 +879,7 @@ f"> */
 	    integer *, doublereal *);
     doublereal bignum;
     integer ijobvl, iright;
-    extern /* Subroutine */ int zgghrd_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void zgghrd_(char *, char *, integer *, integer *, 
 	    integer *, doublecomplex *, integer *, doublecomplex *, integer *,
 	     doublecomplex *, integer *, doublecomplex *, integer *, integer *
 	    ), zlascl_(char *, integer *, integer *, 
@@ -890,14 +890,14 @@ f"> */
     integer liwmin;
     logical wantse, lastsl;
     doublereal anrmto, bnrmto;
-    extern /* Subroutine */ int zgeqrf_(integer *, integer *, doublecomplex *,
+    extern /* Subroutine */ void zgeqrf_(integer *, integer *, doublecomplex *,
 	     integer *, doublecomplex *, doublecomplex *, integer *, integer *
 	    );
     integer maxwrk;
     logical wantsn;
     integer minwrk;
     doublereal smlnum;
-    extern /* Subroutine */ int zhgeqz_(char *, char *, char *, integer *, 
+    extern /* Subroutine */ void zhgeqz_(char *, char *, char *, integer *, 
 	    integer *, integer *, doublecomplex *, integer *, doublecomplex *,
 	     integer *, doublecomplex *, doublecomplex *, doublecomplex *, 
 	    integer *, doublecomplex *, integer *, doublecomplex *, integer *,
@@ -906,7 +906,7 @@ f"> */
 	    , integer *), zlaset_(char *, integer *, integer *, 
 	    doublecomplex *, doublecomplex *, doublecomplex *, integer *);
     logical wantst, lquery, wantsv;
-    extern /* Subroutine */ int ztgsen_(integer *, logical *, logical *, 
+    extern /* Subroutine */ void ztgsen_(integer *, logical *, logical *, 
 	    logical *, integer *, doublecomplex *, integer *, doublecomplex *,
 	     integer *, doublecomplex *, doublecomplex *, doublecomplex *, 
 	    integer *, doublecomplex *, integer *, integer *, doublereal *, 
@@ -1068,16 +1068,16 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZGGESX", &i__1, (ftnlen)6);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
 	*sdim = 0;
-	return 0;
+	return;
     }
 
 /*     Get machine constants */
@@ -1315,7 +1315,7 @@ L40:
     work[1].r = (doublereal) maxwrk, work[1].i = 0.;
     iwork[1] = liwmin;
 
-    return 0;
+    return;
 
 /*     End of ZGGESX */
 

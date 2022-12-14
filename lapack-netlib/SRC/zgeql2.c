@@ -637,7 +637,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int zgeql2_(integer *m, integer *n, doublecomplex *a, 
+/* Subroutine */ void zgeql2_(integer *m, integer *n, doublecomplex *a, 
 	integer *lda, doublecomplex *tau, doublecomplex *work, integer *info)
 {
     /* System generated locals */
@@ -647,9 +647,11 @@ f"> */
     /* Local variables */
     integer i__, k;
     doublecomplex alpha;
-    extern /* Subroutine */ int zlarf_(char *, integer *, integer *, 
+    extern /* Subroutine */ void zlarf_(char *, integer *, integer *, 
 	    doublecomplex *, integer *, doublecomplex *, doublecomplex *, 
-	    integer *, doublecomplex *), xerbla_(char *, integer *, ftnlen), zlarfg_(integer *, doublecomplex *, doublecomplex *, 
+	    integer *, doublecomplex *);
+    extern int xerbla_(char *, integer *, ftnlen);
+    extern void zlarfg_(integer *, doublecomplex *, doublecomplex *, 
 	    integer *, doublecomplex *);
 
 
@@ -683,7 +685,7 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZGEQL2", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
     k = f2cmin(*m,*n);
@@ -712,7 +714,7 @@ f"> */
 	a[i__1].r = alpha.r, a[i__1].i = alpha.i;
 /* L10: */
     }
-    return 0;
+    return;
 
 /*     End of ZGEQL2 */
 

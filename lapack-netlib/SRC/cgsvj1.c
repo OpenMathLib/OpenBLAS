@@ -751,7 +751,7 @@ f"> */
 /* > Zlatko Drmac (Zagreb, Croatia) */
 
 /*  ===================================================================== */
-/* Subroutine */ int cgsvj1_(char *jobv, integer *m, integer *n, integer *n1, 
+/* Subroutine */ void cgsvj1_(char *jobv, integer *m, integer *n, integer *n1, 
 	complex *a, integer *lda, complex *d__, real *sva, integer *mv, 
 	complex *v, integer *ldv, real *eps, real *sfmin, real *tol, integer *
 	nsweep, complex *work, integer *lwork, integer *info)
@@ -769,7 +769,7 @@ f"> */
     real aaqq;
     integer nblr, ierr;
     real bigtheta;
-    extern /* Subroutine */ int crot_(integer *, complex *, integer *, 
+    extern /* Subroutine */ void crot_(integer *, complex *, integer *, 
 	    complex *, integer *, real *, complex *);
     complex ompq;
     integer pskipped;
@@ -781,22 +781,23 @@ f"> */
     real apoaq, aqoap;
     extern logical lsame_(char *, char *);
     real theta, small;
-    extern /* Subroutine */ int ccopy_(integer *, complex *, integer *, 
+    extern /* Subroutine */ void ccopy_(integer *, complex *, integer *, 
 	    complex *, integer *), cswap_(integer *, complex *, integer *, 
 	    complex *, integer *);
     logical applv, rsvec;
-    extern /* Subroutine */ int caxpy_(integer *, complex *, complex *, 
+    extern /* Subroutine */ void caxpy_(integer *, complex *, complex *, 
 	    integer *, complex *, integer *);
     logical rotok;
     real rootsfmin;
     extern real scnrm2_(integer *, complex *, integer *);
     real cs, sn;
-    extern /* Subroutine */ int clascl_(char *, integer *, integer *, real *, 
-	    real *, integer *, integer *, complex *, integer *, integer *), xerbla_(char *, integer *, ftnlen);
+    extern /* Subroutine */ void clascl_(char *, integer *, integer *, real *, 
+	    real *, integer *, integer *, complex *, integer *, integer *);
+    extern int xerbla_(char *, integer *, ftnlen);
     integer ijblsk, swband;
     extern integer isamax_(integer *, real *, integer *);
     integer blskip;
-    extern /* Subroutine */ int classq_(integer *, complex *, integer *, real 
+    extern /* Subroutine */ void classq_(integer *, complex *, integer *, real 
 	    *, real *);
     real mxaapq, thsign, mxsinj;
     integer emptsw, notrot, iswrot, jbc;
@@ -860,7 +861,7 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CGSVJ1", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
     if (rsvec) {
@@ -1345,6 +1346,6 @@ L1995:
     }
 
 
-    return 0;
+    return;
 } /* cgsvj1_ */
 

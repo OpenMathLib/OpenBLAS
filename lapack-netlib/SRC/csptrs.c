@@ -629,7 +629,7 @@ f"> */
 /* > \ingroup complexOTHERcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int csptrs_(char *uplo, integer *n, integer *nrhs, complex *
+/* Subroutine */ void csptrs_(char *uplo, integer *n, integer *nrhs, complex *
 	ap, integer *ipiv, complex *b, integer *ldb, integer *info)
 {
     /* System generated locals */
@@ -639,11 +639,11 @@ f"> */
     /* Local variables */
     complex akm1k;
     integer j, k;
-    extern /* Subroutine */ int cscal_(integer *, complex *, complex *, 
+    extern /* Subroutine */ void cscal_(integer *, complex *, complex *, 
 	    integer *);
     extern logical lsame_(char *, char *);
     complex denom;
-    extern /* Subroutine */ int cgemv_(char *, integer *, integer *, complex *
+    extern /* Subroutine */ void cgemv_(char *, integer *, integer *, complex *
 	    , complex *, integer *, complex *, integer *, complex *, complex *
 	    , integer *), cgeru_(integer *, integer *, complex *, 
 	    complex *, integer *, complex *, integer *, complex *, integer *),
@@ -686,13 +686,13 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CSPTRS", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0 || *nrhs == 0) {
-	return 0;
+	return;
     }
 
     if (upper) {
@@ -1047,7 +1047,7 @@ L100:
 	;
     }
 
-    return 0;
+    return;
 
 /*     End of CSPTRS */
 

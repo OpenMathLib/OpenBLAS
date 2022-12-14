@@ -610,7 +610,7 @@ _berr.f"> */
 /* > \ingroup doubleOTHERcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int dla_lin_berr_(integer *n, integer *nz, integer *nrhs, 
+/* Subroutine */ void dla_lin_berr_(integer *n, integer *nz, integer *nrhs, 
 	doublereal *res, doublereal *ayb, doublereal *berr)
 {
     /* System generated locals */
@@ -667,6 +667,6 @@ _berr.f"> */
 
 	}
     }
-    return 0;
+    return;
 } /* dla_lin_berr__ */
 

@@ -651,7 +651,7 @@ f"> */
 /* > \ingroup complex16GBcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int zgbtrs_(char *trans, integer *n, integer *kl, integer *
+/* Subroutine */ void zgbtrs_(char *trans, integer *n, integer *kl, integer *
 	ku, integer *nrhs, doublecomplex *ab, integer *ldab, integer *ipiv, 
 	doublecomplex *b, integer *ldb, integer *info)
 {
@@ -663,7 +663,7 @@ f"> */
     integer i__, j, l;
     extern logical lsame_(char *, char *);
     logical lnoti;
-    extern /* Subroutine */ int zgemv_(char *, integer *, integer *, 
+    extern /* Subroutine */ void zgemv_(char *, integer *, integer *, 
 	    doublecomplex *, doublecomplex *, integer *, doublecomplex *, 
 	    integer *, doublecomplex *, doublecomplex *, integer *), 
 	    zgeru_(integer *, integer *, doublecomplex *, doublecomplex *, 
@@ -672,7 +672,8 @@ f"> */
 	    integer *), ztbsv_(char *, char *, char *, integer *, integer *, 
 	    doublecomplex *, integer *, doublecomplex *, integer *);
     integer kd, lm;
-    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen), zlacgv_(
+    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
+    extern void zlacgv_(
 	    integer *, doublecomplex *, integer *);
     logical notran;
 
@@ -719,13 +720,13 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZGBTRS", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0 || *nrhs == 0) {
-	return 0;
+	return;
     }
 
     kd = *ku + *kl + 1;
@@ -840,7 +841,7 @@ f"> */
 	    }
 	}
     }
-    return 0;
+    return;
 
 /*     End of ZGBTRS */
 

@@ -696,7 +696,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int clarzb_(char *side, char *trans, char *direct, char *
+/* Subroutine */ void clarzb_(char *side, char *trans, char *direct, char *
 	storev, integer *m, integer *n, integer *k, integer *l, complex *v, 
 	integer *ldv, complex *t, integer *ldt, complex *c__, integer *ldc, 
 	complex *work, integer *ldwork)
@@ -708,15 +708,16 @@ f"> */
 
     /* Local variables */
     integer info, i__, j;
-    extern /* Subroutine */ int cgemm_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void cgemm_(char *, char *, integer *, integer *, 
 	    integer *, complex *, complex *, integer *, complex *, integer *, 
 	    complex *, complex *, integer *);
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int ccopy_(integer *, complex *, integer *, 
+    extern /* Subroutine */ void ccopy_(integer *, complex *, integer *, 
 	    complex *, integer *), ctrmm_(char *, char *, char *, char *, 
 	    integer *, integer *, complex *, complex *, integer *, complex *, 
 	    integer *), clacgv_(integer *, 
-	    complex *, integer *), xerbla_(char *, integer *, ftnlen);
+	    complex *, integer *);
+    extern int xerbla_(char *, integer *, ftnlen);
     char transt[1];
 
 
@@ -747,7 +748,7 @@ f"> */
 
     /* Function Body */
     if (*m <= 0 || *n <= 0) {
-	return 0;
+	return;
     }
 
 /*     Check for currently supported options */
@@ -761,7 +762,7 @@ f"> */
     if (info != 0) {
 	i__1 = -info;
 	xerbla_("CLARZB", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
     if (lsame_(trans, "N")) {
@@ -902,7 +903,7 @@ f"> */
 
     }
 
-    return 0;
+    return;
 
 /*     End of CLARZB */
 

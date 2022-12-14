@@ -649,7 +649,7 @@ f"> */
 /* > \ingroup complexOTHERcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int ctrcon_(char *norm, char *uplo, char *diag, integer *n, 
+/* Subroutine */ void ctrcon_(char *norm, char *uplo, char *diag, integer *n, 
 	complex *a, integer *lda, real *rcond, complex *work, real *rwork, 
 	integer *info)
 {
@@ -664,7 +664,7 @@ f"> */
     integer isave[3];
     real anorm;
     logical upper;
-    extern /* Subroutine */ int clacn2_(integer *, complex *, complex *, real 
+    extern /* Subroutine */ void clacn2_(integer *, complex *, complex *, real 
 	    *, integer *, integer *);
     real xnorm;
     integer ix;
@@ -674,7 +674,7 @@ f"> */
     extern real clantr_(char *, char *, char *, integer *, integer *, complex 
 	    *, integer *, real *);
     real ainvnm;
-    extern /* Subroutine */ int clatrs_(char *, char *, char *, char *, 
+    extern /* Subroutine */ void clatrs_(char *, char *, char *, char *, 
 	    integer *, complex *, integer *, complex *, real *, real *, 
 	    integer *), csrscl_(integer *, 
 	    real *, complex *, integer *);
@@ -722,14 +722,14 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CTRCON", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
 	*rcond = 1.f;
-	return 0;
+	return;
     }
 
     *rcond = 0.f;
@@ -794,7 +794,7 @@ L10:
     }
 
 L20:
-    return 0;
+    return;
 
 /*     End of CTRCON */
 

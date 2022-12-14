@@ -861,7 +861,7 @@ static integer c__1 = 1;
 /* >  DGGSVD3 replaces the deprecated subroutine DGGSVD. */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int dggsvd3_(char *jobu, char *jobv, char *jobq, integer *m, 
+/* Subroutine */ void dggsvd3_(char *jobu, char *jobv, char *jobq, integer *m, 
 	integer *n, integer *p, integer *k, integer *l, doublereal *a, 
 	integer *lda, doublereal *b, integer *ldb, doublereal *alpha, 
 	doublereal *beta, doublereal *u, integer *ldu, doublereal *v, integer 
@@ -880,20 +880,21 @@ static integer c__1 = 1;
     integer ncallmycycle, i__, j;
     extern logical lsame_(char *, char *);
     doublereal anorm, bnorm;
-    extern /* Subroutine */ int dcopy_(integer *, doublereal *, integer *, 
+    extern /* Subroutine */ void dcopy_(integer *, doublereal *, integer *, 
 	    doublereal *, integer *);
     logical wantq, wantu, wantv;
     extern doublereal dlamch_(char *), dlange_(char *, integer *, 
 	    integer *, doublereal *, integer *, doublereal *);
-    extern /* Subroutine */ int dtgsja_(char *, char *, char *, integer *, 
+    extern /* Subroutine */ void dtgsja_(char *, char *, char *, integer *, 
 	    integer *, integer *, integer *, integer *, doublereal *, integer 
 	    *, doublereal *, integer *, doublereal *, doublereal *, 
 	    doublereal *, doublereal *, doublereal *, integer *, doublereal *,
 	     integer *, doublereal *, integer *, doublereal *, integer *, 
-	    integer *), xerbla_(char *, integer *, ftnlen);
+	    integer *);
+    extern int xerbla_(char *, integer *, ftnlen);
     integer lwkopt;
     logical lquery;
-    extern /* Subroutine */ int dggsvp3_(char *, char *, char *, integer *, 
+    extern /* Subroutine */ void dggsvp3_(char *, char *, char *, integer *, 
 	    integer *, integer *, doublereal *, integer *, doublereal *, 
 	    integer *, doublereal *, doublereal *, integer *, integer *, 
 	    doublereal *, integer *, doublereal *, integer *, doublereal *, 
@@ -988,10 +989,10 @@ static integer c__1 = 1;
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DGGSVD3", &i__1, (ftnlen)7);
-	return 0;
+	return;
     }
     if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Compute the Frobenius norm of matrices A and B */
@@ -1054,7 +1055,7 @@ static integer c__1 = 1;
     }
 
     work[1] = (doublereal) lwkopt;
-    return 0;
+    return;
 
 /*     End of DGGSVD3 */
 

@@ -713,7 +713,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int dpftrf_(char *transr, char *uplo, integer *n, doublereal 
+/* Subroutine */ void dpftrf_(char *transr, char *uplo, integer *n, doublereal 
 	*a, integer *info)
 {
     /* System generated locals */
@@ -724,7 +724,7 @@ f"> */
     logical normaltransr;
     extern logical lsame_(char *, char *);
     logical lower;
-    extern /* Subroutine */ int dtrsm_(char *, char *, char *, char *, 
+    extern /* Subroutine */ void dtrsm_(char *, char *, char *, char *, 
 	    integer *, integer *, doublereal *, doublereal *, integer *, 
 	    doublereal *, integer *), dsyrk_(
 	    char *, char *, integer *, integer *, doublereal *, doublereal *, 
@@ -760,13 +760,13 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DPFTRF", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /*     If N is odd, set NISODD = .TRUE. */
@@ -807,7 +807,7 @@ f"> */
 
 		dpotrf_("L", &n1, a, n, info);
 		if (*info > 0) {
-		    return 0;
+		    return;
 		}
 		dtrsm_("R", "L", "T", "N", &n2, &n1, &c_b12, a, n, &a[n1], n);
 		dsyrk_("U", "N", &n2, &n1, &c_b15, &a[n1], n, &c_b12, &a[*n], 
@@ -825,7 +825,7 @@ f"> */
 
 		dpotrf_("L", &n1, &a[n2], n, info);
 		if (*info > 0) {
-		    return 0;
+		    return;
 		}
 		dtrsm_("L", "L", "N", "N", &n1, &n2, &c_b12, &a[n2], n, a, n);
 		dsyrk_("U", "T", &n2, &n1, &c_b15, a, n, &c_b12, &a[n1], n);
@@ -848,7 +848,7 @@ f"> */
 
 		dpotrf_("U", &n1, a, &n1, info);
 		if (*info > 0) {
-		    return 0;
+		    return;
 		}
 		dtrsm_("L", "U", "T", "N", &n1, &n2, &c_b12, a, &n1, &a[n1 * 
 			n1], &n1);
@@ -867,7 +867,7 @@ f"> */
 
 		dpotrf_("U", &n1, &a[n2 * n2], &n2, info);
 		if (*info > 0) {
-		    return 0;
+		    return;
 		}
 		dtrsm_("R", "U", "N", "N", &n2, &n1, &c_b12, &a[n2 * n2], &n2,
 			 a, &n2);
@@ -899,7 +899,7 @@ f"> */
 		i__1 = *n + 1;
 		dpotrf_("L", &k, &a[1], &i__1, info);
 		if (*info > 0) {
-		    return 0;
+		    return;
 		}
 		i__1 = *n + 1;
 		i__2 = *n + 1;
@@ -924,7 +924,7 @@ f"> */
 		i__1 = *n + 1;
 		dpotrf_("L", &k, &a[k + 1], &i__1, info);
 		if (*info > 0) {
-		    return 0;
+		    return;
 		}
 		i__1 = *n + 1;
 		i__2 = *n + 1;
@@ -954,7 +954,7 @@ f"> */
 
 		dpotrf_("U", &k, &a[k], &k, info);
 		if (*info > 0) {
-		    return 0;
+		    return;
 		}
 		dtrsm_("L", "U", "T", "N", &k, &k, &c_b12, &a[k], &n1, &a[k * 
 			(k + 1)], &k);
@@ -973,7 +973,7 @@ f"> */
 
 		dpotrf_("U", &k, &a[k * (k + 1)], &k, info);
 		if (*info > 0) {
-		    return 0;
+		    return;
 		}
 		dtrsm_("R", "U", "N", "N", &k, &k, &c_b12, &a[k * (k + 1)], &
 			k, a, &k);
@@ -989,7 +989,7 @@ f"> */
 
     }
 
-    return 0;
+    return;
 
 /*     End of DPFTRF */
 

@@ -670,7 +670,7 @@ f"> */
 /* > \ingroup complex16GBcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int zungbr_(char *vect, integer *m, integer *n, integer *k, 
+/* Subroutine */ void zungbr_(char *vect, integer *m, integer *n, integer *k, 
 	doublecomplex *a, integer *lda, doublecomplex *tau, doublecomplex *
 	work, integer *lwork, integer *info)
 {
@@ -686,7 +686,7 @@ f"> */
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     integer lwkopt;
     logical lquery;
-    extern /* Subroutine */ int zunglq_(integer *, integer *, integer *, 
+    extern /* Subroutine */ void zunglq_(integer *, integer *, integer *, 
 	    doublecomplex *, integer *, doublecomplex *, doublecomplex *, 
 	    integer *, integer *), zungqr_(integer *, integer *, integer *, 
 	    doublecomplex *, integer *, doublecomplex *, doublecomplex *, 
@@ -767,17 +767,17 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZUNGBR", &i__1, (ftnlen)6);
-	return 0;
+	return;
     } else if (lquery) {
 	work[1].r = (doublereal) lwkopt, work[1].i = 0.;
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*m == 0 || *n == 0) {
 	work[1].r = 1., work[1].i = 0.;
-	return 0;
+	return;
     }
 
     if (wantq) {
@@ -884,7 +884,7 @@ f"> */
 	}
     }
     work[1].r = (doublereal) lwkopt, work[1].i = 0.;
-    return 0;
+    return;
 
 /*     End of ZUNGBR */
 

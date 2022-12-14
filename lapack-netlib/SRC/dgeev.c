@@ -706,7 +706,7 @@ ices</b> */
 /* > \ingroup doubleGEeigen */
 
 /*  ===================================================================== */
-/* Subroutine */ int dgeev_(char *jobvl, char *jobvr, integer *n, doublereal *
+/* Subroutine */ void dgeev_(char *jobvl, char *jobvr, integer *n, doublereal *
 	a, integer *lda, doublereal *wr, doublereal *wi, doublereal *vl, 
 	integer *ldvl, doublereal *vr, integer *ldvr, doublereal *work, 
 	integer *lwork, integer *info)
@@ -721,17 +721,17 @@ ices</b> */
     char side[1];
     doublereal anrm;
     integer ierr, itau;
-    extern /* Subroutine */ int drot_(integer *, doublereal *, integer *, 
+    extern /* Subroutine */ void drot_(integer *, doublereal *, integer *, 
 	    doublereal *, integer *, doublereal *, doublereal *);
     integer iwrk, nout;
     extern doublereal dnrm2_(integer *, doublereal *, integer *);
     integer i__, k;
     doublereal r__;
-    extern /* Subroutine */ int dscal_(integer *, doublereal *, doublereal *, 
+    extern /* Subroutine */ void dscal_(integer *, doublereal *, doublereal *, 
 	    integer *);
     extern logical lsame_(char *, char *);
     extern doublereal dlapy2_(doublereal *, doublereal *);
-    extern /* Subroutine */ int dlabad_(doublereal *, doublereal *), dgebak_(
+    extern /* Subroutine */ void dlabad_(doublereal *, doublereal *), dgebak_(
 	    char *, char *, integer *, integer *, integer *, doublereal *, 
 	    integer *, doublereal *, integer *, integer *), 
 	    dgebal_(char *, integer *, doublereal *, integer *, integer *, 
@@ -742,23 +742,24 @@ ices</b> */
     doublereal cscale;
     extern doublereal dlange_(char *, integer *, integer *, doublereal *, 
 	    integer *, doublereal *);
-    extern /* Subroutine */ int dgehrd_(integer *, integer *, integer *, 
+    extern /* Subroutine */ void dgehrd_(integer *, integer *, integer *, 
 	    doublereal *, integer *, doublereal *, doublereal *, integer *, 
 	    integer *);
     doublereal sn;
-    extern /* Subroutine */ int dlascl_(char *, integer *, integer *, 
+    extern /* Subroutine */ void dlascl_(char *, integer *, integer *, 
 	    doublereal *, doublereal *, integer *, integer *, doublereal *, 
 	    integer *, integer *);
     extern integer idamax_(integer *, doublereal *, integer *);
-    extern /* Subroutine */ int dlacpy_(char *, integer *, integer *, 
+    extern /* Subroutine */ void dlacpy_(char *, integer *, integer *, 
 	    doublereal *, integer *, doublereal *, integer *), 
 	    dlartg_(doublereal *, doublereal *, doublereal *, doublereal *, 
-	    doublereal *), xerbla_(char *, integer *, ftnlen);
+	    doublereal *);
+    extern int xerbla_(char *, integer *, ftnlen);
     logical select[1];
     extern integer ilaenv_(integer *, char *, char *, integer *, integer *, 
 	    integer *, integer *, ftnlen, ftnlen);
     doublereal bignum;
-    extern /* Subroutine */ int dorghr_(integer *, integer *, integer *, 
+    extern /* Subroutine */ void dorghr_(integer *, integer *, integer *, 
 	    doublereal *, integer *, doublereal *, doublereal *, integer *, 
 	    integer *), dhseqr_(char *, char *, integer *, integer *, integer 
 	    *, doublereal *, integer *, doublereal *, doublereal *, 
@@ -768,7 +769,7 @@ ices</b> */
     doublereal smlnum;
     integer hswork;
     logical lquery, wantvr;
-    extern /* Subroutine */ int dtrevc3_(char *, char *, logical *, integer *,
+    extern /* Subroutine */ void dtrevc3_(char *, char *, logical *, integer *,
 	     doublereal *, integer *, doublereal *, integer *, doublereal *, 
 	    integer *, integer *, integer *, doublereal *, integer *, integer 
 	    *);
@@ -910,15 +911,15 @@ ices</b> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DGEEV ", &i__1, (ftnlen)6);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /*     Get machine constants */
@@ -1155,7 +1156,7 @@ L50:
     }
 
     work[1] = (doublereal) maxwrk;
-    return 0;
+    return;
 
 /*     End of DGEEV */
 

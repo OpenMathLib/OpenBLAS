@@ -602,13 +602,13 @@ he bidiagonal SVD problem. */
 /* > \ingroup auxOTHERcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int dlartgs_(doublereal *x, doublereal *y, doublereal *sigma,
+/* Subroutine */ void dlartgs_(doublereal *x, doublereal *y, doublereal *sigma,
 	 doublereal *cs, doublereal *sn)
 {
     doublereal r__, s, w, z__;
     extern doublereal dlamch_(char *);
     doublereal thresh;
-    extern /* Subroutine */ int dlartgp_(doublereal *, doublereal *, 
+    extern /* Subroutine */ void dlartgp_(doublereal *, doublereal *, 
 	    doublereal *, doublereal *, doublereal *);
 
 
@@ -657,7 +657,7 @@ he bidiagonal SVD problem. */
 
     dlartgp_(&w, &z__, sn, cs, &r__);
 
-    return 0;
+    return;
 
 /*     End DLARTGS */
 

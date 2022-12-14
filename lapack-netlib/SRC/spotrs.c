@@ -623,7 +623,7 @@ f"> */
 /* > \ingroup realPOcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int spotrs_(char *uplo, integer *n, integer *nrhs, real *a, 
+/* Subroutine */ void spotrs_(char *uplo, integer *n, integer *nrhs, real *a, 
 	integer *lda, real *b, integer *ldb, integer *info)
 {
     /* System generated locals */
@@ -632,9 +632,10 @@ f"> */
     /* Local variables */
     extern logical lsame_(char *, char *);
     logical upper;
-    extern /* Subroutine */ int strsm_(char *, char *, char *, char *, 
+    extern /* Subroutine */ void strsm_(char *, char *, char *, char *, 
 	    integer *, integer *, real *, real *, integer *, real *, integer *
-	    ), xerbla_(char *, integer *, ftnlen);
+	    );
+    extern int xerbla_(char *, integer *, ftnlen);
 
 
 /*  -- LAPACK computational routine (version 3.7.0) -- */
@@ -673,13 +674,13 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("SPOTRS", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0 || *nrhs == 0) {
-	return 0;
+	return;
     }
 
     if (upper) {
@@ -710,7 +711,7 @@ f"> */
 		a_offset], lda, &b[b_offset], ldb);
     }
 
-    return 0;
+    return;
 
 /*     End of SPOTRS */
 

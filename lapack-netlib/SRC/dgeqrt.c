@@ -650,7 +650,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int dgeqrt_(integer *m, integer *n, integer *nb, doublereal *
+/* Subroutine */ void dgeqrt_(integer *m, integer *n, integer *nb, doublereal *
 	a, integer *lda, doublereal *t, integer *ldt, doublereal *work, 
 	integer *info)
 {
@@ -659,11 +659,12 @@ f"> */
 
     /* Local variables */
     integer i__, k, iinfo, ib;
-    extern /* Subroutine */ int dlarfb_(char *, char *, char *, char *, 
+    extern /* Subroutine */ void dlarfb_(char *, char *, char *, char *, 
 	    integer *, integer *, integer *, doublereal *, integer *, 
 	    doublereal *, integer *, doublereal *, integer *, doublereal *, 
-	    integer *), xerbla_(char *, 
-	    integer *, ftnlen), dgeqrt2_(integer *, integer *, doublereal *, 
+	    integer *);
+    extern int xerbla_(char *, integer *, ftnlen);
+    extern void dgeqrt2_(integer *, integer *, doublereal *, 
 	    integer *, doublereal *, integer *, integer *), dgeqrt3_(integer *
 	    , integer *, doublereal *, integer *, doublereal *, integer *, 
 	    integer *);
@@ -705,14 +706,14 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DGEQRT", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     k = f2cmin(*m,*n);
     if (k == 0) {
-	return 0;
+	return;
     }
 
 /*     Blocked loop of length K */
@@ -747,7 +748,7 @@ f"> */
 		    ib) * a_dim1], lda, &work[1], &i__5);
 	}
     }
-    return 0;
+    return;
 
 /*     End of DGEQRT */
 

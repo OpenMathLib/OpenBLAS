@@ -648,7 +648,7 @@ l elements using an unblocked algorithm. */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int cgeqr2p_(integer *m, integer *n, complex *a, integer *
+/* Subroutine */ void cgeqr2p_(integer *m, integer *n, complex *a, integer *
 	lda, complex *tau, complex *work, integer *info)
 {
     /* System generated locals */
@@ -658,9 +658,10 @@ l elements using an unblocked algorithm. */
     /* Local variables */
     integer i__, k;
     complex alpha;
-    extern /* Subroutine */ int clarf_(char *, integer *, integer *, complex *
-	    , integer *, complex *, complex *, integer *, complex *), 
-	    xerbla_(char *, integer *, ftnlen), clarfgp_(integer *, complex *,
+    extern /* Subroutine */ void clarf_(char *, integer *, integer *, complex *
+	    , integer *, complex *, complex *, integer *, complex *); 
+    extern int xerbla_(char *, integer *, ftnlen);
+    extern void clarfgp_(integer *, complex *,
 	     complex *, integer *, complex *);
 
 
@@ -694,7 +695,7 @@ l elements using an unblocked algorithm. */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CGEQR2P", &i__1, (ftnlen)7);
-	return 0;
+	return;
     }
 
     k = f2cmin(*m,*n);
@@ -727,7 +728,7 @@ l elements using an unblocked algorithm. */
 	}
 /* L10: */
     }
-    return 0;
+    return;
 
 /*     End of CGEQR2P */
 

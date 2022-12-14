@@ -669,9 +669,10 @@ real cla_gercond_c_(char *trans, integer *n, complex *a, integer *lda,
     extern logical lsame_(char *, char *);
     integer isave[3];
     real anorm;
-    extern /* Subroutine */ int clacn2_(integer *, complex *, complex *, real 
-	    *, integer *, integer *), xerbla_(char *, integer *, ftnlen), 
-	    cgetrs_(char *, integer *, integer *, complex *, integer *, 
+    extern /* Subroutine */ void clacn2_(integer *, complex *, complex *, real 
+	    *, integer *, integer *);
+    extern int xerbla_(char *, integer *, ftnlen); 
+    extern void cgetrs_(char *, integer *, integer *, complex *, integer *, 
 	    integer *, complex *, integer *, integer *);
     real ainvnm, tmp;
     logical notrans;

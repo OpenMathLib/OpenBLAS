@@ -706,7 +706,7 @@ f"> */
 /* > \endverbatim */
 
 /*  ===================================================================== */
-/* Subroutine */ int zsytf2_(char *uplo, integer *n, doublecomplex *a, 
+/* Subroutine */ void zsytf2_(char *uplo, integer *n, doublecomplex *a, 
 	integer *lda, integer *ipiv, integer *info)
 {
     /* System generated locals */
@@ -716,18 +716,18 @@ f"> */
 
     /* Local variables */
     integer imax, jmax;
-    extern /* Subroutine */ int zsyr_(char *, integer *, doublecomplex *, 
+    extern /* Subroutine */ void zsyr_(char *, integer *, doublecomplex *, 
 	    doublecomplex *, integer *, doublecomplex *, integer *);
     integer i__, j, k;
     doublecomplex t;
     doublereal alpha;
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int zscal_(integer *, doublecomplex *, 
+    extern /* Subroutine */ void zscal_(integer *, doublecomplex *, 
 	    doublecomplex *, integer *);
     integer kstep;
     logical upper;
     doublecomplex r1;
-    extern /* Subroutine */ int zswap_(integer *, doublecomplex *, integer *, 
+    extern /* Subroutine */ void zswap_(integer *, doublecomplex *, integer *, 
 	    doublecomplex *, integer *);
     doublecomplex d11, d12, d21, d22;
     integer kk, kp;
@@ -771,7 +771,7 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZSYTF2", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Initialize ALPHA for use in choosing pivot block size. */
@@ -1286,7 +1286,7 @@ L40:
     }
 
 L70:
-    return 0;
+    return;
 
 /*     End of ZSYTF2 */
 

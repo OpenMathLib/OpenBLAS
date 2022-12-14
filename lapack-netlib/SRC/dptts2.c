@@ -612,7 +612,7 @@ f"> */
 /* > \ingroup doublePTcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int dptts2_(integer *n, integer *nrhs, doublereal *d__, 
+/* Subroutine */ void dptts2_(integer *n, integer *nrhs, doublereal *d__, 
 	doublereal *e, doublereal *b, integer *ldb)
 {
     /* System generated locals */
@@ -621,7 +621,7 @@ f"> */
 
     /* Local variables */
     integer i__, j;
-    extern /* Subroutine */ int dscal_(integer *, doublereal *, doublereal *, 
+    extern /* Subroutine */ void dscal_(integer *, doublereal *, doublereal *, 
 	    integer *);
 
 
@@ -649,7 +649,7 @@ f"> */
 	    d__1 = 1. / d__[1];
 	    dscal_(nrhs, &d__1, &b[b_offset], ldb);
 	}
-	return 0;
+	return;
     }
 
 /*     Solve A * X = B using the factorization A = L*D*L**T, */
@@ -677,7 +677,7 @@ f"> */
 /* L30: */
     }
 
-    return 0;
+    return;
 
 /*     End of DPTTS2 */
 

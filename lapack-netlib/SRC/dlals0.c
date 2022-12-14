@@ -783,7 +783,7 @@ f"> */
 /* >     Osni Marques, LBNL/NERSC, USA \n */
 
 /*  ===================================================================== */
-/* Subroutine */ int dlals0_(integer *icompq, integer *nl, integer *nr, 
+/* Subroutine */ void dlals0_(integer *icompq, integer *nl, integer *nr, 
 	integer *sqre, integer *nrhs, doublereal *b, integer *ldb, doublereal 
 	*bx, integer *ldbx, integer *perm, integer *givptr, integer *givcol, 
 	integer *ldgcol, doublereal *givnum, integer *ldgnum, doublereal *
@@ -798,24 +798,24 @@ f"> */
 
     /* Local variables */
     doublereal temp;
-    extern /* Subroutine */ int drot_(integer *, doublereal *, integer *, 
+    extern /* Subroutine */ void drot_(integer *, doublereal *, integer *, 
 	    doublereal *, integer *, doublereal *, doublereal *);
     extern doublereal dnrm2_(integer *, doublereal *, integer *);
     integer i__, j, m, n;
-    extern /* Subroutine */ int dscal_(integer *, doublereal *, doublereal *, 
+    extern /* Subroutine */ void dscal_(integer *, doublereal *, doublereal *, 
 	    integer *);
     doublereal diflj, difrj, dsigj;
-    extern /* Subroutine */ int dgemv_(char *, integer *, integer *, 
+    extern /* Subroutine */ void dgemv_(char *, integer *, integer *, 
 	    doublereal *, doublereal *, integer *, doublereal *, integer *, 
 	    doublereal *, doublereal *, integer *), dcopy_(integer *, 
 	    doublereal *, integer *, doublereal *, integer *);
     extern doublereal dlamc3_(doublereal *, doublereal *);
     doublereal dj;
-    extern /* Subroutine */ int dlascl_(char *, integer *, integer *, 
+    extern /* Subroutine */ void dlascl_(char *, integer *, integer *, 
 	    doublereal *, doublereal *, integer *, integer *, doublereal *, 
 	    integer *, integer *), dlacpy_(char *, integer *, integer 
-	    *, doublereal *, integer *, doublereal *, integer *), 
-	    xerbla_(char *, integer *, ftnlen);
+	    *, doublereal *, integer *, doublereal *, integer *); 
+    extern int xerbla_(char *, integer *, ftnlen);
     doublereal dsigjp;
     integer nlp1;
 
@@ -886,7 +886,7 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DLALS0", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
     m = n + *sqre;
@@ -1070,7 +1070,7 @@ f"> */
 	}
     }
 
-    return 0;
+    return;
 
 /*     End of DLALS0 */
 

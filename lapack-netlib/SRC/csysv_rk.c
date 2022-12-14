@@ -740,7 +740,7 @@ k.f"> */
 /* > \endverbatim */
 
 /*  ===================================================================== */
-/* Subroutine */ int csysv_rk_(char *uplo, integer *n, integer *nrhs, 
+/* Subroutine */ void csysv_rk_(char *uplo, integer *n, integer *nrhs, 
 	complex *a, integer *lda, complex *e, integer *ipiv, complex *b, 
 	integer *ldb, complex *work, integer *lwork, integer *info)
 {
@@ -748,12 +748,13 @@ k.f"> */
     integer a_dim1, a_offset, b_dim1, b_offset, i__1;
 
     /* Local variables */
-    extern /* Subroutine */ int csytrs_3_(char *, integer *, integer *, 
+    extern /* Subroutine */ void csytrs_3_(char *, integer *, integer *, 
 	    complex *, integer *, complex *, integer *, complex *, integer *, 
 	    integer *);
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int csytrf_rk_(char *, integer *, complex *, 
-	    integer *, complex *, integer *, complex *, integer *, integer *), xerbla_(char *, integer *, ftnlen);
+    extern /* Subroutine */ void csytrf_rk_(char *, integer *, complex *, 
+	    integer *, complex *, integer *, complex *, integer *, integer *);
+    extern int xerbla_(char *, integer *, ftnlen);
     integer lwkopt;
     logical lquery;
 
@@ -811,9 +812,9 @@ k.f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CSYSV_RK ", &i__1, (ftnlen)9);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Compute the factorization A = U*D*U**T or A = L*D*L**T. */
@@ -832,7 +833,7 @@ k.f"> */
 
     work[1].r = (real) lwkopt, work[1].i = 0.f;
 
-    return 0;
+    return;
 
 /*     End of CSYSV_RK */
 

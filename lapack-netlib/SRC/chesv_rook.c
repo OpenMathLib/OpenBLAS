@@ -719,7 +719,7 @@ ook.f"> */
 
 
 /*  ===================================================================== */
-/* Subroutine */ int chesv_rook_(char *uplo, integer *n, integer *nrhs, 
+/* Subroutine */ void chesv_rook_(char *uplo, integer *n, integer *nrhs, 
 	complex *a, integer *lda, integer *ipiv, complex *b, integer *ldb, 
 	complex *work, integer *lwork, integer *info)
 {
@@ -734,7 +734,7 @@ ook.f"> */
 	    integer *, integer *, ftnlen, ftnlen);
     integer lwkopt;
     logical lquery;
-    extern /* Subroutine */ int chetrf_rook_(char *, integer *, complex *, 
+    extern /* Subroutine */ void chetrf_rook_(char *, integer *, complex *, 
 	    integer *, integer *, complex *, integer *, integer *), 
 	    chetrs_rook_(char *, integer *, integer *, complex *, integer *, 
 	    integer *, complex *, integer *, integer *);
@@ -792,9 +792,9 @@ ook.f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CHESV_ROOK ", &i__1, (ftnlen)11);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Compute the factorization A = U*D*U**H or A = L*D*L**H. */
@@ -813,7 +813,7 @@ ook.f"> */
 
     work[1].r = (real) lwkopt, work[1].i = 0.f;
 
-    return 0;
+    return;
 
 /*     End of CHESV_ROOK */
 

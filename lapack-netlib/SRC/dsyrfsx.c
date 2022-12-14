@@ -811,7 +811,7 @@ static integer c__1 = 1;
 /* > \ingroup doubleSYcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int dsyrfsx_(char *uplo, char *equed, integer *n, integer *
+/* Subroutine */ void dsyrfsx_(char *uplo, char *equed, integer *n, integer *
 	nrhs, doublereal *a, integer *lda, doublereal *af, integer *ldaf, 
 	integer *ipiv, doublereal *s, doublereal *b, integer *ldb, doublereal 
 	*x, integer *ldx, doublereal *rcond, doublereal *berr, integer *
@@ -827,7 +827,7 @@ static integer c__1 = 1;
 
     /* Local variables */
     doublereal illrcond_thresh__, unstable_thresh__;
-    extern /* Subroutine */ int dla_syrfsx_extended_(integer *, char *, 
+    extern /* Subroutine */ void dla_syrfsx_extended_(integer *, char *, 
 	    integer *, integer *, doublereal *, integer *, doublereal *, 
 	    integer *, integer *, logical *, doublereal *, doublereal *, 
 	    integer *, doublereal *, integer *, doublereal *, integer *, 
@@ -848,7 +848,7 @@ static integer c__1 = 1;
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     extern doublereal dlansy_(char *, char *, integer *, doublereal *, 
 	    integer *, doublereal *);
-    extern /* Subroutine */ int dsycon_(char *, integer *, doublereal *, 
+    extern /* Subroutine */ void dsycon_(char *, integer *, doublereal *, 
 	    integer *, integer *, doublereal *, doublereal *, doublereal *, 
 	    integer *, integer *);
     extern integer ilaprec_(char *);
@@ -966,7 +966,7 @@ static integer c__1 = 1;
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DSYRFSX", &i__1, (ftnlen)7);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible. */
@@ -989,7 +989,7 @@ static integer c__1 = 1;
 		err_bnds_comp__[j + err_bnds_comp_dim1 * 3] = 1.;
 	    }
 	}
-	return 0;
+	return;
     }
 
 /*     Default to failure. */
@@ -1130,7 +1130,7 @@ static integer c__1 = 1;
 	}
     }
 
-    return 0;
+    return;
 
 /*     End of DSYRFSX */
 

@@ -680,7 +680,7 @@ kernels.f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int chb2st_kernels_(char *uplo, logical *wantz, integer *
+/* Subroutine */ void chb2st_kernels_(char *uplo, logical *wantz, integer *
 	ttype, integer *st, integer *ed, integer *sweep, integer *n, integer *
 	nb, integer *ib, complex *a, integer *lda, complex *v, complex *tau, 
 	integer *ldvt, complex *work)
@@ -695,10 +695,10 @@ kernels.f"> */
     extern logical lsame_(char *, char *);
     logical upper;
     integer j1, j2, lm, ln;
-    extern /* Subroutine */ int clarfg_(integer *, complex *, complex *, 
+    extern /* Subroutine */ void clarfg_(integer *, complex *, complex *, 
 	    integer *, complex *);
     integer ajeter;
-    extern /* Subroutine */ int clarfx_(char *, integer *, integer *, complex 
+    extern /* Subroutine */ void clarfx_(char *, integer *, integer *, complex 
 	    *, complex *, complex *, integer *, complex *), clarfy_(
 	    char *, integer *, complex *, integer *, complex *, complex *, 
 	    integer *, complex *);
@@ -917,7 +917,7 @@ kernels.f"> */
 	}
     }
 
-    return 0;
+    return;
 
 /*     END OF CHB2ST_KERNELS */
 

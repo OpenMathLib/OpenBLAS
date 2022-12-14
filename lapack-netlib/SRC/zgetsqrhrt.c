@@ -689,7 +689,7 @@ hrt.f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int zgetsqrhrt_(integer *m, integer *n, integer *mb1, 
+/* Subroutine */ void zgetsqrhrt_(integer *m, integer *n, integer *mb1, 
 	integer *nb1, integer *nb2, doublecomplex *a, integer *lda, 
 	doublecomplex *t, integer *ldt, doublecomplex *work, integer *lwork, 
 	integer *info)
@@ -701,16 +701,17 @@ hrt.f"> */
 
     /* Local variables */
     integer ldwt, lworkopt, i__, j, iinfo;
-    extern /* Subroutine */ int zungtsqr_row_(integer *, integer *, integer *
+    extern /* Subroutine */ void zungtsqr_row_(integer *, integer *, integer *
 	    , integer *, doublecomplex *, integer *, doublecomplex *, integer 
 	    *, doublecomplex *, integer *, integer *), zcopy_(integer *, 
 	    doublecomplex *, integer *, doublecomplex *, integer *), 
 	    zunhr_col_(integer *, integer *, integer *, doublecomplex *, 
 	    integer *, doublecomplex *, integer *, doublecomplex *, integer *)
-	    , xerbla_(char *, integer *, ftnlen);
+	    ;
+    extern int xerbla_(char *, integer *, ftnlen);
     logical lquery;
     integer lw1, lw2, num_all_row_blocks__, lwt, nb1local, nb2local;
-    extern /* Subroutine */ int zlatsqr_(integer *, integer *, integer *, 
+    extern /* Subroutine */ void zlatsqr_(integer *, integer *, integer *, 
 	    integer *, doublecomplex *, integer *, doublecomplex *, integer *,
 	     doublecomplex *, integer *, integer *);
 
@@ -812,11 +813,11 @@ hrt.f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZGETSQRHRT", &i__1, (ftnlen)10);
-	return 0;
+	return;
     } else if (lquery) {
 	z__1.r = (doublereal) lworkopt, z__1.i = 0.;
 	work[1].r = z__1.r, work[1].i = z__1.i;
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
@@ -824,7 +825,7 @@ hrt.f"> */
     if (f2cmin(*m,*n) == 0) {
 	z__1.r = (doublereal) lworkopt, z__1.i = 0.;
 	work[1].r = z__1.r, work[1].i = z__1.i;
-	return 0;
+	return;
     }
 
     nb2local = f2cmin(*nb2,*n);
@@ -895,7 +896,7 @@ hrt.f"> */
 
     z__1.r = (doublereal) lworkopt, z__1.i = 0.;
     work[1].r = z__1.r, work[1].i = z__1.i;
-    return 0;
+    return;
 
 /*     End of ZGETSQRHRT */
 

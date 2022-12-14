@@ -755,7 +755,7 @@ rk.f"> */
 /* > \endverbatim */
 
 /*  ===================================================================== */
-/* Subroutine */ int dsytf2_rk_(char *uplo, integer *n, doublereal *a, 
+/* Subroutine */ void dsytf2_rk_(char *uplo, integer *n, doublereal *a, 
 	integer *lda, doublereal *e, integer *ipiv, integer *info)
 {
     /* System generated locals */
@@ -765,16 +765,16 @@ rk.f"> */
     /* Local variables */
     logical done;
     integer imax, jmax;
-    extern /* Subroutine */ int dsyr_(char *, integer *, doublereal *, 
+    extern /* Subroutine */ void dsyr_(char *, integer *, doublereal *, 
 	    doublereal *, integer *, doublereal *, integer *);
     integer i__, j, k, p;
     doublereal t, alpha;
-    extern /* Subroutine */ int dscal_(integer *, doublereal *, doublereal *, 
+    extern /* Subroutine */ void dscal_(integer *, doublereal *, doublereal *, 
 	    integer *);
     extern logical lsame_(char *, char *);
     doublereal dtemp, sfmin;
     integer itemp;
-    extern /* Subroutine */ int dswap_(integer *, doublereal *, integer *, 
+    extern /* Subroutine */ void dswap_(integer *, doublereal *, integer *, 
 	    doublereal *, integer *);
     integer kstep;
     logical upper;
@@ -819,7 +819,7 @@ rk.f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DSYTF2_RK", &i__1, (ftnlen)9);
-	return 0;
+	return;
     }
 
 /*     Initialize ALPHA for use in choosing pivot block size. */
@@ -1534,7 +1534,7 @@ L64:
 	;
     }
 
-    return 0;
+    return;
 
 /*     End of DSYTF2_RK */
 

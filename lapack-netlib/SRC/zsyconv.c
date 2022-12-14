@@ -623,7 +623,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 /* > \ingroup complex16SYcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int zsyconv_(char *uplo, char *way, integer *n, 
+/* Subroutine */ void zsyconv_(char *uplo, char *way, integer *n, 
 	doublecomplex *a, integer *lda, integer *ipiv, doublecomplex *e, 
 	integer *info)
 {
@@ -673,13 +673,13 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZSYCONV", &i__1, (ftnlen)7);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
     if (upper) {
@@ -930,7 +930,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 	}
     }
 
-    return 0;
+    return;
 
 /*     End of ZSYCONV */
 

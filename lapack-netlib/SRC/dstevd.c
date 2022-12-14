@@ -676,7 +676,7 @@ f"> */
 /* > \ingroup doubleOTHEReigen */
 
 /*  ===================================================================== */
-/* Subroutine */ int dstevd_(char *jobz, integer *n, doublereal *d__, 
+/* Subroutine */ void dstevd_(char *jobz, integer *n, doublereal *d__, 
 	doublereal *e, doublereal *z__, integer *ldz, doublereal *work, 
 	integer *lwork, integer *iwork, integer *liwork, integer *info)
 {
@@ -686,7 +686,7 @@ f"> */
 
     /* Local variables */
     doublereal rmin, rmax, tnrm;
-    extern /* Subroutine */ int dscal_(integer *, doublereal *, doublereal *, 
+    extern /* Subroutine */ void dscal_(integer *, doublereal *, doublereal *, 
 	    integer *);
     doublereal sigma;
     extern logical lsame_(char *, char *);
@@ -694,14 +694,14 @@ f"> */
     logical wantz;
     extern doublereal dlamch_(char *);
     integer iscale;
-    extern /* Subroutine */ int dstedc_(char *, integer *, doublereal *, 
+    extern /* Subroutine */ void dstedc_(char *, integer *, doublereal *, 
 	    doublereal *, doublereal *, integer *, doublereal *, integer *, 
 	    integer *, integer *, integer *);
     doublereal safmin;
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     doublereal bignum;
     extern doublereal dlanst_(char *, integer *, doublereal *, doublereal *);
-    extern /* Subroutine */ int dsterf_(integer *, doublereal *, doublereal *,
+    extern /* Subroutine */ void dsterf_(integer *, doublereal *, doublereal *,
 	     integer *);
     integer liwmin;
     doublereal smlnum;
@@ -765,22 +765,22 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DSTEVD", &i__1, (ftnlen)6);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
     if (*n == 1) {
 	if (wantz) {
 	    z__[z_dim1 + 1] = 1.;
 	}
-	return 0;
+	return;
     }
 
 /*     Get machine constants. */
@@ -829,7 +829,7 @@ f"> */
     work[1] = (doublereal) lwmin;
     iwork[1] = liwmin;
 
-    return 0;
+    return;
 
 /*     End of DSTEVD */
 

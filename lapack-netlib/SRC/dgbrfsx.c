@@ -848,7 +848,7 @@ static integer c__1 = 1;
 /* > \ingroup doubleGBcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int dgbrfsx_(char *trans, char *equed, integer *n, integer *
+/* Subroutine */ void dgbrfsx_(char *trans, char *equed, integer *n, integer *
 	kl, integer *ku, integer *nrhs, doublereal *ab, integer *ldab, 
 	doublereal *afb, integer *ldafb, integer *ipiv, doublereal *r__, 
 	doublereal *c__, doublereal *b, integer *ldb, doublereal *x, integer *
@@ -875,10 +875,10 @@ static integer c__1 = 1;
     integer prec_type__;
     extern doublereal dlamch_(char *), dlangb_(char *, integer *, 
 	    integer *, integer *, doublereal *, integer *, doublereal *);
-    extern /* Subroutine */ int dgbcon_(char *, integer *, integer *, integer 
+    extern /* Subroutine */ void dgbcon_(char *, integer *, integer *, integer 
 	    *, doublereal *, integer *, integer *, doublereal *, doublereal *,
-	     doublereal *, integer *, integer *), xerbla_(char *, 
-	    integer *, ftnlen);
+	     doublereal *, integer *, integer *);
+    extern int xerbla_(char *, integer *, ftnlen);
     logical colequ, notran, rowequ;
     integer trans_type__;
     extern doublereal dla_gbrcond_(char *, integer *, integer *, integer *, 
@@ -887,7 +887,7 @@ static integer c__1 = 1;
     extern integer ilaprec_(char *);
     integer ithresh, n_norms__;
     doublereal rthresh, cwise_wrong__;
-    extern /* Subroutine */ int dla_gbrfsx_extended_(integer *, integer *, 
+    extern /* Subroutine */ void dla_gbrfsx_extended_(integer *, integer *, 
 	    integer *, integer *, integer *, integer *, doublereal *, integer 
 	    *, doublereal *, integer *, integer *, logical *, doublereal *, 
 	    doublereal *, integer *, doublereal *, integer *, doublereal *, 
@@ -1010,7 +1010,7 @@ static integer c__1 = 1;
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DGBRFSX", &i__1, (ftnlen)7);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible. */
@@ -1033,7 +1033,7 @@ static integer c__1 = 1;
 		err_bnds_comp__[j + err_bnds_comp_dim1 * 3] = 1.;
 	    }
 	}
-	return 0;
+	return;
     }
 
 /*     Default to failure. */
@@ -1194,7 +1194,7 @@ static integer c__1 = 1;
 	}
     }
 
-    return 0;
+    return;
 
 /*     End of DGBRFSX */
 

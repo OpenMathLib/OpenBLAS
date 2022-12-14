@@ -675,7 +675,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int zgemqr_(char *side, char *trans, integer *m, integer *n, 
+/* Subroutine */ void zgemqr_(char *side, char *trans, integer *m, integer *n, 
 	integer *k, doublecomplex *a, integer *lda, doublecomplex *t, integer 
 	*tsize, doublecomplex *c__, integer *ldc, doublecomplex *work, 
 	integer *lwork, integer *info)
@@ -685,7 +685,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 
     /* Local variables */
     logical left, tran;
-    extern /* Subroutine */ int zlamtsqr_(char *, char *, integer *, integer *
+    extern /* Subroutine */ void zlamtsqr_(char *, char *, integer *, integer *
 	    , integer *, integer *, integer *, doublecomplex *, integer *, 
 	    doublecomplex *, integer *, doublecomplex *, integer *, 
 	    doublecomplex *, integer *, integer *);
@@ -694,7 +694,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
     integer mb, nb, mn, lw, nblcks;
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     logical notran, lquery;
-    extern /* Subroutine */ int zgemqrt_(char *, char *, integer *, integer *,
+    extern /* Subroutine */ void zgemqrt_(char *, char *, integer *, integer *,
 	     integer *, integer *, doublecomplex *, integer *, doublecomplex *
 	    , integer *, doublecomplex *, integer *, doublecomplex *, integer 
 	    *);
@@ -776,9 +776,9 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZGEMQR", &i__1, (ftnlen)6);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
@@ -786,7 +786,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 /* Computing MIN */
     i__1 = f2cmin(*m,*n);
     if (f2cmin(i__1,*k) == 0) {
-	return 0;
+	return;
     }
 
 /* Computing MAX */
@@ -802,7 +802,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 
     work[1].r = (doublereal) lw, work[1].i = 0.;
 
-    return 0;
+    return;
 
 /*     End of ZGEMQR */
 

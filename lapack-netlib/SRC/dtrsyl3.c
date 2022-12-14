@@ -697,7 +697,7 @@ static doublereal c_b32 = 1.;
 /*   Angelika Schwarz, Umea University, Sweden. */
 
 /*  ===================================================================== */
-/* Subroutine */ int dtrsyl3_(char *trana, char *tranb, integer *isgn, 
+/* Subroutine */ void dtrsyl3_(char *trana, char *tranb, integer *isgn, 
 	integer *m, integer *n, doublereal *a, integer *lda, doublereal *b, 
 	integer *ldb, doublereal *c__, integer *ldc, doublereal *scale, 
 	integer *iwork, integer *liwork, doublereal *swork, integer *ldswork, 
@@ -714,7 +714,7 @@ static doublereal c_b32 = 1.;
     logical skip;
     doublereal *wnrm, xnrm;
     integer i__, j, k, l;
-    extern /* Subroutine */ int dscal_(integer *, doublereal *, doublereal *, 
+    extern /* Subroutine */ void dscal_(integer *, doublereal *, doublereal *, 
 	    integer *), dgemm_(char *, char *, integer *, integer *, integer *
 	    , doublereal *, doublereal *, integer *, doublereal *, integer *, 
 	    doublereal *, doublereal *, integer *);
@@ -724,19 +724,19 @@ static doublereal c_b32 = 1.;
     integer l2, nb, pc, jj, ll;
     extern doublereal dlamch_(char *), dlange_(char *, integer *, 
 	    integer *, doublereal *, integer *, doublereal *);
-    extern /* Subroutine */ int dlascl_(char *, integer *, integer *, 
+    extern /* Subroutine */ void dlascl_(char *, integer *, integer *, 
 	    doublereal *, doublereal *, integer *, integer *, doublereal *, 
 	    integer *, integer *);
     doublereal scaloc, scamin;
     extern doublereal dlarmm_(doublereal *, doublereal *, doublereal *);
-    extern /* Subroutine */ int xerbla_(char *, integer *);
+    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen );
     extern integer ilaenv_(integer *, char *, char *, integer *, integer *, 
 	    integer *, integer *, ftnlen, ftnlen);
     doublereal bignum;
     logical notrna, notrnb;
     doublereal smlnum;
     logical lquery;
-    extern /* Subroutine */ int dtrsyl_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void dtrsyl_(char *, char *, integer *, integer *, 
 	    integer *, doublereal *, integer *, doublereal *, integer *, 
 	    doublereal *, integer *, doublereal *, integer *);
     integer nba, nbb;
@@ -814,17 +814,17 @@ static doublereal c_b32 = 1.;
     }
     if (*info != 0) {
 	i__1 = -(*info);
-	xerbla_("DTRSYL3", &i__1);
-	return 0;
+	xerbla_("DTRSYL3", &i__1, 7);
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     *scale = 1.;
     if (*m == 0 || *n == 0) {
-	return 0;
+	return;
     }
 
      wnrm = (doublereal*)malloc(f2cmax(*m,*n)*sizeof(doublereal));
@@ -834,7 +834,7 @@ static doublereal c_b32 = 1.;
     if (f2cmin(nba,nbb) == 1 || *ldswork < f2cmax(nba,nbb) || *liwork < iwork[1]) {
 	dtrsyl_(trana, tranb, isgn, m, n, &a[a_offset], lda, &b[b_offset], 
 		ldb, &c__[c_offset], ldc, scale, info);
-	return 0;
+	return;
     }
 
 /*     Set constants to control overflow */
@@ -1976,7 +1976,7 @@ static doublereal c_b32 = 1.;
 	iwork[1] = nba + nbb + 2;
 	swork[swork_dim1 + 1] = (doublereal) f2cmax(nba,nbb);
 	swork[swork_dim1 + 2] = (doublereal) ((nbb << 1) + nba);
-	return 0;
+	return;
     }
 
 /*     Realize consistent scaling */
@@ -2052,7 +2052,7 @@ static doublereal c_b32 = 1.;
     swork[swork_dim1 + 1] = (doublereal) f2cmax(nba,nbb);
     swork[swork_dim1 + 2] = (doublereal) ((nbb << 1) + nba);
 
-    return 0;
+    return;
 
 /*     End of DTRSYL3 */
 

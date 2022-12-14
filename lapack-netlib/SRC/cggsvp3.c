@@ -791,7 +791,7 @@ static integer c_n1 = -1;
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int cggsvp3_(char *jobu, char *jobv, char *jobq, integer *m, 
+/* Subroutine */ void cggsvp3_(char *jobu, char *jobv, char *jobq, integer *m, 
 	integer *p, integer *n, complex *a, integer *lda, complex *b, integer 
 	*ldb, real *tola, real *tolb, integer *k, integer *l, complex *u, 
 	integer *ldu, complex *v, integer *ldv, complex *q, integer *ldq, 
@@ -807,7 +807,7 @@ static integer c_n1 = -1;
     integer i__, j;
     extern logical lsame_(char *, char *);
     logical wantq, wantu, wantv;
-    extern /* Subroutine */ int cgeqp3_(integer *, integer *, complex *, 
+    extern /* Subroutine */ void cgeqp3_(integer *, integer *, complex *, 
 	    integer *, integer *, complex *, complex *, integer *, real *, 
 	    integer *), cgeqr2_(integer *, integer *, complex *, integer *, 
 	    complex *, complex *, integer *), cgerq2_(integer *, integer *, 
@@ -820,8 +820,9 @@ static integer c_n1 = -1;
 	    complex *, integer *, complex *, integer *), 
 	    clacpy_(char *, integer *, integer *, complex *, integer *, 
 	    complex *, integer *), claset_(char *, integer *, integer 
-	    *, complex *, complex *, complex *, integer *), xerbla_(
-	    char *, integer *, ftnlen), clapmt_(logical *, integer *, integer 
+	    *, complex *, complex *, complex *, integer *);
+    extern int xerbla_(char *, integer *, ftnlen);
+    extern void clapmt_(logical *, integer *, integer 
 	    *, complex *, integer *, integer *);
     logical forwrd;
     integer lwkopt;
@@ -927,10 +928,10 @@ static integer c_n1 = -1;
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CGGSVP3", &i__1, (ftnlen)7);
-	return 0;
+	return;
     }
     if (lquery) {
-	return 0;
+	return;
     }
 
 /*     QR with column pivoting of B: B*P = V*( S11 S12 ) */
@@ -1186,7 +1187,7 @@ static integer c_n1 = -1;
 
     q__1.r = (real) lwkopt, q__1.i = 0.f;
     work[1].r = q__1.r, work[1].i = q__1.i;
-    return 0;
+    return;
 
 /*     End of CGGSVP3 */
 

@@ -742,7 +742,7 @@ static integer c_n1 = -1;
 /*   Angelika Schwarz, Umea University, Sweden. */
 
 /*  ===================================================================== */
-/* Subroutine */ int zlatrs3_(char *uplo, char *trans, char *diag, char *
+/* Subroutine */ void zlatrs3_(char *uplo, char *trans, char *diag, char *
 	normin, integer *n, integer *nrhs, doublecomplex *a, integer *lda, 
 	doublecomplex *x, integer *ldx, doublereal *scale, doublereal *cnorm, 
 	doublereal *work, integer *lwork, integer *info)
@@ -763,7 +763,7 @@ static integer c_n1 = -1;
     extern logical lsame_(char *, char *);
     doublereal rscal;
     integer lanrm, ilast, jlast;
-    extern /* Subroutine */ int zgemm_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void zgemm_(char *, char *, integer *, integer *, 
 	    integer *, doublecomplex *, doublecomplex *, integer *, 
 	    doublecomplex *, integer *, doublecomplex *, doublecomplex *, 
 	    integer *);
@@ -774,20 +774,20 @@ static integer c_n1 = -1;
     integer lscale;
     doublereal scaloc, scamin;
     extern doublereal dlarmm_(doublereal *, doublereal *, doublereal *);
-    extern /* Subroutine */ int xerbla_(char *, integer *);
+    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen );
     extern integer ilaenv_(integer *, char *, char *, integer *, integer *, 
 	    integer *, integer *, ftnlen, ftnlen);
     extern doublereal zlange_(char *, integer *, integer *, doublecomplex *, 
 	    integer *, doublereal *);
     doublereal bignum;
-    extern /* Subroutine */ int zdscal_(integer *, doublereal *, 
+    extern /* Subroutine */ void zdscal_(integer *, doublereal *, 
 	    doublecomplex *, integer *);
     integer ifirst;
     logical notran;
     integer jfirst;
     doublereal smlnum;
     logical nounit;
-    extern /* Subroutine */ int zlatrs_(char *, char *, char *, char *, 
+    extern /* Subroutine */ void zlatrs_(char *, char *, char *, char *, 
 	    integer *, doublecomplex *, integer *, doublecomplex *, 
 	    doublereal *, doublereal *, integer *);
     logical lquery;
@@ -875,10 +875,10 @@ static integer c_n1 = -1;
     }
     if (*info != 0) {
 	i__1 = -(*info);
-	xerbla_("ZLATRS3", &i__1);
-	return 0;
+	xerbla_("ZLATRS3", &i__1, 7);
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Initialize scaling factors */
@@ -891,7 +891,7 @@ static integer c_n1 = -1;
 /*     Quick return if possible */
 
     if (f2cmin(*n,*nrhs) == 0) {
-	return 0;
+	return;
     }
 
 /*     Determine machine dependent constant to control overflow. */
@@ -909,7 +909,7 @@ static integer c_n1 = -1;
 	    zlatrs_(uplo, trans, diag, "Y", n, &a[a_offset], lda, &x[k * 
 		    x_dim1 + 1], &scale[k], &cnorm[1], info);
 	}
-	return 0;
+	return;
     }
 
 /*     Compute norms of blocks of A excluding diagonal blocks and find */
@@ -969,7 +969,7 @@ static integer c_n1 = -1;
 	    zlatrs_(uplo, trans, diag, "N", n, &a[a_offset], lda, &x[k * 
 		    x_dim1 + 1], &scale[k], &cnorm[1], info);
 	}
-	return 0;
+	return;
     }
 
 /*     Every right-hand side requires workspace to store NBA local scale */
@@ -1275,7 +1275,7 @@ static integer c_n1 = -1;
 	    }
 	}
     }
-    return 0;
+    return;
 
 /*     End of ZLATRS3 */
 

@@ -742,7 +742,7 @@ f"> */
 /* > \ingroup realGEeigen */
 
 /*  ===================================================================== */
-/* Subroutine */ int sggev3_(char *jobvl, char *jobvr, integer *n, real *a, 
+/* Subroutine */ void sggev3_(char *jobvl, char *jobvr, integer *n, real *a, 
 	integer *lda, real *b, integer *ldb, real *alphar, real *alphai, real 
 	*beta, real *vl, integer *ldvl, real *vr, integer *ldvr, real *work, 
 	integer *lwork, integer *info)
@@ -760,14 +760,14 @@ f"> */
     integer iwrk;
     extern logical lsame_(char *, char *);
     integer ileft, icols, irows;
-    extern /* Subroutine */ int sgghd3_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void sgghd3_(char *, char *, integer *, integer *, 
 	    integer *, real *, integer *, real *, integer *, real *, integer *
 	    , real *, integer *, real *, integer *, integer *)
 	    ;
     integer jc;
-    extern /* Subroutine */ int slabad_(real *, real *);
+    extern /* Subroutine */ void slabad_(real *, real *);
     integer in, jr;
-    extern /* Subroutine */ int sggbak_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void sggbak_(char *, char *, integer *, integer *, 
 	    integer *, real *, real *, integer *, real *, integer *, integer *
 	    ), sggbal_(char *, integer *, real *, integer *, 
 	    real *, integer *, integer *, integer *, real *, real *, real *, 
@@ -779,29 +779,29 @@ f"> */
     logical ldumma[1];
     char chtemp[1];
     real bignum;
-    extern /* Subroutine */ int slascl_(char *, integer *, integer *, real *, 
+    extern /* Subroutine */ void slascl_(char *, integer *, integer *, real *, 
 	    real *, integer *, integer *, real *, integer *, integer *);
     integer ijobvl, iright;
-    extern /* Subroutine */ int sgeqrf_(integer *, integer *, real *, integer 
+    extern /* Subroutine */ void sgeqrf_(integer *, integer *, real *, integer 
 	    *, real *, real *, integer *, integer *);
     integer ijobvr;
-    extern /* Subroutine */ int slacpy_(char *, integer *, integer *, real *, 
+    extern /* Subroutine */ void slacpy_(char *, integer *, integer *, real *, 
 	    integer *, real *, integer *), slaset_(char *, integer *, 
 	    integer *, real *, real *, real *, integer *), stgevc_(
 	    char *, char *, logical *, integer *, real *, integer *, real *, 
 	    integer *, real *, integer *, real *, integer *, integer *, 
 	    integer *, real *, integer *);
     real anrmto, bnrmto;
-    extern /* Subroutine */ int shgeqz_(char *, char *, char *, integer *, 
+    extern /* Subroutine */ void shgeqz_(char *, char *, char *, integer *, 
 	    integer *, integer *, real *, integer *, real *, integer *, real *
 	    , real *, real *, real *, integer *, real *, integer *, real *, 
 	    integer *, integer *);
     real smlnum;
-    extern /* Subroutine */ int sorgqr_(integer *, integer *, integer *, real 
+    extern /* Subroutine */ void sorgqr_(integer *, integer *, integer *, real 
 	    *, integer *, real *, real *, integer *, integer *);
     integer lwkopt;
     logical lquery;
-    extern /* Subroutine */ int sormqr_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void sormqr_(char *, char *, integer *, integer *, 
 	    integer *, real *, integer *, real *, real *, integer *, real *, 
 	    integer *, integer *);
     integer ihi, ilo;
@@ -936,15 +936,15 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("SGGEV3 ", &i__1, (ftnlen)7);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /*     Get machine constants */
@@ -1227,7 +1227,7 @@ L110:
     }
 
     work[1] = (real) lwkopt;
-    return 0;
+    return;
 
 /*     End of SGGEV3 */
 

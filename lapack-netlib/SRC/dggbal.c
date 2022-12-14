@@ -691,7 +691,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int dggbal_(char *job, integer *n, doublereal *a, integer *
+/* Subroutine */ void dggbal_(char *job, integer *n, doublereal *a, integer *
 	lda, doublereal *b, integer *ldb, integer *ilo, integer *ihi, 
 	doublereal *lscale, doublereal *rscale, doublereal *work, integer *
 	info)
@@ -710,14 +710,14 @@ f"> */
     doublereal coef2, coef5;
     integer i__, j, k, l, m;
     doublereal gamma, t, alpha;
-    extern /* Subroutine */ int dscal_(integer *, doublereal *, doublereal *, 
+    extern /* Subroutine */ void dscal_(integer *, doublereal *, doublereal *, 
 	    integer *);
     extern logical lsame_(char *, char *);
     doublereal sfmin, sfmax;
-    extern /* Subroutine */ int dswap_(integer *, doublereal *, integer *, 
+    extern /* Subroutine */ void dswap_(integer *, doublereal *, integer *, 
 	    doublereal *, integer *);
     integer iflow;
-    extern /* Subroutine */ int daxpy_(integer *, doublereal *, doublereal *, 
+    extern /* Subroutine */ void daxpy_(integer *, doublereal *, doublereal *, 
 	    integer *, doublereal *, integer *);
     integer kount, jc;
     doublereal ta, tb, tc;
@@ -770,7 +770,7 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DGGBAL", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
@@ -778,7 +778,7 @@ f"> */
     if (*n == 0) {
 	*ilo = 1;
 	*ihi = *n;
-	return 0;
+	return;
     }
 
     if (*n == 1) {
@@ -786,7 +786,7 @@ f"> */
 	*ihi = *n;
 	lscale[1] = 1.;
 	rscale[1] = 1.;
-	return 0;
+	return;
     }
 
     if (lsame_(job, "N")) {
@@ -798,7 +798,7 @@ f"> */
 	    rscale[i__] = 1.;
 /* L10: */
 	}
-	return 0;
+	return;
     }
 
     k = 1;
@@ -931,11 +931,11 @@ L190:
 	    rscale[i__] = 1.;
 /* L195: */
 	}
-	return 0;
+	return;
     }
 
     if (*ilo == *ihi) {
-	return 0;
+	return;
     }
 
 /*     Balance the submatrix in rows ILO to IHI. */
@@ -1187,7 +1187,7 @@ L350:
 /* L380: */
     }
 
-    return 0;
+    return;
 
 /*     End of DGGBAL */
 

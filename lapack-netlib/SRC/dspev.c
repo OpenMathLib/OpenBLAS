@@ -644,7 +644,7 @@ atrices</b> */
 /* > \ingroup doubleOTHEReigen */
 
 /*  ===================================================================== */
-/* Subroutine */ int dspev_(char *jobz, char *uplo, integer *n, doublereal *
+/* Subroutine */ void dspev_(char *jobz, char *uplo, integer *n, doublereal *
 	ap, doublereal *w, doublereal *z__, integer *ldz, doublereal *work, 
 	integer *info)
 {
@@ -657,7 +657,7 @@ atrices</b> */
     doublereal anrm;
     integer imax;
     doublereal rmin, rmax;
-    extern /* Subroutine */ int dscal_(integer *, doublereal *, doublereal *, 
+    extern /* Subroutine */ void dscal_(integer *, doublereal *, doublereal *, 
 	    integer *);
     doublereal sigma;
     extern logical lsame_(char *, char *);
@@ -671,10 +671,10 @@ atrices</b> */
     extern doublereal dlansp_(char *, char *, integer *, doublereal *, 
 	    doublereal *);
     integer indtau;
-    extern /* Subroutine */ int dsterf_(integer *, doublereal *, doublereal *,
+    extern /* Subroutine */ void dsterf_(integer *, doublereal *, doublereal *,
 	     integer *);
     integer indwrk;
-    extern /* Subroutine */ int dopgtr_(char *, integer *, doublereal *, 
+    extern /* Subroutine */ void dopgtr_(char *, integer *, doublereal *, 
 	    doublereal *, doublereal *, integer *, doublereal *, integer *), dsptrd_(char *, integer *, doublereal *, doublereal *, 
 	    doublereal *, doublereal *, integer *), dsteqr_(char *, 
 	    integer *, doublereal *, doublereal *, doublereal *, integer *, 
@@ -719,13 +719,13 @@ atrices</b> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DSPEV ", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
     if (*n == 1) {
@@ -733,7 +733,7 @@ atrices</b> */
 	if (wantz) {
 	    z__[z_dim1 + 1] = 1.;
 	}
-	return 0;
+	return;
     }
 
 /*     Get machine constants. */
@@ -792,7 +792,7 @@ atrices</b> */
 	dscal_(&imax, &d__1, &w[1], &c__1);
     }
 
-    return 0;
+    return;
 
 /*     End of DSPEV */
 

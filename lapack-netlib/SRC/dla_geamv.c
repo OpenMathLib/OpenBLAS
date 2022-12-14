@@ -682,7 +682,7 @@ mv.f"> */
 /* > \ingroup doubleGEcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int dla_geamv_(integer *trans, integer *m, integer *n, 
+/* Subroutine */ void dla_geamv_(integer *trans, integer *m, integer *n, 
 	doublereal *alpha, doublereal *a, integer *lda, doublereal *x, 
 	integer *incx, doublereal *beta, doublereal *y, integer *incy)
 {
@@ -738,13 +738,13 @@ mv.f"> */
     }
     if (info != 0) {
 	xerbla_("DLA_GEAMV ", &info, (ftnlen)10);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible. */
 
     if (*m == 0 || *n == 0 || *alpha == 0. && *beta == 1.) {
-	return 0;
+	return;
     }
 
 /*     Set  LENX  and  LENY, the lengths of the vectors x and y, and set */
@@ -895,7 +895,7 @@ mv.f"> */
 	}
     }
 
-    return 0;
+    return;
 
 /*     End of DLA_GEAMV */
 

@@ -683,7 +683,7 @@ static integer c_n1 = -1;
 /* > \ingroup realSYsolve */
 
 /*  ===================================================================== */
-/* Subroutine */ int ssysv_(char *uplo, integer *n, integer *nrhs, real *a, 
+/* Subroutine */ void ssysv_(char *uplo, integer *n, integer *nrhs, real *a, 
 	integer *lda, integer *ipiv, real *b, integer *ldb, real *work, 
 	integer *lwork, integer *info)
 {
@@ -695,7 +695,7 @@ static integer c_n1 = -1;
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     integer lwkopt;
     logical lquery;
-    extern /* Subroutine */ int ssytrf_(char *, integer *, real *, integer *, 
+    extern /* Subroutine */ void ssytrf_(char *, integer *, real *, integer *, 
 	    integer *, real *, integer *, integer *), ssytrs_(char *, 
 	    integer *, integer *, real *, integer *, integer *, real *, 
 	    integer *, integer *), ssytrs2_(char *, integer *, 
@@ -755,9 +755,9 @@ static integer c_n1 = -1;
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("SSYSV ", &i__1, (ftnlen)6);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Compute the factorization A = U*D*U**T or A = L*D*L**T. */
@@ -787,7 +787,7 @@ static integer c_n1 = -1;
 
     work[1] = (real) lwkopt;
 
-    return 0;
+    return;
 
 /*     End of SSYSV */
 

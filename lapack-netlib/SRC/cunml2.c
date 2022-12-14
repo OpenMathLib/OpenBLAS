@@ -668,7 +668,7 @@ f"> */
 /* > \ingroup complexOTHERcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int cunml2_(char *side, char *trans, integer *m, integer *n, 
+/* Subroutine */ void cunml2_(char *side, char *trans, integer *m, integer *n, 
 	integer *k, complex *a, integer *lda, complex *tau, complex *c__, 
 	integer *ldc, complex *work, integer *info)
 {
@@ -680,12 +680,12 @@ f"> */
     logical left;
     complex taui;
     integer i__;
-    extern /* Subroutine */ int clarf_(char *, integer *, integer *, complex *
+    extern /* Subroutine */ void clarf_(char *, integer *, integer *, complex *
 	    , integer *, complex *, complex *, integer *, complex *);
     extern logical lsame_(char *, char *);
     integer i1, i2, i3, ic, jc, mi, ni, nq;
-    extern /* Subroutine */ int clacgv_(integer *, complex *, integer *), 
-	    xerbla_(char *, integer *, ftnlen);
+    extern /* Subroutine */ void clacgv_(integer *, complex *, integer *); 
+    extern int xerbla_(char *, integer *, ftnlen);
     logical notran;
     complex aii;
 
@@ -741,13 +741,13 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CUNML2", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*m == 0 || *n == 0 || *k == 0) {
-	return 0;
+	return;
     }
 
     if (left && notran || ! left && ! notran) {
@@ -812,7 +812,7 @@ f"> */
 	}
 /* L10: */
     }
-    return 0;
+    return;
 
 /*     End of CUNML2 */
 

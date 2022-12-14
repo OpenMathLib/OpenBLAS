@@ -631,7 +631,7 @@ f"> */
 /* >       University of Kansas, USA */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int dlaqr1_(integer *n, doublereal *h__, integer *ldh, 
+/* Subroutine */ void dlaqr1_(integer *n, doublereal *h__, integer *ldh, 
 	doublereal *sr1, doublereal *si1, doublereal *sr2, doublereal *si2, 
 	doublereal *v)
 {
@@ -662,7 +662,7 @@ f"> */
 
     /* Function Body */
     if (*n != 2 && *n != 3) {
-	return 0;
+	return;
     }
 
     if (*n == 2) {
@@ -698,6 +698,6 @@ f"> */
 		    sr2) + h21s * h__[(h_dim1 << 1) + 3];
 	}
     }
-    return 0;
+    return;
 } /* dlaqr1_ */
 

@@ -789,7 +789,7 @@ f"> */
 /* >     Umea University, S-901 87 Umea, Sweden. */
 
 /*  ===================================================================== */
-/* Subroutine */ int stgsy2_(char *trans, integer *ijob, integer *m, integer *
+/* Subroutine */ void stgsy2_(char *trans, integer *ijob, integer *m, integer *
 	n, real *a, integer *lda, real *b, integer *ldb, real *c__, integer *
 	ldc, real *d__, integer *ldd, real *e, integer *lde, real *f, integer 
 	*ldf, real *scale, real *rdsum, real *rdscal, integer *iwork, integer 
@@ -800,12 +800,12 @@ f"> */
 	    d_offset, e_dim1, e_offset, f_dim1, f_offset, i__1, i__2, i__3;
 
     /* Local variables */
-    extern /* Subroutine */ int sger_(integer *, integer *, real *, real *, 
+    extern /* Subroutine */ void sger_(integer *, integer *, real *, real *, 
 	    integer *, real *, integer *, real *, integer *);
     integer ierr, zdim, ipiv[8], jpiv[8], i__, j, k, p, q;
     real alpha, z__[64]	/* was [8][8] */;
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int sscal_(integer *, real *, real *, integer *), 
+    extern /* Subroutine */ void sscal_(integer *, real *, real *, integer *), 
 	    sgemm_(char *, char *, integer *, integer *, integer *, real *, 
 	    real *, integer *, real *, integer *, real *, real *, integer *), sgemv_(char *, integer *, integer *, real *, 
 	    real *, integer *, real *, integer *, real *, real *, integer *), scopy_(integer *, real *, integer *, real *, integer *), 
@@ -815,9 +815,10 @@ f"> */
 	    integer *, integer *);
     integer ie, je, mb, nb, ii, jj, is, js;
     real scaloc;
-    extern /* Subroutine */ int slatdf_(integer *, integer *, real *, integer 
-	    *, real *, real *, real *, integer *, integer *), xerbla_(char *, 
-	    integer *, ftnlen), slaset_(char *, integer *, integer *, real *, 
+    extern /* Subroutine */ void slatdf_(integer *, integer *, real *, integer 
+	    *, real *, real *, real *, integer *, integer *);
+    extern int xerbla_(char *, integer *, ftnlen);
+    extern void slaset_(char *, integer *, integer *, real *, 
 	    real *, real *, integer *);
     logical notran;
     real rhs[8];
@@ -891,7 +892,7 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("STGSY2", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Determine block structure of A */
@@ -1695,7 +1696,7 @@ L40:
 	}
 
     }
-    return 0;
+    return;
 
 /*     End of STGSY2 */
 

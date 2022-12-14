@@ -772,7 +772,7 @@ static doublereal c_b28 = 1.;
 /* > \endverbatim */
 
 /*  ===================================================================== */
-/* Subroutine */ int zheevd_2stage_(char *jobz, char *uplo, integer *n, 
+/* Subroutine */ void zheevd_2stage_(char *jobz, char *uplo, integer *n, 
 	doublecomplex *a, integer *lda, doublereal *w, doublecomplex *work, 
 	integer *lwork, doublereal *rwork, integer *lrwork, integer *iwork, 
 	integer *liwork, integer *info)
@@ -788,11 +788,11 @@ static doublereal c_b28 = 1.;
     doublereal anrm;
     integer imax;
     doublereal rmin, rmax;
-    extern /* Subroutine */ int dscal_(integer *, doublereal *, doublereal *, 
+    extern /* Subroutine */ void dscal_(integer *, doublereal *, doublereal *, 
 	    integer *);
     doublereal sigma;
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int zhetrd_2stage_(char *, char *, integer *, 
+    extern /* Subroutine */ void zhetrd_2stage_(char *, char *, integer *, 
 	    doublecomplex *, integer *, doublereal *, doublereal *, 
 	    doublecomplex *, doublecomplex *, integer *, doublecomplex *, 
 	    integer *, integer *);
@@ -809,7 +809,7 @@ static doublereal c_b28 = 1.;
     extern doublereal zlanhe_(char *, char *, integer *, doublecomplex *, 
 	    integer *, doublereal *);
     integer indtau;
-    extern /* Subroutine */ int dsterf_(integer *, doublereal *, doublereal *,
+    extern /* Subroutine */ void dsterf_(integer *, doublereal *, doublereal *,
 	     integer *), zlascl_(char *, integer *, integer *, doublereal *, 
 	    doublereal *, integer *, integer *, doublecomplex *, integer *, 
 	    integer *), zstedc_(char *, integer *, doublereal *, 
@@ -817,12 +817,12 @@ static doublereal c_b28 = 1.;
 	    integer *, doublereal *, integer *, integer *, integer *, integer 
 	    *);
     integer indrwk, indwrk, liwmin;
-    extern /* Subroutine */ int zlacpy_(char *, integer *, integer *, 
+    extern /* Subroutine */ void zlacpy_(char *, integer *, integer *, 
 	    doublecomplex *, integer *, doublecomplex *, integer *);
     integer lrwmin, llwork;
     doublereal smlnum;
     logical lquery;
-    extern /* Subroutine */ int zunmtr_(char *, char *, char *, integer *, 
+    extern /* Subroutine */ void zunmtr_(char *, char *, char *, integer *, 
 	    integer *, doublecomplex *, integer *, doublecomplex *, 
 	    doublecomplex *, integer *, doublecomplex *, integer *, integer *);
     doublereal eps;
@@ -908,15 +908,15 @@ static doublereal c_b28 = 1.;
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZHEEVD_2STAGE", &i__1, (ftnlen)13);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
     if (*n == 1) {
@@ -926,7 +926,7 @@ static doublereal c_b28 = 1.;
 	    i__1 = a_dim1 + 1;
 	    a[i__1].r = 1., a[i__1].i = 0.;
 	}
-	return 0;
+	return;
     }
 
 /*     Get machine constants. */
@@ -1002,7 +1002,7 @@ static doublereal c_b28 = 1.;
     rwork[1] = (doublereal) lrwmin;
     iwork[1] = liwmin;
 
-    return 0;
+    return;
 
 /*     End of ZHEEVD_2STAGE */
 

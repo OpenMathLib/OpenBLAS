@@ -647,7 +647,7 @@ aa.f"> */
 /* > \ingroup complexHEcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int chetrf_aa_(char *uplo, integer *n, complex *a, integer *
+/* Subroutine */ void chetrf_aa_(char *uplo, integer *n, complex *a, integer *
 	lda, integer *ipiv, complex *work, integer *lwork, integer *info)
 {
     /* System generated locals */
@@ -656,17 +656,17 @@ aa.f"> */
     complex q__1;
 
     /* Local variables */
-    extern /* Subroutine */ int clahef_aa_(char *, integer *, integer *, 
+    extern /* Subroutine */ void clahef_aa_(char *, integer *, integer *, 
 	    integer *, complex *, integer *, integer *, complex *, integer *, 
 	    complex *);
     integer j;
     complex alpha;
-    extern /* Subroutine */ int cscal_(integer *, complex *, complex *, 
+    extern /* Subroutine */ void cscal_(integer *, complex *, complex *, 
 	    integer *), cgemm_(char *, char *, integer *, integer *, integer *
 	    , complex *, complex *, integer *, complex *, integer *, complex *
 	    , complex *, integer *);
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int ccopy_(integer *, complex *, integer *, 
+    extern /* Subroutine */ void ccopy_(integer *, complex *, integer *, 
 	    complex *, integer *), cswap_(integer *, complex *, integer *, 
 	    complex *, integer *);
     logical upper;
@@ -724,15 +724,15 @@ aa.f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CHETRF_AA", &i__1, (ftnlen)9);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
     ipiv[1] = 1;
     if (*n == 1) {
@@ -740,7 +740,7 @@ aa.f"> */
 	i__2 = a_dim1 + 1;
 	r__1 = a[i__2].r;
 	a[i__1].r = r__1, a[i__1].i = 0.f;
-	return 0;
+	return;
     }
 
 /*     Adjust block size based on the workspace size */
@@ -1041,7 +1041,7 @@ L11:
     }
 
 L20:
-    return 0;
+    return;
 
 /*     End of CHETRF_AA */
 

@@ -731,7 +731,7 @@ f"> */
 /* > \ingroup complex16OTHEReigen */
 
 /*  ===================================================================== */
-/* Subroutine */ int zhbevd_(char *jobz, char *uplo, integer *n, integer *kd, 
+/* Subroutine */ void zhbevd_(char *jobz, char *uplo, integer *n, integer *kd, 
 	doublecomplex *ab, integer *ldab, doublereal *w, doublecomplex *z__, 
 	integer *ldz, doublecomplex *work, integer *lwork, doublereal *rwork, 
 	integer *lrwork, integer *iwork, integer *liwork, integer *info)
@@ -746,12 +746,12 @@ f"> */
     integer imax;
     doublereal rmin, rmax;
     integer llwk2;
-    extern /* Subroutine */ int dscal_(integer *, doublereal *, doublereal *, 
+    extern /* Subroutine */ void dscal_(integer *, doublereal *, doublereal *, 
 	    integer *);
     doublereal sigma;
     extern logical lsame_(char *, char *);
     integer iinfo;
-    extern /* Subroutine */ int zgemm_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void zgemm_(char *, char *, integer *, integer *, 
 	    integer *, doublecomplex *, doublecomplex *, integer *, 
 	    doublecomplex *, integer *, doublecomplex *, doublecomplex *, 
 	    integer *);
@@ -767,7 +767,7 @@ f"> */
 	    doublecomplex *, integer *, doublereal *);
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     doublereal bignum;
-    extern /* Subroutine */ int dsterf_(integer *, doublereal *, doublereal *,
+    extern /* Subroutine */ void dsterf_(integer *, doublereal *, doublereal *,
 	     integer *), zlascl_(char *, integer *, integer *, doublereal *, 
 	    doublereal *, integer *, integer *, doublecomplex *, integer *, 
 	    integer *), zstedc_(char *, integer *, doublereal *, 
@@ -777,7 +777,7 @@ f"> */
 	    doublecomplex *, integer *, doublereal *, doublereal *, 
 	    doublecomplex *, integer *, doublecomplex *, integer *);
     integer indwrk, liwmin;
-    extern /* Subroutine */ int zlacpy_(char *, integer *, integer *, 
+    extern /* Subroutine */ void zlacpy_(char *, integer *, integer *, 
 	    doublecomplex *, integer *, doublecomplex *, integer *);
     integer lrwmin;
     doublereal smlnum;
@@ -864,15 +864,15 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZHBEVD", &i__1, (ftnlen)6);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
     if (*n == 1) {
@@ -882,7 +882,7 @@ f"> */
 	    i__1 = z_dim1 + 1;
 	    z__[i__1].r = 1., z__[i__1].i = 0.;
 	}
-	return 0;
+	return;
     }
 
 /*     Get machine constants. */
@@ -952,7 +952,7 @@ f"> */
     work[1].r = (doublereal) lwmin, work[1].i = 0.;
     rwork[1] = (doublereal) lrwmin;
     iwork[1] = liwmin;
-    return 0;
+    return;
 
 /*     End of ZHBEVD */
 

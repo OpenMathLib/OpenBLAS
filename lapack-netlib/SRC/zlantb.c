@@ -662,14 +662,14 @@ doublereal zlantb_(char *norm, char *uplo, char *diag, integer *n, integer *k,
     doublereal ret_val;
 
     /* Local variables */
-    extern /* Subroutine */ int dcombssq_(doublereal *, doublereal *);
+    extern /* Subroutine */ void dcombssq_(doublereal *, doublereal *);
     integer i__, j, l;
     logical udiag;
     extern logical lsame_(char *, char *);
     doublereal value;
     extern logical disnan_(doublereal *);
     doublereal colssq[2];
-    extern /* Subroutine */ int zlassq_(integer *, doublecomplex *, integer *,
+    extern /* Subroutine */ void zlassq_(integer *, doublecomplex *, integer *,
 	     doublereal *, doublereal *);
     doublereal sum, ssq[2];
 

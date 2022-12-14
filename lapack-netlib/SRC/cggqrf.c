@@ -728,7 +728,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int cggqrf_(integer *n, integer *m, integer *p, complex *a, 
+/* Subroutine */ void cggqrf_(integer *n, integer *m, integer *p, complex *a, 
 	integer *lda, complex *taua, complex *b, integer *ldb, complex *taub, 
 	complex *work, integer *lwork, integer *info)
 {
@@ -737,14 +737,15 @@ f"> */
 
     /* Local variables */
     integer lopt, nb;
-    extern /* Subroutine */ int cgeqrf_(integer *, integer *, complex *, 
+    extern /* Subroutine */ void cgeqrf_(integer *, integer *, complex *, 
 	    integer *, complex *, complex *, integer *, integer *), cgerqf_(
 	    integer *, integer *, complex *, integer *, complex *, complex *, 
-	    integer *, integer *), xerbla_(char *, integer *, ftnlen);
+	    integer *, integer *);
+    extern int xerbla_(char *, integer *, ftnlen);
     extern integer ilaenv_(integer *, char *, char *, integer *, integer *, 
 	    integer *, integer *, ftnlen, ftnlen);
     integer nb1, nb2, nb3;
-    extern /* Subroutine */ int cunmqr_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void cunmqr_(char *, char *, integer *, integer *, 
 	    integer *, complex *, integer *, complex *, complex *, integer *, 
 	    complex *, integer *, integer *);
     integer lwkopt;
@@ -808,9 +809,9 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CGGQRF", &i__1, (ftnlen)6);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     QR factorization of N-by-M matrix A: A = Q*R */
@@ -835,7 +836,7 @@ f"> */
     i__1 = f2cmax(i__2,i__3);
     work[1].r = (real) i__1, work[1].i = 0.f;
 
-    return 0;
+    return;
 
 /*     End of CGGQRF */
 

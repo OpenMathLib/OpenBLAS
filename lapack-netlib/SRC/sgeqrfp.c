@@ -665,7 +665,7 @@ static integer c__2 = 2;
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int sgeqrfp_(integer *m, integer *n, real *a, integer *lda, 
+/* Subroutine */ void sgeqrfp_(integer *m, integer *n, real *a, integer *lda, 
 	real *tau, real *work, integer *lwork, integer *info)
 {
     /* System generated locals */
@@ -673,16 +673,17 @@ static integer c__2 = 2;
 
     /* Local variables */
     integer i__, k, nbmin, iinfo, ib, nb, nx;
-    extern /* Subroutine */ int slarfb_(char *, char *, char *, char *, 
+    extern /* Subroutine */ void slarfb_(char *, char *, char *, char *, 
 	    integer *, integer *, integer *, real *, integer *, real *, 
-	    integer *, real *, integer *, real *, integer *), xerbla_(char *, integer *, ftnlen);
+	    integer *, real *, integer *, real *, integer *);
+    extern int xerbla_(char *, integer *, ftnlen);
     extern integer ilaenv_(integer *, char *, char *, integer *, integer *, 
 	    integer *, integer *, ftnlen, ftnlen);
-    extern /* Subroutine */ int slarft_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void slarft_(char *, char *, integer *, integer *, 
 	    real *, integer *, real *, real *, integer *);
     integer ldwork, lwkopt;
     logical lquery;
-    extern /* Subroutine */ int sgeqr2p_(integer *, integer *, real *, 
+    extern /* Subroutine */ void sgeqr2p_(integer *, integer *, real *, 
 	    integer *, real *, real *, integer *);
     integer iws;
 
@@ -724,9 +725,9 @@ static integer c__2 = 2;
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("SGEQRFP", &i__1, (ftnlen)7);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
@@ -734,7 +735,7 @@ static integer c__2 = 2;
     k = f2cmin(*m,*n);
     if (k == 0) {
 	work[1] = 1.f;
-	return 0;
+	return;
     }
 
     nbmin = 2;
@@ -819,7 +820,7 @@ static integer c__2 = 2;
     }
 
     work[1] = (real) iws;
-    return 0;
+    return;
 
 /*     End of SGEQRFP */
 

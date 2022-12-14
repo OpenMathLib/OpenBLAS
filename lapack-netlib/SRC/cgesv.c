@@ -639,8 +639,10 @@ iver) </b> */
     integer a_dim1, a_offset, b_dim1, b_offset, i__1;
 
     /* Local variables */
-    extern /* Subroutine */ int cgetrf_(integer *, integer *, complex *, 
-	    integer *, integer *, integer *), xerbla_(char *, integer *, ftnlen), cgetrs_(char *, integer *, integer *, complex *, integer 
+    extern /* Subroutine */ void cgetrf_(integer *, integer *, complex *, 
+	    integer *, integer *, integer *);
+    extern int xerbla_(char *, integer *, ftnlen);
+    extern void cgetrs_(char *, integer *, integer *, complex *, integer 
 	    *, integer *, complex *, integer *, integer *);
 
 

@@ -643,7 +643,7 @@ static integer c__1 = 1;
 /* > \ingroup complexOTHERauxiliary */
 
 /*  ===================================================================== */
-/* Subroutine */ int clarf_(char *side, integer *m, integer *n, complex *v, 
+/* Subroutine */ void clarf_(char *side, integer *m, integer *n, complex *v, 
 	integer *incv, complex *tau, complex *c__, integer *ldc, complex *
 	work)
 {
@@ -653,7 +653,7 @@ static integer c__1 = 1;
 
     /* Local variables */
     integer i__;
-    extern /* Subroutine */ int cgerc_(integer *, integer *, complex *, 
+    extern /* Subroutine */ void cgerc_(integer *, integer *, complex *, 
 	    complex *, integer *, complex *, integer *, complex *, integer *),
 	     cgemv_(char *, integer *, integer *, complex *, complex *, 
 	    integer *, complex *, integer *, complex *, complex *, integer *);
@@ -750,7 +750,7 @@ static integer c__1 = 1;
 		    c_offset], ldc);
 	}
     }
-    return 0;
+    return;
 
 /*     End of CLARF */
 

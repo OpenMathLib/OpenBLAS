@@ -714,7 +714,7 @@ static integer c__1 = 1;
 /* >      Algorithms, 50(1):33-65, 2009. */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int zunbdb2_(integer *m, integer *p, integer *q, 
+/* Subroutine */ void zunbdb2_(integer *m, integer *p, integer *q, 
 	doublecomplex *x11, integer *ldx11, doublecomplex *x21, integer *
 	ldx21, doublereal *theta, doublereal *phi, doublecomplex *taup1, 
 	doublecomplex *taup2, doublecomplex *tauq1, doublecomplex *work, 
@@ -732,20 +732,21 @@ static integer c__1 = 1;
     integer i__;
     doublereal s;
     integer ilarf, llarf;
-    extern /* Subroutine */ int zscal_(integer *, doublecomplex *, 
+    extern /* Subroutine */ void zscal_(integer *, doublecomplex *, 
 	    doublecomplex *, integer *);
     integer childinfo;
-    extern /* Subroutine */ int zlarf_(char *, integer *, integer *, 
+    extern /* Subroutine */ void zlarf_(char *, integer *, integer *, 
 	    doublecomplex *, integer *, doublecomplex *, doublecomplex *, 
 	    integer *, doublecomplex *), zdrot_(integer *, 
 	    doublecomplex *, integer *, doublecomplex *, integer *, 
 	    doublereal *, doublereal *);
     extern doublereal dznrm2_(integer *, doublecomplex *, integer *);
-    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen), zlacgv_(
+    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
+    extern void zlacgv_(
 	    integer *, doublecomplex *, integer *);
     logical lquery;
     integer iorbdb5, lorbdb5;
-    extern /* Subroutine */ int zunbdb5_(integer *, integer *, integer *, 
+    extern /* Subroutine */ void zunbdb5_(integer *, integer *, integer *, 
 	    doublecomplex *, integer *, doublecomplex *, integer *, 
 	    doublecomplex *, integer *, doublecomplex *, integer *, 
 	    doublecomplex *, integer *, integer *), zlarfgp_(integer *, 
@@ -818,9 +819,9 @@ static integer c__1 = 1;
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZUNBDB2", &i__1, (ftnlen)7);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Reduce rows 1, ..., P of X11 and X21 */
@@ -916,7 +917,7 @@ static integer c__1 = 1;
 		x21[i__ + (i__ + 1) * x21_dim1], ldx21, &work[ilarf]);
     }
 
-    return 0;
+    return;
 
 /*     End of ZUNBDB2 */
 

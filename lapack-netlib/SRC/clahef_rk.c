@@ -776,7 +776,7 @@ rk.f"> */
 /* > \endverbatim */
 
 /*  ===================================================================== */
-/* Subroutine */ int clahef_rk_(char *uplo, integer *n, integer *nb, integer 
+/* Subroutine */ void clahef_rk_(char *uplo, integer *n, integer *nb, integer 
 	*kb, complex *a, integer *lda, complex *e, integer *ipiv, complex *w, 
 	integer *ldw, integer *info)
 {
@@ -789,29 +789,29 @@ rk.f"> */
     logical done;
     integer imax, jmax, j, k, p;
     real t, alpha;
-    extern /* Subroutine */ int cgemm_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void cgemm_(char *, char *, integer *, integer *, 
 	    integer *, complex *, complex *, integer *, complex *, integer *, 
 	    complex *, complex *, integer *);
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int cgemv_(char *, integer *, integer *, complex *
+    extern /* Subroutine */ void cgemv_(char *, integer *, integer *, complex *
 	    , complex *, integer *, complex *, integer *, complex *, complex *
 	    , integer *);
     real sfmin;
-    extern /* Subroutine */ int ccopy_(integer *, complex *, integer *, 
+    extern /* Subroutine */ void ccopy_(integer *, complex *, integer *, 
 	    complex *, integer *);
     integer itemp;
-    extern /* Subroutine */ int cswap_(integer *, complex *, integer *, 
+    extern /* Subroutine */ void cswap_(integer *, complex *, integer *, 
 	    complex *, integer *);
     integer kstep;
     real stemp, r1;
     complex d11, d21, d22;
     integer jb, ii, jj, kk, kp;
     real absakk;
-    extern /* Subroutine */ int clacgv_(integer *, complex *, integer *);
+    extern /* Subroutine */ void clacgv_(integer *, complex *, integer *);
     integer kw;
     extern integer icamax_(integer *, complex *, integer *);
     extern real slamch_(char *);
-    extern /* Subroutine */ int csscal_(integer *, real *, complex *, integer 
+    extern /* Subroutine */ void csscal_(integer *, real *, complex *, integer 
 	    *);
     real colmax, rowmax;
     integer kkw;
@@ -2028,7 +2028,7 @@ L90:
 	*kb = k - 1;
 
     }
-    return 0;
+    return;
 
 /*     End of CLAHEF_RK */
 

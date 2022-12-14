@@ -853,7 +853,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int dgesvj_(char *joba, char *jobu, char *jobv, integer *m, 
+/* Subroutine */ void dgesvj_(char *joba, char *jobu, char *jobv, integer *m, 
 	integer *n, doublereal *a, integer *lda, doublereal *sva, integer *mv,
 	 doublereal *v, integer *ldv, doublereal *work, integer *lwork, 
 	integer *info)
@@ -875,27 +875,27 @@ f"> */
     doublereal temp1;
     integer i__, p, q;
     doublereal t;
-    extern /* Subroutine */ int dscal_(integer *, doublereal *, doublereal *, 
+    extern /* Subroutine */ void dscal_(integer *, doublereal *, doublereal *, 
 	    integer *);
     doublereal large, apoaq, aqoap;
     extern logical lsame_(char *, char *);
     doublereal theta, small, sfmin;
     logical lsvec;
-    extern /* Subroutine */ int dcopy_(integer *, doublereal *, integer *, 
+    extern /* Subroutine */ void dcopy_(integer *, doublereal *, integer *, 
 	    doublereal *, integer *);
     doublereal fastr[5];
-    extern /* Subroutine */ int dswap_(integer *, doublereal *, integer *, 
+    extern /* Subroutine */ void dswap_(integer *, doublereal *, integer *, 
 	    doublereal *, integer *);
     doublereal epsln;
     logical applv, rsvec;
-    extern /* Subroutine */ int daxpy_(integer *, doublereal *, doublereal *, 
+    extern /* Subroutine */ void daxpy_(integer *, doublereal *, doublereal *, 
 	    integer *, doublereal *, integer *);
     logical uctol;
-    extern /* Subroutine */ int drotm_(integer *, doublereal *, integer *, 
+    extern /* Subroutine */ void drotm_(integer *, doublereal *, integer *, 
 	    doublereal *, integer *, doublereal *);
     logical lower, upper, rotok;
     integer n2, n4;
-    extern /* Subroutine */ int dgsvj0_(char *, integer *, integer *, 
+    extern /* Subroutine */ void dgsvj0_(char *, integer *, integer *, 
 	    doublereal *, integer *, doublereal *, doublereal *, integer *, 
 	    doublereal *, integer *, doublereal *, doublereal *, doublereal *,
 	     integer *, doublereal *, integer *, integer *), dgsvj1_(
@@ -908,16 +908,16 @@ f"> */
     doublereal cs;
     extern doublereal dlamch_(char *);
     doublereal sn;
-    extern /* Subroutine */ int dlascl_(char *, integer *, integer *, 
+    extern /* Subroutine */ void dlascl_(char *, integer *, integer *, 
 	    doublereal *, doublereal *, integer *, integer *, doublereal *, 
 	    integer *, integer *);
     extern integer idamax_(integer *, doublereal *, integer *);
-    extern /* Subroutine */ int dlaset_(char *, integer *, integer *, 
-	    doublereal *, doublereal *, doublereal *, integer *), 
-	    xerbla_(char *, integer *, ftnlen);
+    extern /* Subroutine */ void dlaset_(char *, integer *, integer *, 
+	    doublereal *, doublereal *, doublereal *, integer *); 
+    extern int xerbla_(char *, integer *, ftnlen);
     integer ijblsk, swband, blskip;
     doublereal mxaapq;
-    extern /* Subroutine */ int dlassq_(integer *, doublereal *, integer *, 
+    extern /* Subroutine */ void dlassq_(integer *, doublereal *, integer *, 
 	    doublereal *, doublereal *);
     doublereal thsign, mxsinj;
     integer ir1, emptsw, notrot, iswrot, jbc;
@@ -1001,13 +1001,13 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DGESVJ", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /* #:) Quick return for void matrix */
 
     if (*m == 0 || *n == 0) {
-	return 0;
+	return;
     }
 
 /*     Set numerical parameters */
@@ -1049,7 +1049,7 @@ f"> */
 	*info = -4;
 	i__1 = -(*info);
 	xerbla_("DGESVJ", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Initialize the right singular vector matrix. */
@@ -1087,7 +1087,7 @@ f"> */
 		*info = -6;
 		i__2 = -(*info);
 		xerbla_("DGESVJ", &i__2, (ftnlen)6);
-		return 0;
+		return;
 	    }
 	    aaqq = sqrt(aaqq);
 	    if (aapp < big / aaqq && noscale) {
@@ -1117,7 +1117,7 @@ f"> */
 		*info = -6;
 		i__2 = -(*info);
 		xerbla_("DGESVJ", &i__2, (ftnlen)6);
-		return 0;
+		return;
 	    }
 	    aaqq = sqrt(aaqq);
 	    if (aapp < big / aaqq && noscale) {
@@ -1147,7 +1147,7 @@ f"> */
 		*info = -6;
 		i__2 = -(*info);
 		xerbla_("DGESVJ", &i__2, (ftnlen)6);
-		return 0;
+		return;
 	    }
 	    aaqq = sqrt(aaqq);
 	    if (aapp < big / aaqq && noscale) {
@@ -1203,7 +1203,7 @@ f"> */
 	work[4] = 0.;
 	work[5] = 0.;
 	work[6] = 0.;
-	return 0;
+	return;
     }
 
 /* #:) Quick return for one-column matrix */
@@ -1223,7 +1223,7 @@ f"> */
 	work[4] = 0.;
 	work[5] = 0.;
 	work[6] = 0.;
-	return 0;
+	return;
     }
 
 /*     Protect small singular values from underflow, and try to */
@@ -2352,6 +2352,6 @@ L1995:
 /*     MXSINJ is the largest absolute value of the sines of Jacobi angles */
 /*     in the last sweep */
 
-    return 0;
+    return;
 } /* dgesvj_ */
 

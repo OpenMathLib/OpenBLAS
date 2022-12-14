@@ -786,7 +786,7 @@ f"> */
 /* >       of Matrix Analysis, volume 23, pages 948--973, 2002. */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int slaqr4_(logical *wantt, logical *wantz, integer *n, 
+/* Subroutine */ void slaqr4_(logical *wantt, logical *wantz, integer *n, 
 	integer *ilo, integer *ihi, real *h__, integer *ldh, real *wr, real *
 	wi, integer *iloz, integer *ihiz, real *z__, integer *ldz, real *work,
 	 integer *lwork, integer *info)
@@ -802,10 +802,10 @@ f"> */
     real zdum[1]	/* was [1][1] */;
     integer kacc22, i__, k, itmax, nsmax, nwmax, kwtop;
     real aa, bb;
-    extern /* Subroutine */ int slanv2_(real *, real *, real *, real *, real *
+    extern /* Subroutine */ void slanv2_(real *, real *, real *, real *, real *
 	    , real *, real *, real *, real *, real *);
     real cc, dd;
-    extern /* Subroutine */ int slaqr2_(logical *, logical *, integer *, 
+    extern /* Subroutine */ void slaqr2_(logical *, logical *, integer *, 
 	    integer *, integer *, integer *, real *, integer *, integer *, 
 	    integer *, real *, integer *, integer *, integer *, real *, real *
 	    , real *, integer *, integer *, real *, integer *, integer *, 
@@ -824,7 +824,7 @@ f"> */
     extern integer ilaenv_(integer *, char *, char *, integer *, integer *, 
 	    integer *, integer *, ftnlen, ftnlen);
     char jbcmpz[2];
-    extern /* Subroutine */ int slahqr_(logical *, logical *, integer *, 
+    extern /* Subroutine */ void slahqr_(logical *, logical *, integer *, 
 	    integer *, integer *, real *, integer *, real *, real *, integer *
 	    , integer *, real *, integer *, integer *), slacpy_(char *, 
 	    integer *, integer *, real *, integer *, real *, integer *);
@@ -874,7 +874,7 @@ f"> */
 
     if (*n == 0) {
 	work[1] = 1.f;
-	return 0;
+	return;
     }
 
     if (*n <= 15) {
@@ -956,7 +956,7 @@ f"> */
 
 	if (*lwork == -1) {
 	    work[1] = (real) lwkopt;
-	    return 0;
+	    return;
 	}
 
 /*        ==== SLAHQR/SLAQR0 crossover point ==== */
@@ -1336,6 +1336,6 @@ L90:
 
 /*     ==== End of SLAQR4 ==== */
 
-    return 0;
+    return;
 } /* slaqr4_ */
 

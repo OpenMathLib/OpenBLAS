@@ -701,7 +701,7 @@ qr_row.f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int zungtsqr_row_(integer *m, integer *n, integer *mb, 
+/* Subroutine */ void zungtsqr_row_(integer *m, integer *n, integer *mb, 
 	integer *nb, doublecomplex *a, integer *lda, doublecomplex *t, 
 	integer *ldt, doublecomplex *work, integer *lwork, integer *info)
 {
@@ -715,12 +715,12 @@ qr_row.f"> */
     integer ib_bottom__, ib, kb;
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     integer mb1, mb2;
-    extern /* Subroutine */ int zlaset_(char *, integer *, integer *, 
+    extern /* Subroutine */ void zlaset_(char *, integer *, integer *, 
 	    doublecomplex *, doublecomplex *, doublecomplex *, integer *);
     integer m_plus_one__;
     logical lquery;
     integer num_all_row_blocks__, imb, knb, nblocal, kb_last__;
-    extern /* Subroutine */ int zlarfb_gett_(char *, integer *, integer *, 
+    extern /* Subroutine */ void zlarfb_gett_(char *, integer *, integer *, 
 	    integer *, doublecomplex *, integer *, doublecomplex *, integer *,
 	     doublecomplex *, integer *, doublecomplex *, integer *);
 
@@ -782,11 +782,11 @@ qr_row.f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZUNGTSQR_ROW", &i__1, (ftnlen)12);
-	return 0;
+	return;
     } else if (lquery) {
 	z__1.r = (doublereal) lworkopt, z__1.i = 0.;
 	work[1].r = z__1.r, work[1].i = z__1.i;
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
@@ -794,7 +794,7 @@ qr_row.f"> */
     if (f2cmin(*m,*n) == 0) {
 	z__1.r = (doublereal) lworkopt, z__1.i = 0.;
 	work[1].r = z__1.r, work[1].i = z__1.i;
-	return 0;
+	return;
     }
 
 /*     (0) Set the upper-triangular part of the matrix A to zero and */
@@ -917,7 +917,7 @@ qr_row.f"> */
 
     z__1.r = (doublereal) lworkopt, z__1.i = 0.;
     work[1].r = z__1.r, work[1].i = z__1.i;
-    return 0;
+    return;
 
 /*     End of ZUNGTSQR_ROW */
 

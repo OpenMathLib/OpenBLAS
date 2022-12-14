@@ -740,7 +740,7 @@ k.f"> */
 /* > \endverbatim */
 
 /*  ===================================================================== */
-/* Subroutine */ int zhesv_rk_(char *uplo, integer *n, integer *nrhs, 
+/* Subroutine */ void zhesv_rk_(char *uplo, integer *n, integer *nrhs, 
 	doublecomplex *a, integer *lda, doublecomplex *e, integer *ipiv, 
 	doublecomplex *b, integer *ldb, doublecomplex *work, integer *lwork, 
 	integer *info)
@@ -749,13 +749,14 @@ k.f"> */
     integer a_dim1, a_offset, b_dim1, b_offset, i__1;
 
     /* Local variables */
-    extern /* Subroutine */ int zhetrs_3_(char *, integer *, integer *, 
+    extern /* Subroutine */ void zhetrs_3_(char *, integer *, integer *, 
 	    doublecomplex *, integer *, doublecomplex *, integer *, 
 	    doublecomplex *, integer *, integer *);
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int zhetrf_rk_(char *, integer *, doublecomplex *
+    extern /* Subroutine */ void zhetrf_rk_(char *, integer *, doublecomplex *
 	    , integer *, doublecomplex *, integer *, doublecomplex *, integer 
-	    *, integer *), xerbla_(char *, integer *, ftnlen);
+	    *, integer *);
+    extern int xerbla_(char *, integer *, ftnlen);
     integer lwkopt;
     logical lquery;
 
@@ -813,9 +814,9 @@ k.f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZHESV_RK ", &i__1, (ftnlen)9);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Compute the factorization A = P*U*D*(U**H)*(P**T) or */
@@ -835,7 +836,7 @@ k.f"> */
 
     work[1].r = (doublereal) lwkopt, work[1].i = 0.;
 
-    return 0;
+    return;
 
 /*     End of ZHESV_RK */
 

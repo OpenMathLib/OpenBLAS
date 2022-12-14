@@ -638,7 +638,7 @@ f"> */
 /* > \ingroup doubleGTcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int dgtts2_(integer *itrans, integer *n, integer *nrhs, 
+/* Subroutine */ void dgtts2_(integer *itrans, integer *n, integer *nrhs, 
 	doublereal *dl, doublereal *d__, doublereal *du, doublereal *du2, 
 	integer *ipiv, doublereal *b, integer *ldb)
 {
@@ -673,7 +673,7 @@ f"> */
 
     /* Function Body */
     if (*n == 0 || *nrhs == 0) {
-	return 0;
+	return;
     }
 
     if (*itrans == 0) {
@@ -825,6 +825,6 @@ L70:
 
 /*     End of DGTTS2 */
 
-    return 0;
+    return;
 } /* dgtts2_ */
 

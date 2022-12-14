@@ -645,7 +645,7 @@ f"> */
 /* > \ingroup realSYcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int ssygst_(integer *itype, char *uplo, integer *n, real *a, 
+/* Subroutine */ void ssygst_(integer *itype, char *uplo, integer *n, real *a, 
 	integer *lda, real *b, integer *ldb, integer *info)
 {
     /* System generated locals */
@@ -655,7 +655,7 @@ f"> */
     integer k;
     extern logical lsame_(char *, char *);
     logical upper;
-    extern /* Subroutine */ int strmm_(char *, char *, char *, char *, 
+    extern /* Subroutine */ void strmm_(char *, char *, char *, char *, 
 	    integer *, integer *, real *, real *, integer *, real *, integer *
 	    ), ssymm_(char *, char *, integer 
 	    *, integer *, real *, real *, integer *, real *, integer *, real *
@@ -663,10 +663,11 @@ f"> */
 	    *, char *, integer *, integer *, real *, real *, integer *, real *
 	    , integer *);
     integer kb, nb;
-    extern /* Subroutine */ int ssygs2_(integer *, char *, integer *, real *, 
+    extern /* Subroutine */ void ssygs2_(integer *, char *, integer *, real *, 
 	    integer *, real *, integer *, integer *), ssyr2k_(char *, 
 	    char *, integer *, integer *, real *, real *, integer *, real *, 
-	    integer *, real *, real *, integer *), xerbla_( char *, integer *, ftnlen);
+	    integer *, real *, real *, integer *);
+    extern int xerbla_( char *, integer *, ftnlen);
     extern integer ilaenv_(integer *, char *, char *, integer *, integer *, 
 	    integer *, integer *, ftnlen, ftnlen);
 
@@ -707,13 +708,13 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("SSYGST", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /*     Determine the block size for this environment. */
@@ -891,7 +892,7 @@ f"> */
 	    }
 	}
     }
-    return 0;
+    return;
 
 /*     End of SSYGST */
 

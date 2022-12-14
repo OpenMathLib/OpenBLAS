@@ -895,7 +895,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int ztgsja_(char *jobu, char *jobv, char *jobq, integer *m, 
+/* Subroutine */ void ztgsja_(char *jobu, char *jobv, char *jobq, integer *m, 
 	integer *p, integer *n, integer *k, integer *l, doublecomplex *a, 
 	integer *lda, doublecomplex *b, integer *ldb, doublereal *tola, 
 	doublereal *tolb, doublereal *alpha, doublereal *beta, doublecomplex *
@@ -910,7 +910,7 @@ f"> */
     doublecomplex z__1;
 
     /* Local variables */
-    extern /* Subroutine */ int zrot_(integer *, doublecomplex *, integer *, 
+    extern /* Subroutine */ void zrot_(integer *, doublecomplex *, integer *, 
 	    doublecomplex *, integer *, doublereal *, doublecomplex *);
     integer kcallmycycle, i__, j;
     doublereal gamma;
@@ -922,18 +922,20 @@ f"> */
     logical wantu, wantv;
     doublereal ssmin;
     doublecomplex a2, b2;
-    extern /* Subroutine */ int zcopy_(integer *, doublecomplex *, integer *, 
+    extern /* Subroutine */ void zcopy_(integer *, doublecomplex *, integer *, 
 	    doublecomplex *, integer *), zlags2_(logical *, doublereal *, 
 	    doublecomplex *, doublereal *, doublereal *, doublecomplex *, 
 	    doublereal *, doublereal *, doublecomplex *, doublereal *, 
 	    doublecomplex *, doublereal *, doublecomplex *), dlartg_(
 	    doublereal *, doublereal *, doublereal *, doublereal *, 
-	    doublereal *), xerbla_(char *, integer *, ftnlen), zdscal_(
+	    doublereal *);
+    extern int xerbla_(char *, integer *, ftnlen);
+    extern void zdscal_(
 	    integer *, doublereal *, doublecomplex *, integer *), zlapll_(
 	    integer *, doublecomplex *, integer *, doublecomplex *, integer *,
 	     doublereal *);
 //    extern integer myhuge_(doublereal *);
-    extern /* Subroutine */ int zlaset_(char *, integer *, integer *, 
+    extern /* Subroutine */ void zlaset_(char *, integer *, integer *, 
 	    doublecomplex *, doublecomplex *, doublecomplex *, integer *);
     doublereal csq, csu, csv;
     doublecomplex snq;
@@ -1012,7 +1014,7 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZTGSJA", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Initialize U, V and Q, if necessary */
@@ -1289,7 +1291,7 @@ L50:
 L100:
     *ncallmycycle = kcallmycycle;
 
-    return 0;
+    return;
 
 /*     End of ZTGSJA */
 

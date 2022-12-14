@@ -644,7 +644,7 @@ f"> */
 /* > Christof Voemel, University of California, Berkeley, USA */
 
 /*  ===================================================================== */
-/* Subroutine */ int slarra_(integer *n, real *d__, real *e, real *e2, real *
+/* Subroutine */ void slarra_(integer *n, real *d__, real *e, real *e2, real *
 	spltol, real *tnrm, integer *nsplit, integer *isplit, integer *info)
 {
     /* System generated locals */
@@ -678,7 +678,7 @@ f"> */
 /*     Quick return if possible */
 
     if (*n <= 0) {
-	return 0;
+	return;
     }
 
 /*     Compute splitting points */
@@ -713,7 +713,7 @@ f"> */
 	}
     }
     isplit[*nsplit] = *n;
-    return 0;
+    return;
 
 /*     End of SLARRA */
 

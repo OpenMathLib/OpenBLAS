@@ -632,7 +632,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int zlaev2_(doublecomplex *a, doublecomplex *b, 
+/* Subroutine */ void zlaev2_(doublecomplex *a, doublecomplex *b, 
 	doublecomplex *c__, doublereal *rt1, doublereal *rt2, doublereal *cs1,
 	 doublecomplex *sn1)
 {
@@ -643,7 +643,7 @@ f"> */
     /* Local variables */
     doublereal t;
     doublecomplex w;
-    extern /* Subroutine */ int dlaev2_(doublereal *, doublereal *, 
+    extern /* Subroutine */ void dlaev2_(doublereal *, doublereal *, 
 	    doublereal *, doublereal *, doublereal *, doublereal *, 
 	    doublereal *);
 
@@ -671,7 +671,7 @@ f"> */
     dlaev2_(&d__1, &d__2, &d__3, rt1, rt2, cs1, &t);
     z__1.r = t * w.r, z__1.i = t * w.i;
     sn1->r = z__1.r, sn1->i = z__1.i;
-    return 0;
+    return;
 
 /*     End of ZLAEV2 */
 

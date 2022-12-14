@@ -646,13 +646,13 @@ real slangb_(char *norm, integer *n, integer *kl, integer *ku, real *ab,
 
     /* Local variables */
     real temp;
-    extern /* Subroutine */ int scombssq_(real *, real *);
+    extern /* Subroutine */ void scombssq_(real *, real *);
     integer i__, j, k, l;
     extern logical lsame_(char *, char *);
     real value;
     extern logical sisnan_(real *);
     real colssq[2];
-    extern /* Subroutine */ int slassq_(integer *, real *, integer *, real *, 
+    extern /* Subroutine */ void slassq_(integer *, real *, integer *, real *, 
 	    real *);
     real sum, ssq[2];
 

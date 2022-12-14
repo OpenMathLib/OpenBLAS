@@ -609,7 +609,7 @@ f"> */
 /* > \ingroup auxOTHERcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int slamrg_(integer *n1, integer *n2, real *a, integer *
+/* Subroutine */ void slamrg_(integer *n1, integer *n2, real *a, integer *
 	strd1, integer *strd2, integer *index)
 {
     /* System generated locals */
@@ -682,7 +682,7 @@ L10:
 	}
     }
 
-    return 0;
+    return;
 
 /*     End of SLAMRG */
 

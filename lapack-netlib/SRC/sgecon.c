@@ -636,7 +636,7 @@ f"> */
 /* > \ingroup realGEcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int sgecon_(char *norm, integer *n, real *a, integer *lda, 
+/* Subroutine */ void sgecon_(char *norm, integer *n, real *a, integer *lda, 
 	real *anorm, real *rcond, real *work, integer *iwork, integer *info)
 {
     /* System generated locals */
@@ -648,7 +648,7 @@ f"> */
     real scale;
     extern logical lsame_(char *, char *);
     integer isave[3];
-    extern /* Subroutine */ int srscl_(integer *, real *, real *, integer *), 
+    extern /* Subroutine */ void srscl_(integer *, real *, real *, integer *), 
 	    slacn2_(integer *, real *, real *, integer *, real *, integer *, 
 	    integer *);
     real sl;
@@ -660,7 +660,7 @@ f"> */
     real ainvnm;
     logical onenrm;
     char normin[1];
-    extern /* Subroutine */ int slatrs_(char *, char *, char *, char *, 
+    extern /* Subroutine */ void slatrs_(char *, char *, char *, char *, 
 	    integer *, real *, integer *, real *, real *, real *, integer *);
     real smlnum;
 
@@ -698,7 +698,7 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("SGECON", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
@@ -706,9 +706,9 @@ f"> */
     *rcond = 0.f;
     if (*n == 0) {
 	*rcond = 1.f;
-	return 0;
+	return;
     } else if (*anorm == 0.f) {
-	return 0;
+	return;
     }
 
     smlnum = slamch_("Safe minimum");
@@ -772,7 +772,7 @@ L10:
     }
 
 L20:
-    return 0;
+    return;
 
 /*     End of SGECON */
 

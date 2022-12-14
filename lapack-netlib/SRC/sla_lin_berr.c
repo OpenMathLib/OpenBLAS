@@ -610,7 +610,7 @@ _berr.f"> */
 /* > \ingroup realOTHERcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int sla_lin_berr_(integer *n, integer *nz, integer *nrhs, 
+/* Subroutine */ void sla_lin_berr_(integer *n, integer *nz, integer *nrhs, 
 	real *res, real *ayb, real *berr)
 {
     /* System generated locals */
@@ -667,6 +667,6 @@ _berr.f"> */
 
 	}
     }
-    return 0;
+    return;
 } /* sla_lin_berr__ */
 

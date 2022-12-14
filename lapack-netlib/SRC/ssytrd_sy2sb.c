@@ -761,7 +761,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int ssytrd_sy2sb_(char *uplo, integer *n, integer *kd, real 
+/* Subroutine */ void ssytrd_sy2sb_(char *uplo, integer *n, integer *kd, real 
 	*a, integer *lda, real *ab, integer *ldab, real *tau, real *work, 
 	integer *lwork, integer *info)
 {
@@ -775,20 +775,21 @@ f"> */
     integer tpos, wpos, s1pos, s2pos, i__, j;
     extern logical lsame_(char *, char *);
     integer iinfo;
-    extern /* Subroutine */ int sgemm_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void sgemm_(char *, char *, integer *, integer *, 
 	    integer *, real *, real *, integer *, real *, integer *, real *, 
 	    real *, integer *);
     integer lwmin;
     logical upper;
-    extern /* Subroutine */ int scopy_(integer *, real *, integer *, real *, 
+    extern /* Subroutine */ void scopy_(integer *, real *, integer *, real *, 
 	    integer *), ssymm_(char *, char *, integer *, integer *, real *, 
 	    real *, integer *, real *, integer *, real *, real *, integer *);
     integer lk, pk;
-    extern /* Subroutine */ int ssyr2k_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void ssyr2k_(char *, char *, integer *, integer *, 
 	    real *, real *, integer *, real *, integer *, real *, real *, 
 	    integer *);
     integer pn, lt, lw;
-    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen), sgelqf_(
+    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
+    extern void sgelqf_(
 	    integer *, integer *, real *, integer *, real *, real *, integer *
 	    , integer *), sgeqrf_(integer *, integer *, real *, integer *, 
 	    real *, real *, integer *, integer *), slarft_(char *, char *, 
@@ -849,10 +850,10 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("SSYTRD_SY2SB", &i__1, (ftnlen)12);
-	return 0;
+	return;
     } else if (lquery) {
 	work[1] = (real) lwmin;
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
@@ -881,7 +882,7 @@ f"> */
 	    }
 	}
 	work[1] = 1.f;
-	return 0;
+	return;
     }
 
 /*     Determine the pointer position for the workspace */
@@ -1073,7 +1074,7 @@ f"> */
     }
 
     work[1] = (real) lwmin;
-    return 0;
+    return;
 
 /*     End of SSYTRD_SY2SB */
 

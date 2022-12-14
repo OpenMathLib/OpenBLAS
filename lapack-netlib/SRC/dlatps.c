@@ -742,7 +742,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int dlatps_(char *uplo, char *trans, char *diag, char *
+/* Subroutine */ void dlatps_(char *uplo, char *trans, char *diag, char *
 	normin, integer *n, doublereal *ap, doublereal *x, doublereal *scale, 
 	doublereal *cnorm, integer *info)
 {
@@ -758,16 +758,16 @@ f"> */
     integer imax;
     doublereal tmax, tjjs, xmax, grow, sumj;
     integer i__, j;
-    extern /* Subroutine */ int dscal_(integer *, doublereal *, doublereal *, 
+    extern /* Subroutine */ void dscal_(integer *, doublereal *, doublereal *, 
 	    integer *);
     extern logical lsame_(char *, char *);
     doublereal tscal, uscal;
     extern doublereal dasum_(integer *, doublereal *, integer *);
     integer jlast;
-    extern /* Subroutine */ int daxpy_(integer *, doublereal *, doublereal *, 
+    extern /* Subroutine */ void daxpy_(integer *, doublereal *, doublereal *, 
 	    integer *, doublereal *, integer *);
     logical upper;
-    extern /* Subroutine */ int dtpsv_(char *, char *, char *, integer *, 
+    extern /* Subroutine */ void dtpsv_(char *, char *, char *, integer *, 
 	    doublereal *, doublereal *, integer *);
     extern doublereal dlamch_(char *);
     integer ip;
@@ -820,13 +820,13 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DLATPS", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /*     Determine machine dependent parameters to control overflow. */
@@ -1383,7 +1383,7 @@ L150:
 	dscal_(n, &d__1, &cnorm[1], &c__1);
     }
 
-    return 0;
+    return;
 
 /*     End of DLATPS */
 

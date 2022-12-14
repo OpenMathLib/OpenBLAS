@@ -752,7 +752,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int slatrs_(char *uplo, char *trans, char *diag, char *
+/* Subroutine */ void slatrs_(char *uplo, char *trans, char *diag, char *
 	normin, integer *n, real *a, integer *lda, real *x, real *scale, real 
 	*cnorm, integer *info)
 {
@@ -769,12 +769,12 @@ f"> */
     real xmax, grow, sumj;
     integer i__, j;
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int sscal_(integer *, real *, real *, integer *);
+    extern /* Subroutine */ void sscal_(integer *, real *, real *, integer *);
     real tscal, uscal;
     integer jlast;
     extern real sasum_(integer *, real *, integer *);
     logical upper;
-    extern /* Subroutine */ int saxpy_(integer *, real *, real *, integer *, 
+    extern /* Subroutine */ void saxpy_(integer *, real *, real *, integer *, 
 	    real *, integer *), strsv_(char *, char *, char *, integer *, 
 	    real *, integer *, real *, integer *);
     real xj;
@@ -831,13 +831,13 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("SLATRS", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /*     Determine machine dependent parameters to control overflow. */
@@ -1375,7 +1375,7 @@ L135:
 	sscal_(n, &r__1, &cnorm[1], &c__1);
     }
 
-    return 0;
+    return;
 
 /*     End of SLATRS */
 

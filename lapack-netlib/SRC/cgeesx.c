@@ -752,7 +752,7 @@ f"> */
 /* > \ingroup complexGEeigen */
 
 /*  ===================================================================== */
-/* Subroutine */ int cgeesx_(char *jobvs, char *sort, L_fp select, char *
+/* Subroutine */ void cgeesx_(char *jobvs, char *sort, L_fp select, char *
 	sense, integer *n, complex *a, integer *lda, integer *sdim, complex *
 	w, complex *vs, integer *ldvs, real *rconde, real *rcondv, complex *
 	work, integer *lwork, real *rwork, logical *bwork, integer *info)
@@ -765,7 +765,7 @@ f"> */
     real anrm;
     integer ierr, itau, iwrk, lwrk, i__, icond, ieval;
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int ccopy_(integer *, complex *, integer *, 
+    extern /* Subroutine */ void ccopy_(integer *, complex *, integer *, 
 	    complex *, integer *), cgebak_(char *, char *, integer *, integer 
 	    *, integer *, real *, integer *, complex *, integer *, integer *), cgebal_(char *, integer *, complex *, integer *, 
 	    integer *, integer *, real *, integer *), slabad_(real *, 
@@ -774,25 +774,25 @@ f"> */
     extern real clange_(char *, integer *, integer *, complex *, integer *, 
 	    real *);
     real cscale;
-    extern /* Subroutine */ int cgehrd_(integer *, integer *, integer *, 
+    extern /* Subroutine */ void cgehrd_(integer *, integer *, integer *, 
 	    complex *, integer *, complex *, complex *, integer *, integer *),
 	     clascl_(char *, integer *, integer *, real *, real *, integer *, 
 	    integer *, complex *, integer *, integer *);
     extern real slamch_(char *);
-    extern /* Subroutine */ int clacpy_(char *, integer *, integer *, complex 
-	    *, integer *, complex *, integer *), xerbla_(char *, 
-	    integer *, ftnlen);
+    extern /* Subroutine */ void clacpy_(char *, integer *, integer *, complex 
+	    *, integer *, complex *, integer *);
+    extern int xerbla_(char *, integer *, ftnlen);
     extern integer ilaenv_(integer *, char *, char *, integer *, integer *, 
 	    integer *, integer *, ftnlen, ftnlen);
     real bignum;
-    extern /* Subroutine */ int slascl_(char *, integer *, integer *, real *, 
+    extern /* Subroutine */ void slascl_(char *, integer *, integer *, real *, 
 	    real *, integer *, integer *, real *, integer *, integer *), chseqr_(char *, char *, integer *, integer *, integer *, 
 	    complex *, integer *, complex *, complex *, integer *, complex *, 
 	    integer *, integer *), cunghr_(integer *, integer 
 	    *, integer *, complex *, integer *, complex *, complex *, integer 
 	    *, integer *);
     logical wantsb;
-    extern /* Subroutine */ int ctrsen_(char *, char *, logical *, integer *, 
+    extern /* Subroutine */ void ctrsen_(char *, char *, logical *, integer *, 
 	    complex *, integer *, complex *, integer *, complex *, integer *, 
 	    real *, real *, complex *, integer *, integer *);
     logical wantse;
@@ -906,16 +906,16 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CGEESX", &i__1, (ftnlen)6);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
 	*sdim = 0;
-	return 0;
+	return;
     }
 
 /*     Get machine constants */
@@ -1054,7 +1054,7 @@ f"> */
     }
 
     work[1].r = (real) maxwrk, work[1].i = 0.f;
-    return 0;
+    return;
 
 /*     End of CGEESX */
 

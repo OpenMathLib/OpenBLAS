@@ -665,7 +665,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int dsptrd_(char *uplo, integer *n, doublereal *ap, 
+/* Subroutine */ void dsptrd_(char *uplo, integer *n, doublereal *ap, 
 	doublereal *d__, doublereal *e, doublereal *tau, integer *info)
 {
     /* System generated locals */
@@ -675,20 +675,21 @@ f"> */
     extern doublereal ddot_(integer *, doublereal *, integer *, doublereal *, 
 	    integer *);
     doublereal taui;
-    extern /* Subroutine */ int dspr2_(char *, integer *, doublereal *, 
+    extern /* Subroutine */ void dspr2_(char *, integer *, doublereal *, 
 	    doublereal *, integer *, doublereal *, integer *, doublereal *);
     integer i__;
     doublereal alpha;
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int daxpy_(integer *, doublereal *, doublereal *, 
+    extern /* Subroutine */ void daxpy_(integer *, doublereal *, doublereal *, 
 	    integer *, doublereal *, integer *), dspmv_(char *, integer *, 
 	    doublereal *, doublereal *, doublereal *, integer *, doublereal *,
 	     doublereal *, integer *);
     integer i1;
     logical upper;
     integer ii;
-    extern /* Subroutine */ int dlarfg_(integer *, doublereal *, doublereal *,
-	     integer *, doublereal *), xerbla_(char *, integer *, ftnlen);
+    extern /* Subroutine */ void dlarfg_(integer *, doublereal *, doublereal *,
+	     integer *, doublereal *);
+    extern int xerbla_(char *, integer *, ftnlen);
     integer i1i1;
 
 
@@ -720,13 +721,13 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DSPTRD", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n <= 0) {
-	return 0;
+	return;
     }
 
     if (upper) {
@@ -828,7 +829,7 @@ f"> */
 	d__[*n] = ap[ii];
     }
 
-    return 0;
+    return;
 
 /*     End of DSPTRD */
 

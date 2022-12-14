@@ -661,7 +661,7 @@ _col_getrfnp.f"> */
 /* > \endverbatim */
 
 /*  ===================================================================== */
-/* Subroutine */ int zlaunhr_col_getrfnp_(integer *m, integer *n, 
+/* Subroutine */ void zlaunhr_col_getrfnp_(integer *m, integer *n, 
 	doublecomplex *a, integer *lda, doublecomplex *d__, integer *info)
 {
     /* System generated locals */
@@ -669,10 +669,10 @@ _col_getrfnp.f"> */
     doublecomplex z__1;
 
     /* Local variables */
-    extern /* Subroutine */ int zlaunhr_col_getrfnp2_(integer *, integer *, 
+    extern /* Subroutine */ void zlaunhr_col_getrfnp2_(integer *, integer *, 
 	    doublecomplex *, integer *, doublecomplex *, integer *);
     integer j, iinfo;
-    extern /* Subroutine */ int zgemm_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void zgemm_(char *, char *, integer *, integer *, 
 	    integer *, doublecomplex *, doublecomplex *, integer *, 
 	    doublecomplex *, integer *, doublecomplex *, doublecomplex *, 
 	    integer *), ztrsm_(char *, char *, char *, char *,
@@ -713,13 +713,13 @@ _col_getrfnp.f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZLAUNHR_COL_GETRFNP", &i__1, (ftnlen)19);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (f2cmin(*m,*n) == 0) {
-	return 0;
+	return;
     }
 
 /*     Determine the block size for this environment. */
@@ -771,7 +771,7 @@ _col_getrfnp.f"> */
 	    }
 	}
     }
-    return 0;
+    return;
 
 /*     End of ZLAUNHR_COL_GETRFNP */
 

@@ -793,7 +793,7 @@ f"> */
 /* > \ingroup doubleGEeigen */
 
 /*  ===================================================================== */
-/* Subroutine */ int dgeesx_(char *jobvs, char *sort, L_fp select, char *
+/* Subroutine */ void dgeesx_(char *jobvs, char *sort, L_fp select, char *
 	sense, integer *n, doublereal *a, integer *lda, integer *sdim, 
 	doublereal *wr, doublereal *wi, doublereal *vs, integer *ldvs, 
 	doublereal *rconde, doublereal *rcondv, doublereal *work, integer *
@@ -807,12 +807,12 @@ f"> */
     doublereal anrm;
     integer ierr, itau, iwrk, lwrk, inxt, i__, icond, ieval;
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int dcopy_(integer *, doublereal *, integer *, 
+    extern /* Subroutine */ void dcopy_(integer *, doublereal *, integer *, 
 	    doublereal *, integer *), dswap_(integer *, doublereal *, integer 
 	    *, doublereal *, integer *);
     logical cursl;
     integer liwrk, i1, i2;
-    extern /* Subroutine */ int dlabad_(doublereal *, doublereal *), dgebak_(
+    extern /* Subroutine */ void dlabad_(doublereal *, doublereal *), dgebak_(
 	    char *, char *, integer *, integer *, integer *, doublereal *, 
 	    integer *, doublereal *, integer *, integer *), 
 	    dgebal_(char *, integer *, doublereal *, integer *, integer *, 
@@ -822,23 +822,23 @@ f"> */
     doublereal cscale;
     extern doublereal dlamch_(char *), dlange_(char *, integer *, 
 	    integer *, doublereal *, integer *, doublereal *);
-    extern /* Subroutine */ int dgehrd_(integer *, integer *, integer *, 
+    extern /* Subroutine */ void dgehrd_(integer *, integer *, integer *, 
 	    doublereal *, integer *, doublereal *, doublereal *, integer *, 
 	    integer *), dlascl_(char *, integer *, integer *, doublereal *, 
 	    doublereal *, integer *, integer *, doublereal *, integer *, 
 	    integer *), dlacpy_(char *, integer *, integer *, 
-	    doublereal *, integer *, doublereal *, integer *), 
-	    xerbla_(char *, integer *, ftnlen);
+	    doublereal *, integer *, doublereal *, integer *); 
+    extern int xerbla_(char *, integer *, ftnlen);
     extern integer ilaenv_(integer *, char *, char *, integer *, integer *, 
 	    integer *, integer *, ftnlen, ftnlen);
     doublereal bignum;
-    extern /* Subroutine */ int dorghr_(integer *, integer *, integer *, 
+    extern /* Subroutine */ void dorghr_(integer *, integer *, integer *, 
 	    doublereal *, integer *, doublereal *, doublereal *, integer *, 
 	    integer *), dhseqr_(char *, char *, integer *, integer *, integer 
 	    *, doublereal *, integer *, doublereal *, doublereal *, 
 	    doublereal *, integer *, doublereal *, integer *, integer *);
     logical wantsb;
-    extern /* Subroutine */ int dtrsen_(char *, char *, logical *, integer *, 
+    extern /* Subroutine */ void dtrsen_(char *, char *, logical *, integer *, 
 	    doublereal *, integer *, doublereal *, integer *, doublereal *, 
 	    doublereal *, integer *, doublereal *, doublereal *, doublereal *,
 	     integer *, integer *, integer *, integer *);
@@ -966,16 +966,16 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DGEESX", &i__1, (ftnlen)6);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
 	*sdim = 0;
-	return 0;
+	return;
     }
 
 /*     Get machine constants */
@@ -1240,7 +1240,7 @@ L20:
 	iwork[1] = 1;
     }
 
-    return 0;
+    return;
 
 /*     End of DGEESX */
 

@@ -698,7 +698,7 @@ static real c_b32 = 1.f;
 /*   Angelika Schwarz, Umea University, Sweden. */
 
 /*  ===================================================================== */
-/* Subroutine */ int strsyl3_(char *trana, char *tranb, integer *isgn, 
+/* Subroutine */ void strsyl3_(char *trana, char *tranb, integer *isgn, 
 	integer *m, integer *n, real *a, integer *lda, real *b, integer *ldb, 
 	real *c__, integer *ldc, real *scale, integer *iwork, integer *liwork,
 	 real *swork, integer *ldswork, integer *info)
@@ -716,7 +716,7 @@ static real c_b32 = 1.f;
     integer i__, j, k, l;
     extern logical lsame_(char *, char *);
     integer iinfo;
-    extern /* Subroutine */ int sscal_(integer *, real *, real *, integer *), 
+    extern /* Subroutine */ void sscal_(integer *, real *, real *, integer *), 
 	    sgemm_(char *, char *, integer *, integer *, integer *, real *, 
 	    real *, integer *, real *, integer *, real *, real *, integer *);
     integer i1, i2, j1, j2, k1, k2, l1;
@@ -726,17 +726,17 @@ static real c_b32 = 1.f;
     extern real slamch_(char *), slange_(char *, integer *, integer *,
 	     real *, integer *, real *);
     real scamin;
-    extern /* Subroutine */ int xerbla_(char *, integer *);
+    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     extern integer ilaenv_(integer *, char *, char *, integer *, integer *, 
 	    integer *, integer *, ftnlen, ftnlen);
     real bignum;
-    extern /* Subroutine */ int slascl_(char *, integer *, integer *, real *, 
+    extern /* Subroutine */ void slascl_(char *, integer *, integer *, real *, 
 	    real *, integer *, integer *, real *, integer *, integer *);
     extern real slarmm_(real *, real *, real *);
     logical notrna, notrnb;
     real smlnum;
     logical lquery;
-    extern /* Subroutine */ int strsyl_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void strsyl_(char *, char *, integer *, integer *, 
 	    integer *, real *, integer *, real *, integer *, real *, integer *
 	    , real *, integer *);
     integer nba, nbb;
@@ -817,17 +817,17 @@ static real c_b32 = 1.f;
     }
     if (*info != 0) {
 	i__1 = -(*info);
-	xerbla_("STRSYL3", &i__1);
-	return 0;
+	xerbla_("STRSYL3", &i__1, 7);
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     *scale = 1.f;
     if (*m == 0 || *n == 0) {
-	return 0;
+	return;
     }
 
 /*     Use unblocked code for small problems or if insufficient */
@@ -836,7 +836,7 @@ static real c_b32 = 1.f;
     if (f2cmin(nba,nbb) == 1 || *ldswork < f2cmax(nba,nbb) || *liwork < iwork[1]) {
 	strsyl_(trana, tranb, isgn, m, n, &a[a_offset], lda, &b[b_offset], 
 		ldb, &c__[c_offset], ldc, scale, info);
-	return 0;
+	return;
     }
 
 
@@ -1982,7 +1982,7 @@ static real c_b32 = 1.f;
 	iwork[1] = nba + nbb + 2;
 	swork[swork_dim1 + 1] = (real) f2cmax(nba,nbb);
 	swork[swork_dim1 + 2] = (real) ((nbb << 1) + nba);
-	return 0;
+	return;
     }
 
 /*     Realize consistent scaling */
@@ -2058,7 +2058,7 @@ static real c_b32 = 1.f;
     swork[swork_dim1 + 1] = (real) f2cmax(nba,nbb);
     swork[swork_dim1 + 2] = (real) ((nbb << 1) + nba);
 
-    return 0;
+    return;
 
 /*     End of STRSYL3 */
 

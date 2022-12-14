@@ -633,7 +633,7 @@ f"> */
 /* > \ingroup doubleGTcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int dgttrf_(integer *n, doublereal *dl, doublereal *d__, 
+/* Subroutine */ void dgttrf_(integer *n, doublereal *dl, doublereal *d__, 
 	doublereal *du, doublereal *du2, integer *ipiv, integer *info)
 {
     /* System generated locals */
@@ -668,13 +668,13 @@ f"> */
 	*info = -1;
 	i__1 = -(*info);
 	xerbla_("DGTTRF", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /*     Initialize IPIV(i) = i and DU2(I) = 0 */
@@ -748,7 +748,7 @@ f"> */
     }
 L50:
 
-    return 0;
+    return;
 
 /*     End of DGTTRF */
 

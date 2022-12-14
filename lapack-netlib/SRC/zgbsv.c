@@ -673,7 +673,7 @@ e driver) */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int zgbsv_(integer *n, integer *kl, integer *ku, integer *
+/* Subroutine */ void zgbsv_(integer *n, integer *kl, integer *ku, integer *
 	nrhs, doublecomplex *ab, integer *ldab, integer *ipiv, doublecomplex *
 	b, integer *ldb, integer *info)
 {
@@ -681,7 +681,8 @@ e driver) */
     integer ab_dim1, ab_offset, b_dim1, b_offset, i__1;
 
     /* Local variables */
-    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen), zgbtrf_(
+    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
+    extern void zgbtrf_(
 	    integer *, integer *, integer *, integer *, doublecomplex *, 
 	    integer *, integer *, integer *), zgbtrs_(char *, integer *, 
 	    integer *, integer *, integer *, doublecomplex *, integer *, 
@@ -726,7 +727,7 @@ e driver) */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZGBSV ", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Compute the LU factorization of the band matrix A. */
@@ -739,7 +740,7 @@ e driver) */
 	zgbtrs_("No transpose", n, kl, ku, nrhs, &ab[ab_offset], ldab, &ipiv[
 		1], &b[b_offset], ldb, info);
     }
-    return 0;
+    return;
 
 /*     End of ZGBSV */
 

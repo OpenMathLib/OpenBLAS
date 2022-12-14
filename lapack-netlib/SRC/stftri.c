@@ -715,7 +715,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int stftri_(char *transr, char *uplo, char *diag, integer *n,
+/* Subroutine */ void stftri_(char *transr, char *uplo, char *diag, integer *n,
 	 real *a, integer *info)
 {
     /* System generated locals */
@@ -727,9 +727,10 @@ f"> */
     extern logical lsame_(char *, char *);
     logical lower;
     integer n1, n2;
-    extern /* Subroutine */ int strmm_(char *, char *, char *, char *, 
+    extern /* Subroutine */ void strmm_(char *, char *, char *, char *, 
 	    integer *, integer *, real *, real *, integer *, real *, integer *
-	    ), xerbla_(char *, integer *, ftnlen);
+	    );
+    extern int xerbla_(char *, integer *, ftnlen);
     logical nisodd;
     extern /* Subroutine */ int strtri_(char *, char *, integer *, real *, 
 	    integer *, integer *);
@@ -762,13 +763,13 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("STFTRI", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /*     If N is odd, set NISODD = .TRUE. */
@@ -810,7 +811,7 @@ f"> */
 
 		strtri_("L", diag, &n1, a, n, info);
 		if (*info > 0) {
-		    return 0;
+		    return;
 		}
 		strmm_("R", "L", "N", diag, &n2, &n1, &c_b13, a, n, &a[n1], n);
 		strtri_("U", diag, &n2, &a[*n], n, info)
@@ -819,7 +820,7 @@ f"> */
 		    *info += n1;
 		}
 		if (*info > 0) {
-		    return 0;
+		    return;
 		}
 		strmm_("L", "U", "T", diag, &n2, &n1, &c_b18, &a[*n], n, &a[
 			n1], n);
@@ -833,7 +834,7 @@ f"> */
 		strtri_("L", diag, &n1, &a[n2], n, info)
 			;
 		if (*info > 0) {
-		    return 0;
+		    return;
 		}
 		strmm_("L", "L", "T", diag, &n1, &n2, &c_b13, &a[n2], n, a, n);
 		strtri_("U", diag, &n2, &a[n1], n, info)
@@ -842,7 +843,7 @@ f"> */
 		    *info += n1;
 		}
 		if (*info > 0) {
-		    return 0;
+		    return;
 		}
 		strmm_("R", "U", "N", diag, &n1, &n2, &c_b18, &a[n1], n, a, n);
 
@@ -859,7 +860,7 @@ f"> */
 
 		strtri_("U", diag, &n1, a, &n1, info);
 		if (*info > 0) {
-		    return 0;
+		    return;
 		}
 		strmm_("L", "U", "N", diag, &n1, &n2, &c_b13, a, &n1, &a[n1 * 
 			n1], &n1);
@@ -868,7 +869,7 @@ f"> */
 		    *info += n1;
 		}
 		if (*info > 0) {
-		    return 0;
+		    return;
 		}
 		strmm_("R", "L", "T", diag, &n1, &n2, &c_b18, &a[1], &n1, &a[
 			n1 * n1], &n1);
@@ -880,7 +881,7 @@ f"> */
 
 		strtri_("U", diag, &n1, &a[n2 * n2], &n2, info);
 		if (*info > 0) {
-		    return 0;
+		    return;
 		}
 		strmm_("R", "U", "T", diag, &n2, &n1, &c_b13, &a[n2 * n2], &
 			n2, a, &n2);
@@ -889,7 +890,7 @@ f"> */
 		    *info += n1;
 		}
 		if (*info > 0) {
-		    return 0;
+		    return;
 		}
 		strmm_("L", "L", "N", diag, &n2, &n1, &c_b18, &a[n1 * n2], &
 			n2, a, &n2);
@@ -914,7 +915,7 @@ f"> */
 		i__1 = *n + 1;
 		strtri_("L", diag, &k, &a[1], &i__1, info);
 		if (*info > 0) {
-		    return 0;
+		    return;
 		}
 		i__1 = *n + 1;
 		i__2 = *n + 1;
@@ -926,7 +927,7 @@ f"> */
 		    *info += k;
 		}
 		if (*info > 0) {
-		    return 0;
+		    return;
 		}
 		i__1 = *n + 1;
 		i__2 = *n + 1;
@@ -943,7 +944,7 @@ f"> */
 		i__1 = *n + 1;
 		strtri_("L", diag, &k, &a[k + 1], &i__1, info);
 		if (*info > 0) {
-		    return 0;
+		    return;
 		}
 		i__1 = *n + 1;
 		i__2 = *n + 1;
@@ -955,7 +956,7 @@ f"> */
 		    *info += k;
 		}
 		if (*info > 0) {
-		    return 0;
+		    return;
 		}
 		i__1 = *n + 1;
 		i__2 = *n + 1;
@@ -974,7 +975,7 @@ f"> */
 
 		strtri_("U", diag, &k, &a[k], &k, info);
 		if (*info > 0) {
-		    return 0;
+		    return;
 		}
 		strmm_("L", "U", "N", diag, &k, &k, &c_b13, &a[k], &k, &a[k * 
 			(k + 1)], &k);
@@ -983,7 +984,7 @@ f"> */
 		    *info += k;
 		}
 		if (*info > 0) {
-		    return 0;
+		    return;
 		}
 		strmm_("R", "L", "T", diag, &k, &k, &c_b18, a, &k, &a[k * (k 
 			+ 1)], &k)
@@ -996,7 +997,7 @@ f"> */
 
 		strtri_("U", diag, &k, &a[k * (k + 1)], &k, info);
 		if (*info > 0) {
-		    return 0;
+		    return;
 		}
 		strmm_("R", "U", "T", diag, &k, &k, &c_b13, &a[k * (k + 1)], &
 			k, a, &k);
@@ -1005,7 +1006,7 @@ f"> */
 		    *info += k;
 		}
 		if (*info > 0) {
-		    return 0;
+		    return;
 		}
 		strmm_("L", "L", "N", diag, &k, &k, &c_b18, &a[k * k], &k, a, 
 			&k);
@@ -1013,7 +1014,7 @@ f"> */
 	}
     }
 
-    return 0;
+    return;
 
 /*     End of STFTRI */
 

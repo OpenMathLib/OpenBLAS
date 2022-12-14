@@ -710,7 +710,7 @@ f"> */
 /* > \endverbatim */
 
 /*  ===================================================================== */
-/* Subroutine */ int cgelst_(char *trans, integer *m, integer *n, integer *
+/* Subroutine */ void cgelst_(char *trans, integer *m, integer *n, integer *
 	nrhs, complex *a, integer *lda, complex *b, integer *ldb, complex *
 	work, integer *lwork, integer *info)
 {
@@ -727,29 +727,30 @@ f"> */
     integer nbmin;
     real rwork[1];
     integer lwopt, nb;
-    extern /* Subroutine */ int slabad_(real *, real *);
+    extern /* Subroutine */ void slabad_(real *, real *);
     extern real clange_(char *, integer *, integer *, complex *, integer *, 
 	    real *);
     integer mn;
-    extern /* Subroutine */ int clascl_(char *, integer *, integer *, real *, 
+    extern /* Subroutine */ void clascl_(char *, integer *, integer *, real *, 
 	    real *, integer *, integer *, complex *, integer *, integer *);
     extern real slamch_(char *);
-    extern /* Subroutine */ int claset_(char *, integer *, integer *, complex 
-	    *, complex *, complex *, integer *), xerbla_(char *, 
-	    integer *);
+    extern /* Subroutine */ void claset_(char *, integer *, integer *, complex 
+	    *, complex *, complex *, integer *);
+    extern int xerbla_(char *, integer *, ftnlen);
     extern integer ilaenv_(integer *, char *, char *, integer *, integer *, 
 	    integer *, integer *, ftnlen, ftnlen);
-    extern /* Subroutine */ int cgelqt_(integer *, integer *, integer *, 
+    extern /* Subroutine */ void cgelqt_(integer *, integer *, integer *, 
 	    complex *, integer *, complex *, integer *, complex *, integer *);
     integer scllen;
     real bignum;
-    extern /* Subroutine */ int cgeqrt_(integer *, integer *, integer *, 
+    extern /* Subroutine */ void cgeqrt_(integer *, integer *, integer *, 
 	    complex *, integer *, complex *, integer *, complex *, integer *);
     integer mnnrhs;
     real smlnum;
     logical lquery;
     extern /* Subroutine */ int ctrtrs_(char *, char *, char *, integer *, 
-	    integer *, complex *, integer *, complex *, integer *, integer *), cgemlqt_(char *, char *, integer *, 
+	    integer *, complex *, integer *, complex *, integer *, integer *);
+    extern void cgemlqt_(char *, char *, integer *, 
 	    integer *, integer *, integer *, complex *, integer *, complex *, 
 	    integer *, complex *, integer *, complex *, integer *), cgemqrt_(char *, char *, integer *, integer *, integer *,
 	     integer *, complex *, integer *, complex *, integer *, complex *,
@@ -826,10 +827,10 @@ f"> */
 
     if (*info != 0) {
 	i__1 = -(*info);
-	xerbla_("CGELST ", &i__1);
-	return 0;
+	xerbla_("CGELST ", &i__1, 6);
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
@@ -841,7 +842,7 @@ f"> */
 	claset_("Full", &i__1, nrhs, &c_b1, &c_b1, &b[b_offset], ldb);
 	r__1 = (real) lwopt;
 	work[1].r = r__1, work[1].i = 0.f;
-	return 0;
+	return;
     }
 
 /*     *GEQRT and *GELQT routines cannot accept NB larger than f2cmin(M,N) */
@@ -901,7 +902,7 @@ f"> */
 	claset_("Full", &i__1, nrhs, &c_b1, &c_b1, &b[b_offset], ldb);
 	r__1 = (real) lwopt;
 	work[1].r = r__1, work[1].i = 0.f;
-	return 0;
+	return;
     }
 
     brow = *m;
@@ -956,7 +957,7 @@ f"> */
 		    , lda, &b[b_offset], ldb, info);
 
 	    if (*info > 0) {
-		return 0;
+		return;
 	    }
 
 	    scllen = *n;
@@ -975,7 +976,7 @@ f"> */
 		    a_offset], lda, &b[b_offset], ldb, info);
 
 	    if (*info > 0) {
-		return 0;
+		return;
 	    }
 
 /*           Block 2: Zero out all rows below the N-th row in B: */
@@ -1026,7 +1027,7 @@ f"> */
 		    , lda, &b[b_offset], ldb, info);
 
 	    if (*info > 0) {
-		return 0;
+		return;
 	    }
 
 /*           Block 2: Zero out all rows below the M-th row in B: */
@@ -1071,7 +1072,7 @@ f"> */
 		    a_offset], lda, &b[b_offset], ldb, info);
 
 	    if (*info > 0) {
-		return 0;
+		return;
 	    }
 
 	    scllen = *m;
@@ -1100,7 +1101,7 @@ f"> */
     r__1 = (real) lwopt;
     work[1].r = r__1, work[1].i = 0.f;
 
-    return 0;
+    return;
 
 /*     End of CGELST */
 

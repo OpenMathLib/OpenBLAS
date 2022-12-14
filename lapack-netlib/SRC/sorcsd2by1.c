@@ -746,7 +746,7 @@ by1.f"> */
 /* > \ingroup realOTHERcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int sorcsd2by1_(char *jobu1, char *jobu2, char *jobv1t, 
+/* Subroutine */ void sorcsd2by1_(char *jobu1, char *jobu2, char *jobv1t, 
 	integer *m, integer *p, integer *q, real *x11, integer *ldx11, real *
 	x21, integer *ldx21, real *theta, real *u1, integer *ldu1, real *u2, 
 	integer *ldu2, real *v1t, integer *ldv1t, real *work, integer *lwork, 
@@ -761,34 +761,35 @@ by1.f"> */
 	    lworkmin, lworkopt, i__, j, r__;
     extern logical lsame_(char *, char *);
     integer childinfo;
-    extern /* Subroutine */ int scopy_(integer *, real *, integer *, real *, 
+    extern /* Subroutine */ void scopy_(integer *, real *, integer *, real *, 
 	    integer *);
     integer lorglqmin, lorgqrmin, lorglqopt, itaup1, itaup2, itauq1, 
 	    lorgqropt;
     logical wantu1, wantu2;
     integer ibbcsd, lbbcsd;
-    extern /* Subroutine */ int sbbcsd_(char *, char *, char *, char *, char *
+    extern /* Subroutine */ void sbbcsd_(char *, char *, char *, char *, char *
 	    , integer *, integer *, integer *, real *, real *, real *, 
 	    integer *, real *, integer *, real *, integer *, real *, integer *
 	    , real *, real *, real *, real *, real *, real *, real *, real *, 
 	    real *, integer *, integer *);
     integer iorbdb, lorbdb;
-    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen), slacpy_(
+    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
+    extern void slacpy_(
 	    char *, integer *, integer *, real *, integer *, real *, integer *
 	    );
     integer iorglq;
-    extern /* Subroutine */ int slapmr_(logical *, integer *, integer *, real 
+    extern /* Subroutine */ void slapmr_(logical *, integer *, integer *, real 
 	    *, integer *, integer *);
     integer lorglq;
-    extern /* Subroutine */ int slapmt_(logical *, integer *, integer *, real 
+    extern /* Subroutine */ void slapmt_(logical *, integer *, integer *, real 
 	    *, integer *, integer *);
     integer iorgqr, lorgqr;
-    extern /* Subroutine */ int sorglq_(integer *, integer *, integer *, real 
+    extern /* Subroutine */ void sorglq_(integer *, integer *, integer *, real 
 	    *, integer *, real *, real *, integer *, integer *), sorgqr_(
 	    integer *, integer *, integer *, real *, integer *, real *, real *
 	    , integer *, integer *);
     logical lquery;
-    extern /* Subroutine */ int sorbdb1_(integer *, integer *, integer *, 
+    extern /* Subroutine */ void sorbdb1_(integer *, integer *, integer *, 
 	    real *, integer *, real *, integer *, real *, real *, real *, 
 	    real *, real *, real *, integer *, integer *), sorbdb2_(integer *,
 	     integer *, integer *, real *, integer *, real *, integer *, real 
@@ -1113,9 +1114,9 @@ by1.f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("SORCSD2BY1", &i__1, (ftnlen)10);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
     lorgqr = *lwork - iorgqr + 1;
     lorglq = *lwork - iorglq + 1;
@@ -1425,7 +1426,7 @@ by1.f"> */
 	}
     }
 
-    return 0;
+    return;
 
 /*     End of SORCSD2BY1 */
 

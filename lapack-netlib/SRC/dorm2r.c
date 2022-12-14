@@ -672,7 +672,7 @@ f"> */
 /* > \ingroup doubleOTHERcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int dorm2r_(char *side, char *trans, integer *m, integer *n, 
+/* Subroutine */ void dorm2r_(char *side, char *trans, integer *m, integer *n, 
 	integer *k, doublereal *a, integer *lda, doublereal *tau, doublereal *
 	c__, integer *ldc, doublereal *work, integer *info)
 {
@@ -682,7 +682,7 @@ f"> */
     /* Local variables */
     logical left;
     integer i__;
-    extern /* Subroutine */ int dlarf_(char *, integer *, integer *, 
+    extern /* Subroutine */ void dlarf_(char *, integer *, integer *, 
 	    doublereal *, integer *, doublereal *, doublereal *, integer *, 
 	    doublereal *);
     extern logical lsame_(char *, char *);
@@ -743,13 +743,13 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DORM2R", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*m == 0 || *n == 0 || *k == 0) {
-	return 0;
+	return;
     }
 
     if (left && ! notran || ! left && notran) {
@@ -796,7 +796,7 @@ f"> */
 	a[i__ + i__ * a_dim1] = aii;
 /* L10: */
     }
-    return 0;
+    return;
 
 /*     End of DORM2R */
 

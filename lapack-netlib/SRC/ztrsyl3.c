@@ -678,7 +678,7 @@ static doublereal c_b106 = 1.;
 /*   Angelika Schwarz, Umea University, Sweden. */
 
 /*  ===================================================================== */
-/* Subroutine */ int ztrsyl3_(char *trana, char *tranb, integer *isgn, 
+/* Subroutine */ void ztrsyl3_(char *trana, char *tranb, integer *isgn, 
 	integer *m, integer *n, doublecomplex *a, integer *lda, doublecomplex 
 	*b, integer *ldb, doublecomplex *c__, integer *ldc, doublereal *scale,
 	 doublereal *swork, integer *ldswork, integer *info)
@@ -698,7 +698,7 @@ static doublereal c_b106 = 1.;
     integer i__, j, k, l;
     extern logical lsame_(char *, char *);
     integer iinfo;
-    extern /* Subroutine */ int zgemm_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void zgemm_(char *, char *, integer *, integer *, 
 	    integer *, doublecomplex *, doublecomplex *, integer *, 
 	    doublecomplex *, integer *, doublecomplex *, doublecomplex *, 
 	    integer *);
@@ -708,20 +708,20 @@ static doublereal c_b106 = 1.;
     extern doublereal dlamch_(char *);
     doublereal scaloc, scamin;
     extern doublereal dlarmm_(doublereal *, doublereal *, doublereal *);
-    extern /* Subroutine */ int xerbla_(char *, integer *);
+    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen );
     extern integer ilaenv_(integer *, char *, char *, integer *, integer *, 
 	    integer *, integer *, ftnlen, ftnlen);
     extern doublereal zlange_(char *, integer *, integer *, doublecomplex *, 
 	    integer *, doublereal *);
     doublereal bignum;
-    extern /* Subroutine */ int zdscal_(integer *, doublereal *, 
+    extern /* Subroutine */ void zdscal_(integer *, doublereal *, 
 	    doublecomplex *, integer *), zlascl_(char *, integer *, integer *,
 	     doublereal *, doublereal *, integer *, integer *, doublecomplex *
 	    , integer *, integer *);
     logical notrna, notrnb;
     doublereal smlnum;
     logical lquery;
-    extern /* Subroutine */ int ztrsyl_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void ztrsyl_(char *, char *, integer *, integer *, 
 	    integer *, doublecomplex *, integer *, doublecomplex *, integer *,
 	     doublecomplex *, integer *, doublereal *, integer *);
     integer nba, nbb;
@@ -796,17 +796,17 @@ static doublereal c_b106 = 1.;
     }
     if (*info != 0) {
 	i__1 = -(*info);
-	xerbla_("ZTRSYL3", &i__1);
-	return 0;
+	xerbla_("ZTRSYL3", &i__1, 7);
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     *scale = 1.;
     if (*m == 0 || *n == 0) {
-	return 0;
+	return;
     }
 
     wnrm = (doublereal*)malloc(f2cmax(*m,*n)*sizeof(doublereal));
@@ -816,7 +816,7 @@ static doublereal c_b106 = 1.;
     if (f2cmin(nba,nbb) == 1 || *ldswork < f2cmax(nba,nbb)) {
 	ztrsyl_(trana, tranb, isgn, m, n, &a[a_offset], lda, &b[b_offset], 
 		ldb, &c__[c_offset], ldc, scale, info);
-	return 0;
+	return;
     }
 
 /*     Set constants to control overflow */
@@ -1932,7 +1932,7 @@ static doublereal c_b106 = 1.;
 
 	swork[swork_dim1 + 1] = (doublereal) f2cmax(nba,nbb);
 	swork[swork_dim1 + 2] = (doublereal) ((nbb << 1) + nba);
-	return 0;
+	return;
     }
 
 /*     Realize consistent scaling */
@@ -2019,7 +2019,7 @@ static doublereal c_b106 = 1.;
     swork[swork_dim1 + 1] = (doublereal) f2cmax(nba,nbb);
     swork[swork_dim1 + 2] = (doublereal) ((nbb << 1) + nba);
 
-    return 0;
+    return;
 
 /*     End of ZTRSYL3 */
 

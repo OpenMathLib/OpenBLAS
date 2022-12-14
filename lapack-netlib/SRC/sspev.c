@@ -644,7 +644,7 @@ atrices</b> */
 /* > \ingroup realOTHEReigen */
 
 /*  ===================================================================== */
-/* Subroutine */ int sspev_(char *jobz, char *uplo, integer *n, real *ap, 
+/* Subroutine */ void sspev_(char *jobz, char *uplo, integer *n, real *ap, 
 	real *w, real *z__, integer *ldz, real *work, integer *info)
 {
     /* System generated locals */
@@ -658,7 +658,7 @@ atrices</b> */
     real rmin, rmax, sigma;
     extern logical lsame_(char *, char *);
     integer iinfo;
-    extern /* Subroutine */ int sscal_(integer *, real *, real *, integer *);
+    extern /* Subroutine */ void sscal_(integer *, real *, real *, integer *);
     logical wantz;
     integer iscale;
     extern real slamch_(char *);
@@ -667,9 +667,9 @@ atrices</b> */
     real bignum;
     integer indtau, indwrk;
     extern real slansp_(char *, char *, integer *, real *, real *);
-    extern /* Subroutine */ int ssterf_(integer *, real *, real *, integer *);
+    extern /* Subroutine */ void ssterf_(integer *, real *, real *, integer *);
     real smlnum;
-    extern /* Subroutine */ int sopgtr_(char *, integer *, real *, real *, 
+    extern /* Subroutine */ void sopgtr_(char *, integer *, real *, real *, 
 	    real *, integer *, real *, integer *), ssptrd_(char *, 
 	    integer *, real *, real *, real *, real *, integer *), 
 	    ssteqr_(char *, integer *, real *, real *, real *, integer *, 
@@ -714,13 +714,13 @@ atrices</b> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("SSPEV ", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
     if (*n == 1) {
@@ -728,7 +728,7 @@ atrices</b> */
 	if (wantz) {
 	    z__[z_dim1 + 1] = 1.f;
 	}
-	return 0;
+	return;
     }
 
 /*     Get machine constants. */
@@ -787,7 +787,7 @@ atrices</b> */
 	sscal_(&imax, &r__1, &w[1], &c__1);
     }
 
-    return 0;
+    return;
 
 /*     End of SSPEV */
 

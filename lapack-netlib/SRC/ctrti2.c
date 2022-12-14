@@ -624,7 +624,7 @@ f"> */
 /* > \ingroup complexOTHERcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int ctrti2_(char *uplo, char *diag, integer *n, complex *a, 
+/* Subroutine */ void ctrti2_(char *uplo, char *diag, integer *n, complex *a, 
 	integer *lda, integer *info)
 {
     /* System generated locals */
@@ -633,12 +633,13 @@ f"> */
 
     /* Local variables */
     integer j;
-    extern /* Subroutine */ int cscal_(integer *, complex *, complex *, 
+    extern /* Subroutine */ void cscal_(integer *, complex *, complex *, 
 	    integer *);
     extern logical lsame_(char *, char *);
     logical upper;
-    extern /* Subroutine */ int ctrmv_(char *, char *, char *, integer *, 
-	    complex *, integer *, complex *, integer *), xerbla_(char *, integer *, ftnlen);
+    extern /* Subroutine */ void ctrmv_(char *, char *, char *, integer *, 
+	    complex *, integer *, complex *, integer *);
+    extern int xerbla_(char *, integer *, ftnlen);
     logical nounit;
     complex ajj;
 
@@ -675,7 +676,7 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CTRTI2", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
     if (upper) {
@@ -735,7 +736,7 @@ f"> */
 	}
     }
 
-    return 0;
+    return;
 
 /*     End of CTRTI2 */
 

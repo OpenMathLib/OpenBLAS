@@ -606,7 +606,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int slarnv_(integer *idist, integer *iseed, integer *n, real 
+/* Subroutine */ void slarnv_(integer *idist, integer *iseed, integer *n, real 
 	*x)
 {
     /* System generated locals */
@@ -616,7 +616,7 @@ f"> */
     integer i__;
     real u[128];
     integer il, iv, il2;
-    extern /* Subroutine */ int slaruv_(integer *, integer *, real *);
+    extern /* Subroutine */ void slaruv_(integer *, integer *, real *);
 
 
 /*  -- LAPACK auxiliary routine (version 3.7.0) -- */
@@ -680,7 +680,7 @@ f"> */
 	}
 /* L40: */
     }
-    return 0;
+    return;
 
 /*     End of SLARNV */
 

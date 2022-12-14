@@ -659,7 +659,7 @@ static doublereal c_b5 = 1.;
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int dlarz_(char *side, integer *m, integer *n, integer *l, 
+/* Subroutine */ void dlarz_(char *side, integer *m, integer *n, integer *l, 
 	doublereal *v, integer *incv, doublereal *tau, doublereal *c__, 
 	integer *ldc, doublereal *work)
 {
@@ -668,11 +668,11 @@ static doublereal c_b5 = 1.;
     doublereal d__1;
 
     /* Local variables */
-    extern /* Subroutine */ int dger_(integer *, integer *, doublereal *, 
+    extern /* Subroutine */ void dger_(integer *, integer *, doublereal *, 
 	    doublereal *, integer *, doublereal *, integer *, doublereal *, 
 	    integer *);
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int dgemv_(char *, integer *, integer *, 
+    extern /* Subroutine */ void dgemv_(char *, integer *, integer *, 
 	    doublereal *, doublereal *, integer *, doublereal *, integer *, 
 	    doublereal *, doublereal *, integer *), dcopy_(integer *, 
 	    doublereal *, integer *, doublereal *, integer *), daxpy_(integer 
@@ -756,7 +756,7 @@ static doublereal c_b5 = 1.;
 
     }
 
-    return 0;
+    return;
 
 /*     End of DLARZ */
 

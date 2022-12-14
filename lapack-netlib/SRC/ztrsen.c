@@ -776,7 +776,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int ztrsen_(char *job, char *compq, logical *select, integer 
+/* Subroutine */ void ztrsen_(char *job, char *compq, logical *select, integer 
 	*n, doublecomplex *t, integer *ldt, doublecomplex *q, integer *ldq, 
 	doublecomplex *w, integer *m, doublereal *s, doublereal *sep, 
 	doublecomplex *work, integer *lwork, integer *info)
@@ -793,21 +793,21 @@ f"> */
     doublereal rnorm;
     integer n1, n2;
     doublereal rwork[1];
-    extern /* Subroutine */ int zlacn2_(integer *, doublecomplex *, 
+    extern /* Subroutine */ void zlacn2_(integer *, doublecomplex *, 
 	    doublecomplex *, doublereal *, integer *, integer *);
     integer nn, ks;
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     extern doublereal zlange_(char *, integer *, integer *, doublecomplex *, 
 	    integer *, doublereal *);
     logical wantbh;
-    extern /* Subroutine */ int zlacpy_(char *, integer *, integer *, 
+    extern /* Subroutine */ void zlacpy_(char *, integer *, integer *, 
 	    doublecomplex *, integer *, doublecomplex *, integer *);
     logical wantsp;
-    extern /* Subroutine */ int ztrexc_(char *, integer *, doublecomplex *, 
+    extern /* Subroutine */ void ztrexc_(char *, integer *, doublecomplex *, 
 	    integer *, doublecomplex *, integer *, integer *, integer *, 
 	    integer *);
     logical lquery;
-    extern /* Subroutine */ int ztrsyl_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void ztrsyl_(char *, char *, integer *, integer *, 
 	    integer *, doublecomplex *, integer *, doublecomplex *, integer *,
 	     doublecomplex *, integer *, doublereal *, integer *);
     doublereal est;
@@ -890,9 +890,9 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZTRSEN", &i__1, (ftnlen)6);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
@@ -990,7 +990,7 @@ L40:
 
     work[1].r = (doublereal) lwmin, work[1].i = 0.;
 
-    return 0;
+    return;
 
 /*     End of ZTRSEN */
 

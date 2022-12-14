@@ -664,7 +664,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 /* > \ingroup realOTHERcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int sorbdb5_(integer *m1, integer *m2, integer *n, real *x1, 
+/* Subroutine */ void sorbdb5_(integer *m1, integer *m2, integer *n, real *x1, 
 	integer *incx1, real *x2, integer *incx2, real *q1, integer *ldq1, 
 	real *q2, integer *ldq2, real *work, integer *lwork, integer *info)
 {
@@ -674,7 +674,8 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
     /* Local variables */
     extern real snrm2_(integer *, real *, integer *);
     integer i__, j, childinfo;
-    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen), sorbdb6_(
+    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
+    extern void sorbdb6_(
 	    integer *, integer *, integer *, real *, integer *, real *, 
 	    integer *, real *, integer *, real *, integer *, real *, integer *
 	    , integer *);
@@ -725,7 +726,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("SORBDB5", &i__1, (ftnlen)7);
-	return 0;
+	return;
     }
 
 /*     Project X onto the orthogonal complement of Q */
@@ -737,7 +738,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 
     if (snrm2_(m1, &x1[1], incx1) != 0.f || snrm2_(m2, &x2[1], incx2) != 0.f) 
 	    {
-	return 0;
+	return;
     }
 
 /*     Project each standard basis vector e_1,...,e_M1 in turn, stopping */
@@ -758,7 +759,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 		ldq1, &q2[q2_offset], ldq2, &work[1], lwork, &childinfo);
 	if (snrm2_(m1, &x1[1], incx1) != 0.f || snrm2_(m2, &x2[1], incx2) != 
 		0.f) {
-	    return 0;
+	    return;
 	}
     }
 
@@ -780,11 +781,11 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 		ldq1, &q2[q2_offset], ldq2, &work[1], lwork, &childinfo);
 	if (snrm2_(m1, &x1[1], incx1) != 0.f || snrm2_(m2, &x2[1], incx2) != 
 		0.f) {
-	    return 0;
+	    return;
 	}
     }
 
-    return 0;
+    return;
 
 /*     End of SORBDB5 */
 

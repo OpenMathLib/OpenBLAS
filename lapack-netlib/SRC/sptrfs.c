@@ -676,7 +676,7 @@ f"> */
 /* > \ingroup realPTcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int sptrfs_(integer *n, integer *nrhs, real *d__, real *e, 
+/* Subroutine */ void sptrfs_(integer *n, integer *nrhs, real *d__, real *e, 
 	real *df, real *ef, real *b, integer *ldb, real *x, integer *ldx, 
 	real *ferr, real *berr, real *work, integer *info)
 {
@@ -689,7 +689,7 @@ f"> */
     integer i__, j;
     real s;
     integer count;
-    extern /* Subroutine */ int saxpy_(integer *, real *, real *, integer *, 
+    extern /* Subroutine */ void saxpy_(integer *, real *, real *, integer *, 
 	    real *, integer *);
     real bi, cx, dx, ex;
     integer ix;
@@ -699,7 +699,7 @@ f"> */
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     extern integer isamax_(integer *, real *, integer *);
     real lstres;
-    extern /* Subroutine */ int spttrs_(integer *, integer *, real *, real *, 
+    extern /* Subroutine */ void spttrs_(integer *, integer *, real *, real *, 
 	    real *, integer *, integer *);
     real eps;
 
@@ -744,7 +744,7 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("SPTRFS", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
@@ -756,7 +756,7 @@ f"> */
 	    berr[j] = 0.f;
 /* L10: */
 	}
-	return 0;
+	return;
     }
 
 /*     NZ = maximum number of nonzero elements in each row of A, plus 1 */
@@ -935,7 +935,7 @@ L20:
 /* L90: */
     }
 
-    return 0;
+    return;
 
 /*     End of SPTRFS */
 

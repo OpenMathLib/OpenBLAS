@@ -680,7 +680,7 @@ f"> */
 /* > \ingroup realSYcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int strsyl_(char *trana, char *tranb, integer *isgn, integer 
+/* Subroutine */ void strsyl_(char *trana, char *tranb, integer *isgn, integer 
 	*m, integer *n, real *a, integer *lda, real *b, integer *ldb, real *
 	c__, integer *ldc, real *scale, integer *info)
 {
@@ -697,14 +697,14 @@ f"> */
     integer j, k, l;
     real x[4]	/* was [2][2] */;
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int sscal_(integer *, real *, real *, integer *);
+    extern /* Subroutine */ void sscal_(integer *, real *, real *, integer *);
     integer knext, lnext, k1, k2, l1, l2;
     real xnorm;
-    extern /* Subroutine */ int slaln2_(logical *, integer *, integer *, real 
+    extern /* Subroutine */ void slaln2_(logical *, integer *, integer *, real 
 	    *, real *, real *, integer *, real *, real *, real *, integer *, 
 	    real *, real *, real *, integer *, real *, real *, integer *);
     real a11, db;
-    extern /* Subroutine */ int slasy2_(logical *, logical *, integer *, 
+    extern /* Subroutine */ void slasy2_(logical *, logical *, integer *, 
 	    integer *, integer *, real *, integer *, real *, integer *, real *
 	    , integer *, real *, real *, integer *, real *, integer *), 
 	    slabad_(real *, real *);
@@ -766,14 +766,14 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("STRSYL", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     *scale = 1.f;
     if (*m == 0 || *n == 0) {
-	return 0;
+	return;
     }
 
 /*     Set constants to control overflow */
@@ -1875,7 +1875,7 @@ L250:
 
     }
 
-    return 0;
+    return;
 
 /*     End of STRSYL */
 

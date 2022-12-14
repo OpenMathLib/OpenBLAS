@@ -703,7 +703,7 @@ f"> */
 /* > Christof Voemel, University of California, Berkeley, USA */
 
 /*  ===================================================================== */
-/* Subroutine */ int dlarrb_(integer *n, doublereal *d__, doublereal *lld, 
+/* Subroutine */ void dlarrb_(integer *n, doublereal *d__, doublereal *lld, 
 	integer *ifirst, integer *ilast, doublereal *rtol1, doublereal *rtol2,
 	 integer *offset, doublereal *w, doublereal *wgap, doublereal *werr, 
 	doublereal *work, integer *iwork, doublereal *pivmin, doublereal *
@@ -751,7 +751,7 @@ f"> */
 /*     Quick return if possible */
 
     if (*n <= 0) {
-	return 0;
+	return;
     }
 
     maxitr = (integer) ((log(*spdiam + *pivmin) - log(*pivmin)) / log(2.)) + 
@@ -933,7 +933,7 @@ L100:
 	wgap[ii - 1] = f2cmax(d__1,d__2);
 /* L111: */
     }
-    return 0;
+    return;
 
 /*     End of DLARRB */
 

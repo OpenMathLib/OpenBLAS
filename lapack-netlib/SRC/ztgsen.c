@@ -944,7 +944,7 @@ f"> */
 /* >      1996. */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int ztgsen_(integer *ijob, logical *wantq, logical *wantz, 
+/* Subroutine */ void ztgsen_(integer *ijob, logical *wantq, logical *wantz, 
 	logical *select, integer *n, doublecomplex *a, integer *lda, 
 	doublecomplex *b, integer *ldb, doublecomplex *alpha, doublecomplex *
 	beta, doublecomplex *q, integer *ldq, doublecomplex *z__, integer *
@@ -963,13 +963,13 @@ f"> */
     logical swap;
     doublecomplex temp1, temp2;
     integer i__, k, isave[3];
-    extern /* Subroutine */ int zscal_(integer *, doublecomplex *, 
+    extern /* Subroutine */ void zscal_(integer *, doublecomplex *, 
 	    doublecomplex *, integer *);
     logical wantd;
     integer lwmin;
     logical wantp;
     integer n1, n2;
-    extern /* Subroutine */ int zlacn2_(integer *, doublecomplex *, 
+    extern /* Subroutine */ void zlacn2_(integer *, doublecomplex *, 
 	    doublecomplex *, doublereal *, integer *, integer *);
     logical wantd1, wantd2;
     extern doublereal dlamch_(char *);
@@ -978,16 +978,16 @@ f"> */
     doublereal rdscal, safmin;
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     integer liwmin;
-    extern /* Subroutine */ int zlacpy_(char *, integer *, integer *, 
+    extern /* Subroutine */ void zlacpy_(char *, integer *, integer *, 
 	    doublecomplex *, integer *, doublecomplex *, integer *), 
 	    ztgexc_(logical *, logical *, integer *, doublecomplex *, integer 
 	    *, doublecomplex *, integer *, doublecomplex *, integer *, 
 	    doublecomplex *, integer *, integer *, integer *, integer *);
     integer mn2;
-    extern /* Subroutine */ int zlassq_(integer *, doublecomplex *, integer *,
+    extern /* Subroutine */ void zlassq_(integer *, doublecomplex *, integer *,
 	     doublereal *, doublereal *);
     logical lquery;
-    extern /* Subroutine */ int ztgsyl_(char *, integer *, integer *, integer 
+    extern /* Subroutine */ void ztgsyl_(char *, integer *, integer *, integer 
 	    *, doublecomplex *, integer *, doublecomplex *, integer *, 
 	    doublecomplex *, integer *, doublecomplex *, integer *, 
 	    doublecomplex *, integer *, doublecomplex *, integer *, 
@@ -1048,7 +1048,7 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZTGSEN", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
     ierr = 0;
@@ -1116,9 +1116,9 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZTGSEN", &i__1, (ftnlen)6);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible. */
@@ -1373,7 +1373,7 @@ L70:
     work[1].r = (doublereal) lwmin, work[1].i = 0.;
     iwork[1] = liwmin;
 
-    return 0;
+    return;
 
 /*     End of ZTGSEN */
 

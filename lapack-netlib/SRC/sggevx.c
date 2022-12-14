@@ -905,7 +905,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int sggevx_(char *balanc, char *jobvl, char *jobvr, char *
+/* Subroutine */ void sggevx_(char *balanc, char *jobvl, char *jobvr, char *
 	sense, integer *n, real *a, integer *lda, real *b, integer *ldb, real 
 	*alphar, real *alphai, real *beta, real *vl, integer *ldvl, real *vr, 
 	integer *ldvr, integer *ilo, integer *ihi, real *lscale, real *rscale,
@@ -928,22 +928,23 @@ f"> */
     integer icols;
     logical noscl;
     integer irows, jc;
-    extern /* Subroutine */ int slabad_(real *, real *);
+    extern /* Subroutine */ void slabad_(real *, real *);
     integer in, mm, jr;
-    extern /* Subroutine */ int sggbak_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void sggbak_(char *, char *, integer *, integer *, 
 	    integer *, real *, real *, integer *, real *, integer *, integer *
 	    ), sggbal_(char *, integer *, real *, integer *, 
 	    real *, integer *, integer *, integer *, real *, real *, real *, 
 	    integer *);
     logical ilascl, ilbscl;
-    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen), sgghrd_(
+    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
+    extern void sgghrd_(
 	    char *, char *, integer *, integer *, integer *, real *, integer *
 	    , real *, integer *, real *, integer *, real *, integer *, 
 	    integer *);
     logical ldumma[1];
     char chtemp[1];
     real bignum;
-    extern /* Subroutine */ int slascl_(char *, integer *, integer *, real *, 
+    extern /* Subroutine */ void slascl_(char *, integer *, integer *, real *, 
 	    real *, integer *, integer *, real *, integer *, integer *);
     extern integer ilaenv_(integer *, char *, char *, integer *, integer *, 
 	    integer *, integer *, ftnlen, ftnlen);
@@ -951,18 +952,18 @@ f"> */
     integer ijobvl;
     extern real slange_(char *, integer *, integer *, real *, integer *, real 
 	    *);
-    extern /* Subroutine */ int sgeqrf_(integer *, integer *, real *, integer 
+    extern /* Subroutine */ void sgeqrf_(integer *, integer *, real *, integer 
 	    *, real *, real *, integer *, integer *);
     integer ijobvr;
-    extern /* Subroutine */ int slacpy_(char *, integer *, integer *, real *, 
+    extern /* Subroutine */ void slacpy_(char *, integer *, integer *, real *, 
 	    integer *, real *, integer *);
     logical wantsb;
-    extern /* Subroutine */ int slaset_(char *, integer *, integer *, real *, 
+    extern /* Subroutine */ void slaset_(char *, integer *, integer *, real *, 
 	    real *, real *, integer *);
     real anrmto;
     logical wantse;
     real bnrmto;
-    extern /* Subroutine */ int shgeqz_(char *, char *, char *, integer *, 
+    extern /* Subroutine */ void shgeqz_(char *, char *, char *, integer *, 
 	    integer *, integer *, real *, integer *, real *, integer *, real *
 	    , real *, real *, real *, integer *, real *, integer *, real *, 
 	    integer *, integer *), stgevc_(char *, 
@@ -975,10 +976,10 @@ f"> */
     integer minwrk, maxwrk;
     logical wantsn;
     real smlnum;
-    extern /* Subroutine */ int sorgqr_(integer *, integer *, integer *, real 
+    extern /* Subroutine */ void sorgqr_(integer *, integer *, integer *, real 
 	    *, integer *, real *, real *, integer *, integer *);
     logical lquery, wantsv;
-    extern /* Subroutine */ int sormqr_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void sormqr_(char *, char *, integer *, integer *, 
 	    integer *, real *, integer *, real *, real *, integer *, real *, 
 	    integer *, integer *);
     real eps;
@@ -1124,15 +1125,15 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("SGGEVX", &i__1, (ftnlen)6);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 
@@ -1501,7 +1502,7 @@ L130:
     }
 
     work[1] = (real) maxwrk;
-    return 0;
+    return;
 
 /*     End of SGGEVX */
 

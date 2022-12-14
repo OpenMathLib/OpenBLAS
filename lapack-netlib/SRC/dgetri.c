@@ -631,7 +631,7 @@ f"> */
 /* > \ingroup doubleGEcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int dgetri_(integer *n, doublereal *a, integer *lda, integer 
+/* Subroutine */ void dgetri_(integer *n, doublereal *a, integer *lda, integer 
 	*ipiv, doublereal *work, integer *lwork, integer *info)
 {
     /* System generated locals */
@@ -639,14 +639,14 @@ f"> */
 
     /* Local variables */
     integer i__, j;
-    extern /* Subroutine */ int dgemm_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void dgemm_(char *, char *, integer *, integer *, 
 	    integer *, doublereal *, doublereal *, integer *, doublereal *, 
 	    integer *, doublereal *, doublereal *, integer *),
 	     dgemv_(char *, integer *, integer *, doublereal *, doublereal *, 
 	    integer *, doublereal *, integer *, doublereal *, doublereal *, 
 	    integer *);
     integer nbmin;
-    extern /* Subroutine */ int dswap_(integer *, doublereal *, integer *, 
+    extern /* Subroutine */ void dswap_(integer *, doublereal *, integer *, 
 	    doublereal *, integer *), dtrsm_(char *, char *, char *, char *, 
 	    integer *, integer *, doublereal *, doublereal *, integer *, 
 	    doublereal *, integer *);
@@ -697,15 +697,15 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DGETRI", &i__1, (ftnlen)6);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /*     Form inv(U).  If INFO > 0 from DTRTRI, then U is singular, */
@@ -713,7 +713,7 @@ f"> */
 
     dtrtri_("Upper", "Non-unit", n, &a[a_offset], lda, info);
     if (*info > 0) {
-	return 0;
+	return;
     }
 
     nbmin = 2;
@@ -810,7 +810,7 @@ f"> */
     }
 
     work[1] = (doublereal) iws;
-    return 0;
+    return;
 
 /*     End of DGETRI */
 

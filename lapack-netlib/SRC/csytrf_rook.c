@@ -723,7 +723,7 @@ rook.f"> */
 /* > \endverbatim */
 
 /*  ===================================================================== */
-/* Subroutine */ int csytrf_rook_(char *uplo, integer *n, complex *a, 
+/* Subroutine */ void csytrf_rook_(char *uplo, integer *n, complex *a, 
 	integer *lda, integer *ipiv, complex *work, integer *lwork, integer *
 	info)
 {
@@ -742,7 +742,7 @@ rook.f"> */
     integer ldwork, lwkopt;
     logical lquery;
     integer iws;
-    extern /* Subroutine */ int csytf2_rook_(char *, integer *, complex *, 
+    extern /* Subroutine */ void csytf2_rook_(char *, integer *, complex *, 
 	    integer *, integer *, integer *), clasyf_rook_(char *, 
 	    integer *, integer *, integer *, complex *, integer *, integer *, 
 	    complex *, integer *, integer *);
@@ -795,9 +795,9 @@ rook.f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CSYTRF_ROOK", &i__1, (ftnlen)11);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
     nbmin = 2;
@@ -927,7 +927,7 @@ L20:
 
 L40:
     work[1].r = (real) lwkopt, work[1].i = 0.f;
-    return 0;
+    return;
 
 /*     End of CSYTRF_ROOK */
 

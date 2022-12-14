@@ -697,7 +697,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int ztpqrt_(integer *m, integer *n, integer *l, integer *nb, 
+/* Subroutine */ void ztpqrt_(integer *m, integer *n, integer *l, integer *nb, 
 	doublecomplex *a, integer *lda, doublecomplex *b, integer *ldb, 
 	doublecomplex *t, integer *ldt, doublecomplex *work, integer *info)
 {
@@ -707,7 +707,8 @@ f"> */
 
     /* Local variables */
     integer i__, iinfo, ib, lb, mb;
-    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen), ztprfb_(
+    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
+    extern void ztprfb_(
 	    char *, char *, char *, char *, integer *, integer *, integer *, 
 	    integer *, doublecomplex *, integer *, doublecomplex *, integer *,
 	     doublecomplex *, integer *, doublecomplex *, integer *, 
@@ -760,13 +761,13 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZTPQRT", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*m == 0 || *n == 0) {
-	return 0;
+	return;
     }
 
     i__1 = *n;
@@ -800,7 +801,7 @@ f"> */
 		    , &ib);
 	}
     }
-    return 0;
+    return;
 
 /*     End of ZTPQRT */
 

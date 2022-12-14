@@ -649,7 +649,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int dlatrz_(integer *m, integer *n, integer *l, doublereal *
+/* Subroutine */ void dlatrz_(integer *m, integer *n, integer *l, doublereal *
 	a, integer *lda, doublereal *tau, doublereal *work)
 {
     /* System generated locals */
@@ -657,7 +657,7 @@ f"> */
 
     /* Local variables */
     integer i__;
-    extern /* Subroutine */ int dlarz_(char *, integer *, integer *, integer *
+    extern /* Subroutine */ void dlarz_(char *, integer *, integer *, integer *
 	    , doublereal *, integer *, doublereal *, doublereal *, integer *, 
 	    doublereal *), dlarfg_(integer *, doublereal *, 
 	    doublereal *, integer *, doublereal *);
@@ -685,14 +685,14 @@ f"> */
 
     /* Function Body */
     if (*m == 0) {
-	return 0;
+	return;
     } else if (*m == *n) {
 	i__1 = *n;
 	for (i__ = 1; i__ <= i__1; ++i__) {
 	    tau[i__] = 0.;
 /* L10: */
 	}
-	return 0;
+	return;
     }
 
     for (i__ = *m; i__ >= 1; --i__) {
@@ -714,7 +714,7 @@ f"> */
 /* L20: */
     }
 
-    return 0;
+    return;
 
 /*     End of DLATRZ */
 

@@ -613,7 +613,7 @@ f"> */
 /* > \ingroup OTHERauxiliary */
 
 /*  ===================================================================== */
-/* Subroutine */ int slag2d_(integer *m, integer *n, real *sa, integer *ldsa, 
+/* Subroutine */ void slag2d_(integer *m, integer *n, real *sa, integer *ldsa, 
 	doublereal *a, integer *lda, integer *info)
 {
     /* System generated locals */
@@ -651,7 +651,7 @@ f"> */
 	}
 /* L20: */
     }
-    return 0;
+    return;
 
 /*     End of SLAG2D */
 

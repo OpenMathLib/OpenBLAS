@@ -662,21 +662,21 @@ _col_getrfnp.f"> */
 /* > \endverbatim */
 
 /*  ===================================================================== */
-/* Subroutine */ int dlaorhr_col_getrfnp_(integer *m, integer *n, doublereal 
+/* Subroutine */ void dlaorhr_col_getrfnp_(integer *m, integer *n, doublereal 
 	*a, integer *lda, doublereal *d__, integer *info)
 {
     /* System generated locals */
     integer a_dim1, a_offset, i__1, i__2, i__3, i__4;
 
     /* Local variables */
-    extern /* Subroutine */ int dlaorhr_col_getrfnp2_(integer *, integer *, 
+    extern /* Subroutine */ void dlaorhr_col_getrfnp2_(integer *, integer *, 
 	    doublereal *, integer *, doublereal *, integer *);
     integer j;
-    extern /* Subroutine */ int dgemm_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void dgemm_(char *, char *, integer *, integer *, 
 	    integer *, doublereal *, doublereal *, integer *, doublereal *, 
 	    integer *, doublereal *, doublereal *, integer *);
     integer iinfo;
-    extern /* Subroutine */ int dtrsm_(char *, char *, char *, char *, 
+    extern /* Subroutine */ void dtrsm_(char *, char *, char *, char *, 
 	    integer *, integer *, doublereal *, doublereal *, integer *, 
 	    doublereal *, integer *);
     integer jb, nb;
@@ -714,13 +714,13 @@ _col_getrfnp.f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DLAORHR_COL_GETRFNP", &i__1, (ftnlen)19);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (f2cmin(*m,*n) == 0) {
-	return 0;
+	return;
     }
 
 /*     Determine the block size for this environment. */
@@ -771,7 +771,7 @@ _col_getrfnp.f"> */
 	    }
 	}
     }
-    return 0;
+    return;
 
 /*     End of DLAORHR_COL_GETRFNP */
 

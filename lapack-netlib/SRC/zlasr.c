@@ -709,7 +709,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 /* > \ingroup complex16OTHERauxiliary */
 
 /*  ===================================================================== */
-/* Subroutine */ int zlasr_(char *side, char *pivot, char *direct, integer *m,
+/* Subroutine */ void zlasr_(char *side, char *pivot, char *direct, integer *m,
 	 integer *n, doublereal *c__, doublereal *s, doublecomplex *a, 
 	integer *lda)
 {
@@ -763,13 +763,13 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
     }
     if (info != 0) {
 	xerbla_("ZLASR ", &info, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*m == 0 || *n == 0) {
-	return 0;
+	return;
     }
     if (lsame_(side, "L")) {
 
@@ -1161,7 +1161,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 	}
     }
 
-    return 0;
+    return;
 
 /*     End of ZLASR */
 

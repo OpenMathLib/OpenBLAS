@@ -697,7 +697,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int dsytrf_(char *uplo, integer *n, doublereal *a, integer *
+/* Subroutine */ void dsytrf_(char *uplo, integer *n, doublereal *a, integer *
 	lda, integer *ipiv, doublereal *work, integer *lwork, integer *info)
 {
     /* System generated locals */
@@ -708,13 +708,13 @@ f"> */
     extern logical lsame_(char *, char *);
     integer nbmin, iinfo;
     logical upper;
-    extern /* Subroutine */ int dsytf2_(char *, integer *, doublereal *, 
+    extern /* Subroutine */ void dsytf2_(char *, integer *, doublereal *, 
 	    integer *, integer *, integer *);
     integer kb, nb;
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     extern integer ilaenv_(integer *, char *, char *, integer *, integer *, 
 	    integer *, integer *, ftnlen, ftnlen);
-    extern /* Subroutine */ int dlasyf_(char *, integer *, integer *, integer 
+    extern /* Subroutine */ void dlasyf_(char *, integer *, integer *, integer 
 	    *, doublereal *, integer *, integer *, doublereal *, integer *, 
 	    integer *);
     integer ldwork, lwkopt;
@@ -767,9 +767,9 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DSYTRF", &i__1, (ftnlen)6);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
     nbmin = 2;
@@ -896,7 +896,7 @@ L20:
 
 L40:
     work[1] = (doublereal) lwkopt;
-    return 0;
+    return;
 
 /*     End of DSYTRF */
 

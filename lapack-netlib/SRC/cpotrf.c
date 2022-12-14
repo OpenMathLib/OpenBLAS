@@ -624,7 +624,7 @@ f"> */
 /* > \ingroup complexPOcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int cpotrf_(char *uplo, integer *n, complex *a, integer *lda,
+/* Subroutine */ void cpotrf_(char *uplo, integer *n, complex *a, integer *lda,
 	 integer *info)
 {
     /* System generated locals */
@@ -633,13 +633,13 @@ f"> */
 
     /* Local variables */
     integer j;
-    extern /* Subroutine */ int cgemm_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void cgemm_(char *, char *, integer *, integer *, 
 	    integer *, complex *, complex *, integer *, complex *, integer *, 
 	    complex *, complex *, integer *), cherk_(char *, 
 	    char *, integer *, integer *, real *, complex *, integer *, real *
 	    , complex *, integer *);
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int ctrsm_(char *, char *, char *, char *, 
+    extern /* Subroutine */ void ctrsm_(char *, char *, char *, char *, 
 	    integer *, integer *, complex *, complex *, integer *, complex *, 
 	    integer *);
     logical upper;
@@ -647,7 +647,7 @@ f"> */
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     extern integer ilaenv_(integer *, char *, char *, integer *, integer *, 
 	    integer *, integer *, ftnlen, ftnlen);
-    extern /* Subroutine */ int cpotrf2_(char *, integer *, complex *, 
+    extern /* Subroutine */ void cpotrf2_(char *, integer *, complex *, 
 	    integer *, integer *);
 
 
@@ -680,13 +680,13 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CPOTRF", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /*     Determine the block size for this environment. */
@@ -788,7 +788,7 @@ L30:
     *info = *info + j - 1;
 
 L40:
-    return 0;
+    return;
 
 /*     End of CPOTRF */
 

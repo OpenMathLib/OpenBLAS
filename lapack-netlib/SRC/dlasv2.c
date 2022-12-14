@@ -654,7 +654,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int dlasv2_(doublereal *f, doublereal *g, doublereal *h__, 
+/* Subroutine */ void dlasv2_(doublereal *f, doublereal *g, doublereal *h__, 
 	doublereal *ssmin, doublereal *ssmax, doublereal *snr, doublereal *
 	csr, doublereal *snl, doublereal *csl)
 {
@@ -827,7 +827,7 @@ f"> */
     *ssmax = d_sign(ssmax, &tsign);
     d__1 = tsign * d_sign(&c_b4, f) * d_sign(&c_b4, h__);
     *ssmin = d_sign(ssmin, &d__1);
-    return 0;
+    return;
 
 /*     End of DLASV2 */
 

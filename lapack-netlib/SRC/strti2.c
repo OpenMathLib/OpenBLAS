@@ -623,7 +623,7 @@ f"> */
 /* > \ingroup realOTHERcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int strti2_(char *uplo, char *diag, integer *n, real *a, 
+/* Subroutine */ void strti2_(char *uplo, char *diag, integer *n, real *a, 
 	integer *lda, integer *info)
 {
     /* System generated locals */
@@ -632,11 +632,11 @@ f"> */
     /* Local variables */
     integer j;
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int sscal_(integer *, real *, real *, integer *);
+    extern /* Subroutine */ void sscal_(integer *, real *, real *, integer *);
     logical upper;
-    extern /* Subroutine */ int strmv_(char *, char *, char *, integer *, 
-	    real *, integer *, real *, integer *), 
-	    xerbla_(char *, integer *, ftnlen);
+    extern /* Subroutine */ void strmv_(char *, char *, char *, integer *, 
+	    real *, integer *, real *, integer *); 
+    extern int xerbla_(char *, integer *, ftnlen);
     logical nounit;
     real ajj;
 
@@ -673,7 +673,7 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("STRTI2", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
     if (upper) {
@@ -723,7 +723,7 @@ f"> */
 	}
     }
 
-    return 0;
+    return;
 
 /*     End of STRTI2 */
 

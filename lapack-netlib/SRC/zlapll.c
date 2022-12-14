@@ -609,7 +609,7 @@ f"> */
 /* > \ingroup complex16OTHERauxiliary */
 
 /*  ===================================================================== */
-/* Subroutine */ int zlapll_(integer *n, doublecomplex *x, integer *incx, 
+/* Subroutine */ void zlapll_(integer *n, doublecomplex *x, integer *incx, 
 	doublecomplex *y, integer *incy, doublereal *ssmin)
 {
     /* System generated locals */
@@ -618,16 +618,16 @@ f"> */
     doublecomplex z__1, z__2, z__3, z__4;
 
     /* Local variables */
-    extern /* Subroutine */ int dlas2_(doublereal *, doublereal *, doublereal 
+    extern /* Subroutine */ void dlas2_(doublereal *, doublereal *, doublereal 
 	    *, doublereal *, doublereal *);
     doublecomplex c__;
     extern /* Double Complex */ VOID zdotc_(doublecomplex *, integer *, 
 	    doublecomplex *, integer *, doublecomplex *, integer *);
     doublereal ssmax;
-    extern /* Subroutine */ int zaxpy_(integer *, doublecomplex *, 
+    extern /* Subroutine */ void zaxpy_(integer *, doublecomplex *, 
 	    doublecomplex *, integer *, doublecomplex *, integer *);
     doublecomplex a11, a12, a22;
-    extern /* Subroutine */ int zlarfg_(integer *, doublecomplex *, 
+    extern /* Subroutine */ void zlarfg_(integer *, doublecomplex *, 
 	    doublecomplex *, integer *, doublecomplex *);
     doublecomplex tau;
 
@@ -650,7 +650,7 @@ f"> */
     /* Function Body */
     if (*n <= 1) {
 	*ssmin = 0.;
-	return 0;
+	return;
     }
 
 /*     Compute the QR factorization of the N-by-2 matrix ( X Y ) */
@@ -681,7 +681,7 @@ f"> */
     d__3 = z_abs(&a22);
     dlas2_(&d__1, &d__2, &d__3, ssmin, &ssmax);
 
-    return 0;
+    return;
 
 /*     End of ZLAPLL */
 

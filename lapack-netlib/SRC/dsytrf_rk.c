@@ -774,7 +774,7 @@ rk.f"> */
 /* > \endverbatim */
 
 /*  ===================================================================== */
-/* Subroutine */ int dsytrf_rk_(char *uplo, integer *n, doublereal *a, 
+/* Subroutine */ void dsytrf_rk_(char *uplo, integer *n, doublereal *a, 
 	integer *lda, doublereal *e, integer *ipiv, doublereal *work, integer 
 	*lwork, integer *info)
 {
@@ -783,14 +783,14 @@ rk.f"> */
 
     /* Local variables */
     integer i__, k;
-    extern /* Subroutine */ int dsytf2_rk_(char *, integer *, doublereal *, 
+    extern /* Subroutine */ void dsytf2_rk_(char *, integer *, doublereal *, 
 	    integer *, doublereal *, integer *, integer *);
     extern logical lsame_(char *, char *);
     integer nbmin, iinfo;
-    extern /* Subroutine */ int dswap_(integer *, doublereal *, integer *, 
+    extern /* Subroutine */ void dswap_(integer *, doublereal *, integer *, 
 	    doublereal *, integer *);
     logical upper;
-    extern /* Subroutine */ int dlasyf_rk_(char *, integer *, integer *, 
+    extern /* Subroutine */ void dlasyf_rk_(char *, integer *, integer *, 
 	    integer *, doublereal *, integer *, doublereal *, integer *, 
 	    doublereal *, integer *, integer *);
     integer kb, nb, ip;
@@ -848,9 +848,9 @@ rk.f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DSYTRF_RK", &i__1, (ftnlen)9);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
     nbmin = 2;
@@ -1036,7 +1036,7 @@ L35:
     }
 
     work[1] = (doublereal) lwkopt;
-    return 0;
+    return;
 
 /*     End of DSYTRF_RK */
 

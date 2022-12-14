@@ -693,7 +693,7 @@ is composed of a triangular block and a pentagonal block, using the compact WY r
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int stplqt2_(integer *m, integer *n, integer *l, real *a, 
+/* Subroutine */ void stplqt2_(integer *m, integer *n, integer *l, real *a, 
 	integer *lda, real *b, integer *ldb, real *t, integer *ldt, integer *
 	info)
 {
@@ -702,15 +702,16 @@ is composed of a triangular block and a pentagonal block, using the compact WY r
 	    i__3;
 
     /* Local variables */
-    extern /* Subroutine */ int sger_(integer *, integer *, real *, real *, 
+    extern /* Subroutine */ void sger_(integer *, integer *, real *, real *, 
 	    integer *, real *, integer *, real *, integer *);
     integer i__, j, p;
     real alpha;
-    extern /* Subroutine */ int sgemv_(char *, integer *, integer *, real *, 
+    extern /* Subroutine */ void sgemv_(char *, integer *, integer *, real *, 
 	    real *, integer *, real *, integer *, real *, real *, integer *), strmv_(char *, char *, char *, integer *, real *, 
 	    integer *, real *, integer *);
     integer mp, np;
-    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen), slarfg_(
+    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
+    extern void slarfg_(
 	    integer *, real *, real *, integer *, real *);
 
 
@@ -754,13 +755,13 @@ is composed of a triangular block and a pentagonal block, using the compact WY r
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("STPLQT2", &i__1, (ftnlen)7);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0 || *m == 0) {
-	return 0;
+	return;
     }
 
     i__1 = *m;
@@ -860,6 +861,6 @@ is composed of a triangular block and a pentagonal block, using the compact WY r
 
 /*     End of STPLQT2 */
 
-    return 0;
+    return;
 } /* stplqt2_ */
 

@@ -641,14 +641,14 @@ static integer c_n1 = -1;
 /* > \ingroup complexHEcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int chetri2_(char *uplo, integer *n, complex *a, integer *
+/* Subroutine */ void chetri2_(char *uplo, integer *n, complex *a, integer *
 	lda, integer *ipiv, complex *work, integer *lwork, integer *info)
 {
     /* System generated locals */
     integer a_dim1, a_offset, i__1;
 
     /* Local variables */
-    extern /* Subroutine */ int chetri2x_(char *, integer *, complex *, 
+    extern /* Subroutine */ void chetri2x_(char *, integer *, complex *, 
 	    integer *, integer *, complex *, integer *, integer *);
     extern logical lsame_(char *, char *);
     integer nbmax;
@@ -656,7 +656,7 @@ static integer c_n1 = -1;
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     extern integer ilaenv_(integer *, char *, char *, integer *, integer *, 
 	    integer *, integer *, ftnlen, ftnlen);
-    extern /* Subroutine */ int chetri_(char *, integer *, complex *, integer 
+    extern /* Subroutine */ void chetri_(char *, integer *, complex *, integer 
 	    *, integer *, complex *, integer *);
     logical lquery;
     integer minsize;
@@ -709,13 +709,13 @@ static integer c_n1 = -1;
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CHETRI2", &i__1, (ftnlen)7);
-	return 0;
+	return;
     } else if (lquery) {
 	work[1].r = (real) minsize, work[1].i = 0.f;
-	return 0;
+	return;
     }
     if (*n == 0) {
-	return 0;
+	return;
     }
     if (nbmax >= *n) {
 	chetri_(uplo, n, &a[a_offset], lda, &ipiv[1], &work[1], info);
@@ -723,7 +723,7 @@ static integer c_n1 = -1;
 	chetri2x_(uplo, n, &a[a_offset], lda, &ipiv[1], &work[1], &nbmax, 
 		info);
     }
-    return 0;
+    return;
 
 /*     End of CHETRI2 */
 

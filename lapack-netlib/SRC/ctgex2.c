@@ -704,7 +704,7 @@ f"> */
 /* >      Numerical Algorithms, 1996. */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int ctgex2_(logical *wantq, logical *wantz, integer *n, 
+/* Subroutine */ void ctgex2_(logical *wantq, logical *wantz, integer *n, 
 	complex *a, integer *lda, complex *b, integer *ldb, complex *q, 
 	integer *ldq, complex *z__, integer *ldz, integer *j1, integer *info)
 {
@@ -717,7 +717,7 @@ f"> */
     /* Local variables */
     logical weak;
     complex cdum;
-    extern /* Subroutine */ int crot_(integer *, complex *, integer *, 
+    extern /* Subroutine */ void crot_(integer *, complex *, integer *, 
 	    complex *, integer *, real *, complex *);
     complex work[8], f, g;
     integer i__, m;
@@ -727,11 +727,11 @@ f"> */
     real ss;
     extern real slamch_(char *);
     real ws;
-    extern /* Subroutine */ int clacpy_(char *, integer *, integer *, complex 
+    extern /* Subroutine */ void clacpy_(char *, integer *, integer *, complex 
 	    *, integer *, complex *, integer *), clartg_(complex *, 
 	    complex *, real *, complex *, complex *);
     complex sz;
-    extern /* Subroutine */ int classq_(integer *, complex *, integer *, real 
+    extern /* Subroutine */ void classq_(integer *, complex *, integer *, real 
 	    *, real *);
     real thresh, smlnum;
     logical strong;
@@ -767,7 +767,7 @@ f"> */
 /*     Quick return if possible */
 
     if (*n <= 1) {
-	return 0;
+	return;
     }
 
     m = 2;
@@ -938,13 +938,13 @@ f"> */
 
 /*     Exit with INFO = 0 if swap was successfully performed. */
 
-    return 0;
+    return;
 
 /*     Exit with INFO = 1 if swap was rejected. */
 
 L20:
     *info = 1;
-    return 0;
+    return;
 
 /*     End of CTGEX2 */
 

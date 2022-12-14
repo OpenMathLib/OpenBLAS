@@ -646,7 +646,7 @@ ompact WY representation of Q. */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int dgelqt3_(integer *m, integer *n, doublereal *a, integer *
+/* Subroutine */ void dgelqt3_(integer *m, integer *n, doublereal *a, integer *
 	lda, doublereal *t, integer *ldt, integer *info)
 {
     /* System generated locals */
@@ -654,16 +654,17 @@ ompact WY representation of Q. */
 
     /* Local variables */
     integer i__, j;
-    extern /* Subroutine */ int dgemm_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void dgemm_(char *, char *, integer *, integer *, 
 	    integer *, doublereal *, doublereal *, integer *, doublereal *, 
 	    integer *, doublereal *, doublereal *, integer *);
     integer iinfo;
-    extern /* Subroutine */ int dtrmm_(char *, char *, char *, char *, 
+    extern /* Subroutine */ void dtrmm_(char *, char *, char *, char *, 
 	    integer *, integer *, doublereal *, doublereal *, integer *, 
 	    doublereal *, integer *);
     integer i1, j1, m1, m2;
-    extern /* Subroutine */ int dlarfg_(integer *, doublereal *, doublereal *,
-	     integer *, doublereal *), xerbla_(char *, integer *, ftnlen);
+    extern /* Subroutine */ void dlarfg_(integer *, doublereal *, doublereal *,
+	     integer *, doublereal *);
+    extern int xerbla_(char *, integer *, ftnlen);
 
 
 /*  -- LAPACK computational routine (version 3.8.0) -- */
@@ -697,7 +698,7 @@ ompact WY representation of Q. */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DGELQT3", &i__1, (ftnlen)7);
-	return 0;
+	return;
     }
 
     if (*m == 1) {
@@ -795,7 +796,7 @@ ompact WY representation of Q. */
 
     }
 
-    return 0;
+    return;
 
 /*     End of DGELQT3 */
 

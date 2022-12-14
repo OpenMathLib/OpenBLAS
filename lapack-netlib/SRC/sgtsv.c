@@ -636,7 +636,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 /* > \ingroup realGTsolve */
 
 /*  ===================================================================== */
-/* Subroutine */ int sgtsv_(integer *n, integer *nrhs, real *dl, real *d__, 
+/* Subroutine */ void sgtsv_(integer *n, integer *nrhs, real *dl, real *d__, 
 	real *du, real *b, integer *ldb, integer *info)
 {
     /* System generated locals */
@@ -678,11 +678,11 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("SGTSV ", &i__1, (ftnlen)5);
-	return 0;
+	return;
     }
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
     if (*nrhs == 1) {
@@ -698,7 +698,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 		    b[i__ + 1 + b_dim1] -= fact * b[i__ + b_dim1];
 		} else {
 		    *info = i__;
-		    return 0;
+		    return;
 		}
 		dl[i__] = 0.f;
 	    } else {
@@ -727,7 +727,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 		    b[i__ + 1 + b_dim1] -= fact * b[i__ + b_dim1];
 		} else {
 		    *info = i__;
-		    return 0;
+		    return;
 		}
 	    } else {
 		fact = d__[i__] / dl[i__];
@@ -742,7 +742,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 	}
 	if (d__[*n] == 0.f) {
 	    *info = *n;
-	    return 0;
+	    return;
 	}
     } else {
 	i__1 = *n - 2;
@@ -761,7 +761,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 		    }
 		} else {
 		    *info = i__;
-		    return 0;
+		    return;
 		}
 		dl[i__] = 0.f;
 	    } else {
@@ -799,7 +799,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 		    }
 		} else {
 		    *info = i__;
-		    return 0;
+		    return;
 		}
 	    } else {
 		fact = d__[i__] / dl[i__];
@@ -819,7 +819,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 	}
 	if (d__[*n] == 0.f) {
 	    *info = *n;
-	    return 0;
+	    return;
 	}
     }
 
@@ -861,7 +861,7 @@ L70:
 	}
     }
 
-    return 0;
+    return;
 
 /*     End of SGTSV */
 

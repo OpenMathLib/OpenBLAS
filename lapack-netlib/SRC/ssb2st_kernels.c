@@ -683,7 +683,7 @@ kernels.f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int ssb2st_kernels_(char *uplo, logical *wantz, integer *
+/* Subroutine */ void ssb2st_kernels_(char *uplo, logical *wantz, integer *
 	ttype, integer *st, integer *ed, integer *sweep, integer *n, integer *
 	nb, integer *ib, real *a, integer *lda, real *v, real *tau, integer *
 	ldvt, real *work)
@@ -698,10 +698,10 @@ kernels.f"> */
     extern logical lsame_(char *, char *);
     logical upper;
     integer j1, j2, lm, ln, ajeter;
-    extern /* Subroutine */ int slarfg_(integer *, real *, real *, integer *, 
+    extern /* Subroutine */ void slarfg_(integer *, real *, real *, integer *, 
 	    real *);
     integer ofdpos;
-    extern /* Subroutine */ int slarfx_(char *, integer *, integer *, real *, 
+    extern /* Subroutine */ void slarfx_(char *, integer *, integer *, real *, 
 	    real *, real *, integer *, real *), slarfy_(char *, 
 	    integer *, real *, integer *, real *, real *, integer *, real *);
     integer taupos;
@@ -899,7 +899,7 @@ kernels.f"> */
 	}
     }
 
-    return 0;
+    return;
 
 /*     END OF SSB2ST_KERNELS */
 

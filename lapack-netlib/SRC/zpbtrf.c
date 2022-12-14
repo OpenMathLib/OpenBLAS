@@ -660,7 +660,7 @@ f"> */
 /* >  Peter Mayes and Giuseppe Radicati, IBM ECSEC, Rome, March 23, 1989 */
 
 /*  ===================================================================== */
-/* Subroutine */ int zpbtrf_(char *uplo, integer *n, integer *kd, 
+/* Subroutine */ void zpbtrf_(char *uplo, integer *n, integer *kd, 
 	doublecomplex *ab, integer *ldab, integer *info)
 {
     /* System generated locals */
@@ -671,21 +671,22 @@ f"> */
     doublecomplex work[1056]	/* was [33][32] */;
     integer i__, j;
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int zgemm_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void zgemm_(char *, char *, integer *, integer *, 
 	    integer *, doublecomplex *, doublecomplex *, integer *, 
 	    doublecomplex *, integer *, doublecomplex *, doublecomplex *, 
 	    integer *), zherk_(char *, char *, integer *, 
 	    integer *, doublereal *, doublecomplex *, integer *, doublereal *,
 	     doublecomplex *, integer *);
     integer i2, i3;
-    extern /* Subroutine */ int ztrsm_(char *, char *, char *, char *, 
+    extern /* Subroutine */ void ztrsm_(char *, char *, char *, char *, 
 	    integer *, integer *, doublecomplex *, doublecomplex *, integer *,
 	     doublecomplex *, integer *), 
 	    zpbtf2_(char *, integer *, integer *, doublecomplex *, integer *, 
 	    integer *);
     integer ib, nb, ii, jj;
     extern /* Subroutine */ int zpotf2_(char *, integer *, doublecomplex *, 
-	    integer *, integer *), xerbla_(char *, integer *, ftnlen);
+	    integer *, integer *);
+    extern int xerbla_(char *, integer *, ftnlen);
     extern integer ilaenv_(integer *, char *, char *, integer *, integer *, 
 	    integer *, integer *, ftnlen, ftnlen);
 
@@ -720,13 +721,13 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZPBTRF", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /*     Determine the block size for this environment */
@@ -1035,10 +1036,10 @@ f"> */
 	    }
 	}
     }
-    return 0;
+    return;
 
 L150:
-    return 0;
+    return;
 
 /*     End of ZPBTRF */
 

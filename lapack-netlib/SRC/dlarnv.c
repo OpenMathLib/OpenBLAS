@@ -606,7 +606,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int dlarnv_(integer *idist, integer *iseed, integer *n, 
+/* Subroutine */ void dlarnv_(integer *idist, integer *iseed, integer *n, 
 	doublereal *x)
 {
     /* System generated locals */
@@ -616,7 +616,7 @@ f"> */
     integer i__;
     doublereal u[128];
     integer il, iv;
-    extern /* Subroutine */ int dlaruv_(integer *, integer *, doublereal *);
+    extern /* Subroutine */ void dlaruv_(integer *, integer *, doublereal *);
     integer il2;
 
 
@@ -681,7 +681,7 @@ f"> */
 	}
 /* L40: */
     }
-    return 0;
+    return;
 
 /*     End of DLARNV */
 

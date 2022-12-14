@@ -728,7 +728,7 @@ rook.f"> */
 /* > \endverbatim */
 
 /*  ===================================================================== */
-/* Subroutine */ int zhetrf_rook_(char *uplo, integer *n, doublecomplex *a, 
+/* Subroutine */ void zhetrf_rook_(char *uplo, integer *n, doublecomplex *a, 
 	integer *lda, integer *ipiv, doublecomplex *work, integer *lwork, 
 	integer *info)
 {
@@ -746,10 +746,10 @@ rook.f"> */
 	    integer *, integer *, ftnlen, ftnlen);
     integer ldwork, lwkopt;
     logical lquery;
-    extern /* Subroutine */ int zhetf2_rook_(char *, integer *, 
+    extern /* Subroutine */ void zhetf2_rook_(char *, integer *, 
 	    doublecomplex *, integer *, integer *, integer *);
     integer iws;
-    extern /* Subroutine */ int zlahef_rook_(char *, integer *, integer *, 
+    extern /* Subroutine */ void zlahef_rook_(char *, integer *, integer *, 
 	    integer *, doublecomplex *, integer *, integer *, doublecomplex *,
 	     integer *, integer *);
 
@@ -801,9 +801,9 @@ rook.f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZHETRF_ROOK", &i__1, (ftnlen)11);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
     nbmin = 2;
@@ -933,7 +933,7 @@ L20:
 
 L40:
     work[1].r = (doublereal) lwkopt, work[1].i = 0.;
-    return 0;
+    return;
 
 /*     End of ZHETRF_ROOK */
 

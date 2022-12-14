@@ -613,7 +613,7 @@ f"> */
 /* > \ingroup complex16OTHERauxiliary */
 
 /*  ===================================================================== */
-/* Subroutine */ int zlacp2_(char *uplo, integer *m, integer *n, doublereal *
+/* Subroutine */ void zlacp2_(char *uplo, integer *m, integer *n, doublereal *
 	a, integer *lda, doublecomplex *b, integer *ldb)
 {
     /* System generated locals */
@@ -682,7 +682,7 @@ f"> */
 	}
     }
 
-    return 0;
+    return;
 
 /*     End of ZLACP2 */
 

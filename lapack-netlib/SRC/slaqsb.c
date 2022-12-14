@@ -649,7 +649,7 @@ f"> */
 /* > \ingroup realOTHERauxiliary */
 
 /*  ===================================================================== */
-/* Subroutine */ int slaqsb_(char *uplo, integer *n, integer *kd, real *ab, 
+/* Subroutine */ void slaqsb_(char *uplo, integer *n, integer *kd, real *ab, 
 	integer *ldab, real *s, real *scond, real *amax, char *equed)
 {
     /* System generated locals */
@@ -683,7 +683,7 @@ f"> */
     /* Function Body */
     if (*n <= 0) {
 	*(unsigned char *)equed = 'N';
-	return 0;
+	return;
     }
 
 /*     Initialize LARGE and SMALL. */
@@ -738,7 +738,7 @@ f"> */
 	*(unsigned char *)equed = 'Y';
     }
 
-    return 0;
+    return;
 
 /*     End of SLAQSB */
 

@@ -922,7 +922,7 @@ fsx_extended.f"> */
 /* > \ingroup doubleGBcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int dla_gbrfsx_extended_(integer *prec_type__, integer *
+/* Subroutine */ void dla_gbrfsx_extended_(integer *prec_type__, integer *
 	trans_type__, integer *n, integer *kl, integer *ku, integer *nrhs, 
 	doublereal *ab, integer *ldab, doublereal *afb, integer *ldafb, 
 	integer *ipiv, logical *colequ, doublereal *c__, doublereal *b, 
@@ -941,21 +941,21 @@ fsx_extended.f"> */
 
     /* Local variables */
     doublereal dx_x__, dz_z__;
-    extern /* Subroutine */ int dla_lin_berr_(integer *, integer *, integer *
+    extern /* Subroutine */ void dla_lin_berr_(integer *, integer *, integer *
 	    , doublereal *, doublereal *, doublereal *);
     doublereal ymin;
-    extern /* Subroutine */ int blas_dgbmv_x_(integer *, integer *, integer *
+    extern /* Subroutine */ void blas_dgbmv_x_(integer *, integer *, integer *
 	    , integer *, integer *, doublereal *, doublereal *, integer *, 
 	    doublereal *, integer *, doublereal *, doublereal *, integer *, 
 	    integer *);
     doublereal dxratmax, dzratmax;
     integer y_prec_state__;
-    extern /* Subroutine */ int blas_dgbmv2_x_(integer *, integer *, integer 
+    extern /* Subroutine */ void blas_dgbmv2_x_(integer *, integer *, integer 
 	    *, integer *, integer *, doublereal *, doublereal *, integer *, 
 	    doublereal *, doublereal *, integer *, doublereal *, doublereal *,
 	     integer *, integer *);
     integer i__, j, m;
-    extern /* Subroutine */ int dla_gbamv_(integer *, integer *, integer *, 
+    extern /* Subroutine */ void dla_gbamv_(integer *, integer *, integer *, 
 	    integer *, integer *, doublereal *, doublereal *, integer *, 
 	    doublereal *, integer *, doublereal *, doublereal *, integer *), 
 	    dgbmv_(char *, integer *, integer *, integer *, integer *, 
@@ -965,17 +965,17 @@ fsx_extended.f"> */
     doublereal dxrat;
     logical incr_prec__;
     doublereal dzrat;
-    extern /* Subroutine */ int daxpy_(integer *, doublereal *, doublereal *, 
+    extern /* Subroutine */ void daxpy_(integer *, doublereal *, doublereal *, 
 	    integer *, doublereal *, integer *);
     char trans[1];
     doublereal normx, normy, myhugeval, prev_dz_z__;
     extern doublereal dlamch_(char *);
     doublereal yk;
-    extern /* Subroutine */ int dgbtrs_(char *, integer *, integer *, integer 
+    extern /* Subroutine */ void dgbtrs_(char *, integer *, integer *, integer 
 	    *, integer *, doublereal *, integer *, integer *, doublereal *, 
 	    integer *, integer *);
     doublereal final_dx_x__;
-    extern /* Subroutine */ int dla_wwaddw_(integer *, doublereal *, 
+    extern /* Subroutine */ void dla_wwaddw_(integer *, doublereal *, 
 	    doublereal *, doublereal *);
     doublereal final_dz_z__, normdx;
     extern /* Character */ VOID chla_transtype_(char *, integer *);
@@ -1024,7 +1024,7 @@ fsx_extended.f"> */
 
     /* Function Body */
     if (*info != 0) {
-	return 0;
+	return;
     }
     chla_transtype_(ch__1, trans_type__);
     *(unsigned char *)trans = *(unsigned char *)&ch__1[0];
@@ -1262,6 +1262,6 @@ L666:
 
     }
 
-    return 0;
+    return;
 } /* dla_gbrfsx_extended__ */
 

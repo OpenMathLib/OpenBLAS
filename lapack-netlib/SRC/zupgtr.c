@@ -623,7 +623,7 @@ f"> */
 /* > \ingroup complex16OTHERcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int zupgtr_(char *uplo, integer *n, doublecomplex *ap, 
+/* Subroutine */ void zupgtr_(char *uplo, integer *n, doublecomplex *ap, 
 	doublecomplex *tau, doublecomplex *q, integer *ldq, doublecomplex *
 	work, integer *info)
 {
@@ -635,13 +635,14 @@ f"> */
     extern logical lsame_(char *, char *);
     integer iinfo;
     logical upper;
-    extern /* Subroutine */ int zung2l_(integer *, integer *, integer *, 
+    extern /* Subroutine */ void zung2l_(integer *, integer *, integer *, 
 	    doublecomplex *, integer *, doublecomplex *, doublecomplex *, 
 	    integer *);
     integer ij;
-    extern /* Subroutine */ int zung2r_(integer *, integer *, integer *, 
+    extern /* Subroutine */ void zung2r_(integer *, integer *, integer *, 
 	    doublecomplex *, integer *, doublecomplex *, doublecomplex *, 
-	    integer *), xerbla_(char *, integer *, ftnlen);
+	    integer *);
+    extern int xerbla_(char *, integer *, ftnlen);
 
 
 /*  -- LAPACK computational routine (version 3.7.0) -- */
@@ -676,13 +677,13 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZUPGTR", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
     if (upper) {
@@ -769,7 +770,7 @@ f"> */
 		    &work[1], &iinfo);
 	}
     }
-    return 0;
+    return;
 
 /*     End of ZUPGTR */
 

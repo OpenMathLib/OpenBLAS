@@ -659,7 +659,7 @@ aa.f"> */
 /* > \ingroup complex16SYcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int zlasyf_aa_(char *uplo, integer *j1, integer *m, integer 
+/* Subroutine */ void zlasyf_aa_(char *uplo, integer *j1, integer *m, integer 
 	*nb, doublecomplex *a, integer *lda, integer *ipiv, doublecomplex *
 	h__, integer *ldh, doublecomplex *work)
 {
@@ -671,19 +671,19 @@ aa.f"> */
     integer j, k;
     doublecomplex alpha;
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int zscal_(integer *, doublecomplex *, 
+    extern /* Subroutine */ void zscal_(integer *, doublecomplex *, 
 	    doublecomplex *, integer *), zgemv_(char *, integer *, integer *, 
 	    doublecomplex *, doublecomplex *, integer *, doublecomplex *, 
 	    integer *, doublecomplex *, doublecomplex *, integer *);
     integer i1, k1, i2;
-    extern /* Subroutine */ int zcopy_(integer *, doublecomplex *, integer *, 
+    extern /* Subroutine */ void zcopy_(integer *, doublecomplex *, integer *, 
 	    doublecomplex *, integer *), zswap_(integer *, doublecomplex *, 
 	    integer *, doublecomplex *, integer *), zaxpy_(integer *, 
 	    doublecomplex *, doublecomplex *, integer *, doublecomplex *, 
 	    integer *);
     integer mj;
     extern integer izamax_(integer *, doublecomplex *, integer *);
-    extern /* Subroutine */ int zlaset_(char *, integer *, integer *, 
+    extern /* Subroutine */ void zlaset_(char *, integer *, integer *, 
 	    doublecomplex *, doublecomplex *, doublecomplex *, integer *);
     doublecomplex piv;
 
@@ -1078,7 +1078,7 @@ L30:
 L40:
 	;
     }
-    return 0;
+    return;
 
 /*     End of ZLASYF_AA */
 

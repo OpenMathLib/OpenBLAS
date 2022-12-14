@@ -616,7 +616,7 @@ r.f"> */
 /* > \ingroup doubleSYauxiliary */
 
 /*  ===================================================================== */
-/* Subroutine */ int dsyswapr_(char *uplo, integer *n, doublereal *a, integer 
+/* Subroutine */ void dsyswapr_(char *uplo, integer *n, doublereal *a, integer 
 	*lda, integer *i1, integer *i2)
 {
     /* System generated locals */
@@ -625,7 +625,7 @@ r.f"> */
     /* Local variables */
     integer i__;
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int dswap_(integer *, doublereal *, integer *, 
+    extern /* Subroutine */ void dswap_(integer *, doublereal *, integer *, 
 	    doublereal *, integer *);
     logical upper;
     doublereal tmp;
@@ -712,6 +712,6 @@ r.f"> */
 	}
 
     }
-    return 0;
+    return;
 } /* dsyswapr_ */
 

@@ -617,7 +617,7 @@ f"> */
 /* > \ingroup doubleOTHERauxiliary */
 
 /*  ===================================================================== */
-/* Subroutine */ int dlag2s_(integer *m, integer *n, doublereal *a, integer *
+/* Subroutine */ void dlag2s_(integer *m, integer *n, doublereal *a, integer *
 	lda, real *sa, integer *ldsa, integer *info)
 {
     /* System generated locals */
@@ -663,7 +663,7 @@ f"> */
     }
     *info = 0;
 L30:
-    return 0;
+    return;
 
 /*     End of DLAG2S */
 

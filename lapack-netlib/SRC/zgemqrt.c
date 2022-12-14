@@ -676,7 +676,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 /* > \ingroup complex16GEcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int zgemqrt_(char *side, char *trans, integer *m, integer *n,
+/* Subroutine */ void zgemqrt_(char *side, char *trans, integer *m, integer *n,
 	 integer *k, integer *nb, doublecomplex *v, integer *ldv, 
 	doublecomplex *t, integer *ldt, doublecomplex *c__, integer *ldc, 
 	doublecomplex *work, integer *info)
@@ -691,7 +691,8 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
     extern logical lsame_(char *, char *);
     logical right;
     integer ib, kf;
-    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen), zlarfb_(
+    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
+    extern void zlarfb_(
 	    char *, char *, char *, char *, integer *, integer *, integer *, 
 	    doublecomplex *, integer *, doublecomplex *, integer *, 
 	    doublecomplex *, integer *, doublecomplex *, integer *);
@@ -758,12 +759,12 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZGEMQRT", &i__1, (ftnlen)7);
-	return 0;
+	return;
     }
 
 
     if (*m == 0 || *n == 0 || *k == 0) {
-	return 0;
+	return;
     }
 
     if (left && tran) {
@@ -824,7 +825,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 
     }
 
-    return 0;
+    return;
 
 /*     End of ZGEMQRT */
 

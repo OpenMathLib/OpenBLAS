@@ -706,7 +706,7 @@ static integer c__0 = 0;
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int zlamtsqr_(char *side, char *trans, integer *m, integer *
+/* Subroutine */ void zlamtsqr_(char *side, char *trans, integer *m, integer *
 	n, integer *k, integer *mb, integer *nb, doublecomplex *a, integer *
 	lda, doublecomplex *t, integer *ldt, doublecomplex *c__, integer *ldc,
 	 doublecomplex *work, integer *lwork, integer *info)
@@ -716,7 +716,7 @@ static integer c__0 = 0;
 	    i__3;
 
     /* Local variables */
-    extern /* Subroutine */ int ztpmqrt_(char *, char *, integer *, integer *,
+    extern /* Subroutine */ void ztpmqrt_(char *, char *, integer *, integer *,
 	     integer *, integer *, integer *, doublecomplex *, integer *, 
 	    doublecomplex *, integer *, doublecomplex *, integer *, 
 	    doublecomplex *, integer *, doublecomplex *, integer *);
@@ -728,7 +728,7 @@ static integer c__0 = 0;
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     logical notran, lquery;
     integer ctr;
-    extern /* Subroutine */ int zgemqrt_(char *, char *, integer *, integer *,
+    extern /* Subroutine */ void zgemqrt_(char *, char *, integer *, integer *,
 	     integer *, integer *, doublecomplex *, integer *, doublecomplex *
 	    , integer *, doublecomplex *, integer *, doublecomplex *, integer 
 	    *);
@@ -799,9 +799,9 @@ static integer c__0 = 0;
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZLAMTSQR", &i__1, (ftnlen)8);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
@@ -809,7 +809,7 @@ static integer c__0 = 0;
 /* Computing MIN */
     i__1 = f2cmin(*m,*n);
     if (f2cmin(i__1,*k) == 0) {
-	return 0;
+	return;
     }
 
 /* Computing MAX */
@@ -817,7 +817,7 @@ static integer c__0 = 0;
     if (*mb <= *k || *mb >= f2cmax(i__1,*k)) {
 	zgemqrt_(side, trans, m, n, k, nb, &a[a_offset], lda, &t[t_offset], 
 		ldt, &c__[c_offset], ldc, &work[1], info);
-	return 0;
+	return;
     }
 
     if (left && notran) {
@@ -959,7 +959,7 @@ static integer c__0 = 0;
     }
 
     work[1].r = (doublereal) lw, work[1].i = 0.;
-    return 0;
+    return;
 
 /*     End of ZLAMTSQR */
 

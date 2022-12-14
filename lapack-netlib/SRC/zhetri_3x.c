@@ -674,7 +674,7 @@ static doublecomplex c_b2 = {0.,0.};
 /* > \endverbatim */
 
 /*  ===================================================================== */
-/* Subroutine */ int zhetri_3x_(char *uplo, integer *n, doublecomplex *a, 
+/* Subroutine */ void zhetri_3x_(char *uplo, integer *n, doublecomplex *a, 
 	integer *lda, doublecomplex *e, integer *ipiv, doublecomplex *work, 
 	integer *nb, integer *info)
 {
@@ -687,18 +687,18 @@ static doublecomplex c_b2 = {0.,0.};
     /* Local variables */
     integer invd;
     doublecomplex akkp1;
-    extern /* Subroutine */ int zheswapr_(char *, integer *, doublecomplex *, 
+    extern /* Subroutine */ void zheswapr_(char *, integer *, doublecomplex *, 
 	    integer *, integer *, integer *);
     doublecomplex d__;
     integer i__, j, k;
     doublereal t;
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int zgemm_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void zgemm_(char *, char *, integer *, integer *, 
 	    integer *, doublecomplex *, doublecomplex *, integer *, 
 	    doublecomplex *, integer *, doublecomplex *, doublecomplex *, 
 	    integer *);
     logical upper;
-    extern /* Subroutine */ int ztrmm_(char *, char *, char *, char *, 
+    extern /* Subroutine */ void ztrmm_(char *, char *, char *, char *, 
 	    integer *, integer *, doublecomplex *, doublecomplex *, integer *,
 	     doublecomplex *, integer *);
     doublereal ak;
@@ -752,10 +752,10 @@ static doublecomplex c_b2 = {0.,0.};
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZHETRI_3X", &i__1, (ftnlen)9);
-	return 0;
+	return;
     }
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /*     Workspace got Non-diag elements of D */
@@ -776,7 +776,7 @@ static doublecomplex c_b2 = {0.,0.};
 	for (*info = *n; *info >= 1; --(*info)) {
 	    i__1 = *info + *info * a_dim1;
 	    if (ipiv[*info] > 0 && (a[i__1].r == 0. && a[i__1].i == 0.)) {
-		return 0;
+		return;
 	    }
 	}
     } else {
@@ -787,7 +787,7 @@ static doublecomplex c_b2 = {0.,0.};
 	for (*info = 1; *info <= i__1; ++(*info)) {
 	    i__2 = *info + *info * a_dim1;
 	    if (ipiv[*info] > 0 && (a[i__2].r == 0. && a[i__2].i == 0.)) {
-		return 0;
+		return;
 	    }
 	}
     }
@@ -1429,7 +1429,7 @@ static doublecomplex c_b2 = {0.,0.};
 
     }
 
-    return 0;
+    return;
 
 /*     End of ZHETRI_3X */
 

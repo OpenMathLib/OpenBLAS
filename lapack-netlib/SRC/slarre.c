@@ -817,7 +817,7 @@ f"> */
 /* >     Christof Voemel, University of California, Berkeley, USA \n */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int slarre_(char *range, integer *n, real *vl, real *vu, 
+/* Subroutine */ void slarre_(char *range, integer *n, real *vl, real *vu, 
 	integer *il, integer *iu, real *d__, real *e, real *e2, real *rtol1, 
 	real *rtol2, real *spltol, integer *nsplit, integer *isplit, integer *
 	m, real *w, real *werr, real *wgap, integer *iblock, integer *indexw, 
@@ -840,10 +840,10 @@ f"> */
     extern logical lsame_(char *, char *);
     integer iinfo;
     logical norep;
-    extern /* Subroutine */ int scopy_(integer *, real *, integer *, real *, 
+    extern /* Subroutine */ void scopy_(integer *, real *, integer *, real *, 
 	    integer *);
     real s1, s2;
-    extern /* Subroutine */ int slasq2_(integer *, real *, integer *);
+    extern /* Subroutine */ void slasq2_(integer *, real *, integer *);
     integer mb;
     real gl;
     integer in, mm;
@@ -855,11 +855,11 @@ f"> */
     extern real slamch_(char *);
     integer wbegin;
     real safmin, spdiam;
-    extern /* Subroutine */ int slarra_(integer *, real *, real *, real *, 
+    extern /* Subroutine */ void slarra_(integer *, real *, real *, real *, 
 	    real *, real *, integer *, integer *, integer *);
     logical usedqd;
     real clwdth, isleft;
-    extern /* Subroutine */ int slarrb_(integer *, real *, real *, integer *, 
+    extern /* Subroutine */ void slarrb_(integer *, real *, real *, integer *, 
 	    integer *, real *, real *, integer *, real *, real *, real *, 
 	    real *, integer *, real *, real *, integer *, integer *), slarrc_(
 	    char *, integer *, real *, real *, real *, real *, real *, 
@@ -871,7 +871,7 @@ f"> */
 	    integer *, real *, real *, real *, real *, real *, real *, real *,
 	     real *, integer *);
     real isrght, bsrtol, dpivot;
-    extern /* Subroutine */ int slarnv_(integer *, integer *, integer *, real 
+    extern /* Subroutine */ void slarnv_(integer *, integer *, integer *, real 
 	    *);
     integer cnt;
     real eps, tau, tmp, rtl;
@@ -908,7 +908,7 @@ f"> */
 /*     Quick return if possible */
 
     if (*n <= 0) {
-	return 0;
+	return;
     }
 
 /*     Decode RANGE */
@@ -947,7 +947,7 @@ f"> */
 	}
 /*        store the shift for the initial RRR, which is zero in this case */
 	e[1] = 0.f;
-	return 0;
+	return;
     }
 /*     General case: tridiagonal matrix of order > 1 */
 
@@ -1012,7 +1012,7 @@ f"> */
 		vl, vu, &iblock[1], &indexw[1], &work[1], &iwork[1], &iinfo);
 	if (iinfo != 0) {
 	    *info = -1;
-	    return 0;
+	    return;
 	}
 /*        Make sure that the entries M+1 to N in W, WERR, IBLOCK, INDEXW are 0 */
 	i__1 = *n;
@@ -1121,7 +1121,7 @@ L21:
 		    rtl, &tmp, &tmp1, &iinfo);
 	    if (iinfo != 0) {
 		*info = -1;
-		return 0;
+		return;
 	    }
 /* Computing MAX */
 	    r__2 = gl, r__3 = tmp - tmp1 - eps * 100.f * (r__1 = tmp - tmp1, 
@@ -1131,7 +1131,7 @@ L21:
 		    rtl, &tmp, &tmp1, &iinfo);
 	    if (iinfo != 0) {
 		*info = -1;
-		return 0;
+		return;
 	    }
 /* Computing MIN */
 	    r__2 = gu, r__3 = tmp + tmp1 + eps * 100.f * (r__1 = tmp + tmp1, 
@@ -1318,7 +1318,7 @@ L21:
 /*        if the program reaches this point, no base representation could be */
 /*        found in MAXTRY iterations. */
 	*info = 2;
-	return 0;
+	return;
 L83:
 /*        At this point, we have found an initial base representation */
 /*        T - SIGMA I = L D L^T with not too much element growth. */
@@ -1384,7 +1384,7 @@ L83:
 		    iinfo);
 	    if (iinfo != 0) {
 		*info = -4;
-		return 0;
+		return;
 	    }
 /*           SLARRB computes all gaps correctly except for the last one */
 /*           Record distance to VU/GU */
@@ -1427,14 +1427,14 @@ L83:
 /*              and should be changed. The index is in IWORK(1) and the */
 /*              gap is in WORK(N+1) */
 		*info = -5;
-		return 0;
+		return;
 	    } else {
 /*              Test that all eigenvalues are positive as expected */
 		i__2 = in;
 		for (i__ = 1; i__ <= i__2; ++i__) {
 		    if (work[i__] < 0.f) {
 			*info = -6;
-			return 0;
+			return;
 		    }
 /* L149: */
 		}
@@ -1484,7 +1484,7 @@ L170:
 	;
     }
 
-    return 0;
+    return;
 
 /*     end of SLARRE */
 

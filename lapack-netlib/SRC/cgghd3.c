@@ -749,7 +749,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int cgghd3_(char *compq, char *compz, integer *n, integer *
+/* Subroutine */ void cgghd3_(char *compq, char *compz, integer *n, integer *
 	ilo, integer *ihi, complex *a, integer *lda, complex *b, integer *ldb,
 	 complex *q, integer *ldq, complex *z__, integer *ldz, complex *work, 
 	integer *lwork, integer *info)
@@ -763,22 +763,22 @@ f"> */
     logical blk22;
     integer cola, jcol, ierr;
     complex temp;
-    extern /* Subroutine */ int crot_(integer *, complex *, integer *, 
+    extern /* Subroutine */ void crot_(integer *, complex *, integer *, 
 	    complex *, integer *, real *, complex *);
     integer jrow, topq, ppwo;
     complex temp1, temp2, temp3;
     real c__;
     integer kacc22, i__, j, k;
     complex s;
-    extern /* Subroutine */ int cgemm_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void cgemm_(char *, char *, integer *, integer *, 
 	    integer *, complex *, complex *, integer *, complex *, integer *, 
 	    complex *, complex *, integer *);
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int cgemv_(char *, integer *, integer *, complex *
+    extern /* Subroutine */ void cgemv_(char *, integer *, integer *, complex *
 	    , complex *, integer *, complex *, integer *, complex *, complex *
 	    , integer *);
     integer nbmin;
-    extern /* Subroutine */ int cunm22_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void cunm22_(char *, char *, integer *, integer *, 
 	    integer *, integer *, complex *, integer *, complex *, integer *, 
 	    complex *, integer *, integer *);
     complex ctemp;
@@ -787,17 +787,17 @@ f"> */
     complex c1, c2;
     logical wantq;
     integer j0;
-    extern /* Subroutine */ int ctrmv_(char *, char *, char *, integer *, 
+    extern /* Subroutine */ void ctrmv_(char *, char *, char *, integer *, 
 	    complex *, integer *, complex *, integer *);
     logical initz, wantz;
     complex s1, s2;
     char compq2[1], compz2[1];
     integer nb, jj, nh;
-    extern /* Subroutine */ int cgghrd_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void cgghrd_(char *, char *, integer *, integer *, 
 	    integer *, complex *, integer *, complex *, integer *, complex *, 
 	    integer *, complex *, integer *, integer *);
     integer nx, pw;
-    extern /* Subroutine */ int claset_(char *, integer *, integer *, complex 
+    extern /* Subroutine */ void claset_(char *, integer *, integer *, complex 
 	    *, complex *, complex *, integer *), clartg_(complex *, 
 	    complex *, real *, complex *, complex *), clacpy_(char *, integer 
 	    *, integer *, complex *, integer *, complex *, integer *);
@@ -876,9 +876,9 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CGGHD3", &i__1, (ftnlen)6);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Initialize Q and Z if desired. */
@@ -903,7 +903,7 @@ f"> */
     nh = *ihi - *ilo + 1;
     if (nh <= 1) {
 	work[1].r = 1.f, work[1].i = 0.f;
-	return 0;
+	return;
     }
 
 /*     Determine the blocksize. */
@@ -1760,7 +1760,7 @@ f"> */
     q__1.r = (real) lwkopt, q__1.i = 0.f;
     work[1].r = q__1.r, work[1].i = q__1.i;
 
-    return 0;
+    return;
 
 /*     End of CGGHD3 */
 

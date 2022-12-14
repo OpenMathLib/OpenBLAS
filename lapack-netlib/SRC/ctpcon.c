@@ -642,7 +642,7 @@ f"> */
 /* > \ingroup complexOTHERcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int ctpcon_(char *norm, char *uplo, char *diag, integer *n, 
+/* Subroutine */ void ctpcon_(char *norm, char *uplo, char *diag, integer *n, 
 	complex *ap, real *rcond, complex *work, real *rwork, integer *info)
 {
     /* System generated locals */
@@ -656,7 +656,7 @@ f"> */
     integer isave[3];
     real anorm;
     logical upper;
-    extern /* Subroutine */ int clacn2_(integer *, complex *, complex *, real 
+    extern /* Subroutine */ void clacn2_(integer *, complex *, complex *, real 
 	    *, integer *, integer *);
     real xnorm;
     integer ix;
@@ -664,10 +664,10 @@ f"> */
     extern real slamch_(char *);
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     extern real clantp_(char *, char *, char *, integer *, complex *, real *);
-    extern /* Subroutine */ int clatps_(char *, char *, char *, char *, 
+    extern /* Subroutine */ void clatps_(char *, char *, char *, char *, 
 	    integer *, complex *, complex *, real *, real *, integer *);
     real ainvnm;
-    extern /* Subroutine */ int csrscl_(integer *, real *, complex *, integer 
+    extern /* Subroutine */ void csrscl_(integer *, real *, complex *, integer 
 	    *);
     logical onenrm;
     char normin[1];
@@ -709,14 +709,14 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CTPCON", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
 	*rcond = 1.f;
-	return 0;
+	return;
     }
 
     *rcond = 0.f;
@@ -781,7 +781,7 @@ L10:
     }
 
 L20:
-    return 0;
+    return;
 
 /*     End of CTPCON */
 

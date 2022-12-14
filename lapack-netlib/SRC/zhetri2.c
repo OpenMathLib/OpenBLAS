@@ -642,7 +642,7 @@ static integer c_n1 = -1;
 /* > \ingroup complex16HEcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int zhetri2_(char *uplo, integer *n, doublecomplex *a, 
+/* Subroutine */ void zhetri2_(char *uplo, integer *n, doublecomplex *a, 
 	integer *lda, integer *ipiv, doublecomplex *work, integer *lwork, 
 	integer *info)
 {
@@ -650,7 +650,7 @@ static integer c_n1 = -1;
     integer a_dim1, a_offset, i__1;
 
     /* Local variables */
-    extern /* Subroutine */ int zhetri2x_(char *, integer *, doublecomplex *, 
+    extern /* Subroutine */ void zhetri2x_(char *, integer *, doublecomplex *, 
 	    integer *, integer *, doublecomplex *, integer *, integer *);
     extern logical lsame_(char *, char *);
     integer nbmax;
@@ -658,7 +658,7 @@ static integer c_n1 = -1;
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     extern integer ilaenv_(integer *, char *, char *, integer *, integer *, 
 	    integer *, integer *, ftnlen, ftnlen);
-    extern /* Subroutine */ int zhetri_(char *, integer *, doublecomplex *, 
+    extern /* Subroutine */ void zhetri_(char *, integer *, doublecomplex *, 
 	    integer *, integer *, doublecomplex *, integer *);
     logical lquery;
     integer minsize;
@@ -711,13 +711,13 @@ static integer c_n1 = -1;
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZHETRI2", &i__1, (ftnlen)7);
-	return 0;
+	return;
     } else if (lquery) {
 	work[1].r = (doublereal) minsize, work[1].i = 0.;
-	return 0;
+	return;
     }
     if (*n == 0) {
-	return 0;
+	return;
     }
     if (nbmax >= *n) {
 	zhetri_(uplo, n, &a[a_offset], lda, &ipiv[1], &work[1], info);
@@ -725,7 +725,7 @@ static integer c_n1 = -1;
 	zhetri2x_(uplo, n, &a[a_offset], lda, &ipiv[1], &work[1], &nbmax, 
 		info);
     }
-    return 0;
+    return;
 
 /*     End of ZHETRI2 */
 

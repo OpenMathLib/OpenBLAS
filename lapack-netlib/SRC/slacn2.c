@@ -651,7 +651,7 @@ f"> */
 /* >  ACM Trans. Math. Soft., vol. 14, no. 4, pp. 381-396, December 1988. */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int slacn2_(integer *n, real *v, real *x, integer *isgn, 
+/* Subroutine */ void slacn2_(integer *n, real *v, real *x, integer *isgn, 
 	real *est, integer *kase, integer *isave)
 {
     /* System generated locals */
@@ -662,7 +662,7 @@ f"> */
     real temp;
     integer i__, jlast;
     extern real sasum_(integer *, real *, integer *);
-    extern /* Subroutine */ int scopy_(integer *, real *, integer *, real *, 
+    extern /* Subroutine */ void scopy_(integer *, real *, integer *, real *, 
 	    integer *);
     extern integer isamax_(integer *, real *, integer *);
     real altsgn, estold;
@@ -692,7 +692,7 @@ f"> */
 	}
 	*kase = 1;
 	isave[1] = 1;
-	return 0;
+	return;
     }
 
     switch (isave[1]) {
@@ -723,7 +723,7 @@ L20:
     }
     *kase = 2;
     isave[1] = 2;
-    return 0;
+    return;
 
 /*     ................ ENTRY   (ISAVE( 1 ) = 2) */
 /*     FIRST ITERATION.  X HAS BEEN OVERWRITTEN BY TRANSPOSE(A)*X. */
@@ -743,7 +743,7 @@ L50:
     x[isave[2]] = 1.f;
     *kase = 1;
     isave[1] = 3;
-    return 0;
+    return;
 
 /*     ................ ENTRY   (ISAVE( 1 ) = 3) */
 /*     X HAS BEEN OVERWRITTEN BY A*X. */
@@ -777,7 +777,7 @@ L90:
     }
     *kase = 2;
     isave[1] = 4;
-    return 0;
+    return;
 
 /*     ................ ENTRY   (ISAVE( 1 ) = 4) */
 /*     X HAS BEEN OVERWRITTEN BY TRANSPOSE(A)*X. */
@@ -802,7 +802,7 @@ L120:
     }
     *kase = 1;
     isave[1] = 5;
-    return 0;
+    return;
 
 /*     ................ ENTRY   (ISAVE( 1 ) = 5) */
 /*     X HAS BEEN OVERWRITTEN BY A*X. */
@@ -816,7 +816,7 @@ L140:
 
 L150:
     *kase = 0;
-    return 0;
+    return;
 
 /*     End of SLACN2 */
 

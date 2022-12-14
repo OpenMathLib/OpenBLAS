@@ -643,7 +643,7 @@ f"> */
 /* > \ingroup complex16HEcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int zhegs2_(integer *itype, char *uplo, integer *n, 
+/* Subroutine */ void zhegs2_(integer *itype, char *uplo, integer *n, 
 	doublecomplex *a, integer *lda, doublecomplex *b, integer *ldb, 
 	integer *info)
 {
@@ -653,20 +653,21 @@ f"> */
     doublecomplex z__1;
 
     /* Local variables */
-    extern /* Subroutine */ int zher2_(char *, integer *, doublecomplex *, 
+    extern /* Subroutine */ void zher2_(char *, integer *, doublecomplex *, 
 	    doublecomplex *, integer *, doublecomplex *, integer *, 
 	    doublecomplex *, integer *);
     integer k;
     extern logical lsame_(char *, char *);
     logical upper;
-    extern /* Subroutine */ int zaxpy_(integer *, doublecomplex *, 
+    extern /* Subroutine */ void zaxpy_(integer *, doublecomplex *, 
 	    doublecomplex *, integer *, doublecomplex *, integer *), ztrmv_(
 	    char *, char *, char *, integer *, doublecomplex *, integer *, 
 	    doublecomplex *, integer *), ztrsv_(char *
 	    , char *, char *, integer *, doublecomplex *, integer *, 
 	    doublecomplex *, integer *);
     doublecomplex ct;
-    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen), zdscal_(
+    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
+    extern void zdscal_(
 	    integer *, doublereal *, doublecomplex *, integer *), zlacgv_(
 	    integer *, doublecomplex *, integer *);
     doublereal akk, bkk;
@@ -708,7 +709,7 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZHEGS2", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
     if (*itype == 1) {
@@ -886,7 +887,7 @@ f"> */
 	    }
 	}
     }
-    return 0;
+    return;
 
 /*     End of ZHEGS2 */
 

@@ -661,7 +661,7 @@ f"> */
 /* > \endhtmlonly */
 
 /*  ===================================================================== */
-/* Subroutine */ int zlaqp2_(integer *m, integer *n, integer *offset, 
+/* Subroutine */ void zlaqp2_(integer *m, integer *n, integer *offset, 
 	doublecomplex *a, integer *lda, integer *jpvt, doublecomplex *tau, 
 	doublereal *vn1, doublereal *vn2, doublecomplex *work)
 {
@@ -675,7 +675,7 @@ f"> */
     integer i__, j;
     doublereal tol3z;
     integer offpi, itemp;
-    extern /* Subroutine */ int zlarf_(char *, integer *, integer *, 
+    extern /* Subroutine */ void zlarf_(char *, integer *, integer *, 
 	    doublecomplex *, integer *, doublecomplex *, doublecomplex *, 
 	    integer *, doublecomplex *), zswap_(integer *, 
 	    doublecomplex *, integer *, doublecomplex *, integer *);
@@ -683,7 +683,7 @@ f"> */
 	    char *);
     integer mn;
     extern integer idamax_(integer *, doublereal *, integer *);
-    extern /* Subroutine */ int zlarfg_(integer *, doublecomplex *, 
+    extern /* Subroutine */ void zlarfg_(integer *, doublecomplex *, 
 	    doublecomplex *, integer *, doublecomplex *);
     doublecomplex aii;
     integer pvt;
@@ -800,7 +800,7 @@ f"> */
 /* L20: */
     }
 
-    return 0;
+    return;
 
 /*     End of ZLAQP2 */
 

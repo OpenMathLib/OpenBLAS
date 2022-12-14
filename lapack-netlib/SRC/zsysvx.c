@@ -797,7 +797,7 @@ f"> */
 /* > \ingroup complex16SYsolve */
 
 /*  ===================================================================== */
-/* Subroutine */ int zsysvx_(char *fact, char *uplo, integer *n, integer *
+/* Subroutine */ void zsysvx_(char *fact, char *uplo, integer *n, integer *
 	nrhs, doublecomplex *a, integer *lda, doublecomplex *af, integer *
 	ldaf, integer *ipiv, doublecomplex *b, integer *ldb, doublecomplex *x,
 	 integer *ldx, doublereal *rcond, doublereal *ferr, doublereal *berr, 
@@ -816,13 +816,13 @@ f"> */
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     extern integer ilaenv_(integer *, char *, char *, integer *, integer *, 
 	    integer *, integer *, ftnlen, ftnlen);
-    extern /* Subroutine */ int zlacpy_(char *, integer *, integer *, 
+    extern /* Subroutine */ void zlacpy_(char *, integer *, integer *, 
 	    doublecomplex *, integer *, doublecomplex *, integer *);
     integer lwkopt;
     logical lquery;
     extern doublereal zlansy_(char *, char *, integer *, doublecomplex *, 
 	    integer *, doublereal *);
-    extern /* Subroutine */ int zsycon_(char *, integer *, doublecomplex *, 
+    extern /* Subroutine */ void zsycon_(char *, integer *, doublecomplex *, 
 	    integer *, integer *, doublereal *, doublereal *, doublecomplex *,
 	     integer *), zsyrfs_(char *, integer *, integer *, 
 	    doublecomplex *, integer *, doublecomplex *, integer *, integer *,
@@ -909,9 +909,9 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZSYSVX", &i__1, (ftnlen)6);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
     if (nofact) {
@@ -926,7 +926,7 @@ f"> */
 
 	if (*info > 0) {
 	    *rcond = 0.;
-	    return 0;
+	    return;
 	}
     }
 
@@ -960,7 +960,7 @@ f"> */
 
     work[1].r = (doublereal) lwkopt, work[1].i = 0.;
 
-    return 0;
+    return;
 
 /*     End of ZSYSVX */
 

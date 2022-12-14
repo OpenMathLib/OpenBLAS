@@ -685,7 +685,7 @@ f"> */
 /* > \ingroup doubleOTHERauxiliary */
 
 /*  ===================================================================== */
-/* Subroutine */ int dlaein_(logical *rightv, logical *noinit, integer *n, 
+/* Subroutine */ void dlaein_(logical *rightv, logical *noinit, integer *n, 
 	doublereal *h__, integer *ldh, doublereal *wr, doublereal *wi, 
 	doublereal *vr, doublereal *vi, doublereal *b, integer *ldb, 
 	doublereal *work, doublereal *eps3, doublereal *smlnum, doublereal *
@@ -700,7 +700,7 @@ f"> */
     doublereal temp, norm, vmax;
     extern doublereal dnrm2_(integer *, doublereal *, integer *);
     integer i__, j;
-    extern /* Subroutine */ int dscal_(integer *, doublereal *, doublereal *, 
+    extern /* Subroutine */ void dscal_(integer *, doublereal *, doublereal *, 
 	    integer *);
     doublereal scale, w, x, y;
     extern doublereal dasum_(integer *, doublereal *, integer *);
@@ -711,10 +711,10 @@ f"> */
     extern doublereal dlapy2_(doublereal *, doublereal *);
     doublereal ei, ej, absbii, absbjj, xi;
     extern integer idamax_(integer *, doublereal *, integer *);
-    extern /* Subroutine */ int dladiv_(doublereal *, doublereal *, 
+    extern /* Subroutine */ void dladiv_(doublereal *, doublereal *, 
 	    doublereal *, doublereal *, doublereal *, doublereal *);
     doublereal xr;
-    extern /* Subroutine */ int dlatrs_(char *, char *, char *, char *, 
+    extern /* Subroutine */ void dlatrs_(char *, char *, char *, char *, 
 	    integer *, doublereal *, integer *, doublereal *, doublereal *, 
 	    doublereal *, integer *);
     char normin[1];
@@ -1252,7 +1252,7 @@ L280:
 
     }
 
-    return 0;
+    return;
 
 /*     End of DLAEIN */
 

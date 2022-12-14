@@ -631,7 +631,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int zlargv_(integer *n, doublecomplex *x, integer *incx, 
+/* Subroutine */ void zlargv_(integer *n, doublecomplex *x, integer *incx, 
 	doublecomplex *y, integer *incy, doublereal *c__, integer *incc)
 {
     /* System generated locals */
@@ -870,7 +870,7 @@ L50:
 	ix += *incx;
 /* L60: */
     }
-    return 0;
+    return;
 
 /*     End of ZLARGV */
 

@@ -727,7 +727,7 @@ f"> */
 /* > \ingroup complexOTHERcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int cpftrf_(char *transr, char *uplo, integer *n, complex *a,
+/* Subroutine */ void cpftrf_(char *transr, char *uplo, integer *n, complex *a,
 	 integer *info)
 {
     /* System generated locals */
@@ -736,11 +736,11 @@ f"> */
     /* Local variables */
     integer k;
     logical normaltransr;
-    extern /* Subroutine */ int cherk_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void cherk_(char *, char *, integer *, integer *, 
 	    real *, complex *, integer *, real *, complex *, integer *);
     extern logical lsame_(char *, char *);
     logical lower;
-    extern /* Subroutine */ int ctrsm_(char *, char *, char *, char *, 
+    extern /* Subroutine */ void ctrsm_(char *, char *, char *, char *, 
 	    integer *, integer *, complex *, complex *, integer *, complex *, 
 	    integer *);
     integer n1, n2;
@@ -774,13 +774,13 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CPFTRF", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /*     If N is odd, set NISODD = .TRUE. */
@@ -821,7 +821,7 @@ f"> */
 
 		cpotrf_("L", &n1, a, n, info);
 		if (*info > 0) {
-		    return 0;
+		    return;
 		}
 		ctrsm_("R", "L", "C", "N", &n2, &n1, &c_b1, a, n, &a[n1], n);
 		cherk_("U", "N", &n2, &n1, &c_b15, &a[n1], n, &c_b16, &a[*n], 
@@ -839,7 +839,7 @@ f"> */
 
 		cpotrf_("L", &n1, &a[n2], n, info);
 		if (*info > 0) {
-		    return 0;
+		    return;
 		}
 		ctrsm_("L", "L", "N", "N", &n1, &n2, &c_b1, &a[n2], n, a, n);
 		cherk_("U", "C", &n2, &n1, &c_b15, a, n, &c_b16, &a[n1], n);
@@ -862,7 +862,7 @@ f"> */
 
 		cpotrf_("U", &n1, a, &n1, info);
 		if (*info > 0) {
-		    return 0;
+		    return;
 		}
 		ctrsm_("L", "U", "C", "N", &n1, &n2, &c_b1, a, &n1, &a[n1 * 
 			n1], &n1);
@@ -881,7 +881,7 @@ f"> */
 
 		cpotrf_("U", &n1, &a[n2 * n2], &n2, info);
 		if (*info > 0) {
-		    return 0;
+		    return;
 		}
 		ctrsm_("R", "U", "N", "N", &n2, &n1, &c_b1, &a[n2 * n2], &n2, 
 			a, &n2);
@@ -913,7 +913,7 @@ f"> */
 		i__1 = *n + 1;
 		cpotrf_("L", &k, &a[1], &i__1, info);
 		if (*info > 0) {
-		    return 0;
+		    return;
 		}
 		i__1 = *n + 1;
 		i__2 = *n + 1;
@@ -938,7 +938,7 @@ f"> */
 		i__1 = *n + 1;
 		cpotrf_("L", &k, &a[k + 1], &i__1, info);
 		if (*info > 0) {
-		    return 0;
+		    return;
 		}
 		i__1 = *n + 1;
 		i__2 = *n + 1;
@@ -968,7 +968,7 @@ f"> */
 
 		cpotrf_("U", &k, &a[k], &k, info);
 		if (*info > 0) {
-		    return 0;
+		    return;
 		}
 		ctrsm_("L", "U", "C", "N", &k, &k, &c_b1, &a[k], &n1, &a[k * (
 			k + 1)], &k);
@@ -987,7 +987,7 @@ f"> */
 
 		cpotrf_("U", &k, &a[k * (k + 1)], &k, info);
 		if (*info > 0) {
-		    return 0;
+		    return;
 		}
 		ctrsm_("R", "U", "N", "N", &k, &k, &c_b1, &a[k * (k + 1)], &k,
 			 a, &k);
@@ -1003,7 +1003,7 @@ f"> */
 
     }
 
-    return 0;
+    return;
 
 /*     End of CPFTRF */
 

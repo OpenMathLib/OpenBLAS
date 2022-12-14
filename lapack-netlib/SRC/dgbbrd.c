@@ -701,7 +701,7 @@ f"> */
 /* > \ingroup doubleGBcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int dgbbrd_(char *vect, integer *m, integer *n, integer *ncc,
+/* Subroutine */ void dgbbrd_(char *vect, integer *m, integer *n, integer *ncc,
 	 integer *kl, integer *ku, doublereal *ab, integer *ldab, doublereal *
 	d__, doublereal *e, doublereal *q, integer *ldq, doublereal *pt, 
 	integer *ldpt, doublereal *c__, integer *ldc, doublereal *work, 
@@ -713,7 +713,7 @@ f"> */
 
     /* Local variables */
     integer inca;
-    extern /* Subroutine */ int drot_(integer *, doublereal *, integer *, 
+    extern /* Subroutine */ void drot_(integer *, doublereal *, integer *, 
 	    doublereal *, integer *, doublereal *, doublereal *);
     integer i__, j, l;
     extern logical lsame_(char *, char *);
@@ -726,10 +726,12 @@ f"> */
     doublereal rc;
     integer ml, mn, nr, mu;
     doublereal rs;
-    extern /* Subroutine */ int dlaset_(char *, integer *, integer *, 
+    extern /* Subroutine */ void dlaset_(char *, integer *, integer *, 
 	    doublereal *, doublereal *, doublereal *, integer *), 
 	    dlartg_(doublereal *, doublereal *, doublereal *, doublereal *, 
-	    doublereal *), xerbla_(char *, integer *, ftnlen), dlargv_(
+	    doublereal *);
+    extern int xerbla_(char *, integer *, ftnlen);
+    extern void dlargv_(
 	    integer *, doublereal *, integer *, doublereal *, integer *, 
 	    doublereal *, integer *), dlartv_(integer *, doublereal *, 
 	    integer *, doublereal *, integer *, doublereal *, doublereal *, 
@@ -798,7 +800,7 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DGBBRD", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Initialize Q and P**T to the unit matrix, if needed */
@@ -813,7 +815,7 @@ f"> */
 /*     Quick return if possible. */
 
     if (*m == 0 || *n == 0) {
-	return 0;
+	return;
     }
 
     minmn = f2cmin(*m,*n);
@@ -1149,7 +1151,7 @@ f"> */
 /* L150: */
 	}
     }
-    return 0;
+    return;
 
 /*     End of DGBBRD */
 

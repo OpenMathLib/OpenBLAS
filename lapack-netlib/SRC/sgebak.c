@@ -638,7 +638,7 @@ f"> */
 /* > \ingroup realGEcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int sgebak_(char *job, char *side, integer *n, integer *ilo, 
+/* Subroutine */ void sgebak_(char *job, char *side, integer *n, integer *ilo, 
 	integer *ihi, real *scale, integer *m, real *v, integer *ldv, integer 
 	*info)
 {
@@ -649,9 +649,9 @@ f"> */
     integer i__, k;
     real s;
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int sscal_(integer *, real *, real *, integer *);
+    extern /* Subroutine */ void sscal_(integer *, real *, real *, integer *);
     logical leftv;
-    extern /* Subroutine */ int sswap_(integer *, real *, integer *, real *, 
+    extern /* Subroutine */ void sswap_(integer *, real *, integer *, real *, 
 	    integer *);
     integer ii;
     extern /* Subroutine */ int xerbla_(char *, integer *,ftnlen);
@@ -699,19 +699,19 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("SGEBAK", &i__1,(ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
     if (*m == 0) {
-	return 0;
+	return;
     }
     if (lsame_(job, "N")) {
-	return 0;
+	return;
     }
 
     if (*ilo == *ihi) {
@@ -790,7 +790,7 @@ L50:
 	}
     }
 
-    return 0;
+    return;
 
 /*     End of SGEBAK */
 

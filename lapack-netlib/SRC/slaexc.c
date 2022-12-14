@@ -656,7 +656,7 @@ f"> */
 /* > \ingroup realOTHERauxiliary */
 
 /*  ===================================================================== */
-/* Subroutine */ int slaexc_(logical *wantq, integer *n, real *t, integer *
+/* Subroutine */ void slaexc_(logical *wantq, integer *n, real *t, integer *
 	ldt, real *q, integer *ldq, integer *j1, integer *n1, integer *n2, 
 	real *work, integer *info)
 {
@@ -667,14 +667,14 @@ f"> */
     /* Local variables */
     integer ierr;
     real temp;
-    extern /* Subroutine */ int srot_(integer *, real *, integer *, real *, 
+    extern /* Subroutine */ void srot_(integer *, real *, integer *, real *, 
 	    integer *, real *, real *);
     real d__[16]	/* was [4][4] */;
     integer k;
     real u[3], scale, x[4]	/* was [2][2] */, dnorm;
     integer j2, j3, j4;
     real xnorm, u1[3], u2[3];
-    extern /* Subroutine */ int slanv2_(real *, real *, real *, real *, real *
+    extern /* Subroutine */ void slanv2_(real *, real *, real *, real *, real *
 	    , real *, real *, real *, real *, real *), slasy2_(logical *, 
 	    logical *, integer *, integer *, integer *, real *, integer *, 
 	    real *, integer *, real *, integer *, real *, real *, integer *, 
@@ -683,12 +683,12 @@ f"> */
     real cs, t11, t22, t33, sn;
     extern real slamch_(char *), slange_(char *, integer *, integer *,
 	     real *, integer *, real *);
-    extern /* Subroutine */ int slarfg_(integer *, real *, real *, integer *, 
+    extern /* Subroutine */ void slarfg_(integer *, real *, real *, integer *, 
 	    real *), slacpy_(char *, integer *, integer *, real *, integer *, 
 	    real *, integer *), slartg_(real *, real *, real *, real *
 	    , real *);
     real thresh;
-    extern /* Subroutine */ int slarfx_(char *, integer *, integer *, real *, 
+    extern /* Subroutine */ void slarfx_(char *, integer *, integer *, real *, 
 	    real *, real *, integer *, real *);
     real smlnum, wi1, wi2, wr1, wr2, eps, tau, tau1, tau2;
 
@@ -717,10 +717,10 @@ f"> */
 /*     Quick return if possible */
 
     if (*n == 0 || *n1 == 0 || *n2 == 0) {
-	return 0;
+	return;
     }
     if (*j1 + *n1 > *n) {
-	return 0;
+	return;
     }
 
     j2 = *j1 + 1;
@@ -1006,13 +1006,13 @@ L40:
 	}
 
     }
-    return 0;
+    return;
 
 /*     Exit with INFO = 1 if swap was rejected. */
 
 L50:
     *info = 1;
-    return 0;
+    return;
 
 /*     End of SLAEXC */
 

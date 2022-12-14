@@ -616,7 +616,7 @@ f"> */
 /* > \ingroup complex16OTHERauxiliary */
 
 /*  ===================================================================== */
-/* Subroutine */ int zlag2c_(integer *m, integer *n, doublecomplex *a, 
+/* Subroutine */ void zlag2c_(integer *m, integer *n, doublecomplex *a, 
 	integer *lda, complex *sa, integer *ldsa, integer *info)
 {
     /* System generated locals */
@@ -667,7 +667,7 @@ f"> */
     }
     *info = 0;
 L30:
-    return 0;
+    return;
 
 /*     End of ZLAG2C */
 

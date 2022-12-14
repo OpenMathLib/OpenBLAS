@@ -659,7 +659,7 @@ aa.f"> */
 /* > \ingroup doubleSYcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int dlasyf_aa_(char *uplo, integer *j1, integer *m, integer 
+/* Subroutine */ void dlasyf_aa_(char *uplo, integer *j1, integer *m, integer 
 	*nb, doublereal *a, integer *lda, integer *ipiv, doublereal *h__, 
 	integer *ldh, doublereal *work)
 {
@@ -669,10 +669,10 @@ aa.f"> */
     /* Local variables */
     integer j, k;
     doublereal alpha;
-    extern /* Subroutine */ int dscal_(integer *, doublereal *, doublereal *, 
+    extern /* Subroutine */ void dscal_(integer *, doublereal *, doublereal *, 
 	    integer *);
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int dgemv_(char *, integer *, integer *, 
+    extern /* Subroutine */ void dgemv_(char *, integer *, integer *, 
 	    doublereal *, doublereal *, integer *, doublereal *, integer *, 
 	    doublereal *, doublereal *, integer *), dcopy_(integer *, 
 	    doublereal *, integer *, doublereal *, integer *), dswap_(integer 
@@ -681,7 +681,7 @@ aa.f"> */
 	    integer *);
     integer i1, k1, i2, mj;
     extern integer idamax_(integer *, doublereal *, integer *);
-    extern /* Subroutine */ int dlaset_(char *, integer *, integer *, 
+    extern /* Subroutine */ void dlaset_(char *, integer *, integer *, 
 	    doublereal *, doublereal *, doublereal *, integer *);
     doublereal piv;
 
@@ -1045,7 +1045,7 @@ L30:
 L40:
 	;
     }
-    return 0;
+    return;
 
 /*     End of DLASYF_AA */
 

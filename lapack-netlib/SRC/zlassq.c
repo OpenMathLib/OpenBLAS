@@ -615,7 +615,7 @@ f"> */
 /* > \ingroup complex16OTHERauxiliary */
 
 /*  ===================================================================== */
-/* Subroutine */ int zlassq_(integer *n, doublecomplex *x, integer *incx, 
+/* Subroutine */ void zlassq_(integer *n, doublecomplex *x, integer *incx, 
 	doublereal *scale, doublereal *sumsq)
 {
     /* System generated locals */
@@ -676,7 +676,7 @@ f"> */
 	}
     }
 
-    return 0;
+    return;
 
 /*     End of ZLASSQ */
 

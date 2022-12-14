@@ -612,7 +612,7 @@ f"> */
 /* > \ingroup OTHERauxiliary */
 
 /*  ===================================================================== */
-/* Subroutine */ int dlacpy_(char *uplo, integer *m, integer *n, doublereal *
+/* Subroutine */ void dlacpy_(char *uplo, integer *m, integer *n, doublereal *
 	a, integer *lda, doublereal *b, integer *ldb)
 {
     /* System generated locals */
@@ -672,7 +672,7 @@ f"> */
 /* L60: */
 	}
     }
-    return 0;
+    return;
 
 /*     End of DLACPY */
 

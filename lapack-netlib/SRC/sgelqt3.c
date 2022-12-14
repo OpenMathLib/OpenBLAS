@@ -627,7 +627,7 @@ static real c_b19 = -1.f;
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int sgelqt3_(integer *m, integer *n, real *a, integer *lda, 
+/* Subroutine */ void sgelqt3_(integer *m, integer *n, real *a, integer *lda, 
 	real *t, integer *ldt, integer *info)
 {
     /* System generated locals */
@@ -635,13 +635,15 @@ static real c_b19 = -1.f;
 
     /* Local variables */
     integer i__, j, iinfo;
-    extern /* Subroutine */ int sgemm_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void sgemm_(char *, char *, integer *, integer *, 
 	    integer *, real *, real *, integer *, real *, integer *, real *, 
 	    real *, integer *);
     integer i1, j1, m1, m2;
-    extern /* Subroutine */ int strmm_(char *, char *, char *, char *, 
+    extern /* Subroutine */ void strmm_(char *, char *, char *, char *, 
 	    integer *, integer *, real *, real *, integer *, real *, integer *
-	    ), xerbla_(char *, integer *, ftnlen), slarfg_(integer *, real *, real *, integer *, real *);
+	    );
+    extern int xerbla_(char *, integer *, ftnlen);
+    extern void slarfg_(integer *, real *, real *, integer *, real *);
 
 
 /*  -- LAPACK computational routine (version 3.8.0) -- */
@@ -675,7 +677,7 @@ static real c_b19 = -1.f;
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("SGELQT3", &i__1, (ftnlen)7);
-	return 0;
+	return;
     }
 
     if (*m == 1) {
@@ -773,7 +775,7 @@ static real c_b19 = -1.f;
 
     }
 
-    return 0;
+    return;
 
 /*     End of SGELQT3 */
 

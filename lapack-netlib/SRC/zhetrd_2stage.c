@@ -740,7 +740,7 @@ static integer c__4 = 4;
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int zhetrd_2stage_(char *vect, char *uplo, integer *n, 
+/* Subroutine */ void zhetrd_2stage_(char *vect, char *uplo, integer *n, 
 	doublecomplex *a, integer *lda, doublereal *d__, doublereal *e, 
 	doublecomplex *tau, doublecomplex *hous2, integer *lhous2, 
 	doublecomplex *work, integer *lwork, integer *info)
@@ -750,12 +750,12 @@ static integer c__4 = 4;
 
     /* Local variables */
     integer ldab;
-    extern /* Subroutine */ int zhetrd_he2hb_(char *, integer *, integer *, 
+    extern /* Subroutine */ void zhetrd_he2hb_(char *, integer *, integer *, 
 	    doublecomplex *, integer *, doublecomplex *, integer *, 
 	    doublecomplex *, doublecomplex *, integer *, integer *);
     extern integer ilaenv2stage_(integer *, char *, char *, integer *, 
 	    integer *, integer *, integer *);
-    extern /* Subroutine */ int zhetrd_hb2st_(char *, char *, char *, 
+    extern /* Subroutine */ void zhetrd_hb2st_(char *, char *, char *, 
 	    integer *, integer *, doublecomplex *, integer *, doublereal *, 
 	    doublereal *, doublecomplex *, integer *, doublecomplex *, 
 	    integer *, integer *);
@@ -826,16 +826,16 @@ static integer c__4 = 4;
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZHETRD_2STAGE", &i__1, (ftnlen)13);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
 	work[1].r = 1., work[1].i = 0.;
-	return 0;
+	return;
     }
 
 /*     Determine pointer position */
@@ -849,20 +849,20 @@ static integer c__4 = 4;
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZHETRD_HE2HB", &i__1, (ftnlen)12);
-	return 0;
+	return;
     }
     zhetrd_hb2st_("Y", vect, uplo, n, &kd, &work[abpos], &ldab, &d__[1], &e[
 	    1], &hous2[1], lhous2, &work[wpos], &lwrk, info);
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZHETRD_HB2ST", &i__1, (ftnlen)12);
-	return 0;
+	return;
     }
 
 
     hous2[1].r = (doublereal) lhmin, hous2[1].i = 0.;
     work[1].r = (doublereal) lwmin, work[1].i = 0.;
-    return 0;
+    return;
 
 /*     End of ZHETRD_2STAGE */
 

@@ -697,7 +697,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int dtpttf_(char *transr, char *uplo, integer *n, doublereal 
+/* Subroutine */ void dtpttf_(char *transr, char *uplo, integer *n, doublereal 
 	*ap, doublereal *arf, integer *info)
 {
     /* System generated locals */
@@ -738,13 +738,13 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DTPTTF", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
     if (*n == 1) {
@@ -753,7 +753,7 @@ f"> */
 	} else {
 	    arf[0] = ap[0];
 	}
-	return 0;
+	return;
     }
 
 /*     Size of array ARF(0:NT-1) */
@@ -1041,7 +1041,7 @@ f"> */
 
     }
 
-    return 0;
+    return;
 
 /*     End of DTPTTF */
 

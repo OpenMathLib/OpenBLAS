@@ -648,7 +648,7 @@ l elements using an unblocked algorithm. */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int zgeqr2p_(integer *m, integer *n, doublecomplex *a, 
+/* Subroutine */ void zgeqr2p_(integer *m, integer *n, doublecomplex *a, 
 	integer *lda, doublecomplex *tau, doublecomplex *work, integer *info)
 {
     /* System generated locals */
@@ -658,9 +658,11 @@ l elements using an unblocked algorithm. */
     /* Local variables */
     integer i__, k;
     doublecomplex alpha;
-    extern /* Subroutine */ int zlarf_(char *, integer *, integer *, 
+    extern /* Subroutine */ void zlarf_(char *, integer *, integer *, 
 	    doublecomplex *, integer *, doublecomplex *, doublecomplex *, 
-	    integer *, doublecomplex *), xerbla_(char *, integer *, ftnlen), zlarfgp_(integer *, doublecomplex *, doublecomplex *, 
+	    integer *, doublecomplex *);
+    extern int xerbla_(char *, integer *, ftnlen);
+    extern void zlarfgp_(integer *, doublecomplex *, doublecomplex *, 
 	    integer *, doublecomplex *);
 
 
@@ -694,7 +696,7 @@ l elements using an unblocked algorithm. */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZGEQR2P", &i__1, (ftnlen)7);
-	return 0;
+	return;
     }
 
     k = f2cmin(*m,*n);
@@ -727,7 +729,7 @@ l elements using an unblocked algorithm. */
 	}
 /* L10: */
     }
-    return 0;
+    return;
 
 /*     End of ZGEQR2P */
 

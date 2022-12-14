@@ -673,7 +673,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int cpbsv_(char *uplo, integer *n, integer *kd, integer *
+/* Subroutine */ void cpbsv_(char *uplo, integer *n, integer *kd, integer *
 	nrhs, complex *ab, integer *ldab, complex *b, integer *ldb, integer *
 	info)
 {
@@ -682,7 +682,8 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 
     /* Local variables */
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen), cpbtrf_(
+    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
+    extern void cpbtrf_(
 	    char *, integer *, integer *, complex *, integer *, integer *), cpbtrs_(char *, integer *, integer *, integer *, complex 
 	    *, integer *, complex *, integer *, integer *);
 
@@ -724,7 +725,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CPBSV ", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Compute the Cholesky factorization A = U**H*U or A = L*L**H. */
@@ -738,7 +739,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 		info);
 
     }
-    return 0;
+    return;
 
 /*     End of CPBSV */
 

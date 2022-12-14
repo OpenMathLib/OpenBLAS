@@ -684,7 +684,7 @@ static integer c_n1 = -1;
 /* > \ingroup complex16HEsolve */
 
 /*  ===================================================================== */
-/* Subroutine */ int zhesv_(char *uplo, integer *n, integer *nrhs, 
+/* Subroutine */ void zhesv_(char *uplo, integer *n, integer *nrhs, 
 	doublecomplex *a, integer *lda, integer *ipiv, doublecomplex *b, 
 	integer *ldb, doublecomplex *work, integer *lwork, integer *info)
 {
@@ -697,12 +697,12 @@ static integer c_n1 = -1;
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     extern integer ilaenv_(integer *, char *, char *, integer *, integer *, 
 	    integer *, integer *, ftnlen, ftnlen);
-    extern /* Subroutine */ int zhetrf_(char *, integer *, doublecomplex *, 
+    extern /* Subroutine */ void zhetrf_(char *, integer *, doublecomplex *, 
 	    integer *, integer *, doublecomplex *, integer *, integer *), zhetrs_(char *, integer *, integer *, doublecomplex *, 
 	    integer *, integer *, doublecomplex *, integer *, integer *);
     integer lwkopt;
     logical lquery;
-    extern /* Subroutine */ int zhetrs2_(char *, integer *, integer *, 
+    extern /* Subroutine */ void zhetrs2_(char *, integer *, integer *, 
 	    doublecomplex *, integer *, integer *, doublecomplex *, integer *,
 	     doublecomplex *, integer *);
 
@@ -759,9 +759,9 @@ static integer c_n1 = -1;
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZHESV ", &i__1, (ftnlen)6);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Compute the factorization A = U*D*U**H or A = L*D*L**H. */
@@ -791,7 +791,7 @@ static integer c_n1 = -1;
 
     work[1].r = (doublereal) lwkopt, work[1].i = 0.;
 
-    return 0;
+    return;
 
 /*     End of ZHESV */
 

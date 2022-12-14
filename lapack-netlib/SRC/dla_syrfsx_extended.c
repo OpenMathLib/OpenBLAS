@@ -907,7 +907,7 @@ fsx_extended.f"> */
 /* > \ingroup doubleSYcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int dla_syrfsx_extended_(integer *prec_type__, char *uplo, 
+/* Subroutine */ void dla_syrfsx_extended_(integer *prec_type__, char *uplo, 
 	integer *n, integer *nrhs, doublereal *a, integer *lda, doublereal *
 	af, integer *ldaf, integer *ipiv, logical *colequ, doublereal *c__, 
 	doublereal *b, integer *ldb, doublereal *y, integer *ldy, doublereal *
@@ -925,16 +925,16 @@ fsx_extended.f"> */
 
     /* Local variables */
     doublereal dx_x__, dz_z__;
-    extern /* Subroutine */ int dla_lin_berr_(integer *, integer *, integer *
+    extern /* Subroutine */ void dla_lin_berr_(integer *, integer *, integer *
 	    , doublereal *, doublereal *, doublereal *);
     doublereal ymin, dxratmax, dzratmax;
     integer y_prec_state__;
-    extern /* Subroutine */ int blas_dsymv_x_(integer *, integer *, 
+    extern /* Subroutine */ void blas_dsymv_x_(integer *, integer *, 
 	    doublereal *, doublereal *, integer *, doublereal *, integer *, 
 	    doublereal *, doublereal *, integer *, integer *);
     integer uplo2, i__, j;
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int blas_dsymv2_x_(integer *, integer *, 
+    extern /* Subroutine */ void blas_dsymv2_x_(integer *, integer *, 
 	    doublereal *, doublereal *, integer *, doublereal *, doublereal *,
 	     integer *, doublereal *, doublereal *, integer *, integer *), 
 	    dcopy_(integer *, doublereal *, integer *, doublereal *, integer *
@@ -942,10 +942,10 @@ fsx_extended.f"> */
     doublereal dxrat;
     logical incr_prec__;
     doublereal dzrat;
-    extern /* Subroutine */ int daxpy_(integer *, doublereal *, doublereal *, 
+    extern /* Subroutine */ void daxpy_(integer *, doublereal *, doublereal *, 
 	    integer *, doublereal *, integer *);
     logical upper;
-    extern /* Subroutine */ int dla_syamv_(integer *, integer *, doublereal *
+    extern /* Subroutine */ void dla_syamv_(integer *, integer *, doublereal *
 	    , doublereal *, integer *, doublereal *, integer *, doublereal *, 
 	    doublereal *, integer *), dsymv_(char *, integer *, doublereal *, 
 	    doublereal *, integer *, doublereal *, integer *, doublereal *, 
@@ -955,10 +955,10 @@ fsx_extended.f"> */
     doublereal yk;
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     doublereal final_dx_x__;
-    extern /* Subroutine */ int dla_wwaddw_(integer *, doublereal *, 
+    extern /* Subroutine */ void dla_wwaddw_(integer *, doublereal *, 
 	    doublereal *, doublereal *);
     doublereal final_dz_z__, normdx;
-    extern /* Subroutine */ int dsytrs_(char *, integer *, integer *, 
+    extern /* Subroutine */ void dsytrs_(char *, integer *, integer *, 
 	    doublereal *, integer *, integer *, doublereal *, integer *, 
 	    integer *);
     doublereal prevnormdx;
@@ -1026,7 +1026,7 @@ fsx_extended.f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DLA_SYRFSX_EXTENDED", &i__1, (ftnlen)19);
-	return 0;
+	return;
     }
     eps = dlamch_("Epsilon");
     myhugeval = dlamch_("Overflow");
@@ -1251,6 +1251,6 @@ L666:
 
     }
 
-    return 0;
+    return;
 } /* dla_syrfsx_extended__ */
 

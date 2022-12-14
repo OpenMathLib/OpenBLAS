@@ -804,7 +804,7 @@ f"> */
 /* > \ingroup doubleGTsolve */
 
 /*  ===================================================================== */
-/* Subroutine */ int dgtsvx_(char *fact, char *trans, integer *n, integer *
+/* Subroutine */ void dgtsvx_(char *fact, char *trans, integer *n, integer *
 	nrhs, doublereal *dl, doublereal *d__, doublereal *du, doublereal *
 	dlf, doublereal *df, doublereal *duf, doublereal *du2, integer *ipiv, 
 	doublereal *b, integer *ldb, doublereal *x, integer *ldx, doublereal *
@@ -818,14 +818,15 @@ f"> */
     char norm[1];
     extern logical lsame_(char *, char *);
     doublereal anorm;
-    extern /* Subroutine */ int dcopy_(integer *, doublereal *, integer *, 
+    extern /* Subroutine */ void dcopy_(integer *, doublereal *, integer *, 
 	    doublereal *, integer *);
     extern doublereal dlamch_(char *), dlangt_(char *, integer *, 
 	    doublereal *, doublereal *, doublereal *);
     logical nofact;
-    extern /* Subroutine */ int dlacpy_(char *, integer *, integer *, 
-	    doublereal *, integer *, doublereal *, integer *), 
-	    xerbla_(char *, integer *, ftnlen), dgtcon_(char *, integer *, 
+    extern /* Subroutine */ void dlacpy_(char *, integer *, integer *, 
+	    doublereal *, integer *, doublereal *, integer *); 
+    extern int xerbla_(char *, integer *, ftnlen);
+    extern void dgtcon_(char *, integer *, 
 	    doublereal *, doublereal *, doublereal *, doublereal *, integer *,
 	     doublereal *, doublereal *, doublereal *, integer *, integer *), dgtrfs_(char *, integer *, integer *, doublereal *, 
 	    doublereal *, doublereal *, doublereal *, doublereal *, 
@@ -834,7 +835,7 @@ f"> */
 	     integer *, integer *), dgttrf_(integer *, doublereal *, 
 	    doublereal *, doublereal *, doublereal *, integer *, integer *);
     logical notran;
-    extern /* Subroutine */ int dgttrs_(char *, integer *, integer *, 
+    extern /* Subroutine */ void dgttrs_(char *, integer *, integer *, 
 	    doublereal *, doublereal *, doublereal *, doublereal *, integer *,
 	     doublereal *, integer *, integer *);
 
@@ -889,7 +890,7 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DGTSVX", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
     if (nofact) {
@@ -909,7 +910,7 @@ f"> */
 
 	if (*info > 0) {
 	    *rcond = 0.;
-	    return 0;
+	    return;
 	}
     }
 
@@ -946,7 +947,7 @@ f"> */
 	*info = *n + 1;
     }
 
-    return 0;
+    return;
 
 /*     End of DGTSVX */
 

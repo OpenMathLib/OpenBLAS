@@ -601,7 +601,7 @@ f"> */
 /* > \ingroup auxOTHERcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int ssterf_(integer *n, real *d__, real *e, integer *info)
+/* Subroutine */ void ssterf_(integer *n, real *d__, real *e, integer *info)
 {
     /* System generated locals */
     integer i__1;
@@ -610,7 +610,7 @@ f"> */
     /* Local variables */
     real oldc;
     integer lend, jtot;
-    extern /* Subroutine */ int slae2_(real *, real *, real *, real *, real *)
+    extern /* Subroutine */ void slae2_(real *, real *, real *, real *, real *)
 	    ;
     real c__;
     integer i__, l, m;
@@ -624,14 +624,14 @@ f"> */
     real safmin;
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     real safmax;
-    extern /* Subroutine */ int slascl_(char *, integer *, integer *, real *, 
+    extern /* Subroutine */ void slascl_(char *, integer *, integer *, real *, 
 	    real *, integer *, integer *, real *, integer *, integer *);
     integer lendsv;
     real ssfmin;
     integer nmaxit;
     real ssfmax;
     extern real slanst_(char *, integer *, real *, real *);
-    extern /* Subroutine */ int slasrt_(char *, integer *, real *, integer *);
+    extern /* Subroutine */ void slasrt_(char *, integer *, real *, integer *);
     real rt1, rt2, eps, rte;
     integer lsv;
     real eps2;
@@ -661,10 +661,10 @@ f"> */
 	*info = -1;
 	i__1 = -(*info);
 	xerbla_("SSTERF", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
     if (*n <= 1) {
-	return 0;
+	return;
     }
 
 /*     Determine the unit roundoff for this environment. */
@@ -994,7 +994,7 @@ L170:
     slasrt_("I", n, &d__[1], info);
 
 L180:
-    return 0;
+    return;
 
 /*     End of SSTERF */
 

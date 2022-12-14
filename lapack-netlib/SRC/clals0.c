@@ -786,7 +786,7 @@ f"> */
 /* >     Osni Marques, LBNL/NERSC, USA \n */
 
 /*  ===================================================================== */
-/* Subroutine */ int clals0_(integer *icompq, integer *nl, integer *nr, 
+/* Subroutine */ void clals0_(integer *icompq, integer *nl, integer *nr, 
 	integer *sqre, integer *nrhs, complex *b, integer *ldb, complex *bx, 
 	integer *ldbx, integer *perm, integer *givptr, integer *givcol, 
 	integer *ldgcol, real *givnum, integer *ldgnum, real *poles, real *
@@ -807,16 +807,17 @@ f"> */
     extern real snrm2_(integer *, real *, integer *);
     integer i__, j, m, n;
     real diflj, difrj, dsigj;
-    extern /* Subroutine */ int ccopy_(integer *, complex *, integer *, 
+    extern /* Subroutine */ void ccopy_(integer *, complex *, integer *, 
 	    complex *, integer *), sgemv_(char *, integer *, integer *, real *
 	    , real *, integer *, real *, integer *, real *, real *, integer *), csrot_(integer *, complex *, integer *, complex *, 
 	    integer *, real *, real *);
     extern real slamc3_(real *, real *);
     real dj;
-    extern /* Subroutine */ int clascl_(char *, integer *, integer *, real *, 
+    extern /* Subroutine */ void clascl_(char *, integer *, integer *, real *, 
 	    real *, integer *, integer *, complex *, integer *, integer *), csscal_(integer *, real *, complex *, integer *), 
 	    clacpy_(char *, integer *, integer *, complex *, integer *, 
-	    complex *, integer *), xerbla_(char *, integer *, ftnlen);
+	    complex *, integer *);
+    extern int xerbla_(char *, integer *, ftnlen);
     real dsigjp;
     integer nlp1;
 
@@ -887,7 +888,7 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CLALS0", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
     m = n + *sqre;
@@ -1155,7 +1156,7 @@ f"> */
 	}
     }
 
-    return 0;
+    return;
 
 /*     End of CLALS0 */
 

@@ -661,7 +661,7 @@ f"> */
 /* > \endhtmlonly */
 
 /*  ===================================================================== */
-/* Subroutine */ int dlaqp2_(integer *m, integer *n, integer *offset, 
+/* Subroutine */ void dlaqp2_(integer *m, integer *n, integer *offset, 
 	doublereal *a, integer *lda, integer *jpvt, doublereal *tau, 
 	doublereal *vn1, doublereal *vn2, doublereal *work)
 {
@@ -675,15 +675,15 @@ f"> */
     doublereal temp2;
     integer i__, j;
     doublereal tol3z;
-    extern /* Subroutine */ int dlarf_(char *, integer *, integer *, 
+    extern /* Subroutine */ void dlarf_(char *, integer *, integer *, 
 	    doublereal *, integer *, doublereal *, doublereal *, integer *, 
 	    doublereal *);
     integer offpi, itemp;
-    extern /* Subroutine */ int dswap_(integer *, doublereal *, integer *, 
+    extern /* Subroutine */ void dswap_(integer *, doublereal *, integer *, 
 	    doublereal *, integer *);
     extern doublereal dlamch_(char *);
     integer mn;
-    extern /* Subroutine */ int dlarfg_(integer *, doublereal *, doublereal *,
+    extern /* Subroutine */ void dlarfg_(integer *, doublereal *, doublereal *,
 	     integer *, doublereal *);
     extern integer idamax_(integer *, doublereal *, integer *);
     doublereal aii;
@@ -797,7 +797,7 @@ f"> */
 /* L20: */
     }
 
-    return 0;
+    return;
 
 /*     End of DLAQP2 */
 

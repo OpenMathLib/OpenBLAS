@@ -670,7 +670,7 @@ f"> */
 /* > \ingroup realGBcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int sorgbr_(char *vect, integer *m, integer *n, integer *k, 
+/* Subroutine */ void sorgbr_(char *vect, integer *m, integer *n, integer *k, 
 	real *a, integer *lda, real *tau, real *work, integer *lwork, integer 
 	*info)
 {
@@ -683,7 +683,8 @@ f"> */
     integer iinfo;
     logical wantq;
     integer mn;
-    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen), sorglq_(
+    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
+    extern void sorglq_(
 	    integer *, integer *, integer *, real *, integer *, real *, real *
 	    , integer *, integer *), sorgqr_(integer *, integer *, integer *, 
 	    real *, integer *, real *, real *, integer *, integer *);
@@ -765,17 +766,17 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("SORGBR", &i__1, (ftnlen)6);
-	return 0;
+	return;
     } else if (lquery) {
 	work[1] = (real) lwkopt;
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*m == 0 || *n == 0) {
 	work[1] = 1.f;
-	return 0;
+	return;
     }
 
     if (wantq) {
@@ -872,7 +873,7 @@ f"> */
 	}
     }
     work[1] = (real) lwkopt;
-    return 0;
+    return;
 
 /*     End of SORGBR */
 

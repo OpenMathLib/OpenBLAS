@@ -625,7 +625,7 @@ static doublereal c_b16 = -1.;
 /* > \ingroup doubleGEcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int dgetrf2_(integer *m, integer *n, doublereal *a, integer *
+/* Subroutine */ void dgetrf2_(integer *m, integer *n, doublereal *a, integer *
 	lda, integer *ipiv, integer *info)
 {
     /* System generated locals */
@@ -635,19 +635,20 @@ static doublereal c_b16 = -1.;
     /* Local variables */
     doublereal temp;
     integer i__;
-    extern /* Subroutine */ int dscal_(integer *, doublereal *, doublereal *, 
+    extern /* Subroutine */ void dscal_(integer *, doublereal *, doublereal *, 
 	    integer *), dgemm_(char *, char *, integer *, integer *, integer *
 	    , doublereal *, doublereal *, integer *, doublereal *, integer *, 
 	    doublereal *, doublereal *, integer *);
     integer iinfo;
     doublereal sfmin;
-    extern /* Subroutine */ int dtrsm_(char *, char *, char *, char *, 
+    extern /* Subroutine */ void dtrsm_(char *, char *, char *, char *, 
 	    integer *, integer *, doublereal *, doublereal *, integer *, 
 	    doublereal *, integer *);
     integer n1, n2;
     extern doublereal dlamch_(char *);
     extern integer idamax_(integer *, doublereal *, integer *);
-    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen), dlaswp_(
+    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
+    extern int dlaswp_(
 	    integer *, doublereal *, integer *, integer *, integer *, integer 
 	    *, integer *);
 
@@ -681,13 +682,13 @@ static doublereal c_b16 = -1.;
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DGETRF2", &i__1, (ftnlen)7);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*m == 0 || *n == 0) {
-	return 0;
+	return;
     }
     if (*m == 1) {
 
@@ -799,7 +800,7 @@ static doublereal c_b16 = -1.;
 	dlaswp_(&n1, &a[a_dim1 + 1], lda, &i__1, &i__2, &ipiv[1], &c__1);
 
     }
-    return 0;
+    return;
 
 /*     End of DGETRF2 */
 

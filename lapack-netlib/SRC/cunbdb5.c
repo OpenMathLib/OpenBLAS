@@ -664,7 +664,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 /* > \ingroup complexOTHERcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int cunbdb5_(integer *m1, integer *m2, integer *n, complex *
+/* Subroutine */ void cunbdb5_(integer *m1, integer *m2, integer *n, complex *
 	x1, integer *incx1, complex *x2, integer *incx2, complex *q1, integer 
 	*ldq1, complex *q2, integer *ldq2, complex *work, integer *lwork, 
 	integer *info)
@@ -676,7 +676,8 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
     /* Local variables */
     integer i__, j, childinfo;
     extern real scnrm2_(integer *, complex *, integer *);
-    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen), cunbdb6_(
+    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
+    extern void cunbdb6_(
 	    integer *, integer *, integer *, complex *, integer *, complex *, 
 	    integer *, complex *, integer *, complex *, integer *, complex *, 
 	    integer *, integer *);
@@ -727,7 +728,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CUNBDB5", &i__1, (ftnlen)7);
-	return 0;
+	return;
     }
 
 /*     Project X onto the orthogonal complement of Q */
@@ -740,7 +741,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
     r__1 = scnrm2_(m1, &x1[1], incx1);
     r__2 = scnrm2_(m2, &x2[1], incx2);
     if (r__1 != 0.f || r__2 != 0.f) {
-	return 0;
+	return;
     }
 
 /*     Project each standard basis vector e_1,...,e_M1 in turn, stopping */
@@ -765,7 +766,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 	r__1 = scnrm2_(m1, &x1[1], incx1);
 	r__2 = scnrm2_(m2, &x2[1], incx2);
 	if (r__1 != 0.f || r__2 != 0.f) {
-	    return 0;
+	    return;
 	}
     }
 
@@ -791,11 +792,11 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 	r__1 = scnrm2_(m1, &x1[1], incx1);
 	r__2 = scnrm2_(m2, &x2[1], incx2);
 	if (r__1 != 0.f || r__2 != 0.f) {
-	    return 0;
+	    return;
 	}
     }
 
-    return 0;
+    return;
 
 /*     End of CUNBDB5 */
 

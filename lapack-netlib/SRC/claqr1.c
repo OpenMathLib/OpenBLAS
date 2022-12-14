@@ -617,7 +617,7 @@ f"> */
 /* >       University of Kansas, USA */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int claqr1_(integer *n, complex *h__, integer *ldh, complex *
+/* Subroutine */ void claqr1_(integer *n, complex *h__, integer *ldh, complex *
 	s1, complex *s2, complex *v)
 {
     /* System generated locals */
@@ -649,7 +649,7 @@ f"> */
 
     /* Function Body */
     if (*n != 2 && *n != 3) {
-	return 0;
+	return;
     }
 
     if (*n == 2) {
@@ -754,6 +754,6 @@ f"> */
 	    v[3].r = q__1.r, v[3].i = q__1.i;
 	}
     }
-    return 0;
+    return;
 } /* claqr1_ */
 

@@ -631,7 +631,7 @@ f"> */
 /* >     Umea University, S-901 87 Umea, Sweden. */
 
 /*  ===================================================================== */
-/* Subroutine */ int zgesc2_(integer *n, doublecomplex *a, integer *lda, 
+/* Subroutine */ void zgesc2_(integer *n, doublecomplex *a, integer *lda, 
 	doublecomplex *rhs, integer *ipiv, integer *jpiv, doublereal *scale)
 {
     /* System generated locals */
@@ -642,7 +642,7 @@ f"> */
     /* Local variables */
     doublecomplex temp;
     integer i__, j;
-    extern /* Subroutine */ int zscal_(integer *, doublecomplex *, 
+    extern /* Subroutine */ void zscal_(integer *, doublecomplex *, 
 	    doublecomplex *, integer *), dlabad_(doublereal *, doublereal *);
     extern doublereal dlamch_(char *);
     doublereal bignum;
@@ -746,7 +746,7 @@ f"> */
 
     i__1 = *n - 1;
     zlaswp_(&c__1, &rhs[1], lda, &c__1, &i__1, &jpiv[1], &c_n1);
-    return 0;
+    return;
 
 /*     End of ZGESC2 */
 

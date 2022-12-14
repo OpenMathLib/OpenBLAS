@@ -630,7 +630,7 @@ f"> */
 /* > \ingroup complexGEcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int cgetri_(integer *n, complex *a, integer *lda, integer *
+/* Subroutine */ void cgetri_(integer *n, complex *a, integer *lda, integer *
 	ipiv, complex *work, integer *lwork, integer *info)
 {
     /* System generated locals */
@@ -639,13 +639,13 @@ f"> */
 
     /* Local variables */
     integer i__, j;
-    extern /* Subroutine */ int cgemm_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void cgemm_(char *, char *, integer *, integer *, 
 	    integer *, complex *, complex *, integer *, complex *, integer *, 
 	    complex *, complex *, integer *), cgemv_(char *, 
 	    integer *, integer *, complex *, complex *, integer *, complex *, 
 	    integer *, complex *, complex *, integer *);
     integer nbmin;
-    extern /* Subroutine */ int cswap_(integer *, complex *, integer *, 
+    extern /* Subroutine */ void cswap_(integer *, complex *, integer *, 
 	    complex *, integer *), ctrsm_(char *, char *, char *, char *, 
 	    integer *, integer *, complex *, complex *, integer *, complex *, 
 	    integer *);
@@ -696,15 +696,15 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CGETRI", &i__1, (ftnlen)6);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /*     Form inv(U).  If INFO > 0 from CTRTRI, then U is singular, */
@@ -712,7 +712,7 @@ f"> */
 
     ctrtri_("Upper", "Non-unit", n, &a[a_offset], lda, info);
     if (*info > 0) {
-	return 0;
+	return;
     }
 
     nbmin = 2;
@@ -817,7 +817,7 @@ f"> */
     }
 
     work[1].r = (real) iws, work[1].i = 0.f;
-    return 0;
+    return;
 
 /*     End of CGETRI */
 

@@ -623,7 +623,7 @@ f"> */
 /* > \ingroup complexGEcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int cgetrf_(integer *m, integer *n, complex *a, integer *lda,
+/* Subroutine */ void cgetrf_(integer *m, integer *n, complex *a, integer *lda,
 	 integer *ipiv, integer *info)
 {
     /* System generated locals */
@@ -632,18 +632,18 @@ f"> */
 
     /* Local variables */
     integer i__, j;
-    extern /* Subroutine */ int cgemm_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void cgemm_(char *, char *, integer *, integer *, 
 	    integer *, complex *, complex *, integer *, complex *, integer *, 
 	    complex *, complex *, integer *);
     integer iinfo;
-    extern /* Subroutine */ int ctrsm_(char *, char *, char *, char *, 
+    extern /* Subroutine */ void ctrsm_(char *, char *, char *, char *, 
 	    integer *, integer *, complex *, complex *, integer *, complex *, 
 	    integer *);
     integer jb, nb;
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     extern integer ilaenv_(integer *, char *, char *, integer *, integer *, 
 	    integer *, integer *, ftnlen, ftnlen);
-    extern /* Subroutine */ int claswp_(integer *, complex *, integer *, 
+    extern /* Subroutine */ void claswp_(integer *, complex *, integer *, 
 	    integer *, integer *, integer *, integer *), cgetrf2_(integer *, 
 	    integer *, complex *, integer *, integer *, integer *);
 
@@ -677,13 +677,13 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CGETRF", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*m == 0 || *n == 0) {
-	return 0;
+	return;
     }
 
 /*     Determine the block size for this environment. */
@@ -762,7 +762,7 @@ f"> */
 /* L20: */
 	}
     }
-    return 0;
+    return;
 
 /*     End of CGETRF */
 

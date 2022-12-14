@@ -717,7 +717,7 @@ ook.f"> */
 /* > \endverbatim */
 
 /*  ===================================================================== */
-/* Subroutine */ int csysv_rook_(char *uplo, integer *n, integer *nrhs, 
+/* Subroutine */ void csysv_rook_(char *uplo, integer *n, integer *nrhs, 
 	complex *a, integer *lda, integer *ipiv, complex *b, integer *ldb, 
 	complex *work, integer *lwork, integer *info)
 {
@@ -725,7 +725,7 @@ ook.f"> */
     integer a_dim1, a_offset, b_dim1, b_offset, i__1;
 
     /* Local variables */
-    extern /* Subroutine */ int csytrf_rook_(char *, integer *, complex *, 
+    extern /* Subroutine */ void csytrf_rook_(char *, integer *, complex *, 
 	    integer *, integer *, complex *, integer *, integer *), 
 	    csytrs_rook_(char *, integer *, integer *, complex *, integer *, 
 	    integer *, complex *, integer *, integer *);
@@ -787,9 +787,9 @@ ook.f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CSYSV_ROOK ", &i__1, (ftnlen)11);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Compute the factorization A = U*D*U**T or A = L*D*L**T. */
@@ -808,7 +808,7 @@ ook.f"> */
 
     work[1].r = (real) lwkopt, work[1].i = 0.f;
 
-    return 0;
+    return;
 
 /*     End of CSYSV_ROOK */
 

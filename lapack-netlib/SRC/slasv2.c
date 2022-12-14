@@ -654,7 +654,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int slasv2_(real *f, real *g, real *h__, real *ssmin, real *
+/* Subroutine */ void slasv2_(real *f, real *g, real *h__, real *ssmin, real *
 	ssmax, real *snr, real *csr, real *snl, real *csl)
 {
     /* System generated locals */
@@ -825,7 +825,7 @@ f"> */
     *ssmax = r_sign(ssmax, &tsign);
     r__1 = tsign * r_sign(&c_b4, f) * r_sign(&c_b4, h__);
     *ssmin = r_sign(ssmin, &r__1);
-    return 0;
+    return;
 
 /*     End of SLASV2 */
 

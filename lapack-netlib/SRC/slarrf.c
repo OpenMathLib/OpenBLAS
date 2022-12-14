@@ -704,7 +704,7 @@ f"> */
 /* > Christof Voemel, University of California, Berkeley, USA */
 
 /*  ===================================================================== */
-/* Subroutine */ int slarrf_(integer *n, real *d__, real *l, real *ld, 
+/* Subroutine */ void slarrf_(integer *n, real *d__, real *l, real *ld, 
 	integer *clstrt, integer *clend, real *w, real *wgap, real *werr, 
 	real *spdiam, real *clgapl, real *clgapr, real *pivmin, real *sigma, 
 	real *dplus, real *lplus, real *work, integer *info)
@@ -722,7 +722,7 @@ f"> */
     integer i__;
     real s, avgap, ldmax, rdmax;
     integer shift;
-    extern /* Subroutine */ int scopy_(integer *, real *, integer *, real *, 
+    extern /* Subroutine */ void scopy_(integer *, real *, integer *, real *, 
 	    integer *);
     real bestshift, smlgrowth;
     logical dorrr1;
@@ -765,7 +765,7 @@ f"> */
 /*     Quick return if possible */
 
     if (*n <= 0) {
-	return 0;
+	return;
     }
 
     fact = 2.f;
@@ -1010,7 +1010,7 @@ L50:
 	    goto L5;
 	} else {
 	    *info = 1;
-	    return 0;
+	    return;
 	}
     }
 L100:
@@ -1021,7 +1021,7 @@ L100:
 	i__1 = *n - 1;
 	scopy_(&i__1, &work[*n + 1], &c__1, &lplus[1], &c__1);
     }
-    return 0;
+    return;
 
 /*     End of SLARRF */
 

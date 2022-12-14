@@ -698,7 +698,7 @@ a_2stage.f"> */
 /* > \ingroup complexSYcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int chesv_aa_2stage_(char *uplo, integer *n, integer *nrhs, 
+/* Subroutine */ void chesv_aa_2stage_(char *uplo, integer *n, integer *nrhs, 
 	complex *a, integer *lda, complex *tb, integer *ltb, integer *ipiv, 
 	integer *ipiv2, complex *b, integer *ldb, complex *work, integer *
 	lwork, integer *info)
@@ -707,7 +707,7 @@ a_2stage.f"> */
     integer a_dim1, a_offset, b_dim1, b_offset, i__1;
 
     /* Local variables */
-    extern /* Subroutine */ int chetrs_aa_2stage_(char *, integer *, integer 
+    extern /* Subroutine */ void chetrs_aa_2stage_(char *, integer *, integer 
 	    *, complex *, integer *, complex *, integer *, integer *, integer 
 	    *, complex *, integer *, integer *);
     extern logical lsame_(char *, char *);
@@ -715,7 +715,7 @@ a_2stage.f"> */
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     integer lwkopt;
     logical tquery, wquery;
-    extern /* Subroutine */ int chetrf_aa_2stage_(char *, integer *, complex 
+    extern /* Subroutine */ void chetrf_aa_2stage_(char *, integer *, complex 
 	    *, integer *, complex *, integer *, integer *, integer *, complex 
 	    *, integer *, integer *);
 
@@ -774,9 +774,9 @@ a_2stage.f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CHESV_AA_2STAGE", &i__1, (ftnlen)15);
-	return 0;
+	return;
     } else if (wquery || tquery) {
-	return 0;
+	return;
     }
 
 
@@ -795,7 +795,7 @@ a_2stage.f"> */
 
     work[1].r = (real) lwkopt, work[1].i = 0.f;
 
-    return 0;
+    return;
 
 /*     End of CHESV_AA_2STAGE */
 

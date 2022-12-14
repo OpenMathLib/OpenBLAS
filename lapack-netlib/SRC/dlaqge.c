@@ -651,7 +651,7 @@ f"> */
 /* > \ingroup doubleGEauxiliary */
 
 /*  ===================================================================== */
-/* Subroutine */ int dlaqge_(integer *m, integer *n, doublereal *a, integer *
+/* Subroutine */ void dlaqge_(integer *m, integer *n, doublereal *a, integer *
 	lda, doublereal *r__, doublereal *c__, doublereal *rowcnd, doublereal 
 	*colcnd, doublereal *amax, char *equed)
 {
@@ -685,7 +685,7 @@ f"> */
     /* Function Body */
     if (*m <= 0 || *n <= 0) {
 	*(unsigned char *)equed = 'N';
-	return 0;
+	return;
     }
 
 /*     Initialize LARGE and SMALL. */
@@ -749,7 +749,7 @@ f"> */
 	*(unsigned char *)equed = 'B';
     }
 
-    return 0;
+    return;
 
 /*     End of DLAQGE */
 

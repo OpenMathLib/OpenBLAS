@@ -687,7 +687,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int zunmr3_(char *side, char *trans, integer *m, integer *n, 
+/* Subroutine */ void zunmr3_(char *side, char *trans, integer *m, integer *n, 
 	integer *k, integer *l, doublecomplex *a, integer *lda, doublecomplex 
 	*tau, doublecomplex *c__, integer *ldc, doublecomplex *work, integer *
 	info)
@@ -702,7 +702,7 @@ f"> */
     integer i__;
     extern logical lsame_(char *, char *);
     integer i1, i2, i3;
-    extern /* Subroutine */ int zlarz_(char *, integer *, integer *, integer *
+    extern /* Subroutine */ void zlarz_(char *, integer *, integer *, integer *
 	    , doublecomplex *, integer *, doublecomplex *, doublecomplex *, 
 	    integer *, doublecomplex *);
     integer ja, ic, jc, mi, ni, nq;
@@ -763,13 +763,13 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZUNMR3", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*m == 0 || *n == 0 || *k == 0) {
-	return 0;
+	return;
     }
 
     if (left && ! notran || ! left && notran) {
@@ -824,7 +824,7 @@ f"> */
 /* L10: */
     }
 
-    return 0;
+    return;
 
 /*     End of ZUNMR3 */
 

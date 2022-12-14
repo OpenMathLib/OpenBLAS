@@ -1048,7 +1048,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 /* > \ingroup complexGEsolve */
 
 /*  ===================================================================== */
-/* Subroutine */ int cgesvxx_(char *fact, char *trans, integer *n, integer *
+/* Subroutine */ void cgesvxx_(char *fact, char *trans, integer *n, integer *
 	nrhs, complex *a, integer *lda, complex *af, integer *ldaf, integer *
 	ipiv, char *equed, real *r__, real *c__, complex *b, integer *ldb, 
 	complex *x, integer *ldx, real *rcond, real *rpvgrw, real *berr, 
@@ -1070,26 +1070,26 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
     extern logical lsame_(char *, char *);
     real rcmin, rcmax;
     logical equil;
-    extern /* Subroutine */ int claqge_(integer *, integer *, complex *, 
+    extern /* Subroutine */ void claqge_(integer *, integer *, complex *, 
 	    integer *, real *, real *, real *, real *, real *, char *)
 	    ;
     real colcnd;
     extern real slamch_(char *);
     logical nofact;
-    extern /* Subroutine */ int cgetrf_(integer *, integer *, complex *, 
+    extern /* Subroutine */ void cgetrf_(integer *, integer *, complex *, 
 	    integer *, integer *, integer *), clacpy_(char *, integer *, 
-	    integer *, complex *, integer *, complex *, integer *), 
-	    xerbla_(char *, integer *, ftnlen);
+	    integer *, complex *, integer *, complex *, integer *); 
+    extern int xerbla_(char *, integer *, ftnlen);
     real bignum;
     integer infequ;
     logical colequ;
-    extern /* Subroutine */ int cgetrs_(char *, integer *, integer *, complex 
+    extern /* Subroutine */ void cgetrs_(char *, integer *, integer *, complex 
 	    *, integer *, integer *, complex *, integer *, integer *);
     real rowcnd;
     logical notran;
     real smlnum;
     logical rowequ;
-    extern /* Subroutine */ int clascl2_(integer *, integer *, real *, 
+    extern /* Subroutine */ void clascl2_(integer *, integer *, real *, 
 	    complex *, integer *), cgeequb_(integer *, integer *, complex *, 
 	    integer *, real *, real *, real *, real *, real *, integer *), 
 	    cgerfsx_(char *, char *, integer *, integer *, complex *, integer 
@@ -1231,7 +1231,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CGESVXX", &i__1, (ftnlen)7);
-	return 0;
+	return;
     }
 
     if (equil) {
@@ -1297,7 +1297,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 
 	    *rpvgrw = cla_gerpvgrw_(n, info, &a[a_offset], lda, &af[
 		    af_offset], ldaf);
-	    return 0;
+	    return;
 	}
     }
 
@@ -1328,7 +1328,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 	clascl2_(n, nrhs, &r__[1], &x[x_offset], ldx);
     }
 
-    return 0;
+    return;
 
 /*     End of CGESVXX */
 

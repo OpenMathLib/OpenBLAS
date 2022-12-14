@@ -755,7 +755,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int dlatbs_(char *uplo, char *trans, char *diag, char *
+/* Subroutine */ void dlatbs_(char *uplo, char *trans, char *diag, char *
 	normin, integer *n, integer *kd, doublereal *ab, integer *ldab, 
 	doublereal *x, doublereal *scale, doublereal *cnorm, integer *info)
 {
@@ -771,14 +771,14 @@ f"> */
     integer imax;
     doublereal tmax, tjjs, xmax, grow, sumj;
     integer i__, j;
-    extern /* Subroutine */ int dscal_(integer *, doublereal *, doublereal *, 
+    extern /* Subroutine */ void dscal_(integer *, doublereal *, doublereal *, 
 	    integer *);
     integer maind;
     extern logical lsame_(char *, char *);
     doublereal tscal, uscal;
     extern doublereal dasum_(integer *, doublereal *, integer *);
     integer jlast;
-    extern /* Subroutine */ int dtbsv_(char *, char *, char *, integer *, 
+    extern /* Subroutine */ void dtbsv_(char *, char *, char *, integer *, 
 	    integer *, doublereal *, integer *, doublereal *, integer *), daxpy_(integer *, doublereal *, 
 	    doublereal *, integer *, doublereal *, integer *);
     logical upper;
@@ -838,13 +838,13 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DLATBS", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /*     Determine machine dependent parameters to control overflow. */
@@ -1414,7 +1414,7 @@ L150:
 	dscal_(n, &d__1, &cnorm[1], &c__1);
     }
 
-    return 0;
+    return;
 
 /*     End of DLATBS */
 

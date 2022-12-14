@@ -659,7 +659,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int zgbtrf_(integer *m, integer *n, integer *kl, integer *ku,
+/* Subroutine */ void zgbtrf_(integer *m, integer *n, integer *kl, integer *ku,
 	 doublecomplex *ab, integer *ldab, integer *ipiv, integer *info)
 {
     /* System generated locals */
@@ -669,7 +669,7 @@ f"> */
     /* Local variables */
     doublecomplex temp;
     integer i__, j;
-    extern /* Subroutine */ int zscal_(integer *, doublecomplex *, 
+    extern /* Subroutine */ void zscal_(integer *, doublecomplex *, 
 	    doublecomplex *, integer *), zgemm_(char *, char *, integer *, 
 	    integer *, integer *, doublecomplex *, doublecomplex *, integer *,
 	     doublecomplex *, integer *, doublecomplex *, doublecomplex *, 
@@ -677,7 +677,7 @@ f"> */
     doublecomplex work13[4160]	/* was [65][64] */, work31[4160]	/* 
 	    was [65][64] */;
     integer i2, i3, j2, j3, k2;
-    extern /* Subroutine */ int zgeru_(integer *, integer *, doublecomplex *, 
+    extern /* Subroutine */ void zgeru_(integer *, integer *, doublecomplex *, 
 	    doublecomplex *, integer *, doublecomplex *, integer *, 
 	    doublecomplex *, integer *), zcopy_(integer *, doublecomplex *, 
 	    integer *, doublecomplex *, integer *), zswap_(integer *, 
@@ -734,13 +734,13 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZGBTRF", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*m == 0 || *n == 0) {
-	return 0;
+	return;
     }
 
 /*     Determine the block size for this environment */
@@ -1151,7 +1151,7 @@ f"> */
 	}
     }
 
-    return 0;
+    return;
 
 /*     End of ZGBTRF */
 

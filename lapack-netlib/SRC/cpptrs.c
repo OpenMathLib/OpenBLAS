@@ -621,7 +621,7 @@ f"> */
 /* > \ingroup complexOTHERcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int cpptrs_(char *uplo, integer *n, integer *nrhs, complex *
+/* Subroutine */ void cpptrs_(char *uplo, integer *n, integer *nrhs, complex *
 	ap, complex *b, integer *ldb, integer *info)
 {
     /* System generated locals */
@@ -631,9 +631,9 @@ f"> */
     integer i__;
     extern logical lsame_(char *, char *);
     logical upper;
-    extern /* Subroutine */ int ctpsv_(char *, char *, char *, integer *, 
-	    complex *, complex *, integer *), xerbla_(
-	    char *, integer *, ftnlen);
+    extern /* Subroutine */ void ctpsv_(char *, char *, char *, integer *, 
+	    complex *, complex *, integer *);
+    extern int xerbla_(char *, integer *, ftnlen);
 
 
 /*  -- LAPACK computational routine (version 3.7.0) -- */
@@ -668,13 +668,13 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CPPTRS", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0 || *nrhs == 0) {
-	return 0;
+	return;
     }
 
     if (upper) {
@@ -715,7 +715,7 @@ f"> */
 	}
     }
 
-    return 0;
+    return;
 
 /*     End of CPPTRS */
 

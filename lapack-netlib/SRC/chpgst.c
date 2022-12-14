@@ -627,7 +627,7 @@ f"> */
 /* > \ingroup complexOTHERcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int chpgst_(integer *itype, char *uplo, integer *n, complex *
+/* Subroutine */ void chpgst_(integer *itype, char *uplo, integer *n, complex *
 	ap, complex *bp, integer *info)
 {
     /* System generated locals */
@@ -636,25 +636,26 @@ f"> */
     complex q__1, q__2, q__3;
 
     /* Local variables */
-    extern /* Subroutine */ int chpr2_(char *, integer *, complex *, complex *
+    extern /* Subroutine */ void chpr2_(char *, integer *, complex *, complex *
 	    , integer *, complex *, integer *, complex *);
     integer j, k;
     extern /* Complex */ VOID cdotc_(complex *, integer *, complex *, integer 
 	    *, complex *, integer *);
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int chpmv_(char *, integer *, complex *, complex *
+    extern /* Subroutine */ void chpmv_(char *, integer *, complex *, complex *
 	    , complex *, integer *, complex *, complex *, integer *), 
 	    caxpy_(integer *, complex *, complex *, integer *, complex *, 
 	    integer *), ctpmv_(char *, char *, char *, integer *, complex *, 
 	    complex *, integer *);
     logical upper;
     integer j1, k1;
-    extern /* Subroutine */ int ctpsv_(char *, char *, char *, integer *, 
+    extern /* Subroutine */ void ctpsv_(char *, char *, char *, integer *, 
 	    complex *, complex *, integer *);
     integer jj, kk;
     complex ct;
-    extern /* Subroutine */ int csscal_(integer *, real *, complex *, integer 
-	    *), xerbla_(char *, integer *, ftnlen);
+    extern /* Subroutine */ void csscal_(integer *, real *, complex *, integer 
+	    *);
+    extern int xerbla_(char *, integer *, ftnlen);
     real ajj;
     integer j1j1;
     real akk;
@@ -690,7 +691,7 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CHPGST", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
     if (*itype == 1) {
@@ -854,7 +855,7 @@ f"> */
 	    }
 	}
     }
-    return 0;
+    return;
 
 /*     End of CHPGST */
 

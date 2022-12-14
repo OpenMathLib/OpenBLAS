@@ -679,7 +679,7 @@ f"> */
 /* > \ingroup complexOTHERcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int chbgst_(char *vect, char *uplo, integer *n, integer *ka, 
+/* Subroutine */ void chbgst_(char *vect, char *uplo, integer *n, integer *ka, 
 	integer *kb, complex *ab, integer *ldab, complex *bb, integer *ldbb, 
 	complex *x, integer *ldx, complex *work, real *rwork, integer *info)
 {
@@ -691,32 +691,33 @@ f"> */
 
     /* Local variables */
     integer inca;
-    extern /* Subroutine */ int crot_(integer *, complex *, integer *, 
+    extern /* Subroutine */ void crot_(integer *, complex *, integer *, 
 	    complex *, integer *, real *, complex *);
     integer i__, j, k, l, m;
-    extern /* Subroutine */ int cgerc_(integer *, integer *, complex *, 
+    extern /* Subroutine */ void cgerc_(integer *, integer *, complex *, 
 	    complex *, integer *, complex *, integer *, complex *, integer *);
     complex t;
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int cgeru_(integer *, integer *, complex *, 
+    extern /* Subroutine */ void cgeru_(integer *, integer *, complex *, 
 	    complex *, integer *, complex *, integer *, complex *, integer *);
     integer i0, i1;
     logical upper;
     integer i2, j1, j2;
     logical wantx;
-    extern /* Subroutine */ int clar2v_(integer *, complex *, complex *, 
+    extern /* Subroutine */ void clar2v_(integer *, complex *, complex *, 
 	    complex *, integer *, real *, complex *, integer *);
     complex ra;
-    extern /* Subroutine */ int clacgv_(integer *, complex *, integer *);
+    extern /* Subroutine */ void clacgv_(integer *, complex *, integer *);
     integer nr, nx;
-    extern /* Subroutine */ int csscal_(integer *, real *, complex *, integer 
+    extern /* Subroutine */ void csscal_(integer *, real *, complex *, integer 
 	    *), claset_(char *, integer *, integer *, complex *, complex *, 
 	    complex *, integer *), clartg_(complex *, complex *, real 
-	    *, complex *, complex *), xerbla_(char *, integer *, ftnlen), 
-	    clargv_(integer *, complex *, integer *, complex *, integer *, 
+	    *, complex *, complex *);
+    extern int xerbla_(char *, integer *, ftnlen); 
+    extern void clargv_(integer *, complex *, integer *, complex *, integer *, 
 	    real *, integer *);
     logical update;
-    extern /* Subroutine */ int clartv_(integer *, complex *, integer *, 
+    extern /* Subroutine */ void clartv_(integer *, complex *, integer *, 
 	    complex *, integer *, real *, complex *, integer *);
     integer ka1, kb1;
     complex ra1;
@@ -775,13 +776,13 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CHBGST", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
     inca = *ldab * ka1;
@@ -1811,14 +1812,14 @@ L490:
 	    --i__;
 	    i0 = m + 1;
 	    if (*ka == 0) {
-		return 0;
+		return;
 	    }
 	    goto L490;
 	}
     } else {
 	i__ -= *ka;
 	if (i__ < 2) {
-	    return 0;
+	    return;
 	}
     }
 

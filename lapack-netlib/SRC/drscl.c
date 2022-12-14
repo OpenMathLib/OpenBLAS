@@ -593,13 +593,13 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 /* > \ingroup doubleOTHERauxiliary */
 
 /*  ===================================================================== */
-/* Subroutine */ int drscl_(integer *n, doublereal *sa, doublereal *sx, 
+/* Subroutine */ void drscl_(integer *n, doublereal *sa, doublereal *sx, 
 	integer *incx)
 {
     doublereal cden;
     logical done;
     doublereal cnum, cden1, cnum1;
-    extern /* Subroutine */ int dscal_(integer *, doublereal *, doublereal *, 
+    extern /* Subroutine */ void dscal_(integer *, doublereal *, doublereal *, 
 	    integer *), dlabad_(doublereal *, doublereal *);
     extern doublereal dlamch_(char *);
     doublereal bignum, smlnum, mul;
@@ -621,7 +621,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 
     /* Function Body */
     if (*n <= 0) {
-	return 0;
+	return;
     }
 
 /*     Get machine parameters */
@@ -668,7 +668,7 @@ L10:
 	goto L10;
     }
 
-    return 0;
+    return;
 
 /*     End of DRSCL */
 

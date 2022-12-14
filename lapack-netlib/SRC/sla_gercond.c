@@ -674,10 +674,11 @@ real sla_gercond_(char *trans, integer *n, real *a, integer *lda, real *af,
     integer kase, i__, j;
     extern logical lsame_(char *, char *);
     integer isave[3];
-    extern /* Subroutine */ int slacn2_(integer *, real *, real *, integer *, 
-	    real *, integer *, integer *), xerbla_(char *, integer *, ftnlen);
+    extern /* Subroutine */ void slacn2_(integer *, real *, real *, integer *, 
+	    real *, integer *, integer *);
+    extern int xerbla_(char *, integer *, ftnlen);
     real ainvnm;
-    extern /* Subroutine */ int sgetrs_(char *, integer *, integer *, real *, 
+    extern /* Subroutine */ void sgetrs_(char *, integer *, integer *, real *, 
 	    integer *, integer *, real *, integer *, integer *);
     real tmp;
     logical notrans;

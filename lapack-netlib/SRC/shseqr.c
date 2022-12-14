@@ -832,7 +832,7 @@ f"> */
 /* >       of Matrix Analysis, volume 23, pages 948--973, 2002. */
 
 /*  ===================================================================== */
-/* Subroutine */ int shseqr_(char *job, char *compz, integer *n, integer *ilo,
+/* Subroutine */ void shseqr_(char *job, char *compz, integer *n, integer *ilo,
 	 integer *ihi, real *h__, integer *ldh, real *wr, real *wi, real *z__,
 	 integer *ldz, real *work, integer *lwork, integer *info)
 {
@@ -848,14 +848,14 @@ f"> */
     logical initz;
     real workl[49];
     logical wantt, wantz;
-    extern /* Subroutine */ int slaqr0_(logical *, logical *, integer *, 
+    extern /* Subroutine */ void slaqr0_(logical *, logical *, integer *, 
 	    integer *, integer *, real *, integer *, real *, real *, integer *
 	    , integer *, real *, integer *, real *, integer *, integer *);
     real hl[2401]	/* was [49][49] */;
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     extern integer ilaenv_(integer *, char *, char *, integer *, integer *, 
 	    integer *, integer *, ftnlen, ftnlen);
-    extern /* Subroutine */ int slahqr_(logical *, logical *, integer *, 
+    extern /* Subroutine */ void slahqr_(logical *, logical *, integer *, 
 	    integer *, integer *, real *, integer *, real *, real *, integer *
 	    , integer *, real *, integer *, integer *), slacpy_(char *, 
 	    integer *, integer *, real *, integer *, real *, integer *), slaset_(char *, integer *, integer *, real *, real *, 
@@ -928,13 +928,13 @@ f"> */
 
 	i__1 = -(*info);
 	xerbla_("SHSEQR", &i__1, (ftnlen)6);
-	return 0;
+	return;
 
     } else if (*n == 0) {
 
 /*        ==== Quick return in case N = 0; nothing to do. ==== */
 
-	return 0;
+	return;
 
     } else if (lquery) {
 
@@ -947,7 +947,7 @@ f"> */
 /* Computing MAX */
 	r__1 = (real) f2cmax(1,*n);
 	work[1] = f2cmax(r__1,work[1]);
-	return 0;
+	return;
 
     } else {
 
@@ -978,7 +978,7 @@ f"> */
 	if (*ilo == *ihi) {
 	    wr[*ilo] = h__[*ilo + *ilo * h_dim1];
 	    wi[*ilo] = 0.f;
-	    return 0;
+	    return;
 	}
 
 /*        ==== SLAHQR/SLAQR0 crossover point ==== */
@@ -1060,6 +1060,6 @@ f"> */
 
 /*     ==== End of SHSEQR ==== */
 
-    return 0;
+    return;
 } /* shseqr_ */
 

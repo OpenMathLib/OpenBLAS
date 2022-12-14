@@ -694,7 +694,7 @@ f"> */
 /* > \endhtmlonly */
 
 /*  ===================================================================== */
-/* Subroutine */ int slaqps_(integer *m, integer *n, integer *offset, integer 
+/* Subroutine */ void slaqps_(integer *m, integer *n, integer *offset, integer 
 	*nb, integer *kb, real *a, integer *lda, integer *jpvt, real *tau, 
 	real *vn1, real *vn2, real *auxv, real *f, integer *ldf)
 {
@@ -707,15 +707,15 @@ f"> */
     extern real snrm2_(integer *, real *, integer *);
     integer j, k;
     real tol3z;
-    extern /* Subroutine */ int sgemm_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void sgemm_(char *, char *, integer *, integer *, 
 	    integer *, real *, real *, integer *, real *, integer *, real *, 
 	    real *, integer *);
     integer itemp;
-    extern /* Subroutine */ int sgemv_(char *, integer *, integer *, real *, 
+    extern /* Subroutine */ void sgemv_(char *, integer *, integer *, real *, 
 	    real *, integer *, real *, integer *, real *, real *, integer *), sswap_(integer *, real *, integer *, real *, integer *);
     integer rk;
     extern real slamch_(char *);
-    extern /* Subroutine */ int slarfg_(integer *, real *, real *, integer *, 
+    extern /* Subroutine */ void slarfg_(integer *, real *, real *, integer *, 
 	    real *);
     integer lsticc;
     extern integer isamax_(integer *, real *, integer *);
@@ -914,7 +914,7 @@ L40:
 	goto L40;
     }
 
-    return 0;
+    return;
 
 /*     End of SLAQPS */
 

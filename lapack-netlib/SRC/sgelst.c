@@ -710,7 +710,7 @@ f"> */
 /* > \endverbatim */
 
 /*  ===================================================================== */
-/* Subroutine */ int sgelst_(char *trans, integer *m, integer *n, integer *
+/* Subroutine */ void sgelst_(char *trans, integer *m, integer *n, integer *
 	nrhs, real *a, integer *lda, real *b, integer *ldb, real *work, 
 	integer *lwork, integer *info)
 {
@@ -726,26 +726,27 @@ f"> */
     integer nbmin;
     real rwork[1];
     integer lwopt, nb;
-    extern /* Subroutine */ int slabad_(real *, real *);
+    extern /* Subroutine */ void slabad_(real *, real *);
     integer mn;
     extern real slamch_(char *), slange_(char *, integer *, integer *,
 	     real *, integer *, real *);
-    extern /* Subroutine */ int xerbla_(char *, integer *);
+    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     extern integer ilaenv_(integer *, char *, char *, integer *, integer *, 
 	    integer *, integer *, ftnlen, ftnlen);
     integer scllen;
     real bignum;
-    extern /* Subroutine */ int slascl_(char *, integer *, integer *, real *, 
+    extern /* Subroutine */ void slascl_(char *, integer *, integer *, real *, 
 	    real *, integer *, integer *, real *, integer *, integer *), slaset_(char *, integer *, integer *, real *, real *, 
 	    real *, integer *), sgelqt_(integer *, integer *, integer 
 	    *, real *, integer *, real *, integer *, real *, integer *);
     integer mnnrhs;
-    extern /* Subroutine */ int sgeqrt_(integer *, integer *, integer *, real 
+    extern /* Subroutine */ void sgeqrt_(integer *, integer *, integer *, real 
 	    *, integer *, real *, integer *, real *, integer *);
     real smlnum;
     logical lquery;
     extern /* Subroutine */ int strtrs_(char *, char *, char *, integer *, 
-	    integer *, real *, integer *, real *, integer *, integer *), sgemlqt_(char *, char *, integer *, 
+	    integer *, real *, integer *, real *, integer *, integer *);
+    extern void sgemlqt_(char *, char *, integer *, 
 	    integer *, integer *, integer *, real *, integer *, real *, 
 	    integer *, real *, integer *, real *, integer *), 
 	    sgemqrt_(char *, char *, integer *, integer *, integer *, integer 
@@ -822,10 +823,10 @@ f"> */
 
     if (*info != 0) {
 	i__1 = -(*info);
-	xerbla_("SGELST ", &i__1);
-	return 0;
+	xerbla_("SGELST ", &i__1, 6);
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
@@ -836,7 +837,7 @@ f"> */
 	i__1 = f2cmax(*m,*n);
 	slaset_("Full", &i__1, nrhs, &c_b12, &c_b12, &b[b_offset], ldb);
 	work[1] = (real) lwopt;
-	return 0;
+	return;
     }
 
 /*     *GEQRT and *GELQT routines cannot accept NB larger than f2cmin(M,N) */
@@ -895,7 +896,7 @@ f"> */
 	i__1 = f2cmax(*m,*n);
 	slaset_("Full", &i__1, nrhs, &c_b12, &c_b12, &b[b_offset], ldb);
 	work[1] = (real) lwopt;
-	return 0;
+	return;
     }
 
     brow = *m;
@@ -950,7 +951,7 @@ f"> */
 		    , lda, &b[b_offset], ldb, info);
 
 	    if (*info > 0) {
-		return 0;
+		return;
 	    }
 
 	    scllen = *n;
@@ -969,7 +970,7 @@ f"> */
 		    lda, &b[b_offset], ldb, info);
 
 	    if (*info > 0) {
-		return 0;
+		return;
 	    }
 
 /*           Block 2: Zero out all rows below the N-th row in B: */
@@ -1019,7 +1020,7 @@ f"> */
 		    , lda, &b[b_offset], ldb, info);
 
 	    if (*info > 0) {
-		return 0;
+		return;
 	    }
 
 /*           Block 2: Zero out all rows below the M-th row in B: */
@@ -1063,7 +1064,7 @@ f"> */
 		    lda, &b[b_offset], ldb, info);
 
 	    if (*info > 0) {
-		return 0;
+		return;
 	    }
 
 	    scllen = *m;
@@ -1091,7 +1092,7 @@ f"> */
 
     work[1] = (real) lwopt;
 
-    return 0;
+    return;
 
 /*     End of SGELST */
 

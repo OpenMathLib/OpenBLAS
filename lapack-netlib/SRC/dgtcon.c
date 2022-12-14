@@ -658,7 +658,7 @@ f"> */
 /* > \ingroup doubleGTcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int dgtcon_(char *norm, integer *n, doublereal *dl, 
+/* Subroutine */ void dgtcon_(char *norm, integer *n, doublereal *dl, 
 	doublereal *d__, doublereal *du, doublereal *du2, integer *ipiv, 
 	doublereal *anorm, doublereal *rcond, doublereal *work, integer *
 	iwork, integer *info)
@@ -670,12 +670,12 @@ f"> */
     integer kase, kase1, i__;
     extern logical lsame_(char *, char *);
     integer isave[3];
-    extern /* Subroutine */ int dlacn2_(integer *, doublereal *, doublereal *,
-	     integer *, doublereal *, integer *, integer *), xerbla_(char *, 
-	    integer *, ftnlen);
+    extern /* Subroutine */ void dlacn2_(integer *, doublereal *, doublereal *,
+	     integer *, doublereal *, integer *, integer *);
+    extern int xerbla_(char *, integer *, ftnlen);
     doublereal ainvnm;
     logical onenrm;
-    extern /* Subroutine */ int dgttrs_(char *, integer *, integer *, 
+    extern /* Subroutine */ void dgttrs_(char *, integer *, integer *, 
 	    doublereal *, doublereal *, doublereal *, doublereal *, integer *,
 	     doublereal *, integer *, integer *);
 
@@ -713,7 +713,7 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DGTCON", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
@@ -721,9 +721,9 @@ f"> */
     *rcond = 0.;
     if (*n == 0) {
 	*rcond = 1.;
-	return 0;
+	return;
     } else if (*anorm == 0.) {
-	return 0;
+	return;
     }
 
 /*     Check that D(1:N) is non-zero. */
@@ -731,7 +731,7 @@ f"> */
     i__1 = *n;
     for (i__ = 1; i__ <= i__1; ++i__) {
 	if (d__[i__] == 0.) {
-	    return 0;
+	    return;
 	}
 /* L10: */
     }
@@ -768,7 +768,7 @@ L20:
 	*rcond = 1. / ainvnm / *anorm;
     }
 
-    return 0;
+    return;
 
 /*     End of DGTCON */
 

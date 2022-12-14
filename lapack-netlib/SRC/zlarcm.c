@@ -628,7 +628,7 @@ f"> */
 /* > \ingroup complex16OTHERauxiliary */
 
 /*  ===================================================================== */
-/* Subroutine */ int zlarcm_(integer *m, integer *n, doublereal *a, integer *
+/* Subroutine */ void zlarcm_(integer *m, integer *n, doublereal *a, integer *
 	lda, doublecomplex *b, integer *ldb, doublecomplex *c__, integer *ldc,
 	 doublereal *rwork)
 {
@@ -640,7 +640,7 @@ f"> */
 
     /* Local variables */
     integer i__, j, l;
-    extern /* Subroutine */ int dgemm_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void dgemm_(char *, char *, integer *, integer *, 
 	    integer *, doublereal *, doublereal *, integer *, doublereal *, 
 	    integer *, doublereal *, doublereal *, integer *);
 
@@ -670,7 +670,7 @@ f"> */
 
     /* Function Body */
     if (*m == 0 || *n == 0) {
-	return 0;
+	return;
     }
 
     i__1 = *n;
@@ -725,7 +725,7 @@ f"> */
 /* L80: */
     }
 
-    return 0;
+    return;
 
 /*     End of ZLARCM */
 

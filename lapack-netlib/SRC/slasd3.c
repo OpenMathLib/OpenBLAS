@@ -739,7 +739,7 @@ f"> */
 /* >     California at Berkeley, USA */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int slasd3_(integer *nl, integer *nr, integer *sqre, integer 
+/* Subroutine */ void slasd3_(integer *nl, integer *nr, integer *sqre, integer 
 	*k, real *d__, real *q, integer *ldq, real *dsigma, real *u, integer *
 	ldu, real *u2, integer *ldu2, real *vt, integer *ldvt, real *vt2, 
 	integer *ldvt2, integer *idxc, integer *ctot, real *z__, integer *
@@ -754,17 +754,18 @@ f"> */
     real temp;
     extern real snrm2_(integer *, real *, integer *);
     integer i__, j, m, n, ctemp;
-    extern /* Subroutine */ int sgemm_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void sgemm_(char *, char *, integer *, integer *, 
 	    integer *, real *, real *, integer *, real *, integer *, real *, 
 	    real *, integer *);
     integer ktemp;
-    extern /* Subroutine */ int scopy_(integer *, real *, integer *, real *, 
+    extern /* Subroutine */ void scopy_(integer *, real *, integer *, real *, 
 	    integer *);
     extern real slamc3_(real *, real *);
-    extern /* Subroutine */ int slasd4_(integer *, integer *, real *, real *, 
+    extern /* Subroutine */ void slasd4_(integer *, integer *, real *, real *, 
 	    real *, real *, real *, real *, integer *);
     integer jc;
-    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen), slascl_(
+    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
+    extern void slascl_(
 	    char *, integer *, integer *, real *, real *, integer *, integer *
 	    , real *, integer *, integer *), slacpy_(char *, integer *
 	    , integer *, real *, integer *, real *, integer *);
@@ -837,7 +838,7 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("SLASD3", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
@@ -854,7 +855,7 @@ f"> */
 /* L10: */
 	    }
 	}
-	return 0;
+	return;
     }
 
 /*     Modify values DSIGMA(i) to make sure all DSIGMA(i)-DSIGMA(j) can */
@@ -900,7 +901,7 @@ f"> */
 /*        If the zero finder fails, report the convergence failure. */
 
 	if (*info != 0) {
-	    return 0;
+	    return;
 	}
 /* L30: */
     }
@@ -1003,7 +1004,7 @@ L100:
     if (*k == 2) {
 	sgemm_("N", "N", k, &m, k, &c_b13, &q[q_offset], ldq, &vt2[vt2_offset]
 		, ldvt2, &c_b26, &vt[vt_offset], ldvt);
-	return 0;
+	return;
     }
     ktemp = ctot[1] + 1;
     sgemm_("N", "N", k, &nlp1, &ktemp, &c_b13, &q[q_dim1 + 1], ldq, &vt2[
@@ -1034,7 +1035,7 @@ L100:
 	    vt2[ktemp + nlp2 * vt2_dim1], ldvt2, &c_b26, &vt[nlp2 * vt_dim1 + 
 	    1], ldvt);
 
-    return 0;
+    return;
 
 /*     End of SLASD3 */
 

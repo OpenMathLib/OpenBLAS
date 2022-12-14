@@ -631,7 +631,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int ctptri_(char *uplo, char *diag, integer *n, complex *ap, 
+/* Subroutine */ void ctptri_(char *uplo, char *diag, integer *n, complex *ap, 
 	integer *info)
 {
     /* System generated locals */
@@ -640,10 +640,10 @@ f"> */
 
     /* Local variables */
     integer j;
-    extern /* Subroutine */ int cscal_(integer *, complex *, complex *, 
+    extern /* Subroutine */ void cscal_(integer *, complex *, complex *, 
 	    integer *);
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int ctpmv_(char *, char *, char *, integer *, 
+    extern /* Subroutine */ void ctpmv_(char *, char *, char *, integer *, 
 	    complex *, complex *, integer *);
     logical upper;
     integer jc, jj;
@@ -681,7 +681,7 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CTPTRI", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Check for singularity if non-unit. */
@@ -694,7 +694,7 @@ f"> */
 		jj += *info;
 		i__2 = jj;
 		if (ap[i__2].r == 0.f && ap[i__2].i == 0.f) {
-		    return 0;
+		    return;
 		}
 /* L10: */
 	    }
@@ -704,7 +704,7 @@ f"> */
 	    for (*info = 1; *info <= i__1; ++(*info)) {
 		i__2 = jj;
 		if (ap[i__2].r == 0.f && ap[i__2].i == 0.f) {
-		    return 0;
+		    return;
 		}
 		jj = jj + *n - *info + 1;
 /* L20: */
@@ -776,7 +776,7 @@ f"> */
 	}
     }
 
-    return 0;
+    return;
 
 /*     End of CTPTRI */
 

@@ -740,7 +740,7 @@ f"> */
 /* > \ingroup doublePTsolve */
 
 /*  ===================================================================== */
-/* Subroutine */ int dptsvx_(char *fact, integer *n, integer *nrhs, 
+/* Subroutine */ void dptsvx_(char *fact, integer *n, integer *nrhs, 
 	doublereal *d__, doublereal *e, doublereal *df, doublereal *ef, 
 	doublereal *b, integer *ldb, doublereal *x, integer *ldx, doublereal *
 	rcond, doublereal *ferr, doublereal *berr, doublereal *work, integer *
@@ -752,15 +752,15 @@ f"> */
     /* Local variables */
     extern logical lsame_(char *, char *);
     doublereal anorm;
-    extern /* Subroutine */ int dcopy_(integer *, doublereal *, integer *, 
+    extern /* Subroutine */ void dcopy_(integer *, doublereal *, integer *, 
 	    doublereal *, integer *);
     extern doublereal dlamch_(char *);
     logical nofact;
-    extern /* Subroutine */ int dlacpy_(char *, integer *, integer *, 
-	    doublereal *, integer *, doublereal *, integer *), 
-	    xerbla_(char *, integer *, ftnlen);
+    extern /* Subroutine */ void dlacpy_(char *, integer *, integer *, 
+	    doublereal *, integer *, doublereal *, integer *); 
+    extern int xerbla_(char *, integer *, ftnlen);
     extern doublereal dlanst_(char *, integer *, doublereal *, doublereal *);
-    extern /* Subroutine */ int dptcon_(integer *, doublereal *, doublereal *,
+    extern /* Subroutine */ void dptcon_(integer *, doublereal *, doublereal *,
 	     doublereal *, doublereal *, doublereal *, integer *), dptrfs_(
 	    integer *, integer *, doublereal *, doublereal *, doublereal *, 
 	    doublereal *, doublereal *, integer *, doublereal *, integer *, 
@@ -813,7 +813,7 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DPTSVX", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
     if (nofact) {
@@ -831,7 +831,7 @@ f"> */
 
 	if (*info > 0) {
 	    *rcond = 0.;
-	    return 0;
+	    return;
 	}
     }
 
@@ -860,7 +860,7 @@ f"> */
 	*info = *n + 1;
     }
 
-    return 0;
+    return;
 
 /*     End of DPTSVX */
 

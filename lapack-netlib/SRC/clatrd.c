@@ -715,7 +715,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int clatrd_(char *uplo, integer *n, integer *nb, complex *a, 
+/* Subroutine */ void clatrd_(char *uplo, integer *n, integer *nb, complex *a, 
 	integer *lda, real *e, complex *tau, complex *w, integer *ldw)
 {
     /* System generated locals */
@@ -726,17 +726,17 @@ f"> */
     /* Local variables */
     integer i__;
     complex alpha;
-    extern /* Subroutine */ int cscal_(integer *, complex *, complex *, 
+    extern /* Subroutine */ void cscal_(integer *, complex *, complex *, 
 	    integer *);
     extern /* Complex */ VOID cdotc_(complex *, integer *, complex *, integer 
 	    *, complex *, integer *);
-    extern /* Subroutine */ int cgemv_(char *, integer *, integer *, complex *
+    extern /* Subroutine */ void cgemv_(char *, integer *, integer *, complex *
 	    , complex *, integer *, complex *, integer *, complex *, complex *
 	    , integer *), chemv_(char *, integer *, complex *, 
 	    complex *, integer *, complex *, integer *, complex *, complex *, 
 	    integer *);
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int caxpy_(integer *, complex *, complex *, 
+    extern /* Subroutine */ void caxpy_(integer *, complex *, complex *, 
 	    integer *, complex *, integer *), clarfg_(integer *, complex *, 
 	    complex *, integer *, complex *), clacgv_(integer *, complex *, 
 	    integer *);
@@ -766,7 +766,7 @@ f"> */
 
     /* Function Body */
     if (*n <= 0) {
-	return 0;
+	return;
     }
 
     if (lsame_(uplo, "U")) {
@@ -973,7 +973,7 @@ f"> */
 	}
     }
 
-    return 0;
+    return;
 
 /*     End of CLATRD */
 

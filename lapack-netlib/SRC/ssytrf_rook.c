@@ -723,7 +723,7 @@ rook.f"> */
 /* > \endverbatim */
 
 /*  ===================================================================== */
-/* Subroutine */ int ssytrf_rook_(char *uplo, integer *n, real *a, integer *
+/* Subroutine */ void ssytrf_rook_(char *uplo, integer *n, real *a, integer *
 	lda, integer *ipiv, real *work, integer *lwork, integer *info)
 {
     /* System generated locals */
@@ -741,7 +741,7 @@ rook.f"> */
     integer ldwork, lwkopt;
     logical lquery;
     integer iws;
-    extern /* Subroutine */ int ssytf2_rook_(char *, integer *, real *, 
+    extern /* Subroutine */ void ssytf2_rook_(char *, integer *, real *, 
 	    integer *, integer *, integer *), slasyf_rook_(char *, 
 	    integer *, integer *, integer *, real *, integer *, integer *, 
 	    real *, integer *, integer *);
@@ -794,9 +794,9 @@ rook.f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("SSYTRF_ROOK", &i__1, (ftnlen)11);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
     nbmin = 2;
@@ -926,7 +926,7 @@ L20:
 
 L40:
     work[1] = (real) lwkopt;
-    return 0;
+    return;
 
 /*     End of SSYTRF_ROOK */
 

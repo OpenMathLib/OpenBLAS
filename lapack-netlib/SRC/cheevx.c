@@ -772,7 +772,7 @@ f"> */
 /* > \ingroup complexHEeigen */
 
 /*  ===================================================================== */
-/* Subroutine */ int cheevx_(char *jobz, char *range, char *uplo, integer *n, 
+/* Subroutine */ void cheevx_(char *jobz, char *range, char *uplo, integer *n, 
 	complex *a, integer *lda, real *vl, real *vu, integer *il, integer *
 	iu, real *abstol, integer *m, real *w, complex *z__, integer *ldz, 
 	complex *work, integer *lwork, real *rwork, integer *iwork, integer *
@@ -792,12 +792,12 @@ f"> */
     real sigma;
     extern logical lsame_(char *, char *);
     integer iinfo;
-    extern /* Subroutine */ int sscal_(integer *, real *, real *, integer *);
+    extern /* Subroutine */ void sscal_(integer *, real *, real *, integer *);
     char order[1];
-    extern /* Subroutine */ int cswap_(integer *, complex *, integer *, 
+    extern /* Subroutine */ void cswap_(integer *, complex *, integer *, 
 	    complex *, integer *);
     logical lower;
-    extern /* Subroutine */ int scopy_(integer *, real *, integer *, real *, 
+    extern /* Subroutine */ void scopy_(integer *, real *, integer *, real *, 
 	    integer *);
     logical wantz;
     integer nb, jj;
@@ -807,7 +807,7 @@ f"> */
     integer iscale, indibl;
     logical valeig;
     extern real slamch_(char *);
-    extern /* Subroutine */ int csscal_(integer *, real *, complex *, integer 
+    extern /* Subroutine */ void csscal_(integer *, real *, complex *, integer 
 	    *), chetrd_(char *, integer *, complex *, integer *, real *, real 
 	    *, complex *, complex *, integer *, integer *), clacpy_(
 	    char *, integer *, integer *, complex *, integer *, complex *, 
@@ -818,11 +818,11 @@ f"> */
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     real abstll, bignum;
     integer indiwk, indisp, indtau;
-    extern /* Subroutine */ int cstein_(integer *, real *, real *, integer *, 
+    extern /* Subroutine */ void cstein_(integer *, real *, real *, integer *, 
 	    real *, integer *, integer *, complex *, integer *, real *, 
 	    integer *, integer *, integer *);
     integer indrwk, indwrk, lwkmin;
-    extern /* Subroutine */ int csteqr_(char *, integer *, real *, real *, 
+    extern /* Subroutine */ void csteqr_(char *, integer *, real *, real *, 
 	    complex *, integer *, real *, integer *), cungtr_(char *, 
 	    integer *, complex *, integer *, complex *, complex *, integer *, 
 	    integer *), ssterf_(integer *, real *, real *, integer *),
@@ -831,7 +831,7 @@ f"> */
 	    integer *);
     integer nsplit, llwork;
     real smlnum;
-    extern /* Subroutine */ int sstebz_(char *, char *, integer *, real *, 
+    extern /* Subroutine */ void sstebz_(char *, char *, integer *, real *, 
 	    real *, integer *, integer *, real *, real *, real *, integer *, 
 	    integer *, real *, integer *, integer *, real *, integer *, 
 	    integer *);
@@ -928,16 +928,16 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CHEEVX", &i__1, (ftnlen)6);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     *m = 0;
     if (*n == 0) {
-	return 0;
+	return;
     }
 
     if (*n == 1) {
@@ -958,7 +958,7 @@ f"> */
 	    i__1 = z_dim1 + 1;
 	    z__[i__1].r = 1.f, z__[i__1].i = 0.f;
 	}
-	return 0;
+	return;
     }
 
 /*     Get machine constants. */
@@ -1141,7 +1141,7 @@ L40:
 
     work[1].r = (real) lwkopt, work[1].i = 0.f;
 
-    return 0;
+    return;
 
 /*     End of CHEEVX */
 

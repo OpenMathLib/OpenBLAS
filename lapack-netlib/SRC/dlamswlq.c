@@ -713,7 +713,7 @@ static integer c__0 = 0;
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int dlamswlq_(char *side, char *trans, integer *m, integer *
+/* Subroutine */ void dlamswlq_(char *side, char *trans, integer *m, integer *
 	n, integer *k, integer *mb, integer *nb, doublereal *a, integer *lda, 
 	doublereal *t, integer *ldt, doublereal *c__, integer *ldc, 
 	doublereal *work, integer *lwork, integer *info)
@@ -731,7 +731,7 @@ static integer c__0 = 0;
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     logical notran, lquery;
     integer ctr;
-    extern /* Subroutine */ int dgemlqt_(char *, char *, integer *, integer *,
+    extern /* Subroutine */ void dgemlqt_(char *, char *, integer *, integer *,
 	     integer *, integer *, doublereal *, integer *, doublereal *, 
 	    integer *, doublereal *, integer *, doublereal *, integer *), dtpmlqt_(char *, char *, integer *, integer *, 
 	    integer *, integer *, integer *, doublereal *, integer *, 
@@ -799,10 +799,10 @@ static integer c__0 = 0;
 	i__1 = -(*info);
 	xerbla_("DLAMSWLQ", &i__1, (ftnlen)8);
 	work[1] = (doublereal) lw;
-	return 0;
+	return;
     } else if (lquery) {
 	work[1] = (doublereal) lw;
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
@@ -810,7 +810,7 @@ static integer c__0 = 0;
 /* Computing MIN */
     i__1 = f2cmin(*m,*n);
     if (f2cmin(i__1,*k) == 0) {
-	return 0;
+	return;
     }
 
 /* Computing MAX */
@@ -818,7 +818,7 @@ static integer c__0 = 0;
     if (*nb <= *k || *nb >= f2cmax(i__1,*k)) {
 	dgemlqt_(side, trans, m, n, k, mb, &a[a_offset], lda, &t[t_offset], 
 		ldt, &c__[c_offset], ldc, &work[1], info);
-	return 0;
+	return;
     }
 
     if (left && tran) {
@@ -961,7 +961,7 @@ static integer c__0 = 0;
     }
 
     work[1] = (doublereal) lw;
-    return 0;
+    return;
 
 /*     End of DLAMSWLQ */
 

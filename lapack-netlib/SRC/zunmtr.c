@@ -685,7 +685,7 @@ f"> */
 /* > \ingroup complex16OTHERcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int zunmtr_(char *side, char *uplo, char *trans, integer *m, 
+/* Subroutine */ void zunmtr_(char *side, char *uplo, char *trans, integer *m, 
 	integer *n, doublecomplex *a, integer *lda, doublecomplex *tau, 
 	doublecomplex *c__, integer *ldc, doublecomplex *work, integer *lwork,
 	 integer *info)
@@ -706,7 +706,7 @@ f"> */
 	    integer *, integer *, ftnlen, ftnlen);
     integer lwkopt;
     logical lquery;
-    extern /* Subroutine */ int zunmql_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void zunmql_(char *, char *, integer *, integer *, 
 	    integer *, doublecomplex *, integer *, doublecomplex *, 
 	    doublecomplex *, integer *, doublecomplex *, integer *, integer *), zunmqr_(char *, char *, integer *, integer *, 
 	    integer *, doublecomplex *, integer *, doublecomplex *, 
@@ -817,16 +817,16 @@ f"> */
     if (*info != 0) {
 	i__2 = -(*info);
 	xerbla_("ZUNMTR", &i__2, (ftnlen)6);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*m == 0 || *n == 0 || nq == 1) {
 	work[1].r = 1., work[1].i = 0.;
-	return 0;
+	return;
     }
 
     if (left) {
@@ -860,7 +860,7 @@ f"> */
 		c__[i1 + i2 * c_dim1], ldc, &work[1], lwork, &iinfo);
     }
     work[1].r = (doublereal) lwkopt, work[1].i = 0.;
-    return 0;
+    return;
 
 /*     End of ZUNMTR */
 

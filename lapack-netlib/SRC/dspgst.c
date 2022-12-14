@@ -628,7 +628,7 @@ f"> */
 /* > \ingroup doubleOTHERcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int dspgst_(integer *itype, char *uplo, integer *n, 
+/* Subroutine */ void dspgst_(integer *itype, char *uplo, integer *n, 
 	doublereal *ap, doublereal *bp, integer *info)
 {
     /* System generated locals */
@@ -638,19 +638,19 @@ f"> */
     /* Local variables */
     extern doublereal ddot_(integer *, doublereal *, integer *, doublereal *, 
 	    integer *);
-    extern /* Subroutine */ int dspr2_(char *, integer *, doublereal *, 
+    extern /* Subroutine */ void dspr2_(char *, integer *, doublereal *, 
 	    doublereal *, integer *, doublereal *, integer *, doublereal *);
     integer j, k;
-    extern /* Subroutine */ int dscal_(integer *, doublereal *, doublereal *, 
+    extern /* Subroutine */ void dscal_(integer *, doublereal *, doublereal *, 
 	    integer *);
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int daxpy_(integer *, doublereal *, doublereal *, 
+    extern /* Subroutine */ void daxpy_(integer *, doublereal *, doublereal *, 
 	    integer *, doublereal *, integer *), dspmv_(char *, integer *, 
 	    doublereal *, doublereal *, doublereal *, integer *, doublereal *,
 	     doublereal *, integer *);
     logical upper;
     integer j1, k1;
-    extern /* Subroutine */ int dtpmv_(char *, char *, char *, integer *, 
+    extern /* Subroutine */ void dtpmv_(char *, char *, char *, integer *, 
 	    doublereal *, doublereal *, integer *), 
 	    dtpsv_(char *, char *, char *, integer *, doublereal *, 
 	    doublereal *, integer *);
@@ -692,7 +692,7 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DSPGST", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
     if (*itype == 1) {
@@ -831,7 +831,7 @@ f"> */
 	    }
 	}
     }
-    return 0;
+    return;
 
 /*     End of DSPGST */
 

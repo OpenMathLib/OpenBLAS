@@ -701,7 +701,7 @@ qr_row.f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int cungtsqr_row_(integer *m, integer *n, integer *mb, 
+/* Subroutine */ void cungtsqr_row_(integer *m, integer *n, integer *mb, 
 	integer *nb, complex *a, integer *lda, complex *t, integer *ldt, 
 	complex *work, integer *lwork, integer *info)
 {
@@ -713,13 +713,13 @@ qr_row.f"> */
     integer jb_t__, itmp, lworkopt;
     complex dummy[1]	/* was [1][1] */;
     integer ib_bottom__, ib, kb;
-    extern /* Subroutine */ int claset_(char *, integer *, integer *, complex 
-	    *, complex *, complex *, integer *), xerbla_(char *, 
-	    integer *, ftnlen);
+    extern /* Subroutine */ void claset_(char *, integer *, integer *, complex 
+	    *, complex *, complex *, integer *);
+    extern int xerbla_(char *, integer *, ftnlen);
     integer mb1, mb2, m_plus_one__;
     logical lquery;
     integer num_all_row_blocks__, imb, knb, nblocal, kb_last__;
-    extern /* Subroutine */ int clarfb_gett_(char *, integer *, integer *, 
+    extern /* Subroutine */ void clarfb_gett_(char *, integer *, integer *, 
 	    integer *, complex *, integer *, complex *, integer *, complex *, 
 	    integer *, complex *, integer *);
 
@@ -781,11 +781,11 @@ qr_row.f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CUNGTSQR_ROW", &i__1, (ftnlen)12);
-	return 0;
+	return;
     } else if (lquery) {
 	q__1.r = (real) lworkopt, q__1.i = 0.f;
 	work[1].r = q__1.r, work[1].i = q__1.i;
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
@@ -793,7 +793,7 @@ qr_row.f"> */
     if (f2cmin(*m,*n) == 0) {
 	q__1.r = (real) lworkopt, q__1.i = 0.f;
 	work[1].r = q__1.r, work[1].i = q__1.i;
-	return 0;
+	return;
     }
 
 /*     (0) Set the upper-triangular part of the matrix A to zero and */
@@ -916,7 +916,7 @@ qr_row.f"> */
 
     q__1.r = (real) lworkopt, q__1.i = 0.f;
     work[1].r = q__1.r, work[1].i = q__1.i;
-    return 0;
+    return;
 
 /*     End of CUNGTSQR_ROW */
 

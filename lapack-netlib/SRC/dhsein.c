@@ -775,7 +775,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int dhsein_(char *side, char *eigsrc, char *initv, logical *
+/* Subroutine */ void dhsein_(char *side, char *eigsrc, char *initv, logical *
 	select, integer *n, doublereal *h__, integer *ldh, doublereal *wr, 
 	doublereal *wi, doublereal *vl, integer *ldvl, doublereal *vr, 
 	integer *ldvr, integer *mm, integer *m, doublereal *work, integer *
@@ -796,7 +796,7 @@ f"> */
     doublereal hnorm;
     integer kl;
     extern doublereal dlamch_(char *);
-    extern /* Subroutine */ int dlaein_(logical *, logical *, integer *, 
+    extern /* Subroutine */ void dlaein_(logical *, logical *, integer *, 
 	    doublereal *, integer *, doublereal *, doublereal *, doublereal *,
 	     doublereal *, doublereal *, integer *, doublereal *, doublereal *
 	    , doublereal *, doublereal *, integer *);
@@ -900,13 +900,13 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DHSEIN", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible. */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /*     Set machine-dependent constants. */
@@ -979,7 +979,7 @@ L50:
 			work[1]);
 		if (disnan_(&hnorm)) {
 		    *info = -6;
-		    return 0;
+		    return;
 		} else if (hnorm > 0.) {
 		    eps3 = hnorm * ulp;
 		} else {
@@ -1088,7 +1088,7 @@ L60:
 /* L120: */
     }
 
-    return 0;
+    return;
 
 /*     End of DHSEIN */
 

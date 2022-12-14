@@ -631,7 +631,7 @@ f"> */
 /* > \ingroup realGEcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int sgetri_(integer *n, real *a, integer *lda, integer *ipiv,
+/* Subroutine */ void sgetri_(integer *n, real *a, integer *lda, integer *ipiv,
 	 real *work, integer *lwork, integer *info)
 {
     /* System generated locals */
@@ -639,7 +639,7 @@ f"> */
 
     /* Local variables */
     integer i__, j, nbmin;
-    extern /* Subroutine */ int sgemm_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void sgemm_(char *, char *, integer *, integer *, 
 	    integer *, real *, real *, integer *, real *, integer *, real *, 
 	    real *, integer *), sgemv_(char *, integer *, 
 	    integer *, real *, real *, integer *, real *, integer *, real *, 
@@ -693,15 +693,15 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("SGETRI", &i__1, (ftnlen)6);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /*     Form inv(U).  If INFO > 0 from STRTRI, then U is singular, */
@@ -709,7 +709,7 @@ f"> */
 
     strtri_("Upper", "Non-unit", n, &a[a_offset], lda, info);
     if (*info > 0) {
-	return 0;
+	return;
     }
 
     nbmin = 2;
@@ -806,7 +806,7 @@ f"> */
     }
 
     work[1] = (real) iws;
-    return 0;
+    return;
 
 /*     End of SGETRI */
 

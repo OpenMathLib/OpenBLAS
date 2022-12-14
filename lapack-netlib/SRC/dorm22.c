@@ -675,7 +675,7 @@ f"> */
 /* > \ingroup complexOTHERcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int dorm22_(char *side, char *trans, integer *m, integer *n, 
+/* Subroutine */ void dorm22_(char *side, char *trans, integer *m, integer *n, 
 	integer *n1, integer *n2, doublereal *q, integer *ldq, doublereal *
 	c__, integer *ldc, doublereal *work, integer *lwork, integer *info)
 {
@@ -685,17 +685,17 @@ f"> */
     /* Local variables */
     logical left;
     integer i__;
-    extern /* Subroutine */ int dgemm_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void dgemm_(char *, char *, integer *, integer *, 
 	    integer *, doublereal *, doublereal *, integer *, doublereal *, 
 	    integer *, doublereal *, doublereal *, integer *);
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int dtrmm_(char *, char *, char *, char *, 
+    extern /* Subroutine */ void dtrmm_(char *, char *, char *, char *, 
 	    integer *, integer *, doublereal *, doublereal *, integer *, 
 	    doublereal *, integer *);
     integer nb, nq, nw;
-    extern /* Subroutine */ int dlacpy_(char *, integer *, integer *, 
-	    doublereal *, integer *, doublereal *, integer *), 
-	    xerbla_(char *, integer *, ftnlen);
+    extern /* Subroutine */ void dlacpy_(char *, integer *, integer *, 
+	    doublereal *, integer *, doublereal *, integer *); 
+    extern int xerbla_(char *, integer *, ftnlen);
     logical notran;
     integer ldwork, lwkopt;
     logical lquery;
@@ -771,16 +771,16 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DORM22", &i__1, (ftnlen)6);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*m == 0 || *n == 0) {
 	work[1] = 1.;
-	return 0;
+	return;
     }
 
 /*     Degenerate cases (N1 = 0 or N2 = 0) are handled using DTRMM. */
@@ -789,12 +789,12 @@ f"> */
 	dtrmm_(side, "Upper", trans, "Non-Unit", m, n, &c_b10, &q[q_offset], 
 		ldq, &c__[c_offset], ldc);
 	work[1] = 1.;
-	return 0;
+	return;
     } else if (*n2 == 0) {
 	dtrmm_(side, "Lower", trans, "Non-Unit", m, n, &c_b10, &q[q_offset], 
 		ldq, &c__[c_offset], ldc);
 	work[1] = 1.;
-	return 0;
+	return;
     }
 
 /*     Compute the largest chunk size available from the workspace. */
@@ -979,7 +979,7 @@ f"> */
     }
 
     work[1] = (doublereal) lwkopt;
-    return 0;
+    return;
 
 /*     End of DORM22 */
 

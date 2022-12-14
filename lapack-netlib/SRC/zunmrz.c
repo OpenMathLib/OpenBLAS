@@ -702,7 +702,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int zunmrz_(char *side, char *trans, integer *m, integer *n, 
+/* Subroutine */ void zunmrz_(char *side, char *trans, integer *m, integer *n, 
 	integer *k, integer *l, doublecomplex *a, integer *lda, doublecomplex 
 	*tau, doublecomplex *c__, integer *ldc, doublecomplex *work, integer *
 	lwork, integer *info)
@@ -718,7 +718,7 @@ f"> */
     integer i__;
     extern logical lsame_(char *, char *);
     integer nbmin, iinfo, i1, i2, i3, ib, ic, ja, jc, nb, mi, ni;
-    extern /* Subroutine */ int zunmr3_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void zunmr3_(char *, char *, integer *, integer *, 
 	    integer *, integer *, doublecomplex *, integer *, doublecomplex *,
 	     doublecomplex *, integer *, doublecomplex *, integer *);
     integer nq, nw;
@@ -727,14 +727,14 @@ f"> */
 	    integer *, integer *, ftnlen, ftnlen);
     logical notran;
     integer ldwork;
-    extern /* Subroutine */ int zlarzb_(char *, char *, char *, char *, 
+    extern /* Subroutine */ void zlarzb_(char *, char *, char *, char *, 
 	    integer *, integer *, integer *, integer *, doublecomplex *, 
 	    integer *, doublecomplex *, integer *, doublecomplex *, integer *,
 	     doublecomplex *, integer *);
     char transt[1];
     integer lwkopt;
     logical lquery;
-    extern /* Subroutine */ int zlarzt_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void zlarzt_(char *, char *, integer *, integer *, 
 	    doublecomplex *, integer *, doublecomplex *, doublecomplex *, 
 	    integer *);
     integer iwt;
@@ -819,15 +819,15 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZUNMRZ", &i__1, (ftnlen)6);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*m == 0 || *n == 0) {
-	return 0;
+	return;
     }
 
 /*     Determine the block size.  NB may be at most NBMAX, where NBMAX */
@@ -933,7 +933,7 @@ f"> */
 
     work[1].r = (doublereal) lwkopt, work[1].i = 0.;
 
-    return 0;
+    return;
 
 /*     End of ZUNMRZ */
 

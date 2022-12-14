@@ -903,7 +903,7 @@ gett.f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int clarfb_gett_(char *ident, integer *m, integer *n, 
+/* Subroutine */ void clarfb_gett_(char *ident, integer *m, integer *n, 
 	integer *k, complex *t, integer *ldt, complex *a, integer *lda, 
 	complex *b, integer *ldb, complex *work, integer *ldwork)
 {
@@ -914,11 +914,11 @@ gett.f"> */
 
     /* Local variables */
     integer i__, j;
-    extern /* Subroutine */ int cgemm_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void cgemm_(char *, char *, integer *, integer *, 
 	    integer *, complex *, complex *, integer *, complex *, integer *, 
 	    complex *, complex *, integer *);
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int ccopy_(integer *, complex *, integer *, 
+    extern /* Subroutine */ void ccopy_(integer *, complex *, integer *, 
 	    complex *, integer *), ctrmm_(char *, char *, char *, char *, 
 	    integer *, integer *, complex *, complex *, integer *, complex *, 
 	    integer *);
@@ -951,7 +951,7 @@ gett.f"> */
 
     /* Function Body */
     if (*m < 0 || *n <= 0 || *k == 0 || *k > *n) {
-	return 0;
+	return;
     }
 
     lnotident = ! lsame_(ident, "I");
@@ -1148,7 +1148,7 @@ gett.f"> */
 	}
     }
 
-    return 0;
+    return;
 
 /*     End of CLARFB_GETT */
 

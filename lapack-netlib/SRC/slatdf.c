@@ -687,7 +687,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int slatdf_(integer *ijob, integer *n, real *z__, integer *
+/* Subroutine */ void slatdf_(integer *ijob, integer *n, real *z__, integer *
 	ldz, real *rhs, real *rdsum, real *rdscal, integer *ipiv, integer *
 	jpiv)
 {
@@ -701,21 +701,22 @@ f"> */
     extern real sdot_(integer *, real *, integer *, real *, integer *);
     real work[32];
     integer i__, j, k;
-    extern /* Subroutine */ int sscal_(integer *, real *, real *, integer *);
+    extern /* Subroutine */ void sscal_(integer *, real *, real *, integer *);
     real pmone;
     extern real sasum_(integer *, real *, integer *);
     real sminu;
     integer iwork[8];
-    extern /* Subroutine */ int scopy_(integer *, real *, integer *, real *, 
+    extern /* Subroutine */ void scopy_(integer *, real *, integer *, real *, 
 	    integer *), saxpy_(integer *, real *, real *, integer *, real *, 
 	    integer *);
     real splus;
-    extern /* Subroutine */ int sgesc2_(integer *, real *, integer *, real *, 
+    extern /* Subroutine */ void sgesc2_(integer *, real *, integer *, real *, 
 	    integer *, integer *, real *);
     real bm, bp, xm[8], xp[8];
-    extern /* Subroutine */ int sgecon_(char *, integer *, real *, integer *, 
+    extern /* Subroutine */ void sgecon_(char *, integer *, real *, integer *, 
 	    real *, real *, real *, integer *, integer *), slassq_(
-	    integer *, real *, integer *, real *, real *), slaswp_(integer *, 
+	    integer *, real *, integer *, real *, real *);
+    extern int slaswp_(integer *, 
 	    real *, integer *, integer *, integer *, integer *, integer *);
 
 
@@ -857,7 +858,7 @@ f"> */
 
     }
 
-    return 0;
+    return;
 
 /*     End of SLATDF */
 

@@ -630,7 +630,7 @@ f"> */
 /* > \ingroup complex16GEcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int zgetri_(integer *n, doublecomplex *a, integer *lda, 
+/* Subroutine */ void zgetri_(integer *n, doublecomplex *a, integer *lda, 
 	integer *ipiv, doublecomplex *work, integer *lwork, integer *info)
 {
     /* System generated locals */
@@ -639,7 +639,7 @@ f"> */
 
     /* Local variables */
     integer i__, j, nbmin;
-    extern /* Subroutine */ int zgemm_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void zgemm_(char *, char *, integer *, integer *, 
 	    integer *, doublecomplex *, doublecomplex *, integer *, 
 	    doublecomplex *, integer *, doublecomplex *, doublecomplex *, 
 	    integer *), zgemv_(char *, integer *, integer *, 
@@ -695,15 +695,15 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZGETRI", &i__1, (ftnlen)6);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /*     Form inv(U).  If INFO > 0 from ZTRTRI, then U is singular, */
@@ -711,7 +711,7 @@ f"> */
 
     ztrtri_("Upper", "Non-unit", n, &a[a_offset], lda, info);
     if (*info > 0) {
-	return 0;
+	return;
     }
 
     nbmin = 2;
@@ -816,7 +816,7 @@ f"> */
     }
 
     work[1].r = (doublereal) iws, work[1].i = 0.;
-    return 0;
+    return;
 
 /*     End of ZGETRI */
 

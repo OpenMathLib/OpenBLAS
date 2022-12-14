@@ -713,7 +713,7 @@ f"> */
 /* > \ingroup complexOTHEReigen */
 
 /*  ===================================================================== */
-/* Subroutine */ int chpevd_(char *jobz, char *uplo, integer *n, complex *ap, 
+/* Subroutine */ void chpevd_(char *jobz, char *uplo, integer *n, complex *ap, 
 	real *w, complex *z__, integer *ldz, complex *work, integer *lwork, 
 	real *rwork, integer *lrwork, integer *iwork, integer *liwork, 
 	integer *info)
@@ -729,27 +729,27 @@ f"> */
     real rmin, rmax, sigma;
     extern logical lsame_(char *, char *);
     integer iinfo;
-    extern /* Subroutine */ int sscal_(integer *, real *, real *, integer *);
+    extern /* Subroutine */ void sscal_(integer *, real *, real *, integer *);
     integer lwmin, llrwk, llwrk;
     logical wantz;
     integer iscale;
     extern real clanhp_(char *, char *, integer *, complex *, real *);
-    extern /* Subroutine */ int cstedc_(char *, integer *, real *, real *, 
+    extern /* Subroutine */ void cstedc_(char *, integer *, real *, real *, 
 	    complex *, integer *, complex *, integer *, real *, integer *, 
 	    integer *, integer *, integer *);
     extern real slamch_(char *);
-    extern /* Subroutine */ int csscal_(integer *, real *, complex *, integer 
+    extern /* Subroutine */ void csscal_(integer *, real *, complex *, integer 
 	    *);
     real safmin;
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     real bignum;
     integer indtau;
-    extern /* Subroutine */ int chptrd_(char *, integer *, complex *, real *, 
+    extern /* Subroutine */ void chptrd_(char *, integer *, complex *, real *, 
 	    real *, complex *, integer *);
     integer indrwk, indwrk, liwmin;
-    extern /* Subroutine */ int ssterf_(integer *, real *, real *, integer *);
+    extern /* Subroutine */ void ssterf_(integer *, real *, real *, integer *);
     integer lrwmin;
-    extern /* Subroutine */ int cupmtr_(char *, char *, char *, integer *, 
+    extern /* Subroutine */ void cupmtr_(char *, char *, char *, integer *, 
 	    integer *, complex *, complex *, complex *, integer *, complex *, 
 	    integer *);
     real smlnum;
@@ -828,15 +828,15 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CHPEVD", &i__1, (ftnlen)5);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
     if (*n == 1) {
@@ -845,7 +845,7 @@ f"> */
 	    i__1 = z_dim1 + 1;
 	    z__[i__1].r = 1.f, z__[i__1].i = 0.f;
 	}
-	return 0;
+	return;
     }
 
 /*     Get machine constants. */
@@ -911,7 +911,7 @@ f"> */
     work[1].r = (real) lwmin, work[1].i = 0.f;
     rwork[1] = (real) lrwmin;
     iwork[1] = liwmin;
-    return 0;
+    return;
 
 /*     End of CHPEVD */
 

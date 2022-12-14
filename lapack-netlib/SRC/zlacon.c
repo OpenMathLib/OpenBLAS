@@ -628,7 +628,7 @@ f"> */
 /* >  ACM Trans. Math. Soft., vol. 14, no. 4, pp. 381-396, December 1988. */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int zlacon_(integer *n, doublecomplex *v, doublecomplex *x, 
+/* Subroutine */ void zlacon_(integer *n, doublecomplex *v, doublecomplex *x, 
 	doublereal *est, integer *kase)
 {
     /* System generated locals */
@@ -642,7 +642,7 @@ f"> */
     static integer jump, i__, j;
     static doublereal absxi;
     static integer jlast;
-    extern /* Subroutine */ int zcopy_(integer *, doublecomplex *, integer *, 
+    extern /* Subroutine */ void zcopy_(integer *, doublecomplex *, integer *, 
 	    doublecomplex *, integer *);
     extern integer izmax1_(integer *, doublecomplex *, integer *);
     extern doublereal dzsum1_(integer *, doublecomplex *, integer *), dlamch_(
@@ -676,7 +676,7 @@ f"> */
 	}
 	*kase = 1;
 	jump = 1;
-	return 0;
+	return;
     }
 
     switch (jump) {
@@ -717,7 +717,7 @@ L20:
     }
     *kase = 2;
     jump = 2;
-    return 0;
+    return;
 
 /*     ................ ENTRY   (JUMP = 2) */
 /*     FIRST ITERATION.  X HAS BEEN OVERWRITTEN BY CTRANS(A)*X. */
@@ -739,7 +739,7 @@ L50:
     x[i__1].r = 1., x[i__1].i = 0.;
     *kase = 1;
     jump = 3;
-    return 0;
+    return;
 
 /*     ................ ENTRY   (JUMP = 3) */
 /*     X HAS BEEN OVERWRITTEN BY A*X. */
@@ -772,7 +772,7 @@ L70:
     }
     *kase = 2;
     jump = 4;
-    return 0;
+    return;
 
 /*     ................ ENTRY   (JUMP = 4) */
 /*     X HAS BEEN OVERWRITTEN BY CTRANS(A)*X. */
@@ -800,7 +800,7 @@ L100:
     }
     *kase = 1;
     jump = 5;
-    return 0;
+    return;
 
 /*     ................ ENTRY   (JUMP = 5) */
 /*     X HAS BEEN OVERWRITTEN BY A*X. */
@@ -814,7 +814,7 @@ L120:
 
 L130:
     *kase = 0;
-    return 0;
+    return;
 
 /*     End of ZLACON */
 

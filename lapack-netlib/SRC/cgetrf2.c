@@ -624,7 +624,7 @@ static integer c__1 = 1;
 /* > \ingroup complexGEcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int cgetrf2_(integer *m, integer *n, complex *a, integer *
+/* Subroutine */ void cgetrf2_(integer *m, integer *n, complex *a, integer *
 	lda, integer *ipiv, integer *info)
 {
     /* System generated locals */
@@ -634,19 +634,20 @@ static integer c__1 = 1;
     /* Local variables */
     complex temp;
     integer i__;
-    extern /* Subroutine */ int cscal_(integer *, complex *, complex *, 
+    extern /* Subroutine */ void cscal_(integer *, complex *, complex *, 
 	    integer *), cgemm_(char *, char *, integer *, integer *, integer *
 	    , complex *, complex *, integer *, complex *, integer *, complex *
 	    , complex *, integer *);
     integer iinfo;
     real sfmin;
-    extern /* Subroutine */ int ctrsm_(char *, char *, char *, char *, 
+    extern /* Subroutine */ void ctrsm_(char *, char *, char *, char *, 
 	    integer *, integer *, complex *, complex *, integer *, complex *, 
 	    integer *);
     integer n1, n2;
     extern integer icamax_(integer *, complex *, integer *);
     extern real slamch_(char *);
-    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen), claswp_(
+    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
+    extern int claswp_(
 	    integer *, complex *, integer *, integer *, integer *, integer *, 
 	    integer *);
 
@@ -680,13 +681,13 @@ static integer c__1 = 1;
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CGETRF2", &i__1, (ftnlen)7);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*m == 0 || *n == 0) {
-	return 0;
+	return;
     }
     if (*m == 1) {
 
@@ -807,7 +808,7 @@ static integer c__1 = 1;
 	claswp_(&n1, &a[a_dim1 + 1], lda, &i__1, &i__2, &ipiv[1], &c__1);
 
     }
-    return 0;
+    return;
 
 /*     End of CGETRF2 */
 

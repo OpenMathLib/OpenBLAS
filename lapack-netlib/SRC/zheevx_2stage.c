@@ -822,7 +822,7 @@ static integer c__4 = 4;
 /* > \endverbatim */
 
 /*  ===================================================================== */
-/* Subroutine */ int zheevx_2stage_(char *jobz, char *range, char *uplo, 
+/* Subroutine */ void zheevx_2stage_(char *jobz, char *range, char *uplo, 
 	integer *n, doublecomplex *a, integer *lda, doublereal *vl, 
 	doublereal *vu, integer *il, integer *iu, doublereal *abstol, integer 
 	*m, doublereal *w, doublecomplex *z__, integer *ldz, doublecomplex *
@@ -842,24 +842,24 @@ static integer c__4 = 4;
     doublereal rmin, rmax;
     logical test;
     integer itmp1, i__, j, indee;
-    extern /* Subroutine */ int dscal_(integer *, doublereal *, doublereal *, 
+    extern /* Subroutine */ void dscal_(integer *, doublereal *, doublereal *, 
 	    integer *);
     doublereal sigma;
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int zhetrd_2stage_(char *, char *, integer *, 
+    extern /* Subroutine */ void zhetrd_2stage_(char *, char *, integer *, 
 	    doublecomplex *, integer *, doublereal *, doublereal *, 
 	    doublecomplex *, doublecomplex *, integer *, doublecomplex *, 
 	    integer *, integer *);
     integer iinfo;
     char order[1];
     integer lhtrd;
-    extern /* Subroutine */ int dcopy_(integer *, doublereal *, integer *, 
+    extern /* Subroutine */ void dcopy_(integer *, doublereal *, integer *, 
 	    doublereal *, integer *);
     integer lwmin;
     logical lower;
     integer lwtrd;
     logical wantz;
-    extern /* Subroutine */ int zswap_(integer *, doublecomplex *, integer *, 
+    extern /* Subroutine */ void zswap_(integer *, doublecomplex *, integer *, 
 	    doublecomplex *, integer *);
     integer ib, kd, jj;
     extern doublereal dlamch_(char *);
@@ -867,27 +867,28 @@ static integer c__4 = 4;
     integer iscale, indibl;
     logical valeig;
     doublereal safmin;
-    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen), zdscal_(
+    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
+    extern void zdscal_(
 	    integer *, doublereal *, doublecomplex *, integer *);
     doublereal abstll, bignum;
     extern doublereal zlanhe_(char *, char *, integer *, doublecomplex *, 
 	    integer *, doublereal *);
     integer indiwk, indisp, indtau;
-    extern /* Subroutine */ int dsterf_(integer *, doublereal *, doublereal *,
+    extern /* Subroutine */ void dsterf_(integer *, doublereal *, doublereal *,
 	     integer *), dstebz_(char *, char *, integer *, doublereal *, 
 	    doublereal *, integer *, integer *, doublereal *, doublereal *, 
 	    doublereal *, integer *, integer *, doublereal *, integer *, 
 	    integer *, doublereal *, integer *, integer *);
     integer indrwk, indwrk;
-    extern /* Subroutine */ int zlacpy_(char *, integer *, integer *, 
+    extern /* Subroutine */ void zlacpy_(char *, integer *, integer *, 
 	    doublecomplex *, integer *, doublecomplex *, integer *);
     integer nsplit, llwork;
     doublereal smlnum;
-    extern /* Subroutine */ int zstein_(integer *, doublereal *, doublereal *,
+    extern /* Subroutine */ void zstein_(integer *, doublereal *, doublereal *,
 	     integer *, doublereal *, integer *, integer *, doublecomplex *, 
 	    integer *, doublereal *, integer *, integer *, integer *);
     logical lquery;
-    extern /* Subroutine */ int zsteqr_(char *, integer *, doublereal *, 
+    extern /* Subroutine */ void zsteqr_(char *, integer *, doublereal *, 
 	    doublereal *, doublecomplex *, integer *, doublereal *, integer *), zungtr_(char *, integer *, doublecomplex *, integer *, 
 	    doublecomplex *, doublecomplex *, integer *, integer *), 
 	    zunmtr_(char *, char *, char *, integer *, integer *, 
@@ -986,16 +987,16 @@ static integer c__4 = 4;
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZHEEVX_2STAGE", &i__1, (ftnlen)13);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     *m = 0;
     if (*n == 0) {
-	return 0;
+	return;
     }
 
     if (*n == 1) {
@@ -1016,7 +1017,7 @@ static integer c__4 = 4;
 	    i__1 = z_dim1 + 1;
 	    z__[i__1].r = 1., z__[i__1].i = 0.;
 	}
-	return 0;
+	return;
     }
 
 /*     Get machine constants. */
@@ -1202,7 +1203,7 @@ L40:
 
     work[1].r = (doublereal) lwmin, work[1].i = 0.;
 
-    return 0;
+    return;
 
 /*     End of ZHEEVX_2STAGE */
 

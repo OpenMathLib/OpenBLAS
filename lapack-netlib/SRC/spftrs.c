@@ -712,7 +712,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int spftrs_(char *transr, char *uplo, integer *n, integer *
+/* Subroutine */ void spftrs_(char *transr, char *uplo, integer *n, integer *
 	nrhs, real *a, real *b, integer *ldb, integer *info)
 {
     /* System generated locals */
@@ -722,8 +722,9 @@ f"> */
     logical normaltransr;
     extern logical lsame_(char *, char *);
     logical lower;
-    extern /* Subroutine */ int stfsm_(char *, char *, char *, char *, char *,
-	     integer *, integer *, real *, real *, real *, integer *), xerbla_(char *, integer *, ftnlen);
+    extern /* Subroutine */ void stfsm_(char *, char *, char *, char *, char *,
+	     integer *, integer *, real *, real *, real *, integer *);
+    extern int xerbla_(char *, integer *, ftnlen);
 
 
 /*  -- LAPACK computational routine (version 3.7.0) -- */
@@ -760,13 +761,13 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("SPFTRS", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0 || *nrhs == 0) {
-	return 0;
+	return;
     }
 
 /*     start execution: there are two triangular solves */
@@ -783,7 +784,7 @@ f"> */
 		ldb);
     }
 
-    return 0;
+    return;
 
 /*     End of SPFTRS */
 

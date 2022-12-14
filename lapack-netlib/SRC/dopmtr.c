@@ -662,7 +662,7 @@ f"> */
 /* > \ingroup doubleOTHERcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int dopmtr_(char *side, char *uplo, char *trans, integer *m, 
+/* Subroutine */ void dopmtr_(char *side, char *uplo, char *trans, integer *m, 
 	integer *n, doublereal *ap, doublereal *tau, doublereal *c__, integer 
 	*ldc, doublereal *work, integer *info)
 {
@@ -672,7 +672,7 @@ f"> */
     /* Local variables */
     logical left;
     integer i__;
-    extern /* Subroutine */ int dlarf_(char *, integer *, integer *, 
+    extern /* Subroutine */ void dlarf_(char *, integer *, integer *, 
 	    doublereal *, integer *, doublereal *, doublereal *, integer *, 
 	    doublereal *);
     extern logical lsame_(char *, char *);
@@ -732,13 +732,13 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DOPMTR", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*m == 0 || *n == 0) {
-	return 0;
+	return;
     }
 
     if (upper) {
@@ -854,7 +854,7 @@ f"> */
 /* L20: */
 	}
     }
-    return 0;
+    return;
 
 /*     End of DOPMTR */
 

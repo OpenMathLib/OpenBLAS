@@ -644,7 +644,7 @@ static complex c_b1 = {1.f,0.f};
 /* > \ingroup complexSYcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int csytrs2_(char *uplo, integer *n, integer *nrhs, complex *
+/* Subroutine */ void csytrs2_(char *uplo, integer *n, integer *nrhs, complex *
 	a, integer *lda, integer *ipiv, complex *b, integer *ldb, complex *
 	work, integer *info)
 {
@@ -655,12 +655,12 @@ static complex c_b1 = {1.f,0.f};
     /* Local variables */
     complex akm1k;
     integer i__, j, k;
-    extern /* Subroutine */ int cscal_(integer *, complex *, complex *, 
+    extern /* Subroutine */ void cscal_(integer *, complex *, complex *, 
 	    integer *);
     extern logical lsame_(char *, char *);
     complex denom;
     integer iinfo;
-    extern /* Subroutine */ int cswap_(integer *, complex *, integer *, 
+    extern /* Subroutine */ void cswap_(integer *, complex *, integer *, 
 	    complex *, integer *), ctrsm_(char *, char *, char *, char *, 
 	    integer *, integer *, complex *, complex *, integer *, complex *, 
 	    integer *);
@@ -669,7 +669,7 @@ static complex c_b1 = {1.f,0.f};
     integer kp;
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     complex akm1, bkm1;
-    extern /* Subroutine */ int csyconv_(char *, char *, integer *, complex *,
+    extern /* Subroutine */ void csyconv_(char *, char *, integer *, complex *,
 	     integer *, integer *, complex *, integer *);
 
 
@@ -709,13 +709,13 @@ static complex c_b1 = {1.f,0.f};
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CSYTRS2", &i__1, (ftnlen)7);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0 || *nrhs == 0) {
-	return 0;
+	return;
     }
 
 /*     Convert A */
@@ -936,7 +936,7 @@ static complex c_b1 = {1.f,0.f};
 
     csyconv_(uplo, "R", n, &a[a_offset], lda, &ipiv[1], &work[1], &iinfo);
 
-    return 0;
+    return;
 
 /*     End of CSYTRS2 */
 

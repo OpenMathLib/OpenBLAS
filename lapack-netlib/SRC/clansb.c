@@ -652,11 +652,11 @@ real clansb_(char *norm, char *uplo, integer *n, integer *k, complex *ab,
 
     /* Local variables */
     real absa;
-    extern /* Subroutine */ int scombssq_(real *, real *);
+    extern /* Subroutine */ void scombssq_(real *, real *);
     integer i__, j, l;
     extern logical lsame_(char *, char *);
     real value;
-    extern /* Subroutine */ int classq_(integer *, complex *, integer *, real 
+    extern /* Subroutine */ void classq_(integer *, complex *, integer *, real 
 	    *, real *);
     extern logical sisnan_(real *);
     real colssq[2], sum, ssq[2];

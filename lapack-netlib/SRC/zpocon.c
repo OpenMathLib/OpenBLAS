@@ -633,7 +633,7 @@ f"> */
 /* > \ingroup complex16POcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int zpocon_(char *uplo, integer *n, doublecomplex *a, 
+/* Subroutine */ void zpocon_(char *uplo, integer *n, doublecomplex *a, 
 	integer *lda, doublereal *anorm, doublereal *rcond, doublecomplex *
 	work, doublereal *rwork, integer *info)
 {
@@ -647,7 +647,7 @@ f"> */
     extern logical lsame_(char *, char *);
     integer isave[3];
     logical upper;
-    extern /* Subroutine */ int zlacn2_(integer *, doublecomplex *, 
+    extern /* Subroutine */ void zlacn2_(integer *, doublecomplex *, 
 	    doublecomplex *, doublereal *, integer *, integer *);
     extern doublereal dlamch_(char *);
     integer ix;
@@ -655,11 +655,11 @@ f"> */
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     doublereal ainvnm;
     extern integer izamax_(integer *, doublecomplex *, integer *);
-    extern /* Subroutine */ int zdrscl_(integer *, doublereal *, 
+    extern /* Subroutine */ void zdrscl_(integer *, doublereal *, 
 	    doublecomplex *, integer *);
     char normin[1];
     doublereal smlnum;
-    extern /* Subroutine */ int zlatrs_(char *, char *, char *, char *, 
+    extern /* Subroutine */ void zlatrs_(char *, char *, char *, char *, 
 	    integer *, doublecomplex *, integer *, doublecomplex *, 
 	    doublereal *, doublereal *, integer *);
 
@@ -697,7 +697,7 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZPOCON", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
@@ -705,9 +705,9 @@ f"> */
     *rcond = 0.;
     if (*n == 0) {
 	*rcond = 1.;
-	return 0;
+	return;
     } else if (*anorm == 0.) {
-	return 0;
+	return;
     }
 
     smlnum = dlamch_("Safe minimum");
@@ -767,7 +767,7 @@ L10:
     }
 
 L20:
-    return 0;
+    return;
 
 /*     End of ZPOCON */
 

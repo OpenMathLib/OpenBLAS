@@ -693,7 +693,7 @@ f"> */
 /* > \endhtmlonly */
 
 /*  ===================================================================== */
-/* Subroutine */ int claqps_(integer *m, integer *n, integer *offset, integer 
+/* Subroutine */ void claqps_(integer *m, integer *n, integer *offset, integer 
 	*nb, integer *kb, complex *a, integer *lda, integer *jpvt, complex *
 	tau, real *vn1, real *vn2, complex *auxv, complex *f, integer *ldf)
 {
@@ -706,7 +706,7 @@ f"> */
     real temp, temp2;
     integer j, k;
     real tol3z;
-    extern /* Subroutine */ int cgemm_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void cgemm_(char *, char *, integer *, integer *, 
 	    integer *, complex *, complex *, integer *, complex *, integer *, 
 	    complex *, complex *, integer *), cgemv_(char *, 
 	    integer *, integer *, complex *, complex *, integer *, complex *, 
@@ -715,7 +715,7 @@ f"> */
     integer itemp;
     extern real scnrm2_(integer *, complex *, integer *);
     integer rk;
-    extern /* Subroutine */ int clarfg_(integer *, complex *, complex *, 
+    extern /* Subroutine */ void clarfg_(integer *, complex *, complex *, 
 	    integer *, complex *);
     extern real slamch_(char *);
     integer lsticc;
@@ -937,7 +937,7 @@ L60:
 	goto L60;
     }
 
-    return 0;
+    return;
 
 /*     End of CLAQPS */
 

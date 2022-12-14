@@ -673,7 +673,7 @@ static complex c_b2 = {0.f,0.f};
 /* > \endverbatim */
 
 /*  ===================================================================== */
-/* Subroutine */ int csytri_3x_(char *uplo, integer *n, complex *a, integer *
+/* Subroutine */ void csytri_3x_(char *uplo, integer *n, complex *a, integer *
 	lda, complex *e, integer *ipiv, complex *work, integer *nb, integer *
 	info)
 {
@@ -685,16 +685,16 @@ static complex c_b2 = {0.f,0.f};
     /* Local variables */
     integer invd;
     complex akkp1;
-    extern /* Subroutine */ int csyswapr_(char *, integer *, complex *, 
+    extern /* Subroutine */ void csyswapr_(char *, integer *, complex *, 
 	    integer *, integer *, integer *);
     complex d__;
     integer i__, j, k;
     complex t;
-    extern /* Subroutine */ int cgemm_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void cgemm_(char *, char *, integer *, integer *, 
 	    integer *, complex *, complex *, integer *, complex *, integer *, 
 	    complex *, complex *, integer *);
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int ctrmm_(char *, char *, char *, char *, 
+    extern /* Subroutine */ void ctrmm_(char *, char *, char *, char *, 
 	    integer *, integer *, complex *, complex *, integer *, complex *, 
 	    integer *);
     logical upper;
@@ -747,10 +747,10 @@ static complex c_b2 = {0.f,0.f};
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CSYTRI_3X", &i__1, (ftnlen)9);
-	return 0;
+	return;
     }
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /*     Workspace got Non-diag elements of D */
@@ -771,7 +771,7 @@ static complex c_b2 = {0.f,0.f};
 	for (*info = *n; *info >= 1; --(*info)) {
 	    i__1 = *info + *info * a_dim1;
 	    if (ipiv[*info] > 0 && (a[i__1].r == 0.f && a[i__1].i == 0.f)) {
-		return 0;
+		return;
 	    }
 	}
     } else {
@@ -782,7 +782,7 @@ static complex c_b2 = {0.f,0.f};
 	for (*info = 1; *info <= i__1; ++(*info)) {
 	    i__2 = *info + *info * a_dim1;
 	    if (ipiv[*info] > 0 && (a[i__2].r == 0.f && a[i__2].i == 0.f)) {
-		return 0;
+		return;
 	    }
 	}
     }
@@ -1422,7 +1422,7 @@ static complex c_b2 = {0.f,0.f};
 
     }
 
-    return 0;
+    return;
 
 /*     End of CSYTRI_3X */
 

@@ -714,7 +714,7 @@ static integer c__1 = 1;
 /* >      Algorithms, 50(1):33-65, 2009. */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int sorbdb3_(integer *m, integer *p, integer *q, real *x11, 
+/* Subroutine */ void sorbdb3_(integer *m, integer *p, integer *q, real *x11, 
 	integer *ldx11, real *x21, integer *ldx21, real *theta, real *phi, 
 	real *taup1, real *taup2, real *tauq1, real *work, integer *lwork, 
 	integer *info)
@@ -725,7 +725,7 @@ static integer c__1 = 1;
     real r__1, r__2;
 
     /* Local variables */
-    extern /* Subroutine */ int srot_(integer *, real *, integer *, real *, 
+    extern /* Subroutine */ void srot_(integer *, real *, integer *, real *, 
 	    integer *, real *, real *);
     integer lworkmin, lworkopt;
     extern real snrm2_(integer *, real *, integer *);
@@ -733,13 +733,13 @@ static integer c__1 = 1;
     integer i__;
     real s;
     integer ilarf, llarf;
-    extern /* Subroutine */ int slarf_(char *, integer *, integer *, real *, 
+    extern /* Subroutine */ void slarf_(char *, integer *, integer *, real *, 
 	    integer *, real *, real *, integer *, real *);
     integer childinfo;
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     logical lquery;
     integer iorbdb5, lorbdb5;
-    extern /* Subroutine */ int sorbdb5_(integer *, integer *, integer *, 
+    extern /* Subroutine */ void sorbdb5_(integer *, integer *, integer *, 
 	    real *, integer *, real *, integer *, real *, integer *, real *, 
 	    integer *, real *, integer *, integer *), slarfgp_(integer *, 
 	    real *, real *, integer *, real *);
@@ -811,9 +811,9 @@ static integer c__1 = 1;
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("SORBDB3", &i__1, (ftnlen)7);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Reduce rows 1, ..., M-P of X11 and X21 */
@@ -896,7 +896,7 @@ static integer c__1 = 1;
 		i__], &x11[i__ + (i__ + 1) * x11_dim1], ldx11, &work[ilarf]);
     }
 
-    return 0;
+    return;
 
 /*     End of SORBDB3 */
 

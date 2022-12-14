@@ -772,7 +772,7 @@ f"> */
 /* > Christof Voemel, LBNL/NERSC, USA \n */
 
 /*  ===================================================================== */
-/* Subroutine */ int zstegr_(char *jobz, char *range, integer *n, doublereal *
+/* Subroutine */ void zstegr_(char *jobz, char *range, integer *n, doublereal *
 	d__, doublereal *e, doublereal *vl, doublereal *vu, integer *il, 
 	integer *iu, doublereal *abstol, integer *m, doublereal *w, 
 	doublecomplex *z__, integer *ldz, integer *isuppz, doublereal *work, 
@@ -783,7 +783,7 @@ f"> */
 
     /* Local variables */
     logical tryrac;
-    extern /* Subroutine */ int zstemr_(char *, char *, integer *, doublereal 
+    extern /* Subroutine */ void zstemr_(char *, char *, integer *, doublereal 
 	    *, doublereal *, doublereal *, doublereal *, integer *, integer *,
 	     integer *, doublereal *, doublecomplex *, integer *, integer *, 
 	    integer *, logical *, doublereal *, integer *, integer *, integer 
@@ -818,6 +818,6 @@ f"> */
 
 /*     End of ZSTEGR */
 
-    return 0;
+    return;
 } /* zstegr_ */
 

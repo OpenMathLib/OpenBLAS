@@ -740,7 +740,7 @@ static integer c__4 = 4;
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int chetrd_2stage_(char *vect, char *uplo, integer *n, 
+/* Subroutine */ void chetrd_2stage_(char *vect, char *uplo, integer *n, 
 	complex *a, integer *lda, real *d__, real *e, complex *tau, complex *
 	hous2, integer *lhous2, complex *work, integer *lwork, integer *info)
 {
@@ -749,7 +749,7 @@ static integer c__4 = 4;
 
     /* Local variables */
     integer ldab;
-    extern /* Subroutine */ int chetrd_hb2st_(char *, char *, char *, 
+    extern /* Subroutine */ void chetrd_hb2st_(char *, char *, char *, 
 	    integer *, integer *, complex *, integer *, real *, real *, 
 	    complex *, integer *, complex *, integer *, integer *);
     extern integer ilaenv2stage_(integer *, char *, char *, integer *, 
@@ -761,7 +761,7 @@ static integer c__4 = 4;
     integer ib, kd;
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     logical lquery;
-    extern /* Subroutine */ int chetrd_he2hb_(char *, integer *, integer *, 
+    extern /* Subroutine */ void chetrd_he2hb_(char *, integer *, integer *, 
 	    complex *, integer *, complex *, integer *, complex *, complex *, 
 	    integer *, integer *);
 
@@ -824,16 +824,16 @@ static integer c__4 = 4;
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CHETRD_2STAGE", &i__1, (ftnlen)13);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
 	work[1].r = 1.f, work[1].i = 0.f;
-	return 0;
+	return;
     }
 
 /*     Determine pointer position */
@@ -847,20 +847,20 @@ static integer c__4 = 4;
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CHETRD_HE2HB", &i__1, (ftnlen)12);
-	return 0;
+	return;
     }
     chetrd_hb2st_("Y", vect, uplo, n, &kd, &work[abpos], &ldab, &d__[1], &e[
 	    1], &hous2[1], lhous2, &work[wpos], &lwrk, info);
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CHETRD_HB2ST", &i__1, (ftnlen)12);
-	return 0;
+	return;
     }
 
 
     hous2[1].r = (real) lhmin, hous2[1].i = 0.f;
     work[1].r = (real) lwmin, work[1].i = 0.f;
-    return 0;
+    return;
 
 /*     End of CHETRD_2STAGE */
 

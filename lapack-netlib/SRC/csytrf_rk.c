@@ -774,7 +774,7 @@ rk.f"> */
 /* > \endverbatim */
 
 /*  ===================================================================== */
-/* Subroutine */ int csytrf_rk_(char *uplo, integer *n, complex *a, integer *
+/* Subroutine */ void csytrf_rk_(char *uplo, integer *n, complex *a, integer *
 	lda, complex *e, integer *ipiv, complex *work, integer *lwork, 
 	integer *info)
 {
@@ -783,14 +783,14 @@ rk.f"> */
 
     /* Local variables */
     integer i__, k;
-    extern /* Subroutine */ int csytf2_rk_(char *, integer *, complex *, 
+    extern /* Subroutine */ void csytf2_rk_(char *, integer *, complex *, 
 	    integer *, complex *, integer *, integer *);
     extern logical lsame_(char *, char *);
     integer nbmin, iinfo;
-    extern /* Subroutine */ int cswap_(integer *, complex *, integer *, 
+    extern /* Subroutine */ void cswap_(integer *, complex *, integer *, 
 	    complex *, integer *);
     logical upper;
-    extern /* Subroutine */ int clasyf_rk_(char *, integer *, integer *, 
+    extern /* Subroutine */ void clasyf_rk_(char *, integer *, integer *, 
 	    integer *, complex *, integer *, complex *, integer *, complex *, 
 	    integer *, integer *);
     integer kb, nb, ip;
@@ -848,9 +848,9 @@ rk.f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CSYTRF_RK", &i__1, (ftnlen)9);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
     nbmin = 2;
@@ -1036,7 +1036,7 @@ L35:
     }
 
     work[1].r = (real) lwkopt, work[1].i = 0.f;
-    return 0;
+    return;
 
 /*     End of CSYTRF_RK */
 
