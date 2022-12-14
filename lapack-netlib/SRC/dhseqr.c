@@ -832,7 +832,7 @@ f"> */
 /* >       of Matrix Analysis, volume 23, pages 948--973, 2002. */
 
 /*  ===================================================================== */
-/* Subroutine */ int dhseqr_(char *job, char *compz, integer *n, integer *ilo,
+/* Subroutine */ void dhseqr_(char *job, char *compz, integer *n, integer *ilo,
 	 integer *ihi, doublereal *h__, integer *ldh, doublereal *wr, 
 	doublereal *wi, doublereal *z__, integer *ldz, doublereal *work, 
 	integer *lwork, integer *info)
@@ -849,12 +849,12 @@ f"> */
     logical initz;
     doublereal workl[49];
     logical wantt, wantz;
-    extern /* Subroutine */ int dlaqr0_(logical *, logical *, integer *, 
+    extern /* Subroutine */ void dlaqr0_(logical *, logical *, integer *, 
 	    integer *, integer *, doublereal *, integer *, doublereal *, 
 	    doublereal *, integer *, integer *, doublereal *, integer *, 
 	    doublereal *, integer *, integer *);
     doublereal hl[2401]	/* was [49][49] */;
-    extern /* Subroutine */ int dlahqr_(logical *, logical *, integer *, 
+    extern /* Subroutine */ void dlahqr_(logical *, logical *, integer *, 
 	    integer *, integer *, doublereal *, integer *, doublereal *, 
 	    doublereal *, integer *, integer *, doublereal *, integer *, 
 	    integer *), dlacpy_(char *, integer *, integer *, doublereal *, 
@@ -932,13 +932,13 @@ f"> */
 
 	i__1 = -(*info);
 	xerbla_("DHSEQR", &i__1, (ftnlen)6);
-	return 0;
+	return;
 
     } else if (*n == 0) {
 
 /*        ==== Quick return in case N = 0; nothing to do. ==== */
 
-	return 0;
+	return;
 
     } else if (lquery) {
 
@@ -951,7 +951,7 @@ f"> */
 /* Computing MAX */
 	d__1 = (doublereal) f2cmax(1,*n);
 	work[1] = f2cmax(d__1,work[1]);
-	return 0;
+	return;
 
     } else {
 
@@ -982,7 +982,7 @@ f"> */
 	if (*ilo == *ihi) {
 	    wr[*ilo] = h__[*ilo + *ilo * h_dim1];
 	    wi[*ilo] = 0.;
-	    return 0;
+	    return;
 	}
 
 /*        ==== DLAHQR/DLAQR0 crossover point ==== */
@@ -1064,6 +1064,6 @@ f"> */
 
 /*     ==== End of DHSEQR ==== */
 
-    return 0;
+    return;
 } /* dhseqr_ */
 

@@ -789,7 +789,7 @@ f"> */
 /* >     California at Berkeley, USA */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int slasda_(integer *icompq, integer *smlsiz, integer *n, 
+/* Subroutine */ void slasda_(integer *icompq, integer *smlsiz, integer *n, 
 	integer *sqre, real *d__, real *e, real *u, integer *ldu, real *vt, 
 	integer *k, real *difl, real *difr, real *z__, real *poles, integer *
 	givptr, integer *givcol, integer *ldgcol, integer *perm, real *givnum,
@@ -806,14 +806,15 @@ f"> */
     integer idxq, nlvl, i__, j, m;
     real alpha;
     integer inode, ndiml, ndimr, idxqi, itemp, sqrei, i1;
-    extern /* Subroutine */ int scopy_(integer *, real *, integer *, real *, 
+    extern /* Subroutine */ void scopy_(integer *, real *, integer *, real *, 
 	    integer *), slasd6_(integer *, integer *, integer *, integer *, 
 	    real *, real *, real *, real *, real *, integer *, integer *, 
 	    integer *, integer *, integer *, real *, integer *, real *, real *
 	    , real *, real *, integer *, real *, real *, real *, integer *, 
 	    integer *);
     integer ic, nwork1, lf, nd, nwork2, ll, nl, vf, nr, vl;
-    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen), slasdq_(
+    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
+    extern void slasdq_(
 	    char *, integer *, integer *, integer *, integer *, integer *, 
 	    real *, real *, real *, integer *, real *, integer *, real *, 
 	    integer *, real *, integer *), slasdt_(integer *, integer 
@@ -891,7 +892,7 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("SLASDA", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
     m = *n + *sqre;
@@ -908,7 +909,7 @@ f"> */
 		    , ldu, &u[u_offset], ldu, &u[u_offset], ldu, &work[1], 
 		    info);
 	}
-	return 0;
+	return;
     }
 
 /*     Book-keeping and  set up the computation tree. */
@@ -975,7 +976,7 @@ f"> */
 		    ;
 	}
 	if (*info != 0) {
-	    return 0;
+	    return;
 	}
 	i__2 = nl;
 	for (j = 1; j <= i__2; ++j) {
@@ -1011,7 +1012,7 @@ f"> */
 		    ;
 	}
 	if (*info != 0) {
-	    return 0;
+	    return;
 	}
 	i__2 = nr;
 	for (j = 1; j <= i__2; ++j) {
@@ -1076,14 +1077,14 @@ f"> */
 			&s[j], &work[nwork1], &iwork[iwk], info);
 	    }
 	    if (*info != 0) {
-		return 0;
+		return;
 	    }
 /* L40: */
 	}
 /* L50: */
     }
 
-    return 0;
+    return;
 
 /*     End of SLASDA */
 

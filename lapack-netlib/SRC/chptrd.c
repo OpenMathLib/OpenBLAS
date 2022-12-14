@@ -665,7 +665,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int chptrd_(char *uplo, integer *n, complex *ap, real *d__, 
+/* Subroutine */ void chptrd_(char *uplo, integer *n, complex *ap, real *d__, 
 	real *e, complex *tau, integer *info)
 {
     /* System generated locals */
@@ -675,22 +675,23 @@ f"> */
 
     /* Local variables */
     complex taui;
-    extern /* Subroutine */ int chpr2_(char *, integer *, complex *, complex *
+    extern /* Subroutine */ void chpr2_(char *, integer *, complex *, complex *
 	    , integer *, complex *, integer *, complex *);
     integer i__;
     complex alpha;
     extern /* Complex */ VOID cdotc_(complex *, integer *, complex *, integer 
 	    *, complex *, integer *);
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int chpmv_(char *, integer *, complex *, complex *
+    extern /* Subroutine */ void chpmv_(char *, integer *, complex *, complex *
 	    , complex *, integer *, complex *, complex *, integer *), 
 	    caxpy_(integer *, complex *, complex *, integer *, complex *, 
 	    integer *);
     integer i1;
     logical upper;
     integer ii;
-    extern /* Subroutine */ int clarfg_(integer *, complex *, complex *, 
-	    integer *, complex *), xerbla_(char *, integer *, ftnlen);
+    extern /* Subroutine */ void clarfg_(integer *, complex *, complex *, 
+	    integer *, complex *);
+    extern int xerbla_(char *, integer *, ftnlen);
     integer i1i1;
 
 
@@ -722,13 +723,13 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CHPTRD", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n <= 0) {
-	return 0;
+	return;
     }
 
     if (upper) {
@@ -868,7 +869,7 @@ f"> */
 	d__[i__1] = ap[i__2].r;
     }
 
-    return 0;
+    return;
 
 /*     End of CHPTRD */
 

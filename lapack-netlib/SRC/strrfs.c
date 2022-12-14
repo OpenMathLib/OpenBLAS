@@ -695,7 +695,7 @@ f"> */
 /* > \ingroup realOTHERcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int strrfs_(char *uplo, char *trans, char *diag, integer *n, 
+/* Subroutine */ void strrfs_(char *uplo, char *trans, char *diag, integer *n, 
 	integer *nrhs, real *a, integer *lda, real *b, integer *ldb, real *x, 
 	integer *ldx, real *ferr, real *berr, real *work, integer *iwork, 
 	integer *info)
@@ -713,7 +713,7 @@ f"> */
     extern logical lsame_(char *, char *);
     integer isave[3];
     logical upper;
-    extern /* Subroutine */ int scopy_(integer *, real *, integer *, real *, 
+    extern /* Subroutine */ void scopy_(integer *, real *, integer *, real *, 
 	    integer *), saxpy_(integer *, real *, real *, integer *, real *, 
 	    integer *), strmv_(char *, char *, char *, integer *, real *, 
 	    integer *, real *, integer *), strsv_(
@@ -784,7 +784,7 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("STRRFS", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
@@ -796,7 +796,7 @@ f"> */
 	    berr[j] = 0.f;
 /* L10: */
 	}
-	return 0;
+	return;
     }
 
     if (notran) {
@@ -1061,7 +1061,7 @@ L210:
 /* L250: */
     }
 
-    return 0;
+    return;
 
 /*     End of STRRFS */
 

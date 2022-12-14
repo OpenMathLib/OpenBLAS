@@ -677,7 +677,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int zlarft_(char *direct, char *storev, integer *n, integer *
+/* Subroutine */ void zlarft_(char *direct, char *storev, integer *n, integer *
 	k, doublecomplex *v, integer *ldv, doublecomplex *tau, doublecomplex *
 	t, integer *ldt)
 {
@@ -688,17 +688,17 @@ f"> */
     /* Local variables */
     integer i__, j;
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int zgemm_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void zgemm_(char *, char *, integer *, integer *, 
 	    integer *, doublecomplex *, doublecomplex *, integer *, 
 	    doublecomplex *, integer *, doublecomplex *, doublecomplex *, 
 	    integer *), zgemv_(char *, integer *, integer *, 
 	    doublecomplex *, doublecomplex *, integer *, doublecomplex *, 
 	    integer *, doublecomplex *, doublecomplex *, integer *);
     integer lastv;
-    extern /* Subroutine */ int ztrmv_(char *, char *, char *, integer *, 
+    extern /* Subroutine */ void ztrmv_(char *, char *, char *, integer *, 
 	    doublecomplex *, integer *, doublecomplex *, integer *);
     integer prevlastv;
-    extern /* Subroutine */ int mecago_();
+    extern /* Subroutine */ void mecago_();
 
 
 /*  -- LAPACK auxiliary routine (version 3.7.0) -- */
@@ -723,7 +723,7 @@ f"> */
 
     /* Function Body */
     if (*n == 0) {
-	return 0;
+	return;
     }
 
     if (lsame_(direct, "F")) {
@@ -925,7 +925,7 @@ f"> */
 	    }
 	}
     }
-    return 0;
+    return;
 
 /*     End of ZLARFT */
 

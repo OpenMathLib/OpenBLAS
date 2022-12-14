@@ -893,7 +893,7 @@ f"> */
 /* > \ingroup complexGBsolve */
 
 /*  ===================================================================== */
-/* Subroutine */ int cgbsvx_(char *fact, char *trans, integer *n, integer *kl,
+/* Subroutine */ void cgbsvx_(char *fact, char *trans, integer *n, integer *kl,
 	 integer *ku, integer *nrhs, complex *ab, integer *ldab, complex *afb,
 	 integer *ldafb, integer *ipiv, char *equed, real *r__, real *c__, 
 	complex *b, integer *ldb, complex *x, integer *ldx, real *rcond, real 
@@ -911,13 +911,13 @@ f"> */
     integer i__, j;
     extern logical lsame_(char *, char *);
     real rcmin, rcmax, anorm;
-    extern /* Subroutine */ int ccopy_(integer *, complex *, integer *, 
+    extern /* Subroutine */ void ccopy_(integer *, complex *, integer *, 
 	    complex *, integer *);
     logical equil;
     integer j1, j2;
     extern real clangb_(char *, integer *, integer *, integer *, complex *, 
 	    integer *, real *);
-    extern /* Subroutine */ int claqgb_(integer *, integer *, integer *, 
+    extern /* Subroutine */ void claqgb_(integer *, integer *, integer *, 
 	    integer *, complex *, integer *, real *, real *, real *, real *, 
 	    real *, char *), cgbcon_(char *, integer *, integer *, 
 	    integer *, complex *, integer *, integer *, real *, real *, 
@@ -925,22 +925,22 @@ f"> */
     real colcnd;
     extern real clantb_(char *, char *, char *, integer *, integer *, complex 
 	    *, integer *, real *);
-    extern /* Subroutine */ int cgbequ_(integer *, integer *, integer *, 
+    extern /* Subroutine */ void cgbequ_(integer *, integer *, integer *, 
 	    integer *, complex *, integer *, real *, real *, real *, real *, 
 	    real *, integer *);
     extern real slamch_(char *);
-    extern /* Subroutine */ int cgbrfs_(char *, integer *, integer *, integer 
+    extern /* Subroutine */ void cgbrfs_(char *, integer *, integer *, integer 
 	    *, integer *, complex *, integer *, complex *, integer *, integer 
 	    *, complex *, integer *, complex *, integer *, real *, real *, 
 	    complex *, real *, integer *), cgbtrf_(integer *, integer 
 	    *, integer *, integer *, complex *, integer *, integer *, integer 
 	    *);
     logical nofact;
-    extern /* Subroutine */ int clacpy_(char *, integer *, integer *, complex 
-	    *, integer *, complex *, integer *), xerbla_(char *, 
-	    integer *, ftnlen);
+    extern /* Subroutine */ void clacpy_(char *, integer *, integer *, complex 
+	    *, integer *, complex *, integer *);
+    extern int xerbla_(char *, integer *, ftnlen);
     real bignum;
-    extern /* Subroutine */ int cgbtrs_(char *, integer *, integer *, integer 
+    extern /* Subroutine */ void cgbtrs_(char *, integer *, integer *, integer 
 	    *, integer *, complex *, integer *, integer *, complex *, integer 
 	    *, integer *);
     integer infequ;
@@ -1080,7 +1080,7 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CGBSVX", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
     if (equil) {
@@ -1195,7 +1195,7 @@ f"> */
 	    }
 	    rwork[1] = rpvgrw;
 	    *rcond = 0.f;
-	    return 0;
+	    return;
 	}
     }
 
@@ -1289,7 +1289,7 @@ f"> */
     }
 
     rwork[1] = rpvgrw;
-    return 0;
+    return;
 
 /*     End of CGBSVX */
 

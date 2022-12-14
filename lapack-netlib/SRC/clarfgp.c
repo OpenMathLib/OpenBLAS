@@ -617,7 +617,7 @@ static complex c_b5 = {1.f,0.f};
 /* > \ingroup complexOTHERauxiliary */
 
 /*  ===================================================================== */
-/* Subroutine */ int clarfgp_(integer *n, complex *alpha, complex *x, integer 
+/* Subroutine */ void clarfgp_(integer *n, complex *alpha, complex *x, integer 
 	*incx, complex *tau)
 {
     /* System generated locals */
@@ -628,7 +628,7 @@ static complex c_b5 = {1.f,0.f};
     /* Local variables */
     real beta;
     integer j;
-    extern /* Subroutine */ int cscal_(integer *, complex *, complex *, 
+    extern /* Subroutine */ void cscal_(integer *, complex *, complex *, 
 	    integer *);
     real alphi, alphr;
     complex savealpha;
@@ -637,7 +637,7 @@ static complex c_b5 = {1.f,0.f};
 	    real *), slapy3_(real *, real *, real *);
     extern /* Complex */ VOID cladiv_(complex *, complex *, complex *);
     extern real slamch_(char *);
-    extern /* Subroutine */ int csscal_(integer *, real *, complex *, integer 
+    extern /* Subroutine */ void csscal_(integer *, real *, complex *, integer 
 	    *);
     real bignum, smlnum;
     integer knt;
@@ -658,7 +658,7 @@ static complex c_b5 = {1.f,0.f};
     /* Function Body */
     if (*n <= 0) {
 	tau->r = 0.f, tau->i = 0.f;
-	return 0;
+	return;
     }
 
     i__1 = *n - 1;
@@ -815,7 +815,7 @@ L10:
 	alpha->r = beta, alpha->i = 0.f;
     }
 
-    return 0;
+    return;
 
 /*     End of CLARFGP */
 

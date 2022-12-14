@@ -715,7 +715,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int zlatrd_(char *uplo, integer *n, integer *nb, 
+/* Subroutine */ void zlatrd_(char *uplo, integer *n, integer *nb, 
 	doublecomplex *a, integer *lda, doublereal *e, doublecomplex *tau, 
 	doublecomplex *w, integer *ldw)
 {
@@ -728,11 +728,11 @@ f"> */
     integer i__;
     doublecomplex alpha;
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int zscal_(integer *, doublecomplex *, 
+    extern /* Subroutine */ void zscal_(integer *, doublecomplex *, 
 	    doublecomplex *, integer *);
     extern /* Double Complex */ VOID zdotc_(doublecomplex *, integer *, 
 	    doublecomplex *, integer *, doublecomplex *, integer *);
-    extern /* Subroutine */ int zgemv_(char *, integer *, integer *, 
+    extern /* Subroutine */ void zgemv_(char *, integer *, integer *, 
 	    doublecomplex *, doublecomplex *, integer *, doublecomplex *, 
 	    integer *, doublecomplex *, doublecomplex *, integer *), 
 	    zhemv_(char *, integer *, doublecomplex *, doublecomplex *, 
@@ -741,7 +741,7 @@ f"> */
 	    doublecomplex *, doublecomplex *, integer *, doublecomplex *, 
 	    integer *);
     integer iw;
-    extern /* Subroutine */ int zlarfg_(integer *, doublecomplex *, 
+    extern /* Subroutine */ void zlarfg_(integer *, doublecomplex *, 
 	    doublecomplex *, integer *, doublecomplex *), zlacgv_(integer *, 
 	    doublecomplex *, integer *);
 
@@ -769,7 +769,7 @@ f"> */
 
     /* Function Body */
     if (*n <= 0) {
-	return 0;
+	return;
     }
 
     if (lsame_(uplo, "U")) {
@@ -976,7 +976,7 @@ f"> */
 	}
     }
 
-    return 0;
+    return;
 
 /*     End of ZLATRD */
 

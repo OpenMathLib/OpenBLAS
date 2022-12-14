@@ -652,7 +652,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int ctzrqf_(integer *m, integer *n, complex *a, integer *lda,
+/* Subroutine */ void ctzrqf_(integer *m, integer *n, complex *a, integer *lda,
 	 complex *tau, integer *info)
 {
     /* System generated locals */
@@ -661,18 +661,18 @@ f"> */
 
     /* Local variables */
     integer i__, k;
-    extern /* Subroutine */ int cgerc_(integer *, integer *, complex *, 
+    extern /* Subroutine */ void cgerc_(integer *, integer *, complex *, 
 	    complex *, integer *, complex *, integer *, complex *, integer *);
     complex alpha;
-    extern /* Subroutine */ int cgemv_(char *, integer *, integer *, complex *
+    extern /* Subroutine */ void cgemv_(char *, integer *, integer *, complex *
 	    , complex *, integer *, complex *, integer *, complex *, complex *
 	    , integer *), ccopy_(integer *, complex *, integer *, 
 	    complex *, integer *), caxpy_(integer *, complex *, complex *, 
 	    integer *, complex *, integer *);
     integer m1;
-    extern /* Subroutine */ int clarfg_(integer *, complex *, complex *, 
-	    integer *, complex *), clacgv_(integer *, complex *, integer *), 
-	    xerbla_(char *, integer *);
+    extern /* Subroutine */ void clarfg_(integer *, complex *, complex *, 
+	    integer *, complex *), clacgv_(integer *, complex *, integer *); 
+    extern int xerbla_(char *, integer *, ftnlen);
 
 
 /*  -- LAPACK computational routine (version 3.7.0) -- */
@@ -703,14 +703,14 @@ f"> */
     }
     if (*info != 0) {
 	i__1 = -(*info);
-	xerbla_("CTZRQF", &i__1);
-	return 0;
+	xerbla_("CTZRQF", &i__1, 6);
+	return;
     }
 
 /*     Perform the factorization. */
 
     if (*m == 0) {
-	return 0;
+	return;
     }
     if (*m == *n) {
 	i__1 = *n;
@@ -783,7 +783,7 @@ f"> */
 	}
     }
 
-    return 0;
+    return;
 
 /*     End of CTZRQF */
 

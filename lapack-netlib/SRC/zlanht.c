@@ -627,7 +627,7 @@ doublereal zlanht_(char *norm, integer *n, doublereal *d__, doublecomplex *e)
     extern logical lsame_(char *, char *);
     doublereal anorm;
     extern logical disnan_(doublereal *);
-    extern /* Subroutine */ int dlassq_(integer *, doublereal *, integer *, 
+    extern /* Subroutine */ void dlassq_(integer *, doublereal *, integer *, 
 	    doublereal *, doublereal *), zlassq_(integer *, doublecomplex *, 
 	    integer *, doublereal *, doublereal *);
     doublereal sum;

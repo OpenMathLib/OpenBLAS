@@ -625,7 +625,7 @@ f"> */
 /* > \ingroup complex16OTHERcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int ztrtri_(char *uplo, char *diag, integer *n, 
+/* Subroutine */ void ztrtri_(char *uplo, char *diag, integer *n, 
 	doublecomplex *a, integer *lda, integer *info)
 {
     /* System generated locals */
@@ -638,16 +638,16 @@ f"> */
     integer j;
     extern logical lsame_(char *, char *);
     logical upper;
-    extern /* Subroutine */ int ztrmm_(char *, char *, char *, char *, 
+    extern /* Subroutine */ void ztrmm_(char *, char *, char *, char *, 
 	    integer *, integer *, doublecomplex *, doublecomplex *, integer *,
 	     doublecomplex *, integer *), 
 	    ztrsm_(char *, char *, char *, char *, integer *, integer *, 
 	    doublecomplex *, doublecomplex *, integer *, doublecomplex *, 
 	    integer *);
     integer jb, nb, nn;
-    extern /* Subroutine */ int ztrti2_(char *, char *, integer *, 
-	    doublecomplex *, integer *, integer *), xerbla_(
-	    char *, integer *, ftnlen);
+    extern /* Subroutine */ void ztrti2_(char *, char *, integer *, 
+	    doublecomplex *, integer *, integer *);
+    extern int xerbla_(char *, integer *, ftnlen);
     extern integer ilaenv_(integer *, char *, char *, integer *, integer *, 
 	    integer *, integer *, ftnlen, ftnlen);
     logical nounit;
@@ -685,13 +685,13 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZTRTRI", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /*     Check for singularity if non-unit. */
@@ -701,7 +701,7 @@ f"> */
 	for (*info = 1; *info <= i__1; ++(*info)) {
 	    i__2 = *info + *info * a_dim1;
 	    if (a[i__2].r == 0. && a[i__2].i == 0.) {
-		return 0;
+		return;
 	    }
 /* L10: */
 	}
@@ -785,7 +785,7 @@ f"> */
 	}
     }
 
-    return 0;
+    return;
 
 /*     End of ZTRTRI */
 

@@ -593,12 +593,12 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 /* > \ingroup realOTHERauxiliary */
 
 /*  ===================================================================== */
-/* Subroutine */ int srscl_(integer *n, real *sa, real *sx, integer *incx)
+/* Subroutine */ void srscl_(integer *n, real *sa, real *sx, integer *incx)
 {
     real cden;
     logical done;
     real cnum, cden1, cnum1;
-    extern /* Subroutine */ int sscal_(integer *, real *, real *, integer *), 
+    extern /* Subroutine */ void sscal_(integer *, real *, real *, integer *), 
 	    slabad_(real *, real *);
     extern real slamch_(char *);
     real bignum, smlnum, mul;
@@ -620,7 +620,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 
     /* Function Body */
     if (*n <= 0) {
-	return 0;
+	return;
     }
 
 /*     Get machine parameters */
@@ -667,7 +667,7 @@ L10:
 	goto L10;
     }
 
-    return 0;
+    return;
 
 /*     End of SRSCL */
 

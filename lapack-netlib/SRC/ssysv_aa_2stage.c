@@ -699,7 +699,7 @@ a_2stage.f"> */
 /* > \ingroup realSYsolve */
 
 /*  ===================================================================== */
-/* Subroutine */ int ssysv_aa_2stage_(char *uplo, integer *n, integer *nrhs, 
+/* Subroutine */ void ssysv_aa_2stage_(char *uplo, integer *n, integer *nrhs, 
 	real *a, integer *lda, real *tb, integer *ltb, integer *ipiv, integer 
 	*ipiv2, real *b, integer *ldb, real *work, integer *lwork, integer *
 	info)
@@ -708,7 +708,7 @@ a_2stage.f"> */
     integer a_dim1, a_offset, b_dim1, b_offset, i__1;
 
     /* Local variables */
-    extern /* Subroutine */ int ssytrf_aa_2stage_(char *, integer *, real *, 
+    extern /* Subroutine */ void ssytrf_aa_2stage_(char *, integer *, real *, 
 	    integer *, real *, integer *, integer *, integer *, real *, 
 	    integer *, integer *), ssytrs_aa_2stage_(char *, integer 
 	    *, integer *, real *, integer *, real *, integer *, integer *, 
@@ -773,9 +773,9 @@ a_2stage.f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("SSYSV_AA_2STAGE", &i__1, (ftnlen)15);
-	return 0;
+	return;
     } else if (wquery || tquery) {
-	return 0;
+	return;
     }
 
 
@@ -794,7 +794,7 @@ a_2stage.f"> */
 
     work[1] = (real) lwkopt;
 
-    return 0;
+    return;
 
 /*     End of SSYSV_AA_2STAGE */
 

@@ -658,7 +658,7 @@ f"> */
 /* > \ingroup realOTHERcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int spstf2_(char *uplo, integer *n, real *a, integer *lda, 
+/* Subroutine */ void spstf2_(char *uplo, integer *n, real *a, integer *lda, 
 	integer *piv, integer *rank, real *tol, real *work, integer *info)
 {
     /* System generated locals */
@@ -669,13 +669,13 @@ f"> */
     
     integer i__, j;
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int sscal_(integer *, real *, real *, integer *);
+    extern /* Subroutine */ void sscal_(integer *, real *, real *, integer *);
     integer itemp;
-    extern /* Subroutine */ int sgemv_(char *, integer *, integer *, real *, 
+    extern /* Subroutine */ void sgemv_(char *, integer *, integer *, real *, 
 	    real *, integer *, real *, integer *, real *, real *, integer *);
     real stemp;
     logical upper;
-    extern /* Subroutine */ int sswap_(integer *, real *, integer *, real *, 
+    extern /* Subroutine */ void sswap_(integer *, real *, integer *, real *, 
 	    integer *);
     real sstop;
     extern real slamch_(char *);
@@ -716,13 +716,13 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("SPSTF2", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /*     Initialize PIV */
@@ -945,7 +945,7 @@ L160:
     *info = 1;
 
 L170:
-    return 0;
+    return;
 
 /*     End of SPSTF2 */
 

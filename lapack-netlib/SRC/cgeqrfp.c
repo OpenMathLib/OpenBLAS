@@ -665,7 +665,7 @@ static integer c__2 = 2;
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int cgeqrfp_(integer *m, integer *n, complex *a, integer *
+/* Subroutine */ void cgeqrfp_(integer *m, integer *n, complex *a, integer *
 	lda, complex *tau, complex *work, integer *lwork, integer *info)
 {
     /* System generated locals */
@@ -673,17 +673,18 @@ static integer c__2 = 2;
 
     /* Local variables */
     integer i__, k, nbmin, iinfo, ib, nb;
-    extern /* Subroutine */ int clarfb_(char *, char *, char *, char *, 
+    extern /* Subroutine */ void clarfb_(char *, char *, char *, char *, 
 	    integer *, integer *, integer *, complex *, integer *, complex *, 
 	    integer *, complex *, integer *, complex *, integer *);
     integer nx;
-    extern /* Subroutine */ int clarft_(char *, char *, integer *, integer *, 
-	    complex *, integer *, complex *, complex *, integer *), xerbla_(char *, integer *, ftnlen);
+    extern /* Subroutine */ void clarft_(char *, char *, integer *, integer *, 
+	    complex *, integer *, complex *, complex *, integer *);
+    extern int xerbla_(char *, integer *, ftnlen);
     extern integer ilaenv_(integer *, char *, char *, integer *, integer *, 
 	    integer *, integer *, ftnlen, ftnlen);
     integer ldwork, lwkopt;
     logical lquery;
-    extern /* Subroutine */ int cgeqr2p_(integer *, integer *, complex *, 
+    extern /* Subroutine */ void cgeqr2p_(integer *, integer *, complex *, 
 	    integer *, complex *, complex *, integer *);
     integer iws;
 
@@ -725,9 +726,9 @@ static integer c__2 = 2;
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CGEQRFP", &i__1, (ftnlen)7);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
@@ -735,7 +736,7 @@ static integer c__2 = 2;
     k = f2cmin(*m,*n);
     if (k == 0) {
 	work[1].r = 1.f, work[1].i = 0.f;
-	return 0;
+	return;
     }
 
     nbmin = 2;
@@ -820,7 +821,7 @@ static integer c__2 = 2;
     }
 
     work[1].r = (real) iws, work[1].i = 0.f;
-    return 0;
+    return;
 
 /*     End of CGEQRFP */
 

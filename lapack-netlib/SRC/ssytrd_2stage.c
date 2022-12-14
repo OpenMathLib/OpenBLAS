@@ -740,7 +740,7 @@ static integer c__4 = 4;
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int ssytrd_2stage_(char *vect, char *uplo, integer *n, real 
+/* Subroutine */ void ssytrd_2stage_(char *vect, char *uplo, integer *n, real 
 	*a, integer *lda, real *d__, real *e, real *tau, real *hous2, integer 
 	*lhous2, real *work, integer *lwork, integer *info)
 {
@@ -752,7 +752,7 @@ static integer c__4 = 4;
     extern integer ilaenv2stage_(integer *, char *, char *, integer *, 
 	    integer *, integer *, integer *);
     integer lwrk, wpos;
-    extern /* Subroutine */ int ssytrd_sb2st_(char *, char *, char *, 
+    extern /* Subroutine */ void ssytrd_sb2st_(char *, char *, char *, 
 	    integer *, integer *, real *, integer *, real *, real *, real *, 
 	    integer *, real *, integer *, integer *), 
 	    ssytrd_sy2sb_(char *, integer *, integer *, real *, integer *, 
@@ -823,16 +823,16 @@ static integer c__4 = 4;
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("SSYTRD_2STAGE", &i__1, (ftnlen)13);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
 	work[1] = 1.f;
-	return 0;
+	return;
     }
 
 /*     Determine pointer position */
@@ -846,20 +846,20 @@ static integer c__4 = 4;
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("SSYTRD_SY2SB", &i__1, (ftnlen)12);
-	return 0;
+	return;
     }
     ssytrd_sb2st_("Y", vect, uplo, n, &kd, &work[abpos], &ldab, &d__[1], &e[
 	    1], &hous2[1], lhous2, &work[wpos], &lwrk, info);
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("SSYTRD_SB2ST", &i__1, (ftnlen)12);
-	return 0;
+	return;
     }
 
 
     hous2[1] = (real) lhmin;
     work[1] = (real) lwmin;
-    return 0;
+    return;
 
 /*     End of SSYTRD_2STAGE */
 

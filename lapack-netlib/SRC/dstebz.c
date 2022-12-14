@@ -789,7 +789,7 @@ f"> */
 /* > \ingroup auxOTHERcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int dstebz_(char *range, char *order, integer *n, doublereal 
+/* Subroutine */ void dstebz_(char *range, char *order, integer *n, doublereal 
 	*vl, doublereal *vu, integer *il, integer *iu, doublereal *abstol, 
 	doublereal *d__, doublereal *e, integer *m, integer *nsplit, 
 	doublereal *w, integer *iblock, integer *isplit, doublereal *work, 
@@ -815,7 +815,7 @@ f"> */
     integer ibegin;
     doublereal gu;
     integer iw;
-    extern /* Subroutine */ int dlaebz_(integer *, integer *, integer *, 
+    extern /* Subroutine */ void dlaebz_(integer *, integer *, integer *, 
 	    integer *, integer *, integer *, doublereal *, doublereal *, 
 	    doublereal *, doublereal *, doublereal *, doublereal *, integer *,
 	     doublereal *, doublereal *, integer *, integer *, doublereal *, 
@@ -901,7 +901,7 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DSTEBZ", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Initialize error flags */
@@ -914,7 +914,7 @@ f"> */
 
     *m = 0;
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /*     Simplifications: */
@@ -948,7 +948,7 @@ f"> */
 	    iblock[1] = 1;
 	    *m = 1;
 	}
-	return 0;
+	return;
     }
 
 /*     Compute Splitting Points */
@@ -1061,7 +1061,7 @@ f"> */
 
 	if (nwl < 0 || nwl >= *n || nwu < 1 || nwu > *n) {
 	    *info = 4;
-	    return 0;
+	    return;
 	}
     } else {
 
@@ -1364,7 +1364,7 @@ L70:
     if (toofew) {
 	*info += 2;
     }
-    return 0;
+    return;
 
 /*     End of DSTEBZ */
 

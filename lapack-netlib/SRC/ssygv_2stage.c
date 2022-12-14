@@ -743,7 +743,7 @@ stage.f"> */
 /* > \endverbatim */
 
 /*  ===================================================================== */
-/* Subroutine */ int ssygv_2stage_(integer *itype, char *jobz, char *uplo, 
+/* Subroutine */ void ssygv_2stage_(integer *itype, char *jobz, char *uplo, 
 	integer *n, real *a, integer *lda, real *b, integer *ldb, real *w, 
 	real *work, integer *lwork, integer *info)
 {
@@ -754,25 +754,26 @@ stage.f"> */
     integer neig;
     extern integer ilaenv2stage_(integer *, char *, char *, integer *, 
 	    integer *, integer *, integer *);
-    extern /* Subroutine */ int ssyev_2stage_(char *, char *, integer *, 
+    extern /* Subroutine */ void ssyev_2stage_(char *, char *, integer *, 
 	    real *, integer *, real *, real *, integer *, integer *);
     extern logical lsame_(char *, char *);
     integer lhtrd, lwmin;
     char trans[1];
     logical upper;
     integer lwtrd;
-    extern /* Subroutine */ int strmm_(char *, char *, char *, char *, 
+    extern /* Subroutine */ void strmm_(char *, char *, char *, char *, 
 	    integer *, integer *, real *, real *, integer *, real *, integer *
 	    );
     logical wantz;
-    extern /* Subroutine */ int strsm_(char *, char *, char *, char *, 
+    extern /* Subroutine */ void strsm_(char *, char *, char *, char *, 
 	    integer *, integer *, real *, real *, integer *, real *, integer *
 	    );
     integer ib, kd;
-    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen), spotrf_(
+    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
+    extern int spotrf_(
 	    char *, integer *, real *, integer *, integer *);
     logical lquery;
-    extern /* Subroutine */ int ssygst_(integer *, char *, integer *, real *, 
+    extern /* Subroutine */ void ssygst_(integer *, char *, integer *, real *, 
 	    integer *, real *, integer *, integer *);
 
 
@@ -837,15 +838,15 @@ stage.f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("SSYGV_2STAGE ", &i__1, (ftnlen)13);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /*     Form a Cholesky factorization of B. */
@@ -853,7 +854,7 @@ stage.f"> */
     spotrf_(uplo, n, &b[b_offset], ldb, info);
     if (*info != 0) {
 	*info = *n + *info;
-	return 0;
+	return;
     }
 
 /*     Transform problem to standard eigenvalue problem and solve. */
@@ -901,7 +902,7 @@ stage.f"> */
     }
 
     work[1] = (real) lwmin;
-    return 0;
+    return;
 
 /*     End of SSYGV_2STAGE */
 

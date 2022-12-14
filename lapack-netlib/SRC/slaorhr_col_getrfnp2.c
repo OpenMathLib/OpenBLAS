@@ -682,7 +682,7 @@ _col_getrfnp2.f"> */
 /* > \endverbatim */
 
 /*  ===================================================================== */
-/* Subroutine */ int slaorhr_col_getrfnp2_(integer *m, integer *n, real *a, 
+/* Subroutine */ void slaorhr_col_getrfnp2_(integer *m, integer *n, real *a, 
 	integer *lda, real *d__, integer *info)
 {
     /* System generated locals */
@@ -691,12 +691,12 @@ _col_getrfnp2.f"> */
 
     /* Local variables */
     integer i__, iinfo;
-    extern /* Subroutine */ int sscal_(integer *, real *, real *, integer *), 
+    extern /* Subroutine */ void sscal_(integer *, real *, real *, integer *), 
 	    sgemm_(char *, char *, integer *, integer *, integer *, real *, 
 	    real *, integer *, real *, integer *, real *, real *, integer *);
     real sfmin;
     integer n1, n2;
-    extern /* Subroutine */ int strsm_(char *, char *, char *, char *, 
+    extern /* Subroutine */ void strsm_(char *, char *, char *, char *, 
 	    integer *, integer *, real *, real *, integer *, real *, integer *
 	    );
     extern real slamch_(char *);
@@ -732,13 +732,13 @@ _col_getrfnp2.f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("SLAORHR_COL_GETRFNP2", &i__1, (ftnlen)20);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (f2cmin(*m,*n) == 0) {
-	return 0;
+	return;
     }
     if (*m == 1) {
 
@@ -822,7 +822,7 @@ _col_getrfnp2.f"> */
 		lda, &d__[n1 + 1], &iinfo);
 
     }
-    return 0;
+    return;
 
 /*     End of SLAORHR_COL_GETRFNP2 */
 

@@ -641,14 +641,14 @@ static integer c_n1 = -1;
 /* > \ingroup doubleSYcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int dsytri2_(char *uplo, integer *n, doublereal *a, integer *
+/* Subroutine */ void dsytri2_(char *uplo, integer *n, doublereal *a, integer *
 	lda, integer *ipiv, doublereal *work, integer *lwork, integer *info)
 {
     /* System generated locals */
     integer a_dim1, a_offset, i__1;
 
     /* Local variables */
-    extern /* Subroutine */ int dsytri2x_(char *, integer *, doublereal *, 
+    extern /* Subroutine */ void dsytri2x_(char *, integer *, doublereal *, 
 	    integer *, integer *, doublereal *, integer *, integer *);
     extern logical lsame_(char *, char *);
     integer nbmax;
@@ -656,7 +656,7 @@ static integer c_n1 = -1;
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     extern integer ilaenv_(integer *, char *, char *, integer *, integer *, 
 	    integer *, integer *, ftnlen, ftnlen);
-    extern /* Subroutine */ int dsytri_(char *, integer *, doublereal *, 
+    extern /* Subroutine */ void dsytri_(char *, integer *, doublereal *, 
 	    integer *, integer *, doublereal *, integer *);
     logical lquery;
     integer minsize;
@@ -709,13 +709,13 @@ static integer c_n1 = -1;
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DSYTRI2", &i__1, (ftnlen)7);
-	return 0;
+	return;
     } else if (lquery) {
 	work[1] = (doublereal) minsize;
-	return 0;
+	return;
     }
     if (*n == 0) {
-	return 0;
+	return;
     }
     if (nbmax >= *n) {
 	dsytri_(uplo, n, &a[a_offset], lda, &ipiv[1], &work[1], info);
@@ -723,7 +723,7 @@ static integer c_n1 = -1;
 	dsytri2x_(uplo, n, &a[a_offset], lda, &ipiv[1], &work[1], &nbmax, 
 		info);
     }
-    return 0;
+    return;
 
 /*     End of DSYTRI2 */
 

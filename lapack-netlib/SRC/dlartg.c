@@ -608,7 +608,7 @@ f"> */
 /* > \ingroup OTHERauxiliary */
 
 /*  ===================================================================== */
-/* Subroutine */ int dlartg_(doublereal *f, doublereal *g, doublereal *cs, 
+/* Subroutine */ void dlartg_(doublereal *f, doublereal *g, doublereal *cs, 
 	doublereal *sn, doublereal *r__)
 {
     /* System generated locals */
@@ -722,7 +722,7 @@ L30:
 	    *r__ = -(*r__);
 	}
     }
-    return 0;
+    return;
 
 /*     End of DLARTG */
 

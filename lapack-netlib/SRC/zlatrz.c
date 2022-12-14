@@ -649,7 +649,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int zlatrz_(integer *m, integer *n, integer *l, 
+/* Subroutine */ void zlatrz_(integer *m, integer *n, integer *l, 
 	doublecomplex *a, integer *lda, doublecomplex *tau, doublecomplex *
 	work)
 {
@@ -660,7 +660,7 @@ f"> */
     /* Local variables */
     integer i__;
     doublecomplex alpha;
-    extern /* Subroutine */ int zlarz_(char *, integer *, integer *, integer *
+    extern /* Subroutine */ void zlarz_(char *, integer *, integer *, integer *
 	    , doublecomplex *, integer *, doublecomplex *, doublecomplex *, 
 	    integer *, doublecomplex *), zlarfg_(integer *, 
 	    doublecomplex *, doublecomplex *, integer *, doublecomplex *), 
@@ -687,7 +687,7 @@ f"> */
 
     /* Function Body */
     if (*m == 0) {
-	return 0;
+	return;
     } else if (*m == *n) {
 	i__1 = *n;
 	for (i__ = 1; i__ <= i__1; ++i__) {
@@ -695,7 +695,7 @@ f"> */
 	    tau[i__2].r = 0., tau[i__2].i = 0.;
 /* L10: */
 	}
-	return 0;
+	return;
     }
 
     for (i__ = *m; i__ >= 1; --i__) {
@@ -727,7 +727,7 @@ f"> */
 /* L20: */
     }
 
-    return 0;
+    return;
 
 /*     End of ZLATRZ */
 

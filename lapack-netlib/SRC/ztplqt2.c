@@ -693,7 +693,7 @@ is composed of a triangular block and a pentagonal block, using the compact WY r
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int ztplqt2_(integer *m, integer *n, integer *l, 
+/* Subroutine */ void ztplqt2_(integer *m, integer *n, integer *l, 
 	doublecomplex *a, integer *lda, doublecomplex *b, integer *ldb, 
 	doublecomplex *t, integer *ldt, integer *info)
 {
@@ -705,7 +705,7 @@ is composed of a triangular block and a pentagonal block, using the compact WY r
     /* Local variables */
     integer i__, j, p;
     doublecomplex alpha;
-    extern /* Subroutine */ int zgerc_(integer *, integer *, doublecomplex *, 
+    extern /* Subroutine */ void zgerc_(integer *, integer *, doublecomplex *, 
 	    doublecomplex *, integer *, doublecomplex *, integer *, 
 	    doublecomplex *, integer *), zgemv_(char *, integer *, integer *, 
 	    doublecomplex *, doublecomplex *, integer *, doublecomplex *, 
@@ -713,7 +713,8 @@ is composed of a triangular block and a pentagonal block, using the compact WY r
 	    ztrmv_(char *, char *, char *, integer *, doublecomplex *, 
 	    integer *, doublecomplex *, integer *);
     integer mp, np;
-    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen), zlarfg_(
+    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
+    extern void zlarfg_(
 	    integer *, doublecomplex *, doublecomplex *, integer *, 
 	    doublecomplex *);
 
@@ -758,13 +759,13 @@ is composed of a triangular block and a pentagonal block, using the compact WY r
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZTPLQT2", &i__1, (ftnlen)7);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0 || *m == 0) {
-	return 0;
+	return;
     }
 
     i__1 = *m;
@@ -928,6 +929,6 @@ is composed of a triangular block and a pentagonal block, using the compact WY r
 
 /*     End of ZTPLQT2 */
 
-    return 0;
+    return;
 } /* ztplqt2_ */
 

@@ -1080,7 +1080,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 /* > \ingroup complexGBsolve */
 
 /*  ===================================================================== */
-/* Subroutine */ int cgbsvxx_(char *fact, char *trans, integer *n, integer *
+/* Subroutine */ void cgbsvxx_(char *fact, char *trans, integer *n, integer *
 	kl, integer *ku, integer *nrhs, complex *ab, integer *ldab, complex *
 	afb, integer *ldafb, integer *ipiv, char *equed, real *r__, real *c__,
 	 complex *b, integer *ldb, complex *x, integer *ldx, real *rcond, 
@@ -1102,19 +1102,19 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
     extern logical lsame_(char *, char *);
     real rcmin, rcmax;
     logical equil;
-    extern /* Subroutine */ int claqgb_(integer *, integer *, integer *, 
+    extern /* Subroutine */ void claqgb_(integer *, integer *, integer *, 
 	    integer *, complex *, integer *, real *, real *, real *, real *, 
 	    real *, char *);
     real colcnd;
     extern real slamch_(char *);
-    extern /* Subroutine */ int cgbtrf_(integer *, integer *, integer *, 
+    extern /* Subroutine */ void cgbtrf_(integer *, integer *, integer *, 
 	    integer *, complex *, integer *, integer *, integer *);
     logical nofact;
-    extern /* Subroutine */ int clacpy_(char *, integer *, integer *, complex 
-	    *, integer *, complex *, integer *), xerbla_(char *, 
-	    integer *, ftnlen);
+    extern /* Subroutine */ void clacpy_(char *, integer *, integer *, complex 
+	    *, integer *, complex *, integer *);
+    extern int xerbla_(char *, integer *, ftnlen);
     real bignum;
-    extern /* Subroutine */ int cgbtrs_(char *, integer *, integer *, integer 
+    extern /* Subroutine */ void cgbtrs_(char *, integer *, integer *, integer 
 	    *, integer *, complex *, integer *, integer *, complex *, integer 
 	    *, integer *);
     integer infequ;
@@ -1123,7 +1123,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
     logical notran;
     real smlnum;
     logical rowequ;
-    extern /* Subroutine */ int clascl2_(integer *, integer *, real *, 
+    extern /* Subroutine */ void clascl2_(integer *, integer *, real *, 
 	    complex *, integer *), cgbequb_(integer *, integer *, integer *, 
 	    integer *, complex *, integer *, real *, real *, real *, real *, 
 	    real *, integer *), cgbrfsx_(char *, char *, integer *, integer *,
@@ -1270,7 +1270,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CGBSVXX", &i__1, (ftnlen)7);
-	return 0;
+	return;
     }
 
     if (equil) {
@@ -1346,7 +1346,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 
 	    *rpvgrw = cla_gbrpvgrw_(n, kl, ku, info, &ab[ab_offset], ldab, &
 		    afb[afb_offset], ldafb);
-	    return 0;
+	    return;
 	}
     }
 
@@ -1379,7 +1379,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 	clascl2_(n, nrhs, &r__[1], &x[x_offset], ldx);
     }
 
-    return 0;
+    return;
 
 /*     End of CGBSVXX */
 

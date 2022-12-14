@@ -719,7 +719,7 @@ ook.f"> */
 
 
 /*  ===================================================================== */
-/* Subroutine */ int zhesv_rook_(char *uplo, integer *n, integer *nrhs, 
+/* Subroutine */ void zhesv_rook_(char *uplo, integer *n, integer *nrhs, 
 	doublecomplex *a, integer *lda, integer *ipiv, doublecomplex *b, 
 	integer *ldb, doublecomplex *work, integer *lwork, integer *info)
 {
@@ -727,7 +727,7 @@ ook.f"> */
     integer a_dim1, a_offset, b_dim1, b_offset, i__1;
 
     /* Local variables */
-    extern /* Subroutine */ int zhetrs_rook_(char *, integer *, integer *, 
+    extern /* Subroutine */ void zhetrs_rook_(char *, integer *, integer *, 
 	    doublecomplex *, integer *, integer *, doublecomplex *, integer *,
 	     integer *);
     extern logical lsame_(char *, char *);
@@ -737,7 +737,7 @@ ook.f"> */
 	    integer *, integer *, ftnlen, ftnlen);
     integer lwkopt;
     logical lquery;
-    extern /* Subroutine */ int zhetrf_rook_(char *, integer *, 
+    extern /* Subroutine */ void zhetrf_rook_(char *, integer *, 
 	    doublecomplex *, integer *, integer *, doublecomplex *, integer *,
 	     integer *);
 
@@ -794,9 +794,9 @@ ook.f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZHESV_ROOK ", &i__1, (ftnlen)11);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Compute the factorization A = U*D*U**H or A = L*D*L**H. */
@@ -815,7 +815,7 @@ ook.f"> */
 
     work[1].r = (doublereal) lwkopt, work[1].i = 0.;
 
-    return 0;
+    return;
 
 /*     End of ZHESV_ROOK */
 

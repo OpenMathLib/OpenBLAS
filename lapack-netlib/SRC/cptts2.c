@@ -623,7 +623,7 @@ f"> */
 /* > \ingroup complexPTcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int cptts2_(integer *iuplo, integer *n, integer *nrhs, real *
+/* Subroutine */ void cptts2_(integer *iuplo, integer *n, integer *nrhs, real *
 	d__, complex *e, complex *b, integer *ldb)
 {
     /* System generated locals */
@@ -633,7 +633,7 @@ f"> */
 
     /* Local variables */
     integer i__, j;
-    extern /* Subroutine */ int csscal_(integer *, real *, complex *, integer 
+    extern /* Subroutine */ void csscal_(integer *, real *, complex *, integer 
 	    *);
 
 
@@ -661,7 +661,7 @@ f"> */
 	    r__1 = 1.f / d__[1];
 	    csscal_(nrhs, &r__1, &b[b_offset], ldb);
 	}
-	return 0;
+	return;
     }
 
     if (*iuplo == 1) {
@@ -860,7 +860,7 @@ L65:
 	}
     }
 
-    return 0;
+    return;
 
 /*     End of CPTTS2 */
 

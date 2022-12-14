@@ -686,7 +686,7 @@ f"> */
 /* > \ingroup complexOTHERcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int ctprfs_(char *uplo, char *trans, char *diag, integer *n, 
+/* Subroutine */ void ctprfs_(char *uplo, char *trans, char *diag, integer *n, 
 	integer *nrhs, complex *ap, complex *b, integer *ldb, complex *x, 
 	integer *ldx, real *ferr, real *berr, complex *work, real *rwork, 
 	integer *info)
@@ -703,12 +703,12 @@ f"> */
     real s;
     extern logical lsame_(char *, char *);
     integer isave[3];
-    extern /* Subroutine */ int ccopy_(integer *, complex *, integer *, 
+    extern /* Subroutine */ void ccopy_(integer *, complex *, integer *, 
 	    complex *, integer *), caxpy_(integer *, complex *, complex *, 
 	    integer *, complex *, integer *), ctpmv_(char *, char *, char *, 
 	    integer *, complex *, complex *, integer *);
     logical upper;
-    extern /* Subroutine */ int ctpsv_(char *, char *, char *, integer *, 
+    extern /* Subroutine */ void ctpsv_(char *, char *, char *, integer *, 
 	    complex *, complex *, integer *), clacn2_(
 	    integer *, complex *, complex *, real *, integer *, integer *);
     integer kc;
@@ -772,7 +772,7 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CTPRFS", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
@@ -784,7 +784,7 @@ f"> */
 	    berr[j] = 0.f;
 /* L10: */
 	}
-	return 0;
+	return;
     }
 
     if (notran) {
@@ -1118,7 +1118,7 @@ L210:
 /* L250: */
     }
 
-    return 0;
+    return;
 
 /*     End of CTPRFS */
 

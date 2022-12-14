@@ -673,7 +673,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int dgebal_(char *job, integer *n, doublereal *a, integer *
+/* Subroutine */ void dgebal_(char *job, integer *n, doublereal *a, integer *
 	lda, integer *ilo, integer *ihi, doublereal *scale, integer *info)
 {
     /* System generated locals */
@@ -686,10 +686,10 @@ f"> */
     doublereal c__, f, g;
     integer i__, j, k, l, m;
     doublereal r__, s;
-    extern /* Subroutine */ int dscal_(integer *, doublereal *, doublereal *, 
+    extern /* Subroutine */ void dscal_(integer *, doublereal *, doublereal *, 
 	    integer *);
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int dswap_(integer *, doublereal *, integer *, 
+    extern /* Subroutine */ void dswap_(integer *, doublereal *, integer *, 
 	    doublereal *, integer *);
     doublereal sfmin1, sfmin2, sfmax1, sfmax2, ca, ra;
     extern doublereal dlamch_(char *);
@@ -729,7 +729,7 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DGEBAL", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
     k = 1;
@@ -894,7 +894,7 @@ L160:
 	    *info = -3;
 	    i__2 = -(*info);
 	    xerbla_("DGEBAL", &i__2, (ftnlen)6);
-	    return 0;
+	    return;
 	}
 	f *= 2.;
 	c__ *= 2.;
@@ -956,7 +956,7 @@ L210:
     *ilo = k;
     *ihi = l;
 
-    return 0;
+    return;
 
 /*     End of DGEBAL */
 

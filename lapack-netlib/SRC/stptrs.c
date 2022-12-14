@@ -643,7 +643,7 @@ f"> */
 /* > \ingroup realOTHERcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int stptrs_(char *uplo, char *trans, char *diag, integer *n, 
+/* Subroutine */ void stptrs_(char *uplo, char *trans, char *diag, integer *n, 
 	integer *nrhs, real *ap, real *b, integer *ldb, integer *info)
 {
     /* System generated locals */
@@ -653,7 +653,7 @@ f"> */
     integer j;
     extern logical lsame_(char *, char *);
     logical upper;
-    extern /* Subroutine */ int stpsv_(char *, char *, char *, integer *, 
+    extern /* Subroutine */ void stpsv_(char *, char *, char *, integer *, 
 	    real *, real *, integer *);
     integer jc;
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
@@ -698,13 +698,13 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("STPTRS", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /*     Check for singularity. */
@@ -715,7 +715,7 @@ f"> */
 	    i__1 = *n;
 	    for (*info = 1; *info <= i__1; ++(*info)) {
 		if (ap[jc + *info - 1] == 0.f) {
-		    return 0;
+		    return;
 		}
 		jc += *info;
 /* L10: */
@@ -725,7 +725,7 @@ f"> */
 	    i__1 = *n;
 	    for (*info = 1; *info <= i__1; ++(*info)) {
 		if (ap[jc] == 0.f) {
-		    return 0;
+		    return;
 		}
 		jc = jc + *n - *info + 1;
 /* L20: */
@@ -742,7 +742,7 @@ f"> */
 /* L30: */
     }
 
-    return 0;
+    return;
 
 /*     End of STPTRS */
 

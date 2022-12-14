@@ -686,7 +686,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int cgehrd_(integer *n, integer *ilo, integer *ihi, complex *
+/* Subroutine */ void cgehrd_(integer *n, integer *ilo, integer *ihi, complex *
 	a, integer *lda, complex *tau, complex *work, integer *lwork, integer 
 	*info)
 {
@@ -696,11 +696,11 @@ f"> */
 
     /* Local variables */
     integer i__, j;
-    extern /* Subroutine */ int cgemm_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void cgemm_(char *, char *, integer *, integer *, 
 	    integer *, complex *, complex *, integer *, complex *, integer *, 
 	    complex *, complex *, integer *);
     integer nbmin, iinfo;
-    extern /* Subroutine */ int ctrmm_(char *, char *, char *, char *, 
+    extern /* Subroutine */ void ctrmm_(char *, char *, char *, char *, 
 	    integer *, integer *, complex *, complex *, integer *, complex *, 
 	    integer *), caxpy_(integer *, 
 	    complex *, complex *, integer *, complex *, integer *), cgehd2_(
@@ -711,7 +711,7 @@ f"> */
     integer ib;
     complex ei;
     integer nb, nh;
-    extern /* Subroutine */ int clarfb_(char *, char *, char *, char *, 
+    extern /* Subroutine */ void clarfb_(char *, char *, char *, char *, 
 	    integer *, integer *, integer *, complex *, integer *, complex *, 
 	    integer *, complex *, integer *, complex *, integer *);
     integer nx;
@@ -771,9 +771,9 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CGEHRD", &i__1, (ftnlen)6);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Set elements 1:ILO-1 and IHI:N-1 of TAU to zero */
@@ -796,7 +796,7 @@ f"> */
     nh = *ihi - *ilo + 1;
     if (nh <= 1) {
 	work[1].r = 1.f, work[1].i = 0.f;
-	return 0;
+	return;
     }
 
 /*     Determine the block size */
@@ -913,7 +913,7 @@ f"> */
     cgehd2_(n, &i__, ihi, &a[a_offset], lda, &tau[1], &work[1], &iinfo);
     work[1].r = (real) lwkopt, work[1].i = 0.f;
 
-    return 0;
+    return;
 
 /*     End of CGEHRD */
 

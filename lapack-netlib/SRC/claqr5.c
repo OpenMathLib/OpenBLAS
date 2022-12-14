@@ -773,7 +773,7 @@ f"> */
 /* >       ACM Trans. Math. Softw. 40, 2, Article 12 (February 2014). */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int claqr5_(logical *wantt, logical *wantz, integer *kacc22, 
+/* Subroutine */ void claqr5_(logical *wantt, logical *wantz, integer *kacc22, 
 	integer *n, integer *ktop, integer *kbot, integer *nshfts, complex *s,
 	 complex *h__, integer *ldh, integer *iloz, integer *ihiz, complex *
 	z__, integer *ldz, complex *v, integer *ldv, complex *u, integer *ldu,
@@ -793,20 +793,20 @@ f"> */
     integer jcol, jlen, jbot, mbot, jtop, jrow, mtop, j, k, m;
     complex alpha;
     logical accum;
-    extern /* Subroutine */ int cgemm_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void cgemm_(char *, char *, integer *, integer *, 
 	    integer *, complex *, complex *, integer *, complex *, integer *, 
 	    complex *, complex *, integer *);
     integer ndcol, incol, krcol, nbmps, i2, k1, i4;
-    extern /* Subroutine */ int claqr1_(integer *, complex *, integer *, 
+    extern /* Subroutine */ void claqr1_(integer *, complex *, integer *, 
 	    complex *, complex *, complex *);
     real h11, h12, h21, h22;
     integer m22;
-    extern /* Subroutine */ int slabad_(real *, real *), clarfg_(integer *, 
+    extern /* Subroutine */ void slabad_(real *, real *), clarfg_(integer *, 
 	    complex *, complex *, integer *, complex *);
     integer ns, nu;
     extern real slamch_(char *);
     complex vt[3];
-    extern /* Subroutine */ int clacpy_(char *, integer *, integer *, complex 
+    extern /* Subroutine */ void clacpy_(char *, integer *, integer *, complex 
 	    *, integer *, complex *, integer *), claset_(char *, 
 	    integer *, integer *, complex *, complex *, complex *, integer *);
     real safmin, safmax;
@@ -851,14 +851,14 @@ f"> */
 
     /* Function Body */
     if (*nshfts < 2) {
-	return 0;
+	return;
     }
 
 /*     ==== If the active block is empty or 1-by-1, then there */
 /*     .    is nothing to do. ==== */
 
     if (*ktop >= *kbot) {
-	return 0;
+	return;
     }
 
 /*     ==== NSHFTS is supposed to be even, but if it is odd, */
@@ -1899,6 +1899,6 @@ f"> */
 
 /*     ==== End of CLAQR5 ==== */
 
-    return 0;
+    return;
 } /* claqr5_ */
 

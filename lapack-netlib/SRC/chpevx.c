@@ -752,7 +752,7 @@ f"> */
 /* > \ingroup complexOTHEReigen */
 
 /*  ===================================================================== */
-/* Subroutine */ int chpevx_(char *jobz, char *range, char *uplo, integer *n, 
+/* Subroutine */ void chpevx_(char *jobz, char *range, char *uplo, integer *n, 
 	complex *ap, real *vl, real *vu, integer *il, integer *iu, real *
 	abstol, integer *m, real *w, complex *z__, integer *ldz, complex *
 	work, real *rwork, integer *iwork, integer *ifail, integer *info)
@@ -771,9 +771,9 @@ f"> */
     real sigma;
     extern logical lsame_(char *, char *);
     integer iinfo;
-    extern /* Subroutine */ int sscal_(integer *, real *, real *, integer *);
+    extern /* Subroutine */ void sscal_(integer *, real *, real *, integer *);
     char order[1];
-    extern /* Subroutine */ int cswap_(integer *, complex *, integer *, 
+    extern /* Subroutine */ void cswap_(integer *, complex *, integer *, 
 	    complex *, integer *), scopy_(integer *, real *, integer *, real *
 	    , integer *);
     logical wantz;
@@ -783,27 +783,27 @@ f"> */
     extern real clanhp_(char *, char *, integer *, complex *, real *);
     logical valeig;
     extern real slamch_(char *);
-    extern /* Subroutine */ int csscal_(integer *, real *, complex *, integer 
+    extern /* Subroutine */ void csscal_(integer *, real *, complex *, integer 
 	    *);
     real safmin;
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     real abstll, bignum;
     integer indiwk, indisp, indtau;
-    extern /* Subroutine */ int chptrd_(char *, integer *, complex *, real *, 
+    extern /* Subroutine */ void chptrd_(char *, integer *, complex *, real *, 
 	    real *, complex *, integer *), cstein_(integer *, real *, 
 	    real *, integer *, real *, integer *, integer *, complex *, 
 	    integer *, real *, integer *, integer *, integer *);
     integer indrwk, indwrk;
-    extern /* Subroutine */ int csteqr_(char *, integer *, real *, real *, 
+    extern /* Subroutine */ void csteqr_(char *, integer *, real *, real *, 
 	    complex *, integer *, real *, integer *), cupgtr_(char *, 
 	    integer *, complex *, complex *, complex *, integer *, complex *, 
 	    integer *), ssterf_(integer *, real *, real *, integer *);
     integer nsplit;
-    extern /* Subroutine */ int cupmtr_(char *, char *, char *, integer *, 
+    extern /* Subroutine */ void cupmtr_(char *, char *, char *, integer *, 
 	    integer *, complex *, complex *, complex *, integer *, complex *, 
 	    integer *);
     real smlnum;
-    extern /* Subroutine */ int sstebz_(char *, char *, integer *, real *, 
+    extern /* Subroutine */ void sstebz_(char *, char *, integer *, real *, 
 	    real *, integer *, integer *, real *, real *, real *, integer *, 
 	    integer *, real *, integer *, integer *, real *, integer *, 
 	    integer *);
@@ -870,14 +870,14 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CHPEVX", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     *m = 0;
     if (*n == 0) {
-	return 0;
+	return;
     }
 
     if (*n == 1) {
@@ -894,7 +894,7 @@ f"> */
 	    i__1 = z_dim1 + 1;
 	    z__[i__1].r = 1.f, z__[i__1].i = 0.f;
 	}
-	return 0;
+	return;
     }
 
 /*     Get machine constants. */
@@ -1063,7 +1063,7 @@ L20:
 	}
     }
 
-    return 0;
+    return;
 
 /*     End of CHPEVX */
 

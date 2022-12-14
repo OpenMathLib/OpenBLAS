@@ -649,7 +649,7 @@ f"> */
 /* > \ingroup doubleOTHERcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int dtrcon_(char *norm, char *uplo, char *diag, integer *n, 
+/* Subroutine */ void dtrcon_(char *norm, char *uplo, char *diag, integer *n, 
 	doublereal *a, integer *lda, doublereal *rcond, doublereal *work, 
 	integer *iwork, integer *info)
 {
@@ -662,12 +662,12 @@ f"> */
     doublereal scale;
     extern logical lsame_(char *, char *);
     integer isave[3];
-    extern /* Subroutine */ int drscl_(integer *, doublereal *, doublereal *, 
+    extern /* Subroutine */ void drscl_(integer *, doublereal *, doublereal *, 
 	    integer *);
     doublereal anorm;
     logical upper;
     doublereal xnorm;
-    extern /* Subroutine */ int dlacn2_(integer *, doublereal *, doublereal *,
+    extern /* Subroutine */ void dlacn2_(integer *, doublereal *, doublereal *,
 	     integer *, doublereal *, integer *, integer *);
     extern doublereal dlamch_(char *);
     integer ix;
@@ -676,7 +676,7 @@ f"> */
     extern doublereal dlantr_(char *, char *, char *, integer *, integer *, 
 	    doublereal *, integer *, doublereal *);
     doublereal ainvnm;
-    extern /* Subroutine */ int dlatrs_(char *, char *, char *, char *, 
+    extern /* Subroutine */ void dlatrs_(char *, char *, char *, char *, 
 	    integer *, doublereal *, integer *, doublereal *, doublereal *, 
 	    doublereal *, integer *);
     logical onenrm;
@@ -723,14 +723,14 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DTRCON", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
 	*rcond = 1.;
-	return 0;
+	return;
     }
 
     *rcond = 0.;
@@ -793,7 +793,7 @@ L10:
     }
 
 L20:
-    return 0;
+    return;
 
 /*     End of DTRCON */
 

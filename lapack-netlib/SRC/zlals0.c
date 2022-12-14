@@ -786,7 +786,7 @@ f"> */
 /* >     Osni Marques, LBNL/NERSC, USA \n */
 
 /*  ===================================================================== */
-/* Subroutine */ int zlals0_(integer *icompq, integer *nl, integer *nr, 
+/* Subroutine */ void zlals0_(integer *icompq, integer *nl, integer *nr, 
 	integer *sqre, integer *nrhs, doublecomplex *b, integer *ldb, 
 	doublecomplex *bx, integer *ldbx, integer *perm, integer *givptr, 
 	integer *givcol, integer *ldgcol, doublereal *givnum, integer *ldgnum,
@@ -808,18 +808,18 @@ f"> */
     extern doublereal dnrm2_(integer *, doublereal *, integer *);
     integer i__, j, m, n;
     doublereal diflj, difrj, dsigj;
-    extern /* Subroutine */ int dgemv_(char *, integer *, integer *, 
+    extern /* Subroutine */ void dgemv_(char *, integer *, integer *, 
 	    doublereal *, doublereal *, integer *, doublereal *, integer *, 
 	    doublereal *, doublereal *, integer *), zdrot_(integer *, 
 	    doublecomplex *, integer *, doublecomplex *, integer *, 
 	    doublereal *, doublereal *);
     extern doublereal dlamc3_(doublereal *, doublereal *);
-    extern /* Subroutine */ int zcopy_(integer *, doublecomplex *, integer *, 
+    extern /* Subroutine */ void zcopy_(integer *, doublecomplex *, integer *, 
 	    doublecomplex *, integer *);
     doublereal dj;
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     doublereal dsigjp;
-    extern /* Subroutine */ int zdscal_(integer *, doublereal *, 
+    extern /* Subroutine */ void zdscal_(integer *, doublereal *, 
 	    doublecomplex *, integer *), zlascl_(char *, integer *, integer *,
 	     doublereal *, doublereal *, integer *, integer *, doublecomplex *
 	    , integer *, integer *), zlacpy_(char *, integer *, 
@@ -893,7 +893,7 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZLALS0", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
     m = n + *sqre;
@@ -1161,7 +1161,7 @@ f"> */
 	}
     }
 
-    return 0;
+    return;
 
 /*     End of ZLALS0 */
 

@@ -776,7 +776,7 @@ doublereal zlanhf_(char *norm, char *transr, char *uplo, integer *n,
     integer n1;
     doublereal aa;
     extern logical disnan_(doublereal *);
-    extern /* Subroutine */ int zlassq_(integer *, doublecomplex *, integer *,
+    extern /* Subroutine */ void zlassq_(integer *, doublecomplex *, integer *,
 	     doublereal *, doublereal *);
     integer lda, ifm, noe, ilu;
 

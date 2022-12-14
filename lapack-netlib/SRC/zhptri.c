@@ -623,7 +623,7 @@ f"> */
 /* > \ingroup complex16OTHERcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int zhptri_(char *uplo, integer *n, doublecomplex *ap, 
+/* Subroutine */ void zhptri_(char *uplo, integer *n, doublecomplex *ap, 
 	integer *ipiv, doublecomplex *work, integer *info)
 {
     /* System generated locals */
@@ -641,7 +641,7 @@ f"> */
 	    doublecomplex *, integer *, doublecomplex *, integer *);
     integer kstep;
     logical upper;
-    extern /* Subroutine */ int zcopy_(integer *, doublecomplex *, integer *, 
+    extern /* Subroutine */ void zcopy_(integer *, doublecomplex *, integer *, 
 	    doublecomplex *, integer *), zhpmv_(char *, integer *, 
 	    doublecomplex *, doublecomplex *, doublecomplex *, integer *, 
 	    doublecomplex *, doublecomplex *, integer *), zswap_(
@@ -681,13 +681,13 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZHPTRI", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /*     Check that the diagonal matrix D is nonsingular. */
@@ -700,7 +700,7 @@ f"> */
 	for (*info = *n; *info >= 1; --(*info)) {
 	    i__1 = kp;
 	    if (ipiv[*info] > 0 && (ap[i__1].r == 0. && ap[i__1].i == 0.)) {
-		return 0;
+		return;
 	    }
 	    kp -= *info;
 /* L10: */
@@ -714,7 +714,7 @@ f"> */
 	for (*info = 1; *info <= i__1; ++(*info)) {
 	    i__2 = kp;
 	    if (ipiv[*info] > 0 && (ap[i__2].r == 0. && ap[i__2].i == 0.)) {
-		return 0;
+		return;
 	    }
 	    kp = kp + *n - *info + 1;
 /* L20: */
@@ -1052,7 +1052,7 @@ L80:
 	;
     }
 
-    return 0;
+    return;
 
 /*     End of ZHPTRI */
 

@@ -661,7 +661,7 @@ f"> */
 /* > \ingroup complex16OTHERcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int zpstrf_(char *uplo, integer *n, doublecomplex *a, 
+/* Subroutine */ void zpstrf_(char *uplo, integer *n, doublecomplex *a, 
 	integer *lda, integer *piv, integer *rank, doublereal *tol, 
 	doublereal *work, integer *info)
 {
@@ -676,7 +676,7 @@ f"> */
     extern logical lsame_(char *, char *);
     doublereal dtemp;
     integer itemp;
-    extern /* Subroutine */ int zherk_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void zherk_(char *, char *, integer *, integer *, 
 	    doublereal *, doublecomplex *, integer *, doublereal *, 
 	    doublecomplex *, integer *), zgemv_(char *, 
 	    integer *, integer *, doublecomplex *, doublecomplex *, integer *,
@@ -685,18 +685,18 @@ f"> */
     doublereal dstop;
     logical upper;
     doublecomplex ztemp;
-    extern /* Subroutine */ int zswap_(integer *, doublecomplex *, integer *, 
+    extern /* Subroutine */ void zswap_(integer *, doublecomplex *, integer *, 
 	    doublecomplex *, integer *);
     integer jb, nb;
     extern doublereal dlamch_(char *);
-    extern /* Subroutine */ int zpstf2_(char *, integer *, doublecomplex *, 
+    extern /* Subroutine */ void zpstf2_(char *, integer *, doublecomplex *, 
 	    integer *, integer *, integer *, doublereal *, doublereal *, 
 	    integer *);
     extern logical disnan_(doublereal *);
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     extern integer ilaenv_(integer *, char *, char *, integer *, integer *, 
 	    integer *, integer *, ftnlen, ftnlen);
-    extern /* Subroutine */ int zdscal_(integer *, doublereal *, 
+    extern /* Subroutine */ void zdscal_(integer *, doublereal *, 
 	    doublecomplex *, integer *), zlacgv_(integer *, doublecomplex *, 
 	    integer *);
     doublereal ajj;
@@ -734,13 +734,13 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZPSTRF", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /*     Get block size */
@@ -1081,7 +1081,7 @@ L220:
     *info = 1;
 
 L230:
-    return 0;
+    return;
 
 /*     End of ZPSTRF */
 

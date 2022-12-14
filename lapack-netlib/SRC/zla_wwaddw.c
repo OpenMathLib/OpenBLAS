@@ -590,7 +590,7 @@ ddw.f"> */
 /* > \ingroup complex16OTHERcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int zla_wwaddw_(integer *n, doublecomplex *x, doublecomplex 
+/* Subroutine */ void zla_wwaddw_(integer *n, doublecomplex *x, doublecomplex 
 	*y, doublecomplex *w)
 {
     /* System generated locals */
@@ -637,6 +637,6 @@ ddw.f"> */
 	x[i__2].r = s.r, x[i__2].i = s.i;
 /* L10: */
     }
-    return 0;
+    return;
 } /* zla_wwaddw__ */
 

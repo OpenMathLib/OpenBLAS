@@ -926,7 +926,7 @@ static integer c__1 = 1;
 /* > \ingroup doubleGEcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int dgerfsx_(char *trans, char *equed, integer *n, integer *
+/* Subroutine */ void dgerfsx_(char *trans, char *equed, integer *n, integer *
 	nrhs, doublereal *a, integer *lda, doublereal *af, integer *ldaf, 
 	integer *ipiv, doublereal *r__, doublereal *c__, doublereal *b, 
 	integer *ldb, doublereal *x, integer *ldx, doublereal *rcond, 
@@ -952,9 +952,10 @@ static integer c__1 = 1;
     integer prec_type__;
     extern doublereal dlamch_(char *), dlange_(char *, integer *, 
 	    integer *, doublereal *, integer *, doublereal *);
-    extern /* Subroutine */ int dgecon_(char *, integer *, doublereal *, 
+    extern /* Subroutine */ void dgecon_(char *, integer *, doublereal *, 
 	    integer *, doublereal *, doublereal *, doublereal *, integer *, 
-	    integer *), xerbla_(char *, integer *, ftnlen);
+	    integer *);
+    extern int xerbla_(char *, integer *, ftnlen);
     logical colequ, notran, rowequ;
     integer trans_type__;
     extern integer ilaprec_(char *);
@@ -963,7 +964,7 @@ static integer c__1 = 1;
 	    integer *, doublereal *, integer *);
     integer ithresh, n_norms__;
     doublereal rthresh, cwise_wrong__;
-    extern /* Subroutine */ int dla_gerfsx_extended_(integer *, integer *, 
+    extern /* Subroutine */ void dla_gerfsx_extended_(integer *, integer *, 
 	    integer *, integer *, doublereal *, integer *, doublereal *, 
 	    integer *, integer *, logical *, doublereal *, doublereal *, 
 	    integer *, doublereal *, integer *, doublereal *, integer *, 
@@ -1082,7 +1083,7 @@ static integer c__1 = 1;
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DGERFSX", &i__1, (ftnlen)7);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible. */
@@ -1105,7 +1106,7 @@ static integer c__1 = 1;
 		err_bnds_comp__[j + err_bnds_comp_dim1 * 3] = 1.;
 	    }
 	}
-	return 0;
+	return;
     }
 
 /*     Default to failure. */
@@ -1264,7 +1265,7 @@ static integer c__1 = 1;
 	}
     }
 
-    return 0;
+    return;
 
 /*     End of DGERFSX */
 

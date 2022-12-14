@@ -654,7 +654,7 @@ f"> */
 /* > \ingroup realOTHERauxiliary */
 
 /*  ===================================================================== */
-/* Subroutine */ int slagtm_(char *trans, integer *n, integer *nrhs, real *
+/* Subroutine */ void slagtm_(char *trans, integer *n, integer *nrhs, real *
 	alpha, real *dl, real *d__, real *du, real *x, integer *ldx, real *
 	beta, real *b, integer *ldb)
 {
@@ -688,7 +688,7 @@ f"> */
 
     /* Function Body */
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /*     Multiply B by BETA if BETA.NE.1. */
@@ -820,7 +820,7 @@ f"> */
 	    }
 	}
     }
-    return 0;
+    return;
 
 /*     End of SLAGTM */
 

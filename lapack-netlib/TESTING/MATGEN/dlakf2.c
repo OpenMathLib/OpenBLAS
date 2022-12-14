@@ -615,7 +615,7 @@ static doublereal c_b3 = 0.;
 /* > \ingroup double_matgen */
 
 /*  ===================================================================== */
-/* Subroutine */ int dlakf2_(integer *m, integer *n, doublereal *a, integer *
+/* Subroutine */ void dlakf2_(integer *m, integer *n, doublereal *a, integer *
 	lda, doublereal *b, doublereal *d__, doublereal *e, doublereal *z__, 
 	integer *ldz)
 {
@@ -625,7 +625,7 @@ static doublereal c_b3 = 0.;
 
     /* Local variables */
     integer i__, j, l, ik, jk, mn;
-    extern /* Subroutine */ int dlaset_(char *, integer *, integer *, 
+    extern /* Subroutine */ void dlaset_(char *, integer *, integer *, 
 	    doublereal *, doublereal *, doublereal *, integer *);
     integer mn2;
 
@@ -731,7 +731,7 @@ static doublereal c_b3 = 0.;
 /* L90: */
     }
 
-    return 0;
+    return;
 
 /*     End of DLAKF2 */
 

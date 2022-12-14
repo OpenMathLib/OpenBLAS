@@ -686,7 +686,7 @@ f"> */
 /* > \ingroup realOTHERcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int sormtr_(char *side, char *uplo, char *trans, integer *m, 
+/* Subroutine */ void sormtr_(char *side, char *uplo, char *trans, integer *m, 
 	integer *n, real *a, integer *lda, real *tau, real *c__, integer *ldc,
 	 real *work, integer *lwork, integer *info)
 {
@@ -704,12 +704,12 @@ f"> */
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     extern integer ilaenv_(integer *, char *, char *, integer *, integer *, 
 	    integer *, integer *, ftnlen, ftnlen);
-    extern /* Subroutine */ int sormql_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void sormql_(char *, char *, integer *, integer *, 
 	    integer *, real *, integer *, real *, real *, integer *, real *, 
 	    integer *, integer *);
     integer lwkopt;
     logical lquery;
-    extern /* Subroutine */ int sormqr_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void sormqr_(char *, char *, integer *, integer *, 
 	    integer *, real *, integer *, real *, real *, integer *, real *, 
 	    integer *, integer *);
 
@@ -818,16 +818,16 @@ f"> */
     if (*info != 0) {
 	i__2 = -(*info);
 	xerbla_("SORMTR", &i__2, (ftnlen)6);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*m == 0 || *n == 0 || nq == 1) {
 	work[1] = 1.f;
-	return 0;
+	return;
     }
 
     if (left) {
@@ -861,7 +861,7 @@ f"> */
 		c__[i1 + i2 * c_dim1], ldc, &work[1], lwork, &iinfo);
     }
     work[1] = (real) lwkopt;
-    return 0;
+    return;
 
 /*     End of SORMTR */
 

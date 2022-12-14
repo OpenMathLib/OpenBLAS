@@ -653,7 +653,7 @@ f"> */
 /* > \ingroup complexGTcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int cgtcon_(char *norm, integer *n, complex *dl, complex *
+/* Subroutine */ void cgtcon_(char *norm, integer *n, complex *dl, complex *
 	d__, complex *du, complex *du2, integer *ipiv, real *anorm, real *
 	rcond, complex *work, integer *info)
 {
@@ -664,11 +664,12 @@ f"> */
     integer kase, kase1, i__;
     extern logical lsame_(char *, char *);
     integer isave[3];
-    extern /* Subroutine */ int clacn2_(integer *, complex *, complex *, real 
-	    *, integer *, integer *), xerbla_(char *, integer *, ftnlen);
+    extern /* Subroutine */ void clacn2_(integer *, complex *, complex *, real 
+	    *, integer *, integer *);
+    extern int xerbla_(char *, integer *, ftnlen);
     real ainvnm;
     logical onenrm;
-    extern /* Subroutine */ int cgttrs_(char *, integer *, integer *, complex 
+    extern /* Subroutine */ void cgttrs_(char *, integer *, integer *, complex 
 	    *, complex *, complex *, complex *, integer *, complex *, integer 
 	    *, integer *);
 
@@ -705,7 +706,7 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CGTCON", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
@@ -713,9 +714,9 @@ f"> */
     *rcond = 0.f;
     if (*n == 0) {
 	*rcond = 1.f;
-	return 0;
+	return;
     } else if (*anorm == 0.f) {
-	return 0;
+	return;
     }
 
 /*     Check that D(1:N) is non-zero. */
@@ -724,7 +725,7 @@ f"> */
     for (i__ = 1; i__ <= i__1; ++i__) {
 	i__2 = i__;
 	if (d__[i__2].r == 0.f && d__[i__2].i == 0.f) {
-	    return 0;
+	    return;
 	}
 /* L10: */
     }
@@ -761,7 +762,7 @@ L20:
 	*rcond = 1.f / ainvnm / *anorm;
     }
 
-    return 0;
+    return;
 
 /*     End of CGTCON */
 

@@ -634,7 +634,7 @@ f"> */
 /* > \ingroup complex16OTHERcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int zpbtrs_(char *uplo, integer *n, integer *kd, integer *
+/* Subroutine */ void zpbtrs_(char *uplo, integer *n, integer *kd, integer *
 	nrhs, doublecomplex *ab, integer *ldab, doublecomplex *b, integer *
 	ldb, integer *info)
 {
@@ -645,8 +645,8 @@ f"> */
     integer j;
     extern logical lsame_(char *, char *);
     logical upper;
-    extern /* Subroutine */ int ztbsv_(char *, char *, char *, integer *, 
-	    integer *, doublecomplex *, integer *, doublecomplex *, integer *), xerbla_(char *, integer *, ftnlen);
+    extern /* Subroutine */ void ztbsv_(char *, char *, char *, integer *, 
+	    integer *, doublecomplex *, integer *, doublecomplex *, integer *);     extern int xerbla_(char *, integer *, ftnlen);
 
 
 /*  -- LAPACK computational routine (version 3.7.0) -- */
@@ -687,13 +687,13 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZPBTRS", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0 || *nrhs == 0) {
-	return 0;
+	return;
     }
 
     if (upper) {
@@ -734,7 +734,7 @@ f"> */
 	}
     }
 
-    return 0;
+    return;
 
 /*     End of ZPBTRS */
 

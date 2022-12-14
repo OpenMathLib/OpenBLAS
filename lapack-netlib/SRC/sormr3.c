@@ -687,7 +687,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int sormr3_(char *side, char *trans, integer *m, integer *n, 
+/* Subroutine */ void sormr3_(char *side, char *trans, integer *m, integer *n, 
 	integer *k, integer *l, real *a, integer *lda, real *tau, real *c__, 
 	integer *ldc, real *work, integer *info)
 {
@@ -699,7 +699,7 @@ f"> */
     integer i__;
     extern logical lsame_(char *, char *);
     integer i1, i2, i3;
-    extern /* Subroutine */ int slarz_(char *, integer *, integer *, integer *
+    extern /* Subroutine */ void slarz_(char *, integer *, integer *, integer *
 	    , real *, integer *, real *, real *, integer *, real *);
     integer ja, ic, jc, mi, ni, nq;
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
@@ -759,13 +759,13 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("SORMR3", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*m == 0 || *n == 0 || *k == 0) {
-	return 0;
+	return;
     }
 
     if (left && ! notran || ! left && notran) {
@@ -813,7 +813,7 @@ f"> */
 /* L10: */
     }
 
-    return 0;
+    return;
 
 /*     End of SORMR3 */
 

@@ -661,7 +661,7 @@ f"> */
 /* > \endhtmlonly */
 
 /*  ===================================================================== */
-/* Subroutine */ int claqp2_(integer *m, integer *n, integer *offset, complex 
+/* Subroutine */ void claqp2_(integer *m, integer *n, integer *offset, complex 
 	*a, integer *lda, integer *jpvt, complex *tau, real *vn1, real *vn2, 
 	complex *work)
 {
@@ -674,15 +674,15 @@ f"> */
     real temp, temp2;
     integer i__, j;
     real tol3z;
-    extern /* Subroutine */ int clarf_(char *, integer *, integer *, complex *
+    extern /* Subroutine */ void clarf_(char *, integer *, integer *, complex *
 	    , integer *, complex *, complex *, integer *, complex *);
     integer offpi;
-    extern /* Subroutine */ int cswap_(integer *, complex *, integer *, 
+    extern /* Subroutine */ void cswap_(integer *, complex *, integer *, 
 	    complex *, integer *);
     integer itemp;
     extern real scnrm2_(integer *, complex *, integer *);
     integer mn;
-    extern /* Subroutine */ int clarfg_(integer *, complex *, complex *, 
+    extern /* Subroutine */ void clarfg_(integer *, complex *, complex *, 
 	    integer *, complex *);
     extern real slamch_(char *);
     extern integer isamax_(integer *, real *, integer *);
@@ -801,7 +801,7 @@ f"> */
 /* L20: */
     }
 
-    return 0;
+    return;
 
 /*     End of CLAQP2 */
 

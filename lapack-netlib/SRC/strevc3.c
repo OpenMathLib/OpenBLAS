@@ -757,7 +757,7 @@ static logical c_true = TRUE_;
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int strevc3_(char *side, char *howmny, logical *select, 
+/* Subroutine */ void strevc3_(char *side, char *howmny, logical *select, 
 	integer *n, real *t, integer *ldt, real *vl, integer *ldvl, real *vr, 
 	integer *ldvr, integer *mm, integer *m, real *work, integer *lwork, 
 	integer *info)
@@ -780,28 +780,28 @@ static logical c_true = TRUE_;
     integer jnxt, i__, j, k;
     real scale, x[4]	/* was [2][2] */;
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int sscal_(integer *, real *, real *, integer *), 
+    extern /* Subroutine */ void sscal_(integer *, real *, real *, integer *), 
 	    sgemm_(char *, char *, integer *, integer *, integer *, real *, 
 	    real *, integer *, real *, integer *, real *, real *, integer *);
     real remax;
     logical leftv;
-    extern /* Subroutine */ int sgemv_(char *, integer *, integer *, real *, 
+    extern /* Subroutine */ void sgemv_(char *, integer *, integer *, real *, 
 	    real *, integer *, real *, integer *, real *, real *, integer *);
     logical bothv;
     real vcrit;
     logical somev;
     integer j1, j2;
-    extern /* Subroutine */ int scopy_(integer *, real *, integer *, real *, 
+    extern /* Subroutine */ void scopy_(integer *, real *, integer *, real *, 
 	    integer *);
     real xnorm;
-    extern /* Subroutine */ int saxpy_(integer *, real *, real *, integer *, 
+    extern /* Subroutine */ void saxpy_(integer *, real *, real *, integer *, 
 	    real *, integer *);
     integer iscomplex[128];
-    extern /* Subroutine */ int slaln2_(logical *, integer *, integer *, real 
+    extern /* Subroutine */ void slaln2_(logical *, integer *, integer *, real 
 	    *, real *, real *, integer *, real *, real *, real *, integer *, 
 	    real *, real *, real *, integer *, real *, real *, integer *);
     integer nb, ii, ki;
-    extern /* Subroutine */ int slabad_(real *, real *);
+    extern /* Subroutine */ void slabad_(real *, real *);
     integer ip, is, iv;
     real wi;
     extern real slamch_(char *);
@@ -811,7 +811,7 @@ static logical c_true = TRUE_;
 	    integer *, integer *, ftnlen, ftnlen);
     real bignum;
     extern integer isamax_(integer *, real *, integer *);
-    extern /* Subroutine */ int slacpy_(char *, integer *, integer *, real *, 
+    extern /* Subroutine */ void slacpy_(char *, integer *, integer *, real *, 
 	    integer *, real *, integer *), slaset_(char *, integer *, 
 	    integer *, real *, real *, real *, integer *);
     logical rightv;
@@ -928,15 +928,15 @@ static logical c_true = TRUE_;
     if (*info != 0) {
 	i__2 = -(*info);
 	xerbla_("STREVC3", &i__2, (ftnlen)7);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible. */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /*     Use blocked version of back-transformation if sufficient workspace. */
@@ -2049,7 +2049,7 @@ L260:
 	}
     }
 
-    return 0;
+    return;
 
 /*     End of STREVC3 */
 

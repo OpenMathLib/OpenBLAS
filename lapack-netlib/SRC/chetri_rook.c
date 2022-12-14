@@ -643,7 +643,7 @@ rook.f"> */
 /* > \endverbatim */
 
 /*  ===================================================================== */
-/* Subroutine */ int chetri_rook_(char *uplo, integer *n, complex *a, 
+/* Subroutine */ void chetri_rook_(char *uplo, integer *n, complex *a, 
 	integer *lda, integer *ipiv, complex *work, integer *info)
 {
     /* System generated locals */
@@ -659,7 +659,7 @@ rook.f"> */
     extern /* Complex */ VOID cdotc_(complex *, integer *, complex *, integer 
 	    *, complex *, integer *);
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int chemv_(char *, integer *, complex *, complex *
+    extern /* Subroutine */ void chemv_(char *, integer *, complex *, complex *
 	    , integer *, complex *, integer *, complex *, complex *, integer *
 	    ), ccopy_(integer *, complex *, integer *, complex *, 
 	    integer *), cswap_(integer *, complex *, integer *, complex *, 
@@ -703,13 +703,13 @@ rook.f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CHETRI_ROOK", &i__1, (ftnlen)11);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /*     Check that the diagonal matrix D is nonsingular. */
@@ -721,7 +721,7 @@ rook.f"> */
 	for (*info = *n; *info >= 1; --(*info)) {
 	    i__1 = *info + *info * a_dim1;
 	    if (ipiv[*info] > 0 && (a[i__1].r == 0.f && a[i__1].i == 0.f)) {
-		return 0;
+		return;
 	    }
 /* L10: */
 	}
@@ -733,7 +733,7 @@ rook.f"> */
 	for (*info = 1; *info <= i__1; ++(*info)) {
 	    i__2 = *info + *info * a_dim1;
 	    if (ipiv[*info] > 0 && (a[i__2].r == 0.f && a[i__2].i == 0.f)) {
-		return 0;
+		return;
 	    }
 /* L20: */
 	}
@@ -1232,7 +1232,7 @@ L120:
 	;
     }
 
-    return 0;
+    return;
 
 /*     End of CHETRI_ROOK */
 

@@ -639,7 +639,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int zgelq2_(integer *m, integer *n, doublecomplex *a, 
+/* Subroutine */ void zgelq2_(integer *m, integer *n, doublecomplex *a, 
 	integer *lda, doublecomplex *tau, doublecomplex *work, integer *info)
 {
     /* System generated locals */
@@ -648,9 +648,11 @@ f"> */
     /* Local variables */
     integer i__, k;
     doublecomplex alpha;
-    extern /* Subroutine */ int zlarf_(char *, integer *, integer *, 
+    extern /* Subroutine */ void zlarf_(char *, integer *, integer *, 
 	    doublecomplex *, integer *, doublecomplex *, doublecomplex *, 
-	    integer *, doublecomplex *), xerbla_(char *, integer *, ftnlen), zlarfg_(integer *, doublecomplex *, doublecomplex *, 
+	    integer *, doublecomplex *);
+    extern int xerbla_(char *, integer *, ftnlen);
+    extern void zlarfg_(integer *, doublecomplex *, doublecomplex *, 
 	    integer *, doublecomplex *), zlacgv_(integer *, doublecomplex *, 
 	    integer *);
 
@@ -685,7 +687,7 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZGELQ2", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
     k = f2cmin(*m,*n);
@@ -721,7 +723,7 @@ f"> */
 	zlacgv_(&i__2, &a[i__ + i__ * a_dim1], lda);
 /* L10: */
     }
-    return 0;
+    return;
 
 /*     End of ZGELQ2 */
 

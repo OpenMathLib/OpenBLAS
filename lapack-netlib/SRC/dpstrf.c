@@ -660,7 +660,7 @@ f"> */
 /* > \ingroup doubleOTHERcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int dpstrf_(char *uplo, integer *n, doublereal *a, integer *
+/* Subroutine */ void dpstrf_(char *uplo, integer *n, doublereal *a, integer *
 	lda, integer *piv, integer *rank, doublereal *tol, doublereal *work, 
 	integer *info)
 {
@@ -671,19 +671,19 @@ f"> */
     /* Local variables */
     
     integer i__, j, k;
-    extern /* Subroutine */ int dscal_(integer *, doublereal *, doublereal *, 
+    extern /* Subroutine */ void dscal_(integer *, doublereal *, doublereal *, 
 	    integer *);
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int dgemv_(char *, integer *, integer *, 
+    extern /* Subroutine */ void dgemv_(char *, integer *, integer *, 
 	    doublereal *, doublereal *, integer *, doublereal *, integer *, 
 	    doublereal *, doublereal *, integer *);
     doublereal dtemp;
     integer itemp;
-    extern /* Subroutine */ int dswap_(integer *, doublereal *, integer *, 
+    extern /* Subroutine */ void dswap_(integer *, doublereal *, integer *, 
 	    doublereal *, integer *);
     doublereal dstop;
     logical upper;
-    extern /* Subroutine */ int dsyrk_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void dsyrk_(char *, char *, integer *, integer *, 
 	    doublereal *, doublereal *, integer *, doublereal *, doublereal *,
 	     integer *), dpstf2_(char *, integer *, 
 	    doublereal *, integer *, integer *, integer *, doublereal *, 
@@ -729,13 +729,13 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DPSTRF", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /*     Get block size */
@@ -1027,7 +1027,7 @@ L190:
     *info = 1;
 
 L200:
-    return 0;
+    return;
 
 /*     End of DPSTRF */
 

@@ -631,7 +631,7 @@ f"> */
 /* > \ingroup complexOTHERcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int cppcon_(char *uplo, integer *n, complex *ap, real *anorm,
+/* Subroutine */ void cppcon_(char *uplo, integer *n, complex *ap, real *anorm,
 	 real *rcond, complex *work, real *rwork, integer *info)
 {
     /* System generated locals */
@@ -644,18 +644,19 @@ f"> */
     extern logical lsame_(char *, char *);
     integer isave[3];
     logical upper;
-    extern /* Subroutine */ int clacn2_(integer *, complex *, complex *, real 
+    extern /* Subroutine */ void clacn2_(integer *, complex *, complex *, real 
 	    *, integer *, integer *);
     integer ix;
     extern integer icamax_(integer *, complex *, integer *);
     real scalel;
     extern real slamch_(char *);
     real scaleu;
-    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen), clatps_(
+    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
+    extern void clatps_(
 	    char *, char *, char *, char *, integer *, complex *, complex *, 
 	    real *, real *, integer *);
     real ainvnm;
-    extern /* Subroutine */ int csrscl_(integer *, real *, complex *, integer 
+    extern /* Subroutine */ void csrscl_(integer *, real *, complex *, integer 
 	    *);
     char normin[1];
     real smlnum;
@@ -690,7 +691,7 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CPPCON", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
@@ -698,9 +699,9 @@ f"> */
     *rcond = 0.f;
     if (*n == 0) {
 	*rcond = 1.f;
-	return 0;
+	return;
     } else if (*anorm == 0.f) {
-	return 0;
+	return;
     }
 
     smlnum = slamch_("Safe minimum");
@@ -760,7 +761,7 @@ L10:
     }
 
 L20:
-    return 0;
+    return;
 
 /*     End of CPPCON */
 

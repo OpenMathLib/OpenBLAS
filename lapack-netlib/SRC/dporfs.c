@@ -697,7 +697,7 @@ f"> */
 /* > \ingroup doublePOcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int dporfs_(char *uplo, integer *n, integer *nrhs, 
+/* Subroutine */ void dporfs_(char *uplo, integer *n, integer *nrhs, 
 	doublereal *a, integer *lda, doublereal *af, integer *ldaf, 
 	doublereal *b, integer *ldb, doublereal *x, integer *ldx, doublereal *
 	ferr, doublereal *berr, doublereal *work, integer *iwork, integer *
@@ -715,12 +715,12 @@ f"> */
     doublereal s;
     extern logical lsame_(char *, char *);
     integer isave[3];
-    extern /* Subroutine */ int dcopy_(integer *, doublereal *, integer *, 
+    extern /* Subroutine */ void dcopy_(integer *, doublereal *, integer *, 
 	    doublereal *, integer *), daxpy_(integer *, doublereal *, 
 	    doublereal *, integer *, doublereal *, integer *);
     integer count;
     logical upper;
-    extern /* Subroutine */ int dsymv_(char *, integer *, doublereal *, 
+    extern /* Subroutine */ void dsymv_(char *, integer *, doublereal *, 
 	    doublereal *, integer *, doublereal *, integer *, doublereal *, 
 	    doublereal *, integer *), dlacn2_(integer *, doublereal *,
 	     doublereal *, integer *, doublereal *, integer *, integer *);
@@ -728,7 +728,8 @@ f"> */
     doublereal xk;
     integer nz;
     doublereal safmin;
-    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen), dpotrs_(
+    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
+    extern void dpotrs_(
 	    char *, integer *, integer *, doublereal *, integer *, doublereal 
 	    *, integer *, integer *);
     doublereal lstres, eps;
@@ -784,7 +785,7 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DPORFS", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
@@ -796,7 +797,7 @@ f"> */
 	    berr[j] = 0.;
 /* L10: */
 	}
-	return 0;
+	return;
     }
 
 /*     NZ = maximum number of nonzero elements in each row of A, plus 1 */
@@ -993,7 +994,7 @@ L100:
 /* L140: */
     }
 
-    return 0;
+    return;
 
 /*     End of DPORFS */
 

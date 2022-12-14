@@ -779,7 +779,7 @@ f"> */
 /* > \ingroup doubleOTHEReigen */
 
 /*  ===================================================================== */
-/* Subroutine */ int dsbevx_(char *jobz, char *range, char *uplo, integer *n, 
+/* Subroutine */ void dsbevx_(char *jobz, char *range, char *uplo, integer *n, 
 	integer *kd, doublereal *ab, integer *ldab, doublereal *q, integer *
 	ldq, doublereal *vl, doublereal *vu, integer *il, integer *iu, 
 	doublereal *abstol, integer *m, doublereal *w, doublereal *z__, 
@@ -798,16 +798,16 @@ f"> */
     doublereal rmin, rmax;
     logical test;
     integer itmp1, i__, j, indee;
-    extern /* Subroutine */ int dscal_(integer *, doublereal *, doublereal *, 
+    extern /* Subroutine */ void dscal_(integer *, doublereal *, doublereal *, 
 	    integer *);
     doublereal sigma;
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int dgemv_(char *, integer *, integer *, 
+    extern /* Subroutine */ void dgemv_(char *, integer *, integer *, 
 	    doublereal *, doublereal *, integer *, doublereal *, integer *, 
 	    doublereal *, doublereal *, integer *);
     integer iinfo;
     char order[1];
-    extern /* Subroutine */ int dcopy_(integer *, doublereal *, integer *, 
+    extern /* Subroutine */ void dcopy_(integer *, doublereal *, integer *, 
 	    doublereal *, integer *), dswap_(integer *, doublereal *, integer 
 	    *, doublereal *, integer *);
     logical lower, wantz;
@@ -817,30 +817,30 @@ f"> */
     integer iscale, indibl;
     extern doublereal dlansb_(char *, char *, integer *, integer *, 
 	    doublereal *, integer *, doublereal *);
-    extern /* Subroutine */ int dlascl_(char *, integer *, integer *, 
+    extern /* Subroutine */ void dlascl_(char *, integer *, integer *, 
 	    doublereal *, doublereal *, integer *, integer *, doublereal *, 
 	    integer *, integer *);
     logical valeig;
-    extern /* Subroutine */ int dlacpy_(char *, integer *, integer *, 
+    extern /* Subroutine */ void dlacpy_(char *, integer *, integer *, 
 	    doublereal *, integer *, doublereal *, integer *);
     doublereal safmin;
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     doublereal abstll, bignum;
-    extern /* Subroutine */ int dsbtrd_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void dsbtrd_(char *, char *, integer *, integer *, 
 	    doublereal *, integer *, doublereal *, doublereal *, doublereal *,
 	     integer *, doublereal *, integer *);
     integer indisp;
-    extern /* Subroutine */ int dstein_(integer *, doublereal *, doublereal *,
+    extern /* Subroutine */ void dstein_(integer *, doublereal *, doublereal *,
 	     integer *, doublereal *, integer *, integer *, doublereal *, 
 	    integer *, doublereal *, integer *, integer *, integer *), 
 	    dsterf_(integer *, doublereal *, doublereal *, integer *);
     integer indiwo;
-    extern /* Subroutine */ int dstebz_(char *, char *, integer *, doublereal 
+    extern /* Subroutine */ void dstebz_(char *, char *, integer *, doublereal 
 	    *, doublereal *, integer *, integer *, doublereal *, doublereal *,
 	     doublereal *, integer *, integer *, doublereal *, integer *, 
 	    integer *, doublereal *, integer *, integer *);
     integer indwrk;
-    extern /* Subroutine */ int dsteqr_(char *, integer *, doublereal *, 
+    extern /* Subroutine */ void dsteqr_(char *, integer *, doublereal *, 
 	    doublereal *, doublereal *, integer *, doublereal *, integer *);
     integer nsplit;
     doublereal smlnum, eps, vll, vuu, tmp1;
@@ -916,14 +916,14 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DSBEVX", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     *m = 0;
     if (*n == 0) {
-	return 0;
+	return;
     }
 
     if (*n == 1) {
@@ -944,7 +944,7 @@ f"> */
 		z__[z_dim1 + 1] = 1.;
 	    }
 	}
-	return 0;
+	return;
     }
 
 /*     Get machine constants. */
@@ -1119,7 +1119,7 @@ L30:
 	}
     }
 
-    return 0;
+    return;
 
 /*     End of DSBEVX */
 

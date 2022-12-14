@@ -751,7 +751,7 @@ f"> */
 /* > Zlatko Drmac (Zagreb, Croatia) */
 
 /*  ===================================================================== */
-/* Subroutine */ int zgsvj1_(char *jobv, integer *m, integer *n, integer *n1, 
+/* Subroutine */ void zgsvj1_(char *jobv, integer *m, integer *n, integer *n1, 
 	doublecomplex *a, integer *lda, doublecomplex *d__, doublereal *sva, 
 	integer *mv, doublecomplex *v, integer *ldv, doublereal *eps, 
 	doublereal *sfmin, doublereal *tol, integer *nsweep, doublecomplex *
@@ -772,7 +772,7 @@ f"> */
     doublereal bigtheta;
     doublecomplex ompq;
     integer pskipped;
-    extern /* Subroutine */ int zrot_(integer *, doublecomplex *, integer *, 
+    extern /* Subroutine */ void zrot_(integer *, doublecomplex *, integer *, 
 	    doublecomplex *, integer *, doublereal *, doublecomplex *);
     doublereal aapp0, aapq1, temp1;
     integer i__, p, q;
@@ -783,7 +783,7 @@ f"> */
     extern /* Double Complex */ VOID zdotc_(doublecomplex *, integer *, 
 	    doublecomplex *, integer *, doublecomplex *, integer *);
     logical rotok;
-    extern /* Subroutine */ int zcopy_(integer *, doublecomplex *, integer *, 
+    extern /* Subroutine */ void zcopy_(integer *, doublecomplex *, integer *, 
 	    doublecomplex *, integer *), zswap_(integer *, doublecomplex *, 
 	    integer *, doublecomplex *, integer *), zaxpy_(integer *, 
 	    doublecomplex *, doublecomplex *, integer *, doublecomplex *, 
@@ -795,11 +795,11 @@ f"> */
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     integer ijblsk, swband, blskip;
     doublereal mxaapq;
-    extern /* Subroutine */ int zlascl_(char *, integer *, integer *, 
+    extern /* Subroutine */ void zlascl_(char *, integer *, integer *, 
 	    doublereal *, doublereal *, integer *, integer *, doublecomplex *,
 	     integer *, integer *);
     doublereal thsign, mxsinj;
-    extern /* Subroutine */ int zlassq_(integer *, doublecomplex *, integer *,
+    extern /* Subroutine */ void zlassq_(integer *, doublecomplex *, integer *,
 	     doublereal *, doublereal *);
     integer emptsw, notrot, iswrot, jbc;
     doublereal big;
@@ -862,7 +862,7 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZGSVJ1", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
     if (rsvec) {
@@ -1347,6 +1347,6 @@ L1995:
     }
 
 
-    return 0;
+    return;
 } /* zgsvj1_ */
 

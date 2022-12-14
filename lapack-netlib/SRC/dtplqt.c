@@ -697,7 +697,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int dtplqt_(integer *m, integer *n, integer *l, integer *mb, 
+/* Subroutine */ void dtplqt_(integer *m, integer *n, integer *l, integer *mb, 
 	doublereal *a, integer *lda, doublereal *b, integer *ldb, doublereal *
 	t, integer *ldt, doublereal *work, integer *info)
 {
@@ -707,7 +707,8 @@ f"> */
 
     /* Local variables */
     integer i__, iinfo, ib, lb, nb;
-    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen), dtprfb_(
+    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
+    extern void dtprfb_(
 	    char *, char *, char *, char *, integer *, integer *, integer *, 
 	    integer *, doublereal *, integer *, doublereal *, integer *, 
 	    doublereal *, integer *, doublereal *, integer *, doublereal *, 
@@ -759,13 +760,13 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DTPLQT", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*m == 0 || *n == 0) {
-	return 0;
+	return;
     }
 
     i__1 = *m;
@@ -799,7 +800,7 @@ f"> */
 		    a_dim1], lda, &b[i__ + ib + b_dim1], ldb, &work[1], &i__4);
 	}
     }
-    return 0;
+    return;
 
 /*     End of DTPLQT */
 

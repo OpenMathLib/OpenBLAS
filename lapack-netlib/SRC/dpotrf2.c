@@ -617,7 +617,7 @@ static doublereal c_b11 = -1.;
 /* > \ingroup doublePOcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int dpotrf2_(char *uplo, integer *n, doublereal *a, integer *
+/* Subroutine */ void dpotrf2_(char *uplo, integer *n, doublereal *a, integer *
 	lda, integer *info)
 {
     /* System generated locals */
@@ -626,11 +626,11 @@ static doublereal c_b11 = -1.;
     /* Local variables */
     extern logical lsame_(char *, char *);
     integer iinfo;
-    extern /* Subroutine */ int dtrsm_(char *, char *, char *, char *, 
+    extern /* Subroutine */ void dtrsm_(char *, char *, char *, char *, 
 	    integer *, integer *, doublereal *, doublereal *, integer *, 
 	    doublereal *, integer *);
     logical upper;
-    extern /* Subroutine */ int dsyrk_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void dsyrk_(char *, char *, integer *, integer *, 
 	    doublereal *, doublereal *, integer *, doublereal *, doublereal *,
 	     integer *);
     integer n1, n2;
@@ -667,13 +667,13 @@ static doublereal c_b11 = -1.;
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DPOTRF2", &i__1, (ftnlen)7);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /*     N=1 case */
@@ -684,7 +684,7 @@ static doublereal c_b11 = -1.;
 
 	if (a[a_dim1 + 1] <= 0. || disnan_(&a[a_dim1 + 1])) {
 	    *info = 1;
-	    return 0;
+	    return;
 	}
 
 /*        Factor */
@@ -702,7 +702,7 @@ static doublereal c_b11 = -1.;
 	dpotrf2_(uplo, &n1, &a[a_dim1 + 1], lda, &iinfo);
 	if (iinfo != 0) {
 	    *info = iinfo;
-	    return 0;
+	    return;
 	}
 
 /*        Compute the Cholesky factorization A = U**T*U */
@@ -721,7 +721,7 @@ static doublereal c_b11 = -1.;
 	    dpotrf2_(uplo, &n2, &a[n1 + 1 + (n1 + 1) * a_dim1], lda, &iinfo);
 	    if (iinfo != 0) {
 		*info = iinfo + n1;
-		return 0;
+		return;
 	    }
 
 /*        Compute the Cholesky factorization A = L*L**T */
@@ -740,11 +740,11 @@ static doublereal c_b11 = -1.;
 	    dpotrf2_(uplo, &n2, &a[n1 + 1 + (n1 + 1) * a_dim1], lda, &iinfo);
 	    if (iinfo != 0) {
 		*info = iinfo + n1;
-		return 0;
+		return;
 	    }
 	}
     }
-    return 0;
+    return;
 
 /*     End of DPOTRF2 */
 

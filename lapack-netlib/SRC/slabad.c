@@ -585,7 +585,7 @@ f"> */
 /* > \ingroup OTHERauxiliary */
 
 /*  ===================================================================== */
-/* Subroutine */ int slabad_(real *small, real *large)
+/* Subroutine */ void slabad_(real *small, real *large)
 {
 
 /*  -- LAPACK auxiliary routine (version 3.7.0) -- */
@@ -605,7 +605,7 @@ f"> */
 	*large = sqrt(*large);
     }
 
-    return 0;
+    return;
 
 /*     End of SLABAD */
 

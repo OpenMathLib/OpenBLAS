@@ -627,7 +627,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 /* > \ingroup realPOcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int spoequb_(integer *n, real *a, integer *lda, real *s, 
+/* Subroutine */ void spoequb_(integer *n, real *a, integer *lda, real *s, 
 	real *scond, real *amax, integer *info)
 {
     /* System generated locals */
@@ -671,7 +671,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("SPOEQUB", &i__1, (ftnlen)7);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible. */
@@ -679,7 +679,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
     if (*n == 0) {
 	*scond = 1.f;
 	*amax = 0.f;
-	return 0;
+	return;
     }
     base = slamch_("B");
     tmp = -.5f / log(base);
@@ -709,7 +709,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 	for (i__ = 1; i__ <= i__1; ++i__) {
 	    if (s[i__] <= 0.f) {
 		*info = i__;
-		return 0;
+		return;
 	    }
 /* L20: */
 	}
@@ -730,7 +730,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 	*scond = sqrt(smin) / sqrt(*amax);
     }
 
-    return 0;
+    return;
 
 /*     End of SPOEQUB */
 

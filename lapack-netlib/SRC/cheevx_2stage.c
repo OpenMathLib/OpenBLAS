@@ -822,7 +822,7 @@ static integer c__4 = 4;
 /* > \endverbatim */
 
 /*  ===================================================================== */
-/* Subroutine */ int cheevx_2stage_(char *jobz, char *range, char *uplo, 
+/* Subroutine */ void cheevx_2stage_(char *jobz, char *range, char *uplo, 
 	integer *n, complex *a, integer *lda, real *vl, real *vu, integer *il,
 	 integer *iu, real *abstol, integer *m, real *w, complex *z__, 
 	integer *ldz, complex *work, integer *lwork, real *rwork, integer *
@@ -841,22 +841,22 @@ static integer c__4 = 4;
     real rmin, rmax;
     logical test;
     integer itmp1, i__, j;
-    extern /* Subroutine */ int chetrd_2stage_(char *, char *, integer *, 
+    extern /* Subroutine */ void chetrd_2stage_(char *, char *, integer *, 
 	    complex *, integer *, real *, real *, complex *, complex *, 
 	    integer *, complex *, integer *, integer *);
     integer indee;
     real sigma;
     extern logical lsame_(char *, char *);
     integer iinfo;
-    extern /* Subroutine */ int sscal_(integer *, real *, real *, integer *);
+    extern /* Subroutine */ void sscal_(integer *, real *, real *, integer *);
     char order[1];
     integer lhtrd;
-    extern /* Subroutine */ int cswap_(integer *, complex *, integer *, 
+    extern /* Subroutine */ void cswap_(integer *, complex *, integer *, 
 	    complex *, integer *);
     integer lwmin;
     logical lower;
     integer lwtrd;
-    extern /* Subroutine */ int scopy_(integer *, real *, integer *, real *, 
+    extern /* Subroutine */ void scopy_(integer *, real *, integer *, real *, 
 	    integer *);
     logical wantz;
     integer ib, kd, jj;
@@ -866,18 +866,18 @@ static integer c__4 = 4;
     integer iscale, indibl;
     logical valeig;
     extern real slamch_(char *);
-    extern /* Subroutine */ int csscal_(integer *, real *, complex *, integer 
+    extern /* Subroutine */ void csscal_(integer *, real *, complex *, integer 
 	    *), clacpy_(char *, integer *, integer *, complex *, integer *, 
 	    complex *, integer *);
     real safmin;
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     real abstll, bignum;
     integer indiwk, indisp, indtau;
-    extern /* Subroutine */ int cstein_(integer *, real *, real *, integer *, 
+    extern /* Subroutine */ void cstein_(integer *, real *, real *, integer *, 
 	    real *, integer *, integer *, complex *, integer *, real *, 
 	    integer *, integer *, integer *);
     integer indrwk, indwrk;
-    extern /* Subroutine */ int csteqr_(char *, integer *, real *, real *, 
+    extern /* Subroutine */ void csteqr_(char *, integer *, real *, real *, 
 	    complex *, integer *, real *, integer *), cungtr_(char *, 
 	    integer *, complex *, integer *, complex *, complex *, integer *, 
 	    integer *), ssterf_(integer *, real *, real *, integer *),
@@ -886,7 +886,7 @@ static integer c__4 = 4;
 	    integer *);
     integer nsplit, llwork;
     real smlnum;
-    extern /* Subroutine */ int sstebz_(char *, char *, integer *, real *, 
+    extern /* Subroutine */ void sstebz_(char *, char *, integer *, real *, 
 	    real *, integer *, integer *, real *, real *, real *, integer *, 
 	    integer *, real *, integer *, integer *, real *, integer *, 
 	    integer *);
@@ -984,16 +984,16 @@ static integer c__4 = 4;
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CHEEVX_2STAGE", &i__1, (ftnlen)13);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     *m = 0;
     if (*n == 0) {
-	return 0;
+	return;
     }
 
     if (*n == 1) {
@@ -1014,7 +1014,7 @@ static integer c__4 = 4;
 	    i__1 = z_dim1 + 1;
 	    z__[i__1].r = 1.f, z__[i__1].i = 0.f;
 	}
-	return 0;
+	return;
     }
 
 /*     Get machine constants. */
@@ -1200,7 +1200,7 @@ L40:
 
     work[1].r = (real) lwmin, work[1].i = 0.f;
 
-    return 0;
+    return;
 
 /*     End of CHEEVX_2STAGE */
 

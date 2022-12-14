@@ -826,7 +826,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int ztgsna_(char *job, char *howmny, logical *select, 
+/* Subroutine */ void ztgsna_(char *job, char *howmny, logical *select, 
 	integer *n, doublecomplex *a, integer *lda, doublecomplex *b, integer 
 	*ldb, doublecomplex *vl, integer *ldvl, doublecomplex *vr, integer *
 	ldvr, doublereal *s, doublereal *dif, integer *mm, integer *m, 
@@ -851,14 +851,14 @@ f"> */
     extern /* Double Complex */ VOID zdotc_(doublecomplex *, integer *, 
 	    doublecomplex *, integer *, doublecomplex *, integer *);
     integer lwmin;
-    extern /* Subroutine */ int zgemv_(char *, integer *, integer *, 
+    extern /* Subroutine */ void zgemv_(char *, integer *, integer *, 
 	    doublecomplex *, doublecomplex *, integer *, doublecomplex *, 
 	    integer *, doublecomplex *, doublecomplex *, integer *);
     logical wants;
     doublecomplex dummy[1];
     integer n1, n2;
     extern doublereal dlapy2_(doublereal *, doublereal *);
-    extern /* Subroutine */ int dlabad_(doublereal *, doublereal *);
+    extern /* Subroutine */ void dlabad_(doublereal *, doublereal *);
     doublecomplex dummy1[1];
     extern doublereal dznrm2_(integer *, doublecomplex *, integer *), dlamch_(
 	    char *);
@@ -866,14 +866,14 @@ f"> */
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     doublereal bignum;
     logical wantbh, wantdf, somcon;
-    extern /* Subroutine */ int zlacpy_(char *, integer *, integer *, 
+    extern /* Subroutine */ void zlacpy_(char *, integer *, integer *, 
 	    doublecomplex *, integer *, doublecomplex *, integer *), 
 	    ztgexc_(logical *, logical *, integer *, doublecomplex *, integer 
 	    *, doublecomplex *, integer *, doublecomplex *, integer *, 
 	    doublecomplex *, integer *, integer *, integer *, integer *);
     doublereal smlnum;
     logical lquery;
-    extern /* Subroutine */ int ztgsyl_(char *, integer *, integer *, integer 
+    extern /* Subroutine */ void ztgsyl_(char *, integer *, integer *, integer 
 	    *, doublecomplex *, integer *, doublecomplex *, integer *, 
 	    doublecomplex *, integer *, doublecomplex *, integer *, 
 	    doublecomplex *, integer *, doublecomplex *, integer *, 
@@ -974,15 +974,15 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZTGSNA", &i__1, (ftnlen)6);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /*     Get machine constants */
@@ -1082,7 +1082,7 @@ L20:
 	;
     }
     work[1].r = (doublereal) lwmin, work[1].i = 0.;
-    return 0;
+    return;
 
 /*     End of ZTGSNA */
 

@@ -672,7 +672,7 @@ t by U and the right by UC>       SIDE = 'T'   Multiply A on the left by U and t
 /* > \ingroup complex_matgen */
 
 /*  ===================================================================== */
-/* Subroutine */ int claror_(char *side, char *init, integer *m, integer *n, 
+/* Subroutine */ void claror_(char *side, char *init, integer *m, integer *n, 
 	complex *a, integer *lda, integer *iseed, complex *x, integer *info)
 {
     /* System generated locals */
@@ -683,23 +683,23 @@ t by U and the right by UC>       SIDE = 'T'   Multiply A on the left by U and t
     integer kbeg, jcol;
     real xabs;
     integer irow, j;
-    extern /* Subroutine */ int cgerc_(integer *, integer *, complex *, 
+    extern /* Subroutine */ void cgerc_(integer *, integer *, complex *, 
 	    complex *, integer *, complex *, integer *, complex *, integer *),
 	     cscal_(integer *, complex *, complex *, integer *);
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int cgemv_(char *, integer *, integer *, complex *
+    extern /* Subroutine */ void cgemv_(char *, integer *, integer *, complex *
 	    , complex *, integer *, complex *, integer *, complex *, complex *
 	    , integer *);
     complex csign;
     integer ixfrm, itype, nxfrm;
     real xnorm;
     extern real scnrm2_(integer *, complex *, integer *);
-    extern /* Subroutine */ int clacgv_(integer *, complex *, integer *);
+    extern /* Subroutine */ void clacgv_(integer *, complex *, integer *);
     //extern /* Complex */ VOID clarnd_(complex *, integer *, integer *);
     extern complex clarnd_(integer *, integer *);
-    extern /* Subroutine */ int claset_(char *, integer *, integer *, complex 
-	    *, complex *, complex *, integer *), xerbla_(char *, 
-	    integer *);
+    extern /* Subroutine */ void claset_(char *, integer *, integer *, complex 
+	    *, complex *, complex *, integer *);
+    extern int xerbla_(char *, integer *, ftnlen);
     real factor;
     complex xnorms;
 
@@ -723,7 +723,7 @@ t by U and the right by UC>       SIDE = 'T'   Multiply A on the left by U and t
     /* Function Body */
     *info = 0;
     if (*n == 0 || *m == 0) {
-	return 0;
+	return;
     }
 
     itype = 0;
@@ -750,8 +750,8 @@ t by U and the right by UC>       SIDE = 'T'   Multiply A on the left by U and t
     }
     if (*info != 0) {
 	i__1 = -(*info);
-	xerbla_("CLAROR", &i__1);
-	return 0;
+	xerbla_("CLAROR", &i__1, 6);
+	return;
     }
 
     if (itype == 1) {
@@ -815,8 +815,8 @@ t by U and the right by UC>       SIDE = 'T'   Multiply A on the left by U and t
 	if (abs(factor) < 1e-20f) {
 	    *info = 1;
 	    i__2 = -(*info);
-	    xerbla_("CLAROR", &i__2);
-	    return 0;
+	    xerbla_("CLAROR", &i__2, 6);
+	    return;
 	} else {
 	    factor = 1.f / factor;
 	}
@@ -899,7 +899,7 @@ t by U and the right by UC>       SIDE = 'T'   Multiply A on the left by U and t
 /* L90: */
 	}
     }
-    return 0;
+    return;
 
 /*     End of CLAROR */
 

@@ -701,7 +701,7 @@ r_row.f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int sorgtsqr_row_(integer *m, integer *n, integer *mb, 
+/* Subroutine */ void sorgtsqr_row_(integer *m, integer *n, integer *mb, 
 	integer *nb, real *a, integer *lda, real *t, integer *ldt, real *work,
 	 integer *lwork, integer *info)
 {
@@ -712,12 +712,13 @@ r_row.f"> */
     integer jb_t__, itmp, lworkopt;
     real dummy[1]	/* was [1][1] */;
     integer ib_bottom__, ib, kb;
-    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen), slaset_(
+    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
+    extern void slaset_(
 	    char *, integer *, integer *, real *, real *, real *, integer *);
     integer mb1, mb2, m_plus_one__;
     logical lquery;
     integer num_all_row_blocks__, imb, knb, nblocal, kb_last__;
-    extern /* Subroutine */ int slarfb_gett_(char *, integer *, integer *, 
+    extern /* Subroutine */ void slarfb_gett_(char *, integer *, integer *, 
 	    integer *, real *, integer *, real *, integer *, real *, integer *
 	    , real *, integer *);
 
@@ -779,17 +780,17 @@ r_row.f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("SORGTSQR_ROW", &i__1, (ftnlen)12);
-	return 0;
+	return;
     } else if (lquery) {
 	work[1] = (real) lworkopt;
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (f2cmin(*m,*n) == 0) {
 	work[1] = (real) lworkopt;
-	return 0;
+	return;
     }
 
 /*     (0) Set the upper-triangular part of the matrix A to zero and */
@@ -911,7 +912,7 @@ r_row.f"> */
     }
 
     work[1] = (real) lworkopt;
-    return 0;
+    return;
 
 /*     End of SORGTSQR_ROW */
 

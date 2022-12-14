@@ -648,7 +648,7 @@ aa.f"> */
 /* > \ingroup realSYcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int ssytrf_aa_(char *uplo, integer *n, real *a, integer *
+/* Subroutine */ void ssytrf_aa_(char *uplo, integer *n, real *a, integer *
 	lda, integer *ipiv, real *work, integer *lwork, integer *info)
 {
     /* System generated locals */
@@ -658,7 +658,7 @@ aa.f"> */
     integer j;
     real alpha;
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int sscal_(integer *, real *, real *, integer *), 
+    extern /* Subroutine */ void sscal_(integer *, real *, real *, integer *), 
 	    sgemm_(char *, char *, integer *, integer *, integer *, real *, 
 	    real *, integer *, real *, integer *, real *, real *, integer *), slasyf_aa_(char *, integer *, integer *, 
 	    integer *, real *, integer *, integer *, real *, integer *, real *
@@ -666,7 +666,7 @@ aa.f"> */
 	    integer *, real *, integer *, real *, real *, integer *);
     logical upper;
     integer k1, k2, j1, j2, j3;
-    extern /* Subroutine */ int scopy_(integer *, real *, integer *, real *, 
+    extern /* Subroutine */ void scopy_(integer *, real *, integer *, real *, 
 	    integer *), sswap_(integer *, real *, integer *, real *, integer *
 	    );
     integer jb, nb, mj, nj;
@@ -727,19 +727,19 @@ aa.f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("SSYTRF_AA", &i__1, (ftnlen)9);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
     ipiv[1] = 1;
     if (*n == 1) {
-	return 0;
+	return;
     }
 
 /*     Adjust block size based on the workspace size */
@@ -1027,7 +1027,7 @@ L11:
     }
 
 L20:
-    return 0;
+    return;
 
 /*     End of SSYTRF_AA */
 

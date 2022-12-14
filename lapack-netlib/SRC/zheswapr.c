@@ -616,7 +616,7 @@ r.f"> */
 /* > \ingroup complex16HEauxiliary */
 
 /*  ===================================================================== */
-/* Subroutine */ int zheswapr_(char *uplo, integer *n, doublecomplex *a, 
+/* Subroutine */ void zheswapr_(char *uplo, integer *n, doublecomplex *a, 
 	integer *lda, integer *i1, integer *i2)
 {
     /* System generated locals */
@@ -627,7 +627,7 @@ r.f"> */
     integer i__;
     extern logical lsame_(char *, char *);
     logical upper;
-    extern /* Subroutine */ int zswap_(integer *, doublecomplex *, integer *, 
+    extern /* Subroutine */ void zswap_(integer *, doublecomplex *, integer *, 
 	    doublecomplex *, integer *);
     doublecomplex tmp;
 
@@ -749,6 +749,6 @@ r.f"> */
 	}
 
     }
-    return 0;
+    return;
 } /* zheswapr_ */
 

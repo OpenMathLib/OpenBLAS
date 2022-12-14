@@ -703,7 +703,7 @@ f"> */
 /* > \ingroup doubleOTHERcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int dpbrfs_(char *uplo, integer *n, integer *kd, integer *
+/* Subroutine */ void dpbrfs_(char *uplo, integer *n, integer *kd, integer *
 	nrhs, doublereal *ab, integer *ldab, doublereal *afb, integer *ldafb, 
 	doublereal *b, integer *ldb, doublereal *x, integer *ldx, doublereal *
 	ferr, doublereal *berr, doublereal *work, integer *iwork, integer *
@@ -721,7 +721,7 @@ f"> */
     doublereal s;
     extern logical lsame_(char *, char *);
     integer isave[3];
-    extern /* Subroutine */ int dsbmv_(char *, integer *, integer *, 
+    extern /* Subroutine */ void dsbmv_(char *, integer *, integer *, 
 	    doublereal *, doublereal *, integer *, doublereal *, integer *, 
 	    doublereal *, doublereal *, integer *), dcopy_(integer *, 
 	    doublereal *, integer *, doublereal *, integer *), daxpy_(integer 
@@ -729,13 +729,14 @@ f"> */
 	    ;
     integer count;
     logical upper;
-    extern /* Subroutine */ int dlacn2_(integer *, doublereal *, doublereal *,
+    extern /* Subroutine */ void dlacn2_(integer *, doublereal *, doublereal *,
 	     integer *, doublereal *, integer *, integer *);
     extern doublereal dlamch_(char *);
     doublereal xk;
     integer nz;
     doublereal safmin;
-    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen), dpbtrs_(
+    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
+    extern void dpbtrs_(
 	    char *, integer *, integer *, integer *, doublereal *, integer *, 
 	    doublereal *, integer *, integer *);
     doublereal lstres, eps;
@@ -793,7 +794,7 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DPBRFS", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
@@ -805,7 +806,7 @@ f"> */
 	    berr[j] = 0.;
 /* L10: */
 	}
-	return 0;
+	return;
     }
 
 /*     NZ = maximum number of nonzero elements in each row of A, plus 1 */
@@ -1012,7 +1013,7 @@ L100:
 /* L140: */
     }
 
-    return 0;
+    return;
 
 /*     End of DPBRFS */
 

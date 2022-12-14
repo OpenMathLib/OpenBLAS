@@ -666,7 +666,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int dpbstf_(char *uplo, integer *n, integer *kd, doublereal *
+/* Subroutine */ void dpbstf_(char *uplo, integer *n, integer *kd, doublereal *
 	ab, integer *ldab, integer *info)
 {
     /* System generated locals */
@@ -674,10 +674,10 @@ f"> */
     doublereal d__1;
 
     /* Local variables */
-    extern /* Subroutine */ int dsyr_(char *, integer *, doublereal *, 
+    extern /* Subroutine */ void dsyr_(char *, integer *, doublereal *, 
 	    doublereal *, integer *, doublereal *, integer *);
     integer j, m;
-    extern /* Subroutine */ int dscal_(integer *, doublereal *, doublereal *, 
+    extern /* Subroutine */ void dscal_(integer *, doublereal *, doublereal *, 
 	    integer *);
     extern logical lsame_(char *, char *);
     logical upper;
@@ -718,13 +718,13 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DPBSTF", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /* Computing MAX */
@@ -850,11 +850,11 @@ f"> */
 /* L40: */
 	}
     }
-    return 0;
+    return;
 
 L50:
     *info = j;
-    return 0;
+    return;
 
 /*     End of DPBSTF */
 

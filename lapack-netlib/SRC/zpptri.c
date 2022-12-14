@@ -607,7 +607,7 @@ f"> */
 /* > \ingroup complex16OTHERcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int zpptri_(char *uplo, integer *n, doublecomplex *ap, 
+/* Subroutine */ void zpptri_(char *uplo, integer *n, doublecomplex *ap, 
 	integer *info)
 {
     /* System generated locals */
@@ -616,17 +616,18 @@ f"> */
     doublecomplex z__1;
 
     /* Local variables */
-    extern /* Subroutine */ int zhpr_(char *, integer *, doublereal *, 
+    extern /* Subroutine */ void zhpr_(char *, integer *, doublereal *, 
 	    doublecomplex *, integer *, doublecomplex *);
     integer j;
     extern logical lsame_(char *, char *);
     extern /* Double Complex */ VOID zdotc_(doublecomplex *, integer *, 
 	    doublecomplex *, integer *, doublecomplex *, integer *);
     logical upper;
-    extern /* Subroutine */ int ztpmv_(char *, char *, char *, integer *, 
+    extern /* Subroutine */ void ztpmv_(char *, char *, char *, integer *, 
 	    doublecomplex *, doublecomplex *, integer *);
     integer jc, jj;
-    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen), zdscal_(
+    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
+    extern void zdscal_(
 	    integer *, doublereal *, doublecomplex *, integer *), ztptri_(
 	    char *, char *, integer *, doublecomplex *, integer *);
     doublereal ajj;
@@ -658,20 +659,20 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZPPTRI", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /*     Invert the triangular Cholesky factor U or L. */
 
     ztptri_(uplo, "Non-unit", n, &ap[1], info);
     if (*info > 0) {
-	return 0;
+	return;
     }
     if (upper) {
 
@@ -715,7 +716,7 @@ f"> */
 	}
     }
 
-    return 0;
+    return;
 
 /*     End of ZPPTRI */
 

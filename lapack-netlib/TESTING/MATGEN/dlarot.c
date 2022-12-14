@@ -737,7 +737,7 @@ static integer c__1 = 1;
 /* > \ingroup double_matgen */
 
 /*  ===================================================================== */
-/* Subroutine */ int dlarot_(logical *lrows, logical *lleft, logical *lright, 
+/* Subroutine */ void dlarot_(logical *lrows, logical *lleft, logical *lright, 
 	integer *nl, doublereal *c__, doublereal *s, doublereal *a, integer *
 	lda, doublereal *xleft, doublereal *xright)
 {
@@ -746,11 +746,11 @@ static integer c__1 = 1;
 
     /* Local variables */
     integer iinc;
-    extern /* Subroutine */ int drot_(integer *, doublereal *, integer *, 
+    extern /* Subroutine */ void drot_(integer *, doublereal *, integer *, 
 	    doublereal *, integer *, doublereal *, doublereal *);
     integer inext, ix, iy, nt;
     doublereal xt[2], yt[2];
-    extern /* Subroutine */ int xerbla_(char *, integer *);
+    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     integer iyt;
 
 
@@ -799,12 +799,12 @@ static integer c__1 = 1;
 /*     Check for errors */
 
     if (*nl < nt) {
-	xerbla_("DLAROT", &c__4);
-	return 0;
+	xerbla_("DLAROT", &c__4, 6);
+	return;
     }
     if (*lda <= 0 || ! (*lrows) && *lda < *nl - nt) {
-	xerbla_("DLAROT", &c__8);
-	return 0;
+	xerbla_("DLAROT", &c__8, 6);
+	return;
     }
 
 /*     Rotate */
@@ -825,7 +825,7 @@ static integer c__1 = 1;
 	a[iyt] = yt[nt - 1];
     }
 
-    return 0;
+    return;
 
 /*     End of DLAROT */
 

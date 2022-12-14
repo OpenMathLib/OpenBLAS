@@ -721,7 +721,7 @@ f"> */
 /* >    G. Quintana-Orti, Depto. de Informatica, Universidad Jaime I, Spain \n */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int sgelsy_(integer *m, integer *n, integer *nrhs, real *a, 
+/* Subroutine */ void sgelsy_(integer *m, integer *n, integer *nrhs, real *a, 
 	integer *lda, real *b, integer *ldb, integer *jpvt, real *rcond, 
 	integer *rank, real *work, integer *lwork, integer *info)
 {
@@ -733,17 +733,17 @@ f"> */
     real anrm, bnrm, smin, smax;
     integer i__, j, iascl, ibscl, ismin, ismax;
     real c1, c2;
-    extern /* Subroutine */ int scopy_(integer *, real *, integer *, real *, 
+    extern /* Subroutine */ void scopy_(integer *, real *, integer *, real *, 
 	    integer *);
     real wsize, s1, s2;
-    extern /* Subroutine */ int strsm_(char *, char *, char *, char *, 
+    extern /* Subroutine */ void strsm_(char *, char *, char *, char *, 
 	    integer *, integer *, real *, real *, integer *, real *, integer *
 	    ), slaic1_(integer *, integer *, 
 	    real *, real *, real *, real *, real *, real *, real *), sgeqp3_(
 	    integer *, integer *, real *, integer *, integer *, real *, real *
 	    , integer *, integer *);
     integer nb;
-    extern /* Subroutine */ int slabad_(real *, real *);
+    extern /* Subroutine */ void slabad_(real *, real *);
     integer mn;
     extern real slamch_(char *), slange_(char *, integer *, integer *,
 	     real *, integer *, real *);
@@ -751,14 +751,14 @@ f"> */
     extern integer ilaenv_(integer *, char *, char *, integer *, integer *, 
 	    integer *, integer *, ftnlen, ftnlen);
     real bignum;
-    extern /* Subroutine */ int slascl_(char *, integer *, integer *, real *, 
+    extern /* Subroutine */ void slascl_(char *, integer *, integer *, real *, 
 	    real *, integer *, integer *, real *, integer *, integer *), slaset_(char *, integer *, integer *, real *, real *, 
 	    real *, integer *);
     integer lwkmin, nb1, nb2, nb3, nb4;
     real sminpr, smaxpr, smlnum;
     integer lwkopt;
     logical lquery;
-    extern /* Subroutine */ int sormqr_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void sormqr_(char *, char *, integer *, integer *, 
 	    integer *, real *, integer *, real *, real *, integer *, real *, 
 	    integer *, integer *), sormrz_(char *, char *, 
 	    integer *, integer *, integer *, integer *, real *, integer *, 
@@ -847,16 +847,16 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("SGELSY", &i__1, (ftnlen)6);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (mn == 0 || *nrhs == 0) {
 	*rank = 0;
-	return 0;
+	return;
     }
 
 /*     Get machine parameters */
@@ -1055,7 +1055,7 @@ L10:
 L70:
     work[1] = (real) lwkopt;
 
-    return 0;
+    return;
 
 /*     End of SGELSY */
 

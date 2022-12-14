@@ -633,7 +633,7 @@ real slangt_(char *norm, integer *n, real *dl, real *d__, real *du)
     extern logical lsame_(char *, char *);
     real anorm;
     extern logical sisnan_(real *);
-    extern /* Subroutine */ int slassq_(integer *, real *, integer *, real *, 
+    extern /* Subroutine */ void slassq_(integer *, real *, integer *, real *, 
 	    real *);
     real sum;
 

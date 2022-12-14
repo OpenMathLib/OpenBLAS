@@ -673,7 +673,7 @@ static doublereal c_b14 = 0.;
 /* > \endverbatim */
 
 /*  ===================================================================== */
-/* Subroutine */ int dsytri_3x_(char *uplo, integer *n, doublereal *a, 
+/* Subroutine */ void dsytri_3x_(char *uplo, integer *n, doublereal *a, 
 	integer *lda, doublereal *e, integer *ipiv, doublereal *work, integer 
 	*nb, integer *info)
 {
@@ -683,16 +683,16 @@ static doublereal c_b14 = 0.;
     /* Local variables */
     integer invd;
     doublereal akkp1;
-    extern /* Subroutine */ int dsyswapr_(char *, integer *, doublereal *, 
+    extern /* Subroutine */ void dsyswapr_(char *, integer *, doublereal *, 
 	    integer *, integer *, integer *);
     doublereal d__;
     integer i__, j, k;
     doublereal t;
-    extern /* Subroutine */ int dgemm_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void dgemm_(char *, char *, integer *, integer *, 
 	    integer *, doublereal *, doublereal *, integer *, doublereal *, 
 	    integer *, doublereal *, doublereal *, integer *);
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int dtrmm_(char *, char *, char *, char *, 
+    extern /* Subroutine */ void dtrmm_(char *, char *, char *, char *, 
 	    integer *, integer *, doublereal *, doublereal *, integer *, 
 	    doublereal *, integer *);
     logical upper;
@@ -745,10 +745,10 @@ static doublereal c_b14 = 0.;
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DSYTRI_3X", &i__1, (ftnlen)9);
-	return 0;
+	return;
     }
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /*     Workspace got Non-diag elements of D */
@@ -766,7 +766,7 @@ static doublereal c_b14 = 0.;
 
 	for (*info = *n; *info >= 1; --(*info)) {
 	    if (ipiv[*info] > 0 && a[*info + *info * a_dim1] == 0.) {
-		return 0;
+		return;
 	    }
 	}
     } else {
@@ -776,7 +776,7 @@ static doublereal c_b14 = 0.;
 	i__1 = *n;
 	for (*info = 1; *info <= i__1; ++(*info)) {
 	    if (ipiv[*info] > 0 && a[*info + *info * a_dim1] == 0.) {
-		return 0;
+		return;
 	    }
 	}
     }
@@ -1259,7 +1259,7 @@ static doublereal c_b14 = 0.;
 
     }
 
-    return 0;
+    return;
 
 /*     End of DSYTRI_3X */
 

@@ -671,7 +671,7 @@ f"> */
 /* >     Mark Fahey, Department of Mathematics, Univ. of Kentucky, USA */
 
 /*  ===================================================================== */
-/* Subroutine */ int dlagv2_(doublereal *a, integer *lda, doublereal *b, 
+/* Subroutine */ void dlagv2_(doublereal *a, integer *lda, doublereal *b, 
 	integer *ldb, doublereal *alphar, doublereal *alphai, doublereal *
 	beta, doublereal *csl, doublereal *snl, doublereal *csr, doublereal *
 	snr)
@@ -681,20 +681,20 @@ f"> */
     doublereal d__1, d__2, d__3, d__4, d__5, d__6;
 
     /* Local variables */
-    extern /* Subroutine */ int drot_(integer *, doublereal *, integer *, 
+    extern /* Subroutine */ void drot_(integer *, doublereal *, integer *, 
 	    doublereal *, integer *, doublereal *, doublereal *), dlag2_(
 	    doublereal *, integer *, doublereal *, integer *, doublereal *, 
 	    doublereal *, doublereal *, doublereal *, doublereal *, 
 	    doublereal *);
     doublereal r__, t, anorm, bnorm, h1, h2, h3, scale1, scale2;
-    extern /* Subroutine */ int dlasv2_(doublereal *, doublereal *, 
+    extern /* Subroutine */ void dlasv2_(doublereal *, doublereal *, 
 	    doublereal *, doublereal *, doublereal *, doublereal *, 
 	    doublereal *, doublereal *, doublereal *);
     extern doublereal dlapy2_(doublereal *, doublereal *);
     doublereal ascale, bscale;
     extern doublereal dlamch_(char *);
     doublereal wi, qq, rr, safmin;
-    extern /* Subroutine */ int dlartg_(doublereal *, doublereal *, 
+    extern /* Subroutine */ void dlartg_(doublereal *, doublereal *, 
 	    doublereal *, doublereal *, doublereal *);
     doublereal wr1, wr2, ulp;
 
@@ -913,7 +913,7 @@ f"> */
 	beta[2] = 1.;
     }
 
-    return 0;
+    return;
 
 /*     End of DLAGV2 */
 

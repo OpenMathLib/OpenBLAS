@@ -629,7 +629,7 @@ f"> */
 /* > \ingroup doubleSYcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int dsytri_(char *uplo, integer *n, doublereal *a, integer *
+/* Subroutine */ void dsytri_(char *uplo, integer *n, doublereal *a, integer *
 	lda, integer *ipiv, doublereal *work, integer *info)
 {
     /* System generated locals */
@@ -643,12 +643,12 @@ f"> */
     integer k;
     doublereal t;
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int dcopy_(integer *, doublereal *, integer *, 
+    extern /* Subroutine */ void dcopy_(integer *, doublereal *, integer *, 
 	    doublereal *, integer *), dswap_(integer *, doublereal *, integer 
 	    *, doublereal *, integer *);
     integer kstep;
     logical upper;
-    extern /* Subroutine */ int dsymv_(char *, integer *, doublereal *, 
+    extern /* Subroutine */ void dsymv_(char *, integer *, doublereal *, 
 	    doublereal *, integer *, doublereal *, integer *, doublereal *, 
 	    doublereal *, integer *);
     doublereal ak;
@@ -688,13 +688,13 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DSYTRI", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /*     Check that the diagonal matrix D is nonsingular. */
@@ -705,7 +705,7 @@ f"> */
 
 	for (*info = *n; *info >= 1; --(*info)) {
 	    if (ipiv[*info] > 0 && a[*info + *info * a_dim1] == 0.) {
-		return 0;
+		return;
 	    }
 /* L10: */
 	}
@@ -716,7 +716,7 @@ f"> */
 	i__1 = *n;
 	for (*info = 1; *info <= i__1; ++(*info)) {
 	    if (ipiv[*info] > 0 && a[*info + *info * a_dim1] == 0.) {
-		return 0;
+		return;
 	    }
 /* L20: */
 	}
@@ -941,7 +941,7 @@ L60:
 	;
     }
 
-    return 0;
+    return;
 
 /*     End of DSYTRI */
 

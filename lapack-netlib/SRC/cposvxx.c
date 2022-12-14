@@ -1002,7 +1002,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 /* > \ingroup complexPOsolve */
 
 /*  ===================================================================== */
-/* Subroutine */ int cposvxx_(char *fact, char *uplo, integer *n, integer *
+/* Subroutine */ void cposvxx_(char *fact, char *uplo, integer *n, integer *
 	nrhs, complex *a, integer *lda, complex *af, integer *ldaf, char *
 	equed, real *s, complex *b, integer *ldb, complex *x, integer *ldx, 
 	real *rcond, real *rpvgrw, real *berr, integer *n_err_bnds__, real *
@@ -1023,20 +1023,20 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
     extern logical lsame_(char *, char *);
     real scond;
     logical equil, rcequ;
-    extern /* Subroutine */ int claqhe_(char *, integer *, complex *, integer 
+    extern /* Subroutine */ void claqhe_(char *, integer *, complex *, integer 
 	    *, real *, real *, real *, char *);
     extern real slamch_(char *);
     logical nofact;
-    extern /* Subroutine */ int clacpy_(char *, integer *, integer *, complex 
-	    *, integer *, complex *, integer *), xerbla_(char *, 
-	    integer *, ftnlen);
+    extern /* Subroutine */ void clacpy_(char *, integer *, integer *, complex 
+	    *, integer *, complex *, integer *);
+    extern int xerbla_(char *, integer *, ftnlen);
     real bignum;
     integer infequ;
-    extern /* Subroutine */ int cpotrf_(char *, integer *, complex *, integer 
+    extern /* Subroutine */ void cpotrf_(char *, integer *, complex *, integer 
 	    *, integer *), cpotrs_(char *, integer *, integer *, 
 	    complex *, integer *, complex *, integer *, integer *);
     real smlnum;
-    extern /* Subroutine */ int clascl2_(integer *, integer *, real *, 
+    extern /* Subroutine */ void clascl2_(integer *, integer *, real *, 
 	    complex *, integer *), cpoequb_(integer *, complex *, integer *, 
 	    real *, real *, real *, integer *), cporfsx_(char *, char *, 
 	    integer *, integer *, complex *, integer *, complex *, integer *, 
@@ -1150,7 +1150,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CPOSVXX", &i__1, (ftnlen)7);
-	return 0;
+	return;
     }
 
     if (equil) {
@@ -1190,7 +1190,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 
 	    *rpvgrw = cla_porpvgrw_(uplo, n, &a[a_offset], lda, &af[
 		    af_offset], ldaf, &rwork[1]);
-	    return 0;
+	    return;
 	}
     }
 
@@ -1219,7 +1219,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 	clascl2_(n, nrhs, &s[1], &x[x_offset], ldx);
     }
 
-    return 0;
+    return;
 
 /*     End of CPOSVXX */
 

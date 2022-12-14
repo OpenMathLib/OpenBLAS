@@ -804,7 +804,7 @@ f"> */
 /* > Christof Voemel, University of California, Berkeley, USA */
 
 /*  ===================================================================== */
-/* Subroutine */ int dlarrv_(integer *n, doublereal *vl, doublereal *vu, 
+/* Subroutine */ void dlarrv_(integer *n, doublereal *vl, doublereal *vu, 
 	doublereal *d__, doublereal *l, doublereal *pivmin, integer *isplit, 
 	integer *m, integer *dol, integer *dou, doublereal *minrgp, 
 	doublereal *rtol1, doublereal *rtol2, doublereal *w, doublereal *werr,
@@ -825,7 +825,7 @@ f"> */
     integer wend, iter;
     doublereal bstw;
     integer minwsize, itmp1, i__, j, k, p, q;
-    extern /* Subroutine */ int dscal_(integer *, doublereal *, doublereal *, 
+    extern /* Subroutine */ void dscal_(integer *, doublereal *, doublereal *, 
 	    integer *);
     integer indld;
     doublereal fudge;
@@ -835,12 +835,12 @@ f"> */
     doublereal resid;
     logical eskip;
     doublereal right;
-    extern /* Subroutine */ int dcopy_(integer *, doublereal *, integer *, 
+    extern /* Subroutine */ void dcopy_(integer *, doublereal *, integer *, 
 	    doublereal *, integer *);
     integer nclus, zfrom;
     doublereal rqtol;
     integer iindc1, iindc2;
-    extern /* Subroutine */ int dlar1v_(integer *, integer *, integer *, 
+    extern /* Subroutine */ void dlar1v_(integer *, integer *, integer *, 
 	    doublereal *, doublereal *, doublereal *, doublereal *, 
 	    doublereal *, doublereal *, doublereal *, doublereal *, logical *,
 	     integer *, doublereal *, doublereal *, integer *, integer *, 
@@ -857,7 +857,7 @@ f"> */
     logical needbs;
     integer indlld;
     doublereal sgndef, mingma;
-    extern /* Subroutine */ int dlarrb_(integer *, doublereal *, doublereal *,
+    extern /* Subroutine */ void dlarrb_(integer *, doublereal *, doublereal *,
 	     integer *, integer *, doublereal *, doublereal *, integer *, 
 	    doublereal *, doublereal *, doublereal *, doublereal *, integer *,
 	     doublereal *, doublereal *, integer *, integer *);
@@ -867,7 +867,7 @@ f"> */
     doublereal savgap;
     integer ndepth;
     doublereal ssigma;
-    extern /* Subroutine */ int dlarrf_(integer *, doublereal *, doublereal *,
+    extern /* Subroutine */ void dlarrf_(integer *, doublereal *, doublereal *,
 	     doublereal *, integer *, integer *, doublereal *, doublereal *, 
 	    doublereal *, doublereal *, doublereal *, doublereal *, 
 	    doublereal *, doublereal *, doublereal *, doublereal *, 
@@ -875,7 +875,7 @@ f"> */
     logical usedbs;
     integer iindwk, offset;
     doublereal gaptol;
-    extern /* Subroutine */ int dlaset_(char *, integer *, integer *, 
+    extern /* Subroutine */ void dlaset_(char *, integer *, integer *, 
 	    doublereal *, doublereal *, doublereal *, integer *);
     integer newcls, oldfst, indwrk, windex, oldlst;
     logical usedrq;
@@ -921,7 +921,7 @@ f"> */
 /*     Quick return if possible */
 
     if (*n <= 0 || *m <= 0) {
-	return 0;
+	return;
     }
 
 /*     The first N entries of WORK are reserved for the eigenvalues */
@@ -1071,7 +1071,7 @@ L40:
 /*           This is a crude protection against infinitely deep trees */
 	    if (ndepth > *m) {
 		*info = -2;
-		return 0;
+		return;
 	    }
 /*           breadth first processing of the current level of the representation */
 /*           tree: OLDNCL = number of clusters on current level */
@@ -1151,7 +1151,7 @@ L40:
 			    iindwk], pivmin, &spdiam, &in, &iinfo);
 		    if (iinfo != 0) {
 			*info = -1;
-			return 0;
+			return;
 		    }
 /*                 We also recompute the extremal gaps. W holds all eigenvalues */
 /*                 of the unshifted matrix and must be used for computation */
@@ -1318,7 +1318,7 @@ L40:
 			    iwork[k] = newlst;
 			} else {
 			    *info = -2;
-			    return 0;
+			    return;
 			}
 		    } else {
 
@@ -1422,7 +1422,7 @@ L120:
 				    iindwk], pivmin, &spdiam, &itmp1, &iinfo);
 			    if (iinfo != 0) {
 				*info = -3;
-				return 0;
+				return;
 			    }
 			    lambda = work[windex];
 /*                       Reset twist index from inaccurate LAMBDA to */
@@ -1517,7 +1517,7 @@ L120:
 				goto L120;
 			    } else {
 				*info = 5;
-				return 0;
+				return;
 			    }
 			} else {
 			    stp2ii = FALSE_;
@@ -1610,7 +1610,7 @@ L170:
 	;
     }
 
-    return 0;
+    return;
 
 /*     End of DLARRV */
 

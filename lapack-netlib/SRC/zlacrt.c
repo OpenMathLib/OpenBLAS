@@ -614,7 +614,7 @@ f"> */
 /* > \ingroup complex16OTHERauxiliary */
 
 /*  ===================================================================== */
-/* Subroutine */ int zlacrt_(integer *n, doublecomplex *cx, integer *incx, 
+/* Subroutine */ void zlacrt_(integer *n, doublecomplex *cx, integer *incx, 
 	doublecomplex *cy, integer *incy, doublecomplex *c__, doublecomplex *
 	s)
 {
@@ -643,7 +643,7 @@ f"> */
 
     /* Function Body */
     if (*n <= 0) {
-	return 0;
+	return;
     }
     if (*incx == 1 && *incy == 1) {
 	goto L20;
@@ -684,7 +684,7 @@ f"> */
 	iy += *incy;
 /* L10: */
     }
-    return 0;
+    return;
 
 /*     Code for both increments equal to 1 */
 
@@ -712,6 +712,6 @@ L20:
 	cx[i__2].r = ctemp.r, cx[i__2].i = ctemp.i;
 /* L30: */
     }
-    return 0;
+    return;
 } /* zlacrt_ */
 

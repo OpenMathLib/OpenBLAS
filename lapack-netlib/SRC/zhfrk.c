@@ -676,7 +676,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 /* > \ingroup complex16OTHERcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int zhfrk_(char *transr, char *uplo, char *trans, integer *n,
+/* Subroutine */ void zhfrk_(char *transr, char *uplo, char *trans, integer *n,
 	 integer *k, doublereal *alpha, doublecomplex *a, integer *lda, 
 	doublereal *beta, doublecomplex *c__)
 {
@@ -689,7 +689,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
     doublecomplex cbeta;
     logical normaltransr;
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int zgemm_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void zgemm_(char *, char *, integer *, integer *, 
 	    integer *, doublecomplex *, doublecomplex *, integer *, 
 	    doublecomplex *, integer *, doublecomplex *, doublecomplex *, 
 	    integer *), zherk_(char *, char *, integer *, 
@@ -750,7 +750,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
     if (info != 0) {
 	i__1 = -info;
 	xerbla_("ZHFRK ", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible. */
@@ -759,7 +759,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 /*     done (it is in ZHERK for example) and left in the general case. */
 
     if (*n == 0 || (*alpha == 0. || *k == 0) && *beta == 1.) {
-	return 0;
+	return;
     }
 
     if (*alpha == 0. && *beta == 0.) {
@@ -768,7 +768,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 	    i__2 = j;
 	    c__[i__2].r = 0., c__[i__2].i = 0.;
 	}
-	return 0;
+	return;
     }
 
     z__1.r = *alpha, z__1.i = 0.;
@@ -1081,7 +1081,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 
     }
 
-    return 0;
+    return;
 
 /*     End of ZHFRK */
 

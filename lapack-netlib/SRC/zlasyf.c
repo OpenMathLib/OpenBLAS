@@ -692,7 +692,7 @@ f"> */
 /* > \endverbatim */
 
 /*  ===================================================================== */
-/* Subroutine */ int zlasyf_(char *uplo, integer *n, integer *nb, integer *kb,
+/* Subroutine */ void zlasyf_(char *uplo, integer *n, integer *nb, integer *kb,
 	 doublecomplex *a, integer *lda, integer *ipiv, doublecomplex *w, 
 	integer *ldw, integer *info)
 {
@@ -706,17 +706,17 @@ f"> */
     doublecomplex t;
     doublereal alpha;
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int zscal_(integer *, doublecomplex *, 
+    extern /* Subroutine */ void zscal_(integer *, doublecomplex *, 
 	    doublecomplex *, integer *), zgemm_(char *, char *, integer *, 
 	    integer *, integer *, doublecomplex *, doublecomplex *, integer *,
 	     doublecomplex *, integer *, doublecomplex *, doublecomplex *, 
 	    integer *);
     integer kstep;
-    extern /* Subroutine */ int zgemv_(char *, integer *, integer *, 
+    extern /* Subroutine */ void zgemv_(char *, integer *, integer *, 
 	    doublecomplex *, doublecomplex *, integer *, doublecomplex *, 
 	    integer *, doublecomplex *, doublecomplex *, integer *);
     doublecomplex r1;
-    extern /* Subroutine */ int zcopy_(integer *, doublecomplex *, integer *, 
+    extern /* Subroutine */ void zcopy_(integer *, doublecomplex *, integer *, 
 	    doublecomplex *, integer *), zswap_(integer *, doublecomplex *, 
 	    integer *, doublecomplex *, integer *);
     doublecomplex d11, d21, d22;
@@ -1538,7 +1538,7 @@ L120:
 	*kb = k - 1;
 
     }
-    return 0;
+    return;
 
 /*     End of ZLASYF */
 

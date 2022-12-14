@@ -740,7 +740,7 @@ f"> */
 /* >     California at Berkeley, USA */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int dlasd3_(integer *nl, integer *nr, integer *sqre, integer 
+/* Subroutine */ void dlasd3_(integer *nl, integer *nr, integer *sqre, integer 
 	*k, doublereal *d__, doublereal *q, integer *ldq, doublereal *dsigma, 
 	doublereal *u, integer *ldu, doublereal *u2, integer *ldu2, 
 	doublereal *vt, integer *ldvt, doublereal *vt2, integer *ldvt2, 
@@ -755,23 +755,23 @@ f"> */
     doublereal temp;
     extern doublereal dnrm2_(integer *, doublereal *, integer *);
     integer i__, j, m, n;
-    extern /* Subroutine */ int dgemm_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void dgemm_(char *, char *, integer *, integer *, 
 	    integer *, doublereal *, doublereal *, integer *, doublereal *, 
 	    integer *, doublereal *, doublereal *, integer *);
     integer ctemp;
-    extern /* Subroutine */ int dcopy_(integer *, doublereal *, integer *, 
+    extern /* Subroutine */ void dcopy_(integer *, doublereal *, integer *, 
 	    doublereal *, integer *);
     integer ktemp;
     extern doublereal dlamc3_(doublereal *, doublereal *);
-    extern /* Subroutine */ int dlasd4_(integer *, integer *, doublereal *, 
+    extern /* Subroutine */ void dlasd4_(integer *, integer *, doublereal *, 
 	    doublereal *, doublereal *, doublereal *, doublereal *, 
 	    doublereal *, integer *);
     integer jc;
-    extern /* Subroutine */ int dlascl_(char *, integer *, integer *, 
+    extern /* Subroutine */ void dlascl_(char *, integer *, integer *, 
 	    doublereal *, doublereal *, integer *, integer *, doublereal *, 
 	    integer *, integer *), dlacpy_(char *, integer *, integer 
-	    *, doublereal *, integer *, doublereal *, integer *), 
-	    xerbla_(char *, integer *, ftnlen);
+	    *, doublereal *, integer *, doublereal *, integer *); 
+    extern int xerbla_(char *, integer *, ftnlen);
     doublereal rho;
     integer nlp1, nlp2, nrp1;
 
@@ -841,7 +841,7 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DLASD3", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
@@ -858,7 +858,7 @@ f"> */
 /* L10: */
 	    }
 	}
-	return 0;
+	return;
     }
 
 /*     Modify values DSIGMA(i) to make sure all DSIGMA(i)-DSIGMA(j) can */
@@ -904,7 +904,7 @@ f"> */
 /*        If the zero finder fails, report the convergence failure. */
 
 	if (*info != 0) {
-	    return 0;
+	    return;
 	}
 /* L30: */
     }
@@ -1007,7 +1007,7 @@ L100:
     if (*k == 2) {
 	dgemm_("N", "N", k, &m, k, &c_b13, &q[q_offset], ldq, &vt2[vt2_offset]
 		, ldvt2, &c_b26, &vt[vt_offset], ldvt);
-	return 0;
+	return;
     }
     ktemp = ctot[1] + 1;
     dgemm_("N", "N", k, &nlp1, &ktemp, &c_b13, &q[q_dim1 + 1], ldq, &vt2[
@@ -1038,7 +1038,7 @@ L100:
 	    vt2[ktemp + nlp2 * vt2_dim1], ldvt2, &c_b26, &vt[nlp2 * vt_dim1 + 
 	    1], ldvt);
 
-    return 0;
+    return;
 
 /*     End of DLASD3 */
 

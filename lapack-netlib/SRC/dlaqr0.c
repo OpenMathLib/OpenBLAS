@@ -777,7 +777,7 @@ f"> */
 /* > \ingroup doubleOTHERauxiliary */
 
 /*  ===================================================================== */
-/* Subroutine */ int dlaqr0_(logical *wantt, logical *wantz, integer *n, 
+/* Subroutine */ void dlaqr0_(logical *wantt, logical *wantz, integer *n, 
 	integer *ilo, integer *ihi, doublereal *h__, integer *ldh, doublereal 
 	*wr, doublereal *wi, integer *iloz, integer *ihiz, doublereal *z__, 
 	integer *ldz, doublereal *work, integer *lwork, integer *info)
@@ -792,7 +792,7 @@ f"> */
     integer ktop;
     doublereal zdum[1]	/* was [1][1] */;
     integer kacc22, i__, k, itmax, nsmax, nwmax, kwtop;
-    extern /* Subroutine */ int dlanv2_(doublereal *, doublereal *, 
+    extern /* Subroutine */ void dlanv2_(doublereal *, doublereal *, 
 	    doublereal *, doublereal *, doublereal *, doublereal *, 
 	    doublereal *, doublereal *, doublereal *, doublereal *), dlaqr3_(
 	    logical *, logical *, integer *, integer *, integer *, integer *, 
@@ -817,7 +817,7 @@ f"> */
     integer ku, kv, ls, ns;
     doublereal ss;
     integer nw;
-    extern /* Subroutine */ int dlahqr_(logical *, logical *, integer *, 
+    extern /* Subroutine */ void dlahqr_(logical *, logical *, integer *, 
 	    integer *, integer *, doublereal *, integer *, doublereal *, 
 	    doublereal *, integer *, integer *, doublereal *, integer *, 
 	    integer *), dlacpy_(char *, integer *, integer *, doublereal *, 
@@ -871,7 +871,7 @@ f"> */
 
     if (*n == 0) {
 	work[1] = 1.;
-	return 0;
+	return;
     }
 
     if (*n <= 15) {
@@ -953,7 +953,7 @@ f"> */
 
 	if (*lwork == -1) {
 	    work[1] = (doublereal) lwkopt;
-	    return 0;
+	    return;
 	}
 
 /*        ==== DLAHQR/DLAQR0 crossover point ==== */
@@ -1340,6 +1340,6 @@ L90:
 
 /*     ==== End of DLAQR0 ==== */
 
-    return 0;
+    return;
 } /* dlaqr0_ */
 

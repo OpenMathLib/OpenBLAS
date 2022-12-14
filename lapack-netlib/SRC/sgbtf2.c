@@ -660,7 +660,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int sgbtf2_(integer *m, integer *n, integer *kl, integer *ku,
+/* Subroutine */ void sgbtf2_(integer *m, integer *n, integer *kl, integer *ku,
 	 real *ab, integer *ldab, integer *ipiv, integer *info)
 {
     /* System generated locals */
@@ -668,10 +668,10 @@ f"> */
     real r__1;
 
     /* Local variables */
-    extern /* Subroutine */ int sger_(integer *, integer *, real *, real *, 
+    extern /* Subroutine */ void sger_(integer *, integer *, real *, real *, 
 	    integer *, real *, integer *, real *, integer *);
     integer i__, j;
-    extern /* Subroutine */ int sscal_(integer *, real *, real *, integer *), 
+    extern /* Subroutine */ void sscal_(integer *, real *, real *, integer *), 
 	    sswap_(integer *, real *, integer *, real *, integer *);
     integer km, jp, ju, kv;
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
@@ -716,13 +716,13 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("SGBTF2", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*m == 0 || *n == 0) {
-	return 0;
+	return;
     }
 
 /*     Gaussian elimination with partial pivoting */
@@ -812,7 +812,7 @@ f"> */
 	}
 /* L40: */
     }
-    return 0;
+    return;
 
 /*     End of SGBTF2 */
 

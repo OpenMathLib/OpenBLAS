@@ -683,7 +683,7 @@ static integer c__1 = 1;
 /* > \endverbatim */
 
 /*  ===================================================================== */
-/* Subroutine */ int ssycon_3_(char *uplo, integer *n, real *a, integer *lda,
+/* Subroutine */ void ssycon_3_(char *uplo, integer *n, real *a, integer *lda,
 	 real *e, integer *ipiv, real *anorm, real *rcond, real *work, 
 	integer *iwork, integer *info)
 {
@@ -692,14 +692,15 @@ static integer c__1 = 1;
 
     /* Local variables */
     integer kase;
-    extern /* Subroutine */ int ssytrs_3_(char *, integer *, integer *, real 
+    extern /* Subroutine */ void ssytrs_3_(char *, integer *, integer *, real 
 	    *, integer *, real *, integer *, real *, integer *, integer *);
     integer i__;
     extern logical lsame_(char *, char *);
     integer isave[3];
     logical upper;
-    extern /* Subroutine */ int slacn2_(integer *, real *, real *, integer *, 
-	    real *, integer *, integer *), xerbla_(char *, integer *, ftnlen);
+    extern /* Subroutine */ void slacn2_(integer *, real *, real *, integer *, 
+	    real *, integer *, integer *);
+    extern int xerbla_(char *, integer *, ftnlen);
     real ainvnm;
 
 
@@ -738,7 +739,7 @@ static integer c__1 = 1;
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("SSYCON_3", &i__1, (ftnlen)8);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
@@ -746,9 +747,9 @@ static integer c__1 = 1;
     *rcond = 0.f;
     if (*n == 0) {
 	*rcond = 1.f;
-	return 0;
+	return;
     } else if (*anorm <= 0.f) {
-	return 0;
+	return;
     }
 
 /*     Check that the diagonal matrix D is nonsingular. */
@@ -759,7 +760,7 @@ static integer c__1 = 1;
 
 	for (i__ = *n; i__ >= 1; --i__) {
 	    if (ipiv[i__] > 0 && a[i__ + i__ * a_dim1] == 0.f) {
-		return 0;
+		return;
 	    }
 	}
     } else {
@@ -769,7 +770,7 @@ static integer c__1 = 1;
 	i__1 = *n;
 	for (i__ = 1; i__ <= i__1; ++i__) {
 	    if (ipiv[i__] > 0 && a[i__ + i__ * a_dim1] == 0.f) {
-		return 0;
+		return;
 	    }
 	}
     }
@@ -794,7 +795,7 @@ L30:
 	*rcond = 1.f / ainvnm / *anorm;
     }
 
-    return 0;
+    return;
 
 /*     End of DSYCON_3 */
 

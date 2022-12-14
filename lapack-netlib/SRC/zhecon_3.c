@@ -678,7 +678,7 @@ static integer c__1 = 1;
 /* > \endverbatim */
 
 /*  ===================================================================== */
-/* Subroutine */ int zhecon_3_(char *uplo, integer *n, doublecomplex *a, 
+/* Subroutine */ void zhecon_3_(char *uplo, integer *n, doublecomplex *a, 
 	integer *lda, doublecomplex *e, integer *ipiv, doublereal *anorm, 
 	doublereal *rcond, doublecomplex *work, integer *info)
 {
@@ -686,16 +686,16 @@ static integer c__1 = 1;
     integer a_dim1, a_offset, i__1, i__2;
 
     /* Local variables */
-    extern /* Subroutine */ int zhetrs_3_(char *, integer *, integer *, 
+    extern /* Subroutine */ void zhetrs_3_(char *, integer *, integer *, 
 	    doublecomplex *, integer *, doublecomplex *, integer *, 
 	    doublecomplex *, integer *, integer *);
     integer kase, i__;
     extern logical lsame_(char *, char *);
     integer isave[3];
     logical upper;
-    extern /* Subroutine */ int zlacn2_(integer *, doublecomplex *, 
-	    doublecomplex *, doublereal *, integer *, integer *), xerbla_(
-	    char *, integer *, ftnlen);
+    extern /* Subroutine */ void zlacn2_(integer *, doublecomplex *, 
+	    doublecomplex *, doublereal *, integer *, integer *);
+    extern int xerbla_(char *, integer *, ftnlen);
     doublereal ainvnm;
 
 
@@ -733,7 +733,7 @@ static integer c__1 = 1;
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZHECON_3", &i__1, (ftnlen)8);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
@@ -741,9 +741,9 @@ static integer c__1 = 1;
     *rcond = 0.;
     if (*n == 0) {
 	*rcond = 1.;
-	return 0;
+	return;
     } else if (*anorm <= 0.) {
-	return 0;
+	return;
     }
 
 /*     Check that the diagonal matrix D is nonsingular. */
@@ -755,7 +755,7 @@ static integer c__1 = 1;
 	for (i__ = *n; i__ >= 1; --i__) {
 	    i__1 = i__ + i__ * a_dim1;
 	    if (ipiv[i__] > 0 && (a[i__1].r == 0. && a[i__1].i == 0.)) {
-		return 0;
+		return;
 	    }
 	}
     } else {
@@ -766,7 +766,7 @@ static integer c__1 = 1;
 	for (i__ = 1; i__ <= i__1; ++i__) {
 	    i__2 = i__ + i__ * a_dim1;
 	    if (ipiv[i__] > 0 && (a[i__2].r == 0. && a[i__2].i == 0.)) {
-		return 0;
+		return;
 	    }
 	}
     }
@@ -791,7 +791,7 @@ L30:
 	*rcond = 1. / ainvnm / *anorm;
     }
 
-    return 0;
+    return;
 
 /*     End of ZHECON_3 */
 

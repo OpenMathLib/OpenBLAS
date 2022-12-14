@@ -622,7 +622,7 @@ f"> */
 /* > \ingroup realOTHERcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int sorgl2_(integer *m, integer *n, integer *k, real *a, 
+/* Subroutine */ void sorgl2_(integer *m, integer *n, integer *k, real *a, 
 	integer *lda, real *tau, real *work, integer *info)
 {
     /* System generated locals */
@@ -631,9 +631,10 @@ f"> */
 
     /* Local variables */
     integer i__, j, l;
-    extern /* Subroutine */ int sscal_(integer *, real *, real *, integer *), 
+    extern /* Subroutine */ void sscal_(integer *, real *, real *, integer *), 
 	    slarf_(char *, integer *, integer *, real *, integer *, real *, 
-	    real *, integer *, real *), xerbla_(char *, integer *, ftnlen);
+	    real *, integer *, real *);
+    extern int xerbla_(char *, integer *, ftnlen);
 
 
 /*  -- LAPACK computational routine (version 3.7.0) -- */
@@ -668,13 +669,13 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("SORGL2", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*m <= 0) {
-	return 0;
+	return;
     }
 
     if (*k < *m) {
@@ -722,7 +723,7 @@ f"> */
 	}
 /* L40: */
     }
-    return 0;
+    return;
 
 /*     End of SORGL2 */
 

@@ -648,7 +648,7 @@ f"> */
 /* > \ingroup complex16OTHERauxiliary */
 
 /*  ===================================================================== */
-/* Subroutine */ int zlaic1_(integer *job, integer *j, doublecomplex *x, 
+/* Subroutine */ void zlaic1_(integer *job, integer *j, doublecomplex *x, 
 	doublereal *sest, doublecomplex *w, doublecomplex *gamma, doublereal *
 	sestpr, doublecomplex *s, doublecomplex *c__)
 {
@@ -724,7 +724,7 @@ f"> */
 		c__->r = z__1.r, c__->i = z__1.i;
 		*sestpr = s1 * tmp;
 	    }
-	    return 0;
+	    return;
 	} else if (absgam <= eps * absest) {
 	    s->r = 1., s->i = 0.;
 	    c__->r = 0., c__->i = 0.;
@@ -732,7 +732,7 @@ f"> */
 	    s1 = absest / tmp;
 	    s2 = absalp / tmp;
 	    *sestpr = tmp * sqrt(s1 * s1 + s2 * s2);
-	    return 0;
+	    return;
 	} else if (absalp <= eps * absest) {
 	    s1 = absgam;
 	    s2 = absest;
@@ -745,7 +745,7 @@ f"> */
 		c__->r = 1., c__->i = 0.;
 		*sestpr = s1;
 	    }
-	    return 0;
+	    return;
 	} else if (absest <= eps * absalp || absest <= eps * absgam) {
 	    s1 = absgam;
 	    s2 = absalp;
@@ -770,7 +770,7 @@ f"> */
 		z__1.r = z__2.r / scl, z__1.i = z__2.i / scl;
 		c__->r = z__1.r, c__->i = z__1.i;
 	    }
-	    return 0;
+	    return;
 	} else {
 
 /*           normal case */
@@ -819,7 +819,7 @@ f"> */
 	    z__1.r = cosine.r / tmp, z__1.i = cosine.i / tmp;
 	    c__->r = z__1.r, c__->i = z__1.i;
 	    *sestpr = sqrt(t + 1.) * absest;
-	    return 0;
+	    return;
 	}
 
     } else if (*job == 2) {
@@ -860,12 +860,12 @@ f"> */
 	    s->r = z__1.r, s->i = z__1.i;
 	    z__1.r = c__->r / tmp, z__1.i = c__->i / tmp;
 	    c__->r = z__1.r, c__->i = z__1.i;
-	    return 0;
+	    return;
 	} else if (absgam <= eps * absest) {
 	    s->r = 0., s->i = 0.;
 	    c__->r = 1., c__->i = 0.;
 	    *sestpr = absgam;
-	    return 0;
+	    return;
 	} else if (absalp <= eps * absest) {
 	    s1 = absgam;
 	    s2 = absest;
@@ -878,7 +878,7 @@ f"> */
 		c__->r = 0., c__->i = 0.;
 		*sestpr = s2;
 	    }
-	    return 0;
+	    return;
 	} else if (absest <= eps * absalp || absest <= eps * absgam) {
 	    s1 = absgam;
 	    s2 = absalp;
@@ -909,7 +909,7 @@ f"> */
 		z__1.r = z__2.r / scl, z__1.i = z__2.i / scl;
 		c__->r = z__1.r, c__->i = z__1.i;
 	    }
-	    return 0;
+	    return;
 	} else {
 
 /*           normal case */
@@ -992,11 +992,11 @@ f"> */
 	    s->r = z__1.r, s->i = z__1.i;
 	    z__1.r = cosine.r / tmp, z__1.i = cosine.i / tmp;
 	    c__->r = z__1.r, c__->i = z__1.i;
-	    return 0;
+	    return;
 
 	}
     }
-    return 0;
+    return;
 
 /*     End of ZLAIC1 */
 

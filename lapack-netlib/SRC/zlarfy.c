@@ -620,7 +620,7 @@ static integer c__1 = 1;
 /* > \ingroup complex16OTHERauxiliary */
 
 /*  ===================================================================== */
-/* Subroutine */ int zlarfy_(char *uplo, integer *n, doublecomplex *v, 
+/* Subroutine */ void zlarfy_(char *uplo, integer *n, doublecomplex *v, 
 	integer *incv, doublecomplex *tau, doublecomplex *c__, integer *ldc, 
 	doublecomplex *work)
 {
@@ -629,13 +629,13 @@ static integer c__1 = 1;
     doublecomplex z__1, z__2, z__3, z__4;
 
     /* Local variables */
-    extern /* Subroutine */ int zher2_(char *, integer *, doublecomplex *, 
+    extern /* Subroutine */ void zher2_(char *, integer *, doublecomplex *, 
 	    doublecomplex *, integer *, doublecomplex *, integer *, 
 	    doublecomplex *, integer *);
     doublecomplex alpha;
     extern /* Double Complex */ VOID zdotc_(doublecomplex *, integer *, 
 	    doublecomplex *, integer *, doublecomplex *, integer *);
-    extern /* Subroutine */ int zhemv_(char *, integer *, doublecomplex *, 
+    extern /* Subroutine */ void zhemv_(char *, integer *, doublecomplex *, 
 	    doublecomplex *, integer *, doublecomplex *, integer *, 
 	    doublecomplex *, doublecomplex *, integer *), zaxpy_(
 	    integer *, doublecomplex *, doublecomplex *, integer *, 
@@ -660,7 +660,7 @@ static integer c__1 = 1;
 
     /* Function Body */
     if (tau->r == 0. && tau->i == 0.) {
-	return 0;
+	return;
     }
 
 /*     Form  w:= C * v */
@@ -682,7 +682,7 @@ static integer c__1 = 1;
     z__1.r = -tau->r, z__1.i = -tau->i;
     zher2_(uplo, n, &z__1, &v[1], incv, &work[1], &c__1, &c__[c_offset], ldc);
 
-    return 0;
+    return;
 
 /*     End of ZLARFY */
 

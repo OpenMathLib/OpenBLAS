@@ -880,7 +880,7 @@ f"> */
 /* > \ingroup doubleGBsolve */
 
 /*  ===================================================================== */
-/* Subroutine */ int dgbsvx_(char *fact, char *trans, integer *n, integer *kl,
+/* Subroutine */ void dgbsvx_(char *fact, char *trans, integer *n, integer *kl,
 	 integer *ku, integer *nrhs, doublereal *ab, integer *ldab, 
 	doublereal *afb, integer *ldafb, integer *ipiv, char *equed, 
 	doublereal *r__, doublereal *c__, doublereal *b, integer *ldb, 
@@ -898,13 +898,13 @@ f"> */
     integer i__, j;
     extern logical lsame_(char *, char *);
     doublereal rcmin, rcmax, anorm;
-    extern /* Subroutine */ int dcopy_(integer *, doublereal *, integer *, 
+    extern /* Subroutine */ void dcopy_(integer *, doublereal *, integer *, 
 	    doublereal *, integer *);
     logical equil;
     integer j1, j2;
     extern doublereal dlamch_(char *), dlangb_(char *, integer *, 
 	    integer *, integer *, doublereal *, integer *, doublereal *);
-    extern /* Subroutine */ int dlaqgb_(integer *, integer *, integer *, 
+    extern /* Subroutine */ void dlaqgb_(integer *, integer *, integer *, 
 	    integer *, doublereal *, integer *, doublereal *, doublereal *, 
 	    doublereal *, doublereal *, doublereal *, char *), 
 	    dgbcon_(char *, integer *, integer *, integer *, doublereal *, 
@@ -913,7 +913,7 @@ f"> */
     doublereal colcnd;
     extern doublereal dlantb_(char *, char *, char *, integer *, integer *, 
 	    doublereal *, integer *, doublereal *);
-    extern /* Subroutine */ int dgbequ_(integer *, integer *, integer *, 
+    extern /* Subroutine */ void dgbequ_(integer *, integer *, integer *, 
 	    integer *, doublereal *, integer *, doublereal *, doublereal *, 
 	    doublereal *, doublereal *, doublereal *, integer *), dgbrfs_(
 	    char *, integer *, integer *, integer *, integer *, doublereal *, 
@@ -923,11 +923,11 @@ f"> */
 	    integer *, integer *, integer *, doublereal *, integer *, integer 
 	    *, integer *);
     logical nofact;
-    extern /* Subroutine */ int dlacpy_(char *, integer *, integer *, 
-	    doublereal *, integer *, doublereal *, integer *), 
-	    xerbla_(char *, integer *, ftnlen);
+    extern /* Subroutine */ void dlacpy_(char *, integer *, integer *, 
+	    doublereal *, integer *, doublereal *, integer *); 
+    extern int xerbla_(char *, integer *, ftnlen);
     doublereal bignum;
-    extern /* Subroutine */ int dgbtrs_(char *, integer *, integer *, integer 
+    extern /* Subroutine */ void dgbtrs_(char *, integer *, integer *, integer 
 	    *, integer *, doublereal *, integer *, integer *, doublereal *, 
 	    integer *, integer *);
     integer infequ;
@@ -1064,7 +1064,7 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DGBSVX", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
     if (equil) {
@@ -1170,7 +1170,7 @@ f"> */
 	    }
 	    work[1] = rpvgrw;
 	    *rcond = 0.;
-	    return 0;
+	    return;
 	}
     }
 
@@ -1254,7 +1254,7 @@ f"> */
     }
 
     work[1] = rpvgrw;
-    return 0;
+    return;
 
 /*     End of DGBSVX */
 

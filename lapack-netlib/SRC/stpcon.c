@@ -642,7 +642,7 @@ f"> */
 /* > \ingroup realOTHERcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int stpcon_(char *norm, char *uplo, char *diag, integer *n, 
+/* Subroutine */ void stpcon_(char *norm, char *uplo, char *diag, integer *n, 
 	real *ap, real *rcond, real *work, integer *iwork, integer *info)
 {
     /* System generated locals */
@@ -655,10 +655,10 @@ f"> */
     extern logical lsame_(char *, char *);
     integer isave[3];
     real anorm;
-    extern /* Subroutine */ int srscl_(integer *, real *, real *, integer *);
+    extern /* Subroutine */ void srscl_(integer *, real *, real *, integer *);
     logical upper;
     real xnorm;
-    extern /* Subroutine */ int slacn2_(integer *, real *, real *, integer *, 
+    extern /* Subroutine */ void slacn2_(integer *, real *, real *, integer *, 
 	    real *, integer *, integer *);
     integer ix;
     extern real slamch_(char *);
@@ -668,7 +668,7 @@ f"> */
     logical onenrm;
     extern real slantp_(char *, char *, char *, integer *, real *, real *);
     char normin[1];
-    extern /* Subroutine */ int slatps_(char *, char *, char *, char *, 
+    extern /* Subroutine */ void slatps_(char *, char *, char *, char *, 
 	    integer *, real *, real *, real *, real *, integer *);
     real smlnum;
     logical nounit;
@@ -708,14 +708,14 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("STPCON", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
 	*rcond = 1.f;
-	return 0;
+	return;
     }
 
     *rcond = 0.f;
@@ -778,7 +778,7 @@ L10:
     }
 
 L20:
-    return 0;
+    return;
 
 /*     End of STPCON */
 

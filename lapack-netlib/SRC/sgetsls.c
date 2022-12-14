@@ -674,7 +674,7 @@ static integer c__0 = 0;
 /* > \ingroup realGEsolve */
 
 /*  ===================================================================== */
-/* Subroutine */ int sgetsls_(char *trans, integer *m, integer *n, integer *
+/* Subroutine */ void sgetsls_(char *trans, integer *m, integer *n, integer *
 	nrhs, real *a, integer *lda, real *b, integer *ldb, real *work, 
 	integer *lwork, integer *info)
 {
@@ -686,20 +686,20 @@ static integer c__0 = 0;
     logical tran;
     integer brow, tszm, tszo, info2, i__, j, iascl, ibscl;
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int sgelq_(integer *, integer *, real *, integer *
+    extern /* Subroutine */ void sgelq_(integer *, integer *, real *, integer *
 	    , real *, integer *, real *, integer *, integer *);
     integer minmn, maxmn;
-    extern /* Subroutine */ int sgeqr_(integer *, integer *, real *, integer *
+    extern /* Subroutine */ void sgeqr_(integer *, integer *, real *, integer *
 	    , real *, integer *, real *, integer *, integer *);
     real workq[1];
-    extern /* Subroutine */ int slabad_(real *, real *);
+    extern /* Subroutine */ void slabad_(real *, real *);
     real tq[5];
     extern real slamch_(char *), slange_(char *, integer *, integer *,
 	     real *, integer *, real *);
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     integer scllen;
     real bignum;
-    extern /* Subroutine */ int slascl_(char *, integer *, integer *, real *, 
+    extern /* Subroutine */ void slascl_(char *, integer *, integer *, real *, 
 	    real *, integer *, integer *, real *, integer *, integer *), sgemlq_(char *, char *, integer *, integer *, integer *, 
 	    real *, integer *, real *, integer *, real *, integer *, real *, 
 	    integer *, integer *), slaset_(char *, integer *, 
@@ -817,7 +817,7 @@ static integer c__0 = 0;
 	i__1 = -(*info);
 	xerbla_("SGETSLS", &i__1, (ftnlen)7);
 	work[1] = (real) wsizeo;
-	return 0;
+	return;
     }
     if (lquery) {
 	if (*lwork == -1) {
@@ -826,7 +826,7 @@ static integer c__0 = 0;
 	if (*lwork == -2) {
 	    work[1] = (real) wsizem;
 	}
-	return 0;
+	return;
     }
     if (*lwork < wsizeo) {
 	lw1 = tszm;
@@ -843,7 +843,7 @@ static integer c__0 = 0;
     if (f2cmin(i__1,*nrhs) == 0) {
 	i__1 = f2cmax(*m,*n);
 	slaset_("FULL", &i__1, nrhs, &c_b23, &c_b23, &b[b_offset], ldb);
-	return 0;
+	return;
     }
 
 /*     Get machine parameters */
@@ -920,7 +920,7 @@ static integer c__0 = 0;
 	    strtrs_("U", "N", "N", n, nrhs, &a[a_offset], lda, &b[b_offset], 
 		    ldb, info);
 	    if (*info > 0) {
-		return 0;
+		return;
 	    }
 	    scllen = *n;
 	} else {
@@ -933,7 +933,7 @@ static integer c__0 = 0;
 		    ldb, info);
 
 	    if (*info > 0) {
-		return 0;
+		return;
 	    }
 
 /*           B(N+1:M,1:NRHS) = ZERO */
@@ -976,7 +976,7 @@ static integer c__0 = 0;
 		    ldb, info);
 
 	    if (*info > 0) {
-		return 0;
+		return;
 	    }
 
 /*           B(M+1:N,1:NRHS) = 0 */
@@ -1017,7 +1017,7 @@ static integer c__0 = 0;
 		    lda, &b[b_offset], ldb, info);
 
 	    if (*info > 0) {
-		return 0;
+		return;
 	    }
 
 	    scllen = *m;
@@ -1045,7 +1045,7 @@ static integer c__0 = 0;
 
 L50:
     work[1] = (real) (tszo + lwo);
-    return 0;
+    return;
 
 /*     End of SGETSLS */
 

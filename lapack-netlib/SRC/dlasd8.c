@@ -681,7 +681,7 @@ f"> */
 /* >     California at Berkeley, USA */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int dlasd8_(integer *icompq, integer *k, doublereal *d__, 
+/* Subroutine */ void dlasd8_(integer *icompq, integer *k, doublereal *d__, 
 	doublereal *z__, doublereal *vf, doublereal *vl, doublereal *difl, 
 	doublereal *difr, integer *lddifr, doublereal *dsigma, doublereal *
 	work, integer *info)
@@ -697,18 +697,18 @@ f"> */
     extern doublereal dnrm2_(integer *, doublereal *, integer *);
     integer iwk2i, iwk3i, i__, j;
     doublereal diflj, difrj, dsigj;
-    extern /* Subroutine */ int dcopy_(integer *, doublereal *, integer *, 
+    extern /* Subroutine */ void dcopy_(integer *, doublereal *, integer *, 
 	    doublereal *, integer *);
     extern doublereal dlamc3_(doublereal *, doublereal *);
-    extern /* Subroutine */ int dlasd4_(integer *, integer *, doublereal *, 
+    extern /* Subroutine */ void dlasd4_(integer *, integer *, doublereal *, 
 	    doublereal *, doublereal *, doublereal *, doublereal *, 
 	    doublereal *, integer *);
     doublereal dj;
-    extern /* Subroutine */ int dlascl_(char *, integer *, integer *, 
+    extern /* Subroutine */ void dlascl_(char *, integer *, integer *, 
 	    doublereal *, doublereal *, integer *, integer *, doublereal *, 
 	    integer *, integer *), dlaset_(char *, integer *, integer 
-	    *, doublereal *, doublereal *, doublereal *, integer *), 
-	    xerbla_(char *, integer *, ftnlen);
+	    *, doublereal *, doublereal *, doublereal *, integer *); 
+    extern int xerbla_(char *, integer *, ftnlen);
     doublereal dsigjp, rho;
     integer iwk1, iwk2, iwk3;
 
@@ -749,7 +749,7 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DLASD8", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
@@ -761,7 +761,7 @@ f"> */
 	    difl[2] = 1.;
 	    difr[(difr_dim1 << 1) + 1] = 1.;
 	}
-	return 0;
+	return;
     }
 
 /*     Modify values DSIGMA(i) to make sure all DSIGMA(i)-DSIGMA(j) can */
@@ -816,7 +816,7 @@ f"> */
 /*        If the root finder fails, report the convergence failure. */
 
 	if (*info != 0) {
-	    return 0;
+	    return;
 	}
 	work[iwk3i + j] = work[iwk3i + j] * work[j] * work[iwk2i + j];
 	difl[j] = -work[j];
@@ -883,7 +883,7 @@ f"> */
     dcopy_(k, &work[iwk2], &c__1, &vf[1], &c__1);
     dcopy_(k, &work[iwk3], &c__1, &vl[1], &c__1);
 
-    return 0;
+    return;
 
 /*     End of DLASD8 */
 

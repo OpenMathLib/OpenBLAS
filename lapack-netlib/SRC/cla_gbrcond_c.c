@@ -688,10 +688,11 @@ real cla_gbrcond_c_(char *trans, integer *n, integer *kl, integer *ku,
     extern logical lsame_(char *, char *);
     integer isave[3];
     real anorm;
-    extern /* Subroutine */ int clacn2_(integer *, complex *, complex *, real 
+    extern /* Subroutine */ void clacn2_(integer *, complex *, complex *, real 
 	    *, integer *, integer *);
     integer kd, ke;
-    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen), cgbtrs_(
+    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
+    extern void cgbtrs_(
 	    char *, integer *, integer *, integer *, integer *, complex *, 
 	    integer *, integer *, complex *, integer *, integer *);
     real ainvnm, tmp;

@@ -812,7 +812,7 @@ f"> */
 /* >      July 1989, pp 745-751. */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int ztgsyl_(char *trans, integer *ijob, integer *m, integer *
+/* Subroutine */ void ztgsyl_(char *trans, integer *ijob, integer *m, integer *
 	n, doublecomplex *a, integer *lda, doublecomplex *b, integer *ldb, 
 	doublecomplex *c__, integer *ldc, doublecomplex *d__, integer *ldd, 
 	doublecomplex *e, integer *lde, doublecomplex *f, integer *ldf, 
@@ -830,7 +830,7 @@ f"> */
     integer i__, j, k, p, q;
     extern logical lsame_(char *, char *);
     integer ifunc, linfo;
-    extern /* Subroutine */ int zscal_(integer *, doublecomplex *, 
+    extern /* Subroutine */ void zscal_(integer *, doublecomplex *, 
 	    doublecomplex *, integer *), zgemm_(char *, char *, integer *, 
 	    integer *, integer *, doublecomplex *, doublecomplex *, integer *,
 	     doublecomplex *, integer *, doublecomplex *, doublecomplex *, 
@@ -840,7 +840,7 @@ f"> */
     integer ie, je, mb, nb;
     doublereal dscale;
     integer is, js, pq;
-    extern /* Subroutine */ int ztgsy2_(char *, integer *, integer *, integer 
+    extern /* Subroutine */ void ztgsy2_(char *, integer *, integer *, integer 
 	    *, doublecomplex *, integer *, doublecomplex *, integer *, 
 	    doublecomplex *, integer *, doublecomplex *, integer *, 
 	    doublecomplex *, integer *, doublecomplex *, integer *, 
@@ -852,7 +852,7 @@ f"> */
     integer iround;
     logical notran;
     integer isolve;
-    extern /* Subroutine */ int zlacpy_(char *, integer *, integer *, 
+    extern /* Subroutine */ void zlacpy_(char *, integer *, integer *, 
 	    doublecomplex *, integer *, doublecomplex *, integer *), 
 	    zlaset_(char *, integer *, integer *, doublecomplex *, 
 	    doublecomplex *, doublecomplex *, integer *);
@@ -948,9 +948,9 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZTGSYL", &i__1, (ftnlen)6);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
@@ -962,7 +962,7 @@ f"> */
 		*dif = 0.;
 	    }
 	}
-	return 0;
+	return;
     }
 
 /*     Determine  optimal block sizes MB and NB */
@@ -1024,7 +1024,7 @@ f"> */
 /* L30: */
 	}
 
-	return 0;
+	return;
 
     }
 
@@ -1294,7 +1294,7 @@ L70:
 
     work[1].r = (doublereal) lwmin, work[1].i = 0.;
 
-    return 0;
+    return;
 
 /*     End of ZTGSYL */
 

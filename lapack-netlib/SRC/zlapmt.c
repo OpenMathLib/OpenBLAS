@@ -613,7 +613,7 @@ f"> */
 /* > \ingroup complex16OTHERauxiliary */
 
 /*  ===================================================================== */
-/* Subroutine */ int zlapmt_(logical *forwrd, integer *m, integer *n, 
+/* Subroutine */ void zlapmt_(logical *forwrd, integer *m, integer *n, 
 	doublecomplex *x, integer *ldx, integer *k)
 {
     /* System generated locals */
@@ -641,7 +641,7 @@ f"> */
 
     /* Function Body */
     if (*n <= 1) {
-	return 0;
+	return;
     }
 
     i__1 = *n;
@@ -735,7 +735,7 @@ L80:
 
     }
 
-    return 0;
+    return;
 
 /*     End of ZLAPMT */
 

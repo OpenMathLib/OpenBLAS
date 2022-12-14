@@ -729,7 +729,7 @@ or GE matrices</b> */
 /* > \ingroup doubleGEeigen */
 
 /*  ===================================================================== */
-/* Subroutine */ int dgees_(char *jobvs, char *sort, L_fp select, integer *n, 
+/* Subroutine */ void dgees_(char *jobvs, char *sort, L_fp select, integer *n, 
 	doublereal *a, integer *lda, integer *sdim, doublereal *wr, 
 	doublereal *wi, doublereal *vs, integer *ldvs, doublereal *work, 
 	integer *lwork, logical *bwork, integer *info)
@@ -744,12 +744,12 @@ or GE matrices</b> */
     doublereal s;
     integer icond, ieval;
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int dcopy_(integer *, doublereal *, integer *, 
+    extern /* Subroutine */ void dcopy_(integer *, doublereal *, integer *, 
 	    doublereal *, integer *), dswap_(integer *, doublereal *, integer 
 	    *, doublereal *, integer *);
     logical cursl;
     integer i1, i2;
-    extern /* Subroutine */ int dlabad_(doublereal *, doublereal *), dgebak_(
+    extern /* Subroutine */ void dlabad_(doublereal *, doublereal *), dgebak_(
 	    char *, char *, integer *, integer *, integer *, doublereal *, 
 	    integer *, doublereal *, integer *, integer *), 
 	    dgebal_(char *, integer *, doublereal *, integer *, integer *, 
@@ -759,17 +759,17 @@ or GE matrices</b> */
     doublereal cscale;
     extern doublereal dlamch_(char *), dlange_(char *, integer *, 
 	    integer *, doublereal *, integer *, doublereal *);
-    extern /* Subroutine */ int dgehrd_(integer *, integer *, integer *, 
+    extern /* Subroutine */ void dgehrd_(integer *, integer *, integer *, 
 	    doublereal *, integer *, doublereal *, doublereal *, integer *, 
 	    integer *), dlascl_(char *, integer *, integer *, doublereal *, 
 	    doublereal *, integer *, integer *, doublereal *, integer *, 
 	    integer *), dlacpy_(char *, integer *, integer *, 
-	    doublereal *, integer *, doublereal *, integer *), 
-	    xerbla_(char *, integer *, ftnlen);
+	    doublereal *, integer *, doublereal *, integer *); 
+    extern int xerbla_(char *, integer *, ftnlen);
     extern integer ilaenv_(integer *, char *, char *, integer *, integer *, 
 	    integer *, integer *, ftnlen, ftnlen);
     doublereal bignum;
-    extern /* Subroutine */ int dorghr_(integer *, integer *, integer *, 
+    extern /* Subroutine */ void dorghr_(integer *, integer *, integer *, 
 	    doublereal *, integer *, doublereal *, doublereal *, integer *, 
 	    integer *), dhseqr_(char *, char *, integer *, integer *, integer 
 	    *, doublereal *, integer *, doublereal *, doublereal *, 
@@ -874,16 +874,16 @@ or GE matrices</b> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DGEES ", &i__1, (ftnlen)6);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
 	*sdim = 0;
-	return 0;
+	return;
     }
 
 /*     Get machine constants */
@@ -1118,7 +1118,7 @@ L20:
     }
 
     work[1] = (doublereal) maxwrk;
-    return 0;
+    return;
 
 /*     End of DGEES */
 

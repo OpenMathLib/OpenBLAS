@@ -631,7 +631,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int dlaev2_(doublereal *a, doublereal *b, doublereal *c__, 
+/* Subroutine */ void dlaev2_(doublereal *a, doublereal *b, doublereal *c__, 
 	doublereal *rt1, doublereal *rt2, doublereal *cs1, doublereal *sn1)
 {
     /* System generated locals */
@@ -735,7 +735,7 @@ f"> */
 	*cs1 = -(*sn1);
 	*sn1 = tn;
     }
-    return 0;
+    return;
 
 /*     End of DLAEV2 */
 

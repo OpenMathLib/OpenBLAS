@@ -658,7 +658,7 @@ f"> */
 /* > \ingroup realGTcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int sgtcon_(char *norm, integer *n, real *dl, real *d__, 
+/* Subroutine */ void sgtcon_(char *norm, integer *n, real *dl, real *d__, 
 	real *du, real *du2, integer *ipiv, real *anorm, real *rcond, real *
 	work, integer *iwork, integer *info)
 {
@@ -669,11 +669,12 @@ f"> */
     integer kase, kase1, i__;
     extern logical lsame_(char *, char *);
     integer isave[3];
-    extern /* Subroutine */ int slacn2_(integer *, real *, real *, integer *, 
-	    real *, integer *, integer *), xerbla_(char *, integer *, ftnlen);
+    extern /* Subroutine */ void slacn2_(integer *, real *, real *, integer *, 
+	    real *, integer *, integer *);
+    extern int xerbla_(char *, integer *, ftnlen);
     real ainvnm;
     logical onenrm;
-    extern /* Subroutine */ int sgttrs_(char *, integer *, integer *, real *, 
+    extern /* Subroutine */ void sgttrs_(char *, integer *, integer *, real *, 
 	    real *, real *, real *, integer *, real *, integer *, integer *);
 
 
@@ -710,7 +711,7 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("SGTCON", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
@@ -718,9 +719,9 @@ f"> */
     *rcond = 0.f;
     if (*n == 0) {
 	*rcond = 1.f;
-	return 0;
+	return;
     } else if (*anorm == 0.f) {
-	return 0;
+	return;
     }
 
 /*     Check that D(1:N) is non-zero. */
@@ -728,7 +729,7 @@ f"> */
     i__1 = *n;
     for (i__ = 1; i__ <= i__1; ++i__) {
 	if (d__[i__] == 0.f) {
-	    return 0;
+	    return;
 	}
 /* L10: */
     }
@@ -765,7 +766,7 @@ L20:
 	*rcond = 1.f / ainvnm / *anorm;
     }
 
-    return 0;
+    return;
 
 /*     End of SGTCON */
 

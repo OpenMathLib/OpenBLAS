@@ -718,7 +718,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int ctfttp_(char *transr, char *uplo, integer *n, complex *
+/* Subroutine */ void ctfttp_(char *transr, char *uplo, integer *n, complex *
 	arf, complex *ap, integer *info)
 {
     /* System generated locals */
@@ -760,13 +760,13 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CTFTTP", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
     if (*n == 1) {
@@ -776,7 +776,7 @@ f"> */
 	    r_cnjg(&q__1, arf);
 	    ap[0].r = q__1.r, ap[0].i = q__1.i;
 	}
-	return 0;
+	return;
     }
 
 /*     Size of array ARF(0:NT-1) */
@@ -1112,7 +1112,7 @@ f"> */
 
     }
 
-    return 0;
+    return;
 
 /*     End of CTFTTP */
 

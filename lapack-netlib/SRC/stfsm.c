@@ -790,7 +790,7 @@ static real c_b27 = 1.f;
 /* > \endverbatim */
 
 /*  ===================================================================== */
-/* Subroutine */ int stfsm_(char *transr, char *side, char *uplo, char *trans,
+/* Subroutine */ void stfsm_(char *transr, char *side, char *uplo, char *trans,
 	 char *diag, integer *m, integer *n, real *alpha, real *a, real *b, 
 	integer *ldb)
 {
@@ -801,14 +801,15 @@ static real c_b27 = 1.f;
     integer info, i__, j, k;
     logical normaltransr, lside;
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int sgemm_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void sgemm_(char *, char *, integer *, integer *, 
 	    integer *, real *, real *, integer *, real *, integer *, real *, 
 	    real *, integer *);
     logical lower;
     integer m1, m2, n1, n2;
-    extern /* Subroutine */ int strsm_(char *, char *, char *, char *, 
+    extern /* Subroutine */ void strsm_(char *, char *, char *, char *, 
 	    integer *, integer *, real *, real *, integer *, real *, integer *
-	    ), xerbla_(char *, integer *, ftnlen);
+	    );
+    extern int xerbla_(char *, integer *, ftnlen);
     logical misodd, nisodd, notrans;
 
 
@@ -855,13 +856,13 @@ static real c_b27 = 1.f;
     if (info != 0) {
 	i__1 = -info;
 	xerbla_("STFSM ", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return when ( (N.EQ.0).OR.(M.EQ.0) ) */
 
     if (*m == 0 || *n == 0) {
-	return 0;
+	return;
     }
 
 /*     Quick return when ALPHA.EQ.(0D+0) */
@@ -876,7 +877,7 @@ static real c_b27 = 1.f;
 	    }
 /* L20: */
 	}
-	return 0;
+	return;
     }
 
     if (lside) {
@@ -1525,7 +1526,7 @@ static real c_b27 = 1.f;
 	}
     }
 
-    return 0;
+    return;
 
 /*     End of STFSM */
 

@@ -650,7 +650,7 @@ rook.f"> */
 /* > \endverbatim */
 
 /*  ===================================================================== */
-/* Subroutine */ int dsytrs_rook_(char *uplo, integer *n, integer *nrhs, 
+/* Subroutine */ void dsytrs_rook_(char *uplo, integer *n, integer *nrhs, 
 	doublereal *a, integer *lda, integer *ipiv, doublereal *b, integer *
 	ldb, integer *info)
 {
@@ -659,16 +659,16 @@ rook.f"> */
     doublereal d__1;
 
     /* Local variables */
-    extern /* Subroutine */ int dger_(integer *, integer *, doublereal *, 
+    extern /* Subroutine */ void dger_(integer *, integer *, doublereal *, 
 	    doublereal *, integer *, doublereal *, integer *, doublereal *, 
 	    integer *);
     doublereal akm1k;
     integer j, k;
-    extern /* Subroutine */ int dscal_(integer *, doublereal *, doublereal *, 
+    extern /* Subroutine */ void dscal_(integer *, doublereal *, doublereal *, 
 	    integer *);
     extern logical lsame_(char *, char *);
     doublereal denom;
-    extern /* Subroutine */ int dgemv_(char *, integer *, integer *, 
+    extern /* Subroutine */ void dgemv_(char *, integer *, integer *, 
 	    doublereal *, doublereal *, integer *, doublereal *, integer *, 
 	    doublereal *, doublereal *, integer *), dswap_(integer *, 
 	    doublereal *, integer *, doublereal *, integer *);
@@ -714,13 +714,13 @@ rook.f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DSYTRS_ROOK", &i__1, (ftnlen)11);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0 || *nrhs == 0) {
-	return 0;
+	return;
     }
 
     if (upper) {
@@ -1046,7 +1046,7 @@ L100:
 	;
     }
 
-    return 0;
+    return;
 
 /*     End of DSYTRS_ROOK */
 

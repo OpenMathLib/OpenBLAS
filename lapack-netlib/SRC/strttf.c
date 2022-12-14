@@ -704,7 +704,7 @@ f"> */
 /* > \endverbatim */
 
 /*  ===================================================================== */
-/* Subroutine */ int strttf_(char *transr, char *uplo, integer *n, real *a, 
+/* Subroutine */ void strttf_(char *transr, char *uplo, integer *n, real *a, 
 	integer *lda, real *arf, integer *info)
 {
     /* System generated locals */
@@ -753,7 +753,7 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("STRTTF", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
@@ -762,7 +762,7 @@ f"> */
 	if (*n == 1) {
 	    arf[0] = a[0];
 	}
-	return 0;
+	return;
     }
 
 /*     Size of array ARF(0:nt-1) */
@@ -1032,7 +1032,7 @@ f"> */
 
     }
 
-    return 0;
+    return;
 
 /*     End of STRTTF */
 

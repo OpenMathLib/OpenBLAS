@@ -793,7 +793,7 @@ f"> */
 /* >       University of Kansas, USA */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int dlaqr3_(logical *wantt, logical *wantz, integer *n, 
+/* Subroutine */ void dlaqr3_(logical *wantt, logical *wantz, integer *n, 
 	integer *ktop, integer *kbot, integer *nw, doublereal *h__, integer *
 	ldh, integer *iloz, integer *ihiz, doublereal *z__, integer *ldz, 
 	integer *ns, integer *nd, doublereal *sr, doublereal *si, doublereal *
@@ -809,32 +809,32 @@ f"> */
     doublereal beta;
     integer kend, kcol, info, nmin, ifst, ilst, ltop, krow, i__, j, k;
     doublereal s;
-    extern /* Subroutine */ int dlarf_(char *, integer *, integer *, 
+    extern /* Subroutine */ void dlarf_(char *, integer *, integer *, 
 	    doublereal *, integer *, doublereal *, doublereal *, integer *, 
 	    doublereal *), dgemm_(char *, char *, integer *, integer *
 	    , integer *, doublereal *, doublereal *, integer *, doublereal *, 
 	    integer *, doublereal *, doublereal *, integer *);
     logical bulge;
-    extern /* Subroutine */ int dcopy_(integer *, doublereal *, integer *, 
+    extern /* Subroutine */ void dcopy_(integer *, doublereal *, integer *, 
 	    doublereal *, integer *);
     integer infqr, kwtop;
-    extern /* Subroutine */ int dlanv2_(doublereal *, doublereal *, 
+    extern /* Subroutine */ void dlanv2_(doublereal *, doublereal *, 
 	    doublereal *, doublereal *, doublereal *, doublereal *, 
 	    doublereal *, doublereal *, doublereal *, doublereal *), dlaqr4_(
 	    logical *, logical *, integer *, integer *, integer *, doublereal 
 	    *, integer *, doublereal *, doublereal *, integer *, integer *, 
 	    doublereal *, integer *, doublereal *, integer *, integer *);
     doublereal aa, bb, cc;
-    extern /* Subroutine */ int dlabad_(doublereal *, doublereal *);
+    extern /* Subroutine */ void dlabad_(doublereal *, doublereal *);
     doublereal dd, cs;
     extern doublereal dlamch_(char *);
-    extern /* Subroutine */ int dgehrd_(integer *, integer *, integer *, 
+    extern /* Subroutine */ void dgehrd_(integer *, integer *, integer *, 
 	    doublereal *, integer *, doublereal *, doublereal *, integer *, 
 	    integer *), dlarfg_(integer *, doublereal *, doublereal *, 
 	    integer *, doublereal *);
     doublereal sn;
     integer jw;
-    extern /* Subroutine */ int dlahqr_(logical *, logical *, integer *, 
+    extern /* Subroutine */ void dlahqr_(logical *, logical *, integer *, 
 	    integer *, integer *, doublereal *, integer *, doublereal *, 
 	    doublereal *, integer *, integer *, doublereal *, integer *, 
 	    integer *), dlacpy_(char *, integer *, integer *, doublereal *, 
@@ -842,7 +842,7 @@ f"> */
     doublereal safmin, safmax;
     extern integer ilaenv_(integer *, char *, char *, integer *, integer *, 
 	    integer *, integer *, ftnlen, ftnlen);
-    extern /* Subroutine */ int dlaset_(char *, integer *, integer *, 
+    extern /* Subroutine */ void dlaset_(char *, integer *, integer *, 
 	    doublereal *, doublereal *, doublereal *, integer *), 
 	    dtrexc_(char *, integer *, doublereal *, integer *, doublereal *, 
 	    integer *, integer *, integer *, doublereal *, integer *),
@@ -928,7 +928,7 @@ f"> */
 
     if (*lwork == -1) {
 	work[1] = (doublereal) lwkopt;
-	return 0;
+	return;
     }
 
 /*     ==== Nothing to do ... */
@@ -937,11 +937,11 @@ f"> */
     *nd = 0;
     work[1] = 1.;
     if (*ktop > *kbot) {
-	return 0;
+	return;
     }
 /*     ... nor for an empty deflation window. ==== */
     if (*nw < 1) {
-	return 0;
+	return;
     }
 
 /*     ==== Machine constants ==== */
@@ -983,7 +983,7 @@ f"> */
 	    }
 	}
 	work[1] = 1.;
-	return 0;
+	return;
     }
 
 /*     ==== Convert to spike-triangular form.  (In case of a */
@@ -1332,6 +1332,6 @@ L60:
 
 /*     ==== End of DLAQR3 ==== */
 
-    return 0;
+    return;
 } /* dlaqr3_ */
 

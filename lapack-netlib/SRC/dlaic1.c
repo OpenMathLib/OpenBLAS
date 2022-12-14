@@ -648,7 +648,7 @@ f"> */
 /* > \ingroup doubleOTHERauxiliary */
 
 /*  ===================================================================== */
-/* Subroutine */ int dlaic1_(integer *job, integer *j, doublereal *x, 
+/* Subroutine */ void dlaic1_(integer *job, integer *j, doublereal *x, 
 	doublereal *sest, doublereal *w, doublereal *gamma, doublereal *
 	sestpr, doublereal *s, doublereal *c__)
 {
@@ -704,7 +704,7 @@ f"> */
 		*c__ /= tmp;
 		*sestpr = s1 * tmp;
 	    }
-	    return 0;
+	    return;
 	} else if (absgam <= eps * absest) {
 	    *s = 1.;
 	    *c__ = 0.;
@@ -712,7 +712,7 @@ f"> */
 	    s1 = absest / tmp;
 	    s2 = absalp / tmp;
 	    *sestpr = tmp * sqrt(s1 * s1 + s2 * s2);
-	    return 0;
+	    return;
 	} else if (absalp <= eps * absest) {
 	    s1 = absgam;
 	    s2 = absest;
@@ -725,7 +725,7 @@ f"> */
 		*c__ = 1.;
 		*sestpr = s1;
 	    }
-	    return 0;
+	    return;
 	} else if (absest <= eps * absalp || absest <= eps * absgam) {
 	    s1 = absgam;
 	    s2 = absalp;
@@ -742,7 +742,7 @@ f"> */
 		*s = alpha / s1 / *c__;
 		*c__ = d_sign(&c_b5, gamma) / *c__;
 	    }
-	    return 0;
+	    return;
 	} else {
 
 /*           normal case */
@@ -764,7 +764,7 @@ f"> */
 	    *s = sine / tmp;
 	    *c__ = cosine / tmp;
 	    *sestpr = sqrt(t + 1.) * absest;
-	    return 0;
+	    return;
 	}
 
     } else if (*job == 2) {
@@ -790,12 +790,12 @@ f"> */
 	    tmp = sqrt(*s * *s + *c__ * *c__);
 	    *s /= tmp;
 	    *c__ /= tmp;
-	    return 0;
+	    return;
 	} else if (absgam <= eps * absest) {
 	    *s = 0.;
 	    *c__ = 1.;
 	    *sestpr = absgam;
-	    return 0;
+	    return;
 	} else if (absalp <= eps * absest) {
 	    s1 = absgam;
 	    s2 = absest;
@@ -808,7 +808,7 @@ f"> */
 		*c__ = 0.;
 		*sestpr = s2;
 	    }
-	    return 0;
+	    return;
 	} else if (absest <= eps * absalp || absest <= eps * absgam) {
 	    s1 = absgam;
 	    s2 = absalp;
@@ -825,7 +825,7 @@ f"> */
 		*c__ = alpha / s1 / *s;
 		*s = -d_sign(&c_b5, gamma) / *s;
 	    }
-	    return 0;
+	    return;
 	} else {
 
 /*           normal case */
@@ -869,11 +869,11 @@ f"> */
 	    tmp = sqrt(sine * sine + cosine * cosine);
 	    *s = sine / tmp;
 	    *c__ = cosine / tmp;
-	    return 0;
+	    return;
 
 	}
     }
-    return 0;
+    return;
 
 /*     End of DLAIC1 */
 

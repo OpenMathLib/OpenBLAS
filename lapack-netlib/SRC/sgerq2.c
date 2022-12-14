@@ -633,7 +633,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int sgerq2_(integer *m, integer *n, real *a, integer *lda, 
+/* Subroutine */ void sgerq2_(integer *m, integer *n, real *a, integer *lda, 
 	real *tau, real *work, integer *info)
 {
     /* System generated locals */
@@ -641,9 +641,10 @@ f"> */
 
     /* Local variables */
     integer i__, k;
-    extern /* Subroutine */ int slarf_(char *, integer *, integer *, real *, 
-	    integer *, real *, real *, integer *, real *), xerbla_(
-	    char *, integer *, ftnlen), slarfg_(integer *, real *, real *, 
+    extern /* Subroutine */ void slarf_(char *, integer *, integer *, real *, 
+	    integer *, real *, real *, integer *, real *);
+    extern int xerbla_(char *, integer *, ftnlen);
+    extern void slarfg_(integer *, real *, real *, 
 	    integer *, real *);
     real aii;
 
@@ -678,7 +679,7 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("SGERQ2", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
     k = f2cmin(*m,*n);
@@ -703,7 +704,7 @@ f"> */
 	a[*m - k + i__ + (*n - k + i__) * a_dim1] = aii;
 /* L10: */
     }
-    return 0;
+    return;
 
 /*     End of SGERQ2 */
 

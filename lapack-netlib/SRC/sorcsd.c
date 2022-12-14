@@ -810,7 +810,7 @@ f"> */
 /* > \ingroup realOTHERcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int sorcsd_(char *jobu1, char *jobu2, char *jobv1t, char *
+/* Subroutine */ void sorcsd_(char *jobu1, char *jobu2, char *jobv1t, char *
 	jobv2t, char *trans, char *signs, integer *m, integer *p, integer *q, 
 	real *x11, integer *ldx11, real *x12, integer *ldx12, real *x21, 
 	integer *ldx21, real *x22, integer *ldx22, real *theta, real *u1, 
@@ -837,30 +837,31 @@ f"> */
 	    lbbcsdworkopt;
     logical wantu1, wantu2;
     integer ibbcsd, lorbdbworkopt;
-    extern /* Subroutine */ int sbbcsd_(char *, char *, char *, char *, char *
+    extern /* Subroutine */ void sbbcsd_(char *, char *, char *, char *, char *
 	    , integer *, integer *, integer *, real *, real *, real *, 
 	    integer *, real *, integer *, real *, integer *, real *, integer *
 	    , real *, real *, real *, real *, real *, real *, real *, real *, 
 	    real *, integer *, integer *);
     integer iorbdb, lorglqworkmin, lorgqrworkmin;
-    extern /* Subroutine */ int sorbdb_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void sorbdb_(char *, char *, integer *, integer *, 
 	    integer *, real *, integer *, real *, integer *, real *, integer *
 	    , real *, integer *, real *, real *, real *, real *, real *, real 
-	    *, real *, integer *, integer *), xerbla_(char *, integer *, ftnlen);
+	    *, real *, integer *, integer *);
+    extern int xerbla_(char *, integer *, ftnlen);
     integer lorglqworkopt, lorgqrworkopt;
-    extern /* Subroutine */ int slacpy_(char *, integer *, integer *, real *, 
+    extern /* Subroutine */ void slacpy_(char *, integer *, integer *, real *, 
 	    integer *, real *, integer *);
     integer iorglq;
-    extern /* Subroutine */ int slapmr_(logical *, integer *, integer *, real 
+    extern /* Subroutine */ void slapmr_(logical *, integer *, integer *, real 
 	    *, integer *, integer *), slapmt_(logical *, integer *, integer *,
 	     real *, integer *, integer *);
     integer iorgqr;
     char signst[1];
-    extern /* Subroutine */ int sorglq_(integer *, integer *, integer *, real 
+    extern /* Subroutine */ void sorglq_(integer *, integer *, integer *, real 
 	    *, integer *, real *, real *, integer *, integer *);
     char transt[1];
     integer lbbcsdwork;
-    extern /* Subroutine */ int sorgqr_(integer *, integer *, integer *, real 
+    extern /* Subroutine */ void sorgqr_(integer *, integer *, integer *, real 
 	    *, integer *, real *, real *, integer *, integer *);
     logical lquery;
     integer lorbdbwork, lorglqwork, lorgqrwork;
@@ -986,7 +987,7 @@ f"> */
 		 ldx12, &x22[x22_offset], ldx22, &theta[1], &v1t[v1t_offset], 
 		ldv1t, &v2t[v2t_offset], ldv2t, &u1[u1_offset], ldu1, &u2[
 		u2_offset], ldu2, &work[1], lwork, &iwork[1], info);
-	return 0;
+	return;
     }
 
 /*     Work with permutation [ 0 I; I 0 ] * X * [ 0 I; I 0 ] if */
@@ -1006,7 +1007,7 @@ f"> */
 		u2_offset], ldu2, &u1[u1_offset], ldu1, &v2t[v2t_offset], 
 		ldv2t, &v1t[v1t_offset], ldv1t, &work[1], lwork, &iwork[1], 
 		info);
-	return 0;
+	return;
     }
 
 /*     Compute workspace */
@@ -1113,9 +1114,9 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("SORCSD", &i__1, (ftnlen)6);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Transform to bidiagonal block form */
@@ -1275,7 +1276,7 @@ f"> */
 	}
     }
 
-    return 0;
+    return;
 
 /*     End SORCSD */
 

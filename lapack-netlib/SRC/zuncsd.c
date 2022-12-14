@@ -829,7 +829,7 @@ f"> */
 /* > \ingroup complex16OTHERcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int zuncsd_(char *jobu1, char *jobu2, char *jobv1t, char *
+/* Subroutine */ void zuncsd_(char *jobu1, char *jobu2, char *jobv1t, char *
 	jobv2t, char *trans, char *signs, integer *m, integer *p, integer *q, 
 	doublecomplex *x11, integer *ldx11, doublecomplex *x12, integer *
 	ldx12, doublecomplex *x21, integer *ldx21, doublecomplex *x22, 
@@ -856,7 +856,7 @@ f"> */
 	    lorbdbworkmin, lrworkmin, lbbcsdworkopt;
     logical wantu1, wantu2;
     integer lrworkopt, ibbcsd, lorbdbworkopt, iorbdb, lorglqworkmin;
-    extern /* Subroutine */ int zbbcsd_(char *, char *, char *, char *, char *
+    extern /* Subroutine */ void zbbcsd_(char *, char *, char *, char *, char *
 	    , integer *, integer *, integer *, doublereal *, doublereal *, 
 	    doublecomplex *, integer *, doublecomplex *, integer *, 
 	    doublecomplex *, integer *, doublecomplex *, integer *, 
@@ -866,29 +866,29 @@ f"> */
     integer lorgqrworkmin;
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     integer lorglqworkopt;
-    extern /* Subroutine */ int zunbdb_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void zunbdb_(char *, char *, integer *, integer *, 
 	    integer *, doublecomplex *, integer *, doublecomplex *, integer *,
 	     doublecomplex *, integer *, doublecomplex *, integer *, 
 	    doublereal *, doublereal *, doublecomplex *, doublecomplex *, 
 	    doublecomplex *, doublecomplex *, doublecomplex *, integer *, 
 	    integer *);
     integer lorgqrworkopt, iorglq;
-    extern /* Subroutine */ int zlacpy_(char *, integer *, integer *, 
+    extern /* Subroutine */ void zlacpy_(char *, integer *, integer *, 
 	    doublecomplex *, integer *, doublecomplex *, integer *);
     integer iorgqr;
-    extern /* Subroutine */ int zlapmr_(logical *, integer *, integer *, 
+    extern /* Subroutine */ void zlapmr_(logical *, integer *, integer *, 
 	    doublecomplex *, integer *, integer *);
     char signst[1];
-    extern /* Subroutine */ int zlapmt_(logical *, integer *, integer *, 
+    extern /* Subroutine */ void zlapmt_(logical *, integer *, integer *, 
 	    doublecomplex *, integer *, integer *);
     char transt[1];
     integer lbbcsdwork;
     logical lquery;
-    extern /* Subroutine */ int zunglq_(integer *, integer *, integer *, 
+    extern /* Subroutine */ void zunglq_(integer *, integer *, integer *, 
 	    doublecomplex *, integer *, doublecomplex *, doublecomplex *, 
 	    integer *, integer *);
     integer lorbdbwork;
-    extern /* Subroutine */ int zungqr_(integer *, integer *, integer *, 
+    extern /* Subroutine */ void zungqr_(integer *, integer *, integer *, 
 	    doublecomplex *, integer *, doublecomplex *, doublecomplex *, 
 	    integer *, integer *);
     integer lorglqwork, lorgqrwork;
@@ -1017,7 +1017,7 @@ f"> */
 		ldv1t, &v2t[v2t_offset], ldv2t, &u1[u1_offset], ldu1, &u2[
 		u2_offset], ldu2, &work[1], lwork, &rwork[1], lrwork, &iwork[
 		1], info);
-	return 0;
+	return;
     }
 
 /*     Work with permutation [ 0 I; I 0 ] * X * [ 0 I; I 0 ] if */
@@ -1037,7 +1037,7 @@ f"> */
 		u2_offset], ldu2, &u1[u1_offset], ldu1, &v2t[v2t_offset], 
 		ldv2t, &v1t[v1t_offset], ldv1t, &work[1], lwork, &rwork[1], 
 		lrwork, &iwork[1], info);
-	return 0;
+	return;
     }
 
 /*     Compute workspace */
@@ -1153,9 +1153,9 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZUNCSD", &i__1, (ftnlen)6);
-	return 0;
+	return;
     } else if (lquery || lrquery) {
-	return 0;
+	return;
     }
 
 /*     Transform to bidiagonal block form */
@@ -1334,7 +1334,7 @@ f"> */
 	}
     }
 
-    return 0;
+    return;
 
 /*     End ZUNCSD */
 

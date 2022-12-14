@@ -628,7 +628,7 @@ f"> */
 /* > \ingroup realOTHERcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int sorg2r_(integer *m, integer *n, integer *k, real *a, 
+/* Subroutine */ void sorg2r_(integer *m, integer *n, integer *k, real *a, 
 	integer *lda, real *tau, real *work, integer *info)
 {
     /* System generated locals */
@@ -637,9 +637,10 @@ f"> */
 
     /* Local variables */
     integer i__, j, l;
-    extern /* Subroutine */ int sscal_(integer *, real *, real *, integer *), 
+    extern /* Subroutine */ void sscal_(integer *, real *, real *, integer *), 
 	    slarf_(char *, integer *, integer *, real *, integer *, real *, 
-	    real *, integer *, real *), xerbla_(char *, integer *, ftnlen);
+	    real *, integer *, real *);
+    extern int xerbla_(char *, integer *, ftnlen);
 
 
 /*  -- LAPACK computational routine (version 3.7.0) -- */
@@ -674,13 +675,13 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("SORG2R", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n <= 0) {
-	return 0;
+	return;
     }
 
 /*     Initialise columns k+1:n to columns of the unit matrix */
@@ -723,7 +724,7 @@ f"> */
 	}
 /* L40: */
     }
-    return 0;
+    return;
 
 /*     End of SORG2R */
 

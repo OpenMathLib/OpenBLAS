@@ -728,7 +728,7 @@ f"> */
 /* >     Osni Marques, LBNL/NERSC, USA \n */
 
 /*  ===================================================================== */
-/* Subroutine */ int sgelsd_(integer *m, integer *n, integer *nrhs, real *a, 
+/* Subroutine */ void sgelsd_(integer *m, integer *n, integer *nrhs, real *a, 
 	integer *lda, real *b, integer *ldb, real *s, real *rcond, integer *
 	rank, real *work, integer *lwork, integer *iwork, integer *info)
 {
@@ -740,9 +740,9 @@ f"> */
     integer itau, nlvl, iascl, ibscl;
     real sfmin;
     integer minmn, maxmn, itaup, itauq, mnthr, nwork, ie, il;
-    extern /* Subroutine */ int slabad_(real *, real *);
+    extern /* Subroutine */ void slabad_(real *, real *);
     integer mm;
-    extern /* Subroutine */ int sgebrd_(integer *, integer *, real *, integer 
+    extern /* Subroutine */ void sgebrd_(integer *, integer *, real *, integer 
 	    *, real *, real *, real *, real *, real *, integer *, integer *);
     extern real slamch_(char *), slange_(char *, integer *, integer *,
 	     real *, integer *, real *);
@@ -750,30 +750,30 @@ f"> */
     extern integer ilaenv_(integer *, char *, char *, integer *, integer *, 
 	    integer *, integer *, ftnlen, ftnlen);
     real bignum;
-    extern /* Subroutine */ int sgelqf_(integer *, integer *, real *, integer 
+    extern /* Subroutine */ void sgelqf_(integer *, integer *, real *, integer 
 	    *, real *, real *, integer *, integer *), slalsd_(char *, integer 
 	    *, integer *, integer *, real *, real *, real *, integer *, real *
 	    , integer *, real *, integer *, integer *), slascl_(char *
 	    , integer *, integer *, real *, real *, integer *, integer *, 
 	    real *, integer *, integer *);
     integer wlalsd;
-    extern /* Subroutine */ int sgeqrf_(integer *, integer *, real *, integer 
+    extern /* Subroutine */ void sgeqrf_(integer *, integer *, real *, integer 
 	    *, real *, real *, integer *, integer *), slacpy_(char *, integer 
 	    *, integer *, real *, integer *, real *, integer *), 
 	    slaset_(char *, integer *, integer *, real *, real *, real *, 
 	    integer *);
     integer ldwork;
-    extern /* Subroutine */ int sormbr_(char *, char *, char *, integer *, 
+    extern /* Subroutine */ void sormbr_(char *, char *, char *, integer *, 
 	    integer *, integer *, real *, integer *, real *, real *, integer *
 	    , real *, integer *, integer *);
     integer liwork, minwrk, maxwrk;
     real smlnum;
-    extern /* Subroutine */ int sormlq_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void sormlq_(char *, char *, integer *, integer *, 
 	    integer *, real *, integer *, real *, real *, integer *, real *, 
 	    integer *, integer *);
     logical lquery;
     integer smlsiz;
-    extern /* Subroutine */ int sormqr_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void sormqr_(char *, char *, integer *, integer *, 
 	    integer *, real *, integer *, real *, real *, integer *, real *, 
 	    integer *, integer *);
     real eps;
@@ -975,9 +975,9 @@ fprintf(stdout,"start of SGELSD\n");
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("SGELSD", &i__1, (ftnlen)6);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible. */
@@ -985,7 +985,7 @@ fprintf(stdout,"start of SGELSD\n");
     if (*m == 0 || *n == 0) {
 	    fprintf(stdout,"SGELSD quickreturn rank=0\n");
 	*rank = 0;
-	return 0;
+	return;
     }
 
 /*     Get machine parameters. */
@@ -1293,7 +1293,7 @@ L10:
     work[1] = (real) maxwrk;
     iwork[1] = liwork;
 fprintf(stdout, "end of SGELSD\n");
-    return 0;
+    return;
 
 /*     End of SGELSD */
 

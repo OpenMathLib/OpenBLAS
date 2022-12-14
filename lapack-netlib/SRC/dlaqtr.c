@@ -683,7 +683,7 @@ f"> */
 /* > \ingroup doubleOTHERauxiliary */
 
 /*  ===================================================================== */
-/* Subroutine */ int dlaqtr_(logical *ltran, logical *lreal, integer *n, 
+/* Subroutine */ void dlaqtr_(logical *ltran, logical *lreal, integer *n, 
 	doublereal *t, integer *ldt, doublereal *b, doublereal *w, doublereal 
 	*scale, doublereal *x, doublereal *work, integer *info)
 {
@@ -698,16 +698,16 @@ f"> */
     doublereal smin, xmax, d__[4]	/* was [2][2] */;
     integer i__, j, k;
     doublereal v[4]	/* was [2][2] */, z__;
-    extern /* Subroutine */ int dscal_(integer *, doublereal *, doublereal *, 
+    extern /* Subroutine */ void dscal_(integer *, doublereal *, doublereal *, 
 	    integer *);
     extern doublereal dasum_(integer *, doublereal *, integer *);
-    extern /* Subroutine */ int daxpy_(integer *, doublereal *, doublereal *, 
+    extern /* Subroutine */ void daxpy_(integer *, doublereal *, doublereal *, 
 	    integer *, doublereal *, integer *);
     integer jnext, j1, j2;
     doublereal sminw;
     integer n1, n2;
     doublereal xnorm;
-    extern /* Subroutine */ int dlaln2_(logical *, integer *, integer *, 
+    extern /* Subroutine */ void dlaln2_(logical *, integer *, integer *, 
 	    doublereal *, doublereal *, doublereal *, integer *, doublereal *,
 	     doublereal *, doublereal *, integer *, doublereal *, doublereal *
 	    , doublereal *, integer *, doublereal *, doublereal *, integer *);
@@ -716,7 +716,7 @@ f"> */
     doublereal si, xj;
     extern integer idamax_(integer *, doublereal *, integer *);
     doublereal scaloc, sr;
-    extern /* Subroutine */ int dladiv_(doublereal *, doublereal *, 
+    extern /* Subroutine */ void dladiv_(doublereal *, doublereal *, 
 	    doublereal *, doublereal *, doublereal *, doublereal *);
     doublereal bignum;
     logical notran;
@@ -749,7 +749,7 @@ f"> */
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /*     Set constants to control overflow */
@@ -1388,7 +1388,7 @@ L80:
 
     }
 
-    return 0;
+    return;
 
 /*     End of DLAQTR */
 

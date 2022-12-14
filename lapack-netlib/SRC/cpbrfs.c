@@ -702,7 +702,7 @@ f"> */
 /* > \ingroup complexOTHERcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int cpbrfs_(char *uplo, integer *n, integer *kd, integer *
+/* Subroutine */ void cpbrfs_(char *uplo, integer *n, integer *kd, integer *
 	nrhs, complex *ab, integer *ldab, complex *afb, integer *ldafb, 
 	complex *b, integer *ldb, complex *x, integer *ldx, real *ferr, real *
 	berr, complex *work, real *rwork, integer *info)
@@ -718,23 +718,24 @@ f"> */
     real safe1, safe2;
     integer i__, j, k, l;
     real s;
-    extern /* Subroutine */ int chbmv_(char *, integer *, integer *, complex *
+    extern /* Subroutine */ void chbmv_(char *, integer *, integer *, complex *
 	    , complex *, integer *, complex *, integer *, complex *, complex *
 	    , integer *);
     extern logical lsame_(char *, char *);
     integer isave[3];
-    extern /* Subroutine */ int ccopy_(integer *, complex *, integer *, 
+    extern /* Subroutine */ void ccopy_(integer *, complex *, integer *, 
 	    complex *, integer *), caxpy_(integer *, complex *, complex *, 
 	    integer *, complex *, integer *);
     integer count;
     logical upper;
-    extern /* Subroutine */ int clacn2_(integer *, complex *, complex *, real 
+    extern /* Subroutine */ void clacn2_(integer *, complex *, complex *, real 
 	    *, integer *, integer *);
     real xk;
     extern real slamch_(char *);
     integer nz;
     real safmin;
-    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen), cpbtrs_(
+    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
+    extern void cpbtrs_(
 	    char *, integer *, integer *, integer *, complex *, integer *, 
 	    complex *, integer *, integer *);
     real lstres, eps;
@@ -792,7 +793,7 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CPBRFS", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
@@ -804,7 +805,7 @@ f"> */
 	    berr[j] = 0.f;
 /* L10: */
 	}
-	return 0;
+	return;
     }
 
 /*     NZ = maximum number of nonzero elements in each row of A, plus 1 */
@@ -1048,7 +1049,7 @@ L100:
 /* L140: */
     }
 
-    return 0;
+    return;
 
 /*     End of CPBRFS */
 

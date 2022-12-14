@@ -679,7 +679,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int ctplqt_(integer *m, integer *n, integer *l, integer *mb, 
+/* Subroutine */ void ctplqt_(integer *m, integer *n, integer *l, integer *mb, 
 	complex *a, integer *lda, complex *b, integer *ldb, complex *t, 
 	integer *ldt, complex *work, integer *info)
 {
@@ -689,7 +689,8 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 
     /* Local variables */
     integer i__, iinfo, ib, lb, nb;
-    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen), ctprfb_(
+    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
+    extern void ctprfb_(
 	    char *, char *, char *, char *, integer *, integer *, integer *, 
 	    integer *, complex *, integer *, complex *, integer *, complex *, 
 	    integer *, complex *, integer *, complex *, integer *), ctplqt2_(integer *, integer *, integer *,
@@ -740,13 +741,13 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CTPLQT", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*m == 0 || *n == 0) {
-	return 0;
+	return;
     }
 
     i__1 = *m;
@@ -780,7 +781,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 		    a_dim1], lda, &b[i__ + ib + b_dim1], ldb, &work[1], &i__4);
 	}
     }
-    return 0;
+    return;
 
 /*     End of CTPLQT */
 

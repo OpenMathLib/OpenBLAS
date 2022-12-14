@@ -620,7 +620,7 @@ f"> */
 /* > \ingroup realOTHERauxiliary */
 
 /*  ===================================================================== */
-/* Subroutine */ int slar2v_(integer *n, real *x, real *y, real *z__, integer 
+/* Subroutine */ void slar2v_(integer *n, real *x, real *y, real *z__, integer 
 	*incx, real *c__, real *s, integer *incc)
 {
     /* System generated locals */
@@ -677,6 +677,6 @@ f"> */
 
 /*     End of SLAR2V */
 
-    return 0;
+    return;
 } /* slar2v_ */
 

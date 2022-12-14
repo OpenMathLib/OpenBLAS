@@ -793,7 +793,7 @@ f"> */
 /* > \ingroup realGEeigen */
 
 /*  ===================================================================== */
-/* Subroutine */ int sgeesx_(char *jobvs, char *sort, L_fp select, char *
+/* Subroutine */ void sgeesx_(char *jobvs, char *sort, L_fp select, char *
 	sense, integer *n, real *a, integer *lda, integer *sdim, real *wr, 
 	real *wi, real *vs, integer *ldvs, real *rconde, real *rcondv, real *
 	work, integer *lwork, integer *iwork, integer *liwork, logical *bwork,
@@ -809,31 +809,31 @@ f"> */
     extern logical lsame_(char *, char *);
     logical cursl;
     integer liwrk, i1, i2;
-    extern /* Subroutine */ int scopy_(integer *, real *, integer *, real *, 
+    extern /* Subroutine */ void scopy_(integer *, real *, integer *, real *, 
 	    integer *), sswap_(integer *, real *, integer *, real *, integer *
 	    );
     logical lst2sl;
-    extern /* Subroutine */ int slabad_(real *, real *);
+    extern /* Subroutine */ void slabad_(real *, real *);
     logical scalea;
     integer ip;
     real cscale;
-    extern /* Subroutine */ int sgebak_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void sgebak_(char *, char *, integer *, integer *, 
 	    integer *, real *, integer *, real *, integer *, integer *), sgebal_(char *, integer *, real *, integer *, 
 	    integer *, integer *, real *, integer *);
     extern real slamch_(char *);
-    extern /* Subroutine */ int sgehrd_(integer *, integer *, integer *, real 
-	    *, integer *, real *, real *, integer *, integer *), xerbla_(char 
-	    *, integer *, ftnlen);
+    extern /* Subroutine */ void sgehrd_(integer *, integer *, integer *, real 
+	    *, integer *, real *, real *, integer *, integer *);
+    extern int xerbla_(char *, integer *, ftnlen);
     extern integer ilaenv_(integer *, char *, char *, integer *, integer *, 
 	    integer *, integer *, ftnlen, ftnlen);
     extern real slange_(char *, integer *, integer *, real *, integer *, real 
 	    *);
     real bignum;
-    extern /* Subroutine */ int slascl_(char *, integer *, integer *, real *, 
+    extern /* Subroutine */ void slascl_(char *, integer *, integer *, real *, 
 	    real *, integer *, integer *, real *, integer *, integer *), slacpy_(char *, integer *, integer *, real *, integer *, 
 	    real *, integer *);
     logical wantsb, wantse, lastsl;
-    extern /* Subroutine */ int sorghr_(integer *, integer *, integer *, real 
+    extern /* Subroutine */ void sorghr_(integer *, integer *, integer *, real 
 	    *, integer *, real *, real *, integer *, integer *), shseqr_(char 
 	    *, char *, integer *, integer *, integer *, real *, integer *, 
 	    real *, real *, real *, integer *, real *, integer *, integer *);
@@ -841,7 +841,7 @@ f"> */
     logical wantsn;
     real smlnum;
     integer hswork;
-    extern /* Subroutine */ int strsen_(char *, char *, logical *, integer *, 
+    extern /* Subroutine */ void strsen_(char *, char *, logical *, integer *, 
 	    real *, integer *, real *, integer *, real *, real *, integer *, 
 	    real *, real *, real *, integer *, integer *, integer *, integer *
 	    );
@@ -964,16 +964,16 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("SGEESX", &i__1, (ftnlen)6);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
 	*sdim = 0;
-	return 0;
+	return;
     }
 
 /*     Get machine constants */
@@ -1236,7 +1236,7 @@ L20:
 	iwork[1] = 1;
     }
 
-    return 0;
+    return;
 
 /*     End of SGEESX */
 

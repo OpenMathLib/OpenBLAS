@@ -685,7 +685,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int dlahrd_(integer *n, integer *k, integer *nb, doublereal *
+/* Subroutine */ void dlahrd_(integer *n, integer *k, integer *nb, doublereal *
 	a, integer *lda, doublereal *tau, doublereal *t, integer *ldt, 
 	doublereal *y, integer *ldy)
 {
@@ -696,7 +696,7 @@ f"> */
 
     /* Local variables */
     integer i__;
-    extern /* Subroutine */ int dscal_(integer *, doublereal *, doublereal *, 
+    extern /* Subroutine */ void dscal_(integer *, doublereal *, doublereal *, 
 	    integer *), dgemv_(char *, integer *, integer *, doublereal *, 
 	    doublereal *, integer *, doublereal *, integer *, doublereal *, 
 	    doublereal *, integer *), dcopy_(integer *, doublereal *, 
@@ -705,7 +705,7 @@ f"> */
 	    *, char *, char *, integer *, doublereal *, integer *, doublereal 
 	    *, integer *);
     doublereal ei;
-    extern /* Subroutine */ int dlarfg_(integer *, doublereal *, doublereal *,
+    extern /* Subroutine */ void dlarfg_(integer *, doublereal *, doublereal *,
 	     integer *, doublereal *);
 
 
@@ -734,7 +734,7 @@ f"> */
 
     /* Function Body */
     if (*n <= 1) {
-	return 0;
+	return;
     }
 
     i__1 = *nb;
@@ -843,7 +843,7 @@ f"> */
     }
     a[*k + *nb + *nb * a_dim1] = ei;
 
-    return 0;
+    return;
 
 /*     End of DLAHRD */
 

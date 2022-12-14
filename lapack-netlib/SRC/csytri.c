@@ -629,7 +629,7 @@ f"> */
 /* > \ingroup complexSYcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int csytri_(char *uplo, integer *n, complex *a, integer *lda,
+/* Subroutine */ void csytri_(char *uplo, integer *n, complex *a, integer *lda,
 	 integer *ipiv, complex *work, integer *info)
 {
     /* System generated locals */
@@ -641,15 +641,15 @@ f"> */
     integer k;
     complex t;
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int ccopy_(integer *, complex *, integer *, 
+    extern /* Subroutine */ void ccopy_(integer *, complex *, integer *, 
 	    complex *, integer *);
     extern /* Complex */ VOID cdotu_(complex *, integer *, complex *, integer 
 	    *, complex *, integer *);
-    extern /* Subroutine */ int cswap_(integer *, complex *, integer *, 
+    extern /* Subroutine */ void cswap_(integer *, complex *, integer *, 
 	    complex *, integer *);
     integer kstep;
     logical upper;
-    extern /* Subroutine */ int csymv_(char *, integer *, complex *, complex *
+    extern /* Subroutine */ void csymv_(char *, integer *, complex *, complex *
 	    , integer *, complex *, integer *, complex *, complex *, integer *
 	    );
     complex ak;
@@ -689,13 +689,13 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CSYTRI", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /*     Check that the diagonal matrix D is nonsingular. */
@@ -707,7 +707,7 @@ f"> */
 	for (*info = *n; *info >= 1; --(*info)) {
 	    i__1 = *info + *info * a_dim1;
 	    if (ipiv[*info] > 0 && (a[i__1].r == 0.f && a[i__1].i == 0.f)) {
-		return 0;
+		return;
 	    }
 /* L10: */
 	}
@@ -719,7 +719,7 @@ f"> */
 	for (*info = 1; *info <= i__1; ++(*info)) {
 	    i__2 = *info + *info * a_dim1;
 	    if (ipiv[*info] > 0 && (a[i__2].r == 0.f && a[i__2].i == 0.f)) {
-		return 0;
+		return;
 	    }
 /* L20: */
 	}
@@ -1032,7 +1032,7 @@ L60:
 	;
     }
 
-    return 0;
+    return;
 
 /*     End of CSYTRI */
 

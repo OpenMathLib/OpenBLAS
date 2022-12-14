@@ -631,7 +631,7 @@ f"> */
 /* >     Umea University, S-901 87 Umea, Sweden. */
 
 /*  ===================================================================== */
-/* Subroutine */ int cgesc2_(integer *n, complex *a, integer *lda, complex *
+/* Subroutine */ void cgesc2_(integer *n, complex *a, integer *lda, complex *
 	rhs, integer *ipiv, integer *jpiv, real *scale)
 {
     /* System generated locals */
@@ -642,7 +642,7 @@ f"> */
     /* Local variables */
     complex temp;
     integer i__, j;
-    extern /* Subroutine */ int cscal_(integer *, complex *, complex *, 
+    extern /* Subroutine */ void cscal_(integer *, complex *, complex *, 
 	    integer *), slabad_(real *, real *);
     extern integer icamax_(integer *, complex *, integer *);
     extern real slamch_(char *);
@@ -745,7 +745,7 @@ f"> */
 
     i__1 = *n - 1;
     claswp_(&c__1, &rhs[1], lda, &c__1, &i__1, &jpiv[1], &c_n1);
-    return 0;
+    return;
 
 /*     End of CGESC2 */
 

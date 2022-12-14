@@ -720,7 +720,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int slahqr_(logical *wantt, logical *wantz, integer *n, 
+/* Subroutine */ void slahqr_(logical *wantt, logical *wantz, integer *n, 
 	integer *ilo, integer *ihi, real *h__, integer *ldh, real *wr, real *
 	wi, integer *iloz, integer *ihiz, real *z__, integer *ldz, integer *
 	info)
@@ -730,26 +730,26 @@ f"> */
     real r__1, r__2, r__3, r__4;
 
     /* Local variables */
-    extern /* Subroutine */ int srot_(integer *, real *, integer *, real *, 
+    extern /* Subroutine */ void srot_(integer *, real *, integer *, real *, 
 	    integer *, real *, real *);
     integer i__, j, k, l, m;
     real s, v[3];
     integer itmax, i1, i2;
-    extern /* Subroutine */ int scopy_(integer *, real *, integer *, real *, 
+    extern /* Subroutine */ void scopy_(integer *, real *, integer *, real *, 
 	    integer *);
     real t1, t2, t3, v2, v3, aa, ab, ba, bb;
-    extern /* Subroutine */ int slanv2_(real *, real *, real *, real *, real *
+    extern /* Subroutine */ void slanv2_(real *, real *, real *, real *, real *
 	    , real *, real *, real *, real *, real *);
     real h11, h12, h21, h22, cs;
     integer nh;
-    extern /* Subroutine */ int slabad_(real *, real *);
+    extern /* Subroutine */ void slabad_(real *, real *);
     real sn;
     integer nr;
     real tr;
     extern real slamch_(char *);
     integer nz;
     real safmin;
-    extern /* Subroutine */ int slarfg_(integer *, real *, real *, integer *, 
+    extern /* Subroutine */ void slarfg_(integer *, real *, real *, integer *, 
 	    real *);
     real safmax, rtdisc, smlnum, det, h21s;
     integer its;
@@ -781,12 +781,12 @@ f"> */
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
     if (*ilo == *ihi) {
 	wr[*ilo] = h__[*ilo + *ilo * h_dim1];
 	wi[*ilo] = 0.f;
-	return 0;
+	return;
     }
 
 /*     ==== clear out the trash ==== */
@@ -1155,7 +1155,7 @@ L60:
 /*     Failure to converge in remaining number of iterations */
 
     *info = i__;
-    return 0;
+    return;
 
 L150:
 
@@ -1205,7 +1205,7 @@ L150:
     goto L20;
 
 L160:
-    return 0;
+    return;
 
 /*     End of SLAHQR */
 

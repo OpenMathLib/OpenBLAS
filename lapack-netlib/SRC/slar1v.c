@@ -738,7 +738,7 @@ f"> */
 /* > Christof Voemel, University of California, Berkeley, USA */
 
 /*  ===================================================================== */
-/* Subroutine */ int slar1v_(integer *n, integer *b1, integer *bn, real *
+/* Subroutine */ void slar1v_(integer *n, integer *b1, integer *bn, real *
 	lambda, real *d__, real *l, real *ld, real *lld, real *pivmin, real *
 	gaptol, real *z__, logical *wantnc, integer *negcnt, real *ztz, real *
 	mingma, integer *r__, integer *isuppz, real *nrminv, real *resid, 
@@ -1030,7 +1030,7 @@ L280:
     *rqcorr = *mingma * tmp;
 
 
-    return 0;
+    return;
 
 /*     End of SLAR1V */
 

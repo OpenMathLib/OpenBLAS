@@ -644,7 +644,7 @@ rook.f"> */
 /* > \endverbatim */
 
 /*  ===================================================================== */
-/* Subroutine */ int dsytri_rook_(char *uplo, integer *n, doublereal *a, 
+/* Subroutine */ void dsytri_rook_(char *uplo, integer *n, doublereal *a, 
 	integer *lda, integer *ipiv, doublereal *work, integer *info)
 {
     /* System generated locals */
@@ -658,12 +658,12 @@ rook.f"> */
     integer k;
     doublereal t;
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int dcopy_(integer *, doublereal *, integer *, 
+    extern /* Subroutine */ void dcopy_(integer *, doublereal *, integer *, 
 	    doublereal *, integer *), dswap_(integer *, doublereal *, integer 
 	    *, doublereal *, integer *);
     integer kstep;
     logical upper;
-    extern /* Subroutine */ int dsymv_(char *, integer *, doublereal *, 
+    extern /* Subroutine */ void dsymv_(char *, integer *, doublereal *, 
 	    doublereal *, integer *, doublereal *, integer *, doublereal *, 
 	    doublereal *, integer *);
     doublereal ak;
@@ -703,13 +703,13 @@ rook.f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DSYTRI_ROOK", &i__1, (ftnlen)11);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /*     Check that the diagonal matrix D is nonsingular. */
@@ -720,7 +720,7 @@ rook.f"> */
 
 	for (*info = *n; *info >= 1; --(*info)) {
 	    if (ipiv[*info] > 0 && a[*info + *info * a_dim1] == 0.) {
-		return 0;
+		return;
 	    }
 /* L10: */
 	}
@@ -731,7 +731,7 @@ rook.f"> */
 	i__1 = *n;
 	for (*info = 1; *info <= i__1; ++(*info)) {
 	    if (ipiv[*info] > 0 && a[*info + *info * a_dim1] == 0.) {
-		return 0;
+		return;
 	    }
 /* L20: */
 	}
@@ -1030,7 +1030,7 @@ L60:
 	;
     }
 
-    return 0;
+    return;
 
 /*     End of DSYTRI_ROOK */
 

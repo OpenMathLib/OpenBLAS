@@ -614,7 +614,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int zlartg_(doublecomplex *f, doublecomplex *g, doublereal *
+/* Subroutine */ void zlartg_(doublecomplex *f, doublecomplex *g, doublereal *
 	cs, doublecomplex *sn, doublecomplex *r__)
 {
     /* System generated locals */
@@ -681,7 +681,7 @@ L10:
 	    *cs = 1.;
 	    sn->r = 0., sn->i = 0.;
 	    r__->r = f->r, r__->i = f->i;
-	    return 0;
+	    return;
 	}
 L20:
 	--count;
@@ -722,7 +722,7 @@ L20:
 	    d__2 = -d_imag(&gs) / d__;
 	    z__1.r = d__1, z__1.i = d__2;
 	    sn->r = z__1.r, sn->i = z__1.i;
-	    return 0;
+	    return;
 	}
 	d__1 = fs.r;
 	d__2 = d_imag(&fs);
@@ -811,7 +811,7 @@ L20:
 	    }
 	}
     }
-    return 0;
+    return;
 
 /*     End of ZLARTG */
 

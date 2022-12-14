@@ -612,7 +612,7 @@ f"> */
 /* > \ingroup OTHERauxiliary */
 
 /*  ===================================================================== */
-/* Subroutine */ int slacpy_(char *uplo, integer *m, integer *n, real *a, 
+/* Subroutine */ void slacpy_(char *uplo, integer *m, integer *n, real *a, 
 	integer *lda, real *b, integer *ldb)
 {
     /* System generated locals */
@@ -672,7 +672,7 @@ f"> */
 /* L60: */
 	}
     }
-    return 0;
+    return;
 
 /*     End of SLACPY */
 

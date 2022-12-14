@@ -678,7 +678,7 @@ static integer c__1 = 1;
 /* > \endverbatim */
 
 /*  ===================================================================== */
-/* Subroutine */ int csycon_3_(char *uplo, integer *n, complex *a, integer *
+/* Subroutine */ void csycon_3_(char *uplo, integer *n, complex *a, integer *
 	lda, complex *e, integer *ipiv, real *anorm, real *rcond, complex *
 	work, integer *info)
 {
@@ -687,15 +687,16 @@ static integer c__1 = 1;
 
     /* Local variables */
     integer kase;
-    extern /* Subroutine */ int csytrs_3_(char *, integer *, integer *, 
+    extern /* Subroutine */ void csytrs_3_(char *, integer *, integer *, 
 	    complex *, integer *, complex *, integer *, complex *, integer *, 
 	    integer *);
     integer i__;
     extern logical lsame_(char *, char *);
     integer isave[3];
     logical upper;
-    extern /* Subroutine */ int clacn2_(integer *, complex *, complex *, real 
-	    *, integer *, integer *), xerbla_(char *, integer *, ftnlen);
+    extern /* Subroutine */ void clacn2_(integer *, complex *, complex *, real 
+	    *, integer *, integer *);
+    extern int xerbla_(char *, integer *, ftnlen);
     real ainvnm;
 
 
@@ -733,7 +734,7 @@ static integer c__1 = 1;
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CSYCON_3", &i__1, (ftnlen)8);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
@@ -741,9 +742,9 @@ static integer c__1 = 1;
     *rcond = 0.f;
     if (*n == 0) {
 	*rcond = 1.f;
-	return 0;
+	return;
     } else if (*anorm <= 0.f) {
-	return 0;
+	return;
     }
 
 /*     Check that the diagonal matrix D is nonsingular. */
@@ -755,7 +756,7 @@ static integer c__1 = 1;
 	for (i__ = *n; i__ >= 1; --i__) {
 	    i__1 = i__ + i__ * a_dim1;
 	    if (ipiv[i__] > 0 && (a[i__1].r == 0.f && a[i__1].i == 0.f)) {
-		return 0;
+		return;
 	    }
 	}
     } else {
@@ -766,7 +767,7 @@ static integer c__1 = 1;
 	for (i__ = 1; i__ <= i__1; ++i__) {
 	    i__2 = i__ + i__ * a_dim1;
 	    if (ipiv[i__] > 0 && (a[i__2].r == 0.f && a[i__2].i == 0.f)) {
-		return 0;
+		return;
 	    }
 	}
     }
@@ -791,7 +792,7 @@ L30:
 	*rcond = 1.f / ainvnm / *anorm;
     }
 
-    return 0;
+    return;
 
 /*     End of CSYCON_3 */
 

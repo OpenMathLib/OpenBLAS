@@ -661,7 +661,7 @@ f"> */
 /* > \ingroup complex16PTcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int zpteqr_(char *compz, integer *n, doublereal *d__, 
+/* Subroutine */ void zpteqr_(char *compz, integer *n, doublereal *d__, 
 	doublereal *e, doublecomplex *z__, integer *ldz, doublereal *work, 
 	integer *info)
 {
@@ -675,7 +675,7 @@ f"> */
     doublecomplex vt[1]	/* was [1][1] */;
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     integer icompz;
-    extern /* Subroutine */ int zlaset_(char *, integer *, integer *, 
+    extern /* Subroutine */ void zlaset_(char *, integer *, integer *, 
 	    doublecomplex *, doublecomplex *, doublecomplex *, integer *), dpttrf_(integer *, doublereal *, doublereal *, integer *)
 	    , zbdsqr_(char *, integer *, integer *, integer *, integer *, 
 	    doublereal *, doublereal *, doublecomplex *, integer *, 
@@ -725,13 +725,13 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZPTEQR", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
     if (*n == 1) {
@@ -739,7 +739,7 @@ f"> */
 	    i__1 = z_dim1 + 1;
 	    z__[i__1].r = 1., z__[i__1].i = 0.;
 	}
-	return 0;
+	return;
     }
     if (icompz == 2) {
 	zlaset_("Full", n, n, &c_b1, &c_b2, &z__[z_offset], ldz);
@@ -749,7 +749,7 @@ f"> */
 
     dpttrf_(n, &d__[1], &e[1], info);
     if (*info != 0) {
-	return 0;
+	return;
     }
     i__1 = *n;
     for (i__ = 1; i__ <= i__1; ++i__) {
@@ -785,7 +785,7 @@ f"> */
 	*info = *n + *info;
     }
 
-    return 0;
+    return;
 
 /*     End of ZPTEQR */
 

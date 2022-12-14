@@ -652,7 +652,7 @@ f"> */
 /* > \ingroup auxOTHERcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int dlasq5_(integer *i0, integer *n0, doublereal *z__, 
+/* Subroutine */ void dlasq5_(integer *i0, integer *n0, doublereal *z__, 
 	integer *pp, doublereal *tau, doublereal *sigma, doublereal *dmin__, 
 	doublereal *dmin1, doublereal *dmin2, doublereal *dn, doublereal *
 	dnm1, doublereal *dnm2, logical *ieee, doublereal *eps)
@@ -681,7 +681,7 @@ f"> */
 
     /* Function Body */
     if (*n0 - *i0 - 1 <= 0) {
-	return 0;
+	return;
     }
 
     dthresh = *eps * (*sigma + *tau);
@@ -755,7 +755,7 @@ f"> */
 		for (j4 = *i0 << 2; j4 <= i__1; j4 += 4) {
 		    z__[j4 - 2] = d__ + z__[j4 - 1];
 		    if (d__ < 0.) {
-			return 0;
+			return;
 		    } else {
 			z__[j4] = z__[j4 + 1] * (z__[j4 - 1] / z__[j4 - 2]);
 			d__ = z__[j4 + 1] * (d__ / z__[j4 - 2]) - *tau;
@@ -771,7 +771,7 @@ f"> */
 		for (j4 = *i0 << 2; j4 <= i__1; j4 += 4) {
 		    z__[j4 - 3] = d__ + z__[j4];
 		    if (d__ < 0.) {
-			return 0;
+			return;
 		    } else {
 			z__[j4 - 1] = z__[j4 + 2] * (z__[j4] / z__[j4 - 3]);
 			d__ = z__[j4 + 2] * (d__ / z__[j4 - 3]) - *tau;
@@ -792,7 +792,7 @@ f"> */
 	    j4p2 = j4 + (*pp << 1) - 1;
 	    z__[j4 - 2] = *dnm2 + z__[j4p2];
 	    if (*dnm2 < 0.) {
-		return 0;
+		return;
 	    } else {
 		z__[j4] = z__[j4p2 + 2] * (z__[j4p2] / z__[j4 - 2]);
 		*dnm1 = z__[j4p2 + 2] * (*dnm2 / z__[j4 - 2]) - *tau;
@@ -804,7 +804,7 @@ f"> */
 	    j4p2 = j4 + (*pp << 1) - 1;
 	    z__[j4 - 2] = *dnm1 + z__[j4p2];
 	    if (*dnm1 < 0.) {
-		return 0;
+		return;
 	    } else {
 		z__[j4] = z__[j4p2 + 2] * (z__[j4p2] / z__[j4 - 2]);
 		*dn = z__[j4p2 + 2] * (*dnm1 / z__[j4 - 2]) - *tau;
@@ -885,7 +885,7 @@ f"> */
 		for (j4 = *i0 << 2; j4 <= i__1; j4 += 4) {
 		    z__[j4 - 2] = d__ + z__[j4 - 1];
 		    if (d__ < 0.) {
-			return 0;
+			return;
 		    } else {
 			z__[j4] = z__[j4 + 1] * (z__[j4 - 1] / z__[j4 - 2]);
 			d__ = z__[j4 + 1] * (d__ / z__[j4 - 2]) - *tau;
@@ -904,7 +904,7 @@ f"> */
 		for (j4 = *i0 << 2; j4 <= i__1; j4 += 4) {
 		    z__[j4 - 3] = d__ + z__[j4];
 		    if (d__ < 0.) {
-			return 0;
+			return;
 		    } else {
 			z__[j4 - 1] = z__[j4 + 2] * (z__[j4] / z__[j4 - 3]);
 			d__ = z__[j4 + 2] * (d__ / z__[j4 - 3]) - *tau;
@@ -928,7 +928,7 @@ f"> */
 	    j4p2 = j4 + (*pp << 1) - 1;
 	    z__[j4 - 2] = *dnm2 + z__[j4p2];
 	    if (*dnm2 < 0.) {
-		return 0;
+		return;
 	    } else {
 		z__[j4] = z__[j4p2 + 2] * (z__[j4p2] / z__[j4 - 2]);
 		*dnm1 = z__[j4p2 + 2] * (*dnm2 / z__[j4 - 2]) - *tau;
@@ -940,7 +940,7 @@ f"> */
 	    j4p2 = j4 + (*pp << 1) - 1;
 	    z__[j4 - 2] = *dnm1 + z__[j4p2];
 	    if (*dnm1 < 0.) {
-		return 0;
+		return;
 	    } else {
 		z__[j4] = z__[j4p2 + 2] * (z__[j4p2] / z__[j4 - 2]);
 		*dn = z__[j4p2 + 2] * (*dnm1 / z__[j4 - 2]) - *tau;
@@ -952,7 +952,7 @@ f"> */
 
     z__[j4 + 2] = *dn;
     z__[(*n0 << 2) - *pp] = emin;
-    return 0;
+    return;
 
 /*     End of DLASQ5 */
 

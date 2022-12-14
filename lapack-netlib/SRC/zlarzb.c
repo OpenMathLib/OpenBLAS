@@ -696,7 +696,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int zlarzb_(char *side, char *trans, char *direct, char *
+/* Subroutine */ void zlarzb_(char *side, char *trans, char *direct, char *
 	storev, integer *m, integer *n, integer *k, integer *l, doublecomplex 
 	*v, integer *ldv, doublecomplex *t, integer *ldt, doublecomplex *c__, 
 	integer *ldc, doublecomplex *work, integer *ldwork)
@@ -709,14 +709,15 @@ f"> */
     /* Local variables */
     integer info, i__, j;
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int zgemm_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void zgemm_(char *, char *, integer *, integer *, 
 	    integer *, doublecomplex *, doublecomplex *, integer *, 
 	    doublecomplex *, integer *, doublecomplex *, doublecomplex *, 
 	    integer *), zcopy_(integer *, doublecomplex *, 
 	    integer *, doublecomplex *, integer *), ztrmm_(char *, char *, 
 	    char *, char *, integer *, integer *, doublecomplex *, 
-	    doublecomplex *, integer *, doublecomplex *, integer *), xerbla_(char *, integer *, ftnlen), 
-	    zlacgv_(integer *, doublecomplex *, integer *);
+	    doublecomplex *, integer *, doublecomplex *, integer *);
+    extern int xerbla_(char *, integer *, ftnlen); 
+    extern void zlacgv_(integer *, doublecomplex *, integer *);
     char transt[1];
 
 
@@ -747,7 +748,7 @@ f"> */
 
     /* Function Body */
     if (*m <= 0 || *n <= 0) {
-	return 0;
+	return;
     }
 
 /*     Check for currently supported options */
@@ -761,7 +762,7 @@ f"> */
     if (info != 0) {
 	i__1 = -info;
 	xerbla_("ZLARZB", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
     if (lsame_(trans, "N")) {
@@ -902,7 +903,7 @@ f"> */
 
     }
 
-    return 0;
+    return;
 
 /*     End of ZLARZB */
 

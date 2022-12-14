@@ -845,7 +845,7 @@ f"> */
 /* >     California at Berkeley, USA */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int dggsvd_(char *jobu, char *jobv, char *jobq, integer *m, 
+/* Subroutine */ void dggsvd_(char *jobu, char *jobv, char *jobq, integer *m, 
 	integer *n, integer *p, integer *k, integer *l, doublereal *a, 
 	integer *lda, doublereal *b, integer *ldb, doublereal *alpha, 
 	doublereal *beta, doublereal *u, integer *ldu, doublereal *v, integer 
@@ -864,17 +864,19 @@ f"> */
     integer ncallmycycle, i__, j;
     extern logical lsame_(char *, char *);
     doublereal anorm, bnorm;
-    extern /* Subroutine */ int dcopy_(integer *, doublereal *, integer *, 
+    extern /* Subroutine */ void dcopy_(integer *, doublereal *, integer *, 
 	    doublereal *, integer *);
     logical wantq, wantu, wantv;
     extern doublereal dlamch_(char *), dlange_(char *, integer *, 
 	    integer *, doublereal *, integer *, doublereal *);
-    extern /* Subroutine */ int dtgsja_(char *, char *, char *, integer *, 
+    extern /* Subroutine */ void dtgsja_(char *, char *, char *, integer *, 
 	    integer *, integer *, integer *, integer *, doublereal *, integer 
 	    *, doublereal *, integer *, doublereal *, doublereal *, 
 	    doublereal *, doublereal *, doublereal *, integer *, doublereal *,
 	     integer *, doublereal *, integer *, doublereal *, integer *, 
-	    integer *), xerbla_(char *, integer *), dggsvp_(char *, char *, char *, integer *, integer *, 
+	    integer *); 
+    extern int xerbla_(char *, integer *, ftnlen);
+    extern void dggsvp_(char *, char *, char *, integer *, integer *, 
 	    integer *, doublereal *, integer *, doublereal *, integer *, 
 	    doublereal *, doublereal *, integer *, integer *, doublereal *, 
 	    integer *, doublereal *, integer *, doublereal *, integer *, 
@@ -945,8 +947,8 @@ f"> */
     }
     if (*info != 0) {
 	i__1 = -(*info);
-	xerbla_("DGGSVD", &i__1);
-	return 0;
+	xerbla_("DGGSVD", &i__1, 6);
+	return;
     }
 
 /*     Compute the Frobenius norm of matrices A and B */
@@ -1007,7 +1009,7 @@ f"> */
 /* L20: */
     }
 
-    return 0;
+    return;
 
 /*     End of DGGSVD */
 

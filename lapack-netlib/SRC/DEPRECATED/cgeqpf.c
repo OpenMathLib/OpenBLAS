@@ -661,7 +661,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int cgeqpf_(integer *m, integer *n, complex *a, integer *lda,
+/* Subroutine */ void cgeqpf_(integer *m, integer *n, complex *a, integer *lda,
 	 integer *jpvt, complex *tau, complex *work, real *rwork, integer *
 	info)
 {
@@ -674,21 +674,21 @@ f"> */
     real temp, temp2;
     integer i__, j;
     real tol3z;
-    extern /* Subroutine */ int clarf_(char *, integer *, integer *, complex *
+    extern /* Subroutine */ void clarf_(char *, integer *, integer *, complex *
 	    , integer *, complex *, complex *, integer *, complex *), 
 	    cswap_(integer *, complex *, integer *, complex *, integer *);
     integer itemp;
-    extern /* Subroutine */ int cgeqr2_(integer *, integer *, complex *, 
+    extern /* Subroutine */ void cgeqr2_(integer *, integer *, complex *, 
 	    integer *, complex *, complex *, integer *);
     extern real scnrm2_(integer *, complex *, integer *);
-    extern /* Subroutine */ int cunm2r_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void cunm2r_(char *, char *, integer *, integer *, 
 	    integer *, complex *, integer *, complex *, complex *, integer *, 
 	    complex *, integer *);
     integer ma, mn;
-    extern /* Subroutine */ int clarfg_(integer *, complex *, complex *, 
+    extern /* Subroutine */ void clarfg_(integer *, complex *, complex *, 
 	    integer *, complex *);
     extern real slamch_(char *);
-    extern /* Subroutine */ int xerbla_(char *, integer *);
+    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     extern integer isamax_(integer *, real *, integer *);
     complex aii;
     integer pvt;
@@ -725,8 +725,8 @@ f"> */
     }
     if (*info != 0) {
 	i__1 = -(*info);
-	xerbla_("CGEQPF", &i__1);
-	return 0;
+	xerbla_("CGEQPF", &i__1, 6);
+	return;
     }
 
     mn = f2cmin(*m,*n);
@@ -865,7 +865,7 @@ f"> */
 /* L40: */
 	}
     }
-    return 0;
+    return;
 
 /*     End of CGEQPF */
 

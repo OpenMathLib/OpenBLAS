@@ -681,7 +681,7 @@ static integer c__2 = 2;
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int sgelq_(integer *m, integer *n, real *a, integer *lda, 
+/* Subroutine */ void sgelq_(integer *m, integer *n, real *a, integer *lda, 
 	real *t, integer *tsize, real *work, integer *lwork, integer *info)
 {
     /* System generated locals */
@@ -693,11 +693,11 @@ static integer c__2 = 2;
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     extern integer ilaenv_(integer *, char *, char *, integer *, integer *, 
 	    integer *, integer *, ftnlen, ftnlen);
-    extern /* Subroutine */ int sgelqt_(integer *, integer *, integer *, real 
+    extern /* Subroutine */ void sgelqt_(integer *, integer *, integer *, real 
 	    *, integer *, real *, integer *, real *, integer *);
     logical lminws, lquery;
     integer mintsz;
-    extern /* Subroutine */ int slaswlq_(integer *, integer *, integer *, 
+    extern /* Subroutine */ void slaswlq_(integer *, integer *, integer *, 
 	    integer *, real *, integer *, real *, integer *, real *, integer *
 	    , integer *);
 
@@ -837,15 +837,15 @@ static integer c__2 = 2;
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("SGELQ", &i__1, (ftnlen)5);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (f2cmin(*m,*n) == 0) {
-	return 0;
+	return;
     }
 
 /*     The LQ Decomposition */
@@ -858,7 +858,7 @@ static integer c__2 = 2;
     }
 
     work[1] = (real) lwreq;
-    return 0;
+    return;
 
 /*     End of SGELQ */
 

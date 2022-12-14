@@ -648,7 +648,7 @@ l elements using an unblocked algorithm. */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int dgeqr2p_(integer *m, integer *n, doublereal *a, integer *
+/* Subroutine */ void dgeqr2p_(integer *m, integer *n, doublereal *a, integer *
 	lda, doublereal *tau, doublereal *work, integer *info)
 {
     /* System generated locals */
@@ -656,11 +656,12 @@ l elements using an unblocked algorithm. */
 
     /* Local variables */
     integer i__, k;
-    extern /* Subroutine */ int dlarf_(char *, integer *, integer *, 
+    extern /* Subroutine */ void dlarf_(char *, integer *, integer *, 
 	    doublereal *, integer *, doublereal *, doublereal *, integer *, 
-	    doublereal *), xerbla_(char *, integer *, ftnlen);
+	    doublereal *);
+    extern int xerbla_(char *, integer *, ftnlen);
     doublereal aii;
-    extern /* Subroutine */ int dlarfgp_(integer *, doublereal *, doublereal *
+    extern /* Subroutine */ void dlarfgp_(integer *, doublereal *, doublereal *
 	    , integer *, doublereal *);
 
 
@@ -694,7 +695,7 @@ l elements using an unblocked algorithm. */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DGEQR2P", &i__1, (ftnlen)7);
-	return 0;
+	return;
     }
 
     k = f2cmin(*m,*n);
@@ -723,7 +724,7 @@ l elements using an unblocked algorithm. */
 	}
 /* L10: */
     }
-    return 0;
+    return;
 
 /*     End of DGEQR2P */
 

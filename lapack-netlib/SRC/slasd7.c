@@ -791,7 +791,7 @@ f"> */
 /* >     California at Berkeley, USA */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int slasd7_(integer *icompq, integer *nl, integer *nr, 
+/* Subroutine */ void slasd7_(integer *icompq, integer *nl, integer *nr, 
 	integer *sqre, integer *k, real *d__, real *z__, real *zw, real *vf, 
 	real *vfw, real *vl, real *vlw, real *alpha, real *beta, real *dsigma,
 	 integer *idx, integer *idxp, integer *idxq, integer *perm, integer *
@@ -804,16 +804,17 @@ f"> */
 
     /* Local variables */
     integer idxi, idxj;
-    extern /* Subroutine */ int srot_(integer *, real *, integer *, real *, 
+    extern /* Subroutine */ void srot_(integer *, real *, integer *, real *, 
 	    integer *, real *, real *);
     integer i__, j, m, n, idxjp, jprev, k2;
-    extern /* Subroutine */ int scopy_(integer *, real *, integer *, real *, 
+    extern /* Subroutine */ void scopy_(integer *, real *, integer *, real *, 
 	    integer *);
     real z1;
     extern real slapy2_(real *, real *);
     integer jp;
     extern real slamch_(char *);
-    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen), slamrg_(
+    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
+    extern void slamrg_(
 	    integer *, integer *, real *, integer *, integer *, integer *);
     real hlftol, eps, tau, tol;
     integer nlp1, nlp2;
@@ -872,7 +873,7 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("SLASD7", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
     nlp1 = *nl + 1;
@@ -1127,7 +1128,7 @@ L100:
     i__1 = n - 1;
     scopy_(&i__1, &vlw[2], &c__1, &vl[2], &c__1);
 
-    return 0;
+    return;
 
 /*     End of SLASD7 */
 

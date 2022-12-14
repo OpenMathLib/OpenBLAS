@@ -654,7 +654,7 @@ f"> */
 /* > \ingroup complexOTHERauxiliary */
 
 /*  ===================================================================== */
-/* Subroutine */ int clagtm_(char *trans, integer *n, integer *nrhs, real *
+/* Subroutine */ void clagtm_(char *trans, integer *n, integer *nrhs, real *
 	alpha, complex *dl, complex *d__, complex *du, complex *x, integer *
 	ldx, real *beta, complex *b, integer *ldb)
 {
@@ -690,7 +690,7 @@ f"> */
 
     /* Function Body */
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /*     Multiply B by BETA if BETA.NE.1. */
@@ -1160,7 +1160,7 @@ f"> */
 	    }
 	}
     }
-    return 0;
+    return;
 
 /*     End of CLAGTM */
 

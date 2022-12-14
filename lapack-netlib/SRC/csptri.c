@@ -624,7 +624,7 @@ f"> */
 /* > \ingroup complexOTHERcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int csptri_(char *uplo, integer *n, complex *ap, integer *
+/* Subroutine */ void csptri_(char *uplo, integer *n, complex *ap, integer *
 	ipiv, complex *work, integer *info)
 {
     /* System generated locals */
@@ -636,14 +636,14 @@ f"> */
     integer j, k;
     complex t;
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int ccopy_(integer *, complex *, integer *, 
+    extern /* Subroutine */ void ccopy_(integer *, complex *, integer *, 
 	    complex *, integer *);
     extern /* Complex */ VOID cdotu_(complex *, integer *, complex *, integer 
 	    *, complex *, integer *);
-    extern /* Subroutine */ int cswap_(integer *, complex *, integer *, 
+    extern /* Subroutine */ void cswap_(integer *, complex *, integer *, 
 	    complex *, integer *);
     integer kstep;
-    extern /* Subroutine */ int cspmv_(char *, integer *, complex *, complex *
+    extern /* Subroutine */ void cspmv_(char *, integer *, complex *, complex *
 	    , complex *, integer *, complex *, complex *, integer *);
     logical upper;
     complex ak;
@@ -680,13 +680,13 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CSPTRI", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /*     Check that the diagonal matrix D is nonsingular. */
@@ -699,7 +699,7 @@ f"> */
 	for (*info = *n; *info >= 1; --(*info)) {
 	    i__1 = kp;
 	    if (ipiv[*info] > 0 && (ap[i__1].r == 0.f && ap[i__1].i == 0.f)) {
-		return 0;
+		return;
 	    }
 	    kp -= *info;
 /* L10: */
@@ -713,7 +713,7 @@ f"> */
 	for (*info = 1; *info <= i__1; ++(*info)) {
 	    i__2 = kp;
 	    if (ipiv[*info] > 0 && (ap[i__2].r == 0.f && ap[i__2].i == 0.f)) {
-		return 0;
+		return;
 	    }
 	    kp = kp + *n - *info + 1;
 /* L20: */
@@ -1047,7 +1047,7 @@ L80:
 	;
     }
 
-    return 0;
+    return;
 
 /*     End of CSPTRI */
 

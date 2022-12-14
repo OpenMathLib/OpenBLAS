@@ -630,7 +630,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int dtptri_(char *uplo, char *diag, integer *n, doublereal *
+/* Subroutine */ void dtptri_(char *uplo, char *diag, integer *n, doublereal *
 	ap, integer *info)
 {
     /* System generated locals */
@@ -638,10 +638,10 @@ f"> */
 
     /* Local variables */
     integer j;
-    extern /* Subroutine */ int dscal_(integer *, doublereal *, doublereal *, 
+    extern /* Subroutine */ void dscal_(integer *, doublereal *, doublereal *, 
 	    integer *);
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int dtpmv_(char *, char *, char *, integer *, 
+    extern /* Subroutine */ void dtpmv_(char *, char *, char *, integer *, 
 	    doublereal *, doublereal *, integer *);
     logical upper;
     integer jc, jj;
@@ -679,7 +679,7 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DTPTRI", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Check for singularity if non-unit. */
@@ -691,7 +691,7 @@ f"> */
 	    for (*info = 1; *info <= i__1; ++(*info)) {
 		jj += *info;
 		if (ap[jj] == 0.) {
-		    return 0;
+		    return;
 		}
 /* L10: */
 	    }
@@ -700,7 +700,7 @@ f"> */
 	    i__1 = *n;
 	    for (*info = 1; *info <= i__1; ++(*info)) {
 		if (ap[jj] == 0.) {
-		    return 0;
+		    return;
 		}
 		jj = jj + *n - *info + 1;
 /* L20: */
@@ -762,7 +762,7 @@ f"> */
 	}
     }
 
-    return 0;
+    return;
 
 /*     End of DTPTRI */
 

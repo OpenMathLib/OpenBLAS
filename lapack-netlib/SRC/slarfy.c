@@ -620,7 +620,7 @@ static integer c__1 = 1;
 /* > \ingroup realOTHERauxiliary */
 
 /*  ===================================================================== */
-/* Subroutine */ int slarfy_(char *uplo, integer *n, real *v, integer *incv, 
+/* Subroutine */ void slarfy_(char *uplo, integer *n, real *v, integer *incv, 
 	real *tau, real *c__, integer *ldc, real *work)
 {
     /* System generated locals */
@@ -629,10 +629,10 @@ static integer c__1 = 1;
 
     /* Local variables */
     extern real sdot_(integer *, real *, integer *, real *, integer *);
-    extern /* Subroutine */ int ssyr2_(char *, integer *, real *, real *, 
+    extern /* Subroutine */ void ssyr2_(char *, integer *, real *, real *, 
 	    integer *, real *, integer *, real *, integer *);
     real alpha;
-    extern /* Subroutine */ int saxpy_(integer *, real *, real *, integer *, 
+    extern /* Subroutine */ void saxpy_(integer *, real *, real *, integer *, 
 	    real *, integer *), ssymv_(char *, integer *, real *, real *, 
 	    integer *, real *, integer *, real *, real *, integer *);
 
@@ -655,7 +655,7 @@ static integer c__1 = 1;
 
     /* Function Body */
     if (*tau == 0.f) {
-	return 0;
+	return;
     }
 
 /*     Form  w:= C * v */
@@ -671,7 +671,7 @@ static integer c__1 = 1;
     r__1 = -(*tau);
     ssyr2_(uplo, n, &r__1, &v[1], incv, &work[1], &c__1, &c__[c_offset], ldc);
 
-    return 0;
+    return;
 
 /*     End of SLARFY */
 

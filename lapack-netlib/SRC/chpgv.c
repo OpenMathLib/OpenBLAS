@@ -677,7 +677,7 @@ static integer c__1 = 1;
 /* > \ingroup complexOTHEReigen */
 
 /*  ===================================================================== */
-/* Subroutine */ int chpgv_(integer *itype, char *jobz, char *uplo, integer *
+/* Subroutine */ void chpgv_(integer *itype, char *jobz, char *uplo, integer *
 	n, complex *ap, complex *bp, real *w, complex *z__, integer *ldz, 
 	complex *work, real *rwork, integer *info)
 {
@@ -687,16 +687,17 @@ static integer c__1 = 1;
     /* Local variables */
     integer neig, j;
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int chpev_(char *, char *, integer *, complex *, 
+    extern /* Subroutine */ void chpev_(char *, char *, integer *, complex *, 
 	    real *, complex *, integer *, complex *, real *, integer *);
     char trans[1];
-    extern /* Subroutine */ int ctpmv_(char *, char *, char *, integer *, 
+    extern /* Subroutine */ void ctpmv_(char *, char *, char *, integer *, 
 	    complex *, complex *, integer *);
     logical upper;
-    extern /* Subroutine */ int ctpsv_(char *, char *, char *, integer *, 
+    extern /* Subroutine */ void ctpsv_(char *, char *, char *, integer *, 
 	    complex *, complex *, integer *);
     logical wantz;
-    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen), chpgst_(
+    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
+    extern void chpgst_(
 	    integer *, char *, integer *, complex *, complex *, integer *), cpptrf_(char *, integer *, complex *, integer *);
 
 
@@ -740,13 +741,13 @@ static integer c__1 = 1;
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CHPGV ", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /*     Form a Cholesky factorization of B. */
@@ -754,7 +755,7 @@ static integer c__1 = 1;
     cpptrf_(uplo, n, &bp[1], info);
     if (*info != 0) {
 	*info = *n + *info;
-	return 0;
+	return;
     }
 
 /*     Transform problem to standard eigenvalue problem and solve. */
@@ -808,7 +809,7 @@ static integer c__1 = 1;
 	    }
 	}
     }
-    return 0;
+    return;
 
 /*     End of CHPGV */
 

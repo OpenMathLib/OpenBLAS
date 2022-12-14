@@ -718,7 +718,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int zgghrd_(char *compq, char *compz, integer *n, integer *
+/* Subroutine */ void zgghrd_(char *compq, char *compz, integer *n, integer *
 	ilo, integer *ihi, doublecomplex *a, integer *lda, doublecomplex *b, 
 	integer *ldb, doublecomplex *q, integer *ldq, doublecomplex *z__, 
 	integer *ldz, integer *info)
@@ -730,7 +730,7 @@ f"> */
 
     /* Local variables */
     integer jcol, jrow;
-    extern /* Subroutine */ int zrot_(integer *, doublecomplex *, integer *, 
+    extern /* Subroutine */ void zrot_(integer *, doublecomplex *, integer *, 
 	    doublecomplex *, integer *, doublereal *, doublecomplex *);
     doublereal c__;
     doublecomplex s;
@@ -738,7 +738,7 @@ f"> */
     doublecomplex ctemp;
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     integer icompq, icompz;
-    extern /* Subroutine */ int zlaset_(char *, integer *, integer *, 
+    extern /* Subroutine */ void zlaset_(char *, integer *, integer *, 
 	    doublecomplex *, doublecomplex *, doublecomplex *, integer *), zlartg_(doublecomplex *, doublecomplex *, doublereal *, 
 	    doublecomplex *, doublecomplex *);
     logical ilq, ilz;
@@ -823,7 +823,7 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZGGHRD", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Initialize Q and Z if desired. */
@@ -838,7 +838,7 @@ f"> */
 /*     Quick return if possible */
 
     if (*n <= 1) {
-	return 0;
+	return;
     }
 
 /*     Zero out lower triangle of B */
@@ -904,7 +904,7 @@ f"> */
 /* L40: */
     }
 
-    return 0;
+    return;
 
 /*     End of ZGGHRD */
 

@@ -727,7 +727,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int sggrqf_(integer *m, integer *p, integer *n, real *a, 
+/* Subroutine */ void sggrqf_(integer *m, integer *p, integer *n, real *a, 
 	integer *lda, real *taua, real *b, integer *ldb, real *taub, real *
 	work, integer *lwork, integer *info)
 {
@@ -739,13 +739,13 @@ f"> */
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     extern integer ilaenv_(integer *, char *, char *, integer *, integer *, 
 	    integer *, integer *, ftnlen, ftnlen);
-    extern /* Subroutine */ int sgeqrf_(integer *, integer *, real *, integer 
+    extern /* Subroutine */ void sgeqrf_(integer *, integer *, real *, integer 
 	    *, real *, real *, integer *, integer *), sgerqf_(integer *, 
 	    integer *, real *, integer *, real *, real *, integer *, integer *
 	    );
     integer nb1, nb2, nb3, lwkopt;
     logical lquery;
-    extern /* Subroutine */ int sormrq_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void sormrq_(char *, char *, integer *, integer *, 
 	    integer *, real *, integer *, real *, real *, integer *, real *, 
 	    integer *, integer *);
 
@@ -807,9 +807,9 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("SGGRQF", &i__1, (ftnlen)6);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     RQ factorization of M-by-N matrix A: A = R*Q */
@@ -835,7 +835,7 @@ f"> */
     i__1 = lopt, i__2 = (integer) work[1];
     work[1] = (real) f2cmax(i__1,i__2);
 
-    return 0;
+    return;
 
 /*     End of SGGRQF */
 

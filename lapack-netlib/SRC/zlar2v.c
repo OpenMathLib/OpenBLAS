@@ -621,7 +621,7 @@ f"> */
 /* > \ingroup complex16OTHERauxiliary */
 
 /*  ===================================================================== */
-/* Subroutine */ int zlar2v_(integer *n, doublecomplex *x, doublecomplex *y, 
+/* Subroutine */ void zlar2v_(integer *n, doublecomplex *x, doublecomplex *y, 
 	doublecomplex *z__, integer *incx, doublereal *c__, doublecomplex *s, 
 	integer *incc)
 {
@@ -709,7 +709,7 @@ f"> */
 	ic += *incc;
 /* L10: */
     }
-    return 0;
+    return;
 
 /*     End of ZLAR2V */
 

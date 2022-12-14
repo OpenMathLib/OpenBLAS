@@ -900,7 +900,7 @@ fsx_extended.f"> */
 /* > \ingroup complex16POcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int zla_porfsx_extended_(integer *prec_type__, char *uplo, 
+/* Subroutine */ void zla_porfsx_extended_(integer *prec_type__, char *uplo, 
 	integer *n, integer *nrhs, doublecomplex *a, integer *lda, 
 	doublecomplex *af, integer *ldaf, logical *colequ, doublereal *c__, 
 	doublecomplex *b, integer *ldb, doublecomplex *y, integer *ldy, 
@@ -918,36 +918,36 @@ fsx_extended.f"> */
 
     /* Local variables */
     doublereal dx_x__, dz_z__, ymin;
-    extern /* Subroutine */ int zla_lin_berr_(integer *, integer *, integer *
+    extern /* Subroutine */ void zla_lin_berr_(integer *, integer *, integer *
 	    , doublecomplex *, doublereal *, doublereal *);
     doublereal dxratmax, dzratmax;
     integer y_prec_state__;
-    extern /* Subroutine */ int blas_zhemv_x_(integer *, integer *, 
+    extern /* Subroutine */ void blas_zhemv_x_(integer *, integer *, 
 	    doublecomplex *, doublecomplex *, integer *, doublecomplex *, 
 	    integer *, doublecomplex *, doublecomplex *, integer *, integer *)
 	    ;
     integer uplo2, i__, j;
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int blas_zhemv2_x_(integer *, integer *, 
+    extern /* Subroutine */ void blas_zhemv2_x_(integer *, integer *, 
 	    doublecomplex *, doublecomplex *, integer *, doublecomplex *, 
 	    doublecomplex *, integer *, doublecomplex *, doublecomplex *, 
 	    integer *, integer *);
     doublereal dxrat;
     logical incr_prec__;
     doublereal dzrat;
-    extern /* Subroutine */ int zla_heamv_(integer *, integer *, doublereal *
+    extern /* Subroutine */ void zla_heamv_(integer *, integer *, doublereal *
 	    , doublecomplex *, integer *, doublecomplex *, integer *, 
 	    doublereal *, doublereal *, integer *), zhemv_(char *, integer *, 
 	    doublecomplex *, doublecomplex *, integer *, doublecomplex *, 
 	    integer *, doublecomplex *, doublecomplex *, integer *);
     doublereal normx, normy;
-    extern /* Subroutine */ int zcopy_(integer *, doublecomplex *, integer *, 
+    extern /* Subroutine */ void zcopy_(integer *, doublecomplex *, integer *, 
 	    doublecomplex *, integer *), zaxpy_(integer *, doublecomplex *, 
 	    doublecomplex *, integer *, doublecomplex *, integer *);
     doublereal myhugeval, prev_dz_z__;
     extern doublereal dlamch_(char *);
     doublereal yk, final_dx_x__, final_dz_z__, normdx;
-    extern /* Subroutine */ int zla_wwaddw_(integer *, doublecomplex *, 
+    extern /* Subroutine */ void zla_wwaddw_(integer *, doublecomplex *, 
 	    doublecomplex *, doublecomplex *), zpotrs_(char *, integer *, 
 	    integer *, doublecomplex *, integer *, doublecomplex *, integer *,
 	     integer *);
@@ -996,7 +996,7 @@ fsx_extended.f"> */
 
     /* Function Body */
     if (*info != 0) {
-	return 0;
+	return;
     }
     eps = dlamch_("Epsilon");
     myhugeval = dlamch_("Overflow");
@@ -1229,6 +1229,6 @@ L666:
 
     }
 
-    return 0;
+    return;
 } /* zla_porfsx_extended__ */
 

@@ -645,7 +645,7 @@ f"> */
 /* > Christof Voemel, University of California, Berkeley, USA */
 
 /*  ===================================================================== */
-/* Subroutine */ int dlarrc_(char *jobt, integer *n, doublereal *vl, 
+/* Subroutine */ void dlarrc_(char *jobt, integer *n, doublereal *vl, 
 	doublereal *vu, doublereal *d__, doublereal *e, doublereal *pivmin, 
 	integer *eigcnt, integer *lcnt, integer *rcnt, integer *info)
 {
@@ -679,7 +679,7 @@ f"> */
 /*     Quick return if possible */
 
     if (*n <= 0) {
-	return 0;
+	return;
     }
 
     *lcnt = 0;
@@ -752,7 +752,7 @@ f"> */
 	}
     }
     *eigcnt = *rcnt - *lcnt;
-    return 0;
+    return;
 
 /*     end of DLARRC */
 

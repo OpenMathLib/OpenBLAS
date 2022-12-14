@@ -820,7 +820,7 @@ f"> */
 /* >       California at Berkeley, USA \n */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int dstevr_(char *jobz, char *range, integer *n, doublereal *
+/* Subroutine */ void dstevr_(char *jobz, char *range, integer *n, doublereal *
 	d__, doublereal *e, doublereal *vl, doublereal *vu, integer *il, 
 	integer *iu, doublereal *abstol, integer *m, doublereal *w, 
 	doublereal *z__, integer *ldz, integer *isuppz, doublereal *work, 
@@ -836,12 +836,12 @@ f"> */
     logical test;
     doublereal tnrm;
     integer itmp1, i__, j;
-    extern /* Subroutine */ int dscal_(integer *, doublereal *, doublereal *, 
+    extern /* Subroutine */ void dscal_(integer *, doublereal *, doublereal *, 
 	    integer *);
     doublereal sigma;
     extern logical lsame_(char *, char *);
     char order[1];
-    extern /* Subroutine */ int dcopy_(integer *, doublereal *, integer *, 
+    extern /* Subroutine */ void dcopy_(integer *, doublereal *, integer *, 
 	    doublereal *, integer *), dswap_(integer *, doublereal *, integer 
 	    *, doublereal *, integer *);
     integer lwmin;
@@ -858,12 +858,12 @@ f"> */
     doublereal bignum;
     extern doublereal dlanst_(char *, integer *, doublereal *, doublereal *);
     integer indisp;
-    extern /* Subroutine */ int dstein_(integer *, doublereal *, doublereal *,
+    extern /* Subroutine */ void dstein_(integer *, doublereal *, doublereal *,
 	     integer *, doublereal *, integer *, integer *, doublereal *, 
 	    integer *, doublereal *, integer *, integer *, integer *), 
 	    dsterf_(integer *, doublereal *, doublereal *, integer *);
     integer indiwo;
-    extern /* Subroutine */ int dstebz_(char *, char *, integer *, doublereal 
+    extern /* Subroutine */ void dstebz_(char *, char *, integer *, doublereal 
 	    *, doublereal *, integer *, integer *, doublereal *, doublereal *,
 	     doublereal *, integer *, integer *, doublereal *, integer *, 
 	    integer *, doublereal *, integer *, integer *), 
@@ -961,16 +961,16 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DSTEVR", &i__1, (ftnlen)6);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     *m = 0;
     if (*n == 0) {
-	return 0;
+	return;
     }
 
     if (*n == 1) {
@@ -986,7 +986,7 @@ f"> */
 	if (wantz) {
 	    z__[z_dim1 + 1] = 1.;
 	}
-	return 0;
+	return;
     }
 
 /*     Get machine constants. */
@@ -1145,7 +1145,7 @@ L10:
 
     work[1] = (doublereal) lwmin;
     iwork[1] = liwmin;
-    return 0;
+    return;
 
 /*     End of DSTEVR */
 

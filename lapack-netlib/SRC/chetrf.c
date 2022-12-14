@@ -692,7 +692,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int chetrf_(char *uplo, integer *n, complex *a, integer *lda,
+/* Subroutine */ void chetrf_(char *uplo, integer *n, complex *a, integer *lda,
 	 integer *ipiv, complex *work, integer *lwork, integer *info)
 {
     /* System generated locals */
@@ -703,12 +703,13 @@ f"> */
     extern logical lsame_(char *, char *);
     integer nbmin, iinfo;
     logical upper;
-    extern /* Subroutine */ int chetf2_(char *, integer *, complex *, integer 
+    extern /* Subroutine */ void chetf2_(char *, integer *, complex *, integer 
 	    *, integer *, integer *);
     integer kb, nb;
-    extern /* Subroutine */ int clahef_(char *, integer *, integer *, integer 
+    extern /* Subroutine */ void clahef_(char *, integer *, integer *, integer 
 	    *, complex *, integer *, integer *, complex *, integer *, integer 
-	    *), xerbla_(char *, integer *, ftnlen);
+	    *);
+    extern int xerbla_(char *, integer *, ftnlen);
     extern integer ilaenv_(integer *, char *, char *, integer *, integer *, 
 	    integer *, integer *, ftnlen, ftnlen);
     integer ldwork, lwkopt;
@@ -761,9 +762,9 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CHETRF", &i__1, (ftnlen)6);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
     nbmin = 2;
@@ -890,7 +891,7 @@ L20:
 
 L40:
     work[1].r = (real) lwkopt, work[1].i = 0.f;
-    return 0;
+    return;
 
 /*     End of CHETRF */
 

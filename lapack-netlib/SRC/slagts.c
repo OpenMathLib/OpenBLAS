@@ -671,7 +671,7 @@ f"> */
 /* > \ingroup OTHERauxiliary */
 
 /*  ===================================================================== */
-/* Subroutine */ int slagts_(integer *job, integer *n, real *a, real *b, real 
+/* Subroutine */ void slagts_(integer *job, integer *n, real *a, real *b, real 
 	*c__, real *d__, integer *in, real *y, real *tol, integer *info)
 {
     /* System generated locals */
@@ -714,11 +714,11 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("SLAGTS", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
     eps = slamch_("Epsilon");
@@ -777,14 +777,14 @@ f"> */
 		    if (absak < sfmin) {
 			if (absak == 0.f || abs(temp) * sfmin > absak) {
 			    *info = k;
-			    return 0;
+			    return;
 			} else {
 			    temp *= bignum;
 			    ak *= bignum;
 			}
 		    } else if (abs(temp) > absak * bignum) {
 			*info = k;
-			return 0;
+			return;
 		    }
 		}
 		y[k] = temp / ak;
@@ -843,14 +843,14 @@ L40:
 		    if (absak < sfmin) {
 			if (absak == 0.f || abs(temp) * sfmin > absak) {
 			    *info = k;
-			    return 0;
+			    return;
 			} else {
 			    temp *= bignum;
 			    ak *= bignum;
 			}
 		    } else if (abs(temp) > absak * bignum) {
 			*info = k;
-			return 0;
+			return;
 		    }
 		}
 		y[k] = temp / ak;
@@ -905,6 +905,6 @@ L70:
 
 /*     End of SLAGTS */
 
-    return 0;
+    return;
 } /* slagts_ */
 

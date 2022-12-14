@@ -626,7 +626,7 @@ static doublereal c_b13 = 0.;
 /* > \ingroup double_matgen */
 
 /*  ===================================================================== */
-/* Subroutine */ int dlagge_(integer *m, integer *n, integer *kl, integer *ku,
+/* Subroutine */ void dlagge_(integer *m, integer *n, integer *kl, integer *ku,
 	 doublereal *d__, doublereal *a, integer *lda, integer *iseed, 
 	doublereal *work, integer *info)
 {
@@ -635,17 +635,18 @@ static doublereal c_b13 = 0.;
     doublereal d__1;
 
     /* Local variables */
-    extern /* Subroutine */ int dger_(integer *, integer *, doublereal *, 
+    extern /* Subroutine */ void dger_(integer *, integer *, doublereal *, 
 	    doublereal *, integer *, doublereal *, integer *, doublereal *, 
 	    integer *);
     extern doublereal dnrm2_(integer *, doublereal *, integer *);
     integer i__, j;
-    extern /* Subroutine */ int dscal_(integer *, doublereal *, doublereal *, 
+    extern /* Subroutine */ void dscal_(integer *, doublereal *, doublereal *, 
 	    integer *), dgemv_(char *, integer *, integer *, doublereal *, 
 	    doublereal *, integer *, doublereal *, integer *, doublereal *, 
 	    doublereal *, integer *);
     doublereal wa, wb, wn;
-    extern /* Subroutine */ int xerbla_(char *, integer *), dlarnv_(
+    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
+    extern void dlarnv_(
 	    integer *, integer *, integer *, doublereal *);
     doublereal tau;
 
@@ -684,8 +685,8 @@ static doublereal c_b13 = 0.;
     }
     if (*info < 0) {
 	i__1 = -(*info);
-	xerbla_("DLAGGE", &i__1);
-	return 0;
+	xerbla_("DLAGGE", &i__1, 6);
+	return;
     }
 
 /*     initialize A to diagonal matrix */
@@ -708,7 +709,7 @@ static doublereal c_b13 = 0.;
 /*     Quick exit if the user wants a diagonal matrix */
 
     if (*kl == 0 && *ku == 0) {
-	return 0;
+	return;
     }
 
 /*     pre- and post-multiply A by random orthogonal matrices */
@@ -963,7 +964,7 @@ static doublereal c_b13 = 0.;
 	}
 /* L70: */
     }
-    return 0;
+    return;
 
 /*     End of DLAGGE */
 

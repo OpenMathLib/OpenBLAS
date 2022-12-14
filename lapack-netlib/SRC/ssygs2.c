@@ -643,7 +643,7 @@ f"> */
 /* > \ingroup realSYcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int ssygs2_(integer *itype, char *uplo, integer *n, real *a, 
+/* Subroutine */ void ssygs2_(integer *itype, char *uplo, integer *n, real *a, 
 	integer *lda, real *b, integer *ldb, integer *info)
 {
     /* System generated locals */
@@ -652,12 +652,12 @@ f"> */
 
     /* Local variables */
     integer k;
-    extern /* Subroutine */ int ssyr2_(char *, integer *, real *, real *, 
+    extern /* Subroutine */ void ssyr2_(char *, integer *, real *, real *, 
 	    integer *, real *, integer *, real *, integer *);
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int sscal_(integer *, real *, real *, integer *);
+    extern /* Subroutine */ void sscal_(integer *, real *, real *, integer *);
     logical upper;
-    extern /* Subroutine */ int saxpy_(integer *, real *, real *, integer *, 
+    extern /* Subroutine */ void saxpy_(integer *, real *, real *, integer *, 
 	    real *, integer *), strmv_(char *, char *, char *, integer *, 
 	    real *, integer *, real *, integer *), 
 	    strsv_(char *, char *, char *, integer *, real *, integer *, real 
@@ -703,7 +703,7 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("SSYGS2", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
     if (*itype == 1) {
@@ -845,7 +845,7 @@ f"> */
 	    }
 	}
     }
-    return 0;
+    return;
 
 /*     End of SSYGS2 */
 

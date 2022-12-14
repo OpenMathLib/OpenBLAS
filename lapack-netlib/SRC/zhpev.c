@@ -651,7 +651,7 @@ atrices</b> */
 /* > \ingroup complex16OTHEReigen */
 
 /*  ===================================================================== */
-/* Subroutine */ int zhpev_(char *jobz, char *uplo, integer *n, doublecomplex 
+/* Subroutine */ void zhpev_(char *jobz, char *uplo, integer *n, doublecomplex 
 	*ap, doublereal *w, doublecomplex *z__, integer *ldz, doublecomplex *
 	work, doublereal *rwork, integer *info)
 {
@@ -664,7 +664,7 @@ atrices</b> */
     doublereal anrm;
     integer imax;
     doublereal rmin, rmax;
-    extern /* Subroutine */ int dscal_(integer *, doublereal *, doublereal *, 
+    extern /* Subroutine */ void dscal_(integer *, doublereal *, doublereal *, 
 	    integer *);
     doublereal sigma;
     extern logical lsame_(char *, char *);
@@ -673,17 +673,18 @@ atrices</b> */
     extern doublereal dlamch_(char *);
     integer iscale;
     doublereal safmin;
-    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen), zdscal_(
+    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
+    extern void zdscal_(
 	    integer *, doublereal *, doublecomplex *, integer *);
     doublereal bignum;
     integer indtau;
-    extern /* Subroutine */ int dsterf_(integer *, doublereal *, doublereal *,
+    extern /* Subroutine */ void dsterf_(integer *, doublereal *, doublereal *,
 	     integer *);
     extern doublereal zlanhp_(char *, char *, integer *, doublecomplex *, 
 	    doublereal *);
     integer indrwk, indwrk;
     doublereal smlnum;
-    extern /* Subroutine */ int zhptrd_(char *, integer *, doublecomplex *, 
+    extern /* Subroutine */ void zhptrd_(char *, integer *, doublecomplex *, 
 	    doublereal *, doublereal *, doublecomplex *, integer *), 
 	    zsteqr_(char *, integer *, doublereal *, doublereal *, 
 	    doublecomplex *, integer *, doublereal *, integer *), 
@@ -730,13 +731,13 @@ atrices</b> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZHPEV ", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
     if (*n == 1) {
@@ -746,7 +747,7 @@ atrices</b> */
 	    i__1 = z_dim1 + 1;
 	    z__[i__1].r = 1., z__[i__1].i = 0.;
 	}
-	return 0;
+	return;
     }
 
 /*     Get machine constants. */
@@ -806,7 +807,7 @@ atrices</b> */
 	dscal_(&imax, &d__1, &w[1], &c__1);
     }
 
-    return 0;
+    return;
 
 /*     End of ZHPEV */
 

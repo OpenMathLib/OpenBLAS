@@ -743,7 +743,7 @@ f"> */
 /* >     Mark Fahey, Department of Mathematics, Univ. of Kentucky, USA */
 
 /*  ===================================================================== */
-/* Subroutine */ int chpgvd_(integer *itype, char *jobz, char *uplo, integer *
+/* Subroutine */ void chpgvd_(integer *itype, char *jobz, char *uplo, integer *
 	n, complex *ap, complex *bp, real *w, complex *z__, integer *ldz, 
 	complex *work, integer *lwork, real *rwork, integer *lrwork, integer *
 	iwork, integer *liwork, integer *info)
@@ -757,16 +757,17 @@ f"> */
     extern logical lsame_(char *, char *);
     integer lwmin;
     char trans[1];
-    extern /* Subroutine */ int ctpmv_(char *, char *, char *, integer *, 
+    extern /* Subroutine */ void ctpmv_(char *, char *, char *, integer *, 
 	    complex *, complex *, integer *);
     logical upper;
-    extern /* Subroutine */ int ctpsv_(char *, char *, char *, integer *, 
+    extern /* Subroutine */ void ctpsv_(char *, char *, char *, integer *, 
 	    complex *, complex *, integer *);
     logical wantz;
-    extern /* Subroutine */ int chpevd_(char *, char *, integer *, complex *, 
+    extern /* Subroutine */ void chpevd_(char *, char *, integer *, complex *, 
 	    real *, complex *, integer *, complex *, integer *, real *, 
-	    integer *, integer *, integer *, integer *), 
-	    xerbla_(char *, integer *, ftnlen), chpgst_(integer *, char *, 
+	    integer *, integer *, integer *, integer *); 
+    extern int xerbla_(char *, integer *, ftnlen);
+    extern void chpgst_(integer *, char *, 
 	    integer *, complex *, complex *, integer *), cpptrf_(char 
 	    *, integer *, complex *, integer *);
     integer liwmin, lrwmin;
@@ -847,15 +848,15 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CHPGVD", &i__1, (ftnlen)6);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /*     Form a Cholesky factorization of B. */
@@ -863,7 +864,7 @@ f"> */
     cpptrf_(uplo, n, &bp[1], info);
     if (*info != 0) {
 	*info = *n + *info;
-	return 0;
+	return;
     }
 
 /*     Transform problem to standard eigenvalue problem and solve. */
@@ -930,7 +931,7 @@ f"> */
     work[1].r = (real) lwmin, work[1].i = 0.f;
     rwork[1] = (real) lrwmin;
     iwork[1] = liwmin;
-    return 0;
+    return;
 
 /*     End of CHPGVD */
 

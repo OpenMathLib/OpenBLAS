@@ -778,7 +778,7 @@ static complex c_b5 = {20.f,0.f};
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int clatm5_(integer *prtype, integer *m, integer *n, complex 
+/* Subroutine */ void clatm5_(integer *prtype, integer *m, integer *n, complex 
 	*a, integer *lda, complex *b, integer *ldb, complex *c__, integer *
 	ldc, complex *d__, integer *ldd, complex *e, integer *lde, complex *f,
 	 integer *ldf, complex *r__, integer *ldr, complex *l, integer *ldl, 
@@ -793,7 +793,7 @@ static complex c_b5 = {20.f,0.f};
 
     /* Local variables */
     integer i__, j, k;
-    extern /* Subroutine */ int cgemm_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void cgemm_(char *, char *, integer *, integer *, 
 	    integer *, complex *, complex *, integer *, complex *, integer *, 
 	    complex *, complex *, integer *);
     complex imeps, reeps;
@@ -1277,6 +1277,6 @@ static complex c_b5 = {20.f,0.f};
 
 /*     End of CLATM5 */
 
-    return 0;
+    return;
 } /* clatm5_ */
 

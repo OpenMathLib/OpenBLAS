@@ -722,7 +722,7 @@ f"> */
 /* >     California at Berkeley, USA */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int dbdsdc_(char *uplo, char *compq, integer *n, doublereal *
+/* Subroutine */ void dbdsdc_(char *uplo, char *compq, integer *n, doublereal *
 	d__, doublereal *e, doublereal *u, integer *ldu, doublereal *vt, 
 	integer *ldvt, doublereal *q, integer *iq, doublereal *work, integer *
 	iwork, integer *info)
@@ -736,18 +736,18 @@ f"> */
     doublereal p, r__;
     integer z__;
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int dlasr_(char *, char *, char *, integer *, 
+    extern /* Subroutine */ void dlasr_(char *, char *, char *, integer *, 
 	    integer *, doublereal *, doublereal *, doublereal *, integer *), dcopy_(integer *, doublereal *, integer *
 	    , doublereal *, integer *), dswap_(integer *, doublereal *, 
 	    integer *, doublereal *, integer *);
     integer poles, iuplo, nsize, start;
-    extern /* Subroutine */ int dlasd0_(integer *, integer *, doublereal *, 
+    extern /* Subroutine */ void dlasd0_(integer *, integer *, doublereal *, 
 	    doublereal *, doublereal *, integer *, doublereal *, integer *, 
 	    integer *, integer *, doublereal *, integer *);
     integer ic, ii, kk;
     doublereal cs;
     extern doublereal dlamch_(char *);
-    extern /* Subroutine */ int dlasda_(integer *, integer *, integer *, 
+    extern /* Subroutine */ void dlasda_(integer *, integer *, integer *, 
 	    integer *, doublereal *, doublereal *, doublereal *, integer *, 
 	    doublereal *, integer *, doublereal *, doublereal *, doublereal *,
 	     doublereal *, integer *, integer *, integer *, integer *, 
@@ -755,7 +755,7 @@ f"> */
 	     integer *);
     integer is, iu;
     doublereal sn;
-    extern /* Subroutine */ int dlascl_(char *, integer *, integer *, 
+    extern /* Subroutine */ void dlascl_(char *, integer *, integer *, 
 	    doublereal *, doublereal *, integer *, integer *, doublereal *, 
 	    integer *, integer *), dlasdq_(char *, integer *, integer 
 	    *, integer *, integer *, integer *, doublereal *, doublereal *, 
@@ -837,13 +837,13 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DBDSDC", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
     smlsiz = ilaenv_(&c__9, "DBDSDC", " ", &c__0, &c__0, &c__0, &c__0, (
 	    ftnlen)6, (ftnlen)1);
@@ -856,7 +856,7 @@ f"> */
 	    vt[vt_dim1 + 1] = 1.;
 	}
 	d__[1] = abs(d__[1]);
-	return 0;
+	return;
     }
     nm1 = *n - 1;
 
@@ -935,7 +935,7 @@ f"> */
 
     orgnrm = dlanst_("M", n, &d__[1], &e[1]);
     if (orgnrm == 0.) {
-	return 0;
+	return;
     }
     dlascl_("G", &c__0, &c__0, &orgnrm, &c_b15, n, &c__1, &d__[1], n, &ierr);
     dlascl_("G", &c__0, &c__0, &orgnrm, &c_b15, &nm1, &c__1, &e[1], &nm1, &
@@ -1026,7 +1026,7 @@ f"> */
 			iwork[1], info);
 	    }
 	    if (*info != 0) {
-		return 0;
+		return;
 	    }
 	    start = i__ + 1;
 	}
@@ -1086,7 +1086,7 @@ L40:
 	dlasr_("L", "V", "B", n, n, &work[1], &work[*n], &u[u_offset], ldu);
     }
 
-    return 0;
+    return;
 
 /*     End of DBDSDC */
 

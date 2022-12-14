@@ -660,7 +660,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int dgbtrf_(integer *m, integer *n, integer *kl, integer *ku,
+/* Subroutine */ void dgbtrf_(integer *m, integer *n, integer *kl, integer *ku,
 	 doublereal *ab, integer *ldab, integer *ipiv, integer *info)
 {
     /* System generated locals */
@@ -668,12 +668,12 @@ f"> */
     doublereal d__1;
 
     /* Local variables */
-    extern /* Subroutine */ int dger_(integer *, integer *, doublereal *, 
+    extern /* Subroutine */ void dger_(integer *, integer *, doublereal *, 
 	    doublereal *, integer *, doublereal *, integer *, doublereal *, 
 	    integer *);
     doublereal temp;
     integer i__, j;
-    extern /* Subroutine */ int dscal_(integer *, doublereal *, doublereal *, 
+    extern /* Subroutine */ void dscal_(integer *, doublereal *, doublereal *, 
 	    integer *), dgemm_(char *, char *, integer *, integer *, integer *
 	    , doublereal *, doublereal *, integer *, doublereal *, integer *, 
 	    doublereal *, doublereal *, integer *), dcopy_(
@@ -682,11 +682,11 @@ f"> */
 	    );
     doublereal work13[4160]	/* was [65][64] */, work31[4160]	/* 
 	    was [65][64] */;
-    extern /* Subroutine */ int dtrsm_(char *, char *, char *, char *, 
+    extern /* Subroutine */ void dtrsm_(char *, char *, char *, char *, 
 	    integer *, integer *, doublereal *, doublereal *, integer *, 
 	    doublereal *, integer *);
     integer i2, i3, j2, j3, k2;
-    extern /* Subroutine */ int dgbtf2_(integer *, integer *, integer *, 
+    extern /* Subroutine */ void dgbtf2_(integer *, integer *, integer *, 
 	    integer *, doublereal *, integer *, integer *, integer *);
     integer jb, nb, ii, jj, jm, ip, jp, km, ju, kv;
     extern integer idamax_(integer *, doublereal *, integer *);
@@ -736,13 +736,13 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DGBTRF", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*m == 0 || *n == 0) {
-	return 0;
+	return;
     }
 
 /*     Determine the block size for this environment */
@@ -1137,7 +1137,7 @@ f"> */
 	}
     }
 
-    return 0;
+    return;
 
 /*     End of DGBTRF */
 

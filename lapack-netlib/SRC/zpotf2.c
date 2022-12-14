@@ -624,7 +624,7 @@ f"> */
 /* > \ingroup complex16POcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int zpotf2_(char *uplo, integer *n, doublecomplex *a, 
+/* Subroutine */ void zpotf2_(char *uplo, integer *n, doublecomplex *a, 
 	integer *lda, integer *info)
 {
     /* System generated locals */
@@ -637,12 +637,13 @@ f"> */
     extern logical lsame_(char *, char *);
     extern /* Double Complex */ VOID zdotc_(doublecomplex *, integer *, 
 	    doublecomplex *, integer *, doublecomplex *, integer *);
-    extern /* Subroutine */ int zgemv_(char *, integer *, integer *, 
+    extern /* Subroutine */ void zgemv_(char *, integer *, integer *, 
 	    doublecomplex *, doublecomplex *, integer *, doublecomplex *, 
 	    integer *, doublecomplex *, doublecomplex *, integer *);
     logical upper;
     extern logical disnan_(doublereal *);
-    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen), zdscal_(
+    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
+    extern void zdscal_(
 	    integer *, doublereal *, doublecomplex *, integer *), zlacgv_(
 	    integer *, doublecomplex *, integer *);
     doublereal ajj;
@@ -677,13 +678,13 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZPOTF2", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
     if (upper) {
@@ -780,7 +781,7 @@ L30:
     *info = j;
 
 L40:
-    return 0;
+    return;
 
 /*     End of ZPOTF2 */
 

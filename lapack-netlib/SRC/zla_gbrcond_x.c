@@ -683,12 +683,12 @@ doublereal zla_gbrcond_x_(char *trans, integer *n, integer *kl, integer *ku,
     extern logical lsame_(char *, char *);
     integer isave[3];
     doublereal anorm;
-    extern /* Subroutine */ int zlacn2_(integer *, doublecomplex *, 
+    extern /* Subroutine */ void zlacn2_(integer *, doublecomplex *, 
 	    doublecomplex *, doublereal *, integer *, integer *);
     integer kd, ke;
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     doublereal ainvnm;
-    extern /* Subroutine */ int zgbtrs_(char *, integer *, integer *, integer 
+    extern /* Subroutine */ void zgbtrs_(char *, integer *, integer *, integer 
 	    *, integer *, doublecomplex *, integer *, integer *, 
 	    doublecomplex *, integer *, integer *);
     doublereal tmp;

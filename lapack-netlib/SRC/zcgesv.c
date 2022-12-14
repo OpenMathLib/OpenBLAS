@@ -716,7 +716,7 @@ f"> */
 /* > \ingroup complex16GEsolve */
 
 /*  ===================================================================== */
-/* Subroutine */ int zcgesv_(integer *n, integer *nrhs, doublecomplex *a, 
+/* Subroutine */ void zcgesv_(integer *n, integer *nrhs, doublecomplex *a, 
 	integer *lda, integer *ipiv, doublecomplex *b, integer *ldb, 
 	doublecomplex *x, integer *ldx, doublecomplex *work, complex *swork, 
 	doublereal *rwork, integer *iter, integer *info)
@@ -731,7 +731,7 @@ f"> */
     integer ptsa;
     doublereal rnrm, xnrm;
     integer ptsx, i__, iiter;
-    extern /* Subroutine */ int zgemm_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void zgemm_(char *, char *, integer *, integer *, 
 	    integer *, doublecomplex *, doublecomplex *, integer *, 
 	    doublecomplex *, integer *, doublecomplex *, doublecomplex *, 
 	    integer *), zaxpy_(integer *, doublecomplex *, 
@@ -741,16 +741,18 @@ f"> */
 	    doublecomplex *, integer *, complex *, integer *, integer *);
     extern doublereal dlamch_(char *);
     extern /* Subroutine */ int cgetrf_(integer *, integer *, complex *, 
-	    integer *, integer *, integer *), xerbla_(char *, integer *, ftnlen);
+	    integer *, integer *, integer *);
+    extern int xerbla_(char *, integer *, ftnlen);
     extern doublereal zlange_(char *, integer *, integer *, doublecomplex *, 
 	    integer *, doublereal *);
     extern /* Subroutine */ int cgetrs_(char *, integer *, integer *, complex 
 	    *, integer *, integer *, complex *, integer *, integer *);
     extern integer izamax_(integer *, doublecomplex *, integer *);
-    extern /* Subroutine */ int zlacpy_(char *, integer *, integer *, 
-	    doublecomplex *, integer *, doublecomplex *, integer *), 
-	    zgetrf_(integer *, integer *, doublecomplex *, integer *, integer 
-	    *, integer *), zgetrs_(char *, integer *, integer *, 
+    extern /* Subroutine */ void zlacpy_(char *, integer *, integer *, 
+	    doublecomplex *, integer *, doublecomplex *, integer *); 
+    extern int zgetrf_(integer *, integer *, doublecomplex *, integer *, integer 
+	    *, integer *);
+    extern int zgetrs_(char *, integer *, integer *, 
 	    doublecomplex *, integer *, integer *, doublecomplex *, integer *,
 	     integer *);
     doublereal cte, eps;
@@ -807,13 +809,13 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZCGESV", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if (N.EQ.0). */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /*     Skip single precision iterative refinement if a priori slower */
@@ -902,7 +904,7 @@ f"> */
 /*     stopping criterion. We are good to exit. */
 
     *iter = 0;
-    return 0;
+    return;
 
 L10:
 
@@ -965,7 +967,7 @@ L10:
 
 	*iter = iiter;
 
-	return 0;
+	return;
 
 L20:
 
@@ -988,14 +990,14 @@ L40:
     zgetrf_(n, n, &a[a_offset], lda, &ipiv[1], info);
 
     if (*info != 0) {
-	return 0;
+	return;
     }
 
     zlacpy_("All", n, nrhs, &b[b_offset], ldb, &x[x_offset], ldx);
     zgetrs_("No transpose", n, nrhs, &a[a_offset], lda, &ipiv[1], &x[x_offset]
 	    , ldx, info);
 
-    return 0;
+    return;
 
 /*     End of ZCGESV. */
 

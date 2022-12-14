@@ -726,7 +726,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int clabrd_(integer *m, integer *n, integer *nb, complex *a, 
+/* Subroutine */ void clabrd_(integer *m, integer *n, integer *nb, complex *a, 
 	integer *lda, real *d__, real *e, complex *tauq, complex *taup, 
 	complex *x, integer *ldx, complex *y, integer *ldy)
 {
@@ -738,7 +738,7 @@ f"> */
     /* Local variables */
     integer i__;
     complex alpha;
-    extern /* Subroutine */ int cscal_(integer *, complex *, complex *, 
+    extern /* Subroutine */ void cscal_(integer *, complex *, complex *, 
 	    integer *), cgemv_(char *, integer *, integer *, complex *, 
 	    complex *, integer *, complex *, integer *, complex *, complex *, 
 	    integer *), clarfg_(integer *, complex *, complex *, 
@@ -773,7 +773,7 @@ f"> */
 
     /* Function Body */
     if (*m <= 0 || *n <= 0) {
-	return 0;
+	return;
     }
 
     if (*m >= *n) {
@@ -1068,7 +1068,7 @@ f"> */
 /* L20: */
 	}
     }
-    return 0;
+    return;
 
 /*     End of CLABRD */
 

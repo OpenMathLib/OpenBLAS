@@ -745,7 +745,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int zgghd3_(char *compq, char *compz, integer *n, integer *
+/* Subroutine */ void zgghd3_(char *compq, char *compz, integer *n, integer *
 	ilo, integer *ihi, doublecomplex *a, integer *lda, doublecomplex *b, 
 	integer *ldb, doublecomplex *q, integer *ldq, doublecomplex *z__, 
 	integer *ldz, doublecomplex *work, integer *lwork, integer *info)
@@ -760,7 +760,7 @@ f"> */
     integer cola, jcol, ierr;
     doublecomplex temp;
     integer jrow, topq, ppwo;
-    extern /* Subroutine */ int zrot_(integer *, doublecomplex *, integer *, 
+    extern /* Subroutine */ void zrot_(integer *, doublecomplex *, integer *, 
 	    doublecomplex *, integer *, doublereal *, doublecomplex *);
     doublecomplex temp1, temp2, temp3;
     doublereal c__;
@@ -769,33 +769,33 @@ f"> */
     extern logical lsame_(char *, char *);
     integer nbmin;
     doublecomplex ctemp;
-    extern /* Subroutine */ int zgemm_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void zgemm_(char *, char *, integer *, integer *, 
 	    integer *, doublecomplex *, doublecomplex *, integer *, 
 	    doublecomplex *, integer *, doublecomplex *, doublecomplex *, 
 	    integer *);
     integer nblst;
     logical initq;
     doublecomplex c1, c2;
-    extern /* Subroutine */ int zgemv_(char *, integer *, integer *, 
+    extern /* Subroutine */ void zgemv_(char *, integer *, integer *, 
 	    doublecomplex *, doublecomplex *, integer *, doublecomplex *, 
 	    integer *, doublecomplex *, doublecomplex *, integer *);
     logical wantq;
     integer j0;
     logical initz;
-    extern /* Subroutine */ int zunm22_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void zunm22_(char *, char *, integer *, integer *, 
 	    integer *, integer *, doublecomplex *, integer *, doublecomplex *,
 	     integer *, doublecomplex *, integer *, integer *)
 	    ;
     logical wantz;
     doublecomplex s1, s2;
-    extern /* Subroutine */ int ztrmv_(char *, char *, char *, integer *, 
+    extern /* Subroutine */ void ztrmv_(char *, char *, char *, integer *, 
 	    doublecomplex *, integer *, doublecomplex *, integer *);
     char compq2[1], compz2[1];
     integer nb, jj, nh, nx, pw;
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     extern integer ilaenv_(integer *, char *, char *, integer *, integer *, 
 	    integer *, integer *, ftnlen, ftnlen);
-    extern /* Subroutine */ int zgghrd_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void zgghrd_(char *, char *, integer *, integer *, 
 	    integer *, doublecomplex *, integer *, doublecomplex *, integer *,
 	     doublecomplex *, integer *, doublecomplex *, integer *, integer *
 	    ), zlaset_(char *, integer *, integer *, 
@@ -873,9 +873,9 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZGGHD3", &i__1, (ftnlen)6);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Initialize Q and Z if desired. */
@@ -900,7 +900,7 @@ f"> */
     nh = *ihi - *ilo + 1;
     if (nh <= 1) {
 	work[1].r = 1., work[1].i = 0.;
-	return 0;
+	return;
     }
 
 /*     Determine the blocksize. */
@@ -1757,7 +1757,7 @@ f"> */
     z__1.r = (doublereal) lwkopt, z__1.i = 0.;
     work[1].r = z__1.r, work[1].i = z__1.i;
 
-    return 0;
+    return;
 
 /*     End of ZGGHD3 */
 

@@ -643,21 +643,22 @@ presentation of Q. */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int sgeqrt2_(integer *m, integer *n, real *a, integer *lda, 
+/* Subroutine */ void sgeqrt2_(integer *m, integer *n, real *a, integer *lda, 
 	real *t, integer *ldt, integer *info)
 {
     /* System generated locals */
     integer a_dim1, a_offset, t_dim1, t_offset, i__1, i__2, i__3;
 
     /* Local variables */
-    extern /* Subroutine */ int sger_(integer *, integer *, real *, real *, 
+    extern /* Subroutine */ void sger_(integer *, integer *, real *, real *, 
 	    integer *, real *, integer *, real *, integer *);
     integer i__, k;
     real alpha;
-    extern /* Subroutine */ int sgemv_(char *, integer *, integer *, real *, 
+    extern /* Subroutine */ void sgemv_(char *, integer *, integer *, real *, 
 	    real *, integer *, real *, integer *, real *, real *, integer *), strmv_(char *, char *, char *, integer *, real *, 
-	    integer *, real *, integer *), xerbla_(
-	    char *, integer *, ftnlen), slarfg_(integer *, real *, real *, 
+	    integer *, real *, integer *);
+    extern int xerbla_(char *, integer *, ftnlen);
+    extern void slarfg_(integer *, real *, real *, 
 	    integer *, real *);
     real aii;
 
@@ -695,7 +696,7 @@ presentation of Q. */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("SGEQRT2", &i__1, (ftnlen)7);
-	return 0;
+	return;
     }
 
     k = f2cmin(*m,*n);
@@ -764,6 +765,6 @@ presentation of Q. */
 
 /*     End of SGEQRT2 */
 
-    return 0;
+    return;
 } /* sgeqrt2_ */
 

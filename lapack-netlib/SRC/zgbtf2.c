@@ -660,7 +660,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int zgbtf2_(integer *m, integer *n, integer *kl, integer *ku,
+/* Subroutine */ void zgbtf2_(integer *m, integer *n, integer *kl, integer *ku,
 	 doublecomplex *ab, integer *ldab, integer *ipiv, integer *info)
 {
     /* System generated locals */
@@ -669,7 +669,7 @@ f"> */
 
     /* Local variables */
     integer i__, j;
-    extern /* Subroutine */ int zscal_(integer *, doublecomplex *, 
+    extern /* Subroutine */ void zscal_(integer *, doublecomplex *, 
 	    doublecomplex *, integer *), zgeru_(integer *, integer *, 
 	    doublecomplex *, doublecomplex *, integer *, doublecomplex *, 
 	    integer *, doublecomplex *, integer *), zswap_(integer *, 
@@ -717,13 +717,13 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZGBTF2", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*m == 0 || *n == 0) {
-	return 0;
+	return;
     }
 
 /*     Gaussian elimination with partial pivoting */
@@ -816,7 +816,7 @@ f"> */
 	}
 /* L40: */
     }
-    return 0;
+    return;
 
 /*     End of ZGBTF2 */
 

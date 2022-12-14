@@ -670,7 +670,7 @@ f"> */
 /* > \ingroup complexGBcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int cungbr_(char *vect, integer *m, integer *n, integer *k, 
+/* Subroutine */ void cungbr_(char *vect, integer *m, integer *n, integer *k, 
 	complex *a, integer *lda, complex *tau, complex *work, integer *lwork,
 	 integer *info)
 {
@@ -683,7 +683,8 @@ f"> */
     integer iinfo;
     logical wantq;
     integer mn;
-    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen), cunglq_(
+    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
+    extern void cunglq_(
 	    integer *, integer *, integer *, complex *, integer *, complex *, 
 	    complex *, integer *, integer *), cungqr_(integer *, integer *, 
 	    integer *, complex *, integer *, complex *, complex *, integer *, 
@@ -766,17 +767,17 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CUNGBR", &i__1, (ftnlen)6);
-	return 0;
+	return;
     } else if (lquery) {
 	work[1].r = (real) lwkopt, work[1].i = 0.f;
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*m == 0 || *n == 0) {
 	work[1].r = 1.f, work[1].i = 0.f;
-	return 0;
+	return;
     }
 
     if (wantq) {
@@ -883,7 +884,7 @@ f"> */
 	}
     }
     work[1].r = (real) lwkopt, work[1].i = 0.f;
-    return 0;
+    return;
 
 /*     End of CUNGBR */
 

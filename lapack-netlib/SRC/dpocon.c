@@ -633,7 +633,7 @@ f"> */
 /* > \ingroup doublePOcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int dpocon_(char *uplo, integer *n, doublereal *a, integer *
+/* Subroutine */ void dpocon_(char *uplo, integer *n, doublereal *a, integer *
 	lda, doublereal *anorm, doublereal *rcond, doublereal *work, integer *
 	iwork, integer *info)
 {
@@ -646,10 +646,10 @@ f"> */
     doublereal scale;
     extern logical lsame_(char *, char *);
     integer isave[3];
-    extern /* Subroutine */ int drscl_(integer *, doublereal *, doublereal *, 
+    extern /* Subroutine */ void drscl_(integer *, doublereal *, doublereal *, 
 	    integer *);
     logical upper;
-    extern /* Subroutine */ int dlacn2_(integer *, doublereal *, doublereal *,
+    extern /* Subroutine */ void dlacn2_(integer *, doublereal *, doublereal *,
 	     integer *, doublereal *, integer *, integer *);
     extern doublereal dlamch_(char *);
     integer ix;
@@ -658,7 +658,7 @@ f"> */
     doublereal scaleu;
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     doublereal ainvnm;
-    extern /* Subroutine */ int dlatrs_(char *, char *, char *, char *, 
+    extern /* Subroutine */ void dlatrs_(char *, char *, char *, char *, 
 	    integer *, doublereal *, integer *, doublereal *, doublereal *, 
 	    doublereal *, integer *);
     char normin[1];
@@ -698,7 +698,7 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DPOCON", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
@@ -706,9 +706,9 @@ f"> */
     *rcond = 0.;
     if (*n == 0) {
 	*rcond = 1.;
-	return 0;
+	return;
     } else if (*anorm == 0.) {
-	return 0;
+	return;
     }
 
     smlnum = dlamch_("Safe minimum");
@@ -769,7 +769,7 @@ L10:
     }
 
 L20:
-    return 0;
+    return;
 
 /*     End of DPOCON */
 

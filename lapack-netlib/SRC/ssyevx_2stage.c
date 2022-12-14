@@ -816,7 +816,7 @@ static integer c__4 = 4;
 /* > \endverbatim */
 
 /*  ===================================================================== */
-/* Subroutine */ int ssyevx_2stage_(char *jobz, char *range, char *uplo, 
+/* Subroutine */ void ssyevx_2stage_(char *jobz, char *range, char *uplo, 
 	integer *n, real *a, integer *lda, real *vl, real *vu, integer *il, 
 	integer *iu, real *abstol, integer *m, real *w, real *z__, integer *
 	ldz, real *work, integer *lwork, integer *iwork, integer *ifail, 
@@ -838,12 +838,12 @@ static integer c__4 = 4;
     real sigma;
     extern logical lsame_(char *, char *);
     integer iinfo;
-    extern /* Subroutine */ int sscal_(integer *, real *, real *, integer *);
+    extern /* Subroutine */ void sscal_(integer *, real *, real *, integer *);
     char order[1];
     integer lhtrd, lwmin;
     logical lower;
     integer lwtrd;
-    extern /* Subroutine */ int scopy_(integer *, real *, integer *, real *, 
+    extern /* Subroutine */ void scopy_(integer *, real *, integer *, real *, 
 	    integer *), sswap_(integer *, real *, integer *, real *, integer *
 	    ), ssytrd_2stage_(char *, char *, integer *, real *, integer *, 
 	    real *, real *, real *, real *, integer *, real *, integer *, 
@@ -858,23 +858,23 @@ static integer c__4 = 4;
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     real abstll, bignum;
     integer indtau, indisp, indiwo, indwkn;
-    extern /* Subroutine */ int slacpy_(char *, integer *, integer *, real *, 
+    extern /* Subroutine */ void slacpy_(char *, integer *, integer *, real *, 
 	    integer *, real *, integer *);
     integer indwrk;
-    extern /* Subroutine */ int sstein_(integer *, real *, real *, integer *, 
+    extern /* Subroutine */ void sstein_(integer *, real *, real *, integer *, 
 	    real *, integer *, integer *, real *, integer *, real *, integer *
 	    , integer *, integer *), ssterf_(integer *, real *, real *, 
 	    integer *);
     integer llwrkn, llwork, nsplit;
     real smlnum;
     extern real slansy_(char *, char *, integer *, real *, integer *, real *);
-    extern /* Subroutine */ int sstebz_(char *, char *, integer *, real *, 
+    extern /* Subroutine */ void sstebz_(char *, char *, integer *, real *, 
 	    real *, integer *, integer *, real *, real *, real *, integer *, 
 	    integer *, real *, integer *, integer *, real *, integer *, 
 	    integer *), sorgtr_(char *, integer *, real *, 
 	    integer *, real *, real *, integer *, integer *);
     logical lquery;
-    extern /* Subroutine */ int ssteqr_(char *, integer *, real *, real *, 
+    extern /* Subroutine */ void ssteqr_(char *, integer *, real *, real *, 
 	    real *, integer *, real *, integer *), sormtr_(char *, 
 	    char *, char *, integer *, integer *, real *, integer *, real *, 
 	    real *, integer *, real *, integer *, integer *);
@@ -972,16 +972,16 @@ static integer c__4 = 4;
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("SSYEVX_2STAGE", &i__1, (ftnlen)13);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     *m = 0;
     if (*n == 0) {
-	return 0;
+	return;
     }
 
     if (*n == 1) {
@@ -997,7 +997,7 @@ static integer c__4 = 4;
 	if (wantz) {
 	    z__[z_dim1 + 1] = 1.f;
 	}
-	return 0;
+	return;
     }
 
 /*     Get machine constants. */
@@ -1184,7 +1184,7 @@ L40:
 
     work[1] = (real) lwmin;
 
-    return 0;
+    return;
 
 /*     End of SSYEVX_2STAGE */
 

@@ -633,7 +633,7 @@ f"> */
 /* > \ingroup complexOTHERauxiliary */
 
 /*  ===================================================================== */
-/* Subroutine */ int clarfx_(char *side, integer *m, integer *n, complex *v, 
+/* Subroutine */ void clarfx_(char *side, integer *m, integer *n, complex *v, 
 	complex *tau, complex *c__, integer *ldc, complex *work)
 {
     /* System generated locals */
@@ -644,7 +644,7 @@ f"> */
 
     /* Local variables */
     integer j;
-    extern /* Subroutine */ int clarf_(char *, integer *, integer *, complex *
+    extern /* Subroutine */ void clarf_(char *, integer *, integer *, complex *
 	    , integer *, complex *, complex *, integer *, complex *);
     extern logical lsame_(char *, char *);
     complex t1, t2, t3, t4, t5, t6, t7, t8, t9, v1, v2, v3, v4, v5, v6, v7, 
@@ -669,7 +669,7 @@ f"> */
 
     /* Function Body */
     if (tau->r == 0.f && tau->i == 0.f) {
-	return 0;
+	return;
     }
     if (lsame_(side, "L")) {
 
@@ -2593,7 +2593,7 @@ L390:
 	goto L410;
     }
 L410:
-    return 0;
+    return;
 
 /*     End of CLARFX */
 

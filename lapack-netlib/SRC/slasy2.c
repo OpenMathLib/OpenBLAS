@@ -689,7 +689,7 @@ f"> */
 /* > \ingroup realSYauxiliary */
 
 /*  ===================================================================== */
-/* Subroutine */ int slasy2_(logical *ltranl, logical *ltranr, integer *isgn, 
+/* Subroutine */ void slasy2_(logical *ltranl, logical *ltranr, integer *isgn, 
 	integer *n1, integer *n2, real *tl, integer *ldtl, real *tr, integer *
 	ldtr, real *b, integer *ldb, real *scale, real *x, integer *ldx, real 
 	*xnorm, integer *info)
@@ -715,7 +715,7 @@ f"> */
     real xmax;
     integer ipsv, jpsv, i__, j, k;
     logical bswap;
-    extern /* Subroutine */ int scopy_(integer *, real *, integer *, real *, 
+    extern /* Subroutine */ void scopy_(integer *, real *, integer *, real *, 
 	    integer *), sswap_(integer *, real *, integer *, real *, integer *
 	    );
     logical xswap;
@@ -758,7 +758,7 @@ f"> */
 /*     Quick return if possible */
 
     if (*n1 == 0 || *n2 == 0) {
-	return 0;
+	return;
     }
 
 /*     Set constants to control overflow */
@@ -794,7 +794,7 @@ L10:
 
     x[x_dim1 + 1] = b[b_dim1 + 1] * *scale / tau1;
     *xnorm = (r__1 = x[x_dim1 + 1], abs(r__1));
-    return 0;
+    return;
 
 /*     1 by 2: */
 /*     TL11*[X11 X12] + ISGN*[X11 X12]*op[TR11 TR12]  = [B11 B12] */
@@ -904,7 +904,7 @@ L40:
 		, abs(r__2));
 	*xnorm = f2cmax(r__3,r__4);
     }
-    return 0;
+    return;
 
 /*     2 by 2: */
 /*     op[TL11 TL12]*[X11 X12] +ISGN* [X11 X12]*op[TR11 TR12] = [B11 B12] */
@@ -1047,7 +1047,7 @@ L50:
 /* Computing MAX */
     r__1 = abs(tmp[0]) + abs(tmp[2]), r__2 = abs(tmp[1]) + abs(tmp[3]);
     *xnorm = f2cmax(r__1,r__2);
-    return 0;
+    return;
 
 /*     End of SLASY2 */
 

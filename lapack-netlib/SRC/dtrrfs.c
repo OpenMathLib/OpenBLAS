@@ -695,7 +695,7 @@ f"> */
 /* > \ingroup doubleOTHERcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int dtrrfs_(char *uplo, char *trans, char *diag, integer *n, 
+/* Subroutine */ void dtrrfs_(char *uplo, char *trans, char *diag, integer *n, 
 	integer *nrhs, doublereal *a, integer *lda, doublereal *b, integer *
 	ldb, doublereal *x, integer *ldx, doublereal *ferr, doublereal *berr, 
 	doublereal *work, integer *iwork, integer *info)
@@ -712,11 +712,11 @@ f"> */
     doublereal s;
     extern logical lsame_(char *, char *);
     integer isave[3];
-    extern /* Subroutine */ int dcopy_(integer *, doublereal *, integer *, 
+    extern /* Subroutine */ void dcopy_(integer *, doublereal *, integer *, 
 	    doublereal *, integer *), daxpy_(integer *, doublereal *, 
 	    doublereal *, integer *, doublereal *, integer *);
     logical upper;
-    extern /* Subroutine */ int dtrmv_(char *, char *, char *, integer *, 
+    extern /* Subroutine */ void dtrmv_(char *, char *, char *, integer *, 
 	    doublereal *, integer *, doublereal *, integer *), dtrsv_(char *, char *, char *, integer *, doublereal *, 
 	    integer *, doublereal *, integer *), 
 	    dlacn2_(integer *, doublereal *, doublereal *, integer *, 
@@ -785,7 +785,7 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DTRRFS", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
@@ -797,7 +797,7 @@ f"> */
 	    berr[j] = 0.;
 /* L10: */
 	}
-	return 0;
+	return;
     }
 
     if (notran) {
@@ -1062,7 +1062,7 @@ L210:
 /* L250: */
     }
 
-    return 0;
+    return;
 
 /*     End of DTRRFS */
 

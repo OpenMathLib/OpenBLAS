@@ -697,7 +697,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int slarzb_(char *side, char *trans, char *direct, char *
+/* Subroutine */ void slarzb_(char *side, char *trans, char *direct, char *
 	storev, integer *m, integer *n, integer *k, integer *l, real *v, 
 	integer *ldv, real *t, integer *ldt, real *c__, integer *ldc, real *
 	work, integer *ldwork)
@@ -709,12 +709,13 @@ f"> */
     /* Local variables */
     integer info, i__, j;
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int sgemm_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void sgemm_(char *, char *, integer *, integer *, 
 	    integer *, real *, real *, integer *, real *, integer *, real *, 
 	    real *, integer *), scopy_(integer *, real *, 
 	    integer *, real *, integer *), strmm_(char *, char *, char *, 
 	    char *, integer *, integer *, real *, real *, integer *, real *, 
-	    integer *), xerbla_(char *, integer *, ftnlen);
+	    integer *);
+    extern int xerbla_(char *, integer *, ftnlen);
     char transt[1];
 
 
@@ -745,7 +746,7 @@ f"> */
 
     /* Function Body */
     if (*m <= 0 || *n <= 0) {
-	return 0;
+	return;
     }
 
 /*     Check for currently supported options */
@@ -759,7 +760,7 @@ f"> */
     if (info != 0) {
 	i__1 = -info;
 	xerbla_("SLARZB", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
     if (lsame_(trans, "N")) {
@@ -865,7 +866,7 @@ f"> */
 
     }
 
-    return 0;
+    return;
 
 /*     End of SLARZB */
 

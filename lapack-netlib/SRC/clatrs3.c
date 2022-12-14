@@ -743,7 +743,7 @@ static integer c_n1 = -1;
 /*   Angelika Schwarz, Umea University, Sweden. */
 
 /*  ===================================================================== */
-/* Subroutine */ int clatrs3_(char *uplo, char *trans, char *diag, char *
+/* Subroutine */ void clatrs3_(char *uplo, char *trans, char *diag, char *
 	normin, integer *n, integer *nrhs, complex *a, integer *lda, complex *
 	x, integer *ldx, real *scale, real *cnorm, real *work, integer *lwork,
 	 integer *info)
@@ -761,7 +761,7 @@ static integer c_n1 = -1;
     real tmax, xnrm[32];
     integer i__, j, k;
     real w[64];
-    extern /* Subroutine */ int cgemm_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void cgemm_(char *, char *, integer *, integer *, 
 	    integer *, complex *, complex *, integer *, complex *, integer *, 
 	    complex *, complex *, integer *);
     extern logical lsame_(char *, char *);
@@ -774,14 +774,14 @@ static integer c_n1 = -1;
     integer lscale;
     real scaloc;
     extern real slamch_(char *);
-    extern /* Subroutine */ int csscal_(integer *, real *, complex *, integer 
+    extern /* Subroutine */ void csscal_(integer *, real *, complex *, integer 
 	    *);
     real scamin;
-    extern /* Subroutine */ int xerbla_(char *, integer *);
+    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen );
     extern integer ilaenv_(integer *, char *, char *, integer *, integer *, 
 	    integer *, integer *, ftnlen, ftnlen);
     real bignum;
-    extern /* Subroutine */ int clatrs_(char *, char *, char *, char *, 
+    extern /* Subroutine */ void clatrs_(char *, char *, char *, char *, 
 	    integer *, complex *, integer *, complex *, real *, real *, 
 	    integer *);
     extern real slarmm_(real *, real *, real *);
@@ -874,10 +874,10 @@ static integer c_n1 = -1;
     }
     if (*info != 0) {
 	i__1 = -(*info);
-	xerbla_("CLATRS3", &i__1);
-	return 0;
+	xerbla_("CLATRS3", &i__1, 7);
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Initialize scaling factors */
@@ -890,7 +890,7 @@ static integer c_n1 = -1;
 /*     Quick return if possible */
 
     if (f2cmin(*n,*nrhs) == 0) {
-	return 0;
+	return;
     }
 
 /*     Determine machine dependent constant to control overflow. */
@@ -908,7 +908,7 @@ static integer c_n1 = -1;
 	    clatrs_(uplo, trans, diag, "Y", n, &a[a_offset], lda, &x[k * 
 		    x_dim1 + 1], &scale[k], &cnorm[1], info);
 	}
-	return 0;
+	return;
     }
 
 /*     Compute norms of blocks of A excluding diagonal blocks and find */
@@ -968,7 +968,7 @@ static integer c_n1 = -1;
 	    clatrs_(uplo, trans, diag, "N", n, &a[a_offset], lda, &x[k * 
 		    x_dim1 + 1], &scale[k], &cnorm[1], info);
 	}
-	return 0;
+	return;
     }
 
 /*     Every right-hand side requires workspace to store NBA local scale */
@@ -1274,7 +1274,7 @@ static integer c_n1 = -1;
 	    }
 	}
     }
-    return 0;
+    return;
 
 /*     End of CLATRS3 */
 

@@ -618,7 +618,7 @@ f"> */
 /* > \ingroup realOTHERauxiliary */
 
 /*  ===================================================================== */
-/* Subroutine */ int slartv_(integer *n, real *x, integer *incx, real *y, 
+/* Subroutine */ void slartv_(integer *n, real *x, integer *incx, real *y, 
 	integer *incy, real *c__, real *s, integer *incc)
 {
     /* System generated locals */
@@ -659,7 +659,7 @@ f"> */
 	ic += *incc;
 /* L10: */
     }
-    return 0;
+    return;
 
 /*     End of SLARTV */
 

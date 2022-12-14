@@ -658,7 +658,7 @@ f"> */
 /* > \ingroup complex16OTHERcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int ztbtrs_(char *uplo, char *trans, char *diag, integer *n, 
+/* Subroutine */ void ztbtrs_(char *uplo, char *trans, char *diag, integer *n, 
 	integer *kd, integer *nrhs, doublecomplex *ab, integer *ldab, 
 	doublecomplex *b, integer *ldb, integer *info)
 {
@@ -669,8 +669,9 @@ f"> */
     integer j;
     extern logical lsame_(char *, char *);
     logical upper;
-    extern /* Subroutine */ int ztbsv_(char *, char *, char *, integer *, 
-	    integer *, doublecomplex *, integer *, doublecomplex *, integer *), xerbla_(char *, integer *, ftnlen);
+    extern /* Subroutine */ void ztbsv_(char *, char *, char *, integer *, 
+	    integer *, doublecomplex *, integer *, doublecomplex *, integer *);
+    extern int xerbla_(char *, integer *, ftnlen);
     logical nounit;
 
 
@@ -718,13 +719,13 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZTBTRS", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /*     Check for singularity. */
@@ -735,7 +736,7 @@ f"> */
 	    for (*info = 1; *info <= i__1; ++(*info)) {
 		i__2 = *kd + 1 + *info * ab_dim1;
 		if (ab[i__2].r == 0. && ab[i__2].i == 0.) {
-		    return 0;
+		    return;
 		}
 /* L10: */
 	    }
@@ -744,7 +745,7 @@ f"> */
 	    for (*info = 1; *info <= i__1; ++(*info)) {
 		i__2 = *info * ab_dim1 + 1;
 		if (ab[i__2].r == 0. && ab[i__2].i == 0.) {
-		    return 0;
+		    return;
 		}
 /* L20: */
 	    }
@@ -761,7 +762,7 @@ f"> */
 /* L30: */
     }
 
-    return 0;
+    return;
 
 /*     End of ZTBTRS */
 

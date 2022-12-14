@@ -652,7 +652,7 @@ f"> */
 /* > \ingroup realGBcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int sgbtrs_(char *trans, integer *n, integer *kl, integer *
+/* Subroutine */ void sgbtrs_(char *trans, integer *n, integer *kl, integer *
 	ku, integer *nrhs, real *ab, integer *ldab, integer *ipiv, real *b, 
 	integer *ldb, integer *info)
 {
@@ -660,14 +660,14 @@ f"> */
     integer ab_dim1, ab_offset, b_dim1, b_offset, i__1, i__2, i__3;
 
     /* Local variables */
-    extern /* Subroutine */ int sger_(integer *, integer *, real *, real *, 
+    extern /* Subroutine */ void sger_(integer *, integer *, real *, real *, 
 	    integer *, real *, integer *, real *, integer *);
     integer i__, j, l;
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int sgemv_(char *, integer *, integer *, real *, 
+    extern /* Subroutine */ void sgemv_(char *, integer *, integer *, real *, 
 	    real *, integer *, real *, integer *, real *, real *, integer *);
     logical lnoti;
-    extern /* Subroutine */ int sswap_(integer *, real *, integer *, real *, 
+    extern /* Subroutine */ void sswap_(integer *, real *, integer *, real *, 
 	    integer *), stbsv_(char *, char *, char *, integer *, integer *, 
 	    real *, integer *, real *, integer *);
     integer kd, lm;
@@ -717,13 +717,13 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("SGBTRS", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0 || *nrhs == 0) {
-	return 0;
+	return;
     }
 
     kd = *ku + *kl + 1;
@@ -800,7 +800,7 @@ f"> */
 	    }
 	}
     }
-    return 0;
+    return;
 
 /*     End of SGBTRS */
 

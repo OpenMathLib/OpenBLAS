@@ -662,7 +662,7 @@ f"> */
 /* > \ingroup realOTHERcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int sopmtr_(char *side, char *uplo, char *trans, integer *m, 
+/* Subroutine */ void sopmtr_(char *side, char *uplo, char *trans, integer *m, 
 	integer *n, real *ap, real *tau, real *c__, integer *ldc, real *work, 
 	integer *info)
 {
@@ -673,7 +673,7 @@ f"> */
     logical left;
     integer i__;
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int slarf_(char *, integer *, integer *, real *, 
+    extern /* Subroutine */ void slarf_(char *, integer *, integer *, real *, 
 	    integer *, real *, real *, integer *, real *);
     integer i1;
     logical upper;
@@ -731,13 +731,13 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("SOPMTR", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*m == 0 || *n == 0) {
-	return 0;
+	return;
     }
 
     if (upper) {
@@ -853,7 +853,7 @@ f"> */
 /* L20: */
 	}
     }
-    return 0;
+    return;
 
 /*     End of SOPMTR */
 

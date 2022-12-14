@@ -782,7 +782,7 @@ f"> */
 /* > \ingroup complexOTHEReigen */
 
 /*  ===================================================================== */
-/* Subroutine */ int chbevx_(char *jobz, char *range, char *uplo, integer *n, 
+/* Subroutine */ void chbevx_(char *jobz, char *range, char *uplo, integer *n, 
 	integer *kd, complex *ab, integer *ldab, complex *q, integer *ldq, 
 	real *vl, real *vu, integer *il, integer *iu, real *abstol, integer *
 	m, real *w, complex *z__, integer *ldz, complex *work, real *rwork, 
@@ -803,17 +803,17 @@ f"> */
     integer itmp1, i__, j, indee;
     real sigma;
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int cgemv_(char *, integer *, integer *, complex *
+    extern /* Subroutine */ void cgemv_(char *, integer *, integer *, complex *
 	    , complex *, integer *, complex *, integer *, complex *, complex *
 	    , integer *);
     integer iinfo;
-    extern /* Subroutine */ int sscal_(integer *, real *, real *, integer *);
+    extern /* Subroutine */ void sscal_(integer *, real *, real *, integer *);
     char order[1];
-    extern /* Subroutine */ int ccopy_(integer *, complex *, integer *, 
+    extern /* Subroutine */ void ccopy_(integer *, complex *, integer *, 
 	    complex *, integer *), cswap_(integer *, complex *, integer *, 
 	    complex *, integer *);
     logical lower;
-    extern /* Subroutine */ int scopy_(integer *, real *, integer *, real *, 
+    extern /* Subroutine */ void scopy_(integer *, real *, integer *, real *, 
 	    integer *);
     logical wantz;
     integer jj;
@@ -821,27 +821,27 @@ f"> */
 	    integer *, real *);
     logical alleig, indeig;
     integer iscale, indibl;
-    extern /* Subroutine */ int clascl_(char *, integer *, integer *, real *, 
+    extern /* Subroutine */ void clascl_(char *, integer *, integer *, real *, 
 	    real *, integer *, integer *, complex *, integer *, integer *), chbtrd_(char *, char *, integer *, integer *, complex *, 
 	    integer *, real *, real *, complex *, integer *, complex *, 
 	    integer *);
     logical valeig;
     extern real slamch_(char *);
-    extern /* Subroutine */ int clacpy_(char *, integer *, integer *, complex 
+    extern /* Subroutine */ void clacpy_(char *, integer *, integer *, complex 
 	    *, integer *, complex *, integer *);
     real safmin;
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     real abstll, bignum;
     integer indiwk, indisp;
-    extern /* Subroutine */ int cstein_(integer *, real *, real *, integer *, 
+    extern /* Subroutine */ void cstein_(integer *, real *, real *, integer *, 
 	    real *, integer *, integer *, complex *, integer *, real *, 
 	    integer *, integer *, integer *);
     integer indrwk, indwrk;
-    extern /* Subroutine */ int csteqr_(char *, integer *, real *, real *, 
+    extern /* Subroutine */ void csteqr_(char *, integer *, real *, real *, 
 	    complex *, integer *, real *, integer *), ssterf_(integer 
 	    *, real *, real *, integer *);
     integer nsplit;
-    extern /* Subroutine */ int sstebz_(char *, char *, integer *, real *, 
+    extern /* Subroutine */ void sstebz_(char *, char *, integer *, real *, 
 	    real *, integer *, integer *, real *, real *, real *, integer *, 
 	    integer *, real *, integer *, integer *, real *, integer *, 
 	    integer *);
@@ -919,14 +919,14 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CHBEVX", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     *m = 0;
     if (*n == 0) {
-	return 0;
+	return;
     }
 
     if (*n == 1) {
@@ -951,7 +951,7 @@ f"> */
 		z__[i__1].r = 1.f, z__[i__1].i = 0.f;
 	    }
 	}
-	return 0;
+	return;
     }
 
 /*     Get machine constants. */
@@ -1127,7 +1127,7 @@ L30:
 	}
     }
 
-    return 0;
+    return;
 
 /*     End of CHBEVX */
 

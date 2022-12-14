@@ -775,7 +775,7 @@ real clanhf_(char *norm, char *transr, char *uplo, integer *n, complex *a,
     real value;
     integer n1;
     real aa;
-    extern /* Subroutine */ int classq_(integer *, complex *, integer *, real 
+    extern /* Subroutine */ void classq_(integer *, complex *, integer *, real 
 	    *, real *);
     extern logical sisnan_(real *);
     integer lda, ifm, noe, ilu;

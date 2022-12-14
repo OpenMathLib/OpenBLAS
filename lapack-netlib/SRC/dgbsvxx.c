@@ -1065,7 +1065,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 /* > \ingroup doubleGBsolve */
 
 /*  ===================================================================== */
-/* Subroutine */ int dgbsvxx_(char *fact, char *trans, integer *n, integer *
+/* Subroutine */ void dgbsvxx_(char *fact, char *trans, integer *n, integer *
 	kl, integer *ku, integer *nrhs, doublereal *ab, integer *ldab, 
 	doublereal *afb, integer *ldafb, integer *ipiv, char *equed, 
 	doublereal *r__, doublereal *c__, doublereal *b, integer *ldb, 
@@ -1089,18 +1089,18 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
     doublereal rcmin, rcmax;
     logical equil;
     extern doublereal dlamch_(char *);
-    extern /* Subroutine */ int dlaqgb_(integer *, integer *, integer *, 
+    extern /* Subroutine */ void dlaqgb_(integer *, integer *, integer *, 
 	    integer *, doublereal *, integer *, doublereal *, doublereal *, 
 	    doublereal *, doublereal *, doublereal *, char *);
     doublereal colcnd;
-    extern /* Subroutine */ int dgbtrf_(integer *, integer *, integer *, 
+    extern /* Subroutine */ void dgbtrf_(integer *, integer *, integer *, 
 	    integer *, doublereal *, integer *, integer *, integer *);
     logical nofact;
-    extern /* Subroutine */ int dlacpy_(char *, integer *, integer *, 
-	    doublereal *, integer *, doublereal *, integer *), 
-	    xerbla_(char *, integer *, ftnlen);
+    extern /* Subroutine */ void dlacpy_(char *, integer *, integer *, 
+	    doublereal *, integer *, doublereal *, integer *); 
+    extern int xerbla_(char *, integer *, ftnlen);
     doublereal bignum;
-    extern /* Subroutine */ int dgbtrs_(char *, integer *, integer *, integer 
+    extern /* Subroutine */ void dgbtrs_(char *, integer *, integer *, integer 
 	    *, integer *, doublereal *, integer *, integer *, doublereal *, 
 	    integer *, integer *);
     integer infequ;
@@ -1109,7 +1109,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
     logical notran;
     doublereal smlnum;
     logical rowequ;
-    extern /* Subroutine */ int dlascl2_(integer *, integer *, doublereal *, 
+    extern /* Subroutine */ void dlascl2_(integer *, integer *, doublereal *, 
 	    doublereal *, integer *), dgbequb_(integer *, integer *, integer *
 	    , integer *, doublereal *, integer *, doublereal *, doublereal *, 
 	    doublereal *, doublereal *, doublereal *, integer *), dgbrfsx_(
@@ -1258,7 +1258,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DGBSVXX", &i__1, (ftnlen)7);
-	return 0;
+	return;
     }
 
     if (equil) {
@@ -1332,7 +1332,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 
 	    *rpvgrw = dla_gbrpvgrw_(n, kl, ku, info, &ab[ab_offset], ldab, &
 		    afb[afb_offset], ldafb);
-	    return 0;
+	    return;
 	}
     }
 
@@ -1365,7 +1365,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 	dlascl2_(n, nrhs, &r__[1], &x[x_offset], ldx);
     }
 
-    return 0;
+    return;
 
 /*     End of DGBSVXX */
 

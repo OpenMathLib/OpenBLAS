@@ -708,7 +708,7 @@ f"> */
 /* > \ingroup doubleOTHEReigen */
 
 /*  ===================================================================== */
-/* Subroutine */ int dsbevd_(char *jobz, char *uplo, integer *n, integer *kd, 
+/* Subroutine */ void dsbevd_(char *jobz, char *uplo, integer *n, integer *kd, 
 	doublereal *ab, integer *ldab, doublereal *w, doublereal *z__, 
 	integer *ldz, doublereal *work, integer *lwork, integer *iwork, 
 	integer *liwork, integer *info)
@@ -720,7 +720,7 @@ f"> */
     /* Local variables */
     integer inde;
     doublereal anrm, rmin, rmax;
-    extern /* Subroutine */ int dscal_(integer *, doublereal *, doublereal *, 
+    extern /* Subroutine */ void dscal_(integer *, doublereal *, doublereal *, 
 	    integer *), dgemm_(char *, char *, integer *, integer *, integer *
 	    , doublereal *, doublereal *, integer *, doublereal *, integer *, 
 	    doublereal *, doublereal *, integer *);
@@ -731,19 +731,19 @@ f"> */
     integer indwk2, llwrk2;
     extern doublereal dlamch_(char *);
     integer iscale;
-    extern /* Subroutine */ int dlascl_(char *, integer *, integer *, 
+    extern /* Subroutine */ void dlascl_(char *, integer *, integer *, 
 	    doublereal *, doublereal *, integer *, integer *, doublereal *, 
 	    integer *, integer *);
     extern doublereal dlansb_(char *, char *, integer *, integer *, 
 	    doublereal *, integer *, doublereal *);
-    extern /* Subroutine */ int dstedc_(char *, integer *, doublereal *, 
+    extern /* Subroutine */ void dstedc_(char *, integer *, doublereal *, 
 	    doublereal *, doublereal *, integer *, doublereal *, integer *, 
 	    integer *, integer *, integer *), dlacpy_(char *, integer 
 	    *, integer *, doublereal *, integer *, doublereal *, integer *);
     doublereal safmin;
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     doublereal bignum;
-    extern /* Subroutine */ int dsbtrd_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void dsbtrd_(char *, char *, integer *, integer *, 
 	    doublereal *, integer *, doublereal *, doublereal *, doublereal *,
 	     integer *, doublereal *, integer *), dsterf_(
 	    integer *, doublereal *, doublereal *, integer *);
@@ -823,15 +823,15 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DSBEVD", &i__1, (ftnlen)6);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
     if (*n == 1) {
@@ -839,7 +839,7 @@ f"> */
 	if (wantz) {
 	    z__[z_dim1 + 1] = 1.;
 	}
-	return 0;
+	return;
     }
 
 /*     Get machine constants. */
@@ -902,7 +902,7 @@ f"> */
 
     work[1] = (doublereal) lwmin;
     iwork[1] = liwmin;
-    return 0;
+    return;
 
 /*     End of DSBEVD */
 

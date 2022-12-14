@@ -673,7 +673,7 @@ static real c_b106 = 1.f;
 /*   Angelika Schwarz, Umea University, Sweden. */
 
 /*  ===================================================================== */
-/* Subroutine */ int ctrsyl3_(char *trana, char *tranb, integer *isgn, 
+/* Subroutine */ void ctrsyl3_(char *trana, char *tranb, integer *isgn, 
 	integer *m, integer *n, complex *a, integer *lda, complex *b, integer 
 	*ldb, complex *c__, integer *ldc, real *scale, real *swork, integer *
 	ldswork, integer *info)
@@ -691,7 +691,7 @@ static real c_b106 = 1.f;
     integer awrk, bwrk;
     real *wnrm, xnrm;
     integer i__, j, k, l;
-    extern /* Subroutine */ int cgemm_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void cgemm_(char *, char *, integer *, integer *, 
 	    integer *, complex *, complex *, integer *, complex *, integer *, 
 	    complex *, complex *, integer *);
     extern logical lsame_(char *, char *);
@@ -700,21 +700,21 @@ static real c_b106 = 1.f;
     integer nb, jj, ll;
     extern real clange_(char *, integer *, integer *, complex *, integer *, 
 	    real *);
-    extern /* Subroutine */ int clascl_(char *, integer *, integer *, real *, 
+    extern /* Subroutine */ void clascl_(char *, integer *, integer *, real *, 
 	    real *, integer *, integer *, complex *, integer *, integer *);
     real scaloc;
     extern real slamch_(char *);
-    extern /* Subroutine */ int csscal_(integer *, real *, complex *, integer 
+    extern /* Subroutine */ void csscal_(integer *, real *, complex *, integer 
 	    *);
     real scamin;
-    extern /* Subroutine */ int xerbla_(char *, integer *);
+    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen );
     extern integer ilaenv_(integer *, char *, char *, integer *, integer *, 
 	    integer *, integer *, ftnlen, ftnlen);
     real bignum;
     extern real slarmm_(real *, real *, real *);
     logical notrna, notrnb;
     real smlnum;
-    extern /* Subroutine */ int ctrsyl_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void ctrsyl_(char *, char *, integer *, integer *, 
 	    integer *, complex *, integer *, complex *, integer *, complex *, 
 	    integer *, real *, integer *);
     logical lquery;
@@ -790,17 +790,17 @@ static real c_b106 = 1.f;
     }
     if (*info != 0) {
 	i__1 = -(*info);
-	xerbla_("CTRSYL3", &i__1);
-	return 0;
+	xerbla_("CTRSYL3", &i__1, 7);
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     *scale = 1.f;
     if (*m == 0 || *n == 0) {
-	return 0;
+	return;
     }
 
     wnrm = (real*)malloc(f2cmax(*m,*n)*sizeof(real));
@@ -810,7 +810,7 @@ static real c_b106 = 1.f;
     if (f2cmin(nba,nbb) == 1 || *ldswork < f2cmax(nba,nbb)) {
 	ctrsyl_(trana, tranb, isgn, m, n, &a[a_offset], lda, &b[b_offset], 
 		ldb, &c__[c_offset], ldc, scale, info);
-	return 0;
+	return;
     }
 
 /*     Set constants to control overflow */
@@ -1927,7 +1927,7 @@ static real c_b106 = 1.f;
 
 	swork[swork_dim1 + 1] = (real) f2cmax(nba,nbb);
 	swork[swork_dim1 + 2] = (real) ((nbb << 1) + nba);
-	return 0;
+	return;
     }
 
 /*     Realize consistent scaling */
@@ -2014,7 +2014,7 @@ static real c_b106 = 1.f;
     swork[swork_dim1 + 1] = (real) f2cmax(nba,nbb);
     swork[swork_dim1 + 2] = (real) ((nbb << 1) + nba);
 
-    return 0;
+    return;
 
 /*     End of CTRSYL3 */
 

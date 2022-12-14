@@ -749,7 +749,7 @@ stage.f"> */
 /* > \endverbatim */
 
 /*  ===================================================================== */
-/* Subroutine */ int zhegv_2stage_(integer *itype, char *jobz, char *uplo, 
+/* Subroutine */ void zhegv_2stage_(integer *itype, char *jobz, char *uplo, 
 	integer *n, doublecomplex *a, integer *lda, doublecomplex *b, integer 
 	*ldb, doublereal *w, doublecomplex *work, integer *lwork, doublereal *
 	rwork, integer *info)
@@ -761,7 +761,7 @@ stage.f"> */
     integer neig;
     extern integer ilaenv2stage_(integer *, char *, char *, integer *, 
 	    integer *, integer *, integer *);
-    extern /* Subroutine */ int zheev_2stage_(char *, char *, integer *, 
+    extern /* Subroutine */ void zheev_2stage_(char *, char *, integer *, 
 	    doublecomplex *, integer *, doublereal *, doublecomplex *, 
 	    integer *, doublereal *, integer *);
     extern logical lsame_(char *, char *);
@@ -770,14 +770,15 @@ stage.f"> */
     logical upper;
     integer lwtrd;
     logical wantz;
-    extern /* Subroutine */ int ztrmm_(char *, char *, char *, char *, 
+    extern /* Subroutine */ void ztrmm_(char *, char *, char *, char *, 
 	    integer *, integer *, doublecomplex *, doublecomplex *, integer *,
 	     doublecomplex *, integer *), 
 	    ztrsm_(char *, char *, char *, char *, integer *, integer *, 
 	    doublecomplex *, doublecomplex *, integer *, doublecomplex *, 
 	    integer *);
     integer ib, kd;
-    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen), zhegst_(
+    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
+    extern void zhegst_(
 	    integer *, char *, integer *, doublecomplex *, integer *, 
 	    doublecomplex *, integer *, integer *);
     logical lquery;
@@ -847,15 +848,15 @@ stage.f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZHEGV_2STAGE ", &i__1, (ftnlen)13);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /*     Form a Cholesky factorization of B. */
@@ -863,7 +864,7 @@ stage.f"> */
     zpotrf_(uplo, n, &b[b_offset], ldb, info);
     if (*info != 0) {
 	*info = *n + *info;
-	return 0;
+	return;
     }
 
 /*     Transform problem to standard eigenvalue problem and solve. */
@@ -912,7 +913,7 @@ stage.f"> */
 
     work[1].r = (doublereal) lwmin, work[1].i = 0.;
 
-    return 0;
+    return;
 
 /*     End of ZHEGV_2STAGE */
 

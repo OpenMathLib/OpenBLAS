@@ -673,7 +673,7 @@ static integer c__0 = 0;
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int slatsqr_(integer *m, integer *n, integer *mb, integer *
+/* Subroutine */ void slatsqr_(integer *m, integer *n, integer *mb, integer *
 	nb, real *a, integer *lda, real *t, integer *ldt, real *work, integer 
 	*lwork, integer *info)
 {
@@ -682,11 +682,12 @@ static integer c__0 = 0;
 
     /* Local variables */
     integer i__, ii, kk;
-    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen), sgeqrt_(
+    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
+    extern void sgeqrt_(
 	    integer *, integer *, integer *, real *, integer *, real *, 
 	    integer *, real *, integer *);
     logical lquery;
-    extern /* Subroutine */ int stpqrt_(integer *, integer *, integer *, 
+    extern /* Subroutine */ void stpqrt_(integer *, integer *, integer *, 
 	    integer *, real *, integer *, real *, integer *, real *, integer *
 	    , real *, integer *);
     integer ctr;
@@ -738,15 +739,15 @@ static integer c__0 = 0;
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("SLATSQR", &i__1, (ftnlen)7);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (f2cmin(*m,*n) == 0) {
-	return 0;
+	return;
     }
 
 /*     The QR Decomposition */
@@ -754,7 +755,7 @@ static integer c__0 = 0;
     if (*mb <= *n || *mb >= *m) {
 	sgeqrt_(m, n, nb, &a[a_offset], lda, &t[t_offset], ldt, &work[1], 
 		info);
-	return 0;
+	return;
     }
     kk = (*m - *n) % (*mb - *n);
     ii = *m - kk + 1;
@@ -785,7 +786,7 @@ static integer c__0 = 0;
     }
 
     work[1] = (real) (*n * *nb);
-    return 0;
+    return;
 
 /*     End of SLATSQR */
 

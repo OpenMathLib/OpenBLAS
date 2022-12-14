@@ -685,7 +685,7 @@ f"> */
 /* >         1995. */
 
 /*  ===================================================================== */
-/* Subroutine */ int clatdf_(integer *ijob, integer *n, complex *z__, integer 
+/* Subroutine */ void clatdf_(integer *ijob, integer *n, complex *z__, integer 
 	*ldz, complex *rhs, real *rdsum, real *rdscal, integer *ipiv, integer 
 	*jpiv)
 {
@@ -697,25 +697,26 @@ f"> */
     integer info;
     complex temp, work[8];
     integer i__, j, k;
-    extern /* Subroutine */ int cscal_(integer *, complex *, complex *, 
+    extern /* Subroutine */ void cscal_(integer *, complex *, complex *, 
 	    integer *);
     real scale;
     extern /* Complex */ VOID cdotc_(complex *, integer *, complex *, integer 
 	    *, complex *, integer *);
-    extern /* Subroutine */ int ccopy_(integer *, complex *, integer *, 
+    extern /* Subroutine */ void ccopy_(integer *, complex *, integer *, 
 	    complex *, integer *);
     complex pmone;
-    extern /* Subroutine */ int caxpy_(integer *, complex *, complex *, 
+    extern /* Subroutine */ void caxpy_(integer *, complex *, complex *, 
 	    integer *, complex *, integer *);
     real rtemp, sminu, rwork[2], splus;
-    extern /* Subroutine */ int cgesc2_(integer *, complex *, integer *, 
+    extern /* Subroutine */ void cgesc2_(integer *, complex *, integer *, 
 	    complex *, integer *, integer *, real *);
     complex bm, bp;
-    extern /* Subroutine */ int cgecon_(char *, integer *, complex *, integer 
+    extern /* Subroutine */ void cgecon_(char *, integer *, complex *, integer 
 	    *, real *, real *, complex *, real *, integer *);
     complex xm[2], xp[2];
-    extern /* Subroutine */ int classq_(integer *, complex *, integer *, real 
-	    *, real *), claswp_(integer *, complex *, integer *, integer *, 
+    extern /* Subroutine */ void classq_(integer *, complex *, integer *, real 
+	    *, real *);
+    extern int claswp_(integer *, complex *, integer *, integer *, 
 	    integer *, integer *, integer *);
     extern real scasum_(integer *, complex *, integer *);
 
@@ -877,7 +878,7 @@ f"> */
 /*        Compute the sum of squares */
 
 	classq_(n, &rhs[1], &c__1, rdscal, rdsum);
-	return 0;
+	return;
     }
 
 /*     ENTRY IJOB = 2 */
@@ -909,7 +910,7 @@ f"> */
 /*     Compute the sum of squares */
 
     classq_(n, &rhs[1], &c__1, rdscal, rdsum);
-    return 0;
+    return;
 
 /*     End of CLATDF */
 

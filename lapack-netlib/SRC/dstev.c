@@ -630,7 +630,7 @@ atrices</b> */
 /* > \ingroup doubleOTHEReigen */
 
 /*  ===================================================================== */
-/* Subroutine */ int dstev_(char *jobz, integer *n, doublereal *d__, 
+/* Subroutine */ void dstev_(char *jobz, integer *n, doublereal *d__, 
 	doublereal *e, doublereal *z__, integer *ldz, doublereal *work, 
 	integer *info)
 {
@@ -641,7 +641,7 @@ atrices</b> */
     /* Local variables */
     integer imax;
     doublereal rmin, rmax, tnrm;
-    extern /* Subroutine */ int dscal_(integer *, doublereal *, doublereal *, 
+    extern /* Subroutine */ void dscal_(integer *, doublereal *, doublereal *, 
 	    integer *);
     doublereal sigma;
     extern logical lsame_(char *, char *);
@@ -652,7 +652,7 @@ atrices</b> */
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     doublereal bignum;
     extern doublereal dlanst_(char *, integer *, doublereal *, doublereal *);
-    extern /* Subroutine */ int dsterf_(integer *, doublereal *, doublereal *,
+    extern /* Subroutine */ void dsterf_(integer *, doublereal *, doublereal *,
 	     integer *), dsteqr_(char *, integer *, doublereal *, doublereal *
 	    , doublereal *, integer *, doublereal *, integer *);
     doublereal smlnum, eps;
@@ -692,20 +692,20 @@ atrices</b> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DSTEV ", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
     if (*n == 1) {
 	if (wantz) {
 	    z__[z_dim1 + 1] = 1.;
 	}
-	return 0;
+	return;
     }
 
 /*     Get machine constants. */
@@ -755,7 +755,7 @@ atrices</b> */
 	dscal_(&imax, &d__1, &d__[1], &c__1);
     }
 
-    return 0;
+    return;
 
 /*     End of DSTEV */
 

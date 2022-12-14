@@ -607,7 +607,7 @@ f"> */
 /* > \ingroup doubleOTHERcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int dpptri_(char *uplo, integer *n, doublereal *ap, integer *
+/* Subroutine */ void dpptri_(char *uplo, integer *n, doublereal *ap, integer *
 	info)
 {
     /* System generated locals */
@@ -616,17 +616,18 @@ f"> */
     /* Local variables */
     extern doublereal ddot_(integer *, doublereal *, integer *, doublereal *, 
 	    integer *);
-    extern /* Subroutine */ int dspr_(char *, integer *, doublereal *, 
+    extern /* Subroutine */ void dspr_(char *, integer *, doublereal *, 
 	    doublereal *, integer *, doublereal *);
     integer j;
-    extern /* Subroutine */ int dscal_(integer *, doublereal *, doublereal *, 
+    extern /* Subroutine */ void dscal_(integer *, doublereal *, doublereal *, 
 	    integer *);
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int dtpmv_(char *, char *, char *, integer *, 
+    extern /* Subroutine */ void dtpmv_(char *, char *, char *, integer *, 
 	    doublereal *, doublereal *, integer *);
     logical upper;
     integer jc, jj;
-    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen), dtptri_(
+    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
+    extern void dtptri_(
 	    char *, char *, integer *, doublereal *, integer *);
     doublereal ajj;
     integer jjn;
@@ -657,20 +658,20 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DPPTRI", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /*     Invert the triangular Cholesky factor U or L. */
 
     dtptri_(uplo, "Non-unit", n, &ap[1], info);
     if (*info > 0) {
-	return 0;
+	return;
     }
 
     if (upper) {
@@ -711,7 +712,7 @@ f"> */
 	}
     }
 
-    return 0;
+    return;
 
 /*     End of DPPTRI */
 

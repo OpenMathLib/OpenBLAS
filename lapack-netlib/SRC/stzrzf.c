@@ -667,7 +667,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int stzrzf_(integer *m, integer *n, real *a, integer *lda, 
+/* Subroutine */ void stzrzf_(integer *m, integer *n, real *a, integer *lda, 
 	real *tau, real *work, integer *lwork, integer *info)
 {
     /* System generated locals */
@@ -678,12 +678,12 @@ f"> */
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     extern integer ilaenv_(integer *, char *, char *, integer *, integer *, 
 	    integer *, integer *, ftnlen, ftnlen);
-    extern /* Subroutine */ int slarzb_(char *, char *, char *, char *, 
+    extern /* Subroutine */ void slarzb_(char *, char *, char *, char *, 
 	    integer *, integer *, integer *, integer *, real *, integer *, 
 	    real *, integer *, real *, integer *, real *, integer *);
     integer lwkmin, ldwork, lwkopt;
     logical lquery;
-    extern /* Subroutine */ int slarzt_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void slarzt_(char *, char *, integer *, integer *, 
 	    real *, integer *, real *, real *, integer *), 
 	    slatrz_(integer *, integer *, integer *, real *, integer *, real *
 	    , real *);
@@ -742,22 +742,22 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("STZRZF", &i__1, (ftnlen)6);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*m == 0) {
-	return 0;
+	return;
     } else if (*m == *n) {
 	i__1 = *n;
 	for (i__ = 1; i__ <= i__1; ++i__) {
 	    tau[i__] = 0.f;
 /* L10: */
 	}
-	return 0;
+	return;
     }
 
     nbmin = 2;
@@ -855,7 +855,7 @@ f"> */
 
     work[1] = (real) lwkopt;
 
-    return 0;
+    return;
 
 /*     End of STZRZF */
 

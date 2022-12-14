@@ -661,7 +661,7 @@ rix */
 /* > \ingroup complex16OTHERauxiliary */
 
 /*  ===================================================================== */
-/* Subroutine */ int zspmv_(char *uplo, integer *n, doublecomplex *alpha, 
+/* Subroutine */ void zspmv_(char *uplo, integer *n, doublecomplex *alpha, 
 	doublecomplex *ap, doublecomplex *x, integer *incx, doublecomplex *
 	beta, doublecomplex *y, integer *incy)
 {
@@ -707,14 +707,14 @@ rix */
     }
     if (info != 0) {
 	xerbla_("ZSPMV ", &info, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible. */
 
     if (*n == 0 || alpha->r == 0. && alpha->i == 0. && (beta->r == 1. && 
 	    beta->i == 0.)) {
-	return 0;
+	return;
     }
 
 /*     Set up the start points in  X  and  Y. */
@@ -782,7 +782,7 @@ rix */
 	}
     }
     if (alpha->r == 0. && alpha->i == 0.) {
-	return 0;
+	return;
     }
     kk = 1;
     if (lsame_(uplo, "U")) {
@@ -983,7 +983,7 @@ rix */
 	}
     }
 
-    return 0;
+    return;
 
 /*     End of ZSPMV */
 

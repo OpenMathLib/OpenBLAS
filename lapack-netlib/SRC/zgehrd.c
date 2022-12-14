@@ -685,7 +685,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int zgehrd_(integer *n, integer *ilo, integer *ihi, 
+/* Subroutine */ void zgehrd_(integer *n, integer *ilo, integer *ihi, 
 	doublecomplex *a, integer *lda, doublecomplex *tau, doublecomplex *
 	work, integer *lwork, integer *info)
 {
@@ -695,7 +695,7 @@ f"> */
 
     /* Local variables */
     integer i__, j, nbmin, iinfo;
-    extern /* Subroutine */ int zgemm_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void zgemm_(char *, char *, integer *, integer *, 
 	    integer *, doublecomplex *, doublecomplex *, integer *, 
 	    doublecomplex *, integer *, doublecomplex *, doublecomplex *, 
 	    integer *), ztrmm_(char *, char *, char *, char *,
@@ -713,7 +713,7 @@ f"> */
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     extern integer ilaenv_(integer *, char *, char *, integer *, integer *, 
 	    integer *, integer *, ftnlen, ftnlen);
-    extern /* Subroutine */ int zlarfb_(char *, char *, char *, char *, 
+    extern /* Subroutine */ void zlarfb_(char *, char *, char *, char *, 
 	    integer *, integer *, integer *, doublecomplex *, integer *, 
 	    doublecomplex *, integer *, doublecomplex *, integer *, 
 	    doublecomplex *, integer *);
@@ -770,9 +770,9 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZGEHRD", &i__1, (ftnlen)6);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Set elements 1:ILO-1 and IHI:N-1 of TAU to zero */
@@ -795,7 +795,7 @@ f"> */
     nh = *ihi - *ilo + 1;
     if (nh <= 1) {
 	work[1].r = 1., work[1].i = 0.;
-	return 0;
+	return;
     }
 
 /*     Determine the block size */
@@ -912,7 +912,7 @@ f"> */
     zgehd2_(n, &i__, ihi, &a[a_offset], lda, &tau[1], &work[1], &iinfo);
     work[1].r = (doublereal) lwkopt, work[1].i = 0.;
 
-    return 0;
+    return;
 
 /*     End of ZGEHRD */
 

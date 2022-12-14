@@ -647,7 +647,7 @@ static integer c__3 = 3;
 /* > \ingroup complex_matgen */
 
 /*  ===================================================================== */
-/* Subroutine */ int clatm1_(integer *mode, real *cond, integer *irsign, 
+/* Subroutine */ void clatm1_(integer *mode, real *cond, integer *irsign, 
 	integer *idist, integer *iseed, complex *d__, integer *n, integer *
 	info)
 {
@@ -664,9 +664,9 @@ static integer c__3 = 3;
     complex ctemp;
     //extern /* Complex */ VOID clarnd_(complex *, integer *, integer *);
     extern complex clarnd_(integer *, integer *);
-    extern /* Subroutine */ int xerbla_(char *, integer *);
+    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     extern real slaran_(integer *);
-    extern /* Subroutine */ int clarnv_(integer *, integer *, integer *, 
+    extern /* Subroutine */ void clarnv_(integer *, integer *, integer *, 
 	    complex *);
 
 
@@ -691,7 +691,7 @@ static integer c__3 = 3;
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /*     Set INFO if an error */
@@ -711,8 +711,8 @@ static integer c__3 = 3;
 
     if (*info != 0) {
 	i__1 = -(*info);
-	xerbla_("CLATM1", &i__1);
-	return 0;
+	xerbla_("CLATM1", &i__1, 6);
+	return;
     }
 
 /*     Compute D according to COND and MODE */
@@ -848,7 +848,7 @@ L120:
 
     }
 
-    return 0;
+    return;
 
 /*     End of CLATM1 */
 

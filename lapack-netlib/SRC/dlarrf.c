@@ -704,7 +704,7 @@ f"> */
 /* > Christof Voemel, University of California, Berkeley, USA */
 
 /*  ===================================================================== */
-/* Subroutine */ int dlarrf_(integer *n, doublereal *d__, doublereal *l, 
+/* Subroutine */ void dlarrf_(integer *n, doublereal *d__, doublereal *l, 
 	doublereal *ld, integer *clstrt, integer *clend, doublereal *w, 
 	doublereal *wgap, doublereal *werr, doublereal *spdiam, doublereal *
 	clgapl, doublereal *clgapr, doublereal *pivmin, doublereal *sigma, 
@@ -723,7 +723,7 @@ f"> */
     integer i__;
     doublereal s, avgap, ldmax, rdmax;
     integer shift;
-    extern /* Subroutine */ int dcopy_(integer *, doublereal *, integer *, 
+    extern /* Subroutine */ void dcopy_(integer *, doublereal *, integer *, 
 	    doublereal *, integer *);
     doublereal bestshift, smlgrowth;
     logical dorrr1;
@@ -766,7 +766,7 @@ f"> */
 /*     Quick return if possible */
 
     if (*n <= 0) {
-	return 0;
+	return;
     }
 
     fact = 2.;
@@ -1011,7 +1011,7 @@ L50:
 	    goto L5;
 	} else {
 	    *info = 1;
-	    return 0;
+	    return;
 	}
     }
 L100:
@@ -1022,7 +1022,7 @@ L100:
 	i__1 = *n - 1;
 	dcopy_(&i__1, &work[*n + 1], &c__1, &lplus[1], &c__1);
     }
-    return 0;
+    return;
 
 /*     End of DLARRF */
 

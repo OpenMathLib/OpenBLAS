@@ -599,7 +599,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 /* > \ingroup doubleOTHERcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int dlarscl2_(integer *m, integer *n, doublereal *d__, 
+/* Subroutine */ void dlarscl2_(integer *m, integer *n, doublereal *d__, 
 	doublereal *x, integer *ldx)
 {
     /* System generated locals */
@@ -632,6 +632,6 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 	    x[i__ + j * x_dim1] /= d__[i__];
 	}
     }
-    return 0;
+    return;
 } /* dlarscl2_ */
 

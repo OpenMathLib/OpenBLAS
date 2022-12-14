@@ -740,7 +740,7 @@ rices</b> */
 /* > \ingroup complex16GEeigen */
 
 /*  ===================================================================== */
-/* Subroutine */ int zgegs_(char *jobvsl, char *jobvsr, integer *n, 
+/* Subroutine */ void zgegs_(char *jobvsl, char *jobvsr, integer *n, 
 	doublecomplex *a, integer *lda, doublecomplex *b, integer *ldb, 
 	doublecomplex *alpha, doublecomplex *beta, doublecomplex *vsl, 
 	integer *ldvsl, doublecomplex *vsr, integer *ldvsr, doublecomplex *
@@ -760,34 +760,34 @@ rices</b> */
     logical ilvsr;
     integer irows, nb;
     extern doublereal dlamch_(char *);
-    extern /* Subroutine */ int zggbak_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void zggbak_(char *, char *, integer *, integer *, 
 	    integer *, doublereal *, doublereal *, integer *, doublecomplex *,
 	     integer *, integer *), zggbal_(char *, integer *,
 	     doublecomplex *, integer *, doublecomplex *, integer *, integer *
 	    , integer *, doublereal *, doublereal *, doublereal *, integer *);
     logical ilascl, ilbscl;
     doublereal safmin;
-    extern /* Subroutine */ int xerbla_(char *, integer *);
+    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     extern integer ilaenv_(integer *, char *, char *, integer *, integer *, 
 	    integer *, integer *, ftnlen, ftnlen);
     extern doublereal zlange_(char *, integer *, integer *, doublecomplex *, 
 	    integer *, doublereal *);
     doublereal bignum;
     integer ijobvl, iright;
-    extern /* Subroutine */ int zgghrd_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void zgghrd_(char *, char *, integer *, integer *, 
 	    integer *, doublecomplex *, integer *, doublecomplex *, integer *,
 	     doublecomplex *, integer *, doublecomplex *, integer *, integer *
 	    ), zlascl_(char *, integer *, integer *, 
 	    doublereal *, doublereal *, integer *, integer *, doublecomplex *,
 	     integer *, integer *);
     integer ijobvr;
-    extern /* Subroutine */ int zgeqrf_(integer *, integer *, doublecomplex *,
+    extern /* Subroutine */ void zgeqrf_(integer *, integer *, doublecomplex *,
 	     integer *, doublecomplex *, doublecomplex *, integer *, integer *
 	    );
     doublereal anrmto;
     integer lwkmin, nb1, nb2, nb3;
     doublereal bnrmto;
-    extern /* Subroutine */ int zlacpy_(char *, integer *, integer *, 
+    extern /* Subroutine */ void zlacpy_(char *, integer *, integer *, 
 	    doublecomplex *, integer *, doublecomplex *, integer *), 
 	    zhgeqz_(char *, char *, char *, integer *, integer *, integer *, 
 	    doublecomplex *, integer *, doublecomplex *, integer *, 
@@ -799,7 +799,7 @@ rices</b> */
     doublereal smlnum;
     integer irwork, lwkopt;
     logical lquery;
-    extern /* Subroutine */ int zungqr_(integer *, integer *, integer *, 
+    extern /* Subroutine */ void zungqr_(integer *, integer *, integer *, 
 	    doublecomplex *, integer *, doublecomplex *, doublecomplex *, 
 	    integer *, integer *), zunmqr_(char *, char *, integer *, integer 
 	    *, integer *, doublecomplex *, integer *, doublecomplex *, 
@@ -903,16 +903,16 @@ rices</b> */
 
     if (*info != 0) {
 	i__1 = -(*info);
-	xerbla_("ZGEGS ", &i__1);
-	return 0;
+	xerbla_("ZGEGS ", &i__1, 6);
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /*     Get machine constants */
@@ -939,7 +939,7 @@ rices</b> */
 		iinfo);
 	if (iinfo != 0) {
 	    *info = *n + 9;
-	    return 0;
+	    return;
 	}
     }
 
@@ -960,7 +960,7 @@ rices</b> */
 		iinfo);
 	if (iinfo != 0) {
 	    *info = *n + 9;
-	    return 0;
+	    return;
 	}
     }
 
@@ -1097,13 +1097,13 @@ rices</b> */
 		iinfo);
 	if (iinfo != 0) {
 	    *info = *n + 9;
-	    return 0;
+	    return;
 	}
 	zlascl_("G", &c_n1, &c_n1, &anrmto, &anrm, n, &c__1, &alpha[1], n, &
 		iinfo);
 	if (iinfo != 0) {
 	    *info = *n + 9;
-	    return 0;
+	    return;
 	}
     }
 
@@ -1112,20 +1112,20 @@ rices</b> */
 		iinfo);
 	if (iinfo != 0) {
 	    *info = *n + 9;
-	    return 0;
+	    return;
 	}
 	zlascl_("G", &c_n1, &c_n1, &bnrmto, &bnrm, n, &c__1, &beta[1], n, &
 		iinfo);
 	if (iinfo != 0) {
 	    *info = *n + 9;
-	    return 0;
+	    return;
 	}
     }
 
 L10:
     work[1].r = (doublereal) lwkopt, work[1].i = 0.;
 
-    return 0;
+    return;
 
 /*     End of ZGEGS */
 

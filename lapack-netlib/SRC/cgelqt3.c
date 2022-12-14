@@ -627,7 +627,7 @@ static complex c_b1 = {1.f,0.f};
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int cgelqt3_(integer *m, integer *n, complex *a, integer *
+/* Subroutine */ void cgelqt3_(integer *m, integer *n, complex *a, integer *
 	lda, complex *t, integer *ldt, integer *info)
 {
     /* System generated locals */
@@ -636,16 +636,17 @@ static complex c_b1 = {1.f,0.f};
 
     /* Local variables */
     integer i__, j;
-    extern /* Subroutine */ int cgemm_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void cgemm_(char *, char *, integer *, integer *, 
 	    integer *, complex *, complex *, integer *, complex *, integer *, 
 	    complex *, complex *, integer *);
     integer iinfo;
-    extern /* Subroutine */ int ctrmm_(char *, char *, char *, char *, 
+    extern /* Subroutine */ void ctrmm_(char *, char *, char *, char *, 
 	    integer *, integer *, complex *, complex *, integer *, complex *, 
 	    integer *);
     integer i1, j1, m1, m2;
-    extern /* Subroutine */ int clarfg_(integer *, complex *, complex *, 
-	    integer *, complex *), xerbla_(char *, integer *, ftnlen);
+    extern /* Subroutine */ void clarfg_(integer *, complex *, complex *, 
+	    integer *, complex *);
+    extern int xerbla_(char *, integer *, ftnlen);
 
 
 /*  -- LAPACK computational routine (version 3.8.0) -- */
@@ -679,7 +680,7 @@ static complex c_b1 = {1.f,0.f};
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CGELQT3", &i__1, (ftnlen)7);
-	return 0;
+	return;
     }
 
     if (*m == 1) {
@@ -793,7 +794,7 @@ static complex c_b1 = {1.f,0.f};
 
     }
 
-    return 0;
+    return;
 
 /*     End of CGELQT3 */
 

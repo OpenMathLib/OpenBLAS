@@ -856,7 +856,7 @@ f"> */
 /* > \ingroup realGEsolve */
 
 /*  ===================================================================== */
-/* Subroutine */ int sgesvx_(char *fact, char *trans, integer *n, integer *
+/* Subroutine */ void sgesvx_(char *fact, char *trans, integer *n, integer *
 	nrhs, real *a, integer *lda, real *af, integer *ldaf, integer *ipiv, 
 	char *equed, real *r__, real *c__, real *b, integer *ldb, real *x, 
 	integer *ldx, real *rcond, real *ferr, real *berr, real *work, 
@@ -878,21 +878,23 @@ f"> */
     extern real slamch_(char *), slange_(char *, integer *, integer *,
 	     real *, integer *, real *);
     logical nofact;
-    extern /* Subroutine */ int slaqge_(integer *, integer *, real *, integer 
-	    *, real *, real *, real *, real *, real *, char *), 
-	    xerbla_(char *, integer *, ftnlen), sgecon_(char *, integer *, 
+    extern /* Subroutine */ void slaqge_(integer *, integer *, real *, integer 
+	    *, real *, real *, real *, real *, real *, char *); 
+    extern int xerbla_(char *, integer *, ftnlen);
+    extern void sgecon_(char *, integer *, 
 	    real *, integer *, real *, real *, real *, integer *, integer *);
     real bignum;
     integer infequ;
     logical colequ;
-    extern /* Subroutine */ int sgeequ_(integer *, integer *, real *, integer 
+    extern /* Subroutine */ void sgeequ_(integer *, integer *, real *, integer 
 	    *, real *, real *, real *, real *, real *, integer *), sgerfs_(
 	    char *, integer *, integer *, real *, integer *, real *, integer *
 	    , integer *, real *, integer *, real *, integer *, real *, real *,
-	     real *, integer *, integer *), sgetrf_(integer *, 
+	     real *, integer *, integer *);
+    extern int sgetrf_(integer *, 
 	    integer *, real *, integer *, integer *, integer *);
     real rowcnd;
-    extern /* Subroutine */ int slacpy_(char *, integer *, integer *, real *, 
+    extern /* Subroutine */ void slacpy_(char *, integer *, integer *, real *, 
 	    integer *, real *, integer *);
     logical notran;
     extern real slantr_(char *, char *, char *, integer *, integer *, real *, 
@@ -1025,7 +1027,7 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("SGESVX", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
     if (equil) {
@@ -1096,7 +1098,7 @@ f"> */
 	    }
 	    work[1] = rpvgrw;
 	    *rcond = 0.f;
-	    return 0;
+	    return;
 	}
     }
 
@@ -1179,7 +1181,7 @@ f"> */
     }
 
     work[1] = rpvgrw;
-    return 0;
+    return;
 
 /*     End of SGESVX */
 

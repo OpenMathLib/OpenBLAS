@@ -650,7 +650,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int sgeqrt_(integer *m, integer *n, integer *nb, real *a, 
+/* Subroutine */ void sgeqrt_(integer *m, integer *n, integer *nb, real *a, 
 	integer *lda, real *t, integer *ldt, real *work, integer *info)
 {
     /* System generated locals */
@@ -658,9 +658,11 @@ f"> */
 
     /* Local variables */
     integer i__, k, iinfo, ib;
-    extern /* Subroutine */ int slarfb_(char *, char *, char *, char *, 
+    extern /* Subroutine */ void slarfb_(char *, char *, char *, char *, 
 	    integer *, integer *, integer *, real *, integer *, real *, 
-	    integer *, real *, integer *, real *, integer *), xerbla_(char *, integer *, ftnlen), sgeqrt2_(
+	    integer *, real *, integer *, real *, integer *);
+    extern int xerbla_(char *, integer *, ftnlen);
+    extern void sgeqrt2_(
 	    integer *, integer *, real *, integer *, real *, integer *, 
 	    integer *), sgeqrt3_(integer *, integer *, real *, integer *, 
 	    real *, integer *, integer *);
@@ -702,14 +704,14 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("SGEQRT", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     k = f2cmin(*m,*n);
     if (k == 0) {
-	return 0;
+	return;
     }
 
 /*     Blocked loop of length K */
@@ -744,7 +746,7 @@ f"> */
 		    ib) * a_dim1], lda, &work[1], &i__5);
 	}
     }
-    return 0;
+    return;
 
 /*     End of SGEQRT */
 

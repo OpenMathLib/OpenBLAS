@@ -718,7 +718,7 @@ f.f"> */
 /* > */
 /* > \endverbatim */
 /*  ===================================================================== */
-/* Subroutine */ int csyconvf_(char *uplo, char *way, integer *n, complex *a, 
+/* Subroutine */ void csyconvf_(char *uplo, char *way, integer *n, complex *a, 
 	integer *lda, complex *e, integer *ipiv, integer *info)
 {
     /* System generated locals */
@@ -727,7 +727,7 @@ f.f"> */
     /* Local variables */
     integer i__;
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int cswap_(integer *, complex *, integer *, 
+    extern /* Subroutine */ void cswap_(integer *, complex *, integer *, 
 	    complex *, integer *);
     logical upper;
     integer ip;
@@ -768,13 +768,13 @@ f.f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CSYCONVF", &i__1, (ftnlen)8);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
     if (upper) {
@@ -1090,7 +1090,7 @@ f.f"> */
 /*        End A is LOWER */
 
     }
-    return 0;
+    return;
 
 /*     End of CSYCONVF */
 

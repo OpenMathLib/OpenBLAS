@@ -768,7 +768,7 @@ f"> */
 /* >  a matrix. It may be replaced by a better rank determination strategy. */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int sggsvp_(char *jobu, char *jobv, char *jobq, integer *m, 
+/* Subroutine */ void sggsvp_(char *jobu, char *jobv, char *jobq, integer *m, 
 	integer *p, integer *n, real *a, integer *lda, real *b, integer *ldb, 
 	real *tola, real *tolb, integer *k, integer *l, real *u, integer *ldu,
 	 real *v, integer *ldv, real *q, integer *ldq, integer *iwork, real *
@@ -783,13 +783,15 @@ f"> */
     integer i__, j;
     extern logical lsame_(char *, char *);
     logical wantq, wantu, wantv;
-    extern /* Subroutine */ int sgeqr2_(integer *, integer *, real *, integer 
+    extern /* Subroutine */ void sgeqr2_(integer *, integer *, real *, integer 
 	    *, real *, real *, integer *), sgerq2_(integer *, integer *, real 
 	    *, integer *, real *, real *, integer *), sorg2r_(integer *, 
 	    integer *, integer *, real *, integer *, real *, real *, integer *
 	    ), sorm2r_(char *, char *, integer *, integer *, integer *, real *
 	    , integer *, real *, real *, integer *, real *, integer *), sormr2_(char *, char *, integer *, integer *, integer *,
-	     real *, integer *, real *, real *, integer *, real *, integer *), xerbla_(char *, integer *), sgeqpf_(
+	     real *, integer *, real *, real *, integer *, real *, integer *);
+    extern int xerbla_(char *, integer *, ftnlen);
+    extern void sgeqpf_(
 	    integer *, integer *, real *, integer *, integer *, real *, real *
 	    , integer *), slacpy_(char *, integer *, integer *, real *, 
 	    integer *, real *, integer *), slaset_(char *, integer *, 
@@ -861,8 +863,8 @@ f"> */
     }
     if (*info != 0) {
 	i__1 = -(*info);
-	xerbla_("SGGSVP", &i__1);
-	return 0;
+	xerbla_("SGGSVP", &i__1, 6);
+	return;
     }
 
 /*     QR with column pivoting of B: B*P = V*( S11 S12 ) */
@@ -1111,7 +1113,7 @@ f"> */
 
     }
 
-    return 0;
+    return;
 
 /*     End of SGGSVP */
 

@@ -739,7 +739,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int dtrevc_(char *side, char *howmny, logical *select, 
+/* Subroutine */ void dtrevc_(char *side, char *howmny, logical *select, 
 	integer *n, doublereal *t, integer *ldt, doublereal *vl, integer *
 	ldvl, doublereal *vr, integer *ldvr, integer *mm, integer *m, 
 	doublereal *work, integer *info)
@@ -760,24 +760,24 @@ f"> */
     logical over;
     doublereal vmax;
     integer jnxt, i__, j, k;
-    extern /* Subroutine */ int dscal_(integer *, doublereal *, doublereal *, 
+    extern /* Subroutine */ void dscal_(integer *, doublereal *, doublereal *, 
 	    integer *);
     doublereal scale, x[4]	/* was [2][2] */;
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int dgemv_(char *, integer *, integer *, 
+    extern /* Subroutine */ void dgemv_(char *, integer *, integer *, 
 	    doublereal *, doublereal *, integer *, doublereal *, integer *, 
 	    doublereal *, doublereal *, integer *);
     doublereal remax;
-    extern /* Subroutine */ int dcopy_(integer *, doublereal *, integer *, 
+    extern /* Subroutine */ void dcopy_(integer *, doublereal *, integer *, 
 	    doublereal *, integer *);
     logical leftv, bothv;
-    extern /* Subroutine */ int daxpy_(integer *, doublereal *, doublereal *, 
+    extern /* Subroutine */ void daxpy_(integer *, doublereal *, doublereal *, 
 	    integer *, doublereal *, integer *);
     doublereal vcrit;
     logical somev;
     integer j1, j2, n2;
     doublereal xnorm;
-    extern /* Subroutine */ int dlaln2_(logical *, integer *, integer *, 
+    extern /* Subroutine */ void dlaln2_(logical *, integer *, integer *, 
 	    doublereal *, doublereal *, doublereal *, integer *, doublereal *,
 	     doublereal *, doublereal *, integer *, doublereal *, doublereal *
 	    , doublereal *, integer *, doublereal *, doublereal *, integer *),
@@ -886,13 +886,13 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DTREVC", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible. */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /*     Set the constants to control overflow. */
@@ -1795,7 +1795,7 @@ L250:
 
     }
 
-    return 0;
+    return;
 
 /*     End of DTREVC */
 

@@ -645,7 +645,7 @@ f"> */
 /* > \ingroup complex16HEcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int zhegst_(integer *itype, char *uplo, integer *n, 
+/* Subroutine */ void zhegst_(integer *itype, char *uplo, integer *n, 
 	doublecomplex *a, integer *lda, doublecomplex *b, integer *ldb, 
 	integer *info)
 {
@@ -656,11 +656,11 @@ f"> */
     /* Local variables */
     integer k;
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int zhemm_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void zhemm_(char *, char *, integer *, integer *, 
 	    doublecomplex *, doublecomplex *, integer *, doublecomplex *, 
 	    integer *, doublecomplex *, doublecomplex *, integer *);
     logical upper;
-    extern /* Subroutine */ int ztrmm_(char *, char *, char *, char *, 
+    extern /* Subroutine */ void ztrmm_(char *, char *, char *, char *, 
 	    integer *, integer *, doublecomplex *, doublecomplex *, integer *,
 	     doublecomplex *, integer *), 
 	    ztrsm_(char *, char *, char *, char *, integer *, integer *, 
@@ -713,13 +713,13 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZHEGST", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /*     Determine the block size for this environment. */
@@ -903,7 +903,7 @@ f"> */
 	    }
 	}
     }
-    return 0;
+    return;
 
 /*     End of ZHEGST */
 

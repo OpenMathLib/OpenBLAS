@@ -674,7 +674,7 @@ a.f"> */
 /* > \ingroup complex16HEsolve */
 
 /*  ===================================================================== */
-/* Subroutine */ int zhesv_aa_(char *uplo, integer *n, integer *nrhs, 
+/* Subroutine */ void zhesv_aa_(char *uplo, integer *n, integer *nrhs, 
 	doublecomplex *a, integer *lda, integer *ipiv, doublecomplex *b, 
 	integer *ldb, doublecomplex *work, integer *lwork, integer *info)
 {
@@ -684,10 +684,11 @@ a.f"> */
     /* Local variables */
     integer lwkopt_hetrf__, lwkopt_hetrs__;
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int zhetrf_aa_(char *, integer *, doublecomplex *
+    extern /* Subroutine */ void zhetrf_aa_(char *, integer *, doublecomplex *
 	    , integer *, integer *, doublecomplex *, integer *, integer *), zhetrs_aa_(char *, integer *, integer *, doublecomplex *
 	    , integer *, integer *, doublecomplex *, integer *, doublecomplex 
-	    *, integer *, integer *), xerbla_(char *, integer *, ftnlen);
+	    *, integer *, integer *);
+    extern int xerbla_(char *, integer *, ftnlen);
     integer lwkopt;
     logical lquery;
 
@@ -748,9 +749,9 @@ a.f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZHESV_AA ", &i__1, (ftnlen)9);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Compute the factorization A = U**H*T*U or A = L*T*L**H. */
@@ -767,7 +768,7 @@ a.f"> */
 
     work[1].r = (doublereal) lwkopt, work[1].i = 0.;
 
-    return 0;
+    return;
 
 /*     End of ZHESV_AA */
 

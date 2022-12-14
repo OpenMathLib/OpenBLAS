@@ -696,7 +696,7 @@ f"> */
 /* > \ingroup complexGEsolve */
 
 /*  ===================================================================== */
-/* Subroutine */ int cgelss_(integer *m, integer *n, integer *nrhs, complex *
+/* Subroutine */ void cgelss_(integer *m, integer *n, integer *nrhs, complex *
 	a, integer *lda, complex *b, integer *ldb, real *s, real *rcond, 
 	integer *rank, complex *work, integer *lwork, real *rwork, integer *
 	info)
@@ -710,41 +710,43 @@ f"> */
     integer itau, lwork_cgebrd__, lwork_cgelqf__, lwork_cgeqrf__, 
 	    lwork_cungbr__, lwork_cunmbr__, i__, lwork_cunmlq__, 
 	    lwork_cunmqr__;
-    extern /* Subroutine */ int cgemm_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void cgemm_(char *, char *, integer *, integer *, 
 	    integer *, complex *, complex *, integer *, complex *, integer *, 
 	    complex *, complex *, integer *);
     integer iascl, ibscl;
-    extern /* Subroutine */ int cgemv_(char *, integer *, integer *, complex *
+    extern /* Subroutine */ void cgemv_(char *, integer *, integer *, complex *
 	    , complex *, integer *, complex *, integer *, complex *, complex *
 	    , integer *);
     integer chunk;
     real sfmin;
-    extern /* Subroutine */ int ccopy_(integer *, complex *, integer *, 
+    extern /* Subroutine */ void ccopy_(integer *, complex *, integer *, 
 	    complex *, integer *);
     integer minmn, maxmn, itaup, itauq, mnthr, iwork, bl, ie, il;
-    extern /* Subroutine */ int cgebrd_(integer *, integer *, complex *, 
+    extern /* Subroutine */ void cgebrd_(integer *, integer *, complex *, 
 	    integer *, real *, real *, complex *, complex *, complex *, 
 	    integer *, integer *), slabad_(real *, real *);
     extern real clange_(char *, integer *, integer *, complex *, integer *, 
 	    real *);
     integer mm;
-    extern /* Subroutine */ int cgelqf_(integer *, integer *, complex *, 
+    extern /* Subroutine */ void cgelqf_(integer *, integer *, complex *, 
 	    integer *, complex *, complex *, integer *, integer *), clascl_(
 	    char *, integer *, integer *, real *, real *, integer *, integer *
 	    , complex *, integer *, integer *), cgeqrf_(integer *, 
 	    integer *, complex *, integer *, complex *, complex *, integer *, 
 	    integer *);
     extern real slamch_(char *);
-    extern /* Subroutine */ int clacpy_(char *, integer *, integer *, complex 
+    extern /* Subroutine */ void clacpy_(char *, integer *, integer *, complex 
 	    *, integer *, complex *, integer *), claset_(char *, 
-	    integer *, integer *, complex *, complex *, complex *, integer *), xerbla_(char *, integer *, ftnlen), cbdsqr_(char *, 
+	    integer *, integer *, complex *, complex *, complex *, integer *);
+    extern int xerbla_(char *, integer *, ftnlen);
+    extern void cbdsqr_(char *, 
 	    integer *, integer *, integer *, integer *, real *, real *, 
 	    complex *, integer *, complex *, integer *, complex *, integer *, 
 	    real *, integer *);
     extern integer ilaenv_(integer *, char *, char *, integer *, integer *, 
 	    integer *, integer *, ftnlen, ftnlen);
     real bignum;
-    extern /* Subroutine */ int cungbr_(char *, integer *, integer *, integer 
+    extern /* Subroutine */ void cungbr_(char *, integer *, integer *, integer 
 	    *, complex *, integer *, complex *, complex *, integer *, integer 
 	    *), slascl_(char *, integer *, integer *, real *, real *, 
 	    integer *, integer *, real *, integer *, integer *), 
@@ -756,7 +758,7 @@ f"> */
 	    char *, integer *, integer *, integer *, complex *, integer *, 
 	    complex *, complex *, integer *, complex *, integer *, integer *);
     integer ldwork;
-    extern /* Subroutine */ int cunmqr_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void cunmqr_(char *, char *, integer *, integer *, 
 	    integer *, complex *, integer *, complex *, complex *, integer *, 
 	    complex *, integer *, integer *);
     integer minwrk, maxwrk;
@@ -963,16 +965,16 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CGELSS", &i__1, (ftnlen)6);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*m == 0 || *n == 0) {
 	*rank = 0;
-	return 0;
+	return;
     }
 
 /*     Get machine parameters */
@@ -1431,7 +1433,7 @@ f"> */
     }
 L70:
     work[1].r = (real) maxwrk, work[1].i = 0.f;
-    return 0;
+    return;
 
 /*     End of CGELSS */
 

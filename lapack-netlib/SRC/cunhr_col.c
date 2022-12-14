@@ -772,7 +772,7 @@ ol.f"> */
 /* > \endverbatim */
 
 /*  ===================================================================== */
-/* Subroutine */ int cunhr_col_(integer *m, integer *n, integer *nb, complex 
+/* Subroutine */ void cunhr_col_(integer *m, integer *n, integer *nb, complex 
 	*a, integer *lda, complex *t, integer *ldt, complex *d__, integer *
 	info)
 {
@@ -781,13 +781,13 @@ ol.f"> */
     complex q__1;
 
     /* Local variables */
-    extern /* Subroutine */ int claunhr_col_getrfnp_(integer *, integer *, 
+    extern /* Subroutine */ void claunhr_col_getrfnp_(integer *, integer *, 
 	    complex *, integer *, complex *, integer *);
     integer nplusone, i__, j;
-    extern /* Subroutine */ int cscal_(integer *, complex *, complex *, 
+    extern /* Subroutine */ void cscal_(integer *, complex *, complex *, 
 	    integer *);
     integer iinfo;
-    extern /* Subroutine */ int ccopy_(integer *, complex *, integer *, 
+    extern /* Subroutine */ void ccopy_(integer *, complex *, integer *, 
 	    complex *, integer *), ctrsm_(char *, char *, char *, char *, 
 	    integer *, integer *, complex *, complex *, integer *, complex *, 
 	    integer *);
@@ -839,13 +839,13 @@ ol.f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CUNHR_COL", &i__1, (ftnlen)9);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (f2cmin(*m,*n) == 0) {
-	return 0;
+	return;
     }
 
 /*     On input, the M-by-N matrix A contains the unitary */
@@ -977,7 +977,7 @@ ol.f"> */
 
     }
 
-    return 0;
+    return;
 
 /*     End of CUNHR_COL */
 

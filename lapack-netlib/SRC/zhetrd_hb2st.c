@@ -746,7 +746,7 @@ hb2st.f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int zhetrd_hb2st_(char *stage1, char *vect, char *uplo, 
+/* Subroutine */ void zhetrd_hb2st_(char *stage1, char *vect, char *uplo, 
 	integer *n, integer *kd, doublecomplex *ab, integer *ldab, doublereal 
 	*d__, doublereal *e, doublecomplex *hous, integer *lhous, 
 	doublecomplex *work, integer *lwork, integer *info)
@@ -770,14 +770,14 @@ hb2st.f"> */
     integer thgrid, thgrnb, indtau;
     doublereal abstmp;
     integer ofdpos;
-    extern /* Subroutine */ int zhb2st_kernels_(char *, logical *, integer *,
+    extern /* Subroutine */ void zhb2st_kernels_(char *, logical *, integer *,
 	     integer *, integer *, integer *, integer *, integer *, integer *,
 	     doublecomplex *, integer *, doublecomplex *, doublecomplex *, 
 	    integer *, doublecomplex *), zlacpy_(char *, integer *, 
 	    integer *, doublecomplex *, integer *, doublecomplex *, integer *), zlaset_(char *, integer *, integer *, doublecomplex *, 
 	    doublecomplex *, doublecomplex *, integer *);
     integer blklastind;
-    extern /* Subroutine */ int mecago_();
+    extern /* Subroutine */ void mecago_();
     logical lquery, afters1;
     integer lda, tid, ldv;
     doublecomplex tmp;
@@ -848,9 +848,9 @@ hb2st.f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZHETRD_HB2ST", &i__1, (ftnlen)12);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
@@ -858,7 +858,7 @@ hb2st.f"> */
     if (*n == 0) {
 	hous[1].r = 1., hous[1].i = 0.;
 	work[1].r = 1., work[1].i = 0.;
-	return 0;
+	return;
     }
 
 /*     Determine pointer position */
@@ -912,7 +912,7 @@ hb2st.f"> */
 
 	hous[1].r = 1., hous[1].i = 0.;
 	work[1].r = 1., work[1].i = 0.;
-	return 0;
+	return;
     }
 
 /*     Case KD=1: */
@@ -993,7 +993,7 @@ hb2st.f"> */
 
 	hous[1].r = 1., hous[1].i = 0.;
 	work[1].r = 1., work[1].i = 0.;
-	return 0;
+	return;
     }
 
 /*     Main code start here. */
@@ -1115,7 +1115,7 @@ hb2st.f"> */
 
     hous[1].r = (doublereal) lhmin, hous[1].i = 0.;
     work[1].r = (doublereal) lwmin, work[1].i = 0.;
-    return 0;
+    return;
 
 /*     End of ZHETRD_HB2ST */
 

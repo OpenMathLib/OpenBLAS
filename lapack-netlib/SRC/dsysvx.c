@@ -796,7 +796,7 @@ f"> */
 /* > \ingroup doubleSYsolve */
 
 /*  ===================================================================== */
-/* Subroutine */ int dsysvx_(char *fact, char *uplo, integer *n, integer *
+/* Subroutine */ void dsysvx_(char *fact, char *uplo, integer *n, integer *
 	nrhs, doublereal *a, integer *lda, doublereal *af, integer *ldaf, 
 	integer *ipiv, doublereal *b, integer *ldb, doublereal *x, integer *
 	ldx, doublereal *rcond, doublereal *ferr, doublereal *berr, 
@@ -812,14 +812,14 @@ f"> */
     integer nb;
     extern doublereal dlamch_(char *);
     logical nofact;
-    extern /* Subroutine */ int dlacpy_(char *, integer *, integer *, 
-	    doublereal *, integer *, doublereal *, integer *), 
-	    xerbla_(char *, integer *, ftnlen);
+    extern /* Subroutine */ void dlacpy_(char *, integer *, integer *, 
+	    doublereal *, integer *, doublereal *, integer *); 
+    extern int xerbla_(char *, integer *, ftnlen);
     extern integer ilaenv_(integer *, char *, char *, integer *, integer *, 
 	    integer *, integer *, ftnlen, ftnlen);
     extern doublereal dlansy_(char *, char *, integer *, doublereal *, 
 	    integer *, doublereal *);
-    extern /* Subroutine */ int dsycon_(char *, integer *, doublereal *, 
+    extern /* Subroutine */ void dsycon_(char *, integer *, doublereal *, 
 	    integer *, integer *, doublereal *, doublereal *, doublereal *, 
 	    integer *, integer *), dsyrfs_(char *, integer *, integer 
 	    *, doublereal *, integer *, doublereal *, integer *, integer *, 
@@ -829,7 +829,7 @@ f"> */
 	    doublereal *, integer *, integer *);
     integer lwkopt;
     logical lquery;
-    extern /* Subroutine */ int dsytrs_(char *, integer *, integer *, 
+    extern /* Subroutine */ void dsytrs_(char *, integer *, integer *, 
 	    doublereal *, integer *, integer *, doublereal *, integer *, 
 	    integer *);
 
@@ -910,9 +910,9 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DSYSVX", &i__1, (ftnlen)6);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
     if (nofact) {
@@ -927,7 +927,7 @@ f"> */
 
 	if (*info > 0) {
 	    *rcond = 0.;
-	    return 0;
+	    return;
 	}
     }
 
@@ -961,7 +961,7 @@ f"> */
 
     work[1] = (doublereal) lwkopt;
 
-    return 0;
+    return;
 
 /*     End of DSYSVX */
 

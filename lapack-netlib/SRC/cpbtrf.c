@@ -660,7 +660,7 @@ f"> */
 /* >  Peter Mayes and Giuseppe Radicati, IBM ECSEC, Rome, March 23, 1989 */
 
 /*  ===================================================================== */
-/* Subroutine */ int cpbtrf_(char *uplo, integer *n, integer *kd, complex *ab,
+/* Subroutine */ void cpbtrf_(char *uplo, integer *n, integer *kd, complex *ab,
 	 integer *ldab, integer *info)
 {
     /* System generated locals */
@@ -670,18 +670,19 @@ f"> */
     /* Local variables */
     complex work[1056]	/* was [33][32] */;
     integer i__, j;
-    extern /* Subroutine */ int cgemm_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void cgemm_(char *, char *, integer *, integer *, 
 	    integer *, complex *, complex *, integer *, complex *, integer *, 
 	    complex *, complex *, integer *), cherk_(char *, 
 	    char *, integer *, integer *, real *, complex *, integer *, real *
 	    , complex *, integer *);
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int ctrsm_(char *, char *, char *, char *, 
+    extern /* Subroutine */ void ctrsm_(char *, char *, char *, char *, 
 	    integer *, integer *, complex *, complex *, integer *, complex *, 
 	    integer *);
     integer i2, i3;
-    extern /* Subroutine */ int cpbtf2_(char *, integer *, integer *, complex 
-	    *, integer *, integer *), cpotf2_(char *, integer *, 
+    extern /* Subroutine */ void cpbtf2_(char *, integer *, integer *, complex 
+	    *, integer *, integer *);
+    extern int cpotf2_(char *, integer *, 
 	    complex *, integer *, integer *);
     integer ib, nb, ii, jj;
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
@@ -719,13 +720,13 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CPBTRF", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /*     Determine the block size for this environment */
@@ -1034,10 +1035,10 @@ f"> */
 	    }
 	}
     }
-    return 0;
+    return;
 
 L150:
-    return 0;
+    return;
 
 /*     End of CPBTRF */
 

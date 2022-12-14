@@ -659,7 +659,7 @@ aa.f"> */
 /* > \ingroup complexSYcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int clasyf_aa_(char *uplo, integer *j1, integer *m, integer 
+/* Subroutine */ void clasyf_aa_(char *uplo, integer *j1, integer *m, integer 
 	*nb, complex *a, integer *lda, integer *ipiv, complex *h__, integer *
 	ldh, complex *work)
 {
@@ -670,10 +670,10 @@ aa.f"> */
     /* Local variables */
     integer j, k;
     complex alpha;
-    extern /* Subroutine */ int cscal_(integer *, complex *, complex *, 
+    extern /* Subroutine */ void cscal_(integer *, complex *, complex *, 
 	    integer *);
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int cgemv_(char *, integer *, integer *, complex *
+    extern /* Subroutine */ void cgemv_(char *, integer *, integer *, complex *
 	    , complex *, integer *, complex *, integer *, complex *, complex *
 	    , integer *), ccopy_(integer *, complex *, integer *, 
 	    complex *, integer *), cswap_(integer *, complex *, integer *, 
@@ -681,7 +681,7 @@ aa.f"> */
 	    integer *, complex *, integer *);
     integer i1, k1, i2, mj;
     extern integer icamax_(integer *, complex *, integer *);
-    extern /* Subroutine */ int claset_(char *, integer *, integer *, complex 
+    extern /* Subroutine */ void claset_(char *, integer *, integer *, complex 
 	    *, complex *, complex *, integer *);
     complex piv;
 
@@ -1076,7 +1076,7 @@ L30:
 L40:
 	;
     }
-    return 0;
+    return;
 
 /*     End of CLASYF_AA */
 

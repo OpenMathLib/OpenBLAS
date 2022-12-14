@@ -610,7 +610,7 @@ static doublereal c_b6 = 1.;
 /* > \ingroup OTHERauxiliary */
 
 /*  ===================================================================== */
-/* Subroutine */ int dlartgp_(doublereal *f, doublereal *g, doublereal *cs, 
+/* Subroutine */ void dlartgp_(doublereal *f, doublereal *g, doublereal *cs, 
 	doublereal *sn, doublereal *r__)
 {
     /* System generated locals */
@@ -724,7 +724,7 @@ L30:
 	    *r__ = -(*r__);
 	}
     }
-    return 0;
+    return;
 
 /*     End of DLARTGP */
 

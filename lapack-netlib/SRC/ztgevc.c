@@ -733,7 +733,7 @@ f"> */
 /* > \ingroup complex16GEcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int ztgevc_(char *side, char *howmny, logical *select, 
+/* Subroutine */ void ztgevc_(char *side, char *howmny, logical *select, 
 	integer *n, doublecomplex *s, integer *lds, doublecomplex *p, integer 
 	*ldp, doublecomplex *vl, integer *ldvl, doublecomplex *vr, integer *
 	ldvr, integer *mm, integer *m, doublecomplex *work, doublereal *rwork,
@@ -763,11 +763,11 @@ f"> */
     logical compl;
     doublereal anorm, bnorm;
     logical compr;
-    extern /* Subroutine */ int zgemv_(char *, integer *, integer *, 
+    extern /* Subroutine */ void zgemv_(char *, integer *, integer *, 
 	    doublecomplex *, doublecomplex *, integer *, doublecomplex *, 
 	    integer *, doublecomplex *, doublecomplex *, integer *);
     doublecomplex ca, cb;
-    extern /* Subroutine */ int dlabad_(doublereal *, doublereal *);
+    extern /* Subroutine */ void dlabad_(doublereal *, doublereal *);
     logical ilbbad;
     doublereal acoefa;
     integer je;
@@ -869,7 +869,7 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZTGEVC", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Count the number of eigenvectors */
@@ -910,14 +910,14 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZTGEVC", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     *m = im;
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /*     Machine Constants */
@@ -1546,7 +1546,7 @@ L250:
 	}
     }
 
-    return 0;
+    return;
 
 /*     End of ZTGEVC */
 

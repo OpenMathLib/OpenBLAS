@@ -729,7 +729,7 @@ f"> */
 /* > \ingroup realGEsing */
 
 /*  ===================================================================== */
-/* Subroutine */ int sgesvd_(char *jobu, char *jobvt, integer *m, integer *n, 
+/* Subroutine */ void sgesvd_(char *jobu, char *jobvt, integer *m, integer *n, 
 	real *a, integer *lda, real *s, real *u, integer *ldu, real *vt, 
 	integer *ldvt, real *work, integer *lwork, integer *info)
 {
@@ -746,13 +746,13 @@ f"> */
 	    lwork_sgeqrf__, i__;
     extern logical lsame_(char *, char *);
     integer chunk;
-    extern /* Subroutine */ int sgemm_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void sgemm_(char *, char *, integer *, integer *, 
 	    integer *, real *, real *, integer *, real *, integer *, real *, 
 	    real *, integer *);
     integer minmn, wrkbl, itaup, itauq, mnthr, iwork;
     logical wntua, wntva, wntun, wntuo, wntvn, wntvo, wntus, wntvs;
     integer ie, ir, bdspac, iu;
-    extern /* Subroutine */ int sgebrd_(integer *, integer *, real *, integer 
+    extern /* Subroutine */ void sgebrd_(integer *, integer *, real *, integer 
 	    *, real *, real *, real *, real *, real *, integer *, integer *);
     extern real slamch_(char *), slange_(char *, integer *, integer *,
 	     real *, integer *, real *);
@@ -760,7 +760,7 @@ f"> */
     extern integer ilaenv_(integer *, char *, char *, integer *, integer *, 
 	    integer *, integer *, ftnlen, ftnlen);
     real bignum;
-    extern /* Subroutine */ int sgelqf_(integer *, integer *, real *, integer 
+    extern /* Subroutine */ void sgelqf_(integer *, integer *, real *, integer 
 	    *, real *, real *, integer *, integer *), slascl_(char *, integer 
 	    *, integer *, real *, real *, integer *, integer *, real *, 
 	    integer *, integer *), sgeqrf_(integer *, integer *, real 
@@ -774,10 +774,10 @@ f"> */
 	    char *, integer *, integer *, integer *, real *, integer *, real *
 	    , real *, integer *, real *, integer *, integer *);
     integer ldwrkr, minwrk, ldwrku, maxwrk;
-    extern /* Subroutine */ int sorglq_(integer *, integer *, integer *, real 
+    extern /* Subroutine */ void sorglq_(integer *, integer *, integer *, real 
 	    *, integer *, real *, real *, integer *, integer *);
     real smlnum;
-    extern /* Subroutine */ int sorgqr_(integer *, integer *, integer *, real 
+    extern /* Subroutine */ void sorgqr_(integer *, integer *, integer *, real 
 	    *, integer *, real *, real *, integer *, integer *);
     logical lquery, wntuas, wntvas;
     integer blk, lwork_sorgbr_p__, lwork_sorgbr_q__, lwork_sorglq_m__, 
@@ -1378,15 +1378,15 @@ f"> */
     if (*info != 0) {
 	i__2 = -(*info);
 	xerbla_("SGESVD", &i__2, (ftnlen)6);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*m == 0 || *n == 0) {
-	return 0;
+	return;
     }
 
 /*     Get machine constants */
@@ -4587,7 +4587,7 @@ f"> */
 
     work[1] = (real) maxwrk;
 
-    return 0;
+    return;
 
 /*     End of SGESVD */
 

@@ -780,7 +780,7 @@ f"> */
 /* >       ACM Trans. Math. Softw. 40, 2, Article 12 (February 2014). */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int slaqr5_(logical *wantt, logical *wantz, integer *kacc22, 
+/* Subroutine */ void slaqr5_(logical *wantt, logical *wantz, integer *kacc22, 
 	integer *n, integer *ktop, integer *kbot, integer *nshfts, real *sr, 
 	real *si, real *h__, integer *ldh, integer *iloz, integer *ihiz, real 
 	*z__, integer *ldz, real *v, integer *ldv, real *u, integer *ldu, 
@@ -802,19 +802,19 @@ f"> */
     real alpha;
     logical accum;
     integer ndcol, incol;
-    extern /* Subroutine */ int sgemm_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void sgemm_(char *, char *, integer *, integer *, 
 	    integer *, real *, real *, integer *, real *, integer *, real *, 
 	    real *, integer *);
     integer krcol, nbmps, i2, k1, i4;
-    extern /* Subroutine */ int slaqr1_(integer *, real *, integer *, real *, 
+    extern /* Subroutine */ void slaqr1_(integer *, real *, integer *, real *, 
 	    real *, real *, real *, real *);
     real h11, h12, h21, h22;
     integer m22;
-    extern /* Subroutine */ int slabad_(real *, real *);
+    extern /* Subroutine */ void slabad_(real *, real *);
     integer ns, nu;
     extern real slamch_(char *);
     real vt[3], safmin, safmax;
-    extern /* Subroutine */ int slarfg_(integer *, real *, real *, integer *, 
+    extern /* Subroutine */ void slarfg_(integer *, real *, real *, integer *, 
 	    real *), slacpy_(char *, integer *, integer *, real *, integer *, 
 	    real *, integer *), slaset_(char *, integer *, integer *, 
 	    real *, real *, real *, integer *);
@@ -858,14 +858,14 @@ f"> */
 
     /* Function Body */
     if (*nshfts < 2) {
-	return 0;
+	return;
     }
 
 /*     ==== If the active block is empty or 1-by-1, then there */
 /*     .    is nothing to do. ==== */
 
     if (*ktop >= *kbot) {
-	return 0;
+	return;
     }
 
 /*     ==== Shuffle shifts into pairs of real shifts and pairs */
@@ -1526,6 +1526,6 @@ L880:
 
 /*     ==== End of SLAQR5 ==== */
 
-    return 0;
+    return;
 } /* slaqr5_ */
 

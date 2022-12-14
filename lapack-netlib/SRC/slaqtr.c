@@ -683,7 +683,7 @@ f"> */
 /* > \ingroup realOTHERauxiliary */
 
 /*  ===================================================================== */
-/* Subroutine */ int slaqtr_(logical *ltran, logical *lreal, integer *n, real 
+/* Subroutine */ void slaqtr_(logical *ltran, logical *lreal, integer *n, real 
 	*t, integer *ldt, real *b, real *w, real *scale, real *x, real *work, 
 	integer *info)
 {
@@ -698,14 +698,14 @@ f"> */
     real xmax, d__[4]	/* was [2][2] */;
     integer i__, j, k;
     real v[4]	/* was [2][2] */, z__;
-    extern /* Subroutine */ int sscal_(integer *, real *, real *, integer *);
+    extern /* Subroutine */ void sscal_(integer *, real *, real *, integer *);
     integer jnext;
     extern real sasum_(integer *, real *, integer *);
     integer j1, j2;
     real sminw;
     integer n1, n2;
     real xnorm;
-    extern /* Subroutine */ int saxpy_(integer *, real *, real *, integer *, 
+    extern /* Subroutine */ void saxpy_(integer *, real *, real *, integer *, 
 	    real *, integer *), slaln2_(logical *, integer *, integer *, real 
 	    *, real *, real *, integer *, real *, real *, real *, integer *, 
 	    real *, real *, real *, integer *, real *, real *, integer *);
@@ -714,7 +714,7 @@ f"> */
 	     real *, integer *, real *);
     real bignum;
     extern integer isamax_(integer *, real *, integer *);
-    extern /* Subroutine */ int sladiv_(real *, real *, real *, real *, real *
+    extern /* Subroutine */ void sladiv_(real *, real *, real *, real *, real *
 	    , real *);
     logical notran;
     real smlnum, rec, eps, tjj, tmp;
@@ -746,7 +746,7 @@ f"> */
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /*     Set constants to control overflow */
@@ -1385,7 +1385,7 @@ L80:
 
     }
 
-    return 0;
+    return;
 
 /*     End of SLAQTR */
 

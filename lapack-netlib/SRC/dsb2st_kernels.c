@@ -680,7 +680,7 @@ kernels.f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int dsb2st_kernels_(char *uplo, logical *wantz, integer *
+/* Subroutine */ void dsb2st_kernels_(char *uplo, logical *wantz, integer *
 	ttype, integer *st, integer *ed, integer *sweep, integer *n, integer *
 	nb, integer *ib, doublereal *a, integer *lda, doublereal *v, 
 	doublereal *tau, integer *ldvt, doublereal *work)
@@ -695,10 +695,10 @@ kernels.f"> */
     extern logical lsame_(char *, char *);
     logical upper;
     integer j1, j2, lm, ln;
-    extern /* Subroutine */ int dlarfg_(integer *, doublereal *, doublereal *,
+    extern /* Subroutine */ void dlarfg_(integer *, doublereal *, doublereal *,
 	     integer *, doublereal *);
     integer ajeter;
-    extern /* Subroutine */ int dlarfx_(char *, integer *, integer *, 
+    extern /* Subroutine */ void dlarfx_(char *, integer *, integer *, 
 	    doublereal *, doublereal *, doublereal *, integer *, doublereal *), dlarfy_(char *, integer *, doublereal *, integer *, 
 	    doublereal *, doublereal *, integer *, doublereal *);
     integer ofdpos, taupos;
@@ -896,7 +896,7 @@ kernels.f"> */
 	}
     }
 
-    return 0;
+    return;
 
 /*     END OF DSB2ST_KERNELS */
 

@@ -773,17 +773,17 @@ ol.f"> */
 /* > \endverbatim */
 
 /*  ===================================================================== */
-/* Subroutine */ int sorhr_col_(integer *m, integer *n, integer *nb, real *a,
+/* Subroutine */ void sorhr_col_(integer *m, integer *n, integer *nb, real *a,
 	 integer *lda, real *t, integer *ldt, real *d__, integer *info)
 {
     /* System generated locals */
     integer a_dim1, a_offset, t_dim1, t_offset, i__1, i__2, i__3, i__4;
 
     /* Local variables */
-    extern /* Subroutine */ int slaorhr_col_getrfnp_(integer *, integer *, 
+    extern /* Subroutine */ void slaorhr_col_getrfnp_(integer *, integer *, 
 	    real *, integer *, real *, integer *);
     integer nplusone, i__, j, iinfo;
-    extern /* Subroutine */ int sscal_(integer *, real *, real *, integer *), 
+    extern /* Subroutine */ void sscal_(integer *, real *, real *, integer *), 
 	    scopy_(integer *, real *, integer *, real *, integer *), strsm_(
 	    char *, char *, char *, char *, integer *, integer *, real *, 
 	    real *, integer *, real *, integer *);
@@ -835,13 +835,13 @@ ol.f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("SORHR_COL", &i__1, (ftnlen)9);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (f2cmin(*m,*n) == 0) {
-	return 0;
+	return;
     }
 
 /*     On input, the M-by-N matrix A contains the orthogonal */
@@ -970,7 +970,7 @@ ol.f"> */
 
     }
 
-    return 0;
+    return;
 
 /*     End of SORHR_COL */
 

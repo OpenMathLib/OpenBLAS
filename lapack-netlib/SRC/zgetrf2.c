@@ -625,7 +625,7 @@ static integer c__1 = 1;
 /* > \ingroup complex16GEcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int zgetrf2_(integer *m, integer *n, doublecomplex *a, 
+/* Subroutine */ void zgetrf2_(integer *m, integer *n, doublecomplex *a, 
 	integer *lda, integer *ipiv, integer *info)
 {
     /* System generated locals */
@@ -636,13 +636,13 @@ static integer c__1 = 1;
     doublecomplex temp;
     integer i__, iinfo;
     doublereal sfmin;
-    extern /* Subroutine */ int zscal_(integer *, doublecomplex *, 
+    extern /* Subroutine */ void zscal_(integer *, doublecomplex *, 
 	    doublecomplex *, integer *), zgemm_(char *, char *, integer *, 
 	    integer *, integer *, doublecomplex *, doublecomplex *, integer *,
 	     doublecomplex *, integer *, doublecomplex *, doublecomplex *, 
 	    integer *);
     integer n1, n2;
-    extern /* Subroutine */ int ztrsm_(char *, char *, char *, char *, 
+    extern /* Subroutine */ void ztrsm_(char *, char *, char *, char *, 
 	    integer *, integer *, doublecomplex *, doublecomplex *, integer *,
 	     doublecomplex *, integer *);
     extern doublereal dlamch_(char *);
@@ -681,13 +681,13 @@ static integer c__1 = 1;
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZGETRF2", &i__1, (ftnlen)7);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*m == 0 || *n == 0) {
-	return 0;
+	return;
     }
     if (*m == 1) {
 
@@ -807,7 +807,7 @@ static integer c__1 = 1;
 	zlaswp_(&n1, &a[a_dim1 + 1], lda, &i__1, &i__2, &ipiv[1], &c__1);
 
     }
-    return 0;
+    return;
 
 /*     End of ZGETRF2 */
 

@@ -850,7 +850,7 @@ f"> */
 /* > Christof Voemel, University of California, Berkeley, USA */
 
 /*  ===================================================================== */
-/* Subroutine */ int cstemr_(char *jobz, char *range, integer *n, real *d__, 
+/* Subroutine */ void cstemr_(char *jobz, char *range, integer *n, real *d__, 
 	real *e, real *vl, real *vu, integer *il, integer *iu, integer *m, 
 	real *w, complex *z__, integer *ldz, integer *nzc, integer *isuppz, 
 	logical *tryrac, real *work, integer *lwork, integer *iwork, integer *
@@ -866,7 +866,7 @@ f"> */
     integer itmp;
     real tnrm;
     integer inde2;
-    extern /* Subroutine */ int slae2_(real *, real *, real *, real *, real *)
+    extern /* Subroutine */ void slae2_(real *, real *, real *, real *, real *)
 	    ;
     integer itmp2;
     real rtol1, rtol2;
@@ -875,16 +875,16 @@ f"> */
     integer indgp;
     extern logical lsame_(char *, char *);
     integer iinfo;
-    extern /* Subroutine */ int sscal_(integer *, real *, real *, integer *);
+    extern /* Subroutine */ void sscal_(integer *, real *, real *, integer *);
     integer iindw, ilast;
-    extern /* Subroutine */ int cswap_(integer *, complex *, integer *, 
+    extern /* Subroutine */ void cswap_(integer *, complex *, integer *, 
 	    complex *, integer *);
     integer lwmin;
-    extern /* Subroutine */ int scopy_(integer *, real *, integer *, real *, 
+    extern /* Subroutine */ void scopy_(integer *, real *, integer *, real *, 
 	    integer *);
     logical wantz;
     real r1, r2;
-    extern /* Subroutine */ int slaev2_(real *, real *, real *, real *, real *
+    extern /* Subroutine */ void slaev2_(real *, real *, real *, real *, real *
 	    , real *, real *);
     integer jj;
     real cs;
@@ -899,7 +899,7 @@ f"> */
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     real bignum;
     integer inderr, iindwk, indgrs, offset;
-    extern /* Subroutine */ int slarrc_(char *, integer *, real *, real *, 
+    extern /* Subroutine */ void slarrc_(char *, integer *, real *, real *, 
 	    real *, real *, real *, integer *, integer *, integer *, integer *
 	    ), clarrv_(integer *, real *, real *, real *, real *, 
 	    real *, integer *, integer *, integer *, integer *, real *, real *
@@ -912,13 +912,13 @@ f"> */
     integer iinspl, indwrk, ifirst, liwmin, nzcmin;
     real pivmin, thresh;
     extern real slanst_(char *, integer *, real *, real *);
-    extern /* Subroutine */ int slarrj_(integer *, real *, real *, integer *, 
+    extern /* Subroutine */ void slarrj_(integer *, real *, real *, integer *, 
 	    integer *, real *, integer *, real *, real *, real *, integer *, 
 	    real *, real *, integer *);
     integer nsplit;
-    extern /* Subroutine */ int slarrr_(integer *, real *, real *, integer *);
+    extern /* Subroutine */ void slarrr_(integer *, real *, real *, integer *);
     real smlnum;
-    extern /* Subroutine */ int slasrt_(char *, integer *, real *, integer *);
+    extern /* Subroutine */ void slasrt_(char *, integer *, real *, integer *);
     logical lquery, zquery;
     integer iil, iiu;
     real eps, tmp;
@@ -1041,16 +1041,16 @@ f"> */
 	i__1 = -(*info);
 	xerbla_("CSTEMR", &i__1, (ftnlen)6);
 
-	return 0;
+	return;
     } else if (lquery || zquery) {
-	return 0;
+	return;
     }
 
 /*     Handle N = 0, 1, and 2 cases immediately */
 
     *m = 0;
     if (*n == 0) {
-	return 0;
+	return;
     }
 
     if (*n == 1) {
@@ -1069,7 +1069,7 @@ f"> */
 	    isuppz[1] = 1;
 	    isuppz[2] = 1;
 	}
-	return 0;
+	return;
     }
 
     if (*n == 2) {
@@ -1224,7 +1224,7 @@ f"> */
 		work[indgrs], &pivmin, &work[indwrk], &iwork[iindwk], &iinfo);
 	if (iinfo != 0) {
 	    *info = abs(iinfo) + 10;
-	    return 0;
+	    return;
 	}
 /*        Note that if RANGE .NE. 'V', SLARRE computes bounds on the desired */
 /*        part of the spectrum. All desired eigenvalues are contained in */
@@ -1241,7 +1241,7 @@ f"> */
 		    iindwk], &iinfo);
 	    if (iinfo != 0) {
 		*info = abs(iinfo) + 20;
-		return 0;
+		return;
 	    }
 	} else {
 /*           SLARRE computes eigenvalues of the (shifted) root representation */
@@ -1310,7 +1310,7 @@ L39:
 	    slasrt_("I", m, &w[1], &iinfo);
 	    if (iinfo != 0) {
 		*info = 3;
-		return 0;
+		return;
 	    }
 	} else {
 	    i__1 = *m - 1;
@@ -1347,7 +1347,7 @@ L39:
 
     work[1] = (real) lwmin;
     iwork[1] = liwmin;
-    return 0;
+    return;
 
 /*     End of CSTEMR */
 

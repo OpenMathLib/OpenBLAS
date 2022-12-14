@@ -669,7 +669,7 @@ f"> */
 /* > \ingroup complex16SYcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int ztrsyl_(char *trana, char *tranb, integer *isgn, integer 
+/* Subroutine */ void ztrsyl_(char *trana, char *tranb, integer *isgn, integer 
 	*m, integer *n, doublecomplex *a, integer *lda, doublecomplex *b, 
 	integer *ldb, doublecomplex *c__, integer *ldc, doublereal *scale, 
 	integer *info)
@@ -691,7 +691,7 @@ f"> */
 	    doublecomplex *, integer *);
     doublecomplex a11;
     doublereal db;
-    extern /* Subroutine */ int dlabad_(doublereal *, doublereal *);
+    extern /* Subroutine */ void dlabad_(doublereal *, doublereal *);
     extern doublereal dlamch_(char *);
     doublecomplex x11;
     doublereal scaloc;
@@ -699,7 +699,7 @@ f"> */
     extern doublereal zlange_(char *, integer *, integer *, doublecomplex *, 
 	    integer *, doublereal *);
     doublereal bignum;
-    extern /* Subroutine */ int zdscal_(integer *, doublereal *, 
+    extern /* Subroutine */ void zdscal_(integer *, doublereal *, 
 	    doublecomplex *, integer *);
     extern /* Double Complex */ VOID zladiv_(doublecomplex *, doublecomplex *,
 	     doublecomplex *);
@@ -756,14 +756,14 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZTRSYL", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     *scale = 1.;
     if (*m == 0 || *n == 0) {
-	return 0;
+	return;
     }
 
 /*     Set constants to control overflow */
@@ -1103,7 +1103,7 @@ f"> */
 
     }
 
-    return 0;
+    return;
 
 /*     End of ZTRSYL */
 

@@ -672,7 +672,7 @@ e driver) */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int sgbsv_(integer *n, integer *kl, integer *ku, integer *
+/* Subroutine */ void sgbsv_(integer *n, integer *kl, integer *ku, integer *
 	nrhs, real *ab, integer *ldab, integer *ipiv, real *b, integer *ldb, 
 	integer *info)
 {
@@ -680,7 +680,8 @@ e driver) */
     integer ab_dim1, ab_offset, b_dim1, b_offset, i__1;
 
     /* Local variables */
-    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen), sgbtrf_(
+    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
+    extern void sgbtrf_(
 	    integer *, integer *, integer *, integer *, real *, integer *, 
 	    integer *, integer *), sgbtrs_(char *, integer *, integer *, 
 	    integer *, integer *, real *, integer *, integer *, real *, 
@@ -725,7 +726,7 @@ e driver) */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("SGBSV ", &i__1, (ftnlen)5);
-	return 0;
+	return;
     }
 
 /*     Compute the LU factorization of the band matrix A. */
@@ -738,7 +739,7 @@ e driver) */
 	sgbtrs_("No transpose", n, kl, ku, nrhs, &ab[ab_offset], ldab, &ipiv[
 		1], &b[b_offset], ldb, info);
     }
-    return 0;
+    return;
 
 /*     End of SGBSV */
 

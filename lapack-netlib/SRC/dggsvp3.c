@@ -785,7 +785,7 @@ static doublereal c_b24 = 1.;
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int dggsvp3_(char *jobu, char *jobv, char *jobq, integer *m, 
+/* Subroutine */ void dggsvp3_(char *jobu, char *jobv, char *jobq, integer *m, 
 	integer *p, integer *n, doublereal *a, integer *lda, doublereal *b, 
 	integer *ldb, doublereal *tola, doublereal *tolb, integer *k, integer 
 	*l, doublereal *u, integer *ldu, doublereal *v, integer *ldv, 
@@ -801,7 +801,7 @@ static doublereal c_b24 = 1.;
     integer i__, j;
     extern logical lsame_(char *, char *);
     logical wantq, wantu, wantv;
-    extern /* Subroutine */ int dgeqp3_(integer *, integer *, doublereal *, 
+    extern /* Subroutine */ void dgeqp3_(integer *, integer *, doublereal *, 
 	    integer *, integer *, doublereal *, doublereal *, integer *, 
 	    integer *), dgeqr2_(integer *, integer *, doublereal *, integer *,
 	     doublereal *, doublereal *, integer *), dgerq2_(integer *, 
@@ -814,8 +814,9 @@ static doublereal c_b24 = 1.;
 	    integer *, doublereal *, integer *), dlacpy_(char 
 	    *, integer *, integer *, doublereal *, integer *, doublereal *, 
 	    integer *), dlaset_(char *, integer *, integer *, 
-	    doublereal *, doublereal *, doublereal *, integer *), 
-	    xerbla_(char *, integer *, ftnlen), dlapmt_(logical *, integer *, 
+	    doublereal *, doublereal *, doublereal *, integer *); 
+    extern int xerbla_(char *, integer *, ftnlen);
+    extern void dlapmt_(logical *, integer *, 
 	    integer *, doublereal *, integer *, integer *);
     logical forwrd;
     integer lwkopt;
@@ -919,10 +920,10 @@ static doublereal c_b24 = 1.;
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DGGSVP3", &i__1, (ftnlen)7);
-	return 0;
+	return;
     }
     if (lquery) {
-	return 0;
+	return;
     }
 
 /*     QR with column pivoting of B: B*P = V*( S11 S12 ) */
@@ -1174,7 +1175,7 @@ static doublereal c_b24 = 1.;
     }
 
     work[1] = (doublereal) lwkopt;
-    return 0;
+    return;
 
 /*     End of DGGSVP3 */
 

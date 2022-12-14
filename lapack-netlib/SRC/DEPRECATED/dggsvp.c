@@ -768,7 +768,7 @@ f"> */
 /* >  a matrix. It may be replaced by a better rank determination strategy. */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int dggsvp_(char *jobu, char *jobv, char *jobq, integer *m, 
+/* Subroutine */ void dggsvp_(char *jobu, char *jobv, char *jobq, integer *m, 
 	integer *p, integer *n, doublereal *a, integer *lda, doublereal *b, 
 	integer *ldb, doublereal *tola, doublereal *tolb, integer *k, integer 
 	*l, doublereal *u, integer *ldu, doublereal *v, integer *ldv, 
@@ -784,7 +784,7 @@ f"> */
     integer i__, j;
     extern logical lsame_(char *, char *);
     logical wantq, wantu, wantv;
-    extern /* Subroutine */ int dgeqr2_(integer *, integer *, doublereal *, 
+    extern /* Subroutine */ void dgeqr2_(integer *, integer *, doublereal *, 
 	    integer *, doublereal *, doublereal *, integer *), dgerq2_(
 	    integer *, integer *, doublereal *, integer *, doublereal *, 
 	    doublereal *, integer *), dorg2r_(integer *, integer *, integer *,
@@ -797,7 +797,9 @@ f"> */
 	    integer *, integer *, doublereal *, doublereal *, integer *), 
 	    dlacpy_(char *, integer *, integer *, doublereal *, integer *, 
 	    doublereal *, integer *), dlaset_(char *, integer *, 
-	    integer *, doublereal *, doublereal *, doublereal *, integer *), xerbla_(char *, integer *), dlapmt_(logical *, 
+	    integer *, doublereal *, doublereal *, doublereal *, integer *);
+    extern int xerbla_(char *, integer *, ftnlen);
+    extern void dlapmt_(logical *, 
 	    integer *, integer *, doublereal *, integer *, integer *);
     logical forwrd;
 
@@ -865,8 +867,8 @@ f"> */
     }
     if (*info != 0) {
 	i__1 = -(*info);
-	xerbla_("DGGSVP", &i__1);
-	return 0;
+	xerbla_("DGGSVP", &i__1, 6);
+	return;
     }
 
 /*     QR with column pivoting of B: B*P = V*( S11 S12 ) */
@@ -1115,7 +1117,7 @@ f"> */
 
     }
 
-    return 0;
+    return;
 
 /*     End of DGGSVP */
 

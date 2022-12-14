@@ -644,7 +644,7 @@ f"> */
 /* > Christof Voemel, University of California, Berkeley, USA */
 
 /*  ===================================================================== */
-/* Subroutine */ int dlarra_(integer *n, doublereal *d__, doublereal *e, 
+/* Subroutine */ void dlarra_(integer *n, doublereal *d__, doublereal *e, 
 	doublereal *e2, doublereal *spltol, doublereal *tnrm, integer *nsplit,
 	 integer *isplit, integer *info)
 {
@@ -679,7 +679,7 @@ f"> */
 /*     Quick return if possible */
 
     if (*n <= 0) {
-	return 0;
+	return;
     }
 
 /*     Compute splitting points */
@@ -714,7 +714,7 @@ f"> */
 	}
     }
     isplit[*nsplit] = *n;
-    return 0;
+    return;
 
 /*     End of DLARRA */
 

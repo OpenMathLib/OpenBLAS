@@ -710,7 +710,7 @@ or GE matrices</b> */
 /* > \ingroup complexGEeigen */
 
 /*  ===================================================================== */
-/* Subroutine */ int cgees_(char *jobvs, char *sort, L_fp select, integer *n, 
+/* Subroutine */ void cgees_(char *jobvs, char *sort, L_fp select, integer *n, 
 	complex *a, integer *lda, integer *sdim, complex *w, complex *vs, 
 	integer *ldvs, complex *work, integer *lwork, real *rwork, logical *
 	bwork, integer *info)
@@ -725,7 +725,7 @@ or GE matrices</b> */
     real s;
     integer icond, ieval;
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int ccopy_(integer *, complex *, integer *, 
+    extern /* Subroutine */ void ccopy_(integer *, complex *, integer *, 
 	    complex *, integer *), cgebak_(char *, char *, integer *, integer 
 	    *, integer *, real *, integer *, complex *, integer *, integer *), cgebal_(char *, integer *, complex *, integer *, 
 	    integer *, integer *, real *, integer *), slabad_(real *, 
@@ -734,18 +734,18 @@ or GE matrices</b> */
     extern real clange_(char *, integer *, integer *, complex *, integer *, 
 	    real *);
     real cscale;
-    extern /* Subroutine */ int cgehrd_(integer *, integer *, integer *, 
+    extern /* Subroutine */ void cgehrd_(integer *, integer *, integer *, 
 	    complex *, integer *, complex *, complex *, integer *, integer *),
 	     clascl_(char *, integer *, integer *, real *, real *, integer *, 
 	    integer *, complex *, integer *, integer *);
     extern real slamch_(char *);
-    extern /* Subroutine */ int clacpy_(char *, integer *, integer *, complex 
-	    *, integer *, complex *, integer *), xerbla_(char *, 
-	    integer *, ftnlen);
+    extern /* Subroutine */ void clacpy_(char *, integer *, integer *, complex 
+	    *, integer *, complex *, integer *);
+    extern int xerbla_(char *, integer *, ftnlen);
     extern integer ilaenv_(integer *, char *, char *, integer *, integer *, 
 	    integer *, integer *, ftnlen, ftnlen);
     real bignum;
-    extern /* Subroutine */ int chseqr_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void chseqr_(char *, char *, integer *, integer *, 
 	    integer *, complex *, integer *, complex *, complex *, integer *, 
 	    complex *, integer *, integer *), cunghr_(integer 
 	    *, integer *, integer *, complex *, integer *, complex *, complex 
@@ -844,16 +844,16 @@ or GE matrices</b> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CGEES ", &i__1, (ftnlen)6);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
 	*sdim = 0;
-	return 0;
+	return;
     }
 
 /*     Get machine constants */
@@ -971,7 +971,7 @@ or GE matrices</b> */
     }
 
     work[1].r = (real) maxwrk, work[1].i = 0.f;
-    return 0;
+    return;
 
 /*     End of CGEES */
 

@@ -708,7 +708,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 /* > \ingroup OTHERauxiliary */
 
 /*  ===================================================================== */
-/* Subroutine */ int slasr_(char *side, char *pivot, char *direct, integer *m,
+/* Subroutine */ void slasr_(char *side, char *pivot, char *direct, integer *m,
 	 integer *n, real *c__, real *s, real *a, integer *lda)
 {
     /* System generated locals */
@@ -760,13 +760,13 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
     }
     if (info != 0) {
 	xerbla_("SLASR ", &info, (ftnlen)5);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*m == 0 || *n == 0) {
-	return 0;
+	return;
     }
     if (lsame_(side, "L")) {
 
@@ -1002,7 +1002,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 	}
     }
 
-    return 0;
+    return;
 
 /*     End of SLASR */
 

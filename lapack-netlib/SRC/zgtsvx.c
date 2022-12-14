@@ -805,7 +805,7 @@ f"> */
 /* > \ingroup complex16GTsolve */
 
 /*  ===================================================================== */
-/* Subroutine */ int zgtsvx_(char *fact, char *trans, integer *n, integer *
+/* Subroutine */ void zgtsvx_(char *fact, char *trans, integer *n, integer *
 	nrhs, doublecomplex *dl, doublecomplex *d__, doublecomplex *du, 
 	doublecomplex *dlf, doublecomplex *df, doublecomplex *duf, 
 	doublecomplex *du2, integer *ipiv, doublecomplex *b, integer *ldb, 
@@ -820,7 +820,7 @@ f"> */
     char norm[1];
     extern logical lsame_(char *, char *);
     doublereal anorm;
-    extern /* Subroutine */ int zcopy_(integer *, doublecomplex *, integer *, 
+    extern /* Subroutine */ void zcopy_(integer *, doublecomplex *, integer *, 
 	    doublecomplex *, integer *);
     extern doublereal dlamch_(char *);
     logical nofact;
@@ -828,7 +828,7 @@ f"> */
     extern doublereal zlangt_(char *, integer *, doublecomplex *, 
 	    doublecomplex *, doublecomplex *);
     logical notran;
-    extern /* Subroutine */ int zlacpy_(char *, integer *, integer *, 
+    extern /* Subroutine */ void zlacpy_(char *, integer *, integer *, 
 	    doublecomplex *, integer *, doublecomplex *, integer *), 
 	    zgtcon_(char *, integer *, doublecomplex *, doublecomplex *, 
 	    doublecomplex *, doublecomplex *, integer *, doublereal *, 
@@ -894,7 +894,7 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZGTSVX", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
     if (nofact) {
@@ -914,7 +914,7 @@ f"> */
 
 	if (*info > 0) {
 	    *rcond = 0.;
-	    return 0;
+	    return;
 	}
     }
 
@@ -951,7 +951,7 @@ f"> */
 	*info = *n + 1;
     }
 
-    return 0;
+    return;
 
 /*     End of ZGTSVX */
 

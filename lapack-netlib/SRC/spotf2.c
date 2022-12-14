@@ -625,7 +625,7 @@ f"> */
 /* > \ingroup realPOcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int spotf2_(char *uplo, integer *n, real *a, integer *lda, 
+/* Subroutine */ void spotf2_(char *uplo, integer *n, real *a, integer *lda, 
 	integer *info)
 {
     /* System generated locals */
@@ -636,7 +636,7 @@ f"> */
     extern real sdot_(integer *, real *, integer *, real *, integer *);
     integer j;
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int sscal_(integer *, real *, real *, integer *), 
+    extern /* Subroutine */ void sscal_(integer *, real *, real *, integer *), 
 	    sgemv_(char *, integer *, integer *, real *, real *, integer *, 
 	    real *, integer *, real *, real *, integer *);
     logical upper;
@@ -674,13 +674,13 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("SPOTF2", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
     if (upper) {
@@ -756,7 +756,7 @@ L30:
     *info = j;
 
 L40:
-    return 0;
+    return;
 
 /*     End of SPOTF2 */
 

@@ -677,7 +677,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int zhbtrd_(char *vect, char *uplo, integer *n, integer *kd, 
+/* Subroutine */ void zhbtrd_(char *vect, char *uplo, integer *n, integer *kd, 
 	doublecomplex *ab, integer *ldab, doublereal *d__, doublereal *e, 
 	doublecomplex *q, integer *ldq, doublecomplex *work, integer *info)
 {
@@ -692,24 +692,25 @@ f"> */
     doublereal abst;
     integer incx, last;
     doublecomplex temp;
-    extern /* Subroutine */ int zrot_(integer *, doublecomplex *, integer *, 
+    extern /* Subroutine */ void zrot_(integer *, doublecomplex *, integer *, 
 	    doublecomplex *, integer *, doublereal *, doublecomplex *);
     integer j1end, j1inc, i__, j, k, l;
     doublecomplex t;
     integer iqend;
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int zscal_(integer *, doublecomplex *, 
+    extern /* Subroutine */ void zscal_(integer *, doublecomplex *, 
 	    doublecomplex *, integer *);
     logical initq, wantq, upper;
     integer i2, j1, j2;
-    extern /* Subroutine */ int zlar2v_(integer *, doublecomplex *, 
+    extern /* Subroutine */ void zlar2v_(integer *, doublecomplex *, 
 	    doublecomplex *, doublecomplex *, integer *, doublereal *, 
 	    doublecomplex *, integer *);
     integer nq, nr, iqaend;
-    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen), zlacgv_(
+    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
+    extern void zlacgv_(
 	    integer *, doublecomplex *, integer *);
     integer kd1;
-    extern /* Subroutine */ int zlaset_(char *, integer *, integer *, 
+    extern /* Subroutine */ void zlaset_(char *, integer *, integer *, 
 	    doublecomplex *, doublecomplex *, doublecomplex *, integer *), zlartg_(doublecomplex *, doublecomplex *, doublereal *, 
 	    doublecomplex *, doublecomplex *), zlargv_(integer *, 
 	    doublecomplex *, integer *, doublecomplex *, integer *, 
@@ -767,13 +768,13 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZHBTRD", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /*     Initialize Q to the unit matrix, if needed */
@@ -1371,7 +1372,7 @@ f"> */
 	}
     }
 
-    return 0;
+    return;
 
 /*     End of ZHBTRD */
 

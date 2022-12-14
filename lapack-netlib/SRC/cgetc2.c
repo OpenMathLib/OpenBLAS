@@ -625,7 +625,7 @@ f"> */
 /* >     Umea University, S-901 87 Umea, Sweden. */
 
 /*  ===================================================================== */
-/* Subroutine */ int cgetc2_(integer *n, complex *a, integer *lda, integer *
+/* Subroutine */ void cgetc2_(integer *n, complex *a, integer *lda, integer *
 	ipiv, integer *jpiv, integer *info)
 {
     /* System generated locals */
@@ -636,7 +636,7 @@ f"> */
     /* Local variables */
     real smin, xmax;
     integer i__, j;
-    extern /* Subroutine */ int cgeru_(integer *, integer *, complex *, 
+    extern /* Subroutine */ void cgeru_(integer *, integer *, complex *, 
 	    complex *, integer *, complex *, integer *, complex *, integer *),
 	     cswap_(integer *, complex *, integer *, complex *, integer *), 
 	    slabad_(real *, real *);
@@ -668,7 +668,7 @@ f"> */
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /*     Set constants to control overflow */
@@ -689,7 +689,7 @@ f"> */
 	    q__1.r = smlnum, q__1.i = 0.f;
 	    a[i__1].r = q__1.r, a[i__1].i = q__1.i;
 	}
-	return 0;
+	return;
     }
 
 /*     Factorize A using complete pivoting. */
@@ -770,7 +770,7 @@ f"> */
     ipiv[*n] = *n;
     jpiv[*n] = *n;
 
-    return 0;
+    return;
 
 /*     End of CGETC2 */
 

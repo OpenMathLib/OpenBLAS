@@ -786,7 +786,7 @@ static integer c_n1 = -1;
 /* > \ingroup complex16GEsing */
 
 /*  ===================================================================== */
-/* Subroutine */ int zgesvdx_(char *jobu, char *jobvt, char *range, integer *
+/* Subroutine */ void zgesvdx_(char *jobu, char *jobvt, char *range, integer *
 	m, integer *n, doublecomplex *a, integer *lda, doublereal *vl, 
 	doublereal *vu, integer *il, integer *iu, integer *ns, doublereal *s, 
 	doublecomplex *u, integer *ldu, doublecomplex *vt, integer *ldvt, 
@@ -815,43 +815,44 @@ static integer c_n1 = -1;
     logical wantu;
     integer id, ie;
     extern doublereal dlamch_(char *);
-    extern /* Subroutine */ int dlascl_(char *, integer *, integer *, 
+    extern /* Subroutine */ void dlascl_(char *, integer *, integer *, 
 	    doublereal *, doublereal *, integer *, integer *, doublereal *, 
 	    integer *, integer *), zgebrd_(integer *, integer *, 
 	    doublecomplex *, integer *, doublereal *, doublereal *, 
 	    doublecomplex *, doublecomplex *, doublecomplex *, integer *, 
-	    integer *), xerbla_(char *, integer *, ftnlen);
+	    integer *);
+    extern int xerbla_(char *, integer *, ftnlen);
     extern integer ilaenv_(integer *, char *, char *, integer *, integer *, 
 	    integer *, integer *, ftnlen, ftnlen);
     extern doublereal zlange_(char *, integer *, integer *, doublecomplex *, 
 	    integer *, doublereal *);
     doublereal bignum, abstol;
-    extern /* Subroutine */ int zgelqf_(integer *, integer *, doublecomplex *,
+    extern /* Subroutine */ void zgelqf_(integer *, integer *, doublecomplex *,
 	     integer *, doublecomplex *, doublecomplex *, integer *, integer *
 	    ), zlascl_(char *, integer *, integer *, doublereal *, doublereal 
 	    *, integer *, integer *, doublecomplex *, integer *, integer *);
     char rngtgk[1];
-    extern /* Subroutine */ int zgeqrf_(integer *, integer *, doublecomplex *,
+    extern /* Subroutine */ void zgeqrf_(integer *, integer *, doublecomplex *,
 	     integer *, doublecomplex *, doublecomplex *, integer *, integer *
 	    );
     integer itempr;
-    extern /* Subroutine */ int zlaset_(char *, integer *, integer *, 
+    extern /* Subroutine */ void zlaset_(char *, integer *, integer *, 
 	    doublecomplex *, doublecomplex *, doublecomplex *, integer *), zlacpy_(char *, integer *, integer *, doublecomplex *, 
 	    integer *, doublecomplex *, integer *);
     integer minwrk, maxwrk;
     doublereal smlnum;
-    extern /* Subroutine */ int zunmbr_(char *, char *, char *, integer *, 
+    extern /* Subroutine */ void zunmbr_(char *, char *, char *, integer *, 
 	    integer *, integer *, doublecomplex *, integer *, doublecomplex *,
 	     doublecomplex *, integer *, doublecomplex *, integer *, integer *
 	    );
     logical lquery, wantvt;
-    extern /* Subroutine */ int zunmlq_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void zunmlq_(char *, char *, integer *, integer *, 
 	    integer *, doublecomplex *, integer *, doublecomplex *, 
 	    doublecomplex *, integer *, doublecomplex *, integer *, integer *), zunmqr_(char *, char *, integer *, integer *, 
 	    integer *, doublecomplex *, integer *, doublecomplex *, 
 	    doublecomplex *, integer *, doublecomplex *, integer *, integer *);
     doublereal dum[1], eps;
-    extern /* Subroutine */ int dbdsvdx_(char *, char *, char *, integer *, 
+    extern /* Subroutine */ void dbdsvdx_(char *, char *, char *, integer *, 
 	    doublereal *, doublereal *, doublereal *, doublereal *, integer *,
 	     integer *, integer *, doublereal *, doublereal *, integer *, 
 	    doublereal *, integer *, integer *);
@@ -1052,15 +1053,15 @@ static integer c_n1 = -1;
     if (*info != 0) {
 	i__2 = -(*info);
 	xerbla_("ZGESVDX", &i__2, (ftnlen)7);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*m == 0 || *n == 0) {
-	return 0;
+	return;
     }
 
 /*     Set singular values indices accord to RANGE='A'. */
@@ -1504,7 +1505,7 @@ static integer c_n1 = -1;
     z__1.r = d__1, z__1.i = 0.;
     work[1].r = z__1.r, work[1].i = z__1.i;
 
-    return 0;
+    return;
 
 /*     End of ZGESVDX */
 

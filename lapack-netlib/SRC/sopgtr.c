@@ -623,7 +623,7 @@ f"> */
 /* > \ingroup realOTHERcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int sopgtr_(char *uplo, integer *n, real *ap, real *tau, 
+/* Subroutine */ void sopgtr_(char *uplo, integer *n, real *ap, real *tau, 
 	real *q, integer *ldq, real *work, integer *info)
 {
     /* System generated locals */
@@ -634,7 +634,7 @@ f"> */
     extern logical lsame_(char *, char *);
     integer iinfo;
     logical upper;
-    extern /* Subroutine */ int sorg2l_(integer *, integer *, integer *, real 
+    extern /* Subroutine */ void sorg2l_(integer *, integer *, integer *, real 
 	    *, integer *, real *, real *, integer *), sorg2r_(integer *, 
 	    integer *, integer *, real *, integer *, real *, real *, integer *
 	    );
@@ -674,13 +674,13 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("SOPGTR", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
     if (upper) {
@@ -757,7 +757,7 @@ f"> */
 		    &work[1], &iinfo);
 	}
     }
-    return 0;
+    return;
 
 /*     End of SOPGTR */
 

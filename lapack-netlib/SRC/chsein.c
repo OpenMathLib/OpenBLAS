@@ -757,7 +757,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int chsein_(char *side, char *eigsrc, char *initv, logical *
+/* Subroutine */ void chsein_(char *side, char *eigsrc, char *initv, logical *
 	select, integer *n, complex *h__, integer *ldh, complex *w, complex *
 	vl, integer *ldvl, complex *vr, integer *ldvr, integer *mm, integer *
 	m, complex *work, real *rwork, integer *ifaill, integer *ifailr, 
@@ -777,7 +777,7 @@ f"> */
     logical leftv, bothv;
     real hnorm;
     integer kl;
-    extern /* Subroutine */ int claein_(logical *, logical *, integer *, 
+    extern /* Subroutine */ void claein_(logical *, logical *, integer *, 
 	    complex *, integer *, complex *, complex *, complex *, integer *, 
 	    real *, real *, real *, integer *);
     integer kr, ks;
@@ -864,13 +864,13 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CHSEIN", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible. */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /*     Set machine-dependent constants. */
@@ -944,7 +944,7 @@ L50:
 			rwork[1]);
 		if (sisnan_(&hnorm)) {
 		    *info = -6;
-		    return 0;
+		    return;
 		} else if (hnorm > 0.f) {
 		    eps3 = hnorm * ulp;
 		} else {
@@ -1021,7 +1021,7 @@ L60:
 /* L100: */
     }
 
-    return 0;
+    return;
 
 /*     End of CHSEIN */
 

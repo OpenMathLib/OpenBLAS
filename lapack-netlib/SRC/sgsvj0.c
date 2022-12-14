@@ -732,7 +732,7 @@ f"> */
 /* > drmac@math.hr. Thank you. */
 
 /*  ===================================================================== */
-/* Subroutine */ int sgsvj0_(char *jobv, integer *m, integer *n, real *a, 
+/* Subroutine */ void sgsvj0_(char *jobv, integer *m, integer *n, real *a, 
 	integer *lda, real *d__, real *sva, integer *mv, real *v, integer *
 	ldv, real *eps, real *sfmin, real *tol, integer *nsweep, real *work, 
 	integer *lwork, integer *info)
@@ -755,22 +755,22 @@ f"> */
     extern logical lsame_(char *, char *);
     real theta, small, fastr[5];
     logical applv, rsvec;
-    extern /* Subroutine */ int scopy_(integer *, real *, integer *, real *, 
+    extern /* Subroutine */ void scopy_(integer *, real *, integer *, real *, 
 	    integer *);
     logical rotok;
-    extern /* Subroutine */ int sswap_(integer *, real *, integer *, real *, 
+    extern /* Subroutine */ void sswap_(integer *, real *, integer *, real *, 
 	    integer *), saxpy_(integer *, real *, real *, integer *, real *, 
 	    integer *), srotm_(integer *, real *, integer *, real *, integer *
 	    , real *);
     real rootsfmin, cs, sn;
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     integer ijblsk, swband;
-    extern /* Subroutine */ int slascl_(char *, integer *, integer *, real *, 
+    extern /* Subroutine */ void slascl_(char *, integer *, integer *, real *, 
 	    real *, integer *, integer *, real *, integer *, integer *);
     extern integer isamax_(integer *, real *, integer *);
     integer blskip;
     real mxaapq, thsign;
-    extern /* Subroutine */ int slassq_(integer *, real *, integer *, real *, 
+    extern /* Subroutine */ void slassq_(integer *, real *, integer *, real *, 
 	    real *);
     real mxsinj;
     integer ir1, emptsw, notrot, iswrot, jbc;
@@ -832,7 +832,7 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("SGSVJ0", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
     if (rsvec) {
@@ -1711,6 +1711,6 @@ L1995:
 /* L5991: */
     }
 
-    return 0;
+    return;
 } /* sgsvj0_ */
 

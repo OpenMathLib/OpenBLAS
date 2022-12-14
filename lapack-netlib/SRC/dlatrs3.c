@@ -743,7 +743,7 @@ static doublereal c_b36 = 1.;
 /*   Angelika Schwarz, Umea University, Sweden. */
 
 /*  ===================================================================== */
-/* Subroutine */ int dlatrs3_(char *uplo, char *trans, char *diag, char *
+/* Subroutine */ void dlatrs3_(char *uplo, char *trans, char *diag, char *
 	normin, integer *n, integer *nrhs, doublereal *a, integer *lda, 
 	doublereal *x, integer *ldx, doublereal *scale, doublereal *cnorm, 
 	doublereal *work, integer *lwork, integer *info)
@@ -759,10 +759,10 @@ static doublereal c_b36 = 1.;
     integer awrk;
     doublereal tmax, xnrm[32];
     integer i__, j, k;
-    extern /* Subroutine */ int dscal_(integer *, doublereal *, doublereal *, 
+    extern /* Subroutine */ void dscal_(integer *, doublereal *, doublereal *, 
 	    integer *);
     doublereal w[64];
-    extern /* Subroutine */ int dgemm_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void dgemm_(char *, char *, integer *, integer *, 
 	    integer *, doublereal *, doublereal *, integer *, doublereal *, 
 	    integer *, doublereal *, doublereal *, integer *);
     extern logical lsame_(char *, char *);
@@ -775,11 +775,11 @@ static doublereal c_b36 = 1.;
     integer lscale;
     doublereal scaloc, scamin;
     extern doublereal dlarmm_(doublereal *, doublereal *, doublereal *);
-    extern /* Subroutine */ int xerbla_(char *, integer *);
+    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen );
     extern integer ilaenv_(integer *, char *, char *, integer *, integer *, 
 	    integer *, integer *, ftnlen, ftnlen);
     doublereal bignum;
-    extern /* Subroutine */ int dlatrs_(char *, char *, char *, char *, 
+    extern /* Subroutine */ void dlatrs_(char *, char *, char *, char *, 
 	    integer *, doublereal *, integer *, doublereal *, doublereal *, 
 	    doublereal *, integer *);
     integer ifirst;
@@ -871,10 +871,10 @@ static doublereal c_b36 = 1.;
     }
     if (*info != 0) {
 	i__1 = -(*info);
-	xerbla_("DLATRS3", &i__1);
-	return 0;
+	xerbla_("DLATRS3", &i__1, 7);
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Initialize scaling factors */
@@ -887,7 +887,7 @@ static doublereal c_b36 = 1.;
 /*     Quick return if possible */
 
     if (f2cmin(*n,*nrhs) == 0) {
-	return 0;
+	return;
     }
 
 /*     Determine machine dependent constant to control overflow. */
@@ -905,7 +905,7 @@ static doublereal c_b36 = 1.;
 	    dlatrs_(uplo, trans, diag, "Y", n, &a[a_offset], lda, &x[k * 
 		    x_dim1 + 1], &scale[k], &cnorm[1], info);
 	}
-	return 0;
+	return;
     }
 
 /*     Compute norms of blocks of A excluding diagonal blocks and find */
@@ -965,7 +965,7 @@ static doublereal c_b36 = 1.;
 	    dlatrs_(uplo, trans, diag, "N", n, &a[a_offset], lda, &x[k * 
 		    x_dim1 + 1], &scale[k], &cnorm[1], info);
 	}
-	return 0;
+	return;
     }
 
 /*     Every right-hand side requires workspace to store NBA local scale */
@@ -1257,7 +1257,7 @@ static doublereal c_b36 = 1.;
 	    }
 	}
     }
-    return 0;
+    return;
 
 /*     End of DLATRS3 */
 

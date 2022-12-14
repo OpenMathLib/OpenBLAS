@@ -583,7 +583,7 @@ f"> */
 /* > \ingroup complexOTHERauxiliary */
 
 /*  ===================================================================== */
-/* Subroutine */ int clacgv_(integer *n, complex *x, integer *incx)
+/* Subroutine */ void clacgv_(integer *n, complex *x, integer *incx)
 {
     /* System generated locals */
     integer i__1, i__2;
@@ -628,7 +628,7 @@ f"> */
 /* L20: */
 	}
     }
-    return 0;
+    return;
 
 /*     End of CLACGV */
 

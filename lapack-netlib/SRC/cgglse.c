@@ -694,7 +694,7 @@ f"> */
 /* > \ingroup complexOTHERsolve */
 
 /*  ===================================================================== */
-/* Subroutine */ int cgglse_(integer *m, integer *n, integer *p, complex *a, 
+/* Subroutine */ void cgglse_(integer *m, integer *n, integer *p, complex *a, 
 	integer *lda, complex *b, integer *ldb, complex *c__, complex *d__, 
 	complex *x, complex *work, integer *lwork, integer *info)
 {
@@ -704,20 +704,21 @@ f"> */
 
     /* Local variables */
     integer lopt;
-    extern /* Subroutine */ int cgemv_(char *, integer *, integer *, complex *
+    extern /* Subroutine */ void cgemv_(char *, integer *, integer *, complex *
 	    , complex *, integer *, complex *, integer *, complex *, complex *
 	    , integer *), ccopy_(integer *, complex *, integer *, 
 	    complex *, integer *), caxpy_(integer *, complex *, complex *, 
 	    integer *, complex *, integer *), ctrmv_(char *, char *, char *, 
 	    integer *, complex *, integer *, complex *, integer *);
     integer nb, mn, nr;
-    extern /* Subroutine */ int cggrqf_(integer *, integer *, integer *, 
+    extern /* Subroutine */ void cggrqf_(integer *, integer *, integer *, 
 	    complex *, integer *, complex *, complex *, integer *, complex *, 
-	    complex *, integer *, integer *), xerbla_(char *, integer *, ftnlen);
+	    complex *, integer *, integer *);
+    extern int xerbla_(char *, integer *, ftnlen);
     extern integer ilaenv_(integer *, char *, char *, integer *, integer *, 
 	    integer *, integer *, ftnlen, ftnlen);
     integer lwkmin, nb1, nb2, nb3, nb4;
-    extern /* Subroutine */ int cunmqr_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void cunmqr_(char *, char *, integer *, integer *, 
 	    integer *, complex *, integer *, complex *, complex *, integer *, 
 	    complex *, integer *, integer *), cunmrq_(char *, 
 	    char *, integer *, integer *, integer *, complex *, integer *, 
@@ -798,15 +799,15 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CGGLSE", &i__1, (ftnlen)6);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /*     Compute the GRQ factorization of matrices B and A: */
@@ -844,7 +845,7 @@ f"> */
 
 	if (*info > 0) {
 	    *info = 1;
-	    return 0;
+	    return;
 	}
 
 /*        Put the solution in X */
@@ -869,7 +870,7 @@ f"> */
 
 	if (*info > 0) {
 	    *info = 2;
-	    return 0;
+	    return;
 	}
 
 /*        Put the solutions in X */
@@ -910,7 +911,7 @@ f"> */
     i__1 = *p + mn + f2cmax(i__2,i__3);
     work[1].r = (real) i__1, work[1].i = 0.f;
 
-    return 0;
+    return;
 
 /*     End of CGGLSE */
 

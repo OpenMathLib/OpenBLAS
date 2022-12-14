@@ -707,7 +707,7 @@ f"> */
 /* > \ingroup complex16GBcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int zgbbrd_(char *vect, integer *m, integer *n, integer *ncc,
+/* Subroutine */ void zgbbrd_(char *vect, integer *m, integer *n, integer *ncc,
 	 integer *kl, integer *ku, doublecomplex *ab, integer *ldab, 
 	doublereal *d__, doublereal *e, doublecomplex *q, integer *ldq, 
 	doublecomplex *pt, integer *ldpt, doublecomplex *c__, integer *ldc, 
@@ -721,13 +721,13 @@ f"> */
     /* Local variables */
     integer inca;
     doublereal abst;
-    extern /* Subroutine */ int zrot_(integer *, doublecomplex *, integer *, 
+    extern /* Subroutine */ void zrot_(integer *, doublecomplex *, integer *, 
 	    doublecomplex *, integer *, doublereal *, doublecomplex *);
     integer i__, j, l;
     doublecomplex t;
     extern logical lsame_(char *, char *);
     logical wantb, wantc;
-    extern /* Subroutine */ int zscal_(integer *, doublecomplex *, 
+    extern /* Subroutine */ void zscal_(integer *, doublecomplex *, 
 	    doublecomplex *, integer *);
     integer minmn;
     logical wantq;
@@ -738,7 +738,7 @@ f"> */
     doublecomplex rs;
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     integer kb1;
-    extern /* Subroutine */ int zlaset_(char *, integer *, integer *, 
+    extern /* Subroutine */ void zlaset_(char *, integer *, integer *, 
 	    doublecomplex *, doublecomplex *, doublecomplex *, integer *), zlartg_(doublecomplex *, doublecomplex *, doublereal *, 
 	    doublecomplex *, doublecomplex *), zlargv_(integer *, 
 	    doublecomplex *, integer *, doublecomplex *, integer *, 
@@ -746,7 +746,7 @@ f"> */
     integer ml0;
     logical wantpt;
     integer mu0;
-    extern /* Subroutine */ int zlartv_(integer *, doublecomplex *, integer *,
+    extern /* Subroutine */ void zlartv_(integer *, doublecomplex *, integer *,
 	     doublecomplex *, integer *, doublereal *, doublecomplex *, 
 	    integer *);
     integer klm, kun, nrt, klu1;
@@ -812,7 +812,7 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZGBBRD", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Initialize Q and P**H to the unit matrix, if needed */
@@ -827,7 +827,7 @@ f"> */
 /*     Quick return if possible. */
 
     if (*m == 0 || *n == 0) {
-	return 0;
+	return;
     }
 
     minmn = f2cmin(*m,*n);
@@ -1236,7 +1236,7 @@ f"> */
 	}
 /* L120: */
     }
-    return 0;
+    return;
 
 /*     End of ZGBBRD */
 

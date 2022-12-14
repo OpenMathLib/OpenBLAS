@@ -655,7 +655,7 @@ f"> */
 /* > \ingroup realOTHERcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int stbcon_(char *norm, char *uplo, char *diag, integer *n, 
+/* Subroutine */ void stbcon_(char *norm, char *uplo, char *diag, integer *n, 
 	integer *kd, real *ab, integer *ldab, real *rcond, real *work, 
 	integer *iwork, integer *info)
 {
@@ -669,10 +669,10 @@ f"> */
     extern logical lsame_(char *, char *);
     integer isave[3];
     real anorm;
-    extern /* Subroutine */ int srscl_(integer *, real *, real *, integer *);
+    extern /* Subroutine */ void srscl_(integer *, real *, real *, integer *);
     logical upper;
     real xnorm;
-    extern /* Subroutine */ int slacn2_(integer *, real *, real *, integer *, 
+    extern /* Subroutine */ void slacn2_(integer *, real *, real *, integer *, 
 	    real *, integer *, integer *);
     integer ix;
     extern real slamch_(char *);
@@ -681,7 +681,7 @@ f"> */
     extern real slantb_(char *, char *, char *, integer *, integer *, real *, 
 	    integer *, real *);
     real ainvnm;
-    extern /* Subroutine */ int slatbs_(char *, char *, char *, char *, 
+    extern /* Subroutine */ void slatbs_(char *, char *, char *, char *, 
 	    integer *, integer *, real *, integer *, real *, real *, real *, 
 	    integer *);
     logical onenrm;
@@ -730,14 +730,14 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("STBCON", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
 	*rcond = 1.f;
-	return 0;
+	return;
     }
 
     *rcond = 0.f;
@@ -802,7 +802,7 @@ L10:
     }
 
 L20:
-    return 0;
+    return;
 
 /*     End of STBCON */
 

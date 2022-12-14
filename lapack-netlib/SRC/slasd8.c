@@ -681,7 +681,7 @@ f"> */
 /* >     California at Berkeley, USA */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int slasd8_(integer *icompq, integer *k, real *d__, real *
+/* Subroutine */ void slasd8_(integer *icompq, integer *k, real *d__, real *
 	z__, real *vf, real *vl, real *difl, real *difr, integer *lddifr, 
 	real *dsigma, real *work, integer *info)
 {
@@ -696,15 +696,15 @@ f"> */
     extern real snrm2_(integer *, real *, integer *);
     integer i__, j;
     real diflj, difrj, dsigj;
-    extern /* Subroutine */ int scopy_(integer *, real *, integer *, real *, 
+    extern /* Subroutine */ void scopy_(integer *, real *, integer *, real *, 
 	    integer *);
     extern real slamc3_(real *, real *);
-    extern /* Subroutine */ int slasd4_(integer *, integer *, real *, real *, 
+    extern /* Subroutine */ void slasd4_(integer *, integer *, real *, real *, 
 	    real *, real *, real *, real *, integer *);
     real dj;
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     real dsigjp;
-    extern /* Subroutine */ int slascl_(char *, integer *, integer *, real *, 
+    extern /* Subroutine */ void slascl_(char *, integer *, integer *, real *, 
 	    real *, integer *, integer *, real *, integer *, integer *), slaset_(char *, integer *, integer *, real *, real *, 
 	    real *, integer *);
     real rho;
@@ -747,7 +747,7 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("SLASD8", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
@@ -759,7 +759,7 @@ f"> */
 	    difl[2] = 1.f;
 	    difr[(difr_dim1 << 1) + 1] = 1.f;
 	}
-	return 0;
+	return;
     }
 
 /*     Modify values DSIGMA(i) to make sure all DSIGMA(i)-DSIGMA(j) can */
@@ -814,7 +814,7 @@ f"> */
 /*        If the root finder fails, report the convergence failure. */
 
 	if (*info != 0) {
-	    return 0;
+	    return;
 	}
 	work[iwk3i + j] = work[iwk3i + j] * work[j] * work[iwk2i + j];
 	difl[j] = -work[j];
@@ -881,7 +881,7 @@ f"> */
     scopy_(k, &work[iwk2], &c__1, &vf[1], &c__1);
     scopy_(k, &work[iwk3], &c__1, &vl[1], &c__1);
 
-    return 0;
+    return;
 
 /*     End of SLASD8 */
 

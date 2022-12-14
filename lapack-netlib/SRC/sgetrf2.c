@@ -625,7 +625,7 @@ static real c_b16 = -1.f;
 /* > \ingroup realGEcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int sgetrf2_(integer *m, integer *n, real *a, integer *lda, 
+/* Subroutine */ void sgetrf2_(integer *m, integer *n, real *a, integer *lda, 
 	integer *ipiv, integer *info)
 {
     /* System generated locals */
@@ -635,12 +635,12 @@ static real c_b16 = -1.f;
     /* Local variables */
     real temp;
     integer i__, iinfo;
-    extern /* Subroutine */ int sscal_(integer *, real *, real *, integer *), 
+    extern /* Subroutine */ void sscal_(integer *, real *, real *, integer *), 
 	    sgemm_(char *, char *, integer *, integer *, integer *, real *, 
 	    real *, integer *, real *, integer *, real *, real *, integer *);
     real sfmin;
     integer n1, n2;
-    extern /* Subroutine */ int strsm_(char *, char *, char *, char *, 
+    extern /* Subroutine */ void strsm_(char *, char *, char *, char *, 
 	    integer *, integer *, real *, real *, integer *, real *, integer *
 	    );
     extern real slamch_(char *);
@@ -679,13 +679,13 @@ static real c_b16 = -1.f;
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("SGETRF2", &i__1, (ftnlen)7);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*m == 0 || *n == 0) {
-	return 0;
+	return;
     }
     if (*m == 1) {
 
@@ -797,7 +797,7 @@ static real c_b16 = -1.f;
 	slaswp_(&n1, &a[a_dim1 + 1], lda, &i__1, &i__2, &ipiv[1], &c__1);
 
     }
-    return 0;
+    return;
 
 /*     End of SGETRF2 */
 

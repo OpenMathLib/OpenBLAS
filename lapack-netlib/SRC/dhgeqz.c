@@ -818,7 +818,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int dhgeqz_(char *job, char *compq, char *compz, integer *n, 
+/* Subroutine */ void dhgeqz_(char *job, char *compq, char *compz, integer *n, 
 	integer *ilo, integer *ihi, doublereal *h__, integer *ldh, doublereal 
 	*t, integer *ldt, doublereal *alphar, doublereal *alphai, doublereal *
 	beta, doublereal *q, integer *ldq, doublereal *z__, integer *ldz, 
@@ -831,7 +831,7 @@ f"> */
 
     /* Local variables */
     doublereal ad11l, ad12l, ad21l, ad22l, ad32l, wabs, atol, btol, temp;
-    extern /* Subroutine */ int drot_(integer *, doublereal *, integer *, 
+    extern /* Subroutine */ void drot_(integer *, doublereal *, integer *, 
 	    doublereal *, integer *, doublereal *, doublereal *), dlag2_(
 	    doublereal *, integer *, doublereal *, integer *, doublereal *, 
 	    doublereal *, doublereal *, doublereal *, doublereal *, 
@@ -846,7 +846,7 @@ f"> */
     doublereal tempi, tempr, s1, s2, t1, u1, u2;
     extern doublereal dlapy2_(doublereal *, doublereal *), dlapy3_(doublereal 
 	    *, doublereal *, doublereal *);
-    extern /* Subroutine */ int dlasv2_(doublereal *, doublereal *, 
+    extern /* Subroutine */ void dlasv2_(doublereal *, doublereal *, 
 	    doublereal *, doublereal *, doublereal *, doublereal *, 
 	    doublereal *, doublereal *, doublereal *);
     logical ilazr2;
@@ -859,15 +859,15 @@ f"> */
     doublereal cz, sl, w12, w21, w22, wi;
     extern doublereal dlamch_(char *);
     doublereal sr;
-    extern /* Subroutine */ int dlarfg_(integer *, doublereal *, doublereal *,
+    extern /* Subroutine */ void dlarfg_(integer *, doublereal *, doublereal *,
 	     integer *, doublereal *);
     doublereal vs, wr;
     extern doublereal dlanhs_(char *, integer *, doublereal *, integer *, 
 	    doublereal *);
-    extern /* Subroutine */ int dlaset_(char *, integer *, integer *, 
+    extern /* Subroutine */ void dlaset_(char *, integer *, integer *, 
 	    doublereal *, doublereal *, doublereal *, integer *);
     doublereal safmin;
-    extern /* Subroutine */ int dlartg_(doublereal *, doublereal *, 
+    extern /* Subroutine */ void dlartg_(doublereal *, doublereal *, 
 	    doublereal *, doublereal *, doublereal *);
     doublereal safmax;
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
@@ -994,16 +994,16 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DHGEQZ", &i__1, (ftnlen)6);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n <= 0) {
 	work[1] = 1.;
-	return 0;
+	return;
     }
 
 /*     Initialize Q and Z */
@@ -2101,7 +2101,7 @@ L380:
 
 L420:
     work[1] = (doublereal) (*n);
-    return 0;
+    return;
 
 /*     End of DHGEQZ */
 

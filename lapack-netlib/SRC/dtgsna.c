@@ -897,7 +897,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int dtgsna_(char *job, char *howmny, logical *select, 
+/* Subroutine */ void dtgsna_(char *job, char *howmny, logical *select, 
 	integer *n, doublereal *a, integer *lda, doublereal *b, integer *ldb, 
 	doublereal *vl, integer *ldvl, doublereal *vr, integer *ldvr, 
 	doublereal *s, doublereal *dif, integer *mm, integer *m, doublereal *
@@ -919,7 +919,7 @@ f"> */
     doublereal lnrm;
     integer ilst;
     doublereal rnrm;
-    extern /* Subroutine */ int dlag2_(doublereal *, integer *, doublereal *, 
+    extern /* Subroutine */ void dlag2_(doublereal *, integer *, doublereal *, 
 	    integer *, doublereal *, doublereal *, doublereal *, doublereal *,
 	     doublereal *, doublereal *);
     extern doublereal dnrm2_(integer *, doublereal *, integer *);
@@ -927,7 +927,7 @@ f"> */
     integer i__, k;
     doublereal scale;
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int dgemv_(char *, integer *, integer *, 
+    extern /* Subroutine */ void dgemv_(char *, integer *, integer *, 
 	    doublereal *, doublereal *, integer *, doublereal *, integer *, 
 	    doublereal *, doublereal *, integer *);
     doublereal uhavi, uhbvi, tmpii, c1, c2;
@@ -943,15 +943,16 @@ f"> */
     doublereal alphai;
     integer iz;
     doublereal alphar;
-    extern /* Subroutine */ int dlacpy_(char *, integer *, integer *, 
-	    doublereal *, integer *, doublereal *, integer *), 
-	    xerbla_(char *, integer *, ftnlen), dtgexc_(logical *, logical *, 
+    extern /* Subroutine */ void dlacpy_(char *, integer *, integer *, 
+	    doublereal *, integer *, doublereal *, integer *); 
+    extern int xerbla_(char *, integer *, ftnlen);
+    extern void dtgexc_(logical *, logical *, 
 	    integer *, doublereal *, integer *, doublereal *, integer *, 
 	    doublereal *, integer *, doublereal *, integer *, integer *, 
 	    integer *, doublereal *, integer *, integer *);
     logical wantbh, wantdf, somcon;
     doublereal alprqt;
-    extern /* Subroutine */ int dtgsyl_(char *, integer *, integer *, integer 
+    extern /* Subroutine */ void dtgsyl_(char *, integer *, integer *, integer 
 	    *, doublereal *, integer *, doublereal *, integer *, doublereal *,
 	     integer *, doublereal *, integer *, doublereal *, integer *, 
 	    doublereal *, integer *, doublereal *, doublereal *, doublereal *,
@@ -1071,15 +1072,15 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DTGSNA", &i__1, (ftnlen)6);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /*     Get machine constants */
@@ -1289,7 +1290,7 @@ L20:
 	;
     }
     work[1] = (doublereal) lwmin;
-    return 0;
+    return;
 
 /*     End of DTGSNA */
 

@@ -661,7 +661,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int cgeqrf_(integer *m, integer *n, complex *a, integer *lda,
+/* Subroutine */ void cgeqrf_(integer *m, integer *n, complex *a, integer *lda,
 	 complex *tau, complex *work, integer *lwork, integer *info)
 {
     /* System generated locals */
@@ -669,15 +669,16 @@ f"> */
 
     /* Local variables */
     integer i__, k, nbmin, iinfo;
-    extern /* Subroutine */ int cgeqr2_(integer *, integer *, complex *, 
+    extern /* Subroutine */ void cgeqr2_(integer *, integer *, complex *, 
 	    integer *, complex *, complex *, integer *);
     integer ib, nb;
-    extern /* Subroutine */ int clarfb_(char *, char *, char *, char *, 
+    extern /* Subroutine */ void clarfb_(char *, char *, char *, char *, 
 	    integer *, integer *, integer *, complex *, integer *, complex *, 
 	    integer *, complex *, integer *, complex *, integer *);
     integer nx;
-    extern /* Subroutine */ int clarft_(char *, char *, integer *, integer *, 
-	    complex *, integer *, complex *, complex *, integer *), xerbla_(char *, integer *, ftnlen);
+    extern /* Subroutine */ void clarft_(char *, char *, integer *, integer *, 
+	    complex *, integer *, complex *, complex *, integer *);
+    extern int xerbla_(char *, integer *, ftnlen);
     extern integer ilaenv_(integer *, char *, char *, integer *, integer *, 
 	    integer *, integer *, ftnlen, ftnlen);
     integer ldwork, lwkopt;
@@ -722,9 +723,9 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CGEQRF", &i__1, (ftnlen)6);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
@@ -732,7 +733,7 @@ f"> */
     k = f2cmin(*m,*n);
     if (k == 0) {
 	work[1].r = 1.f, work[1].i = 0.f;
-	return 0;
+	return;
     }
 
     nbmin = 2;
@@ -817,7 +818,7 @@ f"> */
     }
 
     work[1].r = (real) iws, work[1].i = 0.f;
-    return 0;
+    return;
 
 /*     End of CGEQRF */
 

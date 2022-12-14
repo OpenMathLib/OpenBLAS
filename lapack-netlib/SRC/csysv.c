@@ -683,7 +683,7 @@ static integer c_n1 = -1;
 /* > \ingroup complexSYsolve */
 
 /*  ===================================================================== */
-/* Subroutine */ int csysv_(char *uplo, integer *n, integer *nrhs, complex *a,
+/* Subroutine */ void csysv_(char *uplo, integer *n, integer *nrhs, complex *a,
 	 integer *lda, integer *ipiv, complex *b, integer *ldb, complex *work,
 	 integer *lwork, integer *info)
 {
@@ -692,12 +692,13 @@ static integer c_n1 = -1;
 
     /* Local variables */
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen), csytrf_(
+    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
+    extern void csytrf_(
 	    char *, integer *, complex *, integer *, integer *, complex *, 
 	    integer *, integer *);
     integer lwkopt;
     logical lquery;
-    extern /* Subroutine */ int csytrs_(char *, integer *, integer *, complex 
+    extern /* Subroutine */ void csytrs_(char *, integer *, integer *, complex 
 	    *, integer *, integer *, complex *, integer *, integer *),
 	     csytrs2_(char *, integer *, integer *, complex *, integer *, 
 	    integer *, complex *, integer *, complex *, integer *);
@@ -755,9 +756,9 @@ static integer c_n1 = -1;
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CSYSV ", &i__1, (ftnlen)6);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Compute the factorization A = U*D*U**T or A = L*D*L**T. */
@@ -787,7 +788,7 @@ static integer c_n1 = -1;
 
     work[1].r = (real) lwkopt, work[1].i = 0.f;
 
-    return 0;
+    return;
 
 /*     End of CSYSV */
 

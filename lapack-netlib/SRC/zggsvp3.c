@@ -791,7 +791,7 @@ static integer c_n1 = -1;
 /* > \endverbatim */
 /* > */
 /* ===================================================================== */
-/* Subroutine */ int zggsvp3_(char *jobu, char *jobv, char *jobq, integer *m, 
+/* Subroutine */ void zggsvp3_(char *jobu, char *jobv, char *jobq, integer *m, 
 	integer *p, integer *n, doublecomplex *a, integer *lda, doublecomplex 
 	*b, integer *ldb, doublereal *tola, doublereal *tolb, integer *k, 
 	integer *l, doublecomplex *u, integer *ldu, doublecomplex *v, integer 
@@ -808,7 +808,7 @@ static integer c_n1 = -1;
     integer i__, j;
     extern logical lsame_(char *, char *);
     logical wantq, wantu, wantv;
-    extern /* Subroutine */ int zgeqp3_(integer *, integer *, doublecomplex *,
+    extern /* Subroutine */ void zgeqp3_(integer *, integer *, doublecomplex *,
 	     integer *, integer *, doublecomplex *, doublecomplex *, integer *
 	    , doublereal *, integer *), zgeqr2_(integer *, integer *, 
 	    doublecomplex *, integer *, doublecomplex *, doublecomplex *, 
@@ -820,11 +820,13 @@ static integer c_n1 = -1;
 	    *, doublecomplex *, doublecomplex *, integer *, doublecomplex *, 
 	    integer *), zunmr2_(char *, char *, integer *, 
 	    integer *, integer *, doublecomplex *, integer *, doublecomplex *,
-	     doublecomplex *, integer *, doublecomplex *, integer *), xerbla_(char *, integer *, ftnlen), zlacpy_(char *, 
+	     doublecomplex *, integer *, doublecomplex *, integer *);
+    extern int xerbla_(char *, integer *, ftnlen);
+    extern void zlacpy_(char *, 
 	    integer *, integer *, doublecomplex *, integer *, doublecomplex *,
 	     integer *);
     logical forwrd;
-    extern /* Subroutine */ int zlaset_(char *, integer *, integer *, 
+    extern /* Subroutine */ void zlaset_(char *, integer *, integer *, 
 	    doublecomplex *, doublecomplex *, doublecomplex *, integer *), zlapmt_(logical *, integer *, integer *, doublecomplex *,
 	     integer *, integer *);
     integer lwkopt;
@@ -930,10 +932,10 @@ static integer c_n1 = -1;
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZGGSVP3", &i__1, (ftnlen)7);
-	return 0;
+	return;
     }
     if (lquery) {
-	return 0;
+	return;
     }
 
 /*     QR with column pivoting of B: B*P = V*( S11 S12 ) */
@@ -1189,7 +1191,7 @@ static integer c_n1 = -1;
 
     z__1.r = (doublereal) lwkopt, z__1.i = 0.;
     work[1].r = z__1.r, work[1].i = z__1.i;
-    return 0;
+    return;
 
 /*     End of ZGGSVP3 */
 

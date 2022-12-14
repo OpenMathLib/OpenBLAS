@@ -648,7 +648,7 @@ f"> */
 /* > \ingroup complexOTHERauxiliary */
 
 /*  ===================================================================== */
-/* Subroutine */ int claic1_(integer *job, integer *j, complex *x, real *sest,
+/* Subroutine */ void claic1_(integer *job, integer *j, complex *x, real *sest,
 	 complex *w, complex *gamma, real *sestpr, complex *s, complex *c__)
 {
     /* System generated locals */
@@ -721,7 +721,7 @@ f"> */
 		c__->r = q__1.r, c__->i = q__1.i;
 		*sestpr = s1 * tmp;
 	    }
-	    return 0;
+	    return;
 	} else if (absgam <= eps * absest) {
 	    s->r = 1.f, s->i = 0.f;
 	    c__->r = 0.f, c__->i = 0.f;
@@ -729,7 +729,7 @@ f"> */
 	    s1 = absest / tmp;
 	    s2 = absalp / tmp;
 	    *sestpr = tmp * sqrt(s1 * s1 + s2 * s2);
-	    return 0;
+	    return;
 	} else if (absalp <= eps * absest) {
 	    s1 = absgam;
 	    s2 = absest;
@@ -742,7 +742,7 @@ f"> */
 		c__->r = 1.f, c__->i = 0.f;
 		*sestpr = s1;
 	    }
-	    return 0;
+	    return;
 	} else if (absest <= eps * absalp || absest <= eps * absgam) {
 	    s1 = absgam;
 	    s2 = absalp;
@@ -767,7 +767,7 @@ f"> */
 		q__1.r = q__2.r / scl, q__1.i = q__2.i / scl;
 		c__->r = q__1.r, c__->i = q__1.i;
 	    }
-	    return 0;
+	    return;
 	} else {
 
 /*           normal case */
@@ -816,7 +816,7 @@ f"> */
 	    q__1.r = cosine.r / tmp, q__1.i = cosine.i / tmp;
 	    c__->r = q__1.r, c__->i = q__1.i;
 	    *sestpr = sqrt(t + 1.f) * absest;
-	    return 0;
+	    return;
 	}
 
     } else if (*job == 2) {
@@ -857,12 +857,12 @@ f"> */
 	    s->r = q__1.r, s->i = q__1.i;
 	    q__1.r = c__->r / tmp, q__1.i = c__->i / tmp;
 	    c__->r = q__1.r, c__->i = q__1.i;
-	    return 0;
+	    return;
 	} else if (absgam <= eps * absest) {
 	    s->r = 0.f, s->i = 0.f;
 	    c__->r = 1.f, c__->i = 0.f;
 	    *sestpr = absgam;
-	    return 0;
+	    return;
 	} else if (absalp <= eps * absest) {
 	    s1 = absgam;
 	    s2 = absest;
@@ -875,7 +875,7 @@ f"> */
 		c__->r = 0.f, c__->i = 0.f;
 		*sestpr = s2;
 	    }
-	    return 0;
+	    return;
 	} else if (absest <= eps * absalp || absest <= eps * absgam) {
 	    s1 = absgam;
 	    s2 = absalp;
@@ -906,7 +906,7 @@ f"> */
 		q__1.r = q__2.r / scl, q__1.i = q__2.i / scl;
 		c__->r = q__1.r, c__->i = q__1.i;
 	    }
-	    return 0;
+	    return;
 	} else {
 
 /*           normal case */
@@ -989,11 +989,11 @@ f"> */
 	    s->r = q__1.r, s->i = q__1.i;
 	    q__1.r = cosine.r / tmp, q__1.i = cosine.i / tmp;
 	    c__->r = q__1.r, c__->i = q__1.i;
-	    return 0;
+	    return;
 
 	}
     }
-    return 0;
+    return;
 
 /*     End of CLAIC1 */
 

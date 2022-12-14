@@ -609,7 +609,7 @@ f"> */
 /* > \ingroup complexOTHERauxiliary */
 
 /*  ===================================================================== */
-/* Subroutine */ int clapll_(integer *n, complex *x, integer *incx, complex *
+/* Subroutine */ void clapll_(integer *n, complex *x, integer *incx, complex *
 	y, integer *incy, real *ssmin)
 {
     /* System generated locals */
@@ -618,16 +618,16 @@ f"> */
     complex q__1, q__2, q__3, q__4;
 
     /* Local variables */
-    extern /* Subroutine */ int slas2_(real *, real *, real *, real *, real *)
+    extern /* Subroutine */ void slas2_(real *, real *, real *, real *, real *)
 	    ;
     complex c__;
     extern /* Complex */ VOID cdotc_(complex *, integer *, complex *, integer 
 	    *, complex *, integer *);
-    extern /* Subroutine */ int caxpy_(integer *, complex *, complex *, 
+    extern /* Subroutine */ void caxpy_(integer *, complex *, complex *, 
 	    integer *, complex *, integer *);
     real ssmax;
     complex a11, a12, a22;
-    extern /* Subroutine */ int clarfg_(integer *, complex *, complex *, 
+    extern /* Subroutine */ void clarfg_(integer *, complex *, complex *, 
 	    integer *, complex *);
     complex tau;
 
@@ -650,7 +650,7 @@ f"> */
     /* Function Body */
     if (*n <= 1) {
 	*ssmin = 0.f;
-	return 0;
+	return;
     }
 
 /*     Compute the QR factorization of the N-by-2 matrix ( X Y ) */
@@ -681,7 +681,7 @@ f"> */
     r__3 = c_abs(&a22);
     slas2_(&r__1, &r__2, &r__3, ssmin, &ssmax);
 
-    return 0;
+    return;
 
 /*     End of CLAPLL */
 

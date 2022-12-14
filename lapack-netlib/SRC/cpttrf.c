@@ -601,7 +601,7 @@ f"> */
 /* > \ingroup complexPTcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int cpttrf_(integer *n, real *d__, complex *e, integer *info)
+/* Subroutine */ void cpttrf_(integer *n, real *d__, complex *e, integer *info)
 {
     /* System generated locals */
     integer i__1, i__2;
@@ -635,13 +635,13 @@ f"> */
 	*info = -1;
 	i__1 = -(*info);
 	xerbla_("CPTTRF", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /*     Compute the L*D*L**H (or U**H *D*U) factorization of A. */
@@ -748,7 +748,7 @@ f"> */
     }
 
 L20:
-    return 0;
+    return;
 
 /*     End of CPTTRF */
 

@@ -699,7 +699,7 @@ a_2stage.f"> */
 /* > \ingroup complex16HEsolve */
 
 /*  ===================================================================== */
-/* Subroutine */ int zhesv_aa_2stage_(char *uplo, integer *n, integer *nrhs, 
+/* Subroutine */ void zhesv_aa_2stage_(char *uplo, integer *n, integer *nrhs, 
 	doublecomplex *a, integer *lda, doublecomplex *tb, integer *ltb, 
 	integer *ipiv, integer *ipiv2, doublecomplex *b, integer *ldb, 
 	doublecomplex *work, integer *lwork, integer *info)
@@ -708,7 +708,7 @@ a_2stage.f"> */
     integer a_dim1, a_offset, b_dim1, b_offset, i__1;
 
     /* Local variables */
-    extern /* Subroutine */ int zhetrf_aa_2stage_(char *, integer *, 
+    extern /* Subroutine */ void zhetrf_aa_2stage_(char *, integer *, 
 	    doublecomplex *, integer *, doublecomplex *, integer *, integer *,
 	     integer *, doublecomplex *, integer *, integer *), 
 	    zhetrs_aa_2stage_(char *, integer *, integer *, doublecomplex *, 
@@ -775,9 +775,9 @@ a_2stage.f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZHESV_AA_2STAGE", &i__1, (ftnlen)15);
-	return 0;
+	return;
     } else if (wquery || tquery) {
-	return 0;
+	return;
     }
 
 /*     Compute the factorization A = U**H*T*U or A = L*T*L**H. */
@@ -795,7 +795,7 @@ a_2stage.f"> */
 
     work[1].r = (doublereal) lwkopt, work[1].i = 0.;
 
-    return 0;
+    return;
 
 /*     End of ZHESV_AA_2STAGE */
 

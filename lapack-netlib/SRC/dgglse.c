@@ -695,7 +695,7 @@ f"> */
 /* > \ingroup doubleOTHERsolve */
 
 /*  ===================================================================== */
-/* Subroutine */ int dgglse_(integer *m, integer *n, integer *p, doublereal *
+/* Subroutine */ void dgglse_(integer *m, integer *n, integer *p, doublereal *
 	a, integer *lda, doublereal *b, integer *ldb, doublereal *c__, 
 	doublereal *d__, doublereal *x, doublereal *work, integer *lwork, 
 	integer *info)
@@ -705,7 +705,7 @@ f"> */
 
     /* Local variables */
     integer lopt;
-    extern /* Subroutine */ int dgemv_(char *, integer *, integer *, 
+    extern /* Subroutine */ void dgemv_(char *, integer *, integer *, 
 	    doublereal *, doublereal *, integer *, doublereal *, integer *, 
 	    doublereal *, doublereal *, integer *), dcopy_(integer *, 
 	    doublereal *, integer *, doublereal *, integer *), daxpy_(integer 
@@ -713,14 +713,14 @@ f"> */
 	    , dtrmv_(char *, char *, char *, integer *, doublereal *, integer 
 	    *, doublereal *, integer *);
     integer nb, mn, nr;
-    extern /* Subroutine */ int dggrqf_(integer *, integer *, integer *, 
+    extern /* Subroutine */ void dggrqf_(integer *, integer *, integer *, 
 	    doublereal *, integer *, doublereal *, doublereal *, integer *, 
-	    doublereal *, doublereal *, integer *, integer *), xerbla_(char *,
-	     integer *, ftnlen);
+	    doublereal *, doublereal *, integer *, integer *);
+    extern int xerbla_(char *, integer *, ftnlen);
     extern integer ilaenv_(integer *, char *, char *, integer *, integer *, 
 	    integer *, integer *, ftnlen, ftnlen);
     integer lwkmin, nb1, nb2, nb3, nb4;
-    extern /* Subroutine */ int dormqr_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void dormqr_(char *, char *, integer *, integer *, 
 	    integer *, doublereal *, integer *, doublereal *, doublereal *, 
 	    integer *, doublereal *, integer *, integer *), 
 	    dormrq_(char *, char *, integer *, integer *, integer *, 
@@ -803,15 +803,15 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DGGLSE", &i__1, (ftnlen)6);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /*     Compute the GRQ factorization of matrices B and A: */
@@ -847,7 +847,7 @@ f"> */
 
 	if (*info > 0) {
 	    *info = 1;
-	    return 0;
+	    return;
 	}
 
 /*        Put the solution in X */
@@ -871,7 +871,7 @@ f"> */
 
 	if (*info > 0) {
 	    *info = 2;
-	    return 0;
+	    return;
 	}
 
 /*        Put the solutions in X */
@@ -908,7 +908,7 @@ f"> */
     i__1 = lopt, i__2 = (integer) work[*p + mn + 1];
     work[1] = (doublereal) (*p + mn + f2cmax(i__1,i__2));
 
-    return 0;
+    return;
 
 /*     End of DGGLSE */
 

@@ -631,7 +631,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int dlasq2_(integer *n, doublereal *z__, integer *info)
+/* Subroutine */ void dlasq2_(integer *n, doublereal *z__, integer *info)
 {
     /* System generated locals */
     integer i__1, i__2, i__3;
@@ -652,7 +652,7 @@ f"> */
     integer iinfo;
     doublereal tempe, tempq;
     integer i0, i1, i4, n0, n1, ttype;
-    extern /* Subroutine */ int dlasq3_(integer *, integer *, doublereal *, 
+    extern /* Subroutine */ void dlasq3_(integer *, integer *, doublereal *, 
 	    integer *, doublereal *, doublereal *, doublereal *, doublereal *,
 	     integer *, integer *, integer *, logical *, integer *, 
 	    doublereal *, doublereal *, doublereal *, doublereal *, 
@@ -666,7 +666,7 @@ f"> */
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     extern integer ilaenv_(integer *, char *, char *, integer *, integer *, 
 	    integer *, integer *, ftnlen, ftnlen);
-    extern /* Subroutine */ int dlasrt_(char *, integer *, doublereal *, 
+    extern /* Subroutine */ void dlasrt_(char *, integer *, doublereal *, 
 	    integer *);
     doublereal dn1, dn2, dee, eps, tau, tol;
     integer ipn4;
@@ -700,9 +700,9 @@ f"> */
     if (*n < 0) {
 	*info = -1;
 	xerbla_("DLASQ2", &c__1, (ftnlen)6);
-	return 0;
+	return;
     } else if (*n == 0) {
-	return 0;
+	return;
     } else if (*n == 1) {
 
 /*        1-by-1 case. */
@@ -711,7 +711,7 @@ f"> */
 	    *info = -201;
 	    xerbla_("DLASQ2", &c__2, (ftnlen)6);
 	}
-	return 0;
+	return;
     } else if (*n == 2) {
 
 /*        2-by-2 case. */
@@ -719,15 +719,15 @@ f"> */
 	if (z__[1] < 0.) {
 	    *info = -201;
 	    xerbla_("DLASQ2", &c__2, (ftnlen)6);
-	    return 0;
+	    return;
 	} else if (z__[2] < 0.) {
 	    *info = -202;
 	    xerbla_("DLASQ2", &c__2, (ftnlen)6);
-	    return 0;
+	    return;
 	} else if (z__[3] < 0.) {
 	    *info = -203;
 	    xerbla_("DLASQ2", &c__2, (ftnlen)6);
-	    return 0;
+	    return;
 	} else if (z__[3] > z__[1]) {
 	    d__ = z__[3];
 	    z__[3] = z__[1];
@@ -748,7 +748,7 @@ f"> */
 	}
 	z__[2] = z__[3];
 	z__[6] = z__[2] + z__[1];
-	return 0;
+	return;
     }
 
 /*     Check for negative data and compute sums of q's and e's. */
@@ -765,11 +765,11 @@ f"> */
 	if (z__[k] < 0.) {
 	    *info = -(k + 200);
 	    xerbla_("DLASQ2", &c__2, (ftnlen)6);
-	    return 0;
+	    return;
 	} else if (z__[k + 1] < 0.) {
 	    *info = -(k + 201);
 	    xerbla_("DLASQ2", &c__2, (ftnlen)6);
-	    return 0;
+	    return;
 	}
 	d__ += z__[k];
 	e += z__[k + 1];
@@ -787,7 +787,7 @@ f"> */
     if (z__[(*n << 1) - 1] < 0.) {
 	*info = -((*n << 1) + 199);
 	xerbla_("DLASQ2", &c__2, (ftnlen)6);
-	return 0;
+	return;
     }
     d__ += z__[(*n << 1) - 1];
 /* Computing MAX */
@@ -805,7 +805,7 @@ f"> */
 	}
 	dlasrt_("D", n, &z__[1], &iinfo);
 	z__[(*n << 1) - 1] = d__;
-	return 0;
+	return;
     }
 
     trace = d__ + e;
@@ -814,7 +814,7 @@ f"> */
 
     if (trace == 0.) {
 	z__[(*n << 1) - 1] = 0.;
-	return 0;
+	return;
     }
 
 /*     Check whether the machine is IEEE conformable. */
@@ -950,7 +950,7 @@ f"> */
 	}
 	if (sigma < 0.) {
 	    *info = 1;
-	    return 0;
+	    return;
 	}
 
 /*        Find last unreduced submatrix's top index I0, find QMAX and */
@@ -1137,7 +1137,7 @@ L145:
 		z__[k * 2] = 0.;
 	    }
 	}
-	return 0;
+	return;
 
 /*        end IWHILB */
 
@@ -1148,7 +1148,7 @@ L150:
     }
 
     *info = 3;
-    return 0;
+    return;
 
 /*     end IWHILA */
 
@@ -1181,7 +1181,7 @@ L170:
     i__1 = *n;
     z__[(*n << 1) + 4] = (doublereal) ndiv / (doublereal) (i__1 * i__1);
     z__[(*n << 1) + 5] = nfail * 100. / (doublereal) iter;
-    return 0;
+    return;
 
 /*     End of DLASQ2 */
 

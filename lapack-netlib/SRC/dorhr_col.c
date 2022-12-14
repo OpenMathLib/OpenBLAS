@@ -773,7 +773,7 @@ ol.f"> */
 /* > \endverbatim */
 
 /*  ===================================================================== */
-/* Subroutine */ int dorhr_col_(integer *m, integer *n, integer *nb, 
+/* Subroutine */ void dorhr_col_(integer *m, integer *n, integer *nb, 
 	doublereal *a, integer *lda, doublereal *t, integer *ldt, doublereal *
 	d__, integer *info)
 {
@@ -781,13 +781,13 @@ ol.f"> */
     integer a_dim1, a_offset, t_dim1, t_offset, i__1, i__2, i__3, i__4;
 
     /* Local variables */
-    extern /* Subroutine */ int dlaorhr_col_getrfnp_(integer *, integer *, 
+    extern /* Subroutine */ void dlaorhr_col_getrfnp_(integer *, integer *, 
 	    doublereal *, integer *, doublereal *, integer *);
     integer nplusone, i__, j;
-    extern /* Subroutine */ int dscal_(integer *, doublereal *, doublereal *, 
+    extern /* Subroutine */ void dscal_(integer *, doublereal *, doublereal *, 
 	    integer *);
     integer iinfo;
-    extern /* Subroutine */ int dcopy_(integer *, doublereal *, integer *, 
+    extern /* Subroutine */ void dcopy_(integer *, doublereal *, integer *, 
 	    doublereal *, integer *), dtrsm_(char *, char *, char *, char *, 
 	    integer *, integer *, doublereal *, doublereal *, integer *, 
 	    doublereal *, integer *);
@@ -839,13 +839,13 @@ ol.f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DORHR_COL", &i__1, (ftnlen)9);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (f2cmin(*m,*n) == 0) {
-	return 0;
+	return;
     }
 
 /*     On input, the M-by-N matrix A contains the orthogonal */
@@ -974,7 +974,7 @@ ol.f"> */
 
     }
 
-    return 0;
+    return;
 
 /*     End of DORHR_COL */
 

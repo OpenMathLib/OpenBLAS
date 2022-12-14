@@ -612,7 +612,7 @@ f"> */
 /* > \ingroup complex16OTHERauxiliary */
 
 /*  ===================================================================== */
-/* Subroutine */ int clag2z_(integer *m, integer *n, complex *sa, integer *
+/* Subroutine */ void clag2z_(integer *m, integer *n, complex *sa, integer *
 	ldsa, doublecomplex *a, integer *lda, integer *info)
 {
     /* System generated locals */
@@ -652,7 +652,7 @@ f"> */
 	}
 /* L20: */
     }
-    return 0;
+    return;
 
 /*     End of CLAG2Z */
 

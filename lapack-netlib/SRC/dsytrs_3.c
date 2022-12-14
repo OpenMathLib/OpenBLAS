@@ -677,7 +677,7 @@ static doublereal c_b9 = 1.;
 /* > \endverbatim */
 
 /*  ===================================================================== */
-/* Subroutine */ int dsytrs_3_(char *uplo, integer *n, integer *nrhs, 
+/* Subroutine */ void dsytrs_3_(char *uplo, integer *n, integer *nrhs, 
 	doublereal *a, integer *lda, doublereal *e, integer *ipiv, doublereal 
 	*b, integer *ldb, integer *info)
 {
@@ -688,11 +688,11 @@ static doublereal c_b9 = 1.;
     /* Local variables */
     doublereal akm1k;
     integer i__, j, k;
-    extern /* Subroutine */ int dscal_(integer *, doublereal *, doublereal *, 
+    extern /* Subroutine */ void dscal_(integer *, doublereal *, doublereal *, 
 	    integer *);
     extern logical lsame_(char *, char *);
     doublereal denom;
-    extern /* Subroutine */ int dswap_(integer *, doublereal *, integer *, 
+    extern /* Subroutine */ void dswap_(integer *, doublereal *, integer *, 
 	    doublereal *, integer *), dtrsm_(char *, char *, char *, char *, 
 	    integer *, integer *, doublereal *, doublereal *, integer *, 
 	    doublereal *, integer *);
@@ -739,13 +739,13 @@ static doublereal c_b9 = 1.;
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DSYTRS_3", &i__1, (ftnlen)8);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0 || *nrhs == 0) {
-	return 0;
+	return;
     }
 
     if (upper) {
@@ -897,7 +897,7 @@ static doublereal c_b9 = 1.;
 
     }
 
-    return 0;
+    return;
 
 /*     End of DSYTRS_3 */
 

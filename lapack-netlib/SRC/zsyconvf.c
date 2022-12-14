@@ -718,7 +718,7 @@ f.f"> */
 /* > */
 /* > \endverbatim */
 /*  ===================================================================== */
-/* Subroutine */ int zsyconvf_(char *uplo, char *way, integer *n, 
+/* Subroutine */ void zsyconvf_(char *uplo, char *way, integer *n, 
 	doublecomplex *a, integer *lda, doublecomplex *e, integer *ipiv, 
 	integer *info)
 {
@@ -729,7 +729,7 @@ f.f"> */
     integer i__;
     extern logical lsame_(char *, char *);
     logical upper;
-    extern /* Subroutine */ int zswap_(integer *, doublecomplex *, integer *, 
+    extern /* Subroutine */ void zswap_(integer *, doublecomplex *, integer *, 
 	    doublecomplex *, integer *);
     integer ip;
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
@@ -769,13 +769,13 @@ f.f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZSYCONVF", &i__1, (ftnlen)8);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
     if (upper) {
@@ -1091,7 +1091,7 @@ f.f"> */
 /*        End A is LOWER */
 
     }
-    return 0;
+    return;
 
 /*     End of ZSYCONVF */
 

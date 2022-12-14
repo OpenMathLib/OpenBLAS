@@ -649,7 +649,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int clatrz_(integer *m, integer *n, integer *l, complex *a, 
+/* Subroutine */ void clatrz_(integer *m, integer *n, integer *l, complex *a, 
 	integer *lda, complex *tau, complex *work)
 {
     /* System generated locals */
@@ -659,7 +659,7 @@ f"> */
     /* Local variables */
     integer i__;
     complex alpha;
-    extern /* Subroutine */ int clarz_(char *, integer *, integer *, integer *
+    extern /* Subroutine */ void clarz_(char *, integer *, integer *, integer *
 	    , complex *, integer *, complex *, complex *, integer *, complex *
 	    ), clarfg_(integer *, complex *, complex *, integer *, 
 	    complex *), clacgv_(integer *, complex *, integer *);
@@ -685,7 +685,7 @@ f"> */
 
     /* Function Body */
     if (*m == 0) {
-	return 0;
+	return;
     } else if (*m == *n) {
 	i__1 = *n;
 	for (i__ = 1; i__ <= i__1; ++i__) {
@@ -693,7 +693,7 @@ f"> */
 	    tau[i__2].r = 0.f, tau[i__2].i = 0.f;
 /* L10: */
 	}
-	return 0;
+	return;
     }
 
     for (i__ = *m; i__ >= 1; --i__) {
@@ -725,7 +725,7 @@ f"> */
 /* L20: */
     }
 
-    return 0;
+    return;
 
 /*     End of CLATRZ */
 

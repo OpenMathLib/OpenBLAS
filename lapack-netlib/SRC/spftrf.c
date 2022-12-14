@@ -713,7 +713,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int spftrf_(char *transr, char *uplo, integer *n, real *a, 
+/* Subroutine */ void spftrf_(char *transr, char *uplo, integer *n, real *a, 
 	integer *info)
 {
     /* System generated locals */
@@ -725,11 +725,12 @@ f"> */
     extern logical lsame_(char *, char *);
     logical lower;
     integer n1, n2;
-    extern /* Subroutine */ int strsm_(char *, char *, char *, char *, 
+    extern /* Subroutine */ void strsm_(char *, char *, char *, char *, 
 	    integer *, integer *, real *, real *, integer *, real *, integer *
 	    ), ssyrk_(char *, char *, integer 
 	    *, integer *, real *, real *, integer *, real *, real *, integer *
-	    ), xerbla_(char *, integer *, ftnlen);
+	    );
+    extern int xerbla_(char *, integer *, ftnlen);
     logical nisodd;
     extern /* Subroutine */ int spotrf_(char *, integer *, real *, integer *, 
 	    integer *);
@@ -759,13 +760,13 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("SPFTRF", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /*     If N is odd, set NISODD = .TRUE. */
@@ -806,7 +807,7 @@ f"> */
 
 		spotrf_("L", &n1, a, n, info);
 		if (*info > 0) {
-		    return 0;
+		    return;
 		}
 		strsm_("R", "L", "T", "N", &n2, &n1, &c_b12, a, n, &a[n1], n);
 		ssyrk_("U", "N", &n2, &n1, &c_b15, &a[n1], n, &c_b12, &a[*n], 
@@ -824,7 +825,7 @@ f"> */
 
 		spotrf_("L", &n1, &a[n2], n, info);
 		if (*info > 0) {
-		    return 0;
+		    return;
 		}
 		strsm_("L", "L", "N", "N", &n1, &n2, &c_b12, &a[n2], n, a, n);
 		ssyrk_("U", "T", &n2, &n1, &c_b15, a, n, &c_b12, &a[n1], n);
@@ -847,7 +848,7 @@ f"> */
 
 		spotrf_("U", &n1, a, &n1, info);
 		if (*info > 0) {
-		    return 0;
+		    return;
 		}
 		strsm_("L", "U", "T", "N", &n1, &n2, &c_b12, a, &n1, &a[n1 * 
 			n1], &n1);
@@ -866,7 +867,7 @@ f"> */
 
 		spotrf_("U", &n1, &a[n2 * n2], &n2, info);
 		if (*info > 0) {
-		    return 0;
+		    return;
 		}
 		strsm_("R", "U", "N", "N", &n2, &n1, &c_b12, &a[n2 * n2], &n2,
 			 a, &n2);
@@ -898,7 +899,7 @@ f"> */
 		i__1 = *n + 1;
 		spotrf_("L", &k, &a[1], &i__1, info);
 		if (*info > 0) {
-		    return 0;
+		    return;
 		}
 		i__1 = *n + 1;
 		i__2 = *n + 1;
@@ -923,7 +924,7 @@ f"> */
 		i__1 = *n + 1;
 		spotrf_("L", &k, &a[k + 1], &i__1, info);
 		if (*info > 0) {
-		    return 0;
+		    return;
 		}
 		i__1 = *n + 1;
 		i__2 = *n + 1;
@@ -953,7 +954,7 @@ f"> */
 
 		spotrf_("U", &k, &a[k], &k, info);
 		if (*info > 0) {
-		    return 0;
+		    return;
 		}
 		strsm_("L", "U", "T", "N", &k, &k, &c_b12, &a[k], &n1, &a[k * 
 			(k + 1)], &k);
@@ -972,7 +973,7 @@ f"> */
 
 		spotrf_("U", &k, &a[k * (k + 1)], &k, info);
 		if (*info > 0) {
-		    return 0;
+		    return;
 		}
 		strsm_("R", "U", "N", "N", &k, &k, &c_b12, &a[k * (k + 1)], &
 			k, a, &k);
@@ -988,7 +989,7 @@ f"> */
 
     }
 
-    return 0;
+    return;
 
 /*     End of SPFTRF */
 

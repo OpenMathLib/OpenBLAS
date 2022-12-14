@@ -687,7 +687,7 @@ mv.f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int cla_heamv_(integer *uplo, integer *n, real *alpha, 
+/* Subroutine */ void cla_heamv_(integer *uplo, integer *n, real *alpha, 
 	complex *a, integer *lda, complex *x, integer *incx, real *beta, real 
 	*y, integer *incy)
 {
@@ -740,13 +740,13 @@ mv.f"> */
     }
     if (info != 0) {
 	xerbla_("CHEMV ", &info, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible. */
 
     if (*n == 0 || *alpha == 0.f && *beta == 1.f) {
-	return 0;
+	return;
     }
 
 /*     Set up the start points in  X  and  Y. */
@@ -959,7 +959,7 @@ mv.f"> */
 	}
     }
 
-    return 0;
+    return;
 
 /*     End of CLA_HEAMV */
 

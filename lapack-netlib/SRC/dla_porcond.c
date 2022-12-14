@@ -665,12 +665,12 @@ doublereal dla_porcond_(char *uplo, integer *n, doublereal *a, integer *lda,
     integer kase, i__, j;
     extern logical lsame_(char *, char *);
     integer isave[3];
-    extern /* Subroutine */ int dlacn2_(integer *, doublereal *, doublereal *,
+    extern /* Subroutine */ void dlacn2_(integer *, doublereal *, doublereal *,
 	     integer *, doublereal *, integer *, integer *);
     logical up;
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     doublereal ainvnm;
-    extern /* Subroutine */ int dpotrs_(char *, integer *, integer *, 
+    extern /* Subroutine */ void dpotrs_(char *, integer *, integer *, 
 	    doublereal *, integer *, doublereal *, integer *, integer *);
     doublereal tmp;
 

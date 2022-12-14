@@ -698,7 +698,7 @@ asen_2stage.f"> */
 /* > \ingroup complexSYcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int csysv_aa_2stage_(char *uplo, integer *n, integer *nrhs, 
+/* Subroutine */ void csysv_aa_2stage_(char *uplo, integer *n, integer *nrhs, 
 	complex *a, integer *lda, complex *tb, integer *ltb, integer *ipiv, 
 	integer *ipiv2, complex *b, integer *ldb, complex *work, integer *
 	lwork, integer *info)
@@ -707,7 +707,7 @@ asen_2stage.f"> */
     integer a_dim1, a_offset, b_dim1, b_offset, i__1;
 
     /* Local variables */
-    extern /* Subroutine */ int csytrf_aa_2stage_(char *, integer *, complex 
+    extern /* Subroutine */ void csytrf_aa_2stage_(char *, integer *, complex 
 	    *, integer *, complex *, integer *, integer *, integer *, complex 
 	    *, integer *, integer *), csytrs_aa_2stage_(char *, 
 	    integer *, integer *, complex *, integer *, complex *, integer *, 
@@ -773,9 +773,9 @@ asen_2stage.f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CSYSV_AA_2STAGE", &i__1, (ftnlen)15);
-	return 0;
+	return;
     } else if (wquery || tquery) {
-	return 0;
+	return;
     }
 
 
@@ -794,7 +794,7 @@ asen_2stage.f"> */
 
     work[1].r = (real) lwkopt, work[1].i = 0.f;
 
-    return 0;
+    return;
 
 /*     End of CSYSV_AA_2STAGE */
 

@@ -614,7 +614,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int clartg_(complex *f, complex *g, real *cs, complex *sn, 
+/* Subroutine */ void clartg_(complex *f, complex *g, real *cs, complex *sn, 
 	complex *r__)
 {
     /* System generated locals */
@@ -681,7 +681,7 @@ L10:
 	    *cs = 1.f;
 	    sn->r = 0.f, sn->i = 0.f;
 	    r__->r = f->r, r__->i = f->i;
-	    return 0;
+	    return;
 	}
 L20:
 	--count;
@@ -722,7 +722,7 @@ L20:
 	    r__2 = -r_imag(&gs) / d__;
 	    q__1.r = r__1, q__1.i = r__2;
 	    sn->r = q__1.r, sn->i = q__1.i;
-	    return 0;
+	    return;
 	}
 	r__1 = fs.r;
 	r__2 = r_imag(&fs);
@@ -811,7 +811,7 @@ L20:
 	    }
 	}
     }
-    return 0;
+    return;
 
 /*     End of CLARTG */
 

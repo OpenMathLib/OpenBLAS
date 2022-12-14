@@ -633,7 +633,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int dpptrf_(char *uplo, integer *n, doublereal *ap, integer *
+/* Subroutine */ void dpptrf_(char *uplo, integer *n, doublereal *ap, integer *
 	info)
 {
     /* System generated locals */
@@ -643,14 +643,14 @@ f"> */
     /* Local variables */
     extern doublereal ddot_(integer *, doublereal *, integer *, doublereal *, 
 	    integer *);
-    extern /* Subroutine */ int dspr_(char *, integer *, doublereal *, 
+    extern /* Subroutine */ void dspr_(char *, integer *, doublereal *, 
 	    doublereal *, integer *, doublereal *);
     integer j;
-    extern /* Subroutine */ int dscal_(integer *, doublereal *, doublereal *, 
+    extern /* Subroutine */ void dscal_(integer *, doublereal *, doublereal *, 
 	    integer *);
     extern logical lsame_(char *, char *);
     logical upper;
-    extern /* Subroutine */ int dtpsv_(char *, char *, char *, integer *, 
+    extern /* Subroutine */ void dtpsv_(char *, char *, char *, integer *, 
 	    doublereal *, doublereal *, integer *);
     integer jc, jj;
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
@@ -682,13 +682,13 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DPPTRF", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
     if (upper) {
@@ -759,7 +759,7 @@ L30:
     *info = j;
 
 L40:
-    return 0;
+    return;
 
 /*     End of DPPTRF */
 

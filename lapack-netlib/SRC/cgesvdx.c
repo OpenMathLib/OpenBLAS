@@ -786,7 +786,7 @@ static integer c_n1 = -1;
 /* > \ingroup complexGEsing */
 
 /*  ===================================================================== */
-/* Subroutine */ int cgesvdx_(char *jobu, char *jobvt, char *range, integer *
+/* Subroutine */ void cgesvdx_(char *jobu, char *jobvt, char *range, integer *
 	m, integer *n, complex *a, integer *lda, real *vl, real *vu, integer *
 	il, integer *iu, integer *ns, real *s, complex *u, integer *ldu, 
 	complex *vt, integer *ldvt, complex *work, integer *lwork, real *
@@ -813,43 +813,44 @@ static integer c_n1 = -1;
     integer iltgk, itemp, minmn, itaup, itauq, iutgk, itgkz, mnthr;
     logical wantu;
     integer id, ie;
-    extern /* Subroutine */ int cgebrd_(integer *, integer *, complex *, 
+    extern /* Subroutine */ void cgebrd_(integer *, integer *, complex *, 
 	    integer *, real *, real *, complex *, complex *, complex *, 
 	    integer *, integer *);
     extern real clange_(char *, integer *, integer *, complex *, integer *, 
 	    real *);
-    extern /* Subroutine */ int cgelqf_(integer *, integer *, complex *, 
+    extern /* Subroutine */ void cgelqf_(integer *, integer *, complex *, 
 	    integer *, complex *, complex *, integer *, integer *), clascl_(
 	    char *, integer *, integer *, real *, real *, integer *, integer *
 	    , complex *, integer *, integer *), cgeqrf_(integer *, 
 	    integer *, complex *, integer *, complex *, complex *, integer *, 
 	    integer *);
     extern real slamch_(char *);
-    extern /* Subroutine */ int claset_(char *, integer *, integer *, complex 
+    extern /* Subroutine */ void claset_(char *, integer *, integer *, complex 
 	    *, complex *, complex *, integer *), clacpy_(char *, 
-	    integer *, integer *, complex *, integer *, complex *, integer *), xerbla_(char *, integer *, ftnlen);
+	    integer *, integer *, complex *, integer *, complex *, integer *);
+    extern int xerbla_(char *, integer *, ftnlen);
     extern integer ilaenv_(integer *, char *, char *, integer *, integer *, 
 	    integer *, integer *, ftnlen, ftnlen);
     real bignum;
-    extern /* Subroutine */ int slascl_(char *, integer *, integer *, real *, 
+    extern /* Subroutine */ void slascl_(char *, integer *, integer *, real *, 
 	    real *, integer *, integer *, real *, integer *, integer *);
     real abstol;
-    extern /* Subroutine */ int cunmbr_(char *, char *, char *, integer *, 
+    extern /* Subroutine */ void cunmbr_(char *, char *, char *, integer *, 
 	    integer *, integer *, complex *, integer *, complex *, complex *, 
 	    integer *, complex *, integer *, integer *);
     char rngtgk[1];
-    extern /* Subroutine */ int cunmlq_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void cunmlq_(char *, char *, integer *, integer *, 
 	    integer *, complex *, integer *, complex *, complex *, integer *, 
 	    complex *, integer *, integer *);
     integer itempr;
-    extern /* Subroutine */ int cunmqr_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void cunmqr_(char *, char *, integer *, integer *, 
 	    integer *, complex *, integer *, complex *, complex *, integer *, 
 	    complex *, integer *, integer *);
     integer minwrk, maxwrk;
     real smlnum;
     logical lquery, wantvt;
     real dum[1], eps;
-    extern /* Subroutine */ int sbdsvdx_(char *, char *, char *, integer *, 
+    extern /* Subroutine */ void sbdsvdx_(char *, char *, char *, integer *, 
 	    real *, real *, real *, real *, integer *, integer *, integer *, 
 	    real *, real *, integer *, real *, integer *, integer *);
 
@@ -1049,15 +1050,15 @@ static integer c_n1 = -1;
     if (*info != 0) {
 	i__2 = -(*info);
 	xerbla_("CGESVDX", &i__2, (ftnlen)7);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*m == 0 || *n == 0) {
-	return 0;
+	return;
     }
 
 /*     Set singular values indices accord to RANGE='A'. */
@@ -1501,7 +1502,7 @@ static integer c_n1 = -1;
     q__1.r = r__1, q__1.i = 0.f;
     work[1].r = q__1.r, work[1].i = q__1.i;
 
-    return 0;
+    return;
 
 /*     End of CGESVDX */
 

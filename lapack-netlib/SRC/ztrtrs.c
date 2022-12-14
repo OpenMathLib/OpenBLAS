@@ -652,7 +652,7 @@ f"> */
 /* > \ingroup complex16OTHERcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int ztrtrs_(char *uplo, char *trans, char *diag, integer *n, 
+/* Subroutine */ void ztrtrs_(char *uplo, char *trans, char *diag, integer *n, 
 	integer *nrhs, doublecomplex *a, integer *lda, doublecomplex *b, 
 	integer *ldb, integer *info)
 {
@@ -661,10 +661,10 @@ f"> */
 
     /* Local variables */
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int ztrsm_(char *, char *, char *, char *, 
+    extern /* Subroutine */ void ztrsm_(char *, char *, char *, char *, 
 	    integer *, integer *, doublecomplex *, doublecomplex *, integer *,
-	     doublecomplex *, integer *), 
-	    xerbla_(char *, integer *, ftnlen);
+	     doublecomplex *, integer *); 
+    extern int xerbla_(char *, integer *, ftnlen);
     logical nounit;
 
 
@@ -709,13 +709,13 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZTRTRS", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /*     Check for singularity. */
@@ -725,7 +725,7 @@ f"> */
 	for (*info = 1; *info <= i__1; ++(*info)) {
 	    i__2 = *info + *info * a_dim1;
 	    if (a[i__2].r == 0. && a[i__2].i == 0.) {
-		return 0;
+		return;
 	    }
 /* L10: */
 	}
@@ -737,7 +737,7 @@ f"> */
     ztrsm_("Left", uplo, trans, diag, n, nrhs, &c_b2, &a[a_offset], lda, &b[
 	    b_offset], ldb);
 
-    return 0;
+    return;
 
 /*     End of ZTRTRS */
 

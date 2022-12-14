@@ -635,7 +635,7 @@ f"> */
 /* > \ingroup complexPTcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int cpttrs_(char *uplo, integer *n, integer *nrhs, real *d__,
+/* Subroutine */ void cpttrs_(char *uplo, integer *n, integer *nrhs, real *d__,
 	 complex *e, complex *b, integer *ldb, integer *info)
 {
     /* System generated locals */
@@ -645,7 +645,7 @@ f"> */
     integer j, iuplo;
     logical upper;
     integer jb;
-    extern /* Subroutine */ int cptts2_(integer *, integer *, integer *, real 
+    extern /* Subroutine */ void cptts2_(integer *, integer *, integer *, real 
 	    *, complex *, complex *, integer *);
     integer nb;
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
@@ -687,13 +687,13 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CPTTRS", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0 || *nrhs == 0) {
-	return 0;
+	return;
     }
 
 /*     Determine the number of right-hand sides to solve at a time. */
@@ -729,7 +729,7 @@ f"> */
 	}
     }
 
-    return 0;
+    return;
 
 /*     End of CPTTRS */
 

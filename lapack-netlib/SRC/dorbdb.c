@@ -798,7 +798,7 @@ f"> */
 /* >      Algorithms, 50(1):33-65, 2009. */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int dorbdb_(char *trans, char *signs, integer *m, integer *p,
+/* Subroutine */ void dorbdb_(char *trans, char *signs, integer *m, integer *p,
 	 integer *q, doublereal *x11, integer *ldx11, doublereal *x12, 
 	integer *ldx12, doublereal *x21, integer *ldx21, doublereal *x22, 
 	integer *ldx22, doublereal *theta, doublereal *phi, doublereal *taup1,
@@ -815,16 +815,16 @@ f"> */
     integer lworkmin;
     extern doublereal dnrm2_(integer *, doublereal *, integer *);
     integer lworkopt, i__;
-    extern /* Subroutine */ int dscal_(integer *, doublereal *, doublereal *, 
+    extern /* Subroutine */ void dscal_(integer *, doublereal *, doublereal *, 
 	    integer *), dlarf_(char *, integer *, integer *, doublereal *, 
 	    integer *, doublereal *, doublereal *, integer *, doublereal *);
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int daxpy_(integer *, doublereal *, doublereal *, 
+    extern /* Subroutine */ void daxpy_(integer *, doublereal *, doublereal *, 
 	    integer *, doublereal *, integer *);
     doublereal z1, z2, z3, z4;
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     logical lquery;
-    extern /* Subroutine */ int dlarfgp_(integer *, doublereal *, doublereal *
+    extern /* Subroutine */ void dlarfgp_(integer *, doublereal *, doublereal *
 	    , integer *, doublereal *);
 
 
@@ -929,9 +929,9 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("xORBDB", &i__1, (ftnlen)6);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Handle column-major and row-major separately */
@@ -1386,7 +1386,7 @@ f"> */
 
     }
 
-    return 0;
+    return;
 
 /*     End of DORBDB */
 

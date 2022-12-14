@@ -710,7 +710,7 @@ f"> */
 /* > \endverbatim */
 
 /*  ===================================================================== */
-/* Subroutine */ int dgelst_(char *trans, integer *m, integer *n, integer *
+/* Subroutine */ void dgelst_(char *trans, integer *m, integer *n, integer *
 	nrhs, doublereal *a, integer *lda, doublereal *b, integer *ldb, 
 	doublereal *work, integer *lwork, integer *info)
 {
@@ -726,21 +726,21 @@ f"> */
     integer nbmin;
     doublereal rwork[1];
     integer lwopt;
-    extern /* Subroutine */ int dlabad_(doublereal *, doublereal *);
+    extern /* Subroutine */ void dlabad_(doublereal *, doublereal *);
     integer nb;
     extern doublereal dlamch_(char *), dlange_(char *, integer *, 
 	    integer *, doublereal *, integer *, doublereal *);
     integer mn;
-    extern /* Subroutine */ int dlascl_(char *, integer *, integer *, 
+    extern /* Subroutine */ void dlascl_(char *, integer *, integer *, 
 	    doublereal *, doublereal *, integer *, integer *, doublereal *, 
 	    integer *, integer *), dlaset_(char *, integer *, integer 
-	    *, doublereal *, doublereal *, doublereal *, integer *), 
-	    xerbla_(char *, integer *);
+	    *, doublereal *, doublereal *, doublereal *, integer *); 
+    extern int xerbla_(char *, integer *, ftnlen);
     extern integer ilaenv_(integer *, char *, char *, integer *, integer *, 
 	    integer *, integer *, ftnlen, ftnlen);
     integer scllen;
     doublereal bignum;
-    extern /* Subroutine */ int dgelqt_(integer *, integer *, integer *, 
+    extern /* Subroutine */ void dgelqt_(integer *, integer *, integer *, 
 	    doublereal *, integer *, doublereal *, integer *, doublereal *, 
 	    integer *), dgeqrt_(integer *, integer *, integer *, doublereal *,
 	     integer *, doublereal *, integer *, doublereal *, integer *);
@@ -749,7 +749,8 @@ f"> */
     logical lquery;
     extern /* Subroutine */ int dtrtrs_(char *, char *, char *, integer *, 
 	    integer *, doublereal *, integer *, doublereal *, integer *, 
-	    integer *), dgemlqt_(char *, char *, 
+	    integer *);
+    extern void dgemlqt_(char *, char *, 
 	    integer *, integer *, integer *, integer *, doublereal *, integer 
 	    *, doublereal *, integer *, doublereal *, integer *, doublereal *,
 	     integer *), dgemqrt_(char *, char *, integer *, 
@@ -827,10 +828,10 @@ f"> */
 
     if (*info != 0) {
 	i__1 = -(*info);
-	xerbla_("DGELST ", &i__1);
-	return 0;
+	xerbla_("DGELST ", &i__1, 6);
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
@@ -841,7 +842,7 @@ f"> */
 	i__1 = f2cmax(*m,*n);
 	dlaset_("Full", &i__1, nrhs, &c_b12, &c_b12, &b[b_offset], ldb);
 	work[1] = (doublereal) lwopt;
-	return 0;
+	return;
     }
 
 /*     *GEQRT and *GELQT routines cannot accept NB larger than f2cmin(M,N) */
@@ -900,7 +901,7 @@ f"> */
 	i__1 = f2cmax(*m,*n);
 	dlaset_("Full", &i__1, nrhs, &c_b12, &c_b12, &b[b_offset], ldb);
 	work[1] = (doublereal) lwopt;
-	return 0;
+	return;
     }
 
     brow = *m;
@@ -955,7 +956,7 @@ f"> */
 		    , lda, &b[b_offset], ldb, info);
 
 	    if (*info > 0) {
-		return 0;
+		return;
 	    }
 
 	    scllen = *n;
@@ -974,7 +975,7 @@ f"> */
 		    lda, &b[b_offset], ldb, info);
 
 	    if (*info > 0) {
-		return 0;
+		return;
 	    }
 
 /*           Block 2: Zero out all rows below the N-th row in B: */
@@ -1024,7 +1025,7 @@ f"> */
 		    , lda, &b[b_offset], ldb, info);
 
 	    if (*info > 0) {
-		return 0;
+		return;
 	    }
 
 /*           Block 2: Zero out all rows below the M-th row in B: */
@@ -1068,7 +1069,7 @@ f"> */
 		    lda, &b[b_offset], ldb, info);
 
 	    if (*info > 0) {
-		return 0;
+		return;
 	    }
 
 	    scllen = *m;
@@ -1096,7 +1097,7 @@ f"> */
 
     work[1] = (doublereal) lwopt;
 
-    return 0;
+    return;
 
 /*     End of DGELST */
 

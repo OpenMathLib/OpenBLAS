@@ -685,7 +685,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 /* > \ingroup doubleOTHEReigen */
 
 /*  ===================================================================== */
-/* Subroutine */ int dsbgv_(char *jobz, char *uplo, integer *n, integer *ka, 
+/* Subroutine */ void dsbgv_(char *jobz, char *uplo, integer *n, integer *ka, 
 	integer *kb, doublereal *ab, integer *ldab, doublereal *bb, integer *
 	ldbb, doublereal *w, doublereal *z__, integer *ldz, doublereal *work, 
 	integer *info)
@@ -699,7 +699,8 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
     extern logical lsame_(char *, char *);
     integer iinfo;
     logical upper, wantz;
-    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen), dpbstf_(
+    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
+    extern void dpbstf_(
 	    char *, integer *, integer *, doublereal *, integer *, integer *), dsbtrd_(char *, char *, integer *, integer *, doublereal 
 	    *, integer *, doublereal *, doublereal *, doublereal *, integer *,
 	     doublereal *, integer *), dsbgst_(char *, char *,
@@ -708,7 +709,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 	    integer *), dsterf_(integer *, doublereal *, 
 	    doublereal *, integer *);
     integer indwrk;
-    extern /* Subroutine */ int dsteqr_(char *, integer *, doublereal *, 
+    extern /* Subroutine */ void dsteqr_(char *, integer *, doublereal *, 
 	    doublereal *, doublereal *, integer *, doublereal *, integer *);
 
 
@@ -761,13 +762,13 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DSBGV ", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /*     Form a split Cholesky factorization of B. */
@@ -775,7 +776,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
     dpbstf_(uplo, n, kb, &bb[bb_offset], ldbb, info);
     if (*info != 0) {
 	*info = *n + *info;
-	return 0;
+	return;
     }
 
 /*     Transform problem to standard eigenvalue problem. */
@@ -804,7 +805,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 	dsteqr_(jobz, n, &w[1], &work[inde], &z__[z_offset], ldz, &work[
 		indwrk], info);
     }
-    return 0;
+    return;
 
 /*     End of DSBGV */
 

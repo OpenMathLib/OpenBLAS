@@ -746,7 +746,7 @@ f"> */
 /* > \ingroup doubleOTHEReigen */
 
 /*  ===================================================================== */
-/* Subroutine */ int dspevx_(char *jobz, char *range, char *uplo, integer *n, 
+/* Subroutine */ void dspevx_(char *jobz, char *range, char *uplo, integer *n, 
 	doublereal *ap, doublereal *vl, doublereal *vu, integer *il, integer *
 	iu, doublereal *abstol, integer *m, doublereal *w, doublereal *z__, 
 	integer *ldz, doublereal *work, integer *iwork, integer *ifail, 
@@ -763,13 +763,13 @@ f"> */
     doublereal rmin, rmax;
     logical test;
     integer itmp1, i__, j, indee;
-    extern /* Subroutine */ int dscal_(integer *, doublereal *, doublereal *, 
+    extern /* Subroutine */ void dscal_(integer *, doublereal *, doublereal *, 
 	    integer *);
     doublereal sigma;
     extern logical lsame_(char *, char *);
     integer iinfo;
     char order[1];
-    extern /* Subroutine */ int dcopy_(integer *, doublereal *, integer *, 
+    extern /* Subroutine */ void dcopy_(integer *, doublereal *, integer *, 
 	    doublereal *, integer *), dswap_(integer *, doublereal *, integer 
 	    *, doublereal *, integer *);
     logical wantz;
@@ -784,17 +784,17 @@ f"> */
     extern doublereal dlansp_(char *, char *, integer *, doublereal *, 
 	    doublereal *);
     integer indtau, indisp;
-    extern /* Subroutine */ int dstein_(integer *, doublereal *, doublereal *,
+    extern /* Subroutine */ void dstein_(integer *, doublereal *, doublereal *,
 	     integer *, doublereal *, integer *, integer *, doublereal *, 
 	    integer *, doublereal *, integer *, integer *, integer *), 
 	    dsterf_(integer *, doublereal *, doublereal *, integer *);
     integer indiwo;
-    extern /* Subroutine */ int dstebz_(char *, char *, integer *, doublereal 
+    extern /* Subroutine */ void dstebz_(char *, char *, integer *, doublereal 
 	    *, doublereal *, integer *, integer *, doublereal *, doublereal *,
 	     doublereal *, integer *, integer *, doublereal *, integer *, 
 	    integer *, doublereal *, integer *, integer *);
     integer indwrk;
-    extern /* Subroutine */ int dopgtr_(char *, integer *, doublereal *, 
+    extern /* Subroutine */ void dopgtr_(char *, integer *, doublereal *, 
 	    doublereal *, doublereal *, integer *, doublereal *, integer *), dsptrd_(char *, integer *, doublereal *, doublereal *, 
 	    doublereal *, doublereal *, integer *), dsteqr_(char *, 
 	    integer *, doublereal *, doublereal *, doublereal *, integer *, 
@@ -864,14 +864,14 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DSPEVX", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     *m = 0;
     if (*n == 0) {
-	return 0;
+	return;
     }
 
     if (*n == 1) {
@@ -887,7 +887,7 @@ f"> */
 	if (wantz) {
 	    z__[z_dim1 + 1] = 1.;
 	}
-	return 0;
+	return;
     }
 
 /*     Get machine constants. */
@@ -1053,7 +1053,7 @@ L20:
 	}
     }
 
-    return 0;
+    return;
 
 /*     End of DSPEVX */
 

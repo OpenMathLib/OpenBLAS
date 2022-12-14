@@ -1012,7 +1012,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 /* > \ingroup complex16SYsolve */
 
 /*  ===================================================================== */
-/* Subroutine */ int zsysvxx_(char *fact, char *uplo, integer *n, integer *
+/* Subroutine */ void zsysvxx_(char *fact, char *uplo, integer *n, integer *
 	nrhs, doublecomplex *a, integer *lda, doublecomplex *af, integer *
 	ldaf, integer *ipiv, char *equed, doublereal *s, doublecomplex *b, 
 	integer *ldb, doublecomplex *x, integer *ldx, doublereal *rcond, 
@@ -1028,7 +1028,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
     doublereal d__1, d__2;
 
     /* Local variables */
-    extern /* Subroutine */ int zsyrfsx_(char *, char *, integer *, integer *,
+    extern /* Subroutine */ void zsyrfsx_(char *, char *, integer *, integer *,
 	     doublecomplex *, integer *, doublecomplex *, integer *, integer *
 	    , doublereal *, doublecomplex *, integer *, doublecomplex *, 
 	    integer *, doublereal *, doublereal *, integer *, doublereal *, 
@@ -1047,10 +1047,10 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     doublereal bignum;
     integer infequ;
-    extern /* Subroutine */ int zlacpy_(char *, integer *, integer *, 
+    extern /* Subroutine */ void zlacpy_(char *, integer *, integer *, 
 	    doublecomplex *, integer *, doublecomplex *, integer *);
     doublereal smlnum;
-    extern /* Subroutine */ int zlaqsy_(char *, integer *, doublecomplex *, 
+    extern /* Subroutine */ void zlaqsy_(char *, integer *, doublecomplex *, 
 	    integer *, doublereal *, doublereal *, doublereal *, char *), zsytrf_(char *, integer *, doublecomplex *, 
 	    integer *, integer *, doublecomplex *, integer *, integer *), zlascl2_(integer *, integer *, doublereal *, 
 	    doublecomplex *, integer *), zsytrs_(char *, integer *, integer *,
@@ -1166,7 +1166,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZSYSVXX", &i__1, (ftnlen)7);
-	return 0;
+	return;
     }
 
     if (equil) {
@@ -1211,7 +1211,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 		*rpvgrw = zla_syrpvgrw_(uplo, n, info, &a[a_offset], lda, &
 			af[af_offset], ldaf, &ipiv[1], &rwork[1]);
 	    }
-	    return 0;
+	    return;
 	}
     }
 
@@ -1243,7 +1243,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 	zlascl2_(n, nrhs, &s[1], &x[x_offset], ldx);
     }
 
-    return 0;
+    return;
 
 /*     End of ZSYSVXX */
 

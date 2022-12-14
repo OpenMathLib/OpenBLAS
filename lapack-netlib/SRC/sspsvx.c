@@ -788,7 +788,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int sspsvx_(char *fact, char *uplo, integer *n, integer *
+/* Subroutine */ void sspsvx_(char *fact, char *uplo, integer *n, integer *
 	nrhs, real *ap, real *afp, integer *ipiv, real *b, integer *ldb, real 
 	*x, integer *ldx, real *rcond, real *ferr, real *berr, real *work, 
 	integer *iwork, integer *info)
@@ -799,15 +799,16 @@ f"> */
     /* Local variables */
     extern logical lsame_(char *, char *);
     real anorm;
-    extern /* Subroutine */ int scopy_(integer *, real *, integer *, real *, 
+    extern /* Subroutine */ void scopy_(integer *, real *, integer *, real *, 
 	    integer *);
     extern real slamch_(char *);
     logical nofact;
-    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen), slacpy_(
+    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
+    extern void slacpy_(
 	    char *, integer *, integer *, real *, integer *, real *, integer *
 	    );
     extern real slansp_(char *, char *, integer *, real *, real *);
-    extern /* Subroutine */ int sspcon_(char *, integer *, real *, integer *, 
+    extern /* Subroutine */ void sspcon_(char *, integer *, real *, integer *, 
 	    real *, real *, real *, integer *, integer *), ssprfs_(
 	    char *, integer *, integer *, real *, real *, integer *, real *, 
 	    integer *, real *, integer *, real *, real *, real *, integer *, 
@@ -862,7 +863,7 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("SSPSVX", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
     if (nofact) {
@@ -877,7 +878,7 @@ f"> */
 
 	if (*info > 0) {
 	    *rcond = 0.f;
-	    return 0;
+	    return;
 	}
     }
 
@@ -907,7 +908,7 @@ f"> */
 	*info = *n + 1;
     }
 
-    return 0;
+    return;
 
 /*     End of SSPSVX */
 

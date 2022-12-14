@@ -633,7 +633,7 @@ f"> */
 /* > \ingroup complexGTcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int cgttrf_(integer *n, complex *dl, complex *d__, complex *
+/* Subroutine */ void cgttrf_(integer *n, complex *dl, complex *d__, complex *
 	du, complex *du2, integer *ipiv, integer *info)
 {
     /* System generated locals */
@@ -669,13 +669,13 @@ f"> */
 	*info = -1;
 	i__1 = -(*info);
 	xerbla_("CGTTRF", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /*     Initialize IPIV(i) = i and DU2(i) = 0 */
@@ -811,7 +811,7 @@ f"> */
     }
 L50:
 
-    return 0;
+    return;
 
 /*     End of CGTTRF */
 

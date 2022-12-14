@@ -817,7 +817,7 @@ f"> */
 /* >     Christof Voemel, University of California, Berkeley, USA \n */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int dlarre_(char *range, integer *n, doublereal *vl, 
+/* Subroutine */ void dlarre_(char *range, integer *n, doublereal *vl, 
 	doublereal *vu, integer *il, integer *iu, doublereal *d__, doublereal 
 	*e, doublereal *e2, doublereal *rtol1, doublereal *rtol2, doublereal *
 	spltol, integer *nsplit, integer *isplit, integer *m, doublereal *w, 
@@ -841,11 +841,11 @@ f"> */
     doublereal avgap, sigma;
     extern logical lsame_(char *, char *);
     integer iinfo;
-    extern /* Subroutine */ int dcopy_(integer *, doublereal *, integer *, 
+    extern /* Subroutine */ void dcopy_(integer *, doublereal *, integer *, 
 	    doublereal *, integer *);
     logical norep;
     doublereal s1, s2;
-    extern /* Subroutine */ int dlasq2_(integer *, doublereal *, integer *);
+    extern /* Subroutine */ void dlasq2_(integer *, doublereal *, integer *);
     integer mb;
     doublereal gl;
     integer in;
@@ -856,7 +856,7 @@ f"> */
     logical forceb;
     integer irange;
     doublereal sgndef;
-    extern /* Subroutine */ int dlarra_(integer *, doublereal *, doublereal *,
+    extern /* Subroutine */ void dlarra_(integer *, doublereal *, doublereal *,
 	     doublereal *, doublereal *, doublereal *, integer *, integer *, 
 	    integer *), dlarrb_(integer *, doublereal *, doublereal *, 
 	    integer *, integer *, doublereal *, doublereal *, integer *, 
@@ -866,7 +866,7 @@ f"> */
 	    *, doublereal *, integer *, integer *, integer *, integer *);
     integer wbegin;
     doublereal safmin, spdiam;
-    extern /* Subroutine */ int dlarrd_(char *, char *, integer *, doublereal 
+    extern /* Subroutine */ void dlarrd_(char *, char *, integer *, doublereal 
 	    *, doublereal *, integer *, integer *, doublereal *, doublereal *,
 	     doublereal *, doublereal *, doublereal *, doublereal *, integer *
 	    , integer *, integer *, doublereal *, doublereal *, doublereal *, 
@@ -877,7 +877,7 @@ f"> */
 	    ;
     logical usedqd;
     doublereal clwdth, isleft;
-    extern /* Subroutine */ int dlarnv_(integer *, integer *, integer *, 
+    extern /* Subroutine */ void dlarnv_(integer *, integer *, integer *, 
 	    doublereal *);
     doublereal isrght, bsrtol, dpivot;
     integer cnt;
@@ -915,7 +915,7 @@ f"> */
 /*     Quick return if possible */
 
     if (*n <= 0) {
-	return 0;
+	return;
     }
 
 /*     Decode RANGE */
@@ -950,7 +950,7 @@ f"> */
 	}
 /*        store the shift for the initial RRR, which is zero in this case */
 	e[1] = 0.;
-	return 0;
+	return;
     }
 /*     General case: tridiagonal matrix of order > 1 */
 
@@ -1015,7 +1015,7 @@ f"> */
 		vl, vu, &iblock[1], &indexw[1], &work[1], &iwork[1], &iinfo);
 	if (iinfo != 0) {
 	    *info = -1;
-	    return 0;
+	    return;
 	}
 /*        Make sure that the entries M+1 to N in W, WERR, IBLOCK, INDEXW are 0 */
 	i__1 = *n;
@@ -1124,7 +1124,7 @@ L21:
 		    rtl, &tmp, &tmp1, &iinfo);
 	    if (iinfo != 0) {
 		*info = -1;
-		return 0;
+		return;
 	    }
 /* Computing MAX */
 	    d__2 = gl, d__3 = tmp - tmp1 - eps * 100. * (d__1 = tmp - tmp1, 
@@ -1134,7 +1134,7 @@ L21:
 		    rtl, &tmp, &tmp1, &iinfo);
 	    if (iinfo != 0) {
 		*info = -1;
-		return 0;
+		return;
 	    }
 /* Computing MIN */
 	    d__2 = gu, d__3 = tmp + tmp1 + eps * 100. * (d__1 = tmp + tmp1, 
@@ -1322,7 +1322,7 @@ L21:
 /*        if the program reaches this point, no base representation could be */
 /*        found in MAXTRY iterations. */
 	*info = 2;
-	return 0;
+	return;
 L83:
 /*        At this point, we have found an initial base representation */
 /*        T - SIGMA I = L D L^T with not too much element growth. */
@@ -1388,7 +1388,7 @@ L83:
 		    iinfo);
 	    if (iinfo != 0) {
 		*info = -4;
-		return 0;
+		return;
 	    }
 /*           DLARRB computes all gaps correctly except for the last one */
 /*           Record distance to VU/GU */
@@ -1431,14 +1431,14 @@ L83:
 /*              and should be changed. The index is in IWORK(1) and the */
 /*              gap is in WORK(N+1) */
 		*info = -5;
-		return 0;
+		return;
 	    } else {
 /*              Test that all eigenvalues are positive as expected */
 		i__2 = in;
 		for (i__ = 1; i__ <= i__2; ++i__) {
 		    if (work[i__] < 0.) {
 			*info = -6;
-			return 0;
+			return;
 		    }
 /* L149: */
 		}
@@ -1488,7 +1488,7 @@ L170:
 	;
     }
 
-    return 0;
+    return;
 
 /*     end of DLARRE */
 

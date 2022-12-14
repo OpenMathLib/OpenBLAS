@@ -600,7 +600,7 @@ static integer c__1 = 1;
 /* > \ingroup complex_matgen */
 
 /*  ===================================================================== */
-/* Subroutine */ int clarge_(integer *n, complex *a, integer *lda, integer *
+/* Subroutine */ void clarge_(integer *n, complex *a, integer *lda, integer *
 	iseed, complex *work, integer *info)
 {
     /* System generated locals */
@@ -610,7 +610,7 @@ static integer c__1 = 1;
 
     /* Local variables */
     integer i__;
-    extern /* Subroutine */ int cgerc_(integer *, integer *, complex *, 
+    extern /* Subroutine */ void cgerc_(integer *, integer *, complex *, 
 	    complex *, integer *, complex *, integer *, complex *, integer *),
 	     cscal_(integer *, complex *, complex *, integer *), cgemv_(char *
 	    , integer *, integer *, complex *, complex *, integer *, complex *
@@ -618,7 +618,8 @@ static integer c__1 = 1;
     extern real scnrm2_(integer *, complex *, integer *);
     complex wa, wb;
     real wn;
-    extern /* Subroutine */ int xerbla_(char *, integer *), clarnv_(
+    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
+    extern void clarnv_(
 	    integer *, integer *, integer *, complex *);
     complex tau;
 
@@ -650,8 +651,8 @@ static integer c__1 = 1;
     }
     if (*info < 0) {
 	i__1 = -(*info);
-	xerbla_("CLARGE", &i__1);
-	return 0;
+	xerbla_("CLARGE", &i__1, 6);
+	return;
     }
 
 /*     pre- and post-multiply A by random unitary matrix */
@@ -702,7 +703,7 @@ static integer c__1 = 1;
 		* a_dim1 + 1], lda);
 /* L10: */
     }
-    return 0;
+    return;
 
 /*     End of CLARGE */
 

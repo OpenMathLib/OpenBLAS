@@ -612,7 +612,7 @@ f"> */
 /* > \ingroup complexOTHERauxiliary */
 
 /*  ===================================================================== */
-/* Subroutine */ int clacpy_(char *uplo, integer *m, integer *n, complex *a, 
+/* Subroutine */ void clacpy_(char *uplo, integer *m, integer *n, complex *a, 
 	integer *lda, complex *b, integer *ldb)
 {
     /* System generated locals */
@@ -681,7 +681,7 @@ f"> */
 	}
     }
 
-    return 0;
+    return;
 
 /*     End of CLACPY */
 

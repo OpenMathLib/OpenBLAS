@@ -674,7 +674,7 @@ static integer c__0 = 0;
 /* > \ingroup complexGEsolve */
 
 /*  ===================================================================== */
-/* Subroutine */ int cgetsls_(char *trans, integer *m, integer *n, integer *
+/* Subroutine */ void cgetsls_(char *trans, integer *m, integer *n, integer *
 	nrhs, complex *a, integer *lda, complex *b, integer *ldb, complex *
 	work, integer *lwork, integer *info)
 {
@@ -686,26 +686,27 @@ static integer c__0 = 0;
     real anrm, bnrm;
     logical tran;
     integer brow, tszm, tszo, info2, i__, j, iascl, ibscl;
-    extern /* Subroutine */ int cgelq_(integer *, integer *, complex *, 
+    extern /* Subroutine */ void cgelq_(integer *, integer *, complex *, 
 	    integer *, complex *, integer *, complex *, integer *, integer *);
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int cgeqr_(integer *, integer *, complex *, 
+    extern /* Subroutine */ void cgeqr_(integer *, integer *, complex *, 
 	    integer *, complex *, integer *, complex *, integer *, integer *);
     integer minmn, maxmn;
     complex workq[1];
-    extern /* Subroutine */ int slabad_(real *, real *);
+    extern /* Subroutine */ void slabad_(real *, real *);
     extern real clange_(char *, integer *, integer *, complex *, integer *, 
 	    real *);
-    extern /* Subroutine */ int clascl_(char *, integer *, integer *, real *, 
+    extern /* Subroutine */ void clascl_(char *, integer *, integer *, real *, 
 	    real *, integer *, integer *, complex *, integer *, integer *);
     complex tq[5];
     extern real slamch_(char *);
-    extern /* Subroutine */ int cgemlq_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void cgemlq_(char *, char *, integer *, integer *, 
 	    integer *, complex *, integer *, complex *, integer *, complex *, 
 	    integer *, complex *, integer *, integer *), 
 	    claset_(char *, integer *, integer *, complex *, complex *, 
-	    complex *, integer *), xerbla_(char *, integer *, ftnlen),
-	     cgemqr_(char *, char *, integer *, integer *, integer *, complex 
+	    complex *, integer *);
+    extern int xerbla_(char *, integer *, ftnlen);
+    extern void cgemqr_(char *, char *, integer *, integer *, integer *, complex 
 	    *, integer *, complex *, integer *, complex *, integer *, complex 
 	    *, integer *, integer *);
     integer scllen;
@@ -821,7 +822,7 @@ static integer c__0 = 0;
 	xerbla_("CGETSLS", &i__1, (ftnlen)7);
 	r__1 = (real) wsizeo;
 	work[1].r = r__1, work[1].i = 0.f;
-	return 0;
+	return;
     }
     if (lquery) {
 	if (*lwork == -1) {
@@ -832,7 +833,7 @@ static integer c__0 = 0;
 	    r__1 = (real) wsizem;
 	    work[1].r = r__1, work[1].i = 0.f;
 	}
-	return 0;
+	return;
     }
     if (*lwork < wsizeo) {
 	lw1 = tszm;
@@ -849,7 +850,7 @@ static integer c__0 = 0;
     if (f2cmin(i__1,*nrhs) == 0) {
 	i__1 = f2cmax(*m,*n);
 	claset_("FULL", &i__1, nrhs, &c_b1, &c_b1, &b[b_offset], ldb);
-	return 0;
+	return;
     }
 
 /*     Get machine parameters */
@@ -927,7 +928,7 @@ static integer c__0 = 0;
 	    ctrtrs_("U", "N", "N", n, nrhs, &a[a_offset], lda, &b[b_offset], 
 		    ldb, info);
 	    if (*info > 0) {
-		return 0;
+		return;
 	    }
 	    scllen = *n;
 	} else {
@@ -940,7 +941,7 @@ static integer c__0 = 0;
 		    ldb, info);
 
 	    if (*info > 0) {
-		return 0;
+		return;
 	    }
 
 /*           B(N+1:M,1:NRHS) = CZERO */
@@ -984,7 +985,7 @@ static integer c__0 = 0;
 		    ldb, info);
 
 	    if (*info > 0) {
-		return 0;
+		return;
 	    }
 
 /*           B(M+1:N,1:NRHS) = 0 */
@@ -1026,7 +1027,7 @@ static integer c__0 = 0;
 		    ldb, info);
 
 	    if (*info > 0) {
-		return 0;
+		return;
 	    }
 
 	    scllen = *m;
@@ -1055,7 +1056,7 @@ static integer c__0 = 0;
 L50:
     r__1 = (real) (tszo + lwo);
     work[1].r = r__1, work[1].i = 0.f;
-    return 0;
+    return;
 
 /*     End of ZGETSLS */
 

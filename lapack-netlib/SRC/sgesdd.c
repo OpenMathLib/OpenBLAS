@@ -734,7 +734,7 @@ f"> */
 /* >     California at Berkeley, USA */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int sgesdd_(char *jobz, integer *m, integer *n, real *a, 
+/* Subroutine */ void sgesdd_(char *jobz, integer *m, integer *n, real *a, 
 	integer *lda, real *s, real *u, integer *ldu, real *vt, integer *ldvt,
 	 real *work, integer *lwork, integer *iwork, integer *info)
 {
@@ -752,7 +752,7 @@ f"> */
 	    lwork_sormbr_prt_mn__, lwork_sormbr_prt_nn__, i__;
     extern logical lsame_(char *, char *);
     integer chunk;
-    extern /* Subroutine */ int sgemm_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void sgemm_(char *, char *, integer *, integer *, 
 	    integer *, real *, real *, integer *, real *, integer *, real *, 
 	    real *, integer *);
     integer minmn, wrkbl, itaup, itauq, mnthr;
@@ -760,17 +760,17 @@ f"> */
     integer nwork;
     logical wntqn, wntqo, wntqs;
     integer ie, il, ir, bdspac, iu, lwork_sorgbr_p_mm__;
-    extern /* Subroutine */ int sbdsdc_(char *, char *, integer *, real *, 
+    extern /* Subroutine */ void sbdsdc_(char *, char *, integer *, real *, 
 	    real *, real *, integer *, real *, integer *, real *, integer *, 
 	    real *, integer *, integer *);
     integer lwork_sorgbr_q_nn__;
-    extern /* Subroutine */ int sgebrd_(integer *, integer *, real *, integer 
+    extern /* Subroutine */ void sgebrd_(integer *, integer *, real *, integer 
 	    *, real *, real *, real *, real *, real *, integer *, integer *);
     extern real slamch_(char *), slange_(char *, integer *, integer *,
 	     real *, integer *, real *);
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     real bignum;
-    extern /* Subroutine */ int sgelqf_(integer *, integer *, real *, integer 
+    extern /* Subroutine */ void sgelqf_(integer *, integer *, real *, integer 
 	    *, real *, real *, integer *, integer *), slascl_(char *, integer 
 	    *, integer *, real *, real *, integer *, integer *, real *, 
 	    integer *, integer *), sgeqrf_(integer *, integer *, real 
@@ -778,19 +778,19 @@ f"> */
 	    *, integer *, integer *, real *, integer *, real *, integer *), slaset_(char *, integer *, integer *, real *, real *, 
 	    real *, integer *);
     extern logical sisnan_(real *);
-    extern /* Subroutine */ int sorgbr_(char *, integer *, integer *, integer 
+    extern /* Subroutine */ void sorgbr_(char *, integer *, integer *, integer 
 	    *, real *, integer *, real *, real *, integer *, integer *);
     integer ldwrkl;
-    extern /* Subroutine */ int sormbr_(char *, char *, char *, integer *, 
+    extern /* Subroutine */ void sormbr_(char *, char *, char *, integer *, 
 	    integer *, integer *, real *, integer *, real *, real *, integer *
 	    , real *, integer *, integer *);
     integer ldwrkr, minwrk, ldwrku, maxwrk;
-    extern /* Subroutine */ int sorglq_(integer *, integer *, integer *, real 
+    extern /* Subroutine */ void sorglq_(integer *, integer *, integer *, real 
 	    *, integer *, real *, real *, integer *, integer *);
     integer ldwkvt;
     real smlnum;
     logical wntqas;
-    extern /* Subroutine */ int sorgqr_(integer *, integer *, integer *, real 
+    extern /* Subroutine */ void sorgqr_(integer *, integer *, integer *, real 
 	    *, integer *, real *, real *, integer *, integer *);
     logical lquery;
     integer blk;
@@ -1236,15 +1236,15 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("SGESDD", &i__1, (ftnlen)6);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*m == 0 || *n == 0) {
-	return 0;
+	return;
     }
 
 /*     Get machine constants */
@@ -1258,7 +1258,7 @@ f"> */
     anrm = slange_("M", m, n, &a[a_offset], lda, dum);
     if (sisnan_(&anrm)) {
 	*info = -4;
-	return 0;
+	return;
     }
     iscl = 0;
     if (anrm > 0.f && anrm < smlnum) {
@@ -2281,7 +2281,7 @@ f"> */
 
     work[1] = (real) maxwrk;
 
-    return 0;
+    return;
 
 /*     End of SGESDD */
 

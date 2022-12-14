@@ -672,7 +672,7 @@ f"> */
 /* >  J. Lewis, Boeing Computer Services Company */
 
 /*  ===================================================================== */
-/* Subroutine */ int zhptrf_(char *uplo, integer *n, doublecomplex *ap, 
+/* Subroutine */ void zhptrf_(char *uplo, integer *n, doublecomplex *ap, 
 	integer *ipiv, integer *info)
 {
     /* System generated locals */
@@ -682,7 +682,7 @@ f"> */
 
     /* Local variables */
     integer imax, jmax;
-    extern /* Subroutine */ int zhpr_(char *, integer *, doublereal *, 
+    extern /* Subroutine */ void zhpr_(char *, integer *, doublereal *, 
 	    doublecomplex *, integer *, doublecomplex *);
     doublereal d__;
     integer i__, j, k;
@@ -692,7 +692,7 @@ f"> */
     integer kstep;
     logical upper;
     doublereal r1;
-    extern /* Subroutine */ int zswap_(integer *, doublecomplex *, integer *, 
+    extern /* Subroutine */ void zswap_(integer *, doublecomplex *, integer *, 
 	    doublecomplex *, integer *);
     extern doublereal dlapy2_(doublereal *, doublereal *);
     doublereal d11;
@@ -704,7 +704,8 @@ f"> */
     doublecomplex wk;
     integer kx;
     doublereal tt;
-    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen), zdscal_(
+    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
+    extern void zdscal_(
 	    integer *, doublereal *, doublecomplex *, integer *);
     doublereal colmax;
     extern integer izamax_(integer *, doublecomplex *, integer *);
@@ -739,7 +740,7 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZHPTRF", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Initialize ALPHA for use in choosing pivot block size. */
@@ -1357,7 +1358,7 @@ L60:
     }
 
 L110:
-    return 0;
+    return;
 
 /*     End of ZHPTRF */
 

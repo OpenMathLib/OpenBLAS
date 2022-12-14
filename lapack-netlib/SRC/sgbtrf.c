@@ -660,7 +660,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int sgbtrf_(integer *m, integer *n, integer *kl, integer *ku,
+/* Subroutine */ void sgbtrf_(integer *m, integer *n, integer *kl, integer *ku,
 	 real *ab, integer *ldab, integer *ipiv, integer *info)
 {
     /* System generated locals */
@@ -668,17 +668,17 @@ f"> */
     real r__1;
 
     /* Local variables */
-    extern /* Subroutine */ int sger_(integer *, integer *, real *, real *, 
+    extern /* Subroutine */ void sger_(integer *, integer *, real *, real *, 
 	    integer *, real *, integer *, real *, integer *);
     real temp;
     integer i__, j;
-    extern /* Subroutine */ int sscal_(integer *, real *, real *, integer *), 
+    extern /* Subroutine */ void sscal_(integer *, real *, real *, integer *), 
 	    sgemm_(char *, char *, integer *, integer *, integer *, real *, 
 	    real *, integer *, real *, integer *, real *, real *, integer *);
     real work13[4160]	/* was [65][64] */, work31[4160]	/* was [65][
 	    64] */;
     integer i2, i3, j2, j3, k2;
-    extern /* Subroutine */ int scopy_(integer *, real *, integer *, real *, 
+    extern /* Subroutine */ void scopy_(integer *, real *, integer *, real *, 
 	    integer *), sswap_(integer *, real *, integer *, real *, integer *
 	    ), strsm_(char *, char *, char *, char *, integer *, integer *, 
 	    real *, real *, integer *, real *, integer *), sgbtf2_(integer *, integer *, integer *, integer 
@@ -730,13 +730,13 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("SGBTRF", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*m == 0 || *n == 0) {
-	return 0;
+	return;
     }
 
 /*     Determine the block size for this environment */
@@ -1131,7 +1131,7 @@ f"> */
 	}
     }
 
-    return 0;
+    return;
 
 /*     End of SGBTRF */
 

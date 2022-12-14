@@ -643,7 +643,7 @@ presentation of Q. */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int zgeqrt2_(integer *m, integer *n, doublecomplex *a, 
+/* Subroutine */ void zgeqrt2_(integer *m, integer *n, doublecomplex *a, 
 	integer *lda, doublecomplex *t, integer *ldt, integer *info)
 {
     /* System generated locals */
@@ -653,14 +653,15 @@ presentation of Q. */
     /* Local variables */
     integer i__, k;
     doublecomplex alpha;
-    extern /* Subroutine */ int zgerc_(integer *, integer *, doublecomplex *, 
+    extern /* Subroutine */ void zgerc_(integer *, integer *, doublecomplex *, 
 	    doublecomplex *, integer *, doublecomplex *, integer *, 
 	    doublecomplex *, integer *), zgemv_(char *, integer *, integer *, 
 	    doublecomplex *, doublecomplex *, integer *, doublecomplex *, 
 	    integer *, doublecomplex *, doublecomplex *, integer *), 
 	    ztrmv_(char *, char *, char *, integer *, doublecomplex *, 
-	    integer *, doublecomplex *, integer *), 
-	    xerbla_(char *, integer *, ftnlen), zlarfg_(integer *, 
+	    integer *, doublecomplex *, integer *); 
+    extern int xerbla_(char *, integer *, ftnlen);
+    extern void zlarfg_(integer *, 
 	    doublecomplex *, doublecomplex *, integer *, doublecomplex *);
     doublecomplex aii;
 
@@ -698,7 +699,7 @@ presentation of Q. */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZGEQRT2", &i__1, (ftnlen)7);
-	return 0;
+	return;
     }
 
     k = f2cmin(*m,*n);
@@ -780,6 +781,6 @@ presentation of Q. */
 
 /*     End of ZGEQRT2 */
 
-    return 0;
+    return;
 } /* zgeqrt2_ */
 

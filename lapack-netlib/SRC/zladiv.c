@@ -584,7 +584,7 @@ f"> */
 
     /* Local variables */
     doublereal zi;
-    extern /* Subroutine */ int dladiv_(doublereal *, doublereal *, 
+    extern /* Subroutine */ void dladiv_(doublereal *, doublereal *, 
 	    doublereal *, doublereal *, doublereal *, doublereal *);
     doublereal zr;
 

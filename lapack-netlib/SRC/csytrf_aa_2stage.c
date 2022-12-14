@@ -675,7 +675,7 @@ aa_2stage.f"> */
 /* > \ingroup complexSYcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int csytrf_aa_2stage_(char *uplo, integer *n, complex *a, 
+/* Subroutine */ void csytrf_aa_2stage_(char *uplo, integer *n, complex *a, 
 	integer *lda, complex *tb, integer *ltb, integer *ipiv, integer *
 	ipiv2, complex *work, integer *lwork, integer *info)
 {
@@ -685,12 +685,12 @@ aa_2stage.f"> */
 
     /* Local variables */
     integer ldtb, i__, j, k;
-    extern /* Subroutine */ int cgemm_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void cgemm_(char *, char *, integer *, integer *, 
 	    integer *, complex *, complex *, integer *, complex *, integer *, 
 	    complex *, complex *, integer *);
     extern logical lsame_(char *, char *);
     integer iinfo;
-    extern /* Subroutine */ int ccopy_(integer *, complex *, integer *, 
+    extern /* Subroutine */ void ccopy_(integer *, complex *, integer *, 
 	    complex *, integer *), cswap_(integer *, complex *, integer *, 
 	    complex *, integer *), ctrsm_(char *, char *, char *, char *, 
 	    integer *, integer *, complex *, complex *, integer *, complex *, 
@@ -698,13 +698,14 @@ aa_2stage.f"> */
     integer i1;
     logical upper;
     integer i2, jb, kb, nb, td, nt;
-    extern /* Subroutine */ int cgbtrf_(integer *, integer *, integer *, 
-	    integer *, complex *, integer *, integer *, integer *), cgetrf_(
-	    integer *, integer *, complex *, integer *, integer *, integer *),
-	     clacpy_(char *, integer *, integer *, complex *, integer *, 
+    extern /* Subroutine */ void cgbtrf_(integer *, integer *, integer *, 
+	    integer *, complex *, integer *, integer *, integer *);
+    extern int cgetrf_(
+	    integer *, integer *, complex *, integer *, integer *, integer *);
+    extern void clacpy_(char *, integer *, integer *, complex *, integer *, 
 	    complex *, integer *), claset_(char *, integer *, integer 
-	    *, complex *, complex *, complex *, integer *), xerbla_(
-	    char *, integer *, ftnlen);
+	    *, complex *, complex *, complex *, integer *);
+    extern int xerbla_(char *, integer *, ftnlen);
     extern integer ilaenv_(integer *, char *, char *, integer *, integer *, 
 	    integer *, integer *, ftnlen, ftnlen);
     logical tquery, wquery;
@@ -752,7 +753,7 @@ aa_2stage.f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CSYTRF_AA_2STAGE", &i__1, (ftnlen)16);
-	return 0;
+	return;
     }
 
 /*     Answer the query */
@@ -770,13 +771,13 @@ aa_2stage.f"> */
 	}
     }
     if (tquery || wquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /*     Determine the number of the block size */
@@ -1277,7 +1278,7 @@ aa_2stage.f"> */
 /*     Factor the band matrix */
     cgbtrf_(n, n, &nb, &nb, &tb[1], &ldtb, &ipiv2[1], info);
 
-    return 0;
+    return;
 
 /*     End of CSYTRF_AA_2STAGE */
 

@@ -822,7 +822,7 @@ f"> */
 /* >       California at Berkeley, USA \n */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int sstevr_(char *jobz, char *range, integer *n, real *d__, 
+/* Subroutine */ void sstevr_(char *jobz, char *range, integer *n, real *d__, 
 	real *e, real *vl, real *vu, integer *il, integer *iu, real *abstol, 
 	integer *m, real *w, real *z__, integer *ldz, integer *isuppz, real *
 	work, integer *lwork, integer *iwork, integer *liwork, integer *info)
@@ -839,10 +839,10 @@ f"> */
     integer i__, j;
     real sigma;
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int sscal_(integer *, real *, real *, integer *);
+    extern /* Subroutine */ void sscal_(integer *, real *, real *, integer *);
     char order[1];
     integer lwmin;
-    extern /* Subroutine */ int scopy_(integer *, real *, integer *, real *, 
+    extern /* Subroutine */ void scopy_(integer *, real *, integer *, real *, 
 	    integer *), sswap_(integer *, real *, integer *, real *, integer *
 	    );
     logical wantz;
@@ -859,17 +859,17 @@ f"> */
     integer indisp, indiwo, liwmin;
     logical tryrac;
     extern real slanst_(char *, integer *, real *, real *);
-    extern /* Subroutine */ int sstein_(integer *, real *, real *, integer *, 
+    extern /* Subroutine */ void sstein_(integer *, real *, real *, integer *, 
 	    real *, integer *, integer *, real *, integer *, real *, integer *
 	    , integer *, integer *), ssterf_(integer *, real *, real *, 
 	    integer *);
     integer nsplit;
-    extern /* Subroutine */ int sstebz_(char *, char *, integer *, real *, 
+    extern /* Subroutine */ void sstebz_(char *, char *, integer *, real *, 
 	    real *, integer *, integer *, real *, real *, real *, integer *, 
 	    integer *, real *, integer *, integer *, real *, integer *, 
 	    integer *);
     real smlnum;
-    extern /* Subroutine */ int sstemr_(char *, char *, integer *, real *, 
+    extern /* Subroutine */ void sstemr_(char *, char *, integer *, real *, 
 	    real *, real *, real *, integer *, integer *, integer *, real *, 
 	    real *, integer *, integer *, integer *, logical *, real *, 
 	    integer *, integer *, integer *, integer *);
@@ -958,16 +958,16 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("SSTEVR", &i__1, (ftnlen)6);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     *m = 0;
     if (*n == 0) {
-	return 0;
+	return;
     }
 
     if (*n == 1) {
@@ -983,7 +983,7 @@ f"> */
 	if (wantz) {
 	    z__[z_dim1 + 1] = 1.f;
 	}
-	return 0;
+	return;
     }
 
 /*     Get machine constants. */
@@ -1139,7 +1139,7 @@ L10:
 
     work[1] = (real) lwmin;
     iwork[1] = liwmin;
-    return 0;
+    return;
 
 /*     End of SSTEVR */
 

@@ -661,7 +661,7 @@ f"> */
 /* > \endhtmlonly */
 
 /*  ===================================================================== */
-/* Subroutine */ int slaqp2_(integer *m, integer *n, integer *offset, real *a,
+/* Subroutine */ void slaqp2_(integer *m, integer *n, integer *offset, real *a,
 	 integer *lda, integer *jpvt, real *tau, real *vn1, real *vn2, real *
 	work)
 {
@@ -675,14 +675,14 @@ f"> */
     integer i__, j;
     real tol3z;
     integer offpi;
-    extern /* Subroutine */ int slarf_(char *, integer *, integer *, real *, 
+    extern /* Subroutine */ void slarf_(char *, integer *, integer *, real *, 
 	    integer *, real *, real *, integer *, real *);
     integer itemp;
-    extern /* Subroutine */ int sswap_(integer *, real *, integer *, real *, 
+    extern /* Subroutine */ void sswap_(integer *, real *, integer *, real *, 
 	    integer *);
     integer mn;
     extern real slamch_(char *);
-    extern /* Subroutine */ int slarfg_(integer *, real *, real *, integer *, 
+    extern /* Subroutine */ void slarfg_(integer *, real *, real *, integer *, 
 	    real *);
     extern integer isamax_(integer *, real *, integer *);
     real aii;
@@ -796,7 +796,7 @@ f"> */
 /* L20: */
     }
 
-    return 0;
+    return;
 
 /*     End of SLAQP2 */
 

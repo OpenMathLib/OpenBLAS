@@ -600,7 +600,7 @@ f"> */
 /* > \ingroup doublePTcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int dpttrf_(integer *n, doublereal *d__, doublereal *e, 
+/* Subroutine */ void dpttrf_(integer *n, doublereal *d__, doublereal *e, 
 	integer *info)
 {
     /* System generated locals */
@@ -633,13 +633,13 @@ f"> */
 	*info = -1;
 	i__1 = -(*info);
 	xerbla_("DPTTRF", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /*     Compute the L*D*L**T (or U**T*D*U) factorization of A. */
@@ -716,7 +716,7 @@ f"> */
     }
 
 L30:
-    return 0;
+    return;
 
 /*     End of DPTTRF */
 

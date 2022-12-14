@@ -729,7 +729,7 @@ stage.f"> */
 /* > \endverbatim */
 
 /*  ===================================================================== */
-/* Subroutine */ int chbev_2stage_(char *jobz, char *uplo, integer *n, 
+/* Subroutine */ void chbev_2stage_(char *jobz, char *uplo, integer *n, 
 	integer *kd, complex *ab, integer *ldab, real *w, complex *z__, 
 	integer *ldz, complex *work, integer *lwork, real *rwork, integer *
 	info)
@@ -739,7 +739,7 @@ stage.f"> */
     real r__1;
 
     /* Local variables */
-    extern /* Subroutine */ int chetrd_hb2st_(char *, char *, char *, 
+    extern /* Subroutine */ void chetrd_hb2st_(char *, char *, char *, 
 	    integer *, integer *, complex *, integer *, real *, real *, 
 	    complex *, integer *, complex *, integer *, integer *);
     integer inde;
@@ -750,7 +750,7 @@ stage.f"> */
     real rmin, rmax, sigma;
     extern logical lsame_(char *, char *);
     integer iinfo;
-    extern /* Subroutine */ int sscal_(integer *, real *, real *, integer *);
+    extern /* Subroutine */ void sscal_(integer *, real *, real *, integer *);
     integer lhtrd, lwmin;
     logical lower;
     integer lwtrd;
@@ -759,14 +759,14 @@ stage.f"> */
     extern real clanhb_(char *, char *, integer *, integer *, complex *, 
 	    integer *, real *);
     integer iscale;
-    extern /* Subroutine */ int clascl_(char *, integer *, integer *, real *, 
+    extern /* Subroutine */ void clascl_(char *, integer *, integer *, real *, 
 	    real *, integer *, integer *, complex *, integer *, integer *);
     extern real slamch_(char *);
     real safmin;
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     real bignum;
     integer indwrk, indrwk;
-    extern /* Subroutine */ int csteqr_(char *, integer *, real *, real *, 
+    extern /* Subroutine */ void csteqr_(char *, integer *, real *, real *, 
 	    complex *, integer *, real *, integer *), ssterf_(integer 
 	    *, real *, real *, integer *);
     integer llwork;
@@ -842,15 +842,15 @@ stage.f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CHBEV_2STAGE ", &i__1, (ftnlen)13);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
     if (*n == 1) {
@@ -865,7 +865,7 @@ stage.f"> */
 	    i__1 = z_dim1 + 1;
 	    z__[i__1].r = 1.f, z__[i__1].i = 0.f;
 	}
-	return 0;
+	return;
     }
 
 /*     Get machine constants. */
@@ -935,7 +935,7 @@ stage.f"> */
 
     work[1].r = (real) lwmin, work[1].i = 0.f;
 
-    return 0;
+    return;
 
 /*     End of CHBEV_2STAGE */
 

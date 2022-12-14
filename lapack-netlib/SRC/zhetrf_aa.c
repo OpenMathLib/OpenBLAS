@@ -647,7 +647,7 @@ aa.f"> */
 /* > \ingroup complex16HEcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int zhetrf_aa_(char *uplo, integer *n, doublecomplex *a, 
+/* Subroutine */ void zhetrf_aa_(char *uplo, integer *n, doublecomplex *a, 
 	integer *lda, integer *ipiv, doublecomplex *work, integer *lwork, 
 	integer *info)
 {
@@ -659,18 +659,18 @@ aa.f"> */
     /* Local variables */
     integer j;
     doublecomplex alpha;
-    extern /* Subroutine */ int zlahef_aa_(char *, integer *, integer *, 
+    extern /* Subroutine */ void zlahef_aa_(char *, integer *, integer *, 
 	    integer *, doublecomplex *, integer *, integer *, doublecomplex *,
 	     integer *, doublecomplex *);
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int zscal_(integer *, doublecomplex *, 
+    extern /* Subroutine */ void zscal_(integer *, doublecomplex *, 
 	    doublecomplex *, integer *), zgemm_(char *, char *, integer *, 
 	    integer *, integer *, doublecomplex *, doublecomplex *, integer *,
 	     doublecomplex *, integer *, doublecomplex *, doublecomplex *, 
 	    integer *);
     logical upper;
     integer k1, k2, j1, j2, j3;
-    extern /* Subroutine */ int zcopy_(integer *, doublecomplex *, integer *, 
+    extern /* Subroutine */ void zcopy_(integer *, doublecomplex *, integer *, 
 	    doublecomplex *, integer *), zswap_(integer *, doublecomplex *, 
 	    integer *, doublecomplex *, integer *);
     integer jb, nb, mj, nj;
@@ -731,15 +731,15 @@ aa.f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZHETRF_AA", &i__1, (ftnlen)9);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
     ipiv[1] = 1;
     if (*n == 1) {
@@ -747,7 +747,7 @@ aa.f"> */
 	i__2 = a_dim1 + 1;
 	d__1 = a[i__2].r;
 	a[i__1].r = d__1, a[i__1].i = 0.;
-	return 0;
+	return;
     }
 
 /*     Adjust block size based on the workspace size */
@@ -1048,7 +1048,7 @@ L11:
     }
 
 L20:
-    return 0;
+    return;
 
 /*     End of ZHETRF_AA */
 

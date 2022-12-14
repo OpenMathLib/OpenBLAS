@@ -841,7 +841,7 @@ static real c_b39 = 1.f;
 /* > \ingroup real_matgen */
 
 /*  ===================================================================== */
-/* Subroutine */ int slatme_(integer *n, char *dist, integer *iseed, real *
+/* Subroutine */ void slatme_(integer *n, char *dist, integer *iseed, real *
 	d__, integer *mode, real *cond, real *dmax__, char *ei, char *rsign, 
 	char *upper, char *sim, real *ds, integer *modes, real *conds, 
 	integer *kl, integer *ku, real *anorm, real *a, integer *lda, real *
@@ -853,7 +853,7 @@ static real c_b39 = 1.f;
 
     /* Local variables */
     logical bads;
-    extern /* Subroutine */ int sger_(integer *, integer *, real *, real *, 
+    extern /* Subroutine */ void sger_(integer *, integer *, real *, real *, 
 	    integer *, real *, integer *, real *, integer *);
     integer isim;
     real temp;
@@ -862,28 +862,29 @@ static real c_b39 = 1.f;
     real alpha;
     extern logical lsame_(char *, char *);
     integer iinfo;
-    extern /* Subroutine */ int sscal_(integer *, real *, real *, integer *);
+    extern /* Subroutine */ void sscal_(integer *, real *, real *, integer *);
     real tempa[1];
     integer icols;
     logical useei;
     integer idist;
-    extern /* Subroutine */ int sgemv_(char *, integer *, integer *, real *, 
+    extern /* Subroutine */ void sgemv_(char *, integer *, integer *, real *, 
 	    real *, integer *, real *, integer *, real *, real *, integer *), scopy_(integer *, real *, integer *, real *, integer *);
     integer irows;
-    extern /* Subroutine */ int slatm1_(integer *, real *, integer *, integer 
+    extern /* Subroutine */ void slatm1_(integer *, real *, integer *, integer 
 	    *, integer *, real *, integer *, integer *);
     integer ic, jc, ir, jr;
     extern real slange_(char *, integer *, integer *, real *, integer *, real 
 	    *);
-    extern /* Subroutine */ int slarge_(integer *, real *, integer *, integer 
+    extern /* Subroutine */ void slarge_(integer *, real *, integer *, integer 
 	    *, real *, integer *), slarfg_(integer *, real *, real *, integer 
-	    *, real *), xerbla_(char *, integer *);
+	    *, real *);
+    extern int xerbla_(char *, integer *, ftnlen);
     extern real slaran_(integer *);
     integer irsign;
-    extern /* Subroutine */ int slaset_(char *, integer *, integer *, real *, 
+    extern /* Subroutine */ void slaset_(char *, integer *, integer *, real *, 
 	    real *, real *, integer *);
     integer iupper;
-    extern /* Subroutine */ int slarnv_(integer *, integer *, integer *, real 
+    extern /* Subroutine */ void slarnv_(integer *, integer *, integer *, real 
 	    *);
     real xnorms;
     integer jcr;
@@ -918,7 +919,7 @@ static real c_b39 = 1.f;
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /*     Decode DIST */
@@ -1036,8 +1037,8 @@ static real c_b39 = 1.f;
 
     if (*info != 0) {
 	i__1 = -(*info);
-	xerbla_("SLATME", &i__1);
-	return 0;
+	xerbla_("SLATME", &i__1, 6);
+	return;
     }
 
 /*     Initialize random number generator */
@@ -1058,7 +1059,7 @@ static real c_b39 = 1.f;
     slatm1_(mode, cond, &irsign, &idist, &iseed[1], &d__[1], n, &iinfo);
     if (iinfo != 0) {
 	*info = 1;
-	return 0;
+	return;
     }
     if (*mode != 0 && abs(*mode) != 6) {
 
@@ -1077,7 +1078,7 @@ static real c_b39 = 1.f;
 	    alpha = *dmax__ / temp;
 	} else if (*dmax__ != 0.f) {
 	    *info = 2;
-	    return 0;
+	    return;
 	} else {
 	    alpha = 0.f;
 	}
@@ -1149,7 +1150,7 @@ static real c_b39 = 1.f;
 	slatm1_(modes, conds, &c__0, &c__0, &iseed[1], &ds[1], n, &iinfo);
 	if (iinfo != 0) {
 	    *info = 3;
-	    return 0;
+	    return;
 	}
 
 /*        Multiply by V and V' */
@@ -1157,7 +1158,7 @@ static real c_b39 = 1.f;
 	slarge_(n, &a[a_offset], lda, &iseed[1], &work[1], &iinfo);
 	if (iinfo != 0) {
 	    *info = 4;
-	    return 0;
+	    return;
 	}
 
 /*        Multiply by S and (1/S) */
@@ -1170,7 +1171,7 @@ static real c_b39 = 1.f;
 		sscal_(n, &r__1, &a[j * a_dim1 + 1], &c__1);
 	    } else {
 		*info = 5;
-		return 0;
+		return;
 	    }
 /* L80: */
 	}
@@ -1180,7 +1181,7 @@ static real c_b39 = 1.f;
 	slarge_(n, &a[a_offset], lda, &iseed[1], &work[1], &iinfo);
 	if (iinfo != 0) {
 	    *info = 4;
-	    return 0;
+	    return;
 	}
     }
 
@@ -1268,7 +1269,7 @@ static real c_b39 = 1.f;
 	}
     }
 
-    return 0;
+    return;
 
 /*     End of SLATME */
 

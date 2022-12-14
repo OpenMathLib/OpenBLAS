@@ -744,7 +744,7 @@ f"> */
 /* >     Osni Marques, LBNL/NERSC, USA \n */
 
 /*  ===================================================================== */
-/* Subroutine */ int zgelsd_(integer *m, integer *n, integer *nrhs, 
+/* Subroutine */ void zgelsd_(integer *m, integer *n, integer *nrhs, 
 	doublecomplex *a, integer *lda, doublecomplex *b, integer *ldb, 
 	doublereal *s, doublereal *rcond, integer *rank, doublecomplex *work, 
 	integer *lwork, doublereal *rwork, integer *iwork, integer *info)
@@ -757,15 +757,16 @@ f"> */
     integer itau, nlvl, iascl, ibscl;
     doublereal sfmin;
     integer minmn, maxmn, itaup, itauq, mnthr, nwork;
-    extern /* Subroutine */ int dlabad_(doublereal *, doublereal *);
+    extern /* Subroutine */ void dlabad_(doublereal *, doublereal *);
     integer ie, il;
     extern doublereal dlamch_(char *);
     integer mm;
-    extern /* Subroutine */ int dlascl_(char *, integer *, integer *, 
+    extern /* Subroutine */ void dlascl_(char *, integer *, integer *, 
 	    doublereal *, doublereal *, integer *, integer *, doublereal *, 
 	    integer *, integer *), dlaset_(char *, integer *, integer 
-	    *, doublereal *, doublereal *, doublereal *, integer *), 
-	    xerbla_(char *, integer *, ftnlen), zgebrd_(integer *, integer *, 
+	    *, doublereal *, doublereal *, doublereal *, integer *); 
+    extern int xerbla_(char *, integer *, ftnlen);
+    extern void zgebrd_(integer *, integer *, 
 	    doublecomplex *, integer *, doublereal *, doublereal *, 
 	    doublecomplex *, doublecomplex *, doublecomplex *, integer *, 
 	    integer *);
@@ -774,7 +775,7 @@ f"> */
     extern doublereal zlange_(char *, integer *, integer *, doublecomplex *, 
 	    integer *, doublereal *);
     doublereal bignum;
-    extern /* Subroutine */ int zgelqf_(integer *, integer *, doublecomplex *,
+    extern /* Subroutine */ void zgelqf_(integer *, integer *, doublecomplex *,
 	     integer *, doublecomplex *, doublecomplex *, integer *, integer *
 	    ), zlalsd_(char *, integer *, integer *, integer *, doublereal *, 
 	    doublereal *, doublecomplex *, integer *, doublereal *, integer *,
@@ -783,20 +784,20 @@ f"> */
 	    integer *, integer *, doublecomplex *, integer *, integer *), zgeqrf_(integer *, integer *, doublecomplex *, integer *,
 	     doublecomplex *, doublecomplex *, integer *, integer *);
     integer ldwork;
-    extern /* Subroutine */ int zlacpy_(char *, integer *, integer *, 
+    extern /* Subroutine */ void zlacpy_(char *, integer *, integer *, 
 	    doublecomplex *, integer *, doublecomplex *, integer *), 
 	    zlaset_(char *, integer *, integer *, doublecomplex *, 
 	    doublecomplex *, doublecomplex *, integer *);
     integer liwork, minwrk, maxwrk;
     doublereal smlnum;
-    extern /* Subroutine */ int zunmbr_(char *, char *, char *, integer *, 
+    extern /* Subroutine */ void zunmbr_(char *, char *, char *, integer *, 
 	    integer *, integer *, doublecomplex *, integer *, doublecomplex *,
 	     doublecomplex *, integer *, doublecomplex *, integer *, integer *
 	    );
     integer lrwork;
     logical lquery;
     integer nrwork, smlsiz;
-    extern /* Subroutine */ int zunmlq_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void zunmlq_(char *, char *, integer *, integer *, 
 	    integer *, doublecomplex *, integer *, doublecomplex *, 
 	    doublecomplex *, integer *, doublecomplex *, integer *, integer *), zunmqr_(char *, char *, integer *, integer *, 
 	    integer *, doublecomplex *, integer *, doublecomplex *, 
@@ -1002,16 +1003,16 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZGELSD", &i__1, (ftnlen)6);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible. */
 
     if (*m == 0 || *n == 0) {
 	*rank = 0;
-	return 0;
+	return;
     }
 
 /*     Get machine parameters. */
@@ -1307,7 +1308,7 @@ L10:
     work[1].r = (doublereal) maxwrk, work[1].i = 0.;
     iwork[1] = liwork;
     rwork[1] = (doublereal) lrwork;
-    return 0;
+    return;
 
 /*     End of ZGELSD */
 

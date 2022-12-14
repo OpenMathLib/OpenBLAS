@@ -692,7 +692,7 @@ f"> */
 /* > \endhtmlonly */
 
 /*  ===================================================================== */
-/* Subroutine */ int zlaqps_(integer *m, integer *n, integer *offset, integer 
+/* Subroutine */ void zlaqps_(integer *m, integer *n, integer *offset, integer 
 	*nb, integer *kb, doublecomplex *a, integer *lda, integer *jpvt, 
 	doublecomplex *tau, doublereal *vn1, doublereal *vn2, doublecomplex *
 	auxv, doublecomplex *f, integer *ldf)
@@ -707,7 +707,7 @@ f"> */
     integer j, k;
     doublereal tol3z;
     integer itemp;
-    extern /* Subroutine */ int zgemm_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void zgemm_(char *, char *, integer *, integer *, 
 	    integer *, doublecomplex *, doublecomplex *, integer *, 
 	    doublecomplex *, integer *, doublecomplex *, doublecomplex *, 
 	    integer *), zgemv_(char *, integer *, integer *, 
@@ -720,7 +720,7 @@ f"> */
     integer rk;
     extern integer idamax_(integer *, doublereal *, integer *);
     integer lsticc;
-    extern /* Subroutine */ int zlarfg_(integer *, doublecomplex *, 
+    extern /* Subroutine */ void zlarfg_(integer *, doublecomplex *, 
 	    doublecomplex *, integer *, doublecomplex *);
     integer lastrk;
     doublecomplex akk;
@@ -939,7 +939,7 @@ L60:
 	goto L60;
     }
 
-    return 0;
+    return;
 
 /*     End of ZLAQPS */
 

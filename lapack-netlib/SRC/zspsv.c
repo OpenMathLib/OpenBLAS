@@ -671,7 +671,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int zspsv_(char *uplo, integer *n, integer *nrhs, 
+/* Subroutine */ void zspsv_(char *uplo, integer *n, integer *nrhs, 
 	doublecomplex *ap, integer *ipiv, doublecomplex *b, integer *ldb, 
 	integer *info)
 {
@@ -680,7 +680,8 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 
     /* Local variables */
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen), zsptrf_(
+    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
+    extern void zsptrf_(
 	    char *, integer *, doublecomplex *, integer *, integer *),
 	     zsptrs_(char *, integer *, integer *, doublecomplex *, integer *,
 	     doublecomplex *, integer *, integer *);
@@ -718,7 +719,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZSPSV ", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Compute the factorization A = U*D*U**T or A = L*D*L**T. */
@@ -731,7 +732,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 	zsptrs_(uplo, n, nrhs, &ap[1], &ipiv[1], &b[b_offset], ldb, info);
 
     }
-    return 0;
+    return;
 
 /*     End of ZSPSV */
 

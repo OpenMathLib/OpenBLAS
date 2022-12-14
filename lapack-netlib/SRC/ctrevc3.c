@@ -762,7 +762,7 @@ static integer c__2 = 2;
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int ctrevc3_(char *side, char *howmny, logical *select, 
+/* Subroutine */ void ctrevc3_(char *side, char *howmny, logical *select, 
 	integer *n, complex *t, integer *ldt, complex *vl, integer *ldvl, 
 	complex *vr, integer *ldvr, integer *mm, integer *m, complex *work, 
 	integer *lwork, real *rwork, integer *lrwork, integer *info)
@@ -781,30 +781,30 @@ static integer c__2 = 2;
     logical over;
     integer i__, j, k;
     real scale;
-    extern /* Subroutine */ int cgemm_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void cgemm_(char *, char *, integer *, integer *, 
 	    integer *, complex *, complex *, integer *, complex *, integer *, 
 	    complex *, complex *, integer *);
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int cgemv_(char *, integer *, integer *, complex *
+    extern /* Subroutine */ void cgemv_(char *, integer *, integer *, complex *
 	    , complex *, integer *, complex *, integer *, complex *, complex *
 	    , integer *);
     real remax;
-    extern /* Subroutine */ int ccopy_(integer *, complex *, integer *, 
+    extern /* Subroutine */ void ccopy_(integer *, complex *, integer *, 
 	    complex *, integer *);
     logical leftv, bothv, somev;
     integer nb, ii, ki;
-    extern /* Subroutine */ int slabad_(real *, real *);
+    extern /* Subroutine */ void slabad_(real *, real *);
     integer is, iv;
     extern integer icamax_(integer *, complex *, integer *);
     extern real slamch_(char *);
-    extern /* Subroutine */ int csscal_(integer *, real *, complex *, integer 
+    extern /* Subroutine */ void csscal_(integer *, real *, complex *, integer 
 	    *), claset_(char *, integer *, integer *, complex *, complex *, 
 	    complex *, integer *), clacpy_(char *, integer *, integer 
-	    *, complex *, integer *, complex *, integer *), xerbla_(
-	    char *, integer *, ftnlen);
+	    *, complex *, integer *, complex *, integer *);
+    extern int xerbla_(char *, integer *, ftnlen);
     extern integer ilaenv_(integer *, char *, char *, integer *, integer *, 
 	    integer *, integer *, ftnlen, ftnlen);
-    extern /* Subroutine */ int clatrs_(char *, char *, char *, char *, 
+    extern /* Subroutine */ void clatrs_(char *, char *, char *, char *, 
 	    integer *, complex *, integer *, complex *, real *, real *, 
 	    integer *);
     extern real scasum_(integer *, complex *, integer *);
@@ -902,15 +902,15 @@ static integer c__2 = 2;
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CTREVC3", &i__1, (ftnlen)7);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible. */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /*     Use blocked version of back-transformation if sufficient workspace. */
@@ -1280,7 +1280,7 @@ L130:
 	}
     }
 
-    return 0;
+    return;
 
 /*     End of CTREVC3 */
 

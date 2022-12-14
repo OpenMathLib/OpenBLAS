@@ -848,7 +848,7 @@ static integer c__1 = 1;
 /* > \ingroup realGBcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int sgbrfsx_(char *trans, char *equed, integer *n, integer *
+/* Subroutine */ void sgbrfsx_(char *trans, char *equed, integer *n, integer *
 	kl, integer *ku, integer *nrhs, real *ab, integer *ldab, real *afb, 
 	integer *ldafb, integer *ipiv, real *r__, real *c__, real *b, integer 
 	*ldb, real *x, integer *ldx, real *rcond, real *berr, integer *
@@ -863,7 +863,7 @@ static integer c__1 = 1;
 
     /* Local variables */
     real illrcond_thresh__;
-    extern /* Subroutine */ int sla_gbrfsx_extended_(integer *, integer *, 
+    extern /* Subroutine */ void sla_gbrfsx_extended_(integer *, integer *, 
 	    integer *, integer *, integer *, integer *, real *, integer *, 
 	    real *, integer *, integer *, logical *, real *, real *, integer *
 	    , real *, integer *, real *, integer *, real *, real *, real *, 
@@ -880,9 +880,10 @@ static integer c__1 = 1;
     integer prec_type__;
     extern real slangb_(char *, integer *, integer *, integer *, real *, 
 	    integer *, real *), slamch_(char *);
-    extern /* Subroutine */ int sgbcon_(char *, integer *, integer *, integer 
+    extern /* Subroutine */ void sgbcon_(char *, integer *, integer *, integer 
 	    *, real *, integer *, integer *, real *, real *, real *, integer *
-	    , integer *), xerbla_(char *, integer *, ftnlen);
+	    , integer *);
+    extern int xerbla_(char *, integer *, ftnlen);
     logical colequ, notran, rowequ;
     integer trans_type__;
     extern integer ilaprec_(char *);
@@ -1007,7 +1008,7 @@ static integer c__1 = 1;
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("SGBRFSX", &i__1, (ftnlen)7);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible. */
@@ -1030,7 +1031,7 @@ static integer c__1 = 1;
 		err_bnds_comp__[j + err_bnds_comp_dim1 * 3] = 1.f;
 	    }
 	}
-	return 0;
+	return;
     }
 
 /*     Default to failure. */
@@ -1191,7 +1192,7 @@ static integer c__1 = 1;
 	}
     }
 
-    return 0;
+    return;
 
 /*     End of SGBRFSX */
 

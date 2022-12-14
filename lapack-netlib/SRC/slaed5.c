@@ -617,7 +617,7 @@ f"> */
 /* >     at Berkeley, USA */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int slaed5_(integer *i__, real *d__, real *z__, real *delta, 
+/* Subroutine */ void slaed5_(integer *i__, real *d__, real *z__, real *delta, 
 	real *rho, real *dlam)
 {
     /* System generated locals */
@@ -689,7 +689,7 @@ f"> */
 	delta[1] /= temp;
 	delta[2] /= temp;
     }
-    return 0;
+    return;
 
 /*     End OF SLAED5 */
 

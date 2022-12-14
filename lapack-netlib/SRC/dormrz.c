@@ -702,7 +702,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int dormrz_(char *side, char *trans, integer *m, integer *n, 
+/* Subroutine */ void dormrz_(char *side, char *trans, integer *m, integer *n, 
 	integer *k, integer *l, doublereal *a, integer *lda, doublereal *tau, 
 	doublereal *c__, integer *ldc, doublereal *work, integer *lwork, 
 	integer *info)
@@ -718,14 +718,14 @@ f"> */
     integer i__;
     extern logical lsame_(char *, char *);
     integer nbmin, iinfo, i1, i2, i3;
-    extern /* Subroutine */ int dormr3_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void dormr3_(char *, char *, integer *, integer *, 
 	    integer *, integer *, doublereal *, integer *, doublereal *, 
 	    doublereal *, integer *, doublereal *, integer *);
     integer ib, ic, ja, jc, nb, mi, ni, nq, nw;
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     extern integer ilaenv_(integer *, char *, char *, integer *, integer *, 
 	    integer *, integer *, ftnlen, ftnlen);
-    extern /* Subroutine */ int dlarzb_(char *, char *, char *, char *, 
+    extern /* Subroutine */ void dlarzb_(char *, char *, char *, char *, 
 	    integer *, integer *, integer *, integer *, doublereal *, integer 
 	    *, doublereal *, integer *, doublereal *, integer *, doublereal *,
 	     integer *), dlarzt_(char *, char 
@@ -818,16 +818,16 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DORMRZ", &i__1, (ftnlen)6);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*m == 0 || *n == 0) {
 	work[1] = 1.;
-	return 0;
+	return;
     }
 
     nbmin = 2;
@@ -922,7 +922,7 @@ f"> */
 
     work[1] = (doublereal) lwkopt;
 
-    return 0;
+    return;
 
 /*     End of DORMRZ */
 

@@ -701,7 +701,7 @@ r_row.f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int dorgtsqr_row_(integer *m, integer *n, integer *mb, 
+/* Subroutine */ void dorgtsqr_row_(integer *m, integer *n, integer *mb, 
 	integer *nb, doublereal *a, integer *lda, doublereal *t, integer *ldt,
 	 doublereal *work, integer *lwork, integer *info)
 {
@@ -712,13 +712,13 @@ r_row.f"> */
     integer jb_t__, itmp, lworkopt;
     doublereal dummy[1]	/* was [1][1] */;
     integer ib_bottom__, ib, kb;
-    extern /* Subroutine */ int dlaset_(char *, integer *, integer *, 
-	    doublereal *, doublereal *, doublereal *, integer *), 
-	    xerbla_(char *, integer *, ftnlen);
+    extern /* Subroutine */ void dlaset_(char *, integer *, integer *, 
+	    doublereal *, doublereal *, doublereal *, integer *); 
+    extern int xerbla_(char *, integer *, ftnlen);
     integer mb1, mb2, m_plus_one__;
     logical lquery;
     integer num_all_row_blocks__, imb, knb, nblocal, kb_last__;
-    extern /* Subroutine */ int dlarfb_gett_(char *, integer *, integer *, 
+    extern /* Subroutine */ void dlarfb_gett_(char *, integer *, integer *, 
 	    integer *, doublereal *, integer *, doublereal *, integer *, 
 	    doublereal *, integer *, doublereal *, integer *);
 
@@ -780,17 +780,17 @@ r_row.f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DORGTSQR_ROW", &i__1, (ftnlen)12);
-	return 0;
+	return;
     } else if (lquery) {
 	work[1] = (doublereal) lworkopt;
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (f2cmin(*m,*n) == 0) {
 	work[1] = (doublereal) lworkopt;
-	return 0;
+	return;
     }
 
 /*     (0) Set the upper-triangular part of the matrix A to zero and */
@@ -912,7 +912,7 @@ r_row.f"> */
     }
 
     work[1] = (doublereal) lworkopt;
-    return 0;
+    return;
 
 /*     End of DORGTSQR_ROW */
 

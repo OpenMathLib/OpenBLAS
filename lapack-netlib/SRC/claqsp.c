@@ -636,7 +636,7 @@ f"> */
 /* > \ingroup complexOTHERauxiliary */
 
 /*  ===================================================================== */
-/* Subroutine */ int claqsp_(char *uplo, integer *n, complex *ap, real *s, 
+/* Subroutine */ void claqsp_(char *uplo, integer *n, complex *ap, real *s, 
 	real *scond, real *amax, char *equed)
 {
     /* System generated locals */
@@ -672,7 +672,7 @@ f"> */
     /* Function Body */
     if (*n <= 0) {
 	*(unsigned char *)equed = 'N';
-	return 0;
+	return;
     }
 
 /*     Initialize LARGE and SMALL. */
@@ -733,7 +733,7 @@ f"> */
 	*(unsigned char *)equed = 'Y';
     }
 
-    return 0;
+    return;
 
 /*     End of CLAQSP */
 

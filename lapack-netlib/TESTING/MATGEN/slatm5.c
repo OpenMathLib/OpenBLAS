@@ -778,7 +778,7 @@ static real c_b33 = -1.f;
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int slatm5_(integer *prtype, integer *m, integer *n, real *a,
+/* Subroutine */ void slatm5_(integer *prtype, integer *m, integer *n, real *a,
 	 integer *lda, real *b, integer *ldb, real *c__, integer *ldc, real *
 	d__, integer *ldd, real *e, integer *lde, real *f, integer *ldf, real 
 	*r__, integer *ldr, real *l, integer *ldl, real *alpha, integer *
@@ -791,7 +791,7 @@ static real c_b33 = -1.f;
 
     /* Local variables */
     integer i__, j, k;
-    extern /* Subroutine */ int sgemm_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void sgemm_(char *, char *, integer *, integer *, 
 	    integer *, real *, real *, integer *, real *, integer *, real *, 
 	    real *, integer *);
     real imeps, reeps;
@@ -1091,6 +1091,6 @@ static real c_b33 = -1.f;
 
 /*     End of SLATM5 */
 
-    return 0;
+    return;
 } /* slatm5_ */
 

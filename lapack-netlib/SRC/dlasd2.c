@@ -782,7 +782,7 @@ f"> */
 /* >     California at Berkeley, USA */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int dlasd2_(integer *nl, integer *nr, integer *sqre, integer 
+/* Subroutine */ void dlasd2_(integer *nl, integer *nr, integer *sqre, integer 
 	*k, doublereal *d__, doublereal *z__, doublereal *alpha, doublereal *
 	beta, doublereal *u, integer *ldu, doublereal *vt, integer *ldvt, 
 	doublereal *dsigma, doublereal *u2, integer *ldu2, doublereal *vt2, 
@@ -796,14 +796,14 @@ f"> */
 
     /* Local variables */
     integer idxi, idxj;
-    extern /* Subroutine */ int drot_(integer *, doublereal *, integer *, 
+    extern /* Subroutine */ void drot_(integer *, doublereal *, integer *, 
 	    doublereal *, integer *, doublereal *, doublereal *);
     integer ctot[4];
     doublereal c__;
     integer i__, j, m, n;
     doublereal s;
     integer idxjp;
-    extern /* Subroutine */ int dcopy_(integer *, doublereal *, integer *, 
+    extern /* Subroutine */ void dcopy_(integer *, doublereal *, integer *, 
 	    doublereal *, integer *);
     integer jprev, k2;
     doublereal z1;
@@ -811,11 +811,11 @@ f"> */
     integer ct;
     extern doublereal dlamch_(char *);
     integer jp;
-    extern /* Subroutine */ int dlamrg_(integer *, integer *, doublereal *, 
+    extern /* Subroutine */ void dlamrg_(integer *, integer *, doublereal *, 
 	    integer *, integer *, integer *), dlacpy_(char *, integer *, 
 	    integer *, doublereal *, integer *, doublereal *, integer *), dlaset_(char *, integer *, integer *, doublereal *, 
-	    doublereal *, doublereal *, integer *), xerbla_(char *, 
-	    integer *, ftnlen);
+	    doublereal *, doublereal *, integer *);
+    extern int xerbla_(char *, integer *, ftnlen);
     doublereal hlftol, eps, tau, tol;
     integer psm[4], nlp1, nlp2;
 
@@ -879,7 +879,7 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DLASD2", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
     nlp1 = *nl + 1;
@@ -1206,7 +1206,7 @@ L120:
 /* L190: */
     }
 
-    return 0;
+    return;
 
 /*     End of DLASD2 */
 

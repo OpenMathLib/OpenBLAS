@@ -610,7 +610,7 @@ static real c_b6 = 1.f;
 /* > \ingroup OTHERauxiliary */
 
 /*  ===================================================================== */
-/* Subroutine */ int slartgp_(real *f, real *g, real *cs, real *sn, real *r__)
+/* Subroutine */ void slartgp_(real *f, real *g, real *cs, real *sn, real *r__)
 {
     /* System generated locals */
     integer i__1;
@@ -723,7 +723,7 @@ L30:
 	    *r__ = -(*r__);
 	}
     }
-    return 0;
+    return;
 
 /*     End of SLARTG */
 

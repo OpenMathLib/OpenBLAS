@@ -850,7 +850,7 @@ f"> */
 /* > Christof Voemel, University of California, Berkeley, USA \n */
 
 /*  ===================================================================== */
-/* Subroutine */ int zstemr_(char *jobz, char *range, integer *n, doublereal *
+/* Subroutine */ void zstemr_(char *jobz, char *range, integer *n, doublereal *
 	d__, doublereal *e, doublereal *vl, doublereal *vu, integer *il, 
 	integer *iu, integer *m, doublereal *w, doublecomplex *z__, integer *
 	ldz, integer *nzc, integer *isuppz, logical *tryrac, doublereal *work,
@@ -865,23 +865,23 @@ f"> */
     doublereal rmin, rmax;
     integer itmp;
     doublereal tnrm;
-    extern /* Subroutine */ int dlae2_(doublereal *, doublereal *, doublereal 
+    extern /* Subroutine */ void dlae2_(doublereal *, doublereal *, doublereal 
 	    *, doublereal *, doublereal *);
     integer inde2, itmp2;
     doublereal rtol1, rtol2;
     integer i__, j;
-    extern /* Subroutine */ int dscal_(integer *, doublereal *, doublereal *, 
+    extern /* Subroutine */ void dscal_(integer *, doublereal *, doublereal *, 
 	    integer *);
     doublereal scale;
     integer indgp;
     extern logical lsame_(char *, char *);
     integer iinfo, iindw, ilast;
-    extern /* Subroutine */ int dcopy_(integer *, doublereal *, integer *, 
+    extern /* Subroutine */ void dcopy_(integer *, doublereal *, integer *, 
 	    doublereal *, integer *);
     integer lwmin;
     logical wantz;
     doublereal r1, r2;
-    extern /* Subroutine */ int zswap_(integer *, doublecomplex *, integer *, 
+    extern /* Subroutine */ void zswap_(integer *, doublecomplex *, integer *, 
 	    doublecomplex *, integer *), dlaev2_(doublereal *, doublereal *, 
 	    doublereal *, doublereal *, doublereal *, doublereal *, 
 	    doublereal *);
@@ -893,7 +893,7 @@ f"> */
     integer ibegin, iindbl;
     doublereal sn, wl;
     logical valeig;
-    extern /* Subroutine */ int dlarrc_(char *, integer *, doublereal *, 
+    extern /* Subroutine */ void dlarrc_(char *, integer *, doublereal *, 
 	    doublereal *, doublereal *, doublereal *, doublereal *, integer *,
 	     integer *, integer *, integer *), dlarre_(char *, 
 	    integer *, doublereal *, doublereal *, integer *, integer *, 
@@ -903,21 +903,22 @@ f"> */
 	    doublereal *, doublereal *, doublereal *, integer *, integer *);
     integer wbegin;
     doublereal safmin, wu;
-    extern /* Subroutine */ int dlarrj_(integer *, doublereal *, doublereal *,
+    extern /* Subroutine */ void dlarrj_(integer *, doublereal *, doublereal *,
 	     integer *, integer *, doublereal *, integer *, doublereal *, 
 	    doublereal *, doublereal *, integer *, doublereal *, doublereal *,
-	     integer *), xerbla_(char *, integer *, ftnlen);
+	     integer *);
+    extern int xerbla_(char *, integer *, ftnlen);
     doublereal bignum;
     integer inderr, iindwk, indgrs, offset;
     extern doublereal dlanst_(char *, integer *, doublereal *, doublereal *);
-    extern /* Subroutine */ int dlarrr_(integer *, doublereal *, doublereal *,
+    extern /* Subroutine */ void dlarrr_(integer *, doublereal *, doublereal *,
 	     integer *), dlasrt_(char *, integer *, doublereal *, integer *);
     doublereal thresh;
     integer iinspl, indwrk, ifirst, liwmin, nzcmin;
     doublereal pivmin;
     integer nsplit;
     doublereal smlnum;
-    extern /* Subroutine */ int zlarrv_(integer *, doublereal *, doublereal *,
+    extern /* Subroutine */ void zlarrv_(integer *, doublereal *, doublereal *,
 	     doublereal *, doublereal *, doublereal *, integer *, integer *, 
 	    integer *, integer *, doublereal *, doublereal *, doublereal *, 
 	    doublereal *, doublereal *, doublereal *, integer *, integer *, 
@@ -1045,16 +1046,16 @@ f"> */
 	i__1 = -(*info);
 	xerbla_("ZSTEMR", &i__1, (ftnlen)6);
 
-	return 0;
+	return;
     } else if (lquery || zquery) {
-	return 0;
+	return;
     }
 
 /*     Handle N = 0, 1, and 2 cases immediately */
 
     *m = 0;
     if (*n == 0) {
-	return 0;
+	return;
     }
 
     if (*n == 1) {
@@ -1073,7 +1074,7 @@ f"> */
 	    isuppz[1] = 1;
 	    isuppz[2] = 1;
 	}
-	return 0;
+	return;
     }
 
     if (*n == 2) {
@@ -1226,7 +1227,7 @@ f"> */
 		work[indgrs], &pivmin, &work[indwrk], &iwork[iindwk], &iinfo);
 	if (iinfo != 0) {
 	    *info = abs(iinfo) + 10;
-	    return 0;
+	    return;
 	}
 /*        Note that if RANGE .NE. 'V', DLARRE computes bounds on the desired */
 /*        part of the spectrum. All desired eigenvalues are contained in */
@@ -1243,7 +1244,7 @@ f"> */
 		    iindwk], &iinfo);
 	    if (iinfo != 0) {
 		*info = abs(iinfo) + 20;
-		return 0;
+		return;
 	    }
 	} else {
 /*           DLARRE computes eigenvalues of the (shifted) root representation */
@@ -1312,7 +1313,7 @@ L39:
 	    dlasrt_("I", m, &w[1], &iinfo);
 	    if (iinfo != 0) {
 		*info = 3;
-		return 0;
+		return;
 	    }
 	} else {
 	    i__1 = *m - 1;
@@ -1349,7 +1350,7 @@ L39:
 
     work[1] = (doublereal) lwmin;
     iwork[1] = liwmin;
-    return 0;
+    return;
 
 /*     End of ZSTEMR */
 

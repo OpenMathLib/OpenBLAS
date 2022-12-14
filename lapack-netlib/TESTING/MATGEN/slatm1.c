@@ -641,7 +641,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 /* > \ingroup real_matgen */
 
 /*  ===================================================================== */
-/* Subroutine */ int slatm1_(integer *mode, real *cond, integer *irsign, 
+/* Subroutine */ void slatm1_(integer *mode, real *cond, integer *irsign, 
 	integer *idist, integer *iseed, real *d__, integer *n, integer *info)
 {
     /* System generated locals */
@@ -652,9 +652,9 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
     real temp;
     integer i__;
     real alpha;
-    extern /* Subroutine */ int xerbla_(char *, integer *);
+    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     extern real slaran_(integer *);
-    extern /* Subroutine */ int slarnv_(integer *, integer *, integer *, real 
+    extern /* Subroutine */ void slarnv_(integer *, integer *, integer *, real 
 	    *);
 
 
@@ -679,7 +679,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /*     Set INFO if an error */
@@ -699,8 +699,8 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 
     if (*info != 0) {
 	i__1 = -(*info);
-	xerbla_("SLATM1", &i__1);
-	return 0;
+	xerbla_("SLATM1", &i__1, 6);
+	return;
     }
 
 /*     Compute D according to COND and MODE */
@@ -815,7 +815,7 @@ L120:
 
     }
 
-    return 0;
+    return;
 
 /*     End of SLATM1 */
 

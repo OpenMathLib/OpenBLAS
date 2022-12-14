@@ -670,7 +670,7 @@ f"> */
 /* > \ingroup doubleGBcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int dorgbr_(char *vect, integer *m, integer *n, integer *k, 
+/* Subroutine */ void dorgbr_(char *vect, integer *m, integer *n, integer *k, 
 	doublereal *a, integer *lda, doublereal *tau, doublereal *work, 
 	integer *lwork, integer *info)
 {
@@ -683,7 +683,8 @@ f"> */
     integer iinfo;
     logical wantq;
     integer mn;
-    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen), dorglq_(
+    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
+    extern void dorglq_(
 	    integer *, integer *, integer *, doublereal *, integer *, 
 	    doublereal *, doublereal *, integer *, integer *), dorgqr_(
 	    integer *, integer *, integer *, doublereal *, integer *, 
@@ -766,17 +767,17 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DORGBR", &i__1, (ftnlen)6);
-	return 0;
+	return;
     } else if (lquery) {
 	work[1] = (doublereal) lwkopt;
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*m == 0 || *n == 0) {
 	work[1] = 1.;
-	return 0;
+	return;
     }
 
     if (wantq) {
@@ -873,7 +874,7 @@ f"> */
 	}
     }
     work[1] = (doublereal) lwkopt;
-    return 0;
+    return;
 
 /*     End of DORGBR */
 

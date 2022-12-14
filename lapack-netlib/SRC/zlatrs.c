@@ -753,7 +753,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int zlatrs_(char *uplo, char *trans, char *diag, char *
+/* Subroutine */ void zlatrs_(char *uplo, char *trans, char *diag, char *
 	normin, integer *n, doublecomplex *a, integer *lda, doublecomplex *x, 
 	doublereal *scale, doublereal *cnorm, integer *info)
 {
@@ -770,7 +770,7 @@ f"> */
     doublecomplex tjjs;
     doublereal xmax, grow;
     integer i__, j;
-    extern /* Subroutine */ int dscal_(integer *, doublereal *, doublereal *, 
+    extern /* Subroutine */ void dscal_(integer *, doublereal *, doublereal *, 
 	    integer *);
     extern logical lsame_(char *, char *);
     doublereal tscal;
@@ -782,7 +782,7 @@ f"> */
     logical upper;
     extern /* Double Complex */ VOID zdotu_(doublecomplex *, integer *, 
 	    doublecomplex *, integer *, doublecomplex *, integer *);
-    extern /* Subroutine */ int zaxpy_(integer *, doublecomplex *, 
+    extern /* Subroutine */ void zaxpy_(integer *, doublecomplex *, 
 	    doublecomplex *, integer *, doublecomplex *, integer *), ztrsv_(
 	    char *, char *, char *, integer *, doublecomplex *, integer *, 
 	    doublecomplex *, integer *), dlabad_(
@@ -790,7 +790,8 @@ f"> */
     extern doublereal dlamch_(char *);
     doublereal xj;
     extern integer idamax_(integer *, doublereal *, integer *);
-    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen), zdscal_(
+    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
+    extern void zdscal_(
 	    integer *, doublereal *, doublecomplex *, integer *);
     doublereal bignum;
     extern integer izamax_(integer *, doublecomplex *, integer *);
@@ -846,13 +847,13 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZLATRS", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /*     Determine machine dependent parameters to control overflow. */
@@ -1705,7 +1706,7 @@ L210:
 	dscal_(n, &d__1, &cnorm[1], &c__1);
     }
 
-    return 0;
+    return;
 
 /*     End of ZLATRS */
 

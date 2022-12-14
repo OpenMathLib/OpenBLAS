@@ -623,7 +623,7 @@ f"> */
 /* > \ingroup complexOTHERcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int cupgtr_(char *uplo, integer *n, complex *ap, complex *
+/* Subroutine */ void cupgtr_(char *uplo, integer *n, complex *ap, complex *
 	tau, complex *q, integer *ldq, complex *work, integer *info)
 {
     /* System generated locals */
@@ -634,7 +634,7 @@ f"> */
     extern logical lsame_(char *, char *);
     integer iinfo;
     logical upper;
-    extern /* Subroutine */ int cung2l_(integer *, integer *, integer *, 
+    extern /* Subroutine */ void cung2l_(integer *, integer *, integer *, 
 	    complex *, integer *, complex *, complex *, integer *), cung2r_(
 	    integer *, integer *, integer *, complex *, integer *, complex *, 
 	    complex *, integer *);
@@ -674,13 +674,13 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CUPGTR", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
     if (upper) {
@@ -767,7 +767,7 @@ f"> */
 		    &work[1], &iinfo);
 	}
     }
-    return 0;
+    return;
 
 /*     End of CUPGTR */
 

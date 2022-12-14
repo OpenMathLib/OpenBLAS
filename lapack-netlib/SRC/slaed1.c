@@ -677,7 +677,7 @@ f"> */
 /* >  Modified by Francoise Tisseur, University of Tennessee */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int slaed1_(integer *n, real *d__, real *q, integer *ldq, 
+/* Subroutine */ void slaed1_(integer *n, real *d__, real *q, integer *ldq, 
 	integer *indxq, real *rho, integer *cutpnt, real *work, integer *
 	iwork, integer *info)
 {
@@ -686,17 +686,18 @@ f"> */
 
     /* Local variables */
     integer indx, i__, k, indxc, indxp;
-    extern /* Subroutine */ int scopy_(integer *, real *, integer *, real *, 
+    extern /* Subroutine */ void scopy_(integer *, real *, integer *, real *, 
 	    integer *);
     integer n1, n2;
-    extern /* Subroutine */ int slaed2_(integer *, integer *, integer *, real 
+    extern /* Subroutine */ void slaed2_(integer *, integer *, integer *, real 
 	    *, real *, integer *, integer *, real *, real *, real *, real *, 
 	    real *, integer *, integer *, integer *, integer *, integer *), 
 	    slaed3_(integer *, integer *, integer *, real *, real *, integer *
 	    , real *, real *, real *, integer *, integer *, real *, real *, 
 	    integer *);
     integer idlmda, is, iw, iz;
-    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen), slamrg_(
+    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
+    extern void slamrg_(
 	    integer *, integer *, real *, integer *, integer *, integer *);
     integer coltyp, iq2, cpp1;
 
@@ -738,13 +739,13 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("SLAED1", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /*     The following values are integer pointers which indicate */
@@ -806,7 +807,7 @@ f"> */
     }
 
 L20:
-    return 0;
+    return;
 
 /*     End of SLAED1 */
 

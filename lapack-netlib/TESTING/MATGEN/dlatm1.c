@@ -641,7 +641,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 /* > \ingroup double_matgen */
 
 /*  ===================================================================== */
-/* Subroutine */ int dlatm1_(integer *mode, doublereal *cond, integer *irsign,
+/* Subroutine */ void dlatm1_(integer *mode, doublereal *cond, integer *irsign,
 	 integer *idist, integer *iseed, doublereal *d__, integer *n, integer 
 	*info)
 {
@@ -654,7 +654,8 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
     integer i__;
     doublereal alpha;
     extern doublereal dlaran_(integer *);
-    extern /* Subroutine */ int xerbla_(char *, integer *), dlarnv_(
+    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
+    extern void dlarnv_(
 	    integer *, integer *, integer *, doublereal *);
 
 
@@ -679,7 +680,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /*     Set INFO if an error */
@@ -699,8 +700,8 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 
     if (*info != 0) {
 	i__1 = -(*info);
-	xerbla_("DLATM1", &i__1);
-	return 0;
+	xerbla_("DLATM1", &i__1, 6);
+	return;
     }
 
 /*     Compute D according to COND and MODE */
@@ -814,7 +815,7 @@ L120:
 
     }
 
-    return 0;
+    return;
 
 /*     End of DLATM1 */
 

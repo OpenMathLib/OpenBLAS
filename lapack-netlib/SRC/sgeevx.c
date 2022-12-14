@@ -819,7 +819,7 @@ f"> */
 /* > \ingroup realGEeigen */
 
 /*  ===================================================================== */
-/* Subroutine */ int sgeevx_(char *balanc, char *jobvl, char *jobvr, char *
+/* Subroutine */ void sgeevx_(char *balanc, char *jobvl, char *jobvr, char *
 	sense, integer *n, real *a, integer *lda, real *wr, real *wi, real *
 	vl, integer *ldvl, real *vr, integer *ldvr, integer *ilo, integer *
 	ihi, real *scale, real *abnrm, real *rconde, real *rcondv, real *work,
@@ -834,43 +834,43 @@ f"> */
     char side[1];
     real anrm;
     integer ierr, itau, iwrk, nout;
-    extern /* Subroutine */ int srot_(integer *, real *, integer *, real *, 
+    extern /* Subroutine */ void srot_(integer *, real *, integer *, real *, 
 	    integer *, real *, real *);
     extern real snrm2_(integer *, real *, integer *);
     integer i__, k;
     real r__;
     integer icond;
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int sscal_(integer *, real *, real *, integer *);
+    extern /* Subroutine */ void sscal_(integer *, real *, real *, integer *);
     extern real slapy2_(real *, real *);
     real cs;
-    extern /* Subroutine */ int slabad_(real *, real *);
+    extern /* Subroutine */ void slabad_(real *, real *);
     logical scalea;
     real cscale;
-    extern /* Subroutine */ int sgebak_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void sgebak_(char *, char *, integer *, integer *, 
 	    integer *, real *, integer *, real *, integer *, integer *), sgebal_(char *, integer *, real *, integer *, 
 	    integer *, integer *, real *, integer *);
     real sn;
     extern real slamch_(char *), slange_(char *, integer *, integer *,
 	     real *, integer *, real *);
-    extern /* Subroutine */ int sgehrd_(integer *, integer *, integer *, real 
-	    *, integer *, real *, real *, integer *, integer *), xerbla_(char 
-	    *, integer *, ftnlen);
+    extern /* Subroutine */ void sgehrd_(integer *, integer *, integer *, real 
+	    *, integer *, real *, real *, integer *, integer *);
+    extern int xerbla_(char *, integer *, ftnlen);
     extern integer ilaenv_(integer *, char *, char *, integer *, integer *, 
 	    integer *, integer *, ftnlen, ftnlen);
     logical select[1];
     real bignum;
-    extern /* Subroutine */ int slascl_(char *, integer *, integer *, real *, 
+    extern /* Subroutine */ void slascl_(char *, integer *, integer *, real *, 
 	    real *, integer *, integer *, real *, integer *, integer *);
     extern integer isamax_(integer *, real *, integer *);
-    extern /* Subroutine */ int slacpy_(char *, integer *, integer *, real *, 
+    extern /* Subroutine */ void slacpy_(char *, integer *, integer *, real *, 
 	    integer *, real *, integer *), slartg_(real *, real *, 
 	    real *, real *, real *), sorghr_(integer *, integer *, integer *, 
 	    real *, integer *, real *, real *, integer *, integer *), shseqr_(
 	    char *, char *, integer *, integer *, integer *, real *, integer *
 	    , real *, real *, real *, integer *, real *, integer *, integer *);
     integer minwrk, maxwrk;
-    extern /* Subroutine */ int strsna_(char *, char *, logical *, integer *, 
+    extern /* Subroutine */ void strsna_(char *, char *, logical *, integer *, 
 	    real *, integer *, real *, integer *, real *, integer *, real *, 
 	    real *, integer *, integer *, real *, integer *, integer *, 
 	    integer *);
@@ -879,7 +879,7 @@ f"> */
     logical wntsne;
     real smlnum;
     logical lquery, wantvr, wntsnn, wntsnv;
-    extern /* Subroutine */ int strevc3_(char *, char *, logical *, integer *,
+    extern /* Subroutine */ void strevc3_(char *, char *, logical *, integer *,
 	     real *, integer *, real *, integer *, real *, integer *, integer 
 	    *, integer *, real *, integer *, integer *);
     char job[1];
@@ -1042,15 +1042,15 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("SGEEVX", &i__1, (ftnlen)6);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /*     Get machine constants */
@@ -1313,7 +1313,7 @@ L50:
     }
 
     work[1] = (real) maxwrk;
-    return 0;
+    return;
 
 /*     End of SGEEVX */
 

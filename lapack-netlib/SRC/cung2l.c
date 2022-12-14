@@ -628,7 +628,7 @@ f"> */
 /* > \ingroup complexOTHERcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int cung2l_(integer *m, integer *n, integer *k, complex *a, 
+/* Subroutine */ void cung2l_(integer *m, integer *n, integer *k, complex *a, 
 	integer *lda, complex *tau, complex *work, integer *info)
 {
     /* System generated locals */
@@ -637,7 +637,7 @@ f"> */
 
     /* Local variables */
     integer i__, j, l;
-    extern /* Subroutine */ int cscal_(integer *, complex *, complex *, 
+    extern /* Subroutine */ void cscal_(integer *, complex *, complex *, 
 	    integer *), clarf_(char *, integer *, integer *, complex *, 
 	    integer *, complex *, complex *, integer *, complex *);
     integer ii;
@@ -676,13 +676,13 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CUNG2L", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n <= 0) {
-	return 0;
+	return;
     }
 
 /*     Initialise columns 1:n-k to columns of the unit matrix */
@@ -731,7 +731,7 @@ f"> */
 	}
 /* L40: */
     }
-    return 0;
+    return;
 
 /*     End of CUNG2L */
 

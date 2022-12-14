@@ -636,7 +636,7 @@ f"> */
 /* > \ingroup doubleGEcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int dgetrs_(char *trans, integer *n, integer *nrhs, 
+/* Subroutine */ void dgetrs_(char *trans, integer *n, integer *nrhs, 
 	doublereal *a, integer *lda, integer *ipiv, doublereal *b, integer *
 	ldb, integer *info)
 {
@@ -645,10 +645,11 @@ f"> */
 
     /* Local variables */
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int dtrsm_(char *, char *, char *, char *, 
+    extern /* Subroutine */ void dtrsm_(char *, char *, char *, char *, 
 	    integer *, integer *, doublereal *, doublereal *, integer *, 
-	    doublereal *, integer *), xerbla_(
-	    char *, integer *, ftnlen), dlaswp_(integer *, doublereal *, 
+	    doublereal *, integer *);
+    extern int xerbla_(char *, integer *, ftnlen);
+    extern void dlaswp_(integer *, doublereal *, 
 	    integer *, integer *, integer *, integer *, integer *);
     logical notran;
 
@@ -691,13 +692,13 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DGETRS", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0 || *nrhs == 0) {
-	return 0;
+	return;
     }
 
     if (notran) {
@@ -736,7 +737,7 @@ f"> */
 	dlaswp_(nrhs, &b[b_offset], ldb, &c__1, n, &ipiv[1], &c_n1);
     }
 
-    return 0;
+    return;
 
 /*     End of DGETRS */
 

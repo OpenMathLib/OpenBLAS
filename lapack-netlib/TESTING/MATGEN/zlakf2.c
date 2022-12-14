@@ -616,7 +616,7 @@ static doublecomplex c_b1 = {0.,0.};
 /* > \ingroup complex16_matgen */
 
 /*  ===================================================================== */
-/* Subroutine */ int zlakf2_(integer *m, integer *n, doublecomplex *a, 
+/* Subroutine */ void zlakf2_(integer *m, integer *n, doublecomplex *a, 
 	integer *lda, doublecomplex *b, doublecomplex *d__, doublecomplex *e, 
 	doublecomplex *z__, integer *ldz)
 {
@@ -627,7 +627,7 @@ static doublecomplex c_b1 = {0.,0.};
 
     /* Local variables */
     integer i__, j, l, ik, jk, mn;
-    extern /* Subroutine */ int zlaset_(char *, integer *, integer *, 
+    extern /* Subroutine */ void zlaset_(char *, integer *, integer *, 
 	    doublecomplex *, doublecomplex *, doublecomplex *, integer *);
     integer mn2;
 
@@ -739,7 +739,7 @@ static doublecomplex c_b1 = {0.,0.};
 /* L90: */
     }
 
-    return 0;
+    return;
 
 /*     End of ZLAKF2 */
 

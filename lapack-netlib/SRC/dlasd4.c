@@ -663,7 +663,7 @@ f"> */
 /* >     at Berkeley, USA */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int dlasd4_(integer *n, integer *i__, doublereal *d__, 
+/* Subroutine */ void dlasd4_(integer *n, integer *i__, doublereal *d__, 
 	doublereal *z__, doublereal *delta, doublereal *rho, doublereal *
 	sigma, doublereal *work, integer *info)
 {
@@ -681,7 +681,7 @@ f"> */
     doublereal dtisq;
     logical swtch;
     doublereal dtnsq;
-    extern /* Subroutine */ int dlaed6_(integer *, logical *, doublereal *, 
+    extern /* Subroutine */ void dlaed6_(integer *, logical *, doublereal *, 
 	    doublereal *, doublereal *, doublereal *, doublereal *, integer *)
 	    , dlasd5_(integer *, doublereal *, doublereal *, doublereal *, 
 	    doublereal *, doublereal *, doublereal *);
@@ -728,11 +728,11 @@ f"> */
 	*sigma = sqrt(d__[1] * d__[1] + *rho * z__[1] * z__[1]);
 	delta[1] = 1.;
 	work[1] = 1.;
-	return 0;
+	return;
     }
     if (*n == 2) {
 	dlasd5_(i__, &d__[1], &z__[1], &delta[1], rho, sigma, &work[1]);
-	return 0;
+	return;
     }
 
 /*     Compute machine epsilon */
@@ -1661,7 +1661,7 @@ f"> */
     }
 
 L240:
-    return 0;
+    return;
 
 /*     End of DLASD4 */
 

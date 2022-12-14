@@ -645,12 +645,12 @@ doublereal dlansy_(char *norm, char *uplo, integer *n, doublereal *a, integer
 
     /* Local variables */
     doublereal absa;
-    extern /* Subroutine */ int dcombssq_(doublereal *, doublereal *);
+    extern /* Subroutine */ void dcombssq_(doublereal *, doublereal *);
     integer i__, j;
     extern logical lsame_(char *, char *);
     doublereal value;
     extern logical disnan_(doublereal *);
-    extern /* Subroutine */ int dlassq_(integer *, doublereal *, integer *, 
+    extern /* Subroutine */ void dlassq_(integer *, doublereal *, integer *, 
 	    doublereal *, doublereal *);
     doublereal colssq[2], sum, ssq[2];
 

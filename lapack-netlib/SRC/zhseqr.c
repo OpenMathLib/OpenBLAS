@@ -816,7 +816,7 @@ f"> */
 /* >       of Matrix Analysis, volume 23, pages 948--973, 2002. */
 
 /*  ===================================================================== */
-/* Subroutine */ int zhseqr_(char *job, char *compz, integer *n, integer *ilo,
+/* Subroutine */ void zhseqr_(char *job, char *compz, integer *n, integer *ilo,
 	 integer *ihi, doublecomplex *h__, integer *ldh, doublecomplex *w, 
 	doublecomplex *z__, integer *ldz, doublecomplex *work, integer *lwork,
 	 integer *info)
@@ -834,7 +834,7 @@ f"> */
     logical initz;
     doublecomplex workl[49];
     logical wantt, wantz;
-    extern /* Subroutine */ int zcopy_(integer *, doublecomplex *, integer *, 
+    extern /* Subroutine */ void zcopy_(integer *, doublecomplex *, integer *, 
 	    doublecomplex *, integer *), zlaqr0_(logical *, logical *, 
 	    integer *, integer *, integer *, doublecomplex *, integer *, 
 	    doublecomplex *, integer *, integer *, doublecomplex *, integer *,
@@ -843,7 +843,7 @@ f"> */
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     extern integer ilaenv_(integer *, char *, char *, integer *, integer *, 
 	    integer *, integer *, ftnlen, ftnlen);
-    extern /* Subroutine */ int zlahqr_(logical *, logical *, integer *, 
+    extern /* Subroutine */ void zlahqr_(logical *, logical *, integer *, 
 	    integer *, integer *, doublecomplex *, integer *, doublecomplex *,
 	     integer *, integer *, doublecomplex *, integer *, integer *), 
 	    zlacpy_(char *, integer *, integer *, doublecomplex *, integer *, 
@@ -919,13 +919,13 @@ f"> */
 
 	i__1 = -(*info);
 	xerbla_("ZHSEQR", &i__1, (ftnlen)6);
-	return 0;
+	return;
 
     } else if (*n == 0) {
 
 /*        ==== Quick return in case N = 0; nothing to do. ==== */
 
-	return 0;
+	return;
 
     } else if (lquery) {
 
@@ -940,7 +940,7 @@ f"> */
 	d__1 = f2cmax(d__2,d__3);
 	z__1.r = d__1, z__1.i = 0.;
 	work[1].r = z__1.r, work[1].i = z__1.i;
-	return 0;
+	return;
 
     } else {
 
@@ -970,7 +970,7 @@ f"> */
 	    i__1 = *ilo;
 	    i__2 = *ilo + *ilo * h_dim1;
 	    w[i__1].r = h__[i__2].r, w[i__1].i = h__[i__2].i;
-	    return 0;
+	    return;
 	}
 
 /*        ==== ZLAHQR/ZLAQR0 crossover point ==== */
@@ -1054,6 +1054,6 @@ f"> */
 
 /*     ==== End of ZHSEQR ==== */
 
-    return 0;
+    return;
 } /* zhseqr_ */
 

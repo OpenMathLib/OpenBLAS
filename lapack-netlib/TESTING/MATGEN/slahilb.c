@@ -635,7 +635,7 @@ static real c_b4 = 0.f;
 /* > \ingroup real_matgen */
 
 /*  ===================================================================== */
-/* Subroutine */ int slahilb_(integer *n, integer *nrhs, real *a, integer *
+/* Subroutine */ void slahilb_(integer *n, integer *nrhs, real *a, integer *
 	lda, real *x, integer *ldx, real *b, integer *ldb, real *work, 
 	integer *info)
 {
@@ -645,7 +645,8 @@ static real c_b4 = 0.f;
 
     /* Local variables */
     integer i__, j, m, r__, ti, tm;
-    extern /* Subroutine */ int xerbla_(char *, integer *), slaset_(
+    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
+    extern void slaset_(
 	    char *, integer *, integer *, real *, real *, real *, integer *);
 
 
@@ -690,8 +691,8 @@ static real c_b4 = 0.f;
     }
     if (*info < 0) {
 	i__1 = -(*info);
-	xerbla_("SLAHILB", &i__1);
-	return 0;
+	xerbla_("SLAHILB", &i__1, 7);
+	return;
     }
     if (*n > 6) {
 	*info = 1;
@@ -745,6 +746,6 @@ static real c_b4 = 0.f;
 	}
     }
 
-    return 0;
+    return;
 } /* slahilb_ */
 

@@ -644,7 +644,7 @@ aa.f"> */
 /* > \ingroup complexHEcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int chetrs_aa_(char *uplo, integer *n, integer *nrhs, 
+/* Subroutine */ void chetrs_aa_(char *uplo, integer *n, integer *nrhs, 
 	complex *a, integer *lda, integer *ipiv, complex *b, integer *ldb, 
 	complex *work, integer *lwork, integer *info)
 {
@@ -654,16 +654,17 @@ aa.f"> */
     /* Local variables */
     integer k;
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int cswap_(integer *, complex *, integer *, 
+    extern /* Subroutine */ void cswap_(integer *, complex *, integer *, 
 	    complex *, integer *), cgtsv_(integer *, integer *, complex *, 
 	    complex *, complex *, complex *, integer *, integer *), ctrsm_(
 	    char *, char *, char *, char *, integer *, integer *, complex *, 
 	    complex *, integer *, complex *, integer *);
     logical upper;
     integer kp;
-    extern /* Subroutine */ int clacgv_(integer *, complex *, integer *), 
+    extern /* Subroutine */ void clacgv_(integer *, complex *, integer *), 
 	    clacpy_(char *, integer *, integer *, complex *, integer *, 
-	    complex *, integer *), xerbla_(char *, integer *, ftnlen);
+	    complex *, integer *);
+    extern int xerbla_(char *, integer *, ftnlen);
     integer lwkopt;
     logical lquery;
 
@@ -712,17 +713,17 @@ aa.f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CHETRS_AA", &i__1, (ftnlen)9);
-	return 0;
+	return;
     } else if (lquery) {
 	lwkopt = *n * 3 - 2;
 	work[1].r = (real) lwkopt, work[1].i = 0.f;
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0 || *nrhs == 0) {
-	return 0;
+	return;
     }
 
     if (upper) {
@@ -864,7 +865,7 @@ aa.f"> */
 
     }
 
-    return 0;
+    return;
 
 /*     End of CHETRS_AA */
 

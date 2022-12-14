@@ -684,7 +684,7 @@ static integer c_n1 = -1;
 /* > \ingroup complexHEsolve */
 
 /*  ===================================================================== */
-/* Subroutine */ int chesv_(char *uplo, integer *n, integer *nrhs, complex *a,
+/* Subroutine */ void chesv_(char *uplo, integer *n, integer *nrhs, complex *a,
 	 integer *lda, integer *ipiv, complex *b, integer *ldb, complex *work,
 	 integer *lwork, integer *info)
 {
@@ -694,16 +694,16 @@ static integer c_n1 = -1;
     /* Local variables */
     extern logical lsame_(char *, char *);
     integer nb;
-    extern /* Subroutine */ int chetrf_(char *, integer *, complex *, integer 
-	    *, integer *, complex *, integer *, integer *), xerbla_(
-	    char *, integer *, ftnlen);
+    extern /* Subroutine */ void chetrf_(char *, integer *, complex *, integer 
+	    *, integer *, complex *, integer *, integer *);
+    extern int xerbla_(char *, integer *, ftnlen);
     extern integer ilaenv_(integer *, char *, char *, integer *, integer *, 
 	    integer *, integer *, ftnlen, ftnlen);
-    extern /* Subroutine */ int chetrs_(char *, integer *, integer *, complex 
+    extern /* Subroutine */ void chetrs_(char *, integer *, integer *, complex 
 	    *, integer *, integer *, complex *, integer *, integer *);
     integer lwkopt;
     logical lquery;
-    extern /* Subroutine */ int chetrs2_(char *, integer *, integer *, 
+    extern /* Subroutine */ void chetrs2_(char *, integer *, integer *, 
 	    complex *, integer *, integer *, complex *, integer *, complex *, 
 	    integer *);
 
@@ -760,9 +760,9 @@ static integer c_n1 = -1;
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CHESV ", &i__1, (ftnlen)6);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Compute the factorization A = U*D*U**H or A = L*D*L**H. */
@@ -792,7 +792,7 @@ static integer c_n1 = -1;
 
     work[1].r = (real) lwkopt, work[1].i = 0.f;
 
-    return 0;
+    return;
 
 /*     End of CHESV */
 

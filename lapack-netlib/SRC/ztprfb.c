@@ -766,7 +766,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int ztprfb_(char *side, char *trans, char *direct, char *
+/* Subroutine */ void ztprfb_(char *side, char *trans, char *direct, char *
 	storev, integer *m, integer *n, integer *k, integer *l, doublecomplex 
 	*v, integer *ldv, doublecomplex *t, integer *ldt, doublecomplex *a, 
 	integer *lda, doublecomplex *b, integer *ldb, doublecomplex *work, 
@@ -782,7 +782,7 @@ f"> */
     integer i__, j;
     extern logical lsame_(char *, char *);
     logical right;
-    extern /* Subroutine */ int zgemm_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void zgemm_(char *, char *, integer *, integer *, 
 	    integer *, doublecomplex *, doublecomplex *, integer *, 
 	    doublecomplex *, integer *, doublecomplex *, doublecomplex *, 
 	    integer *), ztrmm_(char *, char *, char *, char *,
@@ -822,7 +822,7 @@ f"> */
 
     /* Function Body */
     if (*m <= 0 || *n <= 0 || *k <= 0 || *l < 0) {
-	return 0;
+	return;
     }
 
     if (lsame_(storev, "C")) {
@@ -1609,7 +1609,7 @@ f"> */
 
     }
 
-    return 0;
+    return;
 
 /*     End of ZTPRFB */
 

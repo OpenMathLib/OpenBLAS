@@ -676,7 +676,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 /* > \ingroup realGEcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int sgemqrt_(char *side, char *trans, integer *m, integer *n,
+/* Subroutine */ void sgemqrt_(char *side, char *trans, integer *m, integer *n,
 	 integer *k, integer *nb, real *v, integer *ldv, real *t, integer *
 	ldt, real *c__, integer *ldc, real *work, integer *info)
 {
@@ -690,9 +690,10 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
     extern logical lsame_(char *, char *);
     logical right;
     integer ib, kf;
-    extern /* Subroutine */ int slarfb_(char *, char *, char *, char *, 
+    extern /* Subroutine */ void slarfb_(char *, char *, char *, char *, 
 	    integer *, integer *, integer *, real *, integer *, real *, 
-	    integer *, real *, integer *, real *, integer *), xerbla_(char *, integer *, ftnlen);
+	    integer *, real *, integer *, real *, integer *);
+    extern int xerbla_(char *, integer *, ftnlen);
     logical notran;
     integer ldwork;
 
@@ -756,12 +757,12 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("SGEMQRT", &i__1, (ftnlen)7);
-	return 0;
+	return;
     }
 
 
     if (*m == 0 || *n == 0 || *k == 0) {
-	return 0;
+	return;
     }
 
     if (left && tran) {
@@ -822,7 +823,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 
     }
 
-    return 0;
+    return;
 
 /*     End of SGEMQRT */
 

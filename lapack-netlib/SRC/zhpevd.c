@@ -713,7 +713,7 @@ f"> */
 /* > \ingroup complex16OTHEReigen */
 
 /*  ===================================================================== */
-/* Subroutine */ int zhpevd_(char *jobz, char *uplo, integer *n, 
+/* Subroutine */ void zhpevd_(char *jobz, char *uplo, integer *n, 
 	doublecomplex *ap, doublereal *w, doublecomplex *z__, integer *ldz, 
 	doublecomplex *work, integer *lwork, doublereal *rwork, integer *
 	lrwork, integer *iwork, integer *liwork, integer *info)
@@ -727,7 +727,7 @@ f"> */
     doublereal anrm;
     integer imax;
     doublereal rmin, rmax;
-    extern /* Subroutine */ int dscal_(integer *, doublereal *, doublereal *, 
+    extern /* Subroutine */ void dscal_(integer *, doublereal *, doublereal *, 
 	    integer *);
     doublereal sigma;
     extern logical lsame_(char *, char *);
@@ -736,24 +736,25 @@ f"> */
     extern doublereal dlamch_(char *);
     integer iscale;
     doublereal safmin;
-    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen), zdscal_(
+    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
+    extern void zdscal_(
 	    integer *, doublereal *, doublecomplex *, integer *);
     doublereal bignum;
     integer indtau;
-    extern /* Subroutine */ int dsterf_(integer *, doublereal *, doublereal *,
+    extern /* Subroutine */ void dsterf_(integer *, doublereal *, doublereal *,
 	     integer *);
     extern doublereal zlanhp_(char *, char *, integer *, doublecomplex *, 
 	    doublereal *);
-    extern /* Subroutine */ int zstedc_(char *, integer *, doublereal *, 
+    extern /* Subroutine */ void zstedc_(char *, integer *, doublereal *, 
 	    doublereal *, doublecomplex *, integer *, doublecomplex *, 
 	    integer *, doublereal *, integer *, integer *, integer *, integer 
 	    *);
     integer indrwk, indwrk, liwmin, lrwmin;
     doublereal smlnum;
-    extern /* Subroutine */ int zhptrd_(char *, integer *, doublecomplex *, 
+    extern /* Subroutine */ void zhptrd_(char *, integer *, doublecomplex *, 
 	    doublereal *, doublereal *, doublecomplex *, integer *);
     logical lquery;
-    extern /* Subroutine */ int zupmtr_(char *, char *, char *, integer *, 
+    extern /* Subroutine */ void zupmtr_(char *, char *, char *, integer *, 
 	    integer *, doublecomplex *, doublecomplex *, doublecomplex *, 
 	    integer *, doublecomplex *, integer *);
     doublereal eps;
@@ -830,15 +831,15 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZHPEVD", &i__1, (ftnlen)6);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
     if (*n == 1) {
@@ -847,7 +848,7 @@ f"> */
 	    i__1 = z_dim1 + 1;
 	    z__[i__1].r = 1., z__[i__1].i = 0.;
 	}
-	return 0;
+	return;
     }
 
 /*     Get machine constants. */
@@ -913,7 +914,7 @@ f"> */
     work[1].r = (doublereal) lwmin, work[1].i = 0.;
     rwork[1] = (doublereal) lrwmin;
     iwork[1] = liwmin;
-    return 0;
+    return;
 
 /*     End of ZHPEVD */
 

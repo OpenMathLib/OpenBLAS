@@ -721,7 +721,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int zgebrd_(integer *m, integer *n, doublecomplex *a, 
+/* Subroutine */ void zgebrd_(integer *m, integer *n, doublecomplex *a, 
 	integer *lda, doublereal *d__, doublereal *e, doublecomplex *tauq, 
 	doublecomplex *taup, doublecomplex *work, integer *lwork, integer *
 	info)
@@ -733,14 +733,15 @@ f"> */
 
     /* Local variables */
     integer i__, j, nbmin, iinfo, minmn;
-    extern /* Subroutine */ int zgemm_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void zgemm_(char *, char *, integer *, integer *, 
 	    integer *, doublecomplex *, doublecomplex *, integer *, 
 	    doublecomplex *, integer *, doublecomplex *, doublecomplex *, 
 	    integer *), zgebd2_(integer *, integer *, 
 	    doublecomplex *, integer *, doublereal *, doublereal *, 
 	    doublecomplex *, doublecomplex *, doublecomplex *, integer *);
     integer nb, nx, ws;
-    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen), zlabrd_(
+    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
+    extern void zlabrd_(
 	    integer *, integer *, integer *, doublecomplex *, integer *, 
 	    doublereal *, doublereal *, doublecomplex *, doublecomplex *, 
 	    doublecomplex *, integer *, doublecomplex *, integer *);
@@ -797,9 +798,9 @@ f"> */
     if (*info < 0) {
 	i__1 = -(*info);
 	xerbla_("ZGEBRD", &i__1, (ftnlen)6);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
@@ -807,7 +808,7 @@ f"> */
     minmn = f2cmin(*m,*n);
     if (minmn == 0) {
 	work[1].r = 1., work[1].i = 0.;
-	return 0;
+	return;
     }
 
     ws = f2cmax(*m,*n);
@@ -912,7 +913,7 @@ f"> */
     zgebd2_(&i__2, &i__1, &a[i__ + i__ * a_dim1], lda, &d__[i__], &e[i__], &
 	    tauq[i__], &taup[i__], &work[1], &iinfo);
     work[1].r = (doublereal) ws, work[1].i = 0.;
-    return 0;
+    return;
 
 /*     End of ZGEBRD */
 

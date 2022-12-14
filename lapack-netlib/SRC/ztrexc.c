@@ -639,7 +639,7 @@ f"> */
 /* > \ingroup complex16OTHERcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int ztrexc_(char *compq, integer *n, doublecomplex *t, 
+/* Subroutine */ void ztrexc_(char *compq, integer *n, doublecomplex *t, 
 	integer *ldt, doublecomplex *q, integer *ldq, integer *ifst, integer *
 	ilst, integer *info)
 {
@@ -649,7 +649,7 @@ f"> */
 
     /* Local variables */
     doublecomplex temp;
-    extern /* Subroutine */ int zrot_(integer *, doublecomplex *, integer *, 
+    extern /* Subroutine */ void zrot_(integer *, doublecomplex *, integer *, 
 	    doublecomplex *, integer *, doublereal *, doublecomplex *);
     integer k;
     extern logical lsame_(char *, char *);
@@ -657,7 +657,8 @@ f"> */
     integer m1, m2, m3;
     doublereal cs;
     doublecomplex t11, t22, sn;
-    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen), zlartg_(
+    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
+    extern void zlartg_(
 	    doublecomplex *, doublecomplex *, doublereal *, doublecomplex *, 
 	    doublecomplex *);
 
@@ -700,13 +701,13 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZTREXC", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n <= 1 || *ifst == *ilst) {
-	return 0;
+	return;
     }
 
     if (*ifst < *ilst) {
@@ -770,7 +771,7 @@ f"> */
 /* L10: */
     }
 
-    return 0;
+    return;
 
 /*     End of ZTREXC */
 

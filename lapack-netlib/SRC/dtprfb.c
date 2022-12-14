@@ -766,7 +766,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int dtprfb_(char *side, char *trans, char *direct, char *
+/* Subroutine */ void dtprfb_(char *side, char *trans, char *direct, char *
 	storev, integer *m, integer *n, integer *k, integer *l, doublereal *v,
 	 integer *ldv, doublereal *t, integer *ldt, doublereal *a, integer *
 	lda, doublereal *b, integer *ldb, doublereal *work, integer *ldwork)
@@ -778,12 +778,12 @@ f"> */
     /* Local variables */
     logical left, backward;
     integer i__, j;
-    extern /* Subroutine */ int dgemm_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void dgemm_(char *, char *, integer *, integer *, 
 	    integer *, doublereal *, doublereal *, integer *, doublereal *, 
 	    integer *, doublereal *, doublereal *, integer *);
     extern logical lsame_(char *, char *);
     logical right;
-    extern /* Subroutine */ int dtrmm_(char *, char *, char *, char *, 
+    extern /* Subroutine */ void dtrmm_(char *, char *, char *, char *, 
 	    integer *, integer *, doublereal *, doublereal *, integer *, 
 	    doublereal *, integer *);
     integer kp, mp, np;
@@ -820,7 +820,7 @@ f"> */
 
     /* Function Body */
     if (*m <= 0 || *n <= 0 || *k <= 0 || *l < 0) {
-	return 0;
+	return;
     }
 
     if (lsame_(storev, "C")) {
@@ -1471,7 +1471,7 @@ f"> */
 
     }
 
-    return 0;
+    return;
 
 /*     End of DTPRFB */
 

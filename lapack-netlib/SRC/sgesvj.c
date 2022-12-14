@@ -839,7 +839,7 @@ f"> */
 /* > drmac@math.hr. Thank you. */
 
 /*  ===================================================================== */
-/* Subroutine */ int sgesvj_(char *joba, char *jobu, char *jobv, integer *m, 
+/* Subroutine */ void sgesvj_(char *joba, char *jobu, char *jobv, integer *m, 
 	integer *n, real *a, integer *lda, real *sva, integer *mv, real *v, 
 	integer *ldv, real *work, integer *lwork, integer *info)
 {
@@ -859,23 +859,23 @@ f"> */
     real t, large, apoaq, aqoap;
     extern logical lsame_(char *, char *);
     real theta;
-    extern /* Subroutine */ int sscal_(integer *, real *, real *, integer *);
+    extern /* Subroutine */ void sscal_(integer *, real *, real *, integer *);
     real small, sfmin;
     logical lsvec;
     real fastr[5], epsln;
     logical applv, rsvec, uctol, lower, upper;
-    extern /* Subroutine */ int scopy_(integer *, real *, integer *, real *, 
+    extern /* Subroutine */ void scopy_(integer *, real *, integer *, real *, 
 	    integer *);
     logical rotok;
     integer n2;
-    extern /* Subroutine */ int sswap_(integer *, real *, integer *, real *, 
+    extern /* Subroutine */ void sswap_(integer *, real *, integer *, real *, 
 	    integer *);
     integer n4;
-    extern /* Subroutine */ int saxpy_(integer *, real *, real *, integer *, 
+    extern /* Subroutine */ void saxpy_(integer *, real *, real *, integer *, 
 	    real *, integer *), srotm_(integer *, real *, integer *, real *, 
 	    integer *, real *);
     real rootsfmin;
-    extern /* Subroutine */ int sgsvj0_(char *, integer *, integer *, real *, 
+    extern /* Subroutine */ void sgsvj0_(char *, integer *, integer *, real *, 
 	    integer *, real *, real *, integer *, real *, integer *, real *, 
 	    real *, real *, integer *, real *, integer *, integer *), 
 	    sgsvj1_(char *, integer *, integer *, integer *, real *, integer *
@@ -886,15 +886,15 @@ f"> */
     extern real slamch_(char *);
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     integer ijblsk, swband;
-    extern /* Subroutine */ int slascl_(char *, integer *, integer *, real *, 
+    extern /* Subroutine */ void slascl_(char *, integer *, integer *, real *, 
 	    real *, integer *, integer *, real *, integer *, integer *);
     extern integer isamax_(integer *, real *, integer *);
     integer blskip;
     real mxaapq;
-    extern /* Subroutine */ int slaset_(char *, integer *, integer *, real *, 
+    extern /* Subroutine */ void slaset_(char *, integer *, integer *, real *, 
 	    real *, real *, integer *);
     real thsign;
-    extern /* Subroutine */ int slassq_(integer *, real *, integer *, real *, 
+    extern /* Subroutine */ void slassq_(integer *, real *, integer *, real *, 
 	    real *);
     real mxsinj;
     integer ir1, emptsw, notrot, iswrot, jbc;
@@ -978,13 +978,13 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("SGESVJ", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /* #:) Quick return for void matrix */
 
     if (*m == 0 || *n == 0) {
-	return 0;
+	return;
     }
 
 /*     Set numerical parameters */
@@ -1026,7 +1026,7 @@ f"> */
 	*info = -4;
 	i__1 = -(*info);
 	xerbla_("SGESVJ", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Initialize the right singular vector matrix. */
@@ -1064,7 +1064,7 @@ f"> */
 		*info = -6;
 		i__2 = -(*info);
 		xerbla_("SGESVJ", &i__2, (ftnlen)6);
-		return 0;
+		return;
 	    }
 	    aaqq = sqrt(aaqq);
 	    if (aapp < big / aaqq && noscale) {
@@ -1094,7 +1094,7 @@ f"> */
 		*info = -6;
 		i__2 = -(*info);
 		xerbla_("SGESVJ", &i__2, (ftnlen)6);
-		return 0;
+		return;
 	    }
 	    aaqq = sqrt(aaqq);
 	    if (aapp < big / aaqq && noscale) {
@@ -1124,7 +1124,7 @@ f"> */
 		*info = -6;
 		i__2 = -(*info);
 		xerbla_("SGESVJ", &i__2, (ftnlen)6);
-		return 0;
+		return;
 	    }
 	    aaqq = sqrt(aaqq);
 	    if (aapp < big / aaqq && noscale) {
@@ -1180,7 +1180,7 @@ f"> */
 	work[4] = 0.f;
 	work[5] = 0.f;
 	work[6] = 0.f;
-	return 0;
+	return;
     }
 
 /* #:) Quick return for one-column matrix */
@@ -1200,7 +1200,7 @@ f"> */
 	work[4] = 0.f;
 	work[5] = 0.f;
 	work[6] = 0.f;
-	return 0;
+	return;
     }
 
 /*     Protect small singular values from underflow, and try to */
@@ -2329,6 +2329,6 @@ L1995:
 /*     MXSINJ is the largest absolute value of the sines of Jacobi angles */
 /*     in the last sweep */
 
-    return 0;
+    return;
 } /* sgesvj_ */
 

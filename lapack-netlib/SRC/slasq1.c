@@ -623,7 +623,7 @@ f"> */
 /* > \ingroup auxOTHERcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int slasq1_(integer *n, real *d__, real *e, real *work, 
+/* Subroutine */ void slasq1_(integer *n, real *d__, real *e, real *work, 
 	integer *info)
 {
     /* System generated locals */
@@ -631,17 +631,18 @@ f"> */
     real r__1, r__2, r__3;
 
     /* Local variables */
-    extern /* Subroutine */ int slas2_(real *, real *, real *, real *, real *)
+    extern /* Subroutine */ void slas2_(real *, real *, real *, real *, real *)
 	    ;
     integer i__;
     real scale;
     integer iinfo;
     real sigmn, sigmx;
-    extern /* Subroutine */ int scopy_(integer *, real *, integer *, real *, 
+    extern /* Subroutine */ void scopy_(integer *, real *, integer *, real *, 
 	    integer *), slasq2_(integer *, real *, integer *);
     extern real slamch_(char *);
     real safmin;
-    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen), slascl_(
+    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
+    extern void slascl_(
 	    char *, integer *, integer *, real *, real *, integer *, integer *
 	    , real *, integer *, integer *), slasrt_(char *, integer *
 	    , real *, integer *);
@@ -668,17 +669,17 @@ f"> */
 	*info = -1;
 	i__1 = -(*info);
 	xerbla_("SLASQ1", &i__1, (ftnlen)6);
-	return 0;
+	return;
     } else if (*n == 0) {
-	return 0;
+	return;
     } else if (*n == 1) {
 	d__[1] = abs(d__[1]);
-	return 0;
+	return;
     } else if (*n == 2) {
 	slas2_(&d__[1], &e[1], &d__[2], &sigmn, &sigmx);
 	d__[1] = sigmx;
 	d__[2] = sigmn;
-	return 0;
+	return;
     }
 
 /*     Estimate the largest singular value. */
@@ -698,7 +699,7 @@ f"> */
 
     if (sigmx == 0.f) {
 	slasrt_("D", n, &d__[1], &iinfo);
-	return 0;
+	return;
     }
 
     i__1 = *n;
@@ -759,7 +760,7 @@ f"> */
 	slascl_("G", &c__0, &c__0, &scale, &sigmx, n, &c__1, &e[1], n, &iinfo);
     }
 
-    return 0;
+    return;
 
 /*     End of SLASQ1 */
 

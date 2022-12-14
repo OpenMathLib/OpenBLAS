@@ -721,7 +721,7 @@ f"> */
 /* > at Berkeley, USA */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int cheevd_(char *jobz, char *uplo, integer *n, complex *a, 
+/* Subroutine */ void cheevd_(char *jobz, char *uplo, integer *n, complex *a, 
 	integer *lda, real *w, complex *work, integer *lwork, real *rwork, 
 	integer *lrwork, integer *iwork, integer *liwork, integer *info)
 {
@@ -738,7 +738,7 @@ f"> */
     real sigma;
     extern logical lsame_(char *, char *);
     integer iinfo;
-    extern /* Subroutine */ int sscal_(integer *, real *, real *, integer *);
+    extern /* Subroutine */ void sscal_(integer *, real *, real *, integer *);
     integer lwmin, liopt;
     logical lower;
     integer llrwk, lropt;
@@ -747,12 +747,12 @@ f"> */
     extern real clanhe_(char *, char *, integer *, complex *, integer *, real 
 	    *);
     integer iscale;
-    extern /* Subroutine */ int clascl_(char *, integer *, integer *, real *, 
+    extern /* Subroutine */ void clascl_(char *, integer *, integer *, real *, 
 	    real *, integer *, integer *, complex *, integer *, integer *), cstedc_(char *, integer *, real *, real *, complex *, 
 	    integer *, complex *, integer *, real *, integer *, integer *, 
 	    integer *, integer *);
     extern real slamch_(char *);
-    extern /* Subroutine */ int chetrd_(char *, integer *, complex *, integer 
+    extern /* Subroutine */ void chetrd_(char *, integer *, complex *, integer 
 	    *, real *, real *, complex *, complex *, integer *, integer *), clacpy_(char *, integer *, integer *, complex *, integer 
 	    *, complex *, integer *);
     real safmin;
@@ -761,9 +761,9 @@ f"> */
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     real bignum;
     integer indtau, indrwk, indwrk, liwmin;
-    extern /* Subroutine */ int ssterf_(integer *, real *, real *, integer *);
+    extern /* Subroutine */ void ssterf_(integer *, real *, real *, integer *);
     integer lrwmin;
-    extern /* Subroutine */ int cunmtr_(char *, char *, char *, integer *, 
+    extern /* Subroutine */ void cunmtr_(char *, char *, char *, integer *, 
 	    integer *, complex *, integer *, complex *, complex *, integer *, 
 	    complex *, integer *, integer *);
     integer llwork;
@@ -851,15 +851,15 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CHEEVD", &i__1, (ftnlen)6);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
     if (*n == 1) {
@@ -869,7 +869,7 @@ f"> */
 	    i__1 = a_dim1 + 1;
 	    a[i__1].r = 1.f, a[i__1].i = 0.f;
 	}
-	return 0;
+	return;
     }
 
 /*     Get machine constants. */
@@ -942,7 +942,7 @@ f"> */
     rwork[1] = (real) lropt;
     iwork[1] = liopt;
 
-    return 0;
+    return;
 
 /*     End of CHEEVD */
 

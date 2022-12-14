@@ -672,7 +672,7 @@ static integer c__1 = 1;
 /* > \ingroup doubleOTHEReigen */
 
 /*  ===================================================================== */
-/* Subroutine */ int dspgv_(integer *itype, char *jobz, char *uplo, integer *
+/* Subroutine */ void dspgv_(integer *itype, char *jobz, char *uplo, integer *
 	n, doublereal *ap, doublereal *bp, doublereal *w, doublereal *z__, 
 	integer *ldz, doublereal *work, integer *info)
 {
@@ -682,16 +682,17 @@ static integer c__1 = 1;
     /* Local variables */
     integer neig, j;
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int dspev_(char *, char *, integer *, doublereal *
+    extern /* Subroutine */ void dspev_(char *, char *, integer *, doublereal *
 	    , doublereal *, doublereal *, integer *, doublereal *, integer *);
     char trans[1];
     logical upper;
-    extern /* Subroutine */ int dtpmv_(char *, char *, char *, integer *, 
+    extern /* Subroutine */ void dtpmv_(char *, char *, char *, integer *, 
 	    doublereal *, doublereal *, integer *), 
 	    dtpsv_(char *, char *, char *, integer *, doublereal *, 
 	    doublereal *, integer *);
     logical wantz;
-    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen), dpptrf_(
+    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
+    extern void dpptrf_(
 	    char *, integer *, doublereal *, integer *), dspgst_(
 	    integer *, char *, integer *, doublereal *, doublereal *, integer 
 	    *);
@@ -736,13 +737,13 @@ static integer c__1 = 1;
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DSPGV ", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /*     Form a Cholesky factorization of B. */
@@ -750,7 +751,7 @@ static integer c__1 = 1;
     dpptrf_(uplo, n, &bp[1], info);
     if (*info != 0) {
 	*info = *n + *info;
-	return 0;
+	return;
     }
 
 /*     Transform problem to standard eigenvalue problem and solve. */
@@ -803,7 +804,7 @@ static integer c__1 = 1;
 	    }
 	}
     }
-    return 0;
+    return;
 
 /*     End of DSPGV */
 

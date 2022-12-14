@@ -826,7 +826,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int strsen_(char *job, char *compq, logical *select, integer 
+/* Subroutine */ void strsen_(char *job, char *compq, logical *select, integer 
 	*n, real *t, integer *ldt, real *q, integer *ldq, real *wr, real *wi, 
 	integer *m, real *s, real *sep, real *work, integer *lwork, integer *
 	iwork, integer *liwork, integer *info)
@@ -847,20 +847,20 @@ f"> */
     logical wantq, wants;
     real rnorm;
     integer n1, n2;
-    extern /* Subroutine */ int slacn2_(integer *, real *, real *, integer *, 
+    extern /* Subroutine */ void slacn2_(integer *, real *, real *, integer *, 
 	    real *, integer *, integer *);
     integer kk, nn, ks;
     extern real slange_(char *, integer *, integer *, real *, integer *, real 
 	    *);
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     logical wantbh;
-    extern /* Subroutine */ int slacpy_(char *, integer *, integer *, real *, 
+    extern /* Subroutine */ void slacpy_(char *, integer *, integer *, real *, 
 	    integer *, real *, integer *);
     integer liwmin;
-    extern /* Subroutine */ int strexc_(char *, integer *, real *, integer *, 
+    extern /* Subroutine */ void strexc_(char *, integer *, real *, integer *, 
 	    real *, integer *, integer *, integer *, real *, integer *);
     logical wantsp, lquery;
-    extern /* Subroutine */ int strsyl_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void strsyl_(char *, char *, integer *, integer *, 
 	    integer *, real *, integer *, real *, integer *, real *, integer *
 	    , real *, integer *);
     real est;
@@ -972,9 +972,9 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("STRSEN", &i__1, (ftnlen)6);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible. */
@@ -1111,7 +1111,7 @@ L40:
     work[1] = (real) lwmin;
     iwork[1] = liwmin;
 
-    return 0;
+    return;
 
 /*     End of STRSEN */
 

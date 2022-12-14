@@ -921,7 +921,7 @@ fsx_extended.f"> */
 /* > \ingroup realGBcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int sla_gbrfsx_extended_(integer *prec_type__, integer *
+/* Subroutine */ void sla_gbrfsx_extended_(integer *prec_type__, integer *
 	trans_type__, integer *n, integer *kl, integer *ku, integer *nrhs, 
 	real *ab, integer *ldab, real *afb, integer *ldafb, integer *ipiv, 
 	logical *colequ, real *c__, real *b, integer *ldb, real *y, integer *
@@ -939,13 +939,13 @@ fsx_extended.f"> */
 
     /* Local variables */
     real dx_x__, dz_z__, ymin;
-    extern /* Subroutine */ int sla_lin_berr_(integer *, integer *, integer *
+    extern /* Subroutine */ void sla_lin_berr_(integer *, integer *, integer *
 	    , real *, real *, real *), blas_sgbmv_x__(integer *, integer *, 
 	    integer *, integer *, integer *, real *, real *, integer *, real *
 	    , integer *, real *, real *, integer *, integer *);
     real dxratmax, dzratmax;
     integer y_prec_state__, i__, j, m;
-    extern /* Subroutine */ int blas_sgbmv2_x_(integer *, integer *, integer 
+    extern /* Subroutine */ void blas_sgbmv2_x_(integer *, integer *, integer 
 	    *, integer *, integer *, real *, real *, integer *, real *, real *
 	    , integer *, real *, real *, integer *, integer *), sla_gbamv__(
 	    integer *, integer *, integer *, integer *, integer *, real *, 
@@ -956,19 +956,19 @@ fsx_extended.f"> */
     logical incr_prec__;
     real dzrat;
     char trans[1];
-    extern /* Subroutine */ int scopy_(integer *, real *, integer *, real *, 
+    extern /* Subroutine */ void scopy_(integer *, real *, integer *, real *, 
 	    integer *);
     real normx, normy;
-    extern /* Subroutine */ int saxpy_(integer *, real *, real *, integer *, 
+    extern /* Subroutine */ void saxpy_(integer *, real *, real *, integer *, 
 	    real *, integer *);
     real myhugeval, prev_dz_z__, yk;
     extern real slamch_(char *);
     real final_dx_x__, final_dz_z__;
-    extern /* Subroutine */ int sgbtrs_(char *, integer *, integer *, integer 
+    extern /* Subroutine */ void sgbtrs_(char *, integer *, integer *, integer 
 	    *, integer *, real *, integer *, integer *, real *, integer *, 
 	    integer *);
     real normdx;
-    extern /* Subroutine */ int sla_wwaddw_(integer *, real *, real *, real *
+    extern /* Subroutine */ void sla_wwaddw_(integer *, real *, real *, real *
 	    );
     extern /* Character */ VOID chla_transtype_(char *, integer *);
     real prevnormdx;
@@ -1016,7 +1016,7 @@ fsx_extended.f"> */
 
     /* Function Body */
     if (*info != 0) {
-	return 0;
+	return;
     }
     chla_transtype_(ch__1, trans_type__);
     *(unsigned char *)trans = *(unsigned char *)&ch__1[0];
@@ -1254,6 +1254,6 @@ L666:
 
     }
 
-    return 0;
+    return;
 } /* sla_gbrfsx_extended__ */
 

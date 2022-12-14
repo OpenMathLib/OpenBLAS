@@ -638,7 +638,7 @@ f"> */
 /* > \ingroup doubleGEcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int dgebak_(char *job, char *side, integer *n, integer *ilo, 
+/* Subroutine */ void dgebak_(char *job, char *side, integer *n, integer *ilo, 
 	integer *ihi, doublereal *scale, integer *m, doublereal *v, integer *
 	ldv, integer *info)
 {
@@ -648,10 +648,10 @@ f"> */
     /* Local variables */
     integer i__, k;
     doublereal s;
-    extern /* Subroutine */ int dscal_(integer *, doublereal *, doublereal *, 
+    extern /* Subroutine */ void dscal_(integer *, doublereal *, doublereal *, 
 	    integer *);
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int dswap_(integer *, doublereal *, integer *, 
+    extern /* Subroutine */ void dswap_(integer *, doublereal *, integer *, 
 	    doublereal *, integer *);
     logical leftv;
     integer ii;
@@ -700,19 +700,19 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DGEBAK", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
     if (*m == 0) {
-	return 0;
+	return;
     }
     if (lsame_(job, "N")) {
-	return 0;
+	return;
     }
 
     if (*ilo == *ihi) {
@@ -791,7 +791,7 @@ L50:
 	}
     }
 
-    return 0;
+    return;
 
 /*     End of DGEBAK */
 

@@ -633,7 +633,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 /* > \ingroup complexGTsolve */
 
 /*  ===================================================================== */
-/* Subroutine */ int cgtsv_(integer *n, integer *nrhs, complex *dl, complex *
+/* Subroutine */ void cgtsv_(integer *n, integer *nrhs, complex *dl, complex *
 	d__, complex *du, complex *b, integer *ldb, integer *info)
 {
     /* System generated locals */
@@ -676,11 +676,11 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CGTSV ", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
     i__1 = *n - 1;
@@ -697,7 +697,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 /*              solution can not be found. */
 
 		*info = k;
-		return 0;
+		return;
 	    }
 	} else /* if(complicated condition) */ {
 	    i__2 = k;
@@ -785,7 +785,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
     i__1 = *n;
     if (d__[i__1].r == 0.f && d__[i__1].i == 0.f) {
 	*info = *n;
-	return 0;
+	return;
     }
 
 /*     Back solve with the matrix U from the factorization. */
@@ -826,7 +826,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 /* L50: */
     }
 
-    return 0;
+    return;
 
 /*     End of CGTSV */
 

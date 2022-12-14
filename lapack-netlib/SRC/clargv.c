@@ -631,7 +631,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int clargv_(integer *n, complex *x, integer *incx, complex *
+/* Subroutine */ void clargv_(integer *n, complex *x, integer *incx, complex *
 	y, integer *incy, real *c__, integer *incc)
 {
     /* System generated locals */
@@ -869,7 +869,7 @@ L50:
 	ix += *incx;
 /* L60: */
     }
-    return 0;
+    return;
 
 /*     End of CLARGV */
 

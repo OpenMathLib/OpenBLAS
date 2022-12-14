@@ -684,7 +684,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int zlahrd_(integer *n, integer *k, integer *nb, 
+/* Subroutine */ void zlahrd_(integer *n, integer *k, integer *nb, 
 	doublecomplex *a, integer *lda, doublecomplex *tau, doublecomplex *t, 
 	integer *ldt, doublecomplex *y, integer *ldy)
 {
@@ -695,7 +695,7 @@ f"> */
 
     /* Local variables */
     integer i__;
-    extern /* Subroutine */ int zscal_(integer *, doublecomplex *, 
+    extern /* Subroutine */ void zscal_(integer *, doublecomplex *, 
 	    doublecomplex *, integer *), zgemv_(char *, integer *, integer *, 
 	    doublecomplex *, doublecomplex *, integer *, doublecomplex *, 
 	    integer *, doublecomplex *, doublecomplex *, integer *), 
@@ -705,7 +705,7 @@ f"> */
 	    char *, integer *, doublecomplex *, integer *, doublecomplex *, 
 	    integer *);
     doublecomplex ei;
-    extern /* Subroutine */ int zlarfg_(integer *, doublecomplex *, 
+    extern /* Subroutine */ void zlarfg_(integer *, doublecomplex *, 
 	    doublecomplex *, integer *, doublecomplex *), zlacgv_(integer *, 
 	    doublecomplex *, integer *);
 
@@ -735,7 +735,7 @@ f"> */
 
     /* Function Body */
     if (*n <= 1) {
-	return 0;
+	return;
     }
 
     i__1 = *nb;
@@ -859,7 +859,7 @@ f"> */
     i__1 = *k + *nb + *nb * a_dim1;
     a[i__1].r = ei.r, a[i__1].i = ei.i;
 
-    return 0;
+    return;
 
 /*     End of ZLAHRD */
 

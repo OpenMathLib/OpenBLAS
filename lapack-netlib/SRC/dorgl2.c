@@ -622,7 +622,7 @@ f"> */
 /* > \ingroup doubleOTHERcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int dorgl2_(integer *m, integer *n, integer *k, doublereal *
+/* Subroutine */ void dorgl2_(integer *m, integer *n, integer *k, doublereal *
 	a, integer *lda, doublereal *tau, doublereal *work, integer *info)
 {
     /* System generated locals */
@@ -631,9 +631,10 @@ f"> */
 
     /* Local variables */
     integer i__, j, l;
-    extern /* Subroutine */ int dscal_(integer *, doublereal *, doublereal *, 
+    extern /* Subroutine */ void dscal_(integer *, doublereal *, doublereal *, 
 	    integer *), dlarf_(char *, integer *, integer *, doublereal *, 
-	    integer *, doublereal *, doublereal *, integer *, doublereal *), xerbla_(char *, integer *, ftnlen);
+	    integer *, doublereal *, doublereal *, integer *, doublereal *);
+    extern int xerbla_(char *, integer *, ftnlen);
 
 
 /*  -- LAPACK computational routine (version 3.7.0) -- */
@@ -668,13 +669,13 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DORGL2", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*m <= 0) {
-	return 0;
+	return;
     }
 
     if (*k < *m) {
@@ -722,7 +723,7 @@ f"> */
 	}
 /* L40: */
     }
-    return 0;
+    return;
 
 /*     End of DORGL2 */
 

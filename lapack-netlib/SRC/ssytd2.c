@@ -689,7 +689,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int ssytd2_(char *uplo, integer *n, real *a, integer *lda, 
+/* Subroutine */ void ssytd2_(char *uplo, integer *n, real *a, integer *lda, 
 	real *d__, real *e, real *tau, integer *info)
 {
     /* System generated locals */
@@ -699,16 +699,16 @@ f"> */
     real taui;
     extern real sdot_(integer *, real *, integer *, real *, integer *);
     integer i__;
-    extern /* Subroutine */ int ssyr2_(char *, integer *, real *, real *, 
+    extern /* Subroutine */ void ssyr2_(char *, integer *, real *, real *, 
 	    integer *, real *, integer *, real *, integer *);
     real alpha;
     extern logical lsame_(char *, char *);
     logical upper;
-    extern /* Subroutine */ int saxpy_(integer *, real *, real *, integer *, 
+    extern /* Subroutine */ void saxpy_(integer *, real *, real *, integer *, 
 	    real *, integer *), ssymv_(char *, integer *, real *, real *, 
-	    integer *, real *, integer *, real *, real *, integer *), 
-	    xerbla_(char *, integer *, ftnlen), slarfg_(integer *, real *, 
-	    real *, integer *, real *);
+	    integer *, real *, integer *, real *, real *, integer *); 
+    extern int xerbla_(char *, integer *, ftnlen);
+    extern void slarfg_(integer *, real *, real *, integer *, real *);
 
 
 /*  -- LAPACK computational routine (version 3.7.0) -- */
@@ -743,13 +743,13 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("SSYTD2", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n <= 0) {
-	return 0;
+	return;
     }
 
     if (upper) {
@@ -852,7 +852,7 @@ f"> */
 	d__[*n] = a[*n + *n * a_dim1];
     }
 
-    return 0;
+    return;
 
 /*     End of SSYTD2 */
 

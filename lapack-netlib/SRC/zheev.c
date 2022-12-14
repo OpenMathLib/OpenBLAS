@@ -656,7 +656,7 @@ ices</b> */
 /* > \ingroup complex16HEeigen */
 
 /*  ===================================================================== */
-/* Subroutine */ int zheev_(char *jobz, char *uplo, integer *n, doublecomplex 
+/* Subroutine */ void zheev_(char *jobz, char *uplo, integer *n, doublecomplex 
 	*a, integer *lda, doublereal *w, doublecomplex *work, integer *lwork, 
 	doublereal *rwork, integer *info)
 {
@@ -669,7 +669,7 @@ ices</b> */
     doublereal anrm;
     integer imax;
     doublereal rmin, rmax;
-    extern /* Subroutine */ int dscal_(integer *, doublereal *, doublereal *, 
+    extern /* Subroutine */ void dscal_(integer *, doublereal *, doublereal *, 
 	    integer *);
     doublereal sigma;
     extern logical lsame_(char *, char *);
@@ -686,19 +686,19 @@ ices</b> */
     extern doublereal zlanhe_(char *, char *, integer *, doublecomplex *, 
 	    integer *, doublereal *);
     integer indtau;
-    extern /* Subroutine */ int dsterf_(integer *, doublereal *, doublereal *,
+    extern /* Subroutine */ void dsterf_(integer *, doublereal *, doublereal *,
 	     integer *), zlascl_(char *, integer *, integer *, doublereal *, 
 	    doublereal *, integer *, integer *, doublecomplex *, integer *, 
 	    integer *);
     integer indwrk;
-    extern /* Subroutine */ int zhetrd_(char *, integer *, doublecomplex *, 
+    extern /* Subroutine */ void zhetrd_(char *, integer *, doublecomplex *, 
 	    integer *, doublereal *, doublereal *, doublecomplex *, 
 	    doublecomplex *, integer *, integer *);
     integer llwork;
     doublereal smlnum;
     integer lwkopt;
     logical lquery;
-    extern /* Subroutine */ int zsteqr_(char *, integer *, doublereal *, 
+    extern /* Subroutine */ void zsteqr_(char *, integer *, doublereal *, 
 	    doublereal *, doublecomplex *, integer *, doublereal *, integer *), zungtr_(char *, integer *, doublecomplex *, integer *, 
 	    doublecomplex *, doublecomplex *, integer *, integer *);
     doublereal eps;
@@ -757,15 +757,15 @@ ices</b> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZHEEV ", &i__1, (ftnlen)6);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
     if (*n == 1) {
@@ -776,7 +776,7 @@ ices</b> */
 	    i__1 = a_dim1 + 1;
 	    a[i__1].r = 1., a[i__1].i = 0.;
 	}
-	return 0;
+	return;
     }
 
 /*     Get machine constants. */
@@ -842,7 +842,7 @@ ices</b> */
 
     work[1].r = (doublereal) lwkopt, work[1].i = 0.;
 
-    return 0;
+    return;
 
 /*     End of ZHEEV */
 

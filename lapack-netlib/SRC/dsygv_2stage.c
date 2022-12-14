@@ -743,7 +743,7 @@ stage.f"> */
 /* > \endverbatim */
 
 /*  ===================================================================== */
-/* Subroutine */ int dsygv_2stage_(integer *itype, char *jobz, char *uplo, 
+/* Subroutine */ void dsygv_2stage_(integer *itype, char *jobz, char *uplo, 
 	integer *n, doublereal *a, integer *lda, doublereal *b, integer *ldb, 
 	doublereal *w, doublereal *work, integer *lwork, integer *info)
 {
@@ -754,26 +754,27 @@ stage.f"> */
     integer neig;
     extern integer ilaenv2stage_(integer *, char *, char *, integer *, 
 	    integer *, integer *, integer *);
-    extern /* Subroutine */ int dsyev_2stage_(char *, char *, integer *, 
+    extern /* Subroutine */ void dsyev_2stage_(char *, char *, integer *, 
 	    doublereal *, integer *, doublereal *, doublereal *, integer *, 
 	    integer *);
     extern logical lsame_(char *, char *);
     integer lhtrd;
-    extern /* Subroutine */ int dtrmm_(char *, char *, char *, char *, 
+    extern /* Subroutine */ void dtrmm_(char *, char *, char *, char *, 
 	    integer *, integer *, doublereal *, doublereal *, integer *, 
 	    doublereal *, integer *);
     integer lwmin;
     char trans[1];
-    extern /* Subroutine */ int dtrsm_(char *, char *, char *, char *, 
+    extern /* Subroutine */ void dtrsm_(char *, char *, char *, char *, 
 	    integer *, integer *, doublereal *, doublereal *, integer *, 
 	    doublereal *, integer *);
     logical upper;
     integer lwtrd;
     logical wantz;
     integer ib, kd;
-    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen), dpotrf_(
-	    char *, integer *, doublereal *, integer *, integer *), 
-	    dsygst_(integer *, char *, integer *, doublereal *, integer *, 
+    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
+    extern int dpotrf_(
+	    char *, integer *, doublereal *, integer *, integer *); 
+    extern void dsygst_(integer *, char *, integer *, doublereal *, integer *, 
 	    doublereal *, integer *, integer *);
     logical lquery;
 
@@ -839,15 +840,15 @@ stage.f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DSYGV_2STAGE ", &i__1, (ftnlen)13);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /*     Form a Cholesky factorization of B. */
@@ -855,7 +856,7 @@ stage.f"> */
     dpotrf_(uplo, n, &b[b_offset], ldb, info);
     if (*info != 0) {
 	*info = *n + *info;
-	return 0;
+	return;
     }
 
 /*     Transform problem to standard eigenvalue problem and solve. */
@@ -903,7 +904,7 @@ stage.f"> */
     }
 
     work[1] = (doublereal) lwmin;
-    return 0;
+    return;
 
 /*     End of DSYGV_2STAGE */
 

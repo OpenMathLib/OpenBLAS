@@ -627,7 +627,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 /* > \ingroup doublePOcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int dpoequb_(integer *n, doublereal *a, integer *lda, 
+/* Subroutine */ void dpoequb_(integer *n, doublereal *a, integer *lda, 
 	doublereal *s, doublereal *scond, doublereal *amax, integer *info)
 {
     /* System generated locals */
@@ -671,7 +671,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DPOEQUB", &i__1, (ftnlen)7);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible. */
@@ -679,7 +679,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
     if (*n == 0) {
 	*scond = 1.;
 	*amax = 0.;
-	return 0;
+	return;
     }
     base = dlamch_("B");
     tmp = -.5 / log(base);
@@ -709,7 +709,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 	for (i__ = 1; i__ <= i__1; ++i__) {
 	    if (s[i__] <= 0.) {
 		*info = i__;
-		return 0;
+		return;
 	    }
 /* L20: */
 	}
@@ -730,7 +730,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 	*scond = sqrt(smin) / sqrt(*amax);
     }
 
-    return 0;
+    return;
 
 /*     End of DPOEQUB */
 

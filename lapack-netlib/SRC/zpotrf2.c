@@ -618,7 +618,7 @@ static doublereal c_b12 = 1.;
 /* > \ingroup complex16POcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int zpotrf2_(char *uplo, integer *n, doublecomplex *a, 
+/* Subroutine */ void zpotrf2_(char *uplo, integer *n, doublecomplex *a, 
 	integer *lda, integer *info)
 {
     /* System generated locals */
@@ -628,12 +628,12 @@ static doublereal c_b12 = 1.;
     /* Local variables */
     extern logical lsame_(char *, char *);
     integer iinfo;
-    extern /* Subroutine */ int zherk_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void zherk_(char *, char *, integer *, integer *, 
 	    doublereal *, doublecomplex *, integer *, doublereal *, 
 	    doublecomplex *, integer *);
     logical upper;
     integer n1, n2;
-    extern /* Subroutine */ int ztrsm_(char *, char *, char *, char *, 
+    extern /* Subroutine */ void ztrsm_(char *, char *, char *, char *, 
 	    integer *, integer *, doublecomplex *, doublecomplex *, integer *,
 	     doublecomplex *, integer *);
     extern logical disnan_(doublereal *);
@@ -670,13 +670,13 @@ static doublereal c_b12 = 1.;
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZPOTRF2", &i__1, (ftnlen)7);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /*     N=1 case */
@@ -689,7 +689,7 @@ static doublereal c_b12 = 1.;
 	ajj = a[i__1].r;
 	if (ajj <= 0. || disnan_(&ajj)) {
 	    *info = 1;
-	    return 0;
+	    return;
 	}
 
 /*        Factor */
@@ -709,7 +709,7 @@ static doublereal c_b12 = 1.;
 	zpotrf2_(uplo, &n1, &a[a_dim1 + 1], lda, &iinfo);
 	if (iinfo != 0) {
 	    *info = iinfo;
-	    return 0;
+	    return;
 	}
 
 /*        Compute the Cholesky factorization A = U**H*U */
@@ -728,7 +728,7 @@ static doublereal c_b12 = 1.;
 	    zpotrf2_(uplo, &n2, &a[n1 + 1 + (n1 + 1) * a_dim1], lda, &iinfo);
 	    if (iinfo != 0) {
 		*info = iinfo + n1;
-		return 0;
+		return;
 	    }
 
 /*        Compute the Cholesky factorization A = L*L**H */
@@ -747,11 +747,11 @@ static doublereal c_b12 = 1.;
 	    zpotrf2_(uplo, &n2, &a[n1 + 1 + (n1 + 1) * a_dim1], lda, &iinfo);
 	    if (iinfo != 0) {
 		*info = iinfo + n1;
-		return 0;
+		return;
 	    }
 	}
     }
-    return 0;
+    return;
 
 /*     End of ZPOTRF2 */
 

@@ -1086,7 +1086,7 @@ f"> */
 /* >  drmac@math.hr. Thank you. */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int cgejsv_(char *joba, char *jobu, char *jobv, char *jobr, 
+/* Subroutine */ void cgejsv_(char *joba, char *jobu, char *jobv, char *jobr, 
 	char *jobt, char *jobp, integer *m, integer *n, complex *a, integer *
 	lda, real *sva, complex *u, integer *ldu, complex *v, integer *ldv, 
 	complex *cwork, integer *lwork, real *rwork, integer *lrwork, integer 
@@ -1109,24 +1109,24 @@ f"> */
 	    p, q;
     logical jracc;
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int sscal_(integer *, real *, real *, integer *);
+    extern /* Subroutine */ void sscal_(integer *, real *, real *, integer *);
     complex ctemp;
     real entra, small;
     integer iwoff;
     real sfmin;
     logical lsvec;
-    extern /* Subroutine */ int ccopy_(integer *, complex *, integer *, 
+    extern /* Subroutine */ void ccopy_(integer *, complex *, integer *, 
 	    complex *, integer *), cswap_(integer *, complex *, integer *, 
 	    complex *, integer *);
     real epsln;
     logical rsvec;
     integer lwcon, lwlqf;
-    extern /* Subroutine */ int ctrsm_(char *, char *, char *, char *, 
+    extern /* Subroutine */ void ctrsm_(char *, char *, char *, char *, 
 	    integer *, integer *, complex *, complex *, integer *, complex *, 
 	    integer *);
     integer lwqrf, n1;
     logical l2aber;
-    extern /* Subroutine */ int cgeqp3_(integer *, integer *, complex *, 
+    extern /* Subroutine */ void cgeqp3_(integer *, integer *, complex *, 
 	    integer *, integer *, complex *, complex *, integer *, real *, 
 	    integer *);
     real condr1, condr2, uscal1, uscal2;
@@ -1134,53 +1134,54 @@ f"> */
     extern real scnrm2_(integer *, complex *, integer *);
     logical l2pert;
     integer lrwqp3;
-    extern /* Subroutine */ int clacgv_(integer *, complex *, integer *);
+    extern /* Subroutine */ void clacgv_(integer *, complex *, integer *);
     integer nr;
-    extern /* Subroutine */ int cgelqf_(integer *, integer *, complex *, 
+    extern /* Subroutine */ void cgelqf_(integer *, integer *, complex *, 
 	    integer *, complex *, complex *, integer *, integer *);
     extern integer icamax_(integer *, complex *, integer *);
-    extern /* Subroutine */ int clascl_(char *, integer *, integer *, real *, 
+    extern /* Subroutine */ void clascl_(char *, integer *, integer *, real *, 
 	    real *, integer *, integer *, complex *, integer *, integer *);
     real scalem, sconda;
     logical goscal;
     real aatmin;
     extern real slamch_(char *);
     real aatmax;
-    extern /* Subroutine */ int cgeqrf_(integer *, integer *, complex *, 
+    extern /* Subroutine */ void cgeqrf_(integer *, integer *, complex *, 
 	    integer *, complex *, complex *, integer *, integer *), clacpy_(
 	    char *, integer *, integer *, complex *, integer *, complex *, 
 	    integer *), clapmr_(logical *, integer *, integer *, 
 	    complex *, integer *, integer *);
     logical noscal;
-    extern /* Subroutine */ int claset_(char *, integer *, integer *, complex 
+    extern /* Subroutine */ void claset_(char *, integer *, integer *, complex 
 	    *, complex *, complex *, integer *);
     extern integer isamax_(integer *, real *, integer *);
-    extern /* Subroutine */ int slascl_(char *, integer *, integer *, real *, 
+    extern /* Subroutine */ void slascl_(char *, integer *, integer *, real *, 
 	    real *, integer *, integer *, real *, integer *, integer *), cpocon_(char *, integer *, complex *, integer *, real *, 
 	    real *, complex *, real *, integer *), csscal_(integer *, 
 	    real *, complex *, integer *), classq_(integer *, complex *, 
-	    integer *, real *, real *), xerbla_(char *, integer *, ftnlen), 
-	    cgesvj_(char *, char *, char *, integer *, integer *, complex *, 
+	    integer *, real *, real *);
+    extern int xerbla_(char *, integer *, ftnlen); 
+    extern void cgesvj_(char *, char *, char *, integer *, integer *, complex *, 
 	    integer *, real *, integer *, complex *, integer *, complex *, 
-	    integer *, real *, integer *, integer *), 
-	    claswp_(integer *, complex *, integer *, integer *, integer *, 
+	    integer *, real *, integer *, integer *); 
+    extern int claswp_(integer *, complex *, integer *, integer *, integer *, 
 	    integer *, integer *);
     real entrat;
     logical almort;
     complex cdummy[1];
-    extern /* Subroutine */ int cungqr_(integer *, integer *, integer *, 
+    extern /* Subroutine */ void cungqr_(integer *, integer *, integer *, 
 	    complex *, integer *, complex *, complex *, integer *, integer *);
     real maxprj;
-    extern /* Subroutine */ int cunmlq_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void cunmlq_(char *, char *, integer *, integer *, 
 	    integer *, complex *, integer *, complex *, complex *, integer *, 
 	    complex *, integer *, integer *);
     logical errest;
     integer lrwcon;
-    extern /* Subroutine */ int slassq_(integer *, real *, integer *, real *, 
+    extern /* Subroutine */ void slassq_(integer *, real *, integer *, real *, 
 	    real *);
     logical transp;
     integer minwrk, lwsvdj;
-    extern /* Subroutine */ int cunmqr_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void cunmqr_(char *, char *, integer *, integer *, 
 	    integer *, complex *, integer *, complex *, complex *, integer *, 
 	    complex *, integer *, integer *);
     real rdummy[1];
@@ -1784,13 +1785,13 @@ f"> */
 /*       #:( */
 	i__1 = -(*info);
 	xerbla_("CGEJSV", &i__1, (ftnlen)6);
-	return 0;
+	return;
     } else if (lquery) {
 	cwork[1].r = (real) optwrk, cwork[1].i = 0.f;
 	cwork[2].r = (real) minwrk, cwork[2].i = 0.f;
 	rwork[1] = (real) minrwrk;
 	iwork[1] = f2cmax(4,miniwrk);
-	return 0;
+	return;
     }
 
 /*     Quick return for void matrix (Y3K safe) */
@@ -1807,7 +1808,7 @@ f"> */
 	rwork[5] = 0.f;
 	rwork[6] = 0.f;
 	rwork[7] = 0.f;
-	return 0;
+	return;
     }
 
 /*     Determine whether the matrix U should be M x N or M x M */
@@ -1847,7 +1848,7 @@ f"> */
 	    *info = -9;
 	    i__2 = -(*info);
 	    xerbla_("CGEJSV", &i__2, (ftnlen)6);
-	    return 0;
+	    return;
 	}
 	aaqq = sqrt(aaqq);
 	if (aapp < big / aaqq && noscal) {
@@ -1909,7 +1910,7 @@ f"> */
 	iwork[2] = 0;
 	iwork[3] = 0;
 	iwork[4] = -1;
-	return 0;
+	return;
     }
 
 /*     Issue warning if denormalized column norms detected. Override the */
@@ -1976,7 +1977,7 @@ f"> */
 	    rwork[6] = 0.f;
 	    rwork[7] = 0.f;
 	}
-	return 0;
+	return;
 
     }
 
@@ -3547,6 +3548,6 @@ L3302:
 	iwork[4] = -1;
     }
 
-    return 0;
+    return;
 } /* cgejsv_ */
 

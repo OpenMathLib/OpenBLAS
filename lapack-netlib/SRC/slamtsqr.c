@@ -706,7 +706,7 @@ static integer c__0 = 0;
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int slamtsqr_(char *side, char *trans, integer *m, integer *
+/* Subroutine */ void slamtsqr_(char *side, char *trans, integer *m, integer *
 	n, integer *k, integer *mb, integer *nb, real *a, integer *lda, real *
 	t, integer *ldt, real *c__, integer *ldc, real *work, integer *lwork, 
 	integer *info)
@@ -724,7 +724,7 @@ static integer c__0 = 0;
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     logical notran, lquery;
     integer ctr;
-    extern /* Subroutine */ int sgemqrt_(char *, char *, integer *, integer *,
+    extern /* Subroutine */ void sgemqrt_(char *, char *, integer *, integer *,
 	     integer *, integer *, real *, integer *, real *, integer *, real 
 	    *, integer *, real *, integer *), stpmqrt_(char *,
 	     char *, integer *, integer *, integer *, integer *, integer *, 
@@ -797,9 +797,9 @@ static integer c__0 = 0;
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("SLAMTSQR", &i__1, (ftnlen)8);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
@@ -807,7 +807,7 @@ static integer c__0 = 0;
 /* Computing MIN */
     i__1 = f2cmin(*m,*n);
     if (f2cmin(i__1,*k) == 0) {
-	return 0;
+	return;
     }
 
 /* Computing MAX */
@@ -815,7 +815,7 @@ static integer c__0 = 0;
     if (*mb <= *k || *mb >= f2cmax(i__1,*k)) {
 	sgemqrt_(side, trans, m, n, k, nb, &a[a_offset], lda, &t[t_offset], 
 		ldt, &c__[c_offset], ldc, &work[1], info);
-	return 0;
+	return;
     }
 
     if (left && notran) {
@@ -959,7 +959,7 @@ static integer c__0 = 0;
     }
 
     work[1] = (real) lw;
-    return 0;
+    return;
 
 /*     End of SLAMTSQR */
 

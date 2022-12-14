@@ -881,7 +881,7 @@ f"> */
 /* > \ingroup complex16GBsolve */
 
 /*  ===================================================================== */
-/* Subroutine */ int zgbsvx_(char *fact, char *trans, integer *n, integer *kl,
+/* Subroutine */ void zgbsvx_(char *fact, char *trans, integer *n, integer *kl,
 	 integer *ku, integer *nrhs, doublecomplex *ab, integer *ldab, 
 	doublecomplex *afb, integer *ldafb, integer *ipiv, char *equed, 
 	doublereal *r__, doublereal *c__, doublecomplex *b, integer *ldb, 
@@ -903,19 +903,20 @@ f"> */
     doublereal rcmin, rcmax, anorm;
     logical equil;
     integer j1, j2;
-    extern /* Subroutine */ int zcopy_(integer *, doublecomplex *, integer *, 
+    extern /* Subroutine */ void zcopy_(integer *, doublecomplex *, integer *, 
 	    doublecomplex *, integer *);
     extern doublereal dlamch_(char *);
     doublereal colcnd;
     logical nofact;
     extern doublereal zlangb_(char *, integer *, integer *, integer *, 
 	    doublecomplex *, integer *, doublereal *);
-    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen), zlaqgb_(
+    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
+    extern void zlaqgb_(
 	    integer *, integer *, integer *, integer *, doublecomplex *, 
 	    integer *, doublereal *, doublereal *, doublereal *, doublereal *,
 	     doublereal *, char *);
     doublereal bignum;
-    extern /* Subroutine */ int zgbcon_(char *, integer *, integer *, integer 
+    extern /* Subroutine */ void zgbcon_(char *, integer *, integer *, integer 
 	    *, doublecomplex *, integer *, integer *, doublereal *, 
 	    doublereal *, doublecomplex *, doublereal *, integer *);
     integer infequ;
@@ -923,7 +924,7 @@ f"> */
     extern doublereal zlantb_(char *, char *, char *, integer *, integer *, 
 	    doublecomplex *, integer *, doublereal *);
     doublereal rowcnd;
-    extern /* Subroutine */ int zgbequ_(integer *, integer *, integer *, 
+    extern /* Subroutine */ void zgbequ_(integer *, integer *, integer *, 
 	    integer *, doublecomplex *, integer *, doublereal *, doublereal *,
 	     doublereal *, doublereal *, doublereal *, integer *), zgbrfs_(
 	    char *, integer *, integer *, integer *, integer *, doublecomplex 
@@ -933,10 +934,10 @@ f"> */
 	    integer *), zgbtrf_(integer *, integer *, integer *, 
 	    integer *, doublecomplex *, integer *, integer *, integer *);
     logical notran;
-    extern /* Subroutine */ int zlacpy_(char *, integer *, integer *, 
+    extern /* Subroutine */ void zlacpy_(char *, integer *, integer *, 
 	    doublecomplex *, integer *, doublecomplex *, integer *);
     doublereal smlnum;
-    extern /* Subroutine */ int zgbtrs_(char *, integer *, integer *, integer 
+    extern /* Subroutine */ void zgbtrs_(char *, integer *, integer *, integer 
 	    *, integer *, doublecomplex *, integer *, integer *, 
 	    doublecomplex *, integer *, integer *);
     logical rowequ;
@@ -1071,7 +1072,7 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZGBSVX", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
     if (equil) {
@@ -1186,7 +1187,7 @@ f"> */
 	    }
 	    rwork[1] = rpvgrw;
 	    *rcond = 0.;
-	    return 0;
+	    return;
 	}
     }
 
@@ -1280,7 +1281,7 @@ f"> */
     }
 
     rwork[1] = rpvgrw;
-    return 0;
+    return;
 
 /*     End of ZGBSVX */
 

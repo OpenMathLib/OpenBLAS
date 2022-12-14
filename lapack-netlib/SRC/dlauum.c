@@ -618,7 +618,7 @@ f"> */
 /* > \ingroup doubleOTHERauxiliary */
 
 /*  ===================================================================== */
-/* Subroutine */ int dlauum_(char *uplo, integer *n, doublereal *a, integer *
+/* Subroutine */ void dlauum_(char *uplo, integer *n, doublereal *a, integer *
 	lda, integer *info)
 {
     /* System generated locals */
@@ -626,15 +626,15 @@ f"> */
 
     /* Local variables */
     integer i__;
-    extern /* Subroutine */ int dgemm_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void dgemm_(char *, char *, integer *, integer *, 
 	    integer *, doublereal *, doublereal *, integer *, doublereal *, 
 	    integer *, doublereal *, doublereal *, integer *);
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int dtrmm_(char *, char *, char *, char *, 
+    extern /* Subroutine */ void dtrmm_(char *, char *, char *, char *, 
 	    integer *, integer *, doublereal *, doublereal *, integer *, 
 	    doublereal *, integer *);
     logical upper;
-    extern /* Subroutine */ int dsyrk_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void dsyrk_(char *, char *, integer *, integer *, 
 	    doublereal *, doublereal *, integer *, doublereal *, doublereal *,
 	     integer *), dlauu2_(char *, integer *, 
 	    doublereal *, integer *, integer *);
@@ -673,13 +673,13 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DLAUUM", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /*     Determine the block size for this environment. */
@@ -757,7 +757,7 @@ f"> */
 	}
     }
 
-    return 0;
+    return;
 
 /*     End of DLAUUM */
 

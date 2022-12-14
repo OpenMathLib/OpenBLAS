@@ -848,7 +848,7 @@ f"> */
 /* >     California at Berkeley, USA */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int zggsvd_(char *jobu, char *jobv, char *jobq, integer *m, 
+/* Subroutine */ void zggsvd_(char *jobu, char *jobv, char *jobq, integer *m, 
 	integer *n, integer *p, integer *k, integer *l, doublecomplex *a, 
 	integer *lda, doublecomplex *b, integer *ldb, doublereal *alpha, 
 	doublereal *beta, doublecomplex *u, integer *ldu, doublecomplex *v, 
@@ -867,14 +867,14 @@ f"> */
     integer ncallmycycle, i__, j;
     extern logical lsame_(char *, char *);
     doublereal anorm, bnorm;
-    extern /* Subroutine */ int dcopy_(integer *, doublereal *, integer *, 
+    extern /* Subroutine */ void dcopy_(integer *, doublereal *, integer *, 
 	    doublereal *, integer *);
     logical wantq, wantu, wantv;
     extern doublereal dlamch_(char *);
-    extern /* Subroutine */ int xerbla_(char *, integer *);
+    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     extern doublereal zlange_(char *, integer *, integer *, doublecomplex *, 
 	    integer *, doublereal *);
-    extern /* Subroutine */ int ztgsja_(char *, char *, char *, integer *, 
+    extern /* Subroutine */ void ztgsja_(char *, char *, char *, integer *, 
 	    integer *, integer *, integer *, integer *, doublecomplex *, 
 	    integer *, doublecomplex *, integer *, doublereal *, doublereal *,
 	     doublereal *, doublereal *, doublecomplex *, integer *, 
@@ -953,8 +953,8 @@ f"> */
     }
     if (*info != 0) {
 	i__1 = -(*info);
-	xerbla_("ZGGSVD", &i__1);
-	return 0;
+	xerbla_("ZGGSVD", &i__1, 6);
+	return;
     }
 
 /*     Compute the Frobenius norm of matrices A and B */
@@ -1014,7 +1014,7 @@ f"> */
 /* L20: */
     }
 
-    return 0;
+    return;
 
 /*     End of ZGGSVD */
 

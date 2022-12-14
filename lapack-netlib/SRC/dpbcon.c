@@ -644,7 +644,7 @@ f"> */
 /* > \ingroup doubleOTHERcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int dpbcon_(char *uplo, integer *n, integer *kd, doublereal *
+/* Subroutine */ void dpbcon_(char *uplo, integer *n, integer *kd, doublereal *
 	ab, integer *ldab, doublereal *anorm, doublereal *rcond, doublereal *
 	work, integer *iwork, integer *info)
 {
@@ -657,16 +657,16 @@ f"> */
     doublereal scale;
     extern logical lsame_(char *, char *);
     integer isave[3];
-    extern /* Subroutine */ int drscl_(integer *, doublereal *, doublereal *, 
+    extern /* Subroutine */ void drscl_(integer *, doublereal *, doublereal *, 
 	    integer *);
     logical upper;
-    extern /* Subroutine */ int dlacn2_(integer *, doublereal *, doublereal *,
+    extern /* Subroutine */ void dlacn2_(integer *, doublereal *, doublereal *,
 	     integer *, doublereal *, integer *, integer *);
     extern doublereal dlamch_(char *);
     integer ix;
     doublereal scalel;
     extern integer idamax_(integer *, doublereal *, integer *);
-    extern /* Subroutine */ int dlatbs_(char *, char *, char *, char *, 
+    extern /* Subroutine */ void dlatbs_(char *, char *, char *, char *, 
 	    integer *, integer *, doublereal *, integer *, doublereal *, 
 	    doublereal *, doublereal *, integer *);
     doublereal scaleu;
@@ -711,7 +711,7 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DPBCON", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
@@ -719,9 +719,9 @@ f"> */
     *rcond = 0.;
     if (*n == 0) {
 	*rcond = 1.;
-	return 0;
+	return;
     } else if (*anorm == 0.) {
-	return 0;
+	return;
     }
 
     smlnum = dlamch_("Safe minimum");
@@ -785,7 +785,7 @@ L10:
 
 L20:
 
-    return 0;
+    return;
 
 /*     End of DPBCON */
 

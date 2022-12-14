@@ -779,7 +779,7 @@ f"> */
 /* >     Osni Marques, LBNL/NERSC, USA \n */
 
 /*  ===================================================================== */
-/* Subroutine */ int clalsa_(integer *icompq, integer *smlsiz, integer *n, 
+/* Subroutine */ void clalsa_(integer *icompq, integer *smlsiz, integer *n, 
 	integer *nrhs, complex *b, integer *ldb, complex *bx, integer *ldbx, 
 	real *u, integer *ldu, real *vt, integer *k, real *difl, real *difr, 
 	real *z__, real *poles, integer *givptr, integer *givcol, integer *
@@ -796,20 +796,21 @@ f"> */
 
     /* Local variables */
     integer jcol, nlvl, sqre, jrow, i__, j, jimag, jreal, inode, ndiml;
-    extern /* Subroutine */ int sgemm_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void sgemm_(char *, char *, integer *, integer *, 
 	    integer *, real *, real *, integer *, real *, integer *, real *, 
 	    real *, integer *);
     integer ndimr;
-    extern /* Subroutine */ int ccopy_(integer *, complex *, integer *, 
+    extern /* Subroutine */ void ccopy_(integer *, complex *, integer *, 
 	    complex *, integer *);
     integer i1;
-    extern /* Subroutine */ int clals0_(integer *, integer *, integer *, 
+    extern /* Subroutine */ void clals0_(integer *, integer *, integer *, 
 	    integer *, integer *, complex *, integer *, complex *, integer *, 
 	    integer *, integer *, integer *, integer *, real *, integer *, 
 	    real *, real *, real *, real *, integer *, real *, real *, real *,
 	     integer *);
     integer ic, lf, nd, ll, nl, nr;
-    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen), slasdt_(
+    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
+    extern void slasdt_(
 	    integer *, integer *, integer *, integer *, integer *, integer *, 
 	    integer *);
     integer im1, nlf, nrf, lvl, ndb1, nlp1, lvl2, nrp1;
@@ -890,7 +891,7 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CLALSA", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Book-keeping and  setting up the computation tree. */
@@ -1270,7 +1271,7 @@ L170:
 
 L330:
 
-    return 0;
+    return;
 
 /*     End of CLALSA */
 

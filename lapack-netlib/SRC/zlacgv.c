@@ -583,7 +583,7 @@ f"> */
 /* > \ingroup complex16OTHERauxiliary */
 
 /*  ===================================================================== */
-/* Subroutine */ int zlacgv_(integer *n, doublecomplex *x, integer *incx)
+/* Subroutine */ void zlacgv_(integer *n, doublecomplex *x, integer *incx)
 {
     /* System generated locals */
     integer i__1, i__2;
@@ -628,7 +628,7 @@ f"> */
 /* L20: */
 	}
     }
-    return 0;
+    return;
 
 /*     End of ZLACGV */
 

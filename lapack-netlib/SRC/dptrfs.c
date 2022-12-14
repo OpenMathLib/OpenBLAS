@@ -676,7 +676,7 @@ f"> */
 /* > \ingroup doublePTcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int dptrfs_(integer *n, integer *nrhs, doublereal *d__, 
+/* Subroutine */ void dptrfs_(integer *n, integer *nrhs, doublereal *d__, 
 	doublereal *e, doublereal *df, doublereal *ef, doublereal *b, integer 
 	*ldb, doublereal *x, integer *ldx, doublereal *ferr, doublereal *berr,
 	 doublereal *work, integer *info)
@@ -689,7 +689,7 @@ f"> */
     doublereal safe1, safe2;
     integer i__, j;
     doublereal s;
-    extern /* Subroutine */ int daxpy_(integer *, doublereal *, doublereal *, 
+    extern /* Subroutine */ void daxpy_(integer *, doublereal *, doublereal *, 
 	    integer *, doublereal *, integer *);
     integer count;
     doublereal bi;
@@ -701,7 +701,7 @@ f"> */
     doublereal safmin;
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     doublereal lstres;
-    extern /* Subroutine */ int dpttrs_(integer *, integer *, doublereal *, 
+    extern /* Subroutine */ void dpttrs_(integer *, integer *, doublereal *, 
 	    doublereal *, doublereal *, integer *, integer *);
     doublereal eps;
 
@@ -746,7 +746,7 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DPTRFS", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
@@ -758,7 +758,7 @@ f"> */
 	    berr[j] = 0.;
 /* L10: */
 	}
-	return 0;
+	return;
     }
 
 /*     NZ = maximum number of nonzero elements in each row of A, plus 1 */
@@ -937,7 +937,7 @@ L20:
 /* L90: */
     }
 
-    return 0;
+    return;
 
 /*     End of DPTRFS */
 

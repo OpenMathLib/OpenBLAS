@@ -722,7 +722,7 @@ f"> */
 /* >     Mark Fahey, Department of Mathematics, Univ. of Kentucky, USA */
 
 /*  ===================================================================== */
-/* Subroutine */ int dspgvd_(integer *itype, char *jobz, char *uplo, integer *
+/* Subroutine */ void dspgvd_(integer *itype, char *jobz, char *uplo, integer *
 	n, doublereal *ap, doublereal *bp, doublereal *w, doublereal *z__, 
 	integer *ldz, doublereal *work, integer *lwork, integer *iwork, 
 	integer *liwork, integer *info)
@@ -737,17 +737,18 @@ f"> */
     integer lwmin;
     char trans[1];
     logical upper;
-    extern /* Subroutine */ int dtpmv_(char *, char *, char *, integer *, 
+    extern /* Subroutine */ void dtpmv_(char *, char *, char *, integer *, 
 	    doublereal *, doublereal *, integer *), 
 	    dtpsv_(char *, char *, char *, integer *, doublereal *, 
 	    doublereal *, integer *);
     logical wantz;
-    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen), dspevd_(
+    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
+    extern void dspevd_(
 	    char *, char *, integer *, doublereal *, doublereal *, doublereal 
 	    *, integer *, doublereal *, integer *, integer *, integer *, 
 	    integer *);
     integer liwmin;
-    extern /* Subroutine */ int dpptrf_(char *, integer *, doublereal *, 
+    extern /* Subroutine */ void dpptrf_(char *, integer *, doublereal *, 
 	    integer *), dspgst_(integer *, char *, integer *, 
 	    doublereal *, doublereal *, integer *);
     logical lquery;
@@ -819,15 +820,15 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DSPGVD", &i__1, (ftnlen)6);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /*     Form a Cholesky factorization of BP. */
@@ -835,7 +836,7 @@ f"> */
     dpptrf_(uplo, n, &bp[1], info);
     if (*info != 0) {
 	*info = *n + *info;
-	return 0;
+	return;
     }
 
 /*     Transform problem to standard eigenvalue problem and solve. */
@@ -899,7 +900,7 @@ f"> */
     work[1] = (doublereal) lwmin;
     iwork[1] = liwmin;
 
-    return 0;
+    return;
 
 /*     End of DSPGVD */
 

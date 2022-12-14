@@ -723,7 +723,7 @@ rook.f"> */
 /* > \endverbatim */
 
 /*  ===================================================================== */
-/* Subroutine */ int zsytrf_rook_(char *uplo, integer *n, doublecomplex *a, 
+/* Subroutine */ void zsytrf_rook_(char *uplo, integer *n, doublecomplex *a, 
 	integer *lda, integer *ipiv, doublecomplex *work, integer *lwork, 
 	integer *info)
 {
@@ -731,7 +731,7 @@ rook.f"> */
     integer a_dim1, a_offset, i__1, i__2;
 
     /* Local variables */
-    extern /* Subroutine */ int zlasyf_rook_(char *, integer *, integer *, 
+    extern /* Subroutine */ void zlasyf_rook_(char *, integer *, integer *, 
 	    integer *, doublecomplex *, integer *, integer *, doublecomplex *,
 	     integer *, integer *);
     integer j, k;
@@ -745,7 +745,7 @@ rook.f"> */
     integer ldwork, lwkopt;
     logical lquery;
     integer iws;
-    extern /* Subroutine */ int zsytf2_rook_(char *, integer *, 
+    extern /* Subroutine */ void zsytf2_rook_(char *, integer *, 
 	    doublecomplex *, integer *, integer *, integer *);
 
 
@@ -796,9 +796,9 @@ rook.f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZSYTRF_ROOK", &i__1, (ftnlen)11);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
     nbmin = 2;
@@ -928,7 +928,7 @@ L20:
 
 L40:
     work[1].r = (doublereal) lwkopt, work[1].i = 0.;
-    return 0;
+    return;
 
 /*     End of ZSYTRF_ROOK */
 

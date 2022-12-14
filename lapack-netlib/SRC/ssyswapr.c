@@ -616,7 +616,7 @@ r.f"> */
 /* > \ingroup realSYauxiliary */
 
 /*  ===================================================================== */
-/* Subroutine */ int ssyswapr_(char *uplo, integer *n, real *a, integer *lda, 
+/* Subroutine */ void ssyswapr_(char *uplo, integer *n, real *a, integer *lda, 
 	integer *i1, integer *i2)
 {
     /* System generated locals */
@@ -626,7 +626,7 @@ r.f"> */
     integer i__;
     extern logical lsame_(char *, char *);
     logical upper;
-    extern /* Subroutine */ int sswap_(integer *, real *, integer *, real *, 
+    extern /* Subroutine */ void sswap_(integer *, real *, integer *, real *, 
 	    integer *);
     real tmp;
 
@@ -712,6 +712,6 @@ r.f"> */
 	}
 
     }
-    return 0;
+    return;
 } /* ssyswapr_ */
 

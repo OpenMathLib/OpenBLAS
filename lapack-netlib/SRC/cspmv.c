@@ -661,7 +661,7 @@ rix */
 /* > \ingroup complexOTHERauxiliary */
 
 /*  ===================================================================== */
-/* Subroutine */ int cspmv_(char *uplo, integer *n, complex *alpha, complex *
+/* Subroutine */ void cspmv_(char *uplo, integer *n, complex *alpha, complex *
 	ap, complex *x, integer *incx, complex *beta, complex *y, integer *
 	incy)
 {
@@ -707,14 +707,14 @@ rix */
     }
     if (info != 0) {
 	xerbla_("CSPMV ", &info, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible. */
 
     if (*n == 0 || alpha->r == 0.f && alpha->i == 0.f && (beta->r == 1.f && 
 	    beta->i == 0.f)) {
-	return 0;
+	return;
     }
 
 /*     Set up the start points in  X  and  Y. */
@@ -782,7 +782,7 @@ rix */
 	}
     }
     if (alpha->r == 0.f && alpha->i == 0.f) {
-	return 0;
+	return;
     }
     kk = 1;
     if (lsame_(uplo, "U")) {
@@ -983,7 +983,7 @@ rix */
 	}
     }
 
-    return 0;
+    return;
 
 /*     End of CSPMV */
 

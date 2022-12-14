@@ -774,7 +774,7 @@ rk.f"> */
 /* > \endverbatim */
 
 /*  ===================================================================== */
-/* Subroutine */ int zsytrf_rk_(char *uplo, integer *n, doublecomplex *a, 
+/* Subroutine */ void zsytrf_rk_(char *uplo, integer *n, doublecomplex *a, 
 	integer *lda, doublecomplex *e, integer *ipiv, doublecomplex *work, 
 	integer *lwork, integer *info)
 {
@@ -785,10 +785,10 @@ rk.f"> */
     integer i__, k;
     extern logical lsame_(char *, char *);
     integer nbmin, iinfo;
-    extern /* Subroutine */ int zsytf2_rk_(char *, integer *, doublecomplex *
+    extern /* Subroutine */ void zsytf2_rk_(char *, integer *, doublecomplex *
 	    , integer *, doublecomplex *, integer *, integer *);
     logical upper;
-    extern /* Subroutine */ int zswap_(integer *, doublecomplex *, integer *, 
+    extern /* Subroutine */ void zswap_(integer *, doublecomplex *, integer *, 
 	    doublecomplex *, integer *), zlasyf_rk_(char *, integer *, 
 	    integer *, integer *, doublecomplex *, integer *, doublecomplex *,
 	     integer *, doublecomplex *, integer *, integer *);
@@ -847,9 +847,9 @@ rk.f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZSYTRF_RK", &i__1, (ftnlen)9);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
     nbmin = 2;
@@ -1035,7 +1035,7 @@ L35:
     }
 
     work[1].r = (doublereal) lwkopt, work[1].i = 0.;
-    return 0;
+    return;
 
 /*     End of ZSYTRF_RK */
 

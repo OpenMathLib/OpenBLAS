@@ -720,7 +720,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int dlahqr_(logical *wantt, logical *wantz, integer *n, 
+/* Subroutine */ void dlahqr_(logical *wantt, logical *wantz, integer *n, 
 	integer *ilo, integer *ihi, doublereal *h__, integer *ldh, doublereal 
 	*wr, doublereal *wi, integer *iloz, integer *ihiz, doublereal *z__, 
 	integer *ldz, integer *info)
@@ -730,23 +730,23 @@ f"> */
     doublereal d__1, d__2, d__3, d__4;
 
     /* Local variables */
-    extern /* Subroutine */ int drot_(integer *, doublereal *, integer *, 
+    extern /* Subroutine */ void drot_(integer *, doublereal *, integer *, 
 	    doublereal *, integer *, doublereal *, doublereal *);
     integer i__, j, k, l, m;
     doublereal s, v[3];
-    extern /* Subroutine */ int dcopy_(integer *, doublereal *, integer *, 
+    extern /* Subroutine */ void dcopy_(integer *, doublereal *, integer *, 
 	    doublereal *, integer *);
     integer itmax, i1, i2;
     doublereal t1, t2, t3, v2, v3;
-    extern /* Subroutine */ int dlanv2_(doublereal *, doublereal *, 
+    extern /* Subroutine */ void dlanv2_(doublereal *, doublereal *, 
 	    doublereal *, doublereal *, doublereal *, doublereal *, 
 	    doublereal *, doublereal *, doublereal *, doublereal *);
     doublereal aa, ab, ba, bb;
-    extern /* Subroutine */ int dlabad_(doublereal *, doublereal *);
+    extern /* Subroutine */ void dlabad_(doublereal *, doublereal *);
     doublereal h11, h12, h21, h22, cs;
     integer nh;
     extern doublereal dlamch_(char *);
-    extern /* Subroutine */ int dlarfg_(integer *, doublereal *, doublereal *,
+    extern /* Subroutine */ void dlarfg_(integer *, doublereal *, doublereal *,
 	     integer *, doublereal *);
     doublereal sn;
     integer nr;
@@ -782,12 +782,12 @@ f"> */
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
     if (*ilo == *ihi) {
 	wr[*ilo] = h__[*ilo + *ilo * h_dim1];
 	wi[*ilo] = 0.;
-	return 0;
+	return;
     }
 
 /*     ==== clear out the trash ==== */
@@ -1156,7 +1156,7 @@ L60:
 /*     Failure to converge in remaining number of iterations */
 
     *info = i__;
-    return 0;
+    return;
 
 L150:
 
@@ -1206,7 +1206,7 @@ L150:
     goto L20;
 
 L160:
-    return 0;
+    return;
 
 /*     End of DLAHQR */
 

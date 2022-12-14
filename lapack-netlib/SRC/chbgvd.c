@@ -764,7 +764,7 @@ f"> */
 /* >     Mark Fahey, Department of Mathematics, Univ. of Kentucky, USA */
 
 /*  ===================================================================== */
-/* Subroutine */ int chbgvd_(char *jobz, char *uplo, integer *n, integer *ka, 
+/* Subroutine */ void chbgvd_(char *jobz, char *uplo, integer *n, integer *ka, 
 	integer *kb, complex *ab, integer *ldab, complex *bb, integer *ldbb, 
 	real *w, complex *z__, integer *ldz, complex *work, integer *lwork, 
 	real *rwork, integer *lrwork, integer *iwork, integer *liwork, 
@@ -777,7 +777,7 @@ f"> */
     integer inde;
     char vect[1];
     integer llwk2;
-    extern /* Subroutine */ int cgemm_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void cgemm_(char *, char *, integer *, integer *, 
 	    integer *, complex *, complex *, integer *, complex *, integer *, 
 	    complex *, complex *, integer *);
     extern logical lsame_(char *, char *);
@@ -786,7 +786,7 @@ f"> */
     integer llrwk;
     logical wantz;
     integer indwk2;
-    extern /* Subroutine */ int cstedc_(char *, integer *, real *, real *, 
+    extern /* Subroutine */ void cstedc_(char *, integer *, real *, real *, 
 	    complex *, integer *, complex *, integer *, real *, integer *, 
 	    integer *, integer *, integer *), chbtrd_(char *, char *, 
 	    integer *, integer *, complex *, integer *, real *, real *, 
@@ -794,11 +794,12 @@ f"> */
 	    chbgst_(char *, char *, integer *, integer *, integer *, complex *
 	    , integer *, complex *, integer *, complex *, integer *, complex *
 	    , real *, integer *), clacpy_(char *, integer *, 
-	    integer *, complex *, integer *, complex *, integer *), 
-	    xerbla_(char *, integer *, ftnlen), cpbstf_(char *, integer *, 
+	    integer *, complex *, integer *, complex *, integer *); 
+    extern int xerbla_(char *, integer *, ftnlen);
+    extern void cpbstf_(char *, integer *, 
 	    integer *, complex *, integer *, integer *);
     integer indwrk, liwmin;
-    extern /* Subroutine */ int ssterf_(integer *, real *, real *, integer *);
+    extern /* Subroutine */ void ssterf_(integer *, real *, real *, integer *);
     integer lrwmin;
     logical lquery;
 
@@ -887,15 +888,15 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CHBGVD", &i__1, (ftnlen)6);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /*     Form a split Cholesky factorization of B. */
@@ -903,7 +904,7 @@ f"> */
     cpbstf_(uplo, n, kb, &bb[bb_offset], ldbb, info);
     if (*info != 0) {
 	*info = *n + *info;
-	return 0;
+	return;
     }
 
 /*     Transform problem to standard eigenvalue problem. */
@@ -941,7 +942,7 @@ f"> */
     work[1].r = (real) lwmin, work[1].i = 0.f;
     rwork[1] = (real) lrwmin;
     iwork[1] = liwmin;
-    return 0;
+    return;
 
 /*     End of CHBGVD */
 

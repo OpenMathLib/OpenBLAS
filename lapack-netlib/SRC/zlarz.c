@@ -661,7 +661,7 @@ static integer c__1 = 1;
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int zlarz_(char *side, integer *m, integer *n, integer *l, 
+/* Subroutine */ void zlarz_(char *side, integer *m, integer *n, integer *l, 
 	doublecomplex *v, integer *incv, doublecomplex *tau, doublecomplex *
 	c__, integer *ldc, doublecomplex *work)
 {
@@ -671,7 +671,7 @@ static integer c__1 = 1;
 
     /* Local variables */
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int zgerc_(integer *, integer *, doublecomplex *, 
+    extern /* Subroutine */ void zgerc_(integer *, integer *, doublecomplex *, 
 	    doublecomplex *, integer *, doublecomplex *, integer *, 
 	    doublecomplex *, integer *), zgemv_(char *, integer *, integer *, 
 	    doublecomplex *, doublecomplex *, integer *, doublecomplex *, 
@@ -762,7 +762,7 @@ static integer c__1 = 1;
 
     }
 
-    return 0;
+    return;
 
 /*     End of ZLARZ */
 

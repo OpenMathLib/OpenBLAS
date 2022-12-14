@@ -643,7 +643,7 @@ presentation of Q. */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int cgeqrt2_(integer *m, integer *n, complex *a, integer *
+/* Subroutine */ void cgeqrt2_(integer *m, integer *n, complex *a, integer *
 	lda, complex *t, integer *ldt, integer *info)
 {
     /* System generated locals */
@@ -652,14 +652,15 @@ presentation of Q. */
 
     /* Local variables */
     integer i__, k;
-    extern /* Subroutine */ int cgerc_(integer *, integer *, complex *, 
+    extern /* Subroutine */ void cgerc_(integer *, integer *, complex *, 
 	    complex *, integer *, complex *, integer *, complex *, integer *);
     complex alpha;
-    extern /* Subroutine */ int cgemv_(char *, integer *, integer *, complex *
+    extern /* Subroutine */ void cgemv_(char *, integer *, integer *, complex *
 	    , complex *, integer *, complex *, integer *, complex *, complex *
 	    , integer *), ctrmv_(char *, char *, char *, integer *, 
 	    complex *, integer *, complex *, integer *), clarfg_(integer *, complex *, complex *, integer *, 
-	    complex *), xerbla_(char *, integer *, ftnlen);
+	    complex *);
+    extern int xerbla_(char *, integer *, ftnlen);
     complex aii;
 
 
@@ -696,7 +697,7 @@ presentation of Q. */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CGEQRT2", &i__1, (ftnlen)7);
-	return 0;
+	return;
     }
 
     k = f2cmin(*m,*n);
@@ -778,6 +779,6 @@ presentation of Q. */
 
 /*     End of CGEQRT2 */
 
-    return 0;
+    return;
 } /* cgeqrt2_ */
 

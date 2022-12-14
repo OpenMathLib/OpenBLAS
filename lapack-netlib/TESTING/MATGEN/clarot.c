@@ -739,7 +739,7 @@ static integer c__8 = 8;
 /* > \ingroup complex_matgen */
 
 /*  ===================================================================== */
-/* Subroutine */ int clarot_(logical *lrows, logical *lleft, logical *lright, 
+/* Subroutine */ void clarot_(logical *lrows, logical *lleft, logical *lright, 
 	integer *nl, complex *c__, complex *s, complex *a, integer *lda, 
 	complex *xleft, complex *xright)
 {
@@ -752,7 +752,7 @@ static integer c__8 = 8;
     complex tempx;
     integer ix, iy, nt;
     complex xt[2], yt[2];
-    extern /* Subroutine */ int xerbla_(char *, integer *);
+    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     integer iyt;
 
 
@@ -804,12 +804,12 @@ static integer c__8 = 8;
 /*     Check for errors */
 
     if (*nl < nt) {
-	xerbla_("CLAROT", &c__4);
-	return 0;
+	xerbla_("CLAROT", &c__4, 6);
+	return;
     }
     if (*lda <= 0 || ! (*lrows) && *lda < *nl - nt) {
-	xerbla_("CLAROT", &c__8);
-	return 0;
+	xerbla_("CLAROT", &c__8, 6);
+	return;
     }
 
 /*     Rotate */
@@ -887,7 +887,7 @@ static integer c__8 = 8;
 	a[i__1].r = yt[i__2].r, a[i__1].i = yt[i__2].i;
     }
 
-    return 0;
+    return;
 
 /*     End of CLAROT */
 

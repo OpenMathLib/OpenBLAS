@@ -643,7 +643,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int slanv2_(real *a, real *b, real *c__, real *d__, real *
+/* Subroutine */ void slanv2_(real *a, real *b, real *c__, real *d__, real *
 	rt1r, real *rt1i, real *rt2r, real *rt2i, real *cs, real *sn)
 {
     /* System generated locals */
@@ -823,7 +823,7 @@ L10:
 	*rt1i = sqrt((abs(*b))) * sqrt((abs(*c__)));
 	*rt2i = -(*rt1i);
     }
-    return 0;
+    return;
 
 /*     End of SLANV2 */
 

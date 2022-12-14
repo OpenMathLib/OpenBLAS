@@ -704,7 +704,7 @@ f"> */
 /* >      Numerical Algorithms, 1996. */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int ztgex2_(logical *wantq, logical *wantz, integer *n, 
+/* Subroutine */ void ztgex2_(logical *wantq, logical *wantz, integer *n, 
 	doublecomplex *a, integer *lda, doublecomplex *b, integer *ldb, 
 	doublecomplex *q, integer *ldq, doublecomplex *z__, integer *ldz, 
 	integer *j1, integer *info)
@@ -718,7 +718,7 @@ f"> */
     /* Local variables */
     logical weak;
     doublecomplex cdum, work[8];
-    extern /* Subroutine */ int zrot_(integer *, doublecomplex *, integer *, 
+    extern /* Subroutine */ void zrot_(integer *, doublecomplex *, integer *, 
 	    doublecomplex *, integer *, doublereal *, doublecomplex *);
     doublecomplex f, g;
     integer i__, m;
@@ -731,12 +731,12 @@ f"> */
     doublecomplex sz;
     logical dtrong;
     doublereal thresh;
-    extern /* Subroutine */ int zlacpy_(char *, integer *, integer *, 
+    extern /* Subroutine */ void zlacpy_(char *, integer *, integer *, 
 	    doublecomplex *, integer *, doublecomplex *, integer *), 
 	    zlartg_(doublecomplex *, doublecomplex *, doublereal *, 
 	    doublecomplex *, doublecomplex *);
     doublereal smlnum;
-    extern /* Subroutine */ int zlassq_(integer *, doublecomplex *, integer *,
+    extern /* Subroutine */ void zlassq_(integer *, doublecomplex *, integer *,
 	     doublereal *, doublereal *);
     doublereal eps, sum;
 
@@ -770,7 +770,7 @@ f"> */
 /*     Quick return if possible */
 
     if (*n <= 1) {
-	return 0;
+	return;
     }
 
     m = 2;
@@ -941,13 +941,13 @@ f"> */
 
 /*     Exit with INFO = 0 if swap was successfully performed. */
 
-    return 0;
+    return;
 
 /*     Exit with INFO = 1 if swap was rejected. */
 
 L20:
     *info = 1;
-    return 0;
+    return;
 
 /*     End of ZTGEX2 */
 

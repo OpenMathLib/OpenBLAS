@@ -669,7 +669,7 @@ f"> */
 /* > \ingroup complex16GBauxiliary */
 
 /*  ===================================================================== */
-/* Subroutine */ int zlaqgb_(integer *m, integer *n, integer *kl, integer *ku,
+/* Subroutine */ void zlaqgb_(integer *m, integer *n, integer *kl, integer *ku,
 	 doublecomplex *ab, integer *ldab, doublereal *r__, doublereal *c__, 
 	doublereal *rowcnd, doublereal *colcnd, doublereal *amax, char *equed)
 {
@@ -705,7 +705,7 @@ f"> */
     /* Function Body */
     if (*m <= 0 || *n <= 0) {
 	*(unsigned char *)equed = 'N';
-	return 0;
+	return;
     }
 
 /*     Initialize LARGE and SMALL. */
@@ -793,7 +793,7 @@ f"> */
 	*(unsigned char *)equed = 'B';
     }
 
-    return 0;
+    return;
 
 /*     End of ZLAQGB */
 

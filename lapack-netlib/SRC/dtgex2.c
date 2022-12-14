@@ -740,7 +740,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int dtgex2_(logical *wantq, logical *wantz, integer *n, 
+/* Subroutine */ void dtgex2_(logical *wantq, logical *wantz, integer *n, 
 	doublereal *a, integer *lda, doublereal *b, integer *ldb, doublereal *
 	q, integer *ldq, doublereal *z__, integer *ldz, integer *j1, integer *
 	n1, integer *n2, doublereal *work, integer *lwork, integer *info)
@@ -755,23 +755,23 @@ f"> */
     doublereal ddum;
     integer idum;
     doublereal taul[4], dsum;
-    extern /* Subroutine */ int drot_(integer *, doublereal *, integer *, 
+    extern /* Subroutine */ void drot_(integer *, doublereal *, integer *, 
 	    doublereal *, integer *, doublereal *, doublereal *);
     doublereal taur[4], scpy[16]	/* was [4][4] */, tcpy[16]	/* 
 	    was [4][4] */, f, g;
     integer i__, m;
     doublereal s[16]	/* was [4][4] */, t[16]	/* was [4][4] */;
-    extern /* Subroutine */ int dscal_(integer *, doublereal *, doublereal *, 
+    extern /* Subroutine */ void dscal_(integer *, doublereal *, doublereal *, 
 	    integer *);
     doublereal scale, bqra21, brqa21;
-    extern /* Subroutine */ int dgemm_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void dgemm_(char *, char *, integer *, integer *, 
 	    integer *, doublereal *, doublereal *, integer *, doublereal *, 
 	    integer *, doublereal *, doublereal *, integer *);
     doublereal licop[16]	/* was [4][4] */;
     integer linfo;
     doublereal ircop[16]	/* was [4][4] */, dnorm;
     integer iwork[4];
-    extern /* Subroutine */ int dlagv2_(doublereal *, integer *, doublereal *,
+    extern /* Subroutine */ void dlagv2_(doublereal *, integer *, doublereal *,
 	     integer *, doublereal *, doublereal *, doublereal *, doublereal *
 	    , doublereal *, doublereal *, doublereal *), dgeqr2_(integer *, 
 	    integer *, doublereal *, integer *, doublereal *, doublereal *, 
@@ -786,7 +786,7 @@ f"> */
 	    integer *, integer *, integer *, doublereal *, integer *, 
 	    doublereal *, doublereal *, integer *, doublereal *, integer *);
     doublereal be[2], ai[2];
-    extern /* Subroutine */ int dtgsy2_(char *, integer *, integer *, integer 
+    extern /* Subroutine */ void dtgsy2_(char *, integer *, integer *, integer 
 	    *, doublereal *, integer *, doublereal *, integer *, doublereal *,
 	     integer *, doublereal *, integer *, doublereal *, integer *, 
 	    doublereal *, integer *, doublereal *, doublereal *, doublereal *,
@@ -794,7 +794,7 @@ f"> */
     doublereal ar[2], sa, sb, li[16]	/* was [4][4] */;
     extern doublereal dlamch_(char *);
     doublereal dscale, ir[16]	/* was [4][4] */, ss, ws;
-    extern /* Subroutine */ int dlacpy_(char *, integer *, integer *, 
+    extern /* Subroutine */ void dlacpy_(char *, integer *, integer *, 
 	    doublereal *, integer *, doublereal *, integer *), 
 	    dlartg_(doublereal *, doublereal *, doublereal *, doublereal *, 
 	    doublereal *), dlaset_(char *, integer *, integer *, doublereal *,
@@ -836,10 +836,10 @@ f"> */
 /*     Quick return if possible */
 
     if (*n <= 1 || *n1 <= 0 || *n2 <= 0) {
-	return 0;
+	return;
     }
     if (*n1 > *n || *j1 + *n1 > *n) {
-	return 0;
+	return;
     }
     m = *n1 + *n2;
 /* Computing MAX */
@@ -849,7 +849,7 @@ f"> */
 /* Computing MAX */
 	i__1 = 1, i__2 = *n * m, i__1 = f2cmax(i__1,i__2), i__2 = m * m << 1;
 	work[1] = (doublereal) f2cmax(i__1,i__2);
-	return 0;
+	return;
     }
 
     weak = FALSE_;
@@ -988,7 +988,7 @@ f"> */
 
 /*        Exit with INFO = 0 if swap was successfully performed. */
 
-	return 0;
+	return;
 
     } else {
 
@@ -1286,7 +1286,7 @@ f"> */
 
 /*        Exit with INFO = 0 if swap was successfully performed. */
 
-	return 0;
+	return;
 
     }
 
@@ -1295,7 +1295,7 @@ f"> */
 L70:
 
     *info = 1;
-    return 0;
+    return;
 
 /*     End of DTGEX2 */
 

@@ -668,12 +668,12 @@ doublereal zla_hercond_c_(char *uplo, integer *n, doublecomplex *a, integer *
     integer isave[3];
     doublereal anorm;
     logical upper;
-    extern /* Subroutine */ int zlacn2_(integer *, doublecomplex *, 
+    extern /* Subroutine */ void zlacn2_(integer *, doublecomplex *, 
 	    doublecomplex *, doublereal *, integer *, integer *);
     logical up;
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     doublereal ainvnm;
-    extern /* Subroutine */ int zhetrs_(char *, integer *, integer *, 
+    extern /* Subroutine */ void zhetrs_(char *, integer *, integer *, 
 	    doublecomplex *, integer *, integer *, doublecomplex *, integer *,
 	     integer *);
     doublereal tmp;

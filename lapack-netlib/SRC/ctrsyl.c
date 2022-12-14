@@ -669,7 +669,7 @@ f"> */
 /* > \ingroup complexSYcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int ctrsyl_(char *trana, char *tranb, integer *isgn, integer 
+/* Subroutine */ void ctrsyl_(char *trana, char *tranb, integer *isgn, integer 
 	*m, integer *n, complex *a, integer *lda, complex *b, integer *ldb, 
 	complex *c__, integer *ldc, real *scale, integer *info)
 {
@@ -690,15 +690,16 @@ f"> */
 	    *, complex *, integer *);
     complex a11;
     real db;
-    extern /* Subroutine */ int slabad_(real *, real *);
+    extern /* Subroutine */ void slabad_(real *, real *);
     extern real clange_(char *, integer *, integer *, complex *, integer *, 
 	    real *);
     complex x11;
     extern /* Complex */ VOID cladiv_(complex *, complex *, complex *);
     real scaloc;
     extern real slamch_(char *);
-    extern /* Subroutine */ int csscal_(integer *, real *, complex *, integer 
-	    *), xerbla_(char *, integer *, ftnlen);
+    extern /* Subroutine */ void csscal_(integer *, real *, complex *, integer 
+	    *);
+    extern int xerbla_(char *, integer *, ftnlen);
     real bignum;
     logical notrna, notrnb;
     real smlnum, da11;
@@ -753,14 +754,14 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CTRSYL", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     *scale = 1.f;
     if (*m == 0 || *n == 0) {
-	return 0;
+	return;
     }
 
 /*     Set constants to control overflow */
@@ -1100,7 +1101,7 @@ f"> */
 
     }
 
-    return 0;
+    return;
 
 /*     End of CTRSYL */
 

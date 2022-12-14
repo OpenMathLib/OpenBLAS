@@ -807,7 +807,7 @@ f"> */
 /* >     Mark Fahey, Department of Mathematics, Univ. of Kentucky, USA */
 
 /*  ===================================================================== */
-/* Subroutine */ int dsbgvx_(char *jobz, char *range, char *uplo, integer *n, 
+/* Subroutine */ void dsbgvx_(char *jobz, char *range, char *uplo, integer *n, 
 	integer *ka, integer *kb, doublereal *ab, integer *ldab, doublereal *
 	bb, integer *ldbb, doublereal *q, integer *ldq, doublereal *vl, 
 	doublereal *vu, integer *il, integer *iu, doublereal *abstol, integer 
@@ -824,12 +824,12 @@ f"> */
     logical test;
     integer itmp1, i__, j, indee;
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int dgemv_(char *, integer *, integer *, 
+    extern /* Subroutine */ void dgemv_(char *, integer *, integer *, 
 	    doublereal *, doublereal *, integer *, doublereal *, integer *, 
 	    doublereal *, doublereal *, integer *);
     integer iinfo;
     char order[1];
-    extern /* Subroutine */ int dcopy_(integer *, doublereal *, integer *, 
+    extern /* Subroutine */ void dcopy_(integer *, doublereal *, integer *, 
 	    doublereal *, integer *), dswap_(integer *, doublereal *, integer 
 	    *, doublereal *, integer *);
     logical upper, wantz;
@@ -837,28 +837,29 @@ f"> */
     logical alleig, indeig;
     integer indibl;
     logical valeig;
-    extern /* Subroutine */ int dlacpy_(char *, integer *, integer *, 
-	    doublereal *, integer *, doublereal *, integer *), 
-	    xerbla_(char *, integer *, ftnlen), dpbstf_(char *, integer *, 
+    extern /* Subroutine */ void dlacpy_(char *, integer *, integer *, 
+	    doublereal *, integer *, doublereal *, integer *); 
+    extern int xerbla_(char *, integer *, ftnlen);
+    extern void dpbstf_(char *, integer *, 
 	    integer *, doublereal *, integer *, integer *), dsbtrd_(
 	    char *, char *, integer *, integer *, doublereal *, integer *, 
 	    doublereal *, doublereal *, doublereal *, integer *, doublereal *,
 	     integer *);
     integer indisp;
-    extern /* Subroutine */ int dsbgst_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void dsbgst_(char *, char *, integer *, integer *, 
 	    integer *, doublereal *, integer *, doublereal *, integer *, 
 	    doublereal *, integer *, doublereal *, integer *),
 	     dstein_(integer *, doublereal *, doublereal *, integer *, 
 	    doublereal *, integer *, integer *, doublereal *, integer *, 
 	    doublereal *, integer *, integer *, integer *);
     integer indiwo;
-    extern /* Subroutine */ int dsterf_(integer *, doublereal *, doublereal *,
+    extern /* Subroutine */ void dsterf_(integer *, doublereal *, doublereal *,
 	     integer *), dstebz_(char *, char *, integer *, doublereal *, 
 	    doublereal *, integer *, integer *, doublereal *, doublereal *, 
 	    doublereal *, integer *, integer *, doublereal *, integer *, 
 	    integer *, doublereal *, integer *, integer *);
     integer indwrk;
-    extern /* Subroutine */ int dsteqr_(char *, integer *, doublereal *, 
+    extern /* Subroutine */ void dsteqr_(char *, integer *, doublereal *, 
 	    doublereal *, doublereal *, integer *, doublereal *, integer *);
     integer nsplit;
     doublereal tmp1;
@@ -941,14 +942,14 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DSBGVX", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     *m = 0;
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /*     Form a split Cholesky factorization of B. */
@@ -956,7 +957,7 @@ f"> */
     dpbstf_(uplo, n, kb, &bb[bb_offset], ldbb, info);
     if (*info != 0) {
 	*info = *n + *info;
-	return 0;
+	return;
     }
 
 /*     Transform problem to standard eigenvalue problem. */
@@ -1082,7 +1083,7 @@ L30:
 	}
     }
 
-    return 0;
+    return;
 
 /*     End of DSBGVX */
 

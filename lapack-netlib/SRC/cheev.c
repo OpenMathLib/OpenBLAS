@@ -656,7 +656,7 @@ ices</b> */
 /* > \ingroup complexHEeigen */
 
 /*  ===================================================================== */
-/* Subroutine */ int cheev_(char *jobz, char *uplo, integer *n, complex *a, 
+/* Subroutine */ void cheev_(char *jobz, char *uplo, integer *n, complex *a, 
 	integer *lda, real *w, complex *work, integer *lwork, real *rwork, 
 	integer *info)
 {
@@ -671,16 +671,16 @@ ices</b> */
     real rmin, rmax, sigma;
     extern logical lsame_(char *, char *);
     integer iinfo;
-    extern /* Subroutine */ int sscal_(integer *, real *, real *, integer *);
+    extern /* Subroutine */ void sscal_(integer *, real *, real *, integer *);
     logical lower, wantz;
     integer nb;
     extern real clanhe_(char *, char *, integer *, complex *, integer *, real 
 	    *);
     integer iscale;
-    extern /* Subroutine */ int clascl_(char *, integer *, integer *, real *, 
+    extern /* Subroutine */ void clascl_(char *, integer *, integer *, real *, 
 	    real *, integer *, integer *, complex *, integer *, integer *);
     extern real slamch_(char *);
-    extern /* Subroutine */ int chetrd_(char *, integer *, complex *, integer 
+    extern /* Subroutine */ void chetrd_(char *, integer *, complex *, integer 
 	    *, real *, real *, complex *, complex *, integer *, integer *);
     real safmin;
     extern integer ilaenv_(integer *, char *, char *, integer *, integer *, 
@@ -688,7 +688,7 @@ ices</b> */
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     real bignum;
     integer indtau, indwrk;
-    extern /* Subroutine */ int csteqr_(char *, integer *, real *, real *, 
+    extern /* Subroutine */ void csteqr_(char *, integer *, real *, real *, 
 	    complex *, integer *, real *, integer *), cungtr_(char *, 
 	    integer *, complex *, integer *, complex *, complex *, integer *, 
 	    integer *), ssterf_(integer *, real *, real *, integer *);
@@ -752,15 +752,15 @@ ices</b> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CHEEV ", &i__1, (ftnlen)6);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
     if (*n == 1) {
@@ -771,7 +771,7 @@ ices</b> */
 	    i__1 = a_dim1 + 1;
 	    a[i__1].r = 1.f, a[i__1].i = 0.f;
 	}
-	return 0;
+	return;
     }
 
 /*     Get machine constants. */
@@ -837,7 +837,7 @@ ices</b> */
 
     work[1].r = (real) lwkopt, work[1].i = 0.f;
 
-    return 0;
+    return;
 
 /*     End of CHEEV */
 

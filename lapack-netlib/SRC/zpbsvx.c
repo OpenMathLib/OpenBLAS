@@ -853,7 +853,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int zpbsvx_(char *fact, char *uplo, integer *n, integer *kd, 
+/* Subroutine */ void zpbsvx_(char *fact, char *uplo, integer *n, integer *kd, 
 	integer *nrhs, doublecomplex *ab, integer *ldab, doublecomplex *afb, 
 	integer *ldafb, char *equed, doublereal *s, doublecomplex *b, integer 
 	*ldb, doublecomplex *x, integer *ldx, doublereal *rcond, doublereal *
@@ -873,7 +873,7 @@ f"> */
     doublereal scond, anorm;
     logical equil, rcequ, upper;
     integer j1, j2;
-    extern /* Subroutine */ int zcopy_(integer *, doublecomplex *, integer *, 
+    extern /* Subroutine */ void zcopy_(integer *, doublecomplex *, integer *, 
 	    doublecomplex *, integer *);
     extern doublereal dlamch_(char *);
     logical nofact;
@@ -881,11 +881,11 @@ f"> */
     extern doublereal zlanhb_(char *, char *, integer *, integer *, 
 	    doublecomplex *, integer *, doublereal *);
     doublereal bignum;
-    extern /* Subroutine */ int zlaqhb_(char *, integer *, integer *, 
+    extern /* Subroutine */ void zlaqhb_(char *, integer *, integer *, 
 	    doublecomplex *, integer *, doublereal *, doublereal *, 
 	    doublereal *, char *);
     integer infequ;
-    extern /* Subroutine */ int zpbcon_(char *, integer *, integer *, 
+    extern /* Subroutine */ void zpbcon_(char *, integer *, integer *, 
 	    doublecomplex *, integer *, doublereal *, doublereal *, 
 	    doublecomplex *, doublereal *, integer *), zlacpy_(char *,
 	     integer *, integer *, doublecomplex *, integer *, doublecomplex *
@@ -898,7 +898,7 @@ f"> */
 	    integer *), zpbtrf_(char *, integer *, integer *, 
 	    doublecomplex *, integer *, integer *);
     doublereal smlnum;
-    extern /* Subroutine */ int zpbtrs_(char *, integer *, integer *, integer 
+    extern /* Subroutine */ void zpbtrs_(char *, integer *, integer *, integer 
 	    *, doublecomplex *, integer *, doublecomplex *, integer *, 
 	    integer *);
 
@@ -998,7 +998,7 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZPBSVX", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
     if (equil) {
@@ -1069,7 +1069,7 @@ f"> */
 
 	if (*info > 0) {
 	    *rcond = 0.;
-	    return 0;
+	    return;
 	}
     }
 
@@ -1125,7 +1125,7 @@ f"> */
 	*info = *n + 1;
     }
 
-    return 0;
+    return;
 
 /*     End of ZPBSVX */
 

@@ -645,7 +645,7 @@ f"> */
 /* > \ingroup doubleSYcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int dsygst_(integer *itype, char *uplo, integer *n, 
+/* Subroutine */ void dsygst_(integer *itype, char *uplo, integer *n, 
 	doublereal *a, integer *lda, doublereal *b, integer *ldb, integer *
 	info)
 {
@@ -655,20 +655,20 @@ f"> */
     /* Local variables */
     integer k;
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int dtrmm_(char *, char *, char *, char *, 
+    extern /* Subroutine */ void dtrmm_(char *, char *, char *, char *, 
 	    integer *, integer *, doublereal *, doublereal *, integer *, 
 	    doublereal *, integer *), dsymm_(
 	    char *, char *, integer *, integer *, doublereal *, doublereal *, 
 	    integer *, doublereal *, integer *, doublereal *, doublereal *, 
 	    integer *);
     logical upper;
-    extern /* Subroutine */ int dtrsm_(char *, char *, char *, char *, 
+    extern /* Subroutine */ void dtrsm_(char *, char *, char *, char *, 
 	    integer *, integer *, doublereal *, doublereal *, integer *, 
 	    doublereal *, integer *), dsygs2_(
 	    integer *, char *, integer *, doublereal *, integer *, doublereal 
 	    *, integer *, integer *);
     integer kb;
-    extern /* Subroutine */ int dsyr2k_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void dsyr2k_(char *, char *, integer *, integer *, 
 	    doublereal *, doublereal *, integer *, doublereal *, integer *, 
 	    doublereal *, doublereal *, integer *);
     integer nb;
@@ -713,13 +713,13 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DSYGST", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /*     Determine the block size for this environment. */
@@ -897,7 +897,7 @@ f"> */
 	    }
 	}
     }
-    return 0;
+    return;
 
 /*     End of DSYGST */
 

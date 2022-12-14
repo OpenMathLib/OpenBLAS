@@ -677,7 +677,7 @@ f"> */
 /* >  Modified by Francoise Tisseur, University of Tennessee */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int dlaed1_(integer *n, doublereal *d__, doublereal *q, 
+/* Subroutine */ void dlaed1_(integer *n, doublereal *d__, doublereal *q, 
 	integer *ldq, integer *indxq, doublereal *rho, integer *cutpnt, 
 	doublereal *work, integer *iwork, integer *info)
 {
@@ -686,10 +686,10 @@ f"> */
 
     /* Local variables */
     integer indx, i__, k, indxc;
-    extern /* Subroutine */ int dcopy_(integer *, doublereal *, integer *, 
+    extern /* Subroutine */ void dcopy_(integer *, doublereal *, integer *, 
 	    doublereal *, integer *);
     integer indxp;
-    extern /* Subroutine */ int dlaed2_(integer *, integer *, integer *, 
+    extern /* Subroutine */ void dlaed2_(integer *, integer *, integer *, 
 	    doublereal *, doublereal *, integer *, integer *, doublereal *, 
 	    doublereal *, doublereal *, doublereal *, doublereal *, integer *,
 	     integer *, integer *, integer *, integer *), dlaed3_(integer *, 
@@ -697,8 +697,9 @@ f"> */
 	    doublereal *, doublereal *, doublereal *, integer *, integer *, 
 	    doublereal *, doublereal *, integer *);
     integer n1, n2, idlmda, is, iw, iz;
-    extern /* Subroutine */ int dlamrg_(integer *, integer *, doublereal *, 
-	    integer *, integer *, integer *), xerbla_(char *, integer *, ftnlen);
+    extern /* Subroutine */ void dlamrg_(integer *, integer *, doublereal *, 
+	    integer *, integer *, integer *);
+    extern int xerbla_(char *, integer *, ftnlen);
     integer coltyp, iq2, zpp1;
 
 
@@ -739,13 +740,13 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DLAED1", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /*     The following values are integer pointers which indicate */
@@ -807,7 +808,7 @@ f"> */
     }
 
 L20:
-    return 0;
+    return;
 
 /*     End of DLAED1 */
 

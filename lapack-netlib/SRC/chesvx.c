@@ -797,7 +797,7 @@ f"> */
 /* > \ingroup complexHEsolve */
 
 /*  ===================================================================== */
-/* Subroutine */ int chesvx_(char *fact, char *uplo, integer *n, integer *
+/* Subroutine */ void chesvx_(char *fact, char *uplo, integer *n, integer *
 	nrhs, complex *a, integer *lda, complex *af, integer *ldaf, integer *
 	ipiv, complex *b, integer *ldb, complex *x, integer *ldx, real *rcond,
 	 real *ferr, real *berr, complex *work, integer *lwork, real *rwork, 
@@ -813,11 +813,11 @@ f"> */
     integer nb;
     extern real clanhe_(char *, char *, integer *, complex *, integer *, real 
 	    *);
-    extern /* Subroutine */ int checon_(char *, integer *, complex *, integer 
+    extern /* Subroutine */ void checon_(char *, integer *, complex *, integer 
 	    *, integer *, real *, real *, complex *, integer *);
     extern real slamch_(char *);
     logical nofact;
-    extern /* Subroutine */ int cherfs_(char *, integer *, integer *, complex 
+    extern /* Subroutine */ void cherfs_(char *, integer *, integer *, complex 
 	    *, integer *, complex *, integer *, integer *, complex *, integer 
 	    *, complex *, integer *, real *, real *, complex *, real *, 
 	    integer *), chetrf_(char *, integer *, complex *, integer 
@@ -826,7 +826,8 @@ f"> */
 	    integer *);
     extern integer ilaenv_(integer *, char *, char *, integer *, integer *, 
 	    integer *, integer *, ftnlen, ftnlen);
-    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen), chetrs_(
+    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
+    extern void chetrs_(
 	    char *, integer *, integer *, complex *, integer *, integer *, 
 	    complex *, integer *, integer *);
     integer lwkopt;
@@ -909,9 +910,9 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CHESVX", &i__1, (ftnlen)6);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
     if (nofact) {
@@ -926,7 +927,7 @@ f"> */
 
 	if (*info > 0) {
 	    *rcond = 0.f;
-	    return 0;
+	    return;
 	}
     }
 
@@ -960,7 +961,7 @@ f"> */
 
     work[1].r = (real) lwkopt, work[1].i = 0.f;
 
-    return 0;
+    return;
 
 /*     End of CHESVX */
 

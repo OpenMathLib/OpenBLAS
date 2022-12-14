@@ -624,7 +624,7 @@ f"> */
 /* > \ingroup complex16POcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int zpotrf_(char *uplo, integer *n, doublecomplex *a, 
+/* Subroutine */ void zpotrf_(char *uplo, integer *n, doublecomplex *a, 
 	integer *lda, integer *info)
 {
     /* System generated locals */
@@ -634,21 +634,21 @@ f"> */
     /* Local variables */
     integer j;
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int zgemm_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void zgemm_(char *, char *, integer *, integer *, 
 	    integer *, doublecomplex *, doublecomplex *, integer *, 
 	    doublecomplex *, integer *, doublecomplex *, doublecomplex *, 
 	    integer *), zherk_(char *, char *, integer *, 
 	    integer *, doublereal *, doublecomplex *, integer *, doublereal *,
 	     doublecomplex *, integer *);
     logical upper;
-    extern /* Subroutine */ int ztrsm_(char *, char *, char *, char *, 
+    extern /* Subroutine */ void ztrsm_(char *, char *, char *, char *, 
 	    integer *, integer *, doublecomplex *, doublecomplex *, integer *,
 	     doublecomplex *, integer *);
     integer jb, nb;
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     extern integer ilaenv_(integer *, char *, char *, integer *, integer *, 
 	    integer *, integer *, ftnlen, ftnlen);
-    extern /* Subroutine */ int zpotrf2_(char *, integer *, doublecomplex *, 
+    extern /* Subroutine */ void zpotrf2_(char *, integer *, doublecomplex *, 
 	    integer *, integer *);
 
 
@@ -681,13 +681,13 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZPOTRF", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /*     Determine the block size for this environment. */
@@ -789,7 +789,7 @@ L30:
     *info = *info + j - 1;
 
 L40:
-    return 0;
+    return;
 
 /*     End of ZPOTRF */
 

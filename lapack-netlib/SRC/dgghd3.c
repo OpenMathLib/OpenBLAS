@@ -748,7 +748,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int dgghd3_(char *compq, char *compz, integer *n, integer *
+/* Subroutine */ void dgghd3_(char *compq, char *compz, integer *n, integer *
 	ilo, integer *ihi, doublereal *a, integer *lda, doublereal *b, 
 	integer *ldb, doublereal *q, integer *ldq, doublereal *z__, integer *
 	ldz, doublereal *work, integer *lwork, integer *info)
@@ -762,21 +762,21 @@ f"> */
     logical blk22;
     integer cola, jcol, ierr;
     doublereal temp;
-    extern /* Subroutine */ int drot_(integer *, doublereal *, integer *, 
+    extern /* Subroutine */ void drot_(integer *, doublereal *, integer *, 
 	    doublereal *, integer *, doublereal *, doublereal *);
     integer jrow, topq, ppwo;
     doublereal temp1, temp2, temp3, c__;
     integer kacc22, i__, j, k;
     doublereal s;
-    extern /* Subroutine */ int dgemm_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void dgemm_(char *, char *, integer *, integer *, 
 	    integer *, doublereal *, doublereal *, integer *, doublereal *, 
 	    integer *, doublereal *, doublereal *, integer *);
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int dgemv_(char *, integer *, integer *, 
+    extern /* Subroutine */ void dgemv_(char *, integer *, integer *, 
 	    doublereal *, doublereal *, integer *, doublereal *, integer *, 
 	    doublereal *, doublereal *, integer *);
     integer nbmin;
-    extern /* Subroutine */ int dorm22_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void dorm22_(char *, char *, integer *, integer *, 
 	    integer *, integer *, doublereal *, integer *, doublereal *, 
 	    integer *, doublereal *, integer *, integer *);
     integer nblst;
@@ -784,25 +784,25 @@ f"> */
     doublereal c1, c2;
     logical wantq;
     integer j0;
-    extern /* Subroutine */ int dtrmv_(char *, char *, char *, integer *, 
+    extern /* Subroutine */ void dtrmv_(char *, char *, char *, integer *, 
 	    doublereal *, integer *, doublereal *, integer *);
     logical initz, wantz;
     doublereal s1, s2;
     char compq2[1], compz2[1];
     integer nb, jj, nh;
-    extern /* Subroutine */ int dgghrd_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void dgghrd_(char *, char *, integer *, integer *, 
 	    integer *, doublereal *, integer *, doublereal *, integer *, 
 	    doublereal *, integer *, doublereal *, integer *, integer *);
     integer nx, pw;
-    extern /* Subroutine */ int dlaset_(char *, integer *, integer *, 
+    extern /* Subroutine */ void dlaset_(char *, integer *, integer *, 
 	    doublereal *, doublereal *, doublereal *, integer *), 
 	    dlartg_(doublereal *, doublereal *, doublereal *, doublereal *, 
 	    doublereal *);
     extern integer ilaenv_(integer *, char *, char *, integer *, integer *, 
 	    integer *, integer *, ftnlen, ftnlen);
-    extern /* Subroutine */ int dlacpy_(char *, integer *, integer *, 
-	    doublereal *, integer *, doublereal *, integer *), 
-	    xerbla_(char *, integer *, ftnlen);
+    extern /* Subroutine */ void dlacpy_(char *, integer *, integer *, 
+	    doublereal *, integer *, doublereal *, integer *); 
+    extern int xerbla_(char *, integer *, ftnlen);
     integer lwkopt;
     logical lquery;
     integer nnb, len, top, ppw, n2nb;
@@ -873,9 +873,9 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DGGHD3", &i__1, (ftnlen)6);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Initialize Q and Z if desired. */
@@ -900,7 +900,7 @@ f"> */
     nh = *ihi - *ilo + 1;
     if (nh <= 1) {
 	work[1] = 1.;
-	return 0;
+	return;
     }
 
 /*     Determine the blocksize. */
@@ -1573,7 +1573,7 @@ f"> */
     }
     work[1] = (doublereal) lwkopt;
 
-    return 0;
+    return;
 
 /*     End of DGGHD3 */
 

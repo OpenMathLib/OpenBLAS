@@ -680,7 +680,7 @@ kernels.f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int zhb2st_kernels_(char *uplo, logical *wantz, integer *
+/* Subroutine */ void zhb2st_kernels_(char *uplo, logical *wantz, integer *
 	ttype, integer *st, integer *ed, integer *sweep, integer *n, integer *
 	nb, integer *ib, doublecomplex *a, integer *lda, doublecomplex *v, 
 	doublecomplex *tau, integer *ldvt, doublecomplex *work)
@@ -695,10 +695,10 @@ kernels.f"> */
     extern logical lsame_(char *, char *);
     logical upper;
     integer j1, j2, lm, ln, ajeter;
-    extern /* Subroutine */ int zlarfg_(integer *, doublecomplex *, 
+    extern /* Subroutine */ void zlarfg_(integer *, doublecomplex *, 
 	    doublecomplex *, integer *, doublecomplex *);
     integer ofdpos;
-    extern /* Subroutine */ int zlarfx_(char *, integer *, integer *, 
+    extern /* Subroutine */ void zlarfx_(char *, integer *, integer *, 
 	    doublecomplex *, doublecomplex *, doublecomplex *, integer *, 
 	    doublecomplex *), zlarfy_(char *, integer *, 
 	    doublecomplex *, integer *, doublecomplex *, doublecomplex *, 
@@ -918,7 +918,7 @@ kernels.f"> */
 	}
     }
 
-    return 0;
+    return;
 
 /*     END OF ZHB2ST_KERNELS */
 

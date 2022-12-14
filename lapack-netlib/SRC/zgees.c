@@ -710,7 +710,7 @@ or GE matrices</b> */
 /* > \ingroup complex16GEeigen */
 
 /*  ===================================================================== */
-/* Subroutine */ int zgees_(char *jobvs, char *sort, L_fp select, integer *n, 
+/* Subroutine */ void zgees_(char *jobvs, char *sort, L_fp select, integer *n, 
 	doublecomplex *a, integer *lda, integer *sdim, doublecomplex *w, 
 	doublecomplex *vs, integer *ldvs, doublecomplex *work, integer *lwork,
 	 doublereal *rwork, logical *bwork, integer *info)
@@ -725,22 +725,23 @@ or GE matrices</b> */
     doublereal s;
     integer icond, ieval;
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int zcopy_(integer *, doublecomplex *, integer *, 
+    extern /* Subroutine */ void zcopy_(integer *, doublecomplex *, integer *, 
 	    doublecomplex *, integer *), dlabad_(doublereal *, doublereal *);
     logical scalea;
     extern doublereal dlamch_(char *);
     doublereal cscale;
-    extern /* Subroutine */ int zgebak_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void zgebak_(char *, char *, integer *, integer *, 
 	    integer *, doublereal *, integer *, doublecomplex *, integer *, 
 	    integer *), zgebal_(char *, integer *, 
 	    doublecomplex *, integer *, integer *, integer *, doublereal *, 
-	    integer *), xerbla_(char *, integer *, ftnlen);
+	    integer *);
+    extern int xerbla_(char *, integer *, ftnlen);
     extern integer ilaenv_(integer *, char *, char *, integer *, integer *, 
 	    integer *, integer *, ftnlen, ftnlen);
     extern doublereal zlange_(char *, integer *, integer *, doublecomplex *, 
 	    integer *, doublereal *);
     doublereal bignum;
-    extern /* Subroutine */ int zgehrd_(integer *, integer *, integer *, 
+    extern /* Subroutine */ void zgehrd_(integer *, integer *, integer *, 
 	    doublecomplex *, integer *, doublecomplex *, doublecomplex *, 
 	    integer *, integer *), zlascl_(char *, integer *, integer *, 
 	    doublereal *, doublereal *, integer *, integer *, doublecomplex *,
@@ -748,15 +749,15 @@ or GE matrices</b> */
 	    integer *, doublecomplex *, integer *, doublecomplex *, integer *);
     integer minwrk, maxwrk;
     doublereal smlnum;
-    extern /* Subroutine */ int zhseqr_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void zhseqr_(char *, char *, integer *, integer *, 
 	    integer *, doublecomplex *, integer *, doublecomplex *, 
 	    doublecomplex *, integer *, doublecomplex *, integer *, integer *);
     integer hswork;
-    extern /* Subroutine */ int zunghr_(integer *, integer *, integer *, 
+    extern /* Subroutine */ void zunghr_(integer *, integer *, integer *, 
 	    doublecomplex *, integer *, doublecomplex *, doublecomplex *, 
 	    integer *, integer *);
     logical wantst, lquery, wantvs;
-    extern /* Subroutine */ int ztrsen_(char *, char *, logical *, integer *, 
+    extern /* Subroutine */ void ztrsen_(char *, char *, logical *, integer *, 
 	    doublecomplex *, integer *, doublecomplex *, integer *, 
 	    doublecomplex *, integer *, doublereal *, doublereal *, 
 	    doublecomplex *, integer *, integer *);
@@ -848,16 +849,16 @@ or GE matrices</b> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZGEES ", &i__1, (ftnlen)6);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
 	*sdim = 0;
-	return 0;
+	return;
     }
 
 /*     Get machine constants */
@@ -975,7 +976,7 @@ or GE matrices</b> */
     }
 
     work[1].r = (doublereal) maxwrk, work[1].i = 0.;
-    return 0;
+    return;
 
 /*     End of ZGEES */
 

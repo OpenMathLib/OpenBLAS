@@ -734,7 +734,7 @@ f"> */
 /* >     California at Berkeley, USA */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int dgesdd_(char *jobz, integer *m, integer *n, doublereal *
+/* Subroutine */ void dgesdd_(char *jobz, integer *m, integer *n, doublereal *
 	a, integer *lda, doublereal *s, doublereal *u, integer *ldu, 
 	doublereal *vt, integer *ldvt, doublereal *work, integer *lwork, 
 	integer *iwork, integer *info)
@@ -750,7 +750,7 @@ f"> */
     integer idum[1], ierr, itau, lwork_dormbr_qln_mm__, lwork_dormbr_qln_mn__,
 	     lwork_dormbr_qln_nn__, lwork_dormbr_prt_mm__, 
 	    lwork_dormbr_prt_mn__, lwork_dormbr_prt_nn__, i__;
-    extern /* Subroutine */ int dgemm_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void dgemm_(char *, char *, integer *, integer *, 
 	    integer *, doublereal *, doublereal *, integer *, doublereal *, 
 	    integer *, doublereal *, doublereal *, integer *);
     extern logical lsame_(char *, char *);
@@ -759,11 +759,11 @@ f"> */
     integer nwork;
     logical wntqn, wntqo, wntqs;
     integer ie, lwork_dorgbr_p_mm__;
-    extern /* Subroutine */ int dbdsdc_(char *, char *, integer *, doublereal 
+    extern /* Subroutine */ void dbdsdc_(char *, char *, integer *, doublereal 
 	    *, doublereal *, doublereal *, integer *, doublereal *, integer *,
 	     doublereal *, integer *, doublereal *, integer *, integer *);
     integer il, lwork_dorgbr_q_nn__;
-    extern /* Subroutine */ int dgebrd_(integer *, integer *, doublereal *, 
+    extern /* Subroutine */ void dgebrd_(integer *, integer *, doublereal *, 
 	    integer *, doublereal *, doublereal *, doublereal *, doublereal *,
 	     doublereal *, integer *, integer *);
     extern doublereal dlamch_(char *);
@@ -771,7 +771,7 @@ f"> */
     extern doublereal dlange_(char *, integer *, integer *, doublereal *, 
 	    integer *, doublereal *);
     integer iu;
-    extern /* Subroutine */ int dgelqf_(integer *, integer *, doublereal *, 
+    extern /* Subroutine */ void dgelqf_(integer *, integer *, doublereal *, 
 	    integer *, doublereal *, doublereal *, integer *, integer *), 
 	    dlascl_(char *, integer *, integer *, doublereal *, doublereal *, 
 	    integer *, integer *, doublereal *, integer *, integer *),
@@ -779,13 +779,14 @@ f"> */
 	    doublereal *, doublereal *, integer *, integer *), dlacpy_(char *,
 	     integer *, integer *, doublereal *, integer *, doublereal *, 
 	    integer *), dlaset_(char *, integer *, integer *, 
-	    doublereal *, doublereal *, doublereal *, integer *), 
-	    xerbla_(char *, integer *, ftnlen), dorgbr_(char *, integer *, 
+	    doublereal *, doublereal *, doublereal *, integer *); 
+    extern int xerbla_(char *, integer *, ftnlen);
+    extern void dorgbr_(char *, integer *, 
 	    integer *, integer *, doublereal *, integer *, doublereal *, 
 	    doublereal *, integer *, integer *);
     extern logical disnan_(doublereal *);
     doublereal bignum;
-    extern /* Subroutine */ int dormbr_(char *, char *, char *, integer *, 
+    extern /* Subroutine */ void dormbr_(char *, char *, char *, integer *, 
 	    integer *, integer *, doublereal *, integer *, doublereal *, 
 	    doublereal *, integer *, doublereal *, integer *, integer *), dorglq_(integer *, integer *, integer *, 
 	    doublereal *, integer *, doublereal *, doublereal *, integer *, 
@@ -1238,15 +1239,15 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DGESDD", &i__1, (ftnlen)6);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*m == 0 || *n == 0) {
-	return 0;
+	return;
     }
 
 /*     Get machine constants */
@@ -1260,7 +1261,7 @@ f"> */
     anrm = dlange_("M", m, n, &a[a_offset], lda, dum);
     if (disnan_(&anrm)) {
 	*info = -4;
-	return 0;
+	return;
     }
     iscl = 0;
     if (anrm > 0. && anrm < smlnum) {
@@ -2283,7 +2284,7 @@ f"> */
 
     work[1] = (doublereal) maxwrk;
 
-    return 0;
+    return;
 
 /*     End of DGESDD */
 

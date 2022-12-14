@@ -652,7 +652,7 @@ f"> */
 /* > \ingroup OTHERauxiliary */
 
 /*  ===================================================================== */
-/* Subroutine */ int dlascl_(char *type__, integer *kl, integer *ku, 
+/* Subroutine */ void dlascl_(char *type__, integer *kl, integer *ku, 
 	doublereal *cfrom, doublereal *cto, integer *m, integer *n, 
 	doublereal *a, integer *lda, integer *info)
 {
@@ -743,13 +743,13 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DLASCL", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0 || *m == 0) {
-	return 0;
+	return;
     }
 
 /*     Get machine parameters */
@@ -912,7 +912,7 @@ L10:
 	goto L10;
     }
 
-    return 0;
+    return;
 
 /*     End of DLASCL */
 

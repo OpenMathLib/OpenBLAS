@@ -623,7 +623,7 @@ f"> */
 /* > \ingroup doubleGEcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int dgetf2_(integer *m, integer *n, doublereal *a, integer *
+/* Subroutine */ void dgetf2_(integer *m, integer *n, doublereal *a, integer *
 	lda, integer *ipiv, integer *info)
 {
     /* System generated locals */
@@ -631,14 +631,14 @@ f"> */
     doublereal d__1;
 
     /* Local variables */
-    extern /* Subroutine */ int dger_(integer *, integer *, doublereal *, 
+    extern /* Subroutine */ void dger_(integer *, integer *, doublereal *, 
 	    doublereal *, integer *, doublereal *, integer *, doublereal *, 
 	    integer *);
     integer i__, j;
-    extern /* Subroutine */ int dscal_(integer *, doublereal *, doublereal *, 
+    extern /* Subroutine */ void dscal_(integer *, doublereal *, doublereal *, 
 	    integer *);
     doublereal sfmin;
-    extern /* Subroutine */ int dswap_(integer *, doublereal *, integer *, 
+    extern /* Subroutine */ void dswap_(integer *, doublereal *, integer *, 
 	    doublereal *, integer *);
     extern doublereal dlamch_(char *);
     integer jp;
@@ -675,13 +675,13 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DGETF2", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*m == 0 || *n == 0) {
-	return 0;
+	return;
     }
 
 /*     Compute machine safe minimum */
@@ -736,7 +736,7 @@ f"> */
 	}
 /* L10: */
     }
-    return 0;
+    return;
 
 /*     End of DGETF2 */
 

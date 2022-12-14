@@ -690,7 +690,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int chetd2_(char *uplo, integer *n, complex *a, integer *lda,
+/* Subroutine */ void chetd2_(char *uplo, integer *n, complex *a, integer *lda,
 	 real *d__, real *e, complex *tau, integer *info)
 {
     /* System generated locals */
@@ -700,20 +700,21 @@ f"> */
 
     /* Local variables */
     complex taui;
-    extern /* Subroutine */ int cher2_(char *, integer *, complex *, complex *
+    extern /* Subroutine */ void cher2_(char *, integer *, complex *, complex *
 	    , integer *, complex *, integer *, complex *, integer *);
     integer i__;
     complex alpha;
     extern /* Complex */ VOID cdotc_(complex *, integer *, complex *, integer 
 	    *, complex *, integer *);
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int chemv_(char *, integer *, complex *, complex *
+    extern /* Subroutine */ void chemv_(char *, integer *, complex *, complex *
 	    , integer *, complex *, integer *, complex *, complex *, integer *
 	    ), caxpy_(integer *, complex *, complex *, integer *, 
 	    complex *, integer *);
     logical upper;
-    extern /* Subroutine */ int clarfg_(integer *, complex *, complex *, 
-	    integer *, complex *), xerbla_(char *, integer *, ftnlen);
+    extern /* Subroutine */ void clarfg_(integer *, complex *, complex *, 
+	    integer *, complex *);
+    extern int xerbla_(char *, integer *, ftnlen);
 
 
 /*  -- LAPACK computational routine (version 3.7.0) -- */
@@ -748,13 +749,13 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CHETD2", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n <= 0) {
-	return 0;
+	return;
     }
 
     if (upper) {
@@ -909,7 +910,7 @@ f"> */
 	d__[i__1] = a[i__2].r;
     }
 
-    return 0;
+    return;
 
 /*     End of CHETD2 */
 

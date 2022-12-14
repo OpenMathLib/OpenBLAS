@@ -687,7 +687,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int cunmr3_(char *side, char *trans, integer *m, integer *n, 
+/* Subroutine */ void cunmr3_(char *side, char *trans, integer *m, integer *n, 
 	integer *k, integer *l, complex *a, integer *lda, complex *tau, 
 	complex *c__, integer *ldc, complex *work, integer *info)
 {
@@ -700,7 +700,7 @@ f"> */
     complex taui;
     integer i__;
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int clarz_(char *, integer *, integer *, integer *
+    extern /* Subroutine */ void clarz_(char *, integer *, integer *, integer *
 	    , complex *, integer *, complex *, complex *, integer *, complex *
 	    );
     integer i1, i2, i3, ja, ic, jc, mi, ni, nq;
@@ -761,13 +761,13 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CUNMR3", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*m == 0 || *n == 0 || *k == 0) {
-	return 0;
+	return;
     }
 
     if (left && ! notran || ! left && notran) {
@@ -822,7 +822,7 @@ f"> */
 /* L10: */
     }
 
-    return 0;
+    return;
 
 /*     End of CUNMR3 */
 

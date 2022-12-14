@@ -908,7 +908,7 @@ fsx_extended.f"> */
 /* > \ingroup doubleGEcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int dla_gerfsx_extended_(integer *prec_type__, integer *
+/* Subroutine */ void dla_gerfsx_extended_(integer *prec_type__, integer *
 	trans_type__, integer *n, integer *nrhs, doublereal *a, integer *lda, 
 	doublereal *af, integer *ldaf, integer *ipiv, logical *colequ, 
 	doublereal *c__, doublereal *b, integer *ldb, doublereal *y, integer *
@@ -927,15 +927,15 @@ fsx_extended.f"> */
 
     /* Local variables */
     doublereal dx_x__, dz_z__;
-    extern /* Subroutine */ int dla_lin_berr_(integer *, integer *, integer *
+    extern /* Subroutine */ void dla_lin_berr_(integer *, integer *, integer *
 	    , doublereal *, doublereal *, doublereal *);
     doublereal ymin;
-    extern /* Subroutine */ int blas_dgemv_x_(integer *, integer *, integer *
+    extern /* Subroutine */ void blas_dgemv_x_(integer *, integer *, integer *
 	    , doublereal *, doublereal *, integer *, doublereal *, integer *, 
 	    doublereal *, doublereal *, integer *, integer *);
     doublereal dxratmax, dzratmax;
     integer y_prec_state__, i__, j;
-    extern /* Subroutine */ int blas_dgemv2_x_(integer *, integer *, integer 
+    extern /* Subroutine */ void blas_dgemv2_x_(integer *, integer *, integer 
 	    *, doublereal *, doublereal *, integer *, doublereal *, 
 	    doublereal *, integer *, doublereal *, doublereal *, integer *, 
 	    integer *), dla_geamv_(integer *, integer *, integer *, 
@@ -947,13 +947,13 @@ fsx_extended.f"> */
     doublereal dxrat;
     logical incr_prec__;
     doublereal dzrat;
-    extern /* Subroutine */ int daxpy_(integer *, doublereal *, doublereal *, 
+    extern /* Subroutine */ void daxpy_(integer *, doublereal *, doublereal *, 
 	    integer *, doublereal *, integer *);
     char trans[1];
     doublereal normx, normy, myhugeval, prev_dz_z__;
     extern doublereal dlamch_(char *);
     doublereal yk, final_dx_x__;
-    extern /* Subroutine */ int dgetrs_(char *, integer *, integer *, 
+    extern /* Subroutine */ void dgetrs_(char *, integer *, integer *, 
 	    doublereal *, integer *, integer *, doublereal *, integer *, 
 	    integer *), dla_wwaddw_(integer *, doublereal *, 
 	    doublereal *, doublereal *);
@@ -1004,7 +1004,7 @@ fsx_extended.f"> */
 
     /* Function Body */
     if (*info != 0) {
-	return 0;
+	return;
     }
     chla_transtype_(ch__1, trans_type__);
     *(unsigned char *)trans = *(unsigned char *)&ch__1[0];
@@ -1241,6 +1241,6 @@ L666:
 
     }
 
-    return 0;
+    return;
 } /* dla_gerfsx_extended__ */
 

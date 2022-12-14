@@ -768,7 +768,7 @@ f"> */
 /* >       of Matrix Analysis, volume 23, pages 948--973, 2002. */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int zlaqr4_(logical *wantt, logical *wantz, integer *n, 
+/* Subroutine */ void zlaqr4_(logical *wantt, logical *wantz, integer *n, 
 	integer *ilo, integer *ihi, doublecomplex *h__, integer *ldh, 
 	doublecomplex *w, integer *iloz, integer *ihiz, doublecomplex *z__, 
 	integer *ldz, doublecomplex *work, integer *lwork, integer *info)
@@ -787,7 +787,7 @@ f"> */
     doublereal s;
     integer itmax, nsmax, nwmax, kwtop;
     doublecomplex aa, bb, cc, dd;
-    extern /* Subroutine */ int zlaqr2_(logical *, logical *, integer *, 
+    extern /* Subroutine */ void zlaqr2_(logical *, logical *, integer *, 
 	    integer *, integer *, integer *, doublecomplex *, integer *, 
 	    integer *, integer *, doublecomplex *, integer *, integer *, 
 	    integer *, doublecomplex *, doublecomplex *, integer *, integer *,
@@ -805,7 +805,7 @@ f"> */
     doublecomplex rtdisc;
     integer nwupbd;
     logical sorted;
-    extern /* Subroutine */ int zlahqr_(logical *, logical *, integer *, 
+    extern /* Subroutine */ void zlahqr_(logical *, logical *, integer *, 
 	    integer *, integer *, doublecomplex *, integer *, doublecomplex *,
 	     integer *, integer *, doublecomplex *, integer *, integer *), 
 	    zlacpy_(char *, integer *, integer *, doublecomplex *, integer *, 
@@ -855,7 +855,7 @@ f"> */
 
     if (*n == 0) {
 	work[1].r = 1., work[1].i = 0.;
-	return 0;
+	return;
     }
 
     if (*n <= 15) {
@@ -939,7 +939,7 @@ f"> */
 	    d__1 = (doublereal) lwkopt;
 	    z__1.r = d__1, z__1.i = 0.;
 	    work[1].r = z__1.r, work[1].i = z__1.i;
-	    return 0;
+	    return;
 	}
 
 /*        ==== ZLAHQR/ZLAQR0 crossover point ==== */
@@ -1362,6 +1362,6 @@ L80:
 
 /*     ==== End of ZLAQR4 ==== */
 
-    return 0;
+    return;
 } /* zlaqr4_ */
 

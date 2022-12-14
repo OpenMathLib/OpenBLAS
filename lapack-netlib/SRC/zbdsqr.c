@@ -737,7 +737,7 @@ f"> */
 /* > \ingroup complex16OTHERcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int zbdsqr_(char *uplo, integer *n, integer *ncvt, integer *
+/* Subroutine */ void zbdsqr_(char *uplo, integer *n, integer *ncvt, integer *
 	nru, integer *ncc, doublereal *d__, doublereal *e, doublecomplex *vt, 
 	integer *ldvt, doublecomplex *u, integer *ldu, doublecomplex *c__, 
 	integer *ldc, doublereal *rwork, integer *info)
@@ -755,7 +755,7 @@ f"> */
     doublereal cosl;
     integer isub, iter;
     doublereal unfl, sinl, cosr, smin, smax, sinr;
-    extern /* Subroutine */ int dlas2_(doublereal *, doublereal *, doublereal 
+    extern /* Subroutine */ void dlas2_(doublereal *, doublereal *, doublereal 
 	    *, doublereal *, doublereal *);
     doublereal f, g, h__;
     integer i__, j, m;
@@ -767,7 +767,7 @@ f"> */
     integer maxit;
     doublereal sminl, sigmx;
     logical lower;
-    extern /* Subroutine */ int zlasr_(char *, char *, char *, integer *, 
+    extern /* Subroutine */ void zlasr_(char *, char *, char *, integer *, 
 	    integer *, doublereal *, doublereal *, doublecomplex *, integer *), zdrot_(integer *, doublecomplex *, 
 	    integer *, doublecomplex *, integer *, doublereal *, doublereal *)
 	    , zswap_(integer *, doublecomplex *, integer *, doublecomplex *, 
@@ -779,9 +779,10 @@ f"> */
     integer ll;
     extern doublereal dlamch_(char *);
     doublereal sn, mu;
-    extern /* Subroutine */ int dlartg_(doublereal *, doublereal *, 
-	    doublereal *, doublereal *, doublereal *), xerbla_(char *, 
-	    integer *, ftnlen), zdscal_(integer *, doublereal *, 
+    extern /* Subroutine */ void dlartg_(doublereal *, doublereal *, 
+	    doublereal *, doublereal *, doublereal *);
+    extern int xerbla_(char *, integer *, ftnlen);
+    extern void zdscal_(integer *, doublereal *, 
 	    doublecomplex *, integer *);
     doublereal sminoa, thresh;
     logical rotate;
@@ -839,10 +840,10 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZBDSQR", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
     if (*n == 0) {
-	return 0;
+	return;
     }
     if (*n == 1) {
 	goto L160;
@@ -860,7 +861,7 @@ f"> */
 /*     If INFO equals 2, dqds didn't finish, try to finish */
 
 	if (*info != 2) {
-	    return 0;
+	    return;
 	}
 	*info = 0;
     }
@@ -1484,7 +1485,7 @@ L200:
 /* L210: */
     }
 L220:
-    return 0;
+    return;
 
 /*     End of ZBDSQR */
 

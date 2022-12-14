@@ -709,7 +709,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 /* > \ingroup complexOTHERauxiliary */
 
 /*  ===================================================================== */
-/* Subroutine */ int clasr_(char *side, char *pivot, char *direct, integer *m,
+/* Subroutine */ void clasr_(char *side, char *pivot, char *direct, integer *m,
 	 integer *n, real *c__, real *s, complex *a, integer *lda)
 {
     /* System generated locals */
@@ -762,13 +762,13 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
     }
     if (info != 0) {
 	xerbla_("CLASR ", &info, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*m == 0 || *n == 0) {
-	return 0;
+	return;
     }
     if (lsame_(side, "L")) {
 
@@ -1160,7 +1160,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 	}
     }
 
-    return 0;
+    return;
 
 /*     End of CLASR */
 

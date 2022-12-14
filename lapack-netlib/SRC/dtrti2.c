@@ -623,7 +623,7 @@ f"> */
 /* > \ingroup doubleOTHERcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int dtrti2_(char *uplo, char *diag, integer *n, doublereal *
+/* Subroutine */ void dtrti2_(char *uplo, char *diag, integer *n, doublereal *
 	a, integer *lda, integer *info)
 {
     /* System generated locals */
@@ -631,12 +631,13 @@ f"> */
 
     /* Local variables */
     integer j;
-    extern /* Subroutine */ int dscal_(integer *, doublereal *, doublereal *, 
+    extern /* Subroutine */ void dscal_(integer *, doublereal *, doublereal *, 
 	    integer *);
     extern logical lsame_(char *, char *);
     logical upper;
-    extern /* Subroutine */ int dtrmv_(char *, char *, char *, integer *, 
-	    doublereal *, integer *, doublereal *, integer *), xerbla_(char *, integer *, ftnlen);
+    extern /* Subroutine */ void dtrmv_(char *, char *, char *, integer *, 
+	    doublereal *, integer *, doublereal *, integer *);
+    extern int xerbla_(char *, integer *, ftnlen);
     logical nounit;
     doublereal ajj;
 
@@ -673,7 +674,7 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DTRTI2", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
     if (upper) {
@@ -723,7 +724,7 @@ f"> */
 	}
     }
 
-    return 0;
+    return;
 
 /*     End of DTRTI2 */
 

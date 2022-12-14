@@ -666,7 +666,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 /* > \ingroup complex16SYauxiliary */
 
 /*  ===================================================================== */
-/* Subroutine */ int zsymv_(char *uplo, integer *n, doublecomplex *alpha, 
+/* Subroutine */ void zsymv_(char *uplo, integer *n, doublecomplex *alpha, 
 	doublecomplex *a, integer *lda, doublecomplex *x, integer *incx, 
 	doublecomplex *beta, doublecomplex *y, integer *incy)
 {
@@ -716,14 +716,14 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
     }
     if (info != 0) {
 	xerbla_("ZSYMV ", &info, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible. */
 
     if (*n == 0 || alpha->r == 0. && alpha->i == 0. && (beta->r == 1. && 
 	    beta->i == 0.)) {
-	return 0;
+	return;
     }
 
 /*     Set up the start points in  X  and  Y. */
@@ -792,7 +792,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 	}
     }
     if (alpha->r == 0. && alpha->i == 0.) {
-	return 0;
+	return;
     }
     if (lsame_(uplo, "U")) {
 
@@ -984,7 +984,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 	}
     }
 
-    return 0;
+    return;
 
 /*     End of ZSYMV */
 

@@ -685,7 +685,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 /* > \ingroup realOTHEReigen */
 
 /*  ===================================================================== */
-/* Subroutine */ int ssbgv_(char *jobz, char *uplo, integer *n, integer *ka, 
+/* Subroutine */ void ssbgv_(char *jobz, char *uplo, integer *n, integer *ka, 
 	integer *kb, real *ab, integer *ldab, real *bb, integer *ldbb, real *
 	w, real *z__, integer *ldz, real *work, integer *info)
 {
@@ -700,7 +700,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
     logical upper, wantz;
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     integer indwrk;
-    extern /* Subroutine */ int spbstf_(char *, integer *, integer *, real *, 
+    extern /* Subroutine */ void spbstf_(char *, integer *, integer *, real *, 
 	    integer *, integer *), ssbtrd_(char *, char *, integer *, 
 	    integer *, real *, integer *, real *, real *, real *, integer *, 
 	    real *, integer *), ssbgst_(char *, char *, 
@@ -759,13 +759,13 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("SSBGV ", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /*     Form a split Cholesky factorization of B. */
@@ -773,7 +773,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
     spbstf_(uplo, n, kb, &bb[bb_offset], ldbb, info);
     if (*info != 0) {
 	*info = *n + *info;
-	return 0;
+	return;
     }
 
 /*     Transform problem to standard eigenvalue problem. */
@@ -802,7 +802,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 	ssteqr_(jobz, n, &w[1], &work[inde], &z__[z_offset], ldz, &work[
 		indwrk], info);
     }
-    return 0;
+    return;
 
 /*     End of SSBGV */
 

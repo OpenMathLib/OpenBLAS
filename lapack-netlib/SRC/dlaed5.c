@@ -617,7 +617,7 @@ f"> */
 /* >     at Berkeley, USA */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int dlaed5_(integer *i__, doublereal *d__, doublereal *z__, 
+/* Subroutine */ void dlaed5_(integer *i__, doublereal *d__, doublereal *z__, 
 	doublereal *delta, doublereal *rho, doublereal *dlam)
 {
     /* System generated locals */
@@ -688,7 +688,7 @@ f"> */
 	delta[1] /= temp;
 	delta[2] /= temp;
     }
-    return 0;
+    return;
 
 /*     End OF DLAED5 */
 

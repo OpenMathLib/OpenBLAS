@@ -665,7 +665,7 @@ ssary to avoid over-/underflow. */
 /* > \ingroup realOTHERauxiliary */
 
 /*  ===================================================================== */
-/* Subroutine */ int slag2_(real *a, integer *lda, real *b, integer *ldb, 
+/* Subroutine */ void slag2_(real *a, integer *lda, real *b, integer *ldb, 
 	real *safmin, real *scale1, real *scale2, real *wr1, real *wr2, real *
 	wi)
 {
@@ -914,6 +914,6 @@ ssary to avoid over-/underflow. */
 
 /*     End of SLAG2 */
 
-    return 0;
+    return;
 } /* slag2_ */
 

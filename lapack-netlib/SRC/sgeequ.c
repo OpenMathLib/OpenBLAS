@@ -647,7 +647,7 @@ f"> */
 /* > \ingroup realGEcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int sgeequ_(integer *m, integer *n, real *a, integer *lda, 
+/* Subroutine */ void sgeequ_(integer *m, integer *n, real *a, integer *lda, 
 	real *r__, real *c__, real *rowcnd, real *colcnd, real *amax, integer 
 	*info)
 {
@@ -693,7 +693,7 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("SGEEQU", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
@@ -702,7 +702,7 @@ f"> */
 	*rowcnd = 1.f;
 	*colcnd = 1.f;
 	*amax = 0.f;
-	return 0;
+	return;
     }
 
 /*     Get machine constants. */
@@ -756,7 +756,7 @@ f"> */
 	for (i__ = 1; i__ <= i__1; ++i__) {
 	    if (r__[i__] == 0.f) {
 		*info = i__;
-		return 0;
+		return;
 	    }
 /* L50: */
 	}
@@ -826,7 +826,7 @@ f"> */
 	for (j = 1; j <= i__1; ++j) {
 	    if (c__[j] == 0.f) {
 		*info = *m + j;
-		return 0;
+		return;
 	    }
 /* L110: */
 	}
@@ -849,7 +849,7 @@ f"> */
 	*colcnd = f2cmax(rcmin,smlnum) / f2cmin(rcmax,bignum);
     }
 
-    return 0;
+    return;
 
 /*     End of SGEEQU */
 

@@ -677,7 +677,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int slarft_(char *direct, char *storev, integer *n, integer *
+/* Subroutine */ void slarft_(char *direct, char *storev, integer *n, integer *
 	k, real *v, integer *ldv, real *tau, real *t, integer *ldt)
 {
     /* System generated locals */
@@ -687,13 +687,13 @@ f"> */
     /* Local variables */
     integer i__, j;
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int sgemv_(char *, integer *, integer *, real *, 
+    extern /* Subroutine */ void sgemv_(char *, integer *, integer *, real *, 
 	    real *, integer *, real *, integer *, real *, real *, integer *);
     integer lastv;
-    extern /* Subroutine */ int strmv_(char *, char *, char *, integer *, 
+    extern /* Subroutine */ void strmv_(char *, char *, char *, integer *, 
 	    real *, integer *, real *, integer *);
     integer prevlastv;
-    extern /* Subroutine */ int mecago_();
+    extern /* Subroutine */ void mecago_();
 
 
 /*  -- LAPACK auxiliary routine (version 3.7.0) -- */
@@ -718,7 +718,7 @@ f"> */
 
     /* Function Body */
     if (*n == 0) {
-	return 0;
+	return;
     }
 
     if (lsame_(direct, "F")) {
@@ -879,7 +879,7 @@ f"> */
 	    }
 	}
     }
-    return 0;
+    return;
 
 /*     End of SLARFT */
 

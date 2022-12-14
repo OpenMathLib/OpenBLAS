@@ -713,7 +713,7 @@ f"> */
 /* > \ingroup doublePOsolve */
 
 /*  ===================================================================== */
-/* Subroutine */ int dsposv_(char *uplo, integer *n, integer *nrhs, 
+/* Subroutine */ void dsposv_(char *uplo, integer *n, integer *nrhs, 
 	doublereal *a, integer *lda, doublereal *b, integer *ldb, doublereal *
 	x, integer *ldx, doublereal *work, real *swork, integer *iter, 
 	integer *info)
@@ -730,7 +730,7 @@ f"> */
     integer ptsx, i__;
     extern logical lsame_(char *, char *);
     integer iiter;
-    extern /* Subroutine */ int daxpy_(integer *, doublereal *, doublereal *, 
+    extern /* Subroutine */ void daxpy_(integer *, doublereal *, doublereal *, 
 	    integer *, doublereal *, integer *), dsymm_(char *, char *, 
 	    integer *, integer *, doublereal *, doublereal *, integer *, 
 	    doublereal *, integer *, doublereal *, doublereal *, integer *), dlag2s_(integer *, integer *, doublereal *, 
@@ -740,14 +740,17 @@ f"> */
 	    integer *, integer *);
     extern doublereal dlamch_(char *);
     extern integer idamax_(integer *, doublereal *, integer *);
-    extern /* Subroutine */ int dlacpy_(char *, integer *, integer *, 
-	    doublereal *, integer *, doublereal *, integer *), 
-	    xerbla_(char *, integer *, ftnlen);
+    extern /* Subroutine */ void dlacpy_(char *, integer *, integer *, 
+	    doublereal *, integer *, doublereal *, integer *); 
+    extern int xerbla_(char *, integer *, ftnlen);
     extern doublereal dlansy_(char *, char *, integer *, doublereal *, 
 	    integer *, doublereal *);
     extern /* Subroutine */ int dpotrf_(char *, integer *, doublereal *, 
-	    integer *, integer *), dpotrs_(char *, integer *, integer 
-	    *, doublereal *, integer *, doublereal *, integer *, integer *), spotrf_(char *, integer *, real *, integer *, integer *), spotrs_(char *, integer *, integer *, real *, integer *, 
+	    integer *, integer *);
+    extern void dpotrs_(char *, integer *, integer 
+	    *, doublereal *, integer *, doublereal *, integer *, integer *);
+    extern int spotrf_(char *, integer *, real *, integer *, integer *);
+    extern void spotrs_(char *, integer *, integer *, real *, integer *, 
 	    real *, integer *, integer *);
     doublereal cte, eps;
 
@@ -803,13 +806,13 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DSPOSV", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if (N.EQ.0). */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /*     Skip single precision iterative refinement if a priori slower */
@@ -893,7 +896,7 @@ f"> */
 /*     stopping criterion. We are good to exit. */
 
     *iter = 0;
-    return 0;
+    return;
 
 L10:
 
@@ -950,7 +953,7 @@ L10:
 
 	*iter = iiter;
 
-	return 0;
+	return;
 
 L20:
 
@@ -973,13 +976,13 @@ L40:
     dpotrf_(uplo, n, &a[a_offset], lda, info);
 
     if (*info != 0) {
-	return 0;
+	return;
     }
 
     dlacpy_("All", n, nrhs, &b[b_offset], ldb, &x[x_offset], ldx);
     dpotrs_(uplo, n, nrhs, &a[a_offset], lda, &x[x_offset], ldx, info);
 
-    return 0;
+    return;
 
 /*     End of DSPOSV. */
 

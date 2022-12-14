@@ -677,7 +677,7 @@ static integer c__1 = 1;
 /* > \ingroup complex16OTHEReigen */
 
 /*  ===================================================================== */
-/* Subroutine */ int zhpgv_(integer *itype, char *jobz, char *uplo, integer *
+/* Subroutine */ void zhpgv_(integer *itype, char *jobz, char *uplo, integer *
 	n, doublecomplex *ap, doublecomplex *bp, doublereal *w, doublecomplex 
 	*z__, integer *ldz, doublecomplex *work, doublereal *rwork, integer *
 	info)
@@ -690,14 +690,15 @@ static integer c__1 = 1;
     extern logical lsame_(char *, char *);
     char trans[1];
     logical upper;
-    extern /* Subroutine */ int zhpev_(char *, char *, integer *, 
+    extern /* Subroutine */ void zhpev_(char *, char *, integer *, 
 	    doublecomplex *, doublereal *, doublecomplex *, integer *, 
 	    doublecomplex *, doublereal *, integer *);
     logical wantz;
-    extern /* Subroutine */ int ztpmv_(char *, char *, char *, integer *, 
+    extern /* Subroutine */ void ztpmv_(char *, char *, char *, integer *, 
 	    doublecomplex *, doublecomplex *, integer *), ztpsv_(char *, char *, char *, integer *, doublecomplex *
-	    , doublecomplex *, integer *), xerbla_(
-	    char *, integer *, ftnlen), zhpgst_(integer *, char *, integer *, 
+	    , doublecomplex *, integer *);
+    extern int xerbla_(char *, integer *, ftnlen);
+    extern void zhpgst_(integer *, char *, integer *, 
 	    doublecomplex *, doublecomplex *, integer *), zpptrf_(
 	    char *, integer *, doublecomplex *, integer *);
 
@@ -742,13 +743,13 @@ static integer c__1 = 1;
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZHPGV ", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /*     Form a Cholesky factorization of B. */
@@ -756,7 +757,7 @@ static integer c__1 = 1;
     zpptrf_(uplo, n, &bp[1], info);
     if (*info != 0) {
 	*info = *n + *info;
-	return 0;
+	return;
     }
 
 /*     Transform problem to standard eigenvalue problem and solve. */
@@ -810,7 +811,7 @@ static integer c__1 = 1;
 	    }
 	}
     }
-    return 0;
+    return;
 
 /*     End of ZHPGV */
 

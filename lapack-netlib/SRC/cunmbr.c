@@ -711,7 +711,7 @@ f"> */
 /* > \ingroup complexOTHERcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int cunmbr_(char *vect, char *side, char *trans, integer *m, 
+/* Subroutine */ void cunmbr_(char *vect, char *side, char *trans, integer *m, 
 	integer *n, integer *k, complex *a, integer *lda, complex *tau, 
 	complex *c__, integer *ldc, complex *work, integer *lwork, integer *
 	info)
@@ -728,11 +728,11 @@ f"> */
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     extern integer ilaenv_(integer *, char *, char *, integer *, integer *, 
 	    integer *, integer *, ftnlen, ftnlen);
-    extern /* Subroutine */ int cunmlq_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void cunmlq_(char *, char *, integer *, integer *, 
 	    integer *, complex *, integer *, complex *, complex *, integer *, 
 	    complex *, integer *, integer *);
     logical notran;
-    extern /* Subroutine */ int cunmqr_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void cunmqr_(char *, char *, integer *, integer *, 
 	    integer *, complex *, integer *, complex *, complex *, integer *, 
 	    complex *, integer *, integer *);
     logical applyq;
@@ -860,15 +860,15 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CUNMBR", &i__1, (ftnlen)6);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*m == 0 || *n == 0) {
-	return 0;
+	return;
     }
 
     if (applyq) {
@@ -937,7 +937,7 @@ f"> */
 	}
     }
     work[1].r = (real) lwkopt, work[1].i = 0.f;
-    return 0;
+    return;
 
 /*     End of CUNMBR */
 

@@ -857,7 +857,7 @@ f"> */
 /* > \ingroup complex16GEsolve */
 
 /*  ===================================================================== */
-/* Subroutine */ int zgesvx_(char *fact, char *trans, integer *n, integer *
+/* Subroutine */ void zgesvx_(char *fact, char *trans, integer *n, integer *
 	nrhs, doublecomplex *a, integer *lda, doublecomplex *af, integer *
 	ldaf, integer *ipiv, char *equed, doublereal *r__, doublereal *c__, 
 	doublecomplex *b, integer *ldb, doublecomplex *x, integer *ldx, 
@@ -884,7 +884,7 @@ f"> */
     extern doublereal zlange_(char *, integer *, integer *, doublecomplex *, 
 	    integer *, doublereal *);
     doublereal bignum;
-    extern /* Subroutine */ int zlaqge_(integer *, integer *, doublecomplex *,
+    extern /* Subroutine */ void zlaqge_(integer *, integer *, doublecomplex *,
 	     integer *, doublereal *, doublereal *, doublereal *, doublereal *
 	    , doublereal *, char *), zgecon_(char *, integer *, 
 	    doublecomplex *, integer *, doublereal *, doublereal *, 
@@ -892,16 +892,18 @@ f"> */
     integer infequ;
     logical colequ;
     doublereal rowcnd;
-    extern /* Subroutine */ int zgeequ_(integer *, integer *, doublecomplex *,
+    extern /* Subroutine */ void zgeequ_(integer *, integer *, doublecomplex *,
 	     integer *, doublereal *, doublereal *, doublereal *, doublereal *
 	    , doublereal *, integer *);
     logical notran;
-    extern /* Subroutine */ int zgerfs_(char *, integer *, integer *, 
+    extern /* Subroutine */ void zgerfs_(char *, integer *, integer *, 
 	    doublecomplex *, integer *, doublecomplex *, integer *, integer *,
 	     doublecomplex *, integer *, doublecomplex *, integer *, 
 	    doublereal *, doublereal *, doublecomplex *, doublereal *, 
-	    integer *), zgetrf_(integer *, integer *, doublecomplex *,
-	     integer *, integer *, integer *), zlacpy_(char *, integer *, 
+	    integer *);
+    extern int zgetrf_(integer *, integer *, doublecomplex *,
+	     integer *, integer *, integer *);
+    extern void zlacpy_(char *, integer *, 
 	    integer *, doublecomplex *, integer *, doublecomplex *, integer *);
     extern doublereal zlantr_(char *, char *, char *, integer *, integer *, 
 	    doublecomplex *, integer *, doublereal *);
@@ -1034,7 +1036,7 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZGESVX", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
     if (equil) {
@@ -1115,7 +1117,7 @@ f"> */
 	    }
 	    rwork[1] = rpvgrw;
 	    *rcond = 0.;
-	    return 0;
+	    return;
 	}
     }
 
@@ -1208,7 +1210,7 @@ f"> */
     }
 
     rwork[1] = rpvgrw;
-    return 0;
+    return;
 
 /*     End of ZGESVX */
 

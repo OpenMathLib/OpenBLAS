@@ -628,7 +628,7 @@ f"> */
 /* > \ingroup realOTHERcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int sspgst_(integer *itype, char *uplo, integer *n, real *ap,
+/* Subroutine */ void sspgst_(integer *itype, char *uplo, integer *n, real *ap,
 	 real *bp, integer *info)
 {
     /* System generated locals */
@@ -637,14 +637,14 @@ f"> */
 
     /* Local variables */
     extern real sdot_(integer *, real *, integer *, real *, integer *);
-    extern /* Subroutine */ int sspr2_(char *, integer *, real *, real *, 
+    extern /* Subroutine */ void sspr2_(char *, integer *, real *, real *, 
 	    integer *, real *, integer *, real *);
     integer j, k;
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int sscal_(integer *, real *, real *, integer *);
+    extern /* Subroutine */ void sscal_(integer *, real *, real *, integer *);
     logical upper;
     integer j1, k1;
-    extern /* Subroutine */ int saxpy_(integer *, real *, real *, integer *, 
+    extern /* Subroutine */ void saxpy_(integer *, real *, real *, integer *, 
 	    real *, integer *), sspmv_(char *, integer *, real *, real *, 
 	    real *, integer *, real *, real *, integer *), stpmv_(
 	    char *, char *, char *, integer *, real *, real *, integer *), stpsv_(char *, char *, char *, integer *,
@@ -687,7 +687,7 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("SSPGST", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
     if (*itype == 1) {
@@ -826,7 +826,7 @@ f"> */
 	    }
 	}
     }
-    return 0;
+    return;
 
 /*     End of SSPGST */
 

@@ -926,7 +926,7 @@ static integer c__1 = 1;
 /* > \ingroup realGEcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int sgerfsx_(char *trans, char *equed, integer *n, integer *
+/* Subroutine */ void sgerfsx_(char *trans, char *equed, integer *n, integer *
 	nrhs, real *a, integer *lda, real *af, integer *ldaf, integer *ipiv, 
 	real *r__, real *c__, real *b, integer *ldb, real *x, integer *ldx, 
 	real *rcond, real *berr, integer *n_err_bnds__, real *err_bnds_norm__,
@@ -941,7 +941,7 @@ static integer c__1 = 1;
 
     /* Local variables */
     real illrcond_thresh__, unstable_thresh__;
-    extern /* Subroutine */ int sla_gerfsx_extended_(integer *, integer *, 
+    extern /* Subroutine */ void sla_gerfsx_extended_(integer *, integer *, 
 	    integer *, integer *, real *, integer *, real *, integer *, 
 	    integer *, logical *, real *, real *, integer *, real *, integer *
 	    , real *, integer *, real *, real *, real *, real *, real *, real 
@@ -957,7 +957,8 @@ static integer c__1 = 1;
     integer prec_type__;
     extern real slamch_(char *), slange_(char *, integer *, integer *,
 	     real *, integer *, real *);
-    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen), sgecon_(
+    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
+    extern void sgecon_(
 	    char *, integer *, real *, integer *, real *, real *, real *, 
 	    integer *, integer *);
     logical colequ, notran, rowequ;
@@ -1080,7 +1081,7 @@ static integer c__1 = 1;
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("SGERFSX", &i__1, (ftnlen)7);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible. */
@@ -1103,7 +1104,7 @@ static integer c__1 = 1;
 		err_bnds_comp__[j + err_bnds_comp_dim1 * 3] = 1.f;
 	    }
 	}
-	return 0;
+	return;
     }
 
 /*     Default to failure. */
@@ -1262,7 +1263,7 @@ static integer c__1 = 1;
 	}
     }
 
-    return 0;
+    return;
 
 /*     End of SGERFSX */
 

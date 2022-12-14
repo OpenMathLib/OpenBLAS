@@ -646,7 +646,7 @@ static doublecomplex c_b6 = {0.,0.};
 /* > \ingroup complex16_matgen */
 
 /*  ===================================================================== */
-/* Subroutine */ int zlahilb_(integer *n, integer *nrhs, doublecomplex *a, 
+/* Subroutine */ void zlahilb_(integer *n, integer *nrhs, doublecomplex *a, 
 	integer *lda, doublecomplex *x, integer *ldx, doublecomplex *b, 
 	integer *ldb, doublereal *work, integer *info, char *path)
 {
@@ -671,9 +671,9 @@ static doublecomplex c_b6 = {0.,0.};
     integer i__, j, m, r__;
     char c2[2];
     integer ti, tm;
-    extern /* Subroutine */ int xerbla_(char *, integer *);
+    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     extern logical lsamen_(integer *, char *, char *);
-    extern /* Subroutine */ int zlaset_(char *, integer *, integer *, 
+    extern /* Subroutine */ void zlaset_(char *, integer *, integer *, 
 	    doublecomplex *, doublecomplex *, doublecomplex *, integer *);
     doublecomplex tmp;
 
@@ -723,8 +723,8 @@ static doublecomplex c_b6 = {0.,0.};
     }
     if (*info < 0) {
 	i__1 = -(*info);
-	xerbla_("ZLAHILB", &i__1);
-	return 0;
+	xerbla_("ZLAHILB", &i__1, 7);
+	return;
     }
     if (*n > 6) {
 	*info = 1;
@@ -831,6 +831,6 @@ static doublecomplex c_b6 = {0.,0.};
 	    }
 	}
     }
-    return 0;
+    return;
 } /* zlahilb_ */
 

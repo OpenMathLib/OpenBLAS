@@ -756,7 +756,7 @@ f"> */
 /* > at Berkeley, USA */
 
 /*  ===================================================================== */
-/* Subroutine */ int dlaed8_(integer *icompq, integer *k, integer *n, integer 
+/* Subroutine */ void dlaed8_(integer *icompq, integer *k, integer *n, integer 
 	*qsiz, doublereal *d__, doublereal *q, integer *ldq, integer *indxq, 
 	doublereal *rho, integer *cutpnt, doublereal *z__, doublereal *dlamda,
 	 doublereal *q2, integer *ldq2, doublereal *w, integer *perm, integer 
@@ -769,21 +769,22 @@ f"> */
 
     /* Local variables */
     integer jlam, imax, jmax;
-    extern /* Subroutine */ int drot_(integer *, doublereal *, integer *, 
+    extern /* Subroutine */ void drot_(integer *, doublereal *, integer *, 
 	    doublereal *, integer *, doublereal *, doublereal *);
     doublereal c__;
     integer i__, j;
     doublereal s, t;
-    extern /* Subroutine */ int dscal_(integer *, doublereal *, doublereal *, 
+    extern /* Subroutine */ void dscal_(integer *, doublereal *, doublereal *, 
 	    integer *), dcopy_(integer *, doublereal *, integer *, doublereal 
 	    *, integer *);
     integer k2, n1, n2;
     extern doublereal dlapy2_(doublereal *, doublereal *), dlamch_(char *);
     integer jp;
     extern integer idamax_(integer *, doublereal *, integer *);
-    extern /* Subroutine */ int dlamrg_(integer *, integer *, doublereal *, 
+    extern /* Subroutine */ void dlamrg_(integer *, integer *, doublereal *, 
 	    integer *, integer *, integer *), dlacpy_(char *, integer *, 
-	    integer *, doublereal *, integer *, doublereal *, integer *), xerbla_(char *, integer *, ftnlen);
+	    integer *, doublereal *, integer *, doublereal *, integer *);
+    extern int xerbla_(char *, integer *, ftnlen);
     integer n1p1;
     doublereal eps, tau, tol;
 
@@ -837,7 +838,7 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DLAED8", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Need to initialize GIVPTR to O here in case of quick exit */
@@ -850,7 +851,7 @@ f"> */
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
     n1 = *cutpnt;
@@ -924,7 +925,7 @@ f"> */
 	    }
 	    dlacpy_("A", qsiz, n, &q2[q2_dim1 + 1], ldq2, &q[q_dim1 + 1], ldq);
 	}
-	return 0;
+	return;
     }
 
 /*     If there are multiple eigenvalues then the problem deflates.  Here */
@@ -1075,7 +1076,7 @@ L110:
 	}
     }
 
-    return 0;
+    return;
 
 /*     End of DLAED8 */
 

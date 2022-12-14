@@ -1015,7 +1015,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 /* > \ingroup complexSYsolve */
 
 /*  ===================================================================== */
-/* Subroutine */ int csysvxx_(char *fact, char *uplo, integer *n, integer *
+/* Subroutine */ void csysvxx_(char *fact, char *uplo, integer *n, integer *
 	nrhs, complex *a, integer *lda, complex *af, integer *ldaf, integer *
 	ipiv, char *equed, real *s, complex *b, integer *ldb, complex *x, 
 	integer *ldx, real *rcond, real *rpvgrw, real *berr, integer *
@@ -1038,17 +1038,17 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
     logical equil, rcequ;
     extern real slamch_(char *);
     logical nofact;
-    extern /* Subroutine */ int clacpy_(char *, integer *, integer *, complex 
-	    *, integer *, complex *, integer *), xerbla_(char *, 
-	    integer *, ftnlen);
+    extern /* Subroutine */ void clacpy_(char *, integer *, integer *, complex 
+	    *, integer *, complex *, integer *);
+    extern int xerbla_(char *, integer *, ftnlen);
     real bignum;
     integer infequ;
-    extern /* Subroutine */ int claqsy_(char *, integer *, complex *, integer 
+    extern /* Subroutine */ void claqsy_(char *, integer *, complex *, integer 
 	    *, real *, real *, real *, char *), csytrf_(char *
 	    , integer *, complex *, integer *, integer *, complex *, integer *
 	    , integer *);
     real smlnum;
-    extern /* Subroutine */ int clascl2_(integer *, integer *, real *, 
+    extern /* Subroutine */ void clascl2_(integer *, integer *, real *, 
 	    complex *, integer *), csytrs_(char *, integer *, integer *, 
 	    complex *, integer *, integer *, complex *, integer *, integer *), csyequb_(char *, integer *, complex *, integer *, real *,
 	     real *, real *, complex *, integer *), csyrfsx_(char *, 
@@ -1164,7 +1164,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CSYSVXX", &i__1, (ftnlen)7);
-	return 0;
+	return;
     }
 
     if (equil) {
@@ -1209,7 +1209,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 		*rpvgrw = cla_syrpvgrw_(uplo, n, info, &a[a_offset], lda, &
 			af[af_offset], ldaf, &ipiv[1], &rwork[1]);
 	    }
-	    return 0;
+	    return;
 	}
     }
 
@@ -1241,7 +1241,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 	clascl2_(n, nrhs, &s[1], &x[x_offset], ldx);
     }
 
-    return 0;
+    return;
 
 /*     End of CSYSVXX */
 

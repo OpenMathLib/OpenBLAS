@@ -600,7 +600,7 @@ f"> */
 /* > \ingroup auxOTHERcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int spttrf_(integer *n, real *d__, real *e, integer *info)
+/* Subroutine */ void spttrf_(integer *n, real *d__, real *e, integer *info)
 {
     /* System generated locals */
     integer i__1;
@@ -632,13 +632,13 @@ f"> */
 	*info = -1;
 	i__1 = -(*info);
 	xerbla_("SPTTRF", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /*     Compute the L*D*L**T (or U**T*D*U) factorization of A. */
@@ -715,7 +715,7 @@ f"> */
     }
 
 L30:
-    return 0;
+    return;
 
 /*     End of SPTTRF */
 

@@ -724,7 +724,7 @@ f"> */
 /* >     California at Berkeley, USA */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int slasdq_(char *uplo, integer *sqre, integer *n, integer *
+/* Subroutine */ void slasdq_(char *uplo, integer *sqre, integer *n, integer *
 	ncvt, integer *nru, integer *ncc, real *d__, real *e, real *vt, 
 	integer *ldvt, real *u, integer *ldu, real *c__, integer *ldc, real *
 	work, integer *info)
@@ -739,16 +739,17 @@ f"> */
     integer sqre1, i__, j;
     real r__;
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int slasr_(char *, char *, char *, integer *, 
+    extern /* Subroutine */ void slasr_(char *, char *, char *, integer *, 
 	    integer *, real *, real *, real *, integer *);
     integer iuplo;
-    extern /* Subroutine */ int sswap_(integer *, real *, integer *, real *, 
+    extern /* Subroutine */ void sswap_(integer *, real *, integer *, real *, 
 	    integer *);
     real cs, sn;
-    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen), slartg_(
+    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
+    extern void slartg_(
 	    real *, real *, real *, real *, real *);
     logical rotate;
-    extern /* Subroutine */ int sbdsqr_(char *, integer *, integer *, integer 
+    extern /* Subroutine */ void sbdsqr_(char *, integer *, integer *, integer 
 	    *, integer *, real *, real *, real *, integer *, real *, integer *
 	    , real *, integer *, real *, integer *);
     integer np1;
@@ -810,10 +811,10 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("SLASDQ", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /*     ROTATE is true if any singular vectors desired, false otherwise */
@@ -953,7 +954,7 @@ f"> */
 /* L40: */
     }
 
-    return 0;
+    return;
 
 /*     End of SLASDQ */
 

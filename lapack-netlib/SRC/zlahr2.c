@@ -699,7 +699,7 @@ f"> */
 /* >  Mathematical Software, 32(2):180-194, June 2006. */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int zlahr2_(integer *n, integer *k, integer *nb, 
+/* Subroutine */ void zlahr2_(integer *n, integer *k, integer *nb, 
 	doublecomplex *a, integer *lda, doublecomplex *tau, doublecomplex *t, 
 	integer *ldt, doublecomplex *y, integer *ldy)
 {
@@ -710,7 +710,7 @@ f"> */
 
     /* Local variables */
     integer i__;
-    extern /* Subroutine */ int zscal_(integer *, doublecomplex *, 
+    extern /* Subroutine */ void zscal_(integer *, doublecomplex *, 
 	    doublecomplex *, integer *), zgemm_(char *, char *, integer *, 
 	    integer *, integer *, doublecomplex *, doublecomplex *, integer *,
 	     doublecomplex *, integer *, doublecomplex *, doublecomplex *, 
@@ -725,7 +725,7 @@ f"> */
 	    doublecomplex *, integer *), ztrmv_(char *, char *, char *, 
 	    integer *, doublecomplex *, integer *, doublecomplex *, integer *);
     doublecomplex ei;
-    extern /* Subroutine */ int zlarfg_(integer *, doublecomplex *, 
+    extern /* Subroutine */ void zlarfg_(integer *, doublecomplex *, 
 	    doublecomplex *, integer *, doublecomplex *), zlacgv_(integer *, 
 	    doublecomplex *, integer *), zlacpy_(char *, integer *, integer *,
 	     doublecomplex *, integer *, doublecomplex *, integer *);
@@ -756,7 +756,7 @@ f"> */
 
     /* Function Body */
     if (*n <= 1) {
-	return 0;
+	return;
     }
 
     i__1 = *nb;
@@ -899,7 +899,7 @@ f"> */
     ztrmm_("RIGHT", "Upper", "NO TRANSPOSE", "NON-UNIT", k, nb, &c_b2, &t[
 	    t_offset], ldt, &y[y_offset], ldy);
 
-    return 0;
+    return;
 
 /*     End of ZLAHR2 */
 

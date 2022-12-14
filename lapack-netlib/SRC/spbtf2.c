@@ -657,7 +657,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int spbtf2_(char *uplo, integer *n, integer *kd, real *ab, 
+/* Subroutine */ void spbtf2_(char *uplo, integer *n, integer *kd, real *ab, 
 	integer *ldab, integer *info)
 {
     /* System generated locals */
@@ -665,11 +665,11 @@ f"> */
     real r__1;
 
     /* Local variables */
-    extern /* Subroutine */ int ssyr_(char *, integer *, real *, real *, 
+    extern /* Subroutine */ void ssyr_(char *, integer *, real *, real *, 
 	    integer *, real *, integer *);
     integer j;
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int sscal_(integer *, real *, real *, integer *);
+    extern /* Subroutine */ void sscal_(integer *, real *, real *, integer *);
     logical upper;
     integer kn;
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
@@ -708,13 +708,13 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("SPBTF2", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /* Computing MAX */
@@ -782,11 +782,11 @@ f"> */
 /* L20: */
 	}
     }
-    return 0;
+    return;
 
 L30:
     *info = j;
-    return 0;
+    return;
 
 /*     End of SPBTF2 */
 

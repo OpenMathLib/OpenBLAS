@@ -737,7 +737,7 @@ static integer c__1 = 1;
 /* > \ingroup real_matgen */
 
 /*  ===================================================================== */
-/* Subroutine */ int slarot_(logical *lrows, logical *lleft, logical *lright, 
+/* Subroutine */ void slarot_(logical *lrows, logical *lleft, logical *lright, 
 	integer *nl, real *c__, real *s, real *a, integer *lda, real *xleft, 
 	real *xright)
 {
@@ -746,11 +746,11 @@ static integer c__1 = 1;
 
     /* Local variables */
     integer iinc;
-    extern /* Subroutine */ int srot_(integer *, real *, integer *, real *, 
+    extern /* Subroutine */ void srot_(integer *, real *, integer *, real *, 
 	    integer *, real *, real *);
     integer inext, ix, iy, nt;
     real xt[2], yt[2];
-    extern /* Subroutine */ int xerbla_(char *, integer *);
+    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     integer iyt;
 
 
@@ -799,12 +799,12 @@ static integer c__1 = 1;
 /*     Check for errors */
 
     if (*nl < nt) {
-	xerbla_("SLAROT", &c__4);
-	return 0;
+	xerbla_("SLAROT", &c__4, 6);
+	return;
     }
     if (*lda <= 0 || ! (*lrows) && *lda < *nl - nt) {
-	xerbla_("SLAROT", &c__8);
-	return 0;
+	xerbla_("SLAROT", &c__8, 6);
+	return;
     }
 
 /*     Rotate */
@@ -825,7 +825,7 @@ static integer c__1 = 1;
 	a[iyt] = yt[nt - 1];
     }
 
-    return 0;
+    return;
 
 /*     End of SLAROT */
 

@@ -701,7 +701,7 @@ f"> */
 /* > \ingroup realGBcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int sgbbrd_(char *vect, integer *m, integer *n, integer *ncc,
+/* Subroutine */ void sgbbrd_(char *vect, integer *m, integer *n, integer *ncc,
 	 integer *kl, integer *ku, real *ab, integer *ldab, real *d__, real *
 	e, real *q, integer *ldq, real *pt, integer *ldpt, real *c__, integer 
 	*ldc, real *work, integer *info)
@@ -712,7 +712,7 @@ f"> */
 
     /* Local variables */
     integer inca;
-    extern /* Subroutine */ int srot_(integer *, real *, integer *, real *, 
+    extern /* Subroutine */ void srot_(integer *, real *, integer *, real *, 
 	    integer *, real *, real *);
     integer i__, j, l;
     extern logical lsame_(char *, char *);
@@ -723,13 +723,14 @@ f"> */
     real ra, rb, rc;
     integer kk, ml, mn, nr, mu;
     real rs;
-    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen), slaset_(
+    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
+    extern void slaset_(
 	    char *, integer *, integer *, real *, real *, real *, integer *), slartg_(real *, real *, real *, real *, real *);
     integer kb1;
-    extern /* Subroutine */ int slargv_(integer *, real *, integer *, real *, 
+    extern /* Subroutine */ void slargv_(integer *, real *, integer *, real *, 
 	    integer *, real *, integer *);
     integer ml0;
-    extern /* Subroutine */ int slartv_(integer *, real *, integer *, real *, 
+    extern /* Subroutine */ void slartv_(integer *, real *, integer *, real *, 
 	    integer *, real *, real *, integer *);
     logical wantpt;
     integer mu0, klm, kun, nrt, klu1;
@@ -794,7 +795,7 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("SGBBRD", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Initialize Q and P**T to the unit matrix, if needed */
@@ -809,7 +810,7 @@ f"> */
 /*     Quick return if possible. */
 
     if (*m == 0 || *n == 0) {
-	return 0;
+	return;
     }
 
     minmn = f2cmin(*m,*n);
@@ -1145,7 +1146,7 @@ f"> */
 /* L150: */
 	}
     }
-    return 0;
+    return;
 
 /*     End of SGBBRD */
 

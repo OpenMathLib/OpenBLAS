@@ -788,7 +788,7 @@ f"> */
 /* >     Mark Fahey, Department of Mathematics, Univ. of Kentucky, USA */
 
 /*  ===================================================================== */
-/* Subroutine */ int zhpgvx_(integer *itype, char *jobz, char *range, char *
+/* Subroutine */ void zhpgvx_(integer *itype, char *jobz, char *range, char *
 	uplo, integer *n, doublecomplex *ap, doublecomplex *bp, doublereal *
 	vl, doublereal *vu, integer *il, integer *iu, doublereal *abstol, 
 	integer *m, doublereal *w, doublecomplex *z__, integer *ldz, 
@@ -803,11 +803,12 @@ f"> */
     extern logical lsame_(char *, char *);
     char trans[1];
     logical upper, wantz;
-    extern /* Subroutine */ int ztpmv_(char *, char *, char *, integer *, 
+    extern /* Subroutine */ void ztpmv_(char *, char *, char *, integer *, 
 	    doublecomplex *, doublecomplex *, integer *), ztpsv_(char *, char *, char *, integer *, doublecomplex *
 	    , doublecomplex *, integer *);
     logical alleig, indeig, valeig;
-    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen), zhpgst_(
+    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
+    extern void zhpgst_(
 	    integer *, char *, integer *, doublecomplex *, doublecomplex *, 
 	    integer *), zhpevx_(char *, char *, char *, integer *, 
 	    doublecomplex *, doublereal *, doublereal *, integer *, integer *,
@@ -879,13 +880,13 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZHPGVX", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /*     Form a Cholesky factorization of B. */
@@ -893,7 +894,7 @@ f"> */
     zpptrf_(uplo, n, &bp[1], info);
     if (*info != 0) {
 	*info = *n + *info;
-	return 0;
+	return;
     }
 
 /*     Transform problem to standard eigenvalue problem and solve. */
@@ -948,7 +949,7 @@ f"> */
 	}
     }
 
-    return 0;
+    return;
 
 /*     End of ZHPGVX */
 

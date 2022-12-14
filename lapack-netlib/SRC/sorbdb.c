@@ -798,7 +798,7 @@ f"> */
 /* >      Algorithms, 50(1):33-65, 2009. */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int sorbdb_(char *trans, char *signs, integer *m, integer *p,
+/* Subroutine */ void sorbdb_(char *trans, char *signs, integer *m, integer *p,
 	 integer *q, real *x11, integer *ldx11, real *x12, integer *ldx12, 
 	real *x21, integer *ldx21, real *x22, integer *ldx22, real *theta, 
 	real *phi, real *taup1, real *taup2, real *tauq1, real *tauq2, real *
@@ -815,14 +815,14 @@ f"> */
     extern real snrm2_(integer *, real *, integer *);
     integer i__;
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int sscal_(integer *, real *, real *, integer *), 
+    extern /* Subroutine */ void sscal_(integer *, real *, real *, integer *), 
 	    slarf_(char *, integer *, integer *, real *, integer *, real *, 
 	    real *, integer *, real *), saxpy_(integer *, real *, 
 	    real *, integer *, real *, integer *);
     real z1, z2, z3, z4;
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     logical lquery;
-    extern /* Subroutine */ int slarfgp_(integer *, real *, real *, integer *,
+    extern /* Subroutine */ void slarfgp_(integer *, real *, real *, integer *,
 	     real *);
 
 
@@ -927,9 +927,9 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("xORBDB", &i__1, (ftnlen)6);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Handle column-major and row-major separately */
@@ -1386,7 +1386,7 @@ f"> */
 
     }
 
-    return 0;
+    return;
 
 /*     End of SORBDB */
 

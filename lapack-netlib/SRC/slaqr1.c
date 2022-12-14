@@ -631,7 +631,7 @@ f"> */
 /* >       University of Kansas, USA */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int slaqr1_(integer *n, real *h__, integer *ldh, real *sr1, 
+/* Subroutine */ void slaqr1_(integer *n, real *h__, integer *ldh, real *sr1, 
 	real *si1, real *sr2, real *si2, real *v)
 {
     /* System generated locals */
@@ -661,7 +661,7 @@ f"> */
 
     /* Function Body */
     if (*n != 2 && *n != 3) {
-	return 0;
+	return;
     }
 
     if (*n == 2) {
@@ -697,6 +697,6 @@ f"> */
 		    sr2) + h21s * h__[(h_dim1 << 1) + 3];
 	}
     }
-    return 0;
+    return;
 } /* slaqr1_ */
 

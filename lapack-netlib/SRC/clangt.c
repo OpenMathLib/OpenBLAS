@@ -632,7 +632,7 @@ real clangt_(char *norm, integer *n, complex *dl, complex *d__, complex *du)
     real scale;
     extern logical lsame_(char *, char *);
     real anorm;
-    extern /* Subroutine */ int classq_(integer *, complex *, integer *, real 
+    extern /* Subroutine */ void classq_(integer *, complex *, integer *, real 
 	    *, real *);
     extern logical sisnan_(real *);
     real sum;

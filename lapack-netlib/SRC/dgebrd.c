@@ -722,7 +722,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int dgebrd_(integer *m, integer *n, doublereal *a, integer *
+/* Subroutine */ void dgebrd_(integer *m, integer *n, doublereal *a, integer *
 	lda, doublereal *d__, doublereal *e, doublereal *tauq, doublereal *
 	taup, doublereal *work, integer *lwork, integer *info)
 {
@@ -731,15 +731,15 @@ f"> */
 
     /* Local variables */
     integer i__, j;
-    extern /* Subroutine */ int dgemm_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void dgemm_(char *, char *, integer *, integer *, 
 	    integer *, doublereal *, doublereal *, integer *, doublereal *, 
 	    integer *, doublereal *, doublereal *, integer *);
     integer nbmin, iinfo, minmn;
-    extern /* Subroutine */ int dgebd2_(integer *, integer *, doublereal *, 
+    extern /* Subroutine */ void dgebd2_(integer *, integer *, doublereal *, 
 	    integer *, doublereal *, doublereal *, doublereal *, doublereal *,
 	     doublereal *, integer *);
     integer nb;
-    extern /* Subroutine */ int dlabrd_(integer *, integer *, integer *, 
+    extern /* Subroutine */ void dlabrd_(integer *, integer *, integer *, 
 	    doublereal *, integer *, doublereal *, doublereal *, doublereal *,
 	     doublereal *, doublereal *, integer *, doublereal *, integer *);
     integer nx, ws;
@@ -796,9 +796,9 @@ f"> */
     if (*info < 0) {
 	i__1 = -(*info);
 	xerbla_("DGEBRD", &i__1, (ftnlen)6);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
@@ -806,7 +806,7 @@ f"> */
     minmn = f2cmin(*m,*n);
     if (minmn == 0) {
 	work[1] = 1.;
-	return 0;
+	return;
     }
 
     ws = f2cmax(*m,*n);
@@ -900,7 +900,7 @@ f"> */
     dgebd2_(&i__2, &i__1, &a[i__ + i__ * a_dim1], lda, &d__[i__], &e[i__], &
 	    tauq[i__], &taup[i__], &work[1], &iinfo);
     work[1] = (doublereal) ws;
-    return 0;
+    return;
 
 /*     End of DGEBRD */
 

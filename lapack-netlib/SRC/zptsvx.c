@@ -746,7 +746,7 @@ f"> */
 /* > \ingroup complex16PTsolve */
 
 /*  ===================================================================== */
-/* Subroutine */ int zptsvx_(char *fact, integer *n, integer *nrhs, 
+/* Subroutine */ void zptsvx_(char *fact, integer *n, integer *nrhs, 
 	doublereal *d__, doublecomplex *e, doublereal *df, doublecomplex *ef, 
 	doublecomplex *b, integer *ldb, doublecomplex *x, integer *ldx, 
 	doublereal *rcond, doublereal *ferr, doublereal *berr, doublecomplex *
@@ -758,7 +758,7 @@ f"> */
     /* Local variables */
     extern logical lsame_(char *, char *);
     doublereal anorm;
-    extern /* Subroutine */ int dcopy_(integer *, doublereal *, integer *, 
+    extern /* Subroutine */ void dcopy_(integer *, doublereal *, integer *, 
 	    doublereal *, integer *), zcopy_(integer *, doublecomplex *, 
 	    integer *, doublecomplex *, integer *);
     extern doublereal dlamch_(char *);
@@ -766,7 +766,7 @@ f"> */
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     extern doublereal zlanht_(char *, integer *, doublereal *, doublecomplex *
 	    );
-    extern /* Subroutine */ int zlacpy_(char *, integer *, integer *, 
+    extern /* Subroutine */ void zlacpy_(char *, integer *, integer *, 
 	    doublecomplex *, integer *, doublecomplex *, integer *), 
 	    zptcon_(integer *, doublereal *, doublecomplex *, doublereal *, 
 	    doublereal *, doublereal *, integer *), zptrfs_(char *, integer *,
@@ -823,7 +823,7 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZPTSVX", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
     if (nofact) {
@@ -841,7 +841,7 @@ f"> */
 
 	if (*info > 0) {
 	    *rcond = 0.;
-	    return 0;
+	    return;
 	}
     }
 
@@ -871,7 +871,7 @@ f"> */
 	*info = *n + 1;
     }
 
-    return 0;
+    return;
 
 /*     End of ZPTSVX */
 

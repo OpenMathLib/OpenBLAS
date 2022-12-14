@@ -795,7 +795,7 @@ f"> */
 /* >       University of Kansas, USA */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int slaqr2_(logical *wantt, logical *wantz, integer *n, 
+/* Subroutine */ void slaqr2_(logical *wantt, logical *wantz, integer *n, 
 	integer *ktop, integer *kbot, integer *nw, real *h__, integer *ldh, 
 	integer *iloz, integer *ihiz, real *z__, integer *ldz, integer *ns, 
 	integer *nd, real *sr, real *si, real *v, integer *ldv, integer *nh, 
@@ -812,33 +812,33 @@ f"> */
     integer kend, kcol, info, ifst, ilst, ltop, krow, i__, j, k;
     real s;
     logical bulge;
-    extern /* Subroutine */ int slarf_(char *, integer *, integer *, real *, 
+    extern /* Subroutine */ void slarf_(char *, integer *, integer *, real *, 
 	    integer *, real *, real *, integer *, real *), sgemm_(
 	    char *, char *, integer *, integer *, integer *, real *, real *, 
 	    integer *, real *, integer *, real *, real *, integer *);
     integer infqr;
-    extern /* Subroutine */ int scopy_(integer *, real *, integer *, real *, 
+    extern /* Subroutine */ void scopy_(integer *, real *, integer *, real *, 
 	    integer *);
     integer kwtop;
     real aa, bb, cc;
-    extern /* Subroutine */ int slanv2_(real *, real *, real *, real *, real *
+    extern /* Subroutine */ void slanv2_(real *, real *, real *, real *, real *
 	    , real *, real *, real *, real *, real *);
     real dd, cs;
-    extern /* Subroutine */ int slabad_(real *, real *);
+    extern /* Subroutine */ void slabad_(real *, real *);
     real sn;
     integer jw;
     extern real slamch_(char *);
-    extern /* Subroutine */ int sgehrd_(integer *, integer *, integer *, real 
+    extern /* Subroutine */ void sgehrd_(integer *, integer *, integer *, real 
 	    *, integer *, real *, real *, integer *, integer *);
     real safmin, safmax;
-    extern /* Subroutine */ int slarfg_(integer *, real *, real *, integer *, 
+    extern /* Subroutine */ void slarfg_(integer *, real *, real *, integer *, 
 	    real *), slahqr_(logical *, logical *, integer *, integer *, 
 	    integer *, real *, integer *, real *, real *, integer *, integer *
 	    , real *, integer *, integer *), slacpy_(char *, integer *, 
 	    integer *, real *, integer *, real *, integer *), slaset_(
 	    char *, integer *, integer *, real *, real *, real *, integer *);
     logical sorted;
-    extern /* Subroutine */ int strexc_(char *, integer *, real *, integer *, 
+    extern /* Subroutine */ void strexc_(char *, integer *, real *, integer *, 
 	    real *, integer *, integer *, integer *, real *, integer *), sormhr_(char *, char *, integer *, integer *, integer *, 
 	    integer *, real *, integer *, real *, real *, integer *, real *, 
 	    integer *, integer *);
@@ -911,7 +911,7 @@ f"> */
 
     if (*lwork == -1) {
 	work[1] = (real) lwkopt;
-	return 0;
+	return;
     }
 
 /*     ==== Nothing to do ... */
@@ -920,11 +920,11 @@ f"> */
     *nd = 0;
     work[1] = 1.f;
     if (*ktop > *kbot) {
-	return 0;
+	return;
     }
 /*     ... nor for an empty deflation window. ==== */
     if (*nw < 1) {
-	return 0;
+	return;
     }
 
 /*     ==== Machine constants ==== */
@@ -966,7 +966,7 @@ f"> */
 	    }
 	}
 	work[1] = 1.f;
-	return 0;
+	return;
     }
 
 /*     ==== Convert to spike-triangular form.  (In case of a */
@@ -1307,6 +1307,6 @@ L60:
 
 /*     ==== End of SLAQR2 ==== */
 
-    return 0;
+    return;
 } /* slaqr2_ */
 

@@ -904,7 +904,7 @@ gett.f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int dlarfb_gett_(char *ident, integer *m, integer *n, 
+/* Subroutine */ void dlarfb_gett_(char *ident, integer *m, integer *n, 
 	integer *k, doublereal *t, integer *ldt, doublereal *a, integer *lda, 
 	doublereal *b, integer *ldb, doublereal *work, integer *ldwork)
 {
@@ -914,11 +914,11 @@ gett.f"> */
 
     /* Local variables */
     integer i__, j;
-    extern /* Subroutine */ int dgemm_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void dgemm_(char *, char *, integer *, integer *, 
 	    integer *, doublereal *, doublereal *, integer *, doublereal *, 
 	    integer *, doublereal *, doublereal *, integer *);
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int dcopy_(integer *, doublereal *, integer *, 
+    extern /* Subroutine */ void dcopy_(integer *, doublereal *, integer *, 
 	    doublereal *, integer *), dtrmm_(char *, char *, char *, char *, 
 	    integer *, integer *, doublereal *, doublereal *, integer *, 
 	    doublereal *, integer *);
@@ -951,7 +951,7 @@ gett.f"> */
 
     /* Function Body */
     if (*m < 0 || *n <= 0 || *k == 0 || *k > *n) {
-	return 0;
+	return;
     }
 
     lnotident = ! lsame_(ident, "I");
@@ -1132,7 +1132,7 @@ gett.f"> */
 	}
     }
 
-    return 0;
+    return;
 
 /*     End of DLARFB_GETT */
 

@@ -623,7 +623,7 @@ f"> */
 /* > \ingroup realPTcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int spttrs_(integer *n, integer *nrhs, real *d__, real *e, 
+/* Subroutine */ void spttrs_(integer *n, integer *nrhs, real *d__, real *e, 
 	real *b, integer *ldb, integer *info)
 {
     /* System generated locals */
@@ -631,8 +631,9 @@ f"> */
 
     /* Local variables */
     integer j, jb, nb;
-    extern /* Subroutine */ int sptts2_(integer *, integer *, real *, real *, 
-	    real *, integer *), xerbla_(char *, integer *, ftnlen);
+    extern /* Subroutine */ void sptts2_(integer *, integer *, real *, real *, 
+	    real *, integer *);
+    extern int xerbla_(char *, integer *, ftnlen);
     extern integer ilaenv_(integer *, char *, char *, integer *, integer *, 
 	    integer *, integer *, ftnlen, ftnlen);
 
@@ -667,13 +668,13 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("SPTTRS", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0 || *nrhs == 0) {
-	return 0;
+	return;
     }
 
 /*     Determine the number of right-hand sides to solve at a time. */
@@ -701,7 +702,7 @@ f"> */
 	}
     }
 
-    return 0;
+    return;
 
 /*     End of SPTTRS */
 

@@ -638,7 +638,7 @@ f"> */
 /* > \ingroup doubleOTHERcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int dpbequ_(char *uplo, integer *n, integer *kd, doublereal *
+/* Subroutine */ void dpbequ_(char *uplo, integer *n, integer *kd, doublereal *
 	ab, integer *ldab, doublereal *s, doublereal *scond, doublereal *amax,
 	 integer *info)
 {
@@ -686,7 +686,7 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DPBEQU", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
@@ -694,7 +694,7 @@ f"> */
     if (*n == 0) {
 	*scond = 1.;
 	*amax = 0.;
-	return 0;
+	return;
     }
 
     if (upper) {
@@ -731,7 +731,7 @@ f"> */
 	for (i__ = 1; i__ <= i__1; ++i__) {
 	    if (s[i__] <= 0.) {
 		*info = i__;
-		return 0;
+		return;
 	    }
 /* L20: */
 	}
@@ -750,7 +750,7 @@ f"> */
 
 	*scond = sqrt(smin) / sqrt(*amax);
     }
-    return 0;
+    return;
 
 /*     End of DPBEQU */
 

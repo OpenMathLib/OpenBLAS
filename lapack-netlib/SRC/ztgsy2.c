@@ -771,7 +771,7 @@ f"> */
 /* >     Umea University, S-901 87 Umea, Sweden. */
 
 /*  ===================================================================== */
-/* Subroutine */ int ztgsy2_(char *trans, integer *ijob, integer *m, integer *
+/* Subroutine */ void ztgsy2_(char *trans, integer *ijob, integer *m, integer *
 	n, doublecomplex *a, integer *lda, doublecomplex *b, integer *ldb, 
 	doublecomplex *c__, integer *ldc, doublecomplex *d__, integer *ldd, 
 	doublecomplex *e, integer *lde, doublecomplex *f, integer *ldf, 
@@ -788,14 +788,15 @@ f"> */
     integer ierr, ipiv[2], jpiv[2], i__, j, k;
     doublecomplex alpha, z__[4]	/* was [2][2] */;
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int zscal_(integer *, doublecomplex *, 
+    extern /* Subroutine */ void zscal_(integer *, doublecomplex *, 
 	    doublecomplex *, integer *), zaxpy_(integer *, doublecomplex *, 
 	    doublecomplex *, integer *, doublecomplex *, integer *), zgesc2_(
 	    integer *, doublecomplex *, integer *, doublecomplex *, integer *,
 	     integer *, doublereal *), zgetc2_(integer *, doublecomplex *, 
 	    integer *, integer *, integer *, integer *);
     doublereal scaloc;
-    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen), zlatdf_(
+    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
+    extern void zlatdf_(
 	    integer *, integer *, doublecomplex *, integer *, doublecomplex *,
 	     doublereal *, doublereal *, integer *, integer *);
     logical notran;
@@ -866,7 +867,7 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZTGSY2", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
     if (notran) {
@@ -1057,7 +1058,7 @@ f"> */
 /* L80: */
 	}
     }
-    return 0;
+    return;
 
 /*     End of ZTGSY2 */
 

@@ -623,7 +623,7 @@ f"> */
 /* > \ingroup complex16PTcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int zptts2_(integer *iuplo, integer *n, integer *nrhs, 
+/* Subroutine */ void zptts2_(integer *iuplo, integer *n, integer *nrhs, 
 	doublereal *d__, doublecomplex *e, doublecomplex *b, integer *ldb)
 {
     /* System generated locals */
@@ -633,7 +633,7 @@ f"> */
 
     /* Local variables */
     integer i__, j;
-    extern /* Subroutine */ int zdscal_(integer *, doublereal *, 
+    extern /* Subroutine */ void zdscal_(integer *, doublereal *, 
 	    doublecomplex *, integer *);
 
 
@@ -661,7 +661,7 @@ f"> */
 	    d__1 = 1. / d__[1];
 	    zdscal_(nrhs, &d__1, &b[b_offset], ldb);
 	}
-	return 0;
+	return;
     }
 
     if (*iuplo == 1) {
@@ -860,7 +860,7 @@ L80:
 	}
     }
 
-    return 0;
+    return;
 
 /*     End of ZPTTS2 */
 

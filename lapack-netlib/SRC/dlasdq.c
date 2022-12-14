@@ -724,7 +724,7 @@ f"> */
 /* >     California at Berkeley, USA */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int dlasdq_(char *uplo, integer *sqre, integer *n, integer *
+/* Subroutine */ void dlasdq_(char *uplo, integer *sqre, integer *n, integer *
 	ncvt, integer *nru, integer *ncc, doublereal *d__, doublereal *e, 
 	doublereal *vt, integer *ldvt, doublereal *u, integer *ldu, 
 	doublereal *c__, integer *ldc, doublereal *work, integer *info)
@@ -739,14 +739,15 @@ f"> */
     integer sqre1, i__, j;
     doublereal r__;
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int dlasr_(char *, char *, char *, integer *, 
+    extern /* Subroutine */ void dlasr_(char *, char *, char *, integer *, 
 	    integer *, doublereal *, doublereal *, doublereal *, integer *), dswap_(integer *, doublereal *, integer *
 	    , doublereal *, integer *);
     integer iuplo;
     doublereal cs, sn;
-    extern /* Subroutine */ int dlartg_(doublereal *, doublereal *, 
-	    doublereal *, doublereal *, doublereal *), xerbla_(char *, 
-	    integer *, ftnlen), dbdsqr_(char *, integer *, integer *, integer 
+    extern /* Subroutine */ void dlartg_(doublereal *, doublereal *, 
+	    doublereal *, doublereal *, doublereal *);
+    extern int xerbla_(char *, integer *, ftnlen);
+    extern void dbdsqr_(char *, integer *, integer *, integer 
 	    *, integer *, doublereal *, doublereal *, doublereal *, integer *,
 	     doublereal *, integer *, doublereal *, integer *, doublereal *, 
 	    integer *);
@@ -810,10 +811,10 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DLASDQ", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /*     ROTATE is true if any singular vectors desired, false otherwise */
@@ -953,7 +954,7 @@ f"> */
 /* L40: */
     }
 
-    return 0;
+    return;
 
 /*     End of DLASDQ */
 

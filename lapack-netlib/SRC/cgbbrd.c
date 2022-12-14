@@ -712,7 +712,7 @@ f"> */
 /* > \ingroup complexGBcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int cgbbrd_(char *vect, integer *m, integer *n, integer *ncc,
+/* Subroutine */ void cgbbrd_(char *vect, integer *m, integer *n, integer *ncc,
 	 integer *kl, integer *ku, complex *ab, integer *ldab, real *d__, 
 	real *e, complex *q, integer *ldq, complex *pt, integer *ldpt, 
 	complex *c__, integer *ldc, complex *work, real *rwork, integer *info)
@@ -725,11 +725,11 @@ f"> */
     /* Local variables */
     integer inca;
     real abst;
-    extern /* Subroutine */ int crot_(integer *, complex *, integer *, 
+    extern /* Subroutine */ void crot_(integer *, complex *, integer *, 
 	    complex *, integer *, real *, complex *);
     integer i__, j, l;
     complex t;
-    extern /* Subroutine */ int cscal_(integer *, complex *, complex *, 
+    extern /* Subroutine */ void cscal_(integer *, complex *, complex *, 
 	    integer *);
     extern logical lsame_(char *, char *);
     logical wantb, wantc;
@@ -742,10 +742,11 @@ f"> */
     complex rb;
     integer ml, nr, mu;
     complex rs;
-    extern /* Subroutine */ int claset_(char *, integer *, integer *, complex 
+    extern /* Subroutine */ void claset_(char *, integer *, integer *, complex 
 	    *, complex *, complex *, integer *), clartg_(complex *, 
-	    complex *, real *, complex *, complex *), xerbla_(char *, integer 
-	    *, ftnlen), clargv_(integer *, complex *, integer *, complex *, 
+	    complex *, real *, complex *, complex *);
+    extern int xerbla_(char *, integer *, ftnlen);
+    extern void clargv_(integer *, complex *, integer *, complex *, 
 	    integer *, real *, integer *), clartv_(integer *, complex *, 
 	    integer *, complex *, integer *, real *, complex *, integer *);
     integer kb1, ml0;
@@ -813,7 +814,7 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CGBBRD", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Initialize Q and P**H to the unit matrix, if needed */
@@ -828,7 +829,7 @@ f"> */
 /*     Quick return if possible. */
 
     if (*m == 0 || *n == 0) {
-	return 0;
+	return;
     }
 
     minmn = f2cmin(*m,*n);
@@ -1237,7 +1238,7 @@ f"> */
 	}
 /* L120: */
     }
-    return 0;
+    return;
 
 /*     End of CGBBRD */
 

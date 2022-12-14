@@ -631,7 +631,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int slaev2_(real *a, real *b, real *c__, real *rt1, real *
+/* Subroutine */ void slaev2_(real *a, real *b, real *c__, real *rt1, real *
 	rt2, real *cs1, real *sn1)
 {
     /* System generated locals */
@@ -735,7 +735,7 @@ f"> */
 	*cs1 = -(*sn1);
 	*sn1 = tn;
     }
-    return 0;
+    return;
 
 /*     End of SLAEV2 */
 

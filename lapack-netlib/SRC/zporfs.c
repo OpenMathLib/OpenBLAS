@@ -696,7 +696,7 @@ f"> */
 /* > \ingroup complex16POcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int zporfs_(char *uplo, integer *n, integer *nrhs, 
+/* Subroutine */ void zporfs_(char *uplo, integer *n, integer *nrhs, 
 	doublecomplex *a, integer *lda, doublecomplex *af, integer *ldaf, 
 	doublecomplex *b, integer *ldb, doublecomplex *x, integer *ldx, 
 	doublereal *ferr, doublereal *berr, doublecomplex *work, doublereal *
@@ -715,11 +715,11 @@ f"> */
     doublereal s;
     extern logical lsame_(char *, char *);
     integer isave[3], count;
-    extern /* Subroutine */ int zhemv_(char *, integer *, doublecomplex *, 
+    extern /* Subroutine */ void zhemv_(char *, integer *, doublecomplex *, 
 	    doublecomplex *, integer *, doublecomplex *, integer *, 
 	    doublecomplex *, doublecomplex *, integer *);
     logical upper;
-    extern /* Subroutine */ int zcopy_(integer *, doublecomplex *, integer *, 
+    extern /* Subroutine */ void zcopy_(integer *, doublecomplex *, integer *, 
 	    doublecomplex *, integer *), zaxpy_(integer *, doublecomplex *, 
 	    doublecomplex *, integer *, doublecomplex *, integer *), zlacn2_(
 	    integer *, doublecomplex *, doublecomplex *, doublereal *, 
@@ -730,7 +730,7 @@ f"> */
     doublereal safmin;
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     doublereal lstres;
-    extern /* Subroutine */ int zpotrs_(char *, integer *, integer *, 
+    extern /* Subroutine */ void zpotrs_(char *, integer *, integer *, 
 	    doublecomplex *, integer *, doublecomplex *, integer *, integer *);
     doublereal eps;
 
@@ -785,7 +785,7 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZPORFS", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
@@ -797,7 +797,7 @@ f"> */
 	    berr[j] = 0.;
 /* L10: */
 	}
-	return 0;
+	return;
     }
 
 /*     NZ = maximum number of nonzero elements in each row of A, plus 1 */
@@ -1030,7 +1030,7 @@ L100:
 /* L140: */
     }
 
-    return 0;
+    return;
 
 /*     End of ZPORFS */
 

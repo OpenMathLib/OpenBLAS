@@ -617,7 +617,7 @@ static real c_b11 = -1.f;
 /* > \ingroup realPOcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int spotrf2_(char *uplo, integer *n, real *a, integer *lda, 
+/* Subroutine */ void spotrf2_(char *uplo, integer *n, real *a, integer *lda, 
 	integer *info)
 {
     /* System generated locals */
@@ -628,11 +628,12 @@ static real c_b11 = -1.f;
     integer iinfo;
     logical upper;
     integer n1, n2;
-    extern /* Subroutine */ int strsm_(char *, char *, char *, char *, 
+    extern /* Subroutine */ void strsm_(char *, char *, char *, char *, 
 	    integer *, integer *, real *, real *, integer *, real *, integer *
 	    ), ssyrk_(char *, char *, integer 
 	    *, integer *, real *, real *, integer *, real *, real *, integer *
-	    ), xerbla_(char *, integer *, ftnlen);
+	    );
+    extern int xerbla_(char *, integer *, ftnlen);
     extern logical sisnan_(real *);
 
 
@@ -665,13 +666,13 @@ static real c_b11 = -1.f;
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("SPOTRF2", &i__1, (ftnlen)7);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /*     N=1 case */
@@ -682,7 +683,7 @@ static real c_b11 = -1.f;
 
 	if (a[a_dim1 + 1] <= 0.f || sisnan_(&a[a_dim1 + 1])) {
 	    *info = 1;
-	    return 0;
+	    return;
 	}
 
 /*        Factor */
@@ -700,7 +701,7 @@ static real c_b11 = -1.f;
 	spotrf2_(uplo, &n1, &a[a_dim1 + 1], lda, &iinfo);
 	if (iinfo != 0) {
 	    *info = iinfo;
-	    return 0;
+	    return;
 	}
 
 /*        Compute the Cholesky factorization A = U**T*U */
@@ -719,7 +720,7 @@ static real c_b11 = -1.f;
 	    spotrf2_(uplo, &n2, &a[n1 + 1 + (n1 + 1) * a_dim1], lda, &iinfo);
 	    if (iinfo != 0) {
 		*info = iinfo + n1;
-		return 0;
+		return;
 	    }
 
 /*        Compute the Cholesky factorization A = L*L**T */
@@ -738,11 +739,11 @@ static real c_b11 = -1.f;
 	    spotrf2_(uplo, &n2, &a[n1 + 1 + (n1 + 1) * a_dim1], lda, &iinfo);
 	    if (iinfo != 0) {
 		*info = iinfo + n1;
-		return 0;
+		return;
 	    }
 	}
     }
-    return 0;
+    return;
 
 /*     End of SPOTRF2 */
 

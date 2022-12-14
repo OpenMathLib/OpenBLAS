@@ -625,7 +625,7 @@ f"> */
 /* >     Umea University, S-901 87 Umea, Sweden. */
 
 /*  ===================================================================== */
-/* Subroutine */ int dgetc2_(integer *n, doublereal *a, integer *lda, integer 
+/* Subroutine */ void dgetc2_(integer *n, doublereal *a, integer *lda, integer 
 	*ipiv, integer *jpiv, integer *info)
 {
     /* System generated locals */
@@ -633,12 +633,12 @@ f"> */
     doublereal d__1;
 
     /* Local variables */
-    extern /* Subroutine */ int dger_(integer *, integer *, doublereal *, 
+    extern /* Subroutine */ void dger_(integer *, integer *, doublereal *, 
 	    doublereal *, integer *, doublereal *, integer *, doublereal *, 
 	    integer *);
     doublereal smin, xmax;
     integer i__, j;
-    extern /* Subroutine */ int dswap_(integer *, doublereal *, integer *, 
+    extern /* Subroutine */ void dswap_(integer *, doublereal *, integer *, 
 	    doublereal *, integer *), dlabad_(doublereal *, doublereal *);
     extern doublereal dlamch_(char *);
     integer ip, jp;
@@ -668,7 +668,7 @@ f"> */
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /*     Set constants to control overflow */
@@ -687,7 +687,7 @@ f"> */
 	    *info = 1;
 	    a[a_dim1 + 1] = smlnum;
 	}
-	return 0;
+	return;
     }
 
 /*     Factorize A using complete pivoting. */
@@ -762,7 +762,7 @@ f"> */
     ipiv[*n] = *n;
     jpiv[*n] = *n;
 
-    return 0;
+    return;
 
 /*     End of DGETC2 */
 

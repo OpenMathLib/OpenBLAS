@@ -682,7 +682,7 @@ _col_getrfnp2.f"> */
 /* > \endverbatim */
 
 /*  ===================================================================== */
-/* Subroutine */ int claunhr_col_getrfnp2_(integer *m, integer *n, complex *
+/* Subroutine */ void claunhr_col_getrfnp2_(integer *m, integer *n, complex *
 	a, integer *lda, complex *d__, integer *info)
 {
     /* System generated locals */
@@ -692,13 +692,13 @@ _col_getrfnp2.f"> */
 
     /* Local variables */
     integer i__;
-    extern /* Subroutine */ int cscal_(integer *, complex *, complex *, 
+    extern /* Subroutine */ void cscal_(integer *, complex *, complex *, 
 	    integer *), cgemm_(char *, char *, integer *, integer *, integer *
 	    , complex *, complex *, integer *, complex *, integer *, complex *
 	    , complex *, integer *);
     integer iinfo;
     real sfmin;
-    extern /* Subroutine */ int ctrsm_(char *, char *, char *, char *, 
+    extern /* Subroutine */ void ctrsm_(char *, char *, char *, char *, 
 	    integer *, integer *, complex *, complex *, integer *, complex *, 
 	    integer *);
     integer n1, n2;
@@ -735,13 +735,13 @@ _col_getrfnp2.f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CLAUNHR_COL_GETRFNP2", &i__1, (ftnlen)20);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (f2cmin(*m,*n) == 0) {
-	return 0;
+	return;
     }
     if (*m == 1) {
 
@@ -844,7 +844,7 @@ _col_getrfnp2.f"> */
 		lda, &d__[n1 + 1], &iinfo);
 
     }
-    return 0;
+    return;
 
 /*     End of CLAUNHR_COL_GETRFNP2 */
 

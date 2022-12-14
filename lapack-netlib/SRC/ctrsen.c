@@ -776,7 +776,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int ctrsen_(char *job, char *compq, logical *select, integer 
+/* Subroutine */ void ctrsen_(char *job, char *compq, logical *select, integer 
 	*n, complex *t, integer *ldt, complex *q, integer *ldq, complex *w, 
 	integer *m, real *s, real *sep, complex *work, integer *lwork, 
 	integer *info)
@@ -792,20 +792,20 @@ f"> */
     logical wantq, wants;
     real rnorm;
     integer n1, n2;
-    extern /* Subroutine */ int clacn2_(integer *, complex *, complex *, real 
+    extern /* Subroutine */ void clacn2_(integer *, complex *, complex *, real 
 	    *, integer *, integer *);
     real rwork[1];
     extern real clange_(char *, integer *, integer *, complex *, integer *, 
 	    real *);
     integer nn, ks;
-    extern /* Subroutine */ int clacpy_(char *, integer *, integer *, complex 
-	    *, integer *, complex *, integer *), xerbla_(char *, 
-	    integer *, ftnlen);
+    extern /* Subroutine */ void clacpy_(char *, integer *, integer *, complex 
+	    *, integer *, complex *, integer *);
+    extern int xerbla_(char *, integer *, ftnlen);
     logical wantbh;
-    extern /* Subroutine */ int ctrexc_(char *, integer *, complex *, integer 
+    extern /* Subroutine */ void ctrexc_(char *, integer *, complex *, integer 
 	    *, complex *, integer *, integer *, integer *, integer *);
     logical wantsp;
-    extern /* Subroutine */ int ctrsyl_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void ctrsyl_(char *, char *, integer *, integer *, 
 	    integer *, complex *, integer *, complex *, integer *, complex *, 
 	    integer *, real *, integer *);
     logical lquery;
@@ -889,9 +889,9 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CTRSEN", &i__1, (ftnlen)6);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
@@ -989,7 +989,7 @@ L40:
 
     work[1].r = (real) lwmin, work[1].i = 0.f;
 
-    return 0;
+    return;
 
 /*     End of CTRSEN */
 

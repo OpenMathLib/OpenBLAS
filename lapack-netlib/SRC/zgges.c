@@ -784,7 +784,7 @@ or GE matrices</b> */
 /* > \ingroup complex16GEeigen */
 
 /*  ===================================================================== */
-/* Subroutine */ int zgges_(char *jobvsl, char *jobvsr, char *sort, L_fp 
+/* Subroutine */ void zgges_(char *jobvsl, char *jobvsr, char *sort, L_fp 
 	selctg, integer *n, doublecomplex *a, integer *lda, doublecomplex *b, 
 	integer *ldb, integer *sdim, doublecomplex *alpha, doublecomplex *
 	beta, doublecomplex *vsl, integer *ldvsl, doublecomplex *vsr, integer 
@@ -804,9 +804,9 @@ or GE matrices</b> */
     integer ileft, icols;
     logical cursl, ilvsl, ilvsr;
     integer irwrk, irows;
-    extern /* Subroutine */ int dlabad_(doublereal *, doublereal *);
+    extern /* Subroutine */ void dlabad_(doublereal *, doublereal *);
     extern doublereal dlamch_(char *);
-    extern /* Subroutine */ int zggbak_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void zggbak_(char *, char *, integer *, integer *, 
 	    integer *, doublereal *, doublereal *, integer *, doublecomplex *,
 	     integer *, integer *), zggbal_(char *, integer *,
 	     doublecomplex *, integer *, doublecomplex *, integer *, integer *
@@ -819,21 +819,21 @@ or GE matrices</b> */
 	    integer *, doublereal *);
     doublereal bignum;
     integer ijobvl, iright;
-    extern /* Subroutine */ int zgghrd_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void zgghrd_(char *, char *, integer *, integer *, 
 	    integer *, doublecomplex *, integer *, doublecomplex *, integer *,
 	     doublecomplex *, integer *, doublecomplex *, integer *, integer *
 	    ), zlascl_(char *, integer *, integer *, 
 	    doublereal *, doublereal *, integer *, integer *, doublecomplex *,
 	     integer *, integer *);
     integer ijobvr;
-    extern /* Subroutine */ int zgeqrf_(integer *, integer *, doublecomplex *,
+    extern /* Subroutine */ void zgeqrf_(integer *, integer *, doublecomplex *,
 	     integer *, doublecomplex *, doublecomplex *, integer *, integer *
 	    );
     doublereal anrmto;
     integer lwkmin;
     logical lastsl;
     doublereal bnrmto;
-    extern /* Subroutine */ int zlacpy_(char *, integer *, integer *, 
+    extern /* Subroutine */ void zlacpy_(char *, integer *, integer *, 
 	    doublecomplex *, integer *, doublecomplex *, integer *), 
 	    zlaset_(char *, integer *, integer *, doublecomplex *, 
 	    doublecomplex *, doublecomplex *, integer *), zhgeqz_(
@@ -850,7 +850,7 @@ or GE matrices</b> */
     doublereal smlnum;
     logical wantst, lquery;
     integer lwkopt;
-    extern /* Subroutine */ int zungqr_(integer *, integer *, integer *, 
+    extern /* Subroutine */ void zungqr_(integer *, integer *, integer *, 
 	    doublecomplex *, integer *, doublecomplex *, doublecomplex *, 
 	    integer *, integer *), zunmqr_(char *, char *, integer *, integer 
 	    *, integer *, doublecomplex *, integer *, doublecomplex *, 
@@ -972,16 +972,16 @@ or GE matrices</b> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZGGES ", &i__1, (ftnlen)6);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
 	*sdim = 0;
-	return 0;
+	return;
     }
 
 /*     Get machine constants */
@@ -1193,7 +1193,7 @@ L30:
 
     work[1].r = (doublereal) lwkopt, work[1].i = 0.;
 
-    return 0;
+    return;
 
 /*     End of ZGGES */
 

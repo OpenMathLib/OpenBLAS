@@ -613,7 +613,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int dlae2_(doublereal *a, doublereal *b, doublereal *c__, 
+/* Subroutine */ void dlae2_(doublereal *a, doublereal *b, doublereal *c__, 
 	doublereal *rt1, doublereal *rt2)
 {
     /* System generated locals */
@@ -683,7 +683,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 	*rt1 = rt * .5;
 	*rt2 = rt * -.5;
     }
-    return 0;
+    return;
 
 /*     End of DLAE2 */
 

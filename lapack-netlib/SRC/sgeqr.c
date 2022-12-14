@@ -683,7 +683,7 @@ static integer c__2 = 2;
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int sgeqr_(integer *m, integer *n, real *a, integer *lda, 
+/* Subroutine */ void sgeqr_(integer *m, integer *n, real *a, integer *lda, 
 	real *t, integer *tsize, real *work, integer *lwork, integer *info)
 {
     /* System generated locals */
@@ -695,11 +695,11 @@ static integer c__2 = 2;
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     extern integer ilaenv_(integer *, char *, char *, integer *, integer *, 
 	    integer *, integer *, ftnlen, ftnlen);
-    extern /* Subroutine */ int sgeqrt_(integer *, integer *, integer *, real 
+    extern /* Subroutine */ void sgeqrt_(integer *, integer *, integer *, real 
 	    *, integer *, real *, integer *, real *, integer *);
     logical lminws, lquery;
     integer mintsz;
-    extern /* Subroutine */ int slatsqr_(integer *, integer *, integer *, 
+    extern /* Subroutine */ void slatsqr_(integer *, integer *, integer *, 
 	    integer *, real *, integer *, real *, integer *, real *, integer *
 	    , integer *);
 
@@ -825,15 +825,15 @@ static integer c__2 = 2;
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("SGEQR", &i__1, (ftnlen)5);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (f2cmin(*m,*n) == 0) {
-	return 0;
+	return;
     }
 
 /*     The QR Decomposition */
@@ -849,7 +849,7 @@ static integer c__2 = 2;
     i__1 = 1, i__2 = nb * *n;
     work[1] = (real) f2cmax(i__1,i__2);
 
-    return 0;
+    return;
 
 /*     End of SGEQR */
 

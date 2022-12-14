@@ -624,7 +624,7 @@ f"> */
 /* > \ingroup complex16OTHERcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int ztrti2_(char *uplo, char *diag, integer *n, 
+/* Subroutine */ void ztrti2_(char *uplo, char *diag, integer *n, 
 	doublecomplex *a, integer *lda, integer *info)
 {
     /* System generated locals */
@@ -634,11 +634,12 @@ f"> */
     /* Local variables */
     integer j;
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int zscal_(integer *, doublecomplex *, 
+    extern /* Subroutine */ void zscal_(integer *, doublecomplex *, 
 	    doublecomplex *, integer *);
     logical upper;
-    extern /* Subroutine */ int ztrmv_(char *, char *, char *, integer *, 
-	    doublecomplex *, integer *, doublecomplex *, integer *), xerbla_(char *, integer *, ftnlen);
+    extern /* Subroutine */ void ztrmv_(char *, char *, char *, integer *, 
+	    doublecomplex *, integer *, doublecomplex *, integer *);
+    extern int xerbla_(char *, integer *, ftnlen);
     logical nounit;
     doublecomplex ajj;
 
@@ -675,7 +676,7 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZTRTI2", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
     if (upper) {
@@ -735,7 +736,7 @@ f"> */
 	}
     }
 
-    return 0;
+    return;
 
 /*     End of ZTRTI2 */
 

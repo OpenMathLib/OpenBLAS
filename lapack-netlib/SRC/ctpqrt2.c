@@ -690,7 +690,7 @@ is composed of a triangular block and a pentagonal block, using the compact WY r
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int ctpqrt2_(integer *m, integer *n, integer *l, complex *a, 
+/* Subroutine */ void ctpqrt2_(integer *m, integer *n, integer *l, complex *a, 
 	integer *lda, complex *b, integer *ldb, complex *t, integer *ldt, 
 	integer *info)
 {
@@ -701,16 +701,17 @@ is composed of a triangular block and a pentagonal block, using the compact WY r
 
     /* Local variables */
     integer i__, j, p;
-    extern /* Subroutine */ int cgerc_(integer *, integer *, complex *, 
+    extern /* Subroutine */ void cgerc_(integer *, integer *, complex *, 
 	    complex *, integer *, complex *, integer *, complex *, integer *);
     complex alpha;
-    extern /* Subroutine */ int cgemv_(char *, integer *, integer *, complex *
+    extern /* Subroutine */ void cgemv_(char *, integer *, integer *, complex *
 	    , complex *, integer *, complex *, integer *, complex *, complex *
 	    , integer *), ctrmv_(char *, char *, char *, integer *, 
 	    complex *, integer *, complex *, integer *);
     integer mp, np;
-    extern /* Subroutine */ int clarfg_(integer *, complex *, complex *, 
-	    integer *, complex *), xerbla_(char *, integer *, ftnlen);
+    extern /* Subroutine */ void clarfg_(integer *, complex *, complex *, 
+	    integer *, complex *);
+    extern int xerbla_(char *, integer *, ftnlen);
 
 
 /*  -- LAPACK computational routine (version 3.7.0) -- */
@@ -753,13 +754,13 @@ is composed of a triangular block and a pentagonal block, using the compact WY r
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CTPQRT2", &i__1, (ftnlen)7);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0 || *m == 0) {
-	return 0;
+	return;
     }
 
     i__1 = *n;
@@ -873,6 +874,6 @@ is composed of a triangular block and a pentagonal block, using the compact WY r
 
 /*     End of CTPQRT2 */
 
-    return 0;
+    return;
 } /* ctpqrt2_ */
 

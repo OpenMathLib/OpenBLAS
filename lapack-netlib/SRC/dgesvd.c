@@ -729,7 +729,7 @@ f"> */
 /* > \ingroup doubleGEsing */
 
 /*  ===================================================================== */
-/* Subroutine */ int dgesvd_(char *jobu, char *jobvt, integer *m, integer *n, 
+/* Subroutine */ void dgesvd_(char *jobu, char *jobvt, integer *m, integer *n, 
 	doublereal *a, integer *lda, doublereal *s, doublereal *u, integer *
 	ldu, doublereal *vt, integer *ldvt, doublereal *work, integer *lwork, 
 	integer *info)
@@ -745,20 +745,20 @@ f"> */
     doublereal anrm;
     integer ierr, itau, ncvt, nrvt, lwork_dgebrd__, lwork_dgelqf__, 
 	    lwork_dgeqrf__, i__;
-    extern /* Subroutine */ int dgemm_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void dgemm_(char *, char *, integer *, integer *, 
 	    integer *, doublereal *, doublereal *, integer *, doublereal *, 
 	    integer *, doublereal *, doublereal *, integer *);
     extern logical lsame_(char *, char *);
     integer chunk, minmn, wrkbl, itaup, itauq, mnthr, iwork;
     logical wntua, wntva, wntun, wntuo, wntvn, wntvo, wntus, wntvs;
     integer ie;
-    extern /* Subroutine */ int dgebrd_(integer *, integer *, doublereal *, 
+    extern /* Subroutine */ void dgebrd_(integer *, integer *, doublereal *, 
 	    integer *, doublereal *, doublereal *, doublereal *, doublereal *,
 	     doublereal *, integer *, integer *);
     extern doublereal dlamch_(char *), dlange_(char *, integer *, 
 	    integer *, doublereal *, integer *, doublereal *);
     integer ir, bdspac, iu;
-    extern /* Subroutine */ int dgelqf_(integer *, integer *, doublereal *, 
+    extern /* Subroutine */ void dgelqf_(integer *, integer *, doublereal *, 
 	    integer *, doublereal *, doublereal *, integer *, integer *), 
 	    dlascl_(char *, integer *, integer *, doublereal *, doublereal *, 
 	    integer *, integer *, doublereal *, integer *, integer *),
@@ -776,7 +776,7 @@ f"> */
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     extern integer ilaenv_(integer *, char *, char *, integer *, integer *, 
 	    integer *, integer *, ftnlen, ftnlen);
-    extern /* Subroutine */ int dormbr_(char *, char *, char *, integer *, 
+    extern /* Subroutine */ void dormbr_(char *, char *, char *, integer *, 
 	    integer *, integer *, doublereal *, integer *, doublereal *, 
 	    doublereal *, integer *, doublereal *, integer *, integer *), dorglq_(integer *, integer *, integer *, 
 	    doublereal *, integer *, doublereal *, doublereal *, integer *, 
@@ -1382,15 +1382,15 @@ f"> */
     if (*info != 0) {
 	i__2 = -(*info);
 	xerbla_("DGESVD", &i__2, (ftnlen)6);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*m == 0 || *n == 0) {
-	return 0;
+	return;
     }
 
 /*     Get machine constants */
@@ -4591,7 +4591,7 @@ f"> */
 
     work[1] = (doublereal) maxwrk;
 
-    return 0;
+    return;
 
 /*     End of DGESVD */
 

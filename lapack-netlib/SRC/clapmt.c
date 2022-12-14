@@ -613,7 +613,7 @@ f"> */
 /* > \ingroup complexOTHERauxiliary */
 
 /*  ===================================================================== */
-/* Subroutine */ int clapmt_(logical *forwrd, integer *m, integer *n, complex 
+/* Subroutine */ void clapmt_(logical *forwrd, integer *m, integer *n, complex 
 	*x, integer *ldx, integer *k)
 {
     /* System generated locals */
@@ -641,7 +641,7 @@ f"> */
 
     /* Function Body */
     if (*n <= 1) {
-	return 0;
+	return;
     }
 
     i__1 = *n;
@@ -734,7 +734,7 @@ L100:
 
     }
 
-    return 0;
+    return;
 
 /*     End of CLAPMT */
 

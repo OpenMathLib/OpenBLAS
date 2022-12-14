@@ -629,7 +629,7 @@ f"> */
 /* > \ingroup complexSYauxiliary */
 
 /*  ===================================================================== */
-/* Subroutine */ int claesy_(complex *a, complex *b, complex *c__, complex *
+/* Subroutine */ void claesy_(complex *a, complex *b, complex *c__, complex *
 	rt1, complex *rt2, complex *evscal, complex *cs1, complex *sn1)
 {
     /* System generated locals */
@@ -750,7 +750,7 @@ f"> */
 	    evscal->r = 0.f, evscal->i = 0.f;
 	}
     }
-    return 0;
+    return;
 
 /*     End of CLAESY */
 

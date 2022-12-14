@@ -649,7 +649,7 @@ f"> */
 /* >     at Berkeley, USA */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int slaed6_(integer *kniter, logical *orgati, real *rho, 
+/* Subroutine */ void slaed6_(integer *kniter, logical *orgati, real *rho, 
 	real *d__, real *z__, real *finit, real *tau, integer *info)
 {
     /* System generated locals */
@@ -926,7 +926,7 @@ L60:
     if (scale) {
 	*tau *= sclinv;
     }
-    return 0;
+    return;
 
 /*     End of SLAED6 */
 

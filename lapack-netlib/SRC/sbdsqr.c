@@ -755,7 +755,7 @@ f"> */
 /* > \ingroup auxOTHERcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int sbdsqr_(char *uplo, integer *n, integer *ncvt, integer *
+/* Subroutine */ void sbdsqr_(char *uplo, integer *n, integer *ncvt, integer *
 	nru, integer *ncc, real *d__, real *e, real *vt, integer *ldvt, real *
 	u, integer *ldu, real *c__, integer *ldc, real *work, integer *info)
 {
@@ -773,27 +773,27 @@ f"> */
     real cosl;
     integer isub, iter;
     real unfl, sinl, cosr, smin, smax, sinr;
-    extern /* Subroutine */ int srot_(integer *, real *, integer *, real *, 
+    extern /* Subroutine */ void srot_(integer *, real *, integer *, real *, 
 	    integer *, real *, real *);
     integer iterdivn;
-    extern /* Subroutine */ int slas2_(real *, real *, real *, real *, real *)
+    extern /* Subroutine */ void slas2_(real *, real *, real *, real *, real *)
 	    ;
     real f, g, h__;
     integer i__, j, m;
     real r__;
     extern logical lsame_(char *, char *);
     real oldcs;
-    extern /* Subroutine */ int sscal_(integer *, real *, real *, integer *);
+    extern /* Subroutine */ void sscal_(integer *, real *, real *, integer *);
     integer oldll;
     real shift, sigmn, oldsn, sminl;
-    extern /* Subroutine */ int slasr_(char *, char *, char *, integer *, 
+    extern /* Subroutine */ void slasr_(char *, char *, char *, integer *, 
 	    integer *, real *, real *, real *, integer *);
     real sigmx;
     logical lower;
-    extern /* Subroutine */ int sswap_(integer *, real *, integer *, real *, 
+    extern /* Subroutine */ void sswap_(integer *, real *, integer *, real *, 
 	    integer *);
     integer maxitdivn;
-    extern /* Subroutine */ int slasq1_(integer *, real *, real *, real *, 
+    extern /* Subroutine */ void slasq1_(integer *, real *, real *, real *, 
 	    integer *), slasv2_(real *, real *, real *, real *, real *, real *
 	    , real *, real *, real *);
     real cs;
@@ -802,7 +802,7 @@ f"> */
     extern real slamch_(char *);
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     real sminoa;
-    extern /* Subroutine */ int slartg_(real *, real *, real *, real *, real *
+    extern /* Subroutine */ void slartg_(real *, real *, real *, real *, real *
 	    );
     real thresh;
     logical rotate;
@@ -860,10 +860,10 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("SBDSQR", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
     if (*n == 0) {
-	return 0;
+	return;
     }
     if (*n == 1) {
 	goto L160;
@@ -881,7 +881,7 @@ f"> */
 /*     If INFO equals 2, dqds didn't finish, try to finish */
 
 	if (*info != 2) {
-	    return 0;
+	    return;
 	}
 	*info = 0;
     }
@@ -1512,7 +1512,7 @@ L200:
 /* L210: */
     }
 L220:
-    return 0;
+    return;
 
 /*     End of SBDSQR */
 

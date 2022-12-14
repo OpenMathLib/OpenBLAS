@@ -647,7 +647,7 @@ compact WY representation of Q. </b> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int cgeqrt3_(integer *m, integer *n, complex *a, integer *
+/* Subroutine */ void cgeqrt3_(integer *m, integer *n, complex *a, integer *
 	lda, complex *t, integer *ldt, integer *info)
 {
     /* System generated locals */
@@ -656,16 +656,17 @@ compact WY representation of Q. </b> */
 
     /* Local variables */
     integer i__, j;
-    extern /* Subroutine */ int cgemm_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void cgemm_(char *, char *, integer *, integer *, 
 	    integer *, complex *, complex *, integer *, complex *, integer *, 
 	    complex *, complex *, integer *);
     integer iinfo;
-    extern /* Subroutine */ int ctrmm_(char *, char *, char *, char *, 
+    extern /* Subroutine */ void ctrmm_(char *, char *, char *, char *, 
 	    integer *, integer *, complex *, complex *, integer *, complex *, 
 	    integer *);
     integer i1, j1, n1, n2;
-    extern /* Subroutine */ int clarfg_(integer *, complex *, complex *, 
-	    integer *, complex *), xerbla_(char *, integer *, ftnlen);
+    extern /* Subroutine */ void clarfg_(integer *, complex *, complex *, 
+	    integer *, complex *);
+    extern int xerbla_(char *, integer *, ftnlen);
 
 
 /*  -- LAPACK computational routine (version 3.7.0) -- */
@@ -699,7 +700,7 @@ compact WY representation of Q. </b> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CGEQRT3", &i__1, (ftnlen)7);
-	return 0;
+	return;
     }
 
     if (*n == 1) {
@@ -809,7 +810,7 @@ compact WY representation of Q. </b> */
 
     }
 
-    return 0;
+    return;
 
 /*     End of CGEQRT3 */
 

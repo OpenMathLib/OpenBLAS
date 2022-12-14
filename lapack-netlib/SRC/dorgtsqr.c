@@ -688,7 +688,7 @@ r.f"> */
 /* > \endverbatim */
 
 /*  ===================================================================== */
-/* Subroutine */ int dorgtsqr_(integer *m, integer *n, integer *mb, integer *
+/* Subroutine */ void dorgtsqr_(integer *m, integer *n, integer *mb, integer *
 	nb, doublereal *a, integer *lda, doublereal *t, integer *ldt, 
 	doublereal *work, integer *lwork, integer *info)
 {
@@ -696,17 +696,17 @@ r.f"> */
     integer a_dim1, a_offset, t_dim1, t_offset, i__1, i__2;
 
     /* Local variables */
-    extern /* Subroutine */ int dlamtsqr_(char *, char *, integer *, integer *
+    extern /* Subroutine */ void dlamtsqr_(char *, char *, integer *, integer *
 	    , integer *, integer *, integer *, doublereal *, integer *, 
 	    doublereal *, integer *, doublereal *, integer *, doublereal *, 
 	    integer *, integer *);
     integer lworkopt, j, iinfo;
-    extern /* Subroutine */ int dcopy_(integer *, doublereal *, integer *, 
+    extern /* Subroutine */ void dcopy_(integer *, doublereal *, integer *, 
 	    doublereal *, integer *);
     integer lc, lw;
-    extern /* Subroutine */ int dlaset_(char *, integer *, integer *, 
-	    doublereal *, doublereal *, doublereal *, integer *), 
-	    xerbla_(char *, integer *, ftnlen);
+    extern /* Subroutine */ void dlaset_(char *, integer *, integer *, 
+	    doublereal *, doublereal *, doublereal *, integer *); 
+    extern int xerbla_(char *, integer *, ftnlen);
     logical lquery;
     integer ldc, nblocal;
 
@@ -786,17 +786,17 @@ r.f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DORGTSQR", &i__1, (ftnlen)8);
-	return 0;
+	return;
     } else if (lquery) {
 	work[1] = (doublereal) lworkopt;
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (f2cmin(*m,*n) == 0) {
 	work[1] = (doublereal) lworkopt;
-	return 0;
+	return;
     }
 
 /*     (1) Form explicitly the tall-skinny M-by-N left submatrix Q1_in */
@@ -830,7 +830,7 @@ r.f"> */
     }
 
     work[1] = (doublereal) lworkopt;
-    return 0;
+    return;
 
 /*     End of DORGTSQR */
 

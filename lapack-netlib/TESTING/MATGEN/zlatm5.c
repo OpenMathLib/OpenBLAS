@@ -780,7 +780,7 @@ static doublecomplex c_b5 = {20.,0.};
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int zlatm5_(integer *prtype, integer *m, integer *n, 
+/* Subroutine */ void zlatm5_(integer *prtype, integer *m, integer *n, 
 	doublecomplex *a, integer *lda, doublecomplex *b, integer *ldb, 
 	doublecomplex *c__, integer *ldc, doublecomplex *d__, integer *ldd, 
 	doublecomplex *e, integer *lde, doublecomplex *f, integer *ldf, 
@@ -797,7 +797,7 @@ static doublecomplex c_b5 = {20.,0.};
     /* Local variables */
     integer i__, j, k;
     doublecomplex imeps, reeps;
-    extern /* Subroutine */ int zgemm_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void zgemm_(char *, char *, integer *, integer *, 
 	    integer *, doublecomplex *, doublecomplex *, integer *, 
 	    doublecomplex *, integer *, doublecomplex *, doublecomplex *, 
 	    integer *);
@@ -1281,6 +1281,6 @@ static doublecomplex c_b5 = {20.,0.};
 
 /*     End of ZLATM5 */
 
-    return 0;
+    return;
 } /* zlatm5_ */
 

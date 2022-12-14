@@ -699,7 +699,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int dlarzt_(char *direct, char *storev, integer *n, integer *
+/* Subroutine */ void dlarzt_(char *direct, char *storev, integer *n, integer *
 	k, doublereal *v, integer *ldv, doublereal *tau, doublereal *t, 
 	integer *ldt)
 {
@@ -710,11 +710,12 @@ f"> */
     /* Local variables */
     integer info, i__, j;
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int dgemv_(char *, integer *, integer *, 
+    extern /* Subroutine */ void dgemv_(char *, integer *, integer *, 
 	    doublereal *, doublereal *, integer *, doublereal *, integer *, 
 	    doublereal *, doublereal *, integer *), dtrmv_(char *, 
 	    char *, char *, integer *, doublereal *, integer *, doublereal *, 
-	    integer *), xerbla_(char *, integer *, ftnlen);
+	    integer *);
+    extern int xerbla_(char *, integer *, ftnlen);
 
 
 /*  -- LAPACK computational routine (version 3.7.0) -- */
@@ -747,7 +748,7 @@ f"> */
     if (info != 0) {
 	i__1 = -info;
 	xerbla_("DLARZT", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
     for (i__ = *k; i__ >= 1; --i__) {
@@ -785,7 +786,7 @@ f"> */
 	}
 /* L20: */
     }
-    return 0;
+    return;
 
 /*     End of DLARZT */
 

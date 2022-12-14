@@ -666,7 +666,7 @@ f"> */
 /* > \ingroup auxOTHERcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int dlagtf_(integer *n, doublereal *a, doublereal *lambda, 
+/* Subroutine */ void dlagtf_(integer *n, doublereal *a, doublereal *lambda, 
 	doublereal *b, doublereal *c__, doublereal *tol, doublereal *d__, 
 	integer *in, integer *info)
 {
@@ -706,11 +706,11 @@ f"> */
 	*info = -1;
 	i__1 = -(*info);
 	xerbla_("DLAGTF", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
     a[1] -= *lambda;
@@ -719,7 +719,7 @@ f"> */
 	if (a[1] == 0.) {
 	    in[1] = 1;
 	}
-	return 0;
+	return;
     }
 
     eps = dlamch_("Epsilon");
@@ -778,7 +778,7 @@ f"> */
 	in[*n] = *n;
     }
 
-    return 0;
+    return;
 
 /*     End of DLAGTF */
 

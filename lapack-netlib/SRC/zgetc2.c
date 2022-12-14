@@ -626,7 +626,7 @@ f"> */
 /* >     Umea University, S-901 87 Umea, Sweden. */
 
 /*  ===================================================================== */
-/* Subroutine */ int zgetc2_(integer *n, doublecomplex *a, integer *lda, 
+/* Subroutine */ void zgetc2_(integer *n, doublecomplex *a, integer *lda, 
 	integer *ipiv, integer *jpiv, integer *info)
 {
     /* System generated locals */
@@ -637,7 +637,7 @@ f"> */
     /* Local variables */
     doublereal smin, xmax;
     integer i__, j;
-    extern /* Subroutine */ int zgeru_(integer *, integer *, doublecomplex *, 
+    extern /* Subroutine */ void zgeru_(integer *, integer *, doublecomplex *, 
 	    doublecomplex *, integer *, doublecomplex *, integer *, 
 	    doublecomplex *, integer *), zswap_(integer *, doublecomplex *, 
 	    integer *, doublecomplex *, integer *), dlabad_(doublereal *, 
@@ -670,7 +670,7 @@ f"> */
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /*     Set constants to control overflow */
@@ -691,7 +691,7 @@ f"> */
 	    z__1.r = smlnum, z__1.i = 0.;
 	    a[i__1].r = z__1.r, a[i__1].i = z__1.i;
 	}
-	return 0;
+	return;
     }
 
 /*     Factorize A using complete pivoting. */
@@ -772,7 +772,7 @@ f"> */
     ipiv[*n] = *n;
     jpiv[*n] = *n;
 
-    return 0;
+    return;
 
 /*     End of ZGETC2 */
 

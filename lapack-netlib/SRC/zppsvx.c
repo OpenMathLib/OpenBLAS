@@ -823,7 +823,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int zppsvx_(char *fact, char *uplo, integer *n, integer *
+/* Subroutine */ void zppsvx_(char *fact, char *uplo, integer *n, integer *
 	nrhs, doublecomplex *ap, doublecomplex *afp, char *equed, doublereal *
 	s, doublecomplex *b, integer *ldb, doublecomplex *x, integer *ldx, 
 	doublereal *rcond, doublereal *ferr, doublereal *berr, doublecomplex *
@@ -840,7 +840,7 @@ f"> */
     extern logical lsame_(char *, char *);
     doublereal scond, anorm;
     logical equil, rcequ;
-    extern /* Subroutine */ int zcopy_(integer *, doublecomplex *, integer *, 
+    extern /* Subroutine */ void zcopy_(integer *, doublecomplex *, integer *, 
 	    doublecomplex *, integer *);
     extern doublereal dlamch_(char *);
     logical nofact;
@@ -849,14 +849,14 @@ f"> */
     integer infequ;
     extern doublereal zlanhp_(char *, char *, integer *, doublecomplex *, 
 	    doublereal *);
-    extern /* Subroutine */ int zlaqhp_(char *, integer *, doublecomplex *, 
+    extern /* Subroutine */ void zlaqhp_(char *, integer *, doublecomplex *, 
 	    doublereal *, doublereal *, doublereal *, char *),
 	     zlacpy_(char *, integer *, integer *, doublecomplex *, integer *,
 	     doublecomplex *, integer *), zppcon_(char *, integer *, 
 	    doublecomplex *, doublereal *, doublereal *, doublecomplex *, 
 	    doublereal *, integer *);
     doublereal smlnum;
-    extern /* Subroutine */ int zppequ_(char *, integer *, doublecomplex *, 
+    extern /* Subroutine */ void zppequ_(char *, integer *, doublecomplex *, 
 	    doublereal *, doublereal *, doublereal *, integer *), 
 	    zpprfs_(char *, integer *, integer *, doublecomplex *, 
 	    doublecomplex *, doublecomplex *, integer *, doublecomplex *, 
@@ -951,7 +951,7 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZPPSVX", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
     if (equil) {
@@ -998,7 +998,7 @@ f"> */
 
 	if (*info > 0) {
 	    *rcond = 0.;
-	    return 0;
+	    return;
 	}
     }
 
@@ -1051,7 +1051,7 @@ f"> */
 	*info = *n + 1;
     }
 
-    return 0;
+    return;
 
 /*     End of ZPPSVX */
 
