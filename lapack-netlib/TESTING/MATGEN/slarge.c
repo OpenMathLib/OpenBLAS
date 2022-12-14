@@ -600,7 +600,7 @@ static real c_b10 = 0.f;
 /* > \ingroup real_matgen */
 
 /*  ===================================================================== */
-/* Subroutine */ int slarge_(integer *n, real *a, integer *lda, integer *
+/* Subroutine */ void slarge_(integer *n, real *a, integer *lda, integer *
 	iseed, real *work, integer *info)
 {
     /* System generated locals */
@@ -608,15 +608,16 @@ static real c_b10 = 0.f;
     real r__1;
 
     /* Local variables */
-    extern /* Subroutine */ int sger_(integer *, integer *, real *, real *, 
+    extern /* Subroutine */ void sger_(integer *, integer *, real *, real *, 
 	    integer *, real *, integer *, real *, integer *);
     extern real snrm2_(integer *, real *, integer *);
     integer i__;
-    extern /* Subroutine */ int sscal_(integer *, real *, real *, integer *), 
+    extern /* Subroutine */ void sscal_(integer *, real *, real *, integer *), 
 	    sgemv_(char *, integer *, integer *, real *, real *, integer *, 
 	    real *, integer *, real *, real *, integer *);
     real wa, wb, wn;
-    extern /* Subroutine */ int xerbla_(char *, integer *), slarnv_(
+    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
+    extern void slarnv_(
 	    integer *, integer *, integer *, real *);
     real tau;
 
@@ -648,8 +649,8 @@ static real c_b10 = 0.f;
     }
     if (*info < 0) {
 	i__1 = -(*info);
-	xerbla_("SLARGE", &i__1);
-	return 0;
+	xerbla_("SLARGE", &i__1, 6);
+	return;
     }
 
 /*     pre- and post-multiply A by random orthogonal matrix */
@@ -695,7 +696,7 @@ static real c_b10 = 0.f;
 		 a_dim1 + 1], lda);
 /* L10: */
     }
-    return 0;
+    return;
 
 /*     End of SLARGE */
 

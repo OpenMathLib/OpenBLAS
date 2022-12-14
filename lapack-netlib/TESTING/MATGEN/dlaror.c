@@ -659,7 +659,7 @@ static integer c__1 = 1;
 /* > \ingroup double_matgen */
 
 /*  ===================================================================== */
-/* Subroutine */ int dlaror_(char *side, char *init, integer *m, integer *n, 
+/* Subroutine */ void dlaror_(char *side, char *init, integer *m, integer *n, 
 	doublereal *a, integer *lda, integer *iseed, doublereal *x, integer *
 	info)
 {
@@ -669,24 +669,24 @@ static integer c__1 = 1;
 
     /* Local variables */
     integer kbeg;
-    extern /* Subroutine */ int dger_(integer *, integer *, doublereal *, 
+    extern /* Subroutine */ void dger_(integer *, integer *, doublereal *, 
 	    doublereal *, integer *, doublereal *, integer *, doublereal *, 
 	    integer *);
     integer jcol, irow;
     extern doublereal dnrm2_(integer *, doublereal *, integer *);
     integer j;
-    extern /* Subroutine */ int dscal_(integer *, doublereal *, doublereal *, 
+    extern /* Subroutine */ void dscal_(integer *, doublereal *, doublereal *, 
 	    integer *);
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int dgemv_(char *, integer *, integer *, 
+    extern /* Subroutine */ void dgemv_(char *, integer *, integer *, 
 	    doublereal *, doublereal *, integer *, doublereal *, integer *, 
 	    doublereal *, doublereal *, integer *);
     integer ixfrm, itype, nxfrm;
     doublereal xnorm;
     extern doublereal dlarnd_(integer *, integer *);
-    extern /* Subroutine */ int dlaset_(char *, integer *, integer *, 
-	    doublereal *, doublereal *, doublereal *, integer *), 
-	    xerbla_(char *, integer *);
+    extern /* Subroutine */ void dlaset_(char *, integer *, integer *, 
+	    doublereal *, doublereal *, doublereal *, integer *); 
+    extern int xerbla_(char *, integer *, ftnlen);
     doublereal factor, xnorms;
 
 
@@ -709,7 +709,7 @@ static integer c__1 = 1;
     /* Function Body */
     *info = 0;
     if (*n == 0 || *m == 0) {
-	return 0;
+	return;
     }
 
     itype = 0;
@@ -734,8 +734,8 @@ static integer c__1 = 1;
     }
     if (*info != 0) {
 	i__1 = -(*info);
-	xerbla_("DLAROR", &i__1);
-	return 0;
+	xerbla_("DLAROR", &i__1, 6);
+	return;
     }
 
     if (itype == 1) {
@@ -782,8 +782,8 @@ static integer c__1 = 1;
 	factor = xnorms * (xnorms + x[kbeg]);
 	if (abs(factor) < 1e-20) {
 	    *info = 1;
-	    xerbla_("DLAROR", info);
-	    return 0;
+	    xerbla_("DLAROR", info, 6);
+	    return;
 	} else {
 	    factor = 1. / factor;
 	}
@@ -837,7 +837,7 @@ static integer c__1 = 1;
 /* L50: */
 	}
     }
-    return 0;
+    return;
 
 /*     End of DLAROR */
 

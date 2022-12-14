@@ -812,7 +812,7 @@ static integer c__5 = 5;
 /* > \ingroup complex16_matgen */
 
 /*  ===================================================================== */
-/* Subroutine */ int zlatme_(integer *n, char *dist, integer *iseed, 
+/* Subroutine */ void zlatme_(integer *n, char *dist, integer *iseed, 
 	doublecomplex *d__, integer *mode, doublereal *cond, doublecomplex *
 	dmax__, char *rsign, char *upper, char *sim, doublereal *ds, integer *
 	modes, doublereal *conds, integer *kl, integer *ku, doublereal *anorm,
@@ -833,26 +833,26 @@ static integer c__5 = 5;
     integer iinfo;
     doublereal tempa[1];
     integer icols;
-    extern /* Subroutine */ int zgerc_(integer *, integer *, doublecomplex *, 
+    extern /* Subroutine */ void zgerc_(integer *, integer *, doublecomplex *, 
 	    doublecomplex *, integer *, doublecomplex *, integer *, 
 	    doublecomplex *, integer *);
     integer idist;
-    extern /* Subroutine */ int zscal_(integer *, doublecomplex *, 
+    extern /* Subroutine */ void zscal_(integer *, doublecomplex *, 
 	    doublecomplex *, integer *), zgemv_(char *, integer *, integer *, 
 	    doublecomplex *, doublecomplex *, integer *, doublecomplex *, 
 	    integer *, doublecomplex *, doublecomplex *, integer *);
     integer irows;
-    extern /* Subroutine */ int zcopy_(integer *, doublecomplex *, integer *, 
+    extern /* Subroutine */ void zcopy_(integer *, doublecomplex *, integer *, 
 	    doublecomplex *, integer *), dlatm1_(integer *, doublereal *, 
 	    integer *, integer *, integer *, doublereal *, integer *, integer 
 	    *), zlatm1_(integer *, doublereal *, integer *, integer *, 
 	    integer *, doublecomplex *, integer *, integer *);
     integer ic, jc, ir;
     doublereal ralpha;
-    extern /* Subroutine */ int xerbla_(char *, integer *);
+    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     extern doublereal zlange_(char *, integer *, integer *, doublecomplex *, 
 	    integer *, doublereal *);
-    extern /* Subroutine */ int zdscal_(integer *, doublereal *, 
+    extern /* Subroutine */ void zdscal_(integer *, doublereal *, 
 	    doublecomplex *, integer *), zlarge_(integer *, doublecomplex *, 
 	    integer *, integer *, doublecomplex *, integer *), zlarfg_(
 	    integer *, doublecomplex *, doublecomplex *, integer *, 
@@ -861,10 +861,10 @@ static integer c__5 = 5;
     extern doublecomplex zlarnd_(integer *, 
 	    integer *);
     integer irsign;
-    extern /* Subroutine */ int zlaset_(char *, integer *, integer *, 
+    extern /* Subroutine */ void zlaset_(char *, integer *, integer *, 
 	    doublecomplex *, doublecomplex *, doublecomplex *, integer *);
     integer iupper;
-    extern /* Subroutine */ int zlarnv_(integer *, integer *, integer *, 
+    extern /* Subroutine */ void zlarnv_(integer *, integer *, integer *, 
 	    doublecomplex *);
     doublecomplex xnorms;
     integer jcr;
@@ -898,7 +898,7 @@ static integer c__5 = 5;
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /*     Decode DIST */
@@ -990,8 +990,8 @@ static integer c__5 = 5;
 
     if (*info != 0) {
 	i__1 = -(*info);
-	xerbla_("ZLATME", &i__1);
-	return 0;
+	xerbla_("ZLATME", &i__1, 6);
+	return;
     }
 
 /*     Initialize random number generator */
@@ -1012,7 +1012,7 @@ static integer c__5 = 5;
     zlatm1_(mode, cond, &irsign, &idist, &iseed[1], &d__[1], n, &iinfo);
     if (iinfo != 0) {
 	*info = 1;
-	return 0;
+	return;
     }
     if (*mode != 0 && abs(*mode) != 6) {
 
@@ -1032,7 +1032,7 @@ static integer c__5 = 5;
 	    alpha.r = z__1.r, alpha.i = z__1.i;
 	} else {
 	    *info = 2;
-	    return 0;
+	    return;
 	}
 
 	zscal_(n, &alpha, &d__[1], &c__1);
@@ -1069,7 +1069,7 @@ static integer c__5 = 5;
 	dlatm1_(modes, conds, &c__0, &c__0, &iseed[1], &ds[1], n, &iinfo);
 	if (iinfo != 0) {
 	    *info = 3;
-	    return 0;
+	    return;
 	}
 
 /*        Multiply by V and V' */
@@ -1077,7 +1077,7 @@ static integer c__5 = 5;
 	zlarge_(n, &a[a_offset], lda, &iseed[1], &work[1], &iinfo);
 	if (iinfo != 0) {
 	    *info = 4;
-	    return 0;
+	    return;
 	}
 
 /*        Multiply by S and (1/S) */
@@ -1090,7 +1090,7 @@ static integer c__5 = 5;
 		zdscal_(n, &d__1, &a[j * a_dim1 + 1], &c__1);
 	    } else {
 		*info = 5;
-		return 0;
+		return;
 	    }
 /* L50: */
 	}
@@ -1100,7 +1100,7 @@ static integer c__5 = 5;
 	zlarge_(n, &a[a_offset], lda, &iseed[1], &work[1], &iinfo);
 	if (iinfo != 0) {
 	    *info = 4;
-	    return 0;
+	    return;
 	}
     }
 
@@ -1214,7 +1214,7 @@ static integer c__5 = 5;
 	}
     }
 
-    return 0;
+    return;
 
 /*     End of ZLATME */
 

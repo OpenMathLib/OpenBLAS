@@ -686,7 +686,7 @@ static integer c__24 = 24;
 /* > \ingroup complex_matgen */
 
 /*  ===================================================================== */
-/* Subroutine */ int clatm6_(integer *type__, integer *n, complex *a, integer 
+/* Subroutine */ void clatm6_(integer *type__, integer *n, complex *a, integer 
 	*lda, complex *b, complex *x, integer *ldx, complex *y, integer *ldy, 
 	complex *alpha, complex *beta, complex *wx, complex *wy, real *s, 
 	real *dif)
@@ -702,10 +702,10 @@ static integer c__24 = 24;
     complex work[26];
     integer i__, j;
     complex z__[64]	/* was [8][8] */;
-    extern /* Subroutine */ int clakf2_(integer *, integer *, complex *, 
+    extern /* Subroutine */ void clakf2_(integer *, integer *, complex *, 
 	    integer *, complex *, complex *, complex *, complex *, integer *);
     real rwork[50];
-    extern /* Subroutine */ int cgesvd_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void cgesvd_(char *, char *, integer *, integer *, 
 	    complex *, integer *, real *, complex *, integer *, complex *, 
 	    integer *, complex *, integer *, real *, integer *), clacpy_(char *, integer *, integer *, complex *, integer 
 	    *, complex *, integer *);
@@ -931,7 +931,7 @@ static integer c__24 = 24;
 	    &c__1, &work[2], &c__24, &rwork[8], &info);
     dif[5] = rwork[7];
 
-    return 0;
+    return;
 
 /*     End of CLATM6 */
 

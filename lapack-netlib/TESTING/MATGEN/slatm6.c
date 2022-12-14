@@ -692,7 +692,7 @@ static integer c__60 = 60;
 /* > \ingroup real_matgen */
 
 /*  ===================================================================== */
-/* Subroutine */ int slatm6_(integer *type__, integer *n, real *a, integer *
+/* Subroutine */ void slatm6_(integer *type__, integer *n, real *a, integer *
 	lda, real *b, real *x, integer *ldx, real *y, integer *ldy, real *
 	alpha, real *beta, real *wx, real *wy, real *s, real *dif)
 {
@@ -705,7 +705,7 @@ static integer c__60 = 60;
     real work[100];
     integer i__, j;
     real z__[144]	/* was [12][12] */;
-    extern /* Subroutine */ int slakf2_(integer *, integer *, real *, integer 
+    extern /* Subroutine */ void slakf2_(integer *, integer *, real *, integer 
 	    *, real *, real *, real *, real *, integer *), sgesvd_(char *, 
 	    char *, integer *, integer *, real *, integer *, real *, real *, 
 	    integer *, real *, integer *, real *, integer *, integer *), slacpy_(char *, integer *, integer *, real *, 
@@ -864,7 +864,7 @@ static integer c__60 = 60;
 
     }
 
-    return 0;
+    return;
 
 /*     End of SLATM6 */
 

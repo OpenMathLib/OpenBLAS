@@ -601,7 +601,7 @@ static integer c__1 = 1;
 /* > \ingroup complex16_matgen */
 
 /*  ===================================================================== */
-/* Subroutine */ int zlarge_(integer *n, doublecomplex *a, integer *lda, 
+/* Subroutine */ void zlarge_(integer *n, doublecomplex *a, integer *lda, 
 	integer *iseed, doublecomplex *work, integer *info)
 {
     /* System generated locals */
@@ -611,7 +611,7 @@ static integer c__1 = 1;
 
     /* Local variables */
     integer i__;
-    extern /* Subroutine */ int zgerc_(integer *, integer *, doublecomplex *, 
+    extern /* Subroutine */ void zgerc_(integer *, integer *, doublecomplex *, 
 	    doublecomplex *, integer *, doublecomplex *, integer *, 
 	    doublecomplex *, integer *), zscal_(integer *, doublecomplex *, 
 	    doublecomplex *, integer *), zgemv_(char *, integer *, integer *, 
@@ -620,7 +620,8 @@ static integer c__1 = 1;
     extern doublereal dznrm2_(integer *, doublecomplex *, integer *);
     doublecomplex wa, wb;
     doublereal wn;
-    extern /* Subroutine */ int xerbla_(char *, integer *), zlarnv_(
+    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
+    extern void zlarnv_(
 	    integer *, integer *, integer *, doublecomplex *);
     doublecomplex tau;
 
@@ -652,8 +653,8 @@ static integer c__1 = 1;
     }
     if (*info < 0) {
 	i__1 = -(*info);
-	xerbla_("ZLARGE", &i__1);
-	return 0;
+	xerbla_("ZLARGE", &i__1, 6);
+	return;
     }
 
 /*     pre- and post-multiply A by random unitary matrix */
@@ -704,7 +705,7 @@ static integer c__1 = 1;
 		* a_dim1 + 1], lda);
 /* L10: */
     }
-    return 0;
+    return;
 
 /*     End of ZLARGE */
 

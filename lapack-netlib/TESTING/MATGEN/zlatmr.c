@@ -999,7 +999,7 @@ static integer c__1 = 1;
 /* > \ingroup complex16_matgen */
 
 /*  ===================================================================== */
-/* Subroutine */ int zlatmr_(integer *m, integer *n, char *dist, integer *
+/* Subroutine */ void zlatmr_(integer *m, integer *n, char *dist, integer *
 	iseed, char *sym, doublecomplex *d__, integer *mode, doublereal *cond,
 	 doublecomplex *dmax__, char *rsign, char *grade, doublecomplex *dl, 
 	integer *model, doublereal *condl, doublecomplex *dr, integer *moder, 
@@ -1024,7 +1024,7 @@ static integer c__1 = 1;
     integer mnsub;
     doublereal onorm;
     integer mxsub, npvts;
-    extern /* Subroutine */ int zlatm1_(integer *, doublereal *, integer *, 
+    extern /* Subroutine */ void zlatm1_(integer *, doublereal *, integer *, 
 	    integer *, integer *, doublecomplex *, integer *, integer *);
     extern /* Double Complex */ VOID zlatm2_(doublecomplex *, integer *, 
 	    integer *, integer *, integer *, integer *, integer *, integer *, 
@@ -1039,11 +1039,11 @@ static integer c__1 = 1;
     logical fulbnd;
     extern doublereal zlangb_(char *, integer *, integer *, integer *, 
 	    doublecomplex *, integer *, doublereal *);
-    extern /* Subroutine */ int xerbla_(char *, integer *);
+    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     logical badpvt;
     extern doublereal zlange_(char *, integer *, integer *, doublecomplex *, 
 	    integer *, doublereal *);
-    extern /* Subroutine */ int zdscal_(integer *, doublereal *, 
+    extern /* Subroutine */ void zdscal_(integer *, doublereal *, 
 	    doublecomplex *, integer *);
     extern doublereal zlansb_(char *, char *, integer *, integer *, 
 	    doublecomplex *, integer *, doublereal *);
@@ -1083,7 +1083,7 @@ static integer c__1 = 1;
 /*     Quick return if possible */
 
     if (*m == 0 || *n == 0) {
-	return 0;
+	return;
     }
 
 /*     Decode DIST */
@@ -1284,8 +1284,8 @@ static integer c__1 = 1;
 
     if (*info != 0) {
 	i__1 = -(*info);
-	xerbla_("ZLATMR", &i__1);
-	return 0;
+	xerbla_("ZLATMR", &i__1, 6);
+	return;
     }
 
 /*     Decide if we can pivot consistently */
@@ -1311,7 +1311,7 @@ static integer c__1 = 1;
     zlatm1_(mode, cond, &irsign, &idist, &iseed[1], &d__[1], &mnmin, info);
     if (*info != 0) {
 	*info = 1;
-	return 0;
+	return;
     }
     if (*mode != 0 && *mode != -6 && *mode != 6) {
 
@@ -1327,7 +1327,7 @@ static integer c__1 = 1;
 	}
 	if (temp == 0. && (dmax__->r != 0. || dmax__->i != 0.)) {
 	    *info = 2;
-	    return 0;
+	    return;
 	}
 	if (temp != 0.) {
 	    z__1.r = dmax__->r / temp, z__1.i = dmax__->i / temp;
@@ -1367,7 +1367,7 @@ static integer c__1 = 1;
 	zlatm1_(model, condl, &c__0, &idist, &iseed[1], &dl[1], m, info);
 	if (*info != 0) {
 	    *info = 3;
-	    return 0;
+	    return;
 	}
     }
 
@@ -1377,7 +1377,7 @@ static integer c__1 = 1;
 	zlatm1_(moder, condr, &c__0, &idist, &iseed[1], &dr[1], n, info);
 	if (*info != 0) {
 	    *info = 4;
-	    return 0;
+	    return;
 	}
     }
 
@@ -2032,7 +2032,7 @@ static integer c__1 = 1;
 /*           Desired scaling impossible */
 
 	    *info = 5;
-	    return 0;
+	    return;
 
 	} else if (*anorm > 1. && onorm < 1. || *anorm < 1. && onorm > 1.) {
 
@@ -2104,6 +2104,6 @@ static integer c__1 = 1;
 
 /*     End of ZLATMR */
 
-    return 0;
+    return;
 } /* zlatmr_ */
 

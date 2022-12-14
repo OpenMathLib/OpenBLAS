@@ -615,7 +615,7 @@ static real c_b3 = 0.f;
 /* > \ingroup real_matgen */
 
 /*  ===================================================================== */
-/* Subroutine */ int slakf2_(integer *m, integer *n, real *a, integer *lda, 
+/* Subroutine */ void slakf2_(integer *m, integer *n, real *a, integer *lda, 
 	real *b, real *d__, real *e, real *z__, integer *ldz)
 {
     /* System generated locals */
@@ -624,7 +624,7 @@ static real c_b3 = 0.f;
 
     /* Local variables */
     integer i__, j, l, ik, jk, mn;
-    extern /* Subroutine */ int slaset_(char *, integer *, integer *, real *, 
+    extern /* Subroutine */ void slaset_(char *, integer *, integer *, real *, 
 	    real *, real *, integer *);
     integer mn2;
 
@@ -730,7 +730,7 @@ static real c_b3 = 0.f;
 /* L90: */
     }
 
-    return 0;
+    return;
 
 /*     End of SLAKF2 */
 

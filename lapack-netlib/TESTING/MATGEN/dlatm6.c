@@ -692,7 +692,7 @@ static integer c__60 = 60;
 /* > \ingroup double_matgen */
 
 /*  ===================================================================== */
-/* Subroutine */ int dlatm6_(integer *type__, integer *n, doublereal *a, 
+/* Subroutine */ void dlatm6_(integer *type__, integer *n, doublereal *a, 
 	integer *lda, doublereal *b, doublereal *x, integer *ldx, doublereal *
 	y, integer *ldy, doublereal *alpha, doublereal *beta, doublereal *wx, 
 	doublereal *wy, doublereal *s, doublereal *dif)
@@ -706,7 +706,7 @@ static integer c__60 = 60;
     doublereal work[100];
     integer i__, j;
     doublereal z__[144]	/* was [12][12] */;
-    extern /* Subroutine */ int dlakf2_(integer *, integer *, doublereal *, 
+    extern /* Subroutine */ void dlakf2_(integer *, integer *, doublereal *, 
 	    integer *, doublereal *, doublereal *, doublereal *, doublereal *,
 	     integer *), dgesvd_(char *, char *, integer *, integer *, 
 	    doublereal *, integer *, doublereal *, doublereal *, integer *, 
@@ -866,7 +866,7 @@ static integer c__60 = 60;
 
     }
 
-    return 0;
+    return;
 
 /*     End of DLATM6 */
 

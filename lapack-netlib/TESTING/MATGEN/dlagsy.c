@@ -615,7 +615,7 @@ static doublereal c_b26 = 1.;
 /* > \ingroup double_matgen */
 
 /*  ===================================================================== */
-/* Subroutine */ int dlagsy_(integer *n, integer *k, doublereal *d__, 
+/* Subroutine */ void dlagsy_(integer *n, integer *k, doublereal *d__, 
 	doublereal *a, integer *lda, integer *iseed, doublereal *work, 
 	integer *info)
 {
@@ -624,17 +624,17 @@ static doublereal c_b26 = 1.;
     doublereal d__1;
 
     /* Local variables */
-    extern /* Subroutine */ int dger_(integer *, integer *, doublereal *, 
+    extern /* Subroutine */ void dger_(integer *, integer *, doublereal *, 
 	    doublereal *, integer *, doublereal *, integer *, doublereal *, 
 	    integer *);
     extern doublereal ddot_(integer *, doublereal *, integer *, doublereal *, 
 	    integer *), dnrm2_(integer *, doublereal *, integer *);
-    extern /* Subroutine */ int dsyr2_(char *, integer *, doublereal *, 
+    extern /* Subroutine */ void dsyr2_(char *, integer *, doublereal *, 
 	    doublereal *, integer *, doublereal *, integer *, doublereal *, 
 	    integer *);
     integer i__, j;
     doublereal alpha;
-    extern /* Subroutine */ int dscal_(integer *, doublereal *, doublereal *, 
+    extern /* Subroutine */ void dscal_(integer *, doublereal *, doublereal *, 
 	    integer *), dgemv_(char *, integer *, integer *, doublereal *, 
 	    doublereal *, integer *, doublereal *, integer *, doublereal *, 
 	    doublereal *, integer *), daxpy_(integer *, doublereal *, 
@@ -642,7 +642,8 @@ static doublereal c_b26 = 1.;
 	    integer *, doublereal *, doublereal *, integer *, doublereal *, 
 	    integer *, doublereal *, doublereal *, integer *);
     doublereal wa, wb, wn;
-    extern /* Subroutine */ int xerbla_(char *, integer *), dlarnv_(
+    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
+    extern void dlarnv_(
 	    integer *, integer *, integer *, doublereal *);
     doublereal tau;
 
@@ -677,8 +678,8 @@ static doublereal c_b26 = 1.;
     }
     if (*info < 0) {
 	i__1 = -(*info);
-	xerbla_("DLAGSY", &i__1);
-	return 0;
+	xerbla_("DLAGSY", &i__1, 6);
+	return;
     }
 
 /*     initialize lower triangle of A to diagonal matrix */
@@ -822,7 +823,7 @@ static doublereal c_b26 = 1.;
 	}
 /* L80: */
     }
-    return 0;
+    return;
 
 /*     End of DLAGSY */
 

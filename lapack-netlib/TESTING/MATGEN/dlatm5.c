@@ -778,7 +778,7 @@ static doublereal c_b33 = -1.;
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int dlatm5_(integer *prtype, integer *m, integer *n, 
+/* Subroutine */ void dlatm5_(integer *prtype, integer *m, integer *n, 
 	doublereal *a, integer *lda, doublereal *b, integer *ldb, doublereal *
 	c__, integer *ldc, doublereal *d__, integer *ldd, doublereal *e, 
 	integer *lde, doublereal *f, integer *ldf, doublereal *r__, integer *
@@ -792,7 +792,7 @@ static doublereal c_b33 = -1.;
 
     /* Local variables */
     integer i__, j, k;
-    extern /* Subroutine */ int dgemm_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void dgemm_(char *, char *, integer *, integer *, 
 	    integer *, doublereal *, doublereal *, integer *, doublereal *, 
 	    integer *, doublereal *, doublereal *, integer *);
     doublereal imeps, reeps;
@@ -1100,6 +1100,6 @@ static doublereal c_b33 = -1.;
 
 /*     End of DLATM5 */
 
-    return 0;
+    return;
 } /* dlatm5_ */
 

@@ -811,7 +811,7 @@ static integer c__5 = 5;
 /* > \ingroup complex_matgen */
 
 /*  ===================================================================== */
-/* Subroutine */ int clatme_(integer *n, char *dist, integer *iseed, complex *
+/* Subroutine */ void clatme_(integer *n, char *dist, integer *iseed, complex *
 	d__, integer *mode, real *cond, complex *dmax__, char *rsign, char *
 	upper, char *sim, real *ds, integer *modes, real *conds, integer *kl, 
 	integer *ku, real *anorm, complex *a, integer *lda, complex *work, 
@@ -827,22 +827,22 @@ static integer c__5 = 5;
     integer isim;
     real temp;
     integer i__, j;
-    extern /* Subroutine */ int cgerc_(integer *, integer *, complex *, 
+    extern /* Subroutine */ void cgerc_(integer *, integer *, complex *, 
 	    complex *, integer *, complex *, integer *, complex *, integer *);
     complex alpha;
-    extern /* Subroutine */ int cscal_(integer *, complex *, complex *, 
+    extern /* Subroutine */ void cscal_(integer *, complex *, complex *, 
 	    integer *);
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int cgemv_(char *, integer *, integer *, complex *
+    extern /* Subroutine */ void cgemv_(char *, integer *, integer *, complex *
 	    , complex *, integer *, complex *, integer *, complex *, complex *
 	    , integer *);
     integer iinfo;
     real tempa[1];
     integer icols, idist;
-    extern /* Subroutine */ int ccopy_(integer *, complex *, integer *, 
+    extern /* Subroutine */ void ccopy_(integer *, complex *, integer *, 
 	    complex *, integer *);
     integer irows;
-    extern /* Subroutine */ int clatm1_(integer *, real *, integer *, integer 
+    extern /* Subroutine */ void clatm1_(integer *, real *, integer *, integer 
 	    *, integer *, complex *, integer *, integer *), slatm1_(integer *,
 	     real *, integer *, integer *, integer *, real *, integer *, 
 	    integer *);
@@ -850,17 +850,18 @@ static integer c__5 = 5;
     extern real clange_(char *, integer *, integer *, complex *, integer *, 
 	    real *);
     integer ir;
-    extern /* Subroutine */ int clarge_(integer *, complex *, integer *, 
+    extern /* Subroutine */ void clarge_(integer *, complex *, integer *, 
 	    integer *, complex *, integer *), clarfg_(integer *, complex *, 
 	    complex *, integer *, complex *), clacgv_(integer *, complex *, 
 	    integer *);
     //extern /* Complex */ VOID clarnd_(complex *, integer *, integer *);
     extern complex clarnd_(integer *, integer *);
     real ralpha;
-    extern /* Subroutine */ int csscal_(integer *, real *, complex *, integer 
+    extern /* Subroutine */ void csscal_(integer *, real *, complex *, integer 
 	    *), claset_(char *, integer *, integer *, complex *, complex *, 
-	    complex *, integer *), xerbla_(char *, integer *),
-	     clarnv_(integer *, integer *, integer *, complex *);
+	    complex *, integer *);
+    extern int xerbla_(char *, integer *, ftnlen);
+    extern void clarnv_(integer *, integer *, integer *, complex *);
     integer irsign, iupper;
     complex xnorms;
     integer jcr;
@@ -894,7 +895,7 @@ static integer c__5 = 5;
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /*     Decode DIST */
@@ -986,8 +987,8 @@ static integer c__5 = 5;
 
     if (*info != 0) {
 	i__1 = -(*info);
-	xerbla_("CLATME", &i__1);
-	return 0;
+	xerbla_("CLATME", &i__1, 6);
+	return;
     }
 
 /*     Initialize random number generator */
@@ -1008,7 +1009,7 @@ static integer c__5 = 5;
     clatm1_(mode, cond, &irsign, &idist, &iseed[1], &d__[1], n, &iinfo);
     if (iinfo != 0) {
 	*info = 1;
-	return 0;
+	return;
     }
     if (*mode != 0 && abs(*mode) != 6) {
 
@@ -1028,7 +1029,7 @@ static integer c__5 = 5;
 	    alpha.r = q__1.r, alpha.i = q__1.i;
 	} else {
 	    *info = 2;
-	    return 0;
+	    return;
 	}
 
 	cscal_(n, &alpha, &d__[1], &c__1);
@@ -1065,7 +1066,7 @@ static integer c__5 = 5;
 	slatm1_(modes, conds, &c__0, &c__0, &iseed[1], &ds[1], n, &iinfo);
 	if (iinfo != 0) {
 	    *info = 3;
-	    return 0;
+	    return;
 	}
 
 /*        Multiply by V and V' */
@@ -1073,7 +1074,7 @@ static integer c__5 = 5;
 	clarge_(n, &a[a_offset], lda, &iseed[1], &work[1], &iinfo);
 	if (iinfo != 0) {
 	    *info = 4;
-	    return 0;
+	    return;
 	}
 
 /*        Multiply by S and (1/S) */
@@ -1086,7 +1087,7 @@ static integer c__5 = 5;
 		csscal_(n, &r__1, &a[j * a_dim1 + 1], &c__1);
 	    } else {
 		*info = 5;
-		return 0;
+		return;
 	    }
 /* L50: */
 	}
@@ -1096,7 +1097,7 @@ static integer c__5 = 5;
 	clarge_(n, &a[a_offset], lda, &iseed[1], &work[1], &iinfo);
 	if (iinfo != 0) {
 	    *info = 4;
-	    return 0;
+	    return;
 	}
     }
 
@@ -1210,7 +1211,7 @@ static integer c__5 = 5;
 	}
     }
 
-    return 0;
+    return;
 
 /*     End of CLATME */
 

@@ -673,7 +673,7 @@ t by U and the right by UC>       SIDE = 'T'   Multiply A on the left by U and t
 /* > \ingroup complex16_matgen */
 
 /*  ===================================================================== */
-/* Subroutine */ int zlaror_(char *side, char *init, integer *m, integer *n, 
+/* Subroutine */ void zlaror_(char *side, char *init, integer *m, integer *n, 
 	doublecomplex *a, integer *lda, integer *iseed, doublecomplex *x, 
 	integer *info)
 {
@@ -687,25 +687,25 @@ t by U and the right by UC>       SIDE = 'T'   Multiply A on the left by U and t
     integer irow, j;
     extern logical lsame_(char *, char *);
     doublecomplex csign;
-    extern /* Subroutine */ int zgerc_(integer *, integer *, doublecomplex *, 
+    extern /* Subroutine */ void zgerc_(integer *, integer *, doublecomplex *, 
 	    doublecomplex *, integer *, doublecomplex *, integer *, 
 	    doublecomplex *, integer *), zscal_(integer *, doublecomplex *, 
 	    doublecomplex *, integer *);
     integer ixfrm;
-    extern /* Subroutine */ int zgemv_(char *, integer *, integer *, 
+    extern /* Subroutine */ void zgemv_(char *, integer *, integer *, 
 	    doublecomplex *, doublecomplex *, integer *, doublecomplex *, 
 	    integer *, doublecomplex *, doublecomplex *, integer *);
     integer itype, nxfrm;
     doublereal xnorm;
     extern doublereal dznrm2_(integer *, doublecomplex *, integer *);
-    extern /* Subroutine */ int xerbla_(char *, integer *);
+    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     doublereal factor;
-    extern /* Subroutine */ int zlacgv_(integer *, doublecomplex *, integer *)
+    extern /* Subroutine */ void zlacgv_(integer *, doublecomplex *, integer *)
 	    ;
     //extern /* Double Complex */ VOID zlarnd_(doublecomplex *, integer *, 
     extern doublecomplex zlarnd_(integer *, 
 	    integer *);
-    extern /* Subroutine */ int zlaset_(char *, integer *, integer *, 
+    extern /* Subroutine */ void zlaset_(char *, integer *, integer *, 
 	    doublecomplex *, doublecomplex *, doublecomplex *, integer *);
     doublecomplex xnorms;
 
@@ -729,7 +729,7 @@ t by U and the right by UC>       SIDE = 'T'   Multiply A on the left by U and t
     /* Function Body */
     *info = 0;
     if (*n == 0 || *m == 0) {
-	return 0;
+	return;
     }
 
     itype = 0;
@@ -756,8 +756,8 @@ t by U and the right by UC>       SIDE = 'T'   Multiply A on the left by U and t
     }
     if (*info != 0) {
 	i__1 = -(*info);
-	xerbla_("ZLAROR", &i__1);
-	return 0;
+	xerbla_("ZLAROR", &i__1, 6);
+	return;
     }
 
     if (itype == 1) {
@@ -821,8 +821,8 @@ t by U and the right by UC>       SIDE = 'T'   Multiply A on the left by U and t
 	if (abs(factor) < 1e-20) {
 	    *info = 1;
 	    i__2 = -(*info);
-	    xerbla_("ZLAROR", &i__2);
-	    return 0;
+	    xerbla_("ZLAROR", &i__2, 6);
+	    return;
 	} else {
 	    factor = 1. / factor;
 	}
@@ -905,7 +905,7 @@ t by U and the right by UC>       SIDE = 'T'   Multiply A on the left by U and t
 /* L60: */
 	}
     }
-    return 0;
+    return;
 
 /*     End of ZLAROR */
 

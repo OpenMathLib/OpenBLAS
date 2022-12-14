@@ -841,7 +841,7 @@ static doublereal c_b39 = 1.;
 /* > \ingroup double_matgen */
 
 /*  ===================================================================== */
-/* Subroutine */ int dlatme_(integer *n, char *dist, integer *iseed, 
+/* Subroutine */ void dlatme_(integer *n, char *dist, integer *iseed, 
 	doublereal *d__, integer *mode, doublereal *cond, doublereal *dmax__, 
 	char *ei, char *rsign, char *upper, char *sim, doublereal *ds, 
 	integer *modes, doublereal *conds, integer *kl, integer *ku, 
@@ -854,7 +854,7 @@ static doublereal c_b39 = 1.;
 
     /* Local variables */
     logical bads;
-    extern /* Subroutine */ int dger_(integer *, integer *, doublereal *, 
+    extern /* Subroutine */ void dger_(integer *, integer *, doublereal *, 
 	    doublereal *, integer *, doublereal *, integer *, doublereal *, 
 	    integer *);
     integer isim;
@@ -862,10 +862,10 @@ static doublereal c_b39 = 1.;
     logical badei;
     integer i__, j;
     doublereal alpha;
-    extern /* Subroutine */ int dscal_(integer *, doublereal *, doublereal *, 
+    extern /* Subroutine */ void dscal_(integer *, doublereal *, doublereal *, 
 	    integer *);
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int dgemv_(char *, integer *, integer *, 
+    extern /* Subroutine */ void dgemv_(char *, integer *, integer *, 
 	    doublereal *, doublereal *, integer *, doublereal *, integer *, 
 	    doublereal *, doublereal *, integer *);
     integer iinfo;
@@ -873,22 +873,23 @@ static doublereal c_b39 = 1.;
     integer icols;
     logical useei;
     integer idist;
-    extern /* Subroutine */ int dcopy_(integer *, doublereal *, integer *, 
+    extern /* Subroutine */ void dcopy_(integer *, doublereal *, integer *, 
 	    doublereal *, integer *);
     integer irows;
-    extern /* Subroutine */ int dlatm1_(integer *, doublereal *, integer *, 
+    extern /* Subroutine */ void dlatm1_(integer *, doublereal *, integer *, 
 	    integer *, integer *, doublereal *, integer *, integer *);
     integer ic, jc;
     extern doublereal dlange_(char *, integer *, integer *, doublereal *, 
 	    integer *, doublereal *);
     integer ir, jr;
-    extern /* Subroutine */ int dlarge_(integer *, doublereal *, integer *, 
+    extern /* Subroutine */ void dlarge_(integer *, doublereal *, integer *, 
 	    integer *, doublereal *, integer *), dlarfg_(integer *, 
 	    doublereal *, doublereal *, integer *, doublereal *);
     extern doublereal dlaran_(integer *);
-    extern /* Subroutine */ int dlaset_(char *, integer *, integer *, 
-	    doublereal *, doublereal *, doublereal *, integer *), 
-	    xerbla_(char *, integer *), dlarnv_(integer *, integer *, 
+    extern /* Subroutine */ void dlaset_(char *, integer *, integer *, 
+	    doublereal *, doublereal *, doublereal *, integer *); 
+    extern int xerbla_(char *, integer *, ftnlen);
+    extern void dlarnv_(integer *, integer *, 
 	    integer *, doublereal *);
     integer irsign, iupper;
     doublereal xnorms;
@@ -924,7 +925,7 @@ static doublereal c_b39 = 1.;
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /*     Decode DIST */
@@ -1042,8 +1043,8 @@ static doublereal c_b39 = 1.;
 
     if (*info != 0) {
 	i__1 = -(*info);
-	xerbla_("DLATME", &i__1);
-	return 0;
+	xerbla_("DLATME", &i__1, 6);
+	return;
     }
 
 /*     Initialize random number generator */
@@ -1064,7 +1065,7 @@ static doublereal c_b39 = 1.;
     dlatm1_(mode, cond, &irsign, &idist, &iseed[1], &d__[1], n, &iinfo);
     if (iinfo != 0) {
 	*info = 1;
-	return 0;
+	return;
     }
     if (*mode != 0 && abs(*mode) != 6) {
 
@@ -1083,7 +1084,7 @@ static doublereal c_b39 = 1.;
 	    alpha = *dmax__ / temp;
 	} else if (*dmax__ != 0.) {
 	    *info = 2;
-	    return 0;
+	    return;
 	} else {
 	    alpha = 0.;
 	}
@@ -1155,7 +1156,7 @@ static doublereal c_b39 = 1.;
 	dlatm1_(modes, conds, &c__0, &c__0, &iseed[1], &ds[1], n, &iinfo);
 	if (iinfo != 0) {
 	    *info = 3;
-	    return 0;
+	    return;
 	}
 
 /*        Multiply by V and V' */
@@ -1163,7 +1164,7 @@ static doublereal c_b39 = 1.;
 	dlarge_(n, &a[a_offset], lda, &iseed[1], &work[1], &iinfo);
 	if (iinfo != 0) {
 	    *info = 4;
-	    return 0;
+	    return;
 	}
 
 /*        Multiply by S and (1/S) */
@@ -1176,7 +1177,7 @@ static doublereal c_b39 = 1.;
 		dscal_(n, &d__1, &a[j * a_dim1 + 1], &c__1);
 	    } else {
 		*info = 5;
-		return 0;
+		return;
 	    }
 /* L80: */
 	}
@@ -1186,7 +1187,7 @@ static doublereal c_b39 = 1.;
 	dlarge_(n, &a[a_offset], lda, &iseed[1], &work[1], &iinfo);
 	if (iinfo != 0) {
 	    *info = 4;
-	    return 0;
+	    return;
 	}
     }
 
@@ -1274,7 +1275,7 @@ static doublereal c_b39 = 1.;
 	}
     }
 
-    return 0;
+    return;
 
 /*     End of DLATME */
 

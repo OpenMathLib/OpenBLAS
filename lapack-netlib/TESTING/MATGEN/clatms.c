@@ -845,7 +845,7 @@ static logical c_false = FALSE_;
 /* > \ingroup complex_matgen */
 
 /*  ===================================================================== */
-/* Subroutine */ int clatms_(integer *m, integer *n, char *dist, integer *
+/* Subroutine */ void clatms_(integer *m, integer *n, char *dist, integer *
 	iseed, char *sym, real *d__, integer *mode, real *cond, real *dmax__, 
 	integer *kl, integer *ku, char *pack, complex *a, integer *lda, 
 	complex *work, integer *info)
@@ -870,14 +870,14 @@ static logical c_false = FALSE_;
     integer ioffg;
     extern logical lsame_(char *, char *);
     integer iinfo;
-    extern /* Subroutine */ int sscal_(integer *, real *, real *, integer *);
+    extern /* Subroutine */ void sscal_(integer *, real *, real *, integer *);
     complex ctemp;
     integer idist, mnmin, iskew;
     complex extra, dummy;
-    extern /* Subroutine */ int slatm1_(integer *, real *, integer *, integer 
+    extern /* Subroutine */ void slatm1_(integer *, real *, integer *, integer 
 	    *, integer *, real *, integer *, integer *);
     integer ic, jc, nc;
-    extern /* Subroutine */ int clagge_(integer *, integer *, integer *, 
+    extern /* Subroutine */ void clagge_(integer *, integer *, integer *, 
 	    integer *, real *, complex *, integer *, integer *, complex *, 
 	    integer *), claghe_(integer *, integer *, real *, complex *, 
 	    integer *, integer *, complex *, integer *);
@@ -888,13 +888,14 @@ static logical c_false = FALSE_;
     extern complex clarnd_(integer *, integer *);
     integer minlda;
     complex st;
-    extern /* Subroutine */ int claset_(char *, integer *, integer *, complex 
+    extern /* Subroutine */ void claset_(char *, integer *, integer *, complex 
 	    *, complex *, complex *, integer *), clartg_(complex *, 
-	    complex *, real *, complex *, complex *), xerbla_(char *, integer 
-	    *), clagsy_(integer *, integer *, real *, complex *, 
+	    complex *, real *, complex *, complex *);
+    extern int xerbla_(char *, integer *, ftnlen);
+    extern void clagsy_(integer *, integer *, real *, complex *, 
 	    integer *, integer *, complex *, integer *);
     extern real slarnd_(integer *, integer *);
-    extern /* Subroutine */ int clarot_(logical *, logical *, logical *, 
+    extern /* Subroutine */ void clarot_(logical *, logical *, logical *, 
 	    integer *, complex *, complex *, complex *, integer *, complex *, 
 	    complex *);
     logical iltemp, givens;
@@ -929,7 +930,7 @@ static logical c_false = FALSE_;
 /*     Quick return if possible */
 
     if (*m == 0 || *n == 0) {
-	return 0;
+	return;
     }
 
 /*     Decode DIST */
@@ -1068,8 +1069,8 @@ static logical c_false = FALSE_;
 
     if (*info != 0) {
 	i__1 = -(*info);
-	xerbla_("CLATMS", &i__1);
-	return 0;
+	xerbla_("CLATMS", &i__1, 6);
+	return;
     }
 
 /*     Initialize random number generator */
@@ -1090,7 +1091,7 @@ static logical c_false = FALSE_;
     slatm1_(mode, cond, &irsign, &idist, &iseed[1], &d__[1], &mnmin, &iinfo);
     if (iinfo != 0) {
 	*info = 1;
-	return 0;
+	return;
     }
 
 /*     Choose Top-Down if D is (apparently) increasing, */
@@ -1119,7 +1120,7 @@ static logical c_false = FALSE_;
 	    alpha = *dmax__ / temp;
 	} else {
 	    *info = 2;
-	    return 0;
+	    return;
 	}
 
 	sscal_(&mnmin, &alpha, &d__[1], &c__1);
@@ -2033,7 +2034,7 @@ static logical c_false = FALSE_;
 
 	if (iinfo != 0) {
 	    *info = 3;
-	    return 0;
+	    return;
 	}
     }
 
@@ -2208,7 +2209,7 @@ static logical c_false = FALSE_;
 	}
     }
 
-    return 0;
+    return;
 
 /*     End of CLATMS */
 

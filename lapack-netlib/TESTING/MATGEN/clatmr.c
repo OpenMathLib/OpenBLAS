@@ -998,7 +998,7 @@ static integer c__1 = 1;
 /* > \ingroup complex_matgen */
 
 /*  ===================================================================== */
-/* Subroutine */ int clatmr_(integer *m, integer *n, char *dist, integer *
+/* Subroutine */ void clatmr_(integer *m, integer *n, char *dist, integer *
 	iseed, char *sym, complex *d__, integer *mode, real *cond, complex *
 	dmax__, char *rsign, char *grade, complex *dl, integer *model, real *
 	condl, complex *dr, integer *moder, real *condr, char *pivtng, 
@@ -1022,7 +1022,7 @@ static integer c__1 = 1;
     integer mnsub;
     real onorm;
     integer mxsub, npvts;
-    extern /* Subroutine */ int clatm1_(integer *, real *, integer *, integer 
+    extern /* Subroutine */ void clatm1_(integer *, real *, integer *, integer 
 	    *, integer *, complex *, integer *, integer *);
     extern /* Complex */ VOID clatm2_(complex *, integer *, integer *, 
 	    integer *, integer *, integer *, integer *, integer *, integer *, 
@@ -1038,10 +1038,10 @@ static integer c__1 = 1;
     integer igrade;
     extern real clansb_(char *, char *, integer *, integer *, complex *, 
 	    integer *, real *);
-    extern /* Subroutine */ int csscal_(integer *, real *, complex *, integer 
+    extern /* Subroutine */ void csscal_(integer *, real *, complex *, integer 
 	    *);
     logical fulbnd;
-    extern /* Subroutine */ int xerbla_(char *, integer *);
+    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     logical badpvt;
     extern real clansp_(char *, char *, integer *, complex *, real *), clansy_(char *, char *, integer *, complex *, integer *, 
 	    real *);
@@ -1077,7 +1077,7 @@ static integer c__1 = 1;
 /*     Quick return if possible */
 
     if (*m == 0 || *n == 0) {
-	return 0;
+	return;
     }
 
 /*     Decode DIST */
@@ -1278,8 +1278,8 @@ static integer c__1 = 1;
 
     if (*info != 0) {
 	i__1 = -(*info);
-	xerbla_("CLATMR", &i__1);
-	return 0;
+	xerbla_("CLATMR", &i__1, 6);
+	return;
     }
 
 /*     Decide if we can pivot consistently */
@@ -1305,7 +1305,7 @@ static integer c__1 = 1;
     clatm1_(mode, cond, &irsign, &idist, &iseed[1], &d__[1], &mnmin, info);
     if (*info != 0) {
 	*info = 1;
-	return 0;
+	return;
     }
     if (*mode != 0 && *mode != -6 && *mode != 6) {
 
@@ -1321,7 +1321,7 @@ static integer c__1 = 1;
 	}
 	if (temp == 0.f && (dmax__->r != 0.f || dmax__->i != 0.f)) {
 	    *info = 2;
-	    return 0;
+	    return;
 	}
 	if (temp != 0.f) {
 	    q__1.r = dmax__->r / temp, q__1.i = dmax__->i / temp;
@@ -1361,7 +1361,7 @@ static integer c__1 = 1;
 	clatm1_(model, condl, &c__0, &idist, &iseed[1], &dl[1], m, info);
 	if (*info != 0) {
 	    *info = 3;
-	    return 0;
+	    return;
 	}
     }
 
@@ -1371,7 +1371,7 @@ static integer c__1 = 1;
 	clatm1_(moder, condr, &c__0, &idist, &iseed[1], &dr[1], n, info);
 	if (*info != 0) {
 	    *info = 4;
-	    return 0;
+	    return;
 	}
     }
 
@@ -2026,7 +2026,7 @@ static integer c__1 = 1;
 /*           Desired scaling impossible */
 
 	    *info = 5;
-	    return 0;
+	    return;
 
 	} else if (*anorm > 1.f && onorm < 1.f || *anorm < 1.f && onorm > 1.f)
 		 {
@@ -2099,6 +2099,6 @@ static integer c__1 = 1;
 
 /*     End of CLATMR */
 
-    return 0;
+    return;
 } /* clatmr_ */
 
