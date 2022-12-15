@@ -827,13 +827,32 @@ endif
 ifeq ($(ARCH), riscv64)
 NO_BINARY_MODE  = 1
 BINARY_DEFINED  = 1
+ifdef INTERFACE64
+ifneq ($(INTERFACE64), 0)
+ifeq ($(F_COMPILER), GFORTRAN)
+FCOMMON_OPT +=  -fdefault-integer-8
+endif
+ifeq ($(F_COMPILER), FLANG)
+FCOMMON_OPT += -i8
+endif
+endif
+endif
 endif
 
 ifeq ($(ARCH), loongarch64)
 NO_BINARY_MODE  = 1
 BINARY_DEFINED  = 1
+ifdef INTERFACE64
+ifneq ($(INTERFACE64), 0)
+ifeq ($(F_COMPILER), GFORTRAN)
+FCOMMON_OPT +=  -fdefault-integer-8
 endif
-
+ifeq ($(F_COMPILER), FLANG)
+FCOMMON_OPT += -i8
+endif
+endif
+endif
+endif
 
 #
 #  C Compiler dependent settings
