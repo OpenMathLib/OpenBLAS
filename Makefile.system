@@ -419,7 +419,7 @@ ifeq ($(OSNAME), AIX)
 EXTRALIB	+= -lm
 endif
 
-ifeq ($(OSNAME), $(filter $(OSNAME),FreeBSD OpenBSD NetBSD DragonFly)
+ifeq ($(OSNAME), $(filter $(OSNAME),FreeBSD OpenBSD NetBSD DragonFly))
 ifeq ($(ARCH), $(filter $(ARCH),arm arm64))
 EXTRALIB	+= -lm
 endif
