@@ -36,6 +36,8 @@ option(USE_LOCKING "Use locks even in single-threaded builds to make them callab
 
 option(USE_PERL "Use the older PERL scripts for build preparation instead of universal shell scripts" OFF)
 
+option(NO_WARMUP "Do not run a benchmark on each startup just to find the best location for the memory buffer" ON)
+
 if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
   option(NO_AFFINITY "Disable support for CPU affinity masks to avoid binding processes from e.g. R or numpy/scipy to a single core" ON)
 else()
