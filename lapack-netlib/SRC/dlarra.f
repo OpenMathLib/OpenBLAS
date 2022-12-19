@@ -164,6 +164,7 @@
 *     .. Executable Statements ..
 *
       INFO = 0
+      NSPLIT = 1
 *
 *     Quick return if possible
 *
@@ -172,7 +173,6 @@
       END IF
 *
 *     Compute splitting points
-      NSPLIT = 1
       IF(SPLTOL.LT.ZERO) THEN
 *        Criterion based on absolute off-diagonal value
          TMP1 = ABS(SPLTOL)* TNRM
