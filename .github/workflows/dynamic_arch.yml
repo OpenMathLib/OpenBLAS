@@ -37,7 +37,7 @@ jobs:
       - name: Install Dependencies
         run: |
           if [ "$RUNNER_OS" == "Linux" ]; then
-            sudo apt-get install -y gfortran cmake ccache
+            sudo apt-get install -y gfortran cmake ccache libtinfo5
           elif [ "$RUNNER_OS" == "macOS" ]; then
             # It looks like "gfortran" isn't working correctly unless "gcc" is re-installed.
             brew reinstall gcc
