@@ -367,6 +367,8 @@
 *
 
       INFO = 0
+      NSPLIT = 0
+      M = 0
 *
 *     Quick return if possible
 *
@@ -383,8 +385,6 @@
       ELSE IF( LSAME( RANGE, 'I' ) ) THEN
          IRANGE = INDRNG
       END IF
-
-      M = 0
 
 *     Get machine constants
       SAFMIN = DLAMCH( 'S' )
