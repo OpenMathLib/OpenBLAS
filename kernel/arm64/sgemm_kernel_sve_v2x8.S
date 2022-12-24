@@ -189,20 +189,16 @@ With this approach, we can reuse sgemm_n|tcopy_sve_v1.c packing functions. */
     ld1rw  z11.s, p0/z, [pB, 12]
     fmla z24.s, p0/m, z0.s, z12.s
     fmla z25.s, p0/m, z1.s, z12.s
-	prfm	PLDL1KEEP, [pA1, #A_PRE_SIZE]
     ld1rw  z12.s, p0/z, [pB, 16]
     fmla z26.s, p0/m, z0.s, z13.s
     fmla z27.s, p0/m, z1.s, z13.s
-	prfm	PLDL1KEEP, [pA2, #A_PRE_SIZE]
     ld1rw  z13.s, p0/z, [pB, 20]
     fmla z28.s, p0/m, z0.s, z14.s
     fmla z29.s, p0/m, z1.s, z14.s
     ld1rw  z14.s, p0/z, [pB, 24]
     fmla z30.s, p0/m, z0.s, z15.s
     fmla z31.s, p0/m, z1.s, z15.s
-	prfm	PLDL1KEEP, [pA1, #A_PRE_SIZE+64]
     ld1rw  z15.s, p0/z, [pB, 28]
-	prfm	PLDL1KEEP, [pA2, #A_PRE_SIZE+64]
 
     add pB, pB, 32
 .endm
@@ -227,19 +223,15 @@ With this approach, we can reuse sgemm_n|tcopy_sve_v1.c packing functions. */
     ld1rw  z11.s, p0/z, [pB, 12]
     fmla z24.s, p0/m, z0.s, z12.s
     fmla z25.s, p0/m, z1.s, z12.s
-	prfm	PLDL1KEEP, [pA1, #A_PRE_SIZE]
     ld1rw  z12.s, p0/z, [pB, 16]
     fmla z26.s, p0/m, z0.s, z13.s
     fmla z27.s, p0/m, z1.s, z13.s
-	prfm	PLDL1KEEP, [pA2, #A_PRE_SIZE]
     ld1rw  z13.s, p0/z, [pB, 20]
     fmla z28.s, p0/m, z0.s, z14.s
     fmla z29.s, p0/m, z1.s, z14.s
     ld1rw  z14.s, p0/z, [pB, 24]
     fmla z30.s, p0/m, z0.s, z15.s
-	prfm	PLDL1KEEP, [pA1, #A_PRE_SIZE+64]
     fmla z31.s, p0/m, z1.s, z15.s
-	prfm	PLDL1KEEP, [pA2, #A_PRE_SIZE+64]
     ld1rw  z15.s, p0/z, [pB, 28]
 
     add pB, pB, 32
@@ -265,7 +257,6 @@ With this approach, we can reuse sgemm_n|tcopy_sve_v1.c packing functions. */
     ld1rw  z11.s, p0/z, [pB, 12]
     fmla z24.s, p0/m, z2.s, z12.s
     fmla z25.s, p0/m, z3.s, z12.s
-	prfm	PLDL1KEEP, [pB, #B_PRE_SIZE]
     ld1rw  z12.s, p0/z, [pB, 16]
     fmla z26.s, p0/m, z2.s, z13.s
     fmla z27.s, p0/m, z3.s, z13.s
@@ -291,7 +282,6 @@ With this approach, we can reuse sgemm_n|tcopy_sve_v1.c packing functions. */
     fmla z23.s, p0/m, z3.s, z11.s
     fmla z24.s, p0/m, z2.s, z12.s
     fmla z25.s, p0/m, z3.s, z12.s
-	prfm	PLDL1KEEP, [pB, #B_PRE_SIZE]
     fmla z26.s, p0/m, z2.s, z13.s
     fmla z27.s, p0/m, z3.s, z13.s
     fmla z28.s, p0/m, z2.s, z14.s
@@ -322,25 +312,21 @@ With this approach, we can reuse sgemm_n|tcopy_sve_v1.c packing functions. */
     fmla z18.s, p0/m, z0.s, z9.s
     fmla z19.s, p0/m, z1.s, z9.s
     fmla z20.s, p0/m, z0.s, z10.s
-	prfm	PLDL1KEEP, [pA1, #A_PRE_SIZE]
     fmla z21.s, p0/m, z1.s, z10.s
     fmla z22.s, p0/m, z0.s, z11.s
     fmla z23.s, p0/m, z1.s, z11.s
     fmla z24.s, p0/m, z0.s, z12.s
-	prfm	PLDL1KEEP, [pA2, #A_PRE_SIZE]
     fmla z25.s, p0/m, z1.s, z12.s
     fmla z26.s, p0/m, z0.s, z13.s
     fmla z27.s, p0/m, z1.s, z13.s
     fmla z28.s, p0/m, z0.s, z14.s
     fmla z29.s, p0/m, z1.s, z14.s
-	prfm	PLDL1KEEP, [pB, #B_PRE_SIZE]
     fmla z30.s, p0/m, z0.s, z15.s
     fmla z31.s, p0/m, z1.s, z15.s
 .endm
 
 .macro SAVEv2x8
 
-	prfm	PLDL2KEEP, [pCRow0, #C_PRE_SIZE]
 
 	add	pCRow1, pCRow0, LDC
     ld1w  z8.s, p0/z, [pCRow0] 
@@ -349,7 +335,6 @@ With this approach, we can reuse sgemm_n|tcopy_sve_v1.c packing functions. */
     fmla z9.s, p0/m, z17.s, alphaZ
     st1w  z8.s, p0, [pCRow0]
     st1w  z9.s, p0, [pCRow0, #1, mul vl]
-	prfm	PLDL2KEEP, [pCRow1, #C_PRE_SIZE]
 
 	add	pCRow2, pCRow1, LDC
     ld1w  z10.s, p0/z, [pCRow1] 
@@ -358,7 +343,6 @@ With this approach, we can reuse sgemm_n|tcopy_sve_v1.c packing functions. */
     fmla z11.s, p0/m, z19.s, alphaZ
     st1w  z10.s, p0, [pCRow1]
     st1w  z11.s, p0, [pCRow1, #1, mul vl]
-	prfm	PLDL2KEEP, [pCRow2, #C_PRE_SIZE]
 
 	add	pCRow1, pCRow2, LDC
     ld1w  z12.s, p0/z, [pCRow2] 
@@ -367,7 +351,6 @@ With this approach, we can reuse sgemm_n|tcopy_sve_v1.c packing functions. */
     fmla z13.s, p0/m, z21.s, alphaZ
     st1w  z12.s, p0, [pCRow2]
     st1w  z13.s, p0, [pCRow2, #1, mul vl]
-	prfm	PLDL2KEEP, [pCRow1, #C_PRE_SIZE]
 
 	add	pCRow2, pCRow1, LDC
     ld1w  z14.s, p0/z, [pCRow1] 
@@ -376,7 +359,6 @@ With this approach, we can reuse sgemm_n|tcopy_sve_v1.c packing functions. */
     fmla z15.s, p0/m, z23.s, alphaZ
     st1w  z14.s, p0, [pCRow1]
     st1w  z15.s, p0, [pCRow1, #1, mul vl]
-	prfm	PLDL2KEEP, [pCRow2, #C_PRE_SIZE]
 
 	add	pCRow1, pCRow2, LDC
     ld1w  z8.s, p0/z, [pCRow2] 
@@ -385,7 +367,6 @@ With this approach, we can reuse sgemm_n|tcopy_sve_v1.c packing functions. */
     fmla z9.s, p0/m, z25.s, alphaZ
     st1w  z8.s, p0, [pCRow2]
     st1w  z9.s, p0, [pCRow2, #1, mul vl]
-	prfm	PLDL2KEEP, [pCRow1, #C_PRE_SIZE]
 
 	add	pCRow2, pCRow1, LDC
     ld1w  z10.s, p0/z, [pCRow1] 
@@ -394,7 +375,6 @@ With this approach, we can reuse sgemm_n|tcopy_sve_v1.c packing functions. */
     fmla z11.s, p0/m, z27.s, alphaZ
     st1w  z10.s, p0, [pCRow1]
     st1w  z11.s, p0, [pCRow1, #1, mul vl]
-	prfm	PLDL2KEEP, [pCRow2, #C_PRE_SIZE]
 
 	add	pCRow1, pCRow2, LDC
     ld1w  z12.s, p0/z, [pCRow2] 
@@ -403,7 +383,6 @@ With this approach, we can reuse sgemm_n|tcopy_sve_v1.c packing functions. */
     fmla z13.s, p0/m, z29.s, alphaZ
     st1w  z12.s, p0, [pCRow2]
     st1w  z13.s, p0, [pCRow2, #1, mul vl]
-	prfm	PLDL2KEEP, [pCRow1, #C_PRE_SIZE]
 
     ld1w  z14.s, p0/z, [pCRow1] 
     ld1w  z15.s, p0/z, [pCRow1, #1, mul vl] 
@@ -443,10 +422,8 @@ With this approach, we can reuse sgemm_n|tcopy_sve_v1.c packing functions. */
     fmla z16.s, p0/m, z0.s, z8.s
     fmla z17.s, p0/m, z1.s, z8.s
     fmla z18.s, p0/m, z0.s, z9.s
-	prfm	PLDL1KEEP, [pA1, #A_PRE_SIZE]
     fmla z19.s, p0/m, z1.s, z9.s
     fmla z20.s, p0/m, z0.s, z10.s
-	prfm	PLDL1KEEP, [pA2, #A_PRE_SIZE]
     fmla z21.s, p0/m, z1.s, z10.s
     fmla z22.s, p0/m, z0.s, z11.s
     fmla z23.s, p0/m, z1.s, z11.s
@@ -454,7 +431,6 @@ With this approach, we can reuse sgemm_n|tcopy_sve_v1.c packing functions. */
 
 .macro SAVEv2x4
 
-	prfm	PLDL2KEEP, [pCRow0, #C_PRE_SIZE]
 
 	add	pCRow1, pCRow0, LDC
     ld1w  z8.s, p0/z, [pCRow0] 
@@ -463,7 +439,6 @@ With this approach, we can reuse sgemm_n|tcopy_sve_v1.c packing functions. */
     fmla z9.s, p0/m, z17.s, alphaZ
     st1w  z8.s, p0, [pCRow0]
     st1w  z9.s, p0, [pCRow0, #1, mul vl]
-	prfm	PLDL2KEEP, [pCRow1, #C_PRE_SIZE]
 
 	add	pCRow2, pCRow1, LDC
     ld1w  z10.s, p0/z, [pCRow1] 
@@ -472,7 +447,6 @@ With this approach, we can reuse sgemm_n|tcopy_sve_v1.c packing functions. */
     fmla z11.s, p0/m, z19.s, alphaZ
     st1w  z10.s, p0, [pCRow1]
     st1w  z11.s, p0, [pCRow1, #1, mul vl]
-	prfm	PLDL2KEEP, [pCRow2, #C_PRE_SIZE]
 
 	add	pCRow1, pCRow2, LDC
     ld1w  z12.s, p0/z, [pCRow2] 
@@ -481,7 +455,6 @@ With this approach, we can reuse sgemm_n|tcopy_sve_v1.c packing functions. */
     fmla z13.s, p0/m, z21.s, alphaZ
     st1w  z12.s, p0, [pCRow2]
     st1w  z13.s, p0, [pCRow2, #1, mul vl]
-	prfm	PLDL2KEEP, [pCRow1, #C_PRE_SIZE]
 
     ld1w  z14.s, p0/z, [pCRow1] 
     ld1w  z15.s, p0/z, [pCRow1, #1, mul vl] 
@@ -514,15 +487,12 @@ With this approach, we can reuse sgemm_n|tcopy_sve_v1.c packing functions. */
 
     fmla z16.s, p0/m, z0.s, z8.s
     fmla z17.s, p0/m, z1.s, z8.s
-	prfm	PLDL1KEEP, [pA1, #A_PRE_SIZE]
     fmla z18.s, p0/m, z0.s, z9.s
     fmla z19.s, p0/m, z1.s, z9.s
-	prfm	PLDL1KEEP, [pA2, #A_PRE_SIZE]
 .endm
 
 .macro SAVEv2x2
 
-	prfm	PLDL2KEEP, [pCRow0, #C_PRE_SIZE]
 
 	add	pCRow1, pCRow0, LDC
     ld1w  z8.s, p0/z, [pCRow0] 
@@ -531,7 +501,6 @@ With this approach, we can reuse sgemm_n|tcopy_sve_v1.c packing functions. */
     fmla z9.s, p0/m, z17.s, alphaZ
     st1w  z8.s, p0, [pCRow0]
     st1w  z9.s, p0, [pCRow0, #1, mul vl]
-	prfm	PLDL2KEEP, [pCRow1, #C_PRE_SIZE]
 
     ld1w  z10.s, p0/z, [pCRow1] 
     ld1w  z11.s, p0/z, [pCRow1, #1, mul vl] 
@@ -539,7 +508,6 @@ With this approach, we can reuse sgemm_n|tcopy_sve_v1.c packing functions. */
     fmla z11.s, p0/m, z19.s, alphaZ
     st1w  z10.s, p0, [pCRow1]
     st1w  z11.s, p0, [pCRow1, #1, mul vl]
-	prfm	PLDL2KEEP, [pCRow2, #C_PRE_SIZE]
 
 
 
@@ -563,12 +531,10 @@ With this approach, we can reuse sgemm_n|tcopy_sve_v1.c packing functions. */
 
     fmla z16.s, p0/m, z0.s, z8.s
     fmla z17.s, p0/m, z1.s, z8.s
-	prfm	PLDL1KEEP, [pA1, #A_PRE_SIZE]
 .endm
 
 .macro SAVEv2x1
 
-	prfm	PLDL2KEEP, [pCRow0, #C_PRE_SIZE]
 
 	add	pCRow1, pCRow0, LDC
     ld1w  z8.s, p0/z, [pCRow0] 
@@ -618,14 +584,12 @@ With this approach, we can reuse sgemm_n|tcopy_sve_v1.c packing functions. */
     fmla z19.s, p1/m, z0.s, z11.s
     ld1rw  z11.s, p0/z, [pB, 12]
     fmla z20.s, p1/m, z0.s, z12.s
-	prfm	PLDL1KEEP, [pA1, #A_PRE_SIZE]
     ld1rw  z12.s, p0/z, [pB, 16]
     fmla z21.s, p1/m, z0.s, z13.s
     ld1rw  z13.s, p0/z, [pB, 20]
     fmla z22.s, p1/m, z0.s, z14.s
     ld1rw  z14.s, p0/z, [pB, 24]
     fmla z23.s, p1/m, z0.s, z15.s
-	prfm	PLDL1KEEP, [pA1, #A_PRE_SIZE+64]
     ld1rw  z15.s, p0/z, [pB, 28]
 
     add pB, pB, 32
@@ -644,14 +608,12 @@ With this approach, we can reuse sgemm_n|tcopy_sve_v1.c packing functions. */
     fmla z19.s, p1/m, z0.s, z11.s
     ld1rw  z11.s, p0/z, [pB, 12]
     fmla z20.s, p1/m, z0.s, z12.s
-	prfm	PLDL1KEEP, [pA1, #A_PRE_SIZE]
     ld1rw  z12.s, p0/z, [pB, 16]
     fmla z21.s, p1/m, z0.s, z13.s
     ld1rw  z13.s, p0/z, [pB, 20]
     fmla z22.s, p1/m, z0.s, z14.s
     ld1rw  z14.s, p0/z, [pB, 24]
     fmla z23.s, p1/m, z0.s, z15.s
-	prfm	PLDL1KEEP, [pA1, #A_PRE_SIZE+64]
     ld1rw  z15.s, p0/z, [pB, 28]
 
     add pB, pB, 32
@@ -671,7 +633,6 @@ With this approach, we can reuse sgemm_n|tcopy_sve_v1.c packing functions. */
     ld1rw  z11.s, p0/z, [pB, 12]
     fmla z20.s, p1/m, z1.s, z12.s
     ld1rw  z12.s, p0/z, [pB, 16]
-	prfm	PLDL1KEEP, [pB, #B_PRE_SIZE]
     fmla z21.s, p1/m, z1.s, z13.s
     ld1rw  z13.s, p0/z, [pB, 20]
     fmla z22.s, p1/m, z1.s, z14.s
@@ -688,7 +649,6 @@ With this approach, we can reuse sgemm_n|tcopy_sve_v1.c packing functions. */
     fmla z18.s, p1/m, z1.s, z10.s
     fmla z19.s, p1/m, z1.s, z11.s
     fmla z20.s, p1/m, z1.s, z12.s
-	prfm	PLDL1KEEP, [pB, #B_PRE_SIZE]
     fmla z21.s, p1/m, z1.s, z13.s
     fmla z22.s, p1/m, z1.s, z14.s
     fmla z23.s, p1/m, z1.s, z15.s
@@ -712,11 +672,9 @@ With this approach, we can reuse sgemm_n|tcopy_sve_v1.c packing functions. */
     fmla z16.s, p1/m, z0.s, z8.s
     fmla z17.s, p1/m, z0.s, z9.s
     fmla z18.s, p1/m, z0.s, z10.s
-	prfm	PLDL1KEEP, [pA1, #A_PRE_SIZE]
     fmla z19.s, p1/m, z0.s, z11.s
     fmla z20.s, p1/m, z0.s, z12.s
     fmla z21.s, p1/m, z0.s, z13.s
-	prfm	PLDL1KEEP, [pB, #B_PRE_SIZE]
     fmla z22.s, p1/m, z0.s, z14.s
     fmla z23.s, p1/m, z0.s, z15.s
 
@@ -725,49 +683,41 @@ With this approach, we can reuse sgemm_n|tcopy_sve_v1.c packing functions. */
 
 .macro SAVEv1x8
 
-	prfm	PLDL2KEEP, [pCRow0, #C_PRE_SIZE]
 
 	add	pCRow1, pCRow0, LDC
     ld1w  z24.s, p1/z, [pCRow0] 
     fmla z24.s, p1/m, z16.s, alphaZ
     st1w  z24.s, p1, [pCRow0]
-	prfm	PLDL2KEEP, [pCRow1, #C_PRE_SIZE]
 
 	add	pCRow2, pCRow1, LDC
     ld1w  z25.s, p1/z, [pCRow1] 
     fmla z25.s, p1/m, z17.s, alphaZ
     st1w  z25.s, p1, [pCRow1]
-	prfm	PLDL2KEEP, [pCRow2, #C_PRE_SIZE]
 
 	add	pCRow1, pCRow2, LDC
     ld1w  z26.s, p1/z, [pCRow2] 
     fmla z26.s, p1/m, z18.s, alphaZ
     st1w z26.s, p1, [pCRow2]
-	prfm	PLDL2KEEP, [pCRow1, #C_PRE_SIZE]
 
 	add	pCRow2, pCRow1, LDC
     ld1w  z27.s, p1/z, [pCRow1] 
     fmla z27.s, p1/m, z19.s, alphaZ
     st1w  z27.s, p1, [pCRow1]
-	prfm	PLDL2KEEP, [pCRow2, #C_PRE_SIZE]
 
 	add	pCRow1, pCRow2, LDC
     ld1w  z28.s, p1/z, [pCRow2] 
     fmla z28.s, p1/m, z20.s, alphaZ
     st1w  z28.s, p1, [pCRow2]
-	prfm	PLDL2KEEP, [pCRow1, #C_PRE_SIZE]
 
 	add	pCRow2, pCRow1, LDC
     ld1w  z29.s, p1/z, [pCRow1] 
     fmla z29.s, p1/m, z21.s, alphaZ
     st1w  z29.s, p1, [pCRow1]
-	prfm	PLDL2KEEP, [pCRow2, #C_PRE_SIZE]
 
 	add	pCRow1, pCRow2, LDC
     ld1w  z30.s, p1/z, [pCRow2] 
     fmla z30.s, p1/m, z22.s, alphaZ
     st1w  z30.s, p1, [pCRow2]
-	prfm	PLDL2KEEP, [pCRow1, #C_PRE_SIZE]
 
     ld1w  z31.s, p1/z, [pCRow1] 
     fmla z31.s, p1/m, z23.s, alphaZ
@@ -799,7 +749,6 @@ With this approach, we can reuse sgemm_n|tcopy_sve_v1.c packing functions. */
 
     fmla z16.s, p1/m, z0.s, z8.s
     fmla z17.s, p1/m, z0.s, z9.s
-	prfm	PLDL1KEEP, [pA1, #A_PRE_SIZE]
     fmla z18.s, p1/m, z0.s, z10.s
     fmla z19.s, p1/m, z0.s, z11.s
 
@@ -807,25 +756,21 @@ With this approach, we can reuse sgemm_n|tcopy_sve_v1.c packing functions. */
 
 .macro SAVEv1x4
 
-	prfm	PLDL2KEEP, [pCRow0, #C_PRE_SIZE]
 
 	add	pCRow1, pCRow0, LDC
     ld1w  z24.s, p1/z, [pCRow0] 
     fmla z24.s, p1/m, z16.s, alphaZ
     st1w  z24.s, p1, [pCRow0]
-	prfm	PLDL2KEEP, [pCRow1, #C_PRE_SIZE]
 
 	add	pCRow2, pCRow1, LDC
     ld1w  z25.s, p1/z, [pCRow1] 
     fmla z25.s, p1/m, z17.s, alphaZ
     st1w  z25.s, p1, [pCRow1]
-	prfm	PLDL2KEEP, [pCRow2, #C_PRE_SIZE]
 
 	add	pCRow1, pCRow2, LDC
     ld1w  z26.s, p1/z, [pCRow2] 
     fmla z26.s, p1/m, z18.s, alphaZ
     st1w z26.s, p1, [pCRow2]
-	prfm	PLDL2KEEP, [pCRow1, #C_PRE_SIZE]
 
     ld1w  z27.s, p1/z, [pCRow1] 
     fmla z27.s, p1/m, z19.s, alphaZ
@@ -852,20 +797,17 @@ With this approach, we can reuse sgemm_n|tcopy_sve_v1.c packing functions. */
     add pB, pB, 8
 
     fmla z16.s, p1/m, z0.s, z8.s
-	prfm	PLDL1KEEP, [pA1, #A_PRE_SIZE]
     fmla z17.s, p1/m, z0.s, z9.s
 
 .endm
 
 .macro SAVEv1x2
 
-	prfm	PLDL2KEEP, [pCRow0, #C_PRE_SIZE]
 
 	add	pCRow1, pCRow0, LDC
     ld1w  z24.s, p1/z, [pCRow0] 
     fmla z24.s, p1/m, z16.s, alphaZ
     st1w  z24.s, p1, [pCRow0]
-	prfm	PLDL2KEEP, [pCRow1, #C_PRE_SIZE]
 
     ld1w  z25.s, p1/z, [pCRow1] 
     fmla z25.s, p1/m, z17.s, alphaZ
@@ -890,13 +832,11 @@ With this approach, we can reuse sgemm_n|tcopy_sve_v1.c packing functions. */
     add pB, pB, 4
 
     fmla z16.s, p1/m, z0.s, z8.s
-	prfm	PLDL1KEEP, [pA1, #A_PRE_SIZE]
 
 .endm
 
 .macro SAVEv1x1
 
-	prfm	PLDL2KEEP, [pCRow0, #C_PRE_SIZE]
 
     ld1w  z24.s, p1/z, [pCRow0] 
     fmla z24.s, p1/m, z16.s, alphaZ
@@ -928,8 +868,6 @@ With this approach, we can reuse sgemm_n|tcopy_sve_v1.c packing functions. */
 	stp	x26, x27, [sp, #(9 * 16)]
 	str	x28, [sp, #(10 * 16)]
 
-	prfm	PLDL1KEEP, [origPB]
-	prfm	PLDL1KEEP, [origPA]
 
 	fmov	alpha, s0
 	dup	alphaZ, alpha
@@ -968,7 +906,6 @@ With this approach, we can reuse sgemm_n|tcopy_sve_v1.c packing functions. */
 /* Until we have at least 2*SVE_LEN iters left in M, we do them with V2*8 kernel */
     mul temp, vec_len, origK                // generate address of pA2
 	add	pA2, pA1, temp, lsl #2			// pA1 = start of A array
-	prfm	PLDL1KEEP, [pA2]
 
 	.align 5
 .Lsgemm_kernel_L8_Mv2_20:
@@ -1057,11 +994,6 @@ With this approach, we can reuse sgemm_n|tcopy_sve_v1.c packing functions. */
 	bne	.Lsgemm_kernel_L8_Mv2_46
 
 .Lsgemm_kernel_L8_Mv2_100:
-	prfm	PLDL1KEEP, [pA1]
-	prfm	PLDL1KEEP, [pA1, #64]
-	prfm	PLDL1KEEP, [pA2]
-	prfm	PLDL1KEEP, [pA2, #64]
-	prfm	PLDL1KEEP, [origPB]
 
 	SAVEv2x8
     mov pA1, pA2                            // pA1 = pA2
@@ -1171,9 +1103,6 @@ With this approach, we can reuse sgemm_n|tcopy_sve_v1.c packing functions. */
 	bne	.Lsgemm_kernel_L8_Mv1_46
 
 .Lsgemm_kernel_L8_Mv1_100:
-	prfm	PLDL1KEEP, [pA1]
-	prfm	PLDL1KEEP, [pA1, #64]
-	prfm	PLDL1KEEP, [origPB]
 
 	SAVEv1x8
 
@@ -1233,16 +1162,12 @@ With this approach, we can reuse sgemm_n|tcopy_sve_v1.c packing functions. */
 	.align 5
 .Lsgemm_kernel_L4_Mv2_22:
 
-	prfm	PLDL1KEEP, [pB, #B_PRE_SIZE]
 	KERNELv2x4_SUB
 	KERNELv2x4_SUB
-	prfm	PLDL1KEEP, [pB, #B_PRE_SIZE]
 	KERNELv2x4_SUB
 	KERNELv2x4_SUB
-	prfm	PLDL1KEEP, [pB, #B_PRE_SIZE]
 	KERNELv2x4_SUB
 	KERNELv2x4_SUB
-	prfm	PLDL1KEEP, [pB, #B_PRE_SIZE]
 	KERNELv2x4_SUB
 	KERNELv2x4_SUB
 
@@ -1257,18 +1182,12 @@ With this approach, we can reuse sgemm_n|tcopy_sve_v1.c packing functions. */
 	.align 5
 .Lsgemm_kernel_L4_Mv2_46:
 
-	prfm	PLDL1KEEP, [pB, #B_PRE_SIZE]
 	KERNELv2x4_SUB
 
 	subs	counterL, counterL, #1
 	bne	.Lsgemm_kernel_L4_Mv2_46
 
 .Lsgemm_kernel_L4_Mv2_100:
-	prfm	PLDL1KEEP, [pA1]
-	prfm	PLDL1KEEP, [pA1, #64]
-	prfm	PLDL1KEEP, [pA2]
-	prfm	PLDL1KEEP, [pA2, #64]
-	prfm	PLDL1KEEP, [origPB]
 
 	SAVEv2x4
     mov pA1, pA2                            // pA1 = pA2
@@ -1304,16 +1223,12 @@ With this approach, we can reuse sgemm_n|tcopy_sve_v1.c packing functions. */
 	.align 5
 .Lsgemm_kernel_L4_Mv1_22:
 
-	prfm	PLDL1KEEP, [pB, #B_PRE_SIZE]
 	KERNELv1x4_SUB
 	KERNELv1x4_SUB
-	prfm	PLDL1KEEP, [pB, #B_PRE_SIZE]
 	KERNELv1x4_SUB
 	KERNELv1x4_SUB
-	prfm	PLDL1KEEP, [pB, #B_PRE_SIZE]
 	KERNELv1x4_SUB
 	KERNELv1x4_SUB
-	prfm	PLDL1KEEP, [pB, #B_PRE_SIZE]
 	KERNELv1x4_SUB
 	KERNELv1x4_SUB
 
@@ -1328,16 +1243,12 @@ With this approach, we can reuse sgemm_n|tcopy_sve_v1.c packing functions. */
 	.align 5
 .Lsgemm_kernel_L4_Mv1_46:
 
-	prfm	PLDL1KEEP, [pB, #B_PRE_SIZE]
 	KERNELv1x4_SUB
 
 	subs	counterL, counterL, #1
 	bne	.Lsgemm_kernel_L4_Mv1_46
 
 .Lsgemm_kernel_L4_Mv1_100:
-	prfm	PLDL1KEEP, [pA1]
-	prfm	PLDL1KEEP, [pA1, #64]
-	prfm	PLDL1KEEP, [origPB]
 
 	SAVEv1x4
 
@@ -1393,12 +1304,10 @@ With this approach, we can reuse sgemm_n|tcopy_sve_v1.c packing functions. */
 	.align 5
 .Lsgemm_kernel_L2_Mv2_22:
 
-	prfm	PLDL1KEEP, [pB, #B_PRE_SIZE]
 	KERNELv2x2_SUB
 	KERNELv2x2_SUB
 	KERNELv2x2_SUB
 	KERNELv2x2_SUB
-	prfm	PLDL1KEEP, [pB, #B_PRE_SIZE]
 	KERNELv2x2_SUB
 	KERNELv2x2_SUB
 	KERNELv2x2_SUB
@@ -1415,18 +1324,12 @@ With this approach, we can reuse sgemm_n|tcopy_sve_v1.c packing functions. */
 	.align 5
 .Lsgemm_kernel_L2_Mv2_46:
 
-	prfm	PLDL1KEEP, [pB, #B_PRE_SIZE]
 	KERNELv2x2_SUB
 
 	subs	counterL, counterL, #1
 	bne	.Lsgemm_kernel_L2_Mv2_46
 
 .Lsgemm_kernel_L2_Mv2_100:
-	prfm	PLDL1KEEP, [pA1]
-	prfm	PLDL1KEEP, [pA1, #64]
-	prfm	PLDL1KEEP, [pA2]
-	prfm	PLDL1KEEP, [pA2, #64]
-	prfm	PLDL1KEEP, [origPB]
 
 	SAVEv2x2
     mov pA1, pA2                            // pA1 = pA2
@@ -1463,12 +1366,10 @@ With this approach, we can reuse sgemm_n|tcopy_sve_v1.c packing functions. */
 	.align 5
 .Lsgemm_kernel_L2_Mv1_22:
 
-	prfm	PLDL1KEEP, [pB, #B_PRE_SIZE]
 	KERNELv1x2_SUB
 	KERNELv1x2_SUB
 	KERNELv1x2_SUB
 	KERNELv1x2_SUB
-	prfm	PLDL1KEEP, [pB, #B_PRE_SIZE]
 	KERNELv1x2_SUB
 	KERNELv1x2_SUB
 	KERNELv1x2_SUB
@@ -1485,16 +1386,12 @@ With this approach, we can reuse sgemm_n|tcopy_sve_v1.c packing functions. */
 	.align 5
 .Lsgemm_kernel_L2_Mv1_46:
 
-	prfm	PLDL1KEEP, [pB, #B_PRE_SIZE]
 	KERNELv1x2_SUB
 
 	subs	counterL, counterL, #1
 	bne	.Lsgemm_kernel_L2_Mv1_46
 
 .Lsgemm_kernel_L2_Mv1_100:
-	prfm	PLDL1KEEP, [pA1]
-	prfm	PLDL1KEEP, [pA1, #64]
-	prfm	PLDL1KEEP, [origPB]
 
 	SAVEv1x2
 
@@ -1550,7 +1447,6 @@ With this approach, we can reuse sgemm_n|tcopy_sve_v1.c packing functions. */
 	.align 5
 .Lsgemm_kernel_L1_Mv2_22:
 
-	prfm	PLDL1KEEP, [pB, #B_PRE_SIZE]
 	KERNELv2x1_SUB
 	KERNELv2x1_SUB
 	KERNELv2x1_SUB
@@ -1571,16 +1467,12 @@ With this approach, we can reuse sgemm_n|tcopy_sve_v1.c packing functions. */
 	.align 5
 .Lsgemm_kernel_L1_Mv2_46:
 
-	prfm	PLDL1KEEP, [pB, #B_PRE_SIZE]
 	KERNELv2x1_SUB
 
 	subs	counterL, counterL, #1
 	bgt	.Lsgemm_kernel_L1_Mv2_46
 
 .Lsgemm_kernel_L1_Mv2_100:
-	prfm	PLDL1KEEP, [pA1]
-	prfm	PLDL1KEEP, [pA1, #64]
-	prfm	PLDL1KEEP, [origPB]
 
 	SAVEv2x1
     mov pA1, pA2                            // pA1 = pA2
@@ -1617,7 +1509,6 @@ With this approach, we can reuse sgemm_n|tcopy_sve_v1.c packing functions. */
 	.align 5
 .Lsgemm_kernel_L1_Mv1_22:
 
-	prfm	PLDL1KEEP, [pB, #B_PRE_SIZE]
 	KERNELv1x1_SUB
 	KERNELv1x1_SUB
 	KERNELv1x1_SUB
@@ -1638,16 +1529,12 @@ With this approach, we can reuse sgemm_n|tcopy_sve_v1.c packing functions. */
 	.align 5
 .Lsgemm_kernel_L1_Mv1_46:
 
-	prfm	PLDL1KEEP, [pB, #B_PRE_SIZE]
 	KERNELv1x1_SUB
 
 	subs	counterL, counterL, #1
 	bgt	.Lsgemm_kernel_L1_Mv1_46
 
 .Lsgemm_kernel_L1_Mv1_100:
-	prfm	PLDL1KEEP, [pA1]
-	prfm	PLDL1KEEP, [pA1, #64]
-	prfm	PLDL1KEEP, [origPB]
 
 	SAVEv1x1
 
