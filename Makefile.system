@@ -283,6 +283,7 @@ GETARCH_FLAGS += -DHAVE_GAS=$(HAVE_GAS)
 
 # Generating Makefile.conf and config.h
 DUMMY := $(shell $(MAKE) -C $(TOPDIR) -f Makefile.prebuild CC="$(CC)" FC="$(FC)" HOSTCC="$(HOSTCC)" HOST_CFLAGS="$(GETARCH_FLAGS)" CFLAGS="$(CFLAGS)" BINARY=$(BINARY) USE_OPENMP=$(USE_OPENMP) DYNAMIC_ARCH=$(DYNAMIC_ARCH) TARGET_CORE=$(TARGET_CORE) ONLY_CBLAS=$(ONLY_CBLAS) TARGET=$(TARGET) all)
+endif
 
 ifndef TARGET_CORE
 include $(TOPDIR)/Makefile.conf
@@ -304,8 +305,6 @@ HAVE_AVX=
 HAVE_AVX2=
 HAVE_FMA3=
 include $(TOPDIR)/Makefile_kernel.conf
-endif
-
 endif
 
 ifndef NUM_PARALLEL
