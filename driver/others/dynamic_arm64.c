@@ -128,6 +128,9 @@ extern gotoblas_t  gotoblas_NEOVERSEN1;
 #ifndef NO_SVE
 extern gotoblas_t  gotoblas_NEOVERSEV1;
 extern gotoblas_t  gotoblas_NEOVERSEN2;
+#else
+#define gotoblas_NEOVERSEV1 gotoblas_ARMV8;
+#define gotoblas_NEOVERSEN2 gotoblas_ARMV8;
 #endif
 extern gotoblas_t  gotoblas_THUNDERX3T110;
 extern gotoblas_t  gotoblas_CORTEXA55;
@@ -239,7 +242,7 @@ static gotoblas_t *get_coretype(void) {
         p = (char *) NULL ;
 	infile = fopen("/sys/devices/system/cpu/cpu0/regs/identification/midr_el1","r");
 	if (!infile) return NULL;
-	fgets(buffer, sizeof(buffer), infile);
+	(void)fgets(buffer, sizeof(buffer), infile);
 	midr_el1=strtoul(buffer,NULL,16);
 	fclose(infile);
 #else
