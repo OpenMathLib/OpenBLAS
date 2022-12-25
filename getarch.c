@@ -1,5 +1,7 @@
 /*****************************************************************************
 Copyright (c) 2011-2014, The OpenBLAS Project
+Copyright (c) 2022, Arm Limited and/or its affiliates <open-source-office@arm.com>
+
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -1815,6 +1817,69 @@ static int get_num_cores(void) {
 #endif
 }
 
+#ifdef FORCE
+static void split_archconfig_makefile(char* buffer) {
+    sprintf(buffer, "%s", ARCHCONFIG);
+
+    char* p = &buffer[0];
+
+    while (*p) {
+      if ((*p == '-') && (*(p + 1) == 'D')) {
+	p += 2;
+        if (*p != 'H' && *p != 'N') {
+		while( (*p != ' ') && (*p != '-') && (*p != '\0') && (*p != '\n')) {p++; }
+		if (*p == '-') continue;
+	}
+	while ((*p != ' ') && (*p != '\0')) {
+
+	  if (*p == '=') {
+	    printf("=");
+	    p ++;
+	    while ((*p != ' ') && (*p != '\0')) {
+	      printf("%c", *p);
+	      p ++;
+	    }
+	  } else {
+	    printf("%c", *p);
+	    p ++;
+	    if ((*p == ' ') || (*p =='\0')) printf("=1\n");
+	  }
+	}
+      } else p ++;
+    }
+}
+
+static void split_archconfig_header(char* buffer) {
+    sprintf(buffer, "%s -DCORE_%s\n", ARCHCONFIG, CORENAME);
+
+    char* p = &buffer[0];
+    while (*p) {
+      if ((*p == '-') && (*(p + 1) == 'D')) {
+	p += 2;
+	printf("#define ");
+
+	while ((*p != ' ') && (*p != '\0')) {
+
+	  if (*p == '=') {
+	    printf(" ");
+	    p ++;
+	    while ((*p != ' ') && (*p != '\0')) {
+	      printf("%c", *p);
+	      p ++;
+	    }
+	  } else {
+	    if (*p != '\n')
+	    printf("%c", *p);
+	    p ++;
+	  }
+	}
+
+	printf("\n");
+      } else p ++;
+    }
+}
+#endif
+
 int main(int argc, char *argv[]){
 
 #ifdef FORCE
@@ -1846,77 +1911,12 @@ int main(int argc, char *argv[]){
 
     printf("NUM_CORES=%d\n", get_num_cores());
 
-#if defined(__arm__) 
-#if !defined(FORCE)
-    fprintf(stderr,"get features!\n");
-        get_features();
-#else
-    fprintf(stderr,"split archconfig!\n");
-    sprintf(buffer, "%s", ARCHCONFIG);
-
-    p = &buffer[0];
-
-    while (*p) {
-      if ((*p == '-') && (*(p + 1) == 'D')) {
-	p += 2;
-        if (*p != 'H') {
-		while( (*p != ' ') && (*p != '-') && (*p != '\0') && (*p != '\n')) {p++; }
-		if (*p == '-') continue;
-	}
-	while ((*p != ' ') && (*p != '\0')) {
-
-	  if (*p == '=') {
-	    printf("=");
-	    p ++;
-	    while ((*p != ' ') && (*p != '\0')) {
-	      printf("%c", *p);
-	      p ++;
-	    }
-	  } else {
-	    printf("%c", *p);
-	    p ++;
-	    if ((*p == ' ') || (*p =='\0')) printf("=1\n");
-	  }
-	}
-      } else p ++;
-    }
-#endif
-#endif
-
-
-#ifdef INTEL_AMD
-#ifndef FORCE
+#ifdef FORCE
+    split_archconfig_makefile(buffer);
+#elif defined(__arm__)
+    get_features();
+#elif defined(INTEL_AMD)
     get_sse();
-#else
-
-    sprintf(buffer, "%s", ARCHCONFIG);
-
-    p = &buffer[0];
-
-    while (*p) {
-      if ((*p == '-') && (*(p + 1) == 'D')) {
-	p += 2;
-
-	while ((*p != ' ') && (*p != '\0')) {
-
-	  if (*p == '=') {
-	    printf("=");
-	    p ++;
-	    while ((*p != ' ') && (*p != '\0')) {
-	      printf("%c", *p);
-	      p ++;
-	    }
-	  } else {
-	    printf("%c", *p);
-	    p ++;
-	    if ((*p == ' ') || (*p =='\0')) printf("=1");
-	  }
-	}
-
-	printf("\n");
-      } else p ++;
-    }
-#endif
 #endif
 
 #if defined(__BYTE_ORDER__) && __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__
@@ -1945,33 +1945,7 @@ printf("ELF_VERSION=2\n");
 
   case '1' : /* For config.h */
 #ifdef FORCE
-    sprintf(buffer, "%s -DCORE_%s\n", ARCHCONFIG, CORENAME);
-
-    p = &buffer[0];
-    while (*p) {
-      if ((*p == '-') && (*(p + 1) == 'D')) {
-	p += 2;
-	printf("#define ");
-
-	while ((*p != ' ') && (*p != '\0')) {
-
-	  if (*p == '=') {
-	    printf(" ");
-	    p ++;
-	    while ((*p != ' ') && (*p != '\0')) {
-	      printf("%c", *p);
-	      p ++;
-	    }
-	  } else {
-	    if (*p != '\n')
-	    printf("%c", *p);
-	    p ++;
-	  }
-	}
-
-	printf("\n");
-      } else p ++;
-    }
+    split_archconfig_header(buffer);
 #else
     get_cpuconfig();
 #endif
