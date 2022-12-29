@@ -129,8 +129,8 @@ extern gotoblas_t  gotoblas_NEOVERSEN1;
 extern gotoblas_t  gotoblas_NEOVERSEV1;
 extern gotoblas_t  gotoblas_NEOVERSEN2;
 #else
-#define gotoblas_NEOVERSEV1 gotoblas_ARMV8;
-#define gotoblas_NEOVERSEN2 gotoblas_ARMV8;
+#define gotoblas_NEOVERSEV1 gotoblas_ARMV8
+#define gotoblas_NEOVERSEN2 gotoblas_ARMV8
 #endif
 extern gotoblas_t  gotoblas_THUNDERX3T110;
 extern gotoblas_t  gotoblas_CORTEXA55;
@@ -279,7 +279,7 @@ static gotoblas_t *get_coretype(void) {
           return &gotoblas_CORTEXA73;
         case 0xd0c: // Neoverse N1
           return &gotoblas_NEOVERSEN1;
-#ifndef NO_SVE		      
+#ifndef NO_SVE
         case 0xd49:
           return &gotoblas_NEOVERSEN2;
 	case 0xd40:
