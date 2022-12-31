@@ -240,6 +240,21 @@ if [ "$architecture" = "riscv64" ]; then
     rm -rf "$tmpd"
 fi
 
+no_sve=0
+if [ "$architecture" = "arm64" ]; then
+    tmpd=`mktemp -d`
+    tmpf="$tmpd/a.c"
+    printf "#include <arm_sve.h>\n\n int main(void){}\n">> "$tmpf"
+    args=" -march=armv8-a+sve -c -o $tmpf.o $tmpf"
+    no_sve=0
+    {
+        $compiler_name $flags $args >/dev/null 2>&1
+    } || {
+        no_sve=1
+    }
+    rm -rf "$tmpd"
+fi
+
 c11_atomics=0
 case "$data" in
     *HAVE_C11*)
@@ -379,6 +394,7 @@ done
         printf "HAVE_MSA=1\n"
         printf "MSA_FLAGS=%s\n" "$msa_flags"
     }
+    [ "$no_sve" -eq 1 ] && printf "NO_SVE=1\n"
     [ "$no_rv64gv" -eq 1 ] && printf "NO_RV64GV=1\n"
     [ "$no_avx512" -eq 1 ] && printf "NO_AVX512=1\n"
     [ "$no_avx2" -eq 1 ] && printf "NO_AVX2=1\n"
