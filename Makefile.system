@@ -1750,6 +1750,8 @@ export HAVE_NEON
 ifndef NO_MSA
   export HAVE_MSA
   export MSA_FLAGS
+else
+  export NO_MSA
 endif
 export KERNELDIR
 export FUNCTION_PROFILE
