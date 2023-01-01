@@ -318,5 +318,7 @@ jobs:
       - name: Build OpenBLAS
         run: |
           make -j$(nproc) HOSTCC="ccache gcc" CC="ccache ${{ matrix.triple }}-gcc" FC="ccache ${{ matrix.triple }}-gfortran" ARCH=${{ matrix.target }} ${{ matrix.opts }}
+      - name: Post config
+        run: |
           cat config*h
           cat Mak*conf
