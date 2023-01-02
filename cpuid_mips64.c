@@ -208,7 +208,9 @@ void get_cpuconfig(void){
     printf("#define DTB_SIZE 4096\n");
     printf("#define L2_ASSOCIATIVE 8\n");
   }
-  if (!get_feature("msa")) printf("#define NO_MSA\n");
+#ifndef NO_MSA
+  if (get_feature("msa")) printf("#define HAVE_MSA\n");
+#endif
 }
 
 void get_libname(void){
