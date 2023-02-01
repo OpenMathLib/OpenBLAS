@@ -30,10 +30,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define VSETVL(n) vsetvl_e32m4(n)
 #define VSETVL_MAX vsetvlmax_e32m1()
 #define FLOAT_V_T vfloat32m4_t
-#define VLEV_FLOAT vle_v_f32m4
-#define VLSEV_FLOAT vlse_v_f32m4
-#define VSEV_FLOAT vse_v_f32m4
-#define VSSEV_FLOAT vsse_v_f32m4
+#define VLEV_FLOAT vle32_v_f32m4
+#define VLSEV_FLOAT vlse32_v_f32m4
+#define VSEV_FLOAT vse32_v_f32m4
+#define VSSEV_FLOAT vsse32_v_f32m4
 #define VFMACCVF_FLOAT vfmacc_vf_f32m4
 #define VFMULVF_FLOAT vfmul_vf_f32m4
 #define VFNMSACVF_FLOAT vfnmsac_vf_f32m4
@@ -41,10 +41,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define VSETVL(n) vsetvl_e64m4(n)
 #define VSETVL_MAX vsetvlmax_e64m1()
 #define FLOAT_V_T vfloat64m4_t
-#define VLEV_FLOAT vle_v_f64m4
-#define VLSEV_FLOAT vlse_v_f64m4
-#define VSEV_FLOAT vse_v_f64m4
-#define VSSEV_FLOAT vsse_v_f64m4
+#define VLEV_FLOAT vle64_v_f64m4
+#define VLSEV_FLOAT vlse64_v_f64m4
+#define VSEV_FLOAT vse64_v_f64m4
+#define VSSEV_FLOAT vsse64_v_f64m4
 #define VFMACCVF_FLOAT vfmacc_vf_f64m4
 #define VFMULVF_FLOAT vfmul_vf_f64m4
 #define VFNMSACVF_FLOAT vfnmsac_vf_f64m4
@@ -59,7 +59,7 @@ int CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG inc_y, FLOAT 
         unsigned int gvl = 0;
 
         FLOAT_V_T vt0, vt1, vx0, vx1, vy0, vy1;
-        gvl = VSETVL(n);
+        gvl = VSETVL((inc_x != 0 && inc_y != 0) ? n : 1);
         BLASLONG stride_x = inc_x * 2 * sizeof(FLOAT);
         BLASLONG stride_y = inc_y * 2 * sizeof(FLOAT);
         BLASLONG inc_xv = inc_x * 2 * gvl;

@@ -25,21 +25,25 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
 USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
 #include "common.h"
-#if !defined(DOUBLE)
-#define VSETVL(n) vsetvl_e32m8(n)
-#define FLOAT_V_T vfloat32m8_t
-#define VLEV_FLOAT vle_v_f32m8
-#define VLSEV_FLOAT vlse_v_f32m8
-#define VSEV_FLOAT vse_v_f32m8
-#define VSSEV_FLOAT vsse_v_f32m8
+
+#define LMUL m4
+#if defined(DOUBLE)
+#        define ELEN 64
 #else
-#define VSETVL(n) vsetvl_e64m8(n)
-#define FLOAT_V_T vfloat64m8_t
-#define VLEV_FLOAT vle_v_f64m8
-#define VLSEV_FLOAT vlse_v_f64m8
-#define VSEV_FLOAT vse_v_f64m8
-#define VSSEV_FLOAT vsse_v_f64m8
+#        define ELEN 32
 #endif
+
+#define _
+#define JOIN2_X(x, y) x ## y
+#define JOIN2(x, y) JOIN2_X(x, y)
+#define JOIN(v, w, x, y, z) JOIN2( JOIN2( JOIN2( JOIN2( v, w ), x), y), z)
+
+#define VSETVL          JOIN(vsetvl,    _e,     ELEN,   LMUL,   _)
+#define FLOAT_V_T       JOIN(vfloat,    ELEN,   LMUL,   _t,     _)
+#define VLEV_FLOAT      JOIN(vle,       ELEN,   _v_f,   ELEN,   LMUL)
+#define VLSEV_FLOAT     JOIN(vlse,      ELEN,   _v_f,   ELEN,   LMUL)
+#define VSEV_FLOAT      JOIN(vse,       ELEN,   _v_f,   ELEN,   LMUL)
+#define VSSEV_FLOAT     JOIN(vsse,      ELEN,   _v_f,   ELEN,   LMUL)
 
 int CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG inc_y)
 {

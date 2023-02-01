@@ -28,39 +28,33 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "common.h"
 #include <math.h>
 
-#if !defined(DOUBLE)
-#define VSETVL(n) vsetvl_e32m8(n)
-#define VSETVL_MAX vsetvlmax_e32m1()
-#define FLOAT_V_T vfloat32m8_t
-#define FLOAT_V_T_M1 vfloat32m1_t
-#define VFMVFS_FLOAT vfmv_f_s_f32m1_f32
-#define VLSEV_FLOAT vlse_v_f32m8
-#define VFREDMAXVS_FLOAT vfredmax_vs_f32m8_f32m1
-#define MASK_T vbool4_t
-#define VMFLTVF_FLOAT vmflt_vf_f32m8_b4
-#define VFMVVF_FLOAT vfmv_v_f_f32m8
-#define VFMVVF_FLOAT_M1 vfmv_v_f_f32m1
-#define VFRSUBVF_MASK_FLOAT vfrsub_vf_f32m8_m
-#define VFMAXVV_FLOAT vfmax_vv_f32m8
-#define VFADDVV_FLOAT vfadd_vv_f32m8
-
+#define LMUL m8
+#if defined(DOUBLE)
+#        define ELEN 64
+#        define MLEN 8
 #else
-#define VSETVL(n) vsetvl_e64m8(n)
-#define VSETVL_MAX vsetvlmax_e64m1()
-#define FLOAT_V_T vfloat64m8_t
-#define FLOAT_V_T_M1 vfloat64m1_t
-#define VFMVFS_FLOAT vfmv_f_s_f64m1_f64
-#define VLSEV_FLOAT vlse_v_f64m8
-#define VFREDMAXVS_FLOAT vfredmax_vs_f64m8_f64m1
-#define MASK_T vbool8_t
-#define VMFLTVF_FLOAT vmflt_vf_f64m8_b8
-#define VFMVVF_FLOAT vfmv_v_f_f64m8
-#define VFMVVF_FLOAT_M1 vfmv_v_f_f64m1
-#define VFRSUBVF_MASK_FLOAT vfrsub_vf_f64m8_m
-#define VFMAXVV_FLOAT vfmax_vv_f64m8
-#define VFADDVV_FLOAT vfadd_vv_f64m8
-
+#        define ELEN 32
+#        define MLEN 4
 #endif
+
+#define _
+#define JOIN2_X(x, y) x ## y
+#define JOIN2(x, y) JOIN2_X(x, y)
+#define JOIN(v, w, x, y, z) JOIN2( JOIN2( JOIN2( JOIN2( v, w ), x), y), z)
+
+#define VSETVL          JOIN(vsetvl,    _e,     ELEN,   LMUL,   _)
+#define FLOAT_V_T       JOIN(vfloat,    ELEN,   LMUL,   _t,     _)
+#define FLOAT_V_T_M1    JOIN(vfloat,    ELEN,   m1,     _t,     _)
+#define VLEV_FLOAT      JOIN(vle,       ELEN,   _v_f,   ELEN,   LMUL)
+#define VLSEV_FLOAT     JOIN(vlse,      ELEN,   _v_f,   ELEN,   LMUL)
+#define VFREDMAXVS_FLOAT JOIN(vfredmax_vs_f,  ELEN,   LMUL,   _f, JOIN2( ELEN,   m1))
+#define MASK_T          JOIN(vbool,     MLEN,   _t,     _,      _)
+#define VMFLTVF_FLOAT   JOIN(vmflt_vf_f, ELEN,  LMUL,   _b,     MLEN)
+#define VFMVVF_FLOAT    JOIN(vfmv,      _v_f_f, ELEN,   LMUL,   _)
+#define VFMVVF_FLOAT_M1 JOIN(vfmv,      _v_f_f, ELEN,   m1,     _)
+#define VFRSUBVF_MASK_FLOAT JOIN(vfrsub,_vf_f,  ELEN,   LMUL,   _m)
+#define VFMAXVV_FLOAT   JOIN(vfmax,     _vv_f,  ELEN,   LMUL,   _)
+#define VFADDVV_FLOAT   JOIN(vfadd,     _vv_f,  ELEN,   LMUL,   _)
 
 FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x)
 {
@@ -70,10 +64,8 @@ FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x)
 	if (n <= 0 || inc_x <= 0) return(maxf);
         unsigned int gvl = 0;
         FLOAT_V_T v0, v1, v_max;
-        FLOAT_V_T_M1 v_res, v_z0;
-        gvl = VSETVL_MAX;
-        v_res = VFMVVF_FLOAT_M1(0, gvl);
-        v_z0 = VFMVVF_FLOAT_M1(0, gvl);
+        FLOAT_V_T_M1 v_res;
+        v_res = VFMVVF_FLOAT_M1(0, 1);
 
         MASK_T mask0, mask1;
         BLASLONG stride_x = inc_x * sizeof(FLOAT) * 2;
@@ -94,8 +86,7 @@ FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x)
                 j += gvl;
                 ix += inc_xv;
         }
-        v_res = VFREDMAXVS_FLOAT(v_res, v_max, v_z0, gvl);
-        maxf = VFMVFS_FLOAT(v_res);
+        v_res = VFREDMAXVS_FLOAT(v_res, v_max, v_res, gvl);
 
         if(j<n){
                 gvl = VSETVL(n-j);
@@ -106,10 +97,8 @@ FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x)
                 mask1 = VMFLTVF_FLOAT(v1, 0, gvl);
                 v1 = VFRSUBVF_MASK_FLOAT(mask1, v1, v1, 0, gvl);
                 v1 = VFADDVV_FLOAT(v0, v1, gvl);
-                v_res = VFREDMAXVS_FLOAT(v_res, v1, v_z0, gvl);
-                             
-                if(VFMVFS_FLOAT(v_res)> maxf)
-                        maxf = VFMVFS_FLOAT(v_res);
+                v_res = VFREDMAXVS_FLOAT(v_res, v1, v_res, gvl);
         }
+        maxf = EXTRACT_FLOAT(v_res);
         return(maxf);
 }

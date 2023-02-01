@@ -31,13 +31,11 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #if defined(DOUBLE)
 
-#define ABS fabs
 #define VSETVL(n) vsetvl_e64m8(n)
-#define VSETVL_MAX vsetvlmax_e64m1()
 #define FLOAT_V_T vfloat64m8_t
 #define FLOAT_V_T_M1 vfloat64m1_t
-#define VLEV_FLOAT vle_v_f64m8
-#define VLSEV_FLOAT vlse_v_f64m8
+#define VLEV_FLOAT vle64_v_f64m8
+#define VLSEV_FLOAT vlse64_v_f64m8
 #define VFREDMAXVS_FLOAT vfredmax_vs_f64m8_f64m1
 #define MASK_T vbool8_t
 #define VMFLTVV_FLOAT vmflt_vv_f64m8_b8
@@ -45,22 +43,22 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define VFMVVF_FLOAT_M1 vfmv_v_f_f64m1
 #define VFMAXVV_FLOAT vfmax_vv_f64m8
 #define VMFGEVF_FLOAT vmfge_vf_f64m8_b8
-#define VMFIRSTM vmfirst_m_b8
+#define VMFIRSTM vfirst_m_b8
 #define UINT_V_T vuint64m8_t
 #define VIDV_MASK_UINT vid_v_u64m8_m
 #define VIDV_UINT vid_v_u64m8
 #define VADDVX_MASK_UINT vadd_vx_u64m8_m
 #define VADDVX_UINT vadd_vx_u64m8
 #define VMVVX_UINT vmv_v_x_u64m8
+#define VCOMPRESS vcompress_vm_u64m8
+#define VMV_X vmv_x_s_u64m8_u64
 #else
 
-#define ABS fabsf
 #define VSETVL(n) vsetvl_e32m8(n)
-#define VSETVL_MAX vsetvlmax_e32m1()
 #define FLOAT_V_T vfloat32m8_t
 #define FLOAT_V_T_M1 vfloat32m1_t
-#define VLEV_FLOAT vle_v_f32m8
-#define VLSEV_FLOAT vlse_v_f32m8
+#define VLEV_FLOAT vle32_v_f32m8
+#define VLSEV_FLOAT vlse32_v_f32m8
 #define VFREDMAXVS_FLOAT vfredmax_vs_f32m8_f32m1
 #define MASK_T vbool4_t
 #define VMFLTVV_FLOAT vmflt_vv_f32m8_b4
@@ -68,31 +66,31 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define VFMVVF_FLOAT_M1 vfmv_v_f_f32m1
 #define VFMAXVV_FLOAT vfmax_vv_f32m8
 #define VMFGEVF_FLOAT vmfge_vf_f32m8_b4
-#define VMFIRSTM vmfirst_m_b4
+#define VMFIRSTM vfirst_m_b4
 #define UINT_V_T vuint32m8_t
 #define VIDV_MASK_UINT vid_v_u32m8_m
 #define VIDV_UINT vid_v_u32m8
 #define VADDVX_MASK_UINT vadd_vx_u32m8_m
 #define VADDVX_UINT vadd_vx_u32m8
 #define VMVVX_UINT vmv_v_x_u32m8
+#define VCOMPRESS vcompress_vm_u32m8
+#define VMV_X vmv_x_s_u32m8_u32
 #endif
 
 
 BLASLONG CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x)
 {
-	BLASLONG i=0, j=0;
+        BLASLONG i=0, j=0;
         unsigned int max_index = 0;
-	if (n <= 0 || inc_x <= 0) return(max_index);
-	FLOAT maxf=-FLT_MAX;
+        if (n <= 0 || inc_x <= 0) return(max_index);
+        FLOAT maxf=-FLT_MAX;
 
         FLOAT_V_T vx, v_max;
         UINT_V_T v_max_index;
         MASK_T mask;
         unsigned int gvl = 0;
-        FLOAT_V_T_M1 v_res, v_min;
-        gvl = VSETVL_MAX;
-        v_res = VFMVVF_FLOAT_M1(0, gvl);
-        v_min = VFMVVF_FLOAT_M1(-FLT_MAX, gvl);
+        FLOAT_V_T_M1 v_res;
+        v_res = VFMVVF_FLOAT_M1(-FLT_MAX, 1);
 
         if(inc_x == 1){
                 gvl = VSETVL(n);
@@ -104,32 +102,34 @@ BLASLONG CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x)
                         //index where element greater than v_max
                         mask = VMFLTVV_FLOAT(v_max, vx, gvl);
                         v_max_index = VIDV_MASK_UINT(mask, v_max_index, gvl);
-                        v_max_index = VADDVX_MASK_UINT(mask, v_max_index, v_max_index, j,gvl);
+                        v_max_index = VADDVX_MASK_UINT(mask, v_max_index, v_max_index, j, gvl);
 
                         //update v_max and start_index j
                         v_max = VFMAXVV_FLOAT(v_max, vx, gvl);
                         j += gvl;
                 }
-                v_res = VFREDMAXVS_FLOAT(v_res, v_max, v_min, gvl);
-                maxf = *((FLOAT*)&v_res);
+                v_res = VFREDMAXVS_FLOAT(v_res, v_max, v_res, gvl);
+                maxf = EXTRACT_FLOAT(v_res);
                 mask = VMFGEVF_FLOAT(v_max, maxf, gvl);
-                max_index = VMFIRSTM(mask,gvl);
-                max_index = *((unsigned int*)&v_max_index+max_index);
+                UINT_V_T compressed;
+                compressed = VCOMPRESS(mask, compressed, v_max_index, gvl);
+                max_index = VMV_X(compressed);
 
                 if(j < n){
                         gvl = VSETVL(n-j);
                         v_max = VLEV_FLOAT(&x[j], gvl);
 
-                        v_res = VFREDMAXVS_FLOAT(v_res, v_max, v_min, gvl);
-                        FLOAT cur_maxf = *((FLOAT*)&v_res);
+                        v_res = VFREDMAXVS_FLOAT(v_res, v_max, v_res, gvl);
+                        FLOAT cur_maxf = EXTRACT_FLOAT(v_res);
                         if(cur_maxf > maxf){
                                 //tail index
                                 v_max_index = VIDV_UINT(gvl);
                                 v_max_index = VADDVX_UINT(v_max_index, j, gvl);
 
                                 mask = VMFGEVF_FLOAT(v_max, cur_maxf, gvl);
-                                max_index = VMFIRSTM(mask,gvl);
-                                max_index = *((unsigned int*)&v_max_index+max_index);
+                                UINT_V_T compressed;
+                                compressed = VCOMPRESS(mask, compressed, v_max_index, gvl);
+                                max_index = VMV_X(compressed);
                         }
                 }
         }else{
@@ -145,37 +145,37 @@ BLASLONG CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x)
                         //index where element greater than v_max
                         mask = VMFLTVV_FLOAT(v_max, vx, gvl);
                         v_max_index = VIDV_MASK_UINT(mask, v_max_index, gvl);
-                        v_max_index = VADDVX_MASK_UINT(mask, v_max_index, v_max_index, j,gvl);
+                        v_max_index = VADDVX_MASK_UINT(mask, v_max_index, v_max_index, j, gvl);
 
                         //update v_max and start_index j
                         v_max = VFMAXVV_FLOAT(v_max, vx, gvl);
                         j += gvl;
                         idx += inc_v;
                 }
-                v_res = VFREDMAXVS_FLOAT(v_res, v_max, v_min, gvl);
-                maxf = *((FLOAT*)&v_res);
+                v_res = VFREDMAXVS_FLOAT(v_res, v_max, v_res, gvl);
+                maxf = EXTRACT_FLOAT(v_res);
                 mask = VMFGEVF_FLOAT(v_max, maxf, gvl);
-                max_index = VMFIRSTM(mask,gvl);
-                max_index = *((unsigned int*)&v_max_index+max_index);
+                UINT_V_T compressed;
+                compressed = VCOMPRESS(mask, compressed, v_max_index, gvl);
+                max_index = VMV_X(compressed);
 
                 if(j < n){
                         gvl = VSETVL(n-j);
                         v_max = VLSEV_FLOAT(&x[idx], stride_x, gvl);
 
-                        v_res = VFREDMAXVS_FLOAT(v_res, v_max, v_min, gvl);
-                        FLOAT cur_maxf = *((FLOAT*)&v_res);
+                        v_res = VFREDMAXVS_FLOAT(v_res, v_max, v_res, gvl);
+                        FLOAT cur_maxf = EXTRACT_FLOAT(v_res);
                         if(cur_maxf > maxf){
                                 //tail index
                                 v_max_index = VIDV_UINT(gvl);
                                 v_max_index = VADDVX_UINT(v_max_index, j, gvl);
 
                                 mask = VMFGEVF_FLOAT(v_max, cur_maxf, gvl);
-                                max_index = VMFIRSTM(mask,gvl);
-                                max_index = *((unsigned int*)&v_max_index+max_index);
+                                UINT_V_T compressed;
+                                compressed = VCOMPRESS(mask, compressed, v_max_index, gvl);
+                                max_index = VMV_X(compressed);
                         }
                 }
         }
-	return(max_index+1);
+        return(max_index+1);
 }
-
-

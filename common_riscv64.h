@@ -91,8 +91,14 @@ static inline int blas_quickdivide(blasint x, blasint y){
 #define BUFFER_SIZE     ( 32 << 20)
 #define SEEK_ADDRESS
 
-#if defined(C910V)
-#include <riscv_vector.h>
+#if defined(C910V) || defined(__clang__) || defined(RVV_COMPATIBLE_GCC)
+# include <riscv_vector.h>
+#endif
+
+#if !defined(DOUBLE)
+# define EXTRACT_FLOAT(v) vfmv_f_s_f32m1_f32(v)
+#else
+# define EXTRACT_FLOAT(v) vfmv_f_s_f64m1_f64(v)
 #endif
 
 #endif

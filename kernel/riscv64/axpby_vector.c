@@ -27,23 +27,45 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "common.h"
 
+#define LMUL m4
+#if defined(DOUBLE)
+#        define ELEN 64
+#else
+#        define ELEN 32
+#endif
+
+#define _
+#define JOIN2_X(x, y) x ## y
+#define JOIN2(x, y) JOIN2_X(x, y)
+#define JOIN(v, w, x, y, z) JOIN2( JOIN2( JOIN2( JOIN2( v, w ), x), y), z)
+
+#define VSETVL          JOIN(vsetvl,    _e,     ELEN,   LMUL,   _)
+#define FLOAT_V_T       JOIN(vfloat,    ELEN,   LMUL,   _t,     _)
+#define VLEV_FLOAT      JOIN(vle,       ELEN,   _v_f,   ELEN,   LMUL)
+#define VLSEV_FLOAT     JOIN(vlse,      ELEN,   _v_f,   ELEN,   LMUL)
+#define VSEV_FLOAT      JOIN(vse,       ELEN,   _v_f,   ELEN,   LMUL)
+#define VSSEV_FLOAT     JOIN(vsse,      ELEN,   _v_f,   ELEN,   LMUL)
+#define VFMACCVF_FLOAT  JOIN(vfmacc,    _vf_f,  ELEN,   LMUL,   _)
+#define VFMVVF_FLOAT    JOIN(vfmv,      _v_f_f, ELEN,   LMUL,   _)
+#define VFMULVF_FLOAT   JOIN(vfmul,     _vf_f,  ELEN,   LMUL,   _)
+
 #if !defined(DOUBLE)
 #define VSETVL(n) vsetvl_e32m4(n)
 #define FLOAT_V_T vfloat32m4_t
-#define VLEV_FLOAT vle_v_f32m4
-#define VLSEV_FLOAT vlse_v_f32m4
-#define VSEV_FLOAT vse_v_f32m4
-#define VSSEV_FLOAT vsse_v_f32m4
+#define VLEV_FLOAT vle32_v_f32m4
+#define VLSEV_FLOAT vlse32_v_f32m4
+#define VSEV_FLOAT vse32_v_f32m4
+#define VSSEV_FLOAT vsse32_v_f32m4
 #define VFMACCVF_FLOAT vfmacc_vf_f32m4
 #define VFMVVF_FLOAT vfmv_v_f_f32m4
 #define VFMULVF_FLOAT vfmul_vf_f32m4
 #else
 #define VSETVL(n) vsetvl_e64m4(n)
 #define FLOAT_V_T vfloat64m4_t
-#define VLEV_FLOAT vle_v_f64m4
-#define VLSEV_FLOAT vlse_v_f64m4
-#define VSEV_FLOAT vse_v_f64m4
-#define VSSEV_FLOAT vsse_v_f64m4
+#define VLEV_FLOAT vle64_v_f64m4
+#define VLSEV_FLOAT vlse64_v_f64m4
+#define VSEV_FLOAT vse64_v_f64m4
+#define VSSEV_FLOAT vsse64_v_f64m4
 #define VFMACCVF_FLOAT vfmacc_vf_f64m4
 #define VFMVVF_FLOAT vfmv_v_f_f64m4
 #define VFMULVF_FLOAT vfmul_vf_f64m4

@@ -31,11 +31,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define VSETVL_MAX vsetvlmax_e32m1()
 #define FLOAT_V_T vfloat32m4_t
 #define FLOAT_V_T_M1 vfloat32m1_t
-#define VFMVFS_FLOAT vfmv_f_s_f32m1_f32
-#define VLEV_FLOAT vle_v_f32m4
-#define VLSEV_FLOAT vlse_v_f32m4
-#define VSEV_FLOAT vse_v_f32m4
-#define VSSEV_FLOAT vsse_v_f32m4
+#define VLEV_FLOAT vle32_v_f32m4
+#define VLSEV_FLOAT vlse32_v_f32m4
+#define VSEV_FLOAT vse32_v_f32m4
+#define VSSEV_FLOAT vsse32_v_f32m4
 #define VFREDSUM_FLOAT vfredusum_vs_f32m4_f32m1
 #define VFMACCVV_FLOAT vfmacc_vv_f32m4
 #define VFMACCVF_FLOAT vfmacc_vf_f32m4
@@ -47,11 +46,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define VSETVL_MAX vsetvlmax_e64m1()
 #define FLOAT_V_T vfloat64m4_t
 #define FLOAT_V_T_M1 vfloat64m1_t
-#define VFMVFS_FLOAT vfmv_f_s_f64m1_f64
-#define VLEV_FLOAT vle_v_f64m4
-#define VLSEV_FLOAT vlse_v_f64m4
-#define VSEV_FLOAT vse_v_f64m4
-#define VSSEV_FLOAT vsse_v_f64m4
+#define VLEV_FLOAT vle64_v_f64m4
+#define VLSEV_FLOAT vlse64_v_f64m4
+#define VSEV_FLOAT vse64_v_f64m4
+#define VSSEV_FLOAT vsse64_v_f64m4
 #define VFREDSUM_FLOAT vfredusum_vs_f64m4_f64m1
 #define VFMACCVV_FLOAT vfmacc_vv_f64m4
 #define VFMACCVF_FLOAT vfmacc_vf_f64m4
@@ -100,7 +98,7 @@ int CNAME(BLASLONG m, BLASLONG offset, FLOAT alpha, FLOAT *a, BLASLONG lda, FLOA
                                         i += gvl;
                                 }
                                 v_res = VFREDSUM_FLOAT(v_res, vr, v_z0, gvl);
-                                temp2 = VFMVFS_FLOAT(v_res);
+                                temp2 = EXTRACT_FLOAT(v_res);
                                 if(i < m){
                                         gvl = VSETVL(m-i);
                                         vy = VLEV_FLOAT(&y[i], gvl);
@@ -111,7 +109,7 @@ int CNAME(BLASLONG m, BLASLONG offset, FLOAT alpha, FLOAT *a, BLASLONG lda, FLOA
                                         vx = VLEV_FLOAT(&x[i], gvl);
                                         vr = VFMULVV_FLOAT(vx, va, gvl);
                                         v_res = VFREDSUM_FLOAT(v_res, vr, v_z0, gvl);
-                                        temp2 += VFMVFS_FLOAT(v_res);
+                                        temp2 += EXTRACT_FLOAT(v_res);
                                 }
 			}
                         y[j] += alpha * temp2;
@@ -145,7 +143,7 @@ int CNAME(BLASLONG m, BLASLONG offset, FLOAT alpha, FLOAT *a, BLASLONG lda, FLOA
                                         iy += inc_yv;
                                 }
                                 v_res = VFREDSUM_FLOAT(v_res, vr, v_z0, gvl);
-                                temp2 = VFMVFS_FLOAT(v_res);
+                                temp2 = EXTRACT_FLOAT(v_res);
                                 if(i < m){
                                         gvl = VSETVL(m-i);
                                         vy = VLSEV_FLOAT(&y[iy], stride_y, gvl);
@@ -156,7 +154,7 @@ int CNAME(BLASLONG m, BLASLONG offset, FLOAT alpha, FLOAT *a, BLASLONG lda, FLOA
                                         vx = VLEV_FLOAT(&x[i], gvl);
                                         vr = VFMULVV_FLOAT(vx, va, gvl);
                                         v_res = VFREDSUM_FLOAT(v_res, vr, v_z0, gvl);
-                                        temp2 += VFMVFS_FLOAT(v_res);
+                                        temp2 += EXTRACT_FLOAT(v_res);
                                 }
 			}
                         y[jy] += alpha * temp2;
@@ -191,7 +189,7 @@ int CNAME(BLASLONG m, BLASLONG offset, FLOAT alpha, FLOAT *a, BLASLONG lda, FLOA
                                         ix += inc_xv;
                                 }
                                 v_res = VFREDSUM_FLOAT(v_res, vr, v_z0, gvl);
-                                temp2 = VFMVFS_FLOAT(v_res);
+                                temp2 = EXTRACT_FLOAT(v_res);
                                 if(i < m){
                                         gvl = VSETVL(m-i);
                                         vy = VLEV_FLOAT(&y[i], gvl);
@@ -202,7 +200,7 @@ int CNAME(BLASLONG m, BLASLONG offset, FLOAT alpha, FLOAT *a, BLASLONG lda, FLOA
                                         vx = VLSEV_FLOAT(&x[ix], stride_x, gvl);
                                         vr = VFMULVV_FLOAT(vx, va, gvl);
                                         v_res = VFREDSUM_FLOAT(v_res, vr, v_z0, gvl);
-                                        temp2 += VFMVFS_FLOAT(v_res);
+                                        temp2 += EXTRACT_FLOAT(v_res);
                                 }
 			}
                         y[j] += alpha * temp2;
@@ -242,7 +240,7 @@ int CNAME(BLASLONG m, BLASLONG offset, FLOAT alpha, FLOAT *a, BLASLONG lda, FLOA
                                         iy += inc_yv;
                                 }
                                 v_res = VFREDSUM_FLOAT(v_res, vr, v_z0, gvl);
-                                temp2 = VFMVFS_FLOAT(v_res);
+                                temp2 = EXTRACT_FLOAT(v_res);
                                 if(i < m){
                                         gvl = VSETVL(m-i);
                                         vy = VLSEV_FLOAT(&y[iy], stride_y, gvl);
@@ -253,7 +251,7 @@ int CNAME(BLASLONG m, BLASLONG offset, FLOAT alpha, FLOAT *a, BLASLONG lda, FLOA
                                         vx = VLSEV_FLOAT(&x[ix], stride_x, gvl);
                                         vr = VFMULVV_FLOAT(vx, va, gvl);
                                         v_res = VFREDSUM_FLOAT(v_res, vr, v_z0, gvl);
-                                        temp2 += VFMVFS_FLOAT(v_res);
+                                        temp2 += EXTRACT_FLOAT(v_res);
                                 }
 			}
                         y[jy] += alpha * temp2;

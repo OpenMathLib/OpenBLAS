@@ -26,6 +26,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
 
 #include "common.h"
+#include <math.h>
+
 #if !defined(DOUBLE)
 #define VSETVL(n) vsetvl_e32m8(n)
 #define VSETVL_MAX vsetvlmax_e32m1()
@@ -33,13 +35,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define FLOAT_V_T_M1 vfloat32m1_t
 #define VLEV_FLOAT vle32_v_f32m8
 #define VLSEV_FLOAT vlse32_v_f32m8
-#define VFMVFS_FLOAT vfmv_f_s_f32m1_f32
-#define VFREDSUM_FLOAT vfredusum_vs_f32m8_f32m1
-#define VFMACCVV_FLOAT vfmacc_vv_f32m8
+#define VFREDSUMVS_FLOAT vfredusum_vs_f32m8_f32m1
 #define VFMVVF_FLOAT vfmv_v_f_f32m8
 #define VFMVVF_FLOAT_M1 vfmv_v_f_f32m1
-#define VFDOTVV_FLOAT vfdot_vv_f32m8
-#define ABS fabsf
+#define VFADDVV_FLOAT vfadd_vv_f32m8
 #else
 #define VSETVL(n) vsetvl_e64m8(n)
 #define VSETVL_MAX vsetvlmax_e64m1()
@@ -47,91 +46,69 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define FLOAT_V_T_M1 vfloat64m1_t
 #define VLEV_FLOAT vle64_v_f64m8
 #define VLSEV_FLOAT vlse64_v_f64m8
-#define VFMVFS_FLOAT vfmv_f_s_f64m1_f64
-#define VFREDSUM_FLOAT vfredusum_vs_f64m8_f64m1
-#define VFMACCVV_FLOAT vfmacc_vv_f64m8
+#define VFREDSUMVS_FLOAT vfredusum_vs_f64m8_f64m1
 #define VFMVVF_FLOAT vfmv_v_f_f64m8
 #define VFMVVF_FLOAT_M1 vfmv_v_f_f64m1
-#define VFDOTVV_FLOAT vfdot_vv_f64m8
-#define ABS fabs
+#define VFADDVV_FLOAT vfadd_vv_f64m8
 #endif
-
 FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x)
 {
 	BLASLONG i=0, j=0;
-	double len = 0.0 ;
-
-	if ( n < 0 )  return(0.0);
-        if(n == 1) return (ABS(x[0]));
-
-        FLOAT_V_T vr, v0, v1;
+	BLASLONG ix=0;
+	FLOAT asumf=0.0;
+	if (n <= 0 || inc_x <= 0) return(asumf);
         unsigned int gvl = 0;
-        FLOAT_V_T_M1 v_res, v_z0;
+        FLOAT_V_T v0, v1, v_sum;
+        FLOAT_V_T_M1 v_res;
         gvl = VSETVL_MAX;
         v_res = VFMVVF_FLOAT_M1(0, gvl);
-        v_z0 = VFMVVF_FLOAT_M1(0, gvl);
 
         if(inc_x == 1){
                 gvl = VSETVL(n);
-                if(gvl < n/2){
-                        vr = VFMVVF_FLOAT(0, gvl);
-                        for(i=0,j=0; i<n/(2*gvl); i++){
+                if(gvl <= n/2){
+                        v_sum = VFMVVF_FLOAT(0, gvl);
+                        for(i=0,j=0; i<n/(gvl*2); i++){
                                 v0 = VLEV_FLOAT(&x[j], gvl);
-                                vr = VFMACCVV_FLOAT(vr, v0, v0, gvl);
-                                j += gvl;
+                                v_sum = VFADDVV_FLOAT(v_sum, v0, gvl);
 
-                                v1 = VLEV_FLOAT(&x[j], gvl);
-                                vr = VFMACCVV_FLOAT(vr, v1, v1, gvl);
-                                j += gvl;
+                                v1 = VLEV_FLOAT(&x[j+gvl], gvl);
+                                v_sum = VFADDVV_FLOAT(v_sum, v1, gvl);
+                                j += gvl * 2;
                         }
-                        v_res = VFREDSUM_FLOAT(v_res, vr, v_z0, gvl);
-                        len += VFMVFS_FLOAT(v_res);
+                        v_res = VFREDSUMVS_FLOAT(v_res, v_sum, v_res, gvl);
                 }
-                //tail
-                for(;j < n;){
+                for(;j<n;){
                         gvl = VSETVL(n-j);
                         v0 = VLEV_FLOAT(&x[j], gvl);
-                        //v1 = 0
-                        //v1 = VFMVVF_FLOAT(0, gvl);
-                        //vr = VFDOTVV_FLOAT(v0, v0, gvl);
-                        vr = VFMACCVV_FLOAT(v1, v0, v0, gvl);
-                        v_res = VFREDSUM_FLOAT(v_res, vr, v_z0, gvl);
-                        len += VFMVFS_FLOAT(v_res);
-
+                        v_res = VFREDSUMVS_FLOAT(v_res, v0, v_res, gvl);
                         j += gvl;
                 }
         }else{
                 gvl = VSETVL(n);
                 unsigned int stride_x = inc_x * sizeof(FLOAT);
-                if(gvl < n/2){
-                        vr = VFMVVF_FLOAT(0, gvl);
-                        for(i=0,j=0; i<n/(2*gvl); i++){
-                                v0 = VLSEV_FLOAT(&x[j*inc_x], stride_x, gvl);
-                                vr = VFMACCVV_FLOAT(vr, v0, v0, gvl);
-                                j += gvl;
+                if(gvl <= n/2){
+                        v_sum = VFMVVF_FLOAT(0, gvl);
+                        BLASLONG inc_xv = inc_x * gvl;
+                        for(i=0,j=0; i<n/(gvl*2); i++){
+                                v0 = VLSEV_FLOAT(&x[ix], stride_x, gvl);
+                                v_sum = VFADDVV_FLOAT(v_sum, v0, gvl);
 
-                                v1 = VLSEV_FLOAT(&x[j*inc_x], stride_x, gvl);
-                                vr = VFMACCVV_FLOAT(vr, v1, v1, gvl);
-                                j += gvl;
+                                v1 = VLSEV_FLOAT(&x[ix+inc_xv], stride_x, gvl);
+                                v_sum = VFADDVV_FLOAT(v_sum, v1, gvl);
+                                j += gvl * 2;
+                                inc_xv += inc_xv * 2;
                         }
-                        v_res = VFREDSUM_FLOAT(v_res, vr, v_z0, gvl);
-                        len += VFMVFS_FLOAT(v_res);
+                        v_res = VFREDSUMVS_FLOAT(v_res, v_sum, v_res, gvl);
                 }
-                //tail
-                for(;j < n;){
+                for(;j<n;){
                         gvl = VSETVL(n-j);
                         v0 = VLSEV_FLOAT(&x[j*inc_x], stride_x, gvl);
-                        //v1 = 0
-                        //v1 = VFMVVF_FLOAT(0, gvl);
-                        //vr = VFDOTVV_FLOAT(v0, v0, gvl);
-                        vr = VFMACCVV_FLOAT(v1, v0, v0, gvl);
-                        v_res = VFREDSUM_FLOAT(v_res, vr, v_z0, gvl);
-                        len += VFMVFS_FLOAT(v_res);
-
+                        v_res = VFREDSUMVS_FLOAT(v_res, v0, v_res, gvl);
                         j += gvl;
                 }
         }
-	return(sqrt(len));
+        asumf = EXTRACT_FLOAT(v_res);
+	return(asumf);
 }
 
 
