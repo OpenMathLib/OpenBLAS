@@ -238,7 +238,7 @@ endif()
 set_target_properties(${OpenBLAS_LIBS} PROPERTIES OUTPUT_NAME ${OpenBLAS_LIBNAME})
 
 # Android needs to explicitly link against libm
-if(ANDROID)
+if (${CMAKE_SYSTEM_NAME} MATCHES "AIX|Android|Linux|FreeBSD|OpenBSD|NetBSD|DragonFly|Darwin")
   if(BUILD_STATIC_LIBS)
     target_link_libraries(${OpenBLAS_LIBNAME}_static m)
   endif()
