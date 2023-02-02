@@ -32,107 +32,82 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #if !defined(DOUBLE)
 #define VSETVL(n) vsetvl_e32m2(n)
 #define FLOAT_V_T vfloat32m2_t
-#define VLEV_FLOAT vle32_v_f32m2
-#define VSEV_FLOAT vse32_v_f32m2
-#define VLSEV_FLOAT vlse32_v_f32m2
+#define VLSSEG2_FLOAT vlsseg2e32_v_f32m2
+#define VSSEG2_FLOAT vsseg2e32_v_f32m2
+#define VSSEG2_FLOAT_M vsseg2e32_v_f32m2_m
 #define VBOOL_T vbool16_t
 #define UINT_V_T vuint32m2_t
 #define VID_V_UINT vid_v_u32m2
 #define VMSGTU_VX_UINT vmsgtu_vx_u32m2_b16
-#define VMSEQ_VX_UINT vmseq_vx_u32m2_b16
-#define VFMERGE_VFM_FLOAT  vfmerge_vfm_f32m2
 #else
 #define VSETVL(n) vsetvl_e64m2(n)
 #define FLOAT_V_T vfloat64m2_t
-#define VLEV_FLOAT vle64_v_f64m2
-#define VSEV_FLOAT vse64_v_f64m2
-#define VLSEV_FLOAT vlse64_v_f64m2
+#define VLSSEG2_FLOAT vlsseg2e64_v_f64m2
+#define VSSEG2_FLOAT vsseg2e64_v_f64m2
+#define VSSEG2_FLOAT_M vsseg2e64_v_f64m2_m
 #define VBOOL_T     vbool32_t
 #define UINT_V_T     vuint64m2_t
 #define VID_V_UINT   vid_v_u64m2
 #define VMSGTU_VX_UINT vmsgtu_vx_u64m2_b32
-#define VMSEQ_VX_UINT vmseq_vx_u64m2_b32
-#define VFMERGE_VFM_FLOAT  vfmerge_vfm_f64m2
 #endif
 
-// Optimizes the implementation in ../arm64/tmmm_lncopy_sve_v1.c
 
-int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, BLASLONG posX, BLASLONG posY, FLOAT *b){
+int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, BLASLONG offset, FLOAT *b){
 
-    BLASLONG i, js, X;
+    //fprintf(stderr, "%s , %s, m = %4ld  n = %4ld  lda = %4ld offset = %4ld\n", __FILE__, __FUNCTION__, m, n, lda, offset); // Debug
+
+    BLASLONG i, ii, jj, js;
+    BLASLONG stride_lda = sizeof(FLOAT)*lda*2;
 
     FLOAT *ao;
+    jj = offset;
 
-    BLASLONG stride_lda = sizeof(FLOAT)*lda;
-    
-    FLOAT_V_T vb, va1;
-
-    size_t vl;
-#ifdef UNIT
-    VBOOL_T vbool_eq;
-#endif
-
+    FLOAT_V_T va0, va1;
     VBOOL_T vbool_cmp;
     UINT_V_T vindex;
+
+    size_t vl;
 
     for (js = n; js > 0; js -= vl)
     {
         vl = VSETVL(js);
-        X = posX;
-
-        if (posX <= posY) 
-        {
-            ao = a + posY + posX * lda;
-        } 
-        else 
-        {
-            ao = a + posX + posY * lda;
-        }
+        ao = a;
 
         i = 0;
-        do 
+        ii = 0;
+        for (i = 0; i < m;)
         {
-            if (X > posY) 
-            {
-                va1 = VLSEV_FLOAT(ao, stride_lda, vl);
-                VSEV_FLOAT(b, va1, vl);
-
-                ao ++;
-                b += vl;
-                X ++;
-                i ++;
-            } 
-            else if (X < posY) 
-            {
-                ao += lda;
-                b += vl;
-                X ++;
-                i ++;
-            } 
-            else 
+            if (ii == jj) 
             {
                 vindex  = VID_V_UINT(vl);
                 for (unsigned int j = 0; j < vl; j++) 
                 {
-                    va1 = VLSEV_FLOAT(ao, stride_lda, vl);
+                    compinv((b + j * 2), *(ao + j * lda * 2), *(ao + j * lda * 2 + 1));
+                    VLSSEG2_FLOAT(&va0, &va1, ao, stride_lda, vl);
                     vbool_cmp = VMSGTU_VX_UINT(vindex, j, vl);
-                    vb = VFMERGE_VFM_FLOAT(vbool_cmp, va1, ZERO, vl);
-#ifdef UNIT
-                    vbool_eq = VMSEQ_VX_UINT(vindex, j, vl);
-                    vb =  VFMERGE_VFM_FLOAT(vbool_eq, vb, ONE, vl);
-#endif
-                    VSEV_FLOAT(b, vb, vl);
-                    ao++;
-                    b += vl;
+                    VSSEG2_FLOAT_M(vbool_cmp, b, va0, va1, vl);
+                    ao  += 2;
+                    b   += vl * 2;
                 }
-
-                X += vl;
                 i += vl;
+                ii += vl;
+            } 
+            else
+            {
+                if (ii < jj) 
+                {
+                    VLSSEG2_FLOAT(&va0, &va1, ao, stride_lda, vl);
+                    VSSEG2_FLOAT(b, va0, va1, vl);
+                }
+                ao  += 2;
+                b   += vl * 2;
+                i++;
+                ii++;
             }
-        } while (i < m);
+        } 
 
-        posY += vl;
+        a += vl * lda * 2;
+        jj += vl;
     }
-
     return 0;
 }
