@@ -33,6 +33,7 @@ jobs:
       HOMEBREW_NO_BOTTLE_SOURCE_FALLBACK: "ON"
       HOMEBREW_NO_INSTALL_CLEANUP: "ON"
       HOMEBREW_NO_INSTALLED_DEPENDENTS_CHECK: "ON"
+      HOMEBREW_NO_INSTALL_FROM_API: "ON"      
 
     steps:
       - name: Random delay for cron job
