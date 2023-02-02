@@ -46,7 +46,7 @@ if (${F_COMPILER} STREQUAL "GFORTRAN")
   set(FCOMMON_OPT "${FCOMMON_OPT} -fno-optimize-sibling-calls")
   #Don't include -lgfortran, when NO_LAPACK=1 or lsbcc
   if (NOT NO_LAPACK)
-    set(EXTRALIB "{EXTRALIB} -lgfortran")
+    set(EXTRALIB "${EXTRALIB} -lgfortran")
   endif ()
   if (NO_BINARY_MODE)
     if (MIPS64)
