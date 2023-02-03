@@ -130,6 +130,28 @@ endif
 endif
 endif
 
+ifeq ($(CORE), ZEN)
+ifdef HAVE_AVX512VL	
+ifndef NO_AVX512
+CCOMMON_OPT += -march=skylake-avx512
+ifneq ($(F_COMPILER), NAG)
+FCOMMON_OPT += -march=skylake-avx512
+endif
+ifeq ($(OSNAME), CYGWIN_NT)
+CCOMMON_OPT += -fno-asynchronous-unwind-tables
+FCOMMON_OPT += -fno-asynchronous-unwind-tables
+endif
+ifeq ($(OSNAME), WINNT)
+ifeq ($(C_COMPILER), GCC)
+CCOMMON_OPT += -fno-asynchronous-unwind-tables
+FCOMMON_OPT += -fno-asynchronous-unwind-tables
+endif
+endif
+endif
+endif
+endif
+
+
 ifdef HAVE_AVX2
 ifndef NO_AVX2
 ifeq ($(C_COMPILER), GCC)
