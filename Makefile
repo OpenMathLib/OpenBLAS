@@ -110,7 +110,7 @@ endif
 	@echo "To install the library, you can run \"make PREFIX=/path/to/your/installation install\"."
 	@echo
 
-shared :
+shared : libs netlib $(RELA)
 ifneq ($(NO_SHARED), 1)
 ifeq ($(OSNAME), $(filter $(OSNAME),Linux SunOS Android Haiku))
 	@$(MAKE) -C exports so
@@ -134,7 +134,7 @@ ifeq ($(OSNAME), CYGWIN_NT)
 endif
 endif
 
-tests :
+tests : libs netlib $(RELA) shared
 ifeq ($(NOFORTRAN), $(filter 0,$(NOFORTRAN)))
 	touch $(LIBNAME)
 ifndef NO_FBLAS
