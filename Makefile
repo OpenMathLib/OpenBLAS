@@ -126,7 +126,7 @@ endif
 	@echo "to circumvent any install errors."
 	@echo
 
-shared :
+shared : libs netlib $(RELA)
 ifneq ($(NO_SHARED), 1)
 ifeq ($(OSNAME), $(filter $(OSNAME),Linux SunOS Android Haiku FreeBSD DragonFly))
 	@$(MAKE) -C exports so
@@ -150,7 +150,7 @@ ifeq ($(OSNAME), CYGWIN_NT)
 endif
 endif
 
-tests :
+tests : libs netlib $(RELA) shared
 ifeq ($(NOFORTRAN), $(filter 0,$(NOFORTRAN)))
 	touch $(LIBNAME)
 ifndef NO_FBLAS
