@@ -968,16 +968,19 @@ endif
 endif
 ifdef BINARY64
 ifeq ($(ARCH), x86_64)
+ifeq (,$(findstring tp,$(CFLAGS)))
 ifneq ($(NEWPGI2),1)
 CCOMMON_OPT += -tp p7-64
 else
 CCOMMON_OPT += -tp px
+endif
 endif
 ifneq ($(NEWPGI),1)
 CCOMMON_OPT +=  -D__MMX__ -Mnollvm
 endif
 else
 ifeq ($(ARCH), power)
+ifeq (,$(findstring tp,$(CFLAGS)))
 ifeq ($(CORE), POWER8)
 CCOMMON_OPT += -tp pwr8
 endif
@@ -986,11 +989,14 @@ CCOMMON_OPT += -tp pwr9
 endif
 endif
 endif
+endif
 else
 ifneq ($(NEWPGI2),1)
+ifeq (,$(findstring tp,$(CFLAGS)))
 CCOMMON_OPT += -tp p7
 else
 CCOMMON_OPT += -tp px
+endif
 endif
 endif
 endif
