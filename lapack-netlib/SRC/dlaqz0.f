@@ -678,7 +678,7 @@
 
          NS = MIN( NSHIFTS, ISTOP-ISTART2 )
          NS = MIN( NS, N_UNDEFLATED )
-         SHIFTPOS = ISTOP-N_DEFLATED-N_UNDEFLATED+1
+         SHIFTPOS = ISTOP-N_UNDEFLATED+1
 *
 *        Shuffle shifts to put double shifts in front
 *        This ensures that we don't split up a double shift
