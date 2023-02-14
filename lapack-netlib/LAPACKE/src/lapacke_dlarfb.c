@@ -59,7 +59,7 @@ lapack_int LAPACKE_dlarfb( int matrix_layout, char side, char trans, char direct
         ncols_v = ( !col && left ) ? m : ( ( !col && !left ) ? n : ( col ? k : 1 ) );
         uplo = ( ( left && col ) || !( left || col ) ) ? 'l' : 'u';
 
-        if( !forward && ( col && k > nrows_v ) || ( !col && k > ncols_v )) {
+        if( ( col && k > nrows_v ) || ( !col && k > ncols_v ) ) {
             LAPACKE_xerbla( "LAPACKE_dlarfb", -8 );
             return -8;
         }

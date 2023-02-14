@@ -80,7 +80,7 @@ lapack_int LAPACKE_slarfb_work( int matrix_layout, char side, char trans,
             LAPACKE_xerbla( "LAPACKE_slarfb_work", info );
             return info;
         }
-        if( !forward && ( col && k > nrows_v ) || ( !col && k > ncols_v )) {
+        if( ( col && k > nrows_v ) || ( !col && k > ncols_v ) ) {
             info = -8;
             LAPACKE_xerbla( "LAPACKE_slarfb_work", info );
             return info;
