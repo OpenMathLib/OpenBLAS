@@ -156,9 +156,10 @@
       DOUBLE PRECISION   RESULT( NTESTS )
 *     ..
 *     .. External Functions ..
+      LOGICAL            LSAME
       DOUBLE PRECISION   DLAMCH, ZLANGE
       COMPLEX*16         ZLARND
-      EXTERNAL           DLAMCH, ZLARND, ZLANGE
+      EXTERNAL           DLAMCH, ZLARND, ZLANGE, LSAME
 *     ..
 *     .. External Subroutines ..
       EXTERNAL           ZTRTTF, ZGEQRF, ZGEQLF, ZTFSM, ZTRSM
@@ -222,9 +223,9 @@
 *
                            DO 100 IALPHA = 1, 3
 *
-                              IF ( IALPHA.EQ. 1) THEN
+                              IF ( IALPHA.EQ.1 ) THEN
                                  ALPHA = ZERO
-                              ELSE IF ( IALPHA.EQ. 2) THEN
+                              ELSE IF ( IALPHA.EQ.2 ) THEN
                                  ALPHA = ONE
                               ELSE
                                  ALPHA = ZLARND( 4, ISEED )
@@ -263,7 +264,7 @@
 *
                               DO J = 1, NA
                                  DO I = 1, NA
-                                    A( I, J) = ZLARND( 4, ISEED )
+                                    A( I, J ) = ZLARND( 4, ISEED )
                                  END DO
                               END DO
 *
@@ -276,6 +277,20 @@
                                  CALL ZGEQRF( NA, NA, A, LDA, TAU,
      +                                        Z_WORK_ZGEQRF, LDA,
      +                                        INFO )
+*
+*                                Forcing main diagonal of test matrix to
+*                                be unit makes it ill-conditioned for
+*                                some test cases
+*
+                                 IF ( LSAME( DIAG, 'U' ) ) THEN
+                                    DO J = 1, NA
+                                       DO I = 1, J
+                                          A( I, J ) = A( I, J ) /
+     +                                            ( 2.0 * A( J, J ) )
+                                       END DO
+                                    END DO
+                                 END IF
+*
                               ELSE
 *
 *                                The case IUPLO.EQ.2 is when SIDE.EQ.'L'
@@ -285,6 +300,20 @@
                                  CALL ZGELQF( NA, NA, A, LDA, TAU,
      +                                        Z_WORK_ZGEQRF, LDA,
      +                                        INFO )
+*
+*                                Forcing main diagonal of test matrix to
+*                                be unit makes it ill-conditioned for
+*                                some test cases
+*
+                                 IF ( LSAME( DIAG, 'U' ) ) THEN
+                                    DO I = 1, NA
+                                       DO J = 1, I
+                                          A( I, J ) = A( I, J ) /
+     +                                            ( 2.0 * A( I, I ) )
+                                       END DO
+                                    END DO
+                                 END IF
+*
                               END IF
 *
 *                             After the QR factorization, the diagonal
@@ -293,7 +322,8 @@
 *                             value 1.0E+00.
 *
                               DO J = 1, NA
-                                 A( J, J) = A(J,J) * ZLARND( 5, ISEED )
+                                 A( J, J ) = A( J, J ) *
+     +                                   ZLARND( 5, ISEED )
                               END DO
 *
 *                             Store a copy of A in RFP format (in ARF).
@@ -307,8 +337,8 @@
 *
                               DO J = 1, N
                                  DO I = 1, M
-                                    B1( I, J) = ZLARND( 4, ISEED )
-                                    B2( I, J) = B1( I, J)
+                                    B1( I, J ) = ZLARND( 4, ISEED )
+                                    B2( I, J ) = B1( I, J )
                                  END DO
                               END DO
 *
@@ -331,24 +361,24 @@
 *
                               DO J = 1, N
                                  DO I = 1, M
-                                    B1( I, J) = B2( I, J ) - B1( I, J )
+                                    B1( I, J ) = B2( I, J ) - B1( I, J )
                                  END DO
                               END DO
 *
-                              RESULT(1) = ZLANGE( 'I', M, N, B1, LDA,
+                              RESULT( 1 ) = ZLANGE( 'I', M, N, B1, LDA,
      +                                            D_WORK_ZLANGE )
 *
-                              RESULT(1) = RESULT(1) / SQRT( EPS )
-     +                                    / MAX ( MAX( M, N), 1 )
+                              RESULT( 1 ) = RESULT( 1 ) / SQRT( EPS )
+     +                                    / MAX ( MAX( M, N ), 1 )
 *
-                              IF( RESULT(1).GE.THRESH ) THEN
+                              IF( RESULT( 1 ).GE.THRESH ) THEN
                                  IF( NFAIL.EQ.0 ) THEN
                                     WRITE( NOUT, * )
                                     WRITE( NOUT, FMT = 9999 )
                                  END IF
                                  WRITE( NOUT, FMT = 9997 ) 'ZTFSM',
      +                              CFORM, SIDE, UPLO, TRANS, DIAG, M,
-     +                              N, RESULT(1)
+     +                              N, RESULT( 1 )
                                  NFAIL = NFAIL + 1
                               END IF
 *
