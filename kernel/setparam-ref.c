@@ -137,9 +137,14 @@ gotoblas_t TABLE_NAME = {
   0,
 #endif
 
-#if (BUILD_SINGLE==1 ) || (BUILD_DOUBLE==1) || (BUILD_COMPLEX==1)
+#if (BUILD_SINGLE==1 ) || (BUILD_COMPLEX==1)
   samax_kTS,  samin_kTS,  smax_kTS,  smin_kTS,
-  isamax_kTS, isamin_kTS, ismax_kTS, ismin_kTS,
+#endif
+#if (BUILD_SINGLE==1) || (BUILD_DOUBLE==1) || (BUILD_COMPLEX==1)
+  isamax_kTS,
+#endif 
+#if (BUILD_SINGLE==1 ) || (BUILD_COMPLEX==1)
+  isamin_kTS, ismax_kTS, ismin_kTS,
   snrm2_kTS,  sasum_kTS,
 #endif 
 #if BUILD_SINGLE == 1  
@@ -158,8 +163,10 @@ gotoblas_t TABLE_NAME = {
   sswap_kTS,
   sgemv_nTS,  sgemv_tTS,
 #endif
-#if BUILD_SINGLE == 1  
+#if BUILD_SINGLE == 1
   sger_kTS,
+#endif
+#if BUILD_SINGLE == 1  
   ssymv_LTS, ssymv_UTS,
 #endif
 
@@ -178,7 +185,7 @@ gotoblas_t TABLE_NAME = {
   sgemm_oncopyTS, sgemm_otcopyTS,
 #endif
 
-#if BUILD_SINGLE == 1
+#if BUILD_SINGLE == 1 || BUILD_DOUBLE == 1 || BUILD_COMPLEX == 1
 #ifdef SMALL_MATRIX_OPT
   sgemm_small_matrix_permitTS,
   sgemm_small_kernel_nnTS, sgemm_small_kernel_ntTS, sgemm_small_kernel_tnTS, sgemm_small_kernel_ttTS,
@@ -186,7 +193,7 @@ gotoblas_t TABLE_NAME = {
 #endif
 #endif
 
-#if (BUILD_SINGLE==1) || (BUILD_DOUBLE==1) 
+#if (BUILD_SINGLE==1) || (BUILD_DOUBLE==1) || (BUILD_COMPLEX == 1)
   strsm_kernel_LNTS, strsm_kernel_LTTS, strsm_kernel_RNTS, strsm_kernel_RTTS,
 #if SGEMM_DEFAULT_UNROLL_M != SGEMM_DEFAULT_UNROLL_N
   strsm_iunucopyTS, strsm_iunncopyTS, strsm_iutucopyTS, strsm_iutncopyTS,
@@ -198,7 +205,7 @@ gotoblas_t TABLE_NAME = {
   strsm_ounucopyTS, strsm_ounncopyTS, strsm_outucopyTS, strsm_outncopyTS,
   strsm_olnucopyTS, strsm_olnncopyTS, strsm_oltucopyTS, strsm_oltncopyTS,
 #endif
-#if BUILD_SINGLE == 1
+#if (BUILD_SINGLE==1)
   strmm_kernel_RNTS, strmm_kernel_RTTS, strmm_kernel_LNTS, strmm_kernel_LTTS,
 #if SGEMM_DEFAULT_UNROLL_M != SGEMM_DEFAULT_UNROLL_N
   strmm_iunucopyTS, strmm_iunncopyTS, strmm_iutucopyTS, strmm_iutncopyTS,
@@ -215,8 +222,6 @@ gotoblas_t TABLE_NAME = {
   ssymm_outcopyTS, ssymm_oltcopyTS,
 #endif
   ssymm_outcopyTS, ssymm_oltcopyTS,
-#endif
-#if  (BUILD_SINGLE==1) || (BUILD_DOUBLE==1)
 #ifndef NO_LAPACK
   sneg_tcopyTS, slaswp_ncopyTS,
 #else
@@ -271,12 +276,14 @@ gotoblas_t TABLE_NAME = {
   dgemm_oncopyTS, dgemm_otcopyTS,
 #endif
 
-#if  (BUILD_DOUBLE==1)  
+#if  (BUILD_DOUBLE==1) || (BUILD_COMPLEX16)  
 #ifdef SMALL_MATRIX_OPT
   dgemm_small_matrix_permitTS,
   dgemm_small_kernel_nnTS, dgemm_small_kernel_ntTS, dgemm_small_kernel_tnTS, dgemm_small_kernel_ttTS,
   dgemm_small_kernel_b0_nnTS, dgemm_small_kernel_b0_ntTS, dgemm_small_kernel_b0_tnTS, dgemm_small_kernel_b0_ttTS,
 #endif
+#endif
+#if  (BUILD_DOUBLE==1)   
   dtrsm_kernel_LNTS, dtrsm_kernel_LTTS, dtrsm_kernel_RNTS, dtrsm_kernel_RTTS,
 #if DGEMM_DEFAULT_UNROLL_M != DGEMM_DEFAULT_UNROLL_N
   dtrsm_iunucopyTS, dtrsm_iunncopyTS, dtrsm_iutucopyTS, dtrsm_iutncopyTS,
@@ -374,13 +381,18 @@ gotoblas_t TABLE_NAME = {
 #else
  MAX(CGEMM_DEFAULT_UNROLL_M, CGEMM_DEFAULT_UNROLL_N),
 #endif
-  camax_kTS, camin_kTS, icamax_kTS, icamin_kTS,
+#if (BUILD_COMPLEX)
+  camax_kTS, camin_kTS,
+#endif
+#if (BUILD_COMPLEX || BUILD_COMPLEX16)
+  icamax_kTS, 
 #endif
 #if (BUILD_COMPLEX)
+  icamin_kTS,
   cnrm2_kTS, casum_kTS, csum_kTS,
 #endif
 #if (BUILD_COMPLEX || BUILD_COMPLEX16)
-  ccopy_kTS,  cdotu_kTS, cdotc_kTS,
+  ccopy_kTS, cdotu_kTS, cdotc_kTS,
 #endif
 #if (BUILD_COMPLEX)
  csrot_kTS,
@@ -433,6 +445,7 @@ gotoblas_t TABLE_NAME = {
 #endif
   ctrsm_ounucopyTS,  ctrsm_ounncopyTS,  ctrsm_outucopyTS,  ctrsm_outncopyTS,
   ctrsm_olnucopyTS,  ctrsm_olnncopyTS,  ctrsm_oltucopyTS,  ctrsm_oltncopyTS,
+#endif
 #endif
 #if (BUILD_COMPLEX)
 
