@@ -207,9 +207,12 @@ ifneq "$(or $(BUILD_SINGLE), $(BUILD_DOUBLE), $(BUILD_COMPLEX))" ""
 SBLASOBJS	+= \
 	sgemv_n$(TSUFFIX).$(SUFFIX) sgemv_t$(TSUFFIX).$(SUFFIX) 
 endif
+ifneq "$(or $(BUILD_SINGLE), $(BUILD_DOUBLE))" ""
+SBLASOBJS	+= \
+	ssymv_U$(TSUFFIX).$(SUFFIX) ssymv_L$(TSUFFIX).$(SUFFIX) 
+endif
 ifeq ($(BUILD_SINGLE),1)
 SBLASOBJS	+= \
-	ssymv_U$(TSUFFIX).$(SUFFIX) ssymv_L$(TSUFFIX).$(SUFFIX) \
 	sger_k$(TSUFFIX).$(SUFFIX)
 endif
 ifeq ($(BUILD_DOUBLE),1)
@@ -359,8 +362,7 @@ $(KDIR)xgemv_d$(TSUFFIX).$(SUFFIX) $(KDIR)xgemv_d$(TSUFFIX).$(PSUFFIX) : $(KERNE
 	$(CC) -c $(CFLAGS) -DXDOUBLE -DCOMPLEX -DTRANS -DCONJ -DXCONJ $< -o $@
 
 
-ifeq ($(BUILD_SINGLE),1)
-
+ifneq "$(or (BUILD_SINGLE),$(BUILD_DOUBLE))" ""
 $(KDIR)ssymv_U$(TSUFFIX).$(SUFFIX)  $(KDIR)ssymv_U$(TSUFFIX).$(PSUFFIX)  : $(KERNELDIR)/$(SSYMV_U_KERNEL) $(SSYMV_U_PARAM)
 	$(CC) -c $(CFLAGS) -UCOMPLEX -UDOUBLE -ULOWER $< -o $@
 
