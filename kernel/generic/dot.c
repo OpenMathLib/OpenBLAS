@@ -43,7 +43,7 @@ FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG inc_y)
 	FLOAT  dot = 0.0 ;
 #endif
 
-	if ( n < 0 )  return(dot);
+	if ( n < 1 )  return(dot);
 
 	if ( (inc_x == 1) && (inc_y == 1) )
 	{
