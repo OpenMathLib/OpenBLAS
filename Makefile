@@ -40,7 +40,7 @@ LAPACK_NOOPT := $(filter-out -O0 -O1 -O2 -O3 -Ofast -O -Og -Os,$(LAPACK_FFLAGS))
 SUBDIRS_ALL = $(SUBDIRS) test ctest utest exports benchmark ../laswp ../bench cpp_thread_test
 
 .PHONY : all libs netlib $(RELA) test ctest shared install
-.NOTPARALLEL : all libs $(RELA) prof lapack-test install blas-test
+.NOTPARALLEL : all libs netlib $(RELA) prof lapack-test install blas-test
 
 all :: libs netlib $(RELA) tests shared
 	@echo
