@@ -53,6 +53,7 @@ extern void goto_set_num_threads(int nthreads);
 /* Global Parameter */
 extern int blas_cpu_number;
 extern int blas_num_threads;
+extern int blas_num_threads_set;
 extern int blas_omp_linked;
 
 #define BLAS_LEGACY	0x8000U
@@ -137,9 +138,13 @@ typedef struct blas_queue {
 extern int blas_server_avail;
 
 static __inline int num_cpu_avail(int level) {
+int openmp_nthreads;
 
 #ifdef USE_OPENMP
-	int openmp_nthreads=omp_get_max_threads();
+	if (blas_num_threads_set == 0)
+	openmp_nthreads=omp_get_max_threads();
+	else
+	openmp_nthreads=blas_cpu_number;
 #endif
 
 #ifndef USE_OPENMP 
