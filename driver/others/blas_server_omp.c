@@ -100,6 +100,8 @@ static void adjust_thread_buffers() {
 
 void goto_set_num_threads(int num_threads) {
 
+  blas_num_threads_set = 1;
+  if (num_threads < 0) blas_num_threads_set = 0;
   if (num_threads < 1) num_threads = blas_num_threads;
 
   if (num_threads > MAX_CPU_NUMBER) num_threads = MAX_CPU_NUMBER;
