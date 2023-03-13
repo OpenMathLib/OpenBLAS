@@ -6,6 +6,12 @@ ifeq ($(CORE), x280)
 CCOMMON_OPT += -march=rv64imafdcv_zba_zbb_zfh -mabi=lp64d -mllvm --riscv-v-vector-bits-min=512 -ffast-math
 FCOMMON_OPT += -march=rv64imafdcv_zba_zbb_zfh -mabi=lp64d -static
 endif
+
+ifeq ($(CORE), UX900FD)
+CCOMMON_OPT += -march=rv64imafdc$(ARCH_EXT) -mabi=lp64d -mtune=nuclei-900-series -static
+FCOMMON_OPT += -march=rv64imafdc$(ARCH_EXT) -mabi=lp64d -mtune=nuclei-900-series -static
+endif
+
 ifeq ($(CORE), RISCV64_GENERIC)
 CCOMMON_OPT += -march=rv64imafdc -mabi=lp64d
 FCOMMON_OPT += -march=rv64imafdc -mabi=lp64d -static

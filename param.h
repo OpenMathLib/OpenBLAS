@@ -3082,6 +3082,53 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define GEMM_DEFAULT_OFFSET_B 0
 
 #endif
+
+#if defined(UX900FD)
+#define GEMM_DEFAULT_OFFSET_A 0
+#define GEMM_DEFAULT_OFFSET_B 0
+#define GEMM_DEFAULT_ALIGN 0x03fffUL
+
+#define SGEMM_DEFAULT_UNROLL_M  16 // 4 // 16 // 2
+#define SGEMM_DEFAULT_UNROLL_N  8 // 4 // 4 // 2
+/* SGEMM_UNROLL_MN is calculated as max(SGEMM_UNROLL_M, SGEMM_UNROLL_N)
+ * Since we don't define SGEMM_UNROLL_M correctly we have to manually set this macro.
+ * If VLMAX size is ever more than 1024, this should be increased also. */
+#define SGEMM_DEFAULT_UNROLL_MN  32
+
+#define DGEMM_DEFAULT_UNROLL_M  16 //2 // 8
+#define DGEMM_DEFAULT_UNROLL_N  8 //2 // 4
+#define DGEMM_DEFAULT_UNROLL_MN  32
+
+
+#define CGEMM_DEFAULT_UNROLL_M  2
+#define CGEMM_DEFAULT_UNROLL_N  2
+
+#define ZGEMM_DEFAULT_UNROLL_M  2
+#define ZGEMM_DEFAULT_UNROLL_N  2
+
+#define SGEMM_DEFAULT_P	160
+#define DGEMM_DEFAULT_P	160
+#define CGEMM_DEFAULT_P 96
+#define ZGEMM_DEFAULT_P 64
+
+#define SGEMM_DEFAULT_Q 240
+#define DGEMM_DEFAULT_Q 128
+#define CGEMM_DEFAULT_Q 120
+#define ZGEMM_DEFAULT_Q 120
+
+#define SGEMM_DEFAULT_R 12288
+#define DGEMM_DEFAULT_R 8192
+#define CGEMM_DEFAULT_R 4096
+#define ZGEMM_DEFAULT_R 4096
+
+#define SYMV_P	16
+
+#define GEMM_DEFAULT_OFFSET_A 0
+#define GEMM_DEFAULT_OFFSET_B 0
+
+
+#endif
+
 #ifdef C910V
 #define GEMM_DEFAULT_OFFSET_A 0
 #define GEMM_DEFAULT_OFFSET_B 0

@@ -99,4 +99,9 @@ static inline int blas_quickdivide(blasint x, blasint y){
 #include <riscv_vector.h>
 #endif
 
+#if defined(UX900FD)
+#if (defined(__riscv_vector))
+#include <riscv_vector.h>
+#endif
+#endif
 #endif
