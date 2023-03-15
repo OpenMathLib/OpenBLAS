@@ -100,7 +100,7 @@ blasint CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa,
       temp1 = *(b + jp);
 
       //if (temp1 != ZERO) {
-	if (fabs(temp1) > 1.e-305) {    
+	if (fabs(temp1) >= DBL_MIN 
 	temp1 = dp1 / temp1;
 
 	if (jp != j) {
