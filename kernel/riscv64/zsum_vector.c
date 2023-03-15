@@ -27,26 +27,24 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "common.h"
 #include <math.h>
-#include <float.h>
-
 
 #ifdef RISCV64_ZVL256B
 #       define LMUL m2
 #       if defined(DOUBLE)
 #               define ELEN 64
-#               define MLEN 32
+#               define MLEN _b32
 #       else
 #               define ELEN 32
-#               define MLEN 16
+#               define MLEN _b16
 #       endif
 #else
 #       define LMUL m8
 #       if defined(DOUBLE)
 #               define ELEN 64
-#               define MLEN 8
+#               define MLEN _b8
 #       else
 #               define ELEN 32
-#               define MLEN 4
+#               define MLEN _b4
 #       endif
 #endif
 
@@ -60,59 +58,74 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define FLOAT_V_T_M1    JOIN(vfloat,            ELEN,   m1,     _t,     _)
 #define VLEV_FLOAT      JOIN(__riscv_vle,       ELEN,   _v_f,   ELEN,   LMUL)
 #define VLSEV_FLOAT     JOIN(__riscv_vlse,      ELEN,   _v_f,   ELEN,   LMUL)
-#define VFREDMINVS_FLOAT JOIN(__riscv_vfredmin_vs_f,  ELEN,   LMUL,   _f, JOIN2( ELEN,   m1))
-#define MASK_T          JOIN(vbool,             MLEN,   _t,     _,      _)
-#define VMFLTVF_FLOAT   JOIN(__riscv_vmflt_vf_f, ELEN,  LMUL,   _b,     MLEN)
+#define VFREDSUMVS_FLOAT JOIN(__riscv_vfredusum_vs_f,  ELEN,   LMUL,   _f, JOIN2( ELEN,   m1))
 #define VFMVVF_FLOAT    JOIN(__riscv_vfmv,      _v_f_f, ELEN,   LMUL,   _)
 #define VFMVVF_FLOAT_M1 JOIN(__riscv_vfmv,      _v_f_f, ELEN,   m1,     _)
-#define VFRSUBVF_MASK_FLOAT JOIN(__riscv_vfrsub,_vf_f,  ELEN,   LMUL,   _m)
-#define VFMINVV_FLOAT   JOIN(__riscv_vfmin,     _vv_f,  ELEN,   LMUL,   _)
 #define VFADDVV_FLOAT   JOIN(__riscv_vfadd,     _vv_f,  ELEN,   LMUL,   _)
+#define VMFLTVF_FLOAT   JOIN(__riscv_vmflt,     _vf_f,  ELEN,   LMUL,   MLEN)
 
 FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x)
 {
 	BLASLONG i=0, j=0;
 	BLASLONG ix=0;
-	if (n <= 0 || inc_x <= 0) return(0.0);
-	FLOAT minf=FLT_MAX;
+	FLOAT asumf=0.0;
+	if (n <= 0 || inc_x <= 0) return(asumf);
         unsigned int gvl = 0;
-        FLOAT_V_T v0, v1, v_min;
+        FLOAT_V_T v0, v1, v_zero,v_sum;
         FLOAT_V_T_M1 v_res;
-        v_res = VFMVVF_FLOAT_M1(FLT_MAX, 1);
+        v_res = VFMVVF_FLOAT_M1(0, 1);
 
-        MASK_T mask0, mask1;
-        BLASLONG stride_x = inc_x * sizeof(FLOAT) * 2;
-        gvl = VSETVL(n);
-        v_min = VFMVVF_FLOAT(FLT_MAX, gvl);
-        BLASLONG inc_xv = inc_x * gvl * 2;
-        for(; i<n/gvl; i++){
-                v0 = VLSEV_FLOAT(&x[ix], stride_x, gvl);
-                v1 = VLSEV_FLOAT(&x[ix+1], stride_x, gvl);
-                mask0 = VMFLTVF_FLOAT(v0, 0, gvl);
-                v0 = VFRSUBVF_MASK_FLOAT(mask0, v0, 0, gvl);
-                mask1 = VMFLTVF_FLOAT(v1, 0, gvl);
-                v1 = VFRSUBVF_MASK_FLOAT(mask1, v1, 0, gvl);
+        if(inc_x == 1){
+                BLASLONG n2 = n * 2;
+                gvl = VSETVL(n2);
+                v_zero = VFMVVF_FLOAT(0, gvl);
+                if(gvl <= n2/2){
+                        v_sum = VFMVVF_FLOAT(0, gvl);
+                        for(i=0,j=0; i<n2/(gvl*2); i++){
+                                v0 = VLEV_FLOAT(&x[j], gvl);
+                                v_sum = VFADDVV_FLOAT(v_sum, v0, gvl);
 
-                v0 = VFADDVV_FLOAT(v0, v1, gvl);
-                v_min = VFMINVV_FLOAT(v_min, v0, gvl);
+                                v1 = VLEV_FLOAT(&x[j+gvl], gvl);
+                                v_sum = VFADDVV_FLOAT(v_sum, v1, gvl);
+                                j += gvl * 2;
+                        }
+                        v_res = VFREDSUMVS_FLOAT(v_sum, v_res, gvl);
+                }
+                for(;j<n2;){
+                        gvl = VSETVL(n2-j);
+                        v0 = VLEV_FLOAT(&x[j], gvl);
+                        v_res = VFREDSUMVS_FLOAT(v0, v_res, gvl);
+                        j += gvl;
+                }
+        }else{
+                gvl = VSETVL(n);
+                unsigned int stride_x = inc_x * sizeof(FLOAT) * 2;
+                v_zero = VFMVVF_FLOAT(0, gvl);
 
-                j += gvl;
-                ix += inc_xv;
+                BLASLONG inc_xv = inc_x * 2 * gvl;
+                v_sum = VFMVVF_FLOAT(0, gvl);
+                for(i=0,j=0; i<n/gvl; i++){
+                        v0 = VLSEV_FLOAT(&x[ix], stride_x, gvl);
+                        v_sum = VFADDVV_FLOAT(v_sum, v0, gvl);
+
+                        v1 = VLSEV_FLOAT(&x[ix+1], stride_x, gvl);
+                        v_sum = VFADDVV_FLOAT(v_sum, v1, gvl);
+
+                        j += gvl;
+                        ix += inc_xv;
+                }
+                v_res = VFREDSUMVS_FLOAT(v_sum, v_res, gvl);
+                if(j<n){
+                        gvl = VSETVL(n-j);
+                        v0 = VLSEV_FLOAT(&x[ix], stride_x, gvl);
+
+                        v1 = VLSEV_FLOAT(&x[ix+1], stride_x, gvl);
+                        v_sum = VFADDVV_FLOAT(v0, v1, gvl);
+                        v_res = VFREDSUMVS_FLOAT(v_sum, v_res, gvl);
+                }
         }
-        v_res = VFREDMINVS_FLOAT(v_min, v_res, gvl);
-
-        if(j<n){
-                gvl = VSETVL(n-j);
-                v0 = VLSEV_FLOAT(&x[ix], stride_x, gvl);
-                v1 = VLSEV_FLOAT(&x[ix+1], stride_x, gvl);
-                mask0 = VMFLTVF_FLOAT(v0, 0, gvl);
-                v0 = VFRSUBVF_MASK_FLOAT(mask0, v0, 0, gvl);
-                mask1 = VMFLTVF_FLOAT(v1, 0, gvl);
-                v1 = VFRSUBVF_MASK_FLOAT(mask1, v1, 0, gvl);
-                v1 = VFADDVV_FLOAT(v0, v1, gvl);
-                v_res = VFREDMINVS_FLOAT(v1, v_res, gvl);
-        }
-
-        minf = EXTRACT_FLOAT(v_res);
-        return(minf);
+        asumf = EXTRACT_FLOAT(v_res);
+	return(asumf);
 }
+
+

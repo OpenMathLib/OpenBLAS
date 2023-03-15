@@ -70,14 +70,14 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /* or implied, of The University of Texas at Austin.                 */
 /*********************************************************************/
 
-#define CPU_GENERIC   0
-#define CPU_C910V     1
-#define CPU_x280        2
+#define CPU_GENERIC         0
+#define CPU_C910V           1
+#define CPU_RISCV64_ZVL256B 2
 
 static char *cpuname[] = {
   "RISCV64_GENERIC",
-  "C910V"
-  "x280"
+  "C910V",
+  "CPU_RISCV64_ZVL256B"
 };
 
 int detect(void){
