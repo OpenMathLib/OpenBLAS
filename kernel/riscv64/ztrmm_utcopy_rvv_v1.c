@@ -1,3 +1,5 @@
+/*********************************************************************/
+/* Copyright 2009, 2010 The University of Texas at Austin.           */
 /***************************************************************************
 Copyright (c) 2022, The OpenBLAS Project
 All rights reserved.
@@ -34,7 +36,9 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define FLOAT_V_T vfloat32m2_t
 #define VLEV_FLOAT vle32_v_f32m2
 #define VSEV_FLOAT vse32_v_f32m2
-#define VLSEV_FLOAT vlse32_v_f32m2
+#define VLSEG2_FLOAT vlseg2e32_v_f32m2
+#define VLSSEG2_FLOAT vlsseg2e32_v_f32m2
+#define VSSEG2_FLOAT vsseg2e32_v_f32m2
 #define VBOOL_T vbool16_t
 #define UINT_V_T vuint32m2_t
 #define VID_V_UINT vid_v_u32m2
@@ -46,7 +50,9 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define FLOAT_V_T vfloat64m2_t
 #define VLEV_FLOAT vle64_v_f64m2
 #define VSEV_FLOAT vse64_v_f64m2
-#define VLSEV_FLOAT vlse64_v_f64m2
+#define VLSEG2_FLOAT vlseg2e64_v_f64m2
+#define VLSSEG2_FLOAT vlsseg2e64_v_f64m2
+#define VSSEG2_FLOAT vsseg2e64_v_f64m2
 #define VBOOL_T     vbool32_t
 #define UINT_V_T     vuint64m2_t
 #define VID_V_UINT   vid_v_u64m2
@@ -55,19 +61,12 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define VFMERGE_VFM_FLOAT  vfmerge_vfm_f64m2
 #endif
 
-// Optimizes the implementation in ../arm64/tmmm_lncopy_sve_v1.c
-
 int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, BLASLONG posX, BLASLONG posY, FLOAT *b){
 
-    BLASLONG i, js, X;
+    BLASLONG i, j, js, X;
 
     FLOAT *ao;
-
-    BLASLONG stride_lda = sizeof(FLOAT)*lda;
-    
-    FLOAT_V_T vb, va1;
-
-    size_t vl;
+    FLOAT_V_T va0, va1;
 #ifdef UNIT
     VBOOL_T vbool_eq;
 #endif
@@ -75,64 +74,67 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, BLASLONG posX, BLASLON
     VBOOL_T vbool_cmp;
     UINT_V_T vindex;
 
+    size_t vl;
+
     for (js = n; js > 0; js -= vl)
     {
         vl = VSETVL(js);
+
         X = posX;
 
         if (posX <= posY) 
         {
-            ao = a + posY + posX * lda;
+            ao = a + posX * 2 + posY * lda * 2;
         } 
         else 
         {
-            ao = a + posX + posY * lda;
+            ao = a + posY * 2 + posX * lda * 2;
         }
 
         i = 0;
-        do 
+        do
         {
-            if (X > posY) 
+            if (X < posY) 
             {
-                va1 = VLSEV_FLOAT(ao, stride_lda, vl);
-                VSEV_FLOAT(b, va1, vl);
-
-                ao ++;
-                b += vl;
-                X ++;
-                i ++;
-            } 
-            else if (X < posY) 
+                ao  += 2;
+                b   += vl * 2;
+                X++;
+                i++;
+            }
+            else if (X > posY)
             {
-                ao += lda;
-                b += vl;
-                X ++;
-                i ++;
-            } 
-            else 
+                VLSEG2_FLOAT(&va0, &va1, ao, vl);
+                VSSEG2_FLOAT(b, va0, va1, vl);
+                ao  += lda * 2;
+                b   += vl * 2;
+                X++;
+                i++;
+            }
+            else
             {
                 vindex  = VID_V_UINT(vl);
-                for (unsigned int j = 0; j < vl; j++) 
+                for (j = 0; j < vl; j++) 
                 {
-                    va1 = VLSEV_FLOAT(ao, stride_lda, vl);
+                    VLSEG2_FLOAT(&va0, &va1, ao, vl);
                     vbool_cmp = VMSGTU_VX_UINT(vindex, j, vl);
-                    vb = VFMERGE_VFM_FLOAT(vbool_cmp, va1, ZERO, vl);
+                    va0 = VFMERGE_VFM_FLOAT(vbool_cmp, va0, ZERO, vl);
+                    va1 = VFMERGE_VFM_FLOAT(vbool_cmp, va1, ZERO, vl);
 #ifdef UNIT
                     vbool_eq = VMSEQ_VX_UINT(vindex, j, vl);
-                    vb =  VFMERGE_VFM_FLOAT(vbool_eq, vb, ONE, vl);
+                    va0 =  VFMERGE_VFM_FLOAT(vbool_eq, va0, ONE, vl);
+                    va1 =  VFMERGE_VFM_FLOAT(vbool_eq, va1, ZERO, vl);
 #endif
-                    VSEV_FLOAT(b, vb, vl);
-                    ao++;
-                    b += vl;
+                    VSSEG2_FLOAT(b, va0, va1, vl);
+                    ao += lda * 2;
+                    b += vl * 2;
                 }
-
                 X += vl;
                 i += vl;
             }
-        } while (i < m);
-
+        }while (i < m);
         posY += vl;
     }
 
     return 0;
 }
+
