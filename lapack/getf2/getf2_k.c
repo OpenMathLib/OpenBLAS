@@ -37,6 +37,7 @@
 /*********************************************************************/
 
 #include <stdio.h>
+#include <float.h>
 #include "common.h"
 
 static FLOAT dp1 =  1.;
