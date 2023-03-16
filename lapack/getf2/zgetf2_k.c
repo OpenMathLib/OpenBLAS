@@ -37,6 +37,7 @@
 /*********************************************************************/
 
 #include <stdio.h>
+#include <float.h>
 #include "common.h"
 
 double fabs(double);
@@ -106,7 +107,7 @@ blasint CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa,
       temp2 = *(b + jp * 2 + 1);
 
   //    if ((temp1 != ZERO) || (temp2 != ZERO)) {
-	if ((fabs(temp1) > 1.e-305) || (fabs(temp2) > 1.e-305)) {
+	if ((fabs(temp1) >= DBL_MIN) && (fabs(temp2) >= DBL_MIN)) {
 		
 	if (jp != j) {
 	  SWAP_K(j + 1, 0, 0, ZERO, ZERO, a + j * 2, lda,
