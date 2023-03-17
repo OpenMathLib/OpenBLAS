@@ -685,7 +685,7 @@ real *sfac;
     static integer i__;
     extern /* Subroutine */ int ctest_();
     static complex mwpcs[5], mwpct[5];
-    extern /* Subroutine */ int itest1_(), stest1_();
+    extern /* Subroutine */ int cscaltest_(), itest1_(), stest1_();
     static complex cx[8];
     extern real scnrm2test_();
     static integer np1;
@@ -727,7 +727,7 @@ real *sfac;
 		stest1_(&r__1, &strue4[np1 - 1], &strue4[np1 - 1], sfac);
 	    } else if (combla_1.icase == 8) {
 /*              .. CSCAL .. */
-		cscal_(&combla_1.n, &ca, cx, &combla_1.incx);
+		cscaltest_(&combla_1.n, &ca, cx, &combla_1.incx);
 		ctest_(&len, cx, &ctrue5[(np1 + combla_1.incx * 5 << 3) - 48],
 			 &ctrue5[(np1 + combla_1.incx * 5 << 3) - 48], sfac);
 	    } else if (combla_1.icase == 9) {
@@ -761,7 +761,7 @@ real *sfac;
 	    mwpcs[i__1].r = (float)1., mwpcs[i__1].i = (float)1.;
 /* L80: */
 	}
-	cscal_(&c__5, &ca, cx, &combla_1.incx);
+	cscaltest_(&c__5, &ca, cx, &combla_1.incx);
 	ctest_(&c__5, cx, mwpct, mwpcs, sfac);
     } else if (combla_1.icase == 9) {
 /*        CSSCALTEST */

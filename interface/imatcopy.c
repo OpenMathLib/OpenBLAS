@@ -149,10 +149,10 @@ void CNAME( enum CBLAS_ORDER CORDER, enum CBLAS_TRANSPOSE CTRANS, blasint crows,
 
 #endif
 
-	if ( *lda >  *ldb )
-		msize = (size_t)(*lda) * (*ldb)  * sizeof(FLOAT);
-	else
-		msize = (size_t)(*ldb) * (*ldb)  * sizeof(FLOAT);
+	if ( *rows >  *cols )
+            msize = (size_t)(*rows) * (*ldb)  * sizeof(FLOAT);
+    else
+            msize = (size_t)(*cols) * (*ldb)  * sizeof(FLOAT);
 
 	b = malloc(msize);
 	if ( b == NULL )

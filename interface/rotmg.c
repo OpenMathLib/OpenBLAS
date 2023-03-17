@@ -96,12 +96,6 @@ void CNAME(FLOAT *dd1, FLOAT *dd2, FLOAT *dx1, FLOAT dy1, FLOAT *dparam){
 	else
 	{
 		dp2 = *dd2 * dy1;
-		if(dp2 == ZERO)
-		{
-			dflag = -TWO;
-			dparam[0] = dflag;
-			return;
-		}
 		dp1 = *dd1 * *dx1;
 		dq2 =  dp2 * dy1;
 		dq1 =  dp1 * *dx1;
@@ -113,24 +107,10 @@ void CNAME(FLOAT *dd1, FLOAT *dd2, FLOAT *dx1, FLOAT dy1, FLOAT *dparam){
 			dh12 =    dp2 /  dp1;
 
 			du   = ONE - dh12 * dh21;
-			if(du > ZERO)
-			{
-				dflag = ZERO;
-				*dd1  = *dd1 / du;
-				*dd2  = *dd2 / du;
-				*dx1  = *dx1 * du;
-			} else {
-				dflag = -ONE;
-
-				dh11  = ZERO;
-				dh12  = ZERO;
-				dh21  = ZERO;
-				dh22  = ZERO;
-
-				*dd1  = ZERO;
-				*dd2  = ZERO;
-				*dx1  = ZERO;
-			}
+			dflag = ZERO;
+			*dd1  = *dd1 / du;
+			*dd2  = *dd2 / du;
+			*dx1  = *dx1 * du;
 			
 		}
 		else

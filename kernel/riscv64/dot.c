@@ -46,7 +46,7 @@ FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG inc_y)
 	BLASLONG ix=0,iy=0;
 	double dot = 0.0 ;
 
-	if ( n < 0 )  return(dot);
+	if ( n < 1 )  return(dot);
 
 	while(i < n)
 	{
