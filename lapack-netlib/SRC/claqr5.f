@@ -533,11 +533,13 @@
 *                 .    Mth bulge. Exploit fact that first two elements
 *                 .    of row are actually zero. ====
 *
-                  REFSUM = V( 1, M )*V( 3, M )*H( K+3, K+2 )
-                  H( K+3, K   ) = -REFSUM
-                  H( K+3, K+1 ) = -REFSUM*CONJG( V( 2, M ) )
-                  H( K+3, K+2 ) = H( K+3, K+2 ) -
-     $                            REFSUM*CONJG( V( 3, M ) )
+                  T1 = V( 1, M )
+                  T2 = T1*CONJG( V( 2, M ) )
+                  T3 = T1*CONJG( V( 3, M ) )
+                  REFSUM = V( 3, M )*H( K+3, K+2 )
+                  H( K+3, K   ) = -REFSUM*T1
+                  H( K+3, K+1 ) = -REFSUM*T2
+                  H( K+3, K+2 ) = H( K+3, K+2 ) - REFSUM*T3
 *
 *                 ==== Calculate reflection to move
 *                 .    Mth bulge one step. ====
@@ -572,12 +574,13 @@
      $                            S( 2*M ), VT )
                      ALPHA = VT( 1 )
                      CALL CLARFG( 3, ALPHA, VT( 2 ), 1, VT( 1 ) )
-                     REFSUM = CONJG( VT( 1 ) )*
-     $                        ( H( K+1, K )+CONJG( VT( 2 ) )*
-     $                        H( K+2, K ) )
+                     T1 = CONJG( VT( 1 ) )
+                     T2 = T1*VT( 2 )
+                     T3 = T1*VT( 3 )
+                     REFSUM = H( K+1, K )+CONJG( VT( 2 ) )*H( K+2, K )
 *
-                     IF( CABS1( H( K+2, K )-REFSUM*VT( 2 ) )+
-     $                   CABS1( REFSUM*VT( 3 ) ).GT.ULP*
+                     IF( CABS1( H( K+2, K )-REFSUM*T2 )+
+     $                   CABS1( REFSUM*T3 ).GT.ULP*
      $                   ( CABS1( H( K, K ) )+CABS1( H( K+1,
      $                   K+1 ) )+CABS1( H( K+2, K+2 ) ) ) ) THEN
 *
@@ -595,7 +598,7 @@
 *                       .    Replace the old reflector with
 *                       .    the new one. ====
 *
-                        H( K+1, K ) = H( K+1, K ) - REFSUM
+                        H( K+1, K ) = H( K+1, K ) - REFSUM*T1
                         H( K+2, K ) = ZERO
                         H( K+3, K ) = ZERO
                         V( 1, M ) = VT( 1 )

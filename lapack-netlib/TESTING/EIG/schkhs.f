@@ -23,7 +23,7 @@
 *       INTEGER            ISEED( 4 ), IWORK( * ), NN( * )
 *       REAL               A( LDA, * ), EVECTL( LDU, * ),
 *      $                   EVECTR( LDU, * ), EVECTX( LDU, * ),
-*      $                   EVECTY( LDU, * ), H( LDA, * ), RESULT( 14 ),
+*      $                   EVECTY( LDU, * ), H( LDA, * ), RESULT( 16 ),
 *      $                   T1( LDA, * ), T2( LDA, * ), TAU( * ),
 *      $                   U( LDU, * ), UU( LDU, * ), UZ( LDU, * ),
 *      $                   WI1( * ), WI2( * ), WI3( * ), WORK( * ),
@@ -54,10 +54,15 @@
 *>            SHSEIN computes the left and right eigenvector matrices
 *>            Y and X for H, using inverse iteration.
 *>
+*>            STREVC3 computes left and right eigenvector matrices
+*>            from a Schur matrix T and backtransforms them with Z
+*>            to eigenvector matrices L and R for A. L and R are
+*>            GE matrices.
+*>
 *>    When SCHKHS is called, a number of matrix "sizes" ("n's") and a
 *>    number of matrix "types" are specified.  For each size ("n")
 *>    and each type of matrix, one matrix will be generated and used
-*>    to test the nonsymmetric eigenroutines.  For each matrix, 14
+*>    to test the nonsymmetric eigenroutines.  For each matrix, 16
 *>    tests will be performed:
 *>
 *>    (1)     | A - U H U**T | / ( |A| n ulp )
@@ -87,6 +92,10 @@
 *>    (13)    | AX - XW | / ( |A| |X| ulp )
 *>
 *>    (14)    | Y**H A - W**H Y | / ( |A| |Y| ulp )
+*>
+*>    (15)    | AR - RW | / ( |A| |R| ulp )
+*>
+*>    (16)    | LA - WL | / ( |A| |L| ulp )
 *>
 *>    The "sizes" are specified by an array NN(1:NSIZES); the value of
 *>    each element NN(j) specifies one size.
@@ -331,7 +340,7 @@
 *>           Workspace.
 *>           Modified.
 *>
-*>  RESULT - REAL array, dimension (14)
+*>  RESULT - REAL array, dimension (16)
 *>           The values computed by the fourteen tests described above.
 *>           The values are currently limited to 1/ulp, to avoid
 *>           overflow.
@@ -423,7 +432,7 @@
       INTEGER            ISEED( 4 ), IWORK( * ), NN( * )
       REAL               A( LDA, * ), EVECTL( LDU, * ),
      $                   EVECTR( LDU, * ), EVECTX( LDU, * ),
-     $                   EVECTY( LDU, * ), H( LDA, * ), RESULT( 14 ),
+     $                   EVECTY( LDU, * ), H( LDA, * ), RESULT( 16 ),
      $                   T1( LDA, * ), T2( LDA, * ), TAU( * ),
      $                   U( LDU, * ), UU( LDU, * ), UZ( LDU, * ),
      $                   WI1( * ), WI2( * ), WI3( * ), WORK( * ),
@@ -461,7 +470,7 @@
       EXTERNAL           SCOPY, SGEHRD, SGEMM, SGET10, SGET22, SHSEIN,
      $                   SHSEQR, SHST01, SLABAD, SLACPY, SLAFTS, SLASET,
      $                   SLASUM, SLATME, SLATMR, SLATMS, SORGHR, SORMHR,
-     $                   STREVC, XERBLA
+     $                   STREVC, STREVC3, XERBLA
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          ABS, MAX, MIN, REAL, SQRT
@@ -561,7 +570,7 @@
 *
 *           Initialize RESULT
 *
-            DO 30 J = 1, 14
+            DO 30 J = 1, 16
                RESULT( J ) = ZERO
    30       CONTINUE
 *
@@ -1106,6 +1115,64 @@
      $                      WI3, WORK, DUMMA( 3 ) )
                IF( DUMMA( 3 ).LT.ULPINV )
      $            RESULT( 14 ) = DUMMA( 3 )*ANINV
+            END IF
+*
+*           Compute Left and Right Eigenvectors of A
+*
+*           Compute a Right eigenvector matrix:
+*
+            NTEST = 15
+            RESULT( 15 ) = ULPINV
+*
+            CALL SLACPY( ' ', N, N, UZ, LDU, EVECTR, LDU )
+*
+            CALL STREVC3( 'Right', 'Back', SELECT, N, T1, LDA, DUMMA,
+     $                    LDU, EVECTR, LDU, N, IN, WORK, NWORK, IINFO )
+            IF( IINFO.NE.0 ) THEN
+               WRITE( NOUNIT, FMT = 9999 )'STREVC3(R,B)', IINFO, N,
+     $            JTYPE, IOLDSD
+               INFO = ABS( IINFO )
+               GO TO 250
+            END IF
+*
+*           Test 15:  | AR - RW | / ( |A| |R| ulp )
+*
+*                     (from Schur decomposition)
+*
+            CALL SGET22( 'N', 'N', 'N', N, A, LDA, EVECTR, LDU, WR1,
+     $                   WI1, WORK, DUMMA( 1 ) )
+            RESULT( 15 ) = DUMMA( 1 )
+            IF( DUMMA( 2 ).GT.THRESH ) THEN
+               WRITE( NOUNIT, FMT = 9998 )'Right', 'STREVC3',
+     $            DUMMA( 2 ), N, JTYPE, IOLDSD
+            END IF
+*
+*           Compute a Left eigenvector matrix:
+*
+            NTEST = 16
+            RESULT( 16 ) = ULPINV
+*
+            CALL SLACPY( ' ', N, N, UZ, LDU, EVECTL, LDU )
+*
+            CALL STREVC3( 'Left', 'Back', SELECT, N, T1, LDA, EVECTL,
+     $                    LDU, DUMMA, LDU, N, IN, WORK, NWORK, IINFO )
+            IF( IINFO.NE.0 ) THEN
+               WRITE( NOUNIT, FMT = 9999 )'STREVC3(L,B)', IINFO, N,
+     $            JTYPE, IOLDSD
+               INFO = ABS( IINFO )
+               GO TO 250
+            END IF
+*
+*           Test 16:  | LA - WL | / ( |A| |L| ulp )
+*
+*                     (from Schur decomposition)
+*
+            CALL SGET22( 'Trans', 'N', 'Conj', N, A, LDA, EVECTL, LDU,
+     $                   WR1, WI1, WORK, DUMMA( 3 ) )
+            RESULT( 16 ) = DUMMA( 3 )
+            IF( DUMMA( 4 ).GT.THRESH ) THEN
+               WRITE( NOUNIT, FMT = 9998 )'Left', 'STREVC3', DUMMA( 4 ),
+     $            N, JTYPE, IOLDSD
             END IF
 *
 *           End of Loop -- Check for RESULT(j) > THRESH
