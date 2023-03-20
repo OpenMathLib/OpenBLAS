@@ -21,7 +21,7 @@
 *       .. Array Arguments ..
 *       LOGICAL            DOTYPE( * ), SELECT( * )
 *       INTEGER            ISEED( 4 ), IWORK( * ), NN( * )
-*       DOUBLE PRECISION   RESULT( 14 ), RWORK( * )
+*       DOUBLE PRECISION   RESULT( 16 ), RWORK( * )
 *       COMPLEX*16         A( LDA, * ), EVECTL( LDU, * ),
 *      $                   EVECTR( LDU, * ), EVECTX( LDU, * ),
 *      $                   EVECTY( LDU, * ), H( LDA, * ), T1( LDA, * ),
@@ -64,10 +64,15 @@
 *>            eigenvectors of H.  Y is lower triangular, and X is
 *>            upper triangular.
 *>
+*>            ZTREVC3 computes left and right eigenvector matrices
+*>            from a Schur matrix T and backtransforms them with Z
+*>            to eigenvector matrices L and R for A. L and R are
+*>            GE matrices.
+*>
 *>    When ZCHKHS is called, a number of matrix "sizes" ("n's") and a
 *>    number of matrix "types" are specified.  For each size ("n")
 *>    and each type of matrix, one matrix will be generated and used
-*>    to test the nonsymmetric eigenroutines.  For each matrix, 14
+*>    to test the nonsymmetric eigenroutines.  For each matrix, 16
 *>    tests will be performed:
 *>
 *>    (1)     | A - U H U**H | / ( |A| n ulp )
@@ -97,6 +102,10 @@
 *>    (13)    | AX - XW | / ( |A| |X| ulp )
 *>
 *>    (14)    | Y**H A - W**H Y | / ( |A| |Y| ulp )
+*>
+*>    (15)    | AR - RW | / ( |A| |R| ulp )
+*>
+*>    (16)    | LA - WL | / ( |A| |L| ulp )
 *>
 *>    The "sizes" are specified by an array NN(1:NSIZES); the value of
 *>    each element NN(j) specifies one size.
@@ -331,7 +340,7 @@
 *>           Workspace.  Could be equivalenced to IWORK, but not RWORK.
 *>           Modified.
 *>
-*>  RESULT - DOUBLE PRECISION array, dimension (14)
+*>  RESULT - DOUBLE PRECISION array, dimension (16)
 *>           The values computed by the fourteen tests described above.
 *>           The values are currently limited to 1/ulp, to avoid
 *>           overflow.
@@ -421,7 +430,7 @@
 *     .. Array Arguments ..
       LOGICAL            DOTYPE( * ), SELECT( * )
       INTEGER            ISEED( 4 ), IWORK( * ), NN( * )
-      DOUBLE PRECISION   RESULT( 14 ), RWORK( * )
+      DOUBLE PRECISION   RESULT( 16 ), RWORK( * )
       COMPLEX*16         A( LDA, * ), EVECTL( LDU, * ),
      $                   EVECTR( LDU, * ), EVECTX( LDU, * ),
      $                   EVECTY( LDU, * ), H( LDA, * ), T1( LDA, * ),
@@ -464,7 +473,7 @@
       EXTERNAL           DLABAD, DLAFTS, DLASUM, XERBLA, ZCOPY, ZGEHRD,
      $                   ZGEMM, ZGET10, ZGET22, ZHSEIN, ZHSEQR, ZHST01,
      $                   ZLACPY, ZLASET, ZLATME, ZLATMR, ZLATMS, ZTREVC,
-     $                   ZUNGHR, ZUNMHR
+     $                   ZTREVC3, ZUNGHR, ZUNMHR
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          ABS, DBLE, MAX, MIN, SQRT
@@ -1065,6 +1074,66 @@
      $                      WORK, RWORK, DUMMA( 3 ) )
                IF( DUMMA( 3 ).LT.ULPINV )
      $            RESULT( 14 ) = DUMMA( 3 )*ANINV
+            END IF
+*
+*           Compute Left and Right Eigenvectors of A
+*
+*           Compute a Right eigenvector matrix:
+*
+            NTEST = 15
+            RESULT( 15 ) = ULPINV
+*
+            CALL ZLACPY( ' ', N, N, UZ, LDU, EVECTR, LDU )
+*
+            CALL ZTREVC3( 'Right', 'Back', SELECT, N, T1, LDA, CDUMMA,
+     $                    LDU, EVECTR, LDU, N, IN, WORK, NWORK, RWORK,
+     $                    N, IINFO )
+            IF( IINFO.NE.0 ) THEN
+               WRITE( NOUNIT, FMT = 9999 )'ZTREVC3(R,B)', IINFO, N,
+     $            JTYPE, IOLDSD
+               INFO = ABS( IINFO )
+               GO TO 250
+            END IF
+*
+*           Test 15:  | AR - RW | / ( |A| |R| ulp )
+*
+*                     (from Schur decomposition)
+*
+            CALL ZGET22( 'N', 'N', 'N', N, A, LDA, EVECTR, LDU, W1,
+     $                   WORK, RWORK, DUMMA( 1 ) )
+            RESULT( 15 ) = DUMMA( 1 )
+            IF( DUMMA( 2 ).GT.THRESH ) THEN
+               WRITE( NOUNIT, FMT = 9998 )'Right', 'ZTREVC3',
+     $            DUMMA( 2 ), N, JTYPE, IOLDSD
+            END IF
+*
+*           Compute a Left eigenvector matrix:
+*
+            NTEST = 16
+            RESULT( 16 ) = ULPINV
+*
+            CALL ZLACPY( ' ', N, N, UZ, LDU, EVECTL, LDU )
+*
+            CALL ZTREVC3( 'Left', 'Back', SELECT, N, T1, LDA, EVECTL,
+     $                    LDU, CDUMMA, LDU, N, IN, WORK, NWORK, RWORK,
+     $                    N, IINFO )
+            IF( IINFO.NE.0 ) THEN
+               WRITE( NOUNIT, FMT = 9999 )'ZTREVC3(L,B)', IINFO, N,
+     $            JTYPE, IOLDSD
+               INFO = ABS( IINFO )
+               GO TO 250
+            END IF
+*
+*           Test 16:  | LA - WL | / ( |A| |L| ulp )
+*
+*                     (from Schur decomposition)
+*
+            CALL ZGET22( 'Conj', 'N', 'Conj', N, A, LDA, EVECTL, LDU,
+     $                   W1, WORK, RWORK, DUMMA( 3 ) )
+            RESULT( 16 ) = DUMMA( 3 )
+            IF( DUMMA( 4 ).GT.THRESH ) THEN
+               WRITE( NOUNIT, FMT = 9998 )'Left', 'ZTREVC3', DUMMA( 4 ),
+     $            N, JTYPE, IOLDSD
             END IF
 *
 *           End of Loop -- Check for RESULT(j) > THRESH
