@@ -304,7 +304,7 @@
 *>            -> the minimal requirement is LWORK >= 3*N.
 *>            -> For optimal performance, 
 *>               LWORK >= max(N+(N+1)*NB, 2*N+N*NB)=2*N+N*NB,
-*>               where NB is the optimal block size for ZGEQP3, ZGEQRF, ZGELQ,
+*>               where NB is the optimal block size for ZGEQP3, ZGEQRF, ZGELQF,
 *>               ZUNMLQ. In general, the optimal length LWORK is computed as
 *>               LWORK >= max(N+LWORK(ZGEQP3), N+LWORK(ZGESVJ),
 *>                       N+LWORK(ZGELQF), 2*N+LWORK(ZGEQRF), N+LWORK(ZUNMLQ)).
@@ -313,7 +313,7 @@
 *>            -> the minimal requirement is LWORK >= 3*N.      
 *>            -> For optimal performance, 
 *>               LWORK >= max(N+(N+1)*NB, 2*N,2*N+N*NB)=2*N+N*NB,
-*>               where NB is the optimal block size for ZGEQP3, ZGEQRF, ZGELQ,
+*>               where NB is the optimal block size for ZGEQP3, ZGEQRF, ZGELQF,
 *>               ZUNMLQ. In general, the optimal length LWORK is computed as
 *>               LWORK >= max(N+LWORK(ZGEQP3), LWORK(ZPOCON), N+LWORK(ZGESVJ),
 *>                       N+LWORK(ZGELQF), 2*N+LWORK(ZGEQRF), N+LWORK(ZUNMLQ)).   
@@ -349,7 +349,7 @@
 *>
 *> \param[out] RWORK
 *> \verbatim
-*>          RWORK is DOUBLE PRECISION array, dimension (MAX(7,LWORK))
+*>          RWORK is DOUBLE PRECISION array, dimension (MAX(7,LRWORK))
 *>          On exit,
 *>          RWORK(1) = Determines the scaling factor SCALE = RWORK(2) / RWORK(1)
 *>                    such that SCALE*SVA(1:N) are the computed singular values

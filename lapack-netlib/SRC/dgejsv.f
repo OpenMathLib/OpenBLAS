@@ -224,7 +224,7 @@
 *>
 *> \param[out] U
 *> \verbatim
-*>          U is DOUBLE PRECISION array, dimension ( LDU, N )
+*>          U is DOUBLE PRECISION array, dimension ( LDU, N ) or ( LDU, M )
 *>          If JOBU = 'U', then U contains on exit the M-by-N matrix of
 *>                         the left singular vectors.
 *>          If JOBU = 'F', then U contains on exit the M-by-M matrix of
@@ -271,7 +271,7 @@
 *>
 *> \param[out] WORK
 *> \verbatim
-*>          WORK is DOUBLE PRECISION array, dimension (LWORK)
+*>          WORK is DOUBLE PRECISION array, dimension (MAX(7,LWORK))
 *>          On exit, if N > 0 .AND. M > 0 (else not referenced),
 *>          WORK(1) = SCALE = WORK(2) / WORK(1) is the scaling factor such
 *>                    that SCALE*SVA(1:N) are the computed singular values

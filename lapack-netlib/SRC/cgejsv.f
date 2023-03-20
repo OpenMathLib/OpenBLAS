@@ -304,7 +304,7 @@
 *>            -> the minimal requirement is LWORK >= 3*N.
 *>            -> For optimal performance, 
 *>               LWORK >= max(N+(N+1)*NB, 2*N+N*NB)=2*N+N*NB,
-*>               where NB is the optimal block size for CGEQP3, CGEQRF, CGELQ,
+*>               where NB is the optimal block size for CGEQP3, CGEQRF, CGELQF,
 *>               CUNMLQ. In general, the optimal length LWORK is computed as
 *>               LWORK >= max(N+LWORK(CGEQP3), N+LWORK(CGESVJ),
 *>                       N+LWORK(CGELQF), 2*N+LWORK(CGEQRF), N+LWORK(CUNMLQ)).
@@ -313,7 +313,7 @@
 *>            -> the minimal requirement is LWORK >= 3*N.      
 *>            -> For optimal performance, 
 *>               LWORK >= max(N+(N+1)*NB, 2*N,2*N+N*NB)=2*N+N*NB,
-*>               where NB is the optimal block size for CGEQP3, CGEQRF, CGELQ,
+*>               where NB is the optimal block size for CGEQP3, CGEQRF, CGELQF,
 *>               CUNMLQ. In general, the optimal length LWORK is computed as
 *>               LWORK >= max(N+LWORK(CGEQP3), LWORK(CPOCON), N+LWORK(CGESVJ),
 *>                       N+LWORK(CGELQF), 2*N+LWORK(CGEQRF), N+LWORK(CUNMLQ)).   
@@ -350,7 +350,7 @@
 *>
 *> \param[out] RWORK
 *> \verbatim
-*>          RWORK is REAL array, dimension (MAX(7,LWORK))
+*>          RWORK is REAL array, dimension (MAX(7,LRWORK))
 *>          On exit,
 *>          RWORK(1) = Determines the scaling factor SCALE = RWORK(2) / RWORK(1)
 *>                    such that SCALE*SVA(1:N) are the computed singular values
