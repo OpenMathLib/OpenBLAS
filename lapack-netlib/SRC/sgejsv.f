@@ -224,7 +224,7 @@
 *>
 *> \param[out] U
 *> \verbatim
-*>          U is REAL array, dimension ( LDU, N )
+*>          U is REAL array, dimension ( LDU, N ) or ( LDU, M )
 *>          If JOBU = 'U', then U contains on exit the M-by-N matrix of
 *>                         the left singular vectors.
 *>          If JOBU = 'F', then U contains on exit the M-by-M matrix of
@@ -271,7 +271,7 @@
 *>
 *> \param[out] WORK
 *> \verbatim
-*>          WORK is REAL array, dimension (LWORK)
+*>          WORK is REAL array, dimension (MAX(7,LWORK))
 *>          On exit,
 *>          WORK(1) = SCALE = WORK(2) / WORK(1) is the scaling factor such
 *>                    that SCALE*SVA(1:N) are the computed singular values
@@ -318,36 +318,36 @@
 *>               LWORK >= max(2*M+N,4*N+1,7). This is the minimal requirement.
 *>               ->> For optimal performance (blocked code) the optimal value
 *>               is LWORK >= max(2*M+N,3*N+(N+1)*NB,7). Here NB is the optimal
-*>               block size for DGEQP3 and DGEQRF.
+*>               block size for SGEQP3 and SGEQRF.
 *>               In general, optimal LWORK is computed as
-*>               LWORK >= max(2*M+N,N+LWORK(DGEQP3),N+LWORK(DGEQRF), 7).
+*>               LWORK >= max(2*M+N,N+LWORK(SGEQP3),N+LWORK(SGEQRF), 7).
 *>            -> .. an estimate of the scaled condition number of A is
 *>               required (JOBA='E', 'G'). In this case, LWORK is the maximum
 *>               of the above and N*N+4*N, i.e. LWORK >= max(2*M+N,N*N+4*N,7).
 *>               ->> For optimal performance (blocked code) the optimal value
 *>               is LWORK >= max(2*M+N,3*N+(N+1)*NB, N*N+4*N, 7).
 *>               In general, the optimal length LWORK is computed as
-*>               LWORK >= max(2*M+N,N+LWORK(DGEQP3),N+LWORK(DGEQRF),
-*>                                                     N+N*N+LWORK(DPOCON),7).
+*>               LWORK >= max(2*M+N,N+LWORK(SGEQP3),N+LWORK(SGEQRF),
+*>                                                     N+N*N+LWORK(SPOCON),7).
 *>
 *>          If SIGMA and the right singular vectors are needed (JOBV = 'V'),
 *>            -> the minimal requirement is LWORK >= max(2*M+N,4*N+1,7).
 *>            -> For optimal performance, LWORK >= max(2*M+N,3*N+(N+1)*NB,7),
-*>               where NB is the optimal block size for DGEQP3, DGEQRF, DGELQ,
-*>               DORMLQ. In general, the optimal length LWORK is computed as
-*>               LWORK >= max(2*M+N,N+LWORK(DGEQP3), N+LWORK(DPOCON),
-*>                       N+LWORK(DGELQ), 2*N+LWORK(DGEQRF), N+LWORK(DORMLQ)).
+*>               where NB is the optimal block size for SGEQP3, SGEQRF, SGELQF,
+*>               SORMLQ. In general, the optimal length LWORK is computed as
+*>               LWORK >= max(2*M+N,N+LWORK(SGEQP3), N+LWORK(SPOCON),
+*>                       N+LWORK(SGELQF), 2*N+LWORK(SGEQRF), N+LWORK(SORMLQ)).
 *>
 *>          If SIGMA and the left singular vectors are needed
 *>            -> the minimal requirement is LWORK >= max(2*M+N,4*N+1,7).
 *>            -> For optimal performance:
 *>               if JOBU = 'U' :: LWORK >= max(2*M+N,3*N+(N+1)*NB,7),
 *>               if JOBU = 'F' :: LWORK >= max(2*M+N,3*N+(N+1)*NB,N+M*NB,7),
-*>               where NB is the optimal block size for DGEQP3, DGEQRF, DORMQR.
+*>               where NB is the optimal block size for SGEQP3, SGEQRF, SORMQR.
 *>               In general, the optimal length LWORK is computed as
-*>               LWORK >= max(2*M+N,N+LWORK(DGEQP3),N+LWORK(DPOCON),
-*>                        2*N+LWORK(DGEQRF), N+LWORK(DORMQR)).
-*>               Here LWORK(DORMQR) equals N*NB (for JOBU = 'U') or
+*>               LWORK >= max(2*M+N,N+LWORK(SGEQP3),N+LWORK(SPOCON),
+*>                        2*N+LWORK(SGEQRF), N+LWORK(SORMQR)).
+*>               Here LWORK(SORMQR) equals N*NB (for JOBU = 'U') or
 *>               M*NB (for JOBU = 'F').
 *>
 *>          If the full SVD is needed: (JOBU = 'U' or JOBU = 'F') and
@@ -357,12 +357,12 @@
 *>               LWORK >= max(2*M+N, 4*N+N*N,2*N+N*N+6).
 *>            -> For optimal performance, LWORK should be additionally
 *>               larger than N+M*NB, where NB is the optimal block size
-*>               for DORMQR.
+*>               for SORMQR.
 *> \endverbatim
 *>
 *> \param[out] IWORK
 *> \verbatim
-*>          IWORK is INTEGER array, dimension (M+3*N).
+*>          IWORK is INTEGER array, dimension (MAX(3,M+3*N)).
 *>          On exit,
 *>          IWORK(1) = the numerical rank determined after the initial
 *>                     QR factorization with pivoting. See the descriptions
