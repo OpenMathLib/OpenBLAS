@@ -30,29 +30,29 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "common.h"
 
 #if !defined(DOUBLE)
-#define VSETVL(n) vsetvl_e32m2(n)
-#define FLOAT_V_T vfloat32m2_t
-#define VLEV_FLOAT vle32_v_f32m2
-#define VLSEV_FLOAT vlse32_v_f32m2
-#define VSEV_FLOAT vse32_v_f32m2
-#define VBOOL_T vbool16_t
-#define UINT_V_T vuint32m2_t
-#define VID_V_UINT vid_v_u32m2
-#define VMSLTU_VX_UINT vmsltu_vx_u32m2_b16
-#define VMSEQ_VX_UINT vmseq_vx_u32m2_b16
-#define VFMERGE_VFM_FLOAT  vfmerge_vfm_f32m2
+#define VSETVL(n)               __riscv_vsetvl_e32m2(n)
+#define FLOAT_V_T               vfloat32m2_t
+#define VLEV_FLOAT              __riscv_vle32_v_f32m2
+#define VLSEV_FLOAT             __riscv_vlse32_v_f32m2
+#define VSEV_FLOAT              __riscv_vse32_v_f32m2
+#define VBOOL_T                 vbool16_t
+#define UINT_V_T                vuint32m2_t
+#define VID_V_UINT              __riscv_vid_v_u32m2
+#define VMSLTU_VX_UINT          __riscv_vmsltu_vx_u32m2_b16
+#define VMSEQ_VX_UINT           __riscv_vmseq_vx_u32m2_b16
+#define VFMERGE_VFM_FLOAT       __riscv_vfmerge_vfm_f32m2
 #else
-#define VSETVL(n) vsetvl_e64m2(n)
-#define FLOAT_V_T vfloat64m2_t
-#define VLEV_FLOAT vle64_v_f64m2
-#define VLSEV_FLOAT vlse64_v_f64m2
-#define VSEV_FLOAT vse64_v_f64m2
-#define VBOOL_T     vbool32_t
-#define UINT_V_T    vuint64m2_t
-#define VID_V_UINT   vid_v_u64m2
-#define VMSLTU_VX_UINT vmsltu_vx_u64m2_b32
-#define VMSEQ_VX_UINT vmseq_vx_u64m2_b32
-#define VFMERGE_VFM_FLOAT  vfmerge_vfm_f64m2
+#define VSETVL(n)               __riscv_vsetvl_e64m2(n)
+#define FLOAT_V_T               vfloat64m2_t
+#define VLEV_FLOAT              __riscv_vle64_v_f64m2
+#define VLSEV_FLOAT             __riscv_vlse64_v_f64m2
+#define VSEV_FLOAT              __riscv_vse64_v_f64m2
+#define VBOOL_T                 vbool32_t
+#define UINT_V_T                vuint64m2_t
+#define VID_V_UINT              __riscv_vid_v_u64m2
+#define VMSLTU_VX_UINT          __riscv_vmsltu_vx_u64m2_b32
+#define VMSEQ_VX_UINT           __riscv_vmseq_vx_u64m2_b32
+#define VFMERGE_VFM_FLOAT       __riscv_vfmerge_vfm_f64m2
 #endif
 
 // Optimizes the implementation in ../arm64/tmmm_uncopy_sve_v1.c
@@ -114,10 +114,10 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, BLASLONG posX, BLASLON
                 {
                     va1 = VLSEV_FLOAT(ao, stride_lda, vl);
                     vbool_cmp = VMSLTU_VX_UINT(vindex, j, vl);
-                    vb = VFMERGE_VFM_FLOAT(vbool_cmp, va1, ZERO, vl);
+                    vb = VFMERGE_VFM_FLOAT(va1, ZERO, vbool_cmp, vl);
 #ifdef UNIT
                     vbool_eq = VMSEQ_VX_UINT(vindex, j, vl);
-                    vb =  VFMERGE_VFM_FLOAT(vbool_eq, vb, ONE, vl);
+                    vb =  VFMERGE_VFM_FLOAT(vb, ONE, vbool_eq, vl);
 #endif
                     VSEV_FLOAT(b, vb, vl);
                     ao++;

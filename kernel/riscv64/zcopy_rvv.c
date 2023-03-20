@@ -28,29 +28,29 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "common.h"
 
 #if !defined(DOUBLE)
-#define VSETVL_M8(n) vsetvl_e32m8(n)
-#define FLOAT_V_T_M8 vfloat32m8_t
-#define VLEV_FLOAT_M8 vle32_v_f32m8
-#define VSEV_FLOAT_M8 vse32_v_f32m8
+#define VSETVL_M8(n)            __riscv_vsetvl_e32m8(n)
+#define FLOAT_V_T_M8            vfloat32m8_t
+#define VLEV_FLOAT_M8           __riscv_vle32_v_f32m8
+#define VSEV_FLOAT_M8           __riscv_vse32_v_f32m8
 
-#define VSETVL_M4(n) vsetvl_e32m4(n)
-#define FLOAT_V_T_M4 vfloat32m4_t
-#define VLSEG_FLOAT_M4 vlseg2e32_v_f32m4
-#define VSSEG_FLOAT_M4 vsseg2e32_v_f32m4
-#define VLSSEG_FLOAT_M4 vlsseg2e32_v_f32m4
-#define VSSSEG_FLOAT_M4 vssseg2e32_v_f32m4
+#define VSETVL_M4(n)            __riscv_vsetvl_e32m4(n)
+#define FLOAT_V_T_M4            vfloat32m4_t
+#define VLSEG_FLOAT_M4          __riscv_vlseg2e32_v_f32m4
+#define VSSEG_FLOAT_M4          __riscv_vsseg2e32_v_f32m4
+#define VLSSEG_FLOAT_M4         __riscv_vlsseg2e32_v_f32m4
+#define VSSSEG_FLOAT_M4         __riscv_vssseg2e32_v_f32m4
 #else
-#define VSETVL_M8(n) vsetvl_e64m8(n)
-#define FLOAT_V_T_M8 vfloat64m8_t
-#define VLEV_FLOAT_M8 vle64_v_f64m8
-#define VSEV_FLOAT_M8 vse64_v_f64m8
+#define VSETVL_M8(n)            __riscv_vsetvl_e64m8(n)
+#define FLOAT_V_T_M8            vfloat64m8_t
+#define VLEV_FLOAT_M8           __riscv_vle64_v_f64m8
+#define VSEV_FLOAT_M8           __riscv_vse64_v_f64m8
 
-#define VSETVL_M4(n) vsetvl_e64m4(n)
-#define FLOAT_V_T_M4 vfloat64m4_t
-#define VLSEG_FLOAT_M4 vlseg2e64_v_f64m4
-#define VSSEG_FLOAT_M4 vsseg2e64_v_f64m4
-#define VLSSEG_FLOAT_M4 vlsseg2e64_v_f64m4
-#define VSSSEG_FLOAT_M4 vssseg2e64_v_f64m4
+#define VSETVL_M4(n)            __riscv_vsetvl_e64m4(n)
+#define FLOAT_V_T_M4            vfloat64m4_t
+#define VLSEG_FLOAT_M4          __riscv_vlseg2e64_v_f64m4
+#define VSSEG_FLOAT_M4          __riscv_vsseg2e64_v_f64m4
+#define VLSSEG_FLOAT_M4         __riscv_vlsseg2e64_v_f64m4
+#define VSSSEG_FLOAT_M4         __riscv_vssseg2e64_v_f64m4
 #endif
 
 int CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG inc_y)

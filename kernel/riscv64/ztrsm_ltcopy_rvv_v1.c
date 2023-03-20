@@ -29,25 +29,25 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "common.h"
 
 #if !defined(DOUBLE)
-#define VSETVL(n) vsetvl_e32m2(n)
-#define FLOAT_V_T vfloat32m2_t
-#define VLSEG2_FLOAT vlseg2e32_v_f32m2
-#define VSSEG2_FLOAT vsseg2e32_v_f32m2
-#define VSSEG2_FLOAT_M vsseg2e32_v_f32m2_m
-#define VBOOL_T vbool16_t
-#define UINT_V_T vuint32m2_t
-#define VID_V_UINT vid_v_u32m2
-#define VMSGTU_VX_UINT vmsgtu_vx_u32m2_b16
+#define VSETVL(n)               __riscv_vsetvl_e32m2(n)
+#define FLOAT_V_T               vfloat32m2_t
+#define VLSEG2_FLOAT            __riscv_vlseg2e32_v_f32m2
+#define VSSEG2_FLOAT            __riscv_vsseg2e32_v_f32m2
+#define VSSEG2_FLOAT_M          __riscv_vsseg2e32_v_f32m2_m
+#define VBOOL_T                 vbool16_t
+#define UINT_V_T                vuint32m2_t
+#define VID_V_UINT              __riscv_vid_v_u32m2
+#define VMSGTU_VX_UINT          __riscv_vmsgtu_vx_u32m2_b16
 #else
-#define VSETVL(n) vsetvl_e64m2(n)
-#define FLOAT_V_T vfloat64m2_t
-#define VLSEG2_FLOAT vlseg2e64_v_f64m2
-#define VSSEG2_FLOAT vsseg2e64_v_f64m2
-#define VSSEG2_FLOAT_M vsseg2e64_v_f64m2_m
-#define VBOOL_T     vbool32_t
-#define UINT_V_T     vuint64m2_t
-#define VID_V_UINT   vid_v_u64m2
-#define VMSGTU_VX_UINT vmsgtu_vx_u64m2_b32
+#define VSETVL(n)               __riscv_vsetvl_e64m2(n)
+#define FLOAT_V_T               vfloat64m2_t
+#define VLSEG2_FLOAT            __riscv_vlseg2e64_v_f64m2
+#define VSSEG2_FLOAT            __riscv_vsseg2e64_v_f64m2
+#define VSSEG2_FLOAT_M          __riscv_vsseg2e64_v_f64m2_m
+#define VBOOL_T                 vbool32_t
+#define UINT_V_T                vuint64m2_t
+#define VID_V_UINT              __riscv_vid_v_u64m2
+#define VMSGTU_VX_UINT          __riscv_vmsgtu_vx_u64m2_b32
 #endif
 
 int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, BLASLONG offset, FLOAT *b){

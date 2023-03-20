@@ -28,25 +28,25 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "common.h"
 
 #if !defined(DOUBLE)
-#define VSETVL(n) vsetvl_e32m2(n)
-#define FLOAT_V_T vfloat32m2_t
-#define VLEV_FLOAT vle32_v_f32m2
-#define VSEV_FLOAT vse32_v_f32m2
-#define VLSEG2_FLOAT vlseg2e32_v_f32m2
-#define VSSEG2_FLOAT vsseg2e32_v_f32m2
-#define VFMVVF_FLOAT vfmv_v_f_f32m2
-#define VFMACCVF_FLOAT vfmacc_vf_f32m2
-#define VFNMSACVF_FLOAT vfnmsac_vf_f32m2
+#define VSETVL(n)               __riscv_vsetvl_e32m2(n)
+#define FLOAT_V_T               vfloat32m2_t
+#define VLEV_FLOAT              __riscv_vle32_v_f32m2
+#define VSEV_FLOAT              __riscv_vse32_v_f32m2
+#define VLSEG2_FLOAT            __riscv_vlseg2e32_v_f32m2
+#define VSSEG2_FLOAT            __riscv_vsseg2e32_v_f32m2
+#define VFMVVF_FLOAT            __riscv_vfmv_v_f_f32m2
+#define VFMACCVF_FLOAT          __riscv_vfmacc_vf_f32m2
+#define VFNMSACVF_FLOAT         __riscv_vfnmsac_vf_f32m2
 #else
-#define VSETVL(n) vsetvl_e64m2(n)
-#define FLOAT_V_T vfloat64m2_t
-#define VLEV_FLOAT vle64_v_f64m2
-#define VSEV_FLOAT vse64_v_f64m2
-#define VLSEG2_FLOAT vlseg2e64_v_f64m2
-#define VSSEG2_FLOAT vsseg2e64_v_f64m2
-#define VFMVVF_FLOAT vfmv_v_f_f64m2
-#define VFMACCVF_FLOAT vfmacc_vf_f64m2
-#define VFNMSACVF_FLOAT vfnmsac_vf_f64m2
+#define VSETVL(n)               __riscv_vsetvl_e64m2(n)
+#define FLOAT_V_T               vfloat64m2_t
+#define VLEV_FLOAT              __riscv_vle64_v_f64m2
+#define VSEV_FLOAT              __riscv_vse64_v_f64m2
+#define VLSEG2_FLOAT            __riscv_vlseg2e64_v_f64m2
+#define VSSEG2_FLOAT            __riscv_vsseg2e64_v_f64m2
+#define VFMVVF_FLOAT            __riscv_vfmv_v_f_f64m2
+#define VFMACCVF_FLOAT          __riscv_vfmacc_vf_f64m2
+#define VFNMSACVF_FLOAT         __riscv_vfnmsac_vf_f64m2
 #endif
 
 #if defined(NN) || defined(NT) || defined(TN) || defined(TT)
