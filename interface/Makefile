@@ -122,8 +122,9 @@ ZBLAS2OBJS    = \
 		zgemv.$(SUFFIX) zgeru.$(SUFFIX) zgerc.$(SUFFIX) \
 		ztrsv.$(SUFFIX) ztrmv.$(SUFFIX) \
 		zsyr2.$(SUFFIX) zgbmv.$(SUFFIX) \
-		zsbmv.$(SUFFIX) \
-		zspr2.$(SUFFIX) \
+		zsbmv.$(SUFFIX) zspmv.$(SUFFIX) \
+		zspr.$(SUFFIX)  zspr2.$(SUFFIX) \
+		zsymv.$(SUFFIX) zsyr.$(SUFFIX)  \
 		ztbsv.$(SUFFIX) ztbmv.$(SUFFIX) \
 		ztpsv.$(SUFFIX) ztpmv.$(SUFFIX) \
 		zhemv.$(SUFFIX) zhbmv.$(SUFFIX) \
