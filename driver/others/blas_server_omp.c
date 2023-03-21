@@ -112,8 +112,6 @@ void goto_set_num_threads(int num_threads) {
 
   blas_cpu_number  = num_threads;
 
-  omp_set_num_threads(blas_cpu_number);
-
   adjust_thread_buffers();
 #if defined(ARCH_MIPS64)
   //set parameters for different number of threads.
