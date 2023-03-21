@@ -92,7 +92,7 @@ CBLAS2OBJS    = \
 		cgemv.$(SUFFIX) cgeru.$(SUFFIX) cgerc.$(SUFFIX) \
 		ctrsv.$(SUFFIX) ctrmv.$(SUFFIX) \
 		csyr2.$(SUFFIX) cgbmv.$(SUFFIX) \
-		csbmv.$(SUFFIX) cspmv.$(SUFFIX) \ 
+		csbmv.$(SUFFIX) cspmv.$(SUFFIX) \
 		cspr.$(SUFFIX)  cspr2.$(SUFFIX) \
 		csymv.$(SUFFIX) csyr.$(SUFFIX)  \
 		ctbsv.$(SUFFIX) ctbmv.$(SUFFIX) \
