@@ -138,9 +138,9 @@ typedef struct blas_queue {
 extern int blas_server_avail;
 
 static __inline int num_cpu_avail(int level) {
-int openmp_nthreads;
 
 #ifdef USE_OPENMP
+int openmp_nthreads;
 	if (blas_num_threads_set == 0)
 	openmp_nthreads=omp_get_max_threads();
 	else
