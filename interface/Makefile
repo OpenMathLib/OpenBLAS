@@ -92,8 +92,9 @@ CBLAS2OBJS    = \
 		cgemv.$(SUFFIX) cgeru.$(SUFFIX) cgerc.$(SUFFIX) \
 		ctrsv.$(SUFFIX) ctrmv.$(SUFFIX) \
 		csyr2.$(SUFFIX) cgbmv.$(SUFFIX) \
-		csbmv.$(SUFFIX) \
-		cspr2.$(SUFFIX) \
+		csbmv.$(SUFFIX) cspmv.$(SUFFIX) \
+		cspr.$(SUFFIX)  cspr2.$(SUFFIX) \
+		csymv.$(SUFFIX) csyr.$(SUFFIX)  \
 		ctbsv.$(SUFFIX) ctbmv.$(SUFFIX) \
 		ctpsv.$(SUFFIX) ctpmv.$(SUFFIX) \
 		chemv.$(SUFFIX) chbmv.$(SUFFIX) \
@@ -121,8 +122,9 @@ ZBLAS2OBJS    = \
 		zgemv.$(SUFFIX) zgeru.$(SUFFIX) zgerc.$(SUFFIX) \
 		ztrsv.$(SUFFIX) ztrmv.$(SUFFIX) \
 		zsyr2.$(SUFFIX) zgbmv.$(SUFFIX) \
-		zsbmv.$(SUFFIX) \
-		zspr2.$(SUFFIX) \
+		zsbmv.$(SUFFIX) zspmv.$(SUFFIX) \
+		zspr.$(SUFFIX)  zspr2.$(SUFFIX) \
+		zsymv.$(SUFFIX) zsyr.$(SUFFIX)  \
 		ztbsv.$(SUFFIX) ztbmv.$(SUFFIX) \
 		ztpsv.$(SUFFIX) ztpmv.$(SUFFIX) \
 		zhemv.$(SUFFIX) zhbmv.$(SUFFIX) \
