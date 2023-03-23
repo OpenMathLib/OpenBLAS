@@ -180,6 +180,9 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_UPLO Uplo, blasint n, FLOAT alpha,
   buffer = (FLOAT *)blas_memory_alloc(1);
 
 #ifdef SMP
+  if (n <200)
+	  nthreads=1;
+  else
   nthreads = num_cpu_avail(2);
 
   if (nthreads == 1) {
