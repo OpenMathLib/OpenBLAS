@@ -823,6 +823,24 @@ if (DEFINED CORE AND CMAKE_CROSSCOMPILING AND NOT (${HOST_OS} STREQUAL "WINDOWSS
       set(CGEMM3M_UNROLL_N 4)
       set(ZGEMM3M_UNROLL_M 4)
       set(ZGEMM3M_UNROLL_N 4)
+  elseif ("${TCORE}" STREQUAL "ARMV6")
+    file(APPEND ${TARGET_CONF_TEMP}
+      "#define L1_DATA_SIZE\t65536\n"
+      "#define L1_DATA_LINESIZE\t32\n"
+      "#define L2_SIZE\t512488\n"
+      "#define L2_LINESIZE\t32\n"
+      "#define DTB_DEFAULT_ENTRIES\t64\n"
+      "#define DTB_SIZE\t4096\n"
+      "#define L2_ASSOCIATIVE\t4\n"
+      "#define HAVE_VFP\n")
+    set(SGEMM_UNROLL_M 4)
+    set(SGEMM_UNROLL_N 2)
+    set(DGEMM_UNROLL_M 4)
+    set(DGEMM_UNROLL_N 2)
+    set(CGEMM_UNROLL_M 2)
+    set(CGEMM_UNROLL_N 2)
+    set(ZGEMM_UNROLL_M 2)
+    set(ZGEMM_UNROLL_N 2)
   elseif ("${TCORE}" STREQUAL "ARMV7")
     file(APPEND ${TARGET_CONF_TEMP}
       "#define L1_DATA_SIZE\t65536\n"
