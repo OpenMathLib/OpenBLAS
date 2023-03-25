@@ -831,7 +831,7 @@ if (DEFINED CORE AND CMAKE_CROSSCOMPILING AND NOT (${HOST_OS} STREQUAL "WINDOWSS
       "#define L2_LINESIZE\t32\n"
       "#define DTB_DEFAULT_ENTRIES\t64\n"
       "#define DTB_SIZE\t4096\n"
-      "#define L2_ASSOCIATIVE\t4\n"
+      "#define L2_ASSOCIATIVE\t4\n")
     set(SGEMM_UNROLL_M 2)
     set(SGEMM_UNROLL_N 2)
     set(DGEMM_UNROLL_M 2)
