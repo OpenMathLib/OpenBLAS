@@ -35,61 +35,9 @@ int CNAME(BLASLONG m, BLASLONG n, IFLOAT *a, BLASLONG lda, IFLOAT *b) {
   a_offset = a;
   b_offset = b;
 
-  uint16x8_t v0, v1, v2, v3, v4, v5, v6, v7;
   uint16x4_t v0_h, v1_h, v2_h, v3_h, v4_h, v5_h, v6_h, v7_h;
 
-  for (BLASLONG j = 0; j < n / 8; j++) {
-    a_offset0 = a_offset;
-    a_offset1 = a_offset0 + lda;
-    a_offset2 = a_offset1 + lda;
-    a_offset3 = a_offset2 + lda;
-    a_offset += 8;
-
-    for (BLASLONG i = 0; i < m / 4; i++) {
-      v0 = vld1q_u16(a_offset0);
-      v1 = vld1q_u16(a_offset1);
-      v2 = vld1q_u16(a_offset2);
-      v3 = vld1q_u16(a_offset3);
-
-      v4 = vtrn1q_u16(v0, v1);
-      v5 = vtrn2q_u16(v0, v1);
-      v6 = vtrn1q_u16(v2, v3);
-      v7 = vtrn2q_u16(v2, v3);
-
-      v0 = (uint16x8_t)vtrn1q_u32((uint32x4_t)v4, (uint32x4_t)v6);
-      v1 = (uint16x8_t)vtrn1q_u32((uint32x4_t)v5, (uint32x4_t)v7);
-      v2 = (uint16x8_t)vtrn2q_u32((uint32x4_t)v4, (uint32x4_t)v6);
-      v3 = (uint16x8_t)vtrn2q_u32((uint32x4_t)v5, (uint32x4_t)v7);
-
-      vst1_u16(b_offset, vget_low_u16(v0));
-      vst1_u16(b_offset + 4, vget_low_u16(v1));
-      vst1_u16(b_offset + 8, vget_low_u16(v2));
-      vst1_u16(b_offset + 12, vget_low_u16(v3));
-      vst1_u16(b_offset + 16, vget_high_u16(v0));
-      vst1_u16(b_offset + 20, vget_high_u16(v1));
-      vst1_u16(b_offset + 24, vget_high_u16(v2));
-      vst1_u16(b_offset + 28, vget_high_u16(v3));
-
-      b_offset += 32;
-      a_offset0 += 4 * lda;
-      a_offset1 += 4 * lda;
-      a_offset2 += 4 * lda;
-      a_offset3 += 4 * lda;
-    }
-
-    if (m & 3) {
-      BLASLONG rest = m & 3;
-      for (BLASLONG line = 0; line < 8; line++) {
-        b_offset[line * 4] = a_offset0[line];
-        b_offset[line * 4 + 1] = rest == 1 ? 0 : a_offset1[line];
-        b_offset[line * 4 + 2] = rest <= 2 ? 0 : a_offset2[line];
-        b_offset[line * 4 + 3] = rest <= 3 ? 0 : a_offset3[line];
-      }
-      b_offset += 32;
-    }
-  }
-
-  if (n & 4) {
+  for (BLASLONG j = 0; j < n / 4; j++) {
     a_offset0 = a_offset;
     a_offset1 = a_offset0 + lda;
     a_offset2 = a_offset1 + lda;

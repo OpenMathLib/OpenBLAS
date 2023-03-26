@@ -190,10 +190,10 @@ ZGEMMOTCOPYOBJ =  zgemm_otcopy$(TSUFFIX).$(SUFFIX)
 
 SBGEMM_BETA    =  sbgemm_beta_neoversen2.c
 SBGEMMKERNEL    = sbgemm_kernel_$(SBGEMM_UNROLL_M)x$(SBGEMM_UNROLL_N)_neoversen2.c
-SBGEMMINCOPY    = sbgemm_ncopy_$(SBGEMM_UNROLL_N)_neoversen2.c
+SBGEMMINCOPY    = sbgemm_ncopy_$(SBGEMM_UNROLL_M)_neoversen2.c
 SBGEMMITCOPY    = sbgemm_tcopy_$(SBGEMM_UNROLL_M)_neoversen2.c
 SBGEMMONCOPY    = sbgemm_ncopy_$(SBGEMM_UNROLL_N)_neoversen2.c
-SBGEMMOTCOPY    = sbgemm_tcopy_$(SBGEMM_UNROLL_M)_neoversen2.c
+SBGEMMOTCOPY    = sbgemm_tcopy_$(SBGEMM_UNROLL_N)_neoversen2.c
 SBGEMMINCOPYOBJ =  sbgemm_incopy$(TSUFFIX).$(SUFFIX)
 SBGEMMITCOPYOBJ =  sbgemm_itcopy$(TSUFFIX).$(SUFFIX)
 SBGEMMONCOPYOBJ =  sbgemm_oncopy$(TSUFFIX).$(SUFFIX)
