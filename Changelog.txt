@@ -1,5 +1,81 @@
 OpenBLAS ChangeLog
 ====================================================================
+Version 0.3.22
+ 26-Mar-2023
+
+general:
+ - Updated the included LAPACK to Reference-LAPACK release 3.11.0
+   plus post-release corrections and improvements
+ - Added initial support for processing with the EMSCRIPTEN javascript
+   converter (yielding a single-threaded build only)
+ - Added a threshold for multithreading in SYMM, SYMV and SYR2K
+ - Increased the threshold for multithreading in SYRK
+ - OpenBLAS no longer decreases the global OMP_NUM_THREADS when it
+   exceeds the maximum thread count the library was compiled for.
+ - fixed ?GETF2 potentially returning NaN with tiny matrix elements
+ - fixed openblas_set_num_threads to work in USE_OPENMP builds
+ - fixed cpu core counting in USE_OPENMP builds returning the number
+   of OMP "places" rather than cores
+ - fixed interpretation of USE_PERL=0 in build scripts
+ - fixed linking of the library with libm in CMAKE builds
+ - fixed startup delays resulting from a wrong default setting of 
+   NO_WARMUP in CMAKE builds
+ - fixed inconsistent defaults for overriding of LAPACK SPMV, SPR, 
+   SYMV, SYR functions in gmake and CMAKE builds
+ - fixed stride calculation in the optimized small-matrix path of 
+   complex SYR
+ - fixed compilation of ReLAPACK with CMAKE
+ - fixed pkgconfig file contents for INTERFACE64 builds
+ - fixed building of Reference-LAPACK with recent gfortran
+ - fixed building with only a subset of precision types on Windows
+ - added new environment variable OPENBLAS_DEFAULT_NUM_THREADS
+ - added a GEMV-based implementation of GEMMT 
+ - added support for building under QNX
+ - updated support for (cross-)building for ALPHA targets
+
+x86_64:
+ - added autodetection of Intel Raptor Lake cpu models
+ - added SSCAL microkernels for Haswell and newer targets
+ - improved the performance of the Haswell DSCAL microkernel
+ - added CSCAL and ZSCAL microkernels for SkylakeX targets
+ - fixed detection of gfortran and Cray CCE compilers
+ - fixed detection of recent versions of the Intel Fortran compiler
+ - fixed compilation with LLVM to no longer run out of AVX512 registers
+ - fix cpu type option setting with recent NVIDIA HPC compiler versions
+ - fixed compilation for/on AMD Ryzen 4 cpus
+ - fixed compilation of AVX2-capable targets with Apple Clang
+ - fixed runtime selection of COOPERLAKE in DYNAMIC_ARCH builds
+ - worked around gcc/llvm using risky FMA operations in CSCAL/ZSCAL
+ - worked around miscompilations of GEMV, SYMV and ZDOT kernels
+   by gcc12's tree-vectorizer on OSX and Windows
+
+ARM:
+ - fixed cross-compilation to ARMV5 and ARMV6 targets with CMAKE
+
+ARMV8:
+ - fixed cross-compilation to CortexA53 with CMAKE
+ - fixed compilation with CMAKE and "Arm Compiler for Linux 22.1"
+ - added cpu autodetection for Cortex X3 and A715
+ - fixed conditional compilation of SVE-capable targets in DYNAMIC_ARCH
+ - sped up SVE kernels by removing unnecessary prefetches
+ - improved the GEMM performance of Neoverse V1
+ - added SVE kernels for SDOT and DDOT
+ - added an SBGEMM kernel for Neoverse N2
+ - improved cpu-specific compiler option selection for Neoverse cpus
+ - added support for setting CONSISTENT_FPCSR 
+
+MIPS64:
+ - improved MSA capability detection and handling
+ - added a MIPS64_GENERIC build target
+ - fixed corner cases in DNRM2
+
+LOONGARCH64:
+ - fixed handling of the INTERFACE64 option
+
+RISCV:
+ - fixed handling of the INTERFACE64 option
+
+====================================================================
 Version 0.3.21
  07-Aug-2022
 
