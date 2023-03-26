@@ -626,7 +626,7 @@ real slanst_(char *norm, integer *n, real *d__, real *e)
     extern logical lsame_(char *, char *);
     real anorm;
     extern logical sisnan_(real *);
-    extern /* Subroutine */ int slassq_(integer *, real *, integer *, real *, 
+    extern /* Subroutine */ void slassq_(integer *, real *, integer *, real *, 
 	    real *);
     real sum;
 

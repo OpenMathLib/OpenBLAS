@@ -685,7 +685,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int slahrd_(integer *n, integer *k, integer *nb, real *a, 
+/* Subroutine */ void slahrd_(integer *n, integer *k, integer *nb, real *a, 
 	integer *lda, real *tau, real *t, integer *ldt, real *y, integer *ldy)
 {
     /* System generated locals */
@@ -695,14 +695,14 @@ f"> */
 
     /* Local variables */
     integer i__;
-    extern /* Subroutine */ int sscal_(integer *, real *, real *, integer *), 
+    extern /* Subroutine */ void sscal_(integer *, real *, real *, integer *), 
 	    sgemv_(char *, integer *, integer *, real *, real *, integer *, 
 	    real *, integer *, real *, real *, integer *), scopy_(
 	    integer *, real *, integer *, real *, integer *), saxpy_(integer *
 	    , real *, real *, integer *, real *, integer *), strmv_(char *, 
 	    char *, char *, integer *, real *, integer *, real *, integer *);
     real ei;
-    extern /* Subroutine */ int slarfg_(integer *, real *, real *, integer *, 
+    extern /* Subroutine */ void slarfg_(integer *, real *, real *, integer *, 
 	    real *);
 
 
@@ -731,7 +731,7 @@ f"> */
 
     /* Function Body */
     if (*n <= 1) {
-	return 0;
+	return;
     }
 
     i__1 = *nb;
@@ -840,7 +840,7 @@ f"> */
     }
     a[*k + *nb + *nb * a_dim1] = ei;
 
-    return 0;
+    return;
 
 /*     End of SLAHRD */
 

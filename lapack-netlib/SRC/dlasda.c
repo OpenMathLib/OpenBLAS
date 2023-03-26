@@ -789,7 +789,7 @@ f"> */
 /* >     California at Berkeley, USA */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int dlasda_(integer *icompq, integer *smlsiz, integer *n, 
+/* Subroutine */ void dlasda_(integer *icompq, integer *smlsiz, integer *n, 
 	integer *sqre, doublereal *d__, doublereal *e, doublereal *u, integer 
 	*ldu, doublereal *vt, integer *k, doublereal *difl, doublereal *difr, 
 	doublereal *z__, doublereal *poles, integer *givptr, integer *givcol, 
@@ -807,23 +807,24 @@ f"> */
     integer idxq, nlvl, i__, j, m;
     doublereal alpha;
     integer inode, ndiml, ndimr, idxqi, itemp;
-    extern /* Subroutine */ int dcopy_(integer *, doublereal *, integer *, 
+    extern /* Subroutine */ void dcopy_(integer *, doublereal *, integer *, 
 	    doublereal *, integer *);
     integer sqrei, i1;
-    extern /* Subroutine */ int dlasd6_(integer *, integer *, integer *, 
+    extern /* Subroutine */ void dlasd6_(integer *, integer *, integer *, 
 	    integer *, doublereal *, doublereal *, doublereal *, doublereal *,
 	     doublereal *, integer *, integer *, integer *, integer *, 
 	    integer *, doublereal *, integer *, doublereal *, doublereal *, 
 	    doublereal *, doublereal *, integer *, doublereal *, doublereal *,
 	     doublereal *, integer *, integer *);
     integer ic, nwork1, lf, nd, nwork2, ll, nl, vf, nr, vl;
-    extern /* Subroutine */ int dlasdq_(char *, integer *, integer *, integer 
+    extern /* Subroutine */ void dlasdq_(char *, integer *, integer *, integer 
 	    *, integer *, integer *, doublereal *, doublereal *, doublereal *,
 	     integer *, doublereal *, integer *, doublereal *, integer *, 
 	    doublereal *, integer *), dlasdt_(integer *, integer *, 
 	    integer *, integer *, integer *, integer *, integer *), dlaset_(
 	    char *, integer *, integer *, doublereal *, doublereal *, 
-	    doublereal *, integer *), xerbla_(char *, integer *, ftnlen);
+	    doublereal *, integer *);
+    extern int xerbla_(char *, integer *, ftnlen);
     integer im1, smlszp, ncc, nlf, nrf, vfi, iwk, vli, lvl, nru, ndb1, nlp1, 
 	    lvl2, nrp1;
 
@@ -895,7 +896,7 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DLASDA", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
     m = *n + *sqre;
@@ -912,7 +913,7 @@ f"> */
 		    , ldu, &u[u_offset], ldu, &u[u_offset], ldu, &work[1], 
 		    info);
 	}
-	return 0;
+	return;
     }
 
 /*     Book-keeping and  set up the computation tree. */
@@ -979,7 +980,7 @@ f"> */
 		    ;
 	}
 	if (*info != 0) {
-	    return 0;
+	    return;
 	}
 	i__2 = nl;
 	for (j = 1; j <= i__2; ++j) {
@@ -1015,7 +1016,7 @@ f"> */
 		    ;
 	}
 	if (*info != 0) {
-	    return 0;
+	    return;
 	}
 	i__2 = nr;
 	for (j = 1; j <= i__2; ++j) {
@@ -1027,7 +1028,7 @@ f"> */
 
 /*     Now conquer each subproblem bottom-up. */
 
-    j = pow_ii(&c__2, &nlvl);
+    j = pow_ii(c__2, nlvl);
     for (lvl = nlvl; lvl >= 1; --lvl) {
 	lvl2 = (lvl << 1) - 1;
 
@@ -1039,7 +1040,7 @@ f"> */
 	    ll = 1;
 	} else {
 	    i__1 = lvl - 1;
-	    lf = pow_ii(&c__2, &i__1);
+	    lf = pow_ii(c__2, i__1);
 	    ll = (lf << 1) - 1;
 	}
 	i__1 = ll;
@@ -1080,14 +1081,14 @@ f"> */
 			&s[j], &work[nwork1], &iwork[iwk], info);
 	    }
 	    if (*info != 0) {
-		return 0;
+		return;
 	    }
 /* L40: */
 	}
 /* L50: */
     }
 
-    return 0;
+    return;
 
 /*     End of DLASDA */
 

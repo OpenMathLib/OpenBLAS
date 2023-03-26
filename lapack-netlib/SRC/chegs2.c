@@ -643,7 +643,7 @@ f"> */
 /* > \ingroup complexHEcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int chegs2_(integer *itype, char *uplo, integer *n, complex *
+/* Subroutine */ void chegs2_(integer *itype, char *uplo, integer *n, complex *
 	a, integer *lda, complex *b, integer *ldb, integer *info)
 {
     /* System generated locals */
@@ -652,20 +652,20 @@ f"> */
     complex q__1;
 
     /* Local variables */
-    extern /* Subroutine */ int cher2_(char *, integer *, complex *, complex *
+    extern /* Subroutine */ void cher2_(char *, integer *, complex *, complex *
 	    , integer *, complex *, integer *, complex *, integer *);
     integer k;
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int caxpy_(integer *, complex *, complex *, 
+    extern /* Subroutine */ void caxpy_(integer *, complex *, complex *, 
 	    integer *, complex *, integer *);
     logical upper;
-    extern /* Subroutine */ int ctrmv_(char *, char *, char *, integer *, 
+    extern /* Subroutine */ void ctrmv_(char *, char *, char *, integer *, 
 	    complex *, integer *, complex *, integer *), ctrsv_(char *, char *, char *, integer *, complex *, 
 	    integer *, complex *, integer *);
     complex ct;
-    extern /* Subroutine */ int clacgv_(integer *, complex *, integer *), 
-	    csscal_(integer *, real *, complex *, integer *), xerbla_(char *, 
-	    integer *, ftnlen);
+    extern /* Subroutine */ void clacgv_(integer *, complex *, integer *), 
+	    csscal_(integer *, real *, complex *, integer *);
+    extern int xerbla_(char *, integer *, ftnlen);
     real akk, bkk;
 
 
@@ -705,7 +705,7 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CHEGS2", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
     if (*itype == 1) {
@@ -883,7 +883,7 @@ f"> */
 	    }
 	}
     }
-    return 0;
+    return;
 
 /*     End of CHEGS2 */
 

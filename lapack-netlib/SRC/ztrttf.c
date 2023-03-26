@@ -726,7 +726,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int ztrttf_(char *transr, char *uplo, integer *n, 
+/* Subroutine */ void ztrttf_(char *transr, char *uplo, integer *n, 
 	doublecomplex *a, integer *lda, doublecomplex *arf, integer *info)
 {
     /* System generated locals */
@@ -776,7 +776,7 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZTRTTF", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
@@ -790,7 +790,7 @@ f"> */
 		arf[0].r = z__1.r, arf[0].i = z__1.i;
 	    }
 	}
-	return 0;
+	return;
     }
 
 /*     Size of array ARF(1:2,0:nt-1) */
@@ -1122,7 +1122,7 @@ f"> */
 
     }
 
-    return 0;
+    return;
 
 /*     End of ZTRTTF */
 

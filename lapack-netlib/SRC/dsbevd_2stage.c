@@ -753,7 +753,7 @@ static integer c__1 = 1;
 /* > \endverbatim */
 
 /*  ===================================================================== */
-/* Subroutine */ int dsbevd_2stage_(char *jobz, char *uplo, integer *n, 
+/* Subroutine */ void dsbevd_2stage_(char *jobz, char *uplo, integer *n, 
 	integer *kd, doublereal *ab, integer *ldab, doublereal *w, doublereal 
 	*z__, integer *ldz, doublereal *work, integer *lwork, integer *iwork, 
 	integer *liwork, integer *info)
@@ -767,7 +767,7 @@ static integer c__1 = 1;
     extern integer ilaenv2stage_(integer *, char *, char *, integer *, 
 	    integer *, integer *, integer *);
     doublereal anrm, rmin, rmax;
-    extern /* Subroutine */ int dsytrd_sb2st_(char *, char *, char *, 
+    extern /* Subroutine */ void dsytrd_sb2st_(char *, char *, char *, 
 	    integer *, integer *, doublereal *, integer *, doublereal *, 
 	    doublereal *, doublereal *, integer *, doublereal *, integer *, 
 	    integer *), dscal_(integer *, doublereal *
@@ -783,19 +783,19 @@ static integer c__1 = 1;
     integer indwk2, ib, llwrk2;
     extern doublereal dlamch_(char *);
     integer iscale;
-    extern /* Subroutine */ int dlascl_(char *, integer *, integer *, 
+    extern /* Subroutine */ void dlascl_(char *, integer *, integer *, 
 	    doublereal *, doublereal *, integer *, integer *, doublereal *, 
 	    integer *, integer *);
     extern doublereal dlansb_(char *, char *, integer *, integer *, 
 	    doublereal *, integer *, doublereal *);
-    extern /* Subroutine */ int dstedc_(char *, integer *, doublereal *, 
+    extern /* Subroutine */ void dstedc_(char *, integer *, doublereal *, 
 	    doublereal *, doublereal *, integer *, doublereal *, integer *, 
 	    integer *, integer *, integer *), dlacpy_(char *, integer 
 	    *, integer *, doublereal *, integer *, doublereal *, integer *);
     doublereal safmin;
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     doublereal bignum;
-    extern /* Subroutine */ int dsterf_(integer *, doublereal *, doublereal *,
+    extern /* Subroutine */ void dsterf_(integer *, doublereal *, doublereal *,
 	     integer *);
     integer indwrk, liwmin, llwork;
     doublereal smlnum;
@@ -880,15 +880,15 @@ static integer c__1 = 1;
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DSBEVD_2STAGE", &i__1, (ftnlen)13);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
     if (*n == 1) {
@@ -896,7 +896,7 @@ static integer c__1 = 1;
 	if (wantz) {
 	    z__[z_dim1 + 1] = 1.;
 	}
-	return 0;
+	return;
     }
 
 /*     Get machine constants. */
@@ -962,7 +962,7 @@ static integer c__1 = 1;
 
     work[1] = (doublereal) lwmin;
     iwork[1] = liwmin;
-    return 0;
+    return;
 
 /*     End of DSBEVD_2STAGE */
 

@@ -827,7 +827,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int slaebz_(integer *ijob, integer *nitmax, integer *n, 
+/* Subroutine */ void slaebz_(integer *ijob, integer *nitmax, integer *n, 
 	integer *mmax, integer *minp, integer *nbmin, real *abstol, real *
 	reltol, real *pivmin, real *d__, real *e, real *e2, integer *nval, 
 	real *ab, real *c__, integer *mout, integer *nab, real *work, integer 
@@ -873,7 +873,7 @@ f"> */
     *info = 0;
     if (*ijob < 1 || *ijob > 3) {
 	*info = -1;
-	return 0;
+	return;
     }
 
 /*     Initialize NAB */
@@ -911,7 +911,7 @@ f"> */
 	    *mout = *mout + nab[ji + (nab_dim1 << 1)] - nab[ji + nab_dim1];
 /* L30: */
 	}
-	return 0;
+	return;
     }
 
 /*     Initialize for loop */
@@ -1027,7 +1027,7 @@ f"> */
 /* L70: */
 		}
 		if (*info != 0) {
-		    return 0;
+		    return;
 		}
 		kl = klnew;
 	    } else {
@@ -1125,7 +1125,7 @@ f"> */
 			nab[ji + (nab_dim1 << 1)] = itmp1;
 		    } else {
 			*info = *mmax + 1;
-			return 0;
+			return;
 		    }
 		} else {
 
@@ -1215,7 +1215,7 @@ L140:
     *info = f2cmax(i__1,0);
     *mout = kl;
 
-    return 0;
+    return;
 
 /*     End of SLAEBZ */
 

@@ -744,7 +744,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int clatps_(char *uplo, char *trans, char *diag, char *
+/* Subroutine */ void clatps_(char *uplo, char *trans, char *diag, char *
 	normin, integer *n, complex *ap, complex *x, real *scale, real *cnorm,
 	 integer *info)
 {
@@ -764,17 +764,17 @@ f"> */
     extern /* Complex */ VOID cdotc_(complex *, integer *, complex *, integer 
 	    *, complex *, integer *);
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int sscal_(integer *, real *, real *, integer *);
+    extern /* Subroutine */ void sscal_(integer *, real *, real *, integer *);
     real tscal;
     complex uscal;
     integer jlast;
     extern /* Complex */ VOID cdotu_(complex *, integer *, complex *, integer 
 	    *, complex *, integer *);
     complex csumj;
-    extern /* Subroutine */ int caxpy_(integer *, complex *, complex *, 
+    extern /* Subroutine */ void caxpy_(integer *, complex *, complex *, 
 	    integer *, complex *, integer *);
     logical upper;
-    extern /* Subroutine */ int ctpsv_(char *, char *, char *, integer *, 
+    extern /* Subroutine */ void ctpsv_(char *, char *, char *, integer *, 
 	    complex *, complex *, integer *), slabad_(
 	    real *, real *);
     integer ip;
@@ -782,8 +782,9 @@ f"> */
     extern integer icamax_(integer *, complex *, integer *);
     extern /* Complex */ VOID cladiv_(complex *, complex *, complex *);
     extern real slamch_(char *);
-    extern /* Subroutine */ int csscal_(integer *, real *, complex *, integer 
-	    *), xerbla_(char *, integer *, ftnlen);
+    extern /* Subroutine */ void csscal_(integer *, real *, complex *, integer 
+	    *);
+    extern int xerbla_(char *, integer *, ftnlen);
     real bignum;
     extern integer isamax_(integer *, real *, integer *);
     extern real scasum_(integer *, complex *, integer *);
@@ -832,13 +833,13 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CLATPS", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /*     Determine machine dependent parameters to control overflow. */
@@ -1713,7 +1714,7 @@ L185:
 	sscal_(n, &r__1, &cnorm[1], &c__1);
     }
 
-    return 0;
+    return;
 
 /*     End of CLATPS */
 

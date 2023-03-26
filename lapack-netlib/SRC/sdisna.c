@@ -626,7 +626,7 @@ f"> */
 /* > \ingroup auxOTHERcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int sdisna_(char *job, integer *m, integer *n, real *d__, 
+/* Subroutine */ void sdisna_(char *job, integer *m, integer *n, real *d__, 
 	real *sep, integer *info)
 {
     /* System generated locals */
@@ -707,13 +707,13 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("SDISNA", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (k == 0) {
-	return 0;
+	return;
     }
 
 /*     Compute reciprocal condition numbers */
@@ -768,7 +768,7 @@ f"> */
 /* L30: */
     }
 
-    return 0;
+    return;
 
 /*     End of SDISNA */
 

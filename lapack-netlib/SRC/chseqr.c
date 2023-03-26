@@ -816,7 +816,7 @@ f"> */
 /* >       of Matrix Analysis, volume 23, pages 948--973, 2002. */
 
 /*  ===================================================================== */
-/* Subroutine */ int chseqr_(char *job, char *compz, integer *n, integer *ilo,
+/* Subroutine */ void chseqr_(char *job, char *compz, integer *n, integer *ilo,
 	 integer *ihi, complex *h__, integer *ldh, complex *w, complex *z__, 
 	integer *ldz, complex *work, integer *lwork, integer *info)
 {
@@ -830,20 +830,21 @@ f"> */
     /* Local variables */
     integer kbot, nmin;
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int ccopy_(integer *, complex *, integer *, 
+    extern /* Subroutine */ void ccopy_(integer *, complex *, integer *, 
 	    complex *, integer *);
     logical initz;
     complex workl[49];
     logical wantt, wantz;
-    extern /* Subroutine */ int claqr0_(logical *, logical *, integer *, 
+    extern /* Subroutine */ void claqr0_(logical *, logical *, integer *, 
 	    integer *, integer *, complex *, integer *, complex *, integer *, 
 	    integer *, complex *, integer *, complex *, integer *, integer *);
     complex hl[2401]	/* was [49][49] */;
-    extern /* Subroutine */ int clahqr_(logical *, logical *, integer *, 
+    extern /* Subroutine */ void clahqr_(logical *, logical *, integer *, 
 	    integer *, integer *, complex *, integer *, complex *, integer *, 
 	    integer *, complex *, integer *, integer *), clacpy_(char *, 
 	    integer *, integer *, complex *, integer *, complex *, integer *), claset_(char *, integer *, integer *, complex *, complex 
-	    *, complex *, integer *), xerbla_(char *, integer *, ftnlen);
+	    *, complex *, integer *);
+    extern int xerbla_(char *, integer *, ftnlen);
     extern integer ilaenv_(integer *, char *, char *, integer *, integer *, 
 	    integer *, integer *, ftnlen, ftnlen);
     logical lquery;
@@ -915,13 +916,13 @@ f"> */
 
 	i__1 = -(*info);
 	xerbla_("CHSEQR", &i__1, (ftnlen)6);
-	return 0;
+	return;
 
     } else if (*n == 0) {
 
 /*        ==== Quick return in case N = 0; nothing to do. ==== */
 
-	return 0;
+	return;
 
     } else if (lquery) {
 
@@ -936,7 +937,7 @@ f"> */
 	r__1 = f2cmax(r__2,r__3);
 	q__1.r = r__1, q__1.i = 0.f;
 	work[1].r = q__1.r, work[1].i = q__1.i;
-	return 0;
+	return;
 
     } else {
 
@@ -966,7 +967,7 @@ f"> */
 	    i__1 = *ilo;
 	    i__2 = *ilo + *ilo * h_dim1;
 	    w[i__1].r = h__[i__2].r, w[i__1].i = h__[i__2].i;
-	    return 0;
+	    return;
 	}
 
 /*        ==== CLAHQR/CLAQR0 crossover point ==== */
@@ -1050,6 +1051,6 @@ f"> */
 
 /*     ==== End of CHSEQR ==== */
 
-    return 0;
+    return;
 } /* chseqr_ */
 

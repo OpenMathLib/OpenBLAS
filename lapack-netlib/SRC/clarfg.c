@@ -619,7 +619,7 @@ f"> */
 /* > \ingroup complexOTHERauxiliary */
 
 /*  ===================================================================== */
-/* Subroutine */ int clarfg_(integer *n, complex *alpha, complex *x, integer *
+/* Subroutine */ void clarfg_(integer *n, complex *alpha, complex *x, integer *
 	incx, complex *tau)
 {
     /* System generated locals */
@@ -630,14 +630,14 @@ f"> */
     /* Local variables */
     real beta;
     integer j;
-    extern /* Subroutine */ int cscal_(integer *, complex *, complex *, 
+    extern /* Subroutine */ void cscal_(integer *, complex *, complex *, 
 	    integer *);
     real alphi, alphr, xnorm;
     extern real scnrm2_(integer *, complex *, integer *), slapy3_(real *, 
 	    real *, real *);
     extern /* Complex */ VOID cladiv_(complex *, complex *, complex *);
     extern real slamch_(char *);
-    extern /* Subroutine */ int csscal_(integer *, real *, complex *, integer 
+    extern /* Subroutine */ void csscal_(integer *, real *, complex *, integer 
 	    *);
     real safmin, rsafmn;
     integer knt;
@@ -658,7 +658,7 @@ f"> */
     /* Function Body */
     if (*n <= 0) {
 	tau->r = 0.f, tau->i = 0.f;
-	return 0;
+	return;
     }
 
     i__1 = *n - 1;
@@ -725,7 +725,7 @@ L10:
 	alpha->r = beta, alpha->i = 0.f;
     }
 
-    return 0;
+    return;
 
 /*     End of CLARFG */
 

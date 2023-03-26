@@ -721,7 +721,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int sgghrd_(char *compq, char *compz, integer *n, integer *
+/* Subroutine */ void sgghrd_(char *compq, char *compz, integer *n, integer *
 	ilo, integer *ihi, real *a, integer *lda, real *b, integer *ldb, real 
 	*q, integer *ldq, real *z__, integer *ldz, integer *info)
 {
@@ -733,13 +733,13 @@ f"> */
     integer jcol;
     real temp;
     integer jrow;
-    extern /* Subroutine */ int srot_(integer *, real *, integer *, real *, 
+    extern /* Subroutine */ void srot_(integer *, real *, integer *, real *, 
 	    integer *, real *, real *);
     real c__, s;
     extern logical lsame_(char *, char *);
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     integer icompq;
-    extern /* Subroutine */ int slaset_(char *, integer *, integer *, real *, 
+    extern /* Subroutine */ void slaset_(char *, integer *, integer *, real *, 
 	    real *, real *, integer *), slartg_(real *, real *, real *
 	    , real *, real *);
     integer icompz;
@@ -825,7 +825,7 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("SGGHRD", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Initialize Q and Z if desired. */
@@ -840,7 +840,7 @@ f"> */
 /*     Quick return if possible */
 
     if (*n <= 1) {
-	return 0;
+	return;
     }
 
 /*     Zero out lower triangle of B */
@@ -900,7 +900,7 @@ f"> */
 /* L40: */
     }
 
-    return 0;
+    return;
 
 /*     End of SGGHRD */
 

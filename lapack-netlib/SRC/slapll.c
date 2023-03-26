@@ -611,7 +611,7 @@ f"> */
 /* > \ingroup realOTHERauxiliary */
 
 /*  ===================================================================== */
-/* Subroutine */ int slapll_(integer *n, real *x, integer *incx, real *y, 
+/* Subroutine */ void slapll_(integer *n, real *x, integer *incx, real *y, 
 	integer *incy, real *ssmin)
 {
     /* System generated locals */
@@ -619,13 +619,13 @@ f"> */
 
     /* Local variables */
     extern real sdot_(integer *, real *, integer *, real *, integer *);
-    extern /* Subroutine */ int slas2_(real *, real *, real *, real *, real *)
+    extern /* Subroutine */ void slas2_(real *, real *, real *, real *, real *)
 	    ;
     real c__, ssmax;
-    extern /* Subroutine */ int saxpy_(integer *, real *, real *, integer *, 
+    extern /* Subroutine */ void saxpy_(integer *, real *, real *, integer *, 
 	    real *, integer *);
     real a11, a12, a22;
-    extern /* Subroutine */ int slarfg_(integer *, real *, real *, integer *, 
+    extern /* Subroutine */ void slarfg_(integer *, real *, real *, integer *, 
 	    real *);
     real tau;
 
@@ -648,7 +648,7 @@ f"> */
     /* Function Body */
     if (*n <= 1) {
 	*ssmin = 0.f;
-	return 0;
+	return;
     }
 
 /*     Compute the QR factorization of the N-by-2 matrix ( X Y ) */
@@ -670,7 +670,7 @@ f"> */
 
     slas2_(&a11, &a12, &a22, ssmin, &ssmax);
 
-    return 0;
+    return;
 
 /*     End of SLAPLL */
 

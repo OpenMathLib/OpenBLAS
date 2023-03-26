@@ -623,7 +623,7 @@ f"> */
 /* > \ingroup complex16GEcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int zgetf2_(integer *m, integer *n, doublecomplex *a, 
+/* Subroutine */ void zgetf2_(integer *m, integer *n, doublecomplex *a, 
 	integer *lda, integer *ipiv, integer *info)
 {
     /* System generated locals */
@@ -633,7 +633,7 @@ f"> */
     /* Local variables */
     integer i__, j;
     doublereal sfmin;
-    extern /* Subroutine */ int zscal_(integer *, doublecomplex *, 
+    extern /* Subroutine */ void zscal_(integer *, doublecomplex *, 
 	    doublecomplex *, integer *), zgeru_(integer *, integer *, 
 	    doublecomplex *, doublecomplex *, integer *, doublecomplex *, 
 	    integer *, doublecomplex *, integer *), zswap_(integer *, 
@@ -673,13 +673,13 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZGETF2", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*m == 0 || *n == 0) {
-	return 0;
+	return;
     }
 
 /*     Compute machine safe minimum */
@@ -740,7 +740,7 @@ f"> */
 	}
 /* L10: */
     }
-    return 0;
+    return;
 
 /*     End of ZGETF2 */
 

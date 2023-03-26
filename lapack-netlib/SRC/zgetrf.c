@@ -623,7 +623,7 @@ f"> */
 /* > \ingroup complex16GEcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int zgetrf_(integer *m, integer *n, doublecomplex *a, 
+/* Subroutine */ void zgetrf_(integer *m, integer *n, doublecomplex *a, 
 	integer *lda, integer *ipiv, integer *info)
 {
     /* System generated locals */
@@ -632,7 +632,7 @@ f"> */
 
     /* Local variables */
     integer i__, j, iinfo;
-    extern /* Subroutine */ int zgemm_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void zgemm_(char *, char *, integer *, integer *, 
 	    integer *, doublecomplex *, doublecomplex *, integer *, 
 	    doublecomplex *, integer *, doublecomplex *, doublecomplex *, 
 	    integer *), ztrsm_(char *, char *, char *, char *,
@@ -642,7 +642,7 @@ f"> */
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     extern integer ilaenv_(integer *, char *, char *, integer *, integer *, 
 	    integer *, integer *, ftnlen, ftnlen);
-    extern /* Subroutine */ int zlaswp_(integer *, doublecomplex *, integer *,
+    extern /* Subroutine */ void zlaswp_(integer *, doublecomplex *, integer *,
 	     integer *, integer *, integer *, integer *), zgetrf2_(integer *, 
 	    integer *, doublecomplex *, integer *, integer *, integer *);
 
@@ -676,13 +676,13 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZGETRF", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*m == 0 || *n == 0) {
-	return 0;
+	return;
     }
 
 /*     Determine the block size for this environment. */
@@ -761,7 +761,7 @@ f"> */
 /* L20: */
 	}
     }
-    return 0;
+    return;
 
 /*     End of ZGETRF */
 

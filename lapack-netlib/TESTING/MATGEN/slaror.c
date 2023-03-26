@@ -659,7 +659,7 @@ static integer c__1 = 1;
 /* > \ingroup real_matgen */
 
 /*  ===================================================================== */
-/* Subroutine */ int slaror_(char *side, char *init, integer *m, integer *n, 
+/* Subroutine */ void slaror_(char *side, char *init, integer *m, integer *n, 
 	real *a, integer *lda, integer *iseed, real *x, integer *info)
 {
     /* System generated locals */
@@ -668,21 +668,21 @@ static integer c__1 = 1;
 
     /* Local variables */
     integer kbeg, jcol;
-    extern /* Subroutine */ int sger_(integer *, integer *, real *, real *, 
+    extern /* Subroutine */ void sger_(integer *, integer *, real *, real *, 
 	    integer *, real *, integer *, real *, integer *);
     integer irow;
     extern real snrm2_(integer *, real *, integer *);
     integer j;
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int sscal_(integer *, real *, real *, integer *), 
+    extern /* Subroutine */ void sscal_(integer *, real *, real *, integer *), 
 	    sgemv_(char *, integer *, integer *, real *, real *, integer *, 
 	    real *, integer *, real *, real *, integer *);
     integer ixfrm, itype, nxfrm;
     real xnorm;
-    extern /* Subroutine */ int xerbla_(char *, integer *);
+    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     real factor;
     extern real slarnd_(integer *, integer *);
-    extern /* Subroutine */ int slaset_(char *, integer *, integer *, real *, 
+    extern /* Subroutine */ void slaset_(char *, integer *, integer *, real *, 
 	    real *, real *, integer *);
     real xnorms;
 
@@ -706,7 +706,7 @@ static integer c__1 = 1;
     /* Function Body */
     *info = 0;
     if (*n == 0 || *m == 0) {
-	return 0;
+	return;
     }
 
     itype = 0;
@@ -731,8 +731,8 @@ static integer c__1 = 1;
     }
     if (*info != 0) {
 	i__1 = -(*info);
-	xerbla_("SLAROR", &i__1);
-	return 0;
+	xerbla_("SLAROR", &i__1, 6);
+	return;
     }
 
     if (itype == 1) {
@@ -779,8 +779,8 @@ static integer c__1 = 1;
 	factor = xnorms * (xnorms + x[kbeg]);
 	if (abs(factor) < 1e-20f) {
 	    *info = 1;
-	    xerbla_("SLAROR", info);
-	    return 0;
+	    xerbla_("SLAROR", info, 6);
+	    return;
 	} else {
 	    factor = 1.f / factor;
 	}
@@ -834,7 +834,7 @@ static integer c__1 = 1;
 /* L50: */
 	}
     }
-    return 0;
+    return;
 
 /*     End of SLAROR */
 

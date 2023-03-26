@@ -816,7 +816,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int dtgsyl_(char *trans, integer *ijob, integer *m, integer *
+/* Subroutine */ void dtgsyl_(char *trans, integer *ijob, integer *m, integer *
 	n, doublereal *a, integer *lda, doublereal *b, integer *ldb, 
 	doublereal *c__, integer *ldc, doublereal *d__, integer *ldd, 
 	doublereal *e, integer *lde, doublereal *f, integer *ldf, doublereal *
@@ -831,14 +831,14 @@ f"> */
     /* Local variables */
     doublereal dsum;
     integer ppqq, i__, j, k, p, q;
-    extern /* Subroutine */ int dscal_(integer *, doublereal *, doublereal *, 
+    extern /* Subroutine */ void dscal_(integer *, doublereal *, doublereal *, 
 	    integer *), dgemm_(char *, char *, integer *, integer *, integer *
 	    , doublereal *, doublereal *, integer *, doublereal *, integer *, 
 	    doublereal *, doublereal *, integer *);
     extern logical lsame_(char *, char *);
     integer ifunc, linfo, lwmin;
     doublereal scale2;
-    extern /* Subroutine */ int dtgsy2_(char *, integer *, integer *, integer 
+    extern /* Subroutine */ void dtgsy2_(char *, integer *, integer *, integer 
 	    *, doublereal *, integer *, doublereal *, integer *, doublereal *,
 	     integer *, doublereal *, integer *, doublereal *, integer *, 
 	    doublereal *, integer *, doublereal *, doublereal *, doublereal *,
@@ -847,7 +847,7 @@ f"> */
     doublereal dscale;
     integer is, js, pq;
     doublereal scaloc;
-    extern /* Subroutine */ int dlacpy_(char *, integer *, integer *, 
+    extern /* Subroutine */ void dlacpy_(char *, integer *, integer *, 
 	    doublereal *, integer *, doublereal *, integer *), 
 	    dlaset_(char *, integer *, integer *, doublereal *, doublereal *, 
 	    doublereal *, integer *);
@@ -949,9 +949,9 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DTGSYL", &i__1, (ftnlen)6);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
@@ -963,7 +963,7 @@ f"> */
 		*dif = 0.;
 	    }
 	}
-	return 0;
+	return;
     }
 
 /*     Determine optimal block sizes MB and NB */
@@ -1026,7 +1026,7 @@ f"> */
 /* L30: */
 	}
 
-	return 0;
+	return;
     }
 
 /*     Determine block structure of A */
@@ -1293,7 +1293,7 @@ L70:
 
     work[1] = (doublereal) lwmin;
 
-    return 0;
+    return;
 
 /*     End of DTGSYL */
 

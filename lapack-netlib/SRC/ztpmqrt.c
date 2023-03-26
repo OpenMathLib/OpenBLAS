@@ -724,7 +724,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int ztpmqrt_(char *side, char *trans, integer *m, integer *n,
+/* Subroutine */ void ztpmqrt_(char *side, char *trans, integer *m, integer *n,
 	 integer *k, integer *l, integer *nb, doublecomplex *v, integer *ldv, 
 	doublecomplex *t, integer *ldt, doublecomplex *a, integer *lda, 
 	doublecomplex *b, integer *ldb, doublecomplex *work, integer *info)
@@ -742,7 +742,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
     integer ib, lb, mb, kf;
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     logical notran;
-    extern /* Subroutine */ int ztprfb_(char *, char *, char *, char *, 
+    extern /* Subroutine */ void ztprfb_(char *, char *, char *, char *, 
 	    integer *, integer *, integer *, integer *, doublecomplex *, 
 	    integer *, doublecomplex *, integer *, doublecomplex *, integer *,
 	     doublecomplex *, integer *, doublecomplex *, integer *);
@@ -814,12 +814,12 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZTPMQRT", &i__1, (ftnlen)7);
-	return 0;
+	return;
     }
 
 
     if (*m == 0 || *n == 0 || *k == 0) {
-	return 0;
+	return;
     }
 
     if (left && tran) {
@@ -908,7 +908,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 
     }
 
-    return 0;
+    return;
 
 /*     End of ZTPMQRT */
 

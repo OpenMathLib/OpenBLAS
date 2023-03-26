@@ -853,7 +853,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int cpbsvx_(char *fact, char *uplo, integer *n, integer *kd, 
+/* Subroutine */ void cpbsvx_(char *fact, char *uplo, integer *n, integer *kd, 
 	integer *nrhs, complex *ab, integer *ldab, complex *afb, integer *
 	ldafb, char *equed, real *s, complex *b, integer *ldb, complex *x, 
 	integer *ldx, real *rcond, real *ferr, real *berr, complex *work, 
@@ -870,30 +870,31 @@ f"> */
     integer i__, j;
     extern logical lsame_(char *, char *);
     real scond, anorm;
-    extern /* Subroutine */ int ccopy_(integer *, complex *, integer *, 
+    extern /* Subroutine */ void ccopy_(integer *, complex *, integer *, 
 	    complex *, integer *);
     logical equil, rcequ, upper;
     integer j1, j2;
     extern real clanhb_(char *, char *, integer *, integer *, complex *, 
 	    integer *, real *);
-    extern /* Subroutine */ int claqhb_(char *, integer *, integer *, complex 
+    extern /* Subroutine */ void claqhb_(char *, integer *, integer *, complex 
 	    *, integer *, real *, real *, real *, char *), 
 	    cpbcon_(char *, integer *, integer *, complex *, integer *, real *
 	    , real *, complex *, real *, integer *);
     extern real slamch_(char *);
     logical nofact;
-    extern /* Subroutine */ int clacpy_(char *, integer *, integer *, complex 
-	    *, integer *, complex *, integer *), xerbla_(char *, 
-	    integer *, ftnlen), cpbequ_(char *, integer *, integer *, complex 
+    extern /* Subroutine */ void clacpy_(char *, integer *, integer *, complex 
+	    *, integer *, complex *, integer *);
+    extern int xerbla_(char *, integer *, ftnlen);
+    extern void cpbequ_(char *, integer *, integer *, complex 
 	    *, integer *, real *, real *, real *, integer *), cpbrfs_(
 	    char *, integer *, integer *, integer *, complex *, integer *, 
 	    complex *, integer *, complex *, integer *, complex *, integer *, 
 	    real *, real *, complex *, real *, integer *);
     real bignum;
-    extern /* Subroutine */ int cpbtrf_(char *, integer *, integer *, complex 
+    extern /* Subroutine */ void cpbtrf_(char *, integer *, integer *, complex 
 	    *, integer *, integer *);
     integer infequ;
-    extern /* Subroutine */ int cpbtrs_(char *, integer *, integer *, integer 
+    extern /* Subroutine */ void cpbtrs_(char *, integer *, integer *, integer 
 	    *, complex *, integer *, complex *, integer *, integer *);
     real smlnum;
 
@@ -993,7 +994,7 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CPBSVX", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
     if (equil) {
@@ -1064,7 +1065,7 @@ f"> */
 
 	if (*info > 0) {
 	    *rcond = 0.f;
-	    return 0;
+	    return;
 	}
     }
 
@@ -1120,7 +1121,7 @@ f"> */
 	*info = *n + 1;
     }
 
-    return 0;
+    return;
 
 /*     End of CPBSVX */
 

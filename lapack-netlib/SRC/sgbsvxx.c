@@ -1068,7 +1068,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 /* > \ingroup realGBsolve */
 
 /*  ===================================================================== */
-/* Subroutine */ int sgbsvxx_(char *fact, char *trans, integer *n, integer *
+/* Subroutine */ void sgbsvxx_(char *fact, char *trans, integer *n, integer *
 	kl, integer *ku, integer *nrhs, real *ab, integer *ldab, real *afb, 
 	integer *ldafb, integer *ipiv, char *equed, real *r__, real *c__, 
 	real *b, integer *ldb, real *x, integer *ldx, real *rcond, real *
@@ -1092,7 +1092,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
     logical equil;
     real colcnd;
     extern real slamch_(char *);
-    extern /* Subroutine */ int slaqgb_(integer *, integer *, integer *, 
+    extern /* Subroutine */ void slaqgb_(integer *, integer *, integer *, 
 	    integer *, real *, integer *, real *, real *, real *, real *, 
 	    real *, char *);
     logical nofact;
@@ -1100,17 +1100,17 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
     real bignum;
     integer infequ;
     logical colequ;
-    extern /* Subroutine */ int sgbtrf_(integer *, integer *, integer *, 
+    extern /* Subroutine */ void sgbtrf_(integer *, integer *, integer *, 
 	    integer *, real *, integer *, integer *, integer *), slacpy_(char 
 	    *, integer *, integer *, real *, integer *, real *, integer *);
     real rowcnd;
     logical notran;
-    extern /* Subroutine */ int sgbtrs_(char *, integer *, integer *, integer 
+    extern /* Subroutine */ void sgbtrs_(char *, integer *, integer *, integer 
 	    *, integer *, real *, integer *, integer *, real *, integer *, 
 	    integer *);
     real smlnum;
     logical rowequ;
-    extern /* Subroutine */ int slascl2_(integer *, integer *, real *, real *,
+    extern /* Subroutine */ void slascl2_(integer *, integer *, real *, real *,
 	     integer *), sgbequb_(integer *, integer *, integer *, integer *, 
 	    real *, integer *, real *, real *, real *, real *, real *, 
 	    integer *), sgbrfsx_(char *, char *, integer *, integer *, 
@@ -1257,7 +1257,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("SGBSVXX", &i__1, (ftnlen)7);
-	return 0;
+	return;
     }
 
     if (equil) {
@@ -1331,7 +1331,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 
 	    *rpvgrw = sla_gbrpvgrw_(n, kl, ku, info, &ab[ab_offset], ldab, &
 		    afb[afb_offset], ldafb);
-	    return 0;
+	    return;
 	}
     }
 
@@ -1364,7 +1364,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 	slascl2_(n, nrhs, &r__[1], &x[x_offset], ldx);
     }
 
-    return 0;
+    return;
 
 /*     End of SGBSVXX */
 

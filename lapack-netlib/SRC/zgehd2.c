@@ -663,7 +663,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int zgehd2_(integer *n, integer *ilo, integer *ihi, 
+/* Subroutine */ void zgehd2_(integer *n, integer *ilo, integer *ihi, 
 	doublecomplex *a, integer *lda, doublecomplex *tau, doublecomplex *
 	work, integer *info)
 {
@@ -674,9 +674,11 @@ f"> */
     /* Local variables */
     integer i__;
     doublecomplex alpha;
-    extern /* Subroutine */ int zlarf_(char *, integer *, integer *, 
+    extern /* Subroutine */ void zlarf_(char *, integer *, integer *, 
 	    doublecomplex *, integer *, doublecomplex *, doublecomplex *, 
-	    integer *, doublecomplex *), xerbla_(char *, integer *, ftnlen), zlarfg_(integer *, doublecomplex *, doublecomplex *, 
+	    integer *, doublecomplex *);
+    extern int xerbla_(char *, integer *, ftnlen);
+    extern void zlarfg_(integer *, doublecomplex *, doublecomplex *, 
 	    integer *, doublecomplex *);
 
 
@@ -712,7 +714,7 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZGEHD2", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
     i__1 = *ihi - 1;
@@ -749,7 +751,7 @@ f"> */
 /* L10: */
     }
 
-    return 0;
+    return;
 
 /*     End of ZGEHD2 */
 

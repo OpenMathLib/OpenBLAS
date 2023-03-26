@@ -699,7 +699,7 @@ f"> */
 /* >  Mathematical Software, 32(2):180-194, June 2006. */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int clahr2_(integer *n, integer *k, integer *nb, complex *a, 
+/* Subroutine */ void clahr2_(integer *n, integer *k, integer *nb, complex *a, 
 	integer *lda, complex *tau, complex *t, integer *ldt, complex *y, 
 	integer *ldy)
 {
@@ -710,7 +710,7 @@ f"> */
 
     /* Local variables */
     integer i__;
-    extern /* Subroutine */ int cscal_(integer *, complex *, complex *, 
+    extern /* Subroutine */ void cscal_(integer *, complex *, complex *, 
 	    integer *), cgemm_(char *, char *, integer *, integer *, integer *
 	    , complex *, complex *, integer *, complex *, integer *, complex *
 	    , complex *, integer *), cgemv_(char *, integer *,
@@ -723,7 +723,7 @@ f"> */
 	    integer *), ctrmv_(char *, char *, char *, integer *, complex *, 
 	    integer *, complex *, integer *);
     complex ei;
-    extern /* Subroutine */ int clarfg_(integer *, complex *, complex *, 
+    extern /* Subroutine */ void clarfg_(integer *, complex *, complex *, 
 	    integer *, complex *), clacgv_(integer *, complex *, integer *), 
 	    clacpy_(char *, integer *, integer *, complex *, integer *, 
 	    complex *, integer *);
@@ -754,7 +754,7 @@ f"> */
 
     /* Function Body */
     if (*n <= 1) {
-	return 0;
+	return;
     }
 
     i__1 = *nb;
@@ -897,7 +897,7 @@ f"> */
     ctrmm_("RIGHT", "Upper", "NO TRANSPOSE", "NON-UNIT", k, nb, &c_b2, &t[
 	    t_offset], ldt, &y[y_offset], ldy);
 
-    return 0;
+    return;
 
 /*     End of CLAHR2 */
 

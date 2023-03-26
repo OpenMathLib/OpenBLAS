@@ -722,7 +722,7 @@ f"> */
 /* > \ingroup doubleGTcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int dgtrfs_(char *trans, integer *n, integer *nrhs, 
+/* Subroutine */ void dgtrfs_(char *trans, integer *n, integer *nrhs, 
 	doublereal *dl, doublereal *d__, doublereal *du, doublereal *dlf, 
 	doublereal *df, doublereal *duf, doublereal *du2, integer *ipiv, 
 	doublereal *b, integer *ldb, doublereal *x, integer *ldx, doublereal *
@@ -740,22 +740,22 @@ f"> */
     doublereal s;
     extern logical lsame_(char *, char *);
     integer isave[3];
-    extern /* Subroutine */ int dcopy_(integer *, doublereal *, integer *, 
+    extern /* Subroutine */ void dcopy_(integer *, doublereal *, integer *, 
 	    doublereal *, integer *), daxpy_(integer *, doublereal *, 
 	    doublereal *, integer *, doublereal *, integer *);
     integer count;
-    extern /* Subroutine */ int dlacn2_(integer *, doublereal *, doublereal *,
+    extern /* Subroutine */ void dlacn2_(integer *, doublereal *, doublereal *,
 	     integer *, doublereal *, integer *, integer *);
     extern doublereal dlamch_(char *);
     integer nz;
-    extern /* Subroutine */ int dlagtm_(char *, integer *, integer *, 
+    extern /* Subroutine */ void dlagtm_(char *, integer *, integer *, 
 	    doublereal *, doublereal *, doublereal *, doublereal *, 
 	    doublereal *, integer *, doublereal *, doublereal *, integer *);
     doublereal safmin;
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     logical notran;
     char transn[1];
-    extern /* Subroutine */ int dgttrs_(char *, integer *, integer *, 
+    extern /* Subroutine */ void dgttrs_(char *, integer *, integer *, 
 	    doublereal *, doublereal *, doublereal *, doublereal *, integer *,
 	     doublereal *, integer *, integer *);
     char transt[1];
@@ -811,7 +811,7 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DGTRFS", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
@@ -823,7 +823,7 @@ f"> */
 	    berr[j] = 0.;
 /* L10: */
 	}
-	return 0;
+	return;
     }
 
     if (notran) {
@@ -1035,7 +1035,7 @@ L70:
 /* L110: */
     }
 
-    return 0;
+    return;
 
 /*     End of DGTRFS */
 

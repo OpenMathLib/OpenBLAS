@@ -734,7 +734,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int ztftri_(char *transr, char *uplo, char *diag, integer *n,
+/* Subroutine */ void ztftri_(char *transr, char *uplo, char *diag, integer *n,
 	 doublecomplex *a, integer *info)
 {
     /* System generated locals */
@@ -747,10 +747,10 @@ f"> */
     extern logical lsame_(char *, char *);
     logical lower;
     integer n1, n2;
-    extern /* Subroutine */ int ztrmm_(char *, char *, char *, char *, 
+    extern /* Subroutine */ void ztrmm_(char *, char *, char *, char *, 
 	    integer *, integer *, doublecomplex *, doublecomplex *, integer *,
-	     doublecomplex *, integer *), 
-	    xerbla_(char *, integer *, ftnlen);
+	     doublecomplex *, integer *); 
+    extern int xerbla_(char *, integer *, ftnlen);
     logical nisodd;
     extern /* Subroutine */ int ztrtri_(char *, char *, integer *, 
 	    doublecomplex *, integer *, integer *);
@@ -783,13 +783,13 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZTFTRI", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /*     If N is odd, set NISODD = .TRUE. */
@@ -831,7 +831,7 @@ f"> */
 
 		ztrtri_("L", diag, &n1, a, n, info);
 		if (*info > 0) {
-		    return 0;
+		    return;
 		}
 		z__1.r = -1., z__1.i = 0.;
 		ztrmm_("R", "L", "N", diag, &n2, &n1, &z__1, a, n, &a[n1], n);
@@ -841,7 +841,7 @@ f"> */
 		    *info += n1;
 		}
 		if (*info > 0) {
-		    return 0;
+		    return;
 		}
 		ztrmm_("L", "U", "C", diag, &n2, &n1, &c_b1, &a[*n], n, &a[n1]
 			, n);
@@ -855,7 +855,7 @@ f"> */
 		ztrtri_("L", diag, &n1, &a[n2], n, info)
 			;
 		if (*info > 0) {
-		    return 0;
+		    return;
 		}
 		z__1.r = -1., z__1.i = 0.;
 		ztrmm_("L", "L", "C", diag, &n1, &n2, &z__1, &a[n2], n, a, n);
@@ -865,7 +865,7 @@ f"> */
 		    *info += n1;
 		}
 		if (*info > 0) {
-		    return 0;
+		    return;
 		}
 		ztrmm_("R", "U", "N", diag, &n1, &n2, &c_b1, &a[n1], n, a, n);
 
@@ -882,7 +882,7 @@ f"> */
 
 		ztrtri_("U", diag, &n1, a, &n1, info);
 		if (*info > 0) {
-		    return 0;
+		    return;
 		}
 		z__1.r = -1., z__1.i = 0.;
 		ztrmm_("L", "U", "N", diag, &n1, &n2, &z__1, a, &n1, &a[n1 * 
@@ -892,7 +892,7 @@ f"> */
 		    *info += n1;
 		}
 		if (*info > 0) {
-		    return 0;
+		    return;
 		}
 		ztrmm_("R", "L", "C", diag, &n1, &n2, &c_b1, &a[1], &n1, &a[
 			n1 * n1], &n1);
@@ -904,7 +904,7 @@ f"> */
 
 		ztrtri_("U", diag, &n1, &a[n2 * n2], &n2, info);
 		if (*info > 0) {
-		    return 0;
+		    return;
 		}
 		z__1.r = -1., z__1.i = 0.;
 		ztrmm_("R", "U", "C", diag, &n2, &n1, &z__1, &a[n2 * n2], &n2,
@@ -914,7 +914,7 @@ f"> */
 		    *info += n1;
 		}
 		if (*info > 0) {
-		    return 0;
+		    return;
 		}
 		ztrmm_("L", "L", "N", diag, &n2, &n1, &c_b1, &a[n1 * n2], &n2,
 			 a, &n2);
@@ -939,7 +939,7 @@ f"> */
 		i__1 = *n + 1;
 		ztrtri_("L", diag, &k, &a[1], &i__1, info);
 		if (*info > 0) {
-		    return 0;
+		    return;
 		}
 		z__1.r = -1., z__1.i = 0.;
 		i__1 = *n + 1;
@@ -952,7 +952,7 @@ f"> */
 		    *info += k;
 		}
 		if (*info > 0) {
-		    return 0;
+		    return;
 		}
 		i__1 = *n + 1;
 		i__2 = *n + 1;
@@ -968,7 +968,7 @@ f"> */
 		i__1 = *n + 1;
 		ztrtri_("L", diag, &k, &a[k + 1], &i__1, info);
 		if (*info > 0) {
-		    return 0;
+		    return;
 		}
 		z__1.r = -1., z__1.i = 0.;
 		i__1 = *n + 1;
@@ -981,7 +981,7 @@ f"> */
 		    *info += k;
 		}
 		if (*info > 0) {
-		    return 0;
+		    return;
 		}
 		i__1 = *n + 1;
 		i__2 = *n + 1;
@@ -1000,7 +1000,7 @@ f"> */
 
 		ztrtri_("U", diag, &k, &a[k], &k, info);
 		if (*info > 0) {
-		    return 0;
+		    return;
 		}
 		z__1.r = -1., z__1.i = 0.;
 		ztrmm_("L", "U", "N", diag, &k, &k, &z__1, &a[k], &k, &a[k * (
@@ -1010,7 +1010,7 @@ f"> */
 		    *info += k;
 		}
 		if (*info > 0) {
-		    return 0;
+		    return;
 		}
 		ztrmm_("R", "L", "C", diag, &k, &k, &c_b1, a, &k, &a[k * (k + 
 			1)], &k);
@@ -1022,7 +1022,7 @@ f"> */
 
 		ztrtri_("U", diag, &k, &a[k * (k + 1)], &k, info);
 		if (*info > 0) {
-		    return 0;
+		    return;
 		}
 		z__1.r = -1., z__1.i = 0.;
 		ztrmm_("R", "U", "C", diag, &k, &k, &z__1, &a[k * (k + 1)], &
@@ -1032,7 +1032,7 @@ f"> */
 		    *info += k;
 		}
 		if (*info > 0) {
-		    return 0;
+		    return;
 		}
 		ztrmm_("L", "L", "N", diag, &k, &k, &c_b1, &a[k * k], &k, a, &
 			k);
@@ -1040,7 +1040,7 @@ f"> */
 	}
     }
 
-    return 0;
+    return;
 
 /*     End of ZTFTRI */
 

@@ -583,7 +583,7 @@ f"> */
 
     /* Local variables */
     real zi, zr;
-    extern /* Subroutine */ int sladiv_(real *, real *, real *, real *, real *
+    extern /* Subroutine */ void sladiv_(real *, real *, real *, real *, real *
 	    , real *);
 
 

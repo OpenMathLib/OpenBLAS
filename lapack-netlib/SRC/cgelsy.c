@@ -727,7 +727,7 @@ f"> */
 /* >    G. Quintana-Orti, Depto. de Informatica, Universidad Jaime I, Spain \n */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int cgelsy_(integer *m, integer *n, integer *nrhs, complex *
+/* Subroutine */ void cgelsy_(integer *m, integer *n, integer *nrhs, complex *
 	a, integer *lda, complex *b, integer *ldb, integer *jpvt, real *rcond,
 	 integer *rank, complex *work, integer *lwork, real *rwork, integer *
 	info)
@@ -740,45 +740,45 @@ f"> */
     /* Local variables */
     real anrm, bnrm, smin, smax;
     integer i__, j, iascl, ibscl;
-    extern /* Subroutine */ int ccopy_(integer *, complex *, integer *, 
+    extern /* Subroutine */ void ccopy_(integer *, complex *, integer *, 
 	    complex *, integer *);
     integer ismin, ismax;
     complex c1, c2;
-    extern /* Subroutine */ int ctrsm_(char *, char *, char *, char *, 
+    extern /* Subroutine */ void ctrsm_(char *, char *, char *, char *, 
 	    integer *, integer *, complex *, complex *, integer *, complex *, 
 	    integer *), claic1_(integer *, 
 	    integer *, complex *, real *, complex *, complex *, real *, 
 	    complex *, complex *);
     real wsize;
     complex s1, s2;
-    extern /* Subroutine */ int cgeqp3_(integer *, integer *, complex *, 
+    extern /* Subroutine */ void cgeqp3_(integer *, integer *, complex *, 
 	    integer *, integer *, complex *, complex *, integer *, real *, 
 	    integer *);
     integer nb;
-    extern /* Subroutine */ int slabad_(real *, real *);
+    extern /* Subroutine */ void slabad_(real *, real *);
     extern real clange_(char *, integer *, integer *, complex *, integer *, 
 	    real *);
     integer mn;
-    extern /* Subroutine */ int clascl_(char *, integer *, integer *, real *, 
+    extern /* Subroutine */ void clascl_(char *, integer *, integer *, real *, 
 	    real *, integer *, integer *, complex *, integer *, integer *);
     extern real slamch_(char *);
-    extern /* Subroutine */ int claset_(char *, integer *, integer *, complex 
-	    *, complex *, complex *, integer *), xerbla_(char *, 
-	    integer *, ftnlen);
+    extern /* Subroutine */ void claset_(char *, integer *, integer *, complex 
+	    *, complex *, complex *, integer *);
+    extern int xerbla_(char *, integer *, ftnlen);
     extern integer ilaenv_(integer *, char *, char *, integer *, integer *, 
 	    integer *, integer *, ftnlen, ftnlen);
     real bignum;
     integer nb1, nb2, nb3, nb4;
-    extern /* Subroutine */ int cunmqr_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void cunmqr_(char *, char *, integer *, integer *, 
 	    integer *, complex *, integer *, complex *, complex *, integer *, 
 	    complex *, integer *, integer *);
     real sminpr, smaxpr, smlnum;
-    extern /* Subroutine */ int cunmrz_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void cunmrz_(char *, char *, integer *, integer *, 
 	    integer *, integer *, complex *, integer *, complex *, complex *, 
 	    integer *, complex *, integer *, integer *);
     integer lwkopt;
     logical lquery;
-    extern /* Subroutine */ int ctzrzf_(integer *, integer *, complex *, 
+    extern /* Subroutine */ void ctzrzf_(integer *, integer *, complex *, 
 	    integer *, complex *, complex *, integer *, integer *);
 
 
@@ -854,9 +854,9 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CGELSY", &i__1, (ftnlen)6);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
@@ -865,7 +865,7 @@ f"> */
     i__1 = f2cmin(*m,*n);
     if (f2cmin(i__1,*nrhs) == 0) {
 	*rank = 0;
-	return 0;
+	return;
     }
 
 /*     Get machine parameters */
@@ -1082,7 +1082,7 @@ L70:
     q__1.r = (real) lwkopt, q__1.i = 0.f;
     work[1].r = q__1.r, work[1].i = q__1.i;
 
-    return 0;
+    return;
 
 /*     End of CGELSY */
 

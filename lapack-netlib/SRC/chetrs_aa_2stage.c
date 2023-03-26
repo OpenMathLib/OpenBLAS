@@ -655,7 +655,7 @@ aa_2stage.f"> */
 /* > \ingroup complexSYcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int chetrs_aa_2stage_(char *uplo, integer *n, integer *nrhs,
+/* Subroutine */ void chetrs_aa_2stage_(char *uplo, integer *n, integer *nrhs,
 	 complex *a, integer *lda, complex *tb, integer *ltb, integer *ipiv, 
 	integer *ipiv2, complex *b, integer *ldb, integer *info)
 {
@@ -665,15 +665,16 @@ aa_2stage.f"> */
     /* Local variables */
     integer ldtb;
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int ctrsm_(char *, char *, char *, char *, 
+    extern /* Subroutine */ void ctrsm_(char *, char *, char *, char *, 
 	    integer *, integer *, complex *, complex *, integer *, complex *, 
 	    integer *);
     logical upper;
     integer nb;
-    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen), cgbtrs_(
+    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
+    extern void cgbtrs_(
 	    char *, integer *, integer *, integer *, integer *, complex *, 
-	    integer *, integer *, complex *, integer *, integer *), 
-	    claswp_(integer *, complex *, integer *, integer *, integer *, 
+	    integer *, integer *, complex *, integer *, integer *); 
+    extern int claswp_(integer *, complex *, integer *, integer *, integer *, 
 	    integer *, integer *);
 
 
@@ -717,13 +718,13 @@ aa_2stage.f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CHETRS_AA_2STAGE", &i__1, (ftnlen)16);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0 || *nrhs == 0) {
-	return 0;
+	return;
     }
 
 /*     Read NB and compute LDTB */
@@ -808,7 +809,7 @@ aa_2stage.f"> */
 	}
     }
 
-    return 0;
+    return;
 
 /*     End of CHETRS_AA_2STAGE */
 

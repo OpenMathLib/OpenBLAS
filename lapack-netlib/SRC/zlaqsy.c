@@ -643,7 +643,7 @@ f"> */
 /* > \ingroup complex16SYauxiliary */
 
 /*  ===================================================================== */
-/* Subroutine */ int zlaqsy_(char *uplo, integer *n, doublecomplex *a, 
+/* Subroutine */ void zlaqsy_(char *uplo, integer *n, doublecomplex *a, 
 	integer *lda, doublereal *s, doublereal *scond, doublereal *amax, 
 	char *equed)
 {
@@ -680,7 +680,7 @@ f"> */
     /* Function Body */
     if (*n <= 0) {
 	*(unsigned char *)equed = 'N';
-	return 0;
+	return;
     }
 
 /*     Initialize LARGE and SMALL. */
@@ -737,7 +737,7 @@ f"> */
 	*(unsigned char *)equed = 'Y';
     }
 
-    return 0;
+    return;
 
 /*     End of ZLAQSY */
 

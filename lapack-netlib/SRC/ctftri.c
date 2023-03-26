@@ -734,7 +734,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int ctftri_(char *transr, char *uplo, char *diag, integer *n,
+/* Subroutine */ void ctftri_(char *transr, char *uplo, char *diag, integer *n,
 	 complex *a, integer *info)
 {
     /* System generated locals */
@@ -745,7 +745,7 @@ f"> */
     integer k;
     logical normaltransr;
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int ctrmm_(char *, char *, char *, char *, 
+    extern /* Subroutine */ void ctrmm_(char *, char *, char *, char *, 
 	    integer *, integer *, complex *, complex *, integer *, complex *, 
 	    integer *);
     logical lower;
@@ -783,13 +783,13 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CTFTRI", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /*     If N is odd, set NISODD = .TRUE. */
@@ -831,7 +831,7 @@ f"> */
 
 		ctrtri_("L", diag, &n1, a, n, info);
 		if (*info > 0) {
-		    return 0;
+		    return;
 		}
 		q__1.r = -1.f, q__1.i = 0.f;
 		ctrmm_("R", "L", "N", diag, &n2, &n1, &q__1, a, n, &a[n1], n);
@@ -841,7 +841,7 @@ f"> */
 		    *info += n1;
 		}
 		if (*info > 0) {
-		    return 0;
+		    return;
 		}
 		ctrmm_("L", "U", "C", diag, &n2, &n1, &c_b1, &a[*n], n, &a[n1]
 			, n);
@@ -855,7 +855,7 @@ f"> */
 		ctrtri_("L", diag, &n1, &a[n2], n, info)
 			;
 		if (*info > 0) {
-		    return 0;
+		    return;
 		}
 		q__1.r = -1.f, q__1.i = 0.f;
 		ctrmm_("L", "L", "C", diag, &n1, &n2, &q__1, &a[n2], n, a, n);
@@ -865,7 +865,7 @@ f"> */
 		    *info += n1;
 		}
 		if (*info > 0) {
-		    return 0;
+		    return;
 		}
 		ctrmm_("R", "U", "N", diag, &n1, &n2, &c_b1, &a[n1], n, a, n);
 
@@ -882,7 +882,7 @@ f"> */
 
 		ctrtri_("U", diag, &n1, a, &n1, info);
 		if (*info > 0) {
-		    return 0;
+		    return;
 		}
 		q__1.r = -1.f, q__1.i = 0.f;
 		ctrmm_("L", "U", "N", diag, &n1, &n2, &q__1, a, &n1, &a[n1 * 
@@ -892,7 +892,7 @@ f"> */
 		    *info += n1;
 		}
 		if (*info > 0) {
-		    return 0;
+		    return;
 		}
 		ctrmm_("R", "L", "C", diag, &n1, &n2, &c_b1, &a[1], &n1, &a[
 			n1 * n1], &n1);
@@ -904,7 +904,7 @@ f"> */
 
 		ctrtri_("U", diag, &n1, &a[n2 * n2], &n2, info);
 		if (*info > 0) {
-		    return 0;
+		    return;
 		}
 		q__1.r = -1.f, q__1.i = 0.f;
 		ctrmm_("R", "U", "C", diag, &n2, &n1, &q__1, &a[n2 * n2], &n2,
@@ -914,7 +914,7 @@ f"> */
 		    *info += n1;
 		}
 		if (*info > 0) {
-		    return 0;
+		    return;
 		}
 		ctrmm_("L", "L", "N", diag, &n2, &n1, &c_b1, &a[n1 * n2], &n2,
 			 a, &n2);
@@ -939,7 +939,7 @@ f"> */
 		i__1 = *n + 1;
 		ctrtri_("L", diag, &k, &a[1], &i__1, info);
 		if (*info > 0) {
-		    return 0;
+		    return;
 		}
 		q__1.r = -1.f, q__1.i = 0.f;
 		i__1 = *n + 1;
@@ -952,7 +952,7 @@ f"> */
 		    *info += k;
 		}
 		if (*info > 0) {
-		    return 0;
+		    return;
 		}
 		i__1 = *n + 1;
 		i__2 = *n + 1;
@@ -968,7 +968,7 @@ f"> */
 		i__1 = *n + 1;
 		ctrtri_("L", diag, &k, &a[k + 1], &i__1, info);
 		if (*info > 0) {
-		    return 0;
+		    return;
 		}
 		q__1.r = -1.f, q__1.i = 0.f;
 		i__1 = *n + 1;
@@ -981,7 +981,7 @@ f"> */
 		    *info += k;
 		}
 		if (*info > 0) {
-		    return 0;
+		    return;
 		}
 		i__1 = *n + 1;
 		i__2 = *n + 1;
@@ -1000,7 +1000,7 @@ f"> */
 
 		ctrtri_("U", diag, &k, &a[k], &k, info);
 		if (*info > 0) {
-		    return 0;
+		    return;
 		}
 		q__1.r = -1.f, q__1.i = 0.f;
 		ctrmm_("L", "U", "N", diag, &k, &k, &q__1, &a[k], &k, &a[k * (
@@ -1010,7 +1010,7 @@ f"> */
 		    *info += k;
 		}
 		if (*info > 0) {
-		    return 0;
+		    return;
 		}
 		ctrmm_("R", "L", "C", diag, &k, &k, &c_b1, a, &k, &a[k * (k + 
 			1)], &k);
@@ -1022,7 +1022,7 @@ f"> */
 
 		ctrtri_("U", diag, &k, &a[k * (k + 1)], &k, info);
 		if (*info > 0) {
-		    return 0;
+		    return;
 		}
 		q__1.r = -1.f, q__1.i = 0.f;
 		ctrmm_("R", "U", "C", diag, &k, &k, &q__1, &a[k * (k + 1)], &
@@ -1032,7 +1032,7 @@ f"> */
 		    *info += k;
 		}
 		if (*info > 0) {
-		    return 0;
+		    return;
 		}
 		ctrmm_("L", "L", "N", diag, &k, &k, &c_b1, &a[k * k], &k, a, &
 			k);
@@ -1040,7 +1040,7 @@ f"> */
 	}
     }
 
-    return 0;
+    return;
 
 /*     End of CTFTRI */
 

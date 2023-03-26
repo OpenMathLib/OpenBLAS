@@ -671,7 +671,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int cgbtrf_(integer *m, integer *n, integer *kl, integer *ku,
+/* Subroutine */ void cgbtrf_(integer *m, integer *n, integer *kl, integer *ku,
 	 complex *ab, integer *ldab, integer *ipiv, integer *info)
 {
     /* System generated locals */
@@ -681,7 +681,7 @@ f"> */
     /* Local variables */
     complex temp;
     integer i__, j;
-    extern /* Subroutine */ int cscal_(integer *, complex *, complex *, 
+    extern /* Subroutine */ void cscal_(integer *, complex *, complex *, 
 	    integer *), cgemm_(char *, char *, integer *, integer *, integer *
 	    , complex *, complex *, integer *, complex *, integer *, complex *
 	    , complex *, integer *), cgeru_(integer *, 
@@ -691,11 +691,11 @@ f"> */
 	    complex *, integer *);
     complex work13[4160]	/* was [65][64] */, work31[4160]	/* 
 	    was [65][64] */;
-    extern /* Subroutine */ int ctrsm_(char *, char *, char *, char *, 
+    extern /* Subroutine */ void ctrsm_(char *, char *, char *, char *, 
 	    integer *, integer *, complex *, complex *, integer *, complex *, 
 	    integer *);
     integer i2, i3, j2, j3, k2;
-    extern /* Subroutine */ int cgbtf2_(integer *, integer *, integer *, 
+    extern /* Subroutine */ void cgbtf2_(integer *, integer *, integer *, 
 	    integer *, complex *, integer *, integer *, integer *);
     integer jb, nb, ii, jj, jm, ip, jp, km, ju, kv;
     extern integer icamax_(integer *, complex *, integer *);
@@ -745,13 +745,13 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CGBTRF", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*m == 0 || *n == 0) {
-	return 0;
+	return;
     }
 
 /*     Determine the block size for this environment */
@@ -1162,7 +1162,7 @@ f"> */
 	}
     }
 
-    return 0;
+    return;
 
 /*     End of CGBTRF */
 

@@ -689,7 +689,7 @@ f"> */
 /* > \ingroup realGEsolve */
 
 /*  ===================================================================== */
-/* Subroutine */ int sgelss_(integer *m, integer *n, integer *nrhs, real *a, 
+/* Subroutine */ void sgelss_(integer *m, integer *n, integer *nrhs, real *a, 
 	integer *lda, real *b, integer *ldb, real *s, real *rcond, integer *
 	rank, real *work, integer *lwork, integer *info)
 {
@@ -702,22 +702,22 @@ f"> */
     integer itau, lwork_sgebrd__, lwork_sgeqrf__, i__, lwork_sorgbr__, 
 	    lwork_sormbr__, lwork_sormlq__, iascl, ibscl, lwork_sormqr__, 
 	    chunk;
-    extern /* Subroutine */ int sgemm_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void sgemm_(char *, char *, integer *, integer *, 
 	    integer *, real *, real *, integer *, real *, integer *, real *, 
 	    real *, integer *);
     real sfmin;
     integer minmn, maxmn;
-    extern /* Subroutine */ int sgemv_(char *, integer *, integer *, real *, 
+    extern /* Subroutine */ void sgemv_(char *, integer *, integer *, real *, 
 	    real *, integer *, real *, integer *, real *, real *, integer *);
     integer itaup, itauq;
-    extern /* Subroutine */ int srscl_(integer *, real *, real *, integer *);
+    extern /* Subroutine */ void srscl_(integer *, real *, real *, integer *);
     integer mnthr, iwork;
-    extern /* Subroutine */ int scopy_(integer *, real *, integer *, real *, 
+    extern /* Subroutine */ void scopy_(integer *, real *, integer *, real *, 
 	    integer *);
     integer bl, ie, il;
-    extern /* Subroutine */ int slabad_(real *, real *);
+    extern /* Subroutine */ void slabad_(real *, real *);
     integer mm, bdspac;
-    extern /* Subroutine */ int sgebrd_(integer *, integer *, real *, integer 
+    extern /* Subroutine */ void sgebrd_(integer *, integer *, real *, integer 
 	    *, real *, real *, real *, real *, real *, integer *, integer *);
     extern real slamch_(char *), slange_(char *, integer *, integer *,
 	     real *, integer *, real *);
@@ -725,7 +725,7 @@ f"> */
     extern integer ilaenv_(integer *, char *, char *, integer *, integer *, 
 	    integer *, integer *, ftnlen, ftnlen);
     real bignum;
-    extern /* Subroutine */ int sgelqf_(integer *, integer *, real *, integer 
+    extern /* Subroutine */ void sgelqf_(integer *, integer *, real *, integer 
 	    *, real *, real *, integer *, integer *), slascl_(char *, integer 
 	    *, integer *, real *, real *, integer *, integer *, real *, 
 	    integer *, integer *), sgeqrf_(integer *, integer *, real 
@@ -737,16 +737,16 @@ f"> */
 	    char *, integer *, integer *, integer *, real *, integer *, real *
 	    , real *, integer *, integer *);
     integer ldwork;
-    extern /* Subroutine */ int sormbr_(char *, char *, char *, integer *, 
+    extern /* Subroutine */ void sormbr_(char *, char *, char *, integer *, 
 	    integer *, integer *, real *, integer *, real *, real *, integer *
 	    , real *, integer *, integer *);
     integer minwrk, maxwrk;
     real smlnum;
-    extern /* Subroutine */ int sormlq_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void sormlq_(char *, char *, integer *, integer *, 
 	    integer *, real *, integer *, real *, real *, integer *, real *, 
 	    integer *, integer *);
     logical lquery;
-    extern /* Subroutine */ int sormqr_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void sormqr_(char *, char *, integer *, integer *, 
 	    integer *, real *, integer *, real *, real *, integer *, real *, 
 	    integer *, integer *);
     real dum[1], eps, thr;
@@ -968,16 +968,16 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("SGELSS", &i__1, (ftnlen)6);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*m == 0 || *n == 0) {
 	*rank = 0;
-	return 0;
+	return;
     }
 
 /*     Get machine parameters */
@@ -1424,7 +1424,7 @@ f"> */
 
 L70:
     work[1] = (real) maxwrk;
-    return 0;
+    return;
 
 /*     End of SGELSS */
 

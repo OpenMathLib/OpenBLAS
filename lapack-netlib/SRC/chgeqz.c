@@ -796,7 +796,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int chgeqz_(char *job, char *compq, char *compz, integer *n, 
+/* Subroutine */ void chgeqz_(char *job, char *compq, char *compz, integer *n, 
 	integer *ilo, integer *ihi, complex *h__, integer *ldh, complex *t, 
 	integer *ldt, complex *alpha, complex *beta, complex *q, integer *ldq,
 	 complex *z__, integer *ldz, complex *work, integer *lwork, real *
@@ -810,12 +810,12 @@ f"> */
 
     /* Local variables */
     real absb, atol, btol, temp;
-    extern /* Subroutine */ int crot_(integer *, complex *, integer *, 
+    extern /* Subroutine */ void crot_(integer *, complex *, integer *, 
 	    complex *, integer *, real *, complex *);
     real temp2, c__;
     integer j;
     complex s;
-    extern /* Subroutine */ int cscal_(integer *, complex *, complex *, 
+    extern /* Subroutine */ void cscal_(integer *, complex *, complex *, 
 	    integer *);
     complex x, y;
     extern logical lsame_(char *, char *);
@@ -835,7 +835,7 @@ f"> */
     complex signbc;
     extern real slamch_(char *), clanhs_(char *, integer *, complex *,
 	     integer *, real *);
-    extern /* Subroutine */ int claset_(char *, integer *, integer *, complex 
+    extern /* Subroutine */ void claset_(char *, integer *, integer *, complex 
 	    *, complex *, complex *, integer *), clartg_(complex *, 
 	    complex *, real *, complex *, complex *);
     real safmin;
@@ -954,9 +954,9 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CHGEQZ", &i__1, (ftnlen)6);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
@@ -964,7 +964,7 @@ f"> */
 /*     WORK( 1 ) = CMPLX( 1 ) */
     if (*n <= 0) {
 	work[1].r = 1.f, work[1].i = 0.f;
-	return 0;
+	return;
     }
 
 /*     Initialize Q and Z */
@@ -1742,7 +1742,7 @@ L190:
 L210:
     q__1.r = (real) (*n), q__1.i = 0.f;
     work[1].r = q__1.r, work[1].i = q__1.i;
-    return 0;
+    return;
 
 /*     End of CHGEQZ */
 

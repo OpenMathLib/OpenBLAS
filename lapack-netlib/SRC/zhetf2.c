@@ -706,7 +706,7 @@ f"> */
 /* > \endverbatim */
 
 /*  ===================================================================== */
-/* Subroutine */ int zhetf2_(char *uplo, integer *n, doublecomplex *a, 
+/* Subroutine */ void zhetf2_(char *uplo, integer *n, doublecomplex *a, 
 	integer *lda, integer *ipiv, integer *info)
 {
     /* System generated locals */
@@ -716,7 +716,7 @@ f"> */
 
     /* Local variables */
     integer imax, jmax;
-    extern /* Subroutine */ int zher_(char *, integer *, doublereal *, 
+    extern /* Subroutine */ void zher_(char *, integer *, doublereal *, 
 	    doublecomplex *, integer *, doublecomplex *, integer *);
     doublereal d__;
     integer i__, j, k;
@@ -726,7 +726,7 @@ f"> */
     integer kstep;
     logical upper;
     doublereal r1;
-    extern /* Subroutine */ int zswap_(integer *, doublecomplex *, integer *, 
+    extern /* Subroutine */ void zswap_(integer *, doublecomplex *, integer *, 
 	    doublecomplex *, integer *);
     extern doublereal dlapy2_(doublereal *, doublereal *);
     doublereal d11;
@@ -738,7 +738,8 @@ f"> */
     doublecomplex wk;
     doublereal tt;
     extern logical disnan_(doublereal *);
-    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen), zdscal_(
+    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
+    extern void zdscal_(
 	    integer *, doublereal *, doublecomplex *, integer *);
     doublereal colmax;
     extern integer izamax_(integer *, doublecomplex *, integer *);
@@ -776,7 +777,7 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZHETF2", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Initialize ALPHA for use in choosing pivot block size. */
@@ -1379,7 +1380,7 @@ L50:
     }
 
 L90:
-    return 0;
+    return;
 
 /*     End of ZHETF2 */
 

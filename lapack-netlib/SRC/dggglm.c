@@ -700,7 +700,7 @@ f"> */
 /* > \ingroup doubleOTHEReigen */
 
 /*  ===================================================================== */
-/* Subroutine */ int dggglm_(integer *n, integer *m, integer *p, doublereal *
+/* Subroutine */ void dggglm_(integer *n, integer *m, integer *p, doublereal *
 	a, integer *lda, doublereal *b, integer *ldb, doublereal *d__, 
 	doublereal *x, doublereal *y, doublereal *work, integer *lwork, 
 	integer *info)
@@ -710,19 +710,19 @@ f"> */
 
     /* Local variables */
     integer lopt, i__;
-    extern /* Subroutine */ int dgemv_(char *, integer *, integer *, 
+    extern /* Subroutine */ void dgemv_(char *, integer *, integer *, 
 	    doublereal *, doublereal *, integer *, doublereal *, integer *, 
 	    doublereal *, doublereal *, integer *), dcopy_(integer *, 
 	    doublereal *, integer *, doublereal *, integer *);
     integer nb, np;
-    extern /* Subroutine */ int dggqrf_(integer *, integer *, integer *, 
+    extern /* Subroutine */ void dggqrf_(integer *, integer *, integer *, 
 	    doublereal *, integer *, doublereal *, doublereal *, integer *, 
-	    doublereal *, doublereal *, integer *, integer *), xerbla_(char *,
-	     integer *, ftnlen);
+	    doublereal *, doublereal *, integer *, integer *);
+    extern int xerbla_(char *, integer *, ftnlen);
     extern integer ilaenv_(integer *, char *, char *, integer *, integer *, 
 	    integer *, integer *, ftnlen, ftnlen);
     integer lwkmin, nb1, nb2, nb3, nb4;
-    extern /* Subroutine */ int dormqr_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void dormqr_(char *, char *, integer *, integer *, 
 	    integer *, doublereal *, integer *, doublereal *, doublereal *, 
 	    integer *, doublereal *, integer *, integer *), 
 	    dormrq_(char *, char *, integer *, integer *, integer *, 
@@ -805,9 +805,9 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DGGGLM", &i__1, (ftnlen)6);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
@@ -821,7 +821,7 @@ f"> */
 	for (i__ = 1; i__ <= i__1; ++i__) {
 	    y[i__] = 0.;
 	}
-	return 0;
+	return;
     }
 
 /*     Compute the GQR factorization of matrices A and B: */
@@ -860,7 +860,7 @@ f"> */
 
 	if (*info > 0) {
 	    *info = 1;
-	    return 0;
+	    return;
 	}
 
 	i__1 = *n - *m;
@@ -889,7 +889,7 @@ f"> */
 
 	if (*info > 0) {
 	    *info = 2;
-	    return 0;
+	    return;
 	}
 
 /*        Copy D to X */
@@ -909,7 +909,7 @@ f"> */
     i__1 = lopt, i__2 = (integer) work[*m + np + 1];
     work[1] = (doublereal) (*m + np + f2cmax(i__1,i__2));
 
-    return 0;
+    return;
 
 /*     End of DGGGLM */
 

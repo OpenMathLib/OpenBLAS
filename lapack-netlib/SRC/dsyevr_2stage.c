@@ -898,7 +898,7 @@ static integer c_n1 = -1;
 /* > \endverbatim */
 
 /*  ===================================================================== */
-/* Subroutine */ int dsyevr_2stage_(char *jobz, char *range, char *uplo, 
+/* Subroutine */ void dsyevr_2stage_(char *jobz, char *range, char *uplo, 
 	integer *n, doublereal *a, integer *lda, doublereal *vl, doublereal *
 	vu, integer *il, integer *iu, doublereal *abstol, integer *m, 
 	doublereal *w, doublereal *z__, integer *ldz, integer *isuppz, 
@@ -917,14 +917,14 @@ static integer c_n1 = -1;
     integer imax;
     doublereal rmin, rmax;
     integer i__, j, inddd, indee;
-    extern /* Subroutine */ int dscal_(integer *, doublereal *, doublereal *, 
+    extern /* Subroutine */ void dscal_(integer *, doublereal *, doublereal *, 
 	    integer *);
     doublereal sigma;
     extern logical lsame_(char *, char *);
     integer iinfo;
     char order[1];
     integer indwk, lhtrd;
-    extern /* Subroutine */ int dcopy_(integer *, doublereal *, integer *, 
+    extern /* Subroutine */ void dcopy_(integer *, doublereal *, integer *, 
 	    doublereal *, integer *), dswap_(integer *, doublereal *, integer 
 	    *, doublereal *, integer *), dsytrd_2stage_(char *, char *, 
 	    integer *, doublereal *, integer *, doublereal *, doublereal *, 
@@ -945,14 +945,14 @@ static integer c_n1 = -1;
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     doublereal abstll, bignum;
     integer indtau, indisp;
-    extern /* Subroutine */ int dstein_(integer *, doublereal *, doublereal *,
+    extern /* Subroutine */ void dstein_(integer *, doublereal *, doublereal *,
 	     integer *, doublereal *, integer *, integer *, doublereal *, 
 	    integer *, doublereal *, integer *, integer *, integer *), 
 	    dsterf_(integer *, doublereal *, doublereal *, integer *);
     integer indiwo, indwkn;
     extern doublereal dlansy_(char *, char *, integer *, doublereal *, 
 	    integer *, doublereal *);
-    extern /* Subroutine */ int dstebz_(char *, char *, integer *, doublereal 
+    extern /* Subroutine */ void dstebz_(char *, char *, integer *, doublereal 
 	    *, doublereal *, integer *, integer *, doublereal *, doublereal *,
 	     doublereal *, integer *, integer *, doublereal *, integer *, 
 	    integer *, doublereal *, integer *, integer *), 
@@ -963,7 +963,7 @@ static integer c_n1 = -1;
 	    *);
     integer liwmin;
     logical tryrac;
-    extern /* Subroutine */ int dormtr_(char *, char *, char *, integer *, 
+    extern /* Subroutine */ void dormtr_(char *, char *, char *, integer *, 
 	    integer *, doublereal *, integer *, doublereal *, doublereal *, 
 	    integer *, doublereal *, integer *, integer *);
     integer llwrkn, llwork, nsplit;
@@ -1066,9 +1066,9 @@ static integer c_n1 = -1;
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DSYEVR_2STAGE", &i__1, (ftnlen)13);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
@@ -1076,7 +1076,7 @@ static integer c_n1 = -1;
     *m = 0;
     if (*n == 0) {
 	work[1] = 1.;
-	return 0;
+	return;
     }
 
     if (*n == 1) {
@@ -1095,7 +1095,7 @@ static integer c_n1 = -1;
 	    isuppz[1] = 1;
 	    isuppz[2] = 1;
 	}
-	return 0;
+	return;
     }
 
 /*     Get machine constants. */
@@ -1311,7 +1311,7 @@ L30:
     work[1] = (doublereal) lwmin;
     iwork[1] = liwmin;
 
-    return 0;
+    return;
 
 /*     End of DSYEVR_2STAGE */
 

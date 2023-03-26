@@ -597,7 +597,7 @@ f"> */
 /* > \ingroup auxOTHERcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int dlasrt_(char *id, integer *n, doublereal *d__, integer *
+/* Subroutine */ void dlasrt_(char *id, integer *n, doublereal *d__, integer *
 	info)
 {
     /* System generated locals */
@@ -644,13 +644,13 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DLASRT", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n <= 1) {
-	return 0;
+	return;
     }
 
     stkpnt = 1;
@@ -817,7 +817,7 @@ L110:
     if (stkpnt > 0) {
 	goto L10;
     }
-    return 0;
+    return;
 
 /*     End of DLASRT */
 

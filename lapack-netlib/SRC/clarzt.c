@@ -699,7 +699,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int clarzt_(char *direct, char *storev, integer *n, integer *
+/* Subroutine */ void clarzt_(char *direct, char *storev, integer *n, integer *
 	k, complex *v, integer *ldv, complex *tau, complex *t, integer *ldt)
 {
     /* System generated locals */
@@ -708,13 +708,13 @@ f"> */
 
     /* Local variables */
     integer info, i__, j;
-    extern /* Subroutine */ int cgemv_(char *, integer *, integer *, complex *
+    extern /* Subroutine */ void cgemv_(char *, integer *, integer *, complex *
 	    , complex *, integer *, complex *, integer *, complex *, complex *
 	    , integer *);
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int ctrmv_(char *, char *, char *, integer *, 
-	    complex *, integer *, complex *, integer *), clacgv_(integer *, complex *, integer *), xerbla_(char *,
-	     integer *, ftnlen);
+    extern /* Subroutine */ void ctrmv_(char *, char *, char *, integer *, 
+	    complex *, integer *, complex *, integer *), clacgv_(integer *, complex *, integer *);
+    extern int xerbla_(char *, integer *, ftnlen);
 
 
 /*  -- LAPACK computational routine (version 3.7.0) -- */
@@ -747,7 +747,7 @@ f"> */
     if (info != 0) {
 	i__1 = -info;
 	xerbla_("CLARZT", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
     for (i__ = *k; i__ >= 1; --i__) {
@@ -792,7 +792,7 @@ f"> */
 	}
 /* L20: */
     }
-    return 0;
+    return;
 
 /*     End of CLARZT */
 

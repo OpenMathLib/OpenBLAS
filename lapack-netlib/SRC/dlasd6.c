@@ -827,7 +827,7 @@ f"> */
 /* >     California at Berkeley, USA */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int dlasd6_(integer *icompq, integer *nl, integer *nr, 
+/* Subroutine */ void dlasd6_(integer *icompq, integer *nl, integer *nr, 
 	integer *sqre, doublereal *d__, doublereal *vf, doublereal *vl, 
 	doublereal *alpha, doublereal *beta, integer *idxq, integer *perm, 
 	integer *givptr, integer *givcol, integer *ldgcol, doublereal *givnum,
@@ -842,10 +842,10 @@ f"> */
 
     /* Local variables */
     integer idxc, idxp, ivfw, ivlw, i__, m, n;
-    extern /* Subroutine */ int dcopy_(integer *, doublereal *, integer *, 
+    extern /* Subroutine */ void dcopy_(integer *, doublereal *, integer *, 
 	    doublereal *, integer *);
     integer n1, n2;
-    extern /* Subroutine */ int dlasd7_(integer *, integer *, integer *, 
+    extern /* Subroutine */ void dlasd7_(integer *, integer *, integer *, 
 	    integer *, integer *, doublereal *, doublereal *, doublereal *, 
 	    doublereal *, doublereal *, doublereal *, doublereal *, 
 	    doublereal *, doublereal *, doublereal *, integer *, integer *, 
@@ -855,7 +855,7 @@ f"> */
 	    doublereal *, doublereal *, doublereal *, integer *, doublereal *,
 	     doublereal *, integer *);
     integer iw;
-    extern /* Subroutine */ int dlascl_(char *, integer *, integer *, 
+    extern /* Subroutine */ void dlascl_(char *, integer *, integer *, 
 	    doublereal *, doublereal *, integer *, integer *, doublereal *, 
 	    integer *, integer *), dlamrg_(integer *, integer *, 
 	    doublereal *, integer *, integer *, integer *);
@@ -918,7 +918,7 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DLASD6", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     The following values are for bookkeeping purposes only.  They are */
@@ -967,7 +967,7 @@ f"> */
 /*     Report the possible convergence failure. */
 
     if (*info != 0) {
-	return 0;
+	return;
     }
 
 /*     Save the poles if ICOMPQ = 1. */
@@ -987,7 +987,7 @@ f"> */
     n2 = n - *k;
     dlamrg_(&n1, &n2, &d__[1], &c__1, &c_n1, &idxq[1]);
 
-    return 0;
+    return;
 
 /*     End of DLASD6 */
 

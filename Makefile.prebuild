@@ -60,9 +60,9 @@ all: getarch_2nd
 	./getarch_2nd  1 >> $(TARGET_CONF)
 
 $(TARGET_CONF): c_check$(SCRIPTSUFFIX) f_check$(SCRIPTSUFFIX) getarch
-	./c_check$(SCRIPTSUFFIX) $(TARGET_MAKE) $(TARGET_CONF) $(CC) $(TARGET_FLAGS) $(CFLAGS)
+	./c_check$(SCRIPTSUFFIX) $(TARGET_MAKE) $(TARGET_CONF) "$(CC)" $(TARGET_FLAGS) $(CFLAGS)
 ifneq ($(ONLY_CBLAS), 1)
-	./f_check$(SCRIPTSUFFIX) $(TARGET_MAKE) $(TARGET_CONF) $(FC) $(TARGET_FLAGS)
+	./f_check$(SCRIPTSUFFIX) $(TARGET_MAKE) $(TARGET_CONF) "$(FC)" $(TARGET_FLAGS)
 else
 #When we only build CBLAS, we set NOFORTRAN=2
 	echo "NOFORTRAN=2" >> $(TARGET_MAKE)
@@ -77,8 +77,8 @@ endif
 
 
 getarch : getarch.c cpuid.S dummy $(CPUIDEMU)
-	avx512=$$(./c_check$(SCRIPTSUFFIX) - - $(CC) $(TARGET_FLAGS) $(CFLAGS) | grep NO_AVX512); \
-	rv64gv=$$(./c_check$(SCRIPTSUFFIX) - - $(CC) $(TARGET_FLAGS) $(CFLAGS) | grep NO_RV64GV); \
+	avx512=$$(./c_check$(SCRIPTSUFFIX) - - "$(CC)" $(TARGET_FLAGS) $(CFLAGS) | grep NO_AVX512); \
+	rv64gv=$$(./c_check$(SCRIPTSUFFIX) - - "$(CC)" $(TARGET_FLAGS) $(CFLAGS) | grep NO_RV64GV); \
 	$(HOSTCC) $(HOST_CFLAGS) $(EXFLAGS) $${avx512:+-D$${avx512}} $${rv64gv:+-D$${rv64gv}} -o $(@F) getarch.c cpuid.S $(CPUIDEMU)
 
 getarch_2nd : getarch_2nd.c $(TARGET_CONF) dummy

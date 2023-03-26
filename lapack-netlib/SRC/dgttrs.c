@@ -651,7 +651,7 @@ f"> */
 /* > \ingroup doubleGTcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int dgttrs_(char *trans, integer *n, integer *nrhs, 
+/* Subroutine */ void dgttrs_(char *trans, integer *n, integer *nrhs, 
 	doublereal *dl, doublereal *d__, doublereal *du, doublereal *du2, 
 	integer *ipiv, doublereal *b, integer *ldb, integer *info)
 {
@@ -660,7 +660,7 @@ f"> */
 
     /* Local variables */
     integer j;
-    extern /* Subroutine */ int dgtts2_(integer *, integer *, integer *, 
+    extern /* Subroutine */ void dgtts2_(integer *, integer *, integer *, 
 	    doublereal *, doublereal *, doublereal *, doublereal *, integer *,
 	     doublereal *, integer *);
     integer jb, nb;
@@ -707,13 +707,13 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DGTTRS", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0 || *nrhs == 0) {
-	return 0;
+	return;
     }
 
 /*     Decode TRANS */
@@ -753,6 +753,6 @@ f"> */
 
 /*     End of DGTTRS */
 
-    return 0;
+    return;
 } /* dgttrs_ */
 

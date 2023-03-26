@@ -964,7 +964,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int stgsen_(integer *ijob, logical *wantq, logical *wantz, 
+/* Subroutine */ void stgsen_(integer *ijob, logical *wantq, logical *wantz, 
 	logical *select, integer *n, real *a, integer *lda, real *b, integer *
 	ldb, real *alphar, real *alphai, real *beta, real *q, integer *ldq, 
 	real *z__, integer *ldz, integer *m, real *pl, real *pr, real *dif, 
@@ -982,14 +982,14 @@ f"> */
     integer ierr;
     real dsum;
     logical swap;
-    extern /* Subroutine */ int slag2_(real *, integer *, real *, integer *, 
+    extern /* Subroutine */ void slag2_(real *, integer *, real *, integer *, 
 	    real *, real *, real *, real *, real *, real *);
     integer i__, k, isave[3];
     logical wantd;
     integer lwmin;
     logical wantp;
     integer n1, n2;
-    extern /* Subroutine */ int slacn2_(integer *, real *, real *, integer *, 
+    extern /* Subroutine */ void slacn2_(integer *, real *, real *, integer *, 
 	    real *, integer *, integer *);
     logical wantd1, wantd2;
     integer kk;
@@ -997,18 +997,19 @@ f"> */
     integer ks;
     real rdscal;
     extern real slamch_(char *);
-    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen), slacpy_(
+    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
+    extern void slacpy_(
 	    char *, integer *, integer *, real *, integer *, real *, integer *
 	    ), stgexc_(logical *, logical *, integer *, real *, 
 	    integer *, real *, integer *, real *, integer *, real *, integer *
 	    , integer *, integer *, real *, integer *, integer *);
     integer liwmin;
-    extern /* Subroutine */ int slassq_(integer *, real *, integer *, real *, 
+    extern /* Subroutine */ void slassq_(integer *, real *, integer *, real *, 
 	    real *);
     real smlnum;
     integer mn2;
     logical lquery;
-    extern /* Subroutine */ int stgsyl_(char *, integer *, integer *, integer 
+    extern /* Subroutine */ void stgsyl_(char *, integer *, integer *, integer 
 	    *, real *, integer *, real *, integer *, real *, integer *, real *
 	    , integer *, real *, integer *, real *, integer *, real *, real *,
 	     real *, integer *, integer *, integer *);
@@ -1069,7 +1070,7 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("STGSEN", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Get machine constants */
@@ -1151,9 +1152,9 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("STGSEN", &i__1, (ftnlen)6);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible. */
@@ -1448,7 +1449,7 @@ L60:
     work[1] = (real) lwmin;
     iwork[1] = liwmin;
 
-    return 0;
+    return;
 
 /*     End of STGSEN */
 

@@ -2,6 +2,9 @@ name: continuous build
 
 on: [push, pull_request]
 
+permissions:
+  contents: read # to fetch code (actions/checkout)
+
 jobs:
   build:
     runs-on: ${{ matrix.os }}
@@ -34,7 +37,7 @@ jobs:
       - name: Install Dependencies
         run: |
           if [ "$RUNNER_OS" == "Linux" ]; then
-            sudo apt-get install -y gfortran cmake ccache
+            sudo apt-get install -y gfortran cmake ccache libtinfo5
           elif [ "$RUNNER_OS" == "macOS" ]; then
             # It looks like "gfortran" isn't working correctly unless "gcc" is re-installed.
             brew reinstall gcc
@@ -150,6 +153,7 @@ jobs:
       matrix:
         msystem: [MINGW64, MINGW32, CLANG64]
         idx: [int32, int64]
+        build-type: [Release]
         include:
           - msystem: MINGW64
             idx: int32
@@ -173,6 +177,11 @@ jobs:
             idx64-flags: -DBINARY=64 -DINTERFACE64=1
             target-prefix: mingw-w64-clang-x86_64
             c-lapack-flags: -DC_LAPACK=ON
+          - msystem: MINGW64
+            idx: int32
+            target-prefix: mingw-w64-x86_64
+            fc-pkg: mingw-w64-x86_64-gcc-fortran
+            build-type: None
         exclude:
           - msystem: MINGW32
             idx: int64
@@ -215,11 +224,11 @@ jobs:
           path: C:/msys64/home/runneradmin/.ccache
           # We include the commit sha in the cache key, as new cache entries are
           # only created if there is no existing entry for the key yet.
-          key: ccache-msys2-${{ matrix.msystem }}-${{ matrix.idx }}-${{ github.ref }}-${{ github.sha }}
+          key: ccache-msys2-${{ matrix.msystem }}-${{ matrix.idx }}-${{ matrix.build-type }}-${{ github.ref }}-${{ github.sha }}
           # Restore a matching ccache cache entry. Prefer same branch.
           restore-keys: |
-            ccache-msys2-${{ matrix.msystem }}-${{ matrix.idx }}-${{ github.ref }}
-            ccache-msys2-${{ matrix.msystem }}-${{ matrix.idx }}
+            ccache-msys2-${{ matrix.msystem }}-${{ matrix.idx }}-${{ matrix.build-type }}-${{ github.ref }}
+            ccache-msys2-${{ matrix.msystem }}-${{ matrix.idx }}-${{ matrix.build-type }}
 
       - name: Configure ccache
         # Limit the maximum size and switch on compression to avoid exceeding the total disk or cache quota.
@@ -235,7 +244,8 @@ jobs:
       - name: Configure OpenBLAS
         run: |
           mkdir build && cd build
-          cmake -DBUILD_SHARED_LIBS=ON \
+          cmake -DCMAKE_BUILD_TYPE=${{ matrix.build-type }} \
+                -DBUILD_SHARED_LIBS=ON \
                 -DBUILD_STATIC_LIBS=ON \
                 -DDYNAMIC_ARCH=ON \
                 -DUSE_THREAD=ON \
@@ -257,3 +267,54 @@ jobs:
       - name: Run tests
         timeout-minutes: 60
         run: cd build && ctest
+
+
+  cross_build:
+    runs-on: ubuntu-22.04
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - target: mips64el
+            triple: mips64el-linux-gnuabi64
+            opts: DYNAMIC_ARCH=1 TARGET=GENERIC
+          - target: riscv64
+            triple: riscv64-linux-gnu
+            opts: TARGET=RISCV64_GENERIC
+          - target: mipsel
+            triple: mipsel-linux-gnu
+            opts: TARGET=MIPS1004K
+          - target: alpha
+            triple: alpha-linux-gnu
+            opts: TARGET=EV4
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Install Dependencies
+        run: |
+          sudo apt-get install -y ccache gcc-${{ matrix.triple }} gfortran-${{ matrix.triple }} libgomp1-${{ matrix.target }}-cross
+
+      - name: Compilation cache
+        uses: actions/cache@v3
+        with:
+          path: ~/.ccache
+          key: ccache-${{ runner.os }}-${{ matrix.target }}-${{ github.ref }}-${{ github.sha }}
+          restore-keys: |
+            ccache-${{ runner.os }}-${{ matrix.target }}-${{ github.ref }}
+            ccache-${{ runner.os }}-${{ matrix.target }}
+
+      - name: Configure ccache
+        run: |
+          # Limit the maximum size and switch on compression to avoid exceeding the total disk or cache quota (5 GB).
+          test -d ~/.ccache || mkdir -p ~/.ccache
+          echo "max_size = 300M" > ~/.ccache/ccache.conf
+          echo "compression = true" >> ~/.ccache/ccache.conf
+          ccache -s
+
+
+      - name: Build OpenBLAS
+        run: |
+          make -j$(nproc) HOSTCC="ccache gcc" CC="ccache ${{ matrix.triple }}-gcc" FC="ccache ${{ matrix.triple }}-gfortran" ARCH=${{ matrix.target }} ${{ matrix.opts }}

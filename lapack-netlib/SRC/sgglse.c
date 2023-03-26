@@ -695,7 +695,7 @@ f"> */
 /* > \ingroup realOTHERsolve */
 
 /*  ===================================================================== */
-/* Subroutine */ int sgglse_(integer *m, integer *n, integer *p, real *a, 
+/* Subroutine */ void sgglse_(integer *m, integer *n, integer *p, real *a, 
 	integer *lda, real *b, integer *ldb, real *c__, real *d__, real *x, 
 	real *work, integer *lwork, integer *info)
 {
@@ -704,7 +704,7 @@ f"> */
 
     /* Local variables */
     integer lopt;
-    extern /* Subroutine */ int sgemv_(char *, integer *, integer *, real *, 
+    extern /* Subroutine */ void sgemv_(char *, integer *, integer *, real *, 
 	    real *, integer *, real *, integer *, real *, real *, integer *), scopy_(integer *, real *, integer *, real *, integer *), 
 	    saxpy_(integer *, real *, real *, integer *, real *, integer *), 
 	    strmv_(char *, char *, char *, integer *, real *, integer *, real 
@@ -713,17 +713,17 @@ f"> */
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     extern integer ilaenv_(integer *, char *, char *, integer *, integer *, 
 	    integer *, integer *, ftnlen, ftnlen);
-    extern /* Subroutine */ int sggrqf_(integer *, integer *, integer *, real 
+    extern /* Subroutine */ void sggrqf_(integer *, integer *, integer *, real 
 	    *, integer *, real *, real *, integer *, real *, real *, integer *
 	    , integer *);
     integer lwkmin, nb1, nb2, nb3, nb4, lwkopt;
     logical lquery;
-    extern /* Subroutine */ int sormqr_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void sormqr_(char *, char *, integer *, integer *, 
 	    integer *, real *, integer *, real *, real *, integer *, real *, 
 	    integer *, integer *), sormrq_(char *, char *, 
 	    integer *, integer *, integer *, real *, integer *, real *, real *
-	    , integer *, real *, integer *, integer *), 
-	    strtrs_(char *, char *, char *, integer *, integer *, real *, 
+	    , integer *, real *, integer *, integer *); 
+    extern int strtrs_(char *, char *, char *, integer *, integer *, real *, 
 	    integer *, real *, integer *, integer *);
 
 
@@ -797,15 +797,15 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("SGGLSE", &i__1, (ftnlen)6);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /*     Compute the GRQ factorization of matrices B and A: */
@@ -841,7 +841,7 @@ f"> */
 
 	if (*info > 0) {
 	    *info = 1;
-	    return 0;
+	    return;
 	}
 
 /*        Put the solution in X */
@@ -865,7 +865,7 @@ f"> */
 
 	if (*info > 0) {
 	    *info = 2;
-	    return 0;
+	    return;
 	}
 
 /*        Put the solutions in X */
@@ -902,7 +902,7 @@ f"> */
     i__1 = lopt, i__2 = (integer) work[*p + mn + 1];
     work[1] = (real) (*p + mn + f2cmax(i__1,i__2));
 
-    return 0;
+    return;
 
 /*     End of SGGLSE */
 

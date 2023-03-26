@@ -1,4 +1,4 @@
-*> \brief \b SLASCL2 performs diagonal scaling on a vector.
+*> \brief \b SLASCL2 performs diagonal scaling on a matrix.
 *
 *  =========== DOCUMENTATION ===========
 *
@@ -33,7 +33,7 @@
 *>
 *> \verbatim
 *>
-*> SLASCL2 performs a diagonal scaling on a vector:
+*> SLASCL2 performs a diagonal scaling on a matrix:
 *>   x <-- D * x
 *> where the diagonal matrix D is stored as a vector.
 *>
@@ -65,14 +65,14 @@
 *> \param[in,out] X
 *> \verbatim
 *>          X is REAL array, dimension (LDX,N)
-*>     On entry, the vector X to be scaled by D.
-*>     On exit, the scaled vector.
+*>     On entry, the matrix X to be scaled by D.
+*>     On exit, the scaled matrix.
 *> \endverbatim
 *>
 *> \param[in] LDX
 *> \verbatim
 *>          LDX is INTEGER
-*>     The leading dimension of the vector X. LDX >= M.
+*>     The leading dimension of the matrix X. LDX >= M.
 *> \endverbatim
 *
 *  Authors:

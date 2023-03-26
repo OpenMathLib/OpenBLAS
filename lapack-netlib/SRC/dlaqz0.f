@@ -322,7 +322,7 @@
 
 *     Local scalars
       DOUBLE PRECISION :: SMLNUM, ULP, ESHIFT, SAFMIN, SAFMAX, C1, S1,
-     $                    TEMP, SWAP
+     $                    TEMP, SWAP, BNORM, BTOL
       INTEGER :: ISTART, ISTOP, IITER, MAXIT, ISTART2, K, LD, NSHIFTS,
      $           NBLOCK, NW, NMIN, NIBBLE, N_UNDEFLATED, N_DEFLATED,
      $           NS, SWEEP_INFO, SHIFTPOS, LWORKREQ, K2, ISTARTM,
@@ -334,7 +334,7 @@
 *     External Functions
       EXTERNAL :: XERBLA, DHGEQZ, DLASET, DLAQZ3, DLAQZ4, DLABAD,
      $            DLARTG, DROT
-      DOUBLE PRECISION, EXTERNAL :: DLAMCH
+      DOUBLE PRECISION, EXTERNAL :: DLAMCH, DLANHS
       LOGICAL, EXTERNAL :: LSAME
       INTEGER, EXTERNAL :: ILAENV
 
@@ -486,6 +486,9 @@
       ULP = DLAMCH( 'PRECISION' )
       SMLNUM = SAFMIN*( DBLE( N )/ULP )
 
+      BNORM = DLANHS( 'F', IHI-ILO+1, B( ILO, ILO ), LDB, WORK )
+      BTOL = MAX( SAFMIN, ULP*BNORM )
+
       ISTART = ILO
       ISTOP = IHI
       MAXIT = 3*( IHI-ILO+1 )
@@ -562,15 +565,8 @@
 *        slow down the method when many infinite eigenvalues are present
          K = ISTOP
          DO WHILE ( K.GE.ISTART2 )
-            TEMP = ZERO
-            IF( K .LT. ISTOP ) THEN
-               TEMP = TEMP+ABS( B( K, K+1 ) )
-            END IF
-            IF( K .GT. ISTART2 ) THEN
-               TEMP = TEMP+ABS( B( K-1, K ) )
-            END IF
 
-            IF( ABS( B( K, K ) ) .LT. MAX( SMLNUM, ULP*TEMP ) ) THEN
+            IF( ABS( B( K, K ) ) .LT. BTOL ) THEN
 *              A diagonal element of B is negligable, move it
 *              to the top and deflate it
                
@@ -682,7 +678,7 @@
 
          NS = MIN( NSHIFTS, ISTOP-ISTART2 )
          NS = MIN( NS, N_UNDEFLATED )
-         SHIFTPOS = ISTOP-N_DEFLATED-N_UNDEFLATED+1
+         SHIFTPOS = ISTOP-N_UNDEFLATED+1
 *
 *        Shuffle shifts to put double shifts in front
 *        This ensures that we don't split up a double shift

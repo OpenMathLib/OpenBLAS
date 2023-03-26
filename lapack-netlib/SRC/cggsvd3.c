@@ -866,7 +866,7 @@ static integer c__1 = 1;
 /* >  CGGSVD3 replaces the deprecated subroutine CGGSVD. */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int cggsvd3_(char *jobu, char *jobv, char *jobq, integer *m, 
+/* Subroutine */ void cggsvd3_(char *jobu, char *jobv, char *jobq, integer *m, 
 	integer *n, integer *p, integer *k, integer *l, complex *a, integer *
 	lda, complex *b, integer *ldb, real *alpha, real *beta, complex *u, 
 	integer *ldu, complex *v, integer *ldv, complex *q, integer *ldq, 
@@ -887,20 +887,20 @@ static integer c__1 = 1;
     extern logical lsame_(char *, char *);
     real anorm, bnorm;
     logical wantq;
-    extern /* Subroutine */ int scopy_(integer *, real *, integer *, real *, 
+    extern /* Subroutine */ void scopy_(integer *, real *, integer *, real *, 
 	    integer *);
     logical wantu, wantv;
     extern real clange_(char *, integer *, integer *, complex *, integer *, 
 	    real *), slamch_(char *);
-    extern /* Subroutine */ int ctgsja_(char *, char *, char *, integer *, 
+    extern /* Subroutine */ void ctgsja_(char *, char *, char *, integer *, 
 	    integer *, integer *, integer *, integer *, complex *, integer *, 
 	    complex *, integer *, real *, real *, real *, real *, complex *, 
 	    integer *, complex *, integer *, complex *, integer *, complex *, 
-	    integer *, integer *), xerbla_(char *, 
-	    integer *, ftnlen);
+	    integer *, integer *);
+    extern int xerbla_(char *, integer *, ftnlen);
     integer lwkopt;
     logical lquery;
-    extern /* Subroutine */ int cggsvp3_(char *, char *, char *, integer *, 
+    extern /* Subroutine */ void cggsvp3_(char *, char *, char *, integer *, 
 	    integer *, integer *, complex *, integer *, complex *, integer *, 
 	    real *, real *, integer *, integer *, complex *, integer *, 
 	    complex *, integer *, complex *, integer *, integer *, real *, 
@@ -996,10 +996,10 @@ static integer c__1 = 1;
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CGGSVD3", &i__1, (ftnlen)7);
-	return 0;
+	return;
     }
     if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Compute the Frobenius norm of matrices A and B */
@@ -1062,7 +1062,7 @@ static integer c__1 = 1;
 
     q__1.r = (real) lwkopt, q__1.i = 0.f;
     work[1].r = q__1.r, work[1].i = q__1.i;
-    return 0;
+    return;
 
 /*     End of CGGSVD3 */
 

@@ -699,7 +699,7 @@ f"> */
 /* > \ingroup doubleGEcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int dgerfs_(char *trans, integer *n, integer *nrhs, 
+/* Subroutine */ void dgerfs_(char *trans, integer *n, integer *nrhs, 
 	doublereal *a, integer *lda, doublereal *af, integer *ldaf, integer *
 	ipiv, doublereal *b, integer *ldb, doublereal *x, integer *ldx, 
 	doublereal *ferr, doublereal *berr, doublereal *work, integer *iwork, 
@@ -716,21 +716,22 @@ f"> */
     integer i__, j, k;
     doublereal s;
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int dgemv_(char *, integer *, integer *, 
+    extern /* Subroutine */ void dgemv_(char *, integer *, integer *, 
 	    doublereal *, doublereal *, integer *, doublereal *, integer *, 
 	    doublereal *, doublereal *, integer *);
     integer isave[3];
-    extern /* Subroutine */ int dcopy_(integer *, doublereal *, integer *, 
+    extern /* Subroutine */ void dcopy_(integer *, doublereal *, integer *, 
 	    doublereal *, integer *), daxpy_(integer *, doublereal *, 
 	    doublereal *, integer *, doublereal *, integer *);
     integer count;
-    extern /* Subroutine */ int dlacn2_(integer *, doublereal *, doublereal *,
+    extern /* Subroutine */ void dlacn2_(integer *, doublereal *, doublereal *,
 	     integer *, doublereal *, integer *, integer *);
     extern doublereal dlamch_(char *);
     doublereal xk;
     integer nz;
     doublereal safmin;
-    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen), dgetrs_(
+    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
+    extern int dgetrs_(
 	    char *, integer *, integer *, doublereal *, integer *, integer *, 
 	    doublereal *, integer *, integer *);
     logical notran;
@@ -790,7 +791,7 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DGERFS", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
@@ -802,7 +803,7 @@ f"> */
 	    berr[j] = 0.;
 /* L10: */
 	}
-	return 0;
+	return;
     }
 
     if (notran) {
@@ -998,7 +999,7 @@ L100:
 /* L140: */
     }
 
-    return 0;
+    return;
 
 /*     End of DGERFS */
 

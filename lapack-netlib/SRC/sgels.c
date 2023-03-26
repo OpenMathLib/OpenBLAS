@@ -698,7 +698,7 @@ static integer c__0 = 0;
 /* > \ingroup realGEsolve */
 
 /*  ===================================================================== */
-/* Subroutine */ int sgels_(char *trans, integer *m, integer *n, integer *
+/* Subroutine */ void sgels_(char *trans, integer *m, integer *n, integer *
 	nrhs, real *a, integer *lda, real *b, integer *ldb, real *work, 
 	integer *lwork, integer *info)
 {
@@ -714,7 +714,7 @@ static integer c__0 = 0;
     integer wsize;
     real rwork[1];
     integer nb;
-    extern /* Subroutine */ int slabad_(real *, real *);
+    extern /* Subroutine */ void slabad_(real *, real *);
     integer mn;
     extern real slamch_(char *), slange_(char *, integer *, integer *,
 	     real *, integer *, real *);
@@ -723,20 +723,21 @@ static integer c__0 = 0;
 	    integer *, integer *, ftnlen, ftnlen);
     integer scllen;
     real bignum;
-    extern /* Subroutine */ int sgelqf_(integer *, integer *, real *, integer 
+    extern /* Subroutine */ void sgelqf_(integer *, integer *, real *, integer 
 	    *, real *, real *, integer *, integer *), slascl_(char *, integer 
 	    *, integer *, real *, real *, integer *, integer *, real *, 
 	    integer *, integer *), sgeqrf_(integer *, integer *, real 
 	    *, integer *, real *, real *, integer *, integer *), slaset_(char 
 	    *, integer *, integer *, real *, real *, real *, integer *);
     real smlnum;
-    extern /* Subroutine */ int sormlq_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void sormlq_(char *, char *, integer *, integer *, 
 	    integer *, real *, integer *, real *, real *, integer *, real *, 
 	    integer *, integer *);
     logical lquery;
-    extern /* Subroutine */ int sormqr_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void sormqr_(char *, char *, integer *, integer *, 
 	    integer *, real *, integer *, real *, real *, integer *, real *, 
-	    integer *, integer *), strtrs_(char *, char *, 
+	    integer *, integer *);
+    extern int strtrs_(char *, char *, 
 	    char *, integer *, integer *, real *, integer *, real *, integer *
 	    , integer *);
 
@@ -838,9 +839,9 @@ static integer c__0 = 0;
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("SGELS ", &i__1, (ftnlen)6);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
@@ -850,7 +851,7 @@ static integer c__0 = 0;
     if (f2cmin(i__1,*nrhs) == 0) {
 	i__1 = f2cmax(*m,*n);
 	slaset_("Full", &i__1, nrhs, &c_b33, &c_b33, &b[b_offset], ldb);
-	return 0;
+	return;
     }
 
 /*     Get machine parameters */
@@ -936,7 +937,7 @@ static integer c__0 = 0;
 		    , lda, &b[b_offset], ldb, info);
 
 	    if (*info > 0) {
-		return 0;
+		return;
 	    }
 
 	    scllen = *n;
@@ -951,7 +952,7 @@ static integer c__0 = 0;
 		    lda, &b[b_offset], ldb, info);
 
 	    if (*info > 0) {
-		return 0;
+		return;
 	    }
 
 /*           B(N+1:M,1:NRHS) = ZERO */
@@ -998,7 +999,7 @@ static integer c__0 = 0;
 		    , lda, &b[b_offset], ldb, info);
 
 	    if (*info > 0) {
-		return 0;
+		return;
 	    }
 
 /*           B(M+1:N,1:NRHS) = 0 */
@@ -1041,7 +1042,7 @@ static integer c__0 = 0;
 		    lda, &b[b_offset], ldb, info);
 
 	    if (*info > 0) {
-		return 0;
+		return;
 	    }
 
 	    scllen = *m;
@@ -1070,7 +1071,7 @@ static integer c__0 = 0;
 L50:
     work[1] = (real) wsize;
 
-    return 0;
+    return;
 
 /*     End of SGELS */
 

@@ -964,7 +964,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int dtgsen_(integer *ijob, logical *wantq, logical *wantz, 
+/* Subroutine */ void dtgsen_(integer *ijob, logical *wantq, logical *wantz, 
 	logical *select, integer *n, doublereal *a, integer *lda, doublereal *
 	b, integer *ldb, doublereal *alphar, doublereal *alphai, doublereal *
 	beta, doublereal *q, integer *ldq, doublereal *z__, integer *ldz, 
@@ -983,7 +983,7 @@ f"> */
     integer ierr;
     doublereal dsum;
     logical swap;
-    extern /* Subroutine */ int dlag2_(doublereal *, integer *, doublereal *, 
+    extern /* Subroutine */ void dlag2_(doublereal *, integer *, doublereal *, 
 	    integer *, doublereal *, doublereal *, doublereal *, doublereal *,
 	     doublereal *, doublereal *);
     integer i__, k, isave[3];
@@ -991,7 +991,7 @@ f"> */
     integer lwmin;
     logical wantp;
     integer n1, n2;
-    extern /* Subroutine */ int dlacn2_(integer *, doublereal *, doublereal *,
+    extern /* Subroutine */ void dlacn2_(integer *, doublereal *, doublereal *,
 	     integer *, doublereal *, integer *, integer *);
     logical wantd1, wantd2;
     integer kk;
@@ -999,15 +999,16 @@ f"> */
     doublereal dscale;
     integer ks;
     doublereal rdscal;
-    extern /* Subroutine */ int dlacpy_(char *, integer *, integer *, 
-	    doublereal *, integer *, doublereal *, integer *), 
-	    xerbla_(char *, integer *, ftnlen), dtgexc_(logical *, logical *, 
+    extern /* Subroutine */ void dlacpy_(char *, integer *, integer *, 
+	    doublereal *, integer *, doublereal *, integer *); 
+    extern int xerbla_(char *, integer *, ftnlen);
+    extern void dtgexc_(logical *, logical *, 
 	    integer *, doublereal *, integer *, doublereal *, integer *, 
 	    doublereal *, integer *, doublereal *, integer *, integer *, 
 	    integer *, doublereal *, integer *, integer *), dlassq_(integer *,
 	     doublereal *, integer *, doublereal *, doublereal *);
     integer liwmin;
-    extern /* Subroutine */ int dtgsyl_(char *, integer *, integer *, integer 
+    extern /* Subroutine */ void dtgsyl_(char *, integer *, integer *, integer 
 	    *, doublereal *, integer *, doublereal *, integer *, doublereal *,
 	     integer *, doublereal *, integer *, doublereal *, integer *, 
 	    doublereal *, integer *, doublereal *, doublereal *, doublereal *,
@@ -1072,7 +1073,7 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DTGSEN", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Get machine constants */
@@ -1154,9 +1155,9 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DTGSEN", &i__1, (ftnlen)6);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible. */
@@ -1451,7 +1452,7 @@ L60:
     work[1] = (doublereal) lwmin;
     iwork[1] = liwmin;
 
-    return 0;
+    return;
 
 /*     End of DTGSEN */
 

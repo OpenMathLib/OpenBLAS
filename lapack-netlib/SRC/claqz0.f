@@ -299,7 +299,7 @@
       PARAMETER( ZERO = 0.0, ONE = 1.0, HALF = 0.5 )
 
 *     Local scalars
-      REAL :: SMLNUM, ULP, SAFMIN, SAFMAX, C1, TEMPR
+      REAL :: SMLNUM, ULP, SAFMIN, SAFMAX, C1, TEMPR, BNORM, BTOL
       COMPLEX :: ESHIFT, S1, TEMP
       INTEGER :: ISTART, ISTOP, IITER, MAXIT, ISTART2, K, LD, NSHIFTS,
      $           NBLOCK, NW, NMIN, NIBBLE, N_UNDEFLATED, N_DEFLATED,
@@ -312,7 +312,7 @@
 *     External Functions
       EXTERNAL :: XERBLA, CHGEQZ, CLAQZ2, CLAQZ3, CLASET, SLABAD,
      $            CLARTG, CROT
-      REAL, EXTERNAL :: SLAMCH
+      REAL, EXTERNAL :: SLAMCH, CLANHS
       LOGICAL, EXTERNAL :: LSAME
       INTEGER, EXTERNAL :: ILAENV
 
@@ -466,6 +466,9 @@
       ULP = SLAMCH( 'PRECISION' )
       SMLNUM = SAFMIN*( REAL( N )/ULP )
 
+      BNORM = CLANHS( 'F', IHI-ILO+1, B( ILO, ILO ), LDB, RWORK )
+      BTOL = MAX( SAFMIN, ULP*BNORM )
+
       ISTART = ILO
       ISTOP = IHI
       MAXIT = 30*( IHI-ILO+1 )
@@ -528,15 +531,8 @@
 *        slow down the method when many infinite eigenvalues are present
          K = ISTOP
          DO WHILE ( K.GE.ISTART2 )
-            TEMPR = ZERO
-            IF( K .LT. ISTOP ) THEN
-               TEMPR = TEMPR+ABS( B( K, K+1 ) )
-            END IF
-            IF( K .GT. ISTART2 ) THEN
-               TEMPR = TEMPR+ABS( B( K-1, K ) )
-            END IF
 
-            IF( ABS( B( K, K ) ) .LT. MAX( SMLNUM, ULP*TEMPR ) ) THEN
+            IF( ABS( B( K, K ) ) .LT. BTOL ) THEN
 *              A diagonal element of B is negligable, move it
 *              to the top and deflate it
                
@@ -648,7 +644,7 @@
 
          NS = MIN( NSHIFTS, ISTOP-ISTART2 )
          NS = MIN( NS, N_UNDEFLATED )
-         SHIFTPOS = ISTOP-N_DEFLATED-N_UNDEFLATED+1
+         SHIFTPOS = ISTOP-N_UNDEFLATED+1
 
          IF ( MOD( LD, 6 ) .EQ. 0 ) THEN
 * 

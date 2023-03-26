@@ -1,4 +1,4 @@
-*> \brief \b DTPRFB applies a real or complex "triangular-pentagonal" blocked reflector to a real or complex matrix, which is composed of two blocks.
+*> \brief \b DTPRFB applies a real "triangular-pentagonal" block reflector to a real matrix, which is composed of two blocks.
 *
 *  =========== DOCUMENTATION ===========
 *

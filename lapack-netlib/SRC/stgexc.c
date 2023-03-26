@@ -733,7 +733,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int stgexc_(logical *wantq, logical *wantz, integer *n, real 
+/* Subroutine */ void stgexc_(logical *wantq, logical *wantz, integer *n, real 
 	*a, integer *lda, real *b, integer *ldb, real *q, integer *ldq, real *
 	z__, integer *ldz, integer *ifst, integer *ilst, real *work, integer *
 	lwork, integer *info)
@@ -744,10 +744,11 @@ f"> */
 
     /* Local variables */
     integer here, lwmin;
-    extern /* Subroutine */ int stgex2_(logical *, logical *, integer *, real 
+    extern /* Subroutine */ void stgex2_(logical *, logical *, integer *, real 
 	    *, integer *, real *, integer *, real *, integer *, real *, 
 	    integer *, integer *, integer *, integer *, real *, integer *, 
-	    integer *), xerbla_(char *, integer *, ftnlen);
+	    integer *);
+    extern int xerbla_(char *, integer *, ftnlen);
     integer nbnext;
     logical lquery;
     integer nbf, nbl;
@@ -814,15 +815,15 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("STGEXC", &i__1, (ftnlen)6);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n <= 1) {
-	return 0;
+	return;
     }
 
 /*     Determine the first row of the specified block and find out */
@@ -855,7 +856,7 @@ f"> */
 	}
     }
     if (*ifst == *ilst) {
-	return 0;
+	return;
     }
 
     if (*ifst < *ilst) {
@@ -890,7 +891,7 @@ L10:
 		     &work[1], lwork, info);
 	    if (*info != 0) {
 		*ilst = here;
-		return 0;
+		return;
 	    }
 	    here += nbnext;
 
@@ -919,7 +920,7 @@ L10:
 		    nbnext, &work[1], lwork, info);
 	    if (*info != 0) {
 		*ilst = here;
-		return 0;
+		return;
 	    }
 	    if (nbnext == 1) {
 
@@ -930,7 +931,7 @@ L10:
 			 &c__1, &work[1], lwork, info);
 		if (*info != 0) {
 		    *ilst = here;
-		    return 0;
+		    return;
 		}
 		++here;
 
@@ -950,7 +951,7 @@ L10:
 			    here, &c__1, &nbnext, &work[1], lwork, info);
 		    if (*info != 0) {
 			*ilst = here;
-			return 0;
+			return;
 		    }
 		    here += 2;
 		} else {
@@ -962,7 +963,7 @@ L10:
 			    here, &c__1, &c__1, &work[1], lwork, info);
 		    if (*info != 0) {
 			*ilst = here;
-			return 0;
+			return;
 		    }
 		    ++here;
 		    stgex2_(wantq, wantz, n, &a[a_offset], lda, &b[b_offset], 
@@ -970,7 +971,7 @@ L10:
 			    here, &c__1, &c__1, &work[1], lwork, info);
 		    if (*info != 0) {
 			*ilst = here;
-			return 0;
+			return;
 		    }
 		    ++here;
 		}
@@ -1003,7 +1004,7 @@ L20:
 		     &work[1], lwork, info);
 	    if (*info != 0) {
 		*ilst = here;
-		return 0;
+		return;
 	    }
 	    here -= nbnext;
 
@@ -1032,7 +1033,7 @@ L20:
 		    c__1, &work[1], lwork, info);
 	    if (*info != 0) {
 		*ilst = here;
-		return 0;
+		return;
 	    }
 	    if (nbnext == 1) {
 
@@ -1043,7 +1044,7 @@ L20:
 			nbnext, &c__1, &work[1], lwork, info);
 		if (*info != 0) {
 		    *ilst = here;
-		    return 0;
+		    return;
 		}
 		--here;
 	    } else {
@@ -1063,7 +1064,7 @@ L20:
 			    i__1, &c__2, &c__1, &work[1], lwork, info);
 		    if (*info != 0) {
 			*ilst = here;
-			return 0;
+			return;
 		    }
 		    here += -2;
 		} else {
@@ -1075,7 +1076,7 @@ L20:
 			    here, &c__1, &c__1, &work[1], lwork, info);
 		    if (*info != 0) {
 			*ilst = here;
-			return 0;
+			return;
 		    }
 		    --here;
 		    stgex2_(wantq, wantz, n, &a[a_offset], lda, &b[b_offset], 
@@ -1083,7 +1084,7 @@ L20:
 			    here, &c__1, &c__1, &work[1], lwork, info);
 		    if (*info != 0) {
 			*ilst = here;
-			return 0;
+			return;
 		    }
 		    --here;
 		}
@@ -1095,7 +1096,7 @@ L20:
     }
     *ilst = here;
     work[1] = (real) lwmin;
-    return 0;
+    return;
 
 /*     End of STGEXC */
 

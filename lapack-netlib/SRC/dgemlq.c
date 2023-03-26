@@ -674,7 +674,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int dgemlq_(char *side, char *trans, integer *m, integer *n, 
+/* Subroutine */ void dgemlq_(char *side, char *trans, integer *m, integer *n, 
 	integer *k, doublereal *a, integer *lda, doublereal *t, integer *
 	tsize, doublereal *c__, integer *ldc, doublereal *work, integer *
 	lwork, integer *info)
@@ -684,7 +684,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 
     /* Local variables */
     logical left, tran;
-    extern /* Subroutine */ int dlamswlq_(char *, char *, integer *, integer *
+    extern /* Subroutine */ void dlamswlq_(char *, char *, integer *, integer *
 	    , integer *, integer *, integer *, doublereal *, integer *, 
 	    doublereal *, integer *, doublereal *, integer *, doublereal *, 
 	    integer *, integer *);
@@ -693,7 +693,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
     integer mb, nb, mn, lw, nblcks;
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     logical notran, lquery;
-    extern /* Subroutine */ int dgemlqt_(char *, char *, integer *, integer *,
+    extern /* Subroutine */ void dgemlqt_(char *, char *, integer *, integer *,
 	     integer *, integer *, doublereal *, integer *, doublereal *, 
 	    integer *, doublereal *, integer *, doublereal *, integer *);
 
@@ -774,9 +774,9 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DGEMLQ", &i__1, (ftnlen)6);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
@@ -784,7 +784,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 /* Computing MIN */
     i__1 = f2cmin(*m,*n);
     if (f2cmin(i__1,*k) == 0) {
-	return 0;
+	return;
     }
 
 /* Computing MAX */
@@ -800,7 +800,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 
     work[1] = (doublereal) lw;
 
-    return 0;
+    return;
 
 /*     End of DGEMLQ */
 

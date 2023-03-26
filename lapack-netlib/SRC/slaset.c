@@ -620,7 +620,7 @@ f"> */
 /* > \ingroup OTHERauxiliary */
 
 /*  ===================================================================== */
-/* Subroutine */ int slaset_(char *uplo, integer *m, integer *n, real *alpha, 
+/* Subroutine */ void slaset_(char *uplo, integer *m, integer *n, real *alpha, 
 	real *beta, real *a, integer *lda)
 {
     /* System generated locals */
@@ -701,7 +701,7 @@ f"> */
 /* L70: */
     }
 
-    return 0;
+    return;
 
 /*     End of SLASET */
 

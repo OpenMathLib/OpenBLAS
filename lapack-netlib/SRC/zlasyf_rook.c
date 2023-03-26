@@ -698,7 +698,7 @@ rook.f"> */
 /* > \endverbatim */
 
 /*  ===================================================================== */
-/* Subroutine */ int zlasyf_rook_(char *uplo, integer *n, integer *nb, 
+/* Subroutine */ void zlasyf_rook_(char *uplo, integer *n, integer *nb, 
 	integer *kb, doublecomplex *a, integer *lda, integer *ipiv, 
 	doublecomplex *w, integer *ldw, integer *info)
 {
@@ -714,19 +714,19 @@ rook.f"> */
     doublereal alpha;
     extern logical lsame_(char *, char *);
     doublereal dtemp, sfmin;
-    extern /* Subroutine */ int zscal_(integer *, doublecomplex *, 
+    extern /* Subroutine */ void zscal_(integer *, doublecomplex *, 
 	    doublecomplex *, integer *);
     integer itemp;
-    extern /* Subroutine */ int zgemm_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void zgemm_(char *, char *, integer *, integer *, 
 	    integer *, doublecomplex *, doublecomplex *, integer *, 
 	    doublecomplex *, integer *, doublecomplex *, doublecomplex *, 
 	    integer *);
     integer kstep;
-    extern /* Subroutine */ int zgemv_(char *, integer *, integer *, 
+    extern /* Subroutine */ void zgemv_(char *, integer *, integer *, 
 	    doublecomplex *, doublecomplex *, integer *, doublecomplex *, 
 	    integer *, doublecomplex *, doublecomplex *, integer *);
     doublecomplex r1;
-    extern /* Subroutine */ int zcopy_(integer *, doublecomplex *, integer *, 
+    extern /* Subroutine */ void zcopy_(integer *, doublecomplex *, integer *, 
 	    doublecomplex *, integer *), zswap_(integer *, doublecomplex *, 
 	    integer *, doublecomplex *, integer *);
     doublecomplex d11, d12, d21, d22;
@@ -1638,7 +1638,7 @@ L120:
 	*kb = k - 1;
 
     }
-    return 0;
+    return;
 
 /*     End of ZLASYF_ROOK */
 

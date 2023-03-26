@@ -669,7 +669,7 @@ static integer c__1 = 1;
 /* > \ingroup complex16OTHERcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int zunbdb6_(integer *m1, integer *m2, integer *n, 
+/* Subroutine */ void zunbdb6_(integer *m1, integer *m2, integer *n, 
 	doublecomplex *x1, integer *incx1, doublecomplex *x2, integer *incx2, 
 	doublecomplex *q1, integer *ldq1, doublecomplex *q2, integer *ldq2, 
 	doublecomplex *work, integer *lwork, integer *info)
@@ -680,10 +680,11 @@ static integer c__1 = 1;
 
     /* Local variables */
     integer i__;
-    extern /* Subroutine */ int zgemv_(char *, integer *, integer *, 
+    extern /* Subroutine */ void zgemv_(char *, integer *, integer *, 
 	    doublecomplex *, doublecomplex *, integer *, doublecomplex *, 
-	    integer *, doublecomplex *, doublecomplex *, integer *), 
-	    xerbla_(char *, integer *, ftnlen), zlassq_(integer *, 
+	    integer *, doublecomplex *, doublecomplex *, integer *); 
+    extern int xerbla_(char *, integer *, ftnlen);
+    extern void zlassq_(integer *, 
 	    doublecomplex *, integer *, doublereal *, doublereal *);
     doublereal normsq1, normsq2, scl1, scl2, ssq1, ssq2;
 
@@ -733,7 +734,7 @@ static integer c__1 = 1;
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZUNBDB6", &i__1, (ftnlen)7);
-	return 0;
+	return;
     }
 
 /*     First, project X onto the orthogonal complement of Q's column */
@@ -787,11 +788,11 @@ static integer c__1 = 1;
 /*     Otherwise, project again. */
 
     if (normsq2 >= normsq1 * .01) {
-	return 0;
+	return;
     }
 
     if (normsq2 == 0.) {
-	return 0;
+	return;
     }
 
     normsq1 = normsq2;
@@ -850,7 +851,7 @@ static integer c__1 = 1;
 	}
     }
 
-    return 0;
+    return;
 
 /*     End of ZUNBDB6 */
 

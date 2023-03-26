@@ -620,7 +620,7 @@ static integer c__1 = 1;
 /* > \ingroup doubleOTHERauxiliary */
 
 /*  ===================================================================== */
-/* Subroutine */ int dlarfy_(char *uplo, integer *n, doublereal *v, integer *
+/* Subroutine */ void dlarfy_(char *uplo, integer *n, doublereal *v, integer *
 	incv, doublereal *tau, doublereal *c__, integer *ldc, doublereal *
 	work)
 {
@@ -631,11 +631,11 @@ static integer c__1 = 1;
     /* Local variables */
     extern doublereal ddot_(integer *, doublereal *, integer *, doublereal *, 
 	    integer *);
-    extern /* Subroutine */ int dsyr2_(char *, integer *, doublereal *, 
+    extern /* Subroutine */ void dsyr2_(char *, integer *, doublereal *, 
 	    doublereal *, integer *, doublereal *, integer *, doublereal *, 
 	    integer *);
     doublereal alpha;
-    extern /* Subroutine */ int daxpy_(integer *, doublereal *, doublereal *, 
+    extern /* Subroutine */ void daxpy_(integer *, doublereal *, doublereal *, 
 	    integer *, doublereal *, integer *), dsymv_(char *, integer *, 
 	    doublereal *, doublereal *, integer *, doublereal *, integer *, 
 	    doublereal *, doublereal *, integer *);
@@ -659,7 +659,7 @@ static integer c__1 = 1;
 
     /* Function Body */
     if (*tau == 0.) {
-	return 0;
+	return;
     }
 
 /*     Form  w:= C * v */
@@ -675,7 +675,7 @@ static integer c__1 = 1;
     d__1 = -(*tau);
     dsyr2_(uplo, n, &d__1, &v[1], incv, &work[1], &c__1, &c__[c_offset], ldc);
 
-    return 0;
+    return;
 
 /*     End of DLARFY */
 

@@ -843,7 +843,7 @@ static logical c_false = FALSE_;
 /* > \ingroup double_matgen */
 
 /*  ===================================================================== */
-/* Subroutine */ int dlatmt_(integer *m, integer *n, char *dist, integer *
+/* Subroutine */ void dlatmt_(integer *m, integer *n, char *dist, integer *
 	iseed, char *sym, doublereal *d__, integer *mode, doublereal *cond, 
 	doublereal *dmax__, integer *rank, integer *kl, integer *ku, char *
 	pack, doublereal *a, integer *lda, doublereal *work, integer *info)
@@ -861,28 +861,30 @@ static logical c_false = FALSE_;
     integer i__, j, k;
     doublereal s, alpha, angle;
     integer ipack;
-    extern /* Subroutine */ int dscal_(integer *, doublereal *, doublereal *, 
+    extern /* Subroutine */ void dscal_(integer *, doublereal *, doublereal *, 
 	    integer *);
     integer ioffg;
     extern logical lsame_(char *, char *);
     integer iinfo, idist, mnmin;
-    extern /* Subroutine */ int dcopy_(integer *, doublereal *, integer *, 
+    extern /* Subroutine */ void dcopy_(integer *, doublereal *, integer *, 
 	    doublereal *, integer *);
     integer iskew;
     doublereal extra, dummy;
-    extern /* Subroutine */ int dlatm7_(integer *, doublereal *, integer *, 
+    extern /* Subroutine */ void dlatm7_(integer *, doublereal *, integer *, 
 	    integer *, integer *, doublereal *, integer *, integer *, integer 
 	    *);
     integer ic, jc, nc;
-    extern /* Subroutine */ int dlagge_(integer *, integer *, integer *, 
+    extern /* Subroutine */ void dlagge_(integer *, integer *, integer *, 
 	    integer *, doublereal *, doublereal *, integer *, integer *, 
 	    doublereal *, integer *);
     integer il, iendch, ir, jr, ipackg, mr, minlda;
     extern doublereal dlarnd_(integer *, integer *);
-    extern /* Subroutine */ int dlaset_(char *, integer *, integer *, 
+    extern /* Subroutine */ void dlaset_(char *, integer *, integer *, 
 	    doublereal *, doublereal *, doublereal *, integer *), 
 	    dlartg_(doublereal *, doublereal *, doublereal *, doublereal *, 
-	    doublereal *), xerbla_(char *, integer *), dlagsy_(
+	    doublereal *);
+    extern int xerbla_(char *, integer *, ftnlen);
+    extern void dlagsy_(
 	    integer *, integer *, doublereal *, doublereal *, integer *, 
 	    integer *, doublereal *, integer *), dlarot_(logical *, logical *,
 	     logical *, integer *, doublereal *, doublereal *, doublereal *, 
@@ -918,7 +920,7 @@ static logical c_false = FALSE_;
 /*     Quick return if possible */
 
     if (*m == 0 || *n == 0) {
-	return 0;
+	return;
     }
 
 /*     Decode DIST */
@@ -1053,8 +1055,8 @@ static logical c_false = FALSE_;
 
     if (*info != 0) {
 	i__1 = -(*info);
-	xerbla_("DLATMT", &i__1);
-	return 0;
+	xerbla_("DLATMT", &i__1, 6);
+	return;
     }
 
 /*     Initialize random number generator */
@@ -1076,7 +1078,7 @@ static logical c_false = FALSE_;
 	    iinfo);
     if (iinfo != 0) {
 	*info = 1;
-	return 0;
+	return;
     }
 
 /*     Choose Top-Down if D is (apparently) increasing, */
@@ -1105,7 +1107,7 @@ static logical c_false = FALSE_;
 	    alpha = *dmax__ / temp;
 	} else {
 	    *info = 2;
-	    return 0;
+	    return;
 	}
 
 	dscal_(rank, &alpha, &d__[1], &c__1);
@@ -1734,7 +1736,7 @@ static logical c_false = FALSE_;
 	}
 	if (iinfo != 0) {
 	    *info = 3;
-	    return 0;
+	    return;
 	}
     }
 
@@ -1896,7 +1898,7 @@ static logical c_false = FALSE_;
 	}
     }
 
-    return 0;
+    return;
 
 /*     End of DLATMT */
 

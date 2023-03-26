@@ -810,7 +810,7 @@ static doublecomplex c_b1 = {1.,0.};
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int ztfsm_(char *transr, char *side, char *uplo, char *trans,
+/* Subroutine */ void ztfsm_(char *transr, char *side, char *uplo, char *trans,
 	 char *diag, integer *m, integer *n, doublecomplex *alpha, 
 	doublecomplex *a, doublecomplex *b, integer *ldb)
 {
@@ -822,16 +822,16 @@ static doublecomplex c_b1 = {1.,0.};
     integer info, i__, j, k;
     logical normaltransr, lside;
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int zgemm_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void zgemm_(char *, char *, integer *, integer *, 
 	    integer *, doublecomplex *, doublecomplex *, integer *, 
 	    doublecomplex *, integer *, doublecomplex *, doublecomplex *, 
 	    integer *);
     logical lower;
     integer m1, m2, n1, n2;
-    extern /* Subroutine */ int ztrsm_(char *, char *, char *, char *, 
+    extern /* Subroutine */ void ztrsm_(char *, char *, char *, char *, 
 	    integer *, integer *, doublecomplex *, doublecomplex *, integer *,
-	     doublecomplex *, integer *), 
-	    xerbla_(char *, integer *, ftnlen);
+	     doublecomplex *, integer *); 
+    extern int xerbla_(char *, integer *, ftnlen);
     logical misodd, nisodd, notrans;
 
 
@@ -877,13 +877,13 @@ static doublecomplex c_b1 = {1.,0.};
     if (info != 0) {
 	i__1 = -info;
 	xerbla_("ZTFSM ", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return when ( (N.EQ.0).OR.(M.EQ.0) ) */
 
     if (*m == 0 || *n == 0) {
-	return 0;
+	return;
     }
 
 /*     Quick return when ALPHA.EQ.(0D+0,0D+0) */
@@ -899,7 +899,7 @@ static doublecomplex c_b1 = {1.,0.};
 	    }
 /* L20: */
 	}
-	return 0;
+	return;
     }
 
     if (lside) {
@@ -1580,7 +1580,7 @@ static doublecomplex c_b1 = {1.,0.};
 	}
     }
 
-    return 0;
+    return;
 
 /*     End of ZTFSM */
 

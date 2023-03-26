@@ -683,7 +683,7 @@ static integer c_n1 = -1;
 /* > \ingroup doubleSYsolve */
 
 /*  ===================================================================== */
-/* Subroutine */ int dsysv_(char *uplo, integer *n, integer *nrhs, doublereal 
+/* Subroutine */ void dsysv_(char *uplo, integer *n, integer *nrhs, doublereal 
 	*a, integer *lda, integer *ipiv, doublereal *b, integer *ldb, 
 	doublereal *work, integer *lwork, integer *info)
 {
@@ -692,12 +692,13 @@ static integer c_n1 = -1;
 
     /* Local variables */
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen), dsytrf_(
+    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
+    extern void dsytrf_(
 	    char *, integer *, doublereal *, integer *, integer *, doublereal 
 	    *, integer *, integer *);
     integer lwkopt;
     logical lquery;
-    extern /* Subroutine */ int dsytrs_(char *, integer *, integer *, 
+    extern /* Subroutine */ void dsytrs_(char *, integer *, integer *, 
 	    doublereal *, integer *, integer *, doublereal *, integer *, 
 	    integer *), dsytrs2_(char *, integer *, integer *, 
 	    doublereal *, integer *, integer *, doublereal *, integer *, 
@@ -756,9 +757,9 @@ static integer c_n1 = -1;
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DSYSV ", &i__1, (ftnlen)6);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Compute the factorization A = U*D*U**T or A = L*D*L**T. */
@@ -788,7 +789,7 @@ static integer c_n1 = -1;
 
     work[1] = (doublereal) lwkopt;
 
-    return 0;
+    return;
 
 /*     End of DSYSV */
 

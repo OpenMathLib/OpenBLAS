@@ -690,7 +690,7 @@ is composed of a triangular block and a pentagonal block, using the compact WY r
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int dtpqrt2_(integer *m, integer *n, integer *l, doublereal *
+/* Subroutine */ void dtpqrt2_(integer *m, integer *n, integer *l, doublereal *
 	a, integer *lda, doublereal *b, integer *ldb, doublereal *t, integer *
 	ldt, integer *info)
 {
@@ -699,19 +699,20 @@ is composed of a triangular block and a pentagonal block, using the compact WY r
 	    i__3;
 
     /* Local variables */
-    extern /* Subroutine */ int dger_(integer *, integer *, doublereal *, 
+    extern /* Subroutine */ void dger_(integer *, integer *, doublereal *, 
 	    doublereal *, integer *, doublereal *, integer *, doublereal *, 
 	    integer *);
     integer i__, j, p;
     doublereal alpha;
-    extern /* Subroutine */ int dgemv_(char *, integer *, integer *, 
+    extern /* Subroutine */ void dgemv_(char *, integer *, integer *, 
 	    doublereal *, doublereal *, integer *, doublereal *, integer *, 
 	    doublereal *, doublereal *, integer *), dtrmv_(char *, 
 	    char *, char *, integer *, doublereal *, integer *, doublereal *, 
 	    integer *);
     integer mp, np;
-    extern /* Subroutine */ int dlarfg_(integer *, doublereal *, doublereal *,
-	     integer *, doublereal *), xerbla_(char *, integer *, ftnlen);
+    extern /* Subroutine */ void dlarfg_(integer *, doublereal *, doublereal *,
+	     integer *, doublereal *);
+    extern int xerbla_(char *, integer *, ftnlen);
 
 
 /*  -- LAPACK computational routine (version 3.7.0) -- */
@@ -754,13 +755,13 @@ is composed of a triangular block and a pentagonal block, using the compact WY r
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DTPQRT2", &i__1, (ftnlen)7);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0 || *m == 0) {
-	return 0;
+	return;
     }
 
     i__1 = *n;
@@ -854,6 +855,6 @@ is composed of a triangular block and a pentagonal block, using the compact WY r
 
 /*     End of DTPQRT2 */
 
-    return 0;
+    return;
 } /* dtpqrt2_ */
 

@@ -624,14 +624,15 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 /* > \ingroup complex16PTsolve */
 
 /*  ===================================================================== */
-/* Subroutine */ int zptsv_(integer *n, integer *nrhs, doublereal *d__, 
+/* Subroutine */ void zptsv_(integer *n, integer *nrhs, doublereal *d__, 
 	doublecomplex *e, doublecomplex *b, integer *ldb, integer *info)
 {
     /* System generated locals */
     integer b_dim1, b_offset, i__1;
 
     /* Local variables */
-    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen), zpttrf_(
+    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
+    extern void zpttrf_(
 	    integer *, doublereal *, doublecomplex *, integer *), zpttrs_(
 	    char *, integer *, integer *, doublereal *, doublecomplex *, 
 	    doublecomplex *, integer *, integer *);
@@ -667,7 +668,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZPTSV ", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Compute the L*D*L**H (or U**H*D*U) factorization of A. */
@@ -679,7 +680,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 
 	zpttrs_("Lower", n, nrhs, &d__[1], &e[1], &b[b_offset], ldb, info);
     }
-    return 0;
+    return;
 
 /*     End of ZPTSV */
 

@@ -644,7 +644,7 @@ static integer c__1 = 1;
 /* >  Tech report version: http://citeseerx.ist.psu.edu/viewdoc/summary?doi=10.1.1.3.1679 */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int dsyequb_(char *uplo, integer *n, doublereal *a, integer *
+/* Subroutine */ void dsyequb_(char *uplo, integer *n, doublereal *a, integer *
 	lda, doublereal *s, doublereal *scond, doublereal *amax, doublereal *
 	work, integer *info)
 {
@@ -665,7 +665,7 @@ static integer c__1 = 1;
     logical up;
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     doublereal bignum;
-    extern /* Subroutine */ int dlassq_(integer *, doublereal *, integer *, 
+    extern /* Subroutine */ void dlassq_(integer *, doublereal *, integer *, 
 	    doublereal *, doublereal *);
     doublereal smlnum, avg, std, tol;
 
@@ -700,7 +700,7 @@ static integer c__1 = 1;
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DSYEQUB", &i__1, (ftnlen)7);
-	return 0;
+	return;
     }
     up = lsame_(uplo, "U");
     *amax = 0.;
@@ -709,7 +709,7 @@ static integer c__1 = 1;
 
     if (*n == 0) {
 	*scond = 1.;
-	return 0;
+	return;
     }
     i__1 = *n;
     for (i__ = 1; i__ <= i__1; ++i__) {
@@ -826,7 +826,7 @@ static integer c__1 = 1;
 	    d__ = c1 * c1 - c0 * 4 * c2;
 	    if (d__ <= 0.) {
 		*info = -1;
-		return 0;
+		return;
 	    }
 	    si = c0 * -2 / (c1 + sqrt(d__));
 	    d__ = si - s[i__];
@@ -883,6 +883,6 @@ L999:
     }
     *scond = f2cmax(smin,smlnum) / f2cmin(smax,bignum);
 
-    return 0;
+    return;
 } /* dsyequb_ */
 

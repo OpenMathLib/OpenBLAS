@@ -620,7 +620,7 @@ static integer c__1 = 1;
 /* > \ingroup complexOTHERauxiliary */
 
 /*  ===================================================================== */
-/* Subroutine */ int clarfy_(char *uplo, integer *n, complex *v, integer *
+/* Subroutine */ void clarfy_(char *uplo, integer *n, complex *v, integer *
 	incv, complex *tau, complex *c__, integer *ldc, complex *work)
 {
     /* System generated locals */
@@ -628,12 +628,12 @@ static integer c__1 = 1;
     complex q__1, q__2, q__3, q__4;
 
     /* Local variables */
-    extern /* Subroutine */ int cher2_(char *, integer *, complex *, complex *
+    extern /* Subroutine */ void cher2_(char *, integer *, complex *, complex *
 	    , integer *, complex *, integer *, complex *, integer *);
     complex alpha;
     extern /* Complex */ VOID cdotc_(complex *, integer *, complex *, integer 
 	    *, complex *, integer *);
-    extern /* Subroutine */ int chemv_(char *, integer *, complex *, complex *
+    extern /* Subroutine */ void chemv_(char *, integer *, complex *, complex *
 	    , integer *, complex *, integer *, complex *, complex *, integer *
 	    ), caxpy_(integer *, complex *, complex *, integer *, 
 	    complex *, integer *);
@@ -657,7 +657,7 @@ static integer c__1 = 1;
 
     /* Function Body */
     if (tau->r == 0.f && tau->i == 0.f) {
-	return 0;
+	return;
     }
 
 /*     Form  w:= C * v */
@@ -679,7 +679,7 @@ static integer c__1 = 1;
     q__1.r = -tau->r, q__1.i = -tau->i;
     cher2_(uplo, n, &q__1, &v[1], incv, &work[1], &c__1, &c__[c_offset], ldc);
 
-    return 0;
+    return;
 
 /*     End of CLARFY */
 

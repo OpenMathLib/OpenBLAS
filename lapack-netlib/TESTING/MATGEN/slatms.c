@@ -833,7 +833,7 @@ static logical c_false = FALSE_;
 /* > \ingroup real_matgen */
 
 /*  ===================================================================== */
-/* Subroutine */ int slatms_(integer *m, integer *n, char *dist, integer *
+/* Subroutine */ void slatms_(integer *m, integer *n, char *dist, integer *
 	iseed, char *sym, real *d__, integer *mode, real *cond, real *dmax__, 
 	integer *kl, integer *ku, char *pack, real *a, integer *lda, real *
 	work, integer *info)
@@ -853,22 +853,22 @@ static logical c_false = FALSE_;
     integer ipack, ioffg;
     extern logical lsame_(char *, char *);
     integer iinfo;
-    extern /* Subroutine */ int sscal_(integer *, real *, real *, integer *);
+    extern /* Subroutine */ void sscal_(integer *, real *, real *, integer *);
     integer idist, mnmin, iskew;
     real extra, dummy;
-    extern /* Subroutine */ int scopy_(integer *, real *, integer *, real *, 
+    extern /* Subroutine */ void scopy_(integer *, real *, integer *, real *, 
 	    integer *), slatm1_(integer *, real *, integer *, integer *, 
 	    integer *, real *, integer *, integer *);
     integer ic, jc, nc, il, iendch, ir, jr, ipackg, mr;
-    extern /* Subroutine */ int slagge_(integer *, integer *, integer *, 
+    extern /* Subroutine */ void slagge_(integer *, integer *, integer *, 
 	    integer *, real *, real *, integer *, integer *, real *, integer *
 	    );
     integer minlda;
-    extern /* Subroutine */ int xerbla_(char *, integer *);
+    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     extern real slarnd_(integer *, integer *);
     logical iltemp, givens;
     integer ioffst, irsign;
-    extern /* Subroutine */ int slartg_(real *, real *, real *, real *, real *
+    extern /* Subroutine */ void slartg_(real *, real *, real *, real *, real *
 	    ), slaset_(char *, integer *, integer *, real *, real *, real *, 
 	    integer *), slagsy_(integer *, integer *, real *, real *, 
 	    integer *, integer *, real *, integer *), slarot_(logical *, 
@@ -904,7 +904,7 @@ static logical c_false = FALSE_;
 /*     Quick return if possible */
 
     if (*m == 0 || *n == 0) {
-	return 0;
+	return;
     }
 
 /*     Decode DIST */
@@ -1039,8 +1039,8 @@ static logical c_false = FALSE_;
 
     if (*info != 0) {
 	i__1 = -(*info);
-	xerbla_("SLATMS", &i__1);
-	return 0;
+	xerbla_("SLATMS", &i__1, 6);
+	return;
     }
 
 /*     Initialize random number generator */
@@ -1061,7 +1061,7 @@ static logical c_false = FALSE_;
     slatm1_(mode, cond, &irsign, &idist, &iseed[1], &d__[1], &mnmin, &iinfo);
     if (iinfo != 0) {
 	*info = 1;
-	return 0;
+	return;
     }
 
 /*     Choose Top-Down if D is (apparently) increasing, */
@@ -1090,7 +1090,7 @@ static logical c_false = FALSE_;
 	    alpha = *dmax__ / temp;
 	} else {
 	    *info = 2;
-	    return 0;
+	    return;
 	}
 
 	sscal_(&mnmin, &alpha, &d__[1], &c__1);
@@ -1719,7 +1719,7 @@ static logical c_false = FALSE_;
 	}
 	if (iinfo != 0) {
 	    *info = 3;
-	    return 0;
+	    return;
 	}
     }
 
@@ -1881,7 +1881,7 @@ static logical c_false = FALSE_;
 	}
     }
 
-    return 0;
+    return;
 
 /*     End of SLATMS */
 

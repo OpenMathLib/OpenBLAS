@@ -616,7 +616,7 @@ f"> */
 /* > \ingroup complex16OTHERauxiliary */
 
 /*  ===================================================================== */
-/* Subroutine */ int zlaset_(char *uplo, integer *m, integer *n, 
+/* Subroutine */ void zlaset_(char *uplo, integer *m, integer *n, 
 	doublecomplex *alpha, doublecomplex *beta, doublecomplex *a, integer *
 	lda)
 {
@@ -712,7 +712,7 @@ f"> */
 	}
     }
 
-    return 0;
+    return;
 
 /*     End of ZLASET */
 

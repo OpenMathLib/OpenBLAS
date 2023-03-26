@@ -44,6 +44,7 @@
 #endif
 
 #ifndef COMPLEX
+#define SMP_THRESHOLD_MIN 65536.
 #ifdef XDOUBLE
 #define ERROR_NAME "QSYMM "
 #elif defined(DOUBLE)
@@ -52,6 +53,7 @@
 #define ERROR_NAME "SSYMM "
 #endif
 #else
+#define SMP_THRESHOLD_MIN 8192.
 #ifndef GEMM3M
 #ifndef HEMM
 #ifdef XDOUBLE
@@ -89,6 +91,10 @@
 #endif
 #endif
 #endif
+#endif
+
+#ifndef GEMM_MULTITHREAD_THRESHOLD
+#define GEMM_MULTITHREAD_THRESHOLD 4
 #endif
 
 
@@ -159,7 +165,9 @@ void NAME(char *SIDE, char *UPLO,
 #if defined(SMP) && !defined(NO_AFFINITY)
   int nodes;
 #endif
-
+# if defined(SMP)
+  int MN;
+#endif
   blasint info;
   int side;
   int uplo;
@@ -254,6 +262,9 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_SIDE Side, enum CBLAS_UPLO Uplo,
 
 #if defined(SMP) && !defined(NO_AFFINITY)
   int nodes;
+#endif
+#if defined(SMP)
+  int MN;
 #endif
 
   PRINT_DEBUG_CNAME;
@@ -375,15 +386,18 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_SIDE Side, enum CBLAS_UPLO Uplo,
 
 #ifdef SMP
   args.common = NULL;
-  args.nthreads = num_cpu_avail(3);
-
+  MN = 2.* (double) args.m * (double)args.m * (double) args.n;
+  if (MN <= (SMP_THRESHOLD_MIN * (double) GEMM_MULTITHREAD_THRESHOLD) ) {
+	  args.nthreads = 1;
+  } else {
+	 args.nthreads = num_cpu_avail(3);
+  }
   if (args.nthreads == 1) {
 #endif
 
     (symm[(side << 1) | uplo ])(&args, NULL, NULL, sa, sb, 0);
 
 #ifdef SMP
-
   } else {
 
 #ifndef NO_AFFINITY

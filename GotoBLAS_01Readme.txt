@@ -80,7 +80,7 @@
                       SUN
                       Fujitsu
 
-4. Suported precision
+4. Supported precision
 
  Now x86/x86_64 version support 80bit FP precision in addition to
 normal double presicion and single precision. Currently only

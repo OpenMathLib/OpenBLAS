@@ -656,7 +656,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int zggbak_(char *job, char *side, integer *n, integer *ilo, 
+/* Subroutine */ void zggbak_(char *job, char *side, integer *n, integer *ilo, 
 	integer *ihi, doublereal *lscale, doublereal *rscale, integer *m, 
 	doublecomplex *v, integer *ldv, integer *info)
 {
@@ -667,9 +667,10 @@ f"> */
     integer i__, k;
     extern logical lsame_(char *, char *);
     logical leftv;
-    extern /* Subroutine */ int zswap_(integer *, doublecomplex *, integer *, 
-	    doublecomplex *, integer *), xerbla_(char *, integer *, ftnlen), 
-	    zdscal_(integer *, doublereal *, doublecomplex *, integer *);
+    extern /* Subroutine */ void zswap_(integer *, doublecomplex *, integer *, 
+	    doublecomplex *, integer *);
+    extern int xerbla_(char *, integer *, ftnlen); 
+    extern void zdscal_(integer *, doublereal *, doublecomplex *, integer *);
     logical rightv;
 
 
@@ -719,19 +720,19 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZGGBAK", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
     if (*m == 0) {
-	return 0;
+	return;
     }
     if (lsame_(job, "N")) {
-	return 0;
+	return;
     }
 
     if (*ilo == *ihi) {
@@ -836,7 +837,7 @@ L100:
 
 L110:
 
-    return 0;
+    return;
 
 /*     End of ZGGBAK */
 

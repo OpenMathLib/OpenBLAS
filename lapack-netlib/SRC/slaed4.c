@@ -654,7 +654,7 @@ f"> */
 /* >     at Berkeley, USA */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int slaed4_(integer *n, integer *i__, real *d__, real *z__, 
+/* Subroutine */ void slaed4_(integer *n, integer *i__, real *d__, real *z__, 
 	real *delta, real *rho, real *dlam, integer *info)
 {
     /* System generated locals */
@@ -669,7 +669,7 @@ f"> */
     real w, dltlb, dltub, midpt;
     integer niter;
     logical swtch;
-    extern /* Subroutine */ int slaed5_(integer *, real *, real *, real *, 
+    extern /* Subroutine */ void slaed5_(integer *, real *, real *, real *, 
 	    real *, real *), slaed6_(integer *, logical *, real *, real *, 
 	    real *, real *, real *, integer *);
     logical swtch3;
@@ -711,11 +711,11 @@ f"> */
 
 	*dlam = d__[1] + *rho * z__[1] * z__[1];
 	delta[1] = 1.f;
-	return 0;
+	return;
     }
     if (*n == 2) {
 	slaed5_(i__, &d__[1], &z__[1], &delta[1], rho, dlam);
-	return 0;
+	return;
     }
 
 /*     Compute machine epsilon */
@@ -1494,7 +1494,7 @@ f"> */
 
 L250:
 
-    return 0;
+    return;
 
 /*     End of SLAED4 */
 

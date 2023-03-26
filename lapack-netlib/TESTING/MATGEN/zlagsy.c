@@ -616,7 +616,7 @@ static integer c__1 = 1;
 /* > \ingroup complex16_matgen */
 
 /*  ===================================================================== */
-/* Subroutine */ int zlagsy_(integer *n, integer *k, doublereal *d__, 
+/* Subroutine */ void zlagsy_(integer *n, integer *k, doublereal *d__, 
 	doublecomplex *a, integer *lda, integer *iseed, doublecomplex *work, 
 	integer *info)
 {
@@ -629,13 +629,13 @@ static integer c__1 = 1;
     /* Local variables */
     integer i__, j;
     doublecomplex alpha;
-    extern /* Subroutine */ int zgerc_(integer *, integer *, doublecomplex *, 
+    extern /* Subroutine */ void zgerc_(integer *, integer *, doublecomplex *, 
 	    doublecomplex *, integer *, doublecomplex *, integer *, 
 	    doublecomplex *, integer *), zscal_(integer *, doublecomplex *, 
 	    doublecomplex *, integer *);
     extern /* Double Complex */ VOID zdotc_(doublecomplex *, integer *, 
 	    doublecomplex *, integer *, doublecomplex *, integer *);
-    extern /* Subroutine */ int zgemv_(char *, integer *, integer *, 
+    extern /* Subroutine */ void zgemv_(char *, integer *, integer *, 
 	    doublecomplex *, doublecomplex *, integer *, doublecomplex *, 
 	    integer *, doublecomplex *, doublecomplex *, integer *), 
 	    zaxpy_(integer *, doublecomplex *, doublecomplex *, integer *, 
@@ -646,7 +646,8 @@ static integer c__1 = 1;
     integer ii, jj;
     doublecomplex wa, wb;
     doublereal wn;
-    extern /* Subroutine */ int xerbla_(char *, integer *), zlacgv_(
+    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
+    extern void zlacgv_(
 	    integer *, doublecomplex *, integer *), zlarnv_(integer *, 
 	    integer *, integer *, doublecomplex *);
     doublecomplex tau;
@@ -682,8 +683,8 @@ static integer c__1 = 1;
     }
     if (*info < 0) {
 	i__1 = -(*info);
-	xerbla_("ZLAGSY", &i__1);
-	return 0;
+	xerbla_("ZLAGSY", &i__1, 6);
+	return;
     }
 
 /*     initialize lower triangle of A to diagonal matrix */
@@ -913,7 +914,7 @@ static integer c__1 = 1;
 	}
 /* L120: */
     }
-    return 0;
+    return;
 
 /*     End of ZLAGSY */
 

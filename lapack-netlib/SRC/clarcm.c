@@ -628,7 +628,7 @@ f"> */
 /* > \ingroup complexOTHERauxiliary */
 
 /*  ===================================================================== */
-/* Subroutine */ int clarcm_(integer *m, integer *n, real *a, integer *lda, 
+/* Subroutine */ void clarcm_(integer *m, integer *n, real *a, integer *lda, 
 	complex *b, integer *ldb, complex *c__, integer *ldc, real *rwork)
 {
     /* System generated locals */
@@ -639,7 +639,7 @@ f"> */
 
     /* Local variables */
     integer i__, j, l;
-    extern /* Subroutine */ int sgemm_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void sgemm_(char *, char *, integer *, integer *, 
 	    integer *, real *, real *, integer *, real *, integer *, real *, 
 	    real *, integer *);
 
@@ -669,7 +669,7 @@ f"> */
 
     /* Function Body */
     if (*m == 0 || *n == 0) {
-	return 0;
+	return;
     }
 
     i__1 = *n;
@@ -724,7 +724,7 @@ f"> */
 /* L80: */
     }
 
-    return 0;
+    return;
 
 /*     End of CLARCM */
 

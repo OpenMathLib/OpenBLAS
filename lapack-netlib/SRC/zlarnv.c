@@ -608,7 +608,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int zlarnv_(integer *idist, integer *iseed, integer *n, 
+/* Subroutine */ void zlarnv_(integer *idist, integer *iseed, integer *n, 
 	doublecomplex *x)
 {
     /* System generated locals */
@@ -620,7 +620,7 @@ f"> */
     integer i__;
     doublereal u[128];
     integer il, iv;
-    extern /* Subroutine */ int dlaruv_(integer *, integer *, doublereal *);
+    extern /* Subroutine */ void dlaruv_(integer *, integer *, doublereal *);
 
 
 /*  -- LAPACK auxiliary routine (version 3.7.0) -- */
@@ -723,7 +723,7 @@ f"> */
 	}
 /* L60: */
     }
-    return 0;
+    return;
 
 /*     End of ZLARNV */
 

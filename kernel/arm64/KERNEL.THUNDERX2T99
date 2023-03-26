@@ -161,8 +161,8 @@ DNRM2KERNEL    = dznrm2_thunderx2t99.c
 ZNRM2KERNEL    = dznrm2_thunderx2t99.c
 
 
-DDOTKERNEL     = dot_thunderx2t99.c
-SDOTKERNEL     = dot_thunderx2t99.c
+DDOTKERNEL     = dot.c
+SDOTKERNEL     = dot.c
 CDOTKERNEL     = zdot_thunderx2t99.c
 ZDOTKERNEL     = zdot_thunderx2t99.c
 DSDOTKERNEL    = dot.S

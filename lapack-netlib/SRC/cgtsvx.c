@@ -805,7 +805,7 @@ f"> */
 /* > \ingroup complexGTsolve */
 
 /*  ===================================================================== */
-/* Subroutine */ int cgtsvx_(char *fact, char *trans, integer *n, integer *
+/* Subroutine */ void cgtsvx_(char *fact, char *trans, integer *n, integer *
 	nrhs, complex *dl, complex *d__, complex *du, complex *dlf, complex *
 	df, complex *duf, complex *du2, integer *ipiv, complex *b, integer *
 	ldb, complex *x, integer *ldx, real *rcond, real *ferr, real *berr, 
@@ -818,22 +818,23 @@ f"> */
     char norm[1];
     extern logical lsame_(char *, char *);
     real anorm;
-    extern /* Subroutine */ int ccopy_(integer *, complex *, integer *, 
+    extern /* Subroutine */ void ccopy_(integer *, complex *, integer *, 
 	    complex *, integer *);
     extern real slamch_(char *), clangt_(char *, integer *, complex *,
 	     complex *, complex *);
     logical nofact;
-    extern /* Subroutine */ int clacpy_(char *, integer *, integer *, complex 
+    extern /* Subroutine */ void clacpy_(char *, integer *, integer *, complex 
 	    *, integer *, complex *, integer *), cgtcon_(char *, 
 	    integer *, complex *, complex *, complex *, complex *, integer *, 
-	    real *, real *, complex *, integer *), xerbla_(char *, 
-	    integer *, ftnlen), cgtrfs_(char *, integer *, integer *, complex 
+	    real *, real *, complex *, integer *);
+    extern int xerbla_(char *, integer *, ftnlen);
+    extern void cgtrfs_(char *, integer *, integer *, complex 
 	    *, complex *, complex *, complex *, complex *, complex *, complex 
 	    *, integer *, complex *, integer *, complex *, integer *, real *, 
 	    real *, complex *, real *, integer *), cgttrf_(integer *, 
 	    complex *, complex *, complex *, complex *, integer *, integer *);
     logical notran;
-    extern /* Subroutine */ int cgttrs_(char *, integer *, integer *, complex 
+    extern /* Subroutine */ void cgttrs_(char *, integer *, integer *, complex 
 	    *, complex *, complex *, complex *, integer *, complex *, integer 
 	    *, integer *);
 
@@ -888,7 +889,7 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CGTSVX", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
     if (nofact) {
@@ -908,7 +909,7 @@ f"> */
 
 	if (*info > 0) {
 	    *rcond = 0.f;
-	    return 0;
+	    return;
 	}
     }
 
@@ -945,7 +946,7 @@ f"> */
 	*info = *n + 1;
     }
 
-    return 0;
+    return;
 
 /*     End of CGTSVX */
 

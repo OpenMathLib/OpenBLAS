@@ -304,6 +304,15 @@ int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n,
 	while (gemm_p * min_l > l2size) gemm_p -= GEMM_UNROLL_M;
       }
 
+      BLASLONG pad_min_l = min_l;
+#if defined(HALF)
+#if defined(DYNAMIC_ARCH)
+      pad_min_l = (min_l + gotoblas->sbgemm_align_k - 1) & ~(gotoblas->sbgemm_align_k-1);
+#else
+      pad_min_l = (min_l + SBGEMM_ALIGN_K - 1) & ~(SBGEMM_ALIGN_K - 1);;
+#endif
+#endif
+
       /* First, we have to move data A to L2 cache */
       min_i = m_to - m_from;
       l1stride = 1;
@@ -350,7 +359,7 @@ int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n,
 	START_RPCC();
 
 	OCOPY_OPERATION(min_l, min_jj, b, ldb, ls, jjs,
-			sb + min_l * (jjs - js) * COMPSIZE * l1stride);
+			sb + pad_min_l * (jjs - js) * COMPSIZE * l1stride);
 
 	STOP_RPCC(outercost);
 
@@ -358,10 +367,10 @@ int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n,
 
 #if !defined(XDOUBLE)  || !defined(QUAD_PRECISION)
 	KERNEL_OPERATION(min_i, min_jj, min_l, alpha,
-			 sa, sb + min_l * (jjs - js)  * COMPSIZE * l1stride, c, ldc, m_from, jjs);
+			 sa, sb + pad_min_l * (jjs - js)  * COMPSIZE * l1stride, c, ldc, m_from, jjs);
 #else
 	KERNEL_OPERATION(min_i, min_jj, min_l, (void *)&xalpha,
-			 sa, sb + min_l * (jjs - js)  * COMPSIZE * l1stride, c, ldc, m_from, jjs);
+			 sa, sb + pad_min_l * (jjs - js)  * COMPSIZE * l1stride, c, ldc, m_from, jjs);
 #endif
 
 	STOP_RPCC(kernelcost);

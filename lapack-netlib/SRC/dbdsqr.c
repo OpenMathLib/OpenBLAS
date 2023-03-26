@@ -756,7 +756,7 @@ f"> */
 /* > \ingroup auxOTHERcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int dbdsqr_(char *uplo, integer *n, integer *ncvt, integer *
+/* Subroutine */ void dbdsqr_(char *uplo, integer *n, integer *ncvt, integer *
 	nru, integer *ncc, doublereal *d__, doublereal *e, doublereal *vt, 
 	integer *ldvt, doublereal *u, integer *ldu, doublereal *c__, integer *
 	ldc, doublereal *work, integer *info)
@@ -774,28 +774,28 @@ f"> */
     doublereal cosl;
     integer isub, iter;
     doublereal unfl, sinl, cosr, smin, smax, sinr;
-    extern /* Subroutine */ int drot_(integer *, doublereal *, integer *, 
+    extern /* Subroutine */ void drot_(integer *, doublereal *, integer *, 
 	    doublereal *, integer *, doublereal *, doublereal *);
     integer iterdivn;
-    extern /* Subroutine */ int dlas2_(doublereal *, doublereal *, doublereal 
+    extern /* Subroutine */ void dlas2_(doublereal *, doublereal *, doublereal 
 	    *, doublereal *, doublereal *);
     doublereal f, g, h__;
     integer i__, j, m;
     doublereal r__;
-    extern /* Subroutine */ int dscal_(integer *, doublereal *, doublereal *, 
+    extern /* Subroutine */ void dscal_(integer *, doublereal *, doublereal *, 
 	    integer *);
     extern logical lsame_(char *, char *);
     doublereal oldcs;
-    extern /* Subroutine */ int dlasr_(char *, char *, char *, integer *, 
+    extern /* Subroutine */ void dlasr_(char *, char *, char *, integer *, 
 	    integer *, doublereal *, doublereal *, doublereal *, integer *);
     integer oldll;
     doublereal shift, sigmn, oldsn;
-    extern /* Subroutine */ int dswap_(integer *, doublereal *, integer *, 
+    extern /* Subroutine */ void dswap_(integer *, doublereal *, integer *, 
 	    doublereal *, integer *);
     doublereal sminl, sigmx;
     logical lower;
     integer maxitdivn;
-    extern /* Subroutine */ int dlasq1_(integer *, doublereal *, doublereal *,
+    extern /* Subroutine */ void dlasq1_(integer *, doublereal *, doublereal *,
 	     doublereal *, integer *), dlasv2_(doublereal *, doublereal *, 
 	    doublereal *, doublereal *, doublereal *, doublereal *, 
 	    doublereal *, doublereal *, doublereal *);
@@ -803,9 +803,9 @@ f"> */
     integer ll;
     extern doublereal dlamch_(char *);
     doublereal sn, mu;
-    extern /* Subroutine */ int dlartg_(doublereal *, doublereal *, 
-	    doublereal *, doublereal *, doublereal *), xerbla_(char *, 
-	    integer *, ftnlen);
+    extern /* Subroutine */ void dlartg_(doublereal *, doublereal *, 
+	    doublereal *, doublereal *, doublereal *);
+    extern int xerbla_(char *, integer *, ftnlen);
     doublereal sminoa, thresh;
     logical rotate;
     integer nm1;
@@ -862,10 +862,10 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DBDSQR", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
     if (*n == 0) {
-	return 0;
+	return;
     }
     if (*n == 1) {
 	goto L160;
@@ -883,7 +883,7 @@ f"> */
 /*     If INFO equals 2, dqds didn't finish, try to finish */
 
 	if (*info != 2) {
-	    return 0;
+	    return;
 	}
 	*info = 0;
     }
@@ -1513,7 +1513,7 @@ L200:
 /* L210: */
     }
 L220:
-    return 0;
+    return;
 
 /*     End of DBDSQR */
 

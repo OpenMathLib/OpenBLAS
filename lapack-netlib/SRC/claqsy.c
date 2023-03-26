@@ -643,7 +643,7 @@ f"> */
 /* > \ingroup complexSYauxiliary */
 
 /*  ===================================================================== */
-/* Subroutine */ int claqsy_(char *uplo, integer *n, complex *a, integer *lda,
+/* Subroutine */ void claqsy_(char *uplo, integer *n, complex *a, integer *lda,
 	 real *s, real *scond, real *amax, char *equed)
 {
     /* System generated locals */
@@ -679,7 +679,7 @@ f"> */
     /* Function Body */
     if (*n <= 0) {
 	*(unsigned char *)equed = 'N';
-	return 0;
+	return;
     }
 
 /*     Initialize LARGE and SMALL. */
@@ -736,7 +736,7 @@ f"> */
 	*(unsigned char *)equed = 'Y';
     }
 
-    return 0;
+    return;
 
 /*     End of CLAQSY */
 

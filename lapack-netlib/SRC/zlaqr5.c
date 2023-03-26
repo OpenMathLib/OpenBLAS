@@ -773,7 +773,7 @@ f"> */
 /* >       ACM Trans. Math. Softw. 40, 2, Article 12 (February 2014). */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int zlaqr5_(logical *wantt, logical *wantz, integer *kacc22, 
+/* Subroutine */ void zlaqr5_(logical *wantt, logical *wantz, integer *kacc22, 
 	integer *n, integer *ktop, integer *kbot, integer *nshfts, 
 	doublecomplex *s, doublecomplex *h__, integer *ldh, integer *iloz, 
 	integer *ihiz, doublecomplex *z__, integer *ldz, doublecomplex *v, 
@@ -795,24 +795,24 @@ f"> */
     doublecomplex alpha;
     logical accum;
     integer ndcol, incol, krcol, nbmps;
-    extern /* Subroutine */ int zgemm_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void zgemm_(char *, char *, integer *, integer *, 
 	    integer *, doublecomplex *, doublecomplex *, integer *, 
 	    doublecomplex *, integer *, doublecomplex *, doublecomplex *, 
 	    integer *);
     integer i2, k1, i4;
-    extern /* Subroutine */ int dlabad_(doublereal *, doublereal *);
+    extern /* Subroutine */ void dlabad_(doublereal *, doublereal *);
     doublereal h11, h12, h21, h22;
-    extern /* Subroutine */ int zlaqr1_(integer *, doublecomplex *, integer *,
+    extern /* Subroutine */ void zlaqr1_(integer *, doublecomplex *, integer *,
 	     doublecomplex *, doublecomplex *, doublecomplex *);
     integer m22;
     extern doublereal dlamch_(char *);
     integer ns, nu;
     doublecomplex vt[3];
     doublereal safmin, safmax;
-    extern /* Subroutine */ int zlarfg_(integer *, doublecomplex *, 
+    extern /* Subroutine */ void zlarfg_(integer *, doublecomplex *, 
 	    doublecomplex *, integer *, doublecomplex *);
     doublecomplex refsum;
-    extern /* Subroutine */ int zlacpy_(char *, integer *, integer *, 
+    extern /* Subroutine */ void zlacpy_(char *, integer *, integer *, 
 	    doublecomplex *, integer *, doublecomplex *, integer *), 
 	    zlaset_(char *, integer *, integer *, doublecomplex *, 
 	    doublecomplex *, doublecomplex *, integer *);
@@ -856,14 +856,14 @@ f"> */
 
     /* Function Body */
     if (*nshfts < 2) {
-	return 0;
+	return;
     }
 
 /*     ==== If the active block is empty or 1-by-1, then there */
 /*     .    is nothing to do. ==== */
 
     if (*ktop >= *kbot) {
-	return 0;
+	return;
     }
 
 /*     ==== NSHFTS is supposed to be even, but if it is odd, */
@@ -1904,6 +1904,6 @@ f"> */
 
 /*     ==== End of ZLAQR5 ==== */
 
-    return 0;
+    return;
 } /* zlaqr5_ */
 

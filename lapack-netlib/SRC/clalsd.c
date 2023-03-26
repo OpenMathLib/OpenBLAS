@@ -702,7 +702,7 @@ f"> */
 /* >     Osni Marques, LBNL/NERSC, USA \n */
 
 /*  ===================================================================== */
-/* Subroutine */ int clalsd_(char *uplo, integer *smlsiz, integer *n, integer 
+/* Subroutine */ void clalsd_(char *uplo, integer *smlsiz, integer *n, integer 
 	*nrhs, real *d__, real *e, complex *b, integer *ldb, real *rcond, 
 	integer *rank, complex *work, real *rwork, integer *iwork, integer *
 	info)
@@ -719,41 +719,43 @@ f"> */
 	     k;
     real r__;
     integer s, u, jimag, z__, jreal;
-    extern /* Subroutine */ int sgemm_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void sgemm_(char *, char *, integer *, integer *, 
 	    integer *, real *, real *, integer *, real *, integer *, real *, 
 	    real *, integer *);
     integer irwib;
-    extern /* Subroutine */ int ccopy_(integer *, complex *, integer *, 
+    extern /* Subroutine */ void ccopy_(integer *, complex *, integer *, 
 	    complex *, integer *);
     integer poles, sizei, irwrb, nsize;
-    extern /* Subroutine */ int csrot_(integer *, complex *, integer *, 
+    extern /* Subroutine */ void csrot_(integer *, complex *, integer *, 
 	    complex *, integer *, real *, real *);
     integer irwvt, icmpq1, icmpq2;
     real cs;
     integer bx;
-    extern /* Subroutine */ int clalsa_(integer *, integer *, integer *, 
+    extern /* Subroutine */ void clalsa_(integer *, integer *, integer *, 
 	    integer *, complex *, integer *, complex *, integer *, real *, 
 	    integer *, real *, integer *, real *, real *, real *, real *, 
 	    integer *, integer *, integer *, integer *, real *, real *, real *
 	    , real *, integer *, integer *);
     real sn;
-    extern /* Subroutine */ int clascl_(char *, integer *, integer *, real *, 
+    extern /* Subroutine */ void clascl_(char *, integer *, integer *, real *, 
 	    real *, integer *, integer *, complex *, integer *, integer *);
     integer st;
     extern real slamch_(char *);
-    extern /* Subroutine */ int slasda_(integer *, integer *, integer *, 
+    extern /* Subroutine */ void slasda_(integer *, integer *, integer *, 
 	    integer *, real *, real *, real *, integer *, real *, integer *, 
 	    real *, real *, real *, real *, integer *, integer *, integer *, 
 	    integer *, real *, real *, real *, real *, integer *, integer *);
     integer vt;
-    extern /* Subroutine */ int clacpy_(char *, integer *, integer *, complex 
+    extern /* Subroutine */ void clacpy_(char *, integer *, integer *, complex 
 	    *, integer *, complex *, integer *), claset_(char *, 
-	    integer *, integer *, complex *, complex *, complex *, integer *), xerbla_(char *, integer *, ftnlen), slascl_(char *, 
+	    integer *, integer *, complex *, complex *, complex *, integer *);
+    extern int xerbla_(char *, integer *, ftnlen);
+    extern void slascl_(char *, 
 	    integer *, integer *, real *, real *, integer *, integer *, real *
 	    , integer *, integer *);
     extern integer isamax_(integer *, real *, integer *);
     integer givcol;
-    extern /* Subroutine */ int slasdq_(char *, integer *, integer *, integer 
+    extern /* Subroutine */ void slasdq_(char *, integer *, integer *, integer 
 	    *, integer *, integer *, real *, real *, real *, integer *, real *
 	    , integer *, real *, integer *, real *, integer *), 
 	    slaset_(char *, integer *, integer *, real *, real *, real *, 
@@ -762,7 +764,7 @@ f"> */
     real orgnrm;
     integer givnum;
     extern real slanst_(char *, integer *, real *, real *);
-    extern /* Subroutine */ int slasrt_(char *, integer *, real *, integer *);
+    extern /* Subroutine */ void slasrt_(char *, integer *, real *, integer *);
     integer givptr, nm1, nrwork, irwwrk, smlszp, st1;
     real eps;
     integer iwk;
@@ -803,7 +805,7 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CLALSD", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
     eps = slamch_("Epsilon");
@@ -821,7 +823,7 @@ f"> */
 /*     Quick return if possible. */
 
     if (*n == 0) {
-	return 0;
+	return;
     } else if (*n == 1) {
 	if (d__[1] == 0.f) {
 	    claset_("A", &c__1, nrhs, &c_b1, &c_b1, &b[b_offset], ldb);
@@ -831,7 +833,7 @@ f"> */
 		    b_offset], ldb, info);
 	    d__[1] = abs(d__[1]);
 	}
-	return 0;
+	return;
     }
 
 /*     Rotate the matrix if it is lower bidiagonal. */
@@ -874,7 +876,7 @@ f"> */
     orgnrm = slanst_("M", n, &d__[1], &e[1]);
     if (orgnrm == 0.f) {
 	claset_("A", n, nrhs, &c_b1, &c_b1, &b[b_offset], ldb);
-	return 0;
+	return;
     }
 
     slascl_("G", &c__0, &c__0, &orgnrm, &c_b10, n, &c__1, &d__[1], n, info);
@@ -896,7 +898,7 @@ f"> */
 	slasdq_("U", &c__0, n, n, n, &c__0, &d__[1], &e[1], &rwork[irwvt], n, 
 		&rwork[irwu], n, &rwork[irwwrk], &c__1, &rwork[irwwrk], info);
 	if (*info != 0) {
-	    return 0;
+	    return;
 	}
 
 /*        In the real version, B is passed to SLASDQ and multiplied */
@@ -1021,7 +1023,7 @@ f"> */
 	clascl_("G", &c__0, &c__0, &orgnrm, &c_b10, n, nrhs, &b[b_offset], 
 		ldb, info);
 
-	return 0;
+	return;
     }
 
 /*     Book-keeping and setting up some constants. */
@@ -1121,7 +1123,7 @@ f"> */
 			rwork[nrwork], &c__1, &rwork[nrwork], info)
 			;
 		if (*info != 0) {
-		    return 0;
+		    return;
 		}
 
 /*              In the real version, B is passed to SLASDQ and multiplied */
@@ -1189,7 +1191,7 @@ f"> */
 			givnum + st1], &rwork[c__ + st1], &rwork[s + st1], &
 			rwork[nrwork], &iwork[iwk], info);
 		if (*info != 0) {
-		    return 0;
+		    return;
 		}
 		bxst = bx + st1;
 		clalsa_(&icmpq2, smlsiz, &nsize, nrhs, &b[st + b_dim1], ldb, &
@@ -1200,7 +1202,7 @@ f"> */
 			st1], &rwork[givnum + st1], &rwork[c__ + st1], &rwork[
 			s + st1], &rwork[nrwork], &iwork[iwk], info);
 		if (*info != 0) {
-		    return 0;
+		    return;
 		}
 	    }
 	    st = i__ + 1;
@@ -1306,7 +1308,7 @@ f"> */
 		    givnum + st1], &rwork[c__ + st1], &rwork[s + st1], &rwork[
 		    nrwork], &iwork[iwk], info);
 	    if (*info != 0) {
-		return 0;
+		return;
 	    }
 	}
 /* L320: */
@@ -1319,7 +1321,7 @@ f"> */
     clascl_("G", &c__0, &c__0, &orgnrm, &c_b10, n, nrhs, &b[b_offset], ldb, 
 	    info);
 
-    return 0;
+    return;
 
 /*     End of CLALSD */
 

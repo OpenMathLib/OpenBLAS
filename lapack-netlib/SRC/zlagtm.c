@@ -654,7 +654,7 @@ f"> */
 /* > \ingroup complex16OTHERauxiliary */
 
 /*  ===================================================================== */
-/* Subroutine */ int zlagtm_(char *trans, integer *n, integer *nrhs, 
+/* Subroutine */ void zlagtm_(char *trans, integer *n, integer *nrhs, 
 	doublereal *alpha, doublecomplex *dl, doublecomplex *d__, 
 	doublecomplex *du, doublecomplex *x, integer *ldx, doublereal *beta, 
 	doublecomplex *b, integer *ldb)
@@ -691,7 +691,7 @@ f"> */
 
     /* Function Body */
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /*     Multiply B by BETA if BETA.NE.1. */
@@ -1161,7 +1161,7 @@ f"> */
 	    }
 	}
     }
-    return 0;
+    return;
 
 /*     End of ZLAGTM */
 

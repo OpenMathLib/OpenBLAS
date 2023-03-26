@@ -705,7 +705,7 @@ f"> */
 /* >  Modified by Francoise Tisseur, University of Tennessee */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int dstedc_(char *compz, integer *n, doublereal *d__, 
+/* Subroutine */ void dstedc_(char *compz, integer *n, doublereal *d__, 
 	doublereal *e, doublereal *z__, integer *ldz, doublereal *work, 
 	integer *lwork, integer *iwork, integer *liwork, integer *info)
 {
@@ -717,19 +717,19 @@ f"> */
     doublereal tiny;
     integer i__, j, k, m;
     doublereal p;
-    extern /* Subroutine */ int dgemm_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void dgemm_(char *, char *, integer *, integer *, 
 	    integer *, doublereal *, doublereal *, integer *, doublereal *, 
 	    integer *, doublereal *, doublereal *, integer *);
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int dswap_(integer *, doublereal *, integer *, 
+    extern /* Subroutine */ void dswap_(integer *, doublereal *, integer *, 
 	    doublereal *, integer *);
     integer lwmin;
-    extern /* Subroutine */ int dlaed0_(integer *, integer *, integer *, 
+    extern /* Subroutine */ void dlaed0_(integer *, integer *, integer *, 
 	    doublereal *, doublereal *, doublereal *, integer *, doublereal *,
 	     integer *, doublereal *, integer *, integer *);
     integer start, ii;
     extern doublereal dlamch_(char *);
-    extern /* Subroutine */ int dlascl_(char *, integer *, integer *, 
+    extern /* Subroutine */ void dlascl_(char *, integer *, integer *, 
 	    doublereal *, doublereal *, integer *, integer *, doublereal *, 
 	    integer *, integer *), dlacpy_(char *, integer *, integer 
 	    *, doublereal *, integer *, doublereal *, integer *), 
@@ -740,10 +740,10 @@ f"> */
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     integer finish;
     extern doublereal dlanst_(char *, integer *, doublereal *, doublereal *);
-    extern /* Subroutine */ int dsterf_(integer *, doublereal *, doublereal *,
+    extern /* Subroutine */ void dsterf_(integer *, doublereal *, doublereal *,
 	     integer *), dlasrt_(char *, integer *, doublereal *, integer *);
     integer liwmin, icompz;
-    extern /* Subroutine */ int dsteqr_(char *, integer *, doublereal *, 
+    extern /* Subroutine */ void dsteqr_(char *, integer *, doublereal *, 
 	    doublereal *, doublereal *, integer *, doublereal *, integer *);
     doublereal orgnrm;
     logical lquery;
@@ -806,10 +806,10 @@ f"> */
 	    lwmin = *n - 1 << 1;
 	} else {
 	    lgn = (integer) (log((doublereal) (*n)) / log(2.));
-	    if (pow_ii(&c__2, &lgn) < *n) {
+	    if (pow_ii(c__2, lgn) < *n) {
 		++lgn;
 	    }
-	    if (pow_ii(&c__2, &lgn) < *n) {
+	    if (pow_ii(c__2, lgn) < *n) {
 		++lgn;
 	    }
 	    if (icompz == 1) {
@@ -837,21 +837,21 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DSTEDC", &i__1, (ftnlen)6);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
     if (*n == 1) {
 	if (icompz != 0) {
 	    z__[z_dim1 + 1] = 1.;
 	}
-	return 0;
+	return;
     }
 
 /*     If the following conditional clause is removed, then the routine */
@@ -1033,7 +1033,7 @@ L50:
     work[1] = (doublereal) lwmin;
     iwork[1] = liwmin;
 
-    return 0;
+    return;
 
 /*     End of DSTEDC */
 

@@ -691,7 +691,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int zggbal_(char *job, integer *n, doublecomplex *a, integer 
+/* Subroutine */ void zggbal_(char *job, integer *n, doublecomplex *a, integer 
 	*lda, doublecomplex *b, integer *ldb, integer *ilo, integer *ihi, 
 	doublereal *lscale, doublereal *rscale, doublereal *work, integer *
 	info)
@@ -710,15 +710,15 @@ f"> */
     doublereal coef2, coef5;
     integer i__, j, k, l, m;
     doublereal gamma, t, alpha;
-    extern /* Subroutine */ int dscal_(integer *, doublereal *, doublereal *, 
+    extern /* Subroutine */ void dscal_(integer *, doublereal *, doublereal *, 
 	    integer *);
     extern logical lsame_(char *, char *);
     doublereal sfmin, sfmax;
     integer iflow;
-    extern /* Subroutine */ int daxpy_(integer *, doublereal *, doublereal *, 
+    extern /* Subroutine */ void daxpy_(integer *, doublereal *, doublereal *, 
 	    integer *, doublereal *, integer *);
     integer kount;
-    extern /* Subroutine */ int zswap_(integer *, doublecomplex *, integer *, 
+    extern /* Subroutine */ void zswap_(integer *, doublecomplex *, integer *, 
 	    doublecomplex *, integer *);
     integer jc;
     doublereal ta, tb, tc;
@@ -727,7 +727,8 @@ f"> */
     doublereal ew;
     integer nr;
     doublereal pgamma;
-    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen), zdscal_(
+    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
+    extern void zdscal_(
 	    integer *, doublereal *, doublecomplex *, integer *);
     integer lsfmin;
     extern integer izamax_(integer *, doublecomplex *, integer *);
@@ -773,7 +774,7 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZGGBAL", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
@@ -781,7 +782,7 @@ f"> */
     if (*n == 0) {
 	*ilo = 1;
 	*ihi = *n;
-	return 0;
+	return;
     }
 
     if (*n == 1) {
@@ -789,7 +790,7 @@ f"> */
 	*ihi = *n;
 	lscale[1] = 1.;
 	rscale[1] = 1.;
-	return 0;
+	return;
     }
 
     if (lsame_(job, "N")) {
@@ -801,7 +802,7 @@ f"> */
 	    rscale[i__] = 1.;
 /* L10: */
 	}
-	return 0;
+	return;
     }
 
     k = 1;
@@ -946,11 +947,11 @@ L190:
 	    rscale[i__] = 1.;
 /* L195: */
 	}
-	return 0;
+	return;
     }
 
     if (*ilo == *ihi) {
-	return 0;
+	return;
     }
 
 /*     Balance the submatrix in rows ILO to IHI. */
@@ -1213,7 +1214,7 @@ L350:
 /* L380: */
     }
 
-    return 0;
+    return;
 
 /*     End of ZGGBAL */
 

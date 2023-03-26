@@ -600,7 +600,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 /* > \ingroup complex16OTHERcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int zlascl2_(integer *m, integer *n, doublereal *d__, 
+/* Subroutine */ void zlascl2_(integer *m, integer *n, doublereal *d__, 
 	doublecomplex *x, integer *ldx)
 {
     /* System generated locals */
@@ -638,6 +638,6 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 	    x[i__3].r = z__1.r, x[i__3].i = z__1.i;
 	}
     }
-    return 0;
+    return;
 } /* zlascl2_ */
 

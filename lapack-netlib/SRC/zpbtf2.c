@@ -657,7 +657,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int zpbtf2_(char *uplo, integer *n, integer *kd, 
+/* Subroutine */ void zpbtf2_(char *uplo, integer *n, integer *kd, 
 	doublecomplex *ab, integer *ldab, integer *info)
 {
     /* System generated locals */
@@ -665,13 +665,14 @@ f"> */
     doublereal d__1;
 
     /* Local variables */
-    extern /* Subroutine */ int zher_(char *, integer *, doublereal *, 
+    extern /* Subroutine */ void zher_(char *, integer *, doublereal *, 
 	    doublecomplex *, integer *, doublecomplex *, integer *);
     integer j;
     extern logical lsame_(char *, char *);
     logical upper;
     integer kn;
-    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen), zdscal_(
+    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
+    extern void zdscal_(
 	    integer *, doublereal *, doublecomplex *, integer *), zlacgv_(
 	    integer *, doublecomplex *, integer *);
     doublereal ajj;
@@ -709,13 +710,13 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZPBTF2", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /* Computing MAX */
@@ -793,11 +794,11 @@ f"> */
 /* L20: */
 	}
     }
-    return 0;
+    return;
 
 L30:
     *info = j;
-    return 0;
+    return;
 
 /*     End of ZPBTF2 */
 

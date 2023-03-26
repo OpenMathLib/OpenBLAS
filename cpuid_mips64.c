@@ -70,16 +70,18 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /* or implied, of The University of Texas at Austin.                 */
 /*********************************************************************/
 
-#define CPU_UNKNOWN      0
-#define CPU_SICORTEX     1
-#define CPU_LOONGSON3R3  2
-#define CPU_LOONGSON3R4  3
-#define CPU_I6400        4
-#define CPU_P6600        5
-#define CPU_I6500        6
+#define CPU_UNKNOWN         0
+#define CPU_MIPS64_GENERIC  1
+#define CPU_SICORTEX        2
+#define CPU_LOONGSON3R3     3
+#define CPU_LOONGSON3R4     4
+#define CPU_I6400           5
+#define CPU_P6600           6
+#define CPU_I6500           7
 
 static char *cpuname[] = {
   "UNKNOWN",
+  "MIPS64_GENERIC"
   "SICORTEX",
   "LOONGSON3R3",
   "LOONGSON3R4",
@@ -113,8 +115,11 @@ int detect(void){
       return CPU_SICORTEX;
     }
   }
+
+  return CPU_MIPS64_GENERIC;
+#else
+  return CPU_UNKNOWN;
 #endif
-    return CPU_UNKNOWN;
 }
 
 char *get_corename(void){
@@ -136,9 +141,11 @@ void get_subarchitecture(void){
     printf("P6600");
   }else if(detect()==CPU_I6500){
     printf("I6500");
-  }else{
+  }else if(detect()==CPU_SICORTEX){
     printf("SICORTEX");
-  }
+  }else{
+    printf("MIPS64_GENERIC");
+  } 
 }
 
 void get_subdirname(void){
@@ -201,7 +208,9 @@ void get_cpuconfig(void){
     printf("#define DTB_SIZE 4096\n");
     printf("#define L2_ASSOCIATIVE 8\n");
   }
-  if (!get_feature("msa")) printf("#define NO_MSA\n");
+#ifndef NO_MSA
+  if (get_feature("msa")) printf("#define HAVE_MSA\n");
+#endif
 }
 
 void get_libname(void){
@@ -215,8 +224,8 @@ void get_libname(void){
     printf("p6600\n");
   }else if(detect()==CPU_I6500) {
     printf("i6500\n");
-  }else{
-    printf("mips64\n");
+  }else {
+    printf("mips64_generic\n");
   }
 }
 

@@ -90,7 +90,7 @@ extern "C" {
 #endif
 #include <time.h>
 
-#ifdef OS_LINUX
+#if defined(OS_LINUX) || defined(OS_QNX)
 #include <malloc.h>
 #include <sched.h>
 #endif
@@ -107,7 +107,7 @@ extern "C" {
 #endif
 #endif
 
-#ifdef OS_HAIKU
+#if defined(OS_HAIKU) || defined(OS_QNX)
 #define NO_SYSV_IPC
 #endif
 
@@ -386,6 +386,10 @@ typedef int blasint;
 #endif
 #endif
 */
+
+#ifdef __EMSCRIPTEN__
+#define YIELDING
+#endif
 
 #ifndef YIELDING
 #define YIELDING	sched_yield()

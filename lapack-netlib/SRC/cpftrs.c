@@ -733,7 +733,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int cpftrs_(char *transr, char *uplo, integer *n, integer *
+/* Subroutine */ void cpftrs_(char *transr, char *uplo, integer *n, integer *
 	nrhs, complex *a, complex *b, integer *ldb, integer *info)
 {
     /* System generated locals */
@@ -742,7 +742,7 @@ f"> */
     /* Local variables */
     logical normaltransr;
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int ctfsm_(char *, char *, char *, char *, char *,
+    extern /* Subroutine */ void ctfsm_(char *, char *, char *, char *, char *,
 	     integer *, integer *, complex *, complex *, complex *, integer *);
     logical lower;
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
@@ -782,13 +782,13 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CPFTRS", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0 || *nrhs == 0) {
-	return 0;
+	return;
     }
 
 /*     start execution: there are two triangular solves */
@@ -805,7 +805,7 @@ f"> */
 		ldb);
     }
 
-    return 0;
+    return;
 
 /*     End of CPFTRS */
 

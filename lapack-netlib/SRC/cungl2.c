@@ -623,7 +623,7 @@ f"> */
 /* > \ingroup complexOTHERcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int cungl2_(integer *m, integer *n, integer *k, complex *a, 
+/* Subroutine */ void cungl2_(integer *m, integer *n, integer *k, complex *a, 
 	integer *lda, complex *tau, complex *work, integer *info)
 {
     /* System generated locals */
@@ -632,11 +632,11 @@ f"> */
 
     /* Local variables */
     integer i__, j, l;
-    extern /* Subroutine */ int cscal_(integer *, complex *, complex *, 
+    extern /* Subroutine */ void cscal_(integer *, complex *, complex *, 
 	    integer *), clarf_(char *, integer *, integer *, complex *, 
 	    integer *, complex *, complex *, integer *, complex *), 
-	    clacgv_(integer *, complex *, integer *), xerbla_(char *, integer 
-	    *, ftnlen);
+	    clacgv_(integer *, complex *, integer *);
+    extern int xerbla_(char *, integer *, ftnlen);
 
 
 /*  -- LAPACK computational routine (version 3.7.0) -- */
@@ -671,13 +671,13 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CUNGL2", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*m <= 0) {
-	return 0;
+	return;
     }
 
     if (*k < *m) {
@@ -738,7 +738,7 @@ f"> */
 	}
 /* L40: */
     }
-    return 0;
+    return;
 
 /*     End of CUNGL2 */
 

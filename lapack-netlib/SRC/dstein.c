@@ -688,7 +688,7 @@ f"> */
 /* > \ingroup doubleOTHERcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int dstein_(integer *n, doublereal *d__, doublereal *e, 
+/* Subroutine */ void dstein_(integer *n, doublereal *d__, doublereal *e, 
 	integer *m, doublereal *w, integer *iblock, integer *isplit, 
 	doublereal *z__, integer *ldz, doublereal *work, integer *iwork, 
 	integer *ifail, integer *info)
@@ -704,28 +704,29 @@ f"> */
     integer jmax;
     extern doublereal dnrm2_(integer *, doublereal *, integer *);
     integer i__, j;
-    extern /* Subroutine */ int dscal_(integer *, doublereal *, doublereal *, 
+    extern /* Subroutine */ void dscal_(integer *, doublereal *, doublereal *, 
 	    integer *);
     integer iseed[4], gpind, iinfo;
-    extern /* Subroutine */ int dcopy_(integer *, doublereal *, integer *, 
+    extern /* Subroutine */ void dcopy_(integer *, doublereal *, integer *, 
 	    doublereal *, integer *);
     integer b1;
-    extern /* Subroutine */ int daxpy_(integer *, doublereal *, doublereal *, 
+    extern /* Subroutine */ void daxpy_(integer *, doublereal *, doublereal *, 
 	    integer *, doublereal *, integer *);
     integer j1;
     doublereal ortol;
     integer indrv1, indrv2, indrv3, indrv4, indrv5, bn;
     extern doublereal dlamch_(char *);
-    extern /* Subroutine */ int dlagtf_(integer *, doublereal *, doublereal *,
+    extern /* Subroutine */ void dlagtf_(integer *, doublereal *, doublereal *,
 	     doublereal *, doublereal *, doublereal *, doublereal *, integer *
 	    , integer *);
     doublereal xj;
     extern integer idamax_(integer *, doublereal *, integer *);
-    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen), dlagts_(
+    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
+    extern void dlagts_(
 	    integer *, integer *, doublereal *, doublereal *, doublereal *, 
 	    doublereal *, integer *, doublereal *, doublereal *, integer *);
     integer nrmchk;
-    extern /* Subroutine */ int dlarnv_(integer *, integer *, integer *, 
+    extern /* Subroutine */ void dlarnv_(integer *, integer *, integer *, 
 	    doublereal *);
     integer blksiz;
     doublereal onenrm, dtpcrt, pertol, scl, eps, sep, nrm, tol;
@@ -791,16 +792,16 @@ L30:
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DSTEIN", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0 || *m == 0) {
-	return 0;
+	return;
     } else if (*n == 1) {
 	z__[z_dim1 + 1] = 1.;
-	return 0;
+	return;
     }
 
 /*     Get machine constants. */
@@ -1015,7 +1016,7 @@ L160:
 	;
     }
 
-    return 0;
+    return;
 
 /*     End of DSTEIN */
 

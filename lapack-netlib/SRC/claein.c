@@ -662,7 +662,7 @@ f"> */
 /* > \ingroup complexOTHERauxiliary */
 
 /*  ===================================================================== */
-/* Subroutine */ int claein_(logical *rightv, logical *noinit, integer *n, 
+/* Subroutine */ void claein_(logical *rightv, logical *noinit, integer *n, 
 	complex *h__, integer *ldh, complex *w, complex *v, complex *b, 
 	integer *ldb, real *rwork, real *eps3, real *smlnum, integer *info)
 {
@@ -683,7 +683,7 @@ f"> */
     complex ei, ej;
     extern integer icamax_(integer *, complex *, integer *);
     extern /* Complex */ VOID cladiv_(complex *, complex *, complex *);
-    extern /* Subroutine */ int csscal_(integer *, real *, complex *, integer 
+    extern /* Subroutine */ void csscal_(integer *, real *, complex *, integer 
 	    *), clatrs_(char *, char *, char *, char *, integer *, complex *, 
 	    integer *, complex *, real *, real *, integer *);
     extern real scasum_(integer *, complex *, integer *);
@@ -953,7 +953,7 @@ L120:
 	    abs(r__2)));
     csscal_(n, &r__3, &v[1], &c__1);
 
-    return 0;
+    return;
 
 /*     End of CLAEIN */
 

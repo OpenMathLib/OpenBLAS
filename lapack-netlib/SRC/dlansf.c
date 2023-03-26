@@ -739,7 +739,7 @@ doublereal dlansf_(char *norm, char *transr, char *uplo, integer *n,
     integer n1;
     doublereal aa;
     extern logical disnan_(doublereal *);
-    extern /* Subroutine */ int dlassq_(integer *, doublereal *, integer *, 
+    extern /* Subroutine */ void dlassq_(integer *, doublereal *, integer *, 
 	    doublereal *, doublereal *);
     integer lda, ifm, noe, ilu;
 

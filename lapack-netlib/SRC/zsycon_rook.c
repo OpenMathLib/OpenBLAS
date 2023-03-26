@@ -651,7 +651,7 @@ rook.f"> */
 /* > \endverbatim */
 
 /*  ===================================================================== */
-/* Subroutine */ int zsycon_rook_(char *uplo, integer *n, doublecomplex *a, 
+/* Subroutine */ void zsycon_rook_(char *uplo, integer *n, doublecomplex *a, 
 	integer *lda, integer *ipiv, doublereal *anorm, doublereal *rcond, 
 	doublecomplex *work, integer *info)
 {
@@ -660,16 +660,16 @@ rook.f"> */
 
     /* Local variables */
     integer kase;
-    extern /* Subroutine */ int zsytrs_rook_(char *, integer *, integer *, 
+    extern /* Subroutine */ void zsytrs_rook_(char *, integer *, integer *, 
 	    doublecomplex *, integer *, integer *, doublecomplex *, integer *,
 	     integer *);
     integer i__;
     extern logical lsame_(char *, char *);
     integer isave[3];
     logical upper;
-    extern /* Subroutine */ int zlacn2_(integer *, doublecomplex *, 
-	    doublecomplex *, doublereal *, integer *, integer *), xerbla_(
-	    char *, integer *, ftnlen);
+    extern /* Subroutine */ void zlacn2_(integer *, doublecomplex *, 
+	    doublecomplex *, doublereal *, integer *, integer *);
+    extern int xerbla_(char *, integer *, ftnlen);
     doublereal ainvnm;
 
 
@@ -706,7 +706,7 @@ rook.f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZSYCON_ROOK", &i__1, (ftnlen)11);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
@@ -714,9 +714,9 @@ rook.f"> */
     *rcond = 0.;
     if (*n == 0) {
 	*rcond = 1.;
-	return 0;
+	return;
     } else if (*anorm <= 0.) {
-	return 0;
+	return;
     }
 
 /*     Check that the diagonal matrix D is nonsingular. */
@@ -728,7 +728,7 @@ rook.f"> */
 	for (i__ = *n; i__ >= 1; --i__) {
 	    i__1 = i__ + i__ * a_dim1;
 	    if (ipiv[i__] > 0 && (a[i__1].r == 0. && a[i__1].i == 0.)) {
-		return 0;
+		return;
 	    }
 /* L10: */
 	}
@@ -740,7 +740,7 @@ rook.f"> */
 	for (i__ = 1; i__ <= i__1; ++i__) {
 	    i__2 = i__ + i__ * a_dim1;
 	    if (ipiv[i__] > 0 && (a[i__2].r == 0. && a[i__2].i == 0.)) {
-		return 0;
+		return;
 	    }
 /* L20: */
 	}
@@ -766,7 +766,7 @@ L30:
 	*rcond = 1. / ainvnm / *anorm;
     }
 
-    return 0;
+    return;
 
 /*     End of ZSYCON_ROOK */
 

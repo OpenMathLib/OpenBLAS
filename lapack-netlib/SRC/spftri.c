@@ -705,7 +705,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int spftri_(char *transr, char *uplo, integer *n, real *a, 
+/* Subroutine */ void spftri_(char *transr, char *uplo, integer *n, real *a, 
 	integer *info)
 {
     /* System generated locals */
@@ -717,14 +717,16 @@ f"> */
     extern logical lsame_(char *, char *);
     logical lower;
     integer n1, n2;
-    extern /* Subroutine */ int strmm_(char *, char *, char *, char *, 
+    extern /* Subroutine */ void strmm_(char *, char *, char *, char *, 
 	    integer *, integer *, real *, real *, integer *, real *, integer *
 	    ), ssyrk_(char *, char *, integer 
 	    *, integer *, real *, real *, integer *, real *, real *, integer *
-	    ), xerbla_(char *, integer *, ftnlen);
+	    );
+    extern int xerbla_(char *, integer *, ftnlen);
     logical nisodd;
     extern /* Subroutine */ int slauum_(char *, integer *, real *, integer *, 
-	    integer *), stftri_(char *, char *, char *, integer *, 
+	    integer *);
+    extern void stftri_(char *, char *, char *, integer *, 
 	    real *, integer *);
 
 
@@ -752,20 +754,20 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("SPFTRI", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /*     Invert the triangular Cholesky factor U or L. */
 
     stftri_(transr, uplo, "N", n, a, info);
     if (*info > 0) {
-	return 0;
+	return;
     }
 
 /*     If N is odd, set NISODD = .TRUE. */
@@ -940,7 +942,7 @@ f"> */
 
     }
 
-    return 0;
+    return;
 
 /*     End of SPFTRI */
 

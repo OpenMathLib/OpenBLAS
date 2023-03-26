@@ -686,7 +686,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int dgehrd_(integer *n, integer *ilo, integer *ihi, 
+/* Subroutine */ void dgehrd_(integer *n, integer *ilo, integer *ihi, 
 	doublereal *a, integer *lda, doublereal *tau, doublereal *work, 
 	integer *lwork, integer *info)
 {
@@ -695,11 +695,11 @@ f"> */
 
     /* Local variables */
     integer i__, j;
-    extern /* Subroutine */ int dgemm_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void dgemm_(char *, char *, integer *, integer *, 
 	    integer *, doublereal *, doublereal *, integer *, doublereal *, 
 	    integer *, doublereal *, doublereal *, integer *);
     integer nbmin, iinfo;
-    extern /* Subroutine */ int dtrmm_(char *, char *, char *, char *, 
+    extern /* Subroutine */ void dtrmm_(char *, char *, char *, char *, 
 	    integer *, integer *, doublereal *, doublereal *, integer *, 
 	    doublereal *, integer *), daxpy_(
 	    integer *, doublereal *, doublereal *, integer *, doublereal *, 
@@ -710,7 +710,7 @@ f"> */
     integer ib;
     doublereal ei;
     integer nb, nh;
-    extern /* Subroutine */ int dlarfb_(char *, char *, char *, char *, 
+    extern /* Subroutine */ void dlarfb_(char *, char *, char *, char *, 
 	    integer *, integer *, integer *, doublereal *, integer *, 
 	    doublereal *, integer *, doublereal *, integer *, doublereal *, 
 	    integer *);
@@ -771,9 +771,9 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DGEHRD", &i__1, (ftnlen)6);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Set elements 1:ILO-1 and IHI:N-1 of TAU to zero */
@@ -794,7 +794,7 @@ f"> */
     nh = *ihi - *ilo + 1;
     if (nh <= 1) {
 	work[1] = 1.;
-	return 0;
+	return;
     }
 
 /*     Determine the block size */
@@ -905,7 +905,7 @@ f"> */
     dgehd2_(n, &i__, ihi, &a[a_offset], lda, &tau[1], &work[1], &iinfo);
     work[1] = (doublereal) lwkopt;
 
-    return 0;
+    return;
 
 /*     End of DGEHRD */
 

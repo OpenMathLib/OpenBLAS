@@ -651,12 +651,12 @@ real cla_porcond_x_(char *uplo, integer *n, complex *a, integer *lda,
     integer isave[3];
     real anorm;
     logical upper;
-    extern /* Subroutine */ int clacn2_(integer *, complex *, complex *, real 
+    extern /* Subroutine */ void clacn2_(integer *, complex *, complex *, real 
 	    *, integer *, integer *);
     logical up;
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     real ainvnm;
-    extern /* Subroutine */ int cpotrs_(char *, integer *, integer *, complex 
+    extern /* Subroutine */ void cpotrs_(char *, integer *, integer *, complex 
 	    *, integer *, complex *, integer *, integer *);
     real tmp;
 

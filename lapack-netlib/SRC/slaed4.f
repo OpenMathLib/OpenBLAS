@@ -328,9 +328,12 @@
          IF( C.LT.ZERO )
      $      C = ABS( C )
          IF( C.EQ.ZERO ) THEN
-*          ETA = B/A
+*           ETA = B/A
 *           ETA = RHO - TAU
-            ETA = DLTUB - TAU
+*           ETA = DLTUB - TAU
+*
+*           Update proposed by Li, Ren-Cang:
+            ETA = -W / ( DPSI+DPHI )
          ELSE IF( A.GE.ZERO ) THEN
             ETA = ( A+SQRT( ABS( A*A-FOUR*B*C ) ) ) / ( TWO*C )
          ELSE

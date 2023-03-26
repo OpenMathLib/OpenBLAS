@@ -907,7 +907,7 @@ fsx_extended.f"> */
 /* > \ingroup complexHEcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int cla_herfsx_extended_(integer *prec_type__, char *uplo, 
+/* Subroutine */ void cla_herfsx_extended_(integer *prec_type__, char *uplo, 
 	integer *n, integer *nrhs, complex *a, integer *lda, complex *af, 
 	integer *ldaf, integer *ipiv, logical *colequ, real *c__, complex *b, 
 	integer *ldb, complex *y, integer *ldy, real *berr_out__, integer *
@@ -924,37 +924,38 @@ fsx_extended.f"> */
 
     /* Local variables */
     real dx_x__, dz_z__;
-    extern /* Subroutine */ int cla_lin_berr_(integer *, integer *, integer *
+    extern /* Subroutine */ void cla_lin_berr_(integer *, integer *, integer *
 	    , complex *, real *, real *);
     real ymin;
-    extern /* Subroutine */ int blas_chemv_x_(integer *, integer *, complex *
+    extern /* Subroutine */ void blas_chemv_x_(integer *, integer *, complex *
 	    , complex *, integer *, complex *, integer *, complex *, complex *
 	    , integer *, integer *);
     real dxratmax, dzratmax;
     integer y_prec_state__, uplo2, i__, j;
-    extern /* Subroutine */ int blas_chemv2_x_(integer *, integer *, complex 
+    extern /* Subroutine */ void blas_chemv2_x_(integer *, integer *, complex 
 	    *, complex *, integer *, complex *, complex *, integer *, complex 
 	    *, complex *, integer *, integer *), cla_heamv_(integer *, 
 	    integer *, real *, complex *, integer *, complex *, integer *, 
 	    real *, real *, integer *);
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int chemv_(char *, integer *, complex *, complex *
+    extern /* Subroutine */ void chemv_(char *, integer *, complex *, complex *
 	    , integer *, complex *, integer *, complex *, complex *, integer *
 	    ), ccopy_(integer *, complex *, integer *, complex *, 
 	    integer *);
     real dxrat;
     logical incr_prec__;
     real dzrat;
-    extern /* Subroutine */ int caxpy_(integer *, complex *, complex *, 
+    extern /* Subroutine */ void caxpy_(integer *, complex *, complex *, 
 	    integer *, complex *, integer *);
     logical upper;
     real normx, normy, myhugeval, prev_dz_z__, yk;
     extern real slamch_(char *);
-    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen), chetrs_(
+    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
+    extern void chetrs_(
 	    char *, integer *, integer *, complex *, integer *, integer *, 
 	    complex *, integer *, integer *);
     real final_dx_x__;
-    extern /* Subroutine */ int cla_wwaddw_(integer *, complex *, complex *, 
+    extern /* Subroutine */ void cla_wwaddw_(integer *, complex *, complex *, 
 	    complex *);
     real final_dz_z__, normdx, prevnormdx;
     integer cnt;
@@ -1021,7 +1022,7 @@ fsx_extended.f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CLA_HERFSX_EXTENDED", &i__1, (ftnlen)19);
-	return 0;
+	return;
     }
     eps = slamch_("Epsilon");
     myhugeval = slamch_("Overflow");
@@ -1255,6 +1256,6 @@ L666:
 
     }
 
-    return 0;
+    return;
 } /* cla_herfsx_extended__ */
 

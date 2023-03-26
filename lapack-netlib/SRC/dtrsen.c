@@ -825,7 +825,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int dtrsen_(char *job, char *compq, logical *select, integer 
+/* Subroutine */ void dtrsen_(char *job, char *compq, logical *select, integer 
 	*n, doublereal *t, integer *ldt, doublereal *q, integer *ldq, 
 	doublereal *wr, doublereal *wi, integer *m, doublereal *s, doublereal 
 	*sep, doublereal *work, integer *lwork, integer *iwork, integer *
@@ -847,22 +847,22 @@ f"> */
     logical wantq, wants;
     doublereal rnorm;
     integer n1, n2;
-    extern /* Subroutine */ int dlacn2_(integer *, doublereal *, doublereal *,
+    extern /* Subroutine */ void dlacn2_(integer *, doublereal *, doublereal *,
 	     integer *, doublereal *, integer *, integer *);
     integer kk;
     extern doublereal dlange_(char *, integer *, integer *, doublereal *, 
 	    integer *, doublereal *);
     integer nn, ks;
-    extern /* Subroutine */ int dlacpy_(char *, integer *, integer *, 
-	    doublereal *, integer *, doublereal *, integer *), 
-	    xerbla_(char *, integer *, ftnlen);
+    extern /* Subroutine */ void dlacpy_(char *, integer *, integer *, 
+	    doublereal *, integer *, doublereal *, integer *); 
+    extern int xerbla_(char *, integer *, ftnlen);
     logical wantbh;
-    extern /* Subroutine */ int dtrexc_(char *, integer *, doublereal *, 
+    extern /* Subroutine */ void dtrexc_(char *, integer *, doublereal *, 
 	    integer *, doublereal *, integer *, integer *, integer *, 
 	    doublereal *, integer *);
     integer liwmin;
     logical wantsp, lquery;
-    extern /* Subroutine */ int dtrsyl_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void dtrsyl_(char *, char *, integer *, integer *, 
 	    integer *, doublereal *, integer *, doublereal *, integer *, 
 	    doublereal *, integer *, doublereal *, integer *);
     doublereal est;
@@ -974,9 +974,9 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DTRSEN", &i__1, (ftnlen)6);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible. */
@@ -1113,7 +1113,7 @@ L40:
     work[1] = (doublereal) lwmin;
     iwork[1] = liwmin;
 
-    return 0;
+    return;
 
 /*     End of DTRSEN */
 

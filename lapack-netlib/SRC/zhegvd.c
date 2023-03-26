@@ -761,7 +761,7 @@ f"> */
 /* >     Mark Fahey, Department of Mathematics, Univ. of Kentucky, USA */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int zhegvd_(integer *itype, char *jobz, char *uplo, integer *
+/* Subroutine */ void zhegvd_(integer *itype, char *jobz, char *uplo, integer *
 	n, doublecomplex *a, integer *lda, doublecomplex *b, integer *ldb, 
 	doublereal *w, doublecomplex *work, integer *lwork, doublereal *rwork,
 	 integer *lrwork, integer *iwork, integer *liwork, integer *info)
@@ -779,18 +779,19 @@ f"> */
     logical upper;
     integer lropt;
     logical wantz;
-    extern /* Subroutine */ int ztrmm_(char *, char *, char *, char *, 
+    extern /* Subroutine */ void ztrmm_(char *, char *, char *, char *, 
 	    integer *, integer *, doublecomplex *, doublecomplex *, integer *,
 	     doublecomplex *, integer *), 
 	    ztrsm_(char *, char *, char *, char *, integer *, integer *, 
 	    doublecomplex *, doublecomplex *, integer *, doublecomplex *, 
-	    integer *), xerbla_(char *, 
-	    integer *, ftnlen), zheevd_(char *, char *, integer *, 
+	    integer *);
+    extern int xerbla_(char *, integer *, ftnlen);
+    extern void zheevd_(char *, char *, integer *, 
 	    doublecomplex *, integer *, doublereal *, doublecomplex *, 
 	    integer *, doublereal *, integer *, integer *, integer *, integer 
 	    *);
     integer liwmin;
-    extern /* Subroutine */ int zhegst_(integer *, char *, integer *, 
+    extern /* Subroutine */ void zhegst_(integer *, char *, integer *, 
 	    doublecomplex *, integer *, doublecomplex *, integer *, integer *);
     integer lrwmin;
     logical lquery;
@@ -874,15 +875,15 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZHEGVD", &i__1, (ftnlen)6);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /*     Form a Cholesky factorization of B. */
@@ -890,7 +891,7 @@ f"> */
     zpotrf_(uplo, n, &b[b_offset], ldb, info);
     if (*info != 0) {
 	*info = *n + *info;
-	return 0;
+	return;
     }
 
 /*     Transform problem to standard eigenvalue problem and solve. */
@@ -946,7 +947,7 @@ f"> */
     rwork[1] = (doublereal) lropt;
     iwork[1] = liopt;
 
-    return 0;
+    return;
 
 /*     End of ZHEGVD */
 

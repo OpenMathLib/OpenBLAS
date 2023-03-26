@@ -634,7 +634,7 @@ x.f"> */
 /* > \ingroup doubleSYcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int dsytri2x_(char *uplo, integer *n, doublereal *a, integer 
+/* Subroutine */ void dsytri2x_(char *uplo, integer *n, doublereal *a, integer 
 	*lda, integer *ipiv, doublereal *work, integer *nb, integer *info)
 {
     /* System generated locals */
@@ -643,17 +643,17 @@ x.f"> */
     /* Local variables */
     integer invd;
     doublereal akkp1;
-    extern /* Subroutine */ int dsyswapr_(char *, integer *, doublereal *, 
+    extern /* Subroutine */ void dsyswapr_(char *, integer *, doublereal *, 
 	    integer *, integer *, integer *);
     doublereal d__;
     integer i__, j, k;
     doublereal t;
-    extern /* Subroutine */ int dgemm_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void dgemm_(char *, char *, integer *, integer *, 
 	    integer *, doublereal *, doublereal *, integer *, doublereal *, 
 	    integer *, doublereal *, doublereal *, integer *);
     extern logical lsame_(char *, char *);
     integer iinfo;
-    extern /* Subroutine */ int dtrmm_(char *, char *, char *, char *, 
+    extern /* Subroutine */ void dtrmm_(char *, char *, char *, char *, 
 	    integer *, integer *, doublereal *, doublereal *, integer *, 
 	    doublereal *, integer *);
     integer count;
@@ -662,11 +662,12 @@ x.f"> */
     integer u11;
     doublereal u11_i_j__;
     integer ip;
-    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen), dtrtri_(
+    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
+    extern int dtrtri_(
 	    char *, char *, integer *, doublereal *, integer *, integer *);
     integer nnb, cut;
     doublereal akp1;
-    extern /* Subroutine */ int dsyconv_(char *, char *, integer *, 
+    extern /* Subroutine */ void dsyconv_(char *, char *, integer *, 
 	    doublereal *, integer *, integer *, doublereal *, integer *);
     doublereal u01_ip1_j__, u11_ip1_j__;
 
@@ -708,10 +709,10 @@ x.f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DSYTRI2X", &i__1, (ftnlen)8);
-	return 0;
+	return;
     }
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /*     Convert A */
@@ -728,7 +729,7 @@ x.f"> */
 
 	for (*info = *n; *info >= 1; --(*info)) {
 	    if (ipiv[*info] > 0 && a[*info + *info * a_dim1] == 0.) {
-		return 0;
+		return;
 	    }
 	}
     } else {
@@ -738,7 +739,7 @@ x.f"> */
 	i__1 = *n;
 	for (*info = 1; *info <= i__1; ++(*info)) {
 	    if (ipiv[*info] > 0 && a[*info + *info * a_dim1] == 0.) {
-		return 0;
+		return;
 	    }
 	}
     }
@@ -1210,7 +1211,7 @@ x.f"> */
 	}
     }
 
-    return 0;
+    return;
 
 /*     End of DSYTRI2X */
 

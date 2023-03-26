@@ -674,7 +674,7 @@ a.f"> */
 /* > \ingroup realSYsolve */
 
 /*  ===================================================================== */
-/* Subroutine */ int ssysv_aa_(char *uplo, integer *n, integer *nrhs, real *
+/* Subroutine */ void ssysv_aa_(char *uplo, integer *n, integer *nrhs, real *
 	a, integer *lda, integer *ipiv, real *b, integer *ldb, real *work, 
 	integer *lwork, integer *info)
 {
@@ -684,10 +684,11 @@ a.f"> */
     /* Local variables */
     extern logical lsame_(char *, char *);
     integer lwkopt_sytrf__, lwkopt_sytrs__;
-    extern /* Subroutine */ int ssytrf_aa_(char *, integer *, real *, 
+    extern /* Subroutine */ void ssytrf_aa_(char *, integer *, real *, 
 	    integer *, integer *, real *, integer *, integer *), 
 	    ssytrs_aa_(char *, integer *, integer *, real *, integer *, 
-	    integer *, real *, integer *, real *, integer *, integer *), xerbla_(char *, integer *, ftnlen);
+	    integer *, real *, integer *, real *, integer *, integer *);
+    extern int xerbla_(char *, integer *, ftnlen);
     integer lwkopt;
     logical lquery;
 
@@ -748,9 +749,9 @@ a.f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("SSYSV_AA", &i__1, (ftnlen)8);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Compute the factorization A = U**T*T*U or A = L*T*L**T. */
@@ -767,7 +768,7 @@ a.f"> */
 
     work[1] = (real) lwkopt;
 
-    return 0;
+    return;
 
 /*     End of SSYSV_AA */
 

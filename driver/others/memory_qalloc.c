@@ -283,6 +283,7 @@ The numbers of threads in the thread pool.
 This value is equal or large than blas_cpu_number. This means some threads are sleep.
 */
 int blas_num_threads = 0;
+int blas_num_threads_set = 0;
 
 int  goto_get_num_procs  (void) {
   return blas_cpu_number;

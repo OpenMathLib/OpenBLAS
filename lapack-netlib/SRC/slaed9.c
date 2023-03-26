@@ -669,7 +669,7 @@ f"> */
 /* > at Berkeley, USA */
 
 /*  ===================================================================== */
-/* Subroutine */ int slaed9_(integer *k, integer *kstart, integer *kstop, 
+/* Subroutine */ void slaed9_(integer *k, integer *kstart, integer *kstop, 
 	integer *n, real *d__, real *q, integer *ldq, real *rho, real *dlamda,
 	 real *w, real *s, integer *lds, integer *info)
 {
@@ -681,7 +681,7 @@ f"> */
     real temp;
     extern real snrm2_(integer *, real *, integer *);
     integer i__, j;
-    extern /* Subroutine */ int scopy_(integer *, real *, integer *, real *, 
+    extern /* Subroutine */ void scopy_(integer *, real *, integer *, real *, 
 	    integer *), slaed4_(integer *, integer *, real *, real *, real *, 
 	    real *, real *, integer *);
     extern real slamc3_(real *, real *);
@@ -729,13 +729,13 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("SLAED9", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*k == 0) {
-	return 0;
+	return;
     }
 
 /*     Modify values DLAMDA(i) to make sure all DLAMDA(i)-DLAMDA(j) can */
@@ -835,7 +835,7 @@ f"> */
     }
 
 L120:
-    return 0;
+    return;
 
 /*     End of SLAED9 */
 

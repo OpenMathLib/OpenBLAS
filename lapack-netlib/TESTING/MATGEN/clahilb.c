@@ -645,7 +645,7 @@ static complex c_b6 = {0.f,0.f};
 /* > \ingroup complex_matgen */
 
 /*  ===================================================================== */
-/* Subroutine */ int clahilb_(integer *n, integer *nrhs, complex *a, integer *
+/* Subroutine */ void clahilb_(integer *n, integer *nrhs, complex *a, integer *
 	lda, complex *x, integer *ldx, complex *b, integer *ldb, real *work, 
 	integer *info, char *path)
 {
@@ -670,9 +670,9 @@ static complex c_b6 = {0.f,0.f};
     integer i__, j, m, r__;
     char c2[2];
     integer ti, tm;
-    extern /* Subroutine */ int claset_(char *, integer *, integer *, complex 
-	    *, complex *, complex *, integer *), xerbla_(char *, 
-	    integer *);
+    extern /* Subroutine */ void claset_(char *, integer *, integer *, complex 
+	    *, complex *, complex *, integer *);
+    extern int xerbla_(char *, integer *, ftnlen);
     extern logical lsamen_(integer *, char *, char *);
     complex tmp;
 
@@ -722,8 +722,8 @@ static complex c_b6 = {0.f,0.f};
     }
     if (*info < 0) {
 	i__1 = -(*info);
-	xerbla_("CLAHILB", &i__1);
-	return 0;
+	xerbla_("CLAHILB", &i__1, 7);
+	return;
     }
     if (*n > 6) {
 	*info = 1;
@@ -830,6 +830,6 @@ static complex c_b6 = {0.f,0.f};
 	    }
 	}
     }
-    return 0;
+    return;
 } /* clahilb_ */
 

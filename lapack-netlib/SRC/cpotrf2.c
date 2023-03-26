@@ -618,7 +618,7 @@ static real c_b12 = 1.f;
 /* > \ingroup complexPOcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int cpotrf2_(char *uplo, integer *n, complex *a, integer *
+/* Subroutine */ void cpotrf2_(char *uplo, integer *n, complex *a, integer *
 	lda, integer *info)
 {
     /* System generated locals */
@@ -626,11 +626,11 @@ static real c_b12 = 1.f;
     real r__1;
 
     /* Local variables */
-    extern /* Subroutine */ int cherk_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void cherk_(char *, char *, integer *, integer *, 
 	    real *, complex *, integer *, real *, complex *, integer *);
     extern logical lsame_(char *, char *);
     integer iinfo;
-    extern /* Subroutine */ int ctrsm_(char *, char *, char *, char *, 
+    extern /* Subroutine */ void ctrsm_(char *, char *, char *, char *, 
 	    integer *, integer *, complex *, complex *, integer *, complex *, 
 	    integer *);
     logical upper;
@@ -669,13 +669,13 @@ static real c_b12 = 1.f;
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CPOTRF2", &i__1, (ftnlen)7);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /*     N=1 case */
@@ -688,7 +688,7 @@ static real c_b12 = 1.f;
 	ajj = a[i__1].r;
 	if (ajj <= 0.f || sisnan_(&ajj)) {
 	    *info = 1;
-	    return 0;
+	    return;
 	}
 
 /*        Factor */
@@ -708,7 +708,7 @@ static real c_b12 = 1.f;
 	cpotrf2_(uplo, &n1, &a[a_dim1 + 1], lda, &iinfo);
 	if (iinfo != 0) {
 	    *info = iinfo;
-	    return 0;
+	    return;
 	}
 
 /*        Compute the Cholesky factorization A = U**H*U */
@@ -729,7 +729,7 @@ static real c_b12 = 1.f;
 
 	    if (iinfo != 0) {
 		*info = iinfo + n1;
-		return 0;
+		return;
 	    }
 
 /*        Compute the Cholesky factorization A = L*L**H */
@@ -750,12 +750,12 @@ static real c_b12 = 1.f;
 
 	    if (iinfo != 0) {
 		*info = iinfo + n1;
-		return 0;
+		return;
 	    }
 
 	}
     }
-    return 0;
+    return;
 
 /*     End of CPOTRF2 */
 

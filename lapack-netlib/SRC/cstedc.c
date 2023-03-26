@@ -729,7 +729,7 @@ f"> */
 /* > at Berkeley, USA */
 
 /*  ===================================================================== */
-/* Subroutine */ int cstedc_(char *compz, integer *n, real *d__, real *e, 
+/* Subroutine */ void cstedc_(char *compz, integer *n, real *d__, real *e, 
 	complex *z__, integer *ldz, complex *work, integer *lwork, real *
 	rwork, integer *lrwork, integer *iwork, integer *liwork, integer *
 	info)
@@ -743,36 +743,36 @@ f"> */
     integer i__, j, k, m;
     real p;
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int cswap_(integer *, complex *, integer *, 
+    extern /* Subroutine */ void cswap_(integer *, complex *, integer *, 
 	    complex *, integer *);
     integer lwmin;
-    extern /* Subroutine */ int claed0_(integer *, integer *, real *, real *, 
+    extern /* Subroutine */ void claed0_(integer *, integer *, real *, real *, 
 	    complex *, integer *, complex *, integer *, real *, integer *, 
 	    integer *);
     integer start, ii, ll;
-    extern /* Subroutine */ int clacrm_(integer *, integer *, complex *, 
+    extern /* Subroutine */ void clacrm_(integer *, integer *, complex *, 
 	    integer *, real *, integer *, complex *, integer *, real *);
     extern real slamch_(char *);
-    extern /* Subroutine */ int clacpy_(char *, integer *, integer *, complex 
-	    *, integer *, complex *, integer *), xerbla_(char *, 
-	    integer *, ftnlen);
+    extern /* Subroutine */ void clacpy_(char *, integer *, integer *, complex 
+	    *, integer *, complex *, integer *);
+    extern int xerbla_(char *, integer *, ftnlen);
     extern integer ilaenv_(integer *, char *, char *, integer *, integer *, 
 	    integer *, integer *, ftnlen, ftnlen);
     integer finish;
-    extern /* Subroutine */ int slascl_(char *, integer *, integer *, real *, 
+    extern /* Subroutine */ void slascl_(char *, integer *, integer *, real *, 
 	    real *, integer *, integer *, real *, integer *, integer *), sstedc_(char *, integer *, real *, real *, real *, 
 	    integer *, real *, integer *, integer *, integer *, integer *), slaset_(char *, integer *, integer *, real *, real *, 
 	    real *, integer *);
     integer liwmin, icompz;
-    extern /* Subroutine */ int csteqr_(char *, integer *, real *, real *, 
+    extern /* Subroutine */ void csteqr_(char *, integer *, real *, real *, 
 	    complex *, integer *, real *, integer *);
     real orgnrm;
     extern real slanst_(char *, integer *, real *, real *);
-    extern /* Subroutine */ int ssterf_(integer *, real *, real *, integer *);
+    extern /* Subroutine */ void ssterf_(integer *, real *, real *, integer *);
     integer lrwmin;
     logical lquery;
     integer smlsiz;
-    extern /* Subroutine */ int ssteqr_(char *, integer *, real *, real *, 
+    extern /* Subroutine */ void ssteqr_(char *, integer *, real *, real *, 
 	    real *, integer *, real *, integer *);
     integer lgn;
     real eps;
@@ -836,10 +836,10 @@ f"> */
 	    lrwmin = *n - 1 << 1;
 	} else if (icompz == 1) {
 	    lgn = (integer) (log((real) (*n)) / log(2.f));
-	    if (pow_ii(&c__2, &lgn) < *n) {
+	    if (pow_ii(c__2, lgn) < *n) {
 		++lgn;
 	    }
-	    if (pow_ii(&c__2, &lgn) < *n) {
+	    if (pow_ii(c__2, lgn) < *n) {
 		++lgn;
 	    }
 	    lwmin = *n * *n;
@@ -870,22 +870,22 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CSTEDC", &i__1, (ftnlen)6);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
     if (*n == 1) {
 	if (icompz != 0) {
 	    i__1 = z_dim1 + 1;
 	    z__[i__1].r = 1.f, z__[i__1].i = 0.f;
 	}
-	return 0;
+	return;
     }
 
 /*     If the following conditional clause is removed, then the routine */
@@ -1050,7 +1050,7 @@ L70:
     rwork[1] = (real) lrwmin;
     iwork[1] = liwmin;
 
-    return 0;
+    return;
 
 /*     End of CSTEDC */
 

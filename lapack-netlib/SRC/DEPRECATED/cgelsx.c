@@ -700,7 +700,7 @@ f"> */
 /* > \ingroup complexGEsolve */
 
 /*  ===================================================================== */
-/* Subroutine */ int cgelsx_(integer *m, integer *n, integer *nrhs, complex *
+/* Subroutine */ void cgelsx_(integer *m, integer *n, integer *nrhs, complex *
 	a, integer *lda, complex *b, integer *ldb, integer *jpvt, real *rcond,
 	 integer *rank, complex *work, real *rwork, integer *info)
 {
@@ -712,31 +712,31 @@ f"> */
     real anrm, bnrm, smin, smax;
     integer i__, j, k, iascl, ibscl, ismin, ismax;
     complex c1, c2;
-    extern /* Subroutine */ int ctrsm_(char *, char *, char *, char *, 
+    extern /* Subroutine */ void ctrsm_(char *, char *, char *, char *, 
 	    integer *, integer *, complex *, complex *, integer *, complex *, 
 	    integer *), claic1_(integer *, 
 	    integer *, complex *, real *, complex *, complex *, real *, 
 	    complex *, complex *);
     complex s1, s2, t1, t2;
-    extern /* Subroutine */ int cunm2r_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void cunm2r_(char *, char *, integer *, integer *, 
 	    integer *, complex *, integer *, complex *, complex *, integer *, 
 	    complex *, integer *), slabad_(real *, real *);
     extern real clange_(char *, integer *, integer *, complex *, integer *, 
 	    real *);
     integer mn;
-    extern /* Subroutine */ int clascl_(char *, integer *, integer *, real *, 
+    extern /* Subroutine */ void clascl_(char *, integer *, integer *, real *, 
 	    real *, integer *, integer *, complex *, integer *, integer *), cgeqpf_(integer *, integer *, complex *, integer *, 
 	    integer *, complex *, complex *, real *, integer *);
     extern real slamch_(char *);
-    extern /* Subroutine */ int claset_(char *, integer *, integer *, complex 
-	    *, complex *, complex *, integer *), xerbla_(char *, 
-	    integer *);
+    extern /* Subroutine */ void claset_(char *, integer *, integer *, complex 
+	    *, complex *, complex *, integer *);
+    extern int xerbla_(char *, integer *, ftnlen);
     real bignum;
-    extern /* Subroutine */ int clatzm_(char *, integer *, integer *, complex 
+    extern /* Subroutine */ void clatzm_(char *, integer *, integer *, complex 
 	    *, integer *, complex *, complex *, complex *, integer *, complex 
 	    *);
     real sminpr;
-    extern /* Subroutine */ int ctzrqf_(integer *, integer *, complex *, 
+    extern /* Subroutine */ void ctzrqf_(integer *, integer *, complex *, 
 	    integer *, complex *, integer *);
     real smaxpr, smlnum;
 
@@ -787,8 +787,8 @@ f"> */
 
     if (*info != 0) {
 	i__1 = -(*info);
-	xerbla_("CGELSX", &i__1);
-	return 0;
+	xerbla_("CGELSX", &i__1, 6);
+	return;
     }
 
 /*     Quick return if possible */
@@ -797,7 +797,7 @@ f"> */
     i__1 = f2cmin(*m,*n);
     if (f2cmin(i__1,*nrhs) == 0) {
 	*rank = 0;
-	return 0;
+	return;
     }
 
 /*     Get machine parameters */
@@ -1029,7 +1029,7 @@ L70:
 
 L100:
 
-    return 0;
+    return;
 
 /*     End of CGELSX */
 

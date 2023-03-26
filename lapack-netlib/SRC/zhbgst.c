@@ -679,7 +679,7 @@ f"> */
 /* > \ingroup complex16OTHERcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int zhbgst_(char *vect, char *uplo, integer *n, integer *ka, 
+/* Subroutine */ void zhbgst_(char *vect, char *uplo, integer *n, integer *ka, 
 	integer *kb, doublecomplex *ab, integer *ldab, doublecomplex *bb, 
 	integer *ldbb, doublecomplex *x, integer *ldx, doublecomplex *work, 
 	doublereal *rwork, integer *info)
@@ -692,40 +692,41 @@ f"> */
 
     /* Local variables */
     integer inca;
-    extern /* Subroutine */ int zrot_(integer *, doublecomplex *, integer *, 
+    extern /* Subroutine */ void zrot_(integer *, doublecomplex *, integer *, 
 	    doublecomplex *, integer *, doublereal *, doublecomplex *);
     integer i__, j, k, l, m;
     doublecomplex t;
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int zgerc_(integer *, integer *, doublecomplex *, 
+    extern /* Subroutine */ void zgerc_(integer *, integer *, doublecomplex *, 
 	    doublecomplex *, integer *, doublecomplex *, integer *, 
 	    doublecomplex *, integer *);
     integer i0, i1;
     logical upper;
     integer i2, j1, j2;
-    extern /* Subroutine */ int zgeru_(integer *, integer *, doublecomplex *, 
+    extern /* Subroutine */ void zgeru_(integer *, integer *, doublecomplex *, 
 	    doublecomplex *, integer *, doublecomplex *, integer *, 
 	    doublecomplex *, integer *);
     logical wantx;
-    extern /* Subroutine */ int zlar2v_(integer *, doublecomplex *, 
+    extern /* Subroutine */ void zlar2v_(integer *, doublecomplex *, 
 	    doublecomplex *, doublecomplex *, integer *, doublereal *, 
 	    doublecomplex *, integer *);
     doublecomplex ra;
     integer nr, nx;
-    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen), zdscal_(
+    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
+    extern void zdscal_(
 	    integer *, doublereal *, doublecomplex *, integer *);
     logical update;
-    extern /* Subroutine */ int zlacgv_(integer *, doublecomplex *, integer *)
+    extern /* Subroutine */ void zlacgv_(integer *, doublecomplex *, integer *)
 	    ;
     integer ka1, kb1;
-    extern /* Subroutine */ int zlaset_(char *, integer *, integer *, 
+    extern /* Subroutine */ void zlaset_(char *, integer *, integer *, 
 	    doublecomplex *, doublecomplex *, doublecomplex *, integer *), zlartg_(doublecomplex *, doublecomplex *, doublereal *, 
 	    doublecomplex *, doublecomplex *);
     doublecomplex ra1;
-    extern /* Subroutine */ int zlargv_(integer *, doublecomplex *, integer *,
+    extern /* Subroutine */ void zlargv_(integer *, doublecomplex *, integer *,
 	     doublecomplex *, integer *, doublereal *, integer *);
     integer j1t, j2t;
-    extern /* Subroutine */ int zlartv_(integer *, doublecomplex *, integer *,
+    extern /* Subroutine */ void zlartv_(integer *, doublecomplex *, integer *,
 	     doublecomplex *, integer *, doublereal *, doublecomplex *, 
 	    integer *);
     doublereal bii;
@@ -782,13 +783,13 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZHBGST", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
     inca = *ldab * ka1;
@@ -1818,14 +1819,14 @@ L490:
 	    --i__;
 	    i0 = m + 1;
 	    if (*ka == 0) {
-		return 0;
+		return;
 	    }
 	    goto L490;
 	}
     } else {
 	i__ -= *ka;
 	if (i__ < 2) {
-	    return 0;
+	    return;
 	}
     }
 

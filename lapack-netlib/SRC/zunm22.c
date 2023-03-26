@@ -674,7 +674,7 @@ f"> */
 /* > \ingroup complexOTHERcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int zunm22_(char *side, char *trans, integer *m, integer *n, 
+/* Subroutine */ void zunm22_(char *side, char *trans, integer *m, integer *n, 
 	integer *n1, integer *n2, doublecomplex *q, integer *ldq, 
 	doublecomplex *c__, integer *ldc, doublecomplex *work, integer *lwork,
 	 integer *info)
@@ -687,7 +687,7 @@ f"> */
     logical left;
     integer i__;
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int zgemm_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void zgemm_(char *, char *, integer *, integer *, 
 	    integer *, doublecomplex *, doublecomplex *, integer *, 
 	    doublecomplex *, integer *, doublecomplex *, doublecomplex *, 
 	    integer *), ztrmm_(char *, char *, char *, char *,
@@ -697,7 +697,7 @@ f"> */
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     logical notran;
     integer ldwork;
-    extern /* Subroutine */ int zlacpy_(char *, integer *, integer *, 
+    extern /* Subroutine */ void zlacpy_(char *, integer *, integer *, 
 	    doublecomplex *, integer *, doublecomplex *, integer *);
     integer lwkopt;
     logical lquery;
@@ -774,16 +774,16 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZUNM22", &i__1, (ftnlen)6);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*m == 0 || *n == 0) {
 	work[1].r = 1., work[1].i = 0.;
-	return 0;
+	return;
     }
 
 /*     Degenerate cases (N1 = 0 or N2 = 0) are handled using ZTRMM. */
@@ -792,12 +792,12 @@ f"> */
 	ztrmm_(side, "Upper", trans, "Non-Unit", m, n, &c_b1, &q[q_offset], 
 		ldq, &c__[c_offset], ldc);
 	work[1].r = 1., work[1].i = 0.;
-	return 0;
+	return;
     } else if (*n2 == 0) {
 	ztrmm_(side, "Lower", trans, "Non-Unit", m, n, &c_b1, &q[q_offset], 
 		ldq, &c__[c_offset], ldc);
 	work[1].r = 1., work[1].i = 0.;
-	return 0;
+	return;
     }
 
 /*     Compute the largest chunk size available from the workspace. */
@@ -982,7 +982,7 @@ f"> */
 
     z__1.r = (doublereal) lwkopt, z__1.i = 0.;
     work[1].r = z__1.r, work[1].i = z__1.i;
-    return 0;
+    return;
 
 /*     End of ZUNM22 */
 

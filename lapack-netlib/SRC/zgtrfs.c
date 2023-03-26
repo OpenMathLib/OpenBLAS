@@ -724,7 +724,7 @@ f"> */
 /* > \ingroup complex16GTcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int zgtrfs_(char *trans, integer *n, integer *nrhs, 
+/* Subroutine */ void zgtrfs_(char *trans, integer *n, integer *nrhs, 
 	doublecomplex *dl, doublecomplex *d__, doublecomplex *du, 
 	doublecomplex *dlf, doublecomplex *df, doublecomplex *duf, 
 	doublecomplex *du2, integer *ipiv, doublecomplex *b, integer *ldb, 
@@ -745,7 +745,7 @@ f"> */
     doublereal s;
     extern logical lsame_(char *, char *);
     integer isave[3], count;
-    extern /* Subroutine */ int zcopy_(integer *, doublecomplex *, integer *, 
+    extern /* Subroutine */ void zcopy_(integer *, doublecomplex *, integer *, 
 	    doublecomplex *, integer *), zaxpy_(integer *, doublecomplex *, 
 	    doublecomplex *, integer *, doublecomplex *, integer *), zlacn2_(
 	    integer *, doublecomplex *, doublecomplex *, doublereal *, 
@@ -753,14 +753,15 @@ f"> */
     extern doublereal dlamch_(char *);
     integer nz;
     doublereal safmin;
-    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen), zlagtm_(
+    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
+    extern void zlagtm_(
 	    char *, integer *, integer *, doublereal *, doublecomplex *, 
 	    doublecomplex *, doublecomplex *, doublecomplex *, integer *, 
 	    doublereal *, doublecomplex *, integer *);
     logical notran;
     char transn[1], transt[1];
     doublereal lstres;
-    extern /* Subroutine */ int zgttrs_(char *, integer *, integer *, 
+    extern /* Subroutine */ void zgttrs_(char *, integer *, integer *, 
 	    doublecomplex *, doublecomplex *, doublecomplex *, doublecomplex *
 	    , integer *, doublecomplex *, integer *, integer *);
     doublereal eps;
@@ -815,7 +816,7 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZGTRFS", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
@@ -827,7 +828,7 @@ f"> */
 	    berr[j] = 0.;
 /* L10: */
 	}
-	return 0;
+	return;
     }
 
     if (notran) {
@@ -1132,7 +1133,7 @@ L70:
 /* L110: */
     }
 
-    return 0;
+    return;
 
 /*     End of ZGTRFS */
 

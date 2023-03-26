@@ -826,7 +826,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int ctgsna_(char *job, char *howmny, logical *select, 
+/* Subroutine */ void ctgsna_(char *job, char *howmny, logical *select, 
 	integer *n, complex *a, integer *lda, complex *b, integer *ldb, 
 	complex *vl, integer *ldvl, complex *vr, integer *ldvr, real *s, real 
 	*dif, integer *mm, integer *m, complex *work, integer *lwork, integer 
@@ -850,7 +850,7 @@ f"> */
     extern /* Complex */ VOID cdotc_(complex *, integer *, complex *, integer 
 	    *, complex *, integer *);
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int cgemv_(char *, integer *, integer *, complex *
+    extern /* Subroutine */ void cgemv_(char *, integer *, integer *, complex *
 	    , complex *, integer *, complex *, integer *, complex *, complex *
 	    , integer *);
     integer lwmin;
@@ -860,17 +860,18 @@ f"> */
     extern real scnrm2_(integer *, complex *, integer *), slapy2_(real *, 
 	    real *);
     complex dummy1[1];
-    extern /* Subroutine */ int slabad_(real *, real *);
+    extern /* Subroutine */ void slabad_(real *, real *);
     integer ks;
     extern real slamch_(char *);
-    extern /* Subroutine */ int clacpy_(char *, integer *, integer *, complex 
+    extern /* Subroutine */ void clacpy_(char *, integer *, integer *, complex 
 	    *, integer *, complex *, integer *), ctgexc_(logical *, 
 	    logical *, integer *, complex *, integer *, complex *, integer *, 
 	    complex *, integer *, complex *, integer *, integer *, integer *, 
-	    integer *), xerbla_(char *, integer *, ftnlen);
+	    integer *);
+    extern int xerbla_(char *, integer *, ftnlen);
     real bignum;
     logical wantbh, wantdf, somcon;
-    extern /* Subroutine */ int ctgsyl_(char *, integer *, integer *, integer 
+    extern /* Subroutine */ void ctgsyl_(char *, integer *, integer *, integer 
 	    *, complex *, integer *, complex *, integer *, complex *, integer 
 	    *, complex *, integer *, complex *, integer *, complex *, integer 
 	    *, real *, real *, complex *, integer *, integer *, integer *);
@@ -971,15 +972,15 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CTGSNA", &i__1, (ftnlen)6);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /*     Get machine constants */
@@ -1079,7 +1080,7 @@ L20:
 	;
     }
     work[1].r = (real) lwmin, work[1].i = 0.f;
-    return 0;
+    return;
 
 /*     End of CTGSNA */
 

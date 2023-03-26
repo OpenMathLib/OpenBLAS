@@ -32,9 +32,16 @@
 
 #include "lapacke_utils.h"
 
+#ifdef __EMSCRIPTEN__
+lapack_logical LAPACKE_lsame( char ca,  char cb )
+{
+    return (lapack_logical) LAPACK_lsame( &ca, &cb );
+}
+#else
 lapack_logical LAPACKE_lsame( char ca,  char cb )
 {
     return (lapack_logical) LAPACK_lsame( &ca, &cb, 1, 1 );
 }
+#endif
 
 

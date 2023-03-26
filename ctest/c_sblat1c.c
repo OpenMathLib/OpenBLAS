@@ -969,7 +969,7 @@ real *sfac;
 	    1.17 };
 
     /* Local variables */
-    extern /* Subroutine */ srottest_();
+    extern /* Subroutine */ void srottest_();
     static integer i__, k, ksize;
     extern /* Subroutine */ int stest_(), srotmtest_();
     static integer ki, kn;

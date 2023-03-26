@@ -682,7 +682,7 @@ f"> */
 /* > at Berkeley, USA */
 
 /*  ===================================================================== */
-/* Subroutine */ int dlaeda_(integer *n, integer *tlvls, integer *curlvl, 
+/* Subroutine */ void dlaeda_(integer *n, integer *tlvls, integer *curlvl, 
 	integer *curpbm, integer *prmptr, integer *perm, integer *givptr, 
 	integer *givcol, doublereal *givnum, doublereal *q, integer *qptr, 
 	doublereal *z__, doublereal *ztemp, integer *info)
@@ -691,14 +691,14 @@ f"> */
     integer i__1, i__2, i__3;
 
     /* Local variables */
-    extern /* Subroutine */ int drot_(integer *, doublereal *, integer *, 
+    extern /* Subroutine */ void drot_(integer *, doublereal *, integer *, 
 	    doublereal *, integer *, doublereal *, doublereal *);
     integer curr, bsiz1, bsiz2, psiz1, psiz2, i__, k, zptr1;
-    extern /* Subroutine */ int dgemv_(char *, integer *, integer *, 
+    extern /* Subroutine */ void dgemv_(char *, integer *, integer *, 
 	    doublereal *, doublereal *, integer *, doublereal *, integer *, 
 	    doublereal *, doublereal *, integer *), dcopy_(integer *, 
-	    doublereal *, integer *, doublereal *, integer *), xerbla_(char *,
-	     integer *, ftnlen);
+	    doublereal *, integer *, doublereal *, integer *);
+    extern int xerbla_(char *, integer *, ftnlen);
     integer mid, ptr;
 
 
@@ -733,13 +733,13 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DLAEDA", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /*     Determine location of first number in second half. */
@@ -754,7 +754,7 @@ f"> */
 /*     scheme */
 
     i__1 = *curlvl - 1;
-    curr = ptr + *curpbm * pow_ii(&c__2, curlvl) + pow_ii(&c__2, &i__1) - 1;
+    curr = ptr + *curpbm * pow_ii(c__2, *curlvl) + pow_ii(c__2, i__1) - 1;
 
 /*     Determine size of these matrices.  We add HALF to the value of */
 /*     the SQRT in case the machine underestimates one of these square */
@@ -781,12 +781,12 @@ f"> */
 /*     rotations and permutation and then multiplying the center matrices */
 /*     against the current Z. */
 
-    ptr = pow_ii(&c__2, tlvls) + 1;
+    ptr = pow_ii(c__2, *tlvls) + 1;
     i__1 = *curlvl - 1;
     for (k = 1; k <= i__1; ++k) {
 	i__2 = *curlvl - k;
 	i__3 = *curlvl - k - 1;
-	curr = ptr + *curpbm * pow_ii(&c__2, &i__2) + pow_ii(&c__2, &i__3) - 
+	curr = ptr + *curpbm * pow_ii(c__2, i__2) + pow_ii(c__2, i__3) - 
 		1;
 	psiz1 = prmptr[curr + 1] - prmptr[curr];
 	psiz2 = prmptr[curr + 2] - prmptr[curr + 1];
@@ -847,11 +847,11 @@ f"> */
 		c__1);
 
 	i__2 = *tlvls - k;
-	ptr += pow_ii(&c__2, &i__2);
+	ptr += pow_ii(c__2, i__2);
 /* L70: */
     }
 
-    return 0;
+    return;
 
 /*     End of DLAEDA */
 

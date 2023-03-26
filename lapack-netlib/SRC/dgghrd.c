@@ -721,7 +721,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int dgghrd_(char *compq, char *compz, integer *n, integer *
+/* Subroutine */ void dgghrd_(char *compq, char *compz, integer *n, integer *
 	ilo, integer *ihi, doublereal *a, integer *lda, doublereal *b, 
 	integer *ldb, doublereal *q, integer *ldq, doublereal *z__, integer *
 	ldz, integer *info)
@@ -733,15 +733,16 @@ f"> */
     /* Local variables */
     integer jcol;
     doublereal temp;
-    extern /* Subroutine */ int drot_(integer *, doublereal *, integer *, 
+    extern /* Subroutine */ void drot_(integer *, doublereal *, integer *, 
 	    doublereal *, integer *, doublereal *, doublereal *);
     integer jrow;
     doublereal c__, s;
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int dlaset_(char *, integer *, integer *, 
+    extern /* Subroutine */ void dlaset_(char *, integer *, integer *, 
 	    doublereal *, doublereal *, doublereal *, integer *), 
 	    dlartg_(doublereal *, doublereal *, doublereal *, doublereal *, 
-	    doublereal *), xerbla_(char *, integer *, ftnlen);
+	    doublereal *);
+    extern int xerbla_(char *, integer *, ftnlen);
     integer icompq, icompz;
     logical ilq, ilz;
 
@@ -825,7 +826,7 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DGGHRD", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Initialize Q and Z if desired. */
@@ -840,7 +841,7 @@ f"> */
 /*     Quick return if possible */
 
     if (*n <= 1) {
-	return 0;
+	return;
     }
 
 /*     Zero out lower triangle of B */
@@ -900,7 +901,7 @@ f"> */
 /* L40: */
     }
 
-    return 0;
+    return;
 
 /*     End of DGGHRD */
 

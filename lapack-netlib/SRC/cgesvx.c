@@ -857,7 +857,7 @@ f"> */
 /* > \ingroup complexGEsolve */
 
 /*  ===================================================================== */
-/* Subroutine */ int cgesvx_(char *fact, char *trans, integer *n, integer *
+/* Subroutine */ void cgesvx_(char *fact, char *trans, integer *n, integer *
 	nrhs, complex *a, integer *lda, complex *af, integer *ldaf, integer *
 	ipiv, char *equed, real *r__, real *c__, complex *b, integer *ldb, 
 	complex *x, integer *ldx, real *rcond, real *ferr, real *berr, 
@@ -878,22 +878,24 @@ f"> */
     logical equil;
     extern real clange_(char *, integer *, integer *, complex *, integer *, 
 	    real *);
-    extern /* Subroutine */ int claqge_(integer *, integer *, complex *, 
+    extern /* Subroutine */ void claqge_(integer *, integer *, complex *, 
 	    integer *, real *, real *, real *, real *, real *, char *)
 	    , cgecon_(char *, integer *, complex *, integer *, real *, real *,
 	     complex *, real *, integer *);
     real colcnd;
     extern real slamch_(char *);
-    extern /* Subroutine */ int cgeequ_(integer *, integer *, complex *, 
+    extern /* Subroutine */ void cgeequ_(integer *, integer *, complex *, 
 	    integer *, real *, real *, real *, real *, real *, integer *);
     logical nofact;
-    extern /* Subroutine */ int cgerfs_(char *, integer *, integer *, complex 
+    extern /* Subroutine */ void cgerfs_(char *, integer *, integer *, complex 
 	    *, integer *, complex *, integer *, integer *, complex *, integer 
 	    *, complex *, integer *, real *, real *, complex *, real *, 
-	    integer *), cgetrf_(integer *, integer *, complex *, 
-	    integer *, integer *, integer *), clacpy_(char *, integer *, 
-	    integer *, complex *, integer *, complex *, integer *), 
-	    xerbla_(char *, integer *, ftnlen);
+	    integer *);
+    extern int cgetrf_(integer *, integer *, complex *, 
+	    integer *, integer *, integer *);
+    extern void clacpy_(char *, integer *, 
+	    integer *, complex *, integer *, complex *, integer *); 
+    extern int xerbla_(char *, integer *, ftnlen);
     real bignum;
     extern real clantr_(char *, char *, char *, integer *, integer *, complex 
 	    *, integer *, real *);
@@ -1029,7 +1031,7 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CGESVX", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
     if (equil) {
@@ -1110,7 +1112,7 @@ f"> */
 	    }
 	    rwork[1] = rpvgrw;
 	    *rcond = 0.f;
-	    return 0;
+	    return;
 	}
     }
 
@@ -1203,7 +1205,7 @@ f"> */
     }
 
     rwork[1] = rpvgrw;
-    return 0;
+    return;
 
 /*     End of CGESVX */
 

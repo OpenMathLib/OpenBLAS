@@ -640,7 +640,7 @@ f"> */
 /* > \ingroup realOTHERcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int sorghr_(integer *n, integer *ilo, integer *ihi, real *a, 
+/* Subroutine */ void sorghr_(integer *n, integer *ilo, integer *ihi, real *a, 
 	integer *lda, real *tau, real *work, integer *lwork, integer *info)
 {
     /* System generated locals */
@@ -651,7 +651,7 @@ f"> */
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     extern integer ilaenv_(integer *, char *, char *, integer *, integer *, 
 	    integer *, integer *, ftnlen, ftnlen);
-    extern /* Subroutine */ int sorgqr_(integer *, integer *, integer *, real 
+    extern /* Subroutine */ void sorgqr_(integer *, integer *, integer *, real 
 	    *, integer *, real *, real *, integer *, integer *);
     integer lwkopt;
     logical lquery;
@@ -701,16 +701,16 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("SORGHR", &i__1, (ftnlen)6);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
 	work[1] = 1.f;
-	return 0;
+	return;
     }
 
 /*     Shift the vectors which define the elementary reflectors one */
@@ -765,7 +765,7 @@ f"> */
 		ilo], &work[1], lwork, &iinfo);
     }
     work[1] = (real) lwkopt;
-    return 0;
+    return;
 
 /*     End of SORGHR */
 

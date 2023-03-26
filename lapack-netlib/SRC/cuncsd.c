@@ -829,7 +829,7 @@ f"> */
 /* > \ingroup complexOTHERcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int cuncsd_(char *jobu1, char *jobu2, char *jobv1t, char *
+/* Subroutine */ void cuncsd_(char *jobu1, char *jobu2, char *jobv1t, char *
 	jobv2t, char *trans, char *signs, integer *m, integer *p, integer *q, 
 	complex *x11, integer *ldx11, complex *x12, integer *ldx12, complex *
 	x21, integer *ldx21, complex *x22, integer *ldx22, real *theta, 
@@ -853,27 +853,28 @@ f"> */
     integer childinfo, p1, q1, lbbcsdworkmin, itaup1, itaup2, itauq1, itauq2, 
 	    lorbdbworkmin, lrworkmin, lbbcsdworkopt;
     logical wantu1, wantu2;
-    extern /* Subroutine */ int cbbcsd_(char *, char *, char *, char *, char *
+    extern /* Subroutine */ void cbbcsd_(char *, char *, char *, char *, char *
 	    , integer *, integer *, integer *, real *, real *, complex *, 
 	    integer *, complex *, integer *, complex *, integer *, complex *, 
 	    integer *, real *, real *, real *, real *, real *, real *, real *,
 	     real *, real *, integer *, integer *);
     integer lrworkopt, ibbcsd, lorbdbworkopt;
-    extern /* Subroutine */ int cunbdb_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void cunbdb_(char *, char *, integer *, integer *, 
 	    integer *, complex *, integer *, complex *, integer *, complex *, 
 	    integer *, complex *, integer *, real *, real *, complex *, 
 	    complex *, complex *, complex *, complex *, integer *, integer *);
     integer iorbdb, lorglqworkmin, lorgqrworkmin;
-    extern /* Subroutine */ int clacpy_(char *, integer *, integer *, complex 
-	    *, integer *, complex *, integer *), xerbla_(char *, 
-	    integer *, ftnlen), clapmr_(logical *, integer *, integer *, 
+    extern /* Subroutine */ void clacpy_(char *, integer *, integer *, complex 
+	    *, integer *, complex *, integer *);
+    extern int xerbla_(char *, integer *, ftnlen);
+    extern void clapmr_(logical *, integer *, integer *, 
 	    complex *, integer *, integer *), clapmt_(logical *, integer *, 
 	    integer *, complex *, integer *, integer *);
     integer lorglqworkopt;
-    extern /* Subroutine */ int cunglq_(integer *, integer *, integer *, 
+    extern /* Subroutine */ void cunglq_(integer *, integer *, integer *, 
 	    complex *, integer *, complex *, complex *, integer *, integer *);
     integer lorgqrworkopt, iorglq;
-    extern /* Subroutine */ int cungqr_(integer *, integer *, integer *, 
+    extern /* Subroutine */ void cungqr_(integer *, integer *, integer *, 
 	    complex *, integer *, complex *, complex *, integer *, integer *);
     integer iorgqr;
     char signst[1], transt[1];
@@ -1005,7 +1006,7 @@ f"> */
 		ldv1t, &v2t[v2t_offset], ldv2t, &u1[u1_offset], ldu1, &u2[
 		u2_offset], ldu2, &work[1], lwork, &rwork[1], lrwork, &iwork[
 		1], info);
-	return 0;
+	return;
     }
 
 /*     Work with permutation [ 0 I; I 0 ] * X * [ 0 I; I 0 ] if */
@@ -1025,7 +1026,7 @@ f"> */
 		u2_offset], ldu2, &u1[u1_offset], ldu1, &v2t[v2t_offset], 
 		ldv2t, &v1t[v1t_offset], ldv1t, &work[1], lwork, &rwork[1], 
 		lrwork, &iwork[1], info);
-	return 0;
+	return;
     }
 
 /*     Compute workspace */
@@ -1141,9 +1142,9 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CUNCSD", &i__1, (ftnlen)6);
-	return 0;
+	return;
     } else if (lquery || lrquery) {
-	return 0;
+	return;
     }
 
 /*     Transform to bidiagonal block form */
@@ -1322,7 +1323,7 @@ f"> */
 	}
     }
 
-    return 0;
+    return;
 
 /*     End CUNCSD */
 

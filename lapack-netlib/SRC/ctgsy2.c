@@ -771,7 +771,7 @@ f"> */
 /* >     Umea University, S-901 87 Umea, Sweden. */
 
 /*  ===================================================================== */
-/* Subroutine */ int ctgsy2_(char *trans, integer *ijob, integer *m, integer *
+/* Subroutine */ void ctgsy2_(char *trans, integer *ijob, integer *m, integer *
 	n, complex *a, integer *lda, complex *b, integer *ldb, complex *c__, 
 	integer *ldc, complex *d__, integer *ldd, complex *e, integer *lde, 
 	complex *f, integer *ldf, real *scale, real *rdsum, real *rdscal, 
@@ -786,11 +786,11 @@ f"> */
     /* Local variables */
     integer ierr, ipiv[2], jpiv[2], i__, j, k;
     complex alpha;
-    extern /* Subroutine */ int cscal_(integer *, complex *, complex *, 
+    extern /* Subroutine */ void cscal_(integer *, complex *, complex *, 
 	    integer *);
     complex z__[4]	/* was [2][2] */;
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int caxpy_(integer *, complex *, complex *, 
+    extern /* Subroutine */ void caxpy_(integer *, complex *, complex *, 
 	    integer *, complex *, integer *), cgesc2_(integer *, complex *, 
 	    integer *, complex *, integer *, integer *, real *), cgetc2_(
 	    integer *, complex *, integer *, integer *, integer *, integer *),
@@ -866,7 +866,7 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CTGSY2", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
     if (notran) {
@@ -1057,7 +1057,7 @@ f"> */
 /* L80: */
 	}
     }
-    return 0;
+    return;
 
 /*     End of CTGSY2 */
 

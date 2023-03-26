@@ -625,10 +625,10 @@ real clanht_(char *norm, integer *n, real *d__, complex *e)
     real scale;
     extern logical lsame_(char *, char *);
     real anorm;
-    extern /* Subroutine */ int classq_(integer *, complex *, integer *, real 
+    extern /* Subroutine */ void classq_(integer *, complex *, integer *, real 
 	    *, real *);
     extern logical sisnan_(real *);
-    extern /* Subroutine */ int slassq_(integer *, real *, integer *, real *, 
+    extern /* Subroutine */ void slassq_(integer *, real *, integer *, real *, 
 	    real *);
     real sum;
 

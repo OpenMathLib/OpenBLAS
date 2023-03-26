@@ -650,7 +650,7 @@ f"> */
 /* > \ingroup complexOTHERauxiliary */
 
 /*  ===================================================================== */
-/* Subroutine */ int claqsb_(char *uplo, integer *n, integer *kd, complex *ab,
+/* Subroutine */ void claqsb_(char *uplo, integer *n, integer *kd, complex *ab,
 	 integer *ldab, real *s, real *scond, real *amax, char *equed)
 {
     /* System generated locals */
@@ -686,7 +686,7 @@ f"> */
     /* Function Body */
     if (*n <= 0) {
 	*(unsigned char *)equed = 'N';
-	return 0;
+	return;
     }
 
 /*     Initialize LARGE and SMALL. */
@@ -747,7 +747,7 @@ f"> */
 	*(unsigned char *)equed = 'Y';
     }
 
-    return 0;
+    return;
 
 /*     End of CLAQSB */
 

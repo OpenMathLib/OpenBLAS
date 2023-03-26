@@ -662,7 +662,7 @@ f"> */
 /* > \ingroup complex16OTHERcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int zupmtr_(char *side, char *uplo, char *trans, integer *m, 
+/* Subroutine */ void zupmtr_(char *side, char *uplo, char *trans, integer *m, 
 	integer *n, doublecomplex *ap, doublecomplex *tau, doublecomplex *c__,
 	 integer *ldc, doublecomplex *work, integer *info)
 {
@@ -675,7 +675,7 @@ f"> */
     doublecomplex taui;
     integer i__;
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int zlarf_(char *, integer *, integer *, 
+    extern /* Subroutine */ void zlarf_(char *, integer *, integer *, 
 	    doublecomplex *, integer *, doublecomplex *, doublecomplex *, 
 	    integer *, doublecomplex *);
     integer i1;
@@ -734,13 +734,13 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZUPMTR", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*m == 0 || *n == 0) {
-	return 0;
+	return;
     }
 
     if (upper) {
@@ -876,7 +876,7 @@ f"> */
 /* L20: */
 	}
     }
-    return 0;
+    return;
 
 /*     End of ZUPMTR */
 

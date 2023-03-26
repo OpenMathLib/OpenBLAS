@@ -613,7 +613,7 @@ f"> */
 /* > \ingroup complexOTHERauxiliary */
 
 /*  ===================================================================== */
-/* Subroutine */ int clacp2_(char *uplo, integer *m, integer *n, real *a, 
+/* Subroutine */ void clacp2_(char *uplo, integer *m, integer *n, real *a, 
 	integer *lda, complex *b, integer *ldb)
 {
     /* System generated locals */
@@ -682,7 +682,7 @@ f"> */
 	}
     }
 
-    return 0;
+    return;
 
 /*     End of CLACP2 */
 

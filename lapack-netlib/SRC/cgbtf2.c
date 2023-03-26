@@ -672,7 +672,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int cgbtf2_(integer *m, integer *n, integer *kl, integer *ku,
+/* Subroutine */ void cgbtf2_(integer *m, integer *n, integer *kl, integer *ku,
 	 complex *ab, integer *ldab, integer *ipiv, integer *info)
 {
     /* System generated locals */
@@ -681,7 +681,7 @@ f"> */
 
     /* Local variables */
     integer i__, j;
-    extern /* Subroutine */ int cscal_(integer *, complex *, complex *, 
+    extern /* Subroutine */ void cscal_(integer *, complex *, complex *, 
 	    integer *), cgeru_(integer *, integer *, complex *, complex *, 
 	    integer *, complex *, integer *, complex *, integer *), cswap_(
 	    integer *, complex *, integer *, complex *, integer *);
@@ -728,13 +728,13 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CGBTF2", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*m == 0 || *n == 0) {
-	return 0;
+	return;
     }
 
 /*     Gaussian elimination with partial pivoting */
@@ -827,7 +827,7 @@ f"> */
 	}
 /* L40: */
     }
-    return 0;
+    return;
 
 /*     End of CGBTF2 */
 

@@ -620,7 +620,7 @@ f"> */
 /* > \ingroup doubleOTHERauxiliary */
 
 /*  ===================================================================== */
-/* Subroutine */ int dlar2v_(integer *n, doublereal *x, doublereal *y, 
+/* Subroutine */ void dlar2v_(integer *n, doublereal *x, doublereal *y, 
 	doublereal *z__, integer *incx, doublereal *c__, doublereal *s, 
 	integer *incc)
 {
@@ -678,6 +678,6 @@ f"> */
 
 /*     End of DLAR2V */
 
-    return 0;
+    return;
 } /* dlar2v_ */
 

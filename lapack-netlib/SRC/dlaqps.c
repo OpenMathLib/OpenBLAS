@@ -693,7 +693,7 @@ f"> */
 /* > \endhtmlonly */
 
 /*  ===================================================================== */
-/* Subroutine */ int dlaqps_(integer *m, integer *n, integer *offset, integer 
+/* Subroutine */ void dlaqps_(integer *m, integer *n, integer *offset, integer 
 	*nb, integer *kb, doublereal *a, integer *lda, integer *jpvt, 
 	doublereal *tau, doublereal *vn1, doublereal *vn2, doublereal *auxv, 
 	doublereal *f, integer *ldf)
@@ -708,18 +708,18 @@ f"> */
     doublereal temp2;
     integer j, k;
     doublereal tol3z;
-    extern /* Subroutine */ int dgemm_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void dgemm_(char *, char *, integer *, integer *, 
 	    integer *, doublereal *, doublereal *, integer *, doublereal *, 
 	    integer *, doublereal *, doublereal *, integer *),
 	     dgemv_(char *, integer *, integer *, doublereal *, doublereal *, 
 	    integer *, doublereal *, integer *, doublereal *, doublereal *, 
 	    integer *);
     integer itemp;
-    extern /* Subroutine */ int dswap_(integer *, doublereal *, integer *, 
+    extern /* Subroutine */ void dswap_(integer *, doublereal *, integer *, 
 	    doublereal *, integer *);
     extern doublereal dlamch_(char *);
     integer rk;
-    extern /* Subroutine */ int dlarfg_(integer *, doublereal *, doublereal *,
+    extern /* Subroutine */ void dlarfg_(integer *, doublereal *, doublereal *,
 	     integer *, doublereal *);
     extern integer idamax_(integer *, doublereal *, integer *);
     integer lsticc, lastrk;
@@ -917,7 +917,7 @@ L40:
 	goto L40;
     }
 
-    return 0;
+    return;
 
 /*     End of DLAQPS */
 

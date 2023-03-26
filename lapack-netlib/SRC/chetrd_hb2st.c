@@ -746,7 +746,7 @@ hb2st.f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int chetrd_hb2st_(char *stage1, char *vect, char *uplo, 
+/* Subroutine */ void chetrd_hb2st_(char *stage1, char *vect, char *uplo, 
 	integer *n, integer *kd, complex *ab, integer *ldab, real *d__, real *
 	e, complex *hous, integer *lhous, complex *work, integer *lwork, 
 	integer *info)
@@ -766,17 +766,18 @@ hb2st.f"> */
     integer lhmin, sicev, sizea, shift, stind, colpt, lwmin, awpos;
     logical wantq, upper;
     integer grsiz, ttype, stepercol, ed, ib;
-    extern /* Subroutine */ int chb2st_kernels_(char *, logical *, integer *,
+    extern /* Subroutine */ void chb2st_kernels_(char *, logical *, integer *,
 	     integer *, integer *, integer *, integer *, integer *, integer *,
 	     complex *, integer *, complex *, complex *, integer *, complex *);
     integer st, abdpos;
-    extern /* Subroutine */ int clacpy_(char *, integer *, integer *, complex 
+    extern /* Subroutine */ void clacpy_(char *, integer *, integer *, complex 
 	    *, integer *, complex *, integer *), claset_(char *, 
-	    integer *, integer *, complex *, complex *, complex *, integer *), xerbla_(char *, integer *, ftnlen);
+	    integer *, integer *, complex *, complex *, complex *, integer *);
+    extern int xerbla_(char *, integer *, ftnlen);
     integer thgrid, thgrnb, indtau;
     real abstmp;
     integer ofdpos, blklastind;
-    extern /* Subroutine */ int mecago_();
+    extern /* Subroutine */ void mecago_();
     logical lquery, afters1;
     integer lda, tid, ldv;
     complex tmp;
@@ -847,9 +848,9 @@ hb2st.f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CHETRD_HB2ST", &i__1, (ftnlen)12);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
@@ -857,7 +858,7 @@ hb2st.f"> */
     if (*n == 0) {
 	hous[1].r = 1.f, hous[1].i = 0.f;
 	work[1].r = 1.f, work[1].i = 0.f;
-	return 0;
+	return;
     }
 
 /*     Determine pointer position */
@@ -911,7 +912,7 @@ hb2st.f"> */
 
 	hous[1].r = 1.f, hous[1].i = 0.f;
 	work[1].r = 1.f, work[1].i = 0.f;
-	return 0;
+	return;
     }
 
 /*     Case KD=1: */
@@ -992,7 +993,7 @@ hb2st.f"> */
 
 	hous[1].r = 1.f, hous[1].i = 0.f;
 	work[1].r = 1.f, work[1].i = 0.f;
-	return 0;
+	return;
     }
 
 /*     Main code start here. */
@@ -1114,7 +1115,7 @@ hb2st.f"> */
 
     hous[1].r = (real) lhmin, hous[1].i = 0.f;
     work[1].r = (real) lwmin, work[1].i = 0.f;
-    return 0;
+    return;
 
 /*     End of CHETRD_HB2ST */
 

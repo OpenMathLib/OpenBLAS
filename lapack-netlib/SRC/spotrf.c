@@ -623,7 +623,7 @@ f"> */
 /* > \ingroup realPOcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int spotrf_(char *uplo, integer *n, real *a, integer *lda, 
+/* Subroutine */ void spotrf_(char *uplo, integer *n, real *a, integer *lda, 
 	integer *info)
 {
     /* System generated locals */
@@ -632,11 +632,11 @@ f"> */
     /* Local variables */
     integer j;
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int sgemm_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void sgemm_(char *, char *, integer *, integer *, 
 	    integer *, real *, real *, integer *, real *, integer *, real *, 
 	    real *, integer *);
     logical upper;
-    extern /* Subroutine */ int strsm_(char *, char *, char *, char *, 
+    extern /* Subroutine */ void strsm_(char *, char *, char *, char *, 
 	    integer *, integer *, real *, real *, integer *, real *, integer *
 	    ), ssyrk_(char *, char *, integer 
 	    *, integer *, real *, real *, integer *, real *, real *, integer *
@@ -645,7 +645,7 @@ f"> */
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     extern integer ilaenv_(integer *, char *, char *, integer *, integer *, 
 	    integer *, integer *, ftnlen, ftnlen);
-    extern /* Subroutine */ int spotrf2_(char *, integer *, real *, integer *,
+    extern /* Subroutine */ void spotrf2_(char *, integer *, real *, integer *,
 	     integer *);
 
 
@@ -678,13 +678,13 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("SPOTRF", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /*     Determine the block size for this environment. */
@@ -784,7 +784,7 @@ L30:
     *info = *info + j - 1;
 
 L40:
-    return 0;
+    return;
 
 /*     End of SPOTRF */
 

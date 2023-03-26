@@ -630,7 +630,7 @@ f"> */
 /* >  ACM Trans. Math. Soft., vol. 14, no. 4, pp. 381-396, December 1988. */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int dlacon_(integer *n, doublereal *v, doublereal *x, 
+/* Subroutine */ void dlacon_(integer *n, doublereal *v, doublereal *x, 
 	integer *isgn, doublereal *est, integer *kase)
 {
     /* System generated locals */
@@ -643,7 +643,7 @@ f"> */
     static integer jump, i__, j;
     extern doublereal dasum_(integer *, doublereal *, integer *);
     static integer jlast;
-    extern /* Subroutine */ int dcopy_(integer *, doublereal *, integer *, 
+    extern /* Subroutine */ void dcopy_(integer *, doublereal *, integer *, 
 	    doublereal *, integer *);
     extern integer idamax_(integer *, doublereal *, integer *);
     static doublereal altsgn, estold;
@@ -672,7 +672,7 @@ f"> */
 	}
 	*kase = 1;
 	jump = 1;
-	return 0;
+	return;
     }
 
     switch (jump) {
@@ -703,7 +703,7 @@ L20:
     }
     *kase = 2;
     jump = 2;
-    return 0;
+    return;
 
 /*     ................ ENTRY   (JUMP = 2) */
 /*     FIRST ITERATION.  X HAS BEEN OVERWRITTEN BY TRANSPOSE(A)*X. */
@@ -723,7 +723,7 @@ L50:
     x[j] = 1.;
     *kase = 1;
     jump = 3;
-    return 0;
+    return;
 
 /*     ................ ENTRY   (JUMP = 3) */
 /*     X HAS BEEN OVERWRITTEN BY A*X. */
@@ -757,7 +757,7 @@ L90:
     }
     *kase = 2;
     jump = 4;
-    return 0;
+    return;
 
 /*     ................ ENTRY   (JUMP = 4) */
 /*     X HAS BEEN OVERWRITTEN BY TRANSPOSE(A)*X. */
@@ -783,7 +783,7 @@ L120:
     }
     *kase = 1;
     jump = 5;
-    return 0;
+    return;
 
 /*     ................ ENTRY   (JUMP = 5) */
 /*     X HAS BEEN OVERWRITTEN BY A*X. */
@@ -797,7 +797,7 @@ L140:
 
 L150:
     *kase = 0;
-    return 0;
+    return;
 
 /*     End of DLACON */
 

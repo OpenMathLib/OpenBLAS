@@ -703,7 +703,7 @@ f"> */
 /* > Christof Voemel, University of California, Berkeley, USA */
 
 /*  ===================================================================== */
-/* Subroutine */ int slarrb_(integer *n, real *d__, real *lld, integer *
+/* Subroutine */ void slarrb_(integer *n, real *d__, real *lld, integer *
 	ifirst, integer *ilast, real *rtol1, real *rtol2, integer *offset, 
 	real *w, real *wgap, real *werr, real *work, integer *iwork, real *
 	pivmin, real *spdiam, integer *twist, integer *info)
@@ -750,7 +750,7 @@ f"> */
 /*     Quick return if possible */
 
     if (*n <= 0) {
-	return 0;
+	return;
     }
 
     maxitr = (integer) ((log(*spdiam + *pivmin) - log(*pivmin)) / log(2.f)) + 
@@ -932,7 +932,7 @@ L100:
 	wgap[ii - 1] = f2cmax(r__1,r__2);
 /* L111: */
     }
-    return 0;
+    return;
 
 /*     End of SLARRB */
 

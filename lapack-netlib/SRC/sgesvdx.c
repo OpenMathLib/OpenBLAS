@@ -779,7 +779,7 @@ static real c_b109 = 0.f;
 /* > \ingroup realGEsing */
 
 /*  ===================================================================== */
-/* Subroutine */ int sgesvdx_(char *jobu, char *jobvt, char *range, integer *
+/* Subroutine */ void sgesvdx_(char *jobu, char *jobvt, char *range, integer *
 	m, integer *n, real *a, integer *lda, real *vl, real *vu, integer *il,
 	 integer *iu, integer *ns, real *s, real *u, integer *ldu, real *vt, 
 	integer *ldvt, real *work, integer *lwork, integer *iwork, integer *
@@ -802,11 +802,11 @@ static real c_b109 = 0.f;
     integer i__, j;
     extern logical lsame_(char *, char *);
     integer iltgk, itemp, minmn, itaup, itauq, iutgk, itgkz, mnthr;
-    extern /* Subroutine */ int scopy_(integer *, real *, integer *, real *, 
+    extern /* Subroutine */ void scopy_(integer *, real *, integer *, real *, 
 	    integer *);
     logical wantu;
     integer id, ie;
-    extern /* Subroutine */ int sgebrd_(integer *, integer *, real *, integer 
+    extern /* Subroutine */ void sgebrd_(integer *, integer *, real *, integer 
 	    *, real *, real *, real *, real *, real *, integer *, integer *);
     extern real slamch_(char *), slange_(char *, integer *, integer *,
 	     real *, integer *, real *);
@@ -814,30 +814,30 @@ static real c_b109 = 0.f;
     extern integer ilaenv_(integer *, char *, char *, integer *, integer *, 
 	    integer *, integer *, ftnlen, ftnlen);
     real bignum;
-    extern /* Subroutine */ int sgelqf_(integer *, integer *, real *, integer 
+    extern /* Subroutine */ void sgelqf_(integer *, integer *, real *, integer 
 	    *, real *, real *, integer *, integer *), slascl_(char *, integer 
 	    *, integer *, real *, real *, integer *, integer *, real *, 
 	    integer *, integer *);
     real abstol;
-    extern /* Subroutine */ int sgeqrf_(integer *, integer *, real *, integer 
+    extern /* Subroutine */ void sgeqrf_(integer *, integer *, real *, integer 
 	    *, real *, real *, integer *, integer *), slacpy_(char *, integer 
 	    *, integer *, real *, integer *, real *, integer *);
     char rngtgk[1];
-    extern /* Subroutine */ int slaset_(char *, integer *, integer *, real *, 
+    extern /* Subroutine */ void slaset_(char *, integer *, integer *, real *, 
 	    real *, real *, integer *), sormbr_(char *, char *, char *
 	    , integer *, integer *, integer *, real *, integer *, real *, 
 	    real *, integer *, real *, integer *, integer *);
     integer minwrk, maxwrk;
     real smlnum;
-    extern /* Subroutine */ int sormlq_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void sormlq_(char *, char *, integer *, integer *, 
 	    integer *, real *, integer *, real *, real *, integer *, real *, 
 	    integer *, integer *);
     logical lquery, wantvt;
-    extern /* Subroutine */ int sormqr_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void sormqr_(char *, char *, integer *, integer *, 
 	    integer *, real *, integer *, real *, real *, integer *, real *, 
 	    integer *, integer *);
     real dum[1], eps;
-    extern /* Subroutine */ int sbdsvdx_(char *, char *, char *, integer *, 
+    extern /* Subroutine */ void sbdsvdx_(char *, char *, char *, integer *, 
 	    real *, real *, real *, real *, integer *, integer *, integer *, 
 	    real *, real *, integer *, real *, integer *, integer *);
 
@@ -1065,15 +1065,15 @@ static real c_b109 = 0.f;
     if (*info != 0) {
 	i__2 = -(*info);
 	xerbla_("SGESVDX", &i__2, (ftnlen)7);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*m == 0 || *n == 0) {
-	return 0;
+	return;
     }
 
 /*     Set singular values indices accord to RANGE. */
@@ -1455,7 +1455,7 @@ static real c_b109 = 0.f;
 
     work[1] = (real) maxwrk;
 
-    return 0;
+    return;
 
 /*     End of SGESVDX */
 

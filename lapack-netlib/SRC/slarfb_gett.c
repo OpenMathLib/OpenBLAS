@@ -904,7 +904,7 @@ gett.f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int slarfb_gett_(char *ident, integer *m, integer *n, 
+/* Subroutine */ void slarfb_gett_(char *ident, integer *m, integer *n, 
 	integer *k, real *t, integer *ldt, real *a, integer *lda, real *b, 
 	integer *ldb, real *work, integer *ldwork)
 {
@@ -915,7 +915,7 @@ gett.f"> */
     /* Local variables */
     integer i__, j;
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int sgemm_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void sgemm_(char *, char *, integer *, integer *, 
 	    integer *, real *, real *, integer *, real *, integer *, real *, 
 	    real *, integer *), scopy_(integer *, real *, 
 	    integer *, real *, integer *), strmm_(char *, char *, char *, 
@@ -950,7 +950,7 @@ gett.f"> */
 
     /* Function Body */
     if (*m < 0 || *n <= 0 || *k == 0 || *k > *n) {
-	return 0;
+	return;
     }
 
     lnotident = ! lsame_(ident, "I");
@@ -1131,7 +1131,7 @@ gett.f"> */
 	}
     }
 
-    return 0;
+    return;
 
 /*     End of SLARFB_GETT */
 

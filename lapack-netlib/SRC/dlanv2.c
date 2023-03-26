@@ -643,7 +643,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int dlanv2_(doublereal *a, doublereal *b, doublereal *c__, 
+/* Subroutine */ void dlanv2_(doublereal *a, doublereal *b, doublereal *c__, 
 	doublereal *d__, doublereal *rt1r, doublereal *rt1i, doublereal *rt2r,
 	 doublereal *rt2i, doublereal *cs, doublereal *sn)
 {
@@ -826,7 +826,7 @@ L10:
 	*rt1i = sqrt((abs(*b))) * sqrt((abs(*c__)));
 	*rt2i = -(*rt1i);
     }
-    return 0;
+    return;
 
 /*     End of DLANV2 */
 

@@ -659,7 +659,7 @@ aa.f"> */
 /* > \ingroup realSYcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int slasyf_aa_(char *uplo, integer *j1, integer *m, integer 
+/* Subroutine */ void slasyf_aa_(char *uplo, integer *j1, integer *m, integer 
 	*nb, real *a, integer *lda, integer *ipiv, real *h__, integer *ldh, 
 	real *work)
 {
@@ -670,17 +670,17 @@ aa.f"> */
     integer j, k;
     real alpha;
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int sscal_(integer *, real *, real *, integer *), 
+    extern /* Subroutine */ void sscal_(integer *, real *, real *, integer *), 
 	    sgemv_(char *, integer *, integer *, real *, real *, integer *, 
 	    real *, integer *, real *, real *, integer *);
     integer i1, k1, i2;
-    extern /* Subroutine */ int scopy_(integer *, real *, integer *, real *, 
+    extern /* Subroutine */ void scopy_(integer *, real *, integer *, real *, 
 	    integer *), sswap_(integer *, real *, integer *, real *, integer *
 	    ), saxpy_(integer *, real *, real *, integer *, real *, integer *)
 	    ;
     integer mj;
     extern integer isamax_(integer *, real *, integer *);
-    extern /* Subroutine */ int slaset_(char *, integer *, integer *, real *, 
+    extern /* Subroutine */ void slaset_(char *, integer *, integer *, real *, 
 	    real *, real *, integer *);
     real piv;
 
@@ -1044,7 +1044,7 @@ L30:
 L40:
 	;
     }
-    return 0;
+    return;
 
 /*     End of SLASYF_AA */
 

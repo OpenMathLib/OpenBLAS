@@ -615,7 +615,7 @@ static real c_b26 = 1.f;
 /* > \ingroup real_matgen */
 
 /*  ===================================================================== */
-/* Subroutine */ int slagsy_(integer *n, integer *k, real *d__, real *a, 
+/* Subroutine */ void slagsy_(integer *n, integer *k, real *d__, real *a, 
 	integer *lda, integer *iseed, real *work, integer *info)
 {
     /* System generated locals */
@@ -623,22 +623,23 @@ static real c_b26 = 1.f;
     real r__1;
 
     /* Local variables */
-    extern /* Subroutine */ int sger_(integer *, integer *, real *, real *, 
+    extern /* Subroutine */ void sger_(integer *, integer *, real *, real *, 
 	    integer *, real *, integer *, real *, integer *);
     extern real sdot_(integer *, real *, integer *, real *, integer *), 
 	    snrm2_(integer *, real *, integer *);
     integer i__, j;
-    extern /* Subroutine */ int ssyr2_(char *, integer *, real *, real *, 
+    extern /* Subroutine */ void ssyr2_(char *, integer *, real *, real *, 
 	    integer *, real *, integer *, real *, integer *);
     real alpha;
-    extern /* Subroutine */ int sscal_(integer *, real *, real *, integer *), 
+    extern /* Subroutine */ void sscal_(integer *, real *, real *, integer *), 
 	    sgemv_(char *, integer *, integer *, real *, real *, integer *, 
 	    real *, integer *, real *, real *, integer *), saxpy_(
 	    integer *, real *, real *, integer *, real *, integer *), ssymv_(
 	    char *, integer *, real *, real *, integer *, real *, integer *, 
 	    real *, real *, integer *);
     real wa, wb, wn;
-    extern /* Subroutine */ int xerbla_(char *, integer *), slarnv_(
+    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
+    extern void slarnv_(
 	    integer *, integer *, integer *, real *);
     real tau;
 
@@ -673,8 +674,8 @@ static real c_b26 = 1.f;
     }
     if (*info < 0) {
 	i__1 = -(*info);
-	xerbla_("SLAGSY", &i__1);
-	return 0;
+	xerbla_("SLAGSY", &i__1, 6);
+	return;
     }
 
 /*     initialize lower triangle of A to diagonal matrix */
@@ -818,7 +819,7 @@ static real c_b26 = 1.f;
 	}
 /* L80: */
     }
-    return 0;
+    return;
 
 /*     End of SLAGSY */
 

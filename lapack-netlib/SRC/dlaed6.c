@@ -649,7 +649,7 @@ f"> */
 /* >     at Berkeley, USA */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int dlaed6_(integer *kniter, logical *orgati, doublereal *
+/* Subroutine */ void dlaed6_(integer *kniter, logical *orgati, doublereal *
 	rho, doublereal *d__, doublereal *z__, doublereal *finit, doublereal *
 	tau, integer *info)
 {
@@ -928,7 +928,7 @@ L60:
     if (scale) {
 	*tau *= sclinv;
     }
-    return 0;
+    return;
 
 /*     End of DLAED6 */
 

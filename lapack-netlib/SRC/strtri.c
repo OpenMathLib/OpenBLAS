@@ -626,7 +626,7 @@ f"> */
 /* > \ingroup realOTHERcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int strtri_(char *uplo, char *diag, integer *n, real *a, 
+/* Subroutine */ void strtri_(char *uplo, char *diag, integer *n, real *a, 
 	integer *lda, integer *info)
 {
     /* System generated locals */
@@ -638,13 +638,13 @@ f"> */
     integer j;
     extern logical lsame_(char *, char *);
     logical upper;
-    extern /* Subroutine */ int strmm_(char *, char *, char *, char *, 
+    extern /* Subroutine */ void strmm_(char *, char *, char *, char *, 
 	    integer *, integer *, real *, real *, integer *, real *, integer *
 	    ), strsm_(char *, char *, char *, 
 	    char *, integer *, integer *, real *, real *, integer *, real *, 
 	    integer *);
     integer jb, nb;
-    extern /* Subroutine */ int strti2_(char *, char *, integer *, real *, 
+    extern /* Subroutine */ void strti2_(char *, char *, integer *, real *, 
 	    integer *, integer *);
     integer nn;
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
@@ -685,13 +685,13 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("STRTRI", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /*     Check for singularity if non-unit. */
@@ -700,7 +700,7 @@ f"> */
 	i__1 = *n;
 	for (*info = 1; *info <= i__1; ++(*info)) {
 	    if (a[*info + *info * a_dim1] == 0.f) {
-		return 0;
+		return;
 	    }
 /* L10: */
 	}
@@ -782,7 +782,7 @@ f"> */
 	}
     }
 
-    return 0;
+    return;
 
 /*     End of STRTRI */
 

@@ -685,7 +685,7 @@ f"> */
 /* > \ingroup realOTHERauxiliary */
 
 /*  ===================================================================== */
-/* Subroutine */ int slaein_(logical *rightv, logical *noinit, integer *n, 
+/* Subroutine */ void slaein_(logical *rightv, logical *noinit, integer *n, 
 	real *h__, integer *ldh, real *wr, real *wi, real *vr, real *vi, real 
 	*b, integer *ldb, real *work, real *eps3, real *smlnum, real *bignum, 
 	integer *info)
@@ -700,7 +700,7 @@ f"> */
     extern real snrm2_(integer *, real *, integer *);
     integer i__, j;
     real scale, w, x, y;
-    extern /* Subroutine */ int sscal_(integer *, real *, real *, integer *);
+    extern /* Subroutine */ void sscal_(integer *, real *, real *, integer *);
     char trans[1];
     real vcrit;
     extern real sasum_(integer *, real *, integer *);
@@ -709,11 +709,11 @@ f"> */
     extern real slapy2_(real *, real *);
     real ei, ej, absbii, absbjj, xi, xr;
     extern integer isamax_(integer *, real *, integer *);
-    extern /* Subroutine */ int sladiv_(real *, real *, real *, real *, real *
+    extern /* Subroutine */ void sladiv_(real *, real *, real *, real *, real *
 	    , real *);
     char normin[1];
     real nrmsml;
-    extern /* Subroutine */ int slatrs_(char *, char *, char *, char *, 
+    extern /* Subroutine */ void slatrs_(char *, char *, char *, char *, 
 	    integer *, real *, integer *, real *, real *, real *, integer *);
     real growto, rec;
     integer its;
@@ -1250,7 +1250,7 @@ L280:
 
     }
 
-    return 0;
+    return;
 
 /*     End of SLAEIN */
 

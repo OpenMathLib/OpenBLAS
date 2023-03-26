@@ -932,7 +932,7 @@ static logical c_false = FALSE_;
 /* > \ingroup doubleGEsing */
 
 /*  ===================================================================== */
-/* Subroutine */ int dgesvdq_(char *joba, char *jobp, char *jobr, char *jobu, 
+/* Subroutine */ void dgesvdq_(char *joba, char *jobp, char *jobr, char *jobu, 
 	char *jobv, integer *m, integer *n, doublereal *a, integer *lda, 
 	doublereal *s, doublereal *u, integer *ldu, doublereal *v, integer *
 	ldv, integer *numrank, integer *iwork, integer *liwork, doublereal *
@@ -953,7 +953,7 @@ static logical c_false = FALSE_;
     logical acclh, acclm;
     integer p, q;
     logical conda;
-    extern /* Subroutine */ int dscal_(integer *, doublereal *, doublereal *, 
+    extern /* Subroutine */ void dscal_(integer *, doublereal *, doublereal *, 
 	    integer *);
     extern logical lsame_(char *, char *);
     integer iwoff;
@@ -965,32 +965,35 @@ static logical c_false = FALSE_;
     logical dntwu, dntwv, wntua;
     integer lworq;
     logical wntuf, wntva, wntur, wntus, wntvr;
-    extern /* Subroutine */ int dgeqp3_(integer *, integer *, doublereal *, 
+    extern /* Subroutine */ void dgeqp3_(integer *, integer *, doublereal *, 
 	    integer *, integer *, doublereal *, doublereal *, integer *, 
 	    integer *);
     integer lwsvd2, lworq2;
     extern doublereal dlamch_(char *), dlange_(char *, integer *, 
 	    integer *, doublereal *, integer *, doublereal *);
     integer nr;
-    extern /* Subroutine */ int dgelqf_(integer *, integer *, doublereal *, 
+    extern /* Subroutine */ void dgelqf_(integer *, integer *, doublereal *, 
 	    integer *, doublereal *, doublereal *, integer *, integer *), 
 	    dlascl_(char *, integer *, integer *, doublereal *, doublereal *, 
 	    integer *, integer *, doublereal *, integer *, integer *);
     extern integer idamax_(integer *, doublereal *, integer *);
     doublereal sconda;
-    extern /* Subroutine */ int dgeqrf_(integer *, integer *, doublereal *, 
+    extern /* Subroutine */ void dgeqrf_(integer *, integer *, doublereal *, 
 	    integer *, doublereal *, doublereal *, integer *, integer *), 
 	    dgesvd_(char *, char *, integer *, integer *, doublereal *, 
 	    integer *, doublereal *, doublereal *, integer *, doublereal *, 
 	    integer *, doublereal *, integer *, integer *), 
 	    dlacpy_(char *, integer *, integer *, doublereal *, integer *, 
 	    doublereal *, integer *), dlaset_(char *, integer *, 
-	    integer *, doublereal *, doublereal *, doublereal *, integer *), xerbla_(char *, integer *, ftnlen), dlapmt_(logical *, 
+	    integer *, doublereal *, doublereal *, doublereal *, integer *);
+    extern int xerbla_(char *, integer *, ftnlen);
+    extern void dlapmt_(logical *, 
 	    integer *, integer *, doublereal *, integer *, integer *), 
 	    dpocon_(char *, integer *, doublereal *, integer *, doublereal *, 
-	    doublereal *, doublereal *, integer *, integer *), 
-	    dlaswp_(integer *, doublereal *, integer *, integer *, integer *, 
-	    integer *, integer *), dormlq_(char *, char *, integer *, integer 
+	    doublereal *, doublereal *, integer *, integer *); 
+    extern int dlaswp_(integer *, doublereal *, integer *, integer *, integer *, 
+	    integer *, integer *);
+    extern void dormlq_(char *, char *, integer *, integer 
 	    *, integer *, doublereal *, integer *, doublereal *, doublereal *,
 	     integer *, doublereal *, integer *, integer *), 
 	    dormqr_(char *, char *, integer *, integer *, integer *, 
@@ -1380,7 +1383,7 @@ static logical c_false = FALSE_;
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DGESVDQ", &i__1, (ftnlen)7);
-	return 0;
+	return;
     } else if (lquery) {
 
 /*     Return optimal workspace */
@@ -1389,13 +1392,13 @@ static logical c_false = FALSE_;
 	work[1] = (doublereal) optwrk;
 	work[2] = (doublereal) minwrk;
 	rwork[1] = (doublereal) rminwrk;
-	return 0;
+	return;
     }
 
 /*     Quick return if the matrix is void. */
 
     if (*m == 0 || *n == 0) {
-	return 0;
+	return;
     }
 
     big = dlamch_("O");
@@ -1414,7 +1417,7 @@ static logical c_false = FALSE_;
 		*info = -8;
 		i__2 = -(*info);
 		xerbla_("DGESVDQ", &i__2, (ftnlen)7);
-		return 0;
+		return;
 	    }
 /* L1904: */
 	}
@@ -1465,7 +1468,7 @@ static logical c_false = FALSE_;
 		rwork[1] = -1.;
 	    }
 	    rwork[2] = -1.;
-	    return 0;
+	    return;
 	}
 
 	if (rwork[1] > big / sqrt((doublereal) (*m))) {
@@ -1489,7 +1492,7 @@ static logical c_false = FALSE_;
 	    *info = -8;
 	    i__1 = -(*info);
 	    xerbla_("DGESVDQ", &i__1, (ftnlen)7);
-	    return 0;
+	    return;
 	}
 	if (rtmp > big / sqrt((doublereal) (*m))) {
 /*             matrix by 1/sqrt(M) if too large entry detected */
@@ -2244,7 +2247,7 @@ L4002:
 /*     full row rank triangular (trapezoidal) factor of A. */
     *numrank = nr;
 
-    return 0;
+    return;
 
 /*     End of DGESVDQ */
 

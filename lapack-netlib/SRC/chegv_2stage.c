@@ -749,7 +749,7 @@ stage.f"> */
 /* > \endverbatim */
 
 /*  ===================================================================== */
-/* Subroutine */ int chegv_2stage_(integer *itype, char *jobz, char *uplo, 
+/* Subroutine */ void chegv_2stage_(integer *itype, char *jobz, char *uplo, 
 	integer *n, complex *a, integer *lda, complex *b, integer *ldb, real *
 	w, complex *work, integer *lwork, real *rwork, integer *info)
 {
@@ -762,24 +762,26 @@ stage.f"> */
 	    integer *, integer *, integer *);
     extern logical lsame_(char *, char *);
     integer lhtrd;
-    extern /* Subroutine */ int ctrmm_(char *, char *, char *, char *, 
+    extern /* Subroutine */ void ctrmm_(char *, char *, char *, char *, 
 	    integer *, integer *, complex *, complex *, integer *, complex *, 
 	    integer *);
     integer lwmin;
     char trans[1];
-    extern /* Subroutine */ int ctrsm_(char *, char *, char *, char *, 
+    extern /* Subroutine */ void ctrsm_(char *, char *, char *, char *, 
 	    integer *, integer *, complex *, complex *, integer *, complex *, 
 	    integer *);
     logical upper;
     integer lwtrd;
     logical wantz;
     integer ib, kd;
-    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen), chegst_(
+    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
+    extern void chegst_(
 	    integer *, char *, integer *, complex *, integer *, complex *, 
-	    integer *, integer *), cpotrf_(char *, integer *, complex 
+	    integer *, integer *);
+    extern int cpotrf_(char *, integer *, complex 
 	    *, integer *, integer *);
     logical lquery;
-    extern /* Subroutine */ int cheev_2stage_(char *, char *, integer *, 
+    extern /* Subroutine */ void cheev_2stage_(char *, char *, integer *, 
 	    complex *, integer *, real *, complex *, integer *, real *, 
 	    integer *);
 
@@ -846,15 +848,15 @@ stage.f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CHEGV_2STAGE ", &i__1, (ftnlen)13);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /*     Form a Cholesky factorization of B. */
@@ -862,7 +864,7 @@ stage.f"> */
     cpotrf_(uplo, n, &b[b_offset], ldb, info);
     if (*info != 0) {
 	*info = *n + *info;
-	return 0;
+	return;
     }
 
 /*     Transform problem to standard eigenvalue problem and solve. */
@@ -911,7 +913,7 @@ stage.f"> */
 
     work[1].r = (real) lwmin, work[1].i = 0.f;
 
-    return 0;
+    return;
 
 /*     End of CHEGV_2STAGE */
 

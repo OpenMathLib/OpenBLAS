@@ -651,7 +651,7 @@ f"> */
 /* > \ingroup realGTcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int sgttrs_(char *trans, integer *n, integer *nrhs, real *dl,
+/* Subroutine */ void sgttrs_(char *trans, integer *n, integer *nrhs, real *dl,
 	 real *d__, real *du, real *du2, integer *ipiv, real *b, integer *ldb,
 	 integer *info)
 {
@@ -660,9 +660,9 @@ f"> */
 
     /* Local variables */
     integer j, jb, nb;
-    extern /* Subroutine */ int sgtts2_(integer *, integer *, integer *, real 
-	    *, real *, real *, real *, integer *, real *, integer *), xerbla_(
-	    char *, integer *, ftnlen);
+    extern /* Subroutine */ void sgtts2_(integer *, integer *, integer *, real 
+	    *, real *, real *, real *, integer *, real *, integer *);
+    extern int xerbla_(char *, integer *, ftnlen);
     extern integer ilaenv_(integer *, char *, char *, integer *, integer *, 
 	    integer *, integer *, ftnlen, ftnlen);
     integer itrans;
@@ -705,13 +705,13 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("SGTTRS", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0 || *nrhs == 0) {
-	return 0;
+	return;
     }
 
 /*     Decode TRANS */
@@ -751,6 +751,6 @@ f"> */
 
 /*     End of SGTTRS */
 
-    return 0;
+    return;
 } /* sgttrs_ */
 

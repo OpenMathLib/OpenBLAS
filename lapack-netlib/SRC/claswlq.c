@@ -671,7 +671,7 @@ static integer c__0 = 0;
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int claswlq_(integer *m, integer *n, integer *mb, integer *
+/* Subroutine */ void claswlq_(integer *m, integer *n, integer *mb, integer *
 	nb, complex *a, integer *lda, complex *t, integer *ldt, complex *work,
 	 integer *lwork, integer *info)
 {
@@ -680,7 +680,8 @@ static integer c__0 = 0;
 
     /* Local variables */
     integer i__, ii, kk;
-    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen), cgelqt_(
+    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
+    extern void cgelqt_(
 	    integer *, integer *, integer *, complex *, integer *, complex *, 
 	    integer *, complex *, integer *), ctplqt_(integer *, integer *, 
 	    integer *, integer *, complex *, integer *, complex *, integer *, 
@@ -737,15 +738,15 @@ static integer c__0 = 0;
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CLASWLQ", &i__1, (ftnlen)7);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (f2cmin(*m,*n) == 0) {
-	return 0;
+	return;
     }
 
 /*     The LQ Decomposition */
@@ -753,7 +754,7 @@ static integer c__0 = 0;
     if (*m >= *n || *nb <= *m || *nb >= *n) {
 	cgelqt_(m, n, mb, &a[a_offset], lda, &t[t_offset], ldt, &work[1], 
 		info);
-	return 0;
+	return;
     }
 
     kk = (*n - *m) % (*nb - *m);
@@ -786,7 +787,7 @@ static integer c__0 = 0;
 
     i__2 = *m * *mb;
     work[1].r = (real) i__2, work[1].i = 0.f;
-    return 0;
+    return;
 
 /*     End of CLASWLQ */
 

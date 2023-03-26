@@ -849,7 +849,7 @@ f"> */
 /* >     California at Berkeley, USA */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int cggsvd_(char *jobu, char *jobv, char *jobq, integer *m, 
+/* Subroutine */ void cggsvd_(char *jobu, char *jobv, char *jobq, integer *m, 
 	integer *n, integer *p, integer *k, integer *l, complex *a, integer *
 	lda, complex *b, integer *ldb, real *alpha, real *beta, complex *u, 
 	integer *ldu, complex *v, integer *ldv, complex *q, integer *ldq, 
@@ -868,17 +868,18 @@ f"> */
     extern logical lsame_(char *, char *);
     real anorm, bnorm;
     logical wantq;
-    extern /* Subroutine */ int scopy_(integer *, real *, integer *, real *, 
+    extern /* Subroutine */ void scopy_(integer *, real *, integer *, real *, 
 	    integer *);
     logical wantu, wantv;
     extern real clange_(char *, integer *, integer *, complex *, integer *, 
 	    real *), slamch_(char *);
-    extern /* Subroutine */ int ctgsja_(char *, char *, char *, integer *, 
+    extern /* Subroutine */ void ctgsja_(char *, char *, char *, integer *, 
 	    integer *, integer *, integer *, integer *, complex *, integer *, 
 	    complex *, integer *, real *, real *, real *, real *, complex *, 
 	    integer *, complex *, integer *, complex *, integer *, complex *, 
-	    integer *, integer *), xerbla_(char *, 
-	    integer *), cggsvp_(char *, char *, char *, integer *, 
+	    integer *, integer *);
+    extern int xerbla_(char *, integer *, ftnlen);
+    extern void cggsvp_(char *, char *, char *, integer *, 
 	    integer *, integer *, complex *, integer *, complex *, integer *, 
 	    real *, real *, integer *, integer *, complex *, integer *, 
 	    complex *, integer *, complex *, integer *, integer *, real *, 
@@ -950,8 +951,8 @@ f"> */
     }
     if (*info != 0) {
 	i__1 = -(*info);
-	xerbla_("CGGSVD", &i__1);
-	return 0;
+	xerbla_("CGGSVD", &i__1, 6);
+	return;
     }
 
 /*     Compute the Frobenius norm of matrices A and B */
@@ -1011,7 +1012,7 @@ f"> */
 /* L20: */
     }
 
-    return 0;
+    return;
 
 /*     End of CGGSVD */
 

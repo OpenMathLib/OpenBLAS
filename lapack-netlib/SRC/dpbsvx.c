@@ -854,7 +854,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int dpbsvx_(char *fact, char *uplo, integer *n, integer *kd, 
+/* Subroutine */ void dpbsvx_(char *fact, char *uplo, integer *n, integer *kd, 
 	integer *nrhs, doublereal *ab, integer *ldab, doublereal *afb, 
 	integer *ldafb, char *equed, doublereal *s, doublereal *b, integer *
 	ldb, doublereal *x, integer *ldx, doublereal *rcond, doublereal *ferr,
@@ -870,31 +870,32 @@ f"> */
     integer i__, j;
     extern logical lsame_(char *, char *);
     doublereal scond, anorm;
-    extern /* Subroutine */ int dcopy_(integer *, doublereal *, integer *, 
+    extern /* Subroutine */ void dcopy_(integer *, doublereal *, integer *, 
 	    doublereal *, integer *);
     logical equil, rcequ, upper;
     integer j1, j2;
     extern doublereal dlamch_(char *), dlansb_(char *, char *, 
 	    integer *, integer *, doublereal *, integer *, doublereal *);
-    extern /* Subroutine */ int dpbcon_(char *, integer *, integer *, 
+    extern /* Subroutine */ void dpbcon_(char *, integer *, integer *, 
 	    doublereal *, integer *, doublereal *, doublereal *, doublereal *,
 	     integer *, integer *), dlaqsb_(char *, integer *, 
 	    integer *, doublereal *, integer *, doublereal *, doublereal *, 
 	    doublereal *, char *);
     logical nofact;
-    extern /* Subroutine */ int dlacpy_(char *, integer *, integer *, 
-	    doublereal *, integer *, doublereal *, integer *), 
-	    xerbla_(char *, integer *, ftnlen), dpbequ_(char *, integer *, 
+    extern /* Subroutine */ void dlacpy_(char *, integer *, integer *, 
+	    doublereal *, integer *, doublereal *, integer *); 
+    extern int xerbla_(char *, integer *, ftnlen);
+    extern void dpbequ_(char *, integer *, 
 	    integer *, doublereal *, integer *, doublereal *, doublereal *, 
 	    doublereal *, integer *);
     doublereal bignum;
-    extern /* Subroutine */ int dpbrfs_(char *, integer *, integer *, integer 
+    extern /* Subroutine */ void dpbrfs_(char *, integer *, integer *, integer 
 	    *, doublereal *, integer *, doublereal *, integer *, doublereal *,
 	     integer *, doublereal *, integer *, doublereal *, doublereal *, 
 	    doublereal *, integer *, integer *), dpbtrf_(char *, 
 	    integer *, integer *, doublereal *, integer *, integer *);
     integer infequ;
-    extern /* Subroutine */ int dpbtrs_(char *, integer *, integer *, integer 
+    extern /* Subroutine */ void dpbtrs_(char *, integer *, integer *, integer 
 	    *, doublereal *, integer *, doublereal *, integer *, integer *);
     doublereal smlnum;
 
@@ -994,7 +995,7 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DPBSVX", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
     if (equil) {
@@ -1061,7 +1062,7 @@ f"> */
 
 	if (*info > 0) {
 	    *rcond = 0.;
-	    return 0;
+	    return;
 	}
     }
 
@@ -1113,7 +1114,7 @@ f"> */
 	*info = *n + 1;
     }
 
-    return 0;
+    return;
 
 /*     End of DPBSVX */
 

@@ -674,7 +674,7 @@ f"> */
 /* >    X. Sun, Computer Science Dept., Duke University, USA */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int cgeqp3_(integer *m, integer *n, complex *a, integer *lda,
+/* Subroutine */ void cgeqp3_(integer *m, integer *n, complex *a, integer *lda,
 	 integer *jpvt, complex *tau, complex *work, integer *lwork, real *
 	rwork, integer *info)
 {
@@ -684,24 +684,24 @@ f"> */
 
     /* Local variables */
     integer nfxd, j, nbmin;
-    extern /* Subroutine */ int cswap_(integer *, complex *, integer *, 
+    extern /* Subroutine */ void cswap_(integer *, complex *, integer *, 
 	    complex *, integer *);
     integer minmn, minws;
-    extern /* Subroutine */ int claqp2_(integer *, integer *, integer *, 
+    extern /* Subroutine */ void claqp2_(integer *, integer *, integer *, 
 	    complex *, integer *, integer *, complex *, real *, real *, 
 	    complex *);
     extern real scnrm2_(integer *, complex *, integer *);
     integer jb, na, nb, sm, sn, nx;
-    extern /* Subroutine */ int cgeqrf_(integer *, integer *, complex *, 
-	    integer *, complex *, complex *, integer *, integer *), xerbla_(
-	    char *, integer *, ftnlen);
+    extern /* Subroutine */ void cgeqrf_(integer *, integer *, complex *, 
+	    integer *, complex *, complex *, integer *, integer *);
+    extern int xerbla_(char *, integer *, ftnlen);
     extern integer ilaenv_(integer *, char *, char *, integer *, integer *, 
 	    integer *, integer *, ftnlen, ftnlen);
-    extern /* Subroutine */ int claqps_(integer *, integer *, integer *, 
+    extern /* Subroutine */ void claqps_(integer *, integer *, integer *, 
 	    integer *, integer *, complex *, integer *, integer *, complex *, 
 	    real *, real *, complex *, complex *, integer *);
     integer topbmn, sminmn;
-    extern /* Subroutine */ int cunmqr_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void cunmqr_(char *, char *, integer *, integer *, 
 	    integer *, complex *, integer *, complex *, complex *, integer *, 
 	    complex *, integer *, integer *);
     integer lwkopt;
@@ -763,9 +763,9 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CGEQP3", &i__1, (ftnlen)6);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Move initial columns up front. */
@@ -921,7 +921,7 @@ L30:
 
     q__1.r = (real) lwkopt, q__1.i = 0.f;
     work[1].r = q__1.r, work[1].i = q__1.i;
-    return 0;
+    return;
 
 /*     End of CGEQP3 */
 

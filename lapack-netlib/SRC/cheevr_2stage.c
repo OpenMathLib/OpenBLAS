@@ -922,7 +922,7 @@ static integer c_n1 = -1;
 /* > \endverbatim */
 
 /*  ===================================================================== */
-/* Subroutine */ int cheevr_2stage_(char *jobz, char *range, char *uplo, 
+/* Subroutine */ void cheevr_2stage_(char *jobz, char *range, char *uplo, 
 	integer *n, complex *a, integer *lda, real *vl, real *vu, integer *il,
 	 integer *iu, real *abstol, integer *m, real *w, complex *z__, 
 	integer *ldz, integer *isuppz, complex *work, integer *lwork, real *
@@ -941,22 +941,22 @@ static integer c_n1 = -1;
     real rmin, rmax;
     logical test;
     integer itmp1, i__, j;
-    extern /* Subroutine */ int chetrd_2stage_(char *, char *, integer *, 
+    extern /* Subroutine */ void chetrd_2stage_(char *, char *, integer *, 
 	    complex *, integer *, real *, real *, complex *, complex *, 
 	    integer *, complex *, integer *, integer *);
     integer indrd, indre;
     real sigma;
     extern logical lsame_(char *, char *);
     integer iinfo;
-    extern /* Subroutine */ int sscal_(integer *, real *, real *, integer *);
+    extern /* Subroutine */ void sscal_(integer *, real *, real *, integer *);
     char order[1];
     integer indwk, lhtrd;
-    extern /* Subroutine */ int cswap_(integer *, complex *, integer *, 
+    extern /* Subroutine */ void cswap_(integer *, complex *, integer *, 
 	    complex *, integer *);
     integer lwmin;
     logical lower;
     integer lwtrd;
-    extern /* Subroutine */ int scopy_(integer *, real *, integer *, real *, 
+    extern /* Subroutine */ void scopy_(integer *, real *, integer *, real *, 
 	    integer *);
     logical wantz;
     integer ib, kd, jj;
@@ -964,7 +964,7 @@ static integer c_n1 = -1;
     integer iscale, ieeeok, indibl, indrdd, indifl, indree;
     logical valeig;
     extern real slamch_(char *);
-    extern /* Subroutine */ int csscal_(integer *, real *, complex *, integer 
+    extern /* Subroutine */ void csscal_(integer *, real *, complex *, integer 
 	    *);
     real safmin;
     extern integer ilaenv_(integer *, char *, char *, integer *, integer *, 
@@ -972,22 +972,22 @@ static integer c_n1 = -1;
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     real abstll, bignum;
     integer indtau, indisp;
-    extern /* Subroutine */ int cstein_(integer *, real *, real *, integer *, 
+    extern /* Subroutine */ void cstein_(integer *, real *, real *, integer *, 
 	    real *, integer *, integer *, complex *, integer *, real *, 
 	    integer *, integer *, integer *);
     integer indiwo, indwkn;
     extern real clansy_(char *, char *, integer *, complex *, integer *, real 
 	    *);
-    extern /* Subroutine */ int cstemr_(char *, char *, integer *, real *, 
+    extern /* Subroutine */ void cstemr_(char *, char *, integer *, real *, 
 	    real *, real *, real *, integer *, integer *, integer *, real *, 
 	    complex *, integer *, integer *, integer *, logical *, real *, 
 	    integer *, integer *, integer *, integer *);
     integer indrwk, liwmin;
     logical tryrac;
-    extern /* Subroutine */ int ssterf_(integer *, real *, real *, integer *);
+    extern /* Subroutine */ void ssterf_(integer *, real *, real *, integer *);
     integer lrwmin, llwrkn, llwork, nsplit;
     real smlnum;
-    extern /* Subroutine */ int sstebz_(char *, char *, integer *, real *, 
+    extern /* Subroutine */ void sstebz_(char *, char *, integer *, real *, 
 	    real *, integer *, integer *, real *, real *, real *, integer *, 
 	    integer *, real *, integer *, integer *, real *, integer *, 
 	    integer *), cunmtr_(char *, char *, char *, 
@@ -1095,9 +1095,9 @@ static integer c_n1 = -1;
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CHEEVR_2STAGE", &i__1, (ftnlen)13);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
@@ -1105,7 +1105,7 @@ static integer c_n1 = -1;
     *m = 0;
     if (*n == 0) {
 	work[1].r = 1.f, work[1].i = 0.f;
-	return 0;
+	return;
     }
 
     if (*n == 1) {
@@ -1129,7 +1129,7 @@ static integer c_n1 = -1;
 	    isuppz[1] = 1;
 	    isuppz[2] = 1;
 	}
-	return 0;
+	return;
     }
 
 /*     Get machine constants. */
@@ -1351,7 +1351,7 @@ L30:
     rwork[1] = (real) lrwmin;
     iwork[1] = liwmin;
 
-    return 0;
+    return;
 
 /*     End of CHEEVR_2STAGE */
 

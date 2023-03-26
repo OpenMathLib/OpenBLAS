@@ -762,7 +762,7 @@ static integer c__2 = 2;
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int ztrevc3_(char *side, char *howmny, logical *select, 
+/* Subroutine */ void ztrevc3_(char *side, char *howmny, logical *select, 
 	integer *n, doublecomplex *t, integer *ldt, doublecomplex *vl, 
 	integer *ldvl, doublecomplex *vr, integer *ldvr, integer *mm, integer 
 	*m, doublecomplex *work, integer *lwork, doublereal *rwork, integer *
@@ -784,16 +784,16 @@ static integer c__2 = 2;
     doublereal scale;
     extern logical lsame_(char *, char *);
     doublereal remax;
-    extern /* Subroutine */ int zgemm_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void zgemm_(char *, char *, integer *, integer *, 
 	    integer *, doublecomplex *, doublecomplex *, integer *, 
 	    doublecomplex *, integer *, doublecomplex *, doublecomplex *, 
 	    integer *);
     logical leftv, bothv;
-    extern /* Subroutine */ int zgemv_(char *, integer *, integer *, 
+    extern /* Subroutine */ void zgemv_(char *, integer *, integer *, 
 	    doublecomplex *, doublecomplex *, integer *, doublecomplex *, 
 	    integer *, doublecomplex *, doublecomplex *, integer *);
     logical somev;
-    extern /* Subroutine */ int zcopy_(integer *, doublecomplex *, integer *, 
+    extern /* Subroutine */ void zcopy_(integer *, doublecomplex *, integer *, 
 	    doublecomplex *, integer *), dlabad_(doublereal *, doublereal *);
     integer nb, ii, ki;
     extern doublereal dlamch_(char *);
@@ -801,18 +801,18 @@ static integer c__2 = 2;
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     extern integer ilaenv_(integer *, char *, char *, integer *, integer *, 
 	    integer *, integer *, ftnlen, ftnlen);
-    extern /* Subroutine */ int zdscal_(integer *, doublereal *, 
+    extern /* Subroutine */ void zdscal_(integer *, doublereal *, 
 	    doublecomplex *, integer *);
     extern integer izamax_(integer *, doublecomplex *, integer *);
-    extern /* Subroutine */ int zlaset_(char *, integer *, integer *, 
+    extern /* Subroutine */ void zlaset_(char *, integer *, integer *, 
 	    doublecomplex *, doublecomplex *, doublecomplex *, integer *);
     logical rightv;
     extern doublereal dzasum_(integer *, doublecomplex *, integer *);
-    extern /* Subroutine */ int zlacpy_(char *, integer *, integer *, 
+    extern /* Subroutine */ void zlacpy_(char *, integer *, integer *, 
 	    doublecomplex *, integer *, doublecomplex *, integer *);
     integer maxwrk;
     doublereal smlnum;
-    extern /* Subroutine */ int zlatrs_(char *, char *, char *, char *, 
+    extern /* Subroutine */ void zlatrs_(char *, char *, char *, char *, 
 	    integer *, doublecomplex *, integer *, doublecomplex *, 
 	    doublereal *, doublereal *, integer *);
     logical lquery;
@@ -906,15 +906,15 @@ static integer c__2 = 2;
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZTREVC3", &i__1, (ftnlen)7);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible. */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /*     Use blocked version of back-transformation if sufficient workspace. */
@@ -1272,7 +1272,7 @@ L130:
 	}
     }
 
-    return 0;
+    return;
 
 /*     End of ZTREVC3 */
 

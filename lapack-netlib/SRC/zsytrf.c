@@ -697,7 +697,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int zsytrf_(char *uplo, integer *n, doublecomplex *a, 
+/* Subroutine */ void zsytrf_(char *uplo, integer *n, doublecomplex *a, 
 	integer *lda, integer *ipiv, doublecomplex *work, integer *lwork, 
 	integer *info)
 {
@@ -710,13 +710,13 @@ f"> */
     integer nbmin, iinfo;
     logical upper;
     integer kb, nb;
-    extern /* Subroutine */ int zsytf2_(char *, integer *, doublecomplex *, 
-	    integer *, integer *, integer *), xerbla_(char *, integer 
-	    *, ftnlen);
+    extern /* Subroutine */ void zsytf2_(char *, integer *, doublecomplex *, 
+	    integer *, integer *, integer *);
+    extern int xerbla_(char *, integer *, ftnlen);
     extern integer ilaenv_(integer *, char *, char *, integer *, integer *, 
 	    integer *, integer *, ftnlen, ftnlen);
     integer ldwork;
-    extern /* Subroutine */ int zlasyf_(char *, integer *, integer *, integer 
+    extern /* Subroutine */ void zlasyf_(char *, integer *, integer *, integer 
 	    *, doublecomplex *, integer *, integer *, doublecomplex *, 
 	    integer *, integer *);
     integer lwkopt;
@@ -769,9 +769,9 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZSYTRF", &i__1, (ftnlen)6);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
     nbmin = 2;
@@ -898,7 +898,7 @@ L20:
 
 L40:
     work[1].r = (doublereal) lwkopt, work[1].i = 0.;
-    return 0;
+    return;
 
 /*     End of ZSYTRF */
 

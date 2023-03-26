@@ -820,7 +820,7 @@ f"> */
 /* >     Mark Fahey, Department of Mathematics, Univ. of Kentucky, USA */
 
 /*  ===================================================================== */
-/* Subroutine */ int zhegvx_(integer *itype, char *jobz, char *range, char *
+/* Subroutine */ void zhegvx_(integer *itype, char *jobz, char *range, char *
 	uplo, integer *n, doublecomplex *a, integer *lda, doublecomplex *b, 
 	integer *ldb, doublereal *vl, doublereal *vu, integer *il, integer *
 	iu, doublereal *abstol, integer *m, doublereal *w, doublecomplex *z__,
@@ -834,7 +834,7 @@ f"> */
     extern logical lsame_(char *, char *);
     char trans[1];
     logical upper, wantz;
-    extern /* Subroutine */ int ztrmm_(char *, char *, char *, char *, 
+    extern /* Subroutine */ void ztrmm_(char *, char *, char *, char *, 
 	    integer *, integer *, doublecomplex *, doublecomplex *, integer *,
 	     doublecomplex *, integer *), 
 	    ztrsm_(char *, char *, char *, char *, integer *, integer *, 
@@ -845,7 +845,7 @@ f"> */
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     extern integer ilaenv_(integer *, char *, char *, integer *, integer *, 
 	    integer *, integer *, ftnlen, ftnlen);
-    extern /* Subroutine */ int zhegst_(integer *, char *, integer *, 
+    extern /* Subroutine */ void zhegst_(integer *, char *, integer *, 
 	    doublecomplex *, integer *, doublecomplex *, integer *, integer *), zheevx_(char *, char *, char *, integer *, 
 	    doublecomplex *, integer *, doublereal *, doublereal *, integer *,
 	     integer *, doublereal *, integer *, doublereal *, doublecomplex *
@@ -944,16 +944,16 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZHEGVX", &i__1, (ftnlen)6);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     *m = 0;
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /*     Form a Cholesky factorization of B. */
@@ -961,7 +961,7 @@ f"> */
     zpotrf_(uplo, n, &b[b_offset], ldb, info);
     if (*info != 0) {
 	*info = *n + *info;
-	return 0;
+	return;
     }
 
 /*     Transform problem to standard eigenvalue problem and solve. */
@@ -1012,7 +1012,7 @@ f"> */
 
     work[1].r = (doublereal) lwkopt, work[1].i = 0.;
 
-    return 0;
+    return;
 
 /*     End of ZHEGVX */
 

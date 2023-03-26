@@ -651,7 +651,7 @@ f"> */
 /* > \ingroup realGEauxiliary */
 
 /*  ===================================================================== */
-/* Subroutine */ int slaqge_(integer *m, integer *n, real *a, integer *lda, 
+/* Subroutine */ void slaqge_(integer *m, integer *n, real *a, integer *lda, 
 	real *r__, real *c__, real *rowcnd, real *colcnd, real *amax, char *
 	equed)
 {
@@ -685,7 +685,7 @@ f"> */
     /* Function Body */
     if (*m <= 0 || *n <= 0) {
 	*(unsigned char *)equed = 'N';
-	return 0;
+	return;
     }
 
 /*     Initialize LARGE and SMALL. */
@@ -749,7 +749,7 @@ f"> */
 	*(unsigned char *)equed = 'B';
     }
 
-    return 0;
+    return;
 
 /*     End of SLAQGE */
 

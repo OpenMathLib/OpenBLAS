@@ -690,7 +690,7 @@ f"> */
 /* > at Berkeley, USA */
 
 /*  ===================================================================== */
-/* Subroutine */ int slaed0_(integer *icompq, integer *qsiz, integer *n, real 
+/* Subroutine */ void slaed0_(integer *icompq, integer *qsiz, integer *n, real 
 	*d__, real *e, real *q, integer *ldq, real *qstore, integer *ldqs, 
 	real *work, integer *iwork, integer *info)
 {
@@ -701,14 +701,14 @@ f"> */
     /* Local variables */
     real temp;
     integer curr, i__, j, k;
-    extern /* Subroutine */ int sgemm_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void sgemm_(char *, char *, integer *, integer *, 
 	    integer *, real *, real *, integer *, real *, integer *, real *, 
 	    real *, integer *);
     integer iperm, indxq, iwrem;
-    extern /* Subroutine */ int scopy_(integer *, real *, integer *, real *, 
+    extern /* Subroutine */ void scopy_(integer *, real *, integer *, real *, 
 	    integer *);
     integer iqptr, tlvls;
-    extern /* Subroutine */ int slaed1_(integer *, real *, real *, integer *, 
+    extern /* Subroutine */ void slaed1_(integer *, real *, real *, integer *, 
 	    integer *, real *, integer *, real *, integer *, integer *), 
 	    slaed7_(integer *, integer *, integer *, integer *, integer *, 
 	    integer *, real *, real *, integer *, integer *, real *, integer *
@@ -719,10 +719,10 @@ f"> */
     extern integer ilaenv_(integer *, char *, char *, integer *, integer *, 
 	    integer *, integer *, ftnlen, ftnlen);
     integer igivnm, submat;
-    extern /* Subroutine */ int slacpy_(char *, integer *, integer *, real *, 
+    extern /* Subroutine */ void slacpy_(char *, integer *, integer *, real *, 
 	    integer *, real *, integer *);
     integer curprb, subpbs, igivpt, curlvl, matsiz, iprmpt, smlsiz;
-    extern /* Subroutine */ int ssteqr_(char *, integer *, real *, real *, 
+    extern /* Subroutine */ void ssteqr_(char *, integer *, real *, real *, 
 	    real *, integer *, real *, integer *);
     integer lgn, msd2, smm1, spm1, spm2;
 
@@ -767,13 +767,13 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("SLAED0", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
     smlsiz = ilaenv_(&c__9, "SLAED0", " ", &c__0, &c__0, &c__0, &c__0, (
@@ -823,10 +823,10 @@ L10:
 
 	temp = log((real) (*n)) / log(2.f);
 	lgn = (integer) temp;
-	if (pow_ii(&c__2, &lgn) < *n) {
+	if (pow_ii(c__2, lgn) < *n) {
 	    ++lgn;
 	}
-	if (pow_ii(&c__2, &lgn) < *n) {
+	if (pow_ii(c__2, lgn) < *n) {
 	    ++lgn;
 	}
 	iprmpt = indxq + *n + 1;
@@ -992,7 +992,7 @@ L130:
     *info = submat * (*n + 1) + submat + matsiz - 1;
 
 L140:
-    return 0;
+    return;
 
 /*     End of SLAED0 */
 

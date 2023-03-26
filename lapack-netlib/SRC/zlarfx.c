@@ -633,7 +633,7 @@ f"> */
 /* > \ingroup complex16OTHERauxiliary */
 
 /*  ===================================================================== */
-/* Subroutine */ int zlarfx_(char *side, integer *m, integer *n, 
+/* Subroutine */ void zlarfx_(char *side, integer *m, integer *n, 
 	doublecomplex *v, doublecomplex *tau, doublecomplex *c__, integer *
 	ldc, doublecomplex *work)
 {
@@ -646,7 +646,7 @@ f"> */
     /* Local variables */
     integer j;
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int zlarf_(char *, integer *, integer *, 
+    extern /* Subroutine */ void zlarf_(char *, integer *, integer *, 
 	    doublecomplex *, integer *, doublecomplex *, doublecomplex *, 
 	    integer *, doublecomplex *);
     doublecomplex t1, t2, t3, t4, t5, t6, t7, t8, t9, v1, v2, v3, v4, v5, v6, 
@@ -671,7 +671,7 @@ f"> */
 
     /* Function Body */
     if (tau->r == 0. && tau->i == 0.) {
-	return 0;
+	return;
     }
     if (lsame_(side, "L")) {
 
@@ -2595,7 +2595,7 @@ L390:
 	goto L410;
     }
 L410:
-    return 0;
+    return;
 
 /*     End of ZLARFX */
 

@@ -664,7 +664,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int cgehd2_(integer *n, integer *ilo, integer *ihi, complex *
+/* Subroutine */ void cgehd2_(integer *n, integer *ilo, integer *ihi, complex *
 	a, integer *lda, complex *tau, complex *work, integer *info)
 {
     /* System generated locals */
@@ -674,10 +674,10 @@ f"> */
     /* Local variables */
     integer i__;
     complex alpha;
-    extern /* Subroutine */ int clarf_(char *, integer *, integer *, complex *
+    extern /* Subroutine */ void clarf_(char *, integer *, integer *, complex *
 	    , integer *, complex *, complex *, integer *, complex *), 
-	    clarfg_(integer *, complex *, complex *, integer *, complex *), 
-	    xerbla_(char *, integer *, ftnlen);
+	    clarfg_(integer *, complex *, complex *, integer *, complex *); 
+    extern int xerbla_(char *, integer *, ftnlen);
 
 
 /*  -- LAPACK computational routine (version 3.7.0) -- */
@@ -712,7 +712,7 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CGEHD2", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
     i__1 = *ihi - 1;
@@ -749,7 +749,7 @@ f"> */
 /* L10: */
     }
 
-    return 0;
+    return;
 
 /*     End of CGEHD2 */
 

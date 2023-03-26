@@ -635,7 +635,7 @@ x.f"> */
 /* > \ingroup complex16HEcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int zhetri2x_(char *uplo, integer *n, doublecomplex *a, 
+/* Subroutine */ void zhetri2x_(char *uplo, integer *n, doublecomplex *a, 
 	integer *lda, integer *ipiv, doublecomplex *work, integer *nb, 
 	integer *info)
 {
@@ -648,31 +648,32 @@ x.f"> */
     /* Local variables */
     integer invd;
     doublecomplex akkp1;
-    extern /* Subroutine */ int zheswapr_(char *, integer *, doublecomplex *, 
+    extern /* Subroutine */ void zheswapr_(char *, integer *, doublecomplex *, 
 	    integer *, integer *, integer *);
     doublecomplex d__;
     integer i__, j, k;
     doublecomplex t;
     extern logical lsame_(char *, char *);
     integer iinfo;
-    extern /* Subroutine */ int zgemm_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void zgemm_(char *, char *, integer *, integer *, 
 	    integer *, doublecomplex *, doublecomplex *, integer *, 
 	    doublecomplex *, integer *, doublecomplex *, doublecomplex *, 
 	    integer *);
     integer count;
     logical upper;
-    extern /* Subroutine */ int ztrmm_(char *, char *, char *, char *, 
+    extern /* Subroutine */ void ztrmm_(char *, char *, char *, char *, 
 	    integer *, integer *, doublecomplex *, doublecomplex *, integer *,
 	     doublecomplex *, integer *);
     doublecomplex ak, u01_i_j__;
     integer u11;
     doublecomplex u11_i_j__;
     integer ip;
-    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen), ztrtri_(
+    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
+    extern int ztrtri_(
 	    char *, char *, integer *, doublecomplex *, integer *, integer *);
     integer nnb, cut;
     doublecomplex akp1, u01_ip1_j__, u11_ip1_j__;
-    extern /* Subroutine */ int zsyconv_(char *, char *, integer *, 
+    extern /* Subroutine */ void zsyconv_(char *, char *, integer *, 
 	    doublecomplex *, integer *, integer *, doublecomplex *, integer *);
 
 
@@ -713,10 +714,10 @@ x.f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZHETRI2X", &i__1, (ftnlen)8);
-	return 0;
+	return;
     }
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /*     Convert A */
@@ -734,7 +735,7 @@ x.f"> */
 	for (*info = *n; *info >= 1; --(*info)) {
 	    i__1 = *info + *info * a_dim1;
 	    if (ipiv[*info] > 0 && (a[i__1].r == 0. && a[i__1].i == 0.)) {
-		return 0;
+		return;
 	    }
 	}
     } else {
@@ -745,7 +746,7 @@ x.f"> */
 	for (*info = 1; *info <= i__1; ++(*info)) {
 	    i__2 = *info + *info * a_dim1;
 	    if (ipiv[*info] > 0 && (a[i__2].r == 0. && a[i__2].i == 0.)) {
-		return 0;
+		return;
 	    }
 	}
     }
@@ -1388,7 +1389,7 @@ x.f"> */
 	}
     }
 
-    return 0;
+    return;
 
 /*     End of ZHETRI2X */
 

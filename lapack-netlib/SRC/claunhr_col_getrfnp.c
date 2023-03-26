@@ -661,7 +661,7 @@ _col_getrfnp.f"> */
 /* > \endverbatim */
 
 /*  ===================================================================== */
-/* Subroutine */ int claunhr_col_getrfnp_(integer *m, integer *n, complex *a,
+/* Subroutine */ void claunhr_col_getrfnp_(integer *m, integer *n, complex *a,
 	 integer *lda, complex *d__, integer *info)
 {
     /* System generated locals */
@@ -669,14 +669,14 @@ _col_getrfnp.f"> */
     complex q__1;
 
     /* Local variables */
-    extern /* Subroutine */ int claunhr_col_getrfnp2_(integer *, integer *, 
+    extern /* Subroutine */ void claunhr_col_getrfnp2_(integer *, integer *, 
 	    complex *, integer *, complex *, integer *);
     integer j;
-    extern /* Subroutine */ int cgemm_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void cgemm_(char *, char *, integer *, integer *, 
 	    integer *, complex *, complex *, integer *, complex *, integer *, 
 	    complex *, complex *, integer *);
     integer iinfo;
-    extern /* Subroutine */ int ctrsm_(char *, char *, char *, char *, 
+    extern /* Subroutine */ void ctrsm_(char *, char *, char *, char *, 
 	    integer *, integer *, complex *, complex *, integer *, complex *, 
 	    integer *);
     integer jb, nb;
@@ -714,13 +714,13 @@ _col_getrfnp.f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CLAUNHR_COL_GETRFNP", &i__1, (ftnlen)19);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (f2cmin(*m,*n) == 0) {
-	return 0;
+	return;
     }
 
 /*     Determine the block size for this environment. */
@@ -772,7 +772,7 @@ _col_getrfnp.f"> */
 	    }
 	}
     }
-    return 0;
+    return;
 
 /*     End of CLAUNHR_COL_GETRFNP */
 

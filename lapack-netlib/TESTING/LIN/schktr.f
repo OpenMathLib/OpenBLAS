@@ -30,7 +30,7 @@
 *>
 *> \verbatim
 *>
-*> SCHKTR tests STRTRI, -TRS, -RFS, and -CON, and SLATRS
+*> SCHKTR tests STRTRI, -TRS, -RFS, and -CON, and SLATRS(3)
 *> \endverbatim
 *
 *  Arguments:
@@ -187,7 +187,7 @@
       INTEGER            NTYPE1, NTYPES
       PARAMETER          ( NTYPE1 = 10, NTYPES = 18 )
       INTEGER            NTESTS
-      PARAMETER          ( NTESTS = 9 )
+      PARAMETER          ( NTESTS = 10 )
       INTEGER            NTRAN
       PARAMETER          ( NTRAN = 3 )
       REAL               ONE, ZERO
@@ -198,13 +198,13 @@
       CHARACTER*3        PATH
       INTEGER            I, IDIAG, IMAT, IN, INB, INFO, IRHS, ITRAN,
      $                   IUPLO, K, LDA, N, NB, NERRS, NFAIL, NRHS, NRUN
-      REAL               AINVNM, ANORM, DUMMY, RCOND, RCONDC, RCONDI,
-     $                   RCONDO, SCALE
+      REAL               AINVNM, ANORM, BIGNUM, DUMMY, RCOND, RCONDC,
+     $                   RCONDI, RCONDO, RES, SCALE, SLAMCH
 *     ..
 *     .. Local Arrays ..
       CHARACTER          TRANSS( NTRAN ), UPLOS( 2 )
       INTEGER            ISEED( 4 ), ISEEDY( 4 )
-      REAL               RESULT( NTESTS )
+      REAL               RESULT( NTESTS ), SCALE3( 2 )
 *     ..
 *     .. External Functions ..
       LOGICAL            LSAME
@@ -213,9 +213,9 @@
 *     ..
 *     .. External Subroutines ..
       EXTERNAL           ALAERH, ALAHD, ALASUM, SCOPY, SERRTR, SGET04,
-     $                   SLACPY, SLARHS, SLATRS, SLATTR, STRCON, STRRFS,
-     $                   STRT01, STRT02, STRT03, STRT05, STRT06, STRTRI,
-     $                   STRTRS, XLAENV
+     $                   SLACPY, SLARHS, SLATRS, SLATRS3, SLATTR, SSCAL,
+     $                   STRCON, STRRFS, STRT01, STRT02, STRT03, STRT05,
+     $                   STRT06, STRTRI, STRTRS, XLAENV, SLAMCH
 *     ..
 *     .. Scalars in Common ..
       LOGICAL            LERR, OK
@@ -239,6 +239,7 @@
 *
       PATH( 1: 1 ) = 'Single precision'
       PATH( 2: 3 ) = 'TR'
+      BIGNUM = SLAMCH('Overflow') / SLAMCH('Precision')
       NRUN = 0
       NFAIL = 0
       NERRS = 0
@@ -539,6 +540,33 @@
      $                         RWORK, ONE, B( N+1 ), LDA, X, LDA, WORK,
      $                         RESULT( 9 ) )
 *
+*+    TEST 10
+*                 Solve op(A)*X = B
+*
+                  SRNAMT = 'SLATRS3'
+                  CALL SCOPY( N, X, 1, B, 1 )
+                  CALL SCOPY( N, X, 1, B( N+1 ), 1 )
+                  CALL SSCAL( N, BIGNUM, B( N+1 ), 1 )
+                  CALL SLATRS3( UPLO, TRANS, DIAG, 'N', N, 2, A, LDA,
+     $                          B, MAX(1, N), SCALE3, RWORK, WORK, NMAX,
+     $                          INFO )
+*
+*                 Check error code from SLATRS3.
+*
+                  IF( INFO.NE.0 )
+     $               CALL ALAERH( PATH, 'SLATRS3', INFO, 0,
+     $                            UPLO // TRANS // DIAG // 'N', N, N,
+     $                            -1, -1, -1, IMAT, NFAIL, NERRS, NOUT )
+*
+                  CALL STRT03( UPLO, TRANS, DIAG, N, 1, A, LDA,
+     $                         SCALE3( 1 ), RWORK, ONE, B( 1 ), LDA,
+     $                         X, LDA, WORK, RESULT( 10 ) )
+                  CALL SSCAL( N, BIGNUM, X, 1 )
+                  CALL STRT03( UPLO, TRANS, DIAG, N, 1, A, LDA,
+     $                         SCALE3( 2 ), RWORK, ONE, B( N+1 ), LDA,
+     $                         X, LDA, WORK, RES )
+                  RESULT( 10 ) = MAX( RESULT( 10 ), RES )
+*
 *                 Print information about the tests that did not pass
 *                 the threshold.
 *
@@ -556,7 +584,14 @@
      $                  DIAG, 'Y', N, IMAT, 9, RESULT( 9 )
                      NFAIL = NFAIL + 1
                   END IF
-                  NRUN = NRUN + 2
+                  IF( RESULT( 10 ).GE.THRESH ) THEN
+                     IF( NFAIL.EQ.0 .AND. NERRS.EQ.0 )
+     $                  CALL ALAHD( NOUT, PATH )
+                     WRITE( NOUT, FMT = 9996 )'SLATRS3', UPLO, TRANS,
+     $                  DIAG, 'N', N, IMAT, 10, RESULT( 10 )
+                     NFAIL = NFAIL + 1
+                  END IF
+                  NRUN = NRUN + 3
    90          CONTINUE
   100       CONTINUE
   110    CONTINUE
@@ -569,8 +604,8 @@
  9999 FORMAT( ' UPLO=''', A1, ''', DIAG=''', A1, ''', N=', I5, ', NB=',
      $      I4, ', type ', I2, ', test(', I2, ')= ', G12.5 )
  9998 FORMAT( ' UPLO=''', A1, ''', TRANS=''', A1, ''', DIAG=''', A1,
-     $      ''', N=', I5, ', NB=', I4, ', type ', I2, ',
-     $      test(', I2, ')= ', G12.5 )
+     $      ''', N=', I5, ', NB=', I4, ', type ', I2, ', test(',
+     $      I2, ')= ', G12.5 )
  9997 FORMAT( ' NORM=''', A1, ''', UPLO =''', A1, ''', N=', I5, ',',
      $      11X, ' type ', I2, ', test(', I2, ')=', G12.5 )
  9996 FORMAT( 1X, A, '( ''', A1, ''', ''', A1, ''', ''', A1, ''', ''',

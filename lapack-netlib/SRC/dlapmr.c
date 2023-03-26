@@ -613,7 +613,7 @@ f"> */
 /* > \ingroup doubleOTHERauxiliary */
 
 /*  ===================================================================== */
-/* Subroutine */ int dlapmr_(logical *forwrd, integer *m, integer *n, 
+/* Subroutine */ void dlapmr_(logical *forwrd, integer *m, integer *n, 
 	doublereal *x, integer *ldx, integer *k)
 {
     /* System generated locals */
@@ -641,7 +641,7 @@ f"> */
 
     /* Function Body */
     if (*m <= 1) {
-	return 0;
+	return;
     }
 
     i__1 = *m;
@@ -727,7 +727,7 @@ L80:
 
     }
 
-    return 0;
+    return;
 
 /*     End of ZLAPMT */
 

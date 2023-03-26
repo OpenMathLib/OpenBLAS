@@ -693,7 +693,7 @@ mv.f"> */
 /* > \ingroup realGBcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int sla_gbamv_(integer *trans, integer *m, integer *n, 
+/* Subroutine */ void sla_gbamv_(integer *trans, integer *m, integer *n, 
 	integer *kl, integer *ku, real *alpha, real *ab, integer *ldab, real *
 	x, integer *incx, real *beta, real *y, integer *incy)
 {
@@ -752,13 +752,13 @@ mv.f"> */
     }
     if (info != 0) {
 	xerbla_("SLA_GBAMV ", &info, (ftnlen)10);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible. */
 
     if (*m == 0 || *n == 0 || *alpha == 0.f && *beta == 1.f) {
-	return 0;
+	return;
     }
 
 /*     Set  LENX  and  LENY, the lengths of the vectors x and y, and set */
@@ -931,7 +931,7 @@ mv.f"> */
 	}
     }
 
-    return 0;
+    return;
 
 /*     End of SLA_GBAMV */
 

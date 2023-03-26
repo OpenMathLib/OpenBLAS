@@ -638,7 +638,7 @@ f"> */
 /* > \ingroup realGTcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int sgtts2_(integer *itrans, integer *n, integer *nrhs, real 
+/* Subroutine */ void sgtts2_(integer *itrans, integer *n, integer *nrhs, real 
 	*dl, real *d__, real *du, real *du2, integer *ipiv, real *b, integer *
 	ldb)
 {
@@ -673,7 +673,7 @@ f"> */
 
     /* Function Body */
     if (*n == 0 || *nrhs == 0) {
-	return 0;
+	return;
     }
 
     if (*itrans == 0) {
@@ -825,6 +825,6 @@ L70:
 
 /*     End of SGTTS2 */
 
-    return 0;
+    return;
 } /* sgtts2_ */
 

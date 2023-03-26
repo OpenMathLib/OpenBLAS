@@ -628,7 +628,7 @@ f"> */
 /* > \ingroup realOTHERcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int sorg2l_(integer *m, integer *n, integer *k, real *a, 
+/* Subroutine */ void sorg2l_(integer *m, integer *n, integer *k, real *a, 
 	integer *lda, real *tau, real *work, integer *info)
 {
     /* System generated locals */
@@ -637,7 +637,7 @@ f"> */
 
     /* Local variables */
     integer i__, j, l;
-    extern /* Subroutine */ int sscal_(integer *, real *, real *, integer *), 
+    extern /* Subroutine */ void sscal_(integer *, real *, real *, integer *), 
 	    slarf_(char *, integer *, integer *, real *, integer *, real *, 
 	    real *, integer *, real *);
     integer ii;
@@ -676,13 +676,13 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("SORG2L", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n <= 0) {
-	return 0;
+	return;
     }
 
 /*     Initialise columns 1:n-k to columns of the unit matrix */
@@ -723,7 +723,7 @@ f"> */
 	}
 /* L40: */
     }
-    return 0;
+    return;
 
 /*     End of SORG2L */
 

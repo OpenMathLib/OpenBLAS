@@ -655,7 +655,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int dgeqpf_(integer *m, integer *n, doublereal *a, integer *
+/* Subroutine */ void dgeqpf_(integer *m, integer *n, doublereal *a, integer *
 	lda, integer *jpvt, doublereal *tau, doublereal *work, integer *info)
 {
     /* System generated locals */
@@ -668,11 +668,11 @@ f"> */
     doublereal temp2;
     integer i__, j;
     doublereal tol3z;
-    extern /* Subroutine */ int dlarf_(char *, integer *, integer *, 
+    extern /* Subroutine */ void dlarf_(char *, integer *, integer *, 
 	    doublereal *, integer *, doublereal *, doublereal *, integer *, 
 	    doublereal *);
     integer itemp;
-    extern /* Subroutine */ int dswap_(integer *, doublereal *, integer *, 
+    extern /* Subroutine */ void dswap_(integer *, doublereal *, integer *, 
 	    doublereal *, integer *), dgeqr2_(integer *, integer *, 
 	    doublereal *, integer *, doublereal *, doublereal *, integer *), 
 	    dorm2r_(char *, char *, integer *, integer *, integer *, 
@@ -681,10 +681,10 @@ f"> */
     integer ma;
     extern doublereal dlamch_(char *);
     integer mn;
-    extern /* Subroutine */ int dlarfg_(integer *, doublereal *, doublereal *,
+    extern /* Subroutine */ void dlarfg_(integer *, doublereal *, doublereal *,
 	     integer *, doublereal *);
     extern integer idamax_(integer *, doublereal *, integer *);
-    extern /* Subroutine */ int xerbla_(char *, integer *);
+    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     doublereal aii;
     integer pvt;
 
@@ -719,8 +719,8 @@ f"> */
     }
     if (*info != 0) {
 	i__1 = -(*info);
-	xerbla_("DGEQPF", &i__1);
-	return 0;
+	xerbla_("DGEQPF", &i__1, 6);
+	return;
     }
 
     mn = f2cmin(*m,*n);
@@ -854,7 +854,7 @@ f"> */
 /* L40: */
 	}
     }
-    return 0;
+    return;
 
 /*     End of DGEQPF */
 

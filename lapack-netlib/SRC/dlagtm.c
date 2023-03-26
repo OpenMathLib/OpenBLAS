@@ -654,7 +654,7 @@ f"> */
 /* > \ingroup doubleOTHERauxiliary */
 
 /*  ===================================================================== */
-/* Subroutine */ int dlagtm_(char *trans, integer *n, integer *nrhs, 
+/* Subroutine */ void dlagtm_(char *trans, integer *n, integer *nrhs, 
 	doublereal *alpha, doublereal *dl, doublereal *d__, doublereal *du, 
 	doublereal *x, integer *ldx, doublereal *beta, doublereal *b, integer 
 	*ldb)
@@ -689,7 +689,7 @@ f"> */
 
     /* Function Body */
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /*     Multiply B by BETA if BETA.NE.1. */
@@ -821,7 +821,7 @@ f"> */
 	    }
 	}
     }
-    return 0;
+    return;
 
 /*     End of DLAGTM */
 

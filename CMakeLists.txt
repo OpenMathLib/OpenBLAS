@@ -8,7 +8,7 @@ project(OpenBLAS C ASM)
 
 set(OpenBLAS_MAJOR_VERSION 0)
 set(OpenBLAS_MINOR_VERSION 3)
-set(OpenBLAS_PATCH_VERSION 21)
+set(OpenBLAS_PATCH_VERSION 22)
 
 set(OpenBLAS_VERSION "${OpenBLAS_MAJOR_VERSION}.${OpenBLAS_MINOR_VERSION}.${OpenBLAS_PATCH_VERSION}")
 
@@ -35,6 +35,8 @@ option(BUILD_RELAPACK "Build with ReLAPACK (recursive implementation of several 
 option(USE_LOCKING "Use locks even in single-threaded builds to make them callable from multiple threads" OFF)
 
 option(USE_PERL "Use the older PERL scripts for build preparation instead of universal shell scripts" OFF)
+
+option(NO_WARMUP "Do not run a benchmark on each startup just to find the best location for the memory buffer" ON)
 
 if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
   option(NO_AFFINITY "Disable support for CPU affinity masks to avoid binding processes from e.g. R or numpy/scipy to a single core" ON)
@@ -212,10 +214,10 @@ if(NOT NO_LAPACKE)
   add_library(LAPACKE OBJECT ${LAPACKE_SOURCES})
   list(APPEND TARGET_OBJS "$<TARGET_OBJECTS:LAPACKE>")
 endif()
-if(BUILD_RELAPACK)
-  add_library(RELAPACK OBJECT ${RELA_SOURCES})
-  list(APPEND TARGET_OBJS "$<TARGET_OBJECTS:RELAPACK>")
-endif()
+#if(BUILD_RELAPACK)
+#  add_library(RELAPACK OBJECT ${RELA_SOURCES})
+#  list(APPEND TARGET_OBJS "$<TARGET_OBJECTS:RELAPACK>")
+#endif()
 set(OpenBLAS_LIBS "")
 if(BUILD_STATIC_LIBS)
   add_library(${OpenBLAS_LIBNAME}_static STATIC ${TARGET_OBJS} ${OpenBLAS_DEF_FILE})
@@ -236,7 +238,7 @@ endif()
 set_target_properties(${OpenBLAS_LIBS} PROPERTIES OUTPUT_NAME ${OpenBLAS_LIBNAME})
 
 # Android needs to explicitly link against libm
-if(ANDROID)
+if (${CMAKE_SYSTEM_NAME} MATCHES "AIX|Android|Linux|FreeBSD|OpenBSD|NetBSD|DragonFly|Darwin")
   if(BUILD_STATIC_LIBS)
     target_link_libraries(${OpenBLAS_LIBNAME}_static m)
   endif()
@@ -396,7 +398,7 @@ if (BUILD_SHARED_LIBS AND NOT ${SYMBOLPREFIX}${SYMBOLSUFFIX} STREQUAL "")
     message(STATUS "adding suffix ${SYMBOLSUFFIX} to names of exported symbols in ${OpenBLAS_LIBNAME}")
   endif()
 
-  if (NOT DEFINED USE_PERL)
+  if (NOT USE_PERL)
   add_custom_command(TARGET ${OpenBLAS_LIBNAME}_shared POST_BUILD
     COMMAND  ${PROJECT_SOURCE_DIR}/exports/gensymbol "objcopy" "${ARCH}" "${BU}" "${EXPRECISION_IN}" "${NO_CBLAS_IN}" "${NO_LAPACK_IN}" "${NO_LAPACKE_IN}" "${NEED2UNDERSCORES_IN}" "${ONLY_CBLAS_IN}" \"${SYMBOLPREFIX}\" \"${SYMBOLSUFFIX}\" "${BUILD_LAPACK_DEPRECATED}" "${BUILD_BFLOAT16}" "${BUILD_SINGLE}" "${BUILD_DOUBLE}" "${BUILD_COMPLEX}" "${BUILD_COMPLEX16}" > ${PROJECT_BINARY_DIR}/objcopy.def
     COMMAND objcopy -v --redefine-syms ${PROJECT_BINARY_DIR}/objcopy.def  ${PROJECT_BINARY_DIR}/lib/lib${OpenBLAS_LIBNAME}.so

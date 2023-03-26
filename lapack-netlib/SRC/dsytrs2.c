@@ -644,7 +644,7 @@ static doublereal c_b10 = 1.;
 /* > \ingroup doubleSYcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int dsytrs2_(char *uplo, integer *n, integer *nrhs, 
+/* Subroutine */ void dsytrs2_(char *uplo, integer *n, integer *nrhs, 
 	doublereal *a, integer *lda, integer *ipiv, doublereal *b, integer *
 	ldb, doublereal *work, integer *info)
 {
@@ -655,12 +655,12 @@ static doublereal c_b10 = 1.;
     /* Local variables */
     doublereal akm1k;
     integer i__, j, k;
-    extern /* Subroutine */ int dscal_(integer *, doublereal *, doublereal *, 
+    extern /* Subroutine */ void dscal_(integer *, doublereal *, doublereal *, 
 	    integer *);
     extern logical lsame_(char *, char *);
     doublereal denom;
     integer iinfo;
-    extern /* Subroutine */ int dswap_(integer *, doublereal *, integer *, 
+    extern /* Subroutine */ void dswap_(integer *, doublereal *, integer *, 
 	    doublereal *, integer *), dtrsm_(char *, char *, char *, char *, 
 	    integer *, integer *, doublereal *, doublereal *, integer *, 
 	    doublereal *, integer *);
@@ -669,7 +669,7 @@ static doublereal c_b10 = 1.;
     integer kp;
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     doublereal akm1, bkm1;
-    extern /* Subroutine */ int dsyconv_(char *, char *, integer *, 
+    extern /* Subroutine */ void dsyconv_(char *, char *, integer *, 
 	    doublereal *, integer *, integer *, doublereal *, integer *);
 
 
@@ -709,13 +709,13 @@ static doublereal c_b10 = 1.;
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DSYTRS2", &i__1, (ftnlen)7);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0 || *nrhs == 0) {
-	return 0;
+	return;
     }
 
 /*     Convert A */
@@ -900,7 +900,7 @@ static doublereal c_b10 = 1.;
 
     dsyconv_(uplo, "R", n, &a[a_offset], lda, &ipiv[1], &work[1], &iinfo);
 
-    return 0;
+    return;
 
 /*     End of DSYTRS2 */
 

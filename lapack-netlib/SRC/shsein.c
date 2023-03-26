@@ -775,7 +775,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int shsein_(char *side, char *eigsrc, char *initv, logical *
+/* Subroutine */ void shsein_(char *side, char *eigsrc, char *initv, logical *
 	select, integer *n, real *h__, integer *ldh, real *wr, real *wi, real 
 	*vl, integer *ldvl, real *vr, integer *ldvr, integer *mm, integer *m, 
 	real *work, integer *ifaill, integer *ifailr, integer *info)
@@ -795,10 +795,10 @@ f"> */
     real hnorm;
     integer kl, kr;
     extern real slamch_(char *);
-    extern /* Subroutine */ int slaein_(logical *, logical *, integer *, real 
+    extern /* Subroutine */ void slaein_(logical *, logical *, integer *, real 
 	    *, integer *, real *, real *, real *, real *, real *, integer *, 
-	    real *, real *, real *, real *, integer *), xerbla_(char *, 
-	    integer *, ftnlen);
+	    real *, real *, real *, real *, integer *);
+    extern int xerbla_(char *, integer *, ftnlen);
     real bignum;
     extern real slanhs_(char *, integer *, real *, integer *, real *);
     extern logical sisnan_(real *);
@@ -896,13 +896,13 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("SHSEIN", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible. */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /*     Set machine-dependent constants. */
@@ -975,7 +975,7 @@ L50:
 			work[1]);
 		if (sisnan_(&hnorm)) {
 		    *info = -6;
-		    return 0;
+		    return;
 		} else if (hnorm > 0.f) {
 		    eps3 = hnorm * ulp;
 		} else {
@@ -1084,7 +1084,7 @@ L60:
 /* L120: */
     }
 
-    return 0;
+    return;
 
 /*     End of SHSEIN */
 

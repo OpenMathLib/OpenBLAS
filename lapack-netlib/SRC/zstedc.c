@@ -728,7 +728,7 @@ f"> */
 /* > at Berkeley, USA */
 
 /*  ===================================================================== */
-/* Subroutine */ int zstedc_(char *compz, integer *n, doublereal *d__, 
+/* Subroutine */ void zstedc_(char *compz, integer *n, doublereal *d__, 
 	doublereal *e, doublecomplex *z__, integer *ldz, doublecomplex *work, 
 	integer *lwork, doublereal *rwork, integer *lrwork, integer *iwork, 
 	integer *liwork, integer *info)
@@ -743,36 +743,37 @@ f"> */
     doublereal p;
     extern logical lsame_(char *, char *);
     integer lwmin, start;
-    extern /* Subroutine */ int zswap_(integer *, doublecomplex *, integer *, 
+    extern /* Subroutine */ void zswap_(integer *, doublecomplex *, integer *, 
 	    doublecomplex *, integer *), zlaed0_(integer *, integer *, 
 	    doublereal *, doublereal *, doublecomplex *, integer *, 
 	    doublecomplex *, integer *, doublereal *, integer *, integer *);
     integer ii, ll;
     extern doublereal dlamch_(char *);
-    extern /* Subroutine */ int dlascl_(char *, integer *, integer *, 
+    extern /* Subroutine */ void dlascl_(char *, integer *, integer *, 
 	    doublereal *, doublereal *, integer *, integer *, doublereal *, 
 	    integer *, integer *), dstedc_(char *, integer *, 
 	    doublereal *, doublereal *, doublereal *, integer *, doublereal *,
 	     integer *, integer *, integer *, integer *), dlaset_(
 	    char *, integer *, integer *, doublereal *, doublereal *, 
-	    doublereal *, integer *), xerbla_(char *, integer *, ftnlen);
+	    doublereal *, integer *);
+    extern int xerbla_(char *, integer *, ftnlen);
     extern integer ilaenv_(integer *, char *, char *, integer *, integer *, 
 	    integer *, integer *, ftnlen, ftnlen);
     integer finish;
     extern doublereal dlanst_(char *, integer *, doublereal *, doublereal *);
-    extern /* Subroutine */ int dsterf_(integer *, doublereal *, doublereal *,
+    extern /* Subroutine */ void dsterf_(integer *, doublereal *, doublereal *,
 	     integer *), zlacrm_(integer *, integer *, doublecomplex *, 
 	    integer *, doublereal *, integer *, doublecomplex *, integer *, 
 	    doublereal *);
     integer liwmin, icompz;
-    extern /* Subroutine */ int dsteqr_(char *, integer *, doublereal *, 
+    extern /* Subroutine */ void dsteqr_(char *, integer *, doublereal *, 
 	    doublereal *, doublereal *, integer *, doublereal *, integer *), zlacpy_(char *, integer *, integer *, doublecomplex *, 
 	    integer *, doublecomplex *, integer *);
     doublereal orgnrm;
     integer lrwmin;
     logical lquery;
     integer smlsiz;
-    extern /* Subroutine */ int zsteqr_(char *, integer *, doublereal *, 
+    extern /* Subroutine */ void zsteqr_(char *, integer *, doublereal *, 
 	    doublereal *, doublecomplex *, integer *, doublereal *, integer *);
     integer lgn;
     doublereal eps;
@@ -836,10 +837,10 @@ f"> */
 	    lrwmin = *n - 1 << 1;
 	} else if (icompz == 1) {
 	    lgn = (integer) (log((doublereal) (*n)) / log(2.));
-	    if (pow_ii(&c__2, &lgn) < *n) {
+	    if (pow_ii(c__2, lgn) < *n) {
 		++lgn;
 	    }
-	    if (pow_ii(&c__2, &lgn) < *n) {
+	    if (pow_ii(c__2, lgn) < *n) {
 		++lgn;
 	    }
 	    lwmin = *n * *n;
@@ -870,22 +871,22 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZSTEDC", &i__1, (ftnlen)6);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
     if (*n == 1) {
 	if (icompz != 0) {
 	    i__1 = z_dim1 + 1;
 	    z__[i__1].r = 1., z__[i__1].i = 0.;
 	}
-	return 0;
+	return;
     }
 
 /*     If the following conditional clause is removed, then the routine */
@@ -1050,7 +1051,7 @@ L70:
     rwork[1] = (doublereal) lrwmin;
     iwork[1] = liwmin;
 
-    return 0;
+    return;
 
 /*     End of ZSTEDC */
 

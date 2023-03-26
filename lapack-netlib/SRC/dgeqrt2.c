@@ -643,25 +643,25 @@ presentation of Q. */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int dgeqrt2_(integer *m, integer *n, doublereal *a, integer *
+/* Subroutine */ void dgeqrt2_(integer *m, integer *n, doublereal *a, integer *
 	lda, doublereal *t, integer *ldt, integer *info)
 {
     /* System generated locals */
     integer a_dim1, a_offset, t_dim1, t_offset, i__1, i__2, i__3;
 
     /* Local variables */
-    extern /* Subroutine */ int dger_(integer *, integer *, doublereal *, 
+    extern /* Subroutine */ void dger_(integer *, integer *, doublereal *, 
 	    doublereal *, integer *, doublereal *, integer *, doublereal *, 
 	    integer *);
     integer i__, k;
     doublereal alpha;
-    extern /* Subroutine */ int dgemv_(char *, integer *, integer *, 
+    extern /* Subroutine */ void dgemv_(char *, integer *, integer *, 
 	    doublereal *, doublereal *, integer *, doublereal *, integer *, 
 	    doublereal *, doublereal *, integer *), dtrmv_(char *, 
 	    char *, char *, integer *, doublereal *, integer *, doublereal *, 
 	    integer *), dlarfg_(integer *, doublereal 
-	    *, doublereal *, integer *, doublereal *), xerbla_(char *, 
-	    integer *, ftnlen);
+	    *, doublereal *, integer *, doublereal *);
+    extern int xerbla_(char *, integer *, ftnlen);
     doublereal aii;
 
 
@@ -698,7 +698,7 @@ presentation of Q. */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DGEQRT2", &i__1, (ftnlen)7);
-	return 0;
+	return;
     }
 
     k = f2cmin(*m,*n);
@@ -767,6 +767,6 @@ presentation of Q. */
 
 /*     End of DGEQRT2 */
 
-    return 0;
+    return;
 } /* dgeqrt2_ */
 

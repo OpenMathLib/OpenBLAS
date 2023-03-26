@@ -663,7 +663,7 @@ f"> */
 /* > \ingroup complexGBcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int cgbtrs_(char *trans, integer *n, integer *kl, integer *
+/* Subroutine */ void cgbtrs_(char *trans, integer *n, integer *kl, integer *
 	ku, integer *nrhs, complex *ab, integer *ldab, integer *ipiv, complex 
 	*b, integer *ldb, integer *info)
 {
@@ -674,7 +674,7 @@ f"> */
     /* Local variables */
     integer i__, j, l;
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int cgemv_(char *, integer *, integer *, complex *
+    extern /* Subroutine */ void cgemv_(char *, integer *, integer *, complex *
 	    , complex *, integer *, complex *, integer *, complex *, complex *
 	    , integer *), cgeru_(integer *, integer *, complex *, 
 	    complex *, integer *, complex *, integer *, complex *, integer *),
@@ -683,8 +683,8 @@ f"> */
 	    integer *, complex *, integer *);
     logical lnoti;
     integer kd, lm;
-    extern /* Subroutine */ int clacgv_(integer *, complex *, integer *), 
-	    xerbla_(char *, integer *, ftnlen);
+    extern /* Subroutine */ void clacgv_(integer *, complex *, integer *); 
+    extern int xerbla_(char *, integer *, ftnlen);
     logical notran;
 
 
@@ -730,13 +730,13 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CGBTRS", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0 || *nrhs == 0) {
-	return 0;
+	return;
     }
 
     kd = *ku + *kl + 1;
@@ -851,7 +851,7 @@ f"> */
 	    }
 	}
     }
-    return 0;
+    return;
 
 /*     End of CGBTRS */
 

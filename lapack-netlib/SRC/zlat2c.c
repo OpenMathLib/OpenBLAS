@@ -620,7 +620,7 @@ f"> */
 /* > \ingroup complex16OTHERauxiliary */
 
 /*  ===================================================================== */
-/* Subroutine */ int zlat2c_(char *uplo, integer *n, doublecomplex *a, 
+/* Subroutine */ void zlat2c_(char *uplo, integer *n, doublecomplex *a, 
 	integer *lda, complex *sa, integer *ldsa, integer *info)
 {
     /* System generated locals */
@@ -697,7 +697,7 @@ f"> */
     }
 L50:
 
-    return 0;
+    return;
 
 /*     End of ZLAT2C */
 

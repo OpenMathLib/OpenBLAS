@@ -715,7 +715,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int slatrd_(char *uplo, integer *n, integer *nb, real *a, 
+/* Subroutine */ void slatrd_(char *uplo, integer *n, integer *nb, real *a, 
 	integer *lda, real *e, real *tau, real *w, integer *ldw)
 {
     /* System generated locals */
@@ -726,14 +726,14 @@ f"> */
     integer i__;
     real alpha;
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int sscal_(integer *, real *, real *, integer *), 
+    extern /* Subroutine */ void sscal_(integer *, real *, real *, integer *), 
 	    sgemv_(char *, integer *, integer *, real *, real *, integer *, 
 	    real *, integer *, real *, real *, integer *), saxpy_(
 	    integer *, real *, real *, integer *, real *, integer *), ssymv_(
 	    char *, integer *, real *, real *, integer *, real *, integer *, 
 	    real *, real *, integer *);
     integer iw;
-    extern /* Subroutine */ int slarfg_(integer *, real *, real *, integer *, 
+    extern /* Subroutine */ void slarfg_(integer *, real *, real *, integer *, 
 	    real *);
 
 
@@ -760,7 +760,7 @@ f"> */
 
     /* Function Body */
     if (*n <= 0) {
-	return 0;
+	return;
     }
 
     if (lsame_(uplo, "U")) {
@@ -906,7 +906,7 @@ f"> */
 	}
     }
 
-    return 0;
+    return;
 
 /*     End of SLATRD */
 

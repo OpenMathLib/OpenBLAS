@@ -731,7 +731,7 @@ f"> */
 /* > \ingroup complexOTHEReigen */
 
 /*  ===================================================================== */
-/* Subroutine */ int chbevd_(char *jobz, char *uplo, integer *n, integer *kd, 
+/* Subroutine */ void chbevd_(char *jobz, char *uplo, integer *n, integer *kd, 
 	complex *ab, integer *ldab, real *w, complex *z__, integer *ldz, 
 	complex *work, integer *lwork, real *rwork, integer *lrwork, integer *
 	iwork, integer *liwork, integer *info)
@@ -746,13 +746,13 @@ f"> */
     integer imax;
     real rmin, rmax;
     integer llwk2;
-    extern /* Subroutine */ int cgemm_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void cgemm_(char *, char *, integer *, integer *, 
 	    integer *, complex *, complex *, integer *, complex *, integer *, 
 	    complex *, complex *, integer *);
     real sigma;
     extern logical lsame_(char *, char *);
     integer iinfo;
-    extern /* Subroutine */ int sscal_(integer *, real *, real *, integer *);
+    extern /* Subroutine */ void sscal_(integer *, real *, real *, integer *);
     integer lwmin;
     logical lower;
     integer llrwk;
@@ -761,20 +761,20 @@ f"> */
     extern real clanhb_(char *, char *, integer *, integer *, complex *, 
 	    integer *, real *);
     integer iscale;
-    extern /* Subroutine */ int clascl_(char *, integer *, integer *, real *, 
+    extern /* Subroutine */ void clascl_(char *, integer *, integer *, real *, 
 	    real *, integer *, integer *, complex *, integer *, integer *), cstedc_(char *, integer *, real *, real *, complex *, 
 	    integer *, complex *, integer *, real *, integer *, integer *, 
 	    integer *, integer *), chbtrd_(char *, char *, integer *, 
 	    integer *, complex *, integer *, real *, real *, complex *, 
 	    integer *, complex *, integer *);
     extern real slamch_(char *);
-    extern /* Subroutine */ int clacpy_(char *, integer *, integer *, complex 
+    extern /* Subroutine */ void clacpy_(char *, integer *, integer *, complex 
 	    *, integer *, complex *, integer *);
     real safmin;
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     real bignum;
     integer indwrk, liwmin;
-    extern /* Subroutine */ int ssterf_(integer *, real *, real *, integer *);
+    extern /* Subroutine */ void ssterf_(integer *, real *, real *, integer *);
     integer lrwmin;
     real smlnum;
     logical lquery;
@@ -860,15 +860,15 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CHBEVD", &i__1, (ftnlen)6);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
     if (*n == 1) {
@@ -878,7 +878,7 @@ f"> */
 	    i__1 = z_dim1 + 1;
 	    z__[i__1].r = 1.f, z__[i__1].i = 0.f;
 	}
-	return 0;
+	return;
     }
 
 /*     Get machine constants. */
@@ -948,7 +948,7 @@ f"> */
     work[1].r = (real) lwmin, work[1].i = 0.f;
     rwork[1] = (real) lrwmin;
     iwork[1] = liwmin;
-    return 0;
+    return;
 
 /*     End of CHBEVD */
 

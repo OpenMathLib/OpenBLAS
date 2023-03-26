@@ -667,7 +667,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int ztzrzf_(integer *m, integer *n, doublecomplex *a, 
+/* Subroutine */ void ztzrzf_(integer *m, integer *n, doublecomplex *a, 
 	integer *lda, doublecomplex *tau, doublecomplex *work, integer *lwork,
 	 integer *info)
 {
@@ -680,13 +680,13 @@ f"> */
     extern integer ilaenv_(integer *, char *, char *, integer *, integer *, 
 	    integer *, integer *, ftnlen, ftnlen);
     integer lwkmin, ldwork;
-    extern /* Subroutine */ int zlarzb_(char *, char *, char *, char *, 
+    extern /* Subroutine */ void zlarzb_(char *, char *, char *, char *, 
 	    integer *, integer *, integer *, integer *, doublecomplex *, 
 	    integer *, doublecomplex *, integer *, doublecomplex *, integer *,
 	     doublecomplex *, integer *);
     integer lwkopt;
     logical lquery;
-    extern /* Subroutine */ int zlarzt_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void zlarzt_(char *, char *, integer *, integer *, 
 	    doublecomplex *, integer *, doublecomplex *, doublecomplex *, 
 	    integer *), zlatrz_(integer *, integer *, integer 
 	    *, doublecomplex *, integer *, doublecomplex *, doublecomplex *);
@@ -745,15 +745,15 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZTZRZF", &i__1, (ftnlen)6);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*m == 0) {
-	return 0;
+	return;
     } else if (*m == *n) {
 	i__1 = *n;
 	for (i__ = 1; i__ <= i__1; ++i__) {
@@ -761,7 +761,7 @@ f"> */
 	    tau[i__2].r = 0., tau[i__2].i = 0.;
 /* L10: */
 	}
-	return 0;
+	return;
     }
 
     nbmin = 2;
@@ -859,7 +859,7 @@ f"> */
 
     work[1].r = (doublereal) lwkopt, work[1].i = 0.;
 
-    return 0;
+    return;
 
 /*     End of ZTZRZF */
 

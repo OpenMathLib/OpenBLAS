@@ -671,7 +671,7 @@ f"> */
 /* >     Mark Fahey, Department of Mathematics, Univ. of Kentucky, USA */
 
 /*  ===================================================================== */
-/* Subroutine */ int slagv2_(real *a, integer *lda, real *b, integer *ldb, 
+/* Subroutine */ void slagv2_(real *a, integer *lda, real *b, integer *ldb, 
 	real *alphar, real *alphai, real *beta, real *csl, real *snl, real *
 	csr, real *snr)
 {
@@ -680,17 +680,17 @@ f"> */
     real r__1, r__2, r__3, r__4, r__5, r__6;
 
     /* Local variables */
-    extern /* Subroutine */ int srot_(integer *, real *, integer *, real *, 
+    extern /* Subroutine */ void srot_(integer *, real *, integer *, real *, 
 	    integer *, real *, real *), slag2_(real *, integer *, real *, 
 	    integer *, real *, real *, real *, real *, real *, real *);
     real r__, t, anorm, bnorm, h1, h2, h3, scale1, scale2;
-    extern /* Subroutine */ int slasv2_(real *, real *, real *, real *, real *
+    extern /* Subroutine */ void slasv2_(real *, real *, real *, real *, real *
 	    , real *, real *, real *, real *);
     extern real slapy2_(real *, real *);
     real ascale, bscale, wi, qq, rr;
     extern real slamch_(char *);
     real safmin;
-    extern /* Subroutine */ int slartg_(real *, real *, real *, real *, real *
+    extern /* Subroutine */ void slartg_(real *, real *, real *, real *, real *
 	    );
     real wr1, wr2, ulp;
 
@@ -909,7 +909,7 @@ f"> */
 	beta[2] = 1.f;
     }
 
-    return 0;
+    return;
 
 /*     End of SLAGV2 */
 

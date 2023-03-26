@@ -677,7 +677,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int ssbtrd_(char *vect, char *uplo, integer *n, integer *kd, 
+/* Subroutine */ void ssbtrd_(char *vect, char *uplo, integer *n, integer *kd, 
 	real *ab, integer *ldab, real *d__, real *e, real *q, integer *ldq, 
 	real *work, integer *info)
 {
@@ -688,21 +688,22 @@ f"> */
     /* Local variables */
     integer inca, jend, lend, jinc, incx, last;
     real temp;
-    extern /* Subroutine */ int srot_(integer *, real *, integer *, real *, 
+    extern /* Subroutine */ void srot_(integer *, real *, integer *, real *, 
 	    integer *, real *, real *);
     integer j1end, j1inc, i__, j, k, l, iqend;
     extern logical lsame_(char *, char *);
     logical initq, wantq, upper;
     integer i2, j1, j2;
-    extern /* Subroutine */ int slar2v_(integer *, real *, real *, real *, 
+    extern /* Subroutine */ void slar2v_(integer *, real *, real *, real *, 
 	    integer *, real *, real *, integer *);
     integer nq, nr, iqaend;
-    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen), slaset_(
+    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
+    extern void slaset_(
 	    char *, integer *, integer *, real *, real *, real *, integer *), slartg_(real *, real *, real *, real *, real *), slargv_(
 	    integer *, real *, integer *, real *, integer *, real *, integer *
 	    );
     integer kd1;
-    extern /* Subroutine */ int slartv_(integer *, real *, integer *, real *, 
+    extern /* Subroutine */ void slartv_(integer *, real *, integer *, real *, 
 	    integer *, real *, real *, integer *);
     integer ibl, iqb, kdn, jin, nrt, kdm1;
 
@@ -755,13 +756,13 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("SSBTRD", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /*     Initialize Q to the unit matrix, if needed */
@@ -1276,7 +1277,7 @@ f"> */
 	}
     }
 
-    return 0;
+    return;
 
 /*     End of SSBTRD */
 

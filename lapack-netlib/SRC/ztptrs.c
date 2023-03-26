@@ -643,7 +643,7 @@ f"> */
 /* > \ingroup complex16OTHERcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int ztptrs_(char *uplo, char *trans, char *diag, integer *n, 
+/* Subroutine */ void ztptrs_(char *uplo, char *trans, char *diag, integer *n, 
 	integer *nrhs, doublecomplex *ap, doublecomplex *b, integer *ldb, 
 	integer *info)
 {
@@ -654,7 +654,7 @@ f"> */
     integer j;
     extern logical lsame_(char *, char *);
     logical upper;
-    extern /* Subroutine */ int ztpsv_(char *, char *, char *, integer *, 
+    extern /* Subroutine */ void ztpsv_(char *, char *, char *, integer *, 
 	    doublecomplex *, doublecomplex *, integer *);
     integer jc;
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
@@ -699,13 +699,13 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZTPTRS", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /*     Check for singularity. */
@@ -717,7 +717,7 @@ f"> */
 	    for (*info = 1; *info <= i__1; ++(*info)) {
 		i__2 = jc + *info - 1;
 		if (ap[i__2].r == 0. && ap[i__2].i == 0.) {
-		    return 0;
+		    return;
 		}
 		jc += *info;
 /* L10: */
@@ -728,7 +728,7 @@ f"> */
 	    for (*info = 1; *info <= i__1; ++(*info)) {
 		i__2 = jc;
 		if (ap[i__2].r == 0. && ap[i__2].i == 0.) {
-		    return 0;
+		    return;
 		}
 		jc = jc + *n - *info + 1;
 /* L20: */
@@ -745,7 +745,7 @@ f"> */
 /* L30: */
     }
 
-    return 0;
+    return;
 
 /*     End of ZTPTRS */
 

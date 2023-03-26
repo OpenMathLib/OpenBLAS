@@ -741,7 +741,7 @@ f"> */
 /* > \ingroup complexOTHERcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int claed8_(integer *k, integer *n, integer *qsiz, complex *
+/* Subroutine */ void claed8_(integer *k, integer *n, integer *qsiz, complex *
 	q, integer *ldq, real *d__, real *rho, integer *cutpnt, real *z__, 
 	real *dlamda, complex *q2, integer *ldq2, real *w, integer *indxp, 
 	integer *indx, integer *indxq, integer *perm, integer *givptr, 
@@ -756,22 +756,22 @@ f"> */
     real c__;
     integer i__, j;
     real s, t;
-    extern /* Subroutine */ int sscal_(integer *, real *, real *, integer *), 
+    extern /* Subroutine */ void sscal_(integer *, real *, real *, integer *), 
 	    ccopy_(integer *, complex *, integer *, complex *, integer *), 
 	    csrot_(integer *, complex *, integer *, complex *, integer *, 
 	    real *, real *);
     integer k2;
-    extern /* Subroutine */ int scopy_(integer *, real *, integer *, real *, 
+    extern /* Subroutine */ void scopy_(integer *, real *, integer *, real *, 
 	    integer *);
     integer n1, n2;
     extern real slapy2_(real *, real *);
     integer jp;
     extern real slamch_(char *);
-    extern /* Subroutine */ int clacpy_(char *, integer *, integer *, complex 
-	    *, integer *, complex *, integer *), xerbla_(char *, 
-	    integer *, ftnlen);
+    extern /* Subroutine */ void clacpy_(char *, integer *, integer *, complex 
+	    *, integer *, complex *, integer *);
+    extern int xerbla_(char *, integer *, ftnlen);
     extern integer isamax_(integer *, real *, integer *);
-    extern /* Subroutine */ int slamrg_(integer *, integer *, real *, integer 
+    extern /* Subroutine */ void slamrg_(integer *, integer *, real *, integer 
 	    *, integer *, integer *);
     integer n1p1;
     real eps, tau, tol;
@@ -823,7 +823,7 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CLAED8", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Need to initialize GIVPTR to O here in case of quick exit */
@@ -836,7 +836,7 @@ f"> */
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
     n1 = *cutpnt;
@@ -902,7 +902,7 @@ f"> */
 /* L50: */
 	}
 	clacpy_("A", qsiz, n, &q2[q2_dim1 + 1], ldq2, &q[q_dim1 + 1], ldq);
-	return 0;
+	return;
     }
 
 /*     If there are multiple eigenvalues then the problem deflates.  Here */
@@ -1036,7 +1036,7 @@ L100:
 		1) * q_dim1 + 1], ldq);
     }
 
-    return 0;
+    return;
 
 /*     End of CLAED8 */
 

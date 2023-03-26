@@ -778,7 +778,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int strsna_(char *job, char *howmny, logical *select, 
+/* Subroutine */ void strsna_(char *job, char *howmny, logical *select, 
 	integer *n, real *t, integer *ldt, real *vl, integer *ldvl, real *vr, 
 	integer *ldvr, real *s, real *sep, integer *mm, integer *m, real *
 	work, integer *ldwork, integer *iwork, integer *info)
@@ -807,21 +807,21 @@ f"> */
     logical wants;
     real dummy[1];
     integer n2;
-    extern /* Subroutine */ int slacn2_(integer *, real *, real *, integer *, 
+    extern /* Subroutine */ void slacn2_(integer *, real *, real *, integer *, 
 	    real *, integer *, integer *);
     extern real slapy2_(real *, real *);
     real cs;
-    extern /* Subroutine */ int slabad_(real *, real *);
+    extern /* Subroutine */ void slabad_(real *, real *);
     integer nn, ks;
     real sn, mu;
     extern real slamch_(char *);
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     real bignum;
     logical wantbh;
-    extern /* Subroutine */ int slacpy_(char *, integer *, integer *, real *, 
+    extern /* Subroutine */ void slacpy_(char *, integer *, integer *, real *, 
 	    integer *, real *, integer *);
     logical somcon;
-    extern /* Subroutine */ int slaqtr_(logical *, logical *, integer *, real 
+    extern /* Subroutine */ void slaqtr_(logical *, logical *, integer *, real 
 	    *, integer *, real *, real *, real *, real *, real *, integer *), 
 	    strexc_(char *, integer *, real *, integer *, real *, integer *, 
 	    integer *, integer *, real *, integer *);
@@ -924,19 +924,19 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("STRSNA", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
     if (*n == 1) {
 	if (somcon) {
 	    if (! select[1]) {
-		return 0;
+		return;
 	    }
 	}
 	if (wants) {
@@ -945,7 +945,7 @@ f"> */
 	if (wantsp) {
 	    sep[1] = (r__1 = t[t_dim1 + 1], abs(r__1));
 	}
-	return 0;
+	return;
     }
 
 /*     Get machine constants */
@@ -1182,7 +1182,7 @@ L50:
 L60:
 	;
     }
-    return 0;
+    return;
 
 /*     End of STRSNA */
 

@@ -692,7 +692,7 @@ f"> */
 /* > \endverbatim */
 
 /*  ===================================================================== */
-/* Subroutine */ int dlasyf_(char *uplo, integer *n, integer *nb, integer *kb,
+/* Subroutine */ void dlasyf_(char *uplo, integer *n, integer *nb, integer *kb,
 	 doublereal *a, integer *lda, integer *ipiv, doublereal *w, integer *
 	ldw, integer *info)
 {
@@ -703,12 +703,12 @@ f"> */
     /* Local variables */
     integer imax, jmax, j, k;
     doublereal t, alpha;
-    extern /* Subroutine */ int dscal_(integer *, doublereal *, doublereal *, 
+    extern /* Subroutine */ void dscal_(integer *, doublereal *, doublereal *, 
 	    integer *), dgemm_(char *, char *, integer *, integer *, integer *
 	    , doublereal *, doublereal *, integer *, doublereal *, integer *, 
 	    doublereal *, doublereal *, integer *);
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int dgemv_(char *, integer *, integer *, 
+    extern /* Subroutine */ void dgemv_(char *, integer *, integer *, 
 	    doublereal *, doublereal *, integer *, doublereal *, integer *, 
 	    doublereal *, doublereal *, integer *), dcopy_(integer *, 
 	    doublereal *, integer *, doublereal *, integer *), dswap_(integer 
@@ -1434,7 +1434,7 @@ L120:
 	*kb = k - 1;
 
     }
-    return 0;
+    return;
 
 /*     End of DLASYF */
 

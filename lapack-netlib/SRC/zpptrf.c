@@ -633,7 +633,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int zpptrf_(char *uplo, integer *n, doublecomplex *ap, 
+/* Subroutine */ void zpptrf_(char *uplo, integer *n, doublecomplex *ap, 
 	integer *info)
 {
     /* System generated locals */
@@ -642,17 +642,18 @@ f"> */
     doublecomplex z__1, z__2;
 
     /* Local variables */
-    extern /* Subroutine */ int zhpr_(char *, integer *, doublereal *, 
+    extern /* Subroutine */ void zhpr_(char *, integer *, doublereal *, 
 	    doublecomplex *, integer *, doublecomplex *);
     integer j;
     extern logical lsame_(char *, char *);
     extern /* Double Complex */ VOID zdotc_(doublecomplex *, integer *, 
 	    doublecomplex *, integer *, doublecomplex *, integer *);
     logical upper;
-    extern /* Subroutine */ int ztpsv_(char *, char *, char *, integer *, 
+    extern /* Subroutine */ void ztpsv_(char *, char *, char *, integer *, 
 	    doublecomplex *, doublecomplex *, integer *);
     integer jc, jj;
-    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen), zdscal_(
+    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
+    extern void zdscal_(
 	    integer *, doublereal *, doublecomplex *, integer *);
     doublereal ajj;
 
@@ -682,13 +683,13 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZPPTRF", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
     if (upper) {
@@ -769,7 +770,7 @@ L30:
     *info = j;
 
 L40:
-    return 0;
+    return;
 
 /*     End of ZPPTRF */
 

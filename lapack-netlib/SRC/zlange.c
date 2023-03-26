@@ -638,13 +638,13 @@ doublereal zlange_(char *norm, integer *m, integer *n, doublecomplex *a,
 
     /* Local variables */
     doublereal temp;
-    extern /* Subroutine */ int dcombssq_(doublereal *, doublereal *);
+    extern /* Subroutine */ void dcombssq_(doublereal *, doublereal *);
     integer i__, j;
     extern logical lsame_(char *, char *);
     doublereal value;
     extern logical disnan_(doublereal *);
     doublereal colssq[2];
-    extern /* Subroutine */ int zlassq_(integer *, doublecomplex *, integer *,
+    extern /* Subroutine */ void zlassq_(integer *, doublecomplex *, integer *,
 	     doublereal *, doublereal *);
     doublereal sum, ssq[2];
 

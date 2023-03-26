@@ -726,7 +726,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int zlabrd_(integer *m, integer *n, integer *nb, 
+/* Subroutine */ void zlabrd_(integer *m, integer *n, integer *nb, 
 	doublecomplex *a, integer *lda, doublereal *d__, doublereal *e, 
 	doublecomplex *tauq, doublecomplex *taup, doublecomplex *x, integer *
 	ldx, doublecomplex *y, integer *ldy)
@@ -739,7 +739,7 @@ f"> */
     /* Local variables */
     integer i__;
     doublecomplex alpha;
-    extern /* Subroutine */ int zscal_(integer *, doublecomplex *, 
+    extern /* Subroutine */ void zscal_(integer *, doublecomplex *, 
 	    doublecomplex *, integer *), zgemv_(char *, integer *, integer *, 
 	    doublecomplex *, doublecomplex *, integer *, doublecomplex *, 
 	    integer *, doublecomplex *, doublecomplex *, integer *), 
@@ -775,7 +775,7 @@ f"> */
 
     /* Function Body */
     if (*m <= 0 || *n <= 0) {
-	return 0;
+	return;
     }
 
     if (*m >= *n) {
@@ -1070,7 +1070,7 @@ f"> */
 /* L20: */
 	}
     }
-    return 0;
+    return;
 
 /*     End of ZLABRD */
 

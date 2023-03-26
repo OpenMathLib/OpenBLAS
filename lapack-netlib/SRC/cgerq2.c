@@ -633,7 +633,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int cgerq2_(integer *m, integer *n, complex *a, integer *lda,
+/* Subroutine */ void cgerq2_(integer *m, integer *n, complex *a, integer *lda,
 	 complex *tau, complex *work, integer *info)
 {
     /* System generated locals */
@@ -642,11 +642,11 @@ f"> */
     /* Local variables */
     integer i__, k;
     complex alpha;
-    extern /* Subroutine */ int clarf_(char *, integer *, integer *, complex *
+    extern /* Subroutine */ void clarf_(char *, integer *, integer *, complex *
 	    , integer *, complex *, complex *, integer *, complex *), 
 	    clarfg_(integer *, complex *, complex *, integer *, complex *), 
-	    clacgv_(integer *, complex *, integer *), xerbla_(char *, integer 
-	    *, ftnlen);
+	    clacgv_(integer *, complex *, integer *);
+    extern int xerbla_(char *, integer *, ftnlen);
 
 
 /*  -- LAPACK computational routine (version 3.7.0) -- */
@@ -679,7 +679,7 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CGERQ2", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
     k = f2cmin(*m,*n);
@@ -710,7 +710,7 @@ f"> */
 	clacgv_(&i__1, &a[*m - k + i__ + a_dim1], lda);
 /* L10: */
     }
-    return 0;
+    return;
 
 /*     End of CGERQ2 */
 

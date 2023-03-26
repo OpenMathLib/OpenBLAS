@@ -659,7 +659,7 @@ f"> */
 /* > \ingroup complex16GBcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int zgbcon_(char *norm, integer *n, integer *kl, integer *ku,
+/* Subroutine */ void zgbcon_(char *norm, integer *n, integer *kl, integer *ku,
 	 doublecomplex *ab, integer *ldab, integer *ipiv, doublereal *anorm, 
 	doublereal *rcond, doublecomplex *work, doublereal *rwork, integer *
 	info)
@@ -678,7 +678,7 @@ f"> */
     extern /* Double Complex */ VOID zdotc_(doublecomplex *, integer *, 
 	    doublecomplex *, integer *, doublecomplex *, integer *);
     logical lnoti;
-    extern /* Subroutine */ int zaxpy_(integer *, doublecomplex *, 
+    extern /* Subroutine */ void zaxpy_(integer *, doublecomplex *, 
 	    doublecomplex *, integer *, doublecomplex *, integer *), zlacn2_(
 	    integer *, doublecomplex *, doublecomplex *, doublereal *, 
 	    integer *, integer *);
@@ -689,7 +689,7 @@ f"> */
     doublereal ainvnm;
     extern integer izamax_(integer *, doublecomplex *, integer *);
     logical onenrm;
-    extern /* Subroutine */ int zlatbs_(char *, char *, char *, char *, 
+    extern /* Subroutine */ void zlatbs_(char *, char *, char *, char *, 
 	    integer *, integer *, doublecomplex *, integer *, doublecomplex *,
 	     doublereal *, doublereal *, integer *), zdrscl_(integer *, doublereal *, doublecomplex *, 
 	    integer *);
@@ -735,7 +735,7 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZGBCON", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
@@ -743,9 +743,9 @@ f"> */
     *rcond = 0.;
     if (*n == 0) {
 	*rcond = 1.;
-	return 0;
+	return;
     } else if (*anorm == 0.) {
-	return 0;
+	return;
     }
 
     smlnum = dlamch_("Safe minimum");
@@ -859,7 +859,7 @@ L10:
     }
 
 L40:
-    return 0;
+    return;
 
 /*     End of ZGBCON */
 

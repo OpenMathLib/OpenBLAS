@@ -632,7 +632,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int zptcon_(integer *n, doublereal *d__, doublecomplex *e, 
+/* Subroutine */ void zptcon_(integer *n, doublereal *d__, doublecomplex *e, 
 	doublereal *anorm, doublereal *rcond, doublereal *rwork, integer *
 	info)
 {
@@ -673,7 +673,7 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZPTCON", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
@@ -681,9 +681,9 @@ f"> */
     *rcond = 0.;
     if (*n == 0) {
 	*rcond = 1.;
-	return 0;
+	return;
     } else if (*anorm == 0.) {
-	return 0;
+	return;
     }
 
 /*     Check that D(1:N) is positive. */
@@ -691,7 +691,7 @@ f"> */
     i__1 = *n;
     for (i__ = 1; i__ <= i__1; ++i__) {
 	if (d__[i__] <= 0.) {
-	    return 0;
+	    return;
 	}
 /* L10: */
     }
@@ -731,7 +731,7 @@ f"> */
 	*rcond = 1. / ainvnm / *anorm;
     }
 
-    return 0;
+    return;
 
 /*     End of ZPTCON */
 

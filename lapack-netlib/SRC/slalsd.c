@@ -694,7 +694,7 @@ f"> */
 /* >     Osni Marques, LBNL/NERSC, USA \n */
 
 /*  ===================================================================== */
-/* Subroutine */ int slalsd_(char *uplo, integer *smlsiz, integer *n, integer 
+/* Subroutine */ void slalsd_(char *uplo, integer *smlsiz, integer *n, integer 
 	*nrhs, real *d__, real *e, real *b, integer *ldb, real *rcond, 
 	integer *rank, real *work, integer *iwork, integer *info)
 {
@@ -706,16 +706,16 @@ f"> */
     integer difl, difr;
     real rcnd;
     integer perm, nsub, nlvl, sqre, bxst;
-    extern /* Subroutine */ int srot_(integer *, real *, integer *, real *, 
+    extern /* Subroutine */ void srot_(integer *, real *, integer *, real *, 
 	    integer *, real *, real *);
     integer c__, i__, j, k;
     real r__;
     integer s, u, z__;
-    extern /* Subroutine */ int sgemm_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void sgemm_(char *, char *, integer *, integer *, 
 	    integer *, real *, real *, integer *, real *, integer *, real *, 
 	    real *, integer *);
     integer poles, sizei, nsize;
-    extern /* Subroutine */ int scopy_(integer *, real *, integer *, real *, 
+    extern /* Subroutine */ void scopy_(integer *, real *, integer *, real *, 
 	    integer *);
     integer nwork, icmpq1, icmpq2;
     real cs;
@@ -723,12 +723,13 @@ f"> */
     real sn;
     integer st;
     extern real slamch_(char *);
-    extern /* Subroutine */ int slasda_(integer *, integer *, integer *, 
+    extern /* Subroutine */ void slasda_(integer *, integer *, integer *, 
 	    integer *, real *, real *, real *, integer *, real *, integer *, 
 	    real *, real *, real *, real *, integer *, integer *, integer *, 
 	    integer *, real *, real *, real *, real *, integer *, integer *);
     integer vt;
-    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen), slalsa_(
+    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
+    extern void slalsa_(
 	    integer *, integer *, integer *, integer *, real *, integer *, 
 	    real *, integer *, real *, integer *, real *, integer *, real *, 
 	    real *, real *, real *, integer *, integer *, integer *, integer *
@@ -737,7 +738,7 @@ f"> */
 	    , real *, integer *, integer *);
     integer givcol;
     extern integer isamax_(integer *, real *, integer *);
-    extern /* Subroutine */ int slasdq_(char *, integer *, integer *, integer 
+    extern /* Subroutine */ void slasdq_(char *, integer *, integer *, integer 
 	    *, integer *, integer *, real *, real *, real *, integer *, real *
 	    , integer *, real *, integer *, real *, integer *), 
 	    slacpy_(char *, integer *, integer *, real *, integer *, real *, 
@@ -747,7 +748,7 @@ f"> */
     real orgnrm;
     integer givnum;
     extern real slanst_(char *, integer *, real *, real *);
-    extern /* Subroutine */ int slasrt_(char *, integer *, real *, integer *);
+    extern /* Subroutine */ void slasrt_(char *, integer *, real *, integer *);
     integer givptr, nm1, smlszp, st1;
     real eps;
     integer iwk;
@@ -787,7 +788,7 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("SLALSD", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
     eps = slamch_("Epsilon");
@@ -805,7 +806,7 @@ f"> */
 /*     Quick return if possible. */
 
     if (*n == 0) {
-	return 0;
+	return;
     } else if (*n == 1) {
 	if (d__[1] == 0.f) {
 	    slaset_("A", &c__1, nrhs, &c_b6, &c_b6, &b[b_offset], ldb);
@@ -815,7 +816,7 @@ f"> */
 		    b_offset], ldb, info);
 	    d__[1] = abs(d__[1]);
 	}
-	return 0;
+	return;
     }
 
 /*     Rotate the matrix if it is lower bidiagonal. */
@@ -858,7 +859,7 @@ f"> */
     orgnrm = slanst_("M", n, &d__[1], &e[1]);
     if (orgnrm == 0.f) {
 	slaset_("A", n, nrhs, &c_b6, &c_b6, &b[b_offset], ldb);
-	return 0;
+	return;
     }
 
     slascl_("G", &c__0, &c__0, &orgnrm, &c_b11, n, &c__1, &d__[1], n, info);
@@ -874,7 +875,7 @@ f"> */
 	slasdq_("U", &c__0, n, n, &c__0, nrhs, &d__[1], &e[1], &work[1], n, &
 		work[1], n, &b[b_offset], ldb, &work[nwork], info);
 	if (*info != 0) {
-	    return 0;
+	    return;
 	}
 	tol = rcnd * (r__1 = d__[isamax_(n, &d__[1], &c__1)], abs(r__1));
 	i__1 = *n;
@@ -900,7 +901,7 @@ f"> */
 	slascl_("G", &c__0, &c__0, &orgnrm, &c_b11, n, nrhs, &b[b_offset], 
 		ldb, info);
 
-	return 0;
+	return;
     }
 
 /*     Book-keeping and setting up some constants. */
@@ -993,7 +994,7 @@ f"> */
 			st], &work[vt + st1], n, &work[nwork], n, &b[st + 
 			b_dim1], ldb, &work[nwork], info);
 		if (*info != 0) {
-		    return 0;
+		    return;
 		}
 		slacpy_("A", &nsize, nrhs, &b[st + b_dim1], ldb, &work[bx + 
 			st1], n);
@@ -1009,7 +1010,7 @@ f"> */
 			st1], &work[c__ + st1], &work[s + st1], &work[nwork], 
 			&iwork[iwk], info);
 		if (*info != 0) {
-		    return 0;
+		    return;
 		}
 		bxst = bx + st1;
 		slalsa_(&icmpq2, smlsiz, &nsize, nrhs, &b[st + b_dim1], ldb, &
@@ -1020,7 +1021,7 @@ f"> */
 			work[givnum + st1], &work[c__ + st1], &work[s + st1], 
 			&work[nwork], &iwork[iwk], info);
 		if (*info != 0) {
-		    return 0;
+		    return;
 		}
 	    }
 	    st = i__ + 1;
@@ -1072,7 +1073,7 @@ f"> */
 		     &work[c__ + st1], &work[s + st1], &work[nwork], &iwork[
 		    iwk], info);
 	    if (*info != 0) {
-		return 0;
+		return;
 	    }
 	}
 /* L80: */
@@ -1085,7 +1086,7 @@ f"> */
     slascl_("G", &c__0, &c__0, &orgnrm, &c_b11, n, nrhs, &b[b_offset], ldb, 
 	    info);
 
-    return 0;
+    return;
 
 /*     End of SLALSD */
 

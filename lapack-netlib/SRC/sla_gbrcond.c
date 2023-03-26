@@ -692,12 +692,12 @@ real sla_gbrcond_(char *trans, integer *n, integer *kl, integer *ku, real *
     integer kase, i__, j;
     extern logical lsame_(char *, char *);
     integer isave[3];
-    extern /* Subroutine */ int slacn2_(integer *, real *, real *, integer *, 
+    extern /* Subroutine */ void slacn2_(integer *, real *, real *, integer *, 
 	    real *, integer *, integer *);
     integer kd, ke;
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     real ainvnm;
-    extern /* Subroutine */ int sgbtrs_(char *, integer *, integer *, integer 
+    extern /* Subroutine */ void sgbtrs_(char *, integer *, integer *, integer 
 	    *, integer *, real *, integer *, integer *, real *, integer *, 
 	    integer *);
     real tmp;

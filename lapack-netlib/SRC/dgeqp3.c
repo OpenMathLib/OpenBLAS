@@ -667,7 +667,7 @@ f"> */
 /* >    X. Sun, Computer Science Dept., Duke University, USA */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int dgeqp3_(integer *m, integer *n, doublereal *a, integer *
+/* Subroutine */ void dgeqp3_(integer *m, integer *n, doublereal *a, integer *
 	lda, integer *jpvt, doublereal *tau, doublereal *work, integer *lwork,
 	 integer *info)
 {
@@ -678,24 +678,24 @@ f"> */
     integer nfxd;
     extern doublereal dnrm2_(integer *, doublereal *, integer *);
     integer j, nbmin, minmn;
-    extern /* Subroutine */ int dswap_(integer *, doublereal *, integer *, 
+    extern /* Subroutine */ void dswap_(integer *, doublereal *, integer *, 
 	    doublereal *, integer *);
     integer minws;
-    extern /* Subroutine */ int dlaqp2_(integer *, integer *, integer *, 
+    extern /* Subroutine */ void dlaqp2_(integer *, integer *, integer *, 
 	    doublereal *, integer *, integer *, doublereal *, doublereal *, 
 	    doublereal *, doublereal *);
     integer jb, na, nb, sm, sn, nx;
-    extern /* Subroutine */ int dgeqrf_(integer *, integer *, doublereal *, 
-	    integer *, doublereal *, doublereal *, integer *, integer *), 
-	    xerbla_(char *, integer *, ftnlen);
+    extern /* Subroutine */ void dgeqrf_(integer *, integer *, doublereal *, 
+	    integer *, doublereal *, doublereal *, integer *, integer *); 
+    extern int xerbla_(char *, integer *, ftnlen);
     extern integer ilaenv_(integer *, char *, char *, integer *, integer *, 
 	    integer *, integer *, ftnlen, ftnlen);
-    extern /* Subroutine */ int dlaqps_(integer *, integer *, integer *, 
+    extern /* Subroutine */ void dlaqps_(integer *, integer *, integer *, 
 	    integer *, integer *, doublereal *, integer *, integer *, 
 	    doublereal *, doublereal *, doublereal *, doublereal *, 
 	    doublereal *, integer *);
     integer topbmn, sminmn;
-    extern /* Subroutine */ int dormqr_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void dormqr_(char *, char *, integer *, integer *, 
 	    integer *, doublereal *, integer *, doublereal *, doublereal *, 
 	    integer *, doublereal *, integer *, integer *);
     integer lwkopt;
@@ -755,9 +755,9 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DGEQP3", &i__1, (ftnlen)6);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Move initial columns up front. */
@@ -911,7 +911,7 @@ L30:
     }
 
     work[1] = (doublereal) iws;
-    return 0;
+    return;
 
 /*     End of DGEQP3 */
 

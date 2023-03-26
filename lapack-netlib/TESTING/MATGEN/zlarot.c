@@ -740,7 +740,7 @@ static integer c__8 = 8;
 /* > \ingroup complex16_matgen */
 
 /*  ===================================================================== */
-/* Subroutine */ int zlarot_(logical *lrows, logical *lleft, logical *lright, 
+/* Subroutine */ void zlarot_(logical *lrows, logical *lleft, logical *lright, 
 	integer *nl, doublecomplex *c__, doublecomplex *s, doublecomplex *a, 
 	integer *lda, doublecomplex *xleft, doublecomplex *xright)
 {
@@ -753,7 +753,7 @@ static integer c__8 = 8;
     doublecomplex tempx;
     integer ix, iy, nt;
     doublecomplex xt[2], yt[2];
-    extern /* Subroutine */ int xerbla_(char *, integer *);
+    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     integer iyt;
 
 
@@ -805,12 +805,12 @@ static integer c__8 = 8;
 /*     Check for errors */
 
     if (*nl < nt) {
-	xerbla_("ZLAROT", &c__4);
-	return 0;
+	xerbla_("ZLAROT", &c__4, 6);
+	return;
     }
     if (*lda <= 0 || ! (*lrows) && *lda < *nl - nt) {
-	xerbla_("ZLAROT", &c__8);
-	return 0;
+	xerbla_("ZLAROT", &c__8, 6);
+	return;
     }
 
 /*     Rotate */
@@ -888,7 +888,7 @@ static integer c__8 = 8;
 	a[i__1].r = yt[i__2].r, a[i__1].i = yt[i__2].i;
     }
 
-    return 0;
+    return;
 
 /*     End of ZLAROT */
 

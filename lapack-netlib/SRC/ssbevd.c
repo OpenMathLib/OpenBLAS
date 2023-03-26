@@ -708,7 +708,7 @@ f"> */
 /* > \ingroup realOTHEReigen */
 
 /*  ===================================================================== */
-/* Subroutine */ int ssbevd_(char *jobz, char *uplo, integer *n, integer *kd, 
+/* Subroutine */ void ssbevd_(char *jobz, char *uplo, integer *n, integer *kd, 
 	real *ab, integer *ldab, real *w, real *z__, integer *ldz, real *work,
 	 integer *lwork, integer *iwork, integer *liwork, integer *info)
 {
@@ -721,7 +721,7 @@ f"> */
     real anrm, rmin, rmax, sigma;
     extern logical lsame_(char *, char *);
     integer iinfo;
-    extern /* Subroutine */ int sscal_(integer *, real *, real *, integer *), 
+    extern /* Subroutine */ void sscal_(integer *, real *, real *, integer *), 
 	    sgemm_(char *, char *, integer *, integer *, integer *, real *, 
 	    real *, integer *, real *, integer *, real *, real *, integer *);
     integer lwmin;
@@ -733,12 +733,12 @@ f"> */
     real bignum;
     extern real slansb_(char *, char *, integer *, integer *, real *, integer 
 	    *, real *);
-    extern /* Subroutine */ int slascl_(char *, integer *, integer *, real *, 
+    extern /* Subroutine */ void slascl_(char *, integer *, integer *, real *, 
 	    real *, integer *, integer *, real *, integer *, integer *), sstedc_(char *, integer *, real *, real *, real *, 
 	    integer *, real *, integer *, integer *, integer *, integer *), slacpy_(char *, integer *, integer *, real *, integer *, 
 	    real *, integer *);
     integer indwrk, liwmin;
-    extern /* Subroutine */ int ssbtrd_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void ssbtrd_(char *, char *, integer *, integer *, 
 	    real *, integer *, real *, real *, real *, integer *, real *, 
 	    integer *), ssterf_(integer *, real *, real *, 
 	    integer *);
@@ -817,15 +817,15 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("SSBEVD", &i__1, (ftnlen)6);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
     if (*n == 1) {
@@ -833,7 +833,7 @@ f"> */
 	if (wantz) {
 	    z__[z_dim1 + 1] = 1.f;
 	}
-	return 0;
+	return;
     }
 
 /*     Get machine constants. */
@@ -896,7 +896,7 @@ f"> */
 
     work[1] = (real) lwmin;
     iwork[1] = liwmin;
-    return 0;
+    return;
 
 /*     End of SSBEVD */
 

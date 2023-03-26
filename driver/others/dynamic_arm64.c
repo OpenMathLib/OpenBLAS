@@ -125,8 +125,13 @@ extern gotoblas_t  gotoblas_THUNDERX2T99;
 extern gotoblas_t  gotoblas_TSV110;
 extern gotoblas_t  gotoblas_EMAG8180;
 extern gotoblas_t  gotoblas_NEOVERSEN1;
+#ifndef NO_SVE
 extern gotoblas_t  gotoblas_NEOVERSEV1;
 extern gotoblas_t  gotoblas_NEOVERSEN2;
+#else
+#define gotoblas_NEOVERSEV1 gotoblas_ARMV8
+#define gotoblas_NEOVERSEN2 gotoblas_ARMV8
+#endif
 extern gotoblas_t  gotoblas_THUNDERX3T110;
 extern gotoblas_t  gotoblas_CORTEXA55;
 #endif
@@ -237,7 +242,7 @@ static gotoblas_t *get_coretype(void) {
         p = (char *) NULL ;
 	infile = fopen("/sys/devices/system/cpu/cpu0/regs/identification/midr_el1","r");
 	if (!infile) return NULL;
-	fgets(buffer, sizeof(buffer), infile);
+	(void)fgets(buffer, sizeof(buffer), infile);
 	midr_el1=strtoul(buffer,NULL,16);
 	fclose(infile);
 #else
@@ -274,10 +279,12 @@ static gotoblas_t *get_coretype(void) {
           return &gotoblas_CORTEXA73;
         case 0xd0c: // Neoverse N1
           return &gotoblas_NEOVERSEN1;
+#ifndef NO_SVE
         case 0xd49:
           return &gotoblas_NEOVERSEN2;
 	case 0xd40:
 	  return &gotoblas_NEOVERSEV1;
+#endif
 	case 0xd05: // Cortex A55
 	  return &gotoblas_CORTEXA55;
       }

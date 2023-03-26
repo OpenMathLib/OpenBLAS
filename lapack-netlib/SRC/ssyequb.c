@@ -644,7 +644,7 @@ static integer c__1 = 1;
 /* >  Tech report version: http://citeseerx.ist.psu.edu/viewdoc/summary?doi=10.1.1.3.1679 */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int ssyequb_(char *uplo, integer *n, real *a, integer *lda, 
+/* Subroutine */ void ssyequb_(char *uplo, integer *n, real *a, integer *lda, 
 	real *s, real *scond, real *amax, real *work, integer *info)
 {
     /* System generated locals */
@@ -663,7 +663,7 @@ static integer c__1 = 1;
     extern real slamch_(char *);
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     real bignum;
-    extern /* Subroutine */ int slassq_(integer *, real *, integer *, real *, 
+    extern /* Subroutine */ void slassq_(integer *, real *, integer *, real *, 
 	    real *);
     real smlnum, avg, std, tol;
 
@@ -698,7 +698,7 @@ static integer c__1 = 1;
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("SSYEQUB", &i__1, (ftnlen)7);
-	return 0;
+	return;
     }
     up = lsame_(uplo, "U");
     *amax = 0.f;
@@ -707,7 +707,7 @@ static integer c__1 = 1;
 
     if (*n == 0) {
 	*scond = 1.f;
-	return 0;
+	return;
     }
     i__1 = *n;
     for (i__ = 1; i__ <= i__1; ++i__) {
@@ -824,7 +824,7 @@ static integer c__1 = 1;
 	    d__ = c1 * c1 - c0 * 4 * c2;
 	    if (d__ <= 0.f) {
 		*info = -1;
-		return 0;
+		return;
 	    }
 	    si = c0 * -2 / (c1 + sqrt(d__));
 	    d__ = si - s[i__];
@@ -881,6 +881,6 @@ L999:
     }
     *scond = f2cmax(smin,smlnum) / f2cmin(smax,bignum);
 
-    return 0;
+    return;
 } /* ssyequb_ */
 

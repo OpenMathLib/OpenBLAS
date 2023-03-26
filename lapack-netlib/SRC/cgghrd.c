@@ -718,7 +718,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int cgghrd_(char *compq, char *compz, integer *n, integer *
+/* Subroutine */ void cgghrd_(char *compq, char *compz, integer *n, integer *
 	ilo, integer *ihi, complex *a, integer *lda, complex *b, integer *ldb,
 	 complex *q, integer *ldq, complex *z__, integer *ldz, integer *info)
 {
@@ -729,17 +729,17 @@ f"> */
 
     /* Local variables */
     integer jcol;
-    extern /* Subroutine */ int crot_(integer *, complex *, integer *, 
+    extern /* Subroutine */ void crot_(integer *, complex *, integer *, 
 	    complex *, integer *, real *, complex *);
     integer jrow;
     real c__;
     complex s;
     extern logical lsame_(char *, char *);
     complex ctemp;
-    extern /* Subroutine */ int claset_(char *, integer *, integer *, complex 
+    extern /* Subroutine */ void claset_(char *, integer *, integer *, complex 
 	    *, complex *, complex *, integer *), clartg_(complex *, 
-	    complex *, real *, complex *, complex *), xerbla_(char *, integer 
-	    *, ftnlen);
+	    complex *, real *, complex *, complex *);
+    extern int xerbla_(char *, integer *, ftnlen);
     integer icompq, icompz;
     logical ilq, ilz;
 
@@ -823,7 +823,7 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CGGHRD", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Initialize Q and Z if desired. */
@@ -838,7 +838,7 @@ f"> */
 /*     Quick return if possible */
 
     if (*n <= 1) {
-	return 0;
+	return;
     }
 
 /*     Zero out lower triangle of B */
@@ -904,7 +904,7 @@ f"> */
 /* L40: */
     }
 
-    return 0;
+    return;
 
 /*     End of CGGHRD */
 

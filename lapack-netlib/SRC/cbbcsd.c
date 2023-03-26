@@ -849,7 +849,7 @@ f"> */
 /* > \ingroup complexOTHERcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int cbbcsd_(char *jobu1, char *jobu2, char *jobv1t, char *
+/* Subroutine */ void cbbcsd_(char *jobu1, char *jobu2, char *jobv1t, char *
 	jobv2t, char *trans, integer *m, integer *p, integer *q, real *theta, 
 	real *phi, complex *u1, integer *ldu1, complex *u2, integer *ldu2, 
 	complex *v1t, integer *ldv1t, complex *v2t, integer *ldv2t, real *
@@ -869,14 +869,14 @@ f"> */
     real thetamin, thetamax;
     logical restart11, restart12, restart21, restart22;
     integer iu1cs, iu2cs;
-    extern /* Subroutine */ int slas2_(real *, real *, real *, real *, real *)
+    extern /* Subroutine */ void slas2_(real *, real *, real *, real *, real *)
 	    ;
     integer iu1sn, iu2sn, i__, j;
     real r__;
-    extern /* Subroutine */ int cscal_(integer *, complex *, complex *, 
+    extern /* Subroutine */ void cscal_(integer *, complex *, complex *, 
 	    integer *);
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int clasr_(char *, char *, char *, integer *, 
+    extern /* Subroutine */ void clasr_(char *, char *, char *, integer *, 
 	    integer *, real *, real *, complex *, integer *), cswap_(integer *, complex *, integer *, complex *, 
 	    integer *);
     integer maxit;
@@ -888,12 +888,12 @@ f"> */
     extern real slamch_(char *);
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     real thresh, tolmul;
-    extern /* Subroutine */ int mecago_();
+    extern /* Subroutine */ void mecago_();
     logical lquery;
     real b11bulge;
     logical wantv1t, wantv2t;
     real b12bulge, b21bulge, b22bulge, eps, tol;
-    extern /* Subroutine */ int slartgp_(real *, real *, real *, real *, real 
+    extern /* Subroutine */ void slartgp_(real *, real *, real *, real *, real 
 	    *), slartgs_(real *, real *, real *, real *, real *);
 
 
@@ -966,7 +966,7 @@ f"> */
     if (*info == 0 && *q == 0) {
 	lrworkmin = 1;
 	rwork[1] = (real) lrworkmin;
-	return 0;
+	return;
     }
 
 /*     Compute workspace */
@@ -991,9 +991,9 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CBBCSD", &i__1, (ftnlen)6);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Get machine constants */
@@ -1086,7 +1086,7 @@ f"> */
 		    ++(*info);
 		}
 	    }
-	    return 0;
+	    return;
 	}
 
 	iter = iter + imax - imin;
@@ -1800,7 +1800,7 @@ f"> */
 
     }
 
-    return 0;
+    return;
 
 /*     End of CBBCSD */
 

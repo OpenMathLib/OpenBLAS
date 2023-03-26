@@ -255,7 +255,7 @@
                LWMIN = 2*N + 1
             END IF
             LOPT = MAX( LWMIN, 2*N +
-     $                  ILAENV( 1, 'SSYTRD', UPLO, N, -1, -1, -1 ) )
+     $                  N*ILAENV( 1, 'SSYTRD', UPLO, N, -1, -1, -1 ) )
             LIOPT = LIWMIN
          END IF
          WORK( 1 ) = LOPT

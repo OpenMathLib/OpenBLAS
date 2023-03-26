@@ -726,7 +726,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int ctfttr_(char *transr, char *uplo, integer *n, complex *
+/* Subroutine */ void ctfttr_(char *transr, char *uplo, integer *n, complex *
 	arf, complex *a, integer *lda, integer *info)
 {
     /* System generated locals */
@@ -776,7 +776,7 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CTFTTR", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
@@ -790,7 +790,7 @@ f"> */
 		a[0].r = q__1.r, a[0].i = q__1.i;
 	    }
 	}
-	return 0;
+	return;
     }
 
 /*     Size of array ARF(1:2,0:nt-1) */
@@ -1122,7 +1122,7 @@ f"> */
 
     }
 
-    return 0;
+    return;
 
 /*     End of CTFTTR */
 

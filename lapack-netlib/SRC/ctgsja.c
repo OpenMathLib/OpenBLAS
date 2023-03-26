@@ -896,7 +896,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int ctgsja_(char *jobu, char *jobv, char *jobq, integer *m, 
+/* Subroutine */ void ctgsja_(char *jobu, char *jobv, char *jobq, integer *m, 
 	integer *p, integer *n, integer *k, integer *l, complex *a, integer *
 	lda, complex *b, integer *ldb, real *tola, real *tolb, real *alpha, 
 	real *beta, complex *u, integer *ldu, complex *v, integer *ldv, 
@@ -910,12 +910,12 @@ f"> */
     complex q__1;
 
     /* Local variables */
-    extern /* Subroutine */ int crot_(integer *, complex *, integer *, 
+    extern /* Subroutine */ void crot_(integer *, complex *, integer *, 
 	    complex *, integer *, real *, complex *);
     integer kcallmycycle, i__, j;
     real gamma;
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int ccopy_(integer *, complex *, integer *, 
+    extern /* Subroutine */ void ccopy_(integer *, complex *, integer *, 
 	    complex *, integer *);
     logical initq;
     real a1, a3, b1;
@@ -924,13 +924,14 @@ f"> */
     logical wantu, wantv;
     real ssmin;
     complex a2, b2;
-    extern /* Subroutine */ int clags2_(logical *, real *, complex *, real *, 
+    extern /* Subroutine */ void clags2_(logical *, real *, complex *, real *, 
 	    real *, complex *, real *, real *, complex *, real *, complex *, 
 	    real *, complex *), clapll_(integer *, complex *, integer *, 
 	    complex *, integer *, real *), csscal_(integer *, real *, complex 
 	    *, integer *), claset_(char *, integer *, integer *, complex *, 
-	    complex *, complex *, integer *), xerbla_(char *, integer 
-	    *, ftnlen), slartg_(real *, real *, real *, real *, real *);
+	    complex *, complex *, integer *);
+    extern int xerbla_(char *, integer *, ftnlen);
+    extern void slartg_(real *, real *, real *, real *, real *);
 //    extern integer myhuge_(real *);
     real csq, csu, csv;
     complex snq;
@@ -1009,7 +1010,7 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CTGSJA", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Initialize U, V and Q, if necessary */
@@ -1285,7 +1286,7 @@ L50:
 L100:
     *ncallmycycle = kcallmycycle;
 
-    return 0;
+    return;
 
 /*     End of CTGSJA */
 

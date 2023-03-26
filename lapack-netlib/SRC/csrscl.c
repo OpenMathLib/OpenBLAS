@@ -593,14 +593,14 @@ f"> */
 /* > \ingroup complexOTHERauxiliary */
 
 /*  ===================================================================== */
-/* Subroutine */ int csrscl_(integer *n, real *sa, complex *sx, integer *incx)
+/* Subroutine */ void csrscl_(integer *n, real *sa, complex *sx, integer *incx)
 {
     real cden;
     logical done;
     real cnum, cden1, cnum1;
-    extern /* Subroutine */ int slabad_(real *, real *);
+    extern /* Subroutine */ void slabad_(real *, real *);
     extern real slamch_(char *);
-    extern /* Subroutine */ int csscal_(integer *, real *, complex *, integer 
+    extern /* Subroutine */ void csscal_(integer *, real *, complex *, integer 
 	    *);
     real bignum, smlnum, mul;
 
@@ -621,7 +621,7 @@ f"> */
 
     /* Function Body */
     if (*n <= 0) {
-	return 0;
+	return;
     }
 
 /*     Get machine parameters */
@@ -668,7 +668,7 @@ L10:
 	goto L10;
     }
 
-    return 0;
+    return;
 
 /*     End of CSRSCL */
 

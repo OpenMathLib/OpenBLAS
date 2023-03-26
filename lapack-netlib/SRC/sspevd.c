@@ -691,7 +691,7 @@ f"> */
 /* > \ingroup realOTHEReigen */
 
 /*  ===================================================================== */
-/* Subroutine */ int sspevd_(char *jobz, char *uplo, integer *n, real *ap, 
+/* Subroutine */ void sspevd_(char *jobz, char *uplo, integer *n, real *ap, 
 	real *w, real *z__, integer *ldz, real *work, integer *lwork, integer 
 	*iwork, integer *liwork, integer *info)
 {
@@ -704,7 +704,7 @@ f"> */
     real anrm, rmin, rmax, sigma;
     extern logical lsame_(char *, char *);
     integer iinfo;
-    extern /* Subroutine */ int sscal_(integer *, real *, real *, integer *);
+    extern /* Subroutine */ void sscal_(integer *, real *, real *, integer *);
     integer lwmin;
     logical wantz;
     integer iscale;
@@ -713,18 +713,18 @@ f"> */
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     real bignum;
     integer indtau;
-    extern /* Subroutine */ int sstedc_(char *, integer *, real *, real *, 
+    extern /* Subroutine */ void sstedc_(char *, integer *, real *, real *, 
 	    real *, integer *, real *, integer *, integer *, integer *, 
 	    integer *);
     integer indwrk, liwmin;
     extern real slansp_(char *, char *, integer *, real *, real *);
-    extern /* Subroutine */ int ssterf_(integer *, real *, real *, integer *);
+    extern /* Subroutine */ void ssterf_(integer *, real *, real *, integer *);
     integer llwork;
     real smlnum;
-    extern /* Subroutine */ int ssptrd_(char *, integer *, real *, real *, 
+    extern /* Subroutine */ void ssptrd_(char *, integer *, real *, real *, 
 	    real *, real *, integer *);
     logical lquery;
-    extern /* Subroutine */ int sopmtr_(char *, char *, char *, integer *, 
+    extern /* Subroutine */ void sopmtr_(char *, char *, char *, integer *, 
 	    integer *, real *, real *, real *, integer *, real *, integer *);
     real eps;
 
@@ -793,15 +793,15 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("SSPEVD", &i__1, (ftnlen)6);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
     if (*n == 1) {
@@ -809,7 +809,7 @@ f"> */
 	if (wantz) {
 	    z__[z_dim1 + 1] = 1.f;
 	}
-	return 0;
+	return;
     }
 
 /*     Get machine constants. */
@@ -868,7 +868,7 @@ f"> */
 
     work[1] = (real) lwmin;
     iwork[1] = liwmin;
-    return 0;
+    return;
 
 /*     End of SSPEVD */
 

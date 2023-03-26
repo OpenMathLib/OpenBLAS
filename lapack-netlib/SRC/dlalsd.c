@@ -694,7 +694,7 @@ f"> */
 /* >     Osni Marques, LBNL/NERSC, USA \n */
 
 /*  ===================================================================== */
-/* Subroutine */ int dlalsd_(char *uplo, integer *smlsiz, integer *n, integer 
+/* Subroutine */ void dlalsd_(char *uplo, integer *smlsiz, integer *n, integer 
 	*nrhs, doublereal *d__, doublereal *e, doublereal *b, integer *ldb, 
 	doublereal *rcond, integer *rank, doublereal *work, integer *iwork, 
 	integer *info)
@@ -707,53 +707,53 @@ f"> */
     integer difl, difr;
     doublereal rcnd;
     integer perm, nsub;
-    extern /* Subroutine */ int drot_(integer *, doublereal *, integer *, 
+    extern /* Subroutine */ void drot_(integer *, doublereal *, integer *, 
 	    doublereal *, integer *, doublereal *, doublereal *);
     integer nlvl, sqre, bxst, c__, i__, j, k;
     doublereal r__;
     integer s, u;
-    extern /* Subroutine */ int dgemm_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void dgemm_(char *, char *, integer *, integer *, 
 	    integer *, doublereal *, doublereal *, integer *, doublereal *, 
 	    integer *, doublereal *, doublereal *, integer *);
     integer z__;
-    extern /* Subroutine */ int dcopy_(integer *, doublereal *, integer *, 
+    extern /* Subroutine */ void dcopy_(integer *, doublereal *, integer *, 
 	    doublereal *, integer *);
     integer poles, sizei, nsize, nwork, icmpq1, icmpq2;
     doublereal cs;
     extern doublereal dlamch_(char *);
-    extern /* Subroutine */ int dlasda_(integer *, integer *, integer *, 
+    extern /* Subroutine */ void dlasda_(integer *, integer *, integer *, 
 	    integer *, doublereal *, doublereal *, doublereal *, integer *, 
 	    doublereal *, integer *, doublereal *, doublereal *, doublereal *,
 	     doublereal *, integer *, integer *, integer *, integer *, 
 	    doublereal *, doublereal *, doublereal *, doublereal *, integer *,
 	     integer *);
     integer bx;
-    extern /* Subroutine */ int dlalsa_(integer *, integer *, integer *, 
+    extern /* Subroutine */ void dlalsa_(integer *, integer *, integer *, 
 	    integer *, doublereal *, integer *, doublereal *, integer *, 
 	    doublereal *, integer *, doublereal *, integer *, doublereal *, 
 	    doublereal *, doublereal *, doublereal *, integer *, integer *, 
 	    integer *, integer *, doublereal *, doublereal *, doublereal *, 
 	    doublereal *, integer *, integer *);
     doublereal sn;
-    extern /* Subroutine */ int dlascl_(char *, integer *, integer *, 
+    extern /* Subroutine */ void dlascl_(char *, integer *, integer *, 
 	    doublereal *, doublereal *, integer *, integer *, doublereal *, 
 	    integer *, integer *);
     extern integer idamax_(integer *, doublereal *, integer *);
     integer st;
-    extern /* Subroutine */ int dlasdq_(char *, integer *, integer *, integer 
+    extern /* Subroutine */ void dlasdq_(char *, integer *, integer *, integer 
 	    *, integer *, integer *, doublereal *, doublereal *, doublereal *,
 	     integer *, doublereal *, integer *, doublereal *, integer *, 
 	    doublereal *, integer *);
     integer vt;
-    extern /* Subroutine */ int dlacpy_(char *, integer *, integer *, 
+    extern /* Subroutine */ void dlacpy_(char *, integer *, integer *, 
 	    doublereal *, integer *, doublereal *, integer *), 
 	    dlartg_(doublereal *, doublereal *, doublereal *, doublereal *, 
 	    doublereal *), dlaset_(char *, integer *, integer *, doublereal *,
-	     doublereal *, doublereal *, integer *), xerbla_(char *, 
-	    integer *, ftnlen);
+	     doublereal *, doublereal *, integer *);
+    extern int xerbla_(char *, integer *, ftnlen);
     integer givcol;
     extern doublereal dlanst_(char *, integer *, doublereal *, doublereal *);
-    extern /* Subroutine */ int dlasrt_(char *, integer *, doublereal *, 
+    extern /* Subroutine */ void dlasrt_(char *, integer *, doublereal *, 
 	    integer *);
     doublereal orgnrm;
     integer givnum, givptr, nm1, smlszp, st1;
@@ -795,7 +795,7 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DLALSD", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
     eps = dlamch_("Epsilon");
@@ -813,7 +813,7 @@ f"> */
 /*     Quick return if possible. */
 
     if (*n == 0) {
-	return 0;
+	return;
     } else if (*n == 1) {
 	if (d__[1] == 0.) {
 	    dlaset_("A", &c__1, nrhs, &c_b6, &c_b6, &b[b_offset], ldb);
@@ -823,7 +823,7 @@ f"> */
 		    b_offset], ldb, info);
 	    d__[1] = abs(d__[1]);
 	}
-	return 0;
+	return;
     }
 
 /*     Rotate the matrix if it is lower bidiagonal. */
@@ -866,7 +866,7 @@ f"> */
     orgnrm = dlanst_("M", n, &d__[1], &e[1]);
     if (orgnrm == 0.) {
 	dlaset_("A", n, nrhs, &c_b6, &c_b6, &b[b_offset], ldb);
-	return 0;
+	return;
     }
 
     dlascl_("G", &c__0, &c__0, &orgnrm, &c_b11, n, &c__1, &d__[1], n, info);
@@ -882,7 +882,7 @@ f"> */
 	dlasdq_("U", &c__0, n, n, &c__0, nrhs, &d__[1], &e[1], &work[1], n, &
 		work[1], n, &b[b_offset], ldb, &work[nwork], info);
 	if (*info != 0) {
-	    return 0;
+	    return;
 	}
 	tol = rcnd * (d__1 = d__[idamax_(n, &d__[1], &c__1)], abs(d__1));
 	i__1 = *n;
@@ -908,7 +908,7 @@ f"> */
 	dlascl_("G", &c__0, &c__0, &orgnrm, &c_b11, n, nrhs, &b[b_offset], 
 		ldb, info);
 
-	return 0;
+	return;
     }
 
 /*     Book-keeping and setting up some constants. */
@@ -1002,7 +1002,7 @@ f"> */
 			st], &work[vt + st1], n, &work[nwork], n, &b[st + 
 			b_dim1], ldb, &work[nwork], info);
 		if (*info != 0) {
-		    return 0;
+		    return;
 		}
 		dlacpy_("A", &nsize, nrhs, &b[st + b_dim1], ldb, &work[bx + 
 			st1], n);
@@ -1018,7 +1018,7 @@ f"> */
 			st1], &work[c__ + st1], &work[s + st1], &work[nwork], 
 			&iwork[iwk], info);
 		if (*info != 0) {
-		    return 0;
+		    return;
 		}
 		bxst = bx + st1;
 		dlalsa_(&icmpq2, smlsiz, &nsize, nrhs, &b[st + b_dim1], ldb, &
@@ -1029,7 +1029,7 @@ f"> */
 			work[givnum + st1], &work[c__ + st1], &work[s + st1], 
 			&work[nwork], &iwork[iwk], info);
 		if (*info != 0) {
-		    return 0;
+		    return;
 		}
 	    }
 	    st = i__ + 1;
@@ -1081,7 +1081,7 @@ f"> */
 		     &work[c__ + st1], &work[s + st1], &work[nwork], &iwork[
 		    iwk], info);
 	    if (*info != 0) {
-		return 0;
+		return;
 	    }
 	}
 /* L80: */
@@ -1094,7 +1094,7 @@ f"> */
     dlascl_("G", &c__0, &c__0, &orgnrm, &c_b11, n, nrhs, &b[b_offset], ldb, 
 	    info);
 
-    return 0;
+    return;
 
 /*     End of DLALSD */
 

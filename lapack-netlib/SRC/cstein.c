@@ -696,7 +696,7 @@ f"> */
 /* > \ingroup complexOTHERcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int cstein_(integer *n, real *d__, real *e, integer *m, real 
+/* Subroutine */ void cstein_(integer *n, real *d__, real *e, integer *m, real 
 	*w, integer *iblock, integer *isplit, complex *z__, integer *ldz, 
 	real *work, integer *iwork, integer *ifail, integer *info)
 {
@@ -709,24 +709,25 @@ f"> */
     integer jblk, nblk, jmax;
     extern real snrm2_(integer *, real *, integer *);
     integer i__, j, iseed[4], gpind, iinfo;
-    extern /* Subroutine */ int sscal_(integer *, real *, real *, integer *);
+    extern /* Subroutine */ void sscal_(integer *, real *, real *, integer *);
     integer b1, j1;
-    extern /* Subroutine */ int scopy_(integer *, real *, integer *, real *, 
+    extern /* Subroutine */ void scopy_(integer *, real *, integer *, real *, 
 	    integer *);
     real ortol;
     integer indrv1, indrv2, indrv3, indrv4, indrv5, bn, jr;
     real xj;
     extern real slamch_(char *);
-    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen), slagtf_(
+    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
+    extern void slagtf_(
 	    integer *, real *, real *, real *, real *, real *, real *, 
 	    integer *, integer *);
     integer nrmchk;
     extern integer isamax_(integer *, real *, integer *);
-    extern /* Subroutine */ int slagts_(integer *, integer *, real *, real *, 
+    extern /* Subroutine */ void slagts_(integer *, integer *, real *, real *, 
 	    real *, real *, integer *, real *, real *, integer *);
     integer blksiz;
     real onenrm, pertol;
-    extern /* Subroutine */ int slarnv_(integer *, integer *, integer *, real 
+    extern /* Subroutine */ void slarnv_(integer *, integer *, integer *, real 
 	    *);
     real stpcrt, scl, eps, ctr, sep, nrm, tol;
     integer its;
@@ -791,17 +792,17 @@ L30:
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CSTEIN", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0 || *m == 0) {
-	return 0;
+	return;
     } else if (*n == 1) {
 	i__1 = z_dim1 + 1;
 	z__[i__1].r = 1.f, z__[i__1].i = 0.f;
-	return 0;
+	return;
     }
 
 /*     Get machine constants. */
@@ -1029,7 +1030,7 @@ L180:
 	;
     }
 
-    return 0;
+    return;
 
 /*     End of CSTEIN */
 

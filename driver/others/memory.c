@@ -249,8 +249,11 @@ int get_num_procs(void) {
 
 #if defined(USE_OPENMP)
 #if _OPENMP >= 201511
+    int i,n;
+    n = 0;
     ret = omp_get_num_places();
-    if (ret >0 ) nums = ret;
+    if (ret > 0) for (i=0; i<ret;i++) n+= omp_get_place_num_procs(i);
+    if (n > 0) nums = n;
 #endif
     return (nums > 0 ? nums : 2);
 #endif
@@ -418,6 +421,8 @@ The numbers of threads in the thread pool.
 This value is equal or large than blas_cpu_number. This means some threads are sleep.
 */
 int blas_num_threads = 0;
+
+int blas_num_threads_set = 0;
 
 int  goto_get_num_procs  (void) {
   return blas_cpu_number;
@@ -1820,8 +1825,11 @@ int get_num_procs(void) {
 #if defined(USE_OPENMP)
 /*  if (omp_get_proc_bind() != omp_proc_bind_false) */
 #if _OPENMP >= 201511
+    int i,n;
+    n = 0;
     ret = omp_get_num_places();
-    if (ret >0 ) nums = ret;
+    if (ret > 0) for (i=0;i<ret;i++) n+= omp_get_place_num_procs(i);
+    if (n > 0) nums = n;
 #endif
     return (nums > 0 ? nums :2);
 #endif
@@ -1987,6 +1995,8 @@ The numbers of threads in the thread pool.
 This value is equal or large than blas_cpu_number. This means some threads are sleep.
 */
 int blas_num_threads = 0;
+
+int blas_num_threads_set = 0;
 
 int  goto_get_num_procs  (void) {
   return blas_cpu_number;

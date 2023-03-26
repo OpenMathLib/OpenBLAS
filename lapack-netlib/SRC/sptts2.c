@@ -612,7 +612,7 @@ f"> */
 /* > \ingroup realPTcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int sptts2_(integer *n, integer *nrhs, real *d__, real *e, 
+/* Subroutine */ void sptts2_(integer *n, integer *nrhs, real *d__, real *e, 
 	real *b, integer *ldb)
 {
     /* System generated locals */
@@ -621,7 +621,7 @@ f"> */
 
     /* Local variables */
     integer i__, j;
-    extern /* Subroutine */ int sscal_(integer *, real *, real *, integer *);
+    extern /* Subroutine */ void sscal_(integer *, real *, real *, integer *);
 
 
 /*  -- LAPACK computational routine (version 3.7.0) -- */
@@ -648,7 +648,7 @@ f"> */
 	    r__1 = 1.f / d__[1];
 	    sscal_(nrhs, &r__1, &b[b_offset], ldb);
 	}
-	return 0;
+	return;
     }
 
 /*     Solve A * X = B using the factorization A = L*D*L**T, */
@@ -676,7 +676,7 @@ f"> */
 /* L30: */
     }
 
-    return 0;
+    return;
 
 /*     End of SPTTS2 */
 

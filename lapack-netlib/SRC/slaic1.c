@@ -648,7 +648,7 @@ f"> */
 /* > \ingroup realOTHERauxiliary */
 
 /*  ===================================================================== */
-/* Subroutine */ int slaic1_(integer *job, integer *j, real *x, real *sest, 
+/* Subroutine */ void slaic1_(integer *job, integer *j, real *x, real *sest, 
 	real *w, real *gamma, real *sestpr, real *s, real *c__)
 {
     /* System generated locals */
@@ -703,7 +703,7 @@ f"> */
 		*c__ /= tmp;
 		*sestpr = s1 * tmp;
 	    }
-	    return 0;
+	    return;
 	} else if (absgam <= eps * absest) {
 	    *s = 1.f;
 	    *c__ = 0.f;
@@ -711,7 +711,7 @@ f"> */
 	    s1 = absest / tmp;
 	    s2 = absalp / tmp;
 	    *sestpr = tmp * sqrt(s1 * s1 + s2 * s2);
-	    return 0;
+	    return;
 	} else if (absalp <= eps * absest) {
 	    s1 = absgam;
 	    s2 = absest;
@@ -724,7 +724,7 @@ f"> */
 		*c__ = 1.f;
 		*sestpr = s1;
 	    }
-	    return 0;
+	    return;
 	} else if (absest <= eps * absalp || absest <= eps * absgam) {
 	    s1 = absgam;
 	    s2 = absalp;
@@ -741,7 +741,7 @@ f"> */
 		*s = alpha / s1 / *c__;
 		*c__ = r_sign(&c_b5, gamma) / *c__;
 	    }
-	    return 0;
+	    return;
 	} else {
 
 /*           normal case */
@@ -763,7 +763,7 @@ f"> */
 	    *s = sine / tmp;
 	    *c__ = cosine / tmp;
 	    *sestpr = sqrt(t + 1.f) * absest;
-	    return 0;
+	    return;
 	}
 
     } else if (*job == 2) {
@@ -789,12 +789,12 @@ f"> */
 	    tmp = sqrt(*s * *s + *c__ * *c__);
 	    *s /= tmp;
 	    *c__ /= tmp;
-	    return 0;
+	    return;
 	} else if (absgam <= eps * absest) {
 	    *s = 0.f;
 	    *c__ = 1.f;
 	    *sestpr = absgam;
-	    return 0;
+	    return;
 	} else if (absalp <= eps * absest) {
 	    s1 = absgam;
 	    s2 = absest;
@@ -807,7 +807,7 @@ f"> */
 		*c__ = 0.f;
 		*sestpr = s2;
 	    }
-	    return 0;
+	    return;
 	} else if (absest <= eps * absalp || absest <= eps * absgam) {
 	    s1 = absgam;
 	    s2 = absalp;
@@ -824,7 +824,7 @@ f"> */
 		*c__ = alpha / s1 / *s;
 		*s = -r_sign(&c_b5, gamma) / *s;
 	    }
-	    return 0;
+	    return;
 	} else {
 
 /*           normal case */
@@ -868,11 +868,11 @@ f"> */
 	    tmp = sqrt(sine * sine + cosine * cosine);
 	    *s = sine / tmp;
 	    *c__ = cosine / tmp;
-	    return 0;
+	    return;
 
 	}
     }
-    return 0;
+    return;
 
 /*     End of SLAIC1 */
 

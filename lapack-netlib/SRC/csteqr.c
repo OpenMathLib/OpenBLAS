@@ -650,7 +650,7 @@ f"> */
 /* > \ingroup complexOTHERcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int csteqr_(char *compz, integer *n, real *d__, real *e, 
+/* Subroutine */ void csteqr_(char *compz, integer *n, real *d__, real *e, 
 	complex *z__, integer *ldz, real *work, integer *info)
 {
     /* System generated locals */
@@ -659,38 +659,38 @@ f"> */
 
     /* Local variables */
     integer lend, jtot;
-    extern /* Subroutine */ int slae2_(real *, real *, real *, real *, real *)
+    extern /* Subroutine */ void slae2_(real *, real *, real *, real *, real *)
 	    ;
     real b, c__, f, g;
     integer i__, j, k, l, m;
     real p, r__, s;
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int clasr_(char *, char *, char *, integer *, 
+    extern /* Subroutine */ void clasr_(char *, char *, char *, integer *, 
 	    integer *, real *, real *, complex *, integer *);
     real anorm;
-    extern /* Subroutine */ int cswap_(integer *, complex *, integer *, 
+    extern /* Subroutine */ void cswap_(integer *, complex *, integer *, 
 	    complex *, integer *);
     integer l1, lendm1, lendp1;
-    extern /* Subroutine */ int slaev2_(real *, real *, real *, real *, real *
+    extern /* Subroutine */ void slaev2_(real *, real *, real *, real *, real *
 	    , real *, real *);
     extern real slapy2_(real *, real *);
     integer ii, mm, iscale;
     extern real slamch_(char *);
-    extern /* Subroutine */ int claset_(char *, integer *, integer *, complex 
+    extern /* Subroutine */ void claset_(char *, integer *, integer *, complex 
 	    *, complex *, complex *, integer *);
     real safmin;
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     real safmax;
-    extern /* Subroutine */ int slascl_(char *, integer *, integer *, real *, 
+    extern /* Subroutine */ void slascl_(char *, integer *, integer *, real *, 
 	    real *, integer *, integer *, real *, integer *, integer *);
     integer lendsv;
-    extern /* Subroutine */ int slartg_(real *, real *, real *, real *, real *
+    extern /* Subroutine */ void slartg_(real *, real *, real *, real *, real *
 	    );
     real ssfmin;
     integer nmaxit, icompz;
     real ssfmax;
     extern real slanst_(char *, integer *, real *, real *);
-    extern /* Subroutine */ int slasrt_(char *, integer *, real *, integer *);
+    extern /* Subroutine */ void slasrt_(char *, integer *, real *, integer *);
     integer lm1, mm1, nm1;
     real rt1, rt2, eps;
     integer lsv;
@@ -738,13 +738,13 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CSTEQR", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
     if (*n == 1) {
@@ -752,7 +752,7 @@ f"> */
 	    i__1 = z_dim1 + 1;
 	    z__[i__1].r = 1.f, z__[i__1].i = 0.f;
 	}
-	return 0;
+	return;
     }
 
 /*     Determine the unit roundoff and over/underflow thresholds. */
@@ -1125,7 +1125,7 @@ L140:
 	    }
 /* L150: */
 	}
-	return 0;
+	return;
     }
     goto L10;
 
@@ -1164,7 +1164,7 @@ L160:
 /* L180: */
 	}
     }
-    return 0;
+    return;
 
 /*     End of CSTEQR */
 

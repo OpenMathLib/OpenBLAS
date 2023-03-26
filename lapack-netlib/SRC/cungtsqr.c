@@ -688,7 +688,7 @@ r.f"> */
 /* > \endverbatim */
 
 /*  ===================================================================== */
-/* Subroutine */ int cungtsqr_(integer *m, integer *n, integer *mb, integer *
+/* Subroutine */ void cungtsqr_(integer *m, integer *n, integer *mb, integer *
 	nb, complex *a, integer *lda, complex *t, integer *ldt, complex *work,
 	 integer *lwork, integer *info)
 {
@@ -697,17 +697,17 @@ r.f"> */
     complex q__1;
 
     /* Local variables */
-    extern /* Subroutine */ int clamtsqr_(char *, char *, integer *, integer *
+    extern /* Subroutine */ void clamtsqr_(char *, char *, integer *, integer *
 	    , integer *, integer *, integer *, complex *, integer *, complex *
 	    , integer *, complex *, integer *, complex *, integer *, integer *
 	    );
     integer lworkopt, j, iinfo;
-    extern /* Subroutine */ int ccopy_(integer *, complex *, integer *, 
+    extern /* Subroutine */ void ccopy_(integer *, complex *, integer *, 
 	    complex *, integer *);
     integer lc, lw;
-    extern /* Subroutine */ int claset_(char *, integer *, integer *, complex 
-	    *, complex *, complex *, integer *), xerbla_(char *, 
-	    integer *, ftnlen);
+    extern /* Subroutine */ void claset_(char *, integer *, integer *, complex 
+	    *, complex *, complex *, integer *);
+    extern int xerbla_(char *, integer *, ftnlen);
     logical lquery;
     integer ldc, nblocal;
 
@@ -787,11 +787,11 @@ r.f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CUNGTSQR", &i__1, (ftnlen)8);
-	return 0;
+	return;
     } else if (lquery) {
 	q__1.r = (real) lworkopt, q__1.i = 0.f;
 	work[1].r = q__1.r, work[1].i = q__1.i;
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
@@ -799,7 +799,7 @@ r.f"> */
     if (f2cmin(*m,*n) == 0) {
 	q__1.r = (real) lworkopt, q__1.i = 0.f;
 	work[1].r = q__1.r, work[1].i = q__1.i;
-	return 0;
+	return;
     }
 
 /*     (1) Form explicitly the tall-skinny M-by-N left submatrix Q1_in */
@@ -834,7 +834,7 @@ r.f"> */
 
     q__1.r = (real) lworkopt, q__1.i = 0.f;
     work[1].r = q__1.r, work[1].i = q__1.i;
-    return 0;
+    return;
 
 /*     End of CUNGTSQR */
 

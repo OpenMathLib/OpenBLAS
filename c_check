@@ -31,8 +31,8 @@ flags="$*"
 
 cross_suffix=""
 
-if [ "`dirname $compiler_name`" != '.' ]; then
-    cross_suffix="$cross_suffix`dirname $compiler_name`/"
+if [ "`dirname \"$compiler_name\"`" != '.' ]; then
+    cross_suffix="$cross_suffix`dirname \"$compiler_name\"`/"
 fi
 
 bn=`basename $compiler_name`
@@ -162,7 +162,7 @@ fi
     exit 1
 }
 
-have_msa=0
+no_msa=0
 if [ "$architecture" = "mips" ] || [ "$architecture" = "mips64" ]; then
     tmpd="$(mktemp -d)"
     tmpf="$tmpd/a.c"
@@ -172,11 +172,10 @@ if [ "$architecture" = "mips" ] || [ "$architecture" = "mips64" ]; then
     printf "void main(void){ __asm__ volatile(%s); }\n" "$code" >> "$tmpf"
 
     args="$msa_flags -o $tmpf.o $tmpf"
-    have_msa=1
     {
     	$compiler_name $flags $args >/dev/null 2>&1
     } || {
-    	have_msa=0
+    	no_msa=1
     }
 
     rm -rf "$tmpd"
@@ -236,6 +235,21 @@ if [ "$architecture" = "riscv64" ]; then
         $compiler_name $flags $args >/dev/null 2>&1
     } || {
         no_rv64gv=1
+    }
+    rm -rf "$tmpd"
+fi
+
+no_sve=0
+if [ "$architecture" = "arm64" ]; then
+    tmpd=`mktemp -d`
+    tmpf="$tmpd/a.c"
+    printf "#include <arm_sve.h>\n\n int main(void){}\n">> "$tmpf"
+    args=" -march=armv8-a+sve -c -o $tmpf.o $tmpf"
+    no_sve=0
+    {
+        $compiler_name $flags $args >/dev/null 2>&1
+    } || {
+        no_sve=1
     }
     rm -rf "$tmpd"
 fi
@@ -375,10 +389,8 @@ done
         printf "CROSS_SUFFIX=%s\n" "$cross_suffix"
     [ "$cross" -ne 0 ] && printf "CROSS=1\n"
     printf "CEXTRALIB=%s %s %s\n" "$linker_L" "$linker_l" "$linker_a"
-    [ "$have_msa" -eq 1 ] && {
-        printf "HAVE_MSA=1\n"
-        printf "MSA_FLAGS=%s\n" "$msa_flags"
-    }
+    [ "$no_msa" -eq 1 ] &&  printf "NO_MSA=1\n"
+    [ "$no_sve" -eq 1 ] && printf "NO_SVE=1\n"
     [ "$no_rv64gv" -eq 1 ] && printf "NO_RV64GV=1\n"
     [ "$no_avx512" -eq 1 ] && printf "NO_AVX512=1\n"
     [ "$no_avx2" -eq 1 ] && printf "NO_AVX2=1\n"
@@ -396,7 +408,7 @@ compiler=`echo "$compiler" | tr '[[:lower:]]' '[[:upper:]]' `
     [ "$binformat" = "bin32" ] && printf "#define __32BIT__\t1\n"
     [ "$binformat" = "bin64" ] && printf "#define __64BIT__\t1\n"
     [ -n "$need_fu" ] && printf "#define FUNDERSCORE\t%s\n" "$need_fu"
-    [ "$have_msa" -eq 1 ] && printf "#define HAVE_MSA\t1\n"
+    [ "$no_msa" -eq 1 ] && printf "#define NO_MSA\t1\n"
     [ "$c11_atomics" -eq 1 ] && printf "#define HAVE_C11\t1\n"
 } >> "$config"
 

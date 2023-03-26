@@ -700,7 +700,7 @@ f"> */
 /* > \ingroup realOTHEReigen */
 
 /*  ===================================================================== */
-/* Subroutine */ int sggglm_(integer *n, integer *m, integer *p, real *a, 
+/* Subroutine */ void sggglm_(integer *n, integer *m, integer *p, real *a, 
 	integer *lda, real *b, integer *ldb, real *d__, real *x, real *y, 
 	real *work, integer *lwork, integer *info)
 {
@@ -709,23 +709,23 @@ f"> */
 
     /* Local variables */
     integer lopt, i__;
-    extern /* Subroutine */ int sgemv_(char *, integer *, integer *, real *, 
+    extern /* Subroutine */ void sgemv_(char *, integer *, integer *, real *, 
 	    real *, integer *, real *, integer *, real *, real *, integer *), scopy_(integer *, real *, integer *, real *, integer *);
     integer nb, np;
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     extern integer ilaenv_(integer *, char *, char *, integer *, integer *, 
 	    integer *, integer *, ftnlen, ftnlen);
-    extern /* Subroutine */ int sggqrf_(integer *, integer *, integer *, real 
+    extern /* Subroutine */ void sggqrf_(integer *, integer *, integer *, real 
 	    *, integer *, real *, real *, integer *, real *, real *, integer *
 	    , integer *);
     integer lwkmin, nb1, nb2, nb3, nb4, lwkopt;
     logical lquery;
-    extern /* Subroutine */ int sormqr_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void sormqr_(char *, char *, integer *, integer *, 
 	    integer *, real *, integer *, real *, real *, integer *, real *, 
 	    integer *, integer *), sormrq_(char *, char *, 
 	    integer *, integer *, integer *, real *, integer *, real *, real *
-	    , integer *, real *, integer *, integer *), 
-	    strtrs_(char *, char *, char *, integer *, integer *, real *, 
+	    , integer *, real *, integer *, integer *);
+    extern int strtrs_(char *, char *, char *, integer *, integer *, real *, 
 	    integer *, real *, integer *, integer *);
 
 
@@ -799,9 +799,9 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("SGGGLM", &i__1, (ftnlen)6);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
@@ -815,7 +815,7 @@ f"> */
 	for (i__ = 1; i__ <= i__1; ++i__) {
 	    y[i__] = 0.f;
 	}
-	return 0;
+	return;
     }
 
 /*     Compute the GQR factorization of matrices A and B: */
@@ -854,7 +854,7 @@ f"> */
 
 	if (*info > 0) {
 	    *info = 1;
-	    return 0;
+	    return;
 	}
 
 	i__1 = *n - *m;
@@ -883,7 +883,7 @@ f"> */
 
 	if (*info > 0) {
 	    *info = 2;
-	    return 0;
+	    return;
 	}
 
 /*        Copy D to X */
@@ -903,7 +903,7 @@ f"> */
     i__1 = lopt, i__2 = (integer) work[*m + np + 1];
     work[1] = (real) (*m + np + f2cmax(i__1,i__2));
 
-    return 0;
+    return;
 
 /*     End of SGGGLM */
 

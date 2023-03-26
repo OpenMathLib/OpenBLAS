@@ -178,7 +178,8 @@
 *     ..
 *     .. External Functions ..
       INTEGER            ILAENV
-      EXTERNAL           ILAENV
+      LOGICAL            LSAME
+      EXTERNAL           ILAENV, LSAME
 *     ..
 *     .. Executable Statements ..
 *
@@ -310,7 +311,7 @@
 *
 *     Will add the VECT OPTION HERE next release
          VECT  = OPTS(1:1)
-         IF( VECT.EQ.'N' ) THEN
+         IF( LSAME( VECT, 'N' ) ) THEN
             LHOUS = MAX( 1, 4*NI )
          ELSE
 *           This is not correct, it need to call the ALGO and the stage2

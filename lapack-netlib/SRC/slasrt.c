@@ -597,7 +597,7 @@ f"> */
 /* > \ingroup auxOTHERcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int slasrt_(char *id, integer *n, real *d__, integer *info)
+/* Subroutine */ void slasrt_(char *id, integer *n, real *d__, integer *info)
 {
     /* System generated locals */
     integer i__1, i__2;
@@ -643,13 +643,13 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("SLASRT", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n <= 1) {
-	return 0;
+	return;
     }
 
     stkpnt = 1;
@@ -816,7 +816,7 @@ L110:
     if (stkpnt > 0) {
 	goto L10;
     }
-    return 0;
+    return;
 
 /*     End of SLASRT */
 

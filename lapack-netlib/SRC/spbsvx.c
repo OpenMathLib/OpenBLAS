@@ -854,7 +854,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int spbsvx_(char *fact, char *uplo, integer *n, integer *kd, 
+/* Subroutine */ void spbsvx_(char *fact, char *uplo, integer *n, integer *kd, 
 	integer *nrhs, real *ab, integer *ldab, real *afb, integer *ldafb, 
 	char *equed, real *s, real *b, integer *ldb, real *x, integer *ldx, 
 	real *rcond, real *ferr, real *berr, real *work, integer *iwork, 
@@ -872,7 +872,7 @@ f"> */
     real scond, anorm;
     logical equil, rcequ, upper;
     integer j1, j2;
-    extern /* Subroutine */ int scopy_(integer *, real *, integer *, real *, 
+    extern /* Subroutine */ void scopy_(integer *, real *, integer *, real *, 
 	    integer *);
     extern real slamch_(char *);
     logical nofact;
@@ -880,19 +880,19 @@ f"> */
     real bignum;
     extern real slansb_(char *, char *, integer *, integer *, real *, integer 
 	    *, real *);
-    extern /* Subroutine */ int spbcon_(char *, integer *, integer *, real *, 
+    extern /* Subroutine */ void spbcon_(char *, integer *, integer *, real *, 
 	    integer *, real *, real *, real *, integer *, integer *), 
 	    slaqsb_(char *, integer *, integer *, real *, integer *, real *, 
 	    real *, real *, char *);
     integer infequ;
-    extern /* Subroutine */ int slacpy_(char *, integer *, integer *, real *, 
+    extern /* Subroutine */ void slacpy_(char *, integer *, integer *, real *, 
 	    integer *, real *, integer *), spbequ_(char *, integer *, 
 	    integer *, real *, integer *, real *, real *, real *, integer *), spbrfs_(char *, integer *, integer *, integer *, real *, 
 	    integer *, real *, integer *, real *, integer *, real *, integer *
 	    , real *, real *, real *, integer *, integer *), spbtrf_(
 	    char *, integer *, integer *, real *, integer *, integer *);
     real smlnum;
-    extern /* Subroutine */ int spbtrs_(char *, integer *, integer *, integer 
+    extern /* Subroutine */ void spbtrs_(char *, integer *, integer *, integer 
 	    *, real *, integer *, real *, integer *, integer *);
 
 
@@ -991,7 +991,7 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("SPBSVX", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
     if (equil) {
@@ -1058,7 +1058,7 @@ f"> */
 
 	if (*info > 0) {
 	    *rcond = 0.f;
-	    return 0;
+	    return;
 	}
     }
 
@@ -1110,7 +1110,7 @@ f"> */
 	*info = *n + 1;
     }
 
-    return 0;
+    return;
 
 /*     End of SPBSVX */
 

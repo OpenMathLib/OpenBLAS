@@ -702,7 +702,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int sgebd2_(integer *m, integer *n, real *a, integer *lda, 
+/* Subroutine */ void sgebd2_(integer *m, integer *n, real *a, integer *lda, 
 	real *d__, real *e, real *tauq, real *taup, real *work, integer *info)
 {
     /* System generated locals */
@@ -710,9 +710,10 @@ f"> */
 
     /* Local variables */
     integer i__;
-    extern /* Subroutine */ int slarf_(char *, integer *, integer *, real *, 
-	    integer *, real *, real *, integer *, real *), xerbla_(
-	    char *, integer *, ftnlen), slarfg_(integer *, real *, real *, 
+    extern /* Subroutine */ void slarf_(char *, integer *, integer *, real *, 
+	    integer *, real *, real *, integer *, real *);
+    extern int xerbla_(char *, integer *, ftnlen);
+    extern void slarfg_(integer *, real *, real *, 
 	    integer *, real *);
 
 
@@ -749,7 +750,7 @@ f"> */
     if (*info < 0) {
 	i__1 = -(*info);
 	xerbla_("SGEBD2", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
     if (*m >= *n) {
@@ -860,7 +861,7 @@ f"> */
 /* L20: */
 	}
     }
-    return 0;
+    return;
 
 /*     End of SGEBD2 */
 

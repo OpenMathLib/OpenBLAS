@@ -715,7 +715,7 @@ static doublereal c_b9 = -1.;
 /* >      Algorithms, 50(1):33-65, 2009. */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int dorbdb2_(integer *m, integer *p, integer *q, doublereal *
+/* Subroutine */ void dorbdb2_(integer *m, integer *p, integer *q, doublereal *
 	x11, integer *ldx11, doublereal *x21, integer *ldx21, doublereal *
 	theta, doublereal *phi, doublereal *taup1, doublereal *taup2, 
 	doublereal *tauq1, doublereal *work, integer *lwork, integer *info)
@@ -726,7 +726,7 @@ static doublereal c_b9 = -1.;
     doublereal d__1, d__2;
 
     /* Local variables */
-    extern /* Subroutine */ int drot_(integer *, doublereal *, integer *, 
+    extern /* Subroutine */ void drot_(integer *, doublereal *, integer *, 
 	    doublereal *, integer *, doublereal *, doublereal *);
     integer lworkmin;
     extern doublereal dnrm2_(integer *, doublereal *, integer *);
@@ -734,18 +734,18 @@ static doublereal c_b9 = -1.;
     doublereal c__;
     integer i__;
     doublereal s;
-    extern /* Subroutine */ int dscal_(integer *, doublereal *, doublereal *, 
+    extern /* Subroutine */ void dscal_(integer *, doublereal *, doublereal *, 
 	    integer *), dlarf_(char *, integer *, integer *, doublereal *, 
 	    integer *, doublereal *, doublereal *, integer *, doublereal *);
     integer ilarf, llarf, childinfo;
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     logical lquery;
-    extern /* Subroutine */ int dorbdb5_(integer *, integer *, integer *, 
+    extern /* Subroutine */ void dorbdb5_(integer *, integer *, integer *, 
 	    doublereal *, integer *, doublereal *, integer *, doublereal *, 
 	    integer *, doublereal *, integer *, doublereal *, integer *, 
 	    integer *);
     integer iorbdb5, lorbdb5;
-    extern /* Subroutine */ int dlarfgp_(integer *, doublereal *, doublereal *
+    extern /* Subroutine */ void dlarfgp_(integer *, doublereal *, doublereal *
 	    , integer *, doublereal *);
 
 
@@ -815,9 +815,9 @@ static doublereal c_b9 = -1.;
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DORBDB2", &i__1, (ftnlen)7);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Reduce rows 1, ..., P of X11 and X21 */
@@ -901,7 +901,7 @@ static doublereal c_b9 = -1.;
 		i__], &x21[i__ + (i__ + 1) * x21_dim1], ldx21, &work[ilarf]);
     }
 
-    return 0;
+    return;
 
 /*     End of DORBDB2 */
 

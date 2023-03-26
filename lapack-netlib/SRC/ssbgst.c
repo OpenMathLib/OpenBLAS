@@ -674,7 +674,7 @@ f"> */
 /* > \ingroup realOTHERcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int ssbgst_(char *vect, char *uplo, integer *n, integer *ka, 
+/* Subroutine */ void ssbgst_(char *vect, char *uplo, integer *n, integer *ka, 
 	integer *kb, real *ab, integer *ldab, real *bb, integer *ldbb, real *
 	x, integer *ldx, real *work, integer *info)
 {
@@ -685,31 +685,31 @@ f"> */
 
     /* Local variables */
     integer inca;
-    extern /* Subroutine */ int sger_(integer *, integer *, real *, real *, 
+    extern /* Subroutine */ void sger_(integer *, integer *, real *, real *, 
 	    integer *, real *, integer *, real *, integer *), srot_(integer *,
 	     real *, integer *, real *, integer *, real *, real *);
     integer i__, j, k, l, m;
     real t;
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int sscal_(integer *, real *, real *, integer *);
+    extern /* Subroutine */ void sscal_(integer *, real *, real *, integer *);
     integer i0, i1;
     logical upper;
     integer i2, j1, j2;
     logical wantx;
-    extern /* Subroutine */ int slar2v_(integer *, real *, real *, real *, 
+    extern /* Subroutine */ void slar2v_(integer *, real *, real *, real *, 
 	    integer *, real *, real *, integer *);
     real ra;
     integer nr, nx;
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     logical update;
-    extern /* Subroutine */ int slaset_(char *, integer *, integer *, real *, 
+    extern /* Subroutine */ void slaset_(char *, integer *, integer *, real *, 
 	    real *, real *, integer *), slartg_(real *, real *, real *
 	    , real *, real *);
     integer ka1, kb1;
-    extern /* Subroutine */ int slargv_(integer *, real *, integer *, real *, 
+    extern /* Subroutine */ void slargv_(integer *, real *, integer *, real *, 
 	    integer *, real *, integer *);
     real ra1;
-    extern /* Subroutine */ int slartv_(integer *, real *, integer *, real *, 
+    extern /* Subroutine */ void slartv_(integer *, real *, integer *, real *, 
 	    integer *, real *, real *, integer *);
     integer j1t, j2t;
     real bii;
@@ -765,13 +765,13 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("SSBGST", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
     inca = *ldab * ka1;
@@ -1609,14 +1609,14 @@ L490:
 	    --i__;
 	    i0 = m + 1;
 	    if (*ka == 0) {
-		return 0;
+		return;
 	    }
 	    goto L490;
 	}
     } else {
 	i__ -= *ka;
 	if (i__ < 2) {
-	    return 0;
+	    return;
 	}
     }
 

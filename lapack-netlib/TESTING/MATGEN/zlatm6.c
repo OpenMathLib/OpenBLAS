@@ -687,7 +687,7 @@ static integer c__24 = 24;
 /* > \ingroup complex16_matgen */
 
 /*  ===================================================================== */
-/* Subroutine */ int zlatm6_(integer *type__, integer *n, doublecomplex *a, 
+/* Subroutine */ void zlatm6_(integer *type__, integer *n, doublecomplex *a, 
 	integer *lda, doublecomplex *b, doublecomplex *x, integer *ldx, 
 	doublecomplex *y, integer *ldy, doublecomplex *alpha, doublecomplex *
 	beta, doublecomplex *wx, doublecomplex *wy, doublereal *s, doublereal 
@@ -705,7 +705,7 @@ static integer c__24 = 24;
     integer i__, j;
     doublecomplex z__[64]	/* was [8][8] */;
     doublereal rwork[50];
-    extern /* Subroutine */ int zlakf2_(integer *, integer *, doublecomplex *,
+    extern /* Subroutine */ void zlakf2_(integer *, integer *, doublecomplex *,
 	     integer *, doublecomplex *, doublecomplex *, doublecomplex *, 
 	    doublecomplex *, integer *), zgesvd_(char *, char *, integer *, 
 	    integer *, doublecomplex *, integer *, doublereal *, 
@@ -934,7 +934,7 @@ static integer c__24 = 24;
 	    &c__1, &work[2], &c__24, &rwork[8], &info);
     dif[5] = rwork[7];
 
-    return 0;
+    return;
 
 /*     End of ZLATM6 */
 

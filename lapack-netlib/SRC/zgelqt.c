@@ -648,7 +648,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int zgelqt_(integer *m, integer *n, integer *mb, 
+/* Subroutine */ void zgelqt_(integer *m, integer *n, integer *mb, 
 	doublecomplex *a, integer *lda, doublecomplex *t, integer *ldt, 
 	doublecomplex *work, integer *info)
 {
@@ -657,7 +657,8 @@ f"> */
 
     /* Local variables */
     integer i__, k, iinfo, ib;
-    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen), zlarfb_(
+    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
+    extern void zlarfb_(
 	    char *, char *, char *, char *, integer *, integer *, integer *, 
 	    doublecomplex *, integer *, doublecomplex *, integer *, 
 	    doublecomplex *, integer *, doublecomplex *, integer *), zgelqt3_(integer *, integer *, 
@@ -701,14 +702,14 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZGELQT", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     k = f2cmin(*m,*n);
     if (k == 0) {
-	return 0;
+	return;
     }
 
 /*     Blocked loop of length K */
@@ -737,7 +738,7 @@ f"> */
 		    i__ * a_dim1], lda, &work[1], &i__5);
 	}
     }
-    return 0;
+    return;
 
 /*     End of ZGELQT */
 

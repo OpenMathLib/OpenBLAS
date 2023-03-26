@@ -696,7 +696,7 @@ f"> */
 /* > \ingroup complex16GEsolve */
 
 /*  ===================================================================== */
-/* Subroutine */ int zgelss_(integer *m, integer *n, integer *nrhs, 
+/* Subroutine */ void zgelss_(integer *m, integer *n, integer *nrhs, 
 	doublecomplex *a, integer *lda, doublecomplex *b, integer *ldb, 
 	doublereal *s, doublereal *rcond, integer *rank, doublecomplex *work, 
 	integer *lwork, doublereal *rwork, integer *info)
@@ -712,25 +712,26 @@ f"> */
 	    chunk, lwork_zunmqr__;
     doublereal sfmin;
     integer minmn;
-    extern /* Subroutine */ int zgemm_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void zgemm_(char *, char *, integer *, integer *, 
 	    integer *, doublecomplex *, doublecomplex *, integer *, 
 	    doublecomplex *, integer *, doublecomplex *, doublecomplex *, 
 	    integer *);
     integer maxmn, itaup, itauq, mnthr;
-    extern /* Subroutine */ int zgemv_(char *, integer *, integer *, 
+    extern /* Subroutine */ void zgemv_(char *, integer *, integer *, 
 	    doublecomplex *, doublecomplex *, integer *, doublecomplex *, 
 	    integer *, doublecomplex *, doublecomplex *, integer *);
     integer iwork;
-    extern /* Subroutine */ int zcopy_(integer *, doublecomplex *, integer *, 
+    extern /* Subroutine */ void zcopy_(integer *, doublecomplex *, integer *, 
 	    doublecomplex *, integer *), dlabad_(doublereal *, doublereal *);
     integer bl, ie, il;
     extern doublereal dlamch_(char *);
     integer mm;
-    extern /* Subroutine */ int dlascl_(char *, integer *, integer *, 
+    extern /* Subroutine */ void dlascl_(char *, integer *, integer *, 
 	    doublereal *, doublereal *, integer *, integer *, doublereal *, 
 	    integer *, integer *), dlaset_(char *, integer *, integer 
-	    *, doublereal *, doublereal *, doublereal *, integer *), 
-	    xerbla_(char *, integer *, ftnlen), zgebrd_(integer *, integer *, 
+	    *, doublereal *, doublereal *, doublereal *, integer *); 
+    extern int xerbla_(char *, integer *, ftnlen);
+    extern void zgebrd_(integer *, integer *, 
 	    doublecomplex *, integer *, doublereal *, doublereal *, 
 	    doublecomplex *, doublecomplex *, doublecomplex *, integer *, 
 	    integer *);
@@ -739,14 +740,14 @@ f"> */
     extern doublereal zlange_(char *, integer *, integer *, doublecomplex *, 
 	    integer *, doublereal *);
     doublereal bignum;
-    extern /* Subroutine */ int zgelqf_(integer *, integer *, doublecomplex *,
+    extern /* Subroutine */ void zgelqf_(integer *, integer *, doublecomplex *,
 	     integer *, doublecomplex *, doublecomplex *, integer *, integer *
 	    ), zlascl_(char *, integer *, integer *, doublereal *, doublereal 
 	    *, integer *, integer *, doublecomplex *, integer *, integer *), zgeqrf_(integer *, integer *, doublecomplex *, integer *,
 	     doublecomplex *, doublecomplex *, integer *, integer *), zdrscl_(
 	    integer *, doublereal *, doublecomplex *, integer *);
     integer ldwork;
-    extern /* Subroutine */ int zlacpy_(char *, integer *, integer *, 
+    extern /* Subroutine */ void zlacpy_(char *, integer *, integer *, 
 	    doublecomplex *, integer *, doublecomplex *, integer *), 
 	    zlaset_(char *, integer *, integer *, doublecomplex *, 
 	    doublecomplex *, doublecomplex *, integer *), zbdsqr_(
@@ -754,17 +755,17 @@ f"> */
 	    doublereal *, doublecomplex *, integer *, doublecomplex *, 
 	    integer *, doublecomplex *, integer *, doublereal *, integer *);
     integer minwrk, maxwrk;
-    extern /* Subroutine */ int zungbr_(char *, integer *, integer *, integer 
+    extern /* Subroutine */ void zungbr_(char *, integer *, integer *, integer 
 	    *, doublecomplex *, integer *, doublecomplex *, doublecomplex *, 
 	    integer *, integer *);
     doublereal smlnum;
     integer irwork;
-    extern /* Subroutine */ int zunmbr_(char *, char *, char *, integer *, 
+    extern /* Subroutine */ void zunmbr_(char *, char *, char *, integer *, 
 	    integer *, integer *, doublecomplex *, integer *, doublecomplex *,
 	     doublecomplex *, integer *, doublecomplex *, integer *, integer *
 	    );
     logical lquery;
-    extern /* Subroutine */ int zunmlq_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void zunmlq_(char *, char *, integer *, integer *, 
 	    integer *, doublecomplex *, integer *, doublecomplex *, 
 	    doublecomplex *, integer *, doublecomplex *, integer *, integer *), zunmqr_(char *, char *, integer *, integer *, 
 	    integer *, doublecomplex *, integer *, doublecomplex *, 
@@ -969,16 +970,16 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZGELSS", &i__1, (ftnlen)6);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*m == 0 || *n == 0) {
 	*rank = 0;
-	return 0;
+	return;
     }
 
 /*     Get machine parameters */
@@ -1437,7 +1438,7 @@ f"> */
     }
 L70:
     work[1].r = (doublereal) maxwrk, work[1].i = 0.;
-    return 0;
+    return;
 
 /*     End of ZGELSS */
 

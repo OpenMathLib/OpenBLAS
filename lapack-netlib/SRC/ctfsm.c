@@ -810,7 +810,7 @@ static complex c_b1 = {1.f,0.f};
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int ctfsm_(char *transr, char *side, char *uplo, char *trans,
+/* Subroutine */ void ctfsm_(char *transr, char *side, char *uplo, char *trans,
 	 char *diag, integer *m, integer *n, complex *alpha, complex *a, 
 	complex *b, integer *ldb)
 {
@@ -821,13 +821,13 @@ static complex c_b1 = {1.f,0.f};
     /* Local variables */
     integer info, i__, j, k;
     logical normaltransr;
-    extern /* Subroutine */ int cgemm_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void cgemm_(char *, char *, integer *, integer *, 
 	    integer *, complex *, complex *, integer *, complex *, integer *, 
 	    complex *, complex *, integer *);
     logical lside;
     extern logical lsame_(char *, char *);
     logical lower;
-    extern /* Subroutine */ int ctrsm_(char *, char *, char *, char *, 
+    extern /* Subroutine */ void ctrsm_(char *, char *, char *, char *, 
 	    integer *, integer *, complex *, complex *, integer *, complex *, 
 	    integer *);
     integer m1, m2, n1, n2;
@@ -877,13 +877,13 @@ static complex c_b1 = {1.f,0.f};
     if (info != 0) {
 	i__1 = -info;
 	xerbla_("CTFSM ", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return when ( (N.EQ.0).OR.(M.EQ.0) ) */
 
     if (*m == 0 || *n == 0) {
-	return 0;
+	return;
     }
 
 /*     Quick return when ALPHA.EQ.(0E+0,0E+0) */
@@ -899,7 +899,7 @@ static complex c_b1 = {1.f,0.f};
 	    }
 /* L20: */
 	}
-	return 0;
+	return;
     }
 
     if (lside) {
@@ -1580,7 +1580,7 @@ static complex c_b1 = {1.f,0.f};
 	}
     }
 
-    return 0;
+    return;
 
 /*     End of CTFSM */
 

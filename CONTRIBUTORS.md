@@ -211,4 +211,5 @@ In chronological order:
 * PLCT Lab, Institute of Software Chinese Academy of Sciences
   * [2022-03] Support RISC-V Vector Intrinisc 1.0 version.
   
-  
+* Pablo Romero <https://github.com/pablorcum>
+  * [2022-08] Fix building from sources for QNX

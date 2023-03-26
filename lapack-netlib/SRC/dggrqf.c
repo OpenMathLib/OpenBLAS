@@ -727,7 +727,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int dggrqf_(integer *m, integer *p, integer *n, doublereal *
+/* Subroutine */ void dggrqf_(integer *m, integer *p, integer *n, doublereal *
 	a, integer *lda, doublereal *taua, doublereal *b, integer *ldb, 
 	doublereal *taub, doublereal *work, integer *lwork, integer *info)
 {
@@ -736,14 +736,15 @@ f"> */
 
     /* Local variables */
     integer lopt, nb;
-    extern /* Subroutine */ int dgeqrf_(integer *, integer *, doublereal *, 
+    extern /* Subroutine */ void dgeqrf_(integer *, integer *, doublereal *, 
 	    integer *, doublereal *, doublereal *, integer *, integer *), 
 	    dgerqf_(integer *, integer *, doublereal *, integer *, doublereal 
-	    *, doublereal *, integer *, integer *), xerbla_(char *, integer *);
+	    *, doublereal *, integer *, integer *);
+    extern int xerbla_(char *, integer *, ftnlen);
     extern integer ilaenv_(integer *, char *, char *, integer *, integer *, 
 	    integer *, integer *, ftnlen, ftnlen);
     integer nb1, nb2, nb3;
-    extern /* Subroutine */ int dormrq_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void dormrq_(char *, char *, integer *, integer *, 
 	    integer *, doublereal *, integer *, doublereal *, doublereal *, 
 	    integer *, doublereal *, integer *, integer *);
     integer lwkopt;
@@ -806,10 +807,10 @@ f"> */
     }
     if (*info != 0) {
 	i__1 = -(*info);
-	xerbla_("DGGRQF", &i__1);
-	return 0;
+	xerbla_("DGGRQF", &i__1, 6);
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     RQ factorization of M-by-N matrix A: A = R*Q */
@@ -835,7 +836,7 @@ f"> */
     i__1 = lopt, i__2 = (integer) work[1];
     work[1] = (doublereal) f2cmax(i__1,i__2);
 
-    return 0;
+    return;
 
 /*     End of DGGRQF */
 

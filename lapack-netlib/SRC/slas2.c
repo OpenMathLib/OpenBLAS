@@ -618,7 +618,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int slas2_(real *f, real *g, real *h__, real *ssmin, real *
+/* Subroutine */ void slas2_(real *f, real *g, real *h__, real *ssmin, real *
 	ssmax)
 {
     /* System generated locals */
@@ -686,7 +686,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 	    }
 	}
     }
-    return 0;
+    return;
 
 /*     End of SLAS2 */
 

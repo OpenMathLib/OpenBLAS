@@ -814,7 +814,7 @@ f"> */
 /* > \ingroup doublePOsolve */
 
 /*  ===================================================================== */
-/* Subroutine */ int dposvx_(char *fact, char *uplo, integer *n, integer *
+/* Subroutine */ void dposvx_(char *fact, char *uplo, integer *n, integer *
 	nrhs, doublereal *a, integer *lda, doublereal *af, integer *ldaf, 
 	char *equed, doublereal *s, doublereal *b, integer *ldb, doublereal *
 	x, integer *ldx, doublereal *rcond, doublereal *ferr, doublereal *
@@ -833,25 +833,26 @@ f"> */
     logical equil, rcequ;
     extern doublereal dlamch_(char *);
     logical nofact;
-    extern /* Subroutine */ int dlacpy_(char *, integer *, integer *, 
-	    doublereal *, integer *, doublereal *, integer *), 
-	    xerbla_(char *, integer *, ftnlen);
+    extern /* Subroutine */ void dlacpy_(char *, integer *, integer *, 
+	    doublereal *, integer *, doublereal *, integer *); 
+    extern int xerbla_(char *, integer *, ftnlen);
     doublereal bignum;
-    extern /* Subroutine */ int dpocon_(char *, integer *, doublereal *, 
+    extern /* Subroutine */ void dpocon_(char *, integer *, doublereal *, 
 	    integer *, doublereal *, doublereal *, doublereal *, integer *, 
 	    integer *);
     integer infequ;
     extern doublereal dlansy_(char *, char *, integer *, doublereal *, 
 	    integer *, doublereal *);
-    extern /* Subroutine */ int dlaqsy_(char *, integer *, doublereal *, 
+    extern /* Subroutine */ void dlaqsy_(char *, integer *, doublereal *, 
 	    integer *, doublereal *, doublereal *, doublereal *, char *), dpoequ_(integer *, doublereal *, integer *, 
 	    doublereal *, doublereal *, doublereal *, integer *), dporfs_(
 	    char *, integer *, integer *, doublereal *, integer *, doublereal 
 	    *, integer *, doublereal *, integer *, doublereal *, integer *, 
-	    doublereal *, doublereal *, doublereal *, integer *, integer *), dpotrf_(char *, integer *, doublereal *, integer *, 
+	    doublereal *, doublereal *, doublereal *, integer *, integer *);
+    extern int dpotrf_(char *, integer *, doublereal *, integer *, 
 	    integer *);
     doublereal smlnum;
-    extern /* Subroutine */ int dpotrs_(char *, integer *, integer *, 
+    extern /* Subroutine */ void dpotrs_(char *, integer *, integer *, 
 	    doublereal *, integer *, doublereal *, integer *, integer *);
 
 
@@ -948,7 +949,7 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DPOSVX", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
     if (equil) {
@@ -990,7 +991,7 @@ f"> */
 
 	if (*info > 0) {
 	    *rcond = 0.;
-	    return 0;
+	    return;
 	}
     }
 
@@ -1041,7 +1042,7 @@ f"> */
 	*info = *n + 1;
     }
 
-    return 0;
+    return;
 
 /*     End of DPOSVX */
 

@@ -1045,7 +1045,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 /* > \ingroup doubleGEsolve */
 
 /*  ===================================================================== */
-/* Subroutine */ int dgesvxx_(char *fact, char *trans, integer *n, integer *
+/* Subroutine */ void dgesvxx_(char *fact, char *trans, integer *n, integer *
 	nrhs, doublereal *a, integer *lda, doublereal *af, integer *ldaf, 
 	integer *ipiv, char *equed, doublereal *r__, doublereal *c__, 
 	doublereal *b, integer *ldb, doublereal *x, integer *ldx, doublereal *
@@ -1069,25 +1069,26 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
     doublereal rcmin, rcmax;
     logical equil;
     extern doublereal dlamch_(char *);
-    extern /* Subroutine */ int dlaqge_(integer *, integer *, doublereal *, 
+    extern /* Subroutine */ void dlaqge_(integer *, integer *, doublereal *, 
 	    integer *, doublereal *, doublereal *, doublereal *, doublereal *,
 	     doublereal *, char *);
     doublereal colcnd;
     logical nofact;
-    extern /* Subroutine */ int dgetrf_(integer *, integer *, doublereal *, 
+    extern /* Subroutine */ void dgetrf_(integer *, integer *, doublereal *, 
 	    integer *, integer *, integer *), dlacpy_(char *, integer *, 
-	    integer *, doublereal *, integer *, doublereal *, integer *), xerbla_(char *, integer *, ftnlen);
+	    integer *, doublereal *, integer *, doublereal *, integer *);
+    extern int xerbla_(char *, integer *, ftnlen);
     doublereal bignum;
     integer infequ;
     logical colequ;
-    extern /* Subroutine */ int dgetrs_(char *, integer *, integer *, 
+    extern /* Subroutine */ void dgetrs_(char *, integer *, integer *, 
 	    doublereal *, integer *, integer *, doublereal *, integer *, 
 	    integer *);
     doublereal rowcnd;
     logical notran;
     doublereal smlnum;
     logical rowequ;
-    extern /* Subroutine */ int dlascl2_(integer *, integer *, doublereal *, 
+    extern /* Subroutine */ void dlascl2_(integer *, integer *, doublereal *, 
 	    doublereal *, integer *), dgeequb_(integer *, integer *, 
 	    doublereal *, integer *, doublereal *, doublereal *, doublereal *,
 	     doublereal *, doublereal *, integer *), dgerfsx_(char *, char *, 
@@ -1231,7 +1232,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DGESVXX", &i__1, (ftnlen)7);
-	return 0;
+	return;
     }
 
     if (equil) {
@@ -1297,7 +1298,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 
 	    *rpvgrw = dla_gerpvgrw__(n, info, &a[a_offset], lda, &af[
 		    af_offset], ldaf);
-	    return 0;
+	    return;
 	}
     }
 
@@ -1328,7 +1329,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 	dlascl2_(n, nrhs, &r__[1], &x[x_offset], ldx);
     }
 
-    return 0;
+    return;
 
 /*     End of DGESVXX */
 } /* dgesvxx_ */

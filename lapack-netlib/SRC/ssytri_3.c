@@ -683,7 +683,7 @@ static integer c_n1 = -1;
 /* > \endverbatim */
 
 /*  ===================================================================== */
-/* Subroutine */ int ssytri_3_(char *uplo, integer *n, real *a, integer *lda,
+/* Subroutine */ void ssytri_3_(char *uplo, integer *n, real *a, integer *lda,
 	 real *e, integer *ipiv, real *work, integer *lwork, integer *info)
 {
     /* System generated locals */
@@ -691,7 +691,7 @@ static integer c_n1 = -1;
 
     /* Local variables */
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int ssytri_3x_(char *, integer *, real *, 
+    extern /* Subroutine */ void ssytri_3x_(char *, integer *, real *, 
 	    integer *, real *, integer *, real *, integer *, integer *);
     logical upper;
     integer nb;
@@ -747,16 +747,16 @@ static integer c_n1 = -1;
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("SSYTRI_3", &i__1, (ftnlen)8);
-	return 0;
+	return;
     } else if (lquery) {
 	work[1] = (real) lwkopt;
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
     ssytri_3x_(uplo, n, &a[a_offset], lda, &e[1], &ipiv[1], &work[1], &nb, 
@@ -764,7 +764,7 @@ static integer c_n1 = -1;
 
     work[1] = (real) lwkopt;
 
-    return 0;
+    return;
 
 /*     End of SSYTRI_3 */
 

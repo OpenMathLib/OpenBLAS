@@ -845,7 +845,7 @@ f"> */
 /* >     California at Berkeley, USA */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int sggsvd_(char *jobu, char *jobv, char *jobq, integer *m, 
+/* Subroutine */ void sggsvd_(char *jobu, char *jobv, char *jobq, integer *m, 
 	integer *n, integer *p, integer *k, integer *l, real *a, integer *lda,
 	 real *b, integer *ldb, real *alpha, real *beta, real *u, integer *
 	ldu, real *v, integer *ldv, real *q, integer *ldq, real *work, 
@@ -864,12 +864,13 @@ f"> */
     extern logical lsame_(char *, char *);
     real anorm, bnorm;
     logical wantq;
-    extern /* Subroutine */ int scopy_(integer *, real *, integer *, real *, 
+    extern /* Subroutine */ void scopy_(integer *, real *, integer *, real *, 
 	    integer *);
     logical wantu, wantv;
     extern real slamch_(char *), slange_(char *, integer *, integer *,
 	     real *, integer *, real *);
-    extern /* Subroutine */ int xerbla_(char *, integer *), stgsja_(
+    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
+    extern void stgsja_(
 	    char *, char *, char *, integer *, integer *, integer *, integer *
 	    , integer *, real *, integer *, real *, integer *, real *, real *,
 	     real *, real *, real *, integer *, real *, integer *, real *, 
@@ -944,8 +945,8 @@ f"> */
     }
     if (*info != 0) {
 	i__1 = -(*info);
-	xerbla_("SGGSVD", &i__1);
-	return 0;
+	xerbla_("SGGSVD", &i__1, 6);
+	return;
     }
 
 /*     Compute the Frobenius norm of matrices A and B */
@@ -1006,7 +1007,7 @@ f"> */
 /* L20: */
     }
 
-    return 0;
+    return;
 
 /*     End of SGGSVD */
 

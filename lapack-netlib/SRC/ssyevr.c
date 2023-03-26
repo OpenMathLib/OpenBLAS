@@ -853,7 +853,7 @@ f"> */
 /* >       California at Berkeley, USA \n */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int ssyevr_(char *jobz, char *range, char *uplo, integer *n, 
+/* Subroutine */ void ssyevr_(char *jobz, char *range, char *uplo, integer *n, 
 	real *a, integer *lda, real *vl, real *vu, integer *il, integer *iu, 
 	real *abstol, integer *m, real *w, real *z__, integer *ldz, integer *
 	isuppz, real *work, integer *lwork, integer *iwork, integer *liwork, 
@@ -873,11 +873,11 @@ f"> */
     real sigma;
     extern logical lsame_(char *, char *);
     integer iinfo;
-    extern /* Subroutine */ int sscal_(integer *, real *, real *, integer *);
+    extern /* Subroutine */ void sscal_(integer *, real *, real *, integer *);
     char order[1];
     integer indwk, lwmin;
     logical lower;
-    extern /* Subroutine */ int scopy_(integer *, real *, integer *, real *, 
+    extern /* Subroutine */ void scopy_(integer *, real *, integer *, real *, 
 	    integer *), sswap_(integer *, real *, integer *, real *, integer *
 	    );
     logical wantz;
@@ -893,14 +893,14 @@ f"> */
     real abstll, bignum;
     integer indtau, indisp, indiwo, indwkn, liwmin;
     logical tryrac;
-    extern /* Subroutine */ int sstein_(integer *, real *, real *, integer *, 
+    extern /* Subroutine */ void sstein_(integer *, real *, real *, integer *, 
 	    real *, integer *, integer *, real *, integer *, real *, integer *
 	    , integer *, integer *), ssterf_(integer *, real *, real *, 
 	    integer *);
     integer llwrkn, llwork, nsplit;
     real smlnum;
     extern real slansy_(char *, char *, integer *, real *, integer *, real *);
-    extern /* Subroutine */ int sstebz_(char *, char *, integer *, real *, 
+    extern /* Subroutine */ void sstebz_(char *, char *, integer *, real *, 
 	    real *, integer *, integer *, real *, real *, real *, integer *, 
 	    integer *, real *, integer *, integer *, real *, integer *, 
 	    integer *), sstemr_(char *, char *, integer *, 
@@ -909,7 +909,7 @@ f"> */
 	    , integer *, integer *, integer *, integer *);
     integer lwkopt;
     logical lquery;
-    extern /* Subroutine */ int sormtr_(char *, char *, char *, integer *, 
+    extern /* Subroutine */ void sormtr_(char *, char *, char *, integer *, 
 	    integer *, real *, integer *, real *, real *, integer *, real *, 
 	    integer *, integer *), ssytrd_(char *, 
 	    integer *, real *, integer *, real *, real *, real *, real *, 
@@ -1012,9 +1012,9 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("SSYEVR", &i__1, (ftnlen)6);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
@@ -1022,7 +1022,7 @@ f"> */
     *m = 0;
     if (*n == 0) {
 	work[1] = 1.f;
-	return 0;
+	return;
     }
 
     if (*n == 1) {
@@ -1041,7 +1041,7 @@ f"> */
 	    isuppz[1] = 1;
 	    isuppz[2] = 1;
 	}
-	return 0;
+	return;
     }
 
 /*     Get machine constants. */
@@ -1259,7 +1259,7 @@ L30:
     work[1] = (real) lwkopt;
     iwork[1] = liwmin;
 
-    return 0;
+    return;
 
 /*     End of SSYEVR */
 

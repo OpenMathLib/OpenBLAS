@@ -810,7 +810,7 @@ f"> */
 /* >     Mark Fahey, Department of Mathematics, Univ. of Kentucky, USA */
 
 /*  ===================================================================== */
-/* Subroutine */ int ssygvx_(integer *itype, char *jobz, char *range, char *
+/* Subroutine */ void ssygvx_(integer *itype, char *jobz, char *range, char *
 	uplo, integer *n, real *a, integer *lda, real *b, integer *ldb, real *
 	vl, real *vu, integer *il, integer *iu, real *abstol, integer *m, 
 	real *w, real *z__, integer *ldz, real *work, integer *lwork, integer 
@@ -823,11 +823,11 @@ f"> */
     extern logical lsame_(char *, char *);
     char trans[1];
     logical upper;
-    extern /* Subroutine */ int strmm_(char *, char *, char *, char *, 
+    extern /* Subroutine */ void strmm_(char *, char *, char *, char *, 
 	    integer *, integer *, real *, real *, integer *, real *, integer *
 	    );
     logical wantz;
-    extern /* Subroutine */ int strsm_(char *, char *, char *, char *, 
+    extern /* Subroutine */ void strsm_(char *, char *, char *, char *, 
 	    integer *, integer *, real *, real *, integer *, real *, integer *
 	    );
     integer nb;
@@ -840,7 +840,7 @@ f"> */
 	    integer *);
     integer lwkopt;
     logical lquery;
-    extern /* Subroutine */ int ssygst_(integer *, char *, integer *, real *, 
+    extern /* Subroutine */ void ssygst_(integer *, char *, integer *, real *, 
 	    integer *, real *, integer *, integer *), ssyevx_(char *, 
 	    char *, char *, integer *, real *, integer *, real *, real *, 
 	    integer *, integer *, real *, integer *, real *, real *, integer *
@@ -934,16 +934,16 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("SSYGVX", &i__1, (ftnlen)6);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     *m = 0;
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /*     Form a Cholesky factorization of B. */
@@ -951,7 +951,7 @@ f"> */
     spotrf_(uplo, n, &b[b_offset], ldb, info);
     if (*info != 0) {
 	*info = *n + *info;
-	return 0;
+	return;
     }
 
 /*     Transform problem to standard eigenvalue problem and solve. */
@@ -1002,7 +1002,7 @@ f"> */
 
     work[1] = (real) lwkopt;
 
-    return 0;
+    return;
 
 /*     End of SSYGVX */
 

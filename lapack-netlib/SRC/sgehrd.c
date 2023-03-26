@@ -686,7 +686,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int sgehrd_(integer *n, integer *ilo, integer *ihi, real *a, 
+/* Subroutine */ void sgehrd_(integer *n, integer *ilo, integer *ihi, real *a, 
 	integer *lda, real *tau, real *work, integer *lwork, integer *info)
 {
     /* System generated locals */
@@ -694,7 +694,7 @@ f"> */
 
     /* Local variables */
     integer i__, j, nbmin, iinfo;
-    extern /* Subroutine */ int sgemm_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void sgemm_(char *, char *, integer *, integer *, 
 	    integer *, real *, real *, integer *, real *, integer *, real *, 
 	    real *, integer *), strmm_(char *, char *, char *,
 	     char *, integer *, integer *, real *, real *, integer *, real *, 
@@ -706,9 +706,10 @@ f"> */
     integer ib;
     real ei;
     integer nb, nh, nx;
-    extern /* Subroutine */ int slarfb_(char *, char *, char *, char *, 
+    extern /* Subroutine */ void slarfb_(char *, char *, char *, char *, 
 	    integer *, integer *, integer *, real *, integer *, real *, 
-	    integer *, real *, integer *, real *, integer *), xerbla_(char *, integer *,ftnlen);
+	    integer *, real *, integer *, real *, integer *);
+    extern int xerbla_(char *, integer *,ftnlen);
     extern integer ilaenv_(integer *, char *, char *, integer *, integer *, 
 	    integer *, integer *, ftnlen, ftnlen);
     integer ldwork, lwkopt;
@@ -764,9 +765,9 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("SGEHRD", &i__1, (ftnlen)6);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Set elements 1:ILO-1 and IHI:N-1 of TAU to zero */
@@ -787,7 +788,7 @@ f"> */
     nh = *ihi - *ilo + 1;
     if (nh <= 1) {
 	work[1] = 1.f;
-	return 0;
+	return;
     }
 
 /*     Determine the block size */
@@ -898,7 +899,7 @@ f"> */
     sgehd2_(n, &i__, ihi, &a[a_offset], lda, &tau[1], &work[1], &iinfo);
     work[1] = (real) lwkopt;
 
-    return 0;
+    return;
 
 /*     End of SGEHRD */
 

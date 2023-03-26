@@ -779,7 +779,7 @@ static doublereal c_b109 = 0.;
 /* > \ingroup doubleGEsing */
 
 /*  ===================================================================== */
-/* Subroutine */ int dgesvdx_(char *jobu, char *jobvt, char *range, integer *
+/* Subroutine */ void dgesvdx_(char *jobu, char *jobvt, char *range, integer *
 	m, integer *n, doublereal *a, integer *lda, doublereal *vl, 
 	doublereal *vu, integer *il, integer *iu, integer *ns, doublereal *s, 
 	doublereal *u, integer *ldu, doublereal *vt, integer *ldvt, 
@@ -802,17 +802,17 @@ static doublereal c_b109 = 0.;
     integer i__, j;
     extern logical lsame_(char *, char *);
     integer iltgk, itemp, minmn;
-    extern /* Subroutine */ int dcopy_(integer *, doublereal *, integer *, 
+    extern /* Subroutine */ void dcopy_(integer *, doublereal *, integer *, 
 	    doublereal *, integer *);
     integer itaup, itauq, iutgk, itgkz, mnthr;
     logical wantu;
     integer id, ie;
-    extern /* Subroutine */ int dgebrd_(integer *, integer *, doublereal *, 
+    extern /* Subroutine */ void dgebrd_(integer *, integer *, doublereal *, 
 	    integer *, doublereal *, doublereal *, doublereal *, doublereal *,
 	     doublereal *, integer *, integer *);
     extern doublereal dlamch_(char *), dlange_(char *, integer *, 
 	    integer *, doublereal *, integer *, doublereal *);
-    extern /* Subroutine */ int dgelqf_(integer *, integer *, doublereal *, 
+    extern /* Subroutine */ void dgelqf_(integer *, integer *, doublereal *, 
 	    integer *, doublereal *, doublereal *, integer *, integer *), 
 	    dlascl_(char *, integer *, integer *, doublereal *, doublereal *, 
 	    integer *, integer *, doublereal *, integer *, integer *),
@@ -820,16 +820,16 @@ static doublereal c_b109 = 0.;
 	    doublereal *, doublereal *, integer *, integer *), dlacpy_(char *,
 	     integer *, integer *, doublereal *, integer *, doublereal *, 
 	    integer *), dlaset_(char *, integer *, integer *, 
-	    doublereal *, doublereal *, doublereal *, integer *), 
-	    xerbla_(char *, integer *, ftnlen);
+	    doublereal *, doublereal *, doublereal *, integer *); 
+    extern int xerbla_(char *, integer *, ftnlen);
     extern integer ilaenv_(integer *, char *, char *, integer *, integer *, 
 	    integer *, integer *, ftnlen, ftnlen);
     doublereal bignum, abstol;
-    extern /* Subroutine */ int dormbr_(char *, char *, char *, integer *, 
+    extern /* Subroutine */ void dormbr_(char *, char *, char *, integer *, 
 	    integer *, integer *, doublereal *, integer *, doublereal *, 
 	    doublereal *, integer *, doublereal *, integer *, integer *);
     char rngtgk[1];
-    extern /* Subroutine */ int dormlq_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void dormlq_(char *, char *, integer *, integer *, 
 	    integer *, doublereal *, integer *, doublereal *, doublereal *, 
 	    integer *, doublereal *, integer *, integer *), 
 	    dormqr_(char *, char *, integer *, integer *, integer *, 
@@ -839,7 +839,7 @@ static doublereal c_b109 = 0.;
     doublereal smlnum;
     logical lquery, wantvt;
     doublereal dum[1], eps;
-    extern /* Subroutine */ int dbdsvdx_(char *, char *, char *, integer *, 
+    extern /* Subroutine */ void dbdsvdx_(char *, char *, char *, integer *, 
 	    doublereal *, doublereal *, doublereal *, doublereal *, integer *,
 	     integer *, integer *, doublereal *, doublereal *, integer *, 
 	    doublereal *, integer *, integer *);
@@ -1068,15 +1068,15 @@ static doublereal c_b109 = 0.;
     if (*info != 0) {
 	i__2 = -(*info);
 	xerbla_("DGESVDX", &i__2, (ftnlen)7);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*m == 0 || *n == 0) {
-	return 0;
+	return;
     }
 
 /*     Set singular values indices accord to RANGE. */
@@ -1458,7 +1458,7 @@ static doublereal c_b109 = 0.;
 
     work[1] = (doublereal) maxwrk;
 
-    return 0;
+    return;
 
 /*     End of DGESVDX */
 

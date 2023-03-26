@@ -636,7 +636,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 /* > \ingroup doubleGTsolve */
 
 /*  ===================================================================== */
-/* Subroutine */ int dgtsv_(integer *n, integer *nrhs, doublereal *dl, 
+/* Subroutine */ void dgtsv_(integer *n, integer *nrhs, doublereal *dl, 
 	doublereal *d__, doublereal *du, doublereal *b, integer *ldb, integer 
 	*info)
 {
@@ -679,11 +679,11 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DGTSV ", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
     if (*nrhs == 1) {
@@ -699,7 +699,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 		    b[i__ + 1 + b_dim1] -= fact * b[i__ + b_dim1];
 		} else {
 		    *info = i__;
-		    return 0;
+		    return;
 		}
 		dl[i__] = 0.;
 	    } else {
@@ -728,7 +728,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 		    b[i__ + 1 + b_dim1] -= fact * b[i__ + b_dim1];
 		} else {
 		    *info = i__;
-		    return 0;
+		    return;
 		}
 	    } else {
 		fact = d__[i__] / dl[i__];
@@ -743,7 +743,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 	}
 	if (d__[*n] == 0.) {
 	    *info = *n;
-	    return 0;
+	    return;
 	}
     } else {
 	i__1 = *n - 2;
@@ -762,7 +762,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 		    }
 		} else {
 		    *info = i__;
-		    return 0;
+		    return;
 		}
 		dl[i__] = 0.;
 	    } else {
@@ -800,7 +800,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 		    }
 		} else {
 		    *info = i__;
-		    return 0;
+		    return;
 		}
 	    } else {
 		fact = d__[i__] / dl[i__];
@@ -820,7 +820,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 	}
 	if (d__[*n] == 0.) {
 	    *info = *n;
-	    return 0;
+	    return;
 	}
     }
 
@@ -862,7 +862,7 @@ L70:
 	}
     }
 
-    return 0;
+    return;
 
 /*     End of DGTSV */
 

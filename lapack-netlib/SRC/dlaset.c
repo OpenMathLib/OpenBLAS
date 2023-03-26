@@ -620,7 +620,7 @@ f"> */
 /* > \ingroup OTHERauxiliary */
 
 /*  ===================================================================== */
-/* Subroutine */ int dlaset_(char *uplo, integer *m, integer *n, doublereal *
+/* Subroutine */ void dlaset_(char *uplo, integer *m, integer *n, doublereal *
 	alpha, doublereal *beta, doublereal *a, integer *lda)
 {
     /* System generated locals */
@@ -701,7 +701,7 @@ f"> */
 /* L70: */
     }
 
-    return 0;
+    return;
 
 /*     End of DLASET */
 

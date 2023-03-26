@@ -600,7 +600,7 @@ static doublereal c_b10 = 0.;
 /* > \ingroup double_matgen */
 
 /*  ===================================================================== */
-/* Subroutine */ int dlarge_(integer *n, doublereal *a, integer *lda, integer 
+/* Subroutine */ void dlarge_(integer *n, doublereal *a, integer *lda, integer 
 	*iseed, doublereal *work, integer *info)
 {
     /* System generated locals */
@@ -608,17 +608,18 @@ static doublereal c_b10 = 0.;
     doublereal d__1;
 
     /* Local variables */
-    extern /* Subroutine */ int dger_(integer *, integer *, doublereal *, 
+    extern /* Subroutine */ void dger_(integer *, integer *, doublereal *, 
 	    doublereal *, integer *, doublereal *, integer *, doublereal *, 
 	    integer *);
     extern doublereal dnrm2_(integer *, doublereal *, integer *);
     integer i__;
-    extern /* Subroutine */ int dscal_(integer *, doublereal *, doublereal *, 
+    extern /* Subroutine */ void dscal_(integer *, doublereal *, doublereal *, 
 	    integer *), dgemv_(char *, integer *, integer *, doublereal *, 
 	    doublereal *, integer *, doublereal *, integer *, doublereal *, 
 	    doublereal *, integer *);
     doublereal wa, wb, wn;
-    extern /* Subroutine */ int xerbla_(char *, integer *), dlarnv_(
+    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
+    extern void dlarnv_(
 	    integer *, integer *, integer *, doublereal *);
     doublereal tau;
 
@@ -650,8 +651,8 @@ static doublereal c_b10 = 0.;
     }
     if (*info < 0) {
 	i__1 = -(*info);
-	xerbla_("DLARGE", &i__1);
-	return 0;
+	xerbla_("DLARGE", &i__1, 6);
+	return;
     }
 
 /*     pre- and post-multiply A by random orthogonal matrix */
@@ -697,7 +698,7 @@ static doublereal c_b10 = 0.;
 		 a_dim1 + 1], lda);
 /* L10: */
     }
-    return 0;
+    return;
 
 /*     End of DLARGE */
 

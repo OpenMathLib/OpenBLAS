@@ -624,7 +624,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int zlaswp_(integer *n, doublecomplex *a, integer *lda, 
+/* Subroutine */ void zlaswp_(integer *n, doublecomplex *a, integer *lda, 
 	integer *k1, integer *k2, integer *ipiv, integer *incx)
 {
     /* System generated locals */
@@ -665,7 +665,7 @@ f"> */
 	i2 = *k1;
 	inc = -1;
     } else {
-	return 0;
+	return;
     }
 
     n32 = *n / 32 << 5;
@@ -722,7 +722,7 @@ f"> */
 	}
     }
 
-    return 0;
+    return;
 
 /*     End of ZLASWP */
 

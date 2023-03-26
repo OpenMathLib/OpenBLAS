@@ -979,7 +979,7 @@ static integer c__1 = 1;
 /* > \ingroup real_matgen */
 
 /*  ===================================================================== */
-/* Subroutine */ int slatmr_(integer *m, integer *n, char *dist, integer *
+/* Subroutine */ void slatmr_(integer *m, integer *n, char *dist, integer *
 	iseed, char *sym, real *d__, integer *mode, real *cond, real *dmax__, 
 	char *rsign, char *grade, real *dl, integer *model, real *condl, real 
 	*dr, integer *moder, real *condr, char *pivtng, integer *ipivot, 
@@ -998,13 +998,13 @@ static integer c__1 = 1;
     integer ipack;
     extern logical lsame_(char *, char *);
     real tempa[1];
-    extern /* Subroutine */ int sscal_(integer *, real *, real *, integer *);
+    extern /* Subroutine */ void sscal_(integer *, real *, real *, integer *);
     integer iisub, idist, jjsub, mnmin;
     logical dzero;
     integer mnsub;
     real onorm;
     integer mxsub, npvts;
-    extern /* Subroutine */ int slatm1_(integer *, real *, integer *, integer 
+    extern /* Subroutine */ void slatm1_(integer *, real *, integer *, integer 
 	    *, integer *, real *, integer *, integer *);
     extern real slatm2_(integer *, integer *, integer *, integer *, integer *,
 	     integer *, integer *, integer *, real *, integer *, real *, real 
@@ -1017,7 +1017,7 @@ static integer c__1 = 1;
 	    integer *, real *), slange_(char *, integer *, integer *, 
 	    real *, integer *, real *);
     logical fulbnd;
-    extern /* Subroutine */ int xerbla_(char *, integer *);
+    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     logical badpvt;
     extern real slansb_(char *, char *, integer *, integer *, real *, integer 
 	    *, real *);
@@ -1057,7 +1057,7 @@ static integer c__1 = 1;
 /*     Quick return if possible */
 
     if (*m == 0 || *n == 0) {
-	return 0;
+	return;
     }
 
 /*     Decode DIST */
@@ -1251,8 +1251,8 @@ static integer c__1 = 1;
 
     if (*info != 0) {
 	i__1 = -(*info);
-	xerbla_("SLATMR", &i__1);
-	return 0;
+	xerbla_("SLATMR", &i__1, 6);
+	return;
     }
 
 /*     Decide if we can pivot consistently */
@@ -1278,7 +1278,7 @@ static integer c__1 = 1;
     slatm1_(mode, cond, &irsign, &idist, &iseed[1], &d__[1], &mnmin, info);
     if (*info != 0) {
 	*info = 1;
-	return 0;
+	return;
     }
     if (*mode != 0 && *mode != -6 && *mode != 6) {
 
@@ -1294,7 +1294,7 @@ static integer c__1 = 1;
 	}
 	if (temp == 0.f && *dmax__ != 0.f) {
 	    *info = 2;
-	    return 0;
+	    return;
 	}
 	if (temp != 0.f) {
 	    alpha = *dmax__ / temp;
@@ -1315,7 +1315,7 @@ static integer c__1 = 1;
 	slatm1_(model, condl, &c__0, &idist, &iseed[1], &dl[1], m, info);
 	if (*info != 0) {
 	    *info = 3;
-	    return 0;
+	    return;
 	}
     }
 
@@ -1325,7 +1325,7 @@ static integer c__1 = 1;
 	slatm1_(moder, condr, &c__0, &idist, &iseed[1], &dr[1], n, info);
 	if (*info != 0) {
 	    *info = 4;
-	    return 0;
+	    return;
 	}
     }
 
@@ -1814,7 +1814,7 @@ static integer c__1 = 1;
 /*           Desired scaling impossible */
 
 	    *info = 5;
-	    return 0;
+	    return;
 
 	} else if (*anorm > 1.f && onorm < 1.f || *anorm < 1.f && onorm > 1.f)
 		 {
@@ -1887,6 +1887,6 @@ static integer c__1 = 1;
 
 /*     End of SLATMR */
 
-    return 0;
+    return;
 } /* slatmr_ */
 

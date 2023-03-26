@@ -699,7 +699,7 @@ f"> */
 /* > \ingroup complexOTHEReigen */
 
 /*  ===================================================================== */
-/* Subroutine */ int cggglm_(integer *n, integer *m, integer *p, complex *a, 
+/* Subroutine */ void cggglm_(integer *n, integer *m, integer *p, complex *a, 
 	integer *lda, complex *b, integer *ldb, complex *d__, complex *x, 
 	complex *y, complex *work, integer *lwork, integer *info)
 {
@@ -709,18 +709,19 @@ f"> */
 
     /* Local variables */
     integer lopt, i__;
-    extern /* Subroutine */ int cgemv_(char *, integer *, integer *, complex *
+    extern /* Subroutine */ void cgemv_(char *, integer *, integer *, complex *
 	    , complex *, integer *, complex *, integer *, complex *, complex *
 	    , integer *), ccopy_(integer *, complex *, integer *, 
 	    complex *, integer *);
     integer nb, np;
-    extern /* Subroutine */ int cggqrf_(integer *, integer *, integer *, 
+    extern /* Subroutine */ void cggqrf_(integer *, integer *, integer *, 
 	    complex *, integer *, complex *, complex *, integer *, complex *, 
-	    complex *, integer *, integer *), xerbla_(char *, integer *, ftnlen);
+	    complex *, integer *, integer *);
+    extern int xerbla_(char *, integer *, ftnlen);
     extern integer ilaenv_(integer *, char *, char *, integer *, integer *, 
 	    integer *, integer *, ftnlen, ftnlen);
     integer lwkmin, nb1, nb2, nb3, nb4;
-    extern /* Subroutine */ int cunmqr_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void cunmqr_(char *, char *, integer *, integer *, 
 	    integer *, complex *, integer *, complex *, complex *, integer *, 
 	    complex *, integer *, integer *), cunmrq_(char *, 
 	    char *, integer *, integer *, integer *, complex *, integer *, 
@@ -801,9 +802,9 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CGGGLM", &i__1, (ftnlen)6);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
@@ -819,7 +820,7 @@ f"> */
 	    i__2 = i__;
 	    y[i__2].r = 0.f, y[i__2].i = 0.f;
 	}
-	return 0;
+	return;
     }
 
 /*     Compute the GQR factorization of matrices A and B: */
@@ -860,7 +861,7 @@ f"> */
 
 	if (*info > 0) {
 	    *info = 1;
-	    return 0;
+	    return;
 	}
 
 	i__1 = *n - *m;
@@ -891,7 +892,7 @@ f"> */
 
 	if (*info > 0) {
 	    *info = 2;
-	    return 0;
+	    return;
 	}
 
 /*        Copy D to X */
@@ -914,7 +915,7 @@ f"> */
     i__1 = *m + np + f2cmax(i__2,i__3);
     work[1].r = (real) i__1, work[1].i = 0.f;
 
-    return 0;
+    return;
 
 /*     End of CGGGLM */
 

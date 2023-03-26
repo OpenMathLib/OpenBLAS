@@ -202,9 +202,13 @@ int detect(void)
         return CPU_CORTEXA510;
       else if (strstr(cpu_part, "0xd47"))
 	return CPU_CORTEXA710;
+      else if (strstr(cpu_part, "0xd4d")) //A715
+	return CPU_CORTEXA710;
       else if (strstr(cpu_part, "0xd44"))
         return CPU_CORTEXX1;
       else if (strstr(cpu_part, "0xd4c"))
+	return CPU_CORTEXX2;
+      else if (strstr(cpu_part, "0xd4e")) //X3
 	return CPU_CORTEXX2;
     }
     // Qualcomm

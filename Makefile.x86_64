@@ -130,6 +130,28 @@ endif
 endif
 endif
 
+ifeq ($(CORE), ZEN)
+ifdef HAVE_AVX512VL	
+ifndef NO_AVX512
+CCOMMON_OPT += -march=skylake-avx512
+ifneq ($(F_COMPILER), NAG)
+FCOMMON_OPT += -march=skylake-avx512
+endif
+ifeq ($(OSNAME), CYGWIN_NT)
+CCOMMON_OPT += -fno-asynchronous-unwind-tables
+FCOMMON_OPT += -fno-asynchronous-unwind-tables
+endif
+ifeq ($(OSNAME), WINNT)
+ifeq ($(C_COMPILER), GCC)
+CCOMMON_OPT += -fno-asynchronous-unwind-tables
+FCOMMON_OPT += -fno-asynchronous-unwind-tables
+endif
+endif
+endif
+endif
+endif
+
+
 ifdef HAVE_AVX2
 ifndef NO_AVX2
 ifeq ($(C_COMPILER), GCC)
@@ -143,6 +165,7 @@ ifeq ($(C_COMPILER), CLANG)
 CCOMMON_OPT += -mavx2
 endif
 endif
+ifeq ($(NOFORTRAN), $(filter 0,$(NOFORTRAN)))
 ifeq ($(F_COMPILER), GFORTRAN)
 # AVX2 support was added in 4.7.0
 GCCVERSIONGTEQ4 := $(shell expr `$(FC) -dumpversion | cut -f1 -d.` \>= 4)
@@ -155,6 +178,7 @@ endif
 else
 ifeq ($(F_COMPILER), FLANG)
 FCOMMON_OPT += -mavx2
+endif
 endif
 endif
 endif

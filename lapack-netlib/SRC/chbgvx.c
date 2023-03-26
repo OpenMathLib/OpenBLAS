@@ -813,7 +813,7 @@ f"> */
 /* >     Mark Fahey, Department of Mathematics, Univ. of Kentucky, USA */
 
 /*  ===================================================================== */
-/* Subroutine */ int chbgvx_(char *jobz, char *range, char *uplo, integer *n, 
+/* Subroutine */ void chbgvx_(char *jobz, char *range, char *uplo, integer *n, 
 	integer *ka, integer *kb, complex *ab, integer *ldab, complex *bb, 
 	integer *ldbb, complex *q, integer *ldq, real *vl, real *vu, integer *
 	il, integer *iu, real *abstol, integer *m, real *w, complex *z__, 
@@ -830,41 +830,43 @@ f"> */
     logical test;
     integer itmp1, i__, j, indee;
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int cgemv_(char *, integer *, integer *, complex *
+    extern /* Subroutine */ void cgemv_(char *, integer *, integer *, complex *
 	    , complex *, integer *, complex *, integer *, complex *, complex *
 	    , integer *);
     integer iinfo;
     char order[1];
-    extern /* Subroutine */ int ccopy_(integer *, complex *, integer *, 
+    extern /* Subroutine */ void ccopy_(integer *, complex *, integer *, 
 	    complex *, integer *), cswap_(integer *, complex *, integer *, 
 	    complex *, integer *);
     logical upper;
-    extern /* Subroutine */ int scopy_(integer *, real *, integer *, real *, 
+    extern /* Subroutine */ void scopy_(integer *, real *, integer *, real *, 
 	    integer *);
     logical wantz;
     integer jj;
     logical alleig, indeig;
     integer indibl;
-    extern /* Subroutine */ int chbtrd_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void chbtrd_(char *, char *, integer *, integer *, 
 	    complex *, integer *, real *, real *, complex *, integer *, 
 	    complex *, integer *);
     logical valeig;
-    extern /* Subroutine */ int chbgst_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void chbgst_(char *, char *, integer *, integer *, 
 	    integer *, complex *, integer *, complex *, integer *, complex *, 
 	    integer *, complex *, real *, integer *), clacpy_(
 	    char *, integer *, integer *, complex *, integer *, complex *, 
-	    integer *), xerbla_(char *, integer *, ftnlen), cpbstf_(
+	    integer *);
+    extern int xerbla_(char *, integer *, ftnlen);
+    extern void cpbstf_(
 	    char *, integer *, integer *, complex *, integer *, integer *);
     integer indiwk, indisp;
-    extern /* Subroutine */ int cstein_(integer *, real *, real *, integer *, 
+    extern /* Subroutine */ void cstein_(integer *, real *, real *, integer *, 
 	    real *, integer *, integer *, complex *, integer *, real *, 
 	    integer *, integer *, integer *);
     integer indrwk, indwrk;
-    extern /* Subroutine */ int csteqr_(char *, integer *, real *, real *, 
+    extern /* Subroutine */ void csteqr_(char *, integer *, real *, real *, 
 	    complex *, integer *, real *, integer *), ssterf_(integer 
 	    *, real *, real *, integer *);
     integer nsplit;
-    extern /* Subroutine */ int sstebz_(char *, char *, integer *, real *, 
+    extern /* Subroutine */ void sstebz_(char *, char *, integer *, real *, 
 	    real *, integer *, integer *, real *, real *, real *, integer *, 
 	    integer *, real *, integer *, integer *, real *, integer *, 
 	    integer *);
@@ -949,14 +951,14 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CHBGVX", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     *m = 0;
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /*     Form a split Cholesky factorization of B. */
@@ -964,7 +966,7 @@ f"> */
     cpbstf_(uplo, n, kb, &bb[bb_offset], ldbb, info);
     if (*info != 0) {
 	*info = *n + *info;
-	return 0;
+	return;
     }
 
 /*     Transform problem to standard eigenvalue problem. */
@@ -1092,7 +1094,7 @@ L30:
 	}
     }
 
-    return 0;
+    return;
 
 /*     End of CHBGVX */
 

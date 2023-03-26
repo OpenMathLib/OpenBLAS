@@ -999,7 +999,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 /* > \ingroup complex16POsolve */
 
 /*  ===================================================================== */
-/* Subroutine */ int zposvxx_(char *fact, char *uplo, integer *n, integer *
+/* Subroutine */ void zposvxx_(char *fact, char *uplo, integer *n, integer *
 	nrhs, doublecomplex *a, integer *lda, doublecomplex *af, integer *
 	ldaf, char *equed, doublereal *s, doublecomplex *b, integer *ldb, 
 	doublecomplex *x, integer *ldx, doublereal *rcond, doublereal *rpvgrw,
@@ -1025,13 +1025,13 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
     logical nofact;
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     doublereal bignum;
-    extern /* Subroutine */ int zlaqhe_(char *, integer *, doublecomplex *, 
+    extern /* Subroutine */ void zlaqhe_(char *, integer *, doublecomplex *, 
 	    integer *, doublereal *, doublereal *, doublereal *, char *);
     integer infequ;
-    extern /* Subroutine */ int zlacpy_(char *, integer *, integer *, 
+    extern /* Subroutine */ void zlacpy_(char *, integer *, integer *, 
 	    doublecomplex *, integer *, doublecomplex *, integer *);
     doublereal smlnum;
-    extern /* Subroutine */ int zpotrf_(char *, integer *, doublecomplex *, 
+    extern /* Subroutine */ void zpotrf_(char *, integer *, doublecomplex *, 
 	    integer *, integer *), zpotrs_(char *, integer *, integer 
 	    *, doublecomplex *, integer *, doublecomplex *, integer *, 
 	    integer *), zlascl2_(integer *, integer *, doublereal *, 
@@ -1150,7 +1150,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZPOSVXX", &i__1, (ftnlen)7);
-	return 0;
+	return;
     }
 
     if (equil) {
@@ -1190,7 +1190,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 
 	    *rpvgrw = zla_porpvgrw_(uplo, n, &a[a_offset], lda, &af[
 		    af_offset], ldaf, &rwork[1]);
-	    return 0;
+	    return;
 	}
     }
 
@@ -1219,7 +1219,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 	zlascl2_(n, nrhs, &s[1], &x[x_offset], ldx);
     }
 
-    return 0;
+    return;
 
 /*     End of ZPOSVXX */
 

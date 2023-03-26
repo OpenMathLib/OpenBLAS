@@ -38,7 +38,7 @@
 
 #define ASSEMBLER
 #include "common.h"
-#include "version.h"
+
 
 	.set noat
 	.set noreorder

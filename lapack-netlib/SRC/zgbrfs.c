@@ -718,7 +718,7 @@ f"> */
 /* > \ingroup complex16GBcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int zgbrfs_(char *trans, integer *n, integer *kl, integer *
+/* Subroutine */ void zgbrfs_(char *trans, integer *n, integer *kl, integer *
 	ku, integer *nrhs, doublecomplex *ab, integer *ldab, doublecomplex *
 	afb, integer *ldafb, integer *ipiv, doublecomplex *b, integer *ldb, 
 	doublecomplex *x, integer *ldx, doublereal *ferr, doublereal *berr, 
@@ -737,12 +737,12 @@ f"> */
     doublereal s;
     extern logical lsame_(char *, char *);
     integer isave[3];
-    extern /* Subroutine */ int zgbmv_(char *, integer *, integer *, integer *
+    extern /* Subroutine */ void zgbmv_(char *, integer *, integer *, integer *
 	    , integer *, doublecomplex *, doublecomplex *, integer *, 
 	    doublecomplex *, integer *, doublecomplex *, doublecomplex *, 
 	    integer *);
     integer count;
-    extern /* Subroutine */ int zcopy_(integer *, doublecomplex *, integer *, 
+    extern /* Subroutine */ void zcopy_(integer *, doublecomplex *, integer *, 
 	    doublecomplex *, integer *), zaxpy_(integer *, doublecomplex *, 
 	    doublecomplex *, integer *, doublecomplex *, integer *), zlacn2_(
 	    integer *, doublecomplex *, doublecomplex *, doublereal *, 
@@ -756,7 +756,7 @@ f"> */
     logical notran;
     char transn[1], transt[1];
     doublereal lstres;
-    extern /* Subroutine */ int zgbtrs_(char *, integer *, integer *, integer 
+    extern /* Subroutine */ void zgbtrs_(char *, integer *, integer *, integer 
 	    *, integer *, doublecomplex *, integer *, integer *, 
 	    doublecomplex *, integer *, integer *);
     doublereal eps;
@@ -818,7 +818,7 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZGBRFS", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
@@ -830,7 +830,7 @@ f"> */
 	    berr[j] = 0.;
 /* L10: */
 	}
-	return 0;
+	return;
     }
 
     if (notran) {
@@ -1069,7 +1069,7 @@ L100:
 /* L140: */
     }
 
-    return 0;
+    return;
 
 /*     End of ZGBRFS */
 

@@ -979,7 +979,7 @@ static integer c__1 = 1;
 /* > \ingroup double_matgen */
 
 /*  ===================================================================== */
-/* Subroutine */ int dlatmr_(integer *m, integer *n, char *dist, integer *
+/* Subroutine */ void dlatmr_(integer *m, integer *n, char *dist, integer *
 	iseed, char *sym, doublereal *d__, integer *mode, doublereal *cond, 
 	doublereal *dmax__, char *rsign, char *grade, doublereal *dl, integer 
 	*model, doublereal *condl, doublereal *dr, integer *moder, doublereal 
@@ -996,7 +996,7 @@ static integer c__1 = 1;
     doublereal temp;
     integer isym, i__, j, k;
     doublereal alpha;
-    extern /* Subroutine */ int dscal_(integer *, doublereal *, doublereal *, 
+    extern /* Subroutine */ void dscal_(integer *, doublereal *, doublereal *, 
 	    integer *);
     integer ipack;
     extern logical lsame_(char *, char *);
@@ -1006,7 +1006,7 @@ static integer c__1 = 1;
     integer mnsub;
     doublereal onorm;
     integer mxsub, npvts;
-    extern /* Subroutine */ int dlatm1_(integer *, doublereal *, integer *, 
+    extern /* Subroutine */ void dlatm1_(integer *, doublereal *, integer *, 
 	    integer *, integer *, doublereal *, integer *, integer *);
     extern doublereal dlatm2_(integer *, integer *, integer *, integer *, 
 	    integer *, integer *, integer *, integer *, doublereal *, integer 
@@ -1021,7 +1021,7 @@ static integer c__1 = 1;
     extern doublereal dlansb_(char *, char *, integer *, integer *, 
 	    doublereal *, integer *, doublereal *);
     logical fulbnd;
-    extern /* Subroutine */ int xerbla_(char *, integer *);
+    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     logical badpvt;
     extern doublereal dlansp_(char *, char *, integer *, doublereal *, 
 	    doublereal *), dlansy_(char *, char *, integer *, 
@@ -1058,7 +1058,7 @@ static integer c__1 = 1;
 /*     Quick return if possible */
 
     if (*m == 0 || *n == 0) {
-	return 0;
+	return;
     }
 
 /*     Decode DIST */
@@ -1252,8 +1252,8 @@ static integer c__1 = 1;
 
     if (*info != 0) {
 	i__1 = -(*info);
-	xerbla_("DLATMR", &i__1);
-	return 0;
+	xerbla_("DLATMR", &i__1, 6);
+	return;
     }
 
 /*     Decide if we can pivot consistently */
@@ -1279,7 +1279,7 @@ static integer c__1 = 1;
     dlatm1_(mode, cond, &irsign, &idist, &iseed[1], &d__[1], &mnmin, info);
     if (*info != 0) {
 	*info = 1;
-	return 0;
+	return;
     }
     if (*mode != 0 && *mode != -6 && *mode != 6) {
 
@@ -1295,7 +1295,7 @@ static integer c__1 = 1;
 	}
 	if (temp == 0. && *dmax__ != 0.) {
 	    *info = 2;
-	    return 0;
+	    return;
 	}
 	if (temp != 0.) {
 	    alpha = *dmax__ / temp;
@@ -1316,7 +1316,7 @@ static integer c__1 = 1;
 	dlatm1_(model, condl, &c__0, &idist, &iseed[1], &dl[1], m, info);
 	if (*info != 0) {
 	    *info = 3;
-	    return 0;
+	    return;
 	}
     }
 
@@ -1326,7 +1326,7 @@ static integer c__1 = 1;
 	dlatm1_(moder, condr, &c__0, &idist, &iseed[1], &dr[1], n, info);
 	if (*info != 0) {
 	    *info = 4;
-	    return 0;
+	    return;
 	}
     }
 
@@ -1815,7 +1815,7 @@ static integer c__1 = 1;
 /*           Desired scaling impossible */
 
 	    *info = 5;
-	    return 0;
+	    return;
 
 	} else if (*anorm > 1. && onorm < 1. || *anorm < 1. && onorm > 1.) {
 
@@ -1887,6 +1887,6 @@ static integer c__1 = 1;
 
 /*     End of DLATMR */
 
-    return 0;
+    return;
 } /* dlatmr_ */
 

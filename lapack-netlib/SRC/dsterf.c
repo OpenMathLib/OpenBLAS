@@ -601,7 +601,7 @@ f"> */
 /* > \ingroup auxOTHERcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int dsterf_(integer *n, doublereal *d__, doublereal *e, 
+/* Subroutine */ void dsterf_(integer *n, doublereal *d__, doublereal *e, 
 	integer *info)
 {
     /* System generated locals */
@@ -613,7 +613,7 @@ f"> */
     integer lend;
     doublereal rmax;
     integer jtot;
-    extern /* Subroutine */ int dlae2_(doublereal *, doublereal *, doublereal 
+    extern /* Subroutine */ void dlae2_(doublereal *, doublereal *, doublereal 
 	    *, doublereal *, doublereal *);
     doublereal c__;
     integer i__, l, m;
@@ -623,14 +623,14 @@ f"> */
     doublereal bb;
     extern doublereal dlamch_(char *);
     integer iscale;
-    extern /* Subroutine */ int dlascl_(char *, integer *, integer *, 
+    extern /* Subroutine */ void dlascl_(char *, integer *, integer *, 
 	    doublereal *, doublereal *, integer *, integer *, doublereal *, 
 	    integer *, integer *);
     doublereal oldgam, safmin;
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     doublereal safmax;
     extern doublereal dlanst_(char *, integer *, doublereal *, doublereal *);
-    extern /* Subroutine */ int dlasrt_(char *, integer *, doublereal *, 
+    extern /* Subroutine */ void dlasrt_(char *, integer *, doublereal *, 
 	    integer *);
     integer lendsv;
     doublereal ssfmin;
@@ -664,10 +664,10 @@ f"> */
 	*info = -1;
 	i__1 = -(*info);
 	xerbla_("DSTERF", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
     if (*n <= 1) {
-	return 0;
+	return;
     }
 
 /*     Determine the unit roundoff for this environment. */
@@ -998,7 +998,7 @@ L170:
     dlasrt_("I", n, &d__[1], info);
 
 L180:
-    return 0;
+    return;
 
 /*     End of DSTERF */
 

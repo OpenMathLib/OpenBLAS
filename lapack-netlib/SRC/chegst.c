@@ -645,7 +645,7 @@ f"> */
 /* > \ingroup complexHEcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int chegst_(integer *itype, char *uplo, integer *n, complex *
+/* Subroutine */ void chegst_(integer *itype, char *uplo, integer *n, complex *
 	a, integer *lda, complex *b, integer *ldb, integer *info)
 {
     /* System generated locals */
@@ -654,17 +654,17 @@ f"> */
 
     /* Local variables */
     integer k;
-    extern /* Subroutine */ int chemm_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void chemm_(char *, char *, integer *, integer *, 
 	    complex *, complex *, integer *, complex *, integer *, complex *, 
 	    complex *, integer *);
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int ctrmm_(char *, char *, char *, char *, 
+    extern /* Subroutine */ void ctrmm_(char *, char *, char *, char *, 
 	    integer *, integer *, complex *, complex *, integer *, complex *, 
 	    integer *), ctrsm_(char *, char *,
 	     char *, char *, integer *, integer *, complex *, complex *, 
 	    integer *, complex *, integer *);
     logical upper;
-    extern /* Subroutine */ int chegs2_(integer *, char *, integer *, complex 
+    extern /* Subroutine */ void chegs2_(integer *, char *, integer *, complex 
 	    *, integer *, complex *, integer *, integer *), cher2k_(
 	    char *, char *, integer *, integer *, complex *, complex *, 
 	    integer *, complex *, integer *, real *, complex *, integer *);
@@ -710,13 +710,13 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CHEGST", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /*     Determine the block size for this environment. */
@@ -900,7 +900,7 @@ f"> */
 	    }
 	}
     }
-    return 0;
+    return;
 
 /*     End of CHEGST */
 

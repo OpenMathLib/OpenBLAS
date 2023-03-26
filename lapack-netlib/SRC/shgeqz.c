@@ -818,7 +818,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int shgeqz_(char *job, char *compq, char *compz, integer *n, 
+/* Subroutine */ void shgeqz_(char *job, char *compq, char *compz, integer *n, 
 	integer *ilo, integer *ihi, real *h__, integer *ldh, real *t, integer 
 	*ldt, real *alphar, real *alphai, real *beta, real *q, integer *ldq, 
 	real *z__, integer *ldz, real *work, integer *lwork, integer *info)
@@ -830,7 +830,7 @@ f"> */
 
     /* Local variables */
     real ad11l, ad12l, ad21l, ad22l, ad32l, wabs, atol, btol, temp;
-    extern /* Subroutine */ int srot_(integer *, real *, integer *, real *, 
+    extern /* Subroutine */ void srot_(integer *, real *, integer *, real *, 
 	    integer *, real *, real *), slag2_(real *, integer *, real *, 
 	    integer *, real *, real *, real *, real *, real *, real *);
     real temp2, s1inv, c__;
@@ -847,7 +847,7 @@ f"> */
     integer jc;
     extern real slapy3_(real *, real *, real *);
     real an, bn, cl;
-    extern /* Subroutine */ int slasv2_(real *, real *, real *, real *, real *
+    extern /* Subroutine */ void slasv2_(real *, real *, real *, real *, real *
 	    , real *, real *, real *, real *);
     real cq, cr;
     integer in;
@@ -856,7 +856,7 @@ f"> */
     real cz, sl, w12, w21, w22, wi, sr;
     extern real slamch_(char *);
     real vs, wr, safmin;
-    extern /* Subroutine */ int slarfg_(integer *, real *, real *, integer *, 
+    extern /* Subroutine */ void slarfg_(integer *, real *, real *, integer *, 
 	    real *);
     real safmax;
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
@@ -874,7 +874,7 @@ f"> */
     integer istart;
     logical ilpivt;
     real a2r, b1r, b2i, b2r;
-    extern /* Subroutine */ int slartg_(real *, real *, real *, real *, real *
+    extern /* Subroutine */ void slartg_(real *, real *, real *, real *, real *
 	    ), slaset_(char *, integer *, integer *, real *, real *, real *, 
 	    integer *);
     logical lquery;
@@ -985,16 +985,16 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("SHGEQZ", &i__1, (ftnlen)6);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n <= 0) {
 	work[1] = 1.f;
-	return 0;
+	return;
     }
 
 /*     Initialize Q and Z */
@@ -2092,7 +2092,7 @@ L380:
 
 L420:
     work[1] = (real) (*n);
-    return 0;
+    return;
 
 /*     End of SHGEQZ */
 

@@ -640,7 +640,7 @@ f"> */
 /* > \ingroup complexOTHERcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int cunghr_(integer *n, integer *ilo, integer *ihi, complex *
+/* Subroutine */ void cunghr_(integer *n, integer *ilo, integer *ihi, complex *
 	a, integer *lda, complex *tau, complex *work, integer *lwork, integer 
 	*info)
 {
@@ -652,7 +652,7 @@ f"> */
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     extern integer ilaenv_(integer *, char *, char *, integer *, integer *, 
 	    integer *, integer *, ftnlen, ftnlen);
-    extern /* Subroutine */ int cungqr_(integer *, integer *, integer *, 
+    extern /* Subroutine */ void cungqr_(integer *, integer *, integer *, 
 	    complex *, integer *, complex *, complex *, integer *, integer *);
     integer lwkopt;
     logical lquery;
@@ -702,16 +702,16 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CUNGHR", &i__1, (ftnlen)6);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
 	work[1].r = 1.f, work[1].i = 0.f;
-	return 0;
+	return;
     }
 
 /*     Shift the vectors which define the elementary reflectors one */
@@ -774,7 +774,7 @@ f"> */
 		ilo], &work[1], lwork, &iinfo);
     }
     work[1].r = (real) lwkopt, work[1].i = 0.f;
-    return 0;
+    return;
 
 /*     End of CUNGHR */
 

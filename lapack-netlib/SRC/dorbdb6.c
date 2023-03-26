@@ -669,7 +669,7 @@ static doublereal c_b12 = -1.;
 /* > \ingroup doubleOTHERcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int dorbdb6_(integer *m1, integer *m2, integer *n, 
+/* Subroutine */ void dorbdb6_(integer *m1, integer *m2, integer *n, 
 	doublereal *x1, integer *incx1, doublereal *x2, integer *incx2, 
 	doublereal *q1, integer *ldq1, doublereal *q2, integer *ldq2, 
 	doublereal *work, integer *lwork, integer *info)
@@ -680,10 +680,11 @@ static doublereal c_b12 = -1.;
 
     /* Local variables */
     integer i__;
-    extern /* Subroutine */ int dgemv_(char *, integer *, integer *, 
+    extern /* Subroutine */ void dgemv_(char *, integer *, integer *, 
 	    doublereal *, doublereal *, integer *, doublereal *, integer *, 
-	    doublereal *, doublereal *, integer *), xerbla_(char *, 
-	    integer *, ftnlen), dlassq_(integer *, doublereal *, integer *, 
+	    doublereal *, doublereal *, integer *);
+    extern int xerbla_(char *, integer *, ftnlen);
+    extern void dlassq_(integer *, doublereal *, integer *, 
 	    doublereal *, doublereal *);
     doublereal normsq1, normsq2, scl1, scl2, ssq1, ssq2;
 
@@ -733,7 +734,7 @@ static doublereal c_b12 = -1.;
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DORBDB6", &i__1, (ftnlen)7);
-	return 0;
+	return;
     }
 
 /*     First, project X onto the orthogonal complement of Q's column */
@@ -786,11 +787,11 @@ static doublereal c_b12 = -1.;
 /*     Otherwise, project again. */
 
     if (normsq2 >= normsq1 * .01) {
-	return 0;
+	return;
     }
 
     if (normsq2 == 0.) {
-	return 0;
+	return;
     }
 
     normsq1 = normsq2;
@@ -845,7 +846,7 @@ static doublereal c_b12 = -1.;
 	}
     }
 
-    return 0;
+    return;
 
 /*     End of DORBDB6 */
 

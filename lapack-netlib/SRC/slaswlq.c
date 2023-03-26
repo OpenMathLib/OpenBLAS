@@ -671,7 +671,7 @@ static integer c__0 = 0;
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int slaswlq_(integer *m, integer *n, integer *mb, integer *
+/* Subroutine */ void slaswlq_(integer *m, integer *n, integer *mb, integer *
 	nb, real *a, integer *lda, real *t, integer *ldt, real *work, integer 
 	*lwork, integer *info)
 {
@@ -680,11 +680,12 @@ static integer c__0 = 0;
 
     /* Local variables */
     integer i__, ii, kk;
-    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen), sgelqt_(
+    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
+    extern void sgelqt_(
 	    integer *, integer *, integer *, real *, integer *, real *, 
 	    integer *, real *, integer *);
     logical lquery;
-    extern /* Subroutine */ int stplqt_(integer *, integer *, integer *, 
+    extern /* Subroutine */ void stplqt_(integer *, integer *, integer *, 
 	    integer *, real *, integer *, real *, integer *, real *, integer *
 	    , real *, integer *);
     integer ctr;
@@ -737,15 +738,15 @@ static integer c__0 = 0;
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("SLASWLQ", &i__1, (ftnlen)7);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (f2cmin(*m,*n) == 0) {
-	return 0;
+	return;
     }
 
 /*     The LQ Decomposition */
@@ -753,7 +754,7 @@ static integer c__0 = 0;
     if (*m >= *n || *nb <= *m || *nb >= *n) {
 	sgelqt_(m, n, mb, &a[a_offset], lda, &t[t_offset], ldt, &work[1], 
 		info);
-	return 0;
+	return;
     }
 
     kk = (*n - *m) % (*nb - *m);
@@ -785,7 +786,7 @@ static integer c__0 = 0;
     }
 
     work[1] = (real) (*m * *mb);
-    return 0;
+    return;
 
 /*     End of SLASWLQ */
 

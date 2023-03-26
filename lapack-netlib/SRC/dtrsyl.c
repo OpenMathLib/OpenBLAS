@@ -681,7 +681,7 @@ f"> */
 /* > \ingroup doubleSYcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int dtrsyl_(char *trana, char *tranb, integer *isgn, integer 
+/* Subroutine */ void dtrsyl_(char *trana, char *tranb, integer *isgn, integer 
 	*m, integer *n, doublereal *a, integer *lda, doublereal *b, integer *
 	ldb, doublereal *c__, integer *ldc, doublereal *scale, integer *info)
 {
@@ -696,13 +696,13 @@ f"> */
     integer ierr;
     doublereal smin, suml, sumr;
     integer j, k, l;
-    extern /* Subroutine */ int dscal_(integer *, doublereal *, doublereal *, 
+    extern /* Subroutine */ void dscal_(integer *, doublereal *, doublereal *, 
 	    integer *);
     doublereal x[4]	/* was [2][2] */;
     extern logical lsame_(char *, char *);
     integer knext, lnext, k1, k2, l1, l2;
     doublereal xnorm;
-    extern /* Subroutine */ int dlaln2_(logical *, integer *, integer *, 
+    extern /* Subroutine */ void dlaln2_(logical *, integer *, integer *, 
 	    doublereal *, doublereal *, doublereal *, integer *, doublereal *,
 	     doublereal *, doublereal *, integer *, doublereal *, doublereal *
 	    , doublereal *, integer *, doublereal *, doublereal *, integer *),
@@ -711,7 +711,7 @@ f"> */
 	    integer *, doublereal *, doublereal *, integer *, doublereal *, 
 	    integer *);
     doublereal a11, db;
-    extern /* Subroutine */ int dlabad_(doublereal *, doublereal *);
+    extern /* Subroutine */ void dlabad_(doublereal *, doublereal *);
     extern doublereal dlamch_(char *), dlange_(char *, integer *, 
 	    integer *, doublereal *, integer *, doublereal *);
     doublereal scaloc;
@@ -770,14 +770,14 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DTRSYL", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     *scale = 1.;
     if (*m == 0 || *n == 0) {
-	return 0;
+	return;
     }
 
 /*     Set constants to control overflow */
@@ -1879,7 +1879,7 @@ L240:
 
     }
 
-    return 0;
+    return;
 
 /*     End of DTRSYL */
 

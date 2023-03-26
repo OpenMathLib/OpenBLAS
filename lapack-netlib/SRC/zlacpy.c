@@ -612,7 +612,7 @@ f"> */
 /* > \ingroup complex16OTHERauxiliary */
 
 /*  ===================================================================== */
-/* Subroutine */ int zlacpy_(char *uplo, integer *m, integer *n, 
+/* Subroutine */ void zlacpy_(char *uplo, integer *m, integer *n, 
 	doublecomplex *a, integer *lda, doublecomplex *b, integer *ldb)
 {
     /* System generated locals */
@@ -681,7 +681,7 @@ f"> */
 	}
     }
 
-    return 0;
+    return;
 
 /*     End of ZLACPY */
 

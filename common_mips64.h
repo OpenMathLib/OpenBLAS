@@ -86,7 +86,9 @@ static inline unsigned int rpcc(void){
   //__asm__ __volatile__("dmfc0 %0, $25, 1": "=r"(tmp):: "memory");
   //ret=tmp;
   __asm__ __volatile__(".set push \n"
+#if !defined(__mips_isa_rev) || __mips_isa_rev < 2
                        ".set mips32r2\n"
+#endif
                        "rdhwr %0, $2\n"
                        ".set pop": "=r"(ret):: "memory");
 
@@ -99,7 +101,9 @@ static inline unsigned int rpcc(void){
 static inline int WhereAmI(void){
   int ret=0;
   __asm__ __volatile__(".set push \n"
+#if !defined(__mips_isa_rev) || __mips_isa_rev < 2
                        ".set mips32r2\n"
+#endif
                        "rdhwr %0, $0\n"
                        ".set pop": "=r"(ret):: "memory");
   return ret;
@@ -197,9 +201,15 @@ static inline int blas_quickdivide(blasint x, blasint y){
 
 #if defined(ASSEMBLER) && !defined(NEEDPARAM)
 
+#if defined(__mips_isa_rev) && __mips_isa_rev >= 6
+#define ASSEMBLER_ARCH mips64r6
+#else
+#define ASSEMBLER_ARCH mips64
+#endif
+
 #define PROLOGUE \
 	.text ;\
-	.set	mips64 ;\
+	.set	ASSEMBLER_ARCH ;\
 	.align 5 ;\
 	.globl	REALNAME ;\
 	.ent	REALNAME ;\

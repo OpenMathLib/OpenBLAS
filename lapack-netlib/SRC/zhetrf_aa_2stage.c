@@ -676,7 +676,7 @@ aa_2stage.f"> */
 /* > \ingroup complex16SYcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int zhetrf_aa_2stage_(char *uplo, integer *n, doublecomplex 
+/* Subroutine */ void zhetrf_aa_2stage_(char *uplo, integer *n, doublecomplex 
 	*a, integer *lda, doublecomplex *tb, integer *ltb, integer *ipiv, 
 	integer *ipiv2, doublecomplex *work, integer *lwork, integer *info)
 {
@@ -689,14 +689,14 @@ aa_2stage.f"> */
     integer ldtb, i__, j, k;
     extern logical lsame_(char *, char *);
     integer iinfo;
-    extern /* Subroutine */ int zgemm_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void zgemm_(char *, char *, integer *, integer *, 
 	    integer *, doublecomplex *, doublecomplex *, integer *, 
 	    doublecomplex *, integer *, doublecomplex *, doublecomplex *, 
 	    integer *);
     integer i1;
     logical upper;
     integer i2;
-    extern /* Subroutine */ int zcopy_(integer *, doublecomplex *, integer *, 
+    extern /* Subroutine */ void zcopy_(integer *, doublecomplex *, integer *, 
 	    doublecomplex *, integer *), zswap_(integer *, doublecomplex *, 
 	    integer *, doublecomplex *, integer *), ztrsm_(char *, char *, 
 	    char *, char *, integer *, integer *, doublecomplex *, 
@@ -705,11 +705,13 @@ aa_2stage.f"> */
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     extern integer ilaenv_(integer *, char *, char *, integer *, integer *, 
 	    integer *, integer *, ftnlen, ftnlen);
-    extern /* Subroutine */ int zlacgv_(integer *, doublecomplex *, integer *)
+    extern /* Subroutine */ void zlacgv_(integer *, doublecomplex *, integer *)
 	    , zgbtrf_(integer *, integer *, integer *, integer *, 
-	    doublecomplex *, integer *, integer *, integer *), zgetrf_(
+	    doublecomplex *, integer *, integer *, integer *);
+    extern int zgetrf_(
 	    integer *, integer *, doublecomplex *, integer *, integer *, 
-	    integer *), zlacpy_(char *, integer *, integer *, doublecomplex *,
+	    integer *);
+    extern void zlacpy_(char *, integer *, integer *, doublecomplex *,
 	     integer *, doublecomplex *, integer *), zlaset_(char *, 
 	    integer *, integer *, doublecomplex *, doublecomplex *, 
 	    doublecomplex *, integer *), zhegst_(integer *, char *, 
@@ -760,7 +762,7 @@ aa_2stage.f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZHETRF_AA_2STAGE", &i__1, (ftnlen)16);
-	return 0;
+	return;
     }
 
 /*     Answer the query */
@@ -778,13 +780,13 @@ aa_2stage.f"> */
 	}
     }
     if (tquery || wquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /*     Determine the number of the block size */
@@ -1279,7 +1281,7 @@ aa_2stage.f"> */
 /*     Factor the band matrix */
     zgbtrf_(n, n, &nb, &nb, &tb[1], &ldtb, &ipiv2[1], info);
 
-    return 0;
+    return;
 
 /*     End of ZHETRF_AA_2STAGE */
 

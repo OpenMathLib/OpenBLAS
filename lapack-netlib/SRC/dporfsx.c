@@ -803,7 +803,7 @@ static integer c__1 = 1;
 /* > \ingroup doublePOcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int dporfsx_(char *uplo, char *equed, integer *n, integer *
+/* Subroutine */ void dporfsx_(char *uplo, char *equed, integer *n, integer *
 	nrhs, doublereal *a, integer *lda, doublereal *af, integer *ldaf, 
 	doublereal *s, doublereal *b, integer *ldb, doublereal *x, integer *
 	ldx, doublereal *rcond, doublereal *berr, integer *n_err_bnds__, 
@@ -819,7 +819,7 @@ static integer c__1 = 1;
 
     /* Local variables */
     doublereal illrcond_thresh__, unstable_thresh__;
-    extern /* Subroutine */ int dla_porfsx_extended_(integer *, char *, 
+    extern /* Subroutine */ void dla_porfsx_extended_(integer *, char *, 
 	    integer *, integer *, doublereal *, integer *, doublereal *, 
 	    integer *, logical *, doublereal *, doublereal *, integer *, 
 	    doublereal *, integer *, doublereal *, integer *, doublereal *, 
@@ -837,7 +837,8 @@ static integer c__1 = 1;
     doublereal rcond_tmp__;
     integer prec_type__;
     extern doublereal dlamch_(char *);
-    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen), dpocon_(
+    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
+    extern void dpocon_(
 	    char *, integer *, doublereal *, integer *, doublereal *, 
 	    doublereal *, doublereal *, integer *, integer *);
     extern doublereal dlansy_(char *, char *, integer *, doublereal *, 
@@ -955,7 +956,7 @@ static integer c__1 = 1;
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DPORFSX", &i__1, (ftnlen)7);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible. */
@@ -978,7 +979,7 @@ static integer c__1 = 1;
 		err_bnds_comp__[j + err_bnds_comp_dim1 * 3] = 1.;
 	    }
 	}
-	return 0;
+	return;
     }
 
 /*     Default to failure. */
@@ -1117,7 +1118,7 @@ static integer c__1 = 1;
 	}
     }
 
-    return 0;
+    return;
 
 /*     End of DPORFSX */
 

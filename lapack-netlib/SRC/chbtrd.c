@@ -677,7 +677,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int chbtrd_(char *vect, char *uplo, integer *n, integer *kd, 
+/* Subroutine */ void chbtrd_(char *vect, char *uplo, integer *n, integer *kd, 
 	complex *ab, integer *ldab, real *d__, real *e, complex *q, integer *
 	ldq, complex *work, integer *info)
 {
@@ -692,24 +692,25 @@ f"> */
     real abst;
     integer incx, last;
     complex temp;
-    extern /* Subroutine */ int crot_(integer *, complex *, integer *, 
+    extern /* Subroutine */ void crot_(integer *, complex *, integer *, 
 	    complex *, integer *, real *, complex *);
     integer j1end, j1inc, i__, j, k, l;
     complex t;
-    extern /* Subroutine */ int cscal_(integer *, complex *, complex *, 
+    extern /* Subroutine */ void cscal_(integer *, complex *, complex *, 
 	    integer *);
     integer iqend;
     extern logical lsame_(char *, char *);
     logical initq, wantq, upper;
     integer i2, j1, j2;
-    extern /* Subroutine */ int clar2v_(integer *, complex *, complex *, 
+    extern /* Subroutine */ void clar2v_(integer *, complex *, complex *, 
 	    complex *, integer *, real *, complex *, integer *);
     integer nq, nr, iqaend;
-    extern /* Subroutine */ int clacgv_(integer *, complex *, integer *), 
+    extern /* Subroutine */ void clacgv_(integer *, complex *, integer *), 
 	    claset_(char *, integer *, integer *, complex *, complex *, 
 	    complex *, integer *), clartg_(complex *, complex *, real 
-	    *, complex *, complex *), xerbla_(char *, integer *, ftnlen), 
-	    clargv_(integer *, complex *, integer *, complex *, integer *, 
+	    *, complex *, complex *);
+    extern int xerbla_(char *, integer *, ftnlen); 
+    extern void clargv_(integer *, complex *, integer *, complex *, integer *, 
 	    real *, integer *), clartv_(integer *, complex *, integer *, 
 	    complex *, integer *, real *, complex *, integer *);
     integer kd1, ibl, iqb, kdn, jin, nrt, kdm1;
@@ -763,13 +764,13 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CHBTRD", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /*     Initialize Q to the unit matrix, if needed */
@@ -1367,7 +1368,7 @@ f"> */
 	}
     }
 
-    return 0;
+    return;
 
 /*     End of CHBTRD */
 

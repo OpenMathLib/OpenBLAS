@@ -827,7 +827,7 @@ f"> */
 /* >     California at Berkeley, USA */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int slasd6_(integer *icompq, integer *nl, integer *nr, 
+/* Subroutine */ void slasd6_(integer *icompq, integer *nl, integer *nr, 
 	integer *sqre, real *d__, real *vf, real *vl, real *alpha, real *beta,
 	 integer *idxq, integer *perm, integer *givptr, integer *givcol, 
 	integer *ldgcol, real *givnum, integer *ldgnum, real *poles, real *
@@ -841,10 +841,10 @@ f"> */
 
     /* Local variables */
     integer idxc, idxp, ivfw, ivlw, i__, m, n;
-    extern /* Subroutine */ int scopy_(integer *, real *, integer *, real *, 
+    extern /* Subroutine */ void scopy_(integer *, real *, integer *, real *, 
 	    integer *);
     integer n1, n2;
-    extern /* Subroutine */ int slasd7_(integer *, integer *, integer *, 
+    extern /* Subroutine */ void slasd7_(integer *, integer *, integer *, 
 	    integer *, integer *, real *, real *, real *, real *, real *, 
 	    real *, real *, real *, real *, real *, integer *, integer *, 
 	    integer *, integer *, integer *, integer *, integer *, real *, 
@@ -852,7 +852,8 @@ f"> */
 	    *, real *, real *, real *, real *, real *, real *, integer *, 
 	    real *, real *, integer *);
     integer iw, isigma;
-    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen), slascl_(
+    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
+    extern void slascl_(
 	    char *, integer *, integer *, real *, real *, integer *, integer *
 	    , real *, integer *, integer *), slamrg_(integer *, 
 	    integer *, real *, integer *, integer *, integer *);
@@ -913,7 +914,7 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("SLASD6", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     The following values are for bookkeeping purposes only.  They are */
@@ -962,7 +963,7 @@ f"> */
 /*     Report the possible convergence failure. */
 
     if (*info != 0) {
-	return 0;
+	return;
     }
 
 /*     Save the poles if ICOMPQ = 1. */
@@ -982,7 +983,7 @@ f"> */
     n2 = n - *k;
     slamrg_(&n1, &n2, &d__[1], &c__1, &c_n1, &idxq[1]);
 
-    return 0;
+    return;
 
 /*     End of SLASD6 */
 

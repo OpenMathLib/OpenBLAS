@@ -733,7 +733,7 @@ f"> */
 /* > \ingroup complexGEcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int ctgevc_(char *side, char *howmny, logical *select, 
+/* Subroutine */ void ctgevc_(char *side, char *howmny, logical *select, 
 	integer *n, complex *s, integer *lds, complex *p, integer *ldp, 
 	complex *vl, integer *ldvl, complex *vr, integer *ldvr, integer *mm, 
 	integer *m, complex *work, real *rwork, integer *info)
@@ -758,7 +758,7 @@ f"> */
     integer iside;
     real sbeta;
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int cgemv_(char *, integer *, integer *, complex *
+    extern /* Subroutine */ void cgemv_(char *, integer *, integer *, complex *
 	    , complex *, integer *, complex *, integer *, complex *, complex *
 	    , integer *);
     real small;
@@ -773,7 +773,7 @@ f"> */
     complex bcoeff;
     logical ilback;
     integer im;
-    extern /* Subroutine */ int slabad_(real *, real *);
+    extern /* Subroutine */ void slabad_(real *, real *);
     real ascale, bscale;
     integer jr;
     extern /* Complex */ VOID cladiv_(complex *, complex *, complex *);
@@ -867,7 +867,7 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CTGEVC", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Count the number of eigenvectors */
@@ -908,14 +908,14 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CTGEVC", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     *m = im;
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /*     Machine Constants */
@@ -1544,7 +1544,7 @@ L250:
 	}
     }
 
-    return 0;
+    return;
 
 /*     End of CTGEVC */
 

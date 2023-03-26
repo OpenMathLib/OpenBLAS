@@ -746,7 +746,7 @@ sb2t.f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int ssytrd_sb2st_(char *stage1, char *vect, char *uplo, 
+/* Subroutine */ void ssytrd_sb2st_(char *stage1, char *vect, char *uplo, 
 	integer *n, integer *kd, real *ab, integer *ldab, real *d__, real *e, 
 	real *hous, integer *lhous, real *work, integer *lwork, integer *info)
 {
@@ -766,14 +766,14 @@ sb2t.f"> */
     integer sisev, grsiz, ttype, stepercol, ed, ib, st, abdpos;
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     integer thgrid, thgrnb, indtau, ofdpos;
-    extern /* Subroutine */ int slacpy_(char *, integer *, integer *, real *, 
+    extern /* Subroutine */ void slacpy_(char *, integer *, integer *, real *, 
 	    integer *, real *, integer *), slaset_(char *, integer *, 
 	    integer *, real *, real *, real *, integer *), 
 	    ssb2st_kernels_(char *, logical *, integer *, integer *, integer 
 	    *, integer *, integer *, integer *, integer *, real *, integer *, 
 	    real *, real *, integer *, real *);
     integer blklastind;
-    extern /* Subroutine */ int mecago_();
+    extern /* Subroutine */ void mecago_();
     logical lquery, afters1;
     integer lda, tid, ldv, stt, sweepid, nbtiles, sizetau, thgrsiz;
 
@@ -841,9 +841,9 @@ sb2t.f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("SSYTRD_SB2ST", &i__1, (ftnlen)12);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
@@ -851,7 +851,7 @@ sb2t.f"> */
     if (*n == 0) {
 	hous[1] = 1.f;
 	work[1] = 1.f;
-	return 0;
+	return;
     }
 
 /*     Determine pointer position */
@@ -904,7 +904,7 @@ sb2t.f"> */
 
 	hous[1] = 1.f;
 	work[1] = 1.f;
-	return 0;
+	return;
     }
 
 /*     Case KD=1: */
@@ -940,7 +940,7 @@ sb2t.f"> */
 
 	hous[1] = 1.f;
 	work[1] = 1.f;
-	return 0;
+	return;
     }
 
 /*     Main code start here. */
@@ -1059,7 +1059,7 @@ sb2t.f"> */
 
     hous[1] = (real) lhmin;
     work[1] = (real) lwmin;
-    return 0;
+    return;
 
 /*     End of SSYTRD_SB2ST */
 

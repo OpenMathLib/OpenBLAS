@@ -762,7 +762,7 @@ f"> */
 /* > \ingroup complexOTHERcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int claed7_(integer *n, integer *cutpnt, integer *qsiz, 
+/* Subroutine */ void claed7_(integer *n, integer *cutpnt, integer *qsiz, 
 	integer *tlvls, integer *curlvl, integer *curpbm, real *d__, complex *
 	q, integer *ldq, real *rho, integer *indxq, real *qstore, integer *
 	qptr, integer *prmptr, integer *perm, integer *givptr, integer *
@@ -774,7 +774,7 @@ f"> */
 
     /* Local variables */
     integer indx, curr, i__, k, indxc, indxp, n1, n2;
-    extern /* Subroutine */ int claed8_(integer *, integer *, integer *, 
+    extern /* Subroutine */ void claed8_(integer *, integer *, integer *, 
 	    complex *, integer *, real *, real *, integer *, real *, real *, 
 	    complex *, integer *, real *, integer *, integer *, integer *, 
 	    integer *, integer *, integer *, real *, integer *), slaed9_(
@@ -784,10 +784,11 @@ f"> */
 	    integer *, integer *, integer *, real *, real *, integer *, real *
 	    , real *, integer *);
     integer idlmda, iq, iw;
-    extern /* Subroutine */ int clacrm_(integer *, integer *, complex *, 
+    extern /* Subroutine */ void clacrm_(integer *, integer *, complex *, 
 	    integer *, real *, integer *, complex *, integer *, real *);
     integer iz;
-    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen), slamrg_(
+    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
+    extern void slamrg_(
 	    integer *, integer *, real *, integer *, integer *, integer *);
     integer coltyp, ptr;
 
@@ -838,13 +839,13 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CLAED7", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /*     The following values are for bookkeeping purposes only.  They are */
@@ -864,11 +865,11 @@ f"> */
 /*     Form the z-vector which consists of the last row of Q_1 and the */
 /*     first row of Q_2. */
 
-    ptr = pow_ii(&c__2, tlvls) + 1;
+    ptr = pow_ii(c__2, *tlvls) + 1;
     i__1 = *curlvl - 1;
     for (i__ = 1; i__ <= i__1; ++i__) {
 	i__2 = *tlvls - i__;
-	ptr += pow_ii(&c__2, &i__2);
+	ptr += pow_ii(c__2, i__2);
 /* L10: */
     }
     curr = ptr + *curpbm;
@@ -906,7 +907,7 @@ f"> */
 	i__1 = k;
 	qptr[curr + 1] = qptr[curr] + i__1 * i__1;
 	if (*info != 0) {
-	    return 0;
+	    return;
 	}
 
 /*     Prepare the INDXQ sorting premutation. */
@@ -923,7 +924,7 @@ f"> */
 	}
     }
 
-    return 0;
+    return;
 
 /*     End of CLAED7 */
 

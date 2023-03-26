@@ -812,7 +812,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int stgevc_(char *side, char *howmny, logical *select, 
+/* Subroutine */ void stgevc_(char *side, char *howmny, logical *select, 
 	integer *n, real *s, integer *lds, real *p, integer *ldp, real *vl, 
 	integer *ldvl, real *vr, integer *ldvr, integer *mm, integer *m, real 
 	*work, integer *info)
@@ -826,7 +826,7 @@ f"> */
     integer ibeg, ieig, iend;
     real dmin__, temp, xmax, sump[4]	/* was [2][2] */, sums[4]	/* 
 	    was [2][2] */, cim2a, cim2b, cre2a, cre2b;
-    extern /* Subroutine */ int slag2_(real *, integer *, real *, integer *, 
+    extern /* Subroutine */ void slag2_(real *, integer *, real *, integer *, 
 	    real *, real *, real *, real *, real *, real *);
     real temp2, bdiag[2];
     integer i__, j;
@@ -841,7 +841,7 @@ f"> */
     logical compl;
     real anorm, bnorm;
     logical compr;
-    extern /* Subroutine */ int sgemv_(char *, integer *, integer *, real *, 
+    extern /* Subroutine */ void sgemv_(char *, integer *, integer *, real *, 
 	    real *, integer *, real *, integer *, real *, real *, integer *), slaln2_(logical *, integer *, integer *, real *, real *, 
 	    real *, integer *, real *, real *, real *, integer *, real *, 
 	    real *, real *, integer *, real *, real *, integer *);
@@ -855,7 +855,7 @@ f"> */
     real bcoefi, ascale, bscale, creala;
     integer jr;
     real crealb;
-    extern /* Subroutine */ int slabad_(real *, real *);
+    extern /* Subroutine */ void slabad_(real *, real *);
     real bcoefr;
     integer jw, nw;
     extern real slamch_(char *);
@@ -863,7 +863,7 @@ f"> */
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     real xscale, bignum;
     logical ilcomp, ilcplx;
-    extern /* Subroutine */ int slacpy_(char *, integer *, integer *, real *, 
+    extern /* Subroutine */ void slacpy_(char *, integer *, integer *, real *, 
 	    integer *, real *, integer *);
     integer ihwmny;
     real big;
@@ -948,7 +948,7 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("STGEVC", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Count the number of eigenvectors to be computed */
@@ -1017,14 +1017,14 @@ L10:
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("STGEVC", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     *m = im;
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /*     Machine Constants */
@@ -1216,7 +1216,7 @@ L10:
 		bcoefi = -bcoefi;
 		if (bcoefi == 0.f) {
 		    *info = je;
-		    return 0;
+		    return;
 		}
 
 /*              Scale to avoid over/underflow */
@@ -1627,7 +1627,7 @@ L220:
 			temp2, &bcoefi);
 		if (bcoefi == 0.f) {
 		    *info = je - 1;
-		    return 0;
+		    return;
 		}
 
 /*              Scale to avoid over/underflow */
@@ -1957,7 +1957,7 @@ L500:
 	}
     }
 
-    return 0;
+    return;
 
 /*     End of STGEVC */
 

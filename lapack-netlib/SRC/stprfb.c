@@ -766,7 +766,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int stprfb_(char *side, char *trans, char *direct, char *
+/* Subroutine */ void stprfb_(char *side, char *trans, char *direct, char *
 	storev, integer *m, integer *n, integer *k, integer *l, real *v, 
 	integer *ldv, real *t, integer *ldt, real *a, integer *lda, real *b, 
 	integer *ldb, real *work, integer *ldwork)
@@ -779,11 +779,11 @@ f"> */
     logical left, backward;
     integer i__, j;
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int sgemm_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void sgemm_(char *, char *, integer *, integer *, 
 	    integer *, real *, real *, integer *, real *, integer *, real *, 
 	    real *, integer *);
     logical right;
-    extern /* Subroutine */ int strmm_(char *, char *, char *, char *, 
+    extern /* Subroutine */ void strmm_(char *, char *, char *, char *, 
 	    integer *, integer *, real *, real *, integer *, real *, integer *
 	    );
     integer kp, mp, np;
@@ -820,7 +820,7 @@ f"> */
 
     /* Function Body */
     if (*m <= 0 || *n <= 0 || *k <= 0 || *l < 0) {
-	return 0;
+	return;
     }
 
     if (lsame_(storev, "C")) {
@@ -1471,7 +1471,7 @@ f"> */
 
     }
 
-    return 0;
+    return;
 
 /*     End of STPRFB */
 

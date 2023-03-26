@@ -165,7 +165,9 @@ void get_cpuconfig(void){
   }else{
     printf("#define UNKNOWN\n");
   }
-  if (!get_feature("msa")) printf("#define NO_MSA\n");
+#ifndef NO_MSA  
+  if (get_feature("msa")) printf("#define HAVE_MSA\n");
+#endif
 }
 
 void get_libname(void){

@@ -90,21 +90,23 @@
       LOGICAL            OK
       CHARACTER*3        PATH
       INTEGER            KLAEXC, KLALN2, KLANV2, KLAQTR, KLASY2, KTREXC,
-     $                   KTRSEN, KTRSNA, KTRSYL, LLAEXC, LLALN2, LLANV2,
-     $                   LLAQTR, LLASY2, LTREXC, LTRSYL, NLANV2, NLAQTR,
-     $                   NLASY2, NTESTS, NTRSYL, KTGEXC, NTGEXC, LTGEXC
+     $                   KTRSEN, KTRSNA, KTRSYL, KTRSYL3, LLAEXC,
+     $                   LLALN2, LLANV2, LLAQTR, LLASY2, LTREXC, LTRSYL,
+     $                   NLANV2, NLAQTR, NLASY2, NTESTS, NTRSYL, KTGEXC,
+     $                   LTGEXC
       DOUBLE PRECISION   EPS, RLAEXC, RLALN2, RLANV2, RLAQTR, RLASY2,
-     $                   RTREXC, RTRSYL, SFMIN, RTGEXC
+     $                   RTREXC, SFMIN, RTGEXC
 *     ..
 *     .. Local Arrays ..
-      INTEGER            LTRSEN( 3 ), LTRSNA( 3 ), NLAEXC( 2 ),
-     $                   NLALN2( 2 ), NTREXC( 3 ), NTRSEN( 3 ),
+      INTEGER            FTRSYL( 3 ), ITRSYL( 2 ), LTRSEN( 3 ),
+     $                   LTRSNA( 3 ), NLAEXC( 2 ), NLALN2( 2 ),
+     $                   NTGEXC( 2 ), NTREXC( 3 ), NTRSEN( 3 ),
      $                   NTRSNA( 3 )
-      DOUBLE PRECISION   RTRSEN( 3 ), RTRSNA( 3 )
+      DOUBLE PRECISION   RTRSEN( 3 ), RTRSNA( 3 ), RTRSYL( 2 )
 *     ..
 *     .. External Subroutines ..
       EXTERNAL           DERREC, DGET31, DGET32, DGET33, DGET34, DGET35,
-     $                   DGET36, DGET37, DGET38, DGET39, DGET40
+     $                   DGET36, DGET37, DGET38, DGET39, DGET40, DSYL01
 *     ..
 *     .. External Functions ..
       DOUBLE PRECISION   DLAMCH
@@ -153,10 +155,24 @@
          WRITE( NOUT, FMT = 9996 )RLAEXC, LLAEXC, NLAEXC, KLAEXC
       END IF
 *
-      CALL DGET35( RTRSYL, LTRSYL, NTRSYL, KTRSYL )
-      IF( RTRSYL.GT.THRESH ) THEN
+      CALL DGET35( RTRSYL( 1 ), LTRSYL, NTRSYL, KTRSYL )
+      IF( RTRSYL( 1 ).GT.THRESH ) THEN
          OK = .FALSE.
-         WRITE( NOUT, FMT = 9995 )RTRSYL, LTRSYL, NTRSYL, KTRSYL
+         WRITE( NOUT, FMT = 9995 )RTRSYL( 1 ), LTRSYL, NTRSYL, KTRSYL
+      END IF
+*
+      CALL DSYL01( THRESH, FTRSYL, RTRSYL, ITRSYL, KTRSYL3 )
+      IF( FTRSYL( 1 ).GT.0 ) THEN
+         OK = .FALSE.
+         WRITE( NOUT, FMT = 9970 )FTRSYL( 1 ), RTRSYL( 1 ), THRESH
+      END IF
+      IF( FTRSYL( 2 ).GT.0 ) THEN
+         OK = .FALSE.
+         WRITE( NOUT, FMT = 9971 )FTRSYL( 2 ), RTRSYL( 2 ), THRESH
+      END IF
+      IF( FTRSYL( 3 ).GT.0 ) THEN
+         OK = .FALSE.
+         WRITE( NOUT, FMT = 9972 )FTRSYL( 3 )
       END IF
 *
       CALL DGET36( RTREXC, LTREXC, NTREXC, KTREXC, NIN )
@@ -227,7 +243,13 @@
  9987 FORMAT( ' Routines pass computational tests if test ratio is les',
      $      's than', F8.2, / / )
  9986 FORMAT( ' Error in DTGEXC: RMAX =', D12.3, / ' LMAX = ', I8, ' N',
-     $      'INFO=', I8, ' KNT=', I8 )
+     $      'INFO=', 2I8, ' KNT=', I8 )
+ 9972 FORMAT( 'DTRSYL and DTRSYL3 compute an inconsistent result ',
+     $      'factor in ', I8, ' tests.')
+ 9971 FORMAT( 'Error in DTRSYL3: ', I8, ' tests fail the threshold.', /
+     $      'Maximum test ratio =', D12.3, ' threshold =', D12.3 )
+ 9970 FORMAT( 'Error in DTRSYL: ', I8, ' tests fail the threshold.', /
+     $      'Maximum test ratio =', D12.3, ' threshold =', D12.3 )
 *
 *     End of DCHKEC
 *

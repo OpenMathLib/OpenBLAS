@@ -779,7 +779,7 @@ f"> */
 /* > \ingroup realOTHEReigen */
 
 /*  ===================================================================== */
-/* Subroutine */ int ssbevx_(char *jobz, char *range, char *uplo, integer *n, 
+/* Subroutine */ void ssbevx_(char *jobz, char *range, char *uplo, integer *n, 
 	integer *kd, real *ab, integer *ldab, real *q, integer *ldq, real *vl,
 	 real *vu, integer *il, integer *iu, real *abstol, integer *m, real *
 	w, real *z__, integer *ldz, real *work, integer *iwork, integer *
@@ -800,12 +800,12 @@ f"> */
     real sigma;
     extern logical lsame_(char *, char *);
     integer iinfo;
-    extern /* Subroutine */ int sscal_(integer *, real *, real *, integer *);
+    extern /* Subroutine */ void sscal_(integer *, real *, real *, integer *);
     char order[1];
-    extern /* Subroutine */ int sgemv_(char *, integer *, integer *, real *, 
+    extern /* Subroutine */ void sgemv_(char *, integer *, integer *, real *, 
 	    real *, integer *, real *, integer *, real *, real *, integer *);
     logical lower;
-    extern /* Subroutine */ int scopy_(integer *, real *, integer *, real *, 
+    extern /* Subroutine */ void scopy_(integer *, real *, integer *, real *, 
 	    integer *), sswap_(integer *, real *, integer *, real *, integer *
 	    );
     logical wantz;
@@ -819,13 +819,13 @@ f"> */
     real abstll, bignum;
     extern real slansb_(char *, char *, integer *, integer *, real *, integer 
 	    *, real *);
-    extern /* Subroutine */ int slascl_(char *, integer *, integer *, real *, 
+    extern /* Subroutine */ void slascl_(char *, integer *, integer *, real *, 
 	    real *, integer *, integer *, real *, integer *, integer *);
     integer indisp, indiwo;
-    extern /* Subroutine */ int slacpy_(char *, integer *, integer *, real *, 
+    extern /* Subroutine */ void slacpy_(char *, integer *, integer *, real *, 
 	    integer *, real *, integer *);
     integer indwrk;
-    extern /* Subroutine */ int ssbtrd_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void ssbtrd_(char *, char *, integer *, integer *, 
 	    real *, integer *, real *, real *, real *, integer *, real *, 
 	    integer *), sstein_(integer *, real *, real *, 
 	    integer *, real *, integer *, integer *, real *, integer *, real *
@@ -833,7 +833,7 @@ f"> */
 	    real *, integer *);
     integer nsplit;
     real smlnum;
-    extern /* Subroutine */ int sstebz_(char *, char *, integer *, real *, 
+    extern /* Subroutine */ void sstebz_(char *, char *, integer *, real *, 
 	    real *, integer *, integer *, real *, real *, real *, integer *, 
 	    integer *, real *, integer *, integer *, real *, integer *, 
 	    integer *), ssteqr_(char *, integer *, real *, 
@@ -911,14 +911,14 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("SSBEVX", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     *m = 0;
     if (*n == 0) {
-	return 0;
+	return;
     }
 
     if (*n == 1) {
@@ -939,7 +939,7 @@ f"> */
 		z__[z_dim1 + 1] = 1.f;
 	    }
 	}
-	return 0;
+	return;
     }
 
 /*     Get machine constants. */
@@ -1114,7 +1114,7 @@ L30:
 	}
     }
 
-    return 0;
+    return;
 
 /*     End of SSBEVX */
 

@@ -648,7 +648,7 @@ f"> */
 /* > \ingroup complex16GEcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int zgeequ_(integer *m, integer *n, doublecomplex *a, 
+/* Subroutine */ void zgeequ_(integer *m, integer *n, doublecomplex *a, 
 	integer *lda, doublereal *r__, doublereal *c__, doublereal *rowcnd, 
 	doublereal *colcnd, doublereal *amax, integer *info)
 {
@@ -694,7 +694,7 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZGEEQU", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
@@ -703,7 +703,7 @@ f"> */
 	*rowcnd = 1.;
 	*colcnd = 1.;
 	*amax = 0.;
-	return 0;
+	return;
     }
 
 /*     Get machine constants. */
@@ -759,7 +759,7 @@ f"> */
 	for (i__ = 1; i__ <= i__1; ++i__) {
 	    if (r__[i__] == 0.) {
 		*info = i__;
-		return 0;
+		return;
 	    }
 /* L50: */
 	}
@@ -830,7 +830,7 @@ f"> */
 	for (j = 1; j <= i__1; ++j) {
 	    if (c__[j] == 0.) {
 		*info = *m + j;
-		return 0;
+		return;
 	    }
 /* L110: */
 	}
@@ -853,7 +853,7 @@ f"> */
 	*colcnd = f2cmax(rcmin,smlnum) / f2cmin(rcmax,bignum);
     }
 
-    return 0;
+    return;
 
 /*     End of ZGEEQU */
 

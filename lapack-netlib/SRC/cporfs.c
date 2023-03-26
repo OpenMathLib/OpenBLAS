@@ -696,7 +696,7 @@ f"> */
 /* > \ingroup complexPOcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int cporfs_(char *uplo, integer *n, integer *nrhs, complex *
+/* Subroutine */ void cporfs_(char *uplo, integer *n, integer *nrhs, complex *
 	a, integer *lda, complex *af, integer *ldaf, complex *b, integer *ldb,
 	 complex *x, integer *ldx, real *ferr, real *berr, complex *work, 
 	real *rwork, integer *info)
@@ -713,22 +713,23 @@ f"> */
     integer i__, j, k;
     real s;
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int chemv_(char *, integer *, complex *, complex *
+    extern /* Subroutine */ void chemv_(char *, integer *, complex *, complex *
 	    , integer *, complex *, integer *, complex *, complex *, integer *
 	    );
     integer isave[3];
-    extern /* Subroutine */ int ccopy_(integer *, complex *, integer *, 
+    extern /* Subroutine */ void ccopy_(integer *, complex *, integer *, 
 	    complex *, integer *), caxpy_(integer *, complex *, complex *, 
 	    integer *, complex *, integer *);
     integer count;
     logical upper;
-    extern /* Subroutine */ int clacn2_(integer *, complex *, complex *, real 
+    extern /* Subroutine */ void clacn2_(integer *, complex *, complex *, real 
 	    *, integer *, integer *);
     real xk;
     extern real slamch_(char *);
     integer nz;
     real safmin;
-    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen), cpotrs_(
+    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
+    extern void cpotrs_(
 	    char *, integer *, integer *, complex *, integer *, complex *, 
 	    integer *, integer *);
     real lstres, eps;
@@ -784,7 +785,7 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CPORFS", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
@@ -796,7 +797,7 @@ f"> */
 	    berr[j] = 0.f;
 /* L10: */
 	}
-	return 0;
+	return;
     }
 
 /*     NZ = maximum number of nonzero elements in each row of A, plus 1 */
@@ -1029,7 +1030,7 @@ L100:
 /* L140: */
     }
 
-    return 0;
+    return;
 
 /*     End of CPORFS */
 

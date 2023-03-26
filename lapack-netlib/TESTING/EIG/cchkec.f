@@ -23,7 +23,7 @@
 *> \verbatim
 *>
 *> CCHKEC tests eigen- condition estimation routines
-*>        CTRSYL, CTREXC, CTRSNA, CTRSEN
+*>        CTRSYL, CTRSYL3, CTREXC, CTRSNA, CTRSEN
 *>
 *> In all cases, the routine runs through a fixed set of numerical
 *> examples, subjects them to various tests, and compares the test
@@ -88,17 +88,17 @@
 *     .. Local Scalars ..
       LOGICAL            OK
       CHARACTER*3        PATH
-      INTEGER            KTREXC, KTRSEN, KTRSNA, KTRSYL, LTREXC, LTRSYL,
-     $                   NTESTS, NTREXC, NTRSYL
-      REAL               EPS, RTREXC, RTRSYL, SFMIN
+      INTEGER            KTREXC, KTRSEN, KTRSNA, KTRSYL, KTRSYL3,
+     $                   LTREXC, LTRSYL, NTESTS, NTREXC, NTRSYL
+      REAL               EPS, RTREXC, SFMIN
 *     ..
 *     .. Local Arrays ..
-      INTEGER            LTRSEN( 3 ), LTRSNA( 3 ), NTRSEN( 3 ),
-     $                   NTRSNA( 3 )
-      REAL               RTRSEN( 3 ), RTRSNA( 3 )
+      INTEGER            FTRSYL( 3 ), ITRSYL( 2 ), LTRSEN( 3 ),
+     $                   LTRSNA( 3 ), NTRSEN( 3 ), NTRSNA( 3 )
+      REAL               RTRSEN( 3 ), RTRSNA( 3 ), RTRSYL( 2 )
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           CERREC, CGET35, CGET36, CGET37, CGET38
+      EXTERNAL           CERREC, CGET35, CGET36, CGET37, CGET38, CSYL01
 *     ..
 *     .. External Functions ..
       REAL               SLAMCH
@@ -120,10 +120,24 @@
      $   CALL CERREC( PATH, NOUT )
 *
       OK = .TRUE.
-      CALL CGET35( RTRSYL, LTRSYL, NTRSYL, KTRSYL, NIN )
-      IF( RTRSYL.GT.THRESH ) THEN
+      CALL CGET35( RTRSYL( 1 ), LTRSYL, NTRSYL, KTRSYL, NIN )
+      IF( RTRSYL( 1 ).GT.THRESH ) THEN
          OK = .FALSE.
-         WRITE( NOUT, FMT = 9999 )RTRSYL, LTRSYL, NTRSYL, KTRSYL
+         WRITE( NOUT, FMT = 9999 )RTRSYL( 1 ), LTRSYL, NTRSYL, KTRSYL
+      END IF
+*
+      CALL CSYL01( THRESH, FTRSYL, RTRSYL, ITRSYL, KTRSYL3 )
+      IF( FTRSYL( 1 ).GT.0 ) THEN
+         OK = .FALSE.
+         WRITE( NOUT, FMT = 9970 )FTRSYL( 1 ), RTRSYL( 1 ), THRESH
+      END IF
+      IF( FTRSYL( 2 ).GT.0 ) THEN
+         OK = .FALSE.
+         WRITE( NOUT, FMT = 9971 )FTRSYL( 2 ), RTRSYL( 2 ), THRESH
+      END IF
+      IF( FTRSYL( 3 ).GT.0 ) THEN
+         OK = .FALSE.
+         WRITE( NOUT, FMT = 9972 )FTRSYL( 3 )
       END IF
 *
       CALL CGET36( RTREXC, LTREXC, NTREXC, KTREXC, NIN )
@@ -169,6 +183,12 @@
      $      / ' Safe minimum (SFMIN)             = ', E16.6, / )
  9992 FORMAT( ' Routines pass computational tests if test ratio is ',
      $      'less than', F8.2, / / )
+ 9972 FORMAT( 'CTRSYL and CTRSYL3 compute an inconsistent scale ',
+     $      'factor in ', I8, ' tests.')
+ 9971 FORMAT( 'Error in CTRSYL3: ', I8, ' tests fail the threshold.', /
+     $      'Maximum test ratio =', D12.3, ' threshold =', D12.3 )
+ 9970 FORMAT( 'Error in CTRSYL: ', I8, ' tests fail the threshold.', /
+     $      'Maximum test ratio =', D12.3, ' threshold =', D12.3 )
       RETURN
 *
 *     End of CCHKEC

@@ -638,8 +638,10 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
     integer a_dim1, a_offset, b_dim1, b_offset, i__1;
 
     /* Local variables */
-    extern /* Subroutine */ int dgetrf_(integer *, integer *, doublereal *, 
-	    integer *, integer *, integer *), xerbla_(char *, integer *, ftnlen), dgetrs_(char *, integer *, integer *, doublereal *, 
+    extern /* Subroutine */ void dgetrf_(integer *, integer *, doublereal *, 
+	    integer *, integer *, integer *);
+    extern int xerbla_(char *, integer *, ftnlen);
+    extern void dgetrs_(char *, integer *, integer *, doublereal *, 
 	    integer *, integer *, doublereal *, integer *, integer *);
 
 

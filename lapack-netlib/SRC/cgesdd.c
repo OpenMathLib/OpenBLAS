@@ -742,7 +742,7 @@ f"> */
 /* >     California at Berkeley, USA */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int cgesdd_(char *jobz, integer *m, integer *n, complex *a, 
+/* Subroutine */ void cgesdd_(char *jobz, integer *m, integer *n, complex *a, 
 	integer *lda, real *s, complex *u, integer *ldu, complex *vt, integer 
 	*ldvt, complex *work, integer *lwork, real *rwork, integer *iwork, 
 	integer *info)
@@ -760,26 +760,26 @@ f"> */
     real anrm;
     integer ierr, itau, lwork_cunmbr_qln_mm__, lwork_cunmbr_qln_mn__, 
 	    lwork_cunmbr_qln_nn__, idum[1], irvt, i__;
-    extern /* Subroutine */ int cgemm_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void cgemm_(char *, char *, integer *, integer *, 
 	    integer *, complex *, complex *, integer *, complex *, integer *, 
 	    complex *, complex *, integer *);
     extern logical lsame_(char *, char *);
     integer chunk, minmn, wrkbl, itaup, itauq;
     logical wntqa;
     integer nwork;
-    extern /* Subroutine */ int clacp2_(char *, integer *, integer *, real *, 
+    extern /* Subroutine */ void clacp2_(char *, integer *, integer *, real *, 
 	    integer *, complex *, integer *);
     logical wntqn, wntqo, wntqs;
     integer mnthr1, mnthr2, ie, lwork_cungbr_p_mn__, il, lwork_cungbr_p_nn__, 
 	    lwork_cungbr_q_mn__, lwork_cungbr_q_mm__;
-    extern /* Subroutine */ int cgebrd_(integer *, integer *, complex *, 
+    extern /* Subroutine */ void cgebrd_(integer *, integer *, complex *, 
 	    integer *, real *, real *, complex *, complex *, complex *, 
 	    integer *, integer *);
     integer ir;
     extern real clange_(char *, integer *, integer *, complex *, integer *, 
 	    real *);
     integer iu;
-    extern /* Subroutine */ int cgelqf_(integer *, integer *, complex *, 
+    extern /* Subroutine */ void cgelqf_(integer *, integer *, complex *, 
 	    integer *, complex *, complex *, integer *, integer *), clacrm_(
 	    integer *, integer *, complex *, integer *, real *, integer *, 
 	    complex *, integer *, real *), clarcm_(integer *, integer *, real 
@@ -790,13 +790,15 @@ f"> */
 	    integer *, real *, integer *, real *, integer *, integer *), cgeqrf_(integer *, integer *, complex *, integer 
 	    *, complex *, complex *, integer *, integer *);
     extern real slamch_(char *);
-    extern /* Subroutine */ int clacpy_(char *, integer *, integer *, complex 
+    extern /* Subroutine */ void clacpy_(char *, integer *, integer *, complex 
 	    *, integer *, complex *, integer *), claset_(char *, 
-	    integer *, integer *, complex *, complex *, complex *, integer *), xerbla_(char *, integer *, ftnlen), cungbr_(char *, 
+	    integer *, integer *, complex *, complex *, complex *, integer *);
+    extern int xerbla_(char *, integer *, ftnlen);
+    extern void cungbr_(char *, 
 	    integer *, integer *, integer *, complex *, integer *, complex *, 
 	    complex *, integer *, integer *);
     real bignum;
-    extern /* Subroutine */ int slascl_(char *, integer *, integer *, real *, 
+    extern /* Subroutine */ void slascl_(char *, integer *, integer *, real *, 
 	    real *, integer *, integer *, real *, integer *, integer *), cunmbr_(char *, char *, char *, integer *, integer *, 
 	    integer *, complex *, integer *, complex *, complex *, integer *, 
 	    complex *, integer *, integer *), cunglq_(
@@ -804,7 +806,7 @@ f"> */
 	    complex *, integer *, integer *);
     extern logical sisnan_(real *);
     integer ldwrkl;
-    extern /* Subroutine */ int cungqr_(integer *, integer *, integer *, 
+    extern /* Subroutine */ void cungqr_(integer *, integer *, integer *, 
 	    complex *, integer *, complex *, complex *, integer *, integer *);
     integer ldwrkr, minwrk, ldwrku, maxwrk, ldwkvt;
     real smlnum;
@@ -1267,15 +1269,15 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CGESDD", &i__1, (ftnlen)6);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*m == 0 || *n == 0) {
-	return 0;
+	return;
     }
 
 /*     Get machine constants */
@@ -1289,7 +1291,7 @@ f"> */
     anrm = clange_("M", m, n, &a[a_offset], lda, dum);
     if (sisnan_(&anrm)) {
 	*info = -4;
-	return 0;
+	return;
     }
     iscl = 0;
     if (anrm > 0.f && anrm < smlnum) {
@@ -2951,7 +2953,7 @@ f"> */
 
     work[1].r = (real) maxwrk, work[1].i = 0.f;
 
-    return 0;
+    return;
 
 /*     End of CGESDD */
 

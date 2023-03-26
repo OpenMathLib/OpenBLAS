@@ -634,7 +634,7 @@ x.f"> */
 /* > \ingroup realSYcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int ssytri2x_(char *uplo, integer *n, real *a, integer *lda, 
+/* Subroutine */ void ssytri2x_(char *uplo, integer *n, real *a, integer *lda, 
 	integer *ipiv, real *work, integer *nb, integer *info)
 {
     /* System generated locals */
@@ -644,28 +644,29 @@ x.f"> */
     integer invd;
     real akkp1, d__;
     integer i__, j, k;
-    extern /* Subroutine */ int ssyswapr_(char *, integer *, real *, integer *
+    extern /* Subroutine */ void ssyswapr_(char *, integer *, real *, integer *
 	    , integer *, integer *);
     real t;
     extern logical lsame_(char *, char *);
     integer iinfo;
-    extern /* Subroutine */ int sgemm_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void sgemm_(char *, char *, integer *, integer *, 
 	    integer *, real *, real *, integer *, real *, integer *, real *, 
 	    real *, integer *);
     integer count;
     logical upper;
-    extern /* Subroutine */ int strmm_(char *, char *, char *, char *, 
+    extern /* Subroutine */ void strmm_(char *, char *, char *, char *, 
 	    integer *, integer *, real *, real *, integer *, real *, integer *
 	    );
     real ak, u01_i_j__;
     integer u11;
     real u11_i_j__;
     integer ip;
-    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen), strtri_(
+    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
+    extern int strtri_(
 	    char *, char *, integer *, real *, integer *, integer *);
     integer nnb, cut;
     real akp1, u01_ip1_j__, u11_ip1_j__;
-    extern /* Subroutine */ int ssyconv_(char *, char *, integer *, real *, 
+    extern /* Subroutine */ void ssyconv_(char *, char *, integer *, real *, 
 	    integer *, integer *, real *, integer *);
 
 
@@ -706,10 +707,10 @@ x.f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("SSYTRI2X", &i__1, (ftnlen)8);
-	return 0;
+	return;
     }
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /*     Convert A */
@@ -726,7 +727,7 @@ x.f"> */
 
 	for (*info = *n; *info >= 1; --(*info)) {
 	    if (ipiv[*info] > 0 && a[*info + *info * a_dim1] == 0.f) {
-		return 0;
+		return;
 	    }
 	}
     } else {
@@ -736,7 +737,7 @@ x.f"> */
 	i__1 = *n;
 	for (*info = 1; *info <= i__1; ++(*info)) {
 	    if (ipiv[*info] > 0 && a[*info + *info * a_dim1] == 0.f) {
-		return 0;
+		return;
 	    }
 	}
     }
@@ -1208,7 +1209,7 @@ x.f"> */
 	}
     }
 
-    return 0;
+    return;
 
 /*     End of SSYTRI2X */
 

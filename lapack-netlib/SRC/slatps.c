@@ -742,7 +742,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int slatps_(char *uplo, char *trans, char *diag, char *
+/* Subroutine */ void slatps_(char *uplo, char *trans, char *diag, char *
 	normin, integer *n, real *ap, real *x, real *scale, real *cnorm, 
 	integer *info)
 {
@@ -759,12 +759,12 @@ f"> */
     real xmax, grow, sumj;
     integer i__, j;
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int sscal_(integer *, real *, real *, integer *);
+    extern /* Subroutine */ void sscal_(integer *, real *, real *, integer *);
     real tscal, uscal;
     integer jlast;
     extern real sasum_(integer *, real *, integer *);
     logical upper;
-    extern /* Subroutine */ int saxpy_(integer *, real *, real *, integer *, 
+    extern /* Subroutine */ void saxpy_(integer *, real *, real *, integer *, 
 	    real *, integer *), stpsv_(char *, char *, char *, integer *, 
 	    real *, real *, integer *);
     integer ip;
@@ -818,13 +818,13 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("SLATPS", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /*     Determine machine dependent parameters to control overflow. */
@@ -1381,7 +1381,7 @@ L135:
 	sscal_(n, &r__1, &cnorm[1], &c__1);
     }
 
-    return 0;
+    return;
 
 /*     End of SLATPS */
 

@@ -621,7 +621,7 @@ f"> */
 /* > \ingroup doubleOTHERauxiliary */
 
 /*  ===================================================================== */
-/* Subroutine */ int dlat2s_(char *uplo, integer *n, doublereal *a, integer *
+/* Subroutine */ void dlat2s_(char *uplo, integer *n, doublereal *a, integer *
 	lda, real *sa, integer *ldsa, integer *info)
 {
     /* System generated locals */
@@ -688,7 +688,7 @@ f"> */
     }
 L50:
 
-    return 0;
+    return;
 
 /*     End of DLAT2S */
 

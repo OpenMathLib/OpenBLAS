@@ -661,7 +661,7 @@ f"> */
 /* > \ingroup doubleOTHERcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int dtrexc_(char *compq, integer *n, doublereal *t, integer *
+/* Subroutine */ void dtrexc_(char *compq, integer *n, doublereal *t, integer *
 	ldt, doublereal *q, integer *ldq, integer *ifst, integer *ilst, 
 	doublereal *work, integer *info)
 {
@@ -672,9 +672,10 @@ f"> */
     integer here;
     extern logical lsame_(char *, char *);
     logical wantq;
-    extern /* Subroutine */ int dlaexc_(logical *, integer *, doublereal *, 
+    extern /* Subroutine */ void dlaexc_(logical *, integer *, doublereal *, 
 	    integer *, doublereal *, integer *, integer *, integer *, integer 
-	    *, doublereal *, integer *), xerbla_(char *, integer *, ftnlen);
+	    *, doublereal *, integer *);
+    extern int xerbla_(char *, integer *, ftnlen);
     integer nbnext, nbf, nbl;
 
 
@@ -717,13 +718,13 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DTREXC", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n <= 1) {
-	return 0;
+	return;
     }
 
 /*     Determine the first row of specified block */
@@ -757,7 +758,7 @@ f"> */
     }
 
     if (*ifst == *ilst) {
-	return 0;
+	return;
     }
 
     if (*ifst < *ilst) {
@@ -791,7 +792,7 @@ L10:
 		    nbf, &nbnext, &work[1], info);
 	    if (*info != 0) {
 		*ilst = here;
-		return 0;
+		return;
 	    }
 	    here += nbnext;
 
@@ -819,7 +820,7 @@ L10:
 		    c__1, &nbnext, &work[1], info);
 	    if (*info != 0) {
 		*ilst = here;
-		return 0;
+		return;
 	    }
 	    if (nbnext == 1) {
 
@@ -843,7 +844,7 @@ L10:
 			    here, &c__1, &nbnext, &work[1], info);
 		    if (*info != 0) {
 			*ilst = here;
-			return 0;
+			return;
 		    }
 		    here += 2;
 		} else {
@@ -885,7 +886,7 @@ L20:
 		    nbnext, &nbf, &work[1], info);
 	    if (*info != 0) {
 		*ilst = here;
-		return 0;
+		return;
 	    }
 	    here -= nbnext;
 
@@ -913,7 +914,7 @@ L20:
 		    nbnext, &c__1, &work[1], info);
 	    if (*info != 0) {
 		*ilst = here;
-		return 0;
+		return;
 	    }
 	    if (nbnext == 1) {
 
@@ -938,7 +939,7 @@ L20:
 			    i__1, &c__2, &c__1, &work[1], info);
 		    if (*info != 0) {
 			*ilst = here;
-			return 0;
+			return;
 		    }
 		    here += -2;
 		} else {
@@ -960,7 +961,7 @@ L20:
     }
     *ilst = here;
 
-    return 0;
+    return;
 
 /*     End of DTREXC */
 

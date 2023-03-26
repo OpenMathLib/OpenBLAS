@@ -631,7 +631,7 @@ f"> */
 /* > \ingroup complex16SYauxiliary */
 
 /*  ===================================================================== */
-/* Subroutine */ int zlaesy_(doublecomplex *a, doublecomplex *b, 
+/* Subroutine */ void zlaesy_(doublecomplex *a, doublecomplex *b, 
 	doublecomplex *c__, doublecomplex *rt1, doublecomplex *rt2, 
 	doublecomplex *evscal, doublecomplex *cs1, doublecomplex *sn1)
 {
@@ -753,7 +753,7 @@ f"> */
 	    evscal->r = 0., evscal->i = 0.;
 	}
     }
-    return 0;
+    return;
 
 /*     End of ZLAESY */
 

@@ -665,7 +665,7 @@ ssary to avoid over-/underflow. */
 /* > \ingroup doubleOTHERauxiliary */
 
 /*  ===================================================================== */
-/* Subroutine */ int dlag2_(doublereal *a, integer *lda, doublereal *b, 
+/* Subroutine */ void dlag2_(doublereal *a, integer *lda, doublereal *b, 
 	integer *ldb, doublereal *safmin, doublereal *scale1, doublereal *
 	scale2, doublereal *wr1, doublereal *wr2, doublereal *wi)
 {
@@ -914,6 +914,6 @@ ssary to avoid over-/underflow. */
 
 /*     End of DLAG2 */
 
-    return 0;
+    return;
 } /* dlag2_ */
 

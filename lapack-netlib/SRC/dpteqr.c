@@ -661,7 +661,7 @@ f"> */
 /* > \ingroup doublePTcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int dpteqr_(char *compz, integer *n, doublereal *d__, 
+/* Subroutine */ void dpteqr_(char *compz, integer *n, doublereal *d__, 
 	doublereal *e, doublereal *z__, integer *ldz, doublereal *work, 
 	integer *info)
 {
@@ -673,14 +673,15 @@ f"> */
     integer i__;
     extern logical lsame_(char *, char *);
     doublereal vt[1]	/* was [1][1] */;
-    extern /* Subroutine */ int dlaset_(char *, integer *, integer *, 
-	    doublereal *, doublereal *, doublereal *, integer *), 
-	    xerbla_(char *, integer *, ftnlen), dbdsqr_(char *, integer *, 
+    extern /* Subroutine */ void dlaset_(char *, integer *, integer *, 
+	    doublereal *, doublereal *, doublereal *, integer *); 
+    extern int xerbla_(char *, integer *, ftnlen);
+    extern void dbdsqr_(char *, integer *, 
 	    integer *, integer *, integer *, doublereal *, doublereal *, 
 	    doublereal *, integer *, doublereal *, integer *, doublereal *, 
 	    integer *, doublereal *, integer *);
     integer icompz;
-    extern /* Subroutine */ int dpttrf_(integer *, doublereal *, doublereal *,
+    extern /* Subroutine */ void dpttrf_(integer *, doublereal *, doublereal *,
 	     integer *);
     integer nru;
 
@@ -726,20 +727,20 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DPTEQR", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
     if (*n == 1) {
 	if (icompz > 0) {
 	    z__[z_dim1 + 1] = 1.;
 	}
-	return 0;
+	return;
     }
     if (icompz == 2) {
 	dlaset_("Full", n, n, &c_b7, &c_b8, &z__[z_offset], ldz);
@@ -749,7 +750,7 @@ f"> */
 
     dpttrf_(n, &d__[1], &e[1], info);
     if (*info != 0) {
-	return 0;
+	return;
     }
     i__1 = *n;
     for (i__ = 1; i__ <= i__1; ++i__) {
@@ -785,7 +786,7 @@ f"> */
 	*info = *n + *info;
     }
 
-    return 0;
+    return;
 
 /*     End of DPTEQR */
 

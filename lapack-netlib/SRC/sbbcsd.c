@@ -844,7 +844,7 @@ f"> */
 /* > \ingroup realOTHERcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int sbbcsd_(char *jobu1, char *jobu2, char *jobv1t, char *
+/* Subroutine */ void sbbcsd_(char *jobu1, char *jobu2, char *jobv1t, char *
 	jobv2t, char *trans, integer *m, integer *p, integer *q, real *theta, 
 	real *phi, real *u1, integer *ldu1, real *u2, integer *ldu2, real *
 	v1t, integer *ldv1t, real *v2t, integer *ldv2t, real *b11d, real *
@@ -864,17 +864,17 @@ f"> */
     real thetamin, thetamax;
     logical restart11, restart12, restart21, restart22;
     integer lworkmin, iu1cs, iu2cs;
-    extern /* Subroutine */ int slas2_(real *, real *, real *, real *, real *)
+    extern /* Subroutine */ void slas2_(real *, real *, real *, real *, real *)
 	    ;
     integer iu1sn, iu2sn, lworkopt, i__, j;
     real r__;
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int sscal_(integer *, real *, real *, integer *);
+    extern /* Subroutine */ void sscal_(integer *, real *, real *, integer *);
     integer maxit;
-    extern /* Subroutine */ int slasr_(char *, char *, char *, integer *, 
+    extern /* Subroutine */ void slasr_(char *, char *, char *, integer *, 
 	    integer *, real *, real *, real *, integer *);
     real dummy;
-    extern /* Subroutine */ int sswap_(integer *, real *, integer *, real *, 
+    extern /* Subroutine */ void sswap_(integer *, real *, integer *, real *, 
 	    integer *);
     real x1, x2, y1, y2;
     integer iv1tcs, iv2tcs;
@@ -884,12 +884,12 @@ f"> */
     extern real slamch_(char *);
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     real thresh, tolmul;
-    extern /* Subroutine */ int mecago_();
+    extern /* Subroutine */ void mecago_();
     logical lquery;
     real b11bulge;
     logical wantv1t, wantv2t;
     real b12bulge, b21bulge, b22bulge, eps, tol;
-    extern /* Subroutine */ int slartgp_(real *, real *, real *, real *, real 
+    extern /* Subroutine */ void slartgp_(real *, real *, real *, real *, real 
 	    *), slartgs_(real *, real *, real *, real *, real *);
 
 
@@ -962,7 +962,7 @@ f"> */
     if (*info == 0 && *q == 0) {
 	lworkmin = 1;
 	work[1] = (real) lworkmin;
-	return 0;
+	return;
     }
 
 /*     Compute workspace */
@@ -987,9 +987,9 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("SBBCSD", &i__1,(ftnlen)6);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Get machine constants */
@@ -1082,7 +1082,7 @@ f"> */
 		    ++(*info);
 		}
 	    }
-	    return 0;
+	    return;
 	}
 
 	iter = iter + imax - imin;
@@ -1793,7 +1793,7 @@ f"> */
 
     }
 
-    return 0;
+    return;
 
 /*     End of SBBCSD */
 

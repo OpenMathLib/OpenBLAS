@@ -705,7 +705,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int dpftri_(char *transr, char *uplo, integer *n, doublereal 
+/* Subroutine */ void dpftri_(char *transr, char *uplo, integer *n, doublereal 
 	*a, integer *info)
 {
     /* System generated locals */
@@ -715,18 +715,19 @@ f"> */
     integer k;
     logical normaltransr;
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int dtrmm_(char *, char *, char *, char *, 
+    extern /* Subroutine */ void dtrmm_(char *, char *, char *, char *, 
 	    integer *, integer *, doublereal *, doublereal *, integer *, 
 	    doublereal *, integer *);
     logical lower;
-    extern /* Subroutine */ int dsyrk_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void dsyrk_(char *, char *, integer *, integer *, 
 	    doublereal *, doublereal *, integer *, doublereal *, doublereal *,
 	     integer *);
     integer n1, n2;
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     logical nisodd;
     extern /* Subroutine */ int dlauum_(char *, integer *, doublereal *, 
-	    integer *, integer *), dtftri_(char *, char *, char *, 
+	    integer *, integer *);
+    extern void dtftri_(char *, char *, char *, 
 	    integer *, doublereal *, integer *);
 
 
@@ -754,20 +755,20 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DPFTRI", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /*     Invert the triangular Cholesky factor U or L. */
 
     dtftri_(transr, uplo, "N", n, a, info);
     if (*info > 0) {
-	return 0;
+	return;
     }
 
 /*     If N is odd, set NISODD = .TRUE. */
@@ -942,7 +943,7 @@ f"> */
 
     }
 
-    return 0;
+    return;
 
 /*     End of DPFTRI */
 

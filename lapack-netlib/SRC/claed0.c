@@ -661,7 +661,7 @@ f"> */
 /* > \ingroup complexOTHERcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int claed0_(integer *qsiz, integer *n, real *d__, real *e, 
+/* Subroutine */ void claed0_(integer *qsiz, integer *n, real *d__, real *e, 
 	complex *q, integer *ldq, complex *qstore, integer *ldqs, real *rwork,
 	 integer *iwork, integer *info)
 {
@@ -672,19 +672,19 @@ f"> */
     /* Local variables */
     real temp;
     integer curr, i__, j, k, iperm;
-    extern /* Subroutine */ int ccopy_(integer *, complex *, integer *, 
+    extern /* Subroutine */ void ccopy_(integer *, complex *, integer *, 
 	    complex *, integer *);
     integer indxq, iwrem;
-    extern /* Subroutine */ int scopy_(integer *, real *, integer *, real *, 
+    extern /* Subroutine */ void scopy_(integer *, real *, integer *, real *, 
 	    integer *);
     integer iqptr;
-    extern /* Subroutine */ int claed7_(integer *, integer *, integer *, 
+    extern /* Subroutine */ void claed7_(integer *, integer *, integer *, 
 	    integer *, integer *, integer *, real *, complex *, integer *, 
 	    real *, integer *, real *, integer *, integer *, integer *, 
 	    integer *, integer *, real *, complex *, real *, integer *, 
 	    integer *);
     integer tlvls, ll, iq;
-    extern /* Subroutine */ int clacrm_(integer *, integer *, complex *, 
+    extern /* Subroutine */ void clacrm_(integer *, integer *, complex *, 
 	    integer *, real *, integer *, complex *, integer *, real *);
     integer igivcl;
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
@@ -692,7 +692,7 @@ f"> */
 	    integer *, integer *, ftnlen, ftnlen);
     integer igivnm, submat, curprb, subpbs, igivpt, curlvl, matsiz, iprmpt, 
 	    smlsiz;
-    extern /* Subroutine */ int ssteqr_(char *, integer *, real *, real *, 
+    extern /* Subroutine */ void ssteqr_(char *, integer *, real *, real *, 
 	    real *, integer *, real *, integer *);
     integer lgn, msd2, smm1, spm1, spm2;
 
@@ -741,13 +741,13 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CLAED0", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
     smlsiz = ilaenv_(&c__9, "CLAED0", " ", &c__0, &c__0, &c__0, &c__0, (
@@ -796,10 +796,10 @@ L10:
 
     temp = log((real) (*n)) / log(2.f);
     lgn = (integer) temp;
-    if (pow_ii(&c__2, &lgn) < *n) {
+    if (pow_ii(c__2, lgn) < *n) {
 	++lgn;
     }
-    if (pow_ii(&c__2, &lgn) < *n) {
+    if (pow_ii(c__2, lgn) < *n) {
 	++lgn;
     }
     iprmpt = indxq + *n + 1;
@@ -847,7 +847,7 @@ L10:
 	++curr;
 	if (*info > 0) {
 	    *info = submat * (*n + 1) + submat + matsiz - 1;
-	    return 0;
+	    return;
 	}
 	k = 1;
 	i__2 = iwork[i__ + 1];
@@ -897,7 +897,7 @@ L80:
 		    q_dim1 + 1], &rwork[iwrem], &iwork[subpbs + 1], info);
 	    if (*info > 0) {
 		*info = submat * (*n + 1) + submat + matsiz - 1;
-		return 0;
+		return;
 	    }
 	    iwork[i__ / 2 + 1] = iwork[i__ + 2];
 /* L90: */
@@ -922,7 +922,7 @@ L80:
     }
     scopy_(n, &rwork[1], &c__1, &d__[1], &c__1);
 
-    return 0;
+    return;
 
 /*     End of CLAED0 */
 

@@ -816,7 +816,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int stgsyl_(char *trans, integer *ijob, integer *m, integer *
+/* Subroutine */ void stgsyl_(char *trans, integer *ijob, integer *m, integer *
 	n, real *a, integer *lda, real *b, integer *ldb, real *c__, integer *
 	ldc, real *d__, integer *ldd, real *e, integer *lde, real *f, integer 
 	*ldf, real *scale, real *dif, real *work, integer *lwork, integer *
@@ -832,9 +832,9 @@ f"> */
     integer ppqq, i__, j, k, p, q;
     extern logical lsame_(char *, char *);
     integer ifunc;
-    extern /* Subroutine */ int sscal_(integer *, real *, real *, integer *);
+    extern /* Subroutine */ void sscal_(integer *, real *, real *, integer *);
     integer linfo;
-    extern /* Subroutine */ int sgemm_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void sgemm_(char *, char *, integer *, integer *, 
 	    integer *, real *, real *, integer *, real *, integer *, real *, 
 	    real *, integer *);
     integer lwmin;
@@ -842,7 +842,7 @@ f"> */
     integer ie, je, mb, nb;
     real dscale;
     integer is, js;
-    extern /* Subroutine */ int stgsy2_(char *, integer *, integer *, integer 
+    extern /* Subroutine */ void stgsy2_(char *, integer *, integer *, integer 
 	    *, real *, integer *, real *, integer *, real *, integer *, real *
 	    , integer *, real *, integer *, real *, integer *, real *, real *,
 	     real *, integer *, integer *, integer *);
@@ -851,7 +851,7 @@ f"> */
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     extern integer ilaenv_(integer *, char *, char *, integer *, integer *, 
 	    integer *, integer *, ftnlen, ftnlen);
-    extern /* Subroutine */ int slacpy_(char *, integer *, integer *, real *, 
+    extern /* Subroutine */ void slacpy_(char *, integer *, integer *, real *, 
 	    integer *, real *, integer *), slaset_(char *, integer *, 
 	    integer *, real *, real *, real *, integer *);
     integer iround;
@@ -949,9 +949,9 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("STGSYL", &i__1, (ftnlen)6);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
@@ -963,7 +963,7 @@ f"> */
 		*dif = 0.f;
 	    }
 	}
-	return 0;
+	return;
     }
 
 /*     Determine optimal block sizes MB and NB */
@@ -1026,7 +1026,7 @@ f"> */
 /* L30: */
 	}
 
-	return 0;
+	return;
     }
 
 /*     Determine block structure of A */
@@ -1293,7 +1293,7 @@ L70:
 
     work[1] = (real) lwmin;
 
-    return 0;
+    return;
 
 /*     End of STGSYL */
 

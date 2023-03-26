@@ -897,7 +897,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int stgsna_(char *job, char *howmny, logical *select, 
+/* Subroutine */ void stgsna_(char *job, char *howmny, logical *select, 
 	integer *n, real *a, integer *lda, real *b, integer *ldb, real *vl, 
 	integer *ldvl, real *vr, integer *ldvr, real *s, real *dif, integer *
 	mm, integer *m, real *work, integer *lwork, integer *iwork, integer *
@@ -918,7 +918,7 @@ f"> */
     extern real sdot_(integer *, real *, integer *, real *, integer *);
     integer ilst;
     real rnrm;
-    extern /* Subroutine */ int slag2_(real *, integer *, real *, integer *, 
+    extern /* Subroutine */ void slag2_(real *, integer *, real *, integer *, 
 	    real *, real *, real *, real *, real *, real *);
     extern real snrm2_(integer *, real *, integer *);
     real root1, root2;
@@ -926,7 +926,7 @@ f"> */
     real scale;
     extern logical lsame_(char *, char *);
     real uhavi, uhbvi;
-    extern /* Subroutine */ int sgemv_(char *, integer *, integer *, real *, 
+    extern /* Subroutine */ void sgemv_(char *, integer *, integer *, real *, 
 	    real *, integer *, real *, integer *, real *, real *, integer *);
     real tmpii, c1, c2;
     integer lwmin;
@@ -943,7 +943,7 @@ f"> */
     extern real slamch_(char *);
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     logical wantbh, wantdf;
-    extern /* Subroutine */ int slacpy_(char *, integer *, integer *, real *, 
+    extern /* Subroutine */ void slacpy_(char *, integer *, integer *, real *, 
 	    integer *, real *, integer *), stgexc_(logical *, logical 
 	    *, integer *, real *, integer *, real *, integer *, real *, 
 	    integer *, real *, integer *, integer *, integer *, real *, 
@@ -951,7 +951,7 @@ f"> */
     logical somcon;
     real alprqt, smlnum;
     logical lquery;
-    extern /* Subroutine */ int stgsyl_(char *, integer *, integer *, integer 
+    extern /* Subroutine */ void stgsyl_(char *, integer *, integer *, integer 
 	    *, real *, integer *, real *, integer *, real *, integer *, real *
 	    , integer *, real *, integer *, real *, integer *, real *, real *,
 	     real *, integer *, integer *, integer *);
@@ -1068,15 +1068,15 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("STGSNA", &i__1, (ftnlen)6);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /*     Get machine constants */
@@ -1286,7 +1286,7 @@ L20:
 	;
     }
     work[1] = (real) lwmin;
-    return 0;
+    return;
 
 /*     End of STGSNA */
 

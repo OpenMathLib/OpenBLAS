@@ -738,7 +738,7 @@ f"> */
 /* > Christof Voemel, University of California, Berkeley, USA */
 
 /*  ===================================================================== */
-/* Subroutine */ int clar1v_(integer *n, integer *b1, integer *bn, real *
+/* Subroutine */ void clar1v_(integer *n, integer *b1, integer *bn, real *
 	lambda, real *d__, real *l, real *ld, real *lld, real *pivmin, real *
 	gaptol, complex *z__, logical *wantnc, integer *negcnt, real *ztz, 
 	real *mingma, integer *r__, integer *isuppz, real *nrminv, real *
@@ -1090,7 +1090,7 @@ L280:
     *rqcorr = *mingma * tmp;
 
 
-    return 0;
+    return;
 
 /*     End of CLAR1V */
 

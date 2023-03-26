@@ -700,7 +700,7 @@ f"> */
 /* >  Mathematical Software, 32(2):180-194, June 2006. */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int slahr2_(integer *n, integer *k, integer *nb, real *a, 
+/* Subroutine */ void slahr2_(integer *n, integer *k, integer *nb, real *a, 
 	integer *lda, real *tau, real *t, integer *ldt, real *y, integer *ldy)
 {
     /* System generated locals */
@@ -710,7 +710,7 @@ f"> */
 
     /* Local variables */
     integer i__;
-    extern /* Subroutine */ int sscal_(integer *, real *, real *, integer *), 
+    extern /* Subroutine */ void sscal_(integer *, real *, real *, integer *), 
 	    sgemm_(char *, char *, integer *, integer *, integer *, real *, 
 	    real *, integer *, real *, integer *, real *, real *, integer *), sgemv_(char *, integer *, integer *, real *, 
 	    real *, integer *, real *, integer *, real *, real *, integer *), scopy_(integer *, real *, integer *, real *, integer *), 
@@ -719,7 +719,7 @@ f"> */
 	    integer *), strmv_(char *, char *, char *, integer *, real *, 
 	    integer *, real *, integer *);
     real ei;
-    extern /* Subroutine */ int slarfg_(integer *, real *, real *, integer *, 
+    extern /* Subroutine */ void slarfg_(integer *, real *, real *, integer *, 
 	    real *), slacpy_(char *, integer *, integer *, real *, integer *, 
 	    real *, integer *);
 
@@ -749,7 +749,7 @@ f"> */
 
     /* Function Body */
     if (*n <= 1) {
-	return 0;
+	return;
     }
 
     i__1 = *nb;
@@ -877,7 +877,7 @@ f"> */
     strmm_("RIGHT", "Upper", "NO TRANSPOSE", "NON-UNIT", k, nb, &c_b5, &t[
 	    t_offset], ldt, &y[y_offset], ldy);
 
-    return 0;
+    return;
 
 /*     End of SLAHR2 */
 

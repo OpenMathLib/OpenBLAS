@@ -627,7 +627,7 @@ f"> */
 /* > \ingroup complex16OTHERcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int zhpgst_(integer *itype, char *uplo, integer *n, 
+/* Subroutine */ void zhpgst_(integer *itype, char *uplo, integer *n, 
 	doublecomplex *ap, doublecomplex *bp, integer *info)
 {
     /* System generated locals */
@@ -636,7 +636,7 @@ f"> */
     doublecomplex z__1, z__2, z__3;
 
     /* Local variables */
-    extern /* Subroutine */ int zhpr2_(char *, integer *, doublecomplex *, 
+    extern /* Subroutine */ void zhpr2_(char *, integer *, doublecomplex *, 
 	    doublecomplex *, integer *, doublecomplex *, integer *, 
 	    doublecomplex *);
     integer j, k;
@@ -645,7 +645,7 @@ f"> */
 	    doublecomplex *, integer *, doublecomplex *, integer *);
     logical upper;
     integer j1, k1;
-    extern /* Subroutine */ int zhpmv_(char *, integer *, doublecomplex *, 
+    extern /* Subroutine */ void zhpmv_(char *, integer *, doublecomplex *, 
 	    doublecomplex *, doublecomplex *, integer *, doublecomplex *, 
 	    doublecomplex *, integer *), zaxpy_(integer *, 
 	    doublecomplex *, doublecomplex *, integer *, doublecomplex *, 
@@ -654,7 +654,8 @@ f"> */
 	    , doublecomplex *, integer *);
     integer jj, kk;
     doublecomplex ct;
-    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen), zdscal_(
+    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
+    extern void zdscal_(
 	    integer *, doublereal *, doublecomplex *, integer *);
     doublereal ajj;
     integer j1j1;
@@ -691,7 +692,7 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZHPGST", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
     if (*itype == 1) {
@@ -855,7 +856,7 @@ f"> */
 	    }
 	}
     }
-    return 0;
+    return;
 
 /*     End of ZHPGST */
 

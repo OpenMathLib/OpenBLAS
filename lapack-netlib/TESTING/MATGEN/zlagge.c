@@ -628,7 +628,7 @@ static integer c__1 = 1;
 /* > \ingroup complex16_matgen */
 
 /*  ===================================================================== */
-/* Subroutine */ int zlagge_(integer *m, integer *n, integer *kl, integer *ku,
+/* Subroutine */ void zlagge_(integer *m, integer *n, integer *kl, integer *ku,
 	 doublereal *d__, doublecomplex *a, integer *lda, integer *iseed, 
 	doublecomplex *work, integer *info)
 {
@@ -639,7 +639,7 @@ static integer c__1 = 1;
 
     /* Local variables */
     integer i__, j;
-    extern /* Subroutine */ int zgerc_(integer *, integer *, doublecomplex *, 
+    extern /* Subroutine */ void zgerc_(integer *, integer *, doublecomplex *, 
 	    doublecomplex *, integer *, doublecomplex *, integer *, 
 	    doublecomplex *, integer *), zscal_(integer *, doublecomplex *, 
 	    doublecomplex *, integer *), zgemv_(char *, integer *, integer *, 
@@ -648,7 +648,8 @@ static integer c__1 = 1;
     extern doublereal dznrm2_(integer *, doublecomplex *, integer *);
     doublecomplex wa, wb;
     doublereal wn;
-    extern /* Subroutine */ int xerbla_(char *, integer *), zlacgv_(
+    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
+    extern void zlacgv_(
 	    integer *, doublecomplex *, integer *), zlarnv_(integer *, 
 	    integer *, integer *, doublecomplex *);
     doublecomplex tau;
@@ -688,8 +689,8 @@ static integer c__1 = 1;
     }
     if (*info < 0) {
 	i__1 = -(*info);
-	xerbla_("ZLAGGE", &i__1);
-	return 0;
+	xerbla_("ZLAGGE", &i__1, 6);
+	return;
     }
 
 /*     initialize A to diagonal matrix */
@@ -715,7 +716,7 @@ static integer c__1 = 1;
 /*     Quick exit if the user wants a diagonal matrix */
 
     if (*kl == 0 && *ku == 0) {
-	return 0;
+	return;
     }
 
 /*     pre- and post-multiply A by random unitary matrices */
@@ -1026,7 +1027,7 @@ static integer c__1 = 1;
 	}
 /* L70: */
     }
-    return 0;
+    return;
 
 /*     End of ZLAGGE */
 

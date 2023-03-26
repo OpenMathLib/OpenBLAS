@@ -907,7 +907,7 @@ fsx_extended.f"> */
 /* > \ingroup realSYcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int sla_syrfsx_extended_(integer *prec_type__, char *uplo, 
+/* Subroutine */ void sla_syrfsx_extended_(integer *prec_type__, char *uplo, 
 	integer *n, integer *nrhs, real *a, integer *lda, real *af, integer *
 	ldaf, integer *ipiv, logical *colequ, real *c__, real *b, integer *
 	ldb, real *y, integer *ldy, real *berr_out__, integer *n_norms__, 
@@ -923,11 +923,11 @@ fsx_extended.f"> */
 
     /* Local variables */
     real dx_x__, dz_z__, ymin;
-    extern /* Subroutine */ int sla_lin_berr_(integer *, integer *, integer *
+    extern /* Subroutine */ void sla_lin_berr_(integer *, integer *, integer *
 	    , real *, real *, real *);
     real dxratmax, dzratmax;
     integer y_prec_state__, uplo2;
-    extern /* Subroutine */ int blas_ssymv_x_(integer *, integer *, real *, 
+    extern /* Subroutine */ void blas_ssymv_x_(integer *, integer *, real *, 
 	    real *, integer *, real *, integer *, real *, real *, integer *, 
 	    integer *);
     integer i__, j;
@@ -935,24 +935,24 @@ fsx_extended.f"> */
     real dxrat;
     logical incr_prec__;
     real dzrat;
-    extern /* Subroutine */ int blas_ssymv2_x_(integer *, integer *, real *, 
+    extern /* Subroutine */ void blas_ssymv2_x_(integer *, integer *, real *, 
 	    real *, integer *, real *, real *, integer *, real *, real *, 
 	    integer *, integer *);
     logical upper;
-    extern /* Subroutine */ int scopy_(integer *, real *, integer *, real *, 
+    extern /* Subroutine */ void scopy_(integer *, real *, integer *, real *, 
 	    integer *);
     real normx, normy;
-    extern /* Subroutine */ int saxpy_(integer *, real *, real *, integer *, 
+    extern /* Subroutine */ void saxpy_(integer *, real *, real *, integer *, 
 	    real *, integer *), sla_syamv_(integer *, integer *, real *, 
 	    real *, integer *, real *, integer *, real *, real *, integer *);
     real myhugeval, prev_dz_z__;
-    extern /* Subroutine */ int ssymv_(char *, integer *, real *, real *, 
+    extern /* Subroutine */ void ssymv_(char *, integer *, real *, real *, 
 	    integer *, real *, integer *, real *, real *, integer *);
     real yk;
     extern real slamch_(char *);
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     real final_dx_x__, final_dz_z__, normdx;
-    extern /* Subroutine */ int sla_wwaddw_(integer *, real *, real *, real *
+    extern /* Subroutine */ void sla_wwaddw_(integer *, real *, real *, real *
 	    ), ssytrs_(char *, integer *, integer *, real *, integer *, 
 	    integer *, real *, integer *, integer *);
     real prevnormdx;
@@ -1020,7 +1020,7 @@ fsx_extended.f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("SLA_SYRFSX_EXTENDED", &i__1, (ftnlen)19);
-	return 0;
+	return;
     }
     eps = slamch_("Epsilon");
     myhugeval = slamch_("Overflow");
@@ -1245,6 +1245,6 @@ L666:
 
     }
 
-    return 0;
+    return;
 } /* sla_syrfsx_extended__ */
 

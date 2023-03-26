@@ -772,7 +772,7 @@ ol.f"> */
 /* > \endverbatim */
 
 /*  ===================================================================== */
-/* Subroutine */ int zunhr_col_(integer *m, integer *n, integer *nb, 
+/* Subroutine */ void zunhr_col_(integer *m, integer *n, integer *nb, 
 	doublecomplex *a, integer *lda, doublecomplex *t, integer *ldt, 
 	doublecomplex *d__, integer *info)
 {
@@ -781,10 +781,10 @@ ol.f"> */
     doublecomplex z__1;
 
     /* Local variables */
-    extern /* Subroutine */ int zlaunhr_col_getrfnp_(integer *, integer *, 
+    extern /* Subroutine */ void zlaunhr_col_getrfnp_(integer *, integer *, 
 	    doublecomplex *, integer *, doublecomplex *, integer *);
     integer nplusone, i__, j, iinfo;
-    extern /* Subroutine */ int zscal_(integer *, doublecomplex *, 
+    extern /* Subroutine */ void zscal_(integer *, doublecomplex *, 
 	    doublecomplex *, integer *), zcopy_(integer *, doublecomplex *, 
 	    integer *, doublecomplex *, integer *), ztrsm_(char *, char *, 
 	    char *, char *, integer *, integer *, doublecomplex *, 
@@ -837,13 +837,13 @@ ol.f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZUNHR_COL", &i__1, (ftnlen)9);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (f2cmin(*m,*n) == 0) {
-	return 0;
+	return;
     }
 
 /*     On input, the M-by-N matrix A contains the unitary */
@@ -975,7 +975,7 @@ ol.f"> */
 
     }
 
-    return 0;
+    return;
 
 /*     End of ZUNHR_COL */
 

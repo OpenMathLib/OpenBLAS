@@ -706,7 +706,7 @@ f_rook.f"> */
 /* > */
 /* > \endverbatim */
 /*  ===================================================================== */
-/* Subroutine */ int dsyconvf_rook_(char *uplo, char *way, integer *n, 
+/* Subroutine */ void dsyconvf_rook_(char *uplo, char *way, integer *n, 
 	doublereal *a, integer *lda, doublereal *e, integer *ipiv, integer *
 	info)
 {
@@ -716,7 +716,7 @@ f_rook.f"> */
     /* Local variables */
     integer i__;
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int dswap_(integer *, doublereal *, integer *, 
+    extern /* Subroutine */ void dswap_(integer *, doublereal *, integer *, 
 	    doublereal *, integer *);
     logical upper;
     integer ip;
@@ -758,13 +758,13 @@ f_rook.f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DSYCONVF_ROOK", &i__1, (ftnlen)13);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
     if (upper) {
@@ -1063,7 +1063,7 @@ f_rook.f"> */
 /*        End A is LOWER */
 
     }
-    return 0;
+    return;
 
 /*     End of DSYCONVF_ROOK */
 

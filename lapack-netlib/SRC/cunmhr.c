@@ -693,7 +693,7 @@ f"> */
 /* > \ingroup complexOTHERcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int cunmhr_(char *side, char *trans, integer *m, integer *n, 
+/* Subroutine */ void cunmhr_(char *side, char *trans, integer *m, integer *n, 
 	integer *ilo, integer *ihi, complex *a, integer *lda, complex *tau, 
 	complex *c__, integer *ldc, complex *work, integer *lwork, integer *
 	info)
@@ -710,7 +710,7 @@ f"> */
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     extern integer ilaenv_(integer *, char *, char *, integer *, integer *, 
 	    integer *, integer *, ftnlen, ftnlen);
-    extern /* Subroutine */ int cunmqr_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void cunmqr_(char *, char *, integer *, integer *, 
 	    integer *, complex *, integer *, complex *, complex *, integer *, 
 	    complex *, integer *, integer *);
     integer lwkopt;
@@ -797,16 +797,16 @@ f"> */
     if (*info != 0) {
 	i__2 = -(*info);
 	xerbla_("CUNMHR", &i__2, (ftnlen)6);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*m == 0 || *n == 0 || nh == 0) {
 	work[1].r = 1.f, work[1].i = 0.f;
-	return 0;
+	return;
     }
 
     if (left) {
@@ -825,7 +825,7 @@ f"> */
 	    tau[*ilo], &c__[i1 + i2 * c_dim1], ldc, &work[1], lwork, &iinfo);
 
     work[1].r = (real) lwkopt, work[1].i = 0.f;
-    return 0;
+    return;
 
 /*     End of CUNMHR */
 

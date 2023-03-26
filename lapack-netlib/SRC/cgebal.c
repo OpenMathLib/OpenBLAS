@@ -686,7 +686,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int cgebal_(char *job, integer *n, complex *a, integer *lda, 
+/* Subroutine */ void cgebal_(char *job, integer *n, complex *a, integer *lda, 
 	integer *ilo, integer *ihi, real *scale, integer *info)
 {
     /* System generated locals */
@@ -699,15 +699,16 @@ f"> */
     integer i__, j, k, l, m;
     real r__, s;
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int cswap_(integer *, complex *, integer *, 
+    extern /* Subroutine */ void cswap_(integer *, complex *, integer *, 
 	    complex *, integer *);
     real sfmin1, sfmin2, sfmax1, sfmax2, ca;
     extern real scnrm2_(integer *, complex *, integer *);
     real ra;
     extern integer icamax_(integer *, complex *, integer *);
     extern real slamch_(char *);
-    extern /* Subroutine */ int csscal_(integer *, real *, complex *, integer 
-	    *), xerbla_(char *, integer *, ftnlen);
+    extern /* Subroutine */ void csscal_(integer *, real *, complex *, integer 
+	    *);
+    extern int xerbla_(char *, integer *, ftnlen);
     extern logical sisnan_(real *);
     logical noconv;
     integer ica, ira;
@@ -743,7 +744,7 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CGEBAL", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
     k = 1;
@@ -909,7 +910,7 @@ L160:
 	    *info = -3;
 	    i__2 = -(*info);
 	    xerbla_("CGEBAL", &i__2, (ftnlen)6);
-	    return 0;
+	    return;
 	}
 	f *= 2.f;
 	c__ *= 2.f;
@@ -971,7 +972,7 @@ L210:
     *ilo = k;
     *ihi = l;
 
-    return 0;
+    return;
 
 /*     End of CGEBAL */
 

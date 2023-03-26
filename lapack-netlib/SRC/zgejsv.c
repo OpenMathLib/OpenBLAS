@@ -1087,7 +1087,7 @@ f"> */
 /* >  drmac@math.hr. Thank you. */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int zgejsv_(char *joba, char *jobu, char *jobv, char *jobr, 
+/* Subroutine */ void zgejsv_(char *joba, char *jobu, char *jobv, char *jobr, 
 	char *jobt, char *jobp, integer *m, integer *n, doublecomplex *a, 
 	integer *lda, doublereal *sva, doublecomplex *u, integer *ldu, 
 	doublecomplex *v, integer *ldv, doublecomplex *cwork, integer *lwork, 
@@ -1109,7 +1109,7 @@ f"> */
     doublereal temp1;
     integer lwunmqrm, lwqp3, p, q;
     logical jracc;
-    extern /* Subroutine */ int dscal_(integer *, doublereal *, doublereal *, 
+    extern /* Subroutine */ void dscal_(integer *, doublereal *, doublereal *, 
 	    integer *);
     integer lwrk_zgesvju__, lwrk_zgesvjv__;
     extern logical lsame_(char *, char *);
@@ -1122,23 +1122,23 @@ f"> */
     doublereal epsln;
     logical rsvec;
     integer lwcon, lwlqf, lwqrf, n1;
-    extern /* Subroutine */ int zcopy_(integer *, doublecomplex *, integer *, 
+    extern /* Subroutine */ void zcopy_(integer *, doublecomplex *, integer *, 
 	    doublecomplex *, integer *), zswap_(integer *, doublecomplex *, 
 	    integer *, doublecomplex *, integer *);
     logical l2aber;
-    extern /* Subroutine */ int ztrsm_(char *, char *, char *, char *, 
+    extern /* Subroutine */ void ztrsm_(char *, char *, char *, char *, 
 	    integer *, integer *, doublecomplex *, doublecomplex *, integer *,
 	     doublecomplex *, integer *);
     doublereal condr1, condr2, uscal1, uscal2;
     logical l2kill, l2rank, l2tran, l2pert;
-    extern /* Subroutine */ int zgeqp3_(integer *, integer *, doublecomplex *,
+    extern /* Subroutine */ void zgeqp3_(integer *, integer *, doublecomplex *,
 	     integer *, integer *, doublecomplex *, doublecomplex *, integer *
 	    , doublereal *, integer *);
     extern doublereal dznrm2_(integer *, doublecomplex *, integer *);
     integer lrwqp3;
     extern doublereal dlamch_(char *);
     integer nr;
-    extern /* Subroutine */ int dlascl_(char *, integer *, integer *, 
+    extern /* Subroutine */ void dlascl_(char *, integer *, integer *, 
 	    doublereal *, doublereal *, integer *, integer *, doublereal *, 
 	    integer *, integer *);
     extern integer idamax_(integer *, doublereal *, integer *);
@@ -1147,47 +1147,47 @@ f"> */
     doublereal aatmin, aatmax;
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     logical noscal;
-    extern /* Subroutine */ int zdscal_(integer *, doublereal *, 
+    extern /* Subroutine */ void zdscal_(integer *, doublereal *, 
 	    doublecomplex *, integer *), zlacgv_(integer *, doublecomplex *, 
 	    integer *), dlassq_(integer *, doublereal *, integer *, 
 	    doublereal *, doublereal *);
     extern integer izamax_(integer *, doublecomplex *, integer *);
-    extern /* Subroutine */ int zgelqf_(integer *, integer *, doublecomplex *,
+    extern /* Subroutine */ void zgelqf_(integer *, integer *, doublecomplex *,
 	     integer *, doublecomplex *, doublecomplex *, integer *, integer *
 	    ), zlascl_(char *, integer *, integer *, doublereal *, doublereal 
 	    *, integer *, integer *, doublecomplex *, integer *, integer *);
     doublereal entrat;
     logical almort;
     doublecomplex cdummy[1];
-    extern /* Subroutine */ int zgeqrf_(integer *, integer *, doublecomplex *,
+    extern /* Subroutine */ void zgeqrf_(integer *, integer *, doublecomplex *,
 	     integer *, doublecomplex *, doublecomplex *, integer *, integer *
 	    );
     doublereal maxprj;
-    extern /* Subroutine */ int zlacpy_(char *, integer *, integer *, 
+    extern /* Subroutine */ void zlacpy_(char *, integer *, integer *, 
 	    doublecomplex *, integer *, doublecomplex *, integer *), 
 	    zlaset_(char *, integer *, integer *, doublecomplex *, 
 	    doublecomplex *, doublecomplex *, integer *);
     logical errest;
     integer lrwcon;
-    extern /* Subroutine */ int zlapmr_(logical *, integer *, integer *, 
+    extern /* Subroutine */ void zlapmr_(logical *, integer *, integer *, 
 	    doublecomplex *, integer *, integer *);
     logical transp;
     integer minwrk, lwsvdj;
-    extern /* Subroutine */ int zpocon_(char *, integer *, doublecomplex *, 
+    extern /* Subroutine */ void zpocon_(char *, integer *, doublecomplex *, 
 	    integer *, doublereal *, doublereal *, doublecomplex *, 
 	    doublereal *, integer *), zgesvj_(char *, char *, char *, 
 	    integer *, integer *, doublecomplex *, integer *, doublereal *, 
 	    integer *, doublecomplex *, integer *, doublecomplex *, integer *,
 	     doublereal *, integer *, integer *);
     doublereal rdummy[1];
-    extern /* Subroutine */ int zlassq_(integer *, doublecomplex *, integer *,
+    extern /* Subroutine */ void zlassq_(integer *, doublecomplex *, integer *,
 	     doublereal *, doublereal *);
     logical lquery;
     extern /* Subroutine */ int zlaswp_(integer *, doublecomplex *, integer *,
 	     integer *, integer *, integer *, integer *);
     logical rowpiv;
     integer optwrk;
-    extern /* Subroutine */ int zungqr_(integer *, integer *, integer *, 
+    extern /* Subroutine */ void zungqr_(integer *, integer *, integer *, 
 	    doublecomplex *, integer *, doublecomplex *, doublecomplex *, 
 	    integer *, integer *), zunmlq_(char *, char *, integer *, integer 
 	    *, integer *, doublecomplex *, integer *, doublecomplex *, 
@@ -1792,13 +1792,13 @@ f"> */
 /*       #:( */
 	i__1 = -(*info);
 	xerbla_("ZGEJSV", &i__1, (ftnlen)6);
-	return 0;
+	return;
     } else if (lquery) {
 	cwork[1].r = (doublereal) optwrk, cwork[1].i = 0.;
 	cwork[2].r = (doublereal) minwrk, cwork[2].i = 0.;
 	rwork[1] = (doublereal) minrwrk;
 	iwork[1] = f2cmax(4,miniwrk);
-	return 0;
+	return;
     }
 
 /*     Quick return for void matrix (Y3K safe) */
@@ -1815,7 +1815,7 @@ f"> */
 	rwork[5] = 0.;
 	rwork[6] = 0.;
 	rwork[7] = 0.;
-	return 0;
+	return;
     }
 
 /*     Determine whether the matrix U should be M x N or M x M */
@@ -1855,7 +1855,7 @@ f"> */
 	    *info = -9;
 	    i__2 = -(*info);
 	    xerbla_("ZGEJSV", &i__2, (ftnlen)6);
-	    return 0;
+	    return;
 	}
 	aaqq = sqrt(aaqq);
 	if (aapp < big / aaqq && noscal) {
@@ -1917,7 +1917,7 @@ f"> */
 	iwork[2] = 0;
 	iwork[3] = 0;
 	iwork[4] = -1;
-	return 0;
+	return;
     }
 
 /*     Issue warning if denormalized column norms detected. Override the */
@@ -1984,7 +1984,7 @@ f"> */
 	    rwork[6] = 0.;
 	    rwork[7] = 0.;
 	}
-	return 0;
+	return;
 
     }
 
@@ -3554,6 +3554,6 @@ L3302:
 	iwork[4] = -1;
     }
 
-    return 0;
+    return;
 } /* zgejsv_ */
 

@@ -660,7 +660,7 @@ f"> */
 /* > \ingroup complex16OTHERcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int zlaed0_(integer *qsiz, integer *n, doublereal *d__, 
+/* Subroutine */ void zlaed0_(integer *qsiz, integer *n, doublereal *d__, 
 	doublereal *e, doublecomplex *q, integer *ldq, doublecomplex *qstore, 
 	integer *ldqs, doublereal *rwork, integer *iwork, integer *info)
 {
@@ -671,10 +671,10 @@ f"> */
     /* Local variables */
     doublereal temp;
     integer curr, i__, j, k, iperm;
-    extern /* Subroutine */ int dcopy_(integer *, doublereal *, integer *, 
+    extern /* Subroutine */ void dcopy_(integer *, doublereal *, integer *, 
 	    doublereal *, integer *);
     integer indxq, iwrem, iqptr, tlvls;
-    extern /* Subroutine */ int zcopy_(integer *, doublecomplex *, integer *, 
+    extern /* Subroutine */ void zcopy_(integer *, doublecomplex *, integer *, 
 	    doublecomplex *, integer *), zlaed7_(integer *, integer *, 
 	    integer *, integer *, integer *, integer *, doublereal *, 
 	    doublecomplex *, integer *, doublereal *, integer *, doublereal *,
@@ -685,11 +685,11 @@ f"> */
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     extern integer ilaenv_(integer *, char *, char *, integer *, integer *, 
 	    integer *, integer *, ftnlen, ftnlen);
-    extern /* Subroutine */ int zlacrm_(integer *, integer *, doublecomplex *,
+    extern /* Subroutine */ void zlacrm_(integer *, integer *, doublecomplex *,
 	     integer *, doublereal *, integer *, doublecomplex *, integer *, 
 	    doublereal *);
     integer igivnm, submat, curprb, subpbs, igivpt;
-    extern /* Subroutine */ int dsteqr_(char *, integer *, doublereal *, 
+    extern /* Subroutine */ void dsteqr_(char *, integer *, doublereal *, 
 	    doublereal *, doublereal *, integer *, doublereal *, integer *);
     integer curlvl, matsiz, iprmpt, smlsiz, lgn, msd2, smm1, spm1, spm2;
 
@@ -738,13 +738,13 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZLAED0", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
     smlsiz = ilaenv_(&c__9, "ZLAED0", " ", &c__0, &c__0, &c__0, &c__0, (
@@ -793,10 +793,10 @@ L10:
 
     temp = log((doublereal) (*n)) / log(2.);
     lgn = (integer) temp;
-    if (pow_ii(&c__2, &lgn) < *n) {
+    if (pow_ii(c__2, lgn) < *n) {
 	++lgn;
     }
-    if (pow_ii(&c__2, &lgn) < *n) {
+    if (pow_ii(c__2, lgn) < *n) {
 	++lgn;
     }
     iprmpt = indxq + *n + 1;
@@ -844,7 +844,7 @@ L10:
 	++curr;
 	if (*info > 0) {
 	    *info = submat * (*n + 1) + submat + matsiz - 1;
-	    return 0;
+	    return;
 	}
 	k = 1;
 	i__2 = iwork[i__ + 1];
@@ -894,7 +894,7 @@ L80:
 		    q_dim1 + 1], &rwork[iwrem], &iwork[subpbs + 1], info);
 	    if (*info > 0) {
 		*info = submat * (*n + 1) + submat + matsiz - 1;
-		return 0;
+		return;
 	    }
 	    iwork[i__ / 2 + 1] = iwork[i__ + 2];
 /* L90: */
@@ -919,7 +919,7 @@ L80:
     }
     dcopy_(n, &rwork[1], &c__1, &d__[1], &c__1);
 
-    return 0;
+    return;
 
 /*     End of ZLAED0 */
 

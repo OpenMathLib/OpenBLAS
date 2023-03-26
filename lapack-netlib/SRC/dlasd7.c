@@ -791,7 +791,7 @@ f"> */
 /* >     California at Berkeley, USA */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int dlasd7_(integer *icompq, integer *nl, integer *nr, 
+/* Subroutine */ void dlasd7_(integer *icompq, integer *nl, integer *nr, 
 	integer *sqre, integer *k, doublereal *d__, doublereal *z__, 
 	doublereal *zw, doublereal *vf, doublereal *vfw, doublereal *vl, 
 	doublereal *vlw, doublereal *alpha, doublereal *beta, doublereal *
@@ -805,17 +805,18 @@ f"> */
 
     /* Local variables */
     integer idxi, idxj;
-    extern /* Subroutine */ int drot_(integer *, doublereal *, integer *, 
+    extern /* Subroutine */ void drot_(integer *, doublereal *, integer *, 
 	    doublereal *, integer *, doublereal *, doublereal *);
     integer i__, j, m, n, idxjp;
-    extern /* Subroutine */ int dcopy_(integer *, doublereal *, integer *, 
+    extern /* Subroutine */ void dcopy_(integer *, doublereal *, integer *, 
 	    doublereal *, integer *);
     integer jprev, k2;
     doublereal z1;
     extern doublereal dlapy2_(doublereal *, doublereal *), dlamch_(char *);
     integer jp;
-    extern /* Subroutine */ int dlamrg_(integer *, integer *, doublereal *, 
-	    integer *, integer *, integer *), xerbla_(char *, integer *, ftnlen);
+    extern /* Subroutine */ void dlamrg_(integer *, integer *, doublereal *, 
+	    integer *, integer *, integer *);
+    extern int xerbla_(char *, integer *, ftnlen);
     doublereal hlftol, eps, tau, tol;
     integer nlp1, nlp2;
 
@@ -873,7 +874,7 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DLASD7", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
     nlp1 = *nl + 1;
@@ -1128,7 +1129,7 @@ L100:
     i__1 = n - 1;
     dcopy_(&i__1, &vlw[2], &c__1, &vl[2], &c__1);
 
-    return 0;
+    return;
 
 /*     End of DLASD7 */
 

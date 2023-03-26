@@ -655,7 +655,7 @@ f"> */
 /* > \ingroup complex16OTHERcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int ztbcon_(char *norm, char *uplo, char *diag, integer *n, 
+/* Subroutine */ void ztbcon_(char *norm, char *uplo, char *diag, integer *n, 
 	integer *kd, doublecomplex *ab, integer *ldab, doublereal *rcond, 
 	doublecomplex *work, doublereal *rwork, integer *info)
 {
@@ -671,7 +671,7 @@ f"> */
     doublereal anorm;
     logical upper;
     doublereal xnorm;
-    extern /* Subroutine */ int zlacn2_(integer *, doublecomplex *, 
+    extern /* Subroutine */ void zlacn2_(integer *, doublecomplex *, 
 	    doublecomplex *, doublereal *, integer *, integer *);
     extern doublereal dlamch_(char *);
     integer ix;
@@ -681,7 +681,7 @@ f"> */
     extern doublereal zlantb_(char *, char *, char *, integer *, integer *, 
 	    doublecomplex *, integer *, doublereal *);
     logical onenrm;
-    extern /* Subroutine */ int zlatbs_(char *, char *, char *, char *, 
+    extern /* Subroutine */ void zlatbs_(char *, char *, char *, char *, 
 	    integer *, integer *, doublecomplex *, integer *, doublecomplex *,
 	     doublereal *, doublereal *, integer *), zdrscl_(integer *, doublereal *, doublecomplex *, 
 	    integer *);
@@ -730,14 +730,14 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZTBCON", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
 	*rcond = 1.;
-	return 0;
+	return;
     }
 
     *rcond = 0.;
@@ -802,7 +802,7 @@ L10:
     }
 
 L20:
-    return 0;
+    return;
 
 /*     End of ZTBCON */
 

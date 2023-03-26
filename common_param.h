@@ -47,9 +47,10 @@ typedef struct {
   int dtb_entries;
   int offsetA, offsetB, align;
 
-#ifdef BUILD_BFLOAT16
+#if BUILD_BFLOAT16 == 1
   int sbgemm_p, sbgemm_q, sbgemm_r;
   int sbgemm_unroll_m, sbgemm_unroll_n, sbgemm_unroll_mn;
+  int sbgemm_align_k;
 
   void   (*sbstobf16_k) (BLASLONG, float    *, BLASLONG, bfloat16 *, BLASLONG);
   void   (*sbdtobf16_k) (BLASLONG, double   *, BLASLONG, bfloat16 *, BLASLONG);
@@ -160,51 +161,59 @@ BLASLONG (*isbmin_k) (BLASLONG, float *, BLASLONG);
 #endif
 #endif
 
-#if defined(BUILD_SINGLE) || defined(BUILD_COMPLEX)
+#if (BUILD_SINGLE == 1) || (BUILD_DOUBLE == 1) || (BUILD_COMPLEX == 1) || (BUILD_COMPLEX16 == 1)
   int sgemm_p, sgemm_q, sgemm_r;
   int sgemm_unroll_m, sgemm_unroll_n, sgemm_unroll_mn;
 #endif
 
   int exclusive_cache;
 
-#if defined(BUILD_SINGLE) || defined(BUILD_COMPLEX)
+#if (BUILD_SINGLE == 1) || (BUILD_COMPLEX == 1)
   float  (*samax_k) (BLASLONG, float *, BLASLONG);
   float  (*samin_k) (BLASLONG, float *, BLASLONG);
   float  (*smax_k)  (BLASLONG, float *, BLASLONG);
   float  (*smin_k)  (BLASLONG, float *, BLASLONG);
+#endif
 
+#if (BUILD_SINGLE==1) || (BUILD_DOUBLE ==1) || (BUILD_COMPLEX==1)
 BLASLONG (*isamax_k)(BLASLONG, float *, BLASLONG);
+#endif
+#if (BUILD_SINGLE==1) || (BUILD_COMPLEX==1)
 BLASLONG (*isamin_k)(BLASLONG, float *, BLASLONG);
 BLASLONG (*ismax_k) (BLASLONG, float *, BLASLONG);
 BLASLONG (*ismin_k) (BLASLONG, float *, BLASLONG);
   float  (*snrm2_k) (BLASLONG, float *, BLASLONG);
   float  (*sasum_k) (BLASLONG, float *, BLASLONG);
 #endif
-#ifdef BUILD_SINGLE
+#if (BUILD_SINGLE==1)
   float  (*ssum_k)  (BLASLONG, float *, BLASLONG);
 #endif  
-#if defined(BUILD_SINGLE) || defined(BUILD_COMPLEX)
+#if (BUILD_SINGLE==1) || (BUILD_DOUBLE==1) || (BUILD_COMPLEX==1)
   int    (*scopy_k) (BLASLONG, float *, BLASLONG, float *, BLASLONG);
   float  (*sdot_k)  (BLASLONG, float *, BLASLONG, float *, BLASLONG);
   //double (*dsdot_k) (BLASLONG, float *, BLASLONG, float *, BLASLONG);
 
   int    (*srot_k)  (BLASLONG, float *, BLASLONG, float *, BLASLONG, float, float);
-
+#endif
+#if (BUILD_SINGLE==1) || (BUILD_DOUBLE==1) || (BUILD_COMPLEX==1)
   int    (*saxpy_k) (BLASLONG, BLASLONG, BLASLONG, float, float *, BLASLONG, float *, BLASLONG, float *, BLASLONG);
+#endif
+#if (BUILD_SINGLE==1) || (BUILD_DOUBLE==1) || (BUILD_COMPLEX==1) || (BUILD_COMPLEX16==1)
   int    (*sscal_k) (BLASLONG, BLASLONG, BLASLONG, float, float *, BLASLONG, float *, BLASLONG, float *, BLASLONG);
+#endif
+#if (BUILD_SINGLE==1) || (BUILD_DOUBLE==1) || (BUILD_COMPLEX==1)
   int    (*sswap_k) (BLASLONG, BLASLONG, BLASLONG, float, float *, BLASLONG, float *, BLASLONG, float *, BLASLONG);
 
   int    (*sgemv_n) (BLASLONG, BLASLONG, BLASLONG, float, float *, BLASLONG, float *, BLASLONG, float *, BLASLONG, float *);
   int    (*sgemv_t) (BLASLONG, BLASLONG, BLASLONG, float, float *, BLASLONG, float *, BLASLONG, float *, BLASLONG, float *);
 #endif
-#ifdef BUILD_SINGLE  
+#if (BUILD_SINGLE==1)
   int    (*sger_k)  (BLASLONG, BLASLONG, BLASLONG, float, float *, BLASLONG, float *, BLASLONG, float *, BLASLONG, float *);
-
   int    (*ssymv_L) (BLASLONG, BLASLONG, float,  float  *, BLASLONG, float  *, BLASLONG, float  *, BLASLONG, float *);
   int    (*ssymv_U) (BLASLONG, BLASLONG, float,  float  *, BLASLONG, float  *, BLASLONG, float  *, BLASLONG, float *);
 #endif
 
-#if defined(BUILD_SINGLE) || defined(BUILD_COMPLEX)
+#if (BUILD_SINGLE==1) || (BUILD_DOUBLE==1) || (BUILD_COMPLEX==1)
 #ifdef ARCH_X86_64
   void (*sgemm_direct) (BLASLONG, BLASLONG, BLASLONG, float *, BLASLONG , float *, BLASLONG , float * , BLASLONG);
   int  (*sgemm_direct_performant) (BLASLONG M, BLASLONG N, BLASLONG K);
@@ -219,7 +228,7 @@ BLASLONG (*ismin_k) (BLASLONG, float *, BLASLONG);
   int    (*sgemm_oncopy   )(BLASLONG, BLASLONG, float *, BLASLONG, float *);
   int    (*sgemm_otcopy   )(BLASLONG, BLASLONG, float *, BLASLONG, float *);
 #endif
-#ifdef BUILD_SINGLE  
+#if (BUILD_SINGLE==1) || (BUILD_DOUBLE==1) || (BUILD_COMPLEX==1)
 #ifdef SMALL_MATRIX_OPT
   int    (*sgemm_small_matrix_permit)(int transa, int transb, BLASLONG m, BLASLONG n, BLASLONG k, float alpha, float beta);
 
@@ -255,7 +264,8 @@ BLASLONG (*ismin_k) (BLASLONG, float *, BLASLONG);
   int    (*strsm_olnncopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, float *);
   int    (*strsm_oltucopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, float *);
   int    (*strsm_oltncopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, float *);
-
+#endif
+#if (BUILD_SINGLE==1)
   int    (*strmm_kernel_RN)(BLASLONG, BLASLONG, BLASLONG, float, float *, float *, float *, BLASLONG, BLASLONG);
   int    (*strmm_kernel_RT)(BLASLONG, BLASLONG, BLASLONG, float, float *, float *, float *, BLASLONG, BLASLONG);
   int    (*strmm_kernel_LN)(BLASLONG, BLASLONG, BLASLONG, float, float *, float *, float *, BLASLONG, BLASLONG);
@@ -287,12 +297,12 @@ BLASLONG (*ismin_k) (BLASLONG, float *, BLASLONG);
   int    (*slaswp_ncopy) (BLASLONG, BLASLONG, BLASLONG, float *, BLASLONG, blasint *, float *);
 #endif
 
-#if defined(BUILD_DOUBLE) || defined(BUILD_COMPLEX16)
+#if (BUILD_DOUBLE==1) || (BUILD_COMPLEX16==1)
   int dgemm_p, dgemm_q, dgemm_r;
   int dgemm_unroll_m, dgemm_unroll_n, dgemm_unroll_mn;
 #endif
 
-#if defined(BUILD_DOUBLE) || defined(BUILD_COMPLEX16)
+#if (BUILD_DOUBLE==1) || (BUILD_COMPLEX16==1)
   double (*damax_k) (BLASLONG, double *, BLASLONG);
   double (*damin_k) (BLASLONG, double *, BLASLONG);
   double (*dmax_k)  (BLASLONG, double *, BLASLONG);
@@ -301,23 +311,21 @@ BLASLONG (*idamax_k)(BLASLONG, double *, BLASLONG);
 BLASLONG (*idamin_k)(BLASLONG, double *, BLASLONG);
 BLASLONG (*idmax_k) (BLASLONG, double *, BLASLONG);
 BLASLONG (*idmin_k) (BLASLONG, double *, BLASLONG);
-#endif
 
-#if defined(BUILD_DOUBLE) || defined(BUILD_COMPLEX16)
   double (*dnrm2_k) (BLASLONG, double *, BLASLONG);
   double (*dasum_k) (BLASLONG, double *, BLASLONG);
 #endif
-#ifdef BUILD_DOUBLE
+#if (BUILD_DOUBLE==1)
   double (*dsum_k)  (BLASLONG, double *, BLASLONG);
 #endif
-#if defined(BUILD_DOUBLE) || defined(BUILD_COMPLEX16)
+#if (BUILD_DOUBLE==1) || (BUILD_COMPLEX16==1)
   int    (*dcopy_k) (BLASLONG, double *, BLASLONG, double *, BLASLONG);
   double (*ddot_k)  (BLASLONG, double *, BLASLONG, double *, BLASLONG);
 #endif
-#if defined (BUILD_SINGLE) || defined(BUILD_DOUBLE)
+#if (BUILD_SINGLE==1) || (BUILD_DOUBLE==1)
   double (*dsdot_k) (BLASLONG, float *, BLASLONG, float *, BLASLONG);
 #endif
-#if defined(BUILD_DOUBLE) || defined(BUILD_COMPLEX16)
+#if (BUILD_DOUBLE==1) || (BUILD_COMPLEX16==1)
   int    (*drot_k)  (BLASLONG, double *, BLASLONG, double *, BLASLONG, double, double);
   int    (*daxpy_k) (BLASLONG, BLASLONG, BLASLONG, double, double *, BLASLONG, double *, BLASLONG, double *, BLASLONG);
   int    (*dscal_k) (BLASLONG, BLASLONG, BLASLONG, double, double *, BLASLONG, double *, BLASLONG, double *, BLASLONG);
@@ -325,13 +333,13 @@ BLASLONG (*idmin_k) (BLASLONG, double *, BLASLONG);
   int    (*dgemv_n) (BLASLONG, BLASLONG, BLASLONG, double, double *, BLASLONG, double *, BLASLONG, double *, BLASLONG, double *);
   int    (*dgemv_t) (BLASLONG, BLASLONG, BLASLONG, double, double *, BLASLONG, double *, BLASLONG, double *, BLASLONG, double *);
 #endif
-#ifdef BUILD_DOUBLE
+#if (BUILD_DOUBLE==1)
   int    (*dger_k)  (BLASLONG, BLASLONG, BLASLONG, double, double *, BLASLONG, double *, BLASLONG, double *, BLASLONG, double *);
 
   int    (*dsymv_L) (BLASLONG, BLASLONG, double,  double  *, BLASLONG, double  *, BLASLONG, double  *, BLASLONG, double *);
   int    (*dsymv_U) (BLASLONG, BLASLONG, double,  double  *, BLASLONG, double  *, BLASLONG, double  *, BLASLONG, double *);
 #endif
-#if defined(BUILD_DOUBLE) || defined(BUILD_COMPLEX16)
+#if (BUILD_DOUBLE==1) || (BUILD_COMPLEX16==1)
   int    (*dgemm_kernel   )(BLASLONG, BLASLONG, BLASLONG, double, double *, double *, double *, BLASLONG);
   int    (*dgemm_beta     )(BLASLONG, BLASLONG, BLASLONG, double, double *, BLASLONG, double *, BLASLONG, double  *, BLASLONG);
 
@@ -340,7 +348,7 @@ BLASLONG (*idmin_k) (BLASLONG, double *, BLASLONG);
   int    (*dgemm_oncopy   )(BLASLONG, BLASLONG, double *, BLASLONG, double *);
   int    (*dgemm_otcopy   )(BLASLONG, BLASLONG, double *, BLASLONG, double *);
 #endif
-#ifdef BUILD_DOUBLE
+#if (BUILD_DOUBLE==1) || (BUILD_COMPLEX16==1)
 #ifdef SMALL_MATRIX_OPT
   int    (*dgemm_small_matrix_permit)(int transa, int transb, BLASLONG m, BLASLONG n, BLASLONG k, double alpha, double beta);
 
@@ -354,6 +362,8 @@ BLASLONG (*idmin_k) (BLASLONG, double *, BLASLONG);
   int    (*dgemm_small_kernel_b0_tn )(BLASLONG m, BLASLONG n, BLASLONG k, double * A, BLASLONG lda, double alpha, double * B, BLASLONG ldb, double * C, BLASLONG ldc);
   int    (*dgemm_small_kernel_b0_tt )(BLASLONG m, BLASLONG n, BLASLONG k, double * A, BLASLONG lda, double alpha, double * B, BLASLONG ldb, double * C, BLASLONG ldc);
 #endif
+#endif
+#if (BUILD_DOUBLE==1)
   int    (*dtrsm_kernel_LN)(BLASLONG, BLASLONG, BLASLONG, double, double *, double *, double *, BLASLONG, BLASLONG);
   int    (*dtrsm_kernel_LT)(BLASLONG, BLASLONG, BLASLONG, double, double *, double *, double *, BLASLONG, BLASLONG);
   int    (*dtrsm_kernel_RN)(BLASLONG, BLASLONG, BLASLONG, double, double *, double *, double *, BLASLONG, BLASLONG);
@@ -500,23 +510,25 @@ BLASLONG (*iqmin_k) (BLASLONG, xdouble *, BLASLONG);
 
 #endif
 
-#ifdef BUILD_COMPLEX
+#if (BUILD_COMPLEX==1) 
   int cgemm_p, cgemm_q, cgemm_r;
   int cgemm_unroll_m, cgemm_unroll_n, cgemm_unroll_mn;
-
+	
   float (*camax_k) (BLASLONG, float *, BLASLONG);
   float (*camin_k) (BLASLONG, float *, BLASLONG);
-BLASLONG (*icamax_k)(BLASLONG, float *, BLASLONG);
+ 
+BLASLONG (*icamax_k)(BLASLONG, float *, BLASLONG);	
 BLASLONG (*icamin_k)(BLASLONG, float *, BLASLONG);
 
   float (*cnrm2_k) (BLASLONG, float *, BLASLONG);
   float (*casum_k) (BLASLONG, float *, BLASLONG);
   float (*csum_k)  (BLASLONG, float *, BLASLONG);
+
   int    (*ccopy_k) (BLASLONG, float *, BLASLONG, float *, BLASLONG);
   openblas_complex_float (*cdotu_k) (BLASLONG, float *, BLASLONG, float *, BLASLONG);
   openblas_complex_float (*cdotc_k) (BLASLONG, float *, BLASLONG, float *, BLASLONG);
-  int    (*csrot_k) (BLASLONG, float *, BLASLONG, float *, BLASLONG, float, float);
 
+  int    (*csrot_k) (BLASLONG, float *, BLASLONG, float *, BLASLONG, float, float);
   int    (*caxpy_k) (BLASLONG, BLASLONG, BLASLONG, float, float, float *, BLASLONG, float *, BLASLONG, float *, BLASLONG);
   int    (*caxpyc_k)(BLASLONG, BLASLONG, BLASLONG, float, float, float *, BLASLONG, float *, BLASLONG, float *, BLASLONG);
   int    (*cscal_k) (BLASLONG, BLASLONG, BLASLONG, float, float, float *, BLASLONG, float *, BLASLONG, float *, BLASLONG);
@@ -710,7 +722,7 @@ BLASLONG (*icamin_k)(BLASLONG, float *, BLASLONG);
   int    (*claswp_ncopy) (BLASLONG, BLASLONG, BLASLONG, float *, BLASLONG, blasint *, float *);
 #endif
 
-#ifdef BUILD_COMPLEX16
+#if (BUILD_COMPLEX16 == 1)
   int zgemm_p, zgemm_q, zgemm_r;
   int zgemm_unroll_m, zgemm_unroll_n, zgemm_unroll_mn;
 
@@ -1092,34 +1104,34 @@ BLASLONG (*ixamin_k)(BLASLONG, xdouble *, BLASLONG);
   void (*init)(void);
 
   int snum_opt, dnum_opt, qnum_opt;
-#ifdef BUILD_SINGLE
+#if (BUILD_SINGLE==1)
   int    (*saxpby_k)     (BLASLONG, float, float*, BLASLONG,float, float*, BLASLONG);
 #endif
-#ifdef BUILD_DOUBLE
+#if (BUILD_DOUBLE==1)
   int    (*daxpby_k)     (BLASLONG, double, double*, BLASLONG,double, double*, BLASLONG);
 #endif
-#ifdef BUILD_COMPLEX
+#if (BUILD_COMPLEX==1)
   int    (*caxpby_k)     (BLASLONG, float, float,  float*, BLASLONG,float,float, float*, BLASLONG);
 #endif
-#ifdef BUILD_COMPLEX16
+#if (BUILD_COMPLEX16==1)
   int    (*zaxpby_k)     (BLASLONG, double, double,  double*, BLASLONG,double,double, double*, BLASLONG);
 #endif
 
-#ifdef BUILD_SINGLE  
+#if (BUILD_SINGLE==1)
   int    (*somatcopy_k_cn)	(BLASLONG, BLASLONG, float, float*, BLASLONG, float*, BLASLONG);
   int    (*somatcopy_k_ct)	(BLASLONG, BLASLONG, float, float*, BLASLONG, float*, BLASLONG);
   int    (*somatcopy_k_rn)	(BLASLONG, BLASLONG, float, float*, BLASLONG, float*, BLASLONG);
   int    (*somatcopy_k_rt)	(BLASLONG, BLASLONG, float, float*, BLASLONG, float*, BLASLONG);
 #endif
 
-#ifdef BUILD_DOUBLE 
+#if (BUILD_DOUBLE==1) 
   int    (*domatcopy_k_cn)	(BLASLONG, BLASLONG, double, double*, BLASLONG, double*, BLASLONG);
   int    (*domatcopy_k_ct)	(BLASLONG, BLASLONG, double, double*, BLASLONG, double*, BLASLONG);
   int    (*domatcopy_k_rn)	(BLASLONG, BLASLONG, double, double*, BLASLONG, double*, BLASLONG);
   int    (*domatcopy_k_rt)	(BLASLONG, BLASLONG, double, double*, BLASLONG, double*, BLASLONG);
 #endif
 
-#ifdef BUILD_COMPLEX
+#if (BUILD_COMPLEX==1)
   int    (*comatcopy_k_cn)	(BLASLONG, BLASLONG, float, float, float*, BLASLONG, float*, BLASLONG);
   int    (*comatcopy_k_ct)	(BLASLONG, BLASLONG, float, float, float*, BLASLONG, float*, BLASLONG);
   int    (*comatcopy_k_rn)	(BLASLONG, BLASLONG, float, float, float*, BLASLONG, float*, BLASLONG);
@@ -1131,7 +1143,7 @@ BLASLONG (*ixamin_k)(BLASLONG, xdouble *, BLASLONG);
   int    (*comatcopy_k_rtc)	(BLASLONG, BLASLONG, float, float, float*, BLASLONG, float*, BLASLONG);
 #endif
 
-#ifdef BUILD_COMPLEX16
+#if (BUILD_COMPLEX16==1)
   int    (*zomatcopy_k_cn)	(BLASLONG, BLASLONG, double, double, double*, BLASLONG, double*, BLASLONG);
   int    (*zomatcopy_k_ct)	(BLASLONG, BLASLONG, double, double, double*, BLASLONG, double*, BLASLONG);
   int    (*zomatcopy_k_rn)	(BLASLONG, BLASLONG, double, double, double*, BLASLONG, double*, BLASLONG);
@@ -1143,21 +1155,21 @@ BLASLONG (*ixamin_k)(BLASLONG, xdouble *, BLASLONG);
   int    (*zomatcopy_k_rtc)	(BLASLONG, BLASLONG, double, double, double*, BLASLONG, double*, BLASLONG);
 #endif
 
-#ifdef BUILD_SINGLE
+#if (BUILD_SINGLE==1)
   int    (*simatcopy_k_cn)	(BLASLONG, BLASLONG, float, float*, BLASLONG);
   int    (*simatcopy_k_ct)	(BLASLONG, BLASLONG, float, float*, BLASLONG);
   int    (*simatcopy_k_rn)	(BLASLONG, BLASLONG, float, float*, BLASLONG);
   int    (*simatcopy_k_rt)	(BLASLONG, BLASLONG, float, float*, BLASLONG);
 #endif
 
-#ifdef BUILD_DOUBLE
+#if (BUILD_DOUBLE==1)
   int    (*dimatcopy_k_cn)	(BLASLONG, BLASLONG, double, double*, BLASLONG);
   int    (*dimatcopy_k_ct)	(BLASLONG, BLASLONG, double, double*, BLASLONG);
   int    (*dimatcopy_k_rn)	(BLASLONG, BLASLONG, double, double*, BLASLONG);
   int    (*dimatcopy_k_rt)	(BLASLONG, BLASLONG, double, double*, BLASLONG);
 #endif
 
-#ifdef BUILD_COMPLEX
+#if (BUILD_COMPLEX==1)
   int    (*cimatcopy_k_cn)	(BLASLONG, BLASLONG, float, float, float*, BLASLONG);
   int    (*cimatcopy_k_ct)	(BLASLONG, BLASLONG, float, float, float*, BLASLONG);
   int    (*cimatcopy_k_rn)	(BLASLONG, BLASLONG, float, float, float*, BLASLONG);
@@ -1169,7 +1181,7 @@ BLASLONG (*ixamin_k)(BLASLONG, xdouble *, BLASLONG);
   int    (*cimatcopy_k_rtc)	(BLASLONG, BLASLONG, float, float, float*, BLASLONG);
 #endif
 
-#ifdef BUILD_COMPLEX16
+#if (BUILD_COMPLEX16==1)
   int    (*zimatcopy_k_cn)	(BLASLONG, BLASLONG, double, double, double*, BLASLONG);
   int    (*zimatcopy_k_ct)	(BLASLONG, BLASLONG, double, double, double*, BLASLONG);
   int    (*zimatcopy_k_rn)	(BLASLONG, BLASLONG, double, double, double*, BLASLONG);
@@ -1181,16 +1193,16 @@ BLASLONG (*ixamin_k)(BLASLONG, xdouble *, BLASLONG);
   int    (*zimatcopy_k_rtc)	(BLASLONG, BLASLONG, double, double, double*, BLASLONG);
 #endif
 
-#ifdef BUILD_SINGLE
+#if (BUILD_SINGLE==1)
   int    (*sgeadd_k) (BLASLONG, BLASLONG, float, float *, BLASLONG, float, float *, BLASLONG); 
 #endif
-#ifdef BUILD_DOUBLE
+#if (BUILD_DOUBLE==1)
   int    (*dgeadd_k) (BLASLONG, BLASLONG, double, double *, BLASLONG, double, double *, BLASLONG); 
 #endif
-#ifdef BUILD_COMPLEX
+#if (BUILD_COMPLEX==1)
   int    (*cgeadd_k) (BLASLONG, BLASLONG, float, float,  float *,  BLASLONG, float, float, float *, BLASLONG); 
 #endif
-#ifdef BUILD_COMPLEX16
+#if (BUILD_COMPLEX16==1)
   int    (*zgeadd_k) (BLASLONG, BLASLONG, double, double, double *, BLASLONG, double, double, double *, BLASLONG); 
 #endif
 } gotoblas_t;
@@ -1206,7 +1218,7 @@ extern gotoblas_t *gotoblas;
 
 #define HAVE_EX_L2	gotoblas -> exclusive_cache
 
-#ifdef BUILD_BFLOAT16
+#if (BUILD_BFLOAT16==1)
 #define	SBGEMM_P		gotoblas -> sbgemm_p
 #define	SBGEMM_Q		gotoblas -> sbgemm_q
 #define	SBGEMM_R		gotoblas -> sbgemm_r
@@ -1215,7 +1227,7 @@ extern gotoblas_t *gotoblas;
 #define	SBGEMM_UNROLL_MN	gotoblas -> sbgemm_unroll_mn
 #endif
 
-#if defined (BUILD_SINGLE)
+#if (BUILD_SINGLE==1)
 #define	SGEMM_P		gotoblas -> sgemm_p
 #define	SGEMM_Q		gotoblas -> sgemm_q
 #define	SGEMM_R		gotoblas -> sgemm_r
@@ -1224,30 +1236,14 @@ extern gotoblas_t *gotoblas;
 #define SGEMM_UNROLL_MN	gotoblas -> sgemm_unroll_mn
 #endif
 
-#if defined (BUILD_DOUBLE)
+#if (BUILD_DOUBLE==1)
 #define	DGEMM_P		gotoblas -> dgemm_p
 #define	DGEMM_Q		gotoblas -> dgemm_q
 #define	DGEMM_R		gotoblas -> dgemm_r
 #define	DGEMM_UNROLL_M	gotoblas -> dgemm_unroll_m
 #define	DGEMM_UNROLL_N	gotoblas -> dgemm_unroll_n
 #define DGEMM_UNROLL_MN	gotoblas -> dgemm_unroll_mn
-#endif
-
-#define	QGEMM_P		gotoblas -> qgemm_p
-#define	QGEMM_Q		gotoblas -> qgemm_q
-#define	QGEMM_R		gotoblas -> qgemm_r
-#define	QGEMM_UNROLL_M	gotoblas -> qgemm_unroll_m
-#define	QGEMM_UNROLL_N	gotoblas -> qgemm_unroll_n
-#define QGEMM_UNROLL_MN	gotoblas -> qgemm_unroll_mn
-
-#ifdef BUILD_COMPLEX
-#define	CGEMM_P		gotoblas -> cgemm_p
-#define	CGEMM_Q		gotoblas -> cgemm_q
-#define	CGEMM_R		gotoblas -> cgemm_r
-#define	CGEMM_UNROLL_M	gotoblas -> cgemm_unroll_m
-#define	CGEMM_UNROLL_N	gotoblas -> cgemm_unroll_n
-#define CGEMM_UNROLL_MN	gotoblas -> cgemm_unroll_mn
-#ifndef BUILD_SINGLE
+#if (BUILD_SINGLE != 1)
 #define	SGEMM_P		gotoblas -> sgemm_p
 #define	SGEMM_Q		gotoblas -> sgemm_q
 #define	SGEMM_R		1024
@@ -1257,20 +1253,52 @@ extern gotoblas_t *gotoblas;
 #endif
 #endif
 
-#ifdef BUILD_COMPLEX16
+#define	QGEMM_P		gotoblas -> qgemm_p
+#define	QGEMM_Q		gotoblas -> qgemm_q
+#define	QGEMM_R		gotoblas -> qgemm_r
+#define	QGEMM_UNROLL_M	gotoblas -> qgemm_unroll_m
+#define	QGEMM_UNROLL_N	gotoblas -> qgemm_unroll_n
+#define QGEMM_UNROLL_MN	gotoblas -> qgemm_unroll_mn
+
+#if (BUILD_COMPLEX==1)
+#define	CGEMM_P		gotoblas -> cgemm_p
+#define	CGEMM_Q		gotoblas -> cgemm_q
+#define	CGEMM_R		gotoblas -> cgemm_r
+#define	CGEMM_UNROLL_M	gotoblas -> cgemm_unroll_m
+#define	CGEMM_UNROLL_N	gotoblas -> cgemm_unroll_n
+#define CGEMM_UNROLL_MN	gotoblas -> cgemm_unroll_mn
+#if (BUILD_SINGLE != 1)
+#define	SGEMM_P		gotoblas -> sgemm_p
+#define	SGEMM_Q		gotoblas -> sgemm_q
+#define	SGEMM_R		1024
+#define	SGEMM_UNROLL_M	gotoblas -> sgemm_unroll_m
+#define	SGEMM_UNROLL_N	gotoblas -> sgemm_unroll_n
+#define SGEMM_UNROLL_MN	gotoblas -> sgemm_unroll_mn
+#endif
+#endif
+
+#if (BUILD_COMPLEX16==1)
 #define	ZGEMM_P		gotoblas -> zgemm_p
 #define	ZGEMM_Q		gotoblas -> zgemm_q
 #define	ZGEMM_R		gotoblas -> zgemm_r
 #define	ZGEMM_UNROLL_M	gotoblas -> zgemm_unroll_m
 #define	ZGEMM_UNROLL_N	gotoblas -> zgemm_unroll_n
 #define ZGEMM_UNROLL_MN	gotoblas -> zgemm_unroll_mn
-#ifndef BUILD_DOUBLE
+#if (BUILD_DOUBLE != 1)
 #define	DGEMM_P		gotoblas -> dgemm_p
 #define	DGEMM_Q		gotoblas -> dgemm_q
 #define	DGEMM_R		1024
 #define	DGEMM_UNROLL_M	gotoblas -> dgemm_unroll_m
 #define	DGEMM_UNROLL_N	gotoblas -> dgemm_unroll_n
 #define DGEMM_UNROLL_MN	gotoblas -> dgemm_unroll_mn
+#endif
+#if (BUILD_COMPLEX != 1)
+#define	CGEMM_P		gotoblas -> cgemm_p
+#define	CGEMM_Q		gotoblas -> cgemm_q
+#define	CGEMM_R		gotoblas -> cgemm_r
+#define	CGEMM_UNROLL_M	gotoblas -> cgemm_unroll_m
+#define	CGEMM_UNROLL_N	gotoblas -> cgemm_unroll_n
+#define CGEMM_UNROLL_MN	gotoblas -> cgemm_unroll_mn
 #endif
 #endif
 
@@ -1318,7 +1346,7 @@ extern gotoblas_t *gotoblas;
 #define HAVE_EX_L2	0
 #endif
 
-#ifdef BUILD_BFLOAT16
+#if (BUILD_BFLOAT16 == 1)
 #define	SBGEMM_P		SBGEMM_DEFAULT_P
 #define	SBGEMM_Q		SBGEMM_DEFAULT_Q
 #define	SBGEMM_R		SBGEMM_DEFAULT_R

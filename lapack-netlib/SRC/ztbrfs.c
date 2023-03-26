@@ -700,7 +700,7 @@ f"> */
 /* > \ingroup complex16OTHERcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int ztbrfs_(char *uplo, char *trans, char *diag, integer *n, 
+/* Subroutine */ void ztbrfs_(char *uplo, char *trans, char *diag, integer *n, 
 	integer *kd, integer *nrhs, doublecomplex *ab, integer *ldab, 
 	doublecomplex *b, integer *ldb, doublecomplex *x, integer *ldx, 
 	doublereal *ferr, doublereal *berr, doublecomplex *work, doublereal *
@@ -720,7 +720,7 @@ f"> */
     extern logical lsame_(char *, char *);
     integer isave[3];
     logical upper;
-    extern /* Subroutine */ int ztbmv_(char *, char *, char *, integer *, 
+    extern /* Subroutine */ void ztbmv_(char *, char *, char *, integer *, 
 	    integer *, doublecomplex *, integer *, doublecomplex *, integer *), zcopy_(integer *, doublecomplex *, 
 	    integer *, doublecomplex *, integer *), ztbsv_(char *, char *, 
 	    char *, integer *, integer *, doublecomplex *, integer *, 
@@ -794,7 +794,7 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZTBRFS", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
@@ -806,7 +806,7 @@ f"> */
 	    berr[j] = 0.;
 /* L10: */
 	}
-	return 0;
+	return;
     }
 
     if (notran) {
@@ -1151,7 +1151,7 @@ L210:
 /* L250: */
     }
 
-    return 0;
+    return;
 
 /*     End of ZTBRFS */
 

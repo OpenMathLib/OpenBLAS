@@ -778,7 +778,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int dtrsna_(char *job, char *howmny, logical *select, 
+/* Subroutine */ void dtrsna_(char *job, char *howmny, logical *select, 
 	integer *n, doublereal *t, integer *ldt, doublereal *vl, integer *
 	ldvl, doublereal *vr, integer *ldvr, doublereal *s, doublereal *sep, 
 	integer *mm, integer *m, doublereal *work, integer *ldwork, integer *
@@ -810,20 +810,20 @@ f"> */
     logical wants;
     doublereal dummy[1];
     integer n2;
-    extern /* Subroutine */ int dlacn2_(integer *, doublereal *, doublereal *,
+    extern /* Subroutine */ void dlacn2_(integer *, doublereal *, doublereal *,
 	     integer *, doublereal *, integer *, integer *);
     extern doublereal dlapy2_(doublereal *, doublereal *);
-    extern /* Subroutine */ int dlabad_(doublereal *, doublereal *);
+    extern /* Subroutine */ void dlabad_(doublereal *, doublereal *);
     doublereal cs;
     extern doublereal dlamch_(char *);
     integer nn, ks;
     doublereal sn, mu;
-    extern /* Subroutine */ int dlacpy_(char *, integer *, integer *, 
-	    doublereal *, integer *, doublereal *, integer *), 
-	    xerbla_(char *, integer *, ftnlen);
+    extern /* Subroutine */ void dlacpy_(char *, integer *, integer *, 
+	    doublereal *, integer *, doublereal *, integer *); 
+    extern int xerbla_(char *, integer *, ftnlen);
     doublereal bignum;
     logical wantbh;
-    extern /* Subroutine */ int dlaqtr_(logical *, logical *, integer *, 
+    extern /* Subroutine */ void dlaqtr_(logical *, logical *, integer *, 
 	    doublereal *, integer *, doublereal *, doublereal *, doublereal *,
 	     doublereal *, doublereal *, integer *), dtrexc_(char *, integer *
 	    , doublereal *, integer *, doublereal *, integer *, integer *, 
@@ -928,19 +928,19 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DTRSNA", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
     if (*n == 1) {
 	if (somcon) {
 	    if (! select[1]) {
-		return 0;
+		return;
 	    }
 	}
 	if (wants) {
@@ -949,7 +949,7 @@ f"> */
 	if (wantsp) {
 	    sep[1] = (d__1 = t[t_dim1 + 1], abs(d__1));
 	}
-	return 0;
+	return;
     }
 
 /*     Get machine constants */
@@ -1186,7 +1186,7 @@ L50:
 L60:
 	;
     }
-    return 0;
+    return;
 
 /*     End of DTRSNA */
 

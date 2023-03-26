@@ -725,7 +725,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int slabrd_(integer *m, integer *n, integer *nb, real *a, 
+/* Subroutine */ void slabrd_(integer *m, integer *n, integer *nb, real *a, 
 	integer *lda, real *d__, real *e, real *tauq, real *taup, real *x, 
 	integer *ldx, real *y, integer *ldy)
 {
@@ -735,7 +735,7 @@ f"> */
 
     /* Local variables */
     integer i__;
-    extern /* Subroutine */ int sscal_(integer *, real *, real *, integer *), 
+    extern /* Subroutine */ void sscal_(integer *, real *, real *, integer *), 
 	    sgemv_(char *, integer *, integer *, real *, real *, integer *, 
 	    real *, integer *, real *, real *, integer *), slarfg_(
 	    integer *, real *, real *, integer *, real *);
@@ -769,7 +769,7 @@ f"> */
 
     /* Function Body */
     if (*m <= 0 || *n <= 0) {
-	return 0;
+	return;
     }
 
     if (*m >= *n) {
@@ -999,7 +999,7 @@ f"> */
 /* L20: */
 	}
     }
-    return 0;
+    return;
 
 /*     End of SLABRD */
 

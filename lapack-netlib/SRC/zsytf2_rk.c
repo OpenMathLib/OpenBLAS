@@ -756,7 +756,7 @@ rk.f"> */
 /* > \endverbatim */
 
 /*  ===================================================================== */
-/* Subroutine */ int zsytf2_rk_(char *uplo, integer *n, doublecomplex *a, 
+/* Subroutine */ void zsytf2_rk_(char *uplo, integer *n, doublecomplex *a, 
 	integer *lda, doublecomplex *e, integer *ipiv, integer *info)
 {
     /* System generated locals */
@@ -767,7 +767,7 @@ rk.f"> */
     /* Local variables */
     logical done;
     integer imax, jmax;
-    extern /* Subroutine */ int zsyr_(char *, integer *, doublecomplex *, 
+    extern /* Subroutine */ void zsyr_(char *, integer *, doublecomplex *, 
 	    doublecomplex *, integer *, doublecomplex *, integer *);
     integer i__, j, k, p;
     doublecomplex t;
@@ -775,11 +775,11 @@ rk.f"> */
     extern logical lsame_(char *, char *);
     doublereal dtemp, sfmin;
     integer itemp;
-    extern /* Subroutine */ int zscal_(integer *, doublecomplex *, 
+    extern /* Subroutine */ void zscal_(integer *, doublecomplex *, 
 	    doublecomplex *, integer *);
     integer kstep;
     logical upper;
-    extern /* Subroutine */ int zswap_(integer *, doublecomplex *, integer *, 
+    extern /* Subroutine */ void zswap_(integer *, doublecomplex *, integer *, 
 	    doublecomplex *, integer *);
     doublecomplex d11, d12, d21, d22;
     integer ii, kk;
@@ -825,7 +825,7 @@ rk.f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZSYTF2_RK", &i__1, (ftnlen)9);
-	return 0;
+	return;
     }
 
 /*     Initialize ALPHA for use in choosing pivot block size. */
@@ -1683,7 +1683,7 @@ L64:
 	;
     }
 
-    return 0;
+    return;
 
 /*     End of ZSYTF2_RK */
 

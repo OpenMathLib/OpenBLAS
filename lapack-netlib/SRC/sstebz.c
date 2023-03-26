@@ -789,7 +789,7 @@ f"> */
 /* > \ingroup auxOTHERcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int sstebz_(char *range, char *order, integer *n, real *vl, 
+/* Subroutine */ void sstebz_(char *range, char *order, integer *n, real *vl, 
 	real *vu, integer *il, integer *iu, real *abstol, real *d__, real *e, 
 	integer *m, integer *nsplit, real *w, integer *iblock, integer *
 	isplit, real *work, integer *iwork, integer *info)
@@ -821,7 +821,7 @@ f"> */
 	    integer *, integer *, ftnlen, ftnlen);
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     integer idiscu;
-    extern /* Subroutine */ int slaebz_(integer *, integer *, integer *, 
+    extern /* Subroutine */ void slaebz_(integer *, integer *, integer *, 
 	    integer *, integer *, integer *, real *, real *, real *, real *, 
 	    real *, real *, integer *, real *, real *, integer *, integer *, 
 	    real *, integer *, integer *);
@@ -899,7 +899,7 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("SSTEBZ", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Initialize error flags */
@@ -912,7 +912,7 @@ f"> */
 
     *m = 0;
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /*     Simplifications: */
@@ -946,7 +946,7 @@ f"> */
 	    iblock[1] = 1;
 	    *m = 1;
 	}
-	return 0;
+	return;
     }
 
 /*     Compute Splitting Points */
@@ -1060,7 +1060,7 @@ f"> */
 
 	if (nwl < 0 || nwl >= *n || nwu < 1 || nwu > *n) {
 	    *info = 4;
-	    return 0;
+	    return;
 	}
     } else {
 
@@ -1363,7 +1363,7 @@ L70:
     if (toofew) {
 	*info += 2;
     }
-    return 0;
+    return;
 
 /*     End of SSTEBZ */
 

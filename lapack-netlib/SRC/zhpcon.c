@@ -631,7 +631,7 @@ f"> */
 /* > \ingroup complex16OTHERcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int zhpcon_(char *uplo, integer *n, doublecomplex *ap, 
+/* Subroutine */ void zhpcon_(char *uplo, integer *n, doublecomplex *ap, 
 	integer *ipiv, doublereal *anorm, doublereal *rcond, doublecomplex *
 	work, integer *info)
 {
@@ -643,12 +643,12 @@ f"> */
     extern logical lsame_(char *, char *);
     integer isave[3];
     logical upper;
-    extern /* Subroutine */ int zlacn2_(integer *, doublecomplex *, 
+    extern /* Subroutine */ void zlacn2_(integer *, doublecomplex *, 
 	    doublecomplex *, doublereal *, integer *, integer *);
     integer ip;
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     doublereal ainvnm;
-    extern /* Subroutine */ int zhptrs_(char *, integer *, integer *, 
+    extern /* Subroutine */ void zhptrs_(char *, integer *, integer *, 
 	    doublecomplex *, integer *, doublecomplex *, integer *, integer *);
 
 
@@ -681,7 +681,7 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZHPCON", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
@@ -689,9 +689,9 @@ f"> */
     *rcond = 0.;
     if (*n == 0) {
 	*rcond = 1.;
-	return 0;
+	return;
     } else if (*anorm <= 0.) {
-	return 0;
+	return;
     }
 
 /*     Check that the diagonal matrix D is nonsingular. */
@@ -704,7 +704,7 @@ f"> */
 	for (i__ = *n; i__ >= 1; --i__) {
 	    i__1 = ip;
 	    if (ipiv[i__] > 0 && (ap[i__1].r == 0. && ap[i__1].i == 0.)) {
-		return 0;
+		return;
 	    }
 	    ip -= i__;
 /* L10: */
@@ -718,7 +718,7 @@ f"> */
 	for (i__ = 1; i__ <= i__1; ++i__) {
 	    i__2 = ip;
 	    if (ipiv[i__] > 0 && (ap[i__2].r == 0. && ap[i__2].i == 0.)) {
-		return 0;
+		return;
 	    }
 	    ip = ip + *n - i__ + 1;
 /* L20: */
@@ -744,7 +744,7 @@ L30:
 	*rcond = 1. / ainvnm / *anorm;
     }
 
-    return 0;
+    return;
 
 /*     End of ZHPCON */
 

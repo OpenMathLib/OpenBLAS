@@ -609,7 +609,7 @@ f"> */
 /* > \ingroup auxOTHERcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int dlamrg_(integer *n1, integer *n2, doublereal *a, integer 
+/* Subroutine */ void dlamrg_(integer *n1, integer *n2, doublereal *a, integer 
 	*dtrd1, integer *dtrd2, integer *index)
 {
     /* System generated locals */
@@ -682,7 +682,7 @@ L10:
 	}
     }
 
-    return 0;
+    return;
 
 /*     End of DLAMRG */
 

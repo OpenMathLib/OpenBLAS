@@ -615,7 +615,7 @@ f"> */
 /* > \ingroup realOTHERauxiliary */
 
 /*  ===================================================================== */
-/* Subroutine */ int slarfg_(integer *n, real *alpha, real *x, integer *incx, 
+/* Subroutine */ void slarfg_(integer *n, real *alpha, real *x, integer *incx, 
 	real *tau)
 {
     /* System generated locals */
@@ -626,7 +626,7 @@ f"> */
     real beta;
     extern real snrm2_(integer *, real *, integer *);
     integer j;
-    extern /* Subroutine */ int sscal_(integer *, real *, real *, integer *);
+    extern /* Subroutine */ void sscal_(integer *, real *, real *, integer *);
     real xnorm;
     extern real slapy2_(real *, real *), slamch_(char *);
     real safmin, rsafmn;
@@ -648,7 +648,7 @@ f"> */
     /* Function Body */
     if (*n <= 1) {
 	*tau = 0.f;
-	return 0;
+	return;
     }
 
     i__1 = *n - 1;
@@ -704,7 +704,7 @@ L10:
 	*alpha = beta;
     }
 
-    return 0;
+    return;
 
 /*     End of SLARFG */
 

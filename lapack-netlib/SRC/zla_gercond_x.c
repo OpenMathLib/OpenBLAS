@@ -662,11 +662,11 @@ doublereal zla_gercond_x_(char *trans, integer *n, doublecomplex *a, integer
     extern logical lsame_(char *, char *);
     integer isave[3];
     doublereal anorm;
-    extern /* Subroutine */ int zlacn2_(integer *, doublecomplex *, 
-	    doublecomplex *, doublereal *, integer *, integer *), xerbla_(
-	    char *, integer *, ftnlen);
+    extern /* Subroutine */ void zlacn2_(integer *, doublecomplex *, 
+	    doublecomplex *, doublereal *, integer *, integer *);
+    extern int xerbla_(char *, integer *, ftnlen);
     doublereal ainvnm;
-    extern /* Subroutine */ int zgetrs_(char *, integer *, integer *, 
+    extern /* Subroutine */ void zgetrs_(char *, integer *, integer *, 
 	    doublecomplex *, integer *, integer *, doublecomplex *, integer *,
 	     integer *);
     doublereal tmp;

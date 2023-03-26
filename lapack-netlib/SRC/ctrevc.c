@@ -731,7 +731,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int ctrevc_(char *side, char *howmny, logical *select, 
+/* Subroutine */ void ctrevc_(char *side, char *howmny, logical *select, 
 	integer *n, complex *t, integer *ldt, complex *vl, integer *ldvl, 
 	complex *vr, integer *ldvr, integer *mm, integer *m, complex *work, 
 	real *rwork, integer *info)
@@ -749,20 +749,22 @@ f"> */
     integer i__, j, k;
     real scale;
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int cgemv_(char *, integer *, integer *, complex *
+    extern /* Subroutine */ void cgemv_(char *, integer *, integer *, complex *
 	    , complex *, integer *, complex *, integer *, complex *, complex *
 	    , integer *);
     real remax;
-    extern /* Subroutine */ int ccopy_(integer *, complex *, integer *, 
+    extern /* Subroutine */ void ccopy_(integer *, complex *, integer *, 
 	    complex *, integer *);
     logical leftv, bothv, somev;
     integer ii, ki;
-    extern /* Subroutine */ int slabad_(real *, real *);
+    extern /* Subroutine */ void slabad_(real *, real *);
     integer is;
     extern integer icamax_(integer *, complex *, integer *);
     extern real slamch_(char *);
-    extern /* Subroutine */ int csscal_(integer *, real *, complex *, integer 
-	    *), xerbla_(char *, integer *, ftnlen), clatrs_(char *, char *, 
+    extern /* Subroutine */ void csscal_(integer *, real *, complex *, integer 
+	    *);
+    extern int xerbla_(char *, integer *, ftnlen);
+    extern void clatrs_(char *, char *, 
 	    char *, char *, integer *, complex *, integer *, complex *, real *
 	    , real *, integer *);
     extern real scasum_(integer *, complex *, integer *);
@@ -839,13 +841,13 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CTREVC", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible. */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /*     Set the constants to control overflow. */
@@ -1099,7 +1101,7 @@ L130:
 	}
     }
 
-    return 0;
+    return;
 
 /*     End of CTREVC */
 

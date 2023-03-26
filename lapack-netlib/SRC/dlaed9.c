@@ -669,7 +669,7 @@ f"> */
 /* > at Berkeley, USA */
 
 /*  ===================================================================== */
-/* Subroutine */ int dlaed9_(integer *k, integer *kstart, integer *kstop, 
+/* Subroutine */ void dlaed9_(integer *k, integer *kstart, integer *kstop, 
 	integer *n, doublereal *d__, doublereal *q, integer *ldq, doublereal *
 	rho, doublereal *dlamda, doublereal *w, doublereal *s, integer *lds, 
 	integer *info)
@@ -682,7 +682,7 @@ f"> */
     doublereal temp;
     extern doublereal dnrm2_(integer *, doublereal *, integer *);
     integer i__, j;
-    extern /* Subroutine */ int dcopy_(integer *, doublereal *, integer *, 
+    extern /* Subroutine */ void dcopy_(integer *, doublereal *, integer *, 
 	    doublereal *, integer *), dlaed4_(integer *, integer *, 
 	    doublereal *, doublereal *, doublereal *, doublereal *, 
 	    doublereal *, integer *);
@@ -731,13 +731,13 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DLAED9", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*k == 0) {
-	return 0;
+	return;
     }
 
 /*     Modify values DLAMDA(i) to make sure all DLAMDA(i)-DLAMDA(j) can */
@@ -837,7 +837,7 @@ f"> */
     }
 
 L120:
-    return 0;
+    return;
 
 /*     End of DLAED9 */
 

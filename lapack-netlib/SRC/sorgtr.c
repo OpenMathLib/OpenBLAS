@@ -637,7 +637,7 @@ f"> */
 /* > \ingroup realOTHERcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int sorgtr_(char *uplo, integer *n, real *a, integer *lda, 
+/* Subroutine */ void sorgtr_(char *uplo, integer *n, real *a, integer *lda, 
 	real *tau, real *work, integer *lwork, integer *info)
 {
     /* System generated locals */
@@ -652,7 +652,7 @@ f"> */
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     extern integer ilaenv_(integer *, char *, char *, integer *, integer *, 
 	    integer *, integer *, ftnlen, ftnlen);
-    extern /* Subroutine */ int sorgql_(integer *, integer *, integer *, real 
+    extern /* Subroutine */ void sorgql_(integer *, integer *, integer *, real 
 	    *, integer *, real *, real *, integer *, integer *), sorgqr_(
 	    integer *, integer *, integer *, real *, integer *, real *, real *
 	    , integer *, integer *);
@@ -719,16 +719,16 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("SORGTR", &i__1, (ftnlen)6);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
 	work[1] = 1.f;
-	return 0;
+	return;
     }
 
     if (upper) {
@@ -799,7 +799,7 @@ f"> */
 	}
     }
     work[1] = (real) lwkopt;
-    return 0;
+    return;
 
 /*     End of SORGTR */
 

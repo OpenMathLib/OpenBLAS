@@ -662,7 +662,7 @@ f"> */
 /* > \ingroup complex16OTHERauxiliary */
 
 /*  ===================================================================== */
-/* Subroutine */ int zlaein_(logical *rightv, logical *noinit, integer *n, 
+/* Subroutine */ void zlaein_(logical *rightv, logical *noinit, integer *n, 
 	doublecomplex *h__, integer *ldh, doublecomplex *w, doublecomplex *v, 
 	doublecomplex *b, integer *ldb, doublereal *rwork, doublereal *eps3, 
 	doublereal *smlnum, integer *info)
@@ -682,7 +682,7 @@ f"> */
     doublereal rtemp, rootn, vnorm;
     extern doublereal dznrm2_(integer *, doublecomplex *, integer *);
     doublecomplex ei, ej;
-    extern /* Subroutine */ int zdscal_(integer *, doublereal *, 
+    extern /* Subroutine */ void zdscal_(integer *, doublereal *, 
 	    doublecomplex *, integer *);
     extern integer izamax_(integer *, doublecomplex *, integer *);
     extern /* Double Complex */ VOID zladiv_(doublecomplex *, doublecomplex *,
@@ -690,7 +690,7 @@ f"> */
     char normin[1];
     extern doublereal dzasum_(integer *, doublecomplex *, integer *);
     doublereal nrmsml;
-    extern /* Subroutine */ int zlatrs_(char *, char *, char *, char *, 
+    extern /* Subroutine */ void zlatrs_(char *, char *, char *, char *, 
 	    integer *, doublecomplex *, integer *, doublecomplex *, 
 	    doublereal *, doublereal *, integer *);
     doublereal growto;
@@ -958,7 +958,7 @@ L120:
 	    d__2)));
     zdscal_(n, &d__3, &v[1], &c__1);
 
-    return 0;
+    return;
 
 /*     End of ZLAEIN */
 

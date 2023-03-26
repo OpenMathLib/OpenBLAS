@@ -652,7 +652,7 @@ f"> */
 /* > \ingroup realOTHERcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int strtrs_(char *uplo, char *trans, char *diag, integer *n, 
+/* Subroutine */ void strtrs_(char *uplo, char *trans, char *diag, integer *n, 
 	integer *nrhs, real *a, integer *lda, real *b, integer *ldb, integer *
 	info)
 {
@@ -661,9 +661,10 @@ f"> */
 
     /* Local variables */
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int strsm_(char *, char *, char *, char *, 
+    extern /* Subroutine */ void strsm_(char *, char *, char *, char *, 
 	    integer *, integer *, real *, real *, integer *, real *, integer *
-	    ), xerbla_(char *, integer *, ftnlen);
+	    );
+    extern int xerbla_(char *, integer *, ftnlen);
     logical nounit;
 
 
@@ -708,13 +709,13 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("STRTRS", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /*     Check for singularity. */
@@ -723,7 +724,7 @@ f"> */
 	i__1 = *n;
 	for (*info = 1; *info <= i__1; ++(*info)) {
 	    if (a[*info + *info * a_dim1] == 0.f) {
-		return 0;
+		return;
 	    }
 /* L10: */
 	}
@@ -735,7 +736,7 @@ f"> */
     strsm_("Left", uplo, trans, diag, n, nrhs, &c_b12, &a[a_offset], lda, &b[
 	    b_offset], ldb);
 
-    return 0;
+    return;
 
 /*     End of STRTRS */
 

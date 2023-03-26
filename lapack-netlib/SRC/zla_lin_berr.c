@@ -610,7 +610,7 @@ _berr.f"> */
 /* > \ingroup complex16OTHERcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int zla_lin_berr_(integer *n, integer *nz, integer *nrhs, 
+/* Subroutine */ void zla_lin_berr_(integer *n, integer *nz, integer *nrhs, 
 	doublecomplex *res, doublereal *ayb, doublereal *berr)
 {
     /* System generated locals */
@@ -675,6 +675,6 @@ _berr.f"> */
 
 	}
     }
-    return 0;
+    return;
 } /* zla_lin_berr__ */
 

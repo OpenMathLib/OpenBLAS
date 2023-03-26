@@ -654,7 +654,7 @@ f"> */
 /* > \ingroup OTHERauxiliary */
 
 /*  ===================================================================== */
-/* Subroutine */ int dlarrk_(integer *n, integer *iw, doublereal *gl, 
+/* Subroutine */ void dlarrk_(integer *n, integer *iw, doublereal *gl, 
 	doublereal *gu, doublereal *d__, doublereal *e2, doublereal *pivmin, 
 	doublereal *reltol, doublereal *w, doublereal *werr, integer *info)
 {
@@ -691,7 +691,7 @@ f"> */
     /* Function Body */
     if (*n <= 0) {
 	*info = 0;
-	return 0;
+	return;
     }
 
 /*     Get machine constants */
@@ -760,7 +760,7 @@ L30:
 
     *w = (left + right) * .5;
     *werr = (d__1 = right - left, abs(d__1)) * .5;
-    return 0;
+    return;
 
 /*     End of DLARRK */
 

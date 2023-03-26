@@ -788,7 +788,7 @@ f"> */
 /* >     Mark Fahey, Department of Mathematics, Univ. of Kentucky, USA */
 
 /*  ===================================================================== */
-/* Subroutine */ int chpgvx_(integer *itype, char *jobz, char *range, char *
+/* Subroutine */ void chpgvx_(integer *itype, char *jobz, char *range, char *
 	uplo, integer *n, complex *ap, complex *bp, real *vl, real *vu, 
 	integer *il, integer *iu, real *abstol, integer *m, real *w, complex *
 	z__, integer *ldz, complex *work, real *rwork, integer *iwork, 
@@ -801,13 +801,14 @@ f"> */
     integer j;
     extern logical lsame_(char *, char *);
     char trans[1];
-    extern /* Subroutine */ int ctpmv_(char *, char *, char *, integer *, 
+    extern /* Subroutine */ void ctpmv_(char *, char *, char *, integer *, 
 	    complex *, complex *, integer *);
     logical upper;
-    extern /* Subroutine */ int ctpsv_(char *, char *, char *, integer *, 
+    extern /* Subroutine */ void ctpsv_(char *, char *, char *, integer *, 
 	    complex *, complex *, integer *);
     logical wantz, alleig, indeig, valeig;
-    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen), chpgst_(
+    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
+    extern void chpgst_(
 	    integer *, char *, integer *, complex *, complex *, integer *), chpevx_(char *, char *, char *, integer *, complex *, 
 	    real *, real *, integer *, integer *, real *, integer *, real *, 
 	    complex *, integer *, complex *, real *, integer *, integer *, 
@@ -878,13 +879,13 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CHPGVX", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /*     Form a Cholesky factorization of B. */
@@ -892,7 +893,7 @@ f"> */
     cpptrf_(uplo, n, &bp[1], info);
     if (*info != 0) {
 	*info = *n + *info;
-	return 0;
+	return;
     }
 
 /*     Transform problem to standard eigenvalue problem and solve. */
@@ -947,7 +948,7 @@ f"> */
 	}
     }
 
-    return 0;
+    return;
 
 /*     End of CHPGVX */
 

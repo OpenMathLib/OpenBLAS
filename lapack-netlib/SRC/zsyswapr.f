@@ -57,16 +57,14 @@
 *>
 *> \param[in,out] A
 *> \verbatim
-*>          A is COMPLEX*16 array, dimension (LDA,N)
-*>          On entry, the NB diagonal matrix D and the multipliers
-*>          used to obtain the factor U or L as computed by ZSYTRF.
-*>
-*>          On exit, if INFO = 0, the (symmetric) inverse of the original
-*>          matrix.  If UPLO = 'U', the upper triangular part of the
-*>          inverse is formed and the part of A below the diagonal is not
-*>          referenced; if UPLO = 'L' the lower triangular part of the
-*>          inverse is formed and the part of A above the diagonal is
-*>          not referenced.
+*>          A is COMPLEX*16 array, dimension (LDA,*)
+*>          On entry, the N-by-N matrix A. On exit, the permuted matrix
+*>          where the rows I1 and I2 and columns I1 and I2 are interchanged.
+*>          If UPLO = 'U', the interchanges are applied to the upper
+*>          triangular part and the strictly lower triangular part of A is
+*>          not referenced; if UPLO = 'L', the interchanges are applied to
+*>          the lower triangular part and the part of A above the diagonal
+*>          is not referenced.
 *> \endverbatim
 *>
 *> \param[in] LDA
@@ -109,14 +107,13 @@
       INTEGER          I1, I2, LDA, N
 *     ..
 *     .. Array Arguments ..
-      COMPLEX*16       A( LDA, N )
+      COMPLEX*16       A( LDA, * )
 *
 *  =====================================================================
 *
 *     ..
 *     .. Local Scalars ..
       LOGICAL            UPPER
-      INTEGER            I
       COMPLEX*16         TMP
 *
 *     .. External Functions ..
@@ -143,19 +140,12 @@
          A(I1,I1)=A(I2,I2)
          A(I2,I2)=TMP
 *
-         DO I=1,I2-I1-1
-            TMP=A(I1,I1+I)
-            A(I1,I1+I)=A(I1+I,I2)
-            A(I1+I,I2)=TMP
-         END DO
+         CALL ZSWAP( I2-I1-1, A(I1,I1+1), LDA, A(I1+1,I2), 1 )
 *
 *          third swap
 *          - swap row I1 and I2 from I2+1 to N
-         DO I=I2+1,N
-            TMP=A(I1,I)
-            A(I1,I)=A(I2,I)
-            A(I2,I)=TMP
-         END DO
+         IF ( I2.LT.N )
+     $      CALL ZSWAP( N-I2, A(I1,I2+1), LDA, A(I2,I2+1), LDA )
 *
         ELSE
 *
@@ -171,19 +161,12 @@
           A(I1,I1)=A(I2,I2)
           A(I2,I2)=TMP
 *
-          DO I=1,I2-I1-1
-             TMP=A(I1+I,I1)
-             A(I1+I,I1)=A(I2,I1+I)
-             A(I2,I1+I)=TMP
-          END DO
+          CALL ZSWAP( I2-I1-1, A(I1+1,I1), 1, A(I2,I1+1), LDA )
 *
 *         third swap
 *          - swap col I1 and I2 from I2+1 to N
-          DO I=I2+1,N
-             TMP=A(I,I1)
-             A(I,I1)=A(I,I2)
-             A(I,I2)=TMP
-          END DO
+         IF ( I2.LT.N )
+     $      CALL ZSWAP( N-I2, A(I2+1,I1), 1, A(I2+1,I2), 1 )
 *
       ENDIF
       END SUBROUTINE ZSYSWAPR

@@ -822,7 +822,7 @@ rices</b> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int dgegv_(char *jobvl, char *jobvr, integer *n, doublereal *
+/* Subroutine */ void dgegv_(char *jobvl, char *jobvr, integer *n, doublereal *
 	a, integer *lda, doublereal *b, integer *ldb, doublereal *alphar, 
 	doublereal *alphai, doublereal *beta, doublereal *vl, integer *ldvl, 
 	doublereal *vr, integer *ldvr, doublereal *work, integer *lwork, 
@@ -842,11 +842,11 @@ rices</b> */
     doublereal anrm1, anrm2, bnrm1, bnrm2, absai, scale, absar, sbeta;
     extern logical lsame_(char *, char *);
     integer ileft, iinfo, icols, iwork, irows, jc;
-    extern /* Subroutine */ int dggbak_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void dggbak_(char *, char *, integer *, integer *, 
 	    integer *, doublereal *, doublereal *, integer *, doublereal *, 
 	    integer *, integer *);
     integer nb;
-    extern /* Subroutine */ int dggbal_(char *, integer *, doublereal *, 
+    extern /* Subroutine */ void dggbal_(char *, integer *, doublereal *, 
 	    integer *, doublereal *, integer *, integer *, integer *, 
 	    doublereal *, doublereal *, doublereal *, integer *);
     integer in;
@@ -854,42 +854,42 @@ rices</b> */
 	    integer *, doublereal *, integer *, doublereal *);
     integer jr;
     doublereal salfai;
-    extern /* Subroutine */ int dgghrd_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void dgghrd_(char *, char *, integer *, integer *, 
 	    integer *, doublereal *, integer *, doublereal *, integer *, 
 	    doublereal *, integer *, doublereal *, integer *, integer *), dlascl_(char *, integer *, integer *, doublereal 
 	    *, doublereal *, integer *, integer *, doublereal *, integer *, 
 	    integer *);
     doublereal salfar;
-    extern /* Subroutine */ int dgeqrf_(integer *, integer *, doublereal *, 
+    extern /* Subroutine */ void dgeqrf_(integer *, integer *, doublereal *, 
 	    integer *, doublereal *, doublereal *, integer *, integer *), 
 	    dlacpy_(char *, integer *, integer *, doublereal *, integer *, 
 	    doublereal *, integer *);
     doublereal safmin;
-    extern /* Subroutine */ int dlaset_(char *, integer *, integer *, 
+    extern /* Subroutine */ void dlaset_(char *, integer *, integer *, 
 	    doublereal *, doublereal *, doublereal *, integer *);
     doublereal safmax;
     char chtemp[1];
     logical ldumma[1];
-    extern /* Subroutine */ int dhgeqz_(char *, char *, char *, integer *, 
+    extern /* Subroutine */ void dhgeqz_(char *, char *, char *, integer *, 
 	    integer *, integer *, doublereal *, integer *, doublereal *, 
 	    integer *, doublereal *, doublereal *, doublereal *, doublereal *,
 	     integer *, doublereal *, integer *, doublereal *, integer *, 
 	    integer *), dtgevc_(char *, char *, 
 	    logical *, integer *, doublereal *, integer *, doublereal *, 
 	    integer *, doublereal *, integer *, doublereal *, integer *, 
-	    integer *, integer *, doublereal *, integer *), 
-	    xerbla_(char *, integer *);
+	    integer *, integer *, doublereal *, integer *); 
+    extern int xerbla_(char *, integer *, ftnlen);
     integer ijobvl, iright;
     logical ilimit;
     extern integer ilaenv_(integer *, char *, char *, integer *, integer *, 
 	    integer *, integer *, ftnlen, ftnlen);
     integer ijobvr;
-    extern /* Subroutine */ int dorgqr_(integer *, integer *, integer *, 
+    extern /* Subroutine */ void dorgqr_(integer *, integer *, integer *, 
 	    doublereal *, integer *, doublereal *, doublereal *, integer *, 
 	    integer *);
     doublereal onepls;
     integer lwkmin, nb1, nb2, nb3;
-    extern /* Subroutine */ int dormqr_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void dormqr_(char *, char *, integer *, integer *, 
 	    integer *, doublereal *, integer *, doublereal *, doublereal *, 
 	    integer *, doublereal *, integer *, integer *);
     integer lwkopt;
@@ -997,16 +997,16 @@ rices</b> */
 
     if (*info != 0) {
 	i__1 = -(*info);
-	xerbla_("DGEGV ", &i__1);
-	return 0;
+	xerbla_("DGEGV ", &i__1, 6);
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /*     Get machine constants */
@@ -1034,7 +1034,7 @@ rices</b> */
 		iinfo);
 	if (iinfo != 0) {
 	    *info = *n + 10;
-	    return 0;
+	    return;
 	}
     }
 
@@ -1055,7 +1055,7 @@ rices</b> */
 		iinfo);
 	if (iinfo != 0) {
 	    *info = *n + 10;
-	    return 0;
+	    return;
 	}
     }
 
@@ -1426,7 +1426,7 @@ L100:
 L120:
     work[1] = (doublereal) lwkopt;
 
-    return 0;
+    return;
 
 /*     End of DGEGV */
 

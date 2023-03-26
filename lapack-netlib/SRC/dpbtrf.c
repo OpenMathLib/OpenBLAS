@@ -659,7 +659,7 @@ f"> */
 /* >  Peter Mayes and Giuseppe Radicati, IBM ECSEC, Rome, March 23, 1989 */
 
 /*  ===================================================================== */
-/* Subroutine */ int dpbtrf_(char *uplo, integer *n, integer *kd, doublereal *
+/* Subroutine */ void dpbtrf_(char *uplo, integer *n, integer *kd, doublereal *
 	ab, integer *ldab, integer *info)
 {
     /* System generated locals */
@@ -668,18 +668,19 @@ f"> */
     /* Local variables */
     doublereal work[1056]	/* was [33][32] */;
     integer i__, j;
-    extern /* Subroutine */ int dgemm_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void dgemm_(char *, char *, integer *, integer *, 
 	    integer *, doublereal *, doublereal *, integer *, doublereal *, 
 	    integer *, doublereal *, doublereal *, integer *);
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int dtrsm_(char *, char *, char *, char *, 
+    extern /* Subroutine */ void dtrsm_(char *, char *, char *, char *, 
 	    integer *, integer *, doublereal *, doublereal *, integer *, 
 	    doublereal *, integer *);
     integer i2, i3;
-    extern /* Subroutine */ int dsyrk_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void dsyrk_(char *, char *, integer *, integer *, 
 	    doublereal *, doublereal *, integer *, doublereal *, doublereal *,
 	     integer *), dpbtf2_(char *, integer *, integer *,
-	     doublereal *, integer *, integer *), dpotf2_(char *, 
+	     doublereal *, integer *, integer *);
+    extern int dpotf2_(char *, 
 	    integer *, doublereal *, integer *, integer *);
     integer ib, nb, ii, jj;
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
@@ -717,13 +718,13 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DPBTRF", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /*     Determine the block size for this environment */
@@ -1015,10 +1016,10 @@ f"> */
 	    }
 	}
     }
-    return 0;
+    return;
 
 L150:
-    return 0;
+    return;
 
 /*     End of DPBTRF */
 

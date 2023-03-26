@@ -10,7 +10,7 @@
 		http://www.netlib.org/f2c/libf2c.zip
 */
 
-#include "../config.h"
+#include "relapack_config.h"
 #include "f2c.h"
 
 #if BLAS_COMPLEX_FUNCTIONS_AS_ROUTINES

@@ -683,7 +683,7 @@ static integer c_n1 = -1;
 /* > \endverbatim */
 
 /*  ===================================================================== */
-/* Subroutine */ int zsytri_3_(char *uplo, integer *n, doublecomplex *a, 
+/* Subroutine */ void zsytri_3_(char *uplo, integer *n, doublecomplex *a, 
 	integer *lda, doublecomplex *e, integer *ipiv, doublecomplex *work, 
 	integer *lwork, integer *info)
 {
@@ -693,7 +693,7 @@ static integer c_n1 = -1;
     /* Local variables */
     extern logical lsame_(char *, char *);
     logical upper;
-    extern /* Subroutine */ int zsytri_3x_(char *, integer *, doublecomplex *
+    extern /* Subroutine */ void zsytri_3x_(char *, integer *, doublecomplex *
 	    , integer *, doublecomplex *, integer *, doublecomplex *, integer 
 	    *, integer *);
     integer nb;
@@ -749,16 +749,16 @@ static integer c_n1 = -1;
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZSYTRI_3", &i__1, (ftnlen)8);
-	return 0;
+	return;
     } else if (lquery) {
 	work[1].r = (doublereal) lwkopt, work[1].i = 0.;
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
     zsytri_3x_(uplo, n, &a[a_offset], lda, &e[1], &ipiv[1], &work[1], &nb, 
@@ -766,7 +766,7 @@ static integer c_n1 = -1;
 
     work[1].r = (doublereal) lwkopt, work[1].i = 0.;
 
-    return 0;
+    return;
 
 /*     End of ZSYTRI_3 */
 

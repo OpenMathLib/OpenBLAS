@@ -94,7 +94,7 @@ SCLAUX = \
    slagts.o slamrg.o slanst.o \
    slapy2.o slapy3.o slarnv.o \
    slarra.o slarrb.o slarrc.o slarrd.o slarre.o slarrf.o slarrj.o \
-   slarrk.o slarrr.o slaneg.o \
+   slarrk.o slarrr.o slaneg.o slarmm.o \
    slartg.o slaruv.o slas2.o  slascl.o \
    slasd0.o slasd1.o slasd2.o slasd3.o slasd4.o slasd5.o slasd6.o \
    slasd7.o slasd8.o slasda.o slasdq.o slasdt.o \
@@ -116,7 +116,7 @@ DZLAUX = \
    dlagts.o dlamrg.o dlanst.o \
    dlapy2.o dlapy3.o dlarnv.o \
    dlarra.o dlarrb.o dlarrc.o dlarrd.o dlarre.o dlarrf.o dlarrj.o \
-   dlarrk.o dlarrr.o dlaneg.o \
+   dlarrk.o dlarrr.o dlaneg.o dlarmm.o \
    dlartg.o dlaruv.o dlas2.o  dlascl.o \
    dlasd0.o dlasd1.o dlasd2.o dlasd3.o dlasd4.o dlasd5.o dlasd6.o \
    dlasd7.o dlasd8.o dlasda.o dlasdq.o dlasdt.o \
@@ -207,7 +207,7 @@ SLASRC_O = \
    ssytrd_2stage.o ssytrd_sy2sb.o ssytrd_sb2st.o ssb2st_kernels.o \
    ssyevd_2stage.o ssyev_2stage.o ssyevx_2stage.o ssyevr_2stage.o \
    ssbev_2stage.o ssbevx_2stage.o ssbevd_2stage.o ssygv_2stage.o \
-   sgesvdq.o 
+   sgesvdq.o slatrs3.o strsyl3.o sgelst.o
    
 endif
 
@@ -316,7 +316,7 @@ CLASRC_O = \
    chetrd_2stage.o chetrd_he2hb.o chetrd_hb2st.o chb2st_kernels.o \
    cheevd_2stage.o cheev_2stage.o cheevx_2stage.o cheevr_2stage.o \
    chbev_2stage.o chbevx_2stage.o chbevd_2stage.o chegv_2stage.o \
-   cgesvdq.o
+   cgesvdq.o clatrs3.o ctrsyl3.o cgelst.o
 endif
 
 ifdef USEXBLAS
@@ -417,7 +417,7 @@ DLASRC_O = \
    dsytrd_2stage.o dsytrd_sy2sb.o dsytrd_sb2st.o dsb2st_kernels.o \
    dsyevd_2stage.o dsyev_2stage.o dsyevx_2stage.o dsyevr_2stage.o \
    dsbev_2stage.o dsbevx_2stage.o dsbevd_2stage.o dsygv_2stage.o \
-   dgesvdq.o 
+   dgesvdq.o dlatrs3.o dtrsyl3.o dgelst.o
 endif
 
 ifdef USEXBLAS
@@ -526,7 +526,7 @@ ZLASRC_O = \
    zhetrd_2stage.o zhetrd_he2hb.o zhetrd_hb2st.o zhb2st_kernels.o \
    zheevd_2stage.o zheev_2stage.o zheevx_2stage.o zheevr_2stage.o \
    zhbev_2stage.o zhbevx_2stage.o zhbevd_2stage.o zhegv_2stage.o \
-   zgesvdq.o
+   zgesvdq.o zlatrs3.o ztrsyl3.o zgelst.o
 endif
 
 ifdef USEXBLAS
@@ -572,22 +572,26 @@ ALL_AUX_OBJS = xerbla.o ../INSTALL/lsame.o
 SLAPACKOBJS     = \
         sgetrf.o sgetrs.o spotrf.o sgetf2.o \
         spotf2.o slaswp.o sgesv.o slauu2.o  \
-        slauum.o strti2.o strtri.o strtrs.o
+        slauum.o strti2.o strtri.o strtrs.o \
+	ssymv.o ssyr.o sspmv.o sspr.o
 
 DLAPACKOBJS     = \
         dgetrf.o dgetrs.o dpotrf.o dgetf2.o \
         dpotf2.o dlaswp.o dgesv.o dlauu2.o  \
-        dlauum.o dtrti2.o dtrtri.o dtrtrs.o
+        dlauum.o dtrti2.o dtrtri.o dtrtrs.o \
+	dsymv.o dsyr.o dspmv.o dspr.o
 
 CLAPACKOBJS     = \
         cgetrf.o cgetrs.o cpotrf.o cgetf2.o \
         cpotf2.o claswp.o cgesv.o clauu2.o \
-        clauum.o ctrti2.o ctrtri.o ctrtrs.o 
+        clauum.o ctrti2.o ctrtri.o ctrtrs.o \
+	csymv.o csyr.o cspmv.o cspr.o
 
 ZLAPACKOBJS     = \
         zgetrf.o zgetrs.o zpotrf.o zgetf2.o \
         zpotf2.o zlaswp.o zgesv.o  zlauu2.o \
-        zlauum.o ztrti2.o ztrtri.o ztrtrs.o
+        zlauum.o ztrti2.o ztrtri.o ztrtrs.o \
+	zsymv.o zsyr.o zspmv.o zspr.o
 
 ALLAUX = $(filter-out $(ALL_AUX_OBJS),$(ALLAUX_O))
 SLASRC = $(filter-out $(SLAPACKOBJS),$(SLASRC_O))

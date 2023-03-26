@@ -599,7 +599,7 @@ array.f"> */
 /* > \ingroup OTHERauxiliary */
 
 /*  ===================================================================== */
-/* Subroutine */ int xerbla_array_(char *srname_array__, integer *
+/* Subroutine */ void xerbla_array_(char *srname_array__, integer *
 	srname_len__, integer *info, integer srname_array_len)
 {
     /* System generated locals */
@@ -634,6 +634,6 @@ array.f"> */
     }
 fprintf(stderr,"xerbla_array calling xerbla with srname #%s#\n",srname);
     xerbla_(srname, info, (ftnlen)strlen(srname));
-    return 0;
+    return;
 } /* xerbla_array__ */
 

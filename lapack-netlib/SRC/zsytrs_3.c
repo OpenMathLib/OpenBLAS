@@ -677,7 +677,7 @@ static doublecomplex c_b1 = {1.,0.};
 /* > \endverbatim */
 
 /*  ===================================================================== */
-/* Subroutine */ int zsytrs_3_(char *uplo, integer *n, integer *nrhs, 
+/* Subroutine */ void zsytrs_3_(char *uplo, integer *n, integer *nrhs, 
 	doublecomplex *a, integer *lda, doublecomplex *e, integer *ipiv, 
 	doublecomplex *b, integer *ldb, integer *info)
 {
@@ -690,10 +690,10 @@ static doublecomplex c_b1 = {1.,0.};
     integer i__, j, k;
     extern logical lsame_(char *, char *);
     doublecomplex denom;
-    extern /* Subroutine */ int zscal_(integer *, doublecomplex *, 
+    extern /* Subroutine */ void zscal_(integer *, doublecomplex *, 
 	    doublecomplex *, integer *);
     logical upper;
-    extern /* Subroutine */ int zswap_(integer *, doublecomplex *, integer *, 
+    extern /* Subroutine */ void zswap_(integer *, doublecomplex *, integer *, 
 	    doublecomplex *, integer *), ztrsm_(char *, char *, char *, char *
 	    , integer *, integer *, doublecomplex *, doublecomplex *, integer 
 	    *, doublecomplex *, integer *);
@@ -739,13 +739,13 @@ static doublecomplex c_b1 = {1.,0.};
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZSYTRS_3", &i__1, (ftnlen)8);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0 || *nrhs == 0) {
-	return 0;
+	return;
     }
 
     if (upper) {
@@ -933,7 +933,7 @@ static doublecomplex c_b1 = {1.,0.};
 
     }
 
-    return 0;
+    return;
 
 /*     End of ZSYTRS_3 */
 

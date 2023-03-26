@@ -785,7 +785,7 @@ static real c_b24 = 1.f;
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int sggsvp3_(char *jobu, char *jobv, char *jobq, integer *m, 
+/* Subroutine */ void sggsvp3_(char *jobu, char *jobv, char *jobq, integer *m, 
 	integer *p, integer *n, real *a, integer *lda, real *b, integer *ldb, 
 	real *tola, real *tolb, integer *k, integer *l, real *u, integer *ldu,
 	 real *v, integer *ldv, real *q, integer *ldq, integer *iwork, real *
@@ -800,7 +800,7 @@ static real c_b24 = 1.f;
     integer i__, j;
     extern logical lsame_(char *, char *);
     logical wantq, wantu, wantv;
-    extern /* Subroutine */ int sgeqp3_(integer *, integer *, real *, integer 
+    extern /* Subroutine */ void sgeqp3_(integer *, integer *, real *, integer 
 	    *, integer *, real *, real *, integer *, integer *), sgeqr2_(
 	    integer *, integer *, real *, integer *, real *, real *, integer *
 	    ), sgerq2_(integer *, integer *, real *, integer *, real *, real *
@@ -809,8 +809,9 @@ static real c_b24 = 1.f;
 	    integer *, integer *, integer *, real *, integer *, real *, real *
 	    , integer *, real *, integer *), sormr2_(char *, 
 	    char *, integer *, integer *, integer *, real *, integer *, real *
-	    , real *, integer *, real *, integer *), xerbla_(
-	    char *, integer *, ftnlen), slacpy_(char *, integer *, integer *, 
+	    , real *, integer *, real *, integer *);
+    extern int xerbla_(char *, integer *, ftnlen);
+    extern void slacpy_(char *, integer *, integer *, 
 	    real *, integer *, real *, integer *), slaset_(char *, 
 	    integer *, integer *, real *, real *, real *, integer *), 
 	    slapmt_(logical *, integer *, integer *, real *, integer *, 
@@ -917,10 +918,10 @@ static real c_b24 = 1.f;
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("SGGSVP3", &i__1, (ftnlen)7);
-	return 0;
+	return;
     }
     if (lquery) {
-	return 0;
+	return;
     }
 
 /*     QR with column pivoting of B: B*P = V*( S11 S12 ) */
@@ -1172,7 +1173,7 @@ static real c_b24 = 1.f;
     }
 
     work[1] = (real) lwkopt;
-    return 0;
+    return;
 
 /*     End of SGGSVP3 */
 

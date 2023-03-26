@@ -635,7 +635,7 @@ static doublereal c_b4 = 0.;
 /* > \ingroup double_matgen */
 
 /*  ===================================================================== */
-/* Subroutine */ int dlahilb_(integer *n, integer *nrhs, doublereal *a, 
+/* Subroutine */ void dlahilb_(integer *n, integer *nrhs, doublereal *a, 
 	integer *lda, doublereal *x, integer *ldx, doublereal *b, integer *
 	ldb, doublereal *work, integer *info)
 {
@@ -645,9 +645,9 @@ static doublereal c_b4 = 0.;
 
     /* Local variables */
     integer i__, j, m, r__, ti, tm;
-    extern /* Subroutine */ int dlaset_(char *, integer *, integer *, 
-	    doublereal *, doublereal *, doublereal *, integer *), 
-	    xerbla_(char *, integer *);
+    extern /* Subroutine */ void dlaset_(char *, integer *, integer *, 
+	    doublereal *, doublereal *, doublereal *, integer *); 
+    extern int xerbla_(char *, integer *, ftnlen);
 
 
 /*  -- LAPACK test routine (version 3.8.0) -- */
@@ -691,8 +691,8 @@ static doublereal c_b4 = 0.;
     }
     if (*info < 0) {
 	i__1 = -(*info);
-	xerbla_("DLAHILB", &i__1);
-	return 0;
+	xerbla_("DLAHILB", &i__1, 7);
+	return;
     }
     if (*n > 6) {
 	*info = 1;
@@ -745,6 +745,6 @@ static doublereal c_b4 = 0.;
 	}
     }
 
-    return 0;
+    return;
 } /* dlahilb_ */
 

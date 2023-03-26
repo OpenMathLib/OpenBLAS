@@ -991,7 +991,7 @@ f"> */
 /* >  drmac@math.hr. Thank you. */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int sgejsv_(char *joba, char *jobu, char *jobv, char *jobr, 
+/* Subroutine */ void sgejsv_(char *joba, char *jobu, char *jobv, char *jobr, 
 	char *jobt, char *jobp, integer *m, integer *n, real *a, integer *lda,
 	 real *sva, real *u, integer *ldu, real *v, integer *ldv, real *work, 
 	integer *lwork, integer *iwork, integer *info)
@@ -1011,23 +1011,23 @@ f"> */
     integer p, q;
     logical jracc;
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int sscal_(integer *, real *, real *, integer *);
+    extern /* Subroutine */ void sscal_(integer *, real *, real *, integer *);
     real small, entra, sfmin;
     logical lsvec;
     real epsln;
     logical rsvec;
-    extern /* Subroutine */ int scopy_(integer *, real *, integer *, real *, 
+    extern /* Subroutine */ void scopy_(integer *, real *, integer *, real *, 
 	    integer *);
     integer n1;
-    extern /* Subroutine */ int sswap_(integer *, real *, integer *, real *, 
+    extern /* Subroutine */ void sswap_(integer *, real *, integer *, real *, 
 	    integer *);
     logical l2aber;
-    extern /* Subroutine */ int strsm_(char *, char *, char *, char *, 
+    extern /* Subroutine */ void strsm_(char *, char *, char *, char *, 
 	    integer *, integer *, real *, real *, integer *, real *, integer *
 	    );
     real condr1, condr2, uscal1, uscal2;
     logical l2kill, l2rank, l2tran;
-    extern /* Subroutine */ int sgeqp3_(integer *, integer *, real *, integer 
+    extern /* Subroutine */ void sgeqp3_(integer *, integer *, real *, integer 
 	    *, integer *, real *, real *, integer *, integer *);
     logical l2pert;
     integer nr;
@@ -1038,10 +1038,10 @@ f"> */
     real aatmax;
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     logical noscal;
-    extern /* Subroutine */ int sgelqf_(integer *, integer *, real *, integer 
+    extern /* Subroutine */ void sgelqf_(integer *, integer *, real *, integer 
 	    *, real *, real *, integer *, integer *);
     extern integer isamax_(integer *, real *, integer *);
-    extern /* Subroutine */ int slascl_(char *, integer *, integer *, real *, 
+    extern /* Subroutine */ void slascl_(char *, integer *, integer *, real *, 
 	    real *, integer *, integer *, real *, integer *, integer *), sgeqrf_(integer *, integer *, real *, integer *, real *, 
 	    real *, integer *, integer *), slacpy_(char *, integer *, integer 
 	    *, real *, integer *, real *, integer *), slaset_(char *, 
@@ -1049,16 +1049,17 @@ f"> */
     real entrat;
     logical almort;
     real maxprj;
-    extern /* Subroutine */ int spocon_(char *, integer *, real *, integer *, 
+    extern /* Subroutine */ void spocon_(char *, integer *, real *, integer *, 
 	    real *, real *, real *, integer *, integer *);
     logical errest;
-    extern /* Subroutine */ int sgesvj_(char *, char *, char *, integer *, 
+    extern /* Subroutine */ void sgesvj_(char *, char *, char *, integer *, 
 	    integer *, real *, integer *, real *, integer *, real *, integer *
 	    , real *, integer *, integer *), slassq_(
 	    integer *, real *, integer *, real *, real *);
     logical transp;
     extern /* Subroutine */ int slaswp_(integer *, real *, integer *, integer 
-	    *, integer *, integer *, integer *), sorgqr_(integer *, integer *,
+	    *, integer *, integer *, integer *); 
+    extern void sorgqr_(integer *, integer *,
 	     integer *, real *, integer *, real *, real *, integer *, integer 
 	    *), sormlq_(char *, char *, integer *, integer *, integer *, real 
 	    *, integer *, real *, real *, integer *, real *, integer *, 
@@ -1168,7 +1169,7 @@ f"> */
 /*       #:( */
 	i__1 = -(*info);
 	xerbla_("SGEJSV", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return for void matrix (Y3K safe) */
@@ -1184,7 +1185,7 @@ f"> */
 	work[5] = 0.f;
 	work[6] = 0.f;
 	work[7] = 0.f;
-	return 0;
+	return;
     }
 
 /*     Determine whether the matrix U should be M x N or M x M */
@@ -1224,7 +1225,7 @@ f"> */
 	    *info = -9;
 	    i__2 = -(*info);
 	    xerbla_("SGEJSV", &i__2, (ftnlen)6);
-	    return 0;
+	    return;
 	}
 	aaqq = sqrt(aaqq);
 	if (aapp < big / aaqq && noscal) {
@@ -1286,7 +1287,7 @@ f"> */
 	iwork[1] = 0;
 	iwork[2] = 0;
 	iwork[3] = 0;
-	return 0;
+	return;
     }
 
 /*     Issue warning if denormalized column norms detected. Override the */
@@ -1351,7 +1352,7 @@ f"> */
 	    work[6] = 0.f;
 	    work[7] = 0.f;
 	}
-	return 0;
+	return;
 
     }
 
@@ -2797,6 +2798,6 @@ L3302:
     iwork[2] = numrank;
     iwork[3] = warning;
 
-    return 0;
+    return;
 } /* sgejsv_ */
 

@@ -1000,7 +1000,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 /* > \ingroup doublePOsolve */
 
 /*  ===================================================================== */
-/* Subroutine */ int dposvxx_(char *fact, char *uplo, integer *n, integer *
+/* Subroutine */ void dposvxx_(char *fact, char *uplo, integer *n, integer *
 	nrhs, doublereal *a, integer *lda, doublereal *af, integer *ldaf, 
 	char *equed, doublereal *s, doublereal *b, integer *ldb, doublereal *
 	x, integer *ldx, doublereal *rcond, doublereal *rpvgrw, doublereal *
@@ -1024,16 +1024,16 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
     logical equil, rcequ;
     extern doublereal dlamch_(char *);
     logical nofact;
-    extern /* Subroutine */ int dlacpy_(char *, integer *, integer *, 
-	    doublereal *, integer *, doublereal *, integer *), 
-	    xerbla_(char *, integer *, ftnlen);
+    extern /* Subroutine */ void dlacpy_(char *, integer *, integer *, 
+	    doublereal *, integer *, doublereal *, integer *); 
+    extern int xerbla_(char *, integer *, ftnlen);
     doublereal bignum;
     integer infequ;
-    extern /* Subroutine */ int dlaqsy_(char *, integer *, doublereal *, 
+    extern /* Subroutine */ void dlaqsy_(char *, integer *, doublereal *, 
 	    integer *, doublereal *, doublereal *, doublereal *, char *), dpotrf_(char *, integer *, doublereal *, integer 
 	    *, integer *);
     doublereal smlnum;
-    extern /* Subroutine */ int dpotrs_(char *, integer *, integer *, 
+    extern /* Subroutine */ void dpotrs_(char *, integer *, integer *, 
 	    doublereal *, integer *, doublereal *, integer *, integer *), dlascl2_(integer *, integer *, doublereal *, doublereal *
 	    , integer *), dpoequb_(integer *, doublereal *, integer *, 
 	    doublereal *, doublereal *, doublereal *, integer *), dporfsx_(
@@ -1149,7 +1149,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DPOSVXX", &i__1, (ftnlen)7);
-	return 0;
+	return;
     }
 
     if (equil) {
@@ -1189,7 +1189,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 
 	    *rpvgrw = dla_porpvgrw_(uplo, info, &a[a_offset], lda, &af[
 		    af_offset], ldaf, &work[1]);
-	    return 0;
+	    return;
 	}
     }
 
@@ -1218,7 +1218,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 	dlascl2_(n, nrhs, &s[1], &x[x_offset], ldx);
     }
 
-    return 0;
+    return;
 
 /*     End of DPOSVXX */
 

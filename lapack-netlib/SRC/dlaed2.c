@@ -726,7 +726,7 @@ f"> */
 /* >  Modified by Francoise Tisseur, University of Tennessee */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int dlaed2_(integer *k, integer *n, integer *n1, doublereal *
+/* Subroutine */ void dlaed2_(integer *k, integer *n, integer *n1, doublereal *
 	d__, doublereal *q, integer *ldq, integer *indxq, doublereal *rho, 
 	doublereal *z__, doublereal *dlamda, doublereal *w, doublereal *q2, 
 	integer *indx, integer *indxc, integer *indxp, integer *coltyp, 
@@ -738,13 +738,13 @@ f"> */
 
     /* Local variables */
     integer imax, jmax;
-    extern /* Subroutine */ int drot_(integer *, doublereal *, integer *, 
+    extern /* Subroutine */ void drot_(integer *, doublereal *, integer *, 
 	    doublereal *, integer *, doublereal *, doublereal *);
     integer ctot[4];
     doublereal c__;
     integer i__, j;
     doublereal s, t;
-    extern /* Subroutine */ int dscal_(integer *, doublereal *, doublereal *, 
+    extern /* Subroutine */ void dscal_(integer *, doublereal *, doublereal *, 
 	    integer *), dcopy_(integer *, doublereal *, integer *, doublereal 
 	    *, integer *);
     integer k2, n2;
@@ -753,9 +753,10 @@ f"> */
     extern doublereal dlamch_(char *);
     integer pj, js;
     extern integer idamax_(integer *, doublereal *, integer *);
-    extern /* Subroutine */ int dlamrg_(integer *, integer *, doublereal *, 
+    extern /* Subroutine */ void dlamrg_(integer *, integer *, doublereal *, 
 	    integer *, integer *, integer *), dlacpy_(char *, integer *, 
-	    integer *, doublereal *, integer *, doublereal *, integer *), xerbla_(char *, integer *, ftnlen);
+	    integer *, doublereal *, integer *, doublereal *, integer *);
+    extern int xerbla_(char *, integer *, ftnlen);
     integer iq1, iq2, n1p1;
     doublereal eps, tau, tol;
     integer psm[4];
@@ -804,13 +805,13 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DLAED2", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
     n2 = *n - *n1;
@@ -1111,7 +1112,7 @@ L100:
     }
 
 L190:
-    return 0;
+    return;
 
 /*     End of DLAED2 */
 

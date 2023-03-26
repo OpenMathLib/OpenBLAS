@@ -677,7 +677,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int dsbtrd_(char *vect, char *uplo, integer *n, integer *kd, 
+/* Subroutine */ void dsbtrd_(char *vect, char *uplo, integer *n, integer *kd, 
 	doublereal *ab, integer *ldab, doublereal *d__, doublereal *e, 
 	doublereal *q, integer *ldq, doublereal *work, integer *info)
 {
@@ -688,19 +688,21 @@ f"> */
     /* Local variables */
     integer inca, jend, lend, jinc, incx, last;
     doublereal temp;
-    extern /* Subroutine */ int drot_(integer *, doublereal *, integer *, 
+    extern /* Subroutine */ void drot_(integer *, doublereal *, integer *, 
 	    doublereal *, integer *, doublereal *, doublereal *);
     integer j1end, j1inc, i__, j, k, l, iqend;
     extern logical lsame_(char *, char *);
     logical initq, wantq, upper;
     integer i2, j1, j2;
-    extern /* Subroutine */ int dlar2v_(integer *, doublereal *, doublereal *,
+    extern /* Subroutine */ void dlar2v_(integer *, doublereal *, doublereal *,
 	     doublereal *, integer *, doublereal *, doublereal *, integer *);
     integer nq, nr, iqaend;
-    extern /* Subroutine */ int dlaset_(char *, integer *, integer *, 
+    extern /* Subroutine */ void dlaset_(char *, integer *, integer *, 
 	    doublereal *, doublereal *, doublereal *, integer *), 
 	    dlartg_(doublereal *, doublereal *, doublereal *, doublereal *, 
-	    doublereal *), xerbla_(char *, integer *, ftnlen), dlargv_(
+	    doublereal *);
+    extern int xerbla_(char *, integer *, ftnlen);
+    extern void dlargv_(
 	    integer *, doublereal *, integer *, doublereal *, integer *, 
 	    doublereal *, integer *), dlartv_(integer *, doublereal *, 
 	    integer *, doublereal *, integer *, doublereal *, doublereal *, 
@@ -756,13 +758,13 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DSBTRD", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /*     Initialize Q to the unit matrix, if needed */
@@ -1277,7 +1279,7 @@ f"> */
 	}
     }
 
-    return 0;
+    return;
 
 /*     End of DSBTRD */
 

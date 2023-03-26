@@ -173,3 +173,8 @@ HAVE_C11
 ARCH_E2K
 #endif
 
+#if defined(__EMSCRIPTEN__)
+ARCH_RISCV64
+OS_WINDOWS
+#endif
+

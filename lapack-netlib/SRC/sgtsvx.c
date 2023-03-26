@@ -804,7 +804,7 @@ f"> */
 /* > \ingroup realGTsolve */
 
 /*  ===================================================================== */
-/* Subroutine */ int sgtsvx_(char *fact, char *trans, integer *n, integer *
+/* Subroutine */ void sgtsvx_(char *fact, char *trans, integer *n, integer *
 	nrhs, real *dl, real *d__, real *du, real *dlf, real *df, real *duf, 
 	real *du2, integer *ipiv, real *b, integer *ldb, real *x, integer *
 	ldx, real *rcond, real *ferr, real *berr, real *work, integer *iwork, 
@@ -817,18 +817,18 @@ f"> */
     char norm[1];
     extern logical lsame_(char *, char *);
     real anorm;
-    extern /* Subroutine */ int scopy_(integer *, real *, integer *, real *, 
+    extern /* Subroutine */ void scopy_(integer *, real *, integer *, real *, 
 	    integer *);
     extern real slamch_(char *);
     logical nofact;
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     extern real slangt_(char *, integer *, real *, real *, real *);
-    extern /* Subroutine */ int slacpy_(char *, integer *, integer *, real *, 
+    extern /* Subroutine */ void slacpy_(char *, integer *, integer *, real *, 
 	    integer *, real *, integer *), sgtcon_(char *, integer *, 
 	    real *, real *, real *, real *, integer *, real *, real *, real *,
 	     integer *, integer *);
     logical notran;
-    extern /* Subroutine */ int sgtrfs_(char *, integer *, integer *, real *, 
+    extern /* Subroutine */ void sgtrfs_(char *, integer *, integer *, real *, 
 	    real *, real *, real *, real *, real *, real *, integer *, real *,
 	     integer *, real *, integer *, real *, real *, real *, integer *, 
 	    integer *), sgttrf_(integer *, real *, real *, real *, 
@@ -887,7 +887,7 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("SGTSVX", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
     if (nofact) {
@@ -907,7 +907,7 @@ f"> */
 
 	if (*info > 0) {
 	    *rcond = 0.f;
-	    return 0;
+	    return;
 	}
     }
 
@@ -944,7 +944,7 @@ f"> */
 	*info = *n + 1;
     }
 
-    return 0;
+    return;
 
 /*     End of SGTSVX */
 

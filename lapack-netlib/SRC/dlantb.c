@@ -661,13 +661,13 @@ doublereal dlantb_(char *norm, char *uplo, char *diag, integer *n, integer *k,
     doublereal ret_val, d__1;
 
     /* Local variables */
-    extern /* Subroutine */ int dcombssq_(doublereal *, doublereal *);
+    extern /* Subroutine */ void dcombssq_(doublereal *, doublereal *);
     integer i__, j, l;
     logical udiag;
     extern logical lsame_(char *, char *);
     doublereal value;
     extern logical disnan_(doublereal *);
-    extern /* Subroutine */ int dlassq_(integer *, doublereal *, integer *, 
+    extern /* Subroutine */ void dlassq_(integer *, doublereal *, integer *, 
 	    doublereal *, doublereal *);
     doublereal colssq[2], sum, ssq[2];
 

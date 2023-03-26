@@ -655,7 +655,7 @@ f"> */
 /* > \ingroup doubleOTHERcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int dtbcon_(char *norm, char *uplo, char *diag, integer *n, 
+/* Subroutine */ void dtbcon_(char *norm, char *uplo, char *diag, integer *n, 
 	integer *kd, doublereal *ab, integer *ldab, doublereal *rcond, 
 	doublereal *work, integer *iwork, integer *info)
 {
@@ -668,21 +668,22 @@ f"> */
     doublereal scale;
     extern logical lsame_(char *, char *);
     integer isave[3];
-    extern /* Subroutine */ int drscl_(integer *, doublereal *, doublereal *, 
+    extern /* Subroutine */ void drscl_(integer *, doublereal *, doublereal *, 
 	    integer *);
     doublereal anorm;
     logical upper;
     doublereal xnorm;
-    extern /* Subroutine */ int dlacn2_(integer *, doublereal *, doublereal *,
+    extern /* Subroutine */ void dlacn2_(integer *, doublereal *, doublereal *,
 	     integer *, doublereal *, integer *, integer *);
     extern doublereal dlamch_(char *);
     integer ix;
     extern integer idamax_(integer *, doublereal *, integer *);
     extern doublereal dlantb_(char *, char *, char *, integer *, integer *, 
 	    doublereal *, integer *, doublereal *);
-    extern /* Subroutine */ int dlatbs_(char *, char *, char *, char *, 
+    extern /* Subroutine */ void dlatbs_(char *, char *, char *, char *, 
 	    integer *, integer *, doublereal *, integer *, doublereal *, 
-	    doublereal *, doublereal *, integer *), xerbla_(char *, integer *, ftnlen);
+	    doublereal *, doublereal *, integer *);
+    extern int xerbla_(char *, integer *, ftnlen);
     doublereal ainvnm;
     logical onenrm;
     char normin[1];
@@ -730,14 +731,14 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DTBCON", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
 	*rcond = 1.;
-	return 0;
+	return;
     }
 
     *rcond = 0.;
@@ -802,7 +803,7 @@ L10:
     }
 
 L20:
-    return 0;
+    return;
 
 /*     End of DTBCON */
 

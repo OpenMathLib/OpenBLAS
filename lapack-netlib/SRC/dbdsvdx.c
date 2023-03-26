@@ -742,7 +742,7 @@ static integer c__2 = 2;
 /* > \ingroup doubleOTHEReigen */
 
 /*  ===================================================================== */
-/* Subroutine */ int dbdsvdx_(char *uplo, char *jobz, char *range, integer *n,
+/* Subroutine */ void dbdsvdx_(char *uplo, char *jobz, char *range, integer *n,
 	 doublereal *d__, doublereal *e, doublereal *vl, doublereal *vu, 
 	integer *il, integer *iu, integer *ns, doublereal *s, doublereal *z__,
 	 integer *ldz, doublereal *work, integer *iwork, integer *info)
@@ -762,23 +762,23 @@ static integer c__2 = 2;
     integer i__, idbeg, j, k;
     doublereal sqrt2;
     integer idend;
-    extern /* Subroutine */ int dscal_(integer *, doublereal *, doublereal *, 
+    extern /* Subroutine */ void dscal_(integer *, doublereal *, doublereal *, 
 	    integer *);
     integer isbeg;
     extern logical lsame_(char *, char *);
     integer idtgk, ietgk, iltgk, itemp;
-    extern /* Subroutine */ int dcopy_(integer *, doublereal *, integer *, 
+    extern /* Subroutine */ void dcopy_(integer *, doublereal *, integer *, 
 	    doublereal *, integer *);
     integer icolz;
     logical allsv;
     integer idptr;
     logical indsv;
     integer ieptr, iutgk;
-    extern /* Subroutine */ int daxpy_(integer *, doublereal *, doublereal *, 
+    extern /* Subroutine */ void daxpy_(integer *, doublereal *, doublereal *, 
 	    integer *, doublereal *, integer *);
     doublereal vltgk;
     logical lower;
-    extern /* Subroutine */ int dswap_(integer *, doublereal *, integer *, 
+    extern /* Subroutine */ void dswap_(integer *, doublereal *, integer *, 
 	    doublereal *, integer *);
     doublereal zjtji;
     logical split, valsv;
@@ -791,12 +791,12 @@ static integer c__2 = 2;
     integer iifail;
     doublereal mu;
     extern integer idamax_(integer *, doublereal *, integer *);
-    extern /* Subroutine */ int dlaset_(char *, integer *, integer *, 
-	    doublereal *, doublereal *, doublereal *, integer *), 
-	    xerbla_(char *, integer *, ftnlen);
+    extern /* Subroutine */ void dlaset_(char *, integer *, integer *, 
+	    doublereal *, doublereal *, doublereal *, integer *); 
+    extern int xerbla_(char *, integer *, ftnlen);
     doublereal abstol, thresh;
     integer iiwork;
-    extern /* Subroutine */ int dstevx_(char *, char *, integer *, doublereal 
+    extern /* Subroutine */ void dstevx_(char *, char *, integer *, doublereal 
 	    *, doublereal *, doublereal *, doublereal *, integer *, integer *,
 	     doublereal *, integer *, doublereal *, doublereal *, integer *, 
 	    doublereal *, integer *, integer *, integer *), 
@@ -868,14 +868,14 @@ static integer c__2 = 2;
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DBDSVDX", &i__1, (ftnlen)7);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible (N.LE.1) */
 
     *ns = 0;
     if (*n == 0) {
-	return 0;
+	return;
     }
 
     if (*n == 1) {
@@ -892,7 +892,7 @@ static integer c__2 = 2;
 	    z__[z_dim1 + 1] = d_sign(&c_b10, &d__[1]);
 	    z__[z_dim1 + 2] = 1.;
 	}
-	return 0;
+	return;
     }
 
     abstol = dlamch_("Safe Minimum") * 2;
@@ -1007,7 +1007,7 @@ static integer c__2 = 2;
 		iltgk, &iltgk, &abstol, ns, &s[1], &z__[z_offset], ldz, &work[
 		itemp], &iwork[iiwork], &iwork[iifail], info);
 	if (*ns == 0) {
-	    return 0;
+	    return;
 	} else {
 	    if (wantz) {
 		i__1 = *n << 1;
@@ -1208,7 +1208,7 @@ static integer c__2 = 2;
 			    , &iwork[iifail], info);
 		    if (*info != 0) {
 /*                    Exit with the error code from DSTEVX. */
-			return 0;
+			return;
 		    }
 		    emin = (d__1 = s[isbeg], abs(d__1));
 		    i__3 = isbeg + nsl - 1;
@@ -1262,7 +1262,7 @@ static integer c__2 = 2;
 				    z_dim1], &c__2);
 			    if (nrmu == 0.) {
 				*info = (*n << 1) + 1;
-				return 0;
+				return;
 			    }
 			    d__1 = 1. / nrmu;
 			    dscal_(&nru, &d__1, &z__[irowu + (icolz + i__) * 
@@ -1293,7 +1293,7 @@ static integer c__2 = 2;
 				    z_dim1], &c__2);
 			    if (nrmv == 0.) {
 				*info = (*n << 1) + 1;
-				return 0;
+				return;
 			    }
 			    d__1 = -1. / nrmv;
 			    dscal_(&nrv, &d__1, &z__[irowv + (icolz + i__) * 
@@ -1465,7 +1465,7 @@ static integer c__2 = 2;
 	}
     }
 
-    return 0;
+    return;
 
 /*     End of DBDSVDX */
 

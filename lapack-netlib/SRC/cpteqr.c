@@ -661,7 +661,7 @@ f"> */
 /* > \ingroup complexPTcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int cpteqr_(char *compz, integer *n, real *d__, real *e, 
+/* Subroutine */ void cpteqr_(char *compz, integer *n, real *d__, real *e, 
 	complex *z__, integer *ldz, real *work, integer *info)
 {
     /* System generated locals */
@@ -672,13 +672,14 @@ f"> */
     integer i__;
     extern logical lsame_(char *, char *);
     complex vt[1]	/* was [1][1] */;
-    extern /* Subroutine */ int claset_(char *, integer *, integer *, complex 
-	    *, complex *, complex *, integer *), xerbla_(char *, 
-	    integer *, ftnlen), cbdsqr_(char *, integer *, integer *, integer 
+    extern /* Subroutine */ void claset_(char *, integer *, integer *, complex 
+	    *, complex *, complex *, integer *);
+    extern int xerbla_(char *, integer *, ftnlen);
+    extern void cbdsqr_(char *, integer *, integer *, integer 
 	    *, integer *, real *, real *, complex *, integer *, complex *, 
 	    integer *, complex *, integer *, real *, integer *);
     integer icompz;
-    extern /* Subroutine */ int spttrf_(integer *, real *, real *, integer *);
+    extern /* Subroutine */ void spttrf_(integer *, real *, real *, integer *);
     integer nru;
 
 
@@ -723,13 +724,13 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CPTEQR", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
     if (*n == 1) {
@@ -737,7 +738,7 @@ f"> */
 	    i__1 = z_dim1 + 1;
 	    z__[i__1].r = 1.f, z__[i__1].i = 0.f;
 	}
-	return 0;
+	return;
     }
     if (icompz == 2) {
 	claset_("Full", n, n, &c_b1, &c_b2, &z__[z_offset], ldz);
@@ -747,7 +748,7 @@ f"> */
 
     spttrf_(n, &d__[1], &e[1], info);
     if (*info != 0) {
-	return 0;
+	return;
     }
     i__1 = *n;
     for (i__ = 1; i__ <= i__1; ++i__) {
@@ -783,7 +784,7 @@ f"> */
 	*info = *n + *info;
     }
 
-    return 0;
+    return;
 
 /*     End of CPTEQR */
 

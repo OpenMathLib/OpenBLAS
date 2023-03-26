@@ -654,7 +654,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int sgeqlf_(integer *m, integer *n, real *a, integer *lda, 
+/* Subroutine */ void sgeqlf_(integer *m, integer *n, real *a, integer *lda, 
 	real *tau, real *work, integer *lwork, integer *info)
 {
     /* System generated locals */
@@ -662,15 +662,16 @@ f"> */
 
     /* Local variables */
     integer i__, k, nbmin, iinfo;
-    extern /* Subroutine */ int sgeql2_(integer *, integer *, real *, integer 
+    extern /* Subroutine */ void sgeql2_(integer *, integer *, real *, integer 
 	    *, real *, real *, integer *);
     integer ib, nb, ki, kk, mu, nu, nx;
-    extern /* Subroutine */ int slarfb_(char *, char *, char *, char *, 
+    extern /* Subroutine */ void slarfb_(char *, char *, char *, char *, 
 	    integer *, integer *, integer *, real *, integer *, real *, 
-	    integer *, real *, integer *, real *, integer *), xerbla_(char *, integer *, ftnlen);
+	    integer *, real *, integer *, real *, integer *);
+    extern int xerbla_(char *, integer *, ftnlen);
     extern integer ilaenv_(integer *, char *, char *, integer *, integer *, 
 	    integer *, integer *, ftnlen, ftnlen);
-    extern /* Subroutine */ int slarft_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void slarft_(char *, char *, integer *, integer *, 
 	    real *, integer *, real *, real *, integer *);
     integer ldwork, lwkopt;
     logical lquery;
@@ -725,15 +726,15 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("SGEQLF", &i__1, (ftnlen)6);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (k == 0) {
-	return 0;
+	return;
     }
 
     nbmin = 2;
@@ -825,7 +826,7 @@ f"> */
     }
 
     work[1] = (real) iws;
-    return 0;
+    return;
 
 /*     End of SGEQLF */
 

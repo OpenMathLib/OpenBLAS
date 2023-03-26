@@ -760,7 +760,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int ztrsna_(char *job, char *howmny, logical *select, 
+/* Subroutine */ void ztrsna_(char *job, char *howmny, logical *select, 
 	integer *n, doublecomplex *t, integer *ldt, doublecomplex *vl, 
 	integer *ldvl, doublecomplex *vr, integer *ldvr, doublereal *s, 
 	doublereal *sep, integer *mm, integer *m, doublecomplex *work, 
@@ -785,7 +785,7 @@ f"> */
     doublecomplex dummy[1];
     logical wants;
     doublereal xnorm;
-    extern /* Subroutine */ int zlacn2_(integer *, doublecomplex *, 
+    extern /* Subroutine */ void zlacn2_(integer *, doublecomplex *, 
 	    doublecomplex *, doublereal *, integer *, integer *), dlabad_(
 	    doublereal *, doublereal *);
     extern doublereal dznrm2_(integer *, doublecomplex *, integer *), dlamch_(
@@ -796,14 +796,14 @@ f"> */
     logical wantbh;
     extern integer izamax_(integer *, doublecomplex *, integer *);
     logical somcon;
-    extern /* Subroutine */ int zdrscl_(integer *, doublereal *, 
+    extern /* Subroutine */ void zdrscl_(integer *, doublereal *, 
 	    doublecomplex *, integer *);
     char normin[1];
-    extern /* Subroutine */ int zlacpy_(char *, integer *, integer *, 
+    extern /* Subroutine */ void zlacpy_(char *, integer *, integer *, 
 	    doublecomplex *, integer *, doublecomplex *, integer *);
     doublereal smlnum;
     logical wantsp;
-    extern /* Subroutine */ int zlatrs_(char *, char *, char *, char *, 
+    extern /* Subroutine */ void zlatrs_(char *, char *, char *, char *, 
 	    integer *, doublecomplex *, integer *, doublecomplex *, 
 	    doublereal *, doublereal *, integer *), ztrexc_(char *, integer *, doublecomplex *, integer *, 
 	    doublecomplex *, integer *, integer *, integer *, integer *);
@@ -883,19 +883,19 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZTRSNA", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
     if (*n == 1) {
 	if (somcon) {
 	    if (! select[1]) {
-		return 0;
+		return;
 	    }
 	}
 	if (wants) {
@@ -904,7 +904,7 @@ f"> */
 	if (wantsp) {
 	    sep[1] = z_abs(&t[t_dim1 + 1]);
 	}
-	return 0;
+	return;
     }
 
 /*     Get machine constants */
@@ -1021,7 +1021,7 @@ L40:
 L50:
 	;
     }
-    return 0;
+    return;
 
 /*     End of ZTRSNA */
 

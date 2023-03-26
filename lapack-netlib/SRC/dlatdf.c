@@ -687,7 +687,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int dlatdf_(integer *ijob, integer *n, doublereal *z__, 
+/* Subroutine */ void dlatdf_(integer *ijob, integer *n, doublereal *z__, 
 	integer *ldz, doublereal *rhs, doublereal *rdsum, doublereal *rdscal, 
 	integer *ipiv, integer *jpiv)
 {
@@ -701,25 +701,26 @@ f"> */
     integer info;
     doublereal temp, work[32];
     integer i__, j, k;
-    extern /* Subroutine */ int dscal_(integer *, doublereal *, doublereal *, 
+    extern /* Subroutine */ void dscal_(integer *, doublereal *, doublereal *, 
 	    integer *);
     extern doublereal dasum_(integer *, doublereal *, integer *);
     doublereal pmone;
-    extern /* Subroutine */ int dcopy_(integer *, doublereal *, integer *, 
+    extern /* Subroutine */ void dcopy_(integer *, doublereal *, integer *, 
 	    doublereal *, integer *), daxpy_(integer *, doublereal *, 
 	    doublereal *, integer *, doublereal *, integer *);
     doublereal sminu;
     integer iwork[8];
     doublereal splus;
-    extern /* Subroutine */ int dgesc2_(integer *, doublereal *, integer *, 
+    extern /* Subroutine */ void dgesc2_(integer *, doublereal *, integer *, 
 	    doublereal *, integer *, integer *, doublereal *);
     doublereal bm, bp;
-    extern /* Subroutine */ int dgecon_(char *, integer *, doublereal *, 
+    extern /* Subroutine */ void dgecon_(char *, integer *, doublereal *, 
 	    integer *, doublereal *, doublereal *, doublereal *, integer *, 
 	    integer *);
     doublereal xm[8], xp[8];
-    extern /* Subroutine */ int dlassq_(integer *, doublereal *, integer *, 
-	    doublereal *, doublereal *), dlaswp_(integer *, doublereal *, 
+    extern /* Subroutine */ void dlassq_(integer *, doublereal *, integer *, 
+	    doublereal *, doublereal *);
+    extern int dlaswp_(integer *, doublereal *, 
 	    integer *, integer *, integer *, integer *, integer *);
 
 
@@ -861,7 +862,7 @@ f"> */
 
     }
 
-    return 0;
+    return;
 
 /*     End of DLATDF */
 

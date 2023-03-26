@@ -728,7 +728,7 @@ rook.f"> */
 /* > \endverbatim */
 
 /*  ===================================================================== */
-/* Subroutine */ int chetrf_rook_(char *uplo, integer *n, complex *a, 
+/* Subroutine */ void chetrf_rook_(char *uplo, integer *n, complex *a, 
 	integer *lda, integer *ipiv, complex *work, integer *lwork, integer *
 	info)
 {
@@ -746,10 +746,10 @@ rook.f"> */
 	    integer *, integer *, ftnlen, ftnlen);
     integer ldwork, lwkopt;
     logical lquery;
-    extern /* Subroutine */ int chetf2_rook_(char *, integer *, complex *, 
+    extern /* Subroutine */ void chetf2_rook_(char *, integer *, complex *, 
 	    integer *, integer *, integer *);
     integer iws;
-    extern /* Subroutine */ int clahef_rook_(char *, integer *, integer *, 
+    extern /* Subroutine */ void clahef_rook_(char *, integer *, integer *, 
 	    integer *, complex *, integer *, integer *, complex *, integer *, 
 	    integer *);
 
@@ -801,9 +801,9 @@ rook.f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CHETRF_ROOK", &i__1, (ftnlen)11);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
     nbmin = 2;
@@ -933,7 +933,7 @@ L20:
 
 L40:
     work[1].r = (real) lwkopt, work[1].i = 0.f;
-    return 0;
+    return;
 
 /*     End of CHETRF_ROOK */
 

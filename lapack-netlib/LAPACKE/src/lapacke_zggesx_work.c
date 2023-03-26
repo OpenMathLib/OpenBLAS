@@ -76,12 +76,12 @@ lapack_int LAPACKE_zggesx_work( int matrix_layout, char jobvsl, char jobvsr,
             LAPACKE_xerbla( "LAPACKE_zggesx_work", info );
             return info;
         }
-        if( ldvsl < n ) {
+        if( ldvsl < 1 || ( LAPACKE_lsame( jobvsl, 'v' ) && ldvsl < n ) ) {
             info = -16;
             LAPACKE_xerbla( "LAPACKE_zggesx_work", info );
             return info;
         }
-        if( ldvsr < n ) {
+        if( ldvsr < 1 || ( LAPACKE_lsame( jobvsr, 'v' ) && ldvsr < n ) ) {
             info = -18;
             LAPACKE_xerbla( "LAPACKE_zggesx_work", info );
             return info;

@@ -688,7 +688,7 @@ r.f"> */
 /* > \endverbatim */
 
 /*  ===================================================================== */
-/* Subroutine */ int sorgtsqr_(integer *m, integer *n, integer *mb, integer *
+/* Subroutine */ void sorgtsqr_(integer *m, integer *n, integer *mb, integer *
 	nb, real *a, integer *lda, real *t, integer *ldt, real *work, integer 
 	*lwork, integer *info)
 {
@@ -696,14 +696,15 @@ r.f"> */
     integer a_dim1, a_offset, t_dim1, t_offset, i__1, i__2;
 
     /* Local variables */
-    extern /* Subroutine */ int slamtsqr_(char *, char *, integer *, integer *
+    extern /* Subroutine */ void slamtsqr_(char *, char *, integer *, integer *
 	    , integer *, integer *, integer *, real *, integer *, real *, 
 	    integer *, real *, integer *, real *, integer *, integer *);
     integer lworkopt, j, iinfo;
-    extern /* Subroutine */ int scopy_(integer *, real *, integer *, real *, 
+    extern /* Subroutine */ void scopy_(integer *, real *, integer *, real *, 
 	    integer *);
     integer lc, lw;
-    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen), slaset_(
+    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
+    extern void slaset_(
 	    char *, integer *, integer *, real *, real *, real *, integer *);
     logical lquery;
     integer ldc, nblocal;
@@ -784,17 +785,17 @@ r.f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("SORGTSQR", &i__1, (ftnlen)8);
-	return 0;
+	return;
     } else if (lquery) {
 	work[1] = (real) lworkopt;
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (f2cmin(*m,*n) == 0) {
 	work[1] = (real) lworkopt;
-	return 0;
+	return;
     }
 
 /*     (1) Form explicitly the tall-skinny M-by-N left submatrix Q1_in */
@@ -828,7 +829,7 @@ r.f"> */
     }
 
     work[1] = (real) lworkopt;
-    return 0;
+    return;
 
 /*     End of SORGTSQR */
 

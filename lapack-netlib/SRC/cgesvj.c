@@ -868,7 +868,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int cgesvj_(char *joba, char *jobu, char *jobv, integer *m, 
+/* Subroutine */ void cgesvj_(char *joba, char *jobu, char *jobv, integer *m, 
 	integer *n, complex *a, integer *lda, real *sva, integer *mv, complex 
 	*v, integer *ldv, complex *cwork, integer *lwork, real *rwork, 
 	integer *lrwork, integer *info)
@@ -885,7 +885,7 @@ f"> */
     real aaqq, ctol;
     integer ierr;
     real bigtheta;
-    extern /* Subroutine */ int crot_(integer *, complex *, integer *, 
+    extern /* Subroutine */ void crot_(integer *, complex *, integer *, 
 	    complex *, integer *, real *, complex *);
     complex ompq;
     integer pskipped;
@@ -898,16 +898,16 @@ f"> */
     extern logical lsame_(char *, char *);
     real theta, small, sfmin;
     logical lsvec;
-    extern /* Subroutine */ int ccopy_(integer *, complex *, integer *, 
+    extern /* Subroutine */ void ccopy_(integer *, complex *, integer *, 
 	    complex *, integer *), cswap_(integer *, complex *, integer *, 
 	    complex *, integer *);
     real epsln;
     logical applv, rsvec, uctol;
-    extern /* Subroutine */ int caxpy_(integer *, complex *, complex *, 
+    extern /* Subroutine */ void caxpy_(integer *, complex *, complex *, 
 	    integer *, complex *, integer *);
     logical lower, upper, rotok;
     integer n2, n4;
-    extern /* Subroutine */ int cgsvj0_(char *, integer *, integer *, complex 
+    extern /* Subroutine */ void cgsvj0_(char *, integer *, integer *, complex 
 	    *, integer *, complex *, real *, integer *, complex *, integer *, 
 	    real *, real *, real *, integer *, complex *, integer *, integer *
 	    ), cgsvj1_(char *, integer *, integer *, integer *, 
@@ -918,18 +918,19 @@ f"> */
     extern real scnrm2_(integer *, complex *, integer *);
     integer n34;
     real cs, sn;
-    extern /* Subroutine */ int clascl_(char *, integer *, integer *, real *, 
+    extern /* Subroutine */ void clascl_(char *, integer *, integer *, real *, 
 	    real *, integer *, integer *, complex *, integer *, integer *);
     extern real slamch_(char *);
-    extern /* Subroutine */ int csscal_(integer *, real *, complex *, integer 
+    extern /* Subroutine */ void csscal_(integer *, real *, complex *, integer 
 	    *), claset_(char *, integer *, integer *, complex *, complex *, 
-	    complex *, integer *), xerbla_(char *, integer *, ftnlen);
+	    complex *, integer *);
+    extern int xerbla_(char *, integer *, ftnlen);
     integer ijblsk, swband;
     extern integer isamax_(integer *, real *, integer *);
-    extern /* Subroutine */ int slascl_(char *, integer *, integer *, real *, 
+    extern /* Subroutine */ void slascl_(char *, integer *, integer *, real *, 
 	    real *, integer *, integer *, real *, integer *, integer *);
     integer blskip;
-    extern /* Subroutine */ int classq_(integer *, complex *, integer *, real 
+    extern /* Subroutine */ void classq_(integer *, complex *, integer *, real 
 	    *, real *);
     real mxaapq, thsign, mxsinj;
     integer ir1, emptsw;
@@ -1014,18 +1015,18 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CGESVJ", &i__1, (ftnlen)6);
-	return 0;
+	return;
     } else if (lquery) {
 	i__1 = *m + *n;
 	cwork[1].r = (real) i__1, cwork[1].i = 0.f;
 	rwork[1] = (real) f2cmax(*n,6);
-	return 0;
+	return;
     }
 
 /* #:) Quick return for void matrix */
 
     if (*m == 0 || *n == 0) {
-	return 0;
+	return;
     }
 
 /*     Set numerical parameters */
@@ -1067,7 +1068,7 @@ f"> */
 	*info = -4;
 	i__1 = -(*info);
 	xerbla_("CGESVJ", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Initialize the right singular vector matrix. */
@@ -1105,7 +1106,7 @@ f"> */
 		*info = -6;
 		i__2 = -(*info);
 		xerbla_("CGESVJ", &i__2, (ftnlen)6);
-		return 0;
+		return;
 	    }
 	    aaqq = sqrt(aaqq);
 	    if (aapp < big / aaqq && noscale) {
@@ -1135,7 +1136,7 @@ f"> */
 		*info = -6;
 		i__2 = -(*info);
 		xerbla_("CGESVJ", &i__2, (ftnlen)6);
-		return 0;
+		return;
 	    }
 	    aaqq = sqrt(aaqq);
 	    if (aapp < big / aaqq && noscale) {
@@ -1165,7 +1166,7 @@ f"> */
 		*info = -6;
 		i__2 = -(*info);
 		xerbla_("CGESVJ", &i__2, (ftnlen)6);
-		return 0;
+		return;
 	    }
 	    aaqq = sqrt(aaqq);
 	    if (aapp < big / aaqq && noscale) {
@@ -1221,7 +1222,7 @@ f"> */
 	rwork[4] = 0.f;
 	rwork[5] = 0.f;
 	rwork[6] = 0.f;
-	return 0;
+	return;
     }
 
 /* #:) Quick return for one-column matrix */
@@ -1241,7 +1242,7 @@ f"> */
 	rwork[4] = 0.f;
 	rwork[5] = 0.f;
 	rwork[6] = 0.f;
-	return 0;
+	return;
     }
 
 /*     Protect small singular values from underflow, and try to */
@@ -2267,6 +2268,6 @@ L1995:
 /*     MXSINJ is the largest absolute value of the sines of Jacobi angles */
 /*     in the last sweep */
 
-    return 0;
+    return;
 } /* cgesvj_ */
 

@@ -664,7 +664,7 @@ f"> */
 /* >     California at Berkeley, USA */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int dlasd0_(integer *n, integer *sqre, doublereal *d__, 
+/* Subroutine */ void dlasd0_(integer *n, integer *sqre, doublereal *d__, 
 	doublereal *e, doublereal *u, integer *ldu, doublereal *vt, integer *
 	ldvt, integer *smlsiz, integer *iwork, doublereal *work, integer *
 	info)
@@ -677,17 +677,17 @@ f"> */
     integer idxq, nlvl, i__, j, m;
     doublereal alpha;
     integer inode, ndiml, idxqc, ndimr, itemp, sqrei, i1;
-    extern /* Subroutine */ int dlasd1_(integer *, integer *, integer *, 
+    extern /* Subroutine */ void dlasd1_(integer *, integer *, integer *, 
 	    doublereal *, doublereal *, doublereal *, doublereal *, integer *,
 	     doublereal *, integer *, integer *, integer *, doublereal *, 
 	    integer *);
     integer ic, lf, nd, ll, nl, nr;
-    extern /* Subroutine */ int dlasdq_(char *, integer *, integer *, integer 
+    extern /* Subroutine */ void dlasdq_(char *, integer *, integer *, integer 
 	    *, integer *, integer *, doublereal *, doublereal *, doublereal *,
 	     integer *, doublereal *, integer *, doublereal *, integer *, 
 	    doublereal *, integer *), dlasdt_(integer *, integer *, 
-	    integer *, integer *, integer *, integer *, integer *), xerbla_(
-	    char *, integer *, ftnlen);
+	    integer *, integer *, integer *, integer *, integer *);
+    extern int xerbla_(char *, integer *, ftnlen);
     integer im1, ncc, nlf, nrf, iwk, lvl, ndb1, nlp1, nrp1;
 
 
@@ -735,7 +735,7 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DLASD0", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     If the input matrix is too small, call DLASDQ to find the SVD. */
@@ -743,7 +743,7 @@ f"> */
     if (*n <= *smlsiz) {
 	dlasdq_("U", sqre, n, &m, n, &c__0, &d__[1], &e[1], &vt[vt_offset], 
 		ldvt, &u[u_offset], ldu, &u[u_offset], ldu, &work[1], info);
-	return 0;
+	return;
     }
 
 /*     Set up the computation tree. */
@@ -783,7 +783,7 @@ f"> */
 		nlf + nlf * vt_dim1], ldvt, &u[nlf + nlf * u_dim1], ldu, &u[
 		nlf + nlf * u_dim1], ldu, &work[1], info);
 	if (*info != 0) {
-	    return 0;
+	    return;
 	}
 	itemp = idxq + nlf - 2;
 	i__2 = nl;
@@ -801,7 +801,7 @@ f"> */
 		nrf + nrf * vt_dim1], ldvt, &u[nrf + nrf * u_dim1], ldu, &u[
 		nrf + nrf * u_dim1], ldu, &work[1], info);
 	if (*info != 0) {
-	    return 0;
+	    return;
 	}
 	itemp = idxq + ic;
 	i__2 = nr;
@@ -824,7 +824,7 @@ f"> */
 	    ll = 1;
 	} else {
 	    i__1 = lvl - 1;
-	    lf = pow_ii(&c__2, &i__1);
+	    lf = pow_ii(c__2, i__1);
 	    ll = (lf << 1) - 1;
 	}
 	i__1 = ll;
@@ -849,14 +849,14 @@ f"> */
 /*        Report the possible convergence failure. */
 
 	    if (*info != 0) {
-		return 0;
+		return;
 	    }
 /* L40: */
 	}
 /* L50: */
     }
 
-    return 0;
+    return;
 
 /*     End of DLASD0 */
 

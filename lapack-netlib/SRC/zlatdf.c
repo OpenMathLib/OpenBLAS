@@ -685,7 +685,7 @@ f"> */
 /* >         1995. */
 
 /*  ===================================================================== */
-/* Subroutine */ int zlatdf_(integer *ijob, integer *n, doublecomplex *z__, 
+/* Subroutine */ void zlatdf_(integer *ijob, integer *n, doublecomplex *z__, 
 	integer *ldz, doublecomplex *rhs, doublereal *rdsum, doublereal *
 	rdscal, integer *ipiv, integer *jpiv)
 {
@@ -698,26 +698,27 @@ f"> */
     doublecomplex temp, work[8];
     integer i__, j, k;
     doublereal scale;
-    extern /* Subroutine */ int zscal_(integer *, doublecomplex *, 
+    extern /* Subroutine */ void zscal_(integer *, doublecomplex *, 
 	    doublecomplex *, integer *);
     doublecomplex pmone;
     extern /* Double Complex */ VOID zdotc_(doublecomplex *, integer *, 
 	    doublecomplex *, integer *, doublecomplex *, integer *);
     doublereal rtemp, sminu, rwork[2];
-    extern /* Subroutine */ int zcopy_(integer *, doublecomplex *, integer *, 
+    extern /* Subroutine */ void zcopy_(integer *, doublecomplex *, integer *, 
 	    doublecomplex *, integer *);
     doublereal splus;
-    extern /* Subroutine */ int zaxpy_(integer *, doublecomplex *, 
+    extern /* Subroutine */ void zaxpy_(integer *, doublecomplex *, 
 	    doublecomplex *, integer *, doublecomplex *, integer *), zgesc2_(
 	    integer *, doublecomplex *, integer *, doublecomplex *, integer *,
 	     integer *, doublereal *);
     doublecomplex bm, bp, xm[2], xp[2];
-    extern /* Subroutine */ int zgecon_(char *, integer *, doublecomplex *, 
+    extern /* Subroutine */ void zgecon_(char *, integer *, doublecomplex *, 
 	    integer *, doublereal *, doublereal *, doublecomplex *, 
 	    doublereal *, integer *);
     extern doublereal dzasum_(integer *, doublecomplex *, integer *);
-    extern /* Subroutine */ int zlassq_(integer *, doublecomplex *, integer *,
-	     doublereal *, doublereal *), zlaswp_(integer *, doublecomplex *, 
+    extern /* Subroutine */ void zlassq_(integer *, doublecomplex *, integer *,
+	     doublereal *, doublereal *);
+    extern int zlaswp_(integer *, doublecomplex *, 
 	    integer *, integer *, integer *, integer *, integer *);
 
 
@@ -878,7 +879,7 @@ f"> */
 /*        Compute the sum of squares */
 
 	zlassq_(n, &rhs[1], &c__1, rdscal, rdsum);
-	return 0;
+	return;
     }
 
 /*     ENTRY IJOB = 2 */
@@ -910,7 +911,7 @@ f"> */
 /*     Compute the sum of squares */
 
     zlassq_(n, &rhs[1], &c__1, rdscal, rdsum);
-    return 0;
+    return;
 
 /*     End of ZLATDF */
 

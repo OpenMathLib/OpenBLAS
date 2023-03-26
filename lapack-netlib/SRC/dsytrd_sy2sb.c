@@ -761,7 +761,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int dsytrd_sy2sb_(char *uplo, integer *n, integer *kd, 
+/* Subroutine */ void dsytrd_sy2sb_(char *uplo, integer *n, integer *kd, 
 	doublereal *a, integer *lda, doublereal *ab, integer *ldab, 
 	doublereal *tau, doublereal *work, integer *lwork, integer *info)
 {
@@ -773,30 +773,31 @@ f"> */
     extern integer ilaenv2stage_(integer *, char *, char *, integer *, 
 	    integer *, integer *, integer *);
     integer tpos, wpos, s1pos, s2pos, i__, j;
-    extern /* Subroutine */ int dgemm_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void dgemm_(char *, char *, integer *, integer *, 
 	    integer *, doublereal *, doublereal *, integer *, doublereal *, 
 	    integer *, doublereal *, doublereal *, integer *);
     extern logical lsame_(char *, char *);
     integer iinfo;
-    extern /* Subroutine */ int dcopy_(integer *, doublereal *, integer *, 
+    extern /* Subroutine */ void dcopy_(integer *, doublereal *, integer *, 
 	    doublereal *, integer *);
     integer lwmin;
-    extern /* Subroutine */ int dsymm_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void dsymm_(char *, char *, integer *, integer *, 
 	    doublereal *, doublereal *, integer *, doublereal *, integer *, 
 	    doublereal *, doublereal *, integer *);
     logical upper;
-    extern /* Subroutine */ int dsyr2k_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void dsyr2k_(char *, char *, integer *, integer *, 
 	    doublereal *, doublereal *, integer *, doublereal *, integer *, 
 	    doublereal *, doublereal *, integer *);
     integer lk, pk, pn, lt;
-    extern /* Subroutine */ int dgelqf_(integer *, integer *, doublereal *, 
+    extern /* Subroutine */ void dgelqf_(integer *, integer *, doublereal *, 
 	    integer *, doublereal *, doublereal *, integer *, integer *);
     integer lw;
-    extern /* Subroutine */ int dgeqrf_(integer *, integer *, doublereal *, 
+    extern /* Subroutine */ void dgeqrf_(integer *, integer *, doublereal *, 
 	    integer *, doublereal *, doublereal *, integer *, integer *), 
 	    dlarft_(char *, char *, integer *, integer *, doublereal *, 
-	    integer *, doublereal *, doublereal *, integer *),
-	     xerbla_(char *, integer *, ftnlen), dlaset_(char *, integer *, 
+	    integer *, doublereal *, doublereal *, integer *);
+    extern int xerbla_(char *, integer *, ftnlen);
+    extern void dlaset_(char *, integer *, 
 	    integer *, doublereal *, doublereal *, doublereal *, integer *);
     integer ls1;
     logical lquery;
@@ -852,10 +853,10 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DSYTRD_SY2SB", &i__1, (ftnlen)12);
-	return 0;
+	return;
     } else if (lquery) {
 	work[1] = (doublereal) lwmin;
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
@@ -884,7 +885,7 @@ f"> */
 	    }
 	}
 	work[1] = 1.;
-	return 0;
+	return;
     }
 
 /*     Determine the pointer position for the workspace */
@@ -1076,7 +1077,7 @@ f"> */
     }
 
     work[1] = (doublereal) lwmin;
-    return 0;
+    return;
 
 /*     End of DSYTRD_SY2SB */
 

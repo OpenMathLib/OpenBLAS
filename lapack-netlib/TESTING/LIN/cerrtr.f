@@ -82,9 +82,10 @@
       EXTERNAL           LSAMEN
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           ALAESM, CHKXER, CLATBS, CLATPS, CLATRS, CTBCON,
-     $                   CTBRFS, CTBTRS, CTPCON, CTPRFS, CTPTRI, CTPTRS,
-     $                   CTRCON, CTRRFS, CTRTI2, CTRTRI, CTRTRS
+      EXTERNAL           ALAESM, CHKXER, CLATBS, CLATPS, CLATRS,
+     $                   CLATRS3, CTBCON, CTBRFS, CTBTRS, CTPCON,
+     $                   CTPRFS, CTPTRI, CTPTRS, CTRCON, CTRRFS, CTRTI2,
+     $                   CTRTRI, CTRTRS
 *     ..
 *     .. Scalars in Common ..
       LOGICAL            LERR, OK
@@ -239,6 +240,46 @@
          INFOT = 7
          CALL CLATRS( 'U', 'N', 'N', 'N', 2, A, 1, X, SCALE, RW, INFO )
          CALL CHKXER( 'CLATRS', INFOT, NOUT, LERR, OK )
+*
+*        CLATRS3
+*
+         SRNAMT = 'CLATRS3'
+         INFOT = 1
+         CALL CLATRS3( '/', 'N', 'N', 'N', 0, 0, A, 1, X, 1, SCALE, RW,
+     $                 RW( 2 ), 1, INFO )
+         CALL CHKXER( 'CLATRS3', INFOT, NOUT, LERR, OK )
+         INFOT = 2
+         CALL CLATRS3( 'U', '/', 'N', 'N', 0, 0, A, 1, X, 1, SCALE, RW,
+     $                 RW( 2 ), 1, INFO )
+         CALL CHKXER( 'CLATRS3', INFOT, NOUT, LERR, OK )
+         INFOT = 3
+         CALL CLATRS3( 'U', 'N', '/', 'N', 0, 0, A, 1, X, 1, SCALE, RW,
+     $                 RW( 2 ), 1, INFO )
+         CALL CHKXER( 'CLATRS3', INFOT, NOUT, LERR, OK )
+         INFOT = 4
+         CALL CLATRS3( 'U', 'N', 'N', '/', 0, 0, A, 1, X, 1, SCALE, RW,
+     $                 RW( 2 ), 1, INFO )
+         CALL CHKXER( 'CLATRS3', INFOT, NOUT, LERR, OK )
+         INFOT = 5
+         CALL CLATRS3( 'U', 'N', 'N', 'N', -1, 0, A, 1, X, 1, SCALE, RW,
+     $                 RW( 2 ), 1, INFO )
+         CALL CHKXER( 'CLATRS3', INFOT, NOUT, LERR, OK )
+         INFOT = 6
+         CALL CLATRS3( 'U', 'N', 'N', 'N', 0, -1, A, 1, X, 1, SCALE, RW,
+     $                 RW( 2 ), 1, INFO )
+         CALL CHKXER( 'CLATRS3', INFOT, NOUT, LERR, OK )
+         INFOT = 8
+         CALL CLATRS3( 'U', 'N', 'N', 'N', 2, 0, A, 1, X, 1, SCALE, RW,
+     $                 RW( 2 ), 1, INFO )
+         CALL CHKXER( 'CLATRS3', INFOT, NOUT, LERR, OK )
+         INFOT = 10
+         CALL CLATRS3( 'U', 'N', 'N', 'N', 2, 0, A, 2, X, 1, SCALE, RW,
+     $                 RW( 2 ), 1, INFO )
+         CALL CHKXER( 'CLATRS3', INFOT, NOUT, LERR, OK )
+         INFOT = 14
+         CALL CLATRS3( 'U', 'N', 'N', 'N', 1, 0, A, 1, X, 1, SCALE, RW,
+     $                 RW( 2 ), 0, INFO )
+         CALL CHKXER( 'CLATRS3', INFOT, NOUT, LERR, OK )
 *
 *     Test error exits for the packed triangular routines.
 *

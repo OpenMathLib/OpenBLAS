@@ -604,7 +604,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int slaruv_(integer *iseed, integer *n, real *x)
+/* Subroutine */ void slaruv_(integer *iseed, integer *n, real *x)
 {
     /* Initialized data */
 
@@ -727,7 +727,7 @@ L20:
     iseed[2] = it2;
     iseed[3] = it3;
     iseed[4] = it4;
-    return 0;
+    return;
 
 /*     End of SLARUV */
 

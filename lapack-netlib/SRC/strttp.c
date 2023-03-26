@@ -614,7 +614,7 @@ f"> */
 /* > \ingroup realOTHERcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int strttp_(char *uplo, integer *n, real *a, integer *lda, 
+/* Subroutine */ void strttp_(char *uplo, integer *n, real *a, integer *lda, 
 	real *ap, integer *info)
 {
     /* System generated locals */
@@ -657,7 +657,7 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("STRTTP", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
     if (lower) {
@@ -682,7 +682,7 @@ f"> */
 	}
     }
 
-    return 0;
+    return;
 
 /*     End of STRTTP */
 

@@ -653,7 +653,7 @@ aa_2stage.f"> */
 /* > \ingroup doubleSYcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int dsytrs_aa_2stage_(char *uplo, integer *n, integer *nrhs,
+/* Subroutine */ void dsytrs_aa_2stage_(char *uplo, integer *n, integer *nrhs,
 	 doublereal *a, integer *lda, doublereal *tb, integer *ltb, integer *
 	ipiv, integer *ipiv2, doublereal *b, integer *ldb, integer *info)
 {
@@ -663,15 +663,16 @@ aa_2stage.f"> */
     /* Local variables */
     integer ldtb;
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int dtrsm_(char *, char *, char *, char *, 
+    extern /* Subroutine */ void dtrsm_(char *, char *, char *, char *, 
 	    integer *, integer *, doublereal *, doublereal *, integer *, 
 	    doublereal *, integer *);
     logical upper;
     integer nb;
-    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen), dgbtrs_(
+    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
+    extern void dgbtrs_(
 	    char *, integer *, integer *, integer *, integer *, doublereal *, 
-	    integer *, integer *, doublereal *, integer *, integer *),
-	     dlaswp_(integer *, doublereal *, integer *, integer *, integer *,
+	    integer *, integer *, doublereal *, integer *, integer *);
+    extern int dlaswp_(integer *, doublereal *, integer *, integer *, integer *,
 	     integer *, integer *);
 
 
@@ -715,13 +716,13 @@ aa_2stage.f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DSYTRS_AA_2STAGE", &i__1, (ftnlen)16);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0 || *nrhs == 0) {
-	return 0;
+	return;
     }
 
 /*     Read NB and compute LDTB */
@@ -806,7 +807,7 @@ aa_2stage.f"> */
 	}
     }
 
-    return 0;
+    return;
 
 /*     End of DSYTRS_AA_2STAGE */
 

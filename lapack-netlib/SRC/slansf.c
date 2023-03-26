@@ -738,7 +738,7 @@ real slansf_(char *norm, char *transr, char *uplo, integer *n, real *a, real *
     integer n1;
     real aa;
     extern logical sisnan_(real *);
-    extern /* Subroutine */ int slassq_(integer *, real *, integer *, real *, 
+    extern /* Subroutine */ void slassq_(integer *, real *, integer *, real *, 
 	    real *);
     integer lda, ifm, noe, ilu;
 

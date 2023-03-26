@@ -784,7 +784,7 @@ f"> */
 /* >       University of Kansas, USA */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int zlaqr3_(logical *wantt, logical *wantz, integer *n, 
+/* Subroutine */ void zlaqr3_(logical *wantt, logical *wantz, integer *n, 
 	integer *ktop, integer *kbot, integer *nw, doublecomplex *h__, 
 	integer *ldh, integer *iloz, integer *ihiz, doublecomplex *z__, 
 	integer *ldz, integer *ns, integer *nd, doublecomplex *sh, 
@@ -802,16 +802,16 @@ f"> */
     doublecomplex beta;
     integer kcol, info, nmin, ifst, ilst, ltop, krow, i__, j;
     doublecomplex s;
-    extern /* Subroutine */ int zlarf_(char *, integer *, integer *, 
+    extern /* Subroutine */ void zlarf_(char *, integer *, integer *, 
 	    doublecomplex *, integer *, doublecomplex *, doublecomplex *, 
 	    integer *, doublecomplex *);
     integer infqr;
-    extern /* Subroutine */ int zgemm_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void zgemm_(char *, char *, integer *, integer *, 
 	    integer *, doublecomplex *, doublecomplex *, integer *, 
 	    doublecomplex *, integer *, doublecomplex *, doublecomplex *, 
 	    integer *);
     integer kwtop;
-    extern /* Subroutine */ int zcopy_(integer *, doublecomplex *, integer *, 
+    extern /* Subroutine */ void zcopy_(integer *, doublecomplex *, integer *, 
 	    doublecomplex *, integer *), dlabad_(doublereal *, doublereal *), 
 	    zlaqr4_(logical *, logical *, integer *, integer *, integer *, 
 	    doublecomplex *, integer *, doublecomplex *, integer *, integer *,
@@ -822,7 +822,7 @@ f"> */
     doublereal safmin, safmax;
     extern integer ilaenv_(integer *, char *, char *, integer *, integer *, 
 	    integer *, integer *, ftnlen, ftnlen);
-    extern /* Subroutine */ int zgehrd_(integer *, integer *, integer *, 
+    extern /* Subroutine */ void zgehrd_(integer *, integer *, integer *, 
 	    doublecomplex *, integer *, doublecomplex *, doublecomplex *, 
 	    integer *, integer *), zlarfg_(integer *, doublecomplex *, 
 	    doublecomplex *, integer *, doublecomplex *), zlahqr_(logical *, 
@@ -833,11 +833,11 @@ f"> */
 	    zlaset_(char *, integer *, integer *, doublecomplex *, 
 	    doublecomplex *, doublecomplex *, integer *);
     doublereal smlnum;
-    extern /* Subroutine */ int ztrexc_(char *, integer *, doublecomplex *, 
+    extern /* Subroutine */ void ztrexc_(char *, integer *, doublecomplex *, 
 	    integer *, doublecomplex *, integer *, integer *, integer *, 
 	    integer *);
     integer lwkopt;
-    extern /* Subroutine */ int zunmhr_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void zunmhr_(char *, char *, integer *, integer *, 
 	    integer *, integer *, doublecomplex *, integer *, doublecomplex *,
 	     doublecomplex *, integer *, doublecomplex *, integer *, integer *
 	    );
@@ -920,7 +920,7 @@ f"> */
 	d__1 = (doublereal) lwkopt;
 	z__1.r = d__1, z__1.i = 0.;
 	work[1].r = z__1.r, work[1].i = z__1.i;
-	return 0;
+	return;
     }
 
 /*     ==== Nothing to do ... */
@@ -929,11 +929,11 @@ f"> */
     *nd = 0;
     work[1].r = 1., work[1].i = 0.;
     if (*ktop > *kbot) {
-	return 0;
+	return;
     }
 /*     ... nor for an empty deflation window. ==== */
     if (*nw < 1) {
-	return 0;
+	return;
     }
 
 /*     ==== Machine constants ==== */
@@ -980,7 +980,7 @@ f"> */
 	    }
 	}
 	work[1].r = 1., work[1].i = 0.;
-	return 0;
+	return;
     }
 
 /*     ==== Convert to spike-triangular form.  (In case of a */
@@ -1234,6 +1234,6 @@ f"> */
 
 /*     ==== End of ZLAQR3 ==== */
 
-    return 0;
+    return;
 } /* zlaqr3_ */
 

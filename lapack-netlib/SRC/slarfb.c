@@ -711,7 +711,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int slarfb_(char *side, char *trans, char *direct, char *
+/* Subroutine */ void slarfb_(char *side, char *trans, char *direct, char *
 	storev, integer *m, integer *n, integer *k, real *v, integer *ldv, 
 	real *t, integer *ldt, real *c__, integer *ldc, real *work, integer *
 	ldwork)
@@ -723,7 +723,7 @@ f"> */
     /* Local variables */
     integer i__, j;
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int sgemm_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void sgemm_(char *, char *, integer *, integer *, 
 	    integer *, real *, real *, integer *, real *, integer *, real *, 
 	    real *, integer *), scopy_(integer *, real *, 
 	    integer *, real *, integer *), strmm_(char *, char *, char *, 
@@ -759,7 +759,7 @@ f"> */
 
     /* Function Body */
     if (*m <= 0 || *n <= 0) {
-	return 0;
+	return;
     }
 
     if (lsame_(trans, "N")) {
@@ -1329,7 +1329,7 @@ f"> */
 	}
     }
 
-    return 0;
+    return;
 
 /*     End of SLARFB */
 

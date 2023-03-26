@@ -695,7 +695,7 @@ static integer c_n1 = -1;
 /* > \ingroup complexHEeigen */
 
 /*  ===================================================================== */
-/* Subroutine */ int chegv_(integer *itype, char *jobz, char *uplo, integer *
+/* Subroutine */ void chegv_(integer *itype, char *jobz, char *uplo, integer *
 	n, complex *a, integer *lda, complex *b, integer *ldb, real *w, 
 	complex *work, integer *lwork, real *rwork, integer *info)
 {
@@ -704,23 +704,24 @@ static integer c_n1 = -1;
 
     /* Local variables */
     integer neig;
-    extern /* Subroutine */ int cheev_(char *, char *, integer *, complex *, 
+    extern /* Subroutine */ void cheev_(char *, char *, integer *, complex *, 
 	    integer *, real *, complex *, integer *, real *, integer *);
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int ctrmm_(char *, char *, char *, char *, 
+    extern /* Subroutine */ void ctrmm_(char *, char *, char *, char *, 
 	    integer *, integer *, complex *, complex *, integer *, complex *, 
 	    integer *);
     char trans[1];
-    extern /* Subroutine */ int ctrsm_(char *, char *, char *, char *, 
+    extern /* Subroutine */ void ctrsm_(char *, char *, char *, char *, 
 	    integer *, integer *, complex *, complex *, integer *, complex *, 
 	    integer *);
     logical upper, wantz;
     integer nb;
-    extern /* Subroutine */ int chegst_(integer *, char *, integer *, complex 
+    extern /* Subroutine */ void chegst_(integer *, char *, integer *, complex 
 	    *, integer *, complex *, integer *, integer *);
     extern integer ilaenv_(integer *, char *, char *, integer *, integer *, 
 	    integer *, integer *, ftnlen, ftnlen);
-    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen), cpotrf_(
+    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
+    extern int cpotrf_(
 	    char *, integer *, complex *, integer *, integer *);
     integer lwkopt;
     logical lquery;
@@ -786,15 +787,15 @@ static integer c_n1 = -1;
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CHEGV ", &i__1, (ftnlen)6);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /*     Form a Cholesky factorization of B. */
@@ -802,7 +803,7 @@ static integer c_n1 = -1;
     cpotrf_(uplo, n, &b[b_offset], ldb, info);
     if (*info != 0) {
 	*info = *n + *info;
-	return 0;
+	return;
     }
 
 /*     Transform problem to standard eigenvalue problem and solve. */
@@ -851,7 +852,7 @@ static integer c_n1 = -1;
 
     work[1].r = (real) lwkopt, work[1].i = 0.f;
 
-    return 0;
+    return;
 
 /*     End of CHEGV */
 

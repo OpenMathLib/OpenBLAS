@@ -661,7 +661,7 @@ f"> */
 /* > \ingroup complexOTHERcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int cpstrf_(char *uplo, integer *n, complex *a, integer *lda,
+/* Subroutine */ void cpstrf_(char *uplo, integer *n, complex *a, integer *lda,
 	 integer *piv, integer *rank, real *tol, real *work, integer *info)
 {
     /* System generated locals */
@@ -672,26 +672,27 @@ f"> */
     /* Local variables */
     
     integer i__, j, k;
-    extern /* Subroutine */ int cherk_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void cherk_(char *, char *, integer *, integer *, 
 	    real *, complex *, integer *, real *, complex *, integer *);
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int cgemv_(char *, integer *, integer *, complex *
+    extern /* Subroutine */ void cgemv_(char *, integer *, integer *, complex *
 	    , complex *, integer *, complex *, integer *, complex *, complex *
 	    , integer *);
     complex ctemp;
-    extern /* Subroutine */ int cswap_(integer *, complex *, integer *, 
+    extern /* Subroutine */ void cswap_(integer *, complex *, integer *, 
 	    complex *, integer *);
     integer itemp;
     real stemp;
     logical upper;
     real sstop;
-    extern /* Subroutine */ int cpstf2_(char *, integer *, complex *, integer 
+    extern /* Subroutine */ void cpstf2_(char *, integer *, complex *, integer 
 	    *, integer *, integer *, real *, real *, integer *);
     integer jb, nb;
-    extern /* Subroutine */ int clacgv_(integer *, complex *, integer *);
+    extern /* Subroutine */ void clacgv_(integer *, complex *, integer *);
     extern real slamch_(char *);
-    extern /* Subroutine */ int csscal_(integer *, real *, complex *, integer 
-	    *), xerbla_(char *, integer *, ftnlen);
+    extern /* Subroutine */ void csscal_(integer *, real *, complex *, integer 
+	    *);
+    extern int xerbla_(char *, integer *, ftnlen);
     extern integer ilaenv_(integer *, char *, char *, integer *, integer *, 
 	    integer *, integer *, ftnlen, ftnlen);
     extern logical sisnan_(real *);
@@ -730,13 +731,13 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CPSTRF", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /*     Get block size */
@@ -1076,7 +1077,7 @@ L220:
     *info = 1;
 
 L230:
-    return 0;
+    return;
 
 /*     End of CPSTRF */
 

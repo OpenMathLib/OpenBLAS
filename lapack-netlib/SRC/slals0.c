@@ -784,7 +784,7 @@ f"> */
 /* >     Osni Marques, LBNL/NERSC, USA \n */
 
 /*  ===================================================================== */
-/* Subroutine */ int slals0_(integer *icompq, integer *nl, integer *nr, 
+/* Subroutine */ void slals0_(integer *icompq, integer *nl, integer *nr, 
 	integer *sqre, integer *nrhs, real *b, integer *ldb, real *bx, 
 	integer *ldbx, integer *perm, integer *givptr, integer *givcol, 
 	integer *ldgcol, real *givnum, integer *ldgnum, real *poles, real *
@@ -799,12 +799,12 @@ f"> */
 
     /* Local variables */
     real temp;
-    extern /* Subroutine */ int srot_(integer *, real *, integer *, real *, 
+    extern /* Subroutine */ void srot_(integer *, real *, integer *, real *, 
 	    integer *, real *, real *);
     extern real snrm2_(integer *, real *, integer *);
     integer i__, j, m, n;
     real diflj, difrj, dsigj;
-    extern /* Subroutine */ int sscal_(integer *, real *, real *, integer *), 
+    extern /* Subroutine */ void sscal_(integer *, real *, real *, integer *), 
 	    sgemv_(char *, integer *, integer *, real *, real *, integer *, 
 	    real *, integer *, real *, real *, integer *), scopy_(
 	    integer *, real *, integer *, real *, integer *);
@@ -812,7 +812,7 @@ f"> */
     real dj;
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     real dsigjp;
-    extern /* Subroutine */ int slascl_(char *, integer *, integer *, real *, 
+    extern /* Subroutine */ void slascl_(char *, integer *, integer *, real *, 
 	    real *, integer *, integer *, real *, integer *, integer *), slacpy_(char *, integer *, integer *, real *, integer *, 
 	    real *, integer *);
     integer nlp1;
@@ -884,7 +884,7 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("SLALS0", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
     m = n + *sqre;
@@ -1068,7 +1068,7 @@ f"> */
 	}
     }
 
-    return 0;
+    return;
 
 /*     End of SLALS0 */
 

@@ -723,7 +723,7 @@ f"> */
 /* > \ingroup complex16POsolve */
 
 /*  ===================================================================== */
-/* Subroutine */ int zcposv_(char *uplo, integer *n, integer *nrhs, 
+/* Subroutine */ void zcposv_(char *uplo, integer *n, integer *nrhs, 
 	doublecomplex *a, integer *lda, doublecomplex *b, integer *ldb, 
 	doublecomplex *x, integer *ldx, doublecomplex *work, complex *swork, 
 	doublereal *rwork, integer *iter, integer *info)
@@ -740,7 +740,7 @@ f"> */
     integer ptsx, i__;
     extern logical lsame_(char *, char *);
     integer iiter;
-    extern /* Subroutine */ int zhemm_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void zhemm_(char *, char *, integer *, integer *, 
 	    doublecomplex *, doublecomplex *, integer *, doublecomplex *, 
 	    integer *, doublecomplex *, doublecomplex *, integer *), zaxpy_(integer *, doublecomplex *, doublecomplex *, 
 	    integer *, doublecomplex *, integer *), zlag2c_(integer *, 
@@ -754,11 +754,14 @@ f"> */
 	    integer *, doublereal *);
     extern integer izamax_(integer *, doublecomplex *, integer *);
     extern /* Subroutine */ int cpotrf_(char *, integer *, complex *, integer 
-	    *, integer *), zlacpy_(char *, integer *, integer *, 
+	    *, integer *);
+    extern void zlacpy_(char *, integer *, integer *, 
 	    doublecomplex *, integer *, doublecomplex *, integer *), 
 	    cpotrs_(char *, integer *, integer *, complex *, integer *, 
-	    complex *, integer *, integer *), zpotrf_(char *, integer 
-	    *, doublecomplex *, integer *, integer *), zpotrs_(char *,
+	    complex *, integer *, integer *);
+    extern int zpotrf_(char *, integer 
+	    *, doublecomplex *, integer *, integer *);
+    extern void zpotrs_(char *,
 	     integer *, integer *, doublecomplex *, integer *, doublecomplex *
 	    , integer *, integer *);
     doublereal cte, eps;
@@ -816,13 +819,13 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZCPOSV", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if (N.EQ.0). */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /*     Skip single precision iterative refinement if a priori slower */
@@ -910,7 +913,7 @@ f"> */
 /*     stopping criterion. We are good to exit. */
 
     *iter = 0;
-    return 0;
+    return;
 
 L10:
 
@@ -972,7 +975,7 @@ L10:
 
 	*iter = iiter;
 
-	return 0;
+	return;
 
 L20:
 
@@ -995,13 +998,13 @@ L40:
     zpotrf_(uplo, n, &a[a_offset], lda, info);
 
     if (*info != 0) {
-	return 0;
+	return;
     }
 
     zlacpy_("All", n, nrhs, &b[b_offset], ldb, &x[x_offset], ldx);
     zpotrs_(uplo, n, nrhs, &a[a_offset], lda, &x[x_offset], ldx, info);
 
-    return 0;
+    return;
 
 /*     End of ZCPOSV. */
 

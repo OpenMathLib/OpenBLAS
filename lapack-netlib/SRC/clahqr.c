@@ -708,7 +708,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int clahqr_(logical *wantt, logical *wantz, integer *n, 
+/* Subroutine */ void clahqr_(logical *wantt, logical *wantz, integer *n, 
 	integer *ilo, integer *ihi, complex *h__, integer *ldh, complex *w, 
 	integer *iloz, integer *ihiz, complex *z__, integer *ldz, integer *
 	info)
@@ -723,7 +723,7 @@ f"> */
     integer i__, j, k, l, m;
     real s;
     complex t, u, v[2], x, y;
-    extern /* Subroutine */ int cscal_(integer *, complex *, complex *, 
+    extern /* Subroutine */ void cscal_(integer *, complex *, complex *, 
 	    integer *), ccopy_(integer *, complex *, integer *, complex *, 
 	    integer *);
     integer itmax;
@@ -737,7 +737,7 @@ f"> */
     real h21;
     complex h22, sc;
     integer nh;
-    extern /* Subroutine */ int slabad_(real *, real *), clarfg_(integer *, 
+    extern /* Subroutine */ void slabad_(real *, real *), clarfg_(integer *, 
 	    complex *, complex *, integer *, complex *);
     extern /* Complex */ VOID cladiv_(complex *, complex *, complex *);
     extern real slamch_(char *);
@@ -775,13 +775,13 @@ f"> */
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
     if (*ilo == *ihi) {
 	i__1 = *ilo;
 	i__2 = *ilo + *ilo * h_dim1;
 	w[i__1].r = h__[i__2].r, w[i__1].i = h__[i__2].i;
-	return 0;
+	return;
     }
 
 /*     ==== clear out the trash ==== */
@@ -1296,7 +1296,7 @@ L70:
 /*     Failure to converge in remaining number of iterations */
 
     *info = i__;
-    return 0;
+    return;
 
 L140:
 
@@ -1312,7 +1312,7 @@ L140:
     goto L30;
 
 L150:
-    return 0;
+    return;
 
 /*     End of CLAHQR */
 

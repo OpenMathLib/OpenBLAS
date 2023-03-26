@@ -22,7 +22,7 @@ set(SCLAUX
    slasd7.f slasd8.f slasda.f slasdq.f slasdt.f
    slaset.f slasq1.f slasq2.f slasq3.f slasq4.f slasq5.f slasq6.f
    slasr.f  slasrt.f slassq.f90 slasv2.f spttrf.f sstebz.f sstedc.f
-   ssteqr.f ssterf.f slaisnan.f sisnan.f
+   ssteqr.f ssterf.f slaisnan.f sisnan.f slarmm.f
    slartgp.f slartgs.f ../INSTALL/sroundup_lwork.f
    ../INSTALL/second_${TIMER}.f)
 
@@ -42,7 +42,7 @@ set(DZLAUX
    dlasd7.f dlasd8.f dlasda.f dlasdq.f dlasdt.f
    dlasq1.f dlasq2.f dlasq3.f dlasq4.f dlasq5.f dlasq6.f
    dlasr.f  dlasrt.f dlassq.f90 dlasv2.f dpttrf.f dstebz.f dstedc.f
-   dsteqr.f dsterf.f dlaisnan.f disnan.f
+   dsteqr.f dsterf.f dlaisnan.f disnan.f dlarmm.f
    dlartgp.f dlartgs.f ../INSTALL/droundup_lwork.f
    ../INSTALL/dlamch.f ../INSTALL/dsecnd_${TIMER}.f)
 
@@ -123,7 +123,8 @@ set(SLASRC
    ssyevd_2stage.f ssyev_2stage.f ssyevx_2stage.f ssyevr_2stage.f
    ssbev_2stage.f ssbevx_2stage.f ssbevd_2stage.f ssygv_2stage.f
    sgesvdq.f slaorhr_col_getrfnp.f
-   slaorhr_col_getrfnp2.f sorgtsqr.f sorgtsqr_row.f sorhr_col.f )
+   slaorhr_col_getrfnp2.f sorgtsqr.f sorgtsqr_row.f sorhr_col.f 
+   slatrs3.f strsyl3.f sgelst.f)
 
 set(SXLASRC sgesvxx.f sgerfsx.f sla_gerfsx_extended.f sla_geamv.f
    sla_gercond.f sla_gerpvgrw.f ssysvxx.f ssyrfsx.f
@@ -221,7 +222,8 @@ set(CLASRC
    cheevd_2stage.f cheev_2stage.f cheevx_2stage.f cheevr_2stage.f
    chbev_2stage.f chbevx_2stage.f chbevd_2stage.f chegv_2stage.f
    cgesvdq.f claunhr_col_getrfnp.f claunhr_col_getrfnp2.f 
-   cungtsqr.f cungtsqr_row.f cunhr_col.f )
+   cungtsqr.f cungtsqr_row.f cunhr_col.f 
+   clatrs3.f ctrsyl3.f cgelst.f)
 
 set(CXLASRC cgesvxx.f cgerfsx.f cla_gerfsx_extended.f cla_geamv.f
    cla_gercond_c.f cla_gercond_x.f cla_gerpvgrw.f
@@ -313,7 +315,8 @@ set(DLASRC
    dsyevd_2stage.f dsyev_2stage.f dsyevx_2stage.f dsyevr_2stage.f
    dsbev_2stage.f dsbevx_2stage.f dsbevd_2stage.f dsygv_2stage.f
    dcombssq.f dgesvdq.f dlaorhr_col_getrfnp.f
-   dlaorhr_col_getrfnp2.f dorgtsqr.f dorgtsqr_row.f dorhr_col.f )
+   dlaorhr_col_getrfnp2.f dorgtsqr.f dorgtsqr_row.f dorhr_col.f 
+   dlatrs3.f dtrsyl3.f dgelst.f)
 
 set(DXLASRC dgesvxx.f dgerfsx.f dla_gerfsx_extended.f dla_geamv.f
    dla_gercond.f dla_gerpvgrw.f dsysvxx.f dsyrfsx.f
@@ -415,7 +418,8 @@ set(ZLASRC
    zheevd_2stage.f zheev_2stage.f zheevx_2stage.f zheevr_2stage.f
    zhbev_2stage.f zhbevx_2stage.f zhbevd_2stage.f zhegv_2stage.f
    zgesvdq.f zlaunhr_col_getrfnp.f zlaunhr_col_getrfnp2.f
-   zungtsqr.f zungtsqr_row.f zunhr_col.f)
+   zungtsqr.f zungtsqr_row.f zunhr_col.f
+   zlatrs3.f ztrsyl3.f zgelst.f)
 
 set(ZXLASRC zgesvxx.f zgerfsx.f zla_gerfsx_extended.f zla_geamv.f
    zla_gercond_c.f zla_gercond_x.f zla_gerpvgrw.f zsysvxx.f zsyrfsx.f
@@ -519,7 +523,7 @@ set(SCLAUX
    slaset.c slasq1.c slasq2.c slasq3.c slasq4.c slasq5.c slasq6.c
    slasr.c  slasrt.c slassq.c slasv2.c spttrf.c sstebz.c sstedc.c
    ssteqr.c ssterf.c slaisnan.c sisnan.c
-   slartgp.c slartgs.c
+   slartgp.c slartgs.c slarmm.c
    ../INSTALL/second_${TIMER}.c)
 
 set(DZLAUX
@@ -538,7 +542,7 @@ set(DZLAUX
    dlasq1.c dlasq2.c dlasq3.c dlasq4.c dlasq5.c dlasq6.c
    dlasr.c  dlasrt.c dlassq.c dlasv2.c dpttrf.c dstebz.c dstedc.c
    dsteqr.c dsterf.c dlaisnan.c disnan.c
-   dlartgp.c dlartgs.c
+   dlartgp.c dlartgs.c dlarmm.c
    ../INSTALL/dlamch.c ../INSTALL/dsecnd_${TIMER}.c)
 
 set(SLASRC
@@ -617,7 +621,8 @@ set(SLASRC
    ssyevd_2stage.c ssyev_2stage.c ssyevx_2stage.c ssyevr_2stage.c
    ssbev_2stage.c ssbevx_2stage.c ssbevd_2stage.c ssygv_2stage.c
    sgesvdq.c slaorhr_col_getrfnp.c
-   slaorhr_col_getrfnp2.c sorgtsqr.c sorgtsqr_row.c sorhr_col.c )
+   slaorhr_col_getrfnp2.c sorgtsqr.c sorgtsqr_row.c sorhr_col.c 
+   slatrs3.c strsyl3.c sgelst.c)
 
 set(SXLASRC sgesvxx.c sgerfsx.c sla_gerfsx_extended.c sla_geamv.c
    sla_gercond.c sla_gerpvgrw.c ssysvxx.c ssyrfsx.c
@@ -714,7 +719,8 @@ set(CLASRC
    cheevd_2stage.c cheev_2stage.c cheevx_2stage.c cheevr_2stage.c
    chbev_2stage.c chbevx_2stage.c chbevd_2stage.c chegv_2stage.c
    cgesvdq.c claunhr_col_getrfnp.c claunhr_col_getrfnp2.c 
-   cungtsqr.c cungtsqr_row.c cunhr_col.c )
+   cungtsqr.c cungtsqr_row.c cunhr_col.c 
+   clatrs3.c ctrsyl3.c cgelst.c)
 
 set(CXLASRC cgesvxx.c cgerfsx.c cla_gerfsx_extended.c cla_geamv.c
    cla_gercond_c.c cla_gercond_x.c cla_gerpvgrw.c
@@ -805,7 +811,8 @@ set(DLASRC
    dsyevd_2stage.c dsyev_2stage.c dsyevx_2stage.c dsyevr_2stage.c
    dsbev_2stage.c dsbevx_2stage.c dsbevd_2stage.c dsygv_2stage.c
    dcombssq.c dgesvdq.c dlaorhr_col_getrfnp.c
-   dlaorhr_col_getrfnp2.c dorgtsqr.c dorgtsqr_row.c dorhr_col.c )
+   dlaorhr_col_getrfnp2.c dorgtsqr.c dorgtsqr_row.c dorhr_col.c 
+   dlatrs3.c dtrsyl3.c dgelst.c)
 
 set(DXLASRC dgesvxx.c dgerfsx.c dla_gerfsx_extended.c dla_geamv.c
    dla_gercond.c dla_gerpvgrw.c dsysvxx.c dsyrfsx.c
@@ -906,7 +913,7 @@ set(ZLASRC
    zheevd_2stage.c zheev_2stage.c zheevx_2stage.c zheevr_2stage.c
    zhbev_2stage.c zhbevx_2stage.c zhbevd_2stage.c zhegv_2stage.c
    zgesvdq.c zlaunhr_col_getrfnp.c zlaunhr_col_getrfnp2.c
-   zungtsqr.c zungtsqr_row.c zunhr_col.c)
+   zungtsqr.c zungtsqr_row.c zunhr_col.c zlatrs3.c ztrsyl3.c zgelst.c)
 
 set(ZXLASRC zgesvxx.c zgerfsx.c zla_gerfsx_extended.c zla_geamv.c
    zla_gercond_c.c zla_gercond_x.c zla_gerpvgrw.c zsysvxx.c zsyrfsx.c
@@ -999,6 +1006,9 @@ endforeach ()
 
 if (NOT C_LAPACK)
   set_source_files_properties(${LA_SOURCES} PROPERTIES COMPILE_FLAGS "${LAPACK_FFLAGS}")
+  if (${F_COMPILER} STREQUAL "GFORTRAN")
+    set_source_files_properties(${LA_SOURCES} PROPERTIES COMPILE_FLAGS "${LAPACK_FFLAGS} -fno-tree-vectorize")
+  endif()
 else ()
   set_source_files_properties(${LA_SOURCES} PROPERTIES COMPILE_FLAGS "${LAPACK_CFLAGS}")
 endif ()

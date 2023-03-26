@@ -865,7 +865,7 @@ static integer c__1 = 1;
 /* >  ZGGSVD3 replaces the deprecated subroutine ZGGSVD. */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int zggsvd3_(char *jobu, char *jobv, char *jobq, integer *m, 
+/* Subroutine */ void zggsvd3_(char *jobu, char *jobv, char *jobq, integer *m, 
 	integer *n, integer *p, integer *k, integer *l, doublecomplex *a, 
 	integer *lda, doublecomplex *b, integer *ldb, doublereal *alpha, 
 	doublereal *beta, doublecomplex *u, integer *ldu, doublecomplex *v, 
@@ -885,14 +885,14 @@ static integer c__1 = 1;
     integer ncallmycycle, i__, j;
     extern logical lsame_(char *, char *);
     doublereal anorm, bnorm;
-    extern /* Subroutine */ int dcopy_(integer *, doublereal *, integer *, 
+    extern /* Subroutine */ void dcopy_(integer *, doublereal *, integer *, 
 	    doublereal *, integer *);
     logical wantq, wantu, wantv;
     extern doublereal dlamch_(char *);
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     extern doublereal zlange_(char *, integer *, integer *, doublecomplex *, 
 	    integer *, doublereal *);
-    extern /* Subroutine */ int ztgsja_(char *, char *, char *, integer *, 
+    extern /* Subroutine */ void ztgsja_(char *, char *, char *, integer *, 
 	    integer *, integer *, integer *, integer *, doublecomplex *, 
 	    integer *, doublecomplex *, integer *, doublereal *, doublereal *,
 	     doublereal *, doublereal *, doublecomplex *, integer *, 
@@ -900,7 +900,7 @@ static integer c__1 = 1;
 	    doublecomplex *, integer *, integer *);
     integer lwkopt;
     logical lquery;
-    extern /* Subroutine */ int zggsvp3_(char *, char *, char *, integer *, 
+    extern /* Subroutine */ void zggsvp3_(char *, char *, char *, integer *, 
 	    integer *, integer *, doublecomplex *, integer *, doublecomplex *,
 	     integer *, doublereal *, doublereal *, integer *, integer *, 
 	    doublecomplex *, integer *, doublecomplex *, integer *, 
@@ -997,10 +997,10 @@ static integer c__1 = 1;
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZGGSVD3", &i__1, (ftnlen)7);
-	return 0;
+	return;
     }
     if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Compute the Frobenius norm of matrices A and B */
@@ -1063,7 +1063,7 @@ static integer c__1 = 1;
 
     z__1.r = (doublereal) lwkopt, z__1.i = 0.;
     work[1].r = z__1.r, work[1].i = z__1.i;
-    return 0;
+    return;
 
 /*     End of ZGGSVD3 */
 

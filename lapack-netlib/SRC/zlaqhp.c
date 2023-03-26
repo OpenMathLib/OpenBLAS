@@ -635,7 +635,7 @@ f"> */
 /* > \ingroup complex16OTHERauxiliary */
 
 /*  ===================================================================== */
-/* Subroutine */ int zlaqhp_(char *uplo, integer *n, doublecomplex *ap, 
+/* Subroutine */ void zlaqhp_(char *uplo, integer *n, doublecomplex *ap, 
 	doublereal *s, doublereal *scond, doublereal *amax, char *equed)
 {
     /* System generated locals */
@@ -671,7 +671,7 @@ f"> */
     /* Function Body */
     if (*n <= 0) {
 	*(unsigned char *)equed = 'N';
-	return 0;
+	return;
     }
 
 /*     Initialize LARGE and SMALL. */
@@ -740,7 +740,7 @@ f"> */
 	*(unsigned char *)equed = 'Y';
     }
 
-    return 0;
+    return;
 
 /*     End of ZLAQHP */
 

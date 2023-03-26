@@ -639,7 +639,7 @@ f"> */
 /* > \ingroup complexOTHERcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int ctrexc_(char *compq, integer *n, complex *t, integer *
+/* Subroutine */ void ctrexc_(char *compq, integer *n, complex *t, integer *
 	ldt, complex *q, integer *ldq, integer *ifst, integer *ilst, integer *
 	info)
 {
@@ -649,7 +649,7 @@ f"> */
 
     /* Local variables */
     complex temp;
-    extern /* Subroutine */ int crot_(integer *, complex *, integer *, 
+    extern /* Subroutine */ void crot_(integer *, complex *, integer *, 
 	    complex *, integer *, real *, complex *);
     integer k;
     extern logical lsame_(char *, char *);
@@ -657,8 +657,9 @@ f"> */
     integer m1, m2, m3;
     real cs;
     complex t11, t22, sn;
-    extern /* Subroutine */ int clartg_(complex *, complex *, real *, complex 
-	    *, complex *), xerbla_(char *, integer *, ftnlen);
+    extern /* Subroutine */ void clartg_(complex *, complex *, real *, complex 
+	    *, complex *);
+    extern int xerbla_(char *, integer *, ftnlen);
 
 
 /*  -- LAPACK computational routine (version 3.7.0) -- */
@@ -699,13 +700,13 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CTREXC", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n <= 1 || *ifst == *ilst) {
-	return 0;
+	return;
     }
 
     if (*ifst < *ilst) {
@@ -769,7 +770,7 @@ f"> */
 /* L10: */
     }
 
-    return 0;
+    return;
 
 /*     End of CTREXC */
 

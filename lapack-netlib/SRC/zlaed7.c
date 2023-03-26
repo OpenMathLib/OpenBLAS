@@ -761,7 +761,7 @@ f"> */
 /* > \ingroup complex16OTHERcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int zlaed7_(integer *n, integer *cutpnt, integer *qsiz, 
+/* Subroutine */ void zlaed7_(integer *n, integer *cutpnt, integer *qsiz, 
 	integer *tlvls, integer *curlvl, integer *curpbm, doublereal *d__, 
 	doublecomplex *q, integer *ldq, doublereal *rho, integer *indxq, 
 	doublereal *qstore, integer *qptr, integer *prmptr, integer *perm, 
@@ -773,7 +773,7 @@ f"> */
 
     /* Local variables */
     integer indx, curr, i__, k, indxc, indxp, n1, n2;
-    extern /* Subroutine */ int dlaed9_(integer *, integer *, integer *, 
+    extern /* Subroutine */ void dlaed9_(integer *, integer *, integer *, 
 	    integer *, doublereal *, doublereal *, integer *, doublereal *, 
 	    doublereal *, doublereal *, doublereal *, integer *, integer *), 
 	    zlaed8_(integer *, integer *, integer *, doublecomplex *, integer 
@@ -785,8 +785,10 @@ f"> */
 	    doublereal *, doublereal *, integer *, doublereal *, doublereal *,
 	     integer *);
     integer idlmda, iq, iw, iz;
-    extern /* Subroutine */ int dlamrg_(integer *, integer *, doublereal *, 
-	    integer *, integer *, integer *), xerbla_(char *, integer *, ftnlen), zlacrm_(integer *, integer *, doublecomplex *, integer *,
+    extern /* Subroutine */ void dlamrg_(integer *, integer *, doublereal *, 
+	    integer *, integer *, integer *);
+    extern int xerbla_(char *, integer *, ftnlen);
+    extern void zlacrm_(integer *, integer *, doublecomplex *, integer *,
 	     doublereal *, integer *, doublecomplex *, integer *, doublereal *
 	    );
     integer coltyp, ptr;
@@ -838,13 +840,13 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZLAED7", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /*     The following values are for bookkeeping purposes only.  They are */
@@ -864,11 +866,11 @@ f"> */
 /*     Form the z-vector which consists of the last row of Q_1 and the */
 /*     first row of Q_2. */
 
-    ptr = pow_ii(&c__2, tlvls) + 1;
+    ptr = pow_ii(c__2, *tlvls) + 1;
     i__1 = *curlvl - 1;
     for (i__ = 1; i__ <= i__1; ++i__) {
 	i__2 = *tlvls - i__;
-	ptr += pow_ii(&c__2, &i__2);
+	ptr += pow_ii(c__2, i__2);
 /* L10: */
     }
     curr = ptr + *curpbm;
@@ -906,7 +908,7 @@ f"> */
 	i__1 = k;
 	qptr[curr + 1] = qptr[curr] + i__1 * i__1;
 	if (*info != 0) {
-	    return 0;
+	    return;
 	}
 
 /*     Prepare the INDXQ sorting premutation. */
@@ -923,7 +925,7 @@ f"> */
 	}
     }
 
-    return 0;
+    return;
 
 /*     End of ZLAED7 */
 

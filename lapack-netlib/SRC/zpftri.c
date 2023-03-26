@@ -727,7 +727,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int zpftri_(char *transr, char *uplo, integer *n, 
+/* Subroutine */ void zpftri_(char *transr, char *uplo, integer *n, 
 	doublecomplex *a, integer *info)
 {
     /* System generated locals */
@@ -737,18 +737,19 @@ f"> */
     integer k;
     logical normaltransr;
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int zherk_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void zherk_(char *, char *, integer *, integer *, 
 	    doublereal *, doublecomplex *, integer *, doublereal *, 
 	    doublecomplex *, integer *);
     logical lower;
     integer n1, n2;
-    extern /* Subroutine */ int ztrmm_(char *, char *, char *, char *, 
+    extern /* Subroutine */ void ztrmm_(char *, char *, char *, char *, 
 	    integer *, integer *, doublecomplex *, doublecomplex *, integer *,
-	     doublecomplex *, integer *), 
-	    xerbla_(char *, integer *, ftnlen);
+	     doublecomplex *, integer *); 
+    extern int xerbla_(char *, integer *, ftnlen);
     logical nisodd;
     extern /* Subroutine */ int zlauum_(char *, integer *, doublecomplex *, 
-	    integer *, integer *), ztftri_(char *, char *, char *, 
+	    integer *, integer *);
+    extern void ztftri_(char *, char *, char *, 
 	    integer *, doublecomplex *, integer *);
 
 
@@ -776,20 +777,20 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZPFTRI", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /*     Invert the triangular Cholesky factor U or L. */
 
     ztftri_(transr, uplo, "N", n, a, info);
     if (*info > 0) {
-	return 0;
+	return;
     }
 
 /*     If N is odd, set NISODD = .TRUE. */
@@ -964,7 +965,7 @@ f"> */
 
     }
 
-    return 0;
+    return;
 
 /*     End of ZPFTRI */
 

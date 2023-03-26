@@ -693,7 +693,7 @@ f"> */
 /* > \ingroup doubleOTHERcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int dsprfs_(char *uplo, integer *n, integer *nrhs, 
+/* Subroutine */ void dsprfs_(char *uplo, integer *n, integer *nrhs, 
 	doublereal *ap, doublereal *afp, integer *ipiv, doublereal *b, 
 	integer *ldb, doublereal *x, integer *ldx, doublereal *ferr, 
 	doublereal *berr, doublereal *work, integer *iwork, integer *info)
@@ -709,15 +709,15 @@ f"> */
     doublereal s;
     extern logical lsame_(char *, char *);
     integer isave[3];
-    extern /* Subroutine */ int dcopy_(integer *, doublereal *, integer *, 
+    extern /* Subroutine */ void dcopy_(integer *, doublereal *, integer *, 
 	    doublereal *, integer *), daxpy_(integer *, doublereal *, 
 	    doublereal *, integer *, doublereal *, integer *);
     integer count;
-    extern /* Subroutine */ int dspmv_(char *, integer *, doublereal *, 
+    extern /* Subroutine */ void dspmv_(char *, integer *, doublereal *, 
 	    doublereal *, doublereal *, integer *, doublereal *, doublereal *,
 	     integer *);
     logical upper;
-    extern /* Subroutine */ int dlacn2_(integer *, doublereal *, doublereal *,
+    extern /* Subroutine */ void dlacn2_(integer *, doublereal *, doublereal *,
 	     integer *, doublereal *, integer *, integer *);
     integer ik, kk;
     extern doublereal dlamch_(char *);
@@ -726,7 +726,7 @@ f"> */
     doublereal safmin;
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     doublereal lstres;
-    extern /* Subroutine */ int dsptrs_(char *, integer *, integer *, 
+    extern /* Subroutine */ void dsptrs_(char *, integer *, integer *, 
 	    doublereal *, integer *, doublereal *, integer *, integer *);
     doublereal eps;
 
@@ -774,7 +774,7 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DSPRFS", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
@@ -786,7 +786,7 @@ f"> */
 	    berr[j] = 0.;
 /* L10: */
 	}
-	return 0;
+	return;
     }
 
 /*     NZ = maximum number of nonzero elements in each row of A, plus 1 */
@@ -989,7 +989,7 @@ L100:
 /* L140: */
     }
 
-    return 0;
+    return;
 
 /*     End of DSPRFS */
 

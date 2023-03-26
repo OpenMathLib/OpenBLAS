@@ -617,7 +617,7 @@ f"> */
 /* > \ingroup complex16OTHERauxiliary */
 
 /*  ===================================================================== */
-/* Subroutine */ int zlartv_(integer *n, doublecomplex *x, integer *incx, 
+/* Subroutine */ void zlartv_(integer *n, doublecomplex *x, integer *incx, 
 	doublecomplex *y, integer *incy, doublereal *c__, doublecomplex *s, 
 	integer *incc)
 {
@@ -676,7 +676,7 @@ f"> */
 	ic += *incc;
 /* L10: */
     }
-    return 0;
+    return;
 
 /*     End of ZLARTV */
 

@@ -689,7 +689,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int dsytd2_(char *uplo, integer *n, doublereal *a, integer *
+/* Subroutine */ void dsytd2_(char *uplo, integer *n, doublereal *a, integer *
 	lda, doublereal *d__, doublereal *e, doublereal *tau, integer *info)
 {
     /* System generated locals */
@@ -699,19 +699,20 @@ f"> */
     extern doublereal ddot_(integer *, doublereal *, integer *, doublereal *, 
 	    integer *);
     doublereal taui;
-    extern /* Subroutine */ int dsyr2_(char *, integer *, doublereal *, 
+    extern /* Subroutine */ void dsyr2_(char *, integer *, doublereal *, 
 	    doublereal *, integer *, doublereal *, integer *, doublereal *, 
 	    integer *);
     integer i__;
     doublereal alpha;
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int daxpy_(integer *, doublereal *, doublereal *, 
+    extern /* Subroutine */ void daxpy_(integer *, doublereal *, doublereal *, 
 	    integer *, doublereal *, integer *);
     logical upper;
-    extern /* Subroutine */ int dsymv_(char *, integer *, doublereal *, 
+    extern /* Subroutine */ void dsymv_(char *, integer *, doublereal *, 
 	    doublereal *, integer *, doublereal *, integer *, doublereal *, 
 	    doublereal *, integer *), dlarfg_(integer *, doublereal *,
-	     doublereal *, integer *, doublereal *), xerbla_(char *, integer *, ftnlen
+	     doublereal *, integer *, doublereal *);
+    extern int xerbla_(char *, integer *, ftnlen
 	    );
 
 
@@ -747,13 +748,13 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DSYTD2", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n <= 0) {
-	return 0;
+	return;
     }
 
     if (upper) {
@@ -856,7 +857,7 @@ f"> */
 	d__[*n] = a[*n + *n * a_dim1];
     }
 
-    return 0;
+    return;
 
 /*     End of DSYTD2 */
 

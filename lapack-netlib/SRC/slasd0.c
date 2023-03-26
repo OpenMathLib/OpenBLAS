@@ -664,7 +664,7 @@ f"> */
 /* >     California at Berkeley, USA */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int slasd0_(integer *n, integer *sqre, real *d__, real *e, 
+/* Subroutine */ void slasd0_(integer *n, integer *sqre, real *d__, real *e, 
 	real *u, integer *ldu, real *vt, integer *ldvt, integer *smlsiz, 
 	integer *iwork, real *work, integer *info)
 {
@@ -676,11 +676,12 @@ f"> */
     integer idxq, nlvl, i__, j, m;
     real alpha;
     integer inode, ndiml, idxqc, ndimr, itemp, sqrei, i1;
-    extern /* Subroutine */ int slasd1_(integer *, integer *, integer *, real 
+    extern /* Subroutine */ void slasd1_(integer *, integer *, integer *, real 
 	    *, real *, real *, real *, integer *, real *, integer *, integer *
 	    , integer *, real *, integer *);
     integer ic, lf, nd, ll, nl, nr;
-    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen), slasdq_(
+    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
+    extern void slasdq_(
 	    char *, integer *, integer *, integer *, integer *, integer *, 
 	    real *, real *, real *, integer *, real *, integer *, real *, 
 	    integer *, real *, integer *), slasdt_(integer *, integer 
@@ -732,7 +733,7 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("SLASD0", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     If the input matrix is too small, call SLASDQ to find the SVD. */
@@ -740,7 +741,7 @@ f"> */
     if (*n <= *smlsiz) {
 	slasdq_("U", sqre, n, &m, n, &c__0, &d__[1], &e[1], &vt[vt_offset], 
 		ldvt, &u[u_offset], ldu, &u[u_offset], ldu, &work[1], info);
-	return 0;
+	return;
     }
 
 /*     Set up the computation tree. */
@@ -780,7 +781,7 @@ f"> */
 		nlf + nlf * vt_dim1], ldvt, &u[nlf + nlf * u_dim1], ldu, &u[
 		nlf + nlf * u_dim1], ldu, &work[1], info);
 	if (*info != 0) {
-	    return 0;
+	    return;
 	}
 	itemp = idxq + nlf - 2;
 	i__2 = nl;
@@ -798,7 +799,7 @@ f"> */
 		nrf + nrf * vt_dim1], ldvt, &u[nrf + nrf * u_dim1], ldu, &u[
 		nrf + nrf * u_dim1], ldu, &work[1], info);
 	if (*info != 0) {
-	    return 0;
+	    return;
 	}
 	itemp = idxq + ic;
 	i__2 = nr;
@@ -821,7 +822,7 @@ f"> */
 	    ll = 1;
 	} else {
 	    i__1 = lvl - 1;
-	    lf = pow_ii(&c__2, &i__1);
+	    lf = pow_ii(c__2, i__1);
 	    ll = (lf << 1) - 1;
 	}
 	i__1 = ll;
@@ -846,14 +847,14 @@ f"> */
 /*     Report the possible convergence failure. */
 
 	    if (*info != 0) {
-		return 0;
+		return;
 	    }
 /* L40: */
 	}
 /* L50: */
     }
 
-    return 0;
+    return;
 
 /*     End of SLASD0 */
 

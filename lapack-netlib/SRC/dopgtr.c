@@ -623,7 +623,7 @@ f"> */
 /* > \ingroup doubleOTHERcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int dopgtr_(char *uplo, integer *n, doublereal *ap, 
+/* Subroutine */ void dopgtr_(char *uplo, integer *n, doublereal *ap, 
 	doublereal *tau, doublereal *q, integer *ldq, doublereal *work, 
 	integer *info)
 {
@@ -635,7 +635,7 @@ f"> */
     extern logical lsame_(char *, char *);
     integer iinfo;
     logical upper;
-    extern /* Subroutine */ int dorg2l_(integer *, integer *, integer *, 
+    extern /* Subroutine */ void dorg2l_(integer *, integer *, integer *, 
 	    doublereal *, integer *, doublereal *, doublereal *, integer *), 
 	    dorg2r_(integer *, integer *, integer *, doublereal *, integer *, 
 	    doublereal *, doublereal *, integer *);
@@ -675,13 +675,13 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DOPGTR", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
     if (upper) {
@@ -758,7 +758,7 @@ f"> */
 		    &work[1], &iinfo);
 	}
     }
-    return 0;
+    return;
 
 /*     End of DOPGTR */
 

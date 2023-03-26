@@ -772,7 +772,7 @@ f"> */
 /* > Christof Voemel, LBNL/NERSC, USA \n */
 
 /*  ===================================================================== */
-/* Subroutine */ int cstegr_(char *jobz, char *range, integer *n, real *d__, 
+/* Subroutine */ void cstegr_(char *jobz, char *range, integer *n, real *d__, 
 	real *e, real *vl, real *vu, integer *il, integer *iu, real *abstol, 
 	integer *m, real *w, complex *z__, integer *ldz, integer *isuppz, 
 	real *work, integer *lwork, integer *iwork, integer *liwork, integer *
@@ -782,7 +782,7 @@ f"> */
     integer z_dim1, z_offset;
 
     /* Local variables */
-    extern /* Subroutine */ int cstemr_(char *, char *, integer *, real *, 
+    extern /* Subroutine */ void cstemr_(char *, char *, integer *, real *, 
 	    real *, real *, real *, integer *, integer *, integer *, real *, 
 	    complex *, integer *, integer *, integer *, logical *, real *, 
 	    integer *, integer *, integer *, integer *);
@@ -817,6 +817,6 @@ f"> */
 
 /*     End of CSTEGR */
 
-    return 0;
+    return;
 } /* cstegr_ */
 

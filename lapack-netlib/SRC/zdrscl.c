@@ -593,15 +593,15 @@ f"> */
 /* > \ingroup complex16OTHERauxiliary */
 
 /*  ===================================================================== */
-/* Subroutine */ int zdrscl_(integer *n, doublereal *sa, doublecomplex *sx, 
+/* Subroutine */ void zdrscl_(integer *n, doublereal *sa, doublecomplex *sx, 
 	integer *incx)
 {
     doublereal cden;
     logical done;
     doublereal cnum, cden1, cnum1;
-    extern /* Subroutine */ int dlabad_(doublereal *, doublereal *);
+    extern /* Subroutine */ void dlabad_(doublereal *, doublereal *);
     extern doublereal dlamch_(char *);
-    extern /* Subroutine */ int zdscal_(integer *, doublereal *, 
+    extern /* Subroutine */ void zdscal_(integer *, doublereal *, 
 	    doublecomplex *, integer *);
     doublereal bignum, smlnum, mul;
 
@@ -622,7 +622,7 @@ f"> */
 
     /* Function Body */
     if (*n <= 0) {
-	return 0;
+	return;
     }
 
 /*     Get machine parameters */
@@ -669,7 +669,7 @@ L10:
 	goto L10;
     }
 
-    return 0;
+    return;
 
 /*     End of ZDRSCL */
 

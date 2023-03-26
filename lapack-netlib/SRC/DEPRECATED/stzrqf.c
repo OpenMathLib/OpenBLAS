@@ -652,7 +652,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int stzrqf_(integer *m, integer *n, real *a, integer *lda, 
+/* Subroutine */ void stzrqf_(integer *m, integer *n, real *a, integer *lda, 
 	real *tau, integer *info)
 {
     /* System generated locals */
@@ -660,14 +660,16 @@ f"> */
     real r__1;
 
     /* Local variables */
-    extern /* Subroutine */ int sger_(integer *, integer *, real *, real *, 
+    extern /* Subroutine */ void sger_(integer *, integer *, real *, real *, 
 	    integer *, real *, integer *, real *, integer *);
     integer i__, k;
-    extern /* Subroutine */ int sgemv_(char *, integer *, integer *, real *, 
+    extern /* Subroutine */ void sgemv_(char *, integer *, integer *, real *, 
 	    real *, integer *, real *, integer *, real *, real *, integer *), scopy_(integer *, real *, integer *, real *, integer *);
     integer m1;
-    extern /* Subroutine */ int saxpy_(integer *, real *, real *, integer *, 
-	    real *, integer *), xerbla_(char *, integer *), slarfg_(
+    extern /* Subroutine */ void saxpy_(integer *, real *, real *, integer *, 
+	    real *, integer *);
+    extern int xerbla_(char *, integer *, ftnlen);
+    extern void slarfg_(
 	    integer *, real *, real *, integer *, real *);
 
 
@@ -699,14 +701,14 @@ f"> */
     }
     if (*info != 0) {
 	i__1 = -(*info);
-	xerbla_("STZRQF", &i__1);
-	return 0;
+	xerbla_("STZRQF", &i__1, 6);
+	return;
     }
 
 /*     Perform the factorization. */
 
     if (*m == 0) {
-	return 0;
+	return;
     }
     if (*m == *n) {
 	i__1 = *n;
@@ -764,7 +766,7 @@ f"> */
 	}
     }
 
-    return 0;
+    return;
 
 /*     End of STZRQF */
 

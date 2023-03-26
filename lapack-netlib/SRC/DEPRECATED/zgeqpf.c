@@ -661,7 +661,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int zgeqpf_(integer *m, integer *n, doublecomplex *a, 
+/* Subroutine */ void zgeqpf_(integer *m, integer *n, doublecomplex *a, 
 	integer *lda, integer *jpvt, doublecomplex *tau, doublecomplex *work, 
 	doublereal *rwork, integer *info)
 {
@@ -675,7 +675,7 @@ f"> */
     integer i__, j;
     doublereal tol3z;
     integer itemp;
-    extern /* Subroutine */ int zlarf_(char *, integer *, integer *, 
+    extern /* Subroutine */ void zlarf_(char *, integer *, integer *, 
 	    doublecomplex *, integer *, doublecomplex *, doublecomplex *, 
 	    integer *, doublecomplex *), zswap_(integer *, 
 	    doublecomplex *, integer *, doublecomplex *, integer *), zgeqr2_(
@@ -685,11 +685,12 @@ f"> */
     integer ma;
     extern doublereal dlamch_(char *);
     integer mn;
-    extern /* Subroutine */ int zunm2r_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void zunm2r_(char *, char *, integer *, integer *, 
 	    integer *, doublecomplex *, integer *, doublecomplex *, 
 	    doublecomplex *, integer *, doublecomplex *, integer *);
     extern integer idamax_(integer *, doublereal *, integer *);
-    extern /* Subroutine */ int xerbla_(char *, integer *), zlarfg_(
+    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
+    extern void zlarfg_(
 	    integer *, doublecomplex *, doublecomplex *, integer *, 
 	    doublecomplex *);
     doublecomplex aii;
@@ -727,8 +728,8 @@ f"> */
     }
     if (*info != 0) {
 	i__1 = -(*info);
-	xerbla_("ZGEQPF", &i__1);
-	return 0;
+	xerbla_("ZGEQPF", &i__1, 6);
+	return;
     }
 
     mn = f2cmin(*m,*n);
@@ -867,7 +868,7 @@ f"> */
 /* L40: */
 	}
     }
-    return 0;
+    return;
 
 /*     End of ZGEQPF */
 

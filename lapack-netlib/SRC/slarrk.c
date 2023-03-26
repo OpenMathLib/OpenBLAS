@@ -654,7 +654,7 @@ f"> */
 /* > \ingroup OTHERauxiliary */
 
 /*  ===================================================================== */
-/* Subroutine */ int slarrk_(integer *n, integer *iw, real *gl, real *gu, 
+/* Subroutine */ void slarrk_(integer *n, integer *iw, real *gl, real *gu, 
 	real *d__, real *e2, real *pivmin, real *reltol, real *w, real *werr, 
 	integer *info)
 {
@@ -692,7 +692,7 @@ f"> */
     /* Function Body */
     if (*n <= 0) {
 	*info = 0;
-	return 0;
+	return;
     }
 
 /*     Get machine constants */
@@ -761,7 +761,7 @@ L30:
 
     *w = (left + right) * .5f;
     *werr = (r__1 = right - left, abs(r__1)) * .5f;
-    return 0;
+    return;
 
 /*     End of SLARRK */
 

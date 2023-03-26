@@ -622,7 +622,7 @@ f"> */
 /* > \ingroup complex16POcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int zpoequ_(integer *n, doublecomplex *a, integer *lda, 
+/* Subroutine */ void zpoequ_(integer *n, doublecomplex *a, integer *lda, 
 	doublereal *s, doublereal *scond, doublereal *amax, integer *info)
 {
     /* System generated locals */
@@ -662,7 +662,7 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZPOEQU", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
@@ -670,7 +670,7 @@ f"> */
     if (*n == 0) {
 	*scond = 1.;
 	*amax = 0.;
-	return 0;
+	return;
     }
 
 /*     Find the minimum and maximum diagonal elements. */
@@ -700,7 +700,7 @@ f"> */
 	for (i__ = 1; i__ <= i__1; ++i__) {
 	    if (s[i__] <= 0.) {
 		*info = i__;
-		return 0;
+		return;
 	    }
 /* L20: */
 	}
@@ -719,7 +719,7 @@ f"> */
 
 	*scond = sqrt(smin) / sqrt(*amax);
     }
-    return 0;
+    return;
 
 /*     End of ZPOEQU */
 

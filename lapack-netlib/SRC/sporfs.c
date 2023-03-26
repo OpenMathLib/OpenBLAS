@@ -697,7 +697,7 @@ f"> */
 /* > \ingroup realPOcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int sporfs_(char *uplo, integer *n, integer *nrhs, real *a, 
+/* Subroutine */ void sporfs_(char *uplo, integer *n, integer *nrhs, real *a, 
 	integer *lda, real *af, integer *ldaf, real *b, integer *ldb, real *x,
 	 integer *ldx, real *ferr, real *berr, real *work, integer *iwork, 
 	integer *info)
@@ -715,7 +715,7 @@ f"> */
     extern logical lsame_(char *, char *);
     integer isave[3], count;
     logical upper;
-    extern /* Subroutine */ int scopy_(integer *, real *, integer *, real *, 
+    extern /* Subroutine */ void scopy_(integer *, real *, integer *, real *, 
 	    integer *), saxpy_(integer *, real *, real *, integer *, real *, 
 	    integer *), ssymv_(char *, integer *, real *, real *, integer *, 
 	    real *, integer *, real *, real *, integer *), slacn2_(
@@ -727,7 +727,7 @@ f"> */
     real safmin;
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     real lstres;
-    extern /* Subroutine */ int spotrs_(char *, integer *, integer *, real *, 
+    extern /* Subroutine */ void spotrs_(char *, integer *, integer *, real *, 
 	    integer *, real *, integer *, integer *);
     real eps;
 
@@ -782,7 +782,7 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("SPORFS", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
@@ -794,7 +794,7 @@ f"> */
 	    berr[j] = 0.f;
 /* L10: */
 	}
-	return 0;
+	return;
     }
 
 /*     NZ = maximum number of nonzero elements in each row of A, plus 1 */
@@ -991,7 +991,7 @@ L100:
 /* L140: */
     }
 
-    return 0;
+    return;
 
 /*     End of SPORFS */
 

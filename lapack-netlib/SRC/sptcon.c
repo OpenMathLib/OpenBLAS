@@ -631,7 +631,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int sptcon_(integer *n, real *d__, real *e, real *anorm, 
+/* Subroutine */ void sptcon_(integer *n, real *d__, real *e, real *anorm, 
 	real *rcond, real *work, integer *info)
 {
     /* System generated locals */
@@ -671,7 +671,7 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("SPTCON", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
@@ -679,9 +679,9 @@ f"> */
     *rcond = 0.f;
     if (*n == 0) {
 	*rcond = 1.f;
-	return 0;
+	return;
     } else if (*anorm == 0.f) {
-	return 0;
+	return;
     }
 
 /*     Check that D(1:N) is positive. */
@@ -689,7 +689,7 @@ f"> */
     i__1 = *n;
     for (i__ = 1; i__ <= i__1; ++i__) {
 	if (d__[i__] <= 0.f) {
-	    return 0;
+	    return;
 	}
 /* L10: */
     }
@@ -730,7 +730,7 @@ f"> */
 	*rcond = 1.f / ainvnm / *anorm;
     }
 
-    return 0;
+    return;
 
 /*     End of SPTCON */
 

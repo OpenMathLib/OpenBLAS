@@ -779,7 +779,7 @@ f"> */
 /* >     Osni Marques, LBNL/NERSC, USA \n */
 
 /*  ===================================================================== */
-/* Subroutine */ int slalsa_(integer *icompq, integer *smlsiz, integer *n, 
+/* Subroutine */ void slalsa_(integer *icompq, integer *smlsiz, integer *n, 
 	integer *nrhs, real *b, integer *ldb, real *bx, integer *ldbx, real *
 	u, integer *ldu, real *vt, integer *k, real *difl, real *difr, real *
 	z__, real *poles, integer *givptr, integer *givcol, integer *ldgcol, 
@@ -795,17 +795,18 @@ f"> */
 
     /* Local variables */
     integer nlvl, sqre, i__, j, inode, ndiml;
-    extern /* Subroutine */ int sgemm_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void sgemm_(char *, char *, integer *, integer *, 
 	    integer *, real *, real *, integer *, real *, integer *, real *, 
 	    real *, integer *);
     integer ndimr, i1;
-    extern /* Subroutine */ int scopy_(integer *, real *, integer *, real *, 
+    extern /* Subroutine */ void scopy_(integer *, real *, integer *, real *, 
 	    integer *), slals0_(integer *, integer *, integer *, integer *, 
 	    integer *, real *, integer *, real *, integer *, integer *, 
 	    integer *, integer *, integer *, real *, integer *, real *, real *
 	    , real *, real *, integer *, real *, real *, real *, integer *);
     integer ic, lf, nd, ll, nl, nr;
-    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen), slasdt_(
+    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
+    extern void slasdt_(
 	    integer *, integer *, integer *, integer *, integer *, integer *, 
 	    integer *);
     integer im1, nlf, nrf, lvl, ndb1, nlp1, lvl2, nrp1;
@@ -886,7 +887,7 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("SLALSA", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Book-keeping and  setting up the computation tree. */
@@ -946,7 +947,7 @@ f"> */
 /*     Finally go through the left singular vector matrices of all */
 /*     the other subproblems bottom-up on the tree. */
 
-    j = pow_ii(&c__2, &nlvl);
+    j = pow_ii(c__2, nlvl);
     sqre = 0;
 
     for (lvl = nlvl; lvl >= 1; --lvl) {
@@ -960,7 +961,7 @@ f"> */
 	    ll = 1;
 	} else {
 	    i__1 = lvl - 1;
-	    lf = pow_ii(&c__2, &i__1);
+	    lf = pow_ii(c__2, i__1);
 	    ll = (lf << 1) - 1;
 	}
 	i__1 = ll;
@@ -1005,7 +1006,7 @@ L50:
 	    ll = 1;
 	} else {
 	    i__2 = lvl - 1;
-	    lf = pow_ii(&c__2, &i__2);
+	    lf = pow_ii(c__2, i__2);
 	    ll = (lf << 1) - 1;
 	}
 	i__2 = lf;
@@ -1062,7 +1063,7 @@ L50:
 
 L90:
 
-    return 0;
+    return;
 
 /*     End of SLALSA */
 

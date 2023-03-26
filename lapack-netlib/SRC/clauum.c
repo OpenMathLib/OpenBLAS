@@ -619,7 +619,7 @@ f"> */
 /* > \ingroup complexOTHERauxiliary */
 
 /*  ===================================================================== */
-/* Subroutine */ int clauum_(char *uplo, integer *n, complex *a, integer *lda,
+/* Subroutine */ void clauum_(char *uplo, integer *n, complex *a, integer *lda,
 	 integer *info)
 {
     /* System generated locals */
@@ -627,17 +627,17 @@ f"> */
 
     /* Local variables */
     integer i__;
-    extern /* Subroutine */ int cgemm_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void cgemm_(char *, char *, integer *, integer *, 
 	    integer *, complex *, complex *, integer *, complex *, integer *, 
 	    complex *, complex *, integer *), cherk_(char *, 
 	    char *, integer *, integer *, real *, complex *, integer *, real *
 	    , complex *, integer *);
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int ctrmm_(char *, char *, char *, char *, 
+    extern /* Subroutine */ void ctrmm_(char *, char *, char *, char *, 
 	    integer *, integer *, complex *, complex *, integer *, complex *, 
 	    integer *);
     logical upper;
-    extern /* Subroutine */ int clauu2_(char *, integer *, complex *, integer 
+    extern /* Subroutine */ void clauu2_(char *, integer *, complex *, integer 
 	    *, integer *);
     integer ib, nb;
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
@@ -674,13 +674,13 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CLAUUM", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /*     Determine the block size for this environment. */
@@ -758,7 +758,7 @@ f"> */
 	}
     }
 
-    return 0;
+    return;
 
 /*     End of CLAUUM */
 

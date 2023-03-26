@@ -590,7 +590,7 @@ ddw.f"> */
 /* > \ingroup doubleOTHERcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int dla_wwaddw_(integer *n, doublereal *x, doublereal *y, 
+/* Subroutine */ void dla_wwaddw_(integer *n, doublereal *x, doublereal *y, 
 	doublereal *w)
 {
     /* System generated locals */
@@ -624,6 +624,6 @@ ddw.f"> */
 	x[i__] = s;
 /* L10: */
     }
-    return 0;
+    return;
 } /* dla_wwaddw__ */
 

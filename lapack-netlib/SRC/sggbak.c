@@ -655,7 +655,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int sggbak_(char *job, char *side, integer *n, integer *ilo, 
+/* Subroutine */ void sggbak_(char *job, char *side, integer *n, integer *ilo, 
 	integer *ihi, real *lscale, real *rscale, integer *m, real *v, 
 	integer *ldv, integer *info)
 {
@@ -665,10 +665,11 @@ f"> */
     /* Local variables */
     integer i__, k;
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int sscal_(integer *, real *, real *, integer *);
+    extern /* Subroutine */ void sscal_(integer *, real *, real *, integer *);
     logical leftv;
-    extern /* Subroutine */ int sswap_(integer *, real *, integer *, real *, 
-	    integer *), xerbla_(char *, integer *, ftnlen);
+    extern /* Subroutine */ void sswap_(integer *, real *, integer *, real *, 
+	    integer *);
+    extern int xerbla_(char *, integer *, ftnlen);
     logical rightv;
 
 
@@ -718,19 +719,19 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("SGGBAK", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
     if (*m == 0) {
-	return 0;
+	return;
     }
     if (lsame_(job, "N")) {
-	return 0;
+	return;
     }
 
     if (*ilo == *ihi) {
@@ -836,7 +837,7 @@ L100:
 
 L110:
 
-    return 0;
+    return;
 
 /*     End of SGGBAK */
 

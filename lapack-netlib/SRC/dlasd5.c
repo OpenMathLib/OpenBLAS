@@ -626,7 +626,7 @@ f"> */
 /* >     at Berkeley, USA */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int dlasd5_(integer *i__, doublereal *d__, doublereal *z__, 
+/* Subroutine */ void dlasd5_(integer *i__, doublereal *d__, doublereal *z__, 
 	doublereal *delta, doublereal *rho, doublereal *dsigma, doublereal *
 	work)
 {
@@ -733,7 +733,7 @@ f"> */
 /*        DELTA( 1 ) = DELTA( 1 ) / TEMP */
 /*        DELTA( 2 ) = DELTA( 2 ) / TEMP */
     }
-    return 0;
+    return;
 
 /*     End of DLASD5 */
 

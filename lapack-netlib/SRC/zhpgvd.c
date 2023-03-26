@@ -743,7 +743,7 @@ f"> */
 /* >     Mark Fahey, Department of Mathematics, Univ. of Kentucky, USA */
 
 /*  ===================================================================== */
-/* Subroutine */ int zhpgvd_(integer *itype, char *jobz, char *uplo, integer *
+/* Subroutine */ void zhpgvd_(integer *itype, char *jobz, char *uplo, integer *
 	n, doublecomplex *ap, doublecomplex *bp, doublereal *w, doublecomplex 
 	*z__, integer *ldz, doublecomplex *work, integer *lwork, doublereal *
 	rwork, integer *lrwork, integer *iwork, integer *liwork, integer *
@@ -759,20 +759,20 @@ f"> */
     integer lwmin;
     char trans[1];
     logical upper, wantz;
-    extern /* Subroutine */ int ztpmv_(char *, char *, char *, integer *, 
+    extern /* Subroutine */ void ztpmv_(char *, char *, char *, integer *, 
 	    doublecomplex *, doublecomplex *, integer *), ztpsv_(char *, char *, char *, integer *, doublecomplex *
-	    , doublecomplex *, integer *), xerbla_(
-	    char *, integer *, ftnlen);
+	    , doublecomplex *, integer *);
+    extern int xerbla_(char *, integer *, ftnlen);
     integer liwmin;
-    extern /* Subroutine */ int zhpevd_(char *, char *, integer *, 
+    extern /* Subroutine */ void zhpevd_(char *, char *, integer *, 
 	    doublecomplex *, doublereal *, doublecomplex *, integer *, 
 	    doublecomplex *, integer *, doublereal *, integer *, integer *, 
 	    integer *, integer *);
     integer lrwmin;
-    extern /* Subroutine */ int zhpgst_(integer *, char *, integer *, 
+    extern /* Subroutine */ void zhpgst_(integer *, char *, integer *, 
 	    doublecomplex *, doublecomplex *, integer *);
     logical lquery;
-    extern /* Subroutine */ int zpptrf_(char *, integer *, doublecomplex *, 
+    extern /* Subroutine */ void zpptrf_(char *, integer *, doublecomplex *, 
 	    integer *);
 
 
@@ -850,15 +850,15 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZHPGVD", &i__1, (ftnlen)6);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /*     Form a Cholesky factorization of B. */
@@ -866,7 +866,7 @@ f"> */
     zpptrf_(uplo, n, &bp[1], info);
     if (*info != 0) {
 	*info = *n + *info;
-	return 0;
+	return;
     }
 
 /*     Transform problem to standard eigenvalue problem and solve. */
@@ -933,7 +933,7 @@ f"> */
     work[1].r = (doublereal) lwmin, work[1].i = 0.;
     rwork[1] = (doublereal) lrwmin;
     iwork[1] = liwmin;
-    return 0;
+    return;
 
 /*     End of ZHPGVD */
 

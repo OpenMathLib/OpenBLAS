@@ -668,7 +668,7 @@ f"> */
 /* > \ingroup complexOTHERauxiliary */
 
 /*  ===================================================================== */
-/* Subroutine */ int clags2_(logical *upper, real *a1, complex *a2, real *a3, 
+/* Subroutine */ void clags2_(logical *upper, real *a1, complex *a2, real *a3, 
 	real *b1, complex *b2, real *b3, real *csu, complex *snu, real *csv, 
 	complex *snv, real *csq, complex *snq)
 {
@@ -683,7 +683,7 @@ f"> */
     real d__;
     complex r__, d1;
     real s1, s2, fb, fc;
-    extern /* Subroutine */ int slasv2_(real *, real *, real *, real *, real *
+    extern /* Subroutine */ void slasv2_(real *, real *, real *, real *, real *
 	    , real *, real *, real *, real *), clartg_(complex *, complex *, 
 	    real *, complex *, complex *);
     complex ua11, ua12, ua21, ua22, vb11, vb12, vb21, vb22;
@@ -1028,7 +1028,7 @@ f"> */
 
     }
 
-    return 0;
+    return;
 
 /*     End of CLAGS2 */
 

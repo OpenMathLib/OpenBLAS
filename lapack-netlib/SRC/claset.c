@@ -616,7 +616,7 @@ f"> */
 /* > \ingroup complexOTHERauxiliary */
 
 /*  ===================================================================== */
-/* Subroutine */ int claset_(char *uplo, integer *m, integer *n, complex *
+/* Subroutine */ void claset_(char *uplo, integer *m, integer *n, complex *
 	alpha, complex *beta, complex *a, integer *lda)
 {
     /* System generated locals */
@@ -711,7 +711,7 @@ f"> */
 	}
     }
 
-    return 0;
+    return;
 
 /*     End of CLASET */
 

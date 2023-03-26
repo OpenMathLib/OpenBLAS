@@ -674,7 +674,7 @@ f"> */
 /* > \ingroup doubleOTHERcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int dsbgst_(char *vect, char *uplo, integer *n, integer *ka, 
+/* Subroutine */ void dsbgst_(char *vect, char *uplo, integer *n, integer *ka, 
 	integer *kb, doublereal *ab, integer *ldab, doublereal *bb, integer *
 	ldbb, doublereal *x, integer *ldx, doublereal *work, integer *info)
 {
@@ -685,31 +685,33 @@ f"> */
 
     /* Local variables */
     integer inca;
-    extern /* Subroutine */ int dger_(integer *, integer *, doublereal *, 
+    extern /* Subroutine */ void dger_(integer *, integer *, doublereal *, 
 	    doublereal *, integer *, doublereal *, integer *, doublereal *, 
 	    integer *), drot_(integer *, doublereal *, integer *, doublereal *
 	    , integer *, doublereal *, doublereal *);
     integer i__, j, k, l, m;
     doublereal t;
-    extern /* Subroutine */ int dscal_(integer *, doublereal *, doublereal *, 
+    extern /* Subroutine */ void dscal_(integer *, doublereal *, doublereal *, 
 	    integer *);
     extern logical lsame_(char *, char *);
     integer i0, i1;
     logical upper;
     integer i2, j1, j2;
     logical wantx;
-    extern /* Subroutine */ int dlar2v_(integer *, doublereal *, doublereal *,
+    extern /* Subroutine */ void dlar2v_(integer *, doublereal *, doublereal *,
 	     doublereal *, integer *, doublereal *, doublereal *, integer *);
     doublereal ra;
     integer nr, nx;
-    extern /* Subroutine */ int dlaset_(char *, integer *, integer *, 
+    extern /* Subroutine */ void dlaset_(char *, integer *, integer *, 
 	    doublereal *, doublereal *, doublereal *, integer *), 
 	    dlartg_(doublereal *, doublereal *, doublereal *, doublereal *, 
-	    doublereal *), xerbla_(char *, integer *, ftnlen), dlargv_(
+	    doublereal *);
+    extern int xerbla_(char *, integer *, ftnlen);
+    extern void dlargv_(
 	    integer *, doublereal *, integer *, doublereal *, integer *, 
 	    doublereal *, integer *);
     logical update;
-    extern /* Subroutine */ int dlartv_(integer *, doublereal *, integer *, 
+    extern /* Subroutine */ void dlartv_(integer *, doublereal *, integer *, 
 	    doublereal *, integer *, doublereal *, doublereal *, integer *);
     integer ka1, kb1;
     doublereal ra1;
@@ -767,13 +769,13 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DSBGST", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
     inca = *ldab * ka1;
@@ -1611,14 +1613,14 @@ L490:
 	    --i__;
 	    i0 = m + 1;
 	    if (*ka == 0) {
-		return 0;
+		return;
 	    }
 	    goto L490;
 	}
     } else {
 	i__ -= *ka;
 	if (i__ < 2) {
-	    return 0;
+	    return;
 	}
     }
 

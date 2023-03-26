@@ -34,8 +34,8 @@
 *>
 *> \verbatim
 *>
-*> DLAG2S converts a DOUBLE PRECISION matrix, SA, to a SINGLE
-*> PRECISION matrix, A.
+*> DLAG2S converts a DOUBLE PRECISION matrix, A, to a SINGLE
+*> PRECISION matrix, SA.
 *>
 *> RMAX is the overflow for the SINGLE PRECISION arithmetic
 *> DLAG2S checks that all the entries of A are between -RMAX and
@@ -128,6 +128,9 @@
       REAL               SLAMCH
       EXTERNAL           SLAMCH
 *     ..
+*     .. Intrinsic Functions ..
+      INTRINSIC          REAL
+*     ..
 *     .. Executable Statements ..
 *
       RMAX = SLAMCH( 'O' )
@@ -137,7 +140,7 @@
                INFO = 1
                GO TO 30
             END IF
-            SA( I, J ) = A( I, J )
+            SA( I, J ) = REAL( A( I, J ) )
    10    CONTINUE
    20 CONTINUE
       INFO = 0

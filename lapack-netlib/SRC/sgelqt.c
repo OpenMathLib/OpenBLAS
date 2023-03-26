@@ -630,7 +630,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int sgelqt_(integer *m, integer *n, integer *mb, real *a, 
+/* Subroutine */ void sgelqt_(integer *m, integer *n, integer *mb, real *a, 
 	integer *lda, real *t, integer *ldt, real *work, integer *info)
 {
     /* System generated locals */
@@ -638,9 +638,11 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 
     /* Local variables */
     integer i__, k, iinfo, ib;
-    extern /* Subroutine */ int slarfb_(char *, char *, char *, char *, 
+    extern /* Subroutine */ void slarfb_(char *, char *, char *, char *, 
 	    integer *, integer *, integer *, real *, integer *, real *, 
-	    integer *, real *, integer *, real *, integer *), xerbla_(char *, integer *, ftnlen), sgelqt3_(
+	    integer *, real *, integer *, real *, integer *);
+    extern int xerbla_(char *, integer *, ftnlen);
+    extern void sgelqt3_(
 	    integer *, integer *, real *, integer *, real *, integer *, 
 	    integer *);
 
@@ -681,14 +683,14 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("SGELQT", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     k = f2cmin(*m,*n);
     if (k == 0) {
-	return 0;
+	return;
     }
 
 /*     Blocked loop of length K */
@@ -717,7 +719,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 		    i__ * a_dim1], lda, &work[1], &i__5);
 	}
     }
-    return 0;
+    return;
 
 /*     End of SGELQT */
 

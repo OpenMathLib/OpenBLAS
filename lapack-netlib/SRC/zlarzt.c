@@ -699,7 +699,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int zlarzt_(char *direct, char *storev, integer *n, integer *
+/* Subroutine */ void zlarzt_(char *direct, char *storev, integer *n, integer *
 	k, doublecomplex *v, integer *ldv, doublecomplex *tau, doublecomplex *
 	t, integer *ldt)
 {
@@ -710,13 +710,13 @@ f"> */
     /* Local variables */
     integer info, i__, j;
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int zgemv_(char *, integer *, integer *, 
+    extern /* Subroutine */ void zgemv_(char *, integer *, integer *, 
 	    doublecomplex *, doublecomplex *, integer *, doublecomplex *, 
 	    integer *, doublecomplex *, doublecomplex *, integer *), 
 	    ztrmv_(char *, char *, char *, integer *, doublecomplex *, 
-	    integer *, doublecomplex *, integer *), 
-	    xerbla_(char *, integer *, ftnlen), zlacgv_(integer *, 
-	    doublecomplex *, integer *);
+	    integer *, doublecomplex *, integer *); 
+    extern int xerbla_(char *, integer *, ftnlen);
+    extern void zlacgv_(integer *, doublecomplex *, integer *);
 
 
 /*  -- LAPACK computational routine (version 3.7.0) -- */
@@ -749,7 +749,7 @@ f"> */
     if (info != 0) {
 	i__1 = -info;
 	xerbla_("ZLARZT", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
     for (i__ = *k; i__ >= 1; --i__) {
@@ -794,7 +794,7 @@ f"> */
 	}
 /* L20: */
     }
-    return 0;
+    return;
 
 /*     End of ZLARZT */
 

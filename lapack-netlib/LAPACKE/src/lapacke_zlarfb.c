@@ -42,7 +42,9 @@ lapack_int LAPACKE_zlarfb( int matrix_layout, char side, char trans, char direct
     lapack_int info = 0;
     lapack_int ldwork;
     lapack_complex_double* work = NULL;
-    lapack_int ncols_v, nrows_v;
+    lapack_int nrows_v, ncols_v;
+    lapack_logical left, col, forward;
+    char uplo;
     if( matrix_layout != LAPACK_COL_MAJOR && matrix_layout != LAPACK_ROW_MAJOR ) {
         LAPACKE_xerbla( "LAPACKE_zlarfb", -1 );
         return -1;
@@ -50,59 +52,27 @@ lapack_int LAPACKE_zlarfb( int matrix_layout, char side, char trans, char direct
 #ifndef LAPACK_DISABLE_NAN_CHECK
     if( LAPACKE_get_nancheck() ) {
         /* Optionally check input matrices for NaNs */
-        lapack_int lrv, lcv;  /* row, column stride */
-        if( matrix_layout == LAPACK_COL_MAJOR ) {
-            lrv = 1;
-            lcv = ldv;
-        } else {
-            lrv = ldv;
-            lcv = 1;
-        }
-        ncols_v =     LAPACKE_lsame( storev, 'c' ) ? k :
-                  ( ( LAPACKE_lsame( storev, 'r' ) && LAPACKE_lsame( side, 'l' ) ) ? m :
-                  ( ( LAPACKE_lsame( storev, 'r' ) && LAPACKE_lsame( side, 'r' ) ) ? n : 1) );
+        left = LAPACKE_lsame( side, 'l' );
+        col = LAPACKE_lsame( storev, 'c' );
+        forward = LAPACKE_lsame( direct, 'f' );
 
-        nrows_v =   ( LAPACKE_lsame( storev, 'c' ) && LAPACKE_lsame( side, 'l' ) ) ? m :
-                  ( ( LAPACKE_lsame( storev, 'c' ) && LAPACKE_lsame( side, 'r' ) ) ? n :
-                    ( LAPACKE_lsame( storev, 'r' ) ? k : 1) );
-        if( LAPACKE_zge_nancheck( matrix_layout, m, n, c, ldc ) ) {
-            return -13;
+        nrows_v = ( col && left ) ? m : ( ( col && !left ) ? n : ( !col ? k : 1) );
+        ncols_v = ( !col && left ) ? m : ( ( !col && !left ) ? n : ( col ? k : 1 ) );
+        uplo = ( ( left && col ) || !( left || col ) ) ? 'l' : 'u';
+
+        if( ( col && k > nrows_v ) || ( !col && k > ncols_v ) ) {
+            LAPACKE_xerbla( "LAPACKE_zlarfb", -8 );
+            return -8;
+        }
+        if( LAPACKE_ztz_nancheck( matrix_layout, direct, uplo, 'u',
+                                  nrows_v, ncols_v, v, ldv ) ) {
+            return -9;
         }
         if( LAPACKE_zge_nancheck( matrix_layout, k, k, t, ldt ) ) {
             return -11;
         }
-        if( LAPACKE_lsame( storev, 'c' ) && LAPACKE_lsame( direct, 'f' ) ) {
-            if( LAPACKE_ztr_nancheck( matrix_layout, 'l', 'u', k, v, ldv ) )
-                return -9;
-            if( LAPACKE_zge_nancheck( matrix_layout, nrows_v-k, ncols_v,
-                                      &v[k*lrv], ldv ) )
-                return -9;
-        } else if( LAPACKE_lsame( storev, 'c' ) && LAPACKE_lsame( direct, 'b' ) ) {
-            if( k > nrows_v ) {
-                LAPACKE_xerbla( "LAPACKE_zlarfb", -8 );
-                return -8;
-            }
-            if( LAPACKE_ztr_nancheck( matrix_layout, 'u', 'u', k,
-                                      &v[(nrows_v-k)*lrv], ldv ) )
-                return -9;
-            if( LAPACKE_zge_nancheck( matrix_layout, nrows_v-k, ncols_v, v, ldv ) )
-                return -9;
-        } else if( LAPACKE_lsame( storev, 'r' ) && LAPACKE_lsame( direct, 'f' ) ) {
-            if( LAPACKE_ztr_nancheck( matrix_layout, 'u', 'u', k, v, ldv ) )
-                return -9;
-            if( LAPACKE_zge_nancheck( matrix_layout, nrows_v, ncols_v-k,
-                                      &v[k*lrv], ldv ) )
-                return -9;
-        } else if( LAPACKE_lsame( storev, 'r' ) && LAPACKE_lsame( direct, 'b' ) ) {
-            if( k > ncols_v ) {
-                LAPACKE_xerbla( "LAPACKE_zlarfb", -8 );
-                return -8;
-            }
-            if( LAPACKE_ztr_nancheck( matrix_layout, 'l', 'u', k,
-                                      &v[(ncols_v-k)*lcv], ldv ) )
-                return -9;
-            if( LAPACKE_zge_nancheck( matrix_layout, nrows_v, ncols_v-k, v, ldv ) )
-                return -9;
+        if( LAPACKE_zge_nancheck( matrix_layout, m, n, c, ldc ) ) {
+            return -13;
         }
     }
 #endif

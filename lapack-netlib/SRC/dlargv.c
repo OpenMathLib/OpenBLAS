@@ -613,7 +613,7 @@ f"> */
 /* > \ingroup doubleOTHERauxiliary */
 
 /*  ===================================================================== */
-/* Subroutine */ int dlargv_(integer *n, doublereal *x, integer *incx, 
+/* Subroutine */ void dlargv_(integer *n, doublereal *x, integer *incx, 
 	doublereal *y, integer *incy, doublereal *c__, integer *incc)
 {
     /* System generated locals */
@@ -673,7 +673,7 @@ f"> */
 	ix += *incx;
 /* L10: */
     }
-    return 0;
+    return;
 
 /*     End of DLARGV */
 

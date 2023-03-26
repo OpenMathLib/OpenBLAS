@@ -706,7 +706,7 @@ f"> */
 /* > \endverbatim */
 
 /*  ===================================================================== */
-/* Subroutine */ int csytf2_(char *uplo, integer *n, complex *a, integer *lda,
+/* Subroutine */ void csytf2_(char *uplo, integer *n, complex *a, integer *lda,
 	 integer *ipiv, integer *info)
 {
     /* System generated locals */
@@ -716,15 +716,15 @@ f"> */
 
     /* Local variables */
     integer imax, jmax;
-    extern /* Subroutine */ int csyr_(char *, integer *, complex *, complex *,
+    extern /* Subroutine */ void csyr_(char *, integer *, complex *, complex *,
 	     integer *, complex *, integer *);
     integer i__, j, k;
     complex t;
     real alpha;
-    extern /* Subroutine */ int cscal_(integer *, complex *, complex *, 
+    extern /* Subroutine */ void cscal_(integer *, complex *, complex *, 
 	    integer *);
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int cswap_(integer *, complex *, integer *, 
+    extern /* Subroutine */ void cswap_(integer *, complex *, integer *, 
 	    complex *, integer *);
     integer kstep;
     logical upper;
@@ -770,7 +770,7 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CSYTF2", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Initialize ALPHA for use in choosing pivot block size. */
@@ -1285,7 +1285,7 @@ L40:
     }
 
 L70:
-    return 0;
+    return;
 
 /*     End of CSYTF2 */
 

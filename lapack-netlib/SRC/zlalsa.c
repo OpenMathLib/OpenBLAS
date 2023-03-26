@@ -779,7 +779,7 @@ f"> */
 /* >     Osni Marques, LBNL/NERSC, USA \n */
 
 /*  ===================================================================== */
-/* Subroutine */ int zlalsa_(integer *icompq, integer *smlsiz, integer *n, 
+/* Subroutine */ void zlalsa_(integer *icompq, integer *smlsiz, integer *n, 
 	integer *nrhs, doublecomplex *b, integer *ldb, doublecomplex *bx, 
 	integer *ldbx, doublereal *u, integer *ldu, doublereal *vt, integer *
 	k, doublereal *difl, doublereal *difr, doublereal *z__, doublereal *
@@ -797,11 +797,11 @@ f"> */
 
     /* Local variables */
     integer jcol, nlvl, sqre, jrow, i__, j, jimag;
-    extern /* Subroutine */ int dgemm_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void dgemm_(char *, char *, integer *, integer *, 
 	    integer *, doublereal *, doublereal *, integer *, doublereal *, 
 	    integer *, doublereal *, doublereal *, integer *);
     integer jreal, inode, ndiml, ndimr, i1;
-    extern /* Subroutine */ int zcopy_(integer *, doublecomplex *, integer *, 
+    extern /* Subroutine */ void zcopy_(integer *, doublecomplex *, integer *, 
 	    doublecomplex *, integer *), zlals0_(integer *, integer *, 
 	    integer *, integer *, integer *, doublecomplex *, integer *, 
 	    doublecomplex *, integer *, integer *, integer *, integer *, 
@@ -809,9 +809,9 @@ f"> */
 	    doublereal *, doublereal *, integer *, doublereal *, doublereal *,
 	     doublereal *, integer *);
     integer ic, lf, nd, ll, nl, nr;
-    extern /* Subroutine */ int dlasdt_(integer *, integer *, integer *, 
-	    integer *, integer *, integer *, integer *), xerbla_(char *, 
-	    integer *, ftnlen);
+    extern /* Subroutine */ void dlasdt_(integer *, integer *, integer *, 
+	    integer *, integer *, integer *, integer *);
+    extern int xerbla_(char *, integer *, ftnlen);
     integer im1, nlf, nrf, lvl, ndb1, nlp1, lvl2, nrp1;
 
 
@@ -890,7 +890,7 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZLALSA", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Book-keeping and  setting up the computation tree. */
@@ -1051,7 +1051,7 @@ f"> */
 /*     Finally go through the left singular vector matrices of all */
 /*     the other subproblems bottom-up on the tree. */
 
-    j = pow_ii(&c__2, &nlvl);
+    j = pow_ii(c__2, nlvl);
     sqre = 0;
 
     for (lvl = nlvl; lvl >= 1; --lvl) {
@@ -1065,7 +1065,7 @@ f"> */
 	    ll = 1;
 	} else {
 	    i__1 = lvl - 1;
-	    lf = pow_ii(&c__2, &i__1);
+	    lf = pow_ii(c__2, i__1);
 	    ll = (lf << 1) - 1;
 	}
 	i__1 = ll;
@@ -1110,7 +1110,7 @@ L170:
 	    ll = 1;
 	} else {
 	    i__2 = lvl - 1;
-	    lf = pow_ii(&c__2, &i__2);
+	    lf = pow_ii(c__2, i__2);
 	    ll = (lf << 1) - 1;
 	}
 	i__2 = lf;
@@ -1270,7 +1270,7 @@ L170:
 
 L330:
 
-    return 0;
+    return;
 
 /*     End of ZLALSA */
 

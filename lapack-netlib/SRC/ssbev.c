@@ -660,7 +660,7 @@ atrices</b> */
 /* > \ingroup realOTHEReigen */
 
 /*  ===================================================================== */
-/* Subroutine */ int ssbev_(char *jobz, char *uplo, integer *n, integer *kd, 
+/* Subroutine */ void ssbev_(char *jobz, char *uplo, integer *n, integer *kd, 
 	real *ab, integer *ldab, real *w, real *z__, integer *ldz, real *work,
 	 integer *info)
 {
@@ -675,7 +675,7 @@ atrices</b> */
     real rmin, rmax, sigma;
     extern logical lsame_(char *, char *);
     integer iinfo;
-    extern /* Subroutine */ int sscal_(integer *, real *, real *, integer *);
+    extern /* Subroutine */ void sscal_(integer *, real *, real *, integer *);
     logical lower, wantz;
     integer iscale;
     extern real slamch_(char *);
@@ -684,15 +684,15 @@ atrices</b> */
     real bignum;
     extern real slansb_(char *, char *, integer *, integer *, real *, integer 
 	    *, real *);
-    extern /* Subroutine */ int slascl_(char *, integer *, integer *, real *, 
+    extern /* Subroutine */ void slascl_(char *, integer *, integer *, real *, 
 	    real *, integer *, integer *, real *, integer *, integer *);
     integer indwrk;
-    extern /* Subroutine */ int ssbtrd_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void ssbtrd_(char *, char *, integer *, integer *, 
 	    real *, integer *, real *, real *, real *, integer *, real *, 
 	    integer *), ssterf_(integer *, real *, real *, 
 	    integer *);
     real smlnum;
-    extern /* Subroutine */ int ssteqr_(char *, integer *, real *, real *, 
+    extern /* Subroutine */ void ssteqr_(char *, integer *, real *, real *, 
 	    real *, integer *, real *, integer *);
     real eps;
 
@@ -740,13 +740,13 @@ atrices</b> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("SSBEV ", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
     if (*n == 1) {
@@ -758,7 +758,7 @@ atrices</b> */
 	if (wantz) {
 	    z__[z_dim1 + 1] = 1.f;
 	}
-	return 0;
+	return;
     }
 
 /*     Get machine constants. */
@@ -819,7 +819,7 @@ atrices</b> */
 	sscal_(&imax, &r__1, &w[1], &c__1);
     }
 
-    return 0;
+    return;
 
 /*     End of SSBEV */
 

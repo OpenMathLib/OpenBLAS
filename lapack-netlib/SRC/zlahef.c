@@ -692,7 +692,7 @@ f"> */
 /* > \endverbatim */
 
 /*  ===================================================================== */
-/* Subroutine */ int zlahef_(char *uplo, integer *n, integer *nb, integer *kb,
+/* Subroutine */ void zlahef_(char *uplo, integer *n, integer *nb, integer *kb,
 	 doublecomplex *a, integer *lda, integer *ipiv, doublecomplex *w, 
 	integer *ldw, integer *info)
 {
@@ -705,26 +705,26 @@ f"> */
     integer imax, jmax, j, k;
     doublereal t, alpha;
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int zgemm_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void zgemm_(char *, char *, integer *, integer *, 
 	    integer *, doublecomplex *, doublecomplex *, integer *, 
 	    doublecomplex *, integer *, doublecomplex *, doublecomplex *, 
 	    integer *);
     integer kstep;
-    extern /* Subroutine */ int zgemv_(char *, integer *, integer *, 
+    extern /* Subroutine */ void zgemv_(char *, integer *, integer *, 
 	    doublecomplex *, doublecomplex *, integer *, doublecomplex *, 
 	    integer *, doublecomplex *, doublecomplex *, integer *);
     doublereal r1;
-    extern /* Subroutine */ int zcopy_(integer *, doublecomplex *, integer *, 
+    extern /* Subroutine */ void zcopy_(integer *, doublecomplex *, integer *, 
 	    doublecomplex *, integer *), zswap_(integer *, doublecomplex *, 
 	    integer *, doublecomplex *, integer *);
     doublecomplex d11, d21, d22;
     integer jb, jj, kk, jp, kp;
     doublereal absakk;
     integer kw;
-    extern /* Subroutine */ int zdscal_(integer *, doublereal *, 
+    extern /* Subroutine */ void zdscal_(integer *, doublereal *, 
 	    doublecomplex *, integer *);
     doublereal colmax;
-    extern /* Subroutine */ int zlacgv_(integer *, doublecomplex *, integer *)
+    extern /* Subroutine */ void zlacgv_(integer *, doublecomplex *, integer *)
 	    ;
     extern integer izamax_(integer *, doublecomplex *, integer *);
     doublereal rowmax;
@@ -1733,7 +1733,7 @@ L120:
 	*kb = k - 1;
 
     }
-    return 0;
+    return;
 
 /*     End of ZLAHEF */
 

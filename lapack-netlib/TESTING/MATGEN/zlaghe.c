@@ -616,7 +616,7 @@ static integer c__1 = 1;
 /* > \ingroup complex16_matgen */
 
 /*  ===================================================================== */
-/* Subroutine */ int zlaghe_(integer *n, integer *k, doublereal *d__, 
+/* Subroutine */ void zlaghe_(integer *n, integer *k, doublereal *d__, 
 	doublecomplex *a, integer *lda, integer *iseed, doublecomplex *work, 
 	integer *info)
 {
@@ -626,18 +626,18 @@ static integer c__1 = 1;
     doublecomplex z__1, z__2, z__3, z__4;
 
     /* Local variables */
-    extern /* Subroutine */ int zher2_(char *, integer *, doublecomplex *, 
+    extern /* Subroutine */ void zher2_(char *, integer *, doublecomplex *, 
 	    doublecomplex *, integer *, doublecomplex *, integer *, 
 	    doublecomplex *, integer *);
     integer i__, j;
     doublecomplex alpha;
-    extern /* Subroutine */ int zgerc_(integer *, integer *, doublecomplex *, 
+    extern /* Subroutine */ void zgerc_(integer *, integer *, doublecomplex *, 
 	    doublecomplex *, integer *, doublecomplex *, integer *, 
 	    doublecomplex *, integer *), zscal_(integer *, doublecomplex *, 
 	    doublecomplex *, integer *);
     extern /* Double Complex */ VOID zdotc_(doublecomplex *, integer *, 
 	    doublecomplex *, integer *, doublecomplex *, integer *);
-    extern /* Subroutine */ int zgemv_(char *, integer *, integer *, 
+    extern /* Subroutine */ void zgemv_(char *, integer *, integer *, 
 	    doublecomplex *, doublecomplex *, integer *, doublecomplex *, 
 	    integer *, doublecomplex *, doublecomplex *, integer *), 
 	    zhemv_(char *, integer *, doublecomplex *, doublecomplex *, 
@@ -648,7 +648,8 @@ static integer c__1 = 1;
     extern doublereal dznrm2_(integer *, doublecomplex *, integer *);
     doublecomplex wa, wb;
     doublereal wn;
-    extern /* Subroutine */ int xerbla_(char *, integer *), zlarnv_(
+    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
+    extern void zlarnv_(
 	    integer *, integer *, integer *, doublecomplex *);
     doublecomplex tau;
 
@@ -683,8 +684,8 @@ static integer c__1 = 1;
     }
     if (*info < 0) {
 	i__1 = -(*info);
-	xerbla_("ZLAGHE", &i__1);
-	return 0;
+	xerbla_("ZLAGHE", &i__1, 6);
+	return;
     }
 
 /*     initialize lower triangle of A to diagonal matrix */
@@ -862,7 +863,7 @@ static integer c__1 = 1;
 	}
 /* L80: */
     }
-    return 0;
+    return;
 
 /*     End of ZLAGHE */
 

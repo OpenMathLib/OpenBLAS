@@ -710,7 +710,7 @@ f"> */
 /* > \ingroup doubleGEsolve */
 
 /*  ===================================================================== */
-/* Subroutine */ int dsgesv_(integer *n, integer *nrhs, doublereal *a, 
+/* Subroutine */ void dsgesv_(integer *n, integer *nrhs, doublereal *a, 
 	integer *lda, integer *ipiv, doublereal *b, integer *ldb, doublereal *
 	x, integer *ldx, doublereal *work, real *swork, integer *iter, 
 	integer *info)
@@ -725,11 +725,11 @@ f"> */
     integer ptsa;
     doublereal rnrm, xnrm;
     integer ptsx, i__;
-    extern /* Subroutine */ int dgemm_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void dgemm_(char *, char *, integer *, integer *, 
 	    integer *, doublereal *, doublereal *, integer *, doublereal *, 
 	    integer *, doublereal *, doublereal *, integer *);
     integer iiter;
-    extern /* Subroutine */ int daxpy_(integer *, doublereal *, doublereal *, 
+    extern /* Subroutine */ void daxpy_(integer *, doublereal *, doublereal *, 
 	    integer *, doublereal *, integer *), dlag2s_(integer *, integer *,
 	     doublereal *, integer *, real *, integer *, integer *), slag2d_(
 	    integer *, integer *, real *, integer *, doublereal *, integer *, 
@@ -737,13 +737,17 @@ f"> */
     extern doublereal dlamch_(char *), dlange_(char *, integer *, 
 	    integer *, doublereal *, integer *, doublereal *);
     extern integer idamax_(integer *, doublereal *, integer *);
-    extern /* Subroutine */ int dlacpy_(char *, integer *, integer *, 
-	    doublereal *, integer *, doublereal *, integer *), 
-	    dgetrf_(integer *, integer *, doublereal *, integer *, integer *, 
-	    integer *), xerbla_(char *, integer *, ftnlen), dgetrs_(char *, 
+    extern /* Subroutine */ void dlacpy_(char *, integer *, integer *, 
+	    doublereal *, integer *, doublereal *, integer *); 
+    extern int dgetrf_(integer *, integer *, doublereal *, integer *, integer *, 
+	    integer *); 
+    extern int xerbla_(char *, integer *, ftnlen);
+    extern int dgetrs_(char *, 
 	    integer *, integer *, doublereal *, integer *, integer *, 
-	    doublereal *, integer *, integer *), sgetrf_(integer *, 
-	    integer *, real *, integer *, integer *, integer *), sgetrs_(char 
+	    doublereal *, integer *, integer *);
+    extern int sgetrf_(integer *, 
+	    integer *, real *, integer *, integer *, integer *);
+    extern int sgetrs_(char 
 	    *, integer *, integer *, real *, integer *, integer *, real *, 
 	    integer *, integer *);
     doublereal cte, eps;
@@ -799,13 +803,13 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DSGESV", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if (N.EQ.0). */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /*     Skip single precision iterative refinement if a priori slower */
@@ -890,7 +894,7 @@ f"> */
 /*     stopping criterion. We are good to exit. */
 
     *iter = 0;
-    return 0;
+    return;
 
 L10:
 
@@ -949,7 +953,7 @@ L10:
 
 	*iter = iiter;
 
-	return 0;
+	return;
 
 L20:
 
@@ -972,14 +976,14 @@ L40:
     dgetrf_(n, n, &a[a_offset], lda, &ipiv[1], info);
 
     if (*info != 0) {
-	return 0;
+	return;
     }
 
     dlacpy_("All", n, nrhs, &b[b_offset], ldb, &x[x_offset], ldx);
     dgetrs_("No transpose", n, nrhs, &a[a_offset], lda, &ipiv[1], &x[x_offset]
 	    , ldx, info);
 
-    return 0;
+    return;
 
 /*     End of DSGESV. */
 

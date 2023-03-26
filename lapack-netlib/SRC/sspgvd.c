@@ -722,7 +722,7 @@ f"> */
 /* >     Mark Fahey, Department of Mathematics, Univ. of Kentucky, USA */
 
 /*  ===================================================================== */
-/* Subroutine */ int sspgvd_(integer *itype, char *jobz, char *uplo, integer *
+/* Subroutine */ void sspgvd_(integer *itype, char *jobz, char *uplo, integer *
 	n, real *ap, real *bp, real *w, real *z__, integer *ldz, real *work, 
 	integer *lwork, integer *iwork, integer *liwork, integer *info)
 {
@@ -736,16 +736,17 @@ f"> */
     integer lwmin;
     char trans[1];
     logical upper, wantz;
-    extern /* Subroutine */ int stpmv_(char *, char *, char *, integer *, 
+    extern /* Subroutine */ void stpmv_(char *, char *, char *, integer *, 
 	    real *, real *, integer *), stpsv_(char *,
-	     char *, char *, integer *, real *, real *, integer *), xerbla_(char *, integer *, ftnlen);
+	     char *, char *, integer *, real *, real *, integer *);
+    extern int xerbla_(char *, integer *, ftnlen);
     integer liwmin;
-    extern /* Subroutine */ int sspevd_(char *, char *, integer *, real *, 
+    extern /* Subroutine */ void sspevd_(char *, char *, integer *, real *, 
 	    real *, real *, integer *, real *, integer *, integer *, integer *
 	    , integer *), spptrf_(char *, integer *, real *, 
 	    integer *);
     logical lquery;
-    extern /* Subroutine */ int sspgst_(integer *, char *, integer *, real *, 
+    extern /* Subroutine */ void sspgst_(integer *, char *, integer *, real *, 
 	    real *, integer *);
 
 
@@ -815,15 +816,15 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("SSPGVD", &i__1, (ftnlen)6);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /*     Form a Cholesky factorization of BP. */
@@ -831,7 +832,7 @@ f"> */
     spptrf_(uplo, n, &bp[1], info);
     if (*info != 0) {
 	*info = *n + *info;
-	return 0;
+	return;
     }
 
 /*     Transform problem to standard eigenvalue problem and solve. */
@@ -895,7 +896,7 @@ f"> */
     work[1] = (real) lwmin;
     iwork[1] = liwmin;
 
-    return 0;
+    return;
 
 /*     End of SSPGVD */
 

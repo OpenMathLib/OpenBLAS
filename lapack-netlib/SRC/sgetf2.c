@@ -623,7 +623,7 @@ f"> */
 /* > \ingroup realGEcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int sgetf2_(integer *m, integer *n, real *a, integer *lda, 
+/* Subroutine */ void sgetf2_(integer *m, integer *n, real *a, integer *lda, 
 	integer *ipiv, integer *info)
 {
     /* System generated locals */
@@ -631,12 +631,12 @@ f"> */
     real r__1;
 
     /* Local variables */
-    extern /* Subroutine */ int sger_(integer *, integer *, real *, real *, 
+    extern /* Subroutine */ void sger_(integer *, integer *, real *, real *, 
 	    integer *, real *, integer *, real *, integer *);
     integer i__, j;
-    extern /* Subroutine */ int sscal_(integer *, real *, real *, integer *);
+    extern /* Subroutine */ void sscal_(integer *, real *, real *, integer *);
     real sfmin;
-    extern /* Subroutine */ int sswap_(integer *, real *, integer *, real *, 
+    extern /* Subroutine */ void sswap_(integer *, real *, integer *, real *, 
 	    integer *);
     integer jp;
     extern real slamch_(char *);
@@ -673,13 +673,13 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("SGETF2", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*m == 0 || *n == 0) {
-	return 0;
+	return;
     }
 
 /*     Compute machine safe minimum */
@@ -734,7 +734,7 @@ f"> */
 	}
 /* L10: */
     }
-    return 0;
+    return;
 
 /*     End of SGETF2 */
 

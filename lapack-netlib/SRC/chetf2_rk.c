@@ -755,7 +755,7 @@ rk.f"> */
 /* > \endverbatim */
 
 /*  ===================================================================== */
-/* Subroutine */ int chetf2_rk_(char *uplo, integer *n, complex *a, integer *
+/* Subroutine */ void chetf2_rk_(char *uplo, integer *n, complex *a, integer *
 	lda, complex *e, integer *ipiv, integer *info)
 {
     /* System generated locals */
@@ -764,7 +764,7 @@ rk.f"> */
     complex q__1, q__2, q__3, q__4, q__5, q__6, q__7, q__8;
 
     /* Local variables */
-    extern /* Subroutine */ int cher_(char *, integer *, real *, complex *, 
+    extern /* Subroutine */ void cher_(char *, integer *, real *, complex *, 
 	    integer *, complex *, integer *);
     logical done;
     integer imax, jmax;
@@ -774,7 +774,7 @@ rk.f"> */
     real alpha;
     extern logical lsame_(char *, char *);
     real sfmin;
-    extern /* Subroutine */ int cswap_(integer *, complex *, integer *, 
+    extern /* Subroutine */ void cswap_(integer *, complex *, integer *, 
 	    complex *, integer *);
     integer itemp, kstep;
     real stemp;
@@ -790,8 +790,9 @@ rk.f"> */
     extern integer icamax_(integer *, complex *, integer *);
     extern real slamch_(char *);
     real tt;
-    extern /* Subroutine */ int csscal_(integer *, real *, complex *, integer 
-	    *), xerbla_(char *, integer *, ftnlen);
+    extern /* Subroutine */ void csscal_(integer *, real *, complex *, integer 
+	    *);
+    extern int xerbla_(char *, integer *, ftnlen);
     real colmax, rowmax;
     complex wkm1, wkp1;
 
@@ -828,7 +829,7 @@ rk.f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CHETF2_RK", &i__1, (ftnlen)9);
-	return 0;
+	return;
     }
 
 /*     Initialize ALPHA for use in choosing pivot block size. */
@@ -1837,7 +1838,7 @@ L64:
 	;
     }
 
-    return 0;
+    return;
 
 /*     End of CHETF2_RK */
 

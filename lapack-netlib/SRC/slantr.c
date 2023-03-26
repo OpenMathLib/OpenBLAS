@@ -662,14 +662,14 @@ real slantr_(char *norm, char *uplo, char *diag, integer *m, integer *n, real
     real ret_val, r__1;
 
     /* Local variables */
-    extern /* Subroutine */ int scombssq_(real *, real *);
+    extern /* Subroutine */ void scombssq_(real *, real *);
     integer i__, j;
     logical udiag;
     extern logical lsame_(char *, char *);
     real value;
     extern logical sisnan_(real *);
     real colssq[2];
-    extern /* Subroutine */ int slassq_(integer *, real *, integer *, real *, 
+    extern /* Subroutine */ void slassq_(integer *, real *, integer *, real *, 
 	    real *);
     real sum, ssq[2];
 

@@ -689,7 +689,7 @@ f"> */
 /* > \ingroup auxOTHERcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int slasq3_(integer *i0, integer *n0, real *z__, integer *pp,
+/* Subroutine */ void slasq3_(integer *i0, integer *n0, real *z__, integer *pp,
 	 real *dmin__, real *sigma, real *desig, real *qmax, integer *nfail, 
 	integer *iter, integer *ndiv, logical *ieee, integer *ttype, real *
 	dmin1, real *dmin2, real *dn, real *dn1, real *dn2, real *g, real *
@@ -702,7 +702,7 @@ f"> */
     /* Local variables */
     real temp, s, t;
     integer j4;
-    extern /* Subroutine */ int slasq4_(integer *, integer *, real *, integer 
+    extern /* Subroutine */ void slasq4_(integer *, integer *, real *, integer 
 	    *, integer *, real *, real *, real *, real *, real *, real *, 
 	    real *, integer *, real *), slasq5_(integer *, integer *, real *, 
 	    integer *, real *, real *, real *, real *, real *, real *, real *,
@@ -741,7 +741,7 @@ f"> */
 L10:
 
     if (*n0 < *i0) {
-	return 0;
+	return;
     }
     if (*n0 == *i0) {
 	goto L20;
@@ -937,7 +937,7 @@ L90:
     }
     *sigma = t;
 
-    return 0;
+    return;
 
 /*     End of SLASQ3 */
 

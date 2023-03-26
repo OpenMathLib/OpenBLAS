@@ -672,7 +672,7 @@ static integer c__1 = 1;
 /* > \ingroup realOTHEReigen */
 
 /*  ===================================================================== */
-/* Subroutine */ int sspgv_(integer *itype, char *jobz, char *uplo, integer *
+/* Subroutine */ void sspgv_(integer *itype, char *jobz, char *uplo, integer *
 	n, real *ap, real *bp, real *w, real *z__, integer *ldz, real *work, 
 	integer *info)
 {
@@ -684,12 +684,14 @@ static integer c__1 = 1;
     extern logical lsame_(char *, char *);
     char trans[1];
     logical upper;
-    extern /* Subroutine */ int sspev_(char *, char *, integer *, real *, 
+    extern /* Subroutine */ void sspev_(char *, char *, integer *, real *, 
 	    real *, real *, integer *, real *, integer *);
     logical wantz;
-    extern /* Subroutine */ int stpmv_(char *, char *, char *, integer *, 
+    extern /* Subroutine */ void stpmv_(char *, char *, char *, integer *, 
 	    real *, real *, integer *), stpsv_(char *,
-	     char *, char *, integer *, real *, real *, integer *), xerbla_(char *, integer *, ftnlen), spptrf_(char 
+	     char *, char *, integer *, real *, real *, integer *);
+    extern int xerbla_(char *, integer *, ftnlen);
+    extern void spptrf_(char 
 	    *, integer *, real *, integer *), sspgst_(integer *, char 
 	    *, integer *, real *, real *, integer *);
 
@@ -733,13 +735,13 @@ static integer c__1 = 1;
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("SSPGV ", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /*     Form a Cholesky factorization of B. */
@@ -747,7 +749,7 @@ static integer c__1 = 1;
     spptrf_(uplo, n, &bp[1], info);
     if (*info != 0) {
 	*info = *n + *info;
-	return 0;
+	return;
     }
 
 /*     Transform problem to standard eigenvalue problem and solve. */
@@ -800,7 +802,7 @@ static integer c__1 = 1;
 	    }
 	}
     }
-    return 0;
+    return;
 
 /*     End of SSPGV */
 

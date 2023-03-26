@@ -772,7 +772,7 @@ f"> */
 /* > Christof Voemel, LBNL/NERSC, USA \n */
 
 /*  ===================================================================== */
-/* Subroutine */ int sstegr_(char *jobz, char *range, integer *n, real *d__, 
+/* Subroutine */ void sstegr_(char *jobz, char *range, integer *n, real *d__, 
 	real *e, real *vl, real *vu, integer *il, integer *iu, real *abstol, 
 	integer *m, real *w, real *z__, integer *ldz, integer *isuppz, real *
 	work, integer *lwork, integer *iwork, integer *liwork, integer *info)
@@ -782,7 +782,7 @@ f"> */
 
     /* Local variables */
     logical tryrac;
-    extern /* Subroutine */ int sstemr_(char *, char *, integer *, real *, 
+    extern /* Subroutine */ void sstemr_(char *, char *, integer *, real *, 
 	    real *, real *, real *, integer *, integer *, integer *, real *, 
 	    real *, integer *, integer *, integer *, logical *, real *, 
 	    integer *, integer *, integer *, integer *);
@@ -816,6 +816,6 @@ f"> */
 
 /*     End of SSTEGR */
 
-    return 0;
+    return;
 } /* sstegr_ */
 

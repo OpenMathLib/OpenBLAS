@@ -702,7 +702,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int dgebd2_(integer *m, integer *n, doublereal *a, integer *
+/* Subroutine */ void dgebd2_(integer *m, integer *n, doublereal *a, integer *
 	lda, doublereal *d__, doublereal *e, doublereal *tauq, doublereal *
 	taup, doublereal *work, integer *info)
 {
@@ -711,10 +711,11 @@ f"> */
 
     /* Local variables */
     integer i__;
-    extern /* Subroutine */ int dlarf_(char *, integer *, integer *, 
+    extern /* Subroutine */ void dlarf_(char *, integer *, integer *, 
 	    doublereal *, integer *, doublereal *, doublereal *, integer *, 
 	    doublereal *), dlarfg_(integer *, doublereal *, 
-	    doublereal *, integer *, doublereal *), xerbla_(char *, integer *, ftnlen);
+	    doublereal *, integer *, doublereal *);
+    extern int xerbla_(char *, integer *, ftnlen);
 
 
 /*  -- LAPACK computational routine (version 3.7.1) -- */
@@ -750,7 +751,7 @@ f"> */
     if (*info < 0) {
 	i__1 = -(*info);
 	xerbla_("DGEBD2", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
     if (*m >= *n) {
@@ -861,7 +862,7 @@ f"> */
 /* L20: */
 	}
     }
-    return 0;
+    return;
 
 /*     End of DGEBD2 */
 

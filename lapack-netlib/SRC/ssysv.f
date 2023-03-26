@@ -223,7 +223,7 @@
             LWKOPT = 1
          ELSE
             CALL SSYTRF( UPLO, N, A, LDA, IPIV, WORK, -1, INFO )
-            LWKOPT = WORK(1)
+            LWKOPT = INT( WORK( 1 ) )
          END IF
          WORK( 1 ) = LWKOPT
       END IF

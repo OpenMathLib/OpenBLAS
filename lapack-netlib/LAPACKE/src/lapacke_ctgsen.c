@@ -86,12 +86,10 @@ lapack_int LAPACKE_ctgsen( int matrix_layout, lapack_int ijob,
     liwork = iwork_query;
     lwork = LAPACK_C2INT( work_query );
     /* Allocate memory for work arrays */
-    if( ijob != 0 ) {
-        iwork = (lapack_int*)LAPACKE_malloc( sizeof(lapack_int) * liwork );
-        if( iwork == NULL ) {
-            info = LAPACK_WORK_MEMORY_ERROR;
-            goto exit_level_0;
-        }
+    iwork = (lapack_int*)LAPACKE_malloc( sizeof(lapack_int) * liwork );
+    if( iwork == NULL ) {
+        info = LAPACK_WORK_MEMORY_ERROR;
+        goto exit_level_0;
     }
     work = (lapack_complex_float*)
         LAPACKE_malloc( sizeof(lapack_complex_float) * lwork );
@@ -106,9 +104,7 @@ lapack_int LAPACKE_ctgsen( int matrix_layout, lapack_int ijob,
     /* Release memory and exit */
     LAPACKE_free( work );
 exit_level_1:
-    if( ijob != 0 ) {
-        LAPACKE_free( iwork );
-    }
+    LAPACKE_free( iwork );
 exit_level_0:
     if( info == LAPACK_WORK_MEMORY_ERROR ) {
         LAPACKE_xerbla( "LAPACKE_ctgsen", info );

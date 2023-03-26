@@ -642,7 +642,7 @@ f"> */
 /* > \ingroup doubleSYauxiliary */
 
 /*  ===================================================================== */
-/* Subroutine */ int dlaqsy_(char *uplo, integer *n, doublereal *a, integer *
+/* Subroutine */ void dlaqsy_(char *uplo, integer *n, doublereal *a, integer *
 	lda, doublereal *s, doublereal *scond, doublereal *amax, char *equed)
 {
     /* System generated locals */
@@ -676,7 +676,7 @@ f"> */
     /* Function Body */
     if (*n <= 0) {
 	*(unsigned char *)equed = 'N';
-	return 0;
+	return;
     }
 
 /*     Initialize LARGE and SMALL. */
@@ -725,7 +725,7 @@ f"> */
 	*(unsigned char *)equed = 'Y';
     }
 
-    return 0;
+    return;
 
 /*     End of DLAQSY */
 

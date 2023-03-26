@@ -726,7 +726,7 @@ f"> */
 /* > \ingroup realOTHERauxiliary */
 
 /*  ===================================================================== */
-/* Subroutine */ int slaln2_(logical *ltrans, integer *na, integer *nw, real *
+/* Subroutine */ void slaln2_(logical *ltrans, integer *na, integer *nw, real *
 	smin, real *ca, real *a, integer *lda, real *d1, real *d2, real *b, 
 	integer *ldb, real *wr, real *wi, real *x, integer *ldx, real *scale, 
 	real *xnorm, integer *info)
@@ -753,7 +753,7 @@ f"> */
 #define cr (equiv_1)
     extern real slamch_(char *);
     real bignum;
-    extern /* Subroutine */ int sladiv_(real *, real *, real *, real *, real *
+    extern /* Subroutine */ void sladiv_(real *, real *, real *, real *, real *
 	    , real *);
     real bi1, bi2, br1, br2, smlnum, xi1, xi2, xr1, xr2, ci21, ci22, cr21, 
 	    cr22, li21, csi, ui11, lr21, ui12, ui22;
@@ -920,7 +920,7 @@ f"> */
 		x[x_dim1 + 2] = temp * b[b_dim1 + 2];
 		*xnorm = temp * bnorm;
 		*info = 1;
-		return 0;
+		return;
 	    }
 
 /*           Gaussian elimination with complete pivoting. */
@@ -1023,7 +1023,7 @@ f"> */
 		x[(x_dim1 << 1) + 2] = temp * b[(b_dim1 << 1) + 2];
 		*xnorm = temp * bnorm;
 		*info = 1;
-		return 0;
+		return;
 	    }
 
 /*           Gaussian elimination with complete pivoting. */
@@ -1142,7 +1142,7 @@ f"> */
 	}
     }
 
-    return 0;
+    return;
 
 /*     End of SLALN2 */
 

@@ -660,7 +660,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int slasq4_(integer *i0, integer *n0, real *z__, integer *pp,
+/* Subroutine */ void slasq4_(integer *i0, integer *n0, real *z__, integer *pp,
 	 integer *n0in, real *dmin__, real *dmin1, real *dmin2, real *dn, 
 	real *dn1, real *dn2, real *tau, integer *ttype, real *g)
 {
@@ -693,7 +693,7 @@ f"> */
     if (*dmin__ <= 0.f) {
 	*tau = -(*dmin__);
 	*ttype = -1;
-	return 0;
+	return;
     }
 
     nn = (*n0 << 2) + *pp;
@@ -746,7 +746,7 @@ f"> */
 		    gam = *dn;
 		    a2 = 0.f;
 		    if (z__[nn - 5] > z__[nn - 7]) {
-			return 0;
+			return;
 		    }
 		    b2 = z__[nn - 5] / z__[nn - 7];
 		    np = nn - 9;
@@ -754,11 +754,11 @@ f"> */
 		    np = nn - (*pp << 1);
 		    gam = *dn1;
 		    if (z__[np - 4] > z__[np - 2]) {
-			return 0;
+			return;
 		    }
 		    a2 = z__[np - 4] / z__[np - 2];
 		    if (z__[nn - 9] > z__[nn - 11]) {
-			return 0;
+			return;
 		    }
 		    b2 = z__[nn - 9] / z__[nn - 11];
 		    np = nn - 13;
@@ -774,7 +774,7 @@ f"> */
 		    }
 		    b1 = b2;
 		    if (z__[i4] > z__[i4 - 2]) {
-			return 0;
+			return;
 		    }
 		    b2 *= z__[i4] / z__[i4 - 2];
 		    a2 += b2;
@@ -806,7 +806,7 @@ L20:
 	    b2 = z__[np - 6];
 	    gam = *dn2;
 	    if (z__[np - 8] > b2 || z__[np - 4] > b1) {
-		return 0;
+		return;
 	    }
 	    a2 = z__[np - 8] / b2 * (z__[np - 4] / b1 + 1.f);
 
@@ -822,7 +822,7 @@ L20:
 		    }
 		    b1 = b2;
 		    if (z__[i4] > z__[i4 - 2]) {
-			return 0;
+			return;
 		    }
 		    b2 *= z__[i4] / z__[i4 - 2];
 		    a2 += b2;
@@ -864,7 +864,7 @@ L40:
 	    *ttype = -7;
 	    s = *dmin1 * .333f;
 	    if (z__[nn - 5] > z__[nn - 7]) {
-		return 0;
+		return;
 	    }
 	    b1 = z__[nn - 5] / z__[nn - 7];
 	    b2 = b1;
@@ -875,7 +875,7 @@ L40:
 	    for (i4 = (*n0 << 2) - 9 + *pp; i4 >= i__1; i4 += -4) {
 		a2 = b1;
 		if (z__[i4] > z__[i4 - 2]) {
-		    return 0;
+		    return;
 		}
 		b1 *= z__[i4] / z__[i4 - 2];
 		b2 += b1;
@@ -921,7 +921,7 @@ L60:
 	    *ttype = -10;
 	    s = *dmin2 * .333f;
 	    if (z__[nn - 5] > z__[nn - 7]) {
-		return 0;
+		return;
 	    }
 	    b1 = z__[nn - 5] / z__[nn - 7];
 	    b2 = b1;
@@ -931,7 +931,7 @@ L60:
 	    i__1 = (*i0 << 2) - 1 + *pp;
 	    for (i4 = (*n0 << 2) - 9 + *pp; i4 >= i__1; i4 += -4) {
 		if (z__[i4] > z__[i4 - 2]) {
-		    return 0;
+		    return;
 		}
 		b1 *= z__[i4] / z__[i4 - 2];
 		b2 += b1;
@@ -969,7 +969,7 @@ L80:
     }
 
     *tau = s;
-    return 0;
+    return;
 
 /*     End of SLASQ4 */
 

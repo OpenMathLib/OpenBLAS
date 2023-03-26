@@ -615,7 +615,7 @@ static complex c_b1 = {0.f,0.f};
 /* > \ingroup complex_matgen */
 
 /*  ===================================================================== */
-/* Subroutine */ int clakf2_(integer *m, integer *n, complex *a, integer *lda,
+/* Subroutine */ void clakf2_(integer *m, integer *n, complex *a, integer *lda,
 	 complex *b, complex *d__, complex *e, complex *z__, integer *ldz)
 {
     /* System generated locals */
@@ -625,7 +625,7 @@ static complex c_b1 = {0.f,0.f};
 
     /* Local variables */
     integer i__, j, l, ik, jk, mn;
-    extern /* Subroutine */ int claset_(char *, integer *, integer *, complex 
+    extern /* Subroutine */ void claset_(char *, integer *, integer *, complex 
 	    *, complex *, complex *, integer *);
     integer mn2;
 
@@ -737,7 +737,7 @@ static complex c_b1 = {0.f,0.f};
 /* L90: */
     }
 
-    return 0;
+    return;
 
 /*     End of CLAKF2 */
 

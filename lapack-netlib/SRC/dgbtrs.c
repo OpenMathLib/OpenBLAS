@@ -652,7 +652,7 @@ f"> */
 /* > \ingroup doubleGBcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int dgbtrs_(char *trans, integer *n, integer *kl, integer *
+/* Subroutine */ void dgbtrs_(char *trans, integer *n, integer *kl, integer *
 	ku, integer *nrhs, doublereal *ab, integer *ldab, integer *ipiv, 
 	doublereal *b, integer *ldb, integer *info)
 {
@@ -660,12 +660,12 @@ f"> */
     integer ab_dim1, ab_offset, b_dim1, b_offset, i__1, i__2, i__3;
 
     /* Local variables */
-    extern /* Subroutine */ int dger_(integer *, integer *, doublereal *, 
+    extern /* Subroutine */ void dger_(integer *, integer *, doublereal *, 
 	    doublereal *, integer *, doublereal *, integer *, doublereal *, 
 	    integer *);
     integer i__, j, l;
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int dgemv_(char *, integer *, integer *, 
+    extern /* Subroutine */ void dgemv_(char *, integer *, integer *, 
 	    doublereal *, doublereal *, integer *, doublereal *, integer *, 
 	    doublereal *, doublereal *, integer *), dswap_(integer *, 
 	    doublereal *, integer *, doublereal *, integer *), dtbsv_(char *, 
@@ -719,13 +719,13 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DGBTRS", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0 || *nrhs == 0) {
-	return 0;
+	return;
     }
 
     kd = *ku + *kl + 1;
@@ -802,7 +802,7 @@ f"> */
 	    }
 	}
     }
-    return 0;
+    return;
 
 /*     End of DGBTRS */
 

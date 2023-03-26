@@ -709,7 +709,7 @@ f"> */
 /* > \ingroup doubleOTHERcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int dormbr_(char *vect, char *side, char *trans, integer *m, 
+/* Subroutine */ void dormbr_(char *vect, char *side, char *trans, integer *m, 
 	integer *n, integer *k, doublereal *a, integer *lda, doublereal *tau, 
 	doublereal *c__, integer *ldc, doublereal *work, integer *lwork, 
 	integer *info)
@@ -726,11 +726,11 @@ f"> */
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     extern integer ilaenv_(integer *, char *, char *, integer *, integer *, 
 	    integer *, integer *, ftnlen, ftnlen);
-    extern /* Subroutine */ int dormlq_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void dormlq_(char *, char *, integer *, integer *, 
 	    integer *, doublereal *, integer *, doublereal *, doublereal *, 
 	    integer *, doublereal *, integer *, integer *);
     logical notran;
-    extern /* Subroutine */ int dormqr_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void dormqr_(char *, char *, integer *, integer *, 
 	    integer *, doublereal *, integer *, doublereal *, doublereal *, 
 	    integer *, doublereal *, integer *, integer *);
     logical applyq;
@@ -849,16 +849,16 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DORMBR", &i__1, (ftnlen)6);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     work[1] = 1.;
     if (*m == 0 || *n == 0) {
-	return 0;
+	return;
     }
 
     if (applyq) {
@@ -927,7 +927,7 @@ f"> */
 	}
     }
     work[1] = (doublereal) lwkopt;
-    return 0;
+    return;
 
 /*     End of DORMBR */
 

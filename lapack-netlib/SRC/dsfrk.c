@@ -674,7 +674,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 /* > \ingroup doubleOTHERcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int dsfrk_(char *transr, char *uplo, char *trans, integer *n,
+/* Subroutine */ void dsfrk_(char *transr, char *uplo, char *trans, integer *n,
 	 integer *k, doublereal *alpha, doublereal *a, integer *lda, 
 	doublereal *beta, doublereal *c__)
 {
@@ -684,13 +684,13 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
     /* Local variables */
     integer info, j;
     logical normaltransr;
-    extern /* Subroutine */ int dgemm_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void dgemm_(char *, char *, integer *, integer *, 
 	    integer *, doublereal *, doublereal *, integer *, doublereal *, 
 	    integer *, doublereal *, doublereal *, integer *);
     extern logical lsame_(char *, char *);
     integer nrowa;
     logical lower;
-    extern /* Subroutine */ int dsyrk_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void dsyrk_(char *, char *, integer *, integer *, 
 	    doublereal *, doublereal *, integer *, doublereal *, doublereal *,
 	     integer *);
     integer n1, n2, nk;
@@ -743,7 +743,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
     if (info != 0) {
 	i__1 = -info;
 	xerbla_("DSFRK ", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible. */
@@ -752,7 +752,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 /*     done (it is in DSYRK for example) and left in the general case. */
 
     if (*n == 0 || (*alpha == 0. || *k == 0) && *beta == 1.) {
-	return 0;
+	return;
     }
 
     if (*alpha == 0. && *beta == 0.) {
@@ -760,7 +760,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 	for (j = 1; j <= i__1; ++j) {
 	    c__[j] = 0.;
 	}
-	return 0;
+	return;
     }
 
 /*     C is N-by-N. */
@@ -1066,7 +1066,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 
     }
 
-    return 0;
+    return;
 
 /*     End of DSFRK */
 

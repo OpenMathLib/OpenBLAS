@@ -671,7 +671,7 @@ f"> */
 /* > \ingroup OTHERauxiliary */
 
 /*  ===================================================================== */
-/* Subroutine */ int dlagts_(integer *job, integer *n, doublereal *a, 
+/* Subroutine */ void dlagts_(integer *job, integer *n, doublereal *a, 
 	doublereal *b, doublereal *c__, doublereal *d__, integer *in, 
 	doublereal *y, doublereal *tol, integer *info)
 {
@@ -715,11 +715,11 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DLAGTS", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
     eps = dlamch_("Epsilon");
@@ -778,14 +778,14 @@ f"> */
 		    if (absak < sfmin) {
 			if (absak == 0. || abs(temp) * sfmin > absak) {
 			    *info = k;
-			    return 0;
+			    return;
 			} else {
 			    temp *= bignum;
 			    ak *= bignum;
 			}
 		    } else if (abs(temp) > absak * bignum) {
 			*info = k;
-			return 0;
+			return;
 		    }
 		}
 		y[k] = temp / ak;
@@ -844,14 +844,14 @@ L40:
 		    if (absak < sfmin) {
 			if (absak == 0. || abs(temp) * sfmin > absak) {
 			    *info = k;
-			    return 0;
+			    return;
 			} else {
 			    temp *= bignum;
 			    ak *= bignum;
 			}
 		    } else if (abs(temp) > absak * bignum) {
 			*info = k;
-			return 0;
+			return;
 		    }
 		}
 		y[k] = temp / ak;
@@ -906,6 +906,6 @@ L70:
 
 /*     End of DLAGTS */
 
-    return 0;
+    return;
 } /* dlagts_ */
 

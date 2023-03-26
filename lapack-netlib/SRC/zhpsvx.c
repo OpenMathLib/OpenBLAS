@@ -787,7 +787,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int zhpsvx_(char *fact, char *uplo, integer *n, integer *
+/* Subroutine */ void zhpsvx_(char *fact, char *uplo, integer *n, integer *
 	nrhs, doublecomplex *ap, doublecomplex *afp, integer *ipiv, 
 	doublecomplex *b, integer *ldb, doublecomplex *x, integer *ldx, 
 	doublereal *rcond, doublereal *ferr, doublereal *berr, doublecomplex *
@@ -799,14 +799,14 @@ f"> */
     /* Local variables */
     extern logical lsame_(char *, char *);
     doublereal anorm;
-    extern /* Subroutine */ int zcopy_(integer *, doublecomplex *, integer *, 
+    extern /* Subroutine */ void zcopy_(integer *, doublecomplex *, integer *, 
 	    doublecomplex *, integer *);
     extern doublereal dlamch_(char *);
     logical nofact;
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     extern doublereal zlanhp_(char *, char *, integer *, doublecomplex *, 
 	    doublereal *);
-    extern /* Subroutine */ int zhpcon_(char *, integer *, doublecomplex *, 
+    extern /* Subroutine */ void zhpcon_(char *, integer *, doublecomplex *, 
 	    integer *, doublereal *, doublereal *, doublecomplex *, integer *), zlacpy_(char *, integer *, integer *, doublecomplex *, 
 	    integer *, doublecomplex *, integer *), zhprfs_(char *, 
 	    integer *, integer *, doublecomplex *, doublecomplex *, integer *,
@@ -864,7 +864,7 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZHPSVX", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
     if (nofact) {
@@ -879,7 +879,7 @@ f"> */
 
 	if (*info > 0) {
 	    *rcond = 0.;
-	    return 0;
+	    return;
 	}
     }
 
@@ -908,7 +908,7 @@ f"> */
 	*info = *n + 1;
     }
 
-    return 0;
+    return;
 
 /*     End of ZHPSVX */
 

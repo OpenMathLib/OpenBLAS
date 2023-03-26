@@ -702,7 +702,7 @@ SY matrices</b> */
 /* > \endverbatim */
 
 /*  ===================================================================== */
-/* Subroutine */ int ssyev_2stage_(char *jobz, char *uplo, integer *n, real *
+/* Subroutine */ void ssyev_2stage_(char *jobz, char *uplo, integer *n, real *
 	a, integer *lda, real *w, real *work, integer *lwork, integer *info)
 {
     /* System generated locals */
@@ -718,10 +718,10 @@ SY matrices</b> */
     real rmin, rmax, sigma;
     extern logical lsame_(char *, char *);
     integer iinfo;
-    extern /* Subroutine */ int sscal_(integer *, real *, real *, integer *);
+    extern /* Subroutine */ void sscal_(integer *, real *, real *, integer *);
     integer lhtrd, lwmin;
     logical lower;
-    extern /* Subroutine */ int ssytrd_2stage_(char *, char *, integer *, 
+    extern /* Subroutine */ void ssytrd_2stage_(char *, char *, integer *, 
 	    real *, integer *, real *, real *, real *, real *, integer *, 
 	    real *, integer *, integer *);
     integer lwtrd;
@@ -731,17 +731,17 @@ SY matrices</b> */
     real safmin;
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     real bignum;
-    extern /* Subroutine */ int slascl_(char *, integer *, integer *, real *, 
+    extern /* Subroutine */ void slascl_(char *, integer *, integer *, real *, 
 	    real *, integer *, integer *, real *, integer *, integer *);
     integer indtau, indwrk;
-    extern /* Subroutine */ int ssterf_(integer *, real *, real *, integer *);
+    extern /* Subroutine */ void ssterf_(integer *, real *, real *, integer *);
     extern real slansy_(char *, char *, integer *, real *, integer *, real *);
     integer llwork;
     real smlnum;
-    extern /* Subroutine */ int sorgtr_(char *, integer *, real *, integer *, 
+    extern /* Subroutine */ void sorgtr_(char *, integer *, real *, integer *, 
 	    real *, real *, integer *, integer *);
     logical lquery;
-    extern /* Subroutine */ int ssteqr_(char *, integer *, real *, real *, 
+    extern /* Subroutine */ void ssteqr_(char *, integer *, real *, real *, 
 	    real *, integer *, real *, integer *);
     real eps;
     integer indhous;
@@ -801,15 +801,15 @@ SY matrices</b> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("SSYEV_2STAGE ", &i__1, (ftnlen)13);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
     if (*n == 1) {
@@ -818,7 +818,7 @@ SY matrices</b> */
 	if (wantz) {
 	    a[a_dim1 + 1] = 1.f;
 	}
-	return 0;
+	return;
     }
 
 /*     Get machine constants. */
@@ -866,7 +866,7 @@ SY matrices</b> */
     } else {
 /*        Not available in this release, and argument checking should not */
 /*        let it getting here */
-	return 0;
+	return;
 	sorgtr_(uplo, n, &a[a_offset], lda, &work[indtau], &work[indwrk], &
 		llwork, &iinfo);
 	ssteqr_(jobz, n, &w[1], &work[inde], &a[a_offset], lda, &work[indtau],
@@ -889,7 +889,7 @@ SY matrices</b> */
 
     work[1] = (real) lwmin;
 
-    return 0;
+    return;
 
 /*     End of SSYEV_2STAGE */
 

@@ -636,7 +636,7 @@ f"> */
 /* > \ingroup realGEcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int sgetrs_(char *trans, integer *n, integer *nrhs, real *a, 
+/* Subroutine */ void sgetrs_(char *trans, integer *n, integer *nrhs, real *a, 
 	integer *lda, integer *ipiv, real *b, integer *ldb, integer *info)
 {
     /* System generated locals */
@@ -644,11 +644,12 @@ f"> */
 
     /* Local variables */
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int strsm_(char *, char *, char *, char *, 
+    extern /* Subroutine */ void strsm_(char *, char *, char *, char *, 
 	    integer *, integer *, real *, real *, integer *, real *, integer *
-	    ), xerbla_(char *, integer *, ftnlen);
+	    );
+    extern int xerbla_(char *, integer *, ftnlen);
     logical notran;
-    extern /* Subroutine */ int slaswp_(integer *, real *, integer *, integer 
+    extern /* Subroutine */ void slaswp_(integer *, real *, integer *, integer 
 	    *, integer *, integer *, integer *);
 
 
@@ -690,13 +691,13 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("SGETRS", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0 || *nrhs == 0) {
-	return 0;
+	return;
     }
 
     if (notran) {
@@ -735,7 +736,7 @@ f"> */
 	slaswp_(nrhs, &b[b_offset], ldb, &c__1, n, &ipiv[1], &c_n1);
     }
 
-    return 0;
+    return;
 
 /*     End of SGETRS */
 

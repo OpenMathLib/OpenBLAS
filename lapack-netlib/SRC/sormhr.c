@@ -693,7 +693,7 @@ f"> */
 /* > \ingroup realOTHERcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int sormhr_(char *side, char *trans, integer *m, integer *n, 
+/* Subroutine */ void sormhr_(char *side, char *trans, integer *m, integer *n, 
 	integer *ilo, integer *ihi, real *a, integer *lda, real *tau, real *
 	c__, integer *ldc, real *work, integer *lwork, integer *info)
 {
@@ -711,7 +711,7 @@ f"> */
 	    integer *, integer *, ftnlen, ftnlen);
     integer lwkopt;
     logical lquery;
-    extern /* Subroutine */ int sormqr_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void sormqr_(char *, char *, integer *, integer *, 
 	    integer *, real *, integer *, real *, real *, integer *, real *, 
 	    integer *, integer *);
 
@@ -796,16 +796,16 @@ f"> */
     if (*info != 0) {
 	i__2 = -(*info);
 	xerbla_("SORMHR", &i__2, (ftnlen)6);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*m == 0 || *n == 0 || nh == 0) {
 	work[1] = 1.f;
-	return 0;
+	return;
     }
 
     if (left) {
@@ -824,7 +824,7 @@ f"> */
 	    tau[*ilo], &c__[i1 + i2 * c_dim1], ldc, &work[1], lwork, &iinfo);
 
     work[1] = (real) lwkopt;
-    return 0;
+    return;
 
 /*     End of SORMHR */
 

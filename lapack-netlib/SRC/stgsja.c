@@ -893,7 +893,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int stgsja_(char *jobu, char *jobv, char *jobq, integer *m, 
+/* Subroutine */ void stgsja_(char *jobu, char *jobv, char *jobq, integer *m, 
 	integer *p, integer *n, integer *k, integer *l, real *a, integer *lda,
 	 real *b, integer *ldb, real *tola, real *tolb, real *alpha, real *
 	beta, real *u, integer *ldu, real *v, integer *ldv, real *q, integer *
@@ -905,12 +905,12 @@ f"> */
     real r__1;
 
     /* Local variables */
-    extern /* Subroutine */ int srot_(integer *, real *, integer *, real *, 
+    extern /* Subroutine */ void srot_(integer *, real *, integer *, real *, 
 	    integer *, real *, real *);
     integer kcallmycycle, i__, j;
     real gamma;
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int sscal_(integer *, real *, real *, integer *);
+    extern /* Subroutine */ void sscal_(integer *, real *, real *, integer *);
     real a1;
     logical initq;
     real a2, a3, b1;
@@ -918,10 +918,11 @@ f"> */
     real b2, b3;
     logical wantu, wantv;
     real error, ssmin;
-    extern /* Subroutine */ int scopy_(integer *, real *, integer *, real *, 
+    extern /* Subroutine */ void scopy_(integer *, real *, integer *, real *, 
 	    integer *), slags2_(logical *, real *, real *, real *, real *, 
-	    real *, real *, real *, real *, real *, real *, real *, real *), 
-	    xerbla_(char *, integer *, ftnlen), slapll_(integer *, real *, 
+	    real *, real *, real *, real *, real *, real *, real *, real *); 
+    extern int xerbla_(char *, integer *, ftnlen);
+    extern void slapll_(integer *, real *, 
 	    integer *, real *, integer *, real *), slartg_(real *, real *, 
 	    real *, real *, real *), slaset_(char *, integer *, integer *, 
 	    real *, real *, real *, integer *);
@@ -1000,7 +1001,7 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("STGSJA", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Initialize U, V and Q, if necessary */
@@ -1239,7 +1240,7 @@ L50:
 
 L100:
     *ncallmycycle = kcallmycycle;
-    return 0;
+    return;
 
 /*     End of STGSJA */
 

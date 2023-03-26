@@ -266,11 +266,11 @@
 *
 *              Compute space needed for ZGEQRF
                CALL ZGEQRF( M, N, A, LDA, DUM(1), DUM(1), -1, INFO )
-               LWORK_ZGEQRF = DBLE( DUM(1) )
+               LWORK_ZGEQRF = INT( DUM(1) )
 *              Compute space needed for ZUNMQR
                CALL ZUNMQR( 'L', 'C', M, NRHS, N, A, LDA, DUM(1), B,
      $                   LDB, DUM(1), -1, INFO )
-               LWORK_ZUNMQR = DBLE( DUM(1) )
+               LWORK_ZUNMQR = INT( DUM(1) )
                MM = N
                MAXWRK = MAX( MAXWRK, N + N*ILAENV( 1, 'ZGEQRF', ' ', M,
      $                       N, -1, -1 ) )
@@ -284,15 +284,15 @@
 *              Compute space needed for ZGEBRD
                CALL ZGEBRD( MM, N, A, LDA, S, S, DUM(1), DUM(1), DUM(1),
      $                      -1, INFO )
-               LWORK_ZGEBRD = DBLE( DUM(1) )
+               LWORK_ZGEBRD = INT( DUM(1) )
 *              Compute space needed for ZUNMBR
                CALL ZUNMBR( 'Q', 'L', 'C', MM, NRHS, N, A, LDA, DUM(1),
      $                B, LDB, DUM(1), -1, INFO )
-               LWORK_ZUNMBR = DBLE( DUM(1) )
+               LWORK_ZUNMBR = INT( DUM(1) )
 *              Compute space needed for ZUNGBR
                CALL ZUNGBR( 'P', N, N, N, A, LDA, DUM(1),
      $                   DUM(1), -1, INFO )
-               LWORK_ZUNGBR = DBLE( DUM(1) )
+               LWORK_ZUNGBR = INT( DUM(1) )
 *              Compute total workspace needed
                MAXWRK = MAX( MAXWRK, 2*N + LWORK_ZGEBRD )
                MAXWRK = MAX( MAXWRK, 2*N + LWORK_ZUNMBR )
@@ -310,23 +310,23 @@
 *                 Compute space needed for ZGELQF
                   CALL ZGELQF( M, N, A, LDA, DUM(1), DUM(1),
      $                -1, INFO )
-                  LWORK_ZGELQF = DBLE( DUM(1) )
+                  LWORK_ZGELQF = INT( DUM(1) )
 *                 Compute space needed for ZGEBRD
                   CALL ZGEBRD( M, M, A, LDA, S, S, DUM(1), DUM(1),
      $                         DUM(1), -1, INFO )
-                  LWORK_ZGEBRD = DBLE( DUM(1) )
+                  LWORK_ZGEBRD = INT( DUM(1) )
 *                 Compute space needed for ZUNMBR
                   CALL ZUNMBR( 'Q', 'L', 'C', M, NRHS, N, A, LDA,
      $                DUM(1), B, LDB, DUM(1), -1, INFO )
-                  LWORK_ZUNMBR = DBLE( DUM(1) )
+                  LWORK_ZUNMBR = INT( DUM(1) )
 *                 Compute space needed for ZUNGBR
                   CALL ZUNGBR( 'P', M, M, M, A, LDA, DUM(1),
      $                   DUM(1), -1, INFO )
-                  LWORK_ZUNGBR = DBLE( DUM(1) )
+                  LWORK_ZUNGBR = INT( DUM(1) )
 *                 Compute space needed for ZUNMLQ
                   CALL ZUNMLQ( 'L', 'C', N, NRHS, M, A, LDA, DUM(1),
      $                 B, LDB, DUM(1), -1, INFO )
-                  LWORK_ZUNMLQ = DBLE( DUM(1) )
+                  LWORK_ZUNMLQ = INT( DUM(1) )
 *                 Compute total workspace needed
                   MAXWRK = M + LWORK_ZGELQF
                   MAXWRK = MAX( MAXWRK, 3*M + M*M + LWORK_ZGEBRD )
@@ -345,15 +345,15 @@
 *                 Compute space needed for ZGEBRD
                   CALL ZGEBRD( M, N, A, LDA, S, S, DUM(1), DUM(1),
      $                         DUM(1), -1, INFO )
-                  LWORK_ZGEBRD = DBLE( DUM(1) )
+                  LWORK_ZGEBRD = INT( DUM(1) )
 *                 Compute space needed for ZUNMBR
                   CALL ZUNMBR( 'Q', 'L', 'C', M, NRHS, M, A, LDA,
      $                DUM(1), B, LDB, DUM(1), -1, INFO )
-                  LWORK_ZUNMBR = DBLE( DUM(1) )
+                  LWORK_ZUNMBR = INT( DUM(1) )
 *                 Compute space needed for ZUNGBR
                   CALL ZUNGBR( 'P', M, N, M, A, LDA, DUM(1),
      $                   DUM(1), -1, INFO )
-                  LWORK_ZUNGBR = DBLE( DUM(1) )
+                  LWORK_ZUNGBR = INT( DUM(1) )
                   MAXWRK = 2*M + LWORK_ZGEBRD
                   MAXWRK = MAX( MAXWRK, 2*M + LWORK_ZUNMBR )
                   MAXWRK = MAX( MAXWRK, 2*M + LWORK_ZUNGBR )

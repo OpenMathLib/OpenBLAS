@@ -715,7 +715,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int cgebd2_(integer *m, integer *n, complex *a, integer *lda,
+/* Subroutine */ void cgebd2_(integer *m, integer *n, complex *a, integer *lda,
 	 real *d__, real *e, complex *tauq, complex *taup, complex *work, 
 	integer *info)
 {
@@ -726,11 +726,11 @@ f"> */
     /* Local variables */
     integer i__;
     complex alpha;
-    extern /* Subroutine */ int clarf_(char *, integer *, integer *, complex *
+    extern /* Subroutine */ void clarf_(char *, integer *, integer *, complex *
 	    , integer *, complex *, complex *, integer *, complex *), 
 	    clarfg_(integer *, complex *, complex *, integer *, complex *), 
-	    clacgv_(integer *, complex *, integer *), xerbla_(char *, integer 
-	    *, ftnlen);
+	    clacgv_(integer *, complex *, integer *);
+    extern int xerbla_(char *, integer *, ftnlen);
 
 
 /*  -- LAPACK computational routine (version 3.7.1) -- */
@@ -766,7 +766,7 @@ f"> */
     if (*info < 0) {
 	i__1 = -(*info);
 	xerbla_("CGEBD2", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
     if (*m >= *n) {
@@ -912,7 +912,7 @@ f"> */
 /* L20: */
 	}
     }
-    return 0;
+    return;
 
 /*     End of CGEBD2 */
 

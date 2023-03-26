@@ -651,7 +651,7 @@ f"> */
 /* > \ingroup complex16GTcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int zgttrs_(char *trans, integer *n, integer *nrhs, 
+/* Subroutine */ void zgttrs_(char *trans, integer *n, integer *nrhs, 
 	doublecomplex *dl, doublecomplex *d__, doublecomplex *du, 
 	doublecomplex *du2, integer *ipiv, doublecomplex *b, integer *ldb, 
 	integer *info)
@@ -661,10 +661,10 @@ f"> */
 
     /* Local variables */
     integer j, jb, nb;
-    extern /* Subroutine */ int zgtts2_(integer *, integer *, integer *, 
+    extern /* Subroutine */ void zgtts2_(integer *, integer *, integer *, 
 	    doublecomplex *, doublecomplex *, doublecomplex *, doublecomplex *
-	    , integer *, doublecomplex *, integer *), xerbla_(char *, integer 
-	    *, ftnlen);
+	    , integer *, doublecomplex *, integer *);
+    extern int xerbla_(char *, integer *, ftnlen);
     extern integer ilaenv_(integer *, char *, char *, integer *, integer *, 
 	    integer *, integer *, ftnlen, ftnlen);
     integer itrans;
@@ -707,13 +707,13 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZGTTRS", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0 || *nrhs == 0) {
-	return 0;
+	return;
     }
 
 /*     Decode TRANS */
@@ -756,6 +756,6 @@ f"> */
 
 /*     End of ZGTTRS */
 
-    return 0;
+    return;
 } /* zgttrs_ */
 

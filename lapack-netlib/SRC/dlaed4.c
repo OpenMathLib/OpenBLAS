@@ -654,7 +654,7 @@ f"> */
 /* >     at Berkeley, USA */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int dlaed4_(integer *n, integer *i__, doublereal *d__, 
+/* Subroutine */ void dlaed4_(integer *n, integer *i__, doublereal *d__, 
 	doublereal *z__, doublereal *delta, doublereal *rho, doublereal *dlam,
 	 integer *info)
 {
@@ -670,7 +670,7 @@ f"> */
     doublereal w, dltlb, dltub, midpt;
     integer niter;
     logical swtch;
-    extern /* Subroutine */ int dlaed5_(integer *, doublereal *, doublereal *,
+    extern /* Subroutine */ void dlaed5_(integer *, doublereal *, doublereal *,
 	     doublereal *, doublereal *, doublereal *), dlaed6_(integer *, 
 	    logical *, doublereal *, doublereal *, doublereal *, doublereal *,
 	     doublereal *, integer *);
@@ -712,11 +712,11 @@ f"> */
 
 	*dlam = d__[1] + *rho * z__[1] * z__[1];
 	delta[1] = 1.;
-	return 0;
+	return;
     }
     if (*n == 2) {
 	dlaed5_(i__, &d__[1], &z__[1], &delta[1], rho, dlam);
-	return 0;
+	return;
     }
 
 /*     Compute machine epsilon */
@@ -1495,7 +1495,7 @@ f"> */
 
 L250:
 
-    return 0;
+    return;
 
 /*     End of DLAED4 */
 

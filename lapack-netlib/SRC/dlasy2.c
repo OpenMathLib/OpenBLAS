@@ -689,7 +689,7 @@ f"> */
 /* > \ingroup doubleSYauxiliary */
 
 /*  ===================================================================== */
-/* Subroutine */ int dlasy2_(logical *ltranl, logical *ltranr, integer *isgn, 
+/* Subroutine */ void dlasy2_(logical *ltranl, logical *ltranr, integer *isgn, 
 	integer *n1, integer *n2, doublereal *tl, integer *ldtl, doublereal *
 	tr, integer *ldtr, doublereal *b, integer *ldb, doublereal *scale, 
 	doublereal *x, integer *ldx, doublereal *xnorm, integer *info)
@@ -715,7 +715,7 @@ f"> */
     doublereal xmax;
     integer ipsv, jpsv, i__, j, k;
     logical bswap;
-    extern /* Subroutine */ int dcopy_(integer *, doublereal *, integer *, 
+    extern /* Subroutine */ void dcopy_(integer *, doublereal *, integer *, 
 	    doublereal *, integer *), dswap_(integer *, doublereal *, integer 
 	    *, doublereal *, integer *);
     logical xswap;
@@ -758,7 +758,7 @@ f"> */
 /*     Quick return if possible */
 
     if (*n1 == 0 || *n2 == 0) {
-	return 0;
+	return;
     }
 
 /*     Set constants to control overflow */
@@ -794,7 +794,7 @@ L10:
 
     x[x_dim1 + 1] = b[b_dim1 + 1] * *scale / tau1;
     *xnorm = (d__1 = x[x_dim1 + 1], abs(d__1));
-    return 0;
+    return;
 
 /*     1 by 2: */
 /*     TL11*[X11 X12] + ISGN*[X11 X12]*op[TR11 TR12]  = [B11 B12] */
@@ -904,7 +904,7 @@ L40:
 		, abs(d__2));
 	*xnorm = f2cmax(d__3,d__4);
     }
-    return 0;
+    return;
 
 /*     2 by 2: */
 /*     op[TL11 TL12]*[X11 X12] +ISGN* [X11 X12]*op[TR11 TR12] = [B11 B12] */
@@ -1047,7 +1047,7 @@ L50:
 /* Computing MAX */
     d__1 = abs(tmp[0]) + abs(tmp[2]), d__2 = abs(tmp[1]) + abs(tmp[3]);
     *xnorm = f2cmax(d__1,d__2);
-    return 0;
+    return;
 
 /*     End of DLASY2 */
 

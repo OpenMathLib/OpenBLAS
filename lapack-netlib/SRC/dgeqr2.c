@@ -644,7 +644,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int dgeqr2_(integer *m, integer *n, doublereal *a, integer *
+/* Subroutine */ void dgeqr2_(integer *m, integer *n, doublereal *a, integer *
 	lda, doublereal *tau, doublereal *work, integer *info)
 {
     /* System generated locals */
@@ -652,10 +652,11 @@ f"> */
 
     /* Local variables */
     integer i__, k;
-    extern /* Subroutine */ int dlarf_(char *, integer *, integer *, 
+    extern /* Subroutine */ void dlarf_(char *, integer *, integer *, 
 	    doublereal *, integer *, doublereal *, doublereal *, integer *, 
 	    doublereal *), dlarfg_(integer *, doublereal *, 
-	    doublereal *, integer *, doublereal *), xerbla_(char *, integer *, ftnlen);
+	    doublereal *, integer *, doublereal *);
+    extern int xerbla_(char *, integer *, ftnlen);
     doublereal aii;
 
 
@@ -689,7 +690,7 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DGEQR2", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
     k = f2cmin(*m,*n);
@@ -718,7 +719,7 @@ f"> */
 	}
 /* L10: */
     }
-    return 0;
+    return;
 
 /*     End of DGEQR2 */
 

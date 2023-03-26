@@ -9,6 +9,10 @@ ifndef TOPDIR
 TOPDIR = . 
 endif
 
+ifndef RELAPACK_REPLACE
+RELAPACK_REPLACE=0
+endif
+
 # we need to use the host system's architecture for getarch compile options even especially when cross-compiling
 HOSTARCH := $(shell uname -m)
 ifeq ($(HOSTARCH), amd64)
@@ -280,8 +284,10 @@ GETARCH_FLAGS += -DHAVE_GAS=$(HAVE_GAS)
 # Generating Makefile.conf and config.h
 DUMMY := $(shell $(MAKE) -C $(TOPDIR) -f Makefile.prebuild CC="$(CC)" FC="$(FC)" HOSTCC="$(HOSTCC)" HOST_CFLAGS="$(GETARCH_FLAGS)" CFLAGS="$(CFLAGS)" BINARY=$(BINARY) USE_OPENMP=$(USE_OPENMP) DYNAMIC_ARCH=$(DYNAMIC_ARCH) TARGET_CORE=$(TARGET_CORE) ONLY_CBLAS=$(ONLY_CBLAS) TARGET=$(TARGET) all)
 
+endif
+
 ifndef TARGET_CORE
-include $(TOPDIR)/Makefile.conf
+-include $(TOPDIR)/Makefile.conf
 else
 HAVE_NEON=
 HAVE_VFP=
@@ -302,7 +308,6 @@ HAVE_FMA3=
 include $(TOPDIR)/Makefile_kernel.conf
 endif
 
-endif
 
 ifndef NUM_PARALLEL
 NUM_PARALLEL = 1
@@ -415,7 +420,7 @@ ifeq ($(OSNAME), AIX)
 EXTRALIB	+= -lm
 endif
 
-ifeq ($(OSNAME), FreeBSD)
+ifeq ($(OSNAME), $(filter $(OSNAME),FreeBSD OpenBSD NetBSD DragonFly))
 ifeq ($(ARCH), $(filter $(ARCH),arm arm64))
 EXTRALIB	+= -lm
 endif
@@ -660,8 +665,10 @@ DYNAMIC_CORE += CORTEXA57
 DYNAMIC_CORE += CORTEXA72
 DYNAMIC_CORE += CORTEXA73
 DYNAMIC_CORE += NEOVERSEN1
+ifneq ($(NO_SVE), 1)
 DYNAMIC_CORE += NEOVERSEV1
 DYNAMIC_CORE += NEOVERSEN2
+endif
 DYNAMIC_CORE += CORTEXA55
 DYNAMIC_CORE += FALKOR
 DYNAMIC_CORE += THUNDERX
@@ -677,7 +684,12 @@ endif
 endif
 
 ifeq ($(ARCH), mips64)
-DYNAMIC_CORE = LOONGSON3R3 LOONGSON3R4
+DYNAMIC_CORE = LOONGSON3R3 LOONGSON3R4 MIPS64_GENERIC
+ifdef DYNAMIC_LIST
+override DYNAMIC_CORE = MIPS64_GENERIC $(DYNAMIC_LIST)
+XCCOMMON_OPT = -DDYNAMIC_LIST -DDYN_MIPS64_GENERIC
+XCCOMMON_OPT += $(foreach dcore,$(DYNAMIC_LIST),-DDYN_$(dcore))
+endif
 endif
 
 ifeq ($(ARCH), loongarch64)
@@ -818,13 +830,32 @@ endif
 ifeq ($(ARCH), riscv64)
 NO_BINARY_MODE  = 1
 BINARY_DEFINED  = 1
+ifdef INTERFACE64
+ifneq ($(INTERFACE64), 0)
+ifeq ($(F_COMPILER), GFORTRAN)
+FCOMMON_OPT +=  -fdefault-integer-8
+endif
+ifeq ($(F_COMPILER), FLANG)
+FCOMMON_OPT += -i8
+endif
+endif
+endif
 endif
 
 ifeq ($(ARCH), loongarch64)
 NO_BINARY_MODE  = 1
 BINARY_DEFINED  = 1
+ifdef INTERFACE64
+ifneq ($(INTERFACE64), 0)
+ifeq ($(F_COMPILER), GFORTRAN)
+FCOMMON_OPT +=  -fdefault-integer-8
 endif
-
+ifeq ($(F_COMPILER), FLANG)
+FCOMMON_OPT += -i8
+endif
+endif
+endif
+endif
 
 #
 #  C Compiler dependent settings
@@ -854,6 +885,11 @@ BINARY_DEFINED = 1
 else ifeq ($(ARCH), $(filter $(ARCH),mips))
 CCOMMON_OPT += -mabi=32
 BINARY_DEFINED = 1
+endif
+
+ifneq (, $(filter $(CORE), MIPS64_GENERIC))
+CCOMMON_OPT += -DNO_MSA
+FCOMMON_OPT += -DNO_MSA
 endif
 
 ifneq (, $(filter $(CORE),LOONGSON3R3 LOONGSON3R4))
@@ -932,16 +968,19 @@ endif
 endif
 ifdef BINARY64
 ifeq ($(ARCH), x86_64)
+ifeq (,$(findstring tp,$(CFLAGS)))
 ifneq ($(NEWPGI2),1)
 CCOMMON_OPT += -tp p7-64
 else
 CCOMMON_OPT += -tp px
+endif
 endif
 ifneq ($(NEWPGI),1)
 CCOMMON_OPT +=  -D__MMX__ -Mnollvm
 endif
 else
 ifeq ($(ARCH), power)
+ifeq (,$(findstring tp,$(CFLAGS)))
 ifeq ($(CORE), POWER8)
 CCOMMON_OPT += -tp pwr8
 endif
@@ -950,11 +989,14 @@ CCOMMON_OPT += -tp pwr9
 endif
 endif
 endif
+endif
 else
 ifneq ($(NEWPGI2),1)
+ifeq (,$(findstring tp,$(CFLAGS)))
 CCOMMON_OPT += -tp p7
 else
 CCOMMON_OPT += -tp px
+endif
 endif
 endif
 endif
@@ -1347,6 +1389,10 @@ endif
 
 ifeq ($(NO_AVX512), 1)
 CCOMMON_OPT	+= -DNO_AVX512
+endif
+
+ifeq ($(NO_SVE), 1)
+CCOMMON_OPT     += -DNO_SVE
 endif
 
 ifdef SMP

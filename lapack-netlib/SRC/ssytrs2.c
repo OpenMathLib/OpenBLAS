@@ -644,7 +644,7 @@ static real c_b10 = 1.f;
 /* > \ingroup realSYcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int ssytrs2_(char *uplo, integer *n, integer *nrhs, real *a, 
+/* Subroutine */ void ssytrs2_(char *uplo, integer *n, integer *nrhs, real *a, 
 	integer *lda, integer *ipiv, real *b, integer *ldb, real *work, 
 	integer *info)
 {
@@ -658,16 +658,16 @@ static real c_b10 = 1.f;
     extern logical lsame_(char *, char *);
     real denom;
     integer iinfo;
-    extern /* Subroutine */ int sscal_(integer *, real *, real *, integer *);
+    extern /* Subroutine */ void sscal_(integer *, real *, real *, integer *);
     logical upper;
-    extern /* Subroutine */ int sswap_(integer *, real *, integer *, real *, 
+    extern /* Subroutine */ void sswap_(integer *, real *, integer *, real *, 
 	    integer *), strsm_(char *, char *, char *, char *, integer *, 
 	    integer *, real *, real *, integer *, real *, integer *);
     real ak, bk;
     integer kp;
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     real akm1, bkm1;
-    extern /* Subroutine */ int ssyconv_(char *, char *, integer *, real *, 
+    extern /* Subroutine */ void ssyconv_(char *, char *, integer *, real *, 
 	    integer *, integer *, real *, integer *);
 
 
@@ -707,13 +707,13 @@ static real c_b10 = 1.f;
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("SSYTRS2", &i__1, (ftnlen)7);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0 || *nrhs == 0) {
-	return 0;
+	return;
     }
 
 /*     Convert A */
@@ -898,7 +898,7 @@ static real c_b10 = 1.f;
 
     ssyconv_(uplo, "R", n, &a[a_offset], lda, &ipiv[1], &work[1], &iinfo);
 
-    return 0;
+    return;
 
 /*     End of SSYTRS2 */
 

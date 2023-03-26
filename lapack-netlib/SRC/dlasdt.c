@@ -614,7 +614,7 @@ f"> */
 /* >     California at Berkeley, USA */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int dlasdt_(integer *n, integer *lvl, integer *nd, integer *
+/* Subroutine */ void dlasdt_(integer *n, integer *lvl, integer *nd, integer *
 	inode, integer *ndiml, integer *ndimr, integer *msub)
 {
     /* System generated locals */
@@ -678,7 +678,7 @@ f"> */
     }
     *nd = (llst << 1) - 1;
 
-    return 0;
+    return;
 
 /*     End of DLASDT */
 

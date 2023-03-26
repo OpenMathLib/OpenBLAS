@@ -658,7 +658,7 @@ f"> */
 /* > \ingroup complexOTHERcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int ctbtrs_(char *uplo, char *trans, char *diag, integer *n, 
+/* Subroutine */ void ctbtrs_(char *uplo, char *trans, char *diag, integer *n, 
 	integer *kd, integer *nrhs, complex *ab, integer *ldab, complex *b, 
 	integer *ldb, integer *info)
 {
@@ -668,7 +668,7 @@ f"> */
     /* Local variables */
     integer j;
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int ctbsv_(char *, char *, char *, integer *, 
+    extern /* Subroutine */ void ctbsv_(char *, char *, char *, integer *, 
 	    integer *, complex *, integer *, complex *, integer *);
     logical upper;
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
@@ -719,13 +719,13 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CTBTRS", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /*     Check for singularity. */
@@ -736,7 +736,7 @@ f"> */
 	    for (*info = 1; *info <= i__1; ++(*info)) {
 		i__2 = *kd + 1 + *info * ab_dim1;
 		if (ab[i__2].r == 0.f && ab[i__2].i == 0.f) {
-		    return 0;
+		    return;
 		}
 /* L10: */
 	    }
@@ -745,7 +745,7 @@ f"> */
 	    for (*info = 1; *info <= i__1; ++(*info)) {
 		i__2 = *info * ab_dim1 + 1;
 		if (ab[i__2].r == 0.f && ab[i__2].i == 0.f) {
-		    return 0;
+		    return;
 		}
 /* L20: */
 	    }
@@ -762,7 +762,7 @@ f"> */
 /* L30: */
     }
 
-    return 0;
+    return;
 
 /*     End of CTBTRS */
 

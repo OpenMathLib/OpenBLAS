@@ -733,7 +733,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int zpftrs_(char *transr, char *uplo, integer *n, integer *
+/* Subroutine */ void zpftrs_(char *transr, char *uplo, integer *n, integer *
 	nrhs, doublecomplex *a, doublecomplex *b, integer *ldb, integer *info)
 {
     /* System generated locals */
@@ -743,9 +743,10 @@ f"> */
     logical normaltransr;
     extern logical lsame_(char *, char *);
     logical lower;
-    extern /* Subroutine */ int ztfsm_(char *, char *, char *, char *, char *,
+    extern /* Subroutine */ void ztfsm_(char *, char *, char *, char *, char *,
 	     integer *, integer *, doublecomplex *, doublecomplex *, 
-	    doublecomplex *, integer *), xerbla_(char *, integer *, ftnlen);
+	    doublecomplex *, integer *);
+    extern int xerbla_(char *, integer *, ftnlen);
 
 
 /*  -- LAPACK computational routine (version 3.7.0) -- */
@@ -782,13 +783,13 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZPFTRS", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0 || *nrhs == 0) {
-	return 0;
+	return;
     }
 
 /*     start execution: there are two triangular solves */
@@ -805,7 +806,7 @@ f"> */
 		ldb);
     }
 
-    return 0;
+    return;
 
 /*     End of ZPFTRS */
 

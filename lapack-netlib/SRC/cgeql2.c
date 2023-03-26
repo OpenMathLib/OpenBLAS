@@ -637,7 +637,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int cgeql2_(integer *m, integer *n, complex *a, integer *lda,
+/* Subroutine */ void cgeql2_(integer *m, integer *n, complex *a, integer *lda,
 	 complex *tau, complex *work, integer *info)
 {
     /* System generated locals */
@@ -647,10 +647,10 @@ f"> */
     /* Local variables */
     integer i__, k;
     complex alpha;
-    extern /* Subroutine */ int clarf_(char *, integer *, integer *, complex *
+    extern /* Subroutine */ void clarf_(char *, integer *, integer *, complex *
 	    , integer *, complex *, complex *, integer *, complex *), 
-	    clarfg_(integer *, complex *, complex *, integer *, complex *), 
-	    xerbla_(char *, integer *, ftnlen);
+	    clarfg_(integer *, complex *, complex *, integer *, complex *); 
+    extern int xerbla_(char *, integer *, ftnlen);
 
 
 /*  -- LAPACK computational routine (version 3.7.0) -- */
@@ -683,7 +683,7 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CGEQL2", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
     k = f2cmin(*m,*n);
@@ -712,7 +712,7 @@ f"> */
 	a[i__1].r = alpha.r, a[i__1].i = alpha.i;
 /* L10: */
     }
-    return 0;
+    return;
 
 /*     End of CGEQL2 */
 

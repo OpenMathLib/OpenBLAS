@@ -643,7 +643,7 @@ static integer c__1 = 1;
 /* > \ingroup complex16OTHERauxiliary */
 
 /*  ===================================================================== */
-/* Subroutine */ int zlarf_(char *side, integer *m, integer *n, doublecomplex 
+/* Subroutine */ void zlarf_(char *side, integer *m, integer *n, doublecomplex 
 	*v, integer *incv, doublecomplex *tau, doublecomplex *c__, integer *
 	ldc, doublecomplex *work)
 {
@@ -655,7 +655,7 @@ static integer c__1 = 1;
     integer i__;
     extern logical lsame_(char *, char *);
     integer lastc;
-    extern /* Subroutine */ int zgerc_(integer *, integer *, doublecomplex *, 
+    extern /* Subroutine */ void zgerc_(integer *, integer *, doublecomplex *, 
 	    doublecomplex *, integer *, doublecomplex *, integer *, 
 	    doublecomplex *, integer *), zgemv_(char *, integer *, integer *, 
 	    doublecomplex *, doublecomplex *, integer *, doublecomplex *, 
@@ -752,7 +752,7 @@ static integer c__1 = 1;
 		    c_offset], ldc);
 	}
     }
-    return 0;
+    return;
 
 /*     End of ZLARF */
 

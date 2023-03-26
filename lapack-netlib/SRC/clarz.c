@@ -661,7 +661,7 @@ static integer c__1 = 1;
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int clarz_(char *side, integer *m, integer *n, integer *l, 
+/* Subroutine */ void clarz_(char *side, integer *m, integer *n, integer *l, 
 	complex *v, integer *incv, complex *tau, complex *c__, integer *ldc, 
 	complex *work)
 {
@@ -670,12 +670,12 @@ static integer c__1 = 1;
     complex q__1;
 
     /* Local variables */
-    extern /* Subroutine */ int cgerc_(integer *, integer *, complex *, 
+    extern /* Subroutine */ void cgerc_(integer *, integer *, complex *, 
 	    complex *, integer *, complex *, integer *, complex *, integer *),
 	     cgemv_(char *, integer *, integer *, complex *, complex *, 
 	    integer *, complex *, integer *, complex *, complex *, integer *);
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int cgeru_(integer *, integer *, complex *, 
+    extern /* Subroutine */ void cgeru_(integer *, integer *, complex *, 
 	    complex *, integer *, complex *, integer *, complex *, integer *),
 	     ccopy_(integer *, complex *, integer *, complex *, integer *), 
 	    caxpy_(integer *, complex *, complex *, integer *, complex *, 
@@ -760,7 +760,7 @@ static integer c__1 = 1;
 
     }
 
-    return 0;
+    return;
 
 /*     End of CLARZ */
 

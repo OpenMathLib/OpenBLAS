@@ -727,7 +727,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int zggrqf_(integer *m, integer *p, integer *n, 
+/* Subroutine */ void zggrqf_(integer *m, integer *p, integer *n, 
 	doublecomplex *a, integer *lda, doublecomplex *taua, doublecomplex *b,
 	 integer *ldb, doublecomplex *taub, doublecomplex *work, integer *
 	lwork, integer *info)
@@ -740,13 +740,13 @@ f"> */
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     extern integer ilaenv_(integer *, char *, char *, integer *, integer *, 
 	    integer *, integer *, ftnlen, ftnlen);
-    extern /* Subroutine */ int zgeqrf_(integer *, integer *, doublecomplex *,
+    extern /* Subroutine */ void zgeqrf_(integer *, integer *, doublecomplex *,
 	     integer *, doublecomplex *, doublecomplex *, integer *, integer *
 	    ), zgerqf_(integer *, integer *, doublecomplex *, integer *, 
 	    doublecomplex *, doublecomplex *, integer *, integer *);
     integer nb1, nb2, nb3, lwkopt;
     logical lquery;
-    extern /* Subroutine */ int zunmrq_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void zunmrq_(char *, char *, integer *, integer *, 
 	    integer *, doublecomplex *, integer *, doublecomplex *, 
 	    doublecomplex *, integer *, doublecomplex *, integer *, integer *);
 
@@ -808,9 +808,9 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZGGRQF", &i__1, (ftnlen)6);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     RQ factorization of M-by-N matrix A: A = R*Q */
@@ -837,7 +837,7 @@ f"> */
     i__1 = f2cmax(i__2,i__3);
     work[1].r = (doublereal) i__1, work[1].i = 0.;
 
-    return 0;
+    return;
 
 /*     End of ZGGRQF */
 

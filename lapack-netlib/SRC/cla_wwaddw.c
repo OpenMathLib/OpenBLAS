@@ -590,7 +590,7 @@ ddw.f"> */
 /* > \ingroup complexOTHERcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int cla_wwaddw_(integer *n, complex *x, complex *y, complex 
+/* Subroutine */ void cla_wwaddw_(integer *n, complex *x, complex *y, complex 
 	*w)
 {
     /* System generated locals */
@@ -638,6 +638,6 @@ ddw.f"> */
 	x[i__2].r = s.r, x[i__2].i = s.i;
 /* L10: */
     }
-    return 0;
+    return;
 } /* cla_wwaddw__ */
 

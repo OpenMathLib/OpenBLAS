@@ -765,7 +765,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int ctprfb_(char *side, char *trans, char *direct, char *
+/* Subroutine */ void ctprfb_(char *side, char *trans, char *direct, char *
 	storev, integer *m, integer *n, integer *k, integer *l, complex *v, 
 	integer *ldv, complex *t, integer *ldt, complex *a, integer *lda, 
 	complex *b, integer *ldb, complex *work, integer *ldwork)
@@ -778,12 +778,12 @@ f"> */
     /* Local variables */
     logical left, backward;
     integer i__, j;
-    extern /* Subroutine */ int cgemm_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void cgemm_(char *, char *, integer *, integer *, 
 	    integer *, complex *, complex *, integer *, complex *, integer *, 
 	    complex *, complex *, integer *);
     extern logical lsame_(char *, char *);
     logical right;
-    extern /* Subroutine */ int ctrmm_(char *, char *, char *, char *, 
+    extern /* Subroutine */ void ctrmm_(char *, char *, char *, char *, 
 	    integer *, integer *, complex *, complex *, integer *, complex *, 
 	    integer *);
     integer kp, mp, np;
@@ -820,7 +820,7 @@ f"> */
 
     /* Function Body */
     if (*m <= 0 || *n <= 0 || *k <= 0 || *l < 0) {
-	return 0;
+	return;
     }
 
     if (lsame_(storev, "C")) {
@@ -1621,7 +1621,7 @@ f"> */
 
     }
 
-    return 0;
+    return;
 
 /*     End of CTPRFB */
 

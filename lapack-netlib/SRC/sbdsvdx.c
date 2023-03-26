@@ -742,7 +742,7 @@ static integer c__2 = 2;
 /* > \ingroup realOTHEReigen */
 
 /*  ===================================================================== */
-/* Subroutine */ int sbdsvdx_(char *uplo, char *jobz, char *range, integer *n,
+/* Subroutine */ void sbdsvdx_(char *uplo, char *jobz, char *range, integer *n,
 	 real *d__, real *e, real *vl, real *vu, integer *il, integer *iu, 
 	integer *ns, real *s, real *z__, integer *ldz, real *work, integer *
 	iwork, integer *info)
@@ -765,7 +765,7 @@ static integer c__2 = 2;
     integer idend, isbeg;
     extern logical lsame_(char *, char *);
     integer idtgk, ietgk;
-    extern /* Subroutine */ int sscal_(integer *, real *, real *, integer *);
+    extern /* Subroutine */ void sscal_(integer *, real *, real *, integer *);
     integer iltgk, itemp, icolz;
     logical allsv;
     integer idptr;
@@ -777,13 +777,13 @@ static integer c__2 = 2;
     logical split, valsv;
     integer isplt;
     real ortol, vutgk;
-    extern /* Subroutine */ int scopy_(integer *, real *, integer *, real *, 
+    extern /* Subroutine */ void scopy_(integer *, real *, integer *, real *, 
 	    integer *), sswap_(integer *, real *, integer *, real *, integer *
 	    );
     logical wantz;
     char rngvx[1];
     integer irowu, irowv;
-    extern /* Subroutine */ int saxpy_(integer *, real *, real *, integer *, 
+    extern /* Subroutine */ void saxpy_(integer *, real *, real *, integer *, 
 	    real *, integer *);
     integer irowz, iifail;
     real mu;
@@ -791,11 +791,11 @@ static integer c__2 = 2;
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     extern integer isamax_(integer *, real *, integer *);
     real abstol;
-    extern /* Subroutine */ int slaset_(char *, integer *, integer *, real *, 
+    extern /* Subroutine */ void slaset_(char *, integer *, integer *, real *, 
 	    real *, real *, integer *);
     real thresh;
     integer iiwork;
-    extern /* Subroutine */ int mecago_(), sstevx_(char *, char *, 
+    extern /* Subroutine */ void mecago_(), sstevx_(char *, char *, 
 	    integer *, real *, real *, real *, real *, integer *, integer *, 
 	    real *, integer *, real *, real *, integer *, real *, integer *, 
 	    integer *, integer *);
@@ -866,14 +866,14 @@ static integer c__2 = 2;
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("SBDSVDX", &i__1, (ftnlen)7);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible (N.LE.1) */
 
     *ns = 0;
     if (*n == 0) {
-	return 0;
+	return;
     }
 
     if (*n == 1) {
@@ -890,7 +890,7 @@ static integer c__2 = 2;
 	    z__[z_dim1 + 1] = r_sign(&c_b10, &d__[1]);
 	    z__[z_dim1 + 2] = 1.f;
 	}
-	return 0;
+	return;
     }
 
     abstol = slamch_("Safe Minimum") * 2;
@@ -1006,7 +1006,7 @@ static integer c__2 = 2;
 		iltgk, &iltgk, &abstol, ns, &s[1], &z__[z_offset], ldz, &work[
 		itemp], &iwork[iiwork], &iwork[iifail], info);
 	if (*ns == 0) {
-	    return 0;
+	    return;
 	} else {
 	    if (wantz) {
 		i__1 = *n << 1;
@@ -1207,7 +1207,7 @@ static integer c__2 = 2;
 			    , &iwork[iifail], info);
 		    if (*info != 0) {
 /*                    Exit with the error code from SSTEVX. */
-			return 0;
+			return;
 		    }
 		    emin = (r__1 = s[isbeg], abs(r__1));
 		    i__3 = isbeg + nsl - 1;
@@ -1261,7 +1261,7 @@ static integer c__2 = 2;
 				    z_dim1], &c__2);
 			    if (nrmu == 0.f) {
 				*info = (*n << 1) + 1;
-				return 0;
+				return;
 			    }
 			    r__1 = 1.f / nrmu;
 			    sscal_(&nru, &r__1, &z__[irowu + (icolz + i__) * 
@@ -1292,7 +1292,7 @@ static integer c__2 = 2;
 				    z_dim1], &c__2);
 			    if (nrmv == 0.f) {
 				*info = (*n << 1) + 1;
-				return 0;
+				return;
 			    }
 			    r__1 = -1.f / nrmv;
 			    sscal_(&nrv, &r__1, &z__[irowv + (icolz + i__) * 
@@ -1464,7 +1464,7 @@ static integer c__2 = 2;
 	}
     }
 
-    return 0;
+    return;
 
 /*     End of SBDSVDX */
 

@@ -746,7 +746,7 @@ sb2st.f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int dsytrd_sb2st_(char *stage1, char *vect, char *uplo, 
+/* Subroutine */ void dsytrd_sb2st_(char *stage1, char *vect, char *uplo, 
 	integer *n, integer *kd, doublereal *ab, integer *ldab, doublereal *
 	d__, doublereal *e, doublereal *hous, integer *lhous, doublereal *
 	work, integer *lwork, integer *info)
@@ -765,17 +765,18 @@ sb2st.f"> */
     integer lhmin, sidev, sizea, shift, stind, colpt, lwmin, awpos;
     logical wantq, upper;
     integer grsiz, ttype, stepercol, ed, ib, st, abdpos;
-    extern /* Subroutine */ int dlacpy_(char *, integer *, integer *, 
+    extern /* Subroutine */ void dlacpy_(char *, integer *, integer *, 
 	    doublereal *, integer *, doublereal *, integer *), 
 	    dlaset_(char *, integer *, integer *, doublereal *, doublereal *, 
-	    doublereal *, integer *), xerbla_(char *, integer *, ftnlen);
+	    doublereal *, integer *);
+    extern int xerbla_(char *, integer *, ftnlen);
     integer thgrid;
-    extern /* Subroutine */ int dsb2st_kernels_(char *, logical *, integer *,
+    extern /* Subroutine */ void dsb2st_kernels_(char *, logical *, integer *,
 	     integer *, integer *, integer *, integer *, integer *, integer *,
 	     doublereal *, integer *, doublereal *, doublereal *, integer *, 
 	    doublereal *);
     integer thgrnb, indtau, ofdpos, blklastind;
-    extern /* Subroutine */ int mecago_();
+    extern /* Subroutine */ void mecago_();
     logical lquery, afters1;
     integer lda, tid, ldv, stt, sweepid, nbtiles, sizetau, thgrsiz;
 
@@ -843,9 +844,9 @@ sb2st.f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DSYTRD_SB2ST", &i__1, (ftnlen)12);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
@@ -853,7 +854,7 @@ sb2st.f"> */
     if (*n == 0) {
 	hous[1] = 1.;
 	work[1] = 1.;
-	return 0;
+	return;
     }
 
 /*     Determine pointer position */
@@ -906,7 +907,7 @@ sb2st.f"> */
 
 	hous[1] = 1.;
 	work[1] = 1.;
-	return 0;
+	return;
     }
 
 /*     Case KD=1: */
@@ -942,7 +943,7 @@ sb2st.f"> */
 
 	hous[1] = 1.;
 	work[1] = 1.;
-	return 0;
+	return;
     }
 
 /*     Main code start here. */
@@ -1061,7 +1062,7 @@ sb2st.f"> */
 
     hous[1] = (doublereal) lhmin;
     work[1] = (doublereal) lwmin;
-    return 0;
+    return;
 
 /*     End of DSYTRD_SB2ST */
 

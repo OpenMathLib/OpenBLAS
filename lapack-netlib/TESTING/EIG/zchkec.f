@@ -88,17 +88,17 @@
 *     .. Local Scalars ..
       LOGICAL            OK
       CHARACTER*3        PATH
-      INTEGER            KTREXC, KTRSEN, KTRSNA, KTRSYL, LTREXC, LTRSYL,
-     $                   NTESTS, NTREXC, NTRSYL
-      DOUBLE PRECISION   EPS, RTREXC, RTRSYL, SFMIN
+      INTEGER            KTREXC, KTRSEN, KTRSNA, KTRSYL, KTRSYL3,
+     $                   LTREXC, LTRSYL, NTESTS, NTREXC, NTRSYL
+      DOUBLE PRECISION   EPS, RTREXC, SFMIN
 *     ..
 *     .. Local Arrays ..
-      INTEGER            LTRSEN( 3 ), LTRSNA( 3 ), NTRSEN( 3 ),
-     $                   NTRSNA( 3 )
-      DOUBLE PRECISION   RTRSEN( 3 ), RTRSNA( 3 )
+      INTEGER            FTRSYL( 3 ), ITRSYL( 2 ), LTRSEN( 3 ),
+     $                   LTRSNA( 3 ), NTRSEN( 3 ), NTRSNA( 3 )
+      DOUBLE PRECISION   RTRSEN( 3 ), RTRSNA( 3 ), RTRSYL( 2 )
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           ZERREC, ZGET35, ZGET36, ZGET37, ZGET38
+      EXTERNAL           ZERREC, ZGET35, ZGET36, ZGET37, ZGET38, ZSYL01
 *     ..
 *     .. External Functions ..
       DOUBLE PRECISION   DLAMCH
@@ -120,10 +120,24 @@
      $   CALL ZERREC( PATH, NOUT )
 *
       OK = .TRUE.
-      CALL ZGET35( RTRSYL, LTRSYL, NTRSYL, KTRSYL, NIN )
-      IF( RTRSYL.GT.THRESH ) THEN
+      CALL ZGET35( RTRSYL( 1 ), LTRSYL, NTRSYL, KTRSYL, NIN )
+      IF( RTRSYL( 1 ).GT.THRESH ) THEN
          OK = .FALSE.
-         WRITE( NOUT, FMT = 9999 )RTRSYL, LTRSYL, NTRSYL, KTRSYL
+         WRITE( NOUT, FMT = 9999 )RTRSYL( 1 ), LTRSYL, NTRSYL, KTRSYL
+      END IF
+*
+      CALL ZSYL01( THRESH, FTRSYL, RTRSYL, ITRSYL, KTRSYL3 )
+      IF( FTRSYL( 1 ).GT.0 ) THEN
+         OK = .FALSE.
+         WRITE( NOUT, FMT = 9970 )FTRSYL( 1 ), RTRSYL( 1 ), THRESH
+      END IF
+      IF( FTRSYL( 2 ).GT.0 ) THEN
+         OK = .FALSE.
+         WRITE( NOUT, FMT = 9971 )FTRSYL( 2 ), RTRSYL( 2 ), THRESH
+      END IF
+      IF( FTRSYL( 3 ).GT.0 ) THEN
+         OK = .FALSE.
+         WRITE( NOUT, FMT = 9972 )FTRSYL( 3 )
       END IF
 *
       CALL ZGET36( RTREXC, LTREXC, NTREXC, KTREXC, NIN )
@@ -148,7 +162,7 @@
          WRITE( NOUT, FMT = 9996 )RTRSEN, LTRSEN, NTRSEN, KTRSEN
       END IF
 *
-      NTESTS = KTRSYL + KTREXC + KTRSNA + KTRSEN
+      NTESTS = KTRSYL + KTRSYL3 + KTREXC + KTRSNA + KTRSEN
       IF( OK )
      $   WRITE( NOUT, FMT = 9995 )PATH, NTESTS
 *
@@ -169,6 +183,12 @@
      $      / ' Safe minimum (SFMIN)             = ', D16.6, / )
  9992 FORMAT( ' Routines pass computational tests if test ratio is ',
      $      'less than', F8.2, / / )
+ 9970 FORMAT( 'Error in ZTRSYL: ', I8, ' tests fail the threshold.', /
+     $      'Maximum test ratio =', D12.3, ' threshold =', D12.3 )
+ 9971 FORMAT( 'Error in ZTRSYL3: ', I8, ' tests fail the threshold.', /
+     $      'Maximum test ratio =', D12.3, ' threshold =', D12.3 )
+ 9972 FORMAT( 'ZTRSYL and ZTRSYL3 compute an inconsistent scale ',
+     $      'factor in ', I8, ' tests.')
       RETURN
 *
 *     End of ZCHKEC

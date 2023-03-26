@@ -627,7 +627,7 @@ f"> */
 /* > \ingroup auxOTHERcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int slasq6_(integer *i0, integer *n0, real *z__, integer *pp,
+/* Subroutine */ void slasq6_(integer *i0, integer *n0, real *z__, integer *pp,
 	 real *dmin__, real *dmin1, real *dmin2, real *dn, real *dnm1, real *
 	dnm2)
 {
@@ -657,7 +657,7 @@ f"> */
 
     /* Function Body */
     if (*n0 - *i0 - 1 <= 0) {
-	return 0;
+	return;
     }
 
     safmin = slamch_("Safe minimum");
@@ -761,7 +761,7 @@ f"> */
 
     z__[j4 + 2] = *dn;
     z__[(*n0 << 2) - *pp] = emin;
-    return 0;
+    return;
 
 /*     End of SLASQ6 */
 

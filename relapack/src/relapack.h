@@ -1,7 +1,7 @@
 #ifndef RELAPACK_INT_H
 #define RELAPACK_INT_H
 #include <string.h>
-#include "../../config.h"
+#include "config.h"
 #if defined(OS_WINDOWS) && defined(__64BIT__)
 typedef long long BLASLONG;
 typedef unsigned long long BLASULONG;
@@ -9,7 +9,7 @@ typedef unsigned long long BLASULONG;
 typedef long BLASLONG;
 typedef unsigned long BLASULONG;
 #endif
-#include "../config.h"
+#include "relapack_config.h"
 
 #include "../inc/relapack.h"
 

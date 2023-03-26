@@ -635,7 +635,7 @@ f"> */
 /* > \ingroup complex16PTcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int zpttrs_(char *uplo, integer *n, integer *nrhs, 
+/* Subroutine */ void zpttrs_(char *uplo, integer *n, integer *nrhs, 
 	doublereal *d__, doublecomplex *e, doublecomplex *b, integer *ldb, 
 	integer *info)
 {
@@ -646,9 +646,9 @@ f"> */
     integer j, iuplo;
     logical upper;
     integer jb, nb;
-    extern /* Subroutine */ int zptts2_(integer *, integer *, integer *, 
-	    doublereal *, doublecomplex *, doublecomplex *, integer *), 
-	    xerbla_(char *, integer *, ftnlen);
+    extern /* Subroutine */ void zptts2_(integer *, integer *, integer *, 
+	    doublereal *, doublecomplex *, doublecomplex *, integer *); 
+    extern int xerbla_(char *, integer *, ftnlen);
     extern integer ilaenv_(integer *, char *, char *, integer *, integer *, 
 	    integer *, integer *, ftnlen, ftnlen);
 
@@ -687,13 +687,13 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZPTTRS", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0 || *nrhs == 0) {
-	return 0;
+	return;
     }
 
 /*     Determine the number of right-hand sides to solve at a time. */
@@ -729,7 +729,7 @@ f"> */
 	}
     }
 
-    return 0;
+    return;
 
 /*     End of ZPTTRS */
 

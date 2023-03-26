@@ -746,7 +746,7 @@ f"> */
 /* > \ingroup complexPTsolve */
 
 /*  ===================================================================== */
-/* Subroutine */ int cptsvx_(char *fact, integer *n, integer *nrhs, real *d__,
+/* Subroutine */ void cptsvx_(char *fact, integer *n, integer *nrhs, real *d__,
 	 complex *e, real *df, complex *ef, complex *b, integer *ldb, complex 
 	*x, integer *ldx, real *rcond, real *ferr, real *berr, complex *work, 
 	real *rwork, integer *info)
@@ -757,15 +757,16 @@ f"> */
     /* Local variables */
     extern logical lsame_(char *, char *);
     real anorm;
-    extern /* Subroutine */ int ccopy_(integer *, complex *, integer *, 
+    extern /* Subroutine */ void ccopy_(integer *, complex *, integer *, 
 	    complex *, integer *), scopy_(integer *, real *, integer *, real *
 	    , integer *);
     extern real slamch_(char *), clanht_(char *, integer *, real *, 
 	    complex *);
     logical nofact;
-    extern /* Subroutine */ int clacpy_(char *, integer *, integer *, complex 
-	    *, integer *, complex *, integer *), xerbla_(char *, 
-	    integer *, ftnlen), cptcon_(integer *, real *, complex *, real *, 
+    extern /* Subroutine */ void clacpy_(char *, integer *, integer *, complex 
+	    *, integer *, complex *, integer *);
+    extern int xerbla_(char *, integer *, ftnlen);
+    extern void cptcon_(integer *, real *, complex *, real *, 
 	    real *, real *, integer *), cptrfs_(char *, integer *, integer *, 
 	    real *, complex *, real *, complex *, complex *, integer *, 
 	    complex *, integer *, real *, real *, complex *, real *, integer *
@@ -818,7 +819,7 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CPTSVX", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
     if (nofact) {
@@ -836,7 +837,7 @@ f"> */
 
 	if (*info > 0) {
 	    *rcond = 0.f;
-	    return 0;
+	    return;
 	}
     }
 
@@ -866,7 +867,7 @@ f"> */
 	*info = *n + 1;
     }
 
-    return 0;
+    return;
 
 /*     End of CPTSVX */
 

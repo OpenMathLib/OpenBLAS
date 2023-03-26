@@ -665,7 +665,7 @@ static integer c__2 = 2;
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int dgeqrfp_(integer *m, integer *n, doublereal *a, integer *
+/* Subroutine */ void dgeqrfp_(integer *m, integer *n, doublereal *a, integer *
 	lda, doublereal *tau, doublereal *work, integer *lwork, integer *info)
 {
     /* System generated locals */
@@ -673,18 +673,19 @@ static integer c__2 = 2;
 
     /* Local variables */
     integer i__, k, nbmin, iinfo, ib, nb;
-    extern /* Subroutine */ int dlarfb_(char *, char *, char *, char *, 
+    extern /* Subroutine */ void dlarfb_(char *, char *, char *, char *, 
 	    integer *, integer *, integer *, doublereal *, integer *, 
 	    doublereal *, integer *, doublereal *, integer *, doublereal *, 
 	    integer *);
     integer nx;
-    extern /* Subroutine */ int dlarft_(char *, char *, integer *, integer *, 
-	    doublereal *, integer *, doublereal *, doublereal *, integer *), xerbla_(char *, integer *, ftnlen);
+    extern /* Subroutine */ void dlarft_(char *, char *, integer *, integer *, 
+	    doublereal *, integer *, doublereal *, doublereal *, integer *);
+    extern int xerbla_(char *, integer *, ftnlen);
     extern integer ilaenv_(integer *, char *, char *, integer *, integer *, 
 	    integer *, integer *, ftnlen, ftnlen);
     integer ldwork, lwkopt;
     logical lquery;
-    extern /* Subroutine */ int dgeqr2p_(integer *, integer *, doublereal *, 
+    extern /* Subroutine */ void dgeqr2p_(integer *, integer *, doublereal *, 
 	    integer *, doublereal *, doublereal *, integer *);
     integer iws;
 
@@ -726,9 +727,9 @@ static integer c__2 = 2;
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DGEQRFP", &i__1, (ftnlen)7);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
@@ -736,7 +737,7 @@ static integer c__2 = 2;
     k = f2cmin(*m,*n);
     if (k == 0) {
 	work[1] = 1.;
-	return 0;
+	return;
     }
 
     nbmin = 2;
@@ -821,7 +822,7 @@ static integer c__2 = 2;
     }
 
     work[1] = (doublereal) iws;
-    return 0;
+    return;
 
 /*     End of DGEQRFP */
 

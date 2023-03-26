@@ -626,7 +626,7 @@ static real c_b13 = 0.f;
 /* > \ingroup real_matgen */
 
 /*  ===================================================================== */
-/* Subroutine */ int slagge_(integer *m, integer *n, integer *kl, integer *ku,
+/* Subroutine */ void slagge_(integer *m, integer *n, integer *kl, integer *ku,
 	 real *d__, real *a, integer *lda, integer *iseed, real *work, 
 	integer *info)
 {
@@ -635,15 +635,16 @@ static real c_b13 = 0.f;
     real r__1;
 
     /* Local variables */
-    extern /* Subroutine */ int sger_(integer *, integer *, real *, real *, 
+    extern /* Subroutine */ void sger_(integer *, integer *, real *, real *, 
 	    integer *, real *, integer *, real *, integer *);
     extern real snrm2_(integer *, real *, integer *);
     integer i__, j;
-    extern /* Subroutine */ int sscal_(integer *, real *, real *, integer *), 
+    extern /* Subroutine */ void sscal_(integer *, real *, real *, integer *), 
 	    sgemv_(char *, integer *, integer *, real *, real *, integer *, 
 	    real *, integer *, real *, real *, integer *);
     real wa, wb, wn;
-    extern /* Subroutine */ int xerbla_(char *, integer *), slarnv_(
+    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
+    extern void slarnv_(
 	    integer *, integer *, integer *, real *);
     real tau;
 
@@ -682,8 +683,8 @@ static real c_b13 = 0.f;
     }
     if (*info < 0) {
 	i__1 = -(*info);
-	xerbla_("SLAGGE", &i__1);
-	return 0;
+	xerbla_("SLAGGE", &i__1, 6);
+	return;
     }
 
 /*     initialize A to diagonal matrix */
@@ -706,7 +707,7 @@ static real c_b13 = 0.f;
 /*     Quick exit if the user wants a diagonal matrix */
 
     if (*kl == 0 && *ku == 0) {
-	return 0;
+	return;
     }
 
 /*     pre- and post-multiply A by random orthogonal matrices */
@@ -961,7 +962,7 @@ static real c_b13 = 0.f;
 	}
 /* L70: */
     }
-    return 0;
+    return;
 
 /*     End of SLAGGE */
 

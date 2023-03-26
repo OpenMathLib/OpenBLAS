@@ -624,7 +624,7 @@ f"> */
 /* > \ingroup doubleOTHERcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int dsptri_(char *uplo, integer *n, doublereal *ap, integer *
+/* Subroutine */ void dsptri_(char *uplo, integer *n, doublereal *ap, integer *
 	ipiv, doublereal *work, integer *info)
 {
     /* System generated locals */
@@ -638,11 +638,11 @@ f"> */
     integer j, k;
     doublereal t;
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int dcopy_(integer *, doublereal *, integer *, 
+    extern /* Subroutine */ void dcopy_(integer *, doublereal *, integer *, 
 	    doublereal *, integer *), dswap_(integer *, doublereal *, integer 
 	    *, doublereal *, integer *);
     integer kstep;
-    extern /* Subroutine */ int dspmv_(char *, integer *, doublereal *, 
+    extern /* Subroutine */ void dspmv_(char *, integer *, doublereal *, 
 	    doublereal *, doublereal *, integer *, doublereal *, doublereal *,
 	     integer *);
     logical upper;
@@ -680,13 +680,13 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DSPTRI", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /*     Check that the diagonal matrix D is nonsingular. */
@@ -698,7 +698,7 @@ f"> */
 	kp = *n * (*n + 1) / 2;
 	for (*info = *n; *info >= 1; --(*info)) {
 	    if (ipiv[*info] > 0 && ap[kp] == 0.) {
-		return 0;
+		return;
 	    }
 	    kp -= *info;
 /* L10: */
@@ -711,7 +711,7 @@ f"> */
 	i__1 = *n;
 	for (*info = 1; *info <= i__1; ++(*info)) {
 	    if (ipiv[*info] > 0 && ap[kp] == 0.) {
-		return 0;
+		return;
 	    }
 	    kp = kp + *n - *info + 1;
 /* L20: */
@@ -952,7 +952,7 @@ L80:
 	;
     }
 
-    return 0;
+    return;
 
 /*     End of DSPTRI */
 

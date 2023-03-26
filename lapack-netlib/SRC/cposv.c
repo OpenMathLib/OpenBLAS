@@ -639,7 +639,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 /* > \ingroup complexPOsolve */
 
 /*  ===================================================================== */
-/* Subroutine */ int cposv_(char *uplo, integer *n, integer *nrhs, complex *a,
+/* Subroutine */ void cposv_(char *uplo, integer *n, integer *nrhs, complex *a,
 	 integer *lda, complex *b, integer *ldb, integer *info)
 {
     /* System generated locals */
@@ -647,9 +647,10 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 
     /* Local variables */
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen), cpotrf_(
-	    char *, integer *, complex *, integer *, integer *), 
-	    cpotrs_(char *, integer *, integer *, complex *, integer *, 
+    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
+    extern int cpotrf_(
+	    char *, integer *, complex *, integer *, integer *); 
+    extern void cpotrs_(char *, integer *, integer *, complex *, integer *, 
 	    complex *, integer *, integer *);
 
 
@@ -688,7 +689,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CPOSV ", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Compute the Cholesky factorization A = U**H*U or A = L*L**H. */
@@ -701,7 +702,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 	cpotrs_(uplo, n, nrhs, &a[a_offset], lda, &b[b_offset], ldb, info);
 
     }
-    return 0;
+    return;
 
 /*     End of CPOSV */
 

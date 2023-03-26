@@ -663,7 +663,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int sgehd2_(integer *n, integer *ilo, integer *ihi, real *a, 
+/* Subroutine */ void sgehd2_(integer *n, integer *ilo, integer *ihi, real *a, 
 	integer *lda, real *tau, real *work, integer *info)
 {
     /* System generated locals */
@@ -671,10 +671,10 @@ f"> */
 
     /* Local variables */
     integer i__;
-    extern /* Subroutine */ int slarf_(char *, integer *, integer *, real *, 
-	    integer *, real *, real *, integer *, real *), xerbla_(
-	    char *, integer *, ftnlen), slarfg_(integer *, real *, real *, 
-	    integer *, real *);
+    extern /* Subroutine */ void slarf_(char *, integer *, integer *, real *, 
+	    integer *, real *, real *, integer *, real *);
+    extern int xerbla_(char *, integer *, ftnlen);
+    extern void slarfg_(integer *, real *, real *, integer *, real *);
     real aii;
 
 
@@ -710,7 +710,7 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("SGEHD2", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
     i__1 = *ihi - 1;
@@ -743,7 +743,7 @@ f"> */
 /* L10: */
     }
 
-    return 0;
+    return;
 
 /*     End of SGEHD2 */
 

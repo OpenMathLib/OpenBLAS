@@ -908,7 +908,7 @@ fsx_extended.f"> */
 /* > \ingroup complexGEcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int cla_gerfsx_extended_(integer *prec_type__, integer *
+/* Subroutine */ void cla_gerfsx_extended_(integer *prec_type__, integer *
 	trans_type__, integer *n, integer *nrhs, complex *a, integer *lda, 
 	complex *af, integer *ldaf, integer *ipiv, logical *colequ, real *c__,
 	 complex *b, integer *ldb, complex *y, integer *ldy, real *berr_out__,
@@ -926,15 +926,15 @@ fsx_extended.f"> */
 
     /* Local variables */
     real dx_x__, dz_z__;
-    extern /* Subroutine */ int cla_lin_berr_(integer *, integer *, integer *
+    extern /* Subroutine */ void cla_lin_berr_(integer *, integer *, integer *
 	    , complex *, real *, real *);
     real ymin;
-    extern /* Subroutine */ int blas_cgemv_x_(integer *, integer *, integer *
+    extern /* Subroutine */ void blas_cgemv_x_(integer *, integer *, integer *
 	    , complex *, complex *, integer *, complex *, integer *, complex *
 	    , complex *, integer *, integer *);
     real dxratmax, dzratmax;
     integer y_prec_state__, i__, j;
-    extern /* Subroutine */ int blas_cgemv2_x_(integer *, integer *, integer 
+    extern /* Subroutine */ void blas_cgemv2_x_(integer *, integer *, integer 
 	    *, complex *, complex *, integer *, complex *, complex *, integer 
 	    *, complex *, complex *, integer *, integer *), cla_geamv_(
 	    integer *, integer *, integer *, real *, complex *, integer *, 
@@ -945,15 +945,15 @@ fsx_extended.f"> */
     real dxrat;
     logical incr_prec__;
     real dzrat;
-    extern /* Subroutine */ int caxpy_(integer *, complex *, complex *, 
+    extern /* Subroutine */ void caxpy_(integer *, complex *, complex *, 
 	    integer *, complex *, integer *);
     char trans[1];
     real normx, normy, myhugeval, prev_dz_z__, yk;
     extern real slamch_(char *);
-    extern /* Subroutine */ int cgetrs_(char *, integer *, integer *, complex 
+    extern /* Subroutine */ void cgetrs_(char *, integer *, integer *, complex 
 	    *, integer *, integer *, complex *, integer *, integer *);
     real final_dx_x__;
-    extern /* Subroutine */ int cla_wwaddw_(integer *, complex *, complex *, 
+    extern /* Subroutine */ void cla_wwaddw_(integer *, complex *, complex *, 
 	    complex *);
     real final_dz_z__, normdx;
     extern /* Character */ VOID chla_transtype_(char *, integer *);
@@ -1002,7 +1002,7 @@ fsx_extended.f"> */
 
     /* Function Body */
     if (*info != 0) {
-	return 0;
+	return;
     }
     chla_transtype_(ch__1, trans_type__);
     *(unsigned char *)trans = *(unsigned char *)&ch__1[0];
@@ -1247,6 +1247,6 @@ L666:
 
     }
 
-    return 0;
+    return;
 } /* cla_gerfsx_extended__ */
 

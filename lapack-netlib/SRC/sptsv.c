@@ -623,14 +623,15 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 /* > \ingroup realPTsolve */
 
 /*  ===================================================================== */
-/* Subroutine */ int sptsv_(integer *n, integer *nrhs, real *d__, real *e, 
+/* Subroutine */ void sptsv_(integer *n, integer *nrhs, real *d__, real *e, 
 	real *b, integer *ldb, integer *info)
 {
     /* System generated locals */
     integer b_dim1, b_offset, i__1;
 
     /* Local variables */
-    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen), spttrf_(
+    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
+    extern void spttrf_(
 	    integer *, real *, real *, integer *), spttrs_(integer *, integer 
 	    *, real *, real *, real *, integer *, integer *);
 
@@ -665,7 +666,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("SPTSV ", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Compute the L*D*L**T (or U**T*D*U) factorization of A. */
@@ -677,7 +678,7 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 
 	spttrs_(n, nrhs, &d__[1], &e[1], &b[b_offset], ldb, info);
     }
-    return 0;
+    return;
 
 /*     End of SPTSV */
 

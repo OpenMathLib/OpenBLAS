@@ -167,6 +167,9 @@
 *     .. Executable Statements ..
 *
       INFO = 0
+      LCNT = 0
+      RCNT = 0
+      EIGCNT = 0
 *
 *     Quick return if possible
 *
@@ -174,9 +177,6 @@
          RETURN
       END IF
 *
-      LCNT = 0
-      RCNT = 0
-      EIGCNT = 0
       MATT = LSAME( JOBT, 'T' )
 
 

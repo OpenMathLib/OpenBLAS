@@ -616,7 +616,7 @@ r.f"> */
 /* > \ingroup complexSYauxiliary */
 
 /*  ===================================================================== */
-/* Subroutine */ int csyswapr_(char *uplo, integer *n, complex *a, integer *
+/* Subroutine */ void csyswapr_(char *uplo, integer *n, complex *a, integer *
 	lda, integer *i1, integer *i2)
 {
     /* System generated locals */
@@ -625,7 +625,7 @@ r.f"> */
     /* Local variables */
     integer i__;
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int cswap_(integer *, complex *, integer *, 
+    extern /* Subroutine */ void cswap_(integer *, complex *, integer *, 
 	    complex *, integer *);
     logical upper;
     complex tmp;
@@ -736,6 +736,6 @@ r.f"> */
 	}
 
     }
-    return 0;
+    return;
 } /* csyswapr_ */
 

@@ -874,7 +874,7 @@ f"> */
 /* >       California at Berkeley, USA \n */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int zheevr_(char *jobz, char *range, char *uplo, integer *n, 
+/* Subroutine */ void zheevr_(char *jobz, char *range, char *uplo, integer *n, 
 	doublecomplex *a, integer *lda, doublereal *vl, doublereal *vu, 
 	integer *il, integer *iu, doublereal *abstol, integer *m, doublereal *
 	w, doublecomplex *z__, integer *ldz, integer *isuppz, doublecomplex *
@@ -891,7 +891,7 @@ f"> */
     doublereal rmin, rmax;
     logical test;
     integer itmp1, i__, j;
-    extern /* Subroutine */ int dscal_(integer *, doublereal *, doublereal *, 
+    extern /* Subroutine */ void dscal_(integer *, doublereal *, doublereal *, 
 	    integer *);
     integer indrd, indre;
     doublereal sigma;
@@ -899,11 +899,11 @@ f"> */
     integer iinfo;
     char order[1];
     integer indwk;
-    extern /* Subroutine */ int dcopy_(integer *, doublereal *, integer *, 
+    extern /* Subroutine */ void dcopy_(integer *, doublereal *, integer *, 
 	    doublereal *, integer *);
     integer lwmin;
     logical lower, wantz;
-    extern /* Subroutine */ int zswap_(integer *, doublecomplex *, integer *, 
+    extern /* Subroutine */ void zswap_(integer *, doublecomplex *, integer *, 
 	    doublecomplex *, integer *);
     integer nb, jj;
     extern doublereal dlamch_(char *);
@@ -913,32 +913,33 @@ f"> */
     doublereal safmin;
     extern integer ilaenv_(integer *, char *, char *, integer *, integer *, 
 	    integer *, integer *, ftnlen, ftnlen);
-    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen), zdscal_(
+    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
+    extern void zdscal_(
 	    integer *, doublereal *, doublecomplex *, integer *);
     doublereal abstll, bignum;
     integer indtau, indisp;
-    extern /* Subroutine */ int dsterf_(integer *, doublereal *, doublereal *,
+    extern /* Subroutine */ void dsterf_(integer *, doublereal *, doublereal *,
 	     integer *);
     integer indiwo, indwkn;
-    extern /* Subroutine */ int dstebz_(char *, char *, integer *, doublereal 
+    extern /* Subroutine */ void dstebz_(char *, char *, integer *, doublereal 
 	    *, doublereal *, integer *, integer *, doublereal *, doublereal *,
 	     doublereal *, integer *, integer *, doublereal *, integer *, 
 	    integer *, doublereal *, integer *, integer *);
     integer indrwk, liwmin;
-    extern /* Subroutine */ int zhetrd_(char *, integer *, doublecomplex *, 
+    extern /* Subroutine */ void zhetrd_(char *, integer *, doublecomplex *, 
 	    integer *, doublereal *, doublereal *, doublecomplex *, 
 	    doublecomplex *, integer *, integer *);
     logical tryrac;
     integer lrwmin, llwrkn, llwork, nsplit;
     doublereal smlnum;
-    extern /* Subroutine */ int zstein_(integer *, doublereal *, doublereal *,
+    extern /* Subroutine */ void zstein_(integer *, doublereal *, doublereal *,
 	     integer *, doublereal *, integer *, integer *, doublecomplex *, 
 	    integer *, doublereal *, integer *, integer *, integer *);
     logical lquery;
     integer lwkopt;
     extern doublereal zlansy_(char *, char *, integer *, doublecomplex *, 
 	    integer *, doublereal *);
-    extern /* Subroutine */ int zstemr_(char *, char *, integer *, doublereal 
+    extern /* Subroutine */ void zstemr_(char *, char *, integer *, doublereal 
 	    *, doublereal *, doublereal *, doublereal *, integer *, integer *,
 	     integer *, doublereal *, doublecomplex *, integer *, integer *, 
 	    integer *, logical *, doublereal *, integer *, integer *, integer 
@@ -1053,9 +1054,9 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZHEEVR", &i__1, (ftnlen)6);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
@@ -1063,7 +1064,7 @@ f"> */
     *m = 0;
     if (*n == 0) {
 	work[1].r = 1., work[1].i = 0.;
-	return 0;
+	return;
     }
 
     if (*n == 1) {
@@ -1087,7 +1088,7 @@ f"> */
 	    isuppz[1] = 1;
 	    isuppz[2] = 1;
 	}
-	return 0;
+	return;
     }
 
 /*     Get machine constants. */
@@ -1307,7 +1308,7 @@ L30:
     rwork[1] = (doublereal) lrwmin;
     iwork[1] = liwmin;
 
-    return 0;
+    return;
 
 /*     End of ZHEEVR */
 

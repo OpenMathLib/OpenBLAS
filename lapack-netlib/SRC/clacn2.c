@@ -647,7 +647,7 @@ f"> */
 /* >  ACM Trans. Math. Soft., vol. 14, no. 4, pp. 381-396, December 1988. */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int clacn2_(integer *n, complex *v, complex *x, real *est, 
+/* Subroutine */ void clacn2_(integer *n, complex *v, complex *x, real *est, 
 	integer *kase, integer *isave)
 {
     /* System generated locals */
@@ -660,7 +660,7 @@ f"> */
     integer i__;
     real absxi;
     integer jlast;
-    extern /* Subroutine */ int ccopy_(integer *, complex *, integer *, 
+    extern /* Subroutine */ void ccopy_(integer *, complex *, integer *, 
 	    complex *, integer *);
     extern integer icmax1_(integer *, complex *, integer *);
     extern real scsum1_(integer *, complex *, integer *), slamch_(char *);
@@ -694,7 +694,7 @@ f"> */
 	}
 	*kase = 1;
 	isave[1] = 1;
-	return 0;
+	return;
     }
 
     switch (isave[1]) {
@@ -735,7 +735,7 @@ L20:
     }
     *kase = 2;
     isave[1] = 2;
-    return 0;
+    return;
 
 /*     ................ ENTRY   (ISAVE( 1 ) = 2) */
 /*     FIRST ITERATION.  X HAS BEEN OVERWRITTEN BY CTRANS(A)*X. */
@@ -757,7 +757,7 @@ L50:
     x[i__1].r = 1.f, x[i__1].i = 0.f;
     *kase = 1;
     isave[1] = 3;
-    return 0;
+    return;
 
 /*     ................ ENTRY   (ISAVE( 1 ) = 3) */
 /*     X HAS BEEN OVERWRITTEN BY A*X. */
@@ -790,7 +790,7 @@ L70:
     }
     *kase = 2;
     isave[1] = 4;
-    return 0;
+    return;
 
 /*     ................ ENTRY   (ISAVE( 1 ) = 4) */
 /*     X HAS BEEN OVERWRITTEN BY CTRANS(A)*X. */
@@ -818,7 +818,7 @@ L100:
     }
     *kase = 1;
     isave[1] = 5;
-    return 0;
+    return;
 
 /*     ................ ENTRY   (ISAVE( 1 ) = 5) */
 /*     X HAS BEEN OVERWRITTEN BY A*X. */
@@ -832,7 +832,7 @@ L120:
 
 L130:
     *kase = 0;
-    return 0;
+    return;
 
 /*     End of CLACN2 */
 

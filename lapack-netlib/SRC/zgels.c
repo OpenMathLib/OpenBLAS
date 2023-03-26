@@ -697,7 +697,7 @@ static integer c__0 = 0;
 /* > \ingroup complex16GEsolve */
 
 /*  ===================================================================== */
-/* Subroutine */ int zgels_(char *trans, integer *m, integer *n, integer *
+/* Subroutine */ void zgels_(char *trans, integer *m, integer *n, integer *
 	nrhs, doublecomplex *a, integer *lda, doublecomplex *b, integer *ldb, 
 	doublecomplex *work, integer *lwork, integer *info)
 {
@@ -713,7 +713,7 @@ static integer c__0 = 0;
     extern logical lsame_(char *, char *);
     integer wsize;
     doublereal rwork[1];
-    extern /* Subroutine */ int dlabad_(doublereal *, doublereal *);
+    extern /* Subroutine */ void dlabad_(doublereal *, doublereal *);
     integer nb;
     extern doublereal dlamch_(char *);
     integer mn;
@@ -724,7 +724,7 @@ static integer c__0 = 0;
     doublereal bignum;
     extern doublereal zlange_(char *, integer *, integer *, doublecomplex *, 
 	    integer *, doublereal *);
-    extern /* Subroutine */ int zgelqf_(integer *, integer *, doublecomplex *,
+    extern /* Subroutine */ void zgelqf_(integer *, integer *, doublecomplex *,
 	     integer *, doublecomplex *, doublecomplex *, integer *, integer *
 	    ), zlascl_(char *, integer *, integer *, doublereal *, doublereal 
 	    *, integer *, integer *, doublecomplex *, integer *, integer *), zgeqrf_(integer *, integer *, doublecomplex *, integer *,
@@ -733,11 +733,12 @@ static integer c__0 = 0;
 	    doublecomplex *, integer *);
     doublereal smlnum;
     logical lquery;
-    extern /* Subroutine */ int zunmlq_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void zunmlq_(char *, char *, integer *, integer *, 
 	    integer *, doublecomplex *, integer *, doublecomplex *, 
 	    doublecomplex *, integer *, doublecomplex *, integer *, integer *), zunmqr_(char *, char *, integer *, integer *, 
 	    integer *, doublecomplex *, integer *, doublecomplex *, 
-	    doublecomplex *, integer *, doublecomplex *, integer *, integer *), ztrtrs_(char *, char *, char *, integer *, 
+	    doublecomplex *, integer *, doublecomplex *, integer *, integer *);
+    extern int ztrtrs_(char *, char *, char *, integer *, 
 	    integer *, doublecomplex *, integer *, doublecomplex *, integer *,
 	     integer *);
 
@@ -840,9 +841,9 @@ static integer c__0 = 0;
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZGELS ", &i__1, (ftnlen)6);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
@@ -852,7 +853,7 @@ static integer c__0 = 0;
     if (f2cmin(i__1,*nrhs) == 0) {
 	i__1 = f2cmax(*m,*n);
 	zlaset_("Full", &i__1, nrhs, &c_b1, &c_b1, &b[b_offset], ldb);
-	return 0;
+	return;
     }
 
 /*     Get machine parameters */
@@ -939,7 +940,7 @@ static integer c__0 = 0;
 		    , lda, &b[b_offset], ldb, info);
 
 	    if (*info > 0) {
-		return 0;
+		return;
 	    }
 
 	    scllen = *n;
@@ -954,7 +955,7 @@ static integer c__0 = 0;
 		    a_offset], lda, &b[b_offset], ldb, info);
 
 	    if (*info > 0) {
-		return 0;
+		return;
 	    }
 
 /*           B(N+1:M,1:NRHS) = ZERO */
@@ -1002,7 +1003,7 @@ static integer c__0 = 0;
 		    , lda, &b[b_offset], ldb, info);
 
 	    if (*info > 0) {
-		return 0;
+		return;
 	    }
 
 /*           B(M+1:N,1:NRHS) = 0 */
@@ -1047,7 +1048,7 @@ static integer c__0 = 0;
 		    a_offset], lda, &b[b_offset], ldb, info);
 
 	    if (*info > 0) {
-		return 0;
+		return;
 	    }
 
 	    scllen = *m;
@@ -1077,7 +1078,7 @@ L50:
     d__1 = (doublereal) wsize;
     work[1].r = d__1, work[1].i = 0.;
 
-    return 0;
+    return;
 
 /*     End of ZGELS */
 

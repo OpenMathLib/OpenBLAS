@@ -632,7 +632,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int claev2_(complex *a, complex *b, complex *c__, real *rt1, 
+/* Subroutine */ void claev2_(complex *a, complex *b, complex *c__, real *rt1, 
 	real *rt2, real *cs1, complex *sn1)
 {
     /* System generated locals */
@@ -642,7 +642,7 @@ f"> */
     /* Local variables */
     real t;
     complex w;
-    extern /* Subroutine */ int slaev2_(real *, real *, real *, real *, real *
+    extern /* Subroutine */ void slaev2_(real *, real *, real *, real *, real *
 	    , real *, real *);
 
 
@@ -669,7 +669,7 @@ f"> */
     slaev2_(&r__1, &r__2, &r__3, rt1, rt2, cs1, &t);
     q__1.r = t * w.r, q__1.i = t * w.i;
     sn1->r = q__1.r, sn1->i = q__1.i;
-    return 0;
+    return;
 
 /*     End of CLAEV2 */
 

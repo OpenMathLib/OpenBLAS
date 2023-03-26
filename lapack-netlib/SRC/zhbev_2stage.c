@@ -729,7 +729,7 @@ stage.f"> */
 /* > \endverbatim */
 
 /*  ===================================================================== */
-/* Subroutine */ int zhbev_2stage_(char *jobz, char *uplo, integer *n, 
+/* Subroutine */ void zhbev_2stage_(char *jobz, char *uplo, integer *n, 
 	integer *kd, doublecomplex *ab, integer *ldab, doublereal *w, 
 	doublecomplex *z__, integer *ldz, doublecomplex *work, integer *lwork,
 	 doublereal *rwork, integer *info)
@@ -744,12 +744,12 @@ stage.f"> */
 	    integer *, integer *, integer *);
     doublereal anrm;
     integer imax;
-    extern /* Subroutine */ int zhetrd_hb2st_(char *, char *, char *, 
+    extern /* Subroutine */ void zhetrd_hb2st_(char *, char *, char *, 
 	    integer *, integer *, doublecomplex *, integer *, doublereal *, 
 	    doublereal *, doublecomplex *, integer *, doublecomplex *, 
 	    integer *, integer *);
     doublereal rmin, rmax;
-    extern /* Subroutine */ int dscal_(integer *, doublereal *, doublereal *, 
+    extern /* Subroutine */ void dscal_(integer *, doublereal *, doublereal *, 
 	    integer *);
     doublereal sigma;
     extern logical lsame_(char *, char *);
@@ -765,14 +765,14 @@ stage.f"> */
 	    doublecomplex *, integer *, doublereal *);
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     doublereal bignum;
-    extern /* Subroutine */ int dsterf_(integer *, doublereal *, doublereal *,
+    extern /* Subroutine */ void dsterf_(integer *, doublereal *, doublereal *,
 	     integer *), zlascl_(char *, integer *, integer *, doublereal *, 
 	    doublereal *, integer *, integer *, doublecomplex *, integer *, 
 	    integer *);
     integer indwrk, indrwk, llwork;
     doublereal smlnum;
     logical lquery;
-    extern /* Subroutine */ int zsteqr_(char *, integer *, doublereal *, 
+    extern /* Subroutine */ void zsteqr_(char *, integer *, doublereal *, 
 	    doublereal *, doublecomplex *, integer *, doublereal *, integer *);
     doublereal eps;
     integer indhous;
@@ -844,15 +844,15 @@ stage.f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZHBEV_2STAGE ", &i__1, (ftnlen)13);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
     if (*n == 1) {
@@ -867,7 +867,7 @@ stage.f"> */
 	    i__1 = z_dim1 + 1;
 	    z__[i__1].r = 1., z__[i__1].i = 0.;
 	}
-	return 0;
+	return;
     }
 
 /*     Get machine constants. */
@@ -937,7 +937,7 @@ stage.f"> */
 
     work[1].r = (doublereal) lwmin, work[1].i = 0.;
 
-    return 0;
+    return;
 
 /*     End of ZHBEV_2STAGE */
 

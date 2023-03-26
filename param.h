@@ -79,6 +79,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define SBGEMM_DEFAULT_P 256
 #define SBGEMM_DEFAULT_R 256
 #define SBGEMM_DEFAULT_Q 256
+#define SBGEMM_ALIGN_K 1  // must be 2^x
+
 #ifdef OPTERON
 
 #define SNUMOPT		4
@@ -2945,7 +2947,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define SYMV_P	16
 #endif
 
-#if defined(P5600) || defined(MIPS1004K) || defined(MIPS24K) || defined(I6400) || defined(P6600) || defined(I6500)
+#if defined(MIPS64_GENERIC) || defined(P5600) || defined(MIPS1004K) || defined(MIPS24K) || defined(I6400) || defined(P6600) || defined(I6500)
 #define SNUMOPT  2
 #define DNUMOPT  2
 
@@ -2953,7 +2955,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define GEMM_DEFAULT_OFFSET_B  0
 #define GEMM_DEFAULT_ALIGN (BLASLONG) 0x03fffUL
 
-#if defined(HAVE_MSA) && !defined(NO_MSA)
+#if defined(HAVE_MSA)
 #define SGEMM_DEFAULT_UNROLL_M  8
 #define SGEMM_DEFAULT_UNROLL_N  8
 
@@ -3365,6 +3367,8 @@ is a big desktop or server with abundant cache rather than a phone or embedded d
 
 #elif defined(NEOVERSEV1)
 
+#define SWITCH_RATIO  16
+
 #define SGEMM_DEFAULT_UNROLL_M  16
 #define SGEMM_DEFAULT_UNROLL_N  4
 
@@ -3393,6 +3397,9 @@ is a big desktop or server with abundant cache rather than a phone or embedded d
 #define ZGEMM_DEFAULT_R 4096
 
 #elif defined(NEOVERSEN2)
+
+#undef SBGEMM_ALIGN_K
+#define SBGEMM_ALIGN_K 4
 
 #undef SBGEMM_DEFAULT_UNROLL_M
 #undef SBGEMM_DEFAULT_UNROLL_N

@@ -708,7 +708,7 @@ f"> */
 /* >      1996. */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int ctgexc_(logical *wantq, logical *wantz, integer *n, 
+/* Subroutine */ void ctgexc_(logical *wantq, logical *wantz, integer *n, 
 	complex *a, integer *lda, complex *b, integer *ldb, complex *q, 
 	integer *ldq, complex *z__, integer *ldz, integer *ifst, integer *
 	ilst, integer *info)
@@ -719,10 +719,10 @@ f"> */
 
     /* Local variables */
     integer here;
-    extern /* Subroutine */ int ctgex2_(logical *, logical *, integer *, 
+    extern /* Subroutine */ void ctgex2_(logical *, logical *, integer *, 
 	    complex *, integer *, complex *, integer *, complex *, integer *, 
-	    complex *, integer *, integer *, integer *), xerbla_(char *, 
-	    integer *, ftnlen);
+	    complex *, integer *, integer *, integer *);
+    extern int xerbla_(char *, integer *, ftnlen);
 
 
 /*  -- LAPACK computational routine (version 3.7.1) -- */
@@ -769,16 +769,16 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CTGEXC", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n <= 1) {
-	return 0;
+	return;
     }
     if (*ifst == *ilst) {
-	return 0;
+	return;
     }
 
     if (*ifst < *ilst) {
@@ -793,7 +793,7 @@ L10:
 		q_offset], ldq, &z__[z_offset], ldz, &here, info);
 	if (*info != 0) {
 	    *ilst = here;
-	    return 0;
+	    return;
 	}
 	++here;
 	if (here < *ilst) {
@@ -811,7 +811,7 @@ L20:
 		q_offset], ldq, &z__[z_offset], ldz, &here, info);
 	if (*info != 0) {
 	    *ilst = here;
-	    return 0;
+	    return;
 	}
 	--here;
 	if (here >= *ilst) {
@@ -820,7 +820,7 @@ L20:
 	++here;
     }
     *ilst = here;
-    return 0;
+    return;
 
 /*     End of CTGEXC */
 

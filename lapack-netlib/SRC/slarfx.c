@@ -634,7 +634,7 @@ f"> */
 /* > \ingroup realOTHERauxiliary */
 
 /*  ===================================================================== */
-/* Subroutine */ int slarfx_(char *side, integer *m, integer *n, real *v, 
+/* Subroutine */ void slarfx_(char *side, integer *m, integer *n, real *v, 
 	real *tau, real *c__, integer *ldc, real *work)
 {
     /* System generated locals */
@@ -643,7 +643,7 @@ f"> */
     /* Local variables */
     integer j;
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int slarf_(char *, integer *, integer *, real *, 
+    extern /* Subroutine */ void slarf_(char *, integer *, integer *, real *, 
 	    integer *, real *, real *, integer *, real *);
     real t1, t2, t3, t4, t5, t6, t7, t8, t9, v1, v2, v3, v4, v5, v6, v7, v8, 
 	    v9, t10, v10, sum;
@@ -667,7 +667,7 @@ f"> */
 
     /* Function Body */
     if (*tau == 0.f) {
-	return 0;
+	return;
     }
     if (lsame_(side, "L")) {
 
@@ -1279,7 +1279,7 @@ L390:
 	goto L410;
     }
 L410:
-    return 0;
+    return;
 
 /*     End of SLARFX */
 

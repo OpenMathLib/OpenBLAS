@@ -634,7 +634,7 @@ f"> */
 /* > \ingroup doubleOTHERauxiliary */
 
 /*  ===================================================================== */
-/* Subroutine */ int dlarfx_(char *side, integer *m, integer *n, doublereal *
+/* Subroutine */ void dlarfx_(char *side, integer *m, integer *n, doublereal *
 	v, doublereal *tau, doublereal *c__, integer *ldc, doublereal *work)
 {
     /* System generated locals */
@@ -642,7 +642,7 @@ f"> */
 
     /* Local variables */
     integer j;
-    extern /* Subroutine */ int dlarf_(char *, integer *, integer *, 
+    extern /* Subroutine */ void dlarf_(char *, integer *, integer *, 
 	    doublereal *, integer *, doublereal *, doublereal *, integer *, 
 	    doublereal *);
     extern logical lsame_(char *, char *);
@@ -668,7 +668,7 @@ f"> */
 
     /* Function Body */
     if (*tau == 0.) {
-	return 0;
+	return;
     }
     if (lsame_(side, "L")) {
 
@@ -1280,7 +1280,7 @@ L390:
 	goto L410;
     }
 L410:
-    return 0;
+    return;
 
 /*     End of DLARFX */
 

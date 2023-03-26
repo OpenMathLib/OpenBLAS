@@ -660,7 +660,7 @@ atrices</b> */
 /* > \ingroup doubleOTHEReigen */
 
 /*  ===================================================================== */
-/* Subroutine */ int dsbev_(char *jobz, char *uplo, integer *n, integer *kd, 
+/* Subroutine */ void dsbev_(char *jobz, char *uplo, integer *n, integer *kd, 
 	doublereal *ab, integer *ldab, doublereal *w, doublereal *z__, 
 	integer *ldz, doublereal *work, integer *info)
 {
@@ -673,7 +673,7 @@ atrices</b> */
     doublereal anrm;
     integer imax;
     doublereal rmin, rmax;
-    extern /* Subroutine */ int dscal_(integer *, doublereal *, doublereal *, 
+    extern /* Subroutine */ void dscal_(integer *, doublereal *, doublereal *, 
 	    integer *);
     doublereal sigma;
     extern logical lsame_(char *, char *);
@@ -681,7 +681,7 @@ atrices</b> */
     logical lower, wantz;
     extern doublereal dlamch_(char *);
     integer iscale;
-    extern /* Subroutine */ int dlascl_(char *, integer *, integer *, 
+    extern /* Subroutine */ void dlascl_(char *, integer *, integer *, 
 	    doublereal *, doublereal *, integer *, integer *, doublereal *, 
 	    integer *, integer *);
     extern doublereal dlansb_(char *, char *, integer *, integer *, 
@@ -689,12 +689,12 @@ atrices</b> */
     doublereal safmin;
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     doublereal bignum;
-    extern /* Subroutine */ int dsbtrd_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void dsbtrd_(char *, char *, integer *, integer *, 
 	    doublereal *, integer *, doublereal *, doublereal *, doublereal *,
 	     integer *, doublereal *, integer *), dsterf_(
 	    integer *, doublereal *, doublereal *, integer *);
     integer indwrk;
-    extern /* Subroutine */ int dsteqr_(char *, integer *, doublereal *, 
+    extern /* Subroutine */ void dsteqr_(char *, integer *, doublereal *, 
 	    doublereal *, doublereal *, integer *, doublereal *, integer *);
     doublereal smlnum, eps;
 
@@ -742,13 +742,13 @@ atrices</b> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DSBEV ", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
     if (*n == 1) {
@@ -760,7 +760,7 @@ atrices</b> */
 	if (wantz) {
 	    z__[z_dim1 + 1] = 1.;
 	}
-	return 0;
+	return;
     }
 
 /*     Get machine constants. */
@@ -821,7 +821,7 @@ atrices</b> */
 	dscal_(&imax, &d__1, &w[1], &c__1);
     }
 
-    return 0;
+    return;
 
 /*     End of DSBEV */
 

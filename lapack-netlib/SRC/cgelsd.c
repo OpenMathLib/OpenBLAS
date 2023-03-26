@@ -744,7 +744,7 @@ f"> */
 /* >     Osni Marques, LBNL/NERSC, USA \n */
 
 /*  ===================================================================== */
-/* Subroutine */ int cgelsd_(integer *m, integer *n, integer *nrhs, complex *
+/* Subroutine */ void cgelsd_(integer *m, integer *n, integer *nrhs, complex *
 	a, integer *lda, complex *b, integer *ldb, real *s, real *rcond, 
 	integer *rank, complex *work, integer *lwork, real *rwork, integer *
 	iwork, integer *info)
@@ -757,13 +757,13 @@ f"> */
     integer itau, nlvl, iascl, ibscl;
     real sfmin;
     integer minmn, maxmn, itaup, itauq, mnthr, nwork, ie, il;
-    extern /* Subroutine */ int cgebrd_(integer *, integer *, complex *, 
+    extern /* Subroutine */ void cgebrd_(integer *, integer *, complex *, 
 	    integer *, real *, real *, complex *, complex *, complex *, 
 	    integer *, integer *), slabad_(real *, real *);
     extern real clange_(char *, integer *, integer *, complex *, integer *, 
 	    real *);
     integer mm;
-    extern /* Subroutine */ int cgelqf_(integer *, integer *, complex *, 
+    extern /* Subroutine */ void cgelqf_(integer *, integer *, complex *, 
 	    integer *, complex *, complex *, integer *, integer *), clalsd_(
 	    char *, integer *, integer *, integer *, real *, real *, complex *
 	    , integer *, real *, integer *, complex *, real *, integer *, 
@@ -771,13 +771,14 @@ f"> */
 	    real *, integer *, integer *, complex *, integer *, integer *), cgeqrf_(integer *, integer *, complex *, integer *, 
 	    complex *, complex *, integer *, integer *);
     extern real slamch_(char *);
-    extern /* Subroutine */ int clacpy_(char *, integer *, integer *, complex 
+    extern /* Subroutine */ void clacpy_(char *, integer *, integer *, complex 
 	    *, integer *, complex *, integer *), claset_(char *, 
-	    integer *, integer *, complex *, complex *, complex *, integer *), xerbla_(char *, integer *, ftnlen);
+	    integer *, integer *, complex *, complex *, complex *, integer *);
+    extern int xerbla_(char *, integer *, ftnlen);
     extern integer ilaenv_(integer *, char *, char *, integer *, integer *, 
 	    integer *, integer *, ftnlen, ftnlen);
     real bignum;
-    extern /* Subroutine */ int slascl_(char *, integer *, integer *, real *, 
+    extern /* Subroutine */ void slascl_(char *, integer *, integer *, real *, 
 	    real *, integer *, integer *, real *, integer *, integer *), cunmbr_(char *, char *, char *, integer *, integer *, 
 	    integer *, complex *, integer *, complex *, complex *, integer *, 
 	    complex *, integer *, integer *), slaset_(
@@ -785,7 +786,7 @@ f"> */
 	    complex *, integer *, complex *, complex *, integer *, complex *, 
 	    integer *, integer *);
     integer ldwork;
-    extern /* Subroutine */ int cunmqr_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void cunmqr_(char *, char *, integer *, integer *, 
 	    integer *, complex *, integer *, complex *, complex *, integer *, 
 	    complex *, integer *, integer *);
     integer liwork, minwrk, maxwrk;
@@ -994,16 +995,16 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CGELSD", &i__1, (ftnlen)6);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible. */
 
     if (*m == 0 || *n == 0) {
 	*rank = 0;
-	return 0;
+	return;
     }
 
 /*     Get machine parameters. */
@@ -1299,7 +1300,7 @@ L10:
     work[1].r = (real) maxwrk, work[1].i = 0.f;
     iwork[1] = liwork;
     rwork[1] = (real) lrwork;
-    return 0;
+    return;
 
 /*     End of CGELSD */
 

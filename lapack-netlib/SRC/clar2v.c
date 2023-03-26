@@ -621,7 +621,7 @@ f"> */
 /* > \ingroup complexOTHERauxiliary */
 
 /*  ===================================================================== */
-/* Subroutine */ int clar2v_(integer *n, complex *x, complex *y, complex *z__,
+/* Subroutine */ void clar2v_(integer *n, complex *x, complex *y, complex *z__,
 	 integer *incx, real *c__, complex *s, integer *incc)
 {
     /* System generated locals */
@@ -708,7 +708,7 @@ f"> */
 	ic += *incc;
 /* L10: */
     }
-    return 0;
+    return;
 
 /*     End of CLAR2V */
 

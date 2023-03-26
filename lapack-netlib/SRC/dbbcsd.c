@@ -844,7 +844,7 @@ f"> */
 /* > \ingroup doubleOTHERcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int dbbcsd_(char *jobu1, char *jobu2, char *jobv1t, char *
+/* Subroutine */ void dbbcsd_(char *jobu1, char *jobu2, char *jobv1t, char *
 	jobv2t, char *trans, integer *m, integer *p, integer *q, doublereal *
 	theta, doublereal *phi, doublereal *u1, integer *ldu1, doublereal *u2,
 	 integer *ldu2, doublereal *v1t, integer *ldv1t, doublereal *v2t, 
@@ -864,14 +864,14 @@ f"> */
     logical colmajor;
     doublereal thetamin, thetamax;
     logical restart11, restart12, restart21, restart22;
-    extern /* Subroutine */ int dlas2_(doublereal *, doublereal *, doublereal 
+    extern /* Subroutine */ void dlas2_(doublereal *, doublereal *, doublereal 
 	    *, doublereal *, doublereal *);
     integer lworkmin, iu1cs, iu2cs, iu1sn, iu2sn, lworkopt, i__, j;
     doublereal r__;
-    extern /* Subroutine */ int dscal_(integer *, doublereal *, doublereal *, 
+    extern /* Subroutine */ void dscal_(integer *, doublereal *, doublereal *, 
 	    integer *);
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int dlasr_(char *, char *, char *, integer *, 
+    extern /* Subroutine */ void dlasr_(char *, char *, char *, integer *, 
 	    integer *, doublereal *, doublereal *, doublereal *, integer *), dswap_(integer *, doublereal *, integer *
 	    , doublereal *, integer *);
     integer maxit;
@@ -883,12 +883,12 @@ f"> */
     doublereal mu, nu, sigma11, sigma21;
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     doublereal thresh, tolmul;
-    extern /* Subroutine */ int mecago_();
+    extern /* Subroutine */ void mecago_();
     logical lquery;
     doublereal b11bulge;
     logical wantv1t, wantv2t;
     doublereal b12bulge, b21bulge, b22bulge, eps, tol;
-    extern /* Subroutine */ int dlartgp_(doublereal *, doublereal *, 
+    extern /* Subroutine */ void dlartgp_(doublereal *, doublereal *, 
 	    doublereal *, doublereal *, doublereal *), dlartgs_(doublereal *, 
 	    doublereal *, doublereal *, doublereal *, doublereal *);
 
@@ -962,7 +962,7 @@ f"> */
     if (*info == 0 && *q == 0) {
 	lworkmin = 1;
 	work[1] = (doublereal) lworkmin;
-	return 0;
+	return;
     }
 
 /*     Compute workspace */
@@ -987,9 +987,9 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DBBCSD", &i__1, (ftnlen)6);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Get machine constants */
@@ -1081,7 +1081,7 @@ f"> */
 		    ++(*info);
 		}
 	    }
-	    return 0;
+	    return;
 	}
 
 	iter = iter + imax - imin;
@@ -1792,7 +1792,7 @@ f"> */
 
     }
 
-    return 0;
+    return;
 
 /*     End of DBBCSD */
 

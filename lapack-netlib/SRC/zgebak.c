@@ -639,7 +639,7 @@ f"> */
 /* > \ingroup complex16GEcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int zgebak_(char *job, char *side, integer *n, integer *ilo, 
+/* Subroutine */ void zgebak_(char *job, char *side, integer *n, integer *ilo, 
 	integer *ihi, doublereal *scale, integer *m, doublecomplex *v, 
 	integer *ldv, integer *info)
 {
@@ -651,10 +651,11 @@ f"> */
     doublereal s;
     extern logical lsame_(char *, char *);
     logical leftv;
-    extern /* Subroutine */ int zswap_(integer *, doublecomplex *, integer *, 
+    extern /* Subroutine */ void zswap_(integer *, doublecomplex *, integer *, 
 	    doublecomplex *, integer *);
     integer ii;
-    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen), zdscal_(
+    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
+    extern void zdscal_(
 	    integer *, doublereal *, doublecomplex *, integer *);
     logical rightv;
 
@@ -700,19 +701,19 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZGEBAK", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
     if (*m == 0) {
-	return 0;
+	return;
     }
     if (lsame_(job, "N")) {
-	return 0;
+	return;
     }
 
     if (*ilo == *ihi) {
@@ -791,7 +792,7 @@ L50:
 	}
     }
 
-    return 0;
+    return;
 
 /*     End of ZGEBAK */
 

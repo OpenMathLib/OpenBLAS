@@ -756,7 +756,7 @@ rk.f"> */
 /* > \endverbatim */
 
 /*  ===================================================================== */
-/* Subroutine */ int csytf2_rk_(char *uplo, integer *n, complex *a, integer *
+/* Subroutine */ void csytf2_rk_(char *uplo, integer *n, complex *a, integer *
 	lda, complex *e, integer *ipiv, integer *info)
 {
     /* System generated locals */
@@ -767,16 +767,16 @@ rk.f"> */
     /* Local variables */
     logical done;
     integer imax, jmax;
-    extern /* Subroutine */ int csyr_(char *, integer *, complex *, complex *,
+    extern /* Subroutine */ void csyr_(char *, integer *, complex *, complex *,
 	     integer *, complex *, integer *);
     integer i__, j, k, p;
     complex t;
     real alpha;
-    extern /* Subroutine */ int cscal_(integer *, complex *, complex *, 
+    extern /* Subroutine */ void cscal_(integer *, complex *, complex *, 
 	    integer *);
     extern logical lsame_(char *, char *);
     real sfmin;
-    extern /* Subroutine */ int cswap_(integer *, complex *, integer *, 
+    extern /* Subroutine */ void cswap_(integer *, complex *, integer *, 
 	    complex *, integer *);
     integer itemp, kstep;
     real stemp;
@@ -823,7 +823,7 @@ rk.f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CSYTF2_RK", &i__1, (ftnlen)9);
-	return 0;
+	return;
     }
 
 /*     Initialize ALPHA for use in choosing pivot block size. */
@@ -1681,7 +1681,7 @@ L64:
 	;
     }
 
-    return 0;
+    return;
 
 /*     End of CSYTF2_RK */
 

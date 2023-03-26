@@ -697,7 +697,7 @@ static integer c__0 = 0;
 /* > \ingroup complexGEsolve */
 
 /*  ===================================================================== */
-/* Subroutine */ int cgels_(char *trans, integer *m, integer *n, integer *
+/* Subroutine */ void cgels_(char *trans, integer *m, integer *n, integer *
 	nrhs, complex *a, integer *lda, complex *b, integer *ldb, complex *
 	work, integer *lwork, integer *info)
 {
@@ -714,24 +714,25 @@ static integer c__0 = 0;
     integer wsize;
     real rwork[1];
     integer nb;
-    extern /* Subroutine */ int slabad_(real *, real *);
+    extern /* Subroutine */ void slabad_(real *, real *);
     extern real clange_(char *, integer *, integer *, complex *, integer *, 
 	    real *);
     integer mn;
-    extern /* Subroutine */ int cgelqf_(integer *, integer *, complex *, 
+    extern /* Subroutine */ void cgelqf_(integer *, integer *, complex *, 
 	    integer *, complex *, complex *, integer *, integer *), clascl_(
 	    char *, integer *, integer *, real *, real *, integer *, integer *
 	    , complex *, integer *, integer *);
     extern real slamch_(char *);
-    extern /* Subroutine */ int cgeqrf_(integer *, integer *, complex *, 
+    extern /* Subroutine */ void cgeqrf_(integer *, integer *, complex *, 
 	    integer *, complex *, complex *, integer *, integer *), claset_(
 	    char *, integer *, integer *, complex *, complex *, complex *, 
-	    integer *), xerbla_(char *, integer *, ftnlen);
+	    integer *);
+    extern int xerbla_(char *, integer *, ftnlen);
     extern integer ilaenv_(integer *, char *, char *, integer *, integer *, 
 	    integer *, integer *, ftnlen, ftnlen);
     integer scllen;
     real bignum;
-    extern /* Subroutine */ int cunmlq_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void cunmlq_(char *, char *, integer *, integer *, 
 	    integer *, complex *, integer *, complex *, complex *, integer *, 
 	    complex *, integer *, integer *), cunmqr_(char *, 
 	    char *, integer *, integer *, integer *, complex *, integer *, 
@@ -840,9 +841,9 @@ static integer c__0 = 0;
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CGELS ", &i__1, (ftnlen)6);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
@@ -852,7 +853,7 @@ static integer c__0 = 0;
     if (f2cmin(i__1,*nrhs) == 0) {
 	i__1 = f2cmax(*m,*n);
 	claset_("Full", &i__1, nrhs, &c_b1, &c_b1, &b[b_offset], ldb);
-	return 0;
+	return;
     }
 
 /*     Get machine parameters */
@@ -939,7 +940,7 @@ static integer c__0 = 0;
 		    , lda, &b[b_offset], ldb, info);
 
 	    if (*info > 0) {
-		return 0;
+		return;
 	    }
 
 	    scllen = *n;
@@ -954,7 +955,7 @@ static integer c__0 = 0;
 		    a_offset], lda, &b[b_offset], ldb, info);
 
 	    if (*info > 0) {
-		return 0;
+		return;
 	    }
 
 /*           B(N+1:M,1:NRHS) = ZERO */
@@ -1002,7 +1003,7 @@ static integer c__0 = 0;
 		    , lda, &b[b_offset], ldb, info);
 
 	    if (*info > 0) {
-		return 0;
+		return;
 	    }
 
 /*           B(M+1:N,1:NRHS) = 0 */
@@ -1047,7 +1048,7 @@ static integer c__0 = 0;
 		    a_offset], lda, &b[b_offset], ldb, info);
 
 	    if (*info > 0) {
-		return 0;
+		return;
 	    }
 
 	    scllen = *m;
@@ -1077,7 +1078,7 @@ L50:
     r__1 = (real) wsize;
     work[1].r = r__1, work[1].i = 0.f;
 
-    return 0;
+    return;
 
 /*     End of CGELS */
 

@@ -932,7 +932,7 @@ static logical c_false = FALSE_;
 /* > \ingroup complex16GEsing */
 
 /*  ===================================================================== */
-/* Subroutine */ int zgesvdq_(char *joba, char *jobp, char *jobr, char *jobu, 
+/* Subroutine */ void zgesvdq_(char *joba, char *jobp, char *jobr, char *jobu, 
 	char *jobv, integer *m, integer *n, doublecomplex *a, integer *lda, 
 	doublereal *s, doublecomplex *u, integer *ldu, doublecomplex *v, 
 	integer *ldv, integer *numrank, integer *iwork, integer *liwork, 
@@ -967,30 +967,31 @@ static logical c_false = FALSE_;
     logical dntwu, dntwv, wntuf, wntva;
     integer lwunq;
     logical wntur, wntus, wntvr;
-    extern /* Subroutine */ int zgeqp3_(integer *, integer *, doublecomplex *,
+    extern /* Subroutine */ void zgeqp3_(integer *, integer *, doublecomplex *,
 	     integer *, integer *, doublecomplex *, doublecomplex *, integer *
 	    , doublereal *, integer *);
     extern doublereal dznrm2_(integer *, doublecomplex *, integer *);
     integer lwsvd2, lwunq2;
     extern doublereal dlamch_(char *);
     integer nr;
-    extern /* Subroutine */ int dlascl_(char *, integer *, integer *, 
+    extern /* Subroutine */ void dlascl_(char *, integer *, integer *, 
 	    doublereal *, doublereal *, integer *, integer *, doublereal *, 
 	    integer *, integer *);
     extern integer idamax_(integer *, doublereal *, integer *);
     doublereal sconda;
-    extern /* Subroutine */ int dlaset_(char *, integer *, integer *, 
-	    doublereal *, doublereal *, doublereal *, integer *), 
-	    xerbla_(char *, integer *, ftnlen), zdscal_(integer *, doublereal 
+    extern /* Subroutine */ void dlaset_(char *, integer *, integer *, 
+	    doublereal *, doublereal *, doublereal *, integer *); 
+    extern int xerbla_(char *, integer *, ftnlen);
+    extern void zdscal_(integer *, doublereal 
 	    *, doublecomplex *, integer *);
     extern doublereal zlange_(char *, integer *, integer *, doublecomplex *, 
 	    integer *, doublereal *);
-    extern /* Subroutine */ int zgelqf_(integer *, integer *, doublecomplex *,
+    extern /* Subroutine */ void zgelqf_(integer *, integer *, doublecomplex *,
 	     integer *, doublecomplex *, doublecomplex *, integer *, integer *
 	    ), zlascl_(char *, integer *, integer *, doublereal *, doublereal 
 	    *, integer *, integer *, doublecomplex *, integer *, integer *);
     doublecomplex cdummy[1];
-    extern /* Subroutine */ int zgeqrf_(integer *, integer *, doublecomplex *,
+    extern /* Subroutine */ void zgeqrf_(integer *, integer *, doublecomplex *,
 	     integer *, doublecomplex *, doublecomplex *, integer *, integer *
 	    ), zgesvd_(char *, char *, integer *, integer *, doublecomplex *, 
 	    integer *, doublereal *, doublecomplex *, integer *, 
@@ -1001,7 +1002,7 @@ static logical c_false = FALSE_;
 	    doublecomplex *, doublecomplex *, doublecomplex *, integer *);
     integer minwrk;
     logical rtrans;
-    extern /* Subroutine */ int zlapmt_(logical *, integer *, integer *, 
+    extern /* Subroutine */ void zlapmt_(logical *, integer *, integer *, 
 	    doublecomplex *, integer *, integer *), zpocon_(char *, integer *,
 	     doublecomplex *, integer *, doublereal *, doublereal *, 
 	    doublecomplex *, doublereal *, integer *);
@@ -1012,7 +1013,7 @@ static logical c_false = FALSE_;
 	     integer *, integer *, integer *, integer *);
     integer optwrk;
     logical rowprm;
-    extern /* Subroutine */ int zunmlq_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void zunmlq_(char *, char *, integer *, integer *, 
 	    integer *, doublecomplex *, integer *, doublecomplex *, 
 	    doublecomplex *, integer *, doublecomplex *, integer *, integer *), zunmqr_(char *, char *, integer *, integer *, 
 	    integer *, doublecomplex *, integer *, doublecomplex *, 
@@ -1386,7 +1387,7 @@ static logical c_false = FALSE_;
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZGESVDQ", &i__1, (ftnlen)7);
-	return 0;
+	return;
     } else if (lquery) {
 
 /*     Return optimal workspace */
@@ -1395,13 +1396,13 @@ static logical c_false = FALSE_;
 	cwork[1].r = (doublereal) optwrk, cwork[1].i = 0.;
 	cwork[2].r = (doublereal) minwrk, cwork[2].i = 0.;
 	rwork[1] = (doublereal) rminwrk;
-	return 0;
+	return;
     }
 
 /*     Quick return if the matrix is void. */
 
     if (*m == 0 || *n == 0) {
-	return 0;
+	return;
     }
 
     big = dlamch_("O");
@@ -1418,7 +1419,7 @@ static logical c_false = FALSE_;
 		*info = -8;
 		i__2 = -(*info);
 		xerbla_("ZGESVDQ", &i__2, (ftnlen)7);
-		return 0;
+		return;
 	    }
 /* L1904: */
 	}
@@ -1472,7 +1473,7 @@ static logical c_false = FALSE_;
 		rwork[1] = -1.;
 	    }
 	    rwork[2] = -1.;
-	    return 0;
+	    return;
 	}
 
 	if (rwork[1] > big / sqrt((doublereal) (*m))) {
@@ -1496,7 +1497,7 @@ static logical c_false = FALSE_;
 	    *info = -8;
 	    i__1 = -(*info);
 	    xerbla_("ZGESVDQ", &i__1, (ftnlen)7);
-	    return 0;
+	    return;
 	}
 	if (rtmp > big / sqrt((doublereal) (*m))) {
 /*             matrix by 1/sqrt(M) if too large entry detected */
@@ -2323,7 +2324,7 @@ L4002:
 /*     full row rank triangular (trapezoidal) factor of A. */
     *numrank = nr;
 
-    return 0;
+    return;
 
 /*     End of ZGESVDQ */
 

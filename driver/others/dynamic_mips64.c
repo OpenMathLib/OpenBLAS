@@ -38,22 +38,48 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <sys/resource.h>
 #include "common.h"
 
+#if (defined OS_LINUX || defined OS_ANDROID)
+#include <asm/hwcap.h>
+#include <sys/auxv.h>
+
+#ifndef HWCAP_LOONGSON_CPUCFG
+#define HWCAP_LOONGSON_CPUCFG (1 << 14)
+#endif
+#endif
+
+#ifdef DYNAMIC_LIST
+extern gotoblas_t  gotoblas_MIPS64_GENERIC;
+#ifdef DYN_LOONGSON3R3
+extern gotoblas_t  gotoblas_LOONGSON3R3;
+#else
+#define  gotoblas_LOONGSON3R3 gotoblas_MIPS64_GENERIC
+#endif
+#ifdef DYN_LOONGSON3R4
+extern gotoblas_t  gotoblas_LOONGSON3R4;
+#else
+#define  gotoblas_LOONGSON3R4 gotoblas_MIPS64_GENERIC
+#endif
+#else
 extern gotoblas_t  gotoblas_LOONGSON3R3;
 extern gotoblas_t  gotoblas_LOONGSON3R4;
+extern gotoblas_t  gotoblas_MIPS64_GENERIC;
+#endif
 
 extern void openblas_warning(int verbose, const char * msg);
 
-#define NUM_CORETYPES    2
+#define NUM_CORETYPES    3
 
 static char *corename[] = {
+  "MIPS64_GENERIC"
   "loongson3r3",
   "loongson3r4",
   "UNKNOWN"
 };
 
 char *gotoblas_corename(void) {
-  if (gotoblas == &gotoblas_LOONGSON3R3)    return corename[0];
-  if (gotoblas == &gotoblas_LOONGSON3R4)    return corename[1];
+  if (gotoblas == &gotoblas_MIPS64_GENERIC) return corename[0];
+  if (gotoblas == &gotoblas_LOONGSON3R3)    return corename[1];
+  if (gotoblas == &gotoblas_LOONGSON3R4)    return corename[2];
   return corename[NUM_CORETYPES];
 }
 
@@ -73,77 +99,32 @@ static gotoblas_t *force_coretype(char *coretype) {
 
   switch (found)
   {
-    case  0: return (&gotoblas_LOONGSON3R3);
-    case  1: return (&gotoblas_LOONGSON3R4);
+    case  0: return (&gotoblas_MIPS64_GENERIC);
+    case  1: return (&gotoblas_LOONGSON3R3);
+    case  2: return (&gotoblas_LOONGSON3R4);
   }
   snprintf(message, 128, "Core not found: %s\n", coretype);
   openblas_warning(1, message);
   return NULL;
 }
 
+#if (defined OS_LINUX || defined OS_ANDROID)
 #define MMI_MASK    0x00000010
 #define MSA_MASK    0x00000020
-
-int fd[2];
-int support_cpucfg;
-
-static void handler(int signum)
-{
-    close(fd[1]);
-    exit(1);
-}
-
-/* Brief :  Function to check if cpucfg supported on loongson
- * Return:  1   supported
- *          0   not supported
- */
-static int cpucfg_test(void) {
-    pid_t pid;
-    int status = 0;
-
-    support_cpucfg = 0;
-    pipe(fd);
-    pid = fork();
-    if (pid == 0) { /* Subprocess */
-        struct sigaction act;
-        close(fd[0]);
-        /* Set signal action for SIGILL. */
-        act.sa_handler = handler;
-        sigaction(SIGILL,&act,NULL);
-
-        /* Execute cpucfg in subprocess. */
-        __asm__ volatile(
-            ".insn              \n\t"
-            ".word (0xc8080118) \n\t"
-            :::
-        );
-        support_cpucfg = 1;
-        write(fd[1],&support_cpucfg,sizeof(support_cpucfg));
-        close(fd[1]);
-        exit(0);
-    } else if (pid > 0){ /* Parent process*/
-        close(fd[1]);
-        if ((waitpid(pid,&status,0) <= 0) ||
-            (read(fd[0],&support_cpucfg,sizeof(support_cpucfg)) <= 0))
-            support_cpucfg = 0;
-        close(fd[0]);
-    } else {
-        support_cpucfg = 0;
-    }
-
-    return support_cpucfg;
-}
 
 static gotoblas_t *get_coretype_from_cpucfg(void) {
     int flag = 0;
     __asm__ volatile(
+        ".set push                 \n\t"
+        ".set noat                 \n\t"
         ".insn                     \n\t"
-        "dli    $8,    0x01        \n\t"
-        ".word (0xc9084918)        \n\t"
-        "usw    $9,    0x00(%0)    \n\t"
+        "dli    $1,    0x01        \n\t"
+        ".word (0xc8080118)        \n\t"
+        "move   %0,    $1          \n\t"
+        ".set pop                  \n\t"
+        : "=r"(flag)
         :
-        : "r"(&flag)
-        : "memory"
+        :
     );
     if (flag & MSA_MASK)
         return (&gotoblas_LOONGSON3R4);
@@ -153,7 +134,7 @@ static gotoblas_t *get_coretype_from_cpucfg(void) {
 }
 
 static gotoblas_t *get_coretype_from_cpuinfo(void) {
-#ifdef linux
+#ifdef __linux
   FILE *infile;
   char buffer[512], *p;
 
@@ -176,17 +157,19 @@ static gotoblas_t *get_coretype_from_cpuinfo(void) {
      return NULL;
   }
 #endif
-    return NULL;
+  return NULL;
 }
+#endif
 
 static gotoblas_t *get_coretype(void) {
-    int ret = 0;
-
-    ret = cpucfg_test();
-    if (ret == 1)
-        return get_coretype_from_cpucfg();
-    else
-        return get_coretype_from_cpuinfo();
+#if (!defined OS_LINUX && !defined OS_ANDROID)
+  return NULL;
+#else
+  if (!(getauxval(AT_HWCAP) & HWCAP_LOONGSON_CPUCFG))
+    return get_coretype_from_cpucfg();
+  else
+    return get_coretype_from_cpuinfo();
+#endif
 }
 
 void gotoblas_dynamic_init(void) {
@@ -208,9 +191,9 @@ void gotoblas_dynamic_init(void) {
 
   if (gotoblas == NULL)
   {
-    snprintf(coremsg, 128, "Falling back to loongson3r3 core\n");
+    snprintf(coremsg, 128, "Falling back to MIPS64_GENEIRC\n");
     openblas_warning(1, coremsg);
-    gotoblas = &gotoblas_LOONGSON3R3;
+    gotoblas = &gotoblas_MIPS64_GENERIC;
   }
 
   if (gotoblas && gotoblas->init) {

@@ -630,7 +630,7 @@ atrices</b> */
 /* > \ingroup realOTHEReigen */
 
 /*  ===================================================================== */
-/* Subroutine */ int sstev_(char *jobz, integer *n, real *d__, real *e, real *
+/* Subroutine */ void sstev_(char *jobz, integer *n, real *d__, real *e, real *
 	z__, integer *ldz, real *work, integer *info)
 {
     /* System generated locals */
@@ -641,7 +641,7 @@ atrices</b> */
     integer imax;
     real rmin, rmax, tnrm, sigma;
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int sscal_(integer *, real *, real *, integer *);
+    extern /* Subroutine */ void sscal_(integer *, real *, real *, integer *);
     logical wantz;
     integer iscale;
     extern real slamch_(char *);
@@ -649,9 +649,9 @@ atrices</b> */
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     real bignum;
     extern real slanst_(char *, integer *, real *, real *);
-    extern /* Subroutine */ int ssterf_(integer *, real *, real *, integer *);
+    extern /* Subroutine */ void ssterf_(integer *, real *, real *, integer *);
     real smlnum;
-    extern /* Subroutine */ int ssteqr_(char *, integer *, real *, real *, 
+    extern /* Subroutine */ void ssteqr_(char *, integer *, real *, real *, 
 	    real *, integer *, real *, integer *);
     real eps;
 
@@ -690,20 +690,20 @@ atrices</b> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("SSTEV ", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
     if (*n == 1) {
 	if (wantz) {
 	    z__[z_dim1 + 1] = 1.f;
 	}
-	return 0;
+	return;
     }
 
 /*     Get machine constants. */
@@ -753,7 +753,7 @@ atrices</b> */
 	sscal_(&imax, &r__1, &d__[1], &c__1);
     }
 
-    return 0;
+    return;
 
 /*     End of SSTEV */
 

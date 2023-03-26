@@ -775,7 +775,7 @@ f"> */
 /* > at Berkeley, USA */
 
 /*  ===================================================================== */
-/* Subroutine */ int dlaed7_(integer *icompq, integer *n, integer *qsiz, 
+/* Subroutine */ void dlaed7_(integer *icompq, integer *n, integer *qsiz, 
 	integer *tlvls, integer *curlvl, integer *curpbm, doublereal *d__, 
 	doublereal *q, integer *ldq, integer *indxq, doublereal *rho, integer 
 	*cutpnt, doublereal *qstore, integer *qptr, integer *prmptr, integer *
@@ -787,11 +787,11 @@ f"> */
 
     /* Local variables */
     integer indx, curr, i__, k;
-    extern /* Subroutine */ int dgemm_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void dgemm_(char *, char *, integer *, integer *, 
 	    integer *, doublereal *, doublereal *, integer *, doublereal *, 
 	    integer *, doublereal *, doublereal *, integer *);
     integer indxc, indxp, n1, n2;
-    extern /* Subroutine */ int dlaed8_(integer *, integer *, integer *, 
+    extern /* Subroutine */ void dlaed8_(integer *, integer *, integer *, 
 	    integer *, doublereal *, doublereal *, integer *, integer *, 
 	    doublereal *, integer *, doublereal *, doublereal *, doublereal *,
 	     integer *, doublereal *, integer *, integer *, integer *, 
@@ -803,8 +803,9 @@ f"> */
 	    *, doublereal *, integer *, doublereal *, doublereal *, integer *)
 	    ;
     integer idlmda, is, iw, iz;
-    extern /* Subroutine */ int dlamrg_(integer *, integer *, doublereal *, 
-	    integer *, integer *, integer *), xerbla_(char *, integer *, ftnlen);
+    extern /* Subroutine */ void dlamrg_(integer *, integer *, doublereal *, 
+	    integer *, integer *, integer *);
+    extern int xerbla_(char *, integer *, ftnlen);
     integer coltyp, iq2, ptr, ldq2;
 
 
@@ -852,13 +853,13 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DLAED7", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /*     The following values are for bookkeeping purposes only.  They are */
@@ -885,11 +886,11 @@ f"> */
 /*     Form the z-vector which consists of the last row of Q_1 and the */
 /*     first row of Q_2. */
 
-    ptr = pow_ii(&c__2, tlvls) + 1;
+    ptr = pow_ii(c__2, *tlvls) + 1;
     i__1 = *curlvl - 1;
     for (i__ = 1; i__ <= i__1; ++i__) {
 	i__2 = *tlvls - i__;
-	ptr += pow_ii(&c__2, &i__2);
+	ptr += pow_ii(c__2, i__2);
 /* L10: */
     }
     curr = ptr + *curpbm;
@@ -948,7 +949,7 @@ f"> */
     }
 
 L30:
-    return 0;
+    return;
 
 /*     End of DLAED7 */
 

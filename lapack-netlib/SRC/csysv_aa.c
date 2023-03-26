@@ -674,7 +674,7 @@ a.f"> */
 /* > \ingroup complexSYsolve */
 
 /*  ===================================================================== */
-/* Subroutine */ int csysv_aa_(char *uplo, integer *n, integer *nrhs, 
+/* Subroutine */ void csysv_aa_(char *uplo, integer *n, integer *nrhs, 
 	complex *a, integer *lda, integer *ipiv, complex *b, integer *ldb, 
 	complex *work, integer *lwork, integer *info)
 {
@@ -684,10 +684,11 @@ a.f"> */
     /* Local variables */
     extern logical lsame_(char *, char *);
     integer lwkopt_sytrf__, lwkopt_sytrs__;
-    extern /* Subroutine */ int csytrf_aa_(char *, integer *, complex *, 
+    extern /* Subroutine */ void csytrf_aa_(char *, integer *, complex *, 
 	    integer *, integer *, complex *, integer *, integer *), 
 	    csytrs_aa_(char *, integer *, integer *, complex *, integer *, 
-	    integer *, complex *, integer *, complex *, integer *, integer *), xerbla_(char *, integer *, ftnlen);
+	    integer *, complex *, integer *, complex *, integer *, integer *);
+    extern int xerbla_(char *, integer *, ftnlen);
     integer lwkopt;
     logical lquery;
 
@@ -748,9 +749,9 @@ a.f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CSYSV_AA ", &i__1, (ftnlen)9);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Compute the factorization A = U**T*T*U or A = L*T*L**T. */
@@ -767,7 +768,7 @@ a.f"> */
 
     work[1].r = (real) lwkopt, work[1].i = 0.f;
 
-    return 0;
+    return;
 
 /*     End of CSYSV_AA */
 

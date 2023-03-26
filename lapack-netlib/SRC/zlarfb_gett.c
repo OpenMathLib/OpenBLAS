@@ -903,7 +903,7 @@ gett.f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int zlarfb_gett_(char *ident, integer *m, integer *n, 
+/* Subroutine */ void zlarfb_gett_(char *ident, integer *m, integer *n, 
 	integer *k, doublecomplex *t, integer *ldt, doublecomplex *a, integer 
 	*lda, doublecomplex *b, integer *ldb, doublecomplex *work, integer *
 	ldwork)
@@ -916,7 +916,7 @@ gett.f"> */
     /* Local variables */
     integer i__, j;
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int zgemm_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void zgemm_(char *, char *, integer *, integer *, 
 	    integer *, doublecomplex *, doublecomplex *, integer *, 
 	    doublecomplex *, integer *, doublecomplex *, doublecomplex *, 
 	    integer *), zcopy_(integer *, doublecomplex *, 
@@ -952,7 +952,7 @@ gett.f"> */
 
     /* Function Body */
     if (*m < 0 || *n <= 0 || *k == 0 || *k > *n) {
-	return 0;
+	return;
     }
 
     lnotident = ! lsame_(ident, "I");
@@ -1149,7 +1149,7 @@ gett.f"> */
 	}
     }
 
-    return 0;
+    return;
 
 /*     End of ZLARFB_GETT */
 

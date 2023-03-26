@@ -843,7 +843,7 @@ f"> */
 /* > \ingroup complexGEeigen */
 
 /*  ===================================================================== */
-/* Subroutine */ int cggesx_(char *jobvsl, char *jobvsr, char *sort, L_fp 
+/* Subroutine */ void cggesx_(char *jobvsl, char *jobvsr, char *sort, L_fp 
 	selctg, char *sense, integer *n, complex *a, integer *lda, complex *b,
 	 integer *ldb, integer *sdim, complex *alpha, complex *beta, complex *
 	vsl, integer *ldvsl, complex *vsr, integer *ldvsr, real *rconde, real 
@@ -862,7 +862,7 @@ f"> */
     integer ileft, icols;
     logical cursl, ilvsl, ilvsr;
     integer irwrk, irows;
-    extern /* Subroutine */ int cggbak_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void cggbak_(char *, char *, integer *, integer *, 
 	    integer *, real *, real *, integer *, complex *, integer *, 
 	    integer *), cggbal_(char *, integer *, complex *, 
 	    integer *, complex *, integer *, integer *, integer *, real *, 
@@ -870,24 +870,24 @@ f"> */
     extern real clange_(char *, integer *, integer *, complex *, integer *, 
 	    real *);
     real pl;
-    extern /* Subroutine */ int cgghrd_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void cgghrd_(char *, char *, integer *, integer *, 
 	    integer *, complex *, integer *, complex *, integer *, complex *, 
 	    integer *, complex *, integer *, integer *), 
 	    clascl_(char *, integer *, integer *, real *, real *, integer *, 
 	    integer *, complex *, integer *, integer *);
     real pr;
     logical ilascl, ilbscl;
-    extern /* Subroutine */ int cgeqrf_(integer *, integer *, complex *, 
+    extern /* Subroutine */ void cgeqrf_(integer *, integer *, complex *, 
 	    integer *, complex *, complex *, integer *, integer *), clacpy_(
 	    char *, integer *, integer *, complex *, integer *, complex *, 
 	    integer *), claset_(char *, integer *, integer *, complex 
-	    *, complex *, complex *, integer *), xerbla_(char *, 
-	    integer *, ftnlen);
+	    *, complex *, complex *, integer *);
+    extern int xerbla_(char *, integer *, ftnlen);
     extern integer ilaenv_(integer *, char *, char *, integer *, integer *, 
 	    integer *, integer *, ftnlen, ftnlen);
     extern real slamch_(char *);
     real bignum;
-    extern /* Subroutine */ int chgeqz_(char *, char *, char *, integer *, 
+    extern /* Subroutine */ void chgeqz_(char *, char *, char *, integer *, 
 	    integer *, integer *, complex *, integer *, complex *, integer *, 
 	    complex *, complex *, complex *, integer *, complex *, integer *, 
 	    complex *, integer *, real *, integer *), 
@@ -901,12 +901,12 @@ f"> */
     integer liwmin;
     logical wantse, lastsl;
     real anrmto, bnrmto;
-    extern /* Subroutine */ int cungqr_(integer *, integer *, integer *, 
+    extern /* Subroutine */ void cungqr_(integer *, integer *, integer *, 
 	    complex *, integer *, complex *, complex *, integer *, integer *);
     integer minwrk, maxwrk;
     logical wantsn;
     real smlnum;
-    extern /* Subroutine */ int cunmqr_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void cunmqr_(char *, char *, integer *, integer *, 
 	    integer *, complex *, integer *, complex *, complex *, integer *, 
 	    complex *, integer *, integer *);
     logical wantst, lquery, wantsv;
@@ -1062,16 +1062,16 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CGGESX", &i__1, (ftnlen)6);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
 	*sdim = 0;
-	return 0;
+	return;
     }
 
 /*     Get machine constants */
@@ -1309,7 +1309,7 @@ L40:
     work[1].r = (real) maxwrk, work[1].i = 0.f;
     iwork[1] = liwmin;
 
-    return 0;
+    return;
 
 /*     End of CGGESX */
 

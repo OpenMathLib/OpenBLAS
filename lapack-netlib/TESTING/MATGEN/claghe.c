@@ -615,7 +615,7 @@ static integer c__1 = 1;
 /* > \ingroup complex_matgen */
 
 /*  ===================================================================== */
-/* Subroutine */ int claghe_(integer *n, integer *k, real *d__, complex *a, 
+/* Subroutine */ void claghe_(integer *n, integer *k, real *d__, complex *a, 
 	integer *lda, integer *iseed, complex *work, integer *info)
 {
     /* System generated locals */
@@ -624,17 +624,17 @@ static integer c__1 = 1;
     complex q__1, q__2, q__3, q__4;
 
     /* Local variables */
-    extern /* Subroutine */ int cher2_(char *, integer *, complex *, complex *
+    extern /* Subroutine */ void cher2_(char *, integer *, complex *, complex *
 	    , integer *, complex *, integer *, complex *, integer *);
     integer i__, j;
-    extern /* Subroutine */ int cgerc_(integer *, integer *, complex *, 
+    extern /* Subroutine */ void cgerc_(integer *, integer *, complex *, 
 	    complex *, integer *, complex *, integer *, complex *, integer *);
     complex alpha;
-    extern /* Subroutine */ int cscal_(integer *, complex *, complex *, 
+    extern /* Subroutine */ void cscal_(integer *, complex *, complex *, 
 	    integer *);
     extern /* Complex */ VOID cdotc_(complex *, integer *, complex *, integer 
 	    *, complex *, integer *);
-    extern /* Subroutine */ int cgemv_(char *, integer *, integer *, complex *
+    extern /* Subroutine */ void cgemv_(char *, integer *, integer *, complex *
 	    , complex *, integer *, complex *, integer *, complex *, complex *
 	    , integer *), chemv_(char *, integer *, complex *, 
 	    complex *, integer *, complex *, integer *, complex *, complex *, 
@@ -643,7 +643,8 @@ static integer c__1 = 1;
     extern real scnrm2_(integer *, complex *, integer *);
     complex wa, wb;
     real wn;
-    extern /* Subroutine */ int xerbla_(char *, integer *), clarnv_(
+    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
+    extern void clarnv_(
 	    integer *, integer *, integer *, complex *);
     complex tau;
 
@@ -678,8 +679,8 @@ static integer c__1 = 1;
     }
     if (*info < 0) {
 	i__1 = -(*info);
-	xerbla_("CLAGHE", &i__1);
-	return 0;
+	xerbla_("CLAGHE", &i__1, 6);
+	return;
     }
 
 /*     initialize lower triangle of A to diagonal matrix */
@@ -857,7 +858,7 @@ static integer c__1 = 1;
 	}
 /* L80: */
     }
-    return 0;
+    return;
 
 /*     End of CLAGHE */
 

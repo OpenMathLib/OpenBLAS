@@ -17,6 +17,10 @@ on:
 # it only makes sense to test if this file has been changed
 
 name: Nightly-Homebrew-Build
+
+permissions:
+  contents: read # to fetch code (actions/checkout)
+
 jobs:
   build-OpenBLAS-with-Homebrew:
     runs-on: macos-latest
@@ -28,6 +32,8 @@ jobs:
       HOMEBREW_NO_AUTO_UPDATE: "ON"
       HOMEBREW_NO_BOTTLE_SOURCE_FALLBACK: "ON"
       HOMEBREW_NO_INSTALL_CLEANUP: "ON"
+      HOMEBREW_NO_INSTALLED_DEPENDENTS_CHECK: "ON"
+      HOMEBREW_NO_INSTALL_FROM_API: "ON"      
 
     steps:
       - name: Random delay for cron job

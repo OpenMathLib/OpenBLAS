@@ -888,7 +888,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int zggevx_(char *balanc, char *jobvl, char *jobvr, char *
+/* Subroutine */ void zggevx_(char *balanc, char *jobvl, char *jobvr, char *
 	sense, integer *n, doublecomplex *a, integer *lda, doublecomplex *b, 
 	integer *ldb, doublecomplex *alpha, doublecomplex *beta, 
 	doublecomplex *vl, integer *ldvl, doublecomplex *vr, integer *ldvr, 
@@ -913,11 +913,11 @@ f"> */
     integer icols;
     logical noscl;
     integer irows;
-    extern /* Subroutine */ int dlabad_(doublereal *, doublereal *);
+    extern /* Subroutine */ void dlabad_(doublereal *, doublereal *);
     integer jc, in;
     extern doublereal dlamch_(char *);
     integer jr;
-    extern /* Subroutine */ int dlascl_(char *, integer *, integer *, 
+    extern /* Subroutine */ void dlascl_(char *, integer *, integer *, 
 	    doublereal *, doublereal *, integer *, integer *, doublereal *, 
 	    integer *, integer *), zggbak_(char *, char *, integer *, 
 	    integer *, integer *, doublereal *, doublereal *, integer *, 
@@ -935,7 +935,7 @@ f"> */
     extern doublereal zlange_(char *, integer *, integer *, doublecomplex *, 
 	    integer *, doublereal *);
     integer ijobvl;
-    extern /* Subroutine */ int zgghrd_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void zgghrd_(char *, char *, integer *, integer *, 
 	    integer *, doublecomplex *, integer *, doublecomplex *, integer *,
 	     doublecomplex *, integer *, doublecomplex *, integer *, integer *
 	    ), zlascl_(char *, integer *, integer *, 
@@ -943,13 +943,13 @@ f"> */
 	     integer *, integer *);
     integer ijobvr;
     logical wantsb;
-    extern /* Subroutine */ int zgeqrf_(integer *, integer *, doublecomplex *,
+    extern /* Subroutine */ void zgeqrf_(integer *, integer *, doublecomplex *,
 	     integer *, doublecomplex *, doublecomplex *, integer *, integer *
 	    );
     doublereal anrmto;
     logical wantse;
     doublereal bnrmto;
-    extern /* Subroutine */ int zlacpy_(char *, integer *, integer *, 
+    extern /* Subroutine */ void zlacpy_(char *, integer *, integer *, 
 	    doublecomplex *, integer *, doublecomplex *, integer *), 
 	    zlaset_(char *, integer *, integer *, doublecomplex *, 
 	    doublecomplex *, doublecomplex *, integer *), ztgevc_(
@@ -962,7 +962,7 @@ f"> */
 	    *, doublereal *, doublereal *, integer *, integer *, 
 	    doublecomplex *, integer *, integer *, integer *);
     integer minwrk;
-    extern /* Subroutine */ int zhgeqz_(char *, char *, char *, integer *, 
+    extern /* Subroutine */ void zhgeqz_(char *, char *, char *, integer *, 
 	    integer *, integer *, doublecomplex *, integer *, doublecomplex *,
 	     integer *, doublecomplex *, doublecomplex *, doublecomplex *, 
 	    integer *, doublecomplex *, integer *, doublecomplex *, integer *,
@@ -971,7 +971,7 @@ f"> */
     logical wantsn;
     doublereal smlnum;
     logical lquery, wantsv;
-    extern /* Subroutine */ int zungqr_(integer *, integer *, integer *, 
+    extern /* Subroutine */ void zungqr_(integer *, integer *, integer *, 
 	    doublecomplex *, integer *, doublecomplex *, doublecomplex *, 
 	    integer *, integer *), zunmqr_(char *, char *, integer *, integer 
 	    *, integer *, doublecomplex *, integer *, doublecomplex *, 
@@ -1115,15 +1115,15 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZGGEVX", &i__1, (ftnlen)6);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /*     Get machine constants */
@@ -1431,7 +1431,7 @@ L90:
     }
 
     work[1].r = (doublereal) maxwrk, work[1].i = 0.;
-    return 0;
+    return;
 
 /*     End of ZGGEVX */
 

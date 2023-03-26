@@ -653,7 +653,7 @@ aa_2stage.f"> */
 /* > \ingroup realSYcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int ssytrs_aa_2stage_(char *uplo, integer *n, integer *nrhs,
+/* Subroutine */ void ssytrs_aa_2stage_(char *uplo, integer *n, integer *nrhs,
 	 real *a, integer *lda, real *tb, integer *ltb, integer *ipiv, 
 	integer *ipiv2, real *b, integer *ldb, integer *info)
 {
@@ -664,14 +664,15 @@ aa_2stage.f"> */
     integer ldtb;
     extern logical lsame_(char *, char *);
     logical upper;
-    extern /* Subroutine */ int strsm_(char *, char *, char *, char *, 
+    extern /* Subroutine */ void strsm_(char *, char *, char *, char *, 
 	    integer *, integer *, real *, real *, integer *, real *, integer *
 	    );
     integer nb;
-    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen), sgbtrs_(
+    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
+    extern void sgbtrs_(
 	    char *, integer *, integer *, integer *, integer *, real *, 
-	    integer *, integer *, real *, integer *, integer *), 
-	    slaswp_(integer *, real *, integer *, integer *, integer *, 
+	    integer *, integer *, real *, integer *, integer *); 
+    extern int slaswp_(integer *, real *, integer *, integer *, integer *, 
 	    integer *, integer *);
 
 
@@ -715,13 +716,13 @@ aa_2stage.f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("SSYTRS_AA_2STAGE", &i__1, (ftnlen)16);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0 || *nrhs == 0) {
-	return 0;
+	return;
     }
 
 /*     Read NB and compute LDTB */
@@ -806,7 +807,7 @@ aa_2stage.f"> */
 	}
     }
 
-    return 0;
+    return;
 
 /*     End of SSYTRS_AA_2STAGE */
 

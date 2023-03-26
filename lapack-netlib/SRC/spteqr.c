@@ -661,7 +661,7 @@ f"> */
 /* > \ingroup realPTcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int spteqr_(char *compz, integer *n, real *d__, real *e, 
+/* Subroutine */ void spteqr_(char *compz, integer *n, real *d__, real *e, 
 	real *z__, integer *ldz, real *work, integer *info)
 {
     /* System generated locals */
@@ -672,12 +672,13 @@ f"> */
     integer i__;
     extern logical lsame_(char *, char *);
     real vt[1]	/* was [1][1] */;
-    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen), slaset_(
+    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
+    extern void slaset_(
 	    char *, integer *, integer *, real *, real *, real *, integer *), sbdsqr_(char *, integer *, integer *, integer *, integer 
 	    *, real *, real *, real *, integer *, real *, integer *, real *, 
 	    integer *, real *, integer *);
     integer icompz;
-    extern /* Subroutine */ int spttrf_(integer *, real *, real *, integer *);
+    extern /* Subroutine */ void spttrf_(integer *, real *, real *, integer *);
     integer nru;
 
 
@@ -722,20 +723,20 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("SPTEQR", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
     if (*n == 1) {
 	if (icompz > 0) {
 	    z__[z_dim1 + 1] = 1.f;
 	}
-	return 0;
+	return;
     }
     if (icompz == 2) {
 	slaset_("Full", n, n, &c_b7, &c_b8, &z__[z_offset], ldz);
@@ -745,7 +746,7 @@ f"> */
 
     spttrf_(n, &d__[1], &e[1], info);
     if (*info != 0) {
-	return 0;
+	return;
     }
     i__1 = *n;
     for (i__ = 1; i__ <= i__1; ++i__) {
@@ -781,7 +782,7 @@ f"> */
 	*info = *n + *info;
     }
 
-    return 0;
+    return;
 
 /*     End of SPTEQR */
 

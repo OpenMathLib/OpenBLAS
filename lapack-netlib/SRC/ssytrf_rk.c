@@ -774,7 +774,7 @@ rk.f"> */
 /* > \endverbatim */
 
 /*  ===================================================================== */
-/* Subroutine */ int ssytrf_rk_(char *uplo, integer *n, real *a, integer *
+/* Subroutine */ void ssytrf_rk_(char *uplo, integer *n, real *a, integer *
 	lda, real *e, integer *ipiv, real *work, integer *lwork, integer *
 	info)
 {
@@ -785,10 +785,10 @@ rk.f"> */
     integer i__, k;
     extern logical lsame_(char *, char *);
     integer nbmin, iinfo;
-    extern /* Subroutine */ int ssytf2_rk_(char *, integer *, real *, 
+    extern /* Subroutine */ void ssytf2_rk_(char *, integer *, real *, 
 	    integer *, real *, integer *, integer *);
     logical upper;
-    extern /* Subroutine */ int sswap_(integer *, real *, integer *, real *, 
+    extern /* Subroutine */ void sswap_(integer *, real *, integer *, real *, 
 	    integer *), slasyf_rk_(char *, integer *, integer *, integer *, 
 	    real *, integer *, real *, integer *, real *, integer *, integer *
 	    );
@@ -847,9 +847,9 @@ rk.f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("SSYTRF_RK", &i__1, (ftnlen)9);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
     nbmin = 2;
@@ -1035,7 +1035,7 @@ L35:
     }
 
     work[1] = (real) lwkopt;
-    return 0;
+    return;
 
 /*     End of SSYTRF_RK */
 

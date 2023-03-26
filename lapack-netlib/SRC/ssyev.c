@@ -649,7 +649,7 @@ ices</b> */
 /* > \ingroup realSYeigen */
 
 /*  ===================================================================== */
-/* Subroutine */ int ssyev_(char *jobz, char *uplo, integer *n, real *a, 
+/* Subroutine */ void ssyev_(char *jobz, char *uplo, integer *n, real *a, 
 	integer *lda, real *w, real *work, integer *lwork, integer *info)
 {
     /* System generated locals */
@@ -663,7 +663,7 @@ ices</b> */
     real rmin, rmax, sigma;
     extern logical lsame_(char *, char *);
     integer iinfo;
-    extern /* Subroutine */ int sscal_(integer *, real *, real *, integer *);
+    extern /* Subroutine */ void sscal_(integer *, real *, real *, integer *);
     logical lower, wantz;
     integer nb, iscale;
     extern real slamch_(char *);
@@ -672,16 +672,16 @@ ices</b> */
 	    integer *, integer *, ftnlen, ftnlen);
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     real bignum;
-    extern /* Subroutine */ int slascl_(char *, integer *, integer *, real *, 
+    extern /* Subroutine */ void slascl_(char *, integer *, integer *, real *, 
 	    real *, integer *, integer *, real *, integer *, integer *);
     integer indtau, indwrk;
-    extern /* Subroutine */ int ssterf_(integer *, real *, real *, integer *);
+    extern /* Subroutine */ void ssterf_(integer *, real *, real *, integer *);
     extern real slansy_(char *, char *, integer *, real *, integer *, real *);
     integer llwork;
     real smlnum;
     integer lwkopt;
     logical lquery;
-    extern /* Subroutine */ int sorgtr_(char *, integer *, real *, integer *, 
+    extern /* Subroutine */ void sorgtr_(char *, integer *, real *, integer *, 
 	    real *, real *, integer *, integer *), ssteqr_(char *, 
 	    integer *, real *, real *, real *, integer *, real *, integer *), ssytrd_(char *, integer *, real *, integer *, real *, 
 	    real *, real *, real *, integer *, integer *);
@@ -740,15 +740,15 @@ ices</b> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("SSYEV ", &i__1, (ftnlen)6);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
     if (*n == 1) {
@@ -757,7 +757,7 @@ ices</b> */
 	if (wantz) {
 	    a[a_dim1 + 1] = 1.f;
 	}
-	return 0;
+	return;
     }
 
 /*     Get machine constants. */
@@ -822,7 +822,7 @@ ices</b> */
 
     work[1] = (real) lwkopt;
 
-    return 0;
+    return;
 
 /*     End of SSYEV */
 

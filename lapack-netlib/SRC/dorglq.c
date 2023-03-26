@@ -643,7 +643,7 @@ f"> */
 /* > \ingroup doubleOTHERcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int dorglq_(integer *m, integer *n, integer *k, doublereal *
+/* Subroutine */ void dorglq_(integer *m, integer *n, integer *k, doublereal *
 	a, integer *lda, doublereal *tau, doublereal *work, integer *lwork, 
 	integer *info)
 {
@@ -652,16 +652,17 @@ f"> */
 
     /* Local variables */
     integer i__, j, l, nbmin, iinfo;
-    extern /* Subroutine */ int dorgl2_(integer *, integer *, integer *, 
+    extern /* Subroutine */ void dorgl2_(integer *, integer *, integer *, 
 	    doublereal *, integer *, doublereal *, doublereal *, integer *);
     integer ib, nb, ki, kk;
-    extern /* Subroutine */ int dlarfb_(char *, char *, char *, char *, 
+    extern /* Subroutine */ void dlarfb_(char *, char *, char *, char *, 
 	    integer *, integer *, integer *, doublereal *, integer *, 
 	    doublereal *, integer *, doublereal *, integer *, doublereal *, 
 	    integer *);
     integer nx;
-    extern /* Subroutine */ int dlarft_(char *, char *, integer *, integer *, 
-	    doublereal *, integer *, doublereal *, doublereal *, integer *), xerbla_(char *, integer *, ftnlen);
+    extern /* Subroutine */ void dlarft_(char *, char *, integer *, integer *, 
+	    doublereal *, integer *, doublereal *, doublereal *, integer *);
+    extern int xerbla_(char *, integer *, ftnlen);
     extern integer ilaenv_(integer *, char *, char *, integer *, integer *, 
 	    integer *, integer *, ftnlen, ftnlen);
     integer ldwork, lwkopt;
@@ -707,16 +708,16 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DORGLQ", &i__1, (ftnlen)6);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*m <= 0) {
 	work[1] = 1.;
-	return 0;
+	return;
     }
 
     nbmin = 2;
@@ -835,7 +836,7 @@ f"> */
     }
 
     work[1] = (doublereal) iws;
-    return 0;
+    return;
 
 /*     End of DORGLQ */
 

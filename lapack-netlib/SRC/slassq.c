@@ -612,7 +612,7 @@ f"> */
 /* > \ingroup OTHERauxiliary */
 
 /*  ===================================================================== */
-/* Subroutine */ int slassq_(integer *n, real *x, integer *incx, real *scale, 
+/* Subroutine */ void slassq_(integer *n, real *x, integer *incx, real *scale, 
 	real *sumsq)
 {
     /* System generated locals */
@@ -658,7 +658,7 @@ f"> */
 /* L10: */
 	}
     }
-    return 0;
+    return;
 
 /*     End of SLASSQ */
 

@@ -651,13 +651,13 @@ real slansb_(char *norm, char *uplo, integer *n, integer *k, real *ab,
 
     /* Local variables */
     real absa;
-    extern /* Subroutine */ int scombssq_(real *, real *);
+    extern /* Subroutine */ void scombssq_(real *, real *);
     integer i__, j, l;
     extern logical lsame_(char *, char *);
     real value;
     extern logical sisnan_(real *);
     real colssq[2];
-    extern /* Subroutine */ int slassq_(integer *, real *, integer *, real *, 
+    extern /* Subroutine */ void slassq_(integer *, real *, integer *, real *, 
 	    real *);
     real sum, ssq[2];
 

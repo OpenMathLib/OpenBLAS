@@ -604,7 +604,7 @@ f"> */
 /* > \ingroup realPOcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int spotri_(char *uplo, integer *n, real *a, integer *lda, 
+/* Subroutine */ void spotri_(char *uplo, integer *n, real *a, integer *lda, 
 	integer *info)
 {
     /* System generated locals */
@@ -612,8 +612,10 @@ f"> */
 
     /* Local variables */
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen), slauum_(
-	    char *, integer *, real *, integer *, integer *), strtri_(
+    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
+    extern int slauum_(
+	    char *, integer *, real *, integer *, integer *);
+    extern int strtri_(
 	    char *, char *, integer *, real *, integer *, integer *);
 
 
@@ -645,27 +647,27 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("SPOTRI", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /*     Invert the triangular Cholesky factor U or L. */
 
     strtri_(uplo, "Non-unit", n, &a[a_offset], lda, info);
     if (*info > 0) {
-	return 0;
+	return;
     }
 
 /*     Form inv(U) * inv(U)**T or inv(L)**T * inv(L). */
 
     slauum_(uplo, n, &a[a_offset], lda, info);
 
-    return 0;
+    return;
 
 /*     End of SPOTRI */
 

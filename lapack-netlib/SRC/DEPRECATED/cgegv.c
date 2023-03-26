@@ -799,7 +799,7 @@ rices</b> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int cgegv_(char *jobvl, char *jobvr, integer *n, complex *a, 
+/* Subroutine */ void cgegv_(char *jobvl, char *jobvr, integer *n, complex *a, 
 	integer *lda, complex *b, integer *ldb, complex *alpha, complex *beta,
 	 complex *vl, integer *ldvl, complex *vr, integer *ldvr, complex *
 	work, integer *lwork, real *rwork, integer *info)
@@ -819,7 +819,7 @@ rices</b> */
     real anrm1, anrm2, bnrm1, bnrm2, absai, scale, absar, sbeta;
     extern logical lsame_(char *, char *);
     integer ileft, iinfo, icols, iwork, irows, jc;
-    extern /* Subroutine */ int cggbak_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void cggbak_(char *, char *, integer *, integer *, 
 	    integer *, real *, real *, integer *, complex *, integer *, 
 	    integer *), cggbal_(char *, integer *, complex *, 
 	    integer *, complex *, integer *, integer *, integer *, real *, 
@@ -828,40 +828,40 @@ rices</b> */
     extern real clange_(char *, integer *, integer *, complex *, integer *, 
 	    real *);
     integer jr;
-    extern /* Subroutine */ int cgghrd_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void cgghrd_(char *, char *, integer *, integer *, 
 	    integer *, complex *, integer *, complex *, integer *, complex *, 
 	    integer *, complex *, integer *, integer *);
     real salfai;
-    extern /* Subroutine */ int clascl_(char *, integer *, integer *, real *, 
+    extern /* Subroutine */ void clascl_(char *, integer *, integer *, real *, 
 	    real *, integer *, integer *, complex *, integer *, integer *), cgeqrf_(integer *, integer *, complex *, integer *, 
 	    complex *, complex *, integer *, integer *);
     real salfar;
     extern real slamch_(char *);
-    extern /* Subroutine */ int clacpy_(char *, integer *, integer *, complex 
+    extern /* Subroutine */ void clacpy_(char *, integer *, integer *, complex 
 	    *, integer *, complex *, integer *), claset_(char *, 
 	    integer *, integer *, complex *, complex *, complex *, integer *);
     real safmin;
-    extern /* Subroutine */ int ctgevc_(char *, char *, logical *, integer *, 
+    extern /* Subroutine */ void ctgevc_(char *, char *, logical *, integer *, 
 	    complex *, integer *, complex *, integer *, complex *, integer *, 
 	    complex *, integer *, integer *, integer *, complex *, real *, 
 	    integer *);
     real safmax;
     char chtemp[1];
     logical ldumma[1];
-    extern /* Subroutine */ int chgeqz_(char *, char *, char *, integer *, 
+    extern /* Subroutine */ void chgeqz_(char *, char *, char *, integer *, 
 	    integer *, integer *, complex *, integer *, complex *, integer *, 
 	    complex *, complex *, complex *, integer *, complex *, integer *, 
-	    complex *, integer *, real *, integer *), 
-	    xerbla_(char *, integer *);
+	    complex *, integer *, real *, integer *); 
+    extern int xerbla_(char *, integer *, ftnlen);
     extern integer ilaenv_(integer *, char *, char *, integer *, integer *, 
 	    integer *, integer *, ftnlen, ftnlen);
     integer ijobvl, iright;
     logical ilimit;
     integer ijobvr;
-    extern /* Subroutine */ int cungqr_(integer *, integer *, integer *, 
+    extern /* Subroutine */ void cungqr_(integer *, integer *, integer *, 
 	    complex *, integer *, complex *, complex *, integer *, integer *);
     integer lwkmin, nb1, nb2, nb3;
-    extern /* Subroutine */ int cunmqr_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void cunmqr_(char *, char *, integer *, integer *, 
 	    integer *, complex *, integer *, complex *, complex *, integer *, 
 	    complex *, integer *, integer *);
     integer irwork, lwkopt;
@@ -969,16 +969,16 @@ rices</b> */
 
     if (*info != 0) {
 	i__1 = -(*info);
-	xerbla_("CGEGV ", &i__1);
-	return 0;
+	xerbla_("CGEGV ", &i__1, 6);
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /*     Get machine constants */
@@ -1005,7 +1005,7 @@ rices</b> */
 		iinfo);
 	if (iinfo != 0) {
 	    *info = *n + 10;
-	    return 0;
+	    return;
 	}
     }
 
@@ -1026,7 +1026,7 @@ rices</b> */
 		iinfo);
 	if (iinfo != 0) {
 	    *info = *n + 10;
-	    return 0;
+	    return;
 	}
     }
 
@@ -1353,7 +1353,7 @@ L60:
 L80:
     work[1].r = (real) lwkopt, work[1].i = 0.f;
 
-    return 0;
+    return;
 
 /*     End of CGEGV */
 

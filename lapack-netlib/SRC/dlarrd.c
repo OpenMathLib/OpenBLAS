@@ -844,7 +844,7 @@ f"> */
 /* > \ingroup OTHERauxiliary */
 
 /*  ===================================================================== */
-/* Subroutine */ int dlarrd_(char *range, char *order, integer *n, doublereal 
+/* Subroutine */ void dlarrd_(char *range, char *order, integer *n, doublereal 
 	*vl, doublereal *vu, integer *il, integer *iu, doublereal *gers, 
 	doublereal *reltol, doublereal *d__, doublereal *e, doublereal *e2, 
 	doublereal *pivmin, integer *nsplit, integer *isplit, integer *m, 
@@ -869,7 +869,7 @@ f"> */
     extern doublereal dlamch_(char *);
     doublereal gu;
     integer ibegin, iw;
-    extern /* Subroutine */ int dlaebz_(integer *, integer *, integer *, 
+    extern /* Subroutine */ void dlaebz_(integer *, integer *, integer *, 
 	    integer *, integer *, integer *, doublereal *, doublereal *, 
 	    doublereal *, doublereal *, doublereal *, doublereal *, integer *,
 	     doublereal *, doublereal *, integer *, integer *, doublereal *, 
@@ -915,7 +915,7 @@ f"> */
 /*     Quick return if possible */
 
     if (*n <= 0) {
-	return 0;
+	return;
     }
 
 /*     Decode RANGE */
@@ -950,7 +950,7 @@ f"> */
     }
 
     if (*info != 0) {
-	return 0;
+	return;
     }
 /*     Initialize error flags */
     *info = 0;
@@ -959,7 +959,7 @@ f"> */
 /*     Quick return if possible */
     *m = 0;
     if (*n == 0) {
-	return 0;
+	return;
     }
 /*     Simplification: */
     if (irange == 3 && *il == 1 && *iu == *n) {
@@ -980,7 +980,7 @@ f"> */
 	    iblock[1] = 1;
 	    indexw[1] = 1;
 	}
-	return 0;
+	return;
     }
 /*     NB is the minimum vector length for vector bisection, or 0 */
 /*     if only scalar is to be done. */
@@ -1045,7 +1045,7 @@ f"> */
 		, &iout, &iwork[1], &w[1], &iblock[1], &iinfo);
 	if (iinfo != 0) {
 	    *info = iinfo;
-	    return 0;
+	    return;
 	}
 /*        On exit, output intervals may not be ordered by ascending negcount */
 	if (iwork[6] == *iu) {
@@ -1067,7 +1067,7 @@ f"> */
 /*        and [WUL, WU] contains a value with negcount NWU. */
 	if (nwl < 0 || nwl >= *n || nwu < 1 || nwu > *n) {
 	    *info = 4;
-	    return 0;
+	    return;
 	}
     } else if (irange == 2) {
 	*wl = *vl;
@@ -1205,7 +1205,7 @@ f"> */
 		    w[*m + 1], &iblock[*m + 1], &iinfo);
 	    if (iinfo != 0) {
 		*info = iinfo;
-		return 0;
+		return;
 	    }
 
 	    nwl += iwork[1];
@@ -1220,7 +1220,7 @@ f"> */
 		     &w[*m + 1], &iblock[*m + 1], &iinfo);
 	    if (iinfo != 0) {
 		*info = iinfo;
-		return 0;
+		return;
 	    }
 
 /*           Copy eigenvalues into W and IBLOCK */
@@ -1413,7 +1413,7 @@ L70:
     if (toofew) {
 	*info += 2;
     }
-    return 0;
+    return;
 
 /*     End of DLARRD */
 

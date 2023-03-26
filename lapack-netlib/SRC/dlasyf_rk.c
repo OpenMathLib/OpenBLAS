@@ -777,7 +777,7 @@ rk.f"> */
 /* > \endverbatim */
 
 /*  ===================================================================== */
-/* Subroutine */ int dlasyf_rk_(char *uplo, integer *n, integer *nb, integer 
+/* Subroutine */ void dlasyf_rk_(char *uplo, integer *n, integer *nb, integer 
 	*kb, doublereal *a, integer *lda, doublereal *e, integer *ipiv, 
 	doublereal *w, integer *ldw, integer *info)
 {
@@ -789,17 +789,17 @@ rk.f"> */
     logical done;
     integer imax, jmax, j, k, p;
     doublereal t, alpha;
-    extern /* Subroutine */ int dscal_(integer *, doublereal *, doublereal *, 
+    extern /* Subroutine */ void dscal_(integer *, doublereal *, doublereal *, 
 	    integer *), dgemm_(char *, char *, integer *, integer *, integer *
 	    , doublereal *, doublereal *, integer *, doublereal *, integer *, 
 	    doublereal *, doublereal *, integer *);
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int dgemv_(char *, integer *, integer *, 
+    extern /* Subroutine */ void dgemv_(char *, integer *, integer *, 
 	    doublereal *, doublereal *, integer *, doublereal *, integer *, 
 	    doublereal *, doublereal *, integer *);
     doublereal dtemp, sfmin;
     integer itemp;
-    extern /* Subroutine */ int dcopy_(integer *, doublereal *, integer *, 
+    extern /* Subroutine */ void dcopy_(integer *, doublereal *, integer *, 
 	    doublereal *, integer *), dswap_(integer *, doublereal *, integer 
 	    *, doublereal *, integer *);
     integer kstep;
@@ -1585,7 +1585,7 @@ L90:
 
     }
 
-    return 0;
+    return;
 
 /*     End of DLASYF_RK */
 

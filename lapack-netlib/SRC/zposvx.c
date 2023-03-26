@@ -813,7 +813,7 @@ f"> */
 /* > \ingroup complex16POsolve */
 
 /*  ===================================================================== */
-/* Subroutine */ int zposvx_(char *fact, char *uplo, integer *n, integer *
+/* Subroutine */ void zposvx_(char *fact, char *uplo, integer *n, integer *
 	nrhs, doublecomplex *a, integer *lda, doublecomplex *af, integer *
 	ldaf, char *equed, doublereal *s, doublecomplex *b, integer *ldb, 
 	doublecomplex *x, integer *ldx, doublereal *rcond, doublereal *ferr, 
@@ -838,23 +838,24 @@ f"> */
     doublereal bignum;
     extern doublereal zlanhe_(char *, char *, integer *, doublecomplex *, 
 	    integer *, doublereal *);
-    extern /* Subroutine */ int zlaqhe_(char *, integer *, doublecomplex *, 
+    extern /* Subroutine */ void zlaqhe_(char *, integer *, doublecomplex *, 
 	    integer *, doublereal *, doublereal *, doublereal *, char *);
     integer infequ;
-    extern /* Subroutine */ int zlacpy_(char *, integer *, integer *, 
+    extern /* Subroutine */ void zlacpy_(char *, integer *, integer *, 
 	    doublecomplex *, integer *, doublecomplex *, integer *), 
 	    zpocon_(char *, integer *, doublecomplex *, integer *, doublereal 
 	    *, doublereal *, doublecomplex *, doublereal *, integer *)
 	    ;
     doublereal smlnum;
-    extern /* Subroutine */ int zpoequ_(integer *, doublecomplex *, integer *,
+    extern /* Subroutine */ void zpoequ_(integer *, doublecomplex *, integer *,
 	     doublereal *, doublereal *, doublereal *, integer *), zporfs_(
 	    char *, integer *, integer *, doublecomplex *, integer *, 
 	    doublecomplex *, integer *, doublecomplex *, integer *, 
 	    doublecomplex *, integer *, doublereal *, doublereal *, 
-	    doublecomplex *, doublereal *, integer *), zpotrf_(char *,
-	     integer *, doublecomplex *, integer *, integer *), 
-	    zpotrs_(char *, integer *, integer *, doublecomplex *, integer *, 
+	    doublecomplex *, doublereal *, integer *);
+    extern int zpotrf_(char *,
+	     integer *, doublecomplex *, integer *, integer *); 
+    extern void zpotrs_(char *, integer *, integer *, doublecomplex *, integer *, 
 	    doublecomplex *, integer *, integer *);
 
 
@@ -951,7 +952,7 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZPOSVX", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
     if (equil) {
@@ -997,7 +998,7 @@ f"> */
 
 	if (*info > 0) {
 	    *rcond = 0.;
-	    return 0;
+	    return;
 	}
     }
 
@@ -1052,7 +1053,7 @@ f"> */
 	*info = *n + 1;
     }
 
-    return 0;
+    return;
 
 /*     End of ZPOSVX */
 

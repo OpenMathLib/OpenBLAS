@@ -922,7 +922,7 @@ static integer c_n1 = -1;
 /* > \endverbatim */
 
 /*  ===================================================================== */
-/* Subroutine */ int zheevr_2stage_(char *jobz, char *range, char *uplo, 
+/* Subroutine */ void zheevr_2stage_(char *jobz, char *range, char *uplo, 
 	integer *n, doublecomplex *a, integer *lda, doublereal *vl, 
 	doublereal *vu, integer *il, integer *iu, doublereal *abstol, integer 
 	*m, doublereal *w, doublecomplex *z__, integer *ldz, integer *isuppz, 
@@ -941,25 +941,25 @@ static integer c_n1 = -1;
     doublereal rmin, rmax;
     logical test;
     integer itmp1, i__, j;
-    extern /* Subroutine */ int dscal_(integer *, doublereal *, doublereal *, 
+    extern /* Subroutine */ void dscal_(integer *, doublereal *, doublereal *, 
 	    integer *);
     integer indrd, indre;
     doublereal sigma;
     extern logical lsame_(char *, char *);
     integer iinfo;
-    extern /* Subroutine */ int zhetrd_2stage_(char *, char *, integer *, 
+    extern /* Subroutine */ void zhetrd_2stage_(char *, char *, integer *, 
 	    doublecomplex *, integer *, doublereal *, doublereal *, 
 	    doublecomplex *, doublecomplex *, integer *, doublecomplex *, 
 	    integer *, integer *);
     char order[1];
     integer indwk, lhtrd;
-    extern /* Subroutine */ int dcopy_(integer *, doublereal *, integer *, 
+    extern /* Subroutine */ void dcopy_(integer *, doublereal *, integer *, 
 	    doublereal *, integer *);
     integer lwmin;
     logical lower;
     integer lwtrd;
     logical wantz;
-    extern /* Subroutine */ int zswap_(integer *, doublecomplex *, integer *, 
+    extern /* Subroutine */ void zswap_(integer *, doublecomplex *, integer *, 
 	    doublecomplex *, integer *);
     integer ib, kd, jj;
     extern doublereal dlamch_(char *);
@@ -969,14 +969,15 @@ static integer c_n1 = -1;
     doublereal safmin;
     extern integer ilaenv_(integer *, char *, char *, integer *, integer *, 
 	    integer *, integer *, ftnlen, ftnlen);
-    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen), zdscal_(
+    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
+    extern void zdscal_(
 	    integer *, doublereal *, doublecomplex *, integer *);
     doublereal abstll, bignum;
     integer indtau, indisp;
-    extern /* Subroutine */ int dsterf_(integer *, doublereal *, doublereal *,
+    extern /* Subroutine */ void dsterf_(integer *, doublereal *, doublereal *,
 	     integer *);
     integer indiwo, indwkn;
-    extern /* Subroutine */ int dstebz_(char *, char *, integer *, doublereal 
+    extern /* Subroutine */ void dstebz_(char *, char *, integer *, doublereal 
 	    *, doublereal *, integer *, integer *, doublereal *, doublereal *,
 	     doublereal *, integer *, integer *, doublereal *, integer *, 
 	    integer *, doublereal *, integer *, integer *);
@@ -984,13 +985,13 @@ static integer c_n1 = -1;
     logical tryrac;
     integer lrwmin, llwrkn, llwork, nsplit;
     doublereal smlnum;
-    extern /* Subroutine */ int zstein_(integer *, doublereal *, doublereal *,
+    extern /* Subroutine */ void zstein_(integer *, doublereal *, doublereal *,
 	     integer *, doublereal *, integer *, integer *, doublecomplex *, 
 	    integer *, doublereal *, integer *, integer *, integer *);
     logical lquery;
     extern doublereal zlansy_(char *, char *, integer *, doublecomplex *, 
 	    integer *, doublereal *);
-    extern /* Subroutine */ int zstemr_(char *, char *, integer *, doublereal 
+    extern /* Subroutine */ void zstemr_(char *, char *, integer *, doublereal 
 	    *, doublereal *, doublereal *, doublereal *, integer *, integer *,
 	     integer *, doublereal *, doublecomplex *, integer *, integer *, 
 	    integer *, logical *, doublereal *, integer *, integer *, integer 
@@ -1099,9 +1100,9 @@ static integer c_n1 = -1;
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZHEEVR_2STAGE", &i__1, (ftnlen)13);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
@@ -1109,7 +1110,7 @@ static integer c_n1 = -1;
     *m = 0;
     if (*n == 0) {
 	work[1].r = 1., work[1].i = 0.;
-	return 0;
+	return;
     }
 
     if (*n == 1) {
@@ -1133,7 +1134,7 @@ static integer c_n1 = -1;
 	    isuppz[1] = 1;
 	    isuppz[2] = 1;
 	}
-	return 0;
+	return;
     }
 
 /*     Get machine constants. */
@@ -1355,7 +1356,7 @@ L30:
     rwork[1] = (doublereal) lrwmin;
     iwork[1] = liwmin;
 
-    return 0;
+    return;
 
 /*     End of ZHEEVR_2STAGE */
 

@@ -641,7 +641,7 @@ static integer c_n1 = -1;
 /* > \ingroup complex16SYcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int zsytri2_(char *uplo, integer *n, doublecomplex *a, 
+/* Subroutine */ void zsytri2_(char *uplo, integer *n, doublecomplex *a, 
 	integer *lda, integer *ipiv, doublecomplex *work, integer *lwork, 
 	integer *info)
 {
@@ -649,7 +649,7 @@ static integer c_n1 = -1;
     integer a_dim1, a_offset, i__1;
 
     /* Local variables */
-    extern /* Subroutine */ int zsytri2x_(char *, integer *, doublecomplex *, 
+    extern /* Subroutine */ void zsytri2x_(char *, integer *, doublecomplex *, 
 	    integer *, integer *, doublecomplex *, integer *, integer *);
     extern logical lsame_(char *, char *);
     integer nbmax;
@@ -658,7 +658,7 @@ static integer c_n1 = -1;
     extern integer ilaenv_(integer *, char *, char *, integer *, integer *, 
 	    integer *, integer *, ftnlen, ftnlen);
     logical lquery;
-    extern /* Subroutine */ int zsytri_(char *, integer *, doublecomplex *, 
+    extern /* Subroutine */ void zsytri_(char *, integer *, doublecomplex *, 
 	    integer *, integer *, doublecomplex *, integer *);
     integer minsize;
 
@@ -710,13 +710,13 @@ static integer c_n1 = -1;
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZSYTRI2", &i__1, (ftnlen)7);
-	return 0;
+	return;
     } else if (lquery) {
 	work[1].r = (doublereal) minsize, work[1].i = 0.;
-	return 0;
+	return;
     }
     if (*n == 0) {
-	return 0;
+	return;
     }
     if (nbmax >= *n) {
 	zsytri_(uplo, n, &a[a_offset], lda, &ipiv[1], &work[1], info);
@@ -724,7 +724,7 @@ static integer c_n1 = -1;
 	zsytri2x_(uplo, n, &a[a_offset], lda, &ipiv[1], &work[1], &nbmax, 
 		info);
     }
-    return 0;
+    return;
 
 /*     End of ZSYTRI2 */
 

@@ -845,7 +845,7 @@ static integer c__1 = 1;
 /* > \endverbatim */
 
 /*  ===================================================================== */
-/* Subroutine */ int zhbevx_2stage_(char *jobz, char *range, char *uplo, 
+/* Subroutine */ void zhbevx_2stage_(char *jobz, char *range, char *uplo, 
 	integer *n, integer *kd, doublecomplex *ab, integer *ldab, 
 	doublecomplex *q, integer *ldq, doublereal *vl, doublereal *vu, 
 	integer *il, integer *iu, doublereal *abstol, integer *m, doublereal *
@@ -864,7 +864,7 @@ static integer c__1 = 1;
 	    integer *, integer *, integer *);
     doublereal anrm;
     integer imax;
-    extern /* Subroutine */ int zhetrd_hb2st_(char *, char *, char *, 
+    extern /* Subroutine */ void zhetrd_hb2st_(char *, char *, char *, 
 	    integer *, integer *, doublecomplex *, integer *, doublereal *, 
 	    doublereal *, doublecomplex *, integer *, doublecomplex *, 
 	    integer *, integer *);
@@ -872,23 +872,23 @@ static integer c__1 = 1;
     logical test;
     doublecomplex ctmp1;
     integer itmp1, i__, j, indee;
-    extern /* Subroutine */ int dscal_(integer *, doublereal *, doublereal *, 
+    extern /* Subroutine */ void dscal_(integer *, doublereal *, doublereal *, 
 	    integer *);
     doublereal sigma;
     extern logical lsame_(char *, char *);
     integer iinfo;
     char order[1];
     integer lhtrd;
-    extern /* Subroutine */ int dcopy_(integer *, doublereal *, integer *, 
+    extern /* Subroutine */ void dcopy_(integer *, doublereal *, integer *, 
 	    doublereal *, integer *);
     integer lwmin;
     logical lower;
-    extern /* Subroutine */ int zgemv_(char *, integer *, integer *, 
+    extern /* Subroutine */ void zgemv_(char *, integer *, integer *, 
 	    doublecomplex *, doublecomplex *, integer *, doublecomplex *, 
 	    integer *, doublecomplex *, doublecomplex *, integer *);
     integer lwtrd;
     logical wantz;
-    extern /* Subroutine */ int zcopy_(integer *, doublecomplex *, integer *, 
+    extern /* Subroutine */ void zcopy_(integer *, doublecomplex *, integer *, 
 	    doublecomplex *, integer *), zswap_(integer *, doublecomplex *, 
 	    integer *, doublecomplex *, integer *);
     integer ib, jj;
@@ -902,7 +902,7 @@ static integer c__1 = 1;
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     doublereal abstll, bignum;
     integer indiwk, indisp;
-    extern /* Subroutine */ int dsterf_(integer *, doublereal *, doublereal *,
+    extern /* Subroutine */ void dsterf_(integer *, doublereal *, doublereal *,
 	     integer *), zlascl_(char *, integer *, integer *, doublereal *, 
 	    doublereal *, integer *, integer *, doublecomplex *, integer *, 
 	    integer *), dstebz_(char *, char *, integer *, doublereal 
@@ -910,15 +910,15 @@ static integer c__1 = 1;
 	     doublereal *, integer *, integer *, doublereal *, integer *, 
 	    integer *, doublereal *, integer *, integer *);
     integer indrwk, indwrk;
-    extern /* Subroutine */ int zlacpy_(char *, integer *, integer *, 
+    extern /* Subroutine */ void zlacpy_(char *, integer *, integer *, 
 	    doublecomplex *, integer *, doublecomplex *, integer *);
     integer nsplit, llwork;
     doublereal smlnum;
-    extern /* Subroutine */ int zstein_(integer *, doublereal *, doublereal *,
+    extern /* Subroutine */ void zstein_(integer *, doublereal *, doublereal *,
 	     integer *, doublereal *, integer *, integer *, doublecomplex *, 
 	    integer *, doublereal *, integer *, integer *, integer *);
     logical lquery;
-    extern /* Subroutine */ int zsteqr_(char *, integer *, doublereal *, 
+    extern /* Subroutine */ void zsteqr_(char *, integer *, doublereal *, 
 	    doublereal *, doublecomplex *, integer *, doublereal *, integer *);
     doublereal eps, vll, vuu;
     integer indhous;
@@ -1018,16 +1018,16 @@ static integer c__1 = 1;
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZHBEVX_2STAGE", &i__1, (ftnlen)13);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     *m = 0;
     if (*n == 0) {
-	return 0;
+	return;
     }
 
     if (*n == 1) {
@@ -1052,7 +1052,7 @@ static integer c__1 = 1;
 		z__[i__1].r = 1., z__[i__1].i = 0.;
 	    }
 	}
-	return 0;
+	return;
     }
 
 /*     Get machine constants. */
@@ -1237,7 +1237,7 @@ L30:
 
     work[1].r = (doublereal) lwmin, work[1].i = 0.;
 
-    return 0;
+    return;
 
 /*     End of ZHBEVX_2STAGE */
 

@@ -673,7 +673,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int sgebal_(char *job, integer *n, real *a, integer *lda, 
+/* Subroutine */ void sgebal_(char *job, integer *n, real *a, integer *lda, 
 	integer *ilo, integer *ihi, real *scale, integer *info)
 {
     /* System generated locals */
@@ -687,7 +687,7 @@ f"> */
     integer i__, j, k, l, m;
     real r__, s;
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int sscal_(integer *, real *, real *, integer *), 
+    extern /* Subroutine */ void sscal_(integer *, real *, real *, integer *), 
 	    sswap_(integer *, real *, integer *, real *, integer *);
     real sfmin1, sfmin2, sfmax1, sfmax2, ca, ra;
     extern real slamch_(char *);
@@ -728,7 +728,7 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("SGEBAL", &i__1,(ftnlen)6);
-	return 0;
+	return;
     }
 
     k = 1;
@@ -908,7 +908,7 @@ L180:
 	    *info = -3;
 	    i__2 = -(*info);
 	    xerbla_("SGEBAL", &i__2, (ftnlen)6);
-	    return 0;
+	    return;
 	}
 	f /= 2.f;
 	c__ /= 2.f;
@@ -954,7 +954,7 @@ L210:
     *ilo = k;
     *ihi = l;
 
-    return 0;
+    return;
 
 /*     End of SGEBAL */
 

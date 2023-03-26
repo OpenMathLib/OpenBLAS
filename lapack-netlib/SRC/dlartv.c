@@ -618,7 +618,7 @@ f"> */
 /* > \ingroup doubleOTHERauxiliary */
 
 /*  ===================================================================== */
-/* Subroutine */ int dlartv_(integer *n, doublereal *x, integer *incx, 
+/* Subroutine */ void dlartv_(integer *n, doublereal *x, integer *incx, 
 	doublereal *y, integer *incy, doublereal *c__, doublereal *s, integer 
 	*incc)
 {
@@ -660,7 +660,7 @@ f"> */
 	ic += *incc;
 /* L10: */
     }
-    return 0;
+    return;
 
 /*     End of DLARTV */
 

@@ -718,7 +718,7 @@ f"> */
 /* > \ingroup doubleGBcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int dgbrfs_(char *trans, integer *n, integer *kl, integer *
+/* Subroutine */ void dgbrfs_(char *trans, integer *n, integer *kl, integer *
 	ku, integer *nrhs, doublereal *ab, integer *ldab, doublereal *afb, 
 	integer *ldafb, integer *ipiv, doublereal *b, integer *ldb, 
 	doublereal *x, integer *ldx, doublereal *ferr, doublereal *berr, 
@@ -734,23 +734,24 @@ f"> */
     doublereal safe1, safe2;
     integer i__, j, k;
     doublereal s;
-    extern /* Subroutine */ int dgbmv_(char *, integer *, integer *, integer *
+    extern /* Subroutine */ void dgbmv_(char *, integer *, integer *, integer *
 	    , integer *, doublereal *, doublereal *, integer *, doublereal *, 
 	    integer *, doublereal *, doublereal *, integer *);
     extern logical lsame_(char *, char *);
     integer isave[3];
-    extern /* Subroutine */ int dcopy_(integer *, doublereal *, integer *, 
+    extern /* Subroutine */ void dcopy_(integer *, doublereal *, integer *, 
 	    doublereal *, integer *), daxpy_(integer *, doublereal *, 
 	    doublereal *, integer *, doublereal *, integer *);
     integer count;
-    extern /* Subroutine */ int dlacn2_(integer *, doublereal *, doublereal *,
+    extern /* Subroutine */ void dlacn2_(integer *, doublereal *, doublereal *,
 	     integer *, doublereal *, integer *, integer *);
     integer kk;
     extern doublereal dlamch_(char *);
     doublereal xk;
     integer nz;
     doublereal safmin;
-    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen), dgbtrs_(
+    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
+    extern void dgbtrs_(
 	    char *, integer *, integer *, integer *, integer *, doublereal *, 
 	    integer *, integer *, doublereal *, integer *, integer *);
     logical notran;
@@ -814,7 +815,7 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DGBRFS", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
@@ -826,7 +827,7 @@ f"> */
 	    berr[j] = 0.;
 /* L10: */
 	}
-	return 0;
+	return;
     }
 
     if (notran) {
@@ -1035,7 +1036,7 @@ L100:
 /* L140: */
     }
 
-    return 0;
+    return;
 
 /*     End of DGBRFS */
 

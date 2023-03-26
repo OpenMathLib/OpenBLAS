@@ -602,13 +602,13 @@ he bidiagonal SVD problem. */
 /* > \ingroup auxOTHERcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int slartgs_(real *x, real *y, real *sigma, real *cs, real *
+/* Subroutine */ void slartgs_(real *x, real *y, real *sigma, real *cs, real *
 	sn)
 {
     real r__, s, w, z__;
     extern real slamch_(char *);
     real thresh;
-    extern /* Subroutine */ int slartgp_(real *, real *, real *, real *, real 
+    extern /* Subroutine */ void slartgp_(real *, real *, real *, real *, real 
 	    *);
 
 
@@ -657,7 +657,7 @@ he bidiagonal SVD problem. */
 
     slartgp_(&w, &z__, sn, cs, &r__);
 
-    return 0;
+    return;
 
 /*     End SLARTGS */
 

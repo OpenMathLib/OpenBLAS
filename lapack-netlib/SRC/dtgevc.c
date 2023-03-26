@@ -812,7 +812,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int dtgevc_(char *side, char *howmny, logical *select, 
+/* Subroutine */ void dtgevc_(char *side, char *howmny, logical *select, 
 	integer *n, doublereal *s, integer *lds, doublereal *p, integer *ldp, 
 	doublereal *vl, integer *ldvl, doublereal *vr, integer *ldvr, integer 
 	*mm, integer *m, doublereal *work, integer *info)
@@ -826,7 +826,7 @@ f"> */
     integer ibeg, ieig, iend;
     doublereal dmin__, temp, xmax, sump[4]	/* was [2][2] */, sums[4]	
 	    /* was [2][2] */;
-    extern /* Subroutine */ int dlag2_(doublereal *, integer *, doublereal *, 
+    extern /* Subroutine */ void dlag2_(doublereal *, integer *, doublereal *, 
 	    integer *, doublereal *, doublereal *, doublereal *, doublereal *,
 	     doublereal *, doublereal *);
     doublereal cim2a, cim2b, cre2a, cre2b, temp2, bdiag[2];
@@ -836,7 +836,7 @@ f"> */
     integer iside;
     doublereal sbeta;
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int dgemv_(char *, integer *, integer *, 
+    extern /* Subroutine */ void dgemv_(char *, integer *, integer *, 
 	    doublereal *, doublereal *, integer *, doublereal *, integer *, 
 	    doublereal *, doublereal *, integer *);
     logical il2by2;
@@ -845,12 +845,12 @@ f"> */
     logical compl;
     doublereal anorm, bnorm;
     logical compr;
-    extern /* Subroutine */ int dlaln2_(logical *, integer *, integer *, 
+    extern /* Subroutine */ void dlaln2_(logical *, integer *, integer *, 
 	    doublereal *, doublereal *, doublereal *, integer *, doublereal *,
 	     doublereal *, doublereal *, integer *, doublereal *, doublereal *
 	    , doublereal *, integer *, doublereal *, doublereal *, integer *);
     doublereal temp2i;
-    extern /* Subroutine */ int dlabad_(doublereal *, doublereal *);
+    extern /* Subroutine */ void dlabad_(doublereal *, doublereal *);
     doublereal temp2r;
     integer ja;
     logical ilabad, ilbbad;
@@ -865,7 +865,7 @@ f"> */
     doublereal bcoefr;
     integer jw, nw;
     doublereal salfar, safmin;
-    extern /* Subroutine */ int dlacpy_(char *, integer *, integer *, 
+    extern /* Subroutine */ void dlacpy_(char *, integer *, integer *, 
 	    doublereal *, integer *, doublereal *, integer *);
     doublereal xscale, bignum;
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
@@ -953,7 +953,7 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DTGEVC", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Count the number of eigenvectors to be computed */
@@ -1022,14 +1022,14 @@ L10:
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DTGEVC", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     *m = im;
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /*     Machine Constants */
@@ -1221,7 +1221,7 @@ L10:
 		bcoefi = -bcoefi;
 		if (bcoefi == 0.) {
 		    *info = je;
-		    return 0;
+		    return;
 		}
 
 /*              Scale to avoid over/underflow */
@@ -1632,7 +1632,7 @@ L220:
 			temp2, &bcoefi);
 		if (bcoefi == 0.) {
 		    *info = je - 1;
-		    return 0;
+		    return;
 		}
 
 /*              Scale to avoid over/underflow */
@@ -1962,7 +1962,7 @@ L500:
 	}
     }
 
-    return 0;
+    return;
 
 /*     End of DTGEVC */
 

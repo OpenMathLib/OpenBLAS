@@ -601,7 +601,7 @@ f"> */
 /* > \ingroup complex16PTcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int zpttrf_(integer *n, doublereal *d__, doublecomplex *e, 
+/* Subroutine */ void zpttrf_(integer *n, doublereal *d__, doublecomplex *e, 
 	integer *info)
 {
     /* System generated locals */
@@ -636,13 +636,13 @@ f"> */
 	*info = -1;
 	i__1 = -(*info);
 	xerbla_("ZPTTRF", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
 
 /*     Compute the L*D*L**H (or U**H *D*U) factorization of A. */
@@ -749,7 +749,7 @@ f"> */
     }
 
 L30:
-    return 0;
+    return;
 
 /*     End of ZPTTRF */
 

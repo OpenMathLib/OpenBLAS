@@ -732,7 +732,7 @@ f"> */
 /* > drmac@math.hr. Thank you. */
 
 /*  ===================================================================== */
-/* Subroutine */ int dgsvj0_(char *jobv, integer *m, integer *n, doublereal *
+/* Subroutine */ void dgsvj0_(char *jobv, integer *m, integer *n, doublereal *
 	a, integer *lda, doublereal *d__, doublereal *sva, integer *mv, 
 	doublereal *v, integer *ldv, doublereal *eps, doublereal *sfmin, 
 	doublereal *tol, integer *nsweep, doublereal *work, integer *lwork, 
@@ -757,25 +757,25 @@ f"> */
     doublereal t, apoaq, aqoap;
     extern logical lsame_(char *, char *);
     doublereal theta, small;
-    extern /* Subroutine */ int dcopy_(integer *, doublereal *, integer *, 
+    extern /* Subroutine */ void dcopy_(integer *, doublereal *, integer *, 
 	    doublereal *, integer *);
     doublereal fastr[5];
-    extern /* Subroutine */ int dswap_(integer *, doublereal *, integer *, 
+    extern /* Subroutine */ void dswap_(integer *, doublereal *, integer *, 
 	    doublereal *, integer *);
     logical applv, rsvec;
-    extern /* Subroutine */ int daxpy_(integer *, doublereal *, doublereal *, 
+    extern /* Subroutine */ void daxpy_(integer *, doublereal *, doublereal *, 
 	    integer *, doublereal *, integer *), drotm_(integer *, doublereal 
 	    *, integer *, doublereal *, integer *, doublereal *);
     logical rotok;
     doublereal rootsfmin, cs, sn;
-    extern /* Subroutine */ int dlascl_(char *, integer *, integer *, 
+    extern /* Subroutine */ void dlascl_(char *, integer *, integer *, 
 	    doublereal *, doublereal *, integer *, integer *, doublereal *, 
 	    integer *, integer *);
     extern integer idamax_(integer *, doublereal *, integer *);
     extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     integer ijblsk, swband, blskip;
     doublereal mxaapq;
-    extern /* Subroutine */ int dlassq_(integer *, doublereal *, integer *, 
+    extern /* Subroutine */ void dlassq_(integer *, doublereal *, integer *, 
 	    doublereal *, doublereal *);
     doublereal thsign, mxsinj;
     integer ir1, emptsw, notrot, iswrot, jbc;
@@ -837,7 +837,7 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("DGSVJ0", &i__1, (ftnlen)6);
-	return 0;
+	return;
     }
 
     if (rsvec) {
@@ -1720,6 +1720,6 @@ L1995:
 /* L5991: */
     }
 
-    return 0;
+    return;
 } /* dgsvj0_ */
 

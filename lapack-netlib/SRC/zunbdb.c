@@ -798,7 +798,7 @@ f"> */
 /* >      Algorithms, 50(1):33-65, 2009. */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int zunbdb_(char *trans, char *signs, integer *m, integer *p,
+/* Subroutine */ void zunbdb_(char *trans, char *signs, integer *m, integer *p,
 	 integer *q, doublecomplex *x11, integer *ldx11, doublecomplex *x12, 
 	integer *ldx12, doublecomplex *x21, integer *ldx21, doublecomplex *
 	x22, integer *ldx22, doublereal *theta, doublereal *phi, 
@@ -816,18 +816,19 @@ f"> */
     logical colmajor;
     integer lworkmin, lworkopt, i__;
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int zscal_(integer *, doublecomplex *, 
+    extern /* Subroutine */ void zscal_(integer *, doublecomplex *, 
 	    doublecomplex *, integer *), zlarf_(char *, integer *, integer *, 
 	    doublecomplex *, integer *, doublecomplex *, doublecomplex *, 
 	    integer *, doublecomplex *);
     doublereal z1, z2, z3, z4;
-    extern /* Subroutine */ int zaxpy_(integer *, doublecomplex *, 
+    extern /* Subroutine */ void zaxpy_(integer *, doublecomplex *, 
 	    doublecomplex *, integer *, doublecomplex *, integer *);
     extern doublereal dznrm2_(integer *, doublecomplex *, integer *);
-    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen), zlacgv_(
+    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
+    extern void zlacgv_(
 	    integer *, doublecomplex *, integer *);
     logical lquery;
-    extern /* Subroutine */ int zlarfgp_(integer *, doublecomplex *, 
+    extern /* Subroutine */ void zlarfgp_(integer *, doublecomplex *, 
 	    doublecomplex *, integer *, doublecomplex *);
 
 
@@ -933,9 +934,9 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("xORBDB", &i__1, (ftnlen)6);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Handle column-major and row-major separately */
@@ -1427,7 +1428,7 @@ f"> */
 
     }
 
-    return 0;
+    return;
 
 /*     End of ZUNBDB */
 

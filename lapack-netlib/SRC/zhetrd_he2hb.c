@@ -760,7 +760,7 @@ f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int zhetrd_he2hb_(char *uplo, integer *n, integer *kd, 
+/* Subroutine */ void zhetrd_he2hb_(char *uplo, integer *n, integer *kd, 
 	doublecomplex *a, integer *lda, doublecomplex *ab, integer *ldab, 
 	doublecomplex *tau, doublecomplex *work, integer *lwork, integer *
 	info)
@@ -776,7 +776,7 @@ f"> */
     integer tpos, wpos, s1pos, s2pos, i__, j;
     extern logical lsame_(char *, char *);
     integer iinfo;
-    extern /* Subroutine */ int zgemm_(char *, char *, integer *, integer *, 
+    extern /* Subroutine */ void zgemm_(char *, char *, integer *, integer *, 
 	    integer *, doublecomplex *, doublecomplex *, integer *, 
 	    doublecomplex *, integer *, doublecomplex *, doublecomplex *, 
 	    integer *), zhemm_(char *, char *, integer *, 
@@ -785,13 +785,14 @@ f"> */
 	    integer *);
     integer lwmin;
     logical upper;
-    extern /* Subroutine */ int zcopy_(integer *, doublecomplex *, integer *, 
+    extern /* Subroutine */ void zcopy_(integer *, doublecomplex *, integer *, 
 	    doublecomplex *, integer *), zher2k_(char *, char *, integer *, 
 	    integer *, doublecomplex *, doublecomplex *, integer *, 
 	    doublecomplex *, integer *, doublereal *, doublecomplex *, 
 	    integer *);
     integer lk, pk, pn, lt, lw;
-    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen), zgelqf_(
+    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
+    extern void zgelqf_(
 	    integer *, integer *, doublecomplex *, integer *, doublecomplex *,
 	     doublecomplex *, integer *, integer *), zgeqrf_(integer *, 
 	    integer *, doublecomplex *, integer *, doublecomplex *, 
@@ -854,10 +855,10 @@ f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("ZHETRD_HE2HB", &i__1, (ftnlen)12);
-	return 0;
+	return;
     } else if (lquery) {
 	work[1].r = (doublereal) lwmin, work[1].i = 0.;
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
@@ -886,7 +887,7 @@ f"> */
 	    }
 	}
 	work[1].r = 1., work[1].i = 0.;
-	return 0;
+	return;
     }
 
 /*     Determine the pointer position for the workspace */
@@ -1082,7 +1083,7 @@ f"> */
     }
 
     work[1].r = (doublereal) lwmin, work[1].i = 0.;
-    return 0;
+    return;
 
 /*     End of ZHETRD_HE2HB */
 

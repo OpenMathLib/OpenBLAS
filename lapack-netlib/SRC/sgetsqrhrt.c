@@ -689,7 +689,7 @@ hrt.f"> */
 /* > \endverbatim */
 /* > */
 /*  ===================================================================== */
-/* Subroutine */ int sgetsqrhrt_(integer *m, integer *n, integer *mb1, 
+/* Subroutine */ void sgetsqrhrt_(integer *m, integer *n, integer *mb1, 
 	integer *nb1, integer *nb2, real *a, integer *lda, real *t, integer *
 	ldt, real *work, integer *lwork, integer *info)
 {
@@ -699,15 +699,15 @@ hrt.f"> */
 
     /* Local variables */
     integer ldwt, lworkopt, i__, j, iinfo;
-    extern /* Subroutine */ int sorgtsqr_row_(integer *, integer *, integer *
+    extern /* Subroutine */ void sorgtsqr_row_(integer *, integer *, integer *
 	    , integer *, real *, integer *, real *, integer *, real *, 
 	    integer *, integer *), scopy_(integer *, real *, integer *, real *
 	    , integer *), sorhr_col_(integer *, integer *, integer *, real *,
-	     integer *, real *, integer *, real *, integer *), xerbla_(char *,
-	     integer *, ftnlen);
+	     integer *, real *, integer *, real *, integer *);
+    extern int xerbla_(char *, integer *, ftnlen);
     logical lquery;
     integer lw1, lw2, num_all_row_blocks__, lwt;
-    extern /* Subroutine */ int slatsqr_(integer *, integer *, integer *, 
+    extern /* Subroutine */ void slatsqr_(integer *, integer *, integer *, 
 	    integer *, real *, integer *, real *, integer *, real *, integer *
 	    , integer *);
     integer nb1local, nb2local;
@@ -809,17 +809,17 @@ hrt.f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("SGETSQRHRT", &i__1, (ftnlen)10);
-	return 0;
+	return;
     } else if (lquery) {
 	work[1] = (real) lworkopt;
-	return 0;
+	return;
     }
 
 /*     Quick return if possible */
 
     if (f2cmin(*m,*n) == 0) {
 	work[1] = (real) lworkopt;
-	return 0;
+	return;
     }
 
     nb2local = f2cmin(*nb2,*n);
@@ -881,7 +881,7 @@ hrt.f"> */
     }
 
     work[1] = (real) lworkopt;
-    return 0;
+    return;
 
 /*     End of SGETSQRHRT */
 

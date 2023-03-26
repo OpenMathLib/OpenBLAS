@@ -648,7 +648,7 @@ aa.f"> */
 /* > \ingroup complexSYcomputational */
 
 /*  ===================================================================== */
-/* Subroutine */ int csytrf_aa_(char *uplo, integer *n, complex *a, integer *
+/* Subroutine */ void csytrf_aa_(char *uplo, integer *n, complex *a, integer *
 	lda, integer *ipiv, complex *work, integer *lwork, integer *info)
 {
     /* System generated locals */
@@ -657,12 +657,12 @@ aa.f"> */
     /* Local variables */
     integer j;
     complex alpha;
-    extern /* Subroutine */ int cscal_(integer *, complex *, complex *, 
+    extern /* Subroutine */ void cscal_(integer *, complex *, complex *, 
 	    integer *), cgemm_(char *, char *, integer *, integer *, integer *
 	    , complex *, complex *, integer *, complex *, integer *, complex *
 	    , complex *, integer *);
     extern logical lsame_(char *, char *);
-    extern /* Subroutine */ int clasyf_aa_(char *, integer *, integer *, 
+    extern /* Subroutine */ void clasyf_aa_(char *, integer *, integer *, 
 	    integer *, complex *, integer *, integer *, complex *, integer *, 
 	    complex *), cgemv_(char *, integer *, integer *, complex *
 	    , complex *, integer *, complex *, integer *, complex *, complex *
@@ -728,19 +728,19 @@ aa.f"> */
     if (*info != 0) {
 	i__1 = -(*info);
 	xerbla_("CSYTRF_AA", &i__1, (ftnlen)9);
-	return 0;
+	return;
     } else if (lquery) {
-	return 0;
+	return;
     }
 
 /*     Quick return */
 
     if (*n == 0) {
-	return 0;
+	return;
     }
     ipiv[1] = 1;
     if (*n == 1) {
-	return 0;
+	return;
     }
 
 /*     Adjust block size based on the workspace size */
@@ -1034,7 +1034,7 @@ L11:
     }
 
 L20:
-    return 0;
+    return;
 
 /*     End of CSYTRF_AA */
 
