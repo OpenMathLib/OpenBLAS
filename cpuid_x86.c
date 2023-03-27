@@ -1547,6 +1547,8 @@ int get_cpuname(void){
       case 11: //family 6 exmodel 11
         switch (model) {
           case 7: // Raptor Lake
+          case 10:
+          case 15:
             if(support_avx2())
               return CPUTYPE_HASWELL;
 	    if(support_avx())
@@ -2348,6 +2350,8 @@ int get_coretype(void){
       case 11:
 	switch (model) {
 	  case 7: // Raptor Lake
+          case 10:
+          case 15:
 #ifndef NO_AVX2
 	  if(support_avx2())
             return CORE_HASWELL;
