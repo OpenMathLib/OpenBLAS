@@ -64,11 +64,11 @@ set(BLAS3_MANGLED_SOURCES
 # generate the BLAS objs once with and once without cblas
 set (CBLAS_FLAGS "")
 
-if (NOT DEFINED NO_FBLAS)
+if (NOT NO_FBLAS)
   list(APPEND CBLAS_FLAGS 0)
 endif ()
 
-if (NOT DEFINED NO_CBLAS)
+if (NOT NO_CBLAS)
   list(APPEND CBLAS_FLAGS 1)
 endif ()
 
@@ -166,7 +166,7 @@ endforeach ()
 endforeach ()
 
 #Special functions for CBLAS
-if (NOT DEFINED NO_CBLAS)
+if (NOT NO_CBLAS)
   foreach (float_type ${FLOAT_TYPES})
   if (${float_type} STREQUAL "COMPLEX" OR ${float_type} STREQUAL "ZCOMPLEX")
     #cblas_dotc_sub cblas_dotu_sub
@@ -176,7 +176,7 @@ if (NOT DEFINED NO_CBLAS)
   endforeach ()
 endif()
 
-if (NOT DEFINED NO_LAPACK)
+if (NOT NO_LAPACK)
   set(LAPACK_SOURCES
     lapack/gesv.c
   )
