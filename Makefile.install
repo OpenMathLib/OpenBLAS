@@ -77,7 +77,7 @@ endif
 endif
 
 ifneq ($(OSNAME), AIX)
-ifndef NO_LAPACKE
+ifneq ($(NO_LAPACKE), 1)
 	@echo Copying LAPACKE header files to $(DESTDIR)$(OPENBLAS_INCLUDE_DIR)
 	@-install -m644 $(NETLIB_LAPACK_DIR)/LAPACKE/include/lapack.h "$(DESTDIR)$(OPENBLAS_INCLUDE_DIR)/lapack.h"
 	@-install -m644 $(NETLIB_LAPACK_DIR)/LAPACKE/include/lapacke.h "$(DESTDIR)$(OPENBLAS_INCLUDE_DIR)/lapacke.h"
@@ -127,7 +127,7 @@ endif
 
 else
 #install on AIX has different options syntax
-ifndef NO_LAPACKE
+ifneq ($(NO_LAPACKE), 1)
 	@echo Copying LAPACKE header files to $(DESTDIR)$(OPENBLAS_INCLUDE_DIR)
 	@-installbsd -c -m 644 $(NETLIB_LAPACK_DIR)/LAPACKE/include/lapack.h "$(DESTDIR)$(OPENBLAS_INCLUDE_DIR)/lapack.h"
 	@-installbsd -c -m 644 $(NETLIB_LAPACK_DIR)/LAPACKE/include/lapacke.h "$(DESTDIR)$(OPENBLAS_INCLUDE_DIR)/lapacke.h"
