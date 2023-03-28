@@ -92,7 +92,7 @@ CBLASOBJS += \
 	ctrsv_RUU.$(SUFFIX) ctrsv_RUN.$(SUFFIX) ctrsv_RLU.$(SUFFIX) ctrsv_RLN.$(SUFFIX) \
 	ctrsv_CUU.$(SUFFIX) ctrsv_CUN.$(SUFFIX) ctrsv_CLU.$(SUFFIX) ctrsv_CLN.$(SUFFIX)
 
-ifndef NO_LAPACK
+ifneq ($(NO_LAPACK), 1)
 CBLASOBJS += \
 	cspmv_U.$(SUFFIX) cspmv_L.$(SUFFIX) \
 	cspr_U.$(SUFFIX)  cspr_L.$(SUFFIX)  \
