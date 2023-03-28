@@ -186,7 +186,7 @@ Please read `GotoBLAS_01Readme.txt` for older CPU models already supported by th
   ```
   (also known to work on C906)
 
-- **x280**: LLVM auto-vectorization using RISC-V Vector extension 1.0.
+- **x280**: Level-3 BLAS and Level-1,2 are optimized by RISC-V Vector extension 1.0.
   ```sh
   make HOSTCC=gcc TARGET=x280 NUM_THREADS=8 CC=riscv64-unknown-linux-gnu-clang FC=riscv64-unknown-linux-gnu-gfortran
   ```
