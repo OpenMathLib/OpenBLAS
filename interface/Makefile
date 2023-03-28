@@ -445,7 +445,8 @@ QLAPACKOBJS	= \
 CLAPACKOBJS	= \
 	cgetrf.$(SUFFIX) cgetrs.$(SUFFIX) cpotrf.$(SUFFIX) cgetf2.$(SUFFIX) \
 	cpotf2.$(SUFFIX) claswp.$(SUFFIX) cgesv.$(SUFFIX) clauu2.$(SUFFIX) \
-	clauum.$(SUFFIX) ctrti2.$(SUFFIX) ctrtri.$(SUFFIX) ctrtrs.$(SUFFIX)
+	clauum.$(SUFFIX) ctrti2.$(SUFFIX) ctrtri.$(SUFFIX) ctrtrs.$(SUFFIX) \
+	cspr.$(SUFFIX) cspmv.$(SUFFIX) csymv.$(SUFFIX) csyr.$(SUFFIX)
 
 #ZLAPACKOBJS	= \
 #	zgetrf.$(SUFFIX) zgetrs.$(SUFFIX) zpotrf.$(SUFFIX) zgetf2.$(SUFFIX) \
@@ -456,8 +457,8 @@ CLAPACKOBJS	= \
 ZLAPACKOBJS	= \
 	zgetrf.$(SUFFIX) zgetrs.$(SUFFIX) zpotrf.$(SUFFIX) zgetf2.$(SUFFIX) \
 	zpotf2.$(SUFFIX) zlaswp.$(SUFFIX) zgesv.$(SUFFIX)  zlauu2.$(SUFFIX) \
-	zlauum.$(SUFFIX) ztrti2.$(SUFFIX) ztrtri.$(SUFFIX) ztrtrs.$(SUFFIX)
-
+	zlauum.$(SUFFIX) ztrti2.$(SUFFIX) ztrtri.$(SUFFIX) ztrtrs.$(SUFFIX) \
+	zspr.$(SUFFIX) zspmv.$(SUFFIX) zsymv.$(SUFFIX) zsyr.$(SUFFIX)
 
 XLAPACKOBJS	= \
 	xgetf2.$(SUFFIX) xgetrf.$(SUFFIX) xlauu2.$(SUFFIX) xlauum.$(SUFFIX) \
