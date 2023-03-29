@@ -43,25 +43,25 @@ $(XBLASOBJS_P) : override CFLAGS += -DPROFILE $(COMMON_PROF)
 $(SBEXTOBJS_P) : override CFLAGS += -DPROFILE $(COMMON_PROF)
 
 libs    :: $(BLASOBJS) $(COMMONOBJS)
-	$(AR) $(ARFLAGS) -ru $(TOPDIR)/$(LIBNAME) $^
+	$(AR) $(ARFLAGS) -r $(TOPDIR)/$(LIBNAME) $?
 
 prof    :: $(BLASOBJS_P) $(COMMONOBJS_P)
-	$(AR) $(ARFLAGS) -ru $(TOPDIR)/$(LIBNAME_P) $^
+	$(AR) $(ARFLAGS) -r $(TOPDIR)/$(LIBNAME_P) $?
 
 hpl	:: $(HPLOBJS) $(COMMONOBJS)
-	$(AR) $(ARFLAGS) -ru $(TOPDIR)/$(LIBNAME) $^
+	$(AR) $(ARFLAGS) -r $(TOPDIR)/$(LIBNAME) $?
 
 hpl_p	:: $(HPLOBJS_P) $(COMMONOBJS_P)
-	$(AR) $(ARFLAGS) -ru $(TOPDIR)/$(LIBNAME_P) $^
+	$(AR) $(ARFLAGS) -r $(TOPDIR)/$(LIBNAME_P) $?
 
 kernel :: $(BLASOBJS)
-	$(AR) $(ARFLAGS) -ru $(TOPDIR)/$(LIBNAME) $^
+	$(AR) $(ARFLAGS) -r $(TOPDIR)/$(LIBNAME) $?
 
 commonlibs :: $(COMMONOBJS)
-	$(AR) $(ARFLAGS) -ru $(TOPDIR)/$(LIBNAME) $^
+	$(AR) $(ARFLAGS) -r $(TOPDIR)/$(LIBNAME) $?
 
 commonprof :: $(COMMONOBJS_P)
-	$(AR) $(ARFLAGS) -ru $(TOPDIR)/$(LIBNAME_P) $^
+	$(AR) $(ARFLAGS) -r $(TOPDIR)/$(LIBNAME_P) $?
 
 quick :
 	  $(MAKE) -C $(TOPDIR) libs

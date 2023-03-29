@@ -622,24 +622,24 @@ endif
 all: $(LAPACKLIB)
 
 $(LAPACKLIB): $(ALLOBJ) $(ALLXOBJ) $(DEPRECATED)
-	$(AR) $(ARFLAGS) $@ $^
+	$(AR) $(ARFLAGS) $@ $?
 	$(RANLIB) $@
 
 .PHONY: single complex double complex16
 single: $(SLASRC) $(DSLASRC) $(SXLASRC) $(SCLAUX) $(ALLAUX)
-	$(AR) $(ARFLAGS) $(LAPACKLIB) $^
+	$(AR) $(ARFLAGS) $(LAPACKLIB) $?
 	$(RANLIB) $(LAPACKLIB)
 
 complex: $(CLASRC) $(ZCLASRC) $(CXLASRC) $(SCLAUX) $(ALLAUX)
-	$(AR) $(ARFLAGS) $(LAPACKLIB) $^
+	$(AR) $(ARFLAGS) $(LAPACKLIB) $?
 	$(RANLIB) $(LAPACKLIB)
 
 double: $(DLASRC) $(DSLASRC) $(DXLASRC) $(DZLAUX) $(ALLAUX)
-	$(AR) $(ARFLAGS) $(LAPACKLIB) $^
+	$(AR) $(ARFLAGS) $(LAPACKLIB) $?
 	$(RANLIB) $(LAPACKLIB)
 
 complex16: $(ZLASRC) $(ZCLASRC) $(ZXLASRC) $(DZLAUX) $(ALLAUX)
-	$(AR) $(ARFLAGS) $(LAPACKLIB) $^
+	$(AR) $(ARFLAGS) $(LAPACKLIB) $?
 	$(RANLIB) $(LAPACKLIB)
 
 $(ALLAUX): $(FRC)

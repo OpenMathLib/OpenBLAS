@@ -35,27 +35,27 @@ QRLL = qr/LL/cgeqrf.o qr/LL/dgeqrf.o qr/LL/sgeqrf.o qr/LL/zgeqrf.o qr/LL/sceil.o
 all: cholrl.a choltop.a lucr.a lull.a lurec.a qrll.a
 
 cholrl.a: $(CHOLRL)
-	$(AR) $(ARFLAGS) $@ $^
+	$(AR) $(ARFLAGS) $@ $?
 	$(RANLIB) $@
 
 choltop.a: $(CHOLTOP)
-	$(AR) $(ARFLAGS) $@ $^
+	$(AR) $(ARFLAGS) $@ $?
 	$(RANLIB) $@
 
 lucr.a: $(LUCR)
-	$(AR) $(ARFLAGS) $@ $^
+	$(AR) $(ARFLAGS) $@ $?
 	$(RANLIB) $@
 
 lull.a: $(LULL)
-	$(AR) $(ARFLAGS) $@ $^
+	$(AR) $(ARFLAGS) $@ $?
 	$(RANLIB) $@
 
 lurec.a: $(LUREC)
-	$(AR) $(ARFLAGS) $@ $^
+	$(AR) $(ARFLAGS) $@ $?
 	$(RANLIB) $@
 
 qrll.a: $(QRLL)
-	$(AR) $(ARFLAGS) $@ $^
+	$(AR) $(ARFLAGS) $@ $?
 	$(RANLIB) $@
 
 .PHONY: clean cleanobj cleanlib
