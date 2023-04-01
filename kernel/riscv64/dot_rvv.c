@@ -37,24 +37,24 @@ FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG inc_y)
 
     if ( n <= 0 ) return(dot);
 
-    size_t vlmax = vsetvlmax_e64m8();
-    vfloat64m8_t vr = vfmv_v_f_f64m8(0, vlmax);
+    size_t vlmax = __riscv_vsetvlmax_e64m8();
+    vfloat64m8_t vr = __riscv_vfmv_v_f_f64m8(0, vlmax);
 
     if(inc_x == 1 && inc_y == 1) {
 
         for (size_t vl; n > 0; n -= vl, x += vl, y += vl) {
-            vl = vsetvl_e64m8(n);
+            vl = __riscv_vsetvl_e64m8(n);
 
 #if !defined(DOUBLE)
-            vfloat32m4_t vx = vle32_v_f32m4(x, vl);
-            vfloat32m4_t vy = vle32_v_f32m4(y, vl);
+            vfloat32m4_t vx = __riscv_vle32_v_f32m4(x, vl);
+            vfloat32m4_t vy = __riscv_vle32_v_f32m4(y, vl);
 
-            vr = vfwmacc_vv_f64m8(vr, vx, vy, vl);
+            vr = __riscv_vfwmacc_vv_f64m8(vr, vx, vy, vl);
 #else
-            vfloat64m8_t vx = vle64_v_f64m8(x, vl);
-            vfloat64m8_t vy = vle64_v_f64m8(y, vl);
+            vfloat64m8_t vx = __riscv_vle64_v_f64m8(x, vl);
+            vfloat64m8_t vy = __riscv_vle64_v_f64m8(y, vl);
 
-            vr = vfmacc_vv_f64m8(vr, vx, vy, vl);
+            vr = __riscv_vfmacc_vv_f64m8(vr, vx, vy, vl);
 #endif
         }
 
@@ -63,18 +63,18 @@ FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG inc_y)
         BLASLONG stride_y = inc_y * sizeof(FLOAT);
 
         for (size_t vl; n > 0; n -= vl, x += vl, y += vl*inc_y) {
-            vl = vsetvl_e64m8(n);
+            vl = __riscv_vsetvl_e64m8(n);
 
 #if !defined(DOUBLE)
-            vfloat32m4_t vx = vle32_v_f32m4(x, vl);
-            vfloat32m4_t vy = vlse32_v_f32m4(y, stride_y, vl);
+            vfloat32m4_t vx = __riscv_vle32_v_f32m4(x, vl);
+            vfloat32m4_t vy = __riscv_vlse32_v_f32m4(y, stride_y, vl);
 
-            vr = vfwmacc_vv_f64m8(vr, vx, vy, vl);
+            vr = __riscv_vfwmacc_vv_f64m8(vr, vx, vy, vl);
 #else
-            vfloat64m8_t vx = vle64_v_f64m8(x, vl);
-            vfloat64m8_t vy = vlse64_v_f64m8(y, stride_y, vl);
+            vfloat64m8_t vx = __riscv_vle64_v_f64m8(x, vl);
+            vfloat64m8_t vy = __riscv_vlse64_v_f64m8(y, stride_y, vl);
 
-            vr = vfmacc_vv_f64m8(vr, vx, vy, vl);
+            vr = __riscv_vfmacc_vv_f64m8(vr, vx, vy, vl);
 #endif
         }
     } else if (1 == inc_y) {
@@ -82,18 +82,18 @@ FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG inc_y)
         BLASLONG stride_x = inc_x * sizeof(FLOAT);
 
         for (size_t vl; n > 0; n -= vl, x += vl*inc_x, y += vl) {
-            vl = vsetvl_e64m8(n);
+            vl = __riscv_vsetvl_e64m8(n);
 
 #if !defined(DOUBLE)
-            vfloat32m4_t vx = vlse32_v_f32m4(x, stride_x, vl);
-            vfloat32m4_t vy = vle32_v_f32m4(y, vl);
+            vfloat32m4_t vx = __riscv_vlse32_v_f32m4(x, stride_x, vl);
+            vfloat32m4_t vy = __riscv_vle32_v_f32m4(y, vl);
 
-            vr = vfwmacc_vv_f64m8(vr, vx, vy, vl);
+            vr = __riscv_vfwmacc_vv_f64m8(vr, vx, vy, vl);
 #else
-            vfloat64m8_t vx = vlse64_v_f64m8(x, stride_x, vl);
-            vfloat64m8_t vy = vle64_v_f64m8(y, vl);
+            vfloat64m8_t vx = __riscv_vlse64_v_f64m8(x, stride_x, vl);
+            vfloat64m8_t vy = __riscv_vle64_v_f64m8(y, vl);
 
-            vr = vfmacc_vv_f64m8(vr, vx, vy, vl);
+            vr = __riscv_vfmacc_vv_f64m8(vr, vx, vy, vl);
 #endif
         }
     } else {
@@ -102,25 +102,25 @@ FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG inc_y)
         BLASLONG stride_y = inc_y * sizeof(FLOAT);
 
         for (size_t vl; n > 0; n -= vl, x += vl*inc_x, y += vl*inc_y) {
-            vl = vsetvl_e64m8(n);
+            vl = __riscv_vsetvl_e64m8(n);
 
 #if !defined(DOUBLE)
-            vfloat32m4_t vx = vlse32_v_f32m4(x, stride_x, vl);
-            vfloat32m4_t vy = vlse32_v_f32m4(y, stride_y, vl);
+            vfloat32m4_t vx = __riscv_vlse32_v_f32m4(x, stride_x, vl);
+            vfloat32m4_t vy = __riscv_vlse32_v_f32m4(y, stride_y, vl);
 
-            vr = vfwmacc_vv_f64m8(vr, vx, vy, vl);
+            vr = __riscv_vfwmacc_vv_f64m8(vr, vx, vy, vl);
 #else
-            vfloat64m8_t vx = vlse64_v_f64m8(x, stride_x, vl);
-            vfloat64m8_t vy = vlse64_v_f64m8(y, stride_y, vl);
+            vfloat64m8_t vx = __riscv_vlse64_v_f64m8(x, stride_x, vl);
+            vfloat64m8_t vy = __riscv_vlse64_v_f64m8(y, stride_y, vl);
 
-            vr = vfmacc_vv_f64m8(vr, vx, vy, vl);
+            vr = __riscv_vfmacc_vv_f64m8(vr, vx, vy, vl);
 #endif
         }
     }
 
-    vfloat64m1_t vec_zero = vfmv_v_f_f64m1(0, vlmax);
-    vfloat64m1_t vec_sum = vfredusum_vs_f64m8_f64m1(vec_zero, vr, vec_zero, vlmax);
-    dot = vfmv_f_s_f64m1_f64(vec_sum);
+    vfloat64m1_t vec_zero = __riscv_vfmv_v_f_f64m1(0, vlmax);
+    vfloat64m1_t vec_sum = __riscv_vfredusum_vs_f64m8_f64m1(vr, vec_zero, vlmax);
+    dot = __riscv_vfmv_f_s_f64m1_f64(vec_sum);
 
     return(dot);
 }

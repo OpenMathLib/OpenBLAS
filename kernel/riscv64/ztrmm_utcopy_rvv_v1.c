@@ -32,33 +32,33 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "common.h"
 
 #if !defined(DOUBLE)
-#define VSETVL(n) vsetvl_e32m2(n)
-#define FLOAT_V_T vfloat32m2_t
-#define VLEV_FLOAT vle32_v_f32m2
-#define VSEV_FLOAT vse32_v_f32m2
-#define VLSEG2_FLOAT vlseg2e32_v_f32m2
-#define VLSSEG2_FLOAT vlsseg2e32_v_f32m2
-#define VSSEG2_FLOAT vsseg2e32_v_f32m2
-#define VBOOL_T vbool16_t
-#define UINT_V_T vuint32m2_t
-#define VID_V_UINT vid_v_u32m2
-#define VMSGTU_VX_UINT vmsgtu_vx_u32m2_b16
-#define VMSEQ_VX_UINT vmseq_vx_u32m2_b16
-#define VFMERGE_VFM_FLOAT  vfmerge_vfm_f32m2
+#define VSETVL(n)               __riscv_vsetvl_e32m2(n)
+#define FLOAT_V_T               vfloat32m2_t
+#define VLEV_FLOAT              __riscv_vle32_v_f32m2
+#define VSEV_FLOAT              __riscv_vse32_v_f32m2
+#define VLSEG2_FLOAT            __riscv_vlseg2e32_v_f32m2
+#define VLSSEG2_FLOAT           __riscv_vlsseg2e32_v_f32m2
+#define VSSEG2_FLOAT            __riscv_vsseg2e32_v_f32m2
+#define VBOOL_T                 vbool16_t
+#define UINT_V_T                vuint32m2_t
+#define VID_V_UINT              __riscv_vid_v_u32m2
+#define VMSGTU_VX_UINT          __riscv_vmsgtu_vx_u32m2_b16
+#define VMSEQ_VX_UINT           __riscv_vmseq_vx_u32m2_b16
+#define VFMERGE_VFM_FLOAT       __riscv_vfmerge_vfm_f32m2
 #else
-#define VSETVL(n) vsetvl_e64m2(n)
-#define FLOAT_V_T vfloat64m2_t
-#define VLEV_FLOAT vle64_v_f64m2
-#define VSEV_FLOAT vse64_v_f64m2
-#define VLSEG2_FLOAT vlseg2e64_v_f64m2
-#define VLSSEG2_FLOAT vlsseg2e64_v_f64m2
-#define VSSEG2_FLOAT vsseg2e64_v_f64m2
-#define VBOOL_T     vbool32_t
-#define UINT_V_T     vuint64m2_t
-#define VID_V_UINT   vid_v_u64m2
-#define VMSGTU_VX_UINT vmsgtu_vx_u64m2_b32
-#define VMSEQ_VX_UINT vmseq_vx_u64m2_b32
-#define VFMERGE_VFM_FLOAT  vfmerge_vfm_f64m2
+#define VSETVL(n)               __riscv_vsetvl_e64m2(n)
+#define FLOAT_V_T               vfloat64m2_t
+#define VLEV_FLOAT              __riscv_vle64_v_f64m2
+#define VSEV_FLOAT              __riscv_vse64_v_f64m2
+#define VLSEG2_FLOAT            __riscv_vlseg2e64_v_f64m2
+#define VLSSEG2_FLOAT           __riscv_vlsseg2e64_v_f64m2
+#define VSSEG2_FLOAT            __riscv_vsseg2e64_v_f64m2
+#define VBOOL_T                 vbool32_t
+#define UINT_V_T                vuint64m2_t
+#define VID_V_UINT              __riscv_vid_v_u64m2
+#define VMSGTU_VX_UINT          __riscv_vmsgtu_vx_u64m2_b32
+#define VMSEQ_VX_UINT           __riscv_vmseq_vx_u64m2_b32
+#define VFMERGE_VFM_FLOAT       __riscv_vfmerge_vfm_f64m2
 #endif
 
 int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, BLASLONG posX, BLASLONG posY, FLOAT *b){
@@ -117,12 +117,12 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, BLASLONG posX, BLASLON
                 {
                     VLSEG2_FLOAT(&va0, &va1, ao, vl);
                     vbool_cmp = VMSGTU_VX_UINT(vindex, j, vl);
-                    va0 = VFMERGE_VFM_FLOAT(vbool_cmp, va0, ZERO, vl);
-                    va1 = VFMERGE_VFM_FLOAT(vbool_cmp, va1, ZERO, vl);
+                    va0 = VFMERGE_VFM_FLOAT(va0, ZERO, vbool_cmp, vl);
+                    va1 = VFMERGE_VFM_FLOAT(va1, ZERO, vbool_cmp, vl);
 #ifdef UNIT
                     vbool_eq = VMSEQ_VX_UINT(vindex, j, vl);
-                    va0 =  VFMERGE_VFM_FLOAT(vbool_eq, va0, ONE, vl);
-                    va1 =  VFMERGE_VFM_FLOAT(vbool_eq, va1, ZERO, vl);
+                    va0 =  VFMERGE_VFM_FLOAT(va0, ONE, vbool_eq, vl);
+                    va1 =  VFMERGE_VFM_FLOAT(va1, ZERO, vbool_eq, vl);
 #endif
                     VSSEG2_FLOAT(b, va0, va1, vl);
                     ao += lda * 2;

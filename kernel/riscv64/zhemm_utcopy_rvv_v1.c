@@ -28,45 +28,45 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "common.h"
 
 #if !defined(DOUBLE)
-#define VSETVL(n) vsetvl_e32m2(n)
-#define VSETVL_MAX vsetvlmax_e32m2()
-#define FLOAT_V_T vfloat32m2_t
-#define VLEV_FLOAT vle32_v_f32m2
-#define VSEV_FLOAT vse32_v_f32m2
-#define VLSEV_FLOAT vlse32_v_f32m2
-#define VLSEG2_FLOAT vlseg2e32_v_f32m2
-#define VLSSEG2_FLOAT vlsseg2e32_v_f32m2
-#define VSSEG2_FLOAT vsseg2e32_v_f32m2
-#define INT_V_T     vint32m2_t
-#define VID_V_INT   vid_v_i32m2
-#define VADD_VX_INT vadd_vx_i32m2
-#define VFRSUB_VF_FLOAT vfrsub_vf_f32m2
-#define VMSGT_VX_INT vmsgt_vx_i32m2_b16
-#define VMSLT_VX_INT vmslt_vx_i32m2_b16
-#define VMSEQ_VX_INT vmseq_vx_i32m2_b16
-#define VBOOL_T     vbool16_t
-#define VMERGE_VVM_FLOAT  vmerge_vvm_f32m2
-#define VFMVVF_FLOAT vfmv_v_f_f32m2
+#define VSETVL(n)               __riscv_vsetvl_e32m2(n)
+#define VSETVL_MAX              __riscv_vsetvlmax_e32m2()
+#define FLOAT_V_T               vfloat32m2_t
+#define VLEV_FLOAT              __riscv_vle32_v_f32m2
+#define VSEV_FLOAT              __riscv_vse32_v_f32m2
+#define VLSEV_FLOAT             __riscv_vlse32_v_f32m2
+#define VLSEG2_FLOAT            __riscv_vlseg2e32_v_f32m2
+#define VLSSEG2_FLOAT           __riscv_vlsseg2e32_v_f32m2
+#define VSSEG2_FLOAT            __riscv_vsseg2e32_v_f32m2
+#define INT_V_T                 vint32m2_t
+#define VID_V_INT               __riscv_vid_v_i32m2
+#define VADD_VX_INT             __riscv_vadd_vx_i32m2
+#define VFRSUB_VF_FLOAT         __riscv_vfrsub_vf_f32m2
+#define VMSGT_VX_INT            __riscv_vmsgt_vx_i32m2_b16
+#define VMSLT_VX_INT            __riscv_vmslt_vx_i32m2_b16
+#define VMSEQ_VX_INT            __riscv_vmseq_vx_i32m2_b16
+#define VBOOL_T                 vbool16_t
+#define VMERGE_VVM_FLOAT        __riscv_vmerge_vvm_f32m2
+#define VFMVVF_FLOAT            __riscv_vfmv_v_f_f32m2
 #else
-#define VSETVL(n) vsetvl_e64m2(n)
-#define VSETVL_MAX vsetvlmax_e64m2()
-#define FLOAT_V_T vfloat64m2_t
-#define VLEV_FLOAT vle64_v_f64m2
-#define VSEV_FLOAT vse64_v_f64m2
-#define VLSEV_FLOAT vlse64_v_f64m2
-#define VLSEG2_FLOAT vlseg2e64_v_f64m2
-#define VLSSEG2_FLOAT vlsseg2e64_v_f64m2
-#define VSSEG2_FLOAT vsseg2e64_v_f64m2
-#define INT_V_T     vint64m2_t
-#define VID_V_INT   vid_v_i64m2
-#define VADD_VX_INT vadd_vx_i64m2
-#define VFRSUB_VF_FLOAT vfrsub_vf_f64m2
-#define VMSGT_VX_INT vmsgt_vx_i64m2_b32
-#define VMSLT_VX_INT vmslt_vx_i64m2_b32
-#define VMSEQ_VX_INT vmseq_vx_i64m2_b32
-#define VBOOL_T     vbool32_t
-#define VMERGE_VVM_FLOAT  vmerge_vvm_f64m2
-#define VFMVVF_FLOAT vfmv_v_f_f64m2
+#define VSETVL(n)               __riscv_vsetvl_e64m2(n)
+#define VSETVL_MAX              __riscv_vsetvlmax_e64m2()
+#define FLOAT_V_T               vfloat64m2_t
+#define VLEV_FLOAT              __riscv_vle64_v_f64m2
+#define VSEV_FLOAT              __riscv_vse64_v_f64m2
+#define VLSEV_FLOAT             __riscv_vlse64_v_f64m2
+#define VLSEG2_FLOAT            __riscv_vlseg2e64_v_f64m2
+#define VLSSEG2_FLOAT           __riscv_vlsseg2e64_v_f64m2
+#define VSSEG2_FLOAT            __riscv_vsseg2e64_v_f64m2
+#define INT_V_T                 vint64m2_t
+#define VID_V_INT               __riscv_vid_v_i64m2
+#define VADD_VX_INT             __riscv_vadd_vx_i64m2
+#define VFRSUB_VF_FLOAT         __riscv_vfrsub_vf_f64m2
+#define VMSGT_VX_INT            __riscv_vmsgt_vx_i64m2_b32
+#define VMSLT_VX_INT            __riscv_vmslt_vx_i64m2_b32
+#define VMSEQ_VX_INT            __riscv_vmseq_vx_i64m2_b32
+#define VBOOL_T                 vbool32_t
+#define VMERGE_VVM_FLOAT        __riscv_vmerge_vvm_f64m2
+#define VFMVVF_FLOAT            __riscv_vfmv_v_f_f64m2
 #endif
 
 
@@ -101,13 +101,13 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, BLASLONG posX, BLASLON
             vbool_gt0  = VMSGT_VX_INT(vindex, 0, vl);
             vbool_eq0  = VMSEQ_VX_INT(vindex, 0, vl);
 
-            vb0 =  VMERGE_VVM_FLOAT(vbool_gt0, va20, va10, vl);
-            vb1 =  VMERGE_VVM_FLOAT(vbool_gt0, va21, va11, vl);
+            vb0 =  VMERGE_VVM_FLOAT(va20, va10, vbool_gt0, vl);
+            vb1 =  VMERGE_VVM_FLOAT(va21, va11, vbool_gt0, vl);
 
             vb2 =  VFRSUB_VF_FLOAT(vb1, ZERO, vl);
 
-            vb1 =  VMERGE_VVM_FLOAT(vbool_gt0, vb1, vb2, vl);
-            vb1 =  VMERGE_VVM_FLOAT(vbool_eq0, vb1, vzero, vl);
+            vb1 =  VMERGE_VVM_FLOAT(vb1, vb2, vbool_gt0, vl);
+            vb1 =  VMERGE_VVM_FLOAT(vb1, vzero, vbool_eq0, vl);
             VSSEG2_FLOAT(b, vb0, vb1, vl);
 
             b   += vl * 2;

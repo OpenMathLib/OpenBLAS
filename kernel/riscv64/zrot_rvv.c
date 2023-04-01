@@ -28,33 +28,33 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "common.h"
 
 #if !defined(DOUBLE)
-#define VSETVL(n) vsetvl_e32m4(n)
-#define FLOAT_V_T vfloat32m4_t
-#define VLEV_FLOAT vle32_v_f32m4
-#define VLSEV_FLOAT vlse32_v_f32m4
-#define VSEV_FLOAT vse32_v_f32m4
-#define VSSEV_FLOAT vsse32_v_f32m4
-#define VLSEG_FLOAT vlseg2e32_v_f32m4
-#define VSSEG_FLOAT vsseg2e32_v_f32m4
-#define VLSSEG_FLOAT vlsseg2e32_v_f32m4
-#define VSSSEG_FLOAT vssseg2e32_v_f32m4
-#define VFMACCVF_FLOAT vfmacc_vf_f32m4
-#define VFMULVF_FLOAT vfmul_vf_f32m4
-#define VFNMSACVF_FLOAT vfnmsac_vf_f32m4
+#define VSETVL(n)               __riscv_vsetvl_e32m4(n)
+#define FLOAT_V_T               vfloat32m4_t
+#define VLEV_FLOAT              __riscv_vle32_v_f32m4
+#define VLSEV_FLOAT             __riscv_vlse32_v_f32m4
+#define VSEV_FLOAT              __riscv_vse32_v_f32m4
+#define VSSEV_FLOAT             __riscv_vsse32_v_f32m4
+#define VLSEG_FLOAT             __riscv_vlseg2e32_v_f32m4
+#define VSSEG_FLOAT             __riscv_vsseg2e32_v_f32m4
+#define VLSSEG_FLOAT            __riscv_vlsseg2e32_v_f32m4
+#define VSSSEG_FLOAT            __riscv_vssseg2e32_v_f32m4
+#define VFMACCVF_FLOAT          __riscv_vfmacc_vf_f32m4
+#define VFMULVF_FLOAT           __riscv_vfmul_vf_f32m4
+#define VFNMSACVF_FLOAT         __riscv_vfnmsac_vf_f32m4
 #else
-#define VSETVL(n) vsetvl_e64m4(n)
-#define FLOAT_V_T vfloat64m4_t
-#define VLEV_FLOAT vle64_v_f64m4
-#define VLSEV_FLOAT vlse64_v_f64m4
-#define VSEV_FLOAT vse64_v_f64m4
-#define VSSEV_FLOAT vsse64_v_f64m4
-#define VLSEG_FLOAT vlseg2e64_v_f64m4
-#define VSSEG_FLOAT vsseg2e64_v_f64m4
-#define VLSSEG_FLOAT vlsseg2e64_v_f64m4
-#define VSSSEG_FLOAT vssseg2e64_v_f64m4
-#define VFMACCVF_FLOAT vfmacc_vf_f64m4
-#define VFMULVF_FLOAT vfmul_vf_f64m4
-#define VFNMSACVF_FLOAT vfnmsac_vf_f64m4
+#define VSETVL(n)               __riscv_vsetvl_e64m4(n)
+#define FLOAT_V_T               vfloat64m4_t
+#define VLEV_FLOAT              __riscv_vle64_v_f64m4
+#define VLSEV_FLOAT             __riscv_vlse64_v_f64m4
+#define VSEV_FLOAT              __riscv_vse64_v_f64m4
+#define VSSEV_FLOAT             __riscv_vsse64_v_f64m4
+#define VLSEG_FLOAT             __riscv_vlseg2e64_v_f64m4
+#define VSSEG_FLOAT             __riscv_vsseg2e64_v_f64m4
+#define VLSSEG_FLOAT            __riscv_vlsseg2e64_v_f64m4
+#define VSSSEG_FLOAT            __riscv_vssseg2e64_v_f64m4
+#define VFMACCVF_FLOAT          __riscv_vfmacc_vf_f64m4
+#define VFMULVF_FLOAT           __riscv_vfmul_vf_f64m4
+#define VFNMSACVF_FLOAT         __riscv_vfnmsac_vf_f64m4
 #endif
 
 int CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG inc_y, FLOAT c, FLOAT s)

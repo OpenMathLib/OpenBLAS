@@ -28,19 +28,19 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "common.h"
 
 #if !defined(DOUBLE)
-#define VSETVL(n) vsetvl_e32m4(n)
-#define FLOAT_V_T vfloat32m4_t
-#define VLSEG_FLOAT vlseg2e32_v_f32m4
-#define VLSSEG_FLOAT vlsseg2e32_v_f32m4
-#define VSSEG_FLOAT vsseg2e32_v_f32m4
-#define VSSSEG_FLOAT vssseg2e32_v_f32m4
+#define VSETVL(n)               __riscv_vsetvl_e32m4(n)
+#define FLOAT_V_T               vfloat32m4_t
+#define VLSEG_FLOAT             __riscv_vlseg2e32_v_f32m4
+#define VLSSEG_FLOAT            __riscv_vlsseg2e32_v_f32m4
+#define VSSEG_FLOAT             __riscv_vsseg2e32_v_f32m4
+#define VSSSEG_FLOAT            __riscv_vssseg2e32_v_f32m4
 #else
-#define VSETVL(n) vsetvl_e64m4(n)
-#define FLOAT_V_T vfloat64m4_t
-#define VLSEG_FLOAT vlseg2e64_v_f64m4
-#define VLSSEG_FLOAT vlsseg2e64_v_f64m4
-#define VSSEG_FLOAT vsseg2e64_v_f64m4
-#define VSSSEG_FLOAT vssseg2e64_v_f64m4
+#define VSETVL(n)               __riscv_vsetvl_e64m4(n)
+#define FLOAT_V_T               vfloat64m4_t
+#define VLSEG_FLOAT             __riscv_vlseg2e64_v_f64m4
+#define VLSSEG_FLOAT            __riscv_vlsseg2e64_v_f64m4
+#define VSSEG_FLOAT             __riscv_vsseg2e64_v_f64m4
+#define VSSSEG_FLOAT            __riscv_vssseg2e64_v_f64m4
 #endif
 
 int CNAME(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, FLOAT dummy3, FLOAT dummy4, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG inc_y, FLOAT *dummy, BLASLONG dummy2)

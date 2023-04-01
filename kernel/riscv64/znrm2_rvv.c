@@ -28,35 +28,35 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "common.h"
 
 #if !defined(DOUBLE)
-#define VSETVL(n) vsetvl_e32m4(n)
-#define VSETVL_MAX vsetvlmax_e32m4()
-#define VSETVL_MAX_M1 vsetvlmax_e32m1()
-#define FLOAT_V_T vfloat32m4_t
-#define FLOAT_V_T_M1 vfloat32m1_t
-#define VLSEG_FLOAT vlseg2e32_v_f32m4
-#define VLSSEG_FLOAT vlsseg2e32_v_f32m4
-#define VFREDSUM_FLOAT vfredusum_vs_f32m4_f32m1
-#define VFMACCVV_FLOAT vfmacc_vv_f32m4
-#define VFMVVF_FLOAT vfmv_v_f_f32m4
-#define VFMVVF_FLOAT_M1 vfmv_v_f_f32m1
-#define VFREDMAXVS_FLOAT vfredmax_vs_f32m4_f32m1
-#define VFMVFS_FLOAT_M1 vfmv_f_s_f32m1_f32
-#define VFABSV_FLOAT vfabs_v_f32m4
+#define VSETVL(n)               __riscv_vsetvl_e32m4(n)
+#define VSETVL_MAX              __riscv_vsetvlmax_e32m4()
+#define VSETVL_MAX_M1           __riscv_vsetvlmax_e32m1()
+#define FLOAT_V_T               vfloat32m4_t
+#define FLOAT_V_T_M1            vfloat32m1_t
+#define VLSEG_FLOAT             __riscv_vlseg2e32_v_f32m4
+#define VLSSEG_FLOAT            __riscv_vlsseg2e32_v_f32m4
+#define VFREDSUM_FLOAT          __riscv_vfredusum_vs_f32m4_f32m1
+#define VFMACCVV_FLOAT          __riscv_vfmacc_vv_f32m4
+#define VFMVVF_FLOAT            __riscv_vfmv_v_f_f32m4
+#define VFMVVF_FLOAT_M1         __riscv_vfmv_v_f_f32m1
+#define VFREDMAXVS_FLOAT        __riscv_vfredmax_vs_f32m4_f32m1
+#define VFMVFS_FLOAT_M1         __riscv_vfmv_f_s_f32m1_f32
+#define VFABSV_FLOAT            __riscv_vfabs_v_f32m4
 #else
-#define VSETVL(n) vsetvl_e64m4(n)
-#define VSETVL_MAX vsetvlmax_e64m4()
-#define VSETVL_MAX_M1 vsetvlmax_e64m1()
-#define FLOAT_V_T vfloat64m4_t
-#define FLOAT_V_T_M1 vfloat64m1_t
-#define VLSEG_FLOAT vlseg2e64_v_f64m4
-#define VLSSEG_FLOAT vlsseg2e64_v_f64m4
-#define VFREDSUM_FLOAT vfredusum_vs_f64m4_f64m1
-#define VFMACCVV_FLOAT vfmacc_vv_f64m4
-#define VFMVVF_FLOAT vfmv_v_f_f64m4
-#define VFMVVF_FLOAT_M1 vfmv_v_f_f64m1
-#define VFREDMAXVS_FLOAT vfredmax_vs_f64m4_f64m1
-#define VFMVFS_FLOAT_M1 vfmv_f_s_f64m1_f64
-#define VFABSV_FLOAT vfabs_v_f64m4
+#define VSETVL(n)               __riscv_vsetvl_e64m4(n)
+#define VSETVL_MAX              __riscv_vsetvlmax_e64m4()
+#define VSETVL_MAX_M1           __riscv_vsetvlmax_e64m1()
+#define FLOAT_V_T               vfloat64m4_t
+#define FLOAT_V_T_M1            vfloat64m1_t
+#define VLSEG_FLOAT             __riscv_vlseg2e64_v_f64m4
+#define VLSSEG_FLOAT            __riscv_vlsseg2e64_v_f64m4
+#define VFREDSUM_FLOAT          __riscv_vfredusum_vs_f64m4_f64m1
+#define VFMACCVV_FLOAT          __riscv_vfmacc_vv_f64m4
+#define VFMVVF_FLOAT            __riscv_vfmv_v_f_f64m4
+#define VFMVVF_FLOAT_M1         __riscv_vfmv_v_f_f64m1
+#define VFREDMAXVS_FLOAT        __riscv_vfredmax_vs_f64m4_f64m1
+#define VFMVFS_FLOAT_M1         __riscv_vfmv_f_s_f64m1_f64
+#define VFABSV_FLOAT            __riscv_vfabs_v_f64m4
 #endif
 
 // TODO: Should single precision use the widening MAC, or perhaps all should be double? 
@@ -85,10 +85,10 @@ FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x)
             v0 = VFABSV_FLOAT(v0, vl);
             v1 = VFABSV_FLOAT(v1, vl);
 
-            v_max = VFREDMAXVS_FLOAT(v_max, v0, v_max, vl);
+            v_max = VFREDMAXVS_FLOAT(v0, v_max, vl);
             vr = VFMACCVV_FLOAT(vr, v0, v0, vl);
 
-            v_max = VFREDMAXVS_FLOAT(v_max, v1, v_max, vl);
+            v_max = VFREDMAXVS_FLOAT(v1, v_max, vl);
             vr = VFMACCVV_FLOAT(vr, v1, v1, vl);
         }
 
@@ -103,16 +103,16 @@ FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x)
             v0 = VFABSV_FLOAT(v0, vl);
             v1 = VFABSV_FLOAT(v1, vl);
 
-            v_max = VFREDMAXVS_FLOAT(v_max, v0, v_max, vl);
+            v_max = VFREDMAXVS_FLOAT(v0, v_max, vl);
             vr = VFMACCVV_FLOAT(vr, v0, v0, vl);
 
-            v_max = VFREDMAXVS_FLOAT(v_max, v1, v_max, vl);
+            v_max = VFREDMAXVS_FLOAT(v1, v_max, vl);
             vr = VFMACCVV_FLOAT(vr, v1, v1, vl);
         }
 
     }
 
-    v_res = VFREDSUM_FLOAT(v_res, vr, v_res, vlmax);
+    v_res = VFREDSUM_FLOAT(vr, v_res, vlmax);
 
     ssq = VFMVFS_FLOAT_M1(v_res);
     scale = VFMVFS_FLOAT_M1(v_max);

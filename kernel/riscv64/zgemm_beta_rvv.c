@@ -39,23 +39,23 @@
 #include "common.h"
 
 #if !defined(DOUBLE)
-#define VSETVL(n) vsetvl_e32m4(n)
-#define FLOAT_V_T vfloat32m4_t
-#define VLSEG_FLOAT vlseg2e32_v_f32m4
-#define VSSEG_FLOAT vsseg2e32_v_f32m4
-#define VFMVVF_FLOAT vfmv_v_f_f32m4
-#define VFMULVF_FLOAT vfmul_vf_f32m4
-#define VFADDVV_FLOAT vfadd_vv_f32m4
-#define VFSUBVV_FLOAT vfsub_vv_f32m4
+#define VSETVL(n)               __riscv_vsetvl_e32m4(n)
+#define FLOAT_V_T               vfloat32m4_t
+#define VLSEG_FLOAT             __riscv_vlseg2e32_v_f32m4
+#define VSSEG_FLOAT             __riscv_vsseg2e32_v_f32m4
+#define VFMVVF_FLOAT            __riscv_vfmv_v_f_f32m4
+#define VFMULVF_FLOAT           __riscv_vfmul_vf_f32m4
+#define VFADDVV_FLOAT           __riscv_vfadd_vv_f32m4
+#define VFSUBVV_FLOAT           __riscv_vfsub_vv_f32m4
 #else
-#define VSETVL(n) vsetvl_e64m4(n)
-#define FLOAT_V_T vfloat64m4_t
-#define VLSEG_FLOAT vlseg2e64_v_f64m4
-#define VSSEG_FLOAT vsseg2e64_v_f64m4
-#define VFMVVF_FLOAT vfmv_v_f_f64m4
-#define VFMULVF_FLOAT vfmul_vf_f64m4
-#define VFADDVV_FLOAT vfadd_vv_f64m4
-#define VFSUBVV_FLOAT vfsub_vv_f64m4
+#define VSETVL(n)               __riscv_vsetvl_e64m4(n)
+#define FLOAT_V_T               vfloat64m4_t
+#define VLSEG_FLOAT             __riscv_vlseg2e64_v_f64m4
+#define VSSEG_FLOAT             __riscv_vsseg2e64_v_f64m4
+#define VFMVVF_FLOAT            __riscv_vfmv_v_f_f64m4
+#define VFMULVF_FLOAT           __riscv_vfmul_vf_f64m4
+#define VFADDVV_FLOAT           __riscv_vfadd_vv_f64m4
+#define VFSUBVV_FLOAT           __riscv_vfsub_vv_f64m4
 #endif
 
 int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1,

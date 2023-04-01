@@ -29,15 +29,15 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "common.h"
 
 #if !defined(DOUBLE)
-#define VSETVL(n) vsetvl_e32m2(n)
-#define FLOAT_V_T vfloat32m2_t
-#define VLSSEG2_FLOAT vlsseg2e32_v_f32m2
-#define VSSEG2_FLOAT vsseg2e32_v_f32m2
+#define VSETVL(n)               __riscv_vsetvl_e32m2(n)
+#define FLOAT_V_T               vfloat32m2_t
+#define VLSSEG2_FLOAT           __riscv_vlsseg2e32_v_f32m2
+#define VSSEG2_FLOAT            __riscv_vsseg2e32_v_f32m2
 #else
-#define VSETVL(n) vsetvl_e64m2(n)
-#define FLOAT_V_T vfloat64m2_t
-#define VLSSEG2_FLOAT vlsseg2e64_v_f64m2
-#define VSSEG2_FLOAT vsseg2e64_v_f64m2
+#define VSETVL(n)               __riscv_vsetvl_e64m2(n)
+#define FLOAT_V_T               vfloat64m2_t
+#define VLSSEG2_FLOAT           __riscv_vlsseg2e64_v_f64m2
+#define VSSEG2_FLOAT            __riscv_vsseg2e64_v_f64m2
 #endif
 
 int CNAME(BLASLONG m, BLASLONG n, IFLOAT *a, BLASLONG lda, IFLOAT *b){
