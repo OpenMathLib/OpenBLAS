@@ -53,7 +53,7 @@ int CNAME(BLASLONG m, FLOAT alpha_r, FLOAT alpha_i,
 
   for (i = 0; i < m; i++){
 #ifndef LOWER
-    if ((X[i * 2 + 0] != ZERO) && (X[i * 2 + 1] != ZERO)) {
+    if ((X[i * 2 + 0] != ZERO) || (X[i * 2 + 1] != ZERO)) {
       AXPYU_K(i + 1, 0, 0,
 	      alpha_r * X[i * 2 + 0] - alpha_i * X[i * 2 + 1],
 	      alpha_i * X[i * 2 + 0] + alpha_r * X[i * 2 + 1],
@@ -61,7 +61,7 @@ int CNAME(BLASLONG m, FLOAT alpha_r, FLOAT alpha_i,
     }
     a += (i + 1) * 2;
 #else
-    if ((X[i * 2 + 0] != ZERO) && (X[i * 2 + 1] != ZERO)) {
+    if ((X[i * 2 + 0] != ZERO) || (X[i * 2 + 1] != ZERO)) {
       AXPYU_K(m - i, 0, 0,
 	      alpha_r * X[i * 2 + 0] - alpha_i * X[i * 2 + 1],
 	      alpha_i * X[i * 2 + 0] + alpha_r * X[i * 2 + 1],

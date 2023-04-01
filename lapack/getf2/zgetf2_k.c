@@ -106,30 +106,34 @@ blasint CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa,
       temp1 = *(b + jp * 2 + 0);
       temp2 = *(b + jp * 2 + 1);
 
-  //    if ((temp1 != ZERO) || (temp2 != ZERO)) {
-	if ((fabs(temp1) >= DBL_MIN) && (fabs(temp2) >= DBL_MIN)) {
-		
-	if (jp != j) {
-	  SWAP_K(j + 1, 0, 0, ZERO, ZERO, a + j * 2, lda,
+      if ((temp1 != ZERO) || (temp2 != ZERO)) {
+#if defined(DOUBLE)
+	if ((fabs(temp1) >= DBL_MIN) || (fabs(temp2) >= DBL_MIN)) {
+#else
+	if ((fabs(temp1) >= FLT_MIN) || (fabs(temp2) >= FLT_MIN)) {
+#endif		
+	  if (jp != j) {
+	    SWAP_K(j + 1, 0, 0, ZERO, ZERO, a + j * 2, lda,
 		 a + jp * 2, lda, NULL, 0);
-	}
+	  }
 
-	if (fabs(temp1) >= fabs(temp2)){
-	  ratio = temp2 / temp1;
-	  den = dp1 /(temp1 * ( 1 + ratio * ratio));
-	  temp3 =  den;
-	  temp4 = -ratio * den;
-	} else {
-	  ratio = temp1 / temp2;
-	  den = dp1 /(temp2 * ( 1 + ratio * ratio));
-	  temp3 =  ratio * den;
-	  temp4 = -den;
-	}
+	  if (fabs(temp1) >= fabs(temp2)){
+	    ratio = temp2 / temp1;
+	    den = dp1 /(temp1 * ( 1 + ratio * ratio));
+	    temp3 =  den;
+	    temp4 = -ratio * den;
+	  } else {
+	    ratio = temp1 / temp2;
+	    den = dp1 /(temp2 * ( 1 + ratio * ratio));
+	    temp3 =  ratio * den;
+	    temp4 = -den;
+	  }
 
-	if (j + 1 < m) {
-	  SCAL_K(m - j - 1, 0, 0, temp3, temp4,
-		 b + (j + 1) * 2, 1, NULL, 0, NULL, 0);
-	}
+	  if (j + 1 < m) {
+	    SCAL_K(m - j - 1, 0, 0, temp3, temp4,
+	  	 b + (j + 1) * 2, 1, NULL, 0, NULL, 0);
+	  }
+        }
       } else {
 	if (!info) info = j + 1;
       }
