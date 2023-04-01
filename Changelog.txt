@@ -1,5 +1,22 @@
 OpenBLAS ChangeLog
 ====================================================================
+Version 0.3.23
+ 01-Apr-2023
+ 
+ general:
+   - fixed a serious regression in GETRF/GETF2 and ZGETRF/ZGETF2 where
+     subnormal but nonzero data elements triggered the singularity flag
+   - fixed a long-standing bug in CSPR/ZSPR in single-threaded operation
+     for cases where elements of the X vector are real numbers (or 
+     complex with only the real part zero)
+   - fixed gmake builds with the option NO_LAPACK
+   - fixed a few instances in the gmake Makefiles where expressly
+     setting NO_LAPACK=0 or NO_LAPACKE=0 would have the opposite effect
+   
+x86_64:
+   - added further CPUID values for Intel Raptor Lake
+
+====================================================================
 Version 0.3.22
  26-Mar-2023
 
