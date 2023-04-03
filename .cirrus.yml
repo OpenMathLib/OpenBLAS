@@ -9,8 +9,8 @@ task:
   - export CPPFLAGS="-I/opt/homebrew/opt/llvm/include"
   - make TARGET=VORTEX USE_OPENMP=1 CC="/opt/homebrew/opt/llvm/bin/clang -arch arm64"
   config_artifacts:
-  - path: "*conf*"
-  - type: text/plain
+    path: "*conf*"
+    type: text/plain
   lib_artifacts:
-  - path: "libopenblas*"
-  - type: application/octet-stream
+    path: "libopenblas*"
+    type: application/octet-stream
