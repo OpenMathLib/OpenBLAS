@@ -1,0 +1,10 @@
+macos_instance:
+  image: ghcr.io/cirruslabs/macos-monterey-xcode:latest
+
+task:
+  compile_script:
+  - brew install llvm
+  - export PATH=/opt/homebrew/opt/llvm/bin:$PATH
+  - export LDFLAGS="-L/opt/homebrew/opt/llvm/lib"
+  - export CPPFLAGS="-I/opt/homebrew/opt/llvm/include"
+  - make TARGET=VORTEX USE_OPENMP=1 CC=clang
