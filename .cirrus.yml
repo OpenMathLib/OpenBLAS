@@ -7,4 +7,4 @@ task:
   - export PATH=/opt/homebrew/opt/llvm/bin:$PATH
   - export LDFLAGS="-L/opt/homebrew/opt/llvm/lib"
   - export CPPFLAGS="-I/opt/homebrew/opt/llvm/include"
-  - make TARGET=VORTEX USE_OPENMP=1 CC="clang -arch x86_64 -arch arm64"
+  - make TARGET=VORTEX USE_OPENMP=1 CC="clang -arch arm64"
