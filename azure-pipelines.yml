@@ -178,7 +178,7 @@ jobs:
       brew install llvm libomp
       sudo mkdir -p /opt/local/var/macports/build/_opt_bblocal_var_buildworker_ports_build_ports_math_OpenBLAS/OpenBLAS/work/compwrap/cc/opt/local/bin/
       sudo ln -s /usr/local/opt/llvm/bin/clang /opt/local/var/macports/build/_opt_bblocal_var_buildworker_ports_build_ports_math_OpenBLAS/OpenBLAS/work/compwrap/cc/opt/local/bin/clang-mp-11
-      make TARGET=CORE2 USE_OPENMP=1 DYNAMIC_ARCH=1 CC="/opt/local/var/macports/build/_opt_bblocal_var_buildworker_ports_build_ports_math_OpenBLAS/OpenBLAS/work/compwrap/cc/opt/local/bin/clang-mp-11 -arch x86_64" NOFORTRAN=1
+      make TARGET=CORE2 USE_OPENMP=1 DYNAMIC_ARCH=1 LD+="-arch x86_64" FC=gfortran FC+="-m64" CC="/opt/local/var/macports/build/_opt_bblocal_var_buildworker_ports_build_ports_math_OpenBLAS/OpenBLAS/work/compwrap/cc/opt/local/bin/clang-mp-11 -arch x86_64" NOFORTRAN=1
 
 - job: OSX_OpenMP_Clang_cmake
   pool:
