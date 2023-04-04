@@ -176,7 +176,9 @@ jobs:
   - script: |
       brew update
       brew install llvm libomp
-      make TARGET=CORE2 USE_OPENMP=1 DYNAMIC_ARCH=1 CC="/usr/local/opt/llvm/bin/clang -arch x86_64" NOFORTRAN=1
+      mkdir -p /opt/local/var/macports/build/_opt_bblocal_var_buildworker_ports_build_ports_math_OpenBLAS/OpenBLAS/work/compwrap/cc/opt/local/bin/
+      ln -s /usr/local/opt/llvm/bin/clang /_opt_bblocal_var_buildworker_ports_build_ports_math_OpenBLAS/OpenBLAS/work/compwrap/cc/opt/local/bin/clang-mp-11
+      make TARGET=CORE2 USE_OPENMP=1 DYNAMIC_ARCH=1 CC="/_opt_bblocal_var_buildworker_ports_build_ports_math_OpenBLAS/OpenBLAS/work/compwrap/cc/opt/local/bin/clang-mp-11 -arch x86_64" NOFORTRAN=1
 
 - job: OSX_OpenMP_Clang_cmake
   pool:
