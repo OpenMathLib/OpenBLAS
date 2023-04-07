@@ -33,3 +33,14 @@ task:
   name: Graviton2
   compile_script:
   - make
+  
+windows_container:
+  image:cirrusci/windowsservercore:2019
+  
+task:
+  name: Windows/LLVM16
+  install_script: 
+    - choco install -y llvm
+    - choco install -y cmake
+    - choco install -y ninja
+    - cmake . -S build -G "Ninja" -DCMAKE_CXX_COMPILER=clang-cl -DCMAKE_C_COMPILER=clang-cl -DCMAKE_Fortran_COMPILER=flang -DCMAKE_MT=mt -DDYNAMIC_ARCH=ON -DCMAKE_BUILD_TYPE=Release
