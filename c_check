@@ -35,7 +35,7 @@ if [ "`dirname \"$compiler_name\"`" != '.' ]; then
     cross_suffix="$cross_suffix`dirname \"$compiler_name\"`/"
 fi
 
-bn=`basename \"$compiler_name\"`
+bn=`basename -z \"$compiler_name\"`
 case "$bn" in
     *-*) cross_suffix="$cross_suffix${bn%-*}-"
 esac
