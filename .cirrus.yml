@@ -37,7 +37,7 @@ task:
 windows_container:
   image:cirrusci/windowsservercore:2019
   
-task:
+windows_task:
   name: Windows/LLVM16
   install_script: 
     - choco install -y llvm
