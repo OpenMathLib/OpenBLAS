@@ -716,6 +716,7 @@ lapackobjs2z="$lapackobjs2z
 # functions added for lapack-3.7.0
 lapackobjs2s="$lapackobjs2s
     slarfy
+    ssyconvf
     strevc3
     sgelqt
     sgelqt3
