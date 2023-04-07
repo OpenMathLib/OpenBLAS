@@ -8,9 +8,10 @@ task:
   - export LDFLAGS="-L/opt/homebrew/opt/llvm/lib"
   - export CPPFLAGS="-I/opt/homebrew/opt/llvm/include"
   - make TARGET=HASWELL USE_OPENMP=1 CC="/opt/homebrew/opt/llvm/bin/clang -arch x86_64"
-  config_artifacts:
-    path: "*conf*"
-    type: text/plain
+  always:
+    config_artifacts:
+      path: "*conf*"
+      type: text/plain
   lib_artifacts:
     path: "libopenblas*"
     type: application/octet-stream
