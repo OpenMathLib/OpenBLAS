@@ -67,7 +67,6 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x)
 {
 	BLASLONG i=0, j=0;
-	BLASLONG ix=0;
 	FLOAT asumf=0.0;
 	if (n <= 0 || inc_x <= 0) return(asumf);
         unsigned int gvl = 0;
@@ -103,17 +102,15 @@ FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x)
                 unsigned int stride_x = inc_x * sizeof(FLOAT);
                 if(gvl <= n/2){
                         v_sum = VFMVVF_FLOAT(0, gvl);
-                        BLASLONG inc_xv = inc_x * gvl;
                         for(i=0,j=0; i<n/(gvl*2); i++){
-                                v0 = VLSEV_FLOAT(&x[ix], stride_x, gvl);
+                                v0 = VLSEV_FLOAT(&x[j*inc_x], stride_x, gvl);
                                 v0 = VFABS_FLOAT(v0, gvl);
                                 v_sum = VFADDVV_FLOAT(v_sum, v0, gvl);
 
-                                v1 = VLSEV_FLOAT(&x[ix+inc_xv], stride_x, gvl);
+                                v1 = VLSEV_FLOAT(&x[(j+gvl)*inc_x], stride_x, gvl);
                                 v1 = VFABS_FLOAT(v1, gvl);
                                 v_sum = VFADDVV_FLOAT(v_sum, v1, gvl);
                                 j += gvl * 2;
-                                inc_xv += inc_xv * 2;
                         }
                         v_res = VFREDSUMVS_FLOAT(v_sum, v_res, gvl);
                 }

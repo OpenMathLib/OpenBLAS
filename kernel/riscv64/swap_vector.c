@@ -67,7 +67,7 @@ int CNAME(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, FLOAT dummy3, FLOAT *x, 
         BLASLONG stride_x, stride_y;
         FLOAT_V_T vx0, vx1, vy0, vy1;
 
-	if (n < 0)  return(0);
+	if (n <= 0)  return(0);
 
         unsigned int gvl = VSETVL((inc_x != 0 && inc_y != 0) ? n : 1);
         if( inc_x == 0 && inc_y == 0 ) { n = n & 1; }

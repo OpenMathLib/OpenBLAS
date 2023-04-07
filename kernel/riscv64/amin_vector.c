@@ -31,15 +31,19 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #       define LMUL m2
 #       if defined(DOUBLE)
 #               define ELEN 64
+#               define ABS fabs
 #       else
 #               define ELEN 32
+#               define ABS fabsf
 #       endif
 #else
 #       define LMUL m8
 #       if defined(DOUBLE)
 #               define ELEN 64
+#               define ABS fabs
 #       else
 #               define ELEN 32
+#               define ABS fabsf
 #       endif
 #endif
 
@@ -69,7 +73,7 @@ FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x)
         FLOAT minf=0.0;
         if (n <= 0 || inc_x <= 0) return(minf);
 
-        minf = *x;
+        minf = ABS(*x);
         x += inc_x;
         --n;
         if (n == 0) return(minf);
