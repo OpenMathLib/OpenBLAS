@@ -24,21 +24,21 @@ task:
 #      type: text/plain
 #  lib_artifacts:
 #    path: "libopenblas*"
-#    type: application/octet-stream
+#    type: application/octet-streamm
 
-arm_container:
-  image: node:latest
 
 task:
   name: Graviton2
+  arm_container:
+    image: node:latest
   compile_script:
   - make
   
-windows_container:
-  image:cirrusci/windowsservercore:2019
-  
+
 windows_task:
   name: Windows/LLVM16
+  windows_container:
+    image:cirrusci/windowsservercore:2019
   install_script: 
     - choco install -y llvm
     - choco install -y cmake
