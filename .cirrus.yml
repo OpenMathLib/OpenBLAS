@@ -35,10 +35,10 @@ task:
   - make
   
 
-windows_task:
+task:
   name: Windows/LLVM16
   windows_container:
-    image:cirrusci/windowsservercore:2019
+    image: cirrusci/windowsservercore:2019
   install_script: 
     - choco install -y llvm
     - choco install -y cmake
