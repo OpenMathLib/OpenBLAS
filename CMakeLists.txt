@@ -20,6 +20,8 @@ include(CMakePackageConfigHelpers)
 #######
 option(BUILD_WITHOUT_LAPACK "Do not build LAPACK and LAPACKE (Only BLAS or CBLAS)" OFF)
 
+option(BUILD_LAPACK_DEPRECATED "When building LAPACK, include also some older, deprecated routines" ON)
+
 option(BUILD_TESTING "Build LAPACK testsuite when building LAPACK" ON)
 
 option(C_LAPACK "Build LAPACK from C sources instead of the original Fortran" OFF)
@@ -398,12 +400,12 @@ if (BUILD_SHARED_LIBS AND NOT ${SYMBOLPREFIX}${SYMBOLSUFFIX} STREQUAL "")
     message(STATUS "adding suffix ${SYMBOLSUFFIX} to names of exported symbols in ${OpenBLAS_LIBNAME}")
   endif()
 
-  if (${BUILD_LAPACK_DEPRECATED}) 
+  if (${BUILD_LAPACK_DEPRECATED})
 	  set (BLD 1)
   else ()
 	  set (BLD 0)
   endif()
-  if (${BUILD_BFLOAT16}) 
+  if (${BUILD_BFLOAT16})
 	  set (BBF16 1)
   else ()
 	  set (BBF16 0)
