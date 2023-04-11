@@ -436,6 +436,7 @@ if(USE_XBLAS)
   set(ALLXOBJ ${SXLASRC} ${DXLASRC} ${CXLASRC} ${ZXLASRC})
 endif()
 
+if(BUILD_LAPACK_DEPRECATED)
 list(APPEND SLASRC DEPRECATED/sgegs.f DEPRECATED/sgegv.f
   DEPRECATED/sgeqpf.f DEPRECATED/sgelsx.f DEPRECATED/sggsvd.f
   DEPRECATED/sggsvp.f DEPRECATED/slahrd.f DEPRECATED/slatzm.f DEPRECATED/stzrqf.f)
@@ -449,6 +450,7 @@ list(APPEND ZLASRC DEPRECATED/zgegs.f DEPRECATED/zgegv.f
   DEPRECATED/zgeqpf.f DEPRECATED/zgelsx.f DEPRECATED/zggsvd.f
   DEPRECATED/zggsvp.f DEPRECATED/zlahrd.f DEPRECATED/zlatzm.f DEPRECATED/ztzrqf.f)
 message(STATUS "Building deprecated routines")
+endif()
 
 set(DSLASRC spotrs.f)
 
@@ -930,6 +932,7 @@ if(USE_XBLAS)
   set(ALLXOBJ ${SXLASRC} ${DXLASRC} ${CXLASRC} ${ZXLASRC})
 endif()
 
+if(BUILD_LAPACK_DEPRECATED)
 list(APPEND SLASRC DEPRECATED/sgegs.c DEPRECATED/sgegv.c
   DEPRECATED/sgeqpf.c DEPRECATED/sgelsx.c DEPRECATED/sggsvd.c
   DEPRECATED/sggsvp.c DEPRECATED/slahrd.c DEPRECATED/slatzm.c DEPRECATED/stzrqf.c)
@@ -943,6 +946,7 @@ list(APPEND ZLASRC DEPRECATED/zgegs.c DEPRECATED/zgegv.c
   DEPRECATED/zgeqpf.c DEPRECATED/zgelsx.c DEPRECATED/zggsvd.c
   DEPRECATED/zggsvp.c DEPRECATED/zlahrd.c DEPRECATED/zlatzm.c DEPRECATED/ztzrqf.c)
 message(STATUS "Building deprecated routines")
+endif()
 
 set(DSLASRC spotrs.c)
 
