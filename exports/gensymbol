@@ -17,7 +17,7 @@
 # removed blas_thread_shutdown_
 #
 blasobjsc="
-    camin camax caxpy caxpby ccopy cdot cdotc cdotu cgbmv cgemm cgemv cgerc cgeru
+    caxpy caxpby ccopy cdotc cdotu cgbmv cgemm cgemv cgerc cgeru
     chbmv chemm chemv cher2 cher2k cher cherk scabs1 scamax
     chpmv chpr2 chpr crotg cscal csrot csscal cswap scamin scasum scnrm2
     csymm csyr2k csyrk ctbmv ctbsv ctpmv ctpsv ctrmm ctrmv ctrsm
@@ -41,8 +41,8 @@ blasobjss="
     strmm strmv strsm strsv  sgeadd ssum sgemmt"
 
 blasobjsz="
-    zamin zamax izamax izamin
-    zaxpy zaxpby zcopy zdot zdotc zdotu zdrot
+    izamax izamin
+    zaxpy zaxpby zcopy zdotc zdotu zdrot
     zdscal zgbmv zgemm zgemv zgerc zgeru
     zhbmv zhemm zhemv zher2 zher2k zher zherk zhpmv zhpr2
     zhpr zrotg zscal zswap zsymm zsyr2k zsyrk ztbmv
@@ -53,17 +53,17 @@ blasobjsz="
 blasobjs="lsame xerbla"
 bfblasobjs="sbgemm sbgemv sbdot sbstobf16 sbdtobf16 sbf16tos dbf16tod"
 cblasobjsc="
-    cblas_caxpy cblas_ccopy cblas_cdot cblas_cdotc cblas_cdotu cblas_cgbmv cblas_cgemm cblas_cgemv
+    cblas_caxpy cblas_ccopy cblas_cdotc cblas_cdotu cblas_cgbmv cblas_cgemm cblas_cgemv
     cblas_cgerc cblas_cgeru cblas_chbmv cblas_chemm cblas_chemv cblas_cher2 cblas_cher2k
     cblas_cher cblas_cherk  cblas_chpmv cblas_chpr2 cblas_chpr cblas_cscal cblas_caxpby
     cblas_csscal cblas_cswap cblas_csymm cblas_csyr2k cblas_csyrk cblas_ctbmv cblas_cgeadd
     cblas_ctbsv cblas_ctpmv cblas_ctpsv cblas_ctrmm cblas_ctrmv cblas_ctrsm cblas_ctrsv
-    cblas_scnrm2 cblas_scasum cblas_camin cblas_camax cblas_cgemmt cblas_cmin cblas_cmax
+    cblas_scnrm2 cblas_scasum cblas_cgemmt
     cblas_icamax cblas_icamin cblas_icmin cblas_icmax cblas_scsum cblas_cimatcopy cblas_comatcopy
     "
 cblasobjsd="
-    cblas_dasum cblas_daxpy cblas_dcopy cblas_ddot cblas_damin cblas_damax
-    cblas_dgbmv cblas_dgemm cblas_dgemv cblas_dger cblas_dnrm2 cblas_dmin cblas_dmax
+    cblas_dasum cblas_daxpy cblas_dcopy cblas_ddot
+    cblas_dgbmv cblas_dgemm cblas_dgemv cblas_dger cblas_dnrm2
     cblas_drot cblas_drotg cblas_drotm cblas_drotmg cblas_dsbmv cblas_dscal cblas_dsdot
     cblas_dspmv cblas_dspr2 cblas_dspr cblas_dswap cblas_dsymm cblas_dsymv cblas_dsyr2
     cblas_dsyr2k cblas_dsyr cblas_dsyrk cblas_dtbmv cblas_dtbsv cblas_dtpmv cblas_dtpsv
@@ -72,24 +72,24 @@ cblasobjsd="
     "
 
 cblasobjss="
-    cblas_sasum cblas_saxpy cblas_saxpby cblas_samin cblas_samax cblas_smax cblas_smin
+    cblas_sasum cblas_saxpy cblas_saxpby
     cblas_scopy cblas_sdot cblas_sdsdot cblas_sgbmv cblas_sgemm
     cblas_sgemv cblas_sger cblas_snrm2 cblas_srot cblas_srotg
     cblas_srotm cblas_srotmg cblas_ssbmv cblas_sscal cblas_sspmv cblas_sspr2 cblas_sspr
     cblas_sswap cblas_ssymm cblas_ssymv cblas_ssyr2 cblas_ssyr2k cblas_ssyr cblas_ssyrk
     cblas_stbmv cblas_stbsv cblas_stpmv cblas_stpsv cblas_strmm cblas_strmv cblas_strsm
-    cblas_strsv cblas_sgeadd cblas_sgemmt 
+    cblas_strsv cblas_sgeadd cblas_sgemmt
     cblas_isamax cblas_isamin cblas_ismin cblas_ismax cblas_ssum cblas_simatcopy cblas_somatcopy
     "
 
 cblasobjsz="
-    cblas_dzasum cblas_dznrm2 cblas_zaxpy cblas_zcopy cblas_zdot cblas_zdotc cblas_zdotu cblas_zdscal
+    cblas_dzasum cblas_dznrm2 cblas_zaxpy cblas_zcopy cblas_zdotc cblas_zdotu cblas_zdscal
     cblas_zgbmv cblas_zgemm cblas_zgemv cblas_zgerc cblas_zgeru cblas_zhbmv cblas_zhemm
     cblas_zhemv cblas_zher2 cblas_zher2k cblas_zher cblas_zherk cblas_zhpmv cblas_zhpr2
     cblas_zhpr cblas_zscal cblas_zswap cblas_zsymm cblas_zsyr2k cblas_zsyrk
     cblas_ztbmv cblas_ztbsv cblas_ztpmv cblas_ztpsv cblas_ztrmm cblas_ztrmv cblas_ztrsm
     cblas_ztrsv cblas_cdotc_sub cblas_cdotu_sub cblas_zdotc_sub cblas_zdotu_sub
-    cblas_zaxpby cblas_zgeadd cblas_zamin cblas_zamax cblas_zgemmt cblas_zmin cblas_zmax
+    cblas_zaxpby cblas_zgeadd cblas_zgemmt
     cblas_izamax cblas_izamin cblas_izmin cblas_izmax cblas_dzsum cblas_zimatcopy cblas_zomatcopy
 "
 
