@@ -38,7 +38,7 @@ fi
 bn=`basename \"$compiler_name\"`
 
 case "$bn" in
-    *-*) if [ "$bn" != '-']; then
+    *-*) if [ "$bn" != '-' ]; then
            cross_suffix="$cross_suffix${bn%-*}-"
          fi
 esac
