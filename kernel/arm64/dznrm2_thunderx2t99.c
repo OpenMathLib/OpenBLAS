@@ -344,7 +344,6 @@ FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x)
 	FLOAT dummy_alpha[2];
 #endif
 	FLOAT ssq, scale;
-	volatile FLOAT sca;
 
 	if (n <= 0 || inc_x <= 0) return 0.0;
 
@@ -405,7 +404,7 @@ FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x)
 #else
 	nrm2_compute(n, x, inc_x, &ssq, &scale);
 #endif
-	sca = fabs(scale);
+	volatile FLOAT sca = fabs(scale);
 	if (sca < DBL_MIN) return 0.;
 	ssq = sqrt(ssq) * scale;
 
