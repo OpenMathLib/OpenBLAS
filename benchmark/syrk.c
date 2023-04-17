@@ -1,5 +1,5 @@
 /***************************************************************************
-Copyright (c) 2014, The OpenBLAS Project
+Copyright (c) 2014, 2023 The OpenBLAS Project
 All rights reserved.
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -67,7 +67,7 @@ int main(int argc, char *argv[]){
   int step =   1;
   int loops =  1;
 
-  if ((p = getenv("OPENBLAS_LOOPS"))) loops=*p;
+  if ((p = getenv("OPENBLAS_LOOPS"))) loops=atoi(p);
 
   double time1,timeg;
 
@@ -77,7 +77,7 @@ int main(int argc, char *argv[]){
   if (argc > 0) { to       = MAX(atol(*argv), from);	argc--; argv++;}
   if (argc > 0) { step     = atol(*argv);		argc--; argv++;}
 
-  fprintf(stderr, "From : %3d  To : %3d Step = %3d Uplo = %c Trans = %c\n", from, to, step,uplo,trans);
+  fprintf(stderr, "From : %3d  To : %3d Step = %3d Uplo = %c Trans = %c Loops = %d\n", from, to, step,uplo,trans,loops);
 
 
   if (( a = (FLOAT *)malloc(sizeof(FLOAT) * to * to * COMPSIZE)) == NULL){
