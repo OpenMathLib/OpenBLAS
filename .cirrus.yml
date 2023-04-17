@@ -28,7 +28,7 @@ task:
 
 
 task:
-  name: Graviton2
+  name: NeoverseN1
   arm_container:
     image: node:latest
   compile_script:
@@ -41,6 +41,7 @@ task:
     image: cirrusci/windowsservercore:2019
   install_script: 
     - choco install -y llvm
-    - choco install -y cmake --installargs 'ADD_CMAKE_TO_PATH=System'
+    - choco install -y cmake --installargs '"ADD_CMAKE_TO_PATH=System"'
     - choco install -y ninja
+    - refreshenv
     - cmake . -S build -G "Ninja" -DCMAKE_CXX_COMPILER=clang-cl -DCMAKE_C_COMPILER=clang-cl -DCMAKE_Fortran_COMPILER=flang -DCMAKE_MT=mt -DDYNAMIC_ARCH=ON -DCMAKE_BUILD_TYPE=Release
