@@ -18,10 +18,10 @@ task:
   - export LDFLAGS="-L/opt/homebrew/opt/llvm/lib"
   - export CPPFLAGS="-I/opt/homebrew/opt/llvm/include"
   - make TARGET=HASWELL USE_OPENMP=1 CC="/opt/homebrew/opt/llvm/bin/clang -arch x86_64"
-#  always:
-#    config_artifacts:
-#      path: "*conf*"
-#      type: text/plain
+  always:
+    config_artifacts:
+      path: "*conf*"
+      type: text/plain
 #  lib_artifacts:
 #    path: "libopenblas*"
 #    type: application/octet-streamm
@@ -44,4 +44,4 @@ task:
     - choco install -y cmake --installargs '"ADD_CMAKE_TO_PATH=System"'
     - choco install -y ninja
     - refreshenv
-    - cmake . -S build -G "Ninja" -DCMAKE_CXX_COMPILER=clang-cl -DCMAKE_C_COMPILER=clang-cl -DCMAKE_Fortran_COMPILER=flang -DCMAKE_MT=mt -DDYNAMIC_ARCH=ON -DCMAKE_BUILD_TYPE=Release
+    - cmake -S . -B build -G "Ninja" -DCMAKE_CXX_COMPILER=clang-cl -DCMAKE_C_COMPILER=clang-cl -DCMAKE_Fortran_COMPILER=flang -DCMAKE_MT=mt -DDYNAMIC_ARCH=ON -DCMAKE_BUILD_TYPE=Release
