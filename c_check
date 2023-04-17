@@ -40,6 +40,7 @@ bn=`basename \"$compiler_name\"`
 case "$bn" in
     *-*) if [ "$bn" != '-' ]; then
            cross_suffix="$cross_suffix${bn%-*}-"
+	   cross_suffix=`echo $cross_suffix|sed -e 's/ -$//'`
          fi
 esac
 
