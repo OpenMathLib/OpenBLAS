@@ -23,6 +23,9 @@
   * Optimization on AMD Piledriver
   * Optimization on Intel Haswell
 
+* Chris Sidebottom <chris.sidebottom@arm.com>
+  * Optimizations and other improvements targeting AArch64
+
 ## Previous Developers
 
 * Zaheer Chothia <zaheer.chothia@gmail.com>
