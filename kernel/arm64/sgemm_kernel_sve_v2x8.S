@@ -55,8 +55,8 @@ With this approach, we can reuse sgemm_n|tcopy_sve_v1.c packing functions. */
 #define lanes		x15
 #define pA1	    	x16
 #define pA2	    	x17
-#define alpha		w19
-#define vec_len		x20
+#define alpha		w18
+#define vec_len		x19
 #define vec_lenx2   x20
 
 #define alpha0		s10
