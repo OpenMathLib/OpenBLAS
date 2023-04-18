@@ -27,7 +27,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 #include "common.h"
-
+#include <float.h>
 #include <arm_neon.h>
 
 #if defined(SMP)
@@ -404,7 +404,8 @@ FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x)
 #else
 	nrm2_compute(n, x, inc_x, &ssq, &scale);
 #endif
-	if (fabs(scale) <1.e-300) return 0.;
+	volatile FLOAT sca = fabs(scale);
+	if (sca < DBL_MIN) return 0.;
 	ssq = sqrt(ssq) * scale;
 
 	return ssq;
