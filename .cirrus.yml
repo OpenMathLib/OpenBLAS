@@ -40,9 +40,12 @@ task:
   windows_container:
     image: cirrusci/windowsservercore:2019
   install_script: 
+    - choco list --localonly
     - choco install -y llvm
     - choco install -y cmake --installargs '"ADD_CMAKE_TO_PATH=System"'
     - choco install -y ninja
     - refreshenv
-    - C:\\Program\ Files\ \(x86\)\\Microsoft\ Visual\ Studio\ 14.0\\VC\\vcvarsall.bat
+    - cd "c:/Program Files (x86)/Microsoft Visual Studio/2019/BuildTools/VC/Auxiliary/Build"
+    - vcvarsall x64
+    - cd $CIRRUS_WORKING_DIR
     - cmake -S . -B build -G "Ninja" -DCMAKE_CXX_COMPILER=clang-cl -DCMAKE_C_COMPILER=clang-cl -DCMAKE_Fortran_COMPILER=flang -DCMAKE_MT=mt -DDYNAMIC_ARCH=ON -DCMAKE_BUILD_TYPE=Release
