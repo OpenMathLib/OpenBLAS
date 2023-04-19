@@ -49,5 +49,6 @@ task:
     - vcvarsall x64
     - cd "C:\Users\ContainerAdministrator\AppData\Local\Temp\cirrus-ci-build"
     - cmake -S . -B build -G "Ninja" -DCMAKE_CXX_COMPILER=clang-cl -DCMAKE_C_COMPILER=clang-cl -DCMAKE_MT=mt -DDYNAMIC_ARCH=ON -DCMAKE_BUILD_TYPE=Release
-    - cmake --build
+    - cd build
+    - cmake --build .
     - ctest
