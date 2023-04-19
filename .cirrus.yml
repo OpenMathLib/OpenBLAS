@@ -47,5 +47,5 @@ task:
     - refreshenv
     - cd "c:/Program Files (x86)/Microsoft Visual Studio/2019/BuildTools/VC/Auxiliary/Build"
     - vcvarsall x64
-    - cd $CIRRUS_WORKING_DIR
+    - cd "C:\Users\ContainerAdministrator\AppData\Local\Temp\cirrus-ci-build"
     - cmake -S . -B build -G "Ninja" -DCMAKE_CXX_COMPILER=clang-cl -DCMAKE_C_COMPILER=clang-cl -DCMAKE_Fortran_COMPILER=flang -DCMAKE_MT=mt -DDYNAMIC_ARCH=ON -DCMAKE_BUILD_TYPE=Release
