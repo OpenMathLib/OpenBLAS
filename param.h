@@ -3854,6 +3854,10 @@ Until then, just keep it different than DGEMM_DEFAULT_UNROLL_N to keep copy rout
 
 #endif
 
+#ifndef SWITCH_RATIO
+#define SWITCH_RATIO 2
+#endif
+
 #ifndef QGEMM_DEFAULT_UNROLL_M
 #define QGEMM_DEFAULT_UNROLL_M 2
 #endif
