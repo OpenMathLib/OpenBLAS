@@ -1,5 +1,6 @@
 /*********************************************************************/
 /* Copyright 2009, 2010 The University of Texas at Austin.           */
+/* Copyright 2023 The OpenBLAS Project.                              */
 /* All rights reserved.                                              */
 /*                                                                   */
 /* Redistribution and use in source and binary forms, with or        */
@@ -45,6 +46,7 @@
 
 typedef struct {
   int dtb_entries;
+  int switch_ratio;
   int offsetA, offsetB, align;
 
 #if BUILD_BFLOAT16 == 1
