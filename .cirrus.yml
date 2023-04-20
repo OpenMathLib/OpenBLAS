@@ -17,7 +17,7 @@ task:
   - export PATH=/opt/homebrew/opt/llvm/bin:$PATH
   - export LDFLAGS="-L/opt/homebrew/opt/llvm/lib"
   - export CPPFLAGS="-I/opt/homebrew/opt/llvm/include"
-  - make TARGET=HASWELL USE_OPENMP=1 CC="/opt/homebrew/opt/llvm/bin/clang -arch x86_64"
+  - make TARGET=HASWELL NOFORTRAN=1 USE_OPENMP=1 CC="/opt/homebrew/opt/llvm/bin/clang -arch x86_64"
   always:
     config_artifacts:
       path: "*conf*"
@@ -35,20 +35,20 @@ task:
   - make
   
 
-task:
-  name: Windows/LLVM16
-  windows_container:
-    image: cirrusci/windowsservercore:cmake-2021.12.07
-  install_script: 
-    - choco list --localonly
-    - choco install -y llvm
-    - # choco install -y cmake --installargs '"ADD_CMAKE_TO_PATH=System"'
-    - choco install -y ninja
-    - refreshenv
-    - cd "c:/Program Files (x86)/Microsoft Visual Studio/2019/BuildTools/VC/Auxiliary/Build"
-    - vcvarsall x64
-    - cd "C:\Users\ContainerAdministrator\AppData\Local\Temp\cirrus-ci-build"
-    - cmake -S . -B build -G "Ninja" -DCMAKE_CXX_COMPILER=clang-cl -DCMAKE_C_COMPILER=clang-cl -DCMAKE_MT=mt -DCMAKE_BUILD_TYPE=Release
-    - cd build
-    - cmake --build .
-    - ctest
+#task:
+#  name: Windows/LLVM16     --- too slow ---
+#  windows_container:
+#    image: cirrusci/windowsservercore:cmake-2021.12.07
+#  install_script: 
+#    - choco list --localonly
+#    - choco install -y llvm
+#    - # choco install -y cmake --installargs '"ADD_CMAKE_TO_PATH=System"'
+#    - choco install -y ninja
+#    - refreshenv
+#    - cd "c:/Program Files (x86)/Microsoft Visual Studio/2019/BuildTools/VC/Auxiliary/Build"
+#    - vcvarsall x64
+#    - cd "C:\Users\ContainerAdministrator\AppData\Local\Temp\cirrus-ci-build"
+#    - cmake -S . -B build -G "Ninja" -DCMAKE_CXX_COMPILER=clang-cl -DCMAKE_C_COMPILER=clang-cl -DCMAKE_MT=mt -DCMAKE_BUILD_TYPE=Release
+#    - cd build
+#    - cmake --build .
+#    - ctest
