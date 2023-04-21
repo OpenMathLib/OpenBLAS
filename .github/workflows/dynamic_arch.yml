@@ -219,17 +219,19 @@ jobs:
 
       - name: Prepare ccache
         # Get cache location of ccache
+        # Create key that is used in action/cache/restore and action/cache/save steps
         id: ccache-prepare
         run: |
           echo "ccachedir=$(cygpath -m $(ccache -k cache_dir))" >> $GITHUB_OUTPUT
-
-      - name: Compilation cache
-        uses: actions/cache@v3
-        with:
-          path: ${{ steps.ccache-prepare.outputs.ccachedir }}
           # We include the commit sha in the cache key, as new cache entries are
           # only created if there is no existing entry for the key yet.
-          key: ccache-msys2-${{ matrix.msystem }}-${{ matrix.idx }}-${{ matrix.build-type }}-${{ github.ref }}-${{ github.sha }}
+          echo "key=ccache-msys2-${{ matrix.msystem }}-${{ matrix.idx }}-${{ matrix.build-type }}-${{ github.ref }}-${{ github.sha }}" >> $GITHUB_OUTPUT
+
+      - name: Restore ccache
+        uses: actions/cache/restore@v3
+        with:
+          path: ${{ steps.ccache-prepare.outputs.ccachedir }}
+          key: ${{ steps.ccache-prepare.outputs.key }}
           # Restore a matching ccache cache entry. Prefer same branch.
           restore-keys: |
             ccache-msys2-${{ matrix.msystem }}-${{ matrix.idx }}-${{ matrix.build-type }}-${{ github.ref }}
@@ -269,6 +271,13 @@ jobs:
       - name: Show ccache status
         continue-on-error: true
         run: ccache -s
+
+      - name: Save ccache
+        # Save the cache after we are done (successfully) building
+        uses: actions/cache/save@v3
+        with:
+          path: ${{ steps.ccache-prepare.outputs.ccachedir }}
+          key: ${{ steps.ccache-prepare.outputs.key }}
 
       - name: Run tests
         timeout-minutes: 60
