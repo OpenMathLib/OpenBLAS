@@ -217,14 +217,21 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Compilation cache
-        uses: actions/cache@v3
-        with:
-          # It looks like this path needs to be hard-coded.
-          path: C:/msys64/home/runneradmin/.ccache
+      - name: Prepare ccache
+        # Get cache location of ccache
+        # Create key that is used in action/cache/restore and action/cache/save steps
+        id: ccache-prepare
+        run: |
+          echo "ccachedir=$(cygpath -m $(ccache -k cache_dir))" >> $GITHUB_OUTPUT
           # We include the commit sha in the cache key, as new cache entries are
           # only created if there is no existing entry for the key yet.
-          key: ccache-msys2-${{ matrix.msystem }}-${{ matrix.idx }}-${{ matrix.build-type }}-${{ github.ref }}-${{ github.sha }}
+          echo "key=ccache-msys2-${{ matrix.msystem }}-${{ matrix.idx }}-${{ matrix.build-type }}-${{ github.ref }}-${{ github.sha }}" >> $GITHUB_OUTPUT
+
+      - name: Restore ccache
+        uses: actions/cache/restore@v3
+        with:
+          path: ${{ steps.ccache-prepare.outputs.ccachedir }}
+          key: ${{ steps.ccache-prepare.outputs.key }}
           # Restore a matching ccache cache entry. Prefer same branch.
           restore-keys: |
             ccache-msys2-${{ matrix.msystem }}-${{ matrix.idx }}-${{ matrix.build-type }}-${{ github.ref }}
@@ -234,9 +241,10 @@ jobs:
         # Limit the maximum size and switch on compression to avoid exceeding the total disk or cache quota.
         run: |
           which ccache
-          test -d ~/.ccache || mkdir -p ~/.ccache
-          echo "max_size = 250M" > ~/.ccache/ccache.conf
-          echo "compression = true" >> ~/.ccache/ccache.conf
+          test -d ${{ steps.ccache-prepare.outputs.ccachedir }} || mkdir -p ${{ steps.ccache-prepare.outputs.ccachedir }}
+          echo "max_size = 250M" > ${{ steps.ccache-prepare.outputs.ccachedir }}/ccache.conf
+          echo "compression = true" >> ${{ steps.ccache-prepare.outputs.ccachedir }}/ccache.conf
+          ccache -p
           ccache -s
           echo $HOME
           cygpath -w $HOME
@@ -263,6 +271,13 @@ jobs:
       - name: Show ccache status
         continue-on-error: true
         run: ccache -s
+
+      - name: Save ccache
+        # Save the cache after we are done (successfully) building
+        uses: actions/cache/save@v3
+        with:
+          path: ${{ steps.ccache-prepare.outputs.ccachedir }}
+          key: ${{ steps.ccache-prepare.outputs.key }}
 
       - name: Run tests
         timeout-minutes: 60
