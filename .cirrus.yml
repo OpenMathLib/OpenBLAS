@@ -17,7 +17,7 @@ task:
   - export PATH=/opt/homebrew/opt/llvm/bin:$PATH
   - export LDFLAGS="-L/opt/homebrew/opt/llvm/lib"
   - export CPPFLAGS="-I/opt/homebrew/opt/llvm/include"
-  - make TARGET=HASWELL NOFORTRAN=1 RANLIB=/opt/homebrew/opt/llvm/bin/llvm-ranlib USE_OPENMP=1 CC="/opt/homebrew/opt/llvm/bin/clang -arch x86_64"
+  - make TARGET=HASWELL NOFORTRAN=1 RANLIB=/opt/homebrew/opt/llvm/bin/llvm-ranlib CC="/opt/homebrew/opt/llvm/bin/clang -arch x86_64"
   always:
     config_artifacts:
       path: "*conf*"
