@@ -151,39 +151,46 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        msystem: [MINGW64, MINGW32, CLANG64]
+        msystem: [MINGW64, MINGW32, CLANG64, CLANG32]
         idx: [int32, int64]
         build-type: [Release]
         include:
           - msystem: MINGW64
             idx: int32
             target-prefix: mingw-w64-x86_64
-            fc-pkg: mingw-w64-x86_64-gcc-fortran
+            fc-pkg: fc
           - msystem: MINGW32
             idx: int32
             target-prefix: mingw-w64-i686
-            fc-pkg: mingw-w64-i686-gcc-fortran
+            fc-pkg: fc
           - msystem: CLANG64
             idx: int32
             target-prefix: mingw-w64-clang-x86_64
+            fc-pkg: fc
+          - msystem: CLANG32
+            idx: int32
+            target-prefix: mingw-w64-clang-i686
+            fc-pkg: cc
             c-lapack-flags: -DC_LAPACK=ON
           - msystem: MINGW64
             idx: int64
             idx64-flags: -DBINARY=64 -DINTERFACE64=1
             target-prefix: mingw-w64-x86_64
-            fc-pkg: mingw-w64-x86_64-gcc-fortran
+            fc-pkg: fc
           - msystem: CLANG64
             idx: int64
             idx64-flags: -DBINARY=64 -DINTERFACE64=1
             target-prefix: mingw-w64-clang-x86_64
-            c-lapack-flags: -DC_LAPACK=ON
+            fc-pkg: fc
           - msystem: MINGW64
             idx: int32
             target-prefix: mingw-w64-x86_64
-            fc-pkg: mingw-w64-x86_64-gcc-fortran
+            fc-pkg: fc
             build-type: None
         exclude:
           - msystem: MINGW32
+            idx: int64
+          - msystem: CLANG32
             idx: int64
 
     defaults:
@@ -209,7 +216,7 @@ jobs:
           install: >-
             base-devel
             ${{ matrix.target-prefix }}-cc
-            ${{ matrix.fc-pkg }}
+            ${{ matrix.target-prefix }}-${{ matrix.fc-pkg }}
             ${{ matrix.target-prefix }}-cmake
             ${{ matrix.target-prefix }}-ninja
             ${{ matrix.target-prefix }}-ccache
