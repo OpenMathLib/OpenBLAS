@@ -128,10 +128,10 @@ SGEMM_BETA     = sgemm_beta.S
 SGEMMKERNEL    =  sgemm_kernel_sve_v2x$(SGEMM_UNROLL_N).S
 STRMMKERNEL    =  strmm_kernel_sve_v1x$(SGEMM_UNROLL_N).S
 
-SGEMMINCOPY    =  sgemm_ncopy_sve_v1.c
-SGEMMITCOPY    =  sgemm_tcopy_sve_v1.c
-SGEMMONCOPY    =  sgemm_ncopy_$(DGEMM_UNROLL_N).S
-SGEMMOTCOPY    =  sgemm_tcopy_$(DGEMM_UNROLL_N).S
+SGEMMINCOPY    =  gemm_ncopy_sve_v1x$(SGEMM_UNROLL_N).c
+SGEMMITCOPY    =  gemm_tcopy_sve_v1x$(SGEMM_UNROLL_N).c
+SGEMMONCOPY    =  sgemm_ncopy_$(SGEMM_UNROLL_N).S
+SGEMMOTCOPY    =  sgemm_tcopy_$(SGEMM_UNROLL_N).S
 
 SGEMMINCOPYOBJ =  sgemm_incopy$(TSUFFIX).$(SUFFIX)
 SGEMMITCOPYOBJ =  sgemm_itcopy$(TSUFFIX).$(SUFFIX)
@@ -149,8 +149,8 @@ SSYMMLCOPY_M    =  symm_lcopy_sve.c
 DGEMMKERNEL    =  dgemm_kernel_sve_v2x$(DGEMM_UNROLL_N).S
 DTRMMKERNEL    =  dtrmm_kernel_sve_v1x$(DGEMM_UNROLL_N).S
 
-DGEMMINCOPY    =  dgemm_ncopy_sve_v1.c
-DGEMMITCOPY    =  dgemm_tcopy_sve_v1.c
+DGEMMINCOPY    =  gemm_ncopy_sve_v1x$(DGEMM_UNROLL_N).c
+DGEMMITCOPY    =  gemm_tcopy_sve_v1x$(DGEMM_UNROLL_N).c
 DGEMMONCOPY    =  dgemm_ncopy_$(DGEMM_UNROLL_N).S
 DGEMMOTCOPY    =  dgemm_tcopy_$(DGEMM_UNROLL_N).S
 
