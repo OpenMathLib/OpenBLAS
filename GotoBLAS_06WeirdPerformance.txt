@@ -11,7 +11,7 @@
    operation is finished.
 
 
-2. Simlar problem may happen under virtual machine. If supervisor
+2. Similar problem may happen under virtual machine. If supervisor
    allocates different cores for each scheduling, BLAS performnace
    will be bad. This is because BLAS also utilizes all cache,
    unexpected re-schedule for different core may result of heavy
