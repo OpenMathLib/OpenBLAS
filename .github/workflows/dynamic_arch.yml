@@ -287,8 +287,21 @@ jobs:
           key: ${{ steps.ccache-prepare.outputs.key }}
 
       - name: Run tests
+        id: run-ctest
         timeout-minutes: 60
         run: cd build && ctest
+
+      - name: Re-run tests
+        if: always() && (steps.run-ctest.outcome == 'failure')
+        timeout-minutes: 60
+        run: |
+          cd build
+          echo "::group::Re-run ctest"
+          ctest --rerun-failed --output-on-failure || true
+          echo "::endgroup::"
+          echo "::group::Log from these tests"
+          [ ! -f Testing/Temporary/LastTest.log ] || cat Testing/Temporary/LastTest.log
+          echo "::endgroup::"
 
 
   cross_build:
