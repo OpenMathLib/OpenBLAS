@@ -199,7 +199,7 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_UPLO Uplo,
 
 	int transa, transb, uplo;
 	blasint info;
-	blasint m, lda, ldb;
+	blasint lda, ldb;
 	FLOAT *a, *b;
 	XFLOAT *buffer;
 
