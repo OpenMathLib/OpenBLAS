@@ -177,7 +177,7 @@ void NAME(char *UPLO, char *TRANSA, char *TRANSB,
 #else
 
 void CNAME(enum CBLAS_ORDER order, enum CBLAS_UPLO Uplo,
-	   enum CBLAS_TRANSPOSE TransA, enum CBLAS_TRANSPOSE TransB, blasint M,
+	   enum CBLAS_TRANSPOSE TransA, enum CBLAS_TRANSPOSE TransB, blasint m,
 	   blasint k,
 #ifndef COMPLEX
 	   FLOAT alpha,
@@ -199,7 +199,7 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_UPLO Uplo,
 
 	int transa, transb, uplo;
 	blasint info;
-	blasint m, lda, ldb;
+	blasint lda, ldb;
 	FLOAT *a, *b;
 	XFLOAT *buffer;
 
@@ -392,7 +392,7 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_UPLO Uplo,
 
 #endif
 
-	if ((m == 0) )
+	if (m == 0)
 		return;
 
 	IDEBUG_START;
