@@ -168,7 +168,7 @@ fi
 
 no_msa=0
 if [ "$architecture" = "mips" ] || [ "$architecture" = "mips64" ]; then
-    tmpd="$(mktemp -d)"
+    tmpd=$(mktemp -d 2>/dev/null || mktemp -d -t 'OBC')
     tmpf="$tmpd/a.c"
     code='"addvi.b $w0, $w1, 1"'
     msa_flags='-mmsa -mfp64 -mload-store-pairs'
@@ -208,7 +208,7 @@ esac
 
 no_avx512=0
 if [ "$architecture" = "x86" ] || [ "$architecture" = "x86_64" ]; then
-    tmpd=`mktemp -d`
+    tmpd=$(mktemp -d 2>/dev/null || mktemp -d -t 'OBC')
     tmpf="$tmpd/a.c"
     code='"vbroadcastss -4 * 4(%rsi), %zmm2"'
     printf "#include <immintrin.h>\n\nint main(void){ __asm__ volatile(%s); }\n" "$code" >> "$tmpf"
@@ -229,7 +229,7 @@ fi
 
 no_rv64gv=0
 if [ "$architecture" = "riscv64" ]; then
-    tmpd=`mktemp -d`
+    tmpd=$(mktemp -d 2>/dev/null || mktemp -d -t 'OBC')
     tmpf="$tmpd/a.c"
     code='"vsetvli    zero, zero, e8, m1\n"'
     printf "int main(void){ __asm__ volatile(%s); }\n" "$code" >> "$tmpf"
@@ -245,7 +245,7 @@ fi
 
 no_sve=0
 if [ "$architecture" = "arm64" ]; then
-    tmpd=`mktemp -d`
+    tmpd=$(mktemp -d 2>/dev/null || mktemp -d -t 'OBC')
     tmpf="$tmpd/a.c"
     printf "#include <arm_sve.h>\n\n int main(void){}\n">> "$tmpf"
     args=" -march=armv8-a+sve -c -o $tmpf.o $tmpf"
@@ -261,7 +261,7 @@ fi
 c11_atomics=0
 case "$data" in
     *HAVE_C11*)
-        tmpd=`mktemp -d`
+        tmpd=$(mktemp -d 2>/dev/null || mktemp -d -t 'OBC')
         tmpf="$tmpd/a.c"
         printf "#include <stdatomic.h>\nint main(void){}\n" >> "$tmpf"
         args=" -c -o $tmpf.o $tmpf"
