@@ -3015,6 +3015,8 @@ void *blas_memory_alloc(int procpos){
 #endif
  if (memory_overflowed) goto terminate;
   fprintf(stderr,"OpenBLAS warning: precompiled NUM_THREADS exceeded, adding auxiliary array for thread metadata.\n");
+  fprintf(stderr,"To avoid this warning, please rebuild your copy of OpenBLAS with a larger NUM_THREADS setting\n");
+  fprintf(stderr,"or set the environment variable OPENBLAS_NUM_THREADS to %d or lower\n", NUM_BUFFERS);
   memory_overflowed=1;
   new_release_info = (struct release_t*) malloc(512*sizeof(struct release_t));
   newmemory = (struct newmemstruct*) malloc(512*sizeof(struct newmemstruct));
