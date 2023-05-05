@@ -52,7 +52,7 @@ static inline _Complex double * _pCd(doublecomplex *z) {return (_Complex double*
 #endif
 #define pCf(z) (*_pCf(z))
 #define pCd(z) (*_pCd(z))
-typedef int logical;
+typedef integer logical;
 typedef short int shortlogical;
 typedef char logical1;
 typedef char integer1;
@@ -720,12 +720,12 @@ static integer c__0 = 0;
 	*info = -1;
     } else if (*n < 0 || *m < *n) {
 	*info = -2;
-    } else if (*mb <= *n) {
+    } else if (*mb < 1) {
 	*info = -3;
-    } else if (*nb < 1 || *nb > *n && *n > 0) {
+    } else if (*nb < 1 || (*nb > *n && *n > 0)) {
 	*info = -4;
     } else if (*lda < f2cmax(1,*m)) {
-	*info = -5;
+	*info = -6;
     } else if (*ldt < *nb) {
 	*info = -8;
     } else if (*lwork < *n * *nb && ! lquery) {

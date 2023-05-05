@@ -52,7 +52,7 @@ static inline _Complex double * _pCd(doublecomplex *z) {return (_Complex double*
 #endif
 #define pCf(z) (*_pCf(z))
 #define pCd(z) (*_pCd(z))
-typedef int logical;
+typedef integer logical;
 typedef short int shortlogical;
 typedef char logical1;
 typedef char integer1;
@@ -667,7 +667,7 @@ f"> */
 	    real *, integer *, real *, integer *, real *, real *, integer *), scopy_(integer *, real *, integer *, real *, integer *);
     integer m1;
     extern /* Subroutine */ int saxpy_(integer *, real *, real *, integer *, 
-	    real *, integer *), xerbla_(char *, integer *), slarfg_(
+	    real *, integer *), xerbla_(char *, integer *, ftnlen), slarfg_(
 	    integer *, real *, real *, integer *, real *);
 
 
@@ -699,7 +699,7 @@ f"> */
     }
     if (*info != 0) {
 	i__1 = -(*info);
-	xerbla_("STZRQF", &i__1);
+	xerbla_("STZRQF", &i__1, (ftnlen)6);
 	return 0;
     }
 

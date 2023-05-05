@@ -52,7 +52,7 @@ static inline _Complex double * _pCd(doublecomplex *z) {return (_Complex double*
 #endif
 #define pCf(z) (*_pCf(z))
 #define pCd(z) (*_pCd(z))
-typedef int logical;
+typedef integer logical;
 typedef short int shortlogical;
 typedef char logical1;
 typedef char integer1;
@@ -605,8 +605,12 @@ logical lsamen_(integer *n, char *ca, char *cb)
 /* ===================================================================== */
 
     ret_val = FALSE_;
-    if (i_len(ca, ca_len) < *n || i_len(cb, cb_len) < *n) {
-	goto L20;
+
+	ca_len = (integer)strlen(ca);
+	cb_len = (integer)strlen(cb);
+
+    if (ca_len < *n || cb_len < *n) {
+		goto L20;
     }
 
 /*     Do for each character in the two strings. */

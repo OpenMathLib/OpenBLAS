@@ -52,7 +52,7 @@ static inline _Complex double * _pCd(doublecomplex *z) {return (_Complex double*
 #endif
 #define pCf(z) (*_pCf(z))
 #define pCd(z) (*_pCd(z))
-typedef int logical;
+typedef integer logical;
 typedef short int shortlogical;
 typedef char logical1;
 typedef char integer1;
@@ -803,7 +803,7 @@ f"> */
 	    *, integer *, integer *, complex *, integer *, complex *, integer 
 	    *), claset_(char *, integer *, integer *, complex *, 
 	    complex *, complex *, integer *), xerbla_(char *, integer 
-	    *), clapmt_(logical *, integer *, integer *, complex *, 
+	    *, ftnlen), clapmt_(logical *, integer *, integer *, complex *, 
 	    integer *, integer *);
     logical forwrd;
 
@@ -872,7 +872,7 @@ f"> */
     }
     if (*info != 0) {
 	i__1 = -(*info);
-	xerbla_("CGGSVP", &i__1);
+	xerbla_("CGGSVP", &i__1, (ftnlen)6);
 	return 0;
     }
 

@@ -52,7 +52,7 @@ static inline _Complex double * _pCd(doublecomplex *z) {return (_Complex double*
 #endif
 #define pCf(z) (*_pCf(z))
 #define pCd(z) (*_pCd(z))
-typedef int logical;
+typedef integer logical;
 typedef short int shortlogical;
 typedef char logical1;
 typedef char integer1;
@@ -672,7 +672,7 @@ f"> */
     integer m1;
     extern /* Subroutine */ int clarfg_(integer *, complex *, complex *, 
 	    integer *, complex *), clacgv_(integer *, complex *, integer *), 
-	    xerbla_(char *, integer *);
+	    xerbla_(char *, integer *, ftnlen);
 
 
 /*  -- LAPACK computational routine (version 3.7.0) -- */
@@ -703,7 +703,7 @@ f"> */
     }
     if (*info != 0) {
 	i__1 = -(*info);
-	xerbla_("CTZRQF", &i__1);
+	xerbla_("CTZRQF", &i__1, (ftnlen)6);
 	return 0;
     }
 

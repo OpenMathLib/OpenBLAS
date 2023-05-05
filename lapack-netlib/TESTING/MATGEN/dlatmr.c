@@ -52,7 +52,7 @@ static inline _Complex double * _pCd(doublecomplex *z) {return (_Complex double*
 #endif
 #define pCf(z) (*_pCf(z))
 #define pCd(z) (*_pCd(z))
-typedef int logical;
+typedef integer logical;
 typedef short int shortlogical;
 typedef char logical1;
 typedef char integer1;
@@ -1021,7 +1021,7 @@ static integer c__1 = 1;
     extern doublereal dlansb_(char *, char *, integer *, integer *, 
 	    doublereal *, integer *, doublereal *);
     logical fulbnd;
-    extern /* Subroutine */ int xerbla_(char *, integer *);
+    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     logical badpvt;
     extern doublereal dlansp_(char *, char *, integer *, doublereal *, 
 	    doublereal *), dlansy_(char *, char *, integer *, 
@@ -1252,7 +1252,7 @@ static integer c__1 = 1;
 
     if (*info != 0) {
 	i__1 = -(*info);
-	xerbla_("DLATMR", &i__1);
+	xerbla_("DLATMR", &i__1, (ftnlen)6);
 	return 0;
     }
 

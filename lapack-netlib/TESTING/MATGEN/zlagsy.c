@@ -52,7 +52,7 @@ static inline _Complex double * _pCd(doublecomplex *z) {return (_Complex double*
 #endif
 #define pCf(z) (*_pCf(z))
 #define pCd(z) (*_pCd(z))
-typedef int logical;
+typedef integer logical;
 typedef short int shortlogical;
 typedef char logical1;
 typedef char integer1;
@@ -646,7 +646,7 @@ static integer c__1 = 1;
     integer ii, jj;
     doublecomplex wa, wb;
     doublereal wn;
-    extern /* Subroutine */ int xerbla_(char *, integer *), zlacgv_(
+    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen), zlacgv_(
 	    integer *, doublecomplex *, integer *), zlarnv_(integer *, 
 	    integer *, integer *, doublecomplex *);
     doublecomplex tau;
@@ -682,7 +682,7 @@ static integer c__1 = 1;
     }
     if (*info < 0) {
 	i__1 = -(*info);
-	xerbla_("ZLAGSY", &i__1);
+	xerbla_("ZLAGSY", &i__1, (ftnlen)6);
 	return 0;
     }
 

@@ -52,7 +52,7 @@ static inline _Complex double * _pCd(doublecomplex *z) {return (_Complex double*
 #endif
 #define pCf(z) (*_pCf(z))
 #define pCd(z) (*_pCd(z))
-typedef int logical;
+typedef integer logical;
 typedef short int shortlogical;
 typedef char logical1;
 typedef char integer1;
@@ -626,7 +626,7 @@ array.f"> */
     /* Function Body */
     s_copy(srname, "", (ftnlen)32, (ftnlen)0);
 /* Computing MIN */
-    i__2 = *srname_len__, i__3 = i_len(srname, (ftnlen)32);
+    i__2 = *srname_len__, i__3 = (integer)strlen(srname);
     i__1 = f2cmin(i__2,i__3);
     for (i__ = 1; i__ <= i__1; ++i__) {
 	*(unsigned char *)&srname[i__ - 1] = *(unsigned char *)&
