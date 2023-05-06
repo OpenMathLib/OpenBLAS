@@ -373,10 +373,10 @@ ifneq ($(CROSS), 1)
 	(cd $(NETLIB_LAPACK_DIR); ./lapack_testing.py -r -b TESTING)
 endif
 
-lapack-runtest:
+lapack-runtest: lapack-test
 	( cd $(NETLIB_LAPACK_DIR)/INSTALL; ./testlsame; ./testslamch; ./testdlamch; \
         ./testsecond; ./testdsecnd; ./testieee; ./testversion )
-	(cd $(NETLIB_LAPACK_DIR); ./lapack_testing.py -r )
+	(cd $(NETLIB_LAPACK_DIR); ./lapack_testing.py -r -b TESTING )
 
 
 blas-test:
