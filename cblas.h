@@ -350,7 +350,7 @@ void cblas_cher2k(OPENBLAS_CONST enum CBLAS_ORDER Order, OPENBLAS_CONST enum CBL
 void cblas_zher2k(OPENBLAS_CONST enum CBLAS_ORDER Order, OPENBLAS_CONST enum CBLAS_UPLO Uplo, OPENBLAS_CONST enum CBLAS_TRANSPOSE Trans, OPENBLAS_CONST blasint N, OPENBLAS_CONST blasint K,
                   OPENBLAS_CONST void *alpha, OPENBLAS_CONST void *A, OPENBLAS_CONST blasint lda, OPENBLAS_CONST void *B, OPENBLAS_CONST blasint ldb, OPENBLAS_CONST double beta, void *C, OPENBLAS_CONST blasint ldc);
 
-void cblas_xerbla(blasint p, char *rout, char *form, ...);
+void cblas_xerbla(blasint p, OPENBLAS_CONST char *rout, OPENBLAS_CONST char *form, ...);
 
 /*** BLAS extensions ***/
 
