@@ -157,7 +157,7 @@ void CNAME( enum CBLAS_ORDER CORDER, enum CBLAS_TRANSPOSE CTRANS, blasint crows,
 	b = malloc(msize);
 	if ( b == NULL )
 	{
-		printf("Memory alloc failed\n");
+		printf("Memory alloc failed in imatcopy\n");
 		exit(1);
 	}
 
