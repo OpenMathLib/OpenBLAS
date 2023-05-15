@@ -321,7 +321,7 @@ if (NOT NOFORTRAN)
  if (NOT ONLY_CBLAS)
   # Build test and ctest
   add_subdirectory(test)
- endif 
+ endif() 
   if (BUILD_TESTING)
     add_subdirectory(lapack-netlib/TESTING)
   endif()
