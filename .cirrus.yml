@@ -46,7 +46,13 @@ task:
   compile_script:
   - make
   
-
+task:
+  name: NeoverseN1
+  arm_container:
+    image: node:latest
+  compile_script:
+  - make USE_OPENMP=1
+  
 #task:
 #  name: Windows/LLVM16     --- too slow ---
 #  windows_container:
