@@ -47,9 +47,10 @@ task:
   - make
   
 task:
-  name: NeoverseN1
+  name: NeoverseN1-OMP
   arm_container:
     image: node:latest
+    cpu: 8
   compile_script:
   - make USE_OPENMP=1
   
