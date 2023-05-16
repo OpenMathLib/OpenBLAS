@@ -52,10 +52,10 @@
 *> are computed and stored in the arrays U and V, respectively. The diagonal
 *> of [SIGMA] is computed and stored in the array SVA.
 *> \endverbatim
-*>
-*>  Arguments:
-*>  ==========
-*>
+*
+*  Arguments:
+*  ==========
+*
 *> \param[in] JOBA
 *> \verbatim
 *>          JOBA is CHARACTER*1
@@ -151,7 +151,7 @@
 *>         transposed A if A^* seems to be better with respect to convergence.
 *>         If the matrix is not square, JOBT is ignored. 
 *>         The decision is based on two values of entropy over the adjoint
-*>         orbit of A^* * A. See the descriptions of WORK(6) and WORK(7).
+*>         orbit of A^* * A. See the descriptions of RWORK(6) and RWORK(7).
 *>       = 'T': transpose if entropy test indicates possibly faster
 *>         convergence of Jacobi process if A^* is taken as input. If A is
 *>         replaced with A^*, then the row pivoting is included automatically.
@@ -209,11 +209,11 @@
 *> \verbatim
 *>          SVA is DOUBLE PRECISION array, dimension (N)
 *>          On exit,
-*>          - For WORK(1)/WORK(2) = ONE: The singular values of A. During the
-*>            computation SVA contains Euclidean column norms of the
+*>          - For RWORK(1)/RWORK(2) = ONE: The singular values of A. During
+*>            the computation SVA contains Euclidean column norms of the
 *>            iterated matrices in the array A.
-*>          - For WORK(1) .NE. WORK(2): The singular values of A are
-*>            (WORK(1)/WORK(2)) * SVA(1:N). This factored form is used if
+*>          - For RWORK(1) .NE. RWORK(2): The singular values of A are
+*>            (RWORK(1)/RWORK(2)) * SVA(1:N). This factored form is used if
 *>            sigma_max(A) overflows or if small singular values have been
 *>            saved from underflow by scaling the input matrix A.
 *>          - If JOBR='R' then some of the singular values may be returned
