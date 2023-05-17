@@ -52,10 +52,10 @@
 *> are computed and stored in the arrays U and V, respectively. The diagonal
 *> of [SIGMA] is computed and stored in the array SVA.
 *> \endverbatim
-*
-*  Arguments:
-*  ==========
-*
+*>
+*>  Arguments:
+*>  ==========
+*>
 *> \param[in] JOBA
 *> \verbatim
 *>          JOBA is CHARACTER*1
