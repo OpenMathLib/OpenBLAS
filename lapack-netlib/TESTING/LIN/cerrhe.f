@@ -133,7 +133,7 @@
       IF( LSAMEN( 2, C2, 'HE' ) ) THEN
 *
 *        Test error exits of the routines that use factorization
-*        of a Hermitian indefinite matrix with patrial
+*        of a Hermitian indefinite matrix with partial
 *        (Bunch-Kaufman) diagonal pivoting method.
 *
 *        CHETRF
@@ -576,7 +576,7 @@
          CALL CHKXER( 'CHETRS_AA_STAGE', INFOT, NOUT, LERR, OK )
 *
 *        Test error exits of the routines that use factorization
-*        of a Hermitian indefinite packed matrix with patrial
+*        of a Hermitian indefinite packed matrix with partial
 *        (Bunch-Kaufman) diagonal pivoting method.
 *
       ELSE IF( LSAMEN( 2, C2, 'HP' ) ) THEN

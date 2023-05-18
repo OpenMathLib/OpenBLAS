@@ -40,14 +40,14 @@
 *> \verbatim
 *>          TRANS is CHARACTER
 *>          Specifies the form of the residual.
-*>          = 'N':  B - A * X     (No transpose)
+*>          = 'N':  B - A    * X  (No transpose)
 *>          = 'T':  B - A**T * X  (Transpose)
 *>          = 'C':  B - A**H * X  (Conjugate transpose)
 *> \endverbatim
 *>
 *> \param[in] N
 *> \verbatim
-*>          N is INTEGTER
+*>          N is INTEGER
 *>          The order of the matrix A.  N >= 0.
 *> \endverbatim
 *>

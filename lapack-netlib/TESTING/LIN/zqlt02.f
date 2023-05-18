@@ -27,7 +27,7 @@
 *> \verbatim
 *>
 *> ZQLT02 tests ZUNGQL, which generates an m-by-n matrix Q with
-*> orthonornmal columns that is defined as the product of k elementary
+*> orthonormal columns that is defined as the product of k elementary
 *> reflectors.
 *>
 *> Given the QL factorization of an m-by-n matrix A, ZQLT02 generates
