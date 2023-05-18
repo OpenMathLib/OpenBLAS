@@ -1,6 +1,14 @@
 include $(KERNELDIR)/KERNEL.COOPERLAKE
 
-SBGEMM_SMALL_M_PERMIT = sbgemm_small_kernel_permit_spr.c
+undefine SBGEMM_SMALL_M_PERMIT
+undefine SBGEMM_SMALL_K_NN
+undefine SBGEMM_SMALL_K_B0_NN
+undefine SBGEMM_SMALL_K_NT
+undefine SBGEMM_SMALL_K_B0_NT
+undefine SBGEMM_SMALL_K_TN
+undefine SBGEMM_SMALL_K_B0_TN
+undefine SBGEMM_SMALL_K_TT
+undefine SBGEMM_SMALL_K_B0_TT
 
 SBGEMM_BETA     = sgemm_beta_skylakex.c
 SBGEMMKERNEL    = sbgemm_kernel_16x16_spr.c
