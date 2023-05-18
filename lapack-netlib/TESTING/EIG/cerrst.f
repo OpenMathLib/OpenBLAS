@@ -21,7 +21,7 @@
 *>
 *> \verbatim
 *>
-*> CERRST tests the error exits for CHETRD, CUNGTR, CUNMTR, CHPTRD,
+*> CERRST tests the error exits for CHETRD, CHETD2, CUNGTR, CUNMTR, CHPTRD,
 *> CUNGTR, CUPMTR, CSTEQR, CSTEIN, CPTEQR, CHBTRD,
 *> CHEEV, CHEEVX, CHEEVD, CHBEV, CHBEVX, CHBEVD,
 *> CHPEV, CHPEVX, CHPEVD, and CSTEDC.
@@ -94,7 +94,7 @@
       EXTERNAL           CHBEV, CHBEVD, CHBEVX, CHBTRD, CHEEV, CHEEVD,
      $                   CHEEVR, CHEEVX, CHETRD, CHKXER, CHPEV, CHPEVD,
      $                   CHPEVX, CHPTRD, CPTEQR, CSTEDC, CSTEIN, CSTEQR,
-     $                   CUNGTR, CUNMTR, CUPGTR, CUPMTR,
+     $                   CUNGTR, CUNMTR, CUPGTR, CUPMTR, CHETD2,
      $                   CHEEVD_2STAGE, CHEEVR_2STAGE, CHEEVX_2STAGE,
      $                   CHEEV_2STAGE, CHBEV_2STAGE, CHBEVD_2STAGE,
      $                   CHBEVX_2STAGE, CHETRD_2STAGE, CHETRD_HE2HB,
@@ -155,6 +155,20 @@
          CALL CHETRD( 'U', 0, A, 1, D, E, TAU, W, 0, INFO )
          CALL CHKXER( 'CHETRD', INFOT, NOUT, LERR, OK )
          NT = NT + 4
+*
+*        CHETD2
+*
+         SRNAMT = 'CHETD2'
+         INFOT = 1
+         CALL CHETD2( '/', 0, A, 1, D, E, TAU, W, 1, INFO )
+         CALL CHKXER( 'CHETD2', INFOT, NOUT, LERR, OK )
+         INFOT = 2
+         CALL CHETD2( 'U', -1, A, 1, D, E, TAU, W, 1, INFO )
+         CALL CHKXER( 'CHETD2', INFOT, NOUT, LERR, OK )
+         INFOT = 4
+         CALL CHETD2( 'U', 2, A, 1, D, E, TAU, W, 1, INFO )
+         CALL CHKXER( 'CHETD2', INFOT, NOUT, LERR, OK )
+         NT = NT + 3
 *
 *        CHETRD_2STAGE
 *
