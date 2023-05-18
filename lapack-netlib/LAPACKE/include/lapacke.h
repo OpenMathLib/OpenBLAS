@@ -12727,7 +12727,41 @@ lapack_int LAPACKE_zhetrs_aa_2stage_work( int matrix_layout, char uplo, lapack_i
                                lapack_int lda, lapack_complex_double* tb,
                                lapack_int ltb, lapack_int* ipiv, lapack_int* ipiv2,
                                lapack_complex_double* b, lapack_int ldb );
-                   
+
+//LAPACK 3.10.0
+lapack_int LAPACKE_sorhr_col( int matrix_layout, lapack_int m, lapack_int n,
+                              lapack_int nb, float* a,
+                              lapack_int lda, float* t,
+                              lapack_int ldt, float* d );
+lapack_int LAPACKE_sorhr_col_work( int matrix_layout, lapack_int m, lapack_int n,
+                                   lapack_int nb, float* a,
+                                   lapack_int lda, float* t,
+                                   lapack_int ldt, float* d );
+lapack_int LAPACKE_dorhr_col( int matrix_layout, lapack_int m, lapack_int n,
+                              lapack_int nb, double* a,
+                              lapack_int lda, double* t,
+                              lapack_int ldt, double* d );
+lapack_int LAPACKE_dorhr_col_work( int matrix_layout, lapack_int m, lapack_int n,
+                                   lapack_int nb, double* a,
+                                   lapack_int lda, double* t,
+                                   lapack_int ldt, double* d );
+lapack_int LAPACKE_cunhr_col( int matrix_layout, lapack_int m, lapack_int n,
+                              lapack_int nb, lapack_complex_float* a,
+                              lapack_int lda, lapack_complex_float* t,
+                              lapack_int ldt, lapack_complex_float* d );
+lapack_int LAPACKE_cunhr_col_work( int matrix_layout, lapack_int m, lapack_int n,
+                                   lapack_int nb, lapack_complex_float* a,
+                                   lapack_int lda, lapack_complex_float* t,
+                                   lapack_int ldt, lapack_complex_float* d );
+lapack_int LAPACKE_zunhr_col( int matrix_layout, lapack_int m, lapack_int n,
+                              lapack_int nb, lapack_complex_double* a,
+                              lapack_int lda, lapack_complex_double* t,
+                              lapack_int ldt, lapack_complex_double* d );
+lapack_int LAPACKE_zunhr_col_work( int matrix_layout, lapack_int m, lapack_int n,
+                                   lapack_int nb, lapack_complex_double* a,
+                                   lapack_int lda, lapack_complex_double* t,
+                                   lapack_int ldt, lapack_complex_double* d );
+
 /* APIs for set/get nancheck flags */
 void LAPACKE_set_nancheck( int flag );
 int LAPACKE_get_nancheck( void );
