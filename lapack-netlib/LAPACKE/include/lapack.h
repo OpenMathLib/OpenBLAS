@@ -11517,6 +11517,22 @@ void LAPACK_sorgtsqr_row(
     float* work, lapack_int const* lwork,
     lapack_int* info );
 
+#define LAPACK_dorhr_col LAPACK_GLOBAL(dorhr_col,DORHR_COL)
+void LAPACK_dorhr_col(
+    lapack_int const* m, lapack_int const* n,
+    lapack_int const* nb, double* A,
+    lapack_int const* lda, double* T,
+    lapack_int const* ldt, double* D,
+    lapack_int* info );
+
+#define LAPACK_sorhr_col LAPACK_GLOBAL(sorhr_col,SORHR_COL)
+void LAPACK_sorhr_col(
+    lapack_int const* m, lapack_int const* n,
+    lapack_int const* nb, float* A,
+    lapack_int const* lda, float* T,
+    lapack_int const* ldt, float* D,
+    lapack_int* info );
+
 #define LAPACK_dormbr_base LAPACK_GLOBAL(dormbr,DORMBR)
 void LAPACK_dormbr_base(
     char const* vect, char const* side, char const* trans,
@@ -22706,6 +22722,22 @@ void LAPACK_zungtsqr_row(
     lapack_complex_double* A, lapack_int const* lda,
     lapack_complex_double const* T, lapack_int const* ldt,
     lapack_complex_double* work, lapack_int const* lwork,
+    lapack_int* info );
+
+#define LAPACK_cunhr_col LAPACK_GLOBAL(cunhr_col,CUNHR_COL)
+void LAPACK_cunhr_col(
+    lapack_int const* m, lapack_int const* n,
+    lapack_int const* nb, lapack_complex_float* A,
+    lapack_int const* lda, lapack_complex_float* T,
+    lapack_int const* ldt, lapack_complex_float* D,
+    lapack_int* info );
+
+#define LAPACK_zunhr_col LAPACK_GLOBAL(zunhr_col,ZUNHR_COL)
+void LAPACK_zunhr_col(
+    lapack_int const* m, lapack_int const* n,
+    lapack_int const* nb, lapack_complex_double* A,
+    lapack_int const* lda, lapack_complex_double* T,
+    lapack_int const* ldt, lapack_complex_double* D,
     lapack_int* info );
 
 #define LAPACK_cunmbr_base LAPACK_GLOBAL(cunmbr,CUNMBR)
