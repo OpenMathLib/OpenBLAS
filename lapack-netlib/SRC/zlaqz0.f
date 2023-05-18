@@ -89,7 +89,7 @@
 *>      Anal., 29(2006), pp. 199--227.
 *>
 *> Ref: T. Steel, D. Camps, K. Meerbergen, R. Vandebril "A multishift,
-*>      multipole rational QZ method with agressive early deflation"
+*>      multipole rational QZ method with aggressive early deflation"
 *> \endverbatim
 *
 *  Arguments:
@@ -312,7 +312,7 @@
       CHARACTER :: JBCMPZ*3
 
 *     External Functions
-      EXTERNAL :: XERBLA, ZHGEQZ, ZLAQZ2, ZLAQZ3, ZLASET, DLABAD,
+      EXTERNAL :: XERBLA, ZHGEQZ, ZLAQZ2, ZLAQZ3, ZLASET,
      $            ZLARTG, ZROT
       DOUBLE PRECISION, EXTERNAL :: DLAMCH, ZLANHS
       LOGICAL, EXTERNAL :: LSAME
@@ -464,7 +464,6 @@
 *     Get machine constants
       SAFMIN = DLAMCH( 'SAFE MINIMUM' )
       SAFMAX = ONE/SAFMIN
-      CALL DLABAD( SAFMIN, SAFMAX )
       ULP = DLAMCH( 'PRECISION' )
       SMLNUM = SAFMIN*( DBLE( N )/ULP )
 
@@ -535,7 +534,7 @@
          DO WHILE ( K.GE.ISTART2 )
 
             IF( ABS( B( K, K ) ) .LT. BTOL ) THEN
-*              A diagonal element of B is negligable, move it
+*              A diagonal element of B is negligible, move it
 *              to the top and deflate it
                
                DO K2 = K, ISTART2+1, -1

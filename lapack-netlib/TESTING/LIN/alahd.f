@@ -777,7 +777,7 @@
      $       'triangular-pentagonal matrices' )
  8004 FORMAT( / 1X, A3, ':  TS factorization for ',
      $       'tall-skinny or short-wide matrices' )
- 8005 FORMAT( / 1X, A3, ':  Householder recostruction from TSQR',
+ 8005 FORMAT( / 1X, A3, ':  Householder reconstruction from TSQR',
      $       ' factorization output ', /,' for tall-skinny matrices.' )
 *
 *     GE matrix types

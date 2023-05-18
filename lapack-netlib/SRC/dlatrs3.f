@@ -574,7 +574,7 @@
 *              Prepare the linear update to be executed with GEMM.
 *              For each column, compute a consistent scaling, a
 *              scaling factor to survive the linear update, and
-*              rescale the column segments, if necesssary. Then
+*              rescale the column segments, if necessary. Then
 *              the linear update is safely executed.
 *
                DO KK = 1, K2-K1

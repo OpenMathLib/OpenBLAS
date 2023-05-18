@@ -227,7 +227,7 @@
             BM = RHS( J ) - CONE
             SPLUS = ONE
 *
-*           Lockahead for L- part RHS(1:N-1) = +-1
+*           Look-ahead for L- part RHS(1:N-1) = +-1
 *           SPLUS and SMIN computed more efficiently than in BSOLVE[1].
 *
             SPLUS = SPLUS + REAL( CDOTC( N-J, Z( J+1, J ), 1, Z( J+1,

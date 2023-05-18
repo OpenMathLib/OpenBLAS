@@ -520,7 +520,7 @@
 *
 *           Revert VALUE
 *           Assign subdiagonal entries of D from array E to
-*           subgiagonal entries of A.
+*           subdiagonal entries of A.
 *
             I = 1
             DO WHILE ( I.LE.N-1 )

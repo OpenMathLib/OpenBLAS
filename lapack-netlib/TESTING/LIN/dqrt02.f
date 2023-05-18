@@ -27,7 +27,7 @@
 *> \verbatim
 *>
 *> DQRT02 tests DORGQR, which generates an m-by-n matrix Q with
-*> orthonornmal columns that is defined as the product of k elementary
+*> orthonormal columns that is defined as the product of k elementary
 *> reflectors.
 *>
 *> Given the QR factorization of an m-by-n matrix A, DQRT02 generates
