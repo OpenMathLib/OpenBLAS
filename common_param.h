@@ -53,6 +53,7 @@ typedef struct {
   int sbgemm_p, sbgemm_q, sbgemm_r;
   int sbgemm_unroll_m, sbgemm_unroll_n, sbgemm_unroll_mn;
   int sbgemm_align_k;
+  int need_amxtile_permission;  // 0 default, 1 for device support amx.
 
   void   (*sbstobf16_k) (BLASLONG, float    *, BLASLONG, bfloat16 *, BLASLONG);
   void   (*sbdtobf16_k) (BLASLONG, double   *, BLASLONG, bfloat16 *, BLASLONG);

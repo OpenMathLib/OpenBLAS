@@ -154,6 +154,23 @@ static size_t zgemm_small_kernel_b0[] = {
 #endif
 #endif
 
+#if defined(__linux__) && defined(BFLOAT16)
+#define XFEATURE_XTILEDATA 18
+#define ARCH_REQ_XCOMP_PERM 0x1023
+static int openblas_amxtile_permission = 0;
+static int init_amxtile_permission() {
+  long status =
+      syscall(SYS_arch_prctl, ARCH_REQ_XCOMP_PERM, XFEATURE_XTILEDATA);
+  if (status != 0) {
+    fprintf(stderr, "XTILEDATA permission not granted in your device(Linux, "
+                    "Intel Sapphier Rapids), skip sbgemm calculation\n");
+    return -1;
+  }
+  openblas_amxtile_permission = 1;
+  return 0;
+}
+#endif
+
 #ifndef CBLAS
 
 void NAME(char *TRANSA, char *TRANSB,
@@ -454,6 +471,20 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_TRANSPOSE TransA, enum CBLAS_TRANS
   }
 
 #endif
+
+#if defined(__linux__) && defined(BFLOAT16)
+#if defined(DYNAMIC_ARCH)
+  if (gotoblas->need_amxtile_permission &&
+      openblas_amxtile_permission == 0 && init_amxtile_permission() == -1) {
+    return;
+  }
+#endif
+#if !defined(DYNAMIC_ARCH) && defined(SAPPHIRERAPIDS)
+  if (openblas_amxtile_permission == 0 && init_amxtile_permission() == -1) {
+    return;
+  }
+#endif
+#endif  // defined(__linux__) && defined(BFLOAT16)
 
   if ((args.m == 0) || (args.n == 0)) return;
 
