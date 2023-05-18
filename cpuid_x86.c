@@ -1479,6 +1479,8 @@ int get_cpuname(void){
           else
 	    return CPUTYPE_NEHALEM;
 	case 15: // Sapphire Rapids
+	  if(support_amx_bf16())
+	    return CPUTYPE_SAPPHIRERAPIDS;
 	  if(support_avx512_bf16())
             return CPUTYPE_COOPERLAKE;	
           if(support_avx512())
@@ -1845,7 +1847,8 @@ static char *cpuname[] = {
   "ZEN",
   "SKYLAKEX",
   "DHYANA",
-  "COOPERLAKE"
+  "COOPERLAKE",
+  "SAPPHIRERAPIDS",
 };
 
 static char *lowercpuname[] = {
@@ -1902,7 +1905,8 @@ static char *lowercpuname[] = {
   "zen",
   "skylakex",
   "dhyana",
-  "cooperlake"
+  "cooperlake",
+  "sapphirerapids",
 };
 
 static char *corename[] = {
