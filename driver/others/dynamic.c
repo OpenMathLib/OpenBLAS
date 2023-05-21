@@ -220,6 +220,19 @@ extern gotoblas_t gotoblas_COOPERLAKE;
 #else
 #define gotoblas_COOPERLAKE gotoblas_PRESCOTT
 #endif
+#ifdef DYN_SAPPHIRERAPIDS
+extern gotoblas_t gotoblas_SAPPHIRERAPIDS;
+#elif defined(DYN_SKYLAKEX)
+#define gotoblas_SAPPHIRERAPIDS gotoblas_SKYLAKEX
+#elif defined(DYN_HASWELL)
+#define gotoblas_SAPPHIRERAPIDS gotoblas_HASWELL
+#elif defined(DYN_SANDYBRIDGE)
+#define gotoblas_SAPPHIRERAPIDS gotoblas_SANDYBRIDGE
+#elif defined(DYN_NEHALEM)
+#define gotoblas_SAPPHIRERAPIDS gotoblas_NEHALEM
+#else
+#define gotoblas_SAPPHIRERAPIDS gotoblas_PRESCOTT
+#endif
 
 
 #else // not DYNAMIC_LIST

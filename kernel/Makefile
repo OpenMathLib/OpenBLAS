@@ -33,7 +33,7 @@ endif
 ifdef TARGET_CORE
 ifeq ($(TARGET_CORE), SAPPHIRERAPIDS)
  override CFLAGS += -DBUILD_KERNEL -DTABLE_NAME=gotoblas_$(TARGET_CORE)
- ifeq ($(GCCVERSIONGTEQ10), 1) 
+ ifeq ($(GCCVERSIONGTEQ11), 1) 
   override CFLAGS += -march=sapphirerapids
  else 
   override CFLAGS += -march=skylake-avx512 -mavx512f
