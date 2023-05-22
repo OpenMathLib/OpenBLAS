@@ -154,7 +154,7 @@ static size_t zgemm_small_kernel_b0[] = {
 #endif
 #endif
 
-#if defined(__linux__) && defined(BFLOAT16)
+#if defined(__linux__) && defined(__x86_64__) && defined(BFLOAT16)
 #define XFEATURE_XTILEDATA 18
 #define ARCH_REQ_XCOMP_PERM 0x1023
 static int openblas_amxtile_permission = 0;
@@ -472,7 +472,7 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_TRANSPOSE TransA, enum CBLAS_TRANS
 
 #endif
 
-#if defined(__linux__) && defined(BFLOAT16)
+#if defined(__linux__) && defined(__x86_64__) && defined(BFLOAT16)
 #if defined(DYNAMIC_ARCH)
   if (gotoblas->need_amxtile_permission &&
       openblas_amxtile_permission == 0 && init_amxtile_permission() == -1) {
@@ -484,7 +484,7 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_TRANSPOSE TransA, enum CBLAS_TRANS
     return;
   }
 #endif
-#endif  // defined(__linux__) && defined(BFLOAT16)
+#endif  // defined(__linux__) && defined(__x86_64__) && defined(BFLOAT16)
 
   if ((args.m == 0) || (args.n == 0)) return;
 
