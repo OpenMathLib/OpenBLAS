@@ -38,6 +38,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define VFREDSUM_FLOAT __riscv_vfredusum_vs_f32m4_f32m1
 #define VFMACCVV_FLOAT __riscv_vfmacc_vv_f32m4
 #define VFNMSACVV_FLOAT __riscv_vfnmsac_vv_f32m4
+#define VFMACCVV_FLOAT_TU __riscv_vfmacc_vv_f32m4_tu
+#define VFNMSACVV_FLOAT_TU __riscv_vfnmsac_vv_f32m4_tu
 #define VFMACCVF_FLOAT __riscv_vfmacc_vf_f32m4
 #define VFNMSACVF_FLOAT __riscv_vfnmsac_vf_f32m4
 #define VFMVVF_FLOAT __riscv_vfmv_v_f_f32m4
@@ -56,6 +58,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define VFREDSUM_FLOAT __riscv_vfredusum_vs_f64m4_f64m1
 #define VFMACCVV_FLOAT __riscv_vfmacc_vv_f64m4
 #define VFNMSACVV_FLOAT __riscv_vfnmsac_vv_f64m4
+#define VFMACCVV_FLOAT_TU __riscv_vfmacc_vv_f64m4_tu
+#define VFNMSACVV_FLOAT_TU __riscv_vfnmsac_vv_f64m4_tu
 #define VFMACCVF_FLOAT __riscv_vfmacc_vf_f64m4
 #define VFNMSACVF_FLOAT __riscv_vfnmsac_vf_f64m4
 #define VFMVVF_FLOAT __riscv_vfmv_v_f_f64m4
@@ -129,39 +133,35 @@ int CNAME(BLASLONG m, BLASLONG offset, FLOAT alpha_r, FLOAT alpha_i,
                                  ix += inc_xv;
                                  iy += inc_yv;
                          }
+
+                         if(i < j){
+                                 unsigned int gvl_rem = VSETVL(j-i);
+                                 vy_r = VLSEV_FLOAT(&y[2 * iy], stride_y, gvl_rem);
+                                 vy_i = VLSEV_FLOAT(&y[2 * iy + 1], stride_y, gvl_rem);
+                                 
+                                 va_r = VLSEV_FLOAT(&a_ptr[2 * i], 2 * sizeof(FLOAT), gvl_rem);
+                                 va_i = VLSEV_FLOAT(&a_ptr[2 * i + 1], 2 * sizeof(FLOAT), gvl_rem);
+
+                                 vy_r = VFMACCVF_FLOAT(vy_r, temp1[0], va_r, gvl_rem);
+                                 vy_r = VFNMSACVF_FLOAT(vy_r, temp1[1], va_i, gvl_rem);
+                                 vy_i = VFMACCVF_FLOAT(vy_i, temp1[0], va_i, gvl_rem);
+                                 vy_i = VFMACCVF_FLOAT(vy_i, temp1[1], va_r, gvl_rem);
+                                
+                                 VSSEV_FLOAT(&y[2 * iy], stride_y, vy_r, gvl_rem);
+                                 VSSEV_FLOAT(&y[2 * iy + 1], stride_y, vy_i, gvl_rem);
+
+                                 vx_r = VLSEV_FLOAT(&x[2 * ix], stride_x, gvl_rem);
+                                 vx_i = VLSEV_FLOAT(&x[2 * ix + 1], stride_x, gvl_rem);
+                                 vr_r = VFMACCVV_FLOAT_TU(vr_r, vx_r, va_r, gvl_rem);
+                                 vr_r = VFNMSACVV_FLOAT_TU(vr_r, vx_i, va_i, gvl_rem);
+                                 vr_i = VFMACCVV_FLOAT_TU(vr_i, vx_r, va_i, gvl_rem);
+                                 vr_i = VFMACCVV_FLOAT_TU(vr_i, vx_i, va_r, gvl_rem);
+                                
+                         }
                          v_res = VFREDSUM_FLOAT(vr_r, v_z0, gvl);
                          temp2[0] = VFMVFS_FLOAT_M1(v_res);
                          v_res = VFREDSUM_FLOAT(vr_i, v_z0, gvl);
                          temp2[1] = VFMVFS_FLOAT_M1(v_res);
-
-                         if(i < j){
-                                 gvl = VSETVL(j-i);
-                                 vy_r = VLSEV_FLOAT(&y[2 * iy], stride_y, gvl);
-                                 vy_i = VLSEV_FLOAT(&y[2 * iy + 1], stride_y, gvl);
-                                 
-                                 va_r = VLSEV_FLOAT(&a_ptr[2 * i], 2 * sizeof(FLOAT), gvl);
-                                 va_i = VLSEV_FLOAT(&a_ptr[2 * i + 1], 2 * sizeof(FLOAT), gvl);
-
-                                 vy_r = VFMACCVF_FLOAT(vy_r, temp1[0], va_r, gvl);
-                                 vy_r = VFNMSACVF_FLOAT(vy_r, temp1[1], va_i, gvl);
-                                 vy_i = VFMACCVF_FLOAT(vy_i, temp1[0], va_i, gvl);
-                                 vy_i = VFMACCVF_FLOAT(vy_i, temp1[1], va_r, gvl);
-                                
-                                 VSSEV_FLOAT(&y[2 * iy], stride_y, vy_r, gvl);
-                                 VSSEV_FLOAT(&y[2 * iy + 1], stride_y, vy_i, gvl);
-
-                                 vx_r = VLSEV_FLOAT(&x[2 * ix], stride_x, gvl);
-                                 vx_i = VLSEV_FLOAT(&x[2 * ix + 1], stride_x, gvl);
-                                 vr_r = VFMULVV_FLOAT(vx_r, va_r, gvl);
-                                 vr_r = VFNMSACVV_FLOAT(vr_r, vx_i, va_i, gvl);
-                                 vr_i = VFMULVV_FLOAT(vx_r, va_i, gvl);
-                                 vr_i = VFMACCVV_FLOAT(vr_i, vx_i, va_r, gvl);
-                                
-                                 v_res = VFREDSUM_FLOAT(vr_r, v_z0, gvl);
-                                 temp2[0] += VFMVFS_FLOAT_M1(v_res);
-                                 v_res = VFREDSUM_FLOAT(vr_i, v_z0, gvl);
-                                 temp2[1] += VFMVFS_FLOAT_M1(v_res);
-                        }
                 }
 
 		 y[2 * jy] += temp1[0] * a_ptr[j * 2] - temp1[1] * a_ptr[j * 2 + 1] + alpha_r * temp2[0] - alpha_i * temp2[1];
