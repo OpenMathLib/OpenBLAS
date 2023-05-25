@@ -1,4 +1,4 @@
-*> \brief <b> CGEEVX computes the eigenvalues and, optionally, the left and/or right eigenvectors for GE matrices</b>
+*> \brief <b> CGEGS computes the eigenvalues, Schur form, and, optionally, the left and or/right Schur vectors of a complex matrix pair (A,B)</b>
 *
 *  =========== DOCUMENTATION ===========
 *
