@@ -310,6 +310,7 @@ jobs:
 
       - name: Install Dependencies
         run: |
+          sudo apt-get update
           sudo apt-get install -y ccache gcc-${{ matrix.triple }} gfortran-${{ matrix.triple }} libgomp1-${{ matrix.target }}-cross
 
       - name: Compilation cache
