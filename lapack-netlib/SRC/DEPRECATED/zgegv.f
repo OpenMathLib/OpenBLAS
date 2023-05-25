@@ -1,4 +1,4 @@
-*> \brief <b> ZGEEVX computes the eigenvalues and, optionally, the left and/or right eigenvectors for GE matrices</b>
+*> \brief <b> ZGEGV computes the eigenvalues and, optionally, the left and/or right eigenvectors of a complex matrix pair (A,B).</b>
 *
 *  =========== DOCUMENTATION ===========
 *

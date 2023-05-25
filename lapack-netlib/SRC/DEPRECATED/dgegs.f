@@ -1,4 +1,4 @@
-*> \brief <b> DGEEVX computes the eigenvalues and, optionally, the left and/or right eigenvectors for GE matrices</b>
+*> \brief <b> DGEGS computes the eigenvalues, real Schur form, and, optionally, the left and/or right Schur vectors of a real matrix pair (A,B)</b>
 *
 *  =========== DOCUMENTATION ===========
 *
