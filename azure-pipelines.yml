@@ -109,6 +109,7 @@ jobs:
       set "PATH=C:\Miniconda\Scripts;C:\Miniconda\Library\bin;C:\Miniconda\Library\usr\bin;C:\Miniconda\condabin;%PATH%"
       set "LIB=C:\Miniconda\Library\lib;%LIB%"
       set "CPATH=C:\Miniconda\Library\include;%CPATH%"
+      set "OPENBLAS_VERBOSE=2"
       conda config --add channels conda-forge --force
       conda config --set auto_update_conda false
       conda install --yes --quiet ninja flang
