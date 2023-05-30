@@ -120,6 +120,8 @@ jobs:
       cmake --build . --config Release
       ls
       cp lib/*.dll ctest
+      cp lib/*.dll test
+      ls test
       ctest
       ctest --rerun-failed --output-on-failure
 
