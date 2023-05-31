@@ -259,7 +259,7 @@
      $                   NM12, NM13, OLDLL, OLDM
       REAL               ABSE, ABSS, COSL, COSR, CS, EPS, F, G, H, MU,
      $                   OLDCS, OLDSN, R, SHIFT, SIGMN, SIGMX, SINL,
-     $                   SINR, SLL, SMAX, SMIN, SMINL, SMINOA,
+     $                   SINR, SLL, SMAX, SMIN, SMINOA,
      $                   SN, THRESH, TOL, TOLMUL, UNFL
 *     ..
 *     .. External Functions ..
@@ -372,7 +372,7 @@
       DO 30 I = 1, N - 1
          SMAX = MAX( SMAX, ABS( E( I ) ) )
    30 CONTINUE
-      SMINL = ZERO
+      SMIN = ZERO
       IF( TOL.GE.ZERO ) THEN
 *
 *        Relative accuracy desired
@@ -426,7 +426,6 @@
       IF( TOL.LT.ZERO .AND. ABS( D( M ) ).LE.THRESH )
      $   D( M ) = ZERO
       SMAX = ABS( D( M ) )
-      SMIN = SMAX
       DO 70 LLL = 1, M - 1
          LL = M - LLL
          ABSS = ABS( D( LL ) )
@@ -435,7 +434,6 @@
      $      D( LL ) = ZERO
          IF( ABSE.LE.THRESH )
      $      GO TO 80
-         SMIN = MIN( SMIN, ABSS )
          SMAX = MAX( SMAX, ABSS, ABSE )
    70 CONTINUE
       LL = 0
@@ -517,14 +515,14 @@
 *           apply convergence criterion forward
 *
             MU = ABS( D( LL ) )
-            SMINL = MU
+            SMIN = MU
             DO 100 LLL = LL, M - 1
                IF( ABS( E( LLL ) ).LE.TOL*MU ) THEN
                   E( LLL ) = ZERO
                   GO TO 60
                END IF
                MU = ABS( D( LLL+1 ) )*( MU / ( MU+ABS( E( LLL ) ) ) )
-               SMINL = MIN( SMINL, MU )
+               SMIN = MIN( SMIN, MU )
   100       CONTINUE
          END IF
 *
@@ -545,14 +543,14 @@
 *           apply convergence criterion backward
 *
             MU = ABS( D( M ) )
-            SMINL = MU
+            SMIN = MU
             DO 110 LLL = M - 1, LL, -1
                IF( ABS( E( LLL ) ).LE.TOL*MU ) THEN
                   E( LLL ) = ZERO
                   GO TO 60
                END IF
                MU = ABS( D( LLL ) )*( MU / ( MU+ABS( E( LLL ) ) ) )
-               SMINL = MIN( SMINL, MU )
+               SMIN = MIN( SMIN, MU )
   110       CONTINUE
          END IF
       END IF
@@ -562,7 +560,7 @@
 *     Compute shift.  First, test if shifting would ruin relative
 *     accuracy, and if so set the shift to zero.
 *
-      IF( TOL.GE.ZERO .AND. N*TOL*( SMINL / SMAX ).LE.
+      IF( TOL.GE.ZERO .AND. N*TOL*( SMIN / SMAX ).LE.
      $    MAX( EPS, HNDRTH*TOL ) ) THEN
 *
 *        Use a zero shift to avoid loss of relative accuracy
