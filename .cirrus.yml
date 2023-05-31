@@ -10,6 +10,18 @@ task:
   - export CPPFLAGS="-I/opt/homebrew/opt/llvm/include"
   - make TARGET=VORTEX USE_OPENMP=1 CC=clang
 
+task:
+  name: AppleM1/LLVM/CMAKE
+  compile_script:
+  - brew install llvm
+  - export PATH=/opt/homebrew/opt/llvm/bin:$PATH
+  - export LDFLAGS="-L/opt/homebrew/opt/llvm/lib"
+  - export CPPFLAGS="-I/opt/homebrew/opt/llvm/include"
+  - mkdir build
+  - cd build
+  - cmake -DTARGET=VORTEX -DCMAKE_C_COMPILER=clang -DBUILD_SHARED_LIBS=ON ..
+  - make
+  
 macos_instance:
   image: ghcr.io/cirruslabs/macos-monterey-xcode:13.4
 task:
@@ -38,6 +50,23 @@ task:
 #    path: "libopenblas*"
 #    type: application/octet-streamm
 
+macos_instance:
+  image: ghcr.io/cirruslabs/macos-monterey-xcode:13.4
+task:
+  name: AppleM1/LLVM armv8-ios xbuild
+  compile_script:
+  - #brew install llvm
+  - export #PATH=/opt/homebrew/opt/llvm/bin:$PATH
+  - export #LDFLAGS="-L/opt/homebrew/opt/llvm/lib"
+  - export #CPPFLAGS="-I/opt/homebrew/opt/llvm/include" 
+  - find /Applications/Xcode-13.4.1.app/Contents/Developer/Platforms -name "IPhoneOS*sdk"
+  - export CC=/Applications/Xcode-13.4.1.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang
+  - export CFLAGS="-O2 -unwindlib=none -Wno-macro-redefined -isysroot /Applications/Xcode-13.4.1.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS15.5.sdk -arch arm64 -miphoneos-version-min=10.0"
+  - make TARGET=ARMV8 NUM_THREADS=32 HOSTCC=clang NOFORTRAN=1 CROSS=1
+  always:
+    config_artifacts:
+      path: "*conf*"
+      type: text/plain
 
 task:
   name: NeoverseN1
