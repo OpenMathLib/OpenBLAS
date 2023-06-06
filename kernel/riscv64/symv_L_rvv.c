@@ -94,7 +94,6 @@ int CNAME(BLASLONG m, BLASLONG offset, FLOAT alpha, FLOAT *a, BLASLONG lda, FLOA
                         for (k = (m-i); k > 0; k -= vl, i += vl)
                         {
                                 vl = VSETVL(k);
-                                vr = VFMVVF_FLOAT(0, vl);
                                 va = VLEV_FLOAT(&a_ptr[i], vl);
                                 vy = VLEV_FLOAT(&y[i], vl);
                                 vy = VFMACCVF_FLOAT(vy, temp1, va, vl);
@@ -125,7 +124,6 @@ int CNAME(BLASLONG m, BLASLONG offset, FLOAT alpha, FLOAT *a, BLASLONG lda, FLOA
                         {
                                 vl = VSETVL(k);
                                 inc_yv = inc_y * vl;
-                                vr = VFMVVF_FLOAT(0, vl);
                                 va = VLEV_FLOAT(&a_ptr[i], vl);
                                 vy = VLSEV_FLOAT(&y[iy], stride_y, vl);
                                 vy = VFMACCVF_FLOAT(vy, temp1, va, vl);
@@ -157,7 +155,6 @@ int CNAME(BLASLONG m, BLASLONG offset, FLOAT alpha, FLOAT *a, BLASLONG lda, FLOA
                         for (k = (m-i); k > 0; k -= vl, i += vl)
                         {
                                 vl = VSETVL(k);
-                                vr = VFMVVF_FLOAT(0, vl);
                                 inc_xv = inc_x * vl;
 
                                 va = VLEV_FLOAT(&a_ptr[i], vl);
@@ -197,7 +194,6 @@ int CNAME(BLASLONG m, BLASLONG offset, FLOAT alpha, FLOAT *a, BLASLONG lda, FLOA
                                 vl = VSETVL(k);
                                 inc_xv = inc_x * vl;
                                 inc_yv = inc_y * vl;
-                                vr = VFMVVF_FLOAT(0, vl);
                                 
                                 va = VLEV_FLOAT(&a_ptr[i], vl);
                                 vy = VLSEV_FLOAT(&y[iy], stride_y, vl);
