@@ -932,8 +932,12 @@ BINARY_DEFINED = 1
 endif
 
 ifeq ($(ARCH), loongarch64)
-CCOMMON_OPT += -march=loongarch64 -mabi=lp64
-FCOMMON_OPT += -march=loongarch64 -mabi=lp64
+LA64_ABI=$(shell $(CC) -mabi=lp64d -c $(TOPDIR)/cpuid_loongarch64.c -o /dev/null > /dev/null 2> /dev/null && echo lp64d)
+ifneq ($(LA64_ABI), lp64d)
+LA64_ABI=lp64
+endif
+CCOMMON_OPT += -march=loongarch64 -mabi=$(LA64_ABI)
+FCOMMON_OPT += -march=loongarch64 -mabi=$(LA64_ABI)
 endif
 
 endif
