@@ -225,10 +225,19 @@ SSYMV_U_KERNEL =  symv_U_rvv.c
 SSYMV_L_KERNEL =  symv_L_rvv.c
 DSYMV_U_KERNEL =  symv_U_rvv.c 
 DSYMV_L_KERNEL =  symv_L_rvv.c
-CSYMV_U_KERNEL =  ../generic/zsymv_k.c
-CSYMV_L_KERNEL =  ../generic/zsymv_k.c
-ZSYMV_U_KERNEL =  ../generic/zsymv_k.c
-ZSYMV_L_KERNEL =  ../generic/zsymv_k.c
+CSYMV_U_KERNEL =  zsymv_U_rvv.c
+CSYMV_L_KERNEL =  zsymv_L_rvv.c
+ZSYMV_U_KERNEL =  zsymv_U_rvv.c
+ZSYMV_L_KERNEL =  zsymv_L_rvv.c
+
+CHEMV_L_KERNEL =  zhemv_LM_rvv.c
+CHEMV_M_KERNEL =  zhemv_LM_rvv.c
+CHEMV_U_KERNEL =  zhemv_UV_rvv.c
+CHEMV_V_KERNEL =  zhemv_UV_rvv.c
+ZHEMV_L_KERNEL =  zhemv_LM_rvv.c
+ZHEMV_M_KERNEL =  zhemv_LM_rvv.c
+ZHEMV_U_KERNEL =  zhemv_UV_rvv.c
+ZHEMV_V_KERNEL =  zhemv_UV_rvv.c
 
 ZHEMMLTCOPY_M    =  zhemm_ltcopy_rvv_v1.c
 ZHEMMUTCOPY_M    =  zhemm_utcopy_rvv_v1.c
