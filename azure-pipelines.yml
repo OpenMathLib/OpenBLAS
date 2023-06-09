@@ -281,7 +281,7 @@ jobs:
   - script: |
      brew update
      brew install conan
-     conan new
+     conan new cmake_lib -d name=openblas
      conan build
 #     echo -e "tc=CMakeToolchain(self)\n tc.generate \ cmake=CMake(self)\n cmake.configure() \n cmake.build()\n" >conanfile.py
 #     conan build
