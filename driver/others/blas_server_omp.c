@@ -48,6 +48,7 @@
 
 #else
 
+#include <omp.h>
 #ifndef likely
 #ifdef __GNUC__
 #define likely(x) __builtin_expect(!!(x), 1)
@@ -172,6 +173,9 @@ int BLASFUNC(blas_thread_shutdown)(void){
       }
     }
   }
+#if HAVE_OMP_PAUSE_RESOURCE_ALL
+  omp_pause_resource_all(omp_pause_hard);
+#endif
 
   return 0;
 }
