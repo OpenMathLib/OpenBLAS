@@ -64,7 +64,7 @@ static void check_dgemm(double *a, double *b, double *result, double *expected, 
 
 CTEST(fork, safety)
 {
-#ifndef BUILD_DOUBLE
+#if !defined(BUILD_DOUBLE) || (defined(_OPENMP) && _OPENMP < 201811)
 exit(0);
 #else
     blasint n = 1000;
