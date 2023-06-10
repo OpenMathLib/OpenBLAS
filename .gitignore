@@ -14,6 +14,7 @@ lapack-3.4.2
 lapack-3.4.2.tgz
 lapack-netlib/make.inc
 lapack-netlib/lapacke/include/lapacke_mangling.h
+lapack-netlib/SRC/la_constants.mod
 lapack-netlib/TESTING/testing_results.txt
 lapack-netlib/INSTALL/test*
 lapack-netlib/TESTING/xeigtstc
