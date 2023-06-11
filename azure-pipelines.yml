@@ -282,7 +282,7 @@ jobs:
      brew update
      brew install conan
      conan profile detect
-     echo -e "from conans import ConanFile, CMake\n\nclass OpenBLASConan(ConanFile):\n   def build(self):\n      tc=CMakeToolchain(self)\n      tc.generate\n\n      cmake=CMake(self)\n      cmake.configure()\n      cmake.build()\n" >conanfile.py
+     echo -e "from conan import ConanFile, CMake\n\nclass OpenBLASConan(ConanFile):\n   def build(self):\n      tc=CMakeToolchain(self)\n      tc.generate\n\n      cmake=CMake(self)\n      cmake.configure()\n      cmake.build()\n" >conanfile.py
      conan build .
 #     cmake -G ""Xcode"" -DCMAKE_TOOLCHAIN_FILE="conan_toolchain.cmake" -DCMAKE_INSTALL_PREFIX="OpenBLAS" -DNOFORTRAN="ON" -DBUILD_WITHOUT_LAPACK="ON" -DBUILD_LAPACK_DEPRECATED="OFF" -DBUILD_TESTING="OFF" -DUSE_THREAD="ON" -DMSVC_STATIC_CRT="OFF" -DBUILD_STATIC_LIBS="ON" -DBUILD_SHARED_LIBS="OFF" -DONLY_CBLAS="1" -DCMAKE_POLICY_DEFAULT_CMP0091="NEW" "OpenBLAS"
 #     xcodebuild -project OpenBLAS.xcodeproj build -target ALL_BUILD -configuration RelWithDebInfo -hideShellScriptEnvironment
