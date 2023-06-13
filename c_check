@@ -35,12 +35,12 @@ if [ "`dirname \"$compiler_name\"`" != '.' ]; then
     cross_suffix="$cross_suffix`dirname \"$compiler_name\"`/"
 fi
 
-bn=`basename \"$compiler_name\"`
+cn= `echo $compiler_name | sed -e 's/ -.*//'`
+bn=`basename "$cn"`
 
 case "$bn" in
     *-*) if [ "$bn" != '-' ]; then
            cross_suffix="$cross_suffix${bn%-*}-"
-	   cross_suffix=`echo $cross_suffix|sed -e 's/ -$//'`
          fi
 esac
 
