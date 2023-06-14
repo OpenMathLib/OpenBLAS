@@ -82,6 +82,15 @@ task:
     cpu: 8
   compile_script:
   - make USE_OPENMP=1
+
+FreeBSD_task:
+  freebsd_instance:
+    image_family: freebsd-13-2
+  install_script:
+  - pkg update -f && pkg upgrade -y && pkg install -y gmake gcc
+  compile_script:
+  - ls -l /usr/local/lib
+  - gmake CC=gcc 
   
 #task:
 #  name: Windows/LLVM16     --- too slow ---
