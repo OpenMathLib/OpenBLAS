@@ -86,8 +86,10 @@ task:
 task:
   name: FreeBSD
   freebsd_instance:
+  image_family: freebsd-13-2
   compile_script:
-  - make
+  - pkg install -y gmake gcc-12
+  - gmake
   
 #task:
 #  name: Windows/LLVM16     --- too slow ---
