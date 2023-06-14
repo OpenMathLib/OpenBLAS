@@ -89,7 +89,8 @@ FreeBSD_task:
   install_script:
   - pkg update -f && pkg upgrade -y && pkg install -y gmake gcc
   compile_script:
-  - gmake
+  - ls -l /usr/local/lib
+  - gmake CC=gcc 
   
 #task:
 #  name: Windows/LLVM16     --- too slow ---
