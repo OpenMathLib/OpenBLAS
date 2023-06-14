@@ -86,7 +86,7 @@ task:
 task:
   name: FreeBSD
   freebsd_instance:
-  image_family: freebsd-13-2
+  image_family: freebsd-13-0
   compile_script:
   - pkg install -y gmake gcc-12
   - gmake
