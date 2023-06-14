@@ -82,6 +82,12 @@ task:
     cpu: 8
   compile_script:
   - make USE_OPENMP=1
+
+task:
+  name: FreeBSD
+  freebsd_instance:
+  compile_script:
+  - make
   
 #task:
 #  name: Windows/LLVM16     --- too slow ---
