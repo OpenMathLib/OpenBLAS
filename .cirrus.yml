@@ -87,7 +87,7 @@ FreeBSD_task:
   freebsd_instance:
     image_family: freebsd-13-2
   install_script:
-  - pkg update -f && pkg upgrade -y && pkg install -y gmake gcc-12
+  - pkg update -f && pkg upgrade -y && pkg install -y gmake gcc
   compile_script:
   - gmake
   
