@@ -83,12 +83,12 @@ task:
   compile_script:
   - make USE_OPENMP=1
 
-task:
-  name: FreeBSD
+FreeBSD_task:
   freebsd_instance:
-  image_family: freebsd-13-0
+    image_family: freebsd-13-2
+  install_script:
+  - pkg update -f && pkg upgrade -y && pkg install -y gmake gcc-12
   compile_script:
-  - pkg install -y gmake gcc-12
   - gmake
   
 #task:
