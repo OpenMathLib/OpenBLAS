@@ -51,11 +51,13 @@ jobs:
            curl.exe --output %TEMP%\webimage.exe --url $WINDOWS_HPCKIT_URL --retry 5 --retry-delay 5
            start /b /wait %TEMP%\webimage.exe -s -x -f webimage_extracted --log extract.log
            del %TEMP%\webimage.exe
-           #if "$WINDOWS_CPP_COMPONENTS"=="" (
+           echo "webimage downloaded & extracted"
+           if "$WINDOWS_CPP_COMPONENTS"=="" (
               webimage_extracted\bootstrapper.exe -s --action install --eula=accept -p=NEED_VS2017_INTEGRATION=0 -p=NEED_VS2019_INTEGRATION=0 -p=NEED_VS2022_INTEGRATION=0 --log-dir=.
-           #) else (
-           #webimage_extracted\bootstrapper.exe -s --action install --components=%COMPONENTS% --eula=accept -p=NEED_VS2017_INTEGRATION=0 -p=NEED_VS2019_INTEGRATION=0 -p=NEED_VS2022_INTEGRATION=0 --log-dir=.
-           #)
+           ) else (
+           webimage_extracted\bootstrapper.exe -s --action install --components=$WINDOWS_CPP_COMPONENTS n--eula=accept -p=NEED_VS2017_INTEGRATION=0 -p=NEED_VS2019_INTEGRATION=0 -p=NEED_VS2022_INTEGRATION=0 --log-dir=.
+           )
+           echo "bootstrapper finished"
            set installer_exit_code=%ERRORLEVEL%
            rd /s/q "webimage_extracted"
       #scripts/install_windows.bat $WINDOWS_HPCKIT_URL $WINDOWS_CPP_COMPONENTS
