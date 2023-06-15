@@ -1,0 +1,197 @@
+# SPDX-FileCopyrightText: 2022 Intel Corporation
+#
+# SPDX-License-Identifier: MIT
+
+name: build_all
+
+on: [push, pull_request]
+
+env:
+  WINDOWS_BASEKIT_URL: https:/registrationcenter-download.intel.com/akdlm/IRC_NAS/c961e083-5685-4f0b-ada5-c6cf16f561dd/w_BaseKit_p_2023.1.0.47256_offline.exe
+  WINDOWS_HPCKIT_URL: https:/registrationcenter-download.intel.com/akdlm/IRC_NAS/2a13d966-fcc5-4a66-9fcc-50603820e0c9/w_HPCKit_p_2023.1.0.46357_offline.exe
+  LINUX_BASEKIT_URL: https:/registrationcenter-download.intel.com/akdlm/IRC_NAS/7deeaac4-f605-4bcf-a81b-ea7531577c61/l_BaseKit_p_2023.1.0.46401_offline.sh
+  LINUX_HPCKIT_URL: https:/registrationcenter-download.intel.com/akdlm/IRC_NAS/1ff1b38a-8218-4c53-9956-f0b264de35a4/l_HPCKit_p_2023.1.0.46346_offline.sh
+  MACOS_HPCKIT_URL: https:/registrationcenter-download.intel.com/akdlm/IRC_NAS/a99cb1c5-5af6-4824-9811-ae172d24e594/m_HPCKit_p_2023.1.0.44543_offline.dmg
+  WINDOWS_CPP_COMPONENTS: intel.oneapi.win.cpp-compiler
+  WINDOWS_FORTRAN_COMPONENTS: intel.oneapi.win.ifort-compiler
+  WINDOWS_DPCPP_COMPONENTS: intel.oneapi.win.dpcpp-compiler
+  LINUX_CPP_COMPONENTS: intel-oneapi-compiler-dpcpp-cpp-and-cpp-classic
+  LINUX_FORTRAN_COMPONENTS: intel-oneapi-compiler-fortran
+  LINUX_DPCPP_COMPONENTS: intel-oneapi-compiler-dpcpp-cpp
+  LINUX_CPP_COMPONENTS_WEB: intel.oneapi.lin.dpcpp-cpp-compiler-pro
+  LINUX_FORTRAN_COMPONENTS_WEB: intel.oneapi.lin.ifort-compiler
+  LINUX_DPCPP_COMPONENTS_WEB: intel.oneapi.lin.dpcpp-cpp-compiler
+  MACOS_CPP_COMPONENTS: intel.oneapi.mac.cpp-compiler
+  MACOS_FORTRAN_COMPONENTS: intel.oneapi.mac.ifort-compiler
+  CACHE_NUMBER: 7
+  SAMPLES_TAG: 2023.1.0
+  COMPILER_VERSION: 2023.1.0
+  TBB_VERSION: 2021.9.0
+  VS_VER: vs2022
+
+jobs:
+  build_windows_cpp:
+    runs-on: windows-latest
+    defaults:
+      run:
+        shell: bash
+    steps:
+    - uses: actions/checkout@v2
+    - name: cache install
+      id: cache-install
+      uses: actions/cache@v2
+      with:
+        path: |
+            C:\Program Files (x86)\Intel\oneAPI\setvars-vcvarsall.bat
+            C:\Program Files (x86)\Intel\oneAPI\compiler
+        key: install-${{ env.CACHE_NUMBER }}-${{ env.WINDOWS_HPCKIT_URL }}-${{ env.WINDOWS_CPP_COMPONENTS }}-compiler-${{ hashFiles('**/scripts/cache_exclude_windows.sh') }}
+    - name: install
+      if: steps.cache-install.outputs.cache-hit != 'true'
+      run: |
+           curl.exe --output %TEMP%\webimage.exe --url %WINDOWS_HPCKIT_URL% --retry 5 --retry-delay 5
+           start /b /wait %TEMP%\webimage.exe -s -x -f webimage_extracted --log extract.log
+           del %TEMP%\webimage.exe
+           if "%WINDOWS_CPP_COMPONENTS%"=="" (
+              webimage_extracted\bootstrapper.exe -s --action install --eula=accept -p=NEED_VS2017_INTEGRATION=0 -p=NEED_VS2019_INTEGRATION=0 -p=NEED_VS2022_INTEGRATION=0 --log-dir=.
+           ) else (
+           webimage_extracted\bootstrapper.exe -s --action install --components=%COMPONENTS% --eula=accept -p=NEED_VS2017_INTEGRATION=0 -p=NEED_VS2019_INTEGRATION=0 -p=NEED_VS2022_INTEGRATION=0 --log-dir=.
+           )
+           set installer_exit_code=%ERRORLEVEL%
+           rd /s/q "webimage_extracted"
+      #scripts/install_windows.bat $WINDOWS_HPCKIT_URL $WINDOWS_CPP_COMPONENTS
+    - name: build
+      run: 
+                cmake -DCMAKE_BUILD_TYPE=Release \
+                -DBUILD_SHARED_LIBS=ON \
+                -DBUILD_STATIC_LIBS=ON \
+                -DDYNAMIC_ARCH=ON \
+                -DUSE_THREAD=ON \
+                -DNUM_THREADS=64 \
+                -DTARGET=CORE2 \
+                -DCMAKE_C_COMPILER=icx \
+                -DCMAKE_Fortran_COMPILER=ifx 
+                #scripts/build_windows.bat c++ $VS_VER $SAMPLES_TAG
+    - name: exclude unused files from cache
+      if: steps.cache-install.outputs.cache-hit != 'true'
+      shell: bash
+      run: scripts/cache_exclude_windows.sh
+
+#  build_windows_fortran:
+#    runs-on: windows-latest
+#    defaults:
+#      run:
+#        shell: bash
+#    steps:
+#    - uses: actions/checkout@v2
+#    - name: cache install
+#      id: cache-install
+#      uses: actions/cache@v2
+#      with:
+#        path: |
+#            C:\Program Files (x86)\Intel\oneAPI\setvars-vcvarsall.bat
+#            C:\Program Files (x86)\Intel\oneAPI\compiler
+#        key: install-${{ env.CACHE_NUMBER }}-${{ env.WINDOWS_HPCKIT_URL }}-${{ env.WINDOWS_FORTRAN_COMPONENTS }}-compiler-${{ hashFiles('**/scripts/cache_exclude_windows.sh') }}
+#    - name: install
+#      if: steps.cache-install.outputs.cache-hit != 'true'
+#      run: scripts/install_windows.bat $WINDOWS_HPCKIT_URL $WINDOWS_FORTRAN_COMPONENTS
+#    - name: build
+#      run: scripts/build_windows.bat fortran $VS_VER $SAMPLES_TAG
+#    - name: exclude unused files from cache
+#      if: steps.cache-install.outputs.cache-hit != 'true'
+#      shell: bash
+#      run: scripts/cache_exclude_windows.sh
+#
+#
+#  build_linux_cpp:
+#    runs-on: ubuntu-20.04
+#    defaults:
+#      run:
+#        shell: bash
+#    steps:
+#    - uses: actions/checkout@v2
+#    - name: cache install
+#      id: cache-install
+#      uses: actions/cache@v2
+#      with:
+#        path: |
+#          /opt/intel/oneapi/compiler
+#        key: install-${{ env.CACHE_NUMBER }}-${{ env.LINUX_HPCKIT_URL }}-${{ env.LINUX_CPP_COMPONENTS_WEB }}-compiler-${{ hashFiles('**/scripts/cache_exclude_linux.sh') }}
+#    - name: install
+#      if: steps.cache-install.outputs.cache-hit != 'true'
+#      run: scripts/install_linux.sh $LINUX_HPCKIT_URL $LINUX_CPP_COMPONENTS_WEB
+#    - name: build
+#      run: scripts/build_linux.sh c++ $SAMPLES_TAG
+#    - name: exclude unused files from cache
+#      if: steps.cache-install.outputs.cache-hit != 'true'
+#      run: scripts/cache_exclude_linux.sh
+#
+#
+#  build_linux_fortran:
+#    runs-on: ubuntu-20.04
+#    defaults:
+#      run:
+#        shell: bash
+#    steps:
+#    - uses: actions/checkout@v2
+#    - name: cache install
+#      id: cache-install
+#      uses: actions/cache@v2
+#      with:
+##       path: |
+#          /opt/intel/oneapi/compiler
+#        key: install-${{ env.CACHE_NUMBER }}-${{ env.LINUX_HPCKIT_URL }}-${{ env.LINUX_FORTRAN_COMPONENTS_WEB }}-compiler-${{ hashFiles('**/scripts/cache_exclude_linux.sh') }}
+#    - name: install
+#      if: steps.cache-install.outputs.cache-hit != 'true'
+#      run: scripts/install_linux.sh $LINUX_HPCKIT_URL $LINUX_FORTRAN_COMPONENTS_WEB
+#    - name: build
+#      run: scripts/build_linux.sh fortran $SAMPLES_TAG
+#    - name: exclude unused files from cache
+#      if: steps.cache-install.outputs.cache-hit != 'true'
+#      run: scripts/cache_exclude_linux.sh
+
+#  build_macos_cpp:
+#    runs-on: macos-latest
+#    defaults:
+#      run:
+#        shell: bash
+#    steps:
+#    - uses: actions/checkout@v2
+#    - name: prepare for cache restore
+#      run: |
+#        sudo mkdir -p /opt/intel
+#        sudo chown $USER /opt/intel
+#    - name: cache install
+#            id: cache-install
+#      uses: actions/cache@v2
+#      with:
+#        path: /opt/intel/oneapi
+#        key: install-${{ env.MACOS_HPCKIT_URL }}-${{ env.MACOS_CPP_COMPONENTS }}
+#    - name: install
+#      if: steps.cache-install.outputs.cache-hit != 'true'
+#      run: scripts/install_macos.sh $MACOS_HPCKIT_URL $MACOS_CPP_COMPONENTS
+#    - name: build
+#      run: scripts/build_macos.sh c++ $SAMPLES_TAG
+
+#  build_macos_fortran:
+#    runs-on: macos-latest
+#    defaults:
+#      run:
+#        shell: bash
+#    steps:
+#    - uses: actions/checkout@v2
+#    - name: prepare for cache restore
+#      run: |
+#        sudo mkdir -p /opt/intel
+#        sudo chown $USER /opt/intel
+#    - name: cache install
+#      id: cache-install
+#      uses: actions/cache@v2
+#      with:
+#        path: /opt/intel/oneapi
+#        key: install-${{ env.MACOS_HPCKIT_URL }}-${{ env.MACOS_FORTRAN_COMPONENTS }}
+#    - name: install
+#      if: steps.cache-install.outputs.cache-hit != 'true'
+#      run: scripts/install_macos.sh $MACOS_HPCKIT_URL $MACOS_FORTRAN_COMPONENTS
+#    - name: build
+#      run: scripts/build_macos.sh fortran $SAMPLES_TAG
+
