@@ -50,7 +50,7 @@ jobs:
       run: |
            curl.exe --output %TEMP%\webimage.exe \
            --url https:/registrationcenter-download.intel.com/akdlm/IRC_NAS/2a13d966-fcc5-4a66-9fcc-50603820e0c9/w_HPCKit_p_2023.1.0.46357_offline.exe \
-           --retry 5 --retry-delay 5 --max-time 1800
+           --retry 5 --retry-delay 5 --max-time 600
            echo "extracting image"
            start /b /wait %TEMP%\webimage.exe -s -x -f webimage_extracted --log extract.log
            del %TEMP%\webimage.exe
