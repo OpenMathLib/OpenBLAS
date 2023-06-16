@@ -54,11 +54,11 @@ jobs:
            start /b /wait %TEMP%\webimage.exe -s -x -f webimage_extracted --log extract.log
            del %TEMP%\webimage.exe
            echo "webimage downloaded & extracted"
-           if "$WINDOWS_CPP_COMPONENTS"=="" (
-              webimage_extracted\bootstrapper.exe -s --action install --eula=accept -p=NEED_VS2017_INTEGRATION=0 -p=NEED_VS2019_INTEGRATION=0 -p=NEED_VS2022_INTEGRATION=0 --log-dir=.
-           ) else (
-           webimage_extracted\bootstrapper.exe -s --action install --components=$WINDOWS_CPP_COMPONENTS --eula=accept -p=NEED_VS2017_INTEGRATION=0 -p=NEED_VS2019_INTEGRATION=0 -p=NEED_VS2022_INTEGRATION=0 --log-dir=.
-           )
+           # if "$WINDOWS_CPP_COMPONENTS"=="" (
+           #    webimage_extracted\bootstrapper.exe -s --action install --eula=accept -p=NEED_VS2017_INTEGRATION=0 -p=NEED_VS2019_INTEGRATION=0 -p=NEED_VS2022_INTEGRATION=0 --log-dir=.
+           #  ) else (
+           # webimage_extracted\bootstrapper.exe -s --action install --components=$WINDOWS_CPP_COMPONENTS --eula=accept -p=NEED_VS2017_INTEGRATION=0 -p=NEED_VS2019_INTEGRATION=0 -p=NEED_VS2022_INTEGRATION=0 --log-dir=.
+           #)
            echo "bootstrapper finished"
            set installer_exit_code=%ERRORLEVEL%
            rd /s/q "webimage_extracted"
