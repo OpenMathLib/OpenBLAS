@@ -11,6 +11,15 @@ task:
   - make TARGET=VORTEX USE_OPENMP=1 CC=clang
 
 task:
+  name: AppleM1/LLVM/ILP64
+  compile_script:
+  - brew install llvm
+  - export PATH=/opt/homebrew/opt/llvm/bin:$PATH
+  - export LDFLAGS="-L/opt/homebrew/opt/llvm/lib"
+  - export CPPFLAGS="-I/opt/homebrew/opt/llvm/include"
+  - make TARGET=VORTEX USE_OPENMP=1 CC=clang INTERFACE64=1
+
+task:
   name: AppleM1/LLVM/CMAKE
   compile_script:
   - brew install llvm
@@ -74,7 +83,14 @@ task:
     image: node:latest
   compile_script:
   - make
-  
+
+  task:
+  name: NeoverseN1-ILP64
+  arm_container:
+    image: node:latest
+  compile_script:
+  - make INTERFACE64=1
+
 task:
   name: NeoverseN1-OMP
   arm_container:
@@ -84,6 +100,7 @@ task:
   - make USE_OPENMP=1
 
 FreeBSD_task:
+  name FreeBSD-gcc12
   freebsd_instance:
     image_family: freebsd-13-2
   install_script:
@@ -91,7 +108,18 @@ FreeBSD_task:
   compile_script:
   - ls -l /usr/local/lib
   - gmake CC=gcc 
-  
+
+
+FreeBSD_task:
+  name: freebsd-gcc12-ilp64
+  freebsd_instance:
+    image_family: freebsd-13-2
+  install_script:
+  - pkg update -f && pkg upgrade -y && pkg install -y gmake gcc
+  compile_script:
+  - ls -l /usr/local/lib
+  - gmake CC=gcc INTERFACE64=1
+
 #task:
 #  name: Windows/LLVM16     --- too slow ---
 #  windows_container:
