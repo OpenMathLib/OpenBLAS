@@ -100,7 +100,7 @@ task:
   - make USE_OPENMP=1
 
 FreeBSD_task:
-  name FreeBSD-gcc12
+  name: FreeBSD-gcc12
   freebsd_instance:
     image_family: freebsd-13-2
   install_script:
