@@ -66,6 +66,7 @@ gotoblas_t TABLE_NAME = {
 #endif
 
   SBGEMM_ALIGN_K,
+  0, // need_amxtile_permission
 
   sbstobf16_kTS, sbdtobf16_kTS, sbf16tos_kTS, dbf16tod_kTS,
 
@@ -1807,6 +1808,12 @@ static void init_parameter(void) {
   TABLE_NAME.xgemm_p = XGEMM_DEFAULT_P;
 #endif
 
+#endif
+
+#ifdef SAPPHIRERAPIDS
+#if (BUILD_BFLOAT16 == 1)
+  TABLE_NAME.need_amxtile_permission = 1;
+#endif
 #endif
 
 #if BUILD_COMPLEX==1
