@@ -285,6 +285,7 @@ jobs:
      conan profile detect
      wget https://gist.githubusercontent.com/martin-frbg/dae99830b42cfc5bf4e805df211875e1/raw/a33310fa761ebe9311a25330c94fe3b258ff5298/conanfile.py
      conan build .
+     cd build
      ls -l
      ls -l lib
      cmake --install ~/openblas-ios
