@@ -285,9 +285,9 @@ jobs:
      conan profile detect
      wget https://gist.githubusercontent.com/martin-frbg/dae99830b42cfc5bf4e805df211875e1/raw/a33310fa761ebe9311a25330c94fe3b258ff5298/conanfile.py
      conan build .
-     dir
+     ls -l
      ls -l lib
-     cmake --install %TEMP%/OBLAS
+     cmake --install ~/openblas-ios
 #     conan build .
 #     cmake -G ""Xcode"" -DCMAKE_TOOLCHAIN_FILE="conan_toolchain.cmake" -DCMAKE_INSTALL_PREFIX="OpenBLAS" -DNOFORTRAN="ON" -DBUILD_WITHOUT_LAPACK="ON" -DBUILD_LAPACK_DEPRECATED="OFF" -DBUILD_TESTING="OFF" -DUSE_THREAD="ON" -DMSVC_STATIC_CRT="OFF" -DBUILD_STATIC_LIBS="ON" -DBUILD_SHARED_LIBS="OFF" -DONLY_CBLAS="1" -DCMAKE_POLICY_DEFAULT_CMP0091="NEW" "OpenBLAS"
 #     xcodebuild -project OpenBLAS.xcodeproj build -target ALL_BUILD -configuration RelWithDebInfo -hideShellScriptEnvironment
