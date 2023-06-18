@@ -120,13 +120,15 @@
       COMPLEX*16         RMUL
 *     ..
 *     .. Local Arrays ..
-      COMPLEX*16         A( MAXM, MAXM ), B( MAXN, MAXN ),
-     $                   C( MAXM, MAXN ), CC( MAXM, MAXN ),
-     $                   X( MAXM, MAXN ),
-     $                   DUML( MAXM ), DUMR( MAXN ),
+      COMPLEX*16         DUML( MAXM ), DUMR( MAXN ),
      $                   D( MAX( MAXM, MAXN ) )
-      DOUBLE PRECISION   SWORK( LDSWORK, 103 ), DUM( MAXN ), VM( 2 )
+      DOUBLE PRECISION   DUM( MAXN ), VM( 2 )
       INTEGER            ISEED( 4 ), IWORK( MAXM + MAXN + 2 )
+*     ..
+*     .. Allocatable Arrays ..
+      INTEGER            AllocateStatus
+      COMPLEX*16,       DIMENSION(:,:), ALLOCATABLE :: A, B, C, CC, X
+      DOUBLE PRECISION, DIMENSION(:,:), ALLOCATABLE :: SWORK
 *     ..
 *     .. External Functions ..
       LOGICAL            DISNAN
@@ -138,6 +140,20 @@
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          ABS, DBLE, MAX, SQRT
+*     ..
+*     .. Allocate memory dynamically ..
+      ALLOCATE ( A( MAXM, MAXM ), STAT = AllocateStatus )
+      IF( AllocateStatus /= 0 ) STOP "*** Not enough memory ***"
+      ALLOCATE ( B( MAXN, MAXN ), STAT = AllocateStatus )
+      IF( AllocateStatus /= 0 ) STOP "*** Not enough memory ***"
+      ALLOCATE ( C( MAXM, MAXN ), STAT = AllocateStatus )
+      IF( AllocateStatus /= 0 ) STOP "*** Not enough memory ***"
+      ALLOCATE ( CC( MAXM, MAXN ), STAT = AllocateStatus )
+      IF( AllocateStatus /= 0 ) STOP "*** Not enough memory ***"
+      ALLOCATE ( X( MAXM, MAXN ), STAT = AllocateStatus )
+      IF( AllocateStatus /= 0 ) STOP "*** Not enough memory ***"
+      ALLOCATE ( SWORK( LDSWORK, 103 ), STAT = AllocateStatus )
+      IF( AllocateStatus /= 0 ) STOP "*** Not enough memory ***"
 *     ..
 *     .. Executable Statements ..
 *
@@ -286,6 +302,13 @@
             END DO
          END DO
       END DO
+*
+      DEALLOCATE (A, STAT = AllocateStatus)
+      DEALLOCATE (B, STAT = AllocateStatus)
+      DEALLOCATE (C, STAT = AllocateStatus)
+      DEALLOCATE (CC, STAT = AllocateStatus)
+      DEALLOCATE (X, STAT = AllocateStatus)
+      DEALLOCATE (SWORK, STAT = AllocateStatus)
 *
       RETURN
 *
