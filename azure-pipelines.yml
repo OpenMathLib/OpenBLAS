@@ -16,7 +16,7 @@ resources:
 jobs:
 # manylinux1 is useful to test because the
 # standard Docker container uses an old version
-# of gcc / glibc
+# of gcc / glibc  
 - job: manylinux1_gcc
   pool:
     vmImage: 'ubuntu-latest'
@@ -109,15 +109,21 @@ jobs:
       set "PATH=C:\Miniconda\Scripts;C:\Miniconda\Library\bin;C:\Miniconda\Library\usr\bin;C:\Miniconda\condabin;%PATH%"
       set "LIB=C:\Miniconda\Library\lib;%LIB%"
       set "CPATH=C:\Miniconda\Library\include;%CPATH%"
+      set "OPENBLAS_VERBOSE=2"
       conda config --add channels conda-forge --force
       conda config --set auto_update_conda false
       conda install --yes --quiet ninja flang
       mkdir build 
       cd build
       call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
-      cmake -G "Ninja" -DCMAKE_C_COMPILER=clang-cl -DCMAKE_CXX_COMPILER=clang-cl -DCMAKE_Fortran_COMPILER=flang -DBUILD_TESTING=OFF -DCMAKE_MT=mt -DCMAKE_BUILD_TYPE=Release -DMSVC_STATIC_CRT=ON ..
+      cmake -G "Ninja" -DCMAKE_C_COMPILER=clang-cl -DCMAKE_CXX_COMPILER=clang-cl -DCMAKE_Fortran_COMPILER=flang -DBUILD_TESTING=OFF -DCMAKE_MT=mt -DCMAKE_BUILD_TYPE=Release -DMSVC_STATIC_CRT=ON -DBUILD_SHARED_LIBS=ON -DDYNAMIC_ARCH=ON -DDYNAMIC_LIST='HASWELL;SKYLAKEX' ..
       cmake --build . --config Release
+      ls
+      cp lib/*.dll ctest
+      cp lib/*.dll test
+      ls test
       ctest
+      ctest --rerun-failed --output-on-failure
 
 - job: Windows_cl_flang
   pool:
@@ -204,7 +210,7 @@ jobs:
   - script: |
       mkdir build
       cd build
-      cmake -DTARGET=CORE2 -DDYNAMIC_ARCH=1 -DDYNAMIC_LIST='NEHALEM HASWELL SKYLAKEX' -DCMAKE_C_COMPILER=gcc-10 -DCMAKE_Fortran_COMPILER=gfortran-10 -DBUILD_SHARED_LIBS=ON ..
+      cmake -DTARGET=CORE2 -DDYNAMIC_ARCH=1 -DDYNAMIC_LIST='NEHALEM;HASWELL;SKYLAKEX' -DCMAKE_C_COMPILER=gcc-10 -DCMAKE_Fortran_COMPILER=gfortran-10 -DBUILD_SHARED_LIBS=ON ..
       cmake --build .
       ctest
 
