@@ -172,12 +172,11 @@ C>
       EXTERNAL           DGEQR2, DLARFB, DLARFT, XERBLA
 *     ..
 *     .. Intrinsic Functions ..
-      INTRINSIC          MAX, MIN
+      INTRINSIC          CEILING, MAX, MIN, REAL
 *     ..
 *     .. External Functions ..
       INTEGER            ILAENV
-      REAL               SCEIL
-      EXTERNAL           ILAENV, SCEIL
+      EXTERNAL           ILAENV
 *     ..
 *     .. Executable Statements ..
 
@@ -205,13 +204,13 @@ C>
 *
 *     So here 4 x 4 is the last T stored in the workspace
 *
-      NT = K-SCEIL(REAL(K-NX)/REAL(NB))*NB
+      NT = K-CEILING(REAL(K-NX)/REAL(NB))*NB
 
 *
 *     optimal workspace = space for dlarfb + space for normal T's + space for the last T
 *
       LLWORK = MAX (MAX((N-M)*K, (N-M)*NB), MAX(K*NB, NB*NB))
-      LLWORK = SCEIL(REAL(LLWORK)/REAL(NB))
+      LLWORK = CEILING(REAL(LLWORK)/REAL(NB))
 
       IF( K.EQ.0 ) THEN
 
@@ -230,7 +229,7 @@ C>
 
       ELSE
 
-          LBWORK = SCEIL(REAL(K)/REAL(NB))*NB
+          LBWORK = CEILING(REAL(K)/REAL(NB))*NB
           LWKOPT = (LBWORK+LLWORK-NB)*NB
           WORK( 1 ) = LWKOPT
 

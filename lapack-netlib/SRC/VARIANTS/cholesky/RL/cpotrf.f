@@ -24,7 +24,7 @@ C> \brief \b CPOTRF VARIANT: right looking block version of the algorithm, calli
 C>\details \b Purpose:
 C>\verbatim
 C>
-C> CPOTRF computes the Cholesky factorization of a real Hermitian
+C> CPOTRF computes the Cholesky factorization of a complex Hermitian
 C> positive definite matrix A.
 C>
 C> The factorization has the form

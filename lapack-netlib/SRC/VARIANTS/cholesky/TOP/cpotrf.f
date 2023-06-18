@@ -24,7 +24,7 @@ C> \brief \b CPOTRF VARIANT: top-looking block version of the algorithm, calling
 C>\details \b Purpose:
 C>\verbatim
 C>
-C> CPOTRF computes the Cholesky factorization of a real symmetric
+C> CPOTRF computes the Cholesky factorization of a complex Hermitian
 C> positive definite matrix A.
 C>
 C> The factorization has the form
@@ -55,7 +55,7 @@ C>
 C> \param[in,out] A
 C> \verbatim
 C>          A is COMPLEX array, dimension (LDA,N)
-C>          On entry, the symmetric matrix A.  If UPLO = 'U', the leading
+C>          On entry, the Hermitian matrix A.  If UPLO = 'U', the leading
 C>          N-by-N upper triangular part of A contains the upper
 C>          triangular part of the matrix A, and the strictly lower
 C>          triangular part of A is not referenced.  If UPLO = 'L', the
