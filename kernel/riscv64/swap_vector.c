@@ -31,18 +31,18 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define VSETVL(n) vsetvl_e32m8(n)
 #define VSETVL_MAX vsetvlmax_e32m1()
 #define FLOAT_V_T vfloat32m8_t
-#define VLEV_FLOAT vle_v_f32m8
-#define VLSEV_FLOAT vlse_v_f32m8
-#define VSEV_FLOAT vse_v_f32m8
-#define VSSEV_FLOAT vsse_v_f32m8
+#define VLEV_FLOAT vle32_v_f32m8
+#define VLSEV_FLOAT vlse32_v_f32m8
+#define VSEV_FLOAT vse32_v_f32m8
+#define VSSEV_FLOAT vsse32_v_f32m8
 #else
 #define VSETVL(n) vsetvl_e64m8(n)
 #define VSETVL_MAX vsetvlmax_e64m1()
 #define FLOAT_V_T vfloat64m8_t
-#define VLEV_FLOAT vle_v_f64m8
-#define VLSEV_FLOAT vlse_v_f64m8
-#define VSEV_FLOAT vse_v_f64m8
-#define VSSEV_FLOAT vsse_v_f64m8
+#define VLEV_FLOAT vle64_v_f64m8
+#define VLSEV_FLOAT vlse64_v_f64m8
+#define VSEV_FLOAT vse64_v_f64m8
+#define VSSEV_FLOAT vsse64_v_f64m8
 #endif
 
 int CNAME(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, FLOAT dummy3, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG inc_y, FLOAT *dummy, BLASLONG dummy2)
