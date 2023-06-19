@@ -283,13 +283,16 @@ jobs:
      brew update
      brew install conan
      conan profile detect
-     wget https://gist.githubusercontent.com/martin-frbg/dae99830b42cfc5bf4e805df211875e1/raw/a33310fa761ebe9311a25330c94fe3b258ff5298/conanfile.py
+     wget https://gist.github.com/martin-frbg/dae99830b42cfc5bf4e805df211875e1/raw/b0a86e814165e920727ee8d7a758f7f6a3bf80eb/conanfile.py
      conan build .
-     cat cmake_install.cmake
-     cd build
-     ls -l
-     ls -l lib
-     cd ..
+     ls -l build
+     cmake -G ""Xcode"" -DCMAKE_TOOLCHAIN_FILE="conan_toolchain.cmake" -DCMAKE_INSTALL_PREFIX="OpenBLAS" -DNOFORTRAN="ON" -DBUILD_WITHOUT_LAPACK="ON" \
+     -DBUILD_LAPACK_DEPRECATED="OFF" -DBUILD_TESTING="OFF" -DUSE_THREAD="ON" -DMSVC_STATIC_CRT="OFF" -DBUILD_STATIC_LIBS="ON" -DBUILD_SHARED_LIBS="OFF"  \
+     -DONLY_CBLAS="1" -DCMAKE_POLICY_DEFAULT_CMP0091="NEW" "OpenBLAS"
+     ls -l build
+     xcodebuild -project OpenBLAS.xcodeproj build -target ALL_BUILD -configuration RelWithDebInfo -hideShellScriptEnvironmen
+     ls -l build
+     ls -l build/lib
      cmake --install build
 #     conan build .
 #     cmake -G ""Xcode"" -DCMAKE_TOOLCHAIN_FILE="conan_toolchain.cmake" -DCMAKE_INSTALL_PREFIX="OpenBLAS" -DNOFORTRAN="ON" -DBUILD_WITHOUT_LAPACK="ON" -DBUILD_LAPACK_DEPRECATED="OFF" -DBUILD_TESTING="OFF" -DUSE_THREAD="ON" -DMSVC_STATIC_CRT="OFF" -DBUILD_STATIC_LIBS="ON" -DBUILD_SHARED_LIBS="OFF" -DONLY_CBLAS="1" -DCMAKE_POLICY_DEFAULT_CMP0091="NEW" "OpenBLAS"
