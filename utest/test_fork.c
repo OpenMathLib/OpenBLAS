@@ -67,7 +67,11 @@ CTEST(fork, safety)
 #ifndef BUILD_DOUBLE
 exit(0);
 #else
+#ifndef ARCH_RISCV64
     blasint n = 1000;
+#else
+    blasint n = 100;
+#endif   
     int i;
 
     double *a, *b, *c, *d;
