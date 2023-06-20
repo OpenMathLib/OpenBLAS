@@ -124,7 +124,7 @@ set(SLASRC
    ssbev_2stage.f ssbevx_2stage.f ssbevd_2stage.f ssygv_2stage.f
    sgesvdq.f slaorhr_col_getrfnp.f
    slaorhr_col_getrfnp2.f sorgtsqr.f sorgtsqr_row.f sorhr_col.f 
-   slatrs3.f strsyl3.f sgelst.f)
+   slatrs3.f strsyl3.f sgelst.f sgedmd.f90 sgedmdq.f90)
 
 set(SXLASRC sgesvxx.f sgerfsx.f sla_gerfsx_extended.f sla_geamv.f
    sla_gercond.f sla_gerpvgrw.f ssysvxx.f ssyrfsx.f
@@ -223,7 +223,7 @@ set(CLASRC
    chbev_2stage.f chbevx_2stage.f chbevd_2stage.f chegv_2stage.f
    cgesvdq.f claunhr_col_getrfnp.f claunhr_col_getrfnp2.f 
    cungtsqr.f cungtsqr_row.f cunhr_col.f 
-   clatrs3.f ctrsyl3.f cgelst.f)
+   clatrs3.f ctrsyl3.f cgelst.f cgedmd.f90 cgedmdq.f90)
 
 set(CXLASRC cgesvxx.f cgerfsx.f cla_gerfsx_extended.f cla_geamv.f
    cla_gercond_c.f cla_gercond_x.f cla_gerpvgrw.f
@@ -316,7 +316,7 @@ set(DLASRC
    dsbev_2stage.f dsbevx_2stage.f dsbevd_2stage.f dsygv_2stage.f
    dcombssq.f dgesvdq.f dlaorhr_col_getrfnp.f
    dlaorhr_col_getrfnp2.f dorgtsqr.f dorgtsqr_row.f dorhr_col.f 
-   dlatrs3.f dtrsyl3.f dgelst.f)
+   dlatrs3.f dtrsyl3.f dgelst.f dgedmd.f90 dgedmdq.f90)
 
 set(DXLASRC dgesvxx.f dgerfsx.f dla_gerfsx_extended.f dla_geamv.f
    dla_gercond.f dla_gerpvgrw.f dsysvxx.f dsyrfsx.f
@@ -419,7 +419,7 @@ set(ZLASRC
    zhbev_2stage.f zhbevx_2stage.f zhbevd_2stage.f zhegv_2stage.f
    zgesvdq.f zlaunhr_col_getrfnp.f zlaunhr_col_getrfnp2.f
    zungtsqr.f zungtsqr_row.f zunhr_col.f
-   zlatrs3.f ztrsyl3.f zgelst.f)
+   zlatrs3.f ztrsyl3.f zgelst.f zgedmd.f90 zgedmdq.f90)
 
 set(ZXLASRC zgesvxx.f zgerfsx.f zla_gerfsx_extended.f zla_geamv.f
    zla_gercond_c.f zla_gercond_x.f zla_gerpvgrw.f zsysvxx.f zsyrfsx.f
