@@ -283,6 +283,7 @@ jobs:
      brew update
      brew install conan
      conan profile detect
+     ln -s . OpenBLAS
      wget https://gist.github.com/martin-frbg/dae99830b42cfc5bf4e805df211875e1/raw/b0a86e814165e920727ee8d7a758f7f6a3bf80eb/conanfile.py
      conan build .
      ls -l build
@@ -290,7 +291,6 @@ jobs:
      -DBUILD_LAPACK_DEPRECATED="OFF" -DBUILD_TESTING="OFF" -DUSE_THREAD="ON" -DMSVC_STATIC_CRT="OFF" -DBUILD_STATIC_LIBS="ON" -DBUILD_SHARED_LIBS="OFF"  \
      -DONLY_CBLAS="1" -DCMAKE_POLICY_DEFAULT_CMP0091="NEW" "OpenBLAS"
      ls -l
-     ln -s . OpenBLAS
      xcodebuild -project OpenBLAS.xcodeproj build -target ALL_BUILD -configuration RelWithDebInfo -hideShellScriptEnvironment
      ls -l build
      ls -l build/lib
