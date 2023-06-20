@@ -3453,7 +3453,7 @@ void LAPACK_zgedmdq(
     lapack_complex_double* s, lapack_int const* lds,
     lapack_complex_double* work, lapack_int const* lwork,
     lapack_int* iwork, lapack_int const* liwork,
-    lapack_int* info )
+    lapack_int* info );
 
 #define LAPACK_cgesv LAPACK_GLOBAL(cgesv,CGESV)
 lapack_int LAPACK_cgesv(
