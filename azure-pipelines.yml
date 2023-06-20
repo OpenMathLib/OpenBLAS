@@ -246,7 +246,7 @@ jobs:
      vmImage: 'macOS-11'
   steps:   
   - script: | 
-      brew updat
+      brew update
       brew install --cask android-ndk
       export ANDROID_NDK_HOME=/usr/local/share/android-ndk
       make TARGET=ARMV7 ONLY_CBLAS=1 CC=$ANDROID_NDK_HOME/toolchains/llvm/prebuilt/darwin-x86_64/bin/armv7a-linux-androideabi21-clang AR=$ANDROID_NDK_HOME/toolchains/llvm/prebuilt/darwin-x86_64/bin/llvm-ar HOSTCC=gcc ARM_SOFTFP_ABI=1 -j4
@@ -289,13 +289,15 @@ jobs:
      ls -l build
      ls -l build/generators
      cp build/generators/conan_toolchain.cmake .
-     cmake -G ""Xcode"" -DCMAKE_TOOLCHAIN_FILE="conan_toolchain.cmake" -DCMAKE_INSTALL_PREFIX="OpenBLAS" -DNOFORTRAN="ON" -DBUILD_WITHOUT_LAPACK="ON" \
+     cat conan_toolchain.cmake
+     cmake -G ""Xcode"" -T buildsystem=1 -DCMAKE_TOOLCHAIN_FILE="conan_toolchain.cmake" -DCMAKE_INSTALL_PREFIX="OpenBLAS" -DNOFORTRAN="ON" -DBUILD_WITHOUT_LAPACK="ON" \
      -DBUILD_LAPACK_DEPRECATED="OFF" -DBUILD_TESTING="OFF" -DUSE_THREAD="ON" -DMSVC_STATIC_CRT="OFF" -DBUILD_STATIC_LIBS="ON" -DBUILD_SHARED_LIBS="OFF"  \
      -DONLY_CBLAS="1" -DCMAKE_POLICY_DEFAULT_CMP0091="NEW" "OpenBLAS"
      ls -l
+     cat OpenBLAS.xcodeproj
      xcodebuild -project OpenBLAS.xcodeproj build -target ALL_BUILD -configuration RelWithDebInfo -hideShellScriptEnvironment
      ls -lR build
-     cmake --install build/OpenBLAS.build
+     cmake --install build
 #     conan build .
 #     cmake -G ""Xcode"" -DCMAKE_TOOLCHAIN_FILE="conan_toolchain.cmake" -DCMAKE_INSTALL_PREFIX="OpenBLAS" -DNOFORTRAN="ON" -DBUILD_WITHOUT_LAPACK="ON" -DBUILD_LAPACK_DEPRECATED="OFF" -DBUILD_TESTING="OFF" -DUSE_THREAD="ON" -DMSVC_STATIC_CRT="OFF" -DBUILD_STATIC_LIBS="ON" -DBUILD_SHARED_LIBS="OFF" -DONLY_CBLAS="1" -DCMAKE_POLICY_DEFAULT_CMP0091="NEW" "OpenBLAS"
 #     xcodebuild -project OpenBLAS.xcodeproj build -target ALL_BUILD -configuration RelWithDebInfo -hideShellScriptEnvironment
