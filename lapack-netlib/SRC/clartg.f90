@@ -113,6 +113,7 @@
 !> \endverbatim
 !
 subroutine CLARTG( f, g, c, s, r )
+   use iso_fortran_env
    use LA_CONSTANTS, &
    only: wp=>sp, zero=>szero, one=>sone, two=>stwo, czero, &
          safmin=>ssafmin, safmax=>ssafmax
