@@ -509,3 +509,785 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 
 
 
+/*  -- translated by f2c (version 20000121).
+   You must link the resulting object file with the libraries:
+	-lf2c -lm   (in that order)
+*/
+
+
+
+/* Table of constant values */
+
+static integer c_n1 = -1;
+
+/* Subroutine */ int zgedmdq_(char *jobs, char *jobz, char *jobr, char *jobq, 
+	char *jobt, char *jobf, integer *whtsvd, integer *m, integer *n, 
+	doublecomplex *f, integer *ldf, doublecomplex *x, integer *ldx, 
+	doublecomplex *y, integer *ldy, integer *nrnk, doublereal *tol, 
+	integer *k, doublecomplex *eigs, doublecomplex *z__, integer *ldz, 
+	doublereal *res, doublecomplex *b, integer *ldb, doublecomplex *v, 
+	integer *ldv, doublecomplex *s, integer *lds, doublecomplex *zwork, 
+	integer *lzwork, doublereal *work, integer *lwork, integer *iwork, 
+	integer *liwork, integer *info)
+{
+    /* System generated locals */
+    integer f_dim1, f_offset, x_dim1, x_offset, y_dim1, y_offset, z_dim1, 
+	    z_offset, b_dim1, b_offset, v_dim1, v_offset, s_dim1, s_offset, 
+	    i__1, i__2;
+
+    /* Local variables */
+    doublereal zero;
+    integer info1;
+    extern logical lsame_(char *, char *);
+    char jobvl[1];
+    integer minmn;
+    logical wantq;
+    integer mlwqr, olwqr;
+    logical wntex;
+    doublecomplex zzero;
+    extern /* Subroutine */ int zgedmd_(char *, char *, char *, char *, 
+	    integer *, integer *, integer *, doublecomplex *, integer *, 
+	    doublecomplex *, integer *, integer *, doublereal *, integer *, 
+	    doublecomplex *, doublecomplex *, integer *, doublereal *, 
+	    doublecomplex *, integer *, doublecomplex *, integer *, 
+	    doublecomplex *, integer *, doublecomplex *, integer *, 
+	    doublereal *, integer *, integer *, integer *, integer *), xerbla_(char *, integer *);
+    integer mlwdmd, olwdmd;
+    logical sccolx, sccoly;
+    extern /* Subroutine */ int zgeqrf_(integer *, integer *, doublecomplex *,
+	     integer *, doublecomplex *, doublecomplex *, integer *, integer *
+	    ), zlacpy_(char *, integer *, integer *, doublecomplex *, integer 
+	    *, doublecomplex *, integer *), zlaset_(char *, integer *,
+	     integer *, doublecomplex *, doublecomplex *, doublecomplex *, 
+	    integer *);
+    integer iminwr;
+    logical wntvec, wntvcf;
+    integer mlwgqr;
+    logical wntref;
+    integer mlwork, olwgqr, olwork, mlrwrk, mlwmqr, olwmqr;
+    logical lquery, wntres, wnttrf, wntvcq;
+    extern /* Subroutine */ int zungqr_(integer *, integer *, integer *, 
+	    doublecomplex *, integer *, doublecomplex *, doublecomplex *, 
+	    integer *, integer *), zunmqr_(char *, char *, integer *, integer 
+	    *, integer *, doublecomplex *, integer *, doublecomplex *, 
+	    doublecomplex *, integer *, doublecomplex *, integer *, integer *);
+    doublereal one;
+
+/* March 2023 */
+/* ..... */
+/*      USE                   iso_fortran_env */
+/*      INTEGER, PARAMETER :: WP = real64 */
+/* ..... */
+/*     Scalar arguments */
+/*     Array arguments */
+/* ..... */
+/*     Purpose */
+/*     ======= */
+/*     ZGEDMDQ computes the Dynamic Mode Decomposition (DMD) for */
+/*     a pair of data snapshot matrices, using a QR factorization */
+/*     based compression of the data. For the input matrices */
+/*     X and Y such that Y = A*X with an unaccessible matrix */
+/*     A, ZGEDMDQ computes a certain number of Ritz pairs of A using */
+/*     the standard Rayleigh-Ritz extraction from a subspace of */
+/*     range(X) that is determined using the leading left singular */
+/*     vectors of X. Optionally, ZGEDMDQ returns the residuals */
+/*     of the computed Ritz pairs, the information needed for */
+/*     a refinement of the Ritz vectors, or the eigenvectors of */
+/*     the Exact DMD. */
+/*     For further details see the references listed */
+/*     below. For more details of the implementation see [3]. */
+
+/*     References */
+/*     ========== */
+/*     [1] P. Schmid: Dynamic mode decomposition of numerical */
+/*         and experimental data, */
+/*         Journal of Fluid Mechanics 656, 5-28, 2010. */
+/*     [2] Z. Drmac, I. Mezic, R. Mohr: Data driven modal */
+/*         decompositions: analysis and enhancements, */
+/*         SIAM J. on Sci. Comp. 40 (4), A2253-A2285, 2018. */
+/*     [3] Z. Drmac: A LAPACK implementation of the Dynamic */
+/*         Mode Decomposition I. Technical report. AIMDyn Inc. */
+/*         and LAPACK Working Note 298. */
+/*     [4] J. Tu, C. W. Rowley, D. M. Luchtenburg, S. L. */
+/*         Brunton, N. Kutz: On Dynamic Mode Decomposition: */
+/*         Theory and Applications, Journal of Computational */
+/*         Dynamics 1(2), 391 -421, 2014. */
+
+/*     Developed and supported by: */
+/*     =========================== */
+/*     Developed and coded by Zlatko Drmac, Faculty of Science, */
+/*     University of Zagreb;  drmac@math.hr */
+/*     In cooperation with */
+/*     AIMdyn Inc., Santa Barbara, CA. */
+/*     and supported by */
+/*     - DARPA SBIR project "Koopman Operator-Based Forecasting */
+/*     for Nonstationary Processes from Near-Term, Limited */
+/*     Observational Data" Contract No: W31P4Q-21-C-0007 */
+/*     - DARPA PAI project "Physics-Informed Machine Learning */
+/*     Methodologies" Contract No: HR0011-18-9-0033 */
+/*     - DARPA MoDyL project "A Data-Driven, Operator-Theoretic */
+/*     Framework for Space-Time Analysis of Process Dynamics" */
+/*     Contract No: HR0011-16-C-0116 */
+/*     Any opinions, findings and conclusions or recommendations */
+/*     expressed in this material are those of the author and */
+/*     do not necessarily reflect the views of the DARPA SBIR */
+/*     Program Office. */
+/* ============================================================ */
+/*     Distribution Statement A: */
+/*     Approved for Public Release, Distribution Unlimited. */
+/*     Cleared by DARPA on September 29, 2022 */
+/* ============================================================ */
+/* ...................................................................... */
+/*     Arguments */
+/*     ========= */
+/*     JOBS (input) CHARACTER*1 */
+/*     Determines whether the initial data snapshots are scaled */
+/*     by a diagonal matrix. The data snapshots are the columns */
+/*     of F. The leading N-1 columns of F are denoted X and the */
+/*     trailing N-1 columns are denoted Y. */
+/*     'S' :: The data snapshots matrices X and Y are multiplied */
+/*            with a diagonal matrix D so that X*D has unit */
+/*            nonzero columns (in the Euclidean 2-norm) */
+/*     'C' :: The snapshots are scaled as with the 'S' option. */
+/*            If it is found that an i-th column of X is zero */
+/*            vector and the corresponding i-th column of Y is */
+/*            non-zero, then the i-th column of Y is set to */
+/*            zero and a warning flag is raised. */
+/*     'Y' :: The data snapshots matrices X and Y are multiplied */
+/*            by a diagonal matrix D so that Y*D has unit */
+/*            nonzero columns (in the Euclidean 2-norm) */
+/*     'N' :: No data scaling. */
+/* ..... */
+/*     JOBZ (input) CHARACTER*1 */
+/*     Determines whether the eigenvectors (Koopman modes) will */
+/*     be computed. */
+/*     'V' :: The eigenvectors (Koopman modes) will be computed */
+/*            and returned in the matrix Z. */
+/*            See the description of Z. */
+/*     'F' :: The eigenvectors (Koopman modes) will be returned */
+/*            in factored form as the product Z*V, where Z */
+/*            is orthonormal and V contains the eigenvectors */
+/*            of the corresponding Rayleigh quotient. */
+/*            See the descriptions of F, V, Z. */
+/*     'Q' :: The eigenvectors (Koopman modes) will be returned */
+/*            in factored form as the product Q*Z, where Z */
+/*            contains the eigenvectors of the compression of the */
+/*            underlying discretized operator onto the span of */
+/*            the data snapshots. See the descriptions of F, V, Z. */
+/*            Q is from the initial QR factorization. */
+/*     'N' :: The eigenvectors are not computed. */
+/* ..... */
+/*     JOBR (input) CHARACTER*1 */
+/*     Determines whether to compute the residuals. */
+/*     'R' :: The residuals for the computed eigenpairs will */
+/*            be computed and stored in the array RES. */
+/*            See the description of RES. */
+/*            For this option to be legal, JOBZ must be 'V'. */
+/*     'N' :: The residuals are not computed. */
+/* ..... */
+/*     JOBQ (input) CHARACTER*1 */
+/*     Specifies whether to explicitly compute and return the */
+/*     unitary matrix from the QR factorization. */
+/*     'Q' :: The matrix Q of the QR factorization of the data */
+/*            snapshot matrix is computed and stored in the */
+/*            array F. See the description of F. */
+/*     'N' :: The matrix Q is not explicitly computed. */
+/* ..... */
+/*     JOBT (input) CHARACTER*1 */
+/*     Specifies whether to return the upper triangular factor */
+/*     from the QR factorization. */
+/*     'R' :: The matrix R of the QR factorization of the data */
+/*            snapshot matrix F is returned in the array Y. */
+/*            See the description of Y and Further details. */
+/*     'N' :: The matrix R is not returned. */
+/* ..... */
+/*     JOBF (input) CHARACTER*1 */
+/*     Specifies whether to store information needed for post- */
+/*     processing (e.g. computing refined Ritz vectors) */
+/*     'R' :: The matrix needed for the refinement of the Ritz */
+/*            vectors is computed and stored in the array B. */
+/*            See the description of B. */
+/*     'E' :: The unscaled eigenvectors of the Exact DMD are */
+/*            computed and returned in the array B. See the */
+/*            description of B. */
+/*     'N' :: No eigenvector refinement data is computed. */
+/*     To be useful on exit, this option needs JOBQ='Q'. */
+/* ..... */
+/*     WHTSVD (input) INTEGER, WHSTVD in { 1, 2, 3, 4 } */
+/*     Allows for a selection of the SVD algorithm from the */
+/*     LAPACK library. */
+/*     1 :: ZGESVD (the QR SVD algorithm) */
+/*     2 :: ZGESDD (the Divide and Conquer algorithm; if enough */
+/*          workspace available, this is the fastest option) */
+/*     3 :: ZGESVDQ (the preconditioned QR SVD  ; this and 4 */
+/*          are the most accurate options) */
+/*     4 :: ZGEJSV (the preconditioned Jacobi SVD; this and 3 */
+/*          are the most accurate options) */
+/*     For the four methods above, a significant difference in */
+/*     the accuracy of small singular values is possible if */
+/*     the snapshots vary in norm so that X is severely */
+/*     ill-conditioned. If small (smaller than EPS*||X||) */
+/*     singular values are of interest and JOBS=='N',  then */
+/*     the options (3, 4) give the most accurate results, where */
+/*     the option 4 is slightly better and with stronger */
+/*     theoretical background. */
+/*     If JOBS=='S', i.e. the columns of X will be normalized, */
+/*     then all methods give nearly equally accurate results. */
+/* ..... */
+/*     M (input) INTEGER, M >= 0 */
+/*     The state space dimension (the number of rows of F). */
+/* ..... */
+/*     N (input) INTEGER, 0 <= N <= M */
+/*     The number of data snapshots from a single trajectory, */
+/*     taken at equidistant discrete times. This is the */
+/*     number of columns of F. */
+/* ..... */
+/*     F (input/output) COMPLEX(KIND=WP) M-by-N array */
+/*     > On entry, */
+/*     the columns of F are the sequence of data snapshots */
+/*     from a single trajectory, taken at equidistant discrete */
+/*     times. It is assumed that the column norms of F are */
+/*     in the range of the normalized floating point numbers. */
+/*     < On exit, */
+/*     If JOBQ == 'Q', the array F contains the orthogonal */
+/*     matrix/factor of the QR factorization of the initial */
+/*     data snapshots matrix F. See the description of JOBQ. */
+/*     If JOBQ == 'N', the entries in F strictly below the main */
+/*     diagonal contain, column-wise, the information on the */
+/*     Householder vectors, as returned by ZGEQRF. The */
+/*     remaining information to restore the orthogonal matrix */
+/*     of the initial QR factorization is stored in ZWORK(1:MIN(M,N)). */
+/*     See the description of ZWORK. */
+/* ..... */
+/*     LDF (input) INTEGER, LDF >= M */
+/*     The leading dimension of the array F. */
+/* ..... */
+/*     X (workspace/output) COMPLEX(KIND=WP) MIN(M,N)-by-(N-1) array */
+/*     X is used as workspace to hold representations of the */
+/*     leading N-1 snapshots in the orthonormal basis computed */
+/*     in the QR factorization of F. */
+/*     On exit, the leading K columns of X contain the leading */
+/*     K left singular vectors of the above described content */
+/*     of X. To lift them to the space of the left singular */
+/*     vectors U(:,1:K) of the input data, pre-multiply with the */
+/*     Q factor from the initial QR factorization. */
+/*     See the descriptions of F, K, V  and Z. */
+/* ..... */
+/*     LDX (input) INTEGER, LDX >= N */
+/*     The leading dimension of the array X. */
+/* ..... */
+/*     Y (workspace/output) COMPLEX(KIND=WP) MIN(M,N)-by-(N) array */
+/*     Y is used as workspace to hold representations of the */
+/*     trailing N-1 snapshots in the orthonormal basis computed */
+/*     in the QR factorization of F. */
+/*     On exit, */
+/*     If JOBT == 'R', Y contains the MIN(M,N)-by-N upper */
+/*     triangular factor from the QR factorization of the data */
+/*     snapshot matrix F. */
+/* ..... */
+/*     LDY (input) INTEGER , LDY >= N */
+/*     The leading dimension of the array Y. */
+/* ..... */
+/*     NRNK (input) INTEGER */
+/*     Determines the mode how to compute the numerical rank, */
+/*     i.e. how to truncate small singular values of the input */
+/*     matrix X. On input, if */
+/*     NRNK = -1 :: i-th singular value sigma(i) is truncated */
+/*                  if sigma(i) <= TOL*sigma(1) */
+/*                  This option is recommended. */
+/*     NRNK = -2 :: i-th singular value sigma(i) is truncated */
+/*                  if sigma(i) <= TOL*sigma(i-1) */
+/*                  This option is included for R&D purposes. */
+/*                  It requires highly accurate SVD, which */
+/*                  may not be feasible. */
+/*     The numerical rank can be enforced by using positive */
+/*     value of NRNK as follows: */
+/*     0 < NRNK <= N-1 :: at most NRNK largest singular values */
+/*     will be used. If the number of the computed nonzero */
+/*     singular values is less than NRNK, then only those */
+/*     nonzero values will be used and the actually used */
+/*     dimension is less than NRNK. The actual number of */
+/*     the nonzero singular values is returned in the variable */
+/*     K. See the description of K. */
+/* ..... */
+/*     TOL (input) REAL(KIND=WP), 0 <= TOL < 1 */
+/*     The tolerance for truncating small singular values. */
+/*     See the description of NRNK. */
+/* ..... */
+/*     K (output) INTEGER,  0 <= K <= N */
+/*     The dimension of the SVD/POD basis for the leading N-1 */
+/*     data snapshots (columns of F) and the number of the */
+/*     computed Ritz pairs. The value of K is determined */
+/*     according to the rule set by the parameters NRNK and */
+/*     TOL. See the descriptions of NRNK and TOL. */
+/* ..... */
+/*     EIGS (output) COMPLEX(KIND=WP) (N-1)-by-1 array */
+/*     The leading K (K<=N-1) entries of EIGS contain */
+/*     the computed eigenvalues (Ritz values). */
+/*     See the descriptions of K, and Z. */
+/* ..... */
+/*     Z (workspace/output) COMPLEX(KIND=WP)  M-by-(N-1) array */
+/*     If JOBZ =='V' then Z contains the Ritz vectors. Z(:,i) */
+/*     is an eigenvector of the i-th Ritz value; ||Z(:,i)||_2=1. */
+/*     If JOBZ == 'F', then the Z(:,i)'s are given implicitly as */
+/*     Z*V, where Z contains orthonormal matrix (the product of */
+/*     Q from the initial QR factorization and the SVD/POD_basis */
+/*     returned by ZGEDMD in X) and the second factor (the */
+/*     eigenvectors of the Rayleigh quotient) is in the array V, */
+/*     as returned by ZGEDMD. That is,  X(:,1:K)*V(:,i) */
+/*     is an eigenvector corresponding to EIGS(i). The columns */
+/*     of V(1:K,1:K) are the computed eigenvectors of the */
+/*     K-by-K Rayleigh quotient. */
+/*     See the descriptions of EIGS, X and V. */
+/* ..... */
+/*     LDZ (input) INTEGER , LDZ >= M */
+/*     The leading dimension of the array Z. */
+/* ..... */
+/*     RES (output) REAL(KIND=WP) (N-1)-by-1 array */
+/*     RES(1:K) contains the residuals for the K computed */
+/*     Ritz pairs, */
+/*     RES(i) = || A * Z(:,i) - EIGS(i)*Z(:,i))||_2. */
+/*     See the description of EIGS and Z. */
+/* ..... */
+/*     B (output) COMPLEX(KIND=WP)  MIN(M,N)-by-(N-1) array. */
+/*     IF JOBF =='R', B(1:N,1:K) contains A*U(:,1:K), and can */
+/*     be used for computing the refined vectors; see further */
+/*     details in the provided references. */
+/*     If JOBF == 'E', B(1:N,1;K) contains */
+/*     A*U(:,1:K)*W(1:K,1:K), which are the vectors from the */
+/*     Exact DMD, up to scaling by the inverse eigenvalues. */
+/*     In both cases, the content of B can be lifted to the */
+/*     original dimension of the input data by pre-multiplying */
+/*     with the Q factor from the initial QR factorization. */
+/*     Here A denotes a compression of the underlying operator. */
+/*     See the descriptions of F and X. */
+/*     If JOBF =='N', then B is not referenced. */
+/* ..... */
+/*     LDB (input) INTEGER, LDB >= MIN(M,N) */
+/*     The leading dimension of the array B. */
+/* ..... */
+/*     V (workspace/output) COMPLEX(KIND=WP) (N-1)-by-(N-1) array */
+/*     On exit, V(1:K,1:K) V contains the K eigenvectors of */
+/*     the Rayleigh quotient. The Ritz vectors */
+/*     (returned in Z) are the product of Q from the initial QR */
+/*     factorization (see the description of F) X (see the */
+/*     description of X) and V. */
+/* ..... */
+/*     LDV (input) INTEGER, LDV >= N-1 */
+/*     The leading dimension of the array V. */
+/* ..... */
+/*     S (output) COMPLEX(KIND=WP) (N-1)-by-(N-1) array */
+/*     The array S(1:K,1:K) is used for the matrix Rayleigh */
+/*     quotient. This content is overwritten during */
+/*     the eigenvalue decomposition by ZGEEV. */
+/*     See the description of K. */
+/* ..... */
+/*     LDS (input) INTEGER, LDS >= N-1 */
+/*     The leading dimension of the array S. */
+/* ..... */
+/*     ZWORK (workspace/output) COMPLEX(KIND=WP) LWORK-by-1 array */
+/*     On exit, */
+/*     ZWORK(1:MIN(M,N)) contains the scalar factors of the */
+/*     elementary reflectors as returned by ZGEQRF of the */
+/*     M-by-N input matrix F. */
+/*     If the call to ZGEDMDQ is only workspace query, then */
+/*     ZWORK(1) contains the minimal complex workspace length and */
+/*     ZWORK(2) is the optimal complex workspace length. */
+/*     Hence, the length of work is at least 2. */
+/*     See the description of LZWORK. */
+/* ..... */
+/*     LZWORK (input) INTEGER */
+/*     The minimal length of the  workspace vector ZWORK. */
+/*     LZWORK is calculated as follows: */
+/*     Let MLWQR  = N (minimal workspace for ZGEQRF[M,N]) */
+/*         MLWDMD = minimal workspace for ZGEDMD (see the */
+/*                  description of LWORK in ZGEDMD) */
+/*         MLWMQR = N (minimal workspace for */
+/*                    ZUNMQR['L','N',M,N,N]) */
+/*         MLWGQR = N (minimal workspace for ZUNGQR[M,N,N]) */
+/*         MINMN  = MIN(M,N) */
+/*     Then */
+/*     LZWORK = MAX(2, MIN(M,N)+MLWQR, MINMN+MLWDMD) */
+/*     is further updated as follows: */
+/*        if   JOBZ == 'V' or JOBZ == 'F' THEN */
+/*             LZWORK = MAX(LZWORK, MINMN+MLWMQR) */
+/*        if   JOBQ == 'Q' THEN */
+/*             LZWORK = MAX(ZLWORK, MINMN+MLWGQR) */
+
+/* ..... */
+/*     WORK (workspace/output) REAL(KIND=WP) LWORK-by-1 array */
+/*     On exit, */
+/*     WORK(1:N-1) contains the singular values of */
+/*     the input submatrix F(1:M,1:N-1). */
+/*     If the call to ZGEDMDQ is only workspace query, then */
+/*     WORK(1) contains the minimal workspace length and */
+/*     WORK(2) is the optimal workspace length. hence, the */
+/*     length of work is at least 2. */
+/*     See the description of LWORK. */
+/* ..... */
+/*     LWORK (input) INTEGER */
+/*     The minimal length of the  workspace vector WORK. */
+/*     LWORK is the same as in ZGEDMD, because in ZGEDMDQ */
+/*     only ZGEDMD requires real workspace for snapshots */
+/*     of dimensions MIN(M,N)-by-(N-1). */
+/*     If on entry LWORK = -1, then a workspace query is */
+/*     assumed and the procedure only computes the minimal */
+/*     and the optimal workspace length for WORK. */
+/* ..... */
+/*     IWORK (workspace/output) INTEGER LIWORK-by-1 array */
+/*     Workspace that is required only if WHTSVD equals */
+/*     2 , 3 or 4. (See the description of WHTSVD). */
+/*     If on entry LWORK =-1 or LIWORK=-1, then the */
+/*     minimal length of IWORK is computed and returned in */
+/*     IWORK(1). See the description of LIWORK. */
+/* ..... */
+/*     LIWORK (input) INTEGER */
+/*     The minimal length of the workspace vector IWORK. */
+/*     If WHTSVD == 1, then only IWORK(1) is used; LIWORK >=1 */
+/*     Let M1=MIN(M,N), N1=N-1. Then */
+/*     If WHTSVD == 2, then LIWORK >= MAX(1,8*MIN(M1,N1)) */
+/*     If WHTSVD == 3, then LIWORK >= MAX(1,M1+N1-1) */
+/*     If WHTSVD == 4, then LIWORK >= MAX(3,M1+3*N1) */
+/*     If on entry LIWORK = -1, then a workspace query is */
+/*     assumed and the procedure only computes the minimal */
+/*     and the optimal workspace lengths for both WORK and */
+/*     IWORK. See the descriptions of WORK and IWORK. */
+/* ..... */
+/*     INFO (output) INTEGER */
+/*     -i < 0 :: On entry, the i-th argument had an */
+/*               illegal value */
+/*        = 0 :: Successful return. */
+/*        = 1 :: Void input. Quick exit (M=0 or N=0). */
+/*        = 2 :: The SVD computation of X did not converge. */
+/*               Suggestion: Check the input data and/or */
+/*               repeat with different WHTSVD. */
+/*        = 3 :: The computation of the eigenvalues did not */
+/*               converge. */
+/*        = 4 :: If data scaling was requested on input and */
+/*               the procedure found inconsistency in the data */
+/*               such that for some column index i, */
+/*               X(:,i) = 0 but Y(:,i) /= 0, then Y(:,i) is set */
+/*               to zero if JOBS=='C'. The computation proceeds */
+/*               with original or modified data and warning */
+/*               flag is set with INFO=4. */
+/* ............................................................. */
+/* ............................................................. */
+/*     Parameters */
+/*     ~~~~~~~~~~ */
+/*     COMPLEX(KIND=WP), PARAMETER ::  ZONE = ( 1.0_WP, 0.0_WP ) */
+
+/*     Local scalars */
+/*     ~~~~~~~~~~~~~ */
+
+/*     External functions (BLAS and LAPACK) */
+/*     ~~~~~~~~~~~~~~~~~ */
+
+/*     External subroutines (BLAS and LAPACK) */
+/*     ~~~~~~~~~~~~~~~~~~~~ */
+/*     External subroutines */
+/*     ~~~~~~~~~~~~~~~~~~~~ */
+/*     Intrinsic functions */
+/*     ~~~~~~~~~~~~~~~~~~~ */
+/* .......................................................... */
+    /* Parameter adjustments */
+    f_dim1 = *ldf;
+    f_offset = 1 + f_dim1 * 1;
+    f -= f_offset;
+    x_dim1 = *ldx;
+    x_offset = 1 + x_dim1 * 1;
+    x -= x_offset;
+    y_dim1 = *ldy;
+    y_offset = 1 + y_dim1 * 1;
+    y -= y_offset;
+    --eigs;
+    z_dim1 = *ldz;
+    z_offset = 1 + z_dim1 * 1;
+    z__ -= z_offset;
+    --res;
+    b_dim1 = *ldb;
+    b_offset = 1 + b_dim1 * 1;
+    b -= b_offset;
+    v_dim1 = *ldv;
+    v_offset = 1 + v_dim1 * 1;
+    v -= v_offset;
+    s_dim1 = *lds;
+    s_offset = 1 + s_dim1 * 1;
+    s -= s_offset;
+    --zwork;
+    --work;
+    --iwork;
+
+    /* Function Body */
+    one = 1.f;
+    zero = 0.f;
+    zzero.r = 0.f, zzero.i = 0.f;
+
+/*    Test the input arguments */
+    wntres = lsame_(jobr, "R");
+    sccolx = lsame_(jobs, "S") || lsame_(jobs, "C");
+    sccoly = lsame_(jobs, "Y");
+    wntvec = lsame_(jobz, "V");
+    wntvcf = lsame_(jobz, "F");
+    wntvcq = lsame_(jobz, "Q");
+    wntref = lsame_(jobf, "R");
+    wntex = lsame_(jobf, "E");
+    wantq = lsame_(jobq, "Q");
+    wnttrf = lsame_(jobt, "R");
+    minmn = f2cmin(*m,*n);
+    *info = 0;
+    lquery = *lzwork == -1 || *lwork == -1 || *liwork == -1;
+
+    if (! (sccolx || sccoly || lsame_(jobs, "N"))) {
+	*info = -1;
+    } else if (! (wntvec || wntvcf || wntvcq || lsame_(jobz, "N"))) {
+	*info = -2;
+    } else if (! (wntres || lsame_(jobr, "N")) || 
+	    wntres && lsame_(jobz, "N")) {
+	*info = -3;
+    } else if (! (wantq || lsame_(jobq, "N"))) {
+	*info = -4;
+    } else if (! (wnttrf || lsame_(jobt, "N"))) {
+	*info = -5;
+    } else if (! (wntref || wntex || lsame_(jobf, "N")))
+	     {
+	*info = -6;
+    } else if (! (*whtsvd == 1 || *whtsvd == 2 || *whtsvd == 3 || *whtsvd == 
+	    4)) {
+	*info = -7;
+    } else if (*m < 0) {
+	*info = -8;
+    } else if (*n < 0 || *n > *m + 1) {
+	*info = -9;
+    } else if (*ldf < *m) {
+	*info = -11;
+    } else if (*ldx < minmn) {
+	*info = -13;
+    } else if (*ldy < minmn) {
+	*info = -15;
+    } else if (! (*nrnk == -2 || *nrnk == -1 || *nrnk >= 1 && *nrnk <= *n)) {
+	*info = -16;
+    } else if (*tol < zero || *tol >= one) {
+	*info = -17;
+    } else if (*ldz < *m) {
+	*info = -21;
+    } else if ((wntref || wntex) && *ldb < minmn) {
+	*info = -24;
+    } else if (*ldv < *n - 1) {
+	*info = -26;
+    } else if (*lds < *n - 1) {
+	*info = -28;
+    }
+
+    if (wntvec || wntvcf || wntvcq) {
+	*(unsigned char *)jobvl = 'V';
+    } else {
+	*(unsigned char *)jobvl = 'N';
+    }
+    if (*info == 0) {
+/* Compute the minimal and the optimal workspace */
+/* requirements. Simulate running the code and */
+/* determine minimal and optimal sizes of the */
+/* workspace at any moment of the run. */
+	if (*n == 0 || *n == 1) {
+/* All output except K is void. INFO=1 signals */
+/* the void input. In case of a workspace query, */
+/* the minimal workspace lengths are returned. */
+	    if (lquery) {
+		iwork[1] = 1;
+		zwork[1].r = 2., zwork[1].i = 0.;
+		zwork[2].r = 2., zwork[2].i = 0.;
+		work[1] = 2.;
+		work[2] = 2.;
+	    } else {
+		*k = 0;
+	    }
+	    *info = 1;
+	    return 0;
+	}
+	mlrwrk = 2;
+	mlwork = 2;
+	olwork = 2;
+	iminwr = 1;
+	mlwqr = f2cmax(1,*n);
+/* Minimal workspace length for ZGEQRF. */
+/* Computing MAX */
+	i__1 = mlwork, i__2 = minmn + mlwqr;
+	mlwork = f2cmax(i__1,i__2);
+	if (lquery) {
+	    zgeqrf_(m, n, &f[f_offset], ldf, &zwork[1], &zwork[1], &c_n1, &
+		    info1);
+	    olwqr = (integer) zwork[1].r;
+/* Computing MAX */
+	    i__1 = olwork, i__2 = minmn + olwqr;
+	    olwork = f2cmax(i__1,i__2);
+	}
+	i__1 = *n - 1;
+	zgedmd_(jobs, jobvl, jobr, jobf, whtsvd, &minmn, &i__1, &x[x_offset], 
+		ldx, &y[y_offset], ldy, nrnk, tol, k, &eigs[1], &z__[z_offset]
+		, ldz, &res[1], &b[b_offset], ldb, &v[v_offset], ldv, &s[
+		s_offset], lds, &zwork[1], &c_n1, &work[1], &c_n1, &iwork[1], 
+		&c_n1, &info1);
+	mlwdmd = (integer) zwork[1].r;
+/* Computing MAX */
+	i__1 = mlwork, i__2 = minmn + mlwdmd;
+	mlwork = f2cmax(i__1,i__2);
+/* Computing MAX */
+	i__1 = mlrwrk, i__2 = (integer) work[1];
+	mlrwrk = f2cmax(i__1,i__2);
+	iminwr = f2cmax(iminwr,iwork[1]);
+	if (lquery) {
+	    olwdmd = (integer) zwork[2].r;
+/* Computing MAX */
+	    i__1 = olwork, i__2 = minmn + olwdmd;
+	    olwork = f2cmax(i__1,i__2);
+	}
+	if (wntvec || wntvcf) {
+	    mlwmqr = f2cmax(1,*n);
+/* Computing MAX */
+	    i__1 = mlwork, i__2 = minmn + mlwmqr;
+	    mlwork = f2cmax(i__1,i__2);
+	    if (lquery) {
+		zunmqr_("L", "N", m, n, &minmn, &f[f_offset], ldf, &zwork[1], 
+			&z__[z_offset], ldz, &zwork[1], &c_n1, &info1);
+		olwmqr = (integer) zwork[1].r;
+/* Computing MAX */
+		i__1 = olwork, i__2 = minmn + olwmqr;
+		olwork = f2cmax(i__1,i__2);
+	    }
+	}
+	if (wantq) {
+	    mlwgqr = f2cmax(1,*n);
+/* Computing MAX */
+	    i__1 = mlwork, i__2 = minmn + mlwgqr;
+	    mlwork = f2cmax(i__1,i__2);
+	    if (lquery) {
+		zungqr_(m, &minmn, &minmn, &f[f_offset], ldf, &zwork[1], &
+			zwork[1], &c_n1, &info1);
+		olwgqr = (integer) zwork[1].r;
+/* Computing MAX */
+		i__1 = olwork, i__2 = minmn + olwgqr;
+		olwork = f2cmax(i__1,i__2);
+	    }
+	}
+	if (*liwork < iminwr && ! lquery) {
+	    *info = -34;
+	}
+	if (*lwork < mlrwrk && ! lquery) {
+	    *info = -32;
+	}
+	if (*lzwork < mlwork && ! lquery) {
+	    *info = -30;
+	}
+    }
+    if (*info != 0) {
+	i__1 = -(*info);
+	xerbla_("ZGEDMDQ", &i__1);
+	return 0;
+    } else if (lquery) {
+/*     Return minimal and optimal workspace sizes */
+	iwork[1] = iminwr;
+	zwork[1].r = (doublereal) mlwork, zwork[1].i = 0.;
+	zwork[2].r = (doublereal) olwork, zwork[2].i = 0.;
+	work[1] = (doublereal) mlrwrk;
+	work[2] = (doublereal) mlrwrk;
+	return 0;
+    }
+/* ..... */
+/*     Initial QR factorization that is used to represent the */
+/*     snapshots as elements of lower dimensional subspace. */
+/*     For large scale computation with M >> N, at this place */
+/*     one can use an out of core QRF. */
+
+    i__1 = *lzwork - minmn;
+    zgeqrf_(m, n, &f[f_offset], ldf, &zwork[1], &zwork[minmn + 1], &i__1, &
+	    info1);
+
+/*     Define X and Y as the snapshots representations in the */
+/*     orthogonal basis computed in the QR factorization. */
+/*     X corresponds to the leading N-1 and Y to the trailing */
+/*     N-1 snapshots. */
+    i__1 = *n - 1;
+    zlaset_("L", &minmn, &i__1, &zzero, &zzero, &x[x_offset], ldx);
+    i__1 = *n - 1;
+    zlacpy_("U", &minmn, &i__1, &f[f_offset], ldf, &x[x_offset], ldx);
+    i__1 = *n - 1;
+    zlacpy_("A", &minmn, &i__1, &f[(f_dim1 << 1) + 1], ldf, &y[y_offset], ldy);
+    if (*m >= 3) {
+	i__1 = minmn - 2;
+	i__2 = *n - 2;
+	zlaset_("L", &i__1, &i__2, &zzero, &zzero, &y[y_dim1 + 3], ldy);
+    }
+
+/*     Compute the DMD of the projected snapshot pairs (X,Y) */
+    i__1 = *n - 1;
+    i__2 = *lzwork - minmn;
+    zgedmd_(jobs, jobvl, jobr, jobf, whtsvd, &minmn, &i__1, &x[x_offset], ldx,
+	     &y[y_offset], ldy, nrnk, tol, k, &eigs[1], &z__[z_offset], ldz, &
+	    res[1], &b[b_offset], ldb, &v[v_offset], ldv, &s[s_offset], lds, &
+	    zwork[minmn + 1], &i__2, &work[1], lwork, &iwork[1], liwork, &
+	    info1);
+    if (info1 == 2 || info1 == 3) {
+/* Return with error code. See ZGEDMD for details. */
+	*info = info1;
+	return 0;
+    } else {
+	*info = info1;
+    }
+
+/*     The Ritz vectors (Koopman modes) can be explicitly */
+/*     formed or returned in factored form. */
+    if (wntvec) {
+/* Compute the eigenvectors explicitly. */
+	if (*m > minmn) {
+	    i__1 = *m - minmn;
+	    zlaset_("A", &i__1, k, &zzero, &zzero, &z__[minmn + 1 + z_dim1], 
+		    ldz);
+	}
+	i__1 = *lzwork - minmn;
+	zunmqr_("L", "N", m, k, &minmn, &f[f_offset], ldf, &zwork[1], &z__[
+		z_offset], ldz, &zwork[minmn + 1], &i__1, &info1);
+    } else if (wntvcf) {
+/*   Return the Ritz vectors (eigenvectors) in factored */
+/*   form Z*V, where Z contains orthonormal matrix (the */
+/*   product of Q from the initial QR factorization and */
+/*   the SVD/POD_basis returned by ZGEDMD in X) and the */
+/*   second factor (the eigenvectors of the Rayleigh */
+/*   quotient) is in the array V, as returned by ZGEDMD. */
+	zlacpy_("A", n, k, &x[x_offset], ldx, &z__[z_offset], ldz);
+	if (*m > *n) {
+	    i__1 = *m - *n;
+	    zlaset_("A", &i__1, k, &zzero, &zzero, &z__[*n + 1 + z_dim1], ldz);
+	}
+	i__1 = *lzwork - minmn;
+	zunmqr_("L", "N", m, k, &minmn, &f[f_offset], ldf, &zwork[1], &z__[
+		z_offset], ldz, &zwork[minmn + 1], &i__1, &info1);
+    }
+
+/*     Some optional output variables: */
+
+/*     The upper triangular factor R in the initial QR */
+/*     factorization is optionally returned in the array Y. */
+/*     This is useful if this call to ZGEDMDQ is to be */
+/*     followed by a streaming DMD that is implemented in a */
+/*     QR compressed form. */
+    if (wnttrf) {
+/* Return the upper triangular R in Y */
+	zlaset_("A", &minmn, n, &zzero, &zzero, &y[y_offset], ldy);
+	zlacpy_("U", &minmn, n, &f[f_offset], ldf, &y[y_offset], ldy);
+    }
+
+/*     The orthonormal/unitary factor Q in the initial QR */
+/*     factorization is optionally returned in the array F. */
+/*     Same as with the triangular factor above, this is */
+/*     useful in a streaming DMD. */
+    if (wantq) {
+/* Q overwrites F */
+	i__1 = *lzwork - minmn;
+	zungqr_(m, &minmn, &minmn, &f[f_offset], ldf, &zwork[1], &zwork[minmn 
+		+ 1], &i__1, &info1);
+    }
+
+    return 0;
+
+} /* zgedmdq_ */
+
