@@ -112,6 +112,7 @@ jobs:
       conda config --add channels conda-forge --force
       conda config --set auto_update_conda false
       conda install --yes --quiet ninja flang
+      dir C:\Miniconda\Library\include\flang
       mkdir build 
       cd build
       call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
