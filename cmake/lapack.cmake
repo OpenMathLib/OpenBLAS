@@ -915,7 +915,8 @@ set(ZLASRC
    zheevd_2stage.c zheev_2stage.c zheevx_2stage.c zheevr_2stage.c
    zhbev_2stage.c zhbevx_2stage.c zhbevd_2stage.c zhegv_2stage.c
    zgesvdq.c zlaunhr_col_getrfnp.c zlaunhr_col_getrfnp2.c
-   zungtsqr.c zungtsqr_row.c zunhr_col.c zlatrs3.c ztrsyl3.c zgelst.c)
+   zungtsqr.c zungtsqr_row.c zunhr_col.c zlatrs3.c ztrsyl3.c zgelst.c
+   zgedmd.c zgedmdq.c)
 
 set(ZXLASRC zgesvxx.c zgerfsx.c zla_gerfsx_extended.c zla_geamv.c
    zla_gercond_c.c zla_gercond_x.c zla_gerpvgrw.c zsysvxx.c zsyrfsx.c
@@ -925,7 +926,7 @@ set(ZXLASRC zgesvxx.c zgerfsx.c zla_gerfsx_extended.c zla_geamv.c
    zla_gbrfsx_extended.c zla_gbamv.c zla_gbrcond_c.c zla_gbrcond_x.c
    zla_gbrpvgrw.c zhesvxx.c zherfsx.c zla_herfsx_extended.c
    zla_heamv.c zla_hercond_c.c zla_hercond_x.c zla_herpvgrw.c
-   zla_lin_berr.c zlarscl2.c zlascl2.c zla_wwaddw.c zgedmd.c zgedmdq.c)
+   zla_lin_berr.c zlarscl2.c zlascl2.c zla_wwaddw.c)
 
 
 if(USE_XBLAS)
