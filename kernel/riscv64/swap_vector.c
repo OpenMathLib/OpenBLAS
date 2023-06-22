@@ -136,6 +136,7 @@ int CNAME(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, FLOAT dummy3, FLOAT *x, 
                 }
         }else{
                 gvl = VSETVL(n);
+                if (inc_x == 0 && inc_y == 0) gvl = VSETVL(1);
                 stride_x = inc_x * sizeof(FLOAT);
                 stride_y = inc_y * sizeof(FLOAT);
                 if(gvl <= n/2){
