@@ -399,7 +399,7 @@ CTEST(potrf, bug_695){
   }
 #endif
 }
-#endif
+
 
 // Check potrf factorizes a small problem correctly
 CTEST(potrf, smoketest_trivial){
@@ -571,3 +571,4 @@ CTEST(potrf, smoketest_trivial){
     }
   }
 }
+#endif
