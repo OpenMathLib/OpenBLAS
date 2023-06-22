@@ -60,7 +60,7 @@
 *>    factorization can also be regarded as having the form
 *>    A = U**H*D*U.
 *>
-*> 2. If the leading i-by-i principal minor is not positive definite,
+*> 2. If the leading principal minor of order i is not positive,
 *>    then the routine returns with INFO = i. Otherwise, the factored
 *>    form of A is used to estimate the condition number of the matrix
 *>    A.  If the reciprocal of the condition number is less than machine
@@ -205,10 +205,10 @@
 *>          = 0:  successful exit
 *>          < 0:  if INFO = -i, the i-th argument had an illegal value
 *>          > 0:  if INFO = i, and i is
-*>                <= N:  the leading minor of order i of A is
-*>                       not positive definite, so the factorization
-*>                       could not be completed, and the solution has not
-*>                       been computed. RCOND = 0 is returned.
+*>                <= N:  the leading principal minor of order i of A
+*>                       is not positive, so the factorization could not
+*>                       be completed, and the solution has not been
+*>                       computed. RCOND = 0 is returned.
 *>                = N+1: U is nonsingular, but RCOND is less than machine
 *>                       precision, meaning that the matrix is singular
 *>                       to working precision.  Nevertheless, the
