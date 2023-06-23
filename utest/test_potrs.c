@@ -40,7 +40,7 @@ void BLASFUNC(zpotrs_(char*, BLASINT*, BLASINT*, complex double*,
 */
 
 //https://github.com/xianyi/OpenBLAS/issues/695
-#ifndef ARCH_RISCV64
+
 CTEST(potrf, bug_695){
 
   openblas_complex_float A1[100] = 
@@ -571,4 +571,4 @@ CTEST(potrf, smoketest_trivial){
     }
   }
 }
-#endif
+
