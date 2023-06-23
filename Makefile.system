@@ -1614,6 +1614,11 @@ ifdef OS_WINDOWS
 LAPACK_FFLAGS := $(filter-out -fopenmp -mp -openmp -xopenmp=parallel,$(FFLAGS))
 LAPACK_FPFLAGS := $(filter-out -fopenmp -mp -openmp -xopenmp=parallel,$(FPFLAGS))
 else
+ifeq ($(CORE), C910V)
+LAPACK_FFLAGS := $(filter-out -O2 -O3,$(FFLAGS)
+LAPACK_FFLAGS += -O1
+LAPACK_FPFLAGS := $(FPFLAGS)
+else
 LAPACK_FFLAGS := $(FFLAGS)
 LAPACK_FPFLAGS := $(FPFLAGS)
 endif
