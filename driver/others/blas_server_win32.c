@@ -66,11 +66,8 @@ int blas_server_avail = 0;
 static BLASULONG server_lock       = 0;
 
 static blas_pool_t   pool;
-static BLASULONG pool_lock = 0;
 static HANDLE	    blas_threads   [MAX_CPU_NUMBER];
 static DWORD	    blas_threads_id[MAX_CPU_NUMBER];
-
-
 
 static void legacy_exec(void *func, int mode, blas_arg_t *args, void *sb){
 
