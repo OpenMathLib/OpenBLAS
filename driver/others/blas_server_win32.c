@@ -57,6 +57,7 @@
 		#define WIN_CAS(dest, exch, comp) InterlockedCompareExchange64(dest, exch, comp)
 	#else
 		#define WIN_CAS(dest, exch, comp) InterlockedCompareExchange(dest, exch, comp)
+	#endif
 #endif
 
 /* Thread server common information */
