@@ -50,6 +50,15 @@
 
 /* This is a thread implementation for Win32 lazy implementation */
 
+#if defined (__GNUC__) && (__GNUC__ < 6)
+	#define WIN_CAS(dest, exch, comp) __sync_val_compare_and_swap(dest, comp, exch)
+#else
+	#if defined(_WIN64)
+		#define WIN_CAS(dest, exch, comp) InterlockedCompareExchange64(dest, exch, comp)
+	#else
+		#define WIN_CAS(dest, exch, comp) InterlockedCompareExchange(dest, exch, comp)
+#endif
+
 /* Thread server common information */
 typedef struct{
   HANDLE taskSemaphore;
@@ -232,14 +241,14 @@ static DWORD WINAPI blas_thread_server(void *arg){
 
 	// grab a queued task and update the list
 	volatile blas_queue_t* queue_next;
-	LONG64 prev_value;
+	INT_PTR prev_value;
 	do {
 		queue = (volatile blas_queue_t*)pool.queue;
 		if (!queue)
 			break;
 
 		queue_next = (volatile blas_queue_t*)queue->next;
-		prev_value = InterlockedCompareExchange64((PLONG64)&pool.queue, (LONG64)queue_next, (LONG64)queue);
+		prev_value = WIN_CAS((INT_PTR*)&pool.queue, (INT_PTR)queue_next, (INT_PTR)queue);
 	} while (prev_value != queue);
 
     if (queue)  {
