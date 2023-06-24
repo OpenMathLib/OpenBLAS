@@ -1,3 +1,4 @@
+#pragma GCC optimize "O1"
 #include "common.h"
 #include <riscv_vector.h>
 
