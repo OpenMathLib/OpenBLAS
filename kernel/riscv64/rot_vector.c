@@ -155,6 +155,7 @@ int CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG inc_y, FLOAT 
                 }
         }else{
                 gvl = VSETVL(n);
+		if (inc_x == 0 && inc_y == 0) gvl = VSETVL(1);
                 BLASLONG stride_x = inc_x * sizeof(FLOAT);
                 BLASLONG stride_y = inc_y * sizeof(FLOAT);
                 BLASLONG inc_xv = inc_x * gvl;
