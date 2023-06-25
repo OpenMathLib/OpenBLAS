@@ -112,6 +112,7 @@ int CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG inc_y, FLOAT 
 		}
 		
 	}else{
+                if (inc_x == 0 && inc_y == 0) gvl = VSETVL(1);
 		for(i=0,j=0; i < n/gvl; i++){
 			vx0 = VLSEV_FLOAT(&x[ix], stride_x, gvl);
 			vx1 = VLSEV_FLOAT(&x[ix+1], stride_x, gvl);
