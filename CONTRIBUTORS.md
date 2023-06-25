@@ -218,5 +218,5 @@ In chronological order:
   * [2022-08] Fix building from sources for QNX
 
 * Mark Seminatore <https://github.com/mseminatore>
-  * [2023] Fix bounds issue in goto_set_num_threads
-  
+  * [2023-06-23] Fix bounds issue in goto_set_num_threads
+  * [2023-06-23] Improve Windows threading performance scaling
