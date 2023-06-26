@@ -29,8 +29,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <math.h>
 
 #if defined(DOUBLE)
-
-#define ABS fabs
+#define VFMVFS_FLOAT vfmv_f_s_f64m1_f64
 #define VSETVL(n) vsetvl_e64m8(n)
 #define VSETVL_MAX vsetvlmax_e64m1()
 #define FLOAT_V_T vfloat64m8_t
@@ -54,8 +53,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define VADDVX_UINT vadd_vx_u64m8
 #define VMVVX_UINT vmv_v_x_u64m8
 #else
-
-#define ABS fabsf
+#define VFMVFS_FLOAT vfmv_f_s_f32m1_f32
 #define VSETVL(n) vsetvl_e32m8(n)
 #define VSETVL_MAX vsetvlmax_e32m1()
 #define FLOAT_V_T vfloat32m8_t
@@ -85,7 +83,11 @@ BLASLONG CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x)
 {
 	BLASLONG i=0, j=0;
 	FLOAT maxf=0.0;
+#ifdef DOUBLE
+        BLASLONG max_index = 0;
+#else
         unsigned int max_index = 0;
+#endif
 	if (n <= 0 || inc_x <= 0) return(max_index);
 
         FLOAT_V_T vx, v_max;
@@ -117,11 +119,14 @@ BLASLONG CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x)
                         j += gvl;
                 }
                 v_res = VFREDMAXVS_FLOAT(v_res, v_max, v_z0, gvl);
-                maxf = *((FLOAT*)&v_res);
+                maxf = VFMVFS_FLOAT(v_res);
                 mask = VMFGEVF_FLOAT(v_max, maxf, gvl);
                 max_index = VMFIRSTM(mask,gvl);
-                max_index = *((unsigned int*)&v_max_index+max_index);
-
+#ifdef DOUBLE
+		max_index = *((BLASLONG *)&v_max_index+max_index);
+#else
+		max_index = *((unsigned int *)&v_max_index+max_index);
+#endif
                 if(j < n){
                         gvl = VSETVL(n-j);
                         vx = VLEV_FLOAT(&x[j], gvl);
@@ -130,7 +135,7 @@ BLASLONG CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x)
                         v_max = VFRSUBVF_MASK_FLOAT(mask, vx, vx, 0, gvl);
 
                         v_res = VFREDMAXVS_FLOAT(v_res, v_max, v_z0, gvl);
-                        FLOAT cur_maxf = *((FLOAT*)&v_res);
+                        FLOAT cur_maxf = VFMVFS_FLOAT(v_res);
                         if(cur_maxf > maxf){
                                 //tail index
                                 v_max_index = VIDV_UINT(gvl);
@@ -138,7 +143,11 @@ BLASLONG CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x)
 
                                 mask = VMFGEVF_FLOAT(v_max, cur_maxf, gvl);
                                 max_index = VMFIRSTM(mask,gvl);
+#ifdef DOUBLE
+                                max_index = *((BLASLONG*)&v_max_index+max_index);
+#else
                                 max_index = *((unsigned int*)&v_max_index+max_index);
+#endif
                         }
                 }
         }else{
@@ -165,11 +174,14 @@ BLASLONG CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x)
                         idx += inc_v;
                 }
                 v_res = VFREDMAXVS_FLOAT(v_res, v_max, v_z0, gvl);
-                maxf = *((FLOAT*)&v_res);
+                maxf = VFMVFS_FLOAT(v_res);
                 mask = VMFGEVF_FLOAT(v_max, maxf, gvl);
                 max_index = VMFIRSTM(mask,gvl);
+#ifdef DOUBLE
+                max_index = *((BLASLONG*)&v_max_index+max_index);
+#else
                 max_index = *((unsigned int*)&v_max_index+max_index);
-
+#endif
                 if(j < n){
                         gvl = VSETVL(n-j);
                         vx = VLSEV_FLOAT(&x[idx], stride_x, gvl);
@@ -178,7 +190,7 @@ BLASLONG CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x)
                         v_max = VFRSUBVF_MASK_FLOAT(mask, vx, vx, 0, gvl);
 
                         v_res = VFREDMAXVS_FLOAT(v_res, v_max, v_z0, gvl);
-                        FLOAT cur_maxf = *((FLOAT*)&v_res);
+                        FLOAT cur_maxf = VFMVFS_FLOAT(v_res);
                         if(cur_maxf > maxf){
                                 //tail index
                                 v_max_index = VIDV_UINT(gvl);
@@ -186,11 +198,13 @@ BLASLONG CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x)
 
                                 mask = VMFGEVF_FLOAT(v_max, cur_maxf, gvl);
                                 max_index = VMFIRSTM(mask,gvl);
+#ifdef DOUBLE
+                                max_index = *((BLASLONG*)&v_max_index+max_index);
+#else
                                 max_index = *((unsigned int*)&v_max_index+max_index);
+#endif
                         }
                 }
         }
 	return(max_index+1);
 }
-
-
