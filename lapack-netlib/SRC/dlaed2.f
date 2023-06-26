@@ -18,7 +18,7 @@
 *  Definition:
 *  ===========
 *
-*       SUBROUTINE DLAED2( K, N, N1, D, Q, LDQ, INDXQ, RHO, Z, DLAMDA, W,
+*       SUBROUTINE DLAED2( K, N, N1, D, Q, LDQ, INDXQ, RHO, Z, DLAMBDA, W,
 *                          Q2, INDX, INDXC, INDXP, COLTYP, INFO )
 *
 *       .. Scalar Arguments ..
@@ -28,7 +28,7 @@
 *       .. Array Arguments ..
 *       INTEGER            COLTYP( * ), INDX( * ), INDXC( * ), INDXP( * ),
 *      $                   INDXQ( * )
-*       DOUBLE PRECISION   D( * ), DLAMDA( * ), Q( LDQ, * ), Q2( * ),
+*       DOUBLE PRECISION   D( * ), DLAMBDA( * ), Q( LDQ, * ), Q2( * ),
 *      $                   W( * ), Z( * )
 *       ..
 *
@@ -123,9 +123,9 @@
 *>         process.
 *> \endverbatim
 *>
-*> \param[out] DLAMDA
+*> \param[out] DLAMBDA
 *> \verbatim
-*>          DLAMDA is DOUBLE PRECISION array, dimension (N)
+*>          DLAMBDA is DOUBLE PRECISION array, dimension (N)
 *>         A copy of the first K eigenvalues which will be used by
 *>         DLAED3 to form the secular equation.
 *> \endverbatim
@@ -148,7 +148,7 @@
 *> \param[out] INDX
 *> \verbatim
 *>          INDX is INTEGER array, dimension (N)
-*>         The permutation used to sort the contents of DLAMDA into
+*>         The permutation used to sort the contents of DLAMBDA into
 *>         ascending order.
 *> \endverbatim
 *>
@@ -207,7 +207,7 @@
 *>  Modified by Francoise Tisseur, University of Tennessee
 *>
 *  =====================================================================
-      SUBROUTINE DLAED2( K, N, N1, D, Q, LDQ, INDXQ, RHO, Z, DLAMDA, W,
+      SUBROUTINE DLAED2( K, N, N1, D, Q, LDQ, INDXQ, RHO, Z, DLAMBDA, W,
      $                   Q2, INDX, INDXC, INDXP, COLTYP, INFO )
 *
 *  -- LAPACK computational routine --
@@ -221,7 +221,7 @@
 *     .. Array Arguments ..
       INTEGER            COLTYP( * ), INDX( * ), INDXC( * ), INDXP( * ),
      $                   INDXQ( * )
-      DOUBLE PRECISION   D( * ), DLAMDA( * ), Q( LDQ, * ), Q2( * ),
+      DOUBLE PRECISION   D( * ), DLAMBDA( * ), Q( LDQ, * ), Q2( * ),
      $                   W( * ), Z( * )
 *     ..
 *
@@ -300,9 +300,9 @@
 *     re-integrate the deflated parts from the last pass
 *
       DO 20 I = 1, N
-         DLAMDA( I ) = D( INDXQ( I ) )
+         DLAMBDA( I ) = D( INDXQ( I ) )
    20 CONTINUE
-      CALL DLAMRG( N1, N2, DLAMDA, 1, 1, INDXC )
+      CALL DLAMRG( N1, N2, DLAMBDA, 1, 1, INDXC )
       DO 30 I = 1, N
          INDX( I ) = INDXQ( INDXC( I ) )
    30 CONTINUE
@@ -324,11 +324,11 @@
          DO 40 J = 1, N
             I = INDX( J )
             CALL DCOPY( N, Q( 1, I ), 1, Q2( IQ2 ), 1 )
-            DLAMDA( J ) = D( I )
+            DLAMBDA( J ) = D( I )
             IQ2 = IQ2 + N
    40    CONTINUE
          CALL DLACPY( 'A', N, N, Q2, N, Q, LDQ )
-         CALL DCOPY( N, DLAMDA, 1, D, 1 )
+         CALL DCOPY( N, DLAMBDA, 1, D, 1 )
          GO TO 190
       END IF
 *
@@ -421,7 +421,7 @@
             PJ = NJ
          ELSE
             K = K + 1
-            DLAMDA( K ) = D( PJ )
+            DLAMBDA( K ) = D( PJ )
             W( K ) = Z( PJ )
             INDXP( K ) = PJ
             PJ = NJ
@@ -433,7 +433,7 @@
 *     Record the last eigenvalue.
 *
       K = K + 1
-      DLAMDA( K ) = D( PJ )
+      DLAMBDA( K ) = D( PJ )
       W( K ) = Z( PJ )
       INDXP( K ) = PJ
 *
@@ -470,9 +470,9 @@
          PSM( CT ) = PSM( CT ) + 1
   130 CONTINUE
 *
-*     Sort the eigenvalues and corresponding eigenvectors into DLAMDA
+*     Sort the eigenvalues and corresponding eigenvectors into DLAMBDA
 *     and Q2 respectively.  The eigenvalues/vectors which were not
-*     deflated go into the first K slots of DLAMDA and Q2 respectively,
+*     deflated go into the first K slots of DLAMBDA and Q2 respectively,
 *     while those which were deflated go into the last N - K slots.
 *
       I = 1
