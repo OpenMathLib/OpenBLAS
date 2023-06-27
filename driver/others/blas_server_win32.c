@@ -1,4 +1,4 @@
-/*********************************************************************/
+ /*********************************************************************/
 /* Copyright 2009, 2010 The University of Texas at Austin.           */
 /* All rights reserved.                                              */
 /*                                                                   */
@@ -556,7 +556,7 @@ void goto_set_num_threads(int num_threads)
 			blas_server_avail = 1;
 		}
 
-		for(i = (blas_num_threads > 0 ? blas_num_threads-1 : 0; i < num_threads - 1; i++){
+		for(i = (blas_num_threads > 0 ? blas_num_threads-1 : 0); i < num_threads - 1; i++){
 
 			blas_threads[i] = CreateThread(NULL, 0,
 				     blas_thread_server, (void *)i,
