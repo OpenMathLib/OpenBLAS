@@ -63,7 +63,7 @@ FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG inc_y)
 	BLASLONG i=0, j=0;
 	double dot = 0.0 ;
 
-	if ( n < 0 )  return(dot);
+	if ( n < 1 )  return(dot);
 
         FLOAT_V_T vr, vx, vy;
         unsigned int gvl = 0;
