@@ -75,6 +75,7 @@ int blas_server_avail = 0;
 /* Local Variables */
 static BLASULONG server_lock       = 0;
 
+static BLASULONG pool_lock = 0;
 static blas_pool_t   pool;
 static HANDLE	    blas_threads   [MAX_CPU_NUMBER];
 static DWORD	    blas_threads_id[MAX_CPU_NUMBER];
@@ -420,7 +421,17 @@ int exec_blas_async(BLASLONG pos, blas_queue_t *queue){
     pos ++;
   }
 
-  pool.queue = queue;
+LOCK_COMMAND(&pool_lock);
+
+  if (pool.queue) {
+    current = pool.queue;
+    while (current -> next) current = current -> next;
+    current -> next = queue;
+  } else {
+    pool.queue = queue;
+  }
+
+UNLOCK_COMMAND(&pool_lock);
 
   // start up worker threads
   ReleaseSemaphore(pool.taskSemaphore, pos - 1, NULL);
