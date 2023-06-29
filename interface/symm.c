@@ -1,4 +1,4 @@
-/0*********************************************************************/
+/*********************************************************************/
 /* Copyright 2009, 2010 The University of Texas at Austin.           */
 /* All rights reserved.                                              */
 /*                                                                   */
@@ -166,7 +166,7 @@ void NAME(char *SIDE, char *UPLO,
   int nodes;
 #endif
 # if defined(SMP)
-  BLASLONG MN;
+  double MN;
 #endif
   blasint info;
   int side;
@@ -264,7 +264,7 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_SIDE Side, enum CBLAS_UPLO Uplo,
   int nodes;
 #endif
 #if defined(SMP)
-  BLASLONG MN;
+  double MN;
 #endif
 
   PRINT_DEBUG_CNAME;
