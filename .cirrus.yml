@@ -77,6 +77,24 @@ task:
       path: "*conf*"
       type: text/plain
 
+macos_instance:
+  image: ghcr.io/cirruslabs/macos-monterey-xcode:13.4
+task:
+  name: AppleM1/LLVM armv7-androidndk xbuild
+  compile_script:
+  - brew install --cask android-ndk
+  - export #PATH=/opt/homebrew/opt/llvm/bin:$PATH
+  - export #LDFLAGS="-L/opt/homebrew/opt/llvm/lib"
+  - export #CPPFLAGS="-I/opt/homebrew/opt/llvm/include" 
+  - find / -name "armv7a-linux-androideabi*-clang"
+  - #export CC=/Applications/Xcode-13.4.1.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang
+  - #export CFLAGS="-O2 -unwindlib=none -Wno-macro-redefined -isysroot /Applications/Xcode-13.4.1.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS15.5.sdk -arch arm64 -miphoneos-version-min=10.0"
+  - #make TARGET=ARMV8 NUM_THREADS=32 HOSTCC=clang NOFORTRAN=1 CROSS=1
+  always:
+    config_artifacts:
+      path: "*conf*"
+      type: text/plain
+
 task:
   name: NeoverseN1
   arm_container:
