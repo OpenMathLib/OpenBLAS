@@ -1770,6 +1770,8 @@ export TARGET_CORE
 export NO_AVX512
 export NO_AVX2
 export BUILD_BFLOAT16
+export NO_LSX
+export NO_LASX
 
 export SBGEMM_UNROLL_M
 export SBGEMM_UNROLL_N
