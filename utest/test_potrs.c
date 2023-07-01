@@ -32,7 +32,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 **********************************************************************************/
 
 #include "openblas_utest.h"
-
+#include <complex.h>
 /*
 void BLASFUNC(cpotrf)(char*, BLASINT*, complex float*, BLASINT*, BLASINT*);
 void BLASFUNC(zpotrs_(char*, BLASINT*, BLASINT*, complex double*,
