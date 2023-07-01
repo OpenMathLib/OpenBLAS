@@ -50,7 +50,7 @@ task:
   - xcrun --sdk macosx --show-sdk-path
   - xcodebuild -version
   - export CC=/Applications/Xcode-14.0.0.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang
-  - export CFLAGS="-O2 -unwindlib=none -Wno-macro-redefined -isysroot /Applications/Xcode-14.0.0.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/macosx12.1.sdk -arch x86_64 -miphoneos-version-min=10.0"
+  - export CFLAGS="-O2 -unwindlib=none -Wno-macro-redefined -isysroot /Applications/Xcode-14.0.0.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX12.3.sdk -arch x86_64 -miphoneos-version-min=10.0"
   - make TARGET=CORE2 DYNAMIC_ARCH=1 NUM_THREADS=32 HOSTCC=clang NOFORTRAN=1
   always:
     config_artifacts:
