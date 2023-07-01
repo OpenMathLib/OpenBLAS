@@ -47,7 +47,7 @@ task:
   - export ARCHS_STANDARD_INCLUDING_64_BIT="i386 x86_64"
   - export ARCHS_UNIVERSAL_IPHONE_OS="i386 x86_64"
   - export VALID_ARCHS="i386 x86_64"
-  - export SYSROOT=`xcrun --sdk iphoneos --show-sdk-path`
+  - xcrun --sdk iphoneos --show-sdk-path
   - #find /Applications/Xcode-14.3.1.app -name libunwind.dylib
   - xcodebuild -version
   - export CC=/Applications/Xcode-14.0.0.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang
@@ -90,7 +90,7 @@ task:
   - find /System/Volumes/Data/opt/homebrew/Caskroom/android-ndk/25b -name "armv7a-linux-androideabi*-ranlib"
   - #export CC=/Applications/Xcode-13.4.1.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang
   - #export CFLAGS="-O2 -unwindlib=none -Wno-macro-redefined -isysroot /Applications/Xcode-13.4.1.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS15.6.sdk -arch arm64 -miphoneos-version-min=10.0"
-  - export CC=/System/Volumes/Data/opt/homebrew/Caskroom/android-ndk/25b/AndroidNDK8937393.app/Contents/NDK/toolchains/llvm/prebuilt/darwin-x86_64/bin/armv7a-linux-androideabi21-clang
+  - export CC=/System/Volumes/Data/opt/homebrew/Caskroom/android-ndk/25b/AndroidNDK8937393.app/Contents/NDK/toolchains/llvm/prebuilt/darwin-x86_64/bin/armv7a-linux-androideabi23-clang
   - make TARGET=ARMV7 ARM_SOFTFP_ABI=1 NUM_THREADS=32 HOSTCC=clang NOFORTRAN=1 RANLIB="ls -l"
   always:
     config_artifacts:
