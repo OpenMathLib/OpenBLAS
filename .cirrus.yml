@@ -89,7 +89,8 @@ task:
   - find $ANDROID_NDK_HOME -name "armv7a-linux-androideabi*-clang"
   - #export CC=/Applications/Xcode-13.4.1.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang
   - #export CFLAGS="-O2 -unwindlib=none -Wno-macro-redefined -isysroot /Applications/Xcode-13.4.1.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS15.5.sdk -arch arm64 -miphoneos-version-min=10.0"
-  - make TARGET=ARMV7 NUM_THREADS=32 HOSTCC=clang NOFORTRAN=1 CC=armv7a-linux-androideabi27-clang
+  - export CC=/System/Volumes/Data/opt/homebrew/Caskroom/android-ndk/25b/AndroidNDK8937393.app/Contents/NDK/toolchains/llvm/prebuilt/darwin-x86_64/bin/armv7a-linux-androideabi21-clang
+  - make TARGET=ARMV7 NUM_THREADS=32 HOSTCC=clang NOFORTRAN=1
   always:
     config_artifacts:
       path: "*conf*"
