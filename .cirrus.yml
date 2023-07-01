@@ -32,7 +32,7 @@ task:
   - make
   
 macos_instance:
-  image: ghcr.io/cirruslabs/macos-monterey-xcode:13.4
+  image: ghcr.io/cirruslabs/macos-monterey-xcode:14
 task:
   name: AppleM1/LLVM x86_64 xbuild
   compile_script:
@@ -47,9 +47,10 @@ task:
   - export ARCHS_STANDARD_INCLUDING_64_BIT="i386 x86_64"
   - export ARCHS_UNIVERSAL_IPHONE_OS="i386 x86_64"
   - export VALID_ARCHS="i386 x86_64"
-  - #find /Applications/Xcode-13.4.1.app -name libunwind.dylib
-  - export CC=/Applications/Xcode-13.4.1.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang
-  - export CFLAGS="-O2 -unwindlib=none -Wno-macro-redefined -isysroot /Applications/Xcode-13.4.1.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator15.5.sdk -arch x86_64 -miphoneos-version-min=10.0"
+  - #find /Applications/Xcode-14.3.1.app -name libunwind.dylib
+  - xcodebuild -version
+  - export CC=/Applications/Xcode-14.3.1.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang
+  - export CFLAGS="-O2 -unwindlib=none -Wno-macro-redefined -isysroot /Applications/Xcode-14.3.1.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator15.5.sdk -arch x86_64 -miphoneos-version-min=10.0"
   - make TARGET=CORE2 DYNAMIC_ARCH=1 NUM_THREADS=32 HOSTCC=clang NOFORTRAN=1
   always:
     config_artifacts:
@@ -90,7 +91,7 @@ task:
   - #export CC=/Applications/Xcode-13.4.1.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang
   - #export CFLAGS="-O2 -unwindlib=none -Wno-macro-redefined -isysroot /Applications/Xcode-13.4.1.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS15.5.sdk -arch arm64 -miphoneos-version-min=10.0"
   - export CC=/System/Volumes/Data/opt/homebrew/Caskroom/android-ndk/25b/AndroidNDK8937393.app/Contents/NDK/toolchains/llvm/prebuilt/darwin-x86_64/bin/armv7a-linux-androideabi21-clang
-  - make TARGET=ARMV7 ARM_SOFTFP_ABI=1 NUM_THREADS=32 HOSTCC=clang NOFORTRAN=1 RANLIB=ranlib
+  - make TARGET=ARMV7 ARM_SOFTFP_ABI=1 NUM_THREADS=32 HOSTCC=clang NOFORTRAN=1 RANLIB="ls -l"
   always:
     config_artifacts:
       path: "*conf*"
