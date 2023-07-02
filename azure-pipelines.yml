@@ -20,7 +20,7 @@ jobs:
 - job: manylinux1_gcc
   pool:
     vmImage: 'ubuntu-latest'
-  steps:
+  steps:   
   - script: |
       echo "FROM quay.io/pypa/manylinux1_x86_64
         COPY . /tmp/openblas
@@ -271,6 +271,37 @@ jobs:
   - script: |
      make TARGET=ARMV7 DYNAMIC_ARCH=1 NUM_THREADS=32 HOSTCC=clang NOFORTRAN=1
 
+- job: OSX_IOS_CONAN
+  pool:
+     vmImage: 'macOS-11'
+  variables:
+     CC: /Applications/Xcode_12.4.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang
+     CFLAGS: -O2 
+     #-Wno-macro-redefined -isysroot /Applications/Xcode_12.4.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS14.4.sdk -arch arm64 -miphoneos-version-min=10.0
+  steps:
+  - script: |
+     brew update
+     brew install conan
+     conan profile detect
+     ln -s . OpenBLAS
+     wget https://gist.github.com/martin-frbg/dae99830b42cfc5bf4e805df211875e1/raw/b0a86e814165e920727ee8d7a758f7f6a3bf80eb/conanfile.py
+     conan build .
+     ls -l build
+     ls -l build/generators
+     cp build/generators/conan_toolchain.cmake .
+     cat conan_toolchain.cmake
+     cmake -G ""Xcode"" -T buildsystem=1 -DCMAKE_TOOLCHAIN_FILE="conan_toolchain.cmake" -DCMAKE_INSTALL_PREFIX="OpenBLAS" -DNOFORTRAN="ON" -DBUILD_WITHOUT_LAPACK="ON" \
+     -DBUILD_LAPACK_DEPRECATED="OFF" -DBUILD_TESTING="OFF" -DUSE_THREAD="ON" -DMSVC_STATIC_CRT="OFF" -DBUILD_STATIC_LIBS="ON" -DBUILD_SHARED_LIBS="OFF"  \
+     -DONLY_CBLAS="1" -DCMAKE_POLICY_DEFAULT_CMP0091="NEW" "OpenBLAS"
+     ls -l
+     cat OpenBLAS.xcodeproj
+     xcodebuild -project OpenBLAS.xcodeproj build -target ALL_BUILD -configuration RelWithDebInfo -hideShellScriptEnvironment
+     ls -lR build
+     cmake --install build
+#     conan build .
+#     cmake -G ""Xcode"" -DCMAKE_TOOLCHAIN_FILE="conan_toolchain.cmake" -DCMAKE_INSTALL_PREFIX="OpenBLAS" -DNOFORTRAN="ON" -DBUILD_WITHOUT_LAPACK="ON" -DBUILD_LAPACK_DEPRECATED="OFF" -DBUILD_TESTING="OFF" -DUSE_THREAD="ON" -DMSVC_STATIC_CRT="OFF" -DBUILD_STATIC_LIBS="ON" -DBUILD_SHARED_LIBS="OFF" -DONLY_CBLAS="1" -DCMAKE_POLICY_DEFAULT_CMP0091="NEW" "OpenBLAS"
+#     xcodebuild -project OpenBLAS.xcodeproj build -target ALL_BUILD -configuration RelWithDebInfo -hideShellScriptEnvironment
+     
 - job: ALPINE_MUSL
   pool:
      vmImage: 'ubuntu-latest'
