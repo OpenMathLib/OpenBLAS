@@ -124,9 +124,9 @@ task:
     image: node:latest
     cpu: 8
   compile_script:
-  - wget https://github.com/llvm/llvm-project/releases/download/llvmorg-16.0.0/clang+llvm-16.0.0-aarch64-linux-gnu.tar.xz
   - cd /opt
-  - tar Jxvf ~/clang+llvm-16.0.0-aarch64-linux-gnu.tar.xz
+  - wget https://github.com/llvm/llvm-project/releases/download/llvmorg-16.0.0/clang+llvm-16.0.0-aarch64-linux-gnu.tar.xz
+  - tar Jxvf clang+llvm-16.0.0-aarch64-linux-gnu.tar.xz
   - cd -
   - make CC=/opt/clang+llvm-16.0.0-x86_64-linux-gnu-ubuntu-18.04/bin/clang FC=/opt/clang+llvm-16.0.0-aarch64-linux-gnu/bin/flang-new USE_OPENMP=1
 
