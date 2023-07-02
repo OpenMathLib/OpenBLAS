@@ -118,6 +118,17 @@ task:
   compile_script:
   - make USE_OPENMP=1
 
+task:
+  name: NeoverseN1-flang-new
+  arm_container:
+    image: node:latest
+    cpu: 8
+  compile_script:
+  - wget https://github.com/llvm/llvm-project/releases/download/llvmorg-16.0.0/clang+llvm-16.0.0-aarch64-linux-gnu.tar.xz
+  - cd /opt
+  - sudo tar Jxvf ~/clang+llvm-16.0.0-aarch64-linux-gnu.tar.xz
+  - make CC=/opt/clang+llvm-16.0.0-x86_64-linux-gnu-ubuntu-18.04/bin/clang FC=/opt/clang+llvm-16.0.0-aarch64-linux-gnu/bin/flang-new
+
 FreeBSD_task:
   name: FreeBSD-gcc12
   freebsd_instance:
