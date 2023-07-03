@@ -100,7 +100,7 @@ else
                     case "$compiler" in
                         *flang*)
                             vendor=FLANG
-			    if ("$compiler" = "flang-new" ]; then
+			    if ["$compiler" = "flang-new" ]; then
 			        vendor=LLVMFLANG
 			    fi
                             openmp='-fopenmp'
@@ -226,7 +226,7 @@ else
                 ;;
             *flang*)
                 vendor=FLANG
-		if ("$compiler" = "flang-new" ]; then
+		if ["$compiler" = "flang-new" ]; then
 		    vendor=LLVMFLANG
 		fi
                 bu=_
