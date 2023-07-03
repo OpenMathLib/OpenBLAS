@@ -1134,6 +1134,19 @@ FCOMMON_OPT += -fopenmp
 endif
 endif
 
+ifeq ($(F_COMPILER), LLVMFLANG)
+CCOMMON_OPT += -DF_INTERFACE_GFORT
+FCOMMON_OPT += -Wall
+ifdef BINARY64
+FCOMMON_OPT += -m64
+else
+FCOMMON_OPT += -m32
+endif
+ifeq ($(USE_OPENMP), 1)
+FCOMMON_OPT += -fopenmp
+endif
+endif
+
 ifeq ($(F_COMPILER), INTEL)
 CCOMMON_OPT += -DF_INTERFACE_INTEL
 ifdef INTERFACE64
