@@ -44,7 +44,7 @@ if [ -z "$compiler" ]; then
               ppuf77 ppuf95 ppuf90 ppuxlf
 	      pathf90 pathf95
 	      pgf95 pgf90 pgf77 pgfortran nvfortran
-	      flang egfortran
+	      flang flang-new egfortran
               ifort nagfor ifx ftn crayftn"
 
     for list in $lists; do
@@ -100,6 +100,9 @@ else
                     case "$compiler" in
                         *flang*)
                             vendor=FLANG
+			    if ("$compiler" = "flang-new" ]; then
+			        vendor=LLVMFLANG
+			    fi
                             openmp='-fopenmp'
                             ;;
                         *ifort*|*ifx*)
@@ -223,6 +226,9 @@ else
                 ;;
             *flang*)
                 vendor=FLANG
+		if ("$compiler" = "flang-new" ]; then
+		    vendor=LLVMFLANG
+		fi
                 bu=_
                 openmp='-fopenmp'
                 ;;
