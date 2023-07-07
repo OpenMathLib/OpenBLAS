@@ -170,7 +170,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup complex16GEsolve
+*> \ingroup gelss
 *
 *  =====================================================================
       SUBROUTINE ZGELSS( M, N, NRHS, A, LDA, B, LDB, S, RCOND, RANK,
@@ -212,10 +212,9 @@
       COMPLEX*16         DUM( 1 )
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           DLABAD, DLASCL, DLASET, XERBLA, ZBDSQR, ZCOPY,
-     $                   ZDRSCL, ZGEBRD, ZGELQF, ZGEMM, ZGEMV, ZGEQRF,
-     $                   ZLACPY, ZLASCL, ZLASET, ZUNGBR, ZUNMBR, ZUNMLQ,
-     $                   ZUNMQR
+      EXTERNAL           DLASCL, DLASET, XERBLA, ZBDSQR, ZCOPY, ZDRSCL,
+     $                   ZGEBRD, ZGELQF, ZGEMM, ZGEMV, ZGEQRF, ZLACPY,
+     $                   ZLASCL, ZLASET, ZUNGBR, ZUNMBR, ZUNMLQ
 *     ..
 *     .. External Functions ..
       INTEGER            ILAENV
@@ -388,7 +387,6 @@
       SFMIN = DLAMCH( 'S' )
       SMLNUM = SFMIN / EPS
       BIGNUM = ONE / SMLNUM
-      CALL DLABAD( SMLNUM, BIGNUM )
 *
 *     Scale A if max element outside range [SMLNUM,BIGNUM]
 *
@@ -540,7 +538,7 @@
      $                     LDB, CZERO, WORK, N )
                CALL ZLACPY( 'G', N, BL, WORK, N, B( 1, I ), LDB )
    20       CONTINUE
-         ELSE
+         ELSE IF( NRHS.EQ.1 ) THEN
             CALL ZGEMV( 'C', N, N, CONE, A, LDA, B, 1, CZERO, WORK, 1 )
             CALL ZCOPY( N, WORK, 1, B, 1 )
          END IF
@@ -645,7 +643,7 @@
                CALL ZLACPY( 'G', M, BL, WORK( IWORK ), M, B( 1, I ),
      $                      LDB )
    40       CONTINUE
-         ELSE
+         ELSE IF( NRHS.EQ.1 ) THEN
             CALL ZGEMV( 'C', M, M, CONE, WORK( IL ), LDWORK, B( 1, 1 ),
      $                  1, CZERO, WORK( IWORK ), 1 )
             CALL ZCOPY( M, WORK( IWORK ), 1, B( 1, 1 ), 1 )
@@ -737,7 +735,7 @@
      $                     LDB, CZERO, WORK, N )
                CALL ZLACPY( 'F', N, BL, WORK, N, B( 1, I ), LDB )
    60       CONTINUE
-         ELSE
+         ELSE IF( NRHS.EQ.1 ) THEN
             CALL ZGEMV( 'C', M, N, CONE, A, LDA, B, 1, CZERO, WORK, 1 )
             CALL ZCOPY( N, WORK, 1, B, 1 )
          END IF
