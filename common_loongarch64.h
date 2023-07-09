@@ -83,6 +83,19 @@ static inline int blas_quickdivide(blasint x, blasint y){
   return x / y;
 }
 
+#ifndef NO_AFFINITY
+static inline int WhereAmI(void){
+  int ret = 0, counter = 0;
+  __asm__ volatile (
+    "rdtimel.w  %[counter],   %[id]"
+    : [id]"=r"(ret), [counter]"=r"(counter)
+    :
+    : "memory"
+  );
+  return ret;
+}
+#endif
+
 #ifdef DOUBLE
 #define GET_IMAGE(res)  __asm__ __volatile__("fmov.d %0, $f2" : "=f"(res)  : : "memory")
 #else
