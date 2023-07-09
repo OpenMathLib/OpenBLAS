@@ -280,7 +280,7 @@ CLASRC_O = \
    cposv.o  cposvx.o cpotf2.o cpotri.o cpstrf.o cpstf2.o \
    cppcon.o cppequ.o cpprfs.o cppsv.o  cppsvx.o cpptrf.o cpptri.o cpptrs.o \
    cptcon.o cpteqr.o cptrfs.o cptsv.o  cptsvx.o cpttrf.o cpttrs.o cptts2.o \
-   crot.o   cspcon.o cspmv.o  cspr.o   csprfs.o cspsv.o \
+   crot.o crscl.o cspcon.o cspmv.o  cspr.o   csprfs.o cspsv.o \
    cspsvx.o csptrf.o csptri.o csptrs.o csrscl.o cstedc.o \
    cstegr.o cstein.o csteqr.o \
    csycon.o csymv.o \
@@ -488,7 +488,7 @@ ZLASRC_O = \
    zposv.o  zposvx.o zpotf2.o zpotrf.o zpotri.o zpotrs.o zpstrf.o zpstf2.o \
    zppcon.o zppequ.o zpprfs.o zppsv.o  zppsvx.o zpptrf.o zpptri.o zpptrs.o \
    zptcon.o zpteqr.o zptrfs.o zptsv.o  zptsvx.o zpttrf.o zpttrs.o zptts2.o \
-   zrot.o   zspcon.o zspmv.o  zspr.o   zsprfs.o zspsv.o \
+   zrot.o zrscl.o  zspcon.o zspmv.o  zspr.o   zsprfs.o zspsv.o \
    zspsvx.o zsptrf.o zsptri.o zsptrs.o zdrscl.o zstedc.o \
    zstegr.o zstein.o zsteqr.o \
    zsycon.o zsymv.o \
