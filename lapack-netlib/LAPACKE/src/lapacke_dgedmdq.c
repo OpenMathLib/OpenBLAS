@@ -36,7 +36,7 @@ lapack_int LAPACKE_dgedmdq( int matrix_layout, char jobs, char jobz, char jobr,
                             char jobq, char jobt, char jobf, lapack_int whtsvd,
                             lapack_int m, lapack_int n, double* f, lapack_int ldf,
                             double* x, lapack_int ldx, double* y, lapack_int ldy,
-                            lapack_int nrnk, double tol, lapack_int k,
+                            lapack_int nrnk, double* tol, lapack_int k,
                             double* reig, double* imeig, double* z,
                             lapack_int ldz, double* res, double* b, lapack_int ldb,
                             double* v, lapack_int ldv, double* s, lapack_int lds)
