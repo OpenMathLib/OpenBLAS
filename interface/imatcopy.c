@@ -100,13 +100,13 @@ void CNAME( enum CBLAS_ORDER CORDER, enum CBLAS_TRANSPOSE CTRANS, blasint crows,
 
 	if ( order == BlasColMajor)
 	{
-        	if ( trans == BlasNoTrans  &&  *ldb < *rows ) info = 9;
-        	if ( trans == BlasTrans    &&  *ldb < *cols ) info = 9;
+        	if ( trans == BlasNoTrans  &&  *ldb < *rows ) info = 8;
+        	if ( trans == BlasTrans    &&  *ldb < *cols ) info = 8;
 	}
 	if ( order == BlasRowMajor)
 	{
-        	if ( trans == BlasNoTrans  &&  *ldb < *cols ) info = 9;
-        	if ( trans == BlasTrans    &&  *ldb < *rows ) info = 9;
+        	if ( trans == BlasNoTrans  &&  *ldb < *cols ) info = 8;
+        	if ( trans == BlasTrans    &&  *ldb < *rows ) info = 8;
 	}
 
 	if ( order == BlasColMajor &&  *lda < *rows ) info = 7;
