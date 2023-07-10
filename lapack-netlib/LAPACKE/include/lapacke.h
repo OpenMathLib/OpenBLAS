@@ -5808,7 +5808,7 @@ lapack_int LAPACKE_cgedmdq_work( int matrix_layout, char jobs, char jobz,
                                  lapack_complex_float* v, lapack_int ldv,
                                  lapack_complex_float* s, lapack_int lds,
                                  lapack_complex_float* zwork, lapack_int lzwork,
-                                 lapack_complex_float* work, lapack_int lwork,
+                                 float* work, lapack_int lwork,
                                  lapack_int* iwork, lapack_int liwork);
 
 lapack_int LAPACKE_zgedmdq_work( int matrix_layout, char jobs, char jobz,
@@ -5825,7 +5825,7 @@ lapack_int LAPACKE_zgedmdq_work( int matrix_layout, char jobs, char jobz,
                                  lapack_complex_double* v, lapack_int ldv,
                                  lapack_complex_double* s, lapack_int lds,
                                  lapack_complex_double* zwork, lapack_int lzwork,
-                                 lapack_complex_double* work, lapack_int lwork,
+                                 double* work, lapack_int lwork,
                                  lapack_int* iwork, lapack_int liwork);
 
 lapack_int LAPACKE_sgesv_work( int matrix_layout, lapack_int n, lapack_int nrhs,
