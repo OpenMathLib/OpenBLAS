@@ -103,7 +103,7 @@ lapack_int LAPACKE_cgedmdq( int matrix_layout, char jobs, char jobz, char jobr,
         info = LAPACK_WORK_MEMORY_ERROR;
         goto exit_level_0;
     }
-    work  = (lapack_complex_float*)LAPACKE_malloc( sizeof(lapack_complex_float) * lwork );
+    work  = (float*)LAPACKE_malloc( sizeof(lapack_complex_float) * lwork );
     if( work == NULL ) {
         info = LAPACK_WORK_MEMORY_ERROR;
         goto exit_level_1;
