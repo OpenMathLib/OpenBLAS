@@ -54,7 +54,7 @@ lapack_int LAPACKE_zgedmdq_work( int matrix_layout, char jobs, char jobz,
     if( matrix_layout == LAPACK_COL_MAJOR ) {
         /* Call LAPACK function and adjust info */
         LAPACK_zgedmdq( &jobs, &jobz, &jobr, &jobq, &jobt, &jobf, &whtsvd, &m,
-                        &n, f, &ldf, x, &ldx, y, &ldy, &nrnk, &tol, &k, eigs,
+                        &n, f, &ldf, x, &ldx, y, &ldy, &nrnk, tol, &k, eigs,
                         z, &ldz, res, b, &ldb, v, &ldv, s, &lds,
                         zwork, &lzwork, work, &lwork, iwork, &liwork, &info );
         if( info < 0 ) {
@@ -114,7 +114,7 @@ lapack_int LAPACKE_zgedmdq_work( int matrix_layout, char jobs, char jobz,
         /* Query optimal working array(s) size if requested */
         if( lwork == -1 || liwork == -1 ) {
             LAPACK_zgedmdq( &jobs, &jobz, &jobr, &jobq, &jobt, &jobf, &whtsvd, &m,
-                            &n, f, &ldf, x, &ldx, y, &ldy, &nrnk, &tol, &k, eigs,
+                            &n, f, &ldf, x, &ldx, y, &ldy, &nrnk, tol, &k, eigs,
                             z, &ldz, res, b, &ldb, v, &ldv, s, &lds,
                             zwork, &lzwork, work, &lwork, iwork, &liwork, &info );
             return (info < 0) ? (info - 1) : info;
@@ -165,7 +165,7 @@ lapack_int LAPACKE_zgedmdq_work( int matrix_layout, char jobs, char jobz,
         LAPACKE_zge_trans( matrix_layout, m, n, s, lds, s_t, lds_t );
         /* Call LAPACK function and adjust info */
         LAPACK_zgedmdq( &jobs, &jobz, &jobr, &jobq, &jobt, &jobf, &whtsvd, &m,
-                        &n, f, &ldf, x, &ldx, y, &ldy, &nrnk, &tol, &k, eigs,
+                        &n, f, &ldf, x, &ldx, y, &ldy, &nrnk, tol, &k, eigs,
                         z, &ldz, res, b, &ldb, v, &ldv, s, &lds,
                         zwork, &lzwork, work, &lwork, iwork, &liwork, &info );
         if( info < 0 ) {
