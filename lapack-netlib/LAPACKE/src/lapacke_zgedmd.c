@@ -53,7 +53,7 @@ lapack_int LAPACKE_zgedmd( int matrix_layout, char jobs, char jobz, char jobr,
     lapack_int* iwork = NULL;
     lapack_complex_double work_query;
     lapack_int iwork_query;
-    lapack_int zwork_query;
+    lapack_complex_double zwork_query;
     if( matrix_layout != LAPACK_COL_MAJOR && matrix_layout != LAPACK_ROW_MAJOR ) {
         LAPACKE_xerbla( "LAPACKE_zgedmd", -1 );
         return -1;
