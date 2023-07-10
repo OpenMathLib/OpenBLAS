@@ -46,7 +46,7 @@ lapack_int LAPACKE_zgedmdq_work( int matrix_layout, char jobs, char jobz,
                                  lapack_int ldb, lapack_complex_double* v,
                                  lapack_int ldv, lapack_complex_double* s,
                                  lapack_int lds, lapack_complex_double* zwork,
-				 lapack_int lzwork, lapack_complex_double* work,
+				 lapack_int lzwork, double* work,
                                  lapack_int lwork, lapack_int* iwork,
                                  lapack_int liwork )
 {
