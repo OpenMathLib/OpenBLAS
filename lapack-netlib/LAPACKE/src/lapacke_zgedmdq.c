@@ -49,10 +49,10 @@ lapack_int LAPACKE_zgedmdq( int matrix_layout, char jobs, char jobz, char jobr,
     lapack_int liwork = -1;
     lapack_int lzwork = -1;
     lapack_complex_double* zwork = NULL;
-    lapack_complex_double* work = NULL;
+    double* work = NULL;
     lapack_int* iwork = NULL;
     lapack_complex_double work_query;
-    lapack_complex_double zwork_query;
+    double zwork_query;
     lapack_int iwork_query;
     if( matrix_layout != LAPACK_COL_MAJOR && matrix_layout != LAPACK_ROW_MAJOR ) {
         LAPACKE_xerbla( "LAPACKE_cgedmdq", -1 );
@@ -103,7 +103,7 @@ lapack_int LAPACKE_zgedmdq( int matrix_layout, char jobs, char jobz, char jobr,
         info = LAPACK_WORK_MEMORY_ERROR;
         goto exit_level_0;
     }
-    work  = (lapack_complex_double*)LAPACKE_malloc( sizeof(lapack_complex_double) * lwork );
+    work  = (double*)LAPACKE_malloc( sizeof(lapack_complex_double) * lwork );
     if( work == NULL ) {
         info = LAPACK_WORK_MEMORY_ERROR;
         goto exit_level_1;
