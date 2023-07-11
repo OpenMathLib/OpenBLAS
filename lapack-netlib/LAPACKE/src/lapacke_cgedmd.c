@@ -51,7 +51,7 @@ lapack_int LAPACKE_cgedmd( int matrix_layout, char jobs, char jobz, char jobr,
     float* work = NULL;
     lapack_int* iwork = NULL;
     lapack_complex_float zwork_query;
-    lapack_complex_float work_query;
+    float work_query;
     lapack_int iwork_query;
     if( matrix_layout != LAPACK_COL_MAJOR && matrix_layout != LAPACK_ROW_MAJOR ) {
         LAPACKE_xerbla( "LAPACKE_cgedmd", -1 );
