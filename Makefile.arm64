@@ -233,7 +233,7 @@ endif
 ifeq (1, $(filter 1,$(GCCVERSIONGTEQ9) $(ISCLANG)))
 ifeq ($(CORE), EMAG8180)
 CCOMMON_OPT += -march=armv8-a
-ifneq ($ISCLANG)
+if (NOT $ISCLANG)
 CCOMMON_OPT += -mtune=emag
 endif
 ifneq ($(F_COMPILER), NAG)
