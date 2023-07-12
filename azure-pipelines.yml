@@ -279,6 +279,7 @@ jobs:
      CFLAGS: -O2 -Wno-macro-redefined -isysroot /Applications/Xcode_12.5.1.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.1.sdk -arch arm64
   steps:
   - script: |
+    ls /Applications/Xcode_12.5.1.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs
      /Applications/Xcode_12.5.1.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang --version
      /Applications/Xcode_11.7.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang --version
      make TARGET=ARMV8 DYNAMIC_ARCH=1 NUM_THREADS=32 HOSTCC=clang NOFORTRAN=1
