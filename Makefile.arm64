@@ -95,7 +95,7 @@ ifeq (1, $(filter 1,$(GCCVERSIONGTEQ7) $(ISCLANG)))
 ifeq (1, $(filter 1,$(GCCVERSIONGTEQ10) $(ISCLANG)))
 ifeq (1, $(filter 1,$(GCCMINORVERSIONGTEQ4) $(GCCVERSIONGTEQ11) $(ISCLANG)))
 CCOMMON_OPT += -march=armv8.4-a+sve
-if ($ISCLANG)
+if ($(ISCLANG))
 CCOMMON_OPT += -mtune=cortex-x1
 else
 CCOMMON_OPT += -mtune=neoverse-v1
