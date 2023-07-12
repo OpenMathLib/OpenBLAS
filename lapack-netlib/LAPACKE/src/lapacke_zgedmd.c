@@ -92,7 +92,7 @@ lapack_int LAPACKE_zgedmd( int matrix_layout, char jobs, char jobz, char jobr,
     }
     lwork  = LAPACK_Z2INT( work_query );
     liwork = iwork_query;
-    lzwork = zwork_query;
+    lzwork = LAPACK_Z2INT( zwork_query );
     /* Allocate memory for work arrays */
     zwork  = (lapack_complex_double*)LAPACKE_malloc( sizeof(lapack_complex_double) * lzwork );
     if( zwork == NULL ) {
