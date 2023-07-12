@@ -202,7 +202,12 @@ endif
 
 ifeq ($(CORE), THUNDERX3T110)
 ifeq (1, $(filter 1,$(GCCVERSIONGTEQ10) $(ISCLANG)))
-CCOMMON_OPT += -march=armv8.3-a -mtune=thunderx3t110
+CCOMMON_OPT += -march=armv8.3-a 
+ifeq (0, $(ISCLANG))
+CCOMMON_OPT += -mtune=thunderx3t110
+else
+CCOMMON_OPT += -mtune=thunderx2t99
+endif
 ifneq ($(F_COMPILER), NAG)
 FCOMMON_OPT += -march=armv8.3-a -mtune=thunderx3t110
 endif
