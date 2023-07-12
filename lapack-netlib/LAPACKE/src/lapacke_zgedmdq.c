@@ -51,11 +51,11 @@ lapack_int LAPACKE_zgedmdq( int matrix_layout, char jobs, char jobz, char jobr,
     lapack_complex_double* zwork = NULL;
     double* work = NULL;
     lapack_int* iwork = NULL;
-    lapack_complex_double work_query;
-    double zwork_query;
+    double work_query;
+    lapack_complex_double zwork_query;
     lapack_int iwork_query;
     if( matrix_layout != LAPACK_COL_MAJOR && matrix_layout != LAPACK_ROW_MAJOR ) {
-        LAPACKE_xerbla( "LAPACKE_cgedmdq", -1 );
+        LAPACKE_xerbla( "LAPACKE_zgedmdq", -1 );
         return -1;
     }
 #ifndef LAPACK_DISABLE_NAN_CHECK
