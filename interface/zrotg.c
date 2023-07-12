@@ -1,8 +1,10 @@
 #include <math.h>
+#include <float.h>
 #include "common.h"
 #ifdef FUNCTION_PROFILE
 #include "functable.h"
 #endif
+
 
 #ifndef CBLAS
 void NAME(FLOAT *DA, FLOAT *DB, FLOAT *C, FLOAT *S){
@@ -14,6 +16,12 @@ void CNAME(void *VDA, void *VDB, FLOAT *C, void *VS) {
     FLOAT *S  = (FLOAT*) VS;
 #endif /* CBLAS */
 
+#ifdef DOUBLE
+  long double safmin = DBL_MIN;
+#else
+  long double safmin = FLT_MIN;
+#endif
+
 #if defined(__i386__) || defined(__x86_64__) || defined(__ia64__) || defined(_M_X64) || defined(_M_IX86)
 
   long double da_r = *(DA + 0);
@@ -23,6 +31,7 @@ void CNAME(void *VDA, void *VDB, FLOAT *C, void *VS) {
   long double r;
 
   long double ada = fabsl(da_r) + fabsl(da_i);
+  long double adb = sqrt(db_r * db_r + db_i * db_i);
 
   PRINT_DEBUG_NAME;
 
@@ -38,10 +47,24 @@ void CNAME(void *VDA, void *VDB, FLOAT *C, void *VS) {
     *(DA + 1) = db_i;
   } else {
     long double alpha_r, alpha_i;
+    long double safmax = 1./safmin;
+    long double sigma;
+    long double maxab = MAX(ada,adb);
+    long double scale = MIN(MAX(safmin,maxab), safmax);
 
-    ada = sqrt(da_r * da_r + da_i * da_i);
 
-    r = sqrt(da_r * da_r + da_i * da_i + db_r * db_r + db_i * db_i);
+    long double aa_r    = da_r / scale;
+    long double aa_i    = da_i / scale;
+    long double bb_r    = db_r / scale;
+    long double bb_i    = db_i / scale;
+
+    if (ada > adb)
+        sigma = copysign(1.,da_r);
+    else
+        sigma = copysign(1.,db_r);
+
+    r = sigma * scale * sqrt(aa_r * aa_r + aa_i * aa_i + bb_r * bb_r + bb_i * bb_i);
+
 
     alpha_r = da_r / ada;
     alpha_i = da_i / ada;
@@ -60,7 +83,7 @@ void CNAME(void *VDA, void *VDB, FLOAT *C, void *VS) {
   FLOAT r;
 
   FLOAT ada = fabs(da_r) + fabs(da_i);
-  FLOAT adb;
+  FLOAT ada = fabs(db_r) + fabs(db_i);
 
   PRINT_DEBUG_NAME;
 
@@ -75,6 +98,7 @@ void CNAME(void *VDA, void *VDB, FLOAT *C, void *VS) {
     *(DA + 0) = db_r;
     *(DA + 1) = db_i;
   } else {
+    long double safmax = 1./safmin;
     FLOAT scale;
     FLOAT aa_r, aa_i, bb_r, bb_i;
     FLOAT alpha_r, alpha_i;
@@ -108,14 +132,20 @@ void CNAME(void *VDA, void *VDB, FLOAT *C, void *VS) {
     	scale = (bb_i / bb_r);
     	adb = bb_r * sqrt(ONE + scale * scale);
     }
-    scale = ada + adb;
+    FLOAT maxab = MAX(ada,adb);
+    scale = MIN(MAX(safmin,maxab), safmax);
 
     aa_r    = da_r / scale;
     aa_i    = da_i / scale;
     bb_r    = db_r / scale;
     bb_i    = db_i / scale;
 
-    r = scale * sqrt(aa_r * aa_r + aa_i * aa_i + bb_r * bb_r + bb_i * bb_i);
+    if (ada > adb)
+        sigma = copysign(1.,da_r);
+    else
+        sigma = copysign(1.,db_r);
+
+    r = sigma * scale * sqrt(aa_r * aa_r + aa_i * aa_i + bb_r * bb_r + bb_i * bb_i);
 
     alpha_r = da_r / ada;
     alpha_i = da_i / ada;
