@@ -94,7 +94,12 @@ ifeq ($(CORE), NEOVERSEV1)
 ifeq (1, $(filter 1,$(GCCVERSIONGTEQ7) $(ISCLANG)))
 ifeq (1, $(filter 1,$(GCCVERSIONGTEQ10) $(ISCLANG)))
 ifeq (1, $(filter 1,$(GCCMINORVERSIONGTEQ4) $(GCCVERSIONGTEQ11) $(ISCLANG)))
-CCOMMON_OPT += -march=armv8.4-a+sve -mtune=neoverse-v1
+CCOMMON_OPT += -march=armv8.4-a+sve
+if ($ISCLANG)
+CCOMMON_OPT += -mtune=cortex-x1
+else
+CCOMMON_OPT += -mtune=neoverse-v1
+endif
 ifneq ($(F_COMPILER), NAG)
 FCOMMON_OPT += -march=armv8.4-a -mtune=neoverse-v1
 endif
@@ -227,7 +232,10 @@ endif
 
 ifeq (1, $(filter 1,$(GCCVERSIONGTEQ9) $(ISCLANG)))
 ifeq ($(CORE), EMAG8180)
-CCOMMON_OPT += -march=armv8-a -mtune=emag
+CCOMMON_OPT += -march=armv8-a
+ifneq ($ISCLANG)
+CCOMMON_OPT += -mtune=emag
+endif
 ifneq ($(F_COMPILER), NAG)
 FCOMMON_OPT += -march=armv8-a -mtune=emag
 endif
