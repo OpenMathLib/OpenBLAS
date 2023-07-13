@@ -112,7 +112,7 @@ void CNAME(FLOAT *DA, FLOAT *DB, FLOAT *C, FLOAT *S){
   if (adb == ZERO) {
     *C = ONE;
     *S = ZERO;
-    DA = ZERO;
+    *DA = ZERO;
     *DB = ZERO;
   } else {
     FLOAT aa = da / scale;
