@@ -56,7 +56,7 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, BLASLONG posX, BLASLON
     int n_active = svcntp_b64(svptrue_b64(), pn);
 #else
     svint32_t index = svindex_s32(0, lda);
-    svbool_t pn = svwhilelt_b32(js, n);
+    svbool_t pn = svwhilelt_b32((uint64_t)js, (uint64_t)n);
     int n_active = svcntp_b32(svptrue_b32(), pn);
 #endif
     do
