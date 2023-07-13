@@ -98,9 +98,9 @@ void CNAME(FLOAT *DA, FLOAT *DB, FLOAT *C, FLOAT *S){
   scale = MIN(MAX(safmin,maxab), safmax);
 
   if (ada > adb)
-	sigma = sign(1.,da);
+	sigma = copysign(1.,da);
     else
-	sigma = sign(1.,db);
+	sigma = copysign(1.,db);
 
 #ifndef CBLAS
   PRINT_DEBUG_NAME;
@@ -113,7 +113,7 @@ void CNAME(FLOAT *DA, FLOAT *DB, FLOAT *C, FLOAT *S){
     *C = ONE;
     *S = ZERO;
     *DB = ZERO;
-  else if (ada == ZERO) {
+  } else if (ada == ZERO) {
     *C = ZERO;
     *S = ONE;
     *DA = *DB;
