@@ -83,7 +83,7 @@ void CNAME(void *VDA, void *VDB, FLOAT *C, void *VS) {
   FLOAT r;
 
   FLOAT ada = fabs(da_r) + fabs(da_i);
-  FLOAT ada = fabs(db_r) + fabs(db_i);
+  FLOAT adb = fabs(db_r) + fabs(db_i);
 
   PRINT_DEBUG_NAME;
 
@@ -99,7 +99,7 @@ void CNAME(void *VDA, void *VDB, FLOAT *C, void *VS) {
     *(DA + 1) = db_i;
   } else {
     long double safmax = 1./safmin;
-    FLOAT scale;
+    FLOAT scale, sigma;
     FLOAT aa_r, aa_i, bb_r, bb_i;
     FLOAT alpha_r, alpha_i;
 
