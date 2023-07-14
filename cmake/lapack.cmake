@@ -187,7 +187,7 @@ set(CLASRC
    cposv.f  cposvx.f cpotrf2.f cpotri.f cpstrf.f cpstf2.f
    cppcon.f cppequ.f cpprfs.f cppsv.f  cppsvx.f cpptrf.f cpptri.f cpptrs.f
    cptcon.f cpteqr.f cptrfs.f cptsv.f  cptsvx.f cpttrf.f cpttrs.f cptts2.f
-   crot.f   cspcon.f csprfs.f cspsv.f
+   crot.f crscl.f cspcon.f csprfs.f cspsv.f
    cspsvx.f csptrf.f csptri.f csptrs.f csrscl.f cstedc.f
    cstegr.f cstein.f csteqr.f csycon.f
    csyrfs.f csysv.f  csysvx.f csytf2.f csytrf.f csytri.f
@@ -381,7 +381,7 @@ set(ZLASRC
    zposv.f  zposvx.f zpotrf2.f zpotri.f zpotrs.f zpstrf.f zpstf2.f
    zppcon.f zppequ.f zpprfs.f zppsv.f  zppsvx.f zpptrf.f zpptri.f zpptrs.f
    zptcon.f zpteqr.f zptrfs.f zptsv.f  zptsvx.f zpttrf.f zpttrs.f zptts2.f
-   zrot.f   zspcon.f zsprfs.f zspsv.f
+   zrot.f zrscl.f zspcon.f zsprfs.f zspsv.f
    zspsvx.f zsptrf.f zsptri.f zsptrs.f zdrscl.f zstedc.f
    zstegr.f zstein.f zsteqr.f zsycon.f
    zsyrfs.f zsysv.f  zsysvx.f zsytf2.f zsytrf.f zsytri.f
@@ -686,7 +686,7 @@ set(CLASRC
    cposv.c  cposvx.c cpotrf2.c cpotri.c cpstrf.c cpstf2.c
    cppcon.c cppequ.c cpprfs.c cppsv.c  cppsvx.c cpptrf.c cpptri.c cpptrs.c
    cptcon.c cpteqr.c cptrfs.c cptsv.c  cptsvx.c cpttrf.c cpttrs.c cptts2.c
-   crot.c   cspcon.c csprfs.c cspsv.c
+   crot.c crscl.c  cspcon.c csprfs.c cspsv.c
    cspsvx.c csptrf.c csptri.c csptrs.c csrscl.c cstedc.c
    cstegr.c cstein.c csteqr.c csycon.c
    csyrfs.c csysv.c  csysvx.c csytf2.c csytrf.c csytri.c
@@ -878,7 +878,7 @@ set(ZLASRC
    zposv.c  zposvx.c zpotrf2.c zpotri.c zpotrs.c zpstrf.c zpstf2.c
    zppcon.c zppequ.c zpprfs.c zppsv.c  zppsvx.c zpptrf.c zpptri.c zpptrs.c
    zptcon.c zpteqr.c zptrfs.c zptsv.c  zptsvx.c zpttrf.c zpttrs.c zptts2.c
-   zrot.c   zspcon.c zsprfs.c zspsv.c
+   zrot.c zrscl.c  zspcon.c zsprfs.c zspsv.c
    zspsvx.c zsptrf.c zsptri.c zsptrs.c zdrscl.c zstedc.c
    zstegr.c zstein.c zsteqr.c zsycon.c
    zsyrfs.c zsysv.c  zsysvx.c zsytf2.c zsytrf.c zsytri.c

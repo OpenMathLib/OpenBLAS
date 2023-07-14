@@ -69,7 +69,7 @@ endif
 # in GCC>=9
 ifeq ($(CORE), NEOVERSEN1)
 ifeq (1, $(filter 1,$(GCCVERSIONGTEQ7) $(ISCLANG)))
-ifeq ($(GCCVERSIONGTEQ9), 1)
+ifeq (1, $(filter 1,$(GCCVERSIONGTEQ9) $(ISCLANG)))
 CCOMMON_OPT += -march=armv8.2-a -mtune=neoverse-n1
 ifneq ($(F_COMPILER), NAG)
 FCOMMON_OPT += -march=armv8.2-a -mtune=neoverse-n1
@@ -92,9 +92,14 @@ endif
 # in GCC>=10.4
 ifeq ($(CORE), NEOVERSEV1)
 ifeq (1, $(filter 1,$(GCCVERSIONGTEQ7) $(ISCLANG)))
-ifeq ($(GCCVERSIONGTEQ10), 1)
-ifeq (1, $(filter 1,$(GCCMINORVERSIONGTEQ4) $(GCCVERSIONGTEQ11)))
-CCOMMON_OPT += -march=armv8.4-a+sve -mtune=neoverse-v1
+ifeq (1, $(filter 1,$(GCCVERSIONGTEQ10) $(ISCLANG)))
+ifeq (1, $(filter 1,$(GCCMINORVERSIONGTEQ4) $(GCCVERSIONGTEQ11) $(ISCLANG)))
+CCOMMON_OPT += -march=armv8.4-a+sve
+ifeq (1, $(ISCLANG))
+CCOMMON_OPT += -mtune=cortex-x1
+else
+CCOMMON_OPT += -mtune=neoverse-v1
+endif
 ifneq ($(F_COMPILER), NAG)
 FCOMMON_OPT += -march=armv8.4-a -mtune=neoverse-v1
 endif
@@ -122,8 +127,8 @@ endif
 # in GCC>=10.4
 ifeq ($(CORE), NEOVERSEN2)
 ifeq (1, $(filter 1,$(GCCVERSIONGTEQ7) $(ISCLANG)))
-ifeq ($(GCCVERSIONGTEQ10), 1)
-ifeq (1, $(filter 1,$(GCCMINORVERSIONGTEQ4) $(GCCVERSIONGTEQ11)))
+ifeq (1, $(filter 1,$(GCCVERSIONGTEQ10) $(ISCLANG)))
+ifeq (1, $(filter 1,$(GCCMINORVERSIONGTEQ4) $(GCCVERSIONGTEQ11) $(ISCLANG)))
 ifneq ($(OSNAME), Darwin)
 CCOMMON_OPT += -march=armv8.5-a+sve+sve2+bf16 -mtune=neoverse-n2
 else
@@ -155,7 +160,7 @@ endif
 # Use a53 tunings because a55 is only available in GCC>=8.1
 ifeq ($(CORE), CORTEXA55)
 ifeq (1, $(filter 1,$(GCCVERSIONGTEQ7) $(ISCLANG)))
-ifeq ($(GCCVERSIONGTEQ8), 1)
+ifeq (1, $(filter 1,$(GCCVERSIONGTEQ8) $(ISCLANG)))
 CCOMMON_OPT += -march=armv8.2-a -mtune=cortex-a55
 ifneq ($(F_COMPILER), NAG)
 FCOMMON_OPT += -march=armv8.2-a -mtune=cortex-a55
@@ -196,8 +201,13 @@ endif
 endif
 
 ifeq ($(CORE), THUNDERX3T110)
-ifeq ($(GCCVERSIONGTEQ10), 1)
-CCOMMON_OPT += -march=armv8.3-a -mtune=thunderx3t110
+ifeq (1, $(filter 1,$(GCCVERSIONGTEQ10) $(ISCLANG)))
+CCOMMON_OPT += -march=armv8.3-a 
+ifeq (0, $(ISCLANG))
+CCOMMON_OPT += -mtune=thunderx3t110
+else
+CCOMMON_OPT += -mtune=thunderx2t99
+endif
 ifneq ($(F_COMPILER), NAG)
 FCOMMON_OPT += -march=armv8.3-a -mtune=thunderx3t110
 endif
@@ -225,9 +235,12 @@ endif
 endif
 endif
 
-ifeq ($(GCCVERSIONGTEQ9), 1)
+ifeq (1, $(filter 1,$(GCCVERSIONGTEQ9) $(ISCLANG)))
 ifeq ($(CORE), EMAG8180)
-CCOMMON_OPT += -march=armv8-a -mtune=emag
+CCOMMON_OPT += -march=armv8-a
+ifeq  ($(ISCLANG), 0)
+CCOMMON_OPT += -mtune=emag
+endif
 ifneq ($(F_COMPILER), NAG)
 FCOMMON_OPT += -march=armv8-a -mtune=emag
 endif
