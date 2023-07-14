@@ -100,7 +100,7 @@ int CNAME(BLASLONG m, BLASLONG n, IFLOAT *a, BLASLONG lda, IFLOAT *b){
     BLASLONG remaining_n = n - single_vectors_n;
     if (remaining_n) {
         a_offset_inner = a_offset;
-        svbool_t pg = SV_WHILE(0L, remaining_n);
+        svbool_t pg = SV_WHILE((uint64_t)0L, (uint64_t)remaining_n);
         uint64_t active = remaining_n;
         uint64_t i_cnt = m >> 2;
         while (i_cnt--) {

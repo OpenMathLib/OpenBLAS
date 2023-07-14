@@ -271,6 +271,19 @@ jobs:
   - script: |
      make TARGET=ARMV7 DYNAMIC_ARCH=1 NUM_THREADS=32 HOSTCC=clang NOFORTRAN=1
 
+- job: OSX_xbuild_DYNAMIC_ARM64
+  pool:
+     vmImage: 'macOS-11'
+  variables:
+     CC: /Applications/Xcode_12.5.1.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang
+     CFLAGS: -O2 -Wno-macro-redefined -isysroot /Applications/Xcode_12.5.1.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk -arch arm64
+  steps:
+  - script: |
+     ls /Applications/Xcode_12.5.1.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs
+     /Applications/Xcode_12.5.1.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -arch arm64 --print-supported-cpus
+     /Applications/Xcode_11.7.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang --version
+     make TARGET=ARMV8 DYNAMIC_ARCH=1 NUM_THREADS=32 HOSTCC=clang NOFORTRAN=1
+
 - job: ALPINE_MUSL
   pool:
      vmImage: 'ubuntu-latest'
