@@ -32,22 +32,26 @@
 
 #include "lapacke_utils.h"
 
-lapack_int LAPACKE_cgedmd( int matrix_layout, char jobs, char jobz, char jobf,
-                           lapack_int whtsvd, lapack_int m, lapack_int n,
-                           lapack_complex_float* x, lapack_int ldx,
-                           lapack_complex_float* y, lapack_int ldy, lapack_int k,
-                           lapack_complex_float* reig, lapack_complex_float* imeig,
+lapack_int LAPACKE_cgedmd( int matrix_layout, char jobs, char jobz, char jobr,
+			   char jobf, lapack_int whtsvd, lapack_int m,
+		 	   lapack_int n, lapack_complex_float* x,
+			   lapack_int ldx, lapack_complex_float* y,
+			   lapack_int ldy, lapack_int nrnk, float* tol,
+			   lapack_int k, lapack_complex_float* eigs,
                            lapack_complex_float* z, lapack_int ldz,
-                           lapack_complex_float* res, lapack_complex_float* b,
+                           float* res, lapack_complex_float* b,
                            lapack_int ldb, lapack_complex_float* w,
                            lapack_int ldw, lapack_complex_float* s, lapack_int lds)
 {
     lapack_int info = 0;
     lapack_int lwork = -1;
     lapack_int liwork = -1;
-    lapack_complex_float* work = NULL;
+    lapack_int lzwork = -1;
+    lapack_complex_float* zwork = NULL;
+    float* work = NULL;
     lapack_int* iwork = NULL;
-    lapack_complex_float work_query;
+    lapack_complex_float zwork_query;
+    float work_query;
     lapack_int iwork_query;
     if( matrix_layout != LAPACK_COL_MAJOR && matrix_layout != LAPACK_ROW_MAJOR ) {
         LAPACKE_xerbla( "LAPACKE_cgedmd", -1 );
@@ -77,36 +81,44 @@ lapack_int LAPACKE_cgedmd( int matrix_layout, char jobs, char jobz, char jobf,
     }
 #endif
     /* Query optimal working array(s) size */
-    info = LAPACKE_cgedmd_work( matrix_layout, jobs, jobz, jobf, whtsvd, m, n,
-                                x, ldx, y, ldy, k, reig, imeig, z, ldz, res,
-                                b, ldb, w, ldw, s, lds, &work_query, lwork,
-                                &iwork_query, liwork );
+    info = LAPACKE_cgedmd_work( matrix_layout, jobs, jobz, jobr, jobf, whtsvd,
+				m, n, x, ldx, y, ldy, nrnk, tol, k, eigs, z, ldz,
+				res, b, ldb, w, ldw, s, lds, &zwork_query, 
+				lzwork, &work_query, lwork, &iwork_query, liwork );
 
     if( info != 0 ) {
         goto exit_level_0;
     }
+    lzwork  = LAPACK_C2INT( zwork_query );
     lwork  = LAPACK_C2INT( work_query );
     liwork = iwork_query;
     /* Allocate memory for work arrays */
-    work  = (lapack_complex_float*)LAPACKE_malloc( sizeof(lapack_complex_float) * lwork );
-    if( work == NULL ) {
+    zwork  = (lapack_complex_float*)LAPACKE_malloc( sizeof(lapack_complex_float) * lzwork );
+    if( zwork == NULL ) {
         info = LAPACK_WORK_MEMORY_ERROR;
         goto exit_level_0;
+    }
+    work  = (float*)LAPACKE_malloc( sizeof(float) * lwork );
+    if( work == NULL ) {
+        info = LAPACK_WORK_MEMORY_ERROR;
+        goto exit_level_1;
     }
     iwork = (lapack_int*)LAPACKE_malloc( sizeof(lapack_int) * liwork );
     if( iwork == NULL ) {
         info = LAPACK_WORK_MEMORY_ERROR;
-        goto exit_level_1;
+        goto exit_level_2;
     }
     /* Call middle-level interface */
-    info = LAPACKE_cgedmd_work( matrix_layout, jobs, jobz, jobf, whtsvd, m, n,
-                                x, ldx, y, ldy, k, reig, imeig, z, ldz, res,
-                                b, ldb, w, ldw, s, lds, work, lwork, iwork,
-                                liwork );
+    info = LAPACKE_cgedmd_work( matrix_layout, jobs, jobz, jobr, jobf, whtsvd,
+				m, n, x, ldx, y, ldy, nrnk, tol, k, eigs, z, ldz,
+				res, b, ldb, w, ldw, s, lds, zwork, lzwork,
+				work, lwork, iwork, liwork );
     /* Release memory and exit */
     LAPACKE_free( iwork );
-exit_level_1:
+exit_level_2:
     LAPACKE_free( work );
+exit_level_1:
+    LAPACKE_free( zwork );
 exit_level_0:
     if( info == LAPACK_WORK_MEMORY_ERROR ) {
         LAPACKE_xerbla( "LAPACKE_cgedmd", info );
