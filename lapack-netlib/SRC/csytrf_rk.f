@@ -310,7 +310,7 @@
 *        Determine the block size
 *
          NB = ILAENV( 1, 'CSYTRF_RK', UPLO, N, -1, -1, -1 )
-         LWKOPT = N*NB
+         LWKOPT = MAX( 1, N*NB )
          WORK( 1 ) = LWKOPT
       END IF
 *
