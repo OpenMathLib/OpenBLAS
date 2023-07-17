@@ -30,6 +30,15 @@ task:
   - cd build
   - cmake -DTARGET=VORTEX -DCMAKE_C_COMPILER=clang -DBUILD_SHARED_LIBS=ON ..
   - make
+
+task:
+  name: AppleM1/GCC/MAKE/OPENMP
+  compile_script:
+  - brew install gcc@11
+  - export PATH=/opt/homebrew/bin:$PATH
+  - export LDFLAGS="-L/opt/homebrew/lib"
+  - export CPPFLAGS="-I/opt/homebrew/include"
+  - make CC=gcc-11 FC=gfortran-11 USE_OPENMP=1
   
 macos_instance:
   image: ghcr.io/cirruslabs/macos-monterey-xcode:latest
