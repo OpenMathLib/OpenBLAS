@@ -147,6 +147,9 @@ extern void openblas_warning(int verbose, const char * msg);
 #ifndef HWCAP_CPUID
 #define HWCAP_CPUID (1 << 11)
 #endif
+#ifndef HWCAP_SVE
+#define HWCAP_SVE (1 << 22)
+#endif
 
 #define get_cpu_ftr(id, var) ({					\
 		__asm__ __volatile__ ("mrs %0, "#id : "=r" (var));		\
@@ -281,9 +284,15 @@ static gotoblas_t *get_coretype(void) {
           return &gotoblas_NEOVERSEN1;
 #ifndef NO_SVE
         case 0xd49:
-          return &gotoblas_NEOVERSEN2;
+	  if (!(getauxval(AT_HWCAP) & HWCAP_SVE)) 
+	    return &gotoblas_NEOVERSEN1;
+	  else
+            return &gotoblas_NEOVERSEN2;
 	case 0xd40:
-	  return &gotoblas_NEOVERSEV1;
+	  if (!(getauxval(AT_HWCAP) & HWCAP_SVE)) 
+	    return &gotoblas_NEOVERSEN1;
+	  else
+	    return &gotoblas_NEOVERSEV1;
 #endif
 	case 0xd05: // Cortex A55
 	  return &gotoblas_CORTEXA55;
