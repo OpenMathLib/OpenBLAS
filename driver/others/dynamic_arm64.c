@@ -137,6 +137,8 @@ extern gotoblas_t  gotoblas_CORTEXA55;
 #endif
 
 extern void openblas_warning(int verbose, const char * msg);
+#define FALLBACK_VERBOSE 1
+#define NEOVERSEN1_FALLBACK "OpenBLAS : Your OS does not support SVE instructions. OpenBLAS is using Neoverse N1 kernels as a fallback, which may give poorer performance.\n"
 
 #define NUM_CORETYPES   13
 
@@ -284,14 +286,16 @@ static gotoblas_t *get_coretype(void) {
           return &gotoblas_NEOVERSEN1;
 #ifndef NO_SVE
         case 0xd49:
-	  if (!(getauxval(AT_HWCAP) & HWCAP_SVE)) 
+	  if (!(getauxval(AT_HWCAP) & HWCAP_SVE)) {
+	    openblas_warning(FALLBACK_VERBOSE, NEOVERSEN1_FALLBACK);  
 	    return &gotoblas_NEOVERSEN1;
-	  else
+	  } else
             return &gotoblas_NEOVERSEN2;
 	case 0xd40:
-	  if (!(getauxval(AT_HWCAP) & HWCAP_SVE)) 
+	  if (!(getauxval(AT_HWCAP) & HWCAP_SVE)) {
+		  openblas_warning(FALLBACK_VERBOSE, NEOVERSEN1_FALLBACK);
 	    return &gotoblas_NEOVERSEN1;
-	  else
+      	  }else
 	    return &gotoblas_NEOVERSEV1;
 #endif
 	case 0xd05: // Cortex A55
