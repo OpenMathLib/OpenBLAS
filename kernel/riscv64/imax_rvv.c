@@ -42,12 +42,12 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define VMFGEVF_FLOAT           __riscv_vmfge_vf_f64m8_b8
 #define VFMVVF_FLOAT            __riscv_vfmv_v_f_f64m8
 #define VFMVVF_FLOAT_M1         __riscv_vfmv_v_f_f64m1
-#define VFMAXVV_FLOAT           __riscv_vfmax_vv_f64m8
+#define VFMAXVV_FLOAT_TU        __riscv_vfmax_vv_f64m8_tu
 #define VFIRSTM                 __riscv_vfirst_m_b8
 #define UINT_V_T                vuint64m8_t
-#define VIDV_MASK_UINT          __riscv_vid_v_u64m8_mu
+#define VIDV_MASK_UINT_TU       __riscv_vid_v_u64m8_tumu
 #define VIDV_UINT               __riscv_vid_v_u64m8
-#define VADDVX_MASK_UINT        __riscv_vadd_vx_u64m8_mu
+#define VADDVX_MASK_UINT_TU     __riscv_vadd_vx_u64m8_tumu
 #define VADDVX_UINT             __riscv_vadd_vx_u64m8
 #define VMVVX_UINT              __riscv_vmv_v_x_u64m8
 #define VFMVFS_FLOAT_M1         __riscv_vfmv_f_s_f64m1_f64
@@ -67,12 +67,12 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define VMFGEVF_FLOAT           __riscv_vmfge_vf_f32m8_b4
 #define VFMVVF_FLOAT            __riscv_vfmv_v_f_f32m8
 #define VFMVVF_FLOAT_M1         __riscv_vfmv_v_f_f32m1
-#define VFMAXVV_FLOAT           __riscv_vfmax_vv_f32m8
+#define VFMAXVV_FLOAT_TU        __riscv_vfmax_vv_f32m8_tu
 #define VFIRSTM                 __riscv_vfirst_m_b4
 #define UINT_V_T                vuint32m8_t
-#define VIDV_MASK_UINT          __riscv_vid_v_u32m8_mu
+#define VIDV_MASK_UINT_TU       __riscv_vid_v_u32m8_tumu
 #define VIDV_UINT               __riscv_vid_v_u32m8
-#define VADDVX_MASK_UINT        __riscv_vadd_vx_u32m8_mu
+#define VADDVX_MASK_UINT_TU     __riscv_vadd_vx_u32m8_tumu
 #define VADDVX_UINT             __riscv_vadd_vx_u32m8
 #define VMVVX_UINT              __riscv_vmv_v_x_u32m8
 #define VFMVFS_FLOAT_M1         __riscv_vfmv_f_s_f32m1_f32
@@ -104,11 +104,11 @@ BLASLONG CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x)
 
             //index where element greater than v_max
             mask = VMFLTVV_FLOAT(v_max, vx, vl);
-            v_max_index = VIDV_MASK_UINT(mask, v_max_index, vl);
-            v_max_index = VADDVX_MASK_UINT(mask, v_max_index, v_max_index, j, vl);
+            v_max_index = VIDV_MASK_UINT_TU(mask, v_max_index, vl);
+            v_max_index = VADDVX_MASK_UINT_TU(mask, v_max_index, v_max_index, j, vl);
 
             //update v_max and start_index j
-            v_max = VFMAXVV_FLOAT(v_max, vx, vl);
+            v_max = VFMAXVV_FLOAT_TU(v_max, v_max, vx, vl);
         }
 
     } else {
@@ -122,11 +122,11 @@ BLASLONG CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x)
 
             //index where element greater than v_max
             mask = VMFLTVV_FLOAT(v_max, vx, vl);
-            v_max_index = VIDV_MASK_UINT(mask, v_max_index, vl);
-            v_max_index = VADDVX_MASK_UINT(mask, v_max_index, v_max_index, j, vl);
+            v_max_index = VIDV_MASK_UINT_TU(mask, v_max_index, vl);
+            v_max_index = VADDVX_MASK_UINT_TU(mask, v_max_index, v_max_index, j, vl);
 
             //update v_max and start_index j
-            v_max = VFMAXVV_FLOAT(v_max, vx, vl);
+            v_max = VFMAXVV_FLOAT_TU(v_max, v_max, vx, vl);
         }
   
     }
