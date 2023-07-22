@@ -161,13 +161,13 @@
 *
          SRNAMT = 'SSYTD2'
          INFOT = 1
-         CALL SSYTD2( '/', 0, A, 1, D, E, TAU, W, 1, INFO )
+         CALL SSYTD2( '/', 0, A, 1, D, E, TAU, INFO )
          CALL CHKXER( 'SSYTD2', INFOT, NOUT, LERR, OK )
          INFOT = 2
-         CALL SSYTD2( 'U', -1, A, 1, D, E, TAU, W, 1, INFO )
+         CALL SSYTD2( 'U', -1, A, 1, D, E, TAU, INFO )
          CALL CHKXER( 'SSYTD2', INFOT, NOUT, LERR, OK )
          INFOT = 4
-         CALL SSYTD2( 'U', 2, A, 1, D, E, TAU, W, 1, INFO )
+         CALL SSYTD2( 'U', 2, A, 1, D, E, TAU, INFO )
          CALL CHKXER( 'SSYTD2', INFOT, NOUT, LERR, OK )
          NT = NT + 3
 *
