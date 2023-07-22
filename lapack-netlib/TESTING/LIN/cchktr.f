@@ -545,7 +545,7 @@
                   CALL CCOPY( N, X, 1, B( N+1 ), 1 )
                   CALL CSSCAL( N, BIGNUM, B( N+1 ), 1 )
                   CALL CLATRS3( UPLO, TRANS, DIAG, 'N', N, 2, A, LDA,
-     $                          B, MAX(1, N), SCALE3, RWORK, WORK, RWORK2,
+     $                          B, MAX(1, N), SCALE3, RWORK, RWORK2,
      $                          2*NMAX, INFO )
 *
 *                 Check error code from CLATRS3.
