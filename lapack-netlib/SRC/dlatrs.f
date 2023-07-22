@@ -261,6 +261,9 @@
       DOUBLE PRECISION   BIGNUM, GROW, REC, SMLNUM, SUMJ, TJJ, TJJS,
      $                   TMAX, TSCAL, USCAL, XBND, XJ, XMAX
 *     ..
+*     .. Local Arrays ..
+      DOUBLE PRECISION   WORK(1)
+*     ..
 *     .. External Functions ..
       LOGICAL            LSAME
       INTEGER            IDAMAX
@@ -362,7 +365,7 @@
 *              A is upper triangular.
 *
                DO J = 2, N
-                  TMAX = MAX( DLANGE( 'M', J-1, 1, A( 1, J ), 1, SUMJ ),
+                  TMAX = MAX( DLANGE( 'M', J-1, 1, A( 1, J ), 1, WORK ),
      $                        TMAX )
                END DO
             ELSE
@@ -371,7 +374,7 @@
 *
                DO J = 1, N - 1
                   TMAX = MAX( DLANGE( 'M', N-J, 1, A( J+1, J ), 1,
-     $                        SUMJ ), TMAX )
+     $                        WORK ), TMAX )
                END DO
             END IF
 *
