@@ -174,7 +174,8 @@
 *
 *        Compute Householder transform when M=1
 *
-         CALL ZLARFG( N, A, A( 1, MIN( 2, N ) ), LDA, T )
+         CALL ZLARFG( N, A( 1, 1 ), A( 1, MIN( 2, N ) ), LDA,
+     &                T( 1, 1 ) )
          T(1,1)=CONJG(T(1,1))
 *
       ELSE
