@@ -136,15 +136,13 @@ typedef struct blas_queue {
 #ifdef SMP_SERVER
 
 extern int blas_server_avail;
+extern int blas_omp_number_max;
 
 static __inline int num_cpu_avail(int level) {
 
 #ifdef USE_OPENMP
 int openmp_nthreads;
-	if (blas_num_threads_set == 0)
 	openmp_nthreads=omp_get_max_threads();
-	else
-	openmp_nthreads=blas_cpu_number;
 #endif
 
 #ifndef USE_OPENMP 
@@ -156,7 +154,13 @@ int openmp_nthreads;
       ) return 1;        
 
 #ifdef USE_OPENMP
-  if (blas_cpu_number != openmp_nthreads) {
+     if (openmp_nthreads > blas_omp_number_max){
+#ifdef DEBUG
+     fprintf(stderr,"WARNING - more OpenMP threads requested (%d) than available (%d)\n",openmp_nthreads,blas_omp_number_max);
+#endif
+     openmp_nthreads = blas_omp_number_max;
+     }
+     if (blas_cpu_number != openmp_nthreads) {
 	  goto_set_num_threads(openmp_nthreads);
   }
 #endif
