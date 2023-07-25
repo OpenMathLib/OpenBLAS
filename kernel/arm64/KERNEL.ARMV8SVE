@@ -57,7 +57,7 @@ CAMAXKERNEL  = zamax.S
 ZAMAXKERNEL  = zamax.S
 
 SAXPYKERNEL  = axpy.S
-DAXPYKERNEL  = axpy.S
+DAXPYKERNEL  = daxpy_thunderx2t99.S
 CAXPYKERNEL  = zaxpy.S
 ZAXPYKERNEL  = zaxpy.S
 
@@ -81,45 +81,35 @@ DGEMVTKERNEL = gemv_t.S
 CGEMVTKERNEL = zgemv_t.S
 ZGEMVTKERNEL = zgemv_t.S
 
+SASUMKERNEL    = sasum_thunderx2t99.c
+DASUMKERNEL    = dasum_thunderx2t99.c
+CASUMKERNEL    = casum_thunderx2t99.c
+ZASUMKERNEL    = zasum_thunderx2t99.c
 
-SASUMKERNEL    = asum.S
-DASUMKERNEL    = asum.S
-CASUMKERNEL    = casum.S
-ZASUMKERNEL    = zasum.S
+SCOPYKERNEL    = copy_thunderx2t99.c
+DCOPYKERNEL    = copy_thunderx2t99.c
+CCOPYKERNEL    = copy_thunderx2t99.c
+ZCOPYKERNEL    = copy_thunderx2t99.c
 
-SCOPYKERNEL    = copy.S
-DCOPYKERNEL    = copy.S
-CCOPYKERNEL    = copy.S
-ZCOPYKERNEL    = copy.S
+SSWAPKERNEL    = swap_thunderx2t99.S
+DSWAPKERNEL    = swap_thunderx2t99.S
+CSWAPKERNEL    = swap_thunderx2t99.S
+ZSWAPKERNEL    = swap_thunderx2t99.S
 
-SSWAPKERNEL    = swap.S
-DSWAPKERNEL    = swap.S
-CSWAPKERNEL    = swap.S
-ZSWAPKERNEL    = swap.S
+ISAMAXKERNEL   = iamax_thunderx2t99.c
+IDAMAXKERNEL   = iamax_thunderx2t99.c
+ICAMAXKERNEL   = izamax_thunderx2t99.c
+IZAMAXKERNEL   = izamax_thunderx2t99.c
 
-ISAMAXKERNEL   = iamax.S
-IDAMAXKERNEL   = iamax.S
-ICAMAXKERNEL   = izamax.S
-IZAMAXKERNEL   = izamax.S
+SNRM2KERNEL    = scnrm2_thunderx2t99.c
+DNRM2KERNEL    = dznrm2_thunderx2t99.c
+CNRM2KERNEL    = scnrm2_thunderx2t99.c
+ZNRM2KERNEL    = dznrm2_thunderx2t99.c
 
-SNRM2KERNEL    = nrm2.S
-DNRM2KERNEL    = nrm2.S
-CNRM2KERNEL    = znrm2.S
-ZNRM2KERNEL    = znrm2.S
-
-DDOTKERNEL     = dot.S
-ifneq ($(C_COMPILER), PGI)
-SDOTKERNEL     = ../generic/dot.c
-else
-SDOTKERNEL = dot.S
-endif
-ifneq ($(C_COMPILER), PGI)
-CDOTKERNEL     = zdot.S
-ZDOTKERNEL     = zdot.S
-else
-CDOTKERNEL = ../arm/zdot.c
-ZDOTKERNEL = ../arm/zdot.c
-endif
+DDOTKERNEL     = dot.c
+SDOTKERNEL     = dot.c
+CDOTKERNEL     = zdot_thunderx2t99.c
+ZDOTKERNEL     = zdot_thunderx2t99.c
 DSDOTKERNEL    = dot.S
 
 DGEMM_BETA     = dgemm_beta.S

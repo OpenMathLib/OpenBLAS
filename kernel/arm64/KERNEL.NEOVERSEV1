@@ -1,37 +1,5 @@
 include $(KERNELDIR)/KERNEL.ARMV8SVE
 
-DAXPYKERNEL  = daxpy_thunderx2t99.S
-
-SASUMKERNEL    = sasum_thunderx2t99.c
-DASUMKERNEL    = dasum_thunderx2t99.c
-CASUMKERNEL    = casum_thunderx2t99.c
-ZASUMKERNEL    = zasum_thunderx2t99.c
-
-SCOPYKERNEL    = copy_thunderx2t99.c
-DCOPYKERNEL    = copy_thunderx2t99.c
-CCOPYKERNEL    = copy_thunderx2t99.c
-ZCOPYKERNEL    = copy_thunderx2t99.c
-
-SSWAPKERNEL    = swap_thunderx2t99.S
-DSWAPKERNEL    = swap_thunderx2t99.S
-CSWAPKERNEL    = swap_thunderx2t99.S
-ZSWAPKERNEL    = swap_thunderx2t99.S
-
-ISAMAXKERNEL   = iamax_thunderx2t99.c
-IDAMAXKERNEL   = iamax_thunderx2t99.c
-ICAMAXKERNEL   = izamax_thunderx2t99.c
-IZAMAXKERNEL   = izamax_thunderx2t99.c
-
-SNRM2KERNEL    = scnrm2_thunderx2t99.c
-DNRM2KERNEL    = dznrm2_thunderx2t99.c
-CNRM2KERNEL    = scnrm2_thunderx2t99.c
-ZNRM2KERNEL    = dznrm2_thunderx2t99.c
-
-DDOTKERNEL     = dot.c
-SDOTKERNEL     = dot.c
-CDOTKERNEL     = zdot_thunderx2t99.c
-ZDOTKERNEL     = zdot_thunderx2t99.c
-
 CTRSMKERNEL_LN  = ../generic/trsm_kernel_LN.c
 CTRSMKERNEL_LT  = ../generic/trsm_kernel_LT.c
 CTRSMKERNEL_RN  = ../generic/trsm_kernel_RN.c
