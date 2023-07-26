@@ -1,5 +1,5 @@
 # Self-Hosted Github Action Runners on AWS via Cirun.io
-# Reference: https://docs.cirun.io/Reference/yml.html
+# Reference: https://docs.cirun.io/reference/yaml
 runners:
   - name: "aws-runner-graviton"
     # Cloud Provider: AWS
