@@ -53,7 +53,6 @@ extern void goto_set_num_threads(int nthreads);
 /* Global Parameter */
 extern int blas_cpu_number;
 extern int blas_num_threads;
-extern int blas_num_threads_set;
 extern int blas_omp_linked;
 
 #define BLAS_LEGACY	0x8000U
