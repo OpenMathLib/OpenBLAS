@@ -1,5 +1,6 @@
 /*********************************************************************/
 /* Copyright 2009, 2010 The University of Texas at Austin.           */
+/* Copyright 2023 The OpenBLAS Project                               */
 /* All rights reserved.                                              */
 /*                                                                   */
 /* Redistribution and use in source and binary forms, with or        */
@@ -109,6 +110,11 @@ extern gotoblas_t gotoblas_NEOVERSEN2;
 #else
 #define gotoblas_NEOVERSEN2 gotoblas_ARMV8
 #endif
+#ifdef DYN_ARMV8SVE
+extern gotoblas_t gotoblas_ARMV8SVE;
+#else
+#define gotoblas_ARMV8SVE gotoblas_ARMV8
+#endif
 #ifdef DYN_CORTEX_A55
 extern gotoblas_t  gotoblas_CORTEXA55;
 #else
@@ -128,9 +134,11 @@ extern gotoblas_t  gotoblas_NEOVERSEN1;
 #ifndef NO_SVE
 extern gotoblas_t  gotoblas_NEOVERSEV1;
 extern gotoblas_t  gotoblas_NEOVERSEN2;
+extern gotoblas_t  gotoblas_ARMV8SVE;
 #else
 #define gotoblas_NEOVERSEV1 gotoblas_ARMV8
 #define gotoblas_NEOVERSEN2 gotoblas_ARMV8
+#define gotoblas_ARMV8SVE   gotoblas_ARMV8
 #endif
 extern gotoblas_t  gotoblas_THUNDERX3T110;
 extern gotoblas_t  gotoblas_CORTEXA55;
@@ -140,7 +148,7 @@ extern void openblas_warning(int verbose, const char * msg);
 #define FALLBACK_VERBOSE 1
 #define NEOVERSEN1_FALLBACK "OpenBLAS : Your OS does not support SVE instructions. OpenBLAS is using Neoverse N1 kernels as a fallback, which may give poorer performance.\n"
 
-#define NUM_CORETYPES   13
+#define NUM_CORETYPES   16
 
 /*
  * In case asm/hwcap.h is outdated on the build system, make sure
@@ -173,6 +181,7 @@ static char *corename[] = {
   "neoversen2",
   "thunderx3t110",
   "cortexa55",
+  "armv8sve",
   "unknown"
 };
 
@@ -192,6 +201,7 @@ char *gotoblas_corename(void) {
   if (gotoblas == &gotoblas_NEOVERSEN2)   return corename[12];
   if (gotoblas == &gotoblas_THUNDERX3T110) return corename[13];
   if (gotoblas == &gotoblas_CORTEXA55)    return corename[14];
+  if (gotoblas == &gotoblas_ARMV8SVE)     return corename[15];
   return corename[NUM_CORETYPES];
 }
 
@@ -226,6 +236,7 @@ static gotoblas_t *force_coretype(char *coretype) {
     case 12: return (&gotoblas_NEOVERSEN2);
     case 13: return (&gotoblas_THUNDERX3T110);
     case 14: return (&gotoblas_CORTEXA55);
+    case 15: return (&gotoblas_ARMV8SVE);
   }
   snprintf(message, 128, "Core not found: %s\n", coretype);
   openblas_warning(1, message);
@@ -345,6 +356,12 @@ static gotoblas_t *get_coretype(void) {
       snprintf(coremsg, 128, "Unknown CPU model - implementer %x part %x\n",implementer,part);
       openblas_warning(1, coremsg);
   }
+#ifndef NO_SVE
+  if ((getauxval(AT_HWCAP) & HWCAP_SVE)) {
+    return &gotoblas_ARMV8SVE;
+  }
+#endif
+
   return NULL;
 #endif
 }
