@@ -160,8 +160,8 @@ DSYMMLCOPY_M    =  symm_lcopy_sve.c
 CGEMMKERNEL    =  cgemm_kernel_sve_v1x$(ZGEMM_UNROLL_N).S
 CTRMMKERNEL    =  ctrmm_kernel_sve_v1x$(ZGEMM_UNROLL_N).S
 
-CGEMMINCOPY    =  cgemm_ncopy_sve_v1.c
-CGEMMITCOPY    =  cgemm_tcopy_sve_v1.c
+CGEMMINCOPY    =  gemm_ncopy_complex_sve_v1x$(ZGEMM_UNROLL_N).c
+CGEMMITCOPY    =  gemm_tcopy_complex_sve_v1x$(ZGEMM_UNROLL_N).c
 CGEMMONCOPY    =  ../generic/zgemm_ncopy_$(ZGEMM_UNROLL_N).c
 CGEMMOTCOPY    =  ../generic/zgemm_tcopy_$(ZGEMM_UNROLL_N).c
 
@@ -184,8 +184,8 @@ CSYMMLCOPY_M    =  zsymm_lcopy_sve.c
 ZGEMMKERNEL    =  zgemm_kernel_sve_v1x$(ZGEMM_UNROLL_N).S
 ZTRMMKERNEL    =  ztrmm_kernel_sve_v1x$(ZGEMM_UNROLL_N).S
 
-ZGEMMINCOPY    =  zgemm_ncopy_sve_v1.c
-ZGEMMITCOPY    =  zgemm_tcopy_sve_v1.c
+ZGEMMINCOPY    =  gemm_ncopy_complex_sve_v1x$(ZGEMM_UNROLL_N).c
+ZGEMMITCOPY    =  gemm_tcopy_complex_sve_v1x$(ZGEMM_UNROLL_N).c
 ZGEMMONCOPY    =  ../generic/zgemm_ncopy_$(ZGEMM_UNROLL_N).c
 ZGEMMOTCOPY    =  ../generic/zgemm_tcopy_$(ZGEMM_UNROLL_N).c
 
