@@ -80,7 +80,7 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, BLASLONG posX, BLASLON
         gat_ind = svadd_m(cmp, gat_ind, lda_vec);
         gat_ind = svadd_m(svnot_z(pg, cmp) , gat_ind, 2);
         if (offset <= 0) {
-            svbool_t off_g = svwhilelt_b64((uint64_t)offset, (uint64_t)0LL);
+            svbool_t off_g = svwhilelt_b64((int64_t)offset, (int64_t)0LL);
             data_vec_imag = svneg_m(data_vec_imag, off_g, data_vec_imag);
         }
 
@@ -143,7 +143,7 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, BLASLONG posX, BLASLON
         gat_ind = svadd_m(cmp, gat_ind, lda_vec);
         gat_ind = svadd_m(svnot_z(pg, cmp) , gat_ind, 2);
         if (offset <= 0) {
-            svbool_t off_g = svwhilelt_b32((uint32_t)offset, (uint32_t)0);
+            svbool_t off_g = svwhilelt_b32((int32_t)offset, (int32_t)0);
             data_vec_imag = svneg_m(data_vec_imag, off_g, data_vec_imag);
         }
 
