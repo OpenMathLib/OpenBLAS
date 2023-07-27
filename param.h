@@ -3385,11 +3385,13 @@ is a big desktop or server with abundant cache rather than a phone or embedded d
 #define DGEMM_DEFAULT_UNROLL_M  4 // Actually 2VL (8) but kept separate to keep copies separate
 #define DGEMM_DEFAULT_UNROLL_N  8
 
-#define CGEMM_DEFAULT_UNROLL_M  8
+#define CGEMM_DEFAULT_UNROLL_M  2
 #define CGEMM_DEFAULT_UNROLL_N  4
+#define CGEMM_DEFAULT_UNROLL_MN 16
 
-#define ZGEMM_DEFAULT_UNROLL_M  4
+#define ZGEMM_DEFAULT_UNROLL_M  2
 #define ZGEMM_DEFAULT_UNROLL_N  4
+#define ZGEMM_DEFAULT_UNROLL_MN 16
 
 #define SGEMM_DEFAULT_P 128
 #define DGEMM_DEFAULT_P 160
