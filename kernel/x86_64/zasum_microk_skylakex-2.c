@@ -2,8 +2,9 @@
 #ifdef __NVCOMPILER
 #define NVCOMPVERS ( __NVCOMPILER_MAJOR__ * 100 + __NVCOMPILER_MINOR__ )
 #endif
-#if (( defined(__GNUC__)  && __GNUC__   > 6 && defined(__AVX512CD__)) || (defined(__clang__) && __clang_major__ >= 9)) || (defined(__NVCOMPILER) && NVCOMPVERS >= 2203 )
+#if (( defined(__GNUC__)  && __GNUC__   > 6 && defined(__AVX512CD__)) || (defined(__clang__) && __clang_major__ >= 9)) || (defined(__NVCOMPILER) && NVCOMPVERS >= 2309 )
 
+#if (!(defined(__NVCOMPILER) && NVCOMPVERS < 2309))
 
 #define HAVE_ZASUM_KERNEL 1
 
@@ -341,4 +342,5 @@ static FLOAT zasum_kernel(BLASLONG n, FLOAT *x)
 
     return sumf;
 }
+#endif
 #endif
