@@ -131,7 +131,7 @@ task:
   name: NeoverseN1-NVHPC
   arm_container:
     image: node:latest
-    cpu: 4
+    cpu: 1
   nvcompiler_cache:
     folder: /opt/nvidia
     populate_script:
