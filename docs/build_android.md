@@ -1,16 +1,14 @@
-## Prerequisites
-
 In addition to the Android NDK, you will need a C compiler on the build host as this is currently
 required by the OpenBLAS build environment.
 
 
-# Building with android NDK using clang compiler
+### Building with android NDK using clang compiler
 Around version 11 Android NDKs stopped supporting gcc, so you would need to use clang to compile OpenBLAS. clang is supported from OpenBLAS 0.2.20 version onwards. See below sections on how to build with clang for ARMV7 and ARMV8 targets. The same basic principles as described below for ARMV8 should also apply to building an x86 or x86_64 version (substitute something like NEHALEM for the target instead of ARMV8 and replace all the aarch64 in the toolchain paths obviously)
 "Historic" notes:
 Since version 19 the default toolchain is provided as a standalone toolchain, so building one yourself following [building a standalone toolchain](http://developer.android.com/ndk/guides/standalone_toolchain.html) should no longer be necessary.
 If you want to use static linking with an old NDK version older than about r17, you need to choose an API level below 23 currently due to NDK bug 272 (https://github.com/android-ndk/ndk/issues/272 , the libc.a lacks a definition of stderr) that will probably be fixed in r17 of the NDK.
 
-## Build ARMV7 with clang
+#### Build ARMV7 with clang
 ```
 # Set path to ndk-bundle
 export NDK_BUNDLE_DIR=/path/to/ndk-bundle
@@ -33,7 +31,7 @@ AR=${NDK_BUNDLE_DIR}/toolchains/arm-linux-androideabi-4.9/prebuilt/darwin-x86_64
 ```
 otherwise you may get a linker error complaining about a "malformed archive header name at 8" when the native OSX ar command was invoked instead. Note that with recent NDK versions, the AR tool may be named `llvm-ar` rather than what is assumed above. 
  
-## Build ARMV8 with clang
+#### Build ARMV8 with clang
 ```
 # Set path to ndk-bundle
 export NDK_BUNDLE_DIR=/path/to/ndk-bundle/
@@ -59,7 +57,7 @@ make HOSTCC=gcc CC=/opt/android-ndk-r23b/toolchains/llvm/prebuilt/linux-x86_64/b
 ```
 appears to be sufficient on Linux. On OSX, setting AR to the ar provided in the "bin" path of the NDK (probably llvm-ar) is also necessary.
 
-## Alternative script which was tested on OSX with NDK(21.3.6528147)
+#### Alternative script which was tested on OSX with NDK(21.3.6528147)
 This script will build openblas for 3 architecture (ARMV7,ARMV8,X86) and put them with `sudo make install` to `/opt/OpenBLAS/lib`.
 Of course you can also copy only the section that is of interest to you - also notice that the AR= line may need adapting to the
 name of the ar tool provided in your $TOOLCHAIN/bin - for example llvm-ar in some recent NDK versions.
@@ -116,7 +114,7 @@ Also you can find full list of target architectures in [TargetsList.txt](https:/
 ***
 anything below this line should be irrelevant nowadays unless you need to perform software archeology
 ***
-## Building OpenBLAS with very old gcc-based versions of the NDK, without Fortran
+#### Building OpenBLAS with very old gcc-based versions of the NDK, without Fortran
 
 The prebuilt Android NDK toolchains do not include Fortran, hence parts like LAPACK cannot be built. You can still build OpenBLAS without it. For instructions on how to build OpenBLAS with Fortran, see the [next section](#building-openblas-with-fortran).
 
@@ -155,7 +153,7 @@ here that you specified for building, otherwise errors may occur as it tries to 
 make PREFIX=/path/to/install-dir TARGET=... install
 ```
 
-## Building OpenBLAS with Fortran
+#### Building OpenBLAS with Fortran
 
 Instructions on how to build the GNU toolchains with Fortran can be found [here](https://github.com/buffer51/android-gfortran). The [Releases section](https://github.com/buffer51/android-gfortran/releases) provides prebuilt versions, use the standalone one.
 
@@ -172,7 +170,7 @@ make TARGET=ARMV8 BINARY=64 HOSTCC=gcc CC=aarch64-linux-android-gcc FC=aarch64-l
 
 As mentioned above you can leave off the `libs` argument here when building 0.2.20 and later, and you may want to add ARM_SOFTFP_ABI=1 when building for ARMV7.
 
-## Linking OpenBLAS (0.2.19 and earlier) for ARMV7
+#### Linking OpenBLAS (0.2.19 and earlier) for ARMV7
 
 If you are using `ndk-build`, you need to set the ABI to hard floating points in your Application.mk:
 ```
