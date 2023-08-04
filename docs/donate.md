@@ -1,14 +1,4 @@
-<hr noshade="noshade">
-<center>
-<a href="Home"> [Home]</a>
-<a href="Document"> [Document]</a>
-<a href="faq"> [FAQ]</a>
-<a href="publications"> [Publications]</a>
-<a href="download"> [Download]</a>
-<a href="Mailing-List">[Mailing List]</a>
-<a href="Donation">[Donation]</a>
-</center>
-<hr noshade="noshade">
+# Donations
 
 Thank you for the support.
 
@@ -17,8 +7,6 @@ You can read OpenBLAS statement of receipts and disbursement and cash balance on
 ## Fundraiser
 
 * [2013.8] [Testbed for OpenBLAS project](https://www.bountysource.com/fundraisers/443-testbed-for-openblas-project)
-
- * completed.
 
 Here is [Backer list](https://github.com/xianyi/OpenBLAS/blob/develop/BACKERS.md).
 

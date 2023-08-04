@@ -1,1 +1,0 @@
-On newer versions of Xcode and on arm64, you might need to compile with a newer macOS target (11.0) than the default (10.8) with `MACOSX_DEPLOYMENT_TARGET=11.0`, or switch your command-line tools to use an older SDK (e.g., [13.1](https://developer.apple.com/download/all/?q=Xcode%2013)).

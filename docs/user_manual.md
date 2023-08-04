@@ -1,11 +1,3 @@
-##### Table of Contents  
-[Compile the library](#compile-the-library)  
-[Link the library](#link-the-library)  
-[Code examples](#code-examples)  
-[Troubleshooting](#troubleshooting)  
-[BLAS reference manual](#blas-reference-manual)  
- 
-
 ## Compile the library
 ### Normal compile
   * type `make` to detect the CPU automatically.
@@ -47,7 +39,7 @@ Example:
 
 The default directory is /opt/OpenBLAS. Note that any flags passed to `make` during build should also be passed to `make install` to circumvent any install errors, i.e. some headers not being copied over correctly.
 
-For more information, please read [Installation Guide](Installation-Guide).
+For more information, please read [Installation Guide](install.md).
 
 ## Link the library
 
@@ -173,7 +165,7 @@ gcc -o time_dgemm time_dgemm.c /your/path/libopenblas.a
 
 ## Troubleshooting
 
-* Please read [Faq](https://github.com/xianyi/OpenBLAS/wiki/Faq) at first.
+* Please read [Faq](faq.md) at first.
 * Please use gcc version 4.6 and above to compile Sandy Bridge AVX kernels on Linux/MingW/BSD.
 * Please use Clang version 3.1 and above to compile the library on Sandy Bridge microarchitecture. The Clang 3.0 will generate the wrong AVX binary code.
 * The number of CPUs/Cores should less than or equal to 256. On Linux x86_64(amd64), there is experimental support for up to 1024 CPUs/Cores and 128 numa nodes if you build the library with BIGNUMA=1.
@@ -184,4 +176,4 @@ gcc -o time_dgemm time_dgemm.c /your/path/libopenblas.a
 
 If you want to understand every BLAS function and definition, please read [Intel MKL reference manual](https://software.intel.com/en-us/intel-mkl/documentation) or [netlib.org](http://netlib.org/blas/)
 
-Here are [OpenBLAS extension functions](OpenBLAS-Extensions)
+Here are [OpenBLAS extension functions](extensions.md)

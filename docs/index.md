@@ -1,23 +1,8 @@
-# OpenBLAS Wiki
+## Introduction
 
-<hr noshade="noshade">
-<center>
-<a href="wiki/Home"> [Home]</a>
-<a href="wiki/Document"> [Document]</a>
-<a href="wiki/faq"> [FAQ]</a>
-<a href="wiki/publications"> [Publications]</a>
-<a href="wiki/download"> [Download]</a>
-<a href="wiki/Mailing-List">[Mailing List]</a>
-<a href="wiki/Donation">[Donation]</a>
-</center>
-<hr noshade="noshade">
-
-[![Build Status](https://travis-ci.org/xianyi/OpenBLAS.svg?branch=develop)](https://travis-ci.org/xianyi/OpenBLAS)
-
-### Introduction
 OpenBLAS is an optimized Basic Linear Algebra Subprograms (BLAS) library based on [GotoBLAS2](https://www.tacc.utexas.edu/research-development/tacc-software/gotoblas2) 1.13 BSD version.
 
-### License
+## License
 
 OpenBLAS is licensed under the 3-clause BSD license. Full license text follows:
 
@@ -49,7 +34,7 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
 USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-### Acknowledgements
+## Acknowledgements
 
 This work is partially supported by 
 * Research and Development of Compiler System and Toolchain for Domestic CPU, National S&T Major Projects: Core Electronic Devices, High-end General Chips and Fundamental Software (No.2009ZX01036-001-002)
