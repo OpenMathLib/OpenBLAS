@@ -1087,8 +1087,9 @@ endif
 endif
 endif
 
-ifeq ($(F_COMPILER), GFORTRAN)
+ifeq ($(F_COMPILER), $(filter $(F_COMPILER),GFORTRAN FLANGNEW))
 CCOMMON_OPT += -DF_INTERFACE_GFORT
+ifeq ($(F_COMPILER), GFORTRAN)
 FCOMMON_OPT += -Wall
 # make single-threaded LAPACK calls thread-safe #1847
 FCOMMON_OPT += -frecursive
@@ -1099,6 +1100,7 @@ ifneq ($(NOFORTRAN), 1)
 ifneq ($(NOFORTRAN), 2)
 ifneq ($(NO_LAPACK), 1)
 EXTRALIB += -lgfortran
+endif
 endif
 endif
 endif
