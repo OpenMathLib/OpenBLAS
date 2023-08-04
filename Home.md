@@ -1,0 +1,56 @@
+# OpenBLAS Wiki
+
+<hr noshade="noshade">
+<center>
+<a href="wiki/Home"> [Home]</a>
+<a href="wiki/Document"> [Document]</a>
+<a href="wiki/faq"> [FAQ]</a>
+<a href="wiki/publications"> [Publications]</a>
+<a href="wiki/download"> [Download]</a>
+<a href="wiki/Mailing-List">[Mailing List]</a>
+<a href="wiki/Donation">[Donation]</a>
+</center>
+<hr noshade="noshade">
+
+[![Build Status](https://travis-ci.org/xianyi/OpenBLAS.svg?branch=develop)](https://travis-ci.org/xianyi/OpenBLAS)
+
+### Introduction
+OpenBLAS is an optimized Basic Linear Algebra Subprograms (BLAS) library based on [GotoBLAS2](https://www.tacc.utexas.edu/research-development/tacc-software/gotoblas2) 1.13 BSD version.
+
+### License
+
+OpenBLAS is licensed under the 3-clause BSD license. Full license text follows:
+
+Copyright (c) 2011-2015, The OpenBLAS Project  
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are
+met:
+
+   1. Redistributions of source code must retain the above copyright
+      notice, this list of conditions and the following disclaimer.
+   2. Redistributions in binary form must reproduce the above copyright
+      notice, this list of conditions and the following disclaimer in
+      the documentation and/or other materials provided with the
+      distribution.
+   3. Neither the name of the OpenBLAS project nor the names of
+      its contributors may be used to endorse or promote products
+      derived from this software without specific prior written permission.
+ 
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ARE DISCLAIMED. IN NO EVENT SHALL THE OPENBLAS PROJECT OR CONTRIBUTORS BE
+LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
+USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+### Acknowledgements
+
+This work is partially supported by 
+* Research and Development of Compiler System and Toolchain for Domestic CPU, National S&T Major Projects: Core Electronic Devices, High-end General Chips and Fundamental Software (No.2009ZX01036-001-002)
+* National High-tech R&D Program of China (Grant No.2012AA010903)
