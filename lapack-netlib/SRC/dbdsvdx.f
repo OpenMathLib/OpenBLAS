@@ -45,7 +45,7 @@
 *>
 *>  Given an upper bidiagonal B with diagonal D = [ d_1 d_2 ... d_N ]
 *>  and superdiagonal E = [ e_1 e_2 ... e_N-1 ], DBDSVDX computes the
-*>  singular value decompositon of B through the eigenvalues and
+*>  singular value decomposition of B through the eigenvalues and
 *>  eigenvectors of the N*2-by-N*2 tridiagonal matrix
 *>
 *>        |  0  d_1                |
@@ -165,7 +165,7 @@
 *>
 *> \param[out] Z
 *> \verbatim
-*>          Z is DOUBLE PRECISION array, dimension (2*N,K) )
+*>          Z is DOUBLE PRECISION array, dimension (2*N,K)
 *>          If JOBZ = 'V', then if INFO = 0 the first NS columns of Z
 *>          contain the singular vectors of the matrix B corresponding to
 *>          the selected singular values, with U in rows 1 to N and V
@@ -218,18 +218,15 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date June 2016
-*
 *> \ingroup doubleOTHEReigen
 *
 *  =====================================================================
       SUBROUTINE DBDSVDX( UPLO, JOBZ, RANGE, N, D, E, VL, VU, IL, IU,
      $                    NS, S, Z, LDZ, WORK, IWORK, INFO)
 *
-*  -- LAPACK driver routine (version 3.8.0) --
+*  -- LAPACK driver routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2017
 *
 *     .. Scalar Arguments ..
       CHARACTER          JOBZ, RANGE, UPLO

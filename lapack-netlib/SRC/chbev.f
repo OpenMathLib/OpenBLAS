@@ -144,18 +144,15 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
-*
 *> \ingroup complexOTHEReigen
 *
 *  =====================================================================
       SUBROUTINE CHBEV( JOBZ, UPLO, N, KD, AB, LDAB, W, Z, LDZ, WORK,
      $                  RWORK, INFO )
 *
-*  -- LAPACK driver routine (version 3.7.0) --
+*  -- LAPACK driver routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
 *
 *     .. Scalar Arguments ..
       CHARACTER          JOBZ, UPLO
@@ -223,9 +220,9 @@
 *
       IF( N.EQ.1 ) THEN
          IF( LOWER ) THEN
-            W( 1 ) = AB( 1, 1 )
+            W( 1 ) = REAL( AB( 1, 1 ) )
          ELSE
-            W( 1 ) = AB( KD+1, 1 )
+            W( 1 ) = REAL( AB( KD+1, 1 ) )
          END IF
          IF( WANTZ )
      $      Z( 1, 1 ) = ONE

@@ -36,10 +36,6 @@
 /* or implied, of The University of Texas at Austin.                 */
 /*********************************************************************/
 
-/* This kernel was found to give wrong results when used for ISMIN/ISAMIN
-   with increment != 1, although it appears to be correct for corresponding
-   MAX operations. See issue 2116 */
-
 #define ASSEMBLER
 #include "common.h"
 
@@ -55,9 +51,20 @@
 #define MAXPS	maxps
 #define MAXSS	maxss
 #ifdef USE_MIN
+#undef MAXPS
+#undef MAXSS
 #define MAXPS	minps
 #define MAXSS	minss
 #endif
+
+.macro LOAD_AND_COMPARE_TO_MXX REG
+	movss	0 * SIZE(X), \REG
+	addq	INCX, X
+#ifdef USE_ABS
+	andps	 %xmm15, \REG
+#endif
+	cmpeqss	%xmm0, \REG
+.endm
 
 #include "l1param.h"
 
@@ -830,61 +837,14 @@
 	ALIGN_4
 
 .L93:
-	movss	0 * SIZE(X), %xmm1
-	addq	INCX, X
-#ifdef USE_ABS
-	andps	 %xmm15, %xmm1
-#endif
-	cmpeqss	%xmm0, %xmm1
-
-	movss	0 * SIZE(X), %xmm2
-	addq	INCX, X
-#ifdef USE_ABS
-	andps	 %xmm15, %xmm2
-#endif
-	cmpeqss	%xmm0, %xmm2
-
-	movss	0 * SIZE(X), %xmm3
-	addq	INCX, X
-#ifdef USE_ABS
-	andps	 %xmm15, %xmm3
-#endif
-	cmpeqss	%xmm0, %xmm3
-
-	movss	0 * SIZE(X), %xmm4
-	addq	INCX, X
-#ifdef USE_ABS
-	andps	 %xmm15, %xmm4
-#endif
-	cmpeqss	%xmm0, %xmm4
-
-	movss	0 * SIZE(X), %xmm5
-	addq	INCX, X
-#ifdef USE_ABS
-	andps	 %xmm15, %xmm5
-#endif
-	cmpeqps	%xmm0, %xmm5
-
-	movss	0 * SIZE(X), %xmm6
-	addq	INCX, X
-#ifdef USE_ABS
-	andps	 %xmm15, %xmm6
-#endif
-	cmpeqss	%xmm0, %xmm6
-
-	movss	0 * SIZE(X), %xmm7
-	addq	INCX, X
-#ifdef USE_ABS
-	andps	 %xmm15, %xmm7
-#endif
-	cmpeqss	%xmm0, %xmm7
-
-	movss	0 * SIZE(X), %xmm8
-	addq	INCX, X
-#ifdef USE_ABS
-	andps	 %xmm15, %xmm8
-#endif
-	cmpeqss	%xmm0, %xmm8
+  LOAD_AND_COMPARE_TO_MXX %xmm1
+  LOAD_AND_COMPARE_TO_MXX %xmm2
+  LOAD_AND_COMPARE_TO_MXX %xmm3
+  LOAD_AND_COMPARE_TO_MXX %xmm4
+  LOAD_AND_COMPARE_TO_MXX %xmm5
+  LOAD_AND_COMPARE_TO_MXX %xmm6
+  LOAD_AND_COMPARE_TO_MXX %xmm7
+  LOAD_AND_COMPARE_TO_MXX %xmm8
 
 	orps	%xmm2, %xmm1
 	orps	%xmm4, %xmm3

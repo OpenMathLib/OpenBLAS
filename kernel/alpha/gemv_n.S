@@ -38,7 +38,7 @@
 
 #define ASSEMBLER
 #include "common.h"
-#include "version.h"
+
 
 #define STACKSIZE     64
 #define PREFETCHSIZE  32

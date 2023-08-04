@@ -41,7 +41,7 @@
 *>
 *> T must be in Schur canonical form, that is, block upper triangular
 *> with 1-by-1 and 2-by-2 diagonal blocks; each 2-by-2 diagonal block
-*> has its diagonal elemnts equal and its off-diagonal elements of
+*> has its diagonal elements equal and its off-diagonal elements of
 *> opposite sign.
 *> \endverbatim
 *
@@ -130,18 +130,15 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
-*
 *> \ingroup doubleOTHERauxiliary
 *
 *  =====================================================================
       SUBROUTINE DLAEXC( WANTQ, N, T, LDT, Q, LDQ, J1, N1, N2, WORK,
      $                   INFO )
 *
-*  -- LAPACK auxiliary routine (version 3.7.0) --
+*  -- LAPACK auxiliary routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
 *
 *     .. Scalar Arguments ..
       LOGICAL            WANTQ

@@ -4,11 +4,21 @@
 #else
 #include "config_kernel.h"
 #endif
+#if (defined(__WIN32__) || defined(__WIN64__) || defined(__CYGWIN32__) || defined(__CYGWIN64__) || defined(_WIN32) || defined(_WIN64)) && defined(__64BIT__)
+typedef long long BLASLONG;
+typedef unsigned long long BLASULONG;
+#else
+typedef long BLASLONG;
+typedef unsigned long BLASULONG;
+#endif
+
 #include "param.h"
 
 int main(int argc, char **argv) {
 
   if ( (argc <= 1) || ((argc >= 2) && (*argv[1] == '0'))) {
+    printf("SBGEMM_UNROLL_M=%d\n", SBGEMM_DEFAULT_UNROLL_M);
+    printf("SBGEMM_UNROLL_N=%d\n", SBGEMM_DEFAULT_UNROLL_N);
     printf("SGEMM_UNROLL_M=%d\n", SGEMM_DEFAULT_UNROLL_M);
     printf("SGEMM_UNROLL_N=%d\n", SGEMM_DEFAULT_UNROLL_N);
     printf("DGEMM_UNROLL_M=%d\n", DGEMM_DEFAULT_UNROLL_M);

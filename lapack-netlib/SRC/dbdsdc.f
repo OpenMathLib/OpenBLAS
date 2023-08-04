@@ -45,13 +45,6 @@
 *> respectively. DBDSDC can be used to compute all singular values,
 *> and optionally, singular vectors or singular vectors in compact form.
 *>
-*> This code makes very mild assumptions about floating point
-*> arithmetic. It will work on machines with a guard digit in
-*> add/subtract, or on those binary machines without guard digits
-*> which subtract like the Cray X-MP, Cray Y-MP, Cray C-90, or Cray-2.
-*> It could conceivably fail on hexadecimal or decimal machines
-*> without guard digits, but we know of none.  See DLASD3 for details.
-*>
 *> The code currently calls DLASDQ if singular values only are desired.
 *> However, it can be slightly modified to compute singular values
 *> using the divide and conquer method.
@@ -191,8 +184,6 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date June 2016
-*
 *> \ingroup auxOTHERcomputational
 *
 *> \par Contributors:
@@ -205,10 +196,9 @@
       SUBROUTINE DBDSDC( UPLO, COMPQ, N, D, E, U, LDU, VT, LDVT, Q, IQ,
      $                   WORK, IWORK, INFO )
 *
-*  -- LAPACK computational routine (version 3.7.1) --
+*  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     June 2016
 *
 *     .. Scalar Arguments ..
       CHARACTER          COMPQ, UPLO

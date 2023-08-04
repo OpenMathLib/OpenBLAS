@@ -112,18 +112,15 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
-*
 *> \ingroup complex16_lin
 *
 *  =====================================================================
       SUBROUTINE ZPBT01( UPLO, N, KD, A, LDA, AFAC, LDAFAC, RWORK,
      $                   RESID )
 *
-*  -- LAPACK test routine (version 3.7.0) --
+*  -- LAPACK test routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
 *
 *     .. Scalar Arguments ..
       CHARACTER          UPLO
@@ -204,7 +201,8 @@
 *
 *           Compute the (K,K) element of the result.
 *
-            AKK = ZDOTC( KLEN+1, AFAC( KC, K ), 1, AFAC( KC, K ), 1 )
+            AKK = DBLE(
+     $         ZDOTC( KLEN+1, AFAC( KC, K ), 1, AFAC( KC, K ), 1 ) )
             AFAC( KD+1, K ) = AKK
 *
 *           Compute the rest of column K.
@@ -231,7 +229,7 @@
 *
 *           Scale column K by the diagonal element.
 *
-            AKK = AFAC( 1, K )
+            AKK = DBLE( AFAC( 1, K ) )
             CALL ZDSCAL( KLEN+1, AKK, AFAC( 1, K ), 1 )
 *
    40    CONTINUE

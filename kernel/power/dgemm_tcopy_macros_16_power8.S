@@ -38,7 +38,11 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 * Macros for N=4 and M=16
 **********************************************************************************************/
 
+#if defined(_AIX)
+define(`COPY_4x16', `
+#else
 .macro COPY_4x16
+#endif
 
 	lxvd2x		vs32,	o0,	A0
 	lxvd2x		vs33,	o16,	A0
@@ -140,14 +144,22 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	stxvd2x		vs10,	o32,	T1
 	stxvd2x		vs11,	o48,	T1
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
 
 /**********************************************************************************************
 * Macros for N=4 and M=8
 **********************************************************************************************/
 
+#if defined(_AIX)
+define(`COPY_4x8', `
+#else
 .macro COPY_4x8
+#endif
 
 	lxvd2x		vs32,	o0,	A0
 	lxvd2x		vs33,	o16,	A0
@@ -205,14 +217,22 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	stxvd2x		vs46,	o32,	T1
 	stxvd2x		vs47,	o48,	T1
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
 
 /**********************************************************************************************
 * Macros for N=4 and M=4
 **********************************************************************************************/
 
+#if defined(_AIX)
+define(`COPY_4x4', `
+#else
 .macro COPY_4x4
+#endif
 
 	lxvd2x		vs32,	o0,	A0
 	lxvd2x		vs33,	o16,	A0
@@ -250,14 +270,22 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	stxvd2x		vs38,	o32,	T1
 	stxvd2x		vs39,	o48,	T1
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
 
 /**********************************************************************************************
 * Macros for N=4 and M=2
 **********************************************************************************************/
 
+#if defined(_AIX)
+define(`COPY_4x2', `
+#else
 .macro COPY_4x2
+#endif
 
 	lxvd2x		vs32,	o0,	A0
 	addi		A0,	A0,	16
@@ -285,14 +313,22 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	stxvd2x		vs35,	o48,	T1
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
 
 /**********************************************************************************************
 * Macros for N=4 and M=1
 **********************************************************************************************/
 
+#if defined(_AIX)
+define(`COPY_4x1', `
+#else
 .macro COPY_4x1
+#endif
 
 	lxsdx		vs32,	o0,	A0
 	addi		A0,	A0,	8
@@ -322,14 +358,22 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	stxsdx		vs35,	o8,	T1
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
 
 /**********************************************************************************************
 * Macros for N=2 and M=16
 **********************************************************************************************/
 
+#if defined(_AIX)
+define(`COPY_2x16', `
+#else
 .macro COPY_2x16
+#endif
 
 	lxvd2x		vs32,	o0,	A0
 	lxvd2x		vs33,	o16,	A0
@@ -383,14 +427,22 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	stxvd2x		vs46,	o32,	T1
 	stxvd2x		vs47,	o48,	T1
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
 
 /**********************************************************************************************
 * Macros for N=2 and M=8
 **********************************************************************************************/
 
+#if defined(_AIX)
+define(`COPY_2x8', `
+#else
 .macro COPY_2x8
+#endif
 
 	lxvd2x		vs32,	o0,	A0
 	lxvd2x		vs33,	o16,	A0
@@ -420,14 +472,22 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	stxvd2x		vs38,	o32,	T1
 	stxvd2x		vs39,	o48,	T1
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
 
 /**********************************************************************************************
 * Macros for N=2 and M=4
 **********************************************************************************************/
 
+#if defined(_AIX)
+define(`COPY_2x4', `
+#else
 .macro COPY_2x4
+#endif
 
 	lxvd2x		vs32,	o0,	A0
 	lxvd2x		vs33,	o16,	A0
@@ -447,14 +507,22 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	stxvd2x		vs34,	o32,	T1
 	stxvd2x		vs35,	o48,	T1
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
 
 /**********************************************************************************************
 * Macros for N=2 and M=2
 **********************************************************************************************/
 
+#if defined(_AIX)
+define(`COPY_2x2', `
+#else
 .macro COPY_2x2
+#endif
 
 	lxvd2x		vs32,	o0,	A0
 	addi		A0,	A0,	16
@@ -470,14 +538,22 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	stxvd2x		vs33,	o16,	T1
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
 
 /**********************************************************************************************
 * Macros for N=2 and M=1
 **********************************************************************************************/
 
+#if defined(_AIX)
+define(`COPY_2x1', `
+#else
 .macro COPY_2x1
+#endif
 
 	lxsdx		vs32,	o0,	A0
 	addi		A0,	A0,	8
@@ -493,14 +569,22 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	stxsdx		vs33,	o8,	T1
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
 
 /**********************************************************************************************
 * Macros for N=1 and M=16
 **********************************************************************************************/
 
+#if defined(_AIX)
+define(`COPY_1x16', `
+#else
 .macro COPY_1x16
+#endif
 
 	lxvd2x		vs32,	o0,	A0
 	lxvd2x		vs33,	o16,	A0
@@ -528,14 +612,22 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	stxvd2x		vs38,	o32,	T1
 	stxvd2x		vs39,	o48,	T1
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
 
 /**********************************************************************************************
 * Macros for N=1 and M=8
 **********************************************************************************************/
 
+#if defined(_AIX)
+define(`COPY_1x8', `
+#else
 .macro COPY_1x8
+#endif
 
 	lxvd2x		vs32,	o0,	A0
 	lxvd2x		vs33,	o16,	A0
@@ -551,14 +643,22 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	stxvd2x		vs34,	o32,	T1
 	stxvd2x		vs35,	o48,	T1
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
 
 /**********************************************************************************************
 * Macros for N=1 and M=4
 **********************************************************************************************/
 
+#if defined(_AIX)
+define(`COPY_1x4', `
+#else
 .macro COPY_1x4
+#endif
 
 	lxvd2x		vs32,	o0,	A0
 	lxvd2x		vs33,	o16,	A0
@@ -570,14 +670,22 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	stxvd2x		vs32,	o0,	T1
 	stxvd2x		vs33,	o16,	T1
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
 
 /**********************************************************************************************
 * Macros for N=1 and M=2
 **********************************************************************************************/
 
+#if defined(_AIX)
+define(`COPY_1x2', `
+#else
 .macro COPY_1x2
+#endif
 
 	lxvd2x		vs32,	o0,	A0
 	addi		A0,	A0,	16
@@ -587,14 +695,22 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	stxvd2x		vs32,	o0,	T1
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 
 
 /**********************************************************************************************
 * Macros for N=1 and M=1
 **********************************************************************************************/
 
+#if defined(_AIX)
+define(`COPY_1x1', `
+#else
 .macro COPY_1x1
+#endif
 
 	lxsdx		vs32,	o0,	A0
 	addi		A0,	A0,	8
@@ -604,5 +720,9 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	stxsdx		vs32,	o0,	T1
 
+#if defined(_AIX)
+')
+#else
 .endm
+#endif
 

@@ -49,9 +49,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define pCRow3		x15
 #define pA		x16
 #define alpha		x17
-#define temp		x18
+//#define temp		x18
 #define tempOffset	x19
 #define tempK		x20
+#define temp		x21
 
 #define alpha0		d10
 #define alphaV0		v10.d[0]

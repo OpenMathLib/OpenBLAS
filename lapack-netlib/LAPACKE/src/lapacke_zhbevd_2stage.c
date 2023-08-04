@@ -28,7 +28,6 @@
 *****************************************************************************
 * Contents: Native high-level C interface to LAPACK function zhbevd_2stage
 * Author: Intel Corporation
-* Generated December 2016
 *****************************************************************************/
 
 #include "lapacke_utils.h"
@@ -67,7 +66,7 @@ lapack_int LAPACKE_zhbevd_2stage( int matrix_layout, char jobz, char uplo, lapac
     if( info != 0 ) {
         goto exit_level_0;
     }
-    liwork = (lapack_int)iwork_query;
+    liwork = iwork_query;
     lrwork = (lapack_int)rwork_query;
     lwork = LAPACK_Z2INT( work_query );
     /* Allocate memory for work arrays */

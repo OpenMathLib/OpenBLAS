@@ -79,9 +79,9 @@
 *>          = 9: maximum size of the subproblems at the bottom of the
 *>               computation tree in the divide-and-conquer algorithm
 *>               (used by xGELSD and xGESDD)
-*>          =10: ieee NaN arithmetic can be trusted not to trap
+*>          =10: ieee infinity and NaN arithmetic can be trusted not to trap
 *>          =11: infinity arithmetic can be trusted not to trap
-*>          12 <= ISPEC <= 16:
+*>          12 <= ISPEC <= 17:
 *>               xHSEQR or related subroutines,
 *>               see IPARMQ for detailed explanation
 *> \endverbatim
@@ -132,8 +132,6 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date November 2017
-*
 *> \ingroup OTHERauxiliary
 *
 *> \par Further Details:
@@ -162,10 +160,9 @@
 *  =====================================================================
       INTEGER FUNCTION ILAENV( ISPEC, NAME, OPTS, N1, N2, N3, N4 )
 *
-*  -- LAPACK auxiliary routine (version 3.8.0) --
+*  -- LAPACK auxiliary routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2017
 *
 *     .. Scalar Arguments ..
       CHARACTER*( * )    NAME, OPTS
@@ -189,7 +186,7 @@
 *     .. Executable Statements ..
 *
       GO TO ( 10, 10, 10, 80, 90, 100, 110, 120,
-     $        130, 140, 150, 160, 160, 160, 160, 160)ISPEC
+     $        130, 140, 150, 160, 160, 160, 160, 160, 160)ISPEC
 *
 *     Invalid value for ISPEC
 *
@@ -271,7 +268,16 @@
 *
       NB = 1
 *
-      IF( C2.EQ.'GE' ) THEN
+      IF( SUBNAM(2:6).EQ.'LAORH' ) THEN
+*
+*        This is for *LAORHR_GETRFNP routine
+*
+         IF( SNAME ) THEN
+             NB = 32
+         ELSE
+             NB = 32
+         END IF
+      ELSE IF( C2.EQ.'GE' ) THEN
          IF( C3.EQ.'TRF' ) THEN
             IF( SNAME ) THEN
                NB = 64
@@ -463,6 +469,15 @@
             ELSE
                NB = 64
             END IF
+         ELSE IF( C3.EQ.'SYL' ) THEN
+*           The upper bound is to prevent overly aggressive scaling.
+            IF( SNAME ) THEN
+               NB = MIN( MAX( 48, INT( ( MIN( N1, N2 ) * 16 ) / 100) ),
+     $                   240 )
+            ELSE
+               NB = MIN( MAX( 24, INT( ( MIN( N1, N2 ) * 8 ) / 100) ),
+     $                   80 )
+            END IF
          END IF
       ELSE IF( C2.EQ.'LA' ) THEN
          IF( C3.EQ.'UUM' ) THEN
@@ -470,6 +485,12 @@
                NB = 64
             ELSE
                NB = 64
+            END IF
+         ELSE IF( C3.EQ.'TRS' ) THEN
+            IF( SNAME ) THEN
+               NB = 32
+            ELSE
+               NB = 32
             END IF
          END IF
       ELSE IF( SNAME .AND. C2.EQ.'ST' ) THEN
@@ -677,7 +698,7 @@
 *
   140 CONTINUE
 *
-*     ISPEC = 10: ieee NaN arithmetic can be trusted not to trap
+*     ISPEC = 10: ieee and infinity NaN arithmetic can be trusted not to trap
 *
 *     ILAENV = 0
       ILAENV = 1
@@ -688,7 +709,7 @@
 *
   150 CONTINUE
 *
-*     ISPEC = 11: infinity arithmetic can be trusted not to trap
+*     ISPEC = 11: ieee infinity arithmetic can be trusted not to trap
 *
 *     ILAENV = 0
       ILAENV = 1
@@ -699,7 +720,7 @@
 *
   160 CONTINUE
 *
-*     12 <= ISPEC <= 16: xHSEQR or related subroutines.
+*     12 <= ISPEC <= 17: xHSEQR or related subroutines.
 *
       ILAENV = IPARMQ( ISPEC, NAME, OPTS, N1, N2, N3, N4 )
       RETURN

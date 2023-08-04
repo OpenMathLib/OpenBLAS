@@ -46,10 +46,10 @@ static void __inline blas_lock(volatile BLASULONG *address){
 	   "      .machine \"any\" ;"
 	   "0:    lwarx %0,0, %1 ;"
 	   "      cmpwi  0,%0,0;"
-	   "      bne 1f;"
+	   "      bne one%=;"
 	   "      stwcx. %2,0, %1 ;"
 	   "      bne- 0b;"
-	   "1:    "
+	   "one%=:    "
 	: "=&r"(ret)
 	: "r"(address), "r" (val)
 	: "cr0", "memory");

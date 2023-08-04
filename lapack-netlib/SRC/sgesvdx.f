@@ -254,8 +254,6 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date June 2016
-*
 *> \ingroup realGEsing
 *
 *  =====================================================================
@@ -263,10 +261,9 @@
      $                    IL, IU, NS, S, U, LDU, VT, LDVT, WORK,
      $                    LWORK, IWORK, INFO )
 *
-*  -- LAPACK driver routine (version 3.8.0) --
+*  -- LAPACK driver routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     June 2016
 *
 *     .. Scalar Arguments ..
       CHARACTER          JOBU, JOBVT, RANGE

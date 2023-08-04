@@ -187,7 +187,7 @@
 *>                                              DSTEMR('V', 'I')
 *>
 *> Tests 29 through 34 are disable at present because DSTEMR
-*> does not handle partial specturm requests.
+*> does not handle partial spectrum requests.
 *>
 *> (29)    | S - Z D Z' | / ( |S| n ulp )    DSTEMR('V', 'I')
 *>
@@ -384,7 +384,7 @@
 *> \verbatim
 *>          D1 is DOUBLE PRECISION array of
 *>                             dimension( max(NN) )
-*>          The eigenvalues of A, as computed by DSTEQR simlutaneously
+*>          The eigenvalues of A, as computed by DSTEQR simultaneously
 *>          with Z.  On exit, the eigenvalues in D1 correspond with the
 *>          matrix in A.
 *> \endverbatim
@@ -602,8 +602,6 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
-*
 *> \ingroup double_eig
 *
 *  =====================================================================
@@ -612,10 +610,9 @@
      $                   WA1, WA2, WA3, WR, U, LDU, V, VP, TAU, Z, WORK,
      $                   LWORK, IWORK, LIWORK, RESULT, INFO )
 *
-*  -- LAPACK test routine (version 3.7.0) --
+*  -- LAPACK test routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
 *
 *     .. Scalar Arguments ..
       INTEGER            INFO, LDA, LDU, LIWORK, LWORK, NOUNIT, NSIZES,
@@ -669,10 +666,10 @@
       EXTERNAL           ILAENV, DLAMCH, DLARND, DSXT1
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           DCOPY, DLABAD, DLACPY, DLASET, DLASUM, DLATMR,
-     $                   DLATMS, DOPGTR, DORGTR, DPTEQR, DSPT21, DSPTRD,
-     $                   DSTEBZ, DSTECH, DSTEDC, DSTEMR, DSTEIN, DSTEQR,
-     $                   DSTERF, DSTT21, DSTT22, DSYT21, DSYTRD, XERBLA,
+      EXTERNAL           DCOPY, DLACPY, DLASET, DLASUM, DLATMR, DLATMS,
+     $                   DOPGTR, DORGTR, DPTEQR, DSPT21, DSPTRD, DSTEBZ,
+     $                   DSTECH, DSTEDC, DSTEMR, DSTEIN, DSTEQR, DSTERF,
+     $                   DSTT21, DSTT22, DSYT21, DSYTRD, XERBLA,
      $                   DSYTRD_2STAGE
 *     ..
 *     .. Intrinsic Functions ..
@@ -740,7 +737,6 @@
 *
       UNFL = DLAMCH( 'Safe minimum' )
       OVFL = ONE / UNFL
-      CALL DLABAD( UNFL, OVFL )
       ULP = DLAMCH( 'Epsilon' )*DLAMCH( 'Base' )
       ULPINV = ONE / ULP
       LOG2UI = INT( LOG( ULPINV ) / LOG( TWO ) )
@@ -999,8 +995,8 @@
 *           the one from above. Compare it with D1 computed 
 *           using the 1-stage.
 *
-            CALL DLASET( 'Full', N, 1, ZERO, ZERO, SD, 1 )
-            CALL DLASET( 'Full', N, 1, ZERO, ZERO, SE, 1 )
+            CALL DLASET( 'Full', N, 1, ZERO, ZERO, SD, N )
+            CALL DLASET( 'Full', N, 1, ZERO, ZERO, SE, N )
             CALL DLACPY( "U", N, N, A, LDA, V, LDU )
             LH = MAX(1, 4*N)
             LW = LWORK - LH
@@ -1032,8 +1028,8 @@
 *           the one from above. Compare it with D1 computed 
 *           using the 1-stage. 
 *
-            CALL DLASET( 'Full', N, 1, ZERO, ZERO, SD, 1 )
-            CALL DLASET( 'Full', N, 1, ZERO, ZERO, SE, 1 )
+            CALL DLASET( 'Full', N, 1, ZERO, ZERO, SD, N )
+            CALL DLASET( 'Full', N, 1, ZERO, ZERO, SE, N )
             CALL DLACPY( "L", N, N, A, LDA, V, LDU )
             CALL DSYTRD_2STAGE( 'N', "L", N, V, LDU, SD, SE, TAU, 
      $                   WORK, LH, WORK( LH+1 ), LW, IINFO )
@@ -1057,7 +1053,6 @@
                   GO TO 280
                END IF
             END IF
-*
 *
 *           Do Tests 3 and 4 which are similar to 11 and 12 but with the
 *           D1 computed using the standard 1-stage reduction as reference
@@ -1718,7 +1713,6 @@
                         END IF
                      END IF
 *
-*
 *                 Do test 28
 *
                      TEMP2 = TWO*( TWO*N-ONE )*ULP*
@@ -1816,7 +1810,6 @@
 *
                   RESULT( 31 ) = TEMP2 / MAX( UNFL,
      $                           ULP*MAX( TEMP1, TEMP2 ) )
-*
 *
 *           Call DSTEMR(V,V) to compute D1 and Z, do tests.
 *
@@ -1919,7 +1912,6 @@
                   RESULT( 34 ) = ZERO
                END IF
 *
-*
 *           Call DSTEMR(V,A) to compute D1 and Z, do tests.
 *
 *           Compute D1 and Z
@@ -1976,7 +1968,7 @@
                   END IF
                END IF
 *
-*           Do Test 34
+*           Do Test 37
 *
                TEMP1 = ZERO
                TEMP2 = ZERO
@@ -1994,7 +1986,6 @@
             NTESTT = NTESTT + NTEST
 *
 *           End of Loop -- Check for RESULT(j) > THRESH
-*
 *
 *           Print out tests which fail.
 *
@@ -2063,6 +2054,7 @@
      $      ', test(', I2, ')=', G10.3 )
 *
  9988 FORMAT( / 'Test performed:  see DCHKST2STG for details.', / )
+*
 *     End of DCHKST2STG
 *
       END

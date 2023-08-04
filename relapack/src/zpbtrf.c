@@ -35,6 +35,8 @@ void RELAPACK_zpbtrf(
         return;
     }
 
+    if (*n == 0) return;
+
     // Clean char * arguments
     const char cleanuplo = lower ? 'L' : 'U';
 
@@ -43,9 +45,10 @@ void RELAPACK_zpbtrf(
 
     // Allocate work space
     const blasint n1 = ZREC_SPLIT(*n);
-    const blasint mWork = (*kd > n1) ? (lower ? *n - *kd : n1) : *kd;
-    const blasint nWork = (*kd > n1) ? (lower ? n1 : *n - *kd) : *kd;
+    const blasint mWork = abs((*kd > n1) ? (lower ? *n - *kd : n1) : *kd);
+    const blasint nWork = abs((*kd > n1) ? (lower ? n1 : *n - *kd) : *kd);
     double *Work = malloc(mWork * nWork * 2 * sizeof(double));
+
     LAPACK(zlaset)(uplo, &mWork, &nWork, ZERO, ZERO, Work, &mWork);
 
     // Recursive kernel
@@ -64,7 +67,7 @@ static void RELAPACK_zpbtrf_rec(
     blasint *info
 ){
 
-    if (*n <= MAX(CROSSOVER_ZPBTRF, 1)) {
+    if (*n <= MAX(CROSSOVER_ZPBTRF, 1) || *ldAb == 1) {
         // Unblocked
         LAPACK(zpbtf2)(uplo, n, kd, Ab, ldAb, info);
         return;
@@ -148,7 +151,7 @@ static void RELAPACK_zpbtrf_rec(
     }
 
     // recursion(A_BR)
-    if (*kd > n1)
+    if (*kd > n1 && ldA != 0)
         RELAPACK_zpotrf(uplo, &n2, A_BR, ldA, info);
     else
         RELAPACK_zpbtrf_rec(uplo, &n2, kd, Ab_BR, ldAb, Work, ldWork, info);

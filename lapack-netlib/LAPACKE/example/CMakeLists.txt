@@ -3,10 +3,10 @@ add_executable(xexample_DGESV_colmajor example_DGESV_colmajor.c lapacke_example_
 add_executable(xexample_DGELS_rowmajor example_DGELS_rowmajor.c lapacke_example_aux.c lapacke_example_aux.h)
 add_executable(xexample_DGELS_colmajor example_DGELS_colmajor.c lapacke_example_aux.c lapacke_example_aux.h)
 
-target_link_libraries(xexample_DGESV_rowmajor lapacke)
-target_link_libraries(xexample_DGESV_colmajor lapacke)
-target_link_libraries(xexample_DGELS_rowmajor lapacke)
-target_link_libraries(xexample_DGELS_colmajor lapacke)
+target_link_libraries(xexample_DGESV_rowmajor ${LAPACKELIB})
+target_link_libraries(xexample_DGESV_colmajor ${LAPACKELIB})
+target_link_libraries(xexample_DGELS_rowmajor ${LAPACKELIB})
+target_link_libraries(xexample_DGELS_colmajor ${LAPACKELIB})
 
 add_test(example_DGESV_rowmajor ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/xexample_DGESV_rowmajor)
 add_test(example_DGESV_colmajor ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/xexample_DGESV_colmajor)

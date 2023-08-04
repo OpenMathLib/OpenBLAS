@@ -28,7 +28,6 @@
 *****************************************************************************
 * Contents: Native high-level C interface to LAPACK function zhetri2x
 * Author: Intel Corporation
-* Generated June 2016
 *****************************************************************************/
 
 #include "lapacke_utils.h"
@@ -46,7 +45,7 @@ lapack_int LAPACKE_zhetri2x( int matrix_layout, char uplo, lapack_int n,
 #ifndef LAPACK_DISABLE_NAN_CHECK
     if( LAPACKE_get_nancheck() ) {
         /* Optionally check input matrices for NaNs */
-        if( LAPACKE_zge_nancheck( matrix_layout, n, n, a, lda ) ) {
+        if( LAPACKE_zhe_nancheck( matrix_layout, uplo, n, a, lda ) ) {
             return -4;
         }
     }

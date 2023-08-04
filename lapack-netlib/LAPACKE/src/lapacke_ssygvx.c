@@ -28,7 +28,6 @@
 *****************************************************************************
 * Contents: Native high-level C interface to LAPACK function ssygvx
 * Author: Intel Corporation
-* Generated November 2015
 *****************************************************************************/
 
 #include "lapacke_utils.h"
@@ -58,7 +57,7 @@ lapack_int LAPACKE_ssygvx( int matrix_layout, lapack_int itype, char jobz,
         if( LAPACKE_s_nancheck( 1, &abstol, 1 ) ) {
             return -15;
         }
-        if( LAPACKE_sge_nancheck( matrix_layout, n, n, b, ldb ) ) {
+        if( LAPACKE_ssy_nancheck( matrix_layout, uplo, n, b, ldb ) ) {
             return -9;
         }
         if( LAPACKE_lsame( range, 'v' ) ) {

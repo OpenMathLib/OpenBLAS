@@ -117,8 +117,6 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date November 2017
-*
 *> \ingroup complex16SYcomputational
 *
 *> \par References:
@@ -132,10 +130,9 @@
 *  =====================================================================
       SUBROUTINE ZSYEQUB( UPLO, N, A, LDA, S, SCOND, AMAX, WORK, INFO )
 *
-*  -- LAPACK computational routine (version 3.8.0) --
+*  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2017
 *
 *     .. Scalar Arguments ..
       INTEGER            INFO, LDA, N
@@ -266,7 +263,7 @@
 *        avg = s^T beta / n
          AVG = 0.0D0
          DO I = 1, N
-            AVG = AVG + S( I )*WORK( I )
+            AVG = AVG + S( I ) * DBLE( WORK( I ) )
          END DO
          AVG = AVG / N
 
@@ -283,8 +280,8 @@
             T = CABS1( A( I, I ) )
             SI = S( I )
             C2 = ( N-1 ) * T
-            C1 = ( N-2 ) * ( WORK( I ) - T*SI )
-            C0 = -(T*SI)*SI + 2*WORK( I )*SI - N*AVG
+            C1 = ( N-2 ) * ( DBLE( WORK( I ) ) - T*SI )
+            C0 = -(T*SI)*SI + 2 * DBLE( WORK( I ) ) * SI - N*AVG
             D = C1*C1 - 4*C0*C2
 
             IF ( D .LE. 0 ) THEN
@@ -319,7 +316,7 @@
                END DO
             END IF
 
-            AVG = AVG + ( U + WORK( I ) ) * D / N
+            AVG = AVG + ( U + DBLE( WORK( I ) ) ) * D / N
             S( I ) = SI
          END DO
       END DO

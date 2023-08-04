@@ -52,10 +52,10 @@
 *>          Specifies whether the output from this procedure is used
 *>          to compute the matrix V:
 *>          = 'V': the product of the Jacobi rotations is accumulated
-*>                 by postmulyiplying the N-by-N array V.
+*>                 by postmultiplying the N-by-N array V.
 *>                (See the description of V.)
 *>          = 'A': the product of the Jacobi rotations is accumulated
-*>                 by postmulyiplying the MV-by-N array V.
+*>                 by postmultiplying the MV-by-N array V.
 *>                (See the descriptions of MV and V.)
 *>          = 'N': the Jacobi rotations are not accumulated.
 *> \endverbatim
@@ -117,7 +117,7 @@
 *> \param[in] MV
 *> \verbatim
 *>          MV is INTEGER
-*>          If JOBV .EQ. 'A', then MV rows of V are post-multipled by a
+*>          If JOBV = 'A', then MV rows of V are post-multiplied by a
 *>                           sequence of Jacobi rotations.
 *>          If JOBV = 'N',   then MV is not referenced.
 *> \endverbatim
@@ -125,9 +125,9 @@
 *> \param[in,out] V
 *> \verbatim
 *>          V is DOUBLE PRECISION array, dimension (LDV,N)
-*>          If JOBV .EQ. 'V' then N rows of V are post-multipled by a
+*>          If JOBV = 'V' then N rows of V are post-multiplied by a
 *>                           sequence of Jacobi rotations.
-*>          If JOBV .EQ. 'A' then MV rows of V are post-multipled by a
+*>          If JOBV = 'A' then MV rows of V are post-multiplied by a
 *>                           sequence of Jacobi rotations.
 *>          If JOBV = 'N',   then V is not referenced.
 *> \endverbatim
@@ -136,8 +136,8 @@
 *> \verbatim
 *>          LDV is INTEGER
 *>          The leading dimension of the array V,  LDV >= 1.
-*>          If JOBV = 'V', LDV .GE. N.
-*>          If JOBV = 'A', LDV .GE. MV.
+*>          If JOBV = 'V', LDV >= N.
+*>          If JOBV = 'A', LDV >= MV.
 *> \endverbatim
 *>
 *> \param[in] EPS
@@ -157,7 +157,7 @@
 *>          TOL is DOUBLE PRECISION
 *>          TOL is the threshold for Jacobi rotations. For a pair
 *>          A(:,p), A(:,q) of pivot columns, the Jacobi rotation is
-*>          applied only if DABS(COS(angle(A(:,p),A(:,q)))) .GT. TOL.
+*>          applied only if DABS(COS(angle(A(:,p),A(:,q)))) > TOL.
 *> \endverbatim
 *>
 *> \param[in] NSWEEP
@@ -175,14 +175,14 @@
 *> \param[in] LWORK
 *> \verbatim
 *>          LWORK is INTEGER
-*>          LWORK is the dimension of WORK. LWORK .GE. M.
+*>          LWORK is the dimension of WORK. LWORK >= M.
 *> \endverbatim
 *>
 *> \param[out] INFO
 *> \verbatim
 *>          INFO is INTEGER
-*>          = 0 : successful exit.
-*>          < 0 : if INFO = -i, then the i-th argument had an illegal value
+*>          = 0:  successful exit.
+*>          < 0:  if INFO = -i, then the i-th argument had an illegal value
 *> \endverbatim
 *
 *  Authors:
@@ -192,8 +192,6 @@
 *> \author Univ. of California Berkeley
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
-*
-*> \date November 2017
 *
 *> \ingroup doubleOTHERcomputational
 *
@@ -218,10 +216,9 @@
       SUBROUTINE DGSVJ0( JOBV, M, N, A, LDA, D, SVA, MV, V, LDV, EPS,
      $                   SFMIN, TOL, NSWEEP, WORK, LWORK, INFO )
 *
-*  -- LAPACK computational routine (version 3.8.0) --
+*  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2017
 *
 *     .. Scalar Arguments ..
       INTEGER            INFO, LDA, LDV, LWORK, M, MV, N, NSWEEP
@@ -392,7 +389,7 @@
 *        Some BLAS implementations compute DNRM2(M,A(1,p),1)
 *        as DSQRT(DDOT(M,A(1,p),1,A(1,p),1)), which may result in
 *        overflow for ||A(:,p)||_2 > DSQRT(overflow_threshold), and
-*        undeflow for ||A(:,p)||_2 < DSQRT(underflow_threshold).
+*        underflow for ||A(:,p)||_2 < DSQRT(underflow_threshold).
 *        Hence, DNRM2 cannot be trusted, not even in the case when
 *        the true norm is far from the under(over)flow boundaries.
 *        If properly implemented DNRM2 is available, the IF-THEN-ELSE
@@ -1045,7 +1042,7 @@
 
  1993 CONTINUE
 *     end i=1:NSWEEP loop
-* #:) Reaching this point means that the procedure has comleted the given
+* #:) Reaching this point means that the procedure has completed the given
 *     number of iterations.
       INFO = NSWEEP - 1
       GO TO 1995

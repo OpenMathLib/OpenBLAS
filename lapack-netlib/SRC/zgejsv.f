@@ -52,10 +52,10 @@
 *> are computed and stored in the arrays U and V, respectively. The diagonal
 *> of [SIGMA] is computed and stored in the array SVA.
 *> \endverbatim
-*>
-*>  Arguments:
-*>  ==========
-*>
+*
+*  Arguments:
+*  ==========
+*
 *> \param[in] JOBA
 *> \verbatim
 *>          JOBA is CHARACTER*1
@@ -80,13 +80,13 @@
 *>              desirable, then this option is advisable. The input matrix A
 *>              is preprocessed with QR factorization with FULL (row and
 *>              column) pivoting.
-*>       = 'G'  Computation as with 'F' with an additional estimate of the
+*>       = 'G': Computation as with 'F' with an additional estimate of the
 *>              condition number of B, where A=B*D. If A has heavily weighted
 *>              rows, then using this condition number gives too pessimistic
 *>              error bound.
 *>       = 'A': Small singular values are not well determined by the data 
 *>              and are considered as noisy; the matrix is treated as
-*>              numerically rank defficient. The error in the computed
+*>              numerically rank deficient. The error in the computed
 *>              singular values is bounded by f(m,n)*epsilon*||A||.
 *>              The computed SVD A = U * S * V^* restores A up to
 *>              f(m,n)*epsilon*||A||.
@@ -117,7 +117,7 @@
 *>       = 'V': N columns of V are returned in the array V; Jacobi rotations
 *>              are not explicitly accumulated.
 *>       = 'J': N columns of V are returned in the array V, but they are
-*>              computed as the product of Jacobi rotations, if JOBT .EQ. 'N'.
+*>              computed as the product of Jacobi rotations, if JOBT = 'N'.
 *>       = 'W': V may be used as workspace of length N*N. See the description
 *>              of V.
 *>       = 'N': V is not computed.
@@ -131,7 +131,7 @@
 *>         specified range. If A .NE. 0 is scaled so that the largest singular
 *>         value of c*A is around SQRT(BIG), BIG=DLAMCH('O'), then JOBR issues
 *>         the licence to kill columns of A whose norm in c*A is less than
-*>         SQRT(SFMIN) (for JOBR.EQ.'R'), or less than SMALL=SFMIN/EPSLN,
+*>         SQRT(SFMIN) (for JOBR = 'R'), or less than SMALL=SFMIN/EPSLN,
 *>         where SFMIN=DLAMCH('S'), EPSLN=DLAMCH('E').
 *>       = 'N': Do not kill small columns of c*A. This option assumes that
 *>              BLAS and QR factorizations and triangular solvers are
@@ -151,7 +151,7 @@
 *>         transposed A if A^* seems to be better with respect to convergence.
 *>         If the matrix is not square, JOBT is ignored. 
 *>         The decision is based on two values of entropy over the adjoint
-*>         orbit of A^* * A. See the descriptions of WORK(6) and WORK(7).
+*>         orbit of A^* * A. See the descriptions of RWORK(6) and RWORK(7).
 *>       = 'T': transpose if entropy test indicates possibly faster
 *>         convergence of Jacobi process if A^* is taken as input. If A is
 *>         replaced with A^*, then the row pivoting is included automatically.
@@ -209,11 +209,11 @@
 *> \verbatim
 *>          SVA is DOUBLE PRECISION array, dimension (N)
 *>          On exit,
-*>          - For WORK(1)/WORK(2) = ONE: The singular values of A. During the
-*>            computation SVA contains Euclidean column norms of the
+*>          - For RWORK(1)/RWORK(2) = ONE: The singular values of A. During
+*>            the computation SVA contains Euclidean column norms of the
 *>            iterated matrices in the array A.
-*>          - For WORK(1) .NE. WORK(2): The singular values of A are
-*>            (WORK(1)/WORK(2)) * SVA(1:N). This factored form is used if
+*>          - For RWORK(1) .NE. RWORK(2): The singular values of A are
+*>            (RWORK(1)/RWORK(2)) * SVA(1:N). This factored form is used if
 *>            sigma_max(A) overflows or if small singular values have been
 *>            saved from underflow by scaling the input matrix A.
 *>          - If JOBR='R' then some of the singular values may be returned
@@ -229,7 +229,7 @@
 *>          If JOBU = 'F', then U contains on exit the M-by-M matrix of
 *>                         the left singular vectors, including an ONB
 *>                         of the orthogonal complement of the Range(A).
-*>          If JOBU = 'W'  .AND. (JOBV.EQ.'V' .AND. JOBT.EQ.'T' .AND. M.EQ.N),
+*>          If JOBU = 'W'  .AND. (JOBV = 'V' .AND. JOBT = 'T' .AND. M = N),
 *>                         then U is used as workspace if the procedure
 *>                         replaces A with A^*. In that case, [V] is computed
 *>                         in U as left singular vectors of A^* and then
@@ -251,8 +251,8 @@
 *>          V is COMPLEX*16 array, dimension ( LDV, N )
 *>          If JOBV = 'V', 'J' then V contains on exit the N-by-N matrix of
 *>                         the right singular vectors;
-*>          If JOBV = 'W', AND (JOBU.EQ.'U' AND JOBT.EQ.'T' AND M.EQ.N),
-*>                         then V is used as workspace if the pprocedure
+*>          If JOBV = 'W', AND (JOBU = 'U' AND JOBT = 'T' AND M = N),
+*>                         then V is used as workspace if the procedure
 *>                         replaces A with A^*. In that case, [U] is computed
 *>                         in V as right singular vectors of A^* and then
 *>                         copied back to the U array. This 'W' option is just
@@ -282,7 +282,7 @@
 *>          Length of CWORK to confirm proper allocation of workspace.
 *>          LWORK depends on the job:
 *>
-*>          1. If only SIGMA is needed ( JOBU.EQ.'N', JOBV.EQ.'N' ) and
+*>          1. If only SIGMA is needed ( JOBU = 'N', JOBV = 'N' ) and
 *>            1.1 .. no scaled condition estimate required (JOBA.NE.'E'.AND.JOBA.NE.'G'):
 *>               LWORK >= 2*N+1. This is the minimal requirement.
 *>               ->> For optimal performance (blocked code) the optimal value
@@ -298,13 +298,13 @@
 *>               In general, the optimal length LWORK is computed as
 *>               LWORK >= max(N+LWORK(ZGEQP3),N+LWORK(ZGEQRF), LWORK(ZGESVJ),
 *>                            N*N+LWORK(ZPOCON)).
-*>          2. If SIGMA and the right singular vectors are needed (JOBV.EQ.'V'),
-*>             (JOBU.EQ.'N')
-*>            2.1   .. no scaled condition estimate requested (JOBE.EQ.'N'):    
+*>          2. If SIGMA and the right singular vectors are needed (JOBV = 'V'),
+*>             (JOBU = 'N')
+*>            2.1   .. no scaled condition estimate requested (JOBE = 'N'):    
 *>            -> the minimal requirement is LWORK >= 3*N.
 *>            -> For optimal performance, 
 *>               LWORK >= max(N+(N+1)*NB, 2*N+N*NB)=2*N+N*NB,
-*>               where NB is the optimal block size for ZGEQP3, ZGEQRF, ZGELQ,
+*>               where NB is the optimal block size for ZGEQP3, ZGEQRF, ZGELQF,
 *>               ZUNMLQ. In general, the optimal length LWORK is computed as
 *>               LWORK >= max(N+LWORK(ZGEQP3), N+LWORK(ZGESVJ),
 *>                       N+LWORK(ZGELQF), 2*N+LWORK(ZGEQRF), N+LWORK(ZUNMLQ)).
@@ -313,15 +313,15 @@
 *>            -> the minimal requirement is LWORK >= 3*N.      
 *>            -> For optimal performance, 
 *>               LWORK >= max(N+(N+1)*NB, 2*N,2*N+N*NB)=2*N+N*NB,
-*>               where NB is the optimal block size for ZGEQP3, ZGEQRF, ZGELQ,
+*>               where NB is the optimal block size for ZGEQP3, ZGEQRF, ZGELQF,
 *>               ZUNMLQ. In general, the optimal length LWORK is computed as
 *>               LWORK >= max(N+LWORK(ZGEQP3), LWORK(ZPOCON), N+LWORK(ZGESVJ),
 *>                       N+LWORK(ZGELQF), 2*N+LWORK(ZGEQRF), N+LWORK(ZUNMLQ)).   
 *>          3. If SIGMA and the left singular vectors are needed
-*>            3.1  .. no scaled condition estimate requested (JOBE.EQ.'N'):
+*>            3.1  .. no scaled condition estimate requested (JOBE = 'N'):
 *>            -> the minimal requirement is LWORK >= 3*N.
 *>            -> For optimal performance:
-*>               if JOBU.EQ.'U' :: LWORK >= max(3*N, N+(N+1)*NB, 2*N+N*NB)=2*N+N*NB,
+*>               if JOBU = 'U' :: LWORK >= max(3*N, N+(N+1)*NB, 2*N+N*NB)=2*N+N*NB,
 *>               where NB is the optimal block size for ZGEQP3, ZGEQRF, ZUNMQR.
 *>               In general, the optimal length LWORK is computed as
 *>               LWORK >= max(N+LWORK(ZGEQP3), 2*N+LWORK(ZGEQRF), N+LWORK(ZUNMQR)). 
@@ -329,15 +329,15 @@
 *>               required (JOBA='E', or 'G').
 *>            -> the minimal requirement is LWORK >= 3*N.
 *>            -> For optimal performance:
-*>               if JOBU.EQ.'U' :: LWORK >= max(3*N, N+(N+1)*NB, 2*N+N*NB)=2*N+N*NB,
+*>               if JOBU = 'U' :: LWORK >= max(3*N, N+(N+1)*NB, 2*N+N*NB)=2*N+N*NB,
 *>               where NB is the optimal block size for ZGEQP3, ZGEQRF, ZUNMQR.
 *>               In general, the optimal length LWORK is computed as
 *>               LWORK >= max(N+LWORK(ZGEQP3),N+LWORK(ZPOCON),
 *>                        2*N+LWORK(ZGEQRF), N+LWORK(ZUNMQR)).
-*>          4. If the full SVD is needed: (JOBU.EQ.'U' or JOBU.EQ.'F') and 
-*>            4.1. if JOBV.EQ.'V'  
+*>          4. If the full SVD is needed: (JOBU = 'U' or JOBU = 'F') and 
+*>            4.1. if JOBV = 'V'  
 *>               the minimal requirement is LWORK >= 5*N+2*N*N. 
-*>            4.2. if JOBV.EQ.'J' the minimal requirement is 
+*>            4.2. if JOBV = 'J' the minimal requirement is 
 *>               LWORK >= 4*N+N*N.
 *>            In both cases, the allocated CWORK can accommodate blocked runs
 *>            of ZGEQP3, ZGEQRF, ZGELQF, SUNMQR, ZUNMLQ.
@@ -349,16 +349,16 @@
 *>
 *> \param[out] RWORK
 *> \verbatim
-*>          RWORK is DOUBLE PRECISION array, dimension (MAX(7,LWORK))
+*>          RWORK is DOUBLE PRECISION array, dimension (MAX(7,LRWORK))
 *>          On exit,
 *>          RWORK(1) = Determines the scaling factor SCALE = RWORK(2) / RWORK(1)
 *>                    such that SCALE*SVA(1:N) are the computed singular values
 *>                    of A. (See the description of SVA().)
 *>          RWORK(2) = See the description of RWORK(1).
 *>          RWORK(3) = SCONDA is an estimate for the condition number of
-*>                    column equilibrated A. (If JOBA .EQ. 'E' or 'G')
+*>                    column equilibrated A. (If JOBA = 'E' or 'G')
 *>                    SCONDA is an estimate of SQRT(||(R^* * R)^(-1)||_1).
-*>                    It is computed using SPOCON. It holds
+*>                    It is computed using ZPOCON. It holds
 *>                    N^(-1/4) * SCONDA <= ||R^(-1)||_2 <= N^(1/4) * SCONDA
 *>                    where R is the triangular factor from the QRF of A.
 *>                    However, if R is truncated and the numerical rank is
@@ -367,7 +367,7 @@
 *>                    singular values might be lost.
 *>
 *>          If full SVD is needed, the following two condition numbers are
-*>          useful for the analysis of the algorithm. They are provied for
+*>          useful for the analysis of the algorithm. They are provided for
 *>          a developer/implementer who is familiar with the details of
 *>          the method.
 *>
@@ -375,7 +375,7 @@
 *>                    triangular factor in the first QR factorization.
 *>          RWORK(5) = an estimate of the scaled condition number of the
 *>                    triangular factor in the second QR factorization.
-*>          The following two parameters are computed if JOBT .EQ. 'T'.
+*>          The following two parameters are computed if JOBT = 'T'.
 *>          They are provided for a developer/implementer who is familiar
 *>          with the details of the method.
 *>          RWORK(6) = the entropy of A^* * A :: this is the Shannon entropy
@@ -456,23 +456,23 @@
 *>                     of JOBA and JOBR.
 *>          IWORK(2) = the number of the computed nonzero singular values
 *>          IWORK(3) = if nonzero, a warning message:
-*>                     If IWORK(3).EQ.1 then some of the column norms of A
+*>                     If IWORK(3) = 1 then some of the column norms of A
 *>                     were denormalized floats. The requested high accuracy
 *>                     is not warranted by the data.
-*>          IWORK(4) = 1 or -1. If IWORK(4) .EQ. 1, then the procedure used A^* to
+*>          IWORK(4) = 1 or -1. If IWORK(4) = 1, then the procedure used A^* to
 *>                     do the job as specified by the JOB parameters.
-*>          If the call to ZGEJSV is a workspace query (indicated by LWORK .EQ. -1 or
-*>          LRWORK .EQ. -1), then on exit IWORK(1) contains the required length of 
+*>          If the call to ZGEJSV is a workspace query (indicated by LWORK = -1 or
+*>          LRWORK = -1), then on exit IWORK(1) contains the required length of 
 *>          IWORK for the job parameters used in the call.
 *> \endverbatim
 *>
 *> \param[out] INFO
 *> \verbatim
 *>          INFO is INTEGER
-*>           < 0  : if INFO = -i, then the i-th argument had an illegal value.
-*>           = 0 :  successful exit;
-*>           > 0 :  ZGEJSV  did not converge in the maximal allowed number
-*>                  of sweeps. The computed values may be inaccurate.
+*>           < 0:  if INFO = -i, then the i-th argument had an illegal value.
+*>           = 0:  successful exit;
+*>           > 0:  ZGEJSV  did not converge in the maximal allowed number
+*>                 of sweeps. The computed values may be inaccurate.
 *> \endverbatim
 *
 *  Authors:
@@ -482,8 +482,6 @@
 *> \author Univ. of California Berkeley
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
-*
-*> \date June 2016
 *
 *> \ingroup complex16GEsing
 *
@@ -569,10 +567,9 @@
      $                   M, N, A, LDA, SVA, U, LDU, V, LDV,
      $                   CWORK, LWORK, RWORK, LRWORK, IWORK, INFO )
 *
-*  -- LAPACK computational routine (version 3.7.1) --
+*  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     June 2017
 *
 *     .. Scalar Arguments ..
       IMPLICIT    NONE
@@ -710,11 +707,11 @@
           IF ( LQUERY ) THEN 
               CALL ZGEQP3( M, N, A, LDA, IWORK, CDUMMY, CDUMMY, -1, 
      $             RDUMMY, IERR )
-              LWRK_ZGEQP3 = CDUMMY(1)
+              LWRK_ZGEQP3 = INT( CDUMMY(1) )
               CALL ZGEQRF( N, N, A, LDA, CDUMMY, CDUMMY,-1, IERR )
-              LWRK_ZGEQRF = CDUMMY(1)
+              LWRK_ZGEQRF = INT( CDUMMY(1) )
               CALL ZGELQF( N, N, A, LDA, CDUMMY, CDUMMY,-1, IERR )
-              LWRK_ZGELQF = CDUMMY(1)             
+              LWRK_ZGELQF = INT( CDUMMY(1) )
           END IF
           MINWRK  = 2
           OPTWRK  = 2
@@ -730,7 +727,7 @@
               IF ( LQUERY ) THEN 
                   CALL ZGESVJ( 'L', 'N', 'N', N, N, A, LDA, SVA, N, V, 
      $                 LDV, CDUMMY, -1, RDUMMY, -1, IERR )
-                  LWRK_ZGESVJ = CDUMMY(1)
+                  LWRK_ZGESVJ = INT( CDUMMY(1) )
                   IF ( ERREST ) THEN 
                       OPTWRK = MAX( N+LWRK_ZGEQP3, N**2+LWCON, 
      $                              N+LWRK_ZGEQRF, LWRK_ZGESVJ )
@@ -766,10 +763,10 @@
              IF ( LQUERY ) THEN
                  CALL ZGESVJ( 'L', 'U', 'N', N,N, U, LDU, SVA, N, A,
      $                LDA, CDUMMY, -1, RDUMMY, -1, IERR )
-                 LWRK_ZGESVJ = CDUMMY(1)
+                 LWRK_ZGESVJ = INT( CDUMMY(1) )
                  CALL ZUNMLQ( 'L', 'C', N, N, N, A, LDA, CDUMMY,
      $                V, LDV, CDUMMY, -1, IERR )
-                 LWRK_ZUNMLQ = CDUMMY(1)                
+                 LWRK_ZUNMLQ = INT( CDUMMY(1) )
                  IF ( ERREST ) THEN 
                  OPTWRK = MAX( N+LWRK_ZGEQP3, LWCON, LWRK_ZGESVJ, 
      $                         N+LWRK_ZGELQF, 2*N+LWRK_ZGEQRF,
@@ -805,10 +802,10 @@
              IF ( LQUERY ) THEN
                  CALL ZGESVJ( 'L', 'U', 'N', N,N, U, LDU, SVA, N, A,
      $                LDA, CDUMMY, -1, RDUMMY, -1, IERR )
-                 LWRK_ZGESVJ = CDUMMY(1)
+                 LWRK_ZGESVJ = INT( CDUMMY(1) )
                  CALL ZUNMQR( 'L', 'N', M, N, N, A, LDA, CDUMMY, U,
      $               LDU, CDUMMY, -1, IERR )
-                 LWRK_ZUNMQRM = CDUMMY(1)
+                 LWRK_ZUNMQRM = INT( CDUMMY(1) )
                  IF ( ERREST ) THEN
                  OPTWRK = N + MAX( LWRK_ZGEQP3, LWCON, N+LWRK_ZGEQRF,
      $                             LWRK_ZGESVJ, LWRK_ZUNMQRM )
@@ -867,26 +864,26 @@
              IF ( LQUERY ) THEN
                  CALL ZUNMQR( 'L', 'N', M, N, N, A, LDA, CDUMMY, U,
      $                LDU, CDUMMY, -1, IERR )
-                 LWRK_ZUNMQRM = CDUMMY(1)
+                 LWRK_ZUNMQRM = INT( CDUMMY(1) )
                  CALL ZUNMQR( 'L', 'N', N, N, N, A, LDA, CDUMMY, U,
      $                LDU, CDUMMY, -1, IERR )
-                 LWRK_ZUNMQR = CDUMMY(1)
+                 LWRK_ZUNMQR = INT( CDUMMY(1) )
                  IF ( .NOT. JRACC ) THEN
                      CALL ZGEQP3( N,N, A, LDA, IWORK, CDUMMY,CDUMMY, -1,
      $                    RDUMMY, IERR )
-                     LWRK_ZGEQP3N = CDUMMY(1)
+                     LWRK_ZGEQP3N = INT( CDUMMY(1) )
                      CALL ZGESVJ( 'L', 'U', 'N', N, N, U, LDU, SVA,
      $                    N, V, LDV, CDUMMY, -1, RDUMMY, -1, IERR )
-                     LWRK_ZGESVJ = CDUMMY(1)
+                     LWRK_ZGESVJ = INT( CDUMMY(1) )
                      CALL ZGESVJ( 'U', 'U', 'N', N, N, U, LDU, SVA,
      $                    N, V, LDV, CDUMMY, -1, RDUMMY, -1, IERR )
-                     LWRK_ZGESVJU = CDUMMY(1)
+                     LWRK_ZGESVJU = INT( CDUMMY(1) )
                      CALL ZGESVJ( 'L', 'U', 'V', N, N, U, LDU, SVA,
      $                    N, V, LDV, CDUMMY, -1, RDUMMY, -1, IERR )
-                     LWRK_ZGESVJV = CDUMMY(1)
+                     LWRK_ZGESVJV = INT( CDUMMY(1) )
                      CALL ZUNMLQ( 'L', 'C', N, N, N, A, LDA, CDUMMY,
      $                    V, LDV, CDUMMY, -1, IERR )
-                     LWRK_ZUNMLQ = CDUMMY(1)
+                     LWRK_ZUNMLQ = INT( CDUMMY(1) )
                      IF ( ERREST ) THEN 
                        OPTWRK = MAX( N+LWRK_ZGEQP3, N+LWCON, 
      $                          2*N+N**2+LWCON, 2*N+LWRK_ZGEQRF, 
@@ -915,13 +912,13 @@
                  ELSE
                      CALL ZGESVJ( 'L', 'U', 'V', N, N, U, LDU, SVA,
      $                    N, V, LDV, CDUMMY, -1, RDUMMY, -1, IERR )
-                     LWRK_ZGESVJV = CDUMMY(1)
+                     LWRK_ZGESVJV = INT( CDUMMY(1) )
                      CALL ZUNMQR( 'L', 'N', N, N, N, CDUMMY, N, CDUMMY,
      $                    V, LDV, CDUMMY, -1, IERR )
-                     LWRK_ZUNMQR = CDUMMY(1)
+                     LWRK_ZUNMQR = INT( CDUMMY(1) )
                      CALL ZUNMQR( 'L', 'N', M, N, N, A, LDA, CDUMMY, U,
      $                    LDU, CDUMMY, -1, IERR )
-                     LWRK_ZUNMQRM = CDUMMY(1)   
+                     LWRK_ZUNMQRM = INT( CDUMMY(1) )
                      IF ( ERREST ) THEN 
                         OPTWRK = MAX( N+LWRK_ZGEQP3, N+LWCON,   
      $                           2*N+LWRK_ZGEQRF, 2*N+N**2,  
@@ -1316,7 +1313,7 @@
 *     (eg speed by replacing global with restricted window pivoting, such
 *     as in xGEQPX from TOMS # 782). Good results will be obtained using
 *     xGEQPX with properly (!) chosen numerical parameters.
-*     Any improvement of ZGEQP3 improves overal performance of ZGEJSV.
+*     Any improvement of ZGEQP3 improves overall performance of ZGEJSV.
 *
 *     A * P1 = Q1 * [ R1^* 0]^*:
       DO 1963 p = 1, N
@@ -1338,7 +1335,7 @@
       IF ( L2ABER ) THEN
 *        Standard absolute error bound suffices. All sigma_i with
 *        sigma_i < N*EPSLN*||A|| are flushed to zero. This is an
-*        agressive enforcement of lower numerical rank by introducing a
+*        aggressive enforcement of lower numerical rank by introducing a
 *        backward error of the order of N*EPSLN*||A||.
          TEMP1 = SQRT(DBLE(N))*EPSLN
          DO 3001 p = 2, N
@@ -1350,7 +1347,7 @@
  3001    CONTINUE
  3002    CONTINUE
       ELSE IF ( L2RANK ) THEN
-*        .. similarly as above, only slightly more gentle (less agressive).
+*        .. similarly as above, only slightly more gentle (less aggressive).
 *        Sudden drop on the diagonal of R1 is used as the criterion for
 *        close-to-rank-deficient.
          TEMP1 = SQRT(SFMIN)
@@ -1720,7 +1717,7 @@
             CALL ZPOCON('L',NR,CWORK(2*N+1),NR,ONE,TEMP1,
      $                   CWORK(2*N+NR*NR+1),RWORK,IERR)
             CONDR1 = ONE / SQRT(TEMP1)
-*           .. here need a second oppinion on the condition number
+*           .. here need a second opinion on the condition number
 *           .. then assume worst case scenario
 *           R1 is OK for inverse <=> CONDR1 .LT. DBLE(N)
 *           more conservative    <=> CONDR1 .LT. SQRT(DBLE(N))
@@ -1765,7 +1762,7 @@
             ELSE
 *
 *              .. ill-conditioned case: second QRF with pivoting
-*              Note that windowed pivoting would be equaly good
+*              Note that windowed pivoting would be equally good
 *              numerically, and more run-time efficient. So, in
 *              an optimal implementation, the next call to ZGEQP3
 *              should be replaced with eg. CALL ZGEQPX (ACM TOMS #782)
@@ -1823,8 +1820,8 @@
 *
                IF ( CONDR2 .GE. COND_OK ) THEN
 *                 .. save the Householder vectors used for Q3
-*                 (this overwrittes the copy of R2, as it will not be
-*                 needed in this branch, but it does not overwritte the
+*                 (this overwrites the copy of R2, as it will not be
+*                 needed in this branch, but it does not overwrite the
 *                 Huseholder vectors of Q2.).
                   CALL ZLACPY( 'U', NR, NR, V, LDV, CWORK(2*N+1), N )
 *                 .. and the rest of the information on Q3 is in
@@ -1847,7 +1844,7 @@
             END IF
 *
 *        Second preconditioning finished; continue with Jacobi SVD
-*        The input matrix is lower trinagular.
+*        The input matrix is lower triangular.
 *
 *        Recover the right singular vectors as solution of a well
 *        conditioned triangular matrix equation.
@@ -1891,7 +1888,7 @@
             ELSE IF ( CONDR2 .LT. COND_OK ) THEN
 *
 *              The matrix R2 is inverted. The solution of the matrix equation
-*              is Q3^* * V3 = the product of the Jacobi rotations (appplied to
+*              is Q3^* * V3 = the product of the Jacobi rotations (applied to
 *              the lower triangular L3 from the LQ factorization of
 *              R2=L3*Q3), pre-multiplied with the transposed Q3.
                CALL ZGESVJ( 'L', 'U', 'N', NR, NR, V, LDV, SVA, NR, U,
@@ -2079,7 +2076,7 @@
 *
 *        This branch deploys a preconditioned Jacobi SVD with explicitly
 *        accumulated rotations. It is included as optional, mainly for
-*        experimental purposes. It does perfom well, and can also be used.
+*        experimental purposes. It does perform well, and can also be used.
 *        In this implementation, this branch will be automatically activated
 *        if the  condition number sigma_max(A) / sigma_min(A) is predicted
 *        to be greater than the overflow threshold. This is because the

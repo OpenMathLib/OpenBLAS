@@ -5,21 +5,25 @@ endif
 TOPDIR	= ..
 include $(TOPDIR)/Makefile.system
 
+ifeq ($(ARCH), power)
+ifeq ($(C_COMPILER), CLANG)
+ override CFLAGS += -fno-integrated-as
+endif
+endif
+
 AVX2OPT = 
 ifeq ($(C_COMPILER), GCC)
 # AVX2 support was added in 4.7.0
-  GCCVERSIONGTEQ4 := $(shell expr `$(CC) -dumpversion | cut -f1 -d.` \>= 4)
-  GCCMINORVERSIONGTEQ7 := $(shell expr `$(CC) -dumpversion | cut -f2 -d.` \>= 7)
-  ifeq ($(GCCVERSIONGTEQ4)$(GCCMINORVERSIONGTEQ7), 11)
+GCCVERSIONCHECK := $(GCCVERSIONGT4)$(GCCVERSIONGTEQ4)$(GCCMINORVERSIONGTEQ7)
+ifeq ($(GCCVERSIONCHECK), $(filter $(GCCVERSIONCHECK), 011 110 111))
    AVX2OPT = -mavx2
   endif
 endif
 ifeq ($(C_COMPILER), CLANG)
 # Any clang posing as gcc 4.2 should be new enough (3.4 or later)
-  GCCVERSIONGTEQ4 := $(shell expr `$(CC) -dumpversion | cut -f1 -d.` \>= 4)
-  GCCMINORVERSIONGTEQ2 := $(shell expr `$(CC) -dumpversion | cut -f2 -d.` \>= 2)
-  ifeq ($(GCCVERSIONGTEQ4)$(GCCMINORVERSIONGTEQ2), 11)
-   AVX2OPT = -mavx2
+  GCCVERSIONCHECK := $(GCCVERSIONGT4)$(GCCVERSIONGTEQ4)$(GCCMINORVERSIONGTEQ2)
+  ifeq ($(GCCVERSIONCHECK), $(filter $(GCCVERSIONCHECK), 011 110 111))
+   AVX2OPT = -mavx2 -mfma
   endif
 endif
 ifdef NO_AVX2
@@ -27,8 +31,38 @@ ifdef NO_AVX2
 endif
 
 ifdef TARGET_CORE
-ifeq ($(TARGET_CORE), SKYLAKEX)
- override CFLAGS += -DBUILD_KERNEL -DTABLE_NAME=gotoblas_$(TARGET_CORE) -march=skylake-avx512
+ifeq ($(TARGET_CORE), SAPPHIRERAPIDS)
+ override CFLAGS += -DBUILD_KERNEL -DTABLE_NAME=gotoblas_$(TARGET_CORE)
+ ifeq ($(GCCVERSIONGTEQ11), 1) 
+  override CFLAGS += -march=sapphirerapids
+ else 
+  override CFLAGS += -march=skylake-avx512 -mavx512f
+ endif 
+ ifeq ($(OSNAME), CYGWIN_NT)
+  override CFLAGS += -fno-asynchronous-unwind-tables
+ endif
+ ifeq ($(OSNAME), WINNT)
+  ifeq ($(C_COMPILER), GCC)
+   override CFLAGS += -fno-asynchronous-unwind-tables
+  endif
+ endif
+else ifeq ($(TARGET_CORE), COOPERLAKE)
+ override CFLAGS += -DBUILD_KERNEL -DTABLE_NAME=gotoblas_$(TARGET_CORE)
+ ifeq ($(GCCVERSIONGTEQ10), 1) 
+  override CFLAGS += -march=cooperlake
+ else 
+  override CFLAGS += -march=skylake-avx512 -mavx512f
+ endif 
+ ifeq ($(OSNAME), CYGWIN_NT)
+  override CFLAGS += -fno-asynchronous-unwind-tables
+ endif
+ ifeq ($(OSNAME), WINNT)
+  ifeq ($(C_COMPILER), GCC)
+   override CFLAGS += -fno-asynchronous-unwind-tables
+  endif
+ endif
+else ifeq ($(TARGET_CORE), SKYLAKEX)
+ override CFLAGS += -DBUILD_KERNEL -DTABLE_NAME=gotoblas_$(TARGET_CORE) -march=skylake-avx512 -mavx512f
  ifeq ($(OSNAME), CYGWIN_NT)
   override CFLAGS += -fno-asynchronous-unwind-tables
  endif
@@ -39,6 +73,10 @@ ifeq ($(TARGET_CORE), SKYLAKEX)
  endif
 else ifeq ($(TARGET_CORE), HASWELL)
  override CFLAGS += -DBUILD_KERNEL -DTABLE_NAME=gotoblas_$(TARGET_CORE) $(AVX2OPT)
+else ifeq ($(TARGET_CORE), ZEN)
+ override CFLAGS += -DBUILD_KERNEL -DTABLE_NAME=gotoblas_$(TARGET_CORE) $(AVX2OPT)
+else ifeq ($(TARGET_CORE), LOONGSON3R4)
+ override CFLAGS += -DBUILD_KERNEL -DTABLE_NAME=gotoblas_$(TARGET_CORE) $(MSA_FLAGS)
 else
  override CFLAGS += -DBUILD_KERNEL -DTABLE_NAME=gotoblas_$(TARGET_CORE)
 endif
@@ -49,6 +87,9 @@ else
 TARGET_CORE = $(CORE)
 KDIR =
 TSUFFIX =
+ifeq ($(TARGET_CORE), LOONGSON3R4)
+  override CFLAGS += $(MSA_FLAGS)
+endif
 endif
 
 -include $(KERNELDIR)/KERNEL.$(TARGET_CORE)

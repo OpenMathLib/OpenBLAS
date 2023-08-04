@@ -18,7 +18,7 @@
 *  Definition:
 *  ===========
 *
-*     SUBROUTINE CGESVDX( JOBU, JOBVT, RANGE, M, N, A, LDA, VL, VU,
+*     SUBROUTINE ZGESVDX( JOBU, JOBVT, RANGE, M, N, A, LDA, VL, VU,
 *    $                    IL, IU, NS, S, U, LDU, VT, LDVT, WORK,
 *    $                    LWORK, RWORK, IWORK, INFO )
 *
@@ -261,8 +261,6 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date June 2016
-*
 *> \ingroup complex16GEsing
 *
 *  =====================================================================
@@ -270,10 +268,9 @@
      $                    IL, IU, NS, S, U, LDU, VT, LDVT, WORK,
      $                    LWORK, RWORK, IWORK, INFO )
 *
-*  -- LAPACK driver routine (version 3.8.0) --
+*  -- LAPACK driver routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     June 2016
 *
 *     .. Scalar Arguments ..
       CHARACTER          JOBU, JOBVT, RANGE

@@ -17,6 +17,19 @@ ZBLASOBJS += zgetrs_N_parallel.$(SUFFIX) zgetrs_T_parallel.$(SUFFIX) zgetrs_R_pa
 XBLASOBJS += xgetrs_N_parallel.$(SUFFIX) xgetrs_T_parallel.$(SUFFIX) xgetrs_R_parallel.$(SUFFIX) xgetrs_C_parallel.$(SUFFIX)
 endif
 
+ifeq "$(or $(BUILD_SINGLE),$(BUILD_DOUBLE))" ""
+SBLASOBJS=
+endif
+ifneq ($(BUILD_DOUBLE),1)
+DBLASOBJS=
+endif
+ifeq "$(or $(BUILD_COMPLEX),$(BUILD_COMPLEX16))" ""
+CBLASOBJS=
+endif
+ifneq ($(BUILD_COMPLEX16),1)
+ZBLASOBJS=
+endif
+
 sgetrs_N_single.$(SUFFIX) : getrs_single.c
 	$(CC) -c $(CFLAGS) -UCOMPLEX -UDOUBLE -UTRANS $< -o $(@F)
 

@@ -242,7 +242,7 @@
 *>
 *>  B       COMPLEX*16 array, dimension (LDB , max(NN))
 *>          Used to hold the Hermitian positive definite matrix for
-*>          the generailzed problem.
+*>          the generalized problem.
 *>          On exit, B contains the last matrix actually
 *>          used.
 *>          Modified.
@@ -366,8 +366,6 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
-*
 *> \ingroup complex16_eig
 *
 *  =====================================================================
@@ -378,10 +376,9 @@
 *
       IMPLICIT NONE
 *
-*  -- LAPACK test routine (version 3.7.0) --
+*  -- LAPACK test routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
 *
 *     .. Scalar Arguments ..
       INTEGER            INFO, LDA, LDB, LDZ, LIWORK, LRWORK, NOUNIT,
@@ -429,7 +426,7 @@
       EXTERNAL           LSAME, DLAMCH, DLARND
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           DLABAD, DLAFTS, DLASUM, XERBLA, ZHBGV, ZHBGVD,
+      EXTERNAL           DLAFTS, DLASUM, XERBLA, ZHBGV, ZHBGVD,
      $                   ZHBGVX, ZHEGV, ZHEGVD, ZHEGVX, ZHPGV, ZHPGVD,
      $                   ZHPGVX, ZLACPY, ZLASET, ZLATMR, ZLATMS, ZSGT01,
      $                   ZHEGV_2STAGE
@@ -493,7 +490,6 @@
 *
       UNFL = DLAMCH( 'Safe minimum' )
       OVFL = DLAMCH( 'Overflow' )
-      CALL DLABAD( UNFL, OVFL )
       ULP = DLAMCH( 'Epsilon' )*DLAMCH( 'Base' )
       ULPINV = ONE / ULP
       RTUNFL = SQRT( UNFL )

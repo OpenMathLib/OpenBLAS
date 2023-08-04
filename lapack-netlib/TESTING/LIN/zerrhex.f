@@ -51,17 +51,14 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
-*
 *> \ingroup complex16_lin
 *
 *  =====================================================================
       SUBROUTINE ZERRHE( PATH, NUNIT )
 *
-*  -- LAPACK test routine (version 3.7.0) --
+*  -- LAPACK test routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
 *
 *     .. Scalar Arguments ..
       CHARACTER*3        PATH
@@ -141,7 +138,7 @@
       OK = .TRUE.
 *
 *     Test error exits of the routines that use factorization
-*     of a Hermitian indefinite matrix with patrial
+*     of a Hermitian indefinite matrix with partial
 *     (Bunch-Kaufman) diagonal pivoting method.
 *
       IF( LSAMEN( 2, C2, 'HE' ) ) THEN
@@ -529,7 +526,7 @@
       ELSE IF( LSAMEN( 2, C2, 'HP' ) ) THEN
 *
 *        Test error exits of the routines that use factorization
-*        of a Hermitian indefinite packed matrix with patrial
+*        of a Hermitian indefinite packed matrix with partial
 *        (Bunch-Kaufman) diagonal pivoting method.
 *
 *        ZHPTRF
@@ -612,6 +609,6 @@
 *
       RETURN
 *
-*     End of ZERRHE
+*     End of ZERRHEX
 *
       END

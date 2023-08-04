@@ -45,6 +45,10 @@
 #define SSYMV_THREAD_U		ssymv_thread_U
 #define SSYMV_THREAD_L		ssymv_thread_L
 
+
+#define SGEMM_DIRECT_PERFORMANT    sgemm_direct_performant
+#define SGEMM_DIRECT		sgemm_direct
+
 #define	SGEMM_ONCOPY		sgemm_oncopy
 #define	SGEMM_OTCOPY		sgemm_otcopy
 
@@ -160,6 +164,8 @@
 
 #define SGEADD_K                sgeadd_k 
 
+#define SGEMM_SMALL_MATRIX_PERMIT	sgemm_small_matrix_permit
+
 #else
 
 #define	SAMAX_K			gotoblas -> samax_k
@@ -203,6 +209,14 @@
 
 #define SSYMV_THREAD_U		ssymv_thread_U
 #define SSYMV_THREAD_L		ssymv_thread_L
+
+#ifdef ARCH_X86_64
+#define SGEMM_DIRECT_PERFORMANT gotoblas -> sgemm_direct_performant
+#define  SGEMM_DIRECT		gotoblas -> sgemm_direct
+#else
+#define SGEMM_DIRECT_PERFORMANT    sgemm_direct_performant
+#define  SGEMM_DIRECT		sgemm_direct
+#endif
 
 #define	SGEMM_ONCOPY		gotoblas -> sgemm_oncopy
 #define	SGEMM_OTCOPY		gotoblas -> sgemm_otcopy
@@ -287,7 +301,20 @@
 
 #define SGEADD_K                gotoblas -> sgeadd_k 
 
+#define SGEMM_SMALL_MATRIX_PERMIT	gotoblas -> sgemm_small_matrix_permit
+
 #endif
+
+#define SGEMM_SMALL_KERNEL_NN		FUNC_OFFSET(sgemm_small_kernel_nn)
+#define SGEMM_SMALL_KERNEL_NT		FUNC_OFFSET(sgemm_small_kernel_nt)
+#define SGEMM_SMALL_KERNEL_TN		FUNC_OFFSET(sgemm_small_kernel_tn)
+#define SGEMM_SMALL_KERNEL_TT		FUNC_OFFSET(sgemm_small_kernel_tt)
+
+#define SGEMM_SMALL_KERNEL_B0_NN	FUNC_OFFSET(sgemm_small_kernel_b0_nn)
+#define SGEMM_SMALL_KERNEL_B0_NT	FUNC_OFFSET(sgemm_small_kernel_b0_nt)
+#define SGEMM_SMALL_KERNEL_B0_TN	FUNC_OFFSET(sgemm_small_kernel_b0_tn)
+#define SGEMM_SMALL_KERNEL_B0_TT	FUNC_OFFSET(sgemm_small_kernel_b0_tt)
+
 
 #define	SGEMM_NN		sgemm_nn
 #define	SGEMM_CN		sgemm_tn

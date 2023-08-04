@@ -66,7 +66,7 @@
 *> \param[in] N
 *> \verbatim
 *>          N is INTEGER
-*>           The order of the matrix H.  N .GE. 0.
+*>           The order of the matrix H.  N >= 0.
 *> \endverbatim
 *>
 *> \param[in] ILO
@@ -78,12 +78,12 @@
 *> \verbatim
 *>          IHI is INTEGER
 *>           It is assumed that H is already upper triangular in rows
-*>           and columns 1:ILO-1 and IHI+1:N and, if ILO.GT.1,
+*>           and columns 1:ILO-1 and IHI+1:N and, if ILO > 1,
 *>           H(ILO,ILO-1) is zero. ILO and IHI are normally set by a
 *>           previous call to CGEBAL, and then passed to CGEHRD when the
 *>           matrix output by CGEBAL is reduced to Hessenberg form.
 *>           Otherwise, ILO and IHI should be set to 1 and N,
-*>           respectively.  If N.GT.0, then 1.LE.ILO.LE.IHI.LE.N.
+*>           respectively.  If N > 0, then 1 <= ILO <= IHI <= N.
 *>           If N = 0, then ILO = 1 and IHI = 0.
 *> \endverbatim
 *>
@@ -95,17 +95,17 @@
 *>           contains the upper triangular matrix T from the Schur
 *>           decomposition (the Schur form). If INFO = 0 and WANT is
 *>           .FALSE., then the contents of H are unspecified on exit.
-*>           (The output value of H when INFO.GT.0 is given under the
+*>           (The output value of H when INFO > 0 is given under the
 *>           description of INFO below.)
 *>
-*>           This subroutine may explicitly set H(i,j) = 0 for i.GT.j and
+*>           This subroutine may explicitly set H(i,j) = 0 for i > j and
 *>           j = 1, 2, ... ILO-1 or j = IHI+1, IHI+2, ... N.
 *> \endverbatim
 *>
 *> \param[in] LDH
 *> \verbatim
 *>          LDH is INTEGER
-*>           The leading dimension of the array H. LDH .GE. max(1,N).
+*>           The leading dimension of the array H. LDH >= max(1,N).
 *> \endverbatim
 *>
 *> \param[out] W
@@ -127,7 +127,7 @@
 *>          IHIZ is INTEGER
 *>           Specify the rows of Z to which transformations must be
 *>           applied if WANTZ is .TRUE..
-*>           1 .LE. ILOZ .LE. ILO; IHI .LE. IHIZ .LE. N.
+*>           1 <= ILOZ <= ILO; IHI <= IHIZ <= N.
 *> \endverbatim
 *>
 *> \param[in,out] Z
@@ -137,7 +137,7 @@
 *>           If WANTZ is .TRUE., then Z(ILO:IHI,ILOZ:IHIZ) is
 *>           replaced by Z(ILO:IHI,ILOZ:IHIZ)*U where U is the
 *>           orthogonal Schur factor of H(ILO:IHI,ILO:IHI).
-*>           (The output value of Z when INFO.GT.0 is given under
+*>           (The output value of Z when INFO > 0 is given under
 *>           the description of INFO below.)
 *> \endverbatim
 *>
@@ -145,7 +145,7 @@
 *> \verbatim
 *>          LDZ is INTEGER
 *>           The leading dimension of the array Z.  if WANTZ is .TRUE.
-*>           then LDZ.GE.MAX(1,IHIZ).  Otherwize, LDZ.GE.1.
+*>           then LDZ >= MAX(1,IHIZ).  Otherwise, LDZ >= 1.
 *> \endverbatim
 *>
 *> \param[out] WORK
@@ -158,7 +158,7 @@
 *> \param[in] LWORK
 *> \verbatim
 *>          LWORK is INTEGER
-*>           The dimension of the array WORK.  LWORK .GE. max(1,N)
+*>           The dimension of the array WORK.  LWORK >= max(1,N)
 *>           is sufficient, but LWORK typically as large as 6*N may
 *>           be required for optimal performance.  A workspace query
 *>           to determine the optimal workspace size is recommended.
@@ -174,19 +174,19 @@
 *> \param[out] INFO
 *> \verbatim
 *>          INFO is INTEGER
-*>             =  0:  successful exit
-*>           .GT. 0:  if INFO = i, CLAQR0 failed to compute all of
+*>             = 0:  successful exit
+*>             > 0:  if INFO = i, CLAQR0 failed to compute all of
 *>                the eigenvalues.  Elements 1:ilo-1 and i+1:n of WR
 *>                and WI contain those eigenvalues which have been
 *>                successfully computed.  (Failures are rare.)
 *>
-*>                If INFO .GT. 0 and WANT is .FALSE., then on exit,
+*>                If INFO > 0 and WANT is .FALSE., then on exit,
 *>                the remaining unconverged eigenvalues are the eigen-
 *>                values of the upper Hessenberg matrix rows and
 *>                columns ILO through INFO of the final, output
 *>                value of H.
 *>
-*>                If INFO .GT. 0 and WANTT is .TRUE., then on exit
+*>                If INFO > 0 and WANTT is .TRUE., then on exit
 *>
 *>           (*)  (initial value of H)*U  = U*(final value of H)
 *>
@@ -194,7 +194,7 @@
 *>                value of  H is upper Hessenberg and triangular in
 *>                rows and columns INFO+1 through IHI.
 *>
-*>                If INFO .GT. 0 and WANTZ is .TRUE., then on exit
+*>                If INFO > 0 and WANTZ is .TRUE., then on exit
 *>
 *>                  (final value of Z(ILO:IHI,ILOZ:IHIZ)
 *>                   =  (initial value of Z(ILO:IHI,ILOZ:IHIZ)*U
@@ -202,7 +202,7 @@
 *>                where U is the unitary matrix in (*) (regard-
 *>                less of the value of WANTT.)
 *>
-*>                If INFO .GT. 0 and WANTZ is .FALSE., then Z is not
+*>                If INFO > 0 and WANTZ is .FALSE., then Z is not
 *>                accessed.
 *> \endverbatim
 *
@@ -213,8 +213,6 @@
 *> \author Univ. of California Berkeley
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
-*
-*> \date December 2016
 *
 *> \ingroup complexOTHERauxiliary
 *
@@ -240,10 +238,9 @@
       SUBROUTINE CLAQR0( WANTT, WANTZ, N, ILO, IHI, H, LDH, W, ILOZ,
      $                   IHIZ, Z, LDZ, WORK, LWORK, INFO )
 *
-*  -- LAPACK auxiliary routine (version 3.7.0) --
+*  -- LAPACK auxiliary routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
 *
 *     .. Scalar Arguments ..
       INTEGER            IHI, IHIZ, ILO, ILOZ, INFO, LDH, LDZ, LWORK, N
@@ -260,7 +257,7 @@
 *     .    CLAHQR because of insufficient subdiagonal scratch space.
 *     .    (This is a hard limit.) ====
       INTEGER            NTINY
-      PARAMETER          ( NTINY = 11 )
+      PARAMETER          ( NTINY = 15 )
 *
 *     ==== Exceptional deflation windows:  try to cure rare
 *     .    slow convergence by varying the size of the
@@ -355,22 +352,22 @@
          END IF
 *
 *        ==== NWR = recommended deflation window size.  At this
-*        .    point,  N .GT. NTINY = 11, so there is enough
+*        .    point,  N .GT. NTINY = 15, so there is enough
 *        .    subdiagonal workspace for NWR.GE.2 as required.
 *        .    (In fact, there is enough subdiagonal space for
-*        .    NWR.GE.3.) ====
+*        .    NWR.GE.4.) ====
 *
          NWR = ILAENV( 13, 'CLAQR0', JBCMPZ, N, ILO, IHI, LWORK )
          NWR = MAX( 2, NWR )
          NWR = MIN( IHI-ILO+1, ( N-1 ) / 3, NWR )
 *
 *        ==== NSR = recommended number of simultaneous shifts.
-*        .    At this point N .GT. NTINY = 11, so there is at
+*        .    At this point N .GT. NTINY = 15, so there is at
 *        .    enough subdiagonal workspace for NSR to be even
 *        .    and greater than or equal to two as required. ====
 *
          NSR = ILAENV( 15, 'CLAQR0', JBCMPZ, N, ILO, IHI, LWORK )
-         NSR = MIN( NSR, ( N+6 ) / 9, IHI-ILO )
+         NSR = MIN( NSR, ( N-3 ) / 6, IHI-ILO )
          NSR = MAX( 2, NSR-MOD( NSR, 2 ) )
 *
 *        ==== Estimate optimal workspace ====
@@ -418,7 +415,7 @@
 *        ==== NSMAX = the Largest number of simultaneous shifts
 *        .    for which there is sufficient workspace. ====
 *
-         NSMAX = MIN( ( N+6 ) / 9, 2*LWORK / 3 )
+         NSMAX = MIN( ( N-3 ) / 6, 2*LWORK / 3 )
          NSMAX = NSMAX - MOD( NSMAX, 2 )
 *
 *        ==== NDFL: an iteration count restarted at deflation. ====
@@ -558,7 +555,7 @@
 *
 *                 ==== Got NS/2 or fewer shifts? Use CLAQR4 or
 *                 .    CLAHQR on a trailing principal submatrix to
-*                 .    get more. (Since NS.LE.NSMAX.LE.(N+6)/9,
+*                 .    get more. (Since NS.LE.NSMAX.LE.(N-3)/6,
 *                 .    there is enough space below the subdiagonal
 *                 .    to fit an NS-by-NS scratch array.) ====
 *
@@ -639,7 +636,7 @@
                   END IF
                END IF
 *
-*              ==== Use up to NS of the the smallest magnatiude
+*              ==== Use up to NS of the the smallest magnitude
 *              .    shifts.  If there aren't NS shifts available,
 *              .    then use them all, possibly dropping one to
 *              .    make the number of shifts even. ====
@@ -659,7 +656,7 @@
 *              .      (NVE-by-KDU) vertical work WV arrow along
 *              .      the left-hand-edge. ====
 *
-               KDU = 3*NS - 3
+               KDU = 2*NS
                KU = N - KDU + 1
                KWH = KDU + 1
                NHO = ( N-KDU+1-4 ) - ( KDU+1 ) + 1

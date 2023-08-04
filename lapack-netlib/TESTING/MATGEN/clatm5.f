@@ -192,8 +192,6 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date June 2016
-*
 *> \ingroup complex_matgen
 *
 *> \par Further Details:
@@ -268,10 +266,9 @@
      $                   E, LDE, F, LDF, R, LDR, L, LDL, ALPHA, QBLCKA,
      $                   QBLCKB )
 *
-*  -- LAPACK computational routine (version 3.7.0) --
+*  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     June 2016
 *
 *     .. Scalar Arguments ..
       INTEGER            LDA, LDB, LDC, LDD, LDE, LDF, LDL, LDR, M, N,

@@ -121,7 +121,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define CGEMM_KERNEL_8X1_MSA(OP0, OP1, OP2, OP3, OP4)                 \
 {                                                                     \
     LD_SP4_INC(pa0, 4, src_a0, src_a1, src_a2, src_a3);               \
-    src_bi = (v4f32) __msa_cast_to_vector_double(*((double *) pb0));  \
+    src_bi = (v4f32) COPY_DOUBLE_TO_VECTOR(*((double *) pb0));        \
     SPLATI_W2_SP(src_bi, 0, src_br, src_bi);                          \
                                                                       \
     PCKEVOD_W2_SP(src_a1, src_a0, src_a0r, src_a0i);                  \
@@ -200,7 +200,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define CGEMM_KERNEL_4X1_MSA(OP0, OP1, OP2, OP3, OP4)                 \
 {                                                                     \
     LD_SP2_INC(pa0, 4, src_a0, src_a1);                               \
-    src_bi = (v4f32) __msa_cast_to_vector_double(*((double *) pb0));  \
+    src_bi = (v4f32) COPY_DOUBLE_TO_VECTOR(*((double *) pb0));        \
     SPLATI_W2_SP(src_bi, 0, src_br, src_bi);                          \
                                                                       \
     PCKEVOD_W2_SP(src_a1, src_a0, src_a0r, src_a0i);                  \
@@ -758,10 +758,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     pc0[1] += alphar * res1;  \
     pc0[1] += alphai * res0;  \
                               \
-    pc1[2] += alphar * res2;  \
-    pc1[2] -= alphai * res3;  \
-    pc1[3] += alphar * res3;  \
-    pc1[3] += alphai * res2;  \
+    pc1[0] += alphar * res2;  \
+    pc1[0] -= alphai * res3;  \
+    pc1[1] += alphar * res3;  \
+    pc1[1] += alphai * res2;  \
 }
 
 #define CGEMM_SCALE_1X1       \
@@ -1067,10 +1067,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     pc0[1] = alphar * res1;   \
     pc0[1] += alphai * res0;  \
                               \
-    pc1[2] = alphar * res2;   \
-    pc1[2] -= alphai * res3;  \
-    pc1[3] = alphar * res3;   \
-    pc1[3] += alphai * res2;  \
+    pc1[0] = alphar * res2;   \
+    pc1[0] -= alphai * res3;  \
+    pc1[1] = alphar * res3;   \
+    pc1[1] += alphai * res2;  \
 }
 
 #define CGEMM_TRMM_SCALE_1X1  \

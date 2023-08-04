@@ -70,7 +70,7 @@
 *>    where U is an upper triangular matrix and L is a lower triangular
 *>    matrix.
 *>
-*> 3. If the leading i-by-i principal minor is not positive definite,
+*> 3. If the leading principal minor of order i is not positive,
 *>    then the routine returns with INFO = i. Otherwise, the factored
 *>    form of A is used to estimate the condition number of the matrix
 *>    A.  If the reciprocal of the condition number is less than machine
@@ -276,10 +276,10 @@
 *>          = 0: successful exit
 *>          < 0: if INFO = -i, the i-th argument had an illegal value
 *>          > 0: if INFO = i, and i is
-*>                <= N:  the leading minor of order i of A is
-*>                       not positive definite, so the factorization
-*>                       could not be completed, and the solution has not
-*>                       been computed. RCOND = 0 is returned.
+*>                <= N:  the leading principal minor of order i of A
+*>                       is not positive, so the factorization could not
+*>                       be completed, and the solution has not been
+*>                       computed. RCOND = 0 is returned.
 *>                = N+1: U is nonsingular, but RCOND is less than machine
 *>                       precision, meaning that the matrix is singular
 *>                       to working precision.  Nevertheless, the
@@ -297,8 +297,6 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date April 2012
-*
 *> \ingroup complex16POsolve
 *
 *  =====================================================================
@@ -306,10 +304,9 @@
      $                   S, B, LDB, X, LDX, RCOND, FERR, BERR, WORK,
      $                   RWORK, INFO )
 *
-*  -- LAPACK driver routine (version 3.7.0) --
+*  -- LAPACK driver routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     April 2012
 *
 *     .. Scalar Arguments ..
       CHARACTER          EQUED, FACT, UPLO

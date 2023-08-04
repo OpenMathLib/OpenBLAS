@@ -15,13 +15,23 @@ ZASUMKERNEL	= zasum_ppc440.S
 
 SAXPYKERNEL	=  axpy_ppc440.S
 DAXPYKERNEL	=  axpy_ppc440.S
+ifneq ($(__BYTE_ORDER__),__ORDER_BIG_ENDIAN__)
 CAXPYKERNEL	= zaxpy_ppc440.S
 ZAXPYKERNEL	= zaxpy_ppc440.S
+else
+CAXPYKERNEL	= ../arm/zaxpy.c
+ZAXPYKERNEL	= ../arm/zaxpy.c
+endif
 
 SDOTKERNEL	=  dot_ppc440.S
 DDOTKERNEL	=  dot_ppc440.S
+ifneq ($(__BYTE_ORDER__),__ORDER_BIG_ENDIAN__)
 CDOTKERNEL	= zdot_ppc440.S
 ZDOTKERNEL	= zdot_ppc440.S
+else
+CDOTKERNEL	= ../arm/zdot.c
+ZDOTKERNEL	= ../arm/zdot.c
+endif
 
 ISAMAXKERNEL	=  iamax_ppc440.S
 IDAMAXKERNEL	=  iamax_ppc440.S
@@ -52,8 +62,13 @@ ZNRM2KERNEL	= znrm2_ppc440.S
 
 SROTKERNEL	=  rot_ppc440.S
 DROTKERNEL	=  rot_ppc440.S
+ifneq ($(__BYTE_ORDER__),__ORDER_BIG_ENDIAN__)
 CROTKERNEL	= zrot_ppc440.S
 ZROTKERNEL	= zrot_ppc440.S
+else
+CROTKERNEL	= ../arm/zrot.c
+ZROTKERNEL	= ../arm/zrot.c
+endif
 
 SSCALKERNEL	=  scal_ppc440.S
 DSCALKERNEL	=  scal_ppc440.S
@@ -116,3 +131,15 @@ ZTRSMKERNEL_LN	=  ztrsm_kernel_ppc440_LN.S
 ZTRSMKERNEL_LT	=  ztrsm_kernel_ppc440_LT.S
 ZTRSMKERNEL_RN	=  ztrsm_kernel_ppc440_LT.S
 ZTRSMKERNEL_RT	=  ztrsm_kernel_ppc440_RT.S
+
+ifeq ($(__BYTE_ORDER__),__ORDER_BIG_ENDIAN__)
+SGEMVNKERNEL = ../arm/gemv_n.c
+DGEMVNKERNEL = ../arm/gemv_n.c
+SGEMVTKERNEL = ../arm/gemv_t.c
+DGEMVTKERNEL = ../arm/gemv_t.c
+CGEMVNKERNEL = ../arm/zgemv_n.c
+ZGEMVNKERNEL = ../arm/zgemv_n.c
+CGEMVTKERNEL = ../arm/zgemv_t.c
+ZGEMVTKERNEL = ../arm/zgemv_t.c
+endif
+

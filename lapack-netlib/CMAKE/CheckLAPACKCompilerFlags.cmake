@@ -1,4 +1,4 @@
-# This module checks against various known compilers and thier respective
+# This module checks against various known compilers and their respective
 # flags to determine any specific flags needing to be set.
 #
 #  1.  If FPE traps are enabled either abort or disable them
@@ -13,6 +13,19 @@
 macro( CheckLAPACKCompilerFlags )
 
 set( FPE_EXIT FALSE )
+
+# FORTRAN ILP default
+if ( FORTRAN_ILP )
+    if( CMAKE_Fortran_COMPILER_ID STREQUAL "Intel" )
+        if ( WIN32 )
+            set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS} /integer-size:64")
+        else ()
+            set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS} -integer-size 64")
+        endif()
+    else()
+        set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS} -fdefault-integer-8")
+    endif()
+endif()
 
 # GNU Fortran
 if( CMAKE_Fortran_COMPILER_ID STREQUAL "GNU" )

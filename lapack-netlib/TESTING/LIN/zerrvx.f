@@ -48,17 +48,14 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date November 2017
-*
 *> \ingroup complex16_lin
 *
 *  =====================================================================
       SUBROUTINE ZERRVX( PATH, NUNIT )
 *
-*  -- LAPACK test routine (version 3.8.0) --
+*  -- LAPACK test routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2017
 *
 *     .. Scalar Arguments ..
       CHARACTER*3        PATH
@@ -94,7 +91,7 @@
      $                   ZHPSV, ZHPSVX, ZPBSV, ZPBSVX, ZPOSV, ZPOSVX,
      $                   ZPPSV, ZPPSVX, ZPTSV, ZPTSVX, ZSPSV, ZSPSVX,
      $                   ZSYSV, ZSYSV_AA, ZSYSV_RK, ZSYSV_ROOK,
-     $                   ZSYSVX, ZSYSV_AA_2STAGE
+     $                   ZSYSVX, ZHESV_AA_2STAGE
 *     ..
 *     .. Scalars in Common ..
       LOGICAL            LERR, OK
@@ -656,6 +653,9 @@
          INFOT = 3
          CALL ZHESV_ROOK( 'U', 0, -1, A, 1, IP, B, 1, W, 1, INFO )
          CALL CHKXER( 'ZHESV_ROOK', INFOT, NOUT, LERR, OK )
+         INFOT = 5
+         CALL ZHESV_ROOK( 'U', 2, 0, A, 1, IP, B, 2, W, 1, INFO )
+         CALL CHKXER( 'ZHESV_ROOK', INFOT, NOUT, LERR, OK )
          INFOT = 8
          CALL ZHESV_ROOK( 'U', 2, 0, A, 2, IP, B, 1, W, 1, INFO )
          CALL CHKXER( 'ZHESV_ROOK', INFOT, NOUT, LERR, OK )
@@ -703,25 +703,31 @@
 *
       ELSE IF( LSAMEN( 2, C2, 'HA' ) ) THEN
 *
-*        ZHESV_AA
+*        ZHESV_AASEN
 *
-        SRNAMT = 'ZHESV_AA'
-        INFOT = 1
-        CALL ZHESV_AA( '/', 0, 0, A, 1, IP, B, 1, W, 1, INFO )
-        CALL CHKXER( 'ZHESV_AA', INFOT, NOUT, LERR, OK )
-        INFOT = 2
-        CALL ZHESV_AA( 'U', -1, 0, A, 1, IP, B, 1, W, 1, INFO )
-        CALL CHKXER( 'ZHESV_AA', INFOT, NOUT, LERR, OK )
-        INFOT = 3
-        CALL ZHESV_AA( 'U', 0, -1, A, 1, IP, B, 1, W, 1, INFO )
-        CALL CHKXER( 'ZHESV_AA', INFOT, NOUT, LERR, OK )
-        INFOT = 8
-        CALL ZHESV_AA( 'U', 2, 0, A, 2, IP, B, 1, W, 1, INFO )
-        CALL CHKXER( 'ZHESV_AA', INFOT, NOUT, LERR, OK )
+         SRNAMT = 'ZHESV_AA'
+         INFOT = 1
+         CALL ZHESV_AA( '/', 0, 0, A, 1, IP, B, 1, W, 1, INFO )
+         CALL CHKXER( 'ZHESV_AA', INFOT, NOUT, LERR, OK )
+         INFOT = 2
+         CALL ZHESV_AA( 'U', -1, 0, A, 1, IP, B, 1, W, 1, INFO )
+         CALL CHKXER( 'ZHESV_AA', INFOT, NOUT, LERR, OK )
+         INFOT = 3
+         CALL ZHESV_AA( 'U', 0, -1, A, 1, IP, B, 1, W, 1, INFO )
+         CALL CHKXER( 'ZHESV_AA', INFOT, NOUT, LERR, OK )
+         INFOT = 5
+         CALL ZHESV_AA( 'U', 2, 0, A, 1, IP, B, 2, W, 1, INFO )
+         CALL CHKXER( 'ZHESV_AA', INFOT, NOUT, LERR, OK )
+         INFOT = 8
+         CALL ZHESV_AA( 'U', 2, 0, A, 2, IP, B, 1, W, 1, INFO )
+         CALL CHKXER( 'ZHESV_AA', INFOT, NOUT, LERR, OK )
+         INFOT = 10
+         CALL ZHESV_AA( 'U', 3, 1, A, 3, IP, B, 3, W, 6, INFO )
+         CALL CHKXER( 'ZHESV_AA', INFOT, NOUT, LERR, OK )
 *
       ELSE IF( LSAMEN( 2, C2, 'H2' ) ) THEN
 *
-*        CHESV_AASEN_2STAGE
+*        ZHESV_AASEN_2STAGE
 *
          SRNAMT = 'ZHESV_AA_2STAGE'
          INFOT = 1
@@ -740,14 +746,76 @@
          CALL ZHESV_AA_2STAGE( 'U', 2, 1, A, 1, A, 1, IP, IP, B, 1,
      $                         W, 1, INFO )
          CALL CHKXER( 'ZHESV_AA_2STAGE', INFOT, NOUT, LERR, OK )
-         INFOT = 11
-         CALL ZHESV_AA_2STAGE( 'U', 2, 1, A, 2, A, 2, IP, IP, B, 1,
-     $                         W, 1, INFO )
-         CALL CHKXER( 'ZHESV_AA_2STAGE', INFOT, NOUT, LERR, OK )
          INFOT = 7
          CALL ZHESV_AA_2STAGE( 'U', 2, 1, A, 2, A, 1, IP, IP, B, 2,
      $                         W, 1, INFO )
          CALL CHKXER( 'ZHESV_AA_2STAGE', INFOT, NOUT, LERR, OK )
+         INFOT = 11
+         CALL ZHESV_AA_2STAGE( 'U', 2, 1, A, 2, A, 8, IP, IP, B, 1,
+     $                         W, 1, INFO )
+         CALL CHKXER( 'ZHESV_AA_2STAGE', INFOT, NOUT, LERR, OK )
+         INFOT = 13
+         CALL ZHESV_AA_2STAGE( 'U', 2, 1, A, 2, A, 8, IP, IP, B, 2,
+     $                         W, 1, INFO )
+         CALL CHKXER( 'ZHESV_AA_2STAGE', INFOT, NOUT, LERR, OK )
+*
+      ELSE IF( LSAMEN( 2, C2, 'SA' ) ) THEN
+*
+*        ZSYSV_AASEN
+*
+         SRNAMT = 'ZSYSV_AA'
+         INFOT = 1
+         CALL ZSYSV_AA( '/', 0, 0, A, 1, IP, B, 1, W, 1, INFO )
+         CALL CHKXER( 'ZSYSV_AA', INFOT, NOUT, LERR, OK )
+         INFOT = 2
+         CALL ZSYSV_AA( 'U', -1, 0, A, 1, IP, B, 1, W, 1, INFO )
+         CALL CHKXER( 'ZSYSV_AA', INFOT, NOUT, LERR, OK )
+         INFOT = 3
+         CALL ZSYSV_AA( 'U', 0, -1, A, 1, IP, B, 1, W, 1, INFO )
+         CALL CHKXER( 'ZSYSV_AA', INFOT, NOUT, LERR, OK )
+         INFOT = 5
+         CALL ZSYSV_AA( 'U', 2, 0, A, 1, IP, B, 2, W, 1, INFO )
+         CALL CHKXER( 'ZSYSV_AA', INFOT, NOUT, LERR, OK )
+         INFOT = 8
+         CALL ZSYSV_AA( 'U', 2, 0, A, 2, IP, B, 1, W, 1, INFO )
+         CALL CHKXER( 'ZSYSV_AA', INFOT, NOUT, LERR, OK )
+         INFOT = 10
+         CALL ZSYSV_AA( 'U', 3, 1, A, 3, IP, B, 3, W, 6, INFO )
+         CALL CHKXER( 'ZSYSV_AA', INFOT, NOUT, LERR, OK )
+*
+      ELSE IF( LSAMEN( 2, C2, 'S2' ) ) THEN
+*
+*        ZSYSV_AASEN_2STAGE
+*
+         SRNAMT = 'ZSYSV_AA_2STAGE'
+         INFOT = 1
+         CALL ZSYSV_AA_2STAGE( '/', 0, 0, A, 1, A, 1, IP, IP, B, 1,
+     $                         W, 1, INFO )
+         CALL CHKXER( 'ZSYSV_AA_2STAGE', INFOT, NOUT, LERR, OK )
+         INFOT = 2
+         CALL ZSYSV_AA_2STAGE( 'U', -1, 0, A, 1, A, 1, IP, IP, B, 1,
+     $                         W, 1, INFO )
+         CALL CHKXER( 'ZSYSV_AA_2STAGE', INFOT, NOUT, LERR, OK )
+         INFOT = 3
+         CALL ZSYSV_AA_2STAGE( 'U', 0, -1, A, 1, A, 1, IP, IP, B, 1,
+     $                         W, 1, INFO )
+         CALL CHKXER( 'ZSYSV_AA_2STAGE', INFOT, NOUT, LERR, OK )
+         INFOT = 5
+         CALL ZSYSV_AA_2STAGE( 'U', 2, 1, A, 1, A, 1, IP, IP, B, 1,
+     $                         W, 1, INFO )
+         CALL CHKXER( 'ZSYSV_AA_2STAGE', INFOT, NOUT, LERR, OK )
+         INFOT = 7
+         CALL ZSYSV_AA_2STAGE( 'U', 2, 1, A, 2, A, 1, IP, IP, B, 2,
+     $                         W, 1, INFO )
+         CALL CHKXER( 'ZSYSV_AA_2STAGE', INFOT, NOUT, LERR, OK )
+         INFOT = 11
+         CALL ZSYSV_AA_2STAGE( 'U', 2, 1, A, 2, A, 8, IP, IP, B, 1,
+     $                         W, 1, INFO )
+         CALL CHKXER( 'ZSYSV_AA_2STAGE', INFOT, NOUT, LERR, OK )
+         INFOT = 13
+         CALL ZSYSV_AA_2STAGE( 'U', 2, 1, A, 2, A, 8, IP, IP, B, 2,
+     $                         W, 1, INFO )
+         CALL CHKXER( 'ZSYSV_AA_2STAGE', INFOT, NOUT, LERR, OK )
 *
       ELSE IF( LSAMEN( 2, C2, 'HP' ) ) THEN
 *
@@ -808,6 +876,9 @@
          CALL CHKXER( 'ZSYSV ', INFOT, NOUT, LERR, OK )
          INFOT = 3
          CALL ZSYSV( 'U', 0, -1, A, 1, IP, B, 1, W, 1, INFO )
+         CALL CHKXER( 'ZSYSV ', INFOT, NOUT, LERR, OK )
+         INFOT = 5
+         CALL ZSYSV( 'U', 2, 0, A, 1, IP, B, 2, W, 1, INFO )
          CALL CHKXER( 'ZSYSV ', INFOT, NOUT, LERR, OK )
          INFOT = 8
          CALL ZSYSV( 'U', 2, 0, A, 2, IP, B, 1, W, 1, INFO )
@@ -872,6 +943,9 @@
          CALL CHKXER( 'ZSYSV_ROOK', INFOT, NOUT, LERR, OK )
          INFOT = 3
          CALL ZSYSV_ROOK( 'U', 0, -1, A, 1, IP, B, 1, W, 1, INFO )
+         CALL CHKXER( 'ZSYSV_ROOK', INFOT, NOUT, LERR, OK )
+         INFOT = 5
+         CALL ZSYSV_ROOK( 'U', 2, 0, A, 1, IP, B, 2, W, 1, INFO )
          CALL CHKXER( 'ZSYSV_ROOK', INFOT, NOUT, LERR, OK )
          INFOT = 8
          CALL ZSYSV_ROOK( 'U', 2, 0, A, 2, IP, B, 1, W, 1, INFO )

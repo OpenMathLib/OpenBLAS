@@ -106,6 +106,7 @@
 *>          INFO is INTEGER
 *>          = 0:  successful exit
 *>          < 0:  if INFO = -i, the i-th argument had an illegal value
+*>          =-5:  if ANORM is NAN or negative.
 *> \endverbatim
 *
 *  Authors:
@@ -116,18 +117,15 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
-*
 *> \ingroup realGEcomputational
 *
 *  =====================================================================
       SUBROUTINE SGECON( NORM, N, A, LDA, ANORM, RCOND, WORK, IWORK,
      $                   INFO )
 *
-*  -- LAPACK computational routine (version 3.7.0) --
+*  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
 *
 *     .. Scalar Arguments ..
       CHARACTER          NORM
@@ -155,10 +153,10 @@
       INTEGER            ISAVE( 3 )
 *     ..
 *     .. External Functions ..
-      LOGICAL            LSAME
+      LOGICAL            LSAME, SISNAN
       INTEGER            ISAMAX
       REAL               SLAMCH
-      EXTERNAL           LSAME, ISAMAX, SLAMCH
+      EXTERNAL           LSAME, ISAMAX, SLAMCH, SISNAN
 *     ..
 *     .. External Subroutines ..
       EXTERNAL           SLACN2, SLATRS, SRSCL, XERBLA
@@ -178,7 +176,7 @@
          INFO = -2
       ELSE IF( LDA.LT.MAX( 1, N ) ) THEN
          INFO = -4
-      ELSE IF( ANORM.LT.ZERO ) THEN
+      ELSE IF( ANORM.LT.ZERO .OR. SISNAN( ANORM ) ) THEN
          INFO = -5
       END IF
       IF( INFO.NE.0 ) THEN

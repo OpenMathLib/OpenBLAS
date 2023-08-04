@@ -51,8 +51,8 @@ static void drot_kernel_16 (long n, double *x, double *y, double c, double s)
 
   __asm__
     (
-       "xxspltd		36, %x13, 0	\n\t"	// load c to both dwords
-       "xxspltd		37, %x14, 0	\n\t"	// load s to both dwords
+       XXSPLTD_S(36,%x13,0)	// load c to both dwords
+       XXSPLTD_S(37,%x14,0)	// load s to both dwords
 
        "lxvd2x		32, 0, %3	\n\t"	// load x
        "lxvd2x		33, %15, %3	\n\t"
@@ -68,10 +68,10 @@ static void drot_kernel_16 (long n, double *x, double *y, double c, double s)
        "addi		%4, %4, 64	\n\t"
 
        "addic.		%2, %2, -8	\n\t"
-       "ble		2f		\n\t"
+       "ble		two%=		\n\t"
 
-       ".p2align	5		\n"
-     "1:				\n\t"
+       ".align	5		\n"
+     "one%=:				\n\t"
 
        "xvmuldp		40, 32, 36	\n\t"	// c * x
        "xvmuldp		41, 33, 36	\n\t"
@@ -135,9 +135,9 @@ static void drot_kernel_16 (long n, double *x, double *y, double c, double s)
        "addi		%4, %4, 128	\n\t"
 
        "addic.		%2, %2, -8	\n\t"
-       "bgt		1b		\n"
+       "bgt		one%=		\n"
 
-     "2:				\n\t"
+     "two%=:				\n\t"
 
        "xvmuldp		40, 32, 36	\n\t"	// c * x
        "xvmuldp		41, 33, 36	\n\t"

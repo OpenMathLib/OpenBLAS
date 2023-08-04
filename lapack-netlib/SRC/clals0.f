@@ -254,8 +254,6 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
-*
 *> \ingroup complexOTHERcomputational
 *
 *> \par Contributors:
@@ -270,10 +268,9 @@
      $                   PERM, GIVPTR, GIVCOL, LDGCOL, GIVNUM, LDGNUM,
      $                   POLES, DIFL, DIFR, Z, K, C, S, RWORK, INFO )
 *
-*  -- LAPACK computational routine (version 3.7.0) --
+*  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
 *
 *     .. Scalar Arguments ..
       INTEGER            GIVPTR, ICOMPQ, INFO, K, LDB, LDBX, LDGCOL,
@@ -395,6 +392,11 @@
      $                ( POLES( I, 2 ).EQ.ZERO ) ) THEN
                      RWORK( I ) = ZERO
                   ELSE
+*
+*                    Use calls to the subroutine SLAMC3 to enforce the
+*                    parentheses (x+y)+z. The goal is to prevent
+*                    optimizing compilers from doing x+(y+z).
+*
                      RWORK( I ) = POLES( I, 2 )*Z( I ) /
      $                            ( SLAMC3( POLES( I, 2 ), DSIGJ )-
      $                            DIFLJ ) / ( POLES( I, 2 )+DJ )
@@ -473,6 +475,11 @@
                   IF( Z( J ).EQ.ZERO ) THEN
                      RWORK( I ) = ZERO
                   ELSE
+*
+*                    Use calls to the subroutine SLAMC3 to enforce the
+*                    parentheses (x+y)+z. The goal is to prevent optimizing
+*                    compilers from doing x+(y+z).
+*
                      RWORK( I ) = Z( J ) / ( SLAMC3( DSIGJ, -POLES( I+1,
      $                            2 ) )-DIFR( I, 1 ) ) /
      $                            ( DSIGJ+POLES( I, 1 ) ) / DIFR( I, 2 )

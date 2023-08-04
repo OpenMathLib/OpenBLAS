@@ -1,4 +1,4 @@
-*> \brief \b DTPRFB applies a real or complex "triangular-pentagonal" blocked reflector to a real or complex matrix, which is composed of two blocks.
+*> \brief \b DTPRFB applies a real "triangular-pentagonal" block reflector to a real matrix, which is composed of two blocks.
 *
 *  =========== DOCUMENTATION ===========
 *
@@ -152,8 +152,8 @@
 *> \verbatim
 *>          LDA is INTEGER
 *>          The leading dimension of the array A.
-*>          If SIDE = 'L', LDC >= max(1,K);
-*>          If SIDE = 'R', LDC >= max(1,M).
+*>          If SIDE = 'L', LDA >= max(1,K);
+*>          If SIDE = 'R', LDA >= max(1,M).
 *> \endverbatim
 *>
 *> \param[in,out] B
@@ -193,8 +193,6 @@
 *> \author Univ. of California Berkeley
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
-*
-*> \date December 2016
 *
 *> \ingroup doubleOTHERauxiliary
 *
@@ -251,10 +249,9 @@
       SUBROUTINE DTPRFB( SIDE, TRANS, DIRECT, STOREV, M, N, K, L,
      $                   V, LDV, T, LDT, A, LDA, B, LDB, WORK, LDWORK )
 *
-*  -- LAPACK auxiliary routine (version 3.7.0) --
+*  -- LAPACK auxiliary routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
 *
 *     .. Scalar Arguments ..
       CHARACTER DIRECT, SIDE, STOREV, TRANS

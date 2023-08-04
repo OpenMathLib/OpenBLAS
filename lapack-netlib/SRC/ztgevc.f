@@ -53,7 +53,7 @@
 *>
 *>    S*x = w*P*x,  (y**H)*S = w*(y**H)*P,
 *>
-*> where y**H denotes the conjugate tranpose of y.
+*> where y**H denotes the conjugate transpose of y.
 *> The eigenvalues are not input to this routine, but are computed
 *> directly from the diagonal elements of S and P.
 *>
@@ -154,7 +154,7 @@
 *> \verbatim
 *>          VR is COMPLEX*16 array, dimension (LDVR,MM)
 *>          On entry, if SIDE = 'R' or 'B' and HOWMNY = 'B', VR must
-*>          contain an N-by-N matrix Q (usually the unitary matrix Z
+*>          contain an N-by-N matrix Z (usually the unitary matrix Z
 *>          of right Schur vectors returned by ZHGEQZ).
 *>          On exit, if SIDE = 'R' or 'B', VR contains:
 *>          if HOWMNY = 'A', the matrix X of right eigenvectors of (S,P);
@@ -211,18 +211,15 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
-*
 *> \ingroup complex16GEcomputational
 *
 *  =====================================================================
       SUBROUTINE ZTGEVC( SIDE, HOWMNY, SELECT, N, S, LDS, P, LDP, VL,
      $                   LDVL, VR, LDVR, MM, M, WORK, RWORK, INFO )
 *
-*  -- LAPACK computational routine (version 3.7.0) --
+*  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
 *
 *     .. Scalar Arguments ..
       CHARACTER          HOWMNY, SIDE
@@ -262,7 +259,7 @@
       EXTERNAL           LSAME, DLAMCH, ZLADIV
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           DLABAD, XERBLA, ZGEMV
+      EXTERNAL           XERBLA, ZGEMV
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          ABS, DBLE, DCMPLX, DCONJG, DIMAG, MAX, MIN
@@ -370,7 +367,6 @@
 *
       SAFMIN = DLAMCH( 'Safe minimum' )
       BIG = ONE / SAFMIN
-      CALL DLABAD( SAFMIN, BIG )
       ULP = DLAMCH( 'Epsilon' )*DLAMCH( 'Base' )
       SMALL = SAFMIN*N / ULP
       BIG = ONE / SMALL

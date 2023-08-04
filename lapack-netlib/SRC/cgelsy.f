@@ -116,6 +116,7 @@
 *>          B is COMPLEX array, dimension (LDB,NRHS)
 *>          On entry, the M-by-NRHS right hand side matrix B.
 *>          On exit, the N-by-NRHS solution matrix X.
+*>          If M = 0 or N = 0, B is not referenced.
 *> \endverbatim
 *>
 *> \param[in] LDB
@@ -148,6 +149,7 @@
 *>          The effective rank of A, i.e., the order of the submatrix
 *>          R11.  This is the same as the order of the submatrix T11
 *>          in the complete orthogonal factorization of A.
+*>          If NRHS = 0, RANK = 0 on output.
 *> \endverbatim
 *>
 *> \param[out] WORK
@@ -195,8 +197,6 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
-*
 *> \ingroup complexGEsolve
 *
 *> \par Contributors:
@@ -210,10 +210,9 @@
       SUBROUTINE CGELSY( M, N, NRHS, A, LDA, B, LDB, JPVT, RCOND, RANK,
      $                   WORK, LWORK, RWORK, INFO )
 *
-*  -- LAPACK driver routine (version 3.7.0) --
+*  -- LAPACK driver routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
 *
 *     .. Scalar Arguments ..
       INTEGER            INFO, LDA, LDB, LWORK, M, N, NRHS, RANK

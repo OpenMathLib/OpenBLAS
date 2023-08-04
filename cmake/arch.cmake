@@ -1,4 +1,3 @@
-##
 ## Author: Hank Anderson <hank@statease.com>
 ## Description: Ported from portion of OpenBLAS/Makefile.system
 ##              Sets various variables based on architecture.
@@ -45,7 +44,18 @@ endif ()
 
 if (DYNAMIC_ARCH)
   if (ARM64)
-    set(DYNAMIC_CORE ARMV8 CORTEXA53 CORTEXA57 CORTEXA72 CORTEXA73 FALKOR THUNDERX THUNDERX2T99)
+	  set(DYNAMIC_CORE ARMV8 CORTEXA53 CORTEXA55 CORTEXA57 CORTEXA72 CORTEXA73 FALKOR THUNDERX THUNDERX2T99 TSV110 EMAG8180 NEOVERSEN1 THUNDERX3T110)
+    if (${CMAKE_C_COMPILER_VERSION} VERSION_GREATER 9.99)
+          set(DYNAMIC_CORE ${DYNAMIC_CORE} NEOVERSEV1 NEOVERSEN2 ARMV8SVE)
+    endif ()
+    if (DYNAMIC_LIST)
+	  set(DYNAMIC_CORE ARMV8 ${DYNAMIC_LIST})
+    endif ()
+  endif ()
+  
+  if (POWER)
+	  set(DYNAMIC_CORE POWER6 POWER8 POWER9 POWER10)
+	  set(CCOMMON_OPT "${CCOMMON_OPT} -DHAVE_P10_SUPPORT")
   endif ()
   
   if (X86)
@@ -72,12 +82,16 @@ if (DYNAMIC_ARCH)
       set(DYNAMIC_CORE ${DYNAMIC_CORE} HASWELL ZEN)
     endif ()
     if (NOT NO_AVX512)
-      set(DYNAMIC_CORE ${DYNAMIC_CORE} SKYLAKEX)
-      string(REGEX REPLACE "-march=native" "" CMAKE_C_FLAGS ${CMAKE_C_FLAGS})
-   endif ()
-    if (DYNAMIC_LIST)
-	set(DYNAMIC_CORE PRESCOTT ${DYNAMIC_LIST})
+      set(DYNAMIC_CORE ${DYNAMIC_CORE} SKYLAKEX COOPERLAKE SAPPHIRERAPIDS)
+      string(REGEX REPLACE "-march=native" "" CMAKE_C_FLAGS "${CMAKE_C_FLAGS}")
     endif ()
+    if (DYNAMIC_LIST)
+      set(DYNAMIC_CORE PRESCOTT ${DYNAMIC_LIST})
+    endif ()
+  endif ()
+
+  if (EXISTS ${PROJECT_SOURCE_DIR}/config_kernel.h)
+	  message (FATAL_ERROR "Your build directory contains a file config_kernel.h, probably from a previous compilation with make. This will conflict with the cmake compilation and cause strange compiler errors - please remove the file before trying again")
   endif ()
 
   if (NOT DYNAMIC_CORE)
@@ -98,7 +112,11 @@ if (${ARCH} STREQUAL "ia64")
   endif ()
 endif ()
 
-if (MIPS64)
+if (MIPS32 OR MIPS64)
+  set(NO_BINARY_MODE 1)
+endif ()
+
+if (LOONGARCH64)
   set(NO_BINARY_MODE 1)
 endif ()
 
@@ -113,6 +131,11 @@ if (ARM)
 endif ()
 
 if (ARM64)
+  set(NO_BINARY_MODE 1)
+  set(BINARY_DEFINED 1)
+endif ()
+
+if (${ARCH} STREQUAL "riscv64")
   set(NO_BINARY_MODE 1)
   set(BINARY_DEFINED 1)
 endif ()

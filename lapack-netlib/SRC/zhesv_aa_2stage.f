@@ -44,7 +44,7 @@
 *> matrices.
 *>
 *> Aasen's 2-stage algorithm is used to factor A as
-*>    A = U * T * U**H,  if UPLO = 'U', or
+*>    A = U**H * T * U,  if UPLO = 'U', or
 *>    A = L * T * L**H,  if UPLO = 'L',
 *> where U (or L) is a product of permutation and unit upper (lower)
 *> triangular matrices, and T is Hermitian and band. The matrix T is
@@ -88,7 +88,7 @@
 *>          triangular part of the matrix A, and the strictly upper
 *>          triangular part of A is not referenced.
 *>
-*>          On exit, L is stored below (or above) the subdiaonal blocks,
+*>          On exit, L is stored below (or above) the subdiagonal blocks,
 *>          when UPLO  is 'L' (or 'U').
 *> \endverbatim
 *>
@@ -178,8 +178,6 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date November 2017
-*
 *> \ingroup complex16HEsolve
 *
 *  =====================================================================
@@ -187,10 +185,9 @@
      $                            IPIV, IPIV2, B, LDB, WORK, LWORK,
      $                            INFO )
 *
-*  -- LAPACK driver routine (version 3.8.0) --
+*  -- LAPACK driver routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2017
 *
       IMPLICIT NONE
 *
@@ -211,9 +208,7 @@
 *
 *     .. Local Scalars ..
       LOGICAL            UPPER, TQUERY, WQUERY
-      INTEGER            I, J, K, I1, I2, TD
-      INTEGER            LDTB, LWKOPT, NB, KB, NT, IINFO
-      COMPLEX            PIV
+      INTEGER            LWKOPT
 *     ..
 *     .. External Functions ..
       LOGICAL            LSAME
@@ -263,7 +258,7 @@
          RETURN
       END IF
 *
-*     Compute the factorization A = U*T*U**H or A = L*T*L**H.
+*     Compute the factorization A = U**H*T*U or A = L*T*L**H.
 *
       CALL ZHETRF_AA_2STAGE( UPLO, N, A, LDA, TB, LTB, IPIV, IPIV2,
      $                       WORK, LWORK, INFO )

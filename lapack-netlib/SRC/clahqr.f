@@ -138,26 +138,26 @@
 *> \param[out] INFO
 *> \verbatim
 *>          INFO is INTEGER
-*>           =   0: successful exit
-*>          .GT. 0: if INFO = i, CLAHQR failed to compute all the
+*>           = 0:  successful exit
+*>           > 0:  if INFO = i, CLAHQR failed to compute all the
 *>                  eigenvalues ILO to IHI in a total of 30 iterations
 *>                  per eigenvalue; elements i+1:ihi of W contain
 *>                  those eigenvalues which have been successfully
 *>                  computed.
 *>
-*>                  If INFO .GT. 0 and WANTT is .FALSE., then on exit,
+*>                  If INFO > 0 and WANTT is .FALSE., then on exit,
 *>                  the remaining unconverged eigenvalues are the
 *>                  eigenvalues of the upper Hessenberg matrix
-*>                  rows and columns ILO thorugh INFO of the final,
+*>                  rows and columns ILO through INFO of the final,
 *>                  output value of H.
 *>
-*>                  If INFO .GT. 0 and WANTT is .TRUE., then on exit
+*>                  If INFO > 0 and WANTT is .TRUE., then on exit
 *>          (*)       (initial value of H)*U  = U*(final value of H)
-*>                  where U is an orthognal matrix.    The final
+*>                  where U is an orthogonal matrix.    The final
 *>                  value of H is upper Hessenberg and triangular in
 *>                  rows and columns INFO+1 through IHI.
 *>
-*>                  If INFO .GT. 0 and WANTZ is .TRUE., then on exit
+*>                  If INFO > 0 and WANTZ is .TRUE., then on exit
 *>                      (final value of Z)  = (initial value of Z)*U
 *>                  where U is the orthogonal matrix in (*)
 *>                  (regardless of the value of WANTT.)
@@ -170,8 +170,6 @@
 *> \author Univ. of California Berkeley
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
-*
-*> \date December 2016
 *
 *> \ingroup complexOTHERauxiliary
 *
@@ -194,11 +192,11 @@
 *  =====================================================================
       SUBROUTINE CLAHQR( WANTT, WANTZ, N, ILO, IHI, H, LDH, W, ILOZ,
      $                   IHIZ, Z, LDZ, INFO )
+      IMPLICIT NONE
 *
-*  -- LAPACK auxiliary routine (version 3.7.0) --
+*  -- LAPACK auxiliary routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
 *
 *     .. Scalar Arguments ..
       INTEGER            IHI, IHIZ, ILO, ILOZ, INFO, LDH, LDZ, N
@@ -218,6 +216,8 @@
       PARAMETER          ( RZERO = 0.0e0, RONE = 1.0e0, HALF = 0.5e0 )
       REAL               DAT1
       PARAMETER          ( DAT1 = 3.0e0 / 4.0e0 )
+      INTEGER            KEXSH
+      PARAMETER          ( KEXSH = 10 )
 *     ..
 *     .. Local Scalars ..
       COMPLEX            CDUM, H11, H11S, H22, SC, SUM, T, T1, TEMP, U,
@@ -225,7 +225,7 @@
       REAL               AA, AB, BA, BB, H10, H21, RTEMP, S, SAFMAX,
      $                   SAFMIN, SMLNUM, SX, T2, TST, ULP
       INTEGER            I, I1, I2, ITS, ITMAX, J, JHI, JLO, K, L, M,
-     $                   NH, NZ
+     $                   NH, NZ, KDEFL
 *     ..
 *     .. Local Arrays ..
       COMPLEX            V( 2 )
@@ -315,6 +315,10 @@
 *
       ITMAX = 30 * MAX( 10, NH )
 *
+*     KDEFL counts the number of iterations since a deflation
+*
+      KDEFL = 0
+*
 *     The main loop begins here. I is the loop index and decreases from
 *     IHI to ILO in steps of 1. Each iteration of the loop works
 *     with the active submatrix in rows and columns L to I.
@@ -374,6 +378,7 @@
 *
          IF( L.GE.I )
      $      GO TO 140
+         KDEFL = KDEFL + 1
 *
 *        Now the active submatrix is in rows and columns L to I. If
 *        eigenvalues only are being computed, only the active submatrix
@@ -384,18 +389,18 @@
             I2 = I
          END IF
 *
-         IF( ITS.EQ.10 ) THEN
-*
-*           Exceptional shift.
-*
-            S = DAT1*ABS( REAL( H( L+1, L ) ) )
-            T = S + H( L, L )
-         ELSE IF( ITS.EQ.20 ) THEN
+         IF( MOD(KDEFL,2*KEXSH).EQ.0 ) THEN
 *
 *           Exceptional shift.
 *
             S = DAT1*ABS( REAL( H( I, I-1 ) ) )
             T = S + H( I, I )
+         ELSE IF( MOD(KDEFL,KEXSH).EQ.0 ) THEN
+*
+*           Exceptional shift.
+*
+            S = DAT1*ABS( REAL( H( L+1, L ) ) )
+            T = S + H( L, L )
          ELSE
 *
 *           Wilkinson's shift.
@@ -556,6 +561,8 @@
 *     H(I,I-1) is negligible: one eigenvalue has converged.
 *
       W( I ) = H( I, I )
+*     reset deflation counter
+      KDEFL = 0
 *
 *     return to start of the main loop with new value of I.
 *

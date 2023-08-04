@@ -127,7 +127,7 @@
 *> \param[in,out] AUXV
 *> \verbatim
 *>          AUXV is COMPLEX array, dimension (NB)
-*>          Auxiliar vector.
+*>          Auxiliary vector.
 *> \endverbatim
 *>
 *> \param[in,out] F
@@ -149,8 +149,6 @@
 *> \author Univ. of California Berkeley
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
-*
-*> \date December 2016
 *
 *> \ingroup complexOTHERauxiliary
 *
@@ -178,10 +176,9 @@
       SUBROUTINE CLAQPS( M, N, OFFSET, NB, KB, A, LDA, JPVT, TAU, VN1,
      $                   VN2, AUXV, F, LDF )
 *
-*  -- LAPACK auxiliary routine (version 3.7.0) --
+*  -- LAPACK auxiliary routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
 *
 *     .. Scalar Arguments ..
       INTEGER            KB, LDA, LDF, M, N, NB, OFFSET

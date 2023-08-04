@@ -44,6 +44,10 @@ COMPILER_DEC
 COMPILER_GNU
 #endif
 
+#if defined(__fcc_version__) || defined(__FCC_version__)
+COMPILER_FUJITSU
+#endif
+
 #if defined(__ANDROID__)
 OS_ANDROID
 #endif
@@ -84,7 +88,7 @@ OS_AIX
 OS_OSF
 #endif
 
-#if defined(__WIN32) || defined(__WIN64) || defined(__WINNT)
+#if defined(__WIN32) || defined(__WIN64) || defined(_WIN32) || defined(_WIN64) || defined(__WINNT)
 OS_WINNT
 #endif
 
@@ -141,7 +145,7 @@ ARCH_SPARC
 ARCH_IA64
 #endif
 
-#if defined(__LP64) || defined(__LP64__) || defined(__ptr64) || defined(__x86_64__) || defined(__amd64__) || defined(__64BIT__)
+#if defined(__LP64) || defined(__LP64__) || defined(__ptr64) || defined(__x86_64__) || defined(__amd64__) || defined(__64BIT__) || defined(__aarch64__)
 BINARY_64
 #endif
 
@@ -151,5 +155,26 @@ ARCH_ARM
 
 #if defined(__aarch64__)
 ARCH_ARM64
+#endif
+
+#if defined(__riscv)
+ARCH_RISCV64
+#endif
+
+#ifdef __loongarch64
+ARCH_LOONGARCH64
+#endif
+
+#if (defined(__STDC_VERSION__) && __STDC_VERSION__ >= 201112L)
+HAVE_C11
+#endif
+
+#if defined(__e2k__)
+ARCH_E2K
+#endif
+
+#if defined(__EMSCRIPTEN__)
+ARCH_RISCV64
+OS_WINDOWS
 #endif
 

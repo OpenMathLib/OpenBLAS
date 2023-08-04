@@ -21,7 +21,7 @@
 *>
 *> \verbatim
 *>
-*> SERRST tests the error exits for SSYTRD, SORGTR, SORMTR, SSPTRD,
+*> SERRST tests the error exits for SSYTRD, SSYTD2, SORGTR, SORMTR, SSPTRD,
 *> SOPGTR, SOPMTR, SSTEQR, SSTERF, SSTEBZ, SSTEIN, SPTEQR, SSBTRD,
 *> SSYEV, SSYEVX, SSYEVD, SSBEV, SSBEVX, SSBEVD,
 *> SSPEV, SSPEVX, SSPEVD, SSTEV, SSTEVX, SSTEVD, and SSTEDC.
@@ -54,17 +54,14 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
-*
 *> \ingroup single_eig
 *
 *  =====================================================================
       SUBROUTINE SERRST( PATH, NUNIT )
 *
-*  -- LAPACK test routine (version 3.7.0) --
+*  -- LAPACK test routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
 *
 *     .. Scalar Arguments ..
       CHARACTER*3        PATH
@@ -98,7 +95,7 @@
      $                   SSBEV, SSBEVD, SSBEVX, SSBTRD, SSPEV, SSPEVD,
      $                   SSPEVX, SSPTRD, SSTEBZ, SSTEDC, SSTEIN, SSTEQR,
      $                   SSTERF, SSTEV, SSTEVD, SSTEVR, SSTEVX, SSYEV,
-     $                   SSYEVD, SSYEVR, SSYEVX, SSYTRD,
+     $                   SSYEVD, SSYEVR, SSYEVX, SSYTRD, SSYTD2,
      $                   SSYEVD_2STAGE, SSYEVR_2STAGE, SSYEVX_2STAGE,
      $                   SSYEV_2STAGE, SSBEV_2STAGE, SSBEVD_2STAGE,
      $                   SSBEVX_2STAGE, SSYTRD_2STAGE, SSYTRD_SY2SB,
@@ -159,6 +156,20 @@
          CALL SSYTRD( 'U', 0, A, 1, D, E, TAU, W, 0, INFO )
          CALL CHKXER( 'SSYTRD', INFOT, NOUT, LERR, OK )
          NT = NT + 4
+*
+*        SSYTD2
+*
+         SRNAMT = 'SSYTD2'
+         INFOT = 1
+         CALL SSYTD2( '/', 0, A, 1, D, E, TAU, INFO )
+         CALL CHKXER( 'SSYTD2', INFOT, NOUT, LERR, OK )
+         INFOT = 2
+         CALL SSYTD2( 'U', -1, A, 1, D, E, TAU, INFO )
+         CALL CHKXER( 'SSYTD2', INFOT, NOUT, LERR, OK )
+         INFOT = 4
+         CALL SSYTD2( 'U', 2, A, 1, D, E, TAU, INFO )
+         CALL CHKXER( 'SSYTD2', INFOT, NOUT, LERR, OK )
+         NT = NT + 3
 *
 *        SSYTRD_2STAGE
 *

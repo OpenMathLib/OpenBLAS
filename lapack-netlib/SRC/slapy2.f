@@ -31,7 +31,7 @@
 *> \verbatim
 *>
 *> SLAPY2 returns sqrt(x**2+y**2), taking care not to cause unnecessary
-*> overflow.
+*> overflow and unnecessary underflow.
 *> \endverbatim
 *
 *  Arguments:
@@ -56,17 +56,14 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date June 2017
-*
 *> \ingroup OTHERauxiliary
 *
 *  =====================================================================
       REAL             FUNCTION SLAPY2( X, Y )
 *
-*  -- LAPACK auxiliary routine (version 3.7.1) --
+*  -- LAPACK auxiliary routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     June 2017
 *
 *     .. Scalar Arguments ..
       REAL               X, Y
@@ -81,18 +78,18 @@
       PARAMETER          ( ONE = 1.0E0 )
 *     ..
 *     .. Local Scalars ..
-      REAL               W, XABS, YABS, Z
+      REAL               W, XABS, YABS, Z, HUGEVAL
       LOGICAL            X_IS_NAN, Y_IS_NAN
 *     ..
 *     .. External Functions ..
       LOGICAL            SISNAN
       EXTERNAL           SISNAN
 *     ..
+*     .. External Subroutines ..
+      REAL               SLAMCH
+*     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          ABS, MAX, MIN, SQRT
-*     ..
-*     .. Executable Statements ..
-*
 *     ..
 *     .. Executable Statements ..
 *
@@ -100,13 +97,14 @@
       Y_IS_NAN = SISNAN( Y )
       IF ( X_IS_NAN ) SLAPY2 = X
       IF ( Y_IS_NAN ) SLAPY2 = Y
+      HUGEVAL = SLAMCH( 'Overflow' )
 *
       IF ( .NOT.( X_IS_NAN.OR.Y_IS_NAN ) ) THEN
          XABS = ABS( X )
          YABS = ABS( Y )
          W = MAX( XABS, YABS )
          Z = MIN( XABS, YABS )
-         IF( Z.EQ.ZERO ) THEN
+         IF( Z.EQ.ZERO .OR. W.GT.HUGEVAL ) THEN
             SLAPY2 = W
          ELSE
             SLAPY2 = W*SQRT( ONE+( Z / W )**2 )

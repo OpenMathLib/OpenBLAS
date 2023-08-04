@@ -48,10 +48,10 @@
 *> \verbatim
 *>          JOB is CHARACTER*1
 *>          Specifies the type of backward transformation required:
-*>          = 'N', do nothing, return immediately;
-*>          = 'P', do backward transformation for permutation only;
-*>          = 'S', do backward transformation for scaling only;
-*>          = 'B', do backward transformations for both permutation and
+*>          = 'N': do nothing, return immediately;
+*>          = 'P': do backward transformation for permutation only;
+*>          = 'S': do backward transformation for scaling only;
+*>          = 'B': do backward transformations for both permutation and
 *>                 scaling.
 *>          JOB must be the same as the argument JOB supplied to CGEBAL.
 *> \endverbatim
@@ -123,18 +123,15 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
-*
 *> \ingroup complexGEcomputational
 *
 *  =====================================================================
       SUBROUTINE CGEBAK( JOB, SIDE, N, ILO, IHI, SCALE, M, V, LDV,
      $                   INFO )
 *
-*  -- LAPACK computational routine (version 3.7.0) --
+*  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
 *
 *     .. Scalar Arguments ..
       CHARACTER          JOB, SIDE
@@ -241,7 +238,7 @@
      $            GO TO 40
                IF( I.LT.ILO )
      $            I = ILO - II
-               K = SCALE( I )
+               K = INT( SCALE( I ) )
                IF( K.EQ.I )
      $            GO TO 40
                CALL CSWAP( M, V( I, 1 ), LDV, V( K, 1 ), LDV )
@@ -255,7 +252,7 @@
      $            GO TO 50
                IF( I.LT.ILO )
      $            I = ILO - II
-               K = SCALE( I )
+               K = INT( SCALE( I ) )
                IF( K.EQ.I )
      $            GO TO 50
                CALL CSWAP( M, V( I, 1 ), LDV, V( K, 1 ), LDV )

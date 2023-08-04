@@ -28,7 +28,6 @@
 *****************************************************************************
 * Contents: Native high-level C interface to LAPACK function zhetrs_aa_2stage
 * Author: Intel Corporation
-* Generated November 2017
 *****************************************************************************/
 
 #include "lapacke_utils.h"

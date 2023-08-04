@@ -261,13 +261,13 @@
 *> \param[out] INFO
 *> \verbatim
 *>          INFO is INTEGER
-*>          = 0 : successful exit
-*>          < 0 : if INFO = -i, the i-th argument had an illegal value
+*>          = 0:  successful exit
+*>          < 0:  if INFO = -i, the i-th argument had an illegal value
 *>          <= N: if INFO = i, then i eigenvectors failed to converge.
 *>                  Their indices are stored in IFAIL.
-*>          > N : SPBSTF returned an error code; i.e.,
+*>          > N:  SPBSTF returned an error code; i.e.,
 *>                if INFO = N + i, for 1 <= i <= N, then the leading
-*>                minor of order i of B is not positive definite.
+*>                principal minor of order i of B is not positive.
 *>                The factorization of B could not be completed and
 *>                no eigenvalues or eigenvectors were computed.
 *> \endverbatim
@@ -279,8 +279,6 @@
 *> \author Univ. of California Berkeley
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
-*
-*> \date June 2016
 *
 *> \ingroup realOTHEReigen
 *
@@ -294,10 +292,9 @@
      $                   LDBB, Q, LDQ, VL, VU, IL, IU, ABSTOL, M, W, Z,
      $                   LDZ, WORK, IWORK, IFAIL, INFO )
 *
-*  -- LAPACK driver routine (version 3.7.1) --
+*  -- LAPACK driver routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     June 2016
 *
 *     .. Scalar Arguments ..
       CHARACTER          JOBZ, RANGE, UPLO
@@ -320,7 +317,7 @@
 *     .. Local Scalars ..
       LOGICAL            ALLEIG, INDEIG, TEST, UPPER, VALEIG, WANTZ
       CHARACTER          ORDER, VECT
-      INTEGER            I, IINFO, INDD, INDE, INDEE, INDIBL, INDISP,
+      INTEGER            I, IINFO, INDD, INDE, INDEE, INDISP,
      $                   INDIWO, INDWRK, ITMP1, J, JJ, NSPLIT
       REAL               TMP1
 *     ..
@@ -460,17 +457,16 @@
       ELSE
          ORDER = 'E'
       END IF
-      INDIBL = 1
-      INDISP = INDIBL + N
+      INDISP = 1 + N
       INDIWO = INDISP + N
       CALL SSTEBZ( RANGE, ORDER, N, VL, VU, IL, IU, ABSTOL,
      $             WORK( INDD ), WORK( INDE ), M, NSPLIT, W,
-     $             IWORK( INDIBL ), IWORK( INDISP ), WORK( INDWRK ),
+     $             IWORK( 1 ), IWORK( INDISP ), WORK( INDWRK ),
      $             IWORK( INDIWO ), INFO )
 *
       IF( WANTZ ) THEN
          CALL SSTEIN( N, WORK( INDD ), WORK( INDE ), M, W,
-     $                IWORK( INDIBL ), IWORK( INDISP ), Z, LDZ,
+     $                IWORK( 1 ), IWORK( INDISP ), Z, LDZ,
      $                WORK( INDWRK ), IWORK( INDIWO ), IFAIL, INFO )
 *
 *        Apply transformation matrix used in reduction to tridiagonal
@@ -500,11 +496,11 @@
    40       CONTINUE
 *
             IF( I.NE.0 ) THEN
-               ITMP1 = IWORK( INDIBL+I-1 )
+               ITMP1 = IWORK( 1 + I-1 )
                W( I ) = W( J )
-               IWORK( INDIBL+I-1 ) = IWORK( INDIBL+J-1 )
+               IWORK( 1 + I-1 ) = IWORK( 1 + J-1 )
                W( J ) = TMP1
-               IWORK( INDIBL+J-1 ) = ITMP1
+               IWORK( 1 + J-1 ) = ITMP1
                CALL SSWAP( N, Z( 1, I ), 1, Z( 1, J ), 1 )
                IF( INFO.NE.0 ) THEN
                   ITMP1 = IFAIL( I )

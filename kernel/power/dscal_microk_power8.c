@@ -41,7 +41,7 @@ static void dscal_kernel_8 (long n, double *x, double alpha)
     (
        "dcbt		0, %2		\n\t"
 
-       "xxspltd		%x3, %x3, 0	\n\t"
+       XXSPLTD_S(%x3,%x3,0)
 
        "lxvd2x		32, 0, %2	\n\t"
        "lxvd2x		33, %4, %2	\n\t"
@@ -55,10 +55,10 @@ static void dscal_kernel_8 (long n, double *x, double alpha)
        "addi		%2, %2, 128	\n\t"
 
        "addic.		%1, %1, -16	\n\t"
-       "ble		2f		\n\t"
+       "ble		two%=		\n\t"
 
-       ".p2align	5		\n"
-     "1:				\n\t"
+       ".align	5		\n"
+     "one%=:				\n\t"
 
        "xvmuldp		40, 32, %x3	\n\t"
        "xvmuldp		41, 33, %x3	\n\t"
@@ -91,9 +91,9 @@ static void dscal_kernel_8 (long n, double *x, double alpha)
        "addi		%2, %2, 256	\n\t"
 
        "addic.		%1, %1, -16	\n\t"
-       "bgt		1b		\n"
+       "bgt		one%=		\n"
 
-     "2:				\n\t"
+     "two%=:				\n\t"
 
        "xvmuldp		40, 32, %x3	\n\t"
        "xvmuldp		41, 33, %x3	\n\t"
@@ -146,8 +146,8 @@ static void dscal_kernel_8_zero (long n, double *x)
     (
        "xxlxor		%x3, %x3, %x3	\n\t"
 
-       ".p2align	5		\n"
-     "1:				\n\t"
+       ".align	5		\n"
+     "one%=:				\n\t"
 
        "stxvd2x		%x3, 0, %2	\n\t"
        "stxvd2x		%x3, %4, %2	\n\t"
@@ -161,7 +161,7 @@ static void dscal_kernel_8_zero (long n, double *x)
        "addi		%2, %2, 128	\n\t"
 
        "addic.		%1, %1, -16	\n\t"
-       "bgt		1b		\n"
+       "bgt		one%=		\n"
 
      "#n=%1 x=%0=%2 t0=%x3 o16=%4 o32=%5 o48=%6 o64=%7 o80=%8 o96=%9 o112=%10"
      :

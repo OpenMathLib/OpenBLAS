@@ -88,17 +88,14 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
-*
 *> \ingroup complex16_lin
 *
 *  =====================================================================
       SUBROUTINE ZPPT01( UPLO, N, A, AFAC, RWORK, RESID )
 *
-*  -- LAPACK test routine (version 3.7.0) --
+*  -- LAPACK test routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
 *
 *     .. Scalar Arguments ..
       CHARACTER          UPLO
@@ -181,7 +178,7 @@
 *
 *           Compute the (K,K) element of the result.
 *
-            TR = ZDOTC( K, AFAC( KC ), 1, AFAC( KC ), 1 )
+            TR = DBLE( ZDOTC( K, AFAC( KC ), 1, AFAC( KC ), 1 ) )
             AFAC( KC+K-1 ) = TR
 *
 *           Compute the rest of column K.

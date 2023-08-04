@@ -6,7 +6,7 @@
 *            http://www.netlib.org/lapack/explore-html/
 *
 *> \htmlonly
-*> Download SGGHRD + dependencies
+*> Download SGGHD3 + dependencies
 *> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/sgghd3.f">
 *> [TGZ]</a>
 *> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/sgghd3.f">
@@ -211,8 +211,6 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date January 2015
-*
 *> \ingroup realOTHERcomputational
 *
 *> \par Further Details:
@@ -220,7 +218,7 @@
 *>
 *> \verbatim
 *>
-*>  This routine reduces A to Hessenberg form and maintains B in
+*>  This routine reduces A to Hessenberg form and maintains B in triangular form
 *>  using a blocked variant of Moler and Stewart's original algorithm,
 *>  as described by Kagstrom, Kressner, Quintana-Orti, and Quintana-Orti
 *>  (BIT 2008).
@@ -230,10 +228,9 @@
       SUBROUTINE SGGHD3( COMPQ, COMPZ, N, ILO, IHI, A, LDA, B, LDB, Q,
      $                   LDQ, Z, LDZ, WORK, LWORK, INFO )
 *
-*  -- LAPACK computational routine (version 3.8.0) --
+*  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     January 2015
 *
       IMPLICIT NONE
 *

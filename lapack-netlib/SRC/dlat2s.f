@@ -104,17 +104,14 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
-*
 *> \ingroup doubleOTHERauxiliary
 *
 *  =====================================================================
       SUBROUTINE DLAT2S( UPLO, N, A, LDA, SA, LDSA, INFO )
 *
-*  -- LAPACK auxiliary routine (version 3.7.0) --
+*  -- LAPACK auxiliary routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
 *
 *     .. Scalar Arguments ..
       CHARACTER          UPLO
@@ -137,6 +134,9 @@
       LOGICAL            LSAME
       EXTERNAL           SLAMCH, LSAME
 *     ..
+*     .. Intrinsic Functions ..
+      INTRINSIC          REAL
+*     ..
 *     .. Executable Statements ..
 *
       RMAX = SLAMCH( 'O' )
@@ -149,7 +149,7 @@
                   INFO = 1
                   GO TO 50
                END IF
-               SA( I, J ) = A( I, J )
+               SA( I, J ) = REAL( A( I, J ) )
    10       CONTINUE
    20    CONTINUE
       ELSE
@@ -160,7 +160,7 @@
                   INFO = 1
                   GO TO 50
                END IF
-               SA( I, J ) = A( I, J )
+               SA( I, J ) = REAL( A( I, J ) )
    30       CONTINUE
    40    CONTINUE
       END IF

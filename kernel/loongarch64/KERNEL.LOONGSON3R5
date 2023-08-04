@@ -1,0 +1,14 @@
+DGEMMKERNEL    = dgemm_kernel_16x4.S
+DGEMMINCOPY    = dgemm_ncopy_16.S
+DGEMMITCOPY    = dgemm_tcopy_16.S
+DGEMMONCOPY    = dgemm_ncopy_4.S
+DGEMMOTCOPY    = dgemm_tcopy_4.S
+DGEMMINCOPYOBJ = dgemm_incopy$(TSUFFIX).$(SUFFIX)
+DGEMMITCOPYOBJ = dgemm_itcopy$(TSUFFIX).$(SUFFIX)
+DGEMMONCOPYOBJ = dgemm_oncopy$(TSUFFIX).$(SUFFIX)
+DGEMMOTCOPYOBJ = dgemm_otcopy$(TSUFFIX).$(SUFFIX)
+
+DTRSMKERNEL_LN  = ../generic/trsm_kernel_LN.c
+DTRSMKERNEL_LT  = ../generic/trsm_kernel_LT.c
+DTRSMKERNEL_RN  = ../generic/trsm_kernel_RN.c
+DTRSMKERNEL_RT  = ../generic/trsm_kernel_RT.c

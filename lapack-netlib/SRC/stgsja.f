@@ -350,8 +350,6 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
-*
 *> \ingroup realOTHERcomputational
 *
 *> \par Further Details:
@@ -378,10 +376,9 @@
      $                   LDB, TOLA, TOLB, ALPHA, BETA, U, LDU, V, LDV,
      $                   Q, LDQ, WORK, NCYCLE, INFO )
 *
-*  -- LAPACK computational routine (version 3.7.0) --
+*  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
 *
 *     .. Scalar Arguments ..
       CHARACTER          JOBQ, JOBU, JOBV
@@ -400,7 +397,7 @@
 *     .. Parameters ..
       INTEGER            MAXIT
       PARAMETER          ( MAXIT = 40 )
-      REAL               ZERO, ONE
+      REAL               ZERO, ONE, HUGENUM
       PARAMETER          ( ZERO = 0.0E+0, ONE = 1.0E+0 )
 *     ..
 *     .. Local Scalars ..
@@ -419,7 +416,8 @@
      $                   SSCAL, XERBLA
 *     ..
 *     .. Intrinsic Functions ..
-      INTRINSIC          ABS, MAX, MIN
+      INTRINSIC          ABS, MAX, MIN, HUGE
+      PARAMETER          ( HUGENUM = HUGE(ZERO) )
 *     ..
 *     .. Executable Statements ..
 *
@@ -596,9 +594,9 @@
 *
          A1 = A( K+I, N-L+I )
          B1 = B( I, N-L+I )
+         GAMMA = B1 / A1
 *
-         IF( A1.NE.ZERO ) THEN
-            GAMMA = B1 / A1
+         IF( (GAMMA.LE.HUGENUM).AND.(GAMMA.GE.-HUGENUM) ) THEN
 *
 *           change sign if necessary
 *

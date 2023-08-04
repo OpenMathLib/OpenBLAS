@@ -4,7 +4,15 @@
 #include "functable.h"
 #endif
 
+#ifndef CBLAS
 void NAME(FLOAT *DA, FLOAT *DB, FLOAT *C, FLOAT *S){
+
+#else
+void CNAME(void *VDA, void *VDB, FLOAT *C, void *VS) {
+    FLOAT *DA = (FLOAT*) VDA;
+    FLOAT *DB = (FLOAT*) VDB;
+    FLOAT *S  = (FLOAT*) VS;
+#endif /* CBLAS */
 
 #if defined(__i386__) || defined(__x86_64__) || defined(__ia64__) || defined(_M_X64) || defined(_M_IX86)
 
@@ -79,8 +87,12 @@ void NAME(FLOAT *DA, FLOAT *DB, FLOAT *C, FLOAT *S){
       aa_i = fabs(da_r);
     }
 
-    scale = (aa_i / aa_r);
-    ada = aa_r * sqrt(ONE + scale * scale);
+    if (aa_r == ZERO) {
+	ada = 0.;
+    } else {
+        scale = (aa_i / aa_r);
+        ada = aa_r * sqrt(ONE + scale * scale);
+    }
 
     bb_r = fabs(db_r);
     bb_i = fabs(db_i);
@@ -90,9 +102,12 @@ void NAME(FLOAT *DA, FLOAT *DB, FLOAT *C, FLOAT *S){
       bb_i = fabs(bb_r);
     }
 
-    scale = (bb_i / bb_r);
-    adb = bb_r * sqrt(ONE + scale * scale);
-
+    if (bb_r == ZERO) {
+	adb = 0.;
+    } else {
+    	scale = (bb_i / bb_r);
+    	adb = bb_r * sqrt(ONE + scale * scale);
+    }
     scale = ada + adb;
 
     aa_r    = da_r / scale;

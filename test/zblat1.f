@@ -1,7 +1,49 @@
+*> \brief \b ZBLAT1
+*
+*  =========== DOCUMENTATION ===========
+*
+* Online html documentation available at
+*            http://www.netlib.org/lapack/explore-html/
+*
+*  Definition:
+*  ===========
+*
+*       PROGRAM ZBLAT1
+*
+*
+*> \par Purpose:
+*  =============
+*>
+*> \verbatim
+*>
+*>    Test program for the COMPLEX*16 Level 1 BLAS.
+*>
+*>    Based upon the original BLAS test routine together with:
+*>    F06GAF Example Program Text
+*> \endverbatim
+*
+*  Authors:
+*  ========
+*
+*> \author Univ. of Tennessee
+*> \author Univ. of California Berkeley
+*> \author Univ. of Colorado Denver
+*> \author NAG Ltd.
+*
+*> \date April 2012
+*
+*> \ingroup complex16_blas_testing
+*
+*  =====================================================================
       PROGRAM ZBLAT1
-*     Test program for the COMPLEX*16 Level 1 BLAS.
-*     Based upon the original BLAS test routine together with:
-*     F06GAF Example Program Text
+*
+*  -- Reference BLAS test routine (version 3.7.0) --
+*  -- Reference BLAS is a software package provided by Univ. of Tennessee,    --
+*  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
+*     April 2012
+*
+*  =====================================================================
+*
 *     .. Parameters ..
       INTEGER          NOUT
       PARAMETER        (NOUT=6)
@@ -114,8 +156,8 @@
      +                  (5.0D0,6.0D0), (5.0D0,6.0D0), (0.1D0,0.1D0),
      +                  (-0.6D0,0.1D0), (0.1D0,-0.3D0), (7.0D0,8.0D0),
      +                  (7.0D0,8.0D0), (7.0D0,8.0D0), (7.0D0,8.0D0),
-     +                  (7.0D0,8.0D0), (0.3D0,0.1D0), (0.1D0,0.4D0),
-     +                  (0.4D0,0.1D0), (0.1D0,0.2D0), (2.0D0,3.0D0),
+     +                  (7.0D0,8.0D0), (0.3D0,0.1D0), (0.5D0,0.0D0),
+     +                  (0.0D0,0.5D0), (0.0D0,0.2D0), (2.0D0,3.0D0),
      +                  (2.0D0,3.0D0), (2.0D0,3.0D0), (2.0D0,3.0D0)/
       DATA              ((CV(I,J,2),I=1,8),J=1,5)/(0.1D0,0.1D0),
      +                  (4.0D0,5.0D0), (4.0D0,5.0D0), (4.0D0,5.0D0),
@@ -129,10 +171,10 @@
      +                  (3.0D0,6.0D0), (-0.6D0,0.1D0), (4.0D0,7.0D0),
      +                  (0.1D0,-0.3D0), (7.0D0,2.0D0), (7.0D0,2.0D0),
      +                  (7.0D0,2.0D0), (0.3D0,0.1D0), (5.0D0,8.0D0),
-     +                  (0.1D0,0.4D0), (6.0D0,9.0D0), (0.4D0,0.1D0),
-     +                  (8.0D0,3.0D0), (0.1D0,0.2D0), (9.0D0,4.0D0)/
-      DATA              STRUE2/0.0D0, 0.5D0, 0.6D0, 0.7D0, 0.7D0/
-      DATA              STRUE4/0.0D0, 0.7D0, 1.0D0, 1.3D0, 1.7D0/
+     +                  (0.5D0,0.0D0), (6.0D0,9.0D0), (0.0D0,0.5D0),
+     +                  (8.0D0,3.0D0), (0.0D0,0.2D0), (9.0D0,4.0D0)/
+      DATA              STRUE2/0.0D0, 0.5D0, 0.6D0, 0.7D0, 0.8D0/
+      DATA              STRUE4/0.0D0, 0.7D0, 1.0D0, 1.3D0, 1.6D0/
       DATA              ((CTRUE5(I,J,1),I=1,8),J=1,5)/(0.1D0,0.1D0),
      +                  (1.0D0,2.0D0), (1.0D0,2.0D0), (1.0D0,2.0D0),
      +                  (1.0D0,2.0D0), (1.0D0,2.0D0), (1.0D0,2.0D0),
@@ -145,8 +187,8 @@
      +                  (0.11D0,-0.03D0), (-0.17D0,0.46D0),
      +                  (-0.17D0,-0.19D0), (7.0D0,8.0D0), (7.0D0,8.0D0),
      +                  (7.0D0,8.0D0), (7.0D0,8.0D0), (7.0D0,8.0D0),
-     +                  (0.19D0,-0.17D0), (0.32D0,0.09D0),
-     +                  (0.23D0,-0.24D0), (0.18D0,0.01D0),
+     +                  (0.19D0,-0.17D0), (0.20D0,-0.35D0),
+     +                  (0.35D0,0.20D0), (0.14D0,0.08D0),
      +                  (2.0D0,3.0D0), (2.0D0,3.0D0), (2.0D0,3.0D0),
      +                  (2.0D0,3.0D0)/
       DATA              ((CTRUE5(I,J,2),I=1,8),J=1,5)/(0.1D0,0.1D0),
@@ -162,9 +204,9 @@
      +                  (-0.17D0,0.46D0), (4.0D0,7.0D0),
      +                  (-0.17D0,-0.19D0), (7.0D0,2.0D0), (7.0D0,2.0D0),
      +                  (7.0D0,2.0D0), (0.19D0,-0.17D0), (5.0D0,8.0D0),
-     +                  (0.32D0,0.09D0), (6.0D0,9.0D0),
-     +                  (0.23D0,-0.24D0), (8.0D0,3.0D0),
-     +                  (0.18D0,0.01D0), (9.0D0,4.0D0)/
+     +                  (0.20D0,-0.35D0), (6.0D0,9.0D0),
+     +                  (0.35D0,0.20D0), (8.0D0,3.0D0),
+     +                  (0.14D0,0.08D0), (9.0D0,4.0D0)/
       DATA              ((CTRUE6(I,J,1),I=1,8),J=1,5)/(0.1D0,0.1D0),
      +                  (1.0D0,2.0D0), (1.0D0,2.0D0), (1.0D0,2.0D0),
      +                  (1.0D0,2.0D0), (1.0D0,2.0D0), (1.0D0,2.0D0),
@@ -177,8 +219,8 @@
      +                  (0.03D0,0.03D0), (-0.18D0,0.03D0),
      +                  (0.03D0,-0.09D0), (7.0D0,8.0D0), (7.0D0,8.0D0),
      +                  (7.0D0,8.0D0), (7.0D0,8.0D0), (7.0D0,8.0D0),
-     +                  (0.09D0,0.03D0), (0.03D0,0.12D0),
-     +                  (0.12D0,0.03D0), (0.03D0,0.06D0), (2.0D0,3.0D0),
+     +                  (0.09D0,0.03D0), (0.15D0,0.00D0),
+     +                  (0.00D0,0.15D0), (0.00D0,0.06D0), (2.0D0,3.0D0),
      +                  (2.0D0,3.0D0), (2.0D0,3.0D0), (2.0D0,3.0D0)/
       DATA              ((CTRUE6(I,J,2),I=1,8),J=1,5)/(0.1D0,0.1D0),
      +                  (4.0D0,5.0D0), (4.0D0,5.0D0), (4.0D0,5.0D0),
@@ -193,8 +235,8 @@
      +                  (-0.18D0,0.03D0), (4.0D0,7.0D0),
      +                  (0.03D0,-0.09D0), (7.0D0,2.0D0), (7.0D0,2.0D0),
      +                  (7.0D0,2.0D0), (0.09D0,0.03D0), (5.0D0,8.0D0),
-     +                  (0.03D0,0.12D0), (6.0D0,9.0D0), (0.12D0,0.03D0),
-     +                  (8.0D0,3.0D0), (0.03D0,0.06D0), (9.0D0,4.0D0)/
+     +                  (0.15D0,0.00D0), (6.0D0,9.0D0), (0.00D0,0.15D0),
+     +                  (8.0D0,3.0D0), (0.00D0,0.06D0), (9.0D0,4.0D0)/
       DATA              ITRUE3/0, 1, 2, 2, 2/
 *     .. Executable Statements ..
       DO 60 INCX = 1, 2
@@ -529,7 +571,8 @@
 *
 *     .. Parameters ..
       INTEGER          NOUT
-      PARAMETER        (NOUT=6)
+      DOUBLE PRECISION ZERO
+      PARAMETER        (NOUT=6, ZERO=0.0D0)
 *     .. Scalar Arguments ..
       DOUBLE PRECISION SFAC
       INTEGER          LEN
@@ -552,7 +595,7 @@
 *
       DO 40 I = 1, LEN
          SD = SCOMP(I) - STRUE(I)
-         IF (SDIFF(ABS(SSIZE(I))+ABS(SFAC*SD),ABS(SSIZE(I))).EQ.0.0D0)
+         IF (ABS(SFAC*SD) .LE. ABS(SSIZE(I))*EPSILON(ZERO))
      +       GO TO 40
 *
 *                             HERE    SCOMP(I) IS NOT CLOSE TO STRUE(I).

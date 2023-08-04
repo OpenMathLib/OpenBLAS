@@ -158,8 +158,6 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date April 2012
-*
 *> \ingroup complex16_lin
 *
 *  =====================================================================
@@ -167,10 +165,9 @@
      $                   A, AFAC, ASAV, B, BSAV, X, XACT, S, WORK,
      $                   RWORK, IWORK, NOUT )
 *
-*  -- LAPACK test routine (version 3.7.0) --
+*  -- LAPACK test routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     April 2012
 *
 *     .. Scalar Arguments ..
       LOGICAL            TSTERR
@@ -707,9 +704,10 @@
                      CALL ZLACPY( 'Full', N, NRHS, BSAV, LDA, B, LDA )
 
                      IF( .NOT.PREFAC )
-     $                  CALL ZLASET( 'Full', N, N, ZERO, ZERO, AFAC,
-     $                               LDA )
-                     CALL ZLASET( 'Full', N, NRHS, ZERO, ZERO, X, LDA )
+     $                  CALL ZLASET( 'Full', N, N, DCMPLX( ZERO ),
+     $                               DCMPLX( ZERO ), AFAC, LDA )
+                     CALL ZLASET( 'Full', N, NRHS, DCMPLX( ZERO ),
+     $                            DCMPLX( ZERO ), X, LDA )
                      IF( IEQUED.GT.1 .AND. N.GT.0 ) THEN
 *
 *                       Equilibrate the matrix if FACT = 'F' and
@@ -891,6 +889,6 @@
      $      G12.5 )
       RETURN
 *
-*     End of ZDRVGE
+*     End of ZDRVGEX
 *
       END

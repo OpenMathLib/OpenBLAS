@@ -282,8 +282,6 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date June 2016
-*
 *> \ingroup doubleGEcomputational
 *
 *> \par Further Details:
@@ -304,10 +302,9 @@
      $                   ALPHAR, ALPHAI, BETA, Q, LDQ, Z, LDZ, WORK,
      $                   LWORK, INFO )
 *
-*  -- LAPACK computational routine (version 3.7.0) --
+*  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     June 2016
 *
 *     .. Scalar Arguments ..
       CHARACTER          COMPQ, COMPZ, JOB
@@ -340,9 +337,9 @@
      $                   BTOL, C, C11I, C11R, C12, C21, C22I, C22R, CL,
      $                   CQ, CR, CZ, ESHIFT, S, S1, S1INV, S2, SAFMAX,
      $                   SAFMIN, SCALE, SL, SQI, SQR, SR, SZI, SZR, T1,
-     $                   TAU, TEMP, TEMP2, TEMPI, TEMPR, U1, U12, U12L,
-     $                   U2, ULP, VS, W11, W12, W21, W22, WABS, WI, WR,
-     $                   WR2
+     $                   T2, T3, TAU, TEMP, TEMP2, TEMPI, TEMPR, U1,
+     $                   U12, U12L, U2, ULP, VS, W11, W12, W21, W22,
+     $                   WABS, WI, WR, WR2
 *     ..
 *     .. Local Arrays ..
       DOUBLE PRECISION   V( 3 )
@@ -531,7 +528,9 @@
 *
             GO TO 80
          ELSE
-            IF( ABS( H( ILAST, ILAST-1 ) ).LE.ATOL ) THEN
+            IF( ABS( H( ILAST, ILAST-1 ) ).LE.MAX( SAFMIN, ULP*( 
+     $         ABS( H( ILAST, ILAST ) ) + ABS( H( ILAST-1, ILAST-1 ) ) 
+     $         ) ) ) THEN
                H( ILAST, ILAST-1 ) = ZERO
                GO TO 80
             END IF
@@ -551,7 +550,9 @@
             IF( J.EQ.ILO ) THEN
                ILAZRO = .TRUE.
             ELSE
-               IF( ABS( H( J, J-1 ) ).LE.ATOL ) THEN
+               IF( ABS( H( J, J-1 ) ).LE.MAX( SAFMIN, ULP*( 
+     $         ABS( H( J, J ) ) + ABS( H( J-1, J-1 ) ) 
+     $         ) ) ) THEN
                   H( J, J-1 ) = ZERO
                   ILAZRO = .TRUE.
                ELSE
@@ -1126,25 +1127,27 @@
                   H( J+2, J-1 ) = ZERO
                END IF
 *
+               T2 = TAU*V( 2 )
+               T3 = TAU*V( 3 )
                DO 230 JC = J, ILASTM
-                  TEMP = TAU*( H( J, JC )+V( 2 )*H( J+1, JC )+V( 3 )*
-     $                   H( J+2, JC ) )
-                  H( J, JC ) = H( J, JC ) - TEMP
-                  H( J+1, JC ) = H( J+1, JC ) - TEMP*V( 2 )
-                  H( J+2, JC ) = H( J+2, JC ) - TEMP*V( 3 )
-                  TEMP2 = TAU*( T( J, JC )+V( 2 )*T( J+1, JC )+V( 3 )*
-     $                    T( J+2, JC ) )
-                  T( J, JC ) = T( J, JC ) - TEMP2
-                  T( J+1, JC ) = T( J+1, JC ) - TEMP2*V( 2 )
-                  T( J+2, JC ) = T( J+2, JC ) - TEMP2*V( 3 )
+                  TEMP = H( J, JC )+V( 2 )*H( J+1, JC )+V( 3 )*
+     $                   H( J+2, JC )
+                  H( J, JC ) = H( J, JC ) - TEMP*TAU
+                  H( J+1, JC ) = H( J+1, JC ) - TEMP*T2
+                  H( J+2, JC ) = H( J+2, JC ) - TEMP*T3
+                  TEMP2 = T( J, JC )+V( 2 )*T( J+1, JC )+V( 3 )*
+     $                    T( J+2, JC )
+                  T( J, JC ) = T( J, JC ) - TEMP2*TAU
+                  T( J+1, JC ) = T( J+1, JC ) - TEMP2*T2
+                  T( J+2, JC ) = T( J+2, JC ) - TEMP2*T3
   230          CONTINUE
                IF( ILQ ) THEN
                   DO 240 JR = 1, N
-                     TEMP = TAU*( Q( JR, J )+V( 2 )*Q( JR, J+1 )+V( 3 )*
-     $                      Q( JR, J+2 ) )
-                     Q( JR, J ) = Q( JR, J ) - TEMP
-                     Q( JR, J+1 ) = Q( JR, J+1 ) - TEMP*V( 2 )
-                     Q( JR, J+2 ) = Q( JR, J+2 ) - TEMP*V( 3 )
+                     TEMP = Q( JR, J )+V( 2 )*Q( JR, J+1 )+V( 3 )*
+     $                      Q( JR, J+2 )
+                     Q( JR, J ) = Q( JR, J ) - TEMP*TAU
+                     Q( JR, J+1 ) = Q( JR, J+1 ) - TEMP*T2
+                     Q( JR, J+2 ) = Q( JR, J+2 ) - TEMP*T3
   240             CONTINUE
                END IF
 *
@@ -1232,27 +1235,29 @@
 *
 *              Apply transformations from the right.
 *
+               T2 = TAU*V(2)
+               T3 = TAU*V(3)
                DO 260 JR = IFRSTM, MIN( J+3, ILAST )
-                  TEMP = TAU*( H( JR, J )+V( 2 )*H( JR, J+1 )+V( 3 )*
-     $                   H( JR, J+2 ) )
-                  H( JR, J ) = H( JR, J ) - TEMP
-                  H( JR, J+1 ) = H( JR, J+1 ) - TEMP*V( 2 )
-                  H( JR, J+2 ) = H( JR, J+2 ) - TEMP*V( 3 )
+                  TEMP = H( JR, J )+V( 2 )*H( JR, J+1 )+V( 3 )*
+     $                   H( JR, J+2 )
+                  H( JR, J ) = H( JR, J ) - TEMP*TAU
+                  H( JR, J+1 ) = H( JR, J+1 ) - TEMP*T2
+                  H( JR, J+2 ) = H( JR, J+2 ) - TEMP*T3
   260          CONTINUE
                DO 270 JR = IFRSTM, J + 2
-                  TEMP = TAU*( T( JR, J )+V( 2 )*T( JR, J+1 )+V( 3 )*
-     $                   T( JR, J+2 ) )
-                  T( JR, J ) = T( JR, J ) - TEMP
-                  T( JR, J+1 ) = T( JR, J+1 ) - TEMP*V( 2 )
-                  T( JR, J+2 ) = T( JR, J+2 ) - TEMP*V( 3 )
+                  TEMP = T( JR, J )+V( 2 )*T( JR, J+1 )+V( 3 )*
+     $                   T( JR, J+2 )
+                  T( JR, J ) = T( JR, J ) - TEMP*TAU
+                  T( JR, J+1 ) = T( JR, J+1 ) - TEMP*T2
+                  T( JR, J+2 ) = T( JR, J+2 ) - TEMP*T3
   270          CONTINUE
                IF( ILZ ) THEN
                   DO 280 JR = 1, N
-                     TEMP = TAU*( Z( JR, J )+V( 2 )*Z( JR, J+1 )+V( 3 )*
-     $                      Z( JR, J+2 ) )
-                     Z( JR, J ) = Z( JR, J ) - TEMP
-                     Z( JR, J+1 ) = Z( JR, J+1 ) - TEMP*V( 2 )
-                     Z( JR, J+2 ) = Z( JR, J+2 ) - TEMP*V( 3 )
+                     TEMP = Z( JR, J )+V( 2 )*Z( JR, J+1 )+V( 3 )*
+     $                      Z( JR, J+2 )
+                     Z( JR, J ) = Z( JR, J ) - TEMP*TAU
+                     Z( JR, J+1 ) = Z( JR, J+1 ) - TEMP*T2
+                     Z( JR, J+2 ) = Z( JR, J+2 ) - TEMP*T3
   280             CONTINUE
                END IF
                T( J+1, J ) = ZERO

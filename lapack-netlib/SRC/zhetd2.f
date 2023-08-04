@@ -122,8 +122,6 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
-*
 *> \ingroup complex16HEcomputational
 *
 *> \par Further Details:
@@ -175,10 +173,9 @@
 *  =====================================================================
       SUBROUTINE ZHETD2( UPLO, N, A, LDA, D, E, TAU, INFO )
 *
-*  -- LAPACK computational routine (version 3.7.0) --
+*  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
 *
 *     .. Scalar Arguments ..
       CHARACTER          UPLO
@@ -248,7 +245,7 @@
 *
             ALPHA = A( I, I+1 )
             CALL ZLARFG( I, ALPHA, A( 1, I+1 ), 1, TAUI )
-            E( I ) = ALPHA
+            E( I ) = DBLE( ALPHA )
 *
             IF( TAUI.NE.ZERO ) THEN
 *
@@ -276,10 +273,10 @@
                A( I, I ) = DBLE( A( I, I ) )
             END IF
             A( I, I+1 ) = E( I )
-            D( I+1 ) = A( I+1, I+1 )
+            D( I+1 ) = DBLE( A( I+1, I+1 ) )
             TAU( I ) = TAUI
    10    CONTINUE
-         D( 1 ) = A( 1, 1 )
+         D( 1 ) = DBLE( A( 1, 1 ) )
       ELSE
 *
 *        Reduce the lower triangle of A
@@ -292,7 +289,7 @@
 *
             ALPHA = A( I+1, I )
             CALL ZLARFG( N-I, ALPHA, A( MIN( I+2, N ), I ), 1, TAUI )
-            E( I ) = ALPHA
+            E( I ) = DBLE( ALPHA )
 *
             IF( TAUI.NE.ZERO ) THEN
 *
@@ -321,10 +318,10 @@
                A( I+1, I+1 ) = DBLE( A( I+1, I+1 ) )
             END IF
             A( I+1, I ) = E( I )
-            D( I ) = A( I, I )
+            D( I ) = DBLE( A( I, I ) )
             TAU( I ) = TAUI
    20    CONTINUE
-         D( N ) = A( N, N )
+         D( N ) = DBLE( A( N, N ) )
       END IF
 *
       RETURN

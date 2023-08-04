@@ -164,18 +164,15 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
-*
-*> \ingroup realGEsolve
+*> \ingroup gelss
 *
 *  =====================================================================
       SUBROUTINE SGELSS( M, N, NRHS, A, LDA, B, LDB, S, RCOND, RANK,
      $                   WORK, LWORK, INFO )
 *
-*  -- LAPACK driver routine (version 3.7.0) --
+*  -- LAPACK driver routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
 *
 *     .. Scalar Arguments ..
       INTEGER            INFO, LDA, LDB, LWORK, M, N, NRHS, RANK
@@ -205,7 +202,7 @@
 *     ..
 *     .. External Subroutines ..
       EXTERNAL           SBDSQR, SCOPY, SGEBRD, SGELQF, SGEMM, SGEMV,
-     $                   SGEQRF, SLABAD, SLACPY, SLASCL, SLASET, SORGBR,
+     $                   SGEQRF, SLACPY, SLASCL, SLASET, SORGBR,
      $                   SORMBR, SORMLQ, SORMQR, SRSCL, XERBLA
 *     ..
 *     .. External Functions ..
@@ -256,11 +253,11 @@
 *
 *              Compute space needed for SGEQRF
                CALL SGEQRF( M, N, A, LDA, DUM(1), DUM(1), -1, INFO )
-               LWORK_SGEQRF=DUM(1)
+               LWORK_SGEQRF = INT( DUM(1) )
 *              Compute space needed for SORMQR
                CALL SORMQR( 'L', 'T', M, NRHS, N, A, LDA, DUM(1), B,
      $                   LDB, DUM(1), -1, INFO )
-               LWORK_SORMQR=DUM(1)
+               LWORK_SORMQR = INT( DUM(1) )
                MM = N
                MAXWRK = MAX( MAXWRK, N + LWORK_SGEQRF )
                MAXWRK = MAX( MAXWRK, N + LWORK_SORMQR )
@@ -275,15 +272,15 @@
 *              Compute space needed for SGEBRD
                CALL SGEBRD( MM, N, A, LDA, S, DUM(1), DUM(1),
      $                      DUM(1), DUM(1), -1, INFO )
-               LWORK_SGEBRD=DUM(1)
+               LWORK_SGEBRD = INT( DUM(1) )
 *              Compute space needed for SORMBR
                CALL SORMBR( 'Q', 'L', 'T', MM, NRHS, N, A, LDA, DUM(1),
      $                B, LDB, DUM(1), -1, INFO )
-               LWORK_SORMBR=DUM(1)
+               LWORK_SORMBR = INT( DUM(1) )
 *              Compute space needed for SORGBR
                CALL SORGBR( 'P', N, N, N, A, LDA, DUM(1),
      $                   DUM(1), -1, INFO )
-               LWORK_SORGBR=DUM(1)
+               LWORK_SORGBR = INT( DUM(1) )
 *              Compute total workspace needed
                MAXWRK = MAX( MAXWRK, 3*N + LWORK_SGEBRD )
                MAXWRK = MAX( MAXWRK, 3*N + LWORK_SORMBR )
@@ -307,19 +304,19 @@
 *                 Compute space needed for SGEBRD
                   CALL SGEBRD( M, M, A, LDA, S, DUM(1), DUM(1),
      $                      DUM(1), DUM(1), -1, INFO )
-                  LWORK_SGEBRD=DUM(1)
+                  LWORK_SGEBRD = INT( DUM(1) )
 *                 Compute space needed for SORMBR
                   CALL SORMBR( 'Q', 'L', 'T', M, NRHS, N, A, LDA,
      $                DUM(1), B, LDB, DUM(1), -1, INFO )
-                  LWORK_SORMBR=DUM(1)
+                  LWORK_SORMBR = INT( DUM(1) )
 *                 Compute space needed for SORGBR
                   CALL SORGBR( 'P', M, M, M, A, LDA, DUM(1),
      $                   DUM(1), -1, INFO )
-                  LWORK_SORGBR=DUM(1)
+                  LWORK_SORGBR = INT( DUM(1) )
 *                 Compute space needed for SORMLQ
                   CALL SORMLQ( 'L', 'T', N, NRHS, M, A, LDA, DUM(1),
      $                 B, LDB, DUM(1), -1, INFO )
-                  LWORK_SORMLQ=DUM(1)
+                  LWORK_SORMLQ = INT( DUM(1) )
 *                 Compute total workspace needed
                   MAXWRK = M + M*ILAENV( 1, 'SGELQF', ' ', M, N, -1,
      $                                  -1 )
@@ -340,15 +337,15 @@
 *                 Compute space needed for SGEBRD
                   CALL SGEBRD( M, N, A, LDA, S, DUM(1), DUM(1),
      $                      DUM(1), DUM(1), -1, INFO )
-                  LWORK_SGEBRD=DUM(1)
+                  LWORK_SGEBRD = INT( DUM(1) )
 *                 Compute space needed for SORMBR
                   CALL SORMBR( 'Q', 'L', 'T', M, NRHS, M, A, LDA,
      $                DUM(1), B, LDB, DUM(1), -1, INFO )
-                  LWORK_SORMBR=DUM(1)
+                  LWORK_SORMBR = INT( DUM(1) )
 *                 Compute space needed for SORGBR
                   CALL SORGBR( 'P', M, N, M, A, LDA, DUM(1),
      $                   DUM(1), -1, INFO )
-                  LWORK_SORGBR=DUM(1)
+                  LWORK_SORGBR = INT( DUM(1) )
                   MAXWRK = 3*M + LWORK_SGEBRD
                   MAXWRK = MAX( MAXWRK, 3*M + LWORK_SORMBR )
                   MAXWRK = MAX( MAXWRK, 3*M + LWORK_SORGBR )
@@ -384,7 +381,6 @@
       SFMIN = SLAMCH( 'S' )
       SMLNUM = SFMIN / EPS
       BIGNUM = ONE / SMLNUM
-      CALL SLABAD( SMLNUM, BIGNUM )
 *
 *     Scale A if max element outside range [SMLNUM,BIGNUM]
 *
@@ -528,7 +524,7 @@
      $                     LDB, ZERO, WORK, N )
                CALL SLACPY( 'G', N, BL, WORK, N, B( 1, I ), LDB )
    20       CONTINUE
-         ELSE
+         ELSE IF( NRHS.EQ.1 ) THEN
             CALL SGEMV( 'T', N, N, ONE, A, LDA, B, 1, ZERO, WORK, 1 )
             CALL SCOPY( N, WORK, 1, B, 1 )
          END IF
@@ -625,7 +621,7 @@
                CALL SLACPY( 'G', M, BL, WORK( IWORK ), M, B( 1, I ),
      $                      LDB )
    40       CONTINUE
-         ELSE
+         ELSE IF( NRHS.EQ.1 ) THEN
             CALL SGEMV( 'T', M, M, ONE, WORK( IL ), LDWORK, B( 1, 1 ),
      $                  1, ZERO, WORK( IWORK ), 1 )
             CALL SCOPY( M, WORK( IWORK ), 1, B( 1, 1 ), 1 )
@@ -711,7 +707,7 @@
      $                     LDB, ZERO, WORK, N )
                CALL SLACPY( 'F', N, BL, WORK, N, B( 1, I ), LDB )
    60       CONTINUE
-         ELSE
+         ELSE IF( NRHS.EQ.1 ) THEN
             CALL SGEMV( 'T', M, N, ONE, A, LDA, B, 1, ZERO, WORK, 1 )
             CALL SCOPY( N, WORK, 1, B, 1 )
          END IF

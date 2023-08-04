@@ -56,7 +56,7 @@
 *>
 *> Note : CSTEGR and CSTEMR work only on machines which follow
 *> IEEE-754 floating-point standard in their handling of infinities and
-*> NaNs.  Normal execution may create these exceptiona values and hence
+*> NaNs.  Normal execution may create these exceptional values and hence
 *> may abort due to a floating point exception in environments which
 *> do not conform to the IEEE-754 standard.
 *> \endverbatim
@@ -249,8 +249,6 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date June 2016
-*
 *> \ingroup complexOTHERcomputational
 *
 *> \par Contributors:
@@ -265,10 +263,9 @@
      $           ABSTOL, M, W, Z, LDZ, ISUPPZ, WORK, LWORK, IWORK,
      $           LIWORK, INFO )
 *
-*  -- LAPACK computational routine (version 3.7.1) --
+*  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     June 2016
 *
 *     .. Scalar Arguments ..
       CHARACTER          JOBZ, RANGE

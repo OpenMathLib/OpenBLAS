@@ -91,8 +91,8 @@
 *>          INFO is INTEGER
 *>          = 0:  successful exit
 *>          < 0:  if INFO = -i, the i-th argument had an illegal value
-*>          > 0:  if INFO = i, the leading minor of order i is not
-*>                positive definite, and the factorization could not be
+*>          > 0:  if INFO = i, the leading principal minor of order i
+*>                is not positive, and the factorization could not be
 *>                completed.
 *>
 *>  Further Notes on RFP Format:
@@ -204,17 +204,14 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
-*
 *> \ingroup complexOTHERcomputational
 *
 *  =====================================================================
       SUBROUTINE CPFTRF( TRANSR, UPLO, N, A, INFO )
 *
-*  -- LAPACK computational routine (version 3.7.0) --
+*  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
 *
 *     .. Scalar Arguments ..
       CHARACTER          TRANSR, UPLO

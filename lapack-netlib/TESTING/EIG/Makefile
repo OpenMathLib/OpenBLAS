@@ -1,5 +1,3 @@
-include ../../make.inc
-
 ########################################################################
 #  This is the makefile for the eigenvalue test program from LAPACK.
 #  The test files are organized as follows:
@@ -33,6 +31,9 @@ include ../../make.inc
 #
 ########################################################################
 
+TOPSRCDIR = ../..
+include $(TOPSRCDIR)/make.inc
+
 AEIGTST = \
    alahdg.o \
    alasum.o \
@@ -57,11 +58,11 @@ SEIGTST = schkee.o \
    serrbd.o serrec.o serred.o serrgg.o serrhs.o serrst.o \
    sget02.o sget10.o sget22.o sget23.o sget24.o sget31.o \
    sget32.o sget33.o sget34.o sget35.o sget36.o \
-   sget37.o sget38.o sget39.o sget51.o sget52.o sget53.o \
+   sget37.o sget38.o sget39.o sget40.o sget51.o sget52.o sget53.o \
    sget54.o sglmts.o sgqrts.o sgrqts.o sgsvts3.o \
    shst01.o slarfy.o slarhs.o slatm4.o slctes.o slctsx.o slsets.o sort01.o \
    sort03.o ssbt21.o ssgt01.o sslect.o sspt21.o sstt21.o \
-   sstt22.o ssyt21.o ssyt22.o
+   sstt22.o ssyl01.o ssyt21.o ssyt22.o
 
 CEIGTST = cchkee.o \
    cbdt01.o cbdt02.o cbdt03.o cbdt05.o \
@@ -77,7 +78,7 @@ CEIGTST = cchkee.o \
    cget54.o cglmts.o cgqrts.o cgrqts.o cgsvts3.o \
    chbt21.o chet21.o chet22.o chpt21.o chst01.o \
    clarfy.o clarhs.o clatm4.o clctes.o clctsx.o clsets.o csbmv.o \
-   csgt01.o cslect.o \
+   csgt01.o cslect.o csyl01.o\
    cstt21.o cstt22.o cunt01.o cunt03.o
 
 DZIGTST = dlafts.o dlahd2.o dlasum.o dlatb9.o dstech.o dstect.o \
@@ -94,11 +95,11 @@ DEIGTST = dchkee.o \
    derrbd.o derrec.o derred.o derrgg.o derrhs.o derrst.o \
    dget02.o dget10.o dget22.o dget23.o dget24.o dget31.o \
    dget32.o dget33.o dget34.o dget35.o dget36.o \
-   dget37.o dget38.o dget39.o dget51.o dget52.o dget53.o \
+   dget37.o dget38.o dget39.o dget40.o dget51.o dget52.o dget53.o \
    dget54.o dglmts.o dgqrts.o dgrqts.o dgsvts3.o \
    dhst01.o dlarfy.o dlarhs.o dlatm4.o dlctes.o dlctsx.o dlsets.o dort01.o \
    dort03.o dsbt21.o dsgt01.o dslect.o dspt21.o dstt21.o \
-   dstt22.o dsyt21.o dsyt22.o
+   dstt22.o dsyl01.o dsyt21.o dsyt22.o
 
 ZEIGTST = zchkee.o \
    zbdt01.o zbdt02.o zbdt03.o zbdt05.o \
@@ -114,27 +115,29 @@ ZEIGTST = zchkee.o \
    zget54.o zglmts.o zgqrts.o zgrqts.o zgsvts3.o \
    zhbt21.o zhet21.o zhet22.o zhpt21.o zhst01.o \
    zlarfy.o zlarhs.o zlatm4.o zlctes.o zlctsx.o zlsets.o zsbmv.o \
-   zsgt01.o zslect.o \
+   zsgt01.o zslect.o zsyl01.o\
    zstt21.o zstt22.o zunt01.o zunt03.o
 
+.PHONY: all
 all: single complex double complex16
 
+.PHONY: single complex double complex16
 single: xeigtsts
 complex: xeigtstc
 double: xeigtstd
 complex16: xeigtstz
 
-xeigtsts: $(SEIGTST) $(SCIGTST) $(AEIGTST) ../../$(TMGLIB) ../../$(LAPACKLIB) $(BLASLIB)
-	$(LOADER) $(LOADOPTS) -o $@ $^
+xeigtsts: $(SEIGTST) $(SCIGTST) $(AEIGTST) $(TMGLIB) ../$(LAPACKLIB) $(BLASLIB)
+	$(LOADER) $(FFLAGS) $(LDFLAGS) -o $@ $^
 
-xeigtstc: $(CEIGTST) $(SCIGTST) $(AEIGTST) ../../$(TMGLIB) ../../$(LAPACKLIB) $(BLASLIB)
-	$(LOADER) $(LOADOPTS) -o $@ $^
+xeigtstc: $(CEIGTST) $(SCIGTST) $(AEIGTST) $(TMGLIB) ../$(LAPACKLIB) $(BLASLIB)
+	$(LOADER) $(FFLAGS) $(LDFLAGS) -o $@ $^
 
-xeigtstd: $(DEIGTST) $(DZIGTST) $(AEIGTST) ../../$(TMGLIB) ../../$(LAPACKLIB) $(BLASLIB)
-	$(LOADER) $(LOADOPTS) -o $@ $^
+xeigtstd: $(DEIGTST) $(DZIGTST) $(AEIGTST) $(TMGLIB) ../$(LAPACKLIB) $(BLASLIB)
+	$(LOADER) $(FFLAGS) $(LDFLAGS) -o $@ $^
 
-xeigtstz: $(ZEIGTST) $(DZIGTST) $(AEIGTST) ../../$(TMGLIB) ../../$(LAPACKLIB) $(BLASLIB)
-	$(LOADER) $(LOADOPTS) -o $@ $^
+xeigtstz: $(ZEIGTST) $(DZIGTST) $(AEIGTST) $(TMGLIB) ../$(LAPACKLIB) $(BLASLIB)
+	$(LOADER) $(FFLAGS) $(LDFLAGS) -o $@ $^
 
 $(AEIGTST): $(FRC)
 $(SCIGTST): $(FRC)
@@ -147,20 +150,18 @@ $(ZEIGTST): $(FRC)
 FRC:
 	@FRC=$(FRC)
 
+.PHONY: clean cleanobj cleanexe
 clean: cleanobj cleanexe
 cleanobj:
 	rm -f *.o
 cleanexe:
 	rm -f xeigtst*
 
-schkee.o: schkee.f
-	$(FORTRAN) $(DRVOPTS) -c -o $@ $<
-dchkee.o: dchkee.f
-	$(FORTRAN) $(DRVOPTS) -c -o $@ $<
-cchkee.o: cchkee.f
-	$(FORTRAN) $(DRVOPTS) -c -o $@ $<
-zchkee.o: zchkee.f
-	$(FORTRAN) $(DRVOPTS) -c -o $@ $<
-
-.f.o:
-	$(FORTRAN) $(OPTS) -c -o $@ $<
+schkee.o: schkee.F
+	$(FC) $(FFLAGS_DRV) -c -o $@ $<
+dchkee.o: dchkee.F
+	$(FC) $(FFLAGS_DRV) -c -o $@ $<
+cchkee.o: cchkee.F
+	$(FC) $(FFLAGS_DRV) -c -o $@ $<
+zchkee.o: zchkee.F
+	$(FC) $(FFLAGS_DRV) -c -o $@ $<

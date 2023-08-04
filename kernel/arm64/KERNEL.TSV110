@@ -72,8 +72,13 @@ ZCOPYKERNEL  = copy.S
 
 SDOTKERNEL   = dot.S
 DDOTKERNEL   = dot.S
+ifneq ($(C_COMPILER), PGI)
 CDOTKERNEL   = zdot.S
 ZDOTKERNEL   = zdot.S
+else
+CDOTKERNEL = ../arm/zdot.c
+ZDOTKERNEL = ../arm/zdot.c
+endif
 DSDOTKERNEL  = dot.S
 
 SNRM2KERNEL  = nrm2.S
@@ -109,13 +114,29 @@ ZGEMVTKERNEL = zgemv_t.S
 SGEMMKERNEL    =  sgemm_kernel_$(SGEMM_UNROLL_M)x$(SGEMM_UNROLL_N).S
 STRMMKERNEL    =  strmm_kernel_$(SGEMM_UNROLL_M)x$(SGEMM_UNROLL_N).S
 ifneq ($(SGEMM_UNROLL_M), $(SGEMM_UNROLL_N))
-SGEMMINCOPY    =  ../generic/gemm_ncopy_$(SGEMM_UNROLL_M).c
+ifeq ($(SGEMM_UNROLL_M), 16)
+SGEMMITCOPY    =  sgemm_tcopy_$(SGEMM_UNROLL_M).S
+else
 SGEMMITCOPY    =  ../generic/gemm_tcopy_$(SGEMM_UNROLL_M).c
+endif
+ifeq ($(SGEMM_UNROLL_M), 4)
+SGEMMINCOPY    =  sgemm_ncopy_$(SGEMM_UNROLL_M).S
+else
+SGEMMINCOPY    =  ../generic/gemm_ncopy_$(SGEMM_UNROLL_M).c
+endif
 SGEMMINCOPYOBJ =  sgemm_incopy$(TSUFFIX).$(SUFFIX)
 SGEMMITCOPYOBJ =  sgemm_itcopy$(TSUFFIX).$(SUFFIX)
 endif
-SGEMMONCOPY    =  ../generic/gemm_ncopy_$(SGEMM_UNROLL_N).c
+ifeq ($(SGEMM_UNROLL_N), 16)
+SGEMMOTCOPY    =  sgemm_tcopy_$(SGEMM_UNROLL_N).S
+else
 SGEMMOTCOPY    =  ../generic/gemm_tcopy_$(SGEMM_UNROLL_N).c
+endif
+ifeq ($(SGEMM_UNROLL_N), 4)
+SGEMMONCOPY    =  sgemm_ncopy_$(SGEMM_UNROLL_N).S
+else
+SGEMMONCOPY    =  ../generic/gemm_ncopy_$(SGEMM_UNROLL_N).c
+endif
 SGEMMONCOPYOBJ =  sgemm_oncopy$(TSUFFIX).$(SUFFIX)
 SGEMMOTCOPYOBJ =  sgemm_otcopy$(TSUFFIX).$(SUFFIX)
 

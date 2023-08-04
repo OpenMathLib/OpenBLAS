@@ -24,7 +24,7 @@ C> \brief \b ZPOTRF VARIANT: top-looking block version of the algorithm, calling
 C>\details \b Purpose:
 C>\verbatim
 C>
-C> ZPOTRF computes the Cholesky factorization of a real symmetric
+C> ZPOTRF computes the Cholesky factorization of a complex Hermitian
 C> positive definite matrix A.
 C>
 C> The factorization has the form
@@ -55,7 +55,7 @@ C>
 C> \param[in,out] A
 C> \verbatim
 C>          A is COMPLEX*16 array, dimension (LDA,N)
-C>          On entry, the symmetric matrix A.  If UPLO = 'U', the leading
+C>          On entry, the Hermitian matrix A.  If UPLO = 'U', the leading
 C>          N-by-N upper triangular part of A contains the upper
 C>          triangular part of the matrix A, and the strictly lower
 C>          triangular part of A is not referenced.  If UPLO = 'L', the
@@ -79,8 +79,8 @@ C> \verbatim
 C>          INFO is INTEGER
 C>          = 0:  successful exit
 C>          < 0:  if INFO = -i, the i-th argument had an illegal value
-C>          > 0:  if INFO = i, the leading minor of order i is not
-C>                positive definite, and the factorization could not be
+C>          > 0:  if INFO = i, the leading principal minor of order i
+C>                is not positive, and the factorization could not be
 C>                completed.
 C> \endverbatim
 C>
@@ -100,10 +100,9 @@ C> \ingroup variantsPOcomputational
 *  =====================================================================
       SUBROUTINE ZPOTRF ( UPLO, N, A, LDA, INFO )
 *
-*  -- LAPACK computational routine (version 3.1) --
+*  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
 *
 *     .. Scalar Arguments ..
       CHARACTER          UPLO

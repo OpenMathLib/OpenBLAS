@@ -47,6 +47,7 @@
 
 #define MB
 #define WMB
+#define RMB
 
 #ifdef C_SUN
 #define	__asm__ __asm
@@ -339,7 +340,8 @@ REALNAME:
 	.align 16; \
 	.globl REALNAME ;\
        .type REALNAME, @function; \
-REALNAME:
+REALNAME: \
+	_CET_ENDBR
 
 #ifdef PROFILE
 #define PROFCODE call mcount

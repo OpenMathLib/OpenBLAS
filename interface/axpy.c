@@ -115,7 +115,7 @@ void CNAME(blasint n, FLOAT alpha, FLOAT *x, blasint incx, FLOAT *y, blasint inc
 #endif
 
     blas_level1_thread(mode, n, 0, 0, &alpha,
-		       x, incx, y, incy, NULL, 0, (void *)AXPYU_K, nthreads);
+		       x, incx, y, incy, NULL, 0,  (int (*)(void))AXPYU_K, nthreads);
 
   }
 #endif

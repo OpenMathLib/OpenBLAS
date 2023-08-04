@@ -1,5 +1,6 @@
 /*********************************************************************/
 /* Copyright 2009, 2010 The University of Texas at Austin.           */
+/* Copyright 2023 The OpenBLAS Project.                              */
 /* All rights reserved.                                              */
 /*                                                                   */
 /* Redistribution and use in source and binary forms, with or        */
@@ -44,10 +45,6 @@
 #define DIVIDE_RATE 2
 #endif
 
-#ifndef SWITCH_RATIO
-#define SWITCH_RATIO 2
-#endif
-
 //The array of job_t may overflow the stack.
 //Instead, use malloc to alloc job_t.
 #if MAX_CPU_NUMBER > BLAS3_MEM_ALLOC_THRESHOLD
@@ -67,7 +64,7 @@
 #endif
 
 typedef struct {
-#if __STDC_VERSION__ >= 201112L
+#ifdef HAVE_C11
 _Atomic
 #else 
   volatile
@@ -526,9 +523,15 @@ int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa, FLO
   BLASLONG width, i, j, k;
   BLASLONG n, n_from, n_to;
   int  mode, mask;
-  double dnum;
+  double dnum, di, dinum;
 
-  if ((nthreads  == 1) || (args -> n < nthreads * SWITCH_RATIO)) {
+#if defined(DYNAMIC_ARCH)
+  int switch_ratio = gotoblas->switch_ratio;
+#else
+  int switch_ratio = SWITCH_RATIO;
+#endif
+
+  if ((nthreads == 1) || (args->n < nthreads * switch_ratio)) {
     SYRK_LOCAL(args, range_m, range_n, sa, sb, 0);
     return 0;
   }
@@ -601,9 +604,14 @@ int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa, FLO
 
     if (nthreads - num_cpu > 1) {
 
-      double di   = (double)i;
+      di   = (double)i;
 
-      width = (((BLASLONG)((sqrt(di * di + dnum) - di) + mask)/(mask+1)) * (mask+1) );
+      dinum = di * di + dnum;
+
+      if (dinum > 0)
+        width = (((BLASLONG)((sqrt(dinum) - di) + mask)/(mask+1)) * (mask+1) );
+      else
+        width = (((BLASLONG)(- di + mask)/(mask+1)) * (mask+1) );
 
       if (num_cpu == 0) width = n - (((n - width)/(mask+1)) * (mask+1) );
 
@@ -643,10 +651,15 @@ int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa, FLO
 
     if (nthreads - num_cpu > 1) {
 
-	double di   = (double)i;
+	di   = (double)i;
 
-	width = (((BLASLONG)((sqrt(di * di + dnum) - di) + mask)/(mask+1)) * (mask+1));
+	dinum = di * di +dnum;
 
+        if (dinum > 0)
+	  width = (((BLASLONG)((sqrt(di * di + dnum) - di) + mask)/(mask+1)) * (mask+1));
+        else
+          width = (((BLASLONG)(- di + mask)/(mask+1)) * (mask+1));
+      
       if ((width > n - i) || (width < mask)) width = n - i;
 
     } else {

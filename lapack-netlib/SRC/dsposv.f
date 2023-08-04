@@ -106,9 +106,9 @@
 *>          triangular part of the matrix A, and the strictly upper
 *>          triangular part of A is not referenced.
 *>          On exit, if iterative refinement has been successfully used
-*>          (INFO.EQ.0 and ITER.GE.0, see description below), then A is
+*>          (INFO = 0 and ITER >= 0, see description below), then A is
 *>          unchanged, if double precision factorization has been used
-*>          (INFO.EQ.0 and ITER.LT.0, see description below), then the
+*>          (INFO = 0 and ITER < 0, see description below), then the
 *>          array A contains the factor U or L from the Cholesky
 *>          factorization A = U**T*U or A = L*L**T.
 *> \endverbatim
@@ -177,8 +177,8 @@
 *>          INFO is INTEGER
 *>          = 0:  successful exit
 *>          < 0:  if INFO = -i, the i-th argument had an illegal value
-*>          > 0:  if INFO = i, the leading minor of order i of (DOUBLE
-*>                PRECISION) A is not positive definite, so the
+*>          > 0:  if INFO = i, the leading principal minor of order i
+*>                of (DOUBLE PRECISION) A is not positive, so the
 *>                factorization could not be completed, and the solution
 *>                has not been computed.
 *> \endverbatim
@@ -191,18 +191,15 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date June 2016
-*
 *> \ingroup doublePOsolve
 *
 *  =====================================================================
       SUBROUTINE DSPOSV( UPLO, N, NRHS, A, LDA, B, LDB, X, LDX, WORK,
      $                   SWORK, ITER, INFO )
 *
-*  -- LAPACK driver routine (version 3.8.0) --
+*  -- LAPACK driver routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     June 2016
 *
 *     .. Scalar Arguments ..
       CHARACTER          UPLO
@@ -413,7 +410,7 @@
    30 CONTINUE
 *
 *     If we are at this place of the code, this is because we have
-*     performed ITER=ITERMAX iterations and never satisified the
+*     performed ITER=ITERMAX iterations and never satisfied the
 *     stopping criterion, set up the ITER flag accordingly and follow
 *     up on double precision routine.
 *
@@ -434,6 +431,6 @@
 *
       RETURN
 *
-*     End of DSPOSV.
+*     End of DSPOSV
 *
       END

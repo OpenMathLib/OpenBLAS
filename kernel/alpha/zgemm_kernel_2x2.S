@@ -38,7 +38,7 @@
 
 #define ASSEMBLER
 #include "common.h"
-#include "version.h"
+
 
 #if !defined(EV4) && !defined(EV5) && !defined(EV6)
 #error "Architecture is not specified."

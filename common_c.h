@@ -232,6 +232,8 @@
 
 #define CGEADD_K                cgeadd_k 
 
+#define CGEMM_SMALL_MATRIX_PERMIT	cgemm_small_matrix_permit
+
 #else
 
 #define	CAMAX_K			gotoblas -> camax_k
@@ -426,7 +428,50 @@
 
 #define CGEADD_K                gotoblas -> cgeadd_k 
 
+#define CGEMM_SMALL_MATRIX_PERMIT	gotoblas -> cgemm_small_matrix_permit
+
 #endif
+
+#define CGEMM_SMALL_KERNEL_NN		FUNC_OFFSET(cgemm_small_kernel_nn)
+#define CGEMM_SMALL_KERNEL_NT		FUNC_OFFSET(cgemm_small_kernel_nt)
+#define CGEMM_SMALL_KERNEL_NR		FUNC_OFFSET(cgemm_small_kernel_nr)
+#define CGEMM_SMALL_KERNEL_NC		FUNC_OFFSET(cgemm_small_kernel_nc)
+
+#define CGEMM_SMALL_KERNEL_TN		FUNC_OFFSET(cgemm_small_kernel_tn)
+#define CGEMM_SMALL_KERNEL_TT		FUNC_OFFSET(cgemm_small_kernel_tt)
+#define CGEMM_SMALL_KERNEL_TR		FUNC_OFFSET(cgemm_small_kernel_tr)
+#define CGEMM_SMALL_KERNEL_TC		FUNC_OFFSET(cgemm_small_kernel_tc)
+
+#define CGEMM_SMALL_KERNEL_RN		FUNC_OFFSET(cgemm_small_kernel_rn)
+#define CGEMM_SMALL_KERNEL_RT		FUNC_OFFSET(cgemm_small_kernel_rt)
+#define CGEMM_SMALL_KERNEL_RR		FUNC_OFFSET(cgemm_small_kernel_rr)
+#define CGEMM_SMALL_KERNEL_RC		FUNC_OFFSET(cgemm_small_kernel_rc)
+
+#define CGEMM_SMALL_KERNEL_CN		FUNC_OFFSET(cgemm_small_kernel_cn)
+#define CGEMM_SMALL_KERNEL_CT		FUNC_OFFSET(cgemm_small_kernel_ct)
+#define CGEMM_SMALL_KERNEL_CR		FUNC_OFFSET(cgemm_small_kernel_cr)
+#define CGEMM_SMALL_KERNEL_CC		FUNC_OFFSET(cgemm_small_kernel_cc)
+
+#define CGEMM_SMALL_KERNEL_B0_NN	FUNC_OFFSET(cgemm_small_kernel_b0_nn)
+#define CGEMM_SMALL_KERNEL_B0_NT	FUNC_OFFSET(cgemm_small_kernel_b0_nt)
+#define CGEMM_SMALL_KERNEL_B0_NR	FUNC_OFFSET(cgemm_small_kernel_b0_nr)
+#define CGEMM_SMALL_KERNEL_B0_NC	FUNC_OFFSET(cgemm_small_kernel_b0_nc)
+
+#define CGEMM_SMALL_KERNEL_B0_TN	FUNC_OFFSET(cgemm_small_kernel_b0_tn)
+#define CGEMM_SMALL_KERNEL_B0_TT	FUNC_OFFSET(cgemm_small_kernel_b0_tt)
+#define CGEMM_SMALL_KERNEL_B0_TR	FUNC_OFFSET(cgemm_small_kernel_b0_tr)
+#define CGEMM_SMALL_KERNEL_B0_TC	FUNC_OFFSET(cgemm_small_kernel_b0_tc)
+
+#define CGEMM_SMALL_KERNEL_B0_RN	FUNC_OFFSET(cgemm_small_kernel_b0_rn)
+#define CGEMM_SMALL_KERNEL_B0_RT	FUNC_OFFSET(cgemm_small_kernel_b0_rt)
+#define CGEMM_SMALL_KERNEL_B0_RR	FUNC_OFFSET(cgemm_small_kernel_b0_rr)
+#define CGEMM_SMALL_KERNEL_B0_RC	FUNC_OFFSET(cgemm_small_kernel_b0_rc)
+
+#define CGEMM_SMALL_KERNEL_B0_CN	FUNC_OFFSET(cgemm_small_kernel_b0_cn)
+#define CGEMM_SMALL_KERNEL_B0_CT	FUNC_OFFSET(cgemm_small_kernel_b0_ct)
+#define CGEMM_SMALL_KERNEL_B0_CR	FUNC_OFFSET(cgemm_small_kernel_b0_cr)
+#define CGEMM_SMALL_KERNEL_B0_CC	FUNC_OFFSET(cgemm_small_kernel_b0_cc)
+
 
 #define	CGEMM_NN		cgemm_nn
 #define	CGEMM_CN		cgemm_cn

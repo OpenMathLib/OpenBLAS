@@ -167,7 +167,7 @@
 *>                                              ZSTEMR('V', 'I')
 *>
 *> Tests 29 through 34 are disable at present because ZSTEMR
-*> does not handle partial specturm requests.
+*> does not handle partial spectrum requests.
 *>
 *> (29)    | S - Z D Z* | / ( |S| n ulp )    ZSTEMR('V', 'I')
 *>
@@ -364,7 +364,7 @@
 *> \verbatim
 *>          D1 is DOUBLE PRECISION array of
 *>                             dimension( max(NN) )
-*>          The eigenvalues of A, as computed by ZSTEQR simlutaneously
+*>          The eigenvalues of A, as computed by ZSTEQR simultaneously
 *>          with Z.  On exit, the eigenvalues in D1 correspond with the
 *>          matrix in A.
 *> \endverbatim
@@ -593,8 +593,6 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
-*
 *> \ingroup complex16_eig
 *
 *  =====================================================================
@@ -604,10 +602,9 @@
      $                   LWORK, RWORK, LRWORK, IWORK, LIWORK, RESULT,
      $                   INFO )
 *
-*  -- LAPACK test routine (version 3.7.0) --
+*  -- LAPACK test routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
 *
 *     .. Scalar Arguments ..
       INTEGER            INFO, LDA, LDU, LIWORK, LRWORK, LWORK, NOUNIT,
@@ -665,11 +662,10 @@
       EXTERNAL           ILAENV, DLAMCH, DLARND, DSXT1
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           DCOPY, DLABAD, DLASUM, DSTEBZ, DSTECH, DSTERF,
-     $                   XERBLA, ZCOPY, ZHET21, ZHETRD, ZHPT21, ZHPTRD,
-     $                   ZLACPY, ZLASET, ZLATMR, ZLATMS, ZPTEQR, ZSTEDC,
-     $                   ZSTEMR, ZSTEIN, ZSTEQR, ZSTT21, ZSTT22, ZUNGTR,
-     $                   ZUPGTR
+      EXTERNAL           DCOPY, DLASUM, DSTEBZ, DSTECH, DSTERF, XERBLA,
+     $                   ZCOPY, ZHET21, ZHETRD, ZHPT21, ZHPTRD, ZLACPY,
+     $                   ZLASET, ZLATMR, ZLATMS, ZPTEQR, ZSTEDC, ZSTEMR,
+     $                   ZSTEIN, ZSTEQR, ZSTT21, ZSTT22, ZUNGTR, ZUPGTR
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          ABS, DBLE, DCONJG, INT, LOG, MAX, MIN, SQRT
@@ -736,7 +732,6 @@
 *
       UNFL = DLAMCH( 'Safe minimum' )
       OVFL = ONE / UNFL
-      CALL DLABAD( UNFL, OVFL )
       ULP = DLAMCH( 'Epsilon' )*DLAMCH( 'Base' )
       ULPINV = ONE / ULP
       LOG2UI = INT( LOG( ULPINV ) / LOG( TWO ) )

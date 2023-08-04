@@ -28,7 +28,6 @@
 *****************************************************************************
 * Contents: Native high-level C interface to LAPACK function slaswp
 * Author: Intel Corporation
-* Generated June 2016
 *****************************************************************************/
 
 #include "lapacke_utils.h"
@@ -83,6 +82,7 @@ lapack_int LAPACKE_slascl( int matrix_layout, char type, lapack_int kl,
                 LAPACKE_sgb_nancheck( LAPACK_COL_MAJOR, n, m, n-1, 1, a-1, lda+1 ) ) {
                 return -9;
             }
+            break;
         case 'B':
             // TYPE = 'B' - lower part of symmetric band matrix (assume m==n)
             if( LAPACKE_ssb_nancheck( matrix_layout, 'L', n, kl, a, lda ) ) {

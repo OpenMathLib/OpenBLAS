@@ -52,7 +52,7 @@
 *>
 *>    S*x = w*P*x,  (y**H)*S = w*(y**H)*P,
 *>
-*> where y**H denotes the conjugate tranpose of y.
+*> where y**H denotes the conjugate transpose of y.
 *> The eigenvalues are not input to this routine, but are computed
 *> directly from the diagonal blocks of S and P.
 *>
@@ -228,8 +228,6 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
-*
 *> \ingroup realGEcomputational
 *
 *> \par Further Details:
@@ -295,10 +293,9 @@
       SUBROUTINE STGEVC( SIDE, HOWMNY, SELECT, N, S, LDS, P, LDP, VL,
      $                   LDVL, VR, LDVR, MM, M, WORK, INFO )
 *
-*  -- LAPACK computational routine (version 3.7.0) --
+*  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
 *
 *     .. Scalar Arguments ..
       CHARACTER          HOWMNY, SIDE
@@ -340,7 +337,7 @@
       EXTERNAL           LSAME, SLAMCH
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           SGEMV, SLABAD, SLACPY, SLAG2, SLALN2, XERBLA
+      EXTERNAL           SGEMV, SLACPY, SLAG2, SLALN2, XERBLA
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          ABS, MAX, MIN
@@ -466,7 +463,6 @@
 *
       SAFMIN = SLAMCH( 'Safe minimum' )
       BIG = ONE / SAFMIN
-      CALL SLABAD( SAFMIN, BIG )
       ULP = SLAMCH( 'Epsilon' )*SLAMCH( 'Base' )
       SMALL = SAFMIN*N / ULP
       BIG = ONE / SMALL

@@ -29,15 +29,16 @@ void RELAPACK_dgetrf(
         return;
     }
 
-    const blasint sn = MIN(*m, *n);
+    if (*m == 0 || *n == 0) return;
 
+    const blasint sn = MIN(*m, *n);
     RELAPACK_dgetrf_rec(m, &sn, A, ldA, ipiv, info);
 
     // Right remainder
     if (*m < *n) {
         // Constants
         const double ONE[] = { 1. };
-        const blasint   iONE[] = { 1. };
+        const blasint   iONE[] = { 1 };
 
         // Splitting
         const blasint rn = *n - *m;
@@ -60,13 +61,11 @@ static void RELAPACK_dgetrf_rec(
     double *A, const blasint *ldA, blasint *ipiv,
     blasint *info
 ) {
-
-    if (*n <= MAX(CROSSOVER_DGETRF, 1)) {
+    if ( *n <= MAX(CROSSOVER_DGETRF, 1)) {
         // Unblocked
-        LAPACK(dgetf2)(m, n, A, ldA, ipiv, info);
+        LAPACK(dgetrf2)(m, n, A, ldA, ipiv, info);
         return;
     }
-
     // Constants
     const double ONE[]  = { 1. };
     const double MONE[] = { -1. };
@@ -95,6 +94,7 @@ static void RELAPACK_dgetrf_rec(
 
     // recursion(A_L, ipiv_T)
     RELAPACK_dgetrf_rec(m, &n1, A_L, ldA, ipiv_T, info);
+    if (*info) return;
     // apply pivots to A_R
     LAPACK(dlaswp)(&n2, A_R, ldA, iONE, &n1, ipiv_T, iONE);
 

@@ -91,7 +91,7 @@
 *>          RTOL2 is DOUBLE PRECISION
 *>          Tolerance for the convergence of the bisection intervals.
 *>          An interval [LEFT,RIGHT] has converged if
-*>          RIGHT-LEFT.LT.MAX( RTOL1*GAP, RTOL2*MAX(|LEFT|,|RIGHT|) )
+*>          RIGHT-LEFT < MAX( RTOL1*GAP, RTOL2*MAX(|LEFT|,|RIGHT|) )
 *>          where GAP is the (estimated) distance to the nearest
 *>          eigenvalue.
 *> \endverbatim
@@ -117,7 +117,7 @@
 *>          WGAP is DOUBLE PRECISION array, dimension (N-1)
 *>          On input, the (estimated) gaps between consecutive
 *>          eigenvalues of L D L^T, i.e., WGAP(I-OFFSET) is the gap between
-*>          eigenvalues I and I+1. Note that if IFIRST.EQ.ILAST
+*>          eigenvalues I and I+1. Note that if IFIRST = ILAST
 *>          then WGAP(IFIRST-OFFSET) must be set to ZERO.
 *>          On output, these gaps are refined.
 *> \endverbatim
@@ -178,8 +178,6 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date June 2017
-*
 *> \ingroup OTHERauxiliary
 *
 *> \par Contributors:
@@ -196,10 +194,9 @@
      $                   RTOL2, OFFSET, W, WGAP, WERR, WORK, IWORK,
      $                   PIVMIN, SPDIAM, TWIST, INFO )
 *
-*  -- LAPACK auxiliary routine (version 3.7.1) --
+*  -- LAPACK auxiliary routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     June 2017
 *
 *     .. Scalar Arguments ..
       INTEGER            IFIRST, ILAST, INFO, N, OFFSET, TWIST

@@ -39,7 +39,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "ddot_microk_nehalem-2.c"
 #elif defined(HASWELL) || defined(ZEN)
 #include "ddot_microk_haswell-2.c"
-#elif defined (SKYLAKEX)
+#elif defined (SKYLAKEX) || defined (COOPERLAKE) || defined (SAPPHIRERAPIDS)
 #include "ddot_microk_skylakex-2.c"
 #elif defined(SANDYBRIDGE)
 #include "ddot_microk_sandy-2.c"
@@ -190,7 +190,7 @@ FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG inc_y)
 #endif
 		blas_level1_thread_with_return_value(mode, n, 0, 0, &dummy_alpha,
 				   x, inc_x, y, inc_y, result, 0,
-				   ( void *)dot_thread_function, nthreads);
+				    (int (*)(void)) dot_thread_function, nthreads);
 
 		ptr = (RETURN_TYPE *)result;
 		for (i = 0; i < nthreads; i++) {

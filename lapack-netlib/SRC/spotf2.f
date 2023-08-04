@@ -89,8 +89,8 @@
 *>          INFO is INTEGER
 *>          = 0: successful exit
 *>          < 0: if INFO = -k, the k-th argument had an illegal value
-*>          > 0: if INFO = k, the leading minor of order k is not
-*>               positive definite, and the factorization could not be
+*>          > 0: if INFO = k, the leading principal minor of order k
+*>               is not positive, and the factorization could not be
 *>               completed.
 *> \endverbatim
 *
@@ -102,17 +102,14 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
-*
 *> \ingroup realPOcomputational
 *
 *  =====================================================================
       SUBROUTINE SPOTF2( UPLO, N, A, LDA, INFO )
 *
-*  -- LAPACK computational routine (version 3.7.0) --
+*  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
 *
 *     .. Scalar Arguments ..
       CHARACTER          UPLO

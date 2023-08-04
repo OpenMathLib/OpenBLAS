@@ -29,6 +29,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <stdio.h>
 #include "common.h"
 
+#if defined(__VEC__) || defined(__ALTIVEC__)
+
 #define HAVE_KERNEL_4x4_VEC 1
 #define HAVE_KERNEL_4x2_VEC 1
 #define HAVE_KERNEL_4x1_VEC 1
@@ -36,6 +38,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #if defined(HAVE_KERNEL_4x4_VEC) || defined(HAVE_KERNEL_4x2_VEC) || defined(HAVE_KERNEL_4x1_VEC)
 #include <altivec.h> 
+#endif
 #endif
 
 // 
@@ -604,7 +607,6 @@ static void add_y(BLASLONG n, FLOAT *src, FLOAT *dest, BLASLONG inc_dest, FLOAT 
 
 int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1, FLOAT alpha_r, FLOAT alpha_i, FLOAT *a, BLASLONG lda, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG inc_y, FLOAT * buffer) {
     BLASLONG i;
-    BLASLONG j;
     FLOAT *a_ptr;
     FLOAT *x_ptr;
     FLOAT *y_ptr;

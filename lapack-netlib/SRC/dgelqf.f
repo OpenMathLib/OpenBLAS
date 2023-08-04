@@ -34,7 +34,15 @@
 *> \verbatim
 *>
 *> DGELQF computes an LQ factorization of a real M-by-N matrix A:
-*> A = L * Q.
+*>
+*>    A = ( L 0 ) *  Q
+*>
+*> where:
+*>
+*>    Q is a N-by-N orthogonal matrix;
+*>    L is a lower-triangular M-by-M matrix;
+*>    0 is a M-by-(N-M) zero matrix, if M < N.
+*>
 *> \endverbatim
 *
 *  Arguments:
@@ -110,8 +118,6 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
-*
 *> \ingroup doubleGEcomputational
 *
 *> \par Further Details:
@@ -135,10 +141,9 @@
 *  =====================================================================
       SUBROUTINE DGELQF( M, N, A, LDA, TAU, WORK, LWORK, INFO )
 *
-*  -- LAPACK computational routine (version 3.7.0) --
+*  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
 *
 *     .. Scalar Arguments ..
       INTEGER            INFO, LDA, LWORK, M, N

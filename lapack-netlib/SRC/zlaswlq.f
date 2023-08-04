@@ -1,3 +1,4 @@
+*> \brief \b ZLASWLQ
 *
 *  Definition:
 *  ===========
@@ -18,9 +19,20 @@
 *>
 *> \verbatim
 *>
-*>          ZLASWLQ computes a blocked Short-Wide LQ factorization of a
-*>          M-by-N matrix A, where N >= M:
-*>          A = L * Q
+*> ZLASWLQ computes a blocked Tall-Skinny LQ factorization of
+*> a complexx M-by-N matrix A for M <= N:
+*>
+*>    A = ( L 0 ) *  Q,
+*>
+*> where:
+*>
+*>    Q is a n-by-N orthogonal matrix, stored on exit in an implicit
+*>    form in the elements above the diagonal of the array A and in
+*>    the elements of the array T;
+*>    L is a lower-triangular M-by-M matrix stored on exit in
+*>    the elements on and below the diagonal of the array A.
+*>    0 is a M-by-(N-M) zero matrix, if M < N, and is not stored.
+*>
 *> \endverbatim
 *
 *  Arguments:
@@ -48,7 +60,7 @@
 *> \verbatim
 *>          NB is INTEGER
 *>          The column block size to be used in the blocked QR.
-*>          NB > M.
+*>          NB > 0.
 *> \endverbatim
 *>
 *> \param[in,out] A
@@ -92,6 +104,7 @@
 *> \endverbatim
 *> \param[in] LWORK
 *> \verbatim
+*>          LWORK is INTEGER
 *>          The dimension of the array WORK.  LWORK >= MB*M.
 *>          If LWORK = -1, then a workspace query is assumed; the routine
 *>          only calculates the optimal size of the WORK array, returns
@@ -150,10 +163,9 @@
       SUBROUTINE ZLASWLQ( M, N, MB, NB, A, LDA, T, LDT, WORK, LWORK,
      $                  INFO)
 *
-*  -- LAPACK computational routine (version 3.7.1) --
+*  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd. --
-*     June 2017
 *
 *     .. Scalar Arguments ..
       INTEGER           INFO, LDA, M, N, MB, NB, LWORK, LDT
@@ -191,10 +203,10 @@
         INFO = -2
       ELSE IF( MB.LT.1 .OR. ( MB.GT.M .AND. M.GT.0 )) THEN
         INFO = -3
-      ELSE IF( NB.LE.M ) THEN
+      ELSE IF( NB.LE.0 ) THEN
         INFO = -4
       ELSE IF( LDA.LT.MAX( 1, M ) ) THEN
-        INFO = -5
+        INFO = -6
       ELSE IF( LDT.LT.MB ) THEN
         INFO = -8
       ELSE IF( ( LWORK.LT.M*MB) .AND. (.NOT.LQUERY) ) THEN

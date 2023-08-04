@@ -22,7 +22,7 @@
 *> \verbatim
 *>
 *> SERRLS tests the error exits for the REAL least squares
-*> driver routines (SGELS, SGELSS, SGELSY, SGELSD).
+*> driver routines (SGELS, SGELST, SGETSLS, SGELSS, SGELSY, SGELSD).
 *> \endverbatim
 *
 *  Arguments:
@@ -48,17 +48,14 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
-*
 *> \ingroup single_lin
 *
 *  =====================================================================
       SUBROUTINE SERRLS( PATH, NUNIT )
 *
-*  -- LAPACK test routine (version 3.7.0) --
+*  -- LAPACK test routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
 *
 *     .. Scalar Arguments ..
       CHARACTER*3        PATH
@@ -86,7 +83,8 @@
       EXTERNAL           LSAMEN
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           ALAESM, CHKXER, SGELS, SGELSD, SGELSS, SGELSY
+      EXTERNAL           ALAESM, CHKXER, SGELS, SGELSD, SGELSS, SGELST,
+     $                   SGELSY, SGETSLS
 *     ..
 *     .. Scalars in Common ..
       LOGICAL            LERR, OK
@@ -133,9 +131,65 @@
          INFOT = 8
          CALL SGELS( 'N', 2, 0, 0, A, 2, B, 1, W, 2, INFO )
          CALL CHKXER( 'SGELS ', INFOT, NOUT, LERR, OK )
+         INFOT = 8
+         CALL SGELS( 'N', 0, 2, 0, A, 1, B, 1, W, 2, INFO )
+         CALL CHKXER( 'DGELS', INFOT, NOUT, LERR, OK )
          INFOT = 10
          CALL SGELS( 'N', 1, 1, 0, A, 1, B, 1, W, 1, INFO )
          CALL CHKXER( 'SGELS ', INFOT, NOUT, LERR, OK )
+*
+*        SGELST
+*
+         SRNAMT = 'SGELST'
+         INFOT = 1
+         CALL SGELST( '/', 0, 0, 0, A, 1, B, 1, W, 1, INFO )
+         CALL CHKXER( 'SGELST', INFOT, NOUT, LERR, OK )
+         INFOT = 2
+         CALL SGELST( 'N', -1, 0, 0, A, 1, B, 1, W, 1, INFO )
+         CALL CHKXER( 'SGELST', INFOT, NOUT, LERR, OK )
+         INFOT = 3
+         CALL SGELST( 'N', 0, -1, 0, A, 1, B, 1, W, 1, INFO )
+         CALL CHKXER( 'SGELST', INFOT, NOUT, LERR, OK )
+         INFOT = 4
+         CALL SGELST( 'N', 0, 0, -1, A, 1, B, 1, W, 1, INFO )
+         CALL CHKXER( 'SGELST', INFOT, NOUT, LERR, OK )
+         INFOT = 6
+         CALL SGELST( 'N', 2, 0, 0, A, 1, B, 2, W, 2, INFO )
+         CALL CHKXER( 'SGELST', INFOT, NOUT, LERR, OK )
+         INFOT = 8
+         CALL SGELST( 'N', 2, 0, 0, A, 2, B, 1, W, 2, INFO )
+         CALL CHKXER( 'SGELST', INFOT, NOUT, LERR, OK )
+         INFOT = 8
+         CALL SGELST( 'N', 0, 2, 0, A, 1, B, 1, W, 2, INFO )
+         CALL CHKXER( 'SGELST', INFOT, NOUT, LERR, OK )
+         INFOT = 10
+         CALL SGELST( 'N', 1, 1, 0, A, 1, B, 1, W, 1, INFO )
+         CALL CHKXER( 'SGELST', INFOT, NOUT, LERR, OK )
+*
+*        SGETSLS
+*
+         SRNAMT = 'SGETSLS'
+         INFOT = 1
+         CALL SGETSLS( '/', 0, 0, 0, A, 1, B, 1, W, 1, INFO )
+         CALL CHKXER( 'SGETSLS', INFOT, NOUT, LERR, OK )
+         INFOT = 2
+         CALL SGETSLS( 'N', -1, 0, 0, A, 1, B, 1, W, 1, INFO )
+         CALL CHKXER( 'SGETSLS', INFOT, NOUT, LERR, OK )
+         INFOT = 3
+         CALL SGETSLS( 'N', 0, -1, 0, A, 1, B, 1, W, 1, INFO )
+         CALL CHKXER( 'SGETSLS', INFOT, NOUT, LERR, OK )
+         INFOT = 4
+         CALL SGETSLS( 'N', 0, 0, -1, A, 1, B, 1, W, 1, INFO )
+         CALL CHKXER( 'SGETSLS', INFOT, NOUT, LERR, OK )
+         INFOT = 6
+         CALL SGETSLS( 'N', 2, 0, 0, A, 1, B, 2, W, 2, INFO )
+         CALL CHKXER( 'SGETSLS', INFOT, NOUT, LERR, OK )
+         INFOT = 8
+         CALL SGETSLS( 'N', 2, 0, 0, A, 2, B, 1, W, 2, INFO )
+         CALL CHKXER( 'SGETSLS', INFOT, NOUT, LERR, OK )
+         INFOT = 8
+         CALL SGETSLS( 'N', 0, 2, 0, A, 1, B, 1, W, 2, INFO )
+         CALL CHKXER( 'SGETSLS', INFOT, NOUT, LERR, OK )
 *
 *        SGELSS
 *

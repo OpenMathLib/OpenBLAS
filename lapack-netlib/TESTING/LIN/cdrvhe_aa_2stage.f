@@ -145,8 +145,6 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date November 2017
-*
 *> \ingroup complex_lin
 *
 *  =====================================================================
@@ -155,10 +153,9 @@
      $                         NMAX, A, AFAC, AINV, B, X, XACT, WORK,
      $                         RWORK, IWORK, NOUT )
 *
-*  -- LAPACK test routine (version 3.8.0) --
+*  -- LAPACK test routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2017
 *
 *     .. Scalar Arguments ..
       LOGICAL            TSTERR
@@ -449,11 +446,11 @@
 *                    Reconstruct matrix from factors and compute
 *                    residual.
 *
-c                     CALL CHET01_AA( UPLO, N, A, LDA, AFAC, LDA,
-c     $                                  IWORK, AINV, LDA, RWORK,
-c     $                                  RESULT( 2 ) )
-c                     NT = 2
-					  NT = 1
+c                    CALL CHET01_AA( UPLO, N, A, LDA, AFAC, LDA,
+c    $                                  IWORK, AINV, LDA, RWORK,
+c    $                                  RESULT( 2 ) )
+c                    NT = 2
+                     NT = 1
 *
 *                    Print information about the tests that did not pass
 *                    the threshold.

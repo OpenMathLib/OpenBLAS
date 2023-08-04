@@ -8,7 +8,7 @@ platform:
 
 steps:
 - name: Build and Test
-  image: ubuntu:19.04
+  image: ubuntu:18.04
   environment:
     CC: gcc
     COMMON_FLAGS: 'DYNAMIC_ARCH=1 TARGET=ARMV8 NUM_THREADS=32'
@@ -32,7 +32,7 @@ platform:
 
 steps:
 - name: Build and Test
-  image: ubuntu:19.04
+  image: ubuntu:18.04
   environment:
     CC: gcc
     COMMON_FLAGS: 'DYNAMIC_ARCH=1 TARGET=ARMV6 NUM_THREADS=32'
@@ -92,7 +92,7 @@ steps:
     - mkdir build && cd build
     - cmake $CMAKE_FLAGS ..
     - make -j
-    - ctest
+    - ctest -V
 
 ---
 kind: pipeline
@@ -116,7 +116,7 @@ steps:
     - mkdir build && cd build
     - cmake $CMAKE_FLAGS ..
     - make -j
-    - ctest
+    - ctest -V
 
 ---
 kind: pipeline
@@ -140,4 +140,77 @@ steps:
     - mkdir build && cd build
     - cmake $CMAKE_FLAGS ..
     - make -j
-    - ctest
+    - ctest -V
+
+---
+kind: pipeline
+name: arm64_native_test
+
+platform:
+  os: linux
+  arch: arm64
+
+steps:
+- name: Build and Test
+  image: ubuntu:18.04
+  environment:
+    CC: gcc
+    COMMON_FLAGS: 'USE_OPENMP=1'
+  commands:
+    - echo "MAKE_FLAGS:= $COMMON_FLAGS"
+    - apt-get update -y
+    - apt-get install -y make $CC gfortran perl python g++
+    - $CC --version
+    - make QUIET_MAKE=1 $COMMON_FLAGS
+    - make -C test $COMMON_FLAGS
+    - make -C ctest $COMMON_FLAGS
+    - make -C utest $COMMON_FLAGS
+    - make -C cpp_thread_test dgemm_tester
+---
+kind: pipeline
+name: epyc_native_test
+
+platform:
+  os: linux
+  arch: amd64
+
+steps:
+- name: Build and Test
+  image: ubuntu:18.04
+  environment:
+    CC: gcc
+    COMMON_FLAGS: 'USE_OPENMP=1'
+  commands:
+    - echo "MAKE_FLAGS:= $COMMON_FLAGS"
+    - apt-get update -y
+    - apt-get install -y make $CC gfortran perl python g++
+    - $CC --version
+    - make QUIET_MAKE=1 $COMMON_FLAGS
+    - make -C test $COMMON_FLAGS
+    - make -C ctest $COMMON_FLAGS
+    - make -C utest $COMMON_FLAGS
+    - make -C cpp_thread_test dgemm_tester
+---
+kind: pipeline
+name: arm64_gcc10
+
+platform:
+  os: linux
+  arch: arm64
+
+steps:
+- name: Build and Test
+  image: ubuntu:20.04
+  environment:
+    CC: gcc-10
+    FC: gfortran-10
+    COMMON_FLAGS: 'TARGET=ARMV8 DYNAMIC_ARCH=1'
+  commands:
+    - echo "MAKE_FLAGS:= $COMMON_FLAGS"
+    - apt-get update -y
+    - apt-get install -y make $CC gfortran-10 perl python g++
+    - $CC --version
+    - make QUIET_MAKE=1 $COMMON_FLAGS
+    - make -C utest $COMMON_FLAGS
+    - make -C test $COMMON_FLAGS
+    

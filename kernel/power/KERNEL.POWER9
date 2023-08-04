@@ -1,3 +1,7 @@
+ifeq ($(__BYTE_ORDER__),__ORDER_BIG_ENDIAN__)
+include $(KERNELDIR)/KERNEL.POWER8
+else
+
 #SGEMM_BETA = ../generic/gemm_beta.c
 #DGEMM_BETA = ../generic/gemm_beta.c
 #CGEMM_BETA = ../generic/zgemm_beta.c
@@ -12,7 +16,7 @@ SGEMMKERNEL    =  sgemm_kernel_power9.S
 SGEMMINCOPY    = ../generic/gemm_ncopy_16.c
 SGEMMITCOPY    = sgemm_tcopy_16_power8.S
 SGEMMONCOPY    =  ../generic/gemm_ncopy_8.c
-SGEMMOTCOPY    = sgemm_tcopy_8_power8.S 
+SGEMMOTCOPY    = sgemm_tcopy_8_power8.S
 SGEMMINCOPYOBJ =  sgemm_incopy$(TSUFFIX).$(SUFFIX)
 SGEMMITCOPYOBJ =  sgemm_itcopy$(TSUFFIX).$(SUFFIX)
 SGEMMONCOPYOBJ =  sgemm_oncopy$(TSUFFIX).$(SUFFIX)
@@ -48,15 +52,15 @@ ZGEMMOTCOPYOBJ =  zgemm_otcopy$(TSUFFIX).$(SUFFIX)
 ZGEMMINCOPYOBJ =  zgemm_incopy$(TSUFFIX).$(SUFFIX)
 ZGEMMITCOPYOBJ =  zgemm_itcopy$(TSUFFIX).$(SUFFIX)
 
-STRSMKERNEL_LN	=  ../generic/trsm_kernel_LN.c
-STRSMKERNEL_LT	=  ../generic/trsm_kernel_LT.c
-STRSMKERNEL_RN	=  ../generic/trsm_kernel_RN.c
-STRSMKERNEL_RT	=  ../generic/trsm_kernel_RT.c
+STRSMKERNEL_LN	= trsm_kernel_LN_power10.c
+STRSMKERNEL_LT	= trsm_kernel_LT_power10.c
+STRSMKERNEL_RN	= trsm_kernel_RN_power10.c
+STRSMKERNEL_RT	= trsm_kernel_RT_power10.c
 
-DTRSMKERNEL_LN	= ../generic/trsm_kernel_LN.c
+DTRSMKERNEL_LN	= trsm_kernel_LN_power10.c
 DTRSMKERNEL_LT	= dtrsm_kernel_LT_16x4_power8.S
-DTRSMKERNEL_RN	= ../generic/trsm_kernel_RN.c
-DTRSMKERNEL_RT	= ../generic/trsm_kernel_RT.c
+DTRSMKERNEL_RN	= trsm_kernel_RN_power10.c
+DTRSMKERNEL_RT	= trsm_kernel_RT_power10.c
 
 CTRSMKERNEL_LN	= ../generic/trsm_kernel_LN.c
 CTRSMKERNEL_LT	= ../generic/trsm_kernel_LT.c
@@ -89,14 +93,30 @@ ZTRSMKERNEL_RT	= ../generic/trsm_kernel_RT.c
 #SMINKERNEL   = ../arm/min.c
 #DMINKERNEL   = ../arm/min.c
 #
+ifneq ($(GCCVERSIONGTEQ9),1)
+ISAMAXKERNEL = isamax_power9.S
+else
 ISAMAXKERNEL = isamax.c
+endif
 IDAMAXKERNEL = idamax.c
+ifneq ($(GCCVERSIONGTEQ9),1)
+ICAMAXKERNEL = icamax_power9.S
+else
 ICAMAXKERNEL = icamax.c
+endif
 IZAMAXKERNEL = izamax.c
 #
+ifneq ($(GCCVERSIONGTEQ9),1)
+ISAMINKERNEL = isamin_power9.S
+else
 ISAMINKERNEL = isamin.c
+endif
 IDAMINKERNEL = idamin.c
+ifneq ($(GCCVERSIONGTEQ9),1)
+ICAMINKERNEL = icamin_power9.S
+else
 ICAMINKERNEL = icamin.c
+endif
 IZAMINKERNEL = izamin.c
 #
 #ISMAXKERNEL  = ../arm/imax.c
@@ -112,7 +132,11 @@ ZASUMKERNEL  = zasum.c
 #
 SAXPYKERNEL  = saxpy.c
 DAXPYKERNEL  = daxpy.c
+ifneq ($(GCCVERSIONGTEQ9),1)
+CAXPYKERNEL  = caxpy_power9.S
+else
 CAXPYKERNEL  = caxpy.c
+endif
 ZAXPYKERNEL  = zaxpy.c
 #
 SCOPYKERNEL  = scopy.c
@@ -123,7 +147,11 @@ ZCOPYKERNEL  = zcopy.c
 SDOTKERNEL   =  sdot.c
 DDOTKERNEL   =  ddot.c
 DSDOTKERNEL  =  sdot.c
+ifneq ($(GCCVERSIONGTEQ9),1)
+CDOTKERNEL   =  cdot_power9.S
+else
 CDOTKERNEL   =  cdot.c
+endif
 ZDOTKERNEL   =  zdot.c
 #
 SNRM2KERNEL  = ../arm/nrm2.c
@@ -138,8 +166,13 @@ ZROTKERNEL   = zrot.c
 #
 SSCALKERNEL  = sscal.c
 DSCALKERNEL  = dscal.c
+ifeq ($(C_COMPILER), PGI)
+CSCALKERNEL  = ../arm/zscal.c
+ZSCALKERNEL  = ../arm/zscal.c
+else
 CSCALKERNEL  = zscal.c
 ZSCALKERNEL  = zscal.c
+endif
 #
 SSWAPKERNEL  = sswap.c
 DSWAPKERNEL  = dswap.c
@@ -182,3 +215,5 @@ QCABS_KERNEL	= ../generic/cabs.c
 #Dump kernel
 CGEMM3MKERNEL    = ../generic/zgemm3mkernel_dump.c
 ZGEMM3MKERNEL    = ../generic/zgemm3mkernel_dump.c
+
+endif

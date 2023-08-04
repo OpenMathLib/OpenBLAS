@@ -1503,6 +1503,8 @@ C     $      '      .' )
       NC = 0
       RESET = .TRUE.
       ERRMAX = RZERO
+      RALS = RONE
+      RBETS = RONE
 *
       DO 100 IN = 1, NIDIM
          N = IDIM( IN )

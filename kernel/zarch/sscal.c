@@ -59,7 +59,7 @@ static void sscal_kernel_32(BLASLONG n, FLOAT da, FLOAT *x) {
     "vst   %%v31,112(%%r1,%[x])\n\t"
     "agfi   %%r1,128\n\t"
     "brctg  %[n],0b"
-    : "+m"(*(struct { FLOAT x[n]; } *) x),[n] "+&r"(n)
+    : "+m"(*(FLOAT (*)[n]) x),[n] "+&r"(n)
     : [x] "a"(x),[da] "Q"(da)
     : "cc", "r1", "v0", "v24", "v25", "v26", "v27", "v28", "v29", "v30",
        "v31");
@@ -81,7 +81,7 @@ static void sscal_kernel_32_zero(BLASLONG n, FLOAT *x) {
     "vst  %%v0,112(%%r1,%[x])\n\t"
     "agfi  %%r1,128\n\t"
     "brctg %[n],0b"
-    : "=m"(*(struct { FLOAT x[n]; } *) x),[n] "+&r"(n)
+    : "=m"(*(FLOAT (*)[n]) x),[n] "+&r"(n)
     : [x] "a"(x)
     : "cc", "r1", "v0");
 }

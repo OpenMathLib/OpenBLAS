@@ -48,17 +48,14 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
-*
 *> \ingroup single_lin
 *
 *  =====================================================================
       SUBROUTINE SERRTR( PATH, NUNIT )
 *
-*  -- LAPACK test routine (version 3.7.0) --
+*  -- LAPACK test routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
 *
 *     .. Scalar Arguments ..
       CHARACTER*3        PATH
@@ -74,7 +71,7 @@
 *     .. Local Scalars ..
       CHARACTER*2        C2
       INTEGER            INFO
-      REAL               RCOND, SCALE
+      REAL               RCOND, SCALE, SCALES(0)
 *     ..
 *     .. Local Arrays ..
       INTEGER            IW( NMAX )
@@ -86,9 +83,10 @@
       EXTERNAL           LSAMEN
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           ALAESM, CHKXER, SLATBS, SLATPS, SLATRS, STBCON,
-     $                   STBRFS, STBTRS, STPCON, STPRFS, STPTRI, STPTRS,
-     $                   STRCON, STRRFS, STRTI2, STRTRI, STRTRS
+      EXTERNAL           ALAESM, CHKXER, SLATBS, SLATPS, SLATRS,
+     $                   SLATRS3, STBCON, STBRFS, STBTRS, STPCON,
+     $                   STPRFS, STPTRI, STPTRS, STRCON, STRRFS, STRTI2,
+     $                   STRTRI, STRTRS
 *     ..
 *     .. Scalars in Common ..
       LOGICAL            LERR, OK
@@ -247,6 +245,46 @@
          INFOT = 7
          CALL SLATRS( 'U', 'N', 'N', 'N', 2, A, 1, X, SCALE, W, INFO )
          CALL CHKXER( 'SLATRS', INFOT, NOUT, LERR, OK )
+*
+*        SLATRS3
+*
+         SRNAMT = 'SLATRS3'
+         INFOT = 1
+         CALL SLATRS3( '/', 'N', 'N', 'N', 0, 0, A, 1, X, 1, SCALES,
+     $                 W, W( 2 ), 1, INFO )
+         CALL CHKXER( 'SLATRS3', INFOT, NOUT, LERR, OK )
+         INFOT = 2
+         CALL SLATRS3( 'U', '/', 'N', 'N', 0, 0, A, 1, X, 1, SCALES,
+     $                 W, W( 2 ), 1, INFO )
+         CALL CHKXER( 'SLATRS3', INFOT, NOUT, LERR, OK )
+         INFOT = 3
+         CALL SLATRS3( 'U', 'N', '/', 'N', 0, 0, A, 1, X, 1, SCALES,
+     $                 W, W( 2 ), 1, INFO )
+         CALL CHKXER( 'SLATRS3', INFOT, NOUT, LERR, OK )
+         INFOT = 4
+         CALL SLATRS3( 'U', 'N', 'N', '/', 0, 0, A, 1, X, 1, SCALES,
+     $                 W, W( 2 ), 1, INFO )
+         CALL CHKXER( 'SLATRS3', INFOT, NOUT, LERR, OK )
+         INFOT = 5
+         CALL SLATRS3( 'U', 'N', 'N', 'N', -1, 0, A, 1, X, 1, SCALES,
+     $                 W, W( 2 ), 1, INFO )
+         CALL CHKXER( 'SLATRS3', INFOT, NOUT, LERR, OK )
+         INFOT = 6
+         CALL SLATRS3( 'U', 'N', 'N', 'N', 0, -1, A, 1, X, 1, SCALES,
+     $                 W, W( 2 ), 1, INFO )
+         CALL CHKXER( 'SLATRS3', INFOT, NOUT, LERR, OK )
+         INFOT = 8
+         CALL SLATRS3( 'U', 'N', 'N', 'N', 2, 0, A, 1, X, 1, SCALES,
+     $                 W, W( 2 ), 1, INFO )
+         CALL CHKXER( 'SLATRS3', INFOT, NOUT, LERR, OK )
+         INFOT = 10
+         CALL SLATRS3( 'U', 'N', 'N', 'N', 2, 0, A, 2, X, 1, SCALES,
+     $                 W, W( 2 ), 1, INFO )
+         CALL CHKXER( 'SLATRS3', INFOT, NOUT, LERR, OK )
+         INFOT = 14
+         CALL SLATRS3( 'U', 'N', 'N', 'N', 1, 0, A, 1, X, 1, SCALES,
+     $                 W, W( 2 ), 0, INFO )
+         CALL CHKXER( 'SLATRS3', INFOT, NOUT, LERR, OK )
 *
       ELSE IF( LSAMEN( 2, C2, 'TP' ) ) THEN
 *

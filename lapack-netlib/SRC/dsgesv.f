@@ -92,9 +92,9 @@
 *>          dimension (LDA,N)
 *>          On entry, the N-by-N coefficient matrix A.
 *>          On exit, if iterative refinement has been successfully used
-*>          (INFO.EQ.0 and ITER.GE.0, see description below), then A is
+*>          (INFO = 0 and ITER >= 0, see description below), then A is
 *>          unchanged, if double precision factorization has been used
-*>          (INFO.EQ.0 and ITER.LT.0, see description below), then the
+*>          (INFO = 0 and ITER < 0, see description below), then the
 *>          array A contains the factors L and U from the factorization
 *>          A = P*L*U; the unit diagonal elements of L are not stored.
 *> \endverbatim
@@ -111,8 +111,8 @@
 *>          The pivot indices that define the permutation matrix P;
 *>          row i of the matrix was interchanged with row IPIV(i).
 *>          Corresponds either to the single precision factorization
-*>          (if INFO.EQ.0 and ITER.GE.0) or the double precision
-*>          factorization (if INFO.EQ.0 and ITER.LT.0).
+*>          (if INFO = 0 and ITER >= 0) or the double precision
+*>          factorization (if INFO = 0 and ITER < 0).
 *> \endverbatim
 *>
 *> \param[in] B
@@ -187,18 +187,15 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date June 2016
-*
 *> \ingroup doubleGEsolve
 *
 *  =====================================================================
       SUBROUTINE DSGESV( N, NRHS, A, LDA, IPIV, B, LDB, X, LDX, WORK,
      $                   SWORK, ITER, INFO )
 *
-*  -- LAPACK driver routine (version 3.8.0) --
+*  -- LAPACK driver routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     June 2016
 *
 *     .. Scalar Arguments ..
       INTEGER            INFO, ITER, LDA, LDB, LDX, N, NRHS
@@ -406,7 +403,7 @@
    30 CONTINUE
 *
 *     If we are at this place of the code, this is because we have
-*     performed ITER=ITERMAX iterations and never satisified the
+*     performed ITER=ITERMAX iterations and never satisfied the
 *     stopping criterion, set up the ITER flag accordingly and follow up
 *     on double precision routine.
 *
@@ -428,6 +425,6 @@
 *
       RETURN
 *
-*     End of DSGESV.
+*     End of DSGESV
 *
       END

@@ -28,7 +28,6 @@
 *****************************************************************************
 * Contents: Native high-level C interface to LAPACK function ztgsen
 * Author: Intel Corporation
-* Generated November 2015
 *****************************************************************************/
 
 #include "lapacke_utils.h"
@@ -84,15 +83,13 @@ lapack_int LAPACKE_ztgsen( int matrix_layout, lapack_int ijob,
     if( info != 0 ) {
         goto exit_level_0;
     }
-    liwork = (lapack_int)iwork_query;
+    liwork = iwork_query;
     lwork = LAPACK_Z2INT( work_query );
     /* Allocate memory for work arrays */
-    if( ijob != 0 ) {
-        iwork = (lapack_int*)LAPACKE_malloc( sizeof(lapack_int) * liwork );
-        if( iwork == NULL ) {
-            info = LAPACK_WORK_MEMORY_ERROR;
-            goto exit_level_0;
-        }
+    iwork = (lapack_int*)LAPACKE_malloc( sizeof(lapack_int) * liwork );
+    if( iwork == NULL ) {
+        info = LAPACK_WORK_MEMORY_ERROR;
+        goto exit_level_0;
     }
     work = (lapack_complex_double*)
         LAPACKE_malloc( sizeof(lapack_complex_double) * lwork );
@@ -107,9 +104,7 @@ lapack_int LAPACKE_ztgsen( int matrix_layout, lapack_int ijob,
     /* Release memory and exit */
     LAPACKE_free( work );
 exit_level_1:
-    if( ijob != 0 ) {
-        LAPACKE_free( iwork );
-    }
+    LAPACKE_free( iwork );
 exit_level_0:
     if( info == LAPACK_WORK_MEMORY_ERROR ) {
         LAPACKE_xerbla( "LAPACKE_ztgsen", info );

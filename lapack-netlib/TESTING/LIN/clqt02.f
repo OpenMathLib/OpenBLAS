@@ -27,7 +27,7 @@
 *> \verbatim
 *>
 *> CLQT02 tests CUNGLQ, which generates an m-by-n matrix Q with
-*> orthonornmal rows that is defined as the product of k elementary
+*> orthonormal rows that is defined as the product of k elementary
 *> reflectors.
 *>
 *> Given the LQ factorization of an m-by-n matrix A, CLQT02 generates
@@ -127,18 +127,15 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
-*
 *> \ingroup complex_lin
 *
 *  =====================================================================
       SUBROUTINE CLQT02( M, N, K, A, AF, Q, L, LDA, TAU, WORK, LWORK,
      $                   RWORK, RESULT )
 *
-*  -- LAPACK test routine (version 3.7.0) --
+*  -- LAPACK test routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
 *
 *     .. Scalar Arguments ..
       INTEGER            K, LDA, LWORK, M, N

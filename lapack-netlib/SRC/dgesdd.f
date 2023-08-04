@@ -55,12 +55,6 @@
 *>
 *> Note that the routine returns VT = V**T, not V.
 *>
-*> The divide and conquer algorithm makes very mild assumptions about
-*> floating point arithmetic. It will work on machines with a guard
-*> digit in add/subtract, or on those binary machines without guard
-*> digits which subtract like the Cray X-MP, Cray Y-MP, Cray C-90, or
-*> Cray-2. It could conceivably fail on hexadecimal or decimal machines
-*> without guard digits, but we know of none.
 *> \endverbatim
 *
 *  Arguments:
@@ -191,9 +185,10 @@
 *> \param[out] INFO
 *> \verbatim
 *>          INFO is INTEGER
-*>          = 0:  successful exit.
 *>          < 0:  if INFO = -i, the i-th argument had an illegal value.
+*>          = -4:  if A had a NAN entry.
 *>          > 0:  DBDSDC did not converge, updating process failed.
+*>          =  0:  successful exit.
 *> \endverbatim
 *
 *  Authors:
@@ -203,8 +198,6 @@
 *> \author Univ. of California Berkeley
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
-*
-*> \date June 2016
 *
 *> \ingroup doubleGEsing
 *
@@ -219,10 +212,9 @@
      $                   WORK, LWORK, IWORK, INFO )
       implicit none
 *
-*  -- LAPACK driver routine (version 3.7.0) --
+*  -- LAPACK driver routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     June 2016
 *
 *     .. Scalar Arguments ..
       CHARACTER          JOBZ
@@ -267,9 +259,10 @@
      $                   XERBLA
 *     ..
 *     .. External Functions ..
-      LOGICAL            LSAME
-      DOUBLE PRECISION   DLAMCH, DLANGE
-      EXTERNAL           DLAMCH, DLANGE, LSAME
+      LOGICAL            LSAME, DISNAN
+      DOUBLE PRECISION   DLAMCH, DLANGE, DROUNDUP_LWORK
+      EXTERNAL           DLAMCH, DLANGE, LSAME, DISNAN, 
+     $                   DROUNDUP_LWORK
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          INT, MAX, MIN, SQRT
@@ -322,7 +315,7 @@
 *
             IF( WNTQN ) THEN
 *              dbdsdc needs only 4*N (or 6*N for uplo=L for LAPACK <= 3.6)
-*              keep 7*N for backwards compatability.
+*              keep 7*N for backwards compatibility.
                BDSPAC = 7*N
             ELSE
                BDSPAC = 3*N*N + 4*N
@@ -448,7 +441,7 @@
 *
             IF( WNTQN ) THEN
 *              dbdsdc needs only 4*N (or 6*N for uplo=L for LAPACK <= 3.6)
-*              keep 7*N for backwards compatability.
+*              keep 7*N for backwards compatibility.
                BDSPAC = 7*M
             ELSE
                BDSPAC = 3*M*M + 4*M
@@ -570,7 +563,7 @@
          END IF
 
          MAXWRK = MAX( MAXWRK, MINWRK )
-         WORK( 1 ) = MAXWRK
+         WORK( 1 ) = DROUNDUP_LWORK( MAXWRK )
 *
          IF( LWORK.LT.MINWRK .AND. .NOT.LQUERY ) THEN
             INFO = -12
@@ -599,6 +592,10 @@
 *     Scale A if max element outside range [SMLNUM,BIGNUM]
 *
       ANRM = DLANGE( 'M', M, N, A, LDA, DUM )
+      IF( DISNAN( ANRM ) ) THEN
+          INFO = -4
+          RETURN
+      END IF
       ISCL = 0
       IF( ANRM.GT.ZERO .AND. ANRM.LT.SMLNUM ) THEN
          ISCL = 1
@@ -1539,7 +1536,7 @@
 *
 *     Return optimal workspace in WORK(1)
 *
-      WORK( 1 ) = MAXWRK
+      WORK( 1 ) = DROUNDUP_LWORK( MAXWRK )
 *
       RETURN
 *

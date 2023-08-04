@@ -162,8 +162,6 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
-*
 *> \ingroup doubleOTHERauxiliary
 *
 *> \par Further Details:
@@ -242,10 +240,9 @@
       SUBROUTINE DLATBS( UPLO, TRANS, DIAG, NORMIN, N, KD, AB, LDAB, X,
      $                   SCALE, CNORM, INFO )
 *
-*  -- LAPACK auxiliary routine (version 3.7.0) --
+*  -- LAPACK auxiliary routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
 *
 *     .. Scalar Arguments ..
       CHARACTER          DIAG, NORMIN, TRANS, UPLO
@@ -313,6 +310,7 @@
 *
 *     Quick return if possible
 *
+      SCALE = ONE
       IF( N.EQ.0 )
      $   RETURN
 *
@@ -320,7 +318,6 @@
 *
       SMLNUM = DLAMCH( 'Safe minimum' ) / DLAMCH( 'Precision' )
       BIGNUM = ONE / SMLNUM
-      SCALE = ONE
 *
       IF( LSAME( NORMIN, 'N' ) ) THEN
 *

@@ -123,8 +123,8 @@
 *>          < 0:  if INFO = -i, the i-th argument had an illegal value.
 *>          > 0:  if INFO = i, and i is:
 *>                <= N  the Cholesky factorization of the matrix could
-*>                      not be performed because the i-th principal minor
-*>                      was not positive definite.
+*>                      not be performed because the leading principal
+*>                      minor of order i was not positive.
 *>                > N   the SVD algorithm failed to converge;
 *>                      if INFO = N+i, i off-diagonal elements of the
 *>                      bidiagonal factor did not converge to zero.
@@ -138,17 +138,14 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
-*
 *> \ingroup complex16PTcomputational
 *
 *  =====================================================================
       SUBROUTINE ZPTEQR( COMPZ, N, D, E, Z, LDZ, WORK, INFO )
 *
-*  -- LAPACK computational routine (version 3.7.0) --
+*  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
 *
 *     .. Scalar Arguments ..
       CHARACTER          COMPZ

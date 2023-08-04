@@ -137,7 +137,6 @@ C> \ingroup variantsGEcomputational
 *  -- LAPACK computational routine (version 3.X) --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
 *
 *     .. Scalar Arguments ..
       INTEGER            INFO, LDA, M, N

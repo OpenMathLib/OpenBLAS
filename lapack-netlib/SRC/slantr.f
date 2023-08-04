@@ -133,18 +133,15 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
-*
 *> \ingroup realOTHERauxiliary
 *
 *  =====================================================================
       REAL             FUNCTION SLANTR( NORM, UPLO, DIAG, M, N, A, LDA,
      $                 WORK )
 *
-*  -- LAPACK auxiliary routine (version 3.7.0) --
+*  -- LAPACK auxiliary routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
 *
 *     .. Scalar Arguments ..
       CHARACTER          DIAG, NORM, UPLO
@@ -281,7 +278,7 @@
             END IF
          ELSE
             IF( LSAME( DIAG, 'U' ) ) THEN
-               DO 210 I = 1, N
+               DO 210 I = 1, MIN( M, N )
                   WORK( I ) = ONE
   210          CONTINUE
                DO 220 I = N + 1, M

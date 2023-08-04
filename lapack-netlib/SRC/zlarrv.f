@@ -143,7 +143,7 @@
 *>          RTOL2 is DOUBLE PRECISION
 *>           Parameters for bisection.
 *>           An interval [LEFT,RIGHT] has converged if
-*>           RIGHT-LEFT.LT.MAX( RTOL1*GAP, RTOL2*MAX(|LEFT|,|RIGHT|) )
+*>           RIGHT-LEFT < MAX( RTOL1*GAP, RTOL2*MAX(|LEFT|,|RIGHT|) )
 *> \endverbatim
 *>
 *> \param[in,out] W
@@ -266,8 +266,6 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date June 2016
-*
 *> \ingroup complex16OTHERauxiliary
 *
 *> \par Contributors:
@@ -286,10 +284,9 @@
      $                   IBLOCK, INDEXW, GERS, Z, LDZ, ISUPPZ,
      $                   WORK, IWORK, INFO )
 *
-*  -- LAPACK auxiliary routine (version 3.7.1) --
+*  -- LAPACK auxiliary routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     June 2016
 *
 *     .. Scalar Arguments ..
       INTEGER            DOL, DOU, INFO, LDZ, M, N
@@ -351,7 +348,7 @@
 *
 *     Quick return if possible
 *
-      IF( N.LE.0 ) THEN
+      IF( (N.LE.0).OR.(M.LE.0) ) THEN
          RETURN
       END IF
 *

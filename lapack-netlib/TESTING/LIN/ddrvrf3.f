@@ -110,18 +110,15 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date June 2017
-*
 *> \ingroup double_lin
 *
 *  =====================================================================
       SUBROUTINE DDRVRF3( NOUT, NN, NVAL, THRESH, A, LDA, ARF, B1, B2,
      +                    D_WORK_DLANGE, D_WORK_DGEQRF, TAU )
 *
-*  -- LAPACK test routine (version 3.7.1) --
+*  -- LAPACK test routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     June 2017
 *
 *     .. Scalar Arguments ..
       INTEGER            LDA, NN, NOUT
@@ -156,8 +153,9 @@
       DOUBLE PRECISION   RESULT( NTESTS )
 *     ..
 *     .. External Functions ..
+      LOGICAL            LSAME
       DOUBLE PRECISION   DLAMCH, DLANGE, DLARND
-      EXTERNAL           DLAMCH, DLANGE, DLARND
+      EXTERNAL           DLAMCH, DLANGE, DLARND, LSAME
 *     ..
 *     .. External Subroutines ..
       EXTERNAL           DTRTTF, DGEQRF, DGEQLF, DTFSM, DTRSM
@@ -221,9 +219,9 @@
 *
                            DO 100 IALPHA = 1, 3
 *
-                              IF ( IALPHA.EQ. 1) THEN
+                              IF ( IALPHA.EQ.1 ) THEN
                                  ALPHA = ZERO
-                              ELSE IF ( IALPHA.EQ. 2) THEN
+                              ELSE IF ( IALPHA.EQ.2 ) THEN
                                  ALPHA = ONE
                               ELSE
                                  ALPHA = DLARND( 2, ISEED )
@@ -255,14 +253,14 @@
 *                             Generate A our NA--by--NA triangular
 *                             matrix.
 *                             Our test is based on forward error so we
-*                             do want A to be well conditionned! To get
-*                             a well-conditionned triangular matrix, we
+*                             do want A to be well conditioned! To get
+*                             a well-conditioned triangular matrix, we
 *                             take the R factor of the QR/LQ factorization
 *                             of a random matrix.
 *
                               DO J = 1, NA
                                  DO I = 1, NA
-                                    A( I, J) = DLARND( 2, ISEED )
+                                    A( I, J ) = DLARND( 2, ISEED )
                                  END DO
                               END DO
 *
@@ -275,6 +273,20 @@
                                  CALL DGEQRF( NA, NA, A, LDA, TAU,
      +                                        D_WORK_DGEQRF, LDA,
      +                                        INFO )
+*
+*                                Forcing main diagonal of test matrix to
+*                                be unit makes it ill-conditioned for
+*                                some test cases
+*
+                                 IF ( LSAME( DIAG, 'U' ) ) THEN
+                                    DO J = 1, NA
+                                       DO I = 1, J
+                                          A( I, J ) = A( I, J ) /
+     +                                            ( 2.0 * A( J, J ) )
+                                       END DO
+                                    END DO
+                                 END IF
+*
                               ELSE
 *
 *                                The case IUPLO.EQ.2 is when SIDE.EQ.'L'
@@ -284,6 +296,20 @@
                                  CALL DGELQF( NA, NA, A, LDA, TAU,
      +                                        D_WORK_DGEQRF, LDA,
      +                                        INFO )
+*
+*                                Forcing main diagonal of test matrix to
+*                                be unit makes it ill-conditioned for
+*                                some test cases
+*
+                                 IF ( LSAME( DIAG, 'U' ) ) THEN
+                                    DO I = 1, NA
+                                       DO J = 1, I
+                                          A( I, J ) = A( I, J ) /
+     +                                            ( 2.0 * A( I, I ) )
+                                       END DO
+                                    END DO
+                                 END IF
+*
                               END IF
 *
 *                             Store a copy of A in RFP format (in ARF).
@@ -297,8 +323,8 @@
 *
                               DO J = 1, N
                                  DO I = 1, M
-                                    B1( I, J) = DLARND( 2, ISEED )
-                                    B2( I, J) = B1( I, J)
+                                    B1( I, J ) = DLARND( 2, ISEED )
+                                    B2( I, J ) = B1( I, J )
                                  END DO
                               END DO
 *
@@ -321,24 +347,24 @@
 *
                               DO J = 1, N
                                  DO I = 1, M
-                                    B1( I, J) = B2( I, J ) - B1( I, J )
+                                    B1( I, J ) = B2( I, J ) - B1( I, J )
                                  END DO
                               END DO
 *
-                              RESULT(1) = DLANGE( 'I', M, N, B1, LDA,
+                              RESULT( 1 ) = DLANGE( 'I', M, N, B1, LDA,
      +                                            D_WORK_DLANGE )
 *
-                              RESULT(1) = RESULT(1) / SQRT( EPS )
-     +                                    / MAX ( MAX( M, N), 1 )
+                              RESULT( 1 ) = RESULT( 1 ) / SQRT( EPS )
+     +                                    / MAX ( MAX( M, N ), 1 )
 *
-                              IF( RESULT(1).GE.THRESH ) THEN
+                              IF( RESULT( 1 ).GE.THRESH ) THEN
                                  IF( NFAIL.EQ.0 ) THEN
                                     WRITE( NOUT, * )
                                     WRITE( NOUT, FMT = 9999 )
                                  END IF
                                  WRITE( NOUT, FMT = 9997 ) 'DTFSM',
      +                              CFORM, SIDE, UPLO, TRANS, DIAG, M,
-     +                              N, RESULT(1)
+     +                              N, RESULT( 1 )
                                  NFAIL = NFAIL + 1
                               END IF
 *

@@ -163,8 +163,6 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
-*
 *> \ingroup complexOTHERauxiliary
 *
 *> \par Further Details:
@@ -243,10 +241,9 @@
       SUBROUTINE CLATBS( UPLO, TRANS, DIAG, NORMIN, N, KD, AB, LDAB, X,
      $                   SCALE, CNORM, INFO )
 *
-*  -- LAPACK auxiliary routine (version 3.7.0) --
+*  -- LAPACK auxiliary routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
 *
 *     .. Scalar Arguments ..
       CHARACTER          DIAG, NORMIN, TRANS, UPLO
@@ -281,7 +278,7 @@
      $                   CDOTU, CLADIV
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           CAXPY, CSSCAL, CTBSV, SLABAD, SSCAL, XERBLA
+      EXTERNAL           CAXPY, CSSCAL, CTBSV, SSCAL, XERBLA
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          ABS, AIMAG, CMPLX, CONJG, MAX, MIN, REAL
@@ -327,17 +324,14 @@
 *
 *     Quick return if possible
 *
+      SCALE = ONE
       IF( N.EQ.0 )
      $   RETURN
 *
 *     Determine machine dependent parameters to control overflow.
 *
-      SMLNUM = SLAMCH( 'Safe minimum' )
+      SMLNUM = SLAMCH( 'Safe minimum' ) / SLAMCH( 'Precision' )
       BIGNUM = ONE / SMLNUM
-      CALL SLABAD( SMLNUM, BIGNUM )
-      SMLNUM = SMLNUM / SLAMCH( 'Precision' )
-      BIGNUM = ONE / SMLNUM
-      SCALE = ONE
 *
       IF( LSAME( NORMIN, 'N' ) ) THEN
 *

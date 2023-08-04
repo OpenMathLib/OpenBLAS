@@ -71,7 +71,7 @@
 *>             R  * B**T + L  * E**T  = scale * -F
 *>
 *> This case is used to compute an estimate of Dif[(A, D), (B, E)] =
-*> sigma_min(Z) using reverse communicaton with SLACON.
+*> sigma_min(Z) using reverse communication with SLACON.
 *>
 *> STGSY2 also (IJOB >= 1) contributes to the computation in STGSYL
 *> of an upper bound on the separation between to matrix pairs. Then
@@ -85,7 +85,7 @@
 *> \param[in] TRANS
 *> \verbatim
 *>          TRANS is CHARACTER*1
-*>          = 'N', solve the generalized Sylvester equation (1).
+*>          = 'N': solve the generalized Sylvester equation (1).
 *>          = 'T': solve the 'transposed' system (3).
 *> \endverbatim
 *>
@@ -259,8 +259,6 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
-*
 *> \ingroup realSYauxiliary
 *
 *> \par Contributors:
@@ -274,10 +272,9 @@
      $                   LDD, E, LDE, F, LDF, SCALE, RDSUM, RDSCAL,
      $                   IWORK, PQ, INFO )
 *
-*  -- LAPACK auxiliary routine (version 3.7.0) --
+*  -- LAPACK auxiliary routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
 *
 *     .. Scalar Arguments ..
       CHARACTER          TRANS

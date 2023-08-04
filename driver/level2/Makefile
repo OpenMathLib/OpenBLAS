@@ -64,9 +64,9 @@ CBLASOBJS += \
 	chpmv_U.$(SUFFIX) chpmv_L.$(SUFFIX) chpmv_V.$(SUFFIX) chpmv_M.$(SUFFIX) \
 	chpr_U.$(SUFFIX)  chpr_L.$(SUFFIX)  chpr_V.$(SUFFIX)  chpr_M.$(SUFFIX) \
 	chpr2_U.$(SUFFIX) chpr2_L.$(SUFFIX) chpr2_V.$(SUFFIX) chpr2_M.$(SUFFIX) \
-	csbmv_U.$(SUFFIX) csbmv_L.$(SUFFIX) cspmv_U.$(SUFFIX) cspmv_L.$(SUFFIX) \
-	cspr_U.$(SUFFIX)  cspr_L.$(SUFFIX)  cspr2_U.$(SUFFIX) cspr2_L.$(SUFFIX) \
-	csyr_U.$(SUFFIX)  csyr_L.$(SUFFIX)  csyr2_U.$(SUFFIX) csyr2_L.$(SUFFIX) \
+	csbmv_U.$(SUFFIX) csbmv_L.$(SUFFIX) \
+	cspr2_U.$(SUFFIX) cspr2_L.$(SUFFIX) \
+	csyr2_U.$(SUFFIX) csyr2_L.$(SUFFIX) \
 	ctbmv_NUU.$(SUFFIX) ctbmv_NUN.$(SUFFIX) ctbmv_NLU.$(SUFFIX) ctbmv_NLN.$(SUFFIX) \
 	ctbmv_TUU.$(SUFFIX) ctbmv_TUN.$(SUFFIX) ctbmv_TLU.$(SUFFIX) ctbmv_TLN.$(SUFFIX) \
 	ctbmv_RUU.$(SUFFIX) ctbmv_RUN.$(SUFFIX) ctbmv_RLU.$(SUFFIX) ctbmv_RLN.$(SUFFIX) \
@@ -91,6 +91,13 @@ CBLASOBJS += \
 	ctrsv_TUU.$(SUFFIX) ctrsv_TUN.$(SUFFIX) ctrsv_TLU.$(SUFFIX) ctrsv_TLN.$(SUFFIX) \
 	ctrsv_RUU.$(SUFFIX) ctrsv_RUN.$(SUFFIX) ctrsv_RLU.$(SUFFIX) ctrsv_RLN.$(SUFFIX) \
 	ctrsv_CUU.$(SUFFIX) ctrsv_CUN.$(SUFFIX) ctrsv_CLU.$(SUFFIX) ctrsv_CLN.$(SUFFIX)
+
+ifneq ($(NO_LAPACK), 1)
+CBLASOBJS += \
+	cspmv_U.$(SUFFIX) cspmv_L.$(SUFFIX) \
+	cspr_U.$(SUFFIX)  cspr_L.$(SUFFIX)  \
+	csyr_U.$(SUFFIX)  csyr_L.$(SUFFIX)  
+endif
 
 ZBLASOBJS += \
 	zgbmv_n.$(SUFFIX) zgbmv_t.$(SUFFIX) zgbmv_r.$(SUFFIX) zgbmv_c.$(SUFFIX) \
@@ -413,29 +420,81 @@ XBLASOBJS   += \
 	xtbmv_thread_RUU.$(SUFFIX)	xtbmv_thread_RUN.$(SUFFIX) \
 	xtbmv_thread_RLU.$(SUFFIX)	xtbmv_thread_RLN.$(SUFFIX) \
 	xtbmv_thread_CUU.$(SUFFIX)	xtbmv_thread_CUN.$(SUFFIX) \
-	xtbmv_thread_CLU.$(SUFFIX)	xtbmv_thread_CLN.$(SUFFIX) \
+	xtbmv_thread_CLU.$(SUFFIX)	xtbmv_thread_CLN.$(SUFFIX)
+
+ifeq ($(BUILD_BFLOAT16),1)
+SBBLASOBJS     += \
+        sbgemv_thread_n$(TSUFFIX).$(SUFFIX) \
+        sbgemv_thread_t$(TSUFFIX).$(SUFFIX)
+endif
 
 endif
 
+ifneq ($(BUILD_SINGLE),1)
+	SBLASOBJS=
+ifeq ($(BUILD_DOUBLE),1)
+ifdef SMP
+SBLASOBJS   += \
+	sgemv_thread_n.$(SUFFIX)	sgemv_thread_t.$(SUFFIX) \
+	strsv_NUU.$(SUFFIX) strsv_NUN.$(SUFFIX) strsv_NLU.$(SUFFIX) strsv_NLN.$(SUFFIX) \
+	strsv_TUU.$(SUFFIX) strsv_TUN.$(SUFFIX) strsv_TLU.$(SUFFIX) strsv_TLN.$(SUFFIX)
+endif
+endif
+ifeq ($(BUILD_COMPLEX),1)
+ifdef SMP
+	SBLASOBJS = sgemv_thread_n.$(SUFFIX)	sgemv_thread_t.$(SUFFIX) 
+endif
+endif
+endif
+ifneq ($(BUILD_DOUBLE),1)
+	DBLASOBJS=
+ifeq ($(BUILD_COMPLEX16),1)
+ifdef SMP
+	DBLASOBJS = dgemv_thread_n.$(SUFFIX)	dgemv_thread_t.$(SUFFIX) 
+endif
+endif
+endif
+ifneq ($(BUILD_COMPLEX),1)
+	CBLASOBJS=
+ifeq ($(BUILD_COMPLEX16),1)
+	CBLASOBJS= \
+	ctrsv_NUU.$(SUFFIX) ctrsv_NUN.$(SUFFIX) ctrsv_NLU.$(SUFFIX) ctrsv_NLN.$(SUFFIX) \
+	ctrsv_TUU.$(SUFFIX) ctrsv_TUN.$(SUFFIX) ctrsv_TLU.$(SUFFIX) ctrsv_TLN.$(SUFFIX) \
+	ctrsv_RUU.$(SUFFIX) ctrsv_RUN.$(SUFFIX) ctrsv_RLU.$(SUFFIX) ctrsv_RLN.$(SUFFIX) \
+	ctrsv_CUU.$(SUFFIX) ctrsv_CUN.$(SUFFIX) ctrsv_CLU.$(SUFFIX) ctrsv_CLN.$(SUFFIX)
+endif
+endif
+ifneq ($(BUILD_COMPLEX16),1)
+	ZBLASOBJS=
+endif
+
 all ::
+
+ifeq ($(BUILD_SINGLE),1)
 
 sgbmv_n.$(SUFFIX)  sgbmv_n.$(PSUFFIX)  : gbmv_k.c
 	$(CC) -c -UCOMPLEX -UDOUBLE -UTRANS $(CFLAGS) -o $(@F) $<
 
 sgbmv_t.$(SUFFIX)  sgbmv_t.$(PSUFFIX)  : gbmv_k.c
 	$(CC) -c -UCOMPLEX -UDOUBLE -DTRANS $(CFLAGS) -o $(@F) $<
+endif
+
+ifeq ($(BUILD_DOUBLE),1)
 
 dgbmv_n.$(SUFFIX)  dgbmv_n.$(PSUFFIX)  : gbmv_k.c
 	$(CC) -c -UCOMPLEX -DDOUBLE -UTRANS $(CFLAGS) -o $(@F) $<
 
 dgbmv_t.$(SUFFIX)  dgbmv_t.$(PSUFFIX)  : gbmv_k.c
 	$(CC) -c -UCOMPLEX -DDOUBLE -DTRANS $(CFLAGS) -o $(@F) $<
+endif
 
 qgbmv_n.$(SUFFIX)  qgbmv_n.$(PSUFFIX)  : gbmv_k.c
 	$(CC) -c -UCOMPLEX -DXDOUBLE -UTRANS $(CFLAGS) -o $(@F) $<
 
 qgbmv_t.$(SUFFIX)  qgbmv_t.$(PSUFFIX)  : gbmv_k.c
 	$(CC) -c -UCOMPLEX -DXDOUBLE -DTRANS $(CFLAGS) -o $(@F) $<
+
+ifeq ($(BUILD_COMPLEX),1)
 
 cgbmv_n.$(SUFFIX)  cgbmv_n.$(PSUFFIX)  : zgbmv_k.c
 	$(CC) -c -DCOMPLEX -UDOUBLE -UTRANS -UCONJ -UXCONJ $(CFLAGS) -o $(@F) $<
@@ -460,6 +519,9 @@ cgbmv_s.$(SUFFIX)  cgbmv_s.$(PSUFFIX)  : zgbmv_k.c
 
 cgbmv_d.$(SUFFIX)  cgbmv_d.$(PSUFFIX)  : zgbmv_k.c
 	$(CC) -c -DCOMPLEX -UDOUBLE -DTRANS -DCONJ -DXCONJ $(CFLAGS) -o $(@F) $<
+endif
+
+ifeq ($(BUILD_COMPLEX16),1)
 
 zgbmv_n.$(SUFFIX)  zgbmv_n.$(PSUFFIX)  : zgbmv_k.c
 	$(CC) -c -DCOMPLEX -DDOUBLE -UTRANS -UCONJ -UXCONJ $(CFLAGS) -o $(@F) $<
@@ -484,6 +546,7 @@ zgbmv_s.$(SUFFIX)  zgbmv_s.$(PSUFFIX)  : zgbmv_k.c
 
 zgbmv_d.$(SUFFIX)  zgbmv_d.$(PSUFFIX)  : zgbmv_k.c
 	$(CC) -c -DCOMPLEX -DDOUBLE -DTRANS -DCONJ -DXCONJ $(CFLAGS) -o $(@F) $<
+endif
 
 xgbmv_n.$(SUFFIX)  xgbmv_n.$(PSUFFIX)  : zgbmv_k.c
 	$(CC) -c -DCOMPLEX -DXDOUBLE -UTRANS -UCONJ -UXCONJ $(CFLAGS) -o $(@F) $<
@@ -509,23 +572,33 @@ xgbmv_s.$(SUFFIX)  xgbmv_s.$(PSUFFIX)  : zgbmv_k.c
 xgbmv_d.$(SUFFIX)  xgbmv_d.$(PSUFFIX)  : zgbmv_k.c
 	$(CC) -c -DCOMPLEX -DXDOUBLE -DTRANS -DCONJ -DXCONJ $(CFLAGS) -o $(@F) $<
 
+
+ifeq ($(BUILD_SINGLE),1)
+
 sgbmv_thread_n.$(SUFFIX)  sgbmv_thread_n.$(PSUFFIX)  : gbmv_thread.c
 	$(CC) -c -UCOMPLEX -UDOUBLE -UTRANSA $(CFLAGS) -o $(@F) $<
 
 sgbmv_thread_t.$(SUFFIX)  sgbmv_thread_t.$(PSUFFIX)  : gbmv_thread.c
 	$(CC) -c -UCOMPLEX -UDOUBLE -DTRANSA $(CFLAGS) -o $(@F) $<
+endif
+
+
+ifeq ($(BUILD_DOUBLE),1)
 
 dgbmv_thread_n.$(SUFFIX)  dgbmv_thread_n.$(PSUFFIX)  : gbmv_thread.c
 	$(CC) -c -UCOMPLEX -DDOUBLE -UTRANSA $(CFLAGS) -o $(@F) $<
 
 dgbmv_thread_t.$(SUFFIX)  dgbmv_thread_t.$(PSUFFIX)  : gbmv_thread.c
 	$(CC) -c -UCOMPLEX -DDOUBLE -DTRANSA $(CFLAGS) -o $(@F) $<
-
+endif
 qgbmv_thread_n.$(SUFFIX)  qgbmv_thread_n.$(PSUFFIX)  : gbmv_thread.c
 	$(CC) -c -UCOMPLEX -DXDOUBLE -UTRANSA $(CFLAGS) -o $(@F) $<
 
 qgbmv_thread_t.$(SUFFIX)  qgbmv_thread_t.$(PSUFFIX)  : gbmv_thread.c
 	$(CC) -c -UCOMPLEX -DXDOUBLE -DTRANSA $(CFLAGS) -o $(@F) $<
+
+
+ifeq ($(BUILD_COMPLEX),1)
 
 cgbmv_thread_n.$(SUFFIX)  cgbmv_thread_n.$(PSUFFIX)  : gbmv_thread.c
 	$(CC) -c -DCOMPLEX -UDOUBLE -UTRANSA -UCONJ -UXCONJ $(CFLAGS) -o $(@F) $<
@@ -550,6 +623,10 @@ cgbmv_thread_s.$(SUFFIX)  cgbmv_thread_s.$(PSUFFIX)  : gbmv_thread.c
 
 cgbmv_thread_d.$(SUFFIX)  cgbmv_thread_d.$(PSUFFIX)  : gbmv_thread.c
 	$(CC) -c -DCOMPLEX -UDOUBLE -DTRANSA -DCONJ -DXCONJ $(CFLAGS) -o $(@F) $<
+endif
+
+
+ifeq ($(BUILD_COMPLEX16),1)
 
 zgbmv_thread_n.$(SUFFIX)  zgbmv_thread_n.$(PSUFFIX)  : gbmv_thread.c
 	$(CC) -c -DCOMPLEX -DDOUBLE -UTRANSA -UCONJ -UXCONJ $(CFLAGS) -o $(@F) $<
@@ -574,6 +651,7 @@ zgbmv_thread_s.$(SUFFIX)  zgbmv_thread_s.$(PSUFFIX)  : gbmv_thread.c
 
 zgbmv_thread_d.$(SUFFIX)  zgbmv_thread_d.$(PSUFFIX)  : gbmv_thread.c
 	$(CC) -c -DCOMPLEX -DDOUBLE -DTRANSA -DCONJ -DXCONJ $(CFLAGS) -o $(@F) $<
+endif
 
 xgbmv_thread_n.$(SUFFIX)  xgbmv_thread_n.$(PSUFFIX)  : gbmv_thread.c
 	$(CC) -c -DCOMPLEX -DXDOUBLE -UTRANSA -UCONJ -UXCONJ $(CFLAGS) -o $(@F) $<
@@ -599,23 +677,31 @@ xgbmv_thread_s.$(SUFFIX)  xgbmv_thread_s.$(PSUFFIX)  : gbmv_thread.c
 xgbmv_thread_d.$(SUFFIX)  xgbmv_thread_d.$(PSUFFIX)  : gbmv_thread.c
 	$(CC) -c -DCOMPLEX -DXDOUBLE -DTRANSA -DCONJ -DXCONJ $(CFLAGS) -o $(@F) $<
 
+
+ifneq "$(or $(BUILD_SINGLE),$(BUILD_DOUBLE),$(BUILD_COMPLEX))" ""
 sgemv_thread_n.$(SUFFIX) sgemv_thread_n.$(PSUFFIX) : gemv_thread.c ../../common.h
 	$(CC) -c $(CFLAGS) -UCOMPLEX -UDOUBLE  -UTRANSA -UCONJ -UXCONJ $< -o $(@F)
 
 sgemv_thread_t.$(SUFFIX) sgemv_thread_t.$(PSUFFIX) : gemv_thread.c ../../common.h
 	$(CC) -c $(CFLAGS) -UCOMPLEX -UDOUBLE  -DTRANSA -UCONJ -UXCONJ $< -o $(@F)
+endif
 
+
+ifneq "$(or $(BUILD_DOUBLE),$(BUILD_COMPLEX16))" ""
 dgemv_thread_n.$(SUFFIX) dgemv_thread_n.$(PSUFFIX) : gemv_thread.c ../../common.h
 	$(CC) -c $(CFLAGS) -UCOMPLEX -DDOUBLE  -UTRANSA -UCONJ -UXCONJ $< -o $(@F)
 
 dgemv_thread_t.$(SUFFIX) dgemv_thread_t.$(PSUFFIX) : gemv_thread.c ../../common.h
 	$(CC) -c $(CFLAGS) -UCOMPLEX -DDOUBLE  -DTRANSA -UCONJ -UXCONJ $< -o $(@F)
-
+endif
 qgemv_thread_n.$(SUFFIX) qgemv_thread_n.$(PSUFFIX) : gemv_thread.c ../../common.h
 	$(CC) -c $(CFLAGS) -UCOMPLEX -DXDOUBLE -UTRANSA -UCONJ -UXCONJ $< -o $(@F)
 
 qgemv_thread_t.$(SUFFIX) qgemv_thread_t.$(PSUFFIX) : gemv_thread.c ../../common.h
 	$(CC) -c $(CFLAGS) -UCOMPLEX -DXDOUBLE -DTRANSA -UCONJ -UXCONJ $< -o $(@F)
+
+
+ifeq ($(BUILD_COMPLEX),1)
 
 cgemv_thread_n.$(SUFFIX) cgemv_thread_n.$(PSUFFIX) : gemv_thread.c ../../common.h
 	$(CC) -c $(CFLAGS) -DCOMPLEX -UDOUBLE  -UTRANSA -UCONJ -UXCONJ $< -o $(@F)
@@ -640,6 +726,10 @@ cgemv_thread_s.$(SUFFIX) cgemv_thread_s.$(PSUFFIX) : gemv_thread.c ../../common.
 
 cgemv_thread_d.$(SUFFIX) cgemv_thread_d.$(PSUFFIX) : gemv_thread.c ../../common.h
 	$(CC) -c $(CFLAGS) -DCOMPLEX -UDOUBLE  -DTRANSA -DCONJ -DXCONJ $< -o $(@F)
+endif
+
+
+ifeq ($(BUILD_COMPLEX16),1)
 
 zgemv_thread_n.$(SUFFIX) zgemv_thread_n.$(PSUFFIX) : gemv_thread.c ../../common.h
 	$(CC) -c $(CFLAGS) -DCOMPLEX -DDOUBLE  -UTRANSA -UCONJ -UXCONJ $< -o $(@F)
@@ -664,6 +754,7 @@ zgemv_thread_s.$(SUFFIX) zgemv_thread_s.$(PSUFFIX) : gemv_thread.c ../../common.
 
 zgemv_thread_d.$(SUFFIX) zgemv_thread_d.$(PSUFFIX) : gemv_thread.c ../../common.h
 	$(CC) -c $(CFLAGS) -DCOMPLEX -DDOUBLE  -DTRANSA -DCONJ -DXCONJ $< -o $(@F)
+endif
 
 xgemv_thread_n.$(SUFFIX) xgemv_thread_n.$(PSUFFIX) : gemv_thread.c ../../common.h
 	$(CC) -c $(CFLAGS) -DCOMPLEX -DXDOUBLE -UTRANSA -UCONJ -UXCONJ $< -o $(@F)
@@ -3614,5 +3705,13 @@ xtrsv_CUU.$(SUFFIX)  xtrsv_CUU.$(PSUFFIX)  : ztrsv_L.c ../../param.h
 
 xtrsv_CUN.$(SUFFIX)  xtrsv_CUN.$(PSUFFIX)  : ztrsv_L.c ../../param.h
 	$(CC) -c $(CFLAGS) -DXDOUBLE -DCOMPLEX -DTRANSA=4 -UUNIT $< -o $(@F)
+
+ifeq ($(BUILD_BFLOAT16),1)
+sbgemv_thread_n.$(SUFFIX) sbgemv_thread_n.$(PSUFFIX) : sbgemv_thread.c ../../common.h
+	$(CC) -c $(CFLAGS) -UCOMPLEX -UDOUBLE  -UTRANSA -UCONJ -UXCONJ $< -o $(@F)
+sbgemv_thread_t.$(SUFFIX) sbgemv_thread_t.$(PSUFFIX) : sbgemv_thread.c ../../common.h
+	$(CC) -c $(CFLAGS) -UCOMPLEX -UDOUBLE  -DTRANSA -UCONJ -UXCONJ $< -o $(@F)
+endif
+
 
 include ../../Makefile.tail

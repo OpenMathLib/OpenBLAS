@@ -89,8 +89,6 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
-*
 *> \ingroup single_lin
 *
 *  =====================================================================
@@ -492,5 +490,7 @@ c$$$         WRITE(*,*)
 
  8000 FORMAT( ' S', A2, 'SVXX: N =', I2, ', INFO = ', I3,
      $     ', ORCOND = ', G12.5, ', real RCOND = ', G12.5 )
-
+*
+*     End of SEBCHVXX
+*
       END

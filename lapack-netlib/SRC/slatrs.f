@@ -158,8 +158,6 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
-*
 *> \ingroup realOTHERauxiliary
 *
 *> \par Further Details:
@@ -238,10 +236,9 @@
       SUBROUTINE SLATRS( UPLO, TRANS, DIAG, NORMIN, N, A, LDA, X, SCALE,
      $                   CNORM, INFO )
 *
-*  -- LAPACK auxiliary routine (version 3.7.0) --
+*  -- LAPACK auxiliary routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
 *
 *     .. Scalar Arguments ..
       CHARACTER          DIAG, NORMIN, TRANS, UPLO
@@ -264,11 +261,14 @@
       REAL               BIGNUM, GROW, REC, SMLNUM, SUMJ, TJJ, TJJS,
      $                   TMAX, TSCAL, USCAL, XBND, XJ, XMAX
 *     ..
+*     .. Local Arrays ..
+      REAL               WORK (1)
+*     ..
 *     .. External Functions ..
       LOGICAL            LSAME
       INTEGER            ISAMAX
-      REAL               SASUM, SDOT, SLAMCH
-      EXTERNAL           LSAME, ISAMAX, SASUM, SDOT, SLAMCH
+      REAL               SASUM, SDOT, SLAMCH, SLANGE
+      EXTERNAL           LSAME, ISAMAX, SASUM, SDOT, SLAMCH, SLANGE
 *     ..
 *     .. External Subroutines ..
       EXTERNAL           SAXPY, SSCAL, STRSV, XERBLA
@@ -307,6 +307,7 @@
 *
 *     Quick return if possible
 *
+      SCALE = ONE
       IF( N.EQ.0 )
      $   RETURN
 *
@@ -314,7 +315,6 @@
 *
       SMLNUM = SLAMCH( 'Safe minimum' ) / SLAMCH( 'Precision' )
       BIGNUM = ONE / SMLNUM
-      SCALE = ONE
 *
       IF( LSAME( NORMIN, 'N' ) ) THEN
 *
@@ -346,8 +346,67 @@
       IF( TMAX.LE.BIGNUM ) THEN
          TSCAL = ONE
       ELSE
-         TSCAL = ONE / ( SMLNUM*TMAX )
-         CALL SSCAL( N, TSCAL, CNORM, 1 )
+*
+*        Avoid NaN generation if entries in CNORM exceed the
+*        overflow threshold
+*
+         IF ( TMAX.LE.SLAMCH('Overflow') ) THEN
+*           Case 1: All entries in CNORM are valid floating-point numbers
+            TSCAL = ONE / ( SMLNUM*TMAX )
+            CALL SSCAL( N, TSCAL, CNORM, 1 )
+         ELSE
+*           Case 2: At least one column norm of A cannot be represented
+*           as floating-point number. Find the offdiagonal entry A( I, J )
+*           with the largest absolute value. If this entry is not +/- Infinity,
+*           use this value as TSCAL.
+            TMAX = ZERO
+            IF( UPPER ) THEN
+*
+*              A is upper triangular.
+*
+               DO J = 2, N
+                  TMAX = MAX( SLANGE( 'M', J-1, 1, A( 1, J ), 1, WORK ),
+     $                        TMAX )
+               END DO
+            ELSE
+*
+*              A is lower triangular.
+*
+               DO J = 1, N - 1
+                  TMAX = MAX( SLANGE( 'M', N-J, 1, A( J+1, J ), 1,
+     $                        WORK ), TMAX )
+               END DO
+            END IF
+*
+            IF( TMAX.LE.SLAMCH('Overflow') ) THEN
+               TSCAL = ONE / ( SMLNUM*TMAX )
+               DO J = 1, N
+                  IF( CNORM( J ).LE.SLAMCH('Overflow') ) THEN
+                     CNORM( J ) = CNORM( J )*TSCAL
+                  ELSE
+*                    Recompute the 1-norm without introducing Infinity
+*                    in the summation
+                     CNORM( J ) = ZERO
+                     IF( UPPER ) THEN
+                        DO I = 1, J - 1
+                           CNORM( J ) = CNORM( J ) +
+     $                                  TSCAL * ABS( A( I, J ) )
+                        END DO
+                     ELSE
+                        DO I = J + 1, N
+                           CNORM( J ) = CNORM( J ) +
+     $                                  TSCAL * ABS( A( I, J ) )
+                        END DO
+                     END IF
+                  END IF
+               END DO
+            ELSE
+*              At least one entry of A is not a valid floating-point entry.
+*              Rely on TRSV to propagate Inf and NaN.
+               CALL STRSV( UPLO, TRANS, DIAG, N, A, LDA, X, 1 )
+               RETURN
+            END IF
+         END IF
       END IF
 *
 *     Compute a bound on the computed solution vector to see if the

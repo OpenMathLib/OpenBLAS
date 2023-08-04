@@ -90,7 +90,7 @@
 *> \verbatim
 *>          SCALE is DOUBLE PRECISION
 *>          On exit, SCALE contains the scale factor. SCALE is chosen
-*>          0 <= SCALE <= 1 to prevent owerflow in the solution.
+*>          0 <= SCALE <= 1 to prevent overflow in the solution.
 *> \endverbatim
 *
 *  Authors:
@@ -100,8 +100,6 @@
 *> \author Univ. of California Berkeley
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
-*
-*> \date November 2017
 *
 *> \ingroup doubleGEauxiliary
 *
@@ -114,10 +112,9 @@
 *  =====================================================================
       SUBROUTINE DGESC2( N, A, LDA, RHS, IPIV, JPIV, SCALE )
 *
-*  -- LAPACK auxiliary routine (version 3.8.0) --
+*  -- LAPACK auxiliary routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2017
 *
 *     .. Scalar Arguments ..
       INTEGER            LDA, N
@@ -151,7 +148,7 @@
 *     ..
 *     .. Executable Statements ..
 *
-*      Set constant to control owerflow
+*      Set constant to control overflow
 *
       EPS = DLAMCH( 'P' )
       SMLNUM = DLAMCH( 'S' ) / EPS

@@ -70,19 +70,21 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /* or implied, of The University of Texas at Austin.                 */
 /*********************************************************************/
 
-#define CPU_UNKNOWN     0
-#define CPU_SICORTEX    1
-#define CPU_LOONGSON3A  2
-#define CPU_LOONGSON3B  3
-#define CPU_I6400       4
-#define CPU_P6600       5
-#define CPU_I6500       6
+#define CPU_UNKNOWN         0
+#define CPU_MIPS64_GENERIC  1
+#define CPU_SICORTEX        2
+#define CPU_LOONGSON3R3     3
+#define CPU_LOONGSON3R4     4
+#define CPU_I6400           5
+#define CPU_P6600           6
+#define CPU_I6500           7
 
 static char *cpuname[] = {
   "UNKNOWN",
+  "MIPS64_GENERIC"
   "SICORTEX",
-  "LOONGSON3A",
-  "LOONGSON3B",
+  "LOONGSON3R3",
+  "LOONGSON3R4",
   "I6400",
   "P6600",
   "I6500"
@@ -95,43 +97,8 @@ int detect(void){
   char buffer[512], *p;
 
   p = (char *)NULL;
-  infile = fopen("/proc/cpuinfo", "r");
-  while (fgets(buffer, sizeof(buffer), infile)){
-    if (!strncmp("cpu", buffer, 3)){
-	p = strchr(buffer, ':') + 2;
-#if 0
-	fprintf(stderr, "%s\n", p);
-#endif
-	break;
-      }
-  }
-
-  fclose(infile);
-
-  if(p != NULL){
-  if (strstr(p, "Loongson-3A")){
-    return CPU_LOONGSON3A;
-  }else if(strstr(p, "Loongson-3B")){
-    return CPU_LOONGSON3B;
-  }else if (strstr(p, "Loongson-3")){
-    infile = fopen("/proc/cpuinfo", "r");
-    p = (char *)NULL;
-    while (fgets(buffer, sizeof(buffer), infile)){
-      if (!strncmp("system type", buffer, 11)){
-	p = strchr(buffer, ':') + 2;
-	break;
-      }
-    }
-    fclose(infile);
-    if (strstr(p, "loongson3a"))
-      return CPU_LOONGSON3A;
-  }else{
-    return CPU_SICORTEX;
-  }
-  }
   //Check model name for Loongson3
   infile = fopen("/proc/cpuinfo", "r");
-  p = (char *)NULL;
   while (fgets(buffer, sizeof(buffer), infile)){
     if (!strncmp("model name", buffer, 10)){
       p = strchr(buffer, ':') + 2;
@@ -139,15 +106,20 @@ int detect(void){
     }
   }
   fclose(infile);
-  if(p != NULL){
-  if (strstr(p, "Loongson-3A")){
-    return CPU_LOONGSON3A;
-  }else if(strstr(p, "Loongson-3B")){
-    return CPU_LOONGSON3B;
+  if (p != NULL){
+    if (strstr(p, "Loongson-3A3000") || strstr(p, "Loongson-3B3000")){
+      return CPU_LOONGSON3R3;
+    } else if (strstr(p, "Loongson-3A4000") || strstr(p, "Loongson-3B4000")){
+      return CPU_LOONGSON3R4;
+    } else{
+      return CPU_SICORTEX;
+    }
   }
-  }
+
+  return CPU_MIPS64_GENERIC;
+#else
+  return CPU_UNKNOWN;
 #endif
-    return CPU_UNKNOWN;
 }
 
 char *get_corename(void){
@@ -159,19 +131,21 @@ void get_architecture(void){
 }
 
 void get_subarchitecture(void){
-  if(detect()==CPU_LOONGSON3A) {
-    printf("LOONGSON3A");
-  }else if(detect()==CPU_LOONGSON3B){
-    printf("LOONGSON3B");
+  if(detect()==CPU_LOONGSON3R3) {
+    printf("LOONGSON3R3");
+  }else if(detect()==CPU_LOONGSON3R4){
+    printf("LOONGSON3R4");
   }else if(detect()==CPU_I6400){
     printf("I6400");
   }else if(detect()==CPU_P6600){
     printf("P6600");
   }else if(detect()==CPU_I6500){
     printf("I6500");
-  }else{
+  }else if(detect()==CPU_SICORTEX){
     printf("SICORTEX");
-  }
+  }else{
+    printf("MIPS64_GENERIC");
+  } 
 }
 
 void get_subdirname(void){
@@ -179,8 +153,8 @@ void get_subdirname(void){
 }
 
 void get_cpuconfig(void){
-  if(detect()==CPU_LOONGSON3A) {
-    printf("#define LOONGSON3A\n");
+  if(detect()==CPU_LOONGSON3R3) {
+    printf("#define LOONGSON3R3\n");
     printf("#define L1_DATA_SIZE 65536\n");
     printf("#define L1_DATA_LINESIZE 32\n");
     printf("#define L2_SIZE 512488\n");
@@ -188,8 +162,8 @@ void get_cpuconfig(void){
     printf("#define DTB_DEFAULT_ENTRIES 64\n");
     printf("#define DTB_SIZE 4096\n");
     printf("#define L2_ASSOCIATIVE 4\n");
-  }else if(detect()==CPU_LOONGSON3B){
-    printf("#define LOONGSON3B\n");
+  }else if(detect()==CPU_LOONGSON3R4){
+    printf("#define LOONGSON3R4\n");
     printf("#define L1_DATA_SIZE 65536\n");
     printf("#define L1_DATA_LINESIZE 32\n");
     printf("#define L2_SIZE 512488\n");
@@ -234,20 +208,58 @@ void get_cpuconfig(void){
     printf("#define DTB_SIZE 4096\n");
     printf("#define L2_ASSOCIATIVE 8\n");
   }
+#ifndef NO_MSA
+  if (get_feature("msa")) printf("#define HAVE_MSA\n");
+#endif
 }
 
 void get_libname(void){
-  if(detect()==CPU_LOONGSON3A) {
-    printf("loongson3a\n");
-  }else if(detect()==CPU_LOONGSON3B) {
-    printf("loongson3b\n");
+  if(detect()==CPU_LOONGSON3R3) {
+    printf("loongson3r3\n");
+  }else if(detect()==CPU_LOONGSON3R4) {
+    printf("loongson3r4\n");
   }else if(detect()==CPU_I6400) {
     printf("i6400\n");
   }else if(detect()==CPU_P6600) {
     printf("p6600\n");
   }else if(detect()==CPU_I6500) {
     printf("i6500\n");
-  }else{
-    printf("mips64\n");
+  }else {
+    printf("mips64_generic\n");
   }
 }
+
+int get_feature(char *search)
+{
+
+#ifdef __linux
+        FILE *infile;
+        char buffer[2048], *p,*t;
+        p = (char *) NULL ;
+
+        infile = fopen("/proc/cpuinfo", "r");
+
+        while (fgets(buffer, sizeof(buffer), infile))
+        {
+
+                if (!strncmp("Features", buffer, 8) || !strncmp("ASEs implemented", buffer, 16))
+                {
+                        p = strchr(buffer, ':') + 2;
+                        break;
+                }
+        }
+
+        fclose(infile);
+
+        if( p == NULL ) return 0;
+
+        t = strtok(p," ");
+        while( t = strtok(NULL," "))
+        {
+                if (strstr(t, search))   { return(1); }
+        }
+
+#endif
+        return(0);
+}
+

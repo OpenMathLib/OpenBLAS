@@ -32,6 +32,8 @@ void RELAPACK_cpotrf(
         return;
     }
 
+    if (*n == 0) return;
+
     // Clean char * arguments
     const char cleanuplo = lower ? 'L' : 'U';
 
@@ -46,6 +48,7 @@ static void RELAPACK_cpotrf_rec(
     float *A, const blasint *ldA,
     blasint *info
 ){
+    if (*n == 0) return;
 
     if (*n <= MAX(CROSSOVER_CPOTRF, 1)) {
         // Unblocked

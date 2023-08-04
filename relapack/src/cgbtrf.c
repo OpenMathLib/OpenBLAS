@@ -36,6 +36,7 @@ void RELAPACK_cgbtrf(
         return;
     }
 
+    if (*m == 0 || *n == 0) return;
     // Constant
     const float ZERO[] = { 0., 0. };
 
@@ -56,10 +57,10 @@ void RELAPACK_cgbtrf(
 
     // Allocate work space
     const blasint n1 = CREC_SPLIT(*n);
-    const blasint mWorkl = (kv > n1) ? MAX(1, *m - *kl) : kv;
-    const blasint nWorkl = (kv > n1) ? n1 : kv;
-    const blasint mWorku = (*kl > n1) ? n1 : *kl;
-    const blasint nWorku = (*kl > n1) ? MAX(0, *n - *kl) : *kl;
+    const blasint mWorkl = abs ( (kv > n1) ? MAX(1, *m - *kl) : kv);
+    const blasint nWorkl = abs ( (kv > n1) ? n1 : kv);
+    const blasint mWorku = abs ((*kl > n1) ? n1 : *kl);
+    const blasint nWorku = abs ((*kl > n1) ? MAX(0, *n - *kl) : *kl);
     float *Workl = malloc(mWorkl * nWorkl * 2 * sizeof(float));
     float *Worku = malloc(mWorku * nWorku * 2 * sizeof(float));
     LAPACK(claset)("L", &mWorkl, &nWorkl, ZERO, ZERO, Workl, &mWorkl);
@@ -82,7 +83,7 @@ static void RELAPACK_cgbtrf_rec(
     blasint *info
 ) {
 
-    if (*n <= MAX(CROSSOVER_CGBTRF, 1)) {
+    if (*n <= MAX(CROSSOVER_CGBTRF, 1)|| *n > *kl || *ldAb == 1) {
         // Unblocked
         LAPACK(cgbtf2)(m, n, kl, ku, Ab, ldAb, ipiv, info);
         return;

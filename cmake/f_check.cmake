@@ -20,11 +20,24 @@
 # NEEDBUNDERSCORE
 # NEED2UNDERSCORES
 
-if (NOT NO_LAPACK)
+include(CheckLanguage)
+check_language(Fortran)
+if(CMAKE_Fortran_COMPILER)
   enable_language(Fortran)
 else()
-  include(CMakeForceCompiler)
-  CMAKE_FORCE_Fortran_COMPILER(gfortran GNU)
+  set (NOFORTRAN 1)
+  if (NOT NO_LAPACK)
+     if (NOT XXXXX)
+	message(STATUS "No Fortran compiler found, can build only BLAS and f2c-converted LAPACK")
+	set(C_LAPACK 1)
+	if (INTERFACE64)
+	  set (CCOMMON_OPT "${CCOMMON_OPT} -DLAPACK_ILP64")
+  	endif ()
+	set(TIMER "NONE")
+     else ()
+       message(STATUS "No Fortran compiler found, can build only BLAS")
+     endif()  
+  endif()
 endif()
 
 if (NOT ONLY_CBLAS)

@@ -1,3 +1,5 @@
+*> \brief \b SBDT05
+*
 *  =========== DOCUMENTATION ===========
 *
 * Online html documentation available at
@@ -52,6 +54,7 @@
 *> \verbatim
 *>          A is REAL array, dimension (LDA,N)
 *>          The m by n matrix A.
+*> \endverbatim
 *>
 *> \param[in] LDA
 *> \verbatim
@@ -116,18 +119,15 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
-*
 *> \ingroup double_eig
 *
 *  =====================================================================
       SUBROUTINE SBDT05( M, N, A, LDA, S, NS, U, LDU,
      $                    VT, LDVT, WORK, RESID )
 *
-*  -- LAPACK test routine (version 3.7.0) --
+*  -- LAPACK test routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
 *
 *     .. Scalar Arguments ..
       INTEGER            LDA, LDU, LDVT, M, N, NS

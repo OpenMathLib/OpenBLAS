@@ -90,18 +90,15 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
-*
 *> \ingroup double_lin
 *
 *  =====================================================================
       DOUBLE PRECISION FUNCTION DRZT01( M, N, A, AF, LDA, TAU, WORK,
      $                 LWORK )
 *
-*  -- LAPACK test routine (version 3.7.0) --
+*  -- LAPACK test routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
 *
 *     .. Scalar Arguments ..
       INTEGER            LDA, LWORK, M, N
@@ -161,7 +158,7 @@
 *
 *     R = R * P(1) * ... *P(m)
 *
-      CALL DORMRZ( 'Right', 'No tranpose', M, N, M, N-M, AF, LDA, TAU,
+      CALL DORMRZ( 'Right', 'No transpose', M, N, M, N-M, AF, LDA, TAU,
      $             WORK, M, WORK( M*N+1 ), LWORK-M*N, INFO )
 *
 *     R = R - A

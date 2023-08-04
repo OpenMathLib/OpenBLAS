@@ -199,7 +199,7 @@
 *> \verbatim
 *>          SPARSE is REAL between 0. and 1.
 *>           On entry specifies the sparsity of the matrix
-*>           if sparse matix is to be generated.
+*>           if sparse matrix is to be generated.
 *>           SPARSE should lie between 0 and 1.
 *>           A uniform ( 0, 1 ) random number x is generated and
 *>           compared to SPARSE; if x is larger the matrix entry
@@ -217,8 +217,6 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date June 2016
-*
 *> \ingroup real_matgen
 *
 *  =====================================================================
@@ -226,10 +224,9 @@
      $                 IDIST, ISEED, D, IGRADE, DL, DR, IPVTNG, IWORK,
      $                 SPARSE )
 *
-*  -- LAPACK auxiliary routine (version 3.7.0) --
+*  -- LAPACK auxiliary routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     June 2016
 *
 *     .. Scalar Arguments ..
 *

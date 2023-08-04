@@ -119,7 +119,7 @@ void NAME(char *UPLO, blasint *N, FLOAT  *ALPHA,
 void CNAME(enum CBLAS_ORDER order, enum CBLAS_UPLO Uplo, int n, FLOAT alpha, FLOAT *x, int incx, FLOAT *a, int lda) {
 
   FLOAT *buffer;
-  int trans, uplo;
+  int uplo;
   blasint info;
   FLOAT * ALPHA = &alpha;
   FLOAT alpha_r	= ALPHA[0];
@@ -130,7 +130,6 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_UPLO Uplo, int n, FLOAT alpha, FLO
 
   PRINT_DEBUG_CNAME;
 
-  trans = -1;
   uplo  = -1;
   info  =  0;
 
@@ -171,6 +170,32 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_UPLO Uplo, int n, FLOAT alpha, FLO
   if (n == 0) return;
 
   if ((alpha_r == ZERO) && (alpha_i == ZERO)) return;
+
+  if (incx == 1 && n < 50) {
+    blasint i;
+    if (!uplo) {
+      for (i = 0; i < n; i++){
+        if ((x[i * 2 + 0] != ZERO) || (x[i * 2 + 1] != ZERO)) {
+          AXPYU_K(i + 1, 0, 0,
+              alpha_r * x[i * 2 + 0] - alpha_i * x[i * 2 + 1],
+              alpha_i * x[i * 2 + 0] + alpha_r * x[i * 2 + 1],
+              x,         1, a, 1, NULL, 0);
+        }
+        a += lda * 2;
+      }
+    } else {
+      for (i = 0; i < n; i++){
+        if ((x[i * 2 + 0] != ZERO) || (x[i * 2 + 1] != ZERO)) {
+          AXPYU_K(n - i, 0, 0,
+              alpha_r * x[i * 2 + 0] - alpha_i * x[i * 2 + 1],
+              alpha_i * x[i * 2 + 0] + alpha_r * x[i * 2 + 1],
+              x + i * 2, 1, a, 1, NULL, 0);
+        }
+        a += 2 + lda * 2;
+      }
+    }
+    return;
+  }
 
   IDEBUG_START;
 

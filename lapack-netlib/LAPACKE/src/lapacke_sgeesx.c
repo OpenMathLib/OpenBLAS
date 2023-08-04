@@ -28,7 +28,6 @@
 *****************************************************************************
 * Contents: Native high-level C interface to LAPACK function sgeesx
 * Author: Intel Corporation
-* Generated November 2015
 *****************************************************************************/
 
 #include "lapacke_utils.h"
@@ -76,15 +75,18 @@ lapack_int LAPACKE_sgeesx( int matrix_layout, char jobvs, char sort,
     if( info != 0 ) {
         goto exit_level_1;
     }
-    liwork = (lapack_int)iwork_query;
+    liwork = iwork_query;
     lwork = (lapack_int)work_query;
     /* Allocate memory for work arrays */
     if( LAPACKE_lsame( sense, 'b' ) || LAPACKE_lsame( sense, 'v' ) ) {
         iwork = (lapack_int*)LAPACKE_malloc( sizeof(lapack_int) * liwork );
-        if( iwork == NULL ) {
-            info = LAPACK_WORK_MEMORY_ERROR;
-            goto exit_level_1;
-        }
+    }
+    else {
+        iwork = (lapack_int*)LAPACKE_malloc( sizeof(lapack_int) * 1 );
+    }
+    if( iwork == NULL ) {
+        info = LAPACK_WORK_MEMORY_ERROR;
+        goto exit_level_1;
     }
     work = (float*)LAPACKE_malloc( sizeof(float) * lwork );
     if( work == NULL ) {
@@ -98,9 +100,7 @@ lapack_int LAPACKE_sgeesx( int matrix_layout, char jobvs, char sort,
     /* Release memory and exit */
     LAPACKE_free( work );
 exit_level_2:
-    if( LAPACKE_lsame( sense, 'b' ) || LAPACKE_lsame( sense, 'v' ) ) {
-        LAPACKE_free( iwork );
-    }
+    LAPACKE_free( iwork );
 exit_level_1:
     if( LAPACKE_lsame( sort, 's' ) ) {
         LAPACKE_free( bwork );

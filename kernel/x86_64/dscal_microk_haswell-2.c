@@ -38,22 +38,18 @@ static void dscal_kernel_8( BLASLONG n, FLOAT *alpha, FLOAT *x)
 
 	__asm__  __volatile__
 	(
-	"vmovddup		(%2), %%xmm0		    \n\t"  // alpha	
+	"vbroadcastsd		(%2), %%ymm0		    \n\t"  // alpha
 
 	"addq	$128, %1				    \n\t"
 
 	"cmpq 	$0, %0					    \n\t"
 	"je	4f					    \n\t" 
 
-	"vmulpd 	-128(%1), %%xmm0, %%xmm4	    \n\t"
-	"vmulpd 	-112(%1), %%xmm0, %%xmm5	    \n\t"
-	"vmulpd 	 -96(%1), %%xmm0, %%xmm6	    \n\t"
-	"vmulpd 	 -80(%1), %%xmm0, %%xmm7	    \n\t"
+	"vmulpd 	-128(%1), %%ymm0, %%ymm4	    \n\t"
+	"vmulpd 	 -96(%1), %%ymm0, %%ymm5	    \n\t"
 
-	"vmulpd 	 -64(%1), %%xmm0, %%xmm8	    \n\t"
-	"vmulpd 	 -48(%1), %%xmm0, %%xmm9	    \n\t"
-	"vmulpd 	 -32(%1), %%xmm0, %%xmm10    	    \n\t"
-	"vmulpd 	 -16(%1), %%xmm0, %%xmm11           \n\t"
+	"vmulpd 	 -64(%1), %%ymm0, %%ymm6	    \n\t"
+	"vmulpd 	 -32(%1), %%ymm0, %%ymm7    	    \n\t"
 
 	"subq	        $1 , %0			            \n\t"		
 	"jz		2f		             	    \n\t"
@@ -62,26 +58,18 @@ static void dscal_kernel_8( BLASLONG n, FLOAT *alpha, FLOAT *x)
 	"1:				            	    \n\t"
 	// "prefetcht0     640(%1)				    \n\t" 
 
-	"vmovups	%%xmm4  ,-128(%1)		    \n\t"
-	"vmovups	%%xmm5  ,-112(%1)		    \n\t"
-	"vmulpd 	   0(%1), %%xmm0, %%xmm4	    \n\t"
-	"vmovups	%%xmm6  , -96(%1)		    \n\t"
-	"vmulpd 	  16(%1), %%xmm0, %%xmm5	    \n\t"
-	"vmovups	%%xmm7  , -80(%1)		    \n\t"
-	"vmulpd 	  32(%1), %%xmm0, %%xmm6	    \n\t"
+	"vmovups	%%ymm4  ,-128(%1)		    \n\t"
+	"vmovups	%%ymm5  , -96(%1)		    \n\t"
+	"vmulpd 	   0(%1), %%ymm0, %%ymm4	    \n\t"
 
 	// "prefetcht0     704(%1)				    \n\t" 
 
-	"vmovups	%%xmm8  , -64(%1)		    \n\t"
-	"vmulpd 	  48(%1), %%xmm0, %%xmm7	    \n\t"
-	"vmovups	%%xmm9  , -48(%1)		    \n\t"
-	"vmulpd 	  64(%1), %%xmm0, %%xmm8	    \n\t"
-	"vmovups	%%xmm10 , -32(%1)		    \n\t"
-	"vmulpd 	  80(%1), %%xmm0, %%xmm9	    \n\t"
-	"vmovups	%%xmm11 , -16(%1)		    \n\t"
+	"vmovups	%%ymm6  , -64(%1)		    \n\t"
+	"vmulpd 	  32(%1), %%ymm0, %%ymm5	    \n\t"
+	"vmovups	%%ymm7  , -32(%1)		    \n\t"
 
-	"vmulpd 	  96(%1), %%xmm0, %%xmm10    	    \n\t"
-	"vmulpd 	 112(%1), %%xmm0, %%xmm11           \n\t"
+	"vmulpd 	  64(%1), %%ymm0, %%ymm6	    \n\t"
+	"vmulpd 	  96(%1), %%ymm0, %%ymm7    	    \n\t"
 
 
 	"addq		$128, %1	  	 	    \n\t"
@@ -90,15 +78,11 @@ static void dscal_kernel_8( BLASLONG n, FLOAT *alpha, FLOAT *x)
 
 	"2:				            	    \n\t"
  
-	"vmovups	%%xmm4  ,-128(%1)		    \n\t"
-	"vmovups	%%xmm5  ,-112(%1)		    \n\t"
-	"vmovups	%%xmm6  , -96(%1)		    \n\t"
-	"vmovups	%%xmm7  , -80(%1)		    \n\t"
+	"vmovups	%%ymm4  ,-128(%1)		    \n\t"
+	"vmovups	%%ymm5  , -96(%1)		    \n\t"
 
-	"vmovups	%%xmm8  , -64(%1)		    \n\t"
-	"vmovups	%%xmm9  , -48(%1)		    \n\t"
-	"vmovups	%%xmm10 , -32(%1)		    \n\t"
-	"vmovups	%%xmm11 , -16(%1)		    \n\t"
+	"vmovups	%%ymm6  , -64(%1)		    \n\t"
+	"vmovups	%%ymm7  , -32(%1)		    \n\t"
 
 	"addq		$128, %1	  	 	    \n\t"
 
@@ -107,15 +91,11 @@ static void dscal_kernel_8( BLASLONG n, FLOAT *alpha, FLOAT *x)
 	"cmpq	$8  ,%3					    \n\t"
 	"jne	5f					    \n\t"
 
-	"vmulpd	    -128(%1), %%xmm0, %%xmm4	    \n\t"
-	"vmulpd	    -112(%1), %%xmm0, %%xmm5	    \n\t"
-	"vmulpd	     -96(%1), %%xmm0, %%xmm6     	    \n\t"
-	"vmulpd	     -80(%1), %%xmm0, %%xmm7     	    \n\t"
+	"vmulpd	    -128(%1), %%ymm0, %%ymm4	    \n\t"
+	"vmulpd	     -96(%1), %%ymm0, %%ymm5     	    \n\t"
 
-	"vmovups	%%xmm4  ,-128(%1)		    \n\t"
-	"vmovups	%%xmm5  ,-112(%1)		    \n\t"
-	"vmovups	%%xmm6  , -96(%1)		    \n\t"
-	"vmovups	%%xmm7  , -80(%1)		    \n\t"
+	"vmovups	%%ymm4  ,-128(%1)		    \n\t"
+	"vmovups	%%ymm5  , -96(%1)		    \n\t"
 
 	"5:						    \n\t"
 
@@ -149,7 +129,7 @@ static void dscal_kernel_8_zero( BLASLONG n, FLOAT *alpha, FLOAT *x)
 
 	__asm__  __volatile__
 	(
-	"vxorpd		%%xmm0, %%xmm0 , %%xmm0		    \n\t"  
+	"vxorpd	        %%ymm0, %%ymm0 , %%ymm0		    \n\t"
 
 	"addq	$128, %1				    \n\t"
 
@@ -159,15 +139,11 @@ static void dscal_kernel_8_zero( BLASLONG n, FLOAT *alpha, FLOAT *x)
 	".p2align 4				            \n\t"
 	"1:				            	    \n\t"
 
-	"vmovups	%%xmm0  ,-128(%1)		    \n\t"
-	"vmovups	%%xmm0  ,-112(%1)		    \n\t"
-	"vmovups	%%xmm0  , -96(%1)		    \n\t"
-	"vmovups	%%xmm0  , -80(%1)		    \n\t"
+	"vmovups	%%ymm0 , -128(%1)		    \n\t"
+	"vmovups	%%ymm0 ,  -96(%1)		    \n\t"
 
-	"vmovups	%%xmm0  , -64(%1)		    \n\t"
-	"vmovups	%%xmm0  , -48(%1)		    \n\t"
-	"vmovups	%%xmm0  , -32(%1)		    \n\t"
-	"vmovups	%%xmm0  , -16(%1)		    \n\t"
+	"vmovups	%%ymm0 ,  -64(%1)		    \n\t"
+	"vmovups	%%ymm0 ,  -32(%1)		    \n\t"
 
 	"addq		$128, %1	  	 	    \n\t"
 	"subq	        $1 , %0			            \n\t"		
@@ -178,10 +154,8 @@ static void dscal_kernel_8_zero( BLASLONG n, FLOAT *alpha, FLOAT *x)
 	"cmpq	$8  ,%3					    \n\t"
 	"jne	4f					    \n\t"
 
-	"vmovups	%%xmm0  ,-128(%1)		    \n\t"
-	"vmovups	%%xmm0  ,-112(%1)		    \n\t"
-	"vmovups	%%xmm0  , -96(%1)		    \n\t"
-	"vmovups	%%xmm0  , -80(%1)		    \n\t"
+	"vmovups	%%ymm0  ,-128(%1)		    \n\t"
+	"vmovups	%%ymm0  , -96(%1)		    \n\t"
 
 	"4:						    \n\t"
 

@@ -214,7 +214,7 @@
 *>          Not modified.
 *>
 *>  D1      REAL             array, dimension (max(NN))
-*>          The eigenvalues of A, as computed by SSTEQR simlutaneously
+*>          The eigenvalues of A, as computed by SSTEQR simultaneously
 *>          with Z.  On exit, the eigenvalues in D1 correspond with the
 *>          matrix in A.
 *>          Modified.
@@ -443,8 +443,6 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
-*
 *> \ingroup single_eig
 *
 *  =====================================================================
@@ -453,10 +451,9 @@
      $                   WA2, WA3, U, LDU, V, TAU, Z, WORK, LWORK,
      $                   IWORK, LIWORK, RESULT, INFO )
 *
-*  -- LAPACK test routine (version 3.7.0) --
+*  -- LAPACK test routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
 *
 *     .. Scalar Arguments ..
       INTEGER            INFO, LDA, LDU, LIWORK, LWORK, NOUNIT, NSIZES,
@@ -505,7 +502,7 @@
       EXTERNAL           SLAMCH, SLARND, SSXT1
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           ALASVM, SLABAD, SLACPY, SLAFTS, SLASET, SLATMR,
+      EXTERNAL           ALASVM, SLACPY, SLAFTS, SLASET, SLATMR,
      $                   SLATMS, SSBEV, SSBEVD, SSBEVX, SSPEV, SSPEVD,
      $                   SSPEVX, SSTEV, SSTEVD, SSTEVR, SSTEVX, SSTT21,
      $                   SSTT22, SSYEV, SSYEVD, SSYEVR, SSYEVX, SSYT21,
@@ -580,7 +577,6 @@
 *
       UNFL = SLAMCH( 'Safe minimum' )
       OVFL = SLAMCH( 'Overflow' )
-      CALL SLABAD( UNFL, OVFL )
       ULP = SLAMCH( 'Epsilon' )*SLAMCH( 'Base' )
       ULPINV = ONE / ULP
       RTUNFL = SQRT( UNFL )

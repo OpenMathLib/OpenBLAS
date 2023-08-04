@@ -131,18 +131,15 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
-*
 *> \ingroup complex16_lin
 *
 *  =====================================================================
       SUBROUTINE ZDRVGT( DOTYPE, NN, NVAL, NRHS, THRESH, TSTERR, A, AF,
      $                   B, X, XACT, WORK, RWORK, IWORK, NOUT )
 *
-*  -- LAPACK test routine (version 3.7.0) --
+*  -- LAPACK test routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
 *
 *     .. Scalar Arguments ..
       LOGICAL            TSTERR
@@ -310,16 +307,16 @@
                   IZERO = 0
                ELSE IF( IMAT.EQ.8 ) THEN
                   IZERO = 1
-                  Z( 2 ) = A( N )
+                  Z( 2 ) = DBLE( A( N ) )
                   A( N ) = ZERO
                   IF( N.GT.1 ) THEN
-                     Z( 3 ) = A( 1 )
+                     Z( 3 ) = DBLE( A( 1 ) )
                      A( 1 ) = ZERO
                   END IF
                ELSE IF( IMAT.EQ.9 ) THEN
                   IZERO = N
-                  Z( 1 ) = A( 3*N-2 )
-                  Z( 2 ) = A( 2*N-1 )
+                  Z( 1 ) = DBLE( A( 3*N-2 ) )
+                  Z( 2 ) = DBLE( A( 2*N-1 ) )
                   A( 3*N-2 ) = ZERO
                   A( 2*N-1 ) = ZERO
                ELSE

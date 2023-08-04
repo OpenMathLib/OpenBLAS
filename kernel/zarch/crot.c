@@ -169,8 +169,8 @@ static void crot_kernel_32(BLASLONG n, FLOAT *x, FLOAT *y, FLOAT *c, FLOAT *s) {
     "vst  %%v23, 240(%%r1,%[y])\n\t"
     "agfi  %%r1,256\n\t"
     "brctg %[n],0b"
-    : "+m"(*(struct { FLOAT x[n * 2]; } *) x),
-       "+m"(*(struct { FLOAT x[n * 2]; } *) y),[n] "+&r"(n)
+    : "+m"(*(FLOAT (*)[n * 2]) x),
+       "+m"(*(FLOAT (*)[n * 2]) y),[n] "+&r"(n)
     : [x] "a"(x),[y] "a"(y),[c] "Q"(*c),[s] "Q"(*s)
     : "cc", "r1", "v0", "v1", "v16", "v17", "v18", "v19", "v20", "v21",
        "v22", "v23", "v24", "v25", "v26", "v27", "v28", "v29", "v30",

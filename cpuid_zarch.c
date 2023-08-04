@@ -27,52 +27,11 @@
 
 #include <string.h>
 
-#define CPU_GENERIC     0
-#define CPU_Z13         1
-#define CPU_Z14         2
+#include "cpuid_zarch.h"
 
-static char *cpuname[] = {
-  "ZARCH_GENERIC",
-  "Z13",
-  "Z14"
-};
-
-static char *cpuname_lower[] = {
-  "zarch_generic",
-  "z13",
-  "z14"
-};
-
-int detect(void)
-{
-  FILE *infile;
-  char buffer[512], *p;
-
-  p = (char *)NULL;
-  infile = fopen("/proc/sysinfo", "r");
-  while (fgets(buffer, sizeof(buffer), infile)){
-    if (!strncmp("Type", buffer, 4)){
-        p = strchr(buffer, ':') + 2;
-#if 0
-        fprintf(stderr, "%s\n", p);
-#endif
-        break;
-      }
-  }
-
-  fclose(infile);
-
-  if (strstr(p, "2964")) return CPU_Z13;
-  if (strstr(p, "2965")) return CPU_Z13;
-  if (strstr(p, "3906")) return CPU_Z14;
-  if (strstr(p, "3907")) return CPU_Z14;
-
-  return CPU_GENERIC;
-}
 
 void get_libname(void)
 {
-
 	int d = detect();
 	printf("%s", cpuname_lower[d]);
 }

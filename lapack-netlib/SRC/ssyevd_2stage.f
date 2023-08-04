@@ -45,12 +45,6 @@
 *> the reduction to tridiagonal. If eigenvectors are desired, it uses a
 *> divide and conquer algorithm.
 *>
-*> The divide and conquer algorithm makes very mild assumptions about
-*> floating point arithmetic. It will work on machines with a guard
-*> digit in add/subtract, or on those binary machines without guard
-*> digits which subtract like the Cray X-MP, Cray Y-MP, Cray C-90, or
-*> Cray-2. It could conceivably fail on hexadecimal or decimal machines
-*> without guard digits, but we know of none.
 *> \endverbatim
 *
 *  Arguments:
@@ -180,8 +174,6 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date November 2017
-*
 *> \ingroup realSYeigen
 *
 *> \par Contributors:
@@ -229,10 +221,9 @@
 *
       IMPLICIT NONE
 *
-*  -- LAPACK driver routine (version 3.8.0) --
+*  -- LAPACK driver routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2017
 *
 *     .. Scalar Arguments ..
       CHARACTER          JOBZ, UPLO
@@ -385,7 +376,7 @@
       IF( .NOT.WANTZ ) THEN
          CALL SSTERF( N, W, WORK( INDE ), INFO )
       ELSE
-*        Not available in this release, and agrument checking should not
+*        Not available in this release, and argument checking should not
 *        let it getting here
          RETURN
          CALL SSTEDC( 'I', N, W, WORK( INDE ), WORK( INDWRK ), N,

@@ -121,14 +121,12 @@
 *>          The leading dimension of DIFR, must be at least K.
 *> \endverbatim
 *>
-*> \param[in,out] DSIGMA
+*> \param[in] DSIGMA
 *> \verbatim
 *>          DSIGMA is DOUBLE PRECISION array, dimension ( K )
 *>          On entry, the first K elements of this array contain the old
 *>          roots of the deflated updating problem.  These are the poles
 *>          of the secular equation.
-*>          On exit, the elements of DSIGMA may be very slightly altered
-*>          in value.
 *> \endverbatim
 *>
 *> \param[out] WORK
@@ -152,8 +150,6 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date June 2017
-*
 *> \ingroup OTHERauxiliary
 *
 *> \par Contributors:
@@ -166,10 +162,9 @@
       SUBROUTINE DLASD8( ICOMPQ, K, D, Z, VF, VL, DIFL, DIFR, LDDIFR,
      $                   DSIGMA, WORK, INFO )
 *
-*  -- LAPACK auxiliary routine (version 3.7.1) --
+*  -- LAPACK auxiliary routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     June 2017
 *
 *     .. Scalar Arguments ..
       INTEGER            ICOMPQ, INFO, K, LDDIFR
@@ -229,27 +224,6 @@
          END IF
          RETURN
       END IF
-*
-*     Modify values DSIGMA(i) to make sure all DSIGMA(i)-DSIGMA(j) can
-*     be computed with high relative accuracy (barring over/underflow).
-*     This is a problem on machines without a guard digit in
-*     add/subtract (Cray XMP, Cray YMP, Cray C 90 and Cray 2).
-*     The following code replaces DSIGMA(I) by 2*DSIGMA(I)-DSIGMA(I),
-*     which on any of these machines zeros out the bottommost
-*     bit of DSIGMA(I) if it is 1; this makes the subsequent
-*     subtractions DSIGMA(I)-DSIGMA(J) unproblematic when cancellation
-*     occurs. On binary machines with a guard digit (almost all
-*     machines) it does not change DSIGMA(I) at all. On hexadecimal
-*     and decimal machines with a guard digit, it slightly
-*     changes the bottommost bits of DSIGMA(I). It does not account
-*     for hexadecimal or decimal machines without guard digits
-*     (we know of none). We use a subroutine call to compute
-*     2*DLAMBDA(I) to prevent optimizing compilers from eliminating
-*     this code.
-*
-      DO 10 I = 1, K
-         DSIGMA( I ) = DLAMC3( DSIGMA( I ), DSIGMA( I ) ) - DSIGMA( I )
-   10 CONTINUE
 *
 *     Book keeping.
 *
@@ -315,6 +289,11 @@
             DSIGJP = -DSIGMA( J+1 )
          END IF
          WORK( J ) = -Z( J ) / DIFLJ / ( DSIGMA( J )+DJ )
+*
+*        Use calls to the subroutine DLAMC3 to enforce the parentheses
+*        (x+y)+z. The goal is to prevent optimizing compilers
+*        from doing x+(y+z).
+*
          DO 60 I = 1, J - 1
             WORK( I ) = Z( I ) / ( DLAMC3( DSIGMA( I ), DSIGJ )-DIFLJ )
      $                   / ( DSIGMA( I )+DJ )

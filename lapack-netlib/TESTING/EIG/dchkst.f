@@ -166,7 +166,7 @@
 *>                                              DSTEMR('V', 'I')
 *>
 *> Tests 29 through 34 are disable at present because DSTEMR
-*> does not handle partial specturm requests.
+*> does not handle partial spectrum requests.
 *>
 *> (29)    | S - Z D Z' | / ( |S| n ulp )    DSTEMR('V', 'I')
 *>
@@ -363,7 +363,7 @@
 *> \verbatim
 *>          D1 is DOUBLE PRECISION array of
 *>                             dimension( max(NN) )
-*>          The eigenvalues of A, as computed by DSTEQR simlutaneously
+*>          The eigenvalues of A, as computed by DSTEQR simultaneously
 *>          with Z.  On exit, the eigenvalues in D1 correspond with the
 *>          matrix in A.
 *> \endverbatim
@@ -581,8 +581,6 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
-*
 *> \ingroup double_eig
 *
 *  =====================================================================
@@ -591,10 +589,9 @@
      $                   WA1, WA2, WA3, WR, U, LDU, V, VP, TAU, Z, WORK,
      $                   LWORK, IWORK, LIWORK, RESULT, INFO )
 *
-*  -- LAPACK test routine (version 3.7.0) --
+*  -- LAPACK test routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
 *
 *     .. Scalar Arguments ..
       INTEGER            INFO, LDA, LDU, LIWORK, LWORK, NOUNIT, NSIZES,
@@ -648,10 +645,10 @@
       EXTERNAL           ILAENV, DLAMCH, DLARND, DSXT1
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           DCOPY, DLABAD, DLACPY, DLASET, DLASUM, DLATMR,
-     $                   DLATMS, DOPGTR, DORGTR, DPTEQR, DSPT21, DSPTRD,
-     $                   DSTEBZ, DSTECH, DSTEDC, DSTEMR, DSTEIN, DSTEQR,
-     $                   DSTERF, DSTT21, DSTT22, DSYT21, DSYTRD, XERBLA
+      EXTERNAL           DCOPY, DLACPY, DLASET, DLASUM, DLATMR, DLATMS,
+     $                   DOPGTR, DORGTR, DPTEQR, DSPT21, DSPTRD, DSTEBZ,
+     $                   DSTECH, DSTEDC, DSTEMR, DSTEIN, DSTEQR, DSTERF,
+     $                   DSTT21, DSTT22, DSYT21, DSYTRD, XERBLA
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          ABS, DBLE, INT, LOG, MAX, MIN, SQRT
@@ -718,7 +715,6 @@
 *
       UNFL = DLAMCH( 'Safe minimum' )
       OVFL = ONE / UNFL
-      CALL DLABAD( UNFL, OVFL )
       ULP = DLAMCH( 'Epsilon' )*DLAMCH( 'Base' )
       ULPINV = ONE / ULP
       LOG2UI = INT( LOG( ULPINV ) / LOG( TWO ) )

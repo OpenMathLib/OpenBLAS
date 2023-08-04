@@ -1,0 +1,4 @@
+ifeq ($(CORE), C910V)
+CCOMMON_OPT += -march=rv64imafdcv0p7_zfh_xtheadc -mabi=lp64d -mtune=c920
+FCOMMON_OPT += -march=rv64imafdcv0p7_zfh_xtheadc -mabi=lp64d -mtune=c920 -static
+endif

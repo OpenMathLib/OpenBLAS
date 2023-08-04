@@ -28,7 +28,6 @@
 *****************************************************************************
 * Contents: Native high-level C interface to LAPACK function dlatms
 * Author: Intel Corporation
-* Generated April, 2011
 *****************************************************************************/
 
 #include "lapacke_utils.h"

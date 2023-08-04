@@ -231,8 +231,6 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date June 2016
-*
 *> \ingroup complex16OTHEReigen
 *
 *  =====================================================================
@@ -240,10 +238,9 @@
      $                   ABSTOL, M, W, Z, LDZ, WORK, RWORK, IWORK,
      $                   IFAIL, INFO )
 *
-*  -- LAPACK driver routine (version 3.7.0) --
+*  -- LAPACK driver routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     June 2016
 *
 *     .. Scalar Arguments ..
       CHARACTER          JOBZ, RANGE, UPLO
@@ -267,7 +264,7 @@
 *     .. Local Scalars ..
       LOGICAL            ALLEIG, INDEIG, TEST, VALEIG, WANTZ
       CHARACTER          ORDER
-      INTEGER            I, IINFO, IMAX, INDD, INDE, INDEE, INDIBL,
+      INTEGER            I, IINFO, IMAX, INDD, INDE, INDEE,
      $                   INDISP, INDIWK, INDRWK, INDTAU, INDWRK, ISCALE,
      $                   ITMP1, J, JJ, NSPLIT
       DOUBLE PRECISION   ABSTLL, ANRM, BIGNUM, EPS, RMAX, RMIN, SAFMIN,
@@ -335,11 +332,11 @@
       IF( N.EQ.1 ) THEN
          IF( ALLEIG .OR. INDEIG ) THEN
             M = 1
-            W( 1 ) = AP( 1 )
+            W( 1 ) = DBLE( AP( 1 ) )
          ELSE
             IF( VL.LT.DBLE( AP( 1 ) ) .AND. VU.GE.DBLE( AP( 1 ) ) ) THEN
                M = 1
-               W( 1 ) = AP( 1 )
+               W( 1 ) = DBLE( AP( 1 ) )
             END IF
          END IF
          IF( WANTZ )
@@ -437,17 +434,16 @@
       ELSE
          ORDER = 'E'
       END IF
-      INDIBL = 1
-      INDISP = INDIBL + N
+      INDISP = 1 + N
       INDIWK = INDISP + N
       CALL DSTEBZ( RANGE, ORDER, N, VLL, VUU, IL, IU, ABSTLL,
      $             RWORK( INDD ), RWORK( INDE ), M, NSPLIT, W,
-     $             IWORK( INDIBL ), IWORK( INDISP ), RWORK( INDRWK ),
+     $             IWORK( 1 ), IWORK( INDISP ), RWORK( INDRWK ),
      $             IWORK( INDIWK ), INFO )
 *
       IF( WANTZ ) THEN
          CALL ZSTEIN( N, RWORK( INDD ), RWORK( INDE ), M, W,
-     $                IWORK( INDIBL ), IWORK( INDISP ), Z, LDZ,
+     $                IWORK( 1 ), IWORK( INDISP ), Z, LDZ,
      $                RWORK( INDRWK ), IWORK( INDIWK ), IFAIL, INFO )
 *
 *        Apply unitary matrix used in reduction to tridiagonal
@@ -485,11 +481,11 @@
    30       CONTINUE
 *
             IF( I.NE.0 ) THEN
-               ITMP1 = IWORK( INDIBL+I-1 )
+               ITMP1 = IWORK( 1 + I-1 )
                W( I ) = W( J )
-               IWORK( INDIBL+I-1 ) = IWORK( INDIBL+J-1 )
+               IWORK( 1 + I-1 ) = IWORK( 1 + J-1 )
                W( J ) = TMP1
-               IWORK( INDIBL+J-1 ) = ITMP1
+               IWORK( 1 + J-1 ) = ITMP1
                CALL ZSWAP( N, Z( 1, I ), 1, Z( 1, J ), 1 )
                IF( INFO.NE.0 ) THEN
                   ITMP1 = IFAIL( I )

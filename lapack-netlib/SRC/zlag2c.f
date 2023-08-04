@@ -100,17 +100,14 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
-*
 *> \ingroup complex16OTHERauxiliary
 *
 *  =====================================================================
       SUBROUTINE ZLAG2C( M, N, A, LDA, SA, LDSA, INFO )
 *
-*  -- LAPACK auxiliary routine (version 3.7.0) --
+*  -- LAPACK auxiliary routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
 *
 *     .. Scalar Arguments ..
       INTEGER            INFO, LDA, LDSA, M, N
@@ -127,7 +124,7 @@
       DOUBLE PRECISION   RMAX
 *     ..
 *     .. Intrinsic Functions ..
-      INTRINSIC          DBLE, DIMAG
+      INTRINSIC          DBLE, DIMAG, CMPLX
 *     ..
 *     .. External Functions ..
       REAL               SLAMCH
@@ -145,7 +142,7 @@
                INFO = 1
                GO TO 30
             END IF
-            SA( I, J ) = A( I, J )
+            SA( I, J ) = CMPLX( A( I, J ) )
    10    CONTINUE
    20 CONTINUE
       INFO = 0

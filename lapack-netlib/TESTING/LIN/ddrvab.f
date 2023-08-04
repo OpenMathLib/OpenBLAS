@@ -142,8 +142,6 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
-*
 *> \ingroup double_lin
 *
 *  =====================================================================
@@ -151,10 +149,9 @@
      $                   NSVAL, THRESH, NMAX, A, AFAC, B,
      $                   X, WORK, RWORK, SWORK, IWORK, NOUT )
 *
-*  -- LAPACK test routine (version 3.7.0) --
+*  -- LAPACK test routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
 *
 *     .. Scalar Arguments ..
       INTEGER            NM, NMAX, NNS, NOUT
@@ -349,7 +346,7 @@
                CALL DGET08( TRANS, N, N, NRHS, A, LDA, X, LDA, WORK,
      $                      LDA, RWORK, RESULT( 1 ) )
 *
-*              Check if the test passes the tesing.
+*              Check if the test passes the testing.
 *              Print information about the tests that did not
 *              pass the testing.
 *

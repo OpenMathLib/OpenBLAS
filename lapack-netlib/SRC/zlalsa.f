@@ -42,9 +42,9 @@
 *>
 *> \verbatim
 *>
-*> ZLALSA is an itermediate step in solving the least squares problem
+*> ZLALSA is an intermediate step in solving the least squares problem
 *> by computing the SVD of the coefficient matrix in compact form (The
-*> singular vectors are computed as products of simple orthorgonal
+*> singular vectors are computed as products of simple orthogonal
 *> matrices.).
 *>
 *> If ICOMPQ = 0, ZLALSA applies the inverse of the left singular vector
@@ -250,8 +250,6 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date June 2017
-*
 *> \ingroup complex16OTHERcomputational
 *
 *> \par Contributors:
@@ -267,10 +265,9 @@
      $                   GIVCOL, LDGCOL, PERM, GIVNUM, C, S, RWORK,
      $                   IWORK, INFO )
 *
-*  -- LAPACK computational routine (version 3.7.1) --
+*  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     June 2017
 *
 *     .. Scalar Arguments ..
       INTEGER            ICOMPQ, INFO, LDB, LDBX, LDGCOL, LDU, N, NRHS,

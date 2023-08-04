@@ -148,8 +148,6 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date April 2012
-*
 *> \ingroup complex16_lin
 *
 *  =====================================================================
@@ -157,10 +155,9 @@
      $                   A, AFAC, AINV, B, X, XACT, WORK, RWORK, IWORK,
      $                   NOUT )
 *
-*  -- LAPACK test routine (version 3.7.0) --
+*  -- LAPACK test routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     April 2012
 *
 *     .. Scalar Arguments ..
       LOGICAL            TSTERR
@@ -599,10 +596,10 @@
 *                 Restore the matrices A and B.
 *
                   IF( IFACT.EQ.2 )
-     $               CALL ZLASET( UPLO, N, N, CMPLX( ZERO ),
-     $                 CMPLX( ZERO ), AFAC, LDA )
-                  CALL ZLASET( 'Full', N, NRHS, CMPLX( ZERO ),
-     $                 CMPLX( ZERO ), X, LDA )
+     $               CALL ZLASET( UPLO, N, N, DCMPLX( ZERO ),
+     $                 DCMPLX( ZERO ), AFAC, LDA )
+                  CALL ZLASET( 'Full', N, NRHS, DCMPLX( ZERO ),
+     $                 DCMPLX( ZERO ), X, LDA )
 *
 *                 Solve the system and compute the condition number
 *                 and error bounds using ZHESVXX.
@@ -718,6 +715,6 @@
      $      ', type ', I2, ', test ', I2, ', ratio =', G12.5 )
       RETURN
 *
-*     End of ZDRVHE
+*     End of ZDRVHEX
 *
       END

@@ -214,7 +214,7 @@
 *>          Not modified.
 *>
 *>  D1      DOUBLE PRECISION array, dimension (max(NN))
-*>          The eigenvalues of A, as computed by DSTEQR simlutaneously
+*>          The eigenvalues of A, as computed by DSTEQR simultaneously
 *>          with Z.  On exit, the eigenvalues in D1 correspond with the
 *>          matrix in A.
 *>          Modified.
@@ -443,8 +443,6 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
-*
 *> \ingroup double_eig
 *
 *  =====================================================================
@@ -453,10 +451,9 @@
      $                   WA2, WA3, U, LDU, V, TAU, Z, WORK, LWORK,
      $                   IWORK, LIWORK, RESULT, INFO )
 *
-*  -- LAPACK test routine (version 3.7.0) --
+*  -- LAPACK test routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
 *
 *     .. Scalar Arguments ..
       INTEGER            INFO, LDA, LDU, LIWORK, LWORK, NOUNIT, NSIZES,
@@ -505,11 +502,11 @@
       EXTERNAL           DLAMCH, DLARND, DSXT1
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           ALASVM, DLABAD, DLACPY, DLAFTS, DLASET, DLATMR,
-     $                   DLATMS, DSBEV, DSBEVD, DSBEVX, DSPEV, DSPEVD,
-     $                   DSPEVX, DSTEV, DSTEVD, DSTEVR, DSTEVX, DSTT21,
-     $                   DSTT22, DSYEV, DSYEVD, DSYEVR, DSYEVX, DSYT21,
-     $                   DSYT22, XERBLA
+      EXTERNAL           ALASVM, DLACPY, DLAFTS, DLASET, DLATMR, DLATMS,
+     $                   DSBEV, DSBEVD, DSBEVX, DSPEV, DSPEVD, DSPEVX,
+     $                   DSTEV, DSTEVD, DSTEVR, DSTEVX, DSTT21, DSTT22,
+     $                   DSYEV, DSYEVD, DSYEVR, DSYEVX, DSYT21, DSYT22,
+     $                   XERBLA
 *     ..
 *     .. Scalars in Common ..
       CHARACTER*32       SRNAMT
@@ -577,7 +574,6 @@
 *
       UNFL = DLAMCH( 'Safe minimum' )
       OVFL = DLAMCH( 'Overflow' )
-      CALL DLABAD( UNFL, OVFL )
       ULP = DLAMCH( 'Epsilon' )*DLAMCH( 'Base' )
       ULPINV = ONE / ULP
       RTUNFL = SQRT( UNFL )

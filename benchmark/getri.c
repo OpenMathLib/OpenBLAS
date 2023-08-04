@@ -36,12 +36,7 @@
 /* or implied, of The University of Texas at Austin.                 */
 /*********************************************************************/
 
-#include <stdio.h>
-#include <stdlib.h>
-#ifdef __CYGWIN32__
-#include <sys/time.h>
-#endif
-#include "common.h"
+#include "bench.h"
 
 #undef GETRF
 #undef GETRI
@@ -72,84 +67,22 @@
 
 extern void GETRI(blasint *m, FLOAT *a, blasint *lda, blasint *ipiv, FLOAT *work, blasint *lwork, blasint *info);
 
-#if defined(__WIN32__) || defined(__WIN64__)
-
-#ifndef DELTA_EPOCH_IN_MICROSECS
-#define DELTA_EPOCH_IN_MICROSECS 11644473600000000ULL
-#endif
-
-int gettimeofday(struct timeval *tv, void *tz){
-
-  FILETIME ft;
-  unsigned __int64 tmpres = 0;
-  static int tzflag;
-
-  if (NULL != tv)
-    {
-      GetSystemTimeAsFileTime(&ft);
-
-      tmpres |= ft.dwHighDateTime;
-      tmpres <<= 32;
-      tmpres |= ft.dwLowDateTime;
-
-      /*converting file time to unix epoch*/
-      tmpres /= 10;  /*convert into microseconds*/
-      tmpres -= DELTA_EPOCH_IN_MICROSECS;
-      tv->tv_sec = (long)(tmpres / 1000000UL);
-      tv->tv_usec = (long)(tmpres % 1000000UL);
-    }
-
-  return 0;
-}
-
-#endif
-
-#if !defined(__WIN32__) && !defined(__WIN64__) && !defined(__CYGWIN32__) && 0
-
-static void *huge_malloc(BLASLONG size){
-  int shmid;
-  void *address;
-
-#ifndef SHM_HUGETLB
-#define SHM_HUGETLB 04000
-#endif
-
-  if ((shmid =shmget(IPC_PRIVATE,
-		     (size + HUGE_PAGESIZE) & ~(HUGE_PAGESIZE - 1),
-		     SHM_HUGETLB | IPC_CREAT |0600)) < 0) {
-    printf( "Memory allocation failed(shmget).\n");
-    exit(1);
-  }
-
-  address = shmat(shmid, NULL, SHM_RND);
-
-  if ((BLASLONG)address == -1){
-    printf( "Memory allocation failed(shmat).\n");
-    exit(1);
-  }
-
-  shmctl(shmid, IPC_RMID, 0);
-
-  return address;
-}
-
-#define malloc huge_malloc
-
-#endif
-
 int main(int argc, char *argv[]){
 
   FLOAT *a,*work;
   FLOAT wkopt[4];
   blasint *ipiv;
-  blasint m, i, j, info,lwork;
+  blasint m, i, j, l, info,lwork;
 
   int from =   1;
   int to   = 200;
   int step =   1;
+  int loops =  1;
 
-  struct timeval start, stop;
-  double time1;
+  double time1,timeg;
+  
+  char *p;
+  char btest = 'I';
 
   argc--;argv++;
 
@@ -157,6 +90,9 @@ int main(int argc, char *argv[]){
   if (argc > 0) { to       = MAX(atol(*argv), from);	argc--; argv++;}
   if (argc > 0) { step     = atol(*argv);		argc--; argv++;}
 
+  if ((p = getenv("OPENBLAS_TEST"))) btest=*p;
+  
+  if ((p = getenv("OPENBLAS_LOOPS"))) loops=*p;
 
   fprintf(stderr, "From : %3d  To : %3d Step = %3d\n", from, to, step);
 
@@ -172,7 +108,7 @@ int main(int argc, char *argv[]){
 
     for(j = 0; j < to; j++){
       for(i = 0; i < to * COMPSIZE; i++){
-	a[i + j * to * COMPSIZE] = ((FLOAT) rand() / (FLOAT) RAND_MAX) - 0.5;
+	a[(long)i + (long)j * (long)to * COMPSIZE] = ((FLOAT) rand() / (FLOAT) RAND_MAX) - 0.5;
       }
     }
 
@@ -188,39 +124,48 @@ int main(int argc, char *argv[]){
   }
 
 
-#ifdef linux
+#ifdef __linux
   srandom(getpid());
 #endif
 
   fprintf(stderr, "   SIZE           FLops           Time          Lwork\n");
 
   for(m = from; m <= to; m += step){
-
+    timeg = 0.;
     fprintf(stderr, " %6d : ", (int)m);
 
-    GETRF (&m, &m, a, &m, ipiv, &info);
+    for (l = 0; l < loops; l++) {
 
+    if (btest == 'F') begin();
+    GETRF (&m, &m, a, &m, ipiv, &info);
+    if (btest == 'F') {
+      end();
+      timeg += getsec();
+    }
     if (info) {
       fprintf(stderr, "Matrix is not singular .. %d\n", info);
       exit(1);
     }
 
-    gettimeofday( &start, (struct timezone *)0);
+    if (btest == 'I') begin();
 
     lwork = -1;
     GETRI(&m, a, &m, ipiv, wkopt, &lwork, &info);
 
     lwork = (blasint)wkopt[0];
     GETRI(&m, a, &m, ipiv, work, &lwork, &info);
-    gettimeofday( &stop, (struct timezone *)0);
+    if (btest == 'I') end();
 
     if (info) {
       fprintf(stderr, "failed compute inverse matrix .. %d\n", info);
       exit(1);
     }
 
-    time1 = (double)(stop.tv_sec - start.tv_sec) + (double)((stop.tv_usec - start.tv_usec)) * 1.e-6;
-
+    if (btest == 'I') 
+      timeg += getsec();
+    
+    } // loops
+    time1 = timeg/(double)loops;
     fprintf(stderr,
 	    " %10.2f MFlops : %10.2f Sec : %d\n",
 	    COMPSIZE * COMPSIZE * (4.0/3.0 * (double)m * (double)m *(double)m - (double)m *(double)m + 5.0/3.0* (double)m) / time1 * 1.e-6,time1,lwork);

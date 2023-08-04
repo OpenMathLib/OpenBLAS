@@ -230,7 +230,7 @@
 *>          IPIV is INTEGER array, dimension (N)
 *>     If FACT = 'F', then IPIV is an input argument and on entry
 *>     contains the pivot indices from the factorization A = P*L*U
-*>     as computed by SGETRF; row i of the matrix was interchanged
+*>     as computed by CGETRF; row i of the matrix was interchanged
 *>     with row IPIV(i).
 *>
 *>     If FACT = 'N', then IPIV is an output argument and on exit
@@ -349,8 +349,8 @@
 *>     This also means that the solution X, estimated condition numbers,
 *>     and error bounds could be unreliable. If factorization fails with
 *>     0<INFO<=N, then this contains the reciprocal pivot growth factor
-*>     for the leading INFO columns of A.  In SGESVX, this quantity is
-*>     returned in WORK(1).
+*>     for the leading INFO columns of A.  In CGESVX, this quantity is
+*>     returned in RWORK(1).
 *> \endverbatim
 *>
 *> \param[out] BERR
@@ -431,7 +431,7 @@
 *>     information as described below. There currently are up to three
 *>     pieces of information returned for each right-hand side. If
 *>     componentwise accuracy is not requested (PARAMS(3) = 0.0), then
-*>     ERR_BNDS_COMP is not accessed.  If N_ERR_BNDS .LT. 3, then at most
+*>     ERR_BNDS_COMP is not accessed.  If N_ERR_BNDS < 3, then at most
 *>     the first (:,N_ERR_BNDS) entries are returned.
 *>
 *>     The first index in ERR_BNDS_COMP(i,:) corresponds to the ith
@@ -467,14 +467,14 @@
 *> \param[in] NPARAMS
 *> \verbatim
 *>          NPARAMS is INTEGER
-*>     Specifies the number of parameters set in PARAMS.  If .LE. 0, the
+*>     Specifies the number of parameters set in PARAMS.  If <= 0, the
 *>     PARAMS array is never referenced and default values are used.
 *> \endverbatim
 *>
 *> \param[in,out] PARAMS
 *> \verbatim
 *>          PARAMS is REAL array, dimension NPARAMS
-*>     Specifies algorithm parameters.  If an entry is .LT. 0.0, then
+*>     Specifies algorithm parameters.  If an entry is < 0.0, then
 *>     that entry will be filled with default value used for that
 *>     parameter.  Only positions up to NPARAMS are accessed; defaults
 *>     are used for higher-numbered parameters.
@@ -482,9 +482,9 @@
 *>       PARAMS(LA_LINRX_ITREF_I = 1) : Whether to perform iterative
 *>            refinement or not.
 *>         Default: 1.0
-*>            = 0.0 : No refinement is performed, and no error bounds are
+*>            = 0.0:  No refinement is performed, and no error bounds are
 *>                    computed.
-*>            = 1.0 : Use the double-precision refinement algorithm,
+*>            = 1.0:  Use the double-precision refinement algorithm,
 *>                    possibly with doubled-single computations if the
 *>                    compilation environment does not support DOUBLE
 *>                    PRECISION.
@@ -552,8 +552,6 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date April 2012
-*
 *> \ingroup complexGBsolve
 *
 *  =====================================================================
@@ -563,10 +561,9 @@
      $                    ERR_BNDS_NORM, ERR_BNDS_COMP, NPARAMS, PARAMS,
      $                    WORK, RWORK, INFO )
 *
-*  -- LAPACK driver routine (version 3.7.0) --
+*  -- LAPACK driver routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     April 2012
 *
 *     .. Scalar Arguments ..
       CHARACTER          EQUED, FACT, TRANS
@@ -638,7 +635,7 @@
 *
       RPVGRW = ZERO
 *
-*     Test the input parameters.  PARAMS is not tested until SGERFSX.
+*     Test the input parameters.  PARAMS is not tested until CGERFSX.
 *
       IF( .NOT.NOFACT .AND. .NOT.EQUIL .AND. .NOT.
      $     LSAME( FACT, 'F' ) ) THEN

@@ -322,8 +322,6 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date June 2016
-*
 *> \ingroup realOTHERcomputational
 *
 *  =====================================================================
@@ -332,10 +330,9 @@
      $                   V2T, LDV2T, B11D, B11E, B12D, B12E, B21D, B21E,
      $                   B22D, B22E, WORK, LWORK, INFO )
 *
-*  -- LAPACK computational routine (version 3.7.1) --
+*  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     June 2016
 *
 *     .. Scalar Arguments ..
       CHARACTER          JOBU1, JOBU2, JOBV1T, JOBV2T, TRANS
@@ -354,12 +351,13 @@
 *     .. Parameters ..
       INTEGER            MAXITR
       PARAMETER          ( MAXITR = 6 )
-      REAL               HUNDRED, MEIGHTH, ONE, PIOVER2, TEN, ZERO
+      REAL               HUNDRED, MEIGHTH, ONE, TEN, ZERO
       PARAMETER          ( HUNDRED = 100.0E0, MEIGHTH = -0.125E0,
-     $                     ONE = 1.0E0, PIOVER2 = 1.57079632679489662E0,
-     $                     TEN = 10.0E0, ZERO = 0.0E0 )
+     $                     ONE = 1.0E0, TEN = 10.0E0, ZERO = 0.0E0 )
       REAL               NEGONE
       PARAMETER          ( NEGONE = -1.0E0 )
+      REAL               PIOVER2
+      PARAMETER ( PIOVER2 = 1.57079632679489661923132169163975144210E0 )
 *     ..
 *     .. Local Scalars ..
       LOGICAL            COLMAJOR, LQUERY, RESTART11, RESTART12,

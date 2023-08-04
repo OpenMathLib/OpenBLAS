@@ -38,7 +38,7 @@
 *>\verbatim
 *>
 *> ZUNBDB4 simultaneously bidiagonalizes the blocks of a tall and skinny
-*> matrix X with orthonomal columns:
+*> matrix X with orthonormal columns:
 *>
 *>                            [ B11 ]
 *>      [ X11 ]   [ P1 |    ] [  0  ]
@@ -124,14 +124,14 @@
 *>
 *> \param[out] TAUP1
 *> \verbatim
-*>          TAUP1 is COMPLEX*16 array, dimension (P)
+*>          TAUP1 is COMPLEX*16 array, dimension (M-Q)
 *>           The scalar factors of the elementary reflectors that define
 *>           P1.
 *> \endverbatim
 *>
 *> \param[out] TAUP2
 *> \verbatim
-*>          TAUP2 is COMPLEX*16 array, dimension (M-P)
+*>          TAUP2 is COMPLEX*16 array, dimension (M-Q)
 *>           The scalar factors of the elementary reflectors that define
 *>           P2.
 *> \endverbatim
@@ -183,8 +183,6 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date July 2012
-*
 *> \ingroup complex16OTHERcomputational
 *
 *> \par Further Details:
@@ -213,10 +211,9 @@
      $                    TAUP1, TAUP2, TAUQ1, PHANTOM, WORK, LWORK,
      $                    INFO )
 *
-*  -- LAPACK computational routine (version 3.8.0) --
+*  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     July 2012
 *
 *     .. Scalar Arguments ..
       INTEGER            INFO, LWORK, M, P, Q, LDX11, LDX21

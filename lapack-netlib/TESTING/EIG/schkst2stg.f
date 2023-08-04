@@ -187,7 +187,7 @@
 *>                                              SSTEMR('V', 'I')
 *>
 *> Tests 29 through 34 are disable at present because SSTEMR
-*> does not handle partial specturm requests.
+*> does not handle partial spectrum requests.
 *>
 *> (29)    | S - Z D Z' | / ( |S| n ulp )    SSTEMR('V', 'I')
 *>
@@ -384,7 +384,7 @@
 *> \verbatim
 *>          D1 is REAL array of
 *>                             dimension( max(NN) )
-*>          The eigenvalues of A, as computed by SSTEQR simlutaneously
+*>          The eigenvalues of A, as computed by SSTEQR simultaneously
 *>          with Z.  On exit, the eigenvalues in D1 correspond with the
 *>          matrix in A.
 *> \endverbatim
@@ -602,8 +602,6 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
-*
 *> \ingroup single_eig
 *
 *  =====================================================================
@@ -612,10 +610,9 @@
      $                   WA1, WA2, WA3, WR, U, LDU, V, VP, TAU, Z, WORK,
      $                   LWORK, IWORK, LIWORK, RESULT, INFO )
 *
-*  -- LAPACK test routine (version 3.7.0) --
+*  -- LAPACK test routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
 *
 *     .. Scalar Arguments ..
       INTEGER            INFO, LDA, LDU, LIWORK, LWORK, NOUNIT, NSIZES,
@@ -669,10 +666,10 @@
       EXTERNAL           ILAENV, SLAMCH, SLARND, SSXT1
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           SCOPY, SLABAD, SLACPY, SLASET, SLASUM, SLATMR,
-     $                   SLATMS, SOPGTR, SORGTR, SPTEQR, SSPT21, SSPTRD,
-     $                   SSTEBZ, SSTECH, SSTEDC, SSTEMR, SSTEIN, SSTEQR,
-     $                   SSTERF, SSTT21, SSTT22, SSYT21, SSYTRD, XERBLA,
+      EXTERNAL           SCOPY, SLACPY, SLASET, SLASUM, SLATMR, SLATMS,
+     $                   SOPGTR, SORGTR, SPTEQR, SSPT21, SSPTRD, SSTEBZ,
+     $                   SSTECH, SSTEDC, SSTEMR, SSTEIN, SSTEQR, SSTERF,
+     $                   SSTT21, SSTT22, SSYT21, SSYTRD, XERBLA,
      $                   SSYTRD_2STAGE
 *     ..
 *     .. Intrinsic Functions ..
@@ -740,7 +737,6 @@
 *
       UNFL = SLAMCH( 'Safe minimum' )
       OVFL = ONE / UNFL
-      CALL SLABAD( UNFL, OVFL )
       ULP = SLAMCH( 'Epsilon' )*SLAMCH( 'Base' )
       ULPINV = ONE / ULP
       LOG2UI = INT( LOG( ULPINV ) / LOG( TWO ) )
@@ -999,8 +995,8 @@
 *           the one from above. Compare it with D1 computed 
 *           using the 1-stage.
 *
-            CALL SLASET( 'Full', N, 1, ZERO, ZERO, SD, 1 )
-            CALL SLASET( 'Full', N, 1, ZERO, ZERO, SE, 1 )
+            CALL SLASET( 'Full', N, 1, ZERO, ZERO, SD, N )
+            CALL SLASET( 'Full', N, 1, ZERO, ZERO, SE, N )
             CALL SLACPY( "U", N, N, A, LDA, V, LDU )
             LH = MAX(1, 4*N)
             LW = LWORK - LH
@@ -1032,8 +1028,8 @@
 *           the one from above. Compare it with D1 computed 
 *           using the 1-stage. 
 *
-            CALL SLASET( 'Full', N, 1, ZERO, ZERO, SD, 1 )
-            CALL SLASET( 'Full', N, 1, ZERO, ZERO, SE, 1 )
+            CALL SLASET( 'Full', N, 1, ZERO, ZERO, SD, N )
+            CALL SLASET( 'Full', N, 1, ZERO, ZERO, SE, N )
             CALL SLACPY( "L", N, N, A, LDA, V, LDU )
             CALL SSYTRD_2STAGE( 'N', "L", N, V, LDU, SD, SE, TAU, 
      $                   WORK, LH, WORK( LH+1 ), LW, IINFO )
@@ -1057,7 +1053,6 @@
                   GO TO 280
                END IF
             END IF
-*
 *
 *           Do Tests 3 and 4 which are similar to 11 and 12 but with the
 *           D1 computed using the standard 1-stage reduction as reference
@@ -1718,7 +1713,6 @@
                         END IF
                      END IF
 *
-*
 *                 Do test 28
 *
                      TEMP2 = TWO*( TWO*N-ONE )*ULP*
@@ -1816,7 +1810,6 @@
 *
                   RESULT( 31 ) = TEMP2 / MAX( UNFL,
      $                           ULP*MAX( TEMP1, TEMP2 ) )
-*
 *
 *           Call SSTEMR(V,V) to compute D1 and Z, do tests.
 *
@@ -1919,7 +1912,6 @@
                   RESULT( 34 ) = ZERO
                END IF
 *
-*
 *           Call SSTEMR(V,A) to compute D1 and Z, do tests.
 *
 *           Compute D1 and Z
@@ -1976,7 +1968,7 @@
                   END IF
                END IF
 *
-*           Do Test 34
+*           Do Test 37
 *
                TEMP1 = ZERO
                TEMP2 = ZERO
@@ -1994,7 +1986,6 @@
             NTESTT = NTESTT + NTEST
 *
 *           End of Loop -- Check for RESULT(j) > THRESH
-*
 *
 *           Print out tests which fail.
 *
@@ -2063,6 +2054,7 @@
      $      ', test(', I2, ')=', G10.3 )
 *
  9988 FORMAT( / 'Test performed:  see SCHKST2STG for details.', / )
+*
 *     End of SCHKST2STG
 *
       END

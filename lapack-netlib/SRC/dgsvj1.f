@@ -40,7 +40,7 @@
 *> DGSVJ1 is called from DGESVJ as a pre-processor and that is its main
 *> purpose. It applies Jacobi rotations in the same way as DGESVJ does, but
 *> it targets only particular pivots and it does not check convergence
-*> (stopping criterion). Few tunning parameters (marked by [TP]) are
+*> (stopping criterion). Few tuning parameters (marked by [TP]) are
 *> available for the implementer.
 *>
 *> Further Details
@@ -61,7 +61,7 @@
 *> In terms of the columns of A, the first N1 columns are rotated 'against'
 *> the remaining N-N1 columns, trying to increase the angle between the
 *> corresponding subspaces. The off-diagonal block is N1-by(N-N1) and it is
-*> tiled using quadratic tiles of side KBL. Here, KBL is a tunning parmeter.
+*> tiled using quadratic tiles of side KBL. Here, KBL is a tuning parameter.
 *> The number of sweeps is given in NSWEEP and the orthogonality threshold
 *> is given in TOL.
 *> \endverbatim
@@ -75,10 +75,10 @@
 *>          Specifies whether the output from this procedure is used
 *>          to compute the matrix V:
 *>          = 'V': the product of the Jacobi rotations is accumulated
-*>                 by postmulyiplying the N-by-N array V.
+*>                 by postmultiplying the N-by-N array V.
 *>                (See the description of V.)
 *>          = 'A': the product of the Jacobi rotations is accumulated
-*>                 by postmulyiplying the MV-by-N array V.
+*>                 by postmultiplying the MV-by-N array V.
 *>                (See the descriptions of MV and V.)
 *>          = 'N': the Jacobi rotations are not accumulated.
 *> \endverbatim
@@ -147,27 +147,27 @@
 *> \param[in] MV
 *> \verbatim
 *>          MV is INTEGER
-*>          If JOBV .EQ. 'A', then MV rows of V are post-multipled by a
-*>                           sequence of Jacobi rotations.
-*>          If JOBV = 'N',   then MV is not referenced.
+*>          If JOBV = 'A', then MV rows of V are post-multiplied by a
+*>                         sequence of Jacobi rotations.
+*>          If JOBV = 'N', then MV is not referenced.
 *> \endverbatim
 *>
 *> \param[in,out] V
 *> \verbatim
 *>          V is DOUBLE PRECISION array, dimension (LDV,N)
-*>          If JOBV .EQ. 'V' then N rows of V are post-multipled by a
-*>                           sequence of Jacobi rotations.
-*>          If JOBV .EQ. 'A' then MV rows of V are post-multipled by a
-*>                           sequence of Jacobi rotations.
-*>          If JOBV = 'N',   then V is not referenced.
+*>          If JOBV = 'V', then N rows of V are post-multiplied by a
+*>                         sequence of Jacobi rotations.
+*>          If JOBV = 'A', then MV rows of V are post-multiplied by a
+*>                         sequence of Jacobi rotations.
+*>          If JOBV = 'N', then V is not referenced.
 *> \endverbatim
 *>
 *> \param[in] LDV
 *> \verbatim
 *>          LDV is INTEGER
 *>          The leading dimension of the array V,  LDV >= 1.
-*>          If JOBV = 'V', LDV .GE. N.
-*>          If JOBV = 'A', LDV .GE. MV.
+*>          If JOBV = 'V', LDV >= N.
+*>          If JOBV = 'A', LDV >= MV.
 *> \endverbatim
 *>
 *> \param[in] EPS
@@ -187,7 +187,7 @@
 *>          TOL is DOUBLE PRECISION
 *>          TOL is the threshold for Jacobi rotations. For a pair
 *>          A(:,p), A(:,q) of pivot columns, the Jacobi rotation is
-*>          applied only if DABS(COS(angle(A(:,p),A(:,q)))) .GT. TOL.
+*>          applied only if DABS(COS(angle(A(:,p),A(:,q)))) > TOL.
 *> \endverbatim
 *>
 *> \param[in] NSWEEP
@@ -205,14 +205,14 @@
 *> \param[in] LWORK
 *> \verbatim
 *>          LWORK is INTEGER
-*>          LWORK is the dimension of WORK. LWORK .GE. M.
+*>          LWORK is the dimension of WORK. LWORK >= M.
 *> \endverbatim
 *>
 *> \param[out] INFO
 *> \verbatim
 *>          INFO is INTEGER
-*>          = 0 : successful exit.
-*>          < 0 : if INFO = -i, then the i-th argument had an illegal value
+*>          = 0:  successful exit.
+*>          < 0:  if INFO = -i, then the i-th argument had an illegal value
 *> \endverbatim
 *
 *  Authors:
@@ -222,8 +222,6 @@
 *> \author Univ. of California Berkeley
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
-*
-*> \date June 2016
 *
 *> \ingroup doubleOTHERcomputational
 *
@@ -236,10 +234,9 @@
       SUBROUTINE DGSVJ1( JOBV, M, N, N1, A, LDA, D, SVA, MV, V, LDV,
      $                   EPS, SFMIN, TOL, NSWEEP, WORK, LWORK, INFO )
 *
-*  -- LAPACK computational routine (version 3.8.0) --
+*  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     June 2016
 *
 *     .. Scalar Arguments ..
       DOUBLE PRECISION   EPS, SFMIN, TOL

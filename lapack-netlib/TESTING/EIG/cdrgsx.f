@@ -340,8 +340,6 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date June 2016
-*
 *> \ingroup complex_eig
 *
 *  =====================================================================
@@ -349,10 +347,9 @@
      $                   AI, BI, Z, Q, ALPHA, BETA, C, LDC, S, WORK,
      $                   LWORK, RWORK, IWORK, LIWORK, BWORK, INFO )
 *
-*  -- LAPACK test routine (version 3.7.0) --
+*  -- LAPACK test routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     June 2016
 *
 *     .. Scalar Arguments ..
       INTEGER            INFO, LDA, LDC, LIWORK, LWORK, NCMAX, NIN,
@@ -398,7 +395,7 @@
 *     ..
 *     .. External Subroutines ..
       EXTERNAL           ALASVM, CGESVD, CGET51, CGGESX, CLACPY, CLAKF2,
-     $                   CLASET, CLATM5, SLABAD, XERBLA
+     $                   CLASET, CLATM5, XERBLA
 *     ..
 *     .. Scalars in Common ..
       LOGICAL            FS
@@ -481,7 +478,6 @@
       ULPINV = ONE / ULP
       SMLNUM = SLAMCH( 'S' ) / ULP
       BIGNUM = ONE / SMLNUM
-      CALL SLABAD( SMLNUM, BIGNUM )
       THRSH2 = TEN*THRESH
       NTESTT = 0
       NERRS = 0
@@ -737,7 +733,7 @@
       CALL CLACPY( 'Full', MPLUSN, MPLUSN, AI, LDA, A, LDA )
       CALL CLACPY( 'Full', MPLUSN, MPLUSN, BI, LDA, B, LDA )
 *
-*     Compute the Schur factorization while swaping the
+*     Compute the Schur factorization while swapping the
 *     m-by-m (1,1)-blocks with n-by-n (2,2)-blocks.
 *
       CALL CGGESX( 'V', 'V', 'S', CLCTSX, 'B', MPLUSN, AI, LDA, BI, LDA,
@@ -920,7 +916,7 @@
      $      / '  2:  A and B are upper triangular matrices, ',
      $      / '  3:  A and B are as type 2, but each second diagonal ',
      $      'block in A_11 and ', /
-     $      '      each third diaongal block in A_22 are 2x2 blocks,',
+     $      '      each third diagonal block in A_22 are 2x2 blocks,',
      $      / '  4:  A and B are block diagonal matrices, ',
      $      / '  5:  (A,B) has potentially close or common ',
      $      'eigenvalues.', / )

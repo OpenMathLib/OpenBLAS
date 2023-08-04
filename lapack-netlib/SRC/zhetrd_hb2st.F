@@ -7,11 +7,11 @@
 *
 *> \htmlonly
 *> Download ZHETRD_HB2ST + dependencies
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/zhbtrd_hb2st.f">
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.tgz?format=tgz&filename=/lapack/lapack_routine/zhetrd_hb2st.f">
 *> [TGZ]</a>
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/zhbtrd_hb2st.f">
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.zip?format=zip&filename=/lapack/lapack_routine/zhetrd_hb2st.f">
 *> [ZIP]</a>
-*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/zhbtrd_hb2st.f">
+*> <a href="http://www.netlib.org/cgi-bin/netlibfiles.txt?format=txt&filename=/lapack/lapack_routine/zhetrd_hb2st.f">
 *> [TXT]</a>
 *> \endhtmlonly
 *
@@ -50,9 +50,9 @@
 *  Arguments:
 *  ==========
 *
-*> \param[in] STAGE
+*> \param[in] STAGE1
 *> \verbatim
-*>          STAGE is CHARACTER*1
+*>          STAGE1 is CHARACTER*1
 *>          = 'N':  "No": to mention that the stage 1 of the reduction  
 *>                  from dense to band using the zhetrd_he2hb routine
 *>                  was not called before this routine to reproduce AB. 
@@ -188,8 +188,6 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date November 2017
-*
 *> \ingroup complex16OTHERcomputational
 *
 *> \par Further Details:
@@ -237,10 +235,9 @@
 *
       IMPLICIT NONE
 *
-*  -- LAPACK computational routine (version 3.8.0) --
+*  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2017
 *
 *     .. Scalar Arguments ..
       CHARACTER          STAGE1, UPLO, VECT
@@ -395,7 +392,7 @@
 *     For that, for real precision just copy the diag and offdiag 
 *     to D and E while for the COMPLEX case the bulge chasing is  
 *     performed to convert the hermetian tridiagonal to symmetric 
-*     tridiagonal. A simpler coversion formula might be used, but then 
+*     tridiagonal. A simpler conversion formula might be used, but then 
 *     updating the Q matrix will be required and based if Q is generated
 *     or not this might complicate the story. 
 *      
@@ -541,7 +538,7 @@ C                 END IF
      $                         STIND, EDIND, SWEEPID, N, KD, IB,
      $                         WORK ( INDA ), LDA, 
      $                         HOUS( INDV ), HOUS( INDTAU ), LDV,
-     $                         WORK( INDW + TID*KD ) )
+     $                         WORK( INDW ) )
 #endif 
                           IF ( BLKLASTIND.GE.(N-1) ) THEN
                               STT = STT + 1

@@ -77,16 +77,13 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date April 2012
-*
 *  =====================================================================
       SUBROUTINE ZTSQR01(TSSW, M, N, MB, NB, RESULT)
       IMPLICIT NONE
 *
-*  -- LAPACK test routine (version 3.7.0) --
+*  -- LAPACK test routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     April 2012
 *
 *     .. Scalar Arguments ..
       CHARACTER         TSSW
@@ -114,7 +111,7 @@
 *     ..
 *     .. Local Arrays ..
       INTEGER            ISEED( 4 )
-      COMPLEX*16         TQUERY( 5 ), WORKQUERY
+      COMPLEX*16         TQUERY( 5 ), WORKQUERY( 1 )
 *     ..
 *     .. External Functions ..
       DOUBLE PRECISION DLAMCH, ZLANGE, ZLANSY
@@ -173,22 +170,22 @@
 *
       CALL ZGEQR( M, N, AF, M, TQUERY, -1, WORKQUERY, -1, INFO )
       TSIZE = INT( TQUERY( 1 ) )
-      LWORK = INT( WORKQUERY )
+      LWORK = INT( WORKQUERY( 1 ) )
       CALL ZGEMQR( 'L', 'N', M, M, K, AF, M, TQUERY, TSIZE, CF, M,
      $             WORKQUERY, -1, INFO)
-      LWORK = MAX( LWORK, INT( WORKQUERY ) )
+      LWORK = MAX( LWORK, INT( WORKQUERY( 1 ) ) )
       CALL ZGEMQR( 'L', 'N', M, N, K, AF, M, TQUERY, TSIZE, CF, M,
      $             WORKQUERY, -1, INFO)
-      LWORK = MAX( LWORK, INT( WORKQUERY ) )
+      LWORK = MAX( LWORK, INT( WORKQUERY( 1 ) ) )
       CALL ZGEMQR( 'L', 'C', M, N, K, AF, M, TQUERY, TSIZE, CF, M,
      $             WORKQUERY, -1, INFO)
-      LWORK = MAX( LWORK, INT( WORKQUERY ) )
+      LWORK = MAX( LWORK, INT( WORKQUERY( 1 ) ) )
       CALL ZGEMQR( 'R', 'N', N, M, K, AF, M, TQUERY, TSIZE, DF, N,
      $             WORKQUERY, -1, INFO)
-      LWORK = MAX( LWORK, INT( WORKQUERY ) )
+      LWORK = MAX( LWORK, INT( WORKQUERY( 1 ) ) )
       CALL ZGEMQR( 'R', 'C', N, M, K, AF, M, TQUERY, TSIZE, DF, N,
      $             WORKQUERY, -1, INFO)
-      LWORK = MAX( LWORK, INT( WORKQUERY ) )
+      LWORK = MAX( LWORK, INT( WORKQUERY( 1 ) ) )
       ALLOCATE ( T( TSIZE ) )
       ALLOCATE ( WORK( LWORK ) )
       srnamt = 'ZGEQR'
@@ -316,22 +313,22 @@
       ELSE
       CALL ZGELQ( M, N, AF, M, TQUERY, -1, WORKQUERY, -1, INFO )
       TSIZE = INT( TQUERY( 1 ) )
-      LWORK = INT( WORKQUERY )
+      LWORK = INT( WORKQUERY( 1 ) )
       CALL ZGEMLQ( 'R', 'N', N, N, K, AF, M, TQUERY, TSIZE, Q, N,
      $              WORKQUERY, -1, INFO )
-      LWORK = MAX( LWORK, INT( WORKQUERY ) )
+      LWORK = MAX( LWORK, INT( WORKQUERY( 1 ) ) )
       CALL ZGEMLQ( 'L', 'N', N, M, K, AF, M, TQUERY, TSIZE, DF, N,
      $             WORKQUERY, -1, INFO)
-      LWORK = MAX( LWORK, INT( WORKQUERY ) )
+      LWORK = MAX( LWORK, INT( WORKQUERY( 1 ) ) )
       CALL ZGEMLQ( 'L', 'C', N, M, K, AF, M, TQUERY, TSIZE, DF, N,
      $             WORKQUERY, -1, INFO)
-      LWORK = MAX( LWORK, INT( WORKQUERY ) )
+      LWORK = MAX( LWORK, INT( WORKQUERY( 1 ) ) )
       CALL ZGEMLQ( 'R', 'N', M, N, K, AF, M, TQUERY, TSIZE, CF, M,
      $             WORKQUERY, -1, INFO)
-      LWORK = MAX( LWORK, INT( WORKQUERY ) )
+      LWORK = MAX( LWORK, INT( WORKQUERY( 1 ) ) )
       CALL ZGEMLQ( 'R', 'C', M, N, K, AF, M, TQUERY, TSIZE, CF, M,
      $             WORKQUERY, -1, INFO)
-      LWORK = MAX( LWORK, INT( WORKQUERY ) )
+      LWORK = MAX( LWORK, INT( WORKQUERY( 1 ) ) )
       ALLOCATE ( T( TSIZE ) )
       ALLOCATE ( WORK( LWORK ) )
       srnamt = 'ZGELQ'

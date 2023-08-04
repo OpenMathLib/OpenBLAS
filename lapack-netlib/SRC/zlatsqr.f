@@ -1,3 +1,4 @@
+*> \brief \b ZLATSQR
 *
 *  Definition:
 *  ===========
@@ -18,9 +19,23 @@
 *>
 *> \verbatim
 *>
-*> SLATSQR computes a blocked Tall-Skinny QR factorization of
-*> an M-by-N matrix A, where M >= N:
-*> A = Q * R .
+*> ZLATSQR computes a blocked Tall-Skinny QR factorization of
+*> a complex M-by-N matrix A for M >= N:
+*>
+*>    A = Q * ( R ),
+*>            ( 0 )
+*>
+*> where:
+*>
+*>    Q is a M-by-M orthogonal matrix, stored on exit in an implicit
+*>    form in the elements below the diagonal of the array A and in
+*>    the elements of the array T;
+*>
+*>    R is an upper-triangular N-by-N matrix, stored on exit in
+*>    the elements on and above the diagonal of the array A.
+*>
+*>    0 is a (M-N)-by-N zero matrix, and is not stored.
+*>
 *> \endverbatim
 *
 *  Arguments:
@@ -91,6 +106,7 @@
 *>
 *> \param[in] LWORK
 *> \verbatim
+*>          LWORK is INTEGER
 *>          The dimension of the array WORK.  LWORK >= NB*N.
 *>          If LWORK = -1, then a workspace query is assumed; the routine
 *>          only calculates the optimal size of the WORK array, returns
@@ -149,10 +165,9 @@
       SUBROUTINE ZLATSQR( M, N, MB, NB, A, LDA, T, LDT, WORK,
      $                    LWORK, INFO)
 *
-*  -- LAPACK computational routine (version 3.7.0) --
+*  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd. --
-*     December 2016
 *
 *     .. Scalar Arguments ..
       INTEGER           INFO, LDA, M, N, MB, NB, LDT, LWORK
@@ -188,12 +203,12 @@
         INFO = -1
       ELSE IF( N.LT.0 .OR. M.LT.N ) THEN
         INFO = -2
-      ELSE IF( MB.LE.N ) THEN
+      ELSE IF( MB.LT.1 ) THEN
         INFO = -3
       ELSE IF( NB.LT.1 .OR. ( NB.GT.N .AND. N.GT.0 )) THEN
         INFO = -4
       ELSE IF( LDA.LT.MAX( 1, M ) ) THEN
-        INFO = -5
+        INFO = -6
       ELSE IF( LDT.LT.NB ) THEN
         INFO = -8
       ELSE IF( LWORK.LT.(N*NB) .AND. (.NOT.LQUERY) ) THEN

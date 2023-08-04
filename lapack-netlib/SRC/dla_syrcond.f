@@ -119,13 +119,13 @@
 *>     i > 0:  The ith argument is invalid.
 *> \endverbatim
 *>
-*> \param[in] WORK
+*> \param[out] WORK
 *> \verbatim
 *>          WORK is DOUBLE PRECISION array, dimension (3*N).
 *>     Workspace.
 *> \endverbatim
 *>
-*> \param[in] IWORK
+*> \param[out] IWORK
 *> \verbatim
 *>          IWORK is INTEGER array, dimension (N).
 *>     Workspace.
@@ -139,8 +139,6 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
-*
 *> \ingroup doubleSYcomputational
 *
 *  =====================================================================
@@ -148,10 +146,9 @@
      $                                       IPIV, CMODE, C, INFO, WORK,
      $                                       IWORK )
 *
-*  -- LAPACK computational routine (version 3.7.0) --
+*  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
 *
 *     .. Scalar Arguments ..
       CHARACTER          UPLO
@@ -337,5 +334,7 @@
      $   DLA_SYRCOND = ( 1.0D+0 / AINVNM )
 *
       RETURN
+*
+*     End of DLA_SYRCOND
 *
       END

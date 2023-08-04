@@ -188,18 +188,15 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
-*
 *> \ingroup complex16OTHERcomputational
 *
 *  =====================================================================
       SUBROUTINE ZUNMBR( VECT, SIDE, TRANS, M, N, K, A, LDA, TAU, C,
      $                   LDC, WORK, LWORK, INFO )
 *
-*  -- LAPACK computational routine (version 3.7.0) --
+*  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
 *
 *     .. Scalar Arguments ..
       CHARACTER          SIDE, TRANS, VECT
@@ -241,13 +238,10 @@
 *
       IF( LEFT ) THEN
          NQ = M
-         NW = N
+         NW = MAX( 1, N )
       ELSE
          NQ = N
-         NW = M
-      END IF
-      IF( M.EQ.0 .OR. N.EQ.0 ) THEN
-         NW = 0
+         NW = MAX( 1, M )
       END IF
       IF( .NOT.APPLYQ .AND. .NOT.LSAME( VECT, 'P' ) ) THEN
          INFO = -1
@@ -267,12 +261,12 @@
          INFO = -8
       ELSE IF( LDC.LT.MAX( 1, M ) ) THEN
          INFO = -11
-      ELSE IF( LWORK.LT.MAX( 1, NW ) .AND. .NOT.LQUERY ) THEN
+      ELSE IF( LWORK.LT.NW .AND. .NOT.LQUERY ) THEN
          INFO = -13
       END IF
 *
       IF( INFO.EQ.0 ) THEN
-         IF( NW.GT.0 ) THEN
+         IF( M.GT.0 .AND. N.GT.0 ) THEN
             IF( APPLYQ ) THEN
                IF( LEFT ) THEN
                   NB = ILAENV( 1, 'ZUNMQR', SIDE // TRANS, M-1, N, M-1,
@@ -290,7 +284,7 @@
      $                 -1 )
                END IF
             END IF
-            LWKOPT = MAX( 1, NW*NB )
+            LWKOPT = NW*NB
          ELSE
             LWKOPT = 1
          END IF

@@ -177,18 +177,15 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
-*
 *> \ingroup realOTHEReigen
 *
 *  =====================================================================
       SUBROUTINE SGGGLM( N, M, P, A, LDA, B, LDB, D, X, Y, WORK, LWORK,
      $                   INFO )
 *
-*  -- LAPACK driver routine (version 3.7.0) --
+*  -- LAPACK driver routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
 *
 *     .. Scalar Arguments ..
       INTEGER            INFO, LDA, LDB, LWORK, M, N, P
@@ -270,8 +267,15 @@
 *
 *     Quick return if possible
 *
-      IF( N.EQ.0 )
-     $   RETURN
+      IF( N.EQ.0 ) THEN
+         DO I = 1, M
+            X(I) = ZERO
+         END DO
+         DO I = 1, P
+            Y(I) = ZERO
+         END DO
+         RETURN
+      END IF
 *
 *     Compute the GQR factorization of matrices A and B:
 *
@@ -284,7 +288,7 @@
 *
       CALL SGGQRF( N, M, P, A, LDA, WORK, B, LDB, WORK( M+1 ),
      $             WORK( M+NP+1 ), LWORK-M-NP, INFO )
-      LOPT = WORK( M+NP+1 )
+      LOPT = INT( WORK( M+NP+1 ) )
 *
 *     Update left-hand-side vector d = Q**T*d = ( d1 ) M
 *                                               ( d2 ) N-M

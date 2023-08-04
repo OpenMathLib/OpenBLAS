@@ -79,10 +79,11 @@
 *>         On exit, E has been destroyed.
 *> \endverbatim
 *>
-*> \param[out] U
+*> \param[in,out] U
 *> \verbatim
 *>          U is DOUBLE PRECISION array, dimension (LDU, N)
-*>         On exit, U contains the left singular vectors.
+*>         On exit, U contains the left singular vectors, 
+*>          if U passed in as (N, N) Identity.
 *> \endverbatim
 *>
 *> \param[in] LDU
@@ -91,10 +92,11 @@
 *>         On entry, leading dimension of U.
 *> \endverbatim
 *>
-*> \param[out] VT
+*> \param[in,out] VT
 *> \verbatim
 *>          VT is DOUBLE PRECISION array, dimension (LDVT, M)
-*>         On exit, VT**T contains the right singular vectors.
+*>         On exit, VT**T contains the right singular vectors,
+*>          if VT passed in as (M, M) Identity.
 *> \endverbatim
 *>
 *> \param[in] LDVT
@@ -136,8 +138,6 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date June 2017
-*
 *> \ingroup OTHERauxiliary
 *
 *> \par Contributors:
@@ -150,10 +150,9 @@
       SUBROUTINE DLASD0( N, SQRE, D, E, U, LDU, VT, LDVT, SMLSIZ, IWORK,
      $                   WORK, INFO )
 *
-*  -- LAPACK auxiliary routine (version 3.7.1) --
+*  -- LAPACK auxiliary routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     June 2017
 *
 *     .. Scalar Arguments ..
       INTEGER            INFO, LDU, LDVT, N, SMLSIZ, SQRE

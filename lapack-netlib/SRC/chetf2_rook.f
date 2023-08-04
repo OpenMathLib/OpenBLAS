@@ -129,8 +129,6 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date November 2013
-*
 *> \ingroup complexHEcomputational
 *
 *> \par Further Details:
@@ -194,10 +192,9 @@
 *  =====================================================================
       SUBROUTINE CHETF2_ROOK( UPLO, N, A, LDA, IPIV, INFO )
 *
-*  -- LAPACK computational routine (version 3.5.0) --
+*  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2013
 *
 *     .. Scalar Arguments ..
       CHARACTER          UPLO
@@ -423,7 +420,7 @@
                   A( J, K ) = CONJG( A( P, J ) )
                   A( P, J ) = T
    14          CONTINUE
-*              (3) Swap and conjugate corner elements at row-col interserction
+*              (3) Swap and conjugate corner elements at row-col intersection
                A( P, K ) = CONJG( A( P, K ) )
 *              (4) Swap diagonal elements at row-col intersection
                R1 = REAL( A( K, K ) )
@@ -444,7 +441,7 @@
                   A( J, KK ) = CONJG( A( KP, J ) )
                   A( KP, J ) = T
    15          CONTINUE
-*              (3) Swap and conjugate corner elements at row-col interserction
+*              (3) Swap and conjugate corner elements at row-col intersection
                A( KP, KK ) = CONJG( A( KP, KK ) )
 *              (4) Swap diagonal elements at row-col intersection
                R1 = REAL( A( KK, KK ) )
@@ -531,8 +528,8 @@
 *                 D = |A12|
                   D = SLAPY2( REAL( A( K-1, K ) ),
      $                AIMAG( A( K-1, K ) ) )
-                  D11 = A( K, K ) / D
-                  D22 = A( K-1, K-1 ) / D
+                  D11 = REAL( A( K, K ) / D )
+                  D22 = REAL( A( K-1, K-1 ) / D )
                   D12 = A( K-1, K ) / D
                   TT = ONE / ( D11*D22-ONE )
 *
@@ -736,7 +733,7 @@
                   A( J, K ) = CONJG( A( P, J ) )
                   A( P, J ) = T
    44          CONTINUE
-*              (3) Swap and conjugate corner elements at row-col interserction
+*              (3) Swap and conjugate corner elements at row-col intersection
                A( P, K ) = CONJG( A( P, K ) )
 *              (4) Swap diagonal elements at row-col intersection
                R1 = REAL( A( K, K ) )
@@ -757,7 +754,7 @@
                   A( J, KK ) = CONJG( A( KP, J ) )
                   A( KP, J ) = T
    45          CONTINUE
-*              (3) Swap and conjugate corner elements at row-col interserction
+*              (3) Swap and conjugate corner elements at row-col intersection
                A( KP, KK ) = CONJG( A( KP, KK ) )
 *              (4) Swap diagonal elements at row-col intersection
                R1 = REAL( A( KK, KK ) )

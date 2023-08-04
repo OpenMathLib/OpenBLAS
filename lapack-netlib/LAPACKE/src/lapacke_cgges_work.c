@@ -28,7 +28,6 @@
 *****************************************************************************
 * Contents: Native middle-level C interface to LAPACK function cgges
 * Author: Intel Corporation
-* Generated November 2015
 *****************************************************************************/
 
 #include "lapacke_utils.h"
@@ -73,12 +72,12 @@ lapack_int LAPACKE_cgges_work( int matrix_layout, char jobvsl, char jobvsr,
             LAPACKE_xerbla( "LAPACKE_cgges_work", info );
             return info;
         }
-        if( ldvsl < n ) {
+        if( ldvsl < 1 || ( LAPACKE_lsame( jobvsl, 'v' ) && ldvsl < n ) ) {
             info = -15;
             LAPACKE_xerbla( "LAPACKE_cgges_work", info );
             return info;
         }
-        if( ldvsr < n ) {
+        if( ldvsr < 1 || ( LAPACKE_lsame( jobvsr, 'v' ) && ldvsr < n ) ) {
             info = -17;
             LAPACKE_xerbla( "LAPACKE_cgges_work", info );
             return info;

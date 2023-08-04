@@ -96,17 +96,14 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
-*
 *> \ingroup double_eig
 *
 *  =====================================================================
       SUBROUTINE DGET39( RMAX, LMAX, NINFO, KNT )
 *
-*  -- LAPACK test routine (version 3.7.0) --
+*  -- LAPACK test routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
 *
 *     .. Scalar Arguments ..
       INTEGER            KNT, LMAX, NINFO
@@ -194,7 +191,7 @@
       VM5( 2 ) = EPS
       VM5( 3 ) = SQRT( SMLNUM )
 *
-*     Initalization
+*     Initialization
 *
       KNT = 0
       RMAX = ZERO

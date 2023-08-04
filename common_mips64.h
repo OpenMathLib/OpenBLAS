@@ -73,6 +73,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #define MB  __sync_synchronize()
 #define WMB __sync_synchronize()
+#define RMB __sync_synchronize()
 
 #define INLINE inline
 
@@ -85,7 +86,9 @@ static inline unsigned int rpcc(void){
   //__asm__ __volatile__("dmfc0 %0, $25, 1": "=r"(tmp):: "memory");
   //ret=tmp;
   __asm__ __volatile__(".set push \n"
+#if !defined(__mips_isa_rev) || __mips_isa_rev < 2
                        ".set mips32r2\n"
+#endif
                        "rdhwr %0, $2\n"
                        ".set pop": "=r"(ret):: "memory");
 
@@ -98,7 +101,9 @@ static inline unsigned int rpcc(void){
 static inline int WhereAmI(void){
   int ret=0;
   __asm__ __volatile__(".set push \n"
+#if !defined(__mips_isa_rev) || __mips_isa_rev < 2
                        ".set mips32r2\n"
+#endif
                        "rdhwr %0, $0\n"
                        ".set pop": "=r"(ret):: "memory");
   return ret;
@@ -196,9 +201,15 @@ static inline int blas_quickdivide(blasint x, blasint y){
 
 #if defined(ASSEMBLER) && !defined(NEEDPARAM)
 
+#if defined(__mips_isa_rev) && __mips_isa_rev >= 6
+#define ASSEMBLER_ARCH mips64r6
+#else
+#define ASSEMBLER_ARCH mips64
+#endif
+
 #define PROLOGUE \
 	.text ;\
-	.set	mips64 ;\
+	.set	ASSEMBLER_ARCH ;\
 	.align 5 ;\
 	.globl	REALNAME ;\
 	.ent	REALNAME ;\
@@ -226,14 +237,9 @@ REALNAME: ;\
 
 #define SEEK_ADDRESS
 
-#define BUFFER_SIZE     ( 32 << 20)
+#define BUFFER_SIZE     ( 32 << 21)
 
-#if defined(LOONGSON3A)
-#define PAGESIZE	(16UL << 10)
-#define FIXED_PAGESIZE	(16UL << 10)
-#endif
-
-#if defined(LOONGSON3B)
+#if defined(LOONGSON3R3) || defined(LOONGSON3R4)
 #define PAGESIZE	(16UL << 10)
 #define FIXED_PAGESIZE	(16UL << 10)
 #endif
@@ -249,7 +255,7 @@ REALNAME: ;\
 #define MAP_ANONYMOUS MAP_ANON
 #endif
 
-#if defined(LOONGSON3A) || defined(LOONGSON3B)
+#if defined(LOONGSON3R3) || defined(LOONGSON3R4)
 #define PREFETCHD_(x) ld $0, x
 #define PREFETCHD(x)  PREFETCHD_(x)
 #else

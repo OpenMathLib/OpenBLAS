@@ -204,7 +204,7 @@
 *>          Not modified.
 *>
 *>  D1      DOUBLE PRECISION array, dimension (max(NN))
-*>          The eigenvalues of A, as computed by ZSTEQR simlutaneously
+*>          The eigenvalues of A, as computed by ZSTEQR simultaneously
 *>          with Z.  On exit, the eigenvalues in D1 correspond with the
 *>          matrix in A.
 *>          Modified.
@@ -328,8 +328,6 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
-*
 *> \ingroup complex16_eig
 *
 *  =====================================================================
@@ -338,10 +336,9 @@
      $                   LDU, V, TAU, Z, WORK, LWORK, RWORK, LRWORK,
      $                   IWORK, LIWORK, RESULT, INFO )
 *
-*  -- LAPACK test routine (version 3.7.0) --
+*  -- LAPACK test routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
 *
 *     .. Scalar Arguments ..
       INTEGER            INFO, LDA, LDU, LIWORK, LRWORK, LWORK, NOUNIT,
@@ -394,10 +391,10 @@
       EXTERNAL           DLAMCH, DLARND, DSXT1
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           ALASVM, DLABAD, DLAFTS, XERBLA, ZHBEV, ZHBEVD,
-     $                   ZHBEVX, ZHEEV, ZHEEVD, ZHEEVR, ZHEEVX, ZHET21,
-     $                   ZHET22, ZHPEV, ZHPEVD, ZHPEVX, ZLACPY, ZLASET,
-     $                   ZLATMR, ZLATMS
+      EXTERNAL           ALASVM, DLAFTS, XERBLA, ZHBEV, ZHBEVD, ZHBEVX,
+     $                   ZHEEV, ZHEEVD, ZHEEVR, ZHEEVX, ZHET21, ZHET22,
+     $                   ZHPEV, ZHPEVD, ZHPEVX, ZLACPY, ZLASET, ZLATMR,
+     $                   ZLATMS
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          ABS, DBLE, INT, LOG, MAX, MIN, SQRT
@@ -454,7 +451,6 @@
 *
       UNFL = DLAMCH( 'Safe minimum' )
       OVFL = DLAMCH( 'Overflow' )
-      CALL DLABAD( UNFL, OVFL )
       ULP = DLAMCH( 'Epsilon' )*DLAMCH( 'Base' )
       ULPINV = ONE / ULP
       RTUNFL = SQRT( UNFL )

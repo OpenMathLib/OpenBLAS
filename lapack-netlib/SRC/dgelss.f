@@ -164,18 +164,15 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
-*
-*> \ingroup doubleGEsolve
+*> \ingroup gelss
 *
 *  =====================================================================
       SUBROUTINE DGELSS( M, N, NRHS, A, LDA, B, LDB, S, RCOND, RANK,
      $                   WORK, LWORK, INFO )
 *
-*  -- LAPACK driver routine (version 3.7.0) --
+*  -- LAPACK driver routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
 *
 *     .. Scalar Arguments ..
       INTEGER            INFO, LDA, LDB, LWORK, M, N, NRHS, RANK
@@ -206,7 +203,7 @@
 *     ..
 *     .. External Subroutines ..
       EXTERNAL           DBDSQR, DCOPY, DGEBRD, DGELQF, DGEMM, DGEMV,
-     $                   DGEQRF, DLABAD, DLACPY, DLASCL, DLASET, DORGBR,
+     $                   DGEQRF, DLACPY, DLASCL, DLASET, DORGBR,
      $                   DORMBR, DORMLQ, DORMQR, DRSCL, XERBLA
 *     ..
 *     .. External Functions ..
@@ -257,11 +254,11 @@
 *
 *              Compute space needed for DGEQRF
                CALL DGEQRF( M, N, A, LDA, DUM(1), DUM(1), -1, INFO )
-               LWORK_DGEQRF=DUM(1)
+               LWORK_DGEQRF = INT( DUM(1) )
 *              Compute space needed for DORMQR
                CALL DORMQR( 'L', 'T', M, NRHS, N, A, LDA, DUM(1), B,
      $                   LDB, DUM(1), -1, INFO )
-               LWORK_DORMQR=DUM(1)
+               LWORK_DORMQR = INT( DUM(1) )
                MM = N
                MAXWRK = MAX( MAXWRK, N + LWORK_DGEQRF )
                MAXWRK = MAX( MAXWRK, N + LWORK_DORMQR )
@@ -276,15 +273,15 @@
 *              Compute space needed for DGEBRD
                CALL DGEBRD( MM, N, A, LDA, S, DUM(1), DUM(1),
      $                      DUM(1), DUM(1), -1, INFO )
-               LWORK_DGEBRD=DUM(1)
+               LWORK_DGEBRD = INT( DUM(1) )
 *              Compute space needed for DORMBR
                CALL DORMBR( 'Q', 'L', 'T', MM, NRHS, N, A, LDA, DUM(1),
      $                B, LDB, DUM(1), -1, INFO )
-               LWORK_DORMBR=DUM(1)
+               LWORK_DORMBR = INT( DUM(1) )
 *              Compute space needed for DORGBR
                CALL DORGBR( 'P', N, N, N, A, LDA, DUM(1),
      $                   DUM(1), -1, INFO )
-               LWORK_DORGBR=DUM(1)
+               LWORK_DORGBR = INT( DUM(1) )
 *              Compute total workspace needed
                MAXWRK = MAX( MAXWRK, 3*N + LWORK_DGEBRD )
                MAXWRK = MAX( MAXWRK, 3*N + LWORK_DORMBR )
@@ -308,23 +305,23 @@
 *                 Compute space needed for DGELQF
                   CALL DGELQF( M, N, A, LDA, DUM(1), DUM(1),
      $                -1, INFO )
-                  LWORK_DGELQF=DUM(1)
+                  LWORK_DGELQF = INT( DUM(1) )
 *                 Compute space needed for DGEBRD
                   CALL DGEBRD( M, M, A, LDA, S, DUM(1), DUM(1),
      $                      DUM(1), DUM(1), -1, INFO )
-                  LWORK_DGEBRD=DUM(1)
+                  LWORK_DGEBRD = INT( DUM(1) )
 *                 Compute space needed for DORMBR
                   CALL DORMBR( 'Q', 'L', 'T', M, NRHS, N, A, LDA,
      $                DUM(1), B, LDB, DUM(1), -1, INFO )
-                  LWORK_DORMBR=DUM(1)
+                  LWORK_DORMBR = INT( DUM(1) )
 *                 Compute space needed for DORGBR
                   CALL DORGBR( 'P', M, M, M, A, LDA, DUM(1),
      $                   DUM(1), -1, INFO )
-                  LWORK_DORGBR=DUM(1)
+                  LWORK_DORGBR = INT( DUM(1) )
 *                 Compute space needed for DORMLQ
                   CALL DORMLQ( 'L', 'T', N, NRHS, M, A, LDA, DUM(1),
      $                 B, LDB, DUM(1), -1, INFO )
-                  LWORK_DORMLQ=DUM(1)
+                  LWORK_DORMLQ = INT( DUM(1) )
 *                 Compute total workspace needed
                   MAXWRK = M + LWORK_DGELQF
                   MAXWRK = MAX( MAXWRK, M*M + 4*M + LWORK_DGEBRD )
@@ -344,15 +341,15 @@
 *                 Compute space needed for DGEBRD
                   CALL DGEBRD( M, N, A, LDA, S, DUM(1), DUM(1),
      $                      DUM(1), DUM(1), -1, INFO )
-                  LWORK_DGEBRD=DUM(1)
+                  LWORK_DGEBRD = INT( DUM(1) )
 *                 Compute space needed for DORMBR
                   CALL DORMBR( 'Q', 'L', 'T', M, NRHS, M, A, LDA,
      $                DUM(1), B, LDB, DUM(1), -1, INFO )
-                  LWORK_DORMBR=DUM(1)
+                  LWORK_DORMBR = INT( DUM(1) )
 *                 Compute space needed for DORGBR
                   CALL DORGBR( 'P', M, N, M, A, LDA, DUM(1),
      $                   DUM(1), -1, INFO )
-                  LWORK_DORGBR=DUM(1)
+                  LWORK_DORGBR = INT( DUM(1) )
                   MAXWRK = 3*M + LWORK_DGEBRD
                   MAXWRK = MAX( MAXWRK, 3*M + LWORK_DORMBR )
                   MAXWRK = MAX( MAXWRK, 3*M + LWORK_DORGBR )
@@ -388,7 +385,6 @@
       SFMIN = DLAMCH( 'S' )
       SMLNUM = SFMIN / EPS
       BIGNUM = ONE / SMLNUM
-      CALL DLABAD( SMLNUM, BIGNUM )
 *
 *     Scale A if max element outside range [SMLNUM,BIGNUM]
 *
@@ -532,7 +528,7 @@
      $                     LDB, ZERO, WORK, N )
                CALL DLACPY( 'G', N, BL, WORK, N, B( 1, I ), LDB )
    20       CONTINUE
-         ELSE
+         ELSE IF( NRHS.EQ.1 ) THEN
             CALL DGEMV( 'T', N, N, ONE, A, LDA, B, 1, ZERO, WORK, 1 )
             CALL DCOPY( N, WORK, 1, B, 1 )
          END IF
@@ -629,7 +625,7 @@
                CALL DLACPY( 'G', M, BL, WORK( IWORK ), M, B( 1, I ),
      $                      LDB )
    40       CONTINUE
-         ELSE
+         ELSE IF( NRHS.EQ.1 ) THEN
             CALL DGEMV( 'T', M, M, ONE, WORK( IL ), LDWORK, B( 1, 1 ),
      $                  1, ZERO, WORK( IWORK ), 1 )
             CALL DCOPY( M, WORK( IWORK ), 1, B( 1, 1 ), 1 )
@@ -715,7 +711,7 @@
      $                     LDB, ZERO, WORK, N )
                CALL DLACPY( 'F', N, BL, WORK, N, B( 1, I ), LDB )
    60       CONTINUE
-         ELSE
+         ELSE IF( NRHS.EQ.1 ) THEN
             CALL DGEMV( 'T', M, N, ONE, A, LDA, B, 1, ZERO, WORK, 1 )
             CALL DCOPY( N, WORK, 1, B, 1 )
          END IF

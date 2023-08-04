@@ -1,5 +1,21 @@
 # COMPILER_PREFIX = mingw32-
 
+ifneq ($(DYNAMIC_ARCH),1)
+ADD_CPUFLAGS = 1
+else
+ifdef TARGET_CORE
+ADD_CPUFLAGS = 1
+endif
+endif
+
+ifdef ADD_CPUFLAGS
+ifdef HAVE_SSE
+CCOMMON_OPT += -msse
+ifneq ($(F_COMPILER), NAG)
+FCOMMON_OPT += -msse
+endif
+endif
+endif
 
 ifeq ($(OSNAME), Interix)
 ARFLAGS		= -m x86
@@ -54,3 +70,20 @@ LIBATLAS	= -L$(ATLASPATH)/32 -lcblas -lf77blas -latlas -lm
 else
 LIBATLAS	= -L$(ATLASPATH)/32 -lptf77blas -lptatlas -lpthread -lm
 endif
+ifdef HAVE_SSE2
+CCOMMON_OPT += -msse2
+FCOMMON_OPT += -msse2
+endif
+ifdef HAVE_SSE3
+CCOMMON_OPT += -msse3
+FCOMMON_OPT += -msse3
+ifdef HAVE_SSSE3
+CCOMMON_OPT += -mssse3
+FCOMMON_OPT += -mssse3
+endif
+ifdef HAVE_SSE4_1
+CCOMMON_OPT += -msse4.1
+FCOMMON_OPT += -msse4.1
+endif
+endif
+

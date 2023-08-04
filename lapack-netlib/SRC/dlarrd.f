@@ -319,8 +319,6 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date June 2016
-*
 *> \ingroup OTHERauxiliary
 *
 *  =====================================================================
@@ -329,10 +327,9 @@
      $                    M, W, WERR, WL, WU, IBLOCK, INDEXW,
      $                    WORK, IWORK, INFO )
 *
-*  -- LAPACK auxiliary routine (version 3.7.1) --
+*  -- LAPACK auxiliary routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     June 2016
 *
 *     .. Scalar Arguments ..
       CHARACTER          ORDER, RANGE
@@ -384,6 +381,7 @@
 *     .. Executable Statements ..
 *
       INFO = 0
+      M = 0
 *
 *     Quick return if possible
 *
@@ -427,13 +425,8 @@
       END IF
 
 *     Initialize error flags
-      INFO = 0
       NCNVRG = .FALSE.
       TOOFEW = .FALSE.
-
-*     Quick return if possible
-      M = 0
-      IF( N.EQ.0 ) RETURN
 
 *     Simplification:
       IF( IRANGE.EQ.INDRNG .AND. IL.EQ.1 .AND. IU.EQ.N ) IRANGE = 1

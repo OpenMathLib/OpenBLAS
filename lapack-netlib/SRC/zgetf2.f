@@ -101,17 +101,14 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
-*
-*> \ingroup complex16GEcomputational
+*> \ingroup getf2
 *
 *  =====================================================================
       SUBROUTINE ZGETF2( M, N, A, LDA, IPIV, INFO )
 *
-*  -- LAPACK computational routine (version 3.7.0) --
+*  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
 *
 *     .. Scalar Arguments ..
       INTEGER            INFO, LDA, M, N
@@ -130,7 +127,7 @@
 *     ..
 *     .. Local Scalars ..
       DOUBLE PRECISION   SFMIN
-      INTEGER            I, J, JP
+      INTEGER            J, JP
 *     ..
 *     .. External Functions ..
       DOUBLE PRECISION   DLAMCH
@@ -138,7 +135,7 @@
       EXTERNAL           DLAMCH, IZAMAX
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           XERBLA, ZGERU, ZSCAL, ZSWAP
+      EXTERNAL           XERBLA, ZGERU, ZRSCL, ZSWAP
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          MAX, MIN
@@ -184,15 +181,8 @@
 *
 *           Compute elements J+1:M of J-th column.
 *
-            IF( J.LT.M ) THEN
-               IF( ABS(A( J, J )) .GE. SFMIN ) THEN
-                  CALL ZSCAL( M-J, ONE / A( J, J ), A( J+1, J ), 1 )
-               ELSE
-                  DO 20 I = 1, M-J
-                     A( J+I, J ) = A( J+I, J ) / A( J, J )
-   20             CONTINUE
-               END IF
-            END IF
+            IF( J.LT.M )
+     $         CALL ZRSCL( M-J, A( J, J ), A( J+1, J ), 1 )
 *
          ELSE IF( INFO.EQ.0 ) THEN
 *

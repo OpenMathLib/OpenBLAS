@@ -99,7 +99,7 @@ int NAME(char *UPLO, blasint *N, FLOAT *a, blasint *ldA, blasint *Info){
   if (uplo < 0)                  info = 1;
 
   if (info) {
-    BLASFUNC(xerbla)(ERROR_NAME, &info, sizeof(ERROR_NAME));
+    BLASFUNC(xerbla)(ERROR_NAME, &info, sizeof(ERROR_NAME) - 1);
     *Info = - info;
     return 0;
   }
@@ -121,6 +121,9 @@ int NAME(char *UPLO, blasint *N, FLOAT *a, blasint *ldA, blasint *Info){
 
 #ifdef SMP
   args.common = NULL;
+  if (args.n < 180)
+    args.nthreads = 1;
+  else
   args.nthreads = num_cpu_avail(4);
 
   if (args.nthreads == 1) {

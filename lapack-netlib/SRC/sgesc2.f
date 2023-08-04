@@ -90,7 +90,7 @@
 *> \verbatim
 *>          SCALE is REAL
 *>           On exit, SCALE contains the scale factor. SCALE is chosen
-*>           0 <= SCALE <= 1 to prevent owerflow in the solution.
+*>           0 <= SCALE <= 1 to prevent overflow in the solution.
 *> \endverbatim
 *
 *  Authors:
@@ -100,8 +100,6 @@
 *> \author Univ. of California Berkeley
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
-*
-*> \date December 2016
 *
 *> \ingroup realGEauxiliary
 *
@@ -114,10 +112,9 @@
 *  =====================================================================
       SUBROUTINE SGESC2( N, A, LDA, RHS, IPIV, JPIV, SCALE )
 *
-*  -- LAPACK auxiliary routine (version 3.7.0) --
+*  -- LAPACK auxiliary routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
 *
 *     .. Scalar Arguments ..
       INTEGER            LDA, N
@@ -151,7 +148,7 @@
 *     ..
 *     .. Executable Statements ..
 *
-*      Set constant to control owerflow
+*      Set constant to control overflow
 *
       EPS = SLAMCH( 'P' )
       SMLNUM = SLAMCH( 'S' ) / EPS

@@ -28,7 +28,6 @@
 *****************************************************************************
 * Contents: Native high-level C interface to LAPACK function zunmhr
 * Author: Intel Corporation
-* Generated November 2015
 *****************************************************************************/
 
 #include "lapacke_utils.h"
@@ -58,7 +57,7 @@ lapack_int LAPACKE_zunmhr( int matrix_layout, char side, char trans,
         if( LAPACKE_zge_nancheck( matrix_layout, m, n, c, ldc ) ) {
             return -11;
         }
-        if( LAPACKE_z_nancheck( m-1, tau, 1 ) ) {
+        if( LAPACKE_z_nancheck( r-1, tau, 1 ) ) {
             return -10;
         }
     }

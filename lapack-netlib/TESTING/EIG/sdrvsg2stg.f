@@ -240,7 +240,7 @@
 *>
 *>  B       REAL             array, dimension (LDB , max(NN))
 *>          Used to hold the symmetric positive definite matrix for
-*>          the generailzed problem.
+*>          the generalized problem.
 *>          On exit, B contains the last matrix actually
 *>          used.
 *>          Modified.
@@ -352,8 +352,6 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
-*
 *> \ingroup real_eig
 *
 *  =====================================================================
@@ -364,10 +362,9 @@
 *
       IMPLICIT NONE
 *
-*  -- LAPACK test routine (version 3.7.0) --
+*  -- LAPACK test routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
 *
 *     .. Scalar Arguments ..
       INTEGER            INFO, LDA, LDB, LDZ, LIWORK, NOUNIT, NSIZES,
@@ -411,7 +408,7 @@
       EXTERNAL           LSAME, SLAMCH, SLARND
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           SLABAD, SLACPY, SLAFTS, SLASET, SLASUM, SLATMR,
+      EXTERNAL           SLACPY, SLAFTS, SLASET, SLASUM, SLATMR,
      $                   SLATMS, SSBGV, SSBGVD, SSBGVX, SSGT01, SSPGV,
      $                   SSPGVD, SSPGVX, SSYGV, SSYGVD, SSYGVX, XERBLA,
      $                   SSYGV_2STAGE
@@ -473,7 +470,6 @@
 *
       UNFL = SLAMCH( 'Safe minimum' )
       OVFL = SLAMCH( 'Overflow' )
-      CALL SLABAD( UNFL, OVFL )
       ULP = SLAMCH( 'Epsilon' )*SLAMCH( 'Base' )
       ULPINV = ONE / ULP
       RTUNFL = SQRT( UNFL )

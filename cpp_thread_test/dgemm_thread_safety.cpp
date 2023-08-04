@@ -12,9 +12,13 @@ void launch_cblas_dgemm(double* A, double* B, double* C, const blasint randomMat
 
 int main(int argc, char* argv[]){
 	blasint randomMatSize = 1024; //dimension of the random square matrices used
-	uint32_t numConcurrentThreads = 52; //number of concurrent calls of the functions being tested
+	uint32_t numConcurrentThreads = 96; //number of concurrent calls of the functions being tested
 	uint32_t numTestRounds = 16; //number of testing rounds before success exit
+	uint32_t maxHwThreads = omp_get_max_threads();
 	
+	if (maxHwThreads < 96)
+		numConcurrentThreads = maxHwThreads;
+
 	if (argc > 4){
 		std::cout<<"ERROR: too many arguments for thread safety tester"<<std::endl;
 		abort();
@@ -42,6 +46,8 @@ int main(int argc, char* argv[]){
 	std::cout<<"Number of concurrent calls into OpenBLAS : "<<numConcurrentThreads<<'\n';
 	std::cout<<"Number of testing rounds : "<<numTestRounds<<'\n';
 	std::cout<<"This test will need "<<(static_cast<uint64_t>(randomMatSize*randomMatSize)*numConcurrentThreads*3*8)/static_cast<double>(1024*1024)<<" MiB of RAM\n"<<std::endl;
+
+	FailIfThreadsAreZero(numConcurrentThreads);
 	
 	std::cout<<"Initializing random number generator..."<<std::flush;
 	std::mt19937_64 PRNG = InitPRNG();

@@ -33,8 +33,16 @@
 *>
 *> \verbatim
 *>
-*> CGELQ2 computes an LQ factorization of a complex m by n matrix A:
-*> A = L * Q.
+*> CGELQ2 computes an LQ factorization of a complex m-by-n matrix A:
+*>
+*>    A = ( L 0 ) *  Q
+*>
+*> where:
+*>
+*>    Q is a n-by-n orthogonal matrix;
+*>    L is a lower-triangular m-by-m matrix;
+*>    0 is a m-by-(n-m) zero matrix, if m < n.
+*>
 *> \endverbatim
 *
 *  Arguments:
@@ -96,8 +104,6 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
-*
 *> \ingroup complexGEcomputational
 *
 *> \par Further Details:
@@ -121,10 +127,9 @@
 *  =====================================================================
       SUBROUTINE CGELQ2( M, N, A, LDA, TAU, WORK, INFO )
 *
-*  -- LAPACK computational routine (version 3.7.0) --
+*  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
 *
 *     .. Scalar Arguments ..
       INTEGER            INFO, LDA, M, N

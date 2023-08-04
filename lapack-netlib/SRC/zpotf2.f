@@ -89,8 +89,8 @@
 *>          INFO is INTEGER
 *>          = 0: successful exit
 *>          < 0: if INFO = -k, the k-th argument had an illegal value
-*>          > 0: if INFO = k, the leading minor of order k is not
-*>               positive definite, and the factorization could not be
+*>          > 0: if INFO = k, the leading principal minor of order k
+*>               is not positive, and the factorization could not be
 *>               completed.
 *> \endverbatim
 *
@@ -102,17 +102,14 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
-*
 *> \ingroup complex16POcomputational
 *
 *  =====================================================================
       SUBROUTINE ZPOTF2( UPLO, N, A, LDA, INFO )
 *
-*  -- LAPACK computational routine (version 3.7.0) --
+*  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
 *
 *     .. Scalar Arguments ..
       CHARACTER          UPLO
@@ -177,8 +174,8 @@
 *
 *           Compute U(J,J) and test for non-positive-definiteness.
 *
-            AJJ = DBLE( A( J, J ) ) - ZDOTC( J-1, A( 1, J ), 1,
-     $            A( 1, J ), 1 )
+            AJJ = DBLE( A( J, J ) ) - DBLE( ZDOTC( J-1, A( 1, J ), 1,
+     $            A( 1, J ), 1 ) )
             IF( AJJ.LE.ZERO.OR.DISNAN( AJJ ) ) THEN
                A( J, J ) = AJJ
                GO TO 30
@@ -204,8 +201,8 @@
 *
 *           Compute L(J,J) and test for non-positive-definiteness.
 *
-            AJJ = DBLE( A( J, J ) ) - ZDOTC( J-1, A( J, 1 ), LDA,
-     $            A( J, 1 ), LDA )
+            AJJ = DBLE( A( J, J ) ) - DBLE( ZDOTC( J-1, A( J, 1 ), LDA,
+     $            A( J, 1 ), LDA ) )
             IF( AJJ.LE.ZERO.OR.DISNAN( AJJ ) ) THEN
                A( J, J ) = AJJ
                GO TO 30

@@ -28,7 +28,6 @@
 *****************************************************************************
 * Contents: Native high-level C interface to LAPACK function chegst
 * Author: Intel Corporation
-* Generated November 2015
 *****************************************************************************/
 
 #include "lapacke_utils.h"
@@ -48,7 +47,7 @@ lapack_int LAPACKE_chegst( int matrix_layout, lapack_int itype, char uplo,
         if( LAPACKE_che_nancheck( matrix_layout, uplo, n, a, lda ) ) {
             return -5;
         }
-        if( LAPACKE_cge_nancheck( matrix_layout, n, n, b, ldb ) ) {
+        if( LAPACKE_che_nancheck( matrix_layout, uplo, n, b, ldb ) ) {
             return -7;
         }
     }

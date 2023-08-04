@@ -29,7 +29,7 @@
 *>
 *> CGTT02 computes the residual for the solution to a tridiagonal
 *> system of equations:
-*>    RESID = norm(B - op(A)*X) / (norm(A) * norm(X) * EPS),
+*>    RESID = norm(B - op(A)*X) / (norm(op(A)) * norm(X) * EPS),
 *> where EPS is the machine epsilon.
 *> \endverbatim
 *
@@ -40,14 +40,14 @@
 *> \verbatim
 *>          TRANS is CHARACTER
 *>          Specifies the form of the residual.
-*>          = 'N':  B - A * X     (No transpose)
+*>          = 'N':  B - A    * X  (No transpose)
 *>          = 'T':  B - A**T * X  (Transpose)
 *>          = 'C':  B - A**H * X  (Conjugate transpose)
 *> \endverbatim
 *>
 *> \param[in] N
 *> \verbatim
-*>          N is INTEGTER
+*>          N is INTEGER
 *>          The order of the matrix A.  N >= 0.
 *> \endverbatim
 *>
@@ -105,7 +105,7 @@
 *> \param[out] RESID
 *> \verbatim
 *>          RESID is REAL
-*>          norm(B - op(A)*X) / (norm(A) * norm(X) * EPS)
+*>          norm(B - op(A)*X) / (norm(op(A)) * norm(X) * EPS)
 *> \endverbatim
 *
 *  Authors:
@@ -116,18 +116,15 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
-*
 *> \ingroup complex_lin
 *
 *  =====================================================================
       SUBROUTINE CGTT02( TRANS, N, NRHS, DL, D, DU, X, LDX, B, LDB,
      $                   RESID )
 *
-*  -- LAPACK test routine (version 3.7.0) --
+*  -- LAPACK test routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
 *
 *     .. Scalar Arguments ..
       CHARACTER          TRANS
@@ -169,7 +166,7 @@
      $   RETURN
 *
 *     Compute the maximum over the number of right hand sides of
-*        norm(B - op(A)*X) / ( norm(A) * norm(X) * EPS ).
+*        norm(B - op(A)*X) / ( norm(op(A)) * norm(X) * EPS ).
 *
       IF( LSAME( TRANS, 'N' ) ) THEN
          ANORM = CLANGT( '1', N, DL, D, DU )
@@ -185,7 +182,7 @@
          RETURN
       END IF
 *
-*     Compute B - op(A)*X.
+*     Compute B - op(A)*X and store in B.
 *
       CALL CLAGTM( TRANS, N, NRHS, -ONE, DL, D, DU, X, LDX, ONE, B,
      $             LDB )

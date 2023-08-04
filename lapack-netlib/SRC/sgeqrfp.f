@@ -33,8 +33,18 @@
 *>
 *> \verbatim
 *>
-*> SGEQRFP computes a QR factorization of a real M-by-N matrix A:
-*> A = Q * R. The diagonal entries of R are nonnegative.
+*> SGEQR2P computes a QR factorization of a real M-by-N matrix A:
+*>
+*>    A = Q * ( R ),
+*>            ( 0 )
+*>
+*> where:
+*>
+*>    Q is a M-by-M orthogonal matrix;
+*>    R is an upper-triangular N-by-N matrix with nonnegative diagonal
+*>    entries;
+*>    0 is a (M-N)-by-N zero matrix, if M > N.
+*>
 *> \endverbatim
 *
 *  Arguments:
@@ -112,8 +122,6 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
-*
 *> \ingroup realGEcomputational
 *
 *> \par Further Details:
@@ -139,10 +147,9 @@
 *  =====================================================================
       SUBROUTINE SGEQRFP( M, N, A, LDA, TAU, WORK, LWORK, INFO )
 *
-*  -- LAPACK computational routine (version 3.7.0) --
+*  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
 *
 *     .. Scalar Arguments ..
       INTEGER            INFO, LDA, LWORK, M, N

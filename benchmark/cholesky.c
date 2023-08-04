@@ -36,12 +36,7 @@
 /* or implied, of The University of Texas at Austin.                 */
 /*********************************************************************/
 
-#include <stdio.h>
-#include <stdlib.h>
-#ifdef __CYGWIN32__
-#include <sys/time.h>
-#endif
-#include "common.h"
+#include "bench.h"
 
 double fabs(double);
 
@@ -70,41 +65,6 @@ double fabs(double);
 #define SYRK    BLASFUNC(cherk)
 #endif
 #endif
-
-
-
-#if defined(__WIN32__) || defined(__WIN64__)
-
-#ifndef DELTA_EPOCH_IN_MICROSECS
-#define DELTA_EPOCH_IN_MICROSECS 11644473600000000ULL
-#endif
-
-int gettimeofday(struct timeval *tv, void *tz){
-
-  FILETIME ft;
-  unsigned __int64 tmpres = 0;
-  static int tzflag;
-
-  if (NULL != tv)
-    {
-      GetSystemTimeAsFileTime(&ft);
-
-      tmpres |= ft.dwHighDateTime;
-      tmpres <<= 32;
-      tmpres |= ft.dwLowDateTime;
-
-      /*converting file time to unix epoch*/
-      tmpres /= 10;  /*convert into microseconds*/
-      tmpres -= DELTA_EPOCH_IN_MICROSECS;
-      tv->tv_sec = (long)(tmpres / 1000000UL);
-      tv->tv_usec = (long)(tmpres % 1000000UL);
-    }
-
-  return 0;
-}
-
-#endif
-
 
 static __inline double getmflops(int ratio, int m, double secs){
 
@@ -145,7 +105,6 @@ int main(int argc, char *argv[]){
 
   FLOAT maxerr;
 
-  struct timeval start, stop;
   double time1;
 
   argc--;argv++;
@@ -173,46 +132,46 @@ int main(int argc, char *argv[]){
 #ifndef COMPLEX
       if (uplos & 1) {
 	for (j = 0; j < m; j++) {
-	  for(i = 0; i < j; i++)     a[i + j * m] = 0.;
-	                             a[j + j * m] = ((double) rand() / (double) RAND_MAX) + 8.;
-	  for(i = j + 1; i < m; i++) a[i + j * m] = ((double) rand() / (double) RAND_MAX) - 0.5;
+	  for(i = 0; i < j; i++)     a[(long)i + (long)j * (long)m] = 0.;
+	                             a[(long)j + (long)j * (long)m] = ((double) rand() / (double) RAND_MAX) + 8.;
+	  for(i = j + 1; i < m; i++) a[(long)i + (long)j * (long)m] = ((double) rand() / (double) RAND_MAX) - 0.5;
 	}
       } else {
 	for (j = 0; j < m; j++) {
-	  for(i = 0; i < j; i++)     a[i + j * m] = ((double) rand() / (double) RAND_MAX) - 0.5;
-	                             a[j + j * m] = ((double) rand() / (double) RAND_MAX) + 8.;
-	  for(i = j + 1; i < m; i++) a[i + j * m] = 0.;
+	  for(i = 0; i < j; i++)     a[(long)i + (long)j * (long)m] = ((double) rand() / (double) RAND_MAX) - 0.5;
+	                             a[(long)j + (long)j * (long)m] = ((double) rand() / (double) RAND_MAX) + 8.;
+	  for(i = j + 1; i < m; i++) a[(long)i + (long)j * (long)m] = 0.;
 	}
       }
 #else
       if (uplos & 1) {
 	for (j = 0; j < m; j++) {
 	  for(i = 0; i < j; i++) {
-	    a[(i + j * m) * 2 + 0] = 0.;
-	    a[(i + j * m) * 2 + 1] = 0.;
+	    a[((long)i + (long)j * (long)m) * 2 + 0] = 0.;
+	    a[((long)i + (long)j * (long)m) * 2 + 1] = 0.;
 	  }
 
-	  a[(j + j * m) * 2 + 0] = ((double) rand() / (double) RAND_MAX) + 8.;
-	  a[(j + j * m) * 2 + 1] = 0.;
+	  a[((long)j + (long)j * (long)m) * 2 + 0] = ((double) rand() / (double) RAND_MAX) + 8.;
+	  a[((long)j + (long)j * (long)m) * 2 + 1] = 0.;
 
 	  for(i = j + 1; i < m; i++) {
-	    a[(i + j * m) * 2 + 0] = ((double) rand() / (double) RAND_MAX) - 0.5;
-	    a[(i + j * m) * 2 + 1] = ((double) rand() / (double) RAND_MAX) - 0.5;
+	    a[((long)i + (long)j * (long)m) * 2 + 0] = ((double) rand() / (double) RAND_MAX) - 0.5;
+	    a[((long)i + (long)j * (long)m) * 2 + 1] = ((double) rand() / (double) RAND_MAX) - 0.5;
 	  }
 	}
       } else {
 	for (j = 0; j < m; j++) {
 	  for(i = 0; i < j; i++) {
-	    a[(i + j * m) * 2 + 0] = ((double) rand() / (double) RAND_MAX) - 0.5;
-	    a[(i + j * m) * 2 + 1] = ((double) rand() / (double) RAND_MAX) - 0.5;
+	    a[((long)i + (long)j * (long)m) * 2 + 0] = ((double) rand() / (double) RAND_MAX) - 0.5;
+	    a[((long)i + (long)j * (long)m) * 2 + 1] = ((double) rand() / (double) RAND_MAX) - 0.5;
 	  }
 
-	  a[(j + j * m) * 2 + 0] = ((double) rand() / (double) RAND_MAX) + 8.;
-	  a[(j + j * m) * 2 + 1] = 0.;
+	  a[((long)j + (long)j * (long)m) * 2 + 0] = ((double) rand() / (double) RAND_MAX) + 8.;
+	  a[((long)j + (long)j * (long)m) * 2 + 1] = 0.;
 
 	  for(i = j + 1; i < m; i++) {
-	    a[(i + j * m) * 2 + 0] = 0.;
-	    a[(i + j * m) * 2 + 1] = 0.;
+	    a[((long)i + (long)j * (long)m) * 2 + 0] = 0.;
+	    a[((long)i + (long)j * (long)m) * 2 + 1] = 0.;
 	  }
 	}
       }
@@ -220,29 +179,31 @@ int main(int argc, char *argv[]){
 
       SYRK(uplo[uplos], trans[uplos], &m, &m, alpha, a, &m, beta, b, &m);
 
-      gettimeofday( &start, (struct timezone *)0);
+      begin();
 
       POTRF(uplo[uplos], &m, b, &m, &info);
 
-      gettimeofday( &stop, (struct timezone *)0);
+      end();
 
       if (info != 0) {
 	fprintf(stderr, "Info = %d\n", info);
 	exit(1);
       }
 
-     time1 = (double)(stop.tv_sec - start.tv_sec) + (double)((stop.tv_usec - start.tv_usec)) * 1.e-6;
+     time1 = getsec();
 
-      maxerr = 0.;
 
       if (!(uplos & 1)) {
 	for (j = 0; j < m; j++) {
 	  for(i = 0; i <= j; i++) {
 #ifndef COMPLEX
-	    if (maxerr < fabs(a[i + j * m] - b[i + j * m])) maxerr = fabs(a[i + j * m] - b[i + j * m]);
+	    if (maxerr < fabs(a[(long)i + (long)j * (long)m] - b[(long)i + (long)j * (long)m]))
+	        maxerr = fabs(a[(long)i + (long)j * (long)m] - b[(long)i + (long)j * (long)m]);
 #else
-	    if (maxerr < fabs(a[(i + j * m) * 2 + 0] - b[(i + j * m) * 2 + 0])) maxerr = fabs(a[(i + j * m) * 2 + 0] - b[(i + j * m) * 2 + 0]);
-	    if (maxerr < fabs(a[(i + j * m) * 2 + 1] - b[(i + j * m) * 2 + 1])) maxerr = fabs(a[(i + j * m) * 2 + 1] - b[(i + j * m) * 2 + 1]);
+	    if (maxerr < fabs(a[((long)i + (long)j * (long)m) * 2 + 0] - b[((long)i + (long)j * (long)m) * 2 + 0]))
+	        maxerr = fabs(a[((long)i + (long)j * (long)m) * 2 + 0] - b[((long)i + (long)j * (long)m) * 2 + 0]);
+	    if (maxerr < fabs(a[((long)i + (long)j * (long)m) * 2 + 1] - b[((long)i + (long)j * (long)m) * 2 + 1]))
+	        maxerr = fabs(a[((long)i + (long)j * (long)m) * 2 + 1] - b[((long)i + (long)j * (long)m) * 2 + 1]);
 #endif
 	  }
 	}
@@ -250,10 +211,13 @@ int main(int argc, char *argv[]){
 	for (j = 0; j < m; j++) {
 	  for(i = j; i < m; i++) {
 #ifndef COMPLEX
-	    if (maxerr < fabs(a[i + j * m] - b[i + j * m])) maxerr = fabs(a[i + j * m] - b[i + j * m]);
+	    if (maxerr < fabs(a[(long)i + (long)j * (long)m] - b[(long)i + (long)j * (long)m]))
+	        maxerr = fabs(a[(long)i + (long)j * (long)m] - b[(long)i + (long)j * (long)m]);
 #else
-	    if (maxerr < fabs(a[(i + j * m) * 2 + 0] - b[(i + j * m) * 2 + 0])) maxerr = fabs(a[(i + j * m) * 2 + 0] - b[(i + j * m) * 2 + 0]);
-	    if (maxerr < fabs(a[(i + j * m) * 2 + 1] - b[(i + j * m) * 2 + 1])) maxerr = fabs(a[(i + j * m) * 2 + 1] - b[(i + j * m) * 2 + 1]);
+	    if (maxerr < fabs(a[((long)i + (long)j * (long)m) * 2 + 0] - b[((long)i + (long)j * (long)m) * 2 + 0]))
+	        maxerr = fabs(a[((long)i + (long)j * (long)m) * 2 + 0] - b[((long)i + (long)j * (long)m) * 2 + 0]);
+	    if (maxerr < fabs(a[((long)i + (long)j * (long)m) * 2 + 1] - b[((long)i + (long)j * (long)m) * 2 + 1]))
+	        maxerr = fabs(a[((long)i + (long)j * (long)m) * 2 + 1] - b[((long)i + (long)j * (long)m) * 2 + 1]);
 #endif
 	  }
 	}

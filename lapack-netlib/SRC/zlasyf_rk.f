@@ -239,8 +239,6 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
-*
 *> \ingroup complex16SYcomputational
 *
 *> \par Contributors:
@@ -262,10 +260,9 @@
       SUBROUTINE ZLASYF_RK( UPLO, N, NB, KB, A, LDA, E, IPIV, W, LDW,
      $                      INFO )
 *
-*  -- LAPACK computational routine (version 3.7.0) --
+*  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
 *
 *     .. Scalar Arguments ..
       CHARACTER          UPLO
@@ -330,7 +327,7 @@
 *        of A and working backwards, and compute the matrix W = U12*D
 *        for use in updating A11
 *
-*        Initilize the first entry of array E, where superdiagonal
+*        Initialize the first entry of array E, where superdiagonal
 *        elements of D are stored
 *
          E( 1 ) = CZERO
@@ -658,7 +655,7 @@
 *        of A and working forwards, and compute the matrix W = L21*D
 *        for use in updating A22
 *
-*        Initilize the unused last entry of the subdiagonal array E.
+*        Initialize the unused last entry of the subdiagonal array E.
 *
          E( N ) = CZERO
 *

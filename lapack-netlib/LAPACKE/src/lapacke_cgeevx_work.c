@@ -28,7 +28,6 @@
 *****************************************************************************
 * Contents: Native middle-level C interface to LAPACK function cgeevx
 * Author: Intel Corporation
-* Generated November 2015
 *****************************************************************************/
 
 #include "lapacke_utils.h"
@@ -66,12 +65,12 @@ lapack_int LAPACKE_cgeevx_work( int matrix_layout, char balanc, char jobvl,
             LAPACKE_xerbla( "LAPACKE_cgeevx_work", info );
             return info;
         }
-        if( ldvl < n ) {
+        if( ldvl < 1 || ( LAPACKE_lsame( jobvl, 'v' ) && ldvl < n ) ) {
             info = -11;
             LAPACKE_xerbla( "LAPACKE_cgeevx_work", info );
             return info;
         }
-        if( ldvr < n ) {
+        if( ldvr < 1 || ( LAPACKE_lsame( jobvr, 'v' ) && ldvr < n ) ) {
             info = -13;
             LAPACKE_xerbla( "LAPACKE_cgeevx_work", info );
             return info;

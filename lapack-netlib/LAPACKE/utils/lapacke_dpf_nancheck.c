@@ -28,12 +28,11 @@
 ******************************************************************************
 * Contents: Native C interface to LAPACK utility function
 * Author: Intel Corporation
-* Created in February, 2010
 *****************************************************************************/
 #include "lapacke_utils.h"
 
 /* Check a matrix for NaN entries.
- * Since matrix in packed format stored continiously it just required to
+ * Since matrix in packed format stored continuously it just required to
  * check 1d array for NaNs. It doesn't depend upon uplo, transr or
  * matrix_layout.
  */

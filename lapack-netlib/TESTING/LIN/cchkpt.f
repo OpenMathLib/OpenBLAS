@@ -139,18 +139,15 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
-*
 *> \ingroup complex_lin
 *
 *  =====================================================================
       SUBROUTINE CCHKPT( DOTYPE, NN, NVAL, NNS, NSVAL, THRESH, TSTERR,
      $                   A, D, E, B, X, XACT, WORK, RWORK, NOUT )
 *
-*  -- LAPACK test routine (version 3.7.0) --
+*  -- LAPACK test routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
 *
 *     .. Scalar Arguments ..
       LOGICAL            TSTERR
@@ -322,15 +319,15 @@
 *                 elements.
 *
                   IF( IZERO.EQ.1 ) THEN
-                     D( 1 ) = Z( 2 )
+                     D( 1 ) = REAL( Z( 2 ) )
                      IF( N.GT.1 )
      $                  E( 1 ) = Z( 3 )
                   ELSE IF( IZERO.EQ.N ) THEN
                      E( N-1 ) = Z( 1 )
-                     D( N ) = Z( 2 )
+                     D( N ) = REAL( Z( 2 ) )
                   ELSE
                      E( IZERO-1 ) = Z( 1 )
-                     D( IZERO ) = Z( 2 )
+                     D( IZERO ) = REAL( Z( 2 ) )
                      E( IZERO ) = Z( 3 )
                   END IF
                END IF

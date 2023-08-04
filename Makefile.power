@@ -9,23 +9,85 @@ else
 USE_OPENMP = 1
 endif
 
-ifeq ($(CORE), POWER9)
-ifeq ($(USE_OPENMP), 1)
-COMMON_OPT += -Ofast -mcpu=power9 -mtune=power9 -mvsx -malign-power -DUSE_OPENMP -fno-fast-math -fopenmp
-FCOMMON_OPT += -O2 -frecursive -mcpu=power9 -mtune=power9 -malign-power -DUSE_OPENMP -fno-fast-math -fopenmp
+ifeq ($(CORE), POWER10)
+ifneq ($(C_COMPILER), PGI)
+CCOMMON_OPT += -Ofast -mcpu=power10 -mtune=power10 -mvsx -fno-fast-math
+ifeq ($(F_COMPILER), IBM)
+FCOMMON_OPT += -O2 -qrecur -qnosave
 else
-COMMON_OPT += -Ofast -mcpu=power9 -mtune=power9 -mvsx -malign-power -fno-fast-math
-FCOMMON_OPT += -O2 -frecursive -mcpu=power9 -mtune=power9 -malign-power -fno-fast-math
+FCOMMON_OPT += -O2 -frecursive -mcpu=power10 -mtune=power10  -fno-fast-math
+endif
+endif
+endif
+
+ifeq ($(CORE), POWER9)
+ifneq ($(C_COMPILER), PGI)
+CCOMMON_OPT += -Ofast -mvsx -fno-fast-math
+ifeq ($(C_COMPILER), GCC)
+ifneq ($(GCCVERSIONGT4), 1)
+$(warning your compiler is too old to fully support POWER9, getting a newer version of gcc is recommended)
+CCOMMON_OPT += -mcpu=power8 -mtune=power8 
+else
+CCOMMON_OPT += -mcpu=power9 -mtune=power9 
+endif
+else
+CCOMMON_OPT += -mcpu=power9 -mtune=power9
+endif
+else
+CCOMMON_OPT += -fast -Mvect=simd -Mcache_align
+endif
+ifneq ($(F_COMPILER), PGI)
+ifeq ($(F_COMPILER), IBM)
+FCOMMON_OPT += -O2 -qrecur -qnosave
+else
+FCOMMON_OPT += -O2 -frecursive -fno-fast-math
+endif
+ifeq ($(C_COMPILER), GCC)
+ifneq ($(GCCVERSIONGT4), 1)
+$(warning your compiler is too old to fully support POWER9, getting a newer version of gcc is recommended)
+FCOMMON_OPT += -mcpu=power8 -mtune=power8 
+else
+FCOMMON_OPT += -mcpu=power9 -mtune=power9 
+endif
+else
+FCOMMON_OPT += -mcpu=power9 -mtune=power9
+endif
+else
+FCOMMON_OPT += -O2 -Mrecursive
 endif
 endif
 
 ifeq ($(CORE), POWER8)
-ifeq ($(USE_OPENMP), 1)
-COMMON_OPT += -Ofast -mcpu=power8 -mtune=power8 -mvsx -malign-power -DUSE_OPENMP -fno-fast-math -fopenmp
-FCOMMON_OPT += -O2 -frecursive -mcpu=power8 -mtune=power8 -malign-power -DUSE_OPENMP -fno-fast-math -fopenmp
+ifneq ($(C_COMPILER), PGI)
+CCOMMON_OPT += -Ofast -mcpu=power8 -mtune=power8 -mvsx  -fno-fast-math
 else
-COMMON_OPT += -Ofast -mcpu=power8 -mtune=power8 -mvsx -malign-power -fno-fast-math
-FCOMMON_OPT += -O2 -frecursive -mcpu=power8 -mtune=power8 -malign-power -fno-fast-math
+CCOMMON_OPT += -fast -Mvect=simd -Mcache_align
+endif
+ifneq ($(F_COMPILER), PGI)
+ifeq ($(OSNAME), AIX)
+ifeq ($(F_COMPILER), IBM)
+FCOMMON_OPT += -O2 -qrecur -qnosave
+else
+FCOMMON_OPT += -O1 -frecursive -mcpu=power8 -mtune=power8  -fno-fast-math 
+endif
+else
+FCOMMON_OPT += -O2 -frecursive -mcpu=power8 -mtune=power8  -fno-fast-math 
+endif
+else
+FCOMMON_OPT += -O2 -Mrecursive
+endif
+endif
+
+ifeq ($(USE_OPENMP), 1)
+ifneq ($(C_COMPILER), PGI)
+CCOMMON_OPT += -DUSE_OPENMP -fopenmp
+else
+CCOMMON_OPT += -DUSE_OPENMP -mp
+endif
+ifneq ($(F_COMPILER), PGI)
+FCOMMON_OPT += -DUSE_OPENMP -fopenmp
+else
+FCOMMON_OPT += -DUSE_OPENMP -mp
 endif
 endif
 
@@ -66,6 +128,9 @@ ifdef BINARY64
 ifeq ($(OSNAME), AIX)
 CCOMMON_OPT	+= -mpowerpc64 -maix64
 ifeq ($(COMPILER_F77), g77)
+FCOMMON_OPT	+= -mpowerpc64 -maix64
+endif
+ifeq ($(F_COMPILER), GFORTRAN)
 FCOMMON_OPT	+= -mpowerpc64 -maix64
 endif
 ifeq ($(COMPILER_F77), xlf)

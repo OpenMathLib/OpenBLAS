@@ -48,17 +48,14 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
-*
 *> \ingroup complex16_lin
 *
 *  =====================================================================
       SUBROUTINE ZERRVX( PATH, NUNIT )
 *
-*  -- LAPACK test routine (version 3.7.0) --
+*  -- LAPACK test routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
 *
 *     .. Scalar Arguments ..
       CHARACTER*3        PATH
@@ -1166,7 +1163,7 @@
      $        2, RCOND, RPVGRW, BERR, N_ERR_BNDS, ERR_BNDS_N,
      $        ERR_BNDS_C, NPARAMS, PARAMS, W, RW, INFO )
          CALL CHKXER( 'ZSYSVXX', INFOT, NOUT, LERR, OK )
-	     INFOT = 13
+         INFOT = 13
          EQ = 'N'
          CALL ZSYSVXX( 'N', 'U', 2, 0, A, 2, AF, 2, IP, EQ, R, B, 1, X,
      $        2, RCOND, RPVGRW, BERR, N_ERR_BNDS, ERR_BNDS_N,
@@ -1297,6 +1294,6 @@
 *
       RETURN
 *
-*     End of ZERRVX
+*     End of ZERRVXX
 *
       END

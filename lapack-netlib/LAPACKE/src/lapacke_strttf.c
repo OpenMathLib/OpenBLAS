@@ -28,7 +28,6 @@
 *****************************************************************************
 * Contents: Native high-level C interface to LAPACK function strttf
 * Author: Intel Corporation
-* Generated November 2015
 *****************************************************************************/
 
 #include "lapacke_utils.h"
@@ -44,7 +43,7 @@ lapack_int LAPACKE_strttf( int matrix_layout, char transr, char uplo,
 #ifndef LAPACK_DISABLE_NAN_CHECK
     if( LAPACKE_get_nancheck() ) {
         /* Optionally check input matrices for NaNs */
-        if( LAPACKE_sge_nancheck( matrix_layout, n, n, a, lda ) ) {
+        if( LAPACKE_str_nancheck( matrix_layout, uplo, 'n', n, a, lda ) ) {
             return -5;
         }
     }

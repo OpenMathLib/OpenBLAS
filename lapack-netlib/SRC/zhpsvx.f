@@ -249,8 +249,6 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date April 2012
-*
 *> \ingroup complex16OTHERsolve
 *
 *> \par Further Details:
@@ -277,10 +275,9 @@
       SUBROUTINE ZHPSVX( FACT, UPLO, N, NRHS, AP, AFP, IPIV, B, LDB, X,
      $                   LDX, RCOND, FERR, BERR, WORK, RWORK, INFO )
 *
-*  -- LAPACK driver routine (version 3.7.0) --
+*  -- LAPACK driver routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     April 2012
 *
 *     .. Scalar Arguments ..
       CHARACTER          FACT, UPLO

@@ -51,7 +51,7 @@
 *> DSTEMR to compute the eigenvectors of T.
 *> The accuracy varies depending on whether bisection is used to
 *> find a few eigenvalues or the dqds algorithm (subroutine DLASQ2) to
-*> conpute all and then discard any unwanted one.
+*> compute all and then discard any unwanted one.
 *> As an added benefit, DLARRE also outputs the n
 *> Gerschgorin intervals for the matrices L_i D_i L_i^T.
 *> \endverbatim
@@ -150,7 +150,7 @@
 *>          RTOL2 is DOUBLE PRECISION
 *>           Parameters for bisection.
 *>           An interval [LEFT,RIGHT] has converged if
-*>           RIGHT-LEFT.LT.MAX( RTOL1*GAP, RTOL2*MAX(|LEFT|,|RIGHT|) )
+*>           RIGHT-LEFT < MAX( RTOL1*GAP, RTOL2*MAX(|LEFT|,|RIGHT|) )
 *> \endverbatim
 *>
 *> \param[in] SPLTOL
@@ -276,8 +276,6 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date June 2016
-*
 *> \ingroup OTHERauxiliary
 *
 *> \par Further Details:
@@ -305,10 +303,9 @@
      $                    W, WERR, WGAP, IBLOCK, INDEXW, GERS, PIVMIN,
      $                    WORK, IWORK, INFO )
 *
-*  -- LAPACK auxiliary routine (version 3.8.0) --
+*  -- LAPACK auxiliary routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     June 2016
 *
 *     .. Scalar Arguments ..
       CHARACTER          RANGE
@@ -370,6 +367,8 @@
 *
 
       INFO = 0
+      NSPLIT = 0
+      M = 0
 *
 *     Quick return if possible
 *
@@ -386,8 +385,6 @@
       ELSE IF( LSAME( RANGE, 'I' ) ) THEN
          IRANGE = INDRNG
       END IF
-
-      M = 0
 
 *     Get machine constants
       SAFMIN = DLAMCH( 'S' )
@@ -899,6 +896,6 @@
 
       RETURN
 *
-*     end of DLARRE
+*     End of DLARRE
 *
       END

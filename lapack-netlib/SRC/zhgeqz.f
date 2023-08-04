@@ -266,8 +266,6 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date April 2012
-*
 *> \ingroup complex16GEcomputational
 *
 *> \par Further Details:
@@ -284,10 +282,9 @@
      $                   ALPHA, BETA, Q, LDQ, Z, LDZ, WORK, LWORK,
      $                   RWORK, INFO )
 *
-*  -- LAPACK computational routine (version 3.7.0) --
+*  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     April 2012
 *
 *     .. Scalar Arguments ..
       CHARACTER          COMPQ, COMPZ, JOB
@@ -319,13 +316,14 @@
       DOUBLE PRECISION   ABSB, ANORM, ASCALE, ATOL, BNORM, BSCALE, BTOL,
      $                   C, SAFMIN, TEMP, TEMP2, TEMPR, ULP
       COMPLEX*16         ABI22, AD11, AD12, AD21, AD22, CTEMP, CTEMP2,
-     $                   CTEMP3, ESHIFT, RTDISC, S, SHIFT, SIGNBC, T1,
-     $                   U12, X
+     $                   CTEMP3, ESHIFT, S, SHIFT, SIGNBC,
+     $                   U12, X, ABI12, Y
 *     ..
 *     .. External Functions ..
+      COMPLEX*16         ZLADIV
       LOGICAL            LSAME
       DOUBLE PRECISION   DLAMCH, ZLANHS
-      EXTERNAL           LSAME, DLAMCH, ZLANHS
+      EXTERNAL           ZLADIV, LSAME, DLAMCH, ZLANHS
 *     ..
 *     .. External Subroutines ..
       EXTERNAL           XERBLA, ZLARTG, ZLASET, ZROT, ZSCAL
@@ -351,6 +349,7 @@
          ILSCHR = .TRUE.
          ISCHUR = 2
       ELSE
+         ILSCHR = .TRUE.
          ISCHUR = 0
       END IF
 *
@@ -364,6 +363,7 @@
          ILQ = .TRUE.
          ICOMPQ = 3
       ELSE
+         ILQ = .TRUE.
          ICOMPQ = 0
       END IF
 *
@@ -377,6 +377,7 @@
          ILZ = .TRUE.
          ICOMPZ = 3
       ELSE
+         ILZ = .TRUE.
          ICOMPZ = 0
       END IF
 *
@@ -515,7 +516,9 @@
          IF( ILAST.EQ.ILO ) THEN
             GO TO 60
          ELSE
-            IF( ABS1( H( ILAST, ILAST-1 ) ).LE.ATOL ) THEN
+            IF( ABS1( H( ILAST, ILAST-1 ) ).LE.MAX( SAFMIN, ULP*( 
+     $         ABS1( H( ILAST, ILAST ) ) + ABS1( H( ILAST-1, ILAST-1 ) 
+     $         ) ) ) ) THEN
                H( ILAST, ILAST-1 ) = CZERO
                GO TO 60
             END IF
@@ -535,7 +538,9 @@
             IF( J.EQ.ILO ) THEN
                ILAZRO = .TRUE.
             ELSE
-               IF( ABS1( H( J, J-1 ) ).LE.ATOL ) THEN
+               IF( ABS1( H( J, J-1 ) ).LE.MAX( SAFMIN, ULP*( 
+     $            ABS1( H( J, J ) ) + ABS1( H( J-1, J-1 ) ) 
+     $            ) ) ) THEN
                   H( J, J-1 ) = CZERO
                   ILAZRO = .TRUE.
                ELSE
@@ -730,22 +735,34 @@
             AD22 = ( ASCALE*H( ILAST, ILAST ) ) /
      $             ( BSCALE*T( ILAST, ILAST ) )
             ABI22 = AD22 - U12*AD21
+            ABI12 = AD12 - U12*AD11
 *
-            T1 = HALF*( AD11+ABI22 )
-            RTDISC = SQRT( T1**2+AD12*AD21-AD11*AD22 )
-            TEMP = DBLE( T1-ABI22 )*DBLE( RTDISC ) +
-     $             DIMAG( T1-ABI22 )*DIMAG( RTDISC )
-            IF( TEMP.LE.ZERO ) THEN
-               SHIFT = T1 + RTDISC
-            ELSE
-               SHIFT = T1 - RTDISC
+            SHIFT = ABI22
+            CTEMP = SQRT( ABI12 )*SQRT( AD21 )
+            TEMP = ABS1( CTEMP )
+            IF( CTEMP.NE.ZERO ) THEN
+               X = HALF*( AD11-SHIFT )
+               TEMP2 = ABS1( X )
+               TEMP = MAX( TEMP, ABS1( X ) )
+               Y = TEMP*SQRT( ( X / TEMP )**2+( CTEMP / TEMP )**2 )
+               IF( TEMP2.GT.ZERO ) THEN
+                  IF( DBLE( X / TEMP2 )*DBLE( Y )+
+     $                DIMAG( X / TEMP2 )*DIMAG( Y ).LT.ZERO )Y = -Y
+               END IF
+               SHIFT = SHIFT - CTEMP*ZLADIV( CTEMP, ( X+Y ) )
             END IF
          ELSE
 *
 *           Exceptional shift.  Chosen for no particularly good reason.
 *
-            ESHIFT = ESHIFT + (ASCALE*H(ILAST,ILAST-1))/
-     $                        (BSCALE*T(ILAST-1,ILAST-1))
+            IF( ( IITER / 20 )*20.EQ.IITER .AND. 
+     $         BSCALE*ABS1(T( ILAST, ILAST )).GT.SAFMIN ) THEN
+               ESHIFT = ESHIFT + ( ASCALE*H( ILAST,
+     $            ILAST ) )/( BSCALE*T( ILAST, ILAST ) )
+            ELSE
+               ESHIFT = ESHIFT + ( ASCALE*H( ILAST,
+     $            ILAST-1 ) )/( BSCALE*T( ILAST-1, ILAST-1 ) )
+            END IF
             SHIFT = ESHIFT
          END IF
 *

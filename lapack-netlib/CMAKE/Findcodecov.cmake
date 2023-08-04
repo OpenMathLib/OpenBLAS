@@ -36,13 +36,13 @@ function(add_coverage TNAME)
 endfunction()
 
 
-# Find the reuired flags foreach language.
+# Find the required flags foreach language.
 set(CMAKE_REQUIRED_QUIET_SAVE ${CMAKE_REQUIRED_QUIET})
 set(CMAKE_REQUIRED_QUIET ${codecov_FIND_QUIETLY})
 
 get_property(ENABLED_LANGUAGES GLOBAL PROPERTY ENABLED_LANGUAGES)
 foreach (LANG ${ENABLED_LANGUAGES})
-  # Coverage flags are not dependend on language, but the used compiler. So
+  # Coverage flags are not dependent on language, but the used compiler. So
   # instead of searching flags foreach language, search flags foreach compiler
   # used.
   set(COMPILER ${CMAKE_${LANG}_COMPILER_ID})
@@ -118,7 +118,7 @@ function (codecov_path_of_source FILE RETURN_VAR)
 
   # If expression was found, SOURCEFILE is a generator-expression for an
   # object library. Currently we found no way to call this function automatic
-  # for the referenced target, so it must be called in the directoryso of the
+  # for the referenced target, so it must be called in the directory of the
   # object library definition.
   if(NOT "${_source}" STREQUAL "")
     set(${RETURN_VAR} "" PARENT_SCOPE)

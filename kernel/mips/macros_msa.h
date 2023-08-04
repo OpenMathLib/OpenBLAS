@@ -63,16 +63,12 @@ inline static void prefetch_load_lf(unsigned char *src)
 #define ST_DP(...) ST_D(v2f64, __VA_ARGS__)
 
 #define COPY_FLOAT_TO_VECTOR(a) ( {                \
-    v4f32  out;                                    \
-    out = __msa_cast_to_vector_float(a);           \
-    out = (v4f32) __msa_splati_w((v4i32) out, 0);  \
+    v4f32  out = {a, a, a, a};                     \
     out;                                           \
 } )
 
 #define COPY_DOUBLE_TO_VECTOR(a) ( {               \
-    v2f64  out;                                    \
-    out = __msa_cast_to_vector_double(a);          \
-    out = (v2f64) __msa_splati_d((v2i64) out, 0);  \
+    v2f64  out = {a, a};                           \
     out;                                           \
 } )
 

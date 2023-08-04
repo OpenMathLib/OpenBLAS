@@ -134,8 +134,6 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date June 2016
-*
 *> \ingroup complex16OTHERauxiliary
 *
 *> \par Further Details:
@@ -169,10 +167,9 @@
       SUBROUTINE ZLATDF( IJOB, N, Z, LDZ, RHS, RDSUM, RDSCAL, IPIV,
      $                   JPIV )
 *
-*  -- LAPACK auxiliary routine (version 3.7.0) --
+*  -- LAPACK auxiliary routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     June 2016
 *
 *     .. Scalar Arguments ..
       INTEGER            IJOB, LDZ, N
@@ -230,7 +227,7 @@
             BM = RHS( J ) - CONE
             SPLUS = ONE
 *
-*           Lockahead for L- part RHS(1:N-1) = +-1
+*           Look-ahead for L- part RHS(1:N-1) = +-1
 *           SPLUS and SMIN computed more efficiently than in BSOLVE[1].
 *
             SPLUS = SPLUS + DBLE( ZDOTC( N-J, Z( J+1, J ), 1, Z( J+1,
@@ -261,7 +258,7 @@
 *
 *        Solve for U- part, lockahead for RHS(N) = +-1. This is not done
 *        In BSOLVE and will hopefully give us a better estimate because
-*        any ill-conditioning of the original matrix is transfered to U
+*        any ill-conditioning of the original matrix is transferred to U
 *        and not to L. U(N, N) is an approximation to sigma_min(LU).
 *
          CALL ZCOPY( N-1, RHS, 1, WORK, 1 )

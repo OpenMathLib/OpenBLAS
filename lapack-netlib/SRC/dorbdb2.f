@@ -37,7 +37,7 @@
 *>\verbatim
 *>
 *> DORBDB2 simultaneously bidiagonalizes the blocks of a tall and skinny
-*> matrix X with orthonomal columns:
+*> matrix X with orthonormal columns:
 *>
 *>                            [ B11 ]
 *>      [ X11 ]   [ P1 |    ] [  0  ]
@@ -122,14 +122,14 @@
 *>
 *> \param[out] TAUP1
 *> \verbatim
-*>          TAUP1 is DOUBLE PRECISION array, dimension (P)
+*>          TAUP1 is DOUBLE PRECISION array, dimension (P-1)
 *>           The scalar factors of the elementary reflectors that define
 *>           P1.
 *> \endverbatim
 *>
 *> \param[out] TAUP2
 *> \verbatim
-*>          TAUP2 is DOUBLE PRECISION array, dimension (M-P)
+*>          TAUP2 is DOUBLE PRECISION array, dimension (Q)
 *>           The scalar factors of the elementary reflectors that define
 *>           P2.
 *> \endverbatim
@@ -173,8 +173,6 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date July 2012
-*
 *> \ingroup doubleOTHERcomputational
 *
 *> \par Further Details:
@@ -202,10 +200,9 @@
       SUBROUTINE DORBDB2( M, P, Q, X11, LDX11, X21, LDX21, THETA, PHI,
      $                    TAUP1, TAUP2, TAUQ1, WORK, LWORK, INFO )
 *
-*  -- LAPACK computational routine (version 3.7.1) --
+*  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     July 2012
 *
 *     .. Scalar Arguments ..
       INTEGER            INFO, LWORK, M, P, Q, LDX11, LDX21

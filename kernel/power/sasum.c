@@ -46,8 +46,12 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #endif
 
+#if defined(__VEC__) || defined(__ALTIVEC__)
 #if defined(POWER8) || defined(POWER9)
 #include "sasum_microk_power8.c"
+#elif defined(POWER10)
+#include "sasum_microk_power10.c"
+#endif
 #endif
 
 
@@ -108,6 +112,21 @@ FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x)
 	if ( inc_x == 1 )
 	{
 
+#if defined(POWER10)
+		if ( n >= 32 )
+		{
+			BLASLONG align = ((32 - ((uintptr_t)x & (uintptr_t)0x1F)) >> 2) & 0x7;
+			for (i = 0; i < align; i++) {
+				sumf += ABS(x[i]);
+			}
+		}
+		n1 = (n-i) & -32;
+		if ( n1 > 0 )
+		{
+			sumf += sasum_kernel_32(n1, &x[i]);
+			i+=n1;
+		}
+#else
 		n1 = n & -32;
 		if ( n1 > 0 )
 		{
@@ -115,6 +134,7 @@ FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x)
 			sumf = sasum_kernel_32(n1, x);
 			i=n1;
 		}
+#endif
 
 		while(i < n)
 		{

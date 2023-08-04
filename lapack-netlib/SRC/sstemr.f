@@ -233,13 +233,13 @@
 *> \param[in,out] TRYRAC
 *> \verbatim
 *>          TRYRAC is LOGICAL
-*>          If TRYRAC.EQ..TRUE., indicates that the code should check whether
+*>          If TRYRAC = .TRUE., indicates that the code should check whether
 *>          the tridiagonal matrix defines its eigenvalues to high relative
 *>          accuracy.  If so, the code uses relative-accuracy preserving
 *>          algorithms that might be (a bit) slower depending on the matrix.
 *>          If the matrix does not define its eigenvalues to high relative
 *>          accuracy, the code can uses possibly faster algorithms.
-*>          If TRYRAC.EQ..FALSE., the code is not required to guarantee
+*>          If TRYRAC = .FALSE., the code is not required to guarantee
 *>          relatively accurate eigenvalues and can use the fastest possible
 *>          techniques.
 *>          On exit, a .TRUE. TRYRAC will be set to .FALSE. if the matrix
@@ -303,9 +303,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date June 2016
-*
-*> \ingroup realOTHERcomputational
+*> \ingroup stemr
 *
 *> \par Contributors:
 *  ==================
@@ -314,17 +312,17 @@
 *> Jim Demmel, University of California, Berkeley, USA \n
 *> Inderjit Dhillon, University of Texas, Austin, USA \n
 *> Osni Marques, LBNL/NERSC, USA \n
-*> Christof Voemel, University of California, Berkeley, USA
+*> Christof Voemel, University of California, Berkeley, USA \n
+*> Aravindh Krishnamoorthy, FAU, Erlangen, Germany \n
 *
 *  =====================================================================
       SUBROUTINE SSTEMR( JOBZ, RANGE, N, D, E, VL, VU, IL, IU,
      $                   M, W, Z, LDZ, NZC, ISUPPZ, TRYRAC, WORK, LWORK,
      $                   IWORK, LIWORK, INFO )
 *
-*  -- LAPACK computational routine (version 3.7.1) --
+*  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     June 2016
 *
 *     .. Scalar Arguments ..
       CHARACTER          JOBZ, RANGE
@@ -347,7 +345,8 @@
      $                     MINRGP = 3.0E-3 )
 *     ..
 *     .. Local Scalars ..
-      LOGICAL            ALLEIG, INDEIG, LQUERY, VALEIG, WANTZ, ZQUERY
+      LOGICAL            ALLEIG, INDEIG, LQUERY, VALEIG, WANTZ, ZQUERY,
+     $                   LAESWAP
       INTEGER            I, IBEGIN, IEND, IFIRST, IIL, IINDBL, IINDW,
      $                   IINDWK, IINFO, IINSPL, IIU, ILAST, IN, INDD,
      $                   INDE2, INDERR, INDGP, INDGRS, INDWRK, ITMP,
@@ -381,6 +380,7 @@
 *
       LQUERY = ( ( LWORK.EQ.-1 ).OR.( LIWORK.EQ.-1 ) )
       ZQUERY = ( NZC.EQ.-1 )
+      LAESWAP = .FALSE.
 
 *     SSTEMR needs WORK of size 6*N, IWORK of size 3*N.
 *     In addition, SLARRE needs WORK of size 6*N, IWORK of size 5*N.
@@ -503,6 +503,15 @@
          ELSE IF( WANTZ.AND.(.NOT.ZQUERY) ) THEN
             CALL SLAEV2( D(1), E(1), D(2), R1, R2, CS, SN )
          END IF
+*        D/S/LAE2 and D/S/LAEV2 outputs satisfy |R1| >= |R2|. However,
+*        the following code requires R1 >= R2. Hence, we correct
+*        the order of R1, R2, CS, SN if R1 < R2 before further processing.
+         IF( R1.LT.R2 ) THEN
+            E(2) = R1
+            R1 = R2
+            R2 = E(2)
+            LAESWAP = .TRUE.
+         ENDIF
          IF( ALLEIG.OR.
      $      (VALEIG.AND.(R2.GT.WL).AND.
      $                  (R2.LE.WU)).OR.
@@ -510,8 +519,13 @@
             M = M+1
             W( M ) = R2
             IF( WANTZ.AND.(.NOT.ZQUERY) ) THEN
-               Z( 1, M ) = -SN
-               Z( 2, M ) = CS
+               IF( LAESWAP ) THEN
+                  Z( 1, M ) = CS
+                  Z( 2, M ) = SN
+               ELSE
+                  Z( 1, M ) = -SN
+                  Z( 2, M ) = CS
+               ENDIF
 *              Note: At most one of SN and CS can be zero.
                IF (SN.NE.ZERO) THEN
                   IF (CS.NE.ZERO) THEN
@@ -534,8 +548,13 @@
             M = M+1
             W( M ) = R1
             IF( WANTZ.AND.(.NOT.ZQUERY) ) THEN
-               Z( 1, M ) = CS
-               Z( 2, M ) = SN
+               IF( LAESWAP ) THEN
+                  Z( 1, M ) = -SN
+                  Z( 2, M ) = CS
+               ELSE
+                  Z( 1, M ) = CS
+                  Z( 2, M ) = SN
+               ENDIF
 *              Note: At most one of SN and CS can be zero.
                IF (SN.NE.ZERO) THEN
                   IF (CS.NE.ZERO) THEN

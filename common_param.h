@@ -1,5 +1,6 @@
 /*********************************************************************/
 /* Copyright 2009, 2010 The University of Texas at Austin.           */
+/* Copyright 2023 The OpenBLAS Project.                              */
 /* All rights reserved.                                              */
 /*                                                                   */
 /* Redistribution and use in source and binary forms, with or        */
@@ -45,49 +46,205 @@
 
 typedef struct {
   int dtb_entries;
+  int switch_ratio;
   int offsetA, offsetB, align;
 
+#if BUILD_BFLOAT16 == 1
+  int sbgemm_p, sbgemm_q, sbgemm_r;
+  int sbgemm_unroll_m, sbgemm_unroll_n, sbgemm_unroll_mn;
+  int sbgemm_align_k;
+  int need_amxtile_permission;  // 0 default, 1 for device support amx.
+
+  void   (*sbstobf16_k) (BLASLONG, float    *, BLASLONG, bfloat16 *, BLASLONG);
+  void   (*sbdtobf16_k) (BLASLONG, double   *, BLASLONG, bfloat16 *, BLASLONG);
+  void   (*sbf16tos_k)  (BLASLONG, bfloat16 *, BLASLONG, float    *, BLASLONG);
+  void   (*dbf16tod_k)  (BLASLONG, bfloat16 *, BLASLONG, double   *, BLASLONG);
+
+  float  (*sbamax_k) (BLASLONG, float *, BLASLONG);
+  float  (*sbamin_k) (BLASLONG, float *, BLASLONG);
+  float  (*sbmax_k)  (BLASLONG, float *, BLASLONG);
+  float  (*sbmin_k)  (BLASLONG, float *, BLASLONG);
+BLASLONG (*isbamax_k)(BLASLONG, float *, BLASLONG);
+BLASLONG (*isbamin_k)(BLASLONG, float *, BLASLONG);
+BLASLONG (*isbmax_k) (BLASLONG, float *, BLASLONG);
+BLASLONG (*isbmin_k) (BLASLONG, float *, BLASLONG);
+
+  float  (*sbnrm2_k) (BLASLONG, float *, BLASLONG);
+  float  (*sbasum_k) (BLASLONG, float *, BLASLONG);
+  float  (*sbsum_k)  (BLASLONG, float *, BLASLONG);
+  int    (*sbcopy_k) (BLASLONG, float *, BLASLONG, float *, BLASLONG);
+  float  (*sbdot_k)  (BLASLONG, bfloat16 *, BLASLONG, bfloat16 *, BLASLONG);
+  double (*dsbdot_k) (BLASLONG, float *, BLASLONG, float *, BLASLONG);
+
+  int    (*sbrot_k)  (BLASLONG, float *, BLASLONG, float *, BLASLONG, float, float);
+
+  int    (*sbaxpy_k) (BLASLONG, BLASLONG, BLASLONG, float, float *, BLASLONG, float *, BLASLONG, float *, BLASLONG);
+  int    (*sbscal_k) (BLASLONG, BLASLONG, BLASLONG, float, float *, BLASLONG, float *, BLASLONG, float *, BLASLONG);
+  int    (*sbswap_k) (BLASLONG, BLASLONG, BLASLONG, float, float *, BLASLONG, float *, BLASLONG, float *, BLASLONG);
+
+  int    (*sbgemv_n) (BLASLONG, BLASLONG, float, bfloat16 *, BLASLONG, bfloat16 *, BLASLONG, float, float *, BLASLONG);
+  int    (*sbgemv_t) (BLASLONG, BLASLONG, float, bfloat16 *, BLASLONG, bfloat16 *, BLASLONG, float, float *, BLASLONG);
+  int    (*sbger_k)  (BLASLONG, BLASLONG, BLASLONG, float, float *, BLASLONG, float *, BLASLONG, float *, BLASLONG, float *);
+
+  int    (*sbsymv_L) (BLASLONG, BLASLONG, float,  float  *, BLASLONG, float  *, BLASLONG, float  *, BLASLONG, float *);
+  int    (*sbsymv_U) (BLASLONG, BLASLONG, float,  float  *, BLASLONG, float  *, BLASLONG, float  *, BLASLONG, float *);
+
+  int    (*sbgemm_kernel   )(BLASLONG, BLASLONG, BLASLONG, float, bfloat16 *, bfloat16 *, float *, BLASLONG);
+  int    (*sbgemm_beta     )(BLASLONG, BLASLONG, BLASLONG, float, bfloat16 *, BLASLONG, bfloat16 *, BLASLONG, float *, BLASLONG);
+
+  int    (*sbgemm_incopy   )(BLASLONG, BLASLONG, bfloat16 *, BLASLONG, bfloat16 *);
+  int    (*sbgemm_itcopy   )(BLASLONG, BLASLONG, bfloat16 *, BLASLONG, bfloat16 *);
+  int    (*sbgemm_oncopy   )(BLASLONG, BLASLONG, bfloat16 *, BLASLONG, bfloat16 *);
+  int    (*sbgemm_otcopy   )(BLASLONG, BLASLONG, bfloat16 *, BLASLONG, bfloat16 *);
+
+  int    (*sbtrsm_kernel_LN)(BLASLONG, BLASLONG, BLASLONG, float, float *, float *, float *, BLASLONG, BLASLONG);
+  int    (*sbtrsm_kernel_LT)(BLASLONG, BLASLONG, BLASLONG, float, float *, float *, float *, BLASLONG, BLASLONG);
+  int    (*sbtrsm_kernel_RN)(BLASLONG, BLASLONG, BLASLONG, float, float *, float *, float *, BLASLONG, BLASLONG);
+  int    (*sbtrsm_kernel_RT)(BLASLONG, BLASLONG, BLASLONG, float, float *, float *, float *, BLASLONG, BLASLONG);
+
+  int    (*sbtrsm_iunucopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, float *);
+  int    (*sbtrsm_iunncopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, float *);
+  int    (*sbtrsm_iutucopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, float *);
+  int    (*sbtrsm_iutncopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, float *);
+  int    (*sbtrsm_ilnucopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, float *);
+  int    (*sbtrsm_ilnncopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, float *);
+  int    (*sbtrsm_iltucopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, float *);
+  int    (*sbtrsm_iltncopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, float *);
+  int    (*sbtrsm_ounucopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, float *);
+  int    (*sbtrsm_ounncopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, float *);
+  int    (*sbtrsm_outucopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, float *);
+  int    (*sbtrsm_outncopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, float *);
+  int    (*sbtrsm_olnucopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, float *);
+  int    (*sbtrsm_olnncopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, float *);
+  int    (*sbtrsm_oltucopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, float *);
+  int    (*sbtrsm_oltncopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, float *);
+
+  int    (*sbtrmm_kernel_RN)(BLASLONG, BLASLONG, BLASLONG, float, float *, float *, float *, BLASLONG, BLASLONG);
+  int    (*sbtrmm_kernel_RT)(BLASLONG, BLASLONG, BLASLONG, float, float *, float *, float *, BLASLONG, BLASLONG);
+  int    (*sbtrmm_kernel_LN)(BLASLONG, BLASLONG, BLASLONG, float, float *, float *, float *, BLASLONG, BLASLONG);
+  int    (*sbtrmm_kernel_LT)(BLASLONG, BLASLONG, BLASLONG, float, float *, float *, float *, BLASLONG, BLASLONG);
+
+  int    (*sbtrmm_iunucopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
+  int    (*sbtrmm_iunncopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
+  int    (*sbtrmm_iutucopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
+  int    (*sbtrmm_iutncopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
+  int    (*sbtrmm_ilnucopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
+  int    (*sbtrmm_ilnncopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
+  int    (*sbtrmm_iltucopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
+  int    (*sbtrmm_iltncopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
+  int    (*sbtrmm_ounucopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
+  int    (*sbtrmm_ounncopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
+  int    (*sbtrmm_outucopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
+  int    (*sbtrmm_outncopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
+  int    (*sbtrmm_olnucopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
+  int    (*sbtrmm_olnncopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
+  int    (*sbtrmm_oltucopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
+  int    (*sbtrmm_oltncopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
+
+  int    (*sbsymm_iutcopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
+  int    (*sbsymm_iltcopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
+  int    (*sbsymm_outcopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
+  int    (*sbsymm_oltcopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, BLASLONG, float *);
+
+  int	 (*sbneg_tcopy)   (BLASLONG, BLASLONG, float *, BLASLONG, float *);
+  int    (*sblaswp_ncopy) (BLASLONG, BLASLONG, BLASLONG, float *, BLASLONG, blasint *, float *);
+
+#ifdef SMALL_MATRIX_OPT
+  int    (*sbgemm_small_matrix_permit)(int transa, int transb, BLASLONG m, BLASLONG n, BLASLONG k, float alpha, float beta);
+
+  int    (*sbgemm_small_kernel_nn    )(BLASLONG m, BLASLONG n, BLASLONG k, bfloat16 * A, BLASLONG lda, float alpha, bfloat16 * B, BLASLONG ldb, float beta, float * C, BLASLONG ldc);
+  int    (*sbgemm_small_kernel_nt    )(BLASLONG m, BLASLONG n, BLASLONG k, bfloat16 * A, BLASLONG lda, float alpha, bfloat16 * B, BLASLONG ldb, float beta, float * C, BLASLONG ldc);
+  int    (*sbgemm_small_kernel_tn    )(BLASLONG m, BLASLONG n, BLASLONG k, bfloat16 * A, BLASLONG lda, float alpha, bfloat16 * B, BLASLONG ldb, float beta, float * C, BLASLONG ldc);
+  int    (*sbgemm_small_kernel_tt    )(BLASLONG m, BLASLONG n, BLASLONG k, bfloat16 * A, BLASLONG lda, float alpha, bfloat16 * B, BLASLONG ldb, float beta, float * C, BLASLONG ldc);
+
+  int    (*sbgemm_small_kernel_b0_nn )(BLASLONG m, BLASLONG n, BLASLONG k, bfloat16 * A, BLASLONG lda, float alpha, bfloat16 * B, BLASLONG ldb, float * C, BLASLONG ldc);
+  int    (*sbgemm_small_kernel_b0_nt )(BLASLONG m, BLASLONG n, BLASLONG k, bfloat16 * A, BLASLONG lda, float alpha, bfloat16 * B, BLASLONG ldb, float * C, BLASLONG ldc);
+  int    (*sbgemm_small_kernel_b0_tn )(BLASLONG m, BLASLONG n, BLASLONG k, bfloat16 * A, BLASLONG lda, float alpha, bfloat16 * B, BLASLONG ldb, float * C, BLASLONG ldc);
+  int    (*sbgemm_small_kernel_b0_tt )(BLASLONG m, BLASLONG n, BLASLONG k, bfloat16 * A, BLASLONG lda, float alpha, bfloat16 * B, BLASLONG ldb, float * C, BLASLONG ldc);
+#endif
+#endif
+
+#if (BUILD_SINGLE == 1) || (BUILD_DOUBLE == 1) || (BUILD_COMPLEX == 1) || (BUILD_COMPLEX16 == 1)
   int sgemm_p, sgemm_q, sgemm_r;
   int sgemm_unroll_m, sgemm_unroll_n, sgemm_unroll_mn;
+#endif
 
   int exclusive_cache;
 
+#if (BUILD_SINGLE == 1) || (BUILD_COMPLEX == 1)
   float  (*samax_k) (BLASLONG, float *, BLASLONG);
   float  (*samin_k) (BLASLONG, float *, BLASLONG);
   float  (*smax_k)  (BLASLONG, float *, BLASLONG);
   float  (*smin_k)  (BLASLONG, float *, BLASLONG);
+#endif
+
+#if (BUILD_SINGLE==1) || (BUILD_DOUBLE ==1) || (BUILD_COMPLEX==1)
 BLASLONG (*isamax_k)(BLASLONG, float *, BLASLONG);
+#endif
+#if (BUILD_SINGLE==1) || (BUILD_COMPLEX==1)
 BLASLONG (*isamin_k)(BLASLONG, float *, BLASLONG);
 BLASLONG (*ismax_k) (BLASLONG, float *, BLASLONG);
 BLASLONG (*ismin_k) (BLASLONG, float *, BLASLONG);
-
   float  (*snrm2_k) (BLASLONG, float *, BLASLONG);
   float  (*sasum_k) (BLASLONG, float *, BLASLONG);
+#endif
+#if (BUILD_SINGLE==1)
   float  (*ssum_k)  (BLASLONG, float *, BLASLONG);
+#endif  
+#if (BUILD_SINGLE==1) || (BUILD_DOUBLE==1) || (BUILD_COMPLEX==1)
   int    (*scopy_k) (BLASLONG, float *, BLASLONG, float *, BLASLONG);
   float  (*sdot_k)  (BLASLONG, float *, BLASLONG, float *, BLASLONG);
-  double (*dsdot_k) (BLASLONG, float *, BLASLONG, float *, BLASLONG);
+  //double (*dsdot_k) (BLASLONG, float *, BLASLONG, float *, BLASLONG);
 
   int    (*srot_k)  (BLASLONG, float *, BLASLONG, float *, BLASLONG, float, float);
-
+#endif
+#if (BUILD_SINGLE==1) || (BUILD_DOUBLE==1) || (BUILD_COMPLEX==1)
   int    (*saxpy_k) (BLASLONG, BLASLONG, BLASLONG, float, float *, BLASLONG, float *, BLASLONG, float *, BLASLONG);
+#endif
+#if (BUILD_SINGLE==1) || (BUILD_DOUBLE==1) || (BUILD_COMPLEX==1) || (BUILD_COMPLEX16==1)
   int    (*sscal_k) (BLASLONG, BLASLONG, BLASLONG, float, float *, BLASLONG, float *, BLASLONG, float *, BLASLONG);
+#endif
+#if (BUILD_SINGLE==1) || (BUILD_DOUBLE==1) || (BUILD_COMPLEX==1)
   int    (*sswap_k) (BLASLONG, BLASLONG, BLASLONG, float, float *, BLASLONG, float *, BLASLONG, float *, BLASLONG);
 
   int    (*sgemv_n) (BLASLONG, BLASLONG, BLASLONG, float, float *, BLASLONG, float *, BLASLONG, float *, BLASLONG, float *);
   int    (*sgemv_t) (BLASLONG, BLASLONG, BLASLONG, float, float *, BLASLONG, float *, BLASLONG, float *, BLASLONG, float *);
+#endif
+#if (BUILD_SINGLE==1)
   int    (*sger_k)  (BLASLONG, BLASLONG, BLASLONG, float, float *, BLASLONG, float *, BLASLONG, float *, BLASLONG, float *);
-
   int    (*ssymv_L) (BLASLONG, BLASLONG, float,  float  *, BLASLONG, float  *, BLASLONG, float  *, BLASLONG, float *);
   int    (*ssymv_U) (BLASLONG, BLASLONG, float,  float  *, BLASLONG, float  *, BLASLONG, float  *, BLASLONG, float *);
+#endif
 
+#if (BUILD_SINGLE==1) || (BUILD_DOUBLE==1) || (BUILD_COMPLEX==1)
+#ifdef ARCH_X86_64
+  void (*sgemm_direct) (BLASLONG, BLASLONG, BLASLONG, float *, BLASLONG , float *, BLASLONG , float * , BLASLONG);
+  int  (*sgemm_direct_performant) (BLASLONG M, BLASLONG N, BLASLONG K);
+#endif
+  
   int    (*sgemm_kernel   )(BLASLONG, BLASLONG, BLASLONG, float, float *, float *, float *, BLASLONG);
   int    (*sgemm_beta     )(BLASLONG, BLASLONG, BLASLONG, float, float *, BLASLONG, float *, BLASLONG, float  *, BLASLONG);
+
 
   int    (*sgemm_incopy   )(BLASLONG, BLASLONG, float *, BLASLONG, float *);
   int    (*sgemm_itcopy   )(BLASLONG, BLASLONG, float *, BLASLONG, float *);
   int    (*sgemm_oncopy   )(BLASLONG, BLASLONG, float *, BLASLONG, float *);
   int    (*sgemm_otcopy   )(BLASLONG, BLASLONG, float *, BLASLONG, float *);
+#endif
+#if (BUILD_SINGLE==1) || (BUILD_DOUBLE==1) || (BUILD_COMPLEX==1)
+#ifdef SMALL_MATRIX_OPT
+  int    (*sgemm_small_matrix_permit)(int transa, int transb, BLASLONG m, BLASLONG n, BLASLONG k, float alpha, float beta);
+
+  int    (*sgemm_small_kernel_nn    )(BLASLONG m, BLASLONG n, BLASLONG k, float * A, BLASLONG lda, float alpha, float * B, BLASLONG ldb, float beta, float * C, BLASLONG ldc);
+  int    (*sgemm_small_kernel_nt    )(BLASLONG m, BLASLONG n, BLASLONG k, float * A, BLASLONG lda, float alpha, float * B, BLASLONG ldb, float beta, float * C, BLASLONG ldc);
+  int    (*sgemm_small_kernel_tn    )(BLASLONG m, BLASLONG n, BLASLONG k, float * A, BLASLONG lda, float alpha, float * B, BLASLONG ldb, float beta, float * C, BLASLONG ldc);
+  int    (*sgemm_small_kernel_tt    )(BLASLONG m, BLASLONG n, BLASLONG k, float * A, BLASLONG lda, float alpha, float * B, BLASLONG ldb, float beta, float * C, BLASLONG ldc);
+
+  int    (*sgemm_small_kernel_b0_nn )(BLASLONG m, BLASLONG n, BLASLONG k, float * A, BLASLONG lda, float alpha, float * B, BLASLONG ldb, float * C, BLASLONG ldc);
+  int    (*sgemm_small_kernel_b0_nt )(BLASLONG m, BLASLONG n, BLASLONG k, float * A, BLASLONG lda, float alpha, float * B, BLASLONG ldb, float * C, BLASLONG ldc);
+  int    (*sgemm_small_kernel_b0_tn )(BLASLONG m, BLASLONG n, BLASLONG k, float * A, BLASLONG lda, float alpha, float * B, BLASLONG ldb, float * C, BLASLONG ldc);
+  int    (*sgemm_small_kernel_b0_tt )(BLASLONG m, BLASLONG n, BLASLONG k, float * A, BLASLONG lda, float alpha, float * B, BLASLONG ldb, float * C, BLASLONG ldc);
+#endif
 
   int    (*strsm_kernel_LN)(BLASLONG, BLASLONG, BLASLONG, float, float *, float *, float *, BLASLONG, BLASLONG);
   int    (*strsm_kernel_LT)(BLASLONG, BLASLONG, BLASLONG, float, float *, float *, float *, BLASLONG, BLASLONG);
@@ -110,7 +267,8 @@ BLASLONG (*ismin_k) (BLASLONG, float *, BLASLONG);
   int    (*strsm_olnncopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, float *);
   int    (*strsm_oltucopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, float *);
   int    (*strsm_oltncopy)(BLASLONG, BLASLONG, float *, BLASLONG, BLASLONG, float *);
-
+#endif
+#if (BUILD_SINGLE==1)
   int    (*strmm_kernel_RN)(BLASLONG, BLASLONG, BLASLONG, float, float *, float *, float *, BLASLONG, BLASLONG);
   int    (*strmm_kernel_RT)(BLASLONG, BLASLONG, BLASLONG, float, float *, float *, float *, BLASLONG, BLASLONG);
   int    (*strmm_kernel_LN)(BLASLONG, BLASLONG, BLASLONG, float, float *, float *, float *, BLASLONG, BLASLONG);
@@ -140,10 +298,14 @@ BLASLONG (*ismin_k) (BLASLONG, float *, BLASLONG);
 
   int	 (*sneg_tcopy)   (BLASLONG, BLASLONG, float *, BLASLONG, float *);
   int    (*slaswp_ncopy) (BLASLONG, BLASLONG, BLASLONG, float *, BLASLONG, blasint *, float *);
+#endif
 
+#if (BUILD_DOUBLE==1) || (BUILD_COMPLEX16==1)
   int dgemm_p, dgemm_q, dgemm_r;
   int dgemm_unroll_m, dgemm_unroll_n, dgemm_unroll_mn;
+#endif
 
+#if (BUILD_DOUBLE==1) || (BUILD_COMPLEX16==1)
   double (*damax_k) (BLASLONG, double *, BLASLONG);
   double (*damin_k) (BLASLONG, double *, BLASLONG);
   double (*dmax_k)  (BLASLONG, double *, BLASLONG);
@@ -155,22 +317,32 @@ BLASLONG (*idmin_k) (BLASLONG, double *, BLASLONG);
 
   double (*dnrm2_k) (BLASLONG, double *, BLASLONG);
   double (*dasum_k) (BLASLONG, double *, BLASLONG);
+#endif
+#if (BUILD_DOUBLE==1)
   double (*dsum_k)  (BLASLONG, double *, BLASLONG);
+#endif
+#if (BUILD_DOUBLE==1) || (BUILD_COMPLEX16==1)
   int    (*dcopy_k) (BLASLONG, double *, BLASLONG, double *, BLASLONG);
   double (*ddot_k)  (BLASLONG, double *, BLASLONG, double *, BLASLONG);
+#endif
+#if (BUILD_SINGLE==1) || (BUILD_DOUBLE==1)
+  double (*dsdot_k) (BLASLONG, float *, BLASLONG, float *, BLASLONG);
+#endif
+#if (BUILD_DOUBLE==1) || (BUILD_COMPLEX16==1)
   int    (*drot_k)  (BLASLONG, double *, BLASLONG, double *, BLASLONG, double, double);
-
   int    (*daxpy_k) (BLASLONG, BLASLONG, BLASLONG, double, double *, BLASLONG, double *, BLASLONG, double *, BLASLONG);
   int    (*dscal_k) (BLASLONG, BLASLONG, BLASLONG, double, double *, BLASLONG, double *, BLASLONG, double *, BLASLONG);
   int    (*dswap_k) (BLASLONG, BLASLONG, BLASLONG, double, double *, BLASLONG, double *, BLASLONG, double *, BLASLONG);
-
   int    (*dgemv_n) (BLASLONG, BLASLONG, BLASLONG, double, double *, BLASLONG, double *, BLASLONG, double *, BLASLONG, double *);
   int    (*dgemv_t) (BLASLONG, BLASLONG, BLASLONG, double, double *, BLASLONG, double *, BLASLONG, double *, BLASLONG, double *);
+#endif
+#if (BUILD_DOUBLE==1)
   int    (*dger_k)  (BLASLONG, BLASLONG, BLASLONG, double, double *, BLASLONG, double *, BLASLONG, double *, BLASLONG, double *);
 
   int    (*dsymv_L) (BLASLONG, BLASLONG, double,  double  *, BLASLONG, double  *, BLASLONG, double  *, BLASLONG, double *);
   int    (*dsymv_U) (BLASLONG, BLASLONG, double,  double  *, BLASLONG, double  *, BLASLONG, double  *, BLASLONG, double *);
-
+#endif
+#if (BUILD_DOUBLE==1) || (BUILD_COMPLEX16==1)
   int    (*dgemm_kernel   )(BLASLONG, BLASLONG, BLASLONG, double, double *, double *, double *, BLASLONG);
   int    (*dgemm_beta     )(BLASLONG, BLASLONG, BLASLONG, double, double *, BLASLONG, double *, BLASLONG, double  *, BLASLONG);
 
@@ -178,7 +350,23 @@ BLASLONG (*idmin_k) (BLASLONG, double *, BLASLONG);
   int    (*dgemm_itcopy   )(BLASLONG, BLASLONG, double *, BLASLONG, double *);
   int    (*dgemm_oncopy   )(BLASLONG, BLASLONG, double *, BLASLONG, double *);
   int    (*dgemm_otcopy   )(BLASLONG, BLASLONG, double *, BLASLONG, double *);
+#endif
+#if (BUILD_DOUBLE==1) || (BUILD_COMPLEX16==1)
+#ifdef SMALL_MATRIX_OPT
+  int    (*dgemm_small_matrix_permit)(int transa, int transb, BLASLONG m, BLASLONG n, BLASLONG k, double alpha, double beta);
 
+  int    (*dgemm_small_kernel_nn    )(BLASLONG m, BLASLONG n, BLASLONG k, double * A, BLASLONG lda, double alpha, double * B, BLASLONG ldb, double beta, double * C, BLASLONG ldc);
+  int    (*dgemm_small_kernel_nt    )(BLASLONG m, BLASLONG n, BLASLONG k, double * A, BLASLONG lda, double alpha, double * B, BLASLONG ldb, double beta, double * C, BLASLONG ldc);
+  int    (*dgemm_small_kernel_tn    )(BLASLONG m, BLASLONG n, BLASLONG k, double * A, BLASLONG lda, double alpha, double * B, BLASLONG ldb, double beta, double * C, BLASLONG ldc);
+  int    (*dgemm_small_kernel_tt    )(BLASLONG m, BLASLONG n, BLASLONG k, double * A, BLASLONG lda, double alpha, double * B, BLASLONG ldb, double beta, double * C, BLASLONG ldc);
+
+  int    (*dgemm_small_kernel_b0_nn )(BLASLONG m, BLASLONG n, BLASLONG k, double * A, BLASLONG lda, double alpha, double * B, BLASLONG ldb, double * C, BLASLONG ldc);
+  int    (*dgemm_small_kernel_b0_nt )(BLASLONG m, BLASLONG n, BLASLONG k, double * A, BLASLONG lda, double alpha, double * B, BLASLONG ldb, double * C, BLASLONG ldc);
+  int    (*dgemm_small_kernel_b0_tn )(BLASLONG m, BLASLONG n, BLASLONG k, double * A, BLASLONG lda, double alpha, double * B, BLASLONG ldb, double * C, BLASLONG ldc);
+  int    (*dgemm_small_kernel_b0_tt )(BLASLONG m, BLASLONG n, BLASLONG k, double * A, BLASLONG lda, double alpha, double * B, BLASLONG ldb, double * C, BLASLONG ldc);
+#endif
+#endif
+#if (BUILD_DOUBLE==1)
   int    (*dtrsm_kernel_LN)(BLASLONG, BLASLONG, BLASLONG, double, double *, double *, double *, BLASLONG, BLASLONG);
   int    (*dtrsm_kernel_LT)(BLASLONG, BLASLONG, BLASLONG, double, double *, double *, double *, BLASLONG, BLASLONG);
   int    (*dtrsm_kernel_RN)(BLASLONG, BLASLONG, BLASLONG, double, double *, double *, double *, BLASLONG, BLASLONG);
@@ -230,7 +418,7 @@ BLASLONG (*idmin_k) (BLASLONG, double *, BLASLONG);
 
   int	 (*dneg_tcopy)   (BLASLONG, BLASLONG, double *, BLASLONG, double *);
   int    (*dlaswp_ncopy) (BLASLONG, BLASLONG, BLASLONG, double *, BLASLONG, blasint *, double *);
-
+#endif
 #ifdef EXPRECISION
 
   int qgemm_p, qgemm_q, qgemm_r;
@@ -325,22 +513,25 @@ BLASLONG (*iqmin_k) (BLASLONG, xdouble *, BLASLONG);
 
 #endif
 
+#if (BUILD_COMPLEX==1) 
   int cgemm_p, cgemm_q, cgemm_r;
   int cgemm_unroll_m, cgemm_unroll_n, cgemm_unroll_mn;
-
+	
   float (*camax_k) (BLASLONG, float *, BLASLONG);
   float (*camin_k) (BLASLONG, float *, BLASLONG);
-BLASLONG (*icamax_k)(BLASLONG, float *, BLASLONG);
+ 
+BLASLONG (*icamax_k)(BLASLONG, float *, BLASLONG);	
 BLASLONG (*icamin_k)(BLASLONG, float *, BLASLONG);
 
   float (*cnrm2_k) (BLASLONG, float *, BLASLONG);
   float (*casum_k) (BLASLONG, float *, BLASLONG);
   float (*csum_k)  (BLASLONG, float *, BLASLONG);
+
   int    (*ccopy_k) (BLASLONG, float *, BLASLONG, float *, BLASLONG);
   openblas_complex_float (*cdotu_k) (BLASLONG, float *, BLASLONG, float *, BLASLONG);
   openblas_complex_float (*cdotc_k) (BLASLONG, float *, BLASLONG, float *, BLASLONG);
-  int    (*csrot_k) (BLASLONG, float *, BLASLONG, float *, BLASLONG, float, float);
 
+  int    (*csrot_k) (BLASLONG, float *, BLASLONG, float *, BLASLONG, float, float);
   int    (*caxpy_k) (BLASLONG, BLASLONG, BLASLONG, float, float, float *, BLASLONG, float *, BLASLONG, float *, BLASLONG);
   int    (*caxpyc_k)(BLASLONG, BLASLONG, BLASLONG, float, float, float *, BLASLONG, float *, BLASLONG, float *, BLASLONG);
   int    (*cscal_k) (BLASLONG, BLASLONG, BLASLONG, float, float, float *, BLASLONG, float *, BLASLONG, float *, BLASLONG);
@@ -376,6 +567,50 @@ BLASLONG (*icamin_k)(BLASLONG, float *, BLASLONG);
   int    (*cgemm_itcopy   )(BLASLONG, BLASLONG, float *, BLASLONG, float *);
   int    (*cgemm_oncopy   )(BLASLONG, BLASLONG, float *, BLASLONG, float *);
   int    (*cgemm_otcopy   )(BLASLONG, BLASLONG, float *, BLASLONG, float *);
+
+#ifdef SMALL_MATRIX_OPT
+  int    (*cgemm_small_matrix_permit)(int transa, int transb, BLASLONG m, BLASLONG n, BLASLONG k, float alpha0, float alpha1, float beta0, float beta1);
+
+  int    (*cgemm_small_kernel_nn    )(BLASLONG m, BLASLONG n, BLASLONG k, float * A, BLASLONG lda, float alpha0, float alpha1, float * B, BLASLONG ldb, float beta0, float beta1, float * C, BLASLONG ldc);
+  int    (*cgemm_small_kernel_nt    )(BLASLONG m, BLASLONG n, BLASLONG k, float * A, BLASLONG lda, float alpha0, float alpha1, float * B, BLASLONG ldb, float beta0, float beta1, float * C, BLASLONG ldc);
+  int    (*cgemm_small_kernel_nr    )(BLASLONG m, BLASLONG n, BLASLONG k, float * A, BLASLONG lda, float alpha0, float alpha1, float * B, BLASLONG ldb, float beta0, float beta1, float * C, BLASLONG ldc);
+  int    (*cgemm_small_kernel_nc    )(BLASLONG m, BLASLONG n, BLASLONG k, float * A, BLASLONG lda, float alpha0, float alpha1, float * B, BLASLONG ldb, float beta0, float beta1, float * C, BLASLONG ldc);
+
+  int    (*cgemm_small_kernel_tn    )(BLASLONG m, BLASLONG n, BLASLONG k, float * A, BLASLONG lda, float alpha0, float alpha1, float * B, BLASLONG ldb, float beta0, float beta1, float * C, BLASLONG ldc);
+  int    (*cgemm_small_kernel_tt    )(BLASLONG m, BLASLONG n, BLASLONG k, float * A, BLASLONG lda, float alpha0, float alpha1, float * B, BLASLONG ldb, float beta0, float beta1, float * C, BLASLONG ldc);
+  int    (*cgemm_small_kernel_tr    )(BLASLONG m, BLASLONG n, BLASLONG k, float * A, BLASLONG lda, float alpha0, float alpha1, float * B, BLASLONG ldb, float beta0, float beta1, float * C, BLASLONG ldc);
+  int    (*cgemm_small_kernel_tc    )(BLASLONG m, BLASLONG n, BLASLONG k, float * A, BLASLONG lda, float alpha0, float alpha1, float * B, BLASLONG ldb, float beta0, float beta1, float * C, BLASLONG ldc);
+
+  int    (*cgemm_small_kernel_rn    )(BLASLONG m, BLASLONG n, BLASLONG k, float * A, BLASLONG lda, float alpha0, float alpha1, float * B, BLASLONG ldb, float beta0, float beta1, float * C, BLASLONG ldc);
+  int    (*cgemm_small_kernel_rt    )(BLASLONG m, BLASLONG n, BLASLONG k, float * A, BLASLONG lda, float alpha0, float alpha1, float * B, BLASLONG ldb, float beta0, float beta1, float * C, BLASLONG ldc);
+  int    (*cgemm_small_kernel_rr    )(BLASLONG m, BLASLONG n, BLASLONG k, float * A, BLASLONG lda, float alpha0, float alpha1, float * B, BLASLONG ldb, float beta0, float beta1, float * C, BLASLONG ldc);
+  int    (*cgemm_small_kernel_rc    )(BLASLONG m, BLASLONG n, BLASLONG k, float * A, BLASLONG lda, float alpha0, float alpha1, float * B, BLASLONG ldb, float beta0, float beta1, float * C, BLASLONG ldc);
+
+  int    (*cgemm_small_kernel_cn    )(BLASLONG m, BLASLONG n, BLASLONG k, float * A, BLASLONG lda, float alpha0, float alpha1, float * B, BLASLONG ldb, float beta0, float beta1, float * C, BLASLONG ldc);
+  int    (*cgemm_small_kernel_ct    )(BLASLONG m, BLASLONG n, BLASLONG k, float * A, BLASLONG lda, float alpha0, float alpha1, float * B, BLASLONG ldb, float beta0, float beta1, float * C, BLASLONG ldc);
+  int    (*cgemm_small_kernel_cr    )(BLASLONG m, BLASLONG n, BLASLONG k, float * A, BLASLONG lda, float alpha0, float alpha1, float * B, BLASLONG ldb, float beta0, float beta1, float * C, BLASLONG ldc);
+  int    (*cgemm_small_kernel_cc    )(BLASLONG m, BLASLONG n, BLASLONG k, float * A, BLASLONG lda, float alpha0, float alpha1, float * B, BLASLONG ldb, float beta0, float beta1, float * C, BLASLONG ldc);
+
+  int    (*cgemm_small_kernel_b0_nn )(BLASLONG m, BLASLONG n, BLASLONG k, float * A, BLASLONG lda, float alpha0, float alpha1, float * B, BLASLONG ldb,  float * C, BLASLONG ldc);
+  int    (*cgemm_small_kernel_b0_nt )(BLASLONG m, BLASLONG n, BLASLONG k, float * A, BLASLONG lda, float alpha0, float alpha1, float * B, BLASLONG ldb,  float * C, BLASLONG ldc);
+  int    (*cgemm_small_kernel_b0_nr )(BLASLONG m, BLASLONG n, BLASLONG k, float * A, BLASLONG lda, float alpha0, float alpha1, float * B, BLASLONG ldb,  float * C, BLASLONG ldc);
+  int    (*cgemm_small_kernel_b0_nc )(BLASLONG m, BLASLONG n, BLASLONG k, float * A, BLASLONG lda, float alpha0, float alpha1, float * B, BLASLONG ldb,  float * C, BLASLONG ldc);
+
+  int    (*cgemm_small_kernel_b0_tn )(BLASLONG m, BLASLONG n, BLASLONG k, float * A, BLASLONG lda, float alpha0, float alpha1, float * B, BLASLONG ldb,  float * C, BLASLONG ldc);
+  int    (*cgemm_small_kernel_b0_tt )(BLASLONG m, BLASLONG n, BLASLONG k, float * A, BLASLONG lda, float alpha0, float alpha1, float * B, BLASLONG ldb,  float * C, BLASLONG ldc);
+  int    (*cgemm_small_kernel_b0_tr )(BLASLONG m, BLASLONG n, BLASLONG k, float * A, BLASLONG lda, float alpha0, float alpha1, float * B, BLASLONG ldb,  float * C, BLASLONG ldc);
+  int    (*cgemm_small_kernel_b0_tc )(BLASLONG m, BLASLONG n, BLASLONG k, float * A, BLASLONG lda, float alpha0, float alpha1, float * B, BLASLONG ldb,  float * C, BLASLONG ldc);
+
+  int    (*cgemm_small_kernel_b0_rn )(BLASLONG m, BLASLONG n, BLASLONG k, float * A, BLASLONG lda, float alpha0, float alpha1, float * B, BLASLONG ldb,  float * C, BLASLONG ldc);
+  int    (*cgemm_small_kernel_b0_rt )(BLASLONG m, BLASLONG n, BLASLONG k, float * A, BLASLONG lda, float alpha0, float alpha1, float * B, BLASLONG ldb,  float * C, BLASLONG ldc);
+  int    (*cgemm_small_kernel_b0_rr )(BLASLONG m, BLASLONG n, BLASLONG k, float * A, BLASLONG lda, float alpha0, float alpha1, float * B, BLASLONG ldb,  float * C, BLASLONG ldc);
+  int    (*cgemm_small_kernel_b0_rc )(BLASLONG m, BLASLONG n, BLASLONG k, float * A, BLASLONG lda, float alpha0, float alpha1, float * B, BLASLONG ldb,  float * C, BLASLONG ldc);
+
+  int    (*cgemm_small_kernel_b0_cn )(BLASLONG m, BLASLONG n, BLASLONG k, float * A, BLASLONG lda, float alpha0, float alpha1, float * B, BLASLONG ldb,  float * C, BLASLONG ldc);
+  int    (*cgemm_small_kernel_b0_ct )(BLASLONG m, BLASLONG n, BLASLONG k, float * A, BLASLONG lda, float alpha0, float alpha1, float * B, BLASLONG ldb,  float * C, BLASLONG ldc);
+  int    (*cgemm_small_kernel_b0_cr )(BLASLONG m, BLASLONG n, BLASLONG k, float * A, BLASLONG lda, float alpha0, float alpha1, float * B, BLASLONG ldb,  float * C, BLASLONG ldc);
+  int    (*cgemm_small_kernel_b0_cc )(BLASLONG m, BLASLONG n, BLASLONG k, float * A, BLASLONG lda, float alpha0, float alpha1, float * B, BLASLONG ldb,  float * C, BLASLONG ldc);
+#endif
 
   int    (*ctrsm_kernel_LN)(BLASLONG, BLASLONG, BLASLONG, float, float, float *, float *, float *, BLASLONG, BLASLONG);
   int    (*ctrsm_kernel_LT)(BLASLONG, BLASLONG, BLASLONG, float, float, float *, float *, float *, BLASLONG, BLASLONG);
@@ -488,7 +723,9 @@ BLASLONG (*icamin_k)(BLASLONG, float *, BLASLONG);
 
   int	 (*cneg_tcopy)   (BLASLONG, BLASLONG, float *, BLASLONG, float *);
   int    (*claswp_ncopy) (BLASLONG, BLASLONG, BLASLONG, float *, BLASLONG, blasint *, float *);
+#endif
 
+#if (BUILD_COMPLEX16 == 1)
   int zgemm_p, zgemm_q, zgemm_r;
   int zgemm_unroll_m, zgemm_unroll_n, zgemm_unroll_mn;
 
@@ -540,6 +777,50 @@ BLASLONG (*izamin_k)(BLASLONG, double *, BLASLONG);
   int    (*zgemm_itcopy   )(BLASLONG, BLASLONG, double *, BLASLONG, double *);
   int    (*zgemm_oncopy   )(BLASLONG, BLASLONG, double *, BLASLONG, double *);
   int    (*zgemm_otcopy   )(BLASLONG, BLASLONG, double *, BLASLONG, double *);
+
+#ifdef SMALL_MATRIX_OPT
+  int    (*zgemm_small_matrix_permit)(int transa, int transb, BLASLONG m, BLASLONG n, BLASLONG k, double alpha0, double alpha1, double beta0, double beta1);
+
+  int    (*zgemm_small_kernel_nn    )(BLASLONG m, BLASLONG n, BLASLONG k, double * A, BLASLONG lda, double alpha0, double alpha1, double * B, BLASLONG ldb, double beta0, double beta1, double * C, BLASLONG ldc);
+  int    (*zgemm_small_kernel_nt    )(BLASLONG m, BLASLONG n, BLASLONG k, double * A, BLASLONG lda, double alpha0, double alpha1, double * B, BLASLONG ldb, double beta0, double beta1, double * C, BLASLONG ldc);
+  int    (*zgemm_small_kernel_nr    )(BLASLONG m, BLASLONG n, BLASLONG k, double * A, BLASLONG lda, double alpha0, double alpha1, double * B, BLASLONG ldb, double beta0, double beta1, double * C, BLASLONG ldc);
+  int    (*zgemm_small_kernel_nc    )(BLASLONG m, BLASLONG n, BLASLONG k, double * A, BLASLONG lda, double alpha0, double alpha1, double * B, BLASLONG ldb, double beta0, double beta1, double * C, BLASLONG ldc);
+
+  int    (*zgemm_small_kernel_tn    )(BLASLONG m, BLASLONG n, BLASLONG k, double * A, BLASLONG lda, double alpha0, double alpha1, double * B, BLASLONG ldb, double beta0, double beta1, double * C, BLASLONG ldc);
+  int    (*zgemm_small_kernel_tt    )(BLASLONG m, BLASLONG n, BLASLONG k, double * A, BLASLONG lda, double alpha0, double alpha1, double * B, BLASLONG ldb, double beta0, double beta1, double * C, BLASLONG ldc);
+  int    (*zgemm_small_kernel_tr    )(BLASLONG m, BLASLONG n, BLASLONG k, double * A, BLASLONG lda, double alpha0, double alpha1, double * B, BLASLONG ldb, double beta0, double beta1, double * C, BLASLONG ldc);
+  int    (*zgemm_small_kernel_tc    )(BLASLONG m, BLASLONG n, BLASLONG k, double * A, BLASLONG lda, double alpha0, double alpha1, double * B, BLASLONG ldb, double beta0, double beta1, double * C, BLASLONG ldc);
+
+  int    (*zgemm_small_kernel_rn    )(BLASLONG m, BLASLONG n, BLASLONG k, double * A, BLASLONG lda, double alpha0, double alpha1, double * B, BLASLONG ldb, double beta0, double beta1, double * C, BLASLONG ldc);
+  int    (*zgemm_small_kernel_rt    )(BLASLONG m, BLASLONG n, BLASLONG k, double * A, BLASLONG lda, double alpha0, double alpha1, double * B, BLASLONG ldb, double beta0, double beta1, double * C, BLASLONG ldc);
+  int    (*zgemm_small_kernel_rr    )(BLASLONG m, BLASLONG n, BLASLONG k, double * A, BLASLONG lda, double alpha0, double alpha1, double * B, BLASLONG ldb, double beta0, double beta1, double * C, BLASLONG ldc);
+  int    (*zgemm_small_kernel_rc    )(BLASLONG m, BLASLONG n, BLASLONG k, double * A, BLASLONG lda, double alpha0, double alpha1, double * B, BLASLONG ldb, double beta0, double beta1, double * C, BLASLONG ldc);
+
+  int    (*zgemm_small_kernel_cn    )(BLASLONG m, BLASLONG n, BLASLONG k, double * A, BLASLONG lda, double alpha0, double alpha1, double * B, BLASLONG ldb, double beta0, double beta1, double * C, BLASLONG ldc);
+  int    (*zgemm_small_kernel_ct    )(BLASLONG m, BLASLONG n, BLASLONG k, double * A, BLASLONG lda, double alpha0, double alpha1, double * B, BLASLONG ldb, double beta0, double beta1, double * C, BLASLONG ldc);
+  int    (*zgemm_small_kernel_cr    )(BLASLONG m, BLASLONG n, BLASLONG k, double * A, BLASLONG lda, double alpha0, double alpha1, double * B, BLASLONG ldb, double beta0, double beta1, double * C, BLASLONG ldc);
+  int    (*zgemm_small_kernel_cc    )(BLASLONG m, BLASLONG n, BLASLONG k, double * A, BLASLONG lda, double alpha0, double alpha1, double * B, BLASLONG ldb, double beta0, double beta1, double * C, BLASLONG ldc);
+
+  int    (*zgemm_small_kernel_b0_nn )(BLASLONG m, BLASLONG n, BLASLONG k, double * A, BLASLONG lda, double alpha0, double alpha1, double * B, BLASLONG ldb,  double * C, BLASLONG ldc);
+  int    (*zgemm_small_kernel_b0_nt )(BLASLONG m, BLASLONG n, BLASLONG k, double * A, BLASLONG lda, double alpha0, double alpha1, double * B, BLASLONG ldb,  double * C, BLASLONG ldc);
+  int    (*zgemm_small_kernel_b0_nr )(BLASLONG m, BLASLONG n, BLASLONG k, double * A, BLASLONG lda, double alpha0, double alpha1, double * B, BLASLONG ldb,  double * C, BLASLONG ldc);
+  int    (*zgemm_small_kernel_b0_nc )(BLASLONG m, BLASLONG n, BLASLONG k, double * A, BLASLONG lda, double alpha0, double alpha1, double * B, BLASLONG ldb,  double * C, BLASLONG ldc);
+
+  int    (*zgemm_small_kernel_b0_tn )(BLASLONG m, BLASLONG n, BLASLONG k, double * A, BLASLONG lda, double alpha0, double alpha1, double * B, BLASLONG ldb,  double * C, BLASLONG ldc);
+  int    (*zgemm_small_kernel_b0_tt )(BLASLONG m, BLASLONG n, BLASLONG k, double * A, BLASLONG lda, double alpha0, double alpha1, double * B, BLASLONG ldb,  double * C, BLASLONG ldc);
+  int    (*zgemm_small_kernel_b0_tr )(BLASLONG m, BLASLONG n, BLASLONG k, double * A, BLASLONG lda, double alpha0, double alpha1, double * B, BLASLONG ldb,  double * C, BLASLONG ldc);
+  int    (*zgemm_small_kernel_b0_tc )(BLASLONG m, BLASLONG n, BLASLONG k, double * A, BLASLONG lda, double alpha0, double alpha1, double * B, BLASLONG ldb,  double * C, BLASLONG ldc);
+
+  int    (*zgemm_small_kernel_b0_rn )(BLASLONG m, BLASLONG n, BLASLONG k, double * A, BLASLONG lda, double alpha0, double alpha1, double * B, BLASLONG ldb,  double * C, BLASLONG ldc);
+  int    (*zgemm_small_kernel_b0_rt )(BLASLONG m, BLASLONG n, BLASLONG k, double * A, BLASLONG lda, double alpha0, double alpha1, double * B, BLASLONG ldb,  double * C, BLASLONG ldc);
+  int    (*zgemm_small_kernel_b0_rr )(BLASLONG m, BLASLONG n, BLASLONG k, double * A, BLASLONG lda, double alpha0, double alpha1, double * B, BLASLONG ldb,  double * C, BLASLONG ldc);
+  int    (*zgemm_small_kernel_b0_rc )(BLASLONG m, BLASLONG n, BLASLONG k, double * A, BLASLONG lda, double alpha0, double alpha1, double * B, BLASLONG ldb,  double * C, BLASLONG ldc);
+
+  int    (*zgemm_small_kernel_b0_cn )(BLASLONG m, BLASLONG n, BLASLONG k, double * A, BLASLONG lda, double alpha0, double alpha1, double * B, BLASLONG ldb,  double * C, BLASLONG ldc);
+  int    (*zgemm_small_kernel_b0_ct )(BLASLONG m, BLASLONG n, BLASLONG k, double * A, BLASLONG lda, double alpha0, double alpha1, double * B, BLASLONG ldb,  double * C, BLASLONG ldc);
+  int    (*zgemm_small_kernel_b0_cr )(BLASLONG m, BLASLONG n, BLASLONG k, double * A, BLASLONG lda, double alpha0, double alpha1, double * B, BLASLONG ldb,  double * C, BLASLONG ldc);
+  int    (*zgemm_small_kernel_b0_cc )(BLASLONG m, BLASLONG n, BLASLONG k, double * A, BLASLONG lda, double alpha0, double alpha1, double * B, BLASLONG ldb,  double * C, BLASLONG ldc);
+#endif
 
   int    (*ztrsm_kernel_LN)(BLASLONG, BLASLONG, BLASLONG, double, double, double *, double *, double *, BLASLONG, BLASLONG);
   int    (*ztrsm_kernel_LT)(BLASLONG, BLASLONG, BLASLONG, double, double, double *, double *, double *, BLASLONG, BLASLONG);
@@ -652,6 +933,7 @@ BLASLONG (*izamin_k)(BLASLONG, double *, BLASLONG);
 
   int	 (*zneg_tcopy)   (BLASLONG, BLASLONG, double *, BLASLONG, double *);
   int    (*zlaswp_ncopy) (BLASLONG, BLASLONG, BLASLONG, double *, BLASLONG, blasint *, double *);
+#endif
 
 #ifdef EXPRECISION
 
@@ -825,22 +1107,34 @@ BLASLONG (*ixamin_k)(BLASLONG, xdouble *, BLASLONG);
   void (*init)(void);
 
   int snum_opt, dnum_opt, qnum_opt;
-
+#if (BUILD_SINGLE==1)
   int    (*saxpby_k)     (BLASLONG, float, float*, BLASLONG,float, float*, BLASLONG);
+#endif
+#if (BUILD_DOUBLE==1)
   int    (*daxpby_k)     (BLASLONG, double, double*, BLASLONG,double, double*, BLASLONG);
+#endif
+#if (BUILD_COMPLEX==1)
   int    (*caxpby_k)     (BLASLONG, float, float,  float*, BLASLONG,float,float, float*, BLASLONG);
+#endif
+#if (BUILD_COMPLEX16==1)
   int    (*zaxpby_k)     (BLASLONG, double, double,  double*, BLASLONG,double,double, double*, BLASLONG);
+#endif
 
+#if (BUILD_SINGLE==1)
   int    (*somatcopy_k_cn)	(BLASLONG, BLASLONG, float, float*, BLASLONG, float*, BLASLONG);
   int    (*somatcopy_k_ct)	(BLASLONG, BLASLONG, float, float*, BLASLONG, float*, BLASLONG);
   int    (*somatcopy_k_rn)	(BLASLONG, BLASLONG, float, float*, BLASLONG, float*, BLASLONG);
   int    (*somatcopy_k_rt)	(BLASLONG, BLASLONG, float, float*, BLASLONG, float*, BLASLONG);
+#endif
 
+#if (BUILD_DOUBLE==1) 
   int    (*domatcopy_k_cn)	(BLASLONG, BLASLONG, double, double*, BLASLONG, double*, BLASLONG);
   int    (*domatcopy_k_ct)	(BLASLONG, BLASLONG, double, double*, BLASLONG, double*, BLASLONG);
   int    (*domatcopy_k_rn)	(BLASLONG, BLASLONG, double, double*, BLASLONG, double*, BLASLONG);
   int    (*domatcopy_k_rt)	(BLASLONG, BLASLONG, double, double*, BLASLONG, double*, BLASLONG);
+#endif
 
+#if (BUILD_COMPLEX==1)
   int    (*comatcopy_k_cn)	(BLASLONG, BLASLONG, float, float, float*, BLASLONG, float*, BLASLONG);
   int    (*comatcopy_k_ct)	(BLASLONG, BLASLONG, float, float, float*, BLASLONG, float*, BLASLONG);
   int    (*comatcopy_k_rn)	(BLASLONG, BLASLONG, float, float, float*, BLASLONG, float*, BLASLONG);
@@ -850,7 +1144,9 @@ BLASLONG (*ixamin_k)(BLASLONG, xdouble *, BLASLONG);
   int    (*comatcopy_k_ctc)	(BLASLONG, BLASLONG, float, float, float*, BLASLONG, float*, BLASLONG);
   int    (*comatcopy_k_rnc)	(BLASLONG, BLASLONG, float, float, float*, BLASLONG, float*, BLASLONG);
   int    (*comatcopy_k_rtc)	(BLASLONG, BLASLONG, float, float, float*, BLASLONG, float*, BLASLONG);
+#endif
 
+#if (BUILD_COMPLEX16==1)
   int    (*zomatcopy_k_cn)	(BLASLONG, BLASLONG, double, double, double*, BLASLONG, double*, BLASLONG);
   int    (*zomatcopy_k_ct)	(BLASLONG, BLASLONG, double, double, double*, BLASLONG, double*, BLASLONG);
   int    (*zomatcopy_k_rn)	(BLASLONG, BLASLONG, double, double, double*, BLASLONG, double*, BLASLONG);
@@ -860,17 +1156,23 @@ BLASLONG (*ixamin_k)(BLASLONG, xdouble *, BLASLONG);
   int    (*zomatcopy_k_ctc)	(BLASLONG, BLASLONG, double, double, double*, BLASLONG, double*, BLASLONG);
   int    (*zomatcopy_k_rnc)	(BLASLONG, BLASLONG, double, double, double*, BLASLONG, double*, BLASLONG);
   int    (*zomatcopy_k_rtc)	(BLASLONG, BLASLONG, double, double, double*, BLASLONG, double*, BLASLONG);
+#endif
 
+#if (BUILD_SINGLE==1)
   int    (*simatcopy_k_cn)	(BLASLONG, BLASLONG, float, float*, BLASLONG);
   int    (*simatcopy_k_ct)	(BLASLONG, BLASLONG, float, float*, BLASLONG);
   int    (*simatcopy_k_rn)	(BLASLONG, BLASLONG, float, float*, BLASLONG);
   int    (*simatcopy_k_rt)	(BLASLONG, BLASLONG, float, float*, BLASLONG);
+#endif
 
+#if (BUILD_DOUBLE==1)
   int    (*dimatcopy_k_cn)	(BLASLONG, BLASLONG, double, double*, BLASLONG);
   int    (*dimatcopy_k_ct)	(BLASLONG, BLASLONG, double, double*, BLASLONG);
   int    (*dimatcopy_k_rn)	(BLASLONG, BLASLONG, double, double*, BLASLONG);
   int    (*dimatcopy_k_rt)	(BLASLONG, BLASLONG, double, double*, BLASLONG);
+#endif
 
+#if (BUILD_COMPLEX==1)
   int    (*cimatcopy_k_cn)	(BLASLONG, BLASLONG, float, float, float*, BLASLONG);
   int    (*cimatcopy_k_ct)	(BLASLONG, BLASLONG, float, float, float*, BLASLONG);
   int    (*cimatcopy_k_rn)	(BLASLONG, BLASLONG, float, float, float*, BLASLONG);
@@ -880,7 +1182,9 @@ BLASLONG (*ixamin_k)(BLASLONG, xdouble *, BLASLONG);
   int    (*cimatcopy_k_ctc)	(BLASLONG, BLASLONG, float, float, float*, BLASLONG);
   int    (*cimatcopy_k_rnc)	(BLASLONG, BLASLONG, float, float, float*, BLASLONG);
   int    (*cimatcopy_k_rtc)	(BLASLONG, BLASLONG, float, float, float*, BLASLONG);
+#endif
 
+#if (BUILD_COMPLEX16==1)
   int    (*zimatcopy_k_cn)	(BLASLONG, BLASLONG, double, double, double*, BLASLONG);
   int    (*zimatcopy_k_ct)	(BLASLONG, BLASLONG, double, double, double*, BLASLONG);
   int    (*zimatcopy_k_rn)	(BLASLONG, BLASLONG, double, double, double*, BLASLONG);
@@ -890,15 +1194,25 @@ BLASLONG (*ixamin_k)(BLASLONG, xdouble *, BLASLONG);
   int    (*zimatcopy_k_ctc)	(BLASLONG, BLASLONG, double, double, double*, BLASLONG);
   int    (*zimatcopy_k_rnc)	(BLASLONG, BLASLONG, double, double, double*, BLASLONG);
   int    (*zimatcopy_k_rtc)	(BLASLONG, BLASLONG, double, double, double*, BLASLONG);
+#endif
 
+#if (BUILD_SINGLE==1)
   int    (*sgeadd_k) (BLASLONG, BLASLONG, float, float *, BLASLONG, float, float *, BLASLONG); 
+#endif
+#if (BUILD_DOUBLE==1)
   int    (*dgeadd_k) (BLASLONG, BLASLONG, double, double *, BLASLONG, double, double *, BLASLONG); 
+#endif
+#if (BUILD_COMPLEX==1)
   int    (*cgeadd_k) (BLASLONG, BLASLONG, float, float,  float *,  BLASLONG, float, float, float *, BLASLONG); 
+#endif
+#if (BUILD_COMPLEX16==1)
   int    (*zgeadd_k) (BLASLONG, BLASLONG, double, double, double *, BLASLONG, double, double, double *, BLASLONG); 
-
+#endif
 } gotoblas_t;
 
 extern gotoblas_t *gotoblas;
+
+#define FUNC_OFFSET(func)	(size_t)(&((gotoblas_t *)NULL)->func)
 
 #define DTB_ENTRIES  gotoblas -> dtb_entries
 #define GEMM_OFFSET_A	gotoblas -> offsetA
@@ -907,19 +1221,40 @@ extern gotoblas_t *gotoblas;
 
 #define HAVE_EX_L2	gotoblas -> exclusive_cache
 
+#if (BUILD_BFLOAT16==1)
+#define	SBGEMM_P		gotoblas -> sbgemm_p
+#define	SBGEMM_Q		gotoblas -> sbgemm_q
+#define	SBGEMM_R		gotoblas -> sbgemm_r
+#define	SBGEMM_UNROLL_M	gotoblas -> sbgemm_unroll_m
+#define	SBGEMM_UNROLL_N	gotoblas -> sbgemm_unroll_n
+#define	SBGEMM_UNROLL_MN	gotoblas -> sbgemm_unroll_mn
+#endif
+
+#if (BUILD_SINGLE==1)
 #define	SGEMM_P		gotoblas -> sgemm_p
 #define	SGEMM_Q		gotoblas -> sgemm_q
 #define	SGEMM_R		gotoblas -> sgemm_r
 #define	SGEMM_UNROLL_M	gotoblas -> sgemm_unroll_m
 #define	SGEMM_UNROLL_N	gotoblas -> sgemm_unroll_n
 #define SGEMM_UNROLL_MN	gotoblas -> sgemm_unroll_mn
+#endif
 
+#if (BUILD_DOUBLE==1)
 #define	DGEMM_P		gotoblas -> dgemm_p
 #define	DGEMM_Q		gotoblas -> dgemm_q
 #define	DGEMM_R		gotoblas -> dgemm_r
 #define	DGEMM_UNROLL_M	gotoblas -> dgemm_unroll_m
 #define	DGEMM_UNROLL_N	gotoblas -> dgemm_unroll_n
 #define DGEMM_UNROLL_MN	gotoblas -> dgemm_unroll_mn
+#if (BUILD_SINGLE != 1)
+#define	SGEMM_P		gotoblas -> sgemm_p
+#define	SGEMM_Q		gotoblas -> sgemm_q
+#define	SGEMM_R		1024
+#define	SGEMM_UNROLL_M	gotoblas -> sgemm_unroll_m
+#define	SGEMM_UNROLL_N	gotoblas -> sgemm_unroll_n
+#define SGEMM_UNROLL_MN	gotoblas -> sgemm_unroll_mn
+#endif
+#endif
 
 #define	QGEMM_P		gotoblas -> qgemm_p
 #define	QGEMM_Q		gotoblas -> qgemm_q
@@ -928,19 +1263,47 @@ extern gotoblas_t *gotoblas;
 #define	QGEMM_UNROLL_N	gotoblas -> qgemm_unroll_n
 #define QGEMM_UNROLL_MN	gotoblas -> qgemm_unroll_mn
 
+#if (BUILD_COMPLEX==1)
 #define	CGEMM_P		gotoblas -> cgemm_p
 #define	CGEMM_Q		gotoblas -> cgemm_q
 #define	CGEMM_R		gotoblas -> cgemm_r
 #define	CGEMM_UNROLL_M	gotoblas -> cgemm_unroll_m
 #define	CGEMM_UNROLL_N	gotoblas -> cgemm_unroll_n
 #define CGEMM_UNROLL_MN	gotoblas -> cgemm_unroll_mn
+#if (BUILD_SINGLE != 1)
+#define	SGEMM_P		gotoblas -> sgemm_p
+#define	SGEMM_Q		gotoblas -> sgemm_q
+#define	SGEMM_R		1024
+#define	SGEMM_UNROLL_M	gotoblas -> sgemm_unroll_m
+#define	SGEMM_UNROLL_N	gotoblas -> sgemm_unroll_n
+#define SGEMM_UNROLL_MN	gotoblas -> sgemm_unroll_mn
+#endif
+#endif
 
+#if (BUILD_COMPLEX16==1)
 #define	ZGEMM_P		gotoblas -> zgemm_p
 #define	ZGEMM_Q		gotoblas -> zgemm_q
 #define	ZGEMM_R		gotoblas -> zgemm_r
 #define	ZGEMM_UNROLL_M	gotoblas -> zgemm_unroll_m
 #define	ZGEMM_UNROLL_N	gotoblas -> zgemm_unroll_n
 #define ZGEMM_UNROLL_MN	gotoblas -> zgemm_unroll_mn
+#if (BUILD_DOUBLE != 1)
+#define	DGEMM_P		gotoblas -> dgemm_p
+#define	DGEMM_Q		gotoblas -> dgemm_q
+#define	DGEMM_R		1024
+#define	DGEMM_UNROLL_M	gotoblas -> dgemm_unroll_m
+#define	DGEMM_UNROLL_N	gotoblas -> dgemm_unroll_n
+#define DGEMM_UNROLL_MN	gotoblas -> dgemm_unroll_mn
+#endif
+#if (BUILD_COMPLEX != 1)
+#define	CGEMM_P		gotoblas -> cgemm_p
+#define	CGEMM_Q		gotoblas -> cgemm_q
+#define	CGEMM_R		gotoblas -> cgemm_r
+#define	CGEMM_UNROLL_M	gotoblas -> cgemm_unroll_m
+#define	CGEMM_UNROLL_N	gotoblas -> cgemm_unroll_n
+#define CGEMM_UNROLL_MN	gotoblas -> cgemm_unroll_mn
+#endif
+#endif
 
 #define	XGEMM_P		gotoblas -> xgemm_p
 #define	XGEMM_Q		gotoblas -> xgemm_q
@@ -972,6 +1335,8 @@ extern gotoblas_t *gotoblas;
 
 #else
 
+#define FUNC_OFFSET(func)	(size_t)(func)
+
 #define DTB_ENTRIES  DTB_DEFAULT_ENTRIES
 
 #define GEMM_OFFSET_A	GEMM_DEFAULT_OFFSET_A
@@ -982,6 +1347,19 @@ extern gotoblas_t *gotoblas;
 #define HAVE_EX_L2	1
 #else
 #define HAVE_EX_L2	0
+#endif
+
+#if (BUILD_BFLOAT16 == 1)
+#define	SBGEMM_P		SBGEMM_DEFAULT_P
+#define	SBGEMM_Q		SBGEMM_DEFAULT_Q
+#define	SBGEMM_R		SBGEMM_DEFAULT_R
+#define SBGEMM_UNROLL_M	SBGEMM_DEFAULT_UNROLL_M
+#define SBGEMM_UNROLL_N	SBGEMM_DEFAULT_UNROLL_N
+#ifdef  SBGEMM_DEFAULT_UNROLL_MN
+#define SBGEMM_UNROLL_MN	SBGEMM_DEFAULT_UNROLL_MN
+#else
+#define SBGEMM_UNROLL_MN	MAX((SBGEMM_UNROLL_M), (SBGEMM_UNROLL_N))
+#endif
 #endif
 
 #define	SGEMM_P		SGEMM_DEFAULT_P
@@ -1119,6 +1497,18 @@ extern gotoblas_t *gotoblas;
 #define GEMM_DEFAULT_R		DGEMM_DEFAULT_R
 #define GEMM_DEFAULT_UNROLL_M	DGEMM_DEFAULT_UNROLL_M
 #define GEMM_DEFAULT_UNROLL_N	DGEMM_DEFAULT_UNROLL_N
+#elif defined(BFLOAT16)
+#define GEMM_P			SBGEMM_P
+#define GEMM_Q			SBGEMM_Q
+#define GEMM_R			SBGEMM_R
+#define GEMM_UNROLL_M		SBGEMM_UNROLL_M
+#define GEMM_UNROLL_N		SBGEMM_UNROLL_N
+#define GEMM_UNROLL_MN		SBGEMM_UNROLL_MN
+#define GEMM_DEFAULT_P		SBGEMM_DEFAULT_P
+#define GEMM_DEFAULT_Q		SBGEMM_DEFAULT_Q
+#define GEMM_DEFAULT_R		SBGEMM_DEFAULT_R
+#define GEMM_DEFAULT_UNROLL_M	SBGEMM_DEFAULT_UNROLL_M
+#define GEMM_DEFAULT_UNROLL_N	SBGEMM_DEFAULT_UNROLL_N
 #else
 #define GEMM_P			SGEMM_P
 #define GEMM_Q			SGEMM_Q
@@ -1204,28 +1594,32 @@ extern gotoblas_t *gotoblas;
 #define GEMM_THREAD gemm_thread_n
 #endif
 
+#ifndef SBGEMM_DEFAULT_R
+#define SBGEMM_DEFAULT_R (((BUFFER_SIZE - ((SBGEMM_DEFAULT_P * SBGEMM_DEFAULT_Q *  4 + GEMM_DEFAULT_OFFSET_A + GEMM_DEFAULT_ALIGN) & ~GEMM_DEFAULT_ALIGN)) / (SBGEMM_DEFAULT_Q *  4) - 15) & ~15UL)
+#endif
+
 #ifndef SGEMM_DEFAULT_R
-#define SGEMM_DEFAULT_R (((BUFFER_SIZE - ((SGEMM_DEFAULT_P * SGEMM_DEFAULT_Q *  4 + GEMM_DEFAULT_OFFSET_A + GEMM_DEFAULT_ALIGN) & ~GEMM_DEFAULT_ALIGN)) / (SGEMM_DEFAULT_Q *  4) - 15) & ~15)
+#define SGEMM_DEFAULT_R (((BUFFER_SIZE - ((SGEMM_DEFAULT_P * SGEMM_DEFAULT_Q *  4 + GEMM_DEFAULT_OFFSET_A + GEMM_DEFAULT_ALIGN) & ~GEMM_DEFAULT_ALIGN)) / (SGEMM_DEFAULT_Q *  4) - 15) & ~15UL)
 #endif
 
 #ifndef DGEMM_DEFAULT_R
-#define DGEMM_DEFAULT_R (((BUFFER_SIZE - ((DGEMM_DEFAULT_P * DGEMM_DEFAULT_Q *  8 + GEMM_DEFAULT_OFFSET_A + GEMM_DEFAULT_ALIGN) & ~GEMM_DEFAULT_ALIGN)) / (DGEMM_DEFAULT_Q *  8) - 15) & ~15)
+#define DGEMM_DEFAULT_R (((BUFFER_SIZE - ((DGEMM_DEFAULT_P * DGEMM_DEFAULT_Q *  8 + GEMM_DEFAULT_OFFSET_A + GEMM_DEFAULT_ALIGN) & ~GEMM_DEFAULT_ALIGN)) / (DGEMM_DEFAULT_Q *  8) - 15) & ~15UL)
 #endif
 
 #ifndef QGEMM_DEFAULT_R
-#define QGEMM_DEFAULT_R (((BUFFER_SIZE - ((QGEMM_DEFAULT_P * QGEMM_DEFAULT_Q * 16 + GEMM_DEFAULT_OFFSET_A + GEMM_DEFAULT_ALIGN) & ~GEMM_DEFAULT_ALIGN)) / (QGEMM_DEFAULT_Q * 16) - 15) & ~15)
+#define QGEMM_DEFAULT_R (((BUFFER_SIZE - ((QGEMM_DEFAULT_P * QGEMM_DEFAULT_Q * 16 + GEMM_DEFAULT_OFFSET_A + GEMM_DEFAULT_ALIGN) & ~GEMM_DEFAULT_ALIGN)) / (QGEMM_DEFAULT_Q * 16) - 15) & ~15UL)
 #endif
 
 #ifndef CGEMM_DEFAULT_R
-#define CGEMM_DEFAULT_R (((BUFFER_SIZE - ((CGEMM_DEFAULT_P * CGEMM_DEFAULT_Q *  8 + GEMM_DEFAULT_OFFSET_A + GEMM_DEFAULT_ALIGN) & ~GEMM_DEFAULT_ALIGN)) / (CGEMM_DEFAULT_Q *  8) - 15) & ~15)
+#define CGEMM_DEFAULT_R (((BUFFER_SIZE - ((CGEMM_DEFAULT_P * CGEMM_DEFAULT_Q *  8 + GEMM_DEFAULT_OFFSET_A + GEMM_DEFAULT_ALIGN) & ~GEMM_DEFAULT_ALIGN)) / (CGEMM_DEFAULT_Q *  8) - 15) & ~15UL)
 #endif
 
 #ifndef ZGEMM_DEFAULT_R
-#define ZGEMM_DEFAULT_R (((BUFFER_SIZE - ((ZGEMM_DEFAULT_P * ZGEMM_DEFAULT_Q * 16 + GEMM_DEFAULT_OFFSET_A + GEMM_DEFAULT_ALIGN) & ~GEMM_DEFAULT_ALIGN)) / (ZGEMM_DEFAULT_Q * 16) - 15) & ~15)
+#define ZGEMM_DEFAULT_R (((BUFFER_SIZE - ((ZGEMM_DEFAULT_P * ZGEMM_DEFAULT_Q * 16 + GEMM_DEFAULT_OFFSET_A + GEMM_DEFAULT_ALIGN) & ~GEMM_DEFAULT_ALIGN)) / (ZGEMM_DEFAULT_Q * 16) - 15) & ~15UL)
 #endif
 
 #ifndef XGEMM_DEFAULT_R
-#define XGEMM_DEFAULT_R (((BUFFER_SIZE - ((XGEMM_DEFAULT_P * XGEMM_DEFAULT_Q * 32 + GEMM_DEFAULT_OFFSET_A + GEMM_DEFAULT_ALIGN) & ~GEMM_DEFAULT_ALIGN)) / (XGEMM_DEFAULT_Q * 32) - 15) & ~15)
+#define XGEMM_DEFAULT_R (((BUFFER_SIZE - ((XGEMM_DEFAULT_P * XGEMM_DEFAULT_Q * 32 + GEMM_DEFAULT_OFFSET_A + GEMM_DEFAULT_ALIGN) & ~GEMM_DEFAULT_ALIGN)) / (XGEMM_DEFAULT_Q * 32) - 15) & ~15UL)
 #endif
 
 #ifndef SNUMOPT

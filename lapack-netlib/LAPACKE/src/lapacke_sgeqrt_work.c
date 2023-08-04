@@ -28,7 +28,6 @@
 ******************************************************************************
 * Contents: Native middle-level C interface to LAPACK function sgeqrt
 * Author: Intel Corporation
-* Generated November 2015
 *****************************************************************************/
 
 #include "lapacke_utils.h"
@@ -80,7 +79,7 @@ lapack_int LAPACKE_sgeqrt_work( int matrix_layout, lapack_int m, lapack_int n,
         }
         /* Transpose output matrices */
         LAPACKE_sge_trans( LAPACK_COL_MAJOR, m, n, a_t, lda_t, a, lda );
-        LAPACKE_sge_trans( LAPACK_COL_MAJOR, ldt, MIN(m,n), t_t, ldt_t, t,
+        LAPACKE_sge_trans( LAPACK_COL_MAJOR, nb, MIN(m,n), t_t, ldt_t, t,
                            ldt );
         /* Release memory and exit */
         LAPACKE_free( t_t );

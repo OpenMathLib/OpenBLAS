@@ -36,7 +36,7 @@
 *>
 *> \verbatim
 *>
-*> ZSYTRS2 solves a system of linear equations A*X = B with a real
+*> ZSYTRS2 solves a system of linear equations A*X = B with a complex
 *> symmetric matrix A using the factorization A = U*D*U**T or
 *> A = L*D*L**T computed by ZSYTRF and converted by ZSYCONV.
 *> \endverbatim
@@ -124,18 +124,15 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date June 2016
-*
 *> \ingroup complex16SYcomputational
 *
 *  =====================================================================
       SUBROUTINE ZSYTRS2( UPLO, N, NRHS, A, LDA, IPIV, B, LDB,
      $                    WORK, INFO )
 *
-*  -- LAPACK computational routine (version 3.7.0) --
+*  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     June 2016
 *
 *     .. Scalar Arguments ..
       CHARACTER          UPLO

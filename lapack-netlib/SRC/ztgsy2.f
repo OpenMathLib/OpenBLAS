@@ -57,7 +57,7 @@
 *>        Z = [ kron(In, A)  -kron(B**H, Im) ]             (2)
 *>            [ kron(In, D)  -kron(E**H, Im) ],
 *>
-*> Ik is the identity matrix of size k and X**H is the conjuguate transpose of X.
+*> Ik is the identity matrix of size k and X**H is the conjugate transpose of X.
 *> kron(X, Y) is the Kronecker product between the matrices X and Y.
 *>
 *> If TRANS = 'C', y in the conjugate transposed system Z**H*y = scale*b
@@ -67,7 +67,7 @@
 *>             R  * B**H + L  * E**H  = scale * -F
 *>
 *> This case is used to compute an estimate of Dif[(A, D), (B, E)] =
-*> = sigma_min(Z) using reverse communicaton with ZLACON.
+*> = sigma_min(Z) using reverse communication with ZLACON.
 *>
 *> ZTGSY2 also (IJOB >= 1) contributes to the computation in ZTGSYL
 *> of an upper bound on the separation between to matrix pairs. Then
@@ -81,7 +81,7 @@
 *> \param[in] TRANS
 *> \verbatim
 *>          TRANS is CHARACTER*1
-*>          = 'N', solve the generalized Sylvester equation (1).
+*>          = 'N': solve the generalized Sylvester equation (1).
 *>          = 'T': solve the 'transposed' system (3).
 *> \endverbatim
 *>
@@ -244,8 +244,6 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
-*
 *> \ingroup complex16SYauxiliary
 *
 *> \par Contributors:
@@ -259,10 +257,9 @@
      $                   LDD, E, LDE, F, LDF, SCALE, RDSUM, RDSCAL,
      $                   INFO )
 *
-*  -- LAPACK auxiliary routine (version 3.7.0) --
+*  -- LAPACK auxiliary routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
 *
 *     .. Scalar Arguments ..
       CHARACTER          TRANS

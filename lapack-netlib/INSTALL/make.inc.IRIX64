@@ -8,33 +8,30 @@ SHELL = /sbin/sh
 
 #  CC is the C compiler, normally invoked with options CFLAGS.
 #
-CC     = cc
+CC = cc
 CFLAGS = -O3
 
-#  Modify the FORTRAN and OPTS definitions to refer to the compiler
+#  Modify the FC and FFLAGS definitions to the desired compiler
 #  and desired compiler options for your machine.  NOOPT refers to
 #  the compiler options desired when NO OPTIMIZATION is selected.
 #
-FORTRAN = f77
-OPTS    = -O3 -64 -mips4 -r10000 -OPT:IEEE_NaN_inf=ON
-#OPTS    = -g  -DEBUG:subscript_check=ON -trapuv -OPT:IEEE_NaN_inf=ON
-DRVOPTS = $(OPTS) -static
-NOOPT   = -64 -mips4 -r10000 -OPT:IEEE_NaN_inf=ON
-#NOOPT   = -g  -DEBUG:subscript_check=ON -trapuv -OPT:IEEE_NaN_inf=ON
+FC = f77
+FFLAGS = -O3 -64 -mips4 -r10000 -OPT:IEEE_NaN_inf=ON
+#FFLAGS = -g -DEBUG:subscript_check=ON -trapuv -OPT:IEEE_NaN_inf=ON
+FFLAGS_DRV = $(FFLAGS) -static
+FFLAGS_NOOPT = -64 -mips4 -r10000 -OPT:IEEE_NaN_inf=ON
+#FFLAGS_NOOPT = -g -DEBUG:subscript_check=ON -trapuv -OPT:IEEE_NaN_inf=ON
 
-#  Define LOADER and LOADOPTS to refer to the loader and desired
-#  load options for your machine.
+#  Define LDFLAGS to the desired linker options for your machine.
 #
-LOADER   = f77
-LOADOPTS = -O3 -64 -mips4 -r10000 -OPT:IEEE_NaN_inf=ON
-#LOADOPTS = -g  -DEBUG:subscript_check=ON -trapuv -OPT:IEEE_NaN_inf=ON
+LDFLAGS =
 
 #  The archiver and the flag(s) to use when building an archive
 #  (library).  If your system has no ranlib, set RANLIB = echo.
 #
-ARCH      = ar
-ARCHFLAGS = cr
-RANLIB    = echo
+AR = ar
+ARFLAGS = cr
+RANLIB = echo
 
 #  Timer for the SECOND and DSECND routines
 #
@@ -78,8 +75,8 @@ TIMER = EXT_ETIME
 #  possible.)
 #
 #BLASLIB      = -lblas
-BLASLIB      = ../../librefblas.a
-CBLASLIB     = ../../libcblas.a
-LAPACKLIB    = liblapack.a
-TMGLIB       = libtmglib.a
-LAPACKELIB   = liblapacke.a
+BLASLIB      = $(TOPSRCDIR)/librefblas.a
+CBLASLIB     = $(TOPSRCDIR)/libcblas.a
+LAPACKLIB    = $(TOPSRCDIR)/liblapack.a
+TMGLIB       = $(TOPSRCDIR)/libtmglib.a
+LAPACKELIB   = $(TOPSRCDIR)/liblapacke.a

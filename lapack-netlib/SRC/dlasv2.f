@@ -107,8 +107,6 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
-*
 *> \ingroup OTHERauxiliary
 *
 *> \par Further Details:
@@ -126,9 +124,7 @@
 *>  infinite.
 *>
 *>  Overflow will not occur unless the largest singular value itself
-*>  overflows or is within a few ulps of overflow. (On machines with
-*>  partial overflow, like the Cray, overflow may occur if the largest
-*>  singular value is within a factor of 2 of overflow.)
+*>  overflows or is within a few ulps of overflow.
 *>
 *>  Underflow is harmless if underflow is gradual. Otherwise, results
 *>  may correspond to a matrix modified by perturbations of size near
@@ -138,10 +134,9 @@
 *  =====================================================================
       SUBROUTINE DLASV2( F, G, H, SSMIN, SSMAX, SNR, CSR, SNL, CSL )
 *
-*  -- LAPACK auxiliary routine (version 3.7.0) --
+*  -- LAPACK auxiliary routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
 *
 *     .. Scalar Arguments ..
       DOUBLE PRECISION   CSL, CSR, F, G, H, SNL, SNR, SSMAX, SSMIN

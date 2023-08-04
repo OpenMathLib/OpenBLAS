@@ -219,18 +219,15 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date June 2016
-*
 *> \ingroup doubleOTHEReigen
 *
 *  =====================================================================
       SUBROUTINE DSTEVX( JOBZ, RANGE, N, D, E, VL, VU, IL, IU, ABSTOL,
      $                   M, W, Z, LDZ, WORK, IWORK, IFAIL, INFO )
 *
-*  -- LAPACK driver routine (version 3.7.0) --
+*  -- LAPACK driver routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     June 2016
 *
 *     .. Scalar Arguments ..
       CHARACTER          JOBZ, RANGE
@@ -251,7 +248,7 @@
 *     .. Local Scalars ..
       LOGICAL            ALLEIG, INDEIG, TEST, VALEIG, WANTZ
       CHARACTER          ORDER
-      INTEGER            I, IMAX, INDIBL, INDISP, INDIWO, INDWRK,
+      INTEGER            I, IMAX, INDISP, INDIWO, INDWRK,
      $                   ISCALE, ITMP1, J, JJ, NSPLIT
       DOUBLE PRECISION   BIGNUM, EPS, RMAX, RMIN, SAFMIN, SIGMA, SMLNUM,
      $                   TMP1, TNRM, VLL, VUU
@@ -402,15 +399,14 @@
          ORDER = 'E'
       END IF
       INDWRK = 1
-      INDIBL = 1
-      INDISP = INDIBL + N
+      INDISP = 1 + N
       INDIWO = INDISP + N
       CALL DSTEBZ( RANGE, ORDER, N, VLL, VUU, IL, IU, ABSTOL, D, E, M,
-     $             NSPLIT, W, IWORK( INDIBL ), IWORK( INDISP ),
+     $             NSPLIT, W, IWORK( 1 ), IWORK( INDISP ),
      $             WORK( INDWRK ), IWORK( INDIWO ), INFO )
 *
       IF( WANTZ ) THEN
-         CALL DSTEIN( N, D, E, M, W, IWORK( INDIBL ), IWORK( INDISP ),
+         CALL DSTEIN( N, D, E, M, W, IWORK( 1 ), IWORK( INDISP ),
      $                Z, LDZ, WORK( INDWRK ), IWORK( INDIWO ), IFAIL,
      $                INFO )
       END IF
@@ -442,11 +438,11 @@
    30       CONTINUE
 *
             IF( I.NE.0 ) THEN
-               ITMP1 = IWORK( INDIBL+I-1 )
+               ITMP1 = IWORK( 1 + I-1 )
                W( I ) = W( J )
-               IWORK( INDIBL+I-1 ) = IWORK( INDIBL+J-1 )
+               IWORK( 1 + I-1 ) = IWORK( 1 + J-1 )
                W( J ) = TMP1
-               IWORK( INDIBL+J-1 ) = ITMP1
+               IWORK( 1 + J-1 ) = ITMP1
                CALL DSWAP( N, Z( 1, I ), 1, Z( 1, J ), 1 )
                IF( INFO.NE.0 ) THEN
                   ITMP1 = IFAIL( I )

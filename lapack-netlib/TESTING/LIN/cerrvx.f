@@ -48,17 +48,14 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date November 2017
-*
 *> \ingroup complex_lin
 *
 *  =====================================================================
       SUBROUTINE CERRVX( PATH, NUNIT )
 *
-*  -- LAPACK test routine (version 3.8.0) --
+*  -- LAPACK test routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2017
 *
 *     .. Scalar Arguments ..
       CHARACTER*3        PATH
@@ -90,7 +87,7 @@
 *     ..
 *     .. External Subroutines ..
       EXTERNAL           CGBSV, CGBSVX, CGESV, CGESVX, CGTSV, CGTSVX,
-     $                   CHESV, CHESV_RK ,CHESV_ROOK, CHESVX, CHKXER,
+     $                   CHESV, CHESV_RK, CHESV_ROOK, CHESVX, CHKXER,
      $                   CHPSV, CHPSVX, CPBSV, CPBSVX, CPOSV, CPOSVX,
      $                   CPPSV, CPPSVX, CPTSV, CPTSVX, CSPSV, CSPSVX,
      $                   CSYSV, CSYSV_AA, CSYSV_RK, CSYSV_ROOK,
@@ -654,6 +651,9 @@
          INFOT = 3
          CALL CHESV_ROOK( 'U', 0, -1, A, 1, IP, B, 1, W, 1, INFO )
          CALL CHKXER( 'CHESV_ROOK', INFOT, NOUT, LERR, OK )
+         INFOT = 5
+         CALL CHESV_ROOK( 'U', 2, 0, A, 1, IP, B, 2, W, 1, INFO )
+         CALL CHKXER( 'CHESV_ROOK', INFOT, NOUT, LERR, OK )
          INFOT = 8
          CALL CHESV_ROOK( 'U', 2, 0, A, 2, IP, B, 1, W, 1, INFO )
          CALL CHKXER( 'CHESV_ROOK', INFOT, NOUT, LERR, OK )
@@ -713,8 +713,14 @@
          INFOT = 3
          CALL CHESV_AA( 'U', 0, -1, A, 1, IP, B, 1, W, 1, INFO )
          CALL CHKXER( 'CHESV_AA', INFOT, NOUT, LERR, OK )
+         INFOT = 5
+         CALL CHESV_AA( 'U', 2, 0, A, 1, IP, B, 2, W, 1, INFO )
+         CALL CHKXER( 'CHESV_AA', INFOT, NOUT, LERR, OK )
          INFOT = 8
          CALL CHESV_AA( 'U', 2, 0, A, 2, IP, B, 1, W, 1, INFO )
+         CALL CHKXER( 'CHESV_AA', INFOT, NOUT, LERR, OK )
+         INFOT = 10
+         CALL CHESV_AA( 'U', 3, 1, A, 3, IP, B, 3, W, 6, INFO )
          CALL CHKXER( 'CHESV_AA', INFOT, NOUT, LERR, OK )
 *
       ELSE IF( LSAMEN( 2, C2, 'H2' ) ) THEN
@@ -738,14 +744,42 @@
          CALL CHESV_AA_2STAGE( 'U', 2, 1, A, 1, A, 1, IP, IP, B, 1,
      $                         W, 1, INFO )
          CALL CHKXER( 'CHESV_AA_2STAGE', INFOT, NOUT, LERR, OK )
-         INFOT = 11
-         CALL CHESV_AA_2STAGE( 'U', 2, 1, A, 2, A, 2, IP, IP, B, 1,
-     $                         W, 1, INFO )
-         CALL CHKXER( 'CHESV_AA_2STAGE', INFOT, NOUT, LERR, OK )
          INFOT = 7
          CALL CHESV_AA_2STAGE( 'U', 2, 1, A, 2, A, 1, IP, IP, B, 2,
      $                         W, 1, INFO )
          CALL CHKXER( 'CHESV_AA_2STAGE', INFOT, NOUT, LERR, OK )
+         INFOT = 11
+         CALL CHESV_AA_2STAGE( 'U', 2, 1, A, 2, A, 8, IP, IP, B, 1,
+     $                         W, 1, INFO )
+         CALL CHKXER( 'CHESV_AA_2STAGE', INFOT, NOUT, LERR, OK )
+         INFOT = 13
+         CALL CHESV_AA_2STAGE( 'U', 2, 1, A, 2, A, 8, IP, IP, B, 2,
+     $                         W, 1, INFO )
+         CALL CHKXER( 'CHESV_AA_2STAGE', INFOT, NOUT, LERR, OK )
+*
+      ELSE IF( LSAMEN( 2, C2, 'SA' ) ) THEN
+*
+*        CSYSV_AASEN
+*
+         SRNAMT = 'CSYSV_AA'
+         INFOT = 1
+         CALL CSYSV_AA( '/', 0, 0, A, 1, IP, B, 1, W, 1, INFO )
+         CALL CHKXER( 'CSYSV_AA', INFOT, NOUT, LERR, OK )
+         INFOT = 2
+         CALL CSYSV_AA( 'U', -1, 0, A, 1, IP, B, 1, W, 1, INFO )
+         CALL CHKXER( 'CSYSV_AA', INFOT, NOUT, LERR, OK )
+         INFOT = 3
+         CALL CSYSV_AA( 'U', 0, -1, A, 1, IP, B, 1, W, 1, INFO )
+         CALL CHKXER( 'CSYSV_AA', INFOT, NOUT, LERR, OK )
+         INFOT = 5
+         CALL CSYSV_AA( 'U', 2, 0, A, 1, IP, B, 2, W, 1, INFO )
+         CALL CHKXER( 'CSYSV_AA', INFOT, NOUT, LERR, OK )
+         INFOT = 8
+         CALL CSYSV_AA( 'U', 2, 0, A, 2, IP, B, 1, W, 1, INFO )
+         CALL CHKXER( 'CSYSV_AA', INFOT, NOUT, LERR, OK )
+         INFOT = 10
+         CALL CSYSV_AA( 'U', 3, 1, A, 3, IP, B, 3, W, 6, INFO )
+         CALL CHKXER( 'CSYSV_AA', INFOT, NOUT, LERR, OK )
 *
       ELSE IF( LSAMEN( 2, C2, 'S2' ) ) THEN
 *
@@ -768,12 +802,16 @@
          CALL CSYSV_AA_2STAGE( 'U', 2, 1, A, 1, A, 1, IP, IP, B, 1,
      $                         W, 1, INFO )
          CALL CHKXER( 'CSYSV_AA_2STAGE', INFOT, NOUT, LERR, OK )
-         INFOT = 11
-         CALL CSYSV_AA_2STAGE( 'U', 2, 1, A, 2, A, 2, IP, IP, B, 1,
-     $                         W, 1, INFO )
-         CALL CHKXER( 'CSYSV_AA_2STAGE', INFOT, NOUT, LERR, OK )
          INFOT = 7
          CALL CSYSV_AA_2STAGE( 'U', 2, 1, A, 2, A, 1, IP, IP, B, 2,
+     $                         W, 1, INFO )
+         CALL CHKXER( 'CSYSV_AA_2STAGE', INFOT, NOUT, LERR, OK )
+         INFOT = 11
+         CALL CSYSV_AA_2STAGE( 'U', 2, 1, A, 2, A, 8, IP, IP, B, 1,
+     $                         W, 1, INFO )
+         CALL CHKXER( 'CSYSV_AA_2STAGE', INFOT, NOUT, LERR, OK )
+         INFOT = 13
+         CALL CSYSV_AA_2STAGE( 'U', 2, 1, A, 2, A, 8, IP, IP, B, 2,
      $                         W, 1, INFO )
          CALL CHKXER( 'CSYSV_AA_2STAGE', INFOT, NOUT, LERR, OK )
 *
@@ -836,6 +874,9 @@
          CALL CHKXER( 'CSYSV ', INFOT, NOUT, LERR, OK )
          INFOT = 3
          CALL CSYSV( 'U', 0, -1, A, 1, IP, B, 1, W, 1, INFO )
+         CALL CHKXER( 'CSYSV ', INFOT, NOUT, LERR, OK )
+         INFOT = 5
+         CALL CSYSV( 'U', 2, 0, A, 1, IP, B, 2, W, 1, INFO )
          CALL CHKXER( 'CSYSV ', INFOT, NOUT, LERR, OK )
          INFOT = 8
          CALL CSYSV( 'U', 2, 0, A, 2, IP, B, 1, W, 1, INFO )
@@ -900,6 +941,9 @@
          CALL CHKXER( 'CSYSV_ROOK', INFOT, NOUT, LERR, OK )
          INFOT = 3
          CALL CSYSV_ROOK( 'U', 0, -1, A, 1, IP, B, 1, W, 1, INFO )
+         CALL CHKXER( 'CSYSV_ROOK', INFOT, NOUT, LERR, OK )
+         INFOT = 5
+         CALL CSYSV_ROOK( 'U', 2, 0, A, 1, IP, B, 2, W, 1, INFO )
          CALL CHKXER( 'CSYSV_ROOK', INFOT, NOUT, LERR, OK )
          INFOT = 8
          CALL CSYSV_ROOK( 'U', 2, 0, A, 2, IP, B, 1, W, 1, INFO )

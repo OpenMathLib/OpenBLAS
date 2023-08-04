@@ -24,6 +24,9 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
 USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
+#if !defined(__VEC__) || !defined(__ALTIVEC__)
+#include "../arm/zrot.c"
+#else
 
 #include "common.h"
 
@@ -40,8 +43,8 @@ static void   zrot_kernel_4(BLASLONG n, FLOAT *x, FLOAT *y, FLOAT cosA, FLOAT si
 
  __asm__
     (
-       "xxspltd     36, %x[cos], 0 \n\t"   // load c to both dwords
-       "xxspltd     37, %x[sin], 0 \n\t"   // load s to both dwords 
+       XXSPLTD_S(36,%x[cos],0)   // load c to both dwords
+       XXSPLTD_S(37,%x[sin],0)   // load s to both dwords 
 
        "lxvd2x      32,  0,     %[x_ptr] \n\t"   // load x
        "lxvd2x      33, %[i16], %[x_ptr] \n\t"
@@ -57,10 +60,10 @@ static void   zrot_kernel_4(BLASLONG n, FLOAT *x, FLOAT *y, FLOAT cosA, FLOAT si
        "addi        %[y_ptr], %[y_ptr], 64  \n\t"
 
        "addic.          %[temp_n], %[temp_n], -4    \n\t"
-       "ble       2f          \n\t"
+       "ble       two%=          \n\t"
 
-       ".p2align  5           \n"
-     "1:                      \n\t"
+       ".align  5           \n"
+     "one%=:                      \n\t"
 
        "xvmuldp         40, 32, 36  \n\t" // c * x
        "xvmuldp         41, 33, 36  \n\t"
@@ -124,9 +127,9 @@ static void   zrot_kernel_4(BLASLONG n, FLOAT *x, FLOAT *y, FLOAT cosA, FLOAT si
        "addi            %[y_ptr], %[y_ptr], 128 \n\t"
 
        "addic.          %[temp_n], %[temp_n], -4      \n\t"
-       "bgt+            1b          \n"
+       "bgt+            one%=          \n"
 
-     "2:                      \n\t"
+     "two%=:                      \n\t"
 
        "xvmuldp         40, 32, 36  \n\t" // c * x
        "xvmuldp         41, 33, 36  \n\t"
@@ -262,4 +265,4 @@ int CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG inc_y, FLOAT 
  
 }
 
- 
+#endif 

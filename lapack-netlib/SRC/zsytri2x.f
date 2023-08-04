@@ -113,17 +113,14 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date June 2017
-*
 *> \ingroup complex16SYcomputational
 *
 *  =====================================================================
       SUBROUTINE ZSYTRI2X( UPLO, N, A, LDA, IPIV, WORK, NB, INFO )
 *
-*  -- LAPACK computational routine (version 3.7.1) --
+*  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     June 2017
 *
 *     .. Scalar Arguments ..
       CHARACTER          UPLO
@@ -234,7 +231,7 @@
         DO WHILE ( K .LE. N )
          IF( IPIV( K ).GT.0 ) THEN
 *           1 x 1 diagonal NNB
-             WORK(K,INVD) = 1/  A( K, K )
+             WORK(K,INVD) = ONE / A( K, K )
              WORK(K,INVD+1) = 0
             K=K+1
          ELSE
@@ -411,7 +408,7 @@
         DO WHILE ( K .GE. 1 )
          IF( IPIV( K ).GT.0 ) THEN
 *           1 x 1 diagonal NNB
-             WORK(K,INVD) = 1/  A( K, K )
+             WORK(K,INVD) = ONE / A( K, K )
              WORK(K,INVD+1) = 0
             K=K-1
          ELSE

@@ -28,7 +28,6 @@
 *****************************************************************************
 * Contents: Native high-level C interface to LAPACK function zlantr
 * Author: Intel Corporation
-* Generated June 2016
 *****************************************************************************/
 
 #include "lapacke_utils.h"
@@ -47,7 +46,7 @@ double LAPACKE_zlantr( int matrix_layout, char norm, char uplo, char diag,
 #ifndef LAPACK_DISABLE_NAN_CHECK
     if( LAPACKE_get_nancheck() ) {
         /* Optionally check input matrices for NaNs */
-        if( LAPACKE_ztr_nancheck( matrix_layout, uplo, diag, MIN(m,n), a, lda ) ) {
+        if( LAPACKE_ztz_nancheck( matrix_layout, 'f', uplo, diag, m, n, a, lda ) ) {
             return -7;
         }
     }

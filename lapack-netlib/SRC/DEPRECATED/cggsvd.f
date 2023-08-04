@@ -107,7 +107,7 @@
 *> In particular, if B is an N-by-N nonsingular matrix, then the GSVD of
 *> A and B implicitly gives the SVD of A*inv(B):
 *>                      A*inv(B) = U*(D1*inv(D2))*V**H.
-*> If ( A**H,B**H)**H has orthnormal columns, then the GSVD of A and B is also
+*> If ( A**H,B**H)**H has orthonormal columns, then the GSVD of A and B is also
 *> equal to the CS decomposition of A and B. Furthermore, the GSVD can
 *> be used to derive the solution of the eigenvalue problem:
 *>                      A**H*A x = lambda* B**H*B x.
@@ -323,8 +323,6 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
-*
 *> \ingroup complexOTHERsing
 *
 *> \par Contributors:
@@ -338,10 +336,9 @@
      $                   LDB, ALPHA, BETA, U, LDU, V, LDV, Q, LDQ, WORK,
      $                   RWORK, IWORK, INFO )
 *
-*  -- LAPACK driver routine (version 3.7.0) --
+*  -- LAPACK driver routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
 *
 *     .. Scalar Arguments ..
       CHARACTER          JOBQ, JOBU, JOBV

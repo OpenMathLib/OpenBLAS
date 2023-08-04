@@ -25,7 +25,7 @@ set(AEIGTST
 set(SCIGTST slafts.f slahd2.f slasum.f slatb9.f sstech.f sstect.f
    ssvdch.f ssvdct.f ssxt1.f)
 
-set(SEIGTST schkee.f
+set(SEIGTST schkee.F
    sbdt01.f sbdt02.f sbdt03.f sbdt04.f sbdt05.f
    schkbb.f schkbd.f schkbk.f schkbl.f schkec.f
    schkgg.f schkgk.f schkgl.f schkhs.f schksb.f schkst.f schkst2stg.f schksb2stg.f
@@ -36,13 +36,13 @@ set(SEIGTST schkee.f
    serrbd.f serrec.f serred.f serrgg.f serrhs.f serrst.f
    sget02.f sget10.f sget22.f sget23.f sget24.f sget31.f
    sget32.f sget33.f sget34.f sget35.f sget36.f
-   sget37.f sget38.f sget39.f sget51.f sget52.f sget53.f
+   sget37.f sget38.f sget39.f sget40.f sget51.f sget52.f sget53.f
    sget54.f sglmts.f sgqrts.f sgrqts.f sgsvts3.f
    shst01.f slarfy.f slarhs.f slatm4.f slctes.f slctsx.f slsets.f sort01.f
    sort03.f ssbt21.f ssgt01.f sslect.f sspt21.f sstt21.f
-   sstt22.f ssyt21.f ssyt22.f)
+   sstt22.f ssyl01.f ssyt21.f ssyt22.f)
 
-set(CEIGTST cchkee.f
+set(CEIGTST cchkee.F
    cbdt01.f cbdt02.f cbdt03.f cbdt05.f
    cchkbb.f cchkbd.f cchkbk.f cchkbl.f cchkec.f
    cchkgg.f cchkgk.f cchkgl.f cchkhb.f cchkhs.f cchkst.f cchkst2stg.f cchkhb2stg.f
@@ -56,13 +56,13 @@ set(CEIGTST cchkee.f
    cget54.f cglmts.f cgqrts.f cgrqts.f cgsvts3.f
    chbt21.f chet21.f chet22.f chpt21.f chst01.f
    clarfy.f clarhs.f clatm4.f clctes.f clctsx.f clsets.f csbmv.f
-   csgt01.f cslect.f
+   csgt01.f cslect.f csyl01.f
    cstt21.f cstt22.f cunt01.f cunt03.f)
 
 set(DZIGTST dlafts.f dlahd2.f dlasum.f dlatb9.f dstech.f dstect.f
    dsvdch.f dsvdct.f dsxt1.f)
 
-set(DEIGTST dchkee.f
+set(DEIGTST dchkee.F
    dbdt01.f dbdt02.f dbdt03.f dbdt04.f dbdt05.f
    dchkbb.f dchkbd.f dchkbk.f dchkbl.f dchkec.f
    dchkgg.f dchkgk.f dchkgl.f dchkhs.f dchksb.f dchkst.f dchkst2stg.f dchksb2stg.f
@@ -73,13 +73,13 @@ set(DEIGTST dchkee.f
    derrbd.f derrec.f derred.f derrgg.f derrhs.f derrst.f
    dget02.f dget10.f dget22.f dget23.f dget24.f dget31.f
    dget32.f dget33.f dget34.f dget35.f dget36.f
-   dget37.f dget38.f dget39.f dget51.f dget52.f dget53.f
+   dget37.f dget38.f dget39.f dget40.f dget51.f dget52.f dget53.f
    dget54.f dglmts.f dgqrts.f dgrqts.f dgsvts3.f
    dhst01.f dlarfy.f dlarhs.f dlatm4.f dlctes.f dlctsx.f dlsets.f dort01.f
    dort03.f dsbt21.f dsgt01.f dslect.f dspt21.f dstt21.f
-   dstt22.f dsyt21.f dsyt22.f)
+   dstt22.f dsyl01.f dsyt21.f dsyt22.f)
 
-set(ZEIGTST zchkee.f
+set(ZEIGTST zchkee.F
    zbdt01.f zbdt02.f zbdt03.f zbdt05.f
    zchkbb.f zchkbd.f zchkbk.f zchkbl.f zchkec.f
    zchkgg.f zchkgk.f zchkgl.f zchkhb.f zchkhs.f zchkst.f zchkst2stg.f zchkhb2stg.f
@@ -93,12 +93,13 @@ set(ZEIGTST zchkee.f
    zget54.f zglmts.f zgqrts.f zgrqts.f zgsvts3.f
    zhbt21.f zhet21.f zhet22.f zhpt21.f zhst01.f
    zlarfy.f zlarhs.f zlatm4.f zlctes.f zlctsx.f zlsets.f zsbmv.f
-   zsgt01.f zslect.f
+   zsgt01.f zslect.f zsyl01.f
    zstt21.f zstt22.f zunt01.f zunt03.f)
 
 macro(add_eig_executable name)
   add_executable(${name} ${ARGN})
-  target_link_libraries(${name} tmglib ${LAPACK_LIBRARIES} ${BLAS_LIBRARIES})
+  target_link_libraries(${name} openblas${SUFFIX64_UNDERSCORE})
+#${TMGLIB} ../${LAPACK_LIBRARIES} ${BLAS_LIBRARIES})
 endmacro()
 
 if(BUILD_SINGLE)

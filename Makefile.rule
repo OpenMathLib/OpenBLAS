@@ -3,7 +3,7 @@
 #
 
 # This library's version
-VERSION = 0.3.8.dev
+VERSION = 0.3.23.dev
 
 # If you set the suffix, the library name will be libopenblas_$(LIBNAMESUFFIX).a
 # and libopenblas_$(LIBNAMESUFFIX).so. Meanwhile, the soname in shared library
@@ -97,6 +97,15 @@ VERSION = 0.3.8.dev
 # they need to wait for the preceding API calls to finish or risk data corruption.
 # NUM_PARALLEL = 2
 
+# When multithreading, OpenBLAS needs to use a memory buffer for communicating
+# and collating results for individual subranges of the original matrix. Since
+# the original GotoBLAS of the early 2000s, the default size of this buffer has
+# been set at a value of 32<<20 (which is 32MB) on x86_64 , twice that on PPC.
+# If you expect to handle large problem sizes (beyond about 30000x30000) uncomment
+# this line and adjust the (32<<n) factor if necessary. Usually an insufficient value
+# manifests itself as a crash in the relevant scal kernel (sscal_k, dscal_k etc) 
+# BUFFERSIZE = 25
+
 # If you don't need to install the static library, please comment this in.
 # NO_STATIC = 1
 
@@ -122,6 +131,9 @@ BUILD_LAPACK_DEPRECATED = 1
 
 # Build RecursiveLAPACK on top of LAPACK
 # BUILD_RELAPACK = 1
+# Have RecursiveLAPACK actually replace standard LAPACK routines instead of 
+# just adding its equivalents with a RELAPACK_ prefix
+# RELAPACK_REPLACE = 1
 
 # If you want to use the legacy threaded Level 3 implementation.
 # USE_SIMPLE_THREADED_LEVEL3 = 1
@@ -198,7 +210,7 @@ NO_AFFINITY = 1
 # to the user space. If bigphysarea is enabled, it will use it.
 # DEVICEDRIVER_ALLOCATION = 1
 
-# If you need to synchronize FP CSR between threads (for x86/x86_64 only).
+# If you need to synchronize FP CSR between threads (for x86/x86_64 and aarch64 only).
 # CONSISTENT_FPCSR = 1
 
 # If any gemm argument m, n or k is less or equal this threshold, gemm will be execute
@@ -263,7 +275,36 @@ COMMON_PROF = -pg
 # work at all.
 #
 # CPP_THREAD_SAFETY_TEST = 1
+#
+# use this to run only the less memory-hungry GEMV test
+# CPP_THREAD_SAFETY_GEMV = 1
 
+
+# If you want to enable the experimental BFLOAT16 support
+# BUILD_BFLOAT16 = 1
+
+
+# Set the thread number threshold beyond which the job array for the threaded level3 BLAS
+# will be allocated on the heap rather than the stack. (This array alone requires 
+# NUM_THREADS*NUM_THREADS*128 bytes of memory so should not pose a problem at low cpu
+# counts, but obviously it is not the only item that ends up on the stack.
+# The default value of 32 ensures that the overall requirement is compatible
+# with the default 1MB stacksize imposed by having the Java VM loaded without use
+# of its -Xss parameter.
+# The value of 160 formerly used from about version 0.2.7 until 0.3.10 is easily compatible
+# with the common Linux stacksize of 8MB but will cause crashes with unwary use of the java
+# VM e.g. in Octave or with the java-based libhdfs in numpy or scipy code
+# BLAS3_MEM_ALLOC_THRESHOLD = 160
+
+
+
+# By default the library contains BLAS functions (and LAPACK if selected) for all input types.
+# To build a smaller library supporting e.g. only single precision real (SGEMM etc.) or only
+# the functions for complex numbers, uncomment the desired type(s) below
+# BUILD_SINGLE = 1
+# BUILD_DOUBLE = 1
+# BUILD_COMPLEX = 1
+# BUILD_COMPLEX16 = 1
 #
 #  End of user configuration
 #

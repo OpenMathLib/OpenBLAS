@@ -150,17 +150,14 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date April 2012
-*
 *> \ingroup complexGBcomputational
 *
 *  =====================================================================
       SUBROUTINE CUNGBR( VECT, M, N, K, A, LDA, TAU, WORK, LWORK, INFO )
 *
-*  -- LAPACK computational routine (version 3.7.0) --
+*  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     April 2012
 *
 *     .. Scalar Arguments ..
       CHARACTER          VECT
@@ -222,8 +219,8 @@
                CALL CUNGQR( M, N, K, A, LDA, TAU, WORK, -1, IINFO )
             ELSE
                IF( M.GT.1 ) THEN
-                  CALL CUNGQR( M-1, M-1, M-1, A( 2, 2 ), LDA, TAU, WORK,
-     $                         -1, IINFO )
+                  CALL CUNGQR( M-1, M-1, M-1, A, LDA, TAU, WORK, -1,
+     $                         IINFO )
                END IF
             END IF
          ELSE
@@ -231,12 +228,12 @@
                CALL CUNGLQ( M, N, K, A, LDA, TAU, WORK, -1, IINFO )
             ELSE
                IF( N.GT.1 ) THEN
-                  CALL CUNGLQ( N-1, N-1, N-1, A( 2, 2 ), LDA, TAU, WORK,
-     $                         -1, IINFO )
+                  CALL CUNGLQ( N-1, N-1, N-1, A, LDA, TAU, WORK, -1,
+     $                         IINFO )
                END IF
             END IF
          END IF
-         LWKOPT = WORK( 1 )
+         LWKOPT = INT( WORK( 1 ) )
          LWKOPT = MAX (LWKOPT, MN)
       END IF
 *

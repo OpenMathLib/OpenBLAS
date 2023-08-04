@@ -74,7 +74,7 @@ int NAME(blasint *M, blasint *N, FLOAT *a, blasint *ldA, blasint *ipiv, blasint 
   if (args.n   < 0)             info = 2;
   if (args.m   < 0)             info = 1;
   if (info) {
-    BLASFUNC(xerbla)(ERROR_NAME, &info, sizeof(ERROR_NAME));
+    BLASFUNC(xerbla)(ERROR_NAME, &info, sizeof(ERROR_NAME) - 1);
     *Info = - info;
     return 0;
   }
@@ -95,7 +95,14 @@ int NAME(blasint *M, blasint *N, FLOAT *a, blasint *ldA, blasint *ipiv, blasint 
 
 #ifdef SMP
   args.common = NULL;
-  args.nthreads = num_cpu_avail(4);
+#ifndef DOUBLE
+  if (args.m*args.n < 40000)
+#else
+  if (args.m*args.n < 10000)
+#endif
+	args.nthreads=1;
+  else
+	args.nthreads = num_cpu_avail(4);
 
   if (args.nthreads == 1) {
 #endif

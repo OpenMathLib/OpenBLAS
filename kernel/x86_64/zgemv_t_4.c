@@ -25,13 +25,15 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
 USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
 
-
 #include "common.h"
 
+#if (defined(__GNUC__) && __GNUC__ > 11) 
+#pragma GCC optimize("no-tree-vectorize")
+#endif
 
 #if defined(BULLDOZER) || defined(PILEDRIVER) || defined(STEAMROLLER)  || defined(EXCAVATOR)
 #include "zgemv_t_microk_bulldozer-4.c"
-#elif defined(HASWELL) || defined(ZEN) || defined (SKYLAKEX)
+#elif defined(HASWELL) || defined(ZEN) || defined (SKYLAKEX) || defined (COOPERLAKE) || defined (SAPPHIRERAPIDS)
 #include "zgemv_t_microk_haswell-4.c"
 #endif
 
@@ -235,9 +237,9 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1, FLOAT alpha_r, FLOAT alpha_i,
         if ( m < 1 ) return(0);
         if ( n < 1 ) return(0);
 
-        inc_x <<= 1;
-        inc_y <<= 1;
-        lda   <<= 1;
+        inc_x *= 2;
+        inc_y *= 2;
+        lda  <<= 1;
 	lda4    = lda << 2;
 
 	xbuffer = buffer;

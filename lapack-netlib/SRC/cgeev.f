@@ -157,7 +157,7 @@
 *>          < 0:  if INFO = -i, the i-th argument had an illegal value.
 *>          > 0:  if INFO = i, the QR algorithm failed to compute all the
 *>                eigenvalues, and no eigenvectors have been computed;
-*>                elements and i+1:N of W contain eigenvalues which have
+*>                elements i+1:N of W contain eigenvalues which have
 *>                converged.
 *> \endverbatim
 *
@@ -169,7 +169,6 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date June 2016
 *
 *  @generated from zgeev.f, fortran z -> c, Tue Apr 19 01:47:44 2016
 *
@@ -180,10 +179,9 @@
      $                  WORK, LWORK, RWORK, INFO )
       implicit none
 *
-*  -- LAPACK driver routine (version 3.7.0) --
+*  -- LAPACK driver routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     June 2016
 *
 *     .. Scalar Arguments ..
       CHARACTER          JOBVL, JOBVR

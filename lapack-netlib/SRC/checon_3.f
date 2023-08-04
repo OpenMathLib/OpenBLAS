@@ -19,7 +19,7 @@
 *  ===========
 *
 *       SUBROUTINE CHECON_3( UPLO, N, A, LDA, E, IPIV, ANORM, RCOND,
-*                            WORK, IWORK, INFO )
+*                            WORK, INFO )
 *
 *       .. Scalar Arguments ..
 *       CHARACTER          UPLO
@@ -27,7 +27,7 @@
 *       REAL               ANORM, RCOND
 *       ..
 *       .. Array Arguments ..
-*       INTEGER            IPIV( * ), IWORK( * )
+*       INTEGER            IPIV( * )
 *       COMPLEX            A( LDA, * ), E ( * ), WORK( * )
 *       ..
 *
@@ -129,11 +129,6 @@
 *>          WORK is COMPLEX array, dimension (2*N)
 *> \endverbatim
 *>
-*> \param[out] IWORK
-*> \verbatim
-*>          IWORK is INTEGER array, dimension (N)
-*> \endverbatim
-*>
 *> \param[out] INFO
 *> \verbatim
 *>          INFO is INTEGER
@@ -148,8 +143,6 @@
 *> \author Univ. of California Berkeley
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
-*
-*> \date June 2017
 *
 *> \ingroup complexHEcomputational
 *
@@ -171,10 +164,9 @@
       SUBROUTINE CHECON_3( UPLO, N, A, LDA, E, IPIV, ANORM, RCOND,
      $                     WORK, INFO )
 *
-*  -- LAPACK computational routine (version 3.7.1) --
+*  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     June 2017
 *
 *     .. Scalar Arguments ..
       CHARACTER          UPLO

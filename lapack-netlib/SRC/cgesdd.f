@@ -53,12 +53,6 @@
 *>
 *> Note that the routine returns VT = V**H, not V.
 *>
-*> The divide and conquer algorithm makes very mild assumptions about
-*> floating point arithmetic. It will work on machines with a guard
-*> digit in add/subtract, or on those binary machines without guard
-*> digits which subtract like the Cray X-MP, Cray Y-MP, Cray C-90, or
-*> Cray-2. It could conceivably fail on hexadecimal or decimal machines
-*> without guard digits, but we know of none.
 *> \endverbatim
 *
 *  Arguments:
@@ -199,9 +193,10 @@
 *> \param[out] INFO
 *> \verbatim
 *>          INFO is INTEGER
-*>          = 0:  successful exit.
 *>          < 0:  if INFO = -i, the i-th argument had an illegal value.
+*>          = -4:  if A had a NAN entry.
 *>          > 0:  The updating process of SBDSDC did not converge.
+*>          =  0:  successful exit.
 *> \endverbatim
 *
 *  Authors:
@@ -211,8 +206,6 @@
 *> \author Univ. of California Berkeley
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
-*
-*> \date June 2016
 *
 *> \ingroup complexGEsing
 *
@@ -227,10 +220,9 @@
      $                   WORK, LWORK, RWORK, IWORK, INFO )
       implicit none
 *
-*  -- LAPACK driver routine (version 3.7.0) --
+*  -- LAPACK driver routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     June 2016
 *
 *     .. Scalar Arguments ..
       CHARACTER          JOBZ
@@ -281,9 +273,10 @@
      $                   CUNGQR, CUNMBR, SBDSDC, SLASCL, XERBLA
 *     ..
 *     .. External Functions ..
-      LOGICAL            LSAME
-      REAL               SLAMCH, CLANGE
-      EXTERNAL           LSAME, SLAMCH, CLANGE
+      LOGICAL            LSAME, SISNAN
+      REAL               SLAMCH, CLANGE, SROUNDUP_LWORK
+      EXTERNAL           LSAME, SLAMCH, CLANGE, SISNAN, 
+     $                   SROUNDUP_LWORK
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          INT, MAX, MIN, SQRT
@@ -619,7 +612,7 @@
          MAXWRK = MAX( MAXWRK, MINWRK )
       END IF
       IF( INFO.EQ.0 ) THEN
-         WORK( 1 ) = MAXWRK
+         WORK( 1 ) = SROUNDUP_LWORK( MAXWRK )
          IF( LWORK.LT.MINWRK .AND. .NOT. LQUERY ) THEN
             INFO = -12
          END IF
@@ -647,6 +640,10 @@
 *     Scale A if max element outside range [SMLNUM,BIGNUM]
 *
       ANRM = CLANGE( 'M', M, N, A, LDA, DUM )
+      IF( SISNAN ( ANRM ) ) THEN
+          INFO = -4
+          RETURN
+      END IF
       ISCL = 0
       IF( ANRM.GT.ZERO .AND. ANRM.LT.SMLNUM ) THEN
          ISCL = 1
@@ -2211,7 +2208,7 @@
 *
 *     Return optimal workspace in WORK(1)
 *
-      WORK( 1 ) = MAXWRK
+      WORK( 1 ) = SROUNDUP_LWORK( MAXWRK )
 *
       RETURN
 *

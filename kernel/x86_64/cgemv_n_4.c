@@ -24,12 +24,13 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
 USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
+#if (defined(__GNUC__) && __GNUC__ > 11) 
+#pragma GCC optimize("no-tree-vectorize")
+#endif
 
-#include <stdlib.h>
-#include <stdio.h>
 #include "common.h"
 
-#if defined(HASWELL) || defined(ZEN) || defined (SKYLAKEX)
+#if defined(HASWELL) || defined(ZEN) || defined (SKYLAKEX) || defined (COOPERLAKE) || defined (SAPPHIRERAPIDS)
 #include "cgemv_n_microk_haswell-4.c"
 #elif defined(BULLDOZER) || defined(PILEDRIVER) || defined(STEAMROLLER) || defined(EXCAVATOR)
 #include "cgemv_n_microk_bulldozer-4.c"

@@ -27,7 +27,7 @@
 *> \verbatim
 *>
 *> DQRT02 tests DORGQR, which generates an m-by-n matrix Q with
-*> orthonornmal columns that is defined as the product of k elementary
+*> orthonormal columns that is defined as the product of k elementary
 *> reflectors.
 *>
 *> Given the QR factorization of an m-by-n matrix A, DQRT02 generates
@@ -127,18 +127,15 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
-*
 *> \ingroup double_lin
 *
 *  =====================================================================
       SUBROUTINE DQRT02( M, N, K, A, AF, Q, R, LDA, TAU, WORK, LWORK,
      $                   RWORK, RESULT )
 *
-*  -- LAPACK test routine (version 3.7.0) --
+*  -- LAPACK test routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
 *
 *     .. Scalar Arguments ..
       INTEGER            K, LDA, LWORK, M, N

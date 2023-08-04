@@ -45,7 +45,7 @@
 *>
 *>    CPOSVXX uses the Cholesky factorization A = U**T*U or A = L*L**T
 *>    to compute the solution to a complex system of linear equations
-*>    A * X = B, where A is an N-by-N symmetric positive definite matrix
+*>    A * X = B, where A is an N-by-N Hermitian positive definite matrix
 *>    and X and B are N-by-NRHS matrices.
 *>
 *>    If requested, both normwise and maximum componentwise error bounds
@@ -87,7 +87,7 @@
 *>    where U is an upper triangular matrix and L is a lower triangular
 *>    matrix.
 *>
-*>    3. If the leading i-by-i principal minor is not positive definite,
+*>    3. If the leading principal minor of order i is not positive,
 *>    then the routine returns with INFO = i. Otherwise, the factored
 *>    form of A is used to estimate the condition number of the matrix
 *>    A (see argument RCOND).  If the reciprocal of the condition number
@@ -157,7 +157,7 @@
 *> \param[in,out] A
 *> \verbatim
 *>          A is COMPLEX array, dimension (LDA,N)
-*>     On entry, the symmetric matrix A, except if FACT = 'F' and EQUED =
+*>     On entry, the Hermitian matrix A, except if FACT = 'F' and EQUED =
 *>     'Y', then A must contain the equilibrated matrix
 *>     diag(S)*A*diag(S).  If UPLO = 'U', the leading N-by-N upper
 *>     triangular part of A contains the upper triangular part of the
@@ -365,7 +365,7 @@
 *>     information as described below. There currently are up to three
 *>     pieces of information returned for each right-hand side. If
 *>     componentwise accuracy is not requested (PARAMS(3) = 0.0), then
-*>     ERR_BNDS_COMP is not accessed.  If N_ERR_BNDS .LT. 3, then at most
+*>     ERR_BNDS_COMP is not accessed.  If N_ERR_BNDS < 3, then at most
 *>     the first (:,N_ERR_BNDS) entries are returned.
 *>
 *>     The first index in ERR_BNDS_COMP(i,:) corresponds to the ith
@@ -401,14 +401,14 @@
 *> \param[in] NPARAMS
 *> \verbatim
 *>          NPARAMS is INTEGER
-*>     Specifies the number of parameters set in PARAMS.  If .LE. 0, the
+*>     Specifies the number of parameters set in PARAMS.  If <= 0, the
 *>     PARAMS array is never referenced and default values are used.
 *> \endverbatim
 *>
 *> \param[in,out] PARAMS
 *> \verbatim
 *>          PARAMS is REAL array, dimension NPARAMS
-*>     Specifies algorithm parameters.  If an entry is .LT. 0.0, then
+*>     Specifies algorithm parameters.  If an entry is < 0.0, then
 *>     that entry will be filled with default value used for that
 *>     parameter.  Only positions up to NPARAMS are accessed; defaults
 *>     are used for higher-numbered parameters.
@@ -416,9 +416,9 @@
 *>       PARAMS(LA_LINRX_ITREF_I = 1) : Whether to perform iterative
 *>            refinement or not.
 *>         Default: 1.0
-*>            = 0.0 : No refinement is performed, and no error bounds are
+*>            = 0.0:  No refinement is performed, and no error bounds are
 *>                    computed.
-*>            = 1.0 : Use the double-precision refinement algorithm,
+*>            = 1.0:  Use the double-precision refinement algorithm,
 *>                    possibly with doubled-single computations if the
 *>                    compilation environment does not support DOUBLE
 *>                    PRECISION.
@@ -486,8 +486,6 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date April 2012
-*
 *> \ingroup complexPOsolve
 *
 *  =====================================================================
@@ -496,10 +494,9 @@
      $                    N_ERR_BNDS, ERR_BNDS_NORM, ERR_BNDS_COMP,
      $                    NPARAMS, PARAMS, WORK, RWORK, INFO )
 *
-*  -- LAPACK driver routine (version 3.7.0) --
+*  -- LAPACK driver routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     April 2012
 *
 *     .. Scalar Arguments ..
       CHARACTER          EQUED, FACT, UPLO

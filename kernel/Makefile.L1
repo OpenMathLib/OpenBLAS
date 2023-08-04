@@ -1,3 +1,11 @@
+FMAFLAG=
+ifndef OLDGCC
+ifdef HAVE_FMA3
+FMAFLAG = -mfma
+endif
+endif
+
+
 ### AMAX ###
 
 ifndef SAMAXKERNEL
@@ -262,6 +270,20 @@ ifndef XDOTKERNEL
 XDOTKERNEL = zdot.S
 endif
 
+ifeq ($(BUILD_BFLOAT16),1)
+ifndef SBDOTKERNEL
+SBDOTKERNEL = ../x86_64/sbdot.c
+endif
+
+ifndef TOBF16KERNEL
+TOBF16KERNEL = ../x86_64/tobf16.c
+endif
+
+ifndef BF16TOKERNEL
+BF16TOKERNEL = ../x86_64/bf16to.c
+endif
+endif
+
 ### NRM2 ###
 
 ifndef SNRM2KERNEL
@@ -516,6 +538,15 @@ XBLASOBJS	+= \
 	xdotc_k$(TSUFFIX).$(SUFFIX) xdotu_k$(TSUFFIX).$(SUFFIX) xnrm2_k$(TSUFFIX).$(SUFFIX) xqrot_k$(TSUFFIX).$(SUFFIX) \
 	xscal_k$(TSUFFIX).$(SUFFIX) xswap_k$(TSUFFIX).$(SUFFIX) xsum_k$(TSUFFIX).$(SUFFIX)
 
+ifeq ($(BUILD_BFLOAT16),1)
+SBBLASOBJS	+= \
+	 sbdot_k$(TSUFFIX).$(SUFFIX)
+SBEXTOBJS        += \
+	 sbstobf16_k$(TSUFFIX).$(SUFFIX) sbdtobf16_k$(TSUFFIX).$(SUFFIX)
+SBEXTOBJS        += \
+	 sbf16tos_k$(TSUFFIX).$(SUFFIX) dbf16tod_k$(TSUFFIX).$(SUFFIX)
+endif
+
 ### AMAX ###
 
 
@@ -734,6 +765,19 @@ $(KDIR)ddot_k$(TSUFFIX).$(SUFFIX) $(KDIR)ddot_k$(TPSUFFIX).$(PSUFFIX) : $(KERNEL
 $(KDIR)qdot_k$(TSUFFIX).$(SUFFIX) $(KDIR)qdot_k$(TPSUFFIX).$(PSUFFIX) : $(KERNELDIR)/$(QDOTKERNEL)
 	$(CC) -c $(CFLAGS) -UCOMPLEX -DXDOUBLE $< -o $@
 
+ifeq ($(BUILD_BFLOAT16),1)
+$(KDIR)sbdot_k$(TSUFFIX).$(SUFFIX) $(KDIR)sbdot_k$(TPSUFFIX).$(PSUFFIX) : $(KERNELDIR)/$(SBDOTKERNEL)
+	$(CC) -c $(CFLAGS) -UCOMPLEX $< -o $@
+$(KDIR)sbstobf16_k$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(TOBF16KERNEL)
+	$(CC) -c $(CFLAGS) -UDOUBLE -DSINGLE $< -o $@
+$(KDIR)sbdtobf16_k$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(TOBF16KERNEL)
+	$(CC) -c $(CFLAGS) -DDOUBLE -USINGLE $< -o $@
+$(KDIR)sbf16tos_k$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(BF16TOKERNEL)
+	$(CC) -c $(CFLAGS) -UDOUBLE -DSINGLE $< -o $@
+$(KDIR)dbf16tod_k$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(BF16TOKERNEL)
+	$(CC) -c $(CFLAGS) -DDOUBLE -USINGLE $< -o $@
+endif
+
 $(KDIR)sdot_k$(TSUFFIX).$(SUFFIX) $(KDIR)sdot_k$(TPSUFFIX).$(PSUFFIX) : $(KERNELDIR)/$(SDOTKERNEL)
 	$(CC) -c $(CFLAGS) -UCOMPLEX -UDOUBLE $< -o $@
 
@@ -792,10 +836,10 @@ $(KDIR)xnrm2_k$(TSUFFIX).$(SUFFIX)  $(KDIR)xnrm2_k$(TPSUFFIX).$(PSUFFIX)  : $(KE
 	$(CC) $(CFLAGS) -DCOMPLEX -c -DXDOUBLE $< -o $@
 
 $(KDIR)srot_k$(TSUFFIX).$(SUFFIX)  $(KDIR)srot_k$(TPSUFFIX).$(PSUFFIX)  : $(KERNELDIR)/$(SROTKERNEL)
-	$(CC) -c $(CFLAGS) -UCOMPLEX -UCOMPLEX -UDOUBLE  $< -o $@
+	$(CC) -c $(CFLAGS) $(FMAFLAG) -UCOMPLEX -UCOMPLEX -UDOUBLE  $< -o $@
 
 $(KDIR)drot_k$(TSUFFIX).$(SUFFIX)  $(KDIR)drot_k$(TPSUFFIX).$(PSUFFIX)  : $(KERNELDIR)/$(DROTKERNEL)
-	$(CC) -c $(CFLAGS) -UCOMPLEX -UCOMPLEX -DDOUBLE  $< -o $@
+	$(CC) -c $(CFLAGS) $(FMAFLAG) -UCOMPLEX -UCOMPLEX -DDOUBLE  $< -o $@
 
 $(KDIR)qrot_k$(TSUFFIX).$(SUFFIX)  $(KDIR)qrot_k$(TPSUFFIX).$(PSUFFIX)  : $(KERNELDIR)/$(QROTKERNEL)
 	$(CC) -c $(CFLAGS) -UCOMPLEX -UCOMPLEX -DXDOUBLE $< -o $@

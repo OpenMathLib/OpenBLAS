@@ -28,7 +28,6 @@
 *****************************************************************************
 * Contents: Native middle-level C interface to LAPACK function slacpy
 * Author: Intel Corporation
-* Generated November 2015
 *****************************************************************************/
 
 #include "lapacke_utils.h"
@@ -41,9 +40,6 @@ lapack_int LAPACKE_slacpy_work( int matrix_layout, char uplo, lapack_int m,
     if( matrix_layout == LAPACK_COL_MAJOR ) {
         /* Call LAPACK function and adjust info */
         LAPACK_slacpy( &uplo, &m, &n, a, &lda, b, &ldb );
-        if( info < 0 ) {
-            info = info - 1;
-        }
     } else if( matrix_layout == LAPACK_ROW_MAJOR ) {
         lapack_int lda_t = MAX(1,m);
         lapack_int ldb_t = MAX(1,m);

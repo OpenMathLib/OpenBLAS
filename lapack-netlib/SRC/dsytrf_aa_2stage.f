@@ -38,7 +38,7 @@
 *> DSYTRF_AA_2STAGE computes the factorization of a real symmetric matrix A
 *> using the Aasen's algorithm.  The form of the factorization is
 *>
-*>    A = U*T*U**T  or  A = L*T*L**T
+*>    A = U**T*T*U  or  A = L*T*L**T
 *>
 *> where U (or L) is a product of permutation and unit upper (lower)
 *> triangular matrices, and T is a symmetric band matrix with the
@@ -75,7 +75,7 @@
 *>          triangular part of the matrix A, and the strictly upper
 *>          triangular part of A is not referenced.
 *>
-*>          On exit, L is stored below (or above) the subdiaonal blocks,
+*>          On exit, L is stored below (or above) the subdiagonal blocks,
 *>          when UPLO  is 'L' (or 'U').
 *> \endverbatim
 *>
@@ -103,6 +103,22 @@
 *>          no error message related to LTB is issued by XERBLA.
 *> \endverbatim
 *>
+*> \param[out] IPIV
+*> \verbatim
+*>          IPIV is INTEGER array, dimension (N)
+*>          On exit, it contains the details of the interchanges, i.e.,
+*>          the row and column k of A were interchanged with the
+*>          row and column IPIV(k).
+*> \endverbatim
+*>
+*> \param[out] IPIV2
+*> \verbatim
+*>          IPIV2 is INTEGER array, dimension (N)
+*>          On exit, it contains the details of the interchanges, i.e.,
+*>          the row and column k of T were interchanged with the
+*>          row and column IPIV2(k).
+*> \endverbatim
+*>
 *> \param[out] WORK
 *> \verbatim
 *>          WORK is DOUBLE PRECISION workspace of size LWORK
@@ -118,22 +134,6 @@
 *>          routine only calculates the optimal size of the WORK array,
 *>          returns this value as the first entry of the WORK array, and
 *>          no error message related to LWORK is issued by XERBLA.
-*> \endverbatim
-*>
-*> \param[out] IPIV
-*> \verbatim
-*>          IPIV is INTEGER array, dimension (N)
-*>          On exit, it contains the details of the interchanges, i.e.,
-*>          the row and column k of A were interchanged with the
-*>          row and column IPIV(k).
-*> \endverbatim
-*>
-*> \param[out] IPIV2
-*> \verbatim
-*>          IPIV2 is INTEGER array, dimension (N)
-*>          On exit, it contains the details of the interchanges, i.e.,
-*>          the row and column k of T were interchanged with the
-*>          row and column IPIV2(k).
 *> \endverbatim
 *>
 *> \param[out] INFO
@@ -152,18 +152,15 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date November 2017
-*
 *> \ingroup doubleSYcomputational
 *
 *  =====================================================================
       SUBROUTINE DSYTRF_AA_2STAGE( UPLO, N, A, LDA, TB, LTB, IPIV,
      $                             IPIV2, WORK, LWORK, INFO )
 *
-*  -- LAPACK computational routine (version 3.8.0) --
+*  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2017
 *
       IMPLICIT NONE
 *
@@ -275,7 +272,7 @@
       IF( UPPER ) THEN
 *
 *        .....................................................
-*        Factorize A as L*D*L**T using the upper triangle of A
+*        Factorize A as U**T*D*U using the upper triangle of A
 *        .....................................................
 *
          DO J = 0, NT-1
@@ -442,12 +439,14 @@ c               END IF
 *                    > Apply pivots to previous columns of L
                      CALL DSWAP( K-1, A( (J+1)*NB+1, I1 ), 1, 
      $                                A( (J+1)*NB+1, I2 ), 1 )
-*                    > Swap A(I1+1:M, I1) with A(I2, I1+1:M)               
-                     CALL DSWAP( I2-I1-1, A( I1, I1+1 ), LDA,
-     $                                    A( I1+1, I2 ), 1 )
+*                    > Swap A(I1+1:M, I1) with A(I2, I1+1:M)
+                     IF( I2.GT.(I1+1) )
+     $                  CALL DSWAP( I2-I1-1, A( I1, I1+1 ), LDA,
+     $                                       A( I1+1, I2 ), 1 )
 *                    > Swap A(I2+1:M, I1) with A(I2+1:M, I2)
-                     CALL DSWAP( N-I2, A( I1, I2+1 ), LDA,
-     $                                 A( I2, I2+1 ), LDA ) 
+                     IF( I2.LT.N )
+     $                  CALL DSWAP( N-I2, A( I1, I2+1 ), LDA,
+     $                                    A( I2, I2+1 ), LDA ) 
 *                    > Swap A(I1, I1) with A(I2, I2)
                      PIV = A( I1, I1 )
                      A( I1, I1 ) = A( I2, I2 )
@@ -616,11 +615,13 @@ c               END IF
                      CALL DSWAP( K-1, A( I1, (J+1)*NB+1 ), LDA, 
      $                                A( I2, (J+1)*NB+1 ), LDA )
 *                    > Swap A(I1+1:M, I1) with A(I2, I1+1:M)               
-                     CALL DSWAP( I2-I1-1, A( I1+1, I1 ), 1,
-     $                                    A( I2, I1+1 ), LDA )
+                     IF( I2.GT.(I1+1) )
+     $                  CALL DSWAP( I2-I1-1, A( I1+1, I1 ), 1,
+     $                                       A( I2, I1+1 ), LDA )
 *                    > Swap A(I2+1:M, I1) with A(I2+1:M, I2)
-                     CALL DSWAP( N-I2, A( I2+1, I1 ), 1,
-     $                                 A( I2+1, I2 ), 1 ) 
+                     IF( I2.LT.N )
+     $                  CALL DSWAP( N-I2, A( I2+1, I1 ), 1,
+     $                                    A( I2+1, I2 ), 1 ) 
 *                    > Swap A(I1, I1) with A(I2, I2)
                      PIV = A( I1, I1 )
                      A( I1, I1 ) = A( I2, I2 )

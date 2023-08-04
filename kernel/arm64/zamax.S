@@ -137,10 +137,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	fadd	v3.2d, v3.2d, v4.2d
 #if defined(USE_MIN)
 	fmin	v1.2d, v1.2d, v3.2d
-	fminp	MAXF, v1.2d
+	fminp	TMPF, v1.2d
 #else
 	fmax	v1.2d, v1.2d, v3.2d
-	fmaxp	MAXF, v1.2d
+	fmaxp	TMPF, v1.2d
 #endif
 #endif
 	fcmp	MAXF, TMPF

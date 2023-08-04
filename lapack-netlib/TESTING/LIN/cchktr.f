@@ -31,7 +31,7 @@
 *>
 *> \verbatim
 *>
-*> CCHKTR tests CTRTRI, -TRS, -RFS, and -CON, and CLATRS
+*> CCHKTR tests CTRTRI, -TRS, -RFS, and -CON, and CLATRS(3)
 *> \endverbatim
 *
 *  Arguments:
@@ -154,8 +154,6 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
-*
 *> \ingroup complex_lin
 *
 *  =====================================================================
@@ -163,10 +161,9 @@
      $                   THRESH, TSTERR, NMAX, A, AINV, B, X, XACT,
      $                   WORK, RWORK, NOUT )
 *
-*  -- LAPACK test routine (version 3.7.0) --
+*  -- LAPACK test routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
 *
 *     .. Scalar Arguments ..
       LOGICAL            TSTERR
@@ -187,7 +184,7 @@
       INTEGER            NTYPE1, NTYPES
       PARAMETER          ( NTYPE1 = 10, NTYPES = 18 )
       INTEGER            NTESTS
-      PARAMETER          ( NTESTS = 9 )
+      PARAMETER          ( NTESTS = 10 )
       INTEGER            NTRAN
       PARAMETER          ( NTRAN = 3 )
       REAL               ONE, ZERO
@@ -198,13 +195,14 @@
       CHARACTER*3        PATH
       INTEGER            I, IDIAG, IMAT, IN, INB, INFO, IRHS, ITRAN,
      $                   IUPLO, K, LDA, N, NB, NERRS, NFAIL, NRHS, NRUN
-      REAL               AINVNM, ANORM, DUMMY, RCOND, RCONDC, RCONDI,
-     $                   RCONDO, SCALE
+      REAL               AINVNM, ANORM, BIGNUM, DUMMY, RCOND, RCONDC,
+     $                   RCONDI, RCONDO, RES, SCALE, SLAMCH
 *     ..
 *     .. Local Arrays ..
       CHARACTER          TRANSS( NTRAN ), UPLOS( 2 )
       INTEGER            ISEED( 4 ), ISEEDY( 4 )
-      REAL               RESULT( NTESTS )
+      REAL               RESULT( NTESTS ), RWORK2( 2*NMAX ),
+     $                   SCALE3( 2 )
 *     ..
 *     .. External Functions ..
       LOGICAL            LSAME
@@ -213,9 +211,9 @@
 *     ..
 *     .. External Subroutines ..
       EXTERNAL           ALAERH, ALAHD, ALASUM, CCOPY, CERRTR, CGET04,
-     $                   CLACPY, CLARHS, CLATRS, CLATTR, CTRCON, CTRRFS,
-     $                   CTRT01, CTRT02, CTRT03, CTRT05, CTRT06, CTRTRI,
-     $                   CTRTRS, XLAENV
+     $                   CLACPY, CLARHS, CLATRS, CLATRS3, CLATTR,
+     $                   CSSCAL, CTRCON, CTRRFS, CTRT01, CTRT02, CTRT03,
+     $                   CTRT05, CTRT06, CTRTRI, CTRTRS, XLAENV, SLAMCH
 *     ..
 *     .. Scalars in Common ..
       LOGICAL            LERR, OK
@@ -239,6 +237,7 @@
 *
       PATH( 1: 1 ) = 'Complex precision'
       PATH( 2: 3 ) = 'TR'
+      BIGNUM = SLAMCH('Overflow') / SLAMCH('Precision')
       NRUN = 0
       NFAIL = 0
       NERRS = 0
@@ -383,7 +382,7 @@
 *                       This line is needed on a Sun SPARCstation.
 *
                         IF( N.GT.0 )
-     $                     DUMMY = A( 1 )
+     $                     DUMMY = REAL( A( 1 ) )
 *
                         CALL CTRT02( UPLO, TRANS, DIAG, N, NRHS, A, LDA,
      $                               X, LDA, B, LDA, WORK, RWORK,
@@ -538,6 +537,32 @@
      $                         RWORK, ONE, B( N+1 ), LDA, X, LDA, WORK,
      $                         RESULT( 9 ) )
 *
+*+    TEST 10
+*                 Solve op(A)*X = B.
+*
+                  SRNAMT = 'CLATRS3'
+                  CALL CCOPY( N, X, 1, B, 1 )
+                  CALL CCOPY( N, X, 1, B( N+1 ), 1 )
+                  CALL CSSCAL( N, BIGNUM, B( N+1 ), 1 )
+                  CALL CLATRS3( UPLO, TRANS, DIAG, 'N', N, 2, A, LDA,
+     $                          B, MAX(1, N), SCALE3, RWORK, RWORK2,
+     $                          2*NMAX, INFO )
+*
+*                 Check error code from CLATRS3.
+*
+                  IF( INFO.NE.0 )
+     $               CALL ALAERH( PATH, 'CLATRS3', INFO, 0,
+     $                            UPLO // TRANS // DIAG // 'N', N, N,
+     $                            -1, -1, -1, IMAT, NFAIL, NERRS, NOUT )
+                  CALL CTRT03( UPLO, TRANS, DIAG, N, 1, A, LDA,
+     $                         SCALE3( 1 ), RWORK, ONE, B( 1 ), LDA,
+     $                         X, LDA, WORK, RESULT( 10 ) )
+                  CALL CSSCAL( N, BIGNUM, X, 1 )
+                  CALL CTRT03( UPLO, TRANS, DIAG, N, 1, A, LDA,
+     $                         SCALE3( 2 ), RWORK, ONE, B( N+1 ), LDA,
+     $                         X, LDA, WORK, RES )
+                  RESULT( 10 ) = MAX( RESULT( 10 ), RES )
+*
 *                 Print information about the tests that did not pass
 *                 the threshold.
 *
@@ -555,7 +580,14 @@
      $                  DIAG, 'Y', N, IMAT, 9, RESULT( 9 )
                      NFAIL = NFAIL + 1
                   END IF
-                  NRUN = NRUN + 2
+                  IF( RESULT( 10 ).GE.THRESH ) THEN
+                     IF( NFAIL.EQ.0 .AND. NERRS.EQ.0 )
+     $                  CALL ALAHD( NOUT, PATH )
+                     WRITE( NOUT, FMT = 9996 )'CLATRS3', UPLO, TRANS,
+     $                  DIAG, 'N', N, IMAT, 10, RESULT( 10 )
+                     NFAIL = NFAIL + 1
+                  END IF
+                  NRUN = NRUN + 3
    90          CONTINUE
   100       CONTINUE
   110    CONTINUE

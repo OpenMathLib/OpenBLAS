@@ -36,7 +36,7 @@
 *>    CLA_WWADDW adds a vector W into a doubled-single vector (X, Y).
 *>
 *>    This works for all extant IBM's hex and binary floating point
-*>    arithmetics, but not for decimal.
+*>    arithmetic, but not for decimal.
 *> \endverbatim
 *
 *  Arguments:
@@ -74,17 +74,14 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
-*
 *> \ingroup complexOTHERcomputational
 *
 *  =====================================================================
       SUBROUTINE CLA_WWADDW( N, X, Y, W )
 *
-*  -- LAPACK computational routine (version 3.7.0) --
+*  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
 *
 *     .. Scalar Arguments ..
       INTEGER            N
@@ -108,4 +105,7 @@
         X(I) = S
    10 CONTINUE
       RETURN
+*
+*     End of CLA_WWADDW
+*
       END
