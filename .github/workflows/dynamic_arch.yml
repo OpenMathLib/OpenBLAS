@@ -167,9 +167,6 @@ jobs:
             idx: int32
             target-prefix: mingw-w64-clang-x86_64
             fc-pkg: fc
-            # Compiling with Flang 16 seems to cause test errors on machines
-            # with AVX512 instructions. Revisit after MSYS2 distributes Flang 17.
-            no-avx512-flags: -DNO_AVX512=1
           - msystem: CLANG32
             idx: int32
             target-prefix: mingw-w64-clang-i686
@@ -185,9 +182,6 @@ jobs:
             idx64-flags: -DBINARY=64 -DINTERFACE64=1
             target-prefix: mingw-w64-clang-x86_64
             fc-pkg: fc
-            # Compiling with Flang 16 seems to cause test errors on machines
-            # with AVX512 instructions. Revisit after MSYS2 distributes Flang 17.
-            no-avx512-flags: -DNO_AVX512=1
           - msystem: MINGW64
             idx: int32
             target-prefix: mingw-w64-x86_64
@@ -274,7 +268,6 @@ jobs:
                 -DTARGET=CORE2 \
                 ${{ matrix.idx64-flags }} \
                 ${{ matrix.c-lapack-flags }} \
-                ${{ matrix.no-avx512-flags }} \
                 -DCMAKE_C_COMPILER_LAUNCHER=ccache \
                 -DCMAKE_Fortran_COMPILER_LAUNCHER=ccache \
                 ..
