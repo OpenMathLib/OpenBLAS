@@ -115,6 +115,14 @@ if (NOT NOFORTRAN AND CMAKE_Fortran_COMPILER_ID STREQUAL "LLVMFlang")
     endif()
     set(NO_AVX512 1)
   endif()
+
+  if (CMAKE_Fortran_COMPILER_VERSION VERSION_LESS 17)
+    # LLVM Flang before version 17 doesn't support necessary OpenMP constructs.
+    if (USE_OPENMP)
+      message(STATUS "Disabling OpenMP for LLVM Flang before version 17.")
+      set(USE_OPENMP 0)
+    endif()
+  endif()
 endif()
 
 include("${PROJECT_SOURCE_DIR}/cmake/utils.cmake")
