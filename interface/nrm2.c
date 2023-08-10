@@ -54,6 +54,21 @@ FLOATRET NAME(blasint *N, FLOAT *x, blasint *INCX){
 
   if (n <= 0) return 0.;
 
+#ifndef COMPLEX
+  if (n == 1)
+#ifdef DOUBLE
+    return fabs(x[0]);
+#else
+    return fabsf(x[0]);
+#endif
+#endif
+
+  if (incx < 0) 
+#ifdef COMPLEX    
+    x -= (n - 1) * incx * 2;
+#else
+    x -= (n - 1) * incx;
+#endif
   IDEBUG_START;
 
   FUNCTION_PROFILE_START();
@@ -82,6 +97,22 @@ FLOAT CNAME(blasint n, FLOAT *x, blasint incx){
 
   if (n <= 0) return 0.;
 
+  #ifndef COMPLEX
+  if (n == 1)
+#ifdef DOUBLE
+    return fabs(x[0]);
+#else
+    return fabsf(x[0]);
+#endif
+#endif
+
+  if (incx < 0) 
+#ifdef COMPLEX    
+    x -= (n - 1) * incx * 2;
+#else
+    x -= (n - 1) * incx;
+#endif
+  
   IDEBUG_START;
 
   FUNCTION_PROFILE_START();
