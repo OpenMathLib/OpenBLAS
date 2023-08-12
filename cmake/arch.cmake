@@ -135,7 +135,7 @@ if (ARM64)
   set(BINARY_DEFINED 1)
 endif ()
 
-if (${ARCH} STREQUAL "riscv64")
+if (RISCV64)
   set(NO_BINARY_MODE 1)
   set(BINARY_DEFINED 1)
 endif ()
