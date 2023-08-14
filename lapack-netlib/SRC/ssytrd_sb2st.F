@@ -506,7 +506,7 @@
      $                         STIND, EDIND, SWEEPID, N, KD, IB,
      $                         WORK ( INDA ), LDA, 
      $                         HOUS( INDV ), HOUS( INDTAU ), LDV,
-     $                         WORK( INDW + TID*KD ) )
+     $                         WORK( INDW ) )
 #endif 
                           IF ( BLKLASTIND.GE.(N-1) ) THEN
                               STT = STT + 1

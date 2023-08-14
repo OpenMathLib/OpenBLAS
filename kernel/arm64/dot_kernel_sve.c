@@ -50,8 +50,8 @@ static FLOAT dot_kernel_sve(BLASLONG n, FLOAT *x, FLOAT *y) {
         BLASLONG sve_width = SVE_WIDTH;
 
         for (BLASLONG i = 0; i < n; i += sve_width * 2) {
-                svbool_t pg_a = SVE_WHILELT(i, n);
-                svbool_t pg_b = SVE_WHILELT(i + sve_width, n);
+                svbool_t pg_a = SVE_WHILELT((uint64_t)i, (uint64_t)n);
+                svbool_t pg_b = SVE_WHILELT((uint64_t)(i + sve_width), (uint64_t)n);
 
                 SVE_TYPE x_vec_a = svld1(pg_a, &x[i]);
                 SVE_TYPE y_vec_a = svld1(pg_a, &y[i]);

@@ -21,8 +21,8 @@
 *>
 *> \verbatim
 *>
-*> ZERRHS tests the error exits for ZGEBAK, CGEBAL, CGEHRD, ZUNGHR,
-*> ZUNMHR, ZHSEQR, CHSEIN, and ZTREVC.
+*> ZERRHS tests the error exits for ZGEBAK, ZGEBAL, ZGEHRD, ZGEHD2,
+*> ZUNGHR, ZUNMHR, ZHSEQR, ZHSEIN, ZTREVC, and ZTREVC3.
 *> \endverbatim
 *
 *  Arguments:
@@ -86,7 +86,7 @@
 *     ..
 *     .. External Subroutines ..
       EXTERNAL           CHKXER, ZGEBAK, ZGEBAL, ZGEHRD, ZHSEIN, ZHSEQR,
-     $                   ZTREVC, ZUNGHR, ZUNMHR
+     $                   ZUNGHR, ZUNMHR, ZTREVC, ZTREVC3
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          DBLE
@@ -192,6 +192,29 @@
          CALL ZGEHRD( 2, 1, 2, A, 2, TAU, W, 1, INFO )
          CALL CHKXER( 'ZGEHRD', INFOT, NOUT, LERR, OK )
          NT = NT + 7
+*
+*        ZGEHD2
+*
+         SRNAMT = 'ZGEHD2'
+         INFOT = 1
+         CALL ZGEHD2( -1, 1, 1, A, 1, TAU, W, INFO )
+         CALL CHKXER( 'ZGEHD2', INFOT, NOUT, LERR, OK )
+         INFOT = 2
+         CALL ZGEHD2( 0, 0, 0, A, 1, TAU, W, INFO )
+         CALL CHKXER( 'ZGEHD2', INFOT, NOUT, LERR, OK )
+         INFOT = 2
+         CALL ZGEHD2( 0, 2, 0, A, 1, TAU, W, INFO )
+         CALL CHKXER( 'ZGEHD2', INFOT, NOUT, LERR, OK )
+         INFOT = 3
+         CALL ZGEHD2( 1, 1, 0, A, 1, TAU, W, INFO )
+         CALL CHKXER( 'ZGEHD2', INFOT, NOUT, LERR, OK )
+         INFOT = 3
+         CALL ZGEHD2( 0, 1, 1, A, 1, TAU, W, INFO )
+         CALL CHKXER( 'ZGEHD2', INFOT, NOUT, LERR, OK )
+         INFOT = 5
+         CALL ZGEHD2( 2, 1, 1, A, 1, TAU, W, INFO )
+         CALL CHKXER( 'ZGEHD2', INFOT, NOUT, LERR, OK )
+         NT = NT + 6
 *
 *        ZUNGHR
 *
@@ -389,6 +412,47 @@
      $                INFO )
          CALL CHKXER( 'ZTREVC', INFOT, NOUT, LERR, OK )
          NT = NT + 7
+*
+*        ZTREVC3
+*
+         SRNAMT = 'ZTREVC3'
+         INFOT = 1
+         CALL ZTREVC3( '/', 'A', SEL, 0, A, 1, VL, 1, VR, 1, 0, M, W,
+     $                 LW, RW, 1, INFO )
+         CALL CHKXER( 'ZTREVC3', INFOT, NOUT, LERR, OK )
+         INFOT = 2
+         CALL ZTREVC3( 'L', '/', SEL, 0, A, 1, VL, 1, VR, 1, 0, M, W,
+     $                 LW, RW, 1, INFO )
+         CALL CHKXER( 'ZTREVC3', INFOT, NOUT, LERR, OK )
+         INFOT = 4
+         CALL ZTREVC3( 'L', 'A', SEL, -1, A, 1, VL, 1, VR, 1, 0, M, W,
+     $                 LW, RW, 1, INFO )
+         CALL CHKXER( 'ZTREVC3', INFOT, NOUT, LERR, OK )
+         INFOT = 6
+         CALL ZTREVC3( 'L', 'A', SEL, 2, A, 1, VL, 2, VR, 1, 4, M, W,
+     $                 LW, RW, 2, INFO )
+         CALL CHKXER( 'ZTREVC3', INFOT, NOUT, LERR, OK )
+         INFOT = 8
+         CALL ZTREVC3( 'L', 'A', SEL, 2, A, 2, VL, 1, VR, 1, 4, M, W,
+     $                 LW, RW, 2, INFO )
+         CALL CHKXER( 'ZTREVC3', INFOT, NOUT, LERR, OK )
+         INFOT = 10
+         CALL ZTREVC3( 'R', 'A', SEL, 2, A, 2, VL, 1, VR, 1, 4, M, W,
+     $                 LW, RW, 2, INFO )
+         CALL CHKXER( 'ZTREVC3', INFOT, NOUT, LERR, OK )
+         INFOT = 11
+         CALL ZTREVC3( 'L', 'A', SEL, 2, A, 2, VL, 2, VR, 1, 1, M, W,
+     $                 LW, RW, 2, INFO )
+         CALL CHKXER( 'ZTREVC3', INFOT, NOUT, LERR, OK )
+         INFOT = 14
+         CALL ZTREVC3( 'L', 'A', SEL, 2, A, 2, VL, 2, VR, 1, 2, M, W,
+     $                 2, RW, 2, INFO )
+         CALL CHKXER( 'ZTREVC3', INFOT, NOUT, LERR, OK )
+         INFOT = 16
+         CALL ZTREVC3( 'L', 'A', SEL, 2, A, 2, VL, 2, VR, 1, 2, M, W,
+     $                 LW, RW, 1, INFO )
+         CALL CHKXER( 'ZTREVC3', INFOT, NOUT, LERR, OK )
+         NT = NT + 9
       END IF
 *
 *     Print a summary line.

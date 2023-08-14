@@ -21,8 +21,8 @@
 *>
 *> \verbatim
 *>
-*> SERRHS tests the error exits for SGEBAK, SGEBAL, SGEHRD, SORGHR,
-*> SORMHR, SHSEQR, SHSEIN, and STREVC.
+*> SERRHS tests the error exits for SGEBAK, SGEBAL, SGEHRD, SGEHD2,
+*> SORGHR, SORMHR, SHSEQR, SHSEIN, STREVC, and STREVC3.
 *> \endverbatim
 *
 *  Arguments:
@@ -85,7 +85,7 @@
 *     ..
 *     .. External Subroutines ..
       EXTERNAL           CHKXER, SGEBAK, SGEBAL, SGEHRD, SHSEIN, SHSEQR,
-     $                   SORGHR, SORMHR, STREVC
+     $                   SORGHR, SORMHR, STREVC, STREVC3, SGEHD2
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          REAL
@@ -192,6 +192,29 @@
          CALL SGEHRD( 2, 1, 2, A, 2, TAU, W, 1, INFO )
          CALL CHKXER( 'SGEHRD', INFOT, NOUT, LERR, OK )
          NT = NT + 7
+*
+*        SGEHD2
+*
+         SRNAMT = 'SGEHD2'
+         INFOT = 1
+         CALL SGEHD2( -1, 1, 1, A, 1, TAU, W, INFO )
+         CALL CHKXER( 'SGEHD2', INFOT, NOUT, LERR, OK )
+         INFOT = 2
+         CALL SGEHD2( 0, 0, 0, A, 1, TAU, W, INFO )
+         CALL CHKXER( 'SGEHD2', INFOT, NOUT, LERR, OK )
+         INFOT = 2
+         CALL SGEHD2( 0, 2, 0, A, 1, TAU, W, INFO )
+         CALL CHKXER( 'SGEHD2', INFOT, NOUT, LERR, OK )
+         INFOT = 3
+         CALL SGEHD2( 1, 1, 0, A, 1, TAU, W, INFO )
+         CALL CHKXER( 'SGEHD2', INFOT, NOUT, LERR, OK )
+         INFOT = 3
+         CALL SGEHD2( 0, 1, 1, A, 1, TAU, W, INFO )
+         CALL CHKXER( 'SGEHD2', INFOT, NOUT, LERR, OK )
+         INFOT = 5
+         CALL SGEHD2( 2, 1, 1, A, 1, TAU, W, INFO )
+         CALL CHKXER( 'SGEHD2', INFOT, NOUT, LERR, OK )
+         NT = NT + 6
 *
 *        SORGHR
 *
@@ -327,7 +350,11 @@
          CALL SHSEQR( 'E', 'V', 2, 1, 2, A, 2, WR, WI, C, 1, W, 1,
      $                INFO )
          CALL CHKXER( 'SHSEQR', INFOT, NOUT, LERR, OK )
-         NT = NT + 9
+         INFOT = 13
+         CALL SHSEQR( 'E', 'N', 2, 1, 2, A, 2, WR, WI, C, 1, W, 1,
+     $                INFO )
+         CALL CHKXER( 'SHSEQR', INFOT, NOUT, LERR, OK )
+         NT = NT + 10
 *
 *        SHSEIN
 *
@@ -398,6 +425,43 @@
      $                INFO )
          CALL CHKXER( 'STREVC', INFOT, NOUT, LERR, OK )
          NT = NT + 7
+*
+*        STREVC3
+*
+         SRNAMT = 'STREVC3'
+         INFOT = 1
+         CALL STREVC3( '/', 'A', SEL, 0, A, 1, VL, 1, VR, 1, 0, M, W,
+     $                 LW, INFO )
+         CALL CHKXER( 'STREVC3', INFOT, NOUT, LERR, OK )
+         INFOT = 2
+         CALL STREVC3( 'L', '/', SEL, 0, A, 1, VL, 1, VR, 1, 0, M, W,
+     $                 LW, INFO )
+         CALL CHKXER( 'STREVC3', INFOT, NOUT, LERR, OK )
+         INFOT = 4
+         CALL STREVC3( 'L', 'A', SEL, -1, A, 1, VL, 1, VR, 1, 0, M, W,
+     $                 LW, INFO )
+         CALL CHKXER( 'STREVC3', INFOT, NOUT, LERR, OK )
+         INFOT = 6
+         CALL STREVC3( 'L', 'A', SEL, 2, A, 1, VL, 2, VR, 1, 4, M, W,
+     $                 LW, INFO )
+         CALL CHKXER( 'STREVC3', INFOT, NOUT, LERR, OK )
+         INFOT = 8
+         CALL STREVC3( 'L', 'A', SEL, 2, A, 2, VL, 1, VR, 1, 4, M, W,
+     $                 LW, INFO )
+         CALL CHKXER( 'STREVC3', INFOT, NOUT, LERR, OK )
+         INFOT = 10
+         CALL STREVC3( 'R', 'A', SEL, 2, A, 2, VL, 1, VR, 1, 4, M, W,
+     $                 LW, INFO )
+         CALL CHKXER( 'STREVC3', INFOT, NOUT, LERR, OK )
+         INFOT = 11
+         CALL STREVC3( 'L', 'A', SEL, 2, A, 2, VL, 2, VR, 1, 1, M, W,
+     $                 LW, INFO )
+         CALL CHKXER( 'STREVC3', INFOT, NOUT, LERR, OK )
+         INFOT = 14
+         CALL STREVC3( 'L', 'A', SEL, 2, A, 2, VL, 2, VR, 1, 2, M, W,
+     $                 2, INFO )
+         CALL CHKXER( 'STREVC3', INFOT, NOUT, LERR, OK )
+         NT = NT + 8
       END IF
 *
 *     Print a summary line.

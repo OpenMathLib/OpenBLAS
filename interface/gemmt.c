@@ -77,6 +77,7 @@ void NAME(char *UPLO, char *TRANSA, char *TRANSB,
 	blasint info;
 
 	char transA, transB, Uplo;
+	blasint nrowa, nrowb;
 	IFLOAT *buffer;
 	IFLOAT *aa, *bb;
 	FLOAT *cc;
@@ -155,29 +156,38 @@ void NAME(char *UPLO, char *TRANSA, char *TRANSB,
 	if (Uplo == 'L')
 		uplo = 1;
 
+	nrowa = m;
+	if (transa) nrowa = k;
+	nrowb = k;
+	if (transb) nrowb = m;
+
 	info = 0;
 
-	if (uplo < 0)
-		info = 14;
-	if (ldc < m)
+	if (ldc < MAX(1, m))
 		info = 13;
+	if (ldb < MAX(1, nrowa))
+		info = 10;
+	if (lda < MAX(1, nrowb))
+		info = 8;
 	if (k < 0)
 		info = 5;
 	if (m < 0)
-		info = 3;
+		info = 4;
 	if (transb < 0)
-		info = 2;
+		info = 3;
 	if (transa < 0)
+		info = 2;
+	if (uplo < 0)
 		info = 1;
 
-	if (info) {
+	if (info != 0) {
 		BLASFUNC(xerbla) (ERROR_NAME, &info, sizeof(ERROR_NAME));
 		return;
 	}
 #else
 
 void CNAME(enum CBLAS_ORDER order, enum CBLAS_UPLO Uplo,
-	   enum CBLAS_TRANSPOSE TransA, enum CBLAS_TRANSPOSE TransB, blasint M,
+	   enum CBLAS_TRANSPOSE TransA, enum CBLAS_TRANSPOSE TransB, blasint m,
 	   blasint k,
 #ifndef COMPLEX
 	   FLOAT alpha,
@@ -199,17 +209,20 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_UPLO Uplo,
 
 	int transa, transb, uplo;
 	blasint info;
-	blasint m, lda, ldb;
+	blasint lda, ldb;
 	FLOAT *a, *b;
 	XFLOAT *buffer;
 
 	PRINT_DEBUG_CNAME;
 
+	uplo = -1;
 	transa = -1;
 	transb = -1;
 	info = 0;
 
 	if (order == CblasColMajor) {
+		if (Uplo == CblasUpper) uplo = 0;
+		if (Uplo == CblasLower) uplo = 1;
 
 		if (TransA == CblasNoTrans)
 			transa = 0;
@@ -249,15 +262,27 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_UPLO Uplo,
 
 		info = -1;
 
-		if (ldc < m)
+		blasint nrowa, nrowb;
+		nrowa = m;
+		if (transa) nrowa = k;
+		nrowb = k;
+		if (transb) nrowb = m;
+
+		if (ldc < MAX(1, m))
 			info = 13;
+		if (ldb < MAX(1, nrowb))
+			info = 10;
+		if (lda < MAX(1, nrowa))
+			info = 8;
 		if (k < 0)
 			info = 5;
 		if (m < 0)
-			info = 3;
+			info = 4;
 		if (transb < 0)
-			info = 2;
+			info = 3;
 		if (transa < 0)
+			info = 2;
+		if (uplo < 0)
 			info = 1;
 	}
 
@@ -268,6 +293,9 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_UPLO Uplo,
 
 		lda = LDB;
 		ldb = LDA;
+
+		if (Uplo == CblasUpper) uplo = 0;
+		if (Uplo == CblasLower) uplo = 1;
 
 		if (TransB == CblasNoTrans)
 			transa = 0;
@@ -302,26 +330,29 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_UPLO Uplo,
 
 		info = -1;
 
-		if (ldc < m)
+		blasint ncola, ncolb;
+		ncola = k;
+		if (transa) ncola = m;
+		ncolb = m;
+		if (transb) ncolb = k;
+
+		if (ldc < MAX(1,m))
 			info = 13;
+		if (ldb < MAX(1, ncolb))
+			info = 10;
+		if (lda < MAX(1, ncola))
+			info = 8;
 		if (k < 0)
 			info = 5;
 		if (m < 0)
-			info = 3;
+			info = 4;
 		if (transb < 0)
-			info = 2;
+			info = 3;
 		if (transa < 0)
+			info = 2;
+		if (uplo < 0)
 			info = 1;
-
 	}
-
-	uplo = -1;
-	if (Uplo == CblasUpper)
-		uplo = 0;
-	if (Uplo == CblasLower)
-		uplo = 1;
-	if (uplo < 0)
-		info = 14;
 
 	if (info >= 0) {
 		BLASFUNC(xerbla) (ERROR_NAME, &info, sizeof(ERROR_NAME));
@@ -392,7 +423,7 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_UPLO Uplo,
 
 #endif
 
-	if ((m == 0) )
+	if (m == 0)
 		return;
 
 	IDEBUG_START;

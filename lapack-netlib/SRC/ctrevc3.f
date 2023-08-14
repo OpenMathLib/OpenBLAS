@@ -321,9 +321,9 @@
 *
       INFO = 0
       NB = ILAENV( 1, 'CTREVC', SIDE // HOWMNY, N, -1, -1, -1 )
-      MAXWRK = N + 2*N*NB
+      MAXWRK = MAX( 1, N + 2*N*NB )
       WORK(1) = MAXWRK
-      RWORK(1) = N
+      RWORK(1) = MAX( 1, N )
       LQUERY = ( LWORK.EQ.-1 .OR. LRWORK.EQ.-1 )
       IF( .NOT.RIGHTV .AND. .NOT.LEFTV ) THEN
          INFO = -1

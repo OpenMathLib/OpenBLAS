@@ -90,6 +90,10 @@ set(CSRC
   lapacke_cgerqf_work.c
   lapacke_cgesdd.c
   lapacke_cgesdd_work.c
+  lapacke_cgedmd.c
+  lapacke_cgedmd_work.c
+  lapacke_cgedmdq.c
+  lapacke_cgedmdq_work.c
   lapacke_cgesv.c
   lapacke_cgesv_work.c
   lapacke_cgesvd.c
@@ -558,6 +562,8 @@ set(CSRC
   lapacke_ctrsna_work.c
   lapacke_ctrsyl.c
   lapacke_ctrsyl_work.c
+  lapacke_ctrsyl3.c
+  lapacke_ctrsyl3_work.c
   lapacke_ctrtri.c
   lapacke_ctrtri_work.c
   lapacke_ctrtrs.c
@@ -590,6 +596,8 @@ set(CSRC
   lapacke_cungtr_work.c
   lapacke_cungtsqr_row.c
   lapacke_cungtsqr_row_work.c
+  lapacke_cunhr_col.c
+  lapacke_cunhr_col_work.c
   lapacke_cunmbr.c
   lapacke_cunmbr_work.c
   lapacke_cunmhr.c
@@ -709,6 +717,10 @@ set(DSRC
   lapacke_dgerqf_work.c
   lapacke_dgesdd.c
   lapacke_dgesdd_work.c
+  lapacke_dgedmd.c
+  lapacke_dgedmd_work.c
+  lapacke_dgedmdq.c
+  lapacke_dgedmdq_work.c
   lapacke_dgesv.c
   lapacke_dgesv_work.c
   lapacke_dgesvd.c
@@ -862,6 +874,8 @@ set(DSRC
   lapacke_dorgtr_work.c
   lapacke_dorgtsqr_row.c
   lapacke_dorgtsqr_row_work.c
+  lapacke_dorhr_col.c
+  lapacke_dorhr_col_work.c
   lapacke_dormbr.c
   lapacke_dormbr_work.c
   lapacke_dormhr.c
@@ -1174,6 +1188,8 @@ set(DSRC
   lapacke_dtrsna_work.c
   lapacke_dtrsyl.c
   lapacke_dtrsyl_work.c
+  lapacke_dtrsyl3.c
+  lapacke_dtrsyl3_work.c
   lapacke_dtrtri.c
   lapacke_dtrtri_work.c
   lapacke_dtrtrs.c
@@ -1283,6 +1299,10 @@ set(SSRC
   lapacke_sgerqf_work.c
   lapacke_sgesdd.c
   lapacke_sgesdd_work.c
+  lapacke_sgedmd.c
+  lapacke_sgedmd_work.c
+  lapacke_sgedmdq.c
+  lapacke_sgedmdq_work.c
   lapacke_sgesv.c
   lapacke_sgesv_work.c
   lapacke_sgesvd.c
@@ -1435,6 +1455,8 @@ set(SSRC
   lapacke_sorgtr_work.c
   lapacke_sorgtsqr_row.c
   lapacke_sorgtsqr_row_work.c
+  lapacke_sorhr_col.c
+  lapacke_sorhr_col_work.c
   lapacke_sormbr.c
   lapacke_sormbr_work.c
   lapacke_sormhr.c
@@ -1744,6 +1766,8 @@ set(SSRC
   lapacke_strsna_work.c
   lapacke_strsyl.c
   lapacke_strsyl_work.c
+  lapacke_ctrsyl3.c
+  lapacke_ctrsyl3_work.c
   lapacke_strtri.c
   lapacke_strtri_work.c
   lapacke_strtrs.c
@@ -1851,6 +1875,10 @@ set(ZSRC
   lapacke_zgerqf_work.c
   lapacke_zgesdd.c
   lapacke_zgesdd_work.c
+  lapacke_zgedmd.c
+  lapacke_zgedmd_work.c
+  lapacke_zgedmdq.c
+  lapacke_zgedmdq_work.c
   lapacke_zgesv.c
   lapacke_zgesv_work.c
   lapacke_zgesvd.c
@@ -2319,6 +2347,8 @@ set(ZSRC
   lapacke_ztrsna_work.c
   lapacke_ztrsyl.c
   lapacke_ztrsyl_work.c
+  lapacke_ztrsyl3.c
+  lapacke_ztrsyl3_work.c
   lapacke_ztrtri.c
   lapacke_ztrtri_work.c
   lapacke_ztrtrs.c
@@ -2351,6 +2381,8 @@ set(ZSRC
   lapacke_zungtr_work.c
   lapacke_zungtsqr_row.c
   lapacke_zungtsqr_row_work.c
+  lapacke_zunhr_col.c
+  lapacke_zunhr_col_work.c
   lapacke_zunmbr.c
   lapacke_zunmbr_work.c
   lapacke_zunmhr.c

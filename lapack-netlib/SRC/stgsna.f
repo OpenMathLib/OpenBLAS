@@ -632,8 +632,8 @@
                C1 = TWO*( ALPHAR*ALPHAR+ALPHAI*ALPHAI+BETA*BETA )
                C2 = FOUR*BETA*BETA*ALPHAI*ALPHAI
                ROOT1 = C1 + SQRT( C1*C1-4.0*C2 )
-               ROOT2 = C2 / ROOT1
                ROOT1 = ROOT1 / TWO
+               ROOT2 = C2 / ROOT1
                COND = MIN( SQRT( ROOT1 ), SQRT( ROOT2 ) )
             END IF
 *

@@ -229,7 +229,7 @@
 *     Test path
 *
       PATH( 1: 1 ) = 'Zomplex precision'
-      PATH( 2: 3 ) = 'H2'
+      PATH( 2: 3 ) = 'S2'
 *
 *     Path to generate matrices
 *

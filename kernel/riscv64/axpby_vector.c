@@ -30,20 +30,20 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #if !defined(DOUBLE)
 #define VSETVL(n) vsetvl_e32m4(n)
 #define FLOAT_V_T vfloat32m4_t
-#define VLEV_FLOAT vle_v_f32m4
-#define VLSEV_FLOAT vlse_v_f32m4
-#define VSEV_FLOAT vse_v_f32m4
-#define VSSEV_FLOAT vsse_v_f32m4
+#define VLEV_FLOAT vle32_v_f32m4
+#define VLSEV_FLOAT vlse32_v_f32m4
+#define VSEV_FLOAT vse32_v_f32m4
+#define VSSEV_FLOAT vsse32_v_f32m4
 #define VFMACCVF_FLOAT vfmacc_vf_f32m4
 #define VFMVVF_FLOAT vfmv_v_f_f32m4
 #define VFMULVF_FLOAT vfmul_vf_f32m4
 #else
 #define VSETVL(n) vsetvl_e64m4(n)
 #define FLOAT_V_T vfloat64m4_t
-#define VLEV_FLOAT vle_v_f64m4
-#define VLSEV_FLOAT vlse_v_f64m4
-#define VSEV_FLOAT vse_v_f64m4
-#define VSSEV_FLOAT vsse_v_f64m4
+#define VLEV_FLOAT vle64_v_f64m4
+#define VLSEV_FLOAT vlse64_v_f64m4
+#define VSEV_FLOAT vse64_v_f64m4
+#define VSSEV_FLOAT vsse64_v_f64m4
 #define VFMACCVF_FLOAT vfmacc_vf_f64m4
 #define VFMVVF_FLOAT vfmv_v_f_f64m4
 #define VFMULVF_FLOAT vfmul_vf_f64m4

@@ -1,4 +1,4 @@
-*> \brief <b> SGEEVX computes the eigenvalues and, optionally, the left and/or right eigenvectors for GE matrices</b>
+*> \brief <b> SGEGV computes the eigenvalues and, optionally, the left and/or right eigenvectors of a real matrix pair (A,B).</b>
 *
 *  =========== DOCUMENTATION ===========
 *

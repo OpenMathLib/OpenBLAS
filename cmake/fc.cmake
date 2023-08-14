@@ -3,7 +3,8 @@
 ## Description: Ported from portion of OpenBLAS/Makefile.system
 ##              Sets Fortran related variables.
 
-if (${F_COMPILER} STREQUAL "FLANG")
+if (${F_COMPILER} STREQUAL "FLANG" AND NOT CMAKE_Fortran_COMPILER_ID STREQUAL "LLVMFlang")
+  # This is for classic Flang. LLVM Flang is handled with gfortran below.
   set(CCOMMON_OPT "${CCOMMON_OPT} -DF_INTERFACE_FLANG")
   if (BINARY64 AND INTERFACE64)
     set(FCOMMON_OPT "${FCOMMON_OPT} -i8")
@@ -38,15 +39,17 @@ if (${F_COMPILER} STREQUAL "G95")
   endif ()
 endif ()
 
-if (${F_COMPILER} STREQUAL "GFORTRAN")
+if (${F_COMPILER} STREQUAL "GFORTRAN" OR ${F_COMPILER} STREQUAL "F95" OR CMAKE_Fortran_COMPILER_ID STREQUAL "LLVMFlang")
   set(CCOMMON_OPT "${CCOMMON_OPT} -DF_INTERFACE_GFORT")
-  # ensure reentrancy of lapack codes
-  set(FCOMMON_OPT "${FCOMMON_OPT} -Wall -frecursive")
-  # work around ABI violation in passing string arguments from C
-  set(FCOMMON_OPT "${FCOMMON_OPT} -fno-optimize-sibling-calls")
-  #Don't include -lgfortran, when NO_LAPACK=1 or lsbcc
-  if (NOT NO_LAPACK)
-    set(EXTRALIB "${EXTRALIB} -lgfortran")
+  if (NOT CMAKE_Fortran_COMPILER_ID STREQUAL "LLVMFlang")
+    # ensure reentrancy of lapack codes
+    set(FCOMMON_OPT "${FCOMMON_OPT} -Wall -frecursive")
+    # work around ABI violation in passing string arguments from C
+    set(FCOMMON_OPT "${FCOMMON_OPT} -fno-optimize-sibling-calls")
+    if (NOT NO_LAPACK)
+      # Don't include -lgfortran, when NO_LAPACK=1 or lsbcc
+      set(EXTRALIB "${EXTRALIB} -lgfortran")
+    endif ()
   endif ()
   if (NO_BINARY_MODE)
     if (MIPS64)
@@ -61,6 +64,13 @@ if (${F_COMPILER} STREQUAL "GFORTRAN")
         set(FCOMMON_OPT "${FCOMMON_OPT} -mabi=lp64")
       else ()
         set(FCOMMON_OPT "${FCOMMON_OPT} -mabi=lp32")
+      endif ()
+    endif ()
+    if (RISCV64)
+      if (BINARY64)
+        if (INTERFACE64)
+          set(FCOMMON_OPT "${FCOMMON_OPT} -fdefault-integer-8")
+        endif ()
       endif ()
     endif ()
   else ()
@@ -121,7 +131,7 @@ if (${F_COMPILER} STREQUAL "IBM")
   endif ()
 endif ()
 
-if (${F_COMPILER} STREQUAL "PGI")
+if (${F_COMPILER} STREQUAL "PGI" OR ${F_COMPILER} STREQUAL "PGF95")
   set(CCOMMON_OPT "${CCOMMON_OPT} -DF_INTERFACE_PGI")
   set(COMMON_PROF "${COMMON_PROF} -DPGICOMPILER")
   if (BINARY64)

@@ -107,7 +107,7 @@
 *> In particular, if B is an N-by-N nonsingular matrix, then the GSVD of
 *> A and B implicitly gives the SVD of A*inv(B):
 *>                      A*inv(B) = U*(D1*inv(D2))*V**H.
-*> If ( A**H,B**H)**H has orthnormal columns, then the GSVD of A and B is also
+*> If ( A**H,B**H)**H has orthonormal columns, then the GSVD of A and B is also
 *> equal to the CS decomposition of A and B. Furthermore, the GSVD can
 *> be used to derive the solution of the eigenvalue problem:
 *>                      A**H*A x = lambda* B**H*B x.

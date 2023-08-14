@@ -339,7 +339,7 @@
 *>            [ kron(In2, B11)  -kron(B22**H, In1) ].
 *>
 *>  Here, Inx is the identity matrix of size nx and A22**H is the
-*>  conjuguate transpose of A22. kron(X, Y) is the Kronecker product between
+*>  conjugate transpose of A22. kron(X, Y) is the Kronecker product between
 *>  the matrices X and Y.
 *>
 *>  When DIF(2) is small, small changes in (A, B) can cause large changes

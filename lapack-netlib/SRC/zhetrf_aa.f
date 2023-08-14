@@ -74,7 +74,7 @@
 *>
 *>          On exit, the tridiagonal matrix is stored in the diagonals
 *>          and the subdiagonals of A just below (or above) the diagonals,
-*>          and L is stored below (or above) the subdiaonals, when UPLO
+*>          and L is stored below (or above) the subdiagonals, when UPLO
 *>          is 'L' (or 'U').
 *> \endverbatim
 *>

@@ -1,4 +1,4 @@
-# This module perdorms several try-compiles to determine the default integer
+# This module performs several try-compiles to determine the default integer
 # size being used by the fortran compiler
 #
 # After execution, the following variables are set.  If they are un set then

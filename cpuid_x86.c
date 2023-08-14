@@ -1479,6 +1479,8 @@ int get_cpuname(void){
           else
 	    return CPUTYPE_NEHALEM;
 	case 15: // Sapphire Rapids
+	  if(support_amx_bf16())
+	    return CPUTYPE_SAPPHIRERAPIDS;
 	  if(support_avx512_bf16())
             return CPUTYPE_COOPERLAKE;	
           if(support_avx512())
@@ -1549,6 +1551,7 @@ int get_cpuname(void){
           case 7: // Raptor Lake
           case 10:
           case 15:
+	  case 14: // Alder Lake N
             if(support_avx2())
               return CPUTYPE_HASWELL;
 	    if(support_avx())
@@ -1845,7 +1848,8 @@ static char *cpuname[] = {
   "ZEN",
   "SKYLAKEX",
   "DHYANA",
-  "COOPERLAKE"
+  "COOPERLAKE",
+  "SAPPHIRERAPIDS",
 };
 
 static char *lowercpuname[] = {
@@ -1902,7 +1906,8 @@ static char *lowercpuname[] = {
   "zen",
   "skylakex",
   "dhyana",
-  "cooperlake"
+  "cooperlake",
+  "sapphirerapids",
 };
 
 static char *corename[] = {
@@ -2356,6 +2361,7 @@ int get_coretype(void){
 	  case 7: // Raptor Lake
           case 10:
           case 15:
+	  case 14: // Alder Lake N	  
 #ifndef NO_AVX2
 	  if(support_avx2())
             return CORE_HASWELL;

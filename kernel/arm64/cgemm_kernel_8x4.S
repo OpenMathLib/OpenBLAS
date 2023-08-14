@@ -49,7 +49,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define pCRow3		x15
 #define pA		x16
 #define alphaR		w17
-#define alphaI		w18
+#define alphaI		w19
 
 #define alpha0_R	s10
 #define alphaV0_R	v10.s[0]

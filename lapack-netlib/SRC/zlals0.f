@@ -392,6 +392,11 @@
      $                ( POLES( I, 2 ).EQ.ZERO ) ) THEN
                      RWORK( I ) = ZERO
                   ELSE
+*
+*                    Use calls to the subroutine DLAMC3 to enforce the
+*                    parentheses (x+y)+z. The goal is to prevent
+*                    optimizing compilers from doing x+(y+z).
+*
                      RWORK( I ) = POLES( I, 2 )*Z( I ) /
      $                            ( DLAMC3( POLES( I, 2 ), DSIGJ )-
      $                            DIFLJ ) / ( POLES( I, 2 )+DJ )
@@ -470,6 +475,11 @@
                   IF( Z( J ).EQ.ZERO ) THEN
                      RWORK( I ) = ZERO
                   ELSE
+*
+*                    Use calls to the subroutine DLAMC3 to enforce the
+*                    parentheses (x+y)+z. The goal is to prevent
+*                    optimizing compilers from doing x+(y+z).
+*
                      RWORK( I ) = Z( J ) / ( DLAMC3( DSIGJ, -POLES( I+1,
      $                            2 ) )-DIFR( I, 1 ) ) /
      $                            ( DSIGJ+POLES( I, 1 ) ) / DIFR( I, 2 )

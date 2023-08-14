@@ -1,5 +1,6 @@
 /*********************************************************************/
 /* Copyright 2009, 2010 The University of Texas at Austin.           */
+/* Copyright 2023 The OpenBLAS Project                               */
 /* All rights reserved.                                              */
 /*                                                                   */
 /* Redistribution and use in source and binary forms, with or        */
@@ -52,13 +53,13 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, BLASLONG offset, FLOAT
 #ifdef DOUBLE
   int64_t js = 0;
   svint64_t index = svindex_s64(0LL, lda);
-  svbool_t pn = svwhilelt_b64(js, n);
+  svbool_t pn = svwhilelt_b64((uint64_t)js, (uint64_t)n);
   int n_active = svcntp_b64(svptrue_b64(), pn);
 #else
   int32_t N = n;
   int32_t js = 0;
   svint32_t index = svindex_s32(0, lda);
-  svbool_t pn = svwhilelt_b32(js, N);
+  svbool_t pn = svwhilelt_b32((uint32_t)js, (uint32_t)N);
   int n_active = svcntp_b32(svptrue_b32(), pn);
 #endif
   do {
@@ -106,11 +107,11 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, BLASLONG offset, FLOAT
 
     js += n_active;
 #ifdef DOUBLE
-    pn = svwhilelt_b64(js, n);
+    pn = svwhilelt_b64((uint64_t)js, (uint64_t)n);
     n_active = svcntp_b64(svptrue_b64(), pn);
   } while (svptest_any(svptrue_b64(), pn));
 #else
-    pn = svwhilelt_b32(js, N);
+    pn = svwhilelt_b32((uint32_t)js, (uint32_t)N);
     n_active = svcntp_b32(svptrue_b32(), pn);
   } while (svptest_any(svptrue_b32(), pn));
 #endif

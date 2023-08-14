@@ -107,7 +107,7 @@ void NAME(char *UPLO, char *TRANS,
   FLOAT *sa, *sb;
 
 #ifdef SMP
-  int NNK;
+  double NNK;
 #ifdef USE_SIMPLE_THREADED_LEVEL3
 #ifndef COMPLEX
 #ifdef XDOUBLE
@@ -232,7 +232,7 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_UPLO Uplo, enum CBLAS_TRANSPOSE Tr
   FLOAT *sa, *sb;
 
 #ifdef SMP
-int NNK;
+double NNK;
 
 #ifdef USE_SIMPLE_THREADED_LEVEL3
 #ifndef COMPLEX
