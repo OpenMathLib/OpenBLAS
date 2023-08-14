@@ -93,6 +93,10 @@
 	addq	INCX, X
 	decq	M
 	shufps	$0, %xmm0, %xmm0
+	incq RET
+	comiss %xmm0, %xmm0
+	jp .L999
+	decq RET
 #ifdef USE_ABS
 	andps	%xmm15, %xmm0
 #endif
@@ -254,6 +258,10 @@
 	decq	M
 	addq	$SIZE, X
 
+	incq RET
+	comiss %xmm1, %xmm1
+	jp .L998
+	decq RET
 #ifdef USE_ABS
 	andps	 %xmm15, %xmm1
 #endif
@@ -268,6 +276,14 @@
 
 	movss	0 * SIZE(X), %xmm1
 	movss	1 * SIZE(X), %xmm2
+	incq RET
+	comiss %xmm1, %xmm1
+	jp .L998
+	incq RET
+	comiss %xmm2, %xmm2
+	jp .L998
+	decq RET
+	decq RET
 
 	subq	$2, M
 	addq	$2 * SIZE, X
@@ -332,6 +348,31 @@
 	movss	5 * SIZE(X), %xmm6
 	movss	6 * SIZE(X), %xmm7
 	movss	7 * SIZE(X), %xmm8
+	incq RET
+	comiss %xmm1, %xmm1
+	jp .L998
+	incq RET
+	comiss %xmm2, %xmm2
+	jp .L998
+	incq RET
+	comiss %xmm3, %xmm3
+	jp .L998
+	incq RET
+	comiss %xmm4, %xmm4
+	jp .L998
+	incq RET
+	comiss %xmm5, %xmm5
+	jp .L998
+	incq RET
+	comiss %xmm6, %xmm6
+	jp .L998
+	incq RET
+	comiss %xmm7, %xmm7
+	jp .L998
+	incq RET
+	comiss %xmm8, %xmm8
+	jp .L998
+	subq $8, RET
 #ifdef USE_ABS
 	andps	 %xmm15, %xmm1
 	andps	 %xmm15, %xmm2
@@ -378,6 +419,19 @@
 	movss	1 * SIZE(X), %xmm2
 	movss	2 * SIZE(X), %xmm3
 	movss	3 * SIZE(X), %xmm4
+	incq RET
+	comiss %xmm1, %xmm1
+	jp .L998
+	incq RET
+	comiss %xmm2, %xmm2
+	jp .L998
+	incq RET
+	comiss %xmm3, %xmm3
+	jp .L998
+	incq RET
+	comiss %xmm4, %xmm4
+	jp .L998
+	subq $4, RET
 #ifdef USE_ABS
 	andps	 %xmm15, %xmm1
 	andps	 %xmm15, %xmm2
@@ -405,6 +459,13 @@
 
 	movss	0 * SIZE(X), %xmm1
 	movss	1 * SIZE(X), %xmm2
+	incq RET
+	comiss %xmm1, %xmm1
+	jp .L998
+	incq RET
+	comiss %xmm2, %xmm2
+	jp .L998
+	subq $2, RET
 #ifdef USE_ABS
 	andps	 %xmm15, %xmm1
 	andps	 %xmm15, %xmm2
@@ -593,6 +654,31 @@
 	movss	5 * SIZE(X), %xmm6
 	movss	6 * SIZE(X), %xmm7
 	movss	7 * SIZE(X), %xmm8
+	incq RET
+	comiss %xmm1, %xmm1
+	jp .L998
+	incq RET
+	comiss %xmm2, %xmm2
+	jp .L998
+	incq RET
+	comiss %xmm3, %xmm3
+	jp .L998
+	incq RET
+	comiss %xmm4, %xmm4
+	jp .L998
+	incq RET
+	comiss %xmm5, %xmm5
+	jp .L998
+	incq RET
+	comiss %xmm6, %xmm6
+	jp .L998
+	incq RET
+	comiss %xmm7, %xmm7
+	jp .L998
+	incq RET
+	comiss %xmm8, %xmm8
+	jp .L998
+	subq $8, RET
 #ifdef USE_ABS
 	andps	 %xmm15, %xmm1
 	andps	 %xmm15, %xmm2
@@ -639,6 +725,19 @@
 	movss	1 * SIZE(X), %xmm2
 	movss	2 * SIZE(X), %xmm3
 	movss	3 * SIZE(X), %xmm4
+	incq RET
+	comiss %xmm1, %xmm1
+	jp .L998
+	incq RET
+	comiss %xmm2, %xmm2
+	jp .L998
+	incq RET
+	comiss %xmm3, %xmm3
+	jp .L998
+	incq RET
+	comiss %xmm4, %xmm4
+	jp .L998
+	subq $4, RET
 #ifdef USE_ABS
 	andps	 %xmm15, %xmm1
 	andps	 %xmm15, %xmm2
@@ -666,6 +765,13 @@
 
 	movss	0 * SIZE(X), %xmm1
 	movss	1 * SIZE(X), %xmm2
+	incq RET
+	comiss %xmm1, %xmm1
+	jp .L998
+	incq RET
+	comiss %xmm2, %xmm2
+	jp .L998
+	subq $2, RET
 #ifdef USE_ABS
 	andps	 %xmm15, %xmm1
 	andps	 %xmm15, %xmm2
@@ -885,6 +991,31 @@
 	movss	0 * SIZE(X), %xmm2
 	subq	INCX, X
 	movss	0 * SIZE(X), %xmm1
+	incq RET
+	comiss %xmm1, %xmm1
+	jp .L998
+	incq RET
+	comiss %xmm2, %xmm2
+	jp .L998
+	incq RET
+	comiss %xmm3, %xmm3
+	jp .L998
+	incq RET
+	comiss %xmm4, %xmm4
+	jp .L998
+	incq RET
+	comiss %xmm5, %xmm5
+	jp .L998
+	incq RET
+	comiss %xmm6, %xmm6
+	jp .L998
+	incq RET
+	comiss %xmm7, %xmm7
+	jp .L998
+	incq RET
+	comiss %xmm8, %xmm8
+	jp .L998
+	subq $8, RET
 #ifdef USE_ABS
 	andps	 %xmm15, %xmm1
 	andps	 %xmm15, %xmm2
@@ -932,7 +1063,19 @@
 	addq	INCX, X
 	movss	0 * SIZE(X), %xmm4
 	addq	INCX, X
-
+	incq RET
+	comiss %xmm1, %xmm1
+	jp .L998
+	incq RET
+	comiss %xmm2, %xmm2
+	jp .L998
+	incq RET
+	comiss %xmm3, %xmm3
+	jp .L998
+	incq RET
+	comiss %xmm4, %xmm4
+	jp .L998
+	subq $4, RET
 #ifdef USE_ABS
 	andps	 %xmm15, %xmm1
 	andps	 %xmm15, %xmm2
@@ -961,6 +1104,13 @@
 	addq	INCX, X
 	movss	0 * SIZE(X), %xmm2
 	addq	INCX, X
+	incq RET
+	comiss %xmm1, %xmm1
+	jp .L998
+	incq RET
+	comiss %xmm2, %xmm2
+	jp .L998
+	subq $2, RET
 #ifdef USE_ABS
 	andps	 %xmm15, %xmm1
 	andps	 %xmm15, %xmm2
@@ -981,6 +1131,10 @@
 	RESTOREREGISTERS
 
 	ret
+
+.L998:
+//	incq RET
+	jmp .L999
 
 	EPILOGUE
 
