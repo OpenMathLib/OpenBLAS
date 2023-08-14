@@ -75,18 +75,31 @@ endif
 ifeq ($(CORE), COOPERLAKE)
 ifndef NO_AVX512
 ifeq ($(C_COMPILER), GCC)
-# cooperlake support was added in 10.1
-ifeq ($(GCCVERSIONGTEQ10)$(GCCMINORVERSIONGTEQ1), 11)
-CCOMMON_OPT += -march=cooperlake
-ifneq ($(F_COMPILER), NAG)
-FCOMMON_OPT += -march=cooperlake
-endif
-else  # gcc not support, fallback to avx512
-CCOMMON_OPT += -march=skylake-avx512
-ifneq ($(F_COMPILER), NAG)
-FCOMMON_OPT += -march=skylake-avx512
-endif
-endif
+ # cooperlake support was added in 10.1
+ ifeq ($(GCCVERSIONGTEQ10)$(GCCMINORVERSIONGTEQ1), 11)
+  CCOMMON_OPT += -march=cooperlake
+  ifneq ($(F_COMPILER), NAG)
+   FCOMMON_OPT += -march=cooperlake
+  endif
+ else  # gcc not support, fallback to avx512
+  CCOMMON_OPT += -march=skylake-avx512
+  ifneq ($(F_COMPILER), NAG)
+   FCOMMON_OPT += -march=skylake-avx512
+  endif
+ endif
+else ifeq ($(C_COMPILER), CLANG)
+ # cooperlake support was added in clang 9
+ ifeq ($(CLANGVERSIONGTEQ9), 1)
+  CCOMMON_OPT += -march=cooperlake
+  ifneq ($(F_COMPILER), NAG)
+   FCOMMON_OPT += -march=cooperlake
+  endif
+ else  # not supported in clang, fallback to avx512
+  CCOMMON_OPT += -march=skylake-avx512
+  ifneq ($(F_COMPILER), NAG)
+   FCOMMON_OPT += -march=skylake-avx512
+  endif
+ endif
 endif
 ifeq ($(OSNAME), CYGWIN_NT)
 CCOMMON_OPT += -fno-asynchronous-unwind-tables
@@ -104,18 +117,31 @@ endif
 ifeq ($(CORE), SAPPHIRERAPIDS)
 ifndef NO_AVX512
 ifeq ($(C_COMPILER), GCC)
-# sapphire rapids support was added in 11
-ifeq ($(GCCVERSIONGTEQ11), 1)
-CCOMMON_OPT += -march=sapphirerapids
-ifneq ($(F_COMPILER), NAG)
-FCOMMON_OPT += -march=sapphirerapids
-endif
-else  # gcc not support, fallback to avx512
-CCOMMON_OPT += -march=skylake-avx512
-ifneq ($(F_COMPILER), NAG)
-FCOMMON_OPT += -march=skylake-avx512
-endif
-endif
+ # sapphire rapids support was added in 11
+ ifeq ($(GCCVERSIONGTEQ11), 1)
+  CCOMMON_OPT += -march=sapphirerapids
+  ifneq ($(F_COMPILER), NAG)
+   FCOMMON_OPT += -march=sapphirerapids
+  endif
+ else  # gcc not support, fallback to avx512
+  CCOMMON_OPT += -march=skylake-avx512
+  ifneq ($(F_COMPILER), NAG)
+   FCOMMON_OPT += -march=skylake-avx512
+  endif
+ endif
+else ifeq ($(C_COMPILER), CLANG)
+ # cooperlake support was added in clang 12
+ ifeq ($(CLANGVERSIONGTEQ12), 1)
+  CCOMMON_OPT += -march=cooperlake
+  ifneq ($(F_COMPILER), NAG)
+   FCOMMON_OPT += -march=cooperlake
+  endif
+ else  # not supported in clang, fallback to avx512
+  CCOMMON_OPT += -march=skylake-avx512
+  ifneq ($(F_COMPILER), NAG)
+   FCOMMON_OPT += -march=skylake-avx512
+  endif
+ endif
 endif
 ifeq ($(OSNAME), CYGWIN_NT)
 CCOMMON_OPT += -fno-asynchronous-unwind-tables

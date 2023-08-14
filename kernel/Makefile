@@ -33,7 +33,7 @@ endif
 ifdef TARGET_CORE
 ifeq ($(TARGET_CORE), SAPPHIRERAPIDS)
  override CFLAGS += -DBUILD_KERNEL -DTABLE_NAME=gotoblas_$(TARGET_CORE)
- ifeq ($(GCCVERSIONGTEQ11), 1) 
+ ifeq (1, $(filter 1,$(GCCVERSIONGTEQ11) $(CLANGVERSIONGTEQ12)))
   override CFLAGS += -march=sapphirerapids
  else 
   override CFLAGS += -march=skylake-avx512 -mavx512f
@@ -48,7 +48,7 @@ ifeq ($(TARGET_CORE), SAPPHIRERAPIDS)
  endif
 else ifeq ($(TARGET_CORE), COOPERLAKE)
  override CFLAGS += -DBUILD_KERNEL -DTABLE_NAME=gotoblas_$(TARGET_CORE)
- ifeq ($(GCCVERSIONGTEQ10), 1) 
+ ifeq (1, $(filter 1,$(GCCVERSIONGTEQ10) $(CLANGVERSIONGTEQ9)))
   override CFLAGS += -march=cooperlake
  else 
   override CFLAGS += -march=skylake-avx512 -mavx512f
