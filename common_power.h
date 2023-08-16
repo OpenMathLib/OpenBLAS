@@ -78,8 +78,6 @@
 #define RMB		__asm__ __volatile__ ("sync")
 #endif
 
-#define INLINE inline
-
 #ifdef PPC440
 #define STDERR stdout
 #define QNONCACHE 0x1
@@ -91,7 +89,7 @@
 
 void *qalloc(int flags, size_t bytes);
 
-static INLINE void blas_lock(volatile unsigned long *address){
+static inline void blas_lock(volatile unsigned long *address){
 
   long int ret, val = 1;
 
