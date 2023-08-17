@@ -167,7 +167,7 @@ typedef __vector unsigned char vec_t;
 
 #define INIT_1ACC() __builtin_mma_xxsetaccz(&acc0);
 
-#if (defined(__GNUC__) && (__GNUC__ == 10))
+#if (defined(__GNUC__) && (__GNUC__ == 10 || (__GNUC__ == 11 && __GNUC_MINOR__ <= 2)))
 #if defined(_AIX)
 #define LOAD_PAIR(pair, v0, v1)                             \
   __builtin_vsx_assemble_pair(&pair, (vec_t)v0, (vec_t)v1);
