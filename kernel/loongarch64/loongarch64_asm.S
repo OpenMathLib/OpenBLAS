@@ -36,6 +36,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define PTR_ST    st.d
 #define PTR_SLLI  slli.d
 #define PTR_SRLI  srli.d
+#define PTR_SRAI  srai.d
+#define PTR_MUL   mul.d
 #define PTR_ALSL  alsl.d
 #else
 #define LA_REG    int32_t
@@ -48,6 +50,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define PTR_ST    st.w
 #define PTR_SLLI  slli.w
 #define PTR_SRLI  srli.w
+#define PTR_SRAI  srai.w
+#define PTR_MUL   mul.w
 #define PTR_ALSL  alsl.w
 #endif
 
@@ -218,6 +222,15 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .endif
 .endm
 //
+// GSUB
+//
+.macro GSUB pre_op, suf_op:req, out:req, in0:req, in1:req, more:vararg
+    \pre_op\()sub.\suf_op \out, \in0, \in1
+.ifnb \more
+    GSUB \pre_op, \suf_op, \more
+.endif
+.endm
+//
 // GSLLI
 //
 .macro GSLLI pre_op, suf_op:req, out:req, in0:req, in1:req, more:vararg
@@ -242,6 +255,33 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     \pre_op\()xor.\suf_op    \out,   \in0,   \in1
 .ifnb \more
     GXOR \pre_op, \suf_op, \more
+.endif
+.endm
+//
+// GPERMI
+//
+.macro GPERMI pre_op:req, suf_op:req, out:req, in0:req, in1:req, more:vararg
+    \pre_op\()permi.\suf_op     \out,   \in0,   \in1
+.ifnb \more
+    GPERMI \pre_op, \suf_op, \more
+.endif
+.endm
+//
+// GNMSUB
+//
+.macro GNMSUB pre_op:req, suf_op:req, out:req, in0:req, in1:req, in2:req, more:vararg
+    \pre_op\()nmsub.\suf_op     \out,   \in0,   \in1,   \in2
+.ifnb \more
+    GNMSUB \pre_op, \suf_op, \more
+.endif
+.endm
+//
+// GPRELD
+//
+.macro GPRELD in0:req, in1:req, in2:req, more:vararg
+    preld \in0, \in1, \in2
+.ifnb \more
+    GPRELD \more
 .endif
 .endm
 
@@ -310,4 +350,58 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .ifnb \more
     GACC \pre_op, \suf_op, \more
 .endif
+.endm
+//
+// GMOV
+//
+.macro GMOV pre_op:req, out:req, in:req, more:vararg
+    \pre_op\()or.v  \out, \in, \in
+.ifnb \more
+    GMOV \pre_op, \more
+.endif
+.endm
+
+//
+// Media Related Macros
+//
+.macro GSBUTTERFLY pre_op, suf_op, out0, out1, in0, in1
+    \pre_op\()ilvl.\suf_op \out0, \in0, \in1
+    \pre_op\()ilvh.\suf_op \out1, \in0, \in1
+.endm
+.macro GINTERLACE pre_op, suf_op, out0, out1, in0, in1
+    \pre_op\()pickev.\suf_op \out0, \in0, \in1
+    \pre_op\()pickod.\suf_op \out1, \in0, \in1
+.endm
+
+//
+// TRANSPOSE4x4_D: Transpose 4x4 block with double-word elements in vectors,
+// has no pre_op param. 128-bit vector instructions are not supported.
+//
+.macro GTRANSPOSE4x4_D in0, in1, in2, in3, out0, out1, out2, out3, \
+                       vt0, vt1
+    GSBUTTERFLY xv, d, \vt0, \out1, \in1, \in0
+    GSBUTTERFLY xv, d, \vt1, \out3, \in3, \in2
+    GMOV xv, \out0, \vt0, \out2, \vt1, \vt1, \out3
+    GPERMI xv, q, \out0, \out2, 0x02, \out2, \vt0, 0x31, \out3, \out1, 0x31, \out1, \vt1, 0x02
+.endm
+
+.macro GTRANSPOSE8x8_W out0, out1, out2, out3, out4, out5, out6, out7, \
+                       in0, in1, in2, in3, in4, in5, in6, in7, \
+                       tmp0, tmp1, tmp2, tmp3
+    GSBUTTERFLY xv, w, \tmp0, \tmp2, \in2, \in0
+    GSBUTTERFLY xv, w, \tmp1, \tmp3, \in3, \in1
+    GSBUTTERFLY xv, w, \out0, \out1, \tmp1, \tmp0
+    GSBUTTERFLY xv, w, \out2, \out3, \tmp3, \tmp2
+
+    GSBUTTERFLY xv, w, \tmp0, \tmp2, \in6, \in4
+    GSBUTTERFLY xv, w, \tmp1, \tmp3, \in7, \in5
+    GSBUTTERFLY xv, w, \out4, \out5, \tmp1, \tmp0
+    GSBUTTERFLY xv, w, \out6, \out7, \tmp3, \tmp2
+
+    GMOV xv, \tmp0, \out0, \tmp1, \out1, \tmp2, \out2, \tmp3, \out3
+
+    GPERMI xv, q, \out0, \out4, 0x02, \out1, \out5, 0x02, \
+                  \out2, \out6, 0x02, \out3, \out7, 0x02, \
+                  \out4, \tmp0, 0x31, \out5, \tmp1, 0x31, \
+                  \out6, \tmp2, 0x31, \out7, \tmp3, 0x31
 .endm
