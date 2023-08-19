@@ -58,6 +58,78 @@ static BLASLONG siamax_kernel_64(BLASLONG n, FLOAT *x, FLOAT *maxf) {
     register __vector float quadruple_values={0,0,0,0};
     register __vector float * v_ptrx=(__vector float *)x;
     for(; i<n; i+=64){
+	    if (vec_any_nan(v_ptrx[0])) {
+	       float d=vec_extract(v_ptrx[0],0);
+	       if (d!=d) return(i+0);
+	       d=vec_extract(v_ptrx[0],1);
+	       if (d!=d) return(i+1);
+	       d=vec_extract(v_ptrx[0],2);
+	       if (d!=d) return(i+2);
+	       return(i+3);
+	    }
+	    if (vec_any_nan(v_ptrx[1])) {
+	       float d=vec_extract(v_ptrx[1],0);
+	       if (d!=d) return(i+4+0);
+	       d=vec_extract(v_ptrx[1],1);
+	       if (d!=d) return(i+4+1);
+	       d=vec_extract(v_ptrx[1],2);
+	       if (d!=d) return(i+4+2);
+	       return(i+4+3);
+	    }
+	    if (vec_any_nan(v_ptrx[2])) {
+	       float d=vec_extract(v_ptrx[2],0);
+	       if (d!=d) return(i+8+0);
+	       d=vec_extract(v_ptrx[2],1);
+	       if (d!=d) return(i+8+1);
+	       d=vec_extract(v_ptrx[2],2);
+	       if (d!=d) return(i+8+2);
+	       return(i+8+3);
+	    }
+	    if (vec_any_nan(v_ptrx[3])) {
+	       float d=vec_extract(v_ptrx[3],0);
+	       if (d!=d) return(i+12+0);
+	       d=vec_extract(v_ptrx[3],1);
+	       if (d!=d) return(i+12+1);
+	       d=vec_extract(v_ptrx[3],2);
+	       if (d!=d) return(i+12+2);
+	       return(i+12+3);
+	    }
+	    if (vec_any_nan(v_ptrx[4])) {
+	       float d=vec_extract(v_ptrx[4],0);
+	       if (d!=d) return(i+16+0);
+	       d=vec_extract(v_ptrx[4],1);
+	       if (d!=d) return(i+16+1);
+	       d=vec_extract(v_ptrx[4],2);
+	       if (d!=d) return(i+16+2);
+	       return(i+16+3);
+	    }
+	    if (vec_any_nan(v_ptrx[5])) {
+	       float d=vec_extract(v_ptrx[5],0);
+	       if (d!=d) return(i+20+0);
+	       d=vec_extract(v_ptrx[5],1);
+	       if (d!=d) return(i+20+1);
+	       d=vec_extract(v_ptrx[5],2);
+	       if (d!=d) return(i+20+2);
+	       return(i+20+3);
+	    }
+	    if (vec_any_nan(v_ptrx[6])) {
+	       float d=vec_extract(v_ptrx[6],0);
+	       if (d!=d) return(i+24+0);
+	       d=vec_extract(v_ptrx[6],1);
+	       if (d!=d) return(i+24+1);
+	       d=vec_extract(v_ptrx[6],2);
+	       if (d!=d) return(i+24+2);
+	       return(i+24+3);
+	    }
+	    if (vec_any_nan(v_ptrx[7])) {
+	       float d=vec_extract(v_ptrx[7],0);
+	       if (d!=d) return(i+28+0);
+	       d=vec_extract(v_ptrx[7],1);
+	       if (d!=d) return(i+28+1);
+	       d=vec_extract(v_ptrx[7],2);
+	       if (d!=d) return(i+28+2);
+	       return(i+28+3);
+	    }
        //absolute temporary vectors
        register __vector float v0=vec_abs(v_ptrx[0]);
        register __vector float v1=vec_abs(v_ptrx[1]);
@@ -226,7 +298,7 @@ BLASLONG CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x) {
     BLASLONG max = 0;
 
     if (n <= 0 || inc_x <= 0) return (max);
-
+    if (x[0] != x[0]) return(1);
     if (inc_x == 1) {
 
         BLASLONG n1 = n & -64;
@@ -238,6 +310,7 @@ BLASLONG CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x) {
         }
 
         while (i < n) {
+	    if (x[i] != x[i]) return(i+1);
             if (ABS(x[i]) > maxf) {
                 max = i;
                 maxf = ABS(x[i]);
@@ -251,18 +324,22 @@ BLASLONG CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x) {
         BLASLONG n1 = n & -4;
         while (j < n1) {
 
+	    if (x[i] != x[i]) return(j+1);
             if (ABS(x[i]) > maxf) {
                 max = j;
                 maxf = ABS(x[i]);
             }
+	    if (x[i+inc_x] != x[i+inc_x]) return(j+1);
             if (ABS(x[i + inc_x]) > maxf) {
                 max = j + 1;
                 maxf = ABS(x[i + inc_x]);
             }
+	    if (x[i+2*inc_x] != x[i+2*inc_x]) return(j+2);
             if (ABS(x[i + 2 * inc_x]) > maxf) {
                 max = j + 2;
                 maxf = ABS(x[i + 2 * inc_x]);
             }
+	    if (x[i+3*inc_x] != x[i+3*inc_x]) return(j+3);
             if (ABS(x[i + 3 * inc_x]) > maxf) {
                 max = j + 3;
                 maxf = ABS(x[i + 3 * inc_x]);
@@ -276,6 +353,7 @@ BLASLONG CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x) {
 
 
         while (j < n) {
+	    if (x[i] != x[i]) return(j+1);
             if (ABS(x[i]) > maxf) {
                 max = j;
                 maxf = ABS(x[i]);
