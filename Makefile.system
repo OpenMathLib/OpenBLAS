@@ -384,6 +384,11 @@ GCCMINORVERSIONGTEQ4 := $(shell expr `$(CC) $(GCCDUMPVERSION_PARAM) | cut -f2 -d
 GCCMINORVERSIONGTEQ7 := $(shell expr `$(CC) $(GCCDUMPVERSION_PARAM) | cut -f2 -d.` \>= 7)
 endif
 
+ifeq ($(C_COMPILER), CLANG)
+CLANGVERSIONGTEQ9 := $(shell expr `$(CC) -dumpversion | cut -f1 -d.` \>= 9)
+CLANGVERSIONGTEQ12 := $(shell expr `$(CC) -dumpversion | cut -f1 -d.` \>= 12)
+endif
+
 #
 #  OS dependent settings
 #
