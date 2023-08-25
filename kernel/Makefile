@@ -80,6 +80,8 @@ else ifeq ($(TARGET_CORE), LOONGSON3R4)
 else ifneq ($(filter NEOVERSEN2 NEOVERSEV1, $(TARGET_CORE)),)
  ifeq ($(C_COMPILER), PGI)
   override CFLAGS += -DBUILD_KERNEL -DTABLE_NAME=gotoblas_$(TARGET_CORE) -Msve_intrinsics
+ else
+  override CFLAGS += -DBUILD_KERNEL -DTABLE_NAME=gotoblas_$(TARGET_CORE)
  endif
 else
  override CFLAGS += -DBUILD_KERNEL -DTABLE_NAME=gotoblas_$(TARGET_CORE)
