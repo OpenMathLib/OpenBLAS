@@ -284,6 +284,9 @@ if [ "$architecture" = "arm64" ]; then
     {
         $compiler_name $flags $args >/dev/null 2>&1
     } || {
+        args=" -Msve_intrinsics -c -o $tmpf.o $tmpf"
+        $compiler_name $flags $args >/dev/null 2>&1
+    } || {
         no_sve=1
     }
     rm -rf "$tmpd"
