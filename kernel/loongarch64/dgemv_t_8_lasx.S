@@ -263,8 +263,11 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #if __loongarch_grlen == 64
     GADDI , d, PA0, PA0, 0x08, PA1, PA1, 0x08, PA2, PA2, 0x08, PA3, PA3, 0x08, \
                PA4, PA4, 0x08, PA5, PA5, 0x08, PA6, PA6, 0x08, PA7, PA7, 0x08
-#else
+#elif __loongarch_grlen == 32
     GADDI , w, PA0, PA0, 0x08, PA1, PA1, 0x08, PA2, PA2, 0x08, PA3, PA3, 0x08, \
+               PA4, PA4, 0x08, PA5, PA5, 0x08, PA6, PA6, 0x08, PA7, PA7, 0x08
+#else
+    GADDI , d, PA0, PA0, 0x08, PA1, PA1, 0x08, PA2, PA2, 0x08, PA3, PA3, 0x08, \
                PA4, PA4, 0x08, PA5, PA5, 0x08, PA6, PA6, 0x08, PA7, PA7, 0x08
 #endif
     GMADD f, d, $f3, $f11, $f1, $f3, $f4, $f12, $f1, $f4, $f5, $f13, $f1, $f5, $f6, $f14, $f1, $f6, \
@@ -292,8 +295,11 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #if __loongarch_grlen == 64
     GADD , d, PA0, PA0, K_LDA, PA1, PA1, K_LDA, PA2, PA2, K_LDA, PA3, PA3, K_LDA, \
               PA4, PA4, K_LDA, PA5, PA5, K_LDA, PA6, PA6, K_LDA, PA7, PA7, K_LDA
-#else
+#elif __loongarch_grlen == 32
     GADD , w, PA0, PA0, K_LDA, PA1, PA1, K_LDA, PA2, PA2, K_LDA, PA3, PA3, K_LDA, \
+              PA4, PA4, K_LDA, PA5, PA5, K_LDA, PA6, PA6, K_LDA, PA7, PA7, K_LDA
+#else
+    GADD , d, PA0, PA0, K_LDA, PA1, PA1, K_LDA, PA2, PA2, K_LDA, PA3, PA3, K_LDA, \
               PA4, PA4, K_LDA, PA5, PA5, K_LDA, PA6, PA6, K_LDA, PA7, PA7, K_LDA
 #endif
     fst.d   $f11,   Y,      0x00
@@ -353,8 +359,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #if __loongarch_grlen == 64
     GADD , d, PA0, PA0, K_LDA, PA1, PA1, K_LDA, PA2, PA2, K_LDA, PA3, PA3, K_LDA
-#else
+#elif __loongarch_grlen == 32
     GADD , w, PA0, PA0, K_LDA, PA1, PA1, K_LDA, PA2, PA2, K_LDA, PA3, PA3, K_LDA
+#else
+    GADD , d, PA0, PA0, K_LDA, PA1, PA1, K_LDA, PA2, PA2, K_LDA, PA3, PA3, K_LDA
 #endif
     fst.d   $f11,   Y,      0x00
     fstx.d  $f12,   Y,      INC_Y
@@ -405,8 +413,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #if __loongarch_grlen == 64
     GADD , d, PA0, PA0, K_LDA, PA1, PA1, K_LDA
-#else
+#elif __loongarch_grlen == 32
     GADD , w, PA0, PA0, K_LDA, PA1, PA1, K_LDA
+#else
+    GADD , d, PA0, PA0, K_LDA, PA1, PA1, K_LDA
 #endif
     fst.d   $f11,   Y,      0x00
     fstx.d  $f12,   Y,      INC_Y
@@ -446,8 +456,11 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #if __loongarch_grlen == 64
     GADD , d, PA1, PA0, LDA, PA2, PA1, LDA, PA3, PA2, LDA, PA4, PA3, LDA, \
               PA5, PA4, LDA, PA6, PA5, LDA, PA7, PA6, LDA
-#else
+#elif __loongarch_grlen == 32
     GADD , w, PA1, PA0, LDA, PA2, PA1, LDA, PA3, PA2, LDA, PA4, PA3, LDA, \
+              PA5, PA4, LDA, PA6, PA5, LDA, PA7, PA6, LDA
+#else
+    GADD , d, PA1, PA0, LDA, PA2, PA1, LDA, PA3, PA2, LDA, PA4, PA3, LDA, \
               PA5, PA4, LDA, PA6, PA5, LDA, PA7, PA6, LDA
 #endif
     la.local    T0,     .L_GAP_TABLE

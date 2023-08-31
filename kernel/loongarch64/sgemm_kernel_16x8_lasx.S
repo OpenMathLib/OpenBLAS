@@ -335,8 +335,11 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #if __loongarch_grlen == 64
     GADDI , d, C0, C0, 0x40, C1, C1, 0x40, C2, C2, 0x40, C3, C3, 0x40, \
                C4, C4, 0x40, C5, C5, 0x40, C6, C6, 0x40, C7, C7, 0x40
-#else
+#elif __loongarch_grlen == 32
     GADDI , w, C0, C0, 0x40, C1, C1, 0x40, C2, C2, 0x40, C3, C3, 0x40, \
+               C4, C4, 0x40, C5, C5, 0x40, C6, C6, 0x40, C7, C7, 0x40
+#else
+    GADDI , d, C0, C0, 0x40, C1, C1, 0x40, C2, C2, 0x40, C3, C3, 0x40, \
                C4, C4, 0x40, C5, C5, 0x40, C6, C6, 0x40, C7, C7, 0x40
 #endif
 .endm
@@ -445,8 +448,11 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #if __loongarch_grlen == 64
     GADDI , d, C0, C0, \stride, C1, C1, \stride, C2, C2, \stride, C3, C3, \stride, \
                C4, C4, \stride, C5, C5, \stride, C6, C6, \stride, C7, C7, \stride
-#else
+#elif __loongarch_grlen == 32
     GADDI , w, C0, C0, \stride, C1, C1, \stride, C2, C2, \stride, C3, C3, \stride, \
+               C4, C4, \stride, C5, C5, \stride, C6, C6, \stride, C7, C7, \stride
+#else
+    GADDI , d, C0, C0, \stride, C1, C1, \stride, C2, C2, \stride, C3, C3, \stride, \
                C4, C4, \stride, C5, C5, \stride, C6, C6, \stride, C7, C7, \stride
 #endif
 .endm
@@ -505,8 +511,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
               D6,  C3, 0x00, D7,  C3, 0x20
 #if __loongarch_grlen == 64
     GADDI , d, C0, C0, 0x40, C1, C1, 0x40, C2, C2, 0x40, C3, C3, 0x40
-#else
+#elif __loongarch_grlen == 32
     GADDI , w, C0, C0, 0x40, C1, C1, 0x40, C2, C2, 0x40, C3, C3, 0x40
+#else
+    GADDI , d, C0, C0, 0x40, C1, C1, 0x40, C2, C2, 0x40, C3, C3, 0x40
 #endif
 .endm
 
@@ -585,8 +593,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .endif
 #if __loongarch_grlen == 64
     GADDI , d, C0, C0, \stride, C1, C1, \stride, C2, C2, \stride, C3, C3, \stride
-#else
+#elif __loongarch_grlen == 32
     GADDI , w, C0, C0, \stride, C1, C1, \stride, C2, C2, \stride, C3, C3, \stride
+#else
+    GADDI , d, C0, C0, \stride, C1, C1, \stride, C2, C2, \stride, C3, C3, \stride
 #endif
 .endm
 
@@ -631,8 +641,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
               D2,  C1, 0x00, D3,  C1, 0x20
 #if __loongarch_grlen == 64
     GADDI , d, C0, C0, 0x40, C1, C1, 0x40
-#else
+#elif __loongarch_grlen == 32
     GADDI , w, C0, C0, 0x40, C1, C1, 0x40
+#else
+    GADDI , d, C0, C0, 0x40, C1, C1, 0x40
 #endif
 .endm
 
@@ -703,8 +715,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .endif
 #if __loongarch_grlen == 64
     GADDI , d, C0, C0, \stride, C1, C1, \stride
-#else
+#elif __loongarch_grlen == 32
     GADDI , w, C0, C0, \stride, C1, C1, \stride
+#else
+    GADDI , d, C0, C0, \stride, C1, C1, \stride
 #endif
 .endm
 
@@ -741,8 +755,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     GST xv, , D0,  C0, 0x00, D1,  C0, 0x20
 #if __loongarch_grlen == 64
     GADDI , d, C0, C0, 0x40
-#else
+#elif __loongarch_grlen == 32
     GADDI , w, C0, C0, 0x40
+#else
+    GADDI , d, C0, C0, 0x40
 #endif
 .endm
 
@@ -813,8 +829,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .endif
 #if __loongarch_grlen == 64
     GADDI , d, C0, C0, \stride
-#else
+#elif __loongarch_grlen == 32
     GADDI , w, C0, C0, \stride
+#else
+    GADDI , d, C0, C0, \stride
 #endif
 .endm
 
@@ -838,8 +856,11 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #if __loongarch_grlen == 64
     GADD , d, C1, C0, T0, C2, C1, T0, C3, C2, T0, C4, C3, T0, C5, C4, T0, \
               C6, C5, T0, C7, C6, T0
-#else
+#elif __loongarch_grlen == 32
     GADD , w, C1, C0, T0, C2, C1, T0, C3, C2, T0, C4, C3, T0, C5, C4, T0, \
+              C6, C5, T0, C7, C6, T0
+#else
+    GADD , d, C1, C0, T0, C2, C1, T0, C3, C2, T0, C4, C3, T0, C5, C4, T0, \
               C6, C5, T0, C7, C6, T0
 #endif
 #if defined(TRMMKERNEL) && defined(LEFT)
@@ -1222,8 +1243,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     PTR_SLLI   T0,    LDC,   2
 #if __loongarch_grlen == 64
     GADD , d, C1, C0, T0, C2, C1, T0, C3, C2, T0
-#else
+#elif __loongarch_grlen == 32
     GADD , w, C1, C0, T0, C2, C1, T0, C3, C2, T0
+#else
+    GADD , d, C1, C0, T0, C2, C1, T0, C3, C2, T0
 #endif
 
 #if defined(TRMMKERNEL) && defined(LEFT)
