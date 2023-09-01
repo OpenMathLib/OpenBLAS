@@ -68,6 +68,7 @@
 #endif
 
 int blas_server_avail = 0;
+int blas_omp_number_max = 0;
 
 extern int openblas_omp_adaptive_env();
 
@@ -100,8 +101,6 @@ static void adjust_thread_buffers() {
 
 void goto_set_num_threads(int num_threads) {
 
-  blas_num_threads_set = 1;
-  if (num_threads < 0) blas_num_threads_set = 0;
   if (num_threads < 1) num_threads = blas_num_threads;
 
   if (num_threads > MAX_CPU_NUMBER) num_threads = MAX_CPU_NUMBER;
@@ -125,6 +124,8 @@ void openblas_set_num_threads(int num_threads) {
 }
 
 int blas_thread_init(void){
+if(blas_omp_number_max <= 0)
+  blas_omp_number_max = omp_get_max_threads();
 
   blas_get_cpu_number();
 

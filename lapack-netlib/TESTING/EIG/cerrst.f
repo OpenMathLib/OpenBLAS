@@ -160,13 +160,13 @@
 *
          SRNAMT = 'CHETD2'
          INFOT = 1
-         CALL CHETD2( '/', 0, A, 1, D, E, TAU, W, 1, INFO )
+         CALL CHETD2( '/', 0, A, 1, D, E, TAU, INFO )
          CALL CHKXER( 'CHETD2', INFOT, NOUT, LERR, OK )
          INFOT = 2
-         CALL CHETD2( 'U', -1, A, 1, D, E, TAU, W, 1, INFO )
+         CALL CHETD2( 'U', -1, A, 1, D, E, TAU, INFO )
          CALL CHKXER( 'CHETD2', INFOT, NOUT, LERR, OK )
          INFOT = 4
-         CALL CHETD2( 'U', 2, A, 1, D, E, TAU, W, 1, INFO )
+         CALL CHETD2( 'U', 2, A, 1, D, E, TAU, INFO )
          CALL CHKXER( 'CHETD2', INFOT, NOUT, LERR, OK )
          NT = NT + 3
 *

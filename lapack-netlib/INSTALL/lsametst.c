@@ -426,7 +426,7 @@ static integer c__3 = 3;
 /*     December 2016 */
 
 /*  ===================================================================== */
-/* Main program */ main(void)
+/* Main program */ int main(void)
 {
     /* Format strings */
     static char fmt_9999[] = "(\002 *** Error:  LSAME( \002,a1,\002, \002,"

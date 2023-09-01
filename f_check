@@ -101,7 +101,14 @@ else
                         *flang*)
                             vendor=FLANG
                             openmp='-fopenmp'
-                            ;;
+			    data=`$compiler -v 2>&1 > /dev/null `
+                	    v="${data#*version *}"
+                	    v="${v%%*.}"
+                	    major="${v%%.*}"
+                	    if [ "$major" -ge 17 ]; then
+                        	vendor=FLANGNEW
+			    fi	
+			;;
                         *ifort*|*ifx*)
                             vendor=INTEL
                             openmp='-fopenmp'

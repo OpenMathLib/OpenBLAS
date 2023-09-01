@@ -105,7 +105,7 @@
 	cmpwi	cr0, N, 0
 	ble-	LL(999)
 	cmpwi	cr0, INCX, 0
-	ble-	LL(999)
+	beq-	LL(999)
 
 	fmr	f0,  f1
 	fmr	f2,  f1

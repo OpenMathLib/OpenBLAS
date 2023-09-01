@@ -9,7 +9,7 @@ pipeline {
             steps {
                 sh 'sudo apt update'
                 sh 'sudo apt install gfortran -y'
-                sh 'make'
+                sh 'make clean && make'
             }
         }
     }

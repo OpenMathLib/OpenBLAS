@@ -69,7 +69,7 @@
 	jle	.L999
 	pxor	%xmm1, %xmm1
 	testl	INCX, INCX
-	jle	.L999
+	je	.L999
 
 	sall	$ZBASE_SHIFT, INCX
 

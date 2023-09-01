@@ -384,6 +384,11 @@ GCCMINORVERSIONGTEQ4 := $(shell expr `$(CC) $(GCCDUMPVERSION_PARAM) | cut -f2 -d
 GCCMINORVERSIONGTEQ7 := $(shell expr `$(CC) $(GCCDUMPVERSION_PARAM) | cut -f2 -d.` \>= 7)
 endif
 
+ifeq ($(C_COMPILER), CLANG)
+CLANGVERSIONGTEQ9 := $(shell expr `$(CC) -dumpversion | cut -f1 -d.` \>= 9)
+CLANGVERSIONGTEQ12 := $(shell expr `$(CC) -dumpversion | cut -f1 -d.` \>= 12)
+endif
+
 #
 #  OS dependent settings
 #
@@ -668,6 +673,7 @@ DYNAMIC_CORE += NEOVERSEN1
 ifneq ($(NO_SVE), 1)
 DYNAMIC_CORE += NEOVERSEV1
 DYNAMIC_CORE += NEOVERSEN2
+DYNAMIC_CORE += ARMV8SVE
 endif
 DYNAMIC_CORE += CORTEXA55
 DYNAMIC_CORE += FALKOR
@@ -1086,8 +1092,9 @@ endif
 endif
 endif
 
-ifeq ($(F_COMPILER), GFORTRAN)
+ifeq ($(F_COMPILER), $(filter $(F_COMPILER),GFORTRAN FLANGNEW))
 CCOMMON_OPT += -DF_INTERFACE_GFORT
+ifeq ($(F_COMPILER), GFORTRAN)
 FCOMMON_OPT += -Wall
 # make single-threaded LAPACK calls thread-safe #1847
 FCOMMON_OPT += -frecursive
@@ -1098,6 +1105,7 @@ ifneq ($(NOFORTRAN), 1)
 ifneq ($(NOFORTRAN), 2)
 ifneq ($(NO_LAPACK), 1)
 EXTRALIB += -lgfortran
+endif
 endif
 endif
 endif
@@ -1767,6 +1775,8 @@ export TARGET_CORE
 export NO_AVX512
 export NO_AVX2
 export BUILD_BFLOAT16
+export NO_LSX
+export NO_LASX
 
 export SBGEMM_UNROLL_M
 export SBGEMM_UNROLL_N

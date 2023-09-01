@@ -77,7 +77,7 @@
 	blez	N, .L999
 	mov.d	s2, s1
 
-	blez	INCX, .L999
+	beqz	INCX, .L999
 	dsll	INCX, INCX, ZBASE_SHIFT
 
 	dsra	I, N, 2

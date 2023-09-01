@@ -32,6 +32,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 **********************************************************************************/
 
 #include <stdint.h>
+#include <sys/auxv.h>
 
 /*  If LASX extension instructions supported,
  *  using core LOONGSON3R5
@@ -46,9 +47,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define CPU_LOONGSON3R5    1
 #define CPU_LOONGSON2K1000 2
 
-#define LOONGARCH_CFG2  0x02
-#define LOONGARCH_LASX  1<<7
-#define LOONGARCH_LSX   1<<6
+#define LA_HWCAP_LSX    (1<<4)
+#define LA_HWCAP_LASX   (1<<5)
 
 static char *cpuname[] = {
   "LOONGSONGENERIC",
@@ -64,17 +64,11 @@ static char *cpuname_lower[] = {
 
 int detect(void) {
 #ifdef __linux
-  uint32_t reg = 0;
+  int flag  = (int)getauxval(AT_HWCAP);
 
-  __asm__ volatile (
-    "cpucfg %0, %1 \n\t"
-    : "+&r"(reg)
-    : "r"(LOONGARCH_CFG2)
-  );
-
-  if (reg & LOONGARCH_LASX)
+  if (flag & LA_HWCAP_LASX)
     return CPU_LOONGSON3R5;
-  else if (reg & LOONGARCH_LSX)
+  else if (flag & LA_HWCAP_LSX)
     return CPU_LOONGSON2K1000;
   else
     return CPU_GENERIC;

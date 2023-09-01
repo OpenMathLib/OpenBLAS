@@ -33,22 +33,23 @@
 #include "lapacke_utils.h"
 
 lapack_int LAPACKE_dgedmd_work( int matrix_layout, char jobs, char jobz,
-                                char jobf, lapack_int whtsvd, lapack_int m,
-                                lapack_int n, double* x, lapack_int ldx,
-                                double* y, lapack_int ldy, lapack_int k,
-                                double* reig, double* imeig, double* z,
-                                lapack_int ldz, double* res, double* b,
-                                lapack_int ldb, double* w, lapack_int ldw,
-                                double* s, lapack_int lds, double* work,
-                                lapack_int lwork, lapack_int* iwork,
-                                lapack_int liwork )
+                                char jobr, char jobf, lapack_int whtsvd,
+				lapack_int m, lapack_int n, double* x,
+				lapack_int ldx, double* y, lapack_int ldy,
+				lapack_int nrnk, double* tol, lapack_int k,
+			       	double* reig, double* imeig,
+				double* z, lapack_int ldz, double* res,
+				double* b, lapack_int ldb, double* w,
+				lapack_int ldw, double* s, lapack_int lds,
+				double* work, lapack_int lwork,
+				lapack_int* iwork, lapack_int liwork )
 {
     lapack_int info = 0;
     if( matrix_layout == LAPACK_COL_MAJOR ) {
         /* Call LAPACK function and adjust info */
-        LAPACK_dgedmd( &jobs, &jobz, &jobf, &whtsvd, &m, &n, x, &ldx, y, &ldy,
-                       &k, reig, imeig, z, &ldz, res, b, &ldb, w, &ldw, s, &lds,
-                       work, &lwork, iwork, &liwork, &info );
+        LAPACK_dgedmd( &jobs, &jobz, &jobr, &jobf, &whtsvd, &m, &n, x, &ldx, y,
+		       &ldy, &nrnk, tol, &k, reig, imeig, z, &ldz, res, b, &ldb, w, &ldw,
+		       s, &lds, work, &lwork, iwork, &liwork, &info );
         if( info < 0 ) {
             info = info - 1;
         }
@@ -98,9 +99,9 @@ lapack_int LAPACKE_dgedmd_work( int matrix_layout, char jobs, char jobz,
         }
         /* Query optimal working array(s) size if requested */
         if( lwork == -1 ) {
-            LAPACK_dgedmd( &jobs, &jobz, &jobf, &whtsvd, &m, &n, x, &ldx, y, &ldy,
-                           &k, reig, imeig, z, &ldz, res, b, &ldb, w, &ldw, s, &lds,
-                           work, &lwork, iwork, &liwork, &info );
+            LAPACK_dgedmd( &jobs, &jobz, &jobr, &jobf, &whtsvd, &m, &n, x, &ldx,
+			   y, &ldy, &nrnk, tol, &k, reig, imeig, z, &ldz, res, b, &ldb, w,
+			   &ldw, s, &lds, work, &lwork, iwork, &liwork, &info );
             return (info < 0) ? (info - 1) : info;
         }
         /* Allocate memory for temporary array(s) */
@@ -142,9 +143,10 @@ lapack_int LAPACKE_dgedmd_work( int matrix_layout, char jobs, char jobz,
         LAPACKE_dge_trans( matrix_layout, m, n, w, ldw, w_t, ldw_t );
         LAPACKE_dge_trans( matrix_layout, m, n, s, lds, s_t, lds_t );
         /* Call LAPACK function and adjust info */
-        LAPACK_dgedmd( &jobs, &jobz, &jobf, &whtsvd, &m, &n, x_t, &ldx_t, y_t,
-                       &ldy_t, &k, reig, imeig, z_t, &ldz_t, res, b_t, &ldb_t,
-                       w_t, &ldw_t, s_t, &lds_t, work, &lwork, iwork, &liwork, &info );
+        LAPACK_dgedmd( &jobs, &jobz, &jobr, &jobf, &whtsvd, &m, &n, x_t, &ldx_t,
+		       y_t, &ldy_t, &nrnk, tol, &k, reig, imeig, z_t, &ldz_t, res, b_t,
+		       &ldb_t, w_t, &ldw_t, s_t, &lds_t, work, &lwork,
+		       iwork, &liwork, &info );
         if( info < 0 ) {
             info = info - 1;
         }

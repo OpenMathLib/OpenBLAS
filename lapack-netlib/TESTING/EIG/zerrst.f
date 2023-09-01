@@ -160,13 +160,13 @@
 *
          SRNAMT = 'ZHETD2'
          INFOT = 1
-         CALL ZHETD2( '/', 0, A, 1, D, E, TAU, W, 1, INFO )
+         CALL ZHETD2( '/', 0, A, 1, D, E, TAU, INFO )
          CALL CHKXER( 'ZHETD2', INFOT, NOUT, LERR, OK )
          INFOT = 2
-         CALL ZHETD2( 'U', -1, A, 1, D, E, TAU, W, 1, INFO )
+         CALL ZHETD2( 'U', -1, A, 1, D, E, TAU, INFO )
          CALL CHKXER( 'ZHETD2', INFOT, NOUT, LERR, OK )
          INFOT = 4
-         CALL ZHETD2( 'U', 2, A, 1, D, E, TAU, W, 1, INFO )
+         CALL ZHETD2( 'U', 2, A, 1, D, E, TAU, INFO )
          CALL CHKXER( 'ZHETD2', INFOT, NOUT, LERR, OK )
          NT = NT + 3
 *

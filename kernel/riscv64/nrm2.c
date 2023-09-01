@@ -57,7 +57,7 @@ FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x)
 	FLOAT absxi = 0.0;
 
 
-	if (n <= 0 || inc_x <= 0) return(0.0);
+	if (n <= 0 || inc_x == 0) return(0.0);
 	if ( n == 1 ) return( ABS(x[0]) );
 
 	n *= inc_x;

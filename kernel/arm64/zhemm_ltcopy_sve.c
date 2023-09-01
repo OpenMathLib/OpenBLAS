@@ -1,5 +1,6 @@
 /*********************************************************************/
 /* Copyright 2009, 2010 The University of Texas at Austin.           */
+/* Copyright 2023 The OpenBLAS Project                               */
 /* All rights reserved.                                              */
 /*                                                                   */
 /* Redistribution and use in source and binary forms, with or        */
@@ -54,7 +55,7 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, BLASLONG posX, BLASLON
   svint64_t one_vec = svdup_s64(1LL);
 
   int64_t j = 0;
-  svbool_t pg = svwhilelt_b64(j, n);
+  svbool_t pg = svwhilelt_b64((uint64_t)j, (uint64_t)n);
   int64_t active = svcntp_b64(svptrue_b64(), pg);
   svint64_t index_neg = svindex_s64(0LL, -1LL);
   svint64_t index = svindex_s64(0LL, 1LL);
@@ -79,7 +80,7 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, BLASLONG posX, BLASLON
         gat_ind = svadd_m(cmp, gat_ind, lda_vec);
         gat_ind = svadd_m(svnot_z(pg, cmp) , gat_ind, 2);
         if (offset <= 0) {
-            svbool_t off_g = svwhilelt_b64(offset, 0LL);
+            svbool_t off_g = svwhilelt_b64((int64_t)offset, (int64_t)0LL);
             data_vec_imag = svneg_m(data_vec_imag, off_g, data_vec_imag);
         }
 
@@ -99,7 +100,7 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, BLASLONG posX, BLASLON
     posX += sve_size;
     posX_vec = svdup_s64(posX);
     j += sve_size;
-    pg = svwhilelt_b64(j, n);
+    pg = svwhilelt_b64((uint64_t)j, (uint64_t)n);
     active = svcntp_b64(svptrue_b64(), pg);
   } while (svptest_any(svptrue_b64(), pg));
 
@@ -117,7 +118,7 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, BLASLONG posX, BLASLON
 
   int32_t j = 0;
   int32_t N = n;
-  svbool_t pg = svwhilelt_b32(j, N);
+  svbool_t pg = svwhilelt_b32((uint32_t)j, (uint32_t)N);
   int32_t active = svcntp_b32(svptrue_b32(), pg);
   svint32_t index_neg = svindex_s32(0, -1);
   svint32_t index = svindex_s32(0, 1);
@@ -142,7 +143,7 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, BLASLONG posX, BLASLON
         gat_ind = svadd_m(cmp, gat_ind, lda_vec);
         gat_ind = svadd_m(svnot_z(pg, cmp) , gat_ind, 2);
         if (offset <= 0) {
-            svbool_t off_g = svwhilelt_b32(offset, 0);
+            svbool_t off_g = svwhilelt_b32((int32_t)offset, (int32_t)0);
             data_vec_imag = svneg_m(data_vec_imag, off_g, data_vec_imag);
         }
 
@@ -162,7 +163,7 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, BLASLONG posX, BLASLON
     posX += sve_size;
     posX_vec = svdup_s32(posX);
     j += sve_size;
-    pg = svwhilelt_b32(j, N);
+    pg = svwhilelt_b32((uint32_t)j, (uint32_t)N);
     active = svcntp_b32(svptrue_b32(), pg);
   } while (svptest_any(svptrue_b32(), pg));
 

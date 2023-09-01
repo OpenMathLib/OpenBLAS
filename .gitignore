@@ -72,6 +72,7 @@ test/SBLAT3.SUMM
 test/ZBLAT2.SUMM
 test/ZBLAT3.SUMM
 test/SHBLAT3.SUMM
+test/SBBLAT3.SUMM
 test/cblat1
 test/cblat2
 test/cblat3
@@ -82,6 +83,7 @@ test/sblat1
 test/sblat2
 test/sblat3
 test/test_shgemm
+test/test_sbgemm
 test/zblat1
 test/zblat2
 test/zblat3
