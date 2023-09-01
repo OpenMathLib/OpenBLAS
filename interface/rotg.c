@@ -1,8 +1,10 @@
 #include <math.h>
+#include <float.h>
 #include "common.h"
 #ifdef FUNCTION_PROFILE
 #include "functable.h"
 #endif
+
 
 #ifndef CBLAS
 
@@ -14,17 +16,27 @@ void CNAME(FLOAT *DA, FLOAT *DB, FLOAT *C, FLOAT *S){
 
 #endif
 
+#ifdef DOUBLE
+  long double safmin = DBL_MIN;
+#else
+  long double safmin = FLT_MIN;
+#endif
+
 #if defined(__i386__) || defined(__x86_64__) || defined(__ia64__) || defined(_M_X64) || defined(_M_IX86)
 
   long double da = *DA;
   long double db = *DB;
   long double c;
   long double s;
-  long double r, roe, z;
+  long double r, z;
+  long double sigma, dascal,dbscal;
 
   long double ada = fabsl(da);
   long double adb = fabsl(db);
-  long double scale = ada + adb;
+  long double maxab = MAX(ada,adb);
+  long double safmax;
+  long double scale;
+
 
 #ifndef CBLAS
   PRINT_DEBUG_NAME;
@@ -32,17 +44,25 @@ void CNAME(FLOAT *DA, FLOAT *DB, FLOAT *C, FLOAT *S){
   PRINT_DEBUG_CNAME;
 #endif
 
-  roe = db;
-  if (ada > adb) roe = da;
-
-  if (scale == ZERO) {
+  if (adb == ZERO) {
     *C = ONE;
     *S = ZERO;
-    *DA = ZERO;
     *DB = ZERO;
+  } else if (ada == ZERO) {
+    *C = ZERO;
+    *S = ONE;
+    *DA = *DB;
+    *DB = ONE;
   } else {
-    r = sqrt(da * da + db * db);
-    if (roe < 0) r = -r;
+  safmax = 1./safmin;
+  scale = MIN(MAX(safmin,maxab), safmax);
+    if (ada > adb)
+	sigma = copysign(1.,da);
+    else
+	sigma = copysign(1.,db);
+    dascal = da / scale;
+    dbscal = db / scale;
+    r = sigma * (scale * sqrt(dascal * dascal + dbscal * dbscal));
     c = da / r;
     s = db / r;
     z = ONE;
@@ -65,11 +85,22 @@ void CNAME(FLOAT *DA, FLOAT *DB, FLOAT *C, FLOAT *S){
   FLOAT db = *DB;
   FLOAT c  = *C;
   FLOAT s  = *S;
-  FLOAT r, roe, z;
+  FLOAT sigma;
+  FLOAT r, z;
 
   FLOAT ada = fabs(da);
   FLOAT adb = fabs(db);
-  FLOAT scale = ada + adb;
+  FLOAT maxab = MAX(ada,adb);
+  long double safmax ;
+  FLOAT scale ;
+
+  safmax = 1./safmin;
+  scale = MIN(MAX(safmin,maxab), safmax);
+
+  if (ada > adb)
+	sigma = copysign(1.,da);
+    else
+	sigma = copysign(1.,db);
 
 #ifndef CBLAS
   PRINT_DEBUG_NAME;
@@ -77,20 +108,21 @@ void CNAME(FLOAT *DA, FLOAT *DB, FLOAT *C, FLOAT *S){
   PRINT_DEBUG_CNAME;
 #endif
 
-  roe = db;
-  if (ada > adb) roe = da;
 
-  if (scale == ZERO) {
+  if (adb == ZERO) {
     *C = ONE;
     *S = ZERO;
-    *DA = ZERO;
     *DB = ZERO;
+  } else if (ada == ZERO) {
+    *C = ZERO;
+    *S = ONE;
+    *DA = *DB;
+    *DB = ONE;
   } else {
     FLOAT aa = da / scale;
     FLOAT bb = db / scale;
 
-    r = scale * sqrt(aa * aa + bb * bb);
-    if (roe < 0) r = -r;
+    r = sigma * scale * sqrt(aa * aa + bb * bb);
     c = da / r;
     s = db / r;
     z = ONE;
