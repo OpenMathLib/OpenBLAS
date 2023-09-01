@@ -39,7 +39,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define PTR_SRAI  srai.d
 #define PTR_MUL   mul.d
 #define PTR_ALSL  alsl.d
-#else
+#elif __loongarch_grlen == 32
 #define LA_REG    int32_t
 #define REG_SIZE  4
 #define REG_LOG   2
@@ -53,6 +53,22 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define PTR_SRAI  srai.w
 #define PTR_MUL   mul.w
 #define PTR_ALSL  alsl.w
+#else
+// If neither of the above two conditions is supported, it means this is an early
+// internal toolchain. To ensure maximum compatibility, the following approach is taken:
+#define LA_REG    int64_t
+#define REG_SIZE  8
+#define REG_LOG   3
+#define PTR_ADDI  addi.d
+#define PTR_ADD   add.d
+#define PTR_SUB   sub.d
+#define PTR_LD    ld.d
+#define PTR_ST    st.d
+#define PTR_SLLI  slli.d
+#define PTR_SRLI  srli.d
+#define PTR_SRAI  srai.d
+#define PTR_MUL   mul.d
+#define PTR_ALSL  alsl.d
 #endif
 
 #if __loongarch_frlen == 64
@@ -60,11 +76,18 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define FREG_LOG  3
 #define PTR_FLD   fld.d
 #define PTR_FST   fst.d
-#else
+#elif __loongarch_frlen == 32
 #define FREG_SIZE 4
 #define FREG_LOG  2
 #define PTR_FLD   fld.s
 #define PTR_FST   fst.s
+#else
+// If neither of the above two conditions is supported, it means this is an early
+// internal toolchain. To ensure maximum compatibility, the following approach is taken:
+#define FREG_SIZE 8
+#define FREG_LOG  3
+#define PTR_FLD   fld.d
+#define PTR_FST   fst.d
 #endif
 
 // The max registers available to the user which
