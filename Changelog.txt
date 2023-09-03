@@ -1,5 +1,105 @@
 OpenBLAS ChangeLog
 ====================================================================
+Version 0.3.24
+ 03-Sep-2023
+
+general:
+   - declared the arguments of cblas_xerbla as const (in accordance with the reference implementation 
+     and others, the previous discrepancy appears to have dated back to GotoBLAS)
+   - fixed the implementation of ?GEMMT that was added in 0.3.23
+   - made cpu-specific SWITCH_RATIO parameters for GEMM available to DYNAMIC_ARCH builds
+   - fixed application of SYMBOLSUFFIX in CMAKE builds
+   - fixed missing SSYCONVF function in the shared library
+   - fixed parallel build logic used with gmake
+   - added support for compilation with LLVM17, in particular its new Fortran compiler
+   - added support for CMAKE builds using the NVIDIA HPC compiler
+   - fixed INTERFACE64 builds with CMAKE and the f95 Fortran compiler
+   - fixed cross-build detection and management in c_check
+   - disabled building of the tests with CMAKE when ONLY_CBLAS is defined
+   - fixed several issues with the handling of runtime limits on the number of OPENMP threads
+   - corrected the error code returned by SGEADD/DGEADD when LDA is too small
+   - corrected the error code returned by IMATCOPY when LDB is too small
+   - updated ?NRM2 to support negative increment values (as introduced in release 3.10 
+     of the reference BLAS)
+   - fixed OpenMP builds with CLANG for the case where libomp is not in a standard location
+   - fixed a potential overwrite of unrelated memory during thread initialisation on startup
+   - fixed a potential integer overflow in the multithreading threshold for ?SYMM/?SYRK
+   - fixed build of the LAPACKE interfaces for the LAPACK 3.11.0 ?TRSYL functions added in 0.3.22
+   - fixed installation of .cmake files in concurrent 32 and 64bit builds with CMAKE
+   - applied additions and corrections from the development branch of Reference-LAPACK:
+   - fixed actual arguments passed to a number of LAPACK functions (from Reference-LAPACK PR 885)
+   - fixed workspace query results in LAPACK ?SYTRF/?TRECV3 (from Reference-LAPACK PR 883)
+   - fixed derivation of the UPLO parameter in LAPACKE_?larfb (from Reference-LAPACK PR 878)
+   - fixed a crash in LAPACK ?GELSDD on NRHS=0 (from Reference-LAPACK PR 876)
+   - added new LAPACK utility functions CRSCL and ZRSCL (from Reference-LAPACK PR 839)
+	- corrected the order of eigenvalues for 2x2 matrices in ?STEMR (Reference-LAPACK PR 867)
+	- removed spurious reference to OpenMP variables outside OpenMP contexts (Reference-LAPACK PR 860)
+	- updated file comments on use of LAMBDA variable in LAPACK (Reference-LAPACK PR 852)
+	- fixed documentation of LAPACK SLASD0/DLASD0 (Reference-LAPACK PR 855)
+	- fixed confusing use of "minor" in LAPACK documentation (Reference-LAPACK PR 849)
+	- added new LAPACK functions ?GEDMD for dynamic mode decomposition (Reference-LAPACK PR 736)
+	- fixed potential stack overflows in the EIG part of the LAPACK testsuite (Reference-LAPACK PR 854)
+	- applied small improvements to the variants of Cholesky and QR functions (Reference-LAPACK PR 847)
+	- removed unused variables from LAPACK ?BDSQR (Reference-LAPACK PR 832)
+	- fixed a potential crash on allocation failure in LAPACKE SGEESX/DGEESX (Reference-LAPACK PR 836)
+	- added a quick return from SLARUV/DLARUV for N < 1 (Reference-LAPACK PR 837)
+	- updated function descriptions in LAPACK ?GEGS/?GEGV (Reference-LAPACK PR 831)
+	- improved algorithm description in ?GELSY (Reference-LAPACK PR 833)
+	- fixed scaling in LAPACK STGSNA/DTGSNA (Reference-LAPACK PR 830)
+	- fixed crash in LAPACKE_?geqrt with row-major data (Reference-LAPACK PR 768)
+	- added LAPACKE interfaces for C/ZUNHR_COL and S/DORHR_COL (Reference-LAPACK PR 827)
+	- added error exit tests for SYSV/SYTD2/GEHD2 to the testsuite (Reference-LAPACK PR 795)
+	- fixed typos in LAPACK source and comments (Reference-LAPACK PRs 809,811,812,814,820)
+	- adopt refactored ?GEBAL implementation (Reference-LAPACK PR 808)
+
+x86_64:
+   - added cpu model autodetection for Intel Alder Lake N
+   - added activation of the AMX tile to the Sapphire Rapids SBGEMM kernel
+   - worked around miscompilations of GEMV/SYMV kernels by gcc's tree-vectorizer
+   - fixed compilation of Cooperlake and Sapphire Rapids kernels with CLANG
+   - fixed runtime detection of Cooperlake and Sapphire Rapids in DYNAMIC_ARCH
+   - fixed feature-based cputype fallback in DYNAMIC_ARCH
+   - added support for building the AVX512 kernels with the NVIDIA HPC compiler
+   - corrected ZAXPY result on old pre-AVX hardware for the INCX=0 case
+   - fixed a potential use of uninitialized variables in ZTRSM
+
+ARM64:
+   - added cpu model autodetection for Apple M2
+   - fixed wrong results of CGEMM/CTRMM/DNRM2 under OSX (use of reserved register)
+   - added support for building the SVE kernels with the NVIDIA HPC compiler
+   - added support for building the SVE kernels with the Apple Clang compiler
+   - fixed compiler option handling for building the SVE kernels with LLVM
+   - implemented SWITCH_RATIO parameter for improved GEMM performance on Neoverse
+   - activated SVE SGEMM and DGEMM kernels for Neoverse V1
+   - improved performance of the SVE CGEMM and ZGEMM kernels on Neoverse V1
+   - improved kernel selection for the ARMV8SVE target and added it to DYNAMIC_ARCH
+   - fixed runtime check for SVE availability in DYNAMIC_ARCH builds to take OS or
+     container restrictions into account
+   - fixed a potential use of uninitialized variables in ZTRSM
+   - fix a potential misdetection of ARMV8 hardware as 32bit in CMAKE builds
+
+LOONGARCH64:
+   - added ABI detection
+   - added support for cpu affinity handling
+   - fixed compilation with early versions of the Loongson toolchain
+   - added an optimized SGEMM kernel for 3A5000
+   - added optimized DGEMV kernels for 3A5000
+   - improved the performance of the DGEMM kernel for 3A5000
+
+MIPS64:
+   - fixed miscompilation of TRMM kernels for the MIPS64_GENERIC target
+
+POWER:
+   - fixed compiler warnings in the POWER10 SBGEMM kernel
+
+RISCV:
+   - fixed application of the INTERFACE64 option when building with CMAKE
+   - fix a potential misdetection of RISCV hardware as 32bit in CMAKE builds
+   - fixed IDAMAX and DOT kernels for C910V
+   - fixed corner cases in the ROT and SWAP kernels for C910V
+   - fixed compilation of the C910V target with recent vendor compilers
+
+====================================================================
 Version 0.3.23
  01-Apr-2023
  
