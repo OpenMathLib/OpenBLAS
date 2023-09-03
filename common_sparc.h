@@ -45,7 +45,7 @@
 
 #ifndef ASSEMBLER
 
-static void __inline blas_lock(volatile unsigned long *address){
+static __inline void blas_lock(volatile unsigned long *address){
 
   long int ret = 1;
 

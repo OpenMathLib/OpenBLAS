@@ -525,7 +525,7 @@ static inline unsigned long long rpcc(void){
 #endif // !RPCC_DEFINED
 
 #if !defined(BLAS_LOCK_DEFINED) && defined(__GNUC__)
-static void __inline blas_lock(volatile BLASULONG *address){
+static __inline void blas_lock(volatile BLASULONG *address){
 
   do {
     while (*address) {YIELDING;};
