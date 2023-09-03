@@ -76,7 +76,7 @@
 	FMOV	c1, t4
 
 	cmp	INCX, 0
-	ble	.LL20
+	beq	.LL20
 	sll	INCX, ZBASE_SHIFT, INCX
 
 	cmp	N, 0

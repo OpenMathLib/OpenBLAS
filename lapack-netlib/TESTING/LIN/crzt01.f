@@ -158,7 +158,7 @@
 *
 *     R = R * P(1) * ... *P(m)
 *
-      CALL CUNMRZ( 'Right', 'No tranpose', M, N, M, N-M, AF, LDA, TAU,
+      CALL CUNMRZ( 'Right', 'No transpose', M, N, M, N-M, AF, LDA, TAU,
      $             WORK, M, WORK( M*N+1 ), LWORK-M*N, INFO )
 *
 *     R = R - A

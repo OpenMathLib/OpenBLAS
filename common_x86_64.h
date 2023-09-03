@@ -70,7 +70,7 @@
 #define RMB
 #endif
 
-static void __inline blas_lock(volatile BLASULONG *address){
+static __inline void blas_lock(volatile BLASULONG *address){
 
 	
 #ifndef C_MSVC

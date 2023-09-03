@@ -45,7 +45,7 @@
 *>
 *>  Given an upper bidiagonal B with diagonal D = [ d_1 d_2 ... d_N ]
 *>  and superdiagonal E = [ e_1 e_2 ... e_N-1 ], SBDSVDX computes the
-*>  singular value decompositon of B through the eigenvalues and
+*>  singular value decomposition of B through the eigenvalues and
 *>  eigenvectors of the N*2-by-N*2 tridiagonal matrix
 *>
 *>        |  0  d_1                |

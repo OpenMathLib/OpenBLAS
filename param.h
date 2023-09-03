@@ -1,5 +1,5 @@
 /*****************************************************************************
-Copyright (c) 2011-2014, The OpenBLAS Project
+Copyright (c) 2011-2023, The OpenBLAS Project
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -2845,31 +2845,39 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define GEMM_DEFAULT_OFFSET_B 0
 #define GEMM_DEFAULT_ALIGN 0x0ffffUL
 
+#if defined(NO_LASX)
+#define DGEMM_DEFAULT_UNROLL_N 8
+#define DGEMM_DEFAULT_UNROLL_M 2
 #define SGEMM_DEFAULT_UNROLL_N 8
+#define SGEMM_DEFAULT_UNROLL_M 2
+#else
 #define DGEMM_DEFAULT_UNROLL_N 4
+#define DGEMM_DEFAULT_UNROLL_M 16
+#define SGEMM_DEFAULT_UNROLL_N 8
+#define SGEMM_DEFAULT_UNROLL_M 16
+#endif
+
 #define QGEMM_DEFAULT_UNROLL_N 2
 #define CGEMM_DEFAULT_UNROLL_N 4
 #define ZGEMM_DEFAULT_UNROLL_N 4
 #define XGEMM_DEFAULT_UNROLL_N 1
 
-#define SGEMM_DEFAULT_UNROLL_M 2
-#define DGEMM_DEFAULT_UNROLL_M 16
 #define QGEMM_DEFAULT_UNROLL_M 2
 #define CGEMM_DEFAULT_UNROLL_M 1
 #define ZGEMM_DEFAULT_UNROLL_M 1
 #define XGEMM_DEFAULT_UNROLL_M 1
 
-#define SGEMM_DEFAULT_P 512
+#define SGEMM_DEFAULT_P 256
 #define DGEMM_DEFAULT_P 32
 #define CGEMM_DEFAULT_P 128
 #define ZGEMM_DEFAULT_P 128
 
-#define SGEMM_DEFAULT_R 12288
+#define SGEMM_DEFAULT_R 1024
 #define DGEMM_DEFAULT_R 858
 #define CGEMM_DEFAULT_R 4096
 #define ZGEMM_DEFAULT_R 4096
 
-#define SGEMM_DEFAULT_Q 128
+#define SGEMM_DEFAULT_Q 256
 #define DGEMM_DEFAULT_Q 152
 #define CGEMM_DEFAULT_Q 128
 #define ZGEMM_DEFAULT_Q 128
@@ -3338,6 +3346,12 @@ is a big desktop or server with abundant cache rather than a phone or embedded d
 
 #elif defined(NEOVERSEN1)
 
+#if defined(XDOUBLE) || defined(DOUBLE)
+#define SWITCH_RATIO            8
+#else
+#define SWITCH_RATIO            16
+#endif
+
 #define SGEMM_DEFAULT_UNROLL_M  16
 #define SGEMM_DEFAULT_UNROLL_N  4
 
@@ -3365,21 +3379,27 @@ is a big desktop or server with abundant cache rather than a phone or embedded d
 #define CGEMM_DEFAULT_R 4096
 #define ZGEMM_DEFAULT_R 4096
 
-#elif defined(NEOVERSEV1)
+#elif defined(NEOVERSEV1) // 256-bit SVE
 
-#define SWITCH_RATIO  16
+#if defined(XDOUBLE) || defined(DOUBLE)
+#define SWITCH_RATIO            8
+#else
+#define SWITCH_RATIO            16
+#endif
 
 #define SGEMM_DEFAULT_UNROLL_M  16
-#define SGEMM_DEFAULT_UNROLL_N  4
+#define SGEMM_DEFAULT_UNROLL_N  8
 
-#define DGEMM_DEFAULT_UNROLL_M  8
-#define DGEMM_DEFAULT_UNROLL_N  4
+#define DGEMM_DEFAULT_UNROLL_M  4 // Actually 2VL (8) but kept separate to keep copies separate
+#define DGEMM_DEFAULT_UNROLL_N  8
 
-#define CGEMM_DEFAULT_UNROLL_M  8
+#define CGEMM_DEFAULT_UNROLL_M  2
 #define CGEMM_DEFAULT_UNROLL_N  4
+#define CGEMM_DEFAULT_UNROLL_MN 16
 
-#define ZGEMM_DEFAULT_UNROLL_M  4
+#define ZGEMM_DEFAULT_UNROLL_M  2
 #define ZGEMM_DEFAULT_UNROLL_N  4
+#define ZGEMM_DEFAULT_UNROLL_MN 16
 
 #define SGEMM_DEFAULT_P 128
 #define DGEMM_DEFAULT_P 160
@@ -3397,6 +3417,12 @@ is a big desktop or server with abundant cache rather than a phone or embedded d
 #define ZGEMM_DEFAULT_R 4096
 
 #elif defined(NEOVERSEN2)
+
+#if defined(XDOUBLE) || defined(DOUBLE)
+#define SWITCH_RATIO            8
+#else
+#define SWITCH_RATIO            16
+#endif
 
 #undef SBGEMM_ALIGN_K
 #define SBGEMM_ALIGN_K 4
@@ -3433,7 +3459,7 @@ is a big desktop or server with abundant cache rather than a phone or embedded d
 #define CGEMM_DEFAULT_R 4096
 #define ZGEMM_DEFAULT_R 4096
 
-#elif defined(ARMV8SVE) || defined(A64FX) || defined(ARMV9) || defined(CORTEXA510)|| defined(CORTEXA710) || defined(CORTEXX2)
+#elif defined(A64FX) // 512-bit SVE
 
 /* When all BLAS3 routines are implemeted with SVE, SGEMM_DEFAULT_UNROLL_M should be "sve_vl".
 Until then, just keep it different than DGEMM_DEFAULT_UNROLL_N to keep copy routines in both directions seperated. */
@@ -3461,6 +3487,43 @@ Until then, just keep it different than DGEMM_DEFAULT_UNROLL_N to keep copy rout
 
 #define SGEMM_DEFAULT_P	128
 #define DGEMM_DEFAULT_P	160
+#define CGEMM_DEFAULT_P 128
+#define ZGEMM_DEFAULT_P 128
+
+#define SGEMM_DEFAULT_Q 352
+#define DGEMM_DEFAULT_Q 128
+#define CGEMM_DEFAULT_Q 224
+#define ZGEMM_DEFAULT_Q 112
+
+#define SGEMM_DEFAULT_R 4096
+#define DGEMM_DEFAULT_R 4096
+#define CGEMM_DEFAULT_R 4096
+#define ZGEMM_DEFAULT_R 4096
+
+#elif defined(ARMV8SVE) || defined(ARMV9) || defined(CORTEXA510)|| defined(CORTEXA710) || defined(CORTEXX2) // 128-bit SVE
+
+#if defined(XDOUBLE) || defined(DOUBLE)
+#define SWITCH_RATIO            8
+#else
+#define SWITCH_RATIO            16
+#endif
+
+#define SGEMM_DEFAULT_UNROLL_M  4 // Actually 1VL (8) but kept seperate to keep copies seperate
+#define SGEMM_DEFAULT_UNROLL_N  8
+
+#define DGEMM_DEFAULT_UNROLL_M  4
+#define DGEMM_DEFAULT_UNROLL_N  8
+
+#define CGEMM_DEFAULT_UNROLL_M  2
+#define CGEMM_DEFAULT_UNROLL_N  4
+#define CGEMM_DEFAULT_UNROLL_MN  16
+
+#define ZGEMM_DEFAULT_UNROLL_M  2
+#define ZGEMM_DEFAULT_UNROLL_N  4
+#define ZGEMM_DEFAULT_UNROLL_MN  16
+
+#define SGEMM_DEFAULT_P 128
+#define DGEMM_DEFAULT_P 160
 #define CGEMM_DEFAULT_P 128
 #define ZGEMM_DEFAULT_P 128
 
@@ -3836,6 +3899,10 @@ Until then, just keep it different than DGEMM_DEFAULT_UNROLL_N to keep copy rout
 
 #define SYMV_P	16
 
+#endif
+
+#ifndef SWITCH_RATIO
+#define SWITCH_RATIO 2
 #endif
 
 #ifndef QGEMM_DEFAULT_UNROLL_M

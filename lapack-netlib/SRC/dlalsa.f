@@ -43,9 +43,9 @@
 *>
 *> \verbatim
 *>
-*> DLALSA is an itermediate step in solving the least squares problem
+*> DLALSA is an intermediate step in solving the least squares problem
 *> by computing the SVD of the coefficient matrix in compact form (The
-*> singular vectors are computed as products of simple orthorgonal
+*> singular vectors are computed as products of simple orthogonal
 *> matrices.).
 *>
 *> If ICOMPQ = 0, DLALSA applies the inverse of the left singular vector

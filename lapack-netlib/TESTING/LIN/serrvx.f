@@ -582,6 +582,9 @@
          INFOT = 3
          CALL SSYSV( 'U', 0, -1, A, 1, IP, B, 1, W, 1, INFO )
          CALL CHKXER( 'SSYSV ', INFOT, NOUT, LERR, OK )
+         INFOT = 5
+         CALL SSYSV( 'U', 2, 0, A, 1, IP, B, 2, W, 1, INFO )
+         CALL CHKXER( 'SSYSV ', INFOT, NOUT, LERR, OK )
          INFOT = 8
          CALL SSYSV( 'U', 2, 0, A, 2, IP, B, 1, W, 1, INFO )
          CALL CHKXER( 'SSYSV ', INFOT, NOUT, LERR, OK )
@@ -647,6 +650,9 @@
          INFOT = 3
          CALL SSYSV_ROOK( 'U', 0, -1, A, 1, IP, B, 1, W, 1, INFO )
          CALL CHKXER( 'SSYSV_ROOK', INFOT, NOUT, LERR, OK )
+         INFOT = 5
+         CALL SSYSV_ROOK( 'U', 2, 0, A, 1, IP, B, 2, W, 1, INFO )
+         CALL CHKXER( 'SSYSV_ROOK', INFOT, NOUT, LERR, OK )
          INFOT = 8
          CALL SSYSV_ROOK( 'U', 2, 0, A, 2, IP, B, 1, W, 1, INFO )
          CALL CHKXER( 'SSYSV_ROOK', INFOT, NOUT, LERR, OK )
@@ -694,7 +700,7 @@
 *
       ELSE IF( LSAMEN( 2, C2, 'SA' ) ) THEN
 *
-*        SSYSV_AA
+*        SSYSV_AASEN
 *
          SRNAMT = 'SSYSV_AA'
          INFOT = 1
@@ -706,13 +712,19 @@
          INFOT = 3
          CALL SSYSV_AA( 'U', 0, -1, A, 1, IP, B, 1, W, 1, INFO )
          CALL CHKXER( 'SSYSV_AA', INFOT, NOUT, LERR, OK )
+         INFOT = 5
+         CALL SSYSV_AA( 'U', 2, 0, A, 1, IP, B, 2, W, 1, INFO )
+         CALL CHKXER( 'SSYSV_AA', INFOT, NOUT, LERR, OK )
          INFOT = 8
          CALL SSYSV_AA( 'U', 2, 0, A, 2, IP, B, 1, W, 1, INFO )
+         CALL CHKXER( 'SSYSV_AA', INFOT, NOUT, LERR, OK )
+         INFOT = 10
+         CALL SSYSV_AA( 'U', 3, 1, A, 3, IP, B, 3, W, 6, INFO )
          CALL CHKXER( 'SSYSV_AA', INFOT, NOUT, LERR, OK )
 *
       ELSE IF( LSAMEN( 2, C2, 'S2' ) ) THEN
 *
-*        DSYSV_AASEN_2STAGE
+*        SSYSV_AASEN_2STAGE
 *
          SRNAMT = 'SSYSV_AA_2STAGE'
          INFOT = 1
@@ -731,12 +743,16 @@
          CALL SSYSV_AA_2STAGE( 'U', 2, 1, A, 1, A, 1, IP, IP, B, 1,
      $                         W, 1, INFO )
          CALL CHKXER( 'SSYSV_AA_2STAGE', INFOT, NOUT, LERR, OK )
+         INFOT = 7
+         CALL SSYSV_AA_2STAGE( 'U', 2, 1, A, 2, A, 1, IP, IP, B, 2,
+     $                         W, 1, INFO )
+         CALL CHKXER( 'SSYSV_AA_2STAGE', INFOT, NOUT, LERR, OK )
          INFOT = 11
          CALL SSYSV_AA_2STAGE( 'U', 2, 1, A, 2, A, 8, IP, IP, B, 1,
      $                         W, 1, INFO )
          CALL CHKXER( 'SSYSV_AA_2STAGE', INFOT, NOUT, LERR, OK )
-         INFOT = 7
-         CALL SSYSV_AA_2STAGE( 'U', 2, 1, A, 2, A, 1, IP, IP, B, 2,
+         INFOT = 13
+         CALL SSYSV_AA_2STAGE( 'U', 2, 1, A, 2, A, 8, IP, IP, B, 2,
      $                         W, 1, INFO )
          CALL CHKXER( 'SSYSV_AA_2STAGE', INFOT, NOUT, LERR, OK )
 *

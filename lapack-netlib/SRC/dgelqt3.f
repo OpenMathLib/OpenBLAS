@@ -173,7 +173,8 @@
 *
 *        Compute Householder transform when M=1
 *
-         CALL DLARFG( N, A, A( 1, MIN( 2, N ) ), LDA, T )
+         CALL DLARFG( N, A ( 1, 1 ), A( 1, MIN( 2, N ) ), LDA,
+     &                T( 1, 1) )
 *
       ELSE
 *

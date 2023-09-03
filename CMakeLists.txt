@@ -8,7 +8,7 @@ project(OpenBLAS C ASM)
 
 set(OpenBLAS_MAJOR_VERSION 0)
 set(OpenBLAS_MINOR_VERSION 3)
-set(OpenBLAS_PATCH_VERSION 23)
+set(OpenBLAS_PATCH_VERSION 23.dev)
 
 set(OpenBLAS_VERSION "${OpenBLAS_MAJOR_VERSION}.${OpenBLAS_MINOR_VERSION}.${OpenBLAS_PATCH_VERSION}")
 
@@ -19,6 +19,8 @@ include(CMakePackageConfigHelpers)
 
 #######
 option(BUILD_WITHOUT_LAPACK "Do not build LAPACK and LAPACKE (Only BLAS or CBLAS)" OFF)
+
+option(BUILD_LAPACK_DEPRECATED "When building LAPACK, include also some older, deprecated routines" ON)
 
 option(BUILD_TESTING "Build LAPACK testsuite when building LAPACK" ON)
 
@@ -309,19 +311,25 @@ endif()
 
 #if (MSVC OR NOT NOFORTRAN)
 if (NOT NO_CBLAS)
+  if (NOT ONLY_CBLAS)
   # Broken without fortran on unix
-  add_subdirectory(utest)
+    add_subdirectory(utest)
+endif()
 endif()
 
 if (NOT NOFORTRAN)
+ if (NOT ONLY_CBLAS)
   # Build test and ctest
   add_subdirectory(test)
+ endif()
   if (BUILD_TESTING)
     add_subdirectory(lapack-netlib/TESTING)
   endif()
 endif()
   if(NOT NO_CBLAS)
+   if (NOT ONLY_CBLAS)
     add_subdirectory(ctest)
+   endif()
   endif()
   if (CPP_THREAD_SAFETY_TEST OR CPP_THREAD_SAFETY_GEMV)
     add_subdirectory(cpp_thread_test)
@@ -398,15 +406,45 @@ if (BUILD_SHARED_LIBS AND NOT ${SYMBOLPREFIX}${SYMBOLSUFFIX} STREQUAL "")
     message(STATUS "adding suffix ${SYMBOLSUFFIX} to names of exported symbols in ${OpenBLAS_LIBNAME}")
   endif()
 
+  if (${BUILD_LAPACK_DEPRECATED})
+	  set (BLD 1)
+  else ()
+	  set (BLD 0)
+  endif()
+  if (${BUILD_BFLOAT16})
+	  set (BBF16 1)
+  else ()
+	  set (BBF16 0)
+  endif()
+  if (${BUILD_SINGLE})
+	  set (BS 1)
+  else ()
+	  set (BS 0)
+  endif()
+  if (${BUILD_DOUBLE})
+	  set (BD 1)
+  else ()
+	  set (BD 0)
+  endif()
+  if (${BUILD_COMPLEX})
+	  set (BC 1)
+  else ()
+	  set (BC 0)
+  endif()
+  if (${BUILD_COMPLEX16})
+	  set (BZ 1)
+  else ()
+	  set (BZ 0)
+  endif()
   if (NOT USE_PERL)
   add_custom_command(TARGET ${OpenBLAS_LIBNAME}_shared POST_BUILD
-    COMMAND  ${PROJECT_SOURCE_DIR}/exports/gensymbol "objcopy" "${ARCH}" "${BU}" "${EXPRECISION_IN}" "${NO_CBLAS_IN}" "${NO_LAPACK_IN}" "${NO_LAPACKE_IN}" "${NEED2UNDERSCORES_IN}" "${ONLY_CBLAS_IN}" \"${SYMBOLPREFIX}\" \"${SYMBOLSUFFIX}\" "${BUILD_LAPACK_DEPRECATED}" "${BUILD_BFLOAT16}" "${BUILD_SINGLE}" "${BUILD_DOUBLE}" "${BUILD_COMPLEX}" "${BUILD_COMPLEX16}" > ${PROJECT_BINARY_DIR}/objcopy.def
+	  COMMAND  ${PROJECT_SOURCE_DIR}/exports/gensymbol "objcopy" "${ARCH}" "${BU}" "${EXPRECISION_IN}" "${NO_CBLAS_IN}" "${NO_LAPACK_IN}" "${NO_LAPACKE_IN}" "${NEED2UNDERSCORES_IN}" "${ONLY_CBLAS_IN}" \"${SYMBOLPREFIX}\" \"${SYMBOLSUFFIX}\" "${BLD}" "${BBF16}" "${BS}" "${BD}" "${BC}" "${BZ}" > ${PROJECT_BINARY_DIR}/objcopy.def
     COMMAND objcopy -v --redefine-syms ${PROJECT_BINARY_DIR}/objcopy.def  ${PROJECT_BINARY_DIR}/lib/lib${OpenBLAS_LIBNAME}.so
     COMMENT "renaming symbols"
     )
   else()
   add_custom_command(TARGET ${OpenBLAS_LIBNAME}_shared POST_BUILD
-    COMMAND perl ${PROJECT_SOURCE_DIR}/exports/gensymbol.pl "objcopy" "${ARCH}" "${BU}" "${EXPRECISION_IN}" "${NO_CBLAS_IN}" "${NO_LAPACK_IN}" "${NO_LAPACKE_IN}" "${NEED2UNDERSCORES_IN}" "${ONLY_CBLAS_IN}" \"${SYMBOLPREFIX}\" \"${SYMBOLSUFFIX}\" "${BUILD_LAPACK_DEPRECATED}" "${BUILD_BFLOAT16}" "${BUILD_SINGLE}" "${BUILD_DOUBLE}" "${BUILD_COMPLEX}" "${BUILD_COMPLEX16}" > ${PROJECT_BINARY_DIR}/objcopy.def
+    COMMAND perl ${PROJECT_SOURCE_DIR}/exports/gensymbol.pl "objcopy" "${ARCH}" "${BU}" "${EXPRECISION_IN}" "${NO_CBLAS_IN}" "${NO_LAPACK_IN}" "${NO_LAPACKE_IN}" "${NEED2UNDERSCORES_IN}" "${ONLY_CBLAS_IN}" \"${SYMBOLPREFIX}\" \"${SYMBOLSUFFIX}\" "${BLD}" "${BBF16}" "${BS}" "${BD}" "${BC}" "${BZ}" > ${PROJECT_BINARY_DIR}/objcopy.def
     COMMAND objcopy -v --redefine-syms ${PROJECT_BINARY_DIR}/objcopy.def  ${PROJECT_BINARY_DIR}/lib/lib${OpenBLAS_LIBNAME}.so
     COMMENT "renaming symbols"
     )
@@ -511,9 +549,8 @@ configure_file(${PROJECT_SOURCE_DIR}/cmake/openblas.pc.in ${PROJECT_BINARY_DIR}/
 install (FILES ${PROJECT_BINARY_DIR}/openblas${SUFFIX64}.pc DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig/)
 
 
-# GNUInstallDirs "DATADIR" wrong here; CMake search path wants "share".
 set(PN OpenBLAS)
-set(CMAKECONFIG_INSTALL_DIR "share/cmake/${PN}${SUFFIX64}")
+set(CMAKECONFIG_INSTALL_DIR "${CMAKE_INSTALL_LIBDIR}/cmake/${PN}${SUFFIX64}")
 configure_package_config_file(cmake/${PN}Config.cmake.in
                               "${CMAKE_CURRENT_BINARY_DIR}/${PN}${SUFFIX64}Config.cmake"
                               INSTALL_DESTINATION ${CMAKECONFIG_INSTALL_DIR})

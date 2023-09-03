@@ -35,6 +35,12 @@ USE_TRMM = 1
 endif
 endif
 
+ifneq ($(DYNAMIC_ARCH), 1)
+ifeq ($(TARGET), MIPS64_GENERIC)
+USE_TRMM = 1
+endif
+endif
+
 ifeq ($(CORE), HASWELL)
 USE_TRMM = 1
 endif

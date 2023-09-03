@@ -232,6 +232,47 @@ if (($architecture eq "mips") || ($architecture eq "mips64")) {
     }
 }
 
+$no_lsx = 0;
+$no_lasx = 0;
+if (($architecture eq "loongarch64")) {
+    eval "use File::Temp qw(tempfile)";
+    if ($@){
+	warn "could not load PERL module File::Temp, so could not check LSX and LASX capatibility";
+    } else {
+	$tmplsx = new File::Temp( SUFFIX => '.c' , UNLINK => 1 );
+	$codelsx = '"vadd.b $vr0, $vr0, $vr0"';
+	$lsx_flags = "-march=loongarch64 -mlsx";
+	print $tmplsx "#include <lsxintrin.h>\n\n";
+	print $tmplsx "void main(void){ __asm__ volatile($codelsx); }\n";
+
+	$args = "$lsx_flags -o $tmplsx.o $tmplsx";
+	my @cmd = ("$compiler_name $flags $args >/dev/null 2>/dev/null");
+	system(@cmd) == 0;
+	if ($? != 0) {
+	    $no_lsx = 1;
+	} else {
+	    $no_lsx = 0;
+	}
+	unlink("$tmplsx.o");
+
+	$tmplasx = new File::Temp( SUFFIX => '.c' , UNLINK => 1 );
+	$codelasx = '"xvadd.b $xr0, $xr0, $xr0"';
+	$lasx_flags = "-march=loongarch64 -mlasx";
+	print $tmplasx "#include <lasxintrin.h>\n\n";
+	print $tmplasx "void main(void){ __asm__ volatile($codelasx); }\n";
+
+	$args = "$lasx_flags -o $tmplasx.o $tmplasx";
+	my @cmd = ("$compiler_name $flags $args >/dev/null 2>/dev/null");
+	system(@cmd) == 0;
+	if ($? != 0) {
+	    $no_lasx = 1;
+	} else {
+	    $no_lasx = 0;
+	}
+	unlink("$tmplasx.o");
+    }
+}
+
 $architecture = x86          if ($data =~ /ARCH_X86/);
 $architecture = x86_64       if ($data =~ /ARCH_X86_64/);
 $architecture = e2k          if ($data =~ /ARCH_E2K/);
@@ -424,6 +465,8 @@ print MAKEFILE "NO_RV64GV=1\n" if $no_rv64gv eq 1;
 print MAKEFILE "NO_AVX512=1\n" if $no_avx512 eq 1;
 print MAKEFILE "NO_AVX2=1\n" if $no_avx2 eq 1;
 print MAKEFILE "OLDGCC=1\n" if $oldgcc eq 1;
+print MAKEFILE "NO_LSX=1\n" if $no_lsx eq 1;
+print MAKEFILE "NO_LASX=1\n" if $no_lasx eq 1;
 
 $os           =~ tr/[a-z]/[A-Z]/;
 $architecture =~ tr/[a-z]/[A-Z]/;
@@ -437,6 +480,8 @@ print CONFFILE "#define __64BIT__\t1\n"  if $binformat eq bin64;
 print CONFFILE "#define FUNDERSCORE\t$need_fu\n" if $need_fu ne "";
 print CONFFILE "#define HAVE_MSA\t1\n"  if $have_msa eq 1;
 print CONFFILE "#define HAVE_C11\t1\n" if $c11_atomics eq 1;
+print CONFFILE "#define NO_LSX\t1\n" if $no_lsx eq 1;
+print CONFFILE "#define NO_LASX\t1\n" if $no_lasx eq 1;
 
 
 if ($os eq "LINUX") {

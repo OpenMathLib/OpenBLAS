@@ -6,11 +6,15 @@ Travis CI: [![Build Status](https://travis-ci.com/xianyi/OpenBLAS.svg?branch=dev
 
 AppVeyor: [![Build status](https://ci.appveyor.com/api/projects/status/09sohd35n8nkkx64/branch/develop?svg=true)](https://ci.appveyor.com/project/xianyi/openblas/branch/develop)
 
-Drone CI: [![Build Status](https://cloud.drone.io/api/badges/xianyi/OpenBLAS/status.svg?branch=develop)](https://cloud.drone.io/xianyi/OpenBLAS/)
+Cirrus CI: [![Build Status](https://api.cirrus-ci.com/github/xianyi/OpenBLAS.svg?branch=develop)](https://cirrus-ci.com/github/xianyi/OpenBLAS)
+<!-- Drone CI: [![Build Status](https://cloud.drone.io/api/badges/xianyi/OpenBLAS/status.svg?branch=develop)](https://cloud.drone.io/xianyi/OpenBLAS/)-->
+
 
 [![Build Status](https://dev.azure.com/xianyi/OpenBLAS/_apis/build/status/xianyi.OpenBLAS?branchName=develop)](https://dev.azure.com/xianyi/OpenBLAS/_build/latest?definitionId=1&branchName=develop)
 
+OSUOSL POWERCI [![Build Status](https://powerci.osuosl.org/buildStatus/icon?job=OpenBLAS_gh%2Fdevelop)](http://powerci.osuosl.org/job/OpenBLAS_gh/job/develop/)
 
+OSUOSL IBMZ-CI [![Build Status](http://ibmz-ci.osuosl.org/buildStatus/icon?job=OpenBLAS-Z%2Fdevelop)](http://ibmz-ci.osuosl.org/job/OpenBLAS-Z/job/develop/)
 ## Introduction
 
 OpenBLAS is an optimized BLAS (Basic Linear Algebra Subprograms) library based on GotoBLAS2 1.13 BSD version.

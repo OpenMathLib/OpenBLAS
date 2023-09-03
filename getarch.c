@@ -1930,15 +1930,15 @@ printf("ELF_VERSION=2\n");
 
 #ifdef MAKE_NB_JOBS
   #if MAKE_NB_JOBS > 0
-    printf("MAKE += -j %d\n", MAKE_NB_JOBS);
+    printf("MAKEFLAGS += -j %d\n", MAKE_NB_JOBS);
   #else
     // Let make use parent -j argument or -j1 if there
     // is no make parent
   #endif
 #elif NO_PARALLEL_MAKE==1
-    printf("MAKE += -j 1\n");
+    printf("MAKEFLAGS += -j 1\n");
 #else
-    printf("MAKE += -j %d\n", get_num_cores());
+    printf("MAKEFLAGS += -j %d\n", get_num_cores());
 #endif
 
     break;

@@ -384,7 +384,7 @@
 *> \verbatim
 *>          D1 is REAL array of
 *>                             dimension( max(NN) )
-*>          The eigenvalues of A, as computed by SSTEQR simlutaneously
+*>          The eigenvalues of A, as computed by SSTEQR simultaneously
 *>          with Z.  On exit, the eigenvalues in D1 correspond with the
 *>          matrix in A.
 *> \endverbatim
@@ -666,10 +666,10 @@
       EXTERNAL           ILAENV, SLAMCH, SLARND, SSXT1
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           SCOPY, SLABAD, SLACPY, SLASET, SLASUM, SLATMR,
-     $                   SLATMS, SOPGTR, SORGTR, SPTEQR, SSPT21, SSPTRD,
-     $                   SSTEBZ, SSTECH, SSTEDC, SSTEMR, SSTEIN, SSTEQR,
-     $                   SSTERF, SSTT21, SSTT22, SSYT21, SSYTRD, XERBLA,
+      EXTERNAL           SCOPY, SLACPY, SLASET, SLASUM, SLATMR, SLATMS,
+     $                   SOPGTR, SORGTR, SPTEQR, SSPT21, SSPTRD, SSTEBZ,
+     $                   SSTECH, SSTEDC, SSTEMR, SSTEIN, SSTEQR, SSTERF,
+     $                   SSTT21, SSTT22, SSYT21, SSYTRD, XERBLA,
      $                   SSYTRD_2STAGE
 *     ..
 *     .. Intrinsic Functions ..
@@ -737,7 +737,6 @@
 *
       UNFL = SLAMCH( 'Safe minimum' )
       OVFL = ONE / UNFL
-      CALL SLABAD( UNFL, OVFL )
       ULP = SLAMCH( 'Epsilon' )*SLAMCH( 'Base' )
       ULPINV = ONE / ULP
       LOG2UI = INT( LOG( ULPINV ) / LOG( TWO ) )

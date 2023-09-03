@@ -40,9 +40,9 @@ LAPACK_NOOPT := $(filter-out -O0 -O1 -O2 -O3 -Ofast -O -Og -Os,$(LAPACK_FFLAGS))
 SUBDIRS_ALL = $(SUBDIRS) test ctest utest exports benchmark ../laswp ../bench cpp_thread_test
 
 .PHONY : all libs netlib $(RELA) test ctest shared install
-.NOTPARALLEL : all libs $(RELA) prof lapack-test install blas-test
+.NOTPARALLEL : shared
 
-all :: libs netlib $(RELA) tests shared
+all :: tests
 	@echo
 	@echo " OpenBLAS build complete. ($(LIB_COMPONENTS))"
 	@echo
@@ -150,7 +150,7 @@ ifeq ($(OSNAME), CYGWIN_NT)
 endif
 endif
 
-tests : libs netlib $(RELA) shared
+tests : shared
 ifeq ($(NOFORTRAN), $(filter 0,$(NOFORTRAN)))
 	touch $(LIBNAME)
 ifndef NO_FBLAS
@@ -373,10 +373,10 @@ ifneq ($(CROSS), 1)
 	(cd $(NETLIB_LAPACK_DIR); ./lapack_testing.py -r -b TESTING)
 endif
 
-lapack-runtest:
+lapack-runtest: lapack-test
 	( cd $(NETLIB_LAPACK_DIR)/INSTALL; ./testlsame; ./testslamch; ./testdlamch; \
         ./testsecond; ./testdsecnd; ./testieee; ./testversion )
-	(cd $(NETLIB_LAPACK_DIR); ./lapack_testing.py -r )
+	(cd $(NETLIB_LAPACK_DIR); ./lapack_testing.py -r -b TESTING )
 
 
 blas-test:

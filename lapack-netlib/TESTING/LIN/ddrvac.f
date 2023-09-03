@@ -365,7 +365,7 @@
                   CALL DPOT06( UPLO, N, NRHS, A, LDA, X, LDA, WORK,
      $               LDA, RWORK, RESULT( 1 ) )
 *
-*                 Check if the test passes the tesing.
+*                 Check if the test passes the testing.
 *                 Print information about the tests that did not
 *                 pass the testing.
 *

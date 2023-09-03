@@ -33,8 +33,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define VSETVL_MAX vsetvlmax_e32m1()
 #define FLOAT_V_T vfloat32m8_t
 #define FLOAT_V_T_M1 vfloat32m1_t
-#define VLEV_FLOAT vle_v_f32m8
-#define VLSEV_FLOAT vlse_v_f32m8
+#define VLEV_FLOAT vle32_v_f32m8
+#define VLSEV_FLOAT vlse32_v_f32m8
 #define VFREDSUMVS_FLOAT vfredosum_vs_f32m8_f32m1
 #define MASK_T vbool4_t
 #define VMFLTVF_FLOAT vmflt_vf_f32m8_b4
@@ -47,8 +47,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define VSETVL_MAX vsetvlmax_e64m1()
 #define FLOAT_V_T vfloat64m8_t
 #define FLOAT_V_T_M1 vfloat64m1_t
-#define VLEV_FLOAT vle_v_f64m8
-#define VLSEV_FLOAT vlse_v_f64m8
+#define VLEV_FLOAT vle64_v_f64m8
+#define VLSEV_FLOAT vlse64_v_f64m8
 #define VFREDSUMVS_FLOAT vfredusum_vs_f64m8_f64m1
 #define MASK_T vbool8_t
 #define VMFLTVF_FLOAT vmflt_vf_f64m8_b8

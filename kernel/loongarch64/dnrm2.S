@@ -70,7 +70,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
    MTC  s1, $r0
    bge $r0,    N, .L999
    slli.d INCX, INCX, BASE_SHIFT
-   bge $r0,    INCX, .L999
+   beq $r0,    INCX, .L999
    move    XX, X
    NOP
    LD a1,  X,   0 * SIZE

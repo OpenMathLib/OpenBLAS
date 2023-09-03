@@ -1,5 +1,6 @@
 /*********************************************************************/
 /* Copyright 2009, 2010 The University of Texas at Austin.           */
+/* Copyright 2023 The OpenBLAS Project.                              */
 /* All rights reserved.                                              */
 /*                                                                   */
 /* Redistribution and use in source and binary forms, with or        */
@@ -42,10 +43,6 @@
 
 #ifndef DIVIDE_RATE
 #define DIVIDE_RATE 2
-#endif
-
-#ifndef SWITCH_RATIO
-#define SWITCH_RATIO 2
 #endif
 
 #ifndef GEMM_PREFERED_SIZE
@@ -577,6 +574,11 @@ InitializeCriticalSection((PCRITICAL_SECTION)&level3_lock);
   BLASLONG width, i, j, k, js;
   BLASLONG m, n, n_from, n_to;
   int mode;
+#if defined(DYNAMIC_ARCH)
+  int switch_ratio = gotoblas->switch_ratio;
+#else
+  int switch_ratio = SWITCH_RATIO;
+#endif
 
   /* Get execution mode */
 #ifndef COMPLEX
@@ -698,8 +700,8 @@ EnterCriticalSection((PCRITICAL_SECTION)&level3_lock);
     num_parts  = 0;
     while (n > 0){
       width = blas_quickdivide(n + nthreads - num_parts - 1, nthreads - num_parts);
-      if (width < SWITCH_RATIO) {
-        width = SWITCH_RATIO;
+      if (width < switch_ratio) {
+        width = switch_ratio;
       }
       width = round_up(n, width, GEMM_PREFERED_SIZE);
 
@@ -746,6 +748,11 @@ int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, IFLOAT *sa, IF
   BLASLONG m = args -> m;
   BLASLONG n = args -> n;
   BLASLONG nthreads_m, nthreads_n;
+#if defined(DYNAMIC_ARCH)
+  int switch_ratio = gotoblas->switch_ratio;
+#else
+  int switch_ratio = SWITCH_RATIO;
+#endif
 
   /* Get dimensions from index ranges if available */
   if (range_m) {
@@ -755,21 +762,21 @@ int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, IFLOAT *sa, IF
     n = range_n[1] - range_n[0];
   }
 
-  /* Partitions in m should have at least SWITCH_RATIO rows */
-  if (m < 2 * SWITCH_RATIO) {
+  /* Partitions in m should have at least switch_ratio rows */
+  if (m < 2 * switch_ratio) {
     nthreads_m = 1;
   } else {
     nthreads_m = args -> nthreads;
-    while (m < nthreads_m * SWITCH_RATIO) {
+    while (m < nthreads_m * switch_ratio) {
       nthreads_m = nthreads_m / 2;
     }
   }
 
-  /* Partitions in n should have at most SWITCH_RATIO * nthreads_m columns */
-  if (n < SWITCH_RATIO * nthreads_m) {
+  /* Partitions in n should have at most switch_ratio * nthreads_m columns */
+  if (n < switch_ratio * nthreads_m) {
     nthreads_n = 1;
   } else {
-    nthreads_n = (n + SWITCH_RATIO * nthreads_m - 1) / (SWITCH_RATIO * nthreads_m);
+    nthreads_n = (n + switch_ratio * nthreads_m - 1) / (switch_ratio * nthreads_m);
     if (nthreads_m * nthreads_n > args -> nthreads) {
       nthreads_n = blas_quickdivide(args -> nthreads, nthreads_m);
     }

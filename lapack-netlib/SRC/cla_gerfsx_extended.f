@@ -637,7 +637,7 @@
             PREVNORMDX = NORMDX
             PREV_DZ_Z = DZ_Z
 *
-*           Update soluton.
+*           Update solution.
 *
             IF ( Y_PREC_STATE .LT. EXTRA_Y ) THEN
                CALL CAXPY( N, (1.0E+0,0.0E+0), DY, 1, Y(1,J), 1 )
