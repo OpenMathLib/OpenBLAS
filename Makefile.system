@@ -397,6 +397,9 @@ ifeq ($(OSNAME), Darwin)
 ifndef MACOSX_DEPLOYMENT_TARGET
 ifeq ($(ARCH), arm64)
 export MACOSX_DEPLOYMENT_TARGET=11.0
+ifeq ($(C_COMPILER), GCC)
+export NO_SVE = 1
+endif
 else
 export MACOSX_DEPLOYMENT_TARGET=10.8
 endif
