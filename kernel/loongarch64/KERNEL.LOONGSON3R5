@@ -21,6 +21,9 @@ SGEMMINCOPYOBJ = sgemm_incopy$(TSUFFIX).$(SUFFIX)
 SGEMMITCOPYOBJ = sgemm_itcopy$(TSUFFIX).$(SUFFIX)
 SGEMMONCOPYOBJ = sgemm_oncopy$(TSUFFIX).$(SUFFIX)
 SGEMMOTCOPYOBJ = sgemm_otcopy$(TSUFFIX).$(SUFFIX)
+
+SGEMVNKERNEL = sgemv_n_8_lasx.S
+SGEMVTKERNEL = sgemv_t_8_lasx.S
 endif
 
 DTRSMKERNEL_LN  = ../generic/trsm_kernel_LN.c
