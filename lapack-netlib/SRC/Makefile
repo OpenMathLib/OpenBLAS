@@ -85,7 +85,7 @@ ALLAUX_O = ilaenv.o ilaenv2stage.o ieeeck.o lsamen.o xerbla.o xerbla_array.o \
    ../INSTALL/ilaver.o ../INSTALL/lsame.o ../INSTALL/slamch.o
 
 ifneq "$(or $(BUILD_SINGLE),$(BUILD_COMPLEX))" ""
-SCLAUX = \
+SCLAUX = la_constants.o \
    sbdsvdx.o sstevx.o sstein.o \
    sbdsdc.o \
    sbdsqr.o sdisna.o slabad.o slacpy.o sladiv.o slae2.o  slaebz.o \
@@ -106,7 +106,7 @@ SCLAUX = \
 endif
 
 ifneq "$(or $(BUILD_DOUBLE),$(BUILD_COMPLEX16))" ""
-DZLAUX = \
+DZLAUX = la_constants.o\
    dcombssq.o \
    dbdsvdx.o dstevx.o dstein.o \
    dbdsdc.o \
