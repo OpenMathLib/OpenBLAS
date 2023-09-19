@@ -73,6 +73,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "common.h"
 
+#define NEW_BUFFERS 512
 #ifndef likely
 #ifdef __GNUC__
 #define likely(x) __builtin_expect(!!(x), 1)
@@ -2897,7 +2898,7 @@ void *blas_memory_alloc(int procpos){
 #endif
       position ++;
 
-    } while (position < 512+NUM_BUFFERS);
+    } while (position < NEW_BUFFERS + NUM_BUFFERS);
   }
 #if (defined(SMP) || defined(USE_LOCKING)) && !defined(USE_OPENMP)
   UNLOCK_COMMAND(&alloc_lock);
@@ -3014,9 +3015,10 @@ void *blas_memory_alloc(int procpos){
   fprintf(stderr,"To avoid this warning, please rebuild your copy of OpenBLAS with a larger NUM_THREADS setting\n");
   fprintf(stderr,"or set the environment variable OPENBLAS_NUM_THREADS to %d or lower\n", MAX_CPU_NUMBER);
   memory_overflowed=1;
-  new_release_info = (struct release_t*) malloc(512*sizeof(struct release_t));
-  newmemory = (struct newmemstruct*) malloc(512*sizeof(struct newmemstruct));
-  for (i = 0; i < 512; i++) {
+  MB;
+  new_release_info = (struct release_t*) malloc(NEW_BUFFERS * sizeof(struct release_t));
+  newmemory = (struct newmemstruct*) malloc(NEW_BUFFERS * sizeof(struct newmemstruct));
+  for (i = 0; i < NEW_BUFFERS; i++) {
   newmemory[i].addr   = (void *)0;
 #if defined(WHEREAMI) && !defined(USE_OPENMP)
   newmemory[i].pos    = -1;
@@ -3129,12 +3131,12 @@ void blas_memory_free(void *free_area){
   printf("  Position : %d\n", position);
 #endif
   if (unlikely(memory_overflowed && position >= NUM_BUFFERS)) {
-    while ((position < NUM_BUFFERS+512) && (newmemory[position-NUM_BUFFERS].addr != free_area))
+    while ((position < NUM_BUFFERS+NEW_BUFFERS) && (newmemory[position-NUM_BUFFERS].addr != free_area))
       position++;
   // arm: ensure all writes are finished before other thread takes this memory
   WMB;
-
-  newmemory[position].used = 0;
+if (position - NUM_BUFFERS >= NEW_BUFFERS) goto error;
+  newmemory[position-NUM_BUFFERS].used = 0;
 #if (defined(SMP) || defined(USE_LOCKING)) && !defined(USE_OPENMP)
   UNLOCK_COMMAND(&alloc_lock);
 #endif
@@ -3213,7 +3215,7 @@ void blas_shutdown(void){
     memory[pos].lock   = 0;
   }
   if (memory_overflowed)
-    for (pos = 0; pos < 512; pos ++){
+    for (pos = 0; pos < NEW_BUFFERS; pos ++){
       newmemory[pos].addr   = (void *)0;
       newmemory[pos].used   = 0;
 #if defined(WHEREAMI) && !defined(USE_OPENMP)
