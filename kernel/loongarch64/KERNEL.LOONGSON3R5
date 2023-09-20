@@ -24,12 +24,12 @@ SGEMMOTCOPYOBJ = sgemm_otcopy$(TSUFFIX).$(SUFFIX)
 
 SGEMVNKERNEL = sgemv_n_8_lasx.S
 SGEMVTKERNEL = sgemv_t_8_lasx.S
-endif
 
-DTRSMKERNEL_LN  = ../generic/trsm_kernel_LN.c
-DTRSMKERNEL_LT  = ../generic/trsm_kernel_LT.c
-DTRSMKERNEL_RN  = ../generic/trsm_kernel_RN.c
-DTRSMKERNEL_RT  = ../generic/trsm_kernel_RT.c
+DTRSMKERNEL_LN  = dtrsm_kernel_LN_16x4_lasx.S
+DTRSMKERNEL_LT  = dtrsm_kernel_LT_16x4_lasx.S
+DTRSMKERNEL_RN  = dtrsm_kernel_RN_16x4_lasx.S
+DTRSMKERNEL_RT  = dtrsm_kernel_RT_16x4_lasx.S
+endif
 
 STRSMKERNEL_LN  = ../generic/trsm_kernel_LN.c
 STRSMKERNEL_LT  = ../generic/trsm_kernel_LT.c
