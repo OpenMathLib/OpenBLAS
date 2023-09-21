@@ -1301,7 +1301,7 @@ xhpr2.$(SUFFIX) xhpr2.$(PSUFFIX) : zhpr2.c
 ifeq ($(BUILD_BFLOAT16),1)
 sbgemm.$(SUFFIX) sbgemm.$(PSUFFIX) : gemm.c ../param.h
 	$(CC) -c $(CFLAGS) $< -o $(@F)
-sbgemmt.$(SUFFIX) sbgemm.$(PSUFFIX) : gemmt.c ../param.h
+sbgemmt.$(SUFFIX) sbgemmt.$(PSUFFIX) : gemmt.c ../param.h
 	$(CC) -c $(CFLAGS) $< -o $(@F)
 endif
 
