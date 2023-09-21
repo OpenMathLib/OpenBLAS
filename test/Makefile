@@ -326,7 +326,7 @@ endif
 
 ifeq ($(BUILD_BFLOAT16),1)
 test_sbgemm : compare_sgemm_sbgemm.c ../$(LIBNAME)
-	$(FC) $(FLDFLAGS) -o test_sbgemm compare_sgemm_sbgemm.c ../$(LIBNAME) $(EXTRALIB) $(CEXTRALIB)
+	$(CC) $(FLDFLAGS) -o test_sbgemm compare_sgemm_sbgemm.c ../$(LIBNAME) $(EXTRALIB) $(CEXTRALIB)
 endif
 
 ifeq ($(BUILD_COMPLEX),1)
