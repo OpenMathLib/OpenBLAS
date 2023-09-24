@@ -155,6 +155,10 @@ else
             *'IBM XL'*)
                 vendor=IBM
                 openmp='-openmp'
+		case "$CC" in *gcc*)
+		bu=_
+		;;
+		esac
                 ;;
             *NAG*)
                 vendor=NAG
@@ -223,6 +227,10 @@ else
             *ppuf*|*xlf*)
                 vendor=IBM
                 openmp='-openmp'
+		case "$CC" in *gcc*)
+		bu=_
+		;;
+		esac
                 ;;
             *open64*)
                 vendor=OPEN64
