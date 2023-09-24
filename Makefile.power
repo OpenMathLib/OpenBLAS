@@ -42,15 +42,14 @@ FCOMMON_OPT += -O2 -qrecur -qnosave
 else
 FCOMMON_OPT += -O2 -frecursive -fno-fast-math
 endif
-ifeq ($(C_COMPILER), GCC)
+
+ifeq ($(F_COMPILER), GFORTRAN)
 ifneq ($(GCCVERSIONGT4), 1)
 $(warning your compiler is too old to fully support POWER9, getting a newer version of gcc is recommended)
 FCOMMON_OPT += -mcpu=power8 -mtune=power8 
 else
 FCOMMON_OPT += -mcpu=power9 -mtune=power9 
 endif
-else
-FCOMMON_OPT += -mcpu=power9 -mtune=power9
 endif
 else
 FCOMMON_OPT += -O2 -Mrecursive
@@ -84,10 +83,14 @@ CCOMMON_OPT += -DUSE_OPENMP -fopenmp
 else
 CCOMMON_OPT += -DUSE_OPENMP -mp
 endif
+ifeq ($(F_COMPILER), IBM)
+FCOMMON_OPT += -DUSE_OPENMP 
+else
 ifneq ($(F_COMPILER), PGI)
 FCOMMON_OPT += -DUSE_OPENMP -fopenmp
 else
 FCOMMON_OPT += -DUSE_OPENMP -mp
+endif
 endif
 endif
 
