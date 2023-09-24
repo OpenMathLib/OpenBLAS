@@ -1167,6 +1167,10 @@ endif
 
 ifeq ($(F_COMPILER), IBM)
 CCOMMON_OPT += -DF_INTERFACE_IBM
+FEXTRALIB += -lxlf90
+ifeq ($(C_COMPILER), GCC)
+FCOMMON_OPT += -qextname
+endif
 # FCOMMON_OPT	+= -qarch=440
 ifdef BINARY64
 FCOMMON_OPT += -q64
