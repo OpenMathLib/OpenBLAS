@@ -5,6 +5,7 @@ task:
   name: AppleM1/LLVM
   compile_script:
   - xcodebuild -version
+  - ls -l /Applications
   - ls -l /Applications/Xcode-14.0.0.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/
   - export CC=/Applications/Xcode-14.0.0.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang
   - export CFLAGS="-O2 -unwindlib=none -Wno-macro-redefined -isysroot /Applications/Xcode-14.0.0.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX12.3.sdk"
