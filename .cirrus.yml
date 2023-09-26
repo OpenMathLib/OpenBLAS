@@ -4,17 +4,25 @@ macos_instance:
 task:
   name: AppleM1/LLVM
   compile_script:
-  - xcodebuild -version
-  - ls -l /Applications
-  - ls -l /Applications/Xcode-14.0.0.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/
-  - export CC=/Applications/Xcode-14.0.0.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang
-  - export CFLAGS="-O2 -unwindlib=none -Wno-macro-redefined -isysroot /Applications/Xcode-14.0.0.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX12.3.sdk"
-  - make TARGET=VORTEX FC=gfortran
+  - brew install llvm@16
+  - export PATH=/opt/homebrew/opt/llvm/bin:$PATH
+  - export LDFLAGS="-L/opt/homebrew/opt/llvm/lib"
+  - export CPPFLAGS="-I/opt/homebrew/opt/llvm/include"
+  - make TARGET=VORTEX CC=clang FC=gfortran
+
+task:
+  name: AppleM1/LLVM17
+  compile_script:
+  - brew install llvm@17
+  - export PATH=/opt/homebrew/opt/llvm/bin:$PATH
+  - export LDFLAGS="-L/opt/homebrew/opt/llvm/lib"
+  - export CPPFLAGS="-I/opt/homebrew/opt/llvm/include"
+  - make TARGET=VORTEX CC=clang FC=flang-new
 
 task:
   name: AppleM1/LLVM/ILP64
   compile_script:
-  - brew install llvm
+  - brew install llvm@16
   - export PATH=/opt/homebrew/opt/llvm/bin:$PATH
   - export LDFLAGS="-L/opt/homebrew/opt/llvm/lib"
   - export CPPFLAGS="-I/opt/homebrew/opt/llvm/include"
