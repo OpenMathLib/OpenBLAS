@@ -1,14 +1,27 @@
 macos_instance:
-  image: ghcr.io/cirruslabs/macos-monterey-xcode:latest
+  image: ghcr.io/cirruslabs/macos-ventura-xcode:latest
 
 task:
   name: AppleM1/LLVM
   compile_script:
-  - brew install llvm
+  - brew update
+  - brew install llvm@16
   - export PATH=/opt/homebrew/opt/llvm/bin:$PATH
   - export LDFLAGS="-L/opt/homebrew/opt/llvm/lib"
   - export CPPFLAGS="-I/opt/homebrew/opt/llvm/include"
   - make TARGET=VORTEX USE_OPENMP=1 CC=clang
+
+
+task:
+  name: AppleM1/LLVM17
+  compile_script:
+  - brew update
+  - brew install llvm@17
+  - export PATH=/opt/homebrew/opt/llvm/bin:$PATH
+  - export LDFLAGS="-L/opt/homebrew/opt/llvm/lib"
+  - export CPPFLAGS="-I/opt/homebrew/opt/llvm/include"
+  - make TARGET=VORTEX USE_OPENMP=1 CC=clang FC=flang-new
+
 
 task:
   name: AppleM1/LLVM/ILP64
