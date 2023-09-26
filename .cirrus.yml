@@ -9,7 +9,7 @@ task:
   - export PATH=/opt/homebrew/opt/llvm/bin:$PATH
   - export LDFLAGS="-L/opt/homebrew/opt/llvm/lib"
   - export CPPFLAGS="-I/opt/homebrew/opt/llvm/include"
-  - make TARGET=VORTEX USE_OPENMP=1 CC=clang
+  - make TARGET=VORTEX CC=clang
 
 
 task:
@@ -20,7 +20,7 @@ task:
   - export PATH=/opt/homebrew/opt/llvm/bin:$PATH
   - export LDFLAGS="-L/opt/homebrew/opt/llvm/lib"
   - export CPPFLAGS="-I/opt/homebrew/opt/llvm/include"
-  - make TARGET=VORTEX USE_OPENMP=1 CC=clang FC=flang-new
+  - make TARGET=VORTEX CC=clang
 
 
 task:
