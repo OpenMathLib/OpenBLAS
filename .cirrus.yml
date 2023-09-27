@@ -6,9 +6,9 @@ task:
   compile_script:
   - brew update
   - brew install llvm@16
-  - export PATH=/opt/homebrew/opt/llvm/bin:$PATH
-  - export LDFLAGS="-L/opt/homebrew/opt/llvm/lib"
-  - export CPPFLAGS="-I/opt/homebrew/opt/llvm/include"
+  - export PATH=/opt/homebrew/opt/llvm@16/bin:$PATH
+  - export LDFLAGS="-L/opt/homebrew/opt/llvm@16/lib"
+  - export CPPFLAGS="-I/opt/homebrew/opt/llvm@16/include"
   - make TARGET=VORTEX CC=clang
 
 
@@ -17,9 +17,9 @@ task:
   compile_script:
   - brew update
   - brew install llvm@17
-  - export PATH=/opt/homebrew/opt/llvm/bin:$PATH
-  - export LDFLAGS="-L/opt/homebrew/opt/llvm/lib"
-  - export CPPFLAGS="-I/opt/homebrew/opt/llvm/include"
+  - export PATH=/opt/homebrew/opt/llvm@17/bin:$PATH
+  - export LDFLAGS="-L/opt/homebrew/opt/llvm@17/lib"
+  - export CPPFLAGS="-I/opt/homebrew/opt/llvm@17/include"
   - make TARGET=VORTEX CC=clang
 
 
