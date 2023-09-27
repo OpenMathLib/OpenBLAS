@@ -5,9 +5,9 @@ task:
   name: AppleM1/MacPorts
   compile_script:
   - wget https://github.com/macports/macports-base/releases/download/v2.8.1/MacPorts-2.8.1-12-Monterey.pkg
-  - installer -verboseR -pkg MacPorts-2.8.1-12-Monterey.pkg -target /
-  - port install gcc-devel
-  - port install llvm-16
+  - sudo installer -verboseR -pkg MacPorts-2.8.1-12-Monterey.pkg -target /
+  - sudo port install gcc-devel
+  - sudo port install llvm-16
   - export PATH=/opt/local/bin:$PATH
   - export LDFLAGS="-L/opt/local/lib"
   - export CPPFLAGS="-I/opt/local/include"
