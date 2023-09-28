@@ -11,7 +11,8 @@ task:
   - sudo port install llvm-16
   - export LDFLAGS="-L/opt/local/lib"
   - export CPPFLAGS="-I/opt/local/include"
-  - make TARGET=VORTEX CC=/opt/local/bin/clang FC=/opt/local/bin/gfortran
+  - ls /opt/local/bin
+  - make TARGET=VORTEX CC=/opt/local/bin/clang-mp-16
 
 task:
   name: AppleM1/LLVM
