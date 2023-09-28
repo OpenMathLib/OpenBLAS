@@ -9,9 +9,10 @@ task:
   - export PATH=/opt/local/bin:$PATH
   - sudo port install gcc-devel
   - sudo port install llvm-16
+  - sudo port install clang-16
   - export LDFLAGS="-L/opt/local/lib"
   - export CPPFLAGS="-I/opt/local/include"
-  - ls /opt/local/bin
+  - ls -R /opt/local/bin
   - make TARGET=VORTEX CC=/opt/local/bin/clang-mp-16
 
 task:
