@@ -117,6 +117,9 @@ else
                             vendor=PGI
                             openmp='-mp'
                             ;;
+                        *xlf*)
+                            vendor=IBM
+                            ;;
                         *)
                             vendor=G77
                             openmp=''

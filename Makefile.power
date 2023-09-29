@@ -70,7 +70,11 @@ else
 FCOMMON_OPT += -O1 -frecursive -mcpu=power8 -mtune=power8  -fno-fast-math 
 endif
 else
+ifeq ($(F_COMPILER), IBM)
+FCOMMON_OPT += -O2 -qrecur -qnosave
+else
 FCOMMON_OPT += -O2 -frecursive -mcpu=power8 -mtune=power8  -fno-fast-math 
+endif
 endif
 else
 FCOMMON_OPT += -O2 -Mrecursive
