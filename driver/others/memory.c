@@ -427,9 +427,9 @@ int  goto_get_num_procs  (void) {
   return blas_cpu_number;
 }
 
-static void blas_memory_init();
+static void blas_memory_init(void);
 
-void openblas_fork_handler()
+void openblas_fork_handler(void)
 {
   // This handler shuts down the OpenBLAS-managed PTHREAD pool when OpenBLAS is
   // built with "make USE_OPENMP=0".
@@ -446,9 +446,9 @@ void openblas_fork_handler()
 #endif
 }
 
-extern int openblas_num_threads_env();
-extern int openblas_goto_num_threads_env();
-extern int openblas_omp_num_threads_env();
+extern int openblas_num_threads_env(void);
+extern int openblas_goto_num_threads_env(void);
+extern int openblas_omp_num_threads_env(void);
 
 int blas_get_cpu_number(void){
 #if defined(OS_LINUX) || defined(OS_WINDOWS) || defined(OS_FREEBSD) || defined(OS_OPENBSD) || defined(OS_NETBSD) || defined(OS_DRAGONFLY) || defined(OS_DARWIN) || defined(OS_ANDROID) || defined(OS_HAIKU)
@@ -592,7 +592,7 @@ static BLASULONG  key_lock = 0UL;
 #endif
 
 /* Returns a pointer to the start of the per-thread memory allocation data */
-static __inline struct alloc_t ** get_memory_table() {
+static __inline struct alloc_t ** get_memory_table(void) {
 #if defined(SMP)
 LOCK_COMMAND(&key_lock);
 lsk=local_storage_key;
@@ -1145,7 +1145,7 @@ static void blas_memory_cleanup(void* ptr){
   }
 }
 
-static void blas_memory_init(){
+static void blas_memory_init(void){
 #if defined(SMP)
 #  if defined(OS_WINDOWS)
   local_storage_key = TlsAlloc();
@@ -1502,7 +1502,7 @@ static void gotoblas_memory_init(void) {
 /* Initialization for all function; this function should be called before main */
 
 static int gotoblas_initialized = 0;
-extern void openblas_read_env();
+extern void openblas_read_env(void);
 
 void CONSTRUCTOR gotoblas_init(void) {
 
