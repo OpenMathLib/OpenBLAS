@@ -110,7 +110,7 @@ blasint CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa,
       newarg.b = a + (i + (i + bk) * lda) * COMPSIZE;
 
       gemm_thread_n(mode | BLAS_TRANSA_T,
-		    &newarg, NULL, NULL, (int (*)(void))TRSM_LCUN, sa, sb, args -> nthreads);
+		    &newarg, NULL, NULL, (int (*)(blas_arg_t *, BLASLONG *, BLASLONG *, FLOAT *, FLOAT *, BLASLONG))TRSM_LCUN, sa, sb, args -> nthreads);
 
       newarg.n = n - i - bk;
       newarg.k = bk;
