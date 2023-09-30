@@ -141,14 +141,14 @@ static __inline int num_cpu_avail(int level) {
 
 #ifdef USE_OPENMP
 int openmp_nthreads;
-	openmp_nthreads=omp_get_max_threads(void);
+	openmp_nthreads=omp_get_max_threads();
 #endif
 
 #ifndef USE_OPENMP 
   if (blas_cpu_number == 1
 #endif
 #ifdef USE_OPENMP
-     if (openmp_nthreads == 1 || omp_in_parallel(void)
+     if (openmp_nthreads == 1 || omp_in_parallel()
 #endif
       ) return 1;        
 
