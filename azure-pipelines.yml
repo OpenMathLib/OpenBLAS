@@ -297,7 +297,7 @@ jobs:
      /Applications/Xcode_11.7.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang --version
      mkdir build
      cd build
-     cmake -DTARGET=ARMV8 -DDYNAMIC_ARCH=1 -DCMAKE_C_COMPILER=clang -DNUM_THREADS=32 NOFORTRAN=1 ..
+     cmake -DTARGET=ARMV8 -DDYNAMIC_ARCH=1 -DCMAKE_CROSS_COMPILING=1 -DNUM_THREADS=32 NOFORTRAN=1 ..
      make
 
 - job: ALPINE_MUSL
