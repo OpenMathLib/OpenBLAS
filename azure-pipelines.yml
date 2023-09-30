@@ -1,4 +1,4 @@
-  trigger:
+trigger:
   # start a new build for every push
   batch: False
   branches:
