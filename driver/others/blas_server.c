@@ -93,7 +93,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif
 #endif
 
-extern unsigned int openblas_thread_timeout();
+extern unsigned int openblas_thread_timeout(void);
 
 #ifdef SMP_SERVER
 
