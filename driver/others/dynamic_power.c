@@ -234,6 +234,7 @@ static int __builtin_cpu_supports(char* arg)
     return 0;
 }
 #endif
+#endif
 
 static gotoblas_t *get_coretype(void) {
 
