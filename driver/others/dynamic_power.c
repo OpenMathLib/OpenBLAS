@@ -43,6 +43,13 @@ static int __builtin_cpu_supports(char* arg)
 }
 #endif
 
+#define CPU_UNKNOWN  0
+#define CPU_POWER6   6
+#define CPU_POWER7   7
+#define CPU_POWER8   8
+#define CPU_POWER9   9
+#define CPU_POWER10 10
+
 #if defined(C_PGI) || defined(__clang__)
 /*
  * NV HPC compilers do not yet implement __builtin_cpu_is().
@@ -60,13 +67,6 @@ static int __builtin_cpu_supports(char* arg)
  *
  *  NOTE NV HPC SDK compilers only support POWER8 and POWER9 at this time
  */
-
-#define CPU_UNKNOWN 0
-#define CPU_POWER5 5
-#define CPU_POWER6 6
-#define CPU_POWER8 8
-#define CPU_POWER9 9
-#define CPU_POWER10 10
 
 static  struct {
     uint32_t    pvr_mask;
@@ -190,13 +190,6 @@ static int __builtin_cpu_is(const char *cpu) {
 
 #ifdef _AIX
 #include <sys/systemcfg.h>
-
-#define CPU_UNKNOWN  0
-#define CPU_POWER6   6
-#define CPU_POWER7   7
-#define CPU_POWER8   8
-#define CPU_POWER9   9
-#define CPU_POWER10 10
 
 static int cpuid(void)
 {
