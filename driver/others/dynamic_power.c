@@ -44,7 +44,7 @@ char *gotoblas_corename(void) {
 #define CPU_POWER9   9
 #define CPU_POWER10 10
 
-int cpuid()
+static int cpuid(void)
 {
     int arch = _system_configuration.implementation;
 #ifdef POWER_6
