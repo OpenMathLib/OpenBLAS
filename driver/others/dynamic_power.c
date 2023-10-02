@@ -20,7 +20,7 @@ static char *corename[] = {
 	"POWER10"
 };
 
-#define NUM_CORETYPES 4
+#define NUM_CORETYPES 5
 
 char *gotoblas_corename(void) {
 #ifndef C_PGI
@@ -43,6 +43,13 @@ static int __builtin_cpu_supports(char* arg)
 }
 #endif
 
+#define CPU_UNKNOWN  0
+#define CPU_POWER6   6
+#define CPU_POWER7   7
+#define CPU_POWER8   8
+#define CPU_POWER9   9
+#define CPU_POWER10 10
+
 #if defined(C_PGI) || defined(__clang__)
 /*
  * NV HPC compilers do not yet implement __builtin_cpu_is().
@@ -60,13 +67,6 @@ static int __builtin_cpu_supports(char* arg)
  *
  *  NOTE NV HPC SDK compilers only support POWER8 and POWER9 at this time
  */
-
-#define CPU_UNKNOWN 0
-#define CPU_POWER5 5
-#define CPU_POWER6 6
-#define CPU_POWER8 8
-#define CPU_POWER9 9
-#define CPU_POWER10 10
 
 static  struct {
     uint32_t    pvr_mask;
@@ -188,6 +188,54 @@ static int __builtin_cpu_is(const char *cpu) {
 
 #endif  /* C_PGI */
 
+#ifdef _AIX
+#include <sys/systemcfg.h>
+
+static int cpuid(void)
+{
+    int arch = _system_configuration.implementation;
+#ifdef POWER_6
+    if (arch == POWER_6) return CPU_POWER6;
+#endif
+#ifdef POWER_7
+    else if (arch == POWER_7) return CPU_POWER7;
+#endif
+#ifdef POWER_8
+    else if (arch == POWER_8) return CPU_POWER8;
+#endif
+#ifdef POWER_9
+    else if (arch == POWER_9) return CPU_POWER9;
+#endif
+#ifdef POWER_10
+    else if (arch == POWER_10) return CPU_POWER10;
+#endif
+    return CPU_UNKNOWN;
+}
+
+#ifndef __BUILTIN_CPU_SUPPORTS__
+static int __builtin_cpu_supports(char* arg)
+{
+    static int ipinfo = -1;
+    if (ipinfo < 0) {
+        ipinfo = cpuid();
+    }
+    if (ipinfo >= CPU_POWER10) {
+        if (!strcmp(arg, "power10")) return 1;
+    }
+    if (ipinfo >= CPU_POWER9) {
+        if (!strcmp(arg, "power9")) return 1;
+    }
+    if (ipinfo >= CPU_POWER8) {
+        if (!strcmp(arg, "power8")) return 1;
+    }
+    if (ipinfo >= CPU_POWER6) {
+        if (!strcmp(arg, "power6")) return 1;
+    }
+    return 0;
+}
+#endif
+#endif
+
 static gotoblas_t *get_coretype(void) {
 
 #ifndef C_PGI
@@ -201,7 +249,11 @@ static gotoblas_t *get_coretype(void) {
 		return &gotoblas_POWER9;
 #endif
 #ifdef HAVE_P10_SUPPORT
+#ifdef _AIX
+	if (__builtin_cpu_supports("power10"))
+#else
 	if (__builtin_cpu_supports ("arch_3_1") && __builtin_cpu_supports ("mma"))
+#endif
 		return &gotoblas_POWER10;
 #endif
 	/* Fall back to the POWER9 implementation if the toolchain is too old or the MMA feature is not set */
