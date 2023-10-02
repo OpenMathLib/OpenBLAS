@@ -42,17 +42,17 @@ static int parallel = 0;
 
 
 #ifdef NEEDBUNDERSCORE
-int CNAME() {
+int CNAME(void) {
   return parallel;
 }
 
-int NAME() {
+int NAME(void) {
   return parallel;
 }
 
 #else
 //The CNAME and NAME are the same.
-int NAME() {
+int NAME(void) {
   return parallel;
 }
 #endif

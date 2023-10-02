@@ -18,6 +18,9 @@ jobs:
           - target: LOONGSON2K1000
             triple: loongarch64-unknown-linux-gnu
             opts: NO_SHARED=1 TARGET=LOONGSON2K1000
+          - target: DYNAMIC_ARCH
+            triple: loongarch64-unknown-linux-gnu
+            opts: NO_SHARED=1 DYNAMIC_ARCH=1 TARGET=GENERIC
 
     steps:
       - name: Checkout repository

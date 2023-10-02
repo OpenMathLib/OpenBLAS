@@ -159,7 +159,7 @@ static int dot_thread_function(BLASLONG n, BLASLONG dummy0,
 
 extern int blas_level1_thread_with_return_value(int mode, BLASLONG m, BLASLONG n,
         BLASLONG k, void *alpha, void *a, BLASLONG lda, void *b, BLASLONG ldb,
-        void *c, BLASLONG ldc, int (*function)(), int nthreads);
+        void *c, BLASLONG ldc, int (*function)(void), int nthreads);
 #endif
 
 FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG inc_y)
