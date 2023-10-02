@@ -102,7 +102,7 @@ static gotoblas_t *get_coretype(void) {
 #ifdef _AIX
     if (__builtin_cpu_supports("power10"))
 #else
-	if (__builtin_cpu_supports("arch_3_1") && __builtin_cpu_supports("mma"))
+    if (__builtin_cpu_supports("arch_3_1") && __builtin_cpu_supports("mma"))
 #endif
 		return &gotoblas_POWER10;
 #endif
