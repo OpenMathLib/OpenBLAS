@@ -248,9 +248,8 @@ static int __builtin_cpu_is(char *arg)
         if (!strcmp(arg, "power8")) return 1;
     } else if (ipinfo == CPU_POWER6) {
         if (!strcmp(arg, "power6")) return 1;
-    } else {
-        return 0;
     }
+    return 0;
 }
 #endif
 #endif   /* _AIX */
