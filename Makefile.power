@@ -98,6 +98,9 @@ endif
 endif
 endif
 
+ifeq ($(C_COMPILER), CLANG)
+CCOMMON_OPT += -fno-integrated-as
+endif
 # workaround for C->FORTRAN ABI violation in LAPACKE
 ifeq ($(F_COMPILER), GFORTRAN)
 FCOMMON_OPT += -fno-optimize-sibling-calls
@@ -133,7 +136,11 @@ ifdef BINARY64
 
 
 ifeq ($(OSNAME), AIX)
+ifeq ($(C_COMPILER), GCC)
 CCOMMON_OPT	+= -mpowerpc64 -maix64
+else
+CCOMMON_OPT	+= -m64
+endif
 ifeq ($(COMPILER_F77), g77)
 FCOMMON_OPT	+= -mpowerpc64 -maix64
 endif
