@@ -36,7 +36,7 @@ char *gotoblas_corename(void) {
 	return corename[0];
 }
 
-#if defined(__clang__)
+#if defined(__clang__) && !defined(_AIX)
 static int __builtin_cpu_supports(char* arg) 
 {
 	return 0;
@@ -50,7 +50,7 @@ static int __builtin_cpu_supports(char* arg)
 #define CPU_POWER9   9
 #define CPU_POWER10 10
 
-#if defined(C_PGI) || defined(__clang__)
+#if defined(C_PGI) || (defined(__clang__) && !defined(_AIX))
 /*
  * NV HPC compilers do not yet implement __builtin_cpu_is().
  * Fake a version here for use in the CPU detection code below.
@@ -213,7 +213,7 @@ static int cpuid(void)
 }
 
 #ifndef __BUILTIN_CPU_SUPPORTS__
-static int __builtin_cpu_supports(char* arg)
+static int __builtin_cpu_supports(const char* arg)
 {
     static int ipinfo = -1;
     if (ipinfo < 0) {
@@ -234,7 +234,7 @@ static int __builtin_cpu_supports(char* arg)
     return 0;
 }
 
-static int __builtin_cpu_is(char *arg)
+static int __builtin_cpu_is(const char *arg)
 {
     static int ipinfo = -1;
     if (ipinfo < 0) {
