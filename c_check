@@ -96,11 +96,19 @@ esac
 defined=0
 
 if [ "$os" = "AIX" ]; then
-    case "$BINARY" in
-        32) compiler_name="$compiler_name -maix32" ;;
-        64) compiler_name="$compiler_name -maix64" ;;
-    esac
-    defined=1
+    if [ "$compiler" = "GCC" ]; then
+        case "$BINARY" in
+            32) compiler_name="$compiler_name -maix32" ;;
+            64) compiler_name="$compiler_name -maix64" ;;
+        esac
+        defined=1
+    else
+        case "$BINARY" in
+            32) compiler_name="$compiler_name -m32" ;;
+            64) compiler_name="$compiler_name -m64" ;;
+        esac
+        defined=1
+    fi
 fi
 
 case "$architecture" in
