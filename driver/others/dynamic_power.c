@@ -44,6 +44,7 @@ static int __builtin_cpu_supports(char* arg)
 #endif
 
 #define CPU_UNKNOWN  0
+#define CPU_POWER5   5
 #define CPU_POWER6   6
 #define CPU_POWER7   7
 #define CPU_POWER8   8
