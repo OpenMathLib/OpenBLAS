@@ -178,23 +178,23 @@ static  struct {
 
 static int cpuid(void)
 {
-    int i;
-    uint32_t pvr;
-    uint32_t cpu_type;
+	int i;
+	uint32_t pvr;
+	uint32_t cpu_type;
 
-    asm("mfpvr    %0" : "=r"(pvr));
+	asm("mfpvr    %0" : "=r"(pvr));
 
-    for (i = 0 ; i < sizeof pvrPOWER / sizeof *pvrPOWER ; ++i) {
-        if ((pvr & pvrPOWER[i].pvr_mask) == pvrPOWER[i].pvr_value) {
-            break;
-        }
-    }
+	for (i = 0 ; i < sizeof pvrPOWER / sizeof *pvrPOWER ; ++i) {
+		if ((pvr & pvrPOWER[i].pvr_mask) == pvrPOWER[i].pvr_value) {
+			break;
+		}
+	}
 
 #if defined(DEBUG)
-    printf("%s: returning CPU=%s, cpu_type=%p\n", __func__,
-        pvrPOWER[i].cpu_name, pvrPOWER[i].cpu_type);
+	printf("%s: returning CPU=%s, cpu_type=%p\n", __func__,
+		pvrPOWER[i].cpu_name, pvrPOWER[i].cpu_type);
 #endif
-    cpu_type = pvrPOWER[i].cpu_type;
+	cpu_type = pvrPOWER[i].cpu_type;
     return (int)(cpu_type);
 }
 #endif  /* C_PGI */
@@ -252,10 +252,10 @@ static gotoblas_t *get_coretype(void) {
 #endif
 		return &gotoblas_POWER10;
 #endif
-    /* Fall back to the POWER9 implementation if the toolchain is too old or the MMA feature is not set */
+	/* Fall back to the POWER9 implementation if the toolchain is too old or the MMA feature is not set */
 #if (!defined __GNUC__) || ( __GNUC__ >= 11) || (__GNUC__ == 10 && __GNUC_MINOR__ >= 2)
-    if (__builtin_cpu_is("power10"))
-        return &gotoblas_POWER9;
+	if (__builtin_cpu_is("power10"))
+		return &gotoblas_POWER9;
 #endif
 	return NULL;
 }
