@@ -195,7 +195,7 @@ static int cpuid(void)
 		pvrPOWER[i].cpu_name, pvrPOWER[i].cpu_type);
 #endif
 	cpu_type = pvrPOWER[i].cpu_type;
-    return (int)(cpu_type);
+	return (int)(cpu_type);
 }
 #endif  /* C_PGI */
 #endif  /* _AIX */
