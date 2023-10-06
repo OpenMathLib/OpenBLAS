@@ -3,7 +3,7 @@
 
 extern gotoblas_t gotoblas_POWER6;
 extern gotoblas_t gotoblas_POWER8;
-#if (!defined __GNUC__) || ( __GNUC__ >= 6)
+#if ((!defined __GNUC__) || ( __GNUC__ >= 6)) || defined(__clang__)
 extern gotoblas_t gotoblas_POWER9;
 #endif
 #ifdef HAVE_P10_SUPPORT
@@ -27,7 +27,7 @@ char *gotoblas_corename(void) {
 	if (gotoblas == &gotoblas_POWER6)	return corename[1];
 #endif
 	if (gotoblas == &gotoblas_POWER8)	return corename[2];
-#if (!defined __GNUC__) || ( __GNUC__ >= 6)
+#if ((!defined __GNUC__) || ( __GNUC__ >= 6)) || defined(__clang__)
 	if (gotoblas == &gotoblas_POWER9)	return corename[3];
 #endif
 #ifdef HAVE_P10_SUPPORT
@@ -240,7 +240,7 @@ static gotoblas_t *get_coretype(void) {
 #endif
 	if (__builtin_cpu_is("power8"))
 		return &gotoblas_POWER8;
-#if (!defined __GNUC__) || ( __GNUC__ >= 6)
+#if ((!defined __GNUC__) || ( __GNUC__ >= 6)) || defined(__clang__)
 	if (__builtin_cpu_is("power9"))
 		return &gotoblas_POWER9;
 #endif
@@ -281,7 +281,7 @@ static gotoblas_t *force_coretype(char * coretype) {
 	case  1: return (&gotoblas_POWER6);
 #endif
 	case  2: return (&gotoblas_POWER8);
-#if (!defined __GNUC__) || ( __GNUC__ >= 6)
+#if ((!defined __GNUC__) || ( __GNUC__ >= 6)) || defined(__clang__)
 	case  3: return (&gotoblas_POWER9);
 #endif
 #ifdef HAVE_P10_SUPPORT
