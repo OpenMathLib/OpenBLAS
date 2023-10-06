@@ -246,7 +246,7 @@ static gotoblas_t *get_coretype(void) {
 #endif
 #ifdef HAVE_P10_SUPPORT
 #if defined(_AIX) || defined(__clang__)
-    if (__builtin_cpu_is("power10"))
+	if (__builtin_cpu_is("power10"))
 #else
 	if (__builtin_cpu_supports ("arch_3_1") && __builtin_cpu_supports ("mma"))
 #endif
