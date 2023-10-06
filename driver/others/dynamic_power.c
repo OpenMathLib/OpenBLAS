@@ -36,13 +36,6 @@ char *gotoblas_corename(void) {
 	return corename[0];
 }
 
-#if defined(__clang__) && !defined(_AIX)
-static int __builtin_cpu_supports(char* arg) 
-{
-	return 0;
-}
-#endif
-
 #define CPU_UNKNOWN  0
 #define CPU_POWER5   5
 #define CPU_POWER6   6
@@ -51,7 +44,31 @@ static int __builtin_cpu_supports(char* arg)
 #define CPU_POWER9   9
 #define CPU_POWER10 10
 
-#if defined(C_PGI) || (defined(__clang__) && !defined(_AIX))
+#ifdef _AIX
+#include <sys/systemcfg.h>
+
+static int cpuid(void)
+{
+    int arch = _system_configuration.implementation;
+#ifdef POWER_6
+    if (arch == POWER_6) return CPU_POWER6;
+#endif
+#ifdef POWER_7
+    else if (arch == POWER_7) return CPU_POWER7;
+#endif
+#ifdef POWER_8
+    else if (arch == POWER_8) return CPU_POWER8;
+#endif
+#ifdef POWER_9
+    else if (arch == POWER_9) return CPU_POWER9;
+#endif
+#ifdef POWER_10
+    else if (arch == POWER_10) return CPU_POWER10;
+#endif
+    return CPU_UNKNOWN;
+}
+#else
+#if defined(C_PGI) || defined(__clang__)
 /*
  * NV HPC compilers do not yet implement __builtin_cpu_is().
  * Fake a version here for use in the CPU detection code below.
@@ -60,8 +77,6 @@ static int __builtin_cpu_supports(char* arg)
  * and then test the input to see if what the CPU actually is matches
  * what was requested.
  */
-
-#include <string.h>
 
 /*
  *  Define POWER processor version table.
@@ -161,79 +176,32 @@ static  struct {
     },
 };
 
-static int __builtin_cpu_is(const char *cpu) {
-	int i;
-	uint32_t pvr;
-	uint32_t cpu_type;
-
-	asm("mfpvr    %0" : "=r"(pvr));
-
-	for (i = 0 ; i < sizeof pvrPOWER / sizeof *pvrPOWER ; ++i) {
-		if ((pvr & pvrPOWER[i].pvr_mask) == pvrPOWER[i].pvr_value) {
-			break;
-		}
-	}
-
-#if defined(DEBUG)
-	printf("%s: returning CPU=%s, cpu_type=%p\n", __func__,
-		pvrPOWER[i].cpu_name, pvrPOWER[i].cpu_type);
-#endif
-	cpu_type = pvrPOWER[i].cpu_type;
-
-	if (!strcmp(cpu, "power8"))
-		return cpu_type == CPU_POWER8;
-	if (!strcmp(cpu, "power9"))
-		return cpu_type == CPU_POWER9;
-	return 0;
-}
-
-#endif  /* C_PGI */
-
-#ifdef _AIX
-#include <sys/systemcfg.h>
-
 static int cpuid(void)
 {
-    int arch = _system_configuration.implementation;
-#ifdef POWER_6
-    if (arch == POWER_6) return CPU_POWER6;
+    int i;
+    uint32_t pvr;
+    uint32_t cpu_type;
+
+    asm("mfpvr    %0" : "=r"(pvr));
+
+    for (i = 0 ; i < sizeof pvrPOWER / sizeof *pvrPOWER ; ++i) {
+        if ((pvr & pvrPOWER[i].pvr_mask) == pvrPOWER[i].pvr_value) {
+            break;
+        }
+    }
+
+#if defined(DEBUG)
+    printf("%s: returning CPU=%s, cpu_type=%p\n", __func__,
+        pvrPOWER[i].cpu_name, pvrPOWER[i].cpu_type);
 #endif
-#ifdef POWER_7
-    else if (arch == POWER_7) return CPU_POWER7;
-#endif
-#ifdef POWER_8
-    else if (arch == POWER_8) return CPU_POWER8;
-#endif
-#ifdef POWER_9
-    else if (arch == POWER_9) return CPU_POWER9;
-#endif
-#ifdef POWER_10
-    else if (arch == POWER_10) return CPU_POWER10;
-#endif
-    return CPU_UNKNOWN;
+    cpu_type = pvrPOWER[i].cpu_type;
+    return (int)(cpu_type);
 }
+#endif  /* C_PGI */
+#endif  /* _AIX */
 
 #ifndef __BUILTIN_CPU_SUPPORTS__
-static int __builtin_cpu_supports(const char* arg)
-{
-    static int ipinfo = -1;
-    if (ipinfo < 0) {
-        ipinfo = cpuid();
-    }
-    if (ipinfo >= CPU_POWER10) {
-        if (!strcmp(arg, "power10")) return 1;
-    }
-    if (ipinfo >= CPU_POWER9) {
-        if (!strcmp(arg, "power9")) return 1;
-    }
-    if (ipinfo >= CPU_POWER8) {
-        if (!strcmp(arg, "power8")) return 1;
-    }
-    if (ipinfo >= CPU_POWER6) {
-        if (!strcmp(arg, "power6")) return 1;
-    }
-    return 0;
-}
+#include <string.h>
 
 static int __builtin_cpu_is(const char *arg)
 {
@@ -241,19 +209,28 @@ static int __builtin_cpu_is(const char *arg)
     if (ipinfo < 0) {
         ipinfo = cpuid();
     }
+#ifdef HAVE_P10_SUPPORT
     if (ipinfo == CPU_POWER10) {
         if (!strcmp(arg, "power10")) return 1;
-    } else if (ipinfo == CPU_POWER9) {
+    }
+#endif
+    if (ipinfo == CPU_POWER9) {
         if (!strcmp(arg, "power9")) return 1;
     } else if (ipinfo == CPU_POWER8) {
         if (!strcmp(arg, "power8")) return 1;
+#ifndef C_PGI
     } else if (ipinfo == CPU_POWER6) {
         if (!strcmp(arg, "power6")) return 1;
+#endif
     }
     return 0;
 }
+
+static int __builtin_cpu_supports(const char *arg)
+{
+    return 0;
+}
 #endif
-#endif   /* _AIX */
 
 static gotoblas_t *get_coretype(void) {
 
@@ -268,18 +245,18 @@ static gotoblas_t *get_coretype(void) {
 		return &gotoblas_POWER9;
 #endif
 #ifdef HAVE_P10_SUPPORT
-#ifdef _AIX
-	if (__builtin_cpu_supports("power10"))
+#if defined(_AIX) || defined(__clang__)
+    if (__builtin_cpu_is("power10"))
 #else
 	if (__builtin_cpu_supports ("arch_3_1") && __builtin_cpu_supports ("mma"))
 #endif
 		return &gotoblas_POWER10;
 #endif
-	/* Fall back to the POWER9 implementation if the toolchain is too old or the MMA feature is not set */
+    /* Fall back to the POWER9 implementation if the toolchain is too old or the MMA feature is not set */
 #if (!defined __GNUC__) || ( __GNUC__ >= 11) || (__GNUC__ == 10 && __GNUC_MINOR__ >= 2)
-	if (__builtin_cpu_is("power10"))
-		return &gotoblas_POWER9;
-#endif	
+    if (__builtin_cpu_is("power10"))
+        return &gotoblas_POWER9;
+#endif
 	return NULL;
 }
 
