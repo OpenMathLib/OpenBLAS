@@ -242,251 +242,6 @@ typedef struct Namelist Namelist;
 /* procedure parameter types for -A and -C++ */
 
 #define F2C_proc_par_types 1
-#ifdef __cplusplus
-typedef logical (*L_fp)(...);
-#else
-typedef logical (*L_fp)();
-#endif
-
-#if 0
-static float spow_ui(float x, integer n) {
-	float pow=1.0; unsigned long int u;
-	if(n != 0) {
-		if(n < 0) n = -n, x = 1/x;
-		for(u = n; ; ) {
-			if(u & 01) pow *= x;
-			if(u >>= 1) x *= x;
-			else break;
-		}
-	}
-	return pow;
-}
-static double dpow_ui(double x, integer n) {
-	double pow=1.0; unsigned long int u;
-	if(n != 0) {
-		if(n < 0) n = -n, x = 1/x;
-		for(u = n; ; ) {
-			if(u & 01) pow *= x;
-			if(u >>= 1) x *= x;
-			else break;
-		}
-	}
-	return pow;
-}
-#ifdef _MSC_VER
-static _Fcomplex cpow_ui(complex x, integer n) {
-	complex pow={1.0,0.0}; unsigned long int u;
-		if(n != 0) {
-		if(n < 0) n = -n, x.r = 1/x.r, x.i=1/x.i;
-		for(u = n; ; ) {
-			if(u & 01) pow.r *= x.r, pow.i *= x.i;
-			if(u >>= 1) x.r *= x.r, x.i *= x.i;
-			else break;
-		}
-	}
-	_Fcomplex p={pow.r, pow.i};
-	return p;
-}
-#else
-static _Complex float cpow_ui(_Complex float x, integer n) {
-	_Complex float pow=1.0; unsigned long int u;
-	if(n != 0) {
-		if(n < 0) n = -n, x = 1/x;
-		for(u = n; ; ) {
-			if(u & 01) pow *= x;
-			if(u >>= 1) x *= x;
-			else break;
-		}
-	}
-	return pow;
-}
-#endif
-#ifdef _MSC_VER
-static _Dcomplex zpow_ui(_Dcomplex x, integer n) {
-	_Dcomplex pow={1.0,0.0}; unsigned long int u;
-	if(n != 0) {
-		if(n < 0) n = -n, x._Val[0] = 1/x._Val[0], x._Val[1] =1/x._Val[1];
-		for(u = n; ; ) {
-			if(u & 01) pow._Val[0] *= x._Val[0], pow._Val[1] *= x._Val[1];
-			if(u >>= 1) x._Val[0] *= x._Val[0], x._Val[1] *= x._Val[1];
-			else break;
-		}
-	}
-	_Dcomplex p = {pow._Val[0], pow._Val[1]};
-	return p;
-}
-#else
-static _Complex double zpow_ui(_Complex double x, integer n) {
-	_Complex double pow=1.0; unsigned long int u;
-	if(n != 0) {
-		if(n < 0) n = -n, x = 1/x;
-		for(u = n; ; ) {
-			if(u & 01) pow *= x;
-			if(u >>= 1) x *= x;
-			else break;
-		}
-	}
-	return pow;
-}
-#endif
-static integer pow_ii(integer x, integer n) {
-	integer pow; unsigned long int u;
-	if (n <= 0) {
-		if (n == 0 || x == 1) pow = 1;
-		else if (x != -1) pow = x == 0 ? 1/x : 0;
-		else n = -n;
-	}
-	if ((n > 0) || !(n == 0 || x == 1 || x != -1)) {
-		u = n;
-		for(pow = 1; ; ) {
-			if(u & 01) pow *= x;
-			if(u >>= 1) x *= x;
-			else break;
-		}
-	}
-	return pow;
-}
-static integer dmaxloc_(double *w, integer s, integer e, integer *n)
-{
-	double m; integer i, mi;
-	for(m=w[s-1], mi=s, i=s+1; i<=e; i++)
-		if (w[i-1]>m) mi=i ,m=w[i-1];
-	return mi-s+1;
-}
-static integer smaxloc_(float *w, integer s, integer e, integer *n)
-{
-	float m; integer i, mi;
-	for(m=w[s-1], mi=s, i=s+1; i<=e; i++)
-		if (w[i-1]>m) mi=i ,m=w[i-1];
-	return mi-s+1;
-}
-#endif
-#if 0
-static inline void cdotc_(complex *z, integer *n_, complex *x, integer *incx_, complex *y, integer *incy_) {
-	integer n = *n_, incx = *incx_, incy = *incy_, i;
-#ifdef _MSC_VER
-	_Fcomplex zdotc = {0.0, 0.0};
-	if (incx == 1 && incy == 1) {
-		for (i=0;i<n;i++) { /* zdotc = zdotc + dconjg(x(i))* y(i) */
-			zdotc._Val[0] += conjf(Cf(&x[i]))._Val[0] * Cf(&y[i])._Val[0];
-			zdotc._Val[1] += conjf(Cf(&x[i]))._Val[1] * Cf(&y[i])._Val[1];
-		}
-	} else {
-		for (i=0;i<n;i++) { /* zdotc = zdotc + dconjg(x(i))* y(i) */
-			zdotc._Val[0] += conjf(Cf(&x[i*incx]))._Val[0] * Cf(&y[i*incy])._Val[0];
-			zdotc._Val[1] += conjf(Cf(&x[i*incx]))._Val[1] * Cf(&y[i*incy])._Val[1];
-		}
-	}
-	pCf(z) = zdotc;
-}
-#else
-	_Complex float zdotc = 0.0;
-	if (incx == 1 && incy == 1) {
-		for (i=0;i<n;i++) { /* zdotc = zdotc + dconjg(x(i))* y(i) */
-			zdotc += conjf(Cf(&x[i])) * Cf(&y[i]);
-		}
-	} else {
-		for (i=0;i<n;i++) { /* zdotc = zdotc + dconjg(x(i))* y(i) */
-			zdotc += conjf(Cf(&x[i*incx])) * Cf(&y[i*incy]);
-		}
-	}
-	pCf(z) = zdotc;
-}
-#endif
-static inline void zdotc_(doublecomplex *z, integer *n_, doublecomplex *x, integer *incx_, doublecomplex *y, integer *incy_) {
-	integer n = *n_, incx = *incx_, incy = *incy_, i;
-#ifdef _MSC_VER
-	_Dcomplex zdotc = {0.0, 0.0};
-	if (incx == 1 && incy == 1) {
-		for (i=0;i<n;i++) { /* zdotc = zdotc + dconjg(x(i))* y(i) */
-			zdotc._Val[0] += conj(Cd(&x[i]))._Val[0] * Cd(&y[i])._Val[0];
-			zdotc._Val[1] += conj(Cd(&x[i]))._Val[1] * Cd(&y[i])._Val[1];
-		}
-	} else {
-		for (i=0;i<n;i++) { /* zdotc = zdotc + dconjg(x(i))* y(i) */
-			zdotc._Val[0] += conj(Cd(&x[i*incx]))._Val[0] * Cd(&y[i*incy])._Val[0];
-			zdotc._Val[1] += conj(Cd(&x[i*incx]))._Val[1] * Cd(&y[i*incy])._Val[1];
-		}
-	}
-	pCd(z) = zdotc;
-}
-#else
-	_Complex double zdotc = 0.0;
-	if (incx == 1 && incy == 1) {
-		for (i=0;i<n;i++) { /* zdotc = zdotc + dconjg(x(i))* y(i) */
-			zdotc += conj(Cd(&x[i])) * Cd(&y[i]);
-		}
-	} else {
-		for (i=0;i<n;i++) { /* zdotc = zdotc + dconjg(x(i))* y(i) */
-			zdotc += conj(Cd(&x[i*incx])) * Cd(&y[i*incy]);
-		}
-	}
-	pCd(z) = zdotc;
-}
-#endif	
-static inline void cdotu_(complex *z, integer *n_, complex *x, integer *incx_, complex *y, integer *incy_) {
-	integer n = *n_, incx = *incx_, incy = *incy_, i;
-#ifdef _MSC_VER
-	_Fcomplex zdotc = {0.0, 0.0};
-	if (incx == 1 && incy == 1) {
-		for (i=0;i<n;i++) { /* zdotc = zdotc + dconjg(x(i))* y(i) */
-			zdotc._Val[0] += Cf(&x[i])._Val[0] * Cf(&y[i])._Val[0];
-			zdotc._Val[1] += Cf(&x[i])._Val[1] * Cf(&y[i])._Val[1];
-		}
-	} else {
-		for (i=0;i<n;i++) { /* zdotc = zdotc + dconjg(x(i))* y(i) */
-			zdotc._Val[0] += Cf(&x[i*incx])._Val[0] * Cf(&y[i*incy])._Val[0];
-			zdotc._Val[1] += Cf(&x[i*incx])._Val[1] * Cf(&y[i*incy])._Val[1];
-		}
-	}
-	pCf(z) = zdotc;
-}
-#else
-	_Complex float zdotc = 0.0;
-	if (incx == 1 && incy == 1) {
-		for (i=0;i<n;i++) { /* zdotc = zdotc + dconjg(x(i))* y(i) */
-			zdotc += Cf(&x[i]) * Cf(&y[i]);
-		}
-	} else {
-		for (i=0;i<n;i++) { /* zdotc = zdotc + dconjg(x(i))* y(i) */
-			zdotc += Cf(&x[i*incx]) * Cf(&y[i*incy]);
-		}
-	}
-	pCf(z) = zdotc;
-}
-#endif
-static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integer *incx_, doublecomplex *y, integer *incy_) {
-	integer n = *n_, incx = *incx_, incy = *incy_, i;
-#ifdef _MSC_VER
-	_Dcomplex zdotc = {0.0, 0.0};
-	if (incx == 1 && incy == 1) {
-		for (i=0;i<n;i++) { /* zdotc = zdotc + dconjg(x(i))* y(i) */
-			zdotc._Val[0] += Cd(&x[i])._Val[0] * Cd(&y[i])._Val[0];
-			zdotc._Val[1] += Cd(&x[i])._Val[1] * Cd(&y[i])._Val[1];
-		}
-	} else {
-		for (i=0;i<n;i++) { /* zdotc = zdotc + dconjg(x(i))* y(i) */
-			zdotc._Val[0] += Cd(&x[i*incx])._Val[0] * Cd(&y[i*incy])._Val[0];
-			zdotc._Val[1] += Cd(&x[i*incx])._Val[1] * Cd(&y[i*incy])._Val[1];
-		}
-	}
-	pCd(z) = zdotc;
-}
-#else
-	_Complex double zdotc = 0.0;
-	if (incx == 1 && incy == 1) {
-		for (i=0;i<n;i++) { /* zdotc = zdotc + dconjg(x(i))* y(i) */
-			zdotc += Cd(&x[i]) * Cd(&y[i]);
-		}
-	} else {
-		for (i=0;i<n;i++) { /* zdotc = zdotc + dconjg(x(i))* y(i) */
-			zdotc += Cd(&x[i*incx]) * Cd(&y[i*incy]);
-		}
-	}
-	pCd(z) = zdotc;
-}
-#endif
-#endif
 
 /* Common Block Declarations */
 
@@ -503,16 +258,16 @@ static integer c__1 = 1;
 static integer c__5 = 5;
 static real c_b43 = (float)1.;
 
-/* Main program */ int main()
+/* Main program */ int main(void)
 {
     /* Initialized data */
 
     static real sfac = (float)9.765625e-4;
 
     /* Local variables */
-    extern /* Subroutine */ int check1_(), check2_();
+    extern /* Subroutine */ int check1_(real*), check2_(real*);
     static integer ic;
-    extern /* Subroutine */ int header_();
+    extern /* Subroutine */ int header_(void);
 
 /*     Test program for the COMPLEX    Level 1 CBLAS. */
 /*     Based upon the original CBLAS test routine together with: */
@@ -553,7 +308,7 @@ static real c_b43 = (float)1.;
 
 } /* MAIN__ */
 
-/* Subroutine */ int header_()
+/* Subroutine */ int header_(void)
 {
     /* Initialized data */
 
@@ -564,7 +319,7 @@ static real c_b43 = (float)1.;
     /* Format strings */
 
     /* Builtin functions */
-    integer s_wsfe(), do_fio(), e_wsfe();
+    integer s_wsfe(void), do_fio(void), e_wsfe(void);
 
 /*     .. Parameters .. */
 /*     .. Scalars in Common .. */
@@ -577,8 +332,7 @@ static real c_b43 = (float)1.;
 
 } /* header_ */
 
-/* Subroutine */ int check1_(sfac)
-real *sfac;
+/* Subroutine */ int check1_(real* sfac)
 {
     /* Initialized data */
 
@@ -683,15 +437,15 @@ real *sfac;
 
     /* Local variables */
     static integer i__;
-    extern /* Subroutine */ int ctest_();
+    extern /* Subroutine */ int ctest_(int*, complex*, complex*, complex*, real*);
     static complex mwpcs[5], mwpct[5];
-    extern /* Subroutine */ int itest1_(), stest1_();
+    extern /* Subroutine */ int itest1_(int*, int*), stest1_(real*,real*,real*,real*);
     static complex cx[8];
-    extern real scnrm2test_();
+    extern real scnrm2test_(int*, complex*, int*);
     static integer np1;
-    extern integer icamaxtest_();
-    extern /* Subroutine */ int csscaltest_();
-    extern real scasumtest_();
+    extern integer icamaxtest_(int*, complex*, int*);
+    extern /* Subroutine */ int csscaltest_(int*, real*, complex*, int*);
+    extern real scasumtest_(int*, complex*, int*);
     static integer len;
 
 /*     .. Parameters .. */
@@ -808,8 +562,7 @@ real *sfac;
     return 0;
 } /* check1_ */
 
-/* Subroutine */ int check2_(sfac)
-real *sfac;
+/* Subroutine */ int check2_(real* sfac)
 {
     /* Initialized data */
 
@@ -981,10 +734,10 @@ real *sfac;
     static complex cdot[1];
     static integer lenx, leny, i__;
     static complex ctemp;
-    extern /* Subroutine */ int ctest_();
+    extern /* Subroutine */ int ctest_(int*, complex*, complex*, complex*, real*);
     static integer ksize;
-    extern /* Subroutine */ int cdotctest_(), ccopytest_(), cdotutest_(), 
-	    cswaptest_(), caxpytest_();
+    extern /* Subroutine */ int cdotctest_(int*, complex*, int*, complex*, int*,complex*), ccopytest_(int*, complex*, int*, complex*, int*), cdotutest_(int*, complex*, int*, complex*, int*, complex*), 
+	    cswaptest_(int*, complex*, int*, complex*, int*), caxpytest_(int*, complex*, complex*, int*, complex*, int*);
     static integer ki, kn;
     static complex cx[7], cy[7];
     static integer mx, my;
@@ -1067,9 +820,7 @@ real *sfac;
     return 0;
 } /* check2_ */
 
-/* Subroutine */ int stest_(len, scomp, strue, ssize, sfac)
-integer *len;
-real *scomp, *strue, *ssize, *sfac;
+/* Subroutine */ int stest_(integer* len, real* scomp, real* strue, real* ssize,real* sfac)
 {
     /* System generated locals */
     integer i__1;
@@ -1077,7 +828,7 @@ real *scomp, *strue, *ssize, *sfac;
 
     /* Local variables */
     static integer i__;
-    extern doublereal sdiff_();
+    extern doublereal sdiff_(real*, real*);
     static real sd;
 
 /*     ********************************* STEST ************************** */
@@ -1133,11 +884,10 @@ L40:
 
 } /* stest_ */
 
-/* Subroutine */ int stest1_(scomp1, strue1, ssize, sfac)
-real *scomp1, *strue1, *ssize, *sfac;
+/* Subroutine */ int stest1_(real* scomp1, real* strue1, real* ssize, real* sfac)
 {
     static real scomp[1], strue[1];
-    extern /* Subroutine */ int stest_();
+    extern /* Subroutine */ int stest_(int*, real*, real*, real*, real*);
 
 /*     ************************* STEST1 ***************************** */
 
@@ -1164,8 +914,7 @@ real *scomp1, *strue1, *ssize, *sfac;
     return 0;
 } /* stest1_ */
 
-doublereal sdiff_(sa, sb)
-real *sa, *sb;
+doublereal sdiff_(real* sa, real* sb)
 {
     /* System generated locals */
     real ret_val;
@@ -1179,10 +928,7 @@ real *sa, *sb;
     return ret_val;
 } /* sdiff_ */
 
-/* Subroutine */ int ctest_(len, ccomp, ctrue, csize, sfac)
-integer *len;
-complex *ccomp, *ctrue, *csize;
-real *sfac;
+/* Subroutine */ int ctest_(integer* len, complex* ccomp, complex* ctrue, complex* csize, real* sfac)
 {
     /* System generated locals */
     integer i__1, i__2;
@@ -1193,7 +939,7 @@ real *sfac;
     /* Local variables */
     static integer i__;
     static real scomp[20], ssize[20], strue[20];
-    extern /* Subroutine */ int stest_();
+    extern /* Subroutine */ int stest_(int*, real*,real*,real*,real*);
 
 /*     **************************** CTEST ***************************** */
 
@@ -1231,8 +977,7 @@ real *sfac;
     return 0;
 } /* ctest_ */
 
-/* Subroutine */ int itest1_(icomp, itrue)
-integer *icomp, *itrue;
+/* Subroutine */ int itest1_(integer* icomp, integer* itrue)
 {
     /* Local variables */
     static integer id;
