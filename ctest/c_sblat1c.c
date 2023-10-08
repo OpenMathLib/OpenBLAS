@@ -433,14 +433,14 @@ L40:
 
     /* Local variables */
     static integer i__;
-    extern real snrm2test_(int*,real*,int*);
+    extern real snrm2test_(integer*,real*,integer*);
     static real stemp[1], strue[8];
-    extern /* Subroutine */ int stest_(int*, real*,real*,real*,real*), sscaltest_(int*,real*,real*,int*);
-    extern real sasumtest_(int*,real*,int*);
+    extern /* Subroutine */ int stest_(integer*, real*,real*,real*,real*), sscaltest_(integer*,real*,real*,integer*);
+    extern real sasumtest_(integer*,real*,integer*);
     extern /* Subroutine */ int itest1_(integer*,integer*), stest1_(real*,real*,real*,real*);
     static real sx[8];
     static integer np1;
-    extern integer isamaxtest_(int*,real*,int*);
+    extern integer isamaxtest_(integer*,real*,integer*);
     static integer len;
 
 
@@ -590,10 +590,10 @@ L40:
 
     /* Local variables */
     static integer lenx, leny;
-    extern real sdottest_(int*,real*,int*,real*,int*);
+    extern real sdottest_(integer*,real*,integer*,real*,integer*);
     static integer i__, j, ksize;
-    extern /* Subroutine */ int stest_(int*,real*,real*,real*,real*), scopytest_(int*,real*,int*,real*,int*), sswaptest_(int*,real*,int*,real*,int*), 
-	    saxpytest_(int*,real*,real*,int*,real*,int*);
+    extern /* Subroutine */ int stest_(integer*,real*,real*,real*,real*), scopytest_(integer*,real*,integer*,real*,integer*), sswaptest_(integer*,real*,integer*,real*,integer*), 
+	    saxpytest_(integer*,real*,real*,integer*,real*,integer*);
     static integer ki;
     extern /* Subroutine */ int stest1_(real*,real*,real*,real*);
     static integer kn, mx, my;
@@ -708,9 +708,9 @@ L40:
 	    1.17 };
 
     /* Local variables */
-    extern /* Subroutine */ void srottest_(int*,real*,int*,real*,int*,real*,real*);
+    extern /* Subroutine */ void srottest_(integer*,real*,integer*,real*,integer*,real*,real*);
     static integer i__, k, ksize;
-    extern /* Subroutine */ int stest_(int*,real*,real*,real*,real*), srotmtest_(int*,real*,int*,real*,int*,real*);
+    extern /* Subroutine */ int stest_(integer*,real*,real*,real*,real*), srotmtest_(integer*,real*,integer*,real*,integer*,real*);
     static integer ki, kn;
     static real sx[19], sy[19], sparam[5], stx[19], sty[19];
 
@@ -781,7 +781,7 @@ L40:
     return 0;
 } /* check3_ */
 
-/* Subroutine */ int stest_(int* len, real* scomp, real* strue, real* ssize, real* sfac)
+/* Subroutine */ int stest_(integer* len, real* scomp, real* strue, real* ssize, real* sfac)
 {
     integer i__1;
     real r__1, r__2, r__3, r__4, r__5;
@@ -847,7 +847,7 @@ L40:
 /* Subroutine */ int stest1_(real* scomp1, real* strue1, real* ssize, real* sfac)
 {
     static real scomp[1], strue[1];
-    extern /* Subroutine */ int stest_(int*,real*,real*,real*,real*);
+    extern /* Subroutine */ int stest_(integer*,real*,real*,real*,real*);
 
 /*     ************************* STEST1 ***************************** */
 

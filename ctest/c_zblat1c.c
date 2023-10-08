@@ -380,7 +380,7 @@ static doublereal c_b43 = 1.;
     static integer i__;
     extern /* Subroutine */ int ctest_(integer*, doublecomplex*, doublecomplex*, doublecomplex*, doublereal*);
     static doublecomplex mwpcs[5], mwpct[5];
-    extern /* Subroutine */ int zscaltest_(int*, doublereal*, doublecomplex*, int*), itest1_(int*, int*), stest1_(doublereal*, doublereal*, doublereal*, doublereal*);
+    extern /* Subroutine */ int zscaltest_(integer*, doublereal*, doublecomplex*, integer*), itest1_(integer*, integer*), stest1_(doublereal*, doublereal*, doublereal*, doublereal*);
     static doublecomplex cx[8];
     extern doublereal dznrm2test_(integer*, doublecomplex*, integer*);
     static integer np1;
@@ -591,11 +591,11 @@ static doublereal c_b43 = 1.;
     extern /* Subroutine */ int ctest_(integer*, doublecomplex*, doublecomplex*, doublecomplex*, doublereal*);
     static integer ksize;
     static doublecomplex ztemp;
-    extern /* Subroutine */ int zdotctest_(int*, doublecomplex*, int*, doublecomplex*, int*, doublecomplex*), zcopytest_(int*, doublecomplex*, int*, doublecomplex*, int*);
+    extern /* Subroutine */ int zdotctest_(integer*, doublecomplex*, integer*, doublecomplex*, integer*, doublecomplex*), zcopytest_(integer*, doublecomplex*, integer*, doublecomplex*, integer*);
     static integer ki;
-    extern /* Subroutine */ int zdotutest_(int*, doublecomplex*, int*, doublecomplex*, int*, doublecomplex*), zswaptest_(int*, doublecomplex*, int*, doublecomplex*, int*);
+    extern /* Subroutine */ int zdotutest_(integer*, doublecomplex*, integer*, doublecomplex*, integer*, doublecomplex*), zswaptest_(integer*, doublecomplex*, integer*, doublecomplex*, integer*);
     static integer kn;
-    extern /* Subroutine */ int zaxpytest_(int*, doublereal*, doublecomplex*, int*, doublecomplex*, int*);
+    extern /* Subroutine */ int zaxpytest_(integer*, doublereal*, doublecomplex*, integer*, doublecomplex*, integer*);
     static doublecomplex cx[7], cy[7];
     static integer mx, my;
 
@@ -747,7 +747,7 @@ L40:
 /* Subroutine */ int stest1_(doublereal* scomp1, doublereal* strue1, doublereal* ssize, doublereal* sfac)
 {
     static doublereal scomp[1], strue[1];
-    extern /* Subroutine */ integer stest_(int*,doublereal*, doublereal*, doublereal*, doublereal*);
+    extern /* Subroutine */ int stest_(integer*,doublereal*, doublereal*, doublereal*, doublereal*);
 
 /*     ************************* STEST1 ***************************** */
 

@@ -402,14 +402,14 @@ L40:
 
     /* Local variables */
     static integer i__;
-    extern doublereal dnrm2test_(int*, doublereal*, int*);
+    extern doublereal dnrm2test_(integer*, doublereal*, integer*);
     static doublereal stemp[1], strue[8];
-    extern /* Subroutine */ int stest_(integer*,doublereal*,doublereal*,doublereal*,doublereal*), dscaltest_(int*,doublereal*,doublereal*,int*);
-    extern doublereal dasumtest_(int*,doublereal*,int*);
+    extern /* Subroutine */ int stest_(integer*,doublereal*,doublereal*,doublereal*,doublereal*), dscaltest_(integer*,doublereal*,doublereal*,integer*);
+    extern doublereal dasumtest_(integer*,doublereal*,integer*);
     extern /* Subroutine */ int itest1_(integer*,integer*), stest1_(doublereal*,doublereal*,doublereal*,doublereal*);
     static doublereal sx[8];
     static integer np1;
-    extern integer idamaxtest_(int*,doublereal*,int*);
+    extern integer idamaxtest_(integer*,doublereal*,integer*);
     static integer len;
 
 /*     .. Parameters .. */
@@ -515,10 +515,10 @@ L40:
 
     /* Local variables */
     static integer lenx, leny;
-    extern doublereal ddottest_(int*,doublereal*,int*,doublereal*,int*);
+    extern doublereal ddottest_(integer*,doublereal*,integer*,doublereal*,integer*);
     static integer i__, j, ksize;
-    extern /* Subroutine */ int stest_(integer*,doublereal*,doublereal*,doublereal*,doublereal*), dcopytest_(int*,doublereal*,int*,doublereal*,int*), dswaptest_(int*,doublereal*,int*,doublereal*,int*), 
-	    daxpytest_(int*,doublereal*,doublereal*,int*,doublereal*,int*), stest1_(doublereal*,doublereal*,doublereal*,doublereal*);
+    extern /* Subroutine */ int stest_(integer*,doublereal*,doublereal*,doublereal*,doublereal*), dcopytest_(integer*,doublereal*,integer*,doublereal*,integer*), dswaptest_(integer*,doublereal*,integer*,doublereal*,integer*), 
+	    daxpytest_(integer*,doublereal*,doublereal*,integer*,doublereal*,integer*), stest1_(doublereal*,doublereal*,doublereal*,doublereal*);
     static integer ki, kn, mx, my;
     static doublereal sx[7], sy[7], stx[7], sty[7];
 
@@ -618,9 +618,9 @@ L40:
 	    ;
 
     /* Local variables */
-    extern /* Subroutine */ int drottest_(int*,doublereal*,int*,doublereal*,int*,doublereal*,doublereal*);
+    extern /* Subroutine */ int drottest_(integer*,doublereal*,integer*,doublereal*,integer*,doublereal*,doublereal*);
     static integer i__, k, ksize;
-    extern /* Subroutine */int stest_(integer*,doublereal*,doublereal*,doublereal*,doublereal*), drotmtest_(int*,doublereal*,int*,doublereal*,int*,doublereal*);
+    extern /* Subroutine */int stest_(integer*,doublereal*,doublereal*,doublereal*,doublereal*), drotmtest_(integer*,doublereal*,integer*,doublereal*,integer*,doublereal*);
     static integer ki, kn;
     static doublereal dparam[5], sx[10], sy[10], stx[10], sty[10];
 
@@ -799,7 +799,7 @@ doublereal sdiff_(doublereal* sa, doublereal* sb)
     return ret_val;
 } /* sdiff_ */
 
-/* Subroutine */ int itest1_(int* icomp, int* itrue)
+/* Subroutine */ int itest1_(integer* icomp, integer* itrue)
 {
     /* Local variables */
     static integer id;
