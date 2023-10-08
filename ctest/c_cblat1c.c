@@ -437,9 +437,9 @@ static real c_b43 = (float)1.;
 
     /* Local variables */
     static integer i__;
-    extern /* Subroutine */ int ctest_(int*, complex*, complex*, complex*, real*);
+    extern /* Subroutine */ int ctest_(integer*, complex*, complex*, complex*, real*);
     static complex mwpcs[5], mwpct[5];
-    extern /* Subroutine */ int itest1_(int*, int*), stest1_(real*,real*,real*,real*);
+    extern /* Subroutine */ int itest1_(integer*, integer*), stest1_(real*,real*,real*,real*);
     static complex cx[8];
     extern real scnrm2test_(int*, complex*, int*);
     static integer np1;
@@ -734,7 +734,7 @@ static real c_b43 = (float)1.;
     static complex cdot[1];
     static integer lenx, leny, i__;
     static complex ctemp;
-    extern /* Subroutine */ int ctest_(int*, complex*, complex*, complex*, real*);
+    extern /* Subroutine */ int ctest_(integer*, complex*, complex*, complex*, real*);
     static integer ksize;
     extern /* Subroutine */ int cdotctest_(int*, complex*, int*, complex*, int*,complex*), ccopytest_(int*, complex*, int*, complex*, int*), cdotutest_(int*, complex*, int*, complex*, int*, complex*), 
 	    cswaptest_(int*, complex*, int*, complex*, int*), caxpytest_(int*, complex*, complex*, int*, complex*, int*);
@@ -939,7 +939,7 @@ doublereal sdiff_(real* sa, real* sb)
     /* Local variables */
     static integer i__;
     static real scomp[20], ssize[20], strue[20];
-    extern /* Subroutine */ int stest_(int*, real*,real*,real*,real*);
+    extern /* Subroutine */ int stest_(integer*, real*,real*,real*,real*);
 
 /*     **************************** CTEST ***************************** */
 
