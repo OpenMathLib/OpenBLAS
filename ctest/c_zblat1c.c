@@ -378,7 +378,7 @@ static doublereal c_b43 = 1.;
 
     /* Local variables */
     static integer i__;
-    extern /* Subroutine */ int ctest_(int*, doublecomplex*, doublecomplex*, doublecomplex*, doublereal*);
+    extern /* Subroutine */ int ctest_(integer*, doublecomplex*, doublecomplex*, doublecomplex*, doublereal*);
     static doublecomplex mwpcs[5], mwpct[5];
     extern /* Subroutine */ int zscaltest_(int*, doublereal*, doublecomplex*, int*), itest1_(int*, int*), stest1_(doublereal*, doublereal*, doublereal*, doublereal*);
     static doublecomplex cx[8];
@@ -588,7 +588,7 @@ static doublereal c_b43 = 1.;
     /* Local variables */
     static doublecomplex cdot[1];
     static integer lenx, leny, i__;
-    extern /* Subroutine */ int ctest_(int*, doublecomplex*, doublecomplex*, doublecomplex*, doublereal*);
+    extern /* Subroutine */ int ctest_(integer*, doublecomplex*, doublecomplex*, doublecomplex*, doublereal*);
     static integer ksize;
     static doublecomplex ztemp;
     extern /* Subroutine */ int zdotctest_(int*, doublecomplex*, int*, doublecomplex*, int*, doublecomplex*), zcopytest_(int*, doublecomplex*, int*, doublecomplex*, int*);
@@ -747,7 +747,7 @@ L40:
 /* Subroutine */ int stest1_(doublereal* scomp1, doublereal* strue1, doublereal* ssize, doublereal* sfac)
 {
     static doublereal scomp[1], strue[1];
-    extern /* Subroutine */ int stest_(int*,doublereal*, doublereal*, doublereal*, doublereal*);
+    extern /* Subroutine */ integer stest_(int*,doublereal*, doublereal*, doublereal*, doublereal*);
 
 /*     ************************* STEST1 ***************************** */
 
