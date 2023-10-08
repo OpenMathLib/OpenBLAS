@@ -437,7 +437,7 @@ L40:
     static real stemp[1], strue[8];
     extern /* Subroutine */ int stest_(int*, real*,real*,real*,real*), sscaltest_(int*,real*,real*,int*);
     extern real sasumtest_(int*,real*,int*);
-    extern /* Subroutine */ int itest1_(int*,int*), stest1_(real*,real*,real*,real*);
+    extern /* Subroutine */ int itest1_(integer*,integer*), stest1_(real*,real*,real*,real*);
     static real sx[8];
     static integer np1;
     extern integer isamaxtest_(int*,real*,int*);
