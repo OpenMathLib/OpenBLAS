@@ -887,7 +887,7 @@ L40:
 /* Subroutine */ int stest1_(real* scomp1, real* strue1, real* ssize, real* sfac)
 {
     static real scomp[1], strue[1];
-    extern /* Subroutine */ int stest_(int*, real*, real*, real*, real*);
+    extern /* Subroutine */ int stest_(integer*, real*, real*, real*, real*);
 
 /*     ************************* STEST1 ***************************** */
 
