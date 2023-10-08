@@ -242,255 +242,6 @@ typedef struct Namelist Namelist;
 /* procedure parameter types for -A and -C++ */
 
 #define F2C_proc_par_types 1
-#ifdef __cplusplus
-typedef logical (*L_fp)(...);
-#else
-typedef logical (*L_fp)();
-#endif
-#if 0
-static float spow_ui(float x, integer n) {
-	float pow=1.0; unsigned long int u;
-	if(n != 0) {
-		if(n < 0) n = -n, x = 1/x;
-		for(u = n; ; ) {
-			if(u & 01) pow *= x;
-			if(u >>= 1) x *= x;
-			else break;
-		}
-	}
-	return pow;
-}
-static double dpow_ui(double x, integer n) {
-	double pow=1.0; unsigned long int u;
-	if(n != 0) {
-		if(n < 0) n = -n, x = 1/x;
-		for(u = n; ; ) {
-			if(u & 01) pow *= x;
-			if(u >>= 1) x *= x;
-			else break;
-		}
-	}
-	return pow;
-}
-#ifdef _MSC_VER
-static _Fcomplex cpow_ui(complex x, integer n) {
-	complex pow={1.0,0.0}; unsigned long int u;
-		if(n != 0) {
-		if(n < 0) n = -n, x.r = 1/x.r, x.i=1/x.i;
-		for(u = n; ; ) {
-			if(u & 01) pow.r *= x.r, pow.i *= x.i;
-			if(u >>= 1) x.r *= x.r, x.i *= x.i;
-			else break;
-		}
-	}
-	_Fcomplex p={pow.r, pow.i};
-	return p;
-}
-#else
-static _Complex float cpow_ui(_Complex float x, integer n) {
-	_Complex float pow=1.0; unsigned long int u;
-	if(n != 0) {
-		if(n < 0) n = -n, x = 1/x;
-		for(u = n; ; ) {
-			if(u & 01) pow *= x;
-			if(u >>= 1) x *= x;
-			else break;
-		}
-	}
-	return pow;
-}
-#endif
-#ifdef _MSC_VER
-static _Dcomplex zpow_ui(_Dcomplex x, integer n) {
-	_Dcomplex pow={1.0,0.0}; unsigned long int u;
-	if(n != 0) {
-		if(n < 0) n = -n, x._Val[0] = 1/x._Val[0], x._Val[1] =1/x._Val[1];
-		for(u = n; ; ) {
-			if(u & 01) pow._Val[0] *= x._Val[0], pow._Val[1] *= x._Val[1];
-			if(u >>= 1) x._Val[0] *= x._Val[0], x._Val[1] *= x._Val[1];
-			else break;
-		}
-	}
-	_Dcomplex p = {pow._Val[0], pow._Val[1]};
-	return p;
-}
-#else
-static _Complex double zpow_ui(_Complex double x, integer n) {
-	_Complex double pow=1.0; unsigned long int u;
-	if(n != 0) {
-		if(n < 0) n = -n, x = 1/x;
-		for(u = n; ; ) {
-			if(u & 01) pow *= x;
-			if(u >>= 1) x *= x;
-			else break;
-		}
-	}
-	return pow;
-}
-#endif
-static integer pow_ii(integer x, integer n) {
-	integer pow; unsigned long int u;
-	if (n <= 0) {
-		if (n == 0 || x == 1) pow = 1;
-		else if (x != -1) pow = x == 0 ? 1/x : 0;
-		else n = -n;
-	}
-	if ((n > 0) || !(n == 0 || x == 1 || x != -1)) {
-		u = n;
-		for(pow = 1; ; ) {
-			if(u & 01) pow *= x;
-			if(u >>= 1) x *= x;
-			else break;
-		}
-	}
-	return pow;
-}
-static integer dmaxloc_(double *w, integer s, integer e, integer *n)
-{
-	double m; integer i, mi;
-	for(m=w[s-1], mi=s, i=s+1; i<=e; i++)
-		if (w[i-1]>m) mi=i ,m=w[i-1];
-	return mi-s+1;
-}
-static integer smaxloc_(float *w, integer s, integer e, integer *n)
-{
-	float m; integer i, mi;
-	for(m=w[s-1], mi=s, i=s+1; i<=e; i++)
-		if (w[i-1]>m) mi=i ,m=w[i-1];
-	return mi-s+1;
-}
-#endif
-#if 0
-static inline void cdotc_(complex *z, integer *n_, complex *x, integer *incx_, complex *y, integer *incy_) {
-	integer n = *n_, incx = *incx_, incy = *incy_, i;
-#ifdef _MSC_VER
-	_Fcomplex zdotc = {0.0, 0.0};
-	if (incx == 1 && incy == 1) {
-		for (i=0;i<n;i++) { /* zdotc = zdotc + dconjg(x(i))* y(i) */
-			zdotc._Val[0] += conjf(Cf(&x[i]))._Val[0] * Cf(&y[i])._Val[0];
-			zdotc._Val[1] += conjf(Cf(&x[i]))._Val[1] * Cf(&y[i])._Val[1];
-		}
-	} else {
-		for (i=0;i<n;i++) { /* zdotc = zdotc + dconjg(x(i))* y(i) */
-			zdotc._Val[0] += conjf(Cf(&x[i*incx]))._Val[0] * Cf(&y[i*incy])._Val[0];
-			zdotc._Val[1] += conjf(Cf(&x[i*incx]))._Val[1] * Cf(&y[i*incy])._Val[1];
-		}
-	}
-	pCf(z) = zdotc;
-}
-#else
-	_Complex float zdotc = 0.0;
-	if (incx == 1 && incy == 1) {
-		for (i=0;i<n;i++) { /* zdotc = zdotc + dconjg(x(i))* y(i) */
-			zdotc += conjf(Cf(&x[i])) * Cf(&y[i]);
-		}
-	} else {
-		for (i=0;i<n;i++) { /* zdotc = zdotc + dconjg(x(i))* y(i) */
-			zdotc += conjf(Cf(&x[i*incx])) * Cf(&y[i*incy]);
-		}
-	}
-	pCf(z) = zdotc;
-}
-#endif
-static inline void zdotc_(doublecomplex *z, integer *n_, doublecomplex *x, integer *incx_, doublecomplex *y, integer *incy_) {
-	integer n = *n_, incx = *incx_, incy = *incy_, i;
-#ifdef _MSC_VER
-	_Dcomplex zdotc = {0.0, 0.0};
-	if (incx == 1 && incy == 1) {
-		for (i=0;i<n;i++) { /* zdotc = zdotc + dconjg(x(i))* y(i) */
-			zdotc._Val[0] += conj(Cd(&x[i]))._Val[0] * Cd(&y[i])._Val[0];
-			zdotc._Val[1] += conj(Cd(&x[i]))._Val[1] * Cd(&y[i])._Val[1];
-		}
-	} else {
-		for (i=0;i<n;i++) { /* zdotc = zdotc + dconjg(x(i))* y(i) */
-			zdotc._Val[0] += conj(Cd(&x[i*incx]))._Val[0] * Cd(&y[i*incy])._Val[0];
-			zdotc._Val[1] += conj(Cd(&x[i*incx]))._Val[1] * Cd(&y[i*incy])._Val[1];
-		}
-	}
-	pCd(z) = zdotc;
-}
-#else
-	_Complex double zdotc = 0.0;
-	if (incx == 1 && incy == 1) {
-		for (i=0;i<n;i++) { /* zdotc = zdotc + dconjg(x(i))* y(i) */
-			zdotc += conj(Cd(&x[i])) * Cd(&y[i]);
-		}
-	} else {
-		for (i=0;i<n;i++) { /* zdotc = zdotc + dconjg(x(i))* y(i) */
-			zdotc += conj(Cd(&x[i*incx])) * Cd(&y[i*incy]);
-		}
-	}
-	pCd(z) = zdotc;
-}
-#endif	
-static inline void cdotu_(complex *z, integer *n_, complex *x, integer *incx_, complex *y, integer *incy_) {
-	integer n = *n_, incx = *incx_, incy = *incy_, i;
-#ifdef _MSC_VER
-	_Fcomplex zdotc = {0.0, 0.0};
-	if (incx == 1 && incy == 1) {
-		for (i=0;i<n;i++) { /* zdotc = zdotc + dconjg(x(i))* y(i) */
-			zdotc._Val[0] += Cf(&x[i])._Val[0] * Cf(&y[i])._Val[0];
-			zdotc._Val[1] += Cf(&x[i])._Val[1] * Cf(&y[i])._Val[1];
-		}
-	} else {
-		for (i=0;i<n;i++) { /* zdotc = zdotc + dconjg(x(i))* y(i) */
-			zdotc._Val[0] += Cf(&x[i*incx])._Val[0] * Cf(&y[i*incy])._Val[0];
-			zdotc._Val[1] += Cf(&x[i*incx])._Val[1] * Cf(&y[i*incy])._Val[1];
-		}
-	}
-	pCf(z) = zdotc;
-}
-#else
-	_Complex float zdotc = 0.0;
-	if (incx == 1 && incy == 1) {
-		for (i=0;i<n;i++) { /* zdotc = zdotc + dconjg(x(i))* y(i) */
-			zdotc += Cf(&x[i]) * Cf(&y[i]);
-		}
-	} else {
-		for (i=0;i<n;i++) { /* zdotc = zdotc + dconjg(x(i))* y(i) */
-			zdotc += Cf(&x[i*incx]) * Cf(&y[i*incy]);
-		}
-	}
-	pCf(z) = zdotc;
-}
-#endif
-static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integer *incx_, doublecomplex *y, integer *incy_) {
-	integer n = *n_, incx = *incx_, incy = *incy_, i;
-#ifdef _MSC_VER
-	_Dcomplex zdotc = {0.0, 0.0};
-	if (incx == 1 && incy == 1) {
-		for (i=0;i<n;i++) { /* zdotc = zdotc + dconjg(x(i))* y(i) */
-			zdotc._Val[0] += Cd(&x[i])._Val[0] * Cd(&y[i])._Val[0];
-			zdotc._Val[1] += Cd(&x[i])._Val[1] * Cd(&y[i])._Val[1];
-		}
-	} else {
-		for (i=0;i<n;i++) { /* zdotc = zdotc + dconjg(x(i))* y(i) */
-			zdotc._Val[0] += Cd(&x[i*incx])._Val[0] * Cd(&y[i*incy])._Val[0];
-			zdotc._Val[1] += Cd(&x[i*incx])._Val[1] * Cd(&y[i*incy])._Val[1];
-		}
-	}
-	pCd(z) = zdotc;
-}
-#else
-	_Complex double zdotc = 0.0;
-	if (incx == 1 && incy == 1) {
-		for (i=0;i<n;i++) { /* zdotc = zdotc + dconjg(x(i))* y(i) */
-			zdotc += Cd(&x[i]) * Cd(&y[i]);
-		}
-	} else {
-		for (i=0;i<n;i++) { /* zdotc = zdotc + dconjg(x(i))* y(i) */
-			zdotc += Cd(&x[i*incx]) * Cd(&y[i*incy]);
-		}
-	}
-	pCd(z) = zdotc;
-}
-#endif
-#endif
-/*  -- translated by f2c (version 20000121).
-   You must link the resulting object file with the libraries:
-	-lf2c -lm   (in that order)
-*/
-
 
 
 /* Common Block Declarations */
@@ -521,7 +272,7 @@ static integer c_n1 = -1;
 static integer c__0 = 0;
 static logical c_false = FALSE_;
 
-/* Main program */ int main()
+/* Main program */ int main(void)
 {
     /* Initialized data */
 
@@ -539,16 +290,20 @@ static logical c_false = FALSE_;
     static logical same;
     static integer ninc, nbet, ntra;
     static logical rewi;
-    extern /* Subroutine */ int schk1_(), schk2_(), schk3_(), schk4_(), 
-	    schk5_(), schk6_();
+extern /* Subroutine */ int schk1_(char*, real*, real*, integer*, integer*, logical*, logical*, logical*, integer*, integer*, integer*, integer*, integer*, real*, integer*, real*, integer*, integer*, integer*, integer*, real*, real*, real*, real*, real*, real*, real*, real*, real*, real*, real*, integer*, ftnlen);
+extern /* Subroutine */ int schk2_(char*, real*, real*, integer*, integer*, logical*, logical*, logical*, integer*, integer*, integer*, integer*, integer*, real*, integer*, real*, integer*, integer*, integer*, integer*, real*, real*, real*, real*, real*, real*, real*, real*, real*, real*, real*, integer*, ftnlen);
+extern /* Subroutine */ int schk3_(char*, real*, real*, integer*, integer*, logical*, logical*, logical*, integer*, integer*, integer*, integer*, integer*, integer*, integer*, integer*, real*, real*, real*, real*, real*, real*, real*, real*, real*, integer*, ftnlen);
+extern /* Subroutine */ int schk4_(char*, real*, real*, integer*, integer*, logical*, logical*, logical*, integer*, integer*, integer*, real*, integer*, integer*, integer*, integer*, real*, real*, real*, real*, real*, real*, real*, real*, real*, real*, real*, real*, integer*, ftnlen);
+extern /* Subroutine */ int schk5_(char*, real*, real*, integer*, integer*, logical*, logical*, logical*, integer*, integer*, integer*, real*, integer*, integer*, integer*, integer*, real*, real*, real*, real*, real*, real*, real*, real*, real*, real*, real*, real*, integer*, ftnlen);
+extern /* Subroutine */ int schk6_(char* sname, real* eps, real* thresh, integer* nout, integer* ntra, logical* trace, logical* rewi, logical* fatal, integer* nidim, integer* idim, integer* nalf, real* alf, integer* ninc, integer* inc, integer* nmax, integer* incmax, real* a, real* aa, real* as, real* x, real* xx, real* xs, real* y, real* yy, real* ys, real* yt, real* g, real* z__, integer* iorder, ftnlen sname_len);
     static real a[4225]	/* was [65][65] */, g[65];
     static integer i__, j, n;
     static logical fatal;
     static real x[65], y[65], z__[130];
-    extern doublereal sdiff_();
+    extern doublereal sdiff_(real*, real*);
     static logical trace;
     static integer nidim;
-    extern /* Subroutine */ int smvch_();
+    extern /* Subroutine */ int smvch_(char*, integer*, integer*, real*, real*, integer*, real*, integer*, real*, real*, integer*, real*, real*, real*, real*, real*, logical*, integer*, logical*, ftnlen);
     static char snaps[32], trans[1];
     static integer isnum;
     static logical ltest[16];
@@ -564,12 +319,12 @@ static logical c_false = FALSE_;
     static logical rorder;
     static integer layout;
     static logical ltestt;
-    extern /* Subroutine */ int cs2chke_();
+    extern /* Subroutine */ int cs2chke_(char*, ftnlen);
     static logical tsterr;
     static real alf[7];
     static integer inc[7], nkb;
     static real bet[7];
-    extern logical lse_();
+    extern logical lse_(real*, real*, integer*);
     static real eps, err;
     char   tmpchar;
     
@@ -1098,21 +853,7 @@ L240:
 
 } /* MAIN__ */
 
-/* Subroutine */ int schk1_(sname, eps, thresh, nout, ntra, trace, rewi, 
-	fatal, nidim, idim, nkb, kb, nalf, alf, nbet, bet, ninc, inc, nmax, 
-	incmax, a, aa, as, x, xx, xs, y, yy, ys, yt, g, iorder, sname_len)
-char *sname;
-real *eps, *thresh;
-integer *nout, *ntra;
-logical *trace, *rewi, *fatal;
-integer *nidim, *idim, *nkb, *kb, *nalf;
-real *alf;
-integer *nbet;
-real *bet;
-integer *ninc, *inc, *nmax, *incmax;
-real *a, *aa, *as, *x, *xx, *xs, *y, *yy, *ys, *yt, *g;
-integer *iorder;
-ftnlen sname_len;
+/* Subroutine */ int schk1_(char* sname, real* eps, real* thresh, integer* nout, integer* ntra, logical* trace, logical* rewi, logical* fatal, integer* nidim, integer* idim, integer* nkb, integer* kb, integer* nalf, real* alf, integer* nbet, real* bet, integer* ninc, integer* inc, integer* nmax, integer* incmax, real* a, real* aa, real* as, real* x, real* xx, real* xs, real* y, real* yy, real* ys, real* yt, real* g, integer* iorder, ftnlen sname_len)
 {
     /* Initialized data */
 
@@ -1130,24 +871,25 @@ ftnlen sname_len;
     static integer i__, m, n;
     static real alpha;
     static logical isame[13];
-    extern /* Subroutine */ int smake_();
+    extern /* Subroutine */ int smake_(char*, char*, char*, integer*, integer*, real*, integer*, real*, integer*, integer*, integer*, logical*, real*, ftnlen, ftnlen, ftnlen);
     static integer nargs;
-    extern /* Subroutine */ int smvch_();
+    extern /* Subroutine */ int smvch_(char*, integer*, integer*, real*, real*, integer*, real*, integer*, real*, real*, integer*, real*, real*, real*, real*, real*, logical*, integer*, logical*, ftnlen);
     static logical reset;
     static integer incxs, incys;
     static char trans[1];
     static integer ia, ib, ic;
     static logical banded;
     static integer nc, nd, im, in, kl, ml, nk, nl, ku, ix, iy, ms, lx, ly, ns;
-    extern /* Subroutine */ int csgbmv_(), csgemv_();
+    extern /* Subroutine */ void csgbmv_(integer*, char*, integer*, integer*, integer*, integer*, real*, real*, integer*, real*, integer*, real*, real*, integer*, ftnlen);
+    extern /* Subroutine */ void csgemv_(integer*, char*, integer*, integer*, real*, real*, integer*, real*, integer*, real*, real*, integer*, ftnlen);
     static char ctrans[14];
     static real errmax;
-    extern logical lseres_();
+    extern logical lseres_(char* type__, char* uplo, integer* m, integer* n, real* aa, real* as, integer* lda, ftnlen ltype_len, ftnlen uplo_len);
     static real transl;
     static char transs[1];
     static integer laa, lda;
     static real als, bls;
-    extern logical lse_();
+    extern logical lse_(real*, real*, integer*);
     static real err;
     static integer iku, kls, kus;
 
@@ -1552,21 +1294,7 @@ L140:
 
 } /* schk1_ */
 
-/* Subroutine */ int schk2_(sname, eps, thresh, nout, ntra, trace, rewi, 
-	fatal, nidim, idim, nkb, kb, nalf, alf, nbet, bet, ninc, inc, nmax, 
-	incmax, a, aa, as, x, xx, xs, y, yy, ys, yt, g, iorder, sname_len)
-char *sname;
-real *eps, *thresh;
-integer *nout, *ntra;
-logical *trace, *rewi, *fatal;
-integer *nidim, *idim, *nkb, *kb, *nalf;
-real *alf;
-integer *nbet;
-real *bet;
-integer *ninc, *inc, *nmax, *incmax;
-real *a, *aa, *as, *x, *xx, *xs, *y, *yy, *ys, *yt, *g;
-integer *iorder;
-ftnlen sname_len;
+/* Subroutine */ int schk2_(char* sname, real* eps, real* thresh, integer* nout, integer* ntra, logical* trace, logical* rewi, logical* fatal, integer* nidim, integer* idim, integer* nkb, integer* kb, integer* nalf, real* alf, integer* nbet, real* bet, integer* ninc, integer* inc, integer* nmax, integer* incmax, real* a, real* aa, real* as, real* x, real* xx, real* xs, real* y, real* yy, real* ys, real* yt, real* g, integer* iorder, ftnlen sname_len)
 {
     /* Initialized data */
 
@@ -1585,9 +1313,9 @@ ftnlen sname_len;
     static integer i__, k, n;
     static real alpha;
     static logical isame[13];
-    extern /* Subroutine */ int smake_();
+    extern /* Subroutine */ int smake_(char*, char*, char*, integer*, integer*, real*, integer*, real*, integer*, integer*, integer*, logical*, real*, ftnlen, ftnlen, ftnlen);
     static integer nargs;
-    extern /* Subroutine */ int smvch_();
+    extern /* Subroutine */ int smvch_(char*, integer*, integer*, real*, real*, integer*, real*, integer*, real*, real*, integer*, real*, real*, real*, real*, real*, logical*, integer*, logical*, ftnlen);
     static logical reset;
     static char cuplo[14];
     static integer incxs, incys;
@@ -1598,13 +1326,14 @@ ftnlen sname_len;
     static logical packed;
     static integer nk, ks, ix, iy, ns, lx, ly;
     static real errmax;
-    extern logical lseres_();
-    extern /* Subroutine */ int cssbmv_();
+    extern logical lseres_(char* , char*, integer*, integer*, real*, real*, integer*, ftnlen, ftnlen);
+    extern /* Subroutine */ void cssbmv_(integer*, char*, integer*, integer*, real*, real*, integer*, real*, integer*, real*, real*, integer*, ftnlen);
     static real transl;
-    extern /* Subroutine */ int csspmv_(), cssymv_();
+    extern /* Subroutine */ void csspmv_(integer*, char*, integer*, real*, real*, real*, integer*, real*, real*, integer*, ftnlen);
+    extern /* Subroutine */ void cssymv_(integer*, char*, integer*, real*, real*, integer*, real*, integer*, real*, real*, integer*, ftnlen);
     static integer laa, lda;
     static real als, bls;
-    extern logical lse_();
+    extern logical lse_(real*, real*, integer*);
     static real err;
 
 /*  Tests SSYMV, SSBMV and SSPMV. */
@@ -2003,17 +1732,7 @@ L130:
 
 } /* schk2_ */
 
-/* Subroutine */ int schk3_(sname, eps, thresh, nout, ntra, trace, rewi, 
-	fatal, nidim, idim, nkb, kb, ninc, inc, nmax, incmax, a, aa, as, x, 
-	xx, xs, xt, g, z__, iorder, sname_len)
-char *sname;
-real *eps, *thresh;
-integer *nout, *ntra;
-logical *trace, *rewi, *fatal;
-integer *nidim, *idim, *nkb, *kb, *ninc, *inc, *nmax, *incmax;
-real *a, *aa, *as, *x, *xx, *xs, *xt, *g, *z__;
-integer *iorder;
-ftnlen sname_len;
+/* Subroutine */ int schk3_(char* sname, real* eps, real* thresh, integer* nout, integer* ntra, logical* trace, logical* rewi, logical* fatal, integer* nidim, integer* idim, integer* nkb, integer* kb, integer* ninc, integer* inc, integer* nmax, integer* incmax, real* a, real* aa, real* as, real* x, real* xx, real* xs, real* xt, real* g, real* z__, integer* iorder, ftnlen sname_len)
 {
     /* Initialized data */
 
@@ -2034,9 +1753,9 @@ ftnlen sname_len;
     static integer i__, k, n;
     static char diags[1];
     static logical isame[13];
-    extern /* Subroutine */ int smake_();
+    extern /* Subroutine */ int smake_(char*, char*, char*, integer*, integer*, real*, integer*, real*, integer*, integer*, integer*, logical*, real*, ftnlen, ftnlen, ftnlen);
     static integer nargs;
-    extern /* Subroutine */ int smvch_();
+    extern /* Subroutine */ int smvch_(char*, integer*, integer*, real*, real*, integer*, real*, integer*, real*, real*, integer*, real*, real*, real*, real*, real*, logical*, integer*, logical*, ftnlen);
     static logical reset;
     static char cuplo[14];
     static integer incxs;
@@ -2047,14 +1766,17 @@ ftnlen sname_len;
     static integer nk, ks, ix, ns, lx;
     static char ctrans[14];
     static real errmax;
-    extern logical lseres_();
-    extern /* Subroutine */ int cstbmv_();
+    extern logical lseres_(char*, char*, integer*, integer*, real*, real*, integer*, ftnlen, ftnlen);
+    extern /* Subroutine */ void cstbmv_(integer*, char*, char*, char*, integer*, integer*, real*, integer*, real*, integer*, ftnlen, ftnlen, ftnlen);
     static real transl;
-    extern /* Subroutine */ int cstbsv_();
+    extern /* Subroutine */ void cstbsv_(integer*, char*, char*, char*, integer*, integer*, real*, integer*, real*, integer*, ftnlen, ftnlen, ftnlen);
     static char transs[1];
-    extern /* Subroutine */ int cstpmv_(), cstrmv_(), cstpsv_(), cstrsv_();
+    extern /* Subroutine */ void cstpmv_(integer*, char*, char*, char*, integer*, real*, real*, integer*, ftnlen, ftnlen, ftnlen);
+    extern /* Subroutine */ void cstrmv_(integer*, char*, char*, char*, integer*, real*, integer*, real*, integer*, ftnlen, ftnlen, ftnlen);
+    extern /* Subroutine */ void cstpsv_(integer*, char*, char*, char*, integer*, real*, real*, integer*, ftnlen, ftnlen, ftnlen);
+    extern /* Subroutine */ void cstrsv_(integer*, char*, char*, char*, integer*, real*, integer*, real*, integer*, ftnlen, ftnlen, ftnlen);
     static integer laa, icd, lda, ict, icu;
-    extern logical lse_();
+    extern logical lse_(real*, real*, integer*);
     static real err;
 
 /*  Tests STRMV, STBMV, STPMV, STRSV, STBSV and STPSV. */
@@ -2508,19 +2230,7 @@ L130:
 
 } /* schk3_ */
 
-/* Subroutine */ int schk4_(sname, eps, thresh, nout, ntra, trace, rewi, 
-	fatal, nidim, idim, nalf, alf, ninc, inc, nmax, incmax, a, aa, as, x, 
-	xx, xs, y, yy, ys, yt, g, z__, iorder, sname_len)
-char *sname;
-real *eps, *thresh;
-integer *nout, *ntra;
-logical *trace, *rewi, *fatal;
-integer *nidim, *idim, *nalf;
-real *alf;
-integer *ninc, *inc, *nmax, *incmax;
-real *a, *aa, *as, *x, *xx, *xs, *y, *yy, *ys, *yt, *g, *z__;
-integer *iorder;
-ftnlen sname_len;
+/* Subroutine */ int schk4_(char* sname, real* eps, real* thresh, integer* nout, integer* ntra, logical* trace, logical* rewi, logical* fatal, integer* nidim, integer* idim, integer* nalf, real* alf, integer* ninc, integer* inc, integer* nmax, integer* incmax, real* a, real* aa, real* as, real* x, real* xx, real* xs, real* y, real* yy, real* ys, real* yt, real* g, real* z__, integer* iorder, ftnlen sname_len)
 {
     /* System generated locals */
     integer a_dim1, a_offset, i__1, i__2, i__3, i__4, i__5, i__6;
@@ -2533,17 +2243,18 @@ ftnlen sname_len;
     static integer i__, j, m, n;
     static real alpha, w[1];
     static logical isame[13];
-    extern /* Subroutine */ int smake_(), csger_();
+/* Subroutine */ int smake_(char*, char*, char*, integer*, integer*, real*, integer*, real*, integer*, integer*, integer*, logical*, real*, ftnlen, ftnlen, ftnlen);
+    extern /* Subroutine */ void csger_(integer*, integer*, integer*, real*, real*, integer*, real*, integer*, real*, integer*);
     static integer nargs;
-    extern /* Subroutine */ int smvch_();
+    extern /* Subroutine */ int smvch_(char*, integer*, integer*, real*, real*, integer*, real*, integer*, real*, real*, integer*, real*, real*, real*, real*, real*, logical*, integer*, logical*, ftnlen);
     static logical reset;
     static integer incxs, incys, ia, nc, nd, im, in, ms, ix, iy, ns, lx, ly;
     static real errmax;
-    extern logical lseres_();
+    extern logical lseres_(char* , char*, integer*, integer*, real*, real*, integer*, ftnlen, ftnlen);
     static real transl;
     static integer laa, lda;
     static real als;
-    extern logical lse_();
+    extern logical lse_(real*, real*, integer*);
     static real err;
 
 /*  Tests SGER. */
@@ -2848,19 +2559,7 @@ L150:
 
 } /* schk4_ */
 
-/* Subroutine */ int schk5_(sname, eps, thresh, nout, ntra, trace, rewi, 
-	fatal, nidim, idim, nalf, alf, ninc, inc, nmax, incmax, a, aa, as, x, 
-	xx, xs, y, yy, ys, yt, g, z__, iorder, sname_len)
-char *sname;
-real *eps, *thresh;
-integer *nout, *ntra;
-logical *trace, *rewi, *fatal;
-integer *nidim, *idim, *nalf;
-real *alf;
-integer *ninc, *inc, *nmax, *incmax;
-real *a, *aa, *as, *x, *xx, *xs, *y, *yy, *ys, *yt, *g, *z__;
-integer *iorder;
-ftnlen sname_len;
+/* Subroutine */ int schk5_(char* sname, real* eps, real* thresh, integer* nout, integer* ntra, logical* trace, logical* rewi, logical* fatal, integer* nidim, integer* idim, integer* nalf, real* alf, integer* ninc, integer* inc, integer* nmax, integer* incmax, real* a, real* aa, real* as, real* x, real* xx, real* xs, real* y, real* yy, real* ys, real* yt, real* g, real* z__, integer* iorder, ftnlen sname_len)
 {
     /* Initialized data */
 
@@ -2880,25 +2579,25 @@ ftnlen sname_len;
     static integer i__, j, n;
     static real alpha, w[1];
     static logical isame[13];
-    extern /* Subroutine */ int smake_();
+    extern /* Subroutine */ int smake_(char*, char*, char*, integer*, integer*, real*, integer*, real*, integer*, integer*, integer*, logical*, real*, ftnlen, ftnlen, ftnlen);
     static integer nargs;
-    extern /* Subroutine */ int smvch_();
+    extern /* Subroutine */ int smvch_(char*, integer*, integer*, real*, real*, integer*, real*, integer*, real*, real*, integer*, real*, real*, real*, real*, real*, logical*, integer*, logical*, ftnlen);
     static logical reset;
     static char cuplo[14];
     static integer incxs;
-    extern /* Subroutine */ int csspr_();
+    extern /* Subroutine */ void csspr_(integer*, char*, integer*, real*, real*, integer*, real*, ftnlen);
     static logical upper;
     static char uplos[1];
-    extern /* Subroutine */ int cssyr_();
+    extern /* Subroutine */ void cssyr_(integer*, char*, integer*, real*, real*, integer*, real*, integer*, ftnlen);
     static integer ia, ja, ic, nc, jj, lj, in;
     static logical packed;
     static integer ix, ns, lx;
     static real errmax;
-    extern logical lseres_();
+    extern logical lseres_(char*, char*, integer*, integer*, real*, real*, integer*, ftnlen, ftnlen);
     static real transl;
     static integer laa, lda;
     static real als;
-    extern logical lse_();
+    extern logical lse_(real*, real*, integer*);
     static real err;
 
 /*  Tests SSYR and SSPR. */
@@ -3218,19 +2917,7 @@ L130:
 
 } /* schk5_ */
 
-/* Subroutine */ int schk6_(sname, eps, thresh, nout, ntra, trace, rewi, 
-	fatal, nidim, idim, nalf, alf, ninc, inc, nmax, incmax, a, aa, as, x, 
-	xx, xs, y, yy, ys, yt, g, z__, iorder, sname_len)
-char *sname;
-real *eps, *thresh;
-integer *nout, *ntra;
-logical *trace, *rewi, *fatal;
-integer *nidim, *idim, *nalf;
-real *alf;
-integer *ninc, *inc, *nmax, *incmax;
-real *a, *aa, *as, *x, *xx, *xs, *y, *yy, *ys, *yt, *g, *z__;
-integer *iorder;
-ftnlen sname_len;
+/* Subroutine */ int schk6_(char* sname, real* eps, real* thresh, integer* nout, integer* ntra, logical* trace, logical* rewi, logical* fatal, integer* nidim, integer* idim, integer* nalf, real* alf, integer* ninc, integer* inc, integer* nmax, integer* incmax, real* a, real* aa, real* as, real* x, real* xx, real* xs, real* y, real* yy, real* ys, real* yt, real* g, real* z__, integer* iorder, ftnlen sname_len)
 {
     /* Initialized data */
 
@@ -3249,26 +2936,26 @@ ftnlen sname_len;
     static integer i__, j, n;
     static real alpha, w[2];
     static logical isame[13];
-    extern /* Subroutine */ int smake_();
+    extern /* Subroutine */ int smake_(char*, char*, char*, integer*, integer*, real*, integer*, real*, integer*, integer*, integer*, logical*, real*, ftnlen, ftnlen, ftnlen);
     static integer nargs;
-    extern /* Subroutine */ int smvch_();
+    extern /* Subroutine */ int smvch_(char*, integer*, integer*, real*, real*, integer*, real*, integer*, real*, real*, integer*, real*, real*, real*, real*, real*, logical*, integer*, logical*, ftnlen);
     static logical reset;
     static char cuplo[14];
     static integer incxs, incys;
     static logical upper;
     static char uplos[1];
     static integer ia, ja, ic;
-    extern /* Subroutine */ int csspr2_();
+    extern /* Subroutine */ void csspr2_(integer*, char*, integer*, real*, real*, integer*, real*, integer*, real*, ftnlen);
     static integer nc, jj, lj, in;
     static logical packed;
-    extern /* Subroutine */ int cssyr2_();
+    extern /* Subroutine */ void cssyr2_(integer*, char*, integer*, real*, real*, integer*, real*, integer*, real*, integer*, ftnlen);
     static integer ix, iy, ns, lx, ly;
     static real errmax;
-    extern logical lseres_();
+    extern logical lseres_(char* type__, char* uplo, integer* m, integer* n, real* aa, real* as, integer* lda, ftnlen ltype_len, ftnlen uplo_len);
     static real transl;
     static integer laa, lda;
     static real als;
-    extern logical lse_();
+    extern logical lse_(real*, real*, integer*);
     static real err;
 
 /*  Tests SSYR2 and SSPR2. */
@@ -3634,26 +3321,14 @@ L170:
 
 } /* schk6_ */
 
-/* Subroutine */ int smake_(type__, uplo, diag, m, n, a, nmax, aa, lda, kl, 
-	ku, reset, transl, type_len, uplo_len, diag_len)
-char *type__, *uplo, *diag;
-integer *m, *n;
-real *a;
-integer *nmax;
-real *aa;
-integer *lda, *kl, *ku;
-logical *reset;
-real *transl;
-ftnlen type_len;
-ftnlen uplo_len;
-ftnlen diag_len;
-{
+/* Subroutine */ int smake_(char* type__, char* uplo, char* diag, integer* m, integer* n, real* a, integer* nmax, real* aa, integer* lda, integer* kl, integer* ku, logical* reset, real* transl, ftnlen type_len, ftnlen uplo_len, ftnlen diag_len)
+ {
     /* System generated locals */
     integer a_dim1, a_offset, i__1, i__2, i__3, i__4;
 
     /* Local variables */
     static integer ibeg, iend;
-    extern doublereal sbeg_();
+    extern doublereal sbeg_(logical*);
     static integer ioff;
     static logical unit;
     static integer i__, j;
@@ -3879,28 +3554,14 @@ ftnlen diag_len;
 
 } /* smake_ */
 
-/* Subroutine */ int smvch_(trans, m, n, alpha, a, nmax, x, incx, beta, y, 
-	incy, yt, g, yy, eps, err, fatal, nout, mv, trans_len)
-char *trans;
-integer *m, *n;
-real *alpha, *a;
-integer *nmax;
-real *x;
-integer *incx;
-real *beta, *y;
-integer *incy;
-real *yt, *g, *yy, *eps, *err;
-logical *fatal;
-integer *nout;
-logical *mv;
-ftnlen trans_len;
+/* Subroutine */ int smvch_(char* trans, integer* m, integer* n, real* alpha, real* a, integer* nmax, real* x, integer* incx, real* beta, real* y, integer* incy, real* yt, real* g, real* yy, real* eps, real* err, logical* fatal, integer* nout, logical* mv, ftnlen trans_len)
 {
     /* System generated locals */
     integer a_dim1, a_offset, i__1, i__2;
     real r__1;
 
     /* Builtin functions */
-    double sqrt();
+    double sqrt(double);
 
     /* Local variables */
     static real erri;
@@ -4029,9 +3690,7 @@ L70:
 
 } /* smvch_ */
 
-logical lse_(ri, rj, lr)
-real *ri, *rj;
-integer *lr;
+logical lse_(real* ri, real* rj, integer* lr)
 {
     /* System generated locals */
     integer i__1;
@@ -4076,13 +3735,7 @@ L30:
 
 } /* lse_ */
 
-logical lseres_(type__, uplo, m, n, aa, as, lda, type_len, uplo_len)
-char *type__, *uplo;
-integer *m, *n;
-real *aa, *as;
-integer *lda;
-ftnlen type_len;
-ftnlen uplo_len;
+logical lseres_(char* type__, char* uplo, integer* m, integer* n, real* aa, real* as, integer* lda, ftnlen ltype_len, ftnlen uplo_len)
 {
     /* System generated locals */
     integer aa_dim1, aa_offset, as_dim1, as_offset, i__1, i__2;
@@ -4169,8 +3822,7 @@ L80:
 
 } /* lseres_ */
 
-doublereal sbeg_(reset)
-logical *reset;
+doublereal sbeg_(logical* reset)
 {
     /* System generated locals */
     real ret_val;
@@ -4221,8 +3873,7 @@ L10:
 
 } /* sbeg_ */
 
-doublereal sdiff_(x, y)
-real *x, *y;
+doublereal sdiff_(real* x, real* y)
 {
     /* System generated locals */
     real ret_val;

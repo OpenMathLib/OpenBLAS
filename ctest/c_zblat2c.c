@@ -242,129 +242,6 @@ typedef struct Namelist Namelist;
 /* procedure parameter types for -A and -C++ */
 
 #define F2C_proc_par_types 1
-#ifdef __cplusplus
-typedef logical (*L_fp)(...);
-#else
-typedef logical (*L_fp)();
-#endif
-#if 0
-static float spow_ui(float x, integer n) {
-	float pow=1.0; unsigned long int u;
-	if(n != 0) {
-		if(n < 0) n = -n, x = 1/x;
-		for(u = n; ; ) {
-			if(u & 01) pow *= x;
-			if(u >>= 1) x *= x;
-			else break;
-		}
-	}
-	return pow;
-}
-static double dpow_ui(double x, integer n) {
-	double pow=1.0; unsigned long int u;
-	if(n != 0) {
-		if(n < 0) n = -n, x = 1/x;
-		for(u = n; ; ) {
-			if(u & 01) pow *= x;
-			if(u >>= 1) x *= x;
-			else break;
-		}
-	}
-	return pow;
-}
-#ifdef _MSC_VER
-static _Fcomplex cpow_ui(complex x, integer n) {
-	complex pow={1.0,0.0}; unsigned long int u;
-		if(n != 0) {
-		if(n < 0) n = -n, x.r = 1/x.r, x.i=1/x.i;
-		for(u = n; ; ) {
-			if(u & 01) pow.r *= x.r, pow.i *= x.i;
-			if(u >>= 1) x.r *= x.r, x.i *= x.i;
-			else break;
-		}
-	}
-	_Fcomplex p={pow.r, pow.i};
-	return p;
-}
-#else
-static _Complex float cpow_ui(_Complex float x, integer n) {
-	_Complex float pow=1.0; unsigned long int u;
-	if(n != 0) {
-		if(n < 0) n = -n, x = 1/x;
-		for(u = n; ; ) {
-			if(u & 01) pow *= x;
-			if(u >>= 1) x *= x;
-			else break;
-		}
-	}
-	return pow;
-}
-#endif
-#ifdef _MSC_VER
-static _Dcomplex zpow_ui(_Dcomplex x, integer n) {
-	_Dcomplex pow={1.0,0.0}; unsigned long int u;
-	if(n != 0) {
-		if(n < 0) n = -n, x._Val[0] = 1/x._Val[0], x._Val[1] =1/x._Val[1];
-		for(u = n; ; ) {
-			if(u & 01) pow._Val[0] *= x._Val[0], pow._Val[1] *= x._Val[1];
-			if(u >>= 1) x._Val[0] *= x._Val[0], x._Val[1] *= x._Val[1];
-			else break;
-		}
-	}
-	_Dcomplex p = {pow._Val[0], pow._Val[1]};
-	return p;
-}
-#else
-static _Complex double zpow_ui(_Complex double x, integer n) {
-	_Complex double pow=1.0; unsigned long int u;
-	if(n != 0) {
-		if(n < 0) n = -n, x = 1/x;
-		for(u = n; ; ) {
-			if(u & 01) pow *= x;
-			if(u >>= 1) x *= x;
-			else break;
-		}
-	}
-	return pow;
-}
-#endif
-static integer pow_ii(integer x, integer n) {
-	integer pow; unsigned long int u;
-	if (n <= 0) {
-		if (n == 0 || x == 1) pow = 1;
-		else if (x != -1) pow = x == 0 ? 1/x : 0;
-		else n = -n;
-	}
-	if ((n > 0) || !(n == 0 || x == 1 || x != -1)) {
-		u = n;
-		for(pow = 1; ; ) {
-			if(u & 01) pow *= x;
-			if(u >>= 1) x *= x;
-			else break;
-		}
-	}
-	return pow;
-}
-static integer dmaxloc_(double *w, integer s, integer e, integer *n)
-{
-	double m; integer i, mi;
-	for(m=w[s-1], mi=s, i=s+1; i<=e; i++)
-		if (w[i-1]>m) mi=i ,m=w[i-1];
-	return mi-s+1;
-}
-static integer smaxloc_(float *w, integer s, integer e, integer *n)
-{
-	float m; integer i, mi;
-	for(m=w[s-1], mi=s, i=s+1; i<=e; i++)
-		if (w[i-1]>m) mi=i ,m=w[i-1];
-	return mi-s+1;
-}
-#endif
-/*  -- translated by f2c (version 20000121).
-   You must link the resulting object file with the libraries:
-	-lf2c -lm   (in that order)
-*/
-
 
 
 /* Common Block Declarations */
@@ -396,7 +273,7 @@ static integer c_n1 = -1;
 static integer c__0 = 0;
 static logical c_false = FALSE_;
 
-/* Main program */ int main()
+/* Main program */ int main(void)
 {
     /* Initialized data */
 
@@ -414,19 +291,23 @@ static logical c_false = FALSE_;
     static logical same;
     static integer ninc, nbet, ntra;
     static logical rewi;
-    extern /* Subroutine */ int zchk1_(), zchk2_(), zchk3_(), zchk4_(), 
-	    zchk5_(), zchk6_();
+    extern /* Subroutine */ int zchk1_(char*, doublereal*, doublereal*, integer*, integer*, logical*, logical*, logical*, integer*, integer*, integer*, integer*, integer*, doublecomplex*, integer*, doublecomplex*, integer*, integer*, integer*, integer*, doublecomplex*, doublecomplex*, doublecomplex*, doublecomplex*, doublecomplex*, doublecomplex*, doublecomplex*, doublecomplex*, doublecomplex*, doublecomplex*, doublereal*, integer*, ftnlen);
+    extern /* Subroutine */ int zchk2_(char*, doublereal*, doublereal*, integer*, integer*, logical*, logical*, logical*, integer*, integer*, integer*, integer*, integer*, doublecomplex*, integer*, doublecomplex*, integer*, integer*, integer*, integer*, doublecomplex*, doublecomplex*, doublecomplex*, doublecomplex*, doublecomplex*, doublecomplex*, doublecomplex*, doublecomplex*, doublecomplex*, doublecomplex*, doublereal*, integer*, ftnlen);
+    extern /* Subroutine */ int zchk3_(char*, doublereal*, doublereal*, integer*, integer*, logical*, logical*, logical*, integer*, integer*, integer*, integer*, integer*, integer*, integer*, integer*, doublecomplex*, doublecomplex*, doublecomplex*, doublecomplex*, doublecomplex*, doublecomplex*, doublecomplex*, doublereal*, doublecomplex*, integer*, ftnlen);
+    extern /* Subroutine */ int zchk4_(char*, doublereal*, doublereal*, integer*, integer*, logical*, logical*, logical*, integer*, integer*, integer*, doublecomplex*, integer*, integer*, integer*, integer*, doublecomplex*, doublecomplex*, doublecomplex*, doublecomplex*, doublecomplex*, doublecomplex*, doublecomplex*, doublecomplex*, doublecomplex*, doublecomplex*, doublereal*, doublecomplex*, integer*, ftnlen);
+    extern /* Subroutine */ int zchk5_(char*, doublereal*, doublereal*, integer*, integer*, logical*, logical*, logical*, integer*, integer*, integer*, doublecomplex*, integer*, integer*, integer*, integer*, doublecomplex*, doublecomplex*, doublecomplex*, doublecomplex*, doublecomplex*, doublecomplex*, doublecomplex*, doublecomplex*, doublecomplex*, doublecomplex*, doublereal*, doublecomplex*, integer*, ftnlen);
+    extern /* Subroutine */ int zchk6_(char*, doublereal*, doublereal*, integer*, integer*, logical*, logical*, logical*, integer*, integer*, integer*, doublecomplex*, integer*, integer*, integer*, integer*, doublecomplex*, doublecomplex*, doublecomplex*, doublecomplex*, doublecomplex*, doublecomplex*, doublecomplex*, doublecomplex*, doublecomplex*, doublecomplex*, doublereal*, doublecomplex*, integer*, ftnlen);
     static doublecomplex a[4225]	/* was [65][65] */;
     static doublereal g[65];
     static integer i__, j;
-    extern doublereal ddiff_();
+    extern doublereal ddiff_(doublereal*, doublereal*);
     static integer n;
     static logical fatal;
     static doublecomplex x[65], y[65], z__[130];
     static logical trace;
     static integer nidim;
     static char snaps[32], trans[1];
-    extern /* Subroutine */ int zmvch_();
+    extern /* Subroutine */ int zmvch_(char*, integer*, integer*, doublecomplex*, doublecomplex*, integer*, doublecomplex*, integer*, doublecomplex*, doublecomplex*, integer*, doublecomplex*, doublereal*, doublecomplex*, doublereal*, doublereal*, logical*, integer*, logical*, ftnlen);
     static integer isnum;
     static logical ltest[17];
     static doublecomplex aa[4225];
@@ -441,12 +322,12 @@ static logical c_false = FALSE_;
     static logical rorder;
     static integer layout;
     static logical ltestt, tsterr;
-    extern /* Subroutine */ int cz2chke_();
+    extern /* Subroutine */ void cz2chke_(char*, ftnlen);
     static doublecomplex alf[7];
     static integer inc[7], nkb;
     static doublecomplex bet[7];
     static doublereal eps, err;
-    extern logical lze_();
+    extern logical lze_(doublecomplex*, doublecomplex*, integer*);
     char tmpchar;
 
 /*  Test program for the DOUBLE PRECISION COMPLEX Level 2 Blas. */
@@ -984,22 +865,7 @@ L240:
 
 } /* MAIN__ */
 
-/* Subroutine */ int zchk1_(sname, eps, thresh, nout, ntra, trace, rewi, 
-	fatal, nidim, idim, nkb, kb, nalf, alf, nbet, bet, ninc, inc, nmax, 
-	incmax, a, aa, as, x, xx, xs, y, yy, ys, yt, g, iorder, sname_len)
-char *sname;
-doublereal *eps, *thresh;
-integer *nout, *ntra;
-logical *trace, *rewi, *fatal;
-integer *nidim, *idim, *nkb, *kb, *nalf;
-doublecomplex *alf;
-integer *nbet;
-doublecomplex *bet;
-integer *ninc, *inc, *nmax, *incmax;
-doublecomplex *a, *aa, *as, *x, *xx, *xs, *y, *yy, *ys, *yt;
-doublereal *g;
-integer *iorder;
-ftnlen sname_len;
+/* Subroutine */ int zchk1_(char* sname, doublereal* eps, doublereal* thresh, integer* nout, integer* ntra, logical* trace, logical* rewi, logical* fatal, integer* nidim, integer* idim, integer* nkb, integer* kb, integer* nalf, doublecomplex* alf, integer* nbet, doublecomplex* bet, integer* ninc, integer* inc, integer* nmax, integer* incmax, doublecomplex* a, doublecomplex* aa, doublecomplex* as, doublecomplex* x, doublecomplex* xx, doublecomplex* xs, doublecomplex* y, doublecomplex* yy, doublecomplex* ys, doublecomplex* yt, doublereal* g, integer* iorder, ftnlen sname_len)
 {
     /* Initialized data */
 
@@ -1018,27 +884,27 @@ ftnlen sname_len;
     static integer i__, m, n;
     static doublecomplex alpha;
     static logical isame[13];
-    extern /* Subroutine */ int zmake_();
+    extern /* Subroutine */ int zmake_(char*, char*, char*, integer*, integer*, doublecomplex*, integer*, doublecomplex*, integer*, integer*, integer*, logical*, doublecomplex*, ftnlen, ftnlen, ftnlen);
     static integer nargs;
     static logical reset;
     static integer incxs, incys;
     static char trans[1];
-    extern /* Subroutine */ int zmvch_();
+    extern /* Subroutine */ int zmvch_(char*, integer*, integer*, doublecomplex*, doublecomplex*, integer*, doublecomplex*, integer*, doublecomplex*, doublecomplex*, integer*, doublecomplex*, doublereal*, doublecomplex*, doublereal*, doublereal*, logical*, integer*, logical*, ftnlen);
     static integer ia, ib, ic;
     static logical banded;
     static integer nc, nd, im, in, kl, ml, nk, nl, ku, ix, iy, ms, lx, ly, ns;
-    extern /* Subroutine */ int czgbmv_();
+    extern /* Subroutine */ void czgbmv_(integer*, char*, integer*, integer*, integer*, integer*, doublecomplex*, doublecomplex*, integer*, doublecomplex*, integer*, doublecomplex*, doublecomplex*, integer*, ftnlen);
     static char ctrans[14];
-    extern /* Subroutine */ int czgemv_();
+    extern /* Subroutine */ void czgemv_(integer*, char*, integer*, integer*, doublecomplex*, doublecomplex*, integer*, doublecomplex*, integer*, doublecomplex*, doublecomplex*, integer*, ftnlen);
     static doublereal errmax;
     static doublecomplex transl;
-    extern logical lzeres_();
+    extern logical lzeres_(char*, char*, integer*, integer*, doublecomplex*, doublecomplex*, integer*, ftnlen, ftnlen);
     static char transs[1];
     static integer laa, lda;
     static doublecomplex als, bls;
     static doublereal err;
     static integer iku, kls;
-    extern logical lze_();
+    extern logical lze_(doublecomplex*, doublecomplex*, integer*);
     static integer kus;
 
 
@@ -1451,22 +1317,7 @@ L140:
 
 } /* zchk1_ */
 
-/* Subroutine */ int zchk2_(sname, eps, thresh, nout, ntra, trace, rewi, 
-	fatal, nidim, idim, nkb, kb, nalf, alf, nbet, bet, ninc, inc, nmax, 
-	incmax, a, aa, as, x, xx, xs, y, yy, ys, yt, g, iorder, sname_len)
-char *sname;
-doublereal *eps, *thresh;
-integer *nout, *ntra;
-logical *trace, *rewi, *fatal;
-integer *nidim, *idim, *nkb, *kb, *nalf;
-doublecomplex *alf;
-integer *nbet;
-doublecomplex *bet;
-integer *ninc, *inc, *nmax, *incmax;
-doublecomplex *a, *aa, *as, *x, *xx, *xs, *y, *yy, *ys, *yt;
-doublereal *g;
-integer *iorder;
-ftnlen sname_len;
+/* Subroutine */ int zchk2_(char* sname, doublereal* eps, doublereal* thresh, integer* nout, integer* ntra, logical* trace, logical* rewi, logical* fatal, integer* nidim, integer* idim, integer* nkb, integer* kb, integer* nalf, doublecomplex* alf, integer* nbet, doublecomplex* bet, integer* ninc, integer* inc, integer* nmax, integer* incmax, doublecomplex* a, doublecomplex* aa, doublecomplex* as, doublecomplex* x, doublecomplex* xx, doublecomplex* xs, doublecomplex* y, doublecomplex* yy, doublecomplex* ys, doublecomplex* yt, doublereal* g, integer* iorder, ftnlen sname_len)
 {
     /* Initialized data */
 
@@ -1486,27 +1337,28 @@ ftnlen sname_len;
     static integer i__, k, n;
     static doublecomplex alpha;
     static logical isame[13];
-    extern /* Subroutine */ int zmake_();
+    extern /* Subroutine */ int zmake_(char*, char*, char*, integer*, integer*, doublecomplex*, integer*, doublecomplex*, integer*, integer*, integer*, logical*, doublecomplex*, ftnlen, ftnlen, ftnlen);
     static integer nargs;
     static logical reset;
     static char cuplo[14];
     static integer incxs, incys;
-    extern /* Subroutine */ int zmvch_();
+    extern /* Subroutine */ int zmvch_(char*, integer*, integer*, doublecomplex*, doublecomplex*, integer*, doublecomplex*, integer*, doublecomplex*, doublecomplex*, integer*, doublecomplex*, doublereal*, doublecomplex*, doublereal*, doublereal*, logical*, integer*, logical*, ftnlen);
     static char uplos[1];
     static integer ia, ib, ic;
     static logical banded;
     static integer nc, ik, in;
     static logical packed;
     static integer nk, ks, ix, iy, ns, lx, ly;
-    extern /* Subroutine */ int czhbmv_(), czhemv_();
+    extern /* Subroutine */ void czhbmv_(integer*, char*, integer*, integer*, doublecomplex*, doublecomplex*, integer*, doublecomplex*, integer*, doublecomplex*, doublecomplex*, integer*, ftnlen);
+    extern /* Subroutine */ void czhemv_(integer*, char*, integer*, doublecomplex*, doublecomplex*, integer*, doublecomplex*, integer*, doublecomplex*, doublecomplex*, integer*, ftnlen);
     static doublereal errmax;
     static doublecomplex transl;
-    extern logical lzeres_();
-    extern /* Subroutine */ int czhpmv_();
+    extern logical lzeres_(char*, char*, integer*, integer*, doublecomplex*, doublecomplex*, integer*, ftnlen, ftnlen);
+    extern /* Subroutine */ void czhpmv_(integer*, char*, integer*, doublecomplex*, doublecomplex*, doublecomplex*, integer*, doublecomplex*, doublecomplex*, integer*, ftnlen);
     static integer laa, lda;
     static doublecomplex als, bls;
     static doublereal err;
-    extern logical lze_();
+    extern logical lze_(doublecomplex*, doublecomplex*, integer*);
 
 /*  Tests CHEMV, CHBMV and CHPMV. */
 
@@ -1909,19 +1761,7 @@ L130:
 
 } /* zchk2_ */
 
-/* Subroutine */ int zchk3_(sname, eps, thresh, nout, ntra, trace, rewi, 
-	fatal, nidim, idim, nkb, kb, ninc, inc, nmax, incmax, a, aa, as, x, 
-	xx, xs, xt, g, z__, iorder, sname_len)
-char *sname;
-doublereal *eps, *thresh;
-integer *nout, *ntra;
-logical *trace, *rewi, *fatal;
-integer *nidim, *idim, *nkb, *kb, *ninc, *inc, *nmax, *incmax;
-doublecomplex *a, *aa, *as, *x, *xx, *xs, *xt;
-doublereal *g;
-doublecomplex *z__;
-integer *iorder;
-ftnlen sname_len;
+/* Subroutine */ int zchk3_(char* sname, doublereal* eps, doublereal* thresh, integer* nout, integer* ntra, logical* trace, logical* rewi, logical* fatal, integer* nidim, integer* idim, integer* nkb, integer* kb, integer* ninc, integer* inc, integer* nmax, integer* incmax, doublecomplex* a, doublecomplex* aa, doublecomplex* as, doublecomplex* x, doublecomplex* xx, doublecomplex* xs, doublecomplex* xt, doublereal* g, doublecomplex* z__, integer* iorder, ftnlen sname_len)
 {
     /* Initialized data */
 
@@ -1942,13 +1782,13 @@ ftnlen sname_len;
     static integer i__, k, n;
     static char diags[1];
     static logical isame[13];
-    extern /* Subroutine */ int zmake_();
+    extern /* Subroutine */ int zmake_(char*, char*, char*, integer*, integer*, doublecomplex*, integer*, doublecomplex*, integer*, integer*, integer*, logical*, doublecomplex*, ftnlen, ftnlen, ftnlen);
     static integer nargs;
     static logical reset;
     static char cuplo[14];
     static integer incxs;
     static char trans[1];
-    extern /* Subroutine */ int zmvch_();
+    extern /* Subroutine */ int zmvch_(char*, integer*, integer*, doublecomplex*, doublecomplex*, integer*, doublecomplex*, integer*, doublecomplex*, doublecomplex*, integer*, doublecomplex*, doublereal*, doublecomplex*, doublereal*, doublereal*, logical*, integer*, logical*, ftnlen);
     static char uplos[1];
     static logical banded;
     static integer nc, ik, in;
@@ -1957,14 +1797,17 @@ ftnlen sname_len;
     static char ctrans[14];
     static doublereal errmax;
     static doublecomplex transl;
-    extern logical lzeres_();
-    extern /* Subroutine */ int cztbmv_();
+    extern logical lzeres_(char*, char*, integer*, integer*, doublecomplex*, doublecomplex*, integer*, ftnlen, ftnlen);
+    extern /* Subroutine */ void cztbmv_(integer*, char*, char*, char*, integer*, integer*, doublecomplex*, integer*, doublecomplex*, integer*, ftnlen, ftnlen, ftnlen);
     static char transs[1];
-    extern /* Subroutine */ int cztbsv_(), cztpmv_(), cztrmv_(), cztpsv_(), 
-	    cztrsv_();
+    extern /* Subroutine */ void cztbsv_(integer*, char*, char*, char*, integer*, integer*, doublecomplex*, integer*, doublecomplex*, integer*, ftnlen, ftnlen, ftnlen);
+    extern /* Subroutine */ void cztpmv_(integer*, char*, char*, char*, integer*, doublecomplex*, doublecomplex*, integer*, ftnlen, ftnlen, ftnlen);
+    extern /* Subroutine */ void cztpsv_(integer*, char*, char*, char*, integer*, doublecomplex*, doublecomplex*, integer*, ftnlen, ftnlen, ftnlen);
+    extern /* Subroutine */ void cztrmv_(integer*, char*, char*, char*, integer*, doublecomplex*, integer*, doublecomplex*, integer*, ftnlen, ftnlen, ftnlen);
+    extern /* Subroutine */ void cztrsv_(integer*, char*, char*, char*, integer*, doublecomplex*, integer*, doublecomplex*, integer*, ftnlen, ftnlen, ftnlen);
     static integer laa, icd, lda, ict, icu;
     static doublereal err;
-    extern logical lze_();
+    extern logical lze_(doublecomplex*, doublecomplex*, integer*);
 
 
 
@@ -2422,21 +2265,7 @@ L130:
 
 } /* zchk3_ */
 
-/* Subroutine */ int zchk4_(sname, eps, thresh, nout, ntra, trace, rewi, 
-	fatal, nidim, idim, nalf, alf, ninc, inc, nmax, incmax, a, aa, as, x, 
-	xx, xs, y, yy, ys, yt, g, z__, iorder, sname_len)
-char *sname;
-doublereal *eps, *thresh;
-integer *nout, *ntra;
-logical *trace, *rewi, *fatal;
-integer *nidim, *idim, *nalf;
-doublecomplex *alf;
-integer *ninc, *inc, *nmax, *incmax;
-doublecomplex *a, *aa, *as, *x, *xx, *xs, *y, *yy, *ys, *yt;
-doublereal *g;
-doublecomplex *z__;
-integer *iorder;
-ftnlen sname_len;
+/* Subroutine */ int zchk4_(char* sname, doublereal* eps, doublereal* thresh, integer* nout, integer* ntra, logical* trace, logical* rewi, logical* fatal, integer* nidim, integer* idim, integer* nalf, doublecomplex* alf, integer* ninc, integer* inc, integer* nmax, integer* incmax, doublecomplex* a, doublecomplex* aa, doublecomplex* as, doublecomplex* x, doublecomplex* xx, doublecomplex* xs, doublecomplex* y, doublecomplex* yy, doublecomplex* ys, doublecomplex* yt, doublereal* g, doublecomplex* z__, integer* iorder, ftnlen sname_len)
 {
     /* System generated locals */
     integer a_dim1, a_offset, i__1, i__2, i__3, i__4, i__5, i__6, i__7;
@@ -2450,21 +2279,21 @@ ftnlen sname_len;
     static integer i__, j, m, n;
     static doublecomplex alpha, w[1];
     static logical isame[13];
-    extern /* Subroutine */ int zmake_();
+    extern /* Subroutine */ int zmake_(char*, char*, char*, integer*, integer*, doublecomplex*, integer*, doublecomplex*, integer*, integer*, integer*, logical*, doublecomplex*, ftnlen, ftnlen, ftnlen);
     static integer nargs;
     static logical reset;
     static integer incxs, incys;
-    extern /* Subroutine */ int zmvch_();
+    extern /* Subroutine */ int zmvch_(char*, integer*, integer*, doublecomplex*, doublecomplex*, integer*, doublecomplex*, integer*, doublecomplex*, doublecomplex*, integer*, doublecomplex*, doublereal*, doublecomplex*, doublereal*, doublereal*, logical*, integer*, logical*, ftnlen);
     static integer ia, nc, nd, im, in, ms, ix, iy, ns, lx, ly;
-    extern /* Subroutine */ int czgerc_();
+    extern /* Subroutine */ void czgerc_(integer*, integer*, integer*, doublecomplex*, doublecomplex*, integer*, doublecomplex*, integer*, doublecomplex*, integer*);
     static doublereal errmax;
-    extern /* Subroutine */ int czgeru_();
+    extern /* Subroutine */ void czgeru_(integer*, integer*, integer*, doublecomplex*, doublecomplex*, integer*, doublecomplex*, integer*, doublecomplex*, integer*);
     static doublecomplex transl;
-    extern logical lzeres_();
+    extern logical lzeres_(char*, char*, integer*, integer*, doublecomplex*, doublecomplex*, integer*, ftnlen, ftnlen);
     static integer laa, lda;
     static doublecomplex als;
     static doublereal err;
-    extern logical lze_();
+    extern logical lze_(doublecomplex*, doublecomplex*, integer*);
 
 
 
@@ -2793,21 +2622,7 @@ L150:
 
 } /* zchk4_ */
 
-/* Subroutine */ int zchk5_(sname, eps, thresh, nout, ntra, trace, rewi, 
-	fatal, nidim, idim, nalf, alf, ninc, inc, nmax, incmax, a, aa, as, x, 
-	xx, xs, y, yy, ys, yt, g, z__, iorder, sname_len)
-char *sname;
-doublereal *eps, *thresh;
-integer *nout, *ntra;
-logical *trace, *rewi, *fatal;
-integer *nidim, *idim, *nalf;
-doublecomplex *alf;
-integer *ninc, *inc, *nmax, *incmax;
-doublecomplex *a, *aa, *as, *x, *xx, *xs, *y, *yy, *ys, *yt;
-doublereal *g;
-doublecomplex *z__;
-integer *iorder;
-ftnlen sname_len;
+/* Subroutine */ int zchk5_(char* sname, doublereal* eps, doublereal* thresh, integer* nout, integer* ntra, logical* trace, logical* rewi, logical* fatal, integer* nidim, integer* idim, integer* nalf, doublecomplex* alf, integer* ninc, integer* inc, integer* nmax, integer* incmax, doublecomplex* a, doublecomplex* aa, doublecomplex* as, doublecomplex* x, doublecomplex* xx, doublecomplex* xs, doublecomplex* y, doublecomplex* yy, doublecomplex* ys, doublecomplex* yt, doublereal* g, doublecomplex* z__, integer* iorder, ftnlen sname_len)
 {
     /* Initialized data */
 
@@ -2827,13 +2642,14 @@ ftnlen sname_len;
     static integer i__, j, n;
     static doublecomplex alpha, w[1];
     static logical isame[13];
-    extern /* Subroutine */ int zmake_();
+    extern /* Subroutine */ int zmake_(char*, char*, char*, integer*, integer*, doublecomplex*, integer*, doublecomplex*, integer*, integer*, integer*, logical*, doublecomplex*, ftnlen, ftnlen, ftnlen);
     static integer nargs;
-    extern /* Subroutine */ int czher_();
+    extern /* Subroutine */ void czher_(integer*, char*, integer*, doublereal*, doublecomplex*, integer*, doublecomplex*, integer*, ftnlen);
     static logical reset;
     static char cuplo[14];
     static integer incxs;
-    extern /* Subroutine */ int czhpr_(), zmvch_();
+    extern /* Subroutine */ void czhpr_(integer*, char*, integer*, doublereal*, doublecomplex*, integer*, doublecomplex*, ftnlen);
+    extern /* Subroutine */ int zmvch_(char*, integer*, integer*, doublecomplex*, doublecomplex*, integer*, doublecomplex*, integer*, doublecomplex*, doublecomplex*, integer*, doublecomplex*, doublereal*, doublecomplex*, doublereal*, doublereal*, logical*, integer*, logical*, ftnlen);
     static logical upper;
     static char uplos[1];
     static integer ia, ja, ic, nc, jj, lj, in;
@@ -2841,10 +2657,10 @@ ftnlen sname_len;
     static integer ix, ns, lx;
     static doublereal ralpha, errmax;
     static doublecomplex transl;
-    extern logical lzeres_();
+    extern logical lzeres_(char*, char*, integer*, integer*, doublecomplex*, doublecomplex*, integer*, ftnlen, ftnlen);
     static integer laa, lda;
     static doublereal err;
-    extern logical lze_();
+    extern logical lze_(doublecomplex*, doublecomplex*, integer*);
 
 /*  Tests ZHER and ZHPR. */
 
@@ -3167,21 +2983,7 @@ L130:
 
 } /* zchk5_ */
 
-/* Subroutine */ int zchk6_(sname, eps, thresh, nout, ntra, trace, rewi, 
-	fatal, nidim, idim, nalf, alf, ninc, inc, nmax, incmax, a, aa, as, x, 
-	xx, xs, y, yy, ys, yt, g, z__, iorder, sname_len)
-char *sname;
-doublereal *eps, *thresh;
-integer *nout, *ntra;
-logical *trace, *rewi, *fatal;
-integer *nidim, *idim, *nalf;
-doublecomplex *alf;
-integer *ninc, *inc, *nmax, *incmax;
-doublecomplex *a, *aa, *as, *x, *xx, *xs, *y, *yy, *ys, *yt;
-doublereal *g;
-doublecomplex *z__;
-integer *iorder;
-ftnlen sname_len;
+/* Subroutine */ int zchk6_(char* sname, doublereal* eps, doublereal* thresh, integer* nout, integer* ntra, logical* trace, logical* rewi, logical* fatal, integer* nidim, integer* idim, integer* nalf, doublecomplex* alf, integer* ninc, integer* inc, integer* nmax, integer* incmax, doublecomplex* a, doublecomplex* aa, doublecomplex* as, doublecomplex* x, doublecomplex* xx, doublecomplex* xs, doublecomplex* y, doublecomplex* yy, doublecomplex* ys, doublecomplex* yt, doublereal* g, doublecomplex* z__, integer* iorder, ftnlen sname_len)
 {
     /* Initialized data */
 
@@ -3201,25 +3003,26 @@ ftnlen sname_len;
     static integer i__, j, n;
     static doublecomplex alpha, w[2];
     static logical isame[13];
-    extern /* Subroutine */ int zmake_();
+    extern /* Subroutine */ int zmake_(char*, char*, char*, integer*, integer*, doublecomplex*, integer*, doublecomplex*, integer*, integer*, integer*, logical*, doublecomplex*, ftnlen, ftnlen, ftnlen);
     static integer nargs;
     static logical reset;
     static char cuplo[14];
     static integer incxs, incys;
-    extern /* Subroutine */ int zmvch_();
+    extern /* Subroutine */ int zmvch_(char*, integer*, integer*, doublecomplex*, doublecomplex*, integer*, doublecomplex*, integer*, doublecomplex*, doublecomplex*, integer*, doublecomplex*, doublereal*, doublecomplex*, doublereal*, doublereal*, logical*, integer*, logical*, ftnlen);
     static logical upper;
     static char uplos[1];
-    extern /* Subroutine */ int czher2_(), czhpr2_();
+    extern /* Subroutine */ void czher2_(integer*, char*, integer*, doublecomplex*, doublecomplex*, integer*, doublecomplex*, integer*, doublecomplex*, integer*, ftnlen);
+    extern /* Subroutine */ void czhpr2_(integer*, char*, integer*, doublecomplex*, doublecomplex*, integer*, doublecomplex*, integer*, doublecomplex*, ftnlen);
     static integer ia, ja, ic, nc, jj, lj, in;
     static logical packed;
     static integer ix, iy, ns, lx, ly;
     static doublereal errmax;
     static doublecomplex transl;
-    extern logical lzeres_();
+    extern logical lzeres_(char*, char*, integer*, integer*, doublecomplex*, doublecomplex*, integer*, ftnlen, ftnlen);
     static integer laa, lda;
     static doublecomplex als;
     static doublereal err;
-    extern logical lze_();
+    extern logical lze_(doublecomplex*, doublecomplex*, integer*);
 
 /*  Tests ZHER2 and ZHPR2. */
 
@@ -3604,24 +3407,7 @@ L170:
 
 } /* zchk6_ */
 
-/* Subroutine */ int zmvch_(trans, m, n, alpha, a, nmax, x, incx, beta, y, 
-	incy, yt, g, yy, eps, err, fatal, nout, mv, trans_len)
-char *trans;
-integer *m, *n;
-doublecomplex *alpha, *a;
-integer *nmax;
-doublecomplex *x;
-integer *incx;
-doublecomplex *beta, *y;
-integer *incy;
-doublecomplex *yt;
-doublereal *g;
-doublecomplex *yy;
-doublereal *eps, *err;
-logical *fatal;
-integer *nout;
-logical *mv;
-ftnlen trans_len;
+/* Subroutine */ int zmvch_(char* trans, integer* m, integer* n, doublecomplex* alpha, doublecomplex* a, integer* nmax, doublecomplex* x, integer* incx, doublecomplex* beta, doublecomplex* y, integer* incy, doublecomplex* yt, doublereal* g, doublecomplex* yy, doublereal* eps, doublereal* err, logical* fatal, integer* nout, logical* mv, ftnlen trans_len)
 {
 
     /* System generated locals */
@@ -3819,9 +3605,7 @@ L80:
 
 } /* zmvch_ */
 
-logical lze_(ri, rj, lr)
-doublecomplex *ri, *rj;
-integer *lr;
+logical lze_(doublecomplex* ri, doublecomplex* rj, integer* lr)
 {
     /* System generated locals */
     integer i__1, i__2, i__3;
@@ -3868,13 +3652,7 @@ L30:
 
 } /* lze_ */
 
-logical lzeres_(type__, uplo, m, n, aa, as, lda, type_len, uplo_len)
-char *type__, *uplo;
-integer *m, *n;
-doublecomplex *aa, *as;
-integer *lda;
-ftnlen type_len;
-ftnlen uplo_len;
+logical lzeres_(char* type__, char* uplo, integer* m, integer* n, doublecomplex* aa, doublecomplex* as, integer* lda, ftnlen type_len, ftnlen uplo_len)
 {
     /* System generated locals */
     integer aa_dim1, aa_offset, as_dim1, as_offset, i__1, i__2, i__3, i__4;
@@ -3967,9 +3745,7 @@ L80:
 
 } /* lzeres_ */
 
-/* Double Complex */ VOID zbeg_( ret_val, reset)
-doublecomplex * ret_val;
-logical *reset;
+/* Double Complex */ VOID zbeg_( doublecomplex* ret_val, logical* reset)
 {
     /* System generated locals */
     doublereal d__1, d__2;
@@ -4030,8 +3806,7 @@ L10:
 
 } /* zbeg_ */
 
-doublereal ddiff_(x, y)
-doublereal *x, *y;
+doublereal ddiff_(doublereal* x, doublereal* y)
 {
     /* System generated locals */
     doublereal ret_val;
@@ -4051,19 +3826,7 @@ doublereal *x, *y;
 
 } /* ddiff_ */
 
-/* Subroutine */ int zmake_(type__, uplo, diag, m, n, a, nmax, aa, lda, kl, 
-	ku, reset, transl, type_len, uplo_len, diag_len)
-char *type__, *uplo, *diag;
-integer *m, *n;
-doublecomplex *a;
-integer *nmax;
-doublecomplex *aa;
-integer *lda, *kl, *ku;
-logical *reset;
-doublecomplex *transl;
-ftnlen type_len;
-ftnlen uplo_len;
-ftnlen diag_len;
+/* Subroutine */ int zmake_(char* type__, char* uplo, char* diag, integer* m, integer* n, doublecomplex* a, integer* nmax, doublecomplex* aa, integer* lda, integer* kl, integer* ku, logical* reset, doublecomplex* transl, ftnlen type_len, ftnlen uplo_len, ftnlen diag_len)
 {
     /* System generated locals */
     integer a_dim1, a_offset, i__1, i__2, i__3, i__4;
@@ -4072,7 +3835,7 @@ ftnlen diag_len;
 
     /* Local variables */
     static integer ibeg, iend, ioff;
-    extern /* Double Complex */ VOID zbeg_();
+    extern /* Double Complex */ VOID zbeg_(doublecomplex*, logical*);
     static logical unit;
     static integer i__, j;
     static logical lower;
