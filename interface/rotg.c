@@ -66,13 +66,8 @@ void CNAME(FLOAT *DA, FLOAT *DB, FLOAT *C, FLOAT *S){
     c = da / r;
     s = db / r;
     z = ONE;
-    if (da != ZERO) {
-      if (ada > adb){
-	z = s;
-      } else {
-	z = ONE / c;
-      }
-    }
+    if (ada > adb) z = s;
+    if ((ada <= adb) && (c != ZERO)) z = ONE / c;
 
     *C = c;
     *S = s;

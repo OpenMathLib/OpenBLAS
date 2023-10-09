@@ -61,16 +61,16 @@ void CNAME(void *VDA, void *VDB, FLOAT *C, void *VS) {
 		*(S1 + 0) = *(DB + 0);
 		*(S1 + 1) = *(DB + 1) *-1;
 	if (da_r == ZERO && da_i == ZERO) {
-	    *C = ZERO;	  
+	    *C = ZERO;
 	    if (db_r == ZERO) {
 		    (*DA) = fabsl(db_i);
-		*S = *S1 /da_r;
-		*(S+1) = *(S1+1) /da_r;
+		*S = *S1 /(*DA);
+		*(S+1) = *(S1+1) /(*DA);
 		return;
 	    } else if ( db_i == ZERO) {
 		    *DA = fabsl(db_r);
-		*S = *S1 /da_r;
-		*(S+1) = *(S1+1) /da_r;
+		*S = *S1 /(*DA);
+		*(S+1) = *(S1+1) /(*DA);
 		return;
 	    } else {
 	        long double g1 = MAX( fabsl(db_r), fabsl(db_i));
