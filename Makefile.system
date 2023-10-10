@@ -405,6 +405,13 @@ export MACOSX_DEPLOYMENT_TARGET=10.8
 endif
 endif
 MD5SUM = md5 -r
+XCVER = $(shell pkgutil --pkg-info=com.apple.pkg.Xcode |awk '/version:/ {print $2}'|cut -d: -f2|cut -f1 -d.)
+ifeq (x$(XCVER)x,xx)
+XCVER = $(shell pkgutil --pkg-info=com.apple.pkg.CLTools_Executables |awk '/version:/ {print $2}'|cut -d: -f2|cut -f1 -d.)
+endif
+ifeq (x$(XCVER), x 15)
+CCOMMON_OPT += -Wl,-ld_classic
+endif
 endif
 
 ifneq (,$(findstring $(OSNAME), FreeBSD OpenBSD DragonFly))
