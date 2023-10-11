@@ -49,7 +49,7 @@ typedef union
 typedef union
 {
   float v;
-  struct
+  struct __attribute__((packed))
   {
 #if __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__
     uint32_t s:1;
