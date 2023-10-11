@@ -32,7 +32,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 typedef union
 {
   unsigned short v;
-  struct
+  struct __attribute__((packed))
   {
 #if __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__
     unsigned short s:1;
