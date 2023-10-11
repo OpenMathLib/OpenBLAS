@@ -19,8 +19,13 @@ SBGEMMOTCOPYOBJ =  sbgemm_otcopy$(TSUFFIX).$(SUFFIX)
 
 STRMMKERNEL	= sgemm_kernel_power10.c
 DTRMMKERNEL	= dgemm_kernel_power10.c
+ifeq ($(OSNAME), AIX)
+CTRMMKERNEL     = ctrmm_kernel_8x4_power8.S
+ZTRMMKERNEL     = ztrmm_kernel_8x2_power8.S
+else
 CTRMMKERNEL	= cgemm_kernel_power10.S
 ZTRMMKERNEL	= zgemm_kernel_power10.S
+endif
 
 SGEMMKERNEL    =  sgemm_kernel_power10.c
 SGEMMINCOPY    = ../generic/gemm_ncopy_16.c
@@ -62,10 +67,18 @@ DGEMM_SMALL_K_B0_TT = dgemm_small_kernel_tt_power10.c
 DGEMM_SMALL_K_TN = dgemm_small_kernel_tn_power10.c
 DGEMM_SMALL_K_B0_TN = dgemm_small_kernel_tn_power10.c
 
+ifeq ($(OSNAME), AIX)
+CGEMMKERNEL    = cgemm_kernel_8x4_power8.S
+else
 CGEMMKERNEL    = cgemm_kernel_power10.S
+endif
 #CGEMMKERNEL     = cgemm_kernel_8x4_power8.S
 CGEMMINCOPY    = ../generic/zgemm_ncopy_8.c
+ifeq ($(OSNAME), AIX)
+CGEMMITCOPY    = cgemm_tcopy_8_power8.S
+else
 CGEMMITCOPY    = ../generic/zgemm_tcopy_8.c
+endif
 CGEMMONCOPY    = ../generic/zgemm_ncopy_4.c
 CGEMMOTCOPY    = ../generic/zgemm_tcopy_4.c
 CGEMMONCOPYOBJ =  cgemm_oncopy$(TSUFFIX).$(SUFFIX)
@@ -73,7 +86,11 @@ CGEMMOTCOPYOBJ =  cgemm_otcopy$(TSUFFIX).$(SUFFIX)
 CGEMMINCOPYOBJ =  cgemm_incopy$(TSUFFIX).$(SUFFIX)
 CGEMMITCOPYOBJ =  cgemm_itcopy$(TSUFFIX).$(SUFFIX)
 
+ifeq ($(OSNAME), AIX)
+ZGEMMKERNEL    = zgemm_kernel_8x2_power8.S
+else
 ZGEMMKERNEL    = zgemm_kernel_power10.S
+endif
 ZGEMMONCOPY    = ../generic/zgemm_ncopy_2.c
 ZGEMMOTCOPY    = ../generic/zgemm_tcopy_2.c
 ZGEMMINCOPY    = ../generic/zgemm_ncopy_8.c
@@ -124,6 +141,7 @@ ZTRSMKERNEL_RT	= ../generic/trsm_kernel_RT.c
 #SMINKERNEL   = ../arm/min.c
 #DMINKERNEL   = ../arm/min.c
 #
+ifeq ($(C_COMPILER), GCC)
 ifneq ($(GCCVERSIONGTEQ9),1)
 ISAMAXKERNEL = isamax_power9.S
 else
@@ -146,6 +164,15 @@ IDAMINKERNEL = idamin.c
 ifneq ($(GCCVERSIONGTEQ9),1)
 ICAMINKERNEL = icamin_power9.S
 else
+ICAMINKERNEL = icamin.c
+endif
+else
+ISAMAXKERNEL = isamax.c
+IDAMAXKERNEL = idamax.c
+ICAMAXKERNEL = icamax.c
+IZAMAXKERNEL = izamax.c
+ISAMINKERNEL = isamin.c
+IDAMINKERNEL = idamin.c
 ICAMINKERNEL = icamin.c
 endif
 IZAMINKERNEL = izamin.c
