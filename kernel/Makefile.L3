@@ -634,15 +634,7 @@ $(KDIR)$(SBGEMMONCOPYOBJ) : $(KERNELDIR)/$(SBGEMMONCOPY)
 	$(CC) $(CFLAGS) -c -DBFLOAT16 -UDOUBLE -UCOMPLEX $< -o $@
 
 $(KDIR)$(SBGEMMOTCOPYOBJ) : $(KERNELDIR)/$(SBGEMMOTCOPY)
-
-ifeq ($(OS), AIX)
-	$(CC) $(CFLAGS) -S -DBFLOAT16 -UDOUBLE -UCOMPLEX $< -o - > sbgemmotcopy.s
-	m4 sbgemmotcopy.s > sbgemmotcopy_nomacros.s
-	$(CC) $(CFLAGS) -c -DBFLOAT16 -UDOUBLE -UCOMPLEX sbgemmotcopy_nomacros.s -o $@
-	rm sbgemmotcopy.s sbgemmotcopy_nomacros.s
-else
 	$(CC) $(CFLAGS) -c -DBFLOAT16 -UDOUBLE -UCOMPLEX $< -o $@
-endif
 
 ifneq ($(SBGEMM_UNROLL_M), $(SBGEMM_UNROLL_N))
 
@@ -650,14 +642,7 @@ $(KDIR)$(SBGEMMINCOPYOBJ) : $(KERNELDIR)/$(SBGEMMINCOPY)
 	$(CC) $(CFLAGS) -c -DBFLOAT16 -UDOUBLE -UCOMPLEX $< -o $@
 
 $(KDIR)$(SBGEMMITCOPYOBJ) : $(KERNELDIR)/$(SBGEMMITCOPY)
-ifeq ($(OS), AIX)
-	$(CC) $(CFLAGS) -S -DBFLOAT16 -UDOUBLE -UCOMPLEX $< -o - > sbgemmitcopy.s
-	m4 sbgemmitcopy.s > sbgemmitcopy_nomacros.s
-	$(CC) $(CFLAGS) -c -DBFLOAT16 -UDOUBLE -UCOMPLEX sbgemmitcopy_nomacros.s -o $@
-	rm sbgemmitcopy.s sbgemmitcopy_nomacros.s
-else
 	$(CC) $(CFLAGS) -c -DBFLOAT16 -UDOUBLE -UCOMPLEX $< -o $@
-endif
 
 endif
 endif
@@ -829,14 +814,7 @@ endif
 ifeq ($(BUILD_BFLOAT16), 1)
 
 $(KDIR)sbgemm_kernel$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(SBGEMMKERNEL) $(SBGEMMDEPEND)
-ifeq ($(OS), AIX)
-	$(CC) $(CFLAGS) -S -DBFLOAT16 -UDOUBLE -UCOMPLEX  $< -o - > sbgemm_kernel$(TSUFFIX).s
-	m4 sbgemm_kernel$(TSUFFIX).s > sbgemm_kernel$(TSUFFIX)_nomacros.s
-	$(CC) $(CFLAGS) -c -DBFLOAT16 -UDOUBLE -UCOMPLEX sbgemm_kernel$(TSUFFIX)_nomacros.s -o $@
-	rm sbgemm_kernel$(TSUFFIX).s sbgemm_kernel$(TSUFFIX)_nomacros.s
-else
 	$(CC) $(CFLAGS) -c -DBFLOAT16 -UDOUBLE -UCOMPLEX $< -o $@
-endif
 endif
 
 $(KDIR)dgemm_kernel$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(DGEMMKERNEL) $(DGEMMDEPEND)
