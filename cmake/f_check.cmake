@@ -20,12 +20,7 @@
 # NEEDBUNDERSCORE
 # NEED2UNDERSCORES
 
-include(CheckLanguage)
-check_language(Fortran)
-if(CMAKE_Fortran_COMPILER)
-  enable_language(Fortran)
-else()
-  set (NOFORTRAN 1)
+if(NOT CMAKE_Fortran_COMPILER)
   if (NOT NO_LAPACK)
      if (NOT XXXXX)
 	message(STATUS "No Fortran compiler found, can build only BLAS and f2c-converted LAPACK")

@@ -93,6 +93,38 @@ endif()
 
 message(WARNING "CMake support is experimental. It does not yet support all build options and may not produce the same Makefiles that OpenBLAS ships with.")
 
+if(NOT NOFORTRAN)
+  # Check for working Fortran compiler
+  include(CheckLanguage)
+  check_language(Fortran)
+  if(CMAKE_Fortran_COMPILER)
+    enable_language(Fortran)
+  else()
+    set(NOFORTRAN 1)
+  endif()
+endif()
+
+if (NOT NOFORTRAN AND CMAKE_Fortran_COMPILER_ID STREQUAL "LLVMFlang")
+  if (CMAKE_Fortran_COMPILER_VERSION VERSION_LESS 17 OR WIN32)
+    # The *blas3 tests fail on hardware with AVX512 instruction when using
+    # LLVM Flang before version 17 or when using LLVM Flang on Windows.
+    # Tested with LLVM Flang 16 and LLVM Flang 17 on Windows (MSYS2/CLANG64).
+    # FIXME: Revisit with LLVM Flang 18.
+    if (NOT NO_AVX512)
+      message(STATUS "Disabling AVX512 instructions for LLVM Flang before version 17 or on Windows.")
+    endif()
+    set(NO_AVX512 1)
+  endif()
+
+  if (CMAKE_Fortran_COMPILER_VERSION VERSION_LESS 17)
+    # LLVM Flang before version 17 doesn't support necessary OpenMP constructs.
+    if (USE_OPENMP)
+      message(STATUS "Disabling OpenMP for LLVM Flang before version 17.")
+      set(USE_OPENMP 0)
+    endif()
+  endif()
+endif()
+
 include("${PROJECT_SOURCE_DIR}/cmake/utils.cmake")
 include("${PROJECT_SOURCE_DIR}/cmake/system.cmake")
 
