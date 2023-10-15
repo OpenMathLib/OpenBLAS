@@ -90,8 +90,8 @@ jobs:
   - script: |
       mkdir winlib
       cd winlib
-      wget https://github.com/brechtsanders/winlibs_mingw/releases/download/13.2.0mcf-16.0.6-11.0.1-ucrt-r2/winlibs-x86_64-mcf-seh-gcc-13.2.0-mingw-w64ucrt-11.0.1-r2.zip
-      tar -xf winlibs-x86_64-mcf-seh-gcc-13.2.0-mingw-w64ucrt-11.0.1-r2.zip
+      curl -o mingw64.zip https://github.com/brechtsanders/winlibs_mingw/releases/download/13.2.0mcf-16.0.6-11.0.1-ucrt-r2/winlibs-x86_64-mcf-seh-gcc-13.2.0-mingw-w64ucrt-11.0.1-r2.zip
+      tar -xf mingw64.zip
       set PATH=%cd%\mingw64\bin:%PATH%
       cd
       mingw32-make CC=gcc FC=gfortran
