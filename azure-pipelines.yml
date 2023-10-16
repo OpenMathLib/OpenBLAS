@@ -95,7 +95,7 @@ jobs:
       tar -xf mingw64.zip
       set PATH=%cd%\mingw64\bin;%PATH%
       cd ..
-      mingw32-make CC=gcc FC=gfortran
+      mingw32-make CC=gcc FC=gfortran NOLAPACK=1
 
 - job: Windows_clang_cmake
   pool:
