@@ -1,0 +1,147 @@
+name: msvc
+
+on: [push, pull_request]
+
+permissions:
+  contents: read # to fetch code (actions/checkout)
+
+jobs:
+  msvc:
+    runs-on: windows-latest
+
+    strategy:
+      # Allow other runners in the matrix to continue if some fail
+      fail-fast: false
+
+      matrix:
+        library: [shared, static]
+        include:
+          - library: shared
+            library-flags: -DBUILD_SHARED_LIBS=ON -DBUILD_STATIC_LIBS=OFF
+          - library: static
+            library-flags: -DBUILD_SHARED_LIBS=OFF -DBUILD_STATIC_LIBS=ON
+
+    defaults:
+      run:
+        # Use bash as default shell
+        shell: bash -el {0}
+
+    env:
+      CHERE_INVOKING: 1
+
+    steps:
+      - name: get CPU name
+        shell: pwsh
+        run : |
+          Get-CIMInstance -Class Win32_Processor | Select-Object -Property Name
+
+      - name: checkout repository
+        uses: actions/checkout@v3
+
+      - uses: conda-incubator/setup-miniconda@v2
+        with:
+          auto-update-conda: true
+
+      - name: cache conda packages
+        id: conda-cache
+        uses: actions/cache/restore@v3
+        with:
+          path: C:/Miniconda/envs/test
+          key: conda:msvc
+
+      - name: install packages with conda
+        if: ${{ steps.conda-cache.outputs.cache-hit != 'true' }}
+        run: |
+          echo ${{ steps.conda-cache.outputs.cache-hit }}
+          conda info
+          conda list
+          conda install -y -c conda-forge --override-channels ccache
+
+      - name: save conda cache
+        if: ${{ steps.conda-cache.outputs.cache-hit != 'true' }}
+        uses: actions/cache/save@v3
+        with:
+          path: C:/Miniconda/envs/test
+          key: ${{ steps.conda-cache.outputs.cache-primary-key }}
+
+      - name: Prepare ccache
+        # Get cache location of ccache
+        # Create key that is used in action/cache/restore and action/cache/save steps
+        id: ccache-prepare
+        run: |
+          echo "ccachedir=$(cygpath -m $(ccache -k cache_dir))" >> $GITHUB_OUTPUT
+          # We include the commit sha in the cache key, as new cache entries are
+          # only created if there is no existing entry for the key yet.
+          echo "key=ccache-msvc-${{ matrix.library }}-${{ github.ref }}-${{ github.sha }}" >> $GITHUB_OUTPUT
+
+      - name: Restore ccache
+        uses: actions/cache/restore@v3
+        with:
+          path: ${{ steps.ccache-prepare.outputs.ccachedir }}
+          key: ${{ steps.ccache-prepare.outputs.key }}
+          # Restore a matching ccache cache entry. Prefer same branch.
+          restore-keys: |
+            ccache-msvc-${{ matrix.library }}-${{ github.ref }}
+            ccache-msvc-${{ matrix.library }}
+            ccache-msvc
+
+      - name: Configure ccache
+        # Limit the maximum size and switch on compression to avoid exceeding the total disk or cache quota.
+        run: |
+          which ccache
+          test -d ${{ steps.ccache-prepare.outputs.ccachedir }} || mkdir -p ${{ steps.ccache-prepare.outputs.ccachedir }}
+          echo "max_size = 250M" > ${{ steps.ccache-prepare.outputs.ccachedir }}/ccache.conf
+          echo "compression = true" >> ${{ steps.ccache-prepare.outputs.ccachedir }}/ccache.conf
+          ccache -p
+          ccache -s
+          echo $HOME
+          cygpath -w $HOME
+
+      - name: setup MSVC toolchain
+        uses: ilammy/msvc-dev-cmd@v1
+
+      - name: Configure OpenBLAS
+        run: |
+          mkdir build && cd build
+          cmake -G"Ninja Multi-Config" \
+                -DCMAKE_BUILD_TYPE=Release \
+                ${{ matrix.library-flags }} \
+                -DNOFORTRAN=ON \
+                -DC_LAPACK=ON \
+                -DUSE_OPENMP=ON \
+                -DNUM_THREADS=64 \
+                -DTARGET=CORE2 \
+                -DCMAKE_C_COMPILER_LAUNCHER=ccache \
+                -DCMAKE_Fortran_COMPILER_LAUNCHER=ccache \
+                ..
+
+      - name: Build OpenBLAS
+        run: cd build && cmake --build . --config Release
+
+      - name: Show ccache status
+        continue-on-error: true
+        run: ccache -s
+
+      - name: Save ccache
+        # Save the cache after we are done (successfully) building
+        uses: actions/cache/save@v3
+        with:
+          path: ${{ steps.ccache-prepare.outputs.ccachedir }}
+          key: ${{ steps.ccache-prepare.outputs.key }}
+
+      - name: Run tests
+        id: run-ctest
+        timeout-minutes: 60
+        run: cd build && PATH="${GITHUB_WORKSPACE}/build/lib/RELEASE;${PATH}" ctest -C Release
+
+      - name: Re-run tests
+        if: always() && (steps.run-ctest.outcome == 'failure')
+        timeout-minutes: 60
+        run: |
+          cd build
+          echo "::group::Re-run ctest"
+          PATH="${GITHUB_WORKSPACE}/build/lib/RELEASE;${PATH}" ctest -C Release --rerun-failed --output-on-failure || true
+          echo "::endgroup::"
+          echo "::group::Log from these tests"
+          [ ! -f Testing/Temporary/LastTest.log ] || cat Testing/Temporary/LastTest.log
+          echo "::endgroup::"
