@@ -151,13 +151,13 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        msystem: [MINGW64, MINGW32, CLANG64, CLANG32]
+        msystem: [UCRT64, MINGW32, CLANG64, CLANG32]
         idx: [int32, int64]
         build-type: [Release]
         include:
-          - msystem: MINGW64
+          - msystem: UCRT64
             idx: int32
-            target-prefix: mingw-w64-x86_64
+            target-prefix: mingw-w64-ucrt-x86_64
             fc-pkg: fc
           - msystem: MINGW32
             idx: int32
@@ -175,10 +175,10 @@ jobs:
             target-prefix: mingw-w64-clang-i686
             fc-pkg: cc
             c-lapack-flags: -DC_LAPACK=ON
-          - msystem: MINGW64
+          - msystem: UCRT64
             idx: int64
             idx64-flags: -DBINARY=64 -DINTERFACE64=1
-            target-prefix: mingw-w64-x86_64
+            target-prefix: mingw-w64-ucrt-x86_64
             fc-pkg: fc
           - msystem: CLANG64
             idx: int64
@@ -188,9 +188,9 @@ jobs:
             # Compiling with Flang 16 seems to cause test errors on machines
             # with AVX512 instructions. Revisit after MSYS2 distributes Flang 17.
             no-avx512-flags: -DNO_AVX512=1
-          - msystem: MINGW64
+          - msystem: UCRT64
             idx: int32
-            target-prefix: mingw-w64-x86_64
+            target-prefix: mingw-w64-ucrt-x86_64
             fc-pkg: fc
             build-type: None
         exclude:
