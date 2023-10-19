@@ -23,6 +23,7 @@ permissions:
 
 jobs:
   build-OpenBLAS-with-Homebrew:
+    if: "github.repository == 'OpenMathLib/OpenBLAS'"
     runs-on: macos-latest
     env:
       DEVELOPER_DIR: /Applications/Xcode_11.4.1.app/Contents/Developer
