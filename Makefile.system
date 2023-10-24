@@ -277,10 +277,6 @@ endif
 ifndef GOTOBLAS_MAKEFILE
 export GOTOBLAS_MAKEFILE = 1
 
-# Determine if the assembler is GNU Assembler
-HAVE_GAS := $(shell $(AS) -v < /dev/null 2>&1 | grep GNU 2>&1 >/dev/null ; echo $$?)
-GETARCH_FLAGS += -DHAVE_GAS=$(HAVE_GAS)
-
 # Generating Makefile.conf and config.h
 DUMMY := $(shell $(MAKE) -C $(TOPDIR) -f Makefile.prebuild CC="$(CC)" FC="$(FC)" HOSTCC="$(HOSTCC)" HOST_CFLAGS="$(GETARCH_FLAGS)" CFLAGS="$(CFLAGS)" BINARY=$(BINARY) USE_OPENMP=$(USE_OPENMP) DYNAMIC_ARCH=$(DYNAMIC_ARCH) TARGET_CORE=$(TARGET_CORE) ONLY_CBLAS=$(ONLY_CBLAS) TARGET=$(TARGET) all)
 
@@ -760,7 +756,11 @@ DYNAMIC_CORE += POWER9
 else
 $(info, OpenBLAS: Your gcc version is too old to build the POWER9 kernels.)
 endif
+ifeq ($(OSNAME), AIX)
+LDVERSIONGTEQ35 := 1
+else
 LDVERSIONGTEQ35 := $(shell expr `$(CC) -Wl,--version 2> /dev/null | head -1 | cut -f2 -d "." | cut -f1 -d "-"` \>= 35)
+endif
 ifeq ($(GCCVERSIONGTEQ11)$(LDVERSIONGTEQ35), 11)
 DYNAMIC_CORE += POWER10
 CCOMMON_OPT += -DHAVE_P10_SUPPORT
