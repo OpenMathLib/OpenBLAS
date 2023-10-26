@@ -61,6 +61,15 @@ ifeq ($(CORE), ZEN)
 USE_TRMM = 1
 endif
 
+ifeq ($(OS), AIX)
+M4VERSION := $(shell m4 --version < /dev/null 2>&1 | grep GNU 2>&1 >/dev/null ; echo $$?)
+ifeq ($(M4VERSION), 0)
+M4_AIX := m4 -l16384
+else
+M4_AIX := m4 -B16384
+endif
+$(info $$var is [${$(M4_AIX)}])
+endif
 ifeq ($(CORE), POWER8)
 ifeq ($(BINARY64),1)
 USE_TRMM = 1
@@ -634,15 +643,7 @@ $(KDIR)$(SBGEMMONCOPYOBJ) : $(KERNELDIR)/$(SBGEMMONCOPY)
 	$(CC) $(CFLAGS) -c -DBFLOAT16 -UDOUBLE -UCOMPLEX $< -o $@
 
 $(KDIR)$(SBGEMMOTCOPYOBJ) : $(KERNELDIR)/$(SBGEMMOTCOPY)
-
-ifeq ($(OS), AIX)
-	$(CC) $(CFLAGS) -S -DBFLOAT16 -UDOUBLE -UCOMPLEX $< -o - > sbgemmotcopy.s
-	m4 sbgemmotcopy.s > sbgemmotcopy_nomacros.s
-	$(CC) $(CFLAGS) -c -DBFLOAT16 -UDOUBLE -UCOMPLEX sbgemmotcopy_nomacros.s -o $@
-	rm sbgemmotcopy.s sbgemmotcopy_nomacros.s
-else
 	$(CC) $(CFLAGS) -c -DBFLOAT16 -UDOUBLE -UCOMPLEX $< -o $@
-endif
 
 ifneq ($(SBGEMM_UNROLL_M), $(SBGEMM_UNROLL_N))
 
@@ -650,14 +651,7 @@ $(KDIR)$(SBGEMMINCOPYOBJ) : $(KERNELDIR)/$(SBGEMMINCOPY)
 	$(CC) $(CFLAGS) -c -DBFLOAT16 -UDOUBLE -UCOMPLEX $< -o $@
 
 $(KDIR)$(SBGEMMITCOPYOBJ) : $(KERNELDIR)/$(SBGEMMITCOPY)
-ifeq ($(OS), AIX)
-	$(CC) $(CFLAGS) -S -DBFLOAT16 -UDOUBLE -UCOMPLEX $< -o - > sbgemmitcopy.s
-	m4 sbgemmitcopy.s > sbgemmitcopy_nomacros.s
-	$(CC) $(CFLAGS) -c -DBFLOAT16 -UDOUBLE -UCOMPLEX sbgemmitcopy_nomacros.s -o $@
-	rm sbgemmitcopy.s sbgemmitcopy_nomacros.s
-else
 	$(CC) $(CFLAGS) -c -DBFLOAT16 -UDOUBLE -UCOMPLEX $< -o $@
-endif
 
 endif
 endif
@@ -668,7 +662,7 @@ $(KDIR)$(SGEMMONCOPYOBJ) : $(KERNELDIR)/$(SGEMMONCOPY)
 $(KDIR)$(SGEMMOTCOPYOBJ) : $(KERNELDIR)/$(SGEMMOTCOPY)
 ifeq ($(OS), AIX)
 	$(CC) $(CFLAGS) -S -UDOUBLE -UCOMPLEX $< -o - > sgemmotcopy.s
-	m4 sgemmotcopy.s > sgemmotcopy_nomacros.s
+	$(M4_AIX) sgemmotcopy.s > sgemmotcopy_nomacros.s
 	$(CC) $(CFLAGS) -c -UDOUBLE -UCOMPLEX sgemmotcopy_nomacros.s -o $@
 	rm sgemmotcopy.s sgemmotcopy_nomacros.s
 else
@@ -684,7 +678,7 @@ $(KDIR)$(SGEMMINCOPYOBJ) : $(KERNELDIR)/$(SGEMMINCOPY)
 $(KDIR)$(SGEMMITCOPYOBJ) : $(KERNELDIR)/$(SGEMMITCOPY)
 ifeq ($(OS), AIX)
 	$(CC) $(CFLAGS) -S -UDOUBLE -UCOMPLEX $< -o - > sgemmitcopy.s
-	m4 sgemmitcopy.s > sgemmitcopy_nomacros.s
+	$(M4_AIX) sgemmitcopy.s > sgemmitcopy_nomacros.s
 	$(CC) $(CFLAGS) -c -UDOUBLE -UCOMPLEX sgemmitcopy_nomacros.s -o $@
 	rm sgemmitcopy.s sgemmitcopy_nomacros.s
 else
@@ -696,7 +690,7 @@ endif
 $(KDIR)$(DGEMMONCOPYOBJ) : $(KERNELDIR)/$(DGEMMONCOPY)
 ifeq ($(OS), AIX)
 	$(CC) $(CFLAGS) -S -DDOUBLE -UCOMPLEX $< -o - > dgemm_ncopy.s
-	m4 dgemm_ncopy.s > dgemm_ncopy_nomacros.s
+	$(M4_AIX) dgemm_ncopy.s > dgemm_ncopy_nomacros.s
 	$(CC) $(CFLAGS) -c -DDOUBLE -UCOMPLEX dgemm_ncopy_nomacros.s -o $@
 	rm dgemm_ncopy.s dgemm_ncopy_nomacros.s
 else
@@ -714,7 +708,7 @@ $(KDIR)$(DGEMMINCOPYOBJ) : $(KERNELDIR)/$(DGEMMINCOPY)
 $(KDIR)$(DGEMMITCOPYOBJ) : $(KERNELDIR)/$(DGEMMITCOPY)
 ifeq ($(OS), AIX)
 	$(CC) $(CFLAGS) -S -DDOUBLE -UCOMPLEX $< -o - > dgemm_itcopy.s
-	m4 dgemm_itcopy.s > dgemm_itcopy_nomacros.s
+	$(M4_AIX) dgemm_itcopy.s > dgemm_itcopy_nomacros.s
 	$(CC) $(CFLAGS) -c -DDOUBLE -UCOMPLEX dgemm_itcopy_nomacros.s -o $@
 	rm dgemm_itcopy.s dgemm_itcopy_nomacros.s
 else
@@ -757,7 +751,7 @@ $(KDIR)$(CGEMMINCOPYOBJ) : $(KERNELDIR)/$(CGEMMINCOPY)
 $(KDIR)$(CGEMMITCOPYOBJ) : $(KERNELDIR)/$(CGEMMITCOPY)
 ifeq ($(OS), AIX)
 	$(CC) $(CFLAGS) -UDOUBLE -UCOMPLEX -S $< -o - > cgemm_itcopy.s
-	m4 cgemm_itcopy.s > cgemm_itcopy_nomacros.s
+	$(M4_AIX) cgemm_itcopy.s > cgemm_itcopy_nomacros.s
 	$(CC) $(CFLAGS) -c -UDOUBLE -UCOMPLEX cgemm_itcopy_nomacros.s -o $@
 	rm cgemm_itcopy.s cgemm_itcopy_nomacros.s
 else
@@ -780,7 +774,7 @@ $(KDIR)$(ZGEMMINCOPYOBJ) : $(KERNELDIR)/$(ZGEMMINCOPY)
 $(KDIR)$(ZGEMMITCOPYOBJ) : $(KERNELDIR)/$(ZGEMMITCOPY)
 ifeq ($(OS), AIX)
 	$(CC) $(CFLAGS) -S -DDOUBLE -UCOMPLEX $< -o - > zgemm_itcopy.s
-	m4 zgemm_itcopy.s > zgemm_itcopy_nomacros.s
+	$(M4_AIX) zgemm_itcopy.s > zgemm_itcopy_nomacros.s
 	$(CC) $(CFLAGS) -c -DDOUBLE -UCOMPLEX zgemm_itcopy_nomacros.s -o $@
 	rm zgemm_itcopy.s zgemm_itcopy_nomacros.s
 else
@@ -812,7 +806,7 @@ endif
 $(KDIR)sgemm_kernel$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(SGEMMKERNEL) $(SGEMMDEPEND)
 ifeq ($(OS), AIX)
 	$(CC) $(CFLAGS) -S -UDOUBLE -UCOMPLEX  $< -o - > sgemm_kernel$(TSUFFIX).s
-	m4 sgemm_kernel$(TSUFFIX).s > sgemm_kernel$(TSUFFIX)_nomacros.s
+	$(M4_AIX) sgemm_kernel$(TSUFFIX).s > sgemm_kernel$(TSUFFIX)_nomacros.s
 	$(CC) $(CFLAGS) -c -UDOUBLE -UCOMPLEX sgemm_kernel$(TSUFFIX)_nomacros.s -o $@
 	rm sgemm_kernel$(TSUFFIX).s sgemm_kernel$(TSUFFIX)_nomacros.s
 else
@@ -829,20 +823,13 @@ endif
 ifeq ($(BUILD_BFLOAT16), 1)
 
 $(KDIR)sbgemm_kernel$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(SBGEMMKERNEL) $(SBGEMMDEPEND)
-ifeq ($(OS), AIX)
-	$(CC) $(CFLAGS) -S -DBFLOAT16 -UDOUBLE -UCOMPLEX  $< -o - > sbgemm_kernel$(TSUFFIX).s
-	m4 sbgemm_kernel$(TSUFFIX).s > sbgemm_kernel$(TSUFFIX)_nomacros.s
-	$(CC) $(CFLAGS) -c -DBFLOAT16 -UDOUBLE -UCOMPLEX sbgemm_kernel$(TSUFFIX)_nomacros.s -o $@
-	rm sbgemm_kernel$(TSUFFIX).s sbgemm_kernel$(TSUFFIX)_nomacros.s
-else
 	$(CC) $(CFLAGS) -c -DBFLOAT16 -UDOUBLE -UCOMPLEX $< -o $@
-endif
 endif
 
 $(KDIR)dgemm_kernel$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(DGEMMKERNEL) $(DGEMMDEPEND)
 ifeq ($(OS), AIX)
 	$(CC) $(CFLAGS) -S -DDOUBLE -UCOMPLEX $< -o - > dgemm_kernel$(TSUFFIX).s
-	m4 dgemm_kernel$(TSUFFIX).s > dgemm_kernel$(TSUFFIX)_nomacros.s
+	$(M4_AIX) dgemm_kernel$(TSUFFIX).s > dgemm_kernel$(TSUFFIX)_nomacros.s
 	$(CC) $(CFLAGS) -c -DDOUBLE -UCOMPLEX dgemm_kernel$(TSUFFIX)_nomacros.s -o $@
 	rm dgemm_kernel$(TSUFFIX).s dgemm_kernel$(TSUFFIX)_nomacros.s
 else
@@ -855,7 +842,7 @@ $(KDIR)qgemm_kernel$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(QGEMMKERNEL) $(QGEMMDEP
 $(KDIR)cgemm_kernel_n$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(CGEMMKERNEL) $(CGEMMDEPEND)
 ifeq ($(OS), AIX)
 	$(CC) $(CFLAGS) -S -UDOUBLE -DCOMPLEX -DNN $< -o - > cgemm_kernel_n.s
-	m4 cgemm_kernel_n.s > cgemm_kernel_n_nomacros.s
+	$(M4_AIX) cgemm_kernel_n.s > cgemm_kernel_n_nomacros.s
 	$(CC) $(CFLAGS) -c -UDOUBLE -DCOMPLEX -DNN cgemm_kernel_n_nomacros.s -o $@
 	rm cgemm_kernel_n.s cgemm_kernel_n_nomacros.s
 else
@@ -865,7 +852,7 @@ endif
 $(KDIR)cgemm_kernel_l$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(CGEMMKERNEL) $(CGEMMDEPEND)
 ifeq ($(OS), AIX)
 	$(CC) $(CFLAGS) -S -UDOUBLE -DCOMPLEX -DCN $< -o - > cgemm_kernel_l.s
-	m4 cgemm_kernel_l.s > cgemm_kernel_l_nomacros.s
+	$(M4_AIX) cgemm_kernel_l.s > cgemm_kernel_l_nomacros.s
 	$(CC) $(CFLAGS) -c -UDOUBLE -DCOMPLEX -DCN cgemm_kernel_l_nomacros.s -o $@
 	rm cgemm_kernel_l.s cgemm_kernel_l_nomacros.s
 else
@@ -875,7 +862,7 @@ endif
 $(KDIR)cgemm_kernel_r$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(CGEMMKERNEL) $(CGEMMDEPEND)
 ifeq ($(OS), AIX)
 	$(CC) $(CFLAGS) -S -UDOUBLE -DCOMPLEX -DNC  $< -o - > cgemm_kernel_r.s
-	m4 cgemm_kernel_r.s > cgemm_kernel_r_nomacros.s
+	$(M4_AIX) cgemm_kernel_r.s > cgemm_kernel_r_nomacros.s
 	$(CC) $(CFLAGS) -c -UDOUBLE -DCOMPLEX -DNC cgemm_kernel_r_nomacros.s -o $@
 	rm cgemm_kernel_r.s cgemm_kernel_r_nomacros.s
 else
@@ -885,7 +872,7 @@ endif
 $(KDIR)cgemm_kernel_b$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(CGEMMKERNEL) $(CGEMMDEPEND)
 ifeq ($(OS), AIX)
 	$(CC) $(CFLAGS) -S -UDOUBLE -DCOMPLEX -DCC $< -o - > cgemm_kernel_b.s
-	m4 cgemm_kernel_b.s > cgemm_kernel_b_nomacros.s
+	$(M4_AIX) cgemm_kernel_b.s > cgemm_kernel_b_nomacros.s
 	$(CC) $(CFLAGS) -c -UDOUBLE -DCOMPLEX -DCC cgemm_kernel_b_nomacros.s -o $@
 	rm cgemm_kernel_b.s cgemm_kernel_b_nomacros.s
 else
@@ -895,7 +882,7 @@ endif
 $(KDIR)zgemm_kernel_n$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(ZGEMMKERNEL) $(ZGEMMDEPEND)
 ifeq ($(OS), AIX)
 	$(CC) $(CFLAGS) -S -DDOUBLE -DCOMPLEX -DNN $< -o - > zgemm_kernel_n.s
-	m4 zgemm_kernel_n.s > zgemm_kernel_n_nomacros.s
+	$(M4_AIX) zgemm_kernel_n.s > zgemm_kernel_n_nomacros.s
 	$(CC) $(CFLAGS) -c -DDOUBLE -DCOMPLEX -DNN zgemm_kernel_n_nomacros.s -o $@
 	rm zgemm_kernel_n.s zgemm_kernel_n_nomacros.s
 else ifeq ($(CORE),SANDYBRIDGE)
@@ -907,7 +894,7 @@ endif
 $(KDIR)zgemm_kernel_l$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(ZGEMMKERNEL) $(ZGEMMDEPEND)
 ifeq ($(OS), AIX)
 	$(CC) $(CFLAGS) -S -DDOUBLE -DCOMPLEX -DCN $< -o - > zgemm_kernel_l.s
-	m4 zgemm_kernel_l.s > zgemm_kernel_l_nomacros.s
+	$(M4_AIX) zgemm_kernel_l.s > zgemm_kernel_l_nomacros.s
 	$(CC) $(CFLAGS) -c -DDOUBLE -DCOMPLEX -DCN zgemm_kernel_l_nomacros.s -o $@
 	rm zgemm_kernel_l.s zgemm_kernel_l_nomacros.s
 else ifeq ($(CORE),SANDYBRIDGE)
@@ -919,7 +906,7 @@ endif
 $(KDIR)zgemm_kernel_r$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(ZGEMMKERNEL) $(ZGEMMDEPEND)
 ifeq ($(OS), AIX)
 	$(CC) $(CFLAGS) -S -DDOUBLE -DCOMPLEX -DNC $< -o - > zgemm_kernel_r.s
-	m4 zgemm_kernel_r.s > zgemm_kernel_r_nomacros.s
+	$(M4_AIX) zgemm_kernel_r.s > zgemm_kernel_r_nomacros.s
 	$(CC) $(CFLAGS) -c -DDOUBLE -DCOMPLEX -DNC zgemm_kernel_r_nomacros.s -o $@
 	rm zgemm_kernel_r.s zgemm_kernel_r_nomacros.s
 else ifeq ($(CORE),SANDYBRIDGE)
@@ -931,7 +918,7 @@ endif
 $(KDIR)zgemm_kernel_b$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(ZGEMMKERNEL) $(ZGEMMDEPEND)
 ifeq ($(OS), AIX)
 	$(CC) $(CFLAGS) -S -DDOUBLE -DCOMPLEX -DCC $< -o - > zgemm_kernel_b.s
-	m4 zgemm_kernel_b.s > zgemm_kernel_b_nomacros.s
+	$(M4_AIX) zgemm_kernel_b.s > zgemm_kernel_b_nomacros.s
 	$(CC) $(CFLAGS) -c -DDOUBLE -DCOMPLEX -DCC zgemm_kernel_b_nomacros.s -o $@
 	rm zgemm_kernel_b.s zgemm_kernel_b_nomacros.s
 else ifeq ($(CORE),SANDYBRIDGE)
@@ -957,7 +944,7 @@ ifdef USE_TRMM
 $(KDIR)strmm_kernel_LN$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(STRMMKERNEL)
 ifeq ($(OS), AIX)
 	$(CC) $(CFLAGS) -S -DTRMMKERNEL -UDOUBLE -UCOMPLEX -DLEFT -UTRANSA $< -o - > strmmkernel_ln.s	
-	m4 strmmkernel_ln.s > strmmkernel_ln_nomacros.s
+	$(M4_AIX) strmmkernel_ln.s > strmmkernel_ln_nomacros.s
 	$(CC) $(CFLAGS) -c -DTRMMKERNEL -UDOUBLE -UCOMPLEX -DLEFT -UTRANSA strmmkernel_ln_nomacros.s -o $@
 	rm strmmkernel_ln.s strmmkernel_ln_nomacros.s
 else
@@ -967,7 +954,7 @@ endif
 $(KDIR)strmm_kernel_LT$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(STRMMKERNEL)
 ifeq ($(OS), AIX)
 	$(CC) $(CFLAGS) -S -DTRMMKERNEL -UDOUBLE -UCOMPLEX -DLEFT -DTRANSA $< -o - > strmmkernel_lt.s	
-	m4 strmmkernel_lt.s > strmmkernel_lt_nomacros.s
+	$(M4_AIX) strmmkernel_lt.s > strmmkernel_lt_nomacros.s
 	$(CC) $(CFLAGS) -c -DTRMMKERNEL -UDOUBLE -UCOMPLEX -DLEFT -DTRANSA strmmkernel_lt_nomacros.s -o $@
 	rm strmmkernel_lt.s strmmkernel_lt_nomacros.s
 else
@@ -977,7 +964,7 @@ endif
 $(KDIR)strmm_kernel_RN$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(STRMMKERNEL)
 ifeq ($(OS), AIX)
 	$(CC) $(CFLAGS) -S -DTRMMKERNEL -UDOUBLE -UCOMPLEX -ULEFT -UTRANSA $< -o - > strmmkernel_rn.s	
-	m4 strmmkernel_rn.s > strmmkernel_rn_nomacros.s
+	$(M4_AIX) strmmkernel_rn.s > strmmkernel_rn_nomacros.s
 	$(CC) $(CFLAGS) -c -DTRMMKERNEL -UDOUBLE -UCOMPLEX -ULEFT -UTRANSA strmmkernel_rn_nomacros.s -o $@
 	rm strmmkernel_rn.s strmmkernel_rn_nomacros.s
 else
@@ -987,7 +974,7 @@ endif
 $(KDIR)strmm_kernel_RT$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(STRMMKERNEL)
 ifeq ($(OS), AIX)
 	$(CC) $(CFLAGS) -S -DTRMMKERNEL -UDOUBLE -UCOMPLEX -ULEFT -DTRANSA $< -o - > strmm_kernel_rt.s	
-	m4 strmm_kernel_rt.s > strmm_kernel_rt_nomacros.s
+	$(M4_AIX) strmm_kernel_rt.s > strmm_kernel_rt_nomacros.s
 	$(CC) $(CFLAGS) -c -DTRMMKERNEL -UDOUBLE -UCOMPLEX -ULEFT -DTRANSA strmm_kernel_rt_nomacros.s -o $@
 	rm strmm_kernel_rt.s strmm_kernel_rt_nomacros.s
 else
@@ -997,7 +984,7 @@ endif
 $(KDIR)dtrmm_kernel_LN$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(DTRMMKERNEL)
 ifeq ($(OS), AIX)
 	$(CC) $(CFLAGS) -S -DTRMMKERNEL -DDOUBLE -UCOMPLEX -DLEFT -UTRANSA $< -o - > dtrmm_kernel_ln.s
-	m4 dtrmm_kernel_ln.s > dtrmm_kernel_ln_nomacros.s
+	$(M4_AIX) dtrmm_kernel_ln.s > dtrmm_kernel_ln_nomacros.s
 	$(CC) $(CFLAGS) -c -DTRMMKERNEL -DDOUBLE -UCOMPLEX -DLEFT -UTRANSA dtrmm_kernel_ln_nomacros.s -o $@
 	rm dtrmm_kernel_ln.s dtrmm_kernel_ln_nomacros.s
 else
@@ -1007,7 +994,7 @@ endif
 $(KDIR)dtrmm_kernel_LT$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(DTRMMKERNEL)
 ifeq ($(OS), AIX)
 	$(CC) $(CFLAGS) -S -DTRMMKERNEL -DDOUBLE -UCOMPLEX -DLEFT -DTRANSA $< -o - > dtrmm_kernel_lt.s
-	m4 dtrmm_kernel_lt.s > dtrmm_kernel_lt_nomacros.s
+	$(M4_AIX) dtrmm_kernel_lt.s > dtrmm_kernel_lt_nomacros.s
 	$(CC) $(CFLAGS) -c -DTRMMKERNEL -DDOUBLE -UCOMPLEX -DLEFT -DTRANSA dtrmm_kernel_lt_nomacros.s -o $@
 	rm dtrmm_kernel_lt.s dtrmm_kernel_lt_nomacros.s
 else
@@ -1017,7 +1004,7 @@ endif
 $(KDIR)dtrmm_kernel_RN$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(DTRMMKERNEL)
 ifeq ($(OS), AIX)
 	$(CC) $(CFLAGS) -S -DTRMMKERNEL -DDOUBLE -UCOMPLEX -ULEFT -UTRANSA $< -o - > dtrmm_kernel_rn.s
-	m4 dtrmm_kernel_rn.s > dtrmm_kernel_rn_nomacros.s
+	$(M4_AIX) dtrmm_kernel_rn.s > dtrmm_kernel_rn_nomacros.s
 	$(CC) $(CFLAGS) -c -DTRMMKERNEL -DDOUBLE -UCOMPLEX -ULEFT -UTRANSA dtrmm_kernel_rn_nomacros.s -o $@
 	rm dtrmm_kernel_rn.s dtrmm_kernel_rn_nomacros.s
 else
@@ -1027,7 +1014,7 @@ endif
 $(KDIR)dtrmm_kernel_RT$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(DTRMMKERNEL)
 ifeq ($(OS), AIX)
 	$(CC) $(CFLAGS) -S -DTRMMKERNEL -DDOUBLE -UCOMPLEX -ULEFT -DTRANSA $< -o - > dtrmm_kernel_rt.s
-	m4 dtrmm_kernel_rt.s > dtrmm_kernel_rt_nomacros.s
+	$(M4_AIX) dtrmm_kernel_rt.s > dtrmm_kernel_rt_nomacros.s
 	$(CC) $(CFLAGS) -c -DTRMMKERNEL -DDOUBLE -UCOMPLEX -ULEFT -DTRANSA dtrmm_kernel_rt_nomacros.s -o $@
 	rm dtrmm_kernel_rt.s dtrmm_kernel_rt_nomacros.s
 else
@@ -1049,7 +1036,7 @@ $(KDIR)qtrmm_kernel_RT$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(QGEMMKERNEL)
 $(KDIR)ctrmm_kernel_LN$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(CTRMMKERNEL)
 ifeq ($(OS), AIX)
 	$(CC) $(CFLAGS) -S -DTRMMKERNEL -UDOUBLE -DCOMPLEX -DLEFT -UTRANSA -UCONJ -DNN  $< -o - > ctrmm_kernel_ln.s
-	m4 ctrmm_kernel_ln.s > ctrmm_kernel_ln_nomacros.s
+	$(M4_AIX) ctrmm_kernel_ln.s > ctrmm_kernel_ln_nomacros.s
 	$(CC) $(CFLAGS) -c -DTRMMKERNEL -UDOUBLE -DCOMPLEX -DLEFT -UTRANSA -UCONJ -DNN ctrmm_kernel_ln_nomacros.s -o $@
 	rm ctrmm_kernel_ln.s ctrmm_kernel_ln_nomacros.s
 else
@@ -1059,7 +1046,7 @@ endif
 $(KDIR)ctrmm_kernel_LT$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(CTRMMKERNEL)
 ifeq ($(OS), AIX)
 	$(CC) $(CFLAGS) -S -DTRMMKERNEL -UDOUBLE -DCOMPLEX -DLEFT -DTRANSA -UCONJ -DNN $< -o - > ctrmm_kernel_lt.s
-	m4 ctrmm_kernel_lt.s > ctrmm_kernel_lt_nomacros.s
+	$(M4_AIX) ctrmm_kernel_lt.s > ctrmm_kernel_lt_nomacros.s
 	$(CC) $(CFLAGS) -c -DTRMMKERNEL -UDOUBLE -DCOMPLEX -DLEFT -DTRANSA -UCONJ -DNN ctrmm_kernel_lt_nomacros.s -o $@
 	rm ctrmm_kernel_lt.s ctrmm_kernel_lt_nomacros.s
 else
@@ -1069,7 +1056,7 @@ endif
 $(KDIR)ctrmm_kernel_LR$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(CTRMMKERNEL)
 ifeq ($(OS), AIX)
 	$(CC) $(CFLAGS) -S -DTRMMKERNEL -UDOUBLE -DCOMPLEX -DLEFT -UTRANSA -DCONJ -DCN $< -o - > ctrmm_kernel_lr.s
-	m4 ctrmm_kernel_lr.s > ctrmm_kernel_lr_nomacros.s
+	$(M4_AIX) ctrmm_kernel_lr.s > ctrmm_kernel_lr_nomacros.s
 	$(CC) $(CFLAGS) -c -DTRMMKERNEL -UDOUBLE -DCOMPLEX -DLEFT -UTRANSA -DCONJ -DCN  ctrmm_kernel_lr_nomacros.s -o $@
 	rm ctrmm_kernel_lr.s ctrmm_kernel_lr_nomacros.s
 else
@@ -1079,7 +1066,7 @@ endif
 $(KDIR)ctrmm_kernel_LC$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(CTRMMKERNEL)
 ifeq ($(OS), AIX)
 	$(CC) $(CFLAGS) -S -DTRMMKERNEL -UDOUBLE -DCOMPLEX -DLEFT -DTRANSA -DCONJ -DCN $< -o - > ctrmm_kernel_lc.s
-	m4 ctrmm_kernel_lc.s > ctrmm_kernel_lc_nomacros.s
+	$(M4_AIX) ctrmm_kernel_lc.s > ctrmm_kernel_lc_nomacros.s
 	$(CC) $(CFLAGS) -c -DTRMMKERNEL -UDOUBLE -DCOMPLEX -DLEFT -DTRANSA -DCONJ -DCN ctrmm_kernel_lc_nomacros.s -o $@
 	rm ctrmm_kernel_lc_nomacros.s ctrmm_kernel_lc.s
 else
@@ -1089,7 +1076,7 @@ endif
 $(KDIR)ctrmm_kernel_RN$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(CTRMMKERNEL)
 ifeq ($(OS), AIX)
 	$(CC) $(CFLAGS) -S -DTRMMKERNEL -UDOUBLE -DCOMPLEX -ULEFT -UTRANSA -UCONJ -DNN $< -o - > ctrmm_kernel_rn.s
-	m4 ctrmm_kernel_rn.s > ctrmm_kernel_rn_nomacros.s
+	$(M4_AIX) ctrmm_kernel_rn.s > ctrmm_kernel_rn_nomacros.s
 	$(CC) $(CFLAGS) -c -DTRMMKERNEL -UDOUBLE -DCOMPLEX -ULEFT -UTRANSA -UCONJ -DNN ctrmm_kernel_rn_nomacros.s -o $@
 	rm ctrmm_kernel_rn.s ctrmm_kernel_rn_nomacros.s
 else
@@ -1099,7 +1086,7 @@ endif
 $(KDIR)ctrmm_kernel_RT$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(CTRMMKERNEL)
 ifeq ($(OS), AIX)
 	$(CC) $(CFLAGS) -S -DTRMMKERNEL -UDOUBLE -DCOMPLEX -ULEFT -DTRANSA -UCONJ -DNN $< -o - > ctrmm_kernel_rt.s
-	m4 ctrmm_kernel_rt.s > ctrmm_kernel_rt_nomacros.s
+	$(M4_AIX) ctrmm_kernel_rt.s > ctrmm_kernel_rt_nomacros.s
 	$(CC) $(CFLAGS) -c -DTRMMKERNEL -UDOUBLE -DCOMPLEX -ULEFT -DTRANSA -UCONJ -DNN ctrmm_kernel_rt_nomacros.s -o $@
 	rm ctrmm_kernel_rt.s ctrmm_kernel_rt_nomacros.s
 else
@@ -1109,7 +1096,7 @@ endif
 $(KDIR)ctrmm_kernel_RR$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(CTRMMKERNEL)
 ifeq ($(OS), AIX)
 	$(CC) $(CFLAGS) -S -DTRMMKERNEL -UDOUBLE -DCOMPLEX -ULEFT -UTRANSA -DCONJ -DNC $< -o - > ctrmm_kernel_rr.s
-	m4 ctrmm_kernel_rr.s > ctrmm_kernel_rr_nomacros.s
+	$(M4_AIX) ctrmm_kernel_rr.s > ctrmm_kernel_rr_nomacros.s
 	$(CC) $(CFLAGS) -c -DTRMMKERNEL -UDOUBLE -DCOMPLEX -ULEFT -UTRANSA -DCONJ -DNC ctrmm_kernel_rr_nomacros.s -o $@
 	rm ctrmm_kernel_rr.s ctrmm_kernel_rr_nomacros.s
 else
@@ -1119,7 +1106,7 @@ endif
 $(KDIR)ctrmm_kernel_RC$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(CTRMMKERNEL)
 ifeq ($(OS), AIX)
 	$(CC) $(CFLAGS) -S -DTRMMKERNEL -UDOUBLE -DCOMPLEX -ULEFT -DTRANSA -DCONJ -DNC $< -o - > ctrmm_kernel_RC.s
-	m4 ctrmm_kernel_RC.s > ctrmm_kernel_RC_nomacros.s
+	$(M4_AIX) ctrmm_kernel_RC.s > ctrmm_kernel_RC_nomacros.s
 	$(CC) $(CFLAGS) -c -DTRMMKERNEL -UDOUBLE -DCOMPLEX -ULEFT -DTRANSA -DCONJ -DNC ctrmm_kernel_RC_nomacros.s -o $@
 	rm ctrmm_kernel_RC.s ctrmm_kernel_RC_nomacros.s
 else
@@ -1129,7 +1116,7 @@ endif
 $(KDIR)ztrmm_kernel_LN$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(ZTRMMKERNEL)
 ifeq ($(OS), AIX)
 	$(CC) $(CFLAGS) -S -DTRMMKERNEL -DDOUBLE -DCOMPLEX -DLEFT -UTRANSA -UCONJ -DNN $< -o - > ztrmm_kernel_ln.s
-	m4 ztrmm_kernel_ln.s > ztrmm_kernel_ln_nomacros.s
+	$(M4_AIX) ztrmm_kernel_ln.s > ztrmm_kernel_ln_nomacros.s
 	$(CC) $(CFLAGS) -c -DTRMMKERNEL -DDOUBLE -DCOMPLEX -DLEFT -UTRANSA -UCONJ -DNN ztrmm_kernel_ln_nomacros.s -o $@
 	rm ztrmm_kernel_ln.s ztrmm_kernel_ln_nomacros.s
 else ifeq ($(CORE), SANDYBRIDGE)
@@ -1141,7 +1128,7 @@ endif
 $(KDIR)ztrmm_kernel_LT$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(ZTRMMKERNEL)
 ifeq ($(OS), AIX)
 	$(CC) $(CFLAGS) -S -DTRMMKERNEL -DDOUBLE -DCOMPLEX -DLEFT -DTRANSA -UCONJ -DNN $< -o - > ztrmm_kernel_lt.s
-	m4 ztrmm_kernel_lt.s > ztrmm_kernel_lt_nomacros.s
+	$(M4_AIX) ztrmm_kernel_lt.s > ztrmm_kernel_lt_nomacros.s
 	$(CC) $(CFLAGS) -c -DTRMMKERNEL -DDOUBLE -DCOMPLEX -DLEFT -DTRANSA -UCONJ -DNN ztrmm_kernel_lt_nomacros.s -o $@
 	rm ztrmm_kernel_lt.s ztrmm_kernel_lt_nomacros.s
 else ifeq ($(CORE), SANDYBRIDGE)
@@ -1153,7 +1140,7 @@ endif
 $(KDIR)ztrmm_kernel_LR$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(ZTRMMKERNEL)
 ifeq ($(OS), AIX)
 	$(CC) $(CFLAGS) -S -DTRMMKERNEL -DDOUBLE -DCOMPLEX -DLEFT -UTRANSA -DCONJ -DCN $< -o - > ztrmm_kernel_lr.s
-	m4 ztrmm_kernel_lr.s > ztrmm_kernel_lr_nomacros.s
+	$(M4_AIX) ztrmm_kernel_lr.s > ztrmm_kernel_lr_nomacros.s
 	$(CC) $(CFLAGS) -c -DTRMMKERNEL -DDOUBLE -DCOMPLEX -DLEFT -UTRANSA -DCONJ -DCN ztrmm_kernel_lr_nomacros.s -o $@
 	rm ztrmm_kernel_lr.s ztrmm_kernel_lr_nomacros.s
 else ifeq ($(CORE), SANDYBRIDGE)
@@ -1165,7 +1152,7 @@ endif
 $(KDIR)ztrmm_kernel_LC$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(ZTRMMKERNEL)
 ifeq ($(OS), AIX)
 	$(CC) $(CFLAGS) -S -DTRMMKERNEL -DDOUBLE -DCOMPLEX -DLEFT -DTRANSA -DCONJ -DCN $< -o - > ztrmm_kernel_lc.s
-	m4 ztrmm_kernel_lc.s >ztrmm_kernel_lc_nomacros.s
+	$(M4_AIX) ztrmm_kernel_lc.s >ztrmm_kernel_lc_nomacros.s
 	$(CC) $(CFLAGS) -c -DTRMMKERNEL -DDOUBLE -DCOMPLEX -DLEFT -DTRANSA -DCONJ -DCN ztrmm_kernel_lc_nomacros.s -o $@
 	rm ztrmm_kernel_lc.s ztrmm_kernel_lc_nomacros.s 
 else ifeq ($(CORE), SANDYBRIDGE)
@@ -1177,7 +1164,7 @@ endif
 $(KDIR)ztrmm_kernel_RN$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(ZTRMMKERNEL)
 ifeq ($(OS), AIX)
 	$(CC) $(CFLAGS) -S -DTRMMKERNEL -DDOUBLE -DCOMPLEX -ULEFT -UTRANSA -UCONJ -DNN $< -o - > ztrmm_kernel_rn.s
-	m4 ztrmm_kernel_rn.s > ztrmm_kernel_rn_nomacros.s
+	$(M4_AIX) ztrmm_kernel_rn.s > ztrmm_kernel_rn_nomacros.s
 	$(CC) $(CFLAGS) -c -DTRMMKERNEL -DDOUBLE -DCOMPLEX -ULEFT -UTRANSA -UCONJ -DNN ztrmm_kernel_rn_nomacros.s -o $@
 	rm ztrmm_kernel_rn.s ztrmm_kernel_rn_nomacros.s
 else ifeq ($(CORE), SANDYBRIDGE)
@@ -1189,7 +1176,7 @@ endif
 $(KDIR)ztrmm_kernel_RT$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(ZTRMMKERNEL)
 ifeq ($(OS), AIX)
 	$(CC) $(CFLAGS) -S -DTRMMKERNEL -DDOUBLE -DCOMPLEX -ULEFT -DTRANSA -UCONJ -DNN $< -o - > ztrmm_kernel_rt.s
-	m4 ztrmm_kernel_rt.s > ztrmm_kernel_rt_nomacros.s
+	$(M4_AIX) ztrmm_kernel_rt.s > ztrmm_kernel_rt_nomacros.s
 	$(CC) $(CFLAGS) -c -DTRMMKERNEL -DDOUBLE -DCOMPLEX -ULEFT -DTRANSA -UCONJ -DNN ztrmm_kernel_rt_nomacros.s -o $@
 	rm ztrmm_kernel_rt.s ztrmm_kernel_rt_nomacros.s
 else ifeq ($(CORE), SANDYBRIDGE)
@@ -1201,7 +1188,7 @@ endif
 $(KDIR)ztrmm_kernel_RR$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(ZTRMMKERNEL)
 ifeq ($(OS), AIX)
 	$(CC) $(CFLAGS) -S -DTRMMKERNEL -DDOUBLE -DCOMPLEX -ULEFT -UTRANSA -DCONJ -DNC $< -o - > ztrmm_kernel_rr.s
-	m4 ztrmm_kernel_rr.s > ztrmm_kernel_rr_nomacros.s
+	$(M4_AIX) ztrmm_kernel_rr.s > ztrmm_kernel_rr_nomacros.s
 	$(CC) $(CFLAGS) -c -DTRMMKERNEL -DDOUBLE -DCOMPLEX -ULEFT -UTRANSA -DCONJ -DNC ztrmm_kernel_rr_nomacros.s -o $@
 	rm ztrmm_kernel_rr.s ztrmm_kernel_rr_nomacros.s
 else ifeq ($(CORE), SANDYBRIDGE)
@@ -1213,7 +1200,7 @@ endif
 $(KDIR)ztrmm_kernel_RC$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(ZTRMMKERNEL)
 ifeq ($(OS), AIX)
 	$(CC) $(CFLAGS) -S -DTRMMKERNEL -DDOUBLE -DCOMPLEX -ULEFT -DTRANSA -DCONJ -DNC $< -o - > ztrmm_kernel_rc.s
-	m4 ztrmm_kernel_rc.s > ztrmm_kernel_rc_nomacros.s
+	$(M4_AIX) ztrmm_kernel_rc.s > ztrmm_kernel_rc_nomacros.s
 	$(CC) $(CFLAGS) -c -DTRMMKERNEL -DDOUBLE -DCOMPLEX -ULEFT -DTRANSA -DCONJ -DNC ztrmm_kernel_rc_nomacros.s -o $@
 	rm ztrmm_kernel_rc.s ztrmm_kernel_rc_nomacros.s
 else ifeq ($(CORE), SANDYBRIDGE)
@@ -1235,7 +1222,7 @@ $(KDIR)strmm_kernel_RN$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(SGEMMKERNEL)
 $(KDIR)strmm_kernel_RT$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(SGEMMKERNEL)
 ifeq ($(OS), AIX)
 	$(CC) $(CFLAGS) -S -DTRMMKERNEL -UDOUBLE -UCOMPLEX -ULEFT -DTRANSA $< -o - > strmm_kernel_rt.s	
-	m4 strmm_kernel_rt.s > strmm_kernel_rt_nomacros.s
+	$(M4_AIX) strmm_kernel_rt.s > strmm_kernel_rt_nomacros.s
 	$(CC) $(CFLAGS) -c -DTRMMKERNEL -UDOUBLE -UCOMPLEX -ULEFT -DTRANSA strmm_kernel_rt_nomacros.s -o $@
 	rm strmm_kernel_rt.s strmm_kernel_rt_nomacros.s
 else
@@ -1395,7 +1382,7 @@ $(KDIR)dtrsm_kernel_LN$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(DTRSMKERNEL_LN) $(DT
 $(KDIR)dtrsm_kernel_LT$(TSUFFIX).$(SUFFIX) : $(KERNELDIR)/$(DTRSMKERNEL_LT) $(DTRSMDEPEND)
 ifeq ($(OS), AIX)
 	$(CC) $(CFLAGS) -S -DTRSMKERNEL -UCOMPLEX -DDOUBLE -UUPPER -DLT -UCONJ $< -o - > dtrsm_kernel_lt.s
-	m4 dtrsm_kernel_lt.s > dtrsm_kernel_lt_nomacros.s
+	$(M4_AIX) dtrsm_kernel_lt.s > dtrsm_kernel_lt_nomacros.s
 	$(CC) -c $(CFLAGS) -DTRSMKERNEL -UCOMPLEX -DDOUBLE -UUPPER -DLT -UCONJ dtrsm_kernel_lt_nomacros.s -o $@
 	rm dtrsm_kernel_lt.s dtrsm_kernel_lt_nomacros.s
 else
@@ -2987,7 +2974,7 @@ $(KDIR)cgemm_kernel_l$(TSUFFIX).$(PSUFFIX) : $(KERNELDIR)/$(CGEMMKERNEL) $(CGEMM
 $(KDIR)cgemm_kernel_r$(TSUFFIX).$(PSUFFIX) : $(KERNELDIR)/$(CGEMMKERNEL) $(CGEMMDEPEND)
 ifeq ($(OS), AIX)
 	$(CC) $(PFLAGS) -S -UDOUBLE -DCOMPLEX -DNC $< -o - > cgemm_kernel_r.s
-	m4 cgemm_kernel_r.s > cgemm_kernel_r_nomacros.s
+	$(M4_AIX) cgemm_kernel_r.s > cgemm_kernel_r_nomacros.s
 	$(CC) $(PFLAGS) -c -UDOUBLE -DCOMPLEX -DNC cgemm_kernel_r_nomacros.s -o $@
 	rm cgemm_kernel_r.s cgemm_kernel_r_nomacros.s 
 else
@@ -3033,7 +3020,7 @@ $(KDIR)strmm_kernel_RN$(TSUFFIX).$(PSUFFIX) : $(KERNELDIR)/$(SGEMMKERNEL)
 $(KDIR)strmm_kernel_RT$(TSUFFIX).$(PSUFFIX) : $(KERNELDIR)/$(SGEMMKERNEL)
 ifeq ($(OS), AIX)
 	$(CC) $(CFLAGS) -S -DTRMMKERNEL -UDOUBLE -UCOMPLEX -ULEFT -DTRANSA $< -o - > strmm_kernel_rt.s	
-	m4 strmmkernel_rn.s > strmm_kernel_rt_nomacros.s
+	$(M4_AIX) strmmkernel_rn.s > strmm_kernel_rt_nomacros.s
 	$(CC) $(PFLAGS) -c -DTRMMKERNEL -UDOUBLE -UCOMPLEX -ULEFT -DTRANSA strmm_kernel_rt_nomacros.s -o $@
 	rm strmm_kernel_rt.s strmm_kernel_rt_nomacros.s
 else
