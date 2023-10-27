@@ -54,10 +54,15 @@ Building OpenBLAS requires the following to be installed:
 
 Simply invoking `make` (or `gmake` on BSD) will detect the CPU automatically.
 To set a specific target CPU, use `make TARGET=xxx`, e.g. `make TARGET=NEHALEM`.
-The full target list is in the file `TargetList.txt`. For building with `cmake`, the
-usual conventions apply, i.e. create a build directory either underneath the toplevel
-OpenBLAS source directory or separate from it, and invoke `cmake` there with the path
-to the source tree and any build options you plan to set.
+The full target list is in the file `TargetList.txt`, other build optionss are documented in Makefile.rule and
+can either be set there (typically by removing the comment character from the respective line), or used on the
+`make` command line. 
+Note that when you run `make install` after building, you need to repeat all command line options you provided to `make`
+in the build step, as some settings like the supported maximum number of threads are automatically derived from the
+build host by default, which might not be what you want.
+For building with `cmake`, the usual conventions apply, i.e. create a build directory either underneath the toplevel
+OpenBLAS source directory or separate from it, and invoke `cmake` there with the path to the source tree and any 
+build options you plan to set.
 
 ### Cross compile
 
