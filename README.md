@@ -54,10 +54,15 @@ Building OpenBLAS requires the following to be installed:
 
 Simply invoking `make` (or `gmake` on BSD) will detect the CPU automatically.
 To set a specific target CPU, use `make TARGET=xxx`, e.g. `make TARGET=NEHALEM`.
-The full target list is in the file `TargetList.txt`. For building with `cmake`, the
-usual conventions apply, i.e. create a build directory either underneath the toplevel
-OpenBLAS source directory or separate from it, and invoke `cmake` there with the path
-to the source tree and any build options you plan to set.
+The full target list is in the file `TargetList.txt`, other build optionss are documented in Makefile.rule and
+can either be set there (typically by removing the comment character from the respective line), or used on the
+`make` command line. 
+Note that when you run `make install` after building, you need to repeat all command line options you provided to `make`
+in the build step, as some settings like the supported maximum number of threads are automatically derived from the
+build host by default, which might not be what you want.
+For building with `cmake`, the usual conventions apply, i.e. create a build directory either underneath the toplevel
+OpenBLAS source directory or separate from it, and invoke `cmake` there with the path to the source tree and any 
+build options you plan to set.
 
 ### Cross compile
 
@@ -117,7 +122,7 @@ Use `PREFIX=` when invoking `make`, for example
 ```sh
 make install PREFIX=your_installation_directory
 ```
-
+(along with all options you added on the `make` command line in the preceding build step)
 The default installation directory is `/opt/OpenBLAS`.
 
 ## Supported CPUs and Operating Systems
@@ -137,7 +142,7 @@ Please read `GotoBLAS_01Readme.txt` for older CPU models already supported by th
 - **AMD Bulldozer**: x86-64 ?GEMM FMA4 kernels. (Thanks to Werner Saar)
 - **AMD PILEDRIVER**: Uses Bulldozer codes with some optimizations.
 - **AMD STEAMROLLER**: Uses Bulldozer codes with some optimizations.
-- **AMD ZEN**: Uses Haswell codes with some optimizations.
+- **AMD ZEN**: Uses Haswell codes with some optimizations for Zen 2/3 (use SkylakeX for Zen4)
 
 #### MIPS32
 
@@ -169,13 +174,16 @@ Please read `GotoBLAS_01Readme.txt` for older CPU models already supported by th
 - **TSV110**: Optimized some Level-3 helper functions
 - **EMAG 8180**: preliminary support based on A57
 - **Neoverse N1**: (AWS Graviton2) preliminary support
-- **Apple Vortex**: preliminary support based on ARMV8
+- **Neoverse V1**: (AWS Graviton3) optimized Level-3 BLAS
+- **Apple Vortex**: preliminary support based on ThunderX2/3
+- **A64FX**:  preliminary support, optimized Level-3 BLAS
+- **ARMV8SVE**: any ARMV8 cpu with SVE extensions 
 
 #### PPC/PPC64
 
 - **POWER8**: Optimized BLAS, only for PPC64LE (Little Endian), only with `USE_OPENMP=1`
 - **POWER9**: Optimized Level-3 BLAS (real) and some Level-1,2. PPC64LE with OpenMP only. 
-- **POWER10**:
+- **POWER10**: Optimized Level-3 BLAS including SBGEMM and some Level-1,2.
 
 #### IBM zEnterprise System
 
