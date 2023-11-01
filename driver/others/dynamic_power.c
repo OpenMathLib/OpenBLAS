@@ -52,6 +52,9 @@ static int cpuid(void)
 #ifdef POWER_6
     if (arch == POWER_6) return CPU_POWER6;
 #endif
+#ifdef POWER_7
+    else if (arch == POWER_7) return CPU_POWER6;
+#endif
 #ifdef POWER_8
     else if (arch == POWER_8) return CPU_POWER8;
 #endif
