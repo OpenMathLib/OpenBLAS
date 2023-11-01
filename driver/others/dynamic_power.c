@@ -39,7 +39,6 @@ char *gotoblas_corename(void) {
 #define CPU_UNKNOWN  0
 #define CPU_POWER5   5
 #define CPU_POWER6   6
-#define CPU_POWER7   7
 #define CPU_POWER8   8
 #define CPU_POWER9   9
 #define CPU_POWER10 10
@@ -52,9 +51,6 @@ static int cpuid(void)
     int arch = _system_configuration.implementation;
 #ifdef POWER_6
     if (arch == POWER_6) return CPU_POWER6;
-#endif
-#ifdef POWER_7
-    else if (arch == POWER_7) return CPU_POWER7;
 #endif
 #ifdef POWER_8
     else if (arch == POWER_8) return CPU_POWER8;
