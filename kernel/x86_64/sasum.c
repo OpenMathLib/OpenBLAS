@@ -9,7 +9,7 @@
 
 #endif
 
-#if defined(SKYLAKEX)
+#if defined(SKYLAKEX) || defined(COOPERLAKE) || defined(SAPPHIRERAPIDS)
 #include "sasum_microk_skylakex-2.c"
 #elif defined(HASWELL) || defined(ZEN)
 #include "sasum_microk_haswell-2.c"
