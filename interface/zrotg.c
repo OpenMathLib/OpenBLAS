@@ -30,14 +30,12 @@ void CNAME(void *VDA, void *VDB, FLOAT *C, void *VS) {
   FLOAT db_r = *(DB+0);
   FLOAT db_i = *(DB+1);
   //long double r;
-  FLOAT *r, *S1=(FLOAT *)malloc(2*sizeof(FLOAT));
-  FLOAT *R=(FLOAT *)malloc(2*sizeof(FLOAT));
+  FLOAT *r, *S1[2];
+  FLOAT *R=[2];
   long double d;
 
   FLOAT ada =  da_r * da_r + da_i * da_i; 
   FLOAT adb =  db_r * db_r + db_i * db_i; 
-  FLOAT adart = sqrt( da_r * da_r + da_i * da_i); 
-  FLOAT adbrt = sqrt( db_r * db_r + db_i * db_i); 
 
   PRINT_DEBUG_NAME;
 
@@ -117,8 +115,10 @@ void CNAME(void *VDA, void *VDB, FLOAT *C, void *VS) {
 		        *C = ada / adahsq;
 		        if (*C >= safmin) 
 			    *R = *DA / *C;
+			    *(R+1) = *(DA+1) / *(C+1);
 		        else
 			    *R = *DA * (h / adahsq);
+			    *(R+1) = *(DA+1) * (h / adahsq);
 		        *S = *S1 * ada / adahsq;
 		    	*(S+1) = *(S1+1) * ada / adahsq;
 		    }
