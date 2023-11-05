@@ -113,12 +113,13 @@ void CNAME(void *VDA, void *VDB, FLOAT *C, void *VS) {
 			}
 	    	    } else {
 		        *C = ada / adahsq;
-		        if (*C >= safmin) 
+		        if (*C >= safmin) {
 			    *R = *DA / *C;
 			    *(R+1) = *(DA+1) / *(C+1);
-		        else
+			} else {
 			    *R = *DA * (h / adahsq);
 			    *(R+1) = *(DA+1) * (h / adahsq);
+			}
 		        *S = *S1 * ada / adahsq;
 		    	*(S+1) = *(S1+1) * ada / adahsq;
 		    }
