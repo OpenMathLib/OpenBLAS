@@ -30,8 +30,8 @@ void CNAME(void *VDA, void *VDB, FLOAT *C, void *VS) {
   FLOAT db_r = *(DB+0);
   FLOAT db_i = *(DB+1);
   //long double r;
-  FLOAT *r, *S1[2];
-  FLOAT *R=[2];
+  FLOAT S1[2];
+  FLOAT R=[2];
   long double d;
 
   FLOAT ada =  da_r * da_r + da_i * da_i; 
