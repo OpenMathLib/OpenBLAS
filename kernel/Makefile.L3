@@ -182,7 +182,7 @@ ifeq ($(BUILD_BFLOAT16),1)
 SBBLASOBJS += sbgemm_beta$(TSUFFIX).$(SUFFIX)
 endif
 
-ifneq "$(or $(BUILD_SINGLE),$(BUILD_DOUBLE))" ""
+ifneq "$(or $(BUILD_SINGLE),$(BUILD_DOUBLE),$(BUILD_COMPLEX))" ""
 SBLASOBJS	+= \
 	sgemm_beta$(TSUFFIX).$(SUFFIX) \
 	strmm_kernel_LN$(TSUFFIX).$(SUFFIX) strmm_kernel_LT$(TSUFFIX).$(SUFFIX) \
@@ -191,7 +191,7 @@ SBLASOBJS	+= \
 	strsm_kernel_RN$(TSUFFIX).$(SUFFIX) strsm_kernel_RT$(TSUFFIX).$(SUFFIX) 
 endif
 
-ifeq ($(BUILD_DOUBLE),1)
+ifneq "$(or $(BUILD_DOUBLE),$(BUILD_COMPLEX16))" ""
 DBLASOBJS	+= \
 	dgemm_beta$(TSUFFIX).$(SUFFIX) \
 	dtrmm_kernel_LN$(TSUFFIX).$(SUFFIX) dtrmm_kernel_LT$(TSUFFIX).$(SUFFIX) \
@@ -207,7 +207,7 @@ QBLASOBJS	+= \
 	qtrsm_kernel_LN$(TSUFFIX).$(SUFFIX) qtrsm_kernel_LT$(TSUFFIX).$(SUFFIX) \
 	qtrsm_kernel_RN$(TSUFFIX).$(SUFFIX) qtrsm_kernel_RT$(TSUFFIX).$(SUFFIX)
 
-ifeq ($(BUILD_COMPLEX),1)
+ifneq "$(or $(BUILD_COMPLEX),$(BUILD_COMPLEX16))" ""
 CBLASOBJS	+= \
 	ctrmm_kernel_LN$(TSUFFIX).$(SUFFIX) ctrmm_kernel_LT$(TSUFFIX).$(SUFFIX) \
 	ctrmm_kernel_LR$(TSUFFIX).$(SUFFIX) ctrmm_kernel_LC$(TSUFFIX).$(SUFFIX) \
@@ -255,7 +255,7 @@ XBLASOBJS    +=  xgemm3m_kernel$(TSUFFIX).$(SUFFIX)
 
 endif
 
-ifeq ($(BUILD_SINGLE),1)
+ifneq "$(or $(BUILD_SINGLE),$(BUILD_DOUBLE),$(BUILD_COMPLEX))" ""
 SBLASOBJS += \
 	strmm_iunucopy$(TSUFFIX).$(SUFFIX) strmm_iunncopy$(TSUFFIX).$(SUFFIX) \
 	strmm_ilnucopy$(TSUFFIX).$(SUFFIX) strmm_ilnncopy$(TSUFFIX).$(SUFFIX) \
@@ -264,10 +264,7 @@ SBLASOBJS += \
 	strmm_ounucopy$(TSUFFIX).$(SUFFIX) strmm_ounncopy$(TSUFFIX).$(SUFFIX) \
 	strmm_olnucopy$(TSUFFIX).$(SUFFIX) strmm_olnncopy$(TSUFFIX).$(SUFFIX) \
 	strmm_outucopy$(TSUFFIX).$(SUFFIX) strmm_outncopy$(TSUFFIX).$(SUFFIX) \
-	strmm_oltucopy$(TSUFFIX).$(SUFFIX) strmm_oltncopy$(TSUFFIX).$(SUFFIX) 
-endif
-ifneq "$(or $(BUILD_SINGLE),$(BUILD_DOUBLE))" ""
-SBLASOBJS += \
+	strmm_oltucopy$(TSUFFIX).$(SUFFIX) strmm_oltncopy$(TSUFFIX).$(SUFFIX) \
 	strsm_iunucopy$(TSUFFIX).$(SUFFIX) strsm_iunncopy$(TSUFFIX).$(SUFFIX) \
 	strsm_ilnucopy$(TSUFFIX).$(SUFFIX) strsm_ilnncopy$(TSUFFIX).$(SUFFIX) \
 	strsm_iutucopy$(TSUFFIX).$(SUFFIX) strsm_iutncopy$(TSUFFIX).$(SUFFIX) \
@@ -275,10 +272,7 @@ SBLASOBJS += \
 	strsm_ounucopy$(TSUFFIX).$(SUFFIX) strsm_ounncopy$(TSUFFIX).$(SUFFIX) \
 	strsm_olnucopy$(TSUFFIX).$(SUFFIX) strsm_olnncopy$(TSUFFIX).$(SUFFIX) \
 	strsm_outucopy$(TSUFFIX).$(SUFFIX) strsm_outncopy$(TSUFFIX).$(SUFFIX) \
-	strsm_oltucopy$(TSUFFIX).$(SUFFIX) strsm_oltncopy$(TSUFFIX).$(SUFFIX) 
-endif
-ifeq ($(BUILD_SINGLE),1)
-SBLASOBJS += \
+	strsm_oltucopy$(TSUFFIX).$(SUFFIX) strsm_oltncopy$(TSUFFIX).$(SUFFIX) \
 	ssymm_iutcopy$(TSUFFIX).$(SUFFIX) ssymm_iltcopy$(TSUFFIX).$(SUFFIX) \
 	ssymm_outcopy$(TSUFFIX).$(SUFFIX) ssymm_oltcopy$(TSUFFIX).$(SUFFIX)
 endif
@@ -400,7 +394,7 @@ XBLASOBJS += \
 
 ifeq ($(USE_GEMM3M), 1)
 
-ifeq ($(BUILD_COMPLEX),1)
+ifneq "$(or $(BUILD_COMPLEX),$(BUILD_COMPLEX16))" ""
 CBLASOBJS += \
 	cgemm3m_incopyb$(TSUFFIX).$(SUFFIX) cgemm3m_itcopyb$(TSUFFIX).$(SUFFIX) \
 	cgemm3m_incopyr$(TSUFFIX).$(SUFFIX) cgemm3m_itcopyr$(TSUFFIX).$(SUFFIX) \
