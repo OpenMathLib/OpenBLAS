@@ -152,7 +152,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup realOTHERcomputational
+*> \ingroup unbdb6
 *
 *  =====================================================================
       SUBROUTINE SORBDB6( M1, M2, N, X1, INCX1, X2, INCX2, Q1, LDQ1, Q2,
@@ -174,7 +174,7 @@
 *
 *     .. Parameters ..
       REAL               ALPHA, REALONE, REALZERO
-      PARAMETER          ( ALPHA = 0.01E0, REALONE = 1.0E0,
+      PARAMETER          ( ALPHA = 0.1E0, REALONE = 1.0E0,
      $                     REALZERO = 0.0E0 )
       REAL               NEGONE, ONE, ZERO
       PARAMETER          ( NEGONE = -1.0E0, ONE = 1.0E0, ZERO = 0.0E0 )

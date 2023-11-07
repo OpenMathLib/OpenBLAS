@@ -152,7 +152,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup doubleOTHERcomputational
+*> \ingroup unbdb6
 *
 *  =====================================================================
       SUBROUTINE DORBDB6( M1, M2, N, X1, INCX1, X2, INCX2, Q1, LDQ1, Q2,
@@ -174,7 +174,7 @@
 *
 *     .. Parameters ..
       DOUBLE PRECISION   ALPHA, REALONE, REALZERO
-      PARAMETER          ( ALPHA = 0.01D0, REALONE = 1.0D0,
+      PARAMETER          ( ALPHA = 0.1D0, REALONE = 1.0D0,
      $                     REALZERO = 0.0D0 )
       DOUBLE PRECISION   NEGONE, ONE, ZERO
       PARAMETER          ( NEGONE = -1.0D0, ONE = 1.0D0, ZERO = 0.0D0 )
