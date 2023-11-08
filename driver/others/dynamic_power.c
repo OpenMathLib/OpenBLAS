@@ -202,6 +202,7 @@ static int cpuid(void)
 #ifndef __BUILTIN_CPU_SUPPORTS__
 #include <string.h>
 
+#if defined(_AIX) || (defined(__has_builtin) && !__has_builtin(__builtin_cpu_is))
 static int __builtin_cpu_is(const char *arg)
 {
     static int ipinfo = -1;
@@ -224,11 +225,14 @@ static int __builtin_cpu_is(const char *arg)
     }
     return 0;
 }
+#endif
 
+#if defined(_AIX) || (defined(__has_builtin) && !__has_builtin(__builtin_cpu_supports))
 static int __builtin_cpu_supports(const char *arg)
 {
     return 0;
 }
+#endif
 #endif
 
 static gotoblas_t *get_coretype(void) {
