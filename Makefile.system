@@ -1374,6 +1374,8 @@ ifeq ($(F_COMPILER), SUN)
 FCOMMON_OPT  += -pic
 else ifeq ($(F_COMPILER), NAG)
 FCOMMON_OPT += -PIC
+else ifeq ($(F_COMPILER), IBM)
+FCOMMON_OPT += -qpic=large
 else
 FCOMMON_OPT += -fPIC
 endif
@@ -1626,7 +1628,9 @@ override FPFLAGS    += $(FCOMMON_OPT) $(COMMON_PROF)
 
 ifeq ($(NEED_PIC), 1)
 ifeq (,$(findstring PIC,$(FFLAGS)))
+ifneq ($(F_COMPILER),IBM)
 override FFLAGS += -fPIC
+endif
 endif
 endif
 
