@@ -277,6 +277,10 @@ endif
 ifndef GOTOBLAS_MAKEFILE
 export GOTOBLAS_MAKEFILE = 1
 
+# Determine if the assembler is GNU Assembler
+HAVE_GAS := $(shell $(AS) -v < /dev/null 2>&1 | grep GNU 2>&1 >/dev/null ; echo $$?)
+GETARCH_FLAGS += -DHAVE_GAS=$(HAVE_GAS)
+
 # Generating Makefile.conf and config.h
 DUMMY := $(shell $(MAKE) -C $(TOPDIR) -f Makefile.prebuild CC="$(CC)" FC="$(FC)" HOSTCC="$(HOSTCC)" HOST_CFLAGS="$(GETARCH_FLAGS)" CFLAGS="$(CFLAGS)" BINARY=$(BINARY) USE_OPENMP=$(USE_OPENMP) DYNAMIC_ARCH=$(DYNAMIC_ARCH) TARGET_CORE=$(TARGET_CORE) ONLY_CBLAS=$(ONLY_CBLAS) TARGET=$(TARGET) all)
 
@@ -401,13 +405,6 @@ export MACOSX_DEPLOYMENT_TARGET=10.8
 endif
 endif
 MD5SUM = md5 -r
-XCVER = $(shell pkgutil --pkg-info=com.apple.pkg.Xcode |awk '/version:/ {print $2}'|cut -d: -f2|cut -f1 -d.)
-ifeq (x$(XCVER)x,xx)
-XCVER = $(shell pkgutil --pkg-info=com.apple.pkg.CLTools_Executables |awk '/version:/ {print $2}'|cut -d: -f2|cut -f1 -d.)
-endif
-ifeq (x$(XCVER), x 15)
-CCOMMON_OPT += -Wl,-ld_classic
-endif
 endif
 
 ifneq (,$(findstring $(OSNAME), FreeBSD OpenBSD DragonFly))
@@ -756,11 +753,7 @@ DYNAMIC_CORE += POWER9
 else
 $(info, OpenBLAS: Your gcc version is too old to build the POWER9 kernels.)
 endif
-ifeq ($(OSNAME), AIX)
-LDVERSIONGTEQ35 := 1
-else
 LDVERSIONGTEQ35 := $(shell expr `$(CC) -Wl,--version 2> /dev/null | head -1 | cut -f2 -d "." | cut -f1 -d "-"` \>= 35)
-endif
 ifeq ($(GCCVERSIONGTEQ11)$(LDVERSIONGTEQ35), 11)
 DYNAMIC_CORE += POWER10
 CCOMMON_OPT += -DHAVE_P10_SUPPORT
@@ -1374,8 +1367,6 @@ ifeq ($(F_COMPILER), SUN)
 FCOMMON_OPT  += -pic
 else ifeq ($(F_COMPILER), NAG)
 FCOMMON_OPT += -PIC
-else ifeq ($(F_COMPILER), IBM)
-FCOMMON_OPT += -qpic=large
 else
 FCOMMON_OPT += -fPIC
 endif
@@ -1628,9 +1619,7 @@ override FPFLAGS    += $(FCOMMON_OPT) $(COMMON_PROF)
 
 ifeq ($(NEED_PIC), 1)
 ifeq (,$(findstring PIC,$(FFLAGS)))
-ifneq ($(F_COMPILER),IBM)
 override FFLAGS += -fPIC
-endif
 endif
 endif
 
@@ -1646,11 +1635,11 @@ endif
 
 ifeq ($(F_COMPILER),NAG)
 LAPACK_FFLAGS := $(filter-out -msse3 -mssse3 -msse4.1 -mavx -mavx2 -mskylake-avx512 ,$(FFLAGS))
-override FFLAGS := $(filter-out -msse3 -mssse3 -msse4.1 -mavx -mavx2 -mskylake-avx512 ,$(FFLAGS))
+FFLAGS := $(filter-out -msse3 -mssse3 -msse4.1 -mavx -mavx2 -mskylake-avx512 ,$(FFLAGS))
 endif
 ifeq ($(F_COMPILER),CRAY)
 LAPACK_FFLAGS := $(filter-out -msse3 -mssse3 -msse4.1 -mavx -mavx2 -mskylake-avx512 ,$(FFLAGS))
-override FFLAGS := $(filter-out -msse3 -mssse3 -msse4.1 -mavx -mavx2 -mskylake-avx512 ,$(FFLAGS))
+FFLAGS := $(filter-out -msse3 -mssse3 -msse4.1 -mavx -mavx2 -mskylake-avx512 ,$(FFLAGS))
 endif
 
 LAPACK_CFLAGS = $(CFLAGS)
@@ -1681,10 +1670,6 @@ ifndef LIBSUFFIX
 LIBSUFFIX = a
 endif
 
-ifeq ($(FIXED_LIBNAME), 1)
-LIBNAME		= $(LIBPREFIX).$(LIBSUFFIX)
-LIBNAME_P	= $(LIBPREFIX)_p.$(LIBSUFFIX)
-else
 ifneq ($(DYNAMIC_ARCH), 1)
 ifndef SMP
 LIBNAME		= $(LIBPREFIX)_$(LIBCORE)$(REVISION).$(LIBSUFFIX)
@@ -1702,16 +1687,12 @@ LIBNAME		= $(LIBPREFIX)p$(REVISION).$(LIBSUFFIX)
 LIBNAME_P	= $(LIBPREFIX)p$(REVISION)_p.$(LIBSUFFIX)
 endif
 endif
-endif
+
 
 LIBDLLNAME   = $(LIBPREFIX).dll
 IMPLIBNAME   = lib$(LIBNAMEBASE).dll.a
 ifneq ($(OSNAME), AIX)
-ifeq ($(FIXED_LIBNAME), 1)
-LIBSONAME    = $(LIBNAME:.$(LIBSUFFIX)=.so).$(MAJOR_VERSION)
-else
 LIBSONAME    = $(LIBNAME:.$(LIBSUFFIX)=.so)
-endif
 else
 LIBSONAME    = $(LIBNAME:.$(LIBSUFFIX)=.a)
 endif

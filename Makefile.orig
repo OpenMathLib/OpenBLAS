@@ -35,11 +35,7 @@ export NO_LAPACK
 export C_LAPACK
 endif
 
-ifeq ($(F_COMPILER),CRAY)
-LAPACK_NOOPT := $(filter-out -O0 -O1 -O2 -O3 -Ofast -Og -Os,$(LAPACK_FFLAGS))
-else
 LAPACK_NOOPT := $(filter-out -O0 -O1 -O2 -O3 -Ofast -O -Og -Os,$(LAPACK_FFLAGS))
-endif
 
 SUBDIRS_ALL = $(SUBDIRS) test ctest utest exports benchmark ../laswp ../bench cpp_thread_test
 
@@ -134,27 +130,17 @@ shared : libs netlib $(RELA)
 ifneq ($(NO_SHARED), 1)
 ifeq ($(OSNAME), $(filter $(OSNAME),Linux SunOS Android Haiku FreeBSD DragonFly))
 	@$(MAKE) -C exports so
-ifneq ($(LIBSONAME), $(LIBPREFIX).so)
 	@ln -fs $(LIBSONAME) $(LIBPREFIX).so
-endif
-ifneq ($(LIBSONAME), $(LIBPREFIX).so.$(MAJOR_VERSION))
 	@ln -fs $(LIBSONAME) $(LIBPREFIX).so.$(MAJOR_VERSION)
-endif
 endif
 ifeq ($(OSNAME), $(filter $(OSNAME),OpenBSD NetBSD))
 	@$(MAKE) -C exports so
-ifneq ($(LIBSONAME), $(LIBPREFIX).so)
 	@ln -fs $(LIBSONAME) $(LIBPREFIX).so
-endif
 endif
 ifeq ($(OSNAME), Darwin)
 	@$(MAKE) -C exports dyn
-ifneq ($(LIBDYNNAME), $(LIBPREFIX).dylib)
 	@ln -fs $(LIBDYNNAME) $(LIBPREFIX).dylib
-endif
-ifneq ($(LIBDYNNAME), $(LIBPREFIX).$(MAJOR_VERSION).dylib)
 	@ln -fs $(LIBDYNNAME) $(LIBPREFIX).$(MAJOR_VERSION).dylib
-endif
 endif
 ifeq ($(OSNAME), WINNT)
 	@$(MAKE) -C exports dll
@@ -223,17 +209,13 @@ endif
 ifdef USE_THREAD
 	@echo USE_THREAD=$(USE_THREAD) >>  Makefile.conf_last
 endif
-ifneq ($(LIBNAME), $(LIBPREFIX).$(LIBSUFFIX))
 	@-ln -fs $(LIBNAME) $(LIBPREFIX).$(LIBSUFFIX)
-endif
 	@touch lib.grd
 
 prof : prof_blas prof_lapack
 
 prof_blas :
-ifneq ($(LIBNAME_P), $(LIBPREFIX)_p.$(LIBSUFFIX))
 	ln -fs $(LIBNAME_P) $(LIBPREFIX)_p.$(LIBSUFFIX)
-endif
 	for d in $(SUBDIRS) ; \
 	do if test -d $$d; then \
 	  $(MAKE) -C $$d prof || exit 1 ; \
@@ -244,9 +226,7 @@ ifeq ($(DYNAMIC_ARCH), 1)
 endif
 
 blas :
-ifneq ($(LIBNAME), $(LIBPREFIX).$(LIBSUFFIX))
 	ln -fs $(LIBNAME) $(LIBPREFIX).$(LIBSUFFIX)
-endif
 	for d in $(BLASDIRS) ; \
 	do if test -d $$d; then \
 	  $(MAKE) -C $$d libs || exit 1 ; \
@@ -254,9 +234,7 @@ endif
 	done
 
 hpl :
-ifneq ($(LIBNAME), $(LIBPREFIX).$(LIBSUFFIX))
 	ln -fs $(LIBNAME) $(LIBPREFIX).$(LIBSUFFIX)
-endif
 	for d in $(BLASDIRS) ../laswp exports ; \
 	do if test -d $$d; then \
 	  $(MAKE) -C $$d $(@F) || exit 1 ; \
@@ -270,9 +248,7 @@ ifeq ($(DYNAMIC_ARCH), 1)
 endif
 
 hpl_p :
-ifneq ($(LIBNAME_P), $(LIBPREFIX)_p.$(LIBSUFFIX))
 	ln -fs $(LIBNAME_P) $(LIBPREFIX)_p.$(LIBSUFFIX)
-endif
 	for d in $(SUBDIRS) ../laswp exports ; \
 	do if test -d $$d; then \
 	  $(MAKE) -C $$d $(@F) || exit 1 ; \

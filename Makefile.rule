@@ -10,6 +10,10 @@ VERSION = 0.3.24.dev
 # is libopenblas_$(LIBNAMESUFFIX).so.0.
 # LIBNAMESUFFIX = omp
 
+# Set this to cause the primary library name be actually ruled by the above,
+# not just a symlink to a library name determined by chosen CPU etc.
+# FIXED_LIBNAME = 1
+
 # You can specify the target architecture, otherwise it's
 # automatically detected.
 # TARGET = PENRYN
