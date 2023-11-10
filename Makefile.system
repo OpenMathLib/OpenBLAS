@@ -608,6 +608,9 @@ endif
 
 ifeq ($(C_COMPILER), CLANG)
 CCOMMON_OPT    += -fopenmp
+ifeq ($(F_COMPILER), GFORTRAN)
+FEXTRALIB := $(subst -lgomp,-lomp,$(FEXTRALIB))
+endif
 endif
 
 ifeq ($(C_COMPILER), INTEL)

@@ -373,13 +373,6 @@ if [ -n "$link" ]; then
     	    ;;
     	esac
 
-    	case "$flag" in *-lgomp*)
-    	    case "$CC" in *clang*)
-    	        flag="-lomp"
-    	        ;;
-    	    esac
-    	esac
-
         case "$flag" in -l*)
             case "$flag" in
                 *ibrary*|*gfortranbegin*|*flangmain*|*frtbegin*|*pathfstart*|\
