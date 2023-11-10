@@ -1660,7 +1660,13 @@ int get_cpuname(void){
 	  else
 	    return CPUTYPE_BARCELONA;
         }
-      case 10: // Zen3		      
+      case 10: // Zen3/4
+#ifndef NO_AVX512
+          if(support_avx512_bf16())
+            return CPUTYPE_COOPERLAKE;
+          if(support_avx512())
+            return CPUTYPE_SKYLAKEX;
+#endif
 	if(support_avx())
 #ifndef NO_AVX2
 	    return CPUTYPE_ZEN;
@@ -2438,6 +2444,12 @@ int get_coretype(void){
 	  // Ryzen 2
 	default:
 	  // Matisse,Renoir Ryzen2 models		
+#ifndef NO_AVX512
+          if(support_avx512_bf16())
+            return CORE_COOPERLAKE;
+          if(support_avx512())
+            return CORE_SKYLAKEX;
+#endif
 	  if(support_avx())
 #ifndef NO_AVX2
 	    return CORE_ZEN;
