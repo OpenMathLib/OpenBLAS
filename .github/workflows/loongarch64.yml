@@ -4,6 +4,7 @@ on: [push, pull_request]
 
 jobs:
   TEST:
+    if: "github.repository == 'OpenMathLib/OpenBLAS'"
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
