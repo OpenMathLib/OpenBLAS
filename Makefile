@@ -35,7 +35,11 @@ export NO_LAPACK
 export C_LAPACK
 endif
 
+ifeq ($(F_COMPILER),CRAY)
+LAPACK_NOOPT := $(filter-out -O0 -O1 -O2 -O3 -Ofast -Og -Os,$(LAPACK_FFLAGS))
+else
 LAPACK_NOOPT := $(filter-out -O0 -O1 -O2 -O3 -Ofast -O -Og -Os,$(LAPACK_FFLAGS))
+endif
 
 SUBDIRS_ALL = $(SUBDIRS) test ctest utest exports benchmark ../laswp ../bench cpp_thread_test
 
