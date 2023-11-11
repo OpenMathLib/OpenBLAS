@@ -133,7 +133,7 @@ extern int openblas_omp_num_threads_env();
    if (blas_omp_number_max <= 0) 
 	   blas_omp_number_max=MAX_CPU_NUMBER;
 #else
-    blas_omp_number_max = /omp_get_max_threads();
+    blas_omp_number_max = omp_get_max_threads();
 #endif
 
   blas_get_cpu_number();
