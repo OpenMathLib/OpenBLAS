@@ -124,9 +124,18 @@ void openblas_set_num_threads(int num_threads) {
 }
 
 int blas_thread_init(void){
-  if(blas_omp_number_max <= 0)
-    blas_omp_number_max = omp_get_max_threads();
-	
+
+#if defined(__FreeBSD__) && defined(__clang__)
+extern int openblas_omp_num_threads_env();
+
+   if(blas_omp_number_max <= 0)
+	   blas_omp_number_max= openblas_omp_num_threads_env();
+   if (blas_omp_number_max <= 0) 
+	   blas_omp_number_max=MAX_CPU_NUMBER;
+#else
+    blas_omp_number_max = /omp_get_max_threads();
+#endif
+
   blas_get_cpu_number();
 
   adjust_thread_buffers();
