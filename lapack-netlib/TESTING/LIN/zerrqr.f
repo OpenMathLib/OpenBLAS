@@ -77,7 +77,7 @@
 *     ..
 *     .. External Subroutines ..
       EXTERNAL           ALAESM, CHKXER, ZGEQR2, ZGEQR2P, ZGEQRF,
-     $                   ZGEQRFP, ZGEQRS, ZUNG2R, ZUNGQR, ZUNM2R,
+     $                   ZGEQRFP, ZUNG2R, ZUNGQR, ZUNM2R,
      $                   ZUNMQR
 *     ..
 *     .. Scalars in Common ..
@@ -171,31 +171,6 @@
       INFOT = 4
       CALL ZGEQR2P( 2, 1, A, 1, B, W, INFO )
       CALL CHKXER( 'ZGEQR2P', INFOT, NOUT, LERR, OK )
-*
-*     ZGEQRS
-*
-      SRNAMT = 'ZGEQRS'
-      INFOT = 1
-      CALL ZGEQRS( -1, 0, 0, A, 1, X, B, 1, W, 1, INFO )
-      CALL CHKXER( 'ZGEQRS', INFOT, NOUT, LERR, OK )
-      INFOT = 2
-      CALL ZGEQRS( 0, -1, 0, A, 1, X, B, 1, W, 1, INFO )
-      CALL CHKXER( 'ZGEQRS', INFOT, NOUT, LERR, OK )
-      INFOT = 2
-      CALL ZGEQRS( 1, 2, 0, A, 2, X, B, 2, W, 1, INFO )
-      CALL CHKXER( 'ZGEQRS', INFOT, NOUT, LERR, OK )
-      INFOT = 3
-      CALL ZGEQRS( 0, 0, -1, A, 1, X, B, 1, W, 1, INFO )
-      CALL CHKXER( 'ZGEQRS', INFOT, NOUT, LERR, OK )
-      INFOT = 5
-      CALL ZGEQRS( 2, 1, 0, A, 1, X, B, 2, W, 1, INFO )
-      CALL CHKXER( 'ZGEQRS', INFOT, NOUT, LERR, OK )
-      INFOT = 8
-      CALL ZGEQRS( 2, 1, 0, A, 2, X, B, 1, W, 1, INFO )
-      CALL CHKXER( 'ZGEQRS', INFOT, NOUT, LERR, OK )
-      INFOT = 10
-      CALL ZGEQRS( 1, 1, 2, A, 1, X, B, 1, W, 1, INFO )
-      CALL CHKXER( 'ZGEQRS', INFOT, NOUT, LERR, OK )
 *
 *     ZUNGQR
 *
