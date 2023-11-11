@@ -438,15 +438,19 @@ endif()
 
 if(BUILD_LAPACK_DEPRECATED)
 list(APPEND SLASRC DEPRECATED/sgegs.f DEPRECATED/sgegv.f
+  DEPRECATED/sgelqs.f DEPRECATED/sgeqrs.f
   DEPRECATED/sgeqpf.f DEPRECATED/sgelsx.f DEPRECATED/sggsvd.f
   DEPRECATED/sggsvp.f DEPRECATED/slahrd.f DEPRECATED/slatzm.f DEPRECATED/stzrqf.f)
 list(APPEND DLASRC DEPRECATED/dgegs.f DEPRECATED/dgegv.f
+  DEPRECATED/dgelqs.f DEPRECATED/dgeqrs.f
   DEPRECATED/dgeqpf.f DEPRECATED/dgelsx.f DEPRECATED/dggsvd.f
   DEPRECATED/dggsvp.f DEPRECATED/dlahrd.f DEPRECATED/dlatzm.f DEPRECATED/dtzrqf.f)
 list(APPEND CLASRC DEPRECATED/cgegs.f DEPRECATED/cgegv.f
+  DEPRECATED/cgelqs.f DEPRECATED/cgeqrs.f
   DEPRECATED/cgeqpf.f DEPRECATED/cgelsx.f DEPRECATED/cggsvd.f
   DEPRECATED/cggsvp.f DEPRECATED/clahrd.f DEPRECATED/clatzm.f DEPRECATED/ctzrqf.f)
 list(APPEND ZLASRC DEPRECATED/zgegs.f DEPRECATED/zgegv.f
+  DEPRECATED/zgelqs.f DEPRECATED/zgeqrs.f
   DEPRECATED/zgeqpf.f DEPRECATED/zgelsx.f DEPRECATED/zggsvd.f
   DEPRECATED/zggsvp.f DEPRECATED/zlahrd.f DEPRECATED/zlatzm.f DEPRECATED/ztzrqf.f)
 message(STATUS "Building deprecated routines")
@@ -935,15 +939,19 @@ endif()
 
 if(BUILD_LAPACK_DEPRECATED)
 list(APPEND SLASRC DEPRECATED/sgegs.c DEPRECATED/sgegv.c
+  DEPRECATED/sgelqs.c DEPRECATED/sgeqrs.c
   DEPRECATED/sgeqpf.c DEPRECATED/sgelsx.c DEPRECATED/sggsvd.c
   DEPRECATED/sggsvp.c DEPRECATED/slahrd.c DEPRECATED/slatzm.c DEPRECATED/stzrqf.c)
 list(APPEND DLASRC DEPRECATED/dgegs.c DEPRECATED/dgegv.c
+  DEPRECATED/dgelqs.c DEPRECATED/dgeqrs.c
   DEPRECATED/dgeqpf.c DEPRECATED/dgelsx.c DEPRECATED/dggsvd.c
   DEPRECATED/dggsvp.c DEPRECATED/dlahrd.c DEPRECATED/dlatzm.c DEPRECATED/dtzrqf.c)
 list(APPEND CLASRC DEPRECATED/cgegs.c DEPRECATED/cgegv.c
+  DEPRECATED/cgelqs.c DEPRECATED/cgeqrs.c
   DEPRECATED/cgeqpf.c DEPRECATED/cgelsx.c DEPRECATED/cggsvd.c
   DEPRECATED/cggsvp.c DEPRECATED/clahrd.c DEPRECATED/clatzm.c DEPRECATED/ctzrqf.c)
 list(APPEND ZLASRC DEPRECATED/zgegs.c DEPRECATED/zgegv.c
+  DEPRECATED/zgelqs.c DEPRECATED/zgeqrs.c
   DEPRECATED/zgeqpf.c DEPRECATED/zgelsx.c DEPRECATED/zggsvd.c
   DEPRECATED/zggsvp.c DEPRECATED/zlahrd.c DEPRECATED/zlatzm.c DEPRECATED/ztzrqf.c)
 message(STATUS "Building deprecated routines")
