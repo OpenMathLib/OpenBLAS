@@ -222,7 +222,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup complexOTHERcomputational
+*> \ingroup trevc3
 *
 *> \par Further Details:
 *  =====================
@@ -278,12 +278,13 @@
 *     .. External Functions ..
       LOGICAL            LSAME
       INTEGER            ILAENV, ICAMAX
-      REAL               SLAMCH, SCASUM
-      EXTERNAL           LSAME, ILAENV, ICAMAX, SLAMCH, SCASUM
+      REAL               SLAMCH, SCASUM, SROUNDUP_LWORK
+      EXTERNAL           LSAME, ILAENV, ICAMAX, SLAMCH, SCASUM,
+     $                   SROUNDUP_LWORK
 *     ..
 *     .. External Subroutines ..
       EXTERNAL           XERBLA, CCOPY, CLASET, CSSCAL, CGEMM, CGEMV,
-     $                   CLATRS, CLACPY, SLABAD
+     $                   CLATRS, CLACPY
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          ABS, REAL, CMPLX, CONJG, AIMAG, MAX
@@ -322,7 +323,7 @@
       INFO = 0
       NB = ILAENV( 1, 'CTREVC', SIDE // HOWMNY, N, -1, -1, -1 )
       MAXWRK = MAX( 1, N + 2*N*NB )
-      WORK(1) = MAXWRK
+      WORK(1) = SROUNDUP_LWORK(MAXWRK)
       RWORK(1) = MAX( 1, N )
       LQUERY = ( LWORK.EQ.-1 .OR. LRWORK.EQ.-1 )
       IF( .NOT.RIGHTV .AND. .NOT.LEFTV ) THEN
@@ -371,7 +372,6 @@
 *
       UNFL = SLAMCH( 'Safe minimum' )
       OVFL = ONE / UNFL
-      CALL SLABAD( UNFL, OVFL )
       ULP = SLAMCH( 'Precision' )
       SMLNUM = UNFL*( N / ULP )
 *

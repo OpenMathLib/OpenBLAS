@@ -191,6 +191,8 @@
 *>     SIAM J. Sci. Comput, vol. 34, no. 1, 2012
 *> \endverbatim
 *>
+*> \ingroup lamtsqr
+*>
 *  =====================================================================
       SUBROUTINE CLAMTSQR( SIDE, TRANS, M, N, K, MB, NB, A, LDA, T,
      $        LDT, C, LDC, WORK, LWORK, INFO )
@@ -217,7 +219,8 @@
 *     ..
 *     .. External Functions ..
       LOGICAL            LSAME
-      EXTERNAL           LSAME
+      REAL               SROUNDUP_LWORK
+      EXTERNAL           LSAME, SROUNDUP_LWORK
 *     .. External Subroutines ..
       EXTERNAL   CGEMQRT, CTPMQRT, XERBLA
 *     ..
@@ -264,7 +267,7 @@
 *     Determine the block size if it is tall skinny or short and wide
 *
       IF( INFO.EQ.0)  THEN
-          WORK(1) = LW
+          WORK(1) = SROUNDUP_LWORK(LW)
       END IF
 *
       IF( INFO.NE.0 ) THEN
@@ -409,7 +412,7 @@
 *
       END IF
 *
-      WORK(1) = LW
+      WORK(1) = SROUNDUP_LWORK(LW)
       RETURN
 *
 *     End of CLAMTSQR

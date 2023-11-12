@@ -189,6 +189,8 @@
 *>     SIAM J. Sci. Comput, vol. 34, no. 1, 2012
 *> \endverbatim
 *>
+*> \ingroup lamswlq
+*>
 *  =====================================================================
       SUBROUTINE CLAMSWLQ( SIDE, TRANS, M, N, K, MB, NB, A, LDA, T,
      $    LDT, C, LDC, WORK, LWORK, INFO )
@@ -215,7 +217,8 @@
 *     ..
 *     .. External Functions ..
       LOGICAL            LSAME
-      EXTERNAL           LSAME
+      REAL               SROUNDUP_LWORK
+      EXTERNAL           LSAME, SROUNDUP_LWORK
 *     .. External Subroutines ..
       EXTERNAL    CTPMLQT, CGEMLQT, XERBLA
 *     ..
@@ -259,10 +262,10 @@
 *
       IF( INFO.NE.0 ) THEN
         CALL XERBLA( 'CLAMSWLQ', -INFO )
-        WORK(1) = LW
+        WORK(1) = SROUNDUP_LWORK(LW)
         RETURN
       ELSE IF (LQUERY) THEN
-        WORK(1) = LW
+        WORK(1) = SROUNDUP_LWORK(LW)
         RETURN
       END IF
 *
@@ -401,7 +404,7 @@
 *
       END IF
 *
-      WORK(1) = LW
+      WORK(1) = SROUNDUP_LWORK(LW)
       RETURN
 *
 *     End of CLAMSWLQ
