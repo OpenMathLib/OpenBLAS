@@ -126,7 +126,7 @@ void openblas_set_num_threads(int num_threads) {
 int blas_thread_init(void){
 
 #if defined(__FreeBSD__) && defined(__clang__)
-extern int openblas_omp_num_threads_env();
+extern int openblas_omp_num_threads_env(void);
 
    if(blas_omp_number_max <= 0)
 	   blas_omp_number_max= openblas_omp_num_threads_env();
