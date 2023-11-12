@@ -148,7 +148,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup complex16OTHERcomputational
+*> \ingroup unbdb5
 *
 *  =====================================================================
       SUBROUTINE ZUNBDB5( M1, M2, N, X1, INCX1, X2, INCX2, Q1, LDQ1, Q2,
@@ -169,18 +169,21 @@
 *  =====================================================================
 *
 *     .. Parameters ..
+      DOUBLE PRECISION   REALZERO
+      PARAMETER          ( REALZERO = 0.0D0 )
       COMPLEX*16         ONE, ZERO
       PARAMETER          ( ONE = (1.0D0,0.0D0), ZERO = (0.0D0,0.0D0) )
 *     ..
 *     .. Local Scalars ..
       INTEGER            CHILDINFO, I, J
+      DOUBLE PRECISION   EPS, NORM, SCL, SSQ
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           ZUNBDB6, XERBLA
+      EXTERNAL           ZLASSQ, ZUNBDB6, ZSCAL, XERBLA
 *     ..
 *     .. External Functions ..
-      DOUBLE PRECISION   DZNRM2
-      EXTERNAL           DZNRM2
+      DOUBLE PRECISION   DLAMCH, DZNRM2
+      EXTERNAL           DLAMCH, DZNRM2
 *     ..
 *     .. Intrinsic Function ..
       INTRINSIC          MAX
@@ -213,16 +216,33 @@
          RETURN
       END IF
 *
-*     Project X onto the orthogonal complement of Q
+      EPS = DLAMCH( 'Precision' )
 *
-      CALL ZUNBDB6( M1, M2, N, X1, INCX1, X2, INCX2, Q1, LDQ1, Q2, LDQ2,
-     $              WORK, LWORK, CHILDINFO )
+*     Project X onto the orthogonal complement of Q if X is nonzero
 *
-*     If the projection is nonzero, then return
+      SCL = REALZERO
+      SSQ = REALZERO
+      CALL ZLASSQ( M1, X1, INCX1, SCL, SSQ )
+      CALL ZLASSQ( M2, X2, INCX2, SCL, SSQ )
+      NORM = SCL * SQRT( SSQ )
 *
-      IF( DZNRM2(M1,X1,INCX1) .NE. ZERO
-     $    .OR. DZNRM2(M2,X2,INCX2) .NE. ZERO ) THEN
-         RETURN
+      IF( NORM .GT. N * EPS ) THEN
+*        Scale vector to unit norm to avoid problems in the caller code.
+*        Computing the reciprocal is undesirable but
+*         * xLASCL cannot be used because of the vector increments and
+*         * the round-off error has a negligible impact on
+*           orthogonalization.
+         CALL ZSCAL( M1, ONE / NORM, X1, INCX1 )
+         CALL ZSCAL( M2, ONE / NORM, X2, INCX2 )
+         CALL ZUNBDB6( M1, M2, N, X1, INCX1, X2, INCX2, Q1, LDQ1, Q2,
+     $              LDQ2, WORK, LWORK, CHILDINFO )
+*
+*        If the projection is nonzero, then return
+*
+         IF( DZNRM2(M1,X1,INCX1) .NE. REALZERO
+     $       .OR. DZNRM2(M2,X2,INCX2) .NE. REALZERO ) THEN
+            RETURN
+         END IF
       END IF
 *
 *     Project each standard basis vector e_1,...,e_M1 in turn, stopping
@@ -238,8 +258,8 @@
          END DO
          CALL ZUNBDB6( M1, M2, N, X1, INCX1, X2, INCX2, Q1, LDQ1, Q2,
      $                 LDQ2, WORK, LWORK, CHILDINFO )
-         IF( DZNRM2(M1,X1,INCX1) .NE. ZERO
-     $       .OR. DZNRM2(M2,X2,INCX2) .NE. ZERO ) THEN
+         IF( DZNRM2(M1,X1,INCX1) .NE. REALZERO
+     $       .OR. DZNRM2(M2,X2,INCX2) .NE. REALZERO ) THEN
             RETURN
          END IF
       END DO
@@ -257,8 +277,8 @@
          X2(I) = ONE
          CALL ZUNBDB6( M1, M2, N, X1, INCX1, X2, INCX2, Q1, LDQ1, Q2,
      $                 LDQ2, WORK, LWORK, CHILDINFO )
-         IF( DZNRM2(M1,X1,INCX1) .NE. ZERO
-     $       .OR. DZNRM2(M2,X2,INCX2) .NE. ZERO ) THEN
+         IF( DZNRM2(M1,X1,INCX1) .NE. REALZERO
+     $       .OR. DZNRM2(M2,X2,INCX2) .NE. REALZERO ) THEN
             RETURN
          END IF
       END DO
