@@ -1,5 +1,51 @@
 OpenBLAS ChangeLog
 ====================================================================
+Version 0.3.25
+ 12-Nov-2023
+
+general:
+- improved the error message shown on exceeding the maximum thread count
+- improved the code to add supplementary thread buffers in case of overflow
+- fixed a potential division by zero in ?ROTG
+- improved the ?MATCOPY functions to accept zero-sized rows or columns
+- corrected empty prototypes in function declarations
+- cleaned up unused declarations in the f2c-converted versions of the LAPACK sources
+- fixed compilation with the Cray CCE Compiler suite
+- improved link line rewriting to avoid mixed libgomp/libomp builds with clang&gfortran
+- worked around OPENMP builds with LLVM14's libomp hanging on FreeBSD
+- improved the Makefiles to require less option duplication on "make install"
+- imported the following changes from the upcoming release 3.12 of Reference-LAPACK
+  - deprecate utility functions ?GELQS and ?GEQRS (LAPACK PR 900)
+  - apply rounding up to workspace calculations done in floating point (LAPACK PR 904)
+  - avoid overflow in STGEX2/DTGEX2 (LAPACK PR 907)
+  - fix accumulation in ?LASSQ (LAPACK PR 909)
+  - fix handling of NaN values in ?GECON (LAPACK PR 926)
+  - avoid overflow in CBDSQR/ZBDSQR (LAPACK PR 927)
+  - fix poor vector orthogonalizations in ?ORBDB5/?UNBDB5 (LAPACK PR 928 & 930)
+
+x86-64:
+- fixed compile-time autodetection of AMD Ryzen3 and Ryzen4 cpus
+- fixed capability-based fallback selection for unknown cpus in DYNAMIC_ARCH
+- added AVX512 optimizations for ?ASUM on Sapphire Rapids and Cooper Lake
+
+ARM64:
+- fixed building on Apple with homebrew gcc
+- fixed building with XCODE 15
+- fixed building on A64FX and Cortex A710/X1/X2
+- increased the default buffer size for recent ARM server cpus 
+
+POWER:
+- fixed building with the IBM xlf 16.1.1 compiler
+- fixed building with IBM XL C
+- added support for DYNAMIC_ARCH builds with clang
+- fixed union declaration in the BFLOAT16 test case
+- enable optimizations for the AIX assembler on POWER10
+
+LOONGARCH64:
+- added an optimized SGEMV kernel
+- added an optimized DTRSM kernel
+
+====================================================================
 Version 0.3.24
  03-Sep-2023
 
