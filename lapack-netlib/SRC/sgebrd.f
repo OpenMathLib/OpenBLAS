@@ -147,7 +147,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup realGEcomputational
+*> \ingroup gebrd
 *
 *> \par Further Details:
 *  =====================
@@ -230,11 +230,12 @@
       EXTERNAL           SGEBD2, SGEMM, SLABRD, XERBLA
 *     ..
 *     .. Intrinsic Functions ..
-      INTRINSIC          MAX, MIN, REAL
+      INTRINSIC          MAX, MIN
 *     ..
 *     .. External Functions ..
       INTEGER            ILAENV
-      EXTERNAL           ILAENV
+      REAL               SROUNDUP_LWORK
+      EXTERNAL           ILAENV, SROUNDUP_LWORK
 *     ..
 *     .. Executable Statements ..
 *
@@ -243,7 +244,7 @@
       INFO = 0
       NB = MAX( 1, ILAENV( 1, 'SGEBRD', ' ', M, N, -1, -1 ) )
       LWKOPT = ( M+N )*NB
-      WORK( 1 ) = REAL( LWKOPT )
+      WORK( 1 ) = SROUNDUP_LWORK(LWKOPT)
       LQUERY = ( LWORK.EQ.-1 )
       IF( M.LT.0 ) THEN
          INFO = -1
@@ -341,7 +342,7 @@
 *
       CALL SGEBD2( M-I+1, N-I+1, A( I, I ), LDA, D( I ), E( I ),
      $             TAUQ( I ), TAUP( I ), WORK, IINFO )
-      WORK( 1 ) = WS
+      WORK( 1 ) = SROUNDUP_LWORK(WS)
       RETURN
 *
 *     End of SGEBRD

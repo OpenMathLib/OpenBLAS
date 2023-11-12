@@ -204,7 +204,7 @@
 *
 *> \date May 2020
 *
-*> \ingroup doubleGEcomputational
+*> \ingroup laqz4
 *>
 *  =====================================================================
       SUBROUTINE SLAQZ4( ILSCHUR, ILQ, ILZ, N, ILO, IHI, NSHIFTS,
@@ -236,6 +236,7 @@
 *     External functions
       EXTERNAL :: XERBLA, SGEMM, SLAQZ1, SLAQZ2, SLASET, SLARTG, SROT,
      $            SLACPY
+      REAL, EXTERNAL :: SROUNDUP_LWORK
 
       INFO = 0
       IF ( NBLOCK_DESIRED .LT. NSHIFTS+1 ) THEN
@@ -243,7 +244,7 @@
       END IF
       IF ( LWORK .EQ.-1 ) THEN
 *        workspace query, quick return
-         WORK( 1 ) = N*NBLOCK_DESIRED
+         WORK( 1 ) = SROUNDUP_LWORK(N*NBLOCK_DESIRED)
          RETURN
       ELSE IF ( LWORK .LT. N*NBLOCK_DESIRED ) THEN
          INFO = -25

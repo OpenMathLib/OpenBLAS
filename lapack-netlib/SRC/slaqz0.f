@@ -294,7 +294,7 @@
 *
 *> \date May 2020
 *
-*> \ingroup doubleGEcomputational
+*> \ingroup laqz0
 *>
 *  =====================================================================
       RECURSIVE SUBROUTINE SLAQZ0( WANTS, WANTQ, WANTZ, N, ILO, IHI, A,
@@ -331,7 +331,7 @@
 *     External Functions
       EXTERNAL :: XERBLA, SHGEQZ, SLAQZ3, SLAQZ4, SLASET,
      $            SLARTG, SROT
-      REAL, EXTERNAL :: SLAMCH, SLANHS
+      REAL, EXTERNAL :: SLAMCH, SLANHS, SROUNDUP_LWORK
       LOGICAL, EXTERNAL :: LSAME
       INTEGER, EXTERNAL :: ILAENV
 
@@ -461,7 +461,7 @@
 
       LWORKREQ = MAX( ITEMP1+2*NW**2, ITEMP2+2*NBR**2 )
       IF ( LWORK .EQ.-1 ) THEN
-         WORK( 1 ) = REAL( LWORKREQ )
+         WORK( 1 ) = SROUNDUP_LWORK( LWORKREQ )
          RETURN
       ELSE IF ( LWORK .LT. LWORKREQ ) THEN
          INFO = -19

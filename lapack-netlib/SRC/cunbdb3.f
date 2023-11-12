@@ -173,7 +173,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup complexOTHERcomputational
+*> \ingroup unbdb3
 *
 *> \par Further Details:
 *  =====================
@@ -229,8 +229,8 @@
       EXTERNAL           CLARF, CLARFGP, CUNBDB5, CSROT, CLACGV, XERBLA
 *     ..
 *     .. External Functions ..
-      REAL               SCNRM2
-      EXTERNAL           SCNRM2
+      REAL               SCNRM2, SROUNDUP_LWORK
+      EXTERNAL           SCNRM2, SROUNDUP_LWORK
 *     ..
 *     .. Intrinsic Function ..
       INTRINSIC          ATAN2, COS, MAX, SIN, SQRT
@@ -263,7 +263,7 @@
          LORBDB5 = Q-1
          LWORKOPT = MAX( ILARF+LLARF-1, IORBDB5+LORBDB5-1 )
          LWORKMIN = LWORKOPT
-         WORK(1) = LWORKOPT
+         WORK(1) = SROUNDUP_LWORK(LWORKOPT)
          IF( LWORK .LT. LWORKMIN .AND. .NOT.LQUERY ) THEN
            INFO = -14
          END IF

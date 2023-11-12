@@ -172,7 +172,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup realOTHERcomputational
+*> \ingroup ggrqf
 *
 *> \par Further Details:
 *  =====================
@@ -235,7 +235,8 @@
 *     ..
 *     .. External Functions ..
       INTEGER            ILAENV
-      EXTERNAL           ILAENV
+      REAL               SROUNDUP_LWORK
+      EXTERNAL           ILAENV, SROUNDUP_LWORK
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          INT, MAX, MIN
@@ -250,7 +251,7 @@
       NB3 = ILAENV( 1, 'SORMRQ', ' ', M, N, P, -1 )
       NB = MAX( NB1, NB2, NB3 )
       LWKOPT = MAX( N, M, P)*NB
-      WORK( 1 ) = LWKOPT
+      WORK( 1 ) = SROUNDUP_LWORK(LWKOPT)
       LQUERY = ( LWORK.EQ.-1 )
       IF( M.LT.0 ) THEN
          INFO = -1
@@ -287,7 +288,8 @@
 *     QR factorization of P-by-N matrix B: B = Z*T
 *
       CALL SGEQRF( P, N, B, LDB, TAUB, WORK, LWORK, INFO )
-      WORK( 1 ) = MAX( LOPT, INT( WORK( 1 ) ) )
+      LWKOPT = MAX( LOPT, INT( WORK( 1 ) ) )
+      WORK( 1 ) = SROUNDUP_LWORK( LWKOPT )
 *
       RETURN
 *

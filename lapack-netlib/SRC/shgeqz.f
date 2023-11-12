@@ -282,7 +282,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup realGEcomputational
+*> \ingroup hgeqz
 *
 *> \par Further Details:
 *  =====================
@@ -346,8 +346,9 @@
 *     ..
 *     .. External Functions ..
       LOGICAL            LSAME
-      REAL               SLAMCH, SLANHS, SLAPY2, SLAPY3
-      EXTERNAL           LSAME, SLAMCH, SLANHS, SLAPY2, SLAPY3
+      REAL               SLAMCH, SLANHS, SLAPY2, SLAPY3, SROUNDUP_LWORK
+      EXTERNAL           LSAME, SLAMCH, SLANHS, SLAPY2, SLAPY3,
+     $                   SROUNDUP_LWORK
 *     ..
 *     .. External Subroutines ..
       EXTERNAL           SLAG2, SLARFG, SLARTG, SLASET, SLASV2, SROT,
@@ -1364,7 +1365,7 @@
 *     Exit (other than argument error) -- return optimal workspace size
 *
   420 CONTINUE
-      WORK( 1 ) = REAL( N )
+      WORK( 1 ) = SROUNDUP_LWORK( N )
       RETURN
 *
 *     End of SHGEQZ
