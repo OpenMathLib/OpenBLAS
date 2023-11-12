@@ -235,7 +235,7 @@
       REAL               RESULT( NTESTS )
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           ALAERH, ALAHD, ALASUM, SERRLQ, SGELQS, SGET02,
+      EXTERNAL           ALAERH, ALAHD, ALASUM, SERRLQ, SGET02,
      $                   SLACPY, SLARHS, SLATB4, SLATMS, SLQT01, SLQT02,
      $                   SLQT03, XLAENV
 *     ..
@@ -370,7 +370,7 @@
      $                               WORK, LWORK, RWORK, RESULT( 3 ) )
                         NT = NT + 4
 *
-*                       If M>=N and K=N, call SGELQS to solve a system
+*                       If M<=N and K=M, call SGELS to solve a system
 *                       with NRHS right hand sides and compute the
 *                       residual.
 *
@@ -387,14 +387,20 @@
 *
                            CALL SLACPY( 'Full', M, NRHS, B, LDA, X,
      $                                  LDA )
-                           SRNAMT = 'SGELQS'
-                           CALL SGELQS( M, N, NRHS, AF, LDA, TAU, X,
-     $                                  LDA, WORK, LWORK, INFO )
 *
-*                          Check error code from SGELQS.
+*                          Reset AF to the original matrix. SGELS
+*                          factors the matrix before solving the system.
+*
+                           CALL SLACPY( 'Full', M, N, A, LDA, AF, LDA )
+*
+                           SRNAMT = 'SGELS'
+                           CALL SGELS( 'No transpose', M, N, NRHS, AF,
+     $                                 LDA, X, LDA, WORK, LWORK, INFO )
+*
+*                          Check error code from SGELS.
 *
                            IF( INFO.NE.0 )
-     $                        CALL ALAERH( PATH, 'SGELQS', INFO, 0, ' ',
+     $                        CALL ALAERH( PATH, 'SGELS', INFO, 0, 'N',
      $                                     M, N, NRHS, -1, NB, IMAT,
      $                                     NFAIL, NERRS, NOUT )
 *

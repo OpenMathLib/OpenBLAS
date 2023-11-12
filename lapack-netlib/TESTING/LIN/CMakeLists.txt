@@ -20,7 +20,7 @@ set(SLINTST schkaa.F
    serrgt.f serrlq.f serrls.f
    serrps.f serrql.f serrqp.f serrqr.f
    serrrq.f serrtr.f serrtz.f
-   sgbt01.f sgbt02.f sgbt05.f sgelqs.f sgeqls.f sgeqrs.f
+   sgbt01.f sgbt02.f sgbt05.f sgeqls.f
    sgerqs.f sget01.f sget02.f
    sget03.f sget04.f sget06.f sget07.f sgtt01.f sgtt02.f
    sgtt05.f slaptm.f slarhs.f slatb4.f slatb5.f slattb.f slattp.f
@@ -70,7 +70,7 @@ set(CLINTST cchkaa.F
    cerrgt.f cerrlq.f
    cerrls.f cerrps.f cerrql.f cerrqp.f
    cerrqr.f cerrrq.f cerrtr.f cerrtz.f
-   cgbt01.f cgbt02.f cgbt05.f cgelqs.f cgeqls.f cgeqrs.f
+   cgbt01.f cgbt02.f cgbt05.f cgeqls.f
    cgerqs.f cget01.f cget02.f
    cget03.f cget04.f cget07.f cgtt01.f cgtt02.f
    cgtt05.f chet01.f chet01_rook.f chet01_3.f
@@ -121,7 +121,7 @@ set(DLINTST dchkaa.F
    derrgt.f derrlq.f derrls.f
    derrps.f derrql.f derrqp.f derrqr.f
    derrrq.f derrtr.f derrtz.f
-   dgbt01.f dgbt02.f dgbt05.f dgelqs.f dgeqls.f dgeqrs.f
+   dgbt01.f dgbt02.f dgbt05.f dgeqls.f
    dgerqs.f dget01.f dget02.f
    dget03.f dget04.f dget06.f dget07.f dgtt01.f dgtt02.f
    dgtt05.f dlaptm.f dlarhs.f dlatb4.f dlatb5.f dlattb.f dlattp.f
@@ -172,7 +172,7 @@ set(ZLINTST zchkaa.F
    zerrgt.f zerrlq.f
    zerrls.f zerrps.f zerrql.f zerrqp.f
    zerrqr.f zerrrq.f zerrtr.f zerrtz.f
-   zgbt01.f zgbt02.f zgbt05.f zgelqs.f zgeqls.f zgeqrs.f
+   zgbt01.f zgbt02.f zgbt05.f zgeqls.f
    zgerqs.f zget01.f zget02.f
    zget03.f zget04.f zget07.f zgtt01.f zgtt02.f
    zgtt05.f zhet01.f zhet01_rook.f zhet01_3.f

@@ -76,7 +76,7 @@
      $                   W( NMAX ), X( NMAX )
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           ALAESM, CHKXER, ZGELQ2, ZGELQF, ZGELQS, ZUNGL2,
+      EXTERNAL           ALAESM, CHKXER, ZGELQ2, ZGELQF, ZUNGL2,
      $                   ZUNGLQ, ZUNML2, ZUNMLQ
 *     ..
 *     .. Scalars in Common ..
@@ -141,31 +141,6 @@
       INFOT = 4
       CALL ZGELQ2( 2, 1, A, 1, B, W, INFO )
       CALL CHKXER( 'ZGELQ2', INFOT, NOUT, LERR, OK )
-*
-*     ZGELQS
-*
-      SRNAMT = 'ZGELQS'
-      INFOT = 1
-      CALL ZGELQS( -1, 0, 0, A, 1, X, B, 1, W, 1, INFO )
-      CALL CHKXER( 'ZGELQS', INFOT, NOUT, LERR, OK )
-      INFOT = 2
-      CALL ZGELQS( 0, -1, 0, A, 1, X, B, 1, W, 1, INFO )
-      CALL CHKXER( 'ZGELQS', INFOT, NOUT, LERR, OK )
-      INFOT = 2
-      CALL ZGELQS( 2, 1, 0, A, 2, X, B, 1, W, 1, INFO )
-      CALL CHKXER( 'ZGELQS', INFOT, NOUT, LERR, OK )
-      INFOT = 3
-      CALL ZGELQS( 0, 0, -1, A, 1, X, B, 1, W, 1, INFO )
-      CALL CHKXER( 'ZGELQS', INFOT, NOUT, LERR, OK )
-      INFOT = 5
-      CALL ZGELQS( 2, 2, 0, A, 1, X, B, 2, W, 1, INFO )
-      CALL CHKXER( 'ZGELQS', INFOT, NOUT, LERR, OK )
-      INFOT = 8
-      CALL ZGELQS( 1, 2, 0, A, 1, X, B, 1, W, 1, INFO )
-      CALL CHKXER( 'ZGELQS', INFOT, NOUT, LERR, OK )
-      INFOT = 10
-      CALL ZGELQS( 1, 1, 2, A, 1, X, B, 1, W, 1, INFO )
-      CALL CHKXER( 'ZGELQS', INFOT, NOUT, LERR, OK )
 *
 *     ZUNGLQ
 *
