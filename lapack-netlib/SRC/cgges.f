@@ -261,7 +261,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup complexGEeigen
+*> \ingroup gges
 *
 *  =====================================================================
       SUBROUTINE CGGES( JOBVSL, JOBVSR, SORT, SELCTG, N, A, LDA, B, LDB,
@@ -312,14 +312,13 @@
 *     ..
 *     .. External Subroutines ..
       EXTERNAL           CGEQRF, CGGBAK, CGGBAL, CGGHRD, CHGEQZ, CLACPY,
-     $                   CLASCL, CLASET, CTGSEN, CUNGQR, CUNMQR, SLABAD,
-     $                   XERBLA
+     $                   CLASCL, CLASET, CTGSEN, CUNGQR, CUNMQR, XERBLA
 *     ..
 *     .. External Functions ..
       LOGICAL            LSAME
       INTEGER            ILAENV
-      REAL               CLANGE, SLAMCH
-      EXTERNAL           LSAME, ILAENV, CLANGE, SLAMCH
+      REAL               CLANGE, SLAMCH, SROUNDUP_LWORK
+      EXTERNAL           LSAME, ILAENV, CLANGE, SLAMCH, SROUNDUP_LWORK
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          MAX, SQRT
@@ -390,7 +389,7 @@
             LWKOPT = MAX( LWKOPT, N +
      $                    N*ILAENV( 1, 'CUNGQR', ' ', N, 1, N, -1 ) )
          END IF
-         WORK( 1 ) = LWKOPT
+         WORK( 1 ) = SROUNDUP_LWORK(LWKOPT)
 *
          IF( LWORK.LT.LWKMIN .AND. .NOT.LQUERY )
      $      INFO = -18
@@ -415,7 +414,6 @@
       EPS = SLAMCH( 'P' )
       SMLNUM = SLAMCH( 'S' )
       BIGNUM = ONE / SMLNUM
-      CALL SLABAD( SMLNUM, BIGNUM )
       SMLNUM = SQRT( SMLNUM ) / EPS
       BIGNUM = ONE / SMLNUM
 *
@@ -587,7 +585,7 @@
 *
    30 CONTINUE
 *
-      WORK( 1 ) = LWKOPT
+      WORK( 1 ) = SROUNDUP_LWORK(LWKOPT)
 *
       RETURN
 *

@@ -122,7 +122,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup complexGEcomputational
+*> \ingroup geqrfp
 *
 *> \par Further Details:
 *  =====================
@@ -173,7 +173,8 @@
 *     ..
 *     .. External Functions ..
       INTEGER            ILAENV
-      EXTERNAL           ILAENV
+      REAL               SROUNDUP_LWORK
+      EXTERNAL           ILAENV, SROUNDUP_LWORK
 *     ..
 *     .. Executable Statements ..
 *
@@ -182,7 +183,7 @@
       INFO = 0
       NB = ILAENV( 1, 'CGEQRF', ' ', M, N, -1, -1 )
       LWKOPT = N*NB
-      WORK( 1 ) = LWKOPT
+      WORK( 1 ) = SROUNDUP_LWORK(LWKOPT)
       LQUERY = ( LWORK.EQ.-1 )
       IF( M.LT.0 ) THEN
          INFO = -1
@@ -272,7 +273,7 @@
      $   CALL CGEQR2P( M-I+1, N-I+1, A( I, I ), LDA, TAU( I ), WORK,
      $                IINFO )
 *
-      WORK( 1 ) = IWS
+      WORK( 1 ) = SROUNDUP_LWORK(IWS)
       RETURN
 *
 *     End of CGEQRFP

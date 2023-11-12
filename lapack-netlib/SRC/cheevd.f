@@ -180,7 +180,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup complexHEeigen
+*> \ingroup heevd
 *
 *> \par Further Details:
 *  =====================
@@ -230,8 +230,8 @@
 *     .. External Functions ..
       LOGICAL            LSAME
       INTEGER            ILAENV
-      REAL               CLANHE, SLAMCH
-      EXTERNAL           ILAENV, LSAME, CLANHE, SLAMCH
+      REAL               CLANHE, SLAMCH, SROUNDUP_LWORK
+      EXTERNAL           ILAENV, LSAME, CLANHE, SLAMCH, SROUNDUP_LWORK
 *     ..
 *     .. External Subroutines ..
       EXTERNAL           CHETRD, CLACPY, CLASCL, CSTEDC, CUNMTR, SSCAL,
@@ -282,7 +282,7 @@
             LROPT = LRWMIN
             LIOPT = LIWMIN
          END IF
-         WORK( 1 ) = LOPT
+         WORK( 1 ) = SROUNDUP_LWORK(LOPT)
          RWORK( 1 ) = LROPT
          IWORK( 1 ) = LIOPT
 *
@@ -378,7 +378,7 @@
          CALL SSCAL( IMAX, ONE / SIGMA, W, 1 )
       END IF
 *
-      WORK( 1 ) = LOPT
+      WORK( 1 ) = SROUNDUP_LWORK(LOPT)
       RWORK( 1 ) = LROPT
       IWORK( 1 ) = LIOPT
 *
