@@ -297,7 +297,7 @@
 *
 *  @generated from dgeevx.f, fortran d -> s, Tue Apr 19 01:47:44 2016
 *
-*> \ingroup realGEeigen
+*> \ingroup geevx
 *
 *  =====================================================================
       SUBROUTINE SGEEVX( BALANC, JOBVL, JOBVR, SENSE, N, A, LDA, WR, WI,
@@ -341,16 +341,16 @@
       REAL               DUM( 1 )
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           SGEBAK, SGEBAL, SGEHRD, SHSEQR, SLABAD, SLACPY,
+      EXTERNAL           SGEBAK, SGEBAL, SGEHRD, SHSEQR, SLACPY,
      $                   SLARTG, SLASCL, SORGHR, SROT, SSCAL, STREVC3,
      $                   STRSNA, XERBLA
 *     ..
 *     .. External Functions ..
       LOGICAL            LSAME
       INTEGER            ISAMAX, ILAENV
-      REAL               SLAMCH, SLANGE, SLAPY2, SNRM2
+      REAL               SLAMCH, SLANGE, SLAPY2, SNRM2, SROUNDUP_LWORK
       EXTERNAL           LSAME, ISAMAX, ILAENV, SLAMCH, SLANGE, SLAPY2,
-     $                   SNRM2
+     $                   SNRM2, SROUNDUP_LWORK
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          MAX, SQRT
@@ -453,7 +453,7 @@
             END IF
             MAXWRK = MAX( MAXWRK, MINWRK )
          END IF
-         WORK( 1 ) = MAXWRK
+         WORK( 1 ) = SROUNDUP_LWORK(MAXWRK)
 *
          IF( LWORK.LT.MINWRK .AND. .NOT.LQUERY ) THEN
             INFO = -21
@@ -477,7 +477,6 @@
       EPS = SLAMCH( 'P' )
       SMLNUM = SLAMCH( 'S' )
       BIGNUM = ONE / SMLNUM
-      CALL SLABAD( SMLNUM, BIGNUM )
       SMLNUM = SQRT( SMLNUM ) / EPS
       BIGNUM = ONE / SMLNUM
 *
@@ -684,7 +683,7 @@
          END IF
       END IF
 *
-      WORK( 1 ) = MAXWRK
+      WORK( 1 ) = SROUNDUP_LWORK(MAXWRK)
       RETURN
 *
 *     End of SGEEVX

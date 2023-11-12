@@ -120,7 +120,7 @@
 *>          The dimension of the array WORK.
 *>          If LWORK = -1, then a workspace query is assumed. The routine
 *>          only calculates the size of the WORK array, returns this
-*>          value as WORK(1), and no error message related to WORK 
+*>          value as WORK(1), and no error message related to WORK
 *>          is issued by XERBLA.
 *> \endverbatim
 *>
@@ -144,7 +144,7 @@
 *>
 *> \verbatim
 *>
-*> These details are particular for this LAPACK implementation. Users should not 
+*> These details are particular for this LAPACK implementation. Users should not
 *> take them for granted. These details may change in the future, and are not likely
 *> true for another LAPACK implementation. These details are relevant if one wants
 *> to try to understand the code. They are not part of the interface.
@@ -160,11 +160,13 @@
 *>  block sizes MB and NB returned by ILAENV, SGEQR will use either
 *>  SLATSQR (if the matrix is tall-and-skinny) or SGEQRT to compute
 *>  the QR factorization.
-*>  This version of SGEMQR will use either SLAMTSQR or SGEMQRT to 
+*>  This version of SGEMQR will use either SLAMTSQR or SGEMQRT to
 *>  multiply matrix Q by another matrix.
 *>  Further Details in SLAMTSQR or SGEMQRT.
 *>
 *> \endverbatim
+*>
+*> \ingroup gemqr
 *>
 *  =====================================================================
       SUBROUTINE SGEMQR( SIDE, TRANS, M, N, K, A, LDA, T, TSIZE,
@@ -191,7 +193,8 @@
 *     ..
 *     .. External Functions ..
       LOGICAL            LSAME
-      EXTERNAL           LSAME
+      REAL               SROUNDUP_LWORK
+      EXTERNAL           LSAME, SROUNDUP_LWORK
 *     ..
 *     .. External Subroutines ..
       EXTERNAL           SGEMQRT, SLAMTSQR, XERBLA
@@ -251,7 +254,7 @@
       END IF
 *
       IF( INFO.EQ.0 ) THEN
-        WORK( 1 ) = LW
+        WORK( 1 ) = SROUNDUP_LWORK(LW)
       END IF
 *
       IF( INFO.NE.0 ) THEN
@@ -276,7 +279,7 @@
      $                 NB, C, LDC, WORK, LWORK, INFO )
       END IF
 *
-      WORK( 1 ) = LW
+      WORK( 1 ) = SROUNDUP_LWORK(LW)
 *
       RETURN
 *

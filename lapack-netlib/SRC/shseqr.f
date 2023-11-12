@@ -233,7 +233,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup realOTHERcomputational
+*> \ingroup hseqr
 *
 *> \par Contributors:
 *  ==================
@@ -358,7 +358,8 @@
 *     .. External Functions ..
       INTEGER            ILAENV
       LOGICAL            LSAME
-      EXTERNAL           ILAENV, LSAME
+      REAL               SROUNDUP_LWORK
+      EXTERNAL           ILAENV, LSAME, SROUNDUP_LWORK
 *     ..
 *     .. External Subroutines ..
       EXTERNAL           SLACPY, SLAHQR, SLAQR0, SLASET, XERBLA
@@ -373,7 +374,7 @@
       WANTT = LSAME( JOB, 'S' )
       INITZ = LSAME( COMPZ, 'I' )
       WANTZ = INITZ .OR. LSAME( COMPZ, 'V' )
-      WORK( 1 ) = REAL( MAX( 1, N ) )
+      WORK( 1 ) = SROUNDUP_LWORK( MAX( 1, N ) )
       LQUERY = LWORK.EQ.-1
 *
       INFO = 0
