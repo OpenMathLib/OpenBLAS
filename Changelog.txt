@@ -1,7 +1,7 @@
 OpenBLAS ChangeLog
 ====================================================================
 Version 0.3.25
- 11-Nov-2023
+ 12-Nov-2023
 
 general:
 - improved the error message shown on exceeding the maximum thread count
