@@ -230,7 +230,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup realOTHERcomputational
+*> \ingroup tgsna
 *
 *> \par Further Details:
 *  =====================
@@ -416,8 +416,9 @@
 *     ..
 *     .. External Functions ..
       LOGICAL            LSAME
-      REAL               SDOT, SLAMCH, SLAPY2, SNRM2
-      EXTERNAL           LSAME, SDOT, SLAMCH, SLAPY2, SNRM2
+      REAL               SDOT, SLAMCH, SLAPY2, SNRM2, SROUNDUP_LWORK
+      EXTERNAL           LSAME, SDOT, SLAMCH, SLAPY2, SNRM2,
+     $                   SROUNDUP_LWORK
 *     ..
 *     .. External Subroutines ..
       EXTERNAL           SGEMV, SLACPY, SLAG2, STGEXC, STGSYL, XERBLA
@@ -490,7 +491,7 @@
          ELSE
             LWMIN = N
          END IF
-         WORK( 1 ) = LWMIN
+         WORK( 1 ) = SROUNDUP_LWORK(LWMIN)
 *
          IF( MM.LT.M ) THEN
             INFO = -15
@@ -689,7 +690,7 @@
      $      KS = KS + 1
 *
    20 CONTINUE
-      WORK( 1 ) = LWMIN
+      WORK( 1 ) = SROUNDUP_LWORK(LWMIN)
       RETURN
 *
 *     End of STGSNA
