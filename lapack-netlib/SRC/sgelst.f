@@ -176,7 +176,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup realGEsolve
+*> \ingroup gelst
 *
 *> \par Contributors:
 *  ==================
@@ -222,15 +222,15 @@
 *     .. External Functions ..
       LOGICAL            LSAME
       INTEGER            ILAENV
-      REAL               SLAMCH, SLANGE
-      EXTERNAL           LSAME, ILAENV, SLAMCH, SLANGE
+      REAL               SLAMCH, SLANGE, SROUNDUP_LWORK
+      EXTERNAL           LSAME, ILAENV, SLAMCH, SLANGE, SROUNDUP_LWORK
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           SGELQT, SGEQRT, SGEMLQT, SGEMQRT, SLABAD,
+      EXTERNAL           SGELQT, SGEQRT, SGEMLQT, SGEMQRT,
      $                   SLASCL, SLASET, STRTRS, XERBLA
 *     ..
 *     .. Intrinsic Functions ..
-      INTRINSIC          REAL, MAX, MIN
+      INTRINSIC          MAX, MIN
 *     ..
 *     .. Executable Statements ..
 *
@@ -268,7 +268,7 @@
 *
          MNNRHS = MAX( MN, NRHS )
          LWOPT = MAX( 1, (MN+MNNRHS)*NB )
-         WORK( 1 ) = REAL( LWOPT )
+         WORK( 1 ) = SROUNDUP_LWORK( LWOPT )
 *
       END IF
 *
@@ -283,7 +283,7 @@
 *
       IF( MIN( M, N, NRHS ).EQ.0 ) THEN
          CALL SLASET( 'Full', MAX( M, N ), NRHS, ZERO, ZERO, B, LDB )
-         WORK( 1 ) = REAL( LWOPT )
+         WORK( 1 ) = SROUNDUP_LWORK( LWOPT )
          RETURN
       END IF
 *
@@ -309,7 +309,6 @@
 *
       SMLNUM = SLAMCH( 'S' ) / SLAMCH( 'P' )
       BIGNUM = ONE / SMLNUM
-      CALL SLABAD( SMLNUM, BIGNUM )
 *
 *     Scale A, B if max element outside range [SMLNUM,BIGNUM]
 *
@@ -332,7 +331,7 @@
 *        Matrix all zero. Return zero solution.
 *
          CALL SLASET( 'Full', MAX( M, N ), NRHS, ZERO, ZERO, B, LDB )
-         WORK( 1 ) = REAL( LWOPT )
+         WORK( 1 ) = SROUNDUP_LWORK( LWOPT )
          RETURN
       END IF
 *
@@ -522,7 +521,7 @@
      $                INFO )
       END IF
 *
-      WORK( 1 ) = REAL( LWOPT )
+      WORK( 1 ) = SROUNDUP_LWORK( LWOPT )
 *
       RETURN
 *

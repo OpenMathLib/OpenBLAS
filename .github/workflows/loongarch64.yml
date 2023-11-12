@@ -2,8 +2,13 @@ name: loongarch64 qemu test
 
 on: [push, pull_request]
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
 jobs:
   TEST:
+    if: "github.repository == 'OpenMathLib/OpenBLAS'"
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -18,6 +23,9 @@ jobs:
           - target: LOONGSON2K1000
             triple: loongarch64-unknown-linux-gnu
             opts: NO_SHARED=1 TARGET=LOONGSON2K1000
+          - target: DYNAMIC_ARCH
+            triple: loongarch64-unknown-linux-gnu
+            opts: NO_SHARED=1 DYNAMIC_ARCH=1 TARGET=GENERIC
 
     steps:
       - name: Checkout repository

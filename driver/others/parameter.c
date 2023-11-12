@@ -40,7 +40,7 @@
 #include <string.h>
 #include "common.h"
 
-extern int openblas_block_factor();
+extern int openblas_block_factor(void);
 int get_L2_size(void);
 
 #define DEFAULT_GEMM_P 128

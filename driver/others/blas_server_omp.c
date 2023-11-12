@@ -70,7 +70,7 @@
 int blas_server_avail = 0;
 int blas_omp_number_max = 0;
 
-extern int openblas_omp_adaptive_env();
+extern int openblas_omp_adaptive_env(void);
 
 static void * blas_thread_buffer[MAX_PARALLEL_NUMBER][MAX_CPU_NUMBER];
 #ifdef HAVE_C11
@@ -79,7 +79,7 @@ static atomic_bool blas_buffer_inuse[MAX_PARALLEL_NUMBER];
 static _Bool blas_buffer_inuse[MAX_PARALLEL_NUMBER];
 #endif
 
-static void adjust_thread_buffers() {
+static void adjust_thread_buffers(void) {
 
   int i=0, j=0;
 
@@ -124,8 +124,17 @@ void openblas_set_num_threads(int num_threads) {
 }
 
 int blas_thread_init(void){
-if(blas_omp_number_max <= 0)
-  blas_omp_number_max = omp_get_max_threads();
+
+#if defined(__FreeBSD__) && defined(__clang__)
+extern int openblas_omp_num_threads_env(void);
+
+   if(blas_omp_number_max <= 0)
+	   blas_omp_number_max= openblas_omp_num_threads_env();
+   if (blas_omp_number_max <= 0) 
+	   blas_omp_number_max=MAX_CPU_NUMBER;
+#else
+    blas_omp_number_max = omp_get_max_threads();
+#endif
 
   blas_get_cpu_number();
 

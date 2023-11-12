@@ -271,6 +271,11 @@ endif
 ifeq ($(F_COMPILER), NAG)
 CEXTRALIB = -lgomp
 endif
+ifeq ($(F_COMPILER), IBM)
+ifeq ($(C_COMPILER), GCC)
+CEXTRALIB += -lgomp
+endif
+endif
 endif
 
 ifeq ($(BUILD_SINGLE),1)
@@ -326,7 +331,7 @@ endif
 
 ifeq ($(BUILD_BFLOAT16),1)
 test_sbgemm : compare_sgemm_sbgemm.c ../$(LIBNAME)
-	$(FC) $(FLDFLAGS) -o test_sbgemm compare_sgemm_sbgemm.c ../$(LIBNAME) $(EXTRALIB) $(CEXTRALIB)
+	$(CC) $(CFLAGS) -o test_sbgemm compare_sgemm_sbgemm.c ../$(LIBNAME) $(EXTRALIB) $(CEXTRALIB)
 endif
 
 ifeq ($(BUILD_COMPLEX),1)

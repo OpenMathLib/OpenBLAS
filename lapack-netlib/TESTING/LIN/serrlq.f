@@ -76,7 +76,7 @@
      $                   W( NMAX ), X( NMAX )
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           ALAESM, CHKXER, SGELQ2, SGELQF, SGELQS, SORGL2,
+      EXTERNAL           ALAESM, CHKXER, SGELQ2, SGELQF, SORGL2,
      $                   SORGLQ, SORML2, SORMLQ
 *     ..
 *     .. Scalars in Common ..
@@ -139,31 +139,6 @@
       INFOT = 4
       CALL SGELQ2( 2, 1, A, 1, B, W, INFO )
       CALL CHKXER( 'SGELQ2', INFOT, NOUT, LERR, OK )
-*
-*     SGELQS
-*
-      SRNAMT = 'SGELQS'
-      INFOT = 1
-      CALL SGELQS( -1, 0, 0, A, 1, X, B, 1, W, 1, INFO )
-      CALL CHKXER( 'SGELQS', INFOT, NOUT, LERR, OK )
-      INFOT = 2
-      CALL SGELQS( 0, -1, 0, A, 1, X, B, 1, W, 1, INFO )
-      CALL CHKXER( 'SGELQS', INFOT, NOUT, LERR, OK )
-      INFOT = 2
-      CALL SGELQS( 2, 1, 0, A, 2, X, B, 1, W, 1, INFO )
-      CALL CHKXER( 'SGELQS', INFOT, NOUT, LERR, OK )
-      INFOT = 3
-      CALL SGELQS( 0, 0, -1, A, 1, X, B, 1, W, 1, INFO )
-      CALL CHKXER( 'SGELQS', INFOT, NOUT, LERR, OK )
-      INFOT = 5
-      CALL SGELQS( 2, 2, 0, A, 1, X, B, 2, W, 1, INFO )
-      CALL CHKXER( 'SGELQS', INFOT, NOUT, LERR, OK )
-      INFOT = 8
-      CALL SGELQS( 1, 2, 0, A, 1, X, B, 1, W, 1, INFO )
-      CALL CHKXER( 'SGELQS', INFOT, NOUT, LERR, OK )
-      INFOT = 10
-      CALL SGELQS( 1, 1, 2, A, 1, X, B, 1, W, 1, INFO )
-      CALL CHKXER( 'SGELQS', INFOT, NOUT, LERR, OK )
 *
 *     SORGLQ
 *

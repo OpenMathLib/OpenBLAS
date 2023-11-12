@@ -32,7 +32,11 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 typedef union
 {
   unsigned short v;
+#if defined(_AIX)
+  struct __attribute__((packed))
+#else
   struct
+#endif
   {
 #if __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__
     unsigned short s:1;
@@ -49,7 +53,11 @@ typedef union
 typedef union
 {
   float v;
+#if defined(_AIX)
+  struct __attribute__((packed))
+#else
   struct
+#endif
   {
 #if __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__
     uint32_t s:1;

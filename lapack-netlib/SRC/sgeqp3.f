@@ -120,7 +120,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup realGEcomputational
+*> \ingroup geqp3
 *
 *> \par Further Details:
 *  =====================
@@ -177,8 +177,8 @@
 *     ..
 *     .. External Functions ..
       INTEGER            ILAENV
-      REAL               SNRM2
-      EXTERNAL           ILAENV, SNRM2
+      REAL               SNRM2, SROUNDUP_LWORK
+      EXTERNAL           ILAENV, SNRM2, SROUNDUP_LWORK
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          INT, MAX, MIN
@@ -205,7 +205,7 @@
             NB = ILAENV( INB, 'SGEQRF', ' ', M, N, -1, -1 )
             LWKOPT = 2*N + ( N + 1 )*NB
          END IF
-         WORK( 1 ) = LWKOPT
+         WORK( 1 ) = SROUNDUP_LWORK(LWKOPT)
 *
          IF( ( LWORK.LT.IWS ) .AND. .NOT.LQUERY ) THEN
             INFO = -8
@@ -347,7 +347,7 @@
 *
       END IF
 *
-      WORK( 1 ) = IWS
+      WORK( 1 ) = SROUNDUP_LWORK(IWS)
       RETURN
 *
 *     End of SGEQP3

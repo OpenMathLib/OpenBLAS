@@ -159,6 +159,8 @@
 *>     SIAM J. Sci. Comput, vol. 34, no. 1, 2012
 *> \endverbatim
 *>
+*> \ingroup laswlq
+*>
 *  =====================================================================
       SUBROUTINE CLASWLQ( M, N, MB, NB, A, LDA, T, LDT, WORK, LWORK,
      $                  INFO)
@@ -183,15 +185,13 @@
 *     ..
 *     .. EXTERNAL FUNCTIONS ..
       LOGICAL            LSAME
-      EXTERNAL           LSAME
+      INTEGER            ILAENV
+      REAL               SROUNDUP_LWORK
+      EXTERNAL           LSAME, ILAENV, SROUNDUP_LWORK
 *     .. EXTERNAL SUBROUTINES ..
       EXTERNAL           CGELQT, CTPLQT, XERBLA
 *     .. INTRINSIC FUNCTIONS ..
       INTRINSIC          MAX, MIN, MOD
-*     ..
-*     .. EXTERNAL FUNCTIONS ..
-      INTEGER            ILAENV
-      EXTERNAL           ILAENV
 *     ..
 *     .. EXECUTABLE STATEMENTS ..
 *
@@ -217,7 +217,7 @@
         INFO = -10
       END IF
       IF( INFO.EQ.0)  THEN
-      WORK(1) = MB*M
+      WORK(1) = SROUNDUP_LWORK(MB*M)
       END IF
 *
       IF( INFO.NE.0 ) THEN
@@ -266,7 +266,7 @@
      $                  WORK, INFO )
        END IF
 *
-      WORK( 1 ) = M * MB
+      WORK( 1 ) = SROUNDUP_LWORK(M * MB)
       RETURN
 *
 *     End of CLASWLQ

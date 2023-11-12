@@ -41,15 +41,15 @@ static int openblas_env_goto_num_threads=0;
 static int openblas_env_omp_num_threads=0;
 static int openblas_env_omp_adaptive=0;
 
-int openblas_verbose() { return openblas_env_verbose;}
-unsigned int openblas_thread_timeout() { return openblas_env_thread_timeout;}
-int openblas_block_factor() { return openblas_env_block_factor;}
-int openblas_num_threads_env() { return openblas_env_openblas_num_threads;}
-int openblas_goto_num_threads_env() { return openblas_env_goto_num_threads;}
-int openblas_omp_num_threads_env() { return openblas_env_omp_num_threads;}
-int openblas_omp_adaptive_env() { return openblas_env_omp_adaptive;}
+int openblas_verbose(void) { return openblas_env_verbose;}
+unsigned int openblas_thread_timeout(void) { return openblas_env_thread_timeout;}
+int openblas_block_factor(void) { return openblas_env_block_factor;}
+int openblas_num_threads_env(void) { return openblas_env_openblas_num_threads;}
+int openblas_goto_num_threads_env(void) { return openblas_env_goto_num_threads;}
+int openblas_omp_num_threads_env(void) { return openblas_env_omp_num_threads;}
+int openblas_omp_adaptive_env(void) { return openblas_env_omp_adaptive;}
 
-void openblas_read_env() {
+void openblas_read_env(void) {
   int ret=0;
   env_var_t p;
   if (readenv(p,"OPENBLAS_VERBOSE")) ret = atoi(p);

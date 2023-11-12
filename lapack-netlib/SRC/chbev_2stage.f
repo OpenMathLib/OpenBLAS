@@ -132,7 +132,7 @@
 *> \verbatim
 *>          LWORK is INTEGER
 *>          The length of the array WORK. LWORK >= 1, when N <= 1;
-*>          otherwise  
+*>          otherwise
 *>          If JOBZ = 'N' and N > 1, LWORK must be queried.
 *>                                   LWORK = MAX(1, dimension) where
 *>                                   dimension = (2KD+1)*N + KD*NTHREADS
@@ -171,7 +171,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup complexOTHEReigen
+*> \ingroup hbev_2stage
 *
 *> \par Further Details:
 *  =====================
@@ -189,7 +189,7 @@
 *>  http://doi.acm.org/10.1145/2063384.2063394
 *>
 *>  A. Haidar, J. Kurzak, P. Luszczek, 2013.
-*>  An improved parallel singular value algorithm and its implementation 
+*>  An improved parallel singular value algorithm and its implementation
 *>  for multicore hardware, In Proceedings of 2013 International Conference
 *>  for High Performance Computing, Networking, Storage and Analysis (SC '13).
 *>  Denver, Colorado, USA, 2013.
@@ -197,11 +197,11 @@
 *>  http://doi.acm.org/10.1145/2503210.2503292
 *>
 *>  A. Haidar, R. Solca, S. Tomov, T. Schulthess and J. Dongarra.
-*>  A novel hybrid CPU-GPU generalized eigensolver for electronic structure 
+*>  A novel hybrid CPU-GPU generalized eigensolver for electronic structure
 *>  calculations based on fine-grained memory aware tasks.
 *>  International Journal of High Performance Computing Applications.
 *>  Volume 28 Issue 2, Pages 196-209, May 2014.
-*>  http://hpc.sagepub.com/content/28/2/196 
+*>  http://hpc.sagepub.com/content/28/2/196
 *>
 *> \endverbatim
 *
@@ -240,8 +240,9 @@
 *     .. External Functions ..
       LOGICAL            LSAME
       INTEGER            ILAENV2STAGE
-      REAL               SLAMCH, CLANHB
-      EXTERNAL           LSAME, SLAMCH, CLANHB, ILAENV2STAGE
+      REAL               SLAMCH, CLANHB, SROUNDUP_LWORK
+      EXTERNAL           LSAME, SLAMCH, CLANHB, ILAENV2STAGE,
+     $                   SROUNDUP_LWORK
 *     ..
 *     .. External Subroutines ..
       EXTERNAL           SSCAL, SSTERF, XERBLA, CLASCL, CSTEQR,
@@ -276,7 +277,7 @@
       IF( INFO.EQ.0 ) THEN
          IF( N.LE.1 ) THEN
             LWMIN = 1
-            WORK( 1 ) = LWMIN
+            WORK( 1 ) = SROUNDUP_LWORK(LWMIN)
          ELSE
             IB    = ILAENV2STAGE( 2, 'CHETRD_HB2ST', JOBZ,
      $                            N, KD, -1, -1 )
@@ -285,7 +286,7 @@
             LWTRD = ILAENV2STAGE( 4, 'CHETRD_HB2ST', JOBZ,
      $                            N, KD, IB, -1 )
             LWMIN = LHTRD + LWTRD
-            WORK( 1 )  = LWMIN
+            WORK( 1 )  = SROUNDUP_LWORK(LWMIN)
          ENDIF
 *
          IF( LWORK.LT.LWMIN .AND. .NOT.LQUERY )
@@ -351,7 +352,7 @@
       LLWORK  = LWORK - INDWRK + 1
 *
       CALL CHETRD_HB2ST( "N", JOBZ, UPLO, N, KD, AB, LDAB, W,
-     $                    RWORK( INDE ), WORK( INDHOUS ), LHTRD, 
+     $                    RWORK( INDE ), WORK( INDHOUS ), LHTRD,
      $                    WORK( INDWRK ), LLWORK, IINFO )
 *
 *     For eigenvalues only, call SSTERF.  For eigenvectors, call CSTEQR.
@@ -377,7 +378,7 @@
 *
 *     Set WORK(1) to optimal workspace size.
 *
-      WORK( 1 ) = LWMIN
+      WORK( 1 ) = SROUNDUP_LWORK(LWMIN)
 *
       RETURN
 *

@@ -42,7 +42,7 @@
 
 int CNAME(int mode,
 	  blas_arg_t *arg, BLASLONG *range_m, BLASLONG *range_n,
-	  int (*function)(), void *sa, void *sb, BLASLONG divM, BLASLONG divN) {
+	  int (*function)(blas_arg_t*, BLASLONG*, BLASLONG*,FLOAT *, FLOAT *, BLASLONG ), void *sa, void *sb, BLASLONG divM, BLASLONG divN) {
 
   blas_queue_t queue[MAX_CPU_NUMBER];
 

@@ -41,7 +41,7 @@ typedef void (*RunWithDataFunc)(void*);
 struct ctest {
     const char* ssname;  // suite name
     const char* ttname;  // test name
-    void (*run)();
+    void (*run)(void);
     int skip;
 
     void* data;
@@ -159,9 +159,9 @@ struct ctest {
     void WEAK sname##_teardown(struct sname##_data* data)
 
 #define __CTEST_INTERNAL(sname, tname, _skip) \
-    void __FNAME(sname, tname)(); \
+    void __FNAME(sname, tname)(void); \
     __CTEST_STRUCT(sname, tname, _skip, NULL, NULL, NULL) \
-    void __FNAME(sname, tname)()
+    void __FNAME(sname, tname)(void)
 
 #ifdef __CTEST_APPLE
 #define SETUP_FNAME(sname) NULL
@@ -366,7 +366,7 @@ void __ctest_addTest(struct ctest *test)
 #ifndef __CTEST_MSVC
 /* Add all tests to linked list automatically.
  */
-static void __ctest_linkTests()
+static void __ctest_linkTests(void)
 {
     struct ctest ** test;
     struct ctest ** ctest_begin = (struct ctest **)__PNAME(suite, test);
@@ -401,7 +401,7 @@ static void __ctest_linkTests()
     __ctest_head_p = ctest_begin;
 }
 #else //for msvc
-static void __ctest_linkTests()
+static void __ctest_linkTests(void)
 {
     struct ctest ** ctest_start = __ctest_head_p;
     struct ctest ** test;
@@ -450,7 +450,7 @@ static void msg_start(const char* color, const char* title) {
     print_errormsg("  %s: ", title);
 }
 
-static void msg_end() {
+static void msg_end(void) {
     if (color_output) {
     	print_errormsg(ANSI_NORMAL);
     }
@@ -634,7 +634,7 @@ static int suite_test_filter(struct ctest* t) {
 
 
 #ifndef __CTEST_NO_TIME
-static uint64_t getCurrentTime() {
+static uint64_t getCurrentTime(void) {
     struct timeval now;
     gettimeofday(&now, NULL);
     uint64_t now64 = (uint64_t) now.tv_sec;

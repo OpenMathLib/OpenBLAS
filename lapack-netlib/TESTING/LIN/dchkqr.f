@@ -244,7 +244,7 @@
       EXTERNAL           DGENND
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           ALAERH, ALAHD, ALASUM, DERRQR, DGEQRS, DGET02,
+      EXTERNAL           ALAERH, ALAHD, ALASUM, DERRQR, DGELS, DGET02,
      $                   DLACPY, DLARHS, DLATB4, DLATMS, DQRT01,
      $                   DQRT01P, DQRT02, DQRT03, XLAENV
 *     ..
@@ -372,7 +372,7 @@
                          IF( .NOT. DGENND( M, N, AF, LDA ) )
      $                       RESULT( 9 ) = 2*THRESH
                         NT = NT + 1
-                    ELSE IF( M.GE.N ) THEN
+                     ELSE IF( M.GE.N ) THEN
 *
 *                       Test DORGQR, using factorization
 *                       returned by DQRT01
@@ -389,7 +389,7 @@
      $                               WORK, LWORK, RWORK, RESULT( 3 ) )
                         NT = NT + 4
 *
-*                       If M>=N and K=N, call DGEQRS to solve a system
+*                       If M>=N and K=N, call DGELS to solve a system
 *                       with NRHS right hand sides and compute the
 *                       residual.
 *
@@ -406,14 +406,20 @@
 *
                            CALL DLACPY( 'Full', M, NRHS, B, LDA, X,
      $                                  LDA )
-                           SRNAMT = 'DGEQRS'
-                           CALL DGEQRS( M, N, NRHS, AF, LDA, TAU, X,
-     $                                  LDA, WORK, LWORK, INFO )
 *
-*                          Check error code from DGEQRS.
+*                          Reset AF. DGELS overwrites the matrix with
+*                          its factorization.
+*
+                           CALL DLACPY( 'Full', M, N, A, LDA, AF, LDA )
+*
+                           SRNAMT = 'DGELS'
+                           CALL DGELS( 'No transpose', M, N, NRHS, AF,
+     $                                 LDA, X, LDA, WORK, LWORK, INFO )
+*
+*                          Check error code from DGELS.
 *
                            IF( INFO.NE.0 )
-     $                        CALL ALAERH( PATH, 'DGEQRS', INFO, 0, ' ',
+     $                        CALL ALAERH( PATH, 'DGELS', INFO, 0, 'N',
      $                                     M, N, NRHS, -1, NB, IMAT,
      $                                     NFAIL, NERRS, NOUT )
 *

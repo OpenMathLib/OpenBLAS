@@ -308,7 +308,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup complexOTHERcomputational
+*> \ingroup uncsd
 *
 *  =====================================================================
       RECURSIVE SUBROUTINE CUNCSD( JOBU1, JOBU2, JOBV1T, JOBV2T, TRANS,
@@ -365,7 +365,8 @@
 *     ..
 *     .. External Functions ..
       LOGICAL            LSAME
-      EXTERNAL           LSAME
+      REAL               SROUNDUP_LWORK
+      EXTERNAL           LSAME, SROUNDUP_LWORK
 *     ..
 *     .. Intrinsic Functions
       INTRINSIC          INT, MAX, MIN
@@ -504,7 +505,8 @@
      $              IORBDB + LORBDBWORKOPT ) - 1
          LWORKMIN = MAX( IORGQR + LORGQRWORKMIN, IORGLQ + LORGLQWORKMIN,
      $              IORBDB + LORBDBWORKMIN ) - 1
-         WORK(1) = MAX(LWORKOPT,LWORKMIN)
+         LWORKOPT = MAX(LWORKOPT,LWORKMIN)
+         WORK(1) = SROUNDUP_LWORK(LWORKOPT)
 *
          IF( LWORK .LT. LWORKMIN
      $       .AND. .NOT. ( LQUERY .OR. LRQUERY ) ) THEN

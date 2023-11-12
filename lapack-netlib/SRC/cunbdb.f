@@ -255,7 +255,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup complexOTHERcomputational
+*> \ingroup unbdb
 *
 *> \par Further Details:
 *  =====================
@@ -320,9 +320,9 @@
 *
 *     ..
 *     .. External Functions ..
-      REAL               SCNRM2
+      REAL               SCNRM2, SROUNDUP_LWORK
       LOGICAL            LSAME
-      EXTERNAL           SCNRM2, LSAME
+      EXTERNAL           SCNRM2, SROUNDUP_LWORK, LSAME
 *     ..
 *     .. Intrinsic Functions
       INTRINSIC          ATAN2, COS, MAX, MIN, SIN
@@ -377,7 +377,7 @@
       IF( INFO .EQ. 0 ) THEN
          LWORKOPT = M - Q
          LWORKMIN = M - Q
-         WORK(1) = LWORKOPT
+         WORK(1) = SROUNDUP_LWORK(LWORKOPT)
          IF( LWORK .LT. LWORKMIN .AND. .NOT. LQUERY ) THEN
             INFO = -21
          END IF

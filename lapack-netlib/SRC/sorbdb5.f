@@ -148,7 +148,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup realOTHERcomputational
+*> \ingroup unbdb5
 *
 *  =====================================================================
       SUBROUTINE SORBDB5( M1, M2, N, X1, INCX1, X2, INCX2, Q1, LDQ1, Q2,
@@ -169,18 +169,21 @@
 *  =====================================================================
 *
 *     .. Parameters ..
+      REAL               REALZERO
+      PARAMETER          ( REALZERO = 0.0E0 )
       REAL               ONE, ZERO
       PARAMETER          ( ONE = 1.0E0, ZERO = 0.0E0 )
 *     ..
 *     .. Local Scalars ..
       INTEGER            CHILDINFO, I, J
+      REAL               EPS, NORM, SCL, SSQ
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           SORBDB6, XERBLA
+      EXTERNAL           SLASSQ, SORBDB6, SSCAL, XERBLA
 *     ..
 *     .. External Functions ..
-      REAL               SNRM2
-      EXTERNAL           SNRM2
+      REAL               SLAMCH, SNRM2
+      EXTERNAL           SLAMCH, SNRM2
 *     ..
 *     .. Intrinsic Function ..
       INTRINSIC          MAX
@@ -213,16 +216,33 @@
          RETURN
       END IF
 *
-*     Project X onto the orthogonal complement of Q
+      EPS = SLAMCH( 'Precision' )
 *
-      CALL SORBDB6( M1, M2, N, X1, INCX1, X2, INCX2, Q1, LDQ1, Q2, LDQ2,
-     $              WORK, LWORK, CHILDINFO )
+*     Project X onto the orthogonal complement of Q if X is nonzero
 *
-*     If the projection is nonzero, then return
+      SCL = REALZERO
+      SSQ = REALZERO
+      CALL SLASSQ( M1, X1, INCX1, SCL, SSQ )
+      CALL SLASSQ( M2, X2, INCX2, SCL, SSQ )
+      NORM = SCL * SQRT( SSQ )
 *
-      IF( SNRM2(M1,X1,INCX1) .NE. ZERO
-     $    .OR. SNRM2(M2,X2,INCX2) .NE. ZERO ) THEN
-         RETURN
+      IF( NORM .GT. N * EPS ) THEN
+*        Scale vector to unit norm to avoid problems in the caller code.
+*        Computing the reciprocal is undesirable but
+*         * xLASCL cannot be used because of the vector increments and
+*         * the round-off error has a negligible impact on
+*           orthogonalization.
+         CALL SSCAL( M1, ONE / NORM, X1, INCX1 )
+         CALL SSCAL( M2, ONE / NORM, X2, INCX2 )
+         CALL SORBDB6( M1, M2, N, X1, INCX1, X2, INCX2, Q1, LDQ1, Q2,
+     $              LDQ2, WORK, LWORK, CHILDINFO )
+*
+*        If the projection is nonzero, then return
+*
+         IF( SNRM2(M1,X1,INCX1) .NE. REALZERO
+     $       .OR. SNRM2(M2,X2,INCX2) .NE. REALZERO ) THEN
+            RETURN
+         END IF
       END IF
 *
 *     Project each standard basis vector e_1,...,e_M1 in turn, stopping
@@ -238,8 +258,8 @@
          END DO
          CALL SORBDB6( M1, M2, N, X1, INCX1, X2, INCX2, Q1, LDQ1, Q2,
      $                 LDQ2, WORK, LWORK, CHILDINFO )
-         IF( SNRM2(M1,X1,INCX1) .NE. ZERO
-     $       .OR. SNRM2(M2,X2,INCX2) .NE. ZERO ) THEN
+         IF( SNRM2(M1,X1,INCX1) .NE. REALZERO
+     $       .OR. SNRM2(M2,X2,INCX2) .NE. REALZERO ) THEN
             RETURN
          END IF
       END DO
@@ -257,8 +277,8 @@
          X2(I) = ONE
          CALL SORBDB6( M1, M2, N, X1, INCX1, X2, INCX2, Q1, LDQ1, Q2,
      $                 LDQ2, WORK, LWORK, CHILDINFO )
-         IF( SNRM2(M1,X1,INCX1) .NE. ZERO
-     $       .OR. SNRM2(M2,X2,INCX2) .NE. ZERO ) THEN
+         IF( SNRM2(M1,X1,INCX1) .NE. REALZERO
+     $       .OR. SNRM2(M2,X2,INCX2) .NE. REALZERO ) THEN
             RETURN
          END IF
       END DO

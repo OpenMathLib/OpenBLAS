@@ -1,0 +1,139 @@
+name: arm64 graviton cirun
+
+on:
+  push:
+    branches:
+      - develop
+      - release-**
+  pull_request:
+    branches:
+      - develop
+      - release-**
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read # to fetch code (actions/checkout)
+
+jobs:
+  build:
+    if: "github.repository == 'OpenMathLib/OpenBLAS'"
+    runs-on: "cirun-aws-runner-graviton--${{ github.run_id }}"
+
+    strategy:
+      fail-fast: false
+      matrix:
+        fortran: [gfortran]
+        build: [cmake, make]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Print system information
+        run: |
+          if [ "$RUNNER_OS" == "Linux" ]; then
+            cat /proc/cpuinfo
+          else
+            echo "::error::$RUNNER_OS not supported"
+            exit 1
+          fi
+
+      - name: Install Dependencies
+        run: |
+          if [ "$RUNNER_OS" == "Linux" ]; then
+            sudo apt update
+            sudo apt-get install -y gfortran cmake ccache libtinfo5
+          else
+            echo "::error::$RUNNER_OS not supported"
+            exit 1
+          fi
+
+      - name: Compilation cache
+        uses: actions/cache@v3
+        with:
+          path: ~/.ccache
+          # We include the commit sha in the cache key, as new cache entries are
+          # only created if there is no existing entry for the key yet.
+          # GNU make and cmake call the compilers differently. It looks like
+          # that causes the cache to mismatch. Keep the ccache for both build
+          # tools separate to avoid polluting each other.
+          key: ccache-${{ runner.os }}-${{ matrix.build }}-${{ matrix.fortran }}-${{ github.ref }}-${{ github.sha }}
+          # Restore a matching ccache cache entry. Prefer same branch and same Fortran compiler.
+          restore-keys: |
+            ccache-${{ runner.os }}-${{ matrix.build }}-${{ matrix.fortran }}-${{ github.ref }}
+            ccache-${{ runner.os }}-${{ matrix.build }}-${{ matrix.fortran }}
+            ccache-${{ runner.os }}-${{ matrix.build }}
+
+      - name: Configure ccache
+        run: |
+          if [ "${{ matrix.build }}" = "make" ]; then
+            # Add ccache to path
+            if [ "$RUNNER_OS" = "Linux" ]; then
+              echo "/usr/lib/ccache" >> $GITHUB_PATH
+            else
+              echo "::error::$RUNNER_OS not supported"
+              exit 1
+            fi
+          fi
+          # Limit the maximum size and switch on compression to avoid exceeding the total disk or cache quota (5 GB).
+          test -d ~/.ccache || mkdir -p ~/.ccache
+          echo "max_size = 300M" > ~/.ccache/ccache.conf
+          echo "compression = true" >> ~/.ccache/ccache.conf
+          ccache -s
+
+      - name: Build OpenBLAS
+        run: |
+          case "${{ matrix.build }}" in
+            "make")
+              make -j$(nproc) DYNAMIC_ARCH=1 USE_OPENMP=0 FC="ccache ${{ matrix.fortran }}"
+              ;;
+            "cmake")
+              mkdir build && cd build
+              cmake -DDYNAMIC_ARCH=1 \
+                    -DNOFORTRAN=0 \
+                    -DBUILD_WITHOUT_LAPACK=0 \
+                    -DCMAKE_VERBOSE_MAKEFILE=ON \
+                    -DCMAKE_BUILD_TYPE=Release \
+                    -DCMAKE_Fortran_COMPILER=${{ matrix.fortran }} \
+                    -DCMAKE_C_COMPILER_LAUNCHER=ccache \
+                    -DCMAKE_Fortran_COMPILER_LAUNCHER=ccache \
+                    ..
+              cmake --build .
+              ;;
+            *)
+              echo "::error::Configuration not supported"
+              exit 1
+              ;;
+          esac
+
+      - name: Show ccache status
+        continue-on-error: true
+        run: ccache -s
+
+      - name: Run tests
+        timeout-minutes: 60
+        run: |
+          case "${{ matrix.build }}" in
+            "make")
+              MAKE_FLAGS='DYNAMIC_ARCH=1 USE_OPENMP=0'
+              echo "::group::Tests in 'test' directory"
+              make -C test $MAKE_FLAGS FC="ccache ${{ matrix.fortran }}"
+              echo "::endgroup::"
+              echo "::group::Tests in 'ctest' directory"
+              make -C ctest $MAKE_FLAGS FC="ccache ${{ matrix.fortran }}"
+              echo "::endgroup::"
+              echo "::group::Tests in 'utest' directory"
+              make -C utest $MAKE_FLAGS FC="ccache ${{ matrix.fortran }}"
+              echo "::endgroup::"
+              ;;
+            "cmake")
+              cd build && ctest
+              ;;
+            *)
+              echo "::error::Configuration not supported"
+              exit 1
+              ;;
+          esac

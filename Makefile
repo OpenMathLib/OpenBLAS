@@ -35,7 +35,11 @@ export NO_LAPACK
 export C_LAPACK
 endif
 
+ifeq ($(F_COMPILER),CRAY)
+LAPACK_NOOPT := $(filter-out -O0 -O1 -O2 -O3 -Ofast -Og -Os,$(LAPACK_FFLAGS))
+else
 LAPACK_NOOPT := $(filter-out -O0 -O1 -O2 -O3 -Ofast -O -Og -Os,$(LAPACK_FFLAGS))
+endif
 
 SUBDIRS_ALL = $(SUBDIRS) test ctest utest exports benchmark ../laswp ../bench cpp_thread_test
 
@@ -206,9 +210,25 @@ ifeq ($(DYNAMIC_OLDER), 1)
 	@echo DYNAMIC_OLDER=1 >> Makefile.conf_last
 endif	
 endif
+	@echo TARGET=$(CORE) >> Makefile.conf_last
 ifdef USE_THREAD
 	@echo USE_THREAD=$(USE_THREAD) >>  Makefile.conf_last
 endif
+ifdef SMP
+ifdef NUM_THREADS
+	@echo NUM_THREADS=$(NUM_THREADS) >>  Makefile.conf_last
+else
+	@echo NUM_THREADS=$(NUM_CORES) >>  Makefile.conf_last
+endif
+endif
+ifeq ($(USE_OPENMP),1)
+	@echo USE_OPENMP=1 >>  Makefile.conf_last
+endif
+ifeq ($(INTERFACE64),1)
+	@echo INTERFACE64=1 >>  Makefile.conf_last
+endif
+	@echo THELIBNAME=$(LIBNAME) >>  Makefile.conf_last
+	@echo THELIBSONAME=$(LIBSONAME) >>  Makefile.conf_last
 	@-ln -fs $(LIBNAME) $(LIBPREFIX).$(LIBSUFFIX)
 	@touch lib.grd
 

@@ -182,7 +182,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup complexOTHERcomputational
+*> \ingroup trsen
 *
 *> \par Further Details:
 *  =====================
@@ -293,8 +293,8 @@
 *     ..
 *     .. External Functions ..
       LOGICAL            LSAME
-      REAL               CLANGE
-      EXTERNAL           LSAME, CLANGE
+      REAL               CLANGE, SROUNDUP_LWORK
+      EXTERNAL           LSAME, CLANGE, SROUNDUP_LWORK
 *     ..
 *     .. External Subroutines ..
       EXTERNAL           CLACN2, CLACPY, CTREXC, CTRSYL, XERBLA
@@ -350,7 +350,7 @@
       END IF
 *
       IF( INFO.EQ.0 ) THEN
-         WORK( 1 ) = LWMIN
+         WORK( 1 ) = SROUNDUP_LWORK(LWMIN)
       END IF
 *
       IF( INFO.NE.0 ) THEN
@@ -444,7 +444,7 @@
          W( K ) = T( K, K )
    50 CONTINUE
 *
-      WORK( 1 ) = LWMIN
+      WORK( 1 ) = SROUNDUP_LWORK(LWMIN)
 *
       RETURN
 *

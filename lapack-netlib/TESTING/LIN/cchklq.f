@@ -235,7 +235,7 @@
       REAL               RESULT( NTESTS )
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           ALAERH, ALAHD, ALASUM, CERRLQ, CGELQS, CGET02,
+      EXTERNAL           ALAERH, ALAHD, ALASUM, CERRLQ, CGELS, CGET02,
      $                   CLACPY, CLARHS, CLATB4, CLATMS, CLQT01, CLQT02,
      $                   CLQT03, XLAENV
 *     ..
@@ -370,7 +370,7 @@
      $                               WORK, LWORK, RWORK, RESULT( 3 ) )
                         NT = NT + 4
 *
-*                       If M>=N and K=N, call CGELQS to solve a system
+*                       If M<=N and K=M, call CGELS to solve a system
 *                       with NRHS right hand sides and compute the
 *                       residual.
 *
@@ -387,14 +387,20 @@
 *
                            CALL CLACPY( 'Full', M, NRHS, B, LDA, X,
      $                                  LDA )
-                           SRNAMT = 'CGELQS'
-                           CALL CGELQS( M, N, NRHS, AF, LDA, TAU, X,
-     $                                  LDA, WORK, LWORK, INFO )
 *
-*                          Check error code from CGELQS.
+*                          Reset AF to the original matrix. CGELS
+*                          factors the matrix before solving the system.
+*
+                           CALL CLACPY( 'Full', M, N, A, LDA, AF, LDA )
+*
+                           SRNAMT = 'CGELS'
+                           CALL CGELS( 'No transpose', M, N, NRHS, AF,
+     $                                 LDA, X, LDA, WORK, LWORK, INFO )
+*
+*                          Check error code from CGELS.
 *
                            IF( INFO.NE.0 )
-     $                        CALL ALAERH( PATH, 'CGELQS', INFO, 0, ' ',
+     $                        CALL ALAERH( PATH, 'CGELS', INFO, 0, 'N',
      $                                     M, N, NRHS, -1, NB, IMAT,
      $                                     NFAIL, NERRS, NOUT )
 *

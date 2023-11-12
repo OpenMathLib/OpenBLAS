@@ -214,6 +214,11 @@ endif
 ifeq ($(F_COMPILER), NAG)
 CEXTRALIB = -lgomp
 endif
+ifeq ($(F_COMPILER), IBM)
+ifeq ($(C_COMPILER), GCC)
+CEXTRALIB += -lgomp
+endif
+endif
 endif
 
 ifeq ($(BUILD_SINGLE),1)

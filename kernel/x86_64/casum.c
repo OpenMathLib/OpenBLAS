@@ -4,7 +4,7 @@
 #define ABS_K(a) ((a) > 0 ? (a) : (-(a)))
 #endif
 
-#if defined(SKYLAKEX)
+#if defined(SKYLAKEX) || defined(COOPERLAKE) || defined(SAPPHIRERAPIDS)
 #include "casum_microk_skylakex-2.c"
 #endif
 

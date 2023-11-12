@@ -805,7 +805,8 @@ static gotoblas_t *get_coretype(void){
         }      
 	return NULL;
       }
-      case 0xf:
+      break;
+    case 0xf:
       if (model <= 0x2) return &gotoblas_NORTHWOOD;
       return &gotoblas_PRESCOTT;
     }

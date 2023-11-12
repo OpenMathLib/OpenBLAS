@@ -97,7 +97,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup complexOTHERauxiliary
+*> \ingroup larfgp
 *
 *  =====================================================================
       SUBROUTINE CLARFGP( N, ALPHA, X, INCX, TAU )
@@ -122,7 +122,7 @@
 *     ..
 *     .. Local Scalars ..
       INTEGER            J, KNT
-      REAL               ALPHI, ALPHR, BETA, BIGNUM, SMLNUM, XNORM
+      REAL               ALPHI, ALPHR, BETA, BIGNUM, EPS, SMLNUM, XNORM
       COMPLEX            SAVEALPHA
 *     ..
 *     .. External Functions ..
@@ -143,11 +143,12 @@
          RETURN
       END IF
 *
+      EPS = SLAMCH( 'Precision' )
       XNORM = SCNRM2( N-1, X, INCX )
       ALPHR = REAL( ALPHA )
       ALPHI = AIMAG( ALPHA )
 *
-      IF( XNORM.EQ.ZERO ) THEN
+      IF( XNORM.LE.EPS*ABS(ALPHA) ) THEN
 *
 *        H  =  [1-alpha/abs(alpha) 0; 0 I], sign chosen so ALPHA >= 0.
 *

@@ -250,7 +250,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup complexHEeigen
+*> \ingroup heevx
 *
 *  =====================================================================
       SUBROUTINE CHEEVX( JOBZ, RANGE, UPLO, N, A, LDA, VL, VU, IL, IU,
@@ -294,8 +294,8 @@
 *     .. External Functions ..
       LOGICAL            LSAME
       INTEGER            ILAENV
-      REAL               SLAMCH, CLANHE
-      EXTERNAL           LSAME, ILAENV, SLAMCH, CLANHE
+      REAL               SLAMCH, CLANHE, SROUNDUP_LWORK
+      EXTERNAL           LSAME, ILAENV, SLAMCH, CLANHE, SROUNDUP_LWORK
 *     ..
 *     .. External Subroutines ..
       EXTERNAL           SCOPY, SSCAL, SSTEBZ, SSTERF, XERBLA, CSSCAL,
@@ -354,7 +354,7 @@
             NB = ILAENV( 1, 'CHETRD', UPLO, N, -1, -1, -1 )
             NB = MAX( NB, ILAENV( 1, 'CUNMTR', UPLO, N, -1, -1, -1 ) )
             LWKOPT = MAX( 1, ( NB + 1 )*N )
-            WORK( 1 ) = LWKOPT
+            WORK( 1 ) = SROUNDUP_LWORK(LWKOPT)
          END IF
 *
          IF( LWORK.LT.LWKMIN .AND. .NOT.LQUERY )
@@ -552,7 +552,7 @@
 *
 *     Set WORK(1) to optimal complex workspace size.
 *
-      WORK( 1 ) = LWKOPT
+      WORK( 1 ) = SROUNDUP_LWORK(LWKOPT)
 *
       RETURN
 *

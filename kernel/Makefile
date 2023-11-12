@@ -5,12 +5,6 @@ endif
 TOPDIR	= ..
 include $(TOPDIR)/Makefile.system
 
-ifeq ($(ARCH), power)
-ifeq ($(C_COMPILER), CLANG)
- override CFLAGS += -fno-integrated-as
-endif
-endif
-
 AVX2OPT = 
 ifeq ($(C_COMPILER), GCC)
 # AVX2 support was added in 4.7.0
