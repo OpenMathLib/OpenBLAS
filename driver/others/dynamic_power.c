@@ -66,8 +66,7 @@ static int cpuid(void)
 #endif
     return CPU_UNKNOWN;
 }
-#else
-#if defined(C_PGI) || defined(__clang__)
+#elif defined(C_PGI) || defined(__clang__)
 /*
  * NV HPC compilers do not yet implement __builtin_cpu_is().
  * Fake a version here for use in the CPU detection code below.
@@ -196,13 +195,21 @@ static int cpuid(void)
 	cpu_type = pvrPOWER[i].cpu_type;
 	return (int)(cpu_type);
 }
-#endif  /* C_PGI */
+#elif !defined(__BUILTIN_CPU_SUPPORTS__)
+static int cpuid(void)
+{
+    return CPU_UNKNOWN;
+}
 #endif  /* _AIX */
 
 #ifndef __BUILTIN_CPU_SUPPORTS__
 #include <string.h>
 
-#if defined(_AIX) || (defined(__has_builtin) && !__has_builtin(__builtin_cpu_is))
+#ifndef __has_builtin
+#define __has_builtin(x)   0
+#endif
+
+#if defined(_AIX) || !__has_builtin(__builtin_cpu_is)
 static int __builtin_cpu_is(const char *arg)
 {
     static int ipinfo = -1;
@@ -227,7 +234,7 @@ static int __builtin_cpu_is(const char *arg)
 }
 #endif
 
-#if defined(_AIX) || (defined(__has_builtin) && !__has_builtin(__builtin_cpu_supports))
+#if defined(_AIX) || !__has_builtin(__builtin_cpu_supports)
 static int __builtin_cpu_supports(const char *arg)
 {
     return 0;
