@@ -28,12 +28,13 @@
 *>
 *> DQPT01 tests the QR-factorization with pivoting of a matrix A.  The
 *> array AF contains the (possibly partial) QR-factorization of A, where
-*> the upper triangle of AF(1:k,1:k) is a partial triangular factor,
-*> the entries below the diagonal in the first k columns are the
+*> the upper triangle of AF(1:K,1:K) is a partial triangular factor,
+*> the entries below the diagonal in the first K columns are the
 *> Householder vectors, and the rest of AF contains a partially updated
 *> matrix.
 *>
-*> This function returns ||A*P - Q*R||/(||norm(A)||*eps*M)
+*> This function returns ||A*P - Q*R|| / ( ||norm(A)||*eps*max(M,N) ),
+*> where || . || is matrix one norm.
 *> \endverbatim
 *
 *  Arguments:
@@ -172,28 +173,41 @@
 *
       NORMA = DLANGE( 'One-norm', M, N, A, LDA, RWORK )
 *
-      DO 30 J = 1, K
-         DO 10 I = 1, MIN( J, M )
+      DO J = 1, K
+*
+*        Copy the upper triangular part of the factor R stored
+*        in AF(1:K,1:K) into the work array WORK.
+*
+         DO I = 1, MIN( J, M )
             WORK( ( J-1 )*M+I ) = AF( I, J )
-   10    CONTINUE
-         DO 20 I = J + 1, M
+         END DO
+*
+*        Zero out the elements below the diagonal in the work array.
+*
+         DO I = J + 1, M
             WORK( ( J-1 )*M+I ) = ZERO
-   20    CONTINUE
-   30 CONTINUE
-      DO 40 J = K + 1, N
+         END DO
+      END DO
+*
+*     Copy columns (K+1,N) from AF into the work array WORK.
+*     AF(1:K,K+1:N) contains the rectangular block of the upper trapezoidal
+*     factor R, AF(K+1:M,K+1:N) contains the partially updated residual
+*     matrix of R.
+*
+      DO J = K + 1, N
          CALL DCOPY( M, AF( 1, J ), 1, WORK( ( J-1 )*M+1 ), 1 )
-   40 CONTINUE
+      END DO
 *
       CALL DORMQR( 'Left', 'No transpose', M, N, K, AF, LDA, TAU, WORK,
      $             M, WORK( M*N+1 ), LWORK-M*N, INFO )
 *
-      DO 50 J = 1, N
+      DO J = 1, N
 *
-*        Compare i-th column of QR and jpvt(i)-th column of A
+*        Compare J-th column of QR and JPVT(J)-th column of A.
 *
          CALL DAXPY( M, -ONE, A( 1, JPVT( J ) ), 1, WORK( ( J-1 )*M+1 ),
      $               1 )
-   50 CONTINUE
+      END DO
 *
       DQPT01 = DLANGE( 'One-norm', M, N, WORK, M, RWORK ) /
      $         ( DBLE( MAX( M, N ) )*DLAMCH( 'Epsilon' ) )

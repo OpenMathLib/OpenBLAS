@@ -584,12 +584,26 @@
 *
 *        QR decomposition with column pivoting
 *
-         WRITE( IOUNIT, FMT = 9986 )PATH
+         WRITE( IOUNIT, FMT = 8006 )PATH
          WRITE( IOUNIT, FMT = 9969 )
          WRITE( IOUNIT, FMT = '( '' Test ratios:'' )' )
          WRITE( IOUNIT, FMT = 9940 )1
          WRITE( IOUNIT, FMT = 9939 )2
          WRITE( IOUNIT, FMT = 9938 )3
+         WRITE( IOUNIT, FMT = '( '' Messages:'' )' )
+*
+      ELSE IF( LSAMEN( 2, P2, 'QK' ) ) THEN
+*
+*        truncated QR decomposition with column pivoting
+*
+         WRITE( IOUNIT, FMT = 8006 )PATH
+         WRITE( IOUNIT, FMT = 9871 )
+         WRITE( IOUNIT, FMT = '( '' Test ratios:'' )' )
+         WRITE( IOUNIT, FMT = 8060 )1
+         WRITE( IOUNIT, FMT = 8061 )2
+         WRITE( IOUNIT, FMT = 8062 )3
+         WRITE( IOUNIT, FMT = 8063 )4
+         WRITE( IOUNIT, FMT = 8064 )5
          WRITE( IOUNIT, FMT = '( '' Messages:'' )' )
 *
       ELSE IF( LSAMEN( 2, P2, 'TZ' ) ) THEN
@@ -779,6 +793,8 @@
      $       'tall-skinny or short-wide matrices' )
  8005 FORMAT( / 1X, A3, ':  Householder reconstruction from TSQR',
      $       ' factorization output ', /,' for tall-skinny matrices.' )
+ 8006 FORMAT( / 1X, A3, ':  truncated QR factorization',
+     $        ' with column pivoting' )
 *
 *     GE matrix types
 *
@@ -922,6 +938,36 @@
      $      / 4X, '3. Geometric distribution', 10X,
      $      '6. Every second column fixed' )
 *
+*     QK matrix types
+*
+ 9871 FORMAT( 4X, ' 1. Zero matrix', /
+     $        4X, ' 2. Random, Diagonal, CNDNUM = 2', /
+     $        4X, ' 3. Random, Upper triangular, CNDNUM = 2', /
+     $        4X, ' 4. Random, Lower triangular, CNDNUM = 2', /
+     $        4X, ' 5. Random, First column is zero, CNDNUM = 2', /
+     $        4X, ' 6. Random, Last MINMN column is zero, CNDNUM = 2', /
+     $        4X, ' 7. Random, Last N column is zero, CNDNUM = 2', /
+     $        4X, ' 8. Random, Middle column in MINMN is zero,',
+     $               ' CNDNUM = 2', /
+     $        4X, ' 9. Random, First half of MINMN columns are zero,',
+     $                 ' CNDNUM = 2', /
+     $        4X, '10. Random, Last columns are zero starting from',
+     $                 ' MINMN/2+1, CNDNUM = 2', /
+     $        4X, '11. Random, Half MINMN columns in the middle are',
+     $                 ' zero starting from MINMN/2-(MINMN/2)/2+1,'
+     $                 ' CNDNUM = 2', /
+     $        4X, '12. Random, Odd columns are ZERO, CNDNUM = 2', /
+     $        4X, '13. Random, Even columns are ZERO, CNDNUM = 2', /
+     $        4X, '14. Random, CNDNUM = 2', /
+     $        4X, '15. Random, CNDNUM = sqrt(0.1/EPS)', /
+     $        4X, '16. Random, CNDNUM = 0.1/EPS', /
+     $        4X, '17. Random, CNDNUM = 0.1/EPS,',
+     $                 ' one small singular value S(N)=1/CNDNUM', /
+     $        4X, '18. Random, CNDNUM = 2, scaled near underflow,',
+     $                 ' NORM = SMALL = SAFMIN', /
+     $        4X, '19. Random, CNDNUM = 2, scaled near overflow,',
+     $            ' NORM = LARGE = 1.0/( 0.25 * ( SAFMIN / EPS ) )' )
+*
 *     TZ matrix types
 *
  9968 FORMAT( ' Matrix types (2-3 have condition 1/EPS):', / 4X,
@@ -1030,9 +1076,8 @@
      $      ' * norm(C) * EPS )' )
  9940 FORMAT( 3X, I2, ': norm(svd(A) - svd(R)) / ',
      $      '( M * norm(svd(R)) * EPS )' )
- 9939 FORMAT( 3X, I2, ': norm( A*P - Q*R )     / ( M * norm(A) * EPS )'
-     $       )
- 9938 FORMAT( 3X, I2, ': norm( I - Q''*Q )      / ( M * EPS )' )
+ 9939 FORMAT( 3X, I2, ': norm( A*P - Q*R ) / ( M * norm(A) * EPS )')
+ 9938 FORMAT( 3X, I2, ': norm( I - Q''*Q ) / ( M * EPS )' )
  9937 FORMAT( 3X, I2, ': norm( A - R*Q )       / ( M * norm(A) * EPS )'
      $       )
  9935 FORMAT( 3X, I2, ': norm( B - A * X )   / ',
@@ -1104,6 +1149,15 @@
  8053 FORMAT(3X,I2,': norm( Q''*C - Q''*C ) / ( M * norm(C) * EPS )')
  8054 FORMAT(3X,I2,': norm( C*Q - C*Q ) / ( M * norm(C) * EPS )' )
  8055 FORMAT(3X,I2,': norm( C*Q'' - C*Q'' ) / ( M * norm(C) * EPS )')
+
+ 8060 FORMAT( 3X, I2, ': 2-norm(svd(A) - svd(R)) / ',
+     $      '( max(M,N) * 2-norm(svd(R)) * EPS )' )
+ 8061 FORMAT( 3X, I2, ': 1-norm( A*P - Q*R ) / ( max(M,N) * 1-norm(A)',
+     $                ' * EPS )')
+ 8062 FORMAT( 3X, I2, ': 1-norm( I - Q''*Q ) / ( M * EPS )' )
+ 8063 FORMAT( 3X, I2, ': Returns 1.0D+100, if abs(R(K+1,K+1))',
+     $                 ' > abs(R(K,K)), where K=1:KFACT-1' )
+ 8064 FORMAT( 3X, I2, ': 1-norm(Q**T * B - Q**T * B ) / ( M * EPS )')
 
 *
       RETURN

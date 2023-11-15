@@ -69,6 +69,7 @@
 *> ZLQ    8               List types on next line if 0 < NTYPES <  8
 *> ZQL    8               List types on next line if 0 < NTYPES <  8
 *> ZQP    6               List types on next line if 0 < NTYPES <  6
+*> ZQK   19               List types on next line if 0 < NTYPES < 19
 *> ZTZ    3               List types on next line if 0 < NTYPES <  3
 *> ZLS    6               List types on next line if 0 < NTYPES <  6
 *> ZEQ
@@ -153,12 +154,11 @@
      $                   NBVAL( MAXIN ), NBVAL2( MAXIN ),
      $                   NSVAL( MAXIN ), NVAL( MAXIN ), NXVAL( MAXIN ),
      $                   RANKVAL( MAXIN ), PIV( NMAX )
-      DOUBLE PRECISION   S( 2*NMAX )
-      COMPLEX*16         E( NMAX )
-*
-*    .. Allocatable Arrays ..
+*     ..
+*     .. Allocatable Arrays ..
       INTEGER AllocateStatus
-      DOUBLE PRECISION, DIMENSION(:), ALLOCATABLE::   RWORK
+      DOUBLE PRECISION, DIMENSION(:), ALLOCATABLE::  RWORK, S
+      COMPLEX*16, DIMENSION(:), ALLOCATABLE :: E
       COMPLEX*16, DIMENSION(:,:), ALLOCATABLE::  A, B, WORK
 *     ..
 *     .. External Functions ..
@@ -170,15 +170,16 @@
       EXTERNAL           ALAREQ, ZCHKEQ, ZCHKGB, ZCHKGE, ZCHKGT, ZCHKHE,
      $                   ZCHKHE_ROOK, ZCHKHE_RK, ZCHKHE_AA, ZCHKHP,
      $                   ZCHKLQ, ZCHKUNHR_COL, ZCHKPB, ZCHKPO, ZCHKPS,
-     $                   ZCHKPP, ZCHKPT, ZCHKQ3, ZCHKQL, ZCHKQR, ZCHKRQ,
-     $                   ZCHKSP, ZCHKSY, ZCHKSY_ROOK, ZCHKSY_RK,
-     $                   ZCHKSY_AA, ZCHKTB, ZCHKTP, ZCHKTR, ZCHKTZ,
-     $                   ZDRVGB, ZDRVGE, ZDRVGT, ZDRVHE, ZDRVHE_ROOK,
-     $                   ZDRVHE_RK, ZDRVHE_AA, ZDRVHE_AA_2STAGE, ZDRVHP,
-     $                   ZDRVLS, ZDRVPB,  ZDRVPO, ZDRVPP, ZDRVPT,
-     $                   ZDRVSP, ZDRVSY, ZDRVSY_ROOK, ZDRVSY_RK,
-     $                   ZDRVSY_AA, ZDRVSY_AA_2STAGE, ILAVER, ZCHKQRT,
-     $                   ZCHKQRTP, ZCHKLQT, ZCHKLQTP, ZCHKTSQR
+     $                   ZCHKPP, ZCHKPT, ZCHKQ3, ZCHKQP3RK, ZCHKQL,
+     $                   ZCHKQR, ZCHKRQ, ZCHKSP, ZCHKSY, ZCHKSY_ROOK,
+     $                   ZCHKSY_RK, ZCHKSY_AA, ZCHKTB, ZCHKTP, ZCHKTR,
+     $                   ZCHKTZ, ZDRVGB, ZDRVGE, ZDRVGT, ZDRVHE,
+     $                   ZDRVHE_ROOK, ZDRVHE_RK, ZDRVHE_AA,
+     $                   ZDRVHE_AA_2STAGE, ZDRVHP, ZDRVLS, ZDRVPB,
+     $                   ZDRVPO, ZDRVPP, ZDRVPT, ZDRVSP, ZDRVSY,
+     $                   ZDRVSY_ROOK, ZDRVSY_RK, ZDRVSY_AA,
+     $                   ZDRVSY_AA_2STAGE, ILAVER, ZCHKQRT, ZCHKQRTP,
+     $                   ZCHKLQT, ZCHKLQTP, ZCHKTSQR
 *     ..
 *     .. Scalars in Common ..
       LOGICAL            LERR, OK
@@ -197,13 +198,18 @@
       DATA               THREQ / 2.0D0 / , INTSTR / '0123456789' /
 *
 *     .. Allocate memory dynamically ..
-      ALLOCATE (RWORK( 150*NMAX+2*MAXRHS ), STAT = AllocateStatus)
+*
+      ALLOCATE ( A ( (KDMAX+1) * NMAX, 7 ), STAT = AllocateStatus)
       IF (AllocateStatus /= 0) STOP "*** Not enough memory ***"
-      ALLOCATE (A ((KDMAX+1) * NMAX, 7), STAT = AllocateStatus)
+      ALLOCATE ( B ( NMAX * MAXRHS, 4 ), STAT = AllocateStatus)
+      IF (AllocateStatus /= 0 ) STOP "*** Not enough memory ***"
+      ALLOCATE ( WORK ( NMAX, NMAX+MAXRHS+10 ), STAT = AllocateStatus)
       IF (AllocateStatus /= 0) STOP "*** Not enough memory ***"
-      ALLOCATE (B (NMAX * MAXRHS, 4), STAT = AllocateStatus)
+      ALLOCATE ( E( NMAX ), STAT = AllocateStatus )
       IF (AllocateStatus /= 0) STOP "*** Not enough memory ***"
-      ALLOCATE (WORK (NMAX, NMAX+MAXRHS+10), STAT = AllocateStatus)
+      ALLOCATE ( S( 2*NMAX ), STAT = AllocateStatus)
+      IF (AllocateStatus /= 0) STOP "*** Not enough memory ***"
+      ALLOCATE ( RWORK( 150*NMAX+2*MAXRHS ), STAT = AllocateStatus)
       IF (AllocateStatus /= 0) STOP "*** Not enough memory ***"
 *     ..
 *     .. Executable Statements ..
@@ -1106,6 +1112,23 @@
      $                   THRESH, A( 1, 1 ), A( 1, 2 ), S( 1 ),
      $                   B( 1, 1 ), WORK, RWORK, IWORK,
      $                   NOUT )
+         ELSE
+            WRITE( NOUT, FMT = 9989 )PATH
+         END IF
+*
+      ELSE IF( LSAMEN( 2, C2, 'QK' ) ) THEN
+*
+*        QK: truncated QR factorization with pivoting
+*
+         NTYPES = 19
+         CALL ALAREQ( PATH, NMATS, DOTYPE, NTYPES, NIN, NOUT )
+*
+         IF( TSTCHK ) THEN
+            CALL ZCHKQP3RK( DOTYPE, NM, MVAL, NN, NVAL, NNS, NSVAL,
+     $                   NNB, NBVAL, NXVAL, THRESH, A( 1, 1 ),
+     $                   A( 1, 2 ), B( 1, 1 ), B( 1, 2 ),
+     $                   S( 1 ), B( 1, 4 ),
+     $                   WORK, RWORK, IWORK, NOUT )
          ELSE
             WRITE( NOUT, FMT = 9989 )PATH
          END IF

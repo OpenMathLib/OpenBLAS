@@ -28,12 +28,12 @@
 *> to evaluate the input line which requested NMATS matrix types for
 *> PATH.  The flow of control is as follows:
 *>
-*> If NMATS = NTYPES then
+*> IF NMATS = NTYPES THEN
 *>    DOTYPE(1:NTYPES) = .TRUE.
-*> else
+*> ELSE
 *>    Read the next input line for NMATS matrix types
 *>    Set DOTYPE(I) = .TRUE. for each valid type I
-*> endif
+*> END IF
 *> \endverbatim
 *
 *  Arguments:

@@ -69,6 +69,7 @@
 *> CLQ    8               List types on next line if 0 < NTYPES <  8
 *> CQL    8               List types on next line if 0 < NTYPES <  8
 *> CQP    6               List types on next line if 0 < NTYPES <  6
+*> ZQK   19               List types on next line if 0 < NTYPES < 19
 *> CTZ    3               List types on next line if 0 < NTYPES <  3
 *> CLS    6               List types on next line if 0 < NTYPES <  6
 *> CEQ
@@ -153,12 +154,11 @@
      $                   NBVAL( MAXIN ), NBVAL2( MAXIN ),
      $                   NSVAL( MAXIN ), NVAL( MAXIN ), NXVAL( MAXIN ),
      $                   RANKVAL( MAXIN ), PIV( NMAX )
-      REAL               S( 2*NMAX )
-      COMPLEX            E( NMAX )
 *     ..
 *     .. Allocatable Arrays ..
       INTEGER AllocateStatus
-      REAL, DIMENSION(:), ALLOCATABLE :: RWORK
+      REAL, DIMENSION(:), ALLOCATABLE :: RWORK, S
+      COMPLEX, DIMENSION(:), ALLOCATABLE :: E
       COMPLEX, DIMENSION(:,:), ALLOCATABLE :: A, B, WORK
 *     ..
 *     .. External Functions ..
@@ -170,14 +170,14 @@
       EXTERNAL           ALAREQ, CCHKEQ, CCHKGB, CCHKGE, CCHKGT, CCHKHE,
      $                   CCHKHE_ROOK, CCHKHE_RK, CCHKHE_AA, CCHKHP,
      $                   CCHKLQ, CCHKUNHR_COL, CCHKPB, CCHKPO, CCHKPS,
-     $                   CCHKPP, CCHKPT, CCHKQ3, CCHKQL, CCHKQR, CCHKRQ,
-     $                   CCHKSP, CCHKSY, CCHKSY_ROOK, CCHKSY_RK,
-     $                   CCHKSY_AA, CCHKTB,  CCHKTP, CCHKTR, CCHKTZ,
-     $                   CDRVGB, CDRVGE, CDRVGT, CDRVHE, CDRVHE_ROOK,
-     $                   CDRVHE_RK, CDRVHE_AA, CDRVHP, CDRVLS, CDRVPB,
-     $                   CDRVPO, CDRVPP, CDRVPT, CDRVSP, CDRVSY,
-     $                   CDRVSY_ROOK, CDRVSY_RK, CDRVSY_AA, ILAVER,
-     $                   CCHKQRT, CCHKQRTP
+     $                   CCHKPP, CCHKPT, CCHKQ3, CCHKQP3RK, CCHKQL,
+     $                   CCHKQR, CCHKRQ, CCHKSP, CCHKSY, CCHKSY_ROOK,
+     $                   CCHKSY_RK, CCHKSY_AA, CCHKTB, CCHKTP, CCHKTR,
+     $                   CCHKTZ, CDRVGB, CDRVGE, CDRVGT, CDRVHE,
+     $                   CDRVHE_ROOK, CDRVHE_RK, CDRVHE_AA, CDRVHP,
+     $                   CDRVLS, CDRVPB, CDRVPO, CDRVPP, CDRVPT, CDRVSP,
+     $                   CDRVSY, CDRVSY_ROOK, CDRVSY_RK, CDRVSY_AA,
+     $                   ILAVER, CCHKQRT, CCHKQRTP
 *     ..
 *     .. Scalars in Common ..
       LOGICAL            LERR, OK
@@ -202,6 +202,10 @@
       ALLOCATE ( B( NMAX*MAXRHS, 4 ), STAT = AllocateStatus )
       IF (AllocateStatus /= 0) STOP "*** Not enough memory ***"
       ALLOCATE ( WORK( NMAX, NMAX+MAXRHS+10 ), STAT = AllocateStatus )
+      IF (AllocateStatus /= 0) STOP "*** Not enough memory ***"
+      ALLOCATE ( E( NMAX ), STAT = AllocateStatus )
+      IF (AllocateStatus /= 0) STOP "*** Not enough memory ***"
+      ALLOCATE ( S( 2*NMAX ), STAT = AllocateStatus)
       IF (AllocateStatus /= 0) STOP "*** Not enough memory ***"
       ALLOCATE ( RWORK( 150*NMAX+2*MAXRHS ), STAT = AllocateStatus )
       IF (AllocateStatus /= 0) STOP "*** Not enough memory ***"
@@ -1106,6 +1110,23 @@
             CALL CCHKQ3( DOTYPE, NM, MVAL, NN, NVAL, NNB, NBVAL, NXVAL,
      $                   THRESH, A( 1, 1 ), A( 1, 2 ), S( 1 ),
      $                   B( 1, 1 ), WORK, RWORK, IWORK, NOUT )
+         ELSE
+            WRITE( NOUT, FMT = 9989 )PATH
+         END IF
+*
+      ELSE IF( LSAMEN( 2, C2, 'QK' ) ) THEN
+*
+*        QK: truncated QR factorization with pivoting
+*
+         NTYPES = 19
+         CALL ALAREQ( PATH, NMATS, DOTYPE, NTYPES, NIN, NOUT )
+*
+         IF( TSTCHK ) THEN
+            CALL CCHKQP3RK( DOTYPE, NM, MVAL, NN, NVAL, NNS, NSVAL,
+     $                   NNB, NBVAL, NXVAL, THRESH, A( 1, 1 ),
+     $                   A( 1, 2 ), B( 1, 1 ), B( 1, 2 ),
+     $                   S( 1 ), B( 1, 4 ),
+     $                   WORK, RWORK, IWORK, NOUT )
          ELSE
             WRITE( NOUT, FMT = 9989 )PATH
          END IF
