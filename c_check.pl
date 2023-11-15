@@ -241,8 +241,7 @@ if (($architecture eq "loongarch64")) {
     } else {
 	$tmplsx = new File::Temp( SUFFIX => '.c' , UNLINK => 1 );
 	$codelsx = '"vadd.b $vr0, $vr0, $vr0"';
-	$lsx_flags = "-march=loongarch64 -mlsx";
-	print $tmplsx "#include <lsxintrin.h>\n\n";
+	$lsx_flags = "-march=loongarch64";
 	print $tmplsx "void main(void){ __asm__ volatile($codelsx); }\n";
 
 	$args = "$lsx_flags -o $tmplsx.o $tmplsx";
@@ -257,8 +256,7 @@ if (($architecture eq "loongarch64")) {
 
 	$tmplasx = new File::Temp( SUFFIX => '.c' , UNLINK => 1 );
 	$codelasx = '"xvadd.b $xr0, $xr0, $xr0"';
-	$lasx_flags = "-march=loongarch64 -mlasx";
-	print $tmplasx "#include <lasxintrin.h>\n\n";
+	$lasx_flags = "-march=loongarch64";
 	print $tmplasx "void main(void){ __asm__ volatile($codelasx); }\n";
 
 	$args = "$lasx_flags -o $tmplasx.o $tmplasx";
