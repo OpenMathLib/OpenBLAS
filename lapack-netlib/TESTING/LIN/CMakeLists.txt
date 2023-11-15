@@ -239,7 +239,8 @@ set(ZLINTSTRFP zchkrfp.f zdrvrfp.f zdrvrf1.f zdrvrf2.f zdrvrf3.f zdrvrf4.f zerrr
 
 macro(add_lin_executable name)
   add_executable(${name} ${ARGN})
-  target_link_libraries(${name} ${TMGLIB} ${LAPACK_LIBRARIES} ${BLAS_LIBRARIES})
+  target_link_libraries(${name} openblas${SUFFIX64_UNDERSCORE})
+#${TMGLIB} ${LAPACK_LIBRARIES} ${BLAS_LIBRARIES})
 endmacro()
 
 if(BUILD_SINGLE)
