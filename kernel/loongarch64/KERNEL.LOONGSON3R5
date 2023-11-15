@@ -1,4 +1,8 @@
 ifndef NO_LASX
+
+SDOTKERNEL = dot_lasx.S
+DDOTKERNEL = dot_lasx.S
+
 DGEMMKERNEL    = dgemm_kernel_16x4.S
 DGEMMINCOPY    = dgemm_ncopy_16.S
 DGEMMITCOPY    = dgemm_tcopy_16.S

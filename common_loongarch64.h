@@ -124,7 +124,17 @@ static inline int WhereAmI(void){
 #define CMPLE   fcmp.cle.d
 #define CMPLT   fcmp.clt.d
 #define NEG     fneg.d
+
+#define XVFSUB  xvfsub.d
+#define XVFADD  xvfadd.d
+#define XVFMADD xvfmadd.d
+
+#define VFSUB  vfsub.d
+#define VFADD  vfadd.d
+#define VFMADD vfmadd.d
+
 #else
+
 #define LD      fld.s
 #define ST      fst.s
 #define MADD    fmadd.s
@@ -142,6 +152,15 @@ static inline int WhereAmI(void){
 #define CMPLE   fcmp.cle.s
 #define CMPLT   fcmp.clt.s
 #define NEG     fneg.s
+
+#define XVFSUB  xvfsub.s
+#define XVFADD  xvfadd.s
+#define XVFMADD xvfmadd.s
+
+#define VFSUB  vfsub.s
+#define VFADD  vfadd.s
+#define VFMADD vfmadd.s
+
 #endif /* defined(DOUBLE) */
 
 #if defined(__64BIT__) && defined(USE64BITINT)
