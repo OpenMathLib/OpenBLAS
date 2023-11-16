@@ -42,6 +42,7 @@ CRQ    8               List types on next line if 0 < NTYPES <  8
 CLQ    8               List types on next line if 0 < NTYPES <  8
 CQL    8               List types on next line if 0 < NTYPES <  8
 CQP    6               List types on next line if 0 < NTYPES <  6
+CQK   19               List types on next line if 0 < NTYPES < 19
 CTZ    3               List types on next line if 0 < NTYPES <  3
 CLS    6               List types on next line if 0 < NTYPES <  6
 CEQ
