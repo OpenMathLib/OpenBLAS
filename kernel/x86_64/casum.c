@@ -9,12 +9,12 @@
 #endif
 
 #ifndef HAVE_CASUM_KERNEL
-static FLOAT casum_kernel(BLASLONG n, FLOAT *x1)
+static FLOAT casum_kernel(BLASLONG n, FLOAT *x)
 {
 
     BLASLONG i=0;
     BLASLONG n_8 = n & -8;
-    FLOAT *x = x1;
+    FLOAT *x1 = x;
     FLOAT temp0, temp1, temp2, temp3;
     FLOAT temp4, temp5, temp6, temp7;
     FLOAT sum0 = 0.0;
@@ -24,14 +24,14 @@ static FLOAT casum_kernel(BLASLONG n, FLOAT *x1)
     FLOAT sum4 = 0.0;
     
     while (i < n_8) {
-        temp0 = ABS_K(x[0]);
-        temp1 = ABS_K(x[1]);
-        temp2 = ABS_K(x[2]);
-        temp3 = ABS_K(x[3]);
-        temp4 = ABS_K(x[4]);
-        temp5 = ABS_K(x[5]);
-        temp6 = ABS_K(x[6]);
-        temp7 = ABS_K(x[7]);
+        temp0 = ABS_K(x1[0]);
+        temp1 = ABS_K(x1[1]);
+        temp2 = ABS_K(x1[2]);
+        temp3 = ABS_K(x1[3]);
+        temp4 = ABS_K(x1[4]);
+        temp5 = ABS_K(x1[5]);
+        temp6 = ABS_K(x1[6]);
+        temp7 = ABS_K(x1[7]);
         
         sum0 += temp0;
         sum1 += temp1;
@@ -43,12 +43,12 @@ static FLOAT casum_kernel(BLASLONG n, FLOAT *x1)
         sum2 += temp6;
         sum3 += temp7;
         
-        x+=8;
+        x1+=8;
         i+=4;
     }
 
      while (i < n) {
-        sum4 += (ABS_K(x1[0]) + ABS_K(x1[1]));
+        sum4 += ABS_K(x1[0]) + ABS_K(x1[1]);
         x1 += 2;
         i++;
      }
