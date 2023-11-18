@@ -1,5 +1,5 @@
 macos_instance:
-  image: ghcr.io/cirruslabs/macos-sonoma-xcode:15
+  image: ghcr.io/cirruslabs/macos-ventura-xcode:15
 
 task:
   name: AppleM1/GCC/xcode15
