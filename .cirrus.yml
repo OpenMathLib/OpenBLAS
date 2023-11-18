@@ -10,6 +10,6 @@ task:
   - export CPPFLAGS="-I/opt/homebrew/include"
   - mkdir build
   - cd build
-  - cmake CC=clang FC=gfortran-13 ..
+  - cmake ..
   - make -j 4
-  
+  - ctest
