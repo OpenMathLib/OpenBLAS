@@ -30,7 +30,7 @@
 *>
 *> \verbatim
 *>
-*> DCHKQ3 tests DGEQP3.
+*> DCHKQ3 tests  DGEQP3.
 *> \endverbatim
 *
 *  Arguments:

@@ -159,6 +159,8 @@
 *>     SIAM J. Sci. Comput, vol. 34, no. 1, 2012
 *> \endverbatim
 *>
+*> \ingroup laswlq
+*>
 *  =====================================================================
       SUBROUTINE SLASWLQ( M, N, MB, NB, A, LDA, T, LDT, WORK, LWORK,
      $                  INFO)
@@ -183,7 +185,8 @@
 *     ..
 *     .. EXTERNAL FUNCTIONS ..
       LOGICAL            LSAME
-      EXTERNAL           LSAME
+      REAL               SROUNDUP_LWORK
+      EXTERNAL           LSAME, SROUNDUP_LWORK
 *     .. EXTERNAL SUBROUTINES ..
       EXTERNAL           SGELQT, SGEQRT, STPLQT, STPQRT, XERBLA
 *     .. INTRINSIC FUNCTIONS ..
@@ -262,7 +265,7 @@
      $                  WORK, INFO )
        END IF
 *
-      WORK( 1 ) = M * MB
+      WORK( 1 ) = SROUNDUP_LWORK(M * MB)
       RETURN
 *
 *     End of SLASWLQ

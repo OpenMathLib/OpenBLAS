@@ -2,11 +2,16 @@ name: mips64 qemu test
 
 on: [push, pull_request]
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
 permissions:
   contents: read # to fetch code (actions/checkout)
 
 jobs:
   TEST:
+    if: "github.repository == 'OpenMathLib/OpenBLAS'"
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false

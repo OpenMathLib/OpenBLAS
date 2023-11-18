@@ -125,7 +125,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup complexSYcomputational
+*> \ingroup hetrf_aa
 *
 *  =====================================================================
       SUBROUTINE CSYTRF_AA( UPLO, N, A, LDA, IPIV, WORK, LWORK, INFO)
@@ -159,7 +159,8 @@
 *     .. External Functions ..
       LOGICAL            LSAME
       INTEGER            ILAENV
-      EXTERNAL           LSAME, ILAENV
+      REAL               SROUNDUP_LWORK
+      EXTERNAL           LSAME, ILAENV, SROUNDUP_LWORK
 *     ..
 *     .. External Subroutines ..
       EXTERNAL           CLASYF_AA, CGEMM, CGEMV, CSCAL, CSWAP, CCOPY,
@@ -191,7 +192,7 @@
 *
       IF( INFO.EQ.0 ) THEN
          LWKOPT = (NB+1)*N
-         WORK( 1 ) = LWKOPT
+         WORK( 1 ) = SROUNDUP_LWORK(LWKOPT)
       END IF
 *
       IF( INFO.NE.0 ) THEN
@@ -457,7 +458,7 @@
       END IF
 *
    20 CONTINUE
-      WORK( 1 ) = LWKOPT
+      WORK( 1 ) = SROUNDUP_LWORK(LWKOPT)
       RETURN
 *
 *     End of CSYTRF_AA

@@ -220,7 +220,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     GMADD xvf, d, TP0, A0,  X0, TP0, TP1, A2,  X0, TP1
 .endm
 
-.macro DGEMV_T XW:req X8:req, X4:req
+.macro DGEMV_T_LASX XW:req X8:req, X4:req
     PTR_SRLI  J,      N,      3
     beqz      J,      .L_\XW\()_N_7
     PTR_SLLI  K_LDA,  LDA,    3
@@ -472,9 +472,9 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     .hword .L_GAP_0 - .L_GAP_TABLE
     .hword .L_GAP_1 - .L_GAP_TABLE
 .L_GAP_0: /* if (incx == 1) */
-    DGEMV_T GAP_0, X8, X4
+    DGEMV_T_LASX GAP_0, X8, X4
 .L_GAP_1: /* if (incx != 1) */
-    DGEMV_T GAP_1, X8_GAP, X4_GAP
+    DGEMV_T_LASX GAP_1, X8_GAP, X4_GAP
 .L_END:
     pop_if_used 17 + 8, 24 + 3
     jirl    $r0, $r1, 0x0

@@ -218,8 +218,8 @@
 *     ..
 *     .. External Functions ..
       INTEGER            ILAENV
-      REAL               CLANGE, SLAMCH
-      EXTERNAL           ILAENV, CLANGE, SLAMCH
+      REAL               CLANGE, SLAMCH, SROUNDUP_LWORK
+      EXTERNAL           ILAENV, CLANGE, SLAMCH, SROUNDUP_LWORK
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          MAX, MIN
@@ -361,7 +361,7 @@
             END IF
             MAXWRK = MAX( MINWRK, MAXWRK )
          END IF
-         WORK( 1 ) = MAXWRK
+         WORK( 1 ) = SROUNDUP_LWORK(MAXWRK)
 *
          IF( LWORK.LT.MINWRK .AND. .NOT.LQUERY )
      $      INFO = -12
@@ -758,7 +758,7 @@
          CALL CLASCL( 'G', 0, 0, BIGNUM, BNRM, N, NRHS, B, LDB, INFO )
       END IF
    70 CONTINUE
-      WORK( 1 ) = MAXWRK
+      WORK( 1 ) = SROUNDUP_LWORK(MAXWRK)
       RETURN
 *
 *     End of CGELSS

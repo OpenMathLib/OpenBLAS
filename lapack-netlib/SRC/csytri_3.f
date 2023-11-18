@@ -152,7 +152,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup complexSYcomputational
+*> \ingroup hetri_3
 *
 *> \par Contributors:
 *  ==================
@@ -190,7 +190,8 @@
 *     .. External Functions ..
       LOGICAL            LSAME
       INTEGER            ILAENV
-      EXTERNAL           LSAME, ILAENV
+      REAL               SROUNDUP_LWORK
+      EXTERNAL           LSAME, ILAENV, SROUNDUP_LWORK
 *     ..
 *     .. External Subroutines ..
       EXTERNAL           CSYTRI_3X, XERBLA
@@ -225,7 +226,7 @@
          CALL XERBLA( 'CSYTRI_3', -INFO )
          RETURN
       ELSE IF( LQUERY ) THEN
-         WORK( 1 ) = LWKOPT
+         WORK( 1 ) = SROUNDUP_LWORK(LWKOPT)
          RETURN
       END IF
 *
@@ -236,7 +237,7 @@
 *
       CALL CSYTRI_3X( UPLO, N, A, LDA, E, IPIV, WORK, NB, INFO )
 *
-      WORK( 1 ) = LWKOPT
+      WORK( 1 ) = SROUNDUP_LWORK(LWKOPT)
 *
       RETURN
 *

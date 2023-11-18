@@ -114,7 +114,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup complexGEcomputational
+*> \ingroup gerqf
 *
 *> \par Further Details:
 *  =====================
@@ -163,7 +163,8 @@
 *     ..
 *     .. External Functions ..
       INTEGER            ILAENV
-      EXTERNAL           ILAENV
+      REAL               SROUNDUP_LWORK
+      EXTERNAL           ILAENV, SROUNDUP_LWORK
 *     ..
 *     .. Executable Statements ..
 *
@@ -187,7 +188,7 @@
             NB = ILAENV( 1, 'CGERQF', ' ', M, N, -1, -1 )
             LWKOPT = M*NB
          END IF
-         WORK( 1 ) = LWKOPT
+         WORK( 1 ) = SROUNDUP_LWORK(LWKOPT)
 *
          IF ( .NOT.LQUERY ) THEN
             IF( LWORK.LE.0 .OR. ( N.GT.0 .AND. LWORK.LT.MAX( 1, M ) ) )
@@ -278,7 +279,7 @@
       IF( MU.GT.0 .AND. NU.GT.0 )
      $   CALL CGERQ2( MU, NU, A, LDA, TAU, WORK, IINFO )
 *
-      WORK( 1 ) = IWS
+      WORK( 1 ) = SROUNDUP_LWORK(IWS)
       RETURN
 *
 *     End of CGERQF

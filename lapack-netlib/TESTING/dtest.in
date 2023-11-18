@@ -36,6 +36,7 @@ DRQ    8               List types on next line if 0 < NTYPES <  8
 DLQ    8               List types on next line if 0 < NTYPES <  8
 DQL    8               List types on next line if 0 < NTYPES <  8
 DQP    6               List types on next line if 0 < NTYPES <  6
+DQK   19               LIst types on next line if 0 < NTYPES < 19
 DTZ    3               List types on next line if 0 < NTYPES <  3
 DLS    6               List types on next line if 0 < NTYPES <  6
 DEQ

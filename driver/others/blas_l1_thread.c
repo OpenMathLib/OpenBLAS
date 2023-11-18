@@ -43,7 +43,7 @@
 int blas_level1_thread(int mode, BLASLONG m, BLASLONG n, BLASLONG k, void *alpha,
 		       void *a, BLASLONG lda,
 		       void *b, BLASLONG ldb,
-		       void *c, BLASLONG ldc, int (*function)(), int nthreads){
+		       void *c, BLASLONG ldc, int (*function)(void), int nthreads){
 
   blas_queue_t queue[MAX_CPU_NUMBER];
   blas_arg_t   args [MAX_CPU_NUMBER];
@@ -141,7 +141,7 @@ int blas_level1_thread(int mode, BLASLONG m, BLASLONG n, BLASLONG k, void *alpha
 int blas_level1_thread_with_return_value(int mode, BLASLONG m, BLASLONG n, BLASLONG k, void *alpha,
 		       void *a, BLASLONG lda,
 		       void *b, BLASLONG ldb,
-		       void *c, BLASLONG ldc, int (*function)(), int nthreads){
+		       void *c, BLASLONG ldc, int (*function)(void), int nthreads){
 
   blas_queue_t queue[MAX_CPU_NUMBER];
   blas_arg_t   args [MAX_CPU_NUMBER];

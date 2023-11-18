@@ -167,11 +167,10 @@ jobs:
      
 - job: OSX_OpenMP_Clang
   pool:
-     vmImage: 'macOS-11'
+     vmImage: 'macOS-latest'
   variables:
      LD_LIBRARY_PATH: /usr/local/opt/llvm/lib
      LIBRARY_PATH: /usr/local/opt/llvm/lib
-     MACOSX_DEPLOYMENT_TARGET: 11.0
   steps:   
   - script: |
       brew update
@@ -180,7 +179,7 @@ jobs:
 
 - job: OSX_OpenMP_Clang_cmake
   pool:
-     vmImage: 'macOS-11'
+     vmImage: 'macOS-latest'
   variables:
      LD_LIBRARY_PATH: /usr/local/opt/llvm/lib
      LIBRARY_PATH: /usr/local/opt/llvm/lib
@@ -210,7 +209,7 @@ jobs:
 
 - job: OSX_Ifort_Clang
   pool:
-     vmImage: 'macOS-11'
+     vmImage: 'macOS-latest'
   variables:
      LD_LIBRARY_PATH: /usr/local/opt/llvm/lib
      MACOS_HPCKIT_URL: https://registrationcenter-download.intel.com/akdlm/irc_nas/17643/m_HPCKit_p_2021.2.0.2903_offline.dmg

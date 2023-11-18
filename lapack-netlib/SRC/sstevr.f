@@ -287,7 +287,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup realOTHEReigen
+*> \ingroup stevr
 *
 *> \par Contributors:
 *  ==================
@@ -336,8 +336,8 @@
 *     .. External Functions ..
       LOGICAL            LSAME
       INTEGER            ILAENV
-      REAL               SLAMCH, SLANST
-      EXTERNAL           LSAME, ILAENV, SLAMCH, SLANST
+      REAL               SLAMCH, SLANST, SROUNDUP_LWORK
+      EXTERNAL           LSAME, ILAENV, SLAMCH, SLANST, SROUNDUP_LWORK
 *     ..
 *     .. External Subroutines ..
       EXTERNAL           SCOPY, SSCAL, SSTEBZ, SSTEMR, SSTEIN, SSTERF,
@@ -389,7 +389,7 @@
       END IF
 *
       IF( INFO.EQ.0 ) THEN
-         WORK( 1 ) = LWMIN
+         WORK( 1 ) = SROUNDUP_LWORK(LWMIN)
          IWORK( 1 ) = LIWMIN
 *
          IF( LWORK.LT.LWMIN .AND. .NOT.LQUERY ) THEN
@@ -570,7 +570,7 @@
 *      IF (wantz .and. INDEIG ) Z( 1,1) = Z(1,1) / 1.002 + .002
 *
 *
-      WORK( 1 ) = LWMIN
+      WORK( 1 ) = SROUNDUP_LWORK(LWMIN)
       IWORK( 1 ) = LIWMIN
       RETURN
 *

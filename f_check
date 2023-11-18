@@ -117,6 +117,9 @@ else
                             vendor=PGI
                             openmp='-mp'
                             ;;
+                        *xlf*)
+                            vendor=IBM
+                            ;;
                         *)
                             vendor=G77
                             openmp=''
@@ -368,13 +371,6 @@ if [ -n "$link" ]; then
     	    flag=`echo "$flag" | sed 's/\%/\,/g'`
     	    linker_L="$linker_L -Wl,$flag"
     	    ;;
-    	esac
-
-    	case "$flag" in *-lgomp*)
-    	    case "$CC" in *clang*)
-    	        flag="-lomp"
-    	        ;;
-    	    esac
     	esac
 
         case "$flag" in -l*)

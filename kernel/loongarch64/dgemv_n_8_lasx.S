@@ -341,7 +341,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     fmadd.d $f10,   $f12,   $f2,    $f10
 .endm
 
-.macro DGEMV_N XW:req, X_8:req, X_4:req, X_2:req, X_1:req, Y_8:req, Y_4:req, Y_1:req
+.macro DGEMV_N_LASX XW:req, X_8:req, X_4:req, X_2:req, X_1:req, Y_8:req, Y_4:req, Y_1:req
     PTR_SRLI  J,      N,      3
     beqz      J,      .L_\XW\()_N_7
     PTR_SLLI  K_LDA,  LDA,    3
@@ -541,13 +541,13 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     .hword  .L_GAP_1_0 - .L_GAP_TABLE
     .hword  .L_GAP_1_1 - .L_GAP_TABLE
 .L_GAP_0_0: /* if (inc_x == 1) && (incy == 1) */
-    DGEMV_N GAP_0_0, X_8, X_4, X_2, X_1, Y_8, Y_4, Y_1
+    DGEMV_N_LASX GAP_0_0, X_8, X_4, X_2, X_1, Y_8, Y_4, Y_1
 .L_GAP_0_1: /* if (inc_x == 1) && (incy != 1) */
-    DGEMV_N GAP_0_1, X_8, X_4, X_2, X_1, Y_8_GAP, Y_4_GAP, Y_1
+    DGEMV_N_LASX GAP_0_1, X_8, X_4, X_2, X_1, Y_8_GAP, Y_4_GAP, Y_1
 .L_GAP_1_0: /* if (inc_x != 1) && (incy == 1) */
-    DGEMV_N GAP_1_0, X_8_GAP, X_4_GAP, X_2_GAP, X_1, Y_8, Y_4, Y_1
+    DGEMV_N_LASX GAP_1_0, X_8_GAP, X_4_GAP, X_2_GAP, X_1, Y_8, Y_4, Y_1
 .L_GAP_1_1: /* if (inc_x != 1) && (incy != 1) */
-    DGEMV_N GAP_1_1, X_8_GAP, X_4_GAP, X_2_GAP, X_1, Y_8_GAP, Y_4_GAP, Y_1
+    DGEMV_N_LASX GAP_1_1, X_8_GAP, X_4_GAP, X_2_GAP, X_1, Y_8_GAP, Y_4_GAP, Y_1
 .L_END:
     pop_if_used 17 + 7, 24 + 4
     jirl    $r0, $r1, 0x0

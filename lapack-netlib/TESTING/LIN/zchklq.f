@@ -235,7 +235,7 @@
       DOUBLE PRECISION   RESULT( NTESTS )
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           ALAERH, ALAHD, ALASUM, XLAENV, ZERRLQ, ZGELQS,
+      EXTERNAL           ALAERH, ALAHD, ALASUM, XLAENV, ZERRLQ, ZGELS,
      $                   ZGET02, ZLACPY, ZLARHS, ZLATB4, ZLATMS, ZLQT01,
      $                   ZLQT02, ZLQT03
 *     ..
@@ -370,7 +370,7 @@
      $                               WORK, LWORK, RWORK, RESULT( 3 ) )
                         NT = NT + 4
 *
-*                       If M>=N and K=N, call ZGELQS to solve a system
+*                       If M<=N and K=M, call ZGELS to solve a system
 *                       with NRHS right hand sides and compute the
 *                       residual.
 *
@@ -387,14 +387,20 @@
 *
                            CALL ZLACPY( 'Full', M, NRHS, B, LDA, X,
      $                                  LDA )
-                           SRNAMT = 'ZGELQS'
-                           CALL ZGELQS( M, N, NRHS, AF, LDA, TAU, X,
-     $                                  LDA, WORK, LWORK, INFO )
 *
-*                          Check error code from ZGELQS.
+*                          Reset AF to the original matrix. ZGELS
+*                          factors the matrix before solving the system.
+*
+                           CALL ZLACPY( 'Full', M, N, A, LDA, AF, LDA )
+*
+                           SRNAMT = 'ZGELS'
+                           CALL ZGELS( 'No transpose', M, N, NRHS, AF,
+     $                                 LDA, X, LDA, WORK, LWORK, INFO )
+*
+*                          Check error code from ZGELS.
 *
                            IF( INFO.NE.0 )
-     $                        CALL ALAERH( PATH, 'ZGELQS', INFO, 0, ' ',
+     $                        CALL ALAERH( PATH, 'ZGELS', INFO, 0, 'N',
      $                                     M, N, NRHS, -1, NB, IMAT,
      $                                     NFAIL, NERRS, NOUT )
 *

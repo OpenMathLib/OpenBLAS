@@ -208,7 +208,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup realOTHEReigen
+*> \ingroup hbgvd
 *
 *> \par Contributors:
 *  ==================
@@ -247,7 +247,8 @@
 *     ..
 *     .. External Functions ..
       LOGICAL            LSAME
-      EXTERNAL           LSAME
+      REAL               SROUNDUP_LWORK
+      EXTERNAL           LSAME, SROUNDUP_LWORK
 *     ..
 *     .. External Subroutines ..
       EXTERNAL           SGEMM, SLACPY, SPBSTF, SSBGST, SSBTRD, SSTEDC,
@@ -292,7 +293,7 @@
       END IF
 *
       IF( INFO.EQ.0 ) THEN
-         WORK( 1 ) = LWMIN
+         WORK( 1 ) = SROUNDUP_LWORK(LWMIN)
          IWORK( 1 ) = LIWMIN
 *
          IF( LWORK.LT.LWMIN .AND. .NOT.LQUERY ) THEN
@@ -353,7 +354,7 @@
          CALL SLACPY( 'A', N, N, WORK( INDWK2 ), N, Z, LDZ )
       END IF
 *
-      WORK( 1 ) = LWMIN
+      WORK( 1 ) = SROUNDUP_LWORK(LWMIN)
       IWORK( 1 ) = LIWMIN
 *
       RETURN

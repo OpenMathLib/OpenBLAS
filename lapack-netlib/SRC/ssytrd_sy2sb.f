@@ -158,7 +158,7 @@
 *> \author Univ. of Colorado Denver 
 *> \author NAG Ltd. 
 *
-*> \ingroup realSYcomputational
+*> \ingroup hetrd_he2hb
 *
 *> \par Further Details:
 *  =====================
@@ -283,7 +283,8 @@
 *     .. External Functions ..
       LOGICAL            LSAME
       INTEGER            ILAENV2STAGE 
-      EXTERNAL           LSAME, ILAENV2STAGE
+      REAL               SROUNDUP_LWORK
+      EXTERNAL           LSAME, ILAENV2STAGE, SROUNDUP_LWORK
 *     ..
 *     .. Executable Statements ..
 *
@@ -313,7 +314,7 @@
          CALL XERBLA( 'SSYTRD_SY2SB', -INFO )
          RETURN
       ELSE IF( LQUERY ) THEN
-         WORK( 1 ) = LWMIN
+         WORK( 1 ) = SROUNDUP_LWORK(LWMIN)
          RETURN
       END IF
 *
@@ -506,7 +507,7 @@
 
       END IF
 *
-      WORK( 1 ) = LWMIN
+      WORK( 1 ) = SROUNDUP_LWORK(LWMIN)
       RETURN
 *
 *     End of SSYTRD_SY2SB

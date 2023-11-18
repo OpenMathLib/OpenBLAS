@@ -798,6 +798,18 @@
      $     SUBNAM(1:LEN_TRIM( SUBNAM )), INFO, M, N, IMAT
          END IF
 *
+      ELSE IF( LSAMEN( 2, P2, 'QK' ) ) THEN
+*
+*        xQK:  truncated QR factorization with pivoting
+*
+         IF( LSAMEN( 7, SUBNAM( 2: 8 ), 'GEQP3RK' )  ) THEN
+            WRITE( NOUT, FMT = 9930 )
+     $     SUBNAM(1:LEN_TRIM( SUBNAM )), INFO, M, N, KL, N5, IMAT
+         ELSE IF( LSAMEN( 5, SUBNAM( 2: 6 ), 'LATMS' ) ) THEN
+            WRITE( NOUT, FMT = 9978 )
+     $     SUBNAM(1:LEN_TRIM( SUBNAM )), INFO, M, N, IMAT
+         END IF
+*
       ELSE IF( LSAMEN( 2, P2, 'LQ' ) ) THEN
 *
 *        xLQ:  LQ factorization
@@ -1147,6 +1159,11 @@
 *     What we do next
 *
  9949 FORMAT( ' ==> Doing only the condition estimate for this case' )
+*
+*     SUBNAM, INFO, M, N, NB, IMAT
+*
+ 9930 FORMAT( ' *** Error code from ', A, '=', I5, / ' ==> M =', I5,
+     $      ', N =', I5, ', NX =', I5, ', NB =', I4, ', type ', I2 )
 *
       RETURN
 *

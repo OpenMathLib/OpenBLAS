@@ -260,7 +260,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup realOTHERauxiliary
+*> \ingroup laqr3
 *
 *> \par Contributors:
 *  ==================
@@ -302,14 +302,13 @@
       LOGICAL            BULGE, SORTED
 *     ..
 *     .. External Functions ..
-      REAL               SLAMCH
+      REAL               SLAMCH, SROUNDUP_LWORK
       INTEGER            ILAENV
-      EXTERNAL           SLAMCH, ILAENV
+      EXTERNAL           SLAMCH, SROUNDUP_LWORK, ILAENV
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           SCOPY, SGEHRD, SGEMM, SLABAD, SLACPY, SLAHQR,
-     $                   SLANV2, SLAQR4, SLARF, SLARFG, SLASET, SORMHR,
-     $                   STREXC
+      EXTERNAL           SCOPY, SGEHRD, SGEMM, SLACPY, SLAHQR, SLANV2,
+     $                   SLAQR4, SLARF, SLARFG, SLASET, SORMHR, STREXC
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          ABS, INT, MAX, MIN, REAL, SQRT
@@ -348,7 +347,7 @@
 *     ==== Quick return in case of workspace query. ====
 *
       IF( LWORK.EQ.-1 ) THEN
-         WORK( 1 ) = REAL( LWKOPT )
+         WORK( 1 ) = SROUNDUP_LWORK( LWKOPT )
          RETURN
       END IF
 *
@@ -367,7 +366,6 @@
 *
       SAFMIN = SLAMCH( 'SAFE MINIMUM' )
       SAFMAX = ONE / SAFMIN
-      CALL SLABAD( SAFMIN, SAFMAX )
       ULP = SLAMCH( 'PRECISION' )
       SMLNUM = SAFMIN*( REAL( N ) / ULP )
 *
@@ -685,7 +683,7 @@
 *
 *      ==== Return optimal workspace. ====
 *
-      WORK( 1 ) = REAL( LWKOPT )
+      WORK( 1 ) = SROUNDUP_LWORK( LWKOPT )
 *
 *     ==== End of SLAQR3 ====
 *

@@ -194,7 +194,7 @@ static C_INLINE void xgetbv(int op, int * eax, int * edx){
 }
 #endif
 
-int support_avx(){
+int support_avx(void){
 #ifndef NO_AVX
   int eax, ebx, ecx, edx;
   int ret=0;
@@ -212,7 +212,7 @@ int support_avx(){
 #endif
 }
 
-int support_avx2(){
+int support_avx2(void){
 #ifndef NO_AVX2
   int eax, ebx, ecx=0, edx;
   int ret=0;
@@ -228,7 +228,7 @@ int support_avx2(){
 #endif
 }
 
-int support_avx512(){
+int support_avx512(void){
 #if !defined(NO_AVX) && !defined(NO_AVX512)
   int eax, ebx, ecx, edx;
   int ret=0;
@@ -250,7 +250,7 @@ int support_avx512(){
 #endif
 }
 
-int support_avx512_bf16(){
+int support_avx512_bf16(void){
 #if !defined(NO_AVX) && !defined(NO_AVX512)
   int eax, ebx, ecx, edx;
   int ret=0;
@@ -271,7 +271,7 @@ int support_avx512_bf16(){
 #define BIT_AMX_BF16	0x00400000
 #define BIT_AMX_ENBD	0x00060000
 
-int support_amx_bf16() {
+int support_amx_bf16(void) {
 #if !defined(NO_AVX) && !defined(NO_AVX512)
   int eax, ebx, ecx, edx;
   int ret=0;
@@ -1660,7 +1660,13 @@ int get_cpuname(void){
 	  else
 	    return CPUTYPE_BARCELONA;
         }
-      case 10: // Zen3		      
+      case 10: // Zen3/4
+#ifndef NO_AVX512
+          if(support_avx512_bf16())
+            return CPUTYPE_COOPERLAKE;
+          if(support_avx512())
+            return CPUTYPE_SKYLAKEX;
+#endif
 	if(support_avx())
 #ifndef NO_AVX2
 	    return CPUTYPE_ZEN;
@@ -2438,6 +2444,12 @@ int get_coretype(void){
 	  // Ryzen 2
 	default:
 	  // Matisse,Renoir Ryzen2 models		
+#ifndef NO_AVX512
+          if(support_avx512_bf16())
+            return CORE_COOPERLAKE;
+          if(support_avx512())
+            return CORE_SKYLAKEX;
+#endif
 	  if(support_avx())
 #ifndef NO_AVX2
 	    return CORE_ZEN;

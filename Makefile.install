@@ -3,6 +3,14 @@ export GOTOBLAS_MAKEFILE = 1
 -include $(TOPDIR)/Makefile.conf_last
 include ./Makefile.system
 
+ifdef THELIBNAME
+LIBNAME=$(THELIBNAME)
+LIBSONAME=$(THELIBSONAME)
+endif
+ifeq ($(INTERFACE64),1)
+USE_64BITINT=1
+endif
+
 PREFIX ?= /opt/OpenBLAS
 
 OPENBLAS_INCLUDE_DIR := $(PREFIX)/include

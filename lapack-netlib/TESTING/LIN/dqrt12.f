@@ -26,7 +26,7 @@
 *> DQRT12 computes the singular values `svlues' of the upper trapezoid
 *> of A(1:M,1:N) and returns the ratio
 *>
-*>      || s - svlues||/(||svlues||*eps*max(M,N))
+*>      || svlues - s ||/(||s||*eps*max(M,N))
 *> \endverbatim
 *
 *  Arguments:
@@ -113,8 +113,7 @@
       EXTERNAL           DASUM, DLAMCH, DLANGE, DNRM2
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           DAXPY, DBDSQR, DGEBD2, DLABAD, DLASCL, DLASET,
-     $                   XERBLA
+      EXTERNAL           DAXPY, DBDSQR, DGEBD2, DLASCL, DLASET, XERBLA
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          DBLE, MAX, MIN
@@ -145,17 +144,16 @@
 *     Copy upper triangle of A into work
 *
       CALL DLASET( 'Full', M, N, ZERO, ZERO, WORK, M )
-      DO 20 J = 1, N
-         DO 10 I = 1, MIN( J, M )
+      DO J = 1, N
+         DO I = 1, MIN( J, M )
             WORK( ( J-1 )*M+I ) = A( I, J )
-   10    CONTINUE
-   20 CONTINUE
+         END DO
+      END DO
 *
 *     Get machine parameters
 *
       SMLNUM = DLAMCH( 'S' ) / DLAMCH( 'P' )
       BIGNUM = ONE / SMLNUM
-      CALL DLABAD( SMLNUM, BIGNUM )
 *
 *     Scale work if max entry outside range [SMLNUM,BIGNUM]
 *
@@ -199,16 +197,18 @@
 *
       ELSE
 *
-         DO 30 I = 1, MN
+         DO I = 1, MN
             WORK( M*N+I ) = ZERO
-   30    CONTINUE
+         END DO
       END IF
 *
 *     Compare s and singular values of work
 *
       CALL DAXPY( MN, -ONE, S, 1, WORK( M*N+1 ), 1 )
+*
       DQRT12 = DASUM( MN, WORK( M*N+1 ), 1 ) /
-     $         ( DLAMCH( 'Epsilon' )*DBLE( MAX( M, N ) ) )
+     $  ( DLAMCH('Epsilon') * DBLE( MAX( M, N ) ) )
+*
       IF( NRMSVL.NE.ZERO )
      $   DQRT12 = DQRT12 / NRMSVL
 *

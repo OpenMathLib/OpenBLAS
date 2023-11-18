@@ -77,7 +77,7 @@
 *     ..
 *     .. External Subroutines ..
       EXTERNAL           ALAESM, CHKXER, DGEQR2, DGEQR2P, DGEQRF,
-     $                   DGEQRFP, DGEQRS, DORG2R, DORGQR, DORM2R,
+     $                   DGEQRFP, DORG2R, DORGQR, DORM2R,
      $                   DORMQR
 *     ..
 *     .. Scalars in Common ..
@@ -169,31 +169,6 @@
       INFOT = 4
       CALL DGEQR2P( 2, 1, A, 1, B, W, INFO )
       CALL CHKXER( 'DGEQR2P', INFOT, NOUT, LERR, OK )
-*
-*     DGEQRS
-*
-      SRNAMT = 'DGEQRS'
-      INFOT = 1
-      CALL DGEQRS( -1, 0, 0, A, 1, X, B, 1, W, 1, INFO )
-      CALL CHKXER( 'DGEQRS', INFOT, NOUT, LERR, OK )
-      INFOT = 2
-      CALL DGEQRS( 0, -1, 0, A, 1, X, B, 1, W, 1, INFO )
-      CALL CHKXER( 'DGEQRS', INFOT, NOUT, LERR, OK )
-      INFOT = 2
-      CALL DGEQRS( 1, 2, 0, A, 2, X, B, 2, W, 1, INFO )
-      CALL CHKXER( 'DGEQRS', INFOT, NOUT, LERR, OK )
-      INFOT = 3
-      CALL DGEQRS( 0, 0, -1, A, 1, X, B, 1, W, 1, INFO )
-      CALL CHKXER( 'DGEQRS', INFOT, NOUT, LERR, OK )
-      INFOT = 5
-      CALL DGEQRS( 2, 1, 0, A, 1, X, B, 2, W, 1, INFO )
-      CALL CHKXER( 'DGEQRS', INFOT, NOUT, LERR, OK )
-      INFOT = 8
-      CALL DGEQRS( 2, 1, 0, A, 2, X, B, 1, W, 1, INFO )
-      CALL CHKXER( 'DGEQRS', INFOT, NOUT, LERR, OK )
-      INFOT = 10
-      CALL DGEQRS( 1, 1, 2, A, 1, X, B, 1, W, 1, INFO )
-      CALL CHKXER( 'DGEQRS', INFOT, NOUT, LERR, OK )
 *
 *     DORGQR
 *

@@ -176,7 +176,8 @@ C>
 *     ..
 *     .. External Functions ..
       INTEGER            ILAENV
-      EXTERNAL           ILAENV
+      DOUBLE PRECISION   DROUNDUP_LWORK
+      EXTERNAL           ILAENV, DROUNDUP_LWORK
 *     ..
 *     .. Executable Statements ..
 
@@ -225,13 +226,13 @@ C>
 *         Optimal workspace for dlarfb = MAX(1,N)*NT
 *
           LWKOPT = (LBWORK+LLWORK)*NB
-          WORK( 1 ) = (LWKOPT+NT*NT)
+          WORK( 1 ) = DROUNDUP_LWORK(LWKOPT+NT*NT)
 
       ELSE
 
           LBWORK = CEILING(REAL(K)/REAL(NB))*NB
           LWKOPT = (LBWORK+LLWORK-NB)*NB
-          WORK( 1 ) = LWKOPT
+          WORK( 1 ) = DROUNDUP_LWORK(LWKOPT)
 
       END IF
 
@@ -413,7 +414,7 @@ C>
 
       END IF
 
-      WORK( 1 ) = IWS
+      WORK( 1 ) = DROUNDUP_LWORK(IWS)
       RETURN
 *
 *     End of SGEQRF

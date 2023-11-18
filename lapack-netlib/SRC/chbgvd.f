@@ -232,7 +232,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup complexOTHEReigen
+*> \ingroup hbgvd
 *
 *> \par Contributors:
 *  ==================
@@ -275,7 +275,8 @@
 *     ..
 *     .. External Functions ..
       LOGICAL            LSAME
-      EXTERNAL           LSAME
+      REAL               SROUNDUP_LWORK
+      EXTERNAL           LSAME, SROUNDUP_LWORK
 *     ..
 *     .. External Subroutines ..
       EXTERNAL           SSTERF, XERBLA, CGEMM, CHBGST, CHBTRD, CLACPY,
@@ -322,7 +323,7 @@
       END IF
 *
       IF( INFO.EQ.0 ) THEN
-         WORK( 1 ) = LWMIN
+         WORK( 1 ) = SROUNDUP_LWORK(LWMIN)
          RWORK( 1 ) = LRWMIN
          IWORK( 1 ) = LIWMIN
 *
@@ -388,7 +389,7 @@
          CALL CLACPY( 'A', N, N, WORK( INDWK2 ), N, Z, LDZ )
       END IF
 *
-      WORK( 1 ) = LWMIN
+      WORK( 1 ) = SROUNDUP_LWORK(LWMIN)
       RWORK( 1 ) = LRWMIN
       IWORK( 1 ) = LIWMIN
       RETURN

@@ -2,11 +2,16 @@ name: c910v qemu test
 
 on: [push, pull_request]
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
 permissions:
   contents: read # to fetch code (actions/checkout)
 
 jobs:
   TEST:
+    if: "github.repository == 'OpenMathLib/OpenBLAS'"
     runs-on: ubuntu-latest
     env:
       xuetie_toolchain: https://occ-oss-prod.oss-cn-hangzhou.aliyuncs.com/resource//1663142514282

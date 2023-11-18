@@ -276,7 +276,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup complexSYsolve
+*> \ingroup hesvx
 *
 *  =====================================================================
       SUBROUTINE CSYSVX( FACT, UPLO, N, NRHS, A, LDA, AF, LDAF, IPIV, B,
@@ -313,8 +313,8 @@
 *     .. External Functions ..
       LOGICAL            LSAME
       INTEGER            ILAENV
-      REAL               CLANSY, SLAMCH
-      EXTERNAL           ILAENV, LSAME, CLANSY, SLAMCH
+      REAL               CLANSY, SLAMCH, SROUNDUP_LWORK
+      EXTERNAL           ILAENV, LSAME, CLANSY, SLAMCH, SROUNDUP_LWORK
 *     ..
 *     .. External Subroutines ..
       EXTERNAL           CLACPY, CSYCON, CSYRFS, CSYTRF, CSYTRS, XERBLA
@@ -356,7 +356,7 @@
             NB = ILAENV( 1, 'CSYTRF', UPLO, N, -1, -1, -1 )
             LWKOPT = MAX( LWKOPT, N*NB )
          END IF
-         WORK( 1 ) = LWKOPT
+         WORK( 1 ) = SROUNDUP_LWORK(LWKOPT)
       END IF
 *
       IF( INFO.NE.0 ) THEN
@@ -405,7 +405,7 @@
       IF( RCOND.LT.SLAMCH( 'Epsilon' ) )
      $   INFO = N + 1
 *
-      WORK( 1 ) = LWKOPT
+      WORK( 1 ) = SROUNDUP_LWORK(LWKOPT)
 *
       RETURN
 *

@@ -219,7 +219,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup complexHEeigen
+*> \ingroup hegvd
 *
 *> \par Further Details:
 *  =====================
@@ -268,7 +268,8 @@
 *     ..
 *     .. External Functions ..
       LOGICAL            LSAME
-      EXTERNAL           LSAME
+      REAL               SROUNDUP_LWORK
+      EXTERNAL           LSAME, SROUNDUP_LWORK
 *     ..
 *     .. External Subroutines ..
       EXTERNAL           CHEEVD, CHEGST, CPOTRF, CTRMM, CTRSM, XERBLA
@@ -316,7 +317,7 @@
       END IF
 *
       IF( INFO.EQ.0 ) THEN
-         WORK( 1 ) = LOPT
+         WORK( 1 ) = SROUNDUP_LWORK(LOPT)
          RWORK( 1 ) = LROPT
          IWORK( 1 ) = LIOPT
 *
@@ -392,7 +393,7 @@
          END IF
       END IF
 *
-      WORK( 1 ) = LOPT
+      WORK( 1 ) = SROUNDUP_LWORK(LOPT)
       RWORK( 1 ) = LROPT
       IWORK( 1 ) = LIOPT
 *

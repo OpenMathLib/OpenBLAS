@@ -121,7 +121,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup complexOTHERcomputational
+*> \ingroup ungql
 *
 *  =====================================================================
       SUBROUTINE CUNGQL( M, N, K, A, LDA, TAU, WORK, LWORK, INFO )
@@ -156,7 +156,8 @@
 *     ..
 *     .. External Functions ..
       INTEGER            ILAENV
-      EXTERNAL           ILAENV
+      REAL               SROUNDUP_LWORK
+      EXTERNAL           ILAENV, SROUNDUP_LWORK
 *     ..
 *     .. Executable Statements ..
 *
@@ -181,7 +182,7 @@
             NB = ILAENV( 1, 'CUNGQL', ' ', M, N, K, -1 )
             LWKOPT = N*NB
          END IF
-         WORK( 1 ) = LWKOPT
+         WORK( 1 ) = SROUNDUP_LWORK(LWKOPT)
 *
          IF( LWORK.LT.MAX( 1, N ) .AND. .NOT.LQUERY ) THEN
             INFO = -8

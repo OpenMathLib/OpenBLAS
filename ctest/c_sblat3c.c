@@ -242,129 +242,6 @@ typedef struct Namelist Namelist;
 /* procedure parameter types for -A and -C++ */
 
 #define F2C_proc_par_types 1
-#ifdef __cplusplus
-typedef logical (*L_fp)(...);
-#else
-typedef logical (*L_fp)();
-#endif
-#if 0
-static float spow_ui(float x, integer n) {
-	float pow=1.0; unsigned long int u;
-	if(n != 0) {
-		if(n < 0) n = -n, x = 1/x;
-		for(u = n; ; ) {
-			if(u & 01) pow *= x;
-			if(u >>= 1) x *= x;
-			else break;
-		}
-	}
-	return pow;
-}
-static double dpow_ui(double x, integer n) {
-	double pow=1.0; unsigned long int u;
-	if(n != 0) {
-		if(n < 0) n = -n, x = 1/x;
-		for(u = n; ; ) {
-			if(u & 01) pow *= x;
-			if(u >>= 1) x *= x;
-			else break;
-		}
-	}
-	return pow;
-}
-#ifdef _MSC_VER
-static _Fcomplex cpow_ui(complex x, integer n) {
-	complex pow={1.0,0.0}; unsigned long int u;
-		if(n != 0) {
-		if(n < 0) n = -n, x.r = 1/x.r, x.i=1/x.i;
-		for(u = n; ; ) {
-			if(u & 01) pow.r *= x.r, pow.i *= x.i;
-			if(u >>= 1) x.r *= x.r, x.i *= x.i;
-			else break;
-		}
-	}
-	_Fcomplex p={pow.r, pow.i};
-	return p;
-}
-#else
-static _Complex float cpow_ui(_Complex float x, integer n) {
-	_Complex float pow=1.0; unsigned long int u;
-	if(n != 0) {
-		if(n < 0) n = -n, x = 1/x;
-		for(u = n; ; ) {
-			if(u & 01) pow *= x;
-			if(u >>= 1) x *= x;
-			else break;
-		}
-	}
-	return pow;
-}
-#endif
-#ifdef _MSC_VER
-static _Dcomplex zpow_ui(_Dcomplex x, integer n) {
-	_Dcomplex pow={1.0,0.0}; unsigned long int u;
-	if(n != 0) {
-		if(n < 0) n = -n, x._Val[0] = 1/x._Val[0], x._Val[1] =1/x._Val[1];
-		for(u = n; ; ) {
-			if(u & 01) pow._Val[0] *= x._Val[0], pow._Val[1] *= x._Val[1];
-			if(u >>= 1) x._Val[0] *= x._Val[0], x._Val[1] *= x._Val[1];
-			else break;
-		}
-	}
-	_Dcomplex p = {pow._Val[0], pow._Val[1]};
-	return p;
-}
-#else
-static _Complex double zpow_ui(_Complex double x, integer n) {
-	_Complex double pow=1.0; unsigned long int u;
-	if(n != 0) {
-		if(n < 0) n = -n, x = 1/x;
-		for(u = n; ; ) {
-			if(u & 01) pow *= x;
-			if(u >>= 1) x *= x;
-			else break;
-		}
-	}
-	return pow;
-}
-#endif
-static integer pow_ii(integer x, integer n) {
-	integer pow; unsigned long int u;
-	if (n <= 0) {
-		if (n == 0 || x == 1) pow = 1;
-		else if (x != -1) pow = x == 0 ? 1/x : 0;
-		else n = -n;
-	}
-	if ((n > 0) || !(n == 0 || x == 1 || x != -1)) {
-		u = n;
-		for(pow = 1; ; ) {
-			if(u & 01) pow *= x;
-			if(u >>= 1) x *= x;
-			else break;
-		}
-	}
-	return pow;
-}
-static integer dmaxloc_(double *w, integer s, integer e, integer *n)
-{
-	double m; integer i, mi;
-	for(m=w[s-1], mi=s, i=s+1; i<=e; i++)
-		if (w[i-1]>m) mi=i ,m=w[i-1];
-	return mi-s+1;
-}
-static integer smaxloc_(float *w, integer s, integer e, integer *n)
-{
-	float m; integer i, mi;
-	for(m=w[s-1], mi=s, i=s+1; i<=e; i++)
-		if (w[i-1]>m) mi=i ,m=w[i-1];
-	return mi-s+1;
-}
-#endif
-/*  -- translated by f2c (version 20000121).
-   You must link the resulting object file with the libraries:
-	-lf2c -lm   (in that order)
-*/
-
 
 
 /* Common Block Declarations */
@@ -393,7 +270,7 @@ static logical c_true = TRUE_;
 static integer c__0 = 0;
 static logical c_false = FALSE_;
 
-/* Main program  MAIN__() */ int main()
+/* Main program  MAIN__() */ int main(void)
 {
     /* Initialized data */
 
@@ -402,26 +279,25 @@ static logical c_false = FALSE_;
     /* System generated locals */
     integer i__1, i__2, i__3;
     real r__1;
-    /* Builtin functions */
-    integer s_rsle(), do_lio(), e_rsle(), f_open(), s_wsfe(), do_fio(), 
-	    e_wsfe(), s_wsle(), e_wsle(), s_rsfe(), e_rsfe();
-    integer f_clos();
 
     /* Local variables */
     static integer nalf, idim[9];
     static logical same;
     static integer nbet, ntra;
     static logical rewi;
-    extern /* Subroutine */ int schk1_(), schk2_(), schk3_(), schk4_(), 
-	    schk5_();
+    extern /* Subroutine */ int schk1_(char*, real*, real*, integer*, integer*, logical*, logical*, logical*, integer*, integer*, integer*, real*, integer*, real*, integer*, real*, real*, real*, real*, real*, real*, real*, real*, real*, real*, real*, integer*, ftnlen);
+    extern /* Subroutine */ int schk2_(char*, real*, real*, integer*, integer*, logical*, logical*, logical*, integer*, integer*, integer*, real*, integer*, real*, integer*, real*, real*, real*, real*, real*, real*, real*, real*, real*, real*, real*, integer*, ftnlen);
+    extern /* Subroutine */ int schk3_(char*, real*, real*, integer*, integer*, logical*, logical*, logical*, integer*, integer*, integer*, real*, integer*, real*, real*, real*, real*, real*, real*, real*, real*, real*, integer*, ftnlen);
+    extern /* Subroutine */ int schk4_(char*, real*, real*, integer*, integer*, logical*, logical*, logical*, integer*, integer*, integer*, real*, integer*, real*, integer*, real*, real*, real*, real*, real*, real*, real*, real*, real*, real*, real*, integer*, ftnlen);
+    extern /* Subroutine */ int schk5_(char*, real*, real*, integer*, integer*, logical*, logical*, logical*, integer*, integer*, integer*, real*, integer*, real*, integer*, real*, real*, real*, real*, real*, real*, real*, real*, real*, real*, real*, integer*, ftnlen);
     static real c__[4225]	/* was [65][65] */, g[65];
     static integer i__, j, n;
     static logical fatal;
     static real w[130];
-    extern doublereal sdiff_();
+    extern doublereal sdiff_(real*, real*);
     static logical trace;
     static integer nidim;
-    extern /* Subroutine */ int smmch_();
+    extern /* Subroutine */ int smmch_(char*, char*, integer*, integer*, integer*, real*, real*, integer*, real*, integer*, real*, real*, integer*, real*, real*, real*, integer*, real*, real*, logical*, integer*, logical*, ftnlen, ftnlen);
     static char snaps[32];
     static integer isnum;
     static logical ltest[6];
@@ -433,9 +309,9 @@ static logical c_false = FALSE_;
     static logical rorder;
     static integer layout;
     static logical ltestt, tsterr;
-    extern /* Subroutine */ int cs3chke_();
+    extern /* Subroutine */ void cs3chke_(char*, ftnlen);
     static real alf[7], bet[7];
-    extern logical lse_();
+    extern logical lse_(real*, real*, integer*);
     static real eps, err;
     char tmpchar;
 
@@ -899,21 +775,7 @@ L230:
 
 } /* MAIN__ */
 
-/* Subroutine */ int schk1_(sname, eps, thresh, nout, ntra, trace, rewi, 
-	fatal, nidim, idim, nalf, alf, nbet, bet, nmax, a, aa, as, b, bb, bs, 
-	c__, cc, cs, ct, g, iorder, sname_len)
-char *sname;
-real *eps, *thresh;
-integer *nout, *ntra;
-logical *trace, *rewi, *fatal;
-integer *nidim, *idim, *nalf;
-real *alf;
-integer *nbet;
-real *bet;
-integer *nmax;
-real *a, *aa, *as, *b, *bb, *bs, *c__, *cc, *cs, *ct, *g;
-integer *iorder;
-ftnlen sname_len;
+/* Subroutine */ int schk1_(char* sname, real* eps, real* thresh, integer* nout, integer* ntra, logical* trace, logical* rewi, logical* fatal, integer* nidim, integer* idim, integer* nalf, real* alf, integer* nbet, real* bet, integer* nmax, real* a, real* aa, real* as, real* b, real* bb, real* bs, real* c__, real* cc, real* cs, real* ct, real* g, integer* iorder, ftnlen sname_len)
 {
     /* Initialized data */
 
@@ -923,8 +785,6 @@ ftnlen sname_len;
     integer a_dim1, a_offset, b_dim1, b_offset, c_dim1, c_offset, i__1, i__2, 
 	    i__3, i__4, i__5, i__6;
 
-    /* Builtin functions */
-    integer f_rew(), s_wsfe(), e_wsfe(), do_fio();
 
     /* Local variables */
     static real beta;
@@ -936,18 +796,17 @@ ftnlen sname_len;
     static logical trana, tranb;
     static integer nargs;
     static logical reset;
-    extern /* Subroutine */ void sprcn1_();
-    extern /* Subroutine */ int smake_();
-    extern /* Subroutine */ int smmch_();
+    extern /* Subroutine */ void sprcn1_(integer*, integer*, char*, integer*, char*, char*, integer*, integer*, integer*, real*, integer*, integer*, real*, integer*, ftnlen, ftnlen, ftnlen);
+    extern /* Subroutine */ int smake_(char*, char*, char*, integer*, integer*, real*, integer*, real*, integer*, logical*, real*, ftnlen, ftnlen, ftnlen);
+    extern /* Subroutine */ int smmch_(char*, char*, integer*, integer*, integer*, real*, real*, integer*, real*, integer*, real*, real*, integer*, real*, real*, real*, integer*, real*, real*, logical*, integer*, logical*, ftnlen, ftnlen);
     static integer ia, ib, ma, mb, na, nb, nc, ik, im, in, ks, ms, ns;
-    extern /* Subroutine */ int csgemm_();
+    extern /* Subroutine */ void csgemm_(integer*, char*, char*, integer*, integer*, integer*, real*, real*, integer*, real*, integer*, real*, real*, integer*, ftnlen, ftnlen);
     static char tranas[1], tranbs[1], transa[1], transb[1];
     static real errmax;
-    extern logical lseres_();
-    extern logical lse_();
+    extern logical lseres_(char*, char*, integer*, integer*, real*, real*, integer*, ftnlen, ftnlen);
+    extern logical lse_(real*, real*, integer*);
     static integer ica, icb, laa, lbb, lda, lcc, ldb, ldc;
     static real als, bls;
-    extern logical lse_();
     static real err;
 
 /*  Tests SGEMM. */
@@ -1278,23 +1137,8 @@ L130:
 
 
 
-/* Subroutine */ void sprcn1_(nout, nc, sname, iorder, transa, transb, m, n, k,
-	 alpha, lda, ldb, beta, ldc, sname_len, transa_len, transb_len)
-integer *nout, *nc;
-char *sname;
-integer *iorder;
-char *transa, *transb;
-integer *m, *n, *k;
-real *alpha;
-integer *lda, *ldb;
-real *beta;
-integer *ldc;
-ftnlen sname_len;
-ftnlen transa_len;
-ftnlen transb_len;
+/* Subroutine */ void sprcn1_(integer* nout, integer* nc, char* sname, integer* iorder, char* transa, char* transb, integer* m, integer* n, integer* k, real* alpha, integer* lda, integer* ldb, real* beta, integer* ldc, ftnlen sname_len, ftnlen transa_len, ftnlen transb_len)
 {
-    /* Builtin functions */
-    integer s_wsfe(), do_fio(), e_wsfe();
 
     /* Local variables */
     static char crc[14], cta[14], ctb[14];
@@ -1324,21 +1168,7 @@ ftnlen transb_len;
 } /* sprcn1_ */
 
 
-/* Subroutine */ int schk2_(sname, eps, thresh, nout, ntra, trace, rewi, 
-	fatal, nidim, idim, nalf, alf, nbet, bet, nmax, a, aa, as, b, bb, bs, 
-	c__, cc, cs, ct, g, iorder, sname_len)
-char *sname;
-real *eps, *thresh;
-integer *nout, *ntra;
-logical *trace, *rewi, *fatal;
-integer *nidim, *idim, *nalf;
-real *alf;
-integer *nbet;
-real *bet;
-integer *nmax;
-real *a, *aa, *as, *b, *bb, *bs, *c__, *cc, *cs, *ct, *g;
-integer *iorder;
-ftnlen sname_len;
+/* Subroutine */ int schk2_(char* sname, real* eps, real* thresh, integer* nout, integer* ntra, logical* trace, logical* rewi, logical* fatal, integer* nidim, integer* idim, integer* nalf, real* alf, integer* nbet, real* bet, integer* nmax, real* a, real* aa, real* as, real* b, real* bb, real* bs, real* c__, real* cc, real* cs, real* ct, real* g, integer* iorder, ftnlen sname_len)
 {
     /* Initialized data */
 
@@ -1349,8 +1179,6 @@ ftnlen sname_len;
     integer a_dim1, a_offset, b_dim1, b_offset, c_dim1, c_offset, i__1, i__2, 
 	    i__3, i__4, i__5;
 
-    /* Builtin functions */
-    integer f_rew(), s_wsfe(), e_wsfe(), do_fio();
 
     /* Local variables */
     static real beta;
@@ -1368,15 +1196,15 @@ ftnlen sname_len;
     static char uplos[1];
     static integer ia, ib, na, nc, im, in, ms, ns;
     static real errmax;
-    extern logical lseres_();
-    extern /* Subroutine */ int cssymm_();
-    extern void sprcn2_();
-    extern int smake_();
-    extern int smmch_();
+    extern logical lseres_(char*, char*, integer*, integer*, real*, real*, integer*, ftnlen, ftnlen);
+    extern /* Subroutine */ void cssymm_(integer*, char*, char*, integer*, integer*, real*, real*, integer*, real*, integer*, real*, real*, integer*, ftnlen, ftnlen);
+    extern void sprcn2_(integer*, integer*, char*, integer*, char*, char*, integer*, integer*, real*, integer*, integer*, real*, integer*, ftnlen, ftnlen, ftnlen);
+    extern /* Subroutine */ int smake_(char*, char*, char*, integer*, integer*, real*, integer*, real*, integer*, logical*, real*, ftnlen, ftnlen, ftnlen);
+    extern /* Subroutine */ int smmch_(char*, char*, integer*, integer*, integer*, real*, real*, integer*, real*, integer*, real*, real*, integer*, real*, real*, real*, integer*, real*, real*, logical*, integer*, logical*, ftnlen, ftnlen);
     static integer laa, lbb, lda, lcc, ldb, ldc, ics;
     static real als, bls;
     static integer icu;
-    extern logical lse_();
+    extern logical lse_(real*, real*, integer*);
     static real err;
 
 /*  Tests SSYMM. */
@@ -1685,23 +1513,8 @@ L120:
 } /* schk2_ */
 
 
-/* Subroutine */ void sprcn2_(nout, nc, sname, iorder, side, uplo, m, n, alpha,
-	 lda, ldb, beta, ldc, sname_len, side_len, uplo_len)
-integer *nout, *nc;
-char *sname;
-integer *iorder;
-char *side, *uplo;
-integer *m, *n;
-real *alpha;
-integer *lda, *ldb;
-real *beta;
-integer *ldc;
-ftnlen sname_len;
-ftnlen side_len;
-ftnlen uplo_len;
+/* Subroutine */ void sprcn2_(integer* nout, integer* nc, char* sname, integer* iorder, char* side, char* uplo, integer* m, integer* n, real* alpha, integer* lda, integer* ldb, real* beta, integer* ldc, ftnlen sname_len, ftnlen side_len, ftnlen uplo_len)
 {
-    /* Builtin functions */
-    integer s_wsfe(), do_fio(), e_wsfe();
 
     /* Local variables */
     static char cs[14], cu[14], crc[14];
@@ -1726,19 +1539,7 @@ ftnlen uplo_len;
 } /* sprcn2_ */
 
 
-/* Subroutine */ int schk3_(sname, eps, thresh, nout, ntra, trace, rewi, 
-	fatal, nidim, idim, nalf, alf, nmax, a, aa, as, b, bb, bs, ct, g, c__,
-	 iorder, sname_len)
-char *sname;
-real *eps, *thresh;
-integer *nout, *ntra;
-logical *trace, *rewi, *fatal;
-integer *nidim, *idim, *nalf;
-real *alf;
-integer *nmax;
-real *a, *aa, *as, *b, *bb, *bs, *ct, *g, *c__;
-integer *iorder;
-ftnlen sname_len;
+/* Subroutine */ int schk3_(char* sname, real* eps, real* thresh, integer* nout, integer* ntra, logical* trace, logical* rewi, logical* fatal, integer* nidim, integer* idim, integer* nalf, real* alf, integer* nmax, real* a, real* aa, real* as, real* b, real* bb, real* bs, real* ct, real* g, real* c__, integer* iorder, ftnlen sname_len)
 {
     /* Initialized data */
 
@@ -1751,8 +1552,6 @@ ftnlen sname_len;
     integer a_dim1, a_offset, b_dim1, b_offset, c_dim1, c_offset, i__1, i__2, 
 	    i__3, i__4, i__5;
 
-    /* Builtin functions */
-    integer f_rew(), s_wsfe(), e_wsfe(), do_fio();
 
     /* Local variables */
     static char diag[1];
@@ -1769,18 +1568,19 @@ ftnlen sname_len;
     static integer nargs;
     static logical reset;
     static char uplos[1];
-    extern /* Subroutine */ void sprcn3_();
+    extern /* Subroutine */ void sprcn3_(integer*, integer*, char*, integer*, char*, char*, char*, char*, integer*, integer*, real*, integer*, integer*, ftnlen , ftnlen, ftnlen, ftnlen, ftnlen);
     static integer ia, na, nc, im, in, ms, ns;
     static char tranas[1], transa[1];
     static real errmax;
-    extern int smake_();
-    extern int smmch_();
-    extern logical lseres_();
-    extern /* Subroutine */ int cstrmm_(), cstrsm_();
+    extern /* Subroutine */ int smake_(char*, char*, char*, integer*, integer*, real*, integer*, real*, integer*, logical*, real*, ftnlen, ftnlen, ftnlen);
+    extern /* Subroutine */ int smmch_(char*, char*, integer*, integer*, integer*, real*, real*, integer*, real*, integer*, real*, real*, integer*, real*, real*, real*, integer*, real*, real*, logical*, integer*, logical*, ftnlen, ftnlen);
+    extern logical lseres_(char*, char*, integer*, integer*, real*, real*, integer*, ftnlen, ftnlen);
+    extern /* Subroutine */ void cstrmm_(integer*, char*, char*, char*, char*, integer*, integer*, real*, real*, integer*, real*, integer*, ftnlen, ftnlen, ftnlen, ftnlen);
+    extern /* Subroutine */ void cstrsm_(integer*, char*, char*, char*, char*, integer*, integer*, real*, real*, integer*, real*, integer*, ftnlen, ftnlen, ftnlen, ftnlen);
     static integer laa, icd, lbb, lda, ldb, ics;
     static real als;
     static integer ict, icu;
-    extern logical lse_();
+    extern logical lse_(real*, real*, integer*);
     static real err;
 
 /*  Tests STRMM and STRSM. */
@@ -2155,24 +1955,8 @@ L160:
 } /* schk3_ */
 
 
-/* Subroutine */ void sprcn3_(nout, nc, sname, iorder, side, uplo, transa, 
-	diag, m, n, alpha, lda, ldb, sname_len, side_len, uplo_len, 
-	transa_len, diag_len)
-integer *nout, *nc;
-char *sname;
-integer *iorder;
-char *side, *uplo, *transa, *diag;
-integer *m, *n;
-real *alpha;
-integer *lda, *ldb;
-ftnlen sname_len;
-ftnlen side_len;
-ftnlen uplo_len;
-ftnlen transa_len;
-ftnlen diag_len;
+/* Subroutine */ void sprcn3_(integer* nout, integer* nc, char* sname, integer* iorder, char* side, char* uplo, char* transa, char* diag, integer* m, integer* n, real* alpha, integer* lda, integer* ldb, ftnlen sname_len, ftnlen side_len, ftnlen uplo_len, ftnlen transa_len, ftnlen diag_len)
 {
-    /* Builtin functions */
-    integer s_wsfe(), do_fio(), e_wsfe();
 
     /* Local variables */
     static char ca[14], cd[14], cs[14], cu[14], crc[14];
@@ -2210,21 +1994,7 @@ ftnlen diag_len;
 } /* sprcn3_ */
 
 
-/* Subroutine */ int schk4_(sname, eps, thresh, nout, ntra, trace, rewi, 
-	fatal, nidim, idim, nalf, alf, nbet, bet, nmax, a, aa, as, b, bb, bs, 
-	c__, cc, cs, ct, g, iorder, sname_len)
-char *sname;
-real *eps, *thresh;
-integer *nout, *ntra;
-logical *trace, *rewi, *fatal;
-integer *nidim, *idim, *nalf;
-real *alf;
-integer *nbet;
-real *bet;
-integer *nmax;
-real *a, *aa, *as, *b, *bb, *bs, *c__, *cc, *cs, *ct, *g;
-integer *iorder;
-ftnlen sname_len;
+/* Subroutine */ int schk4_(char* sname, real* eps, real* thresh, integer* nout, integer* ntra, logical* trace, logical* rewi, logical* fatal, integer* nidim, integer* idim, integer* nalf, real* alf, integer* nbet, real* bet, integer* nmax, real* a, real* aa, real* as, real* b, real* bb, real* bs, real* c__, real* cc, real* cs, real* ct, real* g, integer* iorder, ftnlen sname_len)
 {
     /* Initialized data */
 
@@ -2235,8 +2005,6 @@ ftnlen sname_len;
     integer a_dim1, a_offset, b_dim1, b_offset, c_dim1, c_offset, i__1, i__2, 
 	    i__3, i__4, i__5;
 
-    /* Builtin functions */
-    integer f_rew(), s_wsfe(), e_wsfe(), do_fio();
 
     /* Local variables */
     static real beta;
@@ -2253,18 +2021,18 @@ ftnlen sname_len;
     static char trans[1];
     static logical upper;
     static char uplos[1];
-    extern /* Subroutine */ void sprcn4_();
-    extern /* Subroutine */ int smake_();
-    extern /* Subroutine */ int smmch_();
+    extern /* Subroutine */ void sprcn4_(integer*, integer*, char*, integer*, char*, char*, integer*, integer*, real*, integer*, real*, integer*, ftnlen, ftnlen, ftnlen);
+    extern /* Subroutine */ int smake_(char*, char*, char*, integer*, integer*, real*, integer*, real*, integer*, logical*, real*, ftnlen, ftnlen, ftnlen);
+    extern /* Subroutine */ int smmch_(char*, char*, integer*, integer*, integer*, real*, real*, integer*, real*, integer*, real*, real*, integer*, real*, real*, real*, integer*, real*, real*, logical*, integer*, logical*, ftnlen, ftnlen);
     static integer ia, ib, jc, ma, na, nc, ik, in, jj, lj, ks, ns;
     static real errmax;
-    extern logical lseres_();
+    extern logical lseres_(char*, char*, integer*, integer*, real*, real*, integer*, ftnlen, ftnlen);
     static char transs[1];
-    extern /* Subroutine */ int cssyrk_();
+    extern /* Subroutine */ void cssyrk_(integer*, char*, char*, integer*, integer*, real*, real*, integer*, real*, real*, integer*, ftnlen, ftnlen);
     static integer laa, lda, lcc, ldc;
     static real als;
     static integer ict, icu;
-    extern logical lse_();
+    extern logical lse_(real*, real*, integer*);
     static real err;
 
 /*  Tests SSYRK. */
@@ -2575,23 +2343,8 @@ L130:
 } /* schk4_ */
 
 
-/* Subroutine */ void sprcn4_(nout, nc, sname, iorder, uplo, transa, n, k, 
-	alpha, lda, beta, ldc, sname_len, uplo_len, transa_len)
-integer *nout, *nc;
-char *sname;
-integer *iorder;
-char *uplo, *transa;
-integer *n, *k;
-real *alpha;
-integer *lda;
-real *beta;
-integer *ldc;
-ftnlen sname_len;
-ftnlen uplo_len;
-ftnlen transa_len;
+/* Subroutine */ void sprcn4_(integer* nout, integer* nc, char* sname, integer* iorder, char* uplo, char* transa, integer* n, integer* k, real* alpha, integer* lda, real* beta, integer* ldc, ftnlen sname_len, ftnlen uplo_len, ftnlen transa_len)
 {
-    /* Builtin functions */
-    integer s_wsfe(), do_fio(), e_wsfe();
 
     /* Local variables */
     static char ca[14], cu[14], crc[14];
@@ -2619,21 +2372,7 @@ ftnlen transa_len;
 } /* sprcn4_ */
 
 
-/* Subroutine */ int schk5_(sname, eps, thresh, nout, ntra, trace, rewi, 
-	fatal, nidim, idim, nalf, alf, nbet, bet, nmax, ab, aa, as, bb, bs, 
-	c__, cc, cs, ct, g, w, iorder, sname_len)
-char *sname;
-real *eps, *thresh;
-integer *nout, *ntra;
-logical *trace, *rewi, *fatal;
-integer *nidim, *idim, *nalf;
-real *alf;
-integer *nbet;
-real *bet;
-integer *nmax;
-real *ab, *aa, *as, *bb, *bs, *c__, *cc, *cs, *ct, *g, *w;
-integer *iorder;
-ftnlen sname_len;
+/* Subroutine */ int schk5_(char* sname, real* eps, real* thresh, integer* nout, integer* ntra, logical* trace, logical* rewi, logical* fatal, integer* nidim, integer* idim, integer* nalf, real* alf, integer* nbet, real* bet, integer* nmax, real* ab, real* aa, real* as, real* bb, real* bs, real* c__, real* cc, real* cs, real* ct, real* g, real* w, integer* iorder, ftnlen sname_len)
 {
     /* Initialized data */
 
@@ -2643,8 +2382,6 @@ ftnlen sname_len;
     /* System generated locals */
     integer c_dim1, c_offset, i__1, i__2, i__3, i__4, i__5, i__6, i__7, i__8;
 
-    /* Builtin functions */
-    integer f_rew(), s_wsfe(), e_wsfe(), do_fio();
 
     /* Local variables */
     static integer jjab;
@@ -2663,18 +2400,18 @@ ftnlen sname_len;
     static logical upper;
     static char uplos[1];
     static integer ia, ib;
-    extern /* Subroutine */ void sprcn5_();
+    extern /* Subroutine */ void sprcn5_(integer*, integer*, char*, integer*, char*, char*, integer*, integer*, real*, integer*, integer*, real*, integer*, ftnlen, ftnlen, ftnlen);
     static integer jc, ma, na, nc, ik, in, jj, lj, ks, ns;
     static real errmax;
-    extern logical lseres_();
-    extern int smake_();
+    extern logical lseres_(char*, char*, integer*, integer*, real*, real*, integer*, ftnlen, ftnlen);
+    extern /* Subroutine */ int smake_(char*, char*, char*, integer*, integer*, real*, integer*, real*, integer*, logical*, real*, ftnlen, ftnlen, ftnlen);
     static char transs[1];
     static integer laa, lbb, lda, lcc, ldb, ldc;
     static real als;
     static integer ict, icu;
-    extern /* Subroutine */ int cssyr2k_();
-    extern logical lse_();
-    extern int smmch_();
+    extern /* Subroutine */ void cssyr2k_(integer*, char*, char*, integer*, integer*, real*, real*, integer*, real*, integer*, real*, real*, integer*, ftnlen, ftnlen);
+    extern logical lse_(real*, real*, integer*);
+    extern /* Subroutine */ int smmch_(char*, char*, integer*, integer*, integer*, real*, real*, integer*, real*, integer*, real*, real*, integer*, real*, real*, real*, integer*, real*, real*, logical*, integer*, logical*, ftnlen, ftnlen);
     static real err;
 
 /*  Tests SSYR2K. */
@@ -3037,23 +2774,8 @@ L160:
 } /* schk5_ */
 
 
-/* Subroutine */ void sprcn5_(nout, nc, sname, iorder, uplo, transa, n, k, 
-	alpha, lda, ldb, beta, ldc, sname_len, uplo_len, transa_len)
-integer *nout, *nc;
-char *sname;
-integer *iorder;
-char *uplo, *transa;
-integer *n, *k;
-real *alpha;
-integer *lda, *ldb;
-real *beta;
-integer *ldc;
-ftnlen sname_len;
-ftnlen uplo_len;
-ftnlen transa_len;
+/* Subroutine */ void sprcn5_(integer* nout, integer* nc, char* sname, integer* iorder, char* uplo, char* transa, integer* n, integer* k, real* alpha, integer* lda, integer* ldb, real* beta, integer* ldc, ftnlen sname_len, ftnlen uplo_len, ftnlen transa_len)
 {
-    /* Builtin functions */
-    integer s_wsfe(), do_fio(), e_wsfe();
 
     /* Local variables */
     static char ca[14], cu[14], crc[14];
@@ -3081,19 +2803,7 @@ ftnlen transa_len;
 } /* sprcn5_ */
 
 
-/* Subroutine */ int smake_(type__, uplo, diag, m, n, a, nmax, aa, lda, reset,
-	 transl, type_len, uplo_len, diag_len)
-char *type__, *uplo, *diag;
-integer *m, *n;
-real *a;
-integer *nmax;
-real *aa;
-integer *lda;
-logical *reset;
-real *transl;
-ftnlen type_len;
-ftnlen uplo_len;
-ftnlen diag_len;
+/* Subroutine */ int smake_(char* type__, char* uplo, char* diag, integer* m, integer* n, real* a, integer* nmax, real* aa, integer* lda, logical* reset, real* transl, ftnlen type_len, ftnlen uplo_len, ftnlen diag_len)
 {
     /* System generated locals */
     integer a_dim1, a_offset, i__1, i__2;
@@ -3102,7 +2812,7 @@ ftnlen diag_len;
 
     /* Local variables */
     static integer ibeg, iend;
-    extern doublereal sbeg_();
+    extern doublereal sbeg_(logical*);
     static logical unit;
     static integer i__, j;
     static logical lower, upper, gen, tri, sym;
@@ -3233,25 +2943,7 @@ ftnlen diag_len;
 
 } /* smake_ */
 
-/* Subroutine */ int smmch_(transa, transb, m, n, kk, alpha, a, lda, b, ldb, 
-	beta, c__, ldc, ct, g, cc, ldcc, eps, err, fatal, nout, mv, 
-	transa_len, transb_len)
-char *transa, *transb;
-integer *m, *n, *kk;
-real *alpha, *a;
-integer *lda;
-real *b;
-integer *ldb;
-real *beta, *c__;
-integer *ldc;
-real *ct, *g, *cc;
-integer *ldcc;
-real *eps, *err;
-logical *fatal;
-integer *nout;
-logical *mv;
-ftnlen transa_len;
-ftnlen transb_len;
+/* Subroutine */ int smmch_(char* transa, char* transb, integer* m, integer* n, integer* kk, real* alpha, real* a, integer* lda, real* b, integer* ldb, real* beta, real* c__, integer* ldc, real* ct, real* g, real* cc, integer* ldcc, real* eps, real* err, logical* fatal, integer* nout, logical* mv, ftnlen transa_len, ftnlen transb_len)
 {
 
     /* System generated locals */
@@ -3260,8 +2952,7 @@ ftnlen transb_len;
     real r__1, r__2;
 
     /* Builtin functions */
-    double sqrt();
-    integer s_wsfe(), e_wsfe(), do_fio();
+    double sqrt(double);
 
     /* Local variables */
     static real erri;
@@ -3426,9 +3117,7 @@ L150:
 
 } /* smmch_ */
 
-logical lse_(ri, rj, lr)
-real *ri, *rj;
-integer *lr;
+logical lse_(real* ri, real* rj, integer* lr)
 {
     /* System generated locals */
     integer i__1;
@@ -3475,13 +3164,7 @@ L30:
 
 } /* lse_ */
 
-logical lseres_(type__, uplo, m, n, aa, as, lda, type_len, uplo_len)
-char *type__, *uplo;
-integer *m, *n;
-real *aa, *as;
-integer *lda;
-ftnlen type_len;
-ftnlen uplo_len;
+logical lseres_(char* type__, char* uplo, integer* m, integer* n, real* aa, real* as, integer* lda, ftnlen type_len, ftnlen uplo_len)
 {
     /* System generated locals */
     integer aa_dim1, aa_offset, as_dim1, as_offset, i__1, i__2;
@@ -3572,8 +3255,7 @@ L80:
 
 } /* lseres_ */
 
-doublereal sbeg_(reset)
-logical *reset;
+doublereal sbeg_(logical* reset)
 {
     /* System generated locals */
     real ret_val;
@@ -3625,8 +3307,7 @@ L10:
 
 } /* sbeg_ */
 
-doublereal sdiff_(x, y)
-real *x, *y;
+doublereal sdiff_(real* x, real* y)
 {
     /* System generated locals */
     real ret_val;

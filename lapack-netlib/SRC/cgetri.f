@@ -107,7 +107,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup complexGEcomputational
+*> \ingroup getri
 *
 *  =====================================================================
       SUBROUTINE CGETRI( N, A, LDA, IPIV, WORK, LWORK, INFO )
@@ -138,7 +138,8 @@
 *     ..
 *     .. External Functions ..
       INTEGER            ILAENV
-      EXTERNAL           ILAENV
+      REAL               SROUNDUP_LWORK
+      EXTERNAL           ILAENV, SROUNDUP_LWORK
 *     ..
 *     .. External Subroutines ..
       EXTERNAL           CGEMM, CGEMV, CSWAP, CTRSM, CTRTRI, XERBLA
@@ -153,7 +154,7 @@
       INFO = 0
       NB = ILAENV( 1, 'CGETRI', ' ', N, -1, -1, -1 )
       LWKOPT = N*NB
-      WORK( 1 ) = LWKOPT
+      WORK( 1 ) = SROUNDUP_LWORK(LWKOPT)
       LQUERY = ( LWORK.EQ.-1 )
       IF( N.LT.0 ) THEN
          INFO = -1
@@ -251,7 +252,7 @@
      $      CALL CSWAP( N, A( 1, J ), 1, A( 1, JP ), 1 )
    60 CONTINUE
 *
-      WORK( 1 ) = IWS
+      WORK( 1 ) = SROUNDUP_LWORK(IWS)
       RETURN
 *
 *     End of CGETRI

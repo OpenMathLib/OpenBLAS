@@ -169,7 +169,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup sigleOTHERcomputational
+*> \ingroup ungtsqr_row
 *
 *> \par Contributors:
 *  ==================
@@ -213,11 +213,15 @@
 *     .. Local Arrays ..
       REAL               DUMMY( 1, 1 )
 *     ..
+*     .. External Functions ..
+      REAL               SROUNDUP_LWORK
+      EXTERNAL           SROUNDUP_LWORK
+*     ..
 *     .. External Subroutines ..
       EXTERNAL           SLARFB_GETT, SLASET, XERBLA
 *     ..
 *     .. Intrinsic Functions ..
-      INTRINSIC          REAL, MAX, MIN
+      INTRINSIC          MAX, MIN
 *     ..
 *     .. Executable Statements ..
 *
@@ -255,14 +259,14 @@
          CALL XERBLA( 'SORGTSQR_ROW', -INFO )
          RETURN
       ELSE IF ( LQUERY ) THEN
-         WORK( 1 ) = REAL( LWORKOPT )
+         WORK( 1 ) = SROUNDUP_LWORK( LWORKOPT )
          RETURN
       END IF
 *
 *     Quick return if possible
 *
       IF( MIN( M, N ).EQ.0 ) THEN
-         WORK( 1 ) = REAL( LWORKOPT )
+         WORK( 1 ) = SROUNDUP_LWORK( LWORKOPT )
          RETURN
       END IF
 *
@@ -371,7 +375,7 @@
 *
       END DO
 *
-      WORK( 1 ) = REAL( LWORKOPT )
+      WORK( 1 ) = SROUNDUP_LWORK( LWORKOPT )
       RETURN
 *
 *     End of SORGTSQR_ROW

@@ -290,7 +290,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup complexOTHERcomputational
+*> \ingroup tgsen
 *
 *> \par Further Details:
 *  =====================
@@ -467,6 +467,10 @@
 *     .. Local Arrays ..
       INTEGER            ISAVE( 3 )
 *     ..
+*     .. External Functions ..
+      REAL               SROUNDUP_LWORK
+      EXTERNAL           SROUNDUP_LWORK
+*     ..
 *     .. External Subroutines ..
       REAL               SLAMCH
       EXTERNAL           CLACN2, CLACPY, CLASSQ, CSCAL, CTGEXC, CTGSYL,
@@ -537,7 +541,7 @@
          LIWMIN = 1
       END IF
 *
-      WORK( 1 ) = LWMIN
+      WORK( 1 ) =  SROUNDUP_LWORK(LWMIN)
       IWORK( 1 ) = LIWMIN
 *
       IF( LWORK.LT.LWMIN .AND. .NOT.LQUERY ) THEN
@@ -771,7 +775,7 @@
 *
    70 CONTINUE
 *
-      WORK( 1 ) = LWMIN
+      WORK( 1 ) =  SROUNDUP_LWORK(LWMIN)
       IWORK( 1 ) = LIWMIN
 *
       RETURN
