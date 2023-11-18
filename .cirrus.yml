@@ -8,8 +8,4 @@ task:
   - export PATH=/opt/homebrew/bin:$PATH
   - export LDFLAGS="-L/opt/homebrew/lib"
   - export CPPFLAGS="-I/opt/homebrew/include"
-  - mkdir build
-  - cd build
-  - cmake ..
-  - make -j 4
-  - ctest
+  - make CC=clang FC=gfortran-13
