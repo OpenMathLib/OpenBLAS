@@ -407,6 +407,7 @@ XCVER = $(shell pkgutil --pkg-info=com.apple.pkg.CLTools_Executables |awk '/vers
 endif
 ifeq (x$(XCVER), x 15)
 CCOMMON_OPT += -Wl,-ld_classic
+FCOMMON_OPT += -Wl,-ld_classic
 endif
 endif
 
