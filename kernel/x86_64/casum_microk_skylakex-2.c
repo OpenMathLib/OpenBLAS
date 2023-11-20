@@ -2,10 +2,9 @@
 #ifdef __NVCOMPILER
 #define NVCOMPVERS ( __NVCOMPILER_MAJOR__ * 100 + __NVCOMPILER_MINOR__ )
 #endif
-#if ((( defined(__GNUC__)  && __GNUC__   > 6 && defined(__AVX512CD__)) || (defined(__clang__) && (__clang_major__ >= 9 &&__clang_major__ !=17)) || ( defined(__NVCOMPILER) && NVCOMPVERS >= 2309)))
+#if ((( defined(__GNUC__)  && __GNUC__   > 6 && defined(__AVX512CD__)) || (defined(__clang__) && __clang_major__ >= 9)) || (defined(__NVCOMPILER) && NVCOMPVERS >= 2203))
 
-#if (!(defined(__NVCOMPILER) ))
-//&& NVCOMPVERS < 2309))
+#if (!(defined(__NVCOMPILER) && NVCOMPVERS < 2203))
 
 #define HAVE_CASUM_KERNEL 1
 
@@ -21,15 +20,14 @@ static FLOAT casum_kernel(BLASLONG n, FLOAT *x)
     
     if (n2 < 64) {
         __m128 accum_10, accum_11, accum_12, accum_13;
-        __m128 abs_mask1 = abs_mask1;
+        __m128 abs_mask1;
 
         accum_10 = _mm_setzero_ps();
         accum_11 = _mm_setzero_ps();
         accum_12 = _mm_setzero_ps();
         accum_13 = _mm_setzero_ps();
         
-        abs_mask1 = (__m128)_mm_cmpeq_epi8((__m128i) abs_mask1, (__m128i) abs_mask1);
-        abs_mask1 = (__m128)_mm_srli_epi32((__m128i) abs_mask1, 1);
+        abs_mask1 = (__m128)_mm_set1_epi32(0x7fffffff);
                 
         _mm_prefetch(&x1[0], _MM_HINT_T0);
         
