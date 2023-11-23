@@ -128,6 +128,8 @@ jobs:
               echo "::group::Tests in 'utest' directory"
               make -C utest $MAKE_FLAGS FC="ccache ${{ matrix.fortran }}"
               echo "::endgroup::"
+              make $MAKE_FLAGS FC="ccache ${{ matrix.fortran }}" lapack-test
+              echo "::endgroup::"
               ;;
             "cmake")
               cd build && ctest
