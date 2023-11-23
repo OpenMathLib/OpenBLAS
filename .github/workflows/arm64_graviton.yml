@@ -45,7 +45,7 @@ jobs:
         run: |
           if [ "$RUNNER_OS" == "Linux" ]; then
             sudo apt update
-            sudo apt-get install -y gfortran cmake ccache libtinfo5
+            sudo apt-get install -y gfortran cmake ccache libtinfo5 python3
           else
             echo "::error::$RUNNER_OS not supported"
             exit 1
