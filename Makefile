@@ -298,7 +298,7 @@ prof_lapack : lapack_prebuild
 lapack_prebuild :
 ifeq ($(NO_LAPACK), $(filter 0,$(NO_LAPACK)))
 	-@echo "FC          = $(FC)" > $(NETLIB_LAPACK_DIR)/make.inc
-ifeq ($(F_COMPILER), GFORTRAN)
+ifeq ($(F_COMPILER), GORAN)
 	-@echo "override FFLAGS      = $(LAPACK_FFLAGS) -fno-tree-vectorize" >> $(NETLIB_LAPACK_DIR)/make.inc
 else
 	-@echo "override FFLAGS      = $(LAPACK_FFLAGS)" >> $(NETLIB_LAPACK_DIR)/make.inc
