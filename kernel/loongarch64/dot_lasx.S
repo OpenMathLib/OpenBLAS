@@ -51,6 +51,8 @@ PROLOGUE
     LDINT     INCX,   0(INCX)
     LDINT     INCY,   0(INCY)
 #endif
+
+    /* init $f8 and $f9 to zero */
     SUB       s1,     s1,      s1
     SUB       s2,     s2,      s2
     slli.d    INCX,   INCX,    BASE_SHIFT
@@ -59,11 +61,8 @@ PROLOGUE
     bge       $r0,    N,       .L999
     bne       INCX,   TEMP,    .L20   /* inc_x=1 */
     bne       INCY,   TEMP,    .L20   /* inc_y=1 */
-#ifdef DOUBLE
-    srai.d    I,      N,       4
-#else
-    srai.d    I,      N,       5
-#endif
+
+    /* !((inc_x == 1) && (inc_y == 1)) */
 
     /* init $xr8 and $xr9 to zero */
 #ifdef DOUBLE
@@ -71,13 +70,24 @@ PROLOGUE
 #else
     xvldrepl.w $xr0,  X,       0
 #endif
+#ifdef DSDOT
+    xvfcvtl.d.s       $xr0,    $xr0
+    xvfsub.d  $xr8,   $xr0,    $xr0
+    xvfsub.d  $xr9,   $xr0,    $xr0
+#else
     XVFSUB    $xr8,   $xr0,    $xr0
     XVFSUB    $xr9,   $xr0,    $xr0
+#endif
 
-/* !((inc_x == 1) && (inc_y == 1)) */
-    bge       $r0,    I,       .L12   /* <32 */
+#ifdef DOUBLE
+    srai.d    I,      N,       4
+#else
+    srai.d    I,      N,       5
+#endif
+    bge       $r0,    I,       .L12   /* FLOAT: <32 ; DOUBLE: <16 */
+    .align  3
 .L11:
-    /* case 32~ */
+    /* FLOAT: 32~ ; DOUBLE: 16~ */
     xvld      $xr0,   X,       0
     xvld      $xr1,   X,       32
     xvld      $xr2,   X,       64
@@ -89,11 +99,39 @@ PROLOGUE
     addi.w    I,      I,       -1
     addi.d    X,      X,       128
     addi.d    Y,      Y,       128
+#ifdef DSDOT
+    xvfcvtl.d.s       $xr10,   $xr0
+    xvfcvtl.d.s       $xr11,   $xr4
+    xvfcvth.d.s       $xr12,   $xr0
+    xvfcvth.d.s       $xr13,   $xr4
+    xvfmadd.d $xr8,   $xr10,   $xr12,  $xr8
+    xvfmadd.d $xr9,   $xr11,   $xr13,  $xr9
+    xvfcvtl.d.s       $xr10,   $xr1
+    xvfcvtl.d.s       $xr11,   $xr5
+    xvfcvth.d.s       $xr12,   $xr1
+    xvfcvth.d.s       $xr13,   $xr5
+    xvfmadd.d $xr8,   $xr10,   $xr12,  $xr8
+    xvfmadd.d $xr9,   $xr11,   $xr13,  $xr9
+    xvfcvtl.d.s       $xr10,   $xr2
+    xvfcvtl.d.s       $xr11,   $xr6
+    xvfcvth.d.s       $xr12,   $xr2
+    xvfcvth.d.s       $xr13,   $xr6
+    xvfmadd.d $xr8,   $xr10,   $xr12,  $xr8
+    xvfmadd.d $xr9,   $xr11,   $xr13,  $xr9
+    xvfcvtl.d.s       $xr10,   $xr3
+    xvfcvtl.d.s       $xr11,   $xr7
+    xvfcvth.d.s       $xr12,   $xr3
+    xvfcvth.d.s       $xr13,   $xr7
+    xvfmadd.d $xr8,   $xr10,   $xr12,  $xr8
+    xvfmadd.d $xr9,   $xr11,   $xr13,  $xr9
+#else
     XVFMADD   $xr8,   $xr0,    $xr4,   $xr8
     XVFMADD   $xr9,   $xr1,    $xr5,   $xr9
     XVFMADD   $xr8,   $xr2,    $xr6,   $xr8
     XVFMADD   $xr9,   $xr3,    $xr7,   $xr9
+#endif
     bnez      I,      .L11
+    .align  3
 .L12:
 #ifdef DOUBLE
     andi      I,      N,       0xf
@@ -102,18 +140,37 @@ PROLOGUE
     andi      I,      N,       0x1f
     srai.d    I,      I,       3
 #endif
-    bge       $r0,    I,       .L14   /* <8 */
+    bge       $r0,    I,       .L14   /* DOUBLE: <4 ; FLOAT: <8 */
+    .align  3
 .L13:
-    /* case 8~31 */
+    /* FLOAT: 8~31 ; DOUBLE: 4~15 */
     xvld      $xr0,   X,       0
     xvld      $xr4,   Y,       0
     addi.w    I,      I,       -1
     addi.d    X,      X,       32
     addi.d    Y,      Y,       32
+#ifdef DSDOT
+    xvfcvtl.d.s       $xr10,   $xr0
+    xvfcvtl.d.s       $xr11,   $xr4
+    xvfcvth.d.s       $xr12,   $xr0
+    xvfcvth.d.s       $xr13,   $xr4
+    xvfmadd.d $xr8,   $xr10,   $xr12,  $xr8
+    xvfmadd.d $xr9,   $xr11,   $xr13,  $xr9
+#else
     XVFMADD   $xr8,   $xr0,    $xr4,   $xr8
+#endif
     bnez      I,      .L13
+    .align  3
 .L14:
     /* store dot in s1 $f8 */
+#ifdef DSDOT
+    xvfadd.d  $xr8,   $xr8,    $xr9
+    fsub.s    s2,     s2,      s2,  /* set s2 to 0.0 */
+    xvpermi.q $xr0,   $xr8,    0x1
+    vfadd.d   $vr8,   $vr8,    $vr0
+    vpackod.d $vr0,   $vr8,    $vr8
+    vfadd.d   $vr8,   $vr8,    $vr0
+#else
     XVFADD    $xr8,   $xr8,    $xr9
     SUB       s2,     s2,      s2   /* set s2 to 0.0 */
     xvpermi.q $xr0,   $xr8,    0x1
@@ -125,7 +182,9 @@ PROLOGUE
     VFADD     $vr8,   $vr8,    $vr0
     vpackod.w $vr0,   $vr8,    $vr8
     VFADD     $vr8,   $vr8,    $vr0
-#endif
+#endif /* defined DOUBLE */
+#endif /* defined DSDOT */
+    .align  3
 .L15:
 #ifdef DOUBLE
     andi      I,      N,       0x3
@@ -135,7 +194,7 @@ PROLOGUE
     bge       $r0,    I,       .L999  /* =0 */
    .align  3
 .L16:
-    /* case 1~7 */
+    /* FLOAT: 1~7 ; DOUBLE: 1~3 */
     LD        a1,     X,       0
     LD        b1,     Y,       0
 #ifdef DSDOT
