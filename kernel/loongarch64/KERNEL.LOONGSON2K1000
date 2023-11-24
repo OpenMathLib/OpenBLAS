@@ -1,0 +1,7 @@
+ifndef NO_LSX
+
+SDOTKERNEL  = dot_lsx.S
+DSDOTKERNEL = dot_lsx.S
+DDOTKERNEL  = dot_lsx.S
+
+endif
