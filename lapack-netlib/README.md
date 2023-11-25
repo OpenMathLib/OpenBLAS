@@ -6,7 +6,7 @@
 [![Appveyor](https://ci.appveyor.com/api/projects/status/bh38iin398msrbtr?svg=true)](https://ci.appveyor.com/project/langou/lapack/)
 [![codecov](https://codecov.io/gh/Reference-LAPACK/lapack/branch/master/graph/badge.svg)](https://codecov.io/gh/Reference-LAPACK/lapack)
 [![Packaging status](https://repology.org/badge/tiny-repos/lapack.svg)](https://repology.org/metapackage/lapack/versions)
-
+[![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/Reference-LAPACK/lapack/badge)](https://securityscorecards.dev/viewer/?uri=github.com/Reference-LAPACK/lapack)
 
 * VERSION 1.0   :  February 29, 1992
 * VERSION 1.0a  :  June 30, 1992
@@ -37,6 +37,7 @@
 * VERSION 3.10.0 : June 2021
 * VERSION 3.10.1 : April 2022
 * VERSION 3.11.0 : November 2022
+* VERSION 3.12.0 : November 2023
 
 LAPACK is a library of Fortran subroutines for solving the most commonly
 occurring problems in numerical linear algebra.
