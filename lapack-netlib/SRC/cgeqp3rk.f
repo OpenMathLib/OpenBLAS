@@ -55,7 +55,7 @@
 *> where:
 *>
 *>  P(K)            is an N-by-N permutation matrix;
-*>  Q(K)            is an M-by-M orthogonal matrix;
+*>  Q(K)            is an M-by-M unitary matrix;
 *>  R(K)_approx   = ( R11(K), R12(K) ) is a rank K approximation of the
 *>                    full rank factor R with K-by-K upper-triangular
 *>                    R11(K) and K-by-N rectangular R12(K). The diagonal
@@ -124,14 +124,14 @@
 *>     d) RELMAXC2NRMK equals MAXC2NRMK divided by MAXC2NRM, the maximum
 *>        column 2-norm of the original matrix A, which is equal
 *>        to abs(R(1,1)), ( if K = min(M,N), RELMAXC2NRMK = 0.0 );
-*>     e) Q(K)**H * B, the matrix B with the orthogonal
+*>     e) Q(K)**H * B, the matrix B with the unitary
 *>        transformation Q(K)**H applied on the left.
 *>
 *> The N-by-N permutation matrix P(K) is stored in a compact form in
 *> the integer array JPIV. For 1 <= j <= N, column j
 *> of the matrix A was interchanged with column JPIV(j).
 *>
-*> The M-by-M orthogonal matrix Q is represented as a product
+*> The M-by-M unitary matrix Q is represented as a product
 *> of elementary Householder reflectors
 *>
 *>     Q(K) = H(1) *  H(2) * . . . * H(K),
@@ -300,7 +300,7 @@
 *>
 *>              1. The elements below the diagonal of the subarray
 *>                 A(1:M,1:K) together with TAU(1:K) represent the
-*>                 orthogonal matrix Q(K) as a product of K Householder
+*>                 unitary matrix Q(K) as a product of K Householder
 *>                 elementary reflectors.
 *>
 *>              2. The elements on and above the diagonal of
@@ -579,8 +579,8 @@
 *> \verbatim
 *>
 *>  November  2023, Igor Kozachenko, James Demmel,
-*>                  Computer Science Division,
-*>                  University of California, Berkeley
+*>                  EECS Department,
+*>                  University of California, Berkeley, USA.
 *>
 *> \endverbatim
 *
