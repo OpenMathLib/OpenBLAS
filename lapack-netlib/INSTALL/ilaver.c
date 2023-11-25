@@ -315,7 +315,6 @@ typedef struct Namelist Namelist;
 /* > \author Univ. of Colorado Denver */
 /* > \author NAG Ltd. */
 
-/* > \date November 2019 */
 
 /* > \ingroup auxOTHERauxiliary */
 
@@ -332,7 +331,7 @@ typedef struct Namelist Namelist;
 
 /*  ===================================================================== */
     *vers_major__ = 3;
-    *vers_minor__ = 11;
+    *vers_minor__ = 12;
     *vers_patch__ = 0;
 /*  ===================================================================== */
 
