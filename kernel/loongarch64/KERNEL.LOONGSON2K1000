@@ -4,4 +4,7 @@ SDOTKERNEL  = dot_lsx.S
 DSDOTKERNEL = dot_lsx.S
 DDOTKERNEL  = dot_lsx.S
 
+SSCALKERNEL  = sscal_lsx.S
+DSCALKERNEL  = dscal_lsx.S
+
 endif
