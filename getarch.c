@@ -1691,7 +1691,18 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define CORENAME  "x280"
 #else
 #endif
-
+#ifdef FORCE_RISCV64_ZVL128B
+#define FORCE
+#define ARCHITECTURE    "RISCV64"
+#define SUBARCHITECTURE "RISCV64_ZVL128B"
+#define SUBDIRNAME      "riscv64"
+#define ARCHCONFIG "-DRISCV64_ZVL128B "                          \
+                   "-DL1_DATA_SIZE=32768 -DL1_DATA_LINESIZE=32 " \
+                   "-DL2_SIZE=1048576 -DL2_LINESIZE=32 "         \
+                   "-DDTB_DEFAULT_ENTRIES=128 -DDTB_SIZE=4096 -DL2_ASSOCIATIVE=4 "
+#define LIBNAME  "riscv64_zvl128b"
+#define CORENAME "RISCV64_ZVL128B"
+#endif
 
 #if defined(FORCE_E2K) || defined(__e2k__)
 #define FORCE
