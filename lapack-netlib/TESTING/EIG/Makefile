@@ -135,28 +135,28 @@ complex: xeigtstc xdmdeigtstc
 double: xeigtstd xdmdeigtstd
 complex16: xeigtstz xdmdeigtstz
 
-xdmdeigtsts: $(SDMDEIGTST) $(TMGLIB) $(LAPACKLIB) $(BLASLIB)
+xdmdeigtsts: $(SDMDEIGTST) $(TMGLIB) ../$(LAPACKLIB) $(BLASLIB)
 	$(FC) $(FFLAGS) $(LDFLAGS) -o $@ $^
 
-xdmdeigtstc: $(CDMDEIGTST) $(TMGLIB) $(LAPACKLIB) $(BLASLIB)
+xdmdeigtstc: $(CDMDEIGTST) $(TMGLIB) ../$(LAPACKLIB) $(BLASLIB)
 	$(FC) $(FFLAGS) $(LDFLAGS) -o $@ $^
 
-xdmdeigtstd: $(DDMDEIGTST) $(TMGLIB) $(LAPACKLIB) $(BLASLIB)
+xdmdeigtstd: $(DDMDEIGTST) $(TMGLIB) ../$(LAPACKLIB) $(BLASLIB)
 	$(FC) $(FFLAGS) $(LDFLAGS) -o $@ $^
 
-xdmdeigtstz: $(ZDMDEIGTST) $(TMGLIB) $(LAPACKLIB) $(BLASLIB)
+xdmdeigtstz: $(ZDMDEIGTST) $(TMGLIB) ../$(LAPACKLIB) $(BLASLIB)
 	$(FC) $(FFLAGS) $(LDFLAGS) -o $@ $^
 
-xeigtsts: $(SEIGTST) $(SCIGTST) $(AEIGTST) $(TMGLIB) $(LAPACKLIB) $(BLASLIB)
+xeigtsts: $(SEIGTST) $(SCIGTST) $(AEIGTST) $(TMGLIB) ../$(LAPACKLIB) $(BLASLIB)
 	$(FC) $(FFLAGS) $(LDFLAGS) -o $@ $^
 
-xeigtstc: $(CEIGTST) $(SCIGTST) $(AEIGTST) $(TMGLIB) $(LAPACKLIB) $(BLASLIB)
+xeigtstc: $(CEIGTST) $(SCIGTST) $(AEIGTST) $(TMGLIB) ../$(LAPACKLIB) $(BLASLIB)
 	$(FC) $(FFLAGS) $(LDFLAGS) -o $@ $^
 
-xeigtstd: $(DEIGTST) $(DZIGTST) $(AEIGTST) $(TMGLIB) $(LAPACKLIB) $(BLASLIB)
+xeigtstd: $(DEIGTST) $(DZIGTST) $(AEIGTST) $(TMGLIB) ../$(LAPACKLIB) $(BLASLIB)
 	$(FC) $(FFLAGS) $(LDFLAGS) -o $@ $^
 
-xeigtstz: $(ZEIGTST) $(DZIGTST) $(AEIGTST) $(TMGLIB) $(LAPACKLIB) $(BLASLIB)
+xeigtstz: $(ZEIGTST) $(DZIGTST) $(AEIGTST) $(TMGLIB) ../$(LAPACKLIB) $(BLASLIB)
 	$(FC) $(FFLAGS) $(LDFLAGS) -o $@ $^
 
 $(SDMDEIGTST): $(FRC)
