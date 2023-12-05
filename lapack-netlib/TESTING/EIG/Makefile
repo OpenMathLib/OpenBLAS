@@ -64,6 +64,8 @@ SEIGTST = schkee.o \
    sort03.o ssbt21.o ssgt01.o sslect.o sspt21.o sstt21.o \
    sstt22.o ssyl01.o ssyt21.o ssyt22.o
 
+SDMDEIGTST = schkdmd.o
+
 CEIGTST = cchkee.o \
    cbdt01.o cbdt02.o cbdt03.o cbdt05.o \
    cchkbb.o cchkbd.o cchkbk.o cchkbl.o cchkec.o \
@@ -80,6 +82,8 @@ CEIGTST = cchkee.o \
    clarfy.o clarhs.o clatm4.o clctes.o clctsx.o clsets.o csbmv.o \
    csgt01.o cslect.o csyl01.o\
    cstt21.o cstt22.o cunt01.o cunt03.o
+
+CDMDEIGTST = cchkdmd.o
 
 DZIGTST = dlafts.o dlahd2.o dlasum.o dlatb9.o dstech.o dstect.o \
    dsvdch.o dsvdct.o dsxt1.o
@@ -101,6 +105,8 @@ DEIGTST = dchkee.o \
    dort03.o dsbt21.o dsgt01.o dslect.o dspt21.o dstt21.o \
    dstt22.o dsyl01.o dsyt21.o dsyt22.o
 
+DDMDEIGTST = dchkdmd.o
+
 ZEIGTST = zchkee.o \
    zbdt01.o zbdt02.o zbdt03.o zbdt05.o \
    zchkbb.o zchkbd.o zchkbk.o zchkbl.o zchkec.o \
@@ -118,27 +124,45 @@ ZEIGTST = zchkee.o \
    zsgt01.o zslect.o zsyl01.o\
    zstt21.o zstt22.o zunt01.o zunt03.o
 
+ZDMDEIGTST = zchkdmd.o
+
 .PHONY: all
 all: single complex double complex16
 
 .PHONY: single complex double complex16
-single: xeigtsts
-complex: xeigtstc
-double: xeigtstd
-complex16: xeigtstz
+single: xeigtsts xdmdeigtsts
+complex: xeigtstc xdmdeigtstc
+double: xeigtstd xdmdeigtstd
+complex16: xeigtstz xdmdeigtstz
+
+xdmdeigtsts: $(SDMDEIGTST) $(TMGLIB) ../$(LAPACKLIB) $(BLASLIB)
+	$(FC) $(FFLAGS) $(LDFLAGS) -o $@ $^
+
+xdmdeigtstc: $(CDMDEIGTST) $(TMGLIB) ../$(LAPACKLIB) $(BLASLIB)
+	$(FC) $(FFLAGS) $(LDFLAGS) -o $@ $^
+
+xdmdeigtstd: $(DDMDEIGTST) $(TMGLIB) ../$(LAPACKLIB) $(BLASLIB)
+	$(FC) $(FFLAGS) $(LDFLAGS) -o $@ $^
+
+xdmdeigtstz: $(ZDMDEIGTST) $(TMGLIB) ../$(LAPACKLIB) $(BLASLIB)
+	$(FC) $(FFLAGS) $(LDFLAGS) -o $@ $^
 
 xeigtsts: $(SEIGTST) $(SCIGTST) $(AEIGTST) $(TMGLIB) ../$(LAPACKLIB) $(BLASLIB)
-	$(LOADER) $(FFLAGS) $(LDFLAGS) -o $@ $^
+	$(FC) $(FFLAGS) $(LDFLAGS) -o $@ $^
 
 xeigtstc: $(CEIGTST) $(SCIGTST) $(AEIGTST) $(TMGLIB) ../$(LAPACKLIB) $(BLASLIB)
-	$(LOADER) $(FFLAGS) $(LDFLAGS) -o $@ $^
+	$(FC) $(FFLAGS) $(LDFLAGS) -o $@ $^
 
 xeigtstd: $(DEIGTST) $(DZIGTST) $(AEIGTST) $(TMGLIB) ../$(LAPACKLIB) $(BLASLIB)
-	$(LOADER) $(FFLAGS) $(LDFLAGS) -o $@ $^
+	$(FC) $(FFLAGS) $(LDFLAGS) -o $@ $^
 
 xeigtstz: $(ZEIGTST) $(DZIGTST) $(AEIGTST) $(TMGLIB) ../$(LAPACKLIB) $(BLASLIB)
-	$(LOADER) $(FFLAGS) $(LDFLAGS) -o $@ $^
+	$(FC) $(FFLAGS) $(LDFLAGS) -o $@ $^
 
+$(SDMDEIGTST): $(FRC)
+$(CDMDEIGTST): $(FRC)
+$(DDMDEIGTST): $(FRC)
+$(ZDMDEIGTST): $(FRC)
 $(AEIGTST): $(FRC)
 $(SCIGTST): $(FRC)
 $(DZIGTST): $(FRC)
@@ -155,7 +179,7 @@ clean: cleanobj cleanexe
 cleanobj:
 	rm -f *.o
 cleanexe:
-	rm -f xeigtst*
+	rm -f xeigtst* xdmdeigtst*
 
 schkee.o: schkee.F
 	$(FC) $(FFLAGS_DRV) -c -o $@ $<
@@ -164,4 +188,12 @@ dchkee.o: dchkee.F
 cchkee.o: cchkee.F
 	$(FC) $(FFLAGS_DRV) -c -o $@ $<
 zchkee.o: zchkee.F
+	$(FC) $(FFLAGS_DRV) -c -o $@ $<
+schkdmd.o: schkdmd.f90
+	$(FC) $(FFLAGS_DRV) -c -o $@ $<
+cchkdmd.o: cchkdmd.f90
+	$(FC) $(FFLAGS_DRV) -c -o $@ $<
+dchkdmd.o: dchkdmd.f90
+	$(FC) $(FFLAGS_DRV) -c -o $@ $<
+zchkdmd.o: zchkdmd.f90
 	$(FC) $(FFLAGS_DRV) -c -o $@ $<
