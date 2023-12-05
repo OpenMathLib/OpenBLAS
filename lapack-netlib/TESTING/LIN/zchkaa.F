@@ -1268,6 +1268,8 @@
 *
       DEALLOCATE (A, STAT = AllocateStatus)
       DEALLOCATE (B, STAT = AllocateStatus)
+      DEALLOCATE (E, STAT = AllocateStatus)
+      DEALLOCATE (S, STAT = AllocateStatus)
       DEALLOCATE (RWORK, STAT = AllocateStatus)
       DEALLOCATE (WORK,  STAT = AllocateStatus)
 *
