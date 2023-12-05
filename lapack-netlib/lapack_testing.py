@@ -136,7 +136,7 @@ def run_summary_test( f, cmdline, short_summary):
         for line in pipe.readlines():
             f.write(str(line))
             words_in_line=line.split()
-            if (line.find("run")!=-1):
+            if (line.find("run)")!=-1):
 #                  print line
                 whereisrun=words_in_line.index("run)")
                 nb_test_run+=int(words_in_line[whereisrun-2])
