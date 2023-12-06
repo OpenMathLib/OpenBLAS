@@ -344,6 +344,9 @@ static DWORD WINAPI blas_thread_server(void *arg){
 #ifdef SMP_DEBUG
     fprintf(STDERR, "Server[%2ld] Finished!\n", cpu);
 #endif
+	
+	queue->finished = 1;
+
   }
 
   /* Shutdown procedure */
