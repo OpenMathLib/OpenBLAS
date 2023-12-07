@@ -51,15 +51,6 @@
 /* This is a thread implementation for Win32 lazy implementation */
 
 /* Thread server common information */
-//typedef struct{
-//  CRITICAL_SECTION lock;
-//  HANDLE filled;
-//  HANDLE killed;
-//
-//  blas_queue_t	*queue;    /* Parameter Pointer */
-//  int		shutdown;  /* server shutdown flag */
-//
-//} blas_pool_t;
 
 static blas_queue_t *work_queue = NULL;
 static HANDLE kickoff_event = NULL;
@@ -71,11 +62,19 @@ int blas_server_avail = 0;
 /* Local Variables */
 static BLASULONG server_lock       = 0;
 
-//static blas_pool_t   pool;
 static HANDLE	    blas_threads   [MAX_CPU_NUMBER];
 static DWORD	    blas_threads_id[MAX_CPU_NUMBER];
+static volatile int thread_target;	// target num of live threads, volatile for cross-thread reads
 
-
+#if defined (__GNUC__) && (__GNUC__ < 6)
+	#define WIN_CAS(dest, exch, comp) __sync_val_compare_and_swap(dest, comp, exch)
+#else
+	#if defined(_WIN64)
+		#define WIN_CAS(dest, exch, comp) InterlockedCompareExchange64(dest, exch, comp)
+	#else
+		#define WIN_CAS(dest, exch, comp) InterlockedCompareExchange(dest, exch, comp)
+	#endif
+#endif
 
 static void legacy_exec(void *func, int mode, blas_arg_t *args, void *sb){
 
@@ -206,14 +205,10 @@ static void legacy_exec(void *func, int mode, blas_arg_t *args, void *sb){
 static DWORD WINAPI blas_thread_server(void *arg){
 
   /* Thread identifier */
-#ifdef SMP_DEBUG
   BLASLONG  cpu = (BLASLONG)arg;
-#endif
 
   void *buffer, *sa, *sb;
   blas_queue_t	*queue;
-  DWORD action;
-  //HANDLE handles[] = {pool.filled, pool.killed};
 
   /* Each server needs each buffer */
   buffer   = blas_memory_alloc(2);
@@ -232,6 +227,12 @@ static DWORD WINAPI blas_thread_server(void *arg){
 	// event raised when work is added to the queue
 	WaitForSingleObject(kickoff_event, INFINITE);
 
+	if (cpu > thread_target - 2)
+	{
+		//printf("thread [%d] exiting.\n", cpu);
+		break;	// excess thread, so worker thread exits
+	}
+
 #ifdef SMP_DEBUG
     fprintf(STDERR, "Server[%2ld] Got it.\n", cpu);
 #endif
@@ -245,17 +246,17 @@ static DWORD WINAPI blas_thread_server(void *arg){
 
     LeaveCriticalSection(&queue_lock);
 #else
-    volatile work_queue_t* queue_next;
+    volatile blas_queue_t* queue_next;
 
     INT_PTR prev_value;
     do {
-        queue = (volatile work_queue_t*)work_queue;
+        queue = (volatile blas_queue_t*)work_queue;
         if (!queue)
             break;
 
-        queue_next = (volatile work_queue_t*)queue->next;
+        queue_next = (volatile blas_queue_t*)queue->next;
         prev_value = WIN_CAS((INT_PTR*)&work_queue, (INT_PTR)queue_next, (INT_PTR)queue);
-    } while (prev_value != work_item);
+    } while (prev_value != queue);
 #endif
 
     if (queue)  {
@@ -377,9 +378,13 @@ int blas_thread_init(void){
 	// create the kickoff Event
 	kickoff_event = CreateEvent(NULL, TRUE, FALSE, NULL);
 
+	thread_target = blas_cpu_number;
+
     InitializeCriticalSection(&queue_lock);
 
     for(i = 0; i < blas_cpu_number - 1; i++){
+	  //printf("thread_init: creating thread [%d]\n", i);
+
       blas_threads[i] = CreateThread(NULL, 0,
 				     blas_thread_server, (void *)i,
 				     0, &blas_threads_id[i]);
@@ -564,9 +569,35 @@ void goto_set_num_threads(int num_threads)
 
 	if (num_threads > MAX_CPU_NUMBER) num_threads = MAX_CPU_NUMBER;
 
+	if (blas_server_avail && num_threads < blas_num_threads)	{
+		LOCK_COMMAND(&server_lock);
+
+		thread_target = num_threads;
+		
+		SetEvent(kickoff_event);
+
+		for (i = num_threads - 1; i < blas_num_threads - 1; i++) {
+			//printf("set_num_threads: waiting on thread [%d] to quit.\n", i);
+
+			WaitForSingleObject(blas_threads[i], INFINITE);
+
+			//printf("set_num_threads: thread [%d] has quit.\n", i);
+
+			CloseHandle(blas_threads[i]);
+		}
+
+		blas_num_threads = num_threads;
+		
+		ResetEvent(kickoff_event);
+
+		UNLOCK_COMMAND(&server_lock);
+	}
+
 	if (num_threads > blas_num_threads) {
 
 		LOCK_COMMAND(&server_lock);
+
+		thread_target = num_threads;
 
 		//increased_threads = 1;
 	    if (!blas_server_avail){
@@ -579,6 +610,7 @@ void goto_set_num_threads(int num_threads)
 		}
 
 		for(i = (blas_num_threads > 0) ? blas_num_threads - 1 : 0; i < num_threads - 1; i++){
+			//printf("set_num_threads: creating thread [%d]\n", i);
 
 			blas_threads[i] = CreateThread(NULL, 0,
 				     blas_thread_server, (void *)i,
