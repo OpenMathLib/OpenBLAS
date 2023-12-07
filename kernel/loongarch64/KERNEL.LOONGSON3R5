@@ -52,6 +52,9 @@ DASUMKERNEL =  dasum_lasx.S
 SROTKERNEL  =  srot_lasx.S
 DROTKERNEL  =  drot_lasx.S
 
+SNRM2KERNEL =  snrm2_lasx.S
+DNRM2KERNEL =  dnrm2_lasx.S
+
 DGEMMKERNEL    = dgemm_kernel_16x4.S
 DGEMMINCOPY    = dgemm_ncopy_16.S
 DGEMMITCOPY    = dgemm_tcopy_16.S

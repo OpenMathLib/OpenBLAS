@@ -52,4 +52,7 @@ DASUMKERNEL =  dasum_lsx.S
 SROTKERNEL  =  srot_lsx.S
 DROTKERNEL  =  drot_lsx.S
 
+SNRM2KERNEL =  snrm2_lsx.S
+DNRM2KERNEL =  dnrm2_lsx.S
+
 endif
