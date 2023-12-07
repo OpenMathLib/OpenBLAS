@@ -31,4 +31,7 @@ IDAMAXKERNEL = idamax_lsx.S
 ISAMINKERNEL = isamin_lsx.S
 IDAMINKERNEL = idamin_lsx.S
 
+SCOPYKERNEL =  scopy_lsx.S
+DCOPYKERNEL =  dcopy_lsx.S
+
 endif

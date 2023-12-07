@@ -31,6 +31,9 @@ IDAMAXKERNEL = idamax_lasx.S
 ISAMINKERNEL = isamin_lasx.S
 IDAMINKERNEL = idamin_lasx.S
 
+SCOPYKERNEL =  scopy_lasx.S
+DCOPYKERNEL =  dcopy_lasx.S
+
 DGEMMKERNEL    = dgemm_kernel_16x4.S
 DGEMMINCOPY    = dgemm_ncopy_16.S
 DGEMMITCOPY    = dgemm_tcopy_16.S
