@@ -7,6 +7,9 @@ DDOTKERNEL  = dot_lasx.S
 SSCALKERNEL  = sscal_lasx.S
 DSCALKERNEL  = dscal_lasx.S
 
+SAMAXKERNEL =  samax_lasx.S
+DAMAXKERNEL =  damax_lasx.S
+
 DGEMMKERNEL    = dgemm_kernel_16x4.S
 DGEMMINCOPY    = dgemm_ncopy_16.S
 DGEMMITCOPY    = dgemm_tcopy_16.S

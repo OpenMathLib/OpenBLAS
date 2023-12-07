@@ -7,4 +7,7 @@ DDOTKERNEL  = dot_lsx.S
 SSCALKERNEL  = sscal_lsx.S
 DSCALKERNEL  = dscal_lsx.S
 
+SAMAXKERNEL =  samax_lsx.S
+DAMAXKERNEL =  damax_lsx.S
+
 endif
