@@ -37,4 +37,10 @@ DCOPYKERNEL =  dcopy_lsx.S
 SSWAPKERNEL =  sswap_lsx.S
 DSWAPKERNEL =  dswap_lsx.S
 
+SAXPYKERNEL =  saxpy_lsx.S
+DAXPYKERNEL =  daxpy_lsx.S
+
+SAXPBYKERNEL = saxpby_lsx.S
+DAXPBYKERNEL = daxpby_lsx.S
+
 endif
