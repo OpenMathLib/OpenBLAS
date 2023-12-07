@@ -43,6 +43,12 @@ DAXPYKERNEL =  daxpy_lasx.S
 SAXPBYKERNEL = saxpby_lasx.S
 DAXPBYKERNEL = daxpby_lasx.S
 
+SSUMKERNEL  =  ssum_lasx.S
+DSUMKERNEL  =  dsum_lasx.S
+
+SASUMKERNEL =  sasum_lasx.S
+DASUMKERNEL =  dasum_lasx.S
+
 DGEMMKERNEL    = dgemm_kernel_16x4.S
 DGEMMINCOPY    = dgemm_ncopy_16.S
 DGEMMITCOPY    = dgemm_tcopy_16.S

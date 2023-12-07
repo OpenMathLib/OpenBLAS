@@ -43,4 +43,10 @@ DAXPYKERNEL =  daxpy_lsx.S
 SAXPBYKERNEL = saxpby_lsx.S
 DAXPBYKERNEL = daxpby_lsx.S
 
+SSUMKERNEL  =  ssum_lsx.S
+DSUMKERNEL  =  dsum_lsx.S
+
+SASUMKERNEL =  sasum_lsx.S
+DASUMKERNEL =  dasum_lsx.S
+
 endif
