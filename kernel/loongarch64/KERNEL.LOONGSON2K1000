@@ -22,4 +22,7 @@ DMINKERNEL  =  dmin_lsx.S
 ISMAXKERNEL =  ismax_lsx.S
 IDMAXKERNEL =  idmax_lsx.S
 
+ISMINKERNEL =  ismin_lsx.S
+IDMINKERNEL =  idmin_lsx.S
+
 endif

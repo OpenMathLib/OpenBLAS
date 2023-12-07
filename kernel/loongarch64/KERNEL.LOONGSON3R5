@@ -22,6 +22,9 @@ DMINKERNEL =   dmin_lasx.S
 ISMAXKERNEL =  ismax_lasx.S
 IDMAXKERNEL =  idmax_lasx.S
 
+ISMINKERNEL =  ismin_lasx.S
+IDMINKERNEL =  idmin_lasx.S
+
 DGEMMKERNEL    = dgemm_kernel_16x4.S
 DGEMMINCOPY    = dgemm_ncopy_16.S
 DGEMMITCOPY    = dgemm_tcopy_16.S
