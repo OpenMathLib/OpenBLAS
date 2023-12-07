@@ -28,4 +28,7 @@ IDMINKERNEL =  idmin_lsx.S
 ISAMAXKERNEL = isamax_lsx.S
 IDAMAXKERNEL = idamax_lsx.S
 
+ISAMINKERNEL = isamin_lsx.S
+IDAMINKERNEL = idamin_lsx.S
+
 endif
