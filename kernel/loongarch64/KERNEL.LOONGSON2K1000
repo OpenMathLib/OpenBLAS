@@ -49,4 +49,7 @@ DSUMKERNEL  =  dsum_lsx.S
 SASUMKERNEL =  sasum_lsx.S
 DASUMKERNEL =  dasum_lsx.S
 
+SROTKERNEL  =  srot_lsx.S
+DROTKERNEL  =  drot_lsx.S
+
 endif
