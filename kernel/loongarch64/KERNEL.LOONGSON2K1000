@@ -34,4 +34,7 @@ IDAMINKERNEL = idamin_lsx.S
 SCOPYKERNEL =  scopy_lsx.S
 DCOPYKERNEL =  dcopy_lsx.S
 
+SSWAPKERNEL =  sswap_lsx.S
+DSWAPKERNEL =  dswap_lsx.S
+
 endif

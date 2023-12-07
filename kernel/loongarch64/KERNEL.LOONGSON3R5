@@ -34,6 +34,9 @@ IDAMINKERNEL = idamin_lasx.S
 SCOPYKERNEL =  scopy_lasx.S
 DCOPYKERNEL =  dcopy_lasx.S
 
+SSWAPKERNEL =  sswap_lasx.S
+DSWAPKERNEL =  dswap_lasx.S
+
 DGEMMKERNEL    = dgemm_kernel_16x4.S
 DGEMMINCOPY    = dgemm_ncopy_16.S
 DGEMMITCOPY    = dgemm_tcopy_16.S
