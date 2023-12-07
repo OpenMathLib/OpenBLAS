@@ -10,4 +10,7 @@ DSCALKERNEL  = dscal_lsx.S
 SAMAXKERNEL =  samax_lsx.S
 DAMAXKERNEL =  damax_lsx.S
 
+SAMINKERNEL =  samin_lsx.S
+DAMINKERNEL =  damin_lsx.S
+
 endif
