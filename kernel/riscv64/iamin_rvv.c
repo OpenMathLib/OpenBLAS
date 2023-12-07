@@ -46,9 +46,9 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define VFMINVV_FLOAT           __riscv_vfmin_vv_f64m8
 #define VFIRSTM                 __riscv_vfirst_m_b8
 #define UINT_V_T                vuint64m8_t
-#define VIDV_MASK_UINT          __riscv_vid_v_u64m8_m
+#define VIDV_MASK_UINT          __riscv_vid_v_u64m8_mu
 #define VIDV_UINT               __riscv_vid_v_u64m8
-#define VADDVX_MASK_UINT        __riscv_vadd_vx_u64m8_m
+#define VADDVX_MASK_UINT        __riscv_vadd_vx_u64m8_mu
 #define VADDVX_UINT             __riscv_vadd_vx_u64m8
 #define VMVVX_UINT              __riscv_vmv_v_x_u64m8
 #define VFMVFS_FLOAT_M1         __riscv_vfmv_f_s_f64m1_f64
@@ -72,9 +72,9 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define VFMINVV_FLOAT           __riscv_vfmin_vv_f32m8
 #define VFIRSTM                 __riscv_vfirst_m_b4
 #define UINT_V_T                vuint32m8_t
-#define VIDV_MASK_UINT          __riscv_vid_v_u32m8_m
+#define VIDV_MASK_UINT          __riscv_vid_v_u32m8_mu
 #define VIDV_UINT               __riscv_vid_v_u32m8
-#define VADDVX_MASK_UINT        __riscv_vadd_vx_u32m8_m
+#define VADDVX_MASK_UINT        __riscv_vadd_vx_u32m8_mu
 #define VADDVX_UINT             __riscv_vadd_vx_u32m8
 #define VMVVX_UINT              __riscv_vmv_v_x_u32m8
 #define VFMVFS_FLOAT_M1         __riscv_vfmv_f_s_f32m1_f32
@@ -107,8 +107,8 @@ BLASLONG CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x)
 
             // index where element less than v_min
             mask = VMFLTVV_FLOAT(vx, v_min, vl);
-            v_min_index = VIDV_MASK_UINT(mask, vl);
-            v_min_index = VADDVX_MASK_UINT(mask, v_min_index, j, vl);
+            v_min_index = VIDV_MASK_UINT(mask, v_min_index, vl);
+            v_min_index = VADDVX_MASK_UINT(mask, v_min_index, v_min_index, j, vl);
 
             //update v_min and start_index j
             v_min = VFMINVV_FLOAT(v_min, vx, vl);
@@ -126,8 +126,8 @@ BLASLONG CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x)
 
             // index where element less than v_min
             mask = VMFLTVV_FLOAT(vx, v_min, vl);
-            v_min_index = VIDV_MASK_UINT(mask, vl);
-            v_min_index = VADDVX_MASK_UINT(mask, v_min_index, j, vl);
+            v_min_index = VIDV_MASK_UINT(mask, v_min_index, vl);
+            v_min_index = VADDVX_MASK_UINT(mask, v_min_index, v_min_index, j, vl);
 
             //update v_min and start_index j
             v_min = VFMINVV_FLOAT(v_min, vx, vl);
