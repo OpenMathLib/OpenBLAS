@@ -16,6 +16,9 @@ DAMINKERNEL =  damin_lasx.S
 SMAXKERNEL  =  smax_lasx.S
 DMAXKERNEL =   dmax_lasx.S
 
+SMINKERNEL =   smin_lasx.S
+DMINKERNEL =   dmin_lasx.S
+
 DGEMMKERNEL    = dgemm_kernel_16x4.S
 DGEMMINCOPY    = dgemm_ncopy_16.S
 DGEMMITCOPY    = dgemm_tcopy_16.S

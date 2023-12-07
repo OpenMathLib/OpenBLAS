@@ -16,4 +16,7 @@ DAMINKERNEL =  damin_lsx.S
 SMAXKERNEL  =  smax_lsx.S
 DMAXKERNEL  =  dmax_lsx.S
 
+SMINKERNEL  =  smin_lsx.S
+DMINKERNEL  =  dmin_lsx.S
+
 endif
