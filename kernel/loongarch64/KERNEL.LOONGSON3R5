@@ -7,17 +7,17 @@ DDOTKERNEL  = dot_lasx.S
 SSCALKERNEL  = sscal_lasx.S
 DSCALKERNEL  = dscal_lasx.S
 
-SAMAXKERNEL =  samax_lasx.S
-DAMAXKERNEL =  damax_lasx.S
+SAMAXKERNEL =  amax_lasx.S
+DAMAXKERNEL =  amax_lasx.S
 
-SAMINKERNEL =  samin_lasx.S
-DAMINKERNEL =  damin_lasx.S
+SAMINKERNEL =  amin_lasx.S
+DAMINKERNEL =  amin_lasx.S
 
-SMAXKERNEL  =  smax_lasx.S
-DMAXKERNEL =   dmax_lasx.S
+SMAXKERNEL  =  max_lsx.S
+DMAXKERNEL =   max_lsx.S
 
-SMINKERNEL =   smin_lasx.S
-DMINKERNEL =   dmin_lasx.S
+SMINKERNEL =   min_lsx.S
+DMINKERNEL =   min_lsx.S
 
 ISMAXKERNEL =  ismax_lasx.S
 IDMAXKERNEL =  idmax_lasx.S

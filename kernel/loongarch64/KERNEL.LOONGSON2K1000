@@ -7,17 +7,17 @@ DDOTKERNEL  = dot_lsx.S
 SSCALKERNEL  = sscal_lsx.S
 DSCALKERNEL  = dscal_lsx.S
 
-SAMAXKERNEL =  samax_lsx.S
-DAMAXKERNEL =  damax_lsx.S
+SAMAXKERNEL =  amax_lsx.S
+DAMAXKERNEL =  amax_lsx.S
 
-SAMINKERNEL =  samin_lsx.S
-DAMINKERNEL =  damin_lsx.S
+SAMINKERNEL =  amin_lsx.S
+DAMINKERNEL =  amin_lsx.S
 
-SMAXKERNEL  =  smax_lsx.S
-DMAXKERNEL  =  dmax_lsx.S
+SMAXKERNEL  =  max_lsx.S
+DMAXKERNEL  =  max_lsx.S
 
-SMINKERNEL  =  smin_lsx.S
-DMINKERNEL  =  dmin_lsx.S
+SMINKERNEL  =  min_lsx.S
+DMINKERNEL  =  min_lsx.S
 
 ISMAXKERNEL =  ismax_lsx.S
 IDMAXKERNEL =  idmax_lsx.S

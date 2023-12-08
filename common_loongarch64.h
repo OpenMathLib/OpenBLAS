@@ -120,6 +120,10 @@ static inline int WhereAmI(void){
 #define CMOVT   fsel
 #define MTC     movgr2fr.d
 #define FABS    fabs.d
+#define FMIN    fmin.d
+#define FMINA   fmina.d
+#define FMAX    fmax.d
+#define FMAXA   fmaxa.d
 #define CMPEQ   fcmp.ceq.d
 #define CMPLE   fcmp.cle.d
 #define CMPLT   fcmp.clt.d
@@ -128,10 +132,18 @@ static inline int WhereAmI(void){
 #define XVFSUB  xvfsub.d
 #define XVFADD  xvfadd.d
 #define XVFMADD xvfmadd.d
+#define XVFMIN  xvfmin.d
+#define XVFMINA xvfmina.d
+#define XVFMAX  xvfmax.d
+#define XVFMAXA xvfmaxa.d
 
 #define VFSUB  vfsub.d
 #define VFADD  vfadd.d
 #define VFMADD vfmadd.d
+#define VFMIN  vfmin.d
+#define VFMINA vfmina.d
+#define VFMAX  vfmax.d
+#define VFMAXA vfmaxa.d
 
 #else
 
@@ -148,6 +160,10 @@ static inline int WhereAmI(void){
 #define CMOVT   fsel
 #define MTC     movgr2fr.w
 #define FABS    fabs.s
+#define FMIN    fmin.s
+#define FMINA   fmina.s
+#define FMAX    fmax.s
+#define FMAXA   fmaxa.s
 #define CMPEQ   fcmp.ceq.s
 #define CMPLE   fcmp.cle.s
 #define CMPLT   fcmp.clt.s
@@ -156,10 +172,18 @@ static inline int WhereAmI(void){
 #define XVFSUB  xvfsub.s
 #define XVFADD  xvfadd.s
 #define XVFMADD xvfmadd.s
+#define XVFMIN  xvfmin.s
+#define XVFMINA xvfmina.s
+#define XVFMAX  xvfmax.s
+#define XVFMAXA xvfmaxa.s
 
 #define VFSUB  vfsub.s
 #define VFADD  vfadd.s
 #define VFMADD vfmadd.s
+#define VFMIN  vfmin.s
+#define VFMINA vfmina.s
+#define VFMAX  vfmax.s
+#define VFMAXA vfmaxa.s
 
 #endif /* defined(DOUBLE) */
 
