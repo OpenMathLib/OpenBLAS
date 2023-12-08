@@ -36,10 +36,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define VLSEG_FLOAT             __riscv_vlseg2e32_v_f32m4
 #define VLSSEG_FLOAT            __riscv_vlsseg2e32_v_f32m4
 #define VFREDSUM_FLOAT          __riscv_vfredusum_vs_f32m4_f32m1
-#define VFMACCVV_FLOAT          __riscv_vfmacc_vv_f32m4
+#define VFMACCVV_FLOAT_TU       __riscv_vfmacc_vv_f32m4_tu
 #define VFMVVF_FLOAT            __riscv_vfmv_v_f_f32m4
 #define VFMVVF_FLOAT_M1         __riscv_vfmv_v_f_f32m1
-#define VFREDMAXVS_FLOAT        __riscv_vfredmax_vs_f32m4_f32m1
+#define VFREDMAXVS_FLOAT_TU     __riscv_vfredmax_vs_f32m4_f32m1_tu
 #define VFMVFS_FLOAT_M1         __riscv_vfmv_f_s_f32m1_f32
 #define VFABSV_FLOAT            __riscv_vfabs_v_f32m4
 #else
@@ -51,10 +51,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define VLSEG_FLOAT             __riscv_vlseg2e64_v_f64m4
 #define VLSSEG_FLOAT            __riscv_vlsseg2e64_v_f64m4
 #define VFREDSUM_FLOAT          __riscv_vfredusum_vs_f64m4_f64m1
-#define VFMACCVV_FLOAT          __riscv_vfmacc_vv_f64m4
+#define VFMACCVV_FLOAT_TU       __riscv_vfmacc_vv_f64m4_tu
 #define VFMVVF_FLOAT            __riscv_vfmv_v_f_f64m4
 #define VFMVVF_FLOAT_M1         __riscv_vfmv_v_f_f64m1
-#define VFREDMAXVS_FLOAT        __riscv_vfredmax_vs_f64m4_f64m1
+#define VFREDMAXVS_FLOAT_TU     __riscv_vfredmax_vs_f64m4_f64m1_tu
 #define VFMVFS_FLOAT_M1         __riscv_vfmv_f_s_f64m1_f64
 #define VFABSV_FLOAT            __riscv_vfabs_v_f64m4
 #endif
@@ -85,11 +85,11 @@ FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x)
             v0 = VFABSV_FLOAT(v0, vl);
             v1 = VFABSV_FLOAT(v1, vl);
 
-            v_max = VFREDMAXVS_FLOAT(v0, v_max, vl);
-            vr = VFMACCVV_FLOAT(vr, v0, v0, vl);
+            v_max = VFREDMAXVS_FLOAT_TU(v_max, v0, v_max, vl);
+            vr = VFMACCVV_FLOAT_TU(vr, v0, v0, vl);
 
-            v_max = VFREDMAXVS_FLOAT(v1, v_max, vl);
-            vr = VFMACCVV_FLOAT(vr, v1, v1, vl);
+            v_max = VFREDMAXVS_FLOAT_TU(v_max, v1, v_max, vl);
+            vr = VFMACCVV_FLOAT_TU(vr, v1, v1, vl);
         }
 
     } else {
@@ -103,11 +103,11 @@ FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x)
             v0 = VFABSV_FLOAT(v0, vl);
             v1 = VFABSV_FLOAT(v1, vl);
 
-            v_max = VFREDMAXVS_FLOAT(v0, v_max, vl);
-            vr = VFMACCVV_FLOAT(vr, v0, v0, vl);
+            v_max = VFREDMAXVS_FLOAT_TU(v_max, v0, v_max, vl);
+            vr = VFMACCVV_FLOAT_TU(vr, v0, v0, vl);
 
-            v_max = VFREDMAXVS_FLOAT(v1, v_max, vl);
-            vr = VFMACCVV_FLOAT(vr, v1, v1, vl);
+            v_max = VFREDMAXVS_FLOAT_TU(v_max, v1, v_max, vl);
+            vr = VFMACCVV_FLOAT_TU(vr, v1, v1, vl);
         }
 
     }

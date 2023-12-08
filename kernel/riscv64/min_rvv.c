@@ -39,7 +39,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define VFREDMINVS_FLOAT        __riscv_vfredmin_vs_f32m8_f32m1
 #define VFMVVF_FLOAT            __riscv_vfmv_v_f_f32m8
 #define VFMVVF_FLOAT_M1         __riscv_vfmv_v_f_f32m1
-#define VFMINVV_FLOAT           __riscv_vfmin_vv_f32m8
+#define VFMINVV_FLOAT_TU        __riscv_vfmin_vv_f32m8_tu
 #define VFMVFS_FLOAT_M1         __riscv_vfmv_f_s_f32m1_f32
 #else
 #define VSETVL(n)               __riscv_vsetvl_e64m8(n)
@@ -52,7 +52,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define VFREDMINVS_FLOAT        __riscv_vfredmin_vs_f64m8_f64m1
 #define VFMVVF_FLOAT            __riscv_vfmv_v_f_f64m8
 #define VFMVVF_FLOAT_M1         __riscv_vfmv_v_f_f64m1
-#define VFMINVV_FLOAT           __riscv_vfmin_vv_f64m8
+#define VFMINVV_FLOAT_TU        __riscv_vfmin_vv_f64m8_tu
 #define VFMVFS_FLOAT_M1         __riscv_vfmv_f_s_f64m1_f64
 #endif
 
@@ -75,7 +75,7 @@ FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x)
             vl = VSETVL(n);
 
             vx = VLEV_FLOAT(x, vl);
-            vmin = VFMINVV_FLOAT(vmin, vx, vl);
+            vmin = VFMINVV_FLOAT_TU(vmin, vmin, vx, vl);
         }
 
     } else {
@@ -86,7 +86,7 @@ FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x)
             vl = VSETVL(n);
 
             vx = VLSEV_FLOAT(x, stride_x, vl);
-            vmin = VFMINVV_FLOAT(vmin, vx, vl);
+            vmin = VFMINVV_FLOAT_TU(vmin, vmin, vx, vl);
         }
 
     }

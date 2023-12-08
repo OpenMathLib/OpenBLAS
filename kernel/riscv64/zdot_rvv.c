@@ -36,12 +36,12 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define VLSEG_FLOAT             __riscv_vlseg2e32_v_f32m4
 #define VLSSEG_FLOAT            __riscv_vlsseg2e32_v_f32m4
 #define VFREDSUM_FLOAT          __riscv_vfredusum_vs_f32m4_f32m1
-#define VFMACCVV_FLOAT          __riscv_vfmacc_vv_f32m4
+#define VFMACCVV_FLOAT_TU       __riscv_vfmacc_vv_f32m4_tu
 #define VFMVVF_FLOAT            __riscv_vfmv_v_f_f32m4
 #define VFMVVF_FLOAT_M1         __riscv_vfmv_v_f_f32m1
 #define VFMULVV_FLOAT           __riscv_vfmul_vv_f32m4
 #define VFMSACVV_FLOAT          __riscv_vfmsac_vv_f32m4
-#define VFNMSACVV_FLOAT         __riscv_vfnmsac_vv_f32m4
+#define VFNMSACVV_FLOAT_TU      __riscv_vfnmsac_vv_f32m4_tu
 #define VFMVFS_FLOAT_M1         __riscv_vfmv_f_s_f32m1_f32
 #else
 #define VSETVL(n)               __riscv_vsetvl_e64m4(n)
@@ -52,12 +52,12 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define VLSEG_FLOAT             __riscv_vlseg2e64_v_f64m4
 #define VLSSEG_FLOAT            __riscv_vlsseg2e64_v_f64m4
 #define VFREDSUM_FLOAT          __riscv_vfredusum_vs_f64m4_f64m1
-#define VFMACCVV_FLOAT          __riscv_vfmacc_vv_f64m4
+#define VFMACCVV_FLOAT_TU       __riscv_vfmacc_vv_f64m4_tu
 #define VFMVVF_FLOAT            __riscv_vfmv_v_f_f64m4
 #define VFMVVF_FLOAT_M1         __riscv_vfmv_v_f_f64m1
 #define VFMULVV_FLOAT           __riscv_vfmul_vv_f64m4
 #define VFMSACVV_FLOAT          __riscv_vfmsac_vv_f64m4
-#define VFNMSACVV_FLOAT         __riscv_vfnmsac_vv_f64m4
+#define VFNMSACVV_FLOAT_TU      __riscv_vfnmsac_vv_f64m4_tu
 #define VFMVFS_FLOAT_M1         __riscv_vfmv_f_s_f64m1_f64
 #endif
 
@@ -86,14 +86,14 @@ OPENBLAS_COMPLEX_FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLA
             VLSEG_FLOAT(&vx0, &vx1, x, vl);
             VLSEG_FLOAT(&vy0, &vy1, y, vl);
 
-            vr0 = VFMACCVV_FLOAT(vr0, vx0, vy0, vl);
-            vr1 = VFMACCVV_FLOAT(vr1, vx0, vy1, vl);
+            vr0 = VFMACCVV_FLOAT_TU(vr0, vx0, vy0, vl);
+            vr1 = VFMACCVV_FLOAT_TU(vr1, vx0, vy1, vl);
         #if !defined(CONJ)
-            vr0 = VFNMSACVV_FLOAT(vr0, vx1, vy1, vl);
-            vr1 = VFMACCVV_FLOAT(vr1, vx1, vy0, vl);
+            vr0 = VFNMSACVV_FLOAT_TU(vr0, vx1, vy1, vl);
+            vr1 = VFMACCVV_FLOAT_TU(vr1, vx1, vy0, vl);
         #else
-            vr0 = VFMACCVV_FLOAT(vr0, vx1, vy1, vl);
-            vr1 = VFNMSACVV_FLOAT(vr1, vx1, vy0, vl);
+            vr0 = VFMACCVV_FLOAT_TU(vr0, vx1, vy1, vl);
+            vr1 = VFNMSACVV_FLOAT_TU(vr1, vx1, vy0, vl);
         #endif
         }
 
@@ -107,14 +107,14 @@ OPENBLAS_COMPLEX_FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLA
             VLSEG_FLOAT(&vx0, &vx1, x, vl);
             VLSSEG_FLOAT(&vy0, &vy1, y, stride_y, vl);
 
-            vr0 = VFMACCVV_FLOAT(vr0, vx0, vy0, vl);
-            vr1 = VFMACCVV_FLOAT(vr1, vx0, vy1, vl);
+            vr0 = VFMACCVV_FLOAT_TU(vr0, vx0, vy0, vl);
+            vr1 = VFMACCVV_FLOAT_TU(vr1, vx0, vy1, vl);
         #if !defined(CONJ)
-            vr0 = VFNMSACVV_FLOAT(vr0, vx1, vy1, vl);
-            vr1 = VFMACCVV_FLOAT(vr1, vx1, vy0, vl);
+            vr0 = VFNMSACVV_FLOAT_TU(vr0, vx1, vy1, vl);
+            vr1 = VFMACCVV_FLOAT_TU(vr1, vx1, vy0, vl);
         #else
-            vr0 = VFMACCVV_FLOAT(vr0, vx1, vy1, vl);
-            vr1 = VFNMSACVV_FLOAT(vr1, vx1, vy0, vl);
+            vr0 = VFMACCVV_FLOAT_TU(vr0, vx1, vy1, vl);
+            vr1 = VFNMSACVV_FLOAT_TU(vr1, vx1, vy0, vl);
         #endif
         }
     } else if (inc_y == 1){
@@ -127,14 +127,14 @@ OPENBLAS_COMPLEX_FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLA
             VLSSEG_FLOAT(&vx0, &vx1, x, stride_x, vl);
             VLSEG_FLOAT(&vy0, &vy1, y, vl);
 
-            vr0 = VFMACCVV_FLOAT(vr0, vx0, vy0, vl);
-            vr1 = VFMACCVV_FLOAT(vr1, vx0, vy1, vl);
+            vr0 = VFMACCVV_FLOAT_TU(vr0, vx0, vy0, vl);
+            vr1 = VFMACCVV_FLOAT_TU(vr1, vx0, vy1, vl);
         #if !defined(CONJ)
-            vr0 = VFNMSACVV_FLOAT(vr0, vx1, vy1, vl);
-            vr1 = VFMACCVV_FLOAT(vr1, vx1, vy0, vl);
+            vr0 = VFNMSACVV_FLOAT_TU(vr0, vx1, vy1, vl);
+            vr1 = VFMACCVV_FLOAT_TU(vr1, vx1, vy0, vl);
         #else
-            vr0 = VFMACCVV_FLOAT(vr0, vx1, vy1, vl);
-            vr1 = VFNMSACVV_FLOAT(vr1, vx1, vy0, vl);
+            vr0 = VFMACCVV_FLOAT_TU(vr0, vx1, vy1, vl);
+            vr1 = VFNMSACVV_FLOAT_TU(vr1, vx1, vy0, vl);
         #endif
         }
     }else {
@@ -148,14 +148,14 @@ OPENBLAS_COMPLEX_FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLA
             VLSSEG_FLOAT(&vx0, &vx1, x, stride_x, vl);
             VLSSEG_FLOAT(&vy0, &vy1, y, stride_y, vl);
 
-            vr0 = VFMACCVV_FLOAT(vr0, vx0, vy0, vl);
-            vr1 = VFMACCVV_FLOAT(vr1, vx0, vy1, vl);
+            vr0 = VFMACCVV_FLOAT_TU(vr0, vx0, vy0, vl);
+            vr1 = VFMACCVV_FLOAT_TU(vr1, vx0, vy1, vl);
         #if !defined(CONJ)
-            vr0 = VFNMSACVV_FLOAT(vr0, vx1, vy1, vl);
-            vr1 = VFMACCVV_FLOAT(vr1, vx1, vy0, vl);
+            vr0 = VFNMSACVV_FLOAT_TU(vr0, vx1, vy1, vl);
+            vr1 = VFMACCVV_FLOAT_TU(vr1, vx1, vy0, vl);
         #else
-            vr0 = VFMACCVV_FLOAT(vr0, vx1, vy1, vl);
-            vr1 = VFNMSACVV_FLOAT(vr1, vx1, vy0, vl);
+            vr0 = VFMACCVV_FLOAT_TU(vr0, vx1, vy1, vl);
+            vr1 = VFNMSACVV_FLOAT_TU(vr1, vx1, vy0, vl);
         #endif
         }
     }
