@@ -216,3 +216,6 @@ In chronological order:
   
 * Pablo Romero <https://github.com/pablorcum>
   * [2022-08] Fix building from sources for QNX
+
+* Mark Seminatore <https://github.com/mseminatore>
+  * [2023-11-09] Improve Windows threading performance scaling
