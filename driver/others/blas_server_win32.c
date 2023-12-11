@@ -48,6 +48,12 @@
 #endif
 #endif
 
+#ifdef SMP_DEBUG
+#   define MT_TRACE(...) fprintf(stderr, __VA_ARGS__)
+#else
+#   define MT_TRACE(...)
+#endif
+
 /* This is a thread implementation for Win32 lazy implementation */
 
 /* Thread server common information */
@@ -213,29 +219,24 @@ static DWORD WINAPI blas_thread_server(void *arg){
   /* Each server needs each buffer */
   buffer   = blas_memory_alloc(2);
 
-#ifdef SMP_DEBUG
-  fprintf(STDERR, "Server[%2ld] Thread is started!\n", cpu);
-#endif
+  MT_TRACE("Server[%2ld] Thread is started!\n", cpu);
 
   while (1){
 
     /* Waiting for Queue */
 
-#ifdef SMP_DEBUG
-    fprintf(STDERR, "Server[%2ld] Waiting for Queue.\n", cpu);
-#endif
+    MT_TRACE("Server[%2ld] Waiting for Queue.\n", cpu);
+
 	// event raised when work is added to the queue
 	WaitForSingleObject(kickoff_event, INFINITE);
 
 	if (cpu > thread_target - 2)
 	{
-		//printf("thread [%d] exiting.\n", cpu);
+		//MT_TRACE("thread [%d] exiting.\n", cpu);
 		break;	// excess thread, so worker thread exits
 	}
 
-#ifdef SMP_DEBUG
-    fprintf(STDERR, "Server[%2ld] Got it.\n", cpu);
-#endif
+    MT_TRACE("Server[%2ld] Got it.\n", cpu);
 
 #if 1
     EnterCriticalSection(&queue_lock);
@@ -270,10 +271,8 @@ static DWORD WINAPI blas_thread_server(void *arg){
       __asm__ __volatile__ ("fldcw %0"   : : "m" (queue -> x87_mode));
 #endif
 
-#ifdef SMP_DEBUG
-      fprintf(STDERR, "Server[%2ld] Started.  Mode = 0x%03x M = %3ld N=%3ld K=%3ld\n",
+      MT_TRACE("Server[%2ld] Started.  Mode = 0x%03x M = %3ld N=%3ld K=%3ld\n",
 	      cpu, queue->mode, queue-> args ->m, queue->args->n, queue->args->k);
-#endif
 
       // fprintf(stderr, "queue start[%ld]!!!\n", cpu);
 
@@ -342,19 +341,14 @@ static DWORD WINAPI blas_thread_server(void *arg){
 		continue; //if queue == NULL
 	}
 
-#ifdef SMP_DEBUG
-    fprintf(STDERR, "Server[%2ld] Finished!\n", cpu);
-#endif
+    MT_TRACE("Server[%2ld] Finished!\n", cpu);
 	
 	queue->finished = 1;
-
   }
 
   /* Shutdown procedure */
 
-#ifdef SMP_DEBUG
-  fprintf(STDERR, "Server[%2ld] Shutdown!\n",  cpu);
-#endif
+  MT_TRACE("Server[%2ld] Shutdown!\n",  cpu);
 
   blas_memory_free(buffer);
 
@@ -369,10 +363,7 @@ int blas_thread_init(void){
 
   LOCK_COMMAND(&server_lock);
 
-#ifdef SMP_DEBUG
-  fprintf(STDERR, "Initializing Thread(Num. threads = %d)\n",
-	  blas_cpu_number);
-#endif
+  MT_TRACE("Initializing Thread(Num. threads = %d)\n", blas_cpu_number);
 
   if (!blas_server_avail){
 	// create the kickoff Event
@@ -383,7 +374,7 @@ int blas_thread_init(void){
     InitializeCriticalSection(&queue_lock);
 
     for(i = 0; i < blas_cpu_number - 1; i++){
-	  //printf("thread_init: creating thread [%d]\n", i);
+	  //MT_TRACE("thread_init: creating thread [%d]\n", i);
 
       blas_threads[i] = CreateThread(NULL, 0,
 				     blas_thread_server, (void *)i,
@@ -458,14 +449,10 @@ int exec_blas_async(BLASLONG pos, blas_queue_t *queue){
 
 int exec_blas_async_wait(BLASLONG num, blas_queue_t *queue){
 
-#ifdef SMP_DEBUG
-    fprintf(STDERR, "Synchronization Waiting.\n");
-#endif
+    MT_TRACE("Synchronization Waiting.\n");
 
     while (num){
-#ifdef SMP_DEBUG
-    fprintf(STDERR, "Waiting Queue ..\n");
-#endif
+      MT_TRACE("Waiting Queue ..\n");
 	  while (!queue->finished)
 		  YIELDING;
 
@@ -473,9 +460,8 @@ int exec_blas_async_wait(BLASLONG num, blas_queue_t *queue){
       num--;
     }
 
-#ifdef SMP_DEBUG
-    fprintf(STDERR, "Completely Done.\n\n");
-#endif
+    MT_TRACE("Completely Done.\n\n");
+
 	// if work was added to the queue after this batch we can't sleep the worker threads
 	// by resetting the event
 	EnterCriticalSection(&queue_lock);
@@ -577,11 +563,11 @@ void goto_set_num_threads(int num_threads)
 		SetEvent(kickoff_event);
 
 		for (i = num_threads - 1; i < blas_num_threads - 1; i++) {
-			//printf("set_num_threads: waiting on thread [%d] to quit.\n", i);
+			//MT_TRACE("set_num_threads: waiting on thread [%d] to quit.\n", i);
 
 			WaitForSingleObject(blas_threads[i], INFINITE);
 
-			//printf("set_num_threads: thread [%d] has quit.\n", i);
+			//MT_TRACE("set_num_threads: thread [%d] has quit.\n", i);
 
 			CloseHandle(blas_threads[i]);
 		}
@@ -610,7 +596,7 @@ void goto_set_num_threads(int num_threads)
 		}
 
 		for(i = (blas_num_threads > 0) ? blas_num_threads - 1 : 0; i < num_threads - 1; i++){
-			//printf("set_num_threads: creating thread [%d]\n", i);
+			//MT_TRACE("set_num_threads: creating thread [%d]\n", i);
 
 			blas_threads[i] = CreateThread(NULL, 0,
 				     blas_thread_server, (void *)i,
