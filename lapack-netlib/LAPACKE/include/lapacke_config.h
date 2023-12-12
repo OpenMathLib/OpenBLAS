@@ -68,6 +68,17 @@ extern "C" {
 #endif
 
 #ifndef LAPACK_COMPLEX_CUSTOM
+#if defined(_MSC_VER)
+    #define _CRT_USE_C_COMPLEX_H
+    #include <complex.h>
+    #define LAPACK_COMPLEX_CUSTOM
+    #define lapack_complex_float _Fcomplex
+    #define lapack_complex_double _Dcomplex
+    #define lapack_complex_float_real(z)       (creal(z))
+    #define lapack_complex_float_imag(z)       (cimag(z))
+    #define lapack_complex_double_real(z)       (creal(z))
+    #define lapack_complex_double_imag(z)       (cimag(z))
+#else
 
 #if defined(LAPACK_COMPLEX_STRUCTURE)
 
@@ -109,6 +120,7 @@ typedef struct { double real, imag; } _lapack_complex_double;
 #define lapack_complex_double_real(z)       (creal(z))
 #define lapack_complex_double_imag(z)       (cimag(z))
 
+#endif
 #endif
 
 lapack_complex_float lapack_make_complex_float( float re, float im );
