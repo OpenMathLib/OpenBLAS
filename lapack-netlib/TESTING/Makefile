@@ -61,6 +61,8 @@ SEIGTST= snep.out \
          scsd.out \
          slse.out
 
+SDMDEIGTST= sdmd.out
+
 CEIGTST= cnep.out \
          csep.out \
          cse2.out \
@@ -81,6 +83,8 @@ CEIGTST= cnep.out \
          cgsv.out \
          ccsd.out \
          clse.out
+
+CDMDEIGTST= cdmd.out
 
 DEIGTST= dnep.out \
          dsep.out \
@@ -103,6 +107,8 @@ DEIGTST= dnep.out \
          dcsd.out \
          dlse.out
 
+DDMDEIGTST= ddmd.out
+
 ZEIGTST= znep.out \
          zsep.out \
          zse2.out \
@@ -124,6 +130,7 @@ ZEIGTST= znep.out \
          zcsd.out \
          zlse.out
 
+ZDMDEIGTST= zdmd.out
 
 SLINTST= stest.out
 
@@ -142,10 +149,10 @@ ZLINTST= ztest.out
 ZLINTSTPROTO= zctest.out ztest_rfp.out
 
 .PHONY: single complex double complex16
-single:         $(SLINTST) $(SEIGTST)
-complex:        $(CLINTST) $(CEIGTST)
-double:         $(DLINTST) $(DEIGTST)
-complex16:      $(ZLINTST) $(ZEIGTST)
+single:         $(SLINTST) $(SEIGTST) $(SDMDEIGTST)
+complex:        $(CLINTST) $(CEIGTST) $(CDMDEIGTST)
+double:         $(DLINTST) $(DEIGTST) $(DDMDEIGTST)
+complex16:      $(ZLINTST) $(ZEIGTST) $(ZDMDEIGTST)
 
 .PHONY: singleproto complexproto doubleproto complex16proto
 singleproto:    $(SLINTSTPROTO)
@@ -297,6 +304,10 @@ scsd.out: csd.in EIG/xeigtsts
 slse.out: lse.in EIG/xeigtsts
 	@echo LSE: Testing Constrained Linear Least Squares routines
 	./EIG/xeigtsts < lse.in > $@ 2>&1
+
+sdmd.out: sdmd.in EIG/xdmdeigtsts
+	@echo DMD: Testing Dynamic Mode Decomposition routines
+	./EIG/xdmdeigtsts < sdmd.in > $@ 2>&1
 #
 # ======== COMPLEX EIG TESTS ===========================
 
@@ -379,6 +390,10 @@ ccsd.out: csd.in EIG/xeigtstc
 clse.out: lse.in EIG/xeigtstc
 	@echo LSE: Testing Constrained Linear Least Squares routines
 	./EIG/xeigtstc < lse.in > $@ 2>&1
+
+cdmd.out: cdmd.in EIG/xdmdeigtstc
+	@echo DMD: Testing Dynamic Mode Decomposition routines
+	./EIG/xdmdeigtstc < cdmd.in > $@ 2>&1
 #
 # ======== DOUBLE EIG TESTS ===========================
 
@@ -461,6 +476,10 @@ dcsd.out: csd.in EIG/xeigtstd
 dlse.out: lse.in EIG/xeigtstd
 	@echo LSE: Testing Constrained Linear Least Squares routines
 	./EIG/xeigtstd < lse.in > $@ 2>&1
+
+ddmd.out: ddmd.in EIG/xdmdeigtstd
+	@echo DMD: Testing Dynamic Mode Decomposition routines
+	./EIG/xdmdeigtstd < ddmd.in > $@ 2>&1
 #
 # ======== COMPLEX16 EIG TESTS ===========================
 
@@ -543,6 +562,10 @@ zcsd.out: csd.in EIG/xeigtstz
 zlse.out: lse.in EIG/xeigtstz
 	@echo LSE: Testing Constrained Linear Least Squares routines
 	./EIG/xeigtstz < lse.in > $@ 2>&1
+
+zdmd.out: zdmd.in EIG/xdmdeigtstz
+	@echo DMD: Testing Dynamic Mode Decomposition routines
+	./EIG/xdmdeigtstz < zdmd.in > $@ 2>&1
 # ==============================================================================
 
 LIN/xlintsts: $(FRCLIN) $(FRC)
@@ -578,14 +601,26 @@ LIN/xlintstzc: $(FRCLIN) $(FRC)
 EIG/xeigtsts: $(FRCEIG) $(FRC)
 	$(MAKE) -C EIG xeigtsts
 
+EIG/xdmdeigtsts: $(FRCEIG) $(FRC)
+	$(MAKE) -C EIG xdmdeigtsts
+
 EIG/xeigtstc: $(FRCEIG) $(FRC)
 	$(MAKE) -C EIG xeigtstc
+
+EIG/xdmdeigtstc: $(FRCEIG) $(FRC)
+	$(MAKE) -C EIG xdmdeigtstc
 
 EIG/xeigtstd: $(FRCEIG) $(FRC)
 	$(MAKE) -C EIG xeigtstd
 
+EIG/xdmdeigtstd: $(FRCEIG) $(FRC)
+	$(MAKE) -C EIG xdmdeigtstd
+
 EIG/xeigtstz: $(FRCEIG) $(FRC)
 	$(MAKE) -C EIG xeigtstz
+
+EIG/xdmdeigtstz: $(FRCEIG) $(FRC)
+	$(MAKE) -C EIG xdmdeigtstz
 
 .PHONY: clean cleantest
 clean: cleantest

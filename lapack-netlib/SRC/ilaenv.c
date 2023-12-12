@@ -191,7 +191,7 @@ typedef struct Namelist Namelist;
 #define c_cos(R,Z) { pCf(R)=ccos(Cf(Z)); }
 #ifdef _MSC_VER
 #define c_div(c, a, b) {Cf(c)._Val[0] = (Cf(a)._Val[0]/Cf(b)._Val[0]); Cf(c)._Val[1]=(Cf(a)._Val[1]/Cf(b)._Val[1]);}
-#define z_div(c, a, b) {Cd(c)._Val[0] = (Cd(a)._Val[0]/Cd(b)._Val[0]); Cd(c)._Val[1]=(Cd(a)._Val[1]/df(b)._Val[1]);}
+#define z_div(c, a, b) {Cd(c)._Val[0] = (Cd(a)._Val[0]/Cd(b)._Val[0]); Cd(c)._Val[1]=(Cd(a)._Val[1]/Cd(b)._Val[1]);}
 #else
 #define c_div(c, a, b) {pCf(c) = Cf(a)/Cf(b);}
 #define z_div(c, a, b) {pCd(c) = Cd(a)/Cd(b);}
@@ -252,11 +252,11 @@ static char junk[] = "\n@(#)LIBF77 VERSION 19990503\n";
 #define z_exp(R, Z) {pCd(R) = cexp(Cd(Z));}
 #define z_sqrt(R, Z) {pCd(R) = csqrt(Cd(Z));}
 #define myexit_() break;
-#define mycycle() continue;
-#define myceiling(w) {ceil(w)}
-#define myhuge(w) {HUGE_VAL}
+#define mycycle_() continue;
+#define myceiling_(w) {ceil(w)}
+#define myhuge_(w) {HUGE_VAL}
 //#define mymaxloc_(w,s,e,n) {if (sizeof(*(w)) == sizeof(double)) dmaxloc_((w),*(s),*(e),n); else dmaxloc_((w),*(s),*(e),n);}
-#define mymaxloc(w,s,e,n) {dmaxloc_(w,*(s),*(e),n)}
+#define mymaxloc_(w,s,e,n) dmaxloc_(w,*(s),*(e),n)
 
 /* procedure parameter types for -A and -C++ */
 
@@ -509,12 +509,18 @@ static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integ
 
 
 
+/*  -- translated by f2c (version 20000121).
+   You must link the resulting object file with the libraries:
+	-lf2c -lm   (in that order)
+*/
+
+
 
 /* Table of constant values */
 
 static integer c__1 = 1;
-static real c_b174 = 0.f;
-static real c_b175 = 1.f;
+static real c_b179 = 0.f;
+static real c_b180 = 1.f;
 static integer c__0 = 0;
 
 /* > \brief \b ILAENV */
@@ -599,9 +605,9 @@ f"> */
 /* >          = 9: maximum size of the subproblems at the bottom of the */
 /* >               computation tree in the divide-and-conquer algorithm */
 /* >               (used by xGELSD and xGESDD) */
-/* >          =10: ieee NaN arithmetic can be trusted not to trap */
+/* >          =10: ieee infinity and NaN arithmetic can be trusted not to trap */
 /* >          =11: infinity arithmetic can be trusted not to trap */
-/* >          12 <= ISPEC <= 16: */
+/* >          12 <= ISPEC <= 17: */
 /* >               xHSEQR or related subroutines, */
 /* >               see IPARMQ for detailed explanation */
 /* > \endverbatim */
@@ -652,9 +658,7 @@ f"> */
 /* > \author Univ. of Colorado Denver */
 /* > \author NAG Ltd. */
 
-/* > \date November 2019 */
-
-/* > \ingroup OTHERauxiliary */
+/* > \ingroup ilaenv */
 
 /* > \par Further Details: */
 /*  ===================== */
@@ -685,7 +689,7 @@ integer ilaenv_(integer *ispec, char *name__, char *opts, integer *n1,
 	opts_len)
 {
     /* System generated locals */
-    integer ret_val;
+    integer ret_val, i__1, i__2, i__3;
 
     /* Local variables */
     logical twostage;
@@ -702,10 +706,9 @@ integer ilaenv_(integer *ispec, char *name__, char *opts, integer *n1,
 	    integer *, integer *);
 
 
-/*  -- LAPACK auxiliary routine (version 3.9.0) -- */
+/*  -- LAPACK auxiliary routine -- */
 /*  -- LAPACK is a software package provided by Univ. of Tennessee,    -- */
 /*  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..-- */
-/*     November 2019 */
 
 
 /*  ===================================================================== */
@@ -728,6 +731,7 @@ integer ilaenv_(integer *ispec, char *name__, char *opts, integer *n1,
 	case 14:  goto L160;
 	case 15:  goto L160;
 	case 16:  goto L160;
+	case 17:  goto L160;
     }
 
 /*     Invalid value for ISPEC */
@@ -908,6 +912,12 @@ L50:
 	    } else {
 		nb = 64;
 	    }
+	} else if (s_cmp(subnam + 3, "QP3RK", (ftnlen)4, (ftnlen)5) == 0) {
+	    if (sname) {
+		nb = 32;
+	    } else {
+		nb = 32;
+	    }
 	}
     } else if (s_cmp(c2, "PO", (ftnlen)2, (ftnlen)2) == 0) {
 	if (s_cmp(c3, "TRF", (ftnlen)3, (ftnlen)3) == 0) {
@@ -1034,6 +1044,21 @@ L50:
 	    } else {
 		nb = 64;
 	    }
+	} else if (s_cmp(c3, "SYL", (ftnlen)3, (ftnlen)3) == 0) {
+/*           The upper bound is to prevent overly aggressive scaling. */
+	    if (sname) {
+/* Computing MIN */
+/* Computing MAX */
+		i__2 = 48, i__3 = (f2cmin(*n1,*n2) << 4) / 100;
+		i__1 = f2cmax(i__2,i__3);
+		nb = f2cmin(i__1,240);
+	    } else {
+/* Computing MIN */
+/* Computing MAX */
+		i__2 = 24, i__3 = (f2cmin(*n1,*n2) << 3) / 100;
+		i__1 = f2cmax(i__2,i__3);
+		nb = f2cmin(i__1,80);
+	    }
 	}
     } else if (s_cmp(c2, "LA", (ftnlen)2, (ftnlen)2) == 0) {
 	if (s_cmp(c3, "UUM", (ftnlen)3, (ftnlen)3) == 0) {
@@ -1041,6 +1066,12 @@ L50:
 		nb = 64;
 	    } else {
 		nb = 64;
+	    }
+	} else if (s_cmp(c3, "TRS", (ftnlen)3, (ftnlen)3) == 0) {
+	    if (sname) {
+		nb = 32;
+	    } else {
+		nb = 32;
 	    }
 	}
     } else if (sname && s_cmp(c2, "ST", (ftnlen)2, (ftnlen)2) == 0) {
@@ -1088,6 +1119,12 @@ L60:
 		nbmin = 2;
 	    }
 	} else if (s_cmp(c3, "TRI", (ftnlen)3, (ftnlen)3) == 0) {
+	    if (sname) {
+		nbmin = 2;
+	    } else {
+		nbmin = 2;
+	    }
+	} else if (s_cmp(subnam + 3, "QP3RK", (ftnlen)4, (ftnlen)5) == 0) {
 	    if (sname) {
 		nbmin = 2;
 	    } else {
@@ -1184,6 +1221,12 @@ L70:
 	    } else {
 		nx = 128;
 	    }
+	} else if (s_cmp(subnam + 3, "QP3RK", (ftnlen)4, (ftnlen)5) == 0) {
+	    if (sname) {
+		nx = 128;
+	    } else {
+		nx = 128;
+	    }
 	}
     } else if (s_cmp(c2, "SY", (ftnlen)2, (ftnlen)2) == 0) {
 	if (sname && s_cmp(c3, "TRD", (ftnlen)3, (ftnlen)3) == 0) {
@@ -1270,29 +1313,29 @@ L130:
 
 L140:
 
-/*     ISPEC = 10: ieee NaN arithmetic can be trusted not to trap */
+/*     ISPEC = 10: ieee and infinity NaN arithmetic can be trusted not to trap */
 
 /*     ILAENV = 0 */
     ret_val = 1;
     if (ret_val == 1) {
-	ret_val = ieeeck_(&c__1, &c_b174, &c_b175);
+	ret_val = ieeeck_(&c__1, &c_b179, &c_b180);
     }
     return ret_val;
 
 L150:
 
-/*     ISPEC = 11: infinity arithmetic can be trusted not to trap */
+/*     ISPEC = 11: ieee infinity arithmetic can be trusted not to trap */
 
 /*     ILAENV = 0 */
     ret_val = 1;
     if (ret_val == 1) {
-	ret_val = ieeeck_(&c__0, &c_b174, &c_b175);
+	ret_val = ieeeck_(&c__0, &c_b179, &c_b180);
     }
     return ret_val;
 
 L160:
 
-/*     12 <= ISPEC <= 16: xHSEQR or related subroutines. */
+/*     12 <= ISPEC <= 17: xHSEQR or related subroutines. */
 
     ret_val = iparmq_(ispec, name__, opts, n1, n2, n3, n4)
 	    ;

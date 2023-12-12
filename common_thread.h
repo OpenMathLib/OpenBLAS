@@ -111,8 +111,9 @@ typedef struct blas_queue {
   struct blas_queue *next;
 
 #if defined( __WIN32__) || defined(__CYGWIN32__) || defined(_WIN32) || defined(__CYGWIN__)
-  CRITICAL_SECTION lock;
-  HANDLE finish;
+  // CRITICAL_SECTION lock;
+  // HANDLE finish;
+  volatile int finished;
 #else
   pthread_mutex_t	 lock;
   pthread_cond_t	 finished;

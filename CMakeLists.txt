@@ -249,21 +249,22 @@ if (${CMAKE_SYSTEM_NAME} MATCHES "AIX|Android|Linux|FreeBSD|OpenBSD|NetBSD|Drago
   endif()
 endif()
 
-if (APPLE AND DYNAMIC_ARCH AND BUILD_SHARED_LIBS)
+# Seems that this hack doesn't required since macOS 11 Big Sur
+if (APPLE AND BUILD_SHARED_LIBS AND CMAKE_HOST_SYSTEM_VERSION VERSION_LESS 20)
   set (CMAKE_C_USE_RESPONSE_FILE_FOR_OBJECTS 1)
   if (NOT NOFORTRAN)
   set (CMAKE_Fortran_USE_RESPONSE_FILE_FOR_OBJECTS 1)
   set (CMAKE_Fortran_CREATE_SHARED_LIBRARY
- "sh -c 'cat ${CMAKE_BINARY_DIR}/CMakeFiles/openblas_shared.dir/objects*.rsp | xargs -n 1024 ar -ru libopenblas.a && exit 0' "
- "sh -c 'ar -ru libopenblas.a ${CMAKE_BINARY_DIR}/driver/others/CMakeFiles/driver_others.dir/xerbla.c.o && exit 0' "
+ "sh -c 'cat ${CMAKE_BINARY_DIR}/CMakeFiles/openblas_shared.dir/objects*.rsp | xargs -n 1024 ${CMAKE_AR} -ru libopenblas.a && exit 0' "
+ "sh -c '${CMAKE_AR} -ru libopenblas.a ${CMAKE_BINARY_DIR}/driver/others/CMakeFiles/driver_others.dir/xerbla.c.o && exit 0' "
  "sh -c 'echo \"\" | ${CMAKE_Fortran_COMPILER} -o dummy.o -c -x f95-cpp-input - '"
- "sh -c '${CMAKE_Fortran_COMPILER} -fpic -shared -Wl,-all_load -Wl,-force_load,libopenblas.a -Wl,-noall_load dummy.o -o ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/libopenblas.${OpenBLAS_MAJOR_VERSION}.${OpenBLAS_MINOR_VERSION}.dylib'"
+ "sh -c '${CMAKE_Fortran_COMPILER} -fpic -shared -Wl,-all_load -Wl,-force_load,libopenblas.a -Wl,-noall_load dummy.o -undefined dynamic_lookup -o ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/libopenblas.${OpenBLAS_MAJOR_VERSION}.${OpenBLAS_MINOR_VERSION}.dylib'"
  "sh -c 'ls -l ${CMAKE_BINARY_DIR}/lib'")
   else ()
   set (CMAKE_C_CREATE_SHARED_LIBRARY
-   "sh -c 'cat ${CMAKE_BINARY_DIR}/CMakeFiles/openblas_shared.dir/objects*.rsp | xargs -n 1024 ar -ru libopenblas.a && exit 0' "
-   "sh -c 'ar -ru libopenblas.a ${CMAKE_BINARY_DIR}/driver/others/CMakeFiles/driver_others.dir/xerbla.c.o && exit 0' "
-   "sh -c '${CMAKE_C_COMPILER} -fpic -shared -Wl,-all_load -Wl,-force_load,libopenblas.a -Wl,-noall_load -o ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/libopenblas.${OpenBLAS_MAJOR_VERSION}.${OpenBLAS_MINOR_VERSION}.dylib'")
+   "sh -c 'cat ${CMAKE_BINARY_DIR}/CMakeFiles/openblas_shared.dir/objects*.rsp | xargs -n 1024 ${CMAKE_AR} -ru libopenblas.a && exit 0' "
+   "sh -c '${CMAKE_AR} -ru libopenblas.a ${CMAKE_BINARY_DIR}/driver/others/CMakeFiles/driver_others.dir/xerbla.c.o && exit 0' "
+   "sh -c '${CMAKE_C_COMPILER} -fpic -shared -Wl,-all_load -Wl,-force_load,libopenblas.a -Wl,-noall_load -undefined dynamic_lookup -o ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/libopenblas.${OpenBLAS_MAJOR_VERSION}.${OpenBLAS_MINOR_VERSION}.dylib'")
   endif ()
 endif()
 
@@ -541,7 +542,7 @@ if(NOT NO_LAPACKE)
   ADD_CUSTOM_TARGET(genlapacke
   COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/lapack-netlib/LAPACKE/include/lapacke_mangling_with_flags.h.in "${CMAKE_BINARY_DIR}/lapacke_mangling.h"
   )
-  install (FILES ${CMAKE_BINARY_DIR}/lapacke_mangling.h DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/openblas${SUFFIX64})
+  install (FILES ${CMAKE_BINARY_DIR}/lapacke_mangling.h DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 endif()
 
 # Install pkg-config files

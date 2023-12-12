@@ -1,4 +1,60 @@
 ifndef NO_LASX
+
+SDOTKERNEL  = dot_lasx.S
+DSDOTKERNEL = dot_lasx.S
+DDOTKERNEL  = dot_lasx.S
+
+SSCALKERNEL  = sscal_lasx.S
+DSCALKERNEL  = dscal_lasx.S
+
+SAMAXKERNEL =  samax_lasx.S
+DAMAXKERNEL =  damax_lasx.S
+
+SAMINKERNEL =  samin_lasx.S
+DAMINKERNEL =  damin_lasx.S
+
+SMAXKERNEL  =  smax_lasx.S
+DMAXKERNEL =   dmax_lasx.S
+
+SMINKERNEL =   smin_lasx.S
+DMINKERNEL =   dmin_lasx.S
+
+ISMAXKERNEL =  ismax_lasx.S
+IDMAXKERNEL =  idmax_lasx.S
+
+ISMINKERNEL =  ismin_lasx.S
+IDMINKERNEL =  idmin_lasx.S
+
+ISAMAXKERNEL = isamax_lasx.S
+IDAMAXKERNEL = idamax_lasx.S
+
+ISAMINKERNEL = isamin_lasx.S
+IDAMINKERNEL = idamin_lasx.S
+
+SCOPYKERNEL =  scopy_lasx.S
+DCOPYKERNEL =  dcopy_lasx.S
+
+SSWAPKERNEL =  sswap_lasx.S
+DSWAPKERNEL =  dswap_lasx.S
+
+SAXPYKERNEL =  saxpy_lasx.S
+DAXPYKERNEL =  daxpy_lasx.S
+
+SAXPBYKERNEL = saxpby_lasx.S
+DAXPBYKERNEL = daxpby_lasx.S
+
+SSUMKERNEL  =  ssum_lasx.S
+DSUMKERNEL  =  dsum_lasx.S
+
+SASUMKERNEL =  sasum_lasx.S
+DASUMKERNEL =  dasum_lasx.S
+
+SROTKERNEL  =  srot_lasx.S
+DROTKERNEL  =  drot_lasx.S
+
+SNRM2KERNEL =  snrm2_lasx.S
+DNRM2KERNEL =  dnrm2_lasx.S
+
 DGEMMKERNEL    = dgemm_kernel_16x4.S
 DGEMMINCOPY    = dgemm_ncopy_16.S
 DGEMMITCOPY    = dgemm_tcopy_16.S

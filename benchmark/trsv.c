@@ -127,7 +127,7 @@ int main(int argc, char *argv[]){
       long long muls = n*(n+1)/2.0;
       long long adds = (n - 1.0)*n/2.0;
 
-      fprintf(stderr, "%10d   %10.2f MFlops %10.6f sec\n", n,(muls+adds) / timeg * 1.e-6, timeg);
+      fprintf(stderr, "%10d :   %10.2f MFlops %10.6f sec\n", n,(muls+adds) / timeg * 1.e-6, timeg);
       if(a != NULL){
         free(a);
       }

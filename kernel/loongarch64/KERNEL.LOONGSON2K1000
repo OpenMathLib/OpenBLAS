@@ -1,0 +1,58 @@
+ifndef NO_LSX
+
+SDOTKERNEL  = dot_lsx.S
+DSDOTKERNEL = dot_lsx.S
+DDOTKERNEL  = dot_lsx.S
+
+SSCALKERNEL  = sscal_lsx.S
+DSCALKERNEL  = dscal_lsx.S
+
+SAMAXKERNEL =  samax_lsx.S
+DAMAXKERNEL =  damax_lsx.S
+
+SAMINKERNEL =  samin_lsx.S
+DAMINKERNEL =  damin_lsx.S
+
+SMAXKERNEL  =  smax_lsx.S
+DMAXKERNEL  =  dmax_lsx.S
+
+SMINKERNEL  =  smin_lsx.S
+DMINKERNEL  =  dmin_lsx.S
+
+ISMAXKERNEL =  ismax_lsx.S
+IDMAXKERNEL =  idmax_lsx.S
+
+ISMINKERNEL =  ismin_lsx.S
+IDMINKERNEL =  idmin_lsx.S
+
+ISAMAXKERNEL = isamax_lsx.S
+IDAMAXKERNEL = idamax_lsx.S
+
+ISAMINKERNEL = isamin_lsx.S
+IDAMINKERNEL = idamin_lsx.S
+
+SCOPYKERNEL =  scopy_lsx.S
+DCOPYKERNEL =  dcopy_lsx.S
+
+SSWAPKERNEL =  sswap_lsx.S
+DSWAPKERNEL =  dswap_lsx.S
+
+SAXPYKERNEL =  saxpy_lsx.S
+DAXPYKERNEL =  daxpy_lsx.S
+
+SAXPBYKERNEL = saxpby_lsx.S
+DAXPBYKERNEL = daxpby_lsx.S
+
+SSUMKERNEL  =  ssum_lsx.S
+DSUMKERNEL  =  dsum_lsx.S
+
+SASUMKERNEL =  sasum_lsx.S
+DASUMKERNEL =  dasum_lsx.S
+
+SROTKERNEL  =  srot_lsx.S
+DROTKERNEL  =  drot_lsx.S
+
+SNRM2KERNEL =  snrm2_lsx.S
+DNRM2KERNEL =  dnrm2_lsx.S
+
+endif

@@ -260,6 +260,7 @@ endif
 
 
 FLDFLAGS = $(FFLAGS:-fPIC=) $(LDFLAGS)
+CLDFLAGS = $(CFLAGS) $(LDFLAGS)
 
 
 ifeq ($(USE_OPENMP), 1)
@@ -331,7 +332,7 @@ endif
 
 ifeq ($(BUILD_BFLOAT16),1)
 test_sbgemm : compare_sgemm_sbgemm.c ../$(LIBNAME)
-	$(CC) $(CFLAGS) -o test_sbgemm compare_sgemm_sbgemm.c ../$(LIBNAME) $(EXTRALIB) $(CEXTRALIB)
+	$(CC) $(CLDFLAGS) -o test_sbgemm compare_sgemm_sbgemm.c ../$(LIBNAME) $(EXTRALIB) $(CEXTRALIB)
 endif
 
 ifeq ($(BUILD_COMPLEX),1)
