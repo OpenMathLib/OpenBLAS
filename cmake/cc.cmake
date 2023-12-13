@@ -282,6 +282,18 @@ if (${CORE} STREQUAL POWER8)
   endif ()
 endif ()
 
+if (${CORE} STREQUAL PPC970)
+  if (NOT DYNAMIC_ARCH)
+    set (CCOMMON_OPT  "${CCOMMON_OPT} -mcpu=970 -mtune=970 -maltivec -fno-fast-math")
+  endif ()
+endif ()
+
+if (${CORE} STREQUAL PPCG4)
+  if (NOT DYNAMIC_ARCH)
+    set (CCOMMON_OPT  "${CCOMMON_OPT} -mcpu=G4 -mtune=G4 -maltivec -fno-fast-math")
+  endif ()
+endif ()
+
 if (NOT DYNAMIC_ARCH)
 	if (HAVE_AVX2)
         set (CCOMMON_OPT  "${CCOMMON_OPT} -mavx2")
