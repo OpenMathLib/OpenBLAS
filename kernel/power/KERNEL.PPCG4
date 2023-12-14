@@ -96,9 +96,9 @@ CGEMMINCOPY    =
 CGEMMONCOPY    =
 CGEMMONCOPY    =  ../generic/zgemm_ncopy_2.c
 CGEMMOTCOPY    =  ../generic/zgemm_tcopy_2.c
-CGEMMINCOPYOBJ =  
+CGEMMINCOPYOBJ =
 #cgemm_incopy$(TSUFFIX).$(SUFFIX)
-CGEMMITCOPYOBJ =  
+CGEMMITCOPYOBJ =
 #cgemm_itcopy$(TSUFFIX).$(SUFFIX)
 CGEMMONCOPYOBJ =  cgemm_oncopy$(TSUFFIX).$(SUFFIX)
 CGEMMOTCOPYOBJ =  cgemm_otcopy$(TSUFFIX).$(SUFFIX)
