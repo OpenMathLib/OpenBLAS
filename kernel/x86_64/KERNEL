@@ -405,7 +405,7 @@ DGEMVNKERNEL = dgemv_n.S
 endif
 
 ifndef DGEMVTKERNEL
-DGEMVTKERNEL = dgemv_t.S
+DGEMVTKERNEL = dgemv_t_4.c
 endif
 
 ifndef CGEMVNKERNEL
