@@ -282,18 +282,21 @@ if (${CORE} STREQUAL POWER8)
   endif ()
 endif ()
 
+# With -mcpu=970 added it compiles, but library is broken, at least on macOS. If someone
+# tests on *BSD or Linux and adds this flag, please make sure it is not used for macOS case.
 if (${CORE} STREQUAL PPC970)
   if (NOT DYNAMIC_ARCH)
-    set (CCOMMON_OPT  "${CCOMMON_OPT} -mcpu=970 -mtune=970 -maltivec -fno-fast-math")
+    set (CCOMMON_OPT  "${CCOMMON_OPT} -mtune=970 -maltivec -fno-fast-math")
   endif ()
   if (APPLE)
     set (CCOMMON_OPT  "${CCOMMON_OPT} -force_cpusubtype_ALL")
   endif ()
 endif ()
 
+# -mcpu=G4 seems to work fine, but perhaps avoid it for the sake of consistency?
 if (${CORE} STREQUAL PPCG4)
   if (NOT DYNAMIC_ARCH)
-    set (CCOMMON_OPT  "${CCOMMON_OPT} -mcpu=G4 -mtune=G4 -maltivec -fno-fast-math")
+    set (CCOMMON_OPT  "${CCOMMON_OPT} -mtune=G4 -maltivec -fno-fast-math")
   endif ()
   if (APPLE)
     set (CCOMMON_OPT  "${CCOMMON_OPT} -force_cpusubtype_ALL")
