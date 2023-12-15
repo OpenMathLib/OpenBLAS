@@ -196,7 +196,7 @@ Please read `GotoBLAS_01Readme.txt` for older CPU models already supported by th
   ```sh
   make HOSTCC=gcc TARGET=C910V CC=riscv64-unknown-linux-gnu-gcc FC=riscv64-unknown-linux-gnu-gfortran
   ```
-  (also known to work on C906)
+  (also known to work on C906 as long as you use only single-precision functions - its instruction set support appears to be incomplete in double precision)
 
 ### Support for multiple targets in a single library
 
@@ -207,9 +207,11 @@ For **x86_64**, the list of targets this activates contains Prescott, Core2, Neh
 `DYNAMIC_ARCH` is also supported on **x86**, where it translates to Katmai, Coppermine, Northwood, Prescott, Banias,
 Core2, Penryn, Dunnington, Nehalem, Athlon, Opteron, Opteron_SSE3, Barcelona, Bobcat, Atom and Nano.
 
-On **ARMV8**, it enables support for CortexA53, CortexA57, CortexA72, CortexA73, Falkor, ThunderX, ThunderX2T99, TSV110 as well as generic ARMV8 cpus.
+On **ARMV8**, it enables support for CortexA53, CortexA57, CortexA72, CortexA73, Falkor, ThunderX, ThunderX2T99, TSV110 as well as generic ARMV8 cpus. If compiler support for SVE is available at build time, support for NeoverseN2, NeoverseV1 as well as generic ArmV8SVE targets is also enabled.
 
-For **POWER**, the list encompasses POWER6, POWER8 and POWER9, on **ZARCH** it comprises Z13 and Z14.
+For **POWER**, the list encompasses POWER6, POWER8 and POWER9. POWER10 is additionally available if a sufficiently recent compiler is used for the build.
+
+on **ZARCH** it comprises Z13 and Z14 as well as generic zarch support.
 
 The `TARGET` option can be used in conjunction with `DYNAMIC_ARCH=1` to specify which cpu model should be assumed for all the
 common code in the library, usually you will want to set this to the oldest model you expect to encounter.
