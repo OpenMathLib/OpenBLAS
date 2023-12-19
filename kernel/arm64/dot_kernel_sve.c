@@ -67,31 +67,31 @@ THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         SETUP_TRUE                                        \
 "        neg     x10, x9, lsl #1                      \n" \
 "        ands    x11, x10, x0                         \n" \
-"        b.eq    .Lskip_2x                            \n" \
+"        b.eq    2f // skip_2x                        \n" \
         OFFSET_INPUTS                                     \
-".Lvector_2x:                                         \n" \
+"1: // vector_2x                                      \n" \
         UPDATE("p0", "%[X_]", "%[Y_]", "z1") \
         UPDATE("p0", "x12", "x13", "z0") \
 "        sub     x8, x8, x10                          \n" \
 "        cmp     x8, x11                              \n" \
-"        b.lo    .Lvector_2x                          \n" \
+"        b.lo    1b // vector_2x                      \n" \
         SUM_VECTOR("1") \
-".Lskip_2x:                                           \n" \
+"2: // skip_2x                                        \n" \
 "        neg     x10, x9                              \n" \
 "        and     x10, x10, x0                         \n" \
 "        cmp     x8, x10                              \n" \
-"        b.hs    .Ltail                               \n" \
-".Lvector_1x:                                         \n" \
+"        b.hs    4f // tail                           \n" \
+"3: // vector_1x                                      \n" \
         UPDATE("p0", "%[X_]", "%[Y_]", "z0")              \
 "        add     x8, x8, x9                           \n" \
 "        cmp     x8, x10                              \n" \
-"        b.lo    .Lvector_1x                          \n" \
-".Ltail:                                              \n" \
+"        b.lo    3b // vector_1x                      \n" \
+"4: // tail                                           \n" \
 "        cmp     x10, x0                              \n" \
-"        b.eq    .Lend                                \n" \
+"        b.eq    5f // end                            \n" \
         TAIL_WHILE                                        \
         UPDATE("p1", "%[X_]", "%[Y_]", "z0")              \
-".Lend:                                               \n" \
+"5: // end                                            \n" \
         SUM_VECTOR("0") \
         RET
 
