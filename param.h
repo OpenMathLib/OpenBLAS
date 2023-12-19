@@ -3396,13 +3396,13 @@ is a big desktop or server with abundant cache rather than a phone or embedded d
 #define ZGEMM_DEFAULT_UNROLL_N  4
 #define ZGEMM_DEFAULT_UNROLL_MN 16
 
-#define SGEMM_DEFAULT_P 128
-#define DGEMM_DEFAULT_P 160
+#define SGEMM_DEFAULT_P 240
+#define DGEMM_DEFAULT_P 240
 #define CGEMM_DEFAULT_P 128
 #define ZGEMM_DEFAULT_P 128
 
-#define SGEMM_DEFAULT_Q 352
-#define DGEMM_DEFAULT_Q 128
+#define SGEMM_DEFAULT_Q 640
+#define DGEMM_DEFAULT_Q 320
 #define CGEMM_DEFAULT_Q 224
 #define ZGEMM_DEFAULT_Q 112
 
