@@ -255,19 +255,19 @@ for dtype in range_prec:
         else:
             if dtest==16:
                 # LIN TESTS
-                cmdbase="xlintst"+letter+" < "+dtests[0][dtest]+".in > "+dtests[2][dtest]+".out"
+                cmdbase="LIN/xlintst"+letter+" < "+dtests[0][dtest]+".in > "+dtests[2][dtest]+".out"
             elif dtest==17:
                 # PROTO LIN TESTS
-                cmdbase="xlintst"+letter+dtypes[0][dtype-1]+" < "+dtests[0][dtest]+".in > "+dtests[2][dtest]+".out"
+                cmdbase="LIN/xlintst"+letter+dtypes[0][dtype-1]+" < "+dtests[0][dtest]+".in > "+dtests[2][dtest]+".out"
             elif dtest==18:
                 # PROTO LIN TESTS
-                cmdbase="xlintstrf"+letter+" < "+dtests[0][dtest]+".in > "+dtests[2][dtest]+".out"
+                cmdbase="LIN/xlintstrf"+letter+" < "+dtests[0][dtest]+".in > "+dtests[2][dtest]+".out"
             elif dtest==20:
                 # DMD EIG TESTS
-                cmdbase="xdmdeigtst"+letter+" < "+dtests[0][dtest]+".in > "+dtests[2][dtest]+".out"
+                cmdbase="EIG/xdmdeigtst"+letter+" < "+dtests[0][dtest]+".in > "+dtests[2][dtest]+".out"
             else:
                 # EIG TESTS
-                cmdbase="xeigtst"+letter+" < "+dtests[0][dtest]+".in > "+dtests[2][dtest]+".out"
+                cmdbase="EIG/xeigtst"+letter+" < "+dtests[0][dtest]+".in > "+dtests[2][dtest]+".out"
         if not just_errors and not short_summary:
             print("Testing "+name+" "+dtests[1][dtest]+"-"+cmdbase, end=' ')
         # Run the process: either to read the file or run the LAPACK testing
