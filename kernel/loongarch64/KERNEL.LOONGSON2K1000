@@ -59,10 +59,10 @@ SNRM2KERNEL =  snrm2_lsx.S
 DNRM2KERNEL =  dnrm2_lsx.S
 
 DGEMMKERNEL    = dgemm_kernel_8x4.S
-DGEMMINCOPY    = ../generic/gemm_ncopy_8.c
-DGEMMITCOPY    = ../generic/gemm_tcopy_8.c
-DGEMMONCOPY    = ../generic/gemm_ncopy_4.c
-DGEMMOTCOPY    = ../generic/gemm_tcopy_4.c
+DGEMMINCOPY    = dgemm_ncopy_8_lsx.S
+DGEMMITCOPY    = dgemm_tcopy_8_lsx.S
+DGEMMONCOPY    = dgemm_ncopy_4_lsx.S
+DGEMMOTCOPY    = dgemm_tcopy_4_lsx.S
 DGEMMINCOPYOBJ = dgemm_incopy$(TSUFFIX).$(SUFFIX)
 DGEMMITCOPYOBJ = dgemm_itcopy$(TSUFFIX).$(SUFFIX)
 DGEMMONCOPYOBJ = dgemm_oncopy$(TSUFFIX).$(SUFFIX)
