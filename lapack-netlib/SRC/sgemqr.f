@@ -189,12 +189,13 @@
 *     ..
 *     .. Local Scalars ..
       LOGICAL            LEFT, RIGHT, TRAN, NOTRAN, LQUERY
-      INTEGER            MB, NB, LW, NBLCKS, MN
+      INTEGER            MB, NB, LW, NBLCKS, MN, MINMNK, LWMIN
 *     ..
 *     .. External Functions ..
       LOGICAL            LSAME
+      EXTERNAL           LSAME
       REAL               SROUNDUP_LWORK
-      EXTERNAL           LSAME, SROUNDUP_LWORK
+      EXTERNAL           SROUNDUP_LWORK
 *     ..
 *     .. External Subroutines ..
       EXTERNAL           SGEMQRT, SLAMTSQR, XERBLA
@@ -206,7 +207,7 @@
 *
 *     Test the input arguments
 *
-      LQUERY  = LWORK.EQ.-1
+      LQUERY  = ( LWORK.EQ.-1 )
       NOTRAN  = LSAME( TRANS, 'N' )
       TRAN    = LSAME( TRANS, 'T' )
       LEFT    = LSAME( SIDE, 'L' )
@@ -220,6 +221,13 @@
       ELSE
         LW = MB * NB
         MN = N
+      END IF
+*
+      MINMNK = MIN( M, N, K )
+      IF( MINMNK.EQ.0 ) THEN
+         LWMIN = 1
+      ELSE
+         LWMIN = MAX( 1, LW )
       END IF
 *
       IF( ( MB.GT.K ) .AND. ( MN.GT.K ) ) THEN
@@ -249,12 +257,12 @@
         INFO = -9
       ELSE IF( LDC.LT.MAX( 1, M ) ) THEN
         INFO = -11
-      ELSE IF( ( LWORK.LT.MAX( 1, LW ) ) .AND. ( .NOT.LQUERY ) ) THEN
+      ELSE IF( LWORK.LT.LWMIN .AND. .NOT.LQUERY ) THEN
         INFO = -13
       END IF
 *
       IF( INFO.EQ.0 ) THEN
-        WORK( 1 ) = SROUNDUP_LWORK(LW)
+        WORK( 1 ) = SROUNDUP_LWORK( LWMIN )
       END IF
 *
       IF( INFO.NE.0 ) THEN
@@ -266,7 +274,7 @@
 *
 *     Quick return if possible
 *
-      IF( MIN( M, N, K ).EQ.0 ) THEN
+      IF( MINMNK.EQ.0 ) THEN
         RETURN
       END IF
 *
@@ -279,7 +287,7 @@
      $                 NB, C, LDC, WORK, LWORK, INFO )
       END IF
 *
-      WORK( 1 ) = SROUNDUP_LWORK(LW)
+      WORK( 1 ) = SROUNDUP_LWORK( LWMIN )
 *
       RETURN
 *

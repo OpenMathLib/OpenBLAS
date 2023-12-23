@@ -250,7 +250,7 @@
       NB2 = ILAENV( 1, 'SGEQRF', ' ', P, N, -1, -1 )
       NB3 = ILAENV( 1, 'SORMRQ', ' ', M, N, P, -1 )
       NB = MAX( NB1, NB2, NB3 )
-      LWKOPT = MAX( N, M, P)*NB
+      LWKOPT = MAX( 1, MAX( N, M, P )*NB )
       WORK( 1 ) = SROUNDUP_LWORK(LWKOPT)
       LQUERY = ( LWORK.EQ.-1 )
       IF( M.LT.0 ) THEN

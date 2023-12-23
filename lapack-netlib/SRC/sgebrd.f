@@ -122,7 +122,8 @@
 *> \param[in] LWORK
 *> \verbatim
 *>          LWORK is INTEGER
-*>          The length of the array WORK.  LWORK >= max(1,M,N).
+*>          The length of the array WORK.
+*>          LWORK >= 1, if MIN(M,N) = 0, and LWORK >= MAX(M,N), otherwise.
 *>          For optimum performance LWORK >= (M+N)*NB, where NB
 *>          is the optimal blocksize.
 *>
@@ -223,8 +224,8 @@
 *     ..
 *     .. Local Scalars ..
       LOGICAL            LQUERY
-      INTEGER            I, IINFO, J, LDWRKX, LDWRKY, LWKOPT, MINMN, NB,
-     $                   NBMIN, NX, WS
+      INTEGER            I, IINFO, J, LDWRKX, LDWRKY, LWKMIN, LWKOPT,
+     $                   MINMN, NB, NBMIN, NX, WS
 *     ..
 *     .. External Subroutines ..
       EXTERNAL           SGEBD2, SGEMM, SLABRD, XERBLA
@@ -242,9 +243,16 @@
 *     Test the input parameters
 *
       INFO = 0
-      NB = MAX( 1, ILAENV( 1, 'SGEBRD', ' ', M, N, -1, -1 ) )
-      LWKOPT = ( M+N )*NB
-      WORK( 1 ) = SROUNDUP_LWORK(LWKOPT)
+      MINMN = MIN( M, N )
+      IF( MINMN.EQ.0 ) THEN
+         LWKMIN = 1
+         LWKOPT = 1
+      ELSE
+         LWKMIN = MAX( M, N )
+         NB = MAX( 1, ILAENV( 1, 'SGEBRD', ' ', M, N, -1, -1 ) )
+         LWKOPT = ( M+N )*NB
+      ENDIF
+      WORK( 1 ) = SROUNDUP_LWORK( LWKOPT )
       LQUERY = ( LWORK.EQ.-1 )
       IF( M.LT.0 ) THEN
          INFO = -1
@@ -252,7 +260,7 @@
          INFO = -2
       ELSE IF( LDA.LT.MAX( 1, M ) ) THEN
          INFO = -4
-      ELSE IF( LWORK.LT.MAX( 1, M, N ) .AND. .NOT.LQUERY ) THEN
+      ELSE IF( LWORK.LT.LWKMIN .AND. .NOT.LQUERY ) THEN
          INFO = -10
       END IF
       IF( INFO.LT.0 ) THEN
@@ -264,7 +272,6 @@
 *
 *     Quick return if possible
 *
-      MINMN = MIN( M, N )
       IF( MINMN.EQ.0 ) THEN
          WORK( 1 ) = 1
          RETURN
@@ -283,7 +290,7 @@
 *        Determine when to switch from blocked to unblocked code.
 *
          IF( NX.LT.MINMN ) THEN
-            WS = ( M+N )*NB
+            WS = LWKOPT
             IF( LWORK.LT.WS ) THEN
 *
 *              Not enough work space for the optimal NB, consider using
@@ -342,7 +349,8 @@
 *
       CALL SGEBD2( M-I+1, N-I+1, A( I, I ), LDA, D( I ), E( I ),
      $             TAUQ( I ), TAUP( I ), WORK, IINFO )
-      WORK( 1 ) = SROUNDUP_LWORK(WS)
+*
+      WORK( 1 ) = SROUNDUP_LWORK( WS )
       RETURN
 *
 *     End of SGEBRD

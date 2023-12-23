@@ -110,13 +110,14 @@
 *>
 *> \param[out] WORK
 *> \verbatim
-*>         (workspace) REAL array, dimension (MAX(1,LWORK))
+*>          (workspace) DOUBLE PRECISION array, dimension (MAX(1,LWORK))
+*>          On exit, if INFO = 0, WORK(1) returns the minimal LWORK.
 *> \endverbatim
 *>
 *> \param[in] LWORK
 *> \verbatim
 *>          LWORK is INTEGER
-*>          The dimension of the array WORK.
+*>          The dimension of the array WORK. LWORK >= 1.
 *>          If LWORK = -1, then a workspace query is assumed. The routine
 *>          only calculates the size of the WORK array, returns this
 *>          value as WORK(1), and no error message related to WORK
@@ -187,7 +188,7 @@
 *     ..
 *     .. Local Scalars ..
       LOGICAL            LEFT, RIGHT, TRAN, NOTRAN, LQUERY
-      INTEGER            MB, NB, LW, NBLCKS, MN
+      INTEGER            MB, NB, LW, NBLCKS, MN, MINMNK, LWMIN
 *     ..
 *     .. External Functions ..
       LOGICAL            LSAME
@@ -207,7 +208,7 @@
 *
 *     Test the input arguments
 *
-      LQUERY  = LWORK.EQ.-1
+      LQUERY  = ( LWORK.EQ.-1 )
       NOTRAN  = LSAME( TRANS, 'N' )
       TRAN    = LSAME( TRANS, 'T' )
       LEFT    = LSAME( SIDE, 'L' )
@@ -221,6 +222,13 @@
       ELSE
         LW = M * MB
         MN = N
+      END IF
+*
+      MINMNK = MIN( M, N, K )
+      IF( MINMNK.EQ.0 ) THEN
+         LWMIN = 1
+      ELSE
+         LWMIN = MAX( 1, LW )
       END IF
 *
       IF( ( NB.GT.K ) .AND. ( MN.GT.K ) ) THEN
@@ -250,12 +258,12 @@
         INFO = -9
       ELSE IF( LDC.LT.MAX( 1, M ) ) THEN
         INFO = -11
-      ELSE IF( ( LWORK.LT.MAX( 1, LW ) ) .AND. ( .NOT.LQUERY ) ) THEN
+      ELSE IF( LWORK.LT.LWMIN .AND. .NOT.LQUERY ) THEN
         INFO = -13
       END IF
 *
       IF( INFO.EQ.0 ) THEN
-        WORK( 1 ) = SROUNDUP_LWORK( LW )
+        WORK( 1 ) = SROUNDUP_LWORK( LWMIN )
       END IF
 *
       IF( INFO.NE.0 ) THEN
@@ -267,7 +275,7 @@
 *
 *     Quick return if possible
 *
-      IF( MIN( M, N, K ).EQ.0 ) THEN
+      IF( MINMNK.EQ.0 ) THEN
         RETURN
       END IF
 *
@@ -280,7 +288,7 @@
      $                 MB, C, LDC, WORK, LWORK, INFO )
       END IF
 *
-      WORK( 1 ) = SROUNDUP_LWORK( LW )
+      WORK( 1 ) = SROUNDUP_LWORK( LWMIN )
 *
       RETURN
 *
