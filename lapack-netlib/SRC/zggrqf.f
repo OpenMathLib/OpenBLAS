@@ -172,7 +172,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup complex16OTHERcomputational
+*> \ingroup ggrqf
 *
 *> \par Further Details:
 *  =====================
@@ -249,7 +249,7 @@
       NB2 = ILAENV( 1, 'ZGEQRF', ' ', P, N, -1, -1 )
       NB3 = ILAENV( 1, 'ZUNMRQ', ' ', M, N, P, -1 )
       NB = MAX( NB1, NB2, NB3 )
-      LWKOPT = MAX( N, M, P )*NB
+      LWKOPT = MAX( 1, MAX( N, M, P )*NB )
       WORK( 1 ) = LWKOPT
       LQUERY = ( LWORK.EQ.-1 )
       IF( M.LT.0 ) THEN

@@ -107,7 +107,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup complex16GEcomputational
+*> \ingroup getri
 *
 *  =====================================================================
       SUBROUTINE ZGETRI( N, A, LDA, IPIV, WORK, LWORK, INFO )
@@ -152,7 +152,7 @@
 *
       INFO = 0
       NB = ILAENV( 1, 'ZGETRI', ' ', N, -1, -1, -1 )
-      LWKOPT = N*NB
+      LWKOPT = MAX( 1, N*NB )
       WORK( 1 ) = LWKOPT
       LQUERY = ( LWORK.EQ.-1 )
       IF( N.LT.0 ) THEN
