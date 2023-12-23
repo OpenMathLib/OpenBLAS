@@ -278,6 +278,7 @@
 *> \verbatim
 *>          LWORK is INTEGER
 *>          The dimension of the array WORK.
+*>          If N <= 1,               LWORK must be at least 1.
 *>          If JOBZ = 'N' and N > 1, LWORK must be queried.
 *>                                   LWORK = MAX(1, 26*N, dimension) where
 *>                                   dimension = max(stage1,stage2) + (KD+1)*N + 5*N
@@ -300,13 +301,14 @@
 *> \param[out] IWORK
 *> \verbatim
 *>          IWORK is INTEGER array, dimension (MAX(1,LIWORK))
-*>          On exit, if INFO = 0, IWORK(1) returns the optimal LWORK.
+*>          On exit, if INFO = 0, IWORK(1) returns the optimal LIWORK.
 *> \endverbatim
 *>
 *> \param[in] LIWORK
 *> \verbatim
 *>          LIWORK is INTEGER
-*>          The dimension of the array IWORK.  LIWORK >= max(1,10*N).
+*>          The dimension of the array IWORK.
+*>          If N <= 1, LIWORK >= 1, else LIWORK >= 10*N.
 *>
 *>          If LIWORK = -1, then a workspace query is assumed; the
 *>          routine only calculates the optimal size of the IWORK array,
@@ -445,8 +447,14 @@
       IB     = ILAENV2STAGE( 2, 'SSYTRD_2STAGE', JOBZ, N, KD, -1, -1 )
       LHTRD  = ILAENV2STAGE( 3, 'SSYTRD_2STAGE', JOBZ, N, KD, IB, -1 )
       LWTRD  = ILAENV2STAGE( 4, 'SSYTRD_2STAGE', JOBZ, N, KD, IB, -1 )
-      LWMIN  = MAX( 26*N, 5*N + LHTRD + LWTRD )
-      LIWMIN = MAX( 1, 10*N )
+*
+      IF( N.LE.1 ) THEN
+         LWMIN  = 1
+         LIWMIN = 1
+      ELSE
+         LWMIN  = MAX( 26*N, 5*N + LHTRD + LWTRD )
+         LIWMIN = 10*N
+      END IF
 *
       INFO = 0
       IF( .NOT.( LSAME( JOBZ, 'N' ) ) ) THEN
@@ -485,7 +493,7 @@
 *         NB = ILAENV( 1, 'SSYTRD', UPLO, N, -1, -1, -1 )
 *         NB = MAX( NB, ILAENV( 1, 'SORMTR', UPLO, N, -1, -1, -1 ) )
 *         LWKOPT = MAX( ( NB+1 )*N, LWMIN )
-         WORK( 1 ) = SROUNDUP_LWORK(LWMIN)
+         WORK( 1 )  = SROUNDUP_LWORK( LWMIN )
          IWORK( 1 ) = LIWMIN
       END IF
 *
@@ -505,7 +513,7 @@
       END IF
 *
       IF( N.EQ.1 ) THEN
-         WORK( 1 ) = 26
+         WORK( 1 ) = 1
          IF( ALLEIG .OR. INDEIG ) THEN
             M = 1
             W( 1 ) = A( 1, 1 )
@@ -733,7 +741,7 @@
 *
 *     Set WORK(1) to optimal workspace size.
 *
-      WORK( 1 ) = SROUNDUP_LWORK(LWMIN)
+      WORK( 1 )  = SROUNDUP_LWORK( LWMIN )
       IWORK( 1 ) = LIWMIN
 *
       RETURN

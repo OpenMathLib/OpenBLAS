@@ -428,7 +428,8 @@
 *> \verbatim
 *>          LWORK is INTEGER
 *>          The dimension of the array WORK.
-*.          LWORK >= N+NRHS-1
+*>          LWORK >= 1, if MIN(M,N) = 0, and
+*>          LWORK >= N+NRHS-1, otherwise.
 *>          For optimal performance LWORK >= NB*( N+NRHS+1 ),
 *>          where NB is the optimal block size for CGEQP3RK returned
 *>          by ILAENV. Minimal block size MINNB=2.
@@ -627,8 +628,9 @@
 *     .. External Functions ..
       LOGICAL            SISNAN
       INTEGER            ISAMAX, ILAENV
-      REAL               SLAMCH, SCNRM2
-      EXTERNAL           SISNAN, SLAMCH, SCNRM2, ISAMAX, ILAENV
+      REAL               SLAMCH, SCNRM2, SROUNDUP_LWORK
+      EXTERNAL           SISNAN, SLAMCH, SCNRM2, ISAMAX, ILAENV,
+     $                   SROUNDUP_LWORK
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          CMPLX, MAX, MIN
@@ -703,7 +705,7 @@
 *
             LWKOPT = 2*N + NB*( N+NRHS+1 )
          END IF
-         WORK( 1 ) = CMPLX( LWKOPT )
+         WORK( 1 ) = SROUNDUP_LWORK( LWKOPT )
 *
          IF( ( LWORK.LT.IWS ) .AND. .NOT.LQUERY ) THEN
             INFO = -15
@@ -726,7 +728,7 @@
          K = 0
          MAXC2NRMK = ZERO
          RELMAXC2NRMK = ZERO
-         WORK( 1 ) = CMPLX( LWKOPT )
+         WORK( 1 ) = SROUNDUP_LWORK( LWKOPT )
          RETURN
       END IF
 *
@@ -778,7 +780,7 @@
 *
 *        Array TAU is not set and contains undefined elements.
 *
-         WORK( 1 ) = CMPLX( LWKOPT )
+         WORK( 1 ) = SROUNDUP_LWORK( LWKOPT )
          RETURN
       END IF
 *
@@ -797,7 +799,7 @@
             TAU( J ) = CZERO
          END DO
 *
-         WORK( 1 ) = CMPLX( LWKOPT )
+         WORK( 1 ) = SROUNDUP_LWORK( LWKOPT )
          RETURN
 *
       END IF
@@ -828,7 +830,7 @@
          DO J = 1, MINMN
             TAU( J ) = CZERO
          END DO
-         WORK( 1 ) = CMPLX( LWKOPT )
+         WORK( 1 ) = SROUNDUP_LWORK( LWKOPT )
          RETURN
       END IF
 *
@@ -873,7 +875,7 @@
             TAU( J ) = CZERO
          END DO
 *
-         WORK( 1 ) = CMPLX( LWKOPT )
+         WORK( 1 ) = SROUNDUP_LWORK( LWKOPT )
          RETURN
       END IF
 *
@@ -991,7 +993,7 @@
 *
 *              Return from the routine.
 *
-               WORK( 1 ) = CMPLX( LWKOPT )
+               WORK( 1 ) = SROUNDUP_LWORK( LWKOPT )
 *
                RETURN
 *
@@ -1082,7 +1084,7 @@
 *
       END IF
 *
-      WORK( 1 ) = CMPLX( LWKOPT )
+      WORK( 1 ) = SROUNDUP_LWORK( LWKOPT )
 *
       RETURN
 *

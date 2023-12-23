@@ -433,9 +433,9 @@
 *                 block factorization, LWORK is the length of AINV.
 *
                   SRNAMT = 'CHETRF_AA_2STAGE'
-                  LWORK = MIN(N*NB, 3*NMAX*NMAX)
-                  CALL CHETRF_AA_2STAGE( UPLO, N, AFAC, LDA, 
-     $                                   AINV, (3*NB+1)*N, 
+                  LWORK = MIN( MAX( 1, N*NB ), 3*NMAX*NMAX)
+                  CALL CHETRF_AA_2STAGE( UPLO, N, AFAC, LDA,
+     $                                   AINV, MAX( 1, (3*NB+1)*N ),
      $                                   IWORK, IWORK( 1+N ),
      $                                   WORK, LWORK,
      $                                   INFO )
@@ -517,7 +517,6 @@ c                  NT = 1
                      CALL CLACPY( 'Full', N, NRHS, B, LDA, X, LDA )
 *
                      SRNAMT = 'CHETRS_AA_2STAGE'
-                     LWORK = MAX( 1, 3*N-2 )
                      CALL CHETRS_AA_2STAGE( UPLO, N, NRHS, AFAC, LDA,
      $                            AINV, (3*NB+1)*N, IWORK, IWORK( 1+N ),
      $                            X, LDA, INFO )

@@ -97,7 +97,8 @@
 *> \param[in] LWORK
 *> \verbatim
 *>          LWORK is INTEGER
-*>          The dimension of the array WORK.  LWORK >= max(1,N).
+*>          The dimension of the array WORK.
+*>          LWORK >= 1, if MIN(M,N) = 0, and LWORK >= N, otherwise.
 *>          For optimum performance LWORK >= N*NB, where NB is
 *>          the optimal blocksize.
 *>
@@ -162,8 +163,8 @@
 *
 *     .. Local Scalars ..
       LOGICAL            LQUERY
-      INTEGER            I, IB, IINFO, IWS, K, LDWORK, LWKOPT, NB,
-     $                   NBMIN, NX
+      INTEGER            I, IB, IINFO, IWS, K, LDWORK, LWKMIN, LWKOPT,
+     $                   NB, NBMIN, NX
 *     ..
 *     .. External Subroutines ..
       EXTERNAL           CGEQR2P, CLARFB, CLARFT, XERBLA
@@ -182,8 +183,16 @@
 *
       INFO = 0
       NB = ILAENV( 1, 'CGEQRF', ' ', M, N, -1, -1 )
-      LWKOPT = N*NB
-      WORK( 1 ) = SROUNDUP_LWORK(LWKOPT)
+      K = MIN( M, N )
+      IF( K.EQ.0 ) THEN
+         LWKMIN = 1
+         LWKOPT = 1
+      ELSE
+         LWKMIN = N
+         LWKOPT = N*NB
+      END IF
+      WORK( 1 ) = SROUNDUP_LWORK( LWKOPT )
+*
       LQUERY = ( LWORK.EQ.-1 )
       IF( M.LT.0 ) THEN
          INFO = -1
@@ -191,7 +200,7 @@
          INFO = -2
       ELSE IF( LDA.LT.MAX( 1, M ) ) THEN
          INFO = -4
-      ELSE IF( LWORK.LT.MAX( 1, N ) .AND. .NOT.LQUERY ) THEN
+      ELSE IF( LWORK.LT.LWKMIN .AND. .NOT.LQUERY ) THEN
          INFO = -7
       END IF
       IF( INFO.NE.0 ) THEN
@@ -203,7 +212,6 @@
 *
 *     Quick return if possible
 *
-      K = MIN( M, N )
       IF( K.EQ.0 ) THEN
          WORK( 1 ) = 1
          RETURN
@@ -211,7 +219,7 @@
 *
       NBMIN = 2
       NX = 0
-      IWS = N
+      IWS = LWKMIN
       IF( NB.GT.1 .AND. NB.LT.K ) THEN
 *
 *        Determine when to cross over from blocked to unblocked code.
@@ -273,7 +281,7 @@
      $   CALL CGEQR2P( M-I+1, N-I+1, A( I, I ), LDA, TAU( I ), WORK,
      $                IINFO )
 *
-      WORK( 1 ) = SROUNDUP_LWORK(IWS)
+      WORK( 1 ) = SROUNDUP_LWORK( IWS )
       RETURN
 *
 *     End of CGEQRFP

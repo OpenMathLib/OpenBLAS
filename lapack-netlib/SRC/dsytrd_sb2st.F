@@ -18,7 +18,7 @@
 *  Definition:
 *  ===========
 *
-*       SUBROUTINE DSYTRD_SB2ST( STAGE1, VECT, UPLO, N, KD, AB, LDAB, 
+*       SUBROUTINE DSYTRD_SB2ST( STAGE1, VECT, UPLO, N, KD, AB, LDAB,
 *                               D, E, HOUS, LHOUS, WORK, LWORK, INFO )
 *
 *       #if defined(_OPENMP)
@@ -53,12 +53,12 @@
 *> \param[in] STAGE1
 *> \verbatim
 *>          STAGE1 is CHARACTER*1
-*>          = 'N':  "No": to mention that the stage 1 of the reduction  
+*>          = 'N':  "No": to mention that the stage 1 of the reduction
 *>                  from dense to band using the dsytrd_sy2sb routine
-*>                  was not called before this routine to reproduce AB. 
-*>                  In other term this routine is called as standalone. 
-*>          = 'Y':  "Yes": to mention that the stage 1 of the 
-*>                  reduction from dense to band using the dsytrd_sy2sb 
+*>                  was not called before this routine to reproduce AB.
+*>                  In other term this routine is called as standalone.
+*>          = 'Y':  "Yes": to mention that the stage 1 of the
+*>                  reduction from dense to band using the dsytrd_sy2sb
 *>                  routine has been called to produce AB (e.g., AB is
 *>                  the output of dsytrd_sy2sb.
 *> \endverbatim
@@ -66,10 +66,10 @@
 *> \param[in] VECT
 *> \verbatim
 *>          VECT is CHARACTER*1
-*>          = 'N':  No need for the Housholder representation, 
+*>          = 'N':  No need for the Housholder representation,
 *>                  and thus LHOUS is of size max(1, 4*N);
-*>          = 'V':  the Householder representation is needed to 
-*>                  either generate or to apply Q later on, 
+*>          = 'V':  the Householder representation is needed to
+*>                  either generate or to apply Q later on,
 *>                  then LHOUS is to be queried and computed.
 *>                  (NOT AVAILABLE IN THIS RELEASE).
 *> \endverbatim
@@ -132,34 +132,39 @@
 *>
 *> \param[out] HOUS
 *> \verbatim
-*>          HOUS is DOUBLE PRECISION array, dimension LHOUS, that
-*>          store the Householder representation.
+*>          HOUS is DOUBLE PRECISION array, dimension (MAX(1,LHOUS))
+*>          Stores the Householder representation.
 *> \endverbatim
 *>
 *> \param[in] LHOUS
 *> \verbatim
 *>          LHOUS is INTEGER
-*>          The dimension of the array HOUS. LHOUS = MAX(1, dimension)
-*>          If LWORK = -1, or LHOUS=-1,
+*>          The dimension of the array HOUS.
+*>          If N = 0 or KD <= 1, LHOUS >= 1, else LHOUS = MAX(1, dimension).
+*>
+*>          If LWORK = -1, or LHOUS = -1,
 *>          then a query is assumed; the routine
 *>          only calculates the optimal size of the HOUS array, returns
 *>          this value as the first entry of the HOUS array, and no error
 *>          message related to LHOUS is issued by XERBLA.
 *>          LHOUS = MAX(1, dimension) where
 *>          dimension = 4*N if VECT='N'
-*>          not available now if VECT='H'     
+*>          not available now if VECT='H'
 *> \endverbatim
 *>
 *> \param[out] WORK
 *> \verbatim
-*>          WORK is DOUBLE PRECISION array, dimension LWORK.
+*>          WORK is DOUBLE PRECISION array, dimension (MAX(1,LWORK))
+*>          On exit, if INFO = 0, WORK(1) returns the optimal LWORK.
 *> \endverbatim
 *>
 *> \param[in] LWORK
 *> \verbatim
 *>          LWORK is INTEGER
-*>          The dimension of the array WORK. LWORK = MAX(1, dimension)
-*>          If LWORK = -1, or LHOUS=-1,
+*>          The dimension of the array WORK.
+*>          If N = 0 or KD <= 1, LWORK >= 1, else LWORK = MAX(1, dimension).
+*>
+*>          If LWORK = -1, or LHOUS = -1,
 *>          then a workspace query is assumed; the routine
 *>          only calculates the optimal size of the WORK array, returns
 *>          this value as the first entry of the WORK array, and no error
@@ -188,7 +193,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup real16OTHERcomputational
+*> \ingroup hetrd_hb2st
 *
 *> \par Further Details:
 *  =====================
@@ -208,7 +213,7 @@
 *>  http://doi.acm.org/10.1145/2063384.2063394
 *>
 *>  A. Haidar, J. Kurzak, P. Luszczek, 2013.
-*>  An improved parallel singular value algorithm and its implementation 
+*>  An improved parallel singular value algorithm and its implementation
 *>  for multicore hardware, In Proceedings of 2013 International Conference
 *>  for High Performance Computing, Networking, Storage and Analysis (SC '13).
 *>  Denver, Colorado, USA, 2013.
@@ -216,16 +221,16 @@
 *>  http://doi.acm.org/10.1145/2503210.2503292
 *>
 *>  A. Haidar, R. Solca, S. Tomov, T. Schulthess and J. Dongarra.
-*>  A novel hybrid CPU-GPU generalized eigensolver for electronic structure 
+*>  A novel hybrid CPU-GPU generalized eigensolver for electronic structure
 *>  calculations based on fine-grained memory aware tasks.
 *>  International Journal of High Performance Computing Applications.
 *>  Volume 28 Issue 2, Pages 196-209, May 2014.
-*>  http://hpc.sagepub.com/content/28/2/196 
+*>  http://hpc.sagepub.com/content/28/2/196
 *>
 *> \endverbatim
 *>
 *  =====================================================================
-      SUBROUTINE DSYTRD_SB2ST( STAGE1, VECT, UPLO, N, KD, AB, LDAB, 
+      SUBROUTINE DSYTRD_SB2ST( STAGE1, VECT, UPLO, N, KD, AB, LDAB,
      $                         D, E, HOUS, LHOUS, WORK, LWORK, INFO )
 *
 #if defined(_OPENMP)
@@ -258,11 +263,11 @@
 *     ..
 *     .. Local Scalars ..
       LOGICAL            LQUERY, WANTQ, UPPER, AFTERS1
-      INTEGER            I, M, K, IB, SWEEPID, MYID, SHIFT, STT, ST, 
+      INTEGER            I, M, K, IB, SWEEPID, MYID, SHIFT, STT, ST,
      $                   ED, STIND, EDIND, BLKLASTIND, COLPT, THED,
      $                   STEPERCOL, GRSIZ, THGRSIZ, THGRNB, THGRID,
-     $                   NBTILES, TTYPE, TID, NTHREADS, DEBUG,
-     $                   ABDPOS, ABOFDPOS, DPOS, OFDPOS, AWPOS, 
+     $                   NBTILES, TTYPE, TID, NTHREADS,
+     $                   ABDPOS, ABOFDPOS, DPOS, OFDPOS, AWPOS,
      $                   INDA, INDW, APOS, SIZEA, LDA, INDV, INDTAU,
      $                   SIDEV, SIZETAU, LDV, LHMIN, LWMIN
 *     ..
@@ -274,7 +279,7 @@
 *     ..
 *     .. External Functions ..
       LOGICAL            LSAME
-      INTEGER            ILAENV2STAGE 
+      INTEGER            ILAENV2STAGE
       EXTERNAL           LSAME, ILAENV2STAGE
 *     ..
 *     .. Executable Statements ..
@@ -282,7 +287,6 @@
 *     Determine the minimal workspace size required.
 *     Test the input parameters
 *
-      DEBUG   = 0
       INFO    = 0
       AFTERS1 = LSAME( STAGE1, 'Y' )
       WANTQ   = LSAME( VECT, 'V' )
@@ -291,9 +295,14 @@
 *
 *     Determine the block size, the workspace size and the hous size.
 *
-      IB     = ILAENV2STAGE( 2, 'DSYTRD_SB2ST', VECT, N, KD, -1, -1 )
-      LHMIN  = ILAENV2STAGE( 3, 'DSYTRD_SB2ST', VECT, N, KD, IB, -1 )
-      LWMIN  = ILAENV2STAGE( 4, 'DSYTRD_SB2ST', VECT, N, KD, IB, -1 )
+      IB       = ILAENV2STAGE( 2, 'DSYTRD_SB2ST', VECT, N, KD, -1, -1 )
+      IF( N.EQ.0 .OR. KD.LE.1 ) THEN
+         LHMIN = 1
+         LWMIN = 1
+      ELSE
+         LHMIN = ILAENV2STAGE( 3, 'DSYTRD_SB2ST', VECT, N, KD, IB, -1 )
+         LWMIN = ILAENV2STAGE( 4, 'DSYTRD_SB2ST', VECT, N, KD, IB, -1 )
+      END IF
 *
       IF( .NOT.AFTERS1 .AND. .NOT.LSAME( STAGE1, 'N' ) ) THEN
          INFO = -1
@@ -355,7 +364,7 @@
           ABDPOS   = KD + 1
           ABOFDPOS = KD
       ELSE
-          APOS     = INDA 
+          APOS     = INDA
           AWPOS    = INDA + KD + 1
           DPOS     = APOS
           OFDPOS   = DPOS + 1
@@ -363,11 +372,11 @@
           ABOFDPOS = 2
 
       ENDIF
-*      
-*     Case KD=0: 
-*     The matrix is diagonal. We just copy it (convert to "real" for 
-*     real because D is double and the imaginary part should be 0) 
-*     and store it in D. A sequential code here is better or 
+*
+*     Case KD=0:
+*     The matrix is diagonal. We just copy it (convert to "real" for
+*     real because D is double and the imaginary part should be 0)
+*     and store it in D. A sequential code here is better or
 *     in a parallel environment it might need two cores for D and E
 *
       IF( KD.EQ.0 ) THEN
@@ -382,17 +391,17 @@
           WORK( 1 ) = 1
           RETURN
       END IF
-*      
-*     Case KD=1: 
-*     The matrix is already Tridiagonal. We have to make diagonal 
+*
+*     Case KD=1:
+*     The matrix is already Tridiagonal. We have to make diagonal
 *     and offdiagonal elements real, and store them in D and E.
-*     For that, for real precision just copy the diag and offdiag 
-*     to D and E while for the COMPLEX case the bulge chasing is  
-*     performed to convert the hermetian tridiagonal to symmetric 
-*     tridiagonal. A simpler conversion formula might be used, but then 
+*     For that, for real precision just copy the diag and offdiag
+*     to D and E while for the COMPLEX case the bulge chasing is
+*     performed to convert the hermetian tridiagonal to symmetric
+*     tridiagonal. A simpler conversion formula might be used, but then
 *     updating the Q matrix will be required and based if Q is generated
-*     or not this might complicate the story. 
-*      
+*     or not this might complicate the story.
+*
       IF( KD.EQ.1 ) THEN
           DO 50 I = 1, N
               D( I ) = ( AB( ABDPOS, I ) )
@@ -413,7 +422,7 @@
           RETURN
       END IF
 *
-*     Main code start here. 
+*     Main code start here.
 *     Reduce the symmetric band of A to a tridiagonal matrix.
 *
       THGRSIZ   = N
@@ -422,7 +431,7 @@
       NBTILES   = CEILING( REAL(N)/REAL(KD) )
       STEPERCOL = CEILING( REAL(SHIFT)/REAL(GRSIZ) )
       THGRNB    = CEILING( REAL(N-1)/REAL(THGRSIZ) )
-*      
+*
       CALL DLACPY( "A", KD+1, N, AB, LDAB, WORK( APOS ), LDA )
       CALL DLASET( "A", KD,   N, ZERO, ZERO, WORK( AWPOS ), LDA )
 *
@@ -431,7 +440,7 @@
 *
 #if defined(_OPENMP)
 !$OMP PARALLEL PRIVATE( TID, THGRID, BLKLASTIND )
-!$OMP$         PRIVATE( THED, I, M, K, ST, ED, STT, SWEEPID ) 
+!$OMP$         PRIVATE( THED, I, M, K, ST, ED, STT, SWEEPID )
 !$OMP$         PRIVATE( MYID, TTYPE, COLPT, STIND, EDIND )
 !$OMP$         SHARED ( UPLO, WANTQ, INDV, INDTAU, HOUS, WORK)
 !$OMP$         SHARED ( N, KD, IB, NBTILES, LDA, LDV, INDA )
@@ -440,7 +449,7 @@
 #endif
 *
 *     main bulge chasing loop
-*      
+*
       DO 100 THGRID = 1, THGRNB
           STT  = (THGRID-1)*THGRSIZ+1
           THED = MIN( (STT + THGRSIZ -1), (N-1))
@@ -451,7 +460,7 @@
                   ST = STT
                   DO 130 SWEEPID = ST, ED
                       DO 140 K = 1, GRSIZ
-                          MYID  = (I-SWEEPID)*(STEPERCOL*GRSIZ) 
+                          MYID  = (I-SWEEPID)*(STEPERCOL*GRSIZ)
      $                           + (M-1)*GRSIZ + K
                           IF ( MYID.EQ.1 ) THEN
                               TTYPE = 1
@@ -477,16 +486,16 @@
                           ENDIF
 *
 *                         Call the kernel
-*                             
+*
 #if defined(_OPENMP) &&  _OPENMP >= 201307
-                          IF( TTYPE.NE.1 ) THEN      
+                          IF( TTYPE.NE.1 ) THEN
 !$OMP TASK DEPEND(in:WORK(MYID+SHIFT-1))
 !$OMP$     DEPEND(in:WORK(MYID-1))
 !$OMP$     DEPEND(out:WORK(MYID))
                               TID      = OMP_GET_THREAD_NUM()
-                              CALL DSB2ST_KERNELS( UPLO, WANTQ, TTYPE, 
+                              CALL DSB2ST_KERNELS( UPLO, WANTQ, TTYPE,
      $                             STIND, EDIND, SWEEPID, N, KD, IB,
-     $                             WORK ( INDA ), LDA, 
+     $                             WORK ( INDA ), LDA,
      $                             HOUS( INDV ), HOUS( INDTAU ), LDV,
      $                             WORK( INDW + TID*KD ) )
 !$OMP END TASK
@@ -494,20 +503,20 @@
 !$OMP TASK DEPEND(in:WORK(MYID+SHIFT-1))
 !$OMP$     DEPEND(out:WORK(MYID))
                               TID      = OMP_GET_THREAD_NUM()
-                              CALL DSB2ST_KERNELS( UPLO, WANTQ, TTYPE, 
+                              CALL DSB2ST_KERNELS( UPLO, WANTQ, TTYPE,
      $                             STIND, EDIND, SWEEPID, N, KD, IB,
-     $                             WORK ( INDA ), LDA, 
+     $                             WORK ( INDA ), LDA,
      $                             HOUS( INDV ), HOUS( INDTAU ), LDV,
      $                             WORK( INDW + TID*KD ) )
 !$OMP END TASK
                           ENDIF
 #else
-                          CALL DSB2ST_KERNELS( UPLO, WANTQ, TTYPE, 
+                          CALL DSB2ST_KERNELS( UPLO, WANTQ, TTYPE,
      $                         STIND, EDIND, SWEEPID, N, KD, IB,
-     $                         WORK ( INDA ), LDA, 
+     $                         WORK ( INDA ), LDA,
      $                         HOUS( INDV ), HOUS( INDTAU ), LDV,
      $                         WORK( INDW ) )
-#endif 
+#endif
                           IF ( BLKLASTIND.GE.(N-1) ) THEN
                               STT = STT + 1
                               EXIT
@@ -522,14 +531,14 @@
 !$OMP END MASTER
 !$OMP END PARALLEL
 #endif
-*      
+*
 *     Copy the diagonal from A to D. Note that D is REAL thus only
 *     the Real part is needed, the imaginary part should be zero.
 *
       DO 150 I = 1, N
           D( I ) = ( WORK( DPOS+(I-1)*LDA ) )
   150 CONTINUE
-*      
+*
 *     Copy the off diagonal from A to E. Note that E is REAL thus only
 *     the Real part is needed, the imaginary part should be zero.
 *
@@ -543,11 +552,10 @@
   170     CONTINUE
       ENDIF
 *
-      HOUS( 1 ) = LHMIN
       WORK( 1 ) = LWMIN
       RETURN
 *
 *     End of DSYTRD_SB2ST
 *
       END
-      
+

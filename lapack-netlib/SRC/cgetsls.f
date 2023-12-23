@@ -127,7 +127,7 @@
 *> \param[in] LWORK
 *> \verbatim
 *>          LWORK is INTEGER
-*>          The dimension of the array WORK.
+*>          The dimension of the array WORK. LWORK >= 1.
 *>          If LWORK = -1 or -2, then a workspace query is assumed.
 *>          If LWORK = -1, the routine calculates optimal size of WORK for the
 *>          optimal performance and returns this value in WORK(1).
@@ -229,7 +229,10 @@
 *
 *     Determine the optimum and minimum LWORK
 *
-       IF( M.GE.N ) THEN
+       IF( MIN( M, N, NRHS ).EQ.0 ) THEN
+         WSIZEO = 1
+         WSIZEM = 1
+       ELSE IF ( M.GE.N ) THEN
          CALL CGEQR( M, N, A, LDA, TQ, -1, WORKQ, -1, INFO2 )
          TSZO = INT( TQ( 1 ) )
          LWO  = INT( WORKQ( 1 ) )
