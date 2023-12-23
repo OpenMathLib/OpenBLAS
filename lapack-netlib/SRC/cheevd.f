@@ -116,8 +116,7 @@
 *>
 *> \param[out] RWORK
 *> \verbatim
-*>          RWORK is REAL array,
-*>                                         dimension (LRWORK)
+*>          RWORK is REAL array, dimension (MAX(1,LRWORK))
 *>          On exit, if INFO = 0, RWORK(1) returns the optimal LRWORK.
 *> \endverbatim
 *>
@@ -282,8 +281,8 @@
             LROPT = LRWMIN
             LIOPT = LIWMIN
          END IF
-         WORK( 1 ) = SROUNDUP_LWORK(LOPT)
-         RWORK( 1 ) = LROPT
+         WORK( 1 ) = SROUNDUP_LWORK( LOPT )
+         RWORK( 1 ) = SROUNDUP_LWORK( LROPT )
          IWORK( 1 ) = LIOPT
 *
          IF( LWORK.LT.LWMIN .AND. .NOT.LQUERY ) THEN
@@ -378,8 +377,8 @@
          CALL SSCAL( IMAX, ONE / SIGMA, W, 1 )
       END IF
 *
-      WORK( 1 ) = SROUNDUP_LWORK(LOPT)
-      RWORK( 1 ) = LROPT
+      WORK( 1 ) = SROUNDUP_LWORK( LOPT )
+      RWORK( 1 ) = SROUNDUP_LWORK( LROPT )
       IWORK( 1 ) = LIOPT
 *
       RETURN

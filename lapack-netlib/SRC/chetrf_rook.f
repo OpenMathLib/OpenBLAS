@@ -122,7 +122,7 @@
 *> \param[in] LWORK
 *> \verbatim
 *>          LWORK is INTEGER
-*>          The length of WORK.  LWORK >=1.  For best performance
+*>          The length of WORK.  LWORK >= 1.  For best performance
 *>          LWORK >= N*NB, where NB is the block size returned by ILAENV.
 *>
 *>          If LWORK = -1, then a workspace query is assumed; the routine
@@ -264,7 +264,7 @@
 *
          NB = ILAENV( 1, 'CHETRF_ROOK', UPLO, N, -1, -1, -1 )
          LWKOPT = MAX( 1, N*NB )
-         WORK( 1 ) = SROUNDUP_LWORK(LWKOPT)
+         WORK( 1 ) = SROUNDUP_LWORK( LWKOPT )
       END IF
 *
       IF( INFO.NE.0 ) THEN
@@ -387,7 +387,7 @@
       END IF
 *
    40 CONTINUE
-      WORK( 1 ) = SROUNDUP_LWORK(LWKOPT)
+      WORK( 1 ) = SROUNDUP_LWORK( LWKOPT )
       RETURN
 *
 *     End of CHETRF_ROOK

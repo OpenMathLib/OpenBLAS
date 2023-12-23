@@ -132,15 +132,17 @@
 *>
 *> \param[out] HOUS
 *> \verbatim
-*>          HOUS is COMPLEX array, dimension LHOUS, that
-*>          store the Householder representation.
+*>          HOUS is COMPLEX array, dimension (MAX(1,LHOUS))
+*>          Stores the Householder representation.
 *> \endverbatim
 *>
 *> \param[in] LHOUS
 *> \verbatim
 *>          LHOUS is INTEGER
-*>          The dimension of the array HOUS. LHOUS = MAX(1, dimension)
-*>          If LWORK = -1, or LHOUS=-1,
+*>          The dimension of the array HOUS.
+*>          If N = 0 or KD <= 1, LHOUS >= 1, else LHOUS = MAX(1, dimension).
+*>
+*>          If LWORK = -1, or LHOUS = -1,
 *>          then a query is assumed; the routine
 *>          only calculates the optimal size of the HOUS array, returns
 *>          this value as the first entry of the HOUS array, and no error
@@ -152,14 +154,17 @@
 *>
 *> \param[out] WORK
 *> \verbatim
-*>          WORK is COMPLEX array, dimension LWORK.
+*>          WORK is COMPLEX array, dimension (MAX(1,LWORK)).
+*>          On exit, if INFO = 0, WORK(1) returns the optimal LWORK.
 *> \endverbatim
 *>
 *> \param[in] LWORK
 *> \verbatim
 *>          LWORK is INTEGER
-*>          The dimension of the array WORK. LWORK = MAX(1, dimension)
-*>          If LWORK = -1, or LHOUS=-1,
+*>          The dimension of the array WORK.
+*>          If N = 0 or KD <= 1, LWORK >= 1, else LWORK = MAX(1, dimension).
+*>
+*>          If LWORK = -1, or LHOUS = -1,
 *>          then a workspace query is assumed; the routine
 *>          only calculates the optimal size of the WORK array, returns
 *>          this value as the first entry of the WORK array, and no error
@@ -262,7 +267,7 @@
       INTEGER            I, M, K, IB, SWEEPID, MYID, SHIFT, STT, ST,
      $                   ED, STIND, EDIND, BLKLASTIND, COLPT, THED,
      $                   STEPERCOL, GRSIZ, THGRSIZ, THGRNB, THGRID,
-     $                   NBTILES, TTYPE, TID, NTHREADS, DEBUG,
+     $                   NBTILES, TTYPE, TID, NTHREADS,
      $                   ABDPOS, ABOFDPOS, DPOS, OFDPOS, AWPOS,
      $                   INDA, INDW, APOS, SIZEA, LDA, INDV, INDTAU,
      $                   SICEV, SIZETAU, LDV, LHMIN, LWMIN
@@ -286,7 +291,6 @@
 *     Determine the minimal workspace size required.
 *     Test the input parameters
 *
-      DEBUG   = 0
       INFO    = 0
       AFTERS1 = LSAME( STAGE1, 'Y' )
       WANTQ   = LSAME( VECT, 'V' )
@@ -295,9 +299,14 @@
 *
 *     Determine the block size, the workspace size and the hous size.
 *
-      IB     = ILAENV2STAGE( 2, 'CHETRD_HB2ST', VECT, N, KD, -1, -1 )
-      LHMIN  = ILAENV2STAGE( 3, 'CHETRD_HB2ST', VECT, N, KD, IB, -1 )
-      LWMIN  = ILAENV2STAGE( 4, 'CHETRD_HB2ST', VECT, N, KD, IB, -1 )
+      IB       = ILAENV2STAGE( 2, 'CHETRD_HB2ST', VECT, N, KD, -1, -1 )
+      IF( N.EQ.0 .OR. KD.LE.1 ) THEN
+         LHMIN = 1
+         LWMIN = 1
+      ELSE
+         LHMIN = ILAENV2STAGE( 3, 'CHETRD_HB2ST', VECT, N, KD, IB, -1 )
+         LWMIN = ILAENV2STAGE( 4, 'CHETRD_HB2ST', VECT, N, KD, IB, -1 )
+      END IF
 *
       IF( .NOT.AFTERS1 .AND. .NOT.LSAME( STAGE1, 'N' ) ) THEN
          INFO = -1
@@ -318,8 +327,8 @@
       END IF
 *
       IF( INFO.EQ.0 ) THEN
-         HOUS( 1 ) = LHMIN
-         WORK( 1 ) = SROUNDUP_LWORK(LWMIN)
+         HOUS( 1 ) = SROUNDUP_LWORK( LHMIN )
+         WORK( 1 ) = SROUNDUP_LWORK( LWMIN )
       END IF
 *
       IF( INFO.NE.0 ) THEN
@@ -575,8 +584,7 @@ C                 END IF
   170     CONTINUE
       ENDIF
 *
-      HOUS( 1 ) = LHMIN
-      WORK( 1 ) = SROUNDUP_LWORK(LWMIN)
+      WORK( 1 ) = SROUNDUP_LWORK( LWMIN )
       RETURN
 *
 *     End of CHETRD_HB2ST
