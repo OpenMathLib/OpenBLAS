@@ -1,22 +1,560 @@
+!> \brief \b SGEDMD computes the Dynamic Mode Decomposition (DMD) for a pair of data snapshot matrices.
+!
+!  =========== DOCUMENTATION ===========
+!
+!  Definition:
+!  ===========
+!
+!     SUBROUTINE SGEDMD( JOBS, JOBZ, JOBR, JOBF,  WHTSVD,  &
+!                        M, N, X, LDX, Y, LDY, NRNK, TOL,  &
+!                        K, REIG,  IMEIG,   Z, LDZ,  RES,  &
+!                        B, LDB, W,  LDW,   S, LDS,        &
+!                        WORK, LWORK, IWORK, LIWORK, INFO )
+!.....
+!     USE                   iso_fortran_env
+!     IMPLICIT NONE
+!     INTEGER, PARAMETER :: WP = real32
+!.....
+!     Scalar arguments
+!     CHARACTER, INTENT(IN)   :: JOBS,   JOBZ,  JOBR,  JOBF
+!     INTEGER,   INTENT(IN)   :: WHTSVD, M, N,   LDX,  LDY, &
+!                                NRNK, LDZ, LDB, LDW,  LDS, &
+!                                LWORK,  LIWORK
+!     INTEGER,   INTENT(OUT)  :: K, INFO
+!     REAL(KIND=WP), INTENT(IN) ::  TOL
+!     Array arguments
+!     REAL(KIND=WP), INTENT(INOUT) :: X(LDX,*), Y(LDY,*)
+!     REAL(KIND=WP), INTENT(OUT)   :: Z(LDZ,*), B(LDB,*), &
+!                                     W(LDW,*), S(LDS,*)
+!     REAL(KIND=WP), INTENT(OUT)   :: REIG(*),  IMEIG(*), &
+!                                     RES(*)
+!     REAL(KIND=WP), INTENT(OUT)   :: WORK(*)
+!     INTEGER,       INTENT(OUT)   :: IWORK(*)
+!
+!............................................................
+!>    \par Purpose:
+!     =============
+!>    \verbatim
+!>    SGEDMD computes the Dynamic Mode Decomposition (DMD) for
+!>    a pair of data snapshot matrices. For the input matrices
+!>    X and Y such that Y = A*X with an unaccessible matrix
+!>    A, SGEDMD computes a certain number of Ritz pairs of A using
+!>    the standard Rayleigh-Ritz extraction from a subspace of
+!>    range(X) that is determined using the leading left singular
+!>    vectors of X. Optionally, SGEDMD returns the residuals
+!>    of the computed Ritz pairs, the information needed for
+!>    a refinement of the Ritz vectors, or the eigenvectors of
+!>    the Exact DMD.
+!>    For further details see the references listed
+!>    below. For more details of the implementation see [3].
+!>    \endverbatim
+!............................................................
+!>    \par References:
+!     ================
+!>    \verbatim
+!>    [1] P. Schmid: Dynamic mode decomposition of numerical
+!>        and experimental data,
+!>        Journal of Fluid Mechanics 656, 5-28, 2010.
+!>    [2] Z. Drmac, I. Mezic, R. Mohr: Data driven modal
+!>        decompositions: analysis and enhancements,
+!>        SIAM J. on Sci. Comp. 40 (4), A2253-A2285, 2018.
+!>    [3] Z. Drmac: A LAPACK implementation of the Dynamic
+!>        Mode Decomposition I. Technical report. AIMDyn Inc.
+!>        and LAPACK Working Note 298.
+!>    [4] J. Tu, C. W. Rowley, D. M. Luchtenburg, S. L.
+!>        Brunton, N. Kutz: On Dynamic Mode Decomposition:
+!>        Theory and Applications, Journal of Computational
+!>        Dynamics 1(2), 391 -421, 2014.
+!>    \endverbatim
+!......................................................................
+!>    \par Developed and supported by:
+!     ================================
+!>    \verbatim
+!>    Developed and coded by Zlatko Drmac, Faculty of Science,
+!>    University of Zagreb;  drmac@math.hr
+!>    In cooperation with
+!>    AIMdyn Inc., Santa Barbara, CA.
+!>    and supported by
+!>    - DARPA SBIR project "Koopman Operator-Based Forecasting
+!>    for Nonstationary Processes from Near-Term, Limited
+!>    Observational Data" Contract No: W31P4Q-21-C-0007
+!>    - DARPA PAI project "Physics-Informed Machine Learning
+!>    Methodologies" Contract No: HR0011-18-9-0033
+!>    - DARPA MoDyL project "A Data-Driven, Operator-Theoretic
+!>    Framework for Space-Time Analysis of Process Dynamics"
+!>    Contract No: HR0011-16-C-0116
+!>    Any opinions, findings and conclusions or recommendations
+!>    expressed in this material are those of the author and
+!>    do not necessarily reflect the views of the DARPA SBIR
+!>    Program Office
+!>    \endverbatim
+!......................................................................
+!>    \par Distribution Statement A:
+!     ==============================
+!>    \verbatim
+!>    Distribution Statement A:
+!>    Approved for Public Release, Distribution Unlimited.
+!>    Cleared by DARPA on September 29, 2022
+!>    \endverbatim
+!============================================================
+!     Arguments
+!     =========
+!
+!>    \param[in] JOBS
+!>    \verbatim
+!>    JOBS (input) CHARACTER*1
+!>    Determines whether the initial data snapshots are scaled
+!>    by a diagonal matrix.
+!>    'S' :: The data snapshots matrices X and Y are multiplied
+!>           with a diagonal matrix D so that X*D has unit
+!>           nonzero columns (in the Euclidean 2-norm)
+!>    'C' :: The snapshots are scaled as with the 'S' option.
+!>           If it is found that an i-th column of X is zero
+!>           vector and the corresponding i-th column of Y is
+!>           non-zero, then the i-th column of Y is set to
+!>           zero and a warning flag is raised.
+!>    'Y' :: The data snapshots matrices X and Y are multiplied
+!>           by a diagonal matrix D so that Y*D has unit
+!>           nonzero columns (in the Euclidean 2-norm)
+!>    'N' :: No data scaling.
+!>    \endverbatim
+!.....
+!>    \param[in] JOBZ
+!>    \verbatim
+!>    JOBZ (input) CHARACTER*1
+!>    Determines whether the eigenvectors (Koopman modes) will
+!>    be computed.
+!>    'V' :: The eigenvectors (Koopman modes) will be computed
+!>           and returned in the matrix Z.
+!>           See the description of Z.
+!>    'F' :: The eigenvectors (Koopman modes) will be returned
+!>           in factored form as the product X(:,1:K)*W, where X
+!>           contains a POD basis (leading left singular vectors
+!>           of the data matrix X) and W contains the eigenvectors
+!>           of the corresponding Rayleigh quotient.
+!>           See the descriptions of K, X, W, Z.
+!>    'N' :: The eigenvectors are not computed.
+!>    \endverbatim
+!.....
+!>    \param[in] JOBR
+!>    \verbatim
+!>    JOBR (input) CHARACTER*1
+!>    Determines whether to compute the residuals.
+!>    'R' :: The residuals for the computed eigenpairs will be
+!>           computed and stored in the array RES.
+!>           See the description of RES.
+!>           For this option to be legal, JOBZ must be 'V'.
+!>    'N' :: The residuals are not computed.
+!>    \endverbatim
+!.....
+!>    \param[in] JOBF
+!>    \verbatim
+!>    JOBF (input) CHARACTER*1
+!>    Specifies whether to store information needed for post-
+!>    processing (e.g. computing refined Ritz vectors)
+!>    'R' :: The matrix needed for the refinement of the Ritz
+!>           vectors is computed and stored in the array B.
+!>           See the description of B.
+!>    'E' :: The unscaled eigenvectors of the Exact DMD are
+!>           computed and returned in the array B. See the
+!>           description of B.
+!>    'N' :: No eigenvector refinement data is computed.
+!>    \endverbatim
+!.....
+!>    \param[in] WHTSVD
+!>    \verbatim
+!>    WHTSVD (input) INTEGER, WHSTVD in { 1, 2, 3, 4 }
+!>    Allows for a selection of the SVD algorithm from the
+!>    LAPACK library.
+!>    1 :: SGESVD (the QR SVD algorithm)
+!>    2 :: SGESDD (the Divide and Conquer algorithm; if enough
+!>         workspace available, this is the fastest option)
+!>    3 :: SGESVDQ (the preconditioned QR SVD  ; this and 4
+!>         are the most accurate options)
+!>    4 :: SGEJSV (the preconditioned Jacobi SVD; this and 3
+!>         are the most accurate options)
+!>    For the four methods above, a significant difference in
+!>    the accuracy of small singular values is possible if
+!>    the snapshots vary in norm so that X is severely
+!>    ill-conditioned. If small (smaller than EPS*||X||)
+!>    singular values are of interest and JOBS=='N',  then
+!>    the options (3, 4) give the most accurate results, where
+!>    the option 4 is slightly better and with stronger
+!>    theoretical background.
+!>    If JOBS=='S', i.e. the columns of X will be normalized,
+!>    then all methods give nearly equally accurate results.
+!>    \endverbatim
+!.....
+!>    \param[in] M
+!>    \verbatim
+!>    M (input) INTEGER, M>= 0
+!>    The state space dimension (the row dimension of X, Y).
+!>    \endverbatim
+!.....
+!>    \param[in] N
+!>    \verbatim
+!>    N (input) INTEGER, 0 <= N <= M
+!>    The number of data snapshot pairs
+!>    (the number of columns of X and Y).
+!>    \endverbatim
+!.....
+!>    \param[in,out] X
+!>    \verbatim
+!>    X (input/output) REAL(KIND=WP) M-by-N array
+!>    > On entry, X contains the data snapshot matrix X. It is
+!>    assumed that the column norms of X are in the range of
+!>    the normalized floating point numbers.
+!>    < On exit, the leading K columns of X contain a POD basis,
+!>    i.e. the leading K left singular vectors of the input
+!>    data matrix X, U(:,1:K). All N columns of X contain all
+!>    left singular vectors of the input matrix X.
+!>    See the descriptions of K, Z and W.
+!>    \endverbatim
+!.....
+!>    \param[in] LDX
+!>    \verbatim
+!>    LDX (input) INTEGER, LDX >= M
+!>    The leading dimension of the array X.
+!>    \endverbatim
+!.....
+!>    \param[in,out] Y
+!>    \verbatim
+!>    Y (input/workspace/output) REAL(KIND=WP) M-by-N array
+!>    > On entry, Y contains the data snapshot matrix Y
+!>    < On exit,
+!>    If JOBR == 'R', the leading K columns of Y  contain
+!>    the residual vectors for the computed Ritz pairs.
+!>    See the description of RES.
+!>    If JOBR == 'N', Y contains the original input data,
+!>                    scaled according to the value of JOBS.
+!>    \endverbatim
+!.....
+!>    \param[in] LDY
+!>    \verbatim
+!>    LDY (input) INTEGER , LDY >= M
+!>    The leading dimension of the array Y.
+!>    \endverbatim
+!.....
+!>    \param[in] NRNK
+!>    \verbatim
+!>    NRNK (input) INTEGER
+!>    Determines the mode how to compute the numerical rank,
+!>    i.e. how to truncate small singular values of the input
+!>    matrix X. On input, if
+!>    NRNK = -1 :: i-th singular value sigma(i) is truncated
+!>                 if sigma(i) <= TOL*sigma(1)
+!>                 This option is recommended.
+!>    NRNK = -2 :: i-th singular value sigma(i) is truncated
+!>                 if sigma(i) <= TOL*sigma(i-1)
+!>                 This option is included for R&D purposes.
+!>                 It requires highly accurate SVD, which
+!>                 may not be feasible.
+!>    The numerical rank can be enforced by using positive
+!>    value of NRNK as follows:
+!>    0 < NRNK <= N :: at most NRNK largest singular values
+!>    will be used. If the number of the computed nonzero
+!>    singular values is less than NRNK, then only those
+!>    nonzero values will be used and the actually used
+!>    dimension is less than NRNK. The actual number of
+!>    the nonzero singular values is returned in the variable
+!>    K. See the descriptions of TOL and  K.
+!>    \endverbatim
+!.....
+!>    \param[in] TOL
+!>    \verbatim
+!>    TOL (input) REAL(KIND=WP), 0 <= TOL < 1
+!>    The tolerance for truncating small singular values.
+!>    See the description of NRNK.
+!>    \endverbatim
+!.....
+!>    \param[out] K
+!>    \verbatim
+!>    K (output) INTEGER,  0 <= K <= N
+!>    The dimension of the POD basis for the data snapshot
+!>    matrix X and the number of the computed Ritz pairs.
+!>    The value of K is determined according to the rule set
+!>    by the parameters NRNK and TOL.
+!>    See the descriptions of NRNK and TOL.
+!>    \endverbatim
+!.....
+!>    \param[out] REIG
+!>    \verbatim
+!>    REIG (output) REAL(KIND=WP) N-by-1 array
+!>    The leading K (K<=N) entries of REIG contain
+!>    the real parts of the computed eigenvalues
+!>    REIG(1:K) + sqrt(-1)*IMEIG(1:K).
+!>    See the descriptions of K, IMEIG, and Z.
+!>    \endverbatim
+!.....
+!>    \param[out] IMEIG
+!>    \verbatim
+!>    IMEIG (output) REAL(KIND=WP) N-by-1 array
+!>    The leading K (K<=N) entries of IMEIG contain
+!>    the imaginary parts of the computed eigenvalues
+!>    REIG(1:K) + sqrt(-1)*IMEIG(1:K).
+!>    The eigenvalues are determined as follows:
+!>    If IMEIG(i) == 0, then the corresponding eigenvalue is
+!>    real, LAMBDA(i) = REIG(i).
+!>    If IMEIG(i)>0, then the corresponding complex
+!>    conjugate pair of eigenvalues reads
+!>    LAMBDA(i)   = REIG(i) + sqrt(-1)*IMAG(i)
+!>    LAMBDA(i+1) = REIG(i) - sqrt(-1)*IMAG(i)
+!>    That is, complex conjugate pairs have consecutive
+!>    indices (i,i+1), with the positive imaginary part
+!>    listed first.
+!>    See the descriptions of K, REIG, and Z.
+!>    \endverbatim
+!.....
+!>    \param[out] Z
+!>    \verbatim
+!>    Z (workspace/output) REAL(KIND=WP)  M-by-N array
+!>    If JOBZ =='V' then
+!>       Z contains real Ritz vectors as follows:
+!>       If IMEIG(i)=0, then Z(:,i) is an eigenvector of
+!>       the i-th Ritz value; ||Z(:,i)||_2=1.
+!>       If IMEIG(i) > 0 (and IMEIG(i+1) < 0) then
+!>       [Z(:,i) Z(:,i+1)] span an invariant subspace and
+!>       the Ritz values extracted from this subspace are
+!>       REIG(i) + sqrt(-1)*IMEIG(i) and
+!>       REIG(i) - sqrt(-1)*IMEIG(i).
+!>       The corresponding eigenvectors are
+!>       Z(:,i) + sqrt(-1)*Z(:,i+1) and
+!>       Z(:,i) - sqrt(-1)*Z(:,i+1), respectively.
+!>       || Z(:,i:i+1)||_F = 1.
+!>    If JOBZ == 'F', then the above descriptions hold for
+!>    the columns of X(:,1:K)*W(1:K,1:K), where the columns
+!>    of W(1:k,1:K) are the computed eigenvectors of the
+!>    K-by-K Rayleigh quotient. The columns of W(1:K,1:K)
+!>    are similarly structured: If IMEIG(i) == 0 then
+!>    X(:,1:K)*W(:,i) is an eigenvector, and if IMEIG(i)>0
+!>    then X(:,1:K)*W(:,i)+sqrt(-1)*X(:,1:K)*W(:,i+1) and
+!>         X(:,1:K)*W(:,i)-sqrt(-1)*X(:,1:K)*W(:,i+1)
+!>    are the eigenvectors of LAMBDA(i), LAMBDA(i+1).
+!>    See the descriptions of REIG, IMEIG, X and W.
+!>    \endverbatim
+!.....
+!>    \param[in] LDZ
+!>    \verbatim
+!>    LDZ (input) INTEGER , LDZ >= M
+!>    The leading dimension of the array Z.
+!>    \endverbatim
+!.....
+!>    \param[out] RES
+!>    \verbatim
+!>    RES (output) REAL(KIND=WP) N-by-1 array
+!>    RES(1:K) contains the residuals for the K computed
+!>    Ritz pairs.
+!>    If LAMBDA(i) is real, then
+!>       RES(i) = || A * Z(:,i) - LAMBDA(i)*Z(:,i))||_2.
+!>    If [LAMBDA(i), LAMBDA(i+1)] is a complex conjugate pair
+!>    then
+!>    RES(i)=RES(i+1) = || A * Z(:,i:i+1) - Z(:,i:i+1) *B||_F
+!>    where B = [ real(LAMBDA(i)) imag(LAMBDA(i)) ]
+!>              [-imag(LAMBDA(i)) real(LAMBDA(i)) ].
+!>    It holds that
+!>    RES(i)   = || A*ZC(:,i)   - LAMBDA(i)  *ZC(:,i)   ||_2
+!>    RES(i+1) = || A*ZC(:,i+1) - LAMBDA(i+1)*ZC(:,i+1) ||_2
+!>    where ZC(:,i)   =  Z(:,i) + sqrt(-1)*Z(:,i+1)
+!>          ZC(:,i+1) =  Z(:,i) - sqrt(-1)*Z(:,i+1)
+!>    See the description of REIG, IMEIG and Z.
+!>    \endverbatim
+!.....
+!>    \param[out] B
+!>    \verbatim
+!>    B (output) REAL(KIND=WP)  M-by-N array.
+!>    IF JOBF =='R', B(1:M,1:K) contains A*U(:,1:K), and can
+!>    be used for computing the refined vectors; see further
+!>    details in the provided references.
+!>    If JOBF == 'E', B(1:M,1;K) contains
+!>    A*U(:,1:K)*W(1:K,1:K), which are the vectors from the
+!>    Exact DMD, up to scaling by the inverse eigenvalues.
+!>    If JOBF =='N', then B is not referenced.
+!>    See the descriptions of X, W, K.
+!>    \endverbatim
+!.....
+!>    \param[in] LDB
+!>    \verbatim
+!>    LDB (input) INTEGER, LDB >= M
+!>    The leading dimension of the array B.
+!>    \endverbatim
+!.....
+!>    \param[out] W
+!>    \verbatim
+!>    W (workspace/output) REAL(KIND=WP) N-by-N array
+!>    On exit, W(1:K,1:K) contains the K computed
+!>    eigenvectors of the matrix Rayleigh quotient (real and
+!>    imaginary parts for each complex conjugate pair of the
+!>    eigenvalues). The Ritz vectors (returned in Z) are the
+!>    product of X (containing a POD basis for the input
+!>    matrix X) and W. See the descriptions of K, S, X and Z.
+!>    W is also used as a workspace to temporarily store the
+!>    left singular vectors of X.
+!>    \endverbatim
+!.....
+!>    \param[in] LDW
+!>    \verbatim
+!>    LDW (input) INTEGER, LDW >= N
+!>    The leading dimension of the array W.
+!>    \endverbatim
+!.....
+!>    \param[out] S
+!>    \verbatim
+!>    S (workspace/output) REAL(KIND=WP) N-by-N array
+!>    The array S(1:K,1:K) is used for the matrix Rayleigh
+!>    quotient. This content is overwritten during
+!>    the eigenvalue decomposition by SGEEV.
+!>    See the description of K.
+!>    \endverbatim
+!.....
+!>    \param[in] LDS
+!>    \verbatim
+!>    LDS (input) INTEGER, LDS >= N
+!>    The leading dimension of the array S.
+!>    \endverbatim
+!.....
+!>    \param[out] WORK
+!>    \verbatim
+!>    WORK (workspace/output) REAL(KIND=WP) LWORK-by-1 array
+!>    On exit, WORK(1:N) contains the singular values of
+!>    X (for JOBS=='N') or column scaled X (JOBS=='S', 'C').
+!>    If WHTSVD==4, then WORK(N+1) and WORK(N+2) contain
+!>    scaling factor WORK(N+2)/WORK(N+1) used to scale X
+!>    and Y to avoid overflow in the SVD of X.
+!>    This may be of interest if the scaling option is off
+!>    and as many as possible smallest eigenvalues are
+!>    desired to the highest feasible accuracy.
+!>    If the call to SGEDMD is only workspace query, then
+!>    WORK(1) contains the minimal workspace length and
+!>    WORK(2) is the optimal workspace length. Hence, the
+!>    length of work is at least 2.
+!>    See the description of LWORK.
+!>    \endverbatim
+!.....
+!>    \param[in] LWORK
+!>    \verbatim
+!>    LWORK (input) INTEGER
+!>    The minimal length of the workspace vector WORK.
+!>    LWORK is calculated as follows:
+!>    If WHTSVD == 1 ::
+!>       If JOBZ == 'V', then
+!>       LWORK >= MAX(2, N + LWORK_SVD, N+MAX(1,4*N)).
+!>       If JOBZ == 'N'  then
+!>       LWORK >= MAX(2, N + LWORK_SVD, N+MAX(1,3*N)).
+!>       Here LWORK_SVD = MAX(1,3*N+M,5*N) is the minimal
+!>       workspace length of SGESVD.
+!>    If WHTSVD == 2 ::
+!>       If JOBZ == 'V', then
+!>       LWORK >= MAX(2, N + LWORK_SVD, N+MAX(1,4*N))
+!>       If JOBZ == 'N', then
+!>       LWORK >= MAX(2, N + LWORK_SVD, N+MAX(1,3*N))
+!>       Here LWORK_SVD = MAX(M, 5*N*N+4*N)+3*N*N is the
+!>       minimal workspace length of SGESDD.
+!>    If WHTSVD == 3 ::
+!>       If JOBZ == 'V', then
+!>       LWORK >= MAX(2, N+LWORK_SVD,N+MAX(1,4*N))
+!>       If JOBZ == 'N', then
+!>       LWORK >= MAX(2, N+LWORK_SVD,N+MAX(1,3*N))
+!>       Here LWORK_SVD = N+M+MAX(3*N+1,
+!>                       MAX(1,3*N+M,5*N),MAX(1,N))
+!>       is the minimal workspace length of SGESVDQ.
+!>    If WHTSVD == 4 ::
+!>       If JOBZ == 'V', then
+!>       LWORK >= MAX(2, N+LWORK_SVD,N+MAX(1,4*N))
+!>       If JOBZ == 'N', then
+!>       LWORK >= MAX(2, N+LWORK_SVD,N+MAX(1,3*N))
+!>       Here LWORK_SVD = MAX(7,2*M+N,6*N+2*N*N) is the
+!>       minimal workspace length of SGEJSV.
+!>    The above expressions are not simplified in order to
+!>    make the usage of WORK more transparent, and for
+!>    easier checking. In any case, LWORK >= 2.
+!>    If on entry LWORK = -1, then a workspace query is
+!>    assumed and the procedure only computes the minimal
+!>    and the optimal workspace lengths for both WORK and
+!>    IWORK. See the descriptions of WORK and IWORK.
+!>    \endverbatim
+!.....
+!>    \param[out] IWORK
+!>    \verbatim
+!>    IWORK (workspace/output) INTEGER LIWORK-by-1 array
+!>    Workspace that is required only if WHTSVD equals
+!>    2 , 3 or 4. (See the description of WHTSVD).
+!>    If on entry LWORK =-1 or LIWORK=-1, then the
+!>    minimal length of IWORK is computed and returned in
+!>    IWORK(1). See the description of LIWORK.
+!>    \endverbatim
+!.....
+!>    \param[in] LIWORK
+!>    \verbatim
+!>    LIWORK (input) INTEGER
+!>    The minimal length of the workspace vector IWORK.
+!>    If WHTSVD == 1, then only IWORK(1) is used; LIWORK >=1
+!>    If WHTSVD == 2, then LIWORK >= MAX(1,8*MIN(M,N))
+!>    If WHTSVD == 3, then LIWORK >= MAX(1,M+N-1)
+!>    If WHTSVD == 4, then LIWORK >= MAX(3,M+3*N)
+!>    If on entry LIWORK = -1, then a workspace query is
+!>    assumed and the procedure only computes the minimal
+!>    and the optimal workspace lengths for both WORK and
+!>    IWORK. See the descriptions of WORK and IWORK.
+!>    \endverbatim
+!.....
+!>    \param[out] INFO
+!>    \verbatim
+!>    INFO (output) INTEGER
+!>    -i < 0 :: On entry, the i-th argument had an
+!>              illegal value
+!>       = 0 :: Successful return.
+!>       = 1 :: Void input. Quick exit (M=0 or N=0).
+!>       = 2 :: The SVD computation of X did not converge.
+!>              Suggestion: Check the input data and/or
+!>              repeat with different WHTSVD.
+!>       = 3 :: The computation of the eigenvalues did not
+!>              converge.
+!>       = 4 :: If data scaling was requested on input and
+!>              the procedure found inconsistency in the data
+!>              such that for some column index i,
+!>              X(:,i) = 0 but Y(:,i) /= 0, then Y(:,i) is set
+!>              to zero if JOBS=='C'. The computation proceeds
+!>              with original or modified data and warning
+!>              flag is set with INFO=4.
+!>    \endverbatim
+!
+!  Authors:
+!  ========
+!
+!> \author Zlatko Drmac
+!
+!> \ingroup gedmd
+!
+!.............................................................
+!.............................................................
       SUBROUTINE SGEDMD( JOBS, JOBZ, JOBR, JOBF,  WHTSVD,  &
                          M, N, X, LDX, Y, LDY, NRNK, TOL,  &
                          K, REIG,  IMEIG,   Z, LDZ,  RES,  &
                          B, LDB, W,  LDW,   S, LDS,        &
                          WORK, LWORK, IWORK, LIWORK, INFO )
-! March 2023
+!
+!  -- LAPACK driver routine                                           --
+!
+!  -- LAPACK is a software package provided by University of          --
+!  -- Tennessee, University of California Berkeley, University of     --
+!  -- Colorado Denver and NAG Ltd..                                   --
+!
 !.....
       USE                   iso_fortran_env
       IMPLICIT NONE
       INTEGER, PARAMETER :: WP = real32
-!.....
+!
 !     Scalar arguments
+!     ~~~~~~~~~~~~~~~~
       CHARACTER, INTENT(IN)   :: JOBS,   JOBZ,  JOBR,  JOBF
       INTEGER,   INTENT(IN)   :: WHTSVD, M, N,   LDX,  LDY, &
                                  NRNK, LDZ, LDB, LDW,  LDS, &
                                  LWORK,  LIWORK
       INTEGER,   INTENT(OUT)  :: K, INFO
       REAL(KIND=WP), INTENT(IN) ::  TOL
+!
 !     Array arguments
+!     ~~~~~~~~~~~~~~~
       REAL(KIND=WP), INTENT(INOUT) :: X(LDX,*), Y(LDY,*)
       REAL(KIND=WP), INTENT(OUT)   :: Z(LDZ,*), B(LDB,*), &
                                       W(LDW,*), S(LDS,*)
@@ -24,400 +562,12 @@
                                       RES(*)
       REAL(KIND=WP), INTENT(OUT)   :: WORK(*)
       INTEGER,       INTENT(OUT)   :: IWORK(*)
-!............................................................
-!     Purpose
-!     =======
-!     SGEDMD computes the Dynamic Mode Decomposition (DMD) for
-!     a pair of data snapshot matrices. For the input matrices
-!     X and Y such that Y = A*X with an unaccessible matrix
-!     A, SGEDMD computes a certain number of Ritz pairs of A using
-!     the standard Rayleigh-Ritz extraction from a subspace of
-!     range(X) that is determined using the leading left singular
-!     vectors of X. Optionally, SGEDMD returns the residuals
-!     of the computed Ritz pairs, the information needed for
-!     a refinement of the Ritz vectors, or the eigenvectors of
-!     the Exact DMD.
-!     For further details see the references listed
-!     below. For more details of the implementation see [3].
 !
-!     References
-!     ==========
-!     [1] P. Schmid: Dynamic mode decomposition of numerical
-!         and experimental data,
-!         Journal of Fluid Mechanics 656, 5-28, 2010.
-!     [2] Z. Drmac, I. Mezic, R. Mohr: Data driven modal
-!         decompositions: analysis and enhancements,
-!         SIAM J. on Sci. Comp. 40 (4), A2253-A2285, 2018.
-!     [3] Z. Drmac: A LAPACK implementation of the Dynamic
-!         Mode Decomposition I. Technical report. AIMDyn Inc.
-!         and LAPACK Working Note 298.
-!     [4] J. Tu, C. W. Rowley, D. M. Luchtenburg, S. L.
-!         Brunton, N. Kutz: On Dynamic Mode Decomposition:
-!         Theory and Applications, Journal of Computational
-!         Dynamics 1(2), 391 -421, 2014.
-!
-!......................................................................
-!     Developed and supported by:
-!     ===========================
-!     Developed and coded by Zlatko Drmac, Faculty of Science,
-!     University of Zagreb;  drmac@math.hr
-!     In cooperation with
-!     AIMdyn Inc., Santa Barbara, CA.
-!     and supported by
-!     - DARPA SBIR project "Koopman Operator-Based Forecasting
-!     for Nonstationary Processes from Near-Term, Limited
-!     Observational Data" Contract No: W31P4Q-21-C-0007
-!     - DARPA PAI project "Physics-Informed Machine Learning
-!     Methodologies" Contract No: HR0011-18-9-0033
-!     - DARPA MoDyL project "A Data-Driven, Operator-Theoretic
-!     Framework for Space-Time Analysis of Process Dynamics"
-!     Contract No: HR0011-16-C-0116
-!     Any opinions, findings and conclusions or recommendations
-!     expressed in this material are those of the author and
-!     do not necessarily reflect the views of the DARPA SBIR
-!     Program Office
-!============================================================
-!     Distribution Statement A:
-!     Approved for Public Release, Distribution Unlimited.
-!     Cleared by DARPA on September 29, 2022
-!============================================================
-!......................................................................
-!     Arguments
-!     =========
-!     JOBS (input) CHARACTER*1
-!     Determines whether the initial data snapshots are scaled
-!     by a diagonal matrix.
-!     'S' :: The data snapshots matrices X and Y are multiplied
-!            with a diagonal matrix D so that X*D has unit
-!            nonzero columns (in the Euclidean 2-norm)
-!     'C' :: The snapshots are scaled as with the 'S' option.
-!            If it is found that an i-th column of X is zero
-!            vector and the corresponding i-th column of Y is
-!            non-zero, then the i-th column of Y is set to
-!            zero and a warning flag is raised.
-!     'Y' :: The data snapshots matrices X and Y are multiplied
-!            by a diagonal matrix D so that Y*D has unit
-!            nonzero columns (in the Euclidean 2-norm)
-!     'N' :: No data scaling.
-!.....
-!     JOBZ (input) CHARACTER*1
-!     Determines whether the eigenvectors (Koopman modes) will
-!     be computed.
-!     'V' :: The eigenvectors (Koopman modes) will be computed
-!            and returned in the matrix Z.
-!            See the description of Z.
-!     'F' :: The eigenvectors (Koopman modes) will be returned
-!            in factored form as the product X(:,1:K)*W, where X
-!            contains a POD basis (leading left singular vectors
-!            of the data matrix X) and W contains the eigenvectors
-!            of the corresponding Rayleigh quotient.
-!            See the descriptions of K, X, W, Z.
-!     'N' :: The eigenvectors are not computed.
-!.....
-!     JOBR (input) CHARACTER*1
-!     Determines whether to compute the residuals.
-!     'R' :: The residuals for the computed eigenpairs will be
-!            computed and stored in the array RES.
-!            See the description of RES.
-!            For this option to be legal, JOBZ must be 'V'.
-!     'N' :: The residuals are not computed.
-!.....
-!     JOBF (input) CHARACTER*1
-!     Specifies whether to store information needed for post-
-!     processing (e.g. computing refined Ritz vectors)
-!     'R' :: The matrix needed for the refinement of the Ritz
-!            vectors is computed and stored in the array B.
-!            See the description of B.
-!     'E' :: The unscaled eigenvectors of the Exact DMD are
-!            computed and returned in the array B. See the
-!            description of B.
-!     'N' :: No eigenvector refinement data is computed.
-!.....
-!     WHTSVD (input) INTEGER, WHSTVD in { 1, 2, 3, 4 }
-!     Allows for a selection of the SVD algorithm from the
-!     LAPACK library.
-!     1 :: SGESVD (the QR SVD algorithm)
-!     2 :: SGESDD (the Divide and Conquer algorithm; if enough
-!          workspace available, this is the fastest option)
-!     3 :: SGESVDQ (the preconditioned QR SVD  ; this and 4
-!          are the most accurate options)
-!     4 :: SGEJSV (the preconditioned Jacobi SVD; this and 3
-!          are the most accurate options)
-!     For the four methods above, a significant difference in
-!     the accuracy of small singular values is possible if
-!     the snapshots vary in norm so that X is severely
-!     ill-conditioned. If small (smaller than EPS*||X||)
-!     singular values are of interest and JOBS=='N',  then
-!     the options (3, 4) give the most accurate results, where
-!     the option 4 is slightly better and with stronger
-!     theoretical background.
-!     If JOBS=='S', i.e. the columns of X will be normalized,
-!     then all methods give nearly equally accurate results.
-!.....
-!     M (input) INTEGER, M>= 0
-!     The state space dimension (the row dimension of X, Y).
-!.....
-!     N (input) INTEGER, 0 <= N <= M
-!     The number of data snapshot pairs
-!     (the number of columns of X and Y).
-!.....
-!     X (input/output) REAL(KIND=WP) M-by-N array
-!     > On entry, X contains the data snapshot matrix X. It is
-!     assumed that the column norms of X are in the range of
-!     the normalized floating point numbers.
-!     < On exit, the leading K columns of X contain a POD basis,
-!     i.e. the leading K left singular vectors of the input
-!     data matrix X, U(:,1:K). All N columns of X contain all
-!     left singular vectors of the input matrix X.
-!     See the descriptions of K, Z and W.
-!.....
-!     LDX (input) INTEGER, LDX >= M
-!     The leading dimension of the array X.
-!.....
-!     Y (input/workspace/output) REAL(KIND=WP) M-by-N array
-!     > On entry, Y contains the data snapshot matrix Y
-!     < On exit,
-!     If JOBR == 'R', the leading K columns of Y  contain
-!     the residual vectors for the computed Ritz pairs.
-!     See the description of RES.
-!     If JOBR == 'N', Y contains the original input data,
-!                     scaled according to the value of JOBS.
-!.....
-!     LDY (input) INTEGER , LDY >= M
-!     The leading dimension of the array Y.
-!.....
-!     NRNK (input) INTEGER
-!     Determines the mode how to compute the numerical rank,
-!     i.e. how to truncate small singular values of the input
-!     matrix X. On input, if
-!     NRNK = -1 :: i-th singular value sigma(i) is truncated
-!                  if sigma(i) <= TOL*sigma(1)
-!                  This option is recommended.
-!     NRNK = -2 :: i-th singular value sigma(i) is truncated
-!                  if sigma(i) <= TOL*sigma(i-1)
-!                  This option is included for R&D purposes.
-!                  It requires highly accurate SVD, which
-!                  may not be feasible.
-!     The numerical rank can be enforced by using positive
-!     value of NRNK as follows:
-!     0 < NRNK <= N :: at most NRNK largest singular values
-!     will be used. If the number of the computed nonzero
-!     singular values is less than NRNK, then only those
-!     nonzero values will be used and the actually used
-!     dimension is less than NRNK. The actual number of
-!     the nonzero singular values is returned in the variable
-!     K. See the descriptions of TOL and  K.
-!.....
-!     TOL (input) REAL(KIND=WP), 0 <= TOL < 1
-!     The tolerance for truncating small singular values.
-!     See the description of NRNK.
-!.....
-!     K (output) INTEGER,  0 <= K <= N
-!     The dimension of the POD basis for the data snapshot
-!     matrix X and the number of the computed Ritz pairs.
-!     The value of K is determined according to the rule set
-!     by the parameters NRNK and TOL.
-!     See the descriptions of NRNK and TOL.
-!.....
-!     REIG (output) REAL(KIND=WP) N-by-1 array
-!     The leading K (K<=N) entries of REIG contain
-!     the real parts of the computed eigenvalues
-!     REIG(1:K) + sqrt(-1)*IMEIG(1:K).
-!     See the descriptions of K, IMEIG, and Z.
-!.....
-!     IMEIG (output) REAL(KIND=WP) N-by-1 array
-!     The leading K (K<=N) entries of IMEIG contain
-!     the imaginary parts of the computed eigenvalues
-!     REIG(1:K) + sqrt(-1)*IMEIG(1:K).
-!     The eigenvalues are determined as follows:
-!     If IMEIG(i) == 0, then the corresponding eigenvalue is
-!     real, LAMBDA(i) = REIG(i).
-!     If IMEIG(i)>0, then the corresponding complex
-!     conjugate pair of eigenvalues reads
-!     LAMBDA(i)   = REIG(i) + sqrt(-1)*IMAG(i)
-!     LAMBDA(i+1) = REIG(i) - sqrt(-1)*IMAG(i)
-!     That is, complex conjugate pairs have consecutive
-!     indices (i,i+1), with the positive imaginary part
-!     listed first.
-!     See the descriptions of K, REIG, and Z.
-!.....
-!     Z (workspace/output) REAL(KIND=WP)  M-by-N array
-!     If JOBZ =='V' then
-!        Z contains real Ritz vectors as follows:
-!        If IMEIG(i)=0, then Z(:,i) is an eigenvector of
-!        the i-th Ritz value; ||Z(:,i)||_2=1.
-!        If IMEIG(i) > 0 (and IMEIG(i+1) < 0) then
-!        [Z(:,i) Z(:,i+1)] span an invariant subspace and
-!        the Ritz values extracted from this subspace are
-!        REIG(i) + sqrt(-1)*IMEIG(i) and
-!        REIG(i) - sqrt(-1)*IMEIG(i).
-!        The corresponding eigenvectors are
-!        Z(:,i) + sqrt(-1)*Z(:,i+1) and
-!        Z(:,i) - sqrt(-1)*Z(:,i+1), respectively.
-!        || Z(:,i:i+1)||_F = 1.
-!     If JOBZ == 'F', then the above descriptions hold for
-!     the columns of X(:,1:K)*W(1:K,1:K), where the columns
-!     of W(1:k,1:K) are the computed eigenvectors of the
-!     K-by-K Rayleigh quotient. The columns of W(1:K,1:K)
-!     are similarly structured: If IMEIG(i) == 0 then
-!     X(:,1:K)*W(:,i) is an eigenvector, and if IMEIG(i)>0
-!     then X(:,1:K)*W(:,i)+sqrt(-1)*X(:,1:K)*W(:,i+1) and
-!          X(:,1:K)*W(:,i)-sqrt(-1)*X(:,1:K)*W(:,i+1)
-!     are the eigenvectors of LAMBDA(i), LAMBDA(i+1).
-!     See the descriptions of REIG, IMEIG, X and W.
-!.....
-!     LDZ (input) INTEGER , LDZ >= M
-!     The leading dimension of the array Z.
-!.....
-!     RES (output) REAL(KIND=WP) N-by-1 array
-!     RES(1:K) contains the residuals for the K computed
-!     Ritz pairs.
-!     If LAMBDA(i) is real, then
-!        RES(i) = || A * Z(:,i) - LAMBDA(i)*Z(:,i))||_2.
-!     If [LAMBDA(i), LAMBDA(i+1)] is a complex conjugate pair
-!     then
-!     RES(i)=RES(i+1) = || A * Z(:,i:i+1) - Z(:,i:i+1) *B||_F
-!     where B = [ real(LAMBDA(i)) imag(LAMBDA(i)) ]
-!               [-imag(LAMBDA(i)) real(LAMBDA(i)) ].
-!     It holds that
-!     RES(i)   = || A*ZC(:,i)   - LAMBDA(i)  *ZC(:,i)   ||_2
-!     RES(i+1) = || A*ZC(:,i+1) - LAMBDA(i+1)*ZC(:,i+1) ||_2
-!     where ZC(:,i)   =  Z(:,i) + sqrt(-1)*Z(:,i+1)
-!           ZC(:,i+1) =  Z(:,i) - sqrt(-1)*Z(:,i+1)
-!     See the description of REIG, IMEIG and Z.
-!.....
-!     B (output) REAL(KIND=WP)  M-by-N array.
-!     IF JOBF =='R', B(1:M,1:K) contains A*U(:,1:K), and can
-!     be used for computing the refined vectors; see further
-!     details in the provided references.
-!     If JOBF == 'E', B(1:M,1;K) contains
-!     A*U(:,1:K)*W(1:K,1:K), which are the vectors from the
-!     Exact DMD, up to scaling by the inverse eigenvalues.
-!     If JOBF =='N', then B is not referenced.
-!     See the descriptions of X, W, K.
-!.....
-!     LDB (input) INTEGER, LDB >= M
-!     The leading dimension of the array B.
-!.....
-!     W (workspace/output) REAL(KIND=WP) N-by-N array
-!     On exit, W(1:K,1:K) contains the K computed
-!     eigenvectors of the matrix Rayleigh quotient (real and
-!     imaginary parts for each complex conjugate pair of the
-!     eigenvalues). The Ritz vectors (returned in Z) are the
-!     product of X (containing a POD basis for the input
-!     matrix X) and W. See the descriptions of K, S, X and Z.
-!     W is also used as a workspace to temporarily store the
-!     left singular vectors of X.
-!.....
-!     LDW (input) INTEGER, LDW >= N
-!     The leading dimension of the array W.
-!.....
-!     S (workspace/output) REAL(KIND=WP) N-by-N array
-!     The array S(1:K,1:K) is used for the matrix Rayleigh
-!     quotient. This content is overwritten during
-!     the eigenvalue decomposition by SGEEV.
-!     See the description of K.
-!.....
-!     LDS (input) INTEGER, LDS >= N
-!     The leading dimension of the array S.
-!.....
-!     WORK (workspace/output) REAL(KIND=WP) LWORK-by-1 array
-!     On exit, WORK(1:N) contains the singular values of
-!     X (for JOBS=='N') or column scaled X (JOBS=='S', 'C').
-!     If WHTSVD==4, then WORK(N+1) and WORK(N+2) contain
-!     scaling factor WORK(N+2)/WORK(N+1) used to scale X
-!     and Y to avoid overflow in the SVD of X.
-!     This may be of interest if the scaling option is off
-!     and as many as possible smallest eigenvalues are
-!     desired to the highest feasible accuracy.
-!     If the call to SGEDMD is only workspace query, then
-!     WORK(1) contains the minimal workspace length and
-!     WORK(2) is the optimal workspace length. Hence, the
-!     length of work is at least 2.
-!     See the description of LWORK.
-!.....
-!     LWORK (input) INTEGER
-!     The minimal length of the workspace vector WORK.
-!     LWORK is calculated as follows:
-!     If WHTSVD == 1 ::
-!        If JOBZ == 'V', then
-!        LWORK >= MAX(2, N + LWORK_SVD, N+MAX(1,4*N)).
-!        If JOBZ == 'N'  then
-!        LWORK >= MAX(2, N + LWORK_SVD, N+MAX(1,3*N)).
-!        Here LWORK_SVD = MAX(1,3*N+M,5*N) is the minimal
-!        workspace length of SGESVD.
-!     If WHTSVD == 2 ::
-!        If JOBZ == 'V', then
-!        LWORK >= MAX(2, N + LWORK_SVD, N+MAX(1,4*N))
-!        If JOBZ == 'N', then
-!        LWORK >= MAX(2, N + LWORK_SVD, N+MAX(1,3*N))
-!        Here LWORK_SVD = MAX(M, 5*N*N+4*N)+3*N*N is the
-!        minimal workspace length of SGESDD.
-!     If WHTSVD == 3 ::
-!        If JOBZ == 'V', then
-!        LWORK >= MAX(2, N+LWORK_SVD,N+MAX(1,4*N))
-!        If JOBZ == 'N', then
-!        LWORK >= MAX(2, N+LWORK_SVD,N+MAX(1,3*N))
-!        Here LWORK_SVD = N+M+MAX(3*N+1,
-!                        MAX(1,3*N+M,5*N),MAX(1,N))
-!        is the minimal workspace length of SGESVDQ.
-!     If WHTSVD == 4 ::
-!        If JOBZ == 'V', then
-!        LWORK >= MAX(2, N+LWORK_SVD,N+MAX(1,4*N))
-!        If JOBZ == 'N', then
-!        LWORK >= MAX(2, N+LWORK_SVD,N+MAX(1,3*N))
-!        Here LWORK_SVD = MAX(7,2*M+N,6*N+2*N*N) is the
-!        minimal workspace length of SGEJSV.
-!     The above expressions are not simplified in order to
-!     make the usage of WORK more transparent, and for
-!     easier checking. In any case, LWORK >= 2.
-!     If on entry LWORK = -1, then a workspace query is
-!     assumed and the procedure only computes the minimal
-!     and the optimal workspace lengths for both WORK and
-!     IWORK. See the descriptions of WORK and IWORK.
-!.....
-!     IWORK (workspace/output) INTEGER LIWORK-by-1 array
-!     Workspace that is required only if WHTSVD equals
-!     2 , 3 or 4. (See the description of WHTSVD).
-!     If on entry LWORK =-1 or LIWORK=-1, then the
-!     minimal length of IWORK is computed and returned in
-!     IWORK(1). See the description of LIWORK.
-!.....
-!     LIWORK (input) INTEGER
-!     The minimal length of the workspace vector IWORK.
-!     If WHTSVD == 1, then only IWORK(1) is used; LIWORK >=1
-!     If WHTSVD == 2, then LIWORK >= MAX(1,8*MIN(M,N))
-!     If WHTSVD == 3, then LIWORK >= MAX(1,M+N-1)
-!     If WHTSVD == 4, then LIWORK >= MAX(3,M+3*N)
-!     If on entry LIWORK = -1, then a workspace query is
-!     assumed and the procedure only computes the minimal
-!     and the optimal workspace lengths for both WORK and
-!     IWORK. See the descriptions of WORK and IWORK.
-!.....
-!     INFO (output) INTEGER
-!     -i < 0 :: On entry, the i-th argument had an
-!               illegal value
-!        = 0 :: Successful return.
-!        = 1 :: Void input. Quick exit (M=0 or N=0).
-!        = 2 :: The SVD computation of X did not converge.
-!               Suggestion: Check the input data and/or
-!               repeat with different WHTSVD.
-!        = 3 :: The computation of the eigenvalues did not
-!               converge.
-!        = 4 :: If data scaling was requested on input and
-!               the procedure found inconsistency in the data
-!               such that for some column index i,
-!               X(:,i) = 0 but Y(:,i) /= 0, then Y(:,i) is set
-!               to zero if JOBS=='C'. The computation proceeds
-!               with original or modified data and warning
-!               flag is set with INFO=4.
-!.............................................................
-!.............................................................
 !     Parameters
 !     ~~~~~~~~~~
       REAL(KIND=WP), PARAMETER ::  ONE = 1.0_WP
       REAL(KIND=WP), PARAMETER :: ZERO = 0.0_WP
-
+!
 !     Local scalars
 !     ~~~~~~~~~~~~~
       REAL(KIND=WP) :: OFL,   ROOTSC, SCALE,  SMALL,   &
@@ -431,11 +581,11 @@
                         WNTEX, WNTREF, WNTRES, WNTVEC
       CHARACTER     ::  JOBZL, T_OR_N
       CHARACTER     ::  JSVOPT
-
+!
 !     Local arrays
 !     ~~~~~~~~~~~~
       REAL(KIND=WP) :: AB(2,2), RDUMMY(2), RDUMMY2(2)
-
+!
 !     External functions (BLAS and LAPACK)
 !     ~~~~~~~~~~~~~~~~~
       REAL(KIND=WP) SLANGE, SLAMCH, SNRM2
@@ -443,13 +593,13 @@
       INTEGER       ISAMAX
       LOGICAL       SISNAN, LSAME
       EXTERNAL      SISNAN, LSAME
-
+!
 !     External subroutines (BLAS and LAPACK)
 !     ~~~~~~~~~~~~~~~~~~~~
       EXTERNAL      SAXPY,  SGEMM,  SSCAL
       EXTERNAL      SGEEV,  SGEJSV, SGESDD, SGESVD, SGESVDQ, &
                     SLACPY, SLASCL, SLASSQ, XERBLA
-
+!
 !     Intrinsic functions
 !     ~~~~~~~~~~~~~~~~~~~
       INTRINSIC     INT, FLOAT, MAX, SQRT
@@ -632,7 +782,8 @@
           K = 0
           DO i = 1, N
             !WORK(i) = DNRM2( M, X(1,i), 1 )
-            SCALE  = ZERO
+            SSUM  = ONE
+            SCALE = ZERO
             CALL SLASSQ( M, X(1,i), 1, SCALE, SSUM )
             IF ( SISNAN(SCALE) .OR. SISNAN(SSUM) ) THEN
                 K    =  0
@@ -705,7 +856,8 @@
           ! carefully computed using SLASSQ.
           DO i = 1, N
             !WORK(i) = DNRM2( M, Y(1,i), 1 )
-            SCALE  = ZERO
+            SSUM  = ONE
+            SCALE = ZERO
             CALL SLASSQ( M, Y(1,i), 1, SCALE, SSUM )
             IF ( SISNAN(SCALE) .OR. SISNAN(SSUM) ) THEN
                 K    =  0
