@@ -88,7 +88,8 @@
 *> \param[in] LWORK
 *> \verbatim
 *>          LWORK is INTEGER
-*>          The dimension of the array WORK.  LWORK >= max(1,N).
+*>          The dimension of the array WORK.
+*>          LWORK >= 1, if MIN(M,N) = 0, and LWORK >= N, otherwise.
 *>          For optimum performance LWORK >= N*NB, where NB is the
 *>          optimal blocksize.
 *>
@@ -113,7 +114,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup doubleGEcomputational
+*> \ingroup geqlf
 *
 *> \par Further Details:
 *  =====================
@@ -188,8 +189,9 @@
          END IF
          WORK( 1 ) = LWKOPT
 *
-         IF( LWORK.LT.MAX( 1, N ) .AND. .NOT.LQUERY ) THEN
-            INFO = -7
+         IF( .NOT.LQUERY ) THEN
+            IF( LWORK.LE.0 .OR. ( M.GT.0 .AND. LWORK.LT.MAX( 1, N ) ) )
+     $         INFO = -7
          END IF
       END IF
 *
