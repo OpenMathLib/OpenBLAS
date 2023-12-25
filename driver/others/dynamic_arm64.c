@@ -247,6 +247,10 @@ static gotoblas_t *get_coretype(void) {
   int implementer, variant, part, arch, revision, midr_el1;
   char coremsg[128];
 
+#if defined (OS_DARWIN)
+  return &gotoblas_NEOVERSEN1;
+#endif
+	
 #if (!defined OS_LINUX && !defined OS_ANDROID)
   return NULL;
 #else
@@ -351,6 +355,9 @@ static gotoblas_t *get_coretype(void) {
         case 0xc00: // Falkor
           return &gotoblas_FALKOR;
       }
+      break;
+    case 0x61: // Apple
+	return &gotoblas_NEOVERSEN1;
       break;
     default:
       snprintf(coremsg, 128, "Unknown CPU model - implementer %x part %x\n",implementer,part);
