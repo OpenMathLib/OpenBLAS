@@ -122,10 +122,11 @@ extern gotoblas_t  gotoblas_CORTEXA55;
 #endif
 #else
 extern gotoblas_t  gotoblas_CORTEXA53;
+#define gotoblas_CORTEXA55 gotoblas_CORTEXA53
 extern gotoblas_t  gotoblas_CORTEXA57;
-extern gotoblas_t  gotoblas_CORTEXA72;
-extern gotoblas_t  gotoblas_CORTEXA73;
-extern gotoblas_t  gotoblas_FALKOR;
+#define gotoblas_CORTEXA72 gotoblas_CORTEXA57
+#define gotoblas_CORTEXA73 gotoblas_CORTEXA57
+#define gotoblas_FALKOR gotoblas_CORTEXA57
 extern gotoblas_t  gotoblas_THUNDERX;
 extern gotoblas_t  gotoblas_THUNDERX2T99;
 extern gotoblas_t  gotoblas_TSV110;
@@ -141,7 +142,6 @@ extern gotoblas_t  gotoblas_ARMV8SVE;
 #define gotoblas_ARMV8SVE   gotoblas_ARMV8
 #endif
 extern gotoblas_t  gotoblas_THUNDERX3T110;
-extern gotoblas_t  gotoblas_CORTEXA55;
 #endif
 
 extern void openblas_warning(int verbose, const char * msg);
