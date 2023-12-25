@@ -139,6 +139,7 @@ static inline int WhereAmI(void){
 #define XVFMAX  xvfmax.d
 #define XVFMAXA xvfmaxa.d
 #define XVCMPEQ xvfcmp.ceq.d
+#define XVCMPLE xvfcmp.cle.d
 #define XVCMPLT xvfcmp.clt.d
 #define XVMUL   xvfmul.d
 #define XVMSUB  xvfmsub.d
@@ -151,6 +152,7 @@ static inline int WhereAmI(void){
 #define VFMAX  vfmax.d
 #define VFMAXA vfmaxa.d
 #define VCMPEQ vfcmp.ceq.d
+#define VCMPLE vfcmp.cle.d
 #define VCMPLT vfcmp.clt.d
 #define VMUL   vfmul.d
 #define VMSUB  vfmsub.d
@@ -189,6 +191,7 @@ static inline int WhereAmI(void){
 #define XVFMAX  xvfmax.s
 #define XVFMAXA xvfmaxa.s
 #define XVCMPEQ xvfcmp.ceq.s
+#define XVCMPLE xvfcmp.cle.s
 #define XVCMPLT xvfcmp.clt.s
 #define XVMUL   xvfmul.s
 #define XVMSUB  xvfmsub.s
@@ -201,6 +204,7 @@ static inline int WhereAmI(void){
 #define VFMAX  vfmax.s
 #define VFMAXA vfmaxa.s
 #define VCMPEQ vfcmp.ceq.s
+#define VCMPLE vfcmp.cle.s
 #define VCMPLT vfcmp.clt.s
 #define VMUL   vfmul.s
 #define VMSUB  vfmsub.s

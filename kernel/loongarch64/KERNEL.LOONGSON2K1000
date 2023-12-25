@@ -9,6 +9,7 @@ DSCALKERNEL  = dscal_lsx.S
 
 SAMAXKERNEL =  amax_lsx.S
 DAMAXKERNEL =  amax_lsx.S
+CAMAXKERNEL =  camax_lsx.S
 
 SAMINKERNEL =  amin_lsx.S
 DAMINKERNEL =  amin_lsx.S
@@ -25,8 +26,10 @@ IDMAXKERNEL =  imax_lsx.S
 ISMINKERNEL =  imin_lsx.S
 IDMINKERNEL =  imin_lsx.S
 
-ISAMAXKERNEL = isamax_lsx.S
-IDAMAXKERNEL = idamax_lsx.S
+ISAMAXKERNEL = iamax_lsx.S
+IDAMAXKERNEL = iamax_lsx.S
+ICAMAXKERNEL = icamax_lsx.S
+IZAMAXKERNEL = icamax_lsx.S
 
 ISAMINKERNEL = iamin_lsx.S
 IDAMINKERNEL = iamin_lsx.S

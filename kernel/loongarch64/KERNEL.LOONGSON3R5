@@ -9,6 +9,7 @@ DSCALKERNEL  = dscal_lasx.S
 
 SAMAXKERNEL =  amax_lasx.S
 DAMAXKERNEL =  amax_lasx.S
+CAMAXKERNEL =  camax_lasx.S
 
 SAMINKERNEL =  amin_lasx.S
 DAMINKERNEL =  amin_lasx.S
@@ -25,8 +26,10 @@ IDMAXKERNEL =  imax_lasx.S
 ISMINKERNEL =  imin_lasx.S
 IDMINKERNEL =  imin_lasx.S
 
-ISAMAXKERNEL = isamax_lasx.S
-IDAMAXKERNEL = idamax_lasx.S
+ISAMAXKERNEL = iamax_lasx.S
+IDAMAXKERNEL = iamax_lasx.S
+ICAMAXKERNEL = icamax_lasx.S
+IZAMAXKERNEL = icamax_lasx.S
 
 ISAMINKERNEL = iamin_lasx.S
 IDAMINKERNEL = iamin_lasx.S
