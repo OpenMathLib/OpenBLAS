@@ -28,8 +28,8 @@ IDMINKERNEL =  idmin_lsx.S
 ISAMAXKERNEL = isamax_lsx.S
 IDAMAXKERNEL = idamax_lsx.S
 
-ISAMINKERNEL = isamin_lsx.S
-IDAMINKERNEL = idamin_lsx.S
+ISAMINKERNEL = iamin_lsx.S
+IDAMINKERNEL = iamin_lsx.S
 
 SCOPYKERNEL =  copy_lsx.S
 DCOPYKERNEL =  copy_lsx.S
