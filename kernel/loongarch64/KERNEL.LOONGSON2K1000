@@ -40,8 +40,10 @@ DCOPYKERNEL =  copy_lsx.S
 SSWAPKERNEL =  swap_lsx.S
 DSWAPKERNEL =  swap_lsx.S
 
-SAXPYKERNEL =  saxpy_lsx.S
-DAXPYKERNEL =  daxpy_lsx.S
+SAXPYKERNEL =  axpy_lsx.S
+DAXPYKERNEL =  axpy_lsx.S
+CAXPYKERNEL =  caxpy_lsx.S
+ZAXPYKERNEL =  caxpy_lsx.S
 
 SAXPBYKERNEL = saxpby_lsx.S
 DAXPBYKERNEL = daxpby_lsx.S

@@ -40,8 +40,10 @@ DCOPYKERNEL =  copy_lasx.S
 SSWAPKERNEL =  swap_lasx.S
 DSWAPKERNEL =  swap_lasx.S
 
-SAXPYKERNEL =  saxpy_lasx.S
-DAXPYKERNEL =  daxpy_lasx.S
+SAXPYKERNEL =  axpy_lasx.S
+DAXPYKERNEL =  axpy_lasx.S
+CAXPYKERNEL =  caxpy_lasx.S
+ZAXPYKERNEL =  caxpy_lasx.S
 
 SAXPBYKERNEL = saxpby_lasx.S
 DAXPBYKERNEL = daxpby_lasx.S
