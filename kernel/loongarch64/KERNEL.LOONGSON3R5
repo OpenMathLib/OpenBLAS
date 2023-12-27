@@ -13,6 +13,7 @@ CAMAXKERNEL =  camax_lasx.S
 
 SAMINKERNEL =  amin_lasx.S
 DAMINKERNEL =  amin_lasx.S
+CAMINKERNEL =  camin_lasx.S
 
 SMAXKERNEL  =  max_lsx.S
 DMAXKERNEL =   max_lsx.S

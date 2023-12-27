@@ -13,6 +13,7 @@ CAMAXKERNEL =  camax_lsx.S
 
 SAMINKERNEL =  amin_lsx.S
 DAMINKERNEL =  amin_lsx.S
+CAMINKERNEL =  camin_lsx.S
 
 SMAXKERNEL  =  max_lsx.S
 DMAXKERNEL  =  max_lsx.S
