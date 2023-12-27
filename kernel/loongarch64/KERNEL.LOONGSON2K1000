@@ -4,8 +4,10 @@ SDOTKERNEL  = dot_lsx.S
 DSDOTKERNEL = dot_lsx.S
 DDOTKERNEL  = dot_lsx.S
 
-SSCALKERNEL  = sscal_lsx.S
-DSCALKERNEL  = dscal_lsx.S
+SSCALKERNEL  = scal_lsx.S
+DSCALKERNEL  = scal_lsx.S
+CSCALKERNEL  = cscal_lsx.S
+ZSCALKERNEL  = cscal_lsx.S
 
 SAMAXKERNEL =  amax_lsx.S
 DAMAXKERNEL =  amax_lsx.S

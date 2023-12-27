@@ -4,8 +4,10 @@ SDOTKERNEL  = dot_lasx.S
 DSDOTKERNEL = dot_lasx.S
 DDOTKERNEL  = dot_lasx.S
 
-SSCALKERNEL  = sscal_lasx.S
-DSCALKERNEL  = dscal_lasx.S
+SSCALKERNEL  = scal_lasx.S
+DSCALKERNEL  = scal_lasx.S
+CSCALKERNEL  = cscal_lasx.S
+ZSCALKERNEL  = cscal_lasx.S
 
 SAMAXKERNEL =  amax_lasx.S
 DAMAXKERNEL =  amax_lasx.S
