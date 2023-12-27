@@ -49,8 +49,10 @@ DAXPBYKERNEL = daxpby_lsx.S
 SSUMKERNEL  =  sum_lsx.S
 DSUMKERNEL  =  sum_lsx.S
 
-SASUMKERNEL =  sasum_lsx.S
-DASUMKERNEL =  dasum_lsx.S
+SASUMKERNEL =  asum_lsx.S
+DASUMKERNEL =  asum_lsx.S
+CASUMKERNEL =  casum_lsx.S
+ZASUMKERNEL =  casum_lsx.S
 
 SROTKERNEL  =  rot_lsx.S
 DROTKERNEL  =  rot_lsx.S
