@@ -31,11 +31,11 @@ IDAMAXKERNEL = idamax_lsx.S
 ISAMINKERNEL = isamin_lsx.S
 IDAMINKERNEL = idamin_lsx.S
 
-SCOPYKERNEL =  scopy_lsx.S
-DCOPYKERNEL =  dcopy_lsx.S
+SCOPYKERNEL =  copy_lsx.S
+DCOPYKERNEL =  copy_lsx.S
 
-SSWAPKERNEL =  sswap_lsx.S
-DSWAPKERNEL =  dswap_lsx.S
+SSWAPKERNEL =  swap_lsx.S
+DSWAPKERNEL =  swap_lsx.S
 
 SAXPYKERNEL =  saxpy_lsx.S
 DAXPYKERNEL =  daxpy_lsx.S
@@ -43,8 +43,8 @@ DAXPYKERNEL =  daxpy_lsx.S
 SAXPBYKERNEL = saxpby_lsx.S
 DAXPBYKERNEL = daxpby_lsx.S
 
-SSUMKERNEL  =  ssum_lsx.S
-DSUMKERNEL  =  dsum_lsx.S
+SSUMKERNEL  =  sum_lsx.S
+DSUMKERNEL  =  sum_lsx.S
 
 SASUMKERNEL =  sasum_lsx.S
 DASUMKERNEL =  dasum_lsx.S

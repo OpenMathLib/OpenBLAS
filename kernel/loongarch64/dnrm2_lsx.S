@@ -1,3 +1,35 @@
+/*****************************************************************************
+Copyright (c) 2023, The OpenBLAS Project
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are
+met:
+
+   1. Redistributions of source code must retain the above copyright
+      notice, this list of conditions and the following disclaimer.
+
+   2. Redistributions in binary form must reproduce the above copyright
+      notice, this list of conditions and the following disclaimer in
+      the documentation and/or other materials provided with the
+      distribution.
+   3. Neither the name of the OpenBLAS project nor the names of
+      its contributors may be used to endorse or promote products
+      derived from this software without specific prior written
+      permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
+USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+**********************************************************************************/
+
 #define ASSEMBLER
 
 #include "common.h"
@@ -12,6 +44,8 @@
 #define t2     $r13
 #define t3     $r14
 #define t4     $r15
+
+/* Don't change following FR unless you know the effects. */
 #define VX0    $vr15
 #define VX1    $vr16
 #define VM0    $vr17
@@ -35,6 +69,7 @@
 
     vxor.v   res1, res1, res1
     vxor.v   res2, res2, res2
+    vxor.v VM0, VM0, VM0
     bge $r0, N, .L999
     beq $r0, INCX, .L999
     move  XX, X
@@ -46,7 +81,7 @@
     slli.d INCX, INCX, BASE_SHIFT
     srai.d I, N, 3
     bne INCX, TEMP, .L20
-    vld VM0, X, 0
+
     bge $r0,  I, .L97
     .align 3
 
@@ -66,15 +101,7 @@
     .align 3
 
 .L20: // INCX!=1
-    move TEMP, X // initialize the maxa value
-    ld.d t1, TEMP, 0 * SIZE
-    add.d TEMP, TEMP, INCX
-    vinsgr2vr.d VM0, t1, 0
-    srai.d I, N, 3
     bge $r0, I, .L97
-    ld.d t2, TEMP, 0 * SIZE
-    add.d TEMP, TEMP, INCX
-    vinsgr2vr.d VM0, t2, 1
     .align 3
 
 .L21:
@@ -154,16 +181,16 @@
 .L110:
     vld VX0, XX, 0 * SIZE
     vld VX1, XX, 2 * SIZE
-    vfmul.d VM0, VX0, VALPHA
-    vfmul.d VM1, VX1, VALPHA
-    vfmadd.d res1, VM0, VM0, res1
-    vfmadd.d res2, VM1, VM1, res2
+    vfmul.d VM2, VX0, VALPHA
+    vfmul.d VM3, VX1, VALPHA
+    vfmadd.d res1, VM2, VM2, res1
+    vfmadd.d res2, VM3, VM3, res2
     vld VX0, XX, 4 * SIZE
     vld VX1, XX, 6 * SIZE
-    vfmul.d VM0, VX0, VALPHA
-    vfmul.d VM1, VX1, VALPHA
-    vfmadd.d res1, VM0, VM0, res1
-    vfmadd.d res2, VM1, VM1, res2
+    vfmul.d VM2, VX0, VALPHA
+    vfmul.d VM3, VX1, VALPHA
+    vfmadd.d res1, VM2, VM2, res1
+    vfmadd.d res2, VM3, VM3, res2
     addi.d XX, XX, 8 * SIZE
     addi.d I, I, -1
     blt $r0, I, .L110
@@ -173,6 +200,7 @@
 .L120:
     srai.d I, N, 3
     bge $r0, I, .L997
+    .align 3
 
 .L121:
     ld.d t1, XX,  0 * SIZE
@@ -187,14 +215,14 @@
     vinsgr2vr.d VX0, t2, 1
     vinsgr2vr.d VX1, t3, 0
     vinsgr2vr.d VX1, t4, 1
-    vfmul.d VM0, VX0, VALPHA
+    vfmul.d VM2, VX0, VALPHA
     ld.d t1, XX, 0 * SIZE
     add.d XX, XX, INCX
-    vfmul.d VM1, VX1, VALPHA
+    vfmul.d VM3, VX1, VALPHA
     ld.d t2, XX, 0 * SIZE
     add.d XX, XX, INCX
-    vfmadd.d res1, VM0, VM0, res1
-    vfmadd.d res2, VM1, VM1, res2
+    vfmadd.d res1, VM2, VM2, res1
+    vfmadd.d res2, VM3, VM3, res2
     ld.d t3, XX, 0 * SIZE
     add.d XX, XX, INCX
     ld.d t4, XX, 0 * SIZE
@@ -203,10 +231,10 @@
     vinsgr2vr.d VX0, t2, 1
     vinsgr2vr.d VX1, t3, 0
     vinsgr2vr.d VX1, t4, 1
-    vfmul.d VM0, VX0, VALPHA
-    vfmul.d VM1, VX1, VALPHA
-    vfmadd.d res1, VM0, VM0, res1
-    vfmadd.d res2, VM1, VM1, res2
+    vfmul.d VM2, VX0, VALPHA
+    vfmul.d VM3, VX1, VALPHA
+    vfmadd.d res1, VM2, VM2, res1
+    vfmadd.d res2, VM3, VM3, res2
     addi.d  I, I, -1
     blt $r0, I, .L121
     b .L996
@@ -230,13 +258,11 @@
     fmadd.d $f19, $f15, $f15, $f19
     add.d XX, XX , INCX
     blt $r0, I, .L998
-    fsqrt.d $f19, $f19
-    fmul.d $f0, max, $f19
-    jirl    $r0, $r1, 0x0
     .align 3
 
 .L999:
-    fmov.d $f0, $f19
+    fsqrt.d $f19, $f19
+    fmul.d $f0, max, $f19
     jirl $r0, $r1, 0x0
 
     EPILOGUE
