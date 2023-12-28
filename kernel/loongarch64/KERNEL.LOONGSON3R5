@@ -67,6 +67,8 @@ ZASUMKERNEL =  casum_lasx.S
 
 SROTKERNEL  =  rot_lasx.S
 DROTKERNEL  =  rot_lasx.S
+CROTKERNEL  =  crot_lasx.S
+ZROTKERNEL  =  crot_lasx.S
 
 SNRM2KERNEL =  snrm2_lasx.S
 DNRM2KERNEL =  dnrm2_lasx.S

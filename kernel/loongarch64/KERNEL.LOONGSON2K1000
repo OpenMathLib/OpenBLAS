@@ -67,6 +67,8 @@ ZASUMKERNEL =  casum_lsx.S
 
 SROTKERNEL  =  rot_lsx.S
 DROTKERNEL  =  rot_lsx.S
+CROTKERNEL  =  crot_lsx.S
+ZROTKERNEL  =  crot_lsx.S
 
 SNRM2KERNEL =  snrm2_lsx.S
 DNRM2KERNEL =  dnrm2_lsx.S
