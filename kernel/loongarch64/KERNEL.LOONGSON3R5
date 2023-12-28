@@ -70,6 +70,8 @@ DROTKERNEL  =  rot_lasx.S
 
 SNRM2KERNEL =  snrm2_lasx.S
 DNRM2KERNEL =  dnrm2_lasx.S
+CNRM2KERNEL =  cnrm2_lasx.S
+ZNRM2KERNEL =  znrm2_lasx.S
 
 DGEMMKERNEL    = dgemm_kernel_16x4.S
 DGEMMINCOPY    = dgemm_ncopy_16.S
