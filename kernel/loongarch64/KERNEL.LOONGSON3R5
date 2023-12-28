@@ -39,6 +39,8 @@ IDAMINKERNEL = iamin_lasx.S
 
 SCOPYKERNEL =  copy_lasx.S
 DCOPYKERNEL =  copy_lasx.S
+CCOPYKERNEL =  ccopy_lasx.S
+ZCOPYKERNEL =  ccopy_lasx.S
 
 SSWAPKERNEL =  swap_lasx.S
 DSWAPKERNEL =  swap_lasx.S

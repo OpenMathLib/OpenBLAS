@@ -39,6 +39,8 @@ IDAMINKERNEL = iamin_lsx.S
 
 SCOPYKERNEL =  copy_lsx.S
 DCOPYKERNEL =  copy_lsx.S
+CCOPYKERNEL =  ccopy_lsx.S
+ZCOPYKERNEL =  ccopy_lsx.S
 
 SSWAPKERNEL =  swap_lsx.S
 DSWAPKERNEL =  swap_lsx.S
