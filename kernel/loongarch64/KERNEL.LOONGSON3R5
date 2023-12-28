@@ -38,6 +38,8 @@ IZAMAXKERNEL = icamax_lasx.S
 
 ISAMINKERNEL = iamin_lasx.S
 IDAMINKERNEL = iamin_lasx.S
+ICAMINKERNEL = icamin_lasx.S
+IZAMINKERNEL = icamin_lasx.S
 
 SCOPYKERNEL =  copy_lasx.S
 DCOPYKERNEL =  copy_lasx.S

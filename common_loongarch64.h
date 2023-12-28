@@ -133,6 +133,7 @@ static inline int WhereAmI(void){
 
 #define XVFSUB  xvfsub.d
 #define XVFADD  xvfadd.d
+#define XVFMUL  xvfmul.d
 #define XVFMADD xvfmadd.d
 #define XVFMIN  xvfmin.d
 #define XVFMINA xvfmina.d
@@ -146,6 +147,7 @@ static inline int WhereAmI(void){
 
 #define VFSUB  vfsub.d
 #define VFADD  vfadd.d
+#define VFMUL  vfmul.d
 #define VFMADD vfmadd.d
 #define VFMIN  vfmin.d
 #define VFMINA vfmina.d
@@ -185,6 +187,7 @@ static inline int WhereAmI(void){
 
 #define XVFSUB  xvfsub.s
 #define XVFADD  xvfadd.s
+#define XVFMUL  xvfmul.s
 #define XVFMADD xvfmadd.s
 #define XVFMIN  xvfmin.s
 #define XVFMINA xvfmina.s
@@ -198,6 +201,7 @@ static inline int WhereAmI(void){
 
 #define VFSUB  vfsub.s
 #define VFADD  vfadd.s
+#define VFMUL  vfmul.s
 #define VFMADD vfmadd.s
 #define VFMIN  vfmin.s
 #define VFMINA vfmina.s
