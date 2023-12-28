@@ -1,3 +1,29 @@
+/***************************************************************************
+Copyright (c) 2023, The OpenBLAS Project
+All rights reserved.
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are
+met:
+1. Redistributions of source code must retain the above copyright
+notice, this list of conditions and the following disclaimer.
+2. Redistributions in binary form must reproduce the above copyright
+notice, this list of conditions and the following disclaimer in
+the documentation and/or other materials provided with the
+distribution.
+3. Neither the name of the OpenBLAS project nor the names of
+its contributors may be used to endorse or promote products
+derived from this software without specific prior written permission.
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ARE DISCLAIMED. IN NO EVENT SHALL THE OPENBLAS PROJECT OR CONTRIBUTORS BE
+LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
+USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+*****************************************************************************/
 #define ASSEMBLER
 
 #include "common.h"
@@ -39,6 +65,31 @@
     slli.d INCX, INCX, BASE_SHIFT
     bne INCX, TEMP, .L20
     xvld VM0, X, 0
+#ifdef DOUBLE
+    addi.d i0, i0, 1
+    srai.d I, N, 3
+    bge $r0, I, .L21
+    slli.d i0, i0, 2 //4
+    xvreplgr2vr.d VINC4, i0
+    slli.d i0, i0, 1 //8
+    xvreplgr2vr.d VINC8, i0
+    addi.d i0, i0, -15
+    xvinsgr2vr.d VI1, i0, 0 //initialize the index value for vectorization
+    addi.d i0, i0, 1
+    xvinsgr2vr.d VI1, i0, 1
+    addi.d i0, i0, 1
+    xvinsgr2vr.d VI1, i0, 2
+    addi.d i0, i0, 1
+    xvinsgr2vr.d VI1, i0, 3
+    addi.d i0, i0, 5
+    xvinsgr2vr.d VI0, i0, 0 //1
+    addi.d i0, i0, 1
+    xvinsgr2vr.d VI0, i0, 1 //2
+    addi.d i0, i0, 1
+    xvinsgr2vr.d VI0, i0, 2 //3
+    addi.d i0, i0, 1
+    xvinsgr2vr.d VI0, i0, 3 //4
+#else
     addi.w i0, i0, 1
     srai.d I, N, 3
     bge $r0, I, .L21
@@ -76,20 +127,47 @@
     xvinsgr2vr.w VI0, i0, 6 //7
     addi.w i0, i0, 1
     xvinsgr2vr.w VI0, i0, 7 //8
+#endif
+
     .align 3
 
 .L10:
     xvld VX0, X, 0 * SIZE
+#ifdef DOUBLE
+    xvadd.d VI1, VI1, VINC8
+    xvld VX1, X, 4 * SIZE
+    xvadd.d VI2, VI1, VINC4
+    xvfcmp.clt.d VT0, VX0, VX1
+    addi.d I, I, -1
+    xvbitsel.v VM1, VX0, VX1, VT0
+    xvbitsel.v VI2, VI1, VI2, VT0
+    xvfcmp.clt.d VT0, VM0, VM1
+    addi.d X, X, 8 * SIZE
+    xvbitsel.v VM0, VM0, VM1, VT0
+    xvbitsel.v VI0, VI0, VI2, VT0
+#else
     xvadd.w VI1, VI1, VINC8
     xvfcmp.clt.s VT0, VM0, VX0
     addi.d I, I, -1
     xvbitsel.v VM0, VM0, VX0, VT0
     xvbitsel.v VI0, VI0, VI1, VT0
     addi.d X, X, 8 * SIZE
+#endif
     blt $r0, I, .L10
     .align 3
 
 .L15:
+#ifdef DOUBLE
+    xvpickve.d VI1, VI0, 0
+    xvpickve.d VI2, VI0, 1
+    xvpickve.d VI3, VI0, 2
+    xvpickve.d VI4, VI0, 3
+    xvpickve.d x1, VM0, 0
+    xvpickve.d x2, VM0, 1
+    xvpickve.d x3, VM0, 2
+    xvpickve.d x4, VM0, 3
+    xvfcmp.clt.d VT0, x1, x2
+#else
     xvxor.v VX0, VX0, VX0
     xvor.v VX0, VI0, VX0
     xvxor.v VX1, VX1, VX1
@@ -103,28 +181,33 @@
     xvpickve.w x3, VM0, 2
     xvpickve.w x4, VM0, 3
     xvfcmp.clt.s VT0, x1, x2
+#endif
     xvbitsel.v VM1, x1, x2, VT0
     xvbitsel.v VINC4, VI1, VI2, VT0
-    xvfcmp.clt.s VT0, x3, x4
+    XVCMPLT VT0, x3, x4
     xvbitsel.v VM0, x3, x4, VT0
     xvbitsel.v VINC8, VI3, VI4, VT0
-    xvfcmp.clt.s VT0, VM0, VM1
+    XVCMPLT VT0, VM0, VM1
     xvbitsel.v VM0, VM0, VM1, VT0
     xvbitsel.v VI0, VINC8, VINC4, VT0
-    li.d TEMP, 1 //处理尾数相等时取最小序号
-    movgr2fr.w $f17, TEMP
-    ffint.s.w $f17, $f17
-    xvfcmp.ceq.s VT0, VM0, x1
-    fcmp.ceq.s $fcc0, $f23, $f17
+    fcmp.ceq.d $fcc0, $f15, $f9
     bceqz $fcc0, .L26
-    xvfcmp.clt.s VT0, VI1, VI0
+    XVCMPLT VT0, VI1, VI0
     xvbitsel.v VI0, VI0, VI1, VT0
     b .L26
     .align 3
 
-
 .L20: // INCX!=1
     move TEMP, X
+#ifdef DOUBLE
+    addi.d i0, i0, 1
+    ld.d t1, TEMP, 0 * SIZE
+    add.d TEMP, TEMP, INCX
+    xvinsgr2vr.d VM0, t1, 0
+    srai.d I, N, 3
+    bge $r0, I, .L21
+    ld.d t2, TEMP, 0 * SIZE
+#else
     addi.w i0, i0, 1
     ld.w t1, TEMP, 0 * SIZE
     add.d TEMP, TEMP, INCX
@@ -143,11 +226,38 @@
     ld.w t1, TEMP, 0 * SIZE
     add.d TEMP, TEMP, INCX
     ld.w t2, TEMP, 0 * SIZE
+#endif
     add.d TEMP, TEMP, INCX
-    ld.w t3, TEMP, 0 * SIZE
+    ld.d t3, TEMP, 0 * SIZE
     add.d TEMP, TEMP, INCX
-    ld.w t4, TEMP, 0 * SIZE
+    ld.d t4, TEMP, 0 * SIZE
     add.d TEMP, TEMP, INCX
+#ifdef DOUBLE
+    xvinsgr2vr.d VM0, t1, 0
+    xvinsgr2vr.d VM0, t2, 1
+    xvinsgr2vr.d VM0, t3, 2
+    xvinsgr2vr.d VM0, t4, 3
+    slli.d i0, i0, 2 //4
+    xvreplgr2vr.d VINC4, i0
+    slli.d i0, i0, 1 //8
+    xvreplgr2vr.d VINC8, i0
+    addi.d i0, i0, -15
+    xvinsgr2vr.d VI1, i0, 0 //initialize the index value for vectorization
+    addi.d i0, i0, 1
+    xvinsgr2vr.d VI1, i0, 1
+    addi.d i0, i0, 1
+    xvinsgr2vr.d VI1, i0, 2
+    addi.d i0, i0, 1
+    xvinsgr2vr.d VI1, i0, 3
+    addi.d i0, i0, 5
+    xvinsgr2vr.d VI0, i0, 0 //1
+    addi.d i0, i0, 1
+    xvinsgr2vr.d VI0, i0, 1 //2
+    addi.d i0, i0, 1
+    xvinsgr2vr.d VI0, i0, 2 //3
+    addi.d i0, i0, 1
+    xvinsgr2vr.d VI0, i0, 3 //4
+#else
     xvinsgr2vr.w VM0, t1, 4
     xvinsgr2vr.w VM0, t2, 5
     xvinsgr2vr.w VM0, t3, 6
@@ -186,9 +296,46 @@
     xvinsgr2vr.w VI0, i0, 6 //7
     addi.w i0, i0, 1
     xvinsgr2vr.w VI0, i0, 7 //8
+#endif
     .align 3
 
 .L24:
+#ifdef DOUBLE
+    ld.d t1, X, 0 * SIZE
+    add.d X, X, INCX
+    ld.d t2, X, 0 * SIZE
+    add.d X, X, INCX
+    ld.d t3, X, 0 * SIZE
+    add.d X, X, INCX
+    ld.d t4, X, 0 * SIZE
+    add.d X, X, INCX
+    xvinsgr2vr.d VX0, t1, 0
+    xvinsgr2vr.d VX0, t2, 1
+    xvinsgr2vr.d VX0, t3, 2
+    xvinsgr2vr.d VX0, t4, 3
+    xvadd.d VI1, VI1, VINC8
+    ld.d t1, X, 0 * SIZE
+    add.d X, X, INCX
+    ld.d t2, X, 0 * SIZE
+    add.d X, X, INCX
+    ld.d t3, X, 0 * SIZE
+    add.d X, X, INCX
+    ld.d t4, X, 0 * SIZE
+    add.d X, X, INCX
+    xvinsgr2vr.d VX1, t1, 0
+    xvinsgr2vr.d VX1, t2, 1
+    xvinsgr2vr.d VX1, t3, 2
+    xvinsgr2vr.d VX1, t4, 3
+    xvadd.d VI1, VI1, VINC8
+    xvadd.d VI2, VI1, VINC4
+    xvfcmp.clt.d VT0, VX0, VX1
+    addi.d I, I, -1
+    xvbitsel.v VM1, VX0, VX1, VT0
+    xvbitsel.v VI2, VI1, VI2, VT0
+    xvfcmp.clt.d VT0, VM0, VM1
+    xvbitsel.v VM0, VM0, VM1, VT0
+    xvbitsel.v VI0, VI0, VI2, VT0
+#else
     ld.w t1, X, 0 * SIZE
     add.d X, X, INCX
     ld.w t2, X, 0 * SIZE
@@ -218,10 +365,21 @@
     addi.d I, I, -1
     xvbitsel.v VM0, VM0, VX0, VT0
     xvbitsel.v VI0, VI0, VI1, VT0
+#endif
     blt $r0, I, .L24
     .align 3
 
 .L25:
+#ifdef DOUBLE
+    xvpickve.d VI1, VI0, 0
+    xvpickve.d VI2, VI0, 1
+    xvpickve.d VI3, VI0, 2
+    xvpickve.d VI4, VI0, 3
+    xvpickve.d  x1, VM0, 0
+    xvpickve.d  x2, VM0, 1
+    xvpickve.d  x3, VM0, 2
+    xvpickve.d  x4, VM0, 3
+#else
     xvxor.v VX0, VX0, VX0
     xvor.v VX0, VI0, VX0
     xvxor.v VX1, VX1, VX1
@@ -230,57 +388,56 @@
     xvpickve.w VI2, VI0, 1
     xvpickve.w VI3, VI0, 2
     xvpickve.w VI4, VI0, 3
-    xvpickve.w x1, VM0, 0
-    xvpickve.w x2, VM0, 1
-    xvpickve.w x3, VM0, 2
-    xvpickve.w x4, VM0, 3
-    xvfcmp.clt.s VT0, x1, x2
+    xvpickve.w  x1, VM0, 0
+    xvpickve.w  x2, VM0, 1
+    xvpickve.w  x3, VM0, 2
+    xvpickve.w  x4, VM0, 3
+#endif
+    XVCMPLT VT0, x1, x2
     xvbitsel.v VM1, x1, x2, VT0
     xvbitsel.v VINC4, VI1, VI2, VT0
-    xvfcmp.clt.s VT0, x3, x4
+    XVCMPLT VT0, x3, x4
     xvbitsel.v VM0, x3, x4, VT0
     xvbitsel.v VINC8, VI3, VI4, VT0
-    xvfcmp.clt.s VT0, VM0, VM1
+    XVCMPLT VT0, VM0, VM1
     xvbitsel.v VM0, VM0, VM1, VT0
     xvbitsel.v VI0, VINC8, VINC4, VT0
-    li.d TEMP, 1 //处理尾数相等时取最小序号
-    movgr2fr.w $f17, TEMP
-    ffint.s.w $f17, $f17
-    xvfcmp.ceq.s VT0, VM0, x1
-    fcmp.ceq.s $fcc0, $f23, $f17
+    fcmp.ceq.d $fcc0, $f15, $f9
     bceqz $fcc0, .L26
-    xvfcmp.clt.s VT0, VI1, VI0
+    XVCMPLT VT0, VI1, VI0
     xvbitsel.v VI0, VI0, VI1, VT0
     .align 3
 
 .L26:
-    xvfcmp.ceq.s VT0, VM0, x2
-    fcmp.ceq.s $fcc0, $f23, $f17
+    fcmp.ceq.d $fcc0, $f15, $f10
     bceqz $fcc0, .L27
-    xvfcmp.clt.s VT0, VI2, VI0
+    XVCMPLT VT0, VI2, VI0
     xvbitsel.v VI0, VI0, VI2, VT0
     .align 3
 
 .L27:
-    xvfcmp.ceq.s VT0, VM0, x3
-    fcmp.ceq.s $fcc0, $f23, $f17
+    fcmp.ceq.d $fcc0, $f15, $f11
     bceqz $fcc0, .L28
-    xvfcmp.clt.s VT0, VI3, VI0
+    XVCMPLT VT0, VI3, VI0
     xvbitsel.v VI0, VI0, VI3, VT0
     .align 3
 
 .L28:
-    xvfcmp.ceq.s VT0, VM0, x4
-    fcmp.ceq.s $fcc0, $f23, $f17
+    fcmp.ceq.d $fcc0, $f15, $f12
     bceqz $fcc0, .L29
-    xvfcmp.clt.s VT0, VI4, VI0
+    XVCMPLT VT0, VI4, VI0
     xvbitsel.v VI0, VI0, VI4, VT0
     .align 3
 
 .L29:
+#ifdef DOUBLE
+    movfr2gr.d i0, $f20
+#else
     fmov.s $f16, $f20
+#endif
     .align 3
 
+#ifndef DOUBLE
 .L252:
     xvxor.v VI0, VI0, VI0
     xvor.v VI0, VI0, VX0
@@ -343,6 +500,7 @@
     fsel $f15, $f15, $f13, $fcc0
     fsel $f20, $f20, $f16, $fcc0
     movfr2gr.s i0, $f20
+#endif
 
 .L21: //N<8
     andi I, N, 7
@@ -357,14 +515,14 @@
 .L22:
     fld.d $f9, X, 0
     addi.d I, I, -1
-    fcmp.clt.s $fcc0, $f15, $f9
+    CMPLT $fcc0, $f15, $f9
     add.d  X, X, INCX
     fsel $f15, $f15, $f9, $fcc0
     fsel $f20, $f20, $f21, $fcc0
     addi.d i1, i1, 1
     movgr2fr.d $f21, i1
     blt $r0, I, .L22
-    movfr2gr.s i0, $f20
+    MTG i0, $f20
     .align 3
 
 .L999:

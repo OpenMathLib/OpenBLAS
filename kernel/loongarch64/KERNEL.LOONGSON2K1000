@@ -19,8 +19,8 @@ DMAXKERNEL  =  max_lsx.S
 SMINKERNEL  =  min_lsx.S
 DMINKERNEL  =  min_lsx.S
 
-ISMAXKERNEL =  ismax_lsx.S
-IDMAXKERNEL =  idmax_lsx.S
+ISMAXKERNEL =  imax_lsx.S
+IDMAXKERNEL =  imax_lsx.S
 
 ISMINKERNEL =  ismin_lsx.S
 IDMINKERNEL =  idmin_lsx.S
