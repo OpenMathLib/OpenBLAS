@@ -49,8 +49,8 @@ DSUMKERNEL  =  sum_lasx.S
 SASUMKERNEL =  sasum_lasx.S
 DASUMKERNEL =  dasum_lasx.S
 
-SROTKERNEL  =  srot_lasx.S
-DROTKERNEL  =  drot_lasx.S
+SROTKERNEL  =  rot_lasx.S
+DROTKERNEL  =  rot_lasx.S
 
 SNRM2KERNEL =  snrm2_lasx.S
 DNRM2KERNEL =  dnrm2_lasx.S

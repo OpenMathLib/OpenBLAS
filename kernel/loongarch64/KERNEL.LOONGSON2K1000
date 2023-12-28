@@ -49,8 +49,8 @@ DSUMKERNEL  =  sum_lsx.S
 SASUMKERNEL =  sasum_lsx.S
 DASUMKERNEL =  dasum_lsx.S
 
-SROTKERNEL  =  srot_lsx.S
-DROTKERNEL  =  drot_lsx.S
+SROTKERNEL  =  rot_lsx.S
+DROTKERNEL  =  rot_lsx.S
 
 SNRM2KERNEL =  snrm2_lsx.S
 DNRM2KERNEL =  dnrm2_lsx.S
