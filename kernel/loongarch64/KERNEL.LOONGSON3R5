@@ -3,6 +3,8 @@ ifndef NO_LASX
 SDOTKERNEL  = dot_lasx.S
 DSDOTKERNEL = dot_lasx.S
 DDOTKERNEL  = dot_lasx.S
+CDOTKERNEL  = cdot_lasx.S
+ZDOTKERNEL  = cdot_lasx.S
 
 SSCALKERNEL  = scal_lasx.S
 DSCALKERNEL  = scal_lasx.S

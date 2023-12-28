@@ -3,6 +3,8 @@ ifndef NO_LSX
 SDOTKERNEL  = dot_lsx.S
 DSDOTKERNEL = dot_lsx.S
 DDOTKERNEL  = dot_lsx.S
+CDOTKERNEL  = cdot_lsx.S
+ZDOTKERNEL  = cdot_lsx.S
 
 SSCALKERNEL  = scal_lsx.S
 DSCALKERNEL  = scal_lsx.S
