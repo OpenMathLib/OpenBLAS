@@ -22,8 +22,8 @@ DMINKERNEL  =  min_lsx.S
 ISMAXKERNEL =  imax_lsx.S
 IDMAXKERNEL =  imax_lsx.S
 
-ISMINKERNEL =  ismin_lsx.S
-IDMINKERNEL =  idmin_lsx.S
+ISMINKERNEL =  imin_lsx.S
+IDMINKERNEL =  imin_lsx.S
 
 ISAMAXKERNEL = isamax_lsx.S
 IDAMAXKERNEL = idamax_lsx.S
