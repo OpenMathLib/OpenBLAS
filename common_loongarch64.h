@@ -144,6 +144,7 @@ static inline int WhereAmI(void){
 #define XVCMPLT xvfcmp.clt.d
 #define XVMUL   xvfmul.d
 #define XVMSUB  xvfmsub.d
+#define XVNMSUB xvfnmsub.d
 
 #define VFSUB  vfsub.d
 #define VFADD  vfadd.d
@@ -158,6 +159,7 @@ static inline int WhereAmI(void){
 #define VCMPLT vfcmp.clt.d
 #define VMUL   vfmul.d
 #define VMSUB  vfmsub.d
+#define VNMSUB vfnmsub.d
 
 #else
 
@@ -198,6 +200,7 @@ static inline int WhereAmI(void){
 #define XVCMPLT xvfcmp.clt.s
 #define XVMUL   xvfmul.s
 #define XVMSUB  xvfmsub.s
+#define XVNMSUB xvfnmsub.s
 
 #define VFSUB  vfsub.s
 #define VFADD  vfadd.s
@@ -212,6 +215,7 @@ static inline int WhereAmI(void){
 #define VCMPLT vfcmp.clt.s
 #define VMUL   vfmul.s
 #define VMSUB  vfmsub.s
+#define VNMSUB vfnmsub.s
 
 #endif /* defined(DOUBLE) */
 

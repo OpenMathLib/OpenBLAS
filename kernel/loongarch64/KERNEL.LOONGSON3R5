@@ -107,13 +107,35 @@ SGEMMOTCOPYOBJ = sgemm_otcopy$(TSUFFIX).$(SUFFIX)
 SGEMVNKERNEL = sgemv_n_8_lasx.S
 SGEMVTKERNEL = sgemv_t_8_lasx.S
 
+CGEMMKERNEL  = cgemm_kernel_2x2_lsx.S
+CGEMMONCOPY  = cgemm_ncopy_2_lsx.S
+CGEMMOTCOPY  = cgemm_tcopy_2_lsx.S
+CGEMMONCOPYOBJ = cgemm_oncopy$(TSUFFIX).$(SUFFIX)
+CGEMMOTCOPYOBJ = cgemm_otcopy$(TSUFFIX).$(SUFFIX)
+
+CTRSMKERNEL_LN  = ../generic/trsm_kernel_LN.c
+CTRSMKERNEL_LT  = ../generic/trsm_kernel_LT.c
+CTRSMKERNEL_RN  = ../generic/trsm_kernel_RN.c
+CTRSMKERNEL_RT  = ../generic/trsm_kernel_RT.c
+
+ZGEMMKERNEL  = zgemm_kernel_2x2_lasx.S
+ZGEMMONCOPY  = zgemm_ncopy_2_lasx.S
+ZGEMMOTCOPY  = zgemm_tcopy_2_lasx.S
+ZGEMMONCOPYOBJ = zgemm_oncopy$(TSUFFIX).$(SUFFIX)
+ZGEMMOTCOPYOBJ = zgemm_otcopy$(TSUFFIX).$(SUFFIX)
+
+ZTRSMKERNEL_LN  = ../generic/trsm_kernel_LN.c
+ZTRSMKERNEL_LT  = ../generic/trsm_kernel_LT.c
+ZTRSMKERNEL_RN  = ../generic/trsm_kernel_RN.c
+ZTRSMKERNEL_RT  = ../generic/trsm_kernel_RT.c
+
 DTRSMKERNEL_LN  = dtrsm_kernel_LN_16x4_lasx.S
 DTRSMKERNEL_LT  = dtrsm_kernel_LT_16x4_lasx.S
 DTRSMKERNEL_RN  = dtrsm_kernel_RN_16x4_lasx.S
 DTRSMKERNEL_RT  = dtrsm_kernel_RT_16x4_lasx.S
-endif
 
 STRSMKERNEL_LN  = ../generic/trsm_kernel_LN.c
 STRSMKERNEL_LT  = ../generic/trsm_kernel_LT.c
 STRSMKERNEL_RN  = ../generic/trsm_kernel_RN.c
 STRSMKERNEL_RT  = ../generic/trsm_kernel_RT.c
+endif
