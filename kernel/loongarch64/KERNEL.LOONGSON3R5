@@ -75,6 +75,12 @@ DNRM2KERNEL =  dnrm2_lasx.S
 CNRM2KERNEL =  cnrm2_lasx.S
 ZNRM2KERNEL =  znrm2_lasx.S
 
+CSWAPKERNEL = cswap_lasx.S
+ZSWAPKERNEL = cswap_lasx.S
+
+CSUMKERNEL = csum_lasx.S
+ZSUMKERNEL = csum_lasx.S
+
 DGEMMKERNEL    = dgemm_kernel_16x4.S
 DGEMMINCOPY    = dgemm_ncopy_16.S
 DGEMMITCOPY    = dgemm_tcopy_16.S

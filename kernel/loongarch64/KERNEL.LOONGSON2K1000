@@ -75,6 +75,12 @@ DNRM2KERNEL =  dnrm2_lsx.S
 CNRM2KERNEL =  cnrm2_lsx.S
 ZNRM2KERNEL =  znrm2_lsx.S
 
+CSWAPKERNEL = cswap_lsx.S
+ZSWAPKERNEL = cswap_lsx.S
+
+CSUMKERNEL = csum_lsx.S
+ZSUMKERNEL = csum_lsx.S
+
 DGEMMKERNEL    = dgemm_kernel_8x4.S
 DGEMMINCOPY    = dgemm_ncopy_8_lsx.S
 DGEMMITCOPY    = dgemm_tcopy_8_lsx.S
