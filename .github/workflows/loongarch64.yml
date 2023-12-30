@@ -40,7 +40,8 @@ jobs:
 
       - name: Download and install loongarch64-toolchain
         run: |
-          wget https://github.com/loongson/build-tools/releases/download/2023.08.08/CLFS-loongarch64-8.1-x86_64-cross-tools-gcc-glibc.tar.xz
+          wget https://github.com/sunhaiyong1978/CLFS-for-LoongArch/releases/download/8.1/CLFS-loongarch64-8.1-x86_64-cross-tools-gcc-glibc.tar.xz
+          #wget https://github.com/loongson/build-tools/releases/download/2023.08.08/CLFS-loongarch64-8.1-x86_64-cross-tools-gcc-glibc.tar.xz
           tar -xf CLFS-loongarch64-8.1-x86_64-cross-tools-gcc-glibc.tar.xz -C /opt
 
       - name: Set env
