@@ -108,6 +108,10 @@ SGEMVNKERNEL = sgemv_n_8_lasx.S
 SGEMVTKERNEL = sgemv_t_8_lasx.S
 
 CGEMMKERNEL  = cgemm_kernel_2x2_lsx.S
+CGEMMINCOPY  = cgemm_ncopy_2_lsx.S
+CGEMMITCOPY  = cgemm_tcopy_2_lsx.S
+CGEMMINCOPYOBJ = cgemm_incopy$(TSUFFIX).$(SUFFIX)
+CGEMMITCOPYOBJ = cgemm_itcopy$(TSUFFIX).$(SUFFIX)
 CGEMMONCOPY  = cgemm_ncopy_2_lsx.S
 CGEMMOTCOPY  = cgemm_tcopy_2_lsx.S
 CGEMMONCOPYOBJ = cgemm_oncopy$(TSUFFIX).$(SUFFIX)
