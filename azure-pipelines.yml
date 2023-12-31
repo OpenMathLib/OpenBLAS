@@ -288,9 +288,9 @@ jobs:
      vmImage: 'ubuntu-latest'
   steps:
   - script: |
-        wget https://raw.githubusercontent.com/alpinelinux/alpine-chroot-install/v0.13.2/alpine-chroot-install \
-          && echo '60c7e0b5d82e21d1a549fc9a46ba3b36688c09dc  alpine-chroot-install' | sha1sum -c \
-          || exit 1
+        wget https://raw.githubusercontent.com/alpinelinux/alpine-chroot-install/v0.14.0/alpine-chroot-install \
+        && echo 'ccbf65f85cdc351851f8ad025bb3e65bae4d5b06  alpine-chroot-install' | sha1sum -c \
+        || exit 1
         alpine() { /alpine/enter-chroot -u "$USER" "$@"; }
         sudo sh alpine-chroot-install -p 'build-base gfortran perl linux-headers sudo'
         alpine make DYNAMIC_ARCH=1 BINARY=64
