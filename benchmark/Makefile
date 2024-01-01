@@ -37,7 +37,7 @@ ESSL=/opt/ibm/lib
 #LIBESSL = -lesslsmp $(ESSL)/libxlomp_ser.so.1 $(ESSL)/libxlf90_r.so.1 $(ESSL)/libxlfmath.so.1 $(ESSL)/libxlsmp.so.1 /opt/ibm/xlC/13.1.3/lib/libxl.a
 LIBESSL = -lesslsmp  $(ESSL)/libxlf90_r.so.1 $(ESSL)/libxlfmath.so.1 $(ESSL)/libxlsmp.so.1 /opt/ibm/xlC/13.1.3/lib/libxl.a
 
-ifneq ($(NO_LAPACK), 1)
+ifneq ($(NOFORTRAN), 1)
 GOTO_LAPACK_TARGETS=slinpack.goto dlinpack.goto clinpack.goto zlinpack.goto \
 		    scholesky.goto dcholesky.goto ccholesky.goto zcholesky.goto \
 		    sgesv.goto dgesv.goto cgesv.goto zgesv.goto \
@@ -1823,6 +1823,7 @@ zsymv.mkl : zsymv.$(SUFFIX)
 zsymv.veclib : zsymv.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBVECLIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
 
+ifndef NOFORTRAN
 ##################################### Sgeev ####################################################
 sgeev.goto : sgeev.$(SUFFIX) ../$(LIBNAME)
 	$(FC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
@@ -1954,7 +1955,7 @@ zgetri.mkl : zgetri.$(SUFFIX)
 
 zgetri.veclib : zgetri.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBVECLIB) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
-
+endif
 ##################################### Spotrf ####################################################
 spotrf.goto : spotrf.$(SUFFIX) ../$(LIBNAME)
 	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
