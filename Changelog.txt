@@ -1,5 +1,50 @@
 OpenBLAS ChangeLog
 ====================================================================
+Version 0.3.26
+ 2-Jan-2024
+
+general:
+- improved the version of openblas.pc that is created by the CMAKE build
+- fixed a CMAKE-specific build problem on older versions of MacOS
+- worked around linking problems on old versions of MacOS
+- corrected installation location of the lapacke_mangling header in CMAKE builds
+- added type declarations for complex variables to the MSVC-specific parts of the LAPACK header
+- significantly sped up ?GESV for small problem sizes by introducing a lower bound for multithreading
+- imported additions and corrections from the Reference-LAPACK project:
+  - added new LAPACK functions for truncated QR with pivoting (Reference-LAPACK PRs 891&941)
+  - handle miscalculation of minimum work array size in corner cases (Reference-LAPACK PR 942)
+  - fixed use of uninitialized variables in ?GEDMD and improved inline documentation (PR 959)
+  - fixed use of uninitialized variables (and consequential failures) in ?BBCSD (PR 967)
+  - added tests for the recently introduced Dynamic Mode Decomposition functions (PR 736)
+  - fixed several memory leaks in the LAPACK testsuite (PR 953)
+  - fixed counting of testsuite results by the Python script (PR 954)
+   
+x86-64:
+- fixed computation of CASUM on SkylakeX and newer targets in the special
+  case that AVX512 is not supported by the compiler or operating environment
+- fixed potential undefined behaviour in the CASUM/ZASUM kernels for AVX512 targets
+- worked around a problem in the pre-AVX kernels for GEMV
+- sped up the thread management code on MS Windows
+
+arm64:
+- fixed building of the LAPACK testsuite with Xcode 15 on Apple M1 and newer
+- sped up the thread management code on MS Windows
+- sped up SGEMM and DGEMM on Neoverse V1 and N1
+- sped up ?DOT on SVE-capable targets
+- reduced the number of targets in DYNAMIC_ARCH builds by eliminating functionally equivalent ones
+- included support for Apple M1 and newer targets in DYNAMIC_ARCH builds
+
+power:
+- improved the SGEMM kernel for POWER10
+- fixed compilation with (very) old versions of gcc
+- fixed detection of old 32bit PPC targets in CMAKE-based builds
+- added autodetection of the POWERPC 7400 subtype
+- fixed CMAKE-based compilation for PPCG4 and PPC970 targets
+
+loongarch64:
+- added and improved optimized kernels for almost all BLAS functions
+
+====================================================================
 Version 0.3.25
  12-Nov-2023
 
