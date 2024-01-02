@@ -3,17 +3,11 @@ task:
   arm_container:
     image: node:latest
   compile_script:
-  - make
-  - cd benchmark
-  - make
-  - export OPENBLAS_LOOPS=100
-  - ./dgemm.goto 10 2000
-  - cd ..
-  - make clean
   - sed -i -e "s/DGEMM_DEFAULT_P 160/DGEMM_DEFAULT_P 240/g" -e "s/DGEMM_DEFAULT_Q 128/DGEMM_DEFAULT_Q 320/g" param.h
   - make
   - cd benchmark
   - make
+  - export OPENBLAS_LOOPS=100
   - ./dgemm.goto 10 2000
 
 
