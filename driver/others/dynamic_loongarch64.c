@@ -25,6 +25,7 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
 USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *******************************************************************************/
 
+#include <sys/auxv.h>
 #include "common.h"
 
 extern gotoblas_t  gotoblas_LOONGSON3R5;
@@ -74,21 +75,15 @@ static gotoblas_t *force_coretype(char *coretype) {
   return NULL;
 }
 
-#define LASX_MASK       1<<7
-#define LSX_MASK        1<<6
-#define LOONGARCH_CFG2  0x02
+#define LA_HWCAP_LSX    (1U << 4)
+#define LA_HWCAP_LASX   (1U << 5)
 
 static gotoblas_t *get_coretype(void) {
-  int ret = 0;
-  __asm__ volatile (
-    "cpucfg %0, %1 \n\t"
-    : "+&r"(ret)
-    : "r"(LOONGARCH_CFG2)
-  );
+  int hwcap = (int)getauxval(AT_HWCAP);
 
-  if (ret & LASX_MASK)
+  if (hwcap & LA_HWCAP_LASX)
     return &gotoblas_LOONGSON3R5;
-  else if (ret & LSX_MASK)
+  else if (hwcap & LA_HWCAP_LSX)
     return &gotoblas_LOONGSON2K1000;
   else
     return &gotoblas_LOONGSONGENERIC;

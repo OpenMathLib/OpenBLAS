@@ -188,7 +188,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup doubleGEsolve
+*> \ingroup gelsd
 *
 *> \par Contributors:
 *  ==================
@@ -228,7 +228,7 @@
       DOUBLE PRECISION   ANRM, BIGNUM, BNRM, EPS, SFMIN, SMLNUM
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           DGEBRD, DGELQF, DGEQRF, DLABAD, DLACPY, DLALSD,
+      EXTERNAL           DGEBRD, DGELQF, DGEQRF, DLACPY, DLALSD,
      $                   DLASCL, DLASET, DORMBR, DORMLQ, DORMQR, XERBLA
 *     ..
 *     .. External Functions ..
@@ -276,7 +276,7 @@
      $       LOG( TWO ) ) + 1, 0 )
 *
       IF( INFO.EQ.0 ) THEN
-         MAXWRK = 0
+         MAXWRK = 1
          LIWORK = 3*MINMN*NLVL + 11*MINMN
          MM = M
          IF( M.GE.N .AND. M.GE.MNTHR ) THEN
@@ -372,7 +372,6 @@
       SFMIN = DLAMCH( 'S' )
       SMLNUM = SFMIN / EPS
       BIGNUM = ONE / SMLNUM
-      CALL DLABAD( SMLNUM, BIGNUM )
 *
 *     Scale A if max entry outside range [SMLNUM,BIGNUM].
 *

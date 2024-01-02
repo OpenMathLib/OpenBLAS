@@ -348,14 +348,14 @@
       IF( INFO.EQ.0 ) THEN
          IF( N.LE.1 ) THEN
             LWKMIN = 1
-            WORK( 1 ) = LWKMIN
+            LWKOPT = 1
          ELSE
             LWKMIN = 2*N
             NB = ILAENV( 1, 'CHETRD', UPLO, N, -1, -1, -1 )
             NB = MAX( NB, ILAENV( 1, 'CUNMTR', UPLO, N, -1, -1, -1 ) )
-            LWKOPT = MAX( 1, ( NB + 1 )*N )
-            WORK( 1 ) = SROUNDUP_LWORK(LWKOPT)
+            LWKOPT = ( NB + 1 )*N
          END IF
+         WORK( 1 ) = SROUNDUP_LWORK( LWKOPT )
 *
          IF( LWORK.LT.LWKMIN .AND. .NOT.LQUERY )
      $      INFO = -17

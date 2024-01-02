@@ -152,13 +152,17 @@
 *>
 *> \param[out] WORK
 *> \verbatim
-*>          WORK is REAL array, dimension (LWORK).
+*>          WORK is REAL array, dimension (MAX(1,LWORK)).
 *>          On exit, if INFO = 0, WORK(1) returns the optimal size of
 *>          WORK.
 *> \endverbatim
 *>
 *> \param[in] LWORK
+*> \verbatim
 *>          LWORK is INTEGER
+*>          The dimension of the array WORK.
+*>
+*>          If MIN(N,NRHS) = 0, LWORK >= 1, else
 *>          LWORK >= MAX(1, 2*NBA * MAX(NBA, MIN(NRHS, 32)), where
 *>          NBA = (N + NB - 1)/NB and NB is the optimal block size.
 *>
@@ -166,6 +170,7 @@
 *>          only calculates the optimal dimensions of the WORK array, returns
 *>          this value as the first entry of the WORK array, and no error
 *>          message related to LWORK is issued by XERBLA.
+*> \endverbatim
 *>
 *> \param[out] INFO
 *> \verbatim
@@ -182,7 +187,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup doubleOTHERauxiliary
+*> \ingroup latrs3
 *> \par Further Details:
 *  =====================
 *  \verbatim
@@ -257,15 +262,16 @@
       LOGICAL            LQUERY, NOTRAN, NOUNIT, UPPER
       INTEGER            AWRK, I, IFIRST, IINC, ILAST, II, I1, I2, J,
      $                   JFIRST, JINC, JLAST, J1, J2, K, KK, K1, K2,
-     $                   LANRM, LDS, LSCALE, NB, NBA, NBX, RHS
+     $                   LANRM, LDS, LSCALE, NB, NBA, NBX, RHS, LWMIN
       REAL               ANRM, BIGNUM, BNRM, RSCAL, SCAL, SCALOC,
      $                   SCAMIN, SMLNUM, TMAX
 *     ..
 *     .. External Functions ..
       LOGICAL            LSAME
       INTEGER            ILAENV
-      REAL               SLAMCH, CLANGE, SLARMM
-      EXTERNAL           ILAENV, LSAME, SLAMCH, CLANGE, SLARMM
+      REAL               SLAMCH, CLANGE, SLARMM, SROUNDUP_LWORK
+      EXTERNAL           ILAENV, LSAME, SLAMCH, CLANGE, SLARMM,
+     $                   SROUNDUP_LWORK
 *     ..
 *     .. External Subroutines ..
       EXTERNAL           CLATRS, CSSCAL, XERBLA
@@ -296,15 +302,24 @@
 *     row. WORK( I + KK * LDS ) is the scale factor of the vector
 *     segment associated with the I-th block row and the KK-th vector
 *     in the block column.
+*
       LSCALE = NBA * MAX( NBA, MIN( NRHS, NBRHS ) )
       LDS = NBA
+*
 *     The second part stores upper bounds of the triangular A. There are
 *     a total of NBA x NBA blocks, of which only the upper triangular
 *     part or the lower triangular part is referenced. The upper bound of
 *     the block A( I, J ) is stored as WORK( AWRK + I + J * NBA ).
+*
       LANRM = NBA * NBA
       AWRK = LSCALE
-      WORK( 1 ) = LSCALE + LANRM
+*
+      IF( MIN( N, NRHS ).EQ.0 ) THEN
+         LWMIN = 1
+      ELSE
+         LWMIN = LSCALE + LANRM
+      END IF
+      WORK( 1 ) = SROUNDUP_LWORK( LWMIN )
 *
 *     Test the input parameters.
 *
@@ -326,7 +341,7 @@
          INFO = -8
       ELSE IF( LDX.LT.MAX( 1, N ) ) THEN
          INFO = -10
-      ELSE IF( .NOT.LQUERY .AND. LWORK.LT.WORK( 1 ) ) THEN
+      ELSE IF( .NOT.LQUERY .AND. LWORK.LT.LWMIN ) THEN
          INFO = -14
       END IF
       IF( INFO.NE.0 ) THEN
@@ -659,6 +674,9 @@
             END IF
          END DO
       END DO
+*
+      WORK( 1 ) = SROUNDUP_LWORK( LWMIN )
+*
       RETURN
 *
 *     End of CLATRS3

@@ -735,12 +735,12 @@
          CALL CHKXER( 'DSYEVR', INFOT, NOUT, LERR, OK )
          INFOT = 18
          CALL DSYEVR( 'V', 'I', 'U', 1, A, 1, 0.0D0, 0.0D0, 1, 1, 0.0D0,
-     $                M, R, Z, 1, IW, Q, 26*N-1, IW( 2*N+1 ), 10*N,
+     $                M, R, Z, 1, IW, Q, 0, IW( 2*N+1 ), 10*N,
      $                INFO )
          CALL CHKXER( 'DSYEVR', INFOT, NOUT, LERR, OK )
          INFOT = 20
          CALL DSYEVR( 'V', 'I', 'U', 1, A, 1, 0.0D0, 0.0D0, 1, 1, 0.0D0,
-     $                M, R, Z, 1, IW, Q, 26*N, IW( 2*N+1 ), 10*N-1,
+     $                M, R, Z, 1, IW, Q, 26*N, IW( 2*N+1 ), 0,
      $                INFO )
          CALL CHKXER( 'DSYEVR', INFOT, NOUT, LERR, OK )
          NT = NT + 11

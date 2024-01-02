@@ -199,8 +199,7 @@ if [ "$architecture" = "loongarch64" ]; then
     tmpd="$(mktemp -d)"
     tmplsx="$tmpd/lsx.c"
     codelsx='"vadd.b $vr0, $vr0, $vr0"'
-    lsx_flags='-march=loongarch64 -mlsx'
-    printf "#include <lsxintrin.h>\n\n" >> "$tmplsx"
+    lsx_flags='-march=loongarch64'
     printf "void main(void){ __asm__ volatile(%s);}\n" "$codelsx" >> "$tmplsx"
     args="$lsx_flags -o $tmplsx.o $tmplsx"
     {
@@ -211,8 +210,7 @@ if [ "$architecture" = "loongarch64" ]; then
 
     tmplasx="$tmpd/lasx.c"
     codelasx='"xvadd.b $xr0, $xr0, $xr0"'
-    lasx_flags='-march=loongarch64 -mlasx'
-    printf "#include <lasxintrin.h>\n\n" >> "$tmplasx"
+    lasx_flags='-march=loongarch64'
     printf "void main(void){ __asm__ volatile(%s);}\n" "$codelasx" >> "$tmplasx"
     args="$lasx_flags -o $tmplasx.o $tmplasx"
     {

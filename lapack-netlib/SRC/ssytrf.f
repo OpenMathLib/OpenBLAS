@@ -234,7 +234,7 @@
 *
          NB = ILAENV( 1, 'SSYTRF', UPLO, N, -1, -1, -1 )
          LWKOPT = MAX( 1, N*NB )
-         WORK( 1 ) = SROUNDUP_LWORK(LWKOPT)
+         WORK( 1 ) = SROUNDUP_LWORK( LWKOPT )
       END IF
 *
       IF( INFO.NE.0 ) THEN
@@ -353,7 +353,8 @@
       END IF
 *
    40 CONTINUE
-      WORK( 1 ) = SROUNDUP_LWORK(LWKOPT)
+*
+      WORK( 1 ) = SROUNDUP_LWORK( LWKOPT )
       RETURN
 *
 *     End of SSYTRF

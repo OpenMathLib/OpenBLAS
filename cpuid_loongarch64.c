@@ -47,8 +47,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define CPU_LOONGSON3R5    1
 #define CPU_LOONGSON2K1000 2
 
-#define LA_HWCAP_LSX    (1<<4)
-#define LA_HWCAP_LASX   (1<<5)
+#define LA_HWCAP_LSX    (1U << 4)
+#define LA_HWCAP_LASX   (1U << 5)
 
 static char *cpuname[] = {
   "LOONGSONGENERIC",
@@ -64,11 +64,11 @@ static char *cpuname_lower[] = {
 
 int detect(void) {
 #ifdef __linux
-  int flag  = (int)getauxval(AT_HWCAP);
+  int hwcap  = (int)getauxval(AT_HWCAP);
 
-  if (flag & LA_HWCAP_LASX)
+  if (hwcap & LA_HWCAP_LASX)
     return CPU_LOONGSON3R5;
-  else if (flag & LA_HWCAP_LSX)
+  else if (hwcap & LA_HWCAP_LSX)
     return CPU_LOONGSON2K1000;
   else
     return CPU_GENERIC;
@@ -94,7 +94,9 @@ void get_subdirname(void) {
 }
 
 void get_cpuconfig(void) {
+  uint32_t hwcaps = 0;
   int d = detect();
+
   switch (d) {
     case CPU_LOONGSON3R5:
       printf("#define LOONGSON3R5\n");
@@ -129,6 +131,10 @@ void get_cpuconfig(void) {
       printf("#define L2_ASSOCIATIVE 16\n");
     break;
   }
+
+  hwcaps = (uint32_t)getauxval( AT_HWCAP );
+  if (hwcaps & LA_HWCAP_LSX)      printf("#define HAVE_LSX\n");
+  if (hwcaps & LA_HWCAP_LASX)     printf("#define HAVE_LASX\n");
 }
 
 void get_libname(void){

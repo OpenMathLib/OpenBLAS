@@ -101,8 +101,10 @@
 *> \param[in] LWORK
 *> \verbatim
 *>          LWORK is INTEGER
-*>          The length of WORK.  LWORK >= MAX(1,2*N). For optimum performance
-*>          LWORK >= N*(1+NB), where NB is the optimal blocksize.
+*>          The length of WORK.
+*>          LWORK >= 1, if N <= 1, and LWORK >= 2*N, otherwise.
+*>          For optimum performance LWORK >= N*(1+NB), where NB is
+*>          the optimal blocksize, returned by ILAENV.
 *>
 *>          If LWORK = -1, then a workspace query is assumed; the routine
 *>          only calculates the optimal size of the WORK array, returns
@@ -128,7 +130,7 @@
 *> \ingroup hetrf_aa
 *
 *  =====================================================================
-      SUBROUTINE SSYTRF_AA( UPLO, N, A, LDA, IPIV, WORK, LWORK, INFO)
+      SUBROUTINE SSYTRF_AA( UPLO, N, A, LDA, IPIV, WORK, LWORK, INFO )
 *
 *  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
@@ -142,19 +144,19 @@
 *     ..
 *     .. Array Arguments ..
       INTEGER            IPIV( * )
-      REAL   A( LDA, * ), WORK( * )
+      REAL               A( LDA, * ), WORK( * )
 *     ..
 *
 *  =====================================================================
 *     .. Parameters ..
-      REAL   ZERO, ONE
+      REAL               ZERO, ONE
       PARAMETER          ( ZERO = 0.0E+0, ONE = 1.0E+0 )
 *
 *     .. Local Scalars ..
       LOGICAL            LQUERY, UPPER
-      INTEGER            J, LWKOPT
+      INTEGER            J, LWKMIN, LWKOPT
       INTEGER            NB, MJ, NJ, K1, K2, J1, J2, J3, JB
-      REAL   ALPHA
+      REAL               ALPHA
 *     ..
 *     .. External Functions ..
       LOGICAL            LSAME
@@ -180,19 +182,26 @@
       INFO = 0
       UPPER = LSAME( UPLO, 'U' )
       LQUERY = ( LWORK.EQ.-1 )
+      IF( N.LE.1 ) THEN
+         LWKMIN = 1
+         LWKOPT = 1
+      ELSE
+         LWKMIN = 2*N
+         LWKOPT = (NB+1)*N
+      END IF
+*
       IF( .NOT.UPPER .AND. .NOT.LSAME( UPLO, 'L' ) ) THEN
          INFO = -1
       ELSE IF( N.LT.0 ) THEN
          INFO = -2
       ELSE IF( LDA.LT.MAX( 1, N ) ) THEN
          INFO = -4
-      ELSE IF( LWORK.LT.MAX( 1, 2*N ) .AND. .NOT.LQUERY ) THEN
+      ELSE IF( LWORK.LT.LWKMIN .AND. .NOT.LQUERY ) THEN
          INFO = -7
       END IF
 *
       IF( INFO.EQ.0 ) THEN
-         LWKOPT = (NB+1)*N
-         WORK( 1 ) = SROUNDUP_LWORK(LWKOPT)
+         WORK( 1 ) = SROUNDUP_LWORK( LWKOPT )
       END IF
 *
       IF( INFO.NE.0 ) THEN
@@ -204,11 +213,11 @@
 *
 *     Quick return
 *
-      IF ( N.EQ.0 ) THEN
+      IF( N.EQ.0 ) THEN
           RETURN
       ENDIF
       IPIV( 1 ) = 1
-      IF ( N.EQ.1 ) THEN
+      IF( N.EQ.1 ) THEN
          RETURN
       END IF
 *
@@ -458,7 +467,8 @@
       END IF
 *
    20 CONTINUE
-      WORK( 1 ) = SROUNDUP_LWORK(LWKOPT)
+*
+      WORK( 1 ) = SROUNDUP_LWORK( LWKOPT )
       RETURN
 *
 *     End of SSYTRF_AA

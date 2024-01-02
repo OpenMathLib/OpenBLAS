@@ -88,16 +88,16 @@
 *>
 *> \param[out] WORK
 *> \verbatim
-*>          WORK is REAL array, dimension (N+NB+1)*(NB+3)
+*>          WORK is REAL array, dimension (MAX(1,LWORK))
 *> \endverbatim
 *>
 *> \param[in] LWORK
 *> \verbatim
 *>          LWORK is INTEGER
 *>          The dimension of the array WORK.
-*>          WORK is size >= (N+NB+1)*(NB+3)
+*>          If N = 0, LWORK >= 1, else LWORK >= (N+NB+1)*(NB+3).
 *>          If LWORK = -1, then a workspace query is assumed; the routine
-*>           calculates:
+*>          calculates:
 *>              - the optimal size of the WORK array, returns
 *>          this value as the first entry of the WORK array,
 *>              - and no error message related to LWORK is issued by XERBLA.
@@ -120,7 +120,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup realSYcomputational
+*> \ingroup hetri2
 *
 *  =====================================================================
       SUBROUTINE SSYTRI2( UPLO, N, A, LDA, IPIV, WORK, LWORK, INFO )
@@ -147,7 +147,8 @@
 *     .. External Functions ..
       LOGICAL            LSAME
       INTEGER            ILAENV
-      EXTERNAL           LSAME, ILAENV
+      REAL               SROUNDUP_LWORK
+      EXTERNAL           LSAME, ILAENV, SROUNDUP_LWORK
 *     ..
 *     .. External Subroutines ..
       EXTERNAL           SSYTRI, SSYTRI2X, XERBLA
@@ -159,9 +160,13 @@
       INFO = 0
       UPPER = LSAME( UPLO, 'U' )
       LQUERY = ( LWORK.EQ.-1 )
+*
 *     Get blocksize
+*
       NBMAX = ILAENV( 1, 'SSYTRF', UPLO, N, -1, -1, -1 )
-      IF ( NBMAX .GE. N ) THEN
+      IF( N.EQ.0 ) THEN
+         MINSIZE = 1
+      ELSE IF( NBMAX.GE.N ) THEN
          MINSIZE = N
       ELSE
          MINSIZE = (N+NBMAX+1)*(NBMAX+3)
@@ -173,28 +178,29 @@
          INFO = -2
       ELSE IF( LDA.LT.MAX( 1, N ) ) THEN
          INFO = -4
-      ELSE IF (LWORK .LT. MINSIZE .AND. .NOT.LQUERY ) THEN
+      ELSE IF( LWORK.LT.MINSIZE .AND. .NOT.LQUERY ) THEN
          INFO = -7
       END IF
-*
-*     Quick return if possible
-*
 *
       IF( INFO.NE.0 ) THEN
          CALL XERBLA( 'SSYTRI2', -INFO )
          RETURN
       ELSE IF( LQUERY ) THEN
-         WORK(1)=MINSIZE
+         WORK( 1 ) = SROUNDUP_LWORK( MINSIZE )
          RETURN
       END IF
+*
+*     Quick return if possible
+*
       IF( N.EQ.0 )
      $   RETURN
-
-      IF( NBMAX .GE. N ) THEN
+*
+      IF( NBMAX.GE.N ) THEN
          CALL SSYTRI( UPLO, N, A, LDA, IPIV, WORK, INFO )
       ELSE
          CALL SSYTRI2X( UPLO, N, A, LDA, IPIV, WORK, NBMAX, INFO )
       END IF
+*
       RETURN
 *
 *     End of SSYTRI2

@@ -29,7 +29,7 @@ task:
   - mkdir build
   - cd build
   - cmake -DTARGET=VORTEX -DCMAKE_C_COMPILER=clang -DBUILD_SHARED_LIBS=ON ..
-  - make
+  - make -j 4
 
 task:
   name: AppleM1/GCC/MAKE/OPENMP

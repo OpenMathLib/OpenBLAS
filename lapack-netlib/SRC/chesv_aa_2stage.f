@@ -99,14 +99,14 @@
 *>
 *> \param[out] TB
 *> \verbatim
-*>          TB is COMPLEX array, dimension (LTB)
+*>          TB is COMPLEX array, dimension (MAX(1,LTB)).
 *>          On exit, details of the LU factorization of the band matrix.
 *> \endverbatim
 *>
 *> \param[in] LTB
 *> \verbatim
 *>          LTB is INTEGER
-*>          The size of the array TB. LTB >= 4*N, internally
+*>          The size of the array TB. LTB >= MAX(1,4*N), internally
 *>          used to select NB such that LTB >= (3*NB+1)*N.
 *>
 *>          If LTB = -1, then a workspace query is assumed; the
@@ -146,14 +146,15 @@
 *>
 *> \param[out] WORK
 *> \verbatim
-*>          WORK is COMPLEX workspace of size LWORK
+*>          WORK is COMPLEX workspace of size (MAX(1,LWORK))
+*>          On exit, if INFO = 0, WORK(1) returns the optimal LWORK.
 *> \endverbatim
 *>
 *> \param[in] LWORK
 *> \verbatim
 *>          LWORK is INTEGER
-*>          The size of WORK. LWORK >= N, internally used to select NB
-*>          such that LWORK >= N*NB.
+*>          The size of WORK. LWORK >= MAX(1,N), internally used to
+*>          select NB such that LWORK >= N*NB.
 *>
 *>          If LWORK = -1, then a workspace query is assumed; the
 *>          routine only calculates the optimal size of the WORK array,
@@ -203,7 +204,7 @@
 *
 *     .. Local Scalars ..
       LOGICAL            UPPER, TQUERY, WQUERY
-      INTEGER            LWKOPT
+      INTEGER            LWKMIN, LWKOPT
 *     ..
 *     .. External Functions ..
       LOGICAL            LSAME
@@ -225,6 +226,7 @@
       UPPER = LSAME( UPLO, 'U' )
       WQUERY = ( LWORK.EQ.-1 )
       TQUERY = ( LTB.EQ.-1 )
+      LWKMIN = MAX( 1, N )
       IF( .NOT.UPPER .AND. .NOT.LSAME( UPLO, 'L' ) ) THEN
          INFO = -1
       ELSE IF( N.LT.0 ) THEN
@@ -233,18 +235,19 @@
          INFO = -3
       ELSE IF( LDA.LT.MAX( 1, N ) ) THEN
          INFO = -5
-      ELSE IF( LTB.LT.( 4*N ) .AND. .NOT.TQUERY ) THEN
+      ELSE IF( LTB.LT.MAX( 1, 4*N ) .AND. .NOT.TQUERY ) THEN
          INFO = -7
       ELSE IF( LDB.LT.MAX( 1, N ) ) THEN
          INFO = -11
-      ELSE IF( LWORK.LT.N .AND. .NOT.WQUERY ) THEN
+      ELSE IF( LWORK.LT.LWKMIN .AND. .NOT.WQUERY ) THEN
          INFO = -13
       END IF
 *
       IF( INFO.EQ.0 ) THEN
          CALL CHETRF_AA_2STAGE( UPLO, N, A, LDA, TB, -1, IPIV,
      $                          IPIV2, WORK, -1, INFO )
-         LWKOPT = INT( WORK(1) )
+         LWKOPT = MAX( LWKMIN, INT( WORK( 1 ) ) )
+         WORK( 1 ) = SROUNDUP_LWORK( LWKOPT )
       END IF
 *
       IF( INFO.NE.0 ) THEN
@@ -253,7 +256,6 @@
       ELSE IF( WQUERY .OR. TQUERY ) THEN
          RETURN
       END IF
-*
 *
 *     Compute the factorization A = U**H*T*U or A = L*T*L**H.
 *
@@ -268,7 +270,7 @@
 *
       END IF
 *
-      WORK( 1 ) = SROUNDUP_LWORK(LWKOPT)
+      WORK( 1 ) = SROUNDUP_LWORK( LWKOPT )
 *
       RETURN
 *
