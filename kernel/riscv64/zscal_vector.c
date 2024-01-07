@@ -80,7 +80,7 @@ int CNAME(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, FLOAT da_r,FLOAT da_i, F
                         j += gvl;
                         ix += inc_x * 2 * gvl;
                 }  
-        else if(da_r == 0.0 && da_i == 0.0){
+        } else if(da_r == 0.0 && da_i == 0.0){
                 gvl = VSETVL(n);
                 BLASLONG stride_x = inc_x * 2 * sizeof(FLOAT);
                 BLASLONG inc_xv = inc_x * 2 * gvl;
