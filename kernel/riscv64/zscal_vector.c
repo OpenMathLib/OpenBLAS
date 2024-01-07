@@ -59,7 +59,6 @@ int CNAME(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, FLOAT da_r,FLOAT da_i, F
 
         unsigned int gvl = 0;
         FLOAT_V_T vt, v0, v1;
-
         if(da_r == 0.0 && da_i == 0.0){
                 gvl = VSETVL(n);
                 BLASLONG stride_x = inc_x * 2 * sizeof(FLOAT);
@@ -81,7 +80,6 @@ int CNAME(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, FLOAT da_r,FLOAT da_i, F
                         j += gvl;
                         ix += inc_x * 2 * gvl;
                 }
-#if 0
         }else if(da_r == 0.0){
                 gvl = VSETVL(n);
                 BLASLONG stride_x = inc_x * 2 * sizeof(FLOAT);
@@ -110,7 +108,6 @@ int CNAME(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, FLOAT da_r,FLOAT da_i, F
                         VSSEV_FLOAT(&x[ix], stride_x, vt, gvl);
                         VSSEV_FLOAT(&x[ix+1], stride_x, v1, gvl);
                 }
-    #endif
         }else if(da_i == 0.0){
                 gvl = VSETVL(n);
                 BLASLONG stride_x = inc_x * 2 * sizeof(FLOAT);
