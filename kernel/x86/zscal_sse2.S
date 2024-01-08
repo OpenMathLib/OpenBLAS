@@ -98,6 +98,7 @@
 	xorps	%xmm7, %xmm7
 	comisd	%xmm0, %xmm7
 	jne	.L100
+	jp	.L100
 
 	comisd	%xmm1, %xmm7
 	jne	.L100
