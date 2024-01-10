@@ -38,112 +38,151 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 * Macros for N=4 and M=16
 **********************************************************************************************/
 
-#ifndef POWER10
 #if defined(_AIX)
 define(`COPY_4x16', `
 #else
 .macro COPY_4x16
 #endif
 
-	lxvd2x		vs32,	o0,	A0
-	lxvd2x		vs33,	o16,	A0
-	lxvd2x		vs34,	o32,	A0
-	lxvd2x		vs35,	o48,	A0
+    lxvpx       vs32,   o0,     A0
+    lxvpx       vs34,   o32,    A0
 	addi		A0,	A0,	64
 
-	lxvd2x		vs40,	o0,	A1
-	lxvd2x		vs41,	o16,	A1
-	lxvd2x		vs42,	o32,	A1
-	lxvd2x		vs43,	o48,	A1
+    lxvpx       vs40,   o0,     A1
+    lxvpx       vs42,   o32,    A1
 	addi		A1,	A1,	64
 
-	lxvd2x		vs48,	o0,	A2
-	lxvd2x		vs49,	o16,	A2
-	lxvd2x		vs50,	o32,	A2
-	lxvd2x		vs51,	o48,	A2
+    lxvpx       vs48,   o0,     A2
+    lxvpx       vs50,   o32,    A2
 	addi		A2,	A2,	64
 
-	lxvd2x		vs4,	o0,	A3
-	lxvd2x		vs5,	o16,	A3
-	lxvd2x		vs6,	o32,	A3
-	lxvd2x		vs7,	o48,	A3
+    lxvpx       vs4,    o0,     A3
+    lxvpx       vs6,    o32,    A3
 	addi		A3,	A3,	64
 
-	lxvd2x		vs36,	o0,	A0
-	lxvd2x		vs37,	o16,	A0
-	lxvd2x		vs38,	o32,	A0
-	lxvd2x		vs39,	o48,	A0
+    lxvpx       vs36,   o0,     A0
+    lxvpx       vs38,   o32,    A0
 	addi		A0,	A0,	64
 
-	lxvd2x		vs44,	o0,	A1
-	lxvd2x		vs45,	o16,	A1
-	lxvd2x		vs46,	o32,	A1
-	lxvd2x		vs47,	o48,	A1
+    lxvpx       vs44,   o0,     A1
+    lxvpx       vs46,   o32,    A1
 	addi		A1,	A1,	64
 
-	lxvd2x		vs12,	o0,	A2
-	lxvd2x		vs13,	o16,	A2
-	lxvd2x		vs2,	o32,	A2
-	lxvd2x		vs3,	o48,	A2
+    lxvpx       vs12,   o0,     A2
+    lxvpx       vs2,    o32,    A2
 	addi		A2,	A2,	64
 
-	lxvd2x		vs8,	o0,	A3
-	lxvd2x		vs9,	o16,	A3
-	lxvd2x		vs10,	o32,	A3
-	lxvd2x		vs11,	o48,	A3
+    lxvpx       vs8,    o0,     A3
+    lxvpx       vs10,   o32,    A3
 	addi		A3,	A3,	64
 
 	mr		T1,	BO
 
+#if (__BYTE_ORDER__ == __ORDER_BIG_ENDIAN__)
 	stxvd2x		vs32,	o0,	T1
 	stxvd2x		vs33,	o16,	T1
 	stxvd2x		vs34,	o32,	T1
 	stxvd2x		vs35,	o48,	T1
+#else
+    stxvd2x     vs33,   o0, T1
+    stxvd2x     vs32,   o16,    T1
+    stxvd2x     vs35,   o32,    T1
+    stxvd2x     vs34,   o48,    T1
+#endif
 	addi		T1,	T1,	64
 
+#if (__BYTE_ORDER__ == __ORDER_BIG_ENDIAN__)
 	stxvd2x		vs36,	o0,	T1
 	stxvd2x		vs37,	o16,	T1
 	stxvd2x		vs38,	o32,	T1
 	stxvd2x		vs39,	o48,	T1
+#else
+    stxvd2x     vs37,   o0, T1
+    stxvd2x     vs36,   o16,    T1
+    stxvd2x     vs39,   o32,    T1
+    stxvd2x     vs38,   o48,    T1
+#endif
 
 	addi		T1,	T1,	64
 
+#if (__BYTE_ORDER__ == __ORDER_BIG_ENDIAN__)
 	stxvd2x		vs40,	o0,	T1
 	stxvd2x		vs41,	o16,	T1
 	stxvd2x		vs42,	o32,	T1
 	stxvd2x		vs43,	o48,	T1
+#else
+    stxvd2x     vs41,   o0, T1
+    stxvd2x     vs40,   o16,    T1
+    stxvd2x     vs43,   o32,    T1
+    stxvd2x     vs42,   o48,    T1
+#endif
 	addi		T1,	T1,	64
 
+#if (__BYTE_ORDER__ == __ORDER_BIG_ENDIAN__)
 	stxvd2x		vs44,	o0,	T1
 	stxvd2x		vs45,	o16,	T1
 	stxvd2x		vs46,	o32,	T1
 	stxvd2x		vs47,	o48,	T1
+#else
+    stxvd2x     vs45,   o0, T1
+    stxvd2x     vs44,   o16,    T1
+    stxvd2x     vs47,   o32,    T1
+    stxvd2x     vs46,   o48,    T1
+#endif
 
 	addi		T1,	T1,	64
 
+#if (__BYTE_ORDER__ == __ORDER_BIG_ENDIAN__)
 	stxvd2x		vs48,	o0,	T1
 	stxvd2x		vs49,	o16,	T1
 	stxvd2x		vs50,	o32,	T1
 	stxvd2x		vs51,	o48,	T1
+#else
+    stxvd2x     vs49,   o0, T1
+    stxvd2x     vs48,   o16,    T1
+    stxvd2x     vs51,   o32,    T1
+    stxvd2x     vs50,   o48,    T1
+#endif
 	addi		T1,	T1,	64
 
+#if (__BYTE_ORDER__ == __ORDER_BIG_ENDIAN__)
 	stxvd2x		vs12,	o0,	T1
 	stxvd2x		vs13,	o16,	T1
 	stxvd2x		vs2,	o32,	T1
 	stxvd2x		vs3,	o48,	T1
+#else
+    stxvd2x     vs13,   o0, T1
+    stxvd2x     vs12,   o16,    T1
+    stxvd2x     vs3,    o32,    T1
+    stxvd2x     vs2,    o48,    T1
+#endif
 
 	addi		T1,	T1,	64
 
+#if (__BYTE_ORDER__ == __ORDER_BIG_ENDIAN__)
 	stxvd2x		vs4,	o0,	T1
 	stxvd2x		vs5,	o16,	T1
 	stxvd2x		vs6,	o32,	T1
 	stxvd2x		vs7,	o48,	T1
+#else
+    stxvd2x     vs5,    o0, T1
+    stxvd2x     vs4,    o16,    T1
+    stxvd2x     vs7,    o32,    T1
+    stxvd2x     vs6,    o48,    T1
+#endif
 	addi		T1,	T1,	64
 
+#if (__BYTE_ORDER__ == __ORDER_BIG_ENDIAN__)
 	stxvd2x		vs8,	o0,	T1
 	stxvd2x		vs9,	o16,	T1
 	stxvd2x		vs10,	o32,	T1
 	stxvd2x		vs11,	o48,	T1
+#else
+    stxvd2x     vs9,    o0, T1
+    stxvd2x     vs8,    o16,    T1
+    stxvd2x     vs11,   o32,    T1
+    stxvd2x     vs10,   o48,    T1
+#endif
 
 #if defined(_AIX)
 ')
@@ -162,61 +201,81 @@ define(`COPY_4x8', `
 .macro COPY_4x8
 #endif
 
-	lxvd2x		vs32,	o0,	A0
-	lxvd2x		vs33,	o16,	A0
-	lxvd2x		vs34,	o32,	A0
-	lxvd2x		vs35,	o48,	A0
+    lxvpx       vs32,   o0,     A0
+    lxvpx       vs34,   o32,    A0
 	addi		A0,	A0,	64
 
 
-	lxvd2x		vs36,	o0,	A1
-	lxvd2x		vs37,	o16,	A1
-	lxvd2x		vs38,	o32,	A1
-	lxvd2x		vs39,	o48,	A1
+    lxvpx       vs36,   o0,     A1
+    lxvpx       vs38,   o32,    A1
 	addi		A1,	A1,	64
 
 
-	lxvd2x		vs40,	o0,	A2
-	lxvd2x		vs41,	o16,	A2
-	lxvd2x		vs42,	o32,	A2
-	lxvd2x		vs43,	o48,	A2
+    lxvpx       vs40,   o0,     A2
+    lxvpx       vs42,   o32,    A2
 	addi		A2,	A2,	64
 
 
-	lxvd2x		vs44,	o0,	A3
-	lxvd2x		vs45,	o16,	A3
-	lxvd2x		vs46,	o32,	A3
-	lxvd2x		vs47,	o48,	A3
+    lxvpx       vs44,   o0,     A3
+    lxvpx       vs46,   o32,    A3
 	addi		A3,	A3,	64
 
 
 	mr		T1,	BO
 
+#if (__BYTE_ORDER__ == __ORDER_BIG_ENDIAN__)
 	stxvd2x		vs32,	o0,	T1
 	stxvd2x		vs33,	o16,	T1
 	stxvd2x		vs34,	o32,	T1
 	stxvd2x		vs35,	o48,	T1
+#else
+    stxvd2x     vs33,   o0, T1
+    stxvd2x     vs32,   o16,    T1
+    stxvd2x     vs35,   o32,    T1
+    stxvd2x     vs34,   o48,    T1
+#endif
 
 	addi		T1,	T1,	64
 
+#if (__BYTE_ORDER__ == __ORDER_BIG_ENDIAN__)
 	stxvd2x		vs36,	o0,	T1
 	stxvd2x		vs37,	o16,	T1
 	stxvd2x		vs38,	o32,	T1
 	stxvd2x		vs39,	o48,	T1
+#else
+    stxvd2x     vs37,   o0, T1
+    stxvd2x     vs36,   o16,    T1
+    stxvd2x     vs39,   o32,    T1
+    stxvd2x     vs38,   o48,    T1
+#endif
 
 	addi		T1,	T1,	64
 
+#if (__BYTE_ORDER__ == __ORDER_BIG_ENDIAN__)
 	stxvd2x		vs40,	o0,	T1
 	stxvd2x		vs41,	o16,	T1
 	stxvd2x		vs42,	o32,	T1
 	stxvd2x		vs43,	o48,	T1
+#else
+    stxvd2x     vs41,   o0, T1
+    stxvd2x     vs40,   o16,    T1
+    stxvd2x     vs43,   o32,    T1
+    stxvd2x     vs42,   o48,    T1
+#endif
 
 	addi		T1,	T1,	64
 
+#if (__BYTE_ORDER__ == __ORDER_BIG_ENDIAN__)
 	stxvd2x		vs44,	o0,	T1
 	stxvd2x		vs45,	o16,	T1
 	stxvd2x		vs46,	o32,	T1
 	stxvd2x		vs47,	o48,	T1
+#else
+    stxvd2x     vs45,   o0, T1
+    stxvd2x     vs44,   o16,    T1
+    stxvd2x     vs47,   o32,    T1
+    stxvd2x     vs46,   o48,    T1
+#endif
 
 #if defined(_AIX)
 ')
@@ -235,130 +294,53 @@ define(`COPY_4x4', `
 .macro COPY_4x4
 #endif
 
-	lxvd2x		vs32,	o0,	A0
-	lxvd2x		vs33,	o16,	A0
+    lxvpx       vs32,   o0,     A0
 	addi		A0,	A0,	32
 
 
-	lxvd2x		vs34,	o0,	A1
-	lxvd2x		vs35,	o16,	A1
+    lxvpx       vs34,   o0,     A1
 	addi		A1,	A1,	32
 
 
-	lxvd2x		vs36,	o0,	A2
-	lxvd2x		vs37,	o16,	A2
+    lxvpx       vs36,   o0,     A2
 	addi		A2,	A2,	32
 
 
-	lxvd2x		vs38,	o0,	A3
-	lxvd2x		vs39,	o16,	A3
+    lxvpx       vs38,   o0,     A3
 	addi		A3,	A3,	32
 
 
 	mr		T1,	BO
 
+#if (__BYTE_ORDER__ == __ORDER_BIG_ENDIAN__)
 	stxvd2x		vs32,	o0,	T1
 	stxvd2x		vs33,	o16,	T1
 
 	stxvd2x		vs34,	o32,	T1
 	stxvd2x		vs35,	o48,	T1
+#else
+    stxvd2x     vs33,   o0, T1
+    stxvd2x     vs32,   o16,    T1
+
+    stxvd2x     vs35,   o32,    T1
+    stxvd2x     vs34,   o48,    T1
+#endif
 
 	addi		T1,	T1,	64
 
+#if (__BYTE_ORDER__ == __ORDER_BIG_ENDIAN__)
 	stxvd2x		vs36,	o0,	T1
 	stxvd2x		vs37,	o16,	T1
 
 	stxvd2x		vs38,	o32,	T1
 	stxvd2x		vs39,	o48,	T1
-
-#if defined(_AIX)
-')
 #else
-.endm
+    stxvd2x     vs37,   o0, T1
+    stxvd2x     vs36,   o16,    T1
+
+    stxvd2x     vs39,   o32,    T1
+    stxvd2x     vs38,   o48,    T1
 #endif
-#endif
-
-
-/**********************************************************************************************
-* Macros for N=4 and M=2
-**********************************************************************************************/
-
-#if defined(_AIX)
-define(`COPY_4x2', `
-#else
-.macro COPY_4x2
-#endif
-
-	lxvd2x		vs32,	o0,	A0
-	addi		A0,	A0,	16
-
-
-	lxvd2x		vs33,	o0,	A1
-	addi		A1,	A1,	16
-
-
-	lxvd2x		vs34,	o0,	A2
-	addi		A2,	A2,	16
-
-
-	lxvd2x		vs35,	o0,	A3
-	addi		A3,	A3,	16
-
-
-	mr		T1,	BO
-
-	stxvd2x		vs32,	o0,	T1
-
-	stxvd2x		vs33,	o16,	T1
-
-	stxvd2x		vs34,	o32,	T1
-
-	stxvd2x		vs35,	o48,	T1
-
-#if defined(_AIX)
-')
-#else
-.endm
-#endif
-
-
-/**********************************************************************************************
-* Macros for N=4 and M=1
-**********************************************************************************************/
-
-#if defined(_AIX)
-define(`COPY_4x1', `
-#else
-.macro COPY_4x1
-#endif
-
-	lxsdx		vs32,	o0,	A0
-	addi		A0,	A0,	8
-
-
-	lxsdx		vs33,	o0,	A1
-	addi		A1,	A1,	8
-
-
-	lxsdx		vs34,	o0,	A2
-	addi		A2,	A2,	8
-
-
-	lxsdx		vs35,	o0,	A3
-	addi		A3,	A3,	8
-
-
-	mr		T1,	BO
-
-	stxsdx		vs32,	o0,	T1
-
-	stxsdx		vs33,	o8,	T1
-
-	addi		T1,	T1,	16
-
-	stxsdx		vs34,	o0,	T1
-
-	stxsdx		vs35,	o8,	T1
 
 #if defined(_AIX)
 ')
@@ -371,64 +353,83 @@ define(`COPY_4x1', `
 * Macros for N=2 and M=16
 **********************************************************************************************/
 
-#ifndef POWER10
 #if defined(_AIX)
 define(`COPY_2x16', `
 #else
 .macro COPY_2x16
 #endif
 
-	lxvd2x		vs32,	o0,	A0
-	lxvd2x		vs33,	o16,	A0
-	lxvd2x		vs34,	o32,	A0
-	lxvd2x		vs35,	o48,	A0
+    lxvpx       vs32,   o0,     A0
+    lxvpx       vs34,   o32,    A0
 	addi		A0,	A0,	64
 
-	lxvd2x		vs36,	o0,	A0
-	lxvd2x		vs37,	o16,	A0
-	lxvd2x		vs38,	o32,	A0
-	lxvd2x		vs39,	o48,	A0
+    lxvpx       vs36,   o0,     A0
+    lxvpx       vs38,   o32,    A0
 	addi		A0,	A0,	64
 
 
-	lxvd2x		vs40,	o0,	A1
-	lxvd2x		vs41,	o16,	A1
-	lxvd2x		vs42,	o32,	A1
-	lxvd2x		vs43,	o48,	A1
+    lxvpx       vs40,   o0,     A1
+    lxvpx       vs42,   o32,    A1
 	addi		A1,	A1,	64
 
-	lxvd2x		vs44,	o0,	A1
-	lxvd2x		vs45,	o16,	A1
-	lxvd2x		vs46,	o32,	A1
-	lxvd2x		vs47,	o48,	A1
+    lxvpx       vs44,   o0,     A1
+    lxvpx       vs46,   o32,    A1
 	addi		A1,	A1,	64
 
 
 	mr		T1,	BO
 
+#if (__BYTE_ORDER__ == __ORDER_BIG_ENDIAN__)
 	stxvd2x		vs32,	o0,	T1
 	stxvd2x		vs33,	o16,	T1
 	stxvd2x		vs34,	o32,	T1
 	stxvd2x		vs35,	o48,	T1
+#else
+    stxvd2x     vs33,   o0, T1
+    stxvd2x     vs32,   o16,    T1
+    stxvd2x     vs35,   o32,    T1
+    stxvd2x     vs34,   o48,    T1
+#endif
 	addi		T1,	T1,	64
 
+#if (__BYTE_ORDER__ == __ORDER_BIG_ENDIAN__)
 	stxvd2x		vs36,	o0,	T1
 	stxvd2x		vs37,	o16,	T1
 	stxvd2x		vs38,	o32,	T1
 	stxvd2x		vs39,	o48,	T1
+#else
+    stxvd2x     vs37,   o0, T1
+    stxvd2x     vs36,   o16,    T1
+    stxvd2x     vs39,   o32,    T1
+    stxvd2x     vs38,   o48,    T1
+#endif
 
 	addi		T1,	T1,	64
 
+#if (__BYTE_ORDER__ == __ORDER_BIG_ENDIAN__)
 	stxvd2x		vs40,	o0,	T1
 	stxvd2x		vs41,	o16,	T1
 	stxvd2x		vs42,	o32,	T1
 	stxvd2x		vs43,	o48,	T1
+#else
+    stxvd2x     vs41,   o0, T1
+    stxvd2x     vs40,   o16,    T1
+    stxvd2x     vs43,   o32,    T1
+    stxvd2x     vs42,   o48,    T1
+#endif
 	addi		T1,	T1,	64
 
+#if (__BYTE_ORDER__ == __ORDER_BIG_ENDIAN__)
 	stxvd2x		vs44,	o0,	T1
 	stxvd2x		vs45,	o16,	T1
 	stxvd2x		vs46,	o32,	T1
 	stxvd2x		vs47,	o48,	T1
+#else
+    stxvd2x     vs45,   o0, T1
+    stxvd2x     vs44,   o16,    T1
+    stxvd2x     vs47,   o32,    T1
+    stxvd2x     vs46,   o48,    T1
+#endif
 
 #if defined(_AIX)
 ')
@@ -447,33 +448,43 @@ define(`COPY_2x8', `
 .macro COPY_2x8
 #endif
 
-	lxvd2x		vs32,	o0,	A0
-	lxvd2x		vs33,	o16,	A0
-	lxvd2x		vs34,	o32,	A0
-	lxvd2x		vs35,	o48,	A0
+    lxvpx       vs32,   o0,     A0
+    lxvpx       vs34,   o32,    A0
 	addi		A0,	A0,	64
 
 
-	lxvd2x		vs36,	o0,	A1
-	lxvd2x		vs37,	o16,	A1
-	lxvd2x		vs38,	o32,	A1
-	lxvd2x		vs39,	o48,	A1
+    lxvpx       vs36,   o0,     A1
+    lxvpx       vs38,   o0,     A1
 	addi		A1,	A1,	64
 
 
 	mr		T1,	BO
 
+#if (__BYTE_ORDER__ == __ORDER_BIG_ENDIAN__)
 	stxvd2x		vs32,	o0,	T1
 	stxvd2x		vs33,	o16,	T1
 	stxvd2x		vs34,	o32,	T1
 	stxvd2x		vs35,	o48,	T1
+#else
+    stxvd2x     vs33,   o0, T1
+    stxvd2x     vs32,   o16,    T1
+    stxvd2x     vs35,   o32,    T1
+    stxvd2x     vs34,   o48,    T1
+#endif
 
 	addi		T1,	T1,	64
 
+#if (__BYTE_ORDER__ == __ORDER_BIG_ENDIAN__)
 	stxvd2x		vs36,	o0,	T1
 	stxvd2x		vs37,	o16,	T1
 	stxvd2x		vs38,	o32,	T1
 	stxvd2x		vs39,	o48,	T1
+#else
+    stxvd2x     vs37,   o0, T1
+    stxvd2x     vs36,   o16,    T1
+    stxvd2x     vs39,   o32,    T1
+    stxvd2x     vs38,   o48,    T1
+#endif
 
 #if defined(_AIX)
 ')
@@ -492,86 +503,29 @@ define(`COPY_2x4', `
 .macro COPY_2x4
 #endif
 
-	lxvd2x		vs32,	o0,	A0
-	lxvd2x		vs33,	o16,	A0
+    lxvpx       vs32,   o0,     A0
 	addi		A0,	A0,	32
 
 
-	lxvd2x		vs34,	o0,	A1
-	lxvd2x		vs35,	o16,	A1
+    lxvpx       vs34,   o0,     A1
 	addi		A1,	A1,	32
 
 
 	mr		T1,	BO
 
+#if (__BYTE_ORDER__ == __ORDER_BIG_ENDIAN__)
 	stxvd2x		vs32,	o0,	T1
 	stxvd2x		vs33,	o16,	T1
 
 	stxvd2x		vs34,	o32,	T1
 	stxvd2x		vs35,	o48,	T1
-
-#if defined(_AIX)
-')
 #else
-.endm
+    stxvd2x     vs33,   o0, T1
+    stxvd2x     vs32,   o16,    T1
+
+    stxvd2x     vs35,   o32,    T1
+    stxvd2x     vs34,   o48,    T1
 #endif
-#endif
-
-
-/**********************************************************************************************
-* Macros for N=2 and M=2
-**********************************************************************************************/
-
-#if defined(_AIX)
-define(`COPY_2x2', `
-#else
-.macro COPY_2x2
-#endif
-
-	lxvd2x		vs32,	o0,	A0
-	addi		A0,	A0,	16
-
-
-	lxvd2x		vs33,	o0,	A1
-	addi		A1,	A1,	16
-
-
-	mr		T1,	BO
-
-	stxvd2x		vs32,	o0,	T1
-
-	stxvd2x		vs33,	o16,	T1
-
-#if defined(_AIX)
-')
-#else
-.endm
-#endif
-
-
-/**********************************************************************************************
-* Macros for N=2 and M=1
-**********************************************************************************************/
-
-#if defined(_AIX)
-define(`COPY_2x1', `
-#else
-.macro COPY_2x1
-#endif
-
-	lxsdx		vs32,	o0,	A0
-	addi		A0,	A0,	8
-
-
-	lxsdx		vs33,	o0,	A1
-	addi		A1,	A1,	8
-
-
-	mr		T1,	BO
-
-	stxsdx		vs32,	o0,	T1
-
-	stxsdx		vs33,	o8,	T1
 
 #if defined(_AIX)
 ')
@@ -584,38 +538,47 @@ define(`COPY_2x1', `
 * Macros for N=1 and M=16
 **********************************************************************************************/
 
-#ifndef POWER10
 #if defined(_AIX)
 define(`COPY_1x16', `
 #else
 .macro COPY_1x16
 #endif
 
-	lxvd2x		vs32,	o0,	A0
-	lxvd2x		vs33,	o16,	A0
-	lxvd2x		vs34,	o32,	A0
-	lxvd2x		vs35,	o48,	A0
+    lxvpx       vs32,   o0,     A0
+    lxvpx       vs34,   o32,    A0
 	addi		A0,	A0,	64
 
-	lxvd2x		vs36,	o0,	A0
-	lxvd2x		vs37,	o16,	A0
-	lxvd2x		vs38,	o32,	A0
-	lxvd2x		vs39,	o48,	A0
+    lxvpx       vs36,   o0,     A0
+    lxvpx       vs38,   o0,     A0
 	addi		A0,	A0,	64
 
 
 	mr		T1,	BO
 
+#if (__BYTE_ORDER__ == __ORDER_BIG_ENDIAN__)
 	stxvd2x		vs32,	o0,	T1
 	stxvd2x		vs33,	o16,	T1
 	stxvd2x		vs34,	o32,	T1
 	stxvd2x		vs35,	o48,	T1
+#else
+    stxvd2x     vs33,   o0, T1
+    stxvd2x     vs32,   o16,    T1
+    stxvd2x     vs35,   o32,    T1
+    stxvd2x     vs34,   o48,    T1
+#endif
 	addi		T1,	T1,	64
 
+#if (__BYTE_ORDER__ == __ORDER_BIG_ENDIAN__)
 	stxvd2x		vs36,	o0,	T1
 	stxvd2x		vs37,	o16,	T1
 	stxvd2x		vs38,	o32,	T1
 	stxvd2x		vs39,	o48,	T1
+#else
+    stxvd2x     vs37,   o0, T1
+    stxvd2x     vs36,   o16,    T1
+    stxvd2x     vs39,   o32,    T1
+    stxvd2x     vs38,   o48,    T1
+#endif
 
 #if defined(_AIX)
 ')
@@ -634,19 +597,24 @@ define(`COPY_1x8', `
 .macro COPY_1x8
 #endif
 
-	lxvd2x		vs32,	o0,	A0
-	lxvd2x		vs33,	o16,	A0
-	lxvd2x		vs34,	o32,	A0
-	lxvd2x		vs35,	o48,	A0
+    lxvpx       vs32,   o0,     A0
+    lxvpx       vs34,   o32,    A0
 	addi		A0,	A0,	64
 
 
 	mr		T1,	BO
 
+#if (__BYTE_ORDER__ == __ORDER_BIG_ENDIAN__)
 	stxvd2x		vs32,	o0,	T1
 	stxvd2x		vs33,	o16,	T1
 	stxvd2x		vs34,	o32,	T1
 	stxvd2x		vs35,	o48,	T1
+#else
+    stxvd2x     vs33,   o0, T1
+    stxvd2x     vs32,   o16,    T1
+    stxvd2x     vs35,   o32,    T1
+    stxvd2x     vs34,   o48,    T1
+#endif
 
 #if defined(_AIX)
 ')
@@ -665,66 +633,19 @@ define(`COPY_1x4', `
 .macro COPY_1x4
 #endif
 
-	lxvd2x		vs32,	o0,	A0
-	lxvd2x		vs33,	o16,	A0
+    lxvpx       vs32,   o0,     A0
 	addi		A0,	A0,	32
 
 
 	mr		T1,	BO
 
+#if (__BYTE_ORDER__ == __ORDER_BIG_ENDIAN__)
 	stxvd2x		vs32,	o0,	T1
 	stxvd2x		vs33,	o16,	T1
-
-#if defined(_AIX)
-')
 #else
-.endm
+    stxvd2x     vs33,   o0, T1
+    stxvd2x     vs32,   o16,    T1
 #endif
-#endif
-
-
-/**********************************************************************************************
-* Macros for N=1 and M=2
-**********************************************************************************************/
-
-#if defined(_AIX)
-define(`COPY_1x2', `
-#else
-.macro COPY_1x2
-#endif
-
-	lxvd2x		vs32,	o0,	A0
-	addi		A0,	A0,	16
-
-
-	mr		T1,	BO
-
-	stxvd2x		vs32,	o0,	T1
-
-#if defined(_AIX)
-')
-#else
-.endm
-#endif
-
-
-/**********************************************************************************************
-* Macros for N=1 and M=1
-**********************************************************************************************/
-
-#if defined(_AIX)
-define(`COPY_1x1', `
-#else
-.macro COPY_1x1
-#endif
-
-	lxsdx		vs32,	o0,	A0
-	addi		A0,	A0,	8
-
-
-	mr		T1,	BO
-
-	stxsdx		vs32,	o0,	T1
 
 #if defined(_AIX)
 ')
