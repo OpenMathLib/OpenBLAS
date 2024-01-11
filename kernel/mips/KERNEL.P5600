@@ -103,8 +103,10 @@ endif
 ifdef HAVE_MSA
 SSCALKERNEL  = ../mips/sscal_msa.c
 DSCALKERNEL  = ../mips/dscal_msa.c
-CSCALKERNEL  = ../mips/cscal_msa.c
-ZSCALKERNEL  = ../mips/zscal_msa.c
+#CSCALKERNEL  = ../mips/cscal_msa.c
+#ZSCALKERNEL  = ../mips/zscal_msa.c
+CSCALKERNEL = ../mips/zscal.c
+ZSCALKERNEL = ../mips/zscal.c
 else
 SSCALKERNEL  = ../mips/scal.c
 DSCALKERNEL  = ../mips/scal.c
