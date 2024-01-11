@@ -6,7 +6,7 @@ COMMONOBJS	 = memory.$(SUFFIX) xerbla.$(SUFFIX) c_abs.$(SUFFIX) z_abs.$(SUFFIX) 
 #COMMONOBJS	+= slamch.$(SUFFIX) slamc3.$(SUFFIX) dlamch.$(SUFFIX)  dlamc3.$(SUFFIX)
 
 ifdef SMP
-COMMONOBJS	+= blas_server.$(SUFFIX) divtable.$(SUFFIX) blasL1thread.$(SUFFIX)
+COMMONOBJS	+= blas_server.$(SUFFIX) divtable.$(SUFFIX) blasL1thread.$(SUFFIX) blas_server_callback.$(SUFFIX)
 ifneq ($(NO_AFFINITY), 1)
 COMMONOBJS	+= init.$(SUFFIX)
 endif
@@ -140,6 +140,9 @@ memory.$(SUFFIX) : $(MEMORY) ../../common.h ../../param.h
 blas_server.$(SUFFIX) : $(BLAS_SERVER) ../../common.h ../../common_thread.h ../../param.h
 	$(CC) $(CFLAGS) -c $< -o $(@F)
 
+blas_server_callback.$(SUFFIX) : blas_server_callback.c ../../common.h
+	$(CC) $(CFLAGS) -c $< -o $(@F)
+	
 openblas_set_num_threads.$(SUFFIX) : openblas_set_num_threads.c
 	$(CC) $(CFLAGS) -c $< -o $(@F)
 
