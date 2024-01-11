@@ -244,6 +244,7 @@ case "$data" in
 esac
 
 no_avx512=0
+no_avx512bf=0
 if [ "$architecture" = "x86" ] || [ "$architecture" = "x86_64" ]; then
     tmpd=$(mktemp -d 2>/dev/null || mktemp -d -t 'OBC')
     tmpf="$tmpd/a.c"
@@ -262,6 +263,25 @@ if [ "$architecture" = "x86" ] || [ "$architecture" = "x86_64" ]; then
     }
 
     rm -rf "$tmpd"
+    if [ "$no_avx512" -eq 0 ]; then
+    tmpd=$(mktemp -d 2>/dev/null || mktemp -d -t 'OBC')
+    tmpf="$tmpd/a.c"
+    code='"__m512 a= _mm512_dpbf16_ps(a, (__m512bh) _mm512_loadu_si512(%1]), (__m512bh) _mm512_loadu_si512(%2]));"'
+    printf "#include <immintrin.h>\n\nint main(void){ %s; }\n" "$code" >> "$tmpf"
+    if [ "$compiler" = "PGI" ]; then
+        args=" -tp cooperlake -c -o $tmpf.o $tmpf"
+    else
+        args=" -march=cooperlake -c -o $tmpf.o $tmpf"
+    fi
+    no_avx512bf=0
+    {
+        $compiler_name $flags $args >/dev/null 2>&1
+    } || {
+        no_avx512bf=1
+    }
+
+    rm -rf "$tmpd"
+  fi
 fi
 
 no_rv64gv=0
@@ -409,6 +429,7 @@ done
  [ "$makefile" = "-" ] && {
     [ "$no_rv64gv" -eq 1 ] && printf "NO_RV64GV=1\n"
     [ "$no_avx512" -eq 1 ] && printf "NO_AVX512=1\n"
+    [ "$no_avx512bf" -eq 1 ] && printf "NO_AVX512BF16=1\n"
     [ "$no_avx2" -eq 1 ] && printf "NO_AVX2=1\n"
     [ "$oldgcc" -eq 1 ] && printf "OLDGCC=1\n"
     exit 0
@@ -437,6 +458,7 @@ done
     [ "$no_sve" -eq 1 ] && printf "NO_SVE=1\n"
     [ "$no_rv64gv" -eq 1 ] && printf "NO_RV64GV=1\n"
     [ "$no_avx512" -eq 1 ] && printf "NO_AVX512=1\n"
+    [ "$no_avx512bf" -eq 1 ] && printf "NO_AVX512BF16=1\n"
     [ "$no_avx2" -eq 1 ] && printf "NO_AVX2=1\n"
     [ "$oldgcc" -eq 1 ] && printf "OLDGCC=1\n"
     [ "$no_lsx" -eq 1 ] && printf "NO_LSX=1\n"
