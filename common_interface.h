@@ -47,6 +47,11 @@ int    BLASFUNC(xerbla)(char *, blasint *info, blasint);
 
 void    openblas_set_num_threads_(int *);
 
+/*Set the threading backend to a custom callback.*/
+typedef void (*openblas_dojob_callback)(int thread_num, void *jobdata, int dojob_data);
+typedef void (*openblas_threads_callback)(int sync, openblas_dojob_callback dojob, int numjobs, size_t jobdata_elsize, void *jobdata, int dojob_data);
+extern openblas_threads_callback openblas_threads_callback_;
+
 FLOATRET  BLASFUNC(sdot)  (blasint *, float  *, blasint *, float  *, blasint *);
 FLOATRET  BLASFUNC(sdsdot)(blasint *, float  *,        float  *, blasint *, float  *, blasint *);
 

@@ -26,6 +26,11 @@ char* openblas_get_config(void);
 /*Get the CPU corename on runtime.*/
 char* openblas_get_corename(void);
 
+/*Set the threading backend to a custom callback.*/
+typedef void (*openblas_dojob_callback)(int thread_num, void *jobdata, int dojob_data);
+typedef void (*openblas_threads_callback)(int sync, openblas_dojob_callback dojob, int numjobs, size_t jobdata_elsize, void *jobdata, int dojob_data);
+void openblas_set_threads_callback_function(openblas_threads_callback callback);
+
 #ifdef OPENBLAS_OS_LINUX
 /* Sets thread affinity for OpenBLAS threads. `thread_idx` is in [0, openblas_get_num_threads()-1]. */
 int openblas_setaffinity(int thread_idx, size_t cpusetsize, cpu_set_t* cpu_set);

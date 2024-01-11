@@ -25,6 +25,7 @@ if (USE_THREAD)
     ${BLAS_SERVER}
     divtable.c # TODO: Makefile has -UDOUBLE
     blas_l1_thread.c
+    blas_server_callback.c
   )
 
   if (NOT NO_AFFINITY)
