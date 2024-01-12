@@ -2,6 +2,13 @@
 #include <cblas.h>
 #ifdef BUILD_COMPLEX16
 
+#ifndef NAN
+#define NAN 0.0/0.0
+#endif
+#ifndef INFINITY
+#define INFINITY 1.0/0.0
+#endif
+
 CTEST(zscal, i_nan)
 {
     double i[] = {0,1, 0,1, 0,1, 0,1, 0,1, 0,1, 0,1, 0,1, 0,1 };
