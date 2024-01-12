@@ -233,9 +233,15 @@ int CNAME(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, FLOAT da_r, FLOAT da_i,
 
         while (j < n1) {
 
-          temp0 = -da_i * x[i + 1];
+	  if (isnan(x[i]) || isinf(x[i]))
+		temp0 = NAN;
+	  else
+		temp0 = -da_i * x[i + 1];
           x[i + 1] = da_i * x[i];
           x[i] = temp0;
+	  if (isnan(x[i + inc_x]) || isinf(x[i + inc_x]))
+		temp1 = NAN;
+	  else
           temp1 = -da_i * x[i + 1 + inc_x];
           x[i + 1 + inc_x] = da_i * x[i + inc_x];
           x[i + inc_x] = temp1;
@@ -246,7 +252,10 @@ int CNAME(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, FLOAT da_r, FLOAT da_i,
 
         while (j < n) {
 
-          temp0 = -da_i * x[i + 1];
+	  if (isnan(x[i]) || isinf(x[i]))
+		temp0 = NAN;
+	  else
+          	temp0 = -da_i * x[i + 1];
           x[i + 1] = da_i * x[i];
           x[i] = temp0;
           i += inc_x;
@@ -347,7 +356,10 @@ int CNAME(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, FLOAT da_r, FLOAT da_i,
 
       while (j < n) {
 
-        temp0 = -da_i * x[i + 1];
+	if (isnan(x[i]) || isinf(x[i]))
+		temp0 = NAN;
+	  else
+        	temp0 = -da_i * x[i + 1];
         x[i + 1] = da_i * x[i];
         x[i] = temp0;
         i += 2;
