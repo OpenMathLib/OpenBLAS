@@ -329,7 +329,7 @@ int CNAME(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, FLOAT da_r, FLOAT da_i,
       if (da_i == 0)
         zscal_kernel_8_zero(n1, x);
       else
-        zscal_kernel_8_zero_r(n1, alpha, x);
+        zscal_kernel_8(n1, da_r, da_i, x);
     else if (da_i == 0)
       zscal_kernel_8_zero_i(n1, alpha, x);
     else
