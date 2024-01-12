@@ -39,7 +39,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif
 
 #include "common.h"
-
+#include <float.h>
 
 #if defined (SKYLAKEX) || defined (COOPERLAKE) || defined (SAPPHIRERAPIDS)
 #include "zscal_microk_skylakex-2.c"
@@ -222,12 +222,10 @@ int CNAME(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, FLOAT da_r, FLOAT da_i, 
 
 		if ( da_r == 0.0 )
 		{
-
 			BLASLONG n1 = n & -2;
 
 			if ( da_i == 0.0 )
 			{
-
 				while(j < n1)
 				{
 			
@@ -253,7 +251,6 @@ int CNAME(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, FLOAT da_r, FLOAT da_i, 
 			}
 			else
 			{
-
 				while(j < n1)
 				{
 			
@@ -356,49 +353,59 @@ int CNAME(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, FLOAT da_r, FLOAT da_i, 
 
 		alpha[0] = da_r;
 		alpha[1] = da_i;
-	
+
 		if ( da_r == 0.0 )
 			if ( da_i == 0 )
 				zscal_kernel_8_zero(n1 , alpha , x);
 			else
-				zscal_kernel_8_zero_r(n1 , alpha , x);
+//				zscal_kernel_8_zero_r(n1 , alpha , x);
+				zscal_kernel_8(n1 , alpha , x);
 		else
-			if ( da_i == 0 )
+			if ( da_i == 0 && da_r == da_r)
 				zscal_kernel_8_zero_i(n1 , alpha , x);
 			else
 				zscal_kernel_8(n1 , alpha , x);
-
+		}
 		i = n1 << 1;
 		j = n1;
-	}
-
-
-	if ( da_r == 0.0 )
+	
+	if ( da_r == 0.0 || da_r != da_r )
 	{
-
 		if ( da_i == 0.0 )
 		{
-
+		FLOAT res=0.0;
+		if (da_r != da_r) res= da_r;
 			while(j < n)
 			{
-		
-					x[i]=0.0;
-					x[i+1]=0.0;
+					x[i]=res;
+					x[i+1]=res;
 					i += 2 ;
 					j++;
 
 			}
 
 		}
-		else
+		else if (da_r < -FLT_MAX || da_r > FLT_MAX) { 
+			while(j < n)
+			{
+					x[i]= NAN;
+					x[i+1] = da_r;
+					i += 2 ;
+					j++;
+
+			}
+
+		} else
 		{
 
 			while(j < n)
 			{
-			
 				temp0        = -da_i * x[i+1];
+				if (x[i] < -FLT_MAX || x[i] > FLT_MAX)
+					temp0 = NAN;
 				x[i+1]       =  da_i * x[i];
-				x[i]         =  temp0;
+				if ( x[i] == x[i]) //preserve NaN 
+				  x[i]         =  temp0;
 				i += 2 ;
 				j++;
 
@@ -409,12 +416,10 @@ int CNAME(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, FLOAT da_r, FLOAT da_i, 
 	}
 	else
 	{
-
-		if ( da_i == 0.0 )
+		if (da_i == 0.0)
 		{
-
-			while(j < n)
-			{
+				while(j < n)
+				{
 			
 					temp0        =  da_r * x[i];
 					x[i+1]       =  da_r * x[i+1];
@@ -422,15 +427,13 @@ int CNAME(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, FLOAT da_r, FLOAT da_i, 
 					i += 2 ;
 					j++;
 
-			}
-
+				}
 		}
 		else
 		{
 
 			while(j < n)
 			{
-
 				temp0        =  da_r * x[i]   - da_i * x[i+1];
 				x[i+1]       =  da_r * x[i+1] + da_i * x[i];
 				x[i]         =  temp0;
@@ -445,5 +448,3 @@ int CNAME(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, FLOAT da_r, FLOAT da_i, 
 
 	return(0);
 }
-
-

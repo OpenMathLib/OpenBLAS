@@ -98,7 +98,7 @@
 	fcomip	%st(1), %st
 	ffreep	%st(0)
 	jne	.L30
-
+jp .L30
 	EMMS
 
 	pxor	%mm0, %mm0

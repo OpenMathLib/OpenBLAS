@@ -87,6 +87,7 @@
 	xorps	%xmm7, %xmm7
 	comiss	%xmm0, %xmm7
 	jne	.L100		# Alpha_r != ZERO
+	jp	.L100		# Alpha_r NaN
 
 	comiss	%xmm1, %xmm7
 	jne	.L100		# Alpha_i != ZERO
