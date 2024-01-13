@@ -69,6 +69,7 @@
 
 int blas_server_avail = 0;
 int blas_omp_number_max = 0;
+int blas_omp_threads_local = 1;
 
 extern int openblas_omp_adaptive_env(void);
 
