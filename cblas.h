@@ -12,6 +12,7 @@ extern "C" {
 /*Set the number of threads on runtime.*/
 void openblas_set_num_threads(int num_threads);
 void goto_set_num_threads(int num_threads);
+int openblas_set_num_threads_local(int num_threads);
 
 /*Get the number of threads on runtime.*/
 int openblas_get_num_threads(void);

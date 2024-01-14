@@ -36,10 +36,19 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifdef SMP_SERVER
 
 extern  void openblas_set_num_threads(int num_threads) ;
+extern  int openblas_get_num_threads(void) ;
 
 void openblas_set_num_threads_(int* num_threads){
 	openblas_set_num_threads(*num_threads);
 }
+
+int openblas_set_num_threads_local(int num_threads){
+	int ret = openblas_get_num_threads();
+	openblas_set_num_threads(num_threads);
+	blas_omp_threads_local=num_threads;
+	return ret;
+}
+
 
 #else
 //Single thread
@@ -49,5 +58,9 @@ void openblas_set_num_threads(int num_threads) {
 
 void openblas_set_num_threads_(int* num_threads){
 
+}
+
+int openblas_set_num_threads_local(int num_threads){
+	return 1;
 }
 #endif
