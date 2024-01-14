@@ -113,6 +113,8 @@ extern unsigned int openblas_thread_timeout(void);
 /* We need this global for checking if initialization is finished.  */
 int blas_server_avail   __attribute__((aligned(ATTRIBUTE_SIZE))) = 0;
 
+int blas_omp_threads_local = 1;
+
 /* Local Variables */
 #if   defined(USE_PTHREAD_LOCK)
 static pthread_mutex_t  server_lock    = PTHREAD_MUTEX_INITIALIZER;
