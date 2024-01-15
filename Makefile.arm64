@@ -104,9 +104,15 @@ ifneq ($(F_COMPILER), NAG)
 FCOMMON_OPT += -march=armv8.4-a -mtune=neoverse-v1
 endif
 else
-CCOMMON_OPT += -march=armv8.4-a+sve -mtune=native
+CCOMMON_OPT += -march=armv8.4-a+sve 
+ifneq ($(CROSS), 1)
+CCOMMON_OPT += -mtune=native
+endif
 ifneq ($(F_COMPILER), NAG)
-FCOMMON_OPT += -march=armv8.4-a -mtune=native
+FCOMMON_OPT += -march=armv8.4-a 
+ifneq ($(CROSS), 1)
+FCOMMON_OPT += -mtune=native
+endif
 endif
 endif
 else
@@ -138,9 +144,15 @@ ifneq ($(F_COMPILER), NAG)
 FCOMMON_OPT += -march=armv8.5-a+sve+sve2+bf16 -mtune=neoverse-n2
 endif
 else
-CCOMMON_OPT += -march=armv8.5-a+sve -mtune=native
+CCOMMON_OPT += -march=armv8.5-a+sve
+ifneq ($(CROSS), 1)
+CCOMMON_OPT += -mtune=native
+endif
 ifneq ($(F_COMPILER), NAG)
-FCOMMON_OPT += -march=armv8.5-a -mtune=native
+FCOMMON_OPT += -march=armv8.5-a 
+ifneq ($(CROSS), 1)
+FCOMMON_OPT += -mtune=native
+endif
 endif
 endif
 else
