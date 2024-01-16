@@ -85,7 +85,11 @@ else
 	    *Hewlett*)
 		vendor=CRAY
 		openmp='-fopenmp'
-		;;		
+		;;
+   	    *Arm\ F90*)
+		vendor=FLANG
+		openmp='-fopenmp'
+		;;	
             *GNU*|*GCC*)
 
                 v="${data#*GCC: *\) }"
@@ -98,10 +102,6 @@ else
                     openmp='-fopenmp'
                 else
                     case "$compiler" in
-                        *Arm*)
-                            vendor=FLANG
-                            openmp='-fopenmp'
-			    ;;
                         *flang*)
                             vendor=FLANG
                             openmp='-fopenmp'
