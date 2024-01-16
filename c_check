@@ -91,6 +91,7 @@ case "$data" in
     *ARCH_ZARCH*) architecture=zarch ;;
     *ARCH_RISCV64*) architecture=riscv64 ;;
     *ARCH_LOONGARCH64*) architecture=loongarch64 ;;
+    *ARCH_CSKY*) architecture=csky ;;
 esac
 
 defined=0
@@ -236,6 +237,7 @@ case "$data" in
     *ARCH_ARM*) architecture=arm ;;
     *ARCH_ZARCH*) architecture=zarch ;;
     *ARCH_LOONGARCH64*) architecture=loongarch64 ;;
+    *ARCH_CSKY*) architecture=csky ;;
 esac
 
 binformat='bin32'
