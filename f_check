@@ -98,7 +98,7 @@ else
                     openmp='-fopenmp'
                 else
                     case "$compiler" in
-                        *Arm F90*)
+                        *Arm*)
                             vendor=FLANG
                             openmp='-fopenmp'
 			    ;;
