@@ -31,50 +31,64 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #if defined(DOUBLE)
 
-#define VSETVL(n) __riscv_vsetvl_e64m8(n)
+#define VSETVL(n) RISCV_RVV(vsetvl_e64m8)(n)
 #define FLOAT_V_T vfloat64m8_t
 #define FLOAT_V_T_M1 vfloat64m1_t
-#define VLEV_FLOAT __riscv_vle64_v_f64m8
-#define VLSEV_FLOAT __riscv_vlse64_v_f64m8
-#define VFREDMINVS_FLOAT __riscv_vfredmin_vs_f64m8_f64m1
+#define VLEV_FLOAT RISCV_RVV(vle64_v_f64m8)
+#define VLSEV_FLOAT RISCV_RVV(vlse64_v_f64m8)
+#ifdef RISCV_0p10_INTRINSICS
+#define VFREDMINVS_FLOAT(va, vb, gvl) vfredmin_vs_f64m8_f64m1(v_res, va, vb, gvl)
+#define VIDV_MASK_UINT(mask, gvl) RISCV_RVV(vid_v_u64m8_m)(mask, v_min_index, gvl)
+#define VADDVX_MASK_UINT(mask, a, b, gvl) RISCV_RVV(vadd_vx_u64m8_m)(mask, a, a, b, gvl)
+#define VCOMPRESS(va, vm, gvl) RISCV_RVV(vcompress_vm_u64m8)(vm, compressed, va, gvl)
+#else
+#define VFREDMINVS_FLOAT RISCV_RVV(vfredmin_vs_f64m8_f64m1)
+#define VIDV_MASK_UINT RISCV_RVV(vid_v_u64m8_m)
+#define VADDVX_MASK_UINT RISCV_RVV(vadd_vx_u64m8_m)
+#define VCOMPRESS RISCV_RVV(vcompress_vm_u64m8)
+#endif
 #define MASK_T vbool8_t
-#define VMFGTVV_FLOAT __riscv_vmfgt_vv_f64m8_b8
-#define VFMVVF_FLOAT __riscv_vfmv_v_f_f64m8
-#define VFMVVF_FLOAT_M1 __riscv_vfmv_v_f_f64m1
-#define VFMINVV_FLOAT __riscv_vfmin_vv_f64m8
-#define VMFLEVF_FLOAT __riscv_vmfle_vf_f64m8_b8
-#define VMFIRSTM __riscv_vfirst_m_b8
+#define VMFGTVV_FLOAT RISCV_RVV(vmfgt_vv_f64m8_b8)
+#define VFMVVF_FLOAT RISCV_RVV(vfmv_v_f_f64m8)
+#define VFMVVF_FLOAT_M1 RISCV_RVV(vfmv_v_f_f64m1)
+#define VFMINVV_FLOAT RISCV_RVV(vfmin_vv_f64m8)
+#define VMFLEVF_FLOAT RISCV_RVV(vmfle_vf_f64m8_b8)
+#define VMFIRSTM RISCV_RVV(vfirst_m_b8)
 #define UINT_V_T vuint64m8_t
-#define VIDV_MASK_UINT __riscv_vid_v_u64m8_m
-#define VIDV_UINT __riscv_vid_v_u64m8
-#define VADDVX_MASK_UINT __riscv_vadd_vx_u64m8_m
-#define VADDVX_UINT __riscv_vadd_vx_u64m8
-#define VMVVX_UINT __riscv_vmv_v_x_u64m8
-#define VCOMPRESS __riscv_vcompress_vm_u64m8
-#define VMV_X __riscv_vmv_x_s_u64m8_u64
+#define VIDV_UINT RISCV_RVV(vid_v_u64m8)
+#define VADDVX_UINT RISCV_RVV(vadd_vx_u64m8)
+#define VMVVX_UINT RISCV_RVV(vmv_v_x_u64m8)
+#define VMV_X RISCV_RVV(vmv_x_s_u64m8_u64)
 #else
 
-#define VSETVL(n) __riscv_vsetvl_e32m8(n)
+#define VSETVL(n) RISCV_RVV(vsetvl_e32m8)(n)
 #define FLOAT_V_T vfloat32m8_t
 #define FLOAT_V_T_M1 vfloat32m1_t
-#define VLEV_FLOAT __riscv_vle32_v_f32m8
-#define VLSEV_FLOAT __riscv_vlse32_v_f32m8
+#define VLEV_FLOAT RISCV_RVV(vle32_v_f32m8)
+#define VLSEV_FLOAT RISCV_RVV(vlse32_v_f32m8)
+#ifdef RISCV_0p10_INTRINSICS
+#define VFREDMINVS_FLOAT(va, vb, gvl) vfredmin_vs_f32m8_f32m1(v_res, va, vb, gvl)
+#define VIDV_MASK_UINT(mask, gvl) RISCV_RVV(vid_v_u32m8_m)(mask, v_min_index, gvl)
+#define VADDVX_MASK_UINT(mask, a, b, gvl) RISCV_RVV(vadd_vx_u32m8_m)(mask, a, a, b, gvl)
+#define VCOMPRESS(va, vm, gvl) RISCV_RVV(vcompress_vm_u32m8)(vm, compressed, va, gvl)
+#else
 #define VFREDMINVS_FLOAT __riscv_vfredmin_vs_f32m8_f32m1
-#define MASK_T vbool4_t
-#define VMFGTVV_FLOAT __riscv_vmfgt_vv_f32m8_b4
-#define VFMVVF_FLOAT __riscv_vfmv_v_f_f32m8
-#define VFMVVF_FLOAT_M1 __riscv_vfmv_v_f_f32m1
-#define VFMINVV_FLOAT __riscv_vfmin_vv_f32m8
-#define VMFLEVF_FLOAT __riscv_vmfle_vf_f32m8_b4
-#define VMFIRSTM __riscv_vfirst_m_b4
-#define UINT_V_T vuint32m8_t
 #define VIDV_MASK_UINT __riscv_vid_v_u32m8_m
-#define VIDV_UINT __riscv_vid_v_u32m8
 #define VADDVX_MASK_UINT __riscv_vadd_vx_u32m8_m
-#define VADDVX_UINT __riscv_vadd_vx_u32m8
-#define VMVVX_UINT __riscv_vmv_v_x_u32m8
-#define VCOMPRESS __riscv_vcompress_vm_u32m8
-#define VMV_X __riscv_vmv_x_s_u32m8_u32
+#define VCOMPRESS RISCV_RVV(vcompress_vm_u32m8)
+#endif
+#define MASK_T vbool4_t
+#define VMFGTVV_FLOAT RISCV_RVV(vmfgt_vv_f32m8_b4)
+#define VFMVVF_FLOAT RISCV_RVV(vfmv_v_f_f32m8)
+#define VFMVVF_FLOAT_M1 RISCV_RVV(vfmv_v_f_f32m1)
+#define VFMINVV_FLOAT RISCV_RVV(vfmin_vv_f32m8)
+#define VMFLEVF_FLOAT RISCV_RVV(vmfle_vf_f32m8_b4)
+#define VMFIRSTM RISCV_RVV(vfirst_m_b4)
+#define UINT_V_T vuint32m8_t
+#define VIDV_UINT RISCV_RVV(vid_v_u32m8)
+#define VADDVX_UINT RISCV_RVV(vadd_vx_u32m8)
+#define VMVVX_UINT RISCV_RVV(vmv_v_x_u32m8)
+#define VMV_X RISCV_RVV(vmv_x_s_u32m8_u32)
 #endif
 
 

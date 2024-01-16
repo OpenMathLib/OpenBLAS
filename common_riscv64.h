@@ -91,12 +91,23 @@ static inline int blas_quickdivide(blasint x, blasint y){
 #define BUFFER_SIZE     ( 32 << 20)
 #define SEEK_ADDRESS
 
-#if defined(C910V) || defined(RISCV64_ZVL256B) || defined(__riscv_v)
+#if defined(C910V) || (defined(RISCV64_ZVL256B) && (defined(__clang__) || defined(RVV_COMPATIBLE_GCC)))
 # include <riscv_vector.h>
+#endif
+
+#if defined( __riscv_xtheadc ) && defined( __riscv_v ) && ( __riscv_v <= 7000 )
+// t-head toolchain uses obsolete rvv intrinsics, can't build for C910V without this
+#define RISCV_0p10_INTRINSICS
+#define RISCV_RVV(x) x
+#else
+#define RISCV_RVV(x) __riscv_ ## x
+#endif
+
+#if defined(C910V) || defined(RISCV64_ZVL256B)
 # if !defined(DOUBLE)
-#  define EXTRACT_FLOAT(v) __riscv_vfmv_f_s_f32m1_f32(v)
+#  define EXTRACT_FLOAT(v) RISCV_RVV(vfmv_f_s_f32m1_f32)(v)
 # else
-#  define EXTRACT_FLOAT(v) __riscv_vfmv_f_s_f64m1_f64(v)
+#  define EXTRACT_FLOAT(v) RISCV_RVV(vfmv_f_s_f64m1_f64)(v)
 # endif
 #else
 # define EXTRACT_FLOAT(v) (v[0])

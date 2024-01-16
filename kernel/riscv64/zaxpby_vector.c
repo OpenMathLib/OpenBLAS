@@ -28,25 +28,25 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "common.h"
 
 #if !defined(DOUBLE)
-#define VSETVL(n) __riscv_vsetvl_e32m4(n)
+#define VSETVL(n) RISCV_RVV(vsetvl_e32m4)(n)
 #define FLOAT_V_T vfloat32m4_t
-#define VLSEV_FLOAT __riscv_vlse32_v_f32m4
-#define VSSEV_FLOAT __riscv_vsse32_v_f32m4
-#define VFMACCVF_FLOAT __riscv_vfmacc_vf_f32m4
-#define VFMVVF_FLOAT __riscv_vfmv_v_f_f32m4
-#define VFMULVF_FLOAT __riscv_vfmul_vf_f32m4
-#define VFMSACVF_FLOAT __riscv_vfmsac_vf_f32m4
-#define VFNMSACVF_FLOAT __riscv_vfnmsac_vf_f32m4
+#define VLSEV_FLOAT RISCV_RVV(vlse32_v_f32m4)
+#define VSSEV_FLOAT RISCV_RVV(vsse32_v_f32m4)
+#define VFMACCVF_FLOAT RISCV_RVV(vfmacc_vf_f32m4)
+#define VFMVVF_FLOAT RISCV_RVV(vfmv_v_f_f32m4)
+#define VFMULVF_FLOAT RISCV_RVV(vfmul_vf_f32m4)
+#define VFMSACVF_FLOAT RISCV_RVV(vfmsac_vf_f32m4)
+#define VFNMSACVF_FLOAT RISCV_RVV(vfnmsac_vf_f32m4)
 #else
-#define VSETVL(n) __riscv_vsetvl_e64m4(n)
+#define VSETVL(n) RISCV_RVV(vsetvl_e64m4)(n)
 #define FLOAT_V_T vfloat64m4_t
-#define VLSEV_FLOAT __riscv_vlse64_v_f64m4
-#define VSSEV_FLOAT __riscv_vsse64_v_f64m4
-#define VFMACCVF_FLOAT __riscv_vfmacc_vf_f64m4
-#define VFMVVF_FLOAT __riscv_vfmv_v_f_f64m4
-#define VFMULVF_FLOAT __riscv_vfmul_vf_f64m4
-#define VFMSACVF_FLOAT __riscv_vfmsac_vf_f64m4
-#define VFNMSACVF_FLOAT __riscv_vfnmsac_vf_f64m4
+#define VLSEV_FLOAT RISCV_RVV(vlse64_v_f64m4)
+#define VSSEV_FLOAT RISCV_RVV(vsse64_v_f64m4)
+#define VFMACCVF_FLOAT RISCV_RVV(vfmacc_vf_f64m4)
+#define VFMVVF_FLOAT RISCV_RVV(vfmv_v_f_f64m4)
+#define VFMULVF_FLOAT RISCV_RVV(vfmul_vf_f64m4)
+#define VFMSACVF_FLOAT RISCV_RVV(vfmsac_vf_f64m4)
+#define VFNMSACVF_FLOAT RISCV_RVV(vfnmsac_vf_f64m4)
 #endif
 
 int CNAME(BLASLONG n, FLOAT alpha_r, FLOAT alpha_i, FLOAT *x, BLASLONG inc_x, FLOAT beta_r, FLOAT beta_i, FLOAT *y, BLASLONG inc_y)
