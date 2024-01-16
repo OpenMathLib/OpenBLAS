@@ -219,3 +219,6 @@ In chronological order:
 
 * Mark Seminatore <https://github.com/mseminatore>
   * [2023-11-09] Improve Windows threading performance scaling
+
+* Dirreke <https://github.com/mseminatore>
+  * [2024-01-16] Add basic support for the CSKY architecture

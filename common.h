@@ -482,6 +482,10 @@ please https://github.com/xianyi/OpenBLAS/issues/246
 #include "common_e2k.h"
 #endif
 
+#ifdef ARCH_CSKY
+#include "common_csky.h"
+#endif
+
 #ifndef ASSEMBLER
 #ifdef OS_WINDOWSSTORE
 typedef char env_var_t[MAX_PATH];

@@ -873,6 +873,11 @@ endif
 endif
 endif
 
+ifeq ($(ARCH), csky)
+NO_BINARY_MODE	= 1
+BINARY_DEFINED	= 1
+endif
+
 #
 #  C Compiler dependent settings
 #
