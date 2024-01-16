@@ -31,50 +31,62 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #if defined(DOUBLE)
 
-#define VSETVL(n) __riscv_vsetvl_e64m4(n)
+#define VSETVL(n) RISCV_RVV(vsetvl_e64m4)(n)
 #define FLOAT_V_T vfloat64m4_t
 #define FLOAT_V_T_M1 vfloat64m1_t
-#define VLEV_FLOAT __riscv_vle64_v_f64m4
-#define VLSEV_FLOAT __riscv_vlse64_v_f64m4
-#define VFREDMAXVS_FLOAT __riscv_vfredmax_vs_f64m4_f64m1
+#define VLEV_FLOAT RISCV_RVV(vle64_v_f64m4)
+#define VLSEV_FLOAT RISCV_RVV(vlse64_v_f64m4)
+#ifdef RISCV_0p10_INTRINSICS
+#define VFREDMAXVS_FLOAT(va, vb, gvl) vfredmax_vs_f64m4_f64m1(v_res, va, vb, gvl)
+#define VADDVX_MASK_UINT RISCV_RVV(vadd_vx_u64m4_m)
+#define VCOMPRESS(va, vm, gvl) RISCV_RVV(vcompress_vm_u64m4)(vm, compressed, va, gvl)
+#else
+#define VFREDMAXVS_FLOAT RISCV_RVV(vfredmax_vs_f64m4_f64m1)
+#define VADDVX_MASK_UINT RISCV_RVV(vadd_vx_u64m4_mu)
+#define VCOMPRESS RISCV_RVV(vcompress_vm_u64m4)
+#endif
 #define MASK_T vbool16_t
-#define VMFLTVV_FLOAT __riscv_vmflt_vv_f64m4_b16
-#define VFMVVF_FLOAT __riscv_vfmv_v_f_f64m4
-#define VFMVVF_FLOAT_M1 __riscv_vfmv_v_f_f64m1
-#define VFMAXVV_FLOAT __riscv_vfmax_vv_f64m4
-#define VMFGEVF_FLOAT __riscv_vmfge_vf_f64m4_b16
-#define VMFIRSTM __riscv_vfirst_m_b16
+#define VMFLTVV_FLOAT RISCV_RVV(vmflt_vv_f64m4_b16)
+#define VFMVVF_FLOAT RISCV_RVV(vfmv_v_f_f64m4)
+#define VFMVVF_FLOAT_M1 RISCV_RVV(vfmv_v_f_f64m1)
+#define VFMAXVV_FLOAT RISCV_RVV(vfmax_vv_f64m4)
+#define VMFGEVF_FLOAT RISCV_RVV(vmfge_vf_f64m4_b16)
+#define VMFIRSTM RISCV_RVV(vfirst_m_b16)
 #define UINT_V_T vuint64m4_t
-#define VIDV_UINT __riscv_vid_v_u64m4
-#define VADDVX_MASK_UINT __riscv_vadd_vx_u64m4_mu
-#define VADDVX_UINT __riscv_vadd_vx_u64m4
-#define VMVVX_UINT __riscv_vmv_v_x_u64m4
-#define VFABS_FLOAT __riscv_vfabs_v_f64m4
-#define VCOMPRESS __riscv_vcompress_vm_u64m4
-#define VMV_X __riscv_vmv_x_s_u64m4_u64
+#define VIDV_UINT RISCV_RVV(vid_v_u64m4)
+#define VADDVX_UINT RISCV_RVV(vadd_vx_u64m4)
+#define VMVVX_UINT RISCV_RVV(vmv_v_x_u64m4)
+#define VFABS_FLOAT RISCV_RVV(vfabs_v_f64m4)
+#define VMV_X RISCV_RVV(vmv_x_s_u64m4_u64)
 #else
 
-#define VSETVL(n) __riscv_vsetvl_e32m4(n)
+#define VSETVL(n) RISCV_RVV(vsetvl_e32m4)(n)
 #define FLOAT_V_T vfloat32m4_t
 #define FLOAT_V_T_M1 vfloat32m1_t
-#define VLEV_FLOAT __riscv_vle32_v_f32m4
-#define VLSEV_FLOAT __riscv_vlse32_v_f32m4
-#define VFREDMAXVS_FLOAT __riscv_vfredmax_vs_f32m4_f32m1
+#define VLEV_FLOAT RISCV_RVV(vle32_v_f32m4)
+#define VLSEV_FLOAT RISCV_RVV(vlse32_v_f32m4)
+#ifdef RISCV_0p10_INTRINSICS
+#define VFREDMAXVS_FLOAT(va, vb, gvl) vfredmax_vs_f32m4_f32m1(v_res, va, vb, gvl)
+#define VADDVX_MASK_UINT RISCV_RVV(vadd_vx_u32m4_m)
+#define VCOMPRESS(va, vm, gvl) RISCV_RVV(vcompress_vm_u32m4)(vm, compressed, va, gvl)
+#else
+#define VFREDMAXVS_FLOAT RISCV_RVV(vfredmax_vs_f32m4_f32m1)
+#define VADDVX_MASK_UINT RISCV_RVV(vadd_vx_u32m4_mu)
+#define VCOMPRESS RISCV_RVV(vcompress_vm_u32m4)
+#endif
 #define MASK_T vbool8_t
-#define VMFLTVV_FLOAT __riscv_vmflt_vv_f32m4_b8
-#define VFMVVF_FLOAT __riscv_vfmv_v_f_f32m4
-#define VFMVVF_FLOAT_M1 __riscv_vfmv_v_f_f32m1
-#define VFMAXVV_FLOAT __riscv_vfmax_vv_f32m4
-#define VMFGEVF_FLOAT __riscv_vmfge_vf_f32m4_b8
-#define VMFIRSTM __riscv_vfirst_m_b8
+#define VMFLTVV_FLOAT RISCV_RVV(vmflt_vv_f32m4_b8)
+#define VFMVVF_FLOAT RISCV_RVV(vfmv_v_f_f32m4)
+#define VFMVVF_FLOAT_M1 RISCV_RVV(vfmv_v_f_f32m1)
+#define VFMAXVV_FLOAT RISCV_RVV(vfmax_vv_f32m4)
+#define VMFGEVF_FLOAT RISCV_RVV(vmfge_vf_f32m4_b8)
+#define VMFIRSTM RISCV_RVV(vfirst_m_b8)
 #define UINT_V_T vuint32m4_t
-#define VIDV_UINT __riscv_vid_v_u32m4
-#define VADDVX_MASK_UINT __riscv_vadd_vx_u32m4_mu
-#define VADDVX_UINT __riscv_vadd_vx_u32m4
-#define VMVVX_UINT __riscv_vmv_v_x_u32m4
-#define VFABS_FLOAT __riscv_vfabs_v_f32m4
-#define VCOMPRESS __riscv_vcompress_vm_u32m4
-#define VMV_X __riscv_vmv_x_s_u32m4_u32
+#define VIDV_UINT RISCV_RVV(vid_v_u32m4)
+#define VADDVX_UINT RISCV_RVV(vadd_vx_u32m4)
+#define VMVVX_UINT RISCV_RVV(vmv_v_x_u32m4)
+#define VFABS_FLOAT RISCV_RVV(vfabs_v_f32m4)
+#define VMV_X RISCV_RVV(vmv_x_s_u32m4_u32)
 #endif
 
 

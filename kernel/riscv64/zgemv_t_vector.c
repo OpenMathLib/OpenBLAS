@@ -27,31 +27,39 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "common.h"
 #if !defined(DOUBLE)
-#define VSETVL(n) __riscv_vsetvl_e32m2(n)
-#define VSETVL_MAX __riscv_vsetvlmax_e32m1()
+#define VSETVL(n) RISCV_RVV(vsetvl_e32m2)(n)
+#define VSETVL_MAX RISCV_RVV(vsetvlmax_e32m1)()
 #define FLOAT_V_T vfloat32m2_t
 #define FLOAT_V_T_M1 vfloat32m1_t
-#define VFMVFS_FLOAT __riscv_vfmv_f_s_f32m1_f32
-#define VLSEV_FLOAT __riscv_vlse32_v_f32m2
-#define VFREDSUM_FLOAT __riscv_vfredusum_vs_f32m2_f32m1
-#define VFMACCVV_FLOAT __riscv_vfmacc_vv_f32m2
-#define VFNMSACVV_FLOAT __riscv_vfnmsac_vv_f32m2
-#define VFMVVF_FLOAT __riscv_vfmv_v_f_f32m2
-#define VFMVVF_FLOAT_M1 __riscv_vfmv_v_f_f32m1
-#define VFMULVV_FLOAT __riscv_vfmul_vv_f32m2
+#define VFMVFS_FLOAT RISCV_RVV(vfmv_f_s_f32m1_f32)
+#define VLSEV_FLOAT RISCV_RVV(vlse32_v_f32m2)
+#ifdef RISCV_0p10_INTRINSICS
+#define VFREDSUM_FLOAT(vr, va, vb, gvl) RISCV_RVV(vfredusum_vs_f32m2_f32m1)(vr, va, vb, gvl)
 #else
-#define VSETVL(n) __riscv_vsetvl_e64m2(n)
-#define VSETVL_MAX __riscv_vsetvlmax_e64m1()
+#define VFREDSUM_FLOAT(vr, va, vb, gvl) RISCV_RVV(vfredusum_vs_f32m2_f32m1)(va, vb, gvl)
+#endif
+#define VFMACCVV_FLOAT RISCV_RVV(vfmacc_vv_f32m2)
+#define VFNMSACVV_FLOAT RISCV_RVV(vfnmsac_vv_f32m2)
+#define VFMVVF_FLOAT RISCV_RVV(vfmv_v_f_f32m2)
+#define VFMVVF_FLOAT_M1 RISCV_RVV(vfmv_v_f_f32m1)
+#define VFMULVV_FLOAT RISCV_RVV(vfmul_vv_f32m2)
+#else
+#define VSETVL(n) RISCV_RVV(vsetvl_e64m2)(n)
+#define VSETVL_MAX RISCV_RVV(vsetvlmax_e64m1)()
 #define FLOAT_V_T vfloat64m2_t
 #define FLOAT_V_T_M1 vfloat64m1_t
-#define VFMVFS_FLOAT __riscv_vfmv_f_s_f64m1_f64
-#define VLSEV_FLOAT __riscv_vlse64_v_f64m2
-#define VFREDSUM_FLOAT __riscv_vfredusum_vs_f64m2_f64m1
-#define VFMACCVV_FLOAT __riscv_vfmacc_vv_f64m2
-#define VFNMSACVV_FLOAT __riscv_vfnmsac_vv_f64m2
-#define VFMVVF_FLOAT __riscv_vfmv_v_f_f64m2
-#define VFMVVF_FLOAT_M1 __riscv_vfmv_v_f_f64m1
-#define VFMULVV_FLOAT __riscv_vfmul_vv_f64m2
+#define VFMVFS_FLOAT RISCV_RVV(vfmv_f_s_f64m1_f64)
+#define VLSEV_FLOAT RISCV_RVV(vlse64_v_f64m2)
+#ifdef RISCV_0p10_INTRINSICS
+#define VFREDSUM_FLOAT(vr, va, vb, gvl) RISCV_RVV(vfredusum_vs_f64m2_f64m1)(vr, va, vb, gvl)
+#else
+#define VFREDSUM_FLOAT(vr, va, vb, gvl) RISCV_RVV(vfredusum_vs_f64m2_f64m1)(va, vb, gvl)
+#endif
+#define VFMACCVV_FLOAT RISCV_RVV(vfmacc_vv_f64m2)
+#define VFNMSACVV_FLOAT RISCV_RVV(vfnmsac_vv_f64m2)
+#define VFMVVF_FLOAT RISCV_RVV(vfmv_v_f_f64m2)
+#define VFMVVF_FLOAT_M1 RISCV_RVV(vfmv_v_f_f64m1)
+#define VFMULVV_FLOAT RISCV_RVV(vfmul_vv_f64m2)
 #endif
 
 int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1, FLOAT alpha_r, FLOAT alpha_i, FLOAT *a, BLASLONG lda, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG inc_y, FLOAT *buffer)
@@ -93,8 +101,8 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1, FLOAT alpha_r, FLOAT alpha_i,
                         vr = VFMACCVV_FLOAT(vr, va1, vx1, gvl);
                         vi = VFNMSACVV_FLOAT(vi, va1, vx0, gvl);
 #endif
-                        v_res_r = VFREDSUM_FLOAT(vr, v_res_r, gvl);
-                        v_res_i = VFREDSUM_FLOAT(vi, v_res_i, gvl);
+                        v_res_r = VFREDSUM_FLOAT(v_res_r, vr, v_res_r, gvl);
+                        v_res_i = VFREDSUM_FLOAT(v_res_i, vi, v_res_i, gvl);
 
                         j += inc_av;
                         ix += inc_xv;
@@ -117,8 +125,8 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1, FLOAT alpha_r, FLOAT alpha_i,
                         vi = VFNMSACVV_FLOAT(vi, va1, vx0, gvl);
 
 #endif
-                        v_res_r = VFREDSUM_FLOAT(vr, v_res_r, gvl);
-                        v_res_i = VFREDSUM_FLOAT(vi, v_res_i, gvl);
+                        v_res_r = VFREDSUM_FLOAT(v_res_r, vr, v_res_r, gvl);
+                        v_res_i = VFREDSUM_FLOAT(v_res_i, vi, v_res_i, gvl);
                 }
 
                 temp_r = VFMVFS_FLOAT(v_res_r);
