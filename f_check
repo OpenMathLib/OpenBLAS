@@ -45,7 +45,7 @@ if [ -z "$compiler" ]; then
 	      pathf90 pathf95
 	      pgf95 pgf90 pgf77 pgfortran nvfortran
 	      flang egfortran
-              ifort nagfor ifx ftn crayftn"
+              ifort nagfor ifx ftn crayftn armflang"
 
     for list in $lists; do
         for p in $path; do
@@ -85,7 +85,11 @@ else
 	    *Hewlett*)
 		vendor=CRAY
 		openmp='-fopenmp'
-		;;		
+		;;
+   	    *Arm\ F90*)
+		vendor=FLANG
+		openmp='-fopenmp'
+		;;	
             *GNU*|*GCC*)
 
                 v="${data#*GCC: *\) }"
@@ -108,7 +112,7 @@ else
                 	    if [ "$major" -ge 17 ]; then
                         	vendor=FLANGNEW
 			    fi	
-			;;
+			    ;;
                         *ifort*|*ifx*)
                             vendor=INTEL
                             openmp='-fopenmp'
