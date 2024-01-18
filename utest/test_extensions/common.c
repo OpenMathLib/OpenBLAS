@@ -40,14 +40,14 @@ void srand_generate(float *alpha, blasint n)
 {
     blasint i;
     for (i = 0; i < n; i++)
-        alpha[i] = (float)rand() / (float)RAND_MAX * 5.0f;
+        alpha[i] = (float)rand() / (float)RAND_MAX;
 }
 
 void drand_generate(double *alpha, blasint n)
 {
     blasint i;
     for (i = 0; i < n; i++)
-        alpha[i] = (double)rand() / (double)RAND_MAX * 5.0;
+        alpha[i] = (double)rand() / (double)RAND_MAX;
 }
 
 /**

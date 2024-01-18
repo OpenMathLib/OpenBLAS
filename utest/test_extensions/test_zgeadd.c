@@ -103,8 +103,8 @@ static double check_zgeadd(char api, OPENBLAS_CONST enum CBLAS_ORDER order,
     }
 
     // Fill matrix A, C
-    srand_generate(data_zgeadd.a_test, lda * rows * 2);
-    srand_generate(data_zgeadd.c_test, ldc * rows * 2);
+    drand_generate(data_zgeadd.a_test, lda * rows * 2);
+    drand_generate(data_zgeadd.c_test, ldc * rows * 2);
 
     // Copy matrix C for zgeadd
     for (i = 0; i < ldc * rows * 2; i++)

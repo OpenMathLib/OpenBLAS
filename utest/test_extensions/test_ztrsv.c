@@ -66,8 +66,8 @@ static double check_ztrsv(char uplo, char trans, char diag, blasint n, blasint l
 	double alpha_conj[] = {1.0, 0.0}; 
 	char trans_verify = trans;
 
-	srand_generate(data_ztrsv.a_test, n * lda * 2);
-	srand_generate(data_ztrsv.x_test, n * incx * 2);
+	drand_generate(data_ztrsv.a_test, n * lda * 2);
+	drand_generate(data_ztrsv.x_test, n * incx * 2);
 
 	for (i = 0; i < n * lda * 2; i++)
 		data_ztrsv.a_verify[i] = data_ztrsv.a_test[i];
