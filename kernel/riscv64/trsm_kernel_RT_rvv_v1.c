@@ -31,10 +31,13 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define VSETVL(n)               __riscv_vsetvl_e32m2(n)
 #define VSETVL_MAX              __riscv_vsetvlmax_e32m2()
 #define FLOAT_V_T               vfloat32m2_t
+#define FLOAT_VX2_T             vfloat32m2x2_t
+#define VGET_VX2                __riscv_vget_v_f32m2x2_f32m2
+#define VSET_VX2                __riscv_vset_v_f32m2_f32m2x2
 #define VLEV_FLOAT              __riscv_vle32_v_f32m2
 #define VSEV_FLOAT              __riscv_vse32_v_f32m2
-#define VLSEG2_FLOAT            __riscv_vlseg2e32_v_f32m2
-#define VSSEG2_FLOAT            __riscv_vsseg2e32_v_f32m2
+#define VLSEG2_FLOAT            __riscv_vlseg2e32_v_f32m2x2
+#define VSSEG2_FLOAT            __riscv_vsseg2e32_v_f32m2x2
 #define VFMACCVF_FLOAT          __riscv_vfmacc_vf_f32m2
 #define VFNMSACVF_FLOAT         __riscv_vfnmsac_vf_f32m2
 #define VFMULVF_FLOAT           __riscv_vfmul_vf_f32m2
@@ -42,10 +45,13 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define VSETVL(n)               __riscv_vsetvl_e64m2(n)
 #define VSETVL_MAX              __riscv_vsetvlmax_e64m2()
 #define FLOAT_V_T               vfloat64m2_t
+#define FLOAT_VX2_T             vfloat64m2x2_t
+#define VGET_VX2                __riscv_vget_v_f64m2x2_f64m2
+#define VSET_VX2                __riscv_vset_v_f64m2_f64m2x2
 #define VLEV_FLOAT              __riscv_vle64_v_f64m2
 #define VSEV_FLOAT              __riscv_vse64_v_f64m2
-#define VLSEG2_FLOAT            __riscv_vlseg2e64_v_f64m2
-#define VSSEG2_FLOAT            __riscv_vsseg2e64_v_f64m2
+#define VLSEG2_FLOAT            __riscv_vlseg2e64_v_f64m2x2
+#define VSSEG2_FLOAT            __riscv_vsseg2e64_v_f64m2x2
 #define VFMVVF_FLOAT            __riscv_vfmv_v_f_f64m2
 #define VFMACCVF_FLOAT          __riscv_vfmacc_vf_f64m2
 #define VFNMSACVF_FLOAT         __riscv_vfnmsac_vf_f64m2
@@ -133,6 +139,7 @@ static inline void solve(BLASLONG m, BLASLONG n, FLOAT *a, FLOAT *b, FLOAT *c, B
 
     int i, j, k;
 
+    FLOAT_VX2_T vax2, vsx2, vcx2;
     FLOAT_V_T va1, va2, vs1, vs2, vc1, vc2;
 
     size_t vl;
@@ -149,7 +156,9 @@ static inline void solve(BLASLONG m, BLASLONG n, FLOAT *a, FLOAT *b, FLOAT *c, B
         pcj = c;
         for (j = m; j > 0; j -= vl) {
             vl = VSETVL(j);
-            VLSEG2_FLOAT(&va1, &va2, pci, vl);
+            vax2 = VLSEG2_FLOAT(pci, vl);
+            va1 = VGET_VX2(vax2, 0);
+            va2 = VGET_VX2(vax2, 1);
 #ifndef CONJ
             vs1 =   VFMULVF_FLOAT(va1, bb1, vl);
             vs1 = VFNMSACVF_FLOAT(vs1, bb2, va2, vl);
@@ -161,13 +170,17 @@ static inline void solve(BLASLONG m, BLASLONG n, FLOAT *a, FLOAT *b, FLOAT *c, B
             vs2 =   VFMULVF_FLOAT(va2, bb1, vl);
             vs2 = VFNMSACVF_FLOAT(vs2, bb2, va1, vl);
 #endif
-            VSSEG2_FLOAT(a, vs1, vs2, vl);
-            VSSEG2_FLOAT(pci, vs1, vs2, vl);
+            vsx2 = VSET_VX2(vsx2, 0, vs1);
+            vsx2 = VSET_VX2(vsx2, 1, vs2);
+            VSSEG2_FLOAT(a, vsx2, vl);
+            VSSEG2_FLOAT(pci, vsx2, vl);
             a += vl * 2;
             pci += vl * 2;
 
             for (k = 0; k < i; k ++){
-                VLSEG2_FLOAT(&vc1, &vc2, pcj + k * ldc * 2, vl);
+                vcx2 = VLSEG2_FLOAT(pcj + k * ldc * 2, vl);
+                vc1 = VGET_VX2(vcx2, 0);
+                vc2 = VGET_VX2(vcx2, 1);
 #ifndef CONJ
                 vc1 =  VFMACCVF_FLOAT(vc1, *(b + k * 2 + 1), vs2, vl);
                 vc1 = VFNMSACVF_FLOAT(vc1, *(b + k * 2 + 0), vs1, vl);
@@ -179,7 +192,9 @@ static inline void solve(BLASLONG m, BLASLONG n, FLOAT *a, FLOAT *b, FLOAT *c, B
                 vc2 =  VFMACCVF_FLOAT(vc2, *(b + k * 2 + 1), vs1, vl);
                 vc2 = VFNMSACVF_FLOAT(vc2, *(b + k * 2 + 0), vs2, vl);
 #endif
-                VSSEG2_FLOAT(pcj + k * ldc * 2, vc1, vc2, vl);
+                vcx2 = VSET_VX2(vcx2, 0, vc1);
+                vcx2 = VSET_VX2(vcx2, 1, vc2);
+                VSSEG2_FLOAT(pcj + k * ldc * 2, vcx2, vl);
             }
             pcj += vl * 2;
         }

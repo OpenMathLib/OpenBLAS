@@ -45,7 +45,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 int CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG inc_y)
 {
-    if(n < 0)  return(0);
+    if(n <= 0)  return(0);
 
     FLOAT_V_T v0;
 

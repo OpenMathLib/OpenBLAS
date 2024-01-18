@@ -30,10 +30,13 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #if !defined(DOUBLE)
 #define VSETVL(n)               __riscv_vsetvl_e32m2(n)
 #define FLOAT_V_T               vfloat32m2_t
+#define FLOAT_VX2_T             vfloat32m2x2_t
+#define VGET_VX2                __riscv_vget_v_f32m2x2_f32m2
+#define VSET_VX2                __riscv_vset_v_f32m2_f32m2x2
 #define VLEV_FLOAT              __riscv_vle32_v_f32m2
 #define VSEV_FLOAT              __riscv_vse32_v_f32m2
-#define VLSEG2_FLOAT            __riscv_vlseg2e32_v_f32m2
-#define VSSEG2_FLOAT            __riscv_vsseg2e32_v_f32m2
+#define VLSEG2_FLOAT            __riscv_vlseg2e32_v_f32m2x2
+#define VSSEG2_FLOAT            __riscv_vsseg2e32_v_f32m2x2
 #define VFMVVF_FLOAT            __riscv_vfmv_v_f_f32m2
 #define VFMACCVF_FLOAT          __riscv_vfmacc_vf_f32m2
 #define VFNMSACVF_FLOAT         __riscv_vfnmsac_vf_f32m2
@@ -41,10 +44,13 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #else
 #define VSETVL(n)               __riscv_vsetvl_e64m2(n)
 #define FLOAT_V_T               vfloat64m2_t
+#define FLOAT_VX2_T             vfloat64m2x2_t
+#define VGET_VX2                __riscv_vget_v_f64m2x2_f64m2
+#define VSET_VX2                __riscv_vset_v_f64m2_f64m2x2
 #define VLEV_FLOAT              __riscv_vle64_v_f64m2
 #define VSEV_FLOAT              __riscv_vse64_v_f64m2
-#define VLSEG2_FLOAT            __riscv_vlseg2e64_v_f64m2
-#define VSSEG2_FLOAT            __riscv_vsseg2e64_v_f64m2
+#define VLSEG2_FLOAT            __riscv_vlseg2e64_v_f64m2x2
+#define VSSEG2_FLOAT            __riscv_vsseg2e64_v_f64m2x2
 #define VFMVVF_FLOAT            __riscv_vfmv_v_f_f64m2
 #define VFMACCVF_FLOAT          __riscv_vfmacc_vf_f64m2
 #define VFNMSACVF_FLOAT         __riscv_vfnmsac_vf_f64m2
@@ -85,6 +91,7 @@ int CNAME(BLASLONG bm,BLASLONG bn,BLASLONG bk,FLOAT alphar,FLOAT alphai,FLOAT* b
 	off = 0;
 #endif
 
+    FLOAT_VX2_T vax2;
     FLOAT_V_T va0, va1, va2, va3, va4, va5, va6, va7;
     FLOAT_V_T vres0, vres1, vres2, vres3, vres4, vres5, vres6, vres7;
 
@@ -130,10 +137,14 @@ int CNAME(BLASLONG bm,BLASLONG bn,BLASLONG bk,FLOAT alphar,FLOAT alphai,FLOAT* b
 
             for (k = temp/4; k > 0; k--)
             {
-                VLSEG2_FLOAT(&va0, &va1, ptrba, vl);
+                vax2 = VLSEG2_FLOAT(ptrba, vl);
+                va0 = VGET_VX2(vax2, 0);
+                va1 = VGET_VX2(vax2, 1);
                 ptrba += vl*2;
 
-                VLSEG2_FLOAT(&va2, &va3, ptrba, vl);
+                vax2 = VLSEG2_FLOAT(ptrba, vl);
+                va2 = VGET_VX2(vax2, 0);
+                va3 = VGET_VX2(vax2, 1);
                 ptrba += vl*2;
 
                 vres0 =  OP_rr(vres0, *(ptrbb + 0), va0, vl);
@@ -158,7 +169,9 @@ int CNAME(BLASLONG bm,BLASLONG bn,BLASLONG bk,FLOAT alphar,FLOAT alphai,FLOAT* b
 
                 ptrbb += 8;
 
-                VLSEG2_FLOAT(&va4, &va5, ptrba, vl);
+                vax2 = VLSEG2_FLOAT(ptrba, vl);
+                va4 = VGET_VX2(vax2, 0);
+                va5 = VGET_VX2(vax2, 1);
                 ptrba += vl*2;
                 
                 vres0 =  OP_rr(vres0, *(ptrbb + 0), va2, vl);
@@ -183,7 +196,9 @@ int CNAME(BLASLONG bm,BLASLONG bn,BLASLONG bk,FLOAT alphar,FLOAT alphai,FLOAT* b
                 
                 ptrbb += 8;
 
-                VLSEG2_FLOAT(&va6, &va7, ptrba, vl);
+                vax2 = VLSEG2_FLOAT(ptrba, vl);
+                va6 = VGET_VX2(vax2, 0);
+                va7 = VGET_VX2(vax2, 1);
                 ptrba += vl*2;
                 
                 vres0 =  OP_rr(vres0, *(ptrbb + 0), va4, vl);
@@ -233,7 +248,9 @@ int CNAME(BLASLONG bm,BLASLONG bn,BLASLONG bk,FLOAT alphar,FLOAT alphai,FLOAT* b
 
             for (k = temp & 3; k > 0; k--)
             {
-                VLSEG2_FLOAT(&va0, &va1, ptrba, vl);
+                vax2 = VLSEG2_FLOAT(ptrba, vl);
+                va0 = VGET_VX2(vax2, 0);
+                va1 = VGET_VX2(vax2, 1);
                 ptrba += vl*2;
 
                 vres0 =  OP_rr(vres0, *(ptrbb + 0), va0, vl);
@@ -262,25 +279,37 @@ int CNAME(BLASLONG bm,BLASLONG bn,BLASLONG bk,FLOAT alphar,FLOAT alphai,FLOAT* b
             va1 =  VFMULVF_FLOAT(vres1, alphar, vl);
             va0 = VFNMSACVF_FLOAT(va0, alphai, vres1, vl);
             va1 =  VFMACCVF_FLOAT(va1, alphai, vres0, vl);
-            VSSEG2_FLOAT(C0, va0, va1, vl);
+            
+            vax2 = VSET_VX2(vax2, 0, va0);
+            vax2 = VSET_VX2(vax2, 1, va1);
+            VSSEG2_FLOAT(C0, vax2, vl);
 
             va2 =  VFMULVF_FLOAT(vres2, alphar, vl);
             va3 =  VFMULVF_FLOAT(vres3, alphar, vl);
             va2 = VFNMSACVF_FLOAT(va2, alphai, vres3, vl);
             va3 =  VFMACCVF_FLOAT(va3, alphai, vres2, vl);
-            VSSEG2_FLOAT(C1, va2, va3, vl);
+
+            vax2 = VSET_VX2(vax2, 0, va2);
+            vax2 = VSET_VX2(vax2, 1, va3);
+            VSSEG2_FLOAT(C1, vax2, vl);
 
             va0 =  VFMULVF_FLOAT(vres4, alphar, vl);
             va1 =  VFMULVF_FLOAT(vres5, alphar, vl);
             va0 = VFNMSACVF_FLOAT(va0, alphai, vres5, vl);
             va1 =  VFMACCVF_FLOAT(va1, alphai, vres4, vl);
-            VSSEG2_FLOAT(C2, va0, va1, vl);
+
+            vax2 = VSET_VX2(vax2, 0, va0);
+            vax2 = VSET_VX2(vax2, 1, va1);
+            VSSEG2_FLOAT(C2, vax2, vl);
 
             va2 =  VFMULVF_FLOAT(vres6, alphar, vl);
             va3 =  VFMULVF_FLOAT(vres7, alphar, vl);
             va2 = VFNMSACVF_FLOAT(va2, alphai, vres7, vl);
             va3 =  VFMACCVF_FLOAT(va3, alphai, vres6, vl);
-            VSSEG2_FLOAT(C3, va2, va3, vl);
+
+            vax2 = VSET_VX2(vax2, 0, va2);
+            vax2 = VSET_VX2(vax2, 1, va3);
+            VSSEG2_FLOAT(C3, vax2, vl);
 
 #if ( defined(LEFT) && defined(TRANSA)) || (!defined(LEFT) && !defined(TRANSA))
             temp = bk - off;
@@ -342,10 +371,14 @@ int CNAME(BLASLONG bm,BLASLONG bn,BLASLONG bk,FLOAT alphar,FLOAT alphai,FLOAT* b
 #endif
             for (k = temp/4; k > 0; k--)
             {
-                VLSEG2_FLOAT(&va0, &va1, ptrba, vl);
+                vax2 = VLSEG2_FLOAT(ptrba, vl);
+                va0 = VGET_VX2(vax2, 0);
+                va1 = VGET_VX2(vax2, 1);
                 ptrba += vl*2;
 
-                VLSEG2_FLOAT(&va2, &va3, ptrba, vl);
+                vax2 = VLSEG2_FLOAT(ptrba, vl);
+                va2 = VGET_VX2(vax2, 0);
+                va3 = VGET_VX2(vax2, 1);
                 ptrba += vl*2;
 
                 vres0 =  OP_rr(vres0, *(ptrbb + 0), va0, vl);
@@ -360,7 +393,9 @@ int CNAME(BLASLONG bm,BLASLONG bn,BLASLONG bk,FLOAT alphar,FLOAT alphai,FLOAT* b
 
                 ptrbb += 4;
 
-                VLSEG2_FLOAT(&va4, &va5, ptrba, vl);
+                vax2 = VLSEG2_FLOAT(ptrba, vl);
+                va4 = VGET_VX2(vax2, 0);
+                va5 = VGET_VX2(vax2, 1);
                 ptrba += vl*2;
                 
                 vres0 =  OP_rr(vres0, *(ptrbb + 0), va2, vl);
@@ -375,7 +410,9 @@ int CNAME(BLASLONG bm,BLASLONG bn,BLASLONG bk,FLOAT alphar,FLOAT alphai,FLOAT* b
 
                 ptrbb += 4;
 
-                VLSEG2_FLOAT(&va6, &va7, ptrba, vl);
+                vax2 = VLSEG2_FLOAT(ptrba, vl);
+                va6 = VGET_VX2(vax2, 0);
+                va7 = VGET_VX2(vax2, 1);
                 ptrba += vl*2;
                 
                 vres0 =  OP_rr(vres0, *(ptrbb + 0), va4, vl);
@@ -405,7 +442,9 @@ int CNAME(BLASLONG bm,BLASLONG bn,BLASLONG bk,FLOAT alphar,FLOAT alphai,FLOAT* b
 
             for (k = temp & 3; k > 0; k--)
             {
-                VLSEG2_FLOAT(&va0, &va1, ptrba, vl);
+                vax2 = VLSEG2_FLOAT(ptrba, vl);
+                va0 = VGET_VX2(vax2, 0);
+                va1 = VGET_VX2(vax2, 1);
                 ptrba += vl*2;
 
                 vres0 =  OP_rr(vres0, *(ptrbb + 0), va0, vl);
@@ -425,13 +464,19 @@ int CNAME(BLASLONG bm,BLASLONG bn,BLASLONG bk,FLOAT alphar,FLOAT alphai,FLOAT* b
             va1 =  VFMULVF_FLOAT(vres1, alphar, vl);
             va0 = VFNMSACVF_FLOAT(va0, alphai, vres1, vl);
             va1 =  VFMACCVF_FLOAT(va1, alphai, vres0, vl);
-            VSSEG2_FLOAT(C0, va0, va1, vl);
+            
+            vax2 = VSET_VX2(vax2, 0, va0);
+            vax2 = VSET_VX2(vax2, 1, va1);
+            VSSEG2_FLOAT(C0, vax2, vl);
 
             va2 =  VFMULVF_FLOAT(vres2, alphar, vl);
             va3 =  VFMULVF_FLOAT(vres3, alphar, vl);
             va2 = VFNMSACVF_FLOAT(va2, alphai, vres3, vl);
             va3 =  VFMACCVF_FLOAT(va3, alphai, vres2, vl);
-            VSSEG2_FLOAT(C1, va2, va3, vl);
+
+            vax2 = VSET_VX2(vax2, 0, va2);
+            vax2 = VSET_VX2(vax2, 1, va3);
+            VSSEG2_FLOAT(C1, vax2, vl);
 
 #if ( defined(LEFT) && defined(TRANSA)) || (!defined(LEFT) && !defined(TRANSA))
             temp = bk - off;
@@ -487,10 +532,14 @@ int CNAME(BLASLONG bm,BLASLONG bn,BLASLONG bk,FLOAT alphar,FLOAT alphai,FLOAT* b
 #endif
             for (k = temp/4; k > 0; k--)
             {
-                VLSEG2_FLOAT(&va0, &va1, ptrba, vl);
+                vax2 = VLSEG2_FLOAT(ptrba, vl);
+                va0 = VGET_VX2(vax2, 0);
+                va1 = VGET_VX2(vax2, 1);
                 ptrba += vl*2;
 
-                VLSEG2_FLOAT(&va2, &va3, ptrba, vl);
+                vax2 = VLSEG2_FLOAT(ptrba, vl);
+                va2 = VGET_VX2(vax2, 0);
+                va3 = VGET_VX2(vax2, 1);
                 ptrba += vl*2;
 
                 vres0 =  OP_rr(vres0, *(ptrbb + 0), va0, vl);
@@ -500,7 +549,9 @@ int CNAME(BLASLONG bm,BLASLONG bn,BLASLONG bk,FLOAT alphar,FLOAT alphai,FLOAT* b
 
                 ptrbb += 2;
 
-                VLSEG2_FLOAT(&va4, &va5, ptrba, vl);
+                vax2 = VLSEG2_FLOAT(ptrba, vl);
+                va4 = VGET_VX2(vax2, 0);
+                va5 = VGET_VX2(vax2, 1);
                 ptrba += vl*2;
                 
                 vres0 =  OP_rr(vres0, *(ptrbb + 0), va2, vl);
@@ -510,7 +561,9 @@ int CNAME(BLASLONG bm,BLASLONG bn,BLASLONG bk,FLOAT alphar,FLOAT alphai,FLOAT* b
 
                 ptrbb += 2;
 
-                VLSEG2_FLOAT(&va6, &va7, ptrba, vl);
+                vax2 = VLSEG2_FLOAT(ptrba, vl);
+                va6 = VGET_VX2(vax2, 0);
+                va7 = VGET_VX2(vax2, 1);
                 ptrba += vl*2;
                 
                 vres0 =  OP_rr(vres0, *(ptrbb + 0), va4, vl);
@@ -530,7 +583,9 @@ int CNAME(BLASLONG bm,BLASLONG bn,BLASLONG bk,FLOAT alphar,FLOAT alphai,FLOAT* b
 
             for (k = temp & 3; k > 0; k--)
             {
-                VLSEG2_FLOAT(&va0, &va1, ptrba, vl);
+                vax2 = VLSEG2_FLOAT(ptrba, vl);
+                va0 = VGET_VX2(vax2, 0);
+                va1 = VGET_VX2(vax2, 1);
                 ptrba += vl*2;
 
                 vres0 =  OP_rr(vres0, *(ptrbb + 0), va0, vl);
@@ -545,7 +600,10 @@ int CNAME(BLASLONG bm,BLASLONG bn,BLASLONG bk,FLOAT alphar,FLOAT alphai,FLOAT* b
             va1 =  VFMULVF_FLOAT(vres1, alphar, vl);
             va0 = VFNMSACVF_FLOAT(va0, alphai, vres1, vl);
             va1 =  VFMACCVF_FLOAT(va1, alphai, vres0, vl);
-            VSSEG2_FLOAT(C0, va0, va1, vl);
+            
+            vax2 = VSET_VX2(vax2, 0, va0);
+            vax2 = VSET_VX2(vax2, 1, va1);
+            VSSEG2_FLOAT(C0, vax2, vl);
 
 #if ( defined(LEFT) && defined(TRANSA)) || (!defined(LEFT) && !defined(TRANSA))
             temp = bk - off;

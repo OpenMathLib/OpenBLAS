@@ -32,12 +32,14 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #if !defined(DOUBLE)
 #define VSETVL(n)               __riscv_vsetvl_e32m2(n)
 #define FLOAT_V_T               vfloat32m2_t
+#define FLOAT_VX2_T             vfloat32m2x2_t
+#define VGET_VX2                __riscv_vget_v_f32m2x2_f32m2
+#define VSET_VX2                __riscv_vset_v_f32m2_f32m2x2
 #define VLEV_FLOAT              __riscv_vle32_v_f32m2
 #define VLSEV_FLOAT             __riscv_vlse32_v_f32m2
 #define VSEV_FLOAT              __riscv_vse32_v_f32m2
-#define VLSEG2_FLOAT            __riscv_vlseg2e32_v_f32m2
-#define VLSSEG2_FLOAT           __riscv_vlsseg2e32_v_f32m2
-#define VSSEG2_FLOAT            __riscv_vsseg2e32_v_f32m2
+#define VLSSEG2_FLOAT           __riscv_vlsseg2e32_v_f32m2x2
+#define VSSEG2_FLOAT            __riscv_vsseg2e32_v_f32m2x2
 #define VBOOL_T                 vbool16_t
 #define UINT_V_T                vuint32m2_t
 #define VID_V_UINT              __riscv_vid_v_u32m2
@@ -47,12 +49,14 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #else
 #define VSETVL(n)               __riscv_vsetvl_e64m2(n)
 #define FLOAT_V_T               vfloat64m2_t
+#define FLOAT_VX2_T             vfloat64m2x2_t
+#define VGET_VX2                __riscv_vget_v_f64m2x2_f64m2
+#define VSET_VX2                __riscv_vset_v_f64m2_f64m2x2
 #define VLEV_FLOAT              __riscv_vle64_v_f64m2
 #define VLSEV_FLOAT             __riscv_vlse64_v_f64m2
 #define VSEV_FLOAT              __riscv_vse64_v_f64m2
-#define VLSEG2_FLOAT            __riscv_vlseg2e64_v_f64m2
-#define VLSSEG2_FLOAT           __riscv_vlsseg2e64_v_f64m2
-#define VSSEG2_FLOAT            __riscv_vsseg2e64_v_f64m2
+#define VLSSEG2_FLOAT           __riscv_vlsseg2e64_v_f64m2x2
+#define VSSEG2_FLOAT            __riscv_vsseg2e64_v_f64m2x2
 #define VBOOL_T                 vbool32_t
 #define UINT_V_T                vuint64m2_t
 #define VID_V_UINT              __riscv_vid_v_u64m2
@@ -67,6 +71,7 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, BLASLONG posX, BLASLON
     BLASLONG stride_lda = sizeof(FLOAT) * lda * 2;
     FLOAT *ao;
 
+    FLOAT_VX2_T vax2;
     FLOAT_V_T va0, va1;
     size_t vl;
 
@@ -96,8 +101,8 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, BLASLONG posX, BLASLON
         {
             if (X < posY) 
             {
-                VLSSEG2_FLOAT(&va0, &va1, ao, stride_lda, vl);
-                VSSEG2_FLOAT(b, va0, va1, vl);
+                vax2 = VLSSEG2_FLOAT(ao, stride_lda, vl);
+                VSSEG2_FLOAT(b, vax2, vl);
 
                 ao  += 2;
                 b   += vl * 2;
@@ -118,7 +123,10 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, BLASLONG posX, BLASLON
                 vindex  = VID_V_UINT(vl);
                 for (unsigned int j = 0; j < vl; j++) 
                 {
-                    VLSSEG2_FLOAT(&va0, &va1, ao, stride_lda, vl);
+                    vax2 = VLSSEG2_FLOAT(ao, stride_lda, vl);
+                    va0 = VGET_VX2(vax2, 0);
+                    va1 = VGET_VX2(vax2, 1);
+
                     vbool_cmp = VMSLTU_VX_UINT(vindex, j, vl);
                     va0 = VFMERGE_VFM_FLOAT(va0, ZERO, vbool_cmp, vl);
                     va1 = VFMERGE_VFM_FLOAT(va1, ZERO, vbool_cmp, vl);
@@ -127,7 +135,9 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, BLASLONG posX, BLASLON
                     va0 =  VFMERGE_VFM_FLOAT(va0, ONE, vbool_eq, vl);
                     va1 =  VFMERGE_VFM_FLOAT(va1, ZERO, vbool_eq, vl);
 #endif
-                    VSSEG2_FLOAT(b, va0, va1, vl);
+                    vax2 = VSET_VX2(vax2, 0, va0);
+                    vax2 = VSET_VX2(vax2, 1, va1);
+                    VSSEG2_FLOAT(b, vax2, vl);
                     ao  += 2;
                     b   += vl * 2;
                 }

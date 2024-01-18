@@ -53,7 +53,7 @@ int CNAME(BLASLONG n, FLOAT alpha, FLOAT *x, BLASLONG inc_x, FLOAT beta, FLOAT *
 {
     FLOAT_V_T vx, vy;
 
-    if ( n < 0     )  return(0);
+    if ( n <= 0     )  return(0);
 
     if ( beta == 0.0 ) {
         if ( alpha == 0.0 ) {
@@ -63,7 +63,7 @@ int CNAME(BLASLONG n, FLOAT alpha, FLOAT *x, BLASLONG inc_x, FLOAT beta, FLOAT *
                 BLASLONG stride_y = inc_y * sizeof(FLOAT);
                 size_t vl = VSETVL(n);
                 vy = VFMVVF_FLOAT(0.0, vl);
-                for ( ; n > 0; n -= vl, y += vl*stride_y) {
+                for ( ; n > 0; n -= vl, y += vl*inc_y) {
                     vl = VSETVL(n);
                     VSSEV_FLOAT(y, stride_y, vy, vl);
                 }
@@ -126,10 +126,12 @@ int CNAME(BLASLONG n, FLOAT alpha, FLOAT *x, BLASLONG inc_x, FLOAT beta, FLOAT *
 
         } else {
             if ((1 == inc_x) && (1 == inc_y)) {
-                for (size_t vl; n > 0; n -= vl, y += vl) {
+                for (size_t vl; n > 0; n -= vl, x += vl, y += vl) {
                     vl = VSETVL(n);
+                    vx = VLEV_FLOAT(x, vl);
                     vy = VLEV_FLOAT(y, vl);
                     vy = VFMULVF_FLOAT(vy, beta, vl);
+                    vy = VFMACCVF_FLOAT(vy, alpha, vx, vl);
                     VSEV_FLOAT (y, vy, vl);
                 }
             } else if (1 == inc_x) {

@@ -41,8 +41,11 @@
 #if !defined(DOUBLE)
 #define VSETVL(n)               __riscv_vsetvl_e32m4(n)
 #define FLOAT_V_T               vfloat32m4_t
-#define VLSEG_FLOAT             __riscv_vlseg2e32_v_f32m4
-#define VSSEG_FLOAT             __riscv_vsseg2e32_v_f32m4
+#define FLOAT_VX2_T             vfloat32m4x2_t
+#define VGET_VX2                __riscv_vget_v_f32m4x2_f32m4
+#define VSET_VX2                __riscv_vset_v_f32m4_f32m4x2
+#define VLSEG_FLOAT             __riscv_vlseg2e32_v_f32m4x2
+#define VSSEG_FLOAT             __riscv_vsseg2e32_v_f32m4x2
 #define VFMVVF_FLOAT            __riscv_vfmv_v_f_f32m4
 #define VFMULVF_FLOAT           __riscv_vfmul_vf_f32m4
 #define VFADDVV_FLOAT           __riscv_vfadd_vv_f32m4
@@ -50,8 +53,11 @@
 #else
 #define VSETVL(n)               __riscv_vsetvl_e64m4(n)
 #define FLOAT_V_T               vfloat64m4_t
-#define VLSEG_FLOAT             __riscv_vlseg2e64_v_f64m4
-#define VSSEG_FLOAT             __riscv_vsseg2e64_v_f64m4
+#define FLOAT_VX2_T             vfloat64m4x2_t
+#define VGET_VX2                __riscv_vget_v_f64m4x2_f64m4
+#define VSET_VX2                __riscv_vset_v_f64m4_f64m4x2
+#define VLSEG_FLOAT             __riscv_vlseg2e64_v_f64m4x2
+#define VSSEG_FLOAT             __riscv_vsseg2e64_v_f64m4x2
 #define VFMVVF_FLOAT            __riscv_vfmv_v_f_f64m4
 #define VFMULVF_FLOAT           __riscv_vfmul_vf_f64m4
 #define VFADDVV_FLOAT           __riscv_vfadd_vv_f64m4
@@ -68,6 +74,7 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1,
     FLOAT *c_offset;
 	size_t vl;
     FLOAT_V_T vr, vi, v1, v2, v3, v4;
+    FLOAT_VX2_T vx2;
 
     ldc *= 2;
     c_offset = c;
@@ -77,6 +84,8 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1,
         vl = VSETVL(m);
         vr = VFMVVF_FLOAT(0.0, vl);
         vi = VFMVVF_FLOAT(0.0, vl);
+        vx2 = VSET_VX2(vx2, 0, vr);
+        vx2 = VSET_VX2(vx2, 1, vi);
 
         for( ; n > 0; n--, c += ldc) {
             c_offset = c;
@@ -84,7 +93,7 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1,
             for(chunk=m; chunk > 0; chunk -= vl, c_offset += vl*2) {
                 vl = VSETVL(chunk);
 
-                VSSEG_FLOAT(c_offset, vr, vi, vl);
+                VSSEG_FLOAT(c_offset, vx2, vl);
 			}
 		}
 
@@ -96,7 +105,9 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1,
             for(chunk=m; chunk > 0; chunk -= vl, c_offset += vl*2) {
                 vl = VSETVL(chunk);
 
-                VLSEG_FLOAT(&vr, &vi, c_offset, vl);
+                vx2 = VLSEG_FLOAT(c_offset, vl);
+                vr = VGET_VX2(vx2, 0);
+                vi = VGET_VX2(vx2, 1);
 
                 v1 = VFMULVF_FLOAT(vr, beta_r, vl);
                 v2 = VFMULVF_FLOAT(vi, beta_i, vl);
@@ -107,7 +118,9 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1,
 				vr = VFSUBVV_FLOAT(v1, v2, vl);
 				vi = VFADDVV_FLOAT(v3, v4, vl);
 
-                VSSEG_FLOAT(c_offset, vr, vi, vl);
+                vx2 = VSET_VX2(vx2, 0, vr);
+                vx2 = VSET_VX2(vx2, 1, vi);
+                VSSEG_FLOAT(c_offset, vx2, vl);
 			}
 		}
 
