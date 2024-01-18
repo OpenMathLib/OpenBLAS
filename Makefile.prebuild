@@ -55,6 +55,10 @@ ifeq ($(TARGET), C910V)
 TARGET_FLAGS = -march=rv64gcv0p7_zfh_xtheadc -mabi=lp64d
 endif
 
+ifeq ($(TARGET), CK860FV)
+TARGET_FLAGS = -march=ck860v -mcpu=ck860fv -mfdivdu -mhard-float
+endif
+
 all: getarch_2nd
 	./getarch_2nd  0 >> $(TARGET_MAKE)
 	./getarch_2nd  1 >> $(TARGET_CONF)
