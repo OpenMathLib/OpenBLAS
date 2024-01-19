@@ -133,9 +133,9 @@ extern gotoblas_t  gotoblas_TSV110;
 extern gotoblas_t  gotoblas_EMAG8180;
 extern gotoblas_t  gotoblas_NEOVERSEN1;
 #ifndef NO_SVE
-extern gotoblas_t  gotoblas_NEOVERSEV1;
 extern gotoblas_t  gotoblas_NEOVERSEN2;
 extern gotoblas_t  gotoblas_ARMV8SVE;
+#define gotoblas_NEOVERSEV1 gotoblas_ARMV8SVE
 #else
 #define gotoblas_NEOVERSEV1 gotoblas_ARMV8
 #define gotoblas_NEOVERSEN2 gotoblas_ARMV8
@@ -167,6 +167,7 @@ extern void openblas_warning(int verbose, const char * msg);
 
 static char *corename[] = {
   "armv8",
+  "armv8sve",
   "cortexa53",
   "cortexa57",
   "cortexa72",
@@ -181,27 +182,26 @@ static char *corename[] = {
   "neoversen2",
   "thunderx3t110",
   "cortexa55",
-  "armv8sve",
   "unknown"
 };
 
 char *gotoblas_corename(void) {
   if (gotoblas == &gotoblas_ARMV8)        return corename[ 0];
-  if (gotoblas == &gotoblas_CORTEXA53)    return corename[ 1];
-  if (gotoblas == &gotoblas_CORTEXA57)    return corename[ 2];
-  if (gotoblas == &gotoblas_CORTEXA72)    return corename[ 3];
-  if (gotoblas == &gotoblas_CORTEXA73)    return corename[ 4];
-  if (gotoblas == &gotoblas_FALKOR)       return corename[ 5];
-  if (gotoblas == &gotoblas_THUNDERX)     return corename[ 6];
-  if (gotoblas == &gotoblas_THUNDERX2T99) return corename[ 7];
-  if (gotoblas == &gotoblas_TSV110)       return corename[ 8];
-  if (gotoblas == &gotoblas_EMAG8180)     return corename[ 9];
-  if (gotoblas == &gotoblas_NEOVERSEN1)   return corename[10];
-  if (gotoblas == &gotoblas_NEOVERSEV1)   return corename[11];
-  if (gotoblas == &gotoblas_NEOVERSEN2)   return corename[12];
-  if (gotoblas == &gotoblas_THUNDERX3T110) return corename[13];
-  if (gotoblas == &gotoblas_CORTEXA55)    return corename[14];
-  if (gotoblas == &gotoblas_ARMV8SVE)     return corename[15];
+  if (gotoblas == &gotoblas_ARMV8SVE)     return corename[ 1];
+  if (gotoblas == &gotoblas_CORTEXA53)    return corename[ 2];
+  if (gotoblas == &gotoblas_CORTEXA57)    return corename[ 3];
+  if (gotoblas == &gotoblas_CORTEXA72)    return corename[ 4];
+  if (gotoblas == &gotoblas_CORTEXA73)    return corename[ 5];
+  if (gotoblas == &gotoblas_FALKOR)       return corename[ 6];
+  if (gotoblas == &gotoblas_THUNDERX)     return corename[ 7];
+  if (gotoblas == &gotoblas_THUNDERX2T99) return corename[ 8];
+  if (gotoblas == &gotoblas_TSV110)       return corename[ 9];
+  if (gotoblas == &gotoblas_EMAG8180)     return corename[10];
+  if (gotoblas == &gotoblas_NEOVERSEN1)   return corename[11];
+  if (gotoblas == &gotoblas_NEOVERSEV1)   return corename[12];
+  if (gotoblas == &gotoblas_NEOVERSEN2)   return corename[13];
+  if (gotoblas == &gotoblas_THUNDERX3T110) return corename[14];
+  if (gotoblas == &gotoblas_CORTEXA55)    return corename[15];
   return corename[NUM_CORETYPES];
 }
 

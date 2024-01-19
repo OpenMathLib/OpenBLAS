@@ -890,15 +890,41 @@ gotoblas_t TABLE_NAME = {
 };
 
 #if (ARCH_ARM64)
+
+#define L2_CACHE_FILE "/sys/devices/system/cpu/cpu0/cache/index2/size"
+static inline uint64_t get_l2_multiplier() {
+#if defined(__linux) && defined(SCALE_L2)
+  char buffer[100];
+  FILE* sysfs_file = fopen(L2_CACHE_FILE, "r");
+  uint64_t cache_size = 0;
+  char cache_unit = '\n';
+  if (sysfs_file && fgets(buffer, sizeof(buffer), sysfs_file) != NULL) {
+    if (sscanf(buffer, "%ld%c", &cache_size, &cache_unit) > 1) {
+        switch (cache_unit) {
+          case 'K':
+            return MAX(cache_size >> 7, 1);
+          case '\n':
+            return MAX(cache_size >> 17, 1);
+          default: // unknown
+            return 1;
+        }
+    }
+  }
+#endif
+  return 1;
+}
+
 static void init_parameter(void) {
+  const uint64_t l2_multiplier = get_l2_multiplier();
+
 #if (BUILD_BFLOAT16)
   TABLE_NAME.sbgemm_p = SBGEMM_DEFAULT_P;
 #endif
 #if (BUILD_SINGLE==1) || (BUILD_COMPLEX==1)
-  TABLE_NAME.sgemm_p = SGEMM_DEFAULT_P;
+  TABLE_NAME.sgemm_p = SGEMM_DEFAULT_P * l2_multiplier;
 #endif
 #if BUILD_DOUBLE == 1 || (BUILD_COMPLEX16==1)
-  TABLE_NAME.dgemm_p = DGEMM_DEFAULT_P;
+  TABLE_NAME.dgemm_p = DGEMM_DEFAULT_P * l2_multiplier;
 #endif
 #if BUILD_COMPLEX==1
   TABLE_NAME.cgemm_p = CGEMM_DEFAULT_P;
@@ -911,10 +937,10 @@ static void init_parameter(void) {
   TABLE_NAME.sbgemm_q = SBGEMM_DEFAULT_Q;
 #endif
 #if BUILD_SINGLE == 1 || (BUILD_COMPLEX==1)
-  TABLE_NAME.sgemm_q = SGEMM_DEFAULT_Q;
+  TABLE_NAME.sgemm_q = SGEMM_DEFAULT_Q * l2_multiplier;
 #endif
 #if BUILD_DOUBLE== 1 || (BUILD_COMPLEX16==1)
-  TABLE_NAME.dgemm_q = DGEMM_DEFAULT_Q;
+  TABLE_NAME.dgemm_q = DGEMM_DEFAULT_Q * l2_multiplier;
 #endif
 #if BUILD_COMPLEX== 1
   TABLE_NAME.cgemm_q = CGEMM_DEFAULT_Q;
