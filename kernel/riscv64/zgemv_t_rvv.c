@@ -35,8 +35,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define VLSEG_FLOAT             __riscv_vlseg2e32_v_f32m4
 #define VLSSEG_FLOAT            __riscv_vlsseg2e32_v_f32m4
 #define VFREDSUM_FLOAT          __riscv_vfredusum_vs_f32m4_f32m1
-#define VFMACCVV_FLOAT          __riscv_vfmacc_vv_f32m4
-#define VFNMSACVV_FLOAT         __riscv_vfnmsac_vv_f32m4
+#define VFMACCVV_FLOAT_TU       __riscv_vfmacc_vv_f32m4_tu
+#define VFNMSACVV_FLOAT_TU      __riscv_vfnmsac_vv_f32m4_tu
 #define VFMVVF_FLOAT            __riscv_vfmv_v_f_f32m4
 #define VFMVVF_FLOAT_M1         __riscv_vfmv_v_f_f32m1
 #define VFMULVV_FLOAT           __riscv_vfmul_vv_f32m4
@@ -49,8 +49,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define VLSEG_FLOAT             __riscv_vlseg2e64_v_f64m4
 #define VLSSEG_FLOAT            __riscv_vlsseg2e64_v_f64m4
 #define VFREDSUM_FLOAT          __riscv_vfredusum_vs_f64m4_f64m1
-#define VFMACCVV_FLOAT          __riscv_vfmacc_vv_f64m4
-#define VFNMSACVV_FLOAT         __riscv_vfnmsac_vv_f64m4
+#define VFMACCVV_FLOAT_TU       __riscv_vfmacc_vv_f64m4_tu
+#define VFNMSACVV_FLOAT_TU      __riscv_vfnmsac_vv_f64m4_tu
 #define VFMVVF_FLOAT            __riscv_vfmv_v_f_f64m4
 #define VFMVVF_FLOAT_M1         __riscv_vfmv_v_f_f64m1
 #define VFMULVV_FLOAT           __riscv_vfmul_vv_f64m4
@@ -90,15 +90,15 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1, FLOAT alpha_r, FLOAT alpha_i,
                 VLSEG_FLOAT(&vx0, &vx1, &x[ix], vl);
 
 #if ( !defined(CONJ) && !defined(XCONJ) ) || ( defined(CONJ) && defined(XCONJ) )
-                vr = VFMACCVV_FLOAT(vr, va0, vx0, vl);
-                vr = VFNMSACVV_FLOAT(vr, va1, vx1, vl);
-                vi = VFMACCVV_FLOAT(vi, va0, vx1, vl);
-                vi = VFMACCVV_FLOAT(vi, va1, vx0, vl);
+                vr = VFMACCVV_FLOAT_TU(vr, va0, vx0, vl);
+                vr = VFNMSACVV_FLOAT_TU(vr, va1, vx1, vl);
+                vi = VFMACCVV_FLOAT_TU(vi, va0, vx1, vl);
+                vi = VFMACCVV_FLOAT_TU(vi, va1, vx0, vl);
 #else
-                vr = VFMACCVV_FLOAT(vr, va0, vx0, vl);
-                vr = VFMACCVV_FLOAT(vr, va1, vx1, vl);
-                vi = VFMACCVV_FLOAT(vi, va0, vx1, vl);
-                vi = VFNMSACVV_FLOAT(vi, va1, vx0, vl);
+                vr = VFMACCVV_FLOAT_TU(vr, va0, vx0, vl);
+                vr = VFMACCVV_FLOAT_TU(vr, va1, vx1, vl);
+                vi = VFMACCVV_FLOAT_TU(vi, va0, vx1, vl);
+                vi = VFNMSACVV_FLOAT_TU(vi, va1, vx0, vl);
 #endif
                 j += vl * 2;
                 ix += vl * inc_x * 2;
@@ -134,15 +134,15 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1, FLOAT alpha_r, FLOAT alpha_i,
                 VLSSEG_FLOAT(&vx0, &vx1, &x[ix], stride_x, vl);
     
 #if ( !defined(CONJ) && !defined(XCONJ) ) || ( defined(CONJ) && defined(XCONJ) )
-                vr = VFMACCVV_FLOAT(vr, va0, vx0, vl);
-                vr = VFNMSACVV_FLOAT(vr, va1, vx1, vl);
-                vi = VFMACCVV_FLOAT(vi, va0, vx1, vl);
-                vi = VFMACCVV_FLOAT(vi, va1, vx0, vl);
+                vr = VFMACCVV_FLOAT_TU(vr, va0, vx0, vl);
+                vr = VFNMSACVV_FLOAT_TU(vr, va1, vx1, vl);
+                vi = VFMACCVV_FLOAT_TU(vi, va0, vx1, vl);
+                vi = VFMACCVV_FLOAT_TU(vi, va1, vx0, vl);
 #else
-                vr = VFMACCVV_FLOAT(vr, va0, vx0, vl);
-                vr = VFMACCVV_FLOAT(vr, va1, vx1, vl);
-                vi = VFMACCVV_FLOAT(vi, va0, vx1, vl);
-                vi = VFNMSACVV_FLOAT(vi, va1, vx0, vl);
+                vr = VFMACCVV_FLOAT_TU(vr, va0, vx0, vl);
+                vr = VFMACCVV_FLOAT_TU(vr, va1, vx1, vl);
+                vi = VFMACCVV_FLOAT_TU(vi, va0, vx1, vl);
+                vi = VFNMSACVV_FLOAT_TU(vi, va1, vx0, vl);
 #endif
                 j += vl * 2;
                 ix += vl * inc_x * 2;

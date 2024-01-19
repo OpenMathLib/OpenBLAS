@@ -37,7 +37,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define VSEV_FLOAT              __riscv_vse32_v_f32m8
 #define VLSEV_FLOAT             __riscv_vlse32_v_f32m8
 #define VSSEV_FLOAT             __riscv_vsse32_v_f32m8
-#define VFMACCVV_FLOAT          __riscv_vfmacc_vv_f32m8
+#define VFMACCVV_FLOAT_TU       __riscv_vfmacc_vv_f32m8_tu
 #define VFMACCVF_FLOAT          __riscv_vfmacc_vf_f32m8
 #define VFNMSACVF_FLOAT         __riscv_vfnmsac_vf_f32m8
 #define VFMULVF_FLOAT           __riscv_vfmul_vf_f32m8
@@ -56,7 +56,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define VSEV_FLOAT              __riscv_vse64_v_f64m8
 #define VLSEV_FLOAT             __riscv_vlse64_v_f64m8
 #define VSSEV_FLOAT             __riscv_vsse64_v_f64m8
-#define VFMACCVV_FLOAT          __riscv_vfmacc_vv_f64m8
+#define VFMACCVV_FLOAT_TU       __riscv_vfmacc_vv_f64m8_tu
 #define VFMACCVF_FLOAT          __riscv_vfmacc_vf_f64m8
 #define VFNMSACVF_FLOAT         __riscv_vfnmsac_vf_f64m8
 #define VFMULVF_FLOAT           __riscv_vfmul_vf_f64m8
@@ -100,7 +100,7 @@ int CNAME(BLASLONG m, BLASLONG offset, FLOAT alpha, FLOAT *a, BLASLONG lda, FLOA
                                 VSEV_FLOAT(&y[i], vy, vl);
 
                                 vx = VLEV_FLOAT(&x[i], vl);
-                                vr = VFMACCVV_FLOAT(vr, vx, va, vl);
+                                vr = VFMACCVV_FLOAT_TU(vr, vx, va, vl);
 
                         }
                         v_res = VFREDSUM_FLOAT(vr, v_z0, vlmax);
@@ -130,7 +130,7 @@ int CNAME(BLASLONG m, BLASLONG offset, FLOAT alpha, FLOAT *a, BLASLONG lda, FLOA
                                 VSSEV_FLOAT(&y[iy], stride_y, vy, vl);
 
                                 vx = VLEV_FLOAT(&x[i], vl);
-                                vr = VFMACCVV_FLOAT(vr, vx, va, vl);
+                                vr = VFMACCVV_FLOAT_TU(vr, vx, va, vl);
 
                                 iy += inc_yv;
                         }
@@ -163,7 +163,7 @@ int CNAME(BLASLONG m, BLASLONG offset, FLOAT alpha, FLOAT *a, BLASLONG lda, FLOA
                                 VSEV_FLOAT(&y[i], vy, vl);
 
                                 vx = VLSEV_FLOAT(&x[ix], stride_x, vl);
-                                vr = VFMACCVV_FLOAT(vr, vx, va, vl);
+                                vr = VFMACCVV_FLOAT_TU(vr, vx, va, vl);
 
                                 ix += inc_xv;
                         }
@@ -201,7 +201,7 @@ int CNAME(BLASLONG m, BLASLONG offset, FLOAT alpha, FLOAT *a, BLASLONG lda, FLOA
                                 VSSEV_FLOAT(&y[iy], stride_y, vy, vl);
 
                                 vx = VLSEV_FLOAT(&x[ix], stride_x, vl);
-                                vr = VFMACCVV_FLOAT(vr, vx, va, vl);
+                                vr = VFMACCVV_FLOAT_TU(vr, vx, va, vl);
 
                                 ix += inc_xv;
                                 iy += inc_yv;

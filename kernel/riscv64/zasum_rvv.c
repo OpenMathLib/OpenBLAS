@@ -38,7 +38,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define VFMVVF_FLOAT            __riscv_vfmv_v_f_f32m8
 #define VFMVVF_FLOAT_M1         __riscv_vfmv_v_f_f32m1
 #define VFMVFS_FLOAT_M1         __riscv_vfmv_f_s_f32m1_f32
-#define VFADDVV_FLOAT           __riscv_vfadd_vv_f32m8
+#define VFADDVV_FLOAT_TU        __riscv_vfadd_vv_f32m8_tu
 #define VFABSV_FLOAT            __riscv_vfabs_v_f32m8
 #else
 #define VSETVL(n)               __riscv_vsetvl_e64m8(n)
@@ -51,7 +51,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define VFMVVF_FLOAT            __riscv_vfmv_v_f_f64m8
 #define VFMVVF_FLOAT_M1         __riscv_vfmv_v_f_f64m1
 #define VFMVFS_FLOAT_M1         __riscv_vfmv_f_s_f64m1_f64
-#define VFADDVV_FLOAT           __riscv_vfadd_vv_f64m8
+#define VFADDVV_FLOAT_TU        __riscv_vfadd_vv_f64m8_tu
 #define VFABSV_FLOAT            __riscv_vfabs_v_f64m8
 #endif
 
@@ -75,8 +75,8 @@ FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x)
             v0 = VFABSV_FLOAT(v0, vl);
             v1 = VFABSV_FLOAT(v1, vl);
 
-            v_sum = VFADDVV_FLOAT(v_sum, v0, vl);
-            v_sum = VFADDVV_FLOAT(v_sum, v1, vl);
+            v_sum = VFADDVV_FLOAT_TU(v_sum, v_sum, v0, vl);
+            v_sum = VFADDVV_FLOAT_TU(v_sum, v_sum, v1, vl);
         }
 
     }
@@ -93,8 +93,8 @@ FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x)
             v0 = VFABSV_FLOAT(v0, vl);
             v1 = VFABSV_FLOAT(v1, vl);
 
-            v_sum = VFADDVV_FLOAT(v_sum, v0, vl);
-            v_sum = VFADDVV_FLOAT(v_sum, v1, vl);
+            v_sum = VFADDVV_FLOAT_TU(v_sum, v_sum, v0, vl);
+            v_sum = VFADDVV_FLOAT_TU(v_sum, v_sum, v1, vl);
         }
 
     }

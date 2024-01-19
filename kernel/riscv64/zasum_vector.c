@@ -53,17 +53,21 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define JOIN2(x, y) JOIN2_X(x, y)
 #define JOIN(v, w, x, y, z) JOIN2( JOIN2( JOIN2( JOIN2( v, w ), x), y), z)
 
-#define VSETVL          JOIN(__riscv_vsetvl,    _e,     ELEN,   LMUL,   _)
+#define VSETVL          JOIN(RISCV_RVV(vsetvl),    _e,     ELEN,   LMUL,   _)
 #define FLOAT_V_T       JOIN(vfloat,            ELEN,   LMUL,   _t,     _)
 #define FLOAT_V_T_M1    JOIN(vfloat,            ELEN,   m1,     _t,     _)
-#define VLEV_FLOAT      JOIN(__riscv_vle,       ELEN,   _v_f,   ELEN,   LMUL)
-#define VLSEV_FLOAT     JOIN(__riscv_vlse,      ELEN,   _v_f,   ELEN,   LMUL)
-#define VFREDSUMVS_FLOAT JOIN(__riscv_vfredusum_vs_f,  ELEN,   LMUL,   _f, JOIN2( ELEN,   m1))
-#define VFABS_FLOAT     JOIN(__riscv_vfabs,     _v_f,   ELEN,   LMUL,   _)
-#define VFMVVF_FLOAT    JOIN(__riscv_vfmv,      _v_f_f, ELEN,   LMUL,   _)
-#define VFMVVF_FLOAT_M1 JOIN(__riscv_vfmv,      _v_f_f, ELEN,   m1,     _)
-#define VFADDVV_FLOAT   JOIN(__riscv_vfadd,     _vv_f,  ELEN,   LMUL,   _)
-#define VMFLTVF_FLOAT   JOIN(__riscv_vmflt,     _vf_f,  ELEN,   LMUL,   MLEN)
+#define VLEV_FLOAT      JOIN(RISCV_RVV(vle),       ELEN,   _v_f,   ELEN,   LMUL)
+#define VLSEV_FLOAT     JOIN(RISCV_RVV(vlse),      ELEN,   _v_f,   ELEN,   LMUL)
+#ifdef RISCV_0p10_INTRINSICS
+#define VFREDSUMVS_FLOAT(va, vb, gvl) JOIN(RISCV_RVV(vfredusum_vs_f),  ELEN,   LMUL,   _f, JOIN2( ELEN,   m1))(v_res, va, vb, gvl)
+#else
+#define VFREDSUMVS_FLOAT JOIN(RISCV_RVV(vfredusum_vs_f),  ELEN,   LMUL,   _f, JOIN2( ELEN,   m1))
+#endif
+#define VFABS_FLOAT     JOIN(RISCV_RVV(vfabs),     _v_f,   ELEN,   LMUL,   _)
+#define VFMVVF_FLOAT    JOIN(RISCV_RVV(vfmv),      _v_f_f, ELEN,   LMUL,   _)
+#define VFMVVF_FLOAT_M1 JOIN(RISCV_RVV(vfmv),      _v_f_f, ELEN,   m1,     _)
+#define VFADDVV_FLOAT   JOIN(RISCV_RVV(vfadd),     _vv_f,  ELEN,   LMUL,   _)
+#define VMFLTVF_FLOAT   JOIN(RISCV_RVV(vmflt),     _vf_f,  ELEN,   LMUL,   MLEN)
 
 FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x)
 {
