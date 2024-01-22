@@ -520,6 +520,19 @@ LL(1000):
 	.align 4
 
 LL(1010):
+	addi	RET, RET, 1
+	fcmpu	cr0, f24, f24
+	bun	cr0, LL(9999)
+	addi	RET, RET, 1
+	fcmpu	cr0, f25, f25
+	bun	cr0, LL(9999)
+	addi	RET, RET, 1
+	fcmpu	cr0, f26, f26
+	bun	cr0, LL(9999)
+	addi	RET, RET, 1
+	fcmpu	cr0, f27, f27
+	bun	cr0, LL(9999)
+
 	fabs	f8,  f24
 	fabs	f9,  f25
 	fabs	f10, f26
@@ -529,6 +542,20 @@ LL(1010):
 	LFD	f25,   9 * SIZE(XX)
 	LFD	f26,  10 * SIZE(XX)
 	LFD	f27,  11 * SIZE(XX)
+	
+	addi	RET, RET, 1
+	fcmpu	cr0, f24, f24
+	bun	cr0, LL(9999)
+	addi	RET, RET, 1
+	fcmpu	cr0, f25, f25
+	bun	cr0, LL(9999)
+	addi	RET, RET, 1
+	fcmpu	cr0, f26, f26
+	bun	cr0, LL(9999)
+	addi	RET, RET, 1
+	fcmpu	cr0, f27, f27
+	bun	cr0, LL(9999)
+	subi    RET, RET, 8
 
 	fabs	f12, f28
 	fabs	f13, f29
@@ -577,6 +604,32 @@ LL(1010):
 	.align 4
 
 LL(1020):
+	addi	RET, RET, 1
+	fcmpu	cr0, f24, f24
+	bun	cr0, LL(9999)
+	addi	RET, RET, 1
+	fcmpu	cr0, f25, f25
+	bun	cr0, LL(9999)
+	addi	RET, RET, 1
+	fcmpu	cr0, f26, f26
+	bun	cr0, LL(9999)
+	addi	RET, RET, 1
+	fcmpu	cr0, f27, f27
+	bun	cr0, LL(9999)
+	addi	RET, RET, 1
+	fcmpu	cr0, f28, f28
+	bun	cr0, LL(9999)
+	addi	RET, RET, 1
+	fcmpu	cr0, f29, f29
+	bun	cr0, LL(9999)
+	addi	RET, RET, 1
+	fcmpu	cr0, f30, f30
+	bun	cr0, LL(9999)
+	addi	RET, RET, 1
+	fcmpu	cr0, f31, f31
+	bun	cr0, LL(9999)
+	subi	RET, RET, 8
+
 	fabs	f8,  f24
 	fabs	f9,  f25
 	fabs	f10, f26
@@ -631,8 +684,12 @@ LL(1050):
 LL(1060):
 	LFD	f8,  0 * SIZE(XX)
 	addi	XX, XX,  1 * SIZE
+	addi    RET, RET, 1
+	fcmpu   cr0, f8, f8
+	bun	cru, LL(9999)
+	
 	fabs	f8, f8
-	addi	RET, RET, 1
+	//addi	RET, RET, 1
 	fcmpu	cr0, f1, f8
 	beq	cr0, LL(9999)
 	bdnz	LL(1060)
@@ -658,6 +715,18 @@ LL(1100):
 	.align 4
 
 LL(1110):
+	addi	RET, RET, 1
+	fcmpu	cr0, f24, f24
+	bun	cr0, LL(9999)
+	addi	RET, RET, 1
+	fcmpu	cr0, f25, f25
+	bun	cr0, LL(9999)
+	addi	RET, RET, 1
+	fcmpu	cr0, f26, f26
+	bun	cr0, LL(9999)
+	addi	RET, RET, 1
+	fcmpu	cr0, f27, f27
+	bun	cr0, LL(9999)
 	fabs	f8,  f24
 	fabs	f9,  f25
 	fabs	f10, f26
@@ -667,7 +736,19 @@ LL(1110):
 	LFDUX	f25,   XX, INCX
 	LFDUX	f26,   XX, INCX
 	LFDUX	f27,   XX, INCX
-
+	addi	RET, RET, 1
+	fcmpu	cr0, f24, f24
+	bun	cr0, LL(9999)
+	addi	RET, RET, 1
+	fcmpu	cr0, f25, f25
+	bun	cr0, LL(9999)
+	addi	RET, RET, 1
+	fcmpu	cr0, f26, f26
+	bun	cr0, LL(9999)
+	addi	RET, RET, 1
+	fcmpu	cr0, f27, f27
+	bun	cr0, LL(9999)
+	subi    RET, RET, 8
 	fabs	f12, f28
 	fabs	f13, f29
 	fabs	f14, f30
@@ -714,6 +795,30 @@ LL(1110):
 	.align 4
 
 LL(1120):
+	addi	RET, RET, 1
+	fcmpu	cr0, f24, f24
+	bun	cr0, LL(9999)
+	addi	RET, RET, 1
+	fcmpu	cr0, f25, f25
+	bun	cr0, LL(9999)
+	addi	RET, RET, 1
+	fcmpu	cr0, f26, f26
+	bun	cr0, LL(9999)
+	addi	RET, RET, 1
+	fcmpu	cr0, f27, f27
+	bun	cr0, LL(9999)
+	addi	RET, RET, 1
+	fcmpu	cr0, f28, f28
+	bun	cr0, LL(9999)
+	addi	RET, RET, 1
+	fcmpu	cr0, f29, f29
+	bun	cr0, LL(9999)
+	addi	RET, RET, 1
+	fcmpu	cr0, f30, f30
+	bun	cr0, LL(9999)
+	addi	RET, RET, 1
+	fcmpu	cr0, f31, f31
+	subi	RET, RET, 8
 	fabs	f8,  f24
 	fabs	f9,  f25
 	fabs	f10, f26
@@ -765,8 +870,11 @@ LL(1150):
 
 LL(1160):
 	LFDUX	f8,    XX, INCX
-	fabs	f8, f8
 	addi	RET, RET, 1
+	fcmpu	cr0, f8, f8
+	bun	LL(9999)
+	fabs	f8, f8
+//	addi	RET, RET, 1
 	fcmpu	cr0, f1, f8
 	beq	cr0, LL(9999)
 	bdnz	LL(1160)

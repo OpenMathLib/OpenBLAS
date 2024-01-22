@@ -58,3 +58,29 @@ CTEST(amax, damax){
 }
 #endif
 
+#ifdef BUILD_SINGLE
+CTEST(amax, isamax_nan){
+  blasint N=3, inc=1;
+  int te_max=0, tr_max=2;
+  float x[]={1., 0./0., 0./0. };
+  //float x[]={ 0./0., 2., 3. };
+
+
+  te_max=BLASFUNC(isamax)(&N, x, &inc);
+
+  ASSERT_EQUAL(tr_max, te_max);
+}
+#endif
+
+#ifdef BUILD_DOUBLE
+CTEST(amax, idamax_nan){
+  blasint N=4, inc=1;
+  int te_max=0, tr_max=1;
+  //float x[]={1., 0./0., 0./0. };
+  double x[]={ 0./0., 1.,2. ,3.};
+
+  te_max=BLASFUNC(idamax)(&N, x, &inc);
+
+  ASSERT_EQUAL(tr_max, te_max);
+}
+#endif

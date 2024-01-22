@@ -56,13 +56,15 @@ BLASLONG CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x)
 	BLASLONG max=0;
 
 	if (n <= 0 || inc_x <= 0) return(max);
-
+        if (n==1) return(1);
+        if (x[0]!=x[0]) return(1);
 	maxf=ABS(x[0]);
 	ix += inc_x;
 	i++;
 
 	while(i < n)
 	{
+        	if (x[ix]!=x[ix]) return(i+1);
 		if( ABS(x[ix]) > maxf )
 		{
 			max = i;

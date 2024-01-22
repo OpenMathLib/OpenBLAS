@@ -79,6 +79,8 @@
 	movsd	(X), %xmm0
 	addq	INCX, X
 	decq	M
+	comisd  %xmm0, %xmm0
+	jp      .L987
 #ifdef USE_ABS
 	andpd	 %xmm15, %xmm0
 #endif
@@ -269,6 +271,11 @@
 	je	.L21
 
 	movsd	0 * SIZE(X), %xmm1
+	incq RET
+	comisd  %xmm1, %xmm1
+	jp      .L987
+	decq RET
+
 #ifdef USE_ABS
 	andpd	 %xmm15, %xmm1
 #endif
@@ -342,6 +349,32 @@
 	movsd	5 * SIZE(X), %xmm6
 	movsd	6 * SIZE(X), %xmm7
 	movsd	7 * SIZE(X), %xmm8
+	incq RET
+	comisd  %xmm1, %xmm1
+	jp      .L987
+	incq RET
+	comisd  %xmm2, %xmm2
+	jp      .L987
+	incq RET
+	comisd  %xmm3, %xmm3
+	jp      .L987
+	incq RET
+	comisd  %xmm4, %xmm4
+	jp      .L987
+	incq RET
+	comisd  %xmm5, %xmm5
+	jp      .L987
+	incq RET
+	comisd  %xmm6, %xmm6
+	jp      .L987
+	incq RET
+	comisd  %xmm7, %xmm7
+	jp      .L987
+	incq RET
+	comisd  %xmm8, %xmm8
+	jp      .L987
+	subq $8, RET
+
 #ifdef USE_ABS
 	andpd	 %xmm15, %xmm1
 	andpd	 %xmm15, %xmm2
@@ -374,9 +407,9 @@
 	comisd	%xmm0, %xmm6
 	je	.L999
 	incq	RET
-	comisd	%xmm0, %xmm7
-	je	.L999
-	incq	RET
+	comisd  %xmm0, %xmm7
+	je      .L999
+	incq    RET
 	jmp	.L999
 	ALIGN_3
 
@@ -388,6 +421,21 @@
 	movsd	1 * SIZE(X), %xmm2
 	movsd	2 * SIZE(X), %xmm3
 	movsd	3 * SIZE(X), %xmm4
+
+	incq RET
+	comisd  %xmm1, %xmm1
+	jp      .L987
+	incq RET
+	comisd  %xmm2, %xmm2
+	jp      .L987
+	incq RET
+	comisd  %xmm3, %xmm3
+	jp      .L987
+	incq RET
+	comisd  %xmm4, %xmm4
+	jp      .L987
+	subq $4, RET
+
 #ifdef USE_ABS
 	andpd	 %xmm15, %xmm1
 	andpd	 %xmm15, %xmm2
@@ -415,6 +463,14 @@
 
 	movsd	0 * SIZE(X), %xmm1
 	movsd	1 * SIZE(X), %xmm2
+	incq RET
+	comisd  %xmm1, %xmm1
+	jp      .L987
+	incq RET
+	comisd  %xmm2, %xmm2
+	jp      .L987
+        subq $2, RET
+
 #ifdef USE_ABS
 	andpd	 %xmm15, %xmm1
 	andpd	 %xmm15, %xmm2
@@ -670,6 +726,32 @@
 	movsd	5 * SIZE(X), %xmm6
 	movsd	6 * SIZE(X), %xmm7
 	movsd	7 * SIZE(X), %xmm8
+	incq RET
+	comisd  %xmm1, %xmm1
+	jp      .L987
+	incq RET
+	comisd  %xmm2, %xmm2
+	jp      .L987
+	incq RET
+	comisd  %xmm3, %xmm3
+	jp      .L987
+	incq RET
+	comisd  %xmm4, %xmm4
+	jp      .L987
+	incq RET
+	comisd  %xmm5, %xmm5
+	jp      .L987
+	incq RET
+	comisd  %xmm6, %xmm6
+	jp      .L987
+	incq RET
+	comisd  %xmm7, %xmm7
+	jp      .L987
+	incq RET
+	comisd  %xmm8, %xmm8
+	jp      .L987
+	subq $8, RET
+
 #ifdef USE_ABS
 	andpd	 %xmm15, %xmm1
 	andpd	 %xmm15, %xmm2
@@ -716,6 +798,20 @@
 	movsd	1 * SIZE(X), %xmm2
 	movsd	2 * SIZE(X), %xmm3
 	movsd	3 * SIZE(X), %xmm4
+	incq RET
+	comisd  %xmm1, %xmm1
+	jp      .L987
+	incq RET
+	comisd  %xmm2, %xmm2
+	jp      .L987
+	incq RET
+	comisd  %xmm3, %xmm3
+	jp      .L987
+	incq RET
+	comisd  %xmm4, %xmm4
+	jp      .L987
+	subq $4, RET
+
 #ifdef USE_ABS
 	andpd	 %xmm15, %xmm1
 	andpd	 %xmm15, %xmm2
@@ -743,11 +839,21 @@
 
 	movsd	0 * SIZE(X), %xmm1
 	movsd	1 * SIZE(X), %xmm2
+	incq RET
+	comisd  %xmm1, %xmm1
+	jp      .L987
+	incq RET
+	comisd  %xmm2, %xmm2
+	jp      .L987
+	subq $2, RET
+
 #ifdef USE_ABS
 	andpd	 %xmm15, %xmm1
 	andpd	 %xmm15, %xmm2
 #endif
 	addq	$2 * SIZE, X
+	comisd	%xmm0, %xmm0
+	jp	.L987
 	incq	RET
 	comisd	%xmm0, %xmm1
 	je	.L999
@@ -962,6 +1068,7 @@
 	ALIGN_4
 
 .L92:
+
 	movsd	0 * SIZE(X), %xmm1
 	addq	INCX, X
 	movhpd	0 * SIZE(X), %xmm1
@@ -1033,6 +1140,32 @@
 	movsd	0 * SIZE(X), %xmm2
 	subq	INCX, X
 	movsd	0 * SIZE(X), %xmm1
+	incq RET
+	comisd  %xmm1, %xmm1
+	jp      .L987
+	incq RET
+	comisd  %xmm2, %xmm2
+	jp      .L987
+	incq RET
+	comisd  %xmm3, %xmm3
+	jp      .L987
+	incq RET
+	comisd  %xmm4, %xmm4
+	jp      .L987
+	incq RET
+	comisd  %xmm5, %xmm5
+	jp      .L987
+	incq RET
+	comisd  %xmm6, %xmm6
+	jp      .L987
+	incq RET
+	comisd  %xmm7, %xmm7
+	jp      .L987
+	incq RET
+	comisd  %xmm8, %xmm8
+	jp      .L987
+	subq $8, RET
+
 #ifdef USE_ABS
 	andpd	 %xmm15, %xmm1
 	andpd	 %xmm15, %xmm2
@@ -1083,6 +1216,20 @@
 	addq	INCX, X
 	movsd	0 * SIZE(X), %xmm4
 	addq	INCX, X
+	incq RET
+	comisd  %xmm1, %xmm1
+	jp      .L987
+	incq RET
+	comisd  %xmm2, %xmm2
+	jp      .L987
+	incq RET
+	comisd  %xmm3, %xmm3
+	jp      .L987
+	incq RET
+	comisd  %xmm4, %xmm4
+	jp      .L987
+	subq $4, RET
+
 #ifdef USE_ABS
 	andpd	 %xmm15, %xmm1
 	andpd	 %xmm15, %xmm2
@@ -1111,6 +1258,14 @@
 	addq	INCX, X
 	movsd	0 * SIZE(X), %xmm2
 	addq	INCX, X
+	incq RET
+	comisd	%xmm1, %xmm1
+	jp	.L987
+	incq RET
+	comisd	%xmm2, %xmm2
+	jp	.L987
+	decq RET
+	decq RET
 #ifdef USE_ABS
 	andpd	 %xmm15, %xmm1
 	andpd	 %xmm15, %xmm2
@@ -1122,7 +1277,6 @@
 	comisd	%xmm0, %xmm2
 	je	.L999
 	ALIGN_3
-
 .L98:
 	incq	RET
 	ALIGN_3
@@ -1132,5 +1286,8 @@
 
 	ret
 
-	EPILOGUE
+.L987:
+	incq RET //count from xmm0
+	jmp .L999
 
+	EPILOGUE

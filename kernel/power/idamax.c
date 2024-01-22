@@ -327,6 +327,7 @@ BLASLONG CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x) {
     BLASLONG max = 0;
 
     if (n <= 0 || inc_x <= 0) return (max);
+    if (n == 1) return(1);
 
     if (inc_x == 1) {
 
@@ -335,7 +336,7 @@ BLASLONG CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x) {
 
         BLASLONG n1 = n & -32;
 	if (n1 > 0) {
-
+	    for (int ii=i;ii<i+32;ii++) if (x[ii]!=x[ii]) return(ii+1);
             max = diamax_kernel_32(n1, x, &maxf);
 
             i = n1;
@@ -343,6 +344,7 @@ BLASLONG CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x) {
 #endif	
 #endif	
         while (i < n) {
+	    if (x[i] != x[i]) return(i+1);	
             if (ABS(x[i]) > maxf) {
                 max = i;
                 maxf = ABS(x[i]);
@@ -356,6 +358,10 @@ BLASLONG CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x) {
         BLASLONG n1 = n & -4;
         while (j < n1) {
 
+	    if (x[i] != x[i]) return(i+1);	
+	    if (x[i+inc_x] != x[i+inc_x]) return(j+1);	
+	    if (x[i+2*inc_x] != x[i+2*inc_x]) return(j+2);	
+	    if (x[i+3*inc_x] != x[i+3*inc_x]) return(j+3);	
             if (ABS(x[i]) > maxf) {
                 max = j;
                 maxf = ABS(x[i]);
@@ -381,6 +387,7 @@ BLASLONG CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x) {
 
 
         while (j < n) {
+	    if (x[i] != x[i]) return(j+1);	
             if (ABS(x[i]) > maxf) {
                 max = j;
                 maxf = ABS(x[i]);

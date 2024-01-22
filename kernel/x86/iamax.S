@@ -100,6 +100,8 @@
 	movl	$1, RET
 
 	FLD	(X)
+	fcomi	%st, %st
+	jp	.L999
 #ifdef USE_ABS
 	fabs
 #endif
@@ -121,6 +123,8 @@
 #endif
 
 	FLD	0 * SIZE(X)
+	fucomi
+	jp	.L998
 #ifdef USE_ABS
 	fabs
 #endif
@@ -131,6 +135,8 @@
 	incl	NUM
 
 	FLD	1 * SIZE(X)
+	fucomi
+	jp	.L998
 #ifdef USE_ABS
 	fabs
 #endif
@@ -141,6 +147,8 @@
 	incl	NUM
 
 	FLD	2 * SIZE(X)
+	fucomi
+	jp	.L998
 #ifdef USE_ABS
 	fabs
 #endif
@@ -151,6 +159,8 @@
 	incl	NUM
 
 	FLD	3 * SIZE(X)
+	fucomi
+	jp	.L998
 #ifdef USE_ABS
 	fabs
 #endif
@@ -161,6 +171,8 @@
 	incl	NUM
 
 	FLD	4 * SIZE(X)
+	fucomi
+	jp	.L998
 #ifdef USE_ABS
 	fabs
 #endif
@@ -171,6 +183,8 @@
 	incl	NUM
 
 	FLD	5 * SIZE(X)
+	fucomi
+	jp	.L998
 #ifdef USE_ABS
 	fabs
 #endif
@@ -181,6 +195,8 @@
 	incl	NUM
 
 	FLD	6 * SIZE(X)
+	fucomi
+	jp	.L998
 #ifdef USE_ABS
 	fabs
 #endif
@@ -191,6 +207,8 @@
 	incl	NUM
 
 	FLD	7 * SIZE(X)
+	fucomi
+	jp	.L998
 #ifdef USE_ABS
 	fabs
 #endif
@@ -215,6 +233,8 @@
 
 .L21:
 	FLD	0 * SIZE(X)
+	fucomi
+	jp	.L998
 #ifdef USE_ABS
 	fabs
 #endif
@@ -238,6 +258,8 @@
 
 .L50:
 	FLD	0 * SIZE(X)
+	fucomi
+	jp	.L998
 	addl	INCX, X
 #ifdef USE_ABS
 	fabs
@@ -249,6 +271,8 @@
 	incl	NUM
 
 	FLD	0 * SIZE(X)
+	fucomi
+	jp	.L998
 	addl	INCX, X
 #ifdef USE_ABS
 	fabs
@@ -260,6 +284,8 @@
 	incl	NUM
 
 	FLD	0 * SIZE(X)
+	fucomi
+	jp	.L998
 	addl	INCX, X
 #ifdef USE_ABS
 	fabs
@@ -271,6 +297,8 @@
 	incl	NUM
 
 	FLD	0 * SIZE(X)
+	fucomi
+	jp	.L998
 	addl	INCX, X
 #ifdef USE_ABS
 	fabs
@@ -282,6 +310,8 @@
 	incl	NUM
 
 	FLD	0 * SIZE(X)
+	fucomi
+	jp	.L998
 	addl	INCX, X
 #ifdef USE_ABS
 	fabs
@@ -293,6 +323,8 @@
 	incl	NUM
 
 	FLD	0 * SIZE(X)
+	fucomi
+	jp	.L998
 	addl	INCX, X
 #ifdef USE_ABS
 	fabs
@@ -304,6 +336,8 @@
 	incl	NUM
 
 	FLD	0 * SIZE(X)
+	fucomi
+	jp	.L998
 	addl	INCX, X
 #ifdef USE_ABS
 	fabs
@@ -315,6 +349,8 @@
 	incl	NUM
 
 	FLD	0 * SIZE(X)
+	fucomi
+	jp	.L998
 	addl	INCX, X
 #ifdef USE_ABS
 	fabs
@@ -338,6 +374,8 @@
 
 .L61:
 	FLD	0 * SIZE(X)
+	fucomi
+	jp	.L998
 #ifdef USE_ABS
 	fabs
 #endif
@@ -360,5 +398,8 @@
 	popl	%edi
 	popl	%ebp
 	ret
+
+.L998:	mov NUM, RET
+	jmp .L999
 
 	EPILOGUE
