@@ -96,7 +96,7 @@
       INTEGER           ICAMAXTEST
       EXTERNAL          SCASUMTEST, SCNRM2TEST, ICAMAXTEST
 *     .. External Subroutines ..
-      EXTERNAL          CSCAL, CSSCALTEST, CTEST, ITEST1, STEST1
+      EXTERNAL          CSCALTEST, CSSCALTEST, CTEST, ITEST1, STEST1
 *     .. Intrinsic Functions ..
       INTRINSIC         MAX
 *     .. Common blocks ..
@@ -214,8 +214,8 @@
                CALL STEST1(SCASUMTEST(N,CX,INCX),STRUE4(NP1),
      +                     STRUE4(NP1),SFAC)
             ELSE IF (ICASE.EQ.8) THEN
-*              .. CSCAL ..
-               CALL CSCAL(N,CA,CX,INCX)
+*              .. CSCALTEST ..
+               CALL CSCALTEST(N,CA,CX,INCX)
                CALL CTEST(LEN,CX,CTRUE5(1,NP1,INCX),CTRUE5(1,NP1,INCX),
      +                    SFAC)
             ELSE IF (ICASE.EQ.9) THEN
@@ -236,14 +236,14 @@
 *
       INCX = 1
       IF (ICASE.EQ.8) THEN
-*        CSCAL
+*        CSCALTEST
 *        Add a test for alpha equal to zero.
          CA = (0.0E0,0.0E0)
          DO 80 I = 1, 5
             MWPCT(I) = (0.0E0,0.0E0)
             MWPCS(I) = (1.0E0,1.0E0)
    80    CONTINUE
-         CALL CSCAL(5,CA,CX,INCX)
+         CALL CSCALTEST(5,CA,CX,INCX)
          CALL CTEST(5,CX,MWPCT,MWPCS,SFAC)
       ELSE IF (ICASE.EQ.9) THEN
 *        CSSCALTEST
