@@ -58,6 +58,8 @@ ZAXPYKERNEL =  caxpy_lasx.S
 
 SAXPBYKERNEL = axpby_lasx.S
 DAXPBYKERNEL = axpby_lasx.S
+CAXPBYKERNEL = caxpby_lasx.S
+ZAXPBYKERNEL = caxpby_lasx.S
 
 SSUMKERNEL  =  sum_lasx.S
 DSUMKERNEL  =  sum_lasx.S
