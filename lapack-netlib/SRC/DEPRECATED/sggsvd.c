@@ -52,7 +52,7 @@ static inline _Complex double * _pCd(doublecomplex *z) {return (_Complex double*
 #endif
 #define pCf(z) (*_pCf(z))
 #define pCd(z) (*_pCd(z))
-typedef int logical;
+typedef integer logical;
 typedef short int shortlogical;
 typedef char logical1;
 typedef char integer1;
@@ -869,7 +869,7 @@ f"> */
     logical wantu, wantv;
     extern real slamch_(char *), slange_(char *, integer *, integer *,
 	     real *, integer *, real *);
-    extern /* Subroutine */ int xerbla_(char *, integer *), stgsja_(
+    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen), stgsja_(
 	    char *, char *, char *, integer *, integer *, integer *, integer *
 	    , integer *, real *, integer *, real *, integer *, real *, real *,
 	     real *, real *, real *, integer *, real *, integer *, real *, 
@@ -944,7 +944,7 @@ f"> */
     }
     if (*info != 0) {
 	i__1 = -(*info);
-	xerbla_("SGGSVD", &i__1);
+	xerbla_("SGGSVD", &i__1, (ftnlen)6);
 	return 0;
     }
 

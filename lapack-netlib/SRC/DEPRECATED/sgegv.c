@@ -52,7 +52,7 @@ static inline _Complex double * _pCd(doublecomplex *z) {return (_Complex double*
 #endif
 #define pCf(z) (*_pCf(z))
 #define pCd(z) (*_pCd(z))
-typedef int logical;
+typedef integer logical;
 typedef short int shortlogical;
 typedef char logical1;
 typedef char integer1;
@@ -858,7 +858,7 @@ rices</b> */
     char chtemp[1];
     logical ldumma[1];
     extern /* Subroutine */ int slascl_(char *, integer *, integer *, real *, 
-	    real *, integer *, integer *, real *, integer *, integer *), xerbla_(char *, integer *);
+	    real *, integer *, integer *, real *, integer *, integer *), xerbla_(char *, integer *, ftnlen);
     extern integer ilaenv_(integer *, char *, char *, integer *, integer *, 
 	    integer *, integer *, ftnlen, ftnlen);
     integer ijobvl, iright;
@@ -988,7 +988,7 @@ rices</b> */
 
     if (*info != 0) {
 	i__1 = -(*info);
-	xerbla_("SGEGV ", &i__1);
+	xerbla_("SGEGV", &i__1, (ftnlen)5);
 	return 0;
     } else if (lquery) {
 	return 0;

@@ -52,7 +52,7 @@ static inline _Complex double * _pCd(doublecomplex *z) {return (_Complex double*
 #endif
 #define pCf(z) (*_pCf(z))
 #define pCd(z) (*_pCd(z))
-typedef int logical;
+typedef integer logical;
 typedef short int shortlogical;
 typedef char logical1;
 typedef char integer1;
@@ -891,7 +891,7 @@ static logical c_false = FALSE_;
     extern /* Subroutine */ int claset_(char *, integer *, integer *, complex 
 	    *, complex *, complex *, integer *), clartg_(complex *, 
 	    complex *, real *, complex *, complex *), xerbla_(char *, integer 
-	    *), clagsy_(integer *, integer *, real *, complex *, 
+	    *, ftnlen), clagsy_(integer *, integer *, real *, complex *, 
 	    integer *, integer *, complex *, integer *);
     extern real slarnd_(integer *, integer *);
     extern /* Subroutine */ int clarot_(logical *, logical *, logical *, 
@@ -1068,7 +1068,7 @@ static logical c_false = FALSE_;
 
     if (*info != 0) {
 	i__1 = -(*info);
-	xerbla_("CLATMS", &i__1);
+	xerbla_("CLATMS", &i__1, (ftnlen)6);
 	return 0;
     }
 

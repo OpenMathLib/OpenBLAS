@@ -52,7 +52,7 @@ static inline _Complex double * _pCd(doublecomplex *z) {return (_Complex double*
 #endif
 #define pCf(z) (*_pCf(z))
 #define pCd(z) (*_pCd(z))
-typedef int logical;
+typedef integer logical;
 typedef short int shortlogical;
 typedef char logical1;
 typedef char integer1;
@@ -679,7 +679,7 @@ static integer c__1 = 1;
 	    real *, integer *, real *, real *, integer *);
     integer ixfrm, itype, nxfrm;
     real xnorm;
-    extern /* Subroutine */ int xerbla_(char *, integer *);
+    extern /* Subroutine */ int xerbla_(char *, integer *, ftnlen);
     real factor;
     extern real slarnd_(integer *, integer *);
     extern /* Subroutine */ int slaset_(char *, integer *, integer *, real *, 
@@ -731,7 +731,7 @@ static integer c__1 = 1;
     }
     if (*info != 0) {
 	i__1 = -(*info);
-	xerbla_("SLAROR", &i__1);
+	xerbla_("SLAROR", &i__1, (ftnlen)6);
 	return 0;
     }
 
@@ -779,7 +779,7 @@ static integer c__1 = 1;
 	factor = xnorms * (xnorms + x[kbeg]);
 	if (abs(factor) < 1e-20f) {
 	    *info = 1;
-	    xerbla_("SLAROR", info);
+	    xerbla_("SLAROR", info, (ftnlen)6);
 	    return 0;
 	} else {
 	    factor = 1.f / factor;
