@@ -69,7 +69,7 @@ int CNAME(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, FLOAT dummy3, FLOAT dumm
         unsigned int gvl = VSETVL((inc_x != 0 && inc_y != 0) ? n : 1);
         if( inc_x == 0 && inc_y == 0 ) { n = n & 1; }
 
-	if (n < 0)  return(0);
+	if (n <= 0)  return(0);
         if(inc_x == 1 && inc_y == 1){
                 BLASLONG n2 = n * 2;
                 if(gvl <= n2/2){

@@ -156,7 +156,7 @@ BLASLONG CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x)
 
                 v_res = VFREDMINVS_FLOAT(v_min, v_res, gvl);
                 FLOAT cur_minf = EXTRACT_FLOAT(v_res);
-                if(cur_minf > minf){
+                if(cur_minf < minf){
                         //tail index
                         v_min_index = VIDV_UINT(gvl);
                         v_min_index = VADDVX_UINT(v_min_index, j, gvl);
