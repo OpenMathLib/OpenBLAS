@@ -78,6 +78,11 @@ static char *cpuname[] = {
   "C910V"
 };
 
+static char *cpuname_lower[] = {
+  "riscv64_generic",
+  "c910v"
+};
+
 int detect(void){
 #ifdef __linux
   FILE *infile;
@@ -146,5 +151,5 @@ void get_cpuconfig(void){
 }
 
 void get_libname(void){
-  printf("riscv64\n");
+  printf("%s", cpuname_lower[detect()]);
 }
