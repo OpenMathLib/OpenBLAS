@@ -30,14 +30,14 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #if !defined(DOUBLE)
 #define VSETVL(n)               __riscv_vsetvl_e32m2(n)
-#define FLOAT_V_T               vfloat32m2_t
-#define VLSSEG2_FLOAT           __riscv_vlsseg2e32_v_f32m2
-#define VSSEG2_FLOAT            __riscv_vsseg2e32_v_f32m2
+#define FLOAT_VX2_T             vfloat32m2x2_t
+#define VLSSEG2_FLOAT           __riscv_vlsseg2e32_v_f32m2x2
+#define VSSEG2_FLOAT            __riscv_vsseg2e32_v_f32m2x2
 #else
 #define VSETVL(n)               __riscv_vsetvl_e64m2(n)
-#define FLOAT_V_T               vfloat64m2_t
-#define VLSSEG2_FLOAT           __riscv_vlsseg2e64_v_f64m2
-#define VSSEG2_FLOAT            __riscv_vsseg2e64_v_f64m2
+#define FLOAT_VX2_T             vfloat64m2x2_t
+#define VLSSEG2_FLOAT           __riscv_vlsseg2e64_v_f64m2x2
+#define VSSEG2_FLOAT            __riscv_vsseg2e64_v_f64m2x2
 #endif
 
 int CNAME(BLASLONG m, BLASLONG n, IFLOAT *a, BLASLONG lda, IFLOAT *b){
@@ -48,7 +48,7 @@ int CNAME(BLASLONG m, BLASLONG n, IFLOAT *a, BLASLONG lda, IFLOAT *b){
     FLOAT *a_offset1;
     FLOAT *b_offset;
 
-    FLOAT_V_T v0, v1;
+    FLOAT_VX2_T vx2;
     size_t vl;
 
     //fprintf(stderr, "%s, m=%ld n=%ld lda=%ld\n", __FUNCTION__, m, n, lda);
@@ -62,8 +62,8 @@ int CNAME(BLASLONG m, BLASLONG n, IFLOAT *a, BLASLONG lda, IFLOAT *b){
         a_offset += vl * lda * 2;
 
         for(i = m; i > 0; i--) {
-            VLSSEG2_FLOAT(&v0, &v1, a_offset1, lda * sizeof(FLOAT) * 2, vl);
-            VSSEG2_FLOAT(b_offset, v0, v1, vl);
+            vx2 = VLSSEG2_FLOAT(a_offset1, lda * sizeof(FLOAT) * 2, vl);
+            VSSEG2_FLOAT(b_offset, vx2, vl);
 
             a_offset1 += 2;
             b_offset += vl * 2;

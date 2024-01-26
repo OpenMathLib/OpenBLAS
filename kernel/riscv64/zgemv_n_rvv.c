@@ -30,27 +30,33 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #if !defined(DOUBLE)
 #define VSETVL(n)               __riscv_vsetvl_e32m4(n)
 #define FLOAT_V_T               vfloat32m4_t
+#define FLOAT_VX2_T             vfloat32m4x2_t
+#define VGET_VX2                __riscv_vget_v_f32m4x2_f32m4
+#define VSET_VX2                __riscv_vset_v_f32m4_f32m4x2
 #define VLEV_FLOAT              __riscv_vle32_v_f32m4
 #define VLSEV_FLOAT             __riscv_vlse32_v_f32m4
 #define VSEV_FLOAT              __riscv_vse32_v_f32m4
 #define VSSEV_FLOAT             __riscv_vsse32_v_f32m4
-#define VLSEG_FLOAT             __riscv_vlseg2e32_v_f32m4
-#define VSSEG_FLOAT             __riscv_vsseg2e32_v_f32m4
-#define VLSSEG_FLOAT            __riscv_vlsseg2e32_v_f32m4
-#define VSSSEG_FLOAT            __riscv_vssseg2e32_v_f32m4
+#define VLSEG_FLOAT             __riscv_vlseg2e32_v_f32m4x2
+#define VSSEG_FLOAT             __riscv_vsseg2e32_v_f32m4x2
+#define VLSSEG_FLOAT            __riscv_vlsseg2e32_v_f32m4x2
+#define VSSSEG_FLOAT            __riscv_vssseg2e32_v_f32m4x2
 #define VFMACCVF_FLOAT          __riscv_vfmacc_vf_f32m4
 #define VFNMSACVF_FLOAT         __riscv_vfnmsac_vf_f32m4
 #else
 #define VSETVL(n)               __riscv_vsetvl_e64m4(n)
 #define FLOAT_V_T               vfloat64m4_t
+#define FLOAT_VX2_T             vfloat64m4x2_t
+#define VGET_VX2                __riscv_vget_v_f64m4x2_f64m4
+#define VSET_VX2                __riscv_vset_v_f64m4_f64m4x2
 #define VLEV_FLOAT              __riscv_vle64_v_f64m4
 #define VLSEV_FLOAT             __riscv_vlse64_v_f64m4
 #define VSEV_FLOAT              __riscv_vse64_v_f64m4
 #define VSSEV_FLOAT             __riscv_vsse64_v_f64m4
-#define VLSEG_FLOAT             __riscv_vlseg2e64_v_f64m4
-#define VSSEG_FLOAT             __riscv_vsseg2e64_v_f64m4
-#define VLSSEG_FLOAT            __riscv_vlsseg2e64_v_f64m4
-#define VSSSEG_FLOAT            __riscv_vssseg2e64_v_f64m4
+#define VLSEG_FLOAT             __riscv_vlseg2e64_v_f64m4x2
+#define VSSEG_FLOAT             __riscv_vsseg2e64_v_f64m4x2
+#define VLSSEG_FLOAT            __riscv_vlsseg2e64_v_f64m4x2
+#define VSSSEG_FLOAT            __riscv_vssseg2e64_v_f64m4x2
 #define VFMACCVF_FLOAT          __riscv_vfmacc_vf_f64m4
 #define VFNMSACVF_FLOAT         __riscv_vfnmsac_vf_f64m4
 #endif
@@ -62,6 +68,7 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1, FLOAT alpha_r, FLOAT alpha_i,
     FLOAT *a_ptr;
     FLOAT temp_r, temp_i;
     FLOAT_V_T va0, va1, vy0, vy1;
+    FLOAT_VX2_T vax2, vyx2;
 
     BLASLONG stride_y = inc_y * sizeof(FLOAT) * 2;
 
@@ -73,7 +80,10 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1, FLOAT alpha_r, FLOAT alpha_i,
             vl = VSETVL(m);
             a_ptr = a;
             ix = 0;
-            VLSEG_FLOAT(&vy0, &vy1, y, vl);
+            vyx2 = VLSEG_FLOAT(y, vl);
+
+            vy0 = VGET_VX2(vyx2, 0);
+            vy1 = VGET_VX2(vyx2, 1);
 
             for(i = 0; i < n; i++){
 #if !defined(XCONJ)
@@ -84,7 +94,10 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1, FLOAT alpha_r, FLOAT alpha_i,
                 temp_i = alpha_r * x[ix+1] - alpha_i * x[ix];
 #endif
 
-                VLSEG_FLOAT(&va0, &va1, a_ptr, vl);
+                vax2 = VLSEG_FLOAT(a_ptr, vl);
+
+                va0 = VGET_VX2(vax2, 0);
+                va1 = VGET_VX2(vax2, 1);
 #if !defined(CONJ)
 #if !defined(XCONJ)
                 vy0 = VFMACCVF_FLOAT(vy0, temp_r, va0, vl);
@@ -113,7 +126,10 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1, FLOAT alpha_r, FLOAT alpha_i,
                 a_ptr += lda2;
                 ix += inc_x2;
             }
-            VSSEG_FLOAT(y, vy0, vy1, vl);
+
+            vyx2 = VSET_VX2(vyx2, 0, vy0);
+            vyx2 = VSET_VX2(vyx2, 1, vy1);
+            VSSEG_FLOAT(y, vyx2, vl);
         }
 
     }
@@ -123,7 +139,9 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1, FLOAT alpha_r, FLOAT alpha_i,
             vl = VSETVL(m);
             a_ptr = a;
             ix = 0;
-            VLSSEG_FLOAT(&vy0, &vy1, y, stride_y, vl);
+            vyx2 = VLSSEG_FLOAT(y, stride_y, vl);
+            vy0 = VGET_VX2(vyx2, 0);
+            vy1 = VGET_VX2(vyx2, 1);
 
             for(i = 0; i < n; i++){
 #if !defined(XCONJ)
@@ -134,7 +152,9 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1, FLOAT alpha_r, FLOAT alpha_i,
                 temp_i = alpha_r * x[ix+1] - alpha_i * x[ix];
 #endif
 
-                VLSEG_FLOAT(&va0, &va1, a_ptr, vl);
+                vax2 = VLSEG_FLOAT(a_ptr, vl);
+                va0 = VGET_VX2(vax2, 0);
+                va1 = VGET_VX2(vax2, 1);
 #if !defined(CONJ)
 #if !defined(XCONJ)
                 vy0 = VFMACCVF_FLOAT(vy0, temp_r, va0, vl);
@@ -163,7 +183,9 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1, FLOAT alpha_r, FLOAT alpha_i,
                 a_ptr += lda2;
                 ix += inc_x2;
             }
-            VSSSEG_FLOAT(y, stride_y, vy0, vy1, vl);
+            vyx2 = VSET_VX2(vyx2, 0, vy0);
+            vyx2 = VSET_VX2(vyx2, 1, vy1);
+            VSSSEG_FLOAT(y, stride_y, vyx2, vl);
         }
     }
     return(0);

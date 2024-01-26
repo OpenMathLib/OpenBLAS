@@ -82,7 +82,7 @@ int CNAME(BLASLONG m, BLASLONG offset, FLOAT alpha, FLOAT *a, BLASLONG lda, FLOA
 
         FLOAT_V_T va, vx, vy, vr;
         BLASLONG stride_x, stride_y, inc_xv, inc_yv;
-
+        
         BLASLONG m1 = m - offset;
         if(inc_x == 1 && inc_y == 1)
         {

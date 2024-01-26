@@ -31,12 +31,15 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define VSETVL(n)               __riscv_vsetvl_e32m2(n)
 #define VSETVL_MAX              __riscv_vsetvlmax_e32m2()
 #define FLOAT_V_T               vfloat32m2_t
+#define FLOAT_VX2_T             vfloat32m2x2_t
+#define VGET_VX2                __riscv_vget_v_f32m2x2_f32m2
+#define VSET_VX2                __riscv_vset_v_f32m2_f32m2x2
 #define VLEV_FLOAT              __riscv_vle32_v_f32m2
 #define VSEV_FLOAT              __riscv_vse32_v_f32m2
 #define VLSEV_FLOAT             __riscv_vlse32_v_f32m2
-#define VLSEG2_FLOAT            __riscv_vlseg2e32_v_f32m2
-#define VLSSEG2_FLOAT           __riscv_vlsseg2e32_v_f32m2
-#define VSSEG2_FLOAT            __riscv_vsseg2e32_v_f32m2
+#define VLSEG2_FLOAT            __riscv_vlseg2e32_v_f32m2x2
+#define VLSSEG2_FLOAT           __riscv_vlsseg2e32_v_f32m2x2
+#define VSSEG2_FLOAT            __riscv_vsseg2e32_v_f32m2x2
 #define INT_V_T                 vint32m2_t
 #define VID_V_INT               __riscv_vid_v_i32m2
 #define VADD_VX_INT             __riscv_vadd_vx_i32m2
@@ -51,12 +54,15 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define VSETVL(n)               __riscv_vsetvl_e64m2(n)
 #define VSETVL_MAX              __riscv_vsetvlmax_e64m2()
 #define FLOAT_V_T               vfloat64m2_t
+#define FLOAT_VX2_T             vfloat64m2x2_t
+#define VGET_VX2                __riscv_vget_v_f64m2x2_f64m2
+#define VSET_VX2                __riscv_vset_v_f64m2_f64m2x2
 #define VLEV_FLOAT              __riscv_vle64_v_f64m2
 #define VSEV_FLOAT              __riscv_vse64_v_f64m2
 #define VLSEV_FLOAT             __riscv_vlse64_v_f64m2
-#define VLSEG2_FLOAT            __riscv_vlseg2e64_v_f64m2
-#define VLSSEG2_FLOAT           __riscv_vlsseg2e64_v_f64m2
-#define VSSEG2_FLOAT            __riscv_vsseg2e64_v_f64m2
+#define VLSEG2_FLOAT            __riscv_vlseg2e64_v_f64m2x2
+#define VLSSEG2_FLOAT           __riscv_vlsseg2e64_v_f64m2x2
+#define VSSEG2_FLOAT            __riscv_vsseg2e64_v_f64m2x2
 #define INT_V_T                 vint64m2_t
 #define VID_V_INT               __riscv_vid_v_i64m2
 #define VADD_VX_INT             __riscv_vadd_vx_i64m2
@@ -81,6 +87,7 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, BLASLONG posX, BLASLON
     BLASLONG stride_lda = sizeof(FLOAT) * lda * 2;
 
     FLOAT_V_T vb0, vb1, vb2, va10, va11, va20, va21, vzero;
+    FLOAT_VX2_T va1x2, va2x2, vbx2;
     VBOOL_T vbool_gt0, vbool_lt0, vbool_eq0;
     INT_V_T vindex_max, vindex;
 
@@ -96,8 +103,13 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, BLASLONG posX, BLASLON
         ao2 = a + posY * 2 + posX * lda * 2;
 
         for (i = m; i > 0; i--, offset--) {
-            VLSSEG2_FLOAT(&va20, &va21, ao2, stride_lda, vl);
-            VLSEG2_FLOAT(&va10, &va11, ao1, vl);
+            va2x2 = VLSSEG2_FLOAT(ao2, stride_lda, vl);
+            va1x2 = VLSEG2_FLOAT(ao1, vl);
+
+            va20 = VGET_VX2(va2x2, 0);
+            va21 = VGET_VX2(va2x2, 1);
+            va10 = VGET_VX2(va1x2, 0);
+            va11 = VGET_VX2(va1x2, 1);
 
             vindex = VADD_VX_INT(vindex_max, offset, vl);
             vbool_gt0  = VMSGT_VX_INT(vindex, 0, vl);
@@ -111,7 +123,10 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, BLASLONG posX, BLASLON
 
             vb1 =  VMERGE_VVM_FLOAT(vb1, vb2, vbool_lt0, vl);
             vb1 =  VMERGE_VVM_FLOAT(vb1, vzero, vbool_eq0, vl);
-            VSSEG2_FLOAT(b, vb0, vb1, vl);
+
+            vbx2 = VSET_VX2(vbx2, 0, vb0);
+            vbx2 = VSET_VX2(vbx2, 1, vb1);
+            VSSEG2_FLOAT(b, vbx2, vl);
 
             b   += vl * 2;
             ao1 += lda * 2;

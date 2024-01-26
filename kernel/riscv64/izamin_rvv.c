@@ -33,8 +33,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define VSETVL_MAX              __riscv_vsetvlmax_e64m4()
 #define FLOAT_V_T               vfloat64m4_t
 #define FLOAT_V_T_M1            vfloat64m1_t
-#define VLSEG_FLOAT             __riscv_vlseg2e64_v_f64m4
-#define VLSSEG_FLOAT            __riscv_vlsseg2e64_v_f64m4
+#define FLOAT_VX2_T             vfloat64m4x2_t
+#define VGET_VX2                __riscv_vget_v_f64m4x2_f64m4
+#define VLSEG_FLOAT             __riscv_vlseg2e64_v_f64m4x2
+#define VLSSEG_FLOAT            __riscv_vlsseg2e64_v_f64m4x2
 #define VFREDMINVS_FLOAT        __riscv_vfredmin_vs_f64m4_f64m1
 #define MASK_T                  vbool16_t
 #define VMFLTVF_FLOAT           __riscv_vmflt_vf_f64m4_b16
@@ -60,8 +62,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define VSETVL_MAX              __riscv_vsetvlmax_e32m4()
 #define FLOAT_V_T               vfloat32m4_t
 #define FLOAT_V_T_M1            vfloat32m1_t
-#define VLSEG_FLOAT             __riscv_vlseg2e32_v_f32m4
-#define VLSSEG_FLOAT            __riscv_vlsseg2e32_v_f32m4
+#define FLOAT_VX2_T             vfloat32m4x2_t
+#define VGET_VX2                __riscv_vget_v_f32m4x2_f32m4
+#define VLSEG_FLOAT             __riscv_vlseg2e32_v_f32m4x2
+#define VLSSEG_FLOAT            __riscv_vlsseg2e32_v_f32m4x2
 #define VFREDMINVS_FLOAT        __riscv_vfredmin_vs_f32m4_f32m1
 #define MASK_T                  vbool8_t
 #define VMFLTVF_FLOAT           __riscv_vmflt_vf_f32m4_b8
@@ -90,6 +94,7 @@ BLASLONG CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x)
     if (n <= 0 || inc_x <= 0) return(min_index);
 
     FLOAT_V_T vx0, vx1, v_min;
+    FLOAT_VX2_T vxx2;
     UINT_V_T v_min_index;
     MASK_T mask;
   
@@ -104,7 +109,10 @@ BLASLONG CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x)
         for (size_t vl; n > 0; n -= vl, x += vl*2, j += vl) {
             vl = VSETVL(n);
 
-            VLSEG_FLOAT(&vx0, &vx1, x, vl);
+            vxx2 = VLSEG_FLOAT(x, vl);
+
+            vx0 = VGET_VX2(vxx2, 0);
+            vx1 = VGET_VX2(vxx2, 1);
 
             vx0 = VFABSV_FLOAT(vx0, vl);
             vx1 = VFABSV_FLOAT(vx1, vl);
@@ -127,7 +135,10 @@ BLASLONG CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x)
         for (size_t vl; n > 0; n -= vl, x += vl*inc_x*2, j += vl) {
             vl = VSETVL(n);
 
-            VLSSEG_FLOAT(&vx0, &vx1, x, stride_x, vl);
+            vxx2 = VLSSEG_FLOAT(x, stride_x, vl);
+
+            vx0 = VGET_VX2(vxx2, 0);
+            vx1 = VGET_VX2(vxx2, 1);
 
             vx0 = VFABSV_FLOAT(vx0, vl);
             vx1 = VFABSV_FLOAT(vx1, vl);

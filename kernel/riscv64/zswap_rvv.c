@@ -29,18 +29,18 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #if !defined(DOUBLE)
 #define VSETVL(n)               __riscv_vsetvl_e32m4(n)
-#define FLOAT_V_T               vfloat32m4_t
-#define VLSEG_FLOAT             __riscv_vlseg2e32_v_f32m4
-#define VLSSEG_FLOAT            __riscv_vlsseg2e32_v_f32m4
-#define VSSEG_FLOAT             __riscv_vsseg2e32_v_f32m4
-#define VSSSEG_FLOAT            __riscv_vssseg2e32_v_f32m4
+#define FLOAT_VX2_T             vfloat32m4x2_t
+#define VLSEG_FLOAT             __riscv_vlseg2e32_v_f32m4x2
+#define VLSSEG_FLOAT            __riscv_vlsseg2e32_v_f32m4x2
+#define VSSEG_FLOAT             __riscv_vsseg2e32_v_f32m4x2
+#define VSSSEG_FLOAT            __riscv_vssseg2e32_v_f32m4x2
 #else
 #define VSETVL(n)               __riscv_vsetvl_e64m4(n)
-#define FLOAT_V_T               vfloat64m4_t
-#define VLSEG_FLOAT             __riscv_vlseg2e64_v_f64m4
-#define VLSSEG_FLOAT            __riscv_vlsseg2e64_v_f64m4
-#define VSSEG_FLOAT             __riscv_vsseg2e64_v_f64m4
-#define VSSSEG_FLOAT            __riscv_vssseg2e64_v_f64m4
+#define FLOAT_VX2_T             vfloat64m4x2_t
+#define VLSEG_FLOAT             __riscv_vlseg2e64_v_f64m4x2
+#define VLSSEG_FLOAT            __riscv_vlsseg2e64_v_f64m4x2
+#define VSSEG_FLOAT             __riscv_vsseg2e64_v_f64m4x2
+#define VSSSEG_FLOAT            __riscv_vssseg2e64_v_f64m4x2
 #endif
 
 int CNAME(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, FLOAT dummy3, FLOAT dummy4, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG inc_y, FLOAT *dummy, BLASLONG dummy2)
@@ -48,7 +48,7 @@ int CNAME(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, FLOAT dummy3, FLOAT dumm
 
     if (n <= 0) return(0);
 
-    FLOAT_V_T vx0, vx1, vy0, vy1;
+    FLOAT_VX2_T vxx2, vyx2;
 
     if (inc_x == 0 && inc_y == 0) {
         if (n & 1) {
@@ -75,8 +75,8 @@ int CNAME(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, FLOAT dummy3, FLOAT dumm
         BLASLONG m = n - 1;
         for (size_t vl; m > 0; m -= vl * 2, ptr -= vl*inc_y * 2) {
             vl = VSETVL(m);
-            VLSSEG_FLOAT(&vy0, &vy1, ptr - 2, stride_y, vl);
-            VSSSEG_FLOAT(ptr, stride_y, vy0, vy1, vl);
+            vyx2 = VLSSEG_FLOAT(ptr - 2, stride_y, vl);
+            VSSSEG_FLOAT(ptr, stride_y, vyx2, vl);
         }
         y[0] = temp[0];
         y[1] = temp[1];
@@ -92,8 +92,8 @@ int CNAME(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, FLOAT dummy3, FLOAT dumm
         BLASLONG m = n - 1;
         for (size_t vl; m > 0; m -= vl * 2, ptr -= vl*inc_x * 2) {
             vl = VSETVL(m);
-            VLSSEG_FLOAT(&vx0, &vx1, ptr - 2, stride_x, vl);
-            VSSSEG_FLOAT(ptr, stride_x, vx0, vx1, vl);
+            vxx2 = VLSSEG_FLOAT(ptr - 2, stride_x, vl);
+            VSSSEG_FLOAT(ptr, stride_x, vxx2, vl);
         }
         x[0] = temp[0];
         x[1] = temp[1];
@@ -103,11 +103,11 @@ int CNAME(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, FLOAT dummy3, FLOAT dumm
         for (size_t vl; n > 0; n -= vl, x += vl*2, y += vl*2) {
             vl = VSETVL(n);
 
-            VLSEG_FLOAT(&vx0, &vx1, x, vl);
-            VLSEG_FLOAT(&vy0, &vy1, y, vl);
+            vxx2 = VLSEG_FLOAT(x, vl);
+            vyx2 = VLSEG_FLOAT(y, vl);
 
-            VSSEG_FLOAT(y, vx0, vx1, vl);
-            VSSEG_FLOAT(x, vy0, vy1, vl);
+            VSSEG_FLOAT(y, vxx2, vl);
+            VSSEG_FLOAT(x, vyx2, vl);
         }
 
     } else if (inc_x == 1){
@@ -116,11 +116,11 @@ int CNAME(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, FLOAT dummy3, FLOAT dumm
         for (size_t vl; n > 0; n -= vl, x += vl*2, y += vl*inc_y*2) {
             vl = VSETVL(n);
 
-            VLSEG_FLOAT(&vx0, &vx1, x, vl);
-            VLSSEG_FLOAT(&vy0, &vy1, y, stride_y, vl);
+            vxx2 = VLSEG_FLOAT(x, vl);
+            vyx2 = VLSSEG_FLOAT(y, stride_y, vl);
 
-            VSSSEG_FLOAT(y, stride_y, vx0, vx1, vl);
-            VSSEG_FLOAT(x, vy0, vy1, vl);
+            VSSSEG_FLOAT(y, stride_y, vxx2, vl);
+            VSSEG_FLOAT(x, vyx2, vl);
         }
 
     } else if (inc_y == 1){
@@ -129,11 +129,11 @@ int CNAME(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, FLOAT dummy3, FLOAT dumm
         for (size_t vl; n > 0; n -= vl, x += vl*inc_x*2, y += vl*2) {
             vl = VSETVL(n);
 
-            VLSSEG_FLOAT(&vx0, &vx1, x, stride_x, vl);
-            VLSEG_FLOAT(&vy0, &vy1, y, vl);
+            vxx2 = VLSSEG_FLOAT(x, stride_x, vl);
+            vyx2 = VLSEG_FLOAT(y, vl);
 
-            VSSEG_FLOAT(y, vx0, vx1, vl);
-            VSSSEG_FLOAT(x, stride_x, vy0, vy1, vl);
+            VSSEG_FLOAT(y, vxx2, vl);
+            VSSSEG_FLOAT(x, stride_x, vyx2, vl);
         }
 
     } else {
@@ -143,11 +143,11 @@ int CNAME(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, FLOAT dummy3, FLOAT dumm
         for (size_t vl; n > 0; n -= vl, x += vl*inc_x*2, y += vl*inc_y*2) {
             vl = VSETVL(n);
 
-            VLSSEG_FLOAT(&vx0, &vx1, x, stride_x, vl);
-            VLSSEG_FLOAT(&vy0, &vy1, y, stride_y, vl);
+            vxx2 = VLSSEG_FLOAT(x, stride_x, vl);
+            vyx2 = VLSSEG_FLOAT(y, stride_y, vl);
 
-            VSSSEG_FLOAT(y, stride_y, vx0, vx1, vl);
-            VSSSEG_FLOAT(x, stride_x, vy0, vy1, vl);
+            VSSSEG_FLOAT(y, stride_y, vxx2, vl);
+            VSSSEG_FLOAT(x, stride_x, vyx2, vl);
         }
 
     }

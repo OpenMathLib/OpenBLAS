@@ -29,6 +29,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #if !defined(DOUBLE)
 #define VSETVL(n)               __riscv_vsetvl_e32m8(n)
+#define VSETVL_MAX              __riscv_vsetvlmax_e32m8()
 #define FLOAT_V_T               vfloat32m8_t
 #define VLEV_FLOAT              __riscv_vle32_v_f32m8
 #define VLSEV_FLOAT             __riscv_vlse32_v_f32m8
@@ -38,6 +39,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define VFMVVF_FLOAT            __riscv_vfmv_v_f_f32m8
 #else
 #define VSETVL(n)               __riscv_vsetvl_e64m8(n)
+#define VSETVL_MAX              __riscv_vsetvlmax_e64m8()
 #define FLOAT_V_T               vfloat64m8_t
 #define VLEV_FLOAT              __riscv_vle64_v_f64m8
 #define VLSEV_FLOAT             __riscv_vlse64_v_f64m8
@@ -54,26 +56,41 @@ int CNAME(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, FLOAT da, FLOAT *x, BLAS
     FLOAT_V_T v0;
  
     if(inc_x == 1) {
-
-        for (size_t vl; n > 0; n -= vl, x += vl) {
-            vl = VSETVL(n);
-
-            v0 = VLEV_FLOAT(x, vl);
-            v0 = VFMULVF_FLOAT(v0, da, vl);
-            VSEV_FLOAT(x, v0, vl);
+        if(da == 0.0) {
+            int gvl = VSETVL_MAX;
+            v0 = VFMVVF_FLOAT(0.0, gvl);
+            for (size_t vl; n > 0; n -= vl, x += vl) {
+                vl = VSETVL(n);
+                VSEV_FLOAT(x, v0, vl);
+            }
         }
-
-    } else { 
+        else {
+            for (size_t vl; n > 0; n -= vl, x += vl) {
+                vl = VSETVL(n);
+                v0 = VLEV_FLOAT(x, vl);
+                v0 = VFMULVF_FLOAT(v0, da, vl);
+                VSEV_FLOAT(x, v0, vl);
+            }
+        }
+    } else {
         BLASLONG stride_x = inc_x * sizeof(FLOAT);
 
-        for (size_t vl; n > 0; n -= vl, x += vl*inc_x) {
-            vl = VSETVL(n);
-
-            v0 = VLSEV_FLOAT(x, stride_x, vl);
-            v0 = VFMULVF_FLOAT(v0, da, vl);
-            VSSEV_FLOAT(x, stride_x, v0, vl);
+        if(da == 0.0) {
+            int gvl = VSETVL_MAX;
+            v0 = VFMVVF_FLOAT(0.0, gvl);
+            for (size_t vl; n > 0; n -= vl, x += vl*inc_x) {
+                vl = VSETVL(n);
+                VSSEV_FLOAT(x, stride_x, v0, vl);
+            }
         }
-
+        else {
+            for (size_t vl; n > 0; n -= vl, x += vl*inc_x) {
+                vl = VSETVL(n);
+                v0 = VLSEV_FLOAT(x, stride_x, vl);
+                v0 = VFMULVF_FLOAT(v0, da, vl);
+                VSSEV_FLOAT(x, stride_x, v0, vl);
+            }
+        }
     }
 
     return 0;

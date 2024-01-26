@@ -30,28 +30,34 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #if !defined(DOUBLE)
 #define VSETVL(n)               __riscv_vsetvl_e32m4(n)
 #define FLOAT_V_T               vfloat32m4_t
+#define FLOAT_VX2_T             vfloat32m4x2_t
+#define VGET_VX2                __riscv_vget_v_f32m4x2_f32m4
+#define VSET_VX2                __riscv_vset_v_f32m4_f32m4x2
 #define VLEV_FLOAT              __riscv_vle32_v_f32m4
 #define VLSEV_FLOAT             __riscv_vlse32_v_f32m4
 #define VSEV_FLOAT              __riscv_vse32_v_f32m4
 #define VSSEV_FLOAT             __riscv_vsse32_v_f32m4
-#define VLSEG_FLOAT             __riscv_vlseg2e32_v_f32m4
-#define VSSEG_FLOAT             __riscv_vsseg2e32_v_f32m4
-#define VLSSEG_FLOAT            __riscv_vlsseg2e32_v_f32m4
-#define VSSSEG_FLOAT            __riscv_vssseg2e32_v_f32m4
+#define VLSEG_FLOAT             __riscv_vlseg2e32_v_f32m4x2
+#define VSSEG_FLOAT             __riscv_vsseg2e32_v_f32m4x2
+#define VLSSEG_FLOAT            __riscv_vlsseg2e32_v_f32m4x2
+#define VSSSEG_FLOAT            __riscv_vssseg2e32_v_f32m4x2
 #define VFMACCVF_FLOAT          __riscv_vfmacc_vf_f32m4
 #define VFMULVF_FLOAT           __riscv_vfmul_vf_f32m4
 #define VFNMSACVF_FLOAT         __riscv_vfnmsac_vf_f32m4
 #else
 #define VSETVL(n)               __riscv_vsetvl_e64m4(n)
 #define FLOAT_V_T               vfloat64m4_t
+#define FLOAT_VX2_T             vfloat64m4x2_t
+#define VGET_VX2                __riscv_vget_v_f64m4x2_f64m4
+#define VSET_VX2                __riscv_vset_v_f64m4_f64m4x2
 #define VLEV_FLOAT              __riscv_vle64_v_f64m4
 #define VLSEV_FLOAT             __riscv_vlse64_v_f64m4
 #define VSEV_FLOAT              __riscv_vse64_v_f64m4
 #define VSSEV_FLOAT             __riscv_vsse64_v_f64m4
-#define VLSEG_FLOAT             __riscv_vlseg2e64_v_f64m4
-#define VSSEG_FLOAT             __riscv_vsseg2e64_v_f64m4
-#define VLSSEG_FLOAT            __riscv_vlsseg2e64_v_f64m4
-#define VSSSEG_FLOAT            __riscv_vssseg2e64_v_f64m4
+#define VLSEG_FLOAT             __riscv_vlseg2e64_v_f64m4x2
+#define VSSEG_FLOAT             __riscv_vsseg2e64_v_f64m4x2
+#define VLSSEG_FLOAT            __riscv_vlsseg2e64_v_f64m4x2
+#define VSSSEG_FLOAT            __riscv_vssseg2e64_v_f64m4x2
 #define VFMACCVF_FLOAT          __riscv_vfmacc_vf_f64m4
 #define VFMULVF_FLOAT           __riscv_vfmul_vf_f64m4
 #define VFNMSACVF_FLOAT         __riscv_vfnmsac_vf_f64m4
@@ -63,6 +69,7 @@ int CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG inc_y, FLOAT 
     if (n <= 0) return(0);
 
     FLOAT_V_T vt0, vt1, vx0, vx1, vy0, vy1;
+    FLOAT_VX2_T vxx2, vyx2, vtx2;
 
     if (inc_x == 0 && inc_y == 0) {
         BLASLONG i=0;
@@ -93,8 +100,13 @@ int CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG inc_y, FLOAT 
         for (size_t vl; n > 0; n -= vl, x += vl*2, y += vl*2) {
             vl = VSETVL(n);
 
-            VLSEG_FLOAT(&vx0, &vx1, x, vl);
-            VLSEG_FLOAT(&vy0, &vy1, y, vl);
+            vxx2 = VLSEG_FLOAT(x, vl);
+            vyx2 = VLSEG_FLOAT(y, vl);
+
+            vx0 = VGET_VX2(vxx2, 0);
+            vx1 = VGET_VX2(vxx2, 1);
+            vy0 = VGET_VX2(vyx2, 0);
+            vy1 = VGET_VX2(vyx2, 1);
 
             vt0 = VFMULVF_FLOAT(vx0, c, vl);
             vt0 = VFMACCVF_FLOAT(vt0, s, vy0, vl);
@@ -105,8 +117,13 @@ int CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG inc_y, FLOAT 
             vy1 = VFMULVF_FLOAT(vy1, c, vl);
             vy1 = VFNMSACVF_FLOAT(vy1, s, vx1, vl);
 
-            VSSEG_FLOAT(x, vt0, vt1, vl);
-            VSSEG_FLOAT(y, vy0, vy1, vl);
+            vtx2 = VSET_VX2(vtx2, 0, vt0);
+            vtx2 = VSET_VX2(vtx2, 1, vt1);
+            vyx2 = VSET_VX2(vyx2, 0, vy0);
+            vyx2 = VSET_VX2(vyx2, 1, vy1);
+
+            VSSEG_FLOAT(x, vtx2, vl);
+            VSSEG_FLOAT(y, vyx2, vl);
         }
 
     } else if (inc_x == 1){
@@ -115,8 +132,13 @@ int CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG inc_y, FLOAT 
         for (size_t vl; n > 0; n -= vl, x += vl*2, y += vl*inc_y*2) {
             vl = VSETVL(n);
 
-            VLSEG_FLOAT(&vx0, &vx1, x, vl);
-            VLSSEG_FLOAT(&vy0, &vy1, y, stride_y, vl);
+            vxx2 = VLSEG_FLOAT(x, vl);
+            vyx2 = VLSSEG_FLOAT(y, stride_y, vl);
+
+            vx0 = VGET_VX2(vxx2, 0);
+            vx1 = VGET_VX2(vxx2, 1);
+            vy0 = VGET_VX2(vyx2, 0);
+            vy1 = VGET_VX2(vyx2, 1);
 
             vt0 = VFMULVF_FLOAT(vx0, c, vl);
             vt0 = VFMACCVF_FLOAT(vt0, s, vy0, vl);
@@ -127,8 +149,13 @@ int CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG inc_y, FLOAT 
             vy1 = VFMULVF_FLOAT(vy1, c, vl);
             vy1 = VFNMSACVF_FLOAT(vy1, s, vx1, vl);
 
-            VSSEG_FLOAT(x, vt0, vt1, vl);
-            VSSSEG_FLOAT(y, stride_y, vy0, vy1, vl);
+            vtx2 = VSET_VX2(vtx2, 0, vt0);
+            vtx2 = VSET_VX2(vtx2, 1, vt1);
+            vyx2 = VSET_VX2(vyx2, 0, vy0);
+            vyx2 = VSET_VX2(vyx2, 1, vy1);
+
+            VSSEG_FLOAT(x, vtx2, vl);
+            VSSSEG_FLOAT(y, stride_y, vyx2, vl);
         }
 
     } else if (inc_y == 1){
@@ -137,8 +164,13 @@ int CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG inc_y, FLOAT 
         for (size_t vl; n > 0; n -= vl, x += vl*inc_x*2, y += vl*2) {
             vl = VSETVL(n);
 
-            VLSSEG_FLOAT(&vx0, &vx1, x, stride_x, vl);
-            VLSEG_FLOAT(&vy0, &vy1, y, vl);
+            vxx2 = VLSSEG_FLOAT(x, stride_x, vl);
+            vyx2 = VLSEG_FLOAT(y, vl);
+
+            vx0 = VGET_VX2(vxx2, 0);
+            vx1 = VGET_VX2(vxx2, 1);
+            vy0 = VGET_VX2(vyx2, 0);
+            vy1 = VGET_VX2(vyx2, 1);
 
             vt0 = VFMULVF_FLOAT(vx0, c, vl);
             vt0 = VFMACCVF_FLOAT(vt0, s, vy0, vl);
@@ -149,8 +181,13 @@ int CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG inc_y, FLOAT 
             vy1 = VFMULVF_FLOAT(vy1, c, vl);
             vy1 = VFNMSACVF_FLOAT(vy1, s, vx1, vl);
 
-            VSSSEG_FLOAT(x, stride_x, vt0, vt1, vl);
-            VSSEG_FLOAT(y, vy0, vy1, vl);
+            vtx2 = VSET_VX2(vtx2, 0, vt0);
+            vtx2 = VSET_VX2(vtx2, 1, vt1);
+            vyx2 = VSET_VX2(vyx2, 0, vy0);
+            vyx2 = VSET_VX2(vyx2, 1, vy1);
+
+            VSSSEG_FLOAT(x, stride_x, vtx2, vl);
+            VSSEG_FLOAT(y, vyx2, vl);
         }
 
     } else {
@@ -160,8 +197,13 @@ int CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG inc_y, FLOAT 
         for (size_t vl; n > 0; n -= vl, x += vl*inc_x*2, y += vl*inc_y*2) {
             vl = VSETVL(n);
 
-            VLSSEG_FLOAT(&vx0, &vx1, x, stride_x, vl);
-            VLSSEG_FLOAT(&vy0, &vy1, y, stride_y, vl);
+            vxx2 = VLSSEG_FLOAT(x, stride_x, vl);
+            vyx2 = VLSSEG_FLOAT(y, stride_y, vl);
+
+            vx0 = VGET_VX2(vxx2, 0);
+            vx1 = VGET_VX2(vxx2, 1);
+            vy0 = VGET_VX2(vyx2, 0);
+            vy1 = VGET_VX2(vyx2, 1);
 
             vt0 = VFMULVF_FLOAT(vx0, c, vl);
             vt0 = VFMACCVF_FLOAT(vt0, s, vy0, vl);
@@ -172,8 +214,13 @@ int CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG inc_y, FLOAT 
             vy1 = VFMULVF_FLOAT(vy1, c, vl);
             vy1 = VFNMSACVF_FLOAT(vy1, s, vx1, vl);
 
-            VSSSEG_FLOAT(x, stride_x, vt0, vt1, vl);
-            VSSSEG_FLOAT(y, stride_y, vy0, vy1, vl);
+            vtx2 = VSET_VX2(vtx2, 0, vt0);
+            vtx2 = VSET_VX2(vtx2, 1, vt1);
+            vyx2 = VSET_VX2(vyx2, 0, vy0);
+            vyx2 = VSET_VX2(vyx2, 1, vy1);
+
+            VSSSEG_FLOAT(x, stride_x, vtx2, vl);
+            VSSSEG_FLOAT(y, stride_y, vyx2, vl);
         }
     }
 

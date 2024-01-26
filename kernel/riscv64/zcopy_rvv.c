@@ -34,11 +34,11 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define VSEV_FLOAT_M8           __riscv_vse32_v_f32m8
 
 #define VSETVL_M4(n)            __riscv_vsetvl_e32m4(n)
-#define FLOAT_V_T_M4            vfloat32m4_t
-#define VLSEG_FLOAT_M4          __riscv_vlseg2e32_v_f32m4
-#define VSSEG_FLOAT_M4          __riscv_vsseg2e32_v_f32m4
-#define VLSSEG_FLOAT_M4         __riscv_vlsseg2e32_v_f32m4
-#define VSSSEG_FLOAT_M4         __riscv_vssseg2e32_v_f32m4
+#define FLOAT_VX2_T_M4          vfloat32m4x2_t
+#define VLSEG_FLOAT_M4          __riscv_vlseg2e32_v_f32m4x2
+#define VSSEG_FLOAT_M4          __riscv_vsseg2e32_v_f32m4x2
+#define VLSSEG_FLOAT_M4         __riscv_vlsseg2e32_v_f32m4x2
+#define VSSSEG_FLOAT_M4         __riscv_vssseg2e32_v_f32m4x2
 #else
 #define VSETVL_M8(n)            __riscv_vsetvl_e64m8(n)
 #define FLOAT_V_T_M8            vfloat64m8_t
@@ -46,16 +46,16 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define VSEV_FLOAT_M8           __riscv_vse64_v_f64m8
 
 #define VSETVL_M4(n)            __riscv_vsetvl_e64m4(n)
-#define FLOAT_V_T_M4            vfloat64m4_t
-#define VLSEG_FLOAT_M4          __riscv_vlseg2e64_v_f64m4
-#define VSSEG_FLOAT_M4          __riscv_vsseg2e64_v_f64m4
-#define VLSSEG_FLOAT_M4         __riscv_vlsseg2e64_v_f64m4
-#define VSSSEG_FLOAT_M4         __riscv_vssseg2e64_v_f64m4
+#define FLOAT_VX2_T_M4          vfloat64m4x2_t
+#define VLSEG_FLOAT_M4          __riscv_vlseg2e64_v_f64m4x2
+#define VSSEG_FLOAT_M4          __riscv_vsseg2e64_v_f64m4x2
+#define VLSSEG_FLOAT_M4         __riscv_vlsseg2e64_v_f64m4x2
+#define VSSSEG_FLOAT_M4         __riscv_vssseg2e64_v_f64m4x2
 #endif
 
 int CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG inc_y)
 {
-    if(n < 0) return(0);
+    if(n <= 0) return(0);
 
     if(inc_x == 1 && inc_y == 1) {
 
@@ -70,34 +70,34 @@ int CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG inc_y)
 
     }else if (1 == inc_x) {
 
-        FLOAT_V_T_M4 vr, vi;
+        FLOAT_VX2_T_M4 vx2;
         BLASLONG stride_y = inc_y * 2 * sizeof(FLOAT);
 
         for(size_t vl; n > 0; n -= vl, x += vl*2, y += vl*inc_y*2) {
             vl = VSETVL_M4(n);
-            VLSEG_FLOAT_M4(&vr, &vi, x, vl);
-            VSSSEG_FLOAT_M4(y, stride_y, vr, vi, vl);
+            vx2 = VLSEG_FLOAT_M4(x, vl);
+            VSSSEG_FLOAT_M4(y, stride_y, vx2, vl);
         }
     } else if (1 == inc_y) {
 
-        FLOAT_V_T_M4 vr, vi;
+        FLOAT_VX2_T_M4 vx2;
         BLASLONG stride_x = inc_x * 2 * sizeof(FLOAT);
 
         for(size_t vl; n > 0; n -= vl, x += vl*inc_x*2, y += vl*2) {
             vl = VSETVL_M4(n);
-            VLSSEG_FLOAT_M4(&vr, &vi, x, stride_x, vl);
-            VSSEG_FLOAT_M4(y, vr, vi, vl);
+            vx2 = VLSSEG_FLOAT_M4(x, stride_x, vl);
+            VSSEG_FLOAT_M4(y, vx2, vl);
         }
     } else {
 
-        FLOAT_V_T_M4 vr, vi;
+        FLOAT_VX2_T_M4 vx2;
         BLASLONG stride_x = inc_x * 2 * sizeof(FLOAT);
         BLASLONG stride_y = inc_y * 2 * sizeof(FLOAT);
 
         for(size_t vl; n > 0; n -= vl, x += vl*inc_x*2, y += vl*inc_y*2) {
             vl = VSETVL_M4(n);
-            VLSSEG_FLOAT_M4(&vr, &vi, x, stride_x, vl);
-            VSSSEG_FLOAT_M4(y, stride_y, vr, vi, vl);
+            vx2 = VLSSEG_FLOAT_M4(x, stride_x, vl);
+            VSSSEG_FLOAT_M4(y, stride_y, vx2, vl);
         }
     }
 
