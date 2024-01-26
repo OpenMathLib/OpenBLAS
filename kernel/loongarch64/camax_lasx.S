@@ -63,42 +63,60 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     bge $r0, N, .L999
     bge $r0, INCX, .L999
     li.d TEMP, 1
-    li.w I, -1
     slli.d TEMP, TEMP, ZBASE_SHIFT
     slli.d INCX, INCX, ZBASE_SHIFT
-    xvreplgr2vr.w neg1, I
-    xvffint.s.w neg1, neg1
     srai.d I, N, 3
     bne INCX, TEMP, .L20
     bge $r0, I, .L23
     .align 3
 
 .L10:
-    xvld VX0, X, 0 * SIZE
-    xvld VX1, X, 8 * SIZE
-    addi.d I, I, -1
+    xvld VX0, X, 0
+    xvld VX1, X, 32
+#ifdef DOUBLE
+    xvpickev.d x1, VX1, VX0
+    xvpickod.d x2, VX1, VX0
+#else
     xvpickev.w x1, VX1, VX0
     xvpickod.w x2, VX1, VX0
-    xvfmul.s x3, neg1, x1
-    xvfmul.s x4, neg1, x2
-    xvfcmp.clt.s VT0, x1, res0
-    xvfcmp.clt.s VT1, x2, res0
-    xvbitsel.v x1, x1, x3, VT0
-    xvbitsel.v x2, x2, x4, VT1
+#endif
+    XVFSUB x3, res0, x1
+    XVFSUB x4, res0, x2
+    XVFMAX x1, x1, x3
+    XVFMAX x2, x2, x4
+    XVFADD VM1, x1, x2
+    XVFMAX VM0, VM0, VM1
+#ifdef DOUBLE
+    xvld VX0, X, 64
+    xvld VX1, X, 96
+    xvpickev.d x1, VX1, VX0
+    xvpickod.d x2, VX1, VX0
+    XVFSUB x3, res0, x1
+    XVFSUB x4, res0, x2
+    XVFMAX x1, x1, x3
+    XVFMAX x2, x2, x4
+    XVFADD VM1, x1, x2
+    XVFMAX VM0, VM0, VM1
+#endif
+    addi.d I, I, -1
     addi.d X, X, 16 * SIZE
-    xvfadd.s VM1, x1, x2
-    xvfmax.s VM0, VM0, VM1
     blt $r0, I, .L10
     .align 3
 
 .L11:
+#ifdef DOUBLE
+    xvpickve.d x1, VM0, 0
+    xvpickve.d x2, VM0, 1
+    XVFMAX VM0, x1, x2
+#else
     xvpickve.w x1, VM0, 0
     xvpickve.w x2, VM0, 1
     xvpickve.w x3, VM0, 2
     xvpickve.w x4, VM0, 3
-    xvfmax.s VM1, x1, x2
-    xvfmax.s VM0, x3, x4
-    xvfmax.s VM0, VM0, VM1
+    XVFMAX VM0, x1, x2
+    XVFMAX VM1, x3, x4
+    XVFMAX VM0, VM0, VM1
+#endif
     b .L23
     .align 3
 
@@ -107,66 +125,66 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     .align 3
 
 .L21:
-    fld.s t1, X, 0 * SIZE
-    fld.s t2, X, 1 * SIZE
+    LD t1, X, 0 * SIZE
+    LD t2, X, 1 * SIZE
     add.d X, X, INCX
-    fld.s t3, X, 0 * SIZE
-    fld.s t4, X, 1 * SIZE
+    LD t3, X, 0 * SIZE
+    LD t4, X, 1 * SIZE
     add.d X, X, INCX
-    fabs.s t1, t1
-    fabs.s t2, t2
-    fabs.s t3, t3
-    fabs.s t4, t4
-    fadd.s t1, t1, t2
-    fadd.s t3, t3, t4
-    fmax.s s1, t1, t3
-    fld.s t1, X, 0 * SIZE
-    fld.s t2, X, 1 * SIZE
+    FABS t1, t1
+    FABS t2, t2
+    FABS t3, t3
+    FABS t4, t4
+    ADD t1, t1, t2
+    ADD t3, t3, t4
+    FMAX s1, t1, t3
+    LD t1, X, 0 * SIZE
+    LD t2, X, 1 * SIZE
     add.d X, X, INCX
-    fld.s t3, X, 0 * SIZE
-    fld.s t4, X, 1 * SIZE
+    LD t3, X, 0 * SIZE
+    LD t4, X, 1 * SIZE
     add.d X, X, INCX
-    fabs.s t1, t1
-    fabs.s t2, t2
-    fabs.s t3, t3
-    fabs.s t4, t4
-    fadd.s t1, t1, t2
-    fadd.s t3, t3, t4
-    fmax.s s1, t1, t3
-    fld.s t1, X, 0 * SIZE
-    fld.s t2, X, 1 * SIZE
+    FABS t1, t1
+    FABS t2, t2
+    FABS t3, t3
+    FABS t4, t4
+    ADD t1, t1, t2
+    ADD t3, t3, t4
+    FMAX s1, t1, t3
+    LD t1, X, 0 * SIZE
+    LD t2, X, 1 * SIZE
     add.d X, X, INCX
-    fld.s t3, X, 0 * SIZE
-    fld.s t4, X, 1 * SIZE
+    LD t3, X, 0 * SIZE
+    LD t4, X, 1 * SIZE
     add.d X, X, INCX
-    fabs.s t1, t1
-    fabs.s t2, t2
-    fabs.s t3, t3
-    fabs.s t4, t4
+    FABS t1, t1
+    FABS t2, t2
+    FABS t3, t3
+    FABS t4, t4
     addi.d I, I, -1
-    fadd.s t1, t1, t2
-    fadd.s t3, t3, t4
-    fmax.s s3, t1, t3
-    fld.s t1, X, 0 * SIZE
-    fld.s t2, X, 1 * SIZE
+    ADD t1, t1, t2
+    ADD t3, t3, t4
+    FMAX s3, t1, t3
+    LD t1, X, 0 * SIZE
+    LD t2, X, 1 * SIZE
     add.d X, X, INCX
-    fld.s t3, X, 0 * SIZE
-    fld.s t4, X, 1 * SIZE
+    LD t3, X, 0 * SIZE
+    LD t4, X, 1 * SIZE
     add.d X, X, INCX
-    fabs.s t1, t1
-    fabs.s t2, t2
-    fabs.s t3, t3
-    fabs.s t4, t4
-    fadd.s t1, t1, t2
-    fadd.s t3, t3, t4
-    fmax.s s4, t1, t3
+    FABS t1, t1
+    FABS t2, t2
+    FABS t3, t3
+    FABS t4, t4
+    ADD t1, t1, t2
+    ADD t3, t3, t4
+    FMAX s4, t1, t3
     blt $r0, I, .L21
     .align 3
 
 .L22:
-    fmax.s s1, s1, s2
-    fmax.s s3, s3, s4
-    fmax.s s1, s1, s3
+    FMAX s1, s1, s2
+    FMAX s3, s3, s4
+    FMAX s1, s1, s3
     .align 3
 
 .L23: //N<8
@@ -182,12 +200,12 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     FABS a1, a1
     ADD a0, a0, a1
     add.d  X, X, INCX
-    fmax.s s1, a0, s1
+    FMAX s1, a0, s1
     blt $r0, I, .L24
     .align 3
 
 .L999:
-    fmov.s $f0, $f22
+    MOV $f0, $f22
     jirl $r0, $r1, 0x0
     .align 3
 
