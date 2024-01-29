@@ -27,25 +27,25 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "common.h"
 #if !defined(DOUBLE)
-#define VSETVL(n) vsetvl_e32m4(n)
-#define VSETVL_MAX vsetvlmax_e32m1()
+#define VSETVL(n) RISCV_RVV(vsetvl_e32m4)(n)
+#define VSETVL_MAX RISCV_RVV(vsetvlmax_e32m1)()
 #define FLOAT_V_T vfloat32m4_t
-#define VLSEV_FLOAT vlse32_v_f32m4
-#define VSSEV_FLOAT vsse32_v_f32m4
-#define VFMACCVF_FLOAT vfmacc_vf_f32m4
-#define VFMULVF_FLOAT vfmul_vf_f32m4
-#define VFNMSACVF_FLOAT vfnmsac_vf_f32m4
-#define VFMVVF_FLOAT vfmv_v_f_f32m4
+#define VLSEV_FLOAT RISCV_RVV(vlse32_v_f32m4)
+#define VSSEV_FLOAT RISCV_RVV(vsse32_v_f32m4)
+#define VFMACCVF_FLOAT RISCV_RVV(vfmacc_vf_f32m4)
+#define VFMULVF_FLOAT RISCV_RVV(vfmul_vf_f32m4)
+#define VFNMSACVF_FLOAT RISCV_RVV(vfnmsac_vf_f32m4)
+#define VFMVVF_FLOAT RISCV_RVV(vfmv_v_f_f32m4)
 #else
-#define VSETVL(n) vsetvl_e64m4(n)
-#define VSETVL_MAX vsetvlmax_e64m1()
+#define VSETVL(n) RISCV_RVV(vsetvl_e64m4)(n)
+#define VSETVL_MAX RISCV_RVV(vsetvlmax_e64m1)()
 #define FLOAT_V_T vfloat64m4_t
-#define VLSEV_FLOAT vlse64_v_f64m4
-#define VSSEV_FLOAT vsse64_v_f64m4
-#define VFMACCVF_FLOAT vfmacc_vf_f64m4
-#define VFMULVF_FLOAT vfmul_vf_f64m4
-#define VFNMSACVF_FLOAT vfnmsac_vf_f64m4
-#define VFMVVF_FLOAT vfmv_v_f_f64m4
+#define VLSEV_FLOAT RISCV_RVV(vlse64_v_f64m4)
+#define VSSEV_FLOAT RISCV_RVV(vsse64_v_f64m4)
+#define VFMACCVF_FLOAT RISCV_RVV(vfmacc_vf_f64m4)
+#define VFMULVF_FLOAT RISCV_RVV(vfmul_vf_f64m4)
+#define VFNMSACVF_FLOAT RISCV_RVV(vfnmsac_vf_f64m4)
+#define VFMVVF_FLOAT RISCV_RVV(vfmv_v_f_f64m4)
 #endif
 
 int CNAME(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, FLOAT da_r,FLOAT da_i, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG inc_y, FLOAT *dummy, BLASLONG dummy2)
@@ -80,7 +80,6 @@ int CNAME(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, FLOAT da_r,FLOAT da_i, F
                         j += gvl;
                         ix += inc_x * 2 * gvl;
                 }
-#if 0
         }else if(da_r == 0.0){
                 gvl = VSETVL(n);
                 BLASLONG stride_x = inc_x * 2 * sizeof(FLOAT);
@@ -98,7 +97,6 @@ int CNAME(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, FLOAT da_r,FLOAT da_i, F
                         j += gvl;
                         ix += inc_xv;
                 }
-#endif
                 if(j < n){
                         gvl = VSETVL(n-j);
                         v0 = VLSEV_FLOAT(&x[ix], stride_x, gvl);

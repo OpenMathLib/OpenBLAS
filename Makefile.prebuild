@@ -57,6 +57,21 @@ endif
 
 ifeq ($(TARGET), CK860FV)
 TARGET_FLAGS = -march=ck860v -mcpu=ck860fv -mfdivdu -mhard-float
+
+ifeq ($(TARGET), x280)
+TARGET_FLAGS = -march=rv64imafdcv_zba_zbb_zfh -mabi=lp64d
+endif
+
+ifeq ($(TARGET), RISCV64_ZVL256B)
+TARGET_FLAGS = -march=rv64imafdcv -mabi=lp64d
+endif
+
+ifeq ($(TARGET), RISCV64_ZVL128B)
+TARGET_FLAGS = -march=rv64imafdcv -mabi=lp64d
+endif
+
+ifeq ($(TARGET), RISCV64_GENERIC)
+TARGET_FLAGS = -march=rv64imafdc -mabi=lp64d
 endif
 
 all: getarch_2nd

@@ -198,6 +198,11 @@ Please read `GotoBLAS_01Readme.txt` for older CPU models already supported by th
   ```
   (also known to work on C906 as long as you use only single-precision functions - its instruction set support appears to be incomplete in double precision)
 
+- **x280**: Level-3 BLAS and Level-1,2 are optimized by RISC-V Vector extension 1.0.
+  ```sh
+  make HOSTCC=gcc TARGET=x280 NUM_THREADS=8 CC=riscv64-unknown-linux-gnu-clang FC=riscv64-unknown-linux-gnu-gfortran
+  ```
+
 ### Support for multiple targets in a single library
 
 OpenBLAS can be built for multiple targets with runtime detection of the target cpu by specifiying `DYNAMIC_ARCH=1` in Makefile.rule, on the gmake command line or as `-DDYNAMIC_ARCH=TRUE` in cmake.

@@ -25,25 +25,37 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
 USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
 
+
 #include "common.h"
 
-#if !defined(DOUBLE)
-#define VSETVL(n) vsetvl_e32m4(n)
-#define FLOAT_V_T vfloat32m4_t
-#define VLEV_FLOAT vle32_v_f32m4
-#define VLSEV_FLOAT vlse32_v_f32m4
-#define VSEV_FLOAT vse32_v_f32m4
-#define VSSEV_FLOAT vsse32_v_f32m4
-#define VFMACCVF_FLOAT vfmacc_vf_f32m4
+#ifdef RISCV64_ZVL256B
+#       define LMUL m2
+#       if defined(DOUBLE)
+#               define ELEN 64
+#       else
+#               define ELEN 32
+#       endif
 #else
-#define VSETVL(n) vsetvl_e64m4(n)
-#define FLOAT_V_T vfloat64m4_t
-#define VLEV_FLOAT vle64_v_f64m4
-#define VLSEV_FLOAT vlse64_v_f64m4
-#define VSEV_FLOAT vse64_v_f64m4
-#define VSSEV_FLOAT vsse64_v_f64m4
-#define VFMACCVF_FLOAT vfmacc_vf_f64m4
+#       define LMUL m4
+#       if defined(DOUBLE)
+#               define ELEN 64
+#       else
+#               define ELEN 32
+#       endif
 #endif
+
+#define _
+#define JOIN2_X(x, y) x ## y
+#define JOIN2(x, y) JOIN2_X(x, y)
+#define JOIN(v, w, x, y, z) JOIN2( JOIN2( JOIN2( JOIN2( v, w ), x), y), z)
+
+#define VSETVL          JOIN(RISCV_RVV(vsetvl),    _e,     ELEN,   LMUL,   _)
+#define FLOAT_V_T       JOIN(vfloat,    	ELEN,   LMUL,   _t,     _)
+#define VLEV_FLOAT      JOIN(RISCV_RVV(vle),       ELEN,   _v_f,   ELEN,   LMUL)
+#define VLSEV_FLOAT     JOIN(RISCV_RVV(vlse),      ELEN,   _v_f,   ELEN,   LMUL)
+#define VSEV_FLOAT      JOIN(RISCV_RVV(vse),       ELEN,   _v_f,   ELEN,   LMUL)
+#define VSSEV_FLOAT     JOIN(RISCV_RVV(vsse),      ELEN,   _v_f,   ELEN,   LMUL)
+#define VFMACCVF_FLOAT  JOIN(RISCV_RVV(vfmacc),    _vf_f, 	ELEN,   LMUL,   _)
 
 int CNAME(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, FLOAT da, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG inc_y, FLOAT *dummy, BLASLONG dummy2)
 {

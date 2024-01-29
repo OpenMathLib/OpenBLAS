@@ -26,207 +26,189 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
 
 #include "common.h"
-#if !defined(DOUBLE)
-#define VSETVL(n) vsetvl_e32m4(n)
-#define VSETVL_MAX vsetvlmax_e32m1()
-#define FLOAT_V_T vfloat32m4_t
-#define VFMVFS_FLOATM4 vfmv_f_s_f32m4_f32
-#define FLOAT_V_T_M1 vfloat32m1_t
-#define VFMVFS_FLOAT vfmv_f_s_f32m1_f32
-#define VLEV_FLOAT vle32_v_f32m4
-#define VLSEV_FLOAT vlse32_v_f32m4
-#define VFREDSUM_FLOAT vfredusum_vs_f32m4_f32m1
-#define VFMACCVV_FLOAT vfmacc_vv_f32m4
-#define VFMVVF_FLOAT vfmv_v_f_f32m4
-#define VFMVVF_FLOAT_M1 vfmv_v_f_f32m1
-#define VFDOTVV_FLOAT vfdot_vv_f32m4
-#define ABS fabsf
-#define MASK_T vbool8_t
-#define VFRSUBVF_MASK_FLOAT vfrsub_vf_f32m4_m
-#define VMFGTVF_FLOAT vmfgt_vf_f32m4_b8
-#define VMFIRSTM vmfirst_m_b8
-#define VFDIVVF_FLOAT vfdiv_vf_f32m4
-#define VMFLTVF_FLOAT vmflt_vf_f32m4_b8
-#define VFREDMAXVS_FLOAT vfredmax_vs_f32m4_f32m1
+
+#ifdef RISCV64_ZVL256B
+#       define LMUL m1
+#       if defined(DOUBLE)
+#               define ELEN 64
+#               define MLEN 64
+#       else
+#               define ELEN 32
+#               define MLEN 32
+#       endif
 #else
-#define VSETVL(n) vsetvl_e64m4(n)
-#define VSETVL_MAX vsetvlmax_e64m1()
-#define FLOAT_V_T vfloat64m4_t
-#define VFMVFS_FLOATM4 vfmv_f_s_f64m4_f64
-#define FLOAT_V_T_M1 vfloat64m1_t
-#define VFMVFS_FLOAT vfmv_f_s_f64m1_f64
-#define VLEV_FLOAT vle64_v_f64m4
-#define VLSEV_FLOAT vlse64_v_f64m4
-#define VFREDSUM_FLOAT vfredusum_vs_f64m4_f64m1
-#define VFMACCVV_FLOAT vfmacc_vv_f64m4
-#define VFMVVF_FLOAT vfmv_v_f_f64m4
-#define VFMVVF_FLOAT_M1 vfmv_v_f_f64m1
-#define VFDOTVV_FLOAT vfdot_vv_f64m4
-#define ABS fabs
-#define MASK_T vbool16_t
-#define VFRSUBVF_MASK_FLOAT vfrsub_vf_f64m4_m
-#define VMFGTVF_FLOAT vmfgt_vf_f64m4_b16
-#define VMFIRSTM vmfirst_m_b16
-#define VFDIVVF_FLOAT vfdiv_vf_f64m4
-#define VMFLTVF_FLOAT vmflt_vf_f64m4_b16
-#define VFREDMAXVS_FLOAT vfredmax_vs_f64m4_f64m1
+#       define LMUL m4
+#       if defined(DOUBLE)
+#               define ELEN 64
+#               define MLEN 16
+#       else
+#               define ELEN 32
+#               define MLEN 8
+#       endif
 #endif
+
+#define _
+#define JOIN2_X(x, y) x ## y
+#define JOIN2(x, y) JOIN2_X(x, y)
+#define JOIN(v, w, x, y, z) JOIN2( JOIN2( JOIN2( JOIN2( v, w ), x), y), z)
+
+#define VSETVL          JOIN(RISCV_RVV(vsetvl),    _e,     ELEN,   LMUL,   _)
+#define FLOAT_V_T       JOIN(vfloat,            ELEN,   LMUL,   _t,     _)
+#define FLOAT_V_T_M1    JOIN(vfloat,            ELEN,   m1,     _t,     _)
+#define VLEV_FLOAT      JOIN(RISCV_RVV(vle),       ELEN,   _v_f,   ELEN,   LMUL)
+#define VLSEV_FLOAT     JOIN(RISCV_RVV(vlse),      ELEN,   _v_f,   ELEN,   LMUL)
+#define VFMVVF_FLOAT    JOIN(RISCV_RVV(vfmv),      _v_f_f, ELEN,   LMUL,   _)
+#define VFMVSF_FLOAT    JOIN(RISCV_RVV(vfmv),      _s_f_f, ELEN,   LMUL,   _)
+#define VFMVVF_FLOAT_M1 JOIN(RISCV_RVV(vfmv),      _v_f_f, ELEN,   m1,     _)
+#define MASK_T          JOIN(vbool,             MLEN,   _t,     _,      _)
+#define VFABS           JOIN(RISCV_RVV(vfabs),     _v_f,   ELEN,   LMUL,   _)
+#define VMFNE           JOIN(RISCV_RVV(vmfne_vf_f),ELEN,   LMUL,   _b,     MLEN)
+#define VMFGT           JOIN(RISCV_RVV(vmfgt_vv_f),ELEN,   LMUL,   _b,     MLEN)
+#define VMFEQ           JOIN(RISCV_RVV(vmfeq_vf_f),ELEN,   LMUL,   _b,     MLEN)
+#define VCPOP           JOIN(RISCV_RVV(vcpop),     _m_b,   MLEN,   _,      _)
+#ifdef RISCV_0p10_INTRINSICS
+#define VFDIV_M         JOIN(RISCV_RVV(vfdiv),     _vv_f,  ELEN,   LMUL,   _m)
+#define VFMUL_M         JOIN(RISCV_RVV(vfmul),     _vv_f,  ELEN,   LMUL,   _m)
+#define VFMACC_M        JOIN(RISCV_RVV(vfmacc),    _vv_f,  ELEN,   LMUL,   _m)
+#define VMERGE(a, b, mask, gvl)       JOIN(RISCV_RVV(vmerge),    _vvm_f, ELEN,   LMUL,   _)(mask, a, b, gvl)
+#else
+#define VFDIV_M         JOIN(RISCV_RVV(vfdiv),     _vv_f,  ELEN,   LMUL,   _mu)
+#define VFMUL_M         JOIN(RISCV_RVV(vfmul),     _vv_f,  ELEN,   LMUL,   _mu)
+#define VFMACC_M        JOIN(RISCV_RVV(vfmacc),    _vv_f,  ELEN,   LMUL,   _mu)
+#define VMERGE          JOIN(RISCV_RVV(vmerge),    _vvm_f, ELEN,   LMUL,   _)
+#endif
+#define VFIRST          JOIN(RISCV_RVV(vfirst),    _m_b,   MLEN,   _,      _)
+#define VRGATHER        JOIN(RISCV_RVV(vrgather),  _vx_f,  ELEN,   LMUL,   _)
+#define VFDIV           JOIN(RISCV_RVV(vfdiv),     _vv_f,  ELEN,   LMUL,   _)
+#define VFMUL           JOIN(RISCV_RVV(vfmul),     _vv_f,  ELEN,   LMUL,   _)
+#define VFMACC          JOIN(RISCV_RVV(vfmacc),    _vv_f,  ELEN,   LMUL,   _)
+#define VMSBF           JOIN(RISCV_RVV(vmsbf),     _m_b,   MLEN,   _,      _)
+#define VMSOF           JOIN(RISCV_RVV(vmsof),     _m_b,   MLEN,   _,      _)
+#define VMAND           JOIN(RISCV_RVV(vmand),     _mm_b,  MLEN,   _,      _)
+#define VMANDN          JOIN(RISCV_RVV(vmandn),    _mm_b,  MLEN,   _,      _)
+
+#define VSEV_FLOAT      JOIN(RISCV_RVV(vse),       ELEN,   _v_f,   ELEN,   LMUL)
+
+#if defined(DOUBLE)
+#define ABS fabs
+#else
+#define ABS fabsf
+#endif
+
+#define EXTRACT_FLOAT0_V(v) JOIN(RISCV_RVV(vfmv_f_s_f), ELEN, LMUL, _f, ELEN)(v)
+
+//#define DUMP( label, v0, gvl )
+#define DUMP( label, v0, gvl ) do{ FLOAT x[16]; VSEV_FLOAT( x, v0, gvl ); printf ("%s(%d): %s [ ", __FILE__, __LINE__, label); for( int xxx = 0; xxx < gvl; ++xxx ) { printf("%f, ", x[xxx]); } printf(" ]\n"); } while(0)
 
 FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x)
 {
-	BLASLONG i=0, j=0;
+	BLASLONG i=0;
 
-	if ( n < 0 )  return(0.0);
+	if (n <= 0 || inc_x <= 0) return(0.0);
         if(n == 1) return (ABS(x[0]));
 
-        FLOAT_V_T vr, v0, v_zero;
         unsigned int gvl = 0;
-        FLOAT_V_T_M1 v_res, v_z0;
-        gvl = VSETVL_MAX;
-        v_res = VFMVVF_FLOAT_M1(0, gvl);
-        v_z0 = VFMVVF_FLOAT_M1(0, gvl);
 
-        FLOAT scale = 0.0, ssq = 0.0;
-        MASK_T mask;
-        BLASLONG index = 0;
-        if(inc_x == 1){
-                gvl = VSETVL(n);
-                vr = VFMVVF_FLOAT(0, gvl);
-                v_zero = VFMVVF_FLOAT(0, gvl);
-                for(i=0,j=0; i<n/gvl; i++){
-                        v0 = VLEV_FLOAT(&x[j], gvl);
-                        //fabs(vector)
-                        mask = VMFLTVF_FLOAT(v0, 0, gvl);
-                        v0 = VFRSUBVF_MASK_FLOAT(mask, v0, v0, 0, gvl);
-                        //if scale change
-                        mask = VMFGTVF_FLOAT(v0, scale, gvl);
-                        index = VMFIRSTM(mask, gvl);
-                        if(index == -1){//no elements greater than scale
-                                if(scale != 0.0){
-                                        v0 = VFDIVVF_FLOAT(v0, scale, gvl);
-                                        vr = VFMACCVV_FLOAT(vr, v0, v0, gvl);
-                                }
-                        }else{//found greater element
-                                //ssq in vector vr: vr[0]
-                                v_res = VFREDSUM_FLOAT(v_res, vr, v_z0, gvl);
-                                //total ssq before current vector
-                                ssq += VFMVFS_FLOAT(v_res);
-                                //find max
-                                v_res = VFREDMAXVS_FLOAT(v_res, v0, v_z0, gvl);
-                                //update ssq before max_index
-                                ssq = ssq * (scale/VFMVFS_FLOAT(v_res))*(scale/VFMVFS_FLOAT(v_res));
-                                //update scale
-                                scale = VFMVFS_FLOAT(v_res);
-                                //ssq in vector vr
-                                v0 = VFDIVVF_FLOAT(v0, scale, gvl);
-                                vr = VFMACCVV_FLOAT(v_zero, v0, v0, gvl);
-                        }
-                        j += gvl;
-                }
-                //ssq in vector vr: vr[0]
-                v_res = VFREDSUM_FLOAT(v_res, vr, v_z0, gvl);
-                //total ssq now
-                ssq += VFMVFS_FLOAT(v_res);
+        MASK_T nonzero_mask;
+        MASK_T scale_mask;
 
-                //tail
-                if(j < n){
-                        gvl = VSETVL(n-j);
-                        v0 = VLEV_FLOAT(&x[j], gvl);
-                        //fabs(vector)
-                        mask = VMFLTVF_FLOAT(v0, 0, gvl);
-                        v0 = VFRSUBVF_MASK_FLOAT(mask, v0, v0, 0, gvl);
-                        //if scale change
-                        mask = VMFGTVF_FLOAT(v0, scale, gvl);
-                        index = VMFIRSTM(mask, gvl);
-                        if(index == -1){//no elements greater than scale
-                                if(scale != 0.0)
-                                        v0 = VFDIVVF_FLOAT(v0, scale, gvl);
-                        }else{//found greater element
-                                //find max
-                                v_res = VFREDMAXVS_FLOAT(v_res, v0, v_z0, gvl);
-                                //update ssq before max_index
-                                ssq = ssq * (scale/VFMVFS_FLOAT(v_res))*(scale/VFMVFS_FLOAT(v_res));
-                                //update scale
-                                scale = VFMVFS_FLOAT(v_res);
-                                v0 = VFDIVVF_FLOAT(v0, scale, gvl);
-                        }
-                        vr = VFMACCVV_FLOAT(v_zero, v0, v0, gvl);
-                        //ssq in vector vr: vr[0]
-                        v_res = VFREDSUM_FLOAT(v_res, vr, v_z0, gvl);
-                        //total ssq now
-                        ssq += VFMVFS_FLOAT(v_res);
-                }
-        }else{
-                gvl = VSETVL(n);
-                vr = VFMVVF_FLOAT(0, gvl);
-                v_zero = VFMVVF_FLOAT(0, gvl);
-                unsigned int stride_x = inc_x * sizeof(FLOAT);
-                int idx = 0, inc_v = inc_x * gvl;
-                for(i=0,j=0; i<n/gvl; i++){
-                        v0 = VLSEV_FLOAT(&x[idx], stride_x, gvl);
-                        //fabs(vector)
-                        mask = VMFLTVF_FLOAT(v0, 0, gvl);
-                        v0 = VFRSUBVF_MASK_FLOAT(mask, v0, v0, 0, gvl);
-                        //if scale change
-                        mask = VMFGTVF_FLOAT(v0, scale, gvl);
-                        index = VMFIRSTM(mask, gvl);
-                        if(index == -1){//no elements greater than scale
-                                if(scale != 0.0){
-                                        v0 = VFDIVVF_FLOAT(v0, scale, gvl);
-                                        vr = VFMACCVV_FLOAT(vr, v0, v0, gvl);
-                                }
-                        }else{//found greater element
-                                //ssq in vector vr: vr[0]
-                                v_res = VFREDSUM_FLOAT(v_res, vr, v_z0, gvl);
-                                //total ssq before current vector
-                                ssq += VFMVFS_FLOAT(v_res);
-                                //find max
-                                v_res = VFREDMAXVS_FLOAT(v_res, v0, v_z0, gvl);
-                                //update ssq before max_index
-                                ssq = ssq * (scale/VFMVFS_FLOAT(v_res))*(scale/VFMVFS_FLOAT(v_res));
-                                //update scale
-                                scale = VFMVFS_FLOAT(v_res);
-                                //ssq in vector vr
-                                v0 = VFDIVVF_FLOAT(v0, scale, gvl);
-                                vr = VFMACCVV_FLOAT(v_zero, v0, v0, gvl);
-                        }
-                        j += gvl;
-                        idx += inc_v;
-                }
-                //ssq in vector vr: vr[0]
-                v_res = VFREDSUM_FLOAT(v_res, vr, v_z0, gvl);
-                //total ssq now
-                ssq += VFMVFS_FLOAT(v_res);
+        gvl = VSETVL(n);
+        FLOAT_V_T v0;
+        FLOAT_V_T v_ssq = VFMVVF_FLOAT(0, gvl);
+        FLOAT_V_T v_scale = VFMVVF_FLOAT(0, gvl);
 
-                //tail
-                if(j < n){
-                        gvl = VSETVL(n-j);
-                        v0 = VLSEV_FLOAT(&x[idx], stride_x, gvl);
-                        //fabs(vector)
-                        mask = VMFLTVF_FLOAT(v0, 0, gvl);
-                        v0 = VFRSUBVF_MASK_FLOAT(mask, v0, v0, 0, gvl);
-                        //if scale change
-                        mask = VMFGTVF_FLOAT(v0, scale, gvl);
-                        index = VMFIRSTM(mask, gvl);
-                        if(index == -1){//no elements greater than scale
-                                if(scale != 0.0)
-                                        v0 = VFDIVVF_FLOAT(v0, scale, gvl);
-                        }else{//found greater element
-                                //find max
-                                v_res = VFREDMAXVS_FLOAT(v_res, v0, v_z0, gvl);
-                                //update ssq before max_index
-                                ssq = ssq * (scale/VFMVFS_FLOAT(v_res))*(scale/VFMVFS_FLOAT(v_res));
-                                //update scale
-                                scale = VFMVFS_FLOATM4(vr);
-                                v0 = VFDIVVF_FLOAT(v0, scale, gvl);
+        FLOAT scale = 0;
+        FLOAT ssq = 0;
+        unsigned int stride_x = inc_x * sizeof(FLOAT);
+        int idx = 0;
+
+        if( n >= gvl ) // don't pay overheads if we're not doing useful work
+        {
+                for(i=0; i<n/gvl; i++){
+                        v0 = VLSEV_FLOAT( &x[idx], stride_x, gvl );
+                        nonzero_mask = VMFNE( v0, 0, gvl );
+                        v0 = VFABS( v0, gvl );
+                        scale_mask = VMFGT( v0, v_scale, gvl );
+
+                        // assume scale changes are relatively infrequent
+
+                        // unclear if the vcpop+branch is actually a win
+                        // since the operations being skipped are predicated anyway
+                        // need profiling to confirm
+                        if( VCPOP(scale_mask, gvl) ) 
+                        {
+                                v_scale = VFDIV_M( scale_mask, v_scale, v_scale, v0, gvl );
+                                v_scale = VFMUL_M( scale_mask, v_scale, v_scale, v_scale, gvl );
+                                v_ssq = VFMUL_M( scale_mask, v_ssq, v_ssq, v_scale, gvl );
+                                v_scale = VMERGE( v_scale, v0, scale_mask, gvl );
                         }
-                        vr = VFMACCVV_FLOAT(v_zero, v0, v0, gvl);
-                        //ssq in vector vr: vr[0]
-                        v_res = VFREDSUM_FLOAT(v_res, vr, v_z0, gvl);
-                        //total ssq now
-                        ssq += VFMVFS_FLOAT(v_res);
+                        v0 = VFDIV_M( nonzero_mask, v0, v0, v_scale, gvl );
+                        v_ssq = VFMACC_M( nonzero_mask, v_ssq, v0, v0, gvl );
+                        idx += inc_x * gvl;
+                }
+
+                // we have gvl elements which we accumulated independently, with independent scales
+                // we need to combine these
+                // naive sort so we process small values first to avoid losing information
+                // could use vector sort extensions where available, but we're dealing with gvl elts at most
+
+                FLOAT * out_ssq = alloca(gvl*sizeof(FLOAT));
+                FLOAT * out_scale = alloca(gvl*sizeof(FLOAT));
+                VSEV_FLOAT( out_ssq, v_ssq, gvl );
+                VSEV_FLOAT( out_scale, v_scale, gvl );
+                for( int a = 0; a < (gvl-1); ++a )
+                {
+                        int smallest = a;
+                        for( size_t b = a+1; b < gvl; ++b )
+                                if( out_scale[b] < out_scale[smallest] )
+                                        smallest = b;
+                        if( smallest != a )
+                        {
+                                FLOAT tmp1 = out_ssq[a];
+                                FLOAT tmp2 = out_scale[a];
+                                out_ssq[a] = out_ssq[smallest];
+                                out_scale[a] = out_scale[smallest];
+                                out_ssq[smallest] = tmp1;
+                                out_scale[smallest] = tmp2;
+                        }
+                }
+
+                int a = 0;
+                while( a<gvl && out_scale[a] == 0 )
+                        ++a;
+
+                if( a < gvl ) 
+                {
+                        ssq = out_ssq[a];
+                        scale = out_scale[a];
+                        ++a;
+                        for( ; a < gvl; ++a ) 
+                        {
+                                ssq = ssq * ( scale / out_scale[a] ) * ( scale / out_scale[a] ) + out_ssq[a];
+                                scale = out_scale[a];
+                        }
                 }
         }
+
+        //finish any tail using scalar ops
+        i*=gvl*inc_x;
+        n*=inc_x;
+        while(i < n){
+                if ( x[i] != 0.0 ){
+                        FLOAT absxi = ABS( x[i] );
+                        if ( scale < absxi ){
+                                ssq = 1 + ssq * ( scale / absxi ) * ( scale / absxi );
+                                scale = absxi ;
+                        }
+                        else{
+                                ssq += ( absxi/scale ) * ( absxi/scale );
+                        }
+
+                }
+
+                i += inc_x;
+        }
+
 	return(scale * sqrt(ssq));
 }
 
