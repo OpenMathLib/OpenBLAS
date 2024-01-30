@@ -14,10 +14,12 @@ ZSCALKERNEL  = cscal_lsx.S
 SAMAXKERNEL =  amax_lsx.S
 DAMAXKERNEL =  amax_lsx.S
 CAMAXKERNEL =  camax_lsx.S
+ZAMAXKERNEL =  camax_lsx.S
 
 SAMINKERNEL =  amin_lsx.S
 DAMINKERNEL =  amin_lsx.S
 CAMINKERNEL =  camin_lsx.S
+ZAMINKERNEL =  camin_lsx.S
 
 SMAXKERNEL  =  max_lsx.S
 DMAXKERNEL  =  max_lsx.S
