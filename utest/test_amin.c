@@ -34,54 +34,56 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "openblas_utest.h"
 
 #ifdef BUILD_SINGLE
-CTEST(amax, samax){
-  blasint N=3, inc=1;
-  float te_max=0.0, tr_max=0.0;
-  float x[]={-1.1, 2.2, -3.3};
+CTEST(amin, samin){
+  blasint N = 3, inc = 1;
+  float te_min = 0.0, tr_min = 0.0;
+  float x[] = { -1.1, 2.2, -3.3, 4.4, -5.5, 6.6, -7.7, 8.8,
+	        -9.9 };
 
-  te_max=BLASFUNC(samax)(&N, x, &inc);
-  tr_max=3.3;
+  te_min = BLASFUNC(samin)(&N, x, &inc);
+  tr_min = 1.1;
 
-  ASSERT_DBL_NEAR_TOL((double)(tr_max), (double)(te_max), SINGLE_EPS);
+  ASSERT_DBL_NEAR_TOL((double)(tr_min), (double)(te_min), SINGLE_EPS);
 }
 #endif
 #ifdef BUILD_DOUBLE
-CTEST(amax, damax){
-  blasint N=3, inc=1;
-  double te_max=0.0, tr_max=0.0;
-  double x[]={-1.1, 2.2, -3.3};
+CTEST(amin, damin){
+  blasint N = 3, inc = 1;
+  double te_min = 0.0, tr_min = 0.0;
+  double x[] = { -1.1, 2.2, -3.3, 4.4, -5.5, 6.6, -7.7, 8.8,
+	         -9.9 };
 
-  te_max=BLASFUNC(damax)(&N, x, &inc);
-  tr_max=3.3;
+  te_min = BLASFUNC(damin)(&N, x, &inc);
+  tr_min = 1.1;
 
-  ASSERT_DBL_NEAR_TOL((double)(tr_max), (double)(te_max), DOUBLE_EPS);
+  ASSERT_DBL_NEAR_TOL((double)(tr_min), (double)(te_min), DOUBLE_EPS);
 }
 #endif
 #ifdef BUILD_COMPLEX
-CTEST(amax, scamax){
+CTEST(amin, scamin){
   blasint N = 9, inc = 1;
-  float te_max = 0.0, tr_max = 0.0;
+  float te_min = 0.0, tr_min = 0.0;
   float x[] = { -1.1, 2.2, -3.3, 4.4, -5.5, 6.6, -7.7, 8.8,
 	        -9.9, 10.10, -1.1, 2.2, -3.3, 4.4, -5.5, 6.6,
 		-7.7, 8.8 };
 
-  te_max = BLASFUNC(scamax)(&N, x, &inc);
-  tr_max = 20.0;
+  te_min = BLASFUNC(scamin)(&N, x, &inc);
+  tr_min = 3.3;
 
-  ASSERT_DBL_NEAR_TOL((double)(tr_max), (double)(te_max), SINGLE_EPS);
+  ASSERT_DBL_NEAR_TOL((double)(tr_min), (double)(te_min), SINGLE_EPS);
 }
 #endif
 #ifdef BUILD_COMPLEX16
-CTEST(amax, dzamax){
+CTEST(amin, dzamin){
   blasint N = 9, inc = 1;
-  double te_max = 0.0, tr_max = 0.0;
+  double te_min = 0.0, tr_min = 0.0;
   double x[] = { -1.1, 2.2, -3.3, 4.4, -5.5, 6.6, -7.7, 8.8,
 	         -9.9, 10.10, -1.1, 2.2, -3.3, 4.4, -5.5, 6.6,
 		 -7.7, 8.8 };
 
-  te_max = BLASFUNC(dzamax)(&N, x, &inc);
-  tr_max = 20.0;
+  te_min = BLASFUNC(dzamin)(&N, x, &inc);
+  tr_min = 3.3;
 
-  ASSERT_DBL_NEAR_TOL((double)(tr_max), (double)(te_max), DOUBLE_EPS);
+  ASSERT_DBL_NEAR_TOL((double)(tr_min), (double)(te_min), DOUBLE_EPS);
 }
 #endif
