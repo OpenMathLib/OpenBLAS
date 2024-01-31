@@ -72,7 +72,10 @@ static HANDLE	    blas_threads   [MAX_CPU_NUMBER];
 static DWORD	    blas_threads_id[MAX_CPU_NUMBER];
 static volatile int thread_target;	// target num of live threads, volatile for cross-thread reads
 
-static void legacy_exec(void *func, int mode, blas_arg_t *args, void *sb){
+//
+//
+//
+static void legacy_exec(void *func, int mode, blas_arg_t *args, void *sb) {
 
       if (!(mode & BLAS_COMPLEX)) {
 #ifdef EXPRECISION
@@ -195,8 +198,9 @@ static void legacy_exec(void *func, int mode, blas_arg_t *args, void *sb){
       }
 }
 
-// This is a main routine of threads. Each thread waits until job is
-// queued.
+//
+// This is a main routine of threads. Each thread waits until job is queued.
+//
 static DWORD WINAPI blas_thread_server(void *arg) {
 
   /* Thread identifier */
@@ -488,7 +492,7 @@ int exec_blas(BLASLONG num, blas_queue_t *queue) {
 
 // Shutdown procedure, but user don't have to call this routine. The
 // kernel automatically kill threads.
-int BLASFUNC(blas_thread_shutdown)(void){
+int BLASFUNC(blas_thread_shutdown)(void) {
 
   int i;
 
@@ -563,7 +567,7 @@ void goto_set_num_threads(int num_threads)
 
 		thread_target = num_threads;
 
-		//increased_threads = 1;
+		  //increased_threads = 1;
 	    if (!blas_server_avail) {
 			// create the kickoff Event
 			kickoff_event = CreateEvent(NULL, TRUE, FALSE, NULL);
