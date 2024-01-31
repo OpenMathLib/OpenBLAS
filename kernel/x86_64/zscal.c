@@ -69,16 +69,16 @@ static void zscal_kernel_8( BLASLONG n, FLOAT *alpha , FLOAT *x )
 
 	for( i=0; i<n; i+=4 )
 	{
-		t0 = da_r *x[0] - da_i *x[1];	
-		t1 = da_r *x[2] - da_i *x[3];	
-		t2 = da_r *x[4] - da_i *x[5];	
-		t3 = da_r *x[6] - da_i *x[7];	
+		t0 = da_r *x[0] - da_i *x[1];
+		t1 = da_r *x[2] - da_i *x[3];
+		t2 = da_r *x[4] - da_i *x[5];
+		t3 = da_r *x[6] - da_i *x[7];
 
 		x[1] = da_r * x[1] + da_i * x[0];
 		x[3] = da_r * x[3] + da_i * x[2];
 		x[5] = da_r * x[5] + da_i * x[4];
 		x[7] = da_r * x[7] + da_i * x[6];
-		
+
 		x[0] = t0;
 		x[2] = t1;
 		x[4] = t2;
@@ -99,16 +99,16 @@ static void zscal_kernel_8_zero_r( BLASLONG n, FLOAT *alpha , FLOAT *x )
 
 	for( i=0; i<n; i+=4 )
 	{
-		t0 =  - da_i *x[1];	
-		t1 =  - da_i *x[3];	
-		t2 =  - da_i *x[5];	
-		t3 =  - da_i *x[7];	
+		t0 =  - da_i *x[1];
+		t1 =  - da_i *x[3];
+		t2 =  - da_i *x[5];
+		t3 =  - da_i *x[7];
 
 		x[1] =  da_i * x[0];
 		x[3] =  da_i * x[2];
 		x[5] =  da_i * x[4];
 		x[7] =  da_i * x[6];
-		
+
 		x[0] = t0;
 		x[2] = t1;
 		x[4] = t2;
@@ -129,16 +129,16 @@ static void zscal_kernel_8_zero_i( BLASLONG n, FLOAT *alpha , FLOAT *x )
 
 	for( i=0; i<n; i+=4 )
 	{
-		t0 = da_r *x[0];	
-		t1 = da_r *x[2];	
-		t2 = da_r *x[4];	
-		t3 = da_r *x[6];	
+		t0 = da_r *x[0];
+		t1 = da_r *x[2];
+		t2 = da_r *x[4];
+		t3 = da_r *x[6];
 
 		x[1] = da_r * x[1];
 		x[3] = da_r * x[3];
 		x[5] = da_r * x[5];
 		x[7] = da_r * x[7];
-		
+
 		x[0] = t0;
 		x[2] = t1;
 		x[4] = t2;
@@ -157,14 +157,14 @@ static void zscal_kernel_8_zero( BLASLONG n, FLOAT *alpha , FLOAT *x )
 	BLASLONG i;
 	for( i=0; i<n; i+=4 )
 	{
-		x[0] = 0.0;	
-		x[1] = 0.0;	
-		x[2] = 0.0;	
-		x[3] = 0.0;	
-		x[4] = 0.0;	
-		x[5] = 0.0;	
-		x[6] = 0.0;	
-		x[7] = 0.0;	
+		x[0] = 0.0;
+		x[1] = 0.0;
+		x[2] = 0.0;
+		x[3] = 0.0;
+		x[4] = 0.0;
+		x[5] = 0.0;
+		x[6] = 0.0;
+		x[7] = 0.0;
 		x+=8;
 	}
 
@@ -186,10 +186,10 @@ static void zscal_kernel_inc_8(BLASLONG n, FLOAT *alpha, FLOAT *x, BLASLONG inc_
 
 	for ( i=0; i<n; i+=4 )
 	{
-		t0 = da_r * x[0]         - da_i *x[1];	
-		t1 = da_r * x[inc_x]     - da_i *x[inc_x  + 1];	
-		t2 = da_r * x[inc_x2]    - da_i *x[inc_x2 + 1];	
-		t3 = da_r * x[inc_x3]    - da_i *x[inc_x3 + 1];	
+		t0 = da_r * x[0]         - da_i *x[1];
+		t1 = da_r * x[inc_x]     - da_i *x[inc_x  + 1];
+		t2 = da_r * x[inc_x2]    - da_i *x[inc_x2 + 1];
+		t3 = da_r * x[inc_x3]    - da_i *x[inc_x3 + 1];
 
 		x[1]               = da_i * x[0]       + da_r * x[1];
 		x[inc_x  +1]       = da_i * x[inc_x]   + da_r * x[inc_x  +1];
@@ -228,7 +228,7 @@ int CNAME(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, FLOAT da_r, FLOAT da_i, 
 			{
 				while(j < n1)
 				{
-			
+
 					x[i]=0.0;
 					x[i+1]=0.0;
 					x[i+inc_x]=0.0;
@@ -240,7 +240,7 @@ int CNAME(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, FLOAT da_r, FLOAT da_i, 
 
 				while(j < n)
 				{
-			
+
 					x[i]=0.0;
 					x[i+1]=0.0;
 					i += inc_x ;
@@ -253,11 +253,17 @@ int CNAME(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, FLOAT da_r, FLOAT da_i, 
 			{
 				while(j < n1)
 				{
-			
-					temp0        = -da_i * x[i+1];
+
+					if (isnan(x[i]) || isinf(x[i]))
+						temp0	= NAN;
+					else
+						temp0   = -da_i * x[i+1];
 					x[i+1]       =  da_i * x[i];
 					x[i]         =  temp0;
-					temp1        = -da_i * x[i+1+inc_x];
+					if (isnan(x[i+inc_x]) || isinf(x[i+inc_x]))
+						temp1	= NAN;
+					else
+						temp1   = -da_i * x[i+1+inc_x];
 					x[i+1+inc_x] =  da_i * x[i+inc_x];
 					x[i+inc_x]   =  temp1;
 					i += 2*inc_x ;
@@ -267,8 +273,11 @@ int CNAME(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, FLOAT da_r, FLOAT da_i, 
 
 				while(j < n)
 				{
-			
-					temp0        = -da_i * x[i+1];
+
+					if (isnan(x[i]) || isinf(x[i]))
+						temp0	= NAN;
+					else
+						temp0   = -da_i * x[i+1];
 					x[i+1]       =  da_i * x[i];
 					x[i]         =  temp0;
 					i += inc_x ;
@@ -291,7 +300,7 @@ int CNAME(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, FLOAT da_r, FLOAT da_i, 
 
 				while(j < n1)
 				{
-			
+
 					temp0        =  da_r * x[i];
 					x[i+1]       =  da_r * x[i+1];
 					x[i]         =  temp0;
@@ -305,7 +314,7 @@ int CNAME(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, FLOAT da_r, FLOAT da_i, 
 
 				while(j < n)
 				{
-			
+
 					temp0        =  da_r * x[i];
 					x[i+1]       =  da_r * x[i+1];
 					x[i]         =  temp0;
@@ -368,7 +377,7 @@ int CNAME(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, FLOAT da_r, FLOAT da_i, 
 		}
 		i = n1 << 1;
 		j = n1;
-	
+
 	if ( da_r == 0.0 || da_r != da_r )
 	{
 		if ( da_i == 0.0 )
@@ -385,7 +394,7 @@ int CNAME(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, FLOAT da_r, FLOAT da_i, 
 			}
 
 		}
-		else if (da_r < -FLT_MAX || da_r > FLT_MAX) { 
+		else if (da_r < -FLT_MAX || da_r > FLT_MAX) {
 			while(j < n)
 			{
 					x[i]= NAN;
@@ -404,7 +413,7 @@ int CNAME(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, FLOAT da_r, FLOAT da_i, 
 				if (x[i] < -FLT_MAX || x[i] > FLT_MAX)
 					temp0 = NAN;
 				x[i+1]       =  da_i * x[i];
-				if ( x[i] == x[i]) //preserve NaN 
+				if ( x[i] == x[i]) //preserve NaN
 				  x[i]         =  temp0;
 				i += 2 ;
 				j++;
@@ -420,7 +429,7 @@ int CNAME(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, FLOAT da_r, FLOAT da_i, 
 		{
 				while(j < n)
 				{
-			
+
 					temp0        =  da_r * x[i];
 					x[i+1]       =  da_r * x[i+1];
 					x[i]         =  temp0;
@@ -442,7 +451,7 @@ int CNAME(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, FLOAT da_r, FLOAT da_i, 
 
 			}
 
-		}		
+		}
 
 	}
 
