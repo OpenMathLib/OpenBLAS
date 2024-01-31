@@ -1541,10 +1541,10 @@ cblas_samax.$(SUFFIX) cblas_samax.$(PSUFFIX) : max.c
 cblas_damax.$(SUFFIX) cblas_damax.$(PSUFFIX) : max.c
 	$(CC) $(CFLAGS) -DCBLAS -c -DUSE_ABS -UUSE_MIN $< -o $(@F)
 
-cblas_camax.$(SUFFIX) cblas_camax.$(PSUFFIX) : max.c
+cblas_scamax.$(SUFFIX) cblas_scamax.$(PSUFFIX) : max.c
 	$(CC) $(CFLAGS) -DCBLAS -c -DUSE_ABS -UUSE_MIN $< -o $(@F)
 
-cblas_zamax.$(SUFFIX) cblas_zamax.$(PSUFFIX) : max.c
+cblas_dzamax.$(SUFFIX) cblas_dzamax.$(PSUFFIX) : max.c
 	$(CC) $(CFLAGS) -DCBLAS -c -DUSE_ABS -UUSE_MIN $< -o $(@F)
 
 cblas_samin.$(SUFFIX) cblas_samin.$(PSUFFIX) : max.c
@@ -1553,10 +1553,10 @@ cblas_samin.$(SUFFIX) cblas_samin.$(PSUFFIX) : max.c
 cblas_damin.$(SUFFIX) cblas_damin.$(PSUFFIX) : max.c
 	$(CC) $(CFLAGS) -DCBLAS -c -DUSE_ABS -DUSE_MIN $< -o $(@F)
 
-cblas_camin.$(SUFFIX) cblas_camin.$(PSUFFIX) : max.c
+cblas_scamin.$(SUFFIX) cblas_scamin.$(PSUFFIX) : max.c
 	$(CC) $(CFLAGS) -DCBLAS -c -DUSE_ABS -DUSE_MIN $< -o $(@F)
 
-cblas_zamin.$(SUFFIX) cblas_zamin.$(PSUFFIX) : max.c
+cblas_dzamin.$(SUFFIX) cblas_dzamin.$(PSUFFIX) : max.c
 	$(CC) $(CFLAGS) -DCBLAS -c -DUSE_ABS -DUSE_MIN $< -o $(@F)
 
 cblas_sasum.$(SUFFIX) cblas_sasum.$(PSUFFIX) : asum.c
