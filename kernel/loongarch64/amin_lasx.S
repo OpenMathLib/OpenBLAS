@@ -66,7 +66,6 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #else
     xvldrepl.w VM0, X, 0
 #endif
-    XVFSUB VM0, VM0, VM0
     bne INCX, TEMP, .L20
 
     srai.d I, N, 4

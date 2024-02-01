@@ -270,7 +270,8 @@ CSBLAS1OBJS   = \
 	cblas_scopy.$(SUFFIX) cblas_sdot.$(SUFFIX) cblas_sdsdot.$(SUFFIX) cblas_dsdot.$(SUFFIX) \
 	cblas_srot.$(SUFFIX) cblas_srotg.$(SUFFIX) cblas_srotm.$(SUFFIX) cblas_srotmg.$(SUFFIX) \
 	cblas_sscal.$(SUFFIX) cblas_sswap.$(SUFFIX) cblas_snrm2.$(SUFFIX) cblas_saxpby.$(SUFFIX) \
-	cblas_ismin.$(SUFFIX) cblas_ismax.$(SUFFIX) cblas_ssum.$(SUFFIX)
+	cblas_ismin.$(SUFFIX) cblas_ismax.$(SUFFIX) cblas_ssum.$(SUFFIX) cblas_samax.$(SUFFIX) \
+	cblas_samin.$(SUFFIX)
 
 CSBLAS2OBJS   = \
 	cblas_sgemv.$(SUFFIX) cblas_sger.$(SUFFIX) cblas_ssymv.$(SUFFIX) cblas_strmv.$(SUFFIX) \
@@ -295,7 +296,8 @@ CDBLAS1OBJS   = \
 	cblas_dcopy.$(SUFFIX) cblas_ddot.$(SUFFIX) \
 	cblas_drot.$(SUFFIX) cblas_drotg.$(SUFFIX) cblas_drotm.$(SUFFIX) cblas_drotmg.$(SUFFIX) \
 	cblas_dscal.$(SUFFIX) cblas_dswap.$(SUFFIX) cblas_dnrm2.$(SUFFIX) cblas_daxpby.$(SUFFIX) \
-	cblas_idmin.$(SUFFIX) cblas_idmax.$(SUFFIX) cblas_dsum.$(SUFFIX)
+	cblas_idmin.$(SUFFIX) cblas_idmax.$(SUFFIX) cblas_dsum.$(SUFFIX) cblas_damax.$(SUFFIX) \
+	cblas_damin.$(SUFFIX)
 
 CDBLAS2OBJS   = \
 	cblas_dgemv.$(SUFFIX) cblas_dger.$(SUFFIX) cblas_dsymv.$(SUFFIX) cblas_dtrmv.$(SUFFIX) \
@@ -315,7 +317,7 @@ CCBLAS1OBJS   = \
 	cblas_cdotc_sub.$(SUFFIX) cblas_cdotu_sub.$(SUFFIX) \
 	cblas_cscal.$(SUFFIX) cblas_csscal.$(SUFFIX) \
 	cblas_cswap.$(SUFFIX) cblas_scnrm2.$(SUFFIX) \
-	cblas_caxpby.$(SUFFIX) \
+	cblas_caxpby.$(SUFFIX) cblas_scamax.$(SUFFIX) cblas_caxpyc.$(SUFFIX) cblas_scamin.$(SUFFIX) \
 	cblas_icmin.$(SUFFIX) cblas_icmax.$(SUFFIX) cblas_scsum.$(SUFFIX) cblas_csrot.$(SUFFIX) cblas_crotg.$(SUFFIX)
 
 CCBLAS2OBJS   = \
@@ -340,12 +342,12 @@ CXERBLAOBJ = \
 
 CZBLAS1OBJS   = \
 	cblas_izamax.$(SUFFIX) cblas_izamin.$(SUFFIX) cblas_dzasum.$(SUFFIX)  cblas_zaxpy.$(SUFFIX) \
-	cblas_zcopy.$(SUFFIX) \
+	cblas_zcopy.$(SUFFIX) cblas_dzamax.$(SUFFIX) cblas_dzamin.$(SUFFIX) \
 	cblas_zdotc.$(SUFFIX) cblas_zdotu.$(SUFFIX) \
 	cblas_zdotc_sub.$(SUFFIX) cblas_zdotu_sub.$(SUFFIX) \
 	cblas_zscal.$(SUFFIX) cblas_zdscal.$(SUFFIX) \
 	cblas_zswap.$(SUFFIX) cblas_dznrm2.$(SUFFIX) \
-	cblas_zaxpby.$(SUFFIX) \
+	cblas_zaxpby.$(SUFFIX) cblas_zaxpyc.$(SUFFIX) \
 	cblas_izmin.$(SUFFIX) cblas_izmax.$(SUFFIX) cblas_dzsum.$(SUFFIX) cblas_zdrot.$(SUFFIX) cblas_zrotg.$(SUFFIX)
 
 
@@ -1533,6 +1535,30 @@ cblas_icmin.$(SUFFIX) cblas_icmin.$(PSUFFIX) : imax.c
 cblas_izmin.$(SUFFIX) cblas_izmin.$(PSUFFIX) : imax.c
 	$(CC) $(CFLAGS) -DCBLAS -c -UUSE_ABS -DUSE_MIN $< -o $(@F)
 
+cblas_samax.$(SUFFIX) cblas_samax.$(PSUFFIX) : max.c
+	$(CC) $(CFLAGS) -DCBLAS -c -DUSE_ABS -UUSE_MIN $< -o $(@F)
+
+cblas_damax.$(SUFFIX) cblas_damax.$(PSUFFIX) : max.c
+	$(CC) $(CFLAGS) -DCBLAS -c -DUSE_ABS -UUSE_MIN $< -o $(@F)
+
+cblas_scamax.$(SUFFIX) cblas_scamax.$(PSUFFIX) : max.c
+	$(CC) $(CFLAGS) -DCBLAS -c -DUSE_ABS -UUSE_MIN $< -o $(@F)
+
+cblas_dzamax.$(SUFFIX) cblas_dzamax.$(PSUFFIX) : max.c
+	$(CC) $(CFLAGS) -DCBLAS -c -DUSE_ABS -UUSE_MIN $< -o $(@F)
+
+cblas_samin.$(SUFFIX) cblas_samin.$(PSUFFIX) : max.c
+	$(CC) $(CFLAGS) -DCBLAS -c -DUSE_ABS -DUSE_MIN $< -o $(@F)
+
+cblas_damin.$(SUFFIX) cblas_damin.$(PSUFFIX) : max.c
+	$(CC) $(CFLAGS) -DCBLAS -c -DUSE_ABS -DUSE_MIN $< -o $(@F)
+
+cblas_scamin.$(SUFFIX) cblas_scamin.$(PSUFFIX) : max.c
+	$(CC) $(CFLAGS) -DCBLAS -c -DUSE_ABS -DUSE_MIN $< -o $(@F)
+
+cblas_dzamin.$(SUFFIX) cblas_dzamin.$(PSUFFIX) : max.c
+	$(CC) $(CFLAGS) -DCBLAS -c -DUSE_ABS -DUSE_MIN $< -o $(@F)
+
 cblas_sasum.$(SUFFIX) cblas_sasum.$(PSUFFIX) : asum.c
 	$(CC) $(CFLAGS) -DCBLAS -c $< -o $(@F)
 
@@ -1627,6 +1653,19 @@ cblas_daxpy.$(SUFFIX) cblas_daxpy.$(PSUFFIX) : axpy.c
 cblas_caxpy.$(SUFFIX) cblas_caxpy.$(PSUFFIX) : zaxpy.c
 	$(CC) $(CFLAGS) -DCBLAS -c $< -o $(@F)
 
+cblas_caxpyc.$(SUFFIX) cblas_caxpyc.$(PSUFFIX) : zaxpy.c
+	$(CC) $(CFLAGS) -DCBLAS -c -DCONJ $< -o $(@F)
+
+cblas_zaxpyc.$(SUFFIX) cblas_zaxpyc.$(PSUFFIX) : zaxpy.c
+	$(CC) $(CFLAGS) -DCBLAS -c -DCONJ $< -o $(@F)
+
+cblas_xaxpyc.$(SUFFIX) cblas_xaxpyc.$(PSUFFIX) : zaxpy.c
+	$(CC) $(CFLAGS) -DCBLAS -c -DCONJ $< -o $(@F)
+
+sscal.$(SUFFIX) sscal.$(PSUFFIX) : scal.c
+	$(CC) $(CFLAGS) -c $< -o $(@F)
+
+dscal.$(SUFFIX) dscal.$(PSUFFIX) : scal.c
 cblas_zaxpy.$(SUFFIX) cblas_zaxpy.$(PSUFFIX) : zaxpy.c
 	$(CC) $(CFLAGS) -DCBLAS -c $< -o $(@F)
 

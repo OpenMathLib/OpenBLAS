@@ -130,6 +130,8 @@ endif ()
 foreach (float_type ${FLOAT_TYPES})
 
   if (${float_type} STREQUAL "COMPLEX" OR ${float_type} STREQUAL "ZCOMPLEX")
+    GenerateNamedObjects("zaxpy.c" "" "axpyc" ${CBLAS_FLAG} "" "" false ${float_type})
+
     GenerateNamedObjects("zger.c" "" "geru" ${CBLAS_FLAG} "" "" false ${float_type})
     GenerateNamedObjects("zger.c" "CONJ" "gerc" ${CBLAS_FLAG} "" "" false ${float_type})
     GenerateNamedObjects("zdot.c" "CONJ" "dotc" ${CBLAS_FLAG} "" "" false ${float_type})
