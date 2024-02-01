@@ -1,9 +1,11 @@
 # Big-endian 32bit (AIX) is supported through the POWER6 GEMM kernels, no separate TRMM
 ifeq ($(__BYTE_ORDER__)$(BINARY32),__ORDER_BIG_ENDIAN__1)
 SGEMMKERNEL    =  gemm_kernel_power6.S
+SGEMMINCOPY    =
 SGEMMITCOPY    =
 SGEMMONCOPY    =  gemm_ncopy_4.S
 SGEMMOTCOPY    =  gemm_tcopy_4.S
+SGEMMINCOPYOBJ =
 SGEMMITCOPYOBJ =
 SGEMMONCOPYOBJ =  sgemm_oncopy$(TSUFFIX).$(SUFFIX)
 SGEMMOTCOPYOBJ =  sgemm_otcopy$(TSUFFIX).$(SUFFIX)
@@ -48,9 +50,11 @@ CTRMMKERNEL	= ctrmm_kernel_8x4_power8.S
 ZTRMMKERNEL	= ztrmm_kernel_8x2_power8.S
 
 SGEMMKERNEL    =  sgemm_kernel_16x8_power8.S
+SGEMMINCOPY    = sgemm_ncopy_16_power.c
 SGEMMITCOPY    = sgemm_tcopy_16_power8.S
 SGEMMONCOPY    =  ../generic/gemm_ncopy_8.c
 SGEMMOTCOPY    = sgemm_tcopy_8_power8.S
+SGEMMINCOPYOBJ =  sgemm_incopy$(TSUFFIX).$(SUFFIX)
 SGEMMITCOPYOBJ =  sgemm_itcopy$(TSUFFIX).$(SUFFIX)
 SGEMMONCOPYOBJ =  sgemm_oncopy$(TSUFFIX).$(SUFFIX)
 SGEMMOTCOPYOBJ =  sgemm_otcopy$(TSUFFIX).$(SUFFIX)
@@ -85,9 +89,6 @@ ZGEMMOTCOPYOBJ =  zgemm_otcopy$(TSUFFIX).$(SUFFIX)
 ZGEMMINCOPYOBJ =  zgemm_incopy$(TSUFFIX).$(SUFFIX)
 ZGEMMITCOPYOBJ =  zgemm_itcopy$(TSUFFIX).$(SUFFIX)
 endif
-
-SGEMMINCOPY    = sgemm_ncopy_16_power.c
-SGEMMINCOPYOBJ =  sgemm_incopy$(TSUFFIX).$(SUFFIX)
 
 STRSMKERNEL_LN	=  ../generic/trsm_kernel_LN.c
 STRSMKERNEL_LT	=  ../generic/trsm_kernel_LT.c
