@@ -69,104 +69,42 @@ int CNAME(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, FLOAT da_r,FLOAT da_i, F
     size_t vlmax = VSETVL_MAX;
     FLOAT_VX2_T vx2;
 
-    if(da_r == 0.0 && da_i == 0.0) {
+    if(inc_x == 1) {
 
-        vr = VFMVVF_FLOAT(0.0, vlmax);
-        vi = VFMVVF_FLOAT(0.0, vlmax);
-
-        if(inc_x == 1) {
-
-            for (size_t vl; n > 0; n -= vl, x += vl*2) {
-                vl = VSETVL(n);
-                vx2 = VSET_VX2(vx2, 0, vr);
-                vx2 = VSET_VX2(vx2, 1, vi);
-                VSSEG_FLOAT(x, vx2, vl);
-            }
-
-        } else {
-
-            for (size_t vl; n > 0; n -= vl, x += vl*inc_x*2) {
-                vl = VSETVL(n);
-                vx2 = VSET_VX2(vx2, 0, vr);
-                vx2 = VSET_VX2(vx2, 1, vi);
-                VSSSEG_FLOAT(x, stride_x, vx2, vl);
-            }
-        }
-
-    } else if(da_r == 0.0) {
-
-        for (size_t vl; n > 0; n -= vl, x += vl*inc_x*2) {
+        for (size_t vl; n > 0; n -= vl, x += vl*2) {
             vl = VSETVL(n);
-            
-            vx2 = VLSSEG_FLOAT(x, stride_x, vl);
+
+            vx2 = VLSEG_FLOAT(x, vl);
             vr = VGET_VX2(vx2, 0);
             vi = VGET_VX2(vx2, 1);
 
-            vt = VFMULVF_FLOAT(vi, -da_i, vl);
-            vi = VFMULVF_FLOAT(vr, da_i, vl);
+            vt = VFMULVF_FLOAT(vr, da_r, vl);
+            vt = VFNMSACVF_FLOAT(vt, da_i, vi, vl);
+            vi = VFMULVF_FLOAT(vi, da_r, vl);
+            vi = VFMACCVF_FLOAT(vi, da_i, vr, vl);
 
             vx2 = VSET_VX2(vx2, 0, vt);
             vx2 = VSET_VX2(vx2, 1, vi);
-
-            VSSSEG_FLOAT(x, stride_x, vx2, vl);
-        }
-
-    } else if(da_i == 0.0) {
-
-        for (size_t vl; n > 0; n -= vl, x += vl*inc_x*2) {
-            vl = VSETVL(n);
-
-            vx2 = VLSSEG_FLOAT(x, stride_x, vl);
-            vr = VGET_VX2(vx2, 0);
-            vi = VGET_VX2(vx2, 1);
-
-            vr = VFMULVF_FLOAT(vr, da_r, vl);
-            vi = VFMULVF_FLOAT(vi, da_r, vl);
-
-            vx2 = VSET_VX2(vx2, 0, vr);
-            vx2 = VSET_VX2(vx2, 1, vi);
-            VSSSEG_FLOAT(x, stride_x, vx2, vl);
+            VSSEG_FLOAT(x, vx2, vl);
         }
 
     } else {
 
-        if(inc_x == 1) {
+        for (size_t vl; n > 0; n -= vl, x += vl*inc_x*2) {
+            vl = VSETVL(n);
 
-            for (size_t vl; n > 0; n -= vl, x += vl*2) {
-                vl = VSETVL(n);
+            vx2 = VLSSEG_FLOAT(x, stride_x, vl);
+            vr = VGET_VX2(vx2, 0);
+            vi = VGET_VX2(vx2, 1);
 
-                vx2 = VLSEG_FLOAT(x, vl);
-                vr = VGET_VX2(vx2, 0);
-                vi = VGET_VX2(vx2, 1);
+            vt = VFMULVF_FLOAT(vr, da_r, vl);
+            vt = VFNMSACVF_FLOAT(vt, da_i, vi, vl);
+            vi = VFMULVF_FLOAT(vi, da_r, vl);
+            vi = VFMACCVF_FLOAT(vi, da_i, vr, vl);
 
-                vt = VFMULVF_FLOAT(vr, da_r, vl);
-                vt = VFNMSACVF_FLOAT(vt, da_i, vi, vl);
-                vi = VFMULVF_FLOAT(vi, da_r, vl);
-                vi = VFMACCVF_FLOAT(vi, da_i, vr, vl);
-
-                vx2 = VSET_VX2(vx2, 0, vt);
-                vx2 = VSET_VX2(vx2, 1, vi);
-                VSSEG_FLOAT(x, vx2, vl);
-            }
-
-        } else {
-
-            for (size_t vl; n > 0; n -= vl, x += vl*inc_x*2) {
-                vl = VSETVL(n);
-
-                vx2 = VLSSEG_FLOAT(x, stride_x, vl);
-                vr = VGET_VX2(vx2, 0);
-                vi = VGET_VX2(vx2, 1);
-
-                vt = VFMULVF_FLOAT(vr, da_r, vl);
-                vt = VFNMSACVF_FLOAT(vt, da_i, vi, vl);
-                vi = VFMULVF_FLOAT(vi, da_r, vl);
-                vi = VFMACCVF_FLOAT(vi, da_i, vr, vl);
-
-                vx2 = VSET_VX2(vx2, 0, vt);
-                vx2 = VSET_VX2(vx2, 1, vi);
-                VSSSEG_FLOAT(x, stride_x, vx2, vl);
-            }
+            vx2 = VSET_VX2(vx2, 0, vt);
+            vx2 = VSET_VX2(vx2, 1, vi);
+            VSSSEG_FLOAT(x, stride_x, vx2, vl);
         }
     }
 

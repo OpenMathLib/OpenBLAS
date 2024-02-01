@@ -57,6 +57,7 @@ endif
 
 ifeq ($(TARGET), CK860FV)
 TARGET_FLAGS = -march=ck860v -mcpu=ck860fv -mfdivdu -mhard-float
+endif
 
 ifeq ($(TARGET), x280)
 TARGET_FLAGS = -march=rv64imafdcv_zba_zbb_zfh -mabi=lp64d
