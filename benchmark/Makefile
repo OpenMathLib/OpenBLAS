@@ -265,9 +265,9 @@ goto :: sgemm.goto dgemm.goto cgemm.goto zgemm.goto \
        ismax.goto idmax.goto \
        isamin.goto idamin.goto icamin.goto izamin.goto \
        ismin.goto idmin.goto \
-       samax.goto damax.goto camax.goto zamax.goto \
+       samax.goto damax.goto scamax.goto dzamax.goto \
        smax.goto dmax.goto \
-       samin.goto damin.goto camin.goto zamin.goto \
+       samin.goto damin.goto scamin.goto dzamin.goto \
        smin.goto dmin.goto \
        saxpby.goto daxpby.goto caxpby.goto zaxpby.goto \
        snrm2.goto dnrm2.goto scnrm2.goto dznrm2.goto $(GOTO_LAPACK_TARGETS) $(GOTO_HALF_TARGETS)
@@ -2832,12 +2832,12 @@ samax.goto : samax.$(SUFFIX) ../$(LIBNAME)
 damax.goto : damax.$(SUFFIX) ../$(LIBNAME)
 	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
-############################################## CAMAX ##############################################
-camax.goto : camax.$(SUFFIX) ../$(LIBNAME)
+############################################## SCAMAX ##############################################
+scamax.goto : scamax.$(SUFFIX) ../$(LIBNAME)
 	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
-############################################## ZAMAX ##############################################
-zamax.goto : zamax.$(SUFFIX) ../$(LIBNAME)
+############################################## DZAMAX ##############################################
+dzamax.goto : dzamax.$(SUFFIX) ../$(LIBNAME)
 	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
 ############################################## SMAX ##############################################
@@ -2856,12 +2856,12 @@ samin.goto : samin.$(SUFFIX) ../$(LIBNAME)
 damin.goto : damin.$(SUFFIX) ../$(LIBNAME)
 	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
-############################################## CAMIN ##############################################
-camin.goto : camin.$(SUFFIX) ../$(LIBNAME)
+############################################## SCAMIN ##############################################
+scamin.goto : scamin.$(SUFFIX) ../$(LIBNAME)
 	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
-############################################## ZAMIN ##############################################
-zamin.goto : zamin.$(SUFFIX) ../$(LIBNAME)
+############################################## DZAMIN ##############################################
+dzamin.goto : dzamin.$(SUFFIX) ../$(LIBNAME)
 	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
 ############################################## SMIN ##############################################
@@ -3383,10 +3383,10 @@ samax.$(SUFFIX) : amax.c
 damax.$(SUFFIX) : amax.c
 	$(CC) $(CFLAGS) -c -UCOMPLEX  -DDOUBLE -o $(@F) $^
 
-camax.$(SUFFIX) : amax.c
+scamax.$(SUFFIX) : amax.c
 	$(CC) $(CFLAGS) -c -DCOMPLEX  -UDOUBLE -o $(@F) $^
 
-zamax.$(SUFFIX) : amax.c
+dzamax.$(SUFFIX) : amax.c
 	$(CC) $(CFLAGS) -c -DCOMPLEX  -DDOUBLE -o $(@F) $^
 
 
@@ -3403,10 +3403,10 @@ samin.$(SUFFIX) : amin.c
 damin.$(SUFFIX) : amin.c
 	$(CC) $(CFLAGS) -c -UCOMPLEX -DDOUBLE -o $(@F) $^
 
-camin.$(SUFFIX) : amin.c
+scamin.$(SUFFIX) : amin.c
 	$(CC) $(CFLAGS) -c -DCOMPLEX -UDOUBLE -o $(@F) $^
 
-zamin.$(SUFFIX) : amin.c
+dzamin.$(SUFFIX) : amin.c
 	$(CC) $(CFLAGS) -c -DCOMPLEX -DDOUBLE -o $(@F) $^
 
 
