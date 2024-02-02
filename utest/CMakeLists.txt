@@ -60,8 +60,8 @@ ${DIR_EXT}/test_saxpby.c
 ${DIR_EXT}/test_daxpby.c
 ${DIR_EXT}/test_caxpby.c
 ${DIR_EXT}/test_zaxpby.c
-# ${DIR_EXT}/test_caxpyc.c
-# ${DIR_EXT}/test_zaxpyc.c
+${DIR_EXT}/test_caxpyc.c
+${DIR_EXT}/test_zaxpyc.c
 ${DIR_EXT}/test_cgemv_t.c
 ${DIR_EXT}/test_zgemv_t.c
 ${DIR_EXT}/test_cgemv_n.c
