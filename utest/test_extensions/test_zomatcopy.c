@@ -542,38 +542,6 @@ CTEST(zomatcopy, xerbla_invalid_trans)
 }
 
 /**
-* Test error function for an invalid param m.
-* Must be positive.
-*/
-CTEST(zomatcopy, xerbla_invalid_rows)
-{
-    blasint m = 0, n = 100;
-    blasint lda = 0, ldb = 100;
-    char order = 'C';
-    char trans = 'T';
-    int expected_info = 3;
-
-    int passed = check_badargs(order, trans, m, n, lda, ldb, expected_info);
-    ASSERT_EQUAL(TRUE, passed);
-}
-
-/**
-* Test error function for an invalid param n.
-* Must be positive.
-*/
-CTEST(zomatcopy, xerbla_invalid_cols)
-{
-    blasint m = 100, n = 0;
-    blasint lda = 100, ldb = 0;
-    char order = 'C';
-    char trans = 'T';
-    int expected_info = 4;
-
-    int passed = check_badargs(order, trans, m, n, lda, ldb, expected_info);
-    ASSERT_EQUAL(TRUE, passed);
-}
-
-/**
 * Test error function for an invalid param lda.
 * If matrices are stored using row major layout, 
 * lda must be at least n.

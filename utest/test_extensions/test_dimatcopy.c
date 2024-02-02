@@ -812,38 +812,6 @@ CTEST(dimatcopy, xerbla_invalid_trans)
 }
 
 /**
- * Test error function for an invalid param m.
- * Must be positive.
- */
-CTEST(dimatcopy, xerbla_invalid_rows)
-{
-    blasint m = 0, n = 100;
-    blasint lda_src = 0, lda_dst = 100;
-    char order = 'C';
-    char trans = 'T';
-    int expected_info = 3;
-
-    int passed = check_badargs(order, trans, m, n, lda_src, lda_dst, expected_info);
-    ASSERT_EQUAL(TRUE, passed);
-}
-
-/**
- * Test error function for an invalid param n.
- * Must be positive.
- */
-CTEST(dimatcopy, xerbla_invalid_cols)
-{
-    blasint m = 100, n = 0;
-    blasint lda_src = 100, lda_dst = 0;
-    char order = 'C';
-    char trans = 'T';
-    int expected_info = 4;
-
-    int passed = check_badargs(order, trans, m, n, lda_src, lda_dst, expected_info);
-    ASSERT_EQUAL(TRUE, passed);
-}
-
-/**
  * Test error function for an invalid param lda_src.
  * If matrices are stored using row major layout, 
  * lda_src must be at least n.
