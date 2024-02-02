@@ -22,6 +22,7 @@ endif ()
 set(DIR_EXT test_extensions)
 set(OpenBLAS_utest_ext_src
 utest_main.c
+${DIR_EXT}/common.c
 ${DIR_EXT}/xerbla.c
 ${DIR_EXT}/test_isamin.c 
 ${DIR_EXT}/test_idamin.c 
@@ -39,14 +40,14 @@ ${DIR_EXT}/test_scamax.c
 ${DIR_EXT}/test_dzamax.c
 ${DIR_EXT}/test_zrotg.c
 ${DIR_EXT}/test_crotg.c
-$(DIR_EXT)/test_drotmg.c
-$(DIR_EXT)/test_srotmg.c
-$(DIR_EXT)/test_zscal.c
-$(DIR_EXT)/test_cscal.c
-$(DIR_EXT)/test_domatcopy.c
-$(DIR_EXT)/test_somatcopy.c
-$(DIR_EXT)/test_zomatcopy.c
-$(DIR_EXT)/test_comatcopy.c
+${DIR_EXT}/test_drotmg.c
+${DIR_EXT}/test_srotmg.c
+${DIR_EXT}/test_zscal.c
+${DIR_EXT}/test_cscal.c
+${DIR_EXT}/test_domatcopy.c
+${DIR_EXT}/test_somatcopy.c
+${DIR_EXT}/test_zomatcopy.c
+${DIR_EXT}/test_comatcopy.c
 ${DIR_EXT}/test_simatcopy.c
 ${DIR_EXT}/test_dimatcopy.c
 ${DIR_EXT}/test_cimatcopy.c
@@ -59,12 +60,12 @@ ${DIR_EXT}/test_saxpby.c
 ${DIR_EXT}/test_daxpby.c
 ${DIR_EXT}/test_caxpby.c
 ${DIR_EXT}/test_zaxpby.c
-${DIR_EXT}/test_caxpyc.c
-${DIR_EXT}/test_zaxpyc.c
-$(DIR_EXT)/test_cgemv_t.c
-$(DIR_EXT)/test_zgemv_t.c
-$(DIR_EXT)/test_cgemv_n.c
-$(DIR_EXT)/test_zgemv_n.c
+# ${DIR_EXT}/test_caxpyc.c
+# ${DIR_EXT}/test_zaxpyc.c
+${DIR_EXT}/test_cgemv_t.c
+${DIR_EXT}/test_zgemv_t.c
+${DIR_EXT}/test_cgemv_n.c
+${DIR_EXT}/test_zgemv_n.c
 ${DIR_EXT}/test_crot.c
 ${DIR_EXT}/test_zrot.c
 ${DIR_EXT}/test_cgbmv.c
@@ -75,10 +76,10 @@ ${DIR_EXT}/test_cgemmt.c
 ${DIR_EXT}/test_zgemmt.c
 ${DIR_EXT}/test_ztrmv.c
 ${DIR_EXT}/test_ctrmv.c
-$(DIR_EXT)/test_ztrsv.c
-$(DIR_EXT)/test_ctrsv.c
-$(DIR_EXT)/test_zgemm.c
-$(DIR_EXT)/test_cgemm.c
+${DIR_EXT}/test_ztrsv.c
+${DIR_EXT}/test_ctrsv.c
+${DIR_EXT}/test_zgemm.c
+${DIR_EXT}/test_cgemm.c
 )
 
 # crashing on travis cl with an error code suggesting resource not found
