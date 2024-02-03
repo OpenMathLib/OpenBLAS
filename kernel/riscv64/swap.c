@@ -41,7 +41,7 @@ int CNAME(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, FLOAT dummy3, FLOAT *x, 
 	BLASLONG ix=0,iy=0;
 	FLOAT temp;
 
-	if ( n < 0     )  return(0);
+	if ( n <= 0     )  return(0);
 
 	while(i < n)
 	{

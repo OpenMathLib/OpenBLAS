@@ -43,7 +43,7 @@ int CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG inc_y)
 	BLASLONG inc_x2;
 	BLASLONG inc_y2;
 
-	if ( n < 0     )  return(0);
+	if ( n <= 0     )  return(0);
 
 	inc_x2 = 2 * inc_x;
 	inc_y2 = 2 * inc_y;

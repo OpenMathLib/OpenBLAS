@@ -37,6 +37,12 @@ ESSL=/opt/ibm/lib
 #LIBESSL = -lesslsmp $(ESSL)/libxlomp_ser.so.1 $(ESSL)/libxlf90_r.so.1 $(ESSL)/libxlfmath.so.1 $(ESSL)/libxlsmp.so.1 /opt/ibm/xlC/13.1.3/lib/libxl.a
 LIBESSL = -lesslsmp  $(ESSL)/libxlf90_r.so.1 $(ESSL)/libxlfmath.so.1 $(ESSL)/libxlsmp.so.1 /opt/ibm/xlC/13.1.3/lib/libxl.a
 
+# x280 temporary workaround for gfortran
+ifeq ($(TARGET), x280)
+CCOMMON_OPT:=$(filter-out -mllvm --riscv-v-vector-bits-min=512,$(CCOMMON_OPT))
+endif
+
+
 ifneq ($(NO_LAPACK), 1)
 GOTO_LAPACK_TARGETS=slinpack.goto dlinpack.goto clinpack.goto zlinpack.goto \
 		    scholesky.goto dcholesky.goto ccholesky.goto zcholesky.goto \
@@ -265,9 +271,9 @@ goto :: sgemm.goto dgemm.goto cgemm.goto zgemm.goto \
        ismax.goto idmax.goto \
        isamin.goto idamin.goto icamin.goto izamin.goto \
        ismin.goto idmin.goto \
-       samax.goto damax.goto scamax.goto dzamax.goto \
+       samax.goto damax.goto camax.goto zamax.goto \
        smax.goto dmax.goto \
-       samin.goto damin.goto scamin.goto dzamin.goto \
+       samin.goto damin.goto camin.goto zamin.goto \
        smin.goto dmin.goto \
        saxpby.goto daxpby.goto caxpby.goto zaxpby.goto \
        snrm2.goto dnrm2.goto scnrm2.goto dznrm2.goto $(GOTO_LAPACK_TARGETS) $(GOTO_HALF_TARGETS)
@@ -2832,12 +2838,12 @@ samax.goto : samax.$(SUFFIX) ../$(LIBNAME)
 damax.goto : damax.$(SUFFIX) ../$(LIBNAME)
 	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
-############################################## SCAMAX ##############################################
-scamax.goto : scamax.$(SUFFIX) ../$(LIBNAME)
+############################################## CAMAX ##############################################
+camax.goto : camax.$(SUFFIX) ../$(LIBNAME)
 	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
-############################################## DZAMAX ##############################################
-dzamax.goto : dzamax.$(SUFFIX) ../$(LIBNAME)
+############################################## ZAMAX ##############################################
+zamax.goto : zamax.$(SUFFIX) ../$(LIBNAME)
 	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
 ############################################## SMAX ##############################################
@@ -2856,12 +2862,12 @@ samin.goto : samin.$(SUFFIX) ../$(LIBNAME)
 damin.goto : damin.$(SUFFIX) ../$(LIBNAME)
 	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
-############################################## SCAMIN ##############################################
-scamin.goto : scamin.$(SUFFIX) ../$(LIBNAME)
+############################################## CAMIN ##############################################
+camin.goto : camin.$(SUFFIX) ../$(LIBNAME)
 	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
-############################################## DZAMIN ##############################################
-dzamin.goto : dzamin.$(SUFFIX) ../$(LIBNAME)
+############################################## ZAMIN ##############################################
+zamin.goto : zamin.$(SUFFIX) ../$(LIBNAME)
 	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
 ############################################## SMIN ##############################################
@@ -3383,10 +3389,10 @@ samax.$(SUFFIX) : amax.c
 damax.$(SUFFIX) : amax.c
 	$(CC) $(CFLAGS) -c -UCOMPLEX  -DDOUBLE -o $(@F) $^
 
-scamax.$(SUFFIX) : amax.c
+camax.$(SUFFIX) : amax.c
 	$(CC) $(CFLAGS) -c -DCOMPLEX  -UDOUBLE -o $(@F) $^
 
-dzamax.$(SUFFIX) : amax.c
+zamax.$(SUFFIX) : amax.c
 	$(CC) $(CFLAGS) -c -DCOMPLEX  -DDOUBLE -o $(@F) $^
 
 
@@ -3403,10 +3409,10 @@ samin.$(SUFFIX) : amin.c
 damin.$(SUFFIX) : amin.c
 	$(CC) $(CFLAGS) -c -UCOMPLEX -DDOUBLE -o $(@F) $^
 
-scamin.$(SUFFIX) : amin.c
+camin.$(SUFFIX) : amin.c
 	$(CC) $(CFLAGS) -c -DCOMPLEX -UDOUBLE -o $(@F) $^
 
-dzamin.$(SUFFIX) : amin.c
+zamin.$(SUFFIX) : amin.c
 	$(CC) $(CFLAGS) -c -DCOMPLEX -DDOUBLE -o $(@F) $^
 
 

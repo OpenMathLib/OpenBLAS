@@ -25,21 +25,34 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
 USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
 #include "common.h"
-#if !defined(DOUBLE)
-#define VSETVL(n) vsetvl_e32m8(n)
-#define FLOAT_V_T vfloat32m8_t
-#define VLEV_FLOAT vle32_v_f32m8
-#define VLSEV_FLOAT vlse32_v_f32m8
-#define VSEV_FLOAT vse32_v_f32m8
-#define VSSEV_FLOAT vsse32_v_f32m8
+
+#ifdef RISCV64_ZVL256B
+#       define LMUL m2
+#       if defined(DOUBLE)
+#               define ELEN 64
+#       else
+#               define ELEN 32
+#       endif
 #else
-#define VSETVL(n) vsetvl_e64m8(n)
-#define FLOAT_V_T vfloat64m8_t
-#define VLEV_FLOAT vle64_v_f64m8
-#define VLSEV_FLOAT vlse64_v_f64m8
-#define VSEV_FLOAT vse64_v_f64m8
-#define VSSEV_FLOAT vsse64_v_f64m8
+#       define LMUL m8
+#       if defined(DOUBLE)
+#               define ELEN 64
+#       else
+#               define ELEN 32
+#       endif
 #endif
+
+#define _
+#define JOIN2_X(x, y) x ## y
+#define JOIN2(x, y) JOIN2_X(x, y)
+#define JOIN(v, w, x, y, z) JOIN2( JOIN2( JOIN2( JOIN2( v, w ), x), y), z)
+
+#define VSETVL          JOIN(RISCV_RVV(vsetvl),    _e,     ELEN,   LMUL,   _)
+#define FLOAT_V_T       JOIN(vfloat,            ELEN,   LMUL,   _t,     _)
+#define VLEV_FLOAT      JOIN(RISCV_RVV(vle),       ELEN,   _v_f,   ELEN,   LMUL)
+#define VLSEV_FLOAT     JOIN(RISCV_RVV(vlse),      ELEN,   _v_f,   ELEN,   LMUL)
+#define VSEV_FLOAT      JOIN(RISCV_RVV(vse),       ELEN,   _v_f,   ELEN,   LMUL)
+#define VSSEV_FLOAT     JOIN(RISCV_RVV(vsse),      ELEN,   _v_f,   ELEN,   LMUL)
 
 int CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG inc_y)
 {
@@ -58,7 +71,7 @@ int CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG inc_y)
                 stride_x = inc_x * sizeof(FLOAT);
                 if(gvl <= n/4){
                         BLASLONG inc_xv = inc_x * gvl;
-                        BLASLONG gvl3 = gvl * 3;
+                        unsigned int gvl3 = gvl * 3;
                         BLASLONG inc_xv3 = inc_xv * 3;
                         for(i=0,j=0; i<n/(4*gvl); i++){
                                 v0 = VLSEV_FLOAT(&x[ix], stride_x, gvl);
@@ -86,7 +99,7 @@ int CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG inc_y)
                 if(gvl <= n/4){
                         BLASLONG inc_yv = inc_y * gvl;
                         BLASLONG inc_yv3 = inc_yv * 3;
-                        BLASLONG gvl3 = gvl * 3;
+                        unsigned int gvl3 = gvl * 3;
                         for(i=0,j=0; i<n/(4*gvl); i++){
                                 v0 = VLEV_FLOAT(&x[j], gvl);
                                 VSSEV_FLOAT(&y[iy], stride_y, v0, gvl);

@@ -45,7 +45,7 @@ int CNAME(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, FLOAT dummy3, FLOAT dumm
 	BLASLONG inc_x2;
 	BLASLONG inc_y2;
 
-	if ( n < 0     )  return(0);
+	if ( n <= 0     )  return(0);
 
 	inc_x2 = 2 * inc_x;
 	inc_y2 = 2 * inc_y;
