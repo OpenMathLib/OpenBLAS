@@ -45,8 +45,18 @@ endif
 
 all : run_test
 
+ifeq ($(OSNAME), AIX)
+ifeq ($(USE_OPENMP), 1)
+$(UTESTBIN): $(OBJS)
+	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $^ ../$(LIBNAME) $(EXTRALIB)
+else
 $(UTESTBIN): $(OBJS)
 	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $^ ../$(LIBNAME) $(EXTRALIB) $(FEXTRALIB)
+endif
+else
+$(UTESTBIN): $(OBJS)
+	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $^ ../$(LIBNAME) $(EXTRALIB) $(FEXTRALIB)
+endif
 
 run_test: $(UTESTBIN)
 ifneq ($(CROSS), 1)

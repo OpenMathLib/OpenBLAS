@@ -218,6 +218,9 @@ ifeq ($(F_COMPILER), IBM)
 ifeq ($(C_COMPILER), GCC)
 CEXTRALIB += -lgomp
 endif
+ifeq ($(C_COMPILER), CLANG)
+CEXTRALIB += -lomp
+endif
 endif
 endif
 
