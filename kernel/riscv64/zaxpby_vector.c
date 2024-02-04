@@ -62,6 +62,82 @@ int CNAME(BLASLONG n, FLOAT alpha_r, FLOAT alpha_i, FLOAT *x, BLASLONG inc_x, FL
         stride_x = inc_x * 2 * sizeof(FLOAT);
         stride_y = inc_y * 2 * sizeof(FLOAT);
 
+	if (inc_x == 0 || inc_y == 0) {
+
+	FLOAT temp;
+	BLASLONG inc_x2, inc_y2;
+
+	inc_x2 = 2 * inc_x;
+	inc_y2 = 2 * inc_y;
+
+	if ( beta_r == 0.0 && beta_i == 0.0)
+	{
+		if ( alpha_r == 0.0 && alpha_i == 0.0 )
+		{
+
+			while(i < n)
+			{
+				y[iy]   = 0.0 ;
+				y[iy+1] = 0.0 ;
+				iy += inc_y2 ;
+				i++ ;
+			}
+
+		}
+		else
+		{
+
+			while(i < n)
+			{
+				y[iy]   = ( alpha_r * x[ix]   - alpha_i * x[ix+1] ) ;
+				y[iy+1] = ( alpha_r * x[ix+1] + alpha_i * x[ix]   ) ;
+				ix += inc_x2 ;
+				iy += inc_y2 ;
+				i++ ;
+			}
+
+
+		}
+
+	}
+	else
+	{
+		if ( alpha_r == 0.0 && alpha_i == 0.0 )
+		{
+
+			while(i < n)
+			{
+				temp    = ( beta_r * y[iy]   - beta_i * y[iy+1] ) ;
+				y[iy+1] = ( beta_r * y[iy+1] + beta_i * y[iy]   ) ;
+				y[iy]   = temp;
+				iy += inc_y2 ;
+				i++ ;
+			}
+
+		}
+		else
+		{
+
+			while(i < n)
+			{
+				temp    = ( alpha_r * x[ix]   - alpha_i * x[ix+1] ) + ( beta_r * y[iy]   - beta_i * y[iy+1] ) ;
+				y[iy+1] = ( alpha_r * x[ix+1] + alpha_i * x[ix]   ) + ( beta_r * y[iy+1] + beta_i * y[iy]   ) ;
+				y[iy]   = temp;
+				ix += inc_x2 ;
+				iy += inc_y2 ;
+				i++ ;
+			}
+
+
+		}
+
+
+
+	}
+	return(0);
+
+	} else {
+
         if(beta_r == 0.0 && beta_i == 0.0){
                 if(alpha_r == 0.0 && alpha_i == 0.0){
                         if(inc_y == 1){
@@ -191,5 +267,6 @@ int CNAME(BLASLONG n, FLOAT alpha_r, FLOAT alpha_i, FLOAT *x, BLASLONG inc_x, FL
                 }
         }
 	return(0);
+	}
 }
 

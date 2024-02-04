@@ -69,6 +69,63 @@ int CNAME(BLASLONG n, FLOAT alpha, FLOAT *x, BLASLONG inc_x, FLOAT beta, FLOAT *
 
 	BLASLONG stride_x, stride_y, ix = 0, iy = 0;
 
+	if (inc_x == 0 || inc_y == 0) { /* use trivial non-vectorized loop if either increment is zero */
+
+	if ( beta == 0.0 )
+	{
+
+		if ( alpha == 0.0 )
+		{
+			while(i < n)
+			{
+				y[iy] = 0.0 ;
+				iy += inc_y ;
+				i++ ;
+			}
+		}
+		else
+		{
+			while(i < n)
+			{
+				y[iy] = alpha * x[ix] ;
+				ix += inc_x ;
+				iy += inc_y ;
+				i++ ;
+			}
+
+
+		}
+
+	}
+	else
+	{
+
+		if ( alpha == 0.0 )
+		{
+			while(i < n)
+			{
+				y[iy] =  beta * y[iy] ;
+				iy += inc_y ;
+				i++ ;
+			}
+		}
+		else
+		{
+			while(i < n)
+			{
+				y[iy] = alpha * x[ix] + beta * y[iy] ;
+				ix += inc_x ;
+				iy += inc_y ;
+				i++ ;
+			}
+		}
+
+	}
+
+	return(0);
+
+	} else { /* vectorized approach for non-zero increments */
+
         if(beta == 0.0){
                 if(alpha == 0.0){//alpha == 0 && beta == 0
                         if(inc_y == 1){
@@ -381,5 +438,6 @@ int CNAME(BLASLONG n, FLOAT alpha, FLOAT *x, BLASLONG inc_x, FLOAT beta, FLOAT *
                 }
         }
 	return(0);
+	}
 }
 
