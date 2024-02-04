@@ -57,10 +57,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     PROLOGUE
 
     bge $r0, N, .L999
-    li.d TEMP, 1
     movgr2fr.d a1, $r0
     ffint.s.l a1, a1
-    slli.d  TEMP, TEMP, BASE_SHIFT
     slli.d  INCX, INCX, BASE_SHIFT
     slli.d  INCY, INCY, BASE_SHIFT
     MTG  t1, ALPHA
@@ -75,6 +73,13 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     vreplgr2vr.w VXB, t2
     vreplgr2vr.w VXZ, t3
 #endif
+    // If incx == 0 || incy == 0, do one by one
+    and TEMP, INCX, INCY
+    or  I,    N,    N
+    beqz TEMP, .L998
+
+    li.d TEMP, 1
+    slli.d  TEMP, TEMP, BASE_SHIFT
     srai.d I, N, 3
     bne INCX, TEMP, .L20
     bne INCY, TEMP, .L12 // INCX==1 and INCY!=1
