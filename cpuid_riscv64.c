@@ -86,7 +86,10 @@ static char *cpuname[] = {
 
 static char *cpuname_lower[] = {
   "riscv64_generic",
-  "c910v"
+  "c910v",
+  "x280",
+  "riscv64_zvl256b",
+  "riscv64_zvl128b"
 };
 
 int detect(void){
