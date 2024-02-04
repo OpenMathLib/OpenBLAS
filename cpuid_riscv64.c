@@ -84,6 +84,11 @@ static char *cpuname[] = {
   "CPU_RISCV64_ZVL128B"
 };
 
+static char *cpuname_lower[] = {
+  "riscv64_generic",
+  "c910v"
+};
+
 int detect(void){
 #ifdef __linux
   FILE *infile;
@@ -92,23 +97,29 @@ int detect(void){
   char *pmodel = NULL, *pisa = NULL;
 
   infile = fopen("/proc/cpuinfo", "r");
+  if (!infile)
+    return CPU_GENERIC;
   while (fgets(buffer, sizeof(buffer), infile)){
     if(!strncmp(buffer, "model name", 10)){
       strcpy(model_buffer, buffer);
-      pmodel = strchr(isa_buffer, ':') + 1;
+      pmodel = strchr(model_buffer, ':');
+      if (pmodel)
+        pmodel++;
     }
 
     if(!strncmp(buffer, "isa", 3)){
       strcpy(isa_buffer, buffer);
-      pisa = strchr(isa_buffer, '4') + 1;
+      pisa = strchr(isa_buffer, '4');
+      if (pisa)
+        pisa++;
     }
   }
 
   fclose(infile);
 
-  if (!pmodel)
+  if (!pmodel || !pisa)
    return(CPU_GENERIC);
-   
+
   if (strstr(pmodel, check_c910_str) && strchr(pisa, 'v'))
     return CPU_C910V;
 
@@ -146,5 +157,5 @@ void get_cpuconfig(void){
 }
 
 void get_libname(void){
-  printf("riscv64\n");
+  printf("%s", cpuname_lower[detect()]);
 }
