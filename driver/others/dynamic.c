@@ -275,6 +275,7 @@ extern gotoblas_t  gotoblas_EXCAVATOR;
 #define gotoblas_SKYLAKEX gotoblas_SANDYBRIDGE
 #define gotoblas_COOPERLAKE gotoblas_SANDYBRIDGE
 #define gotoblas_ZEN gotoblas_SANDYBRIDGE
+#define gotoblas_SAPPHIRERAPIDS gotoblas_SANDYBRIDGE
 #else
 extern gotoblas_t  gotoblas_HASWELL;
 extern gotoblas_t  gotoblas_ZEN;
