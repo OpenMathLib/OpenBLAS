@@ -527,7 +527,7 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_UPLO Uplo,
 #endif
 			// for alignment
 			buffer_size = (buffer_size + 3) & ~3;
-			STACK_ALLOC(buffer_size, FLOAT, buffer);
+			STACK_ALLOC(buffer_size, IFLOAT, buffer);
 
 #ifdef SMP
 
@@ -616,7 +616,7 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_UPLO Uplo,
 #endif
 			// for alignment
 			buffer_size = (buffer_size + 3) & ~3;
-			STACK_ALLOC(buffer_size, FLOAT, buffer);
+			STACK_ALLOC(buffer_size, IFLOAT, buffer);
 
 #ifdef SMP
 
