@@ -124,7 +124,6 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .L13:
     FABS $f0, $f0
-    SUB $f0, $f0, $f0
     jirl $r0,  $r1, 0x0
     .align 3
 
