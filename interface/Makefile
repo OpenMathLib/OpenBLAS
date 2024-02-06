@@ -1303,7 +1303,7 @@ xhpr2.$(SUFFIX) xhpr2.$(PSUFFIX) : zhpr2.c
 ifeq ($(BUILD_BFLOAT16),1)
 sbgemm.$(SUFFIX) sbgemm.$(PSUFFIX) : gemm.c ../param.h
 	$(CC) -c $(CFLAGS) $< -o $(@F)
-sbgemmt.$(SUFFIX) sbgemmt.$(PSUFFIX) : gemmt.c ../param.h
+sbgemmt.$(SUFFIX) sbgemmt.$(PSUFFIX) : sbgemmt.c ../param.h
 	$(CC) -c $(CFLAGS) $< -o $(@F)
 endif
 
@@ -1662,10 +1662,6 @@ cblas_zaxpyc.$(SUFFIX) cblas_zaxpyc.$(PSUFFIX) : zaxpy.c
 cblas_xaxpyc.$(SUFFIX) cblas_xaxpyc.$(PSUFFIX) : zaxpy.c
 	$(CC) $(CFLAGS) -DCBLAS -c -DCONJ $< -o $(@F)
 
-sscal.$(SUFFIX) sscal.$(PSUFFIX) : scal.c
-	$(CC) $(CFLAGS) -c $< -o $(@F)
-
-dscal.$(SUFFIX) dscal.$(PSUFFIX) : scal.c
 cblas_zaxpy.$(SUFFIX) cblas_zaxpy.$(PSUFFIX) : zaxpy.c
 	$(CC) $(CFLAGS) -DCBLAS -c $< -o $(@F)
 
@@ -1971,7 +1967,7 @@ cblas_sgemmt.$(SUFFIX) cblas_sgemmt.$(PSUFFIX) : gemmt.c ../param.h
 	$(CC) -DCBLAS -c $(CFLAGS) $< -o $(@F)
 
 ifeq ($(BUILD_BFLOAT16),1)
-cblas_sbgemmt.$(SUFFIX) cblas_sbgemmt.$(PSUFFIX) : gemmt.c ../param.h
+cblas_sbgemmt.$(SUFFIX) cblas_sbgemmt.$(PSUFFIX) : sbgemmt.c ../param.h
 	$(CC) -DCBLAS -c $(CFLAGS) $< -o $(@F)
 endif
 
