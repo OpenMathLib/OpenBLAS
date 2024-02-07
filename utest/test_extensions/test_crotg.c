@@ -48,10 +48,10 @@ CTEST(crotg, zero_a)
     float sc;
     BLASFUNC(crotg)(sa, sb, &sc, ss);
     ASSERT_DBL_NEAR_TOL(0.0f, sc, SINGLE_EPS);
-    ASSERT_DBL_NEAR_TOL(1.0f, ss[0], SINGLE_EPS);
-    ASSERT_DBL_NEAR_TOL(0.0f, ss[1], SINGLE_EPS);
-    ASSERT_DBL_NEAR_TOL(1.0f, sa[0], SINGLE_EPS);
-    ASSERT_DBL_NEAR_TOL(1.0f, sa[1], SINGLE_EPS);
+    ASSERT_DBL_NEAR_TOL(0.70711f, ss[0], SINGLE_EPS);
+    ASSERT_DBL_NEAR_TOL(-0.70711f, ss[1], SINGLE_EPS);
+    ASSERT_DBL_NEAR_TOL(1.41421f, sa[0], SINGLE_EPS);
+    ASSERT_DBL_NEAR_TOL(0.0f, sa[1], SINGLE_EPS);
 }
 
 /**
@@ -83,8 +83,8 @@ CTEST(crotg, zero_real)
     float ss[2];
     float sc;
     BLASFUNC(crotg)(sa, sb, &sc, ss);
-    ASSERT_DBL_NEAR_TOL(0.7071f, sc, SINGLE_EPS);
-    ASSERT_DBL_NEAR_TOL(0.7071f, ss[0], SINGLE_EPS);
+    ASSERT_DBL_NEAR_TOL(0.70711f, sc, SINGLE_EPS);
+    ASSERT_DBL_NEAR_TOL(0.70711f, ss[0], SINGLE_EPS);
     ASSERT_DBL_NEAR_TOL(0.0f, ss[1], SINGLE_EPS);
     ASSERT_DBL_NEAR_TOL(0.0f, sa[0], SINGLE_EPS);
     ASSERT_DBL_NEAR_TOL(1.41421f, sa[1], SINGLE_EPS);
@@ -174,10 +174,10 @@ CTEST(crotg, c_api_zero_a)
     float sc;
     cblas_crotg(sa, sb, &sc, ss);
     ASSERT_DBL_NEAR_TOL(0.0f, sc, SINGLE_EPS);
-    ASSERT_DBL_NEAR_TOL(1.0f, ss[0], SINGLE_EPS);
-    ASSERT_DBL_NEAR_TOL(0.0f, ss[1], SINGLE_EPS);
-    ASSERT_DBL_NEAR_TOL(1.0f, sa[0], SINGLE_EPS);
-    ASSERT_DBL_NEAR_TOL(1.0f, sa[1], SINGLE_EPS);
+    ASSERT_DBL_NEAR_TOL(0.70711f, ss[0], SINGLE_EPS);
+    ASSERT_DBL_NEAR_TOL(-0.70711f, ss[1], SINGLE_EPS);
+    ASSERT_DBL_NEAR_TOL(1.41421f, sa[0], SINGLE_EPS);
+    ASSERT_DBL_NEAR_TOL(0.0f, sa[1], SINGLE_EPS);
 }
 
 /**
@@ -209,8 +209,8 @@ CTEST(crotg, c_api_zero_real)
     float ss[2];
     float sc;
     cblas_crotg(sa, sb, &sc, ss);
-    ASSERT_DBL_NEAR_TOL(0.7071f, sc, SINGLE_EPS);
-    ASSERT_DBL_NEAR_TOL(0.7071f, ss[0], SINGLE_EPS);
+    ASSERT_DBL_NEAR_TOL(0.70711f, sc, SINGLE_EPS);
+    ASSERT_DBL_NEAR_TOL(0.70711f, ss[0], SINGLE_EPS);
     ASSERT_DBL_NEAR_TOL(0.0f, ss[1], SINGLE_EPS);
     ASSERT_DBL_NEAR_TOL(0.0f, sa[0], SINGLE_EPS);
     ASSERT_DBL_NEAR_TOL(1.41421f, sa[1], SINGLE_EPS);
