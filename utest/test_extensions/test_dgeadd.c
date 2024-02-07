@@ -346,7 +346,7 @@ CTEST(dgeadd, xerbla_lda_invalid)
     blasint lda = INVALID;
     blasint ldc = 1;
 
-    int expected_info = 6;
+    int expected_info = 5;
 
     int passed = check_badargs('F', order, m, n, lda, ldc, expected_info);
     ASSERT_EQUAL(TRUE, passed);
@@ -680,7 +680,7 @@ CTEST(dgeadd, c_api_xerbla_n_invalid_row_major)
     blasint lda = 1;
     blasint ldc = 1;
 
-    int expected_info = 1;
+    int expected_info = 2;
 
     int passed = check_badargs('C', order, m, n, lda, ldc, expected_info);
     ASSERT_EQUAL(TRUE, passed);
@@ -728,7 +728,7 @@ CTEST(dgeadd, c_api_xerbla_m_invalid_row_major)
     blasint lda = 1;
     blasint ldc = 1;
 
-    int expected_info = 2;
+    int expected_info = 1;
 
     int passed = check_badargs('C', order, m, n, lda, ldc, expected_info);
     ASSERT_EQUAL(TRUE, passed);
