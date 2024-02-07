@@ -60,12 +60,12 @@ CTEST(damin, step_zero){
    blasint i;
    blasint N = ELEMENTS, inc = 0;
    double x[ELEMENTS];
-   for (i = 0; i < N  * inc; i ++) {
+   for (i = 0; i < N; i ++) {
       x[i] = i + 1000;
    }
    x[8] = 0.0;
    double amin = BLASFUNC(damin)(&N, x, &inc);
-   ASSERT_DBL_NEAR_TOL(0.0, amin, DOUBLE_EPS);
+   ASSERT_DBL_NEAR_TOL(x[0], amin, DOUBLE_EPS);
 }
 
 /**

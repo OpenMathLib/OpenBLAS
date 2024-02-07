@@ -62,7 +62,7 @@ CTEST(isamin, step_zero){
    blasint i;
    blasint N = ELEMENTS, inc = 0;
    float x[ELEMENTS];
-   for (i = 0; i < N  * inc; i ++) {
+   for (i = 0; i < N; i ++) {
       x[i] = i + 1000;
    }
    x[8] = 0.0f;
@@ -435,7 +435,7 @@ CTEST(isamin, c_api_step_zero){
    blasint i;
    blasint N = ELEMENTS, inc = 0;
    float x[ELEMENTS];
-   for (i = 0; i < N  * inc; i ++) {
+   for (i = 0; i < N; i ++) {
       x[i] = i + 1000;
    }
    x[8] = 0.0f;

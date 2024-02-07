@@ -59,13 +59,13 @@ CTEST(dzamin, bad_args_N_0){
 CTEST(dzamin, step_zero){
    blasint i;
    blasint N = ELEMENTS * 2, inc = 0;
-   double x[ELEMENTS];
-   for (i = 0; i < N  * inc * 2; i ++) {
+   double x[ELEMENTS * 2];
+   for (i = 0; i < N; i ++) {
       x[i] = i + 1000;
    }
    x[8] = 0.0;
    double amin = BLASFUNC(dzamin)(&N, x, &inc);
-   ASSERT_DBL_NEAR_TOL(0.0, amin, DOUBLE_EPS);
+   ASSERT_DBL_NEAR_TOL((x[0] + x[1]), amin, DOUBLE_EPS);
 }
 
 /**

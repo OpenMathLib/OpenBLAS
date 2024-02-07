@@ -59,13 +59,13 @@ CTEST(scamin, bad_args_N_0){
 CTEST(scamin, step_zero){
    blasint i;
    blasint N = ELEMENTS * 2, inc = 0;
-   float x[ELEMENTS];
-   for (i = 0; i < N  * inc * 2; i ++) {
+   float x[ELEMENTS * 2];
+   for (i = 0; i < N; i ++) {
       x[i] = i + 1000;
    }
    x[8] = 0.0f;
    float amin = BLASFUNC(scamin)(&N, x, &inc);
-   ASSERT_DBL_NEAR_TOL(0.0f, amin, SINGLE_EPS);
+   ASSERT_DBL_NEAR_TOL((x[0] + x[1]), amin, SINGLE_EPS);
 }
 
 /**
