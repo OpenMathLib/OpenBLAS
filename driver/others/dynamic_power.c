@@ -339,6 +339,9 @@ void gotoblas_dynamic_init(void) {
 	if (gotoblas && gotoblas -> init) {
 		strncpy(coren,gotoblas_corename(),20);
 		sprintf(coremsg, "Core: %s\n",coren);
+		if (getenv("GET_OPENBLAS_CORETYPE")) {
+			fprintf(stderr, "%s", coremsg);
+		}
 		openblas_warning(2, coremsg);
 		gotoblas -> init();
 	} else {
