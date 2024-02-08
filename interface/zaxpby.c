@@ -39,12 +39,14 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #ifndef CBLAS
 
-void NAME(blasint *N, FLOAT *ALPHA, FLOAT *x, blasint *INCX, FLOAT *BETA, FLOAT *y, blasint *INCY)
+void NAME(blasint *N, void *VALPHA, FLOAT *x, blasint *INCX, void *VBETA, FLOAT *y, blasint *INCY)
 {
 
   blasint n    = *N;
   blasint incx = *INCX;
   blasint incy = *INCY;
+  FLOAT* ALPHA = (FLOAT*) VALPHA;
+  FLOAT* BETA = (FLOAT*) VBETA;
 
 #else
 
