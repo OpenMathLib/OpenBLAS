@@ -871,13 +871,14 @@ lapackobjs2z="$lapackobjs2z
 lapackobjs2c="$lapackobjs2c
     claqp2rk
     claqp3rk
-    claqz0
-    claqz1
-    claqz2
-    claqz3
-    clatrs3
     ctrsyl3
     "
+#    claqz0
+#    claqz1
+#    claqz2
+#    claqz3
+#    clatrs3
+
 lapackobjs2d="$lapackobjs2d
     dgelqs
     dgelst
@@ -885,15 +886,16 @@ lapackobjs2d="$lapackobjs2d
     dgeqrs
     dlaqp2rk
     dlaqp3rk
-    dlaqz0
-    dlaqz1
-    dlaqz2
-    dlaqz3
-    dlaqz4
     dlarmm
     dlatrs3
     dtrsyl3
     "
+#    dlaqz0
+#    dlaqz1
+#    dlaqz2
+#    dlaqz3
+#    dlaqz4
+
 lapackobjs2z="$lapackobjs2z
     zgelqs
     zgelst
@@ -901,14 +903,14 @@ lapackobjs2z="$lapackobjs2z
     zgeqrs
     zlaqp2rk
     zlaqp3rk
-    zlaqz0
-    zlaqz1
-    zlaqz2
-    zlaqz3
     zlatrs3
     zrscl
     ztrsyl3
-"
+    "
+#    zlaqz0
+#    zlaqz1
+#    zlaqz2
+#    zlaqz3
 
 lapack_extendedprecision_objs="
     zposvxx clagge clatms chesvxx cposvxx cgesvxx ssyrfssx csyrfsx
