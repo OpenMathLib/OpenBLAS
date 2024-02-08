@@ -69,7 +69,7 @@ static int cpuid(void)
     else if (arch == POWER_9) return CPU_POWER9;
 #endif
 #ifdef POWER_10
-    else if (arch == POWER_10) return CPU_POWER10;
+    else if (arch >= POWER_10) return CPU_POWER10;
 #endif
     return CPU_UNKNOWN;
 }
@@ -339,6 +339,9 @@ void gotoblas_dynamic_init(void) {
 	if (gotoblas && gotoblas -> init) {
 		strncpy(coren,gotoblas_corename(),20);
 		sprintf(coremsg, "Core: %s\n",coren);
+		if (getenv("GET_OPENBLAS_CORETYPE")) {
+			fprintf(stderr, "%s", coremsg);
+		}
 		openblas_warning(2, coremsg);
 		gotoblas -> init();
 	} else {
