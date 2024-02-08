@@ -69,7 +69,7 @@ static int cpuid(void)
     else if (arch == POWER_9) return CPU_POWER9;
 #endif
 #ifdef POWER_10
-    else if (arch == POWER_10) return CPU_POWER10;
+    else if (arch >= POWER_10) return CPU_POWER10;
 #endif
     return CPU_UNKNOWN;
 }
