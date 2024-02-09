@@ -61,11 +61,11 @@ CTEST(samin, step_zero){
    blasint N = ELEMENTS, inc = 0;
    float x[ELEMENTS];
    for (i = 0; i < N; i ++) {
-      x[i] = i + 1000;
+      x[i] = i - 1000;
    }
    x[8] = 0.0;
    float amin = BLASFUNC(samin)(&N, x, &inc);
-   ASSERT_DBL_NEAR_TOL(x[0], amin, SINGLE_EPS);
+   ASSERT_DBL_NEAR_TOL(fabsf(x[0]), amin, SINGLE_EPS);
 }
 
 /**

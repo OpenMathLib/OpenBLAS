@@ -61,10 +61,10 @@ CTEST(dzamax, step_zero){
    blasint N = ELEMENTS * 2, inc = 0;
    double x[ELEMENTS * 2];
    for (i = 0; i < N; i ++) {
-      x[i] = i + 1000;
+      x[i] = i - 1000;
    }
    double amax = BLASFUNC(dzamax)(&N, x, &inc);
-   ASSERT_DBL_NEAR_TOL((x[0] + x[1]), amax, DOUBLE_EPS);
+   ASSERT_DBL_NEAR_TOL((fabs(x[0]) + fabs(x[1])), amax, DOUBLE_EPS);
 }
 
 /**
