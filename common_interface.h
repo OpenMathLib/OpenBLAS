@@ -773,8 +773,8 @@ xdouble   BLASFUNC(qlamc3)(xdouble *, xdouble *);
 
 void    BLASFUNC(saxpby) (blasint *, float  *, float  *, blasint *, float *, float  *, blasint *);
 void    BLASFUNC(daxpby) (blasint *, double  *, double  *, blasint *, double *, double  *, blasint *);
-void    BLASFUNC(caxpby) (blasint *, float  *, float  *, blasint *, float *, float  *, blasint *);
-void    BLASFUNC(zaxpby) (blasint *, double  *, double  *, blasint *, double *, double  *, blasint *);
+void    BLASFUNC(caxpby) (blasint *, void  *, float  *, blasint *, void *, float  *, blasint *);
+void    BLASFUNC(zaxpby) (blasint *, void  *, double *, blasint *, void *, double  *, blasint *);
 
 void    BLASFUNC(somatcopy) (char *, char *, blasint *, blasint *, float  *, float  *, blasint *, float  *, blasint *);
 void    BLASFUNC(domatcopy) (char *, char *, blasint *, blasint *, double  *, double  *, blasint *, double  *, blasint *);
