@@ -172,7 +172,7 @@ endif
 
 	@echo Generating $(LIBSONAMEBASE)$(SUFFIX64).pc in "$(DESTDIR)$(OPENBLAS_PKGCONFIG_DIR)"
 	@echo 'libdir='$(OPENBLAS_LIBRARY_DIR) > "$(PKGFILE)"
-	@echo 'libprefix='$(LIBPREFIX) >> "$(PKGFILE)"
+	@echo 'libprefix='$(LIBNAMEPREFIX) >> "$(PKGFILE)"
 	@echo 'libnamesuffix='$(LIBNAMESUFFIX) >> "$(PKGFILE)"
 	@echo 'libsuffix='$(SYMBOLSUFFIX) >> "$(PKGFILE)"
 	@echo 'includedir='$(OPENBLAS_INCLUDE_DIR) >> "$(PKGFILE)"
@@ -190,7 +190,7 @@ endif
 ifneq ($(NO_SHARED),1)
 #ifeq logical or
 ifeq ($(OSNAME), $(filter $(OSNAME),Linux FreeBSD NetBSD OpenBSD DragonFly))
-	@echo "SET(OpenBLAS_LIBRARIES ${OPENBLAS_LIBRARY_DIR}/$(LIBPREFIX)$(LIBSONAMEBASE)$(LIBNAMESUFFIX).so)" >> "$(DESTDIR)$(OPENBLAS_CMAKE_DIR)/$(OPENBLAS_CMAKE_CONFIG)"
+	@echo "SET(OpenBLAS_LIBRARIES ${OPENBLAS_LIBRARY_DIR}/$(LIBPREFIX)$(LIBNAMESUFFIX).so)" >> "$(DESTDIR)$(OPENBLAS_CMAKE_DIR)/$(OPENBLAS_CMAKE_CONFIG)"
 endif
 ifeq ($(OSNAME), $(filter $(OSNAME),WINNT CYGWIN_NT))
 	@echo "SET(OpenBLAS_LIBRARIES ${OPENBLAS_BINARY_DIR}/$(LIBDLLNAME))" >> "$(DESTDIR)$(OPENBLAS_CMAKE_DIR)/$(OPENBLAS_CMAKE_CONFIG)"
