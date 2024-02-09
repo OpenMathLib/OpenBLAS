@@ -47,6 +47,7 @@ config_last.h
 getarch
 getarch_2nd
 utest/openblas_utest
+utest/openblas_utest_ext
 ctest/xccblat1
 ctest/xccblat2
 ctest/xccblat3
