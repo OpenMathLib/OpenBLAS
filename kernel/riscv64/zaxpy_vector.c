@@ -45,10 +45,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 int CNAME(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, FLOAT da_r, FLOAT da_i, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG inc_y, FLOAT *dummy, BLASLONG dummy2)
 {
-	BLASLONG i = 0, j = 0;
-	BLASLONG ix = 0,iy = 0;
-	if(n < 0) return(0);
-	if(da_r == 0.0 && da_i == 0.0) return(0);
+        BLASLONG i = 0, j = 0;
+        BLASLONG ix = 0,iy = 0;
+        if(n <= 0) return(0);
+        if(da_r == 0.0 && da_i == 0.0) return(0);
         unsigned int gvl = 0;
         BLASLONG stride_x = inc_x * 2 * sizeof(FLOAT);
         BLASLONG stride_y = inc_y * 2 * sizeof(FLOAT);
