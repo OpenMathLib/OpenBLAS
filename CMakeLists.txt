@@ -452,6 +452,34 @@ if (BUILD_SHARED_LIBS AND NOT ${SYMBOLPREFIX}${SYMBOLSUFFIX} STREQUAL "")
   endif()
 endif()
 
+if (BUILD_TESTING)
+  find_package(OpenMP REQUIRED)
+  file(GLOB SOURCES "benchmark/*.c")
+  foreach(source ${SOURCES})
+    get_filename_component(name ${source} NAME_WE)
+    if ((NOT ${name} STREQUAL "zdot-intel") AND (NOT ${name} STREQUAL "cula_wrapper"))
+        set(defines DEFAULT COMPLEX DOUBLE "COMPLEX\;DOUBLE")
+      foreach(define ${defines})
+        set(target_name "benchmark_${name}")
+        if (NOT "${define}" STREQUAL "DEFAULT")
+          string(JOIN "_" define_str ${define})
+          set(target_name "${target_name}_${define_str}")
+        endif()
+        if ((NOT ${target_name} STREQUAL "benchmark_imax_COMPLEX") AND (NOT ${target_name} STREQUAL "benchmark_imax_COMPLEX_DOUBLE") AND
+            (NOT ${target_name} STREQUAL "benchmark_imin_COMPLEX") AND (NOT ${target_name} STREQUAL "benchmark_imin_COMPLEX_DOUBLE") AND
+            (NOT ${target_name} STREQUAL "benchmark_max_COMPLEX") AND (NOT ${target_name} STREQUAL "benchmark_max_COMPLEX_DOUBLE") AND
+            (NOT ${target_name} STREQUAL "benchmark_min_COMPLEX") AND (NOT ${target_name} STREQUAL "benchmark_min_COMPLEX_DOUBLE"))
+          add_executable(${target_name} ${source})
+          target_include_directories(${target_name} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR})
+          target_link_libraries(${target_name} ${OpenBLAS_LIBNAME} OpenMP::OpenMP_C)
+          if (NOT "${define}" STREQUAL "DEFAULT")
+            target_compile_definitions(${target_name} PRIVATE ${define})
+          endif()
+        endif()
+      endforeach()
+    endif()
+  endforeach()
+endif()
 
 
 # Install project
