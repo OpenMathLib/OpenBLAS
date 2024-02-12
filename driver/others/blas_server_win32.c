@@ -73,7 +73,7 @@ static DWORD	    blas_threads_id[MAX_CPU_NUMBER];
 static volatile int thread_target;	// target num of live threads, volatile for cross-thread reads
 
 //
-//
+// Legacy code path
 //
 static void legacy_exec(void *func, int mode, blas_arg_t *args, void *sb) {
 
@@ -369,11 +369,11 @@ int blas_thread_init(void) {
   return 0;
 }
 
-/*
-   User can call one of two routines.
-     exec_blas_async ... immediately returns after jobs are queued.
-     exec_blas       ... returns after jobs are finished.
-*/
+//
+//   User can call one of two routines.
+//     exec_blas_async ... immediately returns after jobs are queued.
+//     exec_blas       ... returns after jobs are finished.
+//
 int exec_blas_async(BLASLONG pos, blas_queue_t *queue) {
 
 #if defined(SMP_SERVER)
@@ -471,27 +471,32 @@ int exec_blas(BLASLONG num, blas_queue_t *queue) {
 
   if ((num <= 0) || (queue == NULL)) return 0;
 
-  if ((num > 1) && queue -> next) exec_blas_async(1, queue -> next);
+  if ((num > 1) && queue -> next) 
+    exec_blas_async(1, queue -> next);
 
   routine = queue -> routine;
 
   if (queue -> mode & BLAS_LEGACY) {
     legacy_exec(routine, queue -> mode, queue -> args, queue -> sb);
-  } else
+  } else {
     if (queue -> mode & BLAS_PTHREAD) {
       void (*pthreadcompat)(void *) = queue -> routine;
       (pthreadcompat)(queue -> args);
     } else
       (routine)(queue -> args, queue -> range_m, queue -> range_n,
-		queue -> sa, queue -> sb, 0);
+    		queue -> sa, queue -> sb, 0);
+  }
 
-  if ((num > 1) && queue -> next) exec_blas_async_wait(num - 1, queue -> next);
+  if ((num > 1) && queue -> next) 
+    exec_blas_async_wait(num - 1, queue -> next);
 
   return 0;
 }
 
+//
 // Shutdown procedure, but user don't have to call this routine. The
 // kernel automatically kill threads.
+//
 int BLASFUNC(blas_thread_shutdown)(void) {
 
   int i;
@@ -502,7 +507,7 @@ int BLASFUNC(blas_thread_shutdown)(void) {
 
   if (blas_server_avail) {
 
-    for(i = 0; i < blas_num_threads - 1; i++) {
+    for (i = 0; i < blas_num_threads - 1; i++) {
       // Could also just use WaitForMultipleObjects
       DWORD wait_thread_value = WaitForSingleObject(blas_threads[i], 50);
 
@@ -524,6 +529,9 @@ int BLASFUNC(blas_thread_shutdown)(void) {
   return 0;
 }
 
+//
+// Legacy function to set numbef of threads
+//
 void goto_set_num_threads(int num_threads)
 {
 	long i;
@@ -577,7 +585,7 @@ void goto_set_num_threads(int num_threads)
 			blas_server_avail = 1;
 		}
 
-		for(i = (blas_num_threads > 0) ? blas_num_threads - 1 : 0; i < num_threads - 1; i++) {
+		for (i = (blas_num_threads > 0) ? blas_num_threads - 1 : 0; i < num_threads - 1; i++) {
 			//MT_TRACE("set_num_threads: creating thread [%d]\n", i);
 
 			blas_threads[i] = CreateThread(NULL, 0,
@@ -593,6 +601,9 @@ void goto_set_num_threads(int num_threads)
 	blas_cpu_number  = num_threads;
 }
 
+//
+// Openblas function to set thread count
+//
 void openblas_set_num_threads(int num)
 {
 	goto_set_num_threads(num);
