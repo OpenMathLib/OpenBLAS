@@ -16,13 +16,13 @@ jobs:
         include:
           - target: LOONGSONGENERIC
             triple:  loongarch64-unknown-linux-gnu
-            opts: NO_SHARED=1 TARGET=LOONGSONGENERIC
+            opts: NO_SHARED=1 DYNAMIC_ARCH=1 TARGET=LOONGSONGENERIC
           - target: LOONGSON3R5
             triple: loongarch64-unknown-linux-gnu
-            opts: NO_SHARED=1 TARGET=LOONGSON3R5
+            opts: NO_SHARED=1 DYNAMIC_ARCH=1 TARGET=LOONGSON3R5
           - target: LOONGSON2K1000
             triple: loongarch64-unknown-linux-gnu
-            opts: NO_SHARED=1 TARGET=LOONGSON2K1000
+            opts: NO_SHARED=1 DYNAMIC_ARCH=1 TARGET=LOONGSON2K1000
           - target: DYNAMIC_ARCH
             triple: loongarch64-unknown-linux-gnu
             opts: NO_SHARED=1 DYNAMIC_ARCH=1 TARGET=GENERIC
@@ -40,8 +40,9 @@ jobs:
 
       - name: Download and install loongarch64-toolchain
         run: |
-          wget https://github.com/loongson/build-tools/releases/download/2022.09.06/loongarch64-clfs-7.3-cross-tools-gcc-glibc.tar.xz
-          tar -xf loongarch64-clfs-7.3-cross-tools-gcc-glibc.tar.xz -C /opt
+          wget https://github.com/sunhaiyong1978/CLFS-for-LoongArch/releases/download/8.1/CLFS-loongarch64-8.1-x86_64-cross-tools-gcc-glibc.tar.xz
+          #wget https://github.com/loongson/build-tools/releases/download/2023.08.08/CLFS-loongarch64-8.1-x86_64-cross-tools-gcc-glibc.tar.xz
+          tar -xf CLFS-loongarch64-8.1-x86_64-cross-tools-gcc-glibc.tar.xz -C /opt
 
       - name: Set env
         run: |

@@ -1,6 +1,6 @@
 DGS               Data for the Real Nonsymmetric Schur Form Driver
 5                 Number of matrix dimensions
-2 6 10 12 20 30   Matrix dimensions
+2 10 12 20 30     Matrix dimensions
 1 1 1 2 1         Parameters NB, NBMIN, NXOVER, NS, NBCOL
 10                Threshold for test ratios
 .TRUE.            Put T to test the error exits

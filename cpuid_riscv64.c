@@ -70,12 +70,26 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /* or implied, of The University of Texas at Austin.                 */
 /*********************************************************************/
 
-#define CPU_GENERIC   0
-#define CPU_C910V     1
+#define CPU_GENERIC         0
+#define CPU_C910V           1
+#define CPU_x280            2
+#define CPU_RISCV64_ZVL256B 3
+#define CPU_RISCV64_ZVL128B 4
 
 static char *cpuname[] = {
   "RISCV64_GENERIC",
-  "C910V"
+  "C910V",
+  "x280",
+  "CPU_RISCV64_ZVL256B",
+  "CPU_RISCV64_ZVL128B"
+};
+
+static char *cpuname_lower[] = {
+  "riscv64_generic",
+  "c910v",
+  "x280",
+  "riscv64_zvl256b",
+  "riscv64_zvl128b"
 };
 
 int detect(void){
@@ -86,23 +100,29 @@ int detect(void){
   char *pmodel = NULL, *pisa = NULL;
 
   infile = fopen("/proc/cpuinfo", "r");
+  if (!infile)
+    return CPU_GENERIC;
   while (fgets(buffer, sizeof(buffer), infile)){
     if(!strncmp(buffer, "model name", 10)){
       strcpy(model_buffer, buffer);
-      pmodel = strchr(isa_buffer, ':') + 1;
+      pmodel = strchr(model_buffer, ':');
+      if (pmodel)
+        pmodel++;
     }
 
     if(!strncmp(buffer, "isa", 3)){
       strcpy(isa_buffer, buffer);
-      pisa = strchr(isa_buffer, '4') + 1;
+      pisa = strchr(isa_buffer, '4');
+      if (pisa)
+        pisa++;
     }
   }
 
   fclose(infile);
 
-  if (!pmodel)
+  if (!pmodel || !pisa)
    return(CPU_GENERIC);
-   
+
   if (strstr(pmodel, check_c910_str) && strchr(pisa, 'v'))
     return CPU_C910V;
 
@@ -140,5 +160,5 @@ void get_cpuconfig(void){
 }
 
 void get_libname(void){
-  printf("riscv64\n");
+  printf("%s", cpuname_lower[detect()]);
 }

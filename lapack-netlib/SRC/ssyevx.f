@@ -338,14 +338,14 @@
       IF( INFO.EQ.0 ) THEN
          IF( N.LE.1 ) THEN
             LWKMIN = 1
-            WORK( 1 ) = SROUNDUP_LWORK(LWKMIN)
+            LWKOPT = 1
          ELSE
             LWKMIN = 8*N
             NB = ILAENV( 1, 'SSYTRD', UPLO, N, -1, -1, -1 )
             NB = MAX( NB, ILAENV( 1, 'SORMTR', UPLO, N, -1, -1, -1 ) )
             LWKOPT = MAX( LWKMIN, ( NB + 3 )*N )
-            WORK( 1 ) = SROUNDUP_LWORK(LWKOPT)
          END IF
+         WORK( 1 ) = SROUNDUP_LWORK( LWKOPT )
 *
          IF( LWORK.LT.LWKMIN .AND. .NOT.LQUERY )
      $      INFO = -17
@@ -542,7 +542,7 @@
 *
 *     Set WORK(1) to optimal workspace size.
 *
-      WORK( 1 ) = SROUNDUP_LWORK(LWKOPT)
+      WORK( 1 ) = SROUNDUP_LWORK( LWKOPT )
 *
       RETURN
 *

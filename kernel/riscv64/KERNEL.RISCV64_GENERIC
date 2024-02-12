@@ -45,6 +45,11 @@ DAXPYKERNEL  = ../riscv64/axpy.c
 CAXPYKERNEL  = ../riscv64/zaxpy.c
 ZAXPYKERNEL  = ../riscv64/zaxpy.c
 
+SAXPBYKERNEL  = ../riscv64/axpby.c
+DAXPBYKERNEL  = ../riscv64/axpby.c
+CAXPBYKERNEL  = ../riscv64/zaxpby.c
+ZAXPBYKERNEL  = ../riscv64/zaxpby.c
+
 SCOPYKERNEL  = ../riscv64/copy.c
 DCOPYKERNEL  = ../riscv64/copy.c
 CCOPYKERNEL  = ../riscv64/zcopy.c

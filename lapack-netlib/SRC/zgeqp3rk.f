@@ -428,7 +428,8 @@
 *> \verbatim
 *>          LWORK is INTEGER
 *>          The dimension of the array WORK.
-*.          LWORK >= N+NRHS-1
+*>          LWORK >= 1, if MIN(M,N) = 0, and
+*>          LWORK >= N+NRHS-1, otherwise.
 *>          For optimal performance LWORK >= NB*( N+NRHS+1 ),
 *>          where NB is the optimal block size for ZGEQP3RK returned
 *>          by ILAENV. Minimal block size MINNB=2.

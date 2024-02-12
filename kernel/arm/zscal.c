@@ -60,6 +60,7 @@ int CNAME(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, FLOAT da_r,FLOAT da_i, F
 			else
 			{
 				temp = - da_i * x[ip+1] ;
+				if (isnan(x[ip]) || isinf(x[ip])) temp = NAN;
 				x[ip+1] = da_i * x[ip]  ;
 			}
 		}

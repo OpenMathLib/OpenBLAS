@@ -396,7 +396,7 @@ typedef int blasint;
 #endif
 
 /***
-To alloc job_t on heap or statck.
+To alloc job_t on heap or stack.
 please https://github.com/xianyi/OpenBLAS/issues/246
 ***/
 #if defined(OS_WINDOWS)
@@ -480,6 +480,10 @@ please https://github.com/xianyi/OpenBLAS/issues/246
 
 #ifdef ARCH_E2K
 #include "common_e2k.h"
+#endif
+
+#ifdef ARCH_CSKY
+#include "common_csky.h"
 #endif
 
 #ifndef ASSEMBLER

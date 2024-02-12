@@ -98,7 +98,7 @@
 *> \param[in] LWORK
 *> \verbatim
 *>          LWORK is INTEGER
-*>          The dimension of the array WORK.
+*>          The dimension of the array WORK. LWORK >= 1.
 *>          If LWORK = -1 or -2, then a workspace query is assumed. The routine
 *>          only calculates the sizes of the T and WORK arrays, returns these
 *>          values as the first entries of the T and WORK arrays, and no error
@@ -165,6 +165,8 @@
 *>  ZLASWLQ (if the matrix is short-and-wide) or ZGELQT to compute
 *>  the LQ factorization.
 *> \endverbatim
+*>
+*> \ingroup gelq
 *>
 *  =====================================================================
       SUBROUTINE ZGELQ( M, N, A, LDA, T, TSIZE, WORK, LWORK,

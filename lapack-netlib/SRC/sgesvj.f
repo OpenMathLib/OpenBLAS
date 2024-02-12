@@ -208,7 +208,7 @@
 *>
 *> \param[in,out] WORK
 *> \verbatim
-*>          WORK is REAL array, dimension (LWORK)
+*>          WORK is REAL array, dimension (MAX(1,LWORK))
 *>          On entry,
 *>          If JOBU = 'C' :
 *>          WORK(1) = CTOL, where CTOL defines the threshold for convergence.
@@ -239,7 +239,12 @@
 *> \param[in] LWORK
 *> \verbatim
 *>          LWORK is INTEGER
-*>         length of WORK, WORK >= MAX(6,M+N)
+*>          Length of WORK.
+*>          LWORK >= 1, if MIN(M,N) = 0, and LWORK >= MAX(6,M+N), otherwise.
+*>
+*>          If on entry LWORK = -1, then a workspace query is assumed and
+*>          no computation is done; WORK(1) is set to the minial (and optimal)
+*>          length of WORK.
 *> \endverbatim
 *>
 *> \param[out] INFO
@@ -260,7 +265,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup realGEcomputational
+*> \ingroup gesvj
 *
 *> \par Further Details:
 *  =====================
@@ -351,9 +356,9 @@
       INTEGER            BLSKIP, EMPTSW, i, ibr, IERR, igl, IJBLSK, ir1,
      $                   ISWROT, jbc, jgl, KBL, LKAHEAD, MVL, N2, N34,
      $                   N4, NBL, NOTROT, p, PSKIPPED, q, ROWSKIP,
-     $                   SWBAND
-      LOGICAL            APPLV, GOSCALE, LOWER, LSVEC, NOSCALE, ROTOK,
-     $                   RSVEC, UCTOL, UPPER
+     $                   SWBAND, MINMN, LWMIN
+      LOGICAL            APPLV, GOSCALE, LOWER, LQUERY, LSVEC, NOSCALE,
+     $                   ROTOK, RSVEC, UCTOL, UPPER
 *     ..
 *     .. Local Arrays ..
       REAL               FASTR( 5 )
@@ -369,8 +374,8 @@
       INTEGER            ISAMAX
       EXTERNAL           ISAMAX
 *     from LAPACK
-      REAL               SLAMCH
-      EXTERNAL           SLAMCH
+      REAL               SLAMCH, SROUNDUP_LWORK
+      EXTERNAL           SLAMCH, SROUNDUP_LWORK
       LOGICAL            LSAME
       EXTERNAL           LSAME
 *     ..
@@ -394,6 +399,14 @@
       UPPER = LSAME( JOBA, 'U' )
       LOWER = LSAME( JOBA, 'L' )
 *
+      MINMN = MIN( M, N )
+      IF( MINMN.EQ.0 ) THEN
+         LWMIN = 1
+      ELSE
+         LWMIN = MAX( 6, M+N )
+      END IF
+*
+      LQUERY = ( LWORK.EQ.-1 )
       IF( .NOT.( UPPER .OR. LOWER .OR. LSAME( JOBA, 'G' ) ) ) THEN
          INFO = -1
       ELSE IF( .NOT.( LSVEC .OR. UCTOL .OR. LSAME( JOBU, 'N' ) ) ) THEN
@@ -413,7 +426,7 @@
          INFO = -11
       ELSE IF( UCTOL .AND. ( WORK( 1 ).LE.ONE ) ) THEN
          INFO = -12
-      ELSE IF( LWORK.LT.MAX( M+N, 6 ) ) THEN
+      ELSE IF( LWORK.LT.LWMIN .AND. ( .NOT.LQUERY ) ) THEN
          INFO = -13
       ELSE
          INFO = 0
@@ -423,11 +436,14 @@
       IF( INFO.NE.0 ) THEN
          CALL XERBLA( 'SGESVJ', -INFO )
          RETURN
+      ELSE IF( LQUERY ) THEN
+         WORK( 1 ) = SROUNDUP_LWORK( LWMIN )
+         RETURN
       END IF
 *
 * #:) Quick return for void matrix
 *
-      IF( ( M.EQ.0 ) .OR. ( N.EQ.0 ) )RETURN
+      IF( MINMN.EQ.0 ) RETURN
 *
 *     Set numerical parameters
 *     The stopping criterion for Jacobi rotations is

@@ -223,7 +223,7 @@ zscal_begin:
 	fcmp	DA_I, #0.0
 	beq	.Lzscal_kernel_RI_zero
 
-	b	.Lzscal_kernel_R_zero
+//	b	.Lzscal_kernel_R_zero
 
 .Lzscal_kernel_R_non_zero:
 

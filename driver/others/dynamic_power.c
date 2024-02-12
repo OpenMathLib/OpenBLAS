@@ -43,6 +43,13 @@ char *gotoblas_corename(void) {
 #define CPU_POWER9   9
 #define CPU_POWER10 10
 
+#ifndef POWER_9
+#define POWER_9         0x20000         /* 9 class CPU */
+#endif
+#ifndef POWER_10
+#define POWER_10        0x40000         /* 10 class CPU */
+#endif
+
 #ifdef _AIX
 #include <sys/systemcfg.h>
 
@@ -62,7 +69,7 @@ static int cpuid(void)
     else if (arch == POWER_9) return CPU_POWER9;
 #endif
 #ifdef POWER_10
-    else if (arch == POWER_10) return CPU_POWER10;
+    else if (arch >= POWER_10) return CPU_POWER10;
 #endif
     return CPU_UNKNOWN;
 }
@@ -332,6 +339,9 @@ void gotoblas_dynamic_init(void) {
 	if (gotoblas && gotoblas -> init) {
 		strncpy(coren,gotoblas_corename(),20);
 		sprintf(coremsg, "Core: %s\n",coren);
+		if (getenv("GET_OPENBLAS_CORETYPE")) {
+			fprintf(stderr, "%s", coremsg);
+		}
 		openblas_warning(2, coremsg);
 		gotoblas -> init();
 	} else {

@@ -55,6 +55,26 @@ ifeq ($(TARGET), C910V)
 TARGET_FLAGS = -march=rv64gcv0p7_zfh_xtheadc -mabi=lp64d
 endif
 
+ifeq ($(TARGET), CK860FV)
+TARGET_FLAGS = -march=ck860v -mcpu=ck860fv -mfdivdu -mhard-float
+endif
+
+ifeq ($(TARGET), x280)
+TARGET_FLAGS = -march=rv64imafdcv_zba_zbb_zfh -mabi=lp64d
+endif
+
+ifeq ($(TARGET), RISCV64_ZVL256B)
+TARGET_FLAGS = -march=rv64imafdcv -mabi=lp64d
+endif
+
+ifeq ($(TARGET), RISCV64_ZVL128B)
+TARGET_FLAGS = -march=rv64imafdcv -mabi=lp64d
+endif
+
+ifeq ($(TARGET), RISCV64_GENERIC)
+TARGET_FLAGS = -march=rv64imafdc -mabi=lp64d
+endif
+
 all: getarch_2nd
 	./getarch_2nd  0 >> $(TARGET_MAKE)
 	./getarch_2nd  1 >> $(TARGET_CONF)

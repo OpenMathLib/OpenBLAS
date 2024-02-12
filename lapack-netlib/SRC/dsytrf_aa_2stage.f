@@ -87,14 +87,14 @@
 *>
 *> \param[out] TB
 *> \verbatim
-*>          TB is DOUBLE PRECISION array, dimension (LTB)
+*>          TB is DOUBLE PRECISION array, dimension (MAX(1,LTB))
 *>          On exit, details of the LU factorization of the band matrix.
 *> \endverbatim
 *>
 *> \param[in] LTB
 *> \verbatim
 *>          LTB is INTEGER
-*>          The size of the array TB. LTB >= 4*N, internally
+*>          The size of the array TB. LTB >= MAX(1,4*N), internally
 *>          used to select NB such that LTB >= (3*NB+1)*N.
 *>
 *>          If LTB = -1, then a workspace query is assumed; the
@@ -121,14 +121,14 @@
 *>
 *> \param[out] WORK
 *> \verbatim
-*>          WORK is DOUBLE PRECISION workspace of size LWORK
+*>          WORK is DOUBLE PRECISION workspace of size (MAX(1,LWORK))
 *> \endverbatim
 *>
 *> \param[in] LWORK
 *> \verbatim
 *>          LWORK is INTEGER
-*>          The size of WORK. LWORK >= N, internally used to select NB
-*>          such that LWORK >= N*NB.
+*>          The size of WORK. LWORK >= MAX(1,N), internally used
+*>          to select NB such that LWORK >= N*NB.
 *>
 *>          If LWORK = -1, then a workspace query is assumed; the
 *>          routine only calculates the optimal size of the WORK array,
@@ -152,7 +152,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup doubleSYcomputational
+*> \ingroup hetrf_aa_2stage
 *
 *  =====================================================================
       SUBROUTINE DSYTRF_AA_2STAGE( UPLO, N, A, LDA, TB, LTB, IPIV,
@@ -211,9 +211,9 @@
          INFO = -2
       ELSE IF( LDA.LT.MAX( 1, N ) ) THEN
          INFO = -4
-      ELSE IF ( LTB .LT. 4*N .AND. .NOT.TQUERY ) THEN
+      ELSE IF( LTB.LT.MAX( 1, 4*N ) .AND. .NOT.TQUERY ) THEN
          INFO = -6
-      ELSE IF ( LWORK .LT. N .AND. .NOT.WQUERY ) THEN
+      ELSE IF( LWORK.LT.MAX( 1, N ) .AND. .NOT.WQUERY ) THEN
          INFO = -10
       END IF
 *
@@ -227,10 +227,10 @@
       NB = ILAENV( 1, 'DSYTRF_AA_2STAGE', UPLO, N, -1, -1, -1 )
       IF( INFO.EQ.0 ) THEN
          IF( TQUERY ) THEN
-            TB( 1 ) = (3*NB+1)*N
+            TB( 1 ) = MAX( 1, (3*NB+1)*N )
          END IF
          IF( WQUERY ) THEN
-            WORK( 1 ) = N*NB
+            WORK( 1 ) = MAX( 1, N*NB )
          END IF
       END IF
       IF( TQUERY .OR. WQUERY ) THEN
@@ -239,7 +239,7 @@
 *
 *     Quick return
 *
-      IF ( N.EQ.0 ) THEN
+      IF( N.EQ.0 ) THEN
          RETURN
       ENDIF
 *

@@ -250,8 +250,8 @@
       NB2 = ILAENV( 1, 'CGEQRF', ' ', P, N, -1, -1 )
       NB3 = ILAENV( 1, 'CUNMRQ', ' ', M, N, P, -1 )
       NB = MAX( NB1, NB2, NB3 )
-      LWKOPT = MAX( N, M, P)*NB
-      WORK( 1 ) = SROUNDUP_LWORK(LWKOPT)
+      LWKOPT = MAX( 1, MAX( N, M, P )*NB )
+      WORK( 1 ) = SROUNDUP_LWORK( LWKOPT )
       LQUERY = ( LWORK.EQ.-1 )
       IF( M.LT.0 ) THEN
          INFO = -1
@@ -288,7 +288,7 @@
 *     QR factorization of P-by-N matrix B: B = Z*T
 *
       CALL CGEQRF( P, N, B, LDB, TAUB, WORK, LWORK, INFO )
-      WORK( 1 ) = MAX( LOPT, INT( WORK( 1 ) ) )
+      WORK( 1 ) = SROUNDUP_LWORK( MAX( LOPT, INT( WORK( 1 ) ) ) )
 *
       RETURN
 *

@@ -272,7 +272,8 @@
 *> \param[in] LWORK
 *> \verbatim
 *>          LWORK is INTEGER
-*>          The length of the array WORK.  LWORK >= max(1,2*N).
+*>          The length of the array WORK.
+*>          If N <= 1, LWORK >= 1, else LWORK >= 2*N.
 *>          For optimal efficiency, LWORK >= (NB+1)*N,
 *>          where NB is the max of the blocksize for ZHETRD and for
 *>          ZUNMTR as returned by ILAENV.
@@ -294,7 +295,8 @@
 *> \param[in] LRWORK
 *> \verbatim
 *>          LRWORK is INTEGER
-*>          The length of the array RWORK.  LRWORK >= max(1,24*N).
+*>          The length of the array RWORK.
+*>          If N <= 1, LRWORK >= 1, else LRWORK >= 24*N.
 *>
 *>          If LRWORK = -1, then a workspace query is assumed; the
 *>          routine only calculates the optimal sizes of the WORK, RWORK
@@ -313,7 +315,8 @@
 *> \param[in] LIWORK
 *> \verbatim
 *>          LIWORK is INTEGER
-*>          The dimension of the array IWORK.  LIWORK >= max(1,10*N).
+*>          The dimension of the array IWORK.
+*>          If N <= 1, LIWORK >= 1, else LIWORK >= 10*N.
 *>
 *>          If LIWORK = -1, then a workspace query is assumed; the
 *>          routine only calculates the optimal sizes of the WORK, RWORK
@@ -338,7 +341,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup complex16HEeigen
+*> \ingroup heevr
 *
 *> \par Contributors:
 *  ==================
@@ -417,9 +420,15 @@
       LQUERY = ( ( LWORK.EQ.-1 ) .OR. ( LRWORK.EQ.-1 ) .OR.
      $         ( LIWORK.EQ.-1 ) )
 *
-      LRWMIN = MAX( 1, 24*N )
-      LIWMIN = MAX( 1, 10*N )
-      LWMIN = MAX( 1, 2*N )
+      IF( N.LE.1 ) THEN
+         LWMIN  = 1
+         LRWMIN = 1
+         LIWMIN = 1
+      ELSE
+         LWMIN  = 2*N
+         LRWMIN = 24*N
+         LIWMIN = 10*N
+      END IF
 *
       INFO = 0
       IF( .NOT.( WANTZ .OR. LSAME( JOBZ, 'N' ) ) ) THEN
@@ -454,7 +463,7 @@
          NB = ILAENV( 1, 'ZHETRD', UPLO, N, -1, -1, -1 )
          NB = MAX( NB, ILAENV( 1, 'ZUNMTR', UPLO, N, -1, -1, -1 ) )
          LWKOPT = MAX( ( NB+1 )*N, LWMIN )
-         WORK( 1 ) = LWKOPT
+         WORK( 1 )  = LWKOPT
          RWORK( 1 ) = LRWMIN
          IWORK( 1 ) = LIWMIN
 *
@@ -483,7 +492,7 @@
       END IF
 *
       IF( N.EQ.1 ) THEN
-         WORK( 1 ) = 2
+         WORK( 1 ) = 1
          IF( ALLEIG .OR. INDEIG ) THEN
             M = 1
             W( 1 ) = DBLE( A( 1, 1 ) )
@@ -710,7 +719,7 @@
 *
 *     Set WORK(1) to optimal workspace size.
 *
-      WORK( 1 ) = LWKOPT
+      WORK( 1 )  = LWKOPT
       RWORK( 1 ) = LRWMIN
       IWORK( 1 ) = LIWMIN
 *

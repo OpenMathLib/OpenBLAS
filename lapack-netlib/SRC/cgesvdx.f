@@ -208,7 +208,7 @@
 *> \param[out] WORK
 *> \verbatim
 *>          WORK is COMPLEX array, dimension (MAX(1,LWORK))
-*>          On exit, if INFO = 0, WORK(1) returns the optimal LWORK;
+*>          On exit, if INFO = 0, WORK(1) returns the optimal LWORK.
 *> \endverbatim
 *>
 *> \param[in] LWORK
@@ -261,7 +261,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup complexGEsing
+*> \ingroup gesvdx
 *
 *  =====================================================================
       SUBROUTINE CGESVDX( JOBU, JOBVT, RANGE, M, N, A, LDA, VL, VU,
@@ -312,8 +312,8 @@
 *     .. External Functions ..
       LOGICAL            LSAME
       INTEGER            ILAENV
-      REAL               SLAMCH, CLANGE
-      EXTERNAL           LSAME, ILAENV, SLAMCH, CLANGE
+      REAL               SLAMCH, CLANGE, SROUNDUP_LWORK
+      EXTERNAL           LSAME, ILAENV, SLAMCH, CLANGE, SROUNDUP_LWORK
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          MAX, MIN, SQRT
@@ -448,7 +448,7 @@
             END IF
          END IF
          MAXWRK = MAX( MAXWRK, MINWRK )
-         WORK( 1 ) = CMPLX( REAL( MAXWRK ), ZERO )
+         WORK( 1 ) = SROUNDUP_LWORK( MAXWRK )
 *
          IF( LWORK.LT.MINWRK .AND. .NOT.LQUERY ) THEN
             INFO = -19
@@ -464,7 +464,7 @@
 *
 *     Quick return if possible
 *
-      IF( M.EQ.0 .OR. N.EQ.0 ) THEN
+      IF( MINMN.EQ.0 ) THEN
          RETURN
       END IF
 *
@@ -846,7 +846,7 @@
 *
 *     Return optimal workspace in WORK(1)
 *
-      WORK( 1 ) = CMPLX( REAL( MAXWRK ), ZERO )
+      WORK( 1 ) = SROUNDUP_LWORK( MAXWRK )
 *
       RETURN
 *

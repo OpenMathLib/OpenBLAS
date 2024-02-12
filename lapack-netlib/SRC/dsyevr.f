@@ -271,7 +271,8 @@
 *> \param[in] LWORK
 *> \verbatim
 *>          LWORK is INTEGER
-*>          The dimension of the array WORK.  LWORK >= max(1,26*N).
+*>          The dimension of the array WORK.
+*>          If N <= 1, LWORK >= 1, else LWORK >= 26*N.
 *>          For optimal efficiency, LWORK >= (NB+6)*N,
 *>          where NB is the max of the blocksize for DSYTRD and DORMTR
 *>          returned by ILAENV.
@@ -285,13 +286,14 @@
 *> \param[out] IWORK
 *> \verbatim
 *>          IWORK is INTEGER array, dimension (MAX(1,LIWORK))
-*>          On exit, if INFO = 0, IWORK(1) returns the optimal LWORK.
+*>          On exit, if INFO = 0, IWORK(1) returns the optimal LIWORK.
 *> \endverbatim
 *>
 *> \param[in] LIWORK
 *> \verbatim
 *>          LIWORK is INTEGER
-*>          The dimension of the array IWORK.  LIWORK >= max(1,10*N).
+*>          The dimension of the array IWORK.
+*>          If N <= 1, LIWORK >= 1, else LIWORK >= 10*N.
 *>
 *>          If LIWORK = -1, then a workspace query is assumed; the
 *>          routine only calculates the optimal size of the IWORK array,
@@ -315,7 +317,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup doubleSYeigen
+*> \ingroup heevr
 *
 *> \par Contributors:
 *  ==================
@@ -390,8 +392,13 @@
 *
       LQUERY = ( ( LWORK.EQ.-1 ) .OR. ( LIWORK.EQ.-1 ) )
 *
-      LWMIN = MAX( 1, 26*N )
-      LIWMIN = MAX( 1, 10*N )
+      IF( N.LE.1 ) THEN
+         LWMIN  = 1
+         LIWMIN = 1
+      ELSE
+         LWMIN  = 26*N
+         LIWMIN = 10*N
+      END IF
 *
       INFO = 0
       IF( .NOT.( WANTZ .OR. LSAME( JOBZ, 'N' ) ) ) THEN
@@ -450,7 +457,7 @@
       END IF
 *
       IF( N.EQ.1 ) THEN
-         WORK( 1 ) = 7
+         WORK( 1 ) = 1
          IF( ALLEIG .OR. INDEIG ) THEN
             M = 1
             W( 1 ) = A( 1, 1 )

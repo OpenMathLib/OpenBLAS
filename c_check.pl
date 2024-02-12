@@ -97,6 +97,7 @@ $architecture = arm64        if ($data =~ /ARCH_ARM64/);
 $architecture = zarch        if ($data =~ /ARCH_ZARCH/);
 $architecture = riscv64      if ($data =~ /ARCH_RISCV64/);
 $architecture = loongarch64  if ($data =~ /ARCH_LOONGARCH64/);
+$architecture = csky         if ($data =~ /ARCH_CSKY/);
 
 $defined = 0;
 
@@ -154,6 +155,11 @@ if ($architecture eq "riscv64") {
 if ($architecture eq "loongarch64") {
     $defined = 1;
     $binary = 64;
+}
+
+if ($architecture eq "csky") {
+    $defined = 1;
+    $binary = 32;
 }
 
 if ($compiler eq "PGI") {
@@ -284,6 +290,7 @@ $architecture = arm          if ($data =~ /ARCH_ARM/);
 $architecture = arm64        if ($data =~ /ARCH_ARM64/);
 $architecture = zarch        if ($data =~ /ARCH_ZARCH/);
 $architecture = loongarch64  if ($data =~ /ARCH_LOONGARCH64/);
+$architecture = csky         if ($data =~ /ARCH_CSKY/);
 
 $binformat    = bin32;
 $binformat    = bin64  if ($data =~ /BINARY_64/);

@@ -177,14 +177,14 @@
 *>
 *> \param[out] WORK
 *> \verbatim
-*>          WORK is COMPLEX*16 array, dimension ( MAX(1,LWORK) ).
+*>          WORK is COMPLEX*16 array, dimension (MAX(1,LWORK)).
 *>          On exit, if INFO = 0, WORK(1) returns the optimal LWORK.
 *> \endverbatim
 *>
 *> \param[in] LWORK
 *> \verbatim
 *>          LWORK is INTEGER
-*>          The length of WORK.  LWORK >=1.  For best performance
+*>          The length of WORK.  LWORK >= 1.  For best performance
 *>          LWORK >= N*NB, where NB is the block size returned
 *>          by ILAENV.
 *>
@@ -229,7 +229,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup complex16HEcomputational
+*> \ingroup hetrf_rk
 *
 *> \par Further Details:
 *  =====================
@@ -310,7 +310,7 @@
 *        Determine the block size
 *
          NB = ILAENV( 1, 'ZHETRF_RK', UPLO, N, -1, -1, -1 )
-         LWKOPT = N*NB
+         LWKOPT = MAX( 1, N*NB )
          WORK( 1 ) = LWKOPT
       END IF
 *

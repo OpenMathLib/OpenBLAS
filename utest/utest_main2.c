@@ -38,6 +38,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define CTEST_SEGFAULT
 #define CTEST_ADD_TESTS_MANUALLY
 
+#include "cblas.h"
 #include "openblas_utest.h"
 
 CTEST(amax, samax){
@@ -617,6 +618,51 @@ CTEST(max, smax_zero){
   ASSERT_DBL_NEAR_TOL((double)(tr_max), (double)(te_max), SINGLE_EPS);
 }
 
+
+CTEST(zscal, i_nan)
+{
+    double i[] = {0,1, 0,1, 0,1, 0,1, 0,1, 0,1, 0,1, 0,1, 0,1 };
+    double nan[] = {NAN,0, NAN,0, NAN,0, NAN,0, NAN,0, NAN,0, NAN,0, NAN,0, NAN,0, NAN,0};
+    cblas_zscal(9, i, &nan, 1);
+    ASSERT_TRUE(isnan(nan[0]));
+    ASSERT_TRUE(isnan(nan[1]));
+    ASSERT_TRUE(isnan(nan[16]));
+    ASSERT_TRUE(isnan(nan[17]));
+}
+
+CTEST(zscal, nan_i)
+{
+    double i[] = {0,1, 0,1, 0,1, 0,1, 0,1, 0,1, 0,1, 0,1, 0,1 };
+    double nan[] = {NAN,0, NAN,0, NAN,0, NAN,0, NAN,0, NAN,0, NAN,0, NAN,0, NAN,0, NAN,0};
+    cblas_zscal(9, &nan, &i, 1);
+    ASSERT_TRUE(isnan(i[0]));
+    ASSERT_TRUE(isnan(i[1]));
+    ASSERT_TRUE(isnan(i[16]));
+    ASSERT_TRUE(isnan(i[17]));
+	    }    
+	    
+CTEST(zscal, i_inf)
+{
+    double i[] = {0,1, 0,1, 0,1, 0,1, 0,1, 0,1, 0,1, 0,1, 0,1 };
+    double inf[] = {INFINITY, 0, INFINITY,0, INFINITY,0, INFINITY,0, INFINITY,0, INFINITY,0, INFINITY,0, INFINITY,0, INFINITY,0};
+    cblas_zscal(9, i, &inf, 1);
+    ASSERT_TRUE(isnan(inf[0]));
+    ASSERT_TRUE(isinf(inf[1]));
+    ASSERT_TRUE(isnan(inf[16]));
+    ASSERT_TRUE(isinf(inf[17]));
+}    
+
+CTEST(zscal, inf_i)
+{
+    double i[] = {0,1, 0,1, 0,1, 0,1, 0,1, 0,1, 0,1, 0,1, 0,1 };
+    double inf[] = {INFINITY, 0, INFINITY,0, INFINITY,0, INFINITY,0, INFINITY,0, INFINITY,0, INFINITY,0, INFINITY,0, INFINITY,0};
+    cblas_zscal(9, &inf, &i, 1);
+    ASSERT_TRUE(isnan(i[0]));
+    ASSERT_TRUE(isinf(i[1]));
+    ASSERT_TRUE(isnan(i[16]));
+    ASSERT_TRUE(isinf(i[17]));
+}
+
 int main(int argc, const char ** argv){
 
   CTEST_ADD (amax, samax);
@@ -648,7 +694,10 @@ int main(int argc, const char ** argv){
   CTEST_ADD (swap,zswap_inc_0);
   CTEST_ADD (swap,sswap_inc_0);
   CTEST_ADD (swap,cswap_inc_0);
-
+  CTEST_ADD (zscal, i_nan);
+  CTEST_ADD (zscal, nan_i);
+  CTEST_ADD (zscal, i_inf);
+  CTEST_ADD (zscal, inf_i);
   int num_fail=0;
 
   num_fail=ctest_main(argc, argv);

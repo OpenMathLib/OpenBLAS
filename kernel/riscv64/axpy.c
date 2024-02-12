@@ -42,7 +42,7 @@ int CNAME(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, FLOAT da, FLOAT *x, BLAS
 	BLASLONG i=0;
 	BLASLONG ix,iy;
 
-	if ( n < 0     )  return(0);
+	if ( n <= 0     )  return(0);
 	if ( da == 0.0 ) return(0);
 
 	ix = 0;

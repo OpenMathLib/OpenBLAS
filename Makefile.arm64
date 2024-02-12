@@ -104,19 +104,25 @@ ifneq ($(F_COMPILER), NAG)
 FCOMMON_OPT += -march=armv8.4-a -mtune=neoverse-v1
 endif
 else
-CCOMMON_OPT += -march=armv8.4-a+sve -mtune=native
+CCOMMON_OPT += -march=armv8.4-a+sve 
+ifneq ($(CROSS), 1)
+CCOMMON_OPT += -mtune=native
+endif
 ifneq ($(F_COMPILER), NAG)
-FCOMMON_OPT += -march=armv8.4-a -mtune=native
+FCOMMON_OPT += -march=armv8.4-a 
+ifneq ($(CROSS), 1)
+FCOMMON_OPT += -mtune=native
+endif
 endif
 endif
 else
-CCOMMON_OPT += -march=armv8.2-a -mtune=cortex-a72
+CCOMMON_OPT += -march=armv8.2-a+sve -mtune=cortex-a72
 ifneq ($(F_COMPILER), NAG)
 FCOMMON_OPT += -march=armv8.2-a -mtune=cortex-a72
 endif
 endif
 else
-CCOMMON_OPT += -march=armv8-a -mtune=cortex-a72
+CCOMMON_OPT += -march=armv8-a+sve -mtune=cortex-a72
 ifneq ($(F_COMPILER), NAG)
 FCOMMON_OPT += -march=armv8-a -mtune=cortex-a72
 endif
@@ -132,25 +138,31 @@ ifeq (1, $(filter 1,$(GCCMINORVERSIONGTEQ4) $(GCCVERSIONGTEQ11) $(ISCLANG)))
 ifneq ($(OSNAME), Darwin)
 CCOMMON_OPT += -march=armv8.5-a+sve+sve2+bf16 -mtune=neoverse-n2
 else
-CCOMMON_OPT += -march=armv8.2-a -mtune=cortex-a72
+CCOMMON_OPT += -march=armv8.2-a+sve -mtune=cortex-a72
 endif
 ifneq ($(F_COMPILER), NAG)
 FCOMMON_OPT += -march=armv8.5-a+sve+sve2+bf16 -mtune=neoverse-n2
 endif
 else
-CCOMMON_OPT += -march=armv8.5-a+sve -mtune=native
+CCOMMON_OPT += -march=armv8.5-a+sve
+ifneq ($(CROSS), 1)
+CCOMMON_OPT += -mtune=native
+endif
 ifneq ($(F_COMPILER), NAG)
-FCOMMON_OPT += -march=armv8.5-a -mtune=native
+FCOMMON_OPT += -march=armv8.5-a 
+ifneq ($(CROSS), 1)
+FCOMMON_OPT += -mtune=native
+endif
 endif
 endif
 else
-CCOMMON_OPT += -march=armv8.2-a -mtune=cortex-a72
+CCOMMON_OPT += -march=armv8.2-a+sve -mtune=cortex-a72
 ifneq ($(F_COMPILER), NAG)
 FCOMMON_OPT += -march=armv8.2-a -mtune=cortex-a72
 endif
 endif
 else
-CCOMMON_OPT += -march=armv8-a -mtune=cortex-a72
+CCOMMON_OPT += -march=armv8-a+sve -mtune=cortex-a72
 ifneq ($(F_COMPILER), NAG)
 FCOMMON_OPT += -march=armv8-a -mtune=cortex-a72
 endif

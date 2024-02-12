@@ -28,29 +28,47 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "common.h"
 #include <math.h>
 #include <float.h>
-#if !defined(DOUBLE)
-#define VSETVL(n) vsetvl_e32m8(n)
-#define VSETVL_MAX vsetvlmax_e32m1()
-#define FLOAT_V_T vfloat32m8_t
-#define FLOAT_V_T_M1 vfloat32m1_t
-#define VLEV_FLOAT vle32_v_f32m8
-#define VLSEV_FLOAT vlse32_v_f32m8
-#define VFREDMINVS_FLOAT vfredmin_vs_f32m8_f32m1
-#define VFMVVF_FLOAT vfmv_v_f_f32m8
-#define VFMVVF_FLOAT_M1 vfmv_v_f_f32m1
-#define VFMINVV_FLOAT vfmin_vv_f32m8
+
+#ifdef RISCV64_ZVL256B
+#       define LMUL m2
+#       if defined(DOUBLE)
+#               define ELEN 64
+#               define MLEN 32
+#       else
+#               define ELEN 32
+#               define MLEN 16
+#       endif
 #else
-#define VSETVL(n) vsetvl_e64m8(n)
-#define VSETVL_MAX vsetvlmax_e64m1()
-#define FLOAT_V_T vfloat64m8_t
-#define FLOAT_V_T_M1 vfloat64m1_t
-#define VLEV_FLOAT vle64_v_f64m8
-#define VLSEV_FLOAT vlse64_v_f64m8
-#define VFREDMINVS_FLOAT vfredmin_vs_f64m8_f64m1
-#define VFMVVF_FLOAT vfmv_v_f_f64m8
-#define VFMVVF_FLOAT_M1 vfmv_v_f_f64m1
-#define VFMINVV_FLOAT vfmin_vv_f64m8
+#       define LMUL m8
+#       if defined(DOUBLE)
+#               define ELEN 64
+#               define MLEN 8
+#       else
+#               define ELEN 32
+#               define MLEN 4
+#       endif
 #endif
+
+#define _
+#define JOIN2_X(x, y) x ## y
+#define JOIN2(x, y) JOIN2_X(x, y)
+#define JOIN(v, w, x, y, z) JOIN2( JOIN2( JOIN2( JOIN2( v, w ), x), y), z)
+
+#define VSETVL          JOIN(RISCV_RVV(vsetvl),    _e,     ELEN,   LMUL,   _)
+#define FLOAT_V_T       JOIN(vfloat,    ELEN,   LMUL,   _t,     _)
+#define FLOAT_V_T_M1    JOIN(vfloat,    ELEN,   m1,     _t,     _)
+#define VLEV_FLOAT      JOIN(RISCV_RVV(vle),       ELEN,   _v_f,   ELEN,   LMUL)
+#define VLSEV_FLOAT     JOIN(RISCV_RVV(vlse),      ELEN,   _v_f,   ELEN,   LMUL)
+#ifdef RISCV_0p10_INTRINSICS
+#define VFREDMINVS_FLOAT(va, vb, gvl) JOIN(RISCV_RVV(vfredmin_vs_f),  ELEN,   LMUL,   _f, JOIN2( ELEN,   m1))(v_res, va, vb, gvl)
+#else
+#define VFREDMINVS_FLOAT JOIN(RISCV_RVV(vfredmin_vs_f),  ELEN,   LMUL,   _f, JOIN2( ELEN,   m1))
+#endif
+#define MASK_T          JOIN(vbool,     MLEN,   _t,     _,      _)
+#define VMFLTVF_FLOAT   JOIN(RISCV_RVV(vmflt_vf_f), ELEN,  LMUL,   _b,     MLEN)
+#define VFMVVF_FLOAT    JOIN(RISCV_RVV(vfmv),      _v_f_f, ELEN,   LMUL,   _)
+#define VFMVVF_FLOAT_M1 JOIN(RISCV_RVV(vfmv),      _v_f_f, ELEN,   m1,     _)
+#define VFMINVV_FLOAT   JOIN(RISCV_RVV(vfmin),     _vv_f,  ELEN,   LMUL,   _)
 
 FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x)
 {
@@ -59,10 +77,8 @@ FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x)
 	FLOAT minf=FLT_MAX;
         unsigned int gvl = 0;
         FLOAT_V_T v0, v1, v_min;
-        FLOAT_V_T_M1 v_res, v_max;
-        gvl = VSETVL_MAX;
-        v_res = VFMVVF_FLOAT_M1(0, gvl);
-        v_max = VFMVVF_FLOAT_M1(FLT_MAX, gvl);
+        FLOAT_V_T_M1 v_res;
+        v_res = VFMVVF_FLOAT_M1(FLT_MAX, 1);
 
         if(inc_x == 1){
                 gvl = VSETVL(n);
@@ -76,15 +92,12 @@ FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x)
                                 v_min = VFMINVV_FLOAT(v_min, v1, gvl);
                                 j += gvl * 2;
                         }
-                        v_res = VFREDMINVS_FLOAT(v_res, v_min, v_max, gvl);
-                        minf = *((FLOAT*)&v_res);
+                        v_res = VFREDMINVS_FLOAT(v_min, v_res, gvl);
                 }
                 for(;j<n;){
                         gvl = VSETVL(n-j);
                         v0 = VLEV_FLOAT(&x[j], gvl);
-                        v_res = VFREDMINVS_FLOAT(v_res, v0, v_max, gvl);
-                        if(*((FLOAT*)&v_res) < minf)
-                                minf = *((FLOAT*)&v_res);
+                        v_res = VFREDMINVS_FLOAT(v0, v_res, gvl);
                         j += gvl;
                 }
         }else{
@@ -102,18 +115,16 @@ FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x)
                                 j += gvl * 2;
                                 idx += inc_xv * 2;
                         }
-                        v_res = VFREDMINVS_FLOAT(v_res, v_min, v_max, gvl);
-                        minf = *((FLOAT*)&v_res);
+                        v_res = VFREDMINVS_FLOAT(v_min, v_res, gvl);
                 }
                 for(;j<n;){
                         gvl = VSETVL(n-j);
                         v0 = VLSEV_FLOAT(&x[j*inc_x], stride_x, gvl);
-                        v_res = VFREDMINVS_FLOAT(v_res, v0, v_max, gvl);
-                        if(*((FLOAT*)&v_res) < minf)
-                                minf = *((FLOAT*)&v_res);
+                        v_res = VFREDMINVS_FLOAT(v0, v_res, gvl);
                         j += gvl;
                 }
         }
+        minf = EXTRACT_FLOAT(v_res);
 	return(minf);
 }
 

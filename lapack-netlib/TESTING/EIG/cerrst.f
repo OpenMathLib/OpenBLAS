@@ -748,17 +748,17 @@
          CALL CHKXER( 'CHEEVR', INFOT, NOUT, LERR, OK )
          INFOT = 18
          CALL CHEEVR( 'V', 'I', 'U', 1, A, 1, 0.0E0, 0.0E0, 1, 1, 0.0,
-     $                M, R, Z, 1, IW, Q, 2*N-1, RW, 24*N, IW( 2*N+1 ),
+     $                M, R, Z, 1, IW, Q, 0, RW, 24*N, IW( 2*N+1 ),
      $                10*N, INFO )
          CALL CHKXER( 'CHEEVR', INFOT, NOUT, LERR, OK )
          INFOT = 20
          CALL CHEEVR( 'V', 'I', 'U', 1, A, 1, 0.0E0, 0.0E0, 1, 1, 0.0,
-     $                M, R, Z, 1, IW, Q, 2*N, RW, 24*N-1, IW( 2*N-1 ),
+     $                M, R, Z, 1, IW, Q, 2*N, RW, 0, IW( 2*N-1 ),
      $                10*N, INFO )
          CALL CHKXER( 'CHEEVR', INFOT, NOUT, LERR, OK )
          INFOT = 22
          CALL CHEEVR( 'V', 'I', 'U', 1, A, 1, 0.0E0, 0.0E0, 1, 1, 0.0,
-     $                M, R, Z, 1, IW, Q, 2*N, RW, 24*N, IW, 10*N-1,
+     $                M, R, Z, 1, IW, Q, 2*N, RW, 24*N, IW, 0,
      $                INFO )
          CALL CHKXER( 'CHEEVR', INFOT, NOUT, LERR, OK )
          NT = NT + 12
@@ -830,19 +830,19 @@
          INFOT = 18
          CALL CHEEVR_2STAGE( 'N', 'I', 'U', 1, A, 1,
      $                0.0, 0.0, 1, 1, 0.0,
-     $                M, R, Z, 1, IW, Q, 2*N-1, RW, 24*N, IW( 2*N+1 ),
+     $                M, R, Z, 1, IW, Q, 0, RW, 24*N, IW( 2*N+1 ),
      $                10*N, INFO )
          CALL CHKXER( 'CHEEVR_2STAGE', INFOT, NOUT, LERR, OK )
          INFOT = 20
          CALL CHEEVR_2STAGE( 'N', 'I', 'U', 1, A, 1,
      $                0.0, 0.0, 1, 1, 0.0,
-     $                M, R, Z, 1, IW, Q, 26*N, RW, 24*N-1, IW( 2*N-1 ),
+     $                M, R, Z, 1, IW, Q, 26*N, RW, 0, IW( 2*N-1 ),
      $                10*N, INFO )
          CALL CHKXER( 'CHEEVR_2STAGE', INFOT, NOUT, LERR, OK )
          INFOT = 22
          CALL CHEEVR_2STAGE( 'N', 'I', 'U', 1, A, 1,
      $                0.0, 0.0, 1, 1, 0.0,
-     $                M, R, Z, 1, IW, Q, 26*N, RW, 24*N, IW, 10*N-1,
+     $                M, R, Z, 1, IW, Q, 26*N, RW, 24*N, IW, 0,
      $                INFO )
          CALL CHKXER( 'CHEEVR_2STAGE', INFOT, NOUT, LERR, OK )
          NT = NT + 13

@@ -1,5 +1,5 @@
 /*****************************************************************************
-Copyright (c) 2011-2016, The OpenBLAS Project
+Copyright (c) 2011-2024, The OpenBLAS Project
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -13,9 +13,9 @@ met:
       notice, this list of conditions and the following disclaimer in
       the documentation and/or other materials provided with the
       distribution.
-   3. Neither the name of the OpenBLAS project nor the names of 
-      its contributors may be used to endorse or promote products 
-      derived from this software without specific prior written 
+   3. Neither the name of the OpenBLAS project nor the names of
+      its contributors may be used to endorse or promote products
+      derived from this software without specific prior written
       permission.
 
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -57,4 +57,31 @@ CTEST(amax, damax){
   ASSERT_DBL_NEAR_TOL((double)(tr_max), (double)(te_max), DOUBLE_EPS);
 }
 #endif
+#ifdef BUILD_COMPLEX
+CTEST(amax, scamax){
+  blasint N = 9, inc = 1;
+  float te_max = 0.0, tr_max = 0.0;
+  float x[] = { -1.1, 2.2, -3.3, 4.4, -5.5, 6.6, -7.7, 8.8,
+	        -9.9, 10.10, -1.1, 2.2, -3.3, 4.4, -5.5, 6.6,
+		-7.7, 8.8 };
 
+  te_max = BLASFUNC(scamax)(&N, x, &inc);
+  tr_max = 20.0;
+
+  ASSERT_DBL_NEAR_TOL((double)(tr_max), (double)(te_max), SINGLE_EPS);
+}
+#endif
+#ifdef BUILD_COMPLEX16
+CTEST(amax, dzamax){
+  blasint N = 9, inc = 1;
+  double te_max = 0.0, tr_max = 0.0;
+  double x[] = { -1.1, 2.2, -3.3, 4.4, -5.5, 6.6, -7.7, 8.8,
+	         -9.9, 10.10, -1.1, 2.2, -3.3, 4.4, -5.5, 6.6,
+		 -7.7, 8.8 };
+
+  te_max = BLASFUNC(dzamax)(&N, x, &inc);
+  tr_max = 20.0;
+
+  ASSERT_DBL_NEAR_TOL((double)(tr_max), (double)(te_max), DOUBLE_EPS);
+}
+#endif

@@ -244,7 +244,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup doubleSYeigen
+*> \ingroup heevx
 *
 *  =====================================================================
       SUBROUTINE DSYEVX( JOBZ, RANGE, UPLO, N, A, LDA, VL, VU, IL, IU,
@@ -338,14 +338,14 @@
       IF( INFO.EQ.0 ) THEN
          IF( N.LE.1 ) THEN
             LWKMIN = 1
-            WORK( 1 ) = LWKMIN
+            LWKOPT = 1
          ELSE
             LWKMIN = 8*N
             NB = ILAENV( 1, 'DSYTRD', UPLO, N, -1, -1, -1 )
             NB = MAX( NB, ILAENV( 1, 'DORMTR', UPLO, N, -1, -1, -1 ) )
             LWKOPT = MAX( LWKMIN, ( NB + 3 )*N )
-            WORK( 1 ) = LWKOPT
          END IF
+         WORK( 1 ) = LWKOPT
 *
          IF( LWORK.LT.LWKMIN .AND. .NOT.LQUERY )
      $      INFO = -17

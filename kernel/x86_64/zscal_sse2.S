@@ -82,6 +82,7 @@
 	pxor	%xmm15, %xmm15
 	comisd	%xmm0, %xmm15
 	jne	.L100
+	jp	.L100
 
 	comisd	%xmm1, %xmm15
 	jne	.L100

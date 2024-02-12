@@ -275,7 +275,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup doubleSYsolve
+*> \ingroup hesvx
 *
 *  =====================================================================
       SUBROUTINE DSYSVX( FACT, UPLO, N, NRHS, A, LDA, AF, LDAF, IPIV, B,
@@ -305,7 +305,7 @@
 *     ..
 *     .. Local Scalars ..
       LOGICAL            LQUERY, NOFACT
-      INTEGER            LWKOPT, NB
+      INTEGER            LWKMIN, LWKOPT, NB
       DOUBLE PRECISION   ANORM
 *     ..
 *     .. External Functions ..
@@ -327,6 +327,7 @@
       INFO = 0
       NOFACT = LSAME( FACT, 'N' )
       LQUERY = ( LWORK.EQ.-1 )
+      LWKMIN = MAX( 1, 3*N )
       IF( .NOT.NOFACT .AND. .NOT.LSAME( FACT, 'F' ) ) THEN
          INFO = -1
       ELSE IF( .NOT.LSAME( UPLO, 'U' ) .AND. .NOT.LSAME( UPLO, 'L' ) )
@@ -344,12 +345,12 @@
          INFO = -11
       ELSE IF( LDX.LT.MAX( 1, N ) ) THEN
          INFO = -13
-      ELSE IF( LWORK.LT.MAX( 1, 3*N ) .AND. .NOT.LQUERY ) THEN
+      ELSE IF( LWORK.LT.LWKMIN .AND. .NOT.LQUERY ) THEN
          INFO = -18
       END IF
 *
       IF( INFO.EQ.0 ) THEN
-         LWKOPT = MAX( 1, 3*N )
+         LWKOPT = LWKMIN
          IF( NOFACT ) THEN
             NB = ILAENV( 1, 'DSYTRF', UPLO, N, -1, -1, -1 )
             LWKOPT = MAX( LWKOPT, N*NB )

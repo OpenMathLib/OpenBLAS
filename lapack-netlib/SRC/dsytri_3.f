@@ -119,16 +119,17 @@
 *>
 *> \param[out] WORK
 *> \verbatim
-*>          WORK is DOUBLE PRECISION array, dimension (N+NB+1)*(NB+3).
+*>          WORK is DOUBLE PRECISION array, dimension (MAX(1,LWORK)).
 *>          On exit, if INFO = 0, WORK(1) returns the optimal LWORK.
 *> \endverbatim
 *>
 *> \param[in] LWORK
 *> \verbatim
 *>          LWORK is INTEGER
-*>          The length of WORK. LWORK >= (N+NB+1)*(NB+3).
+*>          The length of WORK.
+*>          If N = 0, LWORK >= 1, else LWORK >= (N+NB+1)*(NB+3).
 *>
-*>          If LDWORK = -1, then a workspace query is assumed;
+*>          If LWORK = -1, then a workspace query is assumed;
 *>          the routine only calculates the optimal size of the optimal
 *>          size of the WORK array, returns this value as the first
 *>          entry of the WORK array, and no error message related to
@@ -152,7 +153,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup doubleSYcomputational
+*> \ingroup hetri_3
 *
 *> \par Contributors:
 *  ==================
@@ -208,8 +209,13 @@
 *
 *     Determine the block size
 *
-      NB = MAX( 1, ILAENV( 1, 'DSYTRI_3', UPLO, N, -1, -1, -1 ) )
-      LWKOPT = ( N+NB+1 ) * ( NB+3 )
+      IF( N.EQ.0 ) THEN
+         LWKOPT = 1
+      ELSE
+         NB = MAX( 1, ILAENV( 1, 'DSYTRI_3', UPLO, N, -1, -1, -1 ) )
+         LWKOPT = ( N+NB+1 ) * ( NB+3 )
+      END IF
+      WORK( 1 ) = LWKOPT
 *
       IF( .NOT.UPPER .AND. .NOT.LSAME( UPLO, 'L' ) ) THEN
          INFO = -1
@@ -217,7 +223,7 @@
          INFO = -2
       ELSE IF( LDA.LT.MAX( 1, N ) ) THEN
          INFO = -4
-      ELSE IF ( LWORK .LT. LWKOPT .AND. .NOT.LQUERY ) THEN
+      ELSE IF( LWORK.LT.LWKOPT .AND. .NOT.LQUERY ) THEN
          INFO = -8
       END IF
 *
@@ -225,7 +231,6 @@
          CALL XERBLA( 'DSYTRI_3', -INFO )
          RETURN
       ELSE IF( LQUERY ) THEN
-         WORK( 1 ) = LWKOPT
          RETURN
       END IF
 *

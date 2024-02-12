@@ -805,7 +805,7 @@
                CALL SLARTGP( B22BULGE, B22E(I-1), RWORK(IU2SN+I-1),
      $                       RWORK(IU2CS+I-1), R )
             ELSE IF( NU .LT. MU ) THEN
-               CALL SLARTGS( B21E(I), B21E(I+1), NU, RWORK(IU2CS+I-1),
+               CALL SLARTGS( B21E(I), B21D(I+1), NU, RWORK(IU2CS+I-1),
      $                       RWORK(IU2SN+I-1) )
             ELSE
                CALL SLARTGS( B22D(I), B22E(I), MU, RWORK(IU2CS+I-1),

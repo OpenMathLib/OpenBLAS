@@ -148,33 +148,23 @@
       ALPHR = DBLE( ALPHA )
       ALPHI = DIMAG( ALPHA )
 *
-      IF( XNORM.LE.EPS*ABS(ALPHA) ) THEN
+      IF( XNORM.LE.EPS*ABS(ALPHA) .AND. ALPHI.EQ.ZERO ) THEN
 *
 *        H  =  [1-alpha/abs(alpha) 0; 0 I], sign chosen so ALPHA >= 0.
 *
-         IF( ALPHI.EQ.ZERO ) THEN
-            IF( ALPHR.GE.ZERO ) THEN
-*              When TAU.eq.ZERO, the vector is special-cased to be
-*              all zeros in the application routines.  We do not need
-*              to clear it.
-               TAU = ZERO
-            ELSE
-*              However, the application routines rely on explicit
-*              zero checks when TAU.ne.ZERO, and we must clear X.
-               TAU = TWO
-               DO J = 1, N-1
-                  X( 1 + (J-1)*INCX ) = ZERO
-               END DO
-               ALPHA = -ALPHA
-            END IF
+         IF( ALPHR.GE.ZERO ) THEN
+*           When TAU.eq.ZERO, the vector is special-cased to be
+*           all zeros in the application routines.  We do not need
+*           to clear it.
+            TAU = ZERO
          ELSE
-*           Only "reflecting" the diagonal entry to be real and non-negative.
-            XNORM = DLAPY2( ALPHR, ALPHI )
-            TAU = DCMPLX( ONE - ALPHR / XNORM, -ALPHI / XNORM )
+*           However, the application routines rely on explicit
+*           zero checks when TAU.ne.ZERO, and we must clear X.
+            TAU = TWO
             DO J = 1, N-1
                X( 1 + (J-1)*INCX ) = ZERO
             END DO
-            ALPHA = XNORM
+            ALPHA = -ALPHA
          END IF
       ELSE
 *

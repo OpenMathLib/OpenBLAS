@@ -215,7 +215,8 @@
 *> \param[in] LWORK
 *> \verbatim
 *>          LWORK is INTEGER
-*>          The dimension of the array WORK.
+*>          The dimension of the array WORK. LWORK >= MAX(1,2*N)
+*>          For good performance, LWORK must generally be larger.
 *>
 *>          If LWORK = -1, then a workspace query is assumed; the routine
 *>          only calculates the optimal size of the WORK array, returns
@@ -260,7 +261,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup complex16GEeigen
+*> \ingroup gges3
 *
 *  =====================================================================
       SUBROUTINE ZGGES3( JOBVSL, JOBVSR, SORT, SELCTG, N, A, LDA, B,
@@ -300,7 +301,8 @@
       LOGICAL            CURSL, ILASCL, ILBSCL, ILVSL, ILVSR, LASTSL,
      $                   LQUERY, WANTST
       INTEGER            I, ICOLS, IERR, IHI, IJOBVL, IJOBVR, ILEFT,
-     $                   ILO, IRIGHT, IROWS, IRWRK, ITAU, IWRK, LWKOPT
+     $                   ILO, IRIGHT, IROWS, IRWRK, ITAU, IWRK, LWKOPT,
+     $                   LWKMIN
       DOUBLE PRECISION   ANRM, ANRMTO, BIGNUM, BNRM, BNRMTO, EPS, PVSL,
      $                   PVSR, SMLNUM
 *     ..
@@ -309,9 +311,8 @@
       DOUBLE PRECISION   DIF( 2 )
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           DLABAD, XERBLA, ZGEQRF, ZGGBAK, ZGGBAL, ZGGHD3,
-     $                   ZLAQZ0, ZLACPY, ZLASCL, ZLASET, ZTGSEN, ZUNGQR,
-     $                   ZUNMQR
+      EXTERNAL           XERBLA, ZGEQRF, ZGGBAK, ZGGBAL, ZGGHD3, ZLAQZ0,
+     $                   ZLACPY, ZLASCL, ZLASET, ZTGSEN, ZUNGQR, ZUNMQR
 *     ..
 *     .. External Functions ..
       LOGICAL            LSAME
@@ -353,6 +354,8 @@
 *
       INFO = 0
       LQUERY = ( LWORK.EQ.-1 )
+      LWKMIN = MAX( 1, 2*N )
+*
       IF( IJOBVL.LE.0 ) THEN
          INFO = -1
       ELSE IF( IJOBVR.LE.0 ) THEN
@@ -369,7 +372,7 @@
          INFO = -14
       ELSE IF( LDVSR.LT.1 .OR. ( ILVSR .AND. LDVSR.LT.N ) ) THEN
          INFO = -16
-      ELSE IF( LWORK.LT.MAX( 1, 2*N ) .AND. .NOT.LQUERY ) THEN
+      ELSE IF( LWORK.LT.LWKMIN .AND. .NOT.LQUERY ) THEN
          INFO = -18
       END IF
 *
@@ -377,28 +380,32 @@
 *
       IF( INFO.EQ.0 ) THEN
          CALL ZGEQRF( N, N, B, LDB, WORK, WORK, -1, IERR )
-         LWKOPT = MAX( 1,  N + INT ( WORK( 1 ) ) )
+         LWKOPT = MAX( LWKMIN,  N + INT( WORK( 1 ) ) )
          CALL ZUNMQR( 'L', 'C', N, N, N, B, LDB, WORK, A, LDA, WORK,
      $                -1, IERR )
-         LWKOPT = MAX( LWKOPT, N + INT ( WORK( 1 ) ) )
+         LWKOPT = MAX( LWKOPT, N + INT( WORK( 1 ) ) )
          IF( ILVSL ) THEN
             CALL ZUNGQR( N, N, N, VSL, LDVSL, WORK, WORK, -1, IERR )
             LWKOPT = MAX( LWKOPT, N + INT ( WORK( 1 ) ) )
          END IF
          CALL ZGGHD3( JOBVSL, JOBVSR, N, 1, N, A, LDA, B, LDB, VSL,
      $                LDVSL, VSR, LDVSR, WORK, -1, IERR )
-         LWKOPT = MAX( LWKOPT, N + INT ( WORK( 1 ) ) )
+         LWKOPT = MAX( LWKOPT, N + INT( WORK( 1 ) ) )
          CALL ZLAQZ0( 'S', JOBVSL, JOBVSR, N, 1, N, A, LDA, B, LDB,
      $                ALPHA, BETA, VSL, LDVSL, VSR, LDVSR, WORK, -1,
      $                RWORK, 0, IERR )
-         LWKOPT = MAX( LWKOPT, INT ( WORK( 1 ) ) )
+         LWKOPT = MAX( LWKOPT, INT( WORK( 1 ) ) )
          IF( WANTST ) THEN
             CALL ZTGSEN( 0, ILVSL, ILVSR, BWORK, N, A, LDA, B, LDB,
      $                   ALPHA, BETA, VSL, LDVSL, VSR, LDVSR, SDIM,
      $                   PVSL, PVSR, DIF, WORK, -1, IDUM, 1, IERR )
-            LWKOPT = MAX( LWKOPT, INT ( WORK( 1 ) ) )
+            LWKOPT = MAX( LWKOPT, INT( WORK( 1 ) ) )
          END IF
-         WORK( 1 ) = DCMPLX( LWKOPT )
+         IF( N.EQ.0 ) THEN
+            WORK( 1 ) = 1
+         ELSE
+            WORK( 1 ) = DCMPLX( LWKOPT )
+         END IF
       END IF
 *
       IF( INFO.NE.0 ) THEN
@@ -420,7 +427,6 @@
       EPS = DLAMCH( 'P' )
       SMLNUM = DLAMCH( 'S' )
       BIGNUM = ONE / SMLNUM
-      CALL DLABAD( SMLNUM, BIGNUM )
       SMLNUM = SQRT( SMLNUM ) / EPS
       BIGNUM = ONE / SMLNUM
 *

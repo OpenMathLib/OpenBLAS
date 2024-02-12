@@ -42,6 +42,8 @@ set(SEIGTST schkee.F
    sort03.f ssbt21.f ssgt01.f sslect.f sspt21.f sstt21.f
    sstt22.f ssyl01.f ssyt21.f ssyt22.f)
 
+set(SDMDEIGTST schkdmd.f90)
+
 set(CEIGTST cchkee.F
    cbdt01.f cbdt02.f cbdt03.f cbdt05.f
    cchkbb.f cchkbd.f cchkbk.f cchkbl.f cchkec.f
@@ -58,6 +60,8 @@ set(CEIGTST cchkee.F
    clarfy.f clarhs.f clatm4.f clctes.f clctsx.f clsets.f csbmv.f
    csgt01.f cslect.f csyl01.f
    cstt21.f cstt22.f cunt01.f cunt03.f)
+
+set(CDMDEIGTST cchkdmd.f90)
 
 set(DZIGTST dlafts.f dlahd2.f dlasum.f dlatb9.f dstech.f dstect.f
    dsvdch.f dsvdct.f dsxt1.f)
@@ -79,6 +83,8 @@ set(DEIGTST dchkee.F
    dort03.f dsbt21.f dsgt01.f dslect.f dspt21.f dstt21.f
    dstt22.f dsyl01.f dsyt21.f dsyt22.f)
 
+set(DDMDEIGTST dchkdmd.f90)
+
 set(ZEIGTST zchkee.F
    zbdt01.f zbdt02.f zbdt03.f zbdt05.f
    zchkbb.f zchkbd.f zchkbk.f zchkbl.f zchkec.f
@@ -96,6 +102,8 @@ set(ZEIGTST zchkee.F
    zsgt01.f zslect.f zsyl01.f
    zstt21.f zstt22.f zunt01.f zunt03.f)
 
+set(ZDMDEIGTST zchkdmd.f90)
+
 macro(add_eig_executable name)
   add_executable(${name} ${ARGN})
   target_link_libraries(${name} openblas${SUFFIX64_UNDERSCORE})
@@ -104,16 +112,20 @@ endmacro()
 
 if(BUILD_SINGLE)
 add_eig_executable(xeigtsts ${SEIGTST} ${SCIGTST} ${AEIGTST})
+add_eig_executable(xdmdeigtsts ${SDMDEIGTST})
 endif()
 
 if(BUILD_COMPLEX)
 add_eig_executable(xeigtstc ${CEIGTST} ${SCIGTST} ${AEIGTST})
+add_eig_executable(xdmdeigtstc ${CDMDEIGTST})
 endif()
 
 if(BUILD_DOUBLE)
 add_eig_executable(xeigtstd ${DEIGTST} ${DZIGTST} ${AEIGTST})
+add_eig_executable(xdmdeigtstd ${DDMDEIGTST})
 endif()
 
 if(BUILD_COMPLEX16)
 add_eig_executable(xeigtstz ${ZEIGTST} ${DZIGTST} ${AEIGTST})
+add_eig_executable(xdmdeigtstz ${ZDMDEIGTST})
 endif()
