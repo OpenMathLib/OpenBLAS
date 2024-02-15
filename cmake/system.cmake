@@ -501,10 +501,11 @@ set(CCOMMON_OPT "${CCOMMON_OPT} -DBLAS3_MEM_ALLOC_THRESHOLD=${BLAS3_MEM_ALLOC_TH
 endif()
 endif()
 endif()
+  
+set(LIBPREFIX "lib${LIBNAMEPREFIX}openblas")
+
 if (DEFINED LIBNAMESUFFIX)
-  set(LIBPREFIX "libopenblas_${LIBNAMESUFFIX}")
-else ()
-  set(LIBPREFIX "libopenblas")
+  set(LIBPREFIX "${LIBNAMEPREFIX}_${LIBNAMESUFFIX}")
 endif ()
 
 if (NOT DEFINED SYMBOLPREFIX)
@@ -679,6 +680,10 @@ else ()
   endif ()
 endif ()
 
+if (DEFINED FIXED_LIBNAME)
+  set (LIBNAME "${LIBPREFIX}.${LIBSUFFIX}")
+  set (LIBNAME "${LIBPREFIX}_p.${LIBSUFFIX}")
+endif()
 
 set(LIBDLLNAME "${LIBPREFIX}.dll")
 set(LIBSONAME "${LIBNAME}.${LIBSUFFIX}.so")
