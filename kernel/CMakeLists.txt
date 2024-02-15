@@ -1349,6 +1349,9 @@ endif ()
     set_target_properties(kernel${TSUFFIX} PROPERTIES COMPILE_FLAGS "${KERNEL_DEFINITIONS}")
     get_target_property(KERNEL_INCLUDE_DIRECTORIES kernel${TSUFFIX} INCLUDE_DIRECTORIES)
     set_target_properties(kernel${TSUFFIX} PROPERTIES INCLUDE_DIRECTORIES "${KERNEL_INCLUDE_DIRECTORIES};${TARGET_CONF_DIR}")
+    if (USE_GEMM3M)
+      target_compile_definitions(kernel${TSUFFIX} PRIVATE USE_GEMM3M)
+    endif()
 endfunction ()
 
 

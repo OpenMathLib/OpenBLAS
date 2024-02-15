@@ -65,7 +65,7 @@ int CNAME(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, FLOAT da, FLOAT *x, BLAS
 	FLOAT_V_T vy0, vy1;
 	BLASLONG stride_x, stride_y;
 
-	if (n < 0)  return(0);
+	if (n <= 0)  return(0);
 	if (da == 0.0) return(0);
 
 	if (inc_x == 1 && inc_y == 1) {

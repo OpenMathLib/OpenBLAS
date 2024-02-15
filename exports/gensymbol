@@ -60,6 +60,7 @@ cblasobjsc="
     cblas_ctbsv cblas_ctpmv cblas_ctpsv cblas_ctrmm cblas_ctrmv cblas_ctrsm cblas_ctrsv
     cblas_scnrm2 cblas_scasum cblas_cgemmt
     cblas_icamax cblas_icamin cblas_icmin cblas_icmax cblas_scsum cblas_cimatcopy cblas_comatcopy
+    cblas_caxpyc cblas_crotg cblas_csrot cblas_scamax cblas_scamin
     "
 cblasobjsd="
     cblas_dasum cblas_daxpy cblas_dcopy cblas_ddot
@@ -69,6 +70,7 @@ cblasobjsd="
     cblas_dsyr2k cblas_dsyr cblas_dsyrk cblas_dtbmv cblas_dtbsv cblas_dtpmv cblas_dtpsv
     cblas_dtrmm cblas_dtrmv cblas_dtrsm cblas_dtrsv cblas_daxpby cblas_dgeadd cblas_dgemmt
     cblas_idamax cblas_idamin cblas_idmin cblas_idmax cblas_dsum cblas_dimatcopy cblas_domatcopy
+    cblas_damax  cblas_damin
     "
 
 cblasobjss="
@@ -80,6 +82,7 @@ cblasobjss="
     cblas_stbmv cblas_stbsv cblas_stpmv cblas_stpsv cblas_strmm cblas_strmv cblas_strsm
     cblas_strsv cblas_sgeadd cblas_sgemmt
     cblas_isamax cblas_isamin cblas_ismin cblas_ismax cblas_ssum cblas_simatcopy cblas_somatcopy
+    cblas_samax cblas_samin
     "
 
 cblasobjsz="
@@ -91,6 +94,7 @@ cblasobjsz="
     cblas_ztrsv cblas_cdotc_sub cblas_cdotu_sub cblas_zdotc_sub cblas_zdotu_sub
     cblas_zaxpby cblas_zgeadd cblas_zgemmt
     cblas_izamax cblas_izamin cblas_izmin cblas_izmax cblas_dzsum cblas_zimatcopy cblas_zomatcopy
+    cblas_zaxpyc cblas_zdrot cblas_zrotg cblas_dzamax cblas_dzamin
 "
 
 cblasobjs="cblas_xerbla"
@@ -861,6 +865,53 @@ lapackobjs2z="$lapackobjs2z
     zgedmd
     zgedmdq
     "
+
+#functions added post 3.11
+
+lapackobjs2c="$lapackobjs2c
+    claqp2rk
+    claqp3rk
+    ctrsyl3
+    "
+#    claqz0
+#    claqz1
+#    claqz2
+#    claqz3
+#    clatrs3
+
+lapackobjs2d="$lapackobjs2d
+    dgelqs
+    dgelst
+    dgeqp3rk
+    dgeqrs
+    dlaqp2rk
+    dlaqp3rk
+    dlarmm
+    dlatrs3
+    dtrsyl3
+    "
+#    dlaqz0
+#    dlaqz1
+#    dlaqz2
+#    dlaqz3
+#    dlaqz4
+
+lapackobjs2z="$lapackobjs2z
+    zgelqs
+    zgelst
+    zgeqp3rk
+    zgeqrs
+    zlaqp2rk
+    zlaqp3rk
+    zlatrs3
+    zrscl
+    ztrsyl3
+    "
+#    zlaqz0
+#    zlaqz1
+#    zlaqz2
+#    zlaqz3
+
 lapack_extendedprecision_objs="
     zposvxx clagge clatms chesvxx cposvxx cgesvxx ssyrfssx csyrfsx
     dlagsy dsysvxx sporfsx slatms zlatms zherfsx csysvxx
@@ -1622,6 +1673,14 @@ lapackeobjsc="
     LAPACKE_cgetsqrhrt_work
     LAPACKE_cungtsqr_row
     LAPACKE_cungtsqr_row_work
+    LAPACKE_clangb
+    LAPACKE_clangb_work
+    LAPACKE_ctrsyl3
+    LAPACKE_ctrsyl3_work
+    LAPACKE_ctz_nancheck
+    LAPACKE_ctz_trans
+    LAPACKE_cunhr_col
+    LAPACKE_cunhr_col_work
 "
 
 lapackeobjsd="
@@ -2239,6 +2298,14 @@ lapackeobjsd="
     LAPACKE_dgetsqrhrt_work
     LAPACKE_dorgtsqr_row
     LAPACKE_dorgtsqr_row_work
+    LAPACKE_dlangb
+    LAPACKE_dlangb_work
+    LAPACKE_dorhr_col
+    LAPACKE_dorhr_col_work
+    LAPACKE_dtrsyl3
+    LAPACKE_dtrsyl3_work
+    LAPACKE_dtz_nancheck
+    LAPACKE_dtz_trans
 "
 
 lapackeobjss="
@@ -2848,6 +2915,14 @@ lapackeobjss="
     LAPACKE_sgetsqrhrt_work
     LAPACKE_sorgtsqr_row
     LAPACKE_sorgtsqr_row_work
+    LAPACKE_slangb
+    LAPACKE_slangb_work
+    LAPACKE_sorhr_col
+    LAPACKE_sorhr_col_work
+    LAPACKE_strsyl3
+    LAPACKE_strsyl3_work
+    LAPACKE_stz_nancheck
+    LAPACKE_stz_trans
 "
 
 lapackeobjsz="
@@ -3515,6 +3590,14 @@ lapackeobjsz="
     LAPACKE_zgetsqrhrt_work
     LAPACKE_zungtsqr_row
     LAPACKE_zungtsqr_row_work
+    LAPACKE_zlangb
+    LAPACKE_zlangb_work
+    LAPACKE_ztrsyl3
+    LAPACKE_ztrsyl3_work
+    LAPACKE_ztz_nancheck
+    LAPACKE_ztz_trans
+    LAPACKE_zunhr_col
+    LAPACKE_zunhr_col_work
 "
 ## @(SRCX_OBJ) from `lapack-3.4.1/lapacke/src/Makefile`
 ## Not exported: requires LAPACKE_EXTENDED to be set and depends on the
@@ -3616,6 +3699,7 @@ lapack_embeded_underscore_objs_s="
     ssysv_aa_2stage ssytrf_aa_2stage
     ssytrs_aa_2stage
     slaorhr_col_getrfnp slaorhr_col_getrfnp2 sorhr_col
+    slarfb_gett
 "
 lapack_embeded_underscore_objs_c="
     chetf2_rook chetrf_rook chetri_rook
@@ -3641,6 +3725,7 @@ lapack_embeded_underscore_objs_c="
     csysv_aa_2stage csytrf_aa_2stage
     csytrs_aa_2stage
     claunhr_col_getrfnp claunhr_col_getrfnp2 cunhr_col
+    clarfb_gett
 "
 lapack_embeded_underscore_objs_d="
     dlasyf_rook
@@ -3658,6 +3743,7 @@ lapack_embeded_underscore_objs_d="
      dsysv_aa_2stage
     dsytrf_aa_2stage dsytrs_aa_2stage
     dlaorhr_col_getrfnp dlaorhr_col_getrfnp2 dorhr_col
+    dlarfb_gett
 "
 lapack_embeded_underscore_objs_z="
     zhetf2_rook zhetrf_rook zhetri_rook
@@ -3682,6 +3768,7 @@ lapack_embeded_underscore_objs_z="
     zhetrs_aa_2stage zsysv_aa_2stage
     zsytrf_aa_2stage zsytrs_aa_2stage
     zlaunhr_col_getrfnp zlaunhr_col_getrfnp2 zunhr_col
+    zlarfb_gett
 "
 
 dirname=`pwd -P`/../lapack-netlib
