@@ -74,6 +74,8 @@ jobs:
               echo "/usr/lib/ccache" >> $GITHUB_PATH
             elif [ "$RUNNER_OS" = "macOS" ]; then
               echo "$(brew --prefix)/opt/ccache/libexec" >> $GITHUB_PATH
+              echo "/opt/homebrew/opt/llvm/bin" >>$GITHUB_PATH
+              echo "" >>$GITHUB_PATH
             else
               echo "::error::$RUNNER_OS not supported"
               exit 1
@@ -87,7 +89,6 @@ jobs:
 
       - name: Build OpenBLAS
         run: |
-          export PATH=/opt/homebrew/opt/llvm/bin:$PATH
           export LDFLAGS="-L/opt/homebrew/opt/llvm/lib"
           export CPPFLAGS="-I/opt/homebrew/opt/llvm/include"
           case "${{ matrix.build }}" in
@@ -95,7 +96,9 @@ jobs:
               make -j$(nproc) DYNAMIC_ARCH=1 USE_OPENMP=${{matrix.openmp}} INTERFACE64=${{matrix.ilp64}} FC="ccache ${{ matrix.fortran }}"
               ;;
             "cmake")
-              mkdir build && cd build
+              pwd
+              mkdir build 
+              cd build
               cmake -DDYNAMIC_ARCH=1 \
                     -DUSE_OPENMP=${{matrix.openmp}}
                     -DINTERFACE64=${{matrix.ilp64}}
