@@ -46,9 +46,6 @@ jobs:
             brew reinstall gcc
             brew install coreutils cmake ccache
             brew install llvm
-  - export PATH=/opt/homebrew/opt/llvm/bin:$PATH
-  - export LDFLAGS="-L/opt/homebrew/opt/llvm/lib"
-  - export CPPFLAGS="-I/opt/homebrew/opt/llvm/include"
           else
             echo "::error::$RUNNER_OS not supported"
             exit 1
@@ -90,6 +87,9 @@ jobs:
 
       - name: Build OpenBLAS
         run: |
+          export PATH=/opt/homebrew/opt/llvm/bin:$PATH
+          export LDFLAGS="-L/opt/homebrew/opt/llvm/lib"
+          export CPPFLAGS="-I/opt/homebrew/opt/llvm/include"
           case "${{ matrix.build }}" in
             "make")
               make -j$(nproc) DYNAMIC_ARCH=1 USE_OPENMP=${{matrix.openmp}} INTERFACE64=${{matrix.ilp64}} FC="ccache ${{ matrix.fortran }}"
