@@ -106,7 +106,7 @@ set(ZDMDEIGTST zchkdmd.f90)
 
 macro(add_eig_executable name)
   add_executable(${name} ${ARGN})
-  target_link_libraries(${name} openblas${SUFFIX64_UNDERSCORE})
+  target_link_libraries(${name} ${LIBNAMEPREFIX}openblas${LIBNAMESUFFIX}${SUFFIX64_UNDERSCORE})
 #${TMGLIB} ../${LAPACK_LIBRARIES} ${BLAS_LIBRARIES})
 endmacro()
 
