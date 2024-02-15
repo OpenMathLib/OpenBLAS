@@ -100,6 +100,8 @@ main (int argc, char *argv[])
       float C[m * n];
       bfloat16_bits AA[m * k], BB[k * n];
       float DD[m * n], CC[m * n];
+      bfloat16 atmp,btmp;
+      blasint one=1;
 
       for (j = 0; j < m; j++)
 	{
@@ -108,16 +110,18 @@ main (int argc, char *argv[])
 	      A[j * k + i] = ((FLOAT) rand () / (FLOAT) RAND_MAX) + 0.5;
 	      B[j * k + i] = ((FLOAT) rand () / (FLOAT) RAND_MAX) + 0.5;
 	      C[j * k + i] = 0;
-	      AA[j * k + i].v = *(uint32_t *) & A[j * k + i] >> 16;
-	      BB[j * k + i].v = *(uint32_t *) & B[j * k + i] >> 16;
+	      sbstobf16_(&one, &A[j*k+i], &one, &atmp, &one);
+	      sbstobf16_(&one, &B[j*k+i], &one, &btmp, &one);
+	      AA[j * k + i].v = atmp;
+	      BB[j * k + i].v = btmp;
 	      CC[j * k + i] = 0;
 	      DD[j * k + i] = 0;
 	    }
 	}
       SGEMM (&transA, &transB, &m, &n, &k, &alpha, A,
 	     &m, B, &k, &beta, C, &m);
-      SBGEMM (&transA, &transB, &m, &n, &k, &alpha, AA,
-	      &m, BB, &k, &beta, CC, &m);
+      SBGEMM (&transA, &transB, &m, &n, &k, &alpha, (bfloat16*) AA,
+	      &m, (bfloat16*)BB, &k, &beta, CC, &m);
       for (i = 0; i < n; i++)
 	for (j = 0; j < m; j++)
 	    if (fabs (CC[i * m + j] - C[i * m + j]) > 1.0)

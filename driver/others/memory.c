@@ -3214,7 +3214,7 @@ void blas_shutdown(void){
 #endif
     memory[pos].lock   = 0;
   }
-  if (memory_overflowed)
+  if (memory_overflowed) {
     for (pos = 0; pos < NEW_BUFFERS; pos ++){
       newmemory[pos].addr   = (void *)0;
       newmemory[pos].used   = 0;
@@ -3222,6 +3222,10 @@ void blas_shutdown(void){
       newmemory[pos].pos    = -1;
 #endif
       newmemory[pos].lock   = 0;
+    }
+    free(newmemory);
+    newmemory = NULL;
+    memory_overflowed = 0;  
   }
 
   UNLOCK_COMMAND(&alloc_lock);

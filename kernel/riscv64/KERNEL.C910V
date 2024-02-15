@@ -42,8 +42,8 @@ ZSUMKERNEL  = ../arm/zsum.c
 
 SAXPYKERNEL  = axpy_vector.c
 DAXPYKERNEL  = axpy_vector.c
-CAXPYKERNEL  = zaxpy.c
-ZAXPYKERNEL  = zaxpy.c
+CAXPYKERNEL  = zaxpy_vector.c
+ZAXPYKERNEL  = zaxpy_vector.c
 
 SAXPBYKERNEL  = axpby_vector.c
 DAXPBYKERNEL  = axpby_vector.c
@@ -59,7 +59,7 @@ SDOTKERNEL   = dot_vector.c
 DDOTKERNEL   = dot_vector.c
 CDOTKERNEL   = zdot_vector.c
 ZDOTKERNEL   = zdot_vector.c
-DSDOTKERNEL  = ../generic/dot.c
+DSDOTKERNEL  = dsdot_vector.c
 
 SNRM2KERNEL  = nrm2_vector.c
 DNRM2KERNEL  = nrm2_vector.c

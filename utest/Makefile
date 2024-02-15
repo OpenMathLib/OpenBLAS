@@ -12,7 +12,7 @@ UTESTBIN=openblas_utest
 include $(TOPDIR)/Makefile.system
 
 OBJS=utest_main.o test_min.o test_amax.o test_ismin.o test_rotmg.o test_axpy.o test_dotu.o test_dsdot.o test_swap.o test_rot.o test_dnrm2.o test_zscal.o \
-     test_amin.o
+     test_amin.o test_axpby.o
 #test_rot.o test_swap.o test_axpy.o test_dotu.o test_dsdot.o test_fork.o
 
 ifneq ($(NO_LAPACK), 1)
@@ -45,8 +45,18 @@ endif
 
 all : run_test
 
+ifeq ($(OSNAME), AIX)
+ifeq ($(USE_OPENMP), 1)
+$(UTESTBIN): $(OBJS)
+	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $^ ../$(LIBNAME) $(EXTRALIB)
+else
 $(UTESTBIN): $(OBJS)
 	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $^ ../$(LIBNAME) $(EXTRALIB) $(FEXTRALIB)
+endif
+else
+$(UTESTBIN): $(OBJS)
+	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $^ ../$(LIBNAME) $(EXTRALIB) $(FEXTRALIB)
+endif
 
 run_test: $(UTESTBIN)
 ifneq ($(CROSS), 1)

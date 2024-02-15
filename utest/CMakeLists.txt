@@ -17,6 +17,7 @@ else ()
     test_swap.c
     test_zscal.c
     test_amin.c
+    test_axpby.c
   )
 endif ()
 
