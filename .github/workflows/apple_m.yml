@@ -18,8 +18,10 @@ jobs:
       fail-fast: false
       matrix:
         build: [cmake, make]
-
-
+        fortran: [gfortran, flang-new]
+        openmp: [0, 1]
+        ilp64: [0, 1]
+        
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -43,6 +45,10 @@ jobs:
             # It looks like "gfortran" isn't working correctly unless "gcc" is re-installed.
             brew reinstall gcc
             brew install coreutils cmake ccache
+            brew install llvm
+  - export PATH=/opt/homebrew/opt/llvm/bin:$PATH
+  - export LDFLAGS="-L/opt/homebrew/opt/llvm/lib"
+  - export CPPFLAGS="-I/opt/homebrew/opt/llvm/include"
           else
             echo "::error::$RUNNER_OS not supported"
             exit 1
@@ -60,7 +66,7 @@ jobs:
           key: ccache-${{ runner.os }}-${{ matrix.build }}-${{ matrix.fortran }}-${{ github.ref }}-${{ github.sha }}
           # Restore a matching ccache cache entry. Prefer same branch and same Fortran compiler.
           restore-keys: |
-            ccache-${{ runner.os }}-${{ matrix.build }}-${{ github.ref }}
+            ccache-${{ runner.os }}-${{ matrix.build }}-${{{matrix.fortran }}-${{ github.ref }}
             ccache-${{ runner.os }}-${{ matrix.build }}
 
       - name: Configure ccache
@@ -86,11 +92,13 @@ jobs:
         run: |
           case "${{ matrix.build }}" in
             "make")
-              make -j$(nproc) DYNAMIC_ARCH=1 USE_OPENMP=0 FC="ccache ${{ matrix.fortran }}"
+              make -j$(nproc) DYNAMIC_ARCH=1 USE_OPENMP=${{matrix.openmp}} INTERFACE64=${{matrix.ilp64}} FC="ccache ${{ matrix.fortran }}"
               ;;
             "cmake")
               mkdir build && cd build
               cmake -DDYNAMIC_ARCH=1 \
+                    -DUSE_OPENMP=${{matrix.openmp}}
+                    -DINTERFACE64=${{matrix.ilp64}}
                     -DNOFORTRAN=0 \
                     -DBUILD_WITHOUT_LAPACK=0 \
                     -DCMAKE_VERBOSE_MAKEFILE=ON \
