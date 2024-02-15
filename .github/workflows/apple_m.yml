@@ -63,7 +63,7 @@ jobs:
           key: ccache-${{ runner.os }}-${{ matrix.build }}-${{ matrix.fortran }}-${{ github.ref }}-${{ github.sha }}
           # Restore a matching ccache cache entry. Prefer same branch and same Fortran compiler.
           restore-keys: |
-            ccache-${{ runner.os }}-${{ matrix.build }}-${{{matrix.fortran }}-${{ github.ref }}
+            ccache-${{ runner.os }}-${{ matrix.build }}-${{matrix.fortran }}-${{ github.ref }}
             ccache-${{ runner.os }}-${{ matrix.build }}
 
       - name: Configure ccache
