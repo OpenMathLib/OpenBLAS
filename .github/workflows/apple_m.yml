@@ -64,6 +64,7 @@ jobs:
           # Restore a matching ccache cache entry. Prefer same branch and same Fortran compiler.
           restore-keys: |
             ccache-${{ runner.os }}-${{ matrix.build }}-${{matrix.fortran }}-${{ github.ref }}
+            ccache-${{ runner.os }}-${{ matrix.build }}-${{matrix.fortran }}
             ccache-${{ runner.os }}-${{ matrix.build }}
 
       - name: Configure ccache
@@ -91,17 +92,16 @@ jobs:
         run: |
           export LDFLAGS="-L/opt/homebrew/opt/llvm/lib"
           export CPPFLAGS="-I/opt/homebrew/opt/llvm/include"
+          export CC="/opt/homebrew/opt/llvm/bin/clang"
           case "${{ matrix.build }}" in
             "make")
               make -j$(nproc) DYNAMIC_ARCH=1 USE_OPENMP=${{matrix.openmp}} INTERFACE64=${{matrix.ilp64}} FC="ccache ${{ matrix.fortran }}"
               ;;
             "cmake")
-              pwd
-              mkdir build 
-              cd build
+              mkdir build && cd build
               cmake -DDYNAMIC_ARCH=1 \
-                    -DUSE_OPENMP=${{matrix.openmp}}
-                    -DINTERFACE64=${{matrix.ilp64}}
+                    -DUSE_OPENMP=${{matrix.openmp}} \
+                    -DINTERFACE64=${{matrix.ilp64}} \
                     -DNOFORTRAN=0 \
                     -DBUILD_WITHOUT_LAPACK=0 \
                     -DCMAKE_VERBOSE_MAKEFILE=ON \
