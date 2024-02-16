@@ -25,6 +25,13 @@ endif()
 foreach(test_bin ${OpenBLAS_Tests})
 	add_executable(${test_bin} ${test_bin}.f)
 target_link_libraries(${test_bin} ${OpenBLAS_LIBNAME})
+if (USE_OPENMP)
+if (CMAKE_Fortran_COMPILER_ID STREQUAL GNU)
+if (CMAKE_C_COMPILER_ID STREQUAL CLANG)
+target_link_libraries(${test_bin} omp)
+endif()
+endif()
+endif()
 endforeach()
 
 # $1 exec, $2 input, $3 output_result
