@@ -98,7 +98,7 @@ jobs:
               make -j$(nproc) DYNAMIC_ARCH=1 USE_OPENMP=${{matrix.openmp}} INTERFACE64=${{matrix.ilp64}} FC="ccache ${{ matrix.fortran }}"
               ;;
             "cmake")
-              export LDFLAGS="-Wö,-ld_classic"
+              export LDFLAGS="-Wl,-ld_classic"
               mkdir build && cd build
               cmake -DDYNAMIC_ARCH=1 \
                     -DUSE_OPENMP=${{matrix.openmp}} \
