@@ -1,4 +1,4 @@
-name: arm64 graviton cirun
+name: arm64 gcp cirun
 
 on:
   push:
@@ -19,8 +19,7 @@ permissions:
 
 jobs:
   build:
-    if: "github.repository == 'OpenMathLib/OpenBLAS'"
-    runs-on: "cirun-aws-runner-graviton--${{ github.run_id }}"
+    runs-on: "cirun-gcp-runner--${{ github.run_id }}"
 
     strategy:
       fail-fast: false
