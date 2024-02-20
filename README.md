@@ -203,6 +203,16 @@ Please read `GotoBLAS_01Readme.txt` for older CPU models already supported by th
   make HOSTCC=gcc TARGET=x280 NUM_THREADS=8 CC=riscv64-unknown-linux-gnu-clang FC=riscv64-unknown-linux-gnu-gfortran
   ```
 
+- **ZVL???B**: Level-3 BLAS and Level-1,2 including vectorised kernels targeting generic RISCV cores with vector support with registers of at least the corresponding width; ZVL128B and ZVL256B are available.
+e.g.:
+  ```sh
+make TARGET=RISCV64_ZVL256B CFLAGS="-DTARGET=RISCV64_ZVL256B" \
+    BINARY=64 ARCH=riscv64 CC='clang -target riscv64-unknown-linux-gnu' \
+    AR=riscv64-unknown-linux-gnu-ar AS=riscv64-unknown-linux-gnu-gcc \
+    LD=riscv64-unknown-linux-gnu-gcc FC=riscv64-unknown-linux-gnu-gfortran \
+    HOSTCC=gcc HOSTFC=gfortran -j
+  ```
+
 ### Support for multiple targets in a single library
 
 OpenBLAS can be built for multiple targets with runtime detection of the target cpu by specifiying `DYNAMIC_ARCH=1` in Makefile.rule, on the gmake command line or as `-DDYNAMIC_ARCH=TRUE` in cmake.

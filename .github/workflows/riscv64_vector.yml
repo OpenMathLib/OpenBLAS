@@ -1,0 +1,253 @@
+name: riscv64 zvl256b qemu test
+
+on: [push, pull_request]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read # to fetch code (actions/checkout)
+
+jobs:
+  TEST:
+    if: "github.repository == 'OpenMathLib/OpenBLAS'"
+    runs-on: ubuntu-latest
+    env:
+      triple: riscv64-unknown-linux-gnu
+      riscv_gnu_toolchain: https://github.com/riscv-collab/riscv-gnu-toolchain
+      riscv_gnu_toolchain_version: 13.2.0
+      riscv_gnu_toolchain_nightly_download_path: /releases/download/2024.02.02/riscv64-glibc-ubuntu-22.04-llvm-nightly-2024.02.02-nightly.tar.gz
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - target: RISCV64_ZVL128B
+            opts: TARGET=RISCV64_ZVL128B BINARY=64 ARCH=riscv64
+            qemu_cpu: rv64,g=true,c=true,v=true,vext_spec=v1.0,vlen=128,elen=64
+          - target: RISCV64_ZVL256B
+            opts: TARGET=RISCV64_ZVL256B BINARY=64 ARCH=riscv64
+            qemu_cpu: rv64,g=true,c=true,v=true,vext_spec=v1.0,vlen=256,elen=64
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: install build deps
+        run: |
+          sudo apt-get update
+          sudo apt-get install autoconf automake autotools-dev ninja-build make \
+          libgomp1-riscv64-cross ccache
+          wget ${riscv_gnu_toolchain}/${riscv_gnu_toolchain_nightly_download_path}
+          tar -xvf $(basename ${riscv_gnu_toolchain_nightly_download_path}) -C /opt
+
+      - name: Compilation cache
+        uses: actions/cache@v3
+        with:
+          path: ~/.ccache
+          key: ccache-${{ runner.os }}-${{ matrix.target }}-${{ github.ref }}-${{ github.sha }}
+          restore-keys: |
+            ccache-${{ runner.os }}-${{ matrix.target }}-${{ github.ref }}
+            ccache-${{ runner.os }}-${{ matrix.target }}
+
+      - name: Configure ccache
+        run: |
+          test -d ~/.ccache || mkdir -p ~/.ccache
+          echo "max_size = 300M" > ~/.ccache/ccache.conf
+          echo "compression = true" >> ~/.ccache/ccache.conf
+          ccache -s
+
+      - name: build OpenBLAS libs
+        run: |
+            export PATH="/opt/riscv/bin:$PATH"
+            make TARGET=${{ matrix.target }} CFLAGS="-DTARGET=${{ matrix.target }}" \
+            CC='ccache clang --rtlib=compiler-rt -target ${triple} --sysroot /opt/riscv/sysroot --gcc-toolchain=/opt/riscv/lib/gcc/riscv64-unknown-linux-gnu/${riscv_gnu_toolchain_version}/' \
+            AR='ccache ${triple}-ar' AS='ccache ${triple}-gcc' LD='ccache ${triple}-gcc' \
+            RANLIB='ccache ${triple}-ranlib' \
+            FC='ccache ${triple}-gfortran' ${{ matrix.opts }} \
+            HOSTCC=gcc HOSTFC=gfortran -j$(nproc)
+
+      - name: build OpenBLAS tests
+        run: |
+            export PATH="/opt/riscv/bin:$PATH"
+            make TARGET=${{ matrix.target }} CFLAGS="-DTARGET=${{ matrix.target }}" \
+            CC='${triple}-gcc' \
+            AR='ccache ${triple}-ar' AS='ccache ${triple}-gcc' LD='ccache ${triple}-gcc' \
+            RANLIB='ccache ${triple}-ranlib' \
+            FC='ccache ${triple}-gfortran' ${{ matrix.opts }} \
+            HOSTCC=gcc HOSTFC=gfortran -j$(nproc) tests
+
+      - name: build lapack-netlib tests
+        working-directory: ./lapack-netlib/TESTING
+        run: |
+            export PATH="/opt/riscv/bin:$PATH"
+            make TARGET=${{ matrix.target }} CFLAGS="-DTARGET=${{ matrix.target }}" \
+            CC='${triple}-gcc' \
+            AR='ccache ${triple}-ar' AS='ccache ${triple}-gcc' LD='ccache ${triple}-gcc' \
+            RANLIB='ccache ${triple}-ranlib' \
+            FC='ccache ${triple}-gfortran' ${{ matrix.opts }} \
+            HOSTCC=gcc HOSTFC=gfortran -j$(nproc) \
+            LIN/xlintsts LIN/xlintstc LIN/xlintstd LIN/xlintstz LIN/xlintstrfs \
+            LIN/xlintstrfc LIN/xlintstrfd LIN/xlintstrfz LIN/xlintstds \
+            LIN/xlintstzc EIG/xeigtsts EIG/xeigtstc EIG/xeigtstd EIG/xeigtstz \
+
+      - name: OpenBLAS tests
+        shell: bash
+        run: |
+          export PATH="/opt/riscv/bin:$PATH"
+          export QEMU_CPU=${{ matrix.qemu_cpu }}
+          rm -rf ./test_out
+          mkdir -p ./test_out
+          run_test() { local DIR=$1; local CMD=$2; local DATA=$3; local OUTPUT="./test_out/$DIR.$CMD"; \
+            echo "`pwd`/$DIR/$CMD $DIR/$DATA" >> $OUTPUT; \
+            if [[ -z $DATA ]]; then qemu-riscv64 ./$DIR/$CMD |& tee $OUTPUT ; \ 
+            else qemu-riscv64 ./$DIR/$CMD < ./$DIR/$DATA |& tee $OUTPUT ; fi ; \
+            RV=$? ; if [[ $RV != 0 ]]; then echo "*** FAIL: nonzero exit code $RV" >> $OUTPUT ; fi \
+          }
+          run_test test cblat1 &
+          run_test test cblat2 cblat2.dat &
+          run_test test cblat3 cblat3.dat &
+          run_test test dblat1 &
+          run_test test dblat2 dblat2.dat &
+          run_test test dblat3 dblat3.dat &
+          run_test test sblat1 &
+          run_test test sblat2 sblat2.dat &
+          run_test test sblat3 sblat3.dat &
+          run_test test zblat1 &
+          run_test test zblat2 zblat2.dat &
+          run_test test zblat3 zblat3.dat &
+          run_test ctest xccblat1 &
+          run_test ctest xccblat2 cin2 &
+          run_test ctest xccblat3 cin3 &
+          run_test ctest xdcblat1 &
+          run_test ctest xdcblat2 din2 &
+          run_test ctest xdcblat3 din3 &
+          run_test ctest xscblat1 &
+          run_test ctest xscblat2 sin2 &
+          run_test ctest xscblat3 sin3 &
+          run_test ctest xzcblat1 &
+          run_test ctest xzcblat2 zin2 &
+          run_test ctest xzcblat3 zin3 &
+          wait
+          while IFS= read -r -d $'\0' LOG; do cat $LOG ; FAILURES=1 ; done < <(grep -lZ FAIL ./test_out/*)
+          if [[ ! -z $FAILURES ]]; then echo "==========" ; echo "== FAIL ==" ; echo "==========" ; echo ; exit 1 ; fi
+
+      - name: netlib tests
+        shell: bash
+        run: |
+          : # these take a very long time
+          echo "Skipping netlib tests in CI"
+          exit 0
+          : # comment out exit above to enable the tests
+          : # probably we want to identify a subset to run in CI
+          export PATH="/opt/riscv/bin:$PATH"
+          export QEMU_CPU=${{ matrix.qemu_cpu }}
+          rm -rf ./test_out
+          mkdir -p ./test_out
+          run_test() { local OUTPUT="./test_out/$1"; local DATA="./lapack-netlib/TESTING/$2"; local CMD="./lapack-netlib/TESTING/$3"; \
+            echo "$4" >> $OUTPUT; \
+            echo "$CMD" >> $OUTPUT; \
+            qemu-riscv64 $CMD < $DATA |& tee $OUTPUT; \
+            RV=$? ; if [[ $RV != 0 ]]; then echo "*** FAIL: nonzero exit code $RV" >> $OUTPUT ; fi; \
+            if grep -q fail $OUTPUT ; then echo "*** FAIL: log contains 'fail'" >> $OUTPUT ; fi ; \
+            if grep -q rror $OUTPUT | grep -v -q "passed" | grep -v "largest error" ; then echo "*** FAIL: log contains 'error'" >> $OUTPUT ; fi \
+          }
+          run_test stest.out stest.in LIN/xlintsts "Testing REAL LAPACK linear equation routines"  &
+          run_test ctest.out ctest.in LIN/xlintstc "Testing COMPLEX LAPACK linear equation routines"  &
+          run_test dtest.out dtest.in LIN/xlintstd "Testing DOUBLE PRECISION LAPACK linear equation routines"  &
+          run_test ztest.out ztest.in LIN/xlintstz "Testing COMPLEX16 LAPACK linear equation routines"  &
+          run_test dstest.out dstest.in LIN/xlintstds "Testing SINGLE-DOUBLE PRECISION LAPACK prototype linear equation routines"  &
+          run_test zctest.out zctest.in LIN/xlintstzc "Testing COMPLEX-COMPLEX16 LAPACK prototype linear equation routines"  &
+          run_test stest_rfp.out stest_rfp.in LIN/xlintstrfs "Testing REAL LAPACK RFP prototype linear equation routines"  &
+          run_test dtest_rfp.out dtest_rfp.in LIN/xlintstrfd "Testing DOUBLE PRECISION LAPACK RFP prototype linear equation routines"  &
+          run_test ctest_rfp.out ctest_rfp.in LIN/xlintstrfc "Testing COMPLEX LAPACK RFP prototype linear equation routines"  &
+          run_test ztest_rfp.out ztest_rfp.in LIN/xlintstrfz "Testing COMPLEX16 LAPACK RFP prototype linear equation routines"  &
+          run_test snep.out nep.in EIG/xeigtsts "NEP - Testing Nonsymmetric Eigenvalue Problem routines"  &
+          run_test ssep.out sep.in EIG/xeigtsts "SEP - Testing Symmetric Eigenvalue Problem routines"  &
+          run_test sse2.out se2.in EIG/xeigtsts "SEP - Testing Symmetric Eigenvalue Problem routines"  &
+          run_test ssvd.out svd.in EIG/xeigtsts "SVD - Testing Singular Value Decomposition routines"  &
+          run_test sec.out sec.in EIG/xeigtsts "SEC - Testing REAL Eigen Condition Routines"  &
+          run_test sed.out sed.in EIG/xeigtsts "SEV - Testing REAL Nonsymmetric Eigenvalue Driver"  &
+          run_test sgg.out sgg.in EIG/xeigtsts "SGG - Testing REAL Nonsymmetric Generalized Eigenvalue Problem routines"  &
+          run_test sgd.out sgd.in EIG/xeigtsts "SGD - Testing REAL Nonsymmetric Generalized Eigenvalue Problem driver routines"  &
+          run_test ssb.out ssb.in EIG/xeigtsts "SSB - Testing REAL Symmetric Eigenvalue Problem routines"  &
+          run_test ssg.out ssg.in EIG/xeigtsts "SSG - Testing REAL Symmetric Generalized Eigenvalue Problem routines"  &
+          run_test sbal.out sbal.in EIG/xeigtsts "SGEBAL - Testing the balancing of a REAL general matrix"  &
+          run_test sbak.out sbak.in EIG/xeigtsts "SGEBAK - Testing the back transformation of a REAL balanced matrix"  &
+          run_test sgbal.out sgbal.in EIG/xeigtsts "SGGBAL - Testing the balancing of a pair of REAL general matrices"  &
+          run_test sgbak.out sgbak.in EIG/xeigtsts "SGGBAK - Testing the back transformation of a pair of REAL balanced matrices"  &
+          run_test sbb.out sbb.in EIG/xeigtsts "SBB - Testing banded Singular Value Decomposition routines"  &
+          run_test sglm.out glm.in EIG/xeigtsts "GLM - Testing Generalized Linear Regression Model routines"  &
+          run_test sgqr.out gqr.in EIG/xeigtsts "GQR - Testing Generalized QR and RQ factorization routines"  &
+          run_test sgsv.out gsv.in EIG/xeigtsts "GSV - Testing Generalized Singular Value Decomposition routines"  &
+          run_test scsd.out csd.in EIG/xeigtsts "CSD - Testing CS Decomposition routines"  &
+          run_test slse.out lse.in EIG/xeigtsts "LSE - Testing Constrained Linear Least Squares routines"  &
+          run_test cnep.out nep.in EIG/xeigtstc "NEP - Testing Nonsymmetric Eigenvalue Problem routines"  &
+          run_test csep.out sep.in EIG/xeigtstc "SEP - Testing Symmetric Eigenvalue Problem routines"  &
+          run_test cse2.out se2.in EIG/xeigtstc "SEP - Testing Symmetric Eigenvalue Problem routines"  &
+          run_test csvd.out svd.in EIG/xeigtstc "SVD - Testing Singular Value Decomposition routines"  &
+          run_test cec.out cec.in EIG/xeigtstc "CEC - Testing COMPLEX Eigen Condition Routines"  &
+          run_test ced.out ced.in EIG/xeigtstc "CES - Testing COMPLEX Nonsymmetric Schur Form Driver"  &
+          run_test cgg.out cgg.in EIG/xeigtstc "CGG - Testing COMPLEX Nonsymmetric Generalized Eigenvalue Problem routines"  &
+          run_test cgd.out cgd.in EIG/xeigtstc "CGD - Testing COMPLEX Nonsymmetric Generalized Eigenvalue Problem driver routines"  &
+          run_test csb.out csb.in EIG/xeigtstc "CHB - Testing Hermitian Eigenvalue Problem routines"  &
+          run_test csg.out csg.in EIG/xeigtstc "CSG - Testing Symmetric Generalized Eigenvalue Problem routines"  &
+          run_test cbal.out cbal.in EIG/xeigtstc "CGEBAL - Testing the balancing of a COMPLEX general matrix"  &
+          run_test cbak.out cbak.in EIG/xeigtstc "CGEBAK - Testing the back transformation of a COMPLEX balanced matrix"  &
+          run_test cgbal.out cgbal.in EIG/xeigtstc "CGGBAL - Testing the balancing of a pair of COMPLEX general matrices"  &
+          run_test cgbak.out cgbak.in EIG/xeigtstc "CGGBAK - Testing the back transformation of a pair of COMPLEX balanced matrices"  &
+          run_test cbb.out cbb.in EIG/xeigtstc "CBB - Testing banded Singular Value Decomposition routines"  &
+          run_test cglm.out glm.in EIG/xeigtstc "GLM - Testing Generalized Linear Regression Model routines"  &
+          run_test cgqr.out gqr.in EIG/xeigtstc "GQR - Testing Generalized QR and RQ factorization routines"  &
+          run_test cgsv.out gsv.in EIG/xeigtstc "GSV - Testing Generalized Singular Value Decomposition routines"  &
+          run_test ccsd.out csd.in EIG/xeigtstc "CSD - Testing CS Decomposition routines"  &
+          run_test clse.out lse.in EIG/xeigtstc "LSE - Testing Constrained Linear Least Squares routines"  &
+          run_test dnep.out nep.in EIG/xeigtstd "NEP - Testing Nonsymmetric Eigenvalue Problem routines"  &
+          run_test dsep.out sep.in EIG/xeigtstd "SEP - Testing Symmetric Eigenvalue Problem routines"  &
+          run_test dse2.out se2.in EIG/xeigtstd "SEP - Testing Symmetric Eigenvalue Problem routines"  &
+          run_test dsvd.out svd.in EIG/xeigtstd "SVD - Testing Singular Value Decomposition routines"  &
+          run_test dec.out dec.in EIG/xeigtstd "DEC - Testing DOUBLE PRECISION Eigen Condition Routines"  &
+          run_test ded.out ded.in EIG/xeigtstd "DEV - Testing DOUBLE PRECISION Nonsymmetric Eigenvalue Driver"  &
+          run_test dgg.out dgg.in EIG/xeigtstd "DGG - Testing DOUBLE PRECISION Nonsymmetric Generalized Eigenvalue Problem routines"  &
+          run_test dgd.out dgd.in EIG/xeigtstd "DGD - Testing DOUBLE PRECISION Nonsymmetric Generalized Eigenvalue Problem driver routines"  &
+          run_test dsb.out dsb.in EIG/xeigtstd "DSB - Testing DOUBLE PRECISION Symmetric Eigenvalue Problem routines"  &
+          run_test dsg.out dsg.in EIG/xeigtstd "DSG - Testing DOUBLE PRECISION Symmetric Generalized Eigenvalue Problem routines"  &
+          run_test dbal.out dbal.in EIG/xeigtstd "DGEBAL - Testing the balancing of a DOUBLE PRECISION general matrix"  &
+          run_test dbak.out dbak.in EIG/xeigtstd "DGEBAK - Testing the back transformation of a DOUBLE PRECISION balanced matrix"  &
+          run_test dgbal.out dgbal.in EIG/xeigtstd "DGGBAL - Testing the balancing of a pair of DOUBLE PRECISION general matrices"  &
+          run_test dgbak.out dgbak.in EIG/xeigtstd "DGGBAK - Testing the back transformation of a pair of DOUBLE PRECISION balanced matrices"  &
+          run_test dbb.out dbb.in EIG/xeigtstd "DBB - Testing banded Singular Value Decomposition routines"  &
+          run_test dglm.out glm.in EIG/xeigtstd "GLM - Testing Generalized Linear Regression Model routines"  &
+          run_test dgqr.out gqr.in EIG/xeigtstd "GQR - Testing Generalized QR and RQ factorization routines"  &
+          run_test dgsv.out gsv.in EIG/xeigtstd "GSV - Testing Generalized Singular Value Decomposition routines"  &
+          run_test dcsd.out csd.in EIG/xeigtstd "CSD - Testing CS Decomposition routines"  &
+          run_test dlse.out lse.in EIG/xeigtstd "LSE - Testing Constrained Linear Least Squares routines"  &
+          run_test znep.out nep.in EIG/xeigtstz "NEP - Testing Nonsymmetric Eigenvalue Problem routines"  &
+          run_test zsep.out sep.in EIG/xeigtstz "SEP - Testing Symmetric Eigenvalue Problem routines"  &
+          run_test zse2.out se2.in EIG/xeigtstz "SEP - Testing Symmetric Eigenvalue Problem routines"  &
+          run_test zsvd.out svd.in EIG/xeigtstz "SVD - Testing Singular Value Decomposition routines"  &
+          run_test zec.out zec.in EIG/xeigtstz "ZEC - Testing COMPLEX16 Eigen Condition Routines"  &
+          run_test zed.out zed.in EIG/xeigtstz "ZES - Testing COMPLEX16 Nonsymmetric Schur Form Driver"  &
+          run_test zgg.out zgg.in EIG/xeigtstz "ZGG - Testing COMPLEX16 Nonsymmetric Generalized Eigenvalue Problem routines"  &
+          run_test zgd.out zgd.in EIG/xeigtstz "ZGD - Testing COMPLEX16 Nonsymmetric Generalized Eigenvalue Problem driver routines"  &
+          run_test zsb.out zsb.in EIG/xeigtstz "ZHB - Testing Hermitian Eigenvalue Problem routines"  &
+          run_test zsg.out zsg.in EIG/xeigtstz "ZSG - Testing Symmetric Generalized Eigenvalue Problem routines"  &
+          run_test zbal.out zbal.in EIG/xeigtstz "ZGEBAL - Testing the balancing of a COMPLEX16 general matrix"  &
+          run_test zbak.out zbak.in EIG/xeigtstz "ZGEBAK - Testing the back transformation of a COMPLEX16 balanced matrix"  &
+          run_test zgbal.out zgbal.in EIG/xeigtstz "ZGGBAL - Testing the balancing of a pair of COMPLEX general matrices"  &
+          run_test zgbak.out zgbak.in EIG/xeigtstz "ZGGBAK - Testing the back transformation of a pair of COMPLEX16 balanced matrices"  &
+          run_test zbb.out zbb.in EIG/xeigtstz "ZBB - Testing banded Singular Value Decomposition routines"  &
+          run_test zglm.out glm.in EIG/xeigtstz "GLM - Testing Generalized Linear Regression Model routines"  &
+          run_test zgqr.out gqr.in EIG/xeigtstz "GQR - Testing Generalized QR and RQ factorization routines"  &
+          run_test zgsv.out gsv.in EIG/xeigtstz "GSV - Testing Generalized Singular Value Decomposition routines"  &
+          run_test zcsd.out csd.in EIG/xeigtstz "CSD - Testing CS Decomposition routines"  &
+          run_test zlse.out lse.in EIG/xeigtstz "LSE - Testing Constrained Linear Least Squares routines"  &
+          wait
+          while IFS= read -r -d $'\0' LOG; do cat $LOG ; FAILURES=1 ;  done < <(grep -lZ FAIL ./test_out/*)
+          python ./lapack-netlib/lapack_testing.py -d ./test_out -e > netlib_summary
+          TOTALS="$(grep 'ALL PRECISIONS' netlib_summary)"
+          NUMERICAL_ERRORS=-1
+          OTHER_ERRORS=-1
+          . <(awk '/ALL PRECISIONS/{printf "NUMERICAL_ERRORS=%s\nOTHER_ERRORS=%s\n", $5, $7}' netlib_summary
+          if (( NUMERICAL_ERRORS != 0 )) || (( OTHER_ERRORS != 0 )) ; then cat netlib_summary ; FAILURES=1 ; fi
+          if [[ ! -z $FAILURES ]]; then echo "==========" ; echo "== FAIL ==" ; echo "==========" ; echo ; exit 1 ; fi
