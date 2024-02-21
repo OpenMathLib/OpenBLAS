@@ -50,6 +50,9 @@ if (${F_COMPILER} STREQUAL "GFORTRAN" OR ${F_COMPILER} STREQUAL "F95" OR CMAKE_F
       # Don't include -lgfortran, when NO_LAPACK=1 or lsbcc
       set(EXTRALIB "${EXTRALIB} -lgfortran")
     endif ()
+    if (INTERFACE64)
+      set(FCOMMON_OPT "${FCOMMON_OPT} -fdefault-integer-8")
+    endif ()
   endif ()
   if (NO_BINARY_MODE)
     if (MIPS64)
