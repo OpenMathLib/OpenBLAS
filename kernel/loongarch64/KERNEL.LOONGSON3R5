@@ -139,6 +139,9 @@ ZGEMMITCOPYOBJ = zgemm_itcopy$(TSUFFIX).$(SUFFIX)
 ZGEMMONCOPYOBJ = zgemm_oncopy$(TSUFFIX).$(SUFFIX)
 ZGEMMOTCOPYOBJ = zgemm_otcopy$(TSUFFIX).$(SUFFIX)
 
+ZGEMVNKERNEL = zgemv_n_4_lasx.S
+ZGEMVTKERNEL = zgemv_t_4_lasx.S
+
 ZTRSMKERNEL_LN  = ../generic/trsm_kernel_LN.c
 ZTRSMKERNEL_LT  = ../generic/trsm_kernel_LT.c
 ZTRSMKERNEL_RN  = ../generic/trsm_kernel_RN.c
