@@ -21,10 +21,14 @@ endif()
 if (BUILD_COMPLEX16)
 	list (APPEND OpenBLAS_Tests zblat1 zblat2 zblat3)
 endif()
-
+message (STATUS CCOMP ${CMAKE_C_COMPILER_ID} FCOMP ${CMAKE_Fortran_COMPILER_ID})
 foreach(test_bin ${OpenBLAS_Tests})
 	add_executable(${test_bin} ${test_bin}.f)
 target_link_libraries(${test_bin} ${OpenBLAS_LIBNAME})
+if (USE_OPENMP AND (${CMAKE_Fortran_COMPILER_ID} STREQUAL GNU) AND (${CMAKE_C_COMPILER_ID} STREQUAL Clang))
+	string(REGEX REPLACE "-fopenmp" "" CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS}")
+target_link_libraries(${test_bin} omp pthread)
+endif()
 endforeach()
 
 # $1 exec, $2 input, $3 output_result
