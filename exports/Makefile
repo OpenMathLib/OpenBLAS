@@ -73,6 +73,10 @@ endif
 endif
 endif
 
+ifeq ($(F_COMPILER)$(OSNAME), IBMAIX)
+EXTRALIB += -lxlf90
+endif
+
 ifeq ($(C_COMPILER), PGI)
 EXTRALIB += -pgf90libs
 endif
@@ -247,6 +251,20 @@ so : ../$(LIBSONAME)
 endif
 
 ifeq ($(OSNAME), AIX)
+
+so : ../$(LIBSONAME) linktest.c
+	$(CC) $(CFLAGS) $(LDFLAGS) -w -o linktest linktest.c ../$(LIBSONAME) $(EXTRALIB) && echo OK.
+	rm -f linktest
+
+../$(LIBSONAME) : aix.exp
+	$(CC) $(CFLAGS) $(LDFLAGS)  -shared -o ../$(LIBSONAME) \
+	-Wl,-bE:aix.exp -Wl,-bbigtoc ../$(LIBNAME) $(EXTRALIB)
+
+aix.exp :
+	/usr/bin/nm -X32_64 -PCpgl ../$(LIBNAME) | /usr/bin/awk '{ if ((($$ 2 == "T") \
+	|| ($$ 2 == "D") || ($$ 2 == "B") || ($$ 2 == "W") || ($$ 2 == "V") || ($$ 2 == "Z")) && (substr($$ 1,1,1) != ".")) \
+	{ if (($$ 2 == "W") || ($$ 2 == "V") || ($$ 2 == "Z")) { print $$ 1 " weak" } else { print $$ 1 } } }' | \
+	/usr/bin/sort -u > aix.exp
 
 ifeq ($(COMPILER_F77), xlf)
 
