@@ -152,6 +152,9 @@ endif
 ifeq ($(OSNAME), CYGWIN_NT)
 	@$(MAKE) -C exports dll
 endif
+ifeq ($(OSNAME), AIX)
+	@$(MAKE) -C exports so
+endif
 endif
 
 tests : shared
