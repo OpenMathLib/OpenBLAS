@@ -385,6 +385,246 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .endm
 
 //
+// GCOMPLEXACC: Complex accumulate the values of vector registers
+// pre_op: xvf or vf, differentiate between LSX or LASX instruction
+// suf_op: s or d, differentiate between single precision or double precision complex numbers
+// Note: When "pre_op = xvf && suf_op = s", in will be modified.
+//
+.macro GCOMPLEXACC pre_op:req, suf_op:req, out:req, in:req, more:vararg
+.ifeqs "\pre_op", "xvf"
+    xvpermi.q              \out,   \in,    0x01
+.ifeqs "\suf_op", "s"
+    \pre_op\()add.\suf_op  \in,    \out,   \in
+    xvpackod.d             \out,   \in,    \in
+    \pre_op\()add.\suf_op  \out,   \out,   \in
+.else
+    \pre_op\()add.\suf_op  \out,   \out,   \in
+.endif
+.endif
+
+.ifeqs "\pre_op", "vf"
+.ifeqs "\suf_op", "s"
+    vpackod.d              \out,   \in,    \in
+    \pre_op\()add.\suf_op  \out,   \out,   \in
+.endif
+.endif
+
+.ifnb \more
+    GCOMPLEXACC \pre_op, \suf_op, \more
+.endif
+.endm
+
+//
+// GCOMPLEXMUL: Complex multiplication, out = in0 * in1
+// xconj: default value 0.
+// if !(xconj)
+//     out_r = in0_r * in1_r - in0_i * in1_i;
+//     out_i = in0_r * in1_i + in0_i * in1_r;
+// else
+//     out_r = in0_r * in1_r + in0_i * in1_i;
+//     out_i = in0_r * in1_i - in0_i * in1_r;
+// pre_op: xvf or vf, differentiate between LSX or LASX instruction
+// suf_op: s or d, differentiate between single precision or double precision complex numbers
+//
+.macro GCOMPLEXMUL xconj=0, pre_op:req, suf_op:req, out:req, in0:req, in1:req, tmp0:req, tmp1:req, tmp2:req, more:vararg
+.ifeqs "\pre_op", "xvf"
+    xvxor.v           \tmp1,     \tmp1,     \tmp1
+.ifeqs "\suf_op", "s"
+    xvpackev.w  \tmp0,     \in0,      \in0
+.else
+    xvpackev.d  \tmp0,     \in0,      \in0
+.endif
+.else
+    vxor.v           \tmp1,     \tmp1,     \tmp1
+.ifeqs "\suf_op", "s"
+    vpackev.w  \tmp0,     \in0,      \in0
+.else
+    vpackev.d  \tmp0,     \in0,      \in0
+.endif
+.endif
+
+    \pre_op\()sub.\suf_op    \tmp1,     \tmp1,     \in0
+
+.ifeqs "\pre_op", "xvf"
+.ifeqs "\suf_op", "s"
+.ifeqs "\xconj", "0"
+    xvpackod.w  \tmp1,     \in0,      \tmp1
+.else
+    xvpackod.w  \tmp1,     \tmp1,     \in0
+.endif
+    xvshuf4i.w  \tmp2,     \in1,      0xb1
+.else
+.ifeqs "\xconj", "0"
+    xvpackod.d  \tmp1,     \in0,      \tmp1
+.else
+    xvpackod.d  \tmp1,     \tmp1,     \in0
+.endif
+    xvshuf4i.d  \tmp2,     \in1,      0x0b
+.endif
+.else
+.ifeqs "\suf_op", "s"
+.ifeqs "\xconj", "0"
+    vpackod.w  \tmp1,     \in0,      \tmp1
+.else
+    vpackod.w  \tmp1,     \tmp1,     \in0
+.endif
+    vshuf4i.w  \tmp2,     \in1,      0xb1
+.else
+.ifeqs "\xconj", "0"
+    vpackod.d  \tmp1,     \in0,      \tmp1
+.else
+    vpackod.d  \tmp1,     \tmp1,     \in0
+.endif
+    vshuf4i.d  \tmp2,     \in1,      0x0b
+.endif
+.endif
+
+    \pre_op\()mul.\suf_op    \out,      \tmp0,     \in1
+    \pre_op\()madd.\suf_op   \out,      \tmp1,     \tmp2,     \out
+
+.ifnb \more
+    GCOMPLEXMUL \xconj, \pre_op, \suf_op, \more
+.endif
+.endm
+
+//
+// GCOMPLEXMADD: Complex multiply-accumulate, out = in0 * in1 + in2
+// xconj: default value 0
+// conj: default value 0
+// if !(CONJ)
+// if !(XCONJ)
+//     out_r = in0_r * in1_r - in0_i * in1_i + in2_r;
+//     out_i = in0_r * in1_i + in0_i * in1_r + in2_i;
+// else
+//     out_r = in0_r * in1_r + in0_i * in1_i + in2_r;
+//     out_i = in0_r * in1_i - in0_i * in1_r + in2_i;
+// else
+// if !(XCONJ)
+//     out_r = in0_r * in1_r + in0_i * in1_i + in2_r;
+//     out_i = in2_i - (in0_r * in1_i - in0_i * in1_r);
+// else
+//     out_r = in0_r * in1_r   - in0_i * in1_i + in2_r;
+//     out_i = in2_i - (in0_r * in1_i + in0_i * in1_r);
+// pre_op: xvf or vf, differentiate between LSX or LASX instruction
+// suf_op: s or d, differentiate between single precision or double precision complex numbers
+//
+.macro GCOMPLEXMADD xconj=0, conj=0, pre_op:req, suf_op:req, out:req, in0:req, in1:req, in2:req, tmp0:req, tmp1:req, tmp2:req, more:vararg
+.ifeqs "\pre_op", "xvf"
+    xvxor.v           \tmp1,     \tmp1,     \tmp1
+.ifeqs "\suf_op", "s"
+    xvpackev.w  \tmp0,     \in0,      \in0
+.else
+    xvpackev.d  \tmp0,     \in0,      \in0
+.endif
+.else
+    vxor.v           \tmp1,     \tmp1,     \tmp1
+.ifeqs "\suf_op", "s"
+    vpackev.w  \tmp0,     \in0,      \in0
+.else
+    vpackev.d  \tmp0,     \in0,      \in0
+.endif
+.endif
+
+    \pre_op\()madd.\suf_op   \tmp2,      \tmp0,     \in1,      \in2
+.ifeqs "\conj", "1"
+    \pre_op\()nmsub.\suf_op  \tmp0,      \tmp0,     \in1,      \in2
+.ifeqs "\pre_op", "xvf"
+.ifeqs "\suf_op", "s"
+    xvshuf4i.w  \tmp0,     \tmp0,      0xb1
+    xvpackev.w  \out,      \tmp0,      \tmp2
+.else
+    xvshuf4i.d  \tmp0,     \tmp0,      0x0b
+    xvpackev.d  \out,      \tmp0,      \tmp2
+.endif
+.else
+.ifeqs "\suf_op", "s"
+    vshuf4i.w  \tmp0,     \tmp0,      0xb1
+    vpackev.w  \out,      \tmp0,      \tmp2
+.else
+    vshuf4i.d  \tmp0,     \tmp0,      0x0b
+    vpackev.d  \out,      \tmp0,      \tmp2
+.endif
+.endif /* pre_op = xvf */
+.else
+    \pre_op\()add.\suf_op    \out,     \tmp2,     \tmp1
+.endif /* conj = 1 */
+
+    \pre_op\()sub.\suf_op    \tmp1,     \tmp1,     \in0
+
+.ifeqs "\pre_op", "xvf"
+.ifeqs "\suf_op", "s"
+.ifeqs "\conj",  "0"
+.ifeqs "\xconj", "0"
+    xvpackod.w  \tmp1,     \in0,      \tmp1
+.else
+    xvpackod.w  \tmp1,     \tmp1,     \in0
+.endif
+.else
+.ifeqs "\xconj", "0"
+    xvpackod.w  \tmp1,     \in0,     \in0
+.else
+    xvpackod.w  \tmp1,     \tmp1,     \tmp1
+.endif
+.endif
+    xvshuf4i.w  \tmp2,     \in1,      0xb1
+.else
+.ifeqs "\conj",  "0"
+.ifeqs "\xconj", "0"
+    xvpackod.d  \tmp1,     \in0,      \tmp1
+.else
+    xvpackod.d  \tmp1,     \tmp1,     \in0
+.endif
+.else
+.ifeqs "\xconj", "0"
+    xvpackod.d  \tmp1,     \in0,     \in0
+.else
+    xvpackod.d  \tmp1,     \tmp1,    \tmp1
+.endif
+.endif
+    xvshuf4i.d  \tmp2,     \in1,      0x0b
+.endif
+.else
+.ifeqs "\suf_op", "s"
+.ifeqs "\conj",  "0"
+.ifeqs "\xconj", "0"
+    vpackod.w  \tmp1,     \in0,      \tmp1
+.else
+    vpackod.w  \tmp1,     \tmp1,     \in0
+.endif
+.else
+.ifeqs "\xconj", "0"
+    vpackod.w  \tmp1,     \in0,     \in0
+.else
+    vpackod.w  \tmp1,     \tmp1,    \tmp1
+.endif
+.endif
+    vshuf4i.w  \tmp2,     \in1,      0xb1
+.else
+.ifeqs "\conj",  "0"
+.ifeqs "\xconj", "0"
+    vpackod.d  \tmp1,     \in0,      \tmp1
+.else
+    vpackod.d  \tmp1,     \tmp1,     \in0
+.endif
+.else
+.ifeqs "\xconj", "0"
+    vpackod.d  \tmp1,     \in0,     \in0
+.else
+    vpackod.d  \tmp1,     \tmp1,    \tmp1
+.endif
+.endif
+    vshuf4i.d  \tmp2,     \in1,      0x0b
+.endif
+.endif
+
+    \pre_op\()madd.\suf_op   \out,      \tmp1,     \tmp2,     \out
+
+.ifnb \more
+    GCOMPLEXMADD \xconj, \conj, \pre_op, \suf_op, \more
+.endif
+.endm
+
+//
 // Media Related Macros
 //
 .macro GSBUTTERFLY pre_op, suf_op, out0, out1, in0, in1

@@ -121,6 +121,9 @@ CGEMMITCOPYOBJ = cgemm_itcopy$(TSUFFIX).$(SUFFIX)
 CGEMMONCOPYOBJ = cgemm_oncopy$(TSUFFIX).$(SUFFIX)
 CGEMMOTCOPYOBJ = cgemm_otcopy$(TSUFFIX).$(SUFFIX)
 
+CGEMVNKERNEL = cgemv_n_8_lasx.S
+CGEMVTKERNEL = cgemv_t_8_lasx.S
+
 CTRSMKERNEL_LN  = ../generic/trsm_kernel_LN.c
 CTRSMKERNEL_LT  = ../generic/trsm_kernel_LT.c
 CTRSMKERNEL_RN  = ../generic/trsm_kernel_RN.c
@@ -135,6 +138,9 @@ ZGEMMINCOPYOBJ = zgemm_incopy$(TSUFFIX).$(SUFFIX)
 ZGEMMITCOPYOBJ = zgemm_itcopy$(TSUFFIX).$(SUFFIX)
 ZGEMMONCOPYOBJ = zgemm_oncopy$(TSUFFIX).$(SUFFIX)
 ZGEMMOTCOPYOBJ = zgemm_otcopy$(TSUFFIX).$(SUFFIX)
+
+ZGEMVNKERNEL = zgemv_n_4_lasx.S
+ZGEMVTKERNEL = zgemv_t_4_lasx.S
 
 ZTRSMKERNEL_LN  = ../generic/trsm_kernel_LN.c
 ZTRSMKERNEL_LT  = ../generic/trsm_kernel_LT.c
