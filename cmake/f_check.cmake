@@ -64,6 +64,7 @@ else ()
     "#define NEEDBUNDERSCORE 1\n")
 endif()
 
+if (CMAKE_Fortran_COMPILER)
 get_filename_component(F_COMPILER ${CMAKE_Fortran_COMPILER} NAME_WE)
 string(TOUPPER ${F_COMPILER} F_COMPILER)
-
+endif()
