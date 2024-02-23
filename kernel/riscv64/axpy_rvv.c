@@ -30,19 +30,29 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #if !defined(DOUBLE)
 #define VSETVL(n)               __riscv_vsetvl_e32m8(n)
 #define FLOAT_V_T               vfloat32m8_t
+#define FLOAT_V_M1_T            vfloat32m1_t
 #define VLEV_FLOAT              __riscv_vle32_v_f32m8
 #define VLSEV_FLOAT             __riscv_vlse32_v_f32m8
 #define VSEV_FLOAT              __riscv_vse32_v_f32m8
+#define VSEV_FLOAT_M1           __riscv_vse32_v_f32m1
 #define VSSEV_FLOAT             __riscv_vsse32_v_f32m8
 #define VFMACCVF_FLOAT          __riscv_vfmacc_vf_f32m8
+#define VFMVVF_FLOAT            __riscv_vfmv_v_f_f32m8
+#define VFREDSUMVS_FLOAT        __riscv_vfredusum_vs_f32m8_f32m1
+#define VFMVVF_FLOAT_M1         __riscv_vfmv_v_f_f32m1
 #else
 #define VSETVL(n)               __riscv_vsetvl_e64m8(n)
 #define FLOAT_V_T               vfloat64m8_t
+#define FLOAT_V_M1_T            vfloat64m1_t
 #define VLEV_FLOAT              __riscv_vle64_v_f64m8
 #define VLSEV_FLOAT             __riscv_vlse64_v_f64m8
 #define VSEV_FLOAT              __riscv_vse64_v_f64m8
+#define VSEV_FLOAT_M1           __riscv_vse64_v_f64m1
 #define VSSEV_FLOAT             __riscv_vsse64_v_f64m8
 #define VFMACCVF_FLOAT          __riscv_vfmacc_vf_f64m8
+#define VFMVVF_FLOAT            __riscv_vfmv_v_f_f64m8
+#define VFREDSUMVS_FLOAT        __riscv_vfredusum_vs_f64m8_f64m1
+#define VFMVVF_FLOAT_M1         __riscv_vfmv_v_f_f64m1
 #endif
 
 int CNAME(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, FLOAT da, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG inc_y, FLOAT *dummy, BLASLONG dummy2)
@@ -76,7 +86,7 @@ int CNAME(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, FLOAT da, FLOAT *x, BLAS
             VSEV_FLOAT(y, vy, vl);
         }
 
-    } else if (1 == inc_x) {
+    } else if (1 == inc_x && 0 != inc_y) {
 
         BLASLONG stride_y = inc_y * sizeof(FLOAT);
 
@@ -89,8 +99,20 @@ int CNAME(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, FLOAT da, FLOAT *x, BLAS
             VSSEV_FLOAT(y, stride_y, vy, vl);
         }
 
-    } else {
+    } else if( 0 == inc_y ) {
+        BLASLONG stride_x = inc_x * sizeof(FLOAT);
+        size_t in_vl = VSETVL(n);
+        vy = VFMVVF_FLOAT( y[0], in_vl );
 
+        for (size_t vl; n > 0; n -= vl, x += vl*inc_x) {
+            vl = VSETVL(n);
+            vx = VLSEV_FLOAT(x, stride_x, vl);
+            vy = VFMACCVF_FLOAT(vy, da, vx, vl);
+        }
+        FLOAT_V_M1_T vres = VFMVVF_FLOAT_M1( 0.0f, 1 );
+        vres = VFREDSUMVS_FLOAT( vy, vres, in_vl );
+        VSEV_FLOAT_M1(y, vres, 1);
+    } else {
         BLASLONG stride_x = inc_x * sizeof(FLOAT);
         BLASLONG stride_y = inc_y * sizeof(FLOAT);
 

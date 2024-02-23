@@ -90,7 +90,9 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <sys/sysinfo.h>
 #include <unistd.h>
 #endif
-#if defined(AIX)
+#if defined(_AIX)
+#include <unistd.h>
+#include <sys/systemcfg.h>
 #include <sys/sysinfo.h>
 #endif
 
@@ -1870,11 +1872,13 @@ static int get_num_cores(void) {
   
   return count;
 
-#elif defined(AIX)
+#elif defined(_AIX)
   //returns the number of processors which are currently online
   count = sysconf(_SC_NPROCESSORS_ONLN);
   if (count <= 0) count = 2;
-  
+
+  return count;
+
 #else
   return 2;
 #endif

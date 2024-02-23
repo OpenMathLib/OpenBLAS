@@ -91,7 +91,7 @@ static inline int blas_quickdivide(blasint x, blasint y){
 #define BUFFER_SIZE     ( 32 << 20)
 #define SEEK_ADDRESS
 
-#if defined(C910V) || (defined(RISCV64_ZVL256B) && (defined(__clang__) || defined(RVV_COMPATIBLE_GCC))) || defined(RISCV64_ZVL128B) || defined(x280)
+#if defined(C910V) || defined(RISCV64_ZVL256B) || defined(RISCV64_ZVL128B) || defined(x280)
 # include <riscv_vector.h>
 #endif
 
