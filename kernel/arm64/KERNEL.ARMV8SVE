@@ -1,3 +1,6 @@
+
+CSUMKERNEL    = csum_thunderx2t99.c
+ZSUMKERNEL    = zsum_thunderx2t99.c
 SAMINKERNEL  = ../arm/amin.c
 DAMINKERNEL  = ../arm/amin.c
 CAMINKERNEL  = ../arm/zamin.c
