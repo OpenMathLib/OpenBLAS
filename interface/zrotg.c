@@ -102,7 +102,7 @@ void CNAME(void *VDA, void *VDB, FLOAT *C, void *VS) {
 		    if (ada >= h *safmin) {
 			*C = sqrt(ada/h);
 			*R = *DA / *C;
-			*(R+1) = *(DA+1) / *(C+1);
+			*(R+1) = *(DA+1) / *C;
 			rtmax *= 2.;
 			if ( ada > rtmin && h < rtmax) { // no risk of intermediate overflow
 				*S = *S1 * (*DA / adahsq) - *(S1+1)* (*(DA+1)/adahsq);
@@ -115,7 +115,7 @@ void CNAME(void *VDA, void *VDB, FLOAT *C, void *VS) {
 		        *C = ada / adahsq;
 		        if (*C >= safmin) {
 			    *R = *DA / *C;
-			    *(R+1) = *(DA+1) / *(C+1);
+			    *(R+1) = *(DA+1) / *C;
 			} else {
 			    *R = *DA * (h / adahsq);
 			    *(R+1) = *(DA+1) * (h / adahsq);
