@@ -1,7 +1,6 @@
-# cd build
-# meson --buildtype release --prefix=$HOME/.local/lapack ..
-# ninja
-# ninja install
+# meson setup build --buildtype release
+# meson compile -C build
+# meson install --prefix=$HOME/.local/lapack
 
 project('LAPACK', 'fortran',
   default_options : ['default_library=static', 'libdir=lib/'],
