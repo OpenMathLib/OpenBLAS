@@ -162,13 +162,13 @@ all3targets += xdcblat3
 endif
 ifeq ($(BUILD_COMPLEX),1)
 all3targets += xccblat3
-ifeq ($(USE_GEMM3M),1)
+ifeq ($(SUPPORT_GEMM3M),1)
 all3targets += xccblat3_3m
 endif
 endif
 ifeq ($(BUILD_COMPLEX16),1)
 all3targets += xzcblat3
-ifeq ($(USE_GEMM3M),1)
+ifeq ($(SUPPORT_GEMM3M),1)
 all3targets += xzcblat3_3m
 endif
 endif
