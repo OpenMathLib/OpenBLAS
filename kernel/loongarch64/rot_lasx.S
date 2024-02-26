@@ -1036,7 +1036,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     add.d Y, Y, INCY
     xvfmul.d VT0, VX1, VXC
     xvfmadd.d VT0, VX3, VXS, VT0
-    xvfmul.d VT1, VX0, VXS
+    xvfmul.d VT1, VX1, VXS
     xvfmsub.d VT1, VX3, VXC, VT1
     xvstelm.d VT0, XX, 0, 0
     add.d XX, XX, INCX
