@@ -61,7 +61,7 @@ ztestl3o = c_zblas3.o c_z3chke.o auxiliary.o c_xerbla.o constant.o
 ztestl3o_3m = c_zblas3_3m.o c_z3chke_3m.o auxiliary.o c_xerbla.o constant.o
 
 
-all :: all1 all2 all3 all3_3m
+all :: all1 all2 all3
 
 ifeq ($(BUILD_SINGLE),1)
 all1targets += xscblat1
@@ -162,9 +162,15 @@ all3targets += xdcblat3
 endif
 ifeq ($(BUILD_COMPLEX),1)
 all3targets += xccblat3
+ifeq ($(USE_GEMM3M),1)
+all3targets += xccblat3_3m
+endif
 endif
 ifeq ($(BUILD_COMPLEX16),1)
 all3targets += xzcblat3
+ifeq ($(USE_GEMM3M),1)
+all3targets += xzcblat3_3m
+endif
 endif
 
 all3: $(all3targets)
@@ -199,7 +205,6 @@ endif
 endif
 endif
 
-all3_3m: xzcblat3_3m xccblat3_3m
 ifeq ($(SUPPORT_GEMM3M),1)
 ifeq ($(USE_OPENMP), 1)
 ifeq ($(BUILD_COMPLEX),1)
