@@ -10,25 +10,7 @@
 #undef I
 #endif
 
-#if defined(_WIN64)
-typedef long long BLASLONG;
-typedef unsigned long long BLASULONG;
-#else
-typedef long BLASLONG;
-typedef unsigned long BLASULONG;
-#endif
-
-#ifdef LAPACK_ILP64
-typedef BLASLONG blasint;
-#if defined(_WIN64)
-#define blasabs(x) llabs(x)
-#else
-#define blasabs(x) labs(x)
-#endif
-#else
-typedef int blasint;
-#define blasabs(x) abs(x)
-#endif
+#include "common.h"
 
 typedef blasint integer;
 
@@ -40,14 +22,11 @@ typedef double doublereal;
 typedef struct { real r, i; } complex;
 typedef struct { doublereal r, i; } doublecomplex;
 #ifdef _MSC_VER
-static inline _Fcomplex Cf(complex *z) {_Fcomplex zz={z->r , z->i}; return zz;}
 static inline _Dcomplex Cd(doublecomplex *z) {_Dcomplex zz={z->r , z->i};return zz;}
-static inline _Fcomplex * _pCf(complex *z) {return (_Fcomplex*)z;}
 static inline _Dcomplex * _pCd(doublecomplex *z) {return (_Dcomplex*)z;}
 #else
 static inline _Complex float Cf(complex *z) {return z->r + z->i*_Complex_I;}
 static inline _Complex double Cd(doublecomplex *z) {return z->r + z->i*_Complex_I;}
-static inline _Complex float * _pCf(complex *z) {return (_Complex float*)z;}
 static inline _Complex double * _pCd(doublecomplex *z) {return (_Complex double*)z;}
 #endif
 #define pCf(z) (*_pCf(z))
@@ -247,7 +226,6 @@ typedef struct Namelist Namelist;
 #define s_copy(A,B,C,D) { int __i,__m; for (__i=0, __m=f2cmin((C),(D)); __i<__m && (B)[__i] != 0; ++__i) (A)[__i] = (B)[__i]; }
 #define sig_die(s, kill) { exit(1); }
 #define s_stop(s, n) {exit(0);}
-static char junk[] = "\n@(#)LIBF77 VERSION 19990503\n";
 #define z_abs(z) (cabs(Cd(z)))
 #define z_exp(R, Z) {pCd(R) = cexp(Cd(Z));}
 #define z_sqrt(R, Z) {pCd(R) = csqrt(Cd(Z));}
@@ -261,259 +239,6 @@ static char junk[] = "\n@(#)LIBF77 VERSION 19990503\n";
 /* procedure parameter types for -A and -C++ */
 
 #define F2C_proc_par_types 1
-#ifdef __cplusplus
-typedef logical (*L_fp)(...);
-#else
-typedef logical (*L_fp)();
-#endif
-
-static float spow_ui(float x, integer n) {
-	float pow=1.0; unsigned long int u;
-	if(n != 0) {
-		if(n < 0) n = -n, x = 1/x;
-		for(u = n; ; ) {
-			if(u & 01) pow *= x;
-			if(u >>= 1) x *= x;
-			else break;
-		}
-	}
-	return pow;
-}
-static double dpow_ui(double x, integer n) {
-	double pow=1.0; unsigned long int u;
-	if(n != 0) {
-		if(n < 0) n = -n, x = 1/x;
-		for(u = n; ; ) {
-			if(u & 01) pow *= x;
-			if(u >>= 1) x *= x;
-			else break;
-		}
-	}
-	return pow;
-}
-#ifdef _MSC_VER
-static _Fcomplex cpow_ui(complex x, integer n) {
-	complex pow={1.0,0.0}; unsigned long int u;
-		if(n != 0) {
-		if(n < 0) n = -n, x.r = 1/x.r, x.i=1/x.i;
-		for(u = n; ; ) {
-			if(u & 01) pow.r *= x.r, pow.i *= x.i;
-			if(u >>= 1) x.r *= x.r, x.i *= x.i;
-			else break;
-		}
-	}
-	_Fcomplex p={pow.r, pow.i};
-	return p;
-}
-#else
-static _Complex float cpow_ui(_Complex float x, integer n) {
-	_Complex float pow=1.0; unsigned long int u;
-	if(n != 0) {
-		if(n < 0) n = -n, x = 1/x;
-		for(u = n; ; ) {
-			if(u & 01) pow *= x;
-			if(u >>= 1) x *= x;
-			else break;
-		}
-	}
-	return pow;
-}
-#endif
-#ifdef _MSC_VER
-static _Dcomplex zpow_ui(_Dcomplex x, integer n) {
-	_Dcomplex pow={1.0,0.0}; unsigned long int u;
-	if(n != 0) {
-		if(n < 0) n = -n, x._Val[0] = 1/x._Val[0], x._Val[1] =1/x._Val[1];
-		for(u = n; ; ) {
-			if(u & 01) pow._Val[0] *= x._Val[0], pow._Val[1] *= x._Val[1];
-			if(u >>= 1) x._Val[0] *= x._Val[0], x._Val[1] *= x._Val[1];
-			else break;
-		}
-	}
-	_Dcomplex p = {pow._Val[0], pow._Val[1]};
-	return p;
-}
-#else
-static _Complex double zpow_ui(_Complex double x, integer n) {
-	_Complex double pow=1.0; unsigned long int u;
-	if(n != 0) {
-		if(n < 0) n = -n, x = 1/x;
-		for(u = n; ; ) {
-			if(u & 01) pow *= x;
-			if(u >>= 1) x *= x;
-			else break;
-		}
-	}
-	return pow;
-}
-#endif
-static integer pow_ii(integer x, integer n) {
-	integer pow; unsigned long int u;
-	if (n <= 0) {
-		if (n == 0 || x == 1) pow = 1;
-		else if (x != -1) pow = x == 0 ? 1/x : 0;
-		else n = -n;
-	}
-	if ((n > 0) || !(n == 0 || x == 1 || x != -1)) {
-		u = n;
-		for(pow = 1; ; ) {
-			if(u & 01) pow *= x;
-			if(u >>= 1) x *= x;
-			else break;
-		}
-	}
-	return pow;
-}
-static integer dmaxloc_(double *w, integer s, integer e, integer *n)
-{
-	double m; integer i, mi;
-	for(m=w[s-1], mi=s, i=s+1; i<=e; i++)
-		if (w[i-1]>m) mi=i ,m=w[i-1];
-	return mi-s+1;
-}
-static integer smaxloc_(float *w, integer s, integer e, integer *n)
-{
-	float m; integer i, mi;
-	for(m=w[s-1], mi=s, i=s+1; i<=e; i++)
-		if (w[i-1]>m) mi=i ,m=w[i-1];
-	return mi-s+1;
-}
-static inline void cdotc_(complex *z, integer *n_, complex *x, integer *incx_, complex *y, integer *incy_) {
-	integer n = *n_, incx = *incx_, incy = *incy_, i;
-#ifdef _MSC_VER
-	_Fcomplex zdotc = {0.0, 0.0};
-	if (incx == 1 && incy == 1) {
-		for (i=0;i<n;i++) { /* zdotc = zdotc + dconjg(x(i))* y(i) */
-			zdotc._Val[0] += conjf(Cf(&x[i]))._Val[0] * Cf(&y[i])._Val[0];
-			zdotc._Val[1] += conjf(Cf(&x[i]))._Val[1] * Cf(&y[i])._Val[1];
-		}
-	} else {
-		for (i=0;i<n;i++) { /* zdotc = zdotc + dconjg(x(i))* y(i) */
-			zdotc._Val[0] += conjf(Cf(&x[i*incx]))._Val[0] * Cf(&y[i*incy])._Val[0];
-			zdotc._Val[1] += conjf(Cf(&x[i*incx]))._Val[1] * Cf(&y[i*incy])._Val[1];
-		}
-	}
-	pCf(z) = zdotc;
-}
-#else
-	_Complex float zdotc = 0.0;
-	if (incx == 1 && incy == 1) {
-		for (i=0;i<n;i++) { /* zdotc = zdotc + dconjg(x(i))* y(i) */
-			zdotc += conjf(Cf(&x[i])) * Cf(&y[i]);
-		}
-	} else {
-		for (i=0;i<n;i++) { /* zdotc = zdotc + dconjg(x(i))* y(i) */
-			zdotc += conjf(Cf(&x[i*incx])) * Cf(&y[i*incy]);
-		}
-	}
-	pCf(z) = zdotc;
-}
-#endif
-static inline void zdotc_(doublecomplex *z, integer *n_, doublecomplex *x, integer *incx_, doublecomplex *y, integer *incy_) {
-	integer n = *n_, incx = *incx_, incy = *incy_, i;
-#ifdef _MSC_VER
-	_Dcomplex zdotc = {0.0, 0.0};
-	if (incx == 1 && incy == 1) {
-		for (i=0;i<n;i++) { /* zdotc = zdotc + dconjg(x(i))* y(i) */
-			zdotc._Val[0] += conj(Cd(&x[i]))._Val[0] * Cd(&y[i])._Val[0];
-			zdotc._Val[1] += conj(Cd(&x[i]))._Val[1] * Cd(&y[i])._Val[1];
-		}
-	} else {
-		for (i=0;i<n;i++) { /* zdotc = zdotc + dconjg(x(i))* y(i) */
-			zdotc._Val[0] += conj(Cd(&x[i*incx]))._Val[0] * Cd(&y[i*incy])._Val[0];
-			zdotc._Val[1] += conj(Cd(&x[i*incx]))._Val[1] * Cd(&y[i*incy])._Val[1];
-		}
-	}
-	pCd(z) = zdotc;
-}
-#else
-	_Complex double zdotc = 0.0;
-	if (incx == 1 && incy == 1) {
-		for (i=0;i<n;i++) { /* zdotc = zdotc + dconjg(x(i))* y(i) */
-			zdotc += conj(Cd(&x[i])) * Cd(&y[i]);
-		}
-	} else {
-		for (i=0;i<n;i++) { /* zdotc = zdotc + dconjg(x(i))* y(i) */
-			zdotc += conj(Cd(&x[i*incx])) * Cd(&y[i*incy]);
-		}
-	}
-	pCd(z) = zdotc;
-}
-#endif	
-static inline void cdotu_(complex *z, integer *n_, complex *x, integer *incx_, complex *y, integer *incy_) {
-	integer n = *n_, incx = *incx_, incy = *incy_, i;
-#ifdef _MSC_VER
-	_Fcomplex zdotc = {0.0, 0.0};
-	if (incx == 1 && incy == 1) {
-		for (i=0;i<n;i++) { /* zdotc = zdotc + dconjg(x(i))* y(i) */
-			zdotc._Val[0] += Cf(&x[i])._Val[0] * Cf(&y[i])._Val[0];
-			zdotc._Val[1] += Cf(&x[i])._Val[1] * Cf(&y[i])._Val[1];
-		}
-	} else {
-		for (i=0;i<n;i++) { /* zdotc = zdotc + dconjg(x(i))* y(i) */
-			zdotc._Val[0] += Cf(&x[i*incx])._Val[0] * Cf(&y[i*incy])._Val[0];
-			zdotc._Val[1] += Cf(&x[i*incx])._Val[1] * Cf(&y[i*incy])._Val[1];
-		}
-	}
-	pCf(z) = zdotc;
-}
-#else
-	_Complex float zdotc = 0.0;
-	if (incx == 1 && incy == 1) {
-		for (i=0;i<n;i++) { /* zdotc = zdotc + dconjg(x(i))* y(i) */
-			zdotc += Cf(&x[i]) * Cf(&y[i]);
-		}
-	} else {
-		for (i=0;i<n;i++) { /* zdotc = zdotc + dconjg(x(i))* y(i) */
-			zdotc += Cf(&x[i*incx]) * Cf(&y[i*incy]);
-		}
-	}
-	pCf(z) = zdotc;
-}
-#endif
-static inline void zdotu_(doublecomplex *z, integer *n_, doublecomplex *x, integer *incx_, doublecomplex *y, integer *incy_) {
-	integer n = *n_, incx = *incx_, incy = *incy_, i;
-#ifdef _MSC_VER
-	_Dcomplex zdotc = {0.0, 0.0};
-	if (incx == 1 && incy == 1) {
-		for (i=0;i<n;i++) { /* zdotc = zdotc + dconjg(x(i))* y(i) */
-			zdotc._Val[0] += Cd(&x[i])._Val[0] * Cd(&y[i])._Val[0];
-			zdotc._Val[1] += Cd(&x[i])._Val[1] * Cd(&y[i])._Val[1];
-		}
-	} else {
-		for (i=0;i<n;i++) { /* zdotc = zdotc + dconjg(x(i))* y(i) */
-			zdotc._Val[0] += Cd(&x[i*incx])._Val[0] * Cd(&y[i*incy])._Val[0];
-			zdotc._Val[1] += Cd(&x[i*incx])._Val[1] * Cd(&y[i*incy])._Val[1];
-		}
-	}
-	pCd(z) = zdotc;
-}
-#else
-	_Complex double zdotc = 0.0;
-	if (incx == 1 && incy == 1) {
-		for (i=0;i<n;i++) { /* zdotc = zdotc + dconjg(x(i))* y(i) */
-			zdotc += Cd(&x[i]) * Cd(&y[i]);
-		}
-	} else {
-		for (i=0;i<n;i++) { /* zdotc = zdotc + dconjg(x(i))* y(i) */
-			zdotc += Cd(&x[i*incx]) * Cd(&y[i*incy]);
-		}
-	}
-	pCd(z) = zdotc;
-}
-#endif
-/*  -- translated by f2c (version 20000121).
-   You must link the resulting object file with the libraries:
-	-lf2c -lm   (in that order)
-*/
-
-
-
-/*  -- translated by f2c (version 20000121).
-   You must link the resulting object file with the libraries:
-	-lf2c -lm   (in that order)
-*/
-
 
 
 /* Common Block Declarations */
@@ -526,7 +251,7 @@ struct {
 #define infoc_1 infoc_
 
 struct {
-    char srnamt[13];
+    char srnamt[12];
 } srnamc_;
 
 #define srnamc_1 srnamc_
@@ -535,199 +260,78 @@ struct {
 
 static doublecomplex c_b1 = {0.,0.};
 static doublecomplex c_b2 = {1.,0.};
-static integer c__9 = 9;
 static integer c__1 = 1;
-static integer c__3 = 3;
-static integer c__8 = 8;
-static integer c__5 = 5;
 static integer c__65 = 65;
-static integer c__7 = 7;
-static integer c__2 = 2;
 static doublereal c_b92 = 1.;
 static integer c__6 = 6;
 static logical c_true = TRUE_;
 static integer c__0 = 0;
 static logical c_false = FALSE_;
 
-/* Main program */ MAIN__(void)
+/* Main program  MAIN__() */ int main(void)
 {
     /* Initialized data */
 
-    static char snames[13*9] = "cblas_zgemm3m" "cblas_zhemm  " "cblas_zsymm  "
-	     "cblas_ztrmm  " "cblas_ztrsm  " "cblas_zherk  " "cblas_zsyrk  " 
-	    "cblas_zher2k " "cblas_zsyr2k ";
-
-    /* Format strings */
-    static char fmt_9997[] = "(\002 NUMBER OF VALUES OF \002,a,\002 IS LESS "
-	    "THAN 1 OR GREATER \002,\002THAN \002,i2)";
-    static char fmt_9996[] = "(\002 VALUE OF N IS LESS THAN 0 OR GREATER THA"
-	    "N \002,i2)";
-    static char fmt_9995[] = "(\002TESTS OF THE COMPLEX*16        LEVEL 3 BL"
-	    "AS\002,//\002 THE F\002,\002OLLOWING PARAMETER VALUES WILL BE US"
-	    "ED:\002)";
-    static char fmt_9994[] = "(\002   FOR N              \002,9i6)";
-    static char fmt_9993[] = "(\002   FOR ALPHA          \002,7(\002(\002,f4"
-	    ".1,\002,\002,f4.1,\002)  \002,:))";
-    static char fmt_9992[] = "(\002   FOR BETA           \002,7(\002(\002,f4"
-	    ".1,\002,\002,f4.1,\002)  \002,:))";
-    static char fmt_9984[] = "(\002 ERROR-CALL MYEXITS WILL NOT BE TESTED"
-	    "\002)";
-    static char fmt_9999[] = "(\002 ROUTINES PASS COMPUTATIONAL TESTS IF TES"
-	    "T RATIO IS LES\002,\002S THAN\002,f8.2)";
-    static char fmt_10002[] = "(\002 COLUMN-MAJOR AND ROW-MAJOR DATA LAYOUTS"
-	    " ARE TESTED\002)";
-    static char fmt_10001[] = "(\002 ROW-MAJOR DATA LAYOUT IS TESTED\002)";
-    static char fmt_10000[] = "(\002 COLUMN-MAJOR DATA LAYOUT IS TESTED\002)";
-    static char fmt_9988[] = "(a13,l2)";
-    static char fmt_9990[] = "(\002 SUBPROGRAM NAME \002,a13,\002 NOT RECOGN"
-	    "IZED\002,/\002 ******* T\002,\002ESTS ABANDONED *******\002)";
-    static char fmt_9998[] = "(\002 RELATIVE MACHINE PRECISION IS TAKEN TO"
-	    " BE\002,1p,e9.1)";
-    static char fmt_9989[] = "(\002 ERROR IN ZMMCH -  IN-LINE DOT PRODUCTS A"
-	    "RE BEING EVALU\002,\002ATED WRONGLY.\002,/\002 ZMMCH WAS CALLED "
-	    "WITH TRANSA = \002,a1,\002AND TRANSB = \002,a1,/\002 AND RETURNE"
-	    "D SAME = \002,l1,\002 AND \002,\002 ERR = \002,f12.3,\002.\002,"
-	    "/\002 THIS MAY BE DUE TO FAULTS IN THE \002,\002ARITHMETIC OR TH"
-	    "E COMPILER.\002,/\002 ******* TESTS ABANDONED \002,\002******"
-	    "*\002)";
-    static char fmt_9987[] = "(1x,a13,\002 WAS NOT TESTED\002)";
-    static char fmt_9986[] = "(/\002 END OF TESTS\002)";
-    static char fmt_9985[] = "(/\002 ******* FATAL ERROR - TESTS ABANDONED *"
-	    "******\002)";
-    static char fmt_9991[] = "(\002 AMEND DATA FILE OR INCREASE ARRAY SIZES "
-	    "IN PROGRAM\002,/\002 ******* TESTS ABANDONED *******\002)";
+    static char snames[9][13] = { "cblas_zgemm3m ", "cblas_zhemm ", "cblas_zsymm ", "cblas_ztrmm ",
+     "cblas_ztrsm ", "cblas_zherk ", "cblas_zsyrk ", "cblas_zher2k", "cblas_zsyr2k"};
 
     /* System generated locals */
     integer i__1, i__2, i__3, i__4, i__5;
     doublereal d__1;
-    olist o__1;
-    cllist cl__1;
+
+    /* Builtin functions */
+    integer s_rsle(void), do_lio(void), e_rsle(void), f_open(void), s_wsfe(void), do_fio(void), 
+	    e_wsfe(void), s_wsle(void), e_wsle(void), s_rsfe(void), e_rsfe(void);
 
     /* Local variables */
-    integer nalf, idim[9];
-    logical same;
-    integer nbet, ntra;
-    logical rewi;
-    extern /* Subroutine */ int zchk1_(char *, doublereal *, doublereal *, 
-	    integer *, integer *, logical *, logical *, logical *, integer *, 
-	    integer *, integer *, doublecomplex *, integer *, doublecomplex *,
-	     integer *, doublecomplex *, doublecomplex *, doublecomplex *, 
-	    doublecomplex *, doublecomplex *, doublecomplex *, doublecomplex *
-	    , doublecomplex *, doublecomplex *, doublecomplex *, doublereal *,
-	     integer *), zchk2_(char *, doublereal *, doublereal *, 
-	    integer *, integer *, logical *, logical *, logical *, integer *, 
-	    integer *, integer *, doublecomplex *, integer *, doublecomplex *,
-	     integer *, doublecomplex *, doublecomplex *, doublecomplex *, 
-	    doublecomplex *, doublecomplex *, doublecomplex *, doublecomplex *
-	    , doublecomplex *, doublecomplex *, doublecomplex *, doublereal *,
-	     integer *), zchk3_(char *, doublereal *, doublereal *, 
-	    integer *, integer *, logical *, logical *, logical *, integer *, 
-	    integer *, integer *, doublecomplex *, integer *, doublecomplex *,
-	     doublecomplex *, doublecomplex *, doublecomplex *, doublecomplex 
-	    *, doublecomplex *, doublecomplex *, doublereal *, doublecomplex *
-	    , integer *), zchk4_(char *, doublereal *, doublereal *, 
-	    integer *, integer *, logical *, logical *, logical *, integer *, 
-	    integer *, integer *, doublecomplex *, integer *, doublecomplex *,
-	     integer *, doublecomplex *, doublecomplex *, doublecomplex *, 
-	    doublecomplex *, doublecomplex *, doublecomplex *, doublecomplex *
-	    , doublecomplex *, doublecomplex *, doublecomplex *, doublereal *,
-	     integer *), zchk5_(char *, doublereal *, doublereal *, 
-	    integer *, integer *, logical *, logical *, logical *, integer *, 
-	    integer *, integer *, doublecomplex *, integer *, doublecomplex *,
-	     integer *, doublecomplex *, doublecomplex *, doublecomplex *, 
-	    doublecomplex *, doublecomplex *, doublecomplex *, doublecomplex *
-	    , doublecomplex *, doublecomplex *, doublereal *, doublecomplex *,
-	     integer *);
-    doublecomplex c__[4225]	/* was [65][65] */;
-    doublereal g[65];
-    integer i__, j;
-    extern doublereal ddiff_(doublereal *, doublereal *);
-    integer n;
-    logical fatal;
-    doublecomplex w[130];
-    logical trace;
-    integer nidim;
-    extern /* Subroutine */ int zmmch_(char *, char *, integer *, integer *, 
-	    integer *, doublecomplex *, doublecomplex *, integer *, 
-	    doublecomplex *, integer *, doublecomplex *, doublecomplex *, 
-	    integer *, doublecomplex *, doublereal *, doublecomplex *, 
-	    integer *, doublereal *, doublereal *, logical *, integer *, 
-	    logical *);
-    char snaps[32];
-    integer isnum;
-    logical ltest[9];
-    doublecomplex aa[4225], ab[8450]	/* was [65][130] */, bb[4225], cc[
-	    4225], as[4225], bs[4225], cs[4225], ct[65];
-    logical sfatal, corder;
-    char snamet[13], transa[1], transb[1];
-    doublereal thresh;
-    logical rorder;
-    integer layout;
-    logical ltestt, tsterr;
-    extern /* Subroutine */ int cz3chke_(char *);
-    doublecomplex alf[7], bet[7];
-    doublereal eps, err;
-    extern logical lze_(doublecomplex *, doublecomplex *, integer *);
-
-    /* Fortran I/O blocks */
-    static cilist io___2 = { 0, 5, 0, 0, 0 };
-    static cilist io___4 = { 0, 5, 0, 0, 0 };
-    static cilist io___7 = { 0, 5, 0, 0, 0 };
-    static cilist io___9 = { 0, 5, 0, 0, 0 };
-    static cilist io___11 = { 0, 5, 0, 0, 0 };
-    static cilist io___13 = { 0, 5, 0, 0, 0 };
-    static cilist io___15 = { 0, 5, 0, 0, 0 };
-    static cilist io___17 = { 0, 5, 0, 0, 0 };
-    static cilist io___19 = { 0, 6, 0, fmt_9997, 0 };
-    static cilist io___20 = { 0, 5, 0, 0, 0 };
-    static cilist io___23 = { 0, 6, 0, fmt_9996, 0 };
-    static cilist io___24 = { 0, 5, 0, 0, 0 };
-    static cilist io___26 = { 0, 6, 0, fmt_9997, 0 };
-    static cilist io___27 = { 0, 5, 0, 0, 0 };
-    static cilist io___29 = { 0, 5, 0, 0, 0 };
-    static cilist io___31 = { 0, 6, 0, fmt_9997, 0 };
-    static cilist io___32 = { 0, 5, 0, 0, 0 };
-    static cilist io___34 = { 0, 6, 0, fmt_9995, 0 };
-    static cilist io___35 = { 0, 6, 0, fmt_9994, 0 };
-    static cilist io___36 = { 0, 6, 0, fmt_9993, 0 };
-    static cilist io___37 = { 0, 6, 0, fmt_9992, 0 };
-    static cilist io___38 = { 0, 6, 0, 0, 0 };
-    static cilist io___39 = { 0, 6, 0, fmt_9984, 0 };
-    static cilist io___40 = { 0, 6, 0, 0, 0 };
-    static cilist io___41 = { 0, 6, 0, fmt_9999, 0 };
-    static cilist io___42 = { 0, 6, 0, 0, 0 };
-    static cilist io___45 = { 0, 6, 0, fmt_10002, 0 };
-    static cilist io___46 = { 0, 6, 0, fmt_10001, 0 };
-    static cilist io___47 = { 0, 6, 0, fmt_10000, 0 };
-    static cilist io___48 = { 0, 6, 0, 0, 0 };
-    static cilist io___50 = { 0, 5, 1, fmt_9988, 0 };
-    static cilist io___53 = { 0, 6, 0, fmt_9990, 0 };
-    static cilist io___55 = { 0, 6, 0, fmt_9998, 0 };
-    static cilist io___68 = { 0, 6, 0, fmt_9989, 0 };
-    static cilist io___69 = { 0, 6, 0, fmt_9989, 0 };
-    static cilist io___70 = { 0, 6, 0, fmt_9989, 0 };
-    static cilist io___71 = { 0, 6, 0, fmt_9989, 0 };
-    static cilist io___73 = { 0, 6, 0, 0, 0 };
-    static cilist io___74 = { 0, 6, 0, fmt_9987, 0 };
-    static cilist io___75 = { 0, 6, 0, 0, 0 };
-    static cilist io___82 = { 0, 6, 0, fmt_9986, 0 };
-    static cilist io___83 = { 0, 6, 0, fmt_9985, 0 };
-    static cilist io___84 = { 0, 6, 0, fmt_9991, 0 };
-
-
-
+    static integer nalf, idim[9];
+    static logical same;
+    static integer nbet, ntra;
+    static logical rewi;
+    extern /* Subroutine */ int zchk1_(char*, doublereal*, doublereal*, integer*, integer*, logical*, logical*, logical*, integer*, integer*, integer*, doublecomplex*, integer*, doublecomplex*, integer*, doublecomplex*, doublecomplex*, doublecomplex*, doublecomplex*, doublecomplex*, doublecomplex*, doublecomplex*, doublecomplex*, doublecomplex*, doublecomplex*, doublereal*, integer*, ftnlen);
+    extern /* Subroutine */ int zchk2_(char*, doublereal*, doublereal*, integer*, integer*, logical*, logical*, logical*, integer*, integer*, integer*, doublecomplex*, integer*, doublecomplex*, integer*, doublecomplex*, doublecomplex*, doublecomplex*, doublecomplex*, doublecomplex*, doublecomplex*, doublecomplex*, doublecomplex*, doublecomplex*, doublecomplex*, doublereal*, integer*, ftnlen);
+    extern /* Subroutine */ int zchk3_(char*, doublereal*, doublereal*, integer*, integer*, logical*, logical*, logical*, integer*, integer*, integer*, doublecomplex*, integer*, doublecomplex*, doublecomplex*, doublecomplex*, doublecomplex*, doublecomplex*, doublecomplex*, doublecomplex*, doublereal*, doublecomplex*, integer*, ftnlen);
+    extern /* Subroutine */ int zchk4_(char*, doublereal*, doublereal*, integer*, integer*, logical*, logical*, logical*, integer*, integer*, integer*, doublecomplex*, integer*, doublecomplex*, integer*, doublecomplex*, doublecomplex*, doublecomplex*, doublecomplex*, doublecomplex*, doublecomplex*, doublecomplex*, doublecomplex*, doublecomplex*, doublecomplex*, doublereal*, integer*, ftnlen);
+    extern /* Subroutine */ int zchk5_(char*, doublereal*, doublereal*, integer*, integer*, logical*, logical*, logical*, integer*, integer*, integer*, doublecomplex*, integer*, doublecomplex*, integer*, doublecomplex*, doublecomplex*, doublecomplex*, doublecomplex*, doublecomplex*, doublecomplex*, doublecomplex*, doublecomplex*, doublecomplex*, doublereal*, doublecomplex*, integer*, ftnlen);
+    static doublecomplex c__[4225]	/* was [65][65] */;
+    static doublereal g[65];
+    static integer i__, j;
+    extern doublereal ddiff_(doublereal*, doublereal*);
+    static integer n;
+    static logical fatal;
+    static doublecomplex w[130];
+    static logical trace;
+    static integer nidim;
+    extern /* Subroutine */ int zmmch_(char*, char*, integer*, integer*, integer*, doublecomplex*, doublecomplex*, integer*, doublecomplex*, integer*, doublecomplex*, doublecomplex*, integer*, doublecomplex*, doublereal*, doublecomplex*, integer*, doublereal*, doublereal*, logical*, integer*, logical*, ftnlen, ftnlen);
+    static char snaps[32];
+    static integer isnum;
+    static logical ltest[9];
+    static doublecomplex aa[4225], ab[8450]	/* was [65][130] */, bb[4225],
+	     cc[4225], as[4225], bs[4225], cs[4225], ct[65];
+    static logical sfatal, corder;
+    static char snamet[12], transa[1], transb[1];
+    static doublereal thresh;
+    static logical rorder;
+    static integer layout;
+    static logical ltestt, tsterr;
+    extern /* Subroutine */ int cz3chke_(char*, ftnlen);
+    static doublecomplex alf[7], bet[7];
+    static doublereal eps, err;
+    extern logical lze_(doublecomplex*, doublecomplex*, integer*);
+    char tmpchar;
+    
 /*  Test program for the COMPLEX*16          Level 3 Blas. */
 
 /*  The program must be driven by a short data file. The first 13 records */
 /*  of the file are read using list-directed input, the last 9 records */
-/*  are read using the format ( A13,L2 ). An annotated example of a data */
+/*  are read using the format ( A12,L2 ). An annotated example of a data */
 /*  file can be obtained by deleting the first 3 characters from the */
 /*  following 22 lines: */
 /*  'CBLAT3.SNAP'     NAME OF SNAPSHOT OUTPUT FILE */
 /*  -1                UNIT NUMBER OF SNAPSHOT FILE (NOT USED IF .LT. 0) */
 /*  F        LOGICAL FLAG, T TO REWIND SNAPSHOT FILE AFTER EACH RECORD. */
 /*  F        LOGICAL FLAG, T TO STOP ON FAILURES. */
-/*  T        LOGICAL FLAG, T TO TEST ERROR CALL MYEXITS. */
+/*  T        LOGICAL FLAG, T TO TEST ERROR EXITS. */
 /*  2        0 TO TEST COLUMN-MAJOR, 1 TO TEST ROW-MAJOR, 2 TO TEST BOTH */
 /*  16.0     THRESHOLD VALUE OF TEST RATIO */
 /*  6                 NUMBER OF VALUES OF N */
@@ -761,20 +365,34 @@ static logical c_false = FALSE_;
 /*     Jeremy Du Croz, Numerical Algorithms Group Ltd. */
 /*     Sven Hammarling, Numerical Algorithms Group Ltd. */
 
+/*     .. Parameters .. */
+/*     .. Local Scalars .. */
+/*     .. Local Arrays .. */
+/*     .. External Functions .. */
+/*     .. External Subroutines .. */
+/*     .. Intrinsic Functions .. */
+/*     .. Scalars in Common .. */
+/*     .. Common blocks .. */
+/*     .. Data statements .. */
+/*     .. Executable Statements .. */
 
     infoc_1.noutc = 6;
 
 /*     Read name and unit number for snapshot output file and open file. */
 
-    s_rsle(&io___2);
-    do_lio(&c__9, &c__1, snaps, (ftnlen)32);
-    e_rsle();
-    s_rsle(&io___4);
-    do_lio(&c__3, &c__1, (char *)&ntra, (ftnlen)sizeof(integer));
-    e_rsle();
+    char line[80];
+    
+    fgets(line,80,stdin);
+    sscanf(line,"'%s'",snaps);
+    fgets(line,80,stdin);
+#ifdef USE64BITINT
+    sscanf(line,"%ld",&ntra);
+#else
+    sscanf(line,"%d",&ntra);
+#endif
     trace = ntra >= 0;
     if (trace) {
-	o__1.oerr = 0;
+/*	o__1.oerr = 0;
 	o__1.ounit = ntra;
 	o__1.ofnmlen = 32;
 	o__1.ofnm = snaps;
@@ -783,149 +401,119 @@ static logical c_false = FALSE_;
 	o__1.oacc = 0;
 	o__1.ofm = 0;
 	o__1.oblnk = 0;
-	f_open(&o__1);
+	f_open(&o__1);*/
     }
 /*     Read the flag that directs rewinding of the snapshot file. */
-    s_rsle(&io___7);
-    do_lio(&c__8, &c__1, (char *)&rewi, (ftnlen)sizeof(logical));
-    e_rsle();
-    rewi = rewi && trace;
+   fgets(line,80,stdin);
+   sscanf(line,"%d",&rewi);
+   rewi = rewi && trace;
 /*     Read the flag that directs stopping on any failure. */
-    s_rsle(&io___9);
-    do_lio(&c__8, &c__1, (char *)&sfatal, (ftnlen)sizeof(logical));
-    e_rsle();
+   fgets(line,80,stdin);
+   sscanf(line,"%c",&tmpchar);
+   sfatal=FALSE_;
+   if (tmpchar=='T')sfatal=TRUE_;
 /*     Read the flag that indicates whether error exits are to be tested. */
-    s_rsle(&io___11);
-    do_lio(&c__8, &c__1, (char *)&tsterr, (ftnlen)sizeof(logical));
-    e_rsle();
+   fgets(line,80,stdin);
+   sscanf(line,"%c",&tmpchar);
+   tsterr=FALSE_;
+   if (tmpchar=='T')tsterr=TRUE_;
 /*     Read the flag that indicates whether row-major data layout to be tested. */
-    s_rsle(&io___13);
-    do_lio(&c__3, &c__1, (char *)&layout, (ftnlen)sizeof(integer));
-    e_rsle();
+   fgets(line,80,stdin);
+   sscanf(line,"%d",&layout);
 /*     Read the threshold value of the test ratio */
-    s_rsle(&io___15);
-    do_lio(&c__5, &c__1, (char *)&thresh, (ftnlen)sizeof(doublereal));
-    e_rsle();
+   fgets(line,80,stdin);
+   sscanf(line,"%lf",&thresh);
 
 /*     Read and check the parameter values for the tests. */
 
 /*     Values of N */
-    s_rsle(&io___17);
-    do_lio(&c__3, &c__1, (char *)&nidim, (ftnlen)sizeof(integer));
-    e_rsle();
+   fgets(line,80,stdin);
+#ifdef USE64BITINT
+   sscanf(line,"%d",&nidim);
+#else
+   sscanf(line,"%d",&nidim);
+#endif
     if (nidim < 1 || nidim > 9) {
-	s_wsfe(&io___19);
-	do_fio(&c__1, "N", (ftnlen)1);
-	do_fio(&c__1, (char *)&c__9, (ftnlen)sizeof(integer));
-	e_wsfe();
-	goto L220;
+        fprintf(stderr,"NUMBER OF VALUES OF N IS LESS THAN 1 OR GREATER THAN 9");
+        goto L220;
     }
-    s_rsle(&io___20);
+   fgets(line,80,stdin);
+#ifdef USE64BITINT
+   sscanf(line,"%ld %ld %ld %ld %ld %ld %ld %ld %ld",&idim[0],&idim[1],&idim[2],
+    &idim[3],&idim[4],&idim[5],&idim[6],&idim[7],&idim[8]);
+#else
+   sscanf(line,"%d %d %d %d %d %d %d %d %d",&idim[0],&idim[1],&idim[2],
+    &idim[3],&idim[4],&idim[5],&idim[6],&idim[7],&idim[8]);
+#endif
     i__1 = nidim;
     for (i__ = 1; i__ <= i__1; ++i__) {
-	do_lio(&c__3, &c__1, (char *)&idim[i__ - 1], (ftnlen)sizeof(integer));
-    }
-    e_rsle();
-    i__1 = nidim;
-    for (i__ = 1; i__ <= i__1; ++i__) {
-	if (idim[i__ - 1] < 0 || idim[i__ - 1] > 65) {
-	    s_wsfe(&io___23);
-	    do_fio(&c__1, (char *)&c__65, (ftnlen)sizeof(integer));
-	    e_wsfe();
-	    goto L220;
-	}
+        if (idim[i__ - 1] < 0 || idim[i__ - 1] > 65) {
+        fprintf(stderr,"VALUE OF N IS LESS THAN 0 OR GREATER THAN 65\n");
+            goto L220;
+        }
 /* L10: */
     }
 /*     Values of ALPHA */
-    s_rsle(&io___24);
-    do_lio(&c__3, &c__1, (char *)&nalf, (ftnlen)sizeof(integer));
-    e_rsle();
+   fgets(line,80,stdin);
+#ifdef USE64BITINT
+   sscanf(line,"%ld",&nalf);
+#else
+   sscanf(line,"%d",&nalf);
+#endif
     if (nalf < 1 || nalf > 7) {
-	s_wsfe(&io___26);
-	do_fio(&c__1, "ALPHA", (ftnlen)5);
-	do_fio(&c__1, (char *)&c__7, (ftnlen)sizeof(integer));
-	e_wsfe();
-	goto L220;
+        fprintf(stderr,"VALUE OF ALPHA IS LESS THAN 0 OR GREATER THAN 7\n");
+        goto L220;
     }
-    s_rsle(&io___27);
-    i__1 = nalf;
-    for (i__ = 1; i__ <= i__1; ++i__) {
-	do_lio(&c__7, &c__1, (char *)&alf[i__ - 1], (ftnlen)sizeof(
-		doublecomplex));
-    }
-    e_rsle();
+   fgets(line,80,stdin);
+   sscanf(line,"(%lf,%lf) (%lf,%lf) (%lf,%lf) (%lf,%lf) (%lf,%lf) (%lf,%lf) (%lf,%lf)",&alf[0].r,&alf[0].i,&alf[1].r,&alf[1].i,&alf[2].r,&alf[2].i,&alf[3].r,&alf[3].i,
+   &alf[4].r,&alf[4].i,&alf[5].r,&alf[5].i,&alf[6].r,&alf[6].i);
+
 /*     Values of BETA */
-    s_rsle(&io___29);
-    do_lio(&c__3, &c__1, (char *)&nbet, (ftnlen)sizeof(integer));
-    e_rsle();
-    if (nbet < 1 || nbet > 7) {
-	s_wsfe(&io___31);
-	do_fio(&c__1, "BETA", (ftnlen)4);
-	do_fio(&c__1, (char *)&c__7, (ftnlen)sizeof(integer));
-	e_wsfe();
-	goto L220;
+   fgets(line,80,stdin);
+#ifdef USE64BITINT
+   sscanf(line,"%ld",&nbet);
+#else
+   sscanf(line,"%d",&nbet);
+#endif
+    if (nalf < 1 || nbet > 7) {
+        fprintf(stderr,"VALUE OF BETA IS LESS THAN 0 OR GREATER THAN 7\n");
+        goto L220;
     }
-    s_rsle(&io___32);
-    i__1 = nbet;
-    for (i__ = 1; i__ <= i__1; ++i__) {
-	do_lio(&c__7, &c__1, (char *)&bet[i__ - 1], (ftnlen)sizeof(
-		doublecomplex));
-    }
-    e_rsle();
+   fgets(line,80,stdin);
+   sscanf(line,"(%lf,%lf) (%lf,%lf) (%lf,%lf) (%lf,%lf) (%lf,%lf) (%lf,%lf) (%lf,%lf)",&bet[0].r,&bet[0].i,&bet[1].r,&bet[1].i,&bet[2].r,&bet[2].i,&bet[3].r,&bet[3].i,
+   &bet[4].r,&bet[4].i,&bet[5].r,&bet[5].i,&bet[6].r,&bet[6].i);
 
 /*     Report values of parameters. */
 
-    s_wsfe(&io___34);
-    e_wsfe();
-    s_wsfe(&io___35);
-    i__1 = nidim;
-    for (i__ = 1; i__ <= i__1; ++i__) {
-	do_fio(&c__1, (char *)&idim[i__ - 1], (ftnlen)sizeof(integer));
-    }
-    e_wsfe();
-    s_wsfe(&io___36);
-    i__1 = nalf;
-    for (i__ = 1; i__ <= i__1; ++i__) {
-	do_fio(&c__2, (char *)&alf[i__ - 1], (ftnlen)sizeof(doublereal));
-    }
-    e_wsfe();
-    s_wsfe(&io___37);
-    i__1 = nbet;
-    for (i__ = 1; i__ <= i__1; ++i__) {
-	do_fio(&c__2, (char *)&bet[i__ - 1], (ftnlen)sizeof(doublereal));
-    }
-    e_wsfe();
+    printf("TESTS OF THE DOUBLE PRECISION COMPLEX LEVEL 3 BLAS\nTHE FOLLOWING PARAMETER VALUES WILL BE USED:\n");
+    printf(" FOR N");
+    for (i__ =1; i__ <=nidim;++i__) printf(" %d",idim[i__-1]);
+    printf("\n");    
+    printf(" FOR ALPHA");
+    for (i__ =1; i__ <=nalf;++i__) printf(" (%lf,%lf)",alf[i__-1].r,alf[i__-1].i);
+    printf("\n");    
+    printf(" FOR BETA");
+    for (i__ =1; i__ <=nbet;++i__) printf(" (%lf,%lf)",bet[i__-1].r,bet[i__-1].i);
+    printf("\n");    
+
     if (! tsterr) {
-	s_wsle(&io___38);
-	e_wsle();
-	s_wsfe(&io___39);
-	e_wsfe();
+      printf(" ERROR-EXITS WILL NOT BE TESTED\n"); 
     }
-    s_wsle(&io___40);
-    e_wsle();
-    s_wsfe(&io___41);
-    do_fio(&c__1, (char *)&thresh, (ftnlen)sizeof(doublereal));
-    e_wsfe();
-    s_wsle(&io___42);
-    e_wsle();
+
+    printf("ROUTINES PASS COMPUTATIONAL TESTS IF TEST RATIO IS LESS THAN %lf\n",thresh);
     rorder = FALSE_;
     corder = FALSE_;
     if (layout == 2) {
 	rorder = TRUE_;
 	corder = TRUE_;
-	s_wsfe(&io___45);
-	e_wsfe();
+        printf("COLUMN-MAJOR AND ROW-MAJOR DATA LAYOUTS ARE TESTED\n");
     } else if (layout == 1) {
 	rorder = TRUE_;
-	s_wsfe(&io___46);
-	e_wsfe();
+        printf("ROW-MAJOR DATA LAYOUT IS TESTED\n");
     } else if (layout == 0) {
 	corder = TRUE_;
-	s_wsfe(&io___47);
-	e_wsfe();
+        printf("COLUMN-MAJOR DATA LAYOUT IS TESTED\n");
     }
-    s_wsle(&io___48);
-    e_wsle();
 
 /*     Read names of subroutines and flags which indicate */
 /*     whether they are to be tested. */
@@ -935,42 +523,33 @@ static logical c_false = FALSE_;
 /* L20: */
     }
 L30:
-    i__1 = s_rsfe(&io___50);
-    if (i__1 != 0) {
-	goto L60;
+   if (! fgets(line,80,stdin)) {
+        goto L60;
     }
-    i__1 = do_fio(&c__1, snamet, (ftnlen)13);
-    if (i__1 != 0) {
-	goto L60;
-    }
-    i__1 = do_fio(&c__1, (char *)&ltestt, (ftnlen)sizeof(logical));
-    if (i__1 != 0) {
-	goto L60;
-    }
-    i__1 = e_rsfe();
-    if (i__1 != 0) {
-	goto L60;
+   i__1 = sscanf(line,"%12c %c",snamet,&tmpchar);
+   ltestt=FALSE_;
+   if (tmpchar=='T')ltestt=TRUE_;
+    if (i__1 < 2) {
+        goto L60;
     }
     for (i__ = 1; i__ <= 9; ++i__) {
-	if (s_cmp(snamet, snames + (i__ - 1) * 13, (ftnlen)13, (ftnlen)13) == 
-		0) {
-	    goto L50;
-	}
+        if (s_cmp(snamet, snames[i__ - 1] , (ftnlen)12, (ftnlen)12) == 
+                0) {
+            goto L50;
+        }
 /* L40: */
     }
-    s_wsfe(&io___53);
-    do_fio(&c__1, snamet, (ftnlen)13);
-    e_wsfe();
-    s_stop("", (ftnlen)0);
+    printf("SUBPROGRAM NAME %s NOT RECOGNIZED\n****** TESTS ABANDONED ******\n",snamet);
+    exit(1);
 L50:
     ltest[i__ - 1] = ltestt;
     goto L30;
 
 L60:
-    cl__1.cerr = 0;
+/*    cl__1.cerr = 0;
     cl__1.cunit = 5;
     cl__1.csta = 0;
-    f_clos(&cl__1);
+    f_clos(&cl__1);*/
 
 /*     Compute EPS (the machine precision). */
 
@@ -984,9 +563,7 @@ L70:
     goto L70;
 L80:
     eps += eps;
-    s_wsfe(&io___55);
-    do_fio(&c__1, (char *)&eps, (ftnlen)sizeof(doublereal));
-    e_wsfe();
+    printf("RELATIVE MACHINE PRECISION IS TAKEN TO BE %9.1g\n",eps);
 
 /*     Check the reliability of ZMMCH using exact data. */
 
@@ -1023,30 +600,28 @@ L80:
     *(unsigned char *)transb = 'N';
     zmmch_(transa, transb, &n, &c__1, &n, &c_b2, ab, &c__65, &ab[4225], &
 	    c__65, &c_b1, c__, &c__65, ct, g, cc, &c__65, &eps, &err, &fatal, 
-	    &c__6, &c_true);
+	    &c__6, &c_true, (ftnlen)1, (ftnlen)1);
     same = lze_(cc, ct, &n);
     if (! same || err != 0.) {
-	s_wsfe(&io___68);
-	do_fio(&c__1, transa, (ftnlen)1);
-	do_fio(&c__1, transb, (ftnlen)1);
-	do_fio(&c__1, (char *)&same, (ftnlen)sizeof(logical));
-	do_fio(&c__1, (char *)&err, (ftnlen)sizeof(doublereal));
-	e_wsfe();
-	s_stop("", (ftnlen)0);
+      printf("ERROR IN ZMMCH - IN-LINE DOT PRODUCTS ARE BEING EVALUATED WRONGLY\n");
+      printf("ZMMCH WAS CALLED WITH TRANSA = %s AND TRANSB = %s\n", transa,transb);
+      printf("AND RETURNED SAME = %c AND ERR = %12.3f.\n",(same==FALSE_? 'F':'T'),err);
+      printf("THIS MAY BE DUE TO FAULTS IN THE ARITHMETIC OR THE COMPILER.\n");
+      printf("****** TESTS ABANDONED ******\n");
+      exit(1);
     }
     *(unsigned char *)transb = 'C';
     zmmch_(transa, transb, &n, &c__1, &n, &c_b2, ab, &c__65, &ab[4225], &
 	    c__65, &c_b1, c__, &c__65, ct, g, cc, &c__65, &eps, &err, &fatal, 
-	    &c__6, &c_true);
+	    &c__6, &c_true, (ftnlen)1, (ftnlen)1);
     same = lze_(cc, ct, &n);
     if (! same || err != 0.) {
-	s_wsfe(&io___69);
-	do_fio(&c__1, transa, (ftnlen)1);
-	do_fio(&c__1, transb, (ftnlen)1);
-	do_fio(&c__1, (char *)&same, (ftnlen)sizeof(logical));
-	do_fio(&c__1, (char *)&err, (ftnlen)sizeof(doublereal));
-	e_wsfe();
-	s_stop("", (ftnlen)0);
+      printf("ERROR IN ZMMCH - IN-LINE DOT PRODUCTS ARE BEING EVALUATED WRONGLY\n");
+      printf("ZMMCH WAS CALLED WITH TRANSA = %s AND TRANSB = %s\n", transa,transb);
+      printf("AND RETURNED SAME = %c AND ERR = %12.3f.\n",(same==FALSE_? 'F':'T'),err);
+      printf("THIS MAY BE DUE TO FAULTS IN THE ARITHMETIC OR THE COMPILER.\n");
+      printf("****** TESTS ABANDONED ******\n");
+      exit(1);
     }
     i__1 = n;
     for (j = 1; j <= i__1; ++j) {
@@ -1069,56 +644,48 @@ L80:
     *(unsigned char *)transb = 'N';
     zmmch_(transa, transb, &n, &c__1, &n, &c_b2, ab, &c__65, &ab[4225], &
 	    c__65, &c_b1, c__, &c__65, ct, g, cc, &c__65, &eps, &err, &fatal, 
-	    &c__6, &c_true);
+	    &c__6, &c_true, (ftnlen)1, (ftnlen)1);
     same = lze_(cc, ct, &n);
     if (! same || err != 0.) {
-	s_wsfe(&io___70);
-	do_fio(&c__1, transa, (ftnlen)1);
-	do_fio(&c__1, transb, (ftnlen)1);
-	do_fio(&c__1, (char *)&same, (ftnlen)sizeof(logical));
-	do_fio(&c__1, (char *)&err, (ftnlen)sizeof(doublereal));
-	e_wsfe();
-	s_stop("", (ftnlen)0);
+      printf("ERROR IN ZMMCH - IN-LINE DOT PRODUCTS ARE BEING EVALUATED WRONGLY\n");
+      printf("ZMMCH WAS CALLED WITH TRANSA = %s AND TRANSB = %s\n", transa,transb);
+      printf("AND RETURNED SAME = %c AND ERR = %12.3f.\n",(same==FALSE_? 'F':'T'),err);
+      printf("THIS MAY BE DUE TO FAULTS IN THE ARITHMETIC OR THE COMPILER.\n");
+      printf("****** TESTS ABANDONED ******\n");
+      exit(1);
     }
     *(unsigned char *)transb = 'C';
     zmmch_(transa, transb, &n, &c__1, &n, &c_b2, ab, &c__65, &ab[4225], &
 	    c__65, &c_b1, c__, &c__65, ct, g, cc, &c__65, &eps, &err, &fatal, 
-	    &c__6, &c_true);
+	    &c__6, &c_true, (ftnlen)1, (ftnlen)1);
     same = lze_(cc, ct, &n);
     if (! same || err != 0.) {
-	s_wsfe(&io___71);
-	do_fio(&c__1, transa, (ftnlen)1);
-	do_fio(&c__1, transb, (ftnlen)1);
-	do_fio(&c__1, (char *)&same, (ftnlen)sizeof(logical));
-	do_fio(&c__1, (char *)&err, (ftnlen)sizeof(doublereal));
-	e_wsfe();
-	s_stop("", (ftnlen)0);
+      printf("ERROR IN ZMMCH - IN-LINE DOT PRODUCTS ARE BEING EVALUATED WRONGLY\n");
+      printf("ZMMCH WAS CALLED WITH TRANSA = %s AND TRANSB = %s\n", transa,transb);
+      printf("AND RETURNED SAME = %c AND ERR = %12.3f.\n",(same==FALSE_? 'F':'T'),err);
+      printf("THIS MAY BE DUE TO FAULTS IN THE ARITHMETIC OR THE COMPILER.\n");
+      printf("****** TESTS ABANDONED ******\n");
+      exit(1);
     }
 
 /*     Test each subroutine in turn. */
 
     for (isnum = 1; isnum <= 9; ++isnum) {
-	s_wsle(&io___73);
-	e_wsle();
 	if (! ltest[isnum - 1]) {
 /*           Subprogram is not to be tested. */
-	    s_wsfe(&io___74);
-	    do_fio(&c__1, snames + (isnum - 1) * 13, (ftnlen)13);
-	    e_wsfe();
+           printf("%12s WAS NOT TESTED\n",snames[isnum-1]);
 	} else {
-	    s_copy(srnamc_1.srnamt, snames + (isnum - 1) * 13, (ftnlen)13, (
-		    ftnlen)13);
+	    s_copy(srnamc_1.srnamt, snames[isnum - 1], (ftnlen)12, (
+		    ftnlen)12);
 /*           Test error exits. */
 	    if (tsterr) {
-		cz3chke_(snames + (isnum - 1) * 13);
-		s_wsle(&io___75);
-		e_wsle();
+		cz3chke_(snames[isnum - 1], (ftnlen)12);
 	    }
 /*           Test computations. */
 	    infoc_1.infot = 0;
 	    infoc_1.ok = TRUE_;
 	    fatal = FALSE_;
-	    switch (isnum) {
+	    switch ((int)isnum) {
 		case 1:  goto L140;
 		case 2:  goto L150;
 		case 3:  goto L150;
@@ -1132,76 +699,76 @@ L80:
 /*           Test ZGEMM, 01. */
 L140:
 	    if (corder) {
-		zchk1_(snames + (isnum - 1) * 13, &eps, &thresh, &c__6, &ntra,
+		zchk1_(snames[isnum - 1], &eps, &thresh, &c__6, &ntra,
 			 &trace, &rewi, &fatal, &nidim, idim, &nalf, alf, &
 			nbet, bet, &c__65, ab, aa, as, &ab[4225], bb, bs, c__,
-			 cc, cs, ct, g, &c__0);
+			 cc, cs, ct, g, &c__0, (ftnlen)12);
 	    }
 	    if (rorder) {
-		zchk1_(snames + (isnum - 1) * 13, &eps, &thresh, &c__6, &ntra,
+		zchk1_(snames[isnum - 1], &eps, &thresh, &c__6, &ntra,
 			 &trace, &rewi, &fatal, &nidim, idim, &nalf, alf, &
 			nbet, bet, &c__65, ab, aa, as, &ab[4225], bb, bs, c__,
-			 cc, cs, ct, g, &c__1);
+			 cc, cs, ct, g, &c__1, (ftnlen)12);
 	    }
 	    goto L190;
 /*           Test ZHEMM, 02, ZSYMM, 03. */
 L150:
 	    if (corder) {
-		zchk2_(snames + (isnum - 1) * 13, &eps, &thresh, &c__6, &ntra,
+		zchk2_(snames[isnum - 1], &eps, &thresh, &c__6, &ntra,
 			 &trace, &rewi, &fatal, &nidim, idim, &nalf, alf, &
 			nbet, bet, &c__65, ab, aa, as, &ab[4225], bb, bs, c__,
-			 cc, cs, ct, g, &c__0);
+			 cc, cs, ct, g, &c__0, (ftnlen)12);
 	    }
 	    if (rorder) {
-		zchk2_(snames + (isnum - 1) * 13, &eps, &thresh, &c__6, &ntra,
+		zchk2_(snames[isnum - 1], &eps, &thresh, &c__6, &ntra,
 			 &trace, &rewi, &fatal, &nidim, idim, &nalf, alf, &
 			nbet, bet, &c__65, ab, aa, as, &ab[4225], bb, bs, c__,
-			 cc, cs, ct, g, &c__1);
+			 cc, cs, ct, g, &c__1, (ftnlen)12);
 	    }
 	    goto L190;
 /*           Test ZTRMM, 04, ZTRSM, 05. */
 L160:
 	    if (corder) {
-		zchk3_(snames + (isnum - 1) * 13, &eps, &thresh, &c__6, &ntra,
+		zchk3_(snames[isnum - 1], &eps, &thresh, &c__6, &ntra,
 			 &trace, &rewi, &fatal, &nidim, idim, &nalf, alf, &
 			c__65, ab, aa, as, &ab[4225], bb, bs, ct, g, c__, &
-			c__0);
+			c__0, (ftnlen)12);
 	    }
 	    if (rorder) {
-		zchk3_(snames + (isnum - 1) * 13, &eps, &thresh, &c__6, &ntra,
+		zchk3_(snames[isnum - 1], &eps, &thresh, &c__6, &ntra,
 			 &trace, &rewi, &fatal, &nidim, idim, &nalf, alf, &
 			c__65, ab, aa, as, &ab[4225], bb, bs, ct, g, c__, &
-			c__1);
+			c__1, (ftnlen)12);
 	    }
 	    goto L190;
 /*           Test ZHERK, 06, ZSYRK, 07. */
 L170:
 	    if (corder) {
-		zchk4_(snames + (isnum - 1) * 13, &eps, &thresh, &c__6, &ntra,
+		zchk4_(snames[isnum - 1], &eps, &thresh, &c__6, &ntra,
 			 &trace, &rewi, &fatal, &nidim, idim, &nalf, alf, &
 			nbet, bet, &c__65, ab, aa, as, &ab[4225], bb, bs, c__,
-			 cc, cs, ct, g, &c__0);
+			 cc, cs, ct, g, &c__0, (ftnlen)12);
 	    }
 	    if (rorder) {
-		zchk4_(snames + (isnum - 1) * 13, &eps, &thresh, &c__6, &ntra,
+		zchk4_(snames[isnum - 1], &eps, &thresh, &c__6, &ntra,
 			 &trace, &rewi, &fatal, &nidim, idim, &nalf, alf, &
 			nbet, bet, &c__65, ab, aa, as, &ab[4225], bb, bs, c__,
-			 cc, cs, ct, g, &c__1);
+			 cc, cs, ct, g, &c__1, (ftnlen)12);
 	    }
 	    goto L190;
 /*           Test ZHER2K, 08, ZSYR2K, 09. */
 L180:
 	    if (corder) {
-		zchk5_(snames + (isnum - 1) * 13, &eps, &thresh, &c__6, &ntra,
+		zchk5_(snames[isnum - 1], &eps, &thresh, &c__6, &ntra,
 			 &trace, &rewi, &fatal, &nidim, idim, &nalf, alf, &
 			nbet, bet, &c__65, ab, aa, as, bb, bs, c__, cc, cs, 
-			ct, g, w, &c__0);
+			ct, g, w, &c__0, (ftnlen)12);
 	    }
 	    if (rorder) {
-		zchk5_(snames + (isnum - 1) * 13, &eps, &thresh, &c__6, &ntra,
+		zchk5_(snames[isnum - 1], &eps, &thresh, &c__6, &ntra,
 			 &trace, &rewi, &fatal, &nidim, idim, &nalf, alf, &
 			nbet, bet, &c__65, ab, aa, as, bb, bs, c__, cc, cs, 
-			ct, g, w, &c__1);
+			ct, g, w, &c__1, (ftnlen)12);
 	    }
 	    goto L190;
 
@@ -1212,122 +779,66 @@ L190:
 	}
 /* L200: */
     }
-    s_wsfe(&io___82);
-    e_wsfe();
+    printf("\nEND OF TESTS\n");
     goto L230;
 
 L210:
-    s_wsfe(&io___83);
-    e_wsfe();
+    printf("\n****** FATAL ERROR - TESTS ABANDONED ******\n");
     goto L230;
 
 L220:
-    s_wsfe(&io___84);
-    e_wsfe();
+    printf("AMEND DATA FILE OR INCREASE ARRAY SIZES IN PROGRAM\n");
+    printf("****** TESTS ABANDONED ******\n");
 
 L230:
     if (trace) {
-	cl__1.cerr = 0;
+/*	cl__1.cerr = 0;
 	cl__1.cunit = ntra;
 	cl__1.csta = 0;
-	f_clos(&cl__1);
+	f_clos(&cl__1);*/
     }
-    cl__1.cerr = 0;
+/*    cl__1.cerr = 0;
     cl__1.cunit = 6;
     cl__1.csta = 0;
-    f_clos(&cl__1);
-    s_stop("", (ftnlen)0);
-
+    f_clos(&cl__1);*/
+    exit(0);
 
 /*     End of ZBLAT3. */
 
-    return 0;
 } /* MAIN__ */
 
-/* Subroutine */ int zchk1_(char *sname, doublereal *eps, doublereal *thresh, 
-	integer *nout, integer *ntra, logical *trace, logical *rewi, logical *
-	fatal, integer *nidim, integer *idim, integer *nalf, doublecomplex *
-	alf, integer *nbet, doublecomplex *bet, integer *nmax, doublecomplex *
-	a, doublecomplex *aa, doublecomplex *as, doublecomplex *b, 
-	doublecomplex *bb, doublecomplex *bs, doublecomplex *c__, 
-	doublecomplex *cc, doublecomplex *cs, doublecomplex *ct, doublereal *
-	g, integer *iorder)
+/* Subroutine */ int zchk1_(char* sname, doublereal* eps, doublereal* thresh, integer* nout, integer* ntra, logical* trace, logical* rewi, logical* fatal, integer* nidim, integer* idim, integer* nalf, doublecomplex* alf, integer* nbet, doublecomplex* bet, integer* nmax, doublecomplex* a, doublecomplex* aa, doublecomplex* as, doublecomplex* b, doublecomplex* bb, doublecomplex* bs, doublecomplex* c__, doublecomplex* cc, doublecomplex* cs, doublecomplex* ct, doublereal* g, integer* iorder, ftnlen sname_len)
 {
     /* Initialized data */
 
-    static char ich[3] = "NTC";
-
-    /* Format strings */
-    static char fmt_9994[] = "(\002 ******* FATAL ERROR - ERROR-CALL MYEXIT "
-	    "TAKEN ON VALID\002,\002 CALL *******\002)";
-    static char fmt_9998[] = "(\002 ******* FATAL ERROR - PARAMETER NUMBER"
-	    " \002,i2,\002 WAS CH\002,\002ANGED INCORRECTLY *******\002)";
-    static char fmt_10000[] = "(\002 \002,a13,\002 PASSED THE COLUMN-MAJOR C"
-	    "OMPUTATIONAL TESTS\002,\002 (\002,i6,\002 CALL\002,\002S)\002)";
-    static char fmt_10001[] = "(\002 \002,a13,\002 PASSED THE ROW-MAJOR    C"
-	    "OMPUTATIONAL TESTS\002,\002 (\002,i6,\002 CALL\002,\002S)\002)";
-    static char fmt_10002[] = "(\002 \002,a13,\002 COMPLETED THE COLUMN-MAJO"
-	    "R COMPUTATIONAL \002,\002TESTS (\002,i6,\002 CALLS)\002,/\002 **"
-	    "***** BUT WITH MAXIMUM TEST \002,\002RATIO \002,f8.2,\002 - SUSP"
-	    "ECT *******\002)";
-    static char fmt_10003[] = "(\002 \002,a13,\002 COMPLETED THE ROW-MAJOR  "
-	    "  COMPUTATIONAL \002,\002TESTS (\002,i6,\002 CALLS)\002,/\002 **"
-	    "***** BUT WITH MAXIMUM TEST \002,\002RATIO \002,f8.2,\002 - SUSP"
-	    "ECT *******\002)";
-    static char fmt_9996[] = "(\002 ******* \002,a13,\002 FAILED ON CALL NUM"
-	    "BER:\002)";
+    static char ich[3+1] = "NTC";
 
     /* System generated locals */
     integer a_dim1, a_offset, b_dim1, b_offset, c_dim1, c_offset, i__1, i__2, 
 	    i__3, i__4, i__5, i__6, i__7, i__8;
-    alist al__1;
 
     /* Local variables */
-    extern /* Subroutine */ int czgemm3m_(integer *, char *, char *, integer *
-	    , integer *, integer *, doublecomplex *, doublecomplex *, integer 
-	    *, doublecomplex *, integer *, doublecomplex *, doublecomplex *, 
-	    integer *);
-    doublecomplex beta;
-    integer ldas, ldbs, ldcs;
-    logical same, null;
-    integer i__, k, m, n;
-    doublecomplex alpha;
-    logical isame[13], trana, tranb;
-    extern /* Subroutine */ int zmake_(char *, char *, char *, integer *, 
-	    integer *, doublecomplex *, integer *, doublecomplex *, integer *,
-	     logical *, doublecomplex *);
-    integer nargs;
-    extern /* Subroutine */ int zmmch_(char *, char *, integer *, integer *, 
-	    integer *, doublecomplex *, doublecomplex *, integer *, 
-	    doublecomplex *, integer *, doublecomplex *, doublecomplex *, 
-	    integer *, doublecomplex *, doublereal *, doublecomplex *, 
-	    integer *, doublereal *, doublereal *, logical *, integer *, 
-	    logical *);
-    logical reset;
-    integer ia, ib;
-    extern /* Subroutine */ int zprcn1_(integer *, integer *, char *, integer 
-	    *, char *, char *, integer *, integer *, integer *, doublecomplex 
-	    *, integer *, integer *, doublecomplex *, integer *);
-    integer ma, mb, na, nb, nc, ik, im, in, ks, ms, ns;
-    char tranas[1], tranbs[1], transa[1], transb[1];
-    doublereal errmax;
-    extern logical lzeres_(char *, char *, integer *, integer *, 
-	    doublecomplex *, doublecomplex *, integer *);
-    integer ica, icb, laa, lbb, lda, lcc, ldb, ldc;
-    doublecomplex als, bls;
-    doublereal err;
-    extern logical lze_(doublecomplex *, doublecomplex *, integer *);
-
-    /* Fortran I/O blocks */
-    static cilist io___128 = { 0, 0, 0, fmt_9994, 0 };
-    static cilist io___131 = { 0, 0, 0, fmt_9998, 0 };
-    static cilist io___133 = { 0, 0, 0, fmt_10000, 0 };
-    static cilist io___134 = { 0, 0, 0, fmt_10001, 0 };
-    static cilist io___135 = { 0, 0, 0, fmt_10002, 0 };
-    static cilist io___136 = { 0, 0, 0, fmt_10003, 0 };
-    static cilist io___137 = { 0, 0, 0, fmt_9996, 0 };
-
-
+    static doublecomplex beta;
+    static integer ldas, ldbs, ldcs;
+    static logical same, null;
+    static integer i__, k, m, n;
+    static doublecomplex alpha;
+    static logical isame[13], trana, tranb;
+    extern /* Subroutine */ int zmake_(char*, char*, char*, integer*, integer*, doublecomplex*, integer*, doublecomplex*, integer*, logical*, doublecomplex*, ftnlen, ftnlen, ftnlen);
+    static integer nargs;
+    extern /* Subroutine */ int zmmch_(char*, char*, integer*, integer*, integer*, doublecomplex*, doublecomplex*, integer*, doublecomplex*, integer*, doublecomplex*, doublecomplex*, integer*, doublecomplex*, doublereal*, doublecomplex*, integer*, doublereal*, doublereal*, logical*, integer*, logical*, ftnlen, ftnlen);
+    static logical reset;
+    static integer ia, ib;
+    extern /* Subroutine */ int zprcn1_(integer*, integer*, char*, integer*, char*, char*, integer*, integer*, integer*, doublecomplex*, integer*, integer*, doublecomplex*, integer*, ftnlen, ftnlen, ftnlen);
+    static integer ma, mb, na, nb, nc, ik, im, in, ks, ms, ns;
+    extern /* Subroutine */ void czgemm3m_(integer*, char*, char*, integer*, integer*, integer*, doublecomplex*, doublecomplex*, integer*, doublecomplex*, integer*, doublecomplex*, doublecomplex*, integer*, ftnlen, ftnlen);
+    static char tranas[1], tranbs[1], transa[1], transb[1];
+    static doublereal errmax;
+    extern logical lzeres_(char*, char*, integer*, integer*, doublecomplex*, doublecomplex*, integer*, ftnlen, ftnlen);
+    static integer ica, icb, laa, lbb, lda, lcc, ldb, ldc;
+    static doublecomplex als, bls;
+    static doublereal err;
+    extern logical lze_(doublecomplex*, doublecomplex*, integer*);
 
 /*  Tests ZGEMM. */
 
@@ -1339,6 +850,17 @@ L230:
 /*     Jeremy Du Croz, Numerical Algorithms Group Ltd. */
 /*     Sven Hammarling, Numerical Algorithms Group Ltd. */
 
+/*     .. Parameters .. */
+/*     .. Scalar Arguments .. */
+/*     .. Array Arguments .. */
+/*     .. Local Scalars .. */
+/*     .. Local Arrays .. */
+/*     .. External Functions .. */
+/*     .. External Subroutines .. */
+/*     .. Intrinsic Functions .. */
+/*     .. Scalars in Common .. */
+/*     .. Common blocks .. */
+/*     .. Data statements .. */
     /* Parameter adjustments */
     --idim;
     --alf;
@@ -1362,6 +884,7 @@ L230:
     a -= a_offset;
 
     /* Function Body */
+/*     .. Executable Statements .. */
 
     nargs = 13;
     nc = 0;
@@ -1418,7 +941,8 @@ L230:
 /*                 Generate the matrix A. */
 
 		    zmake_("ge", " ", " ", &ma, &na, &a[a_offset], nmax, &aa[
-			    1], &lda, &reset, &c_b1);
+			    1], &lda, &reset, &c_b1, (ftnlen)2, (ftnlen)1, (
+			    ftnlen)1);
 
 		    for (icb = 1; icb <= 3; ++icb) {
 			*(unsigned char *)transb = *(unsigned char *)&ich[icb 
@@ -1447,7 +971,8 @@ L230:
 /*                    Generate the matrix B. */
 
 			zmake_("ge", " ", " ", &mb, &nb, &b[b_offset], nmax, &
-				bb[1], &ldb, &reset, &c_b1);
+				bb[1], &ldb, &reset, &c_b1, (ftnlen)2, (
+				ftnlen)1, (ftnlen)1);
 
 			i__4 = *nalf;
 			for (ia = 1; ia <= i__4; ++ia) {
@@ -1462,7 +987,8 @@ L230:
 /*                          Generate the matrix C. */
 
 				zmake_("ge", " ", " ", &m, &n, &c__[c_offset],
-					 nmax, &cc[1], &ldc, &reset, &c_b1);
+					 nmax, &cc[1], &ldc, &reset, &c_b1, (
+					ftnlen)2, (ftnlen)1, (ftnlen)1);
 
 				++nc;
 
@@ -1511,23 +1037,23 @@ L230:
 				if (*trace) {
 				    zprcn1_(ntra, &nc, sname, iorder, transa, 
 					    transb, &m, &n, &k, &alpha, &lda, 
-					    &ldb, &beta, &ldc);
+					    &ldb, &beta, &ldc, (ftnlen)12, (
+					    ftnlen)1, (ftnlen)1);
 				}
 				if (*rewi) {
-				    al__1.aerr = 0;
+/*				    al__1.aerr = 0;
 				    al__1.aunit = *ntra;
-				    f_rew(&al__1);
+				    f_rew(&al__1);*/
 				}
-				czgemm3m_(iorder, transa, transb, &m, &n, &k, 
-					&alpha, &aa[1], &lda, &bb[1], &ldb, &
-					beta, &cc[1], &ldc);
+				czgemm3m_(iorder, transa, transb, &m, &n, &k, &
+					alpha, &aa[1], &lda, &bb[1], &ldb, &
+					beta, &cc[1], &ldc, (ftnlen)1, (
+					ftnlen)1);
 
 /*                          Check if error-exit was taken incorrectly. */
 
 				if (! infoc_1.ok) {
-				    io___128.ciunit = *nout;
-				    s_wsfe(&io___128);
-				    e_wsfe();
+                                    printf(" *** FATAL ERROR - ERROR-CALL MYEXIT TAKEN ON VALID CALL\n");
 				    *fatal = TRUE_;
 				    goto L120;
 				}
@@ -1553,7 +1079,8 @@ L230:
 				    isame[11] = lze_(&cs[1], &cc[1], &lcc);
 				} else {
 				    isame[11] = lzeres_("ge", " ", &m, &n, &
-					    cs[1], &cc[1], &ldc);
+					    cs[1], &cc[1], &ldc, (ftnlen)2, (
+					    ftnlen)1);
 				}
 				isame[12] = ldcs == ldc;
 
@@ -1565,11 +1092,7 @@ L230:
 				for (i__ = 1; i__ <= i__6; ++i__) {
 				    same = same && isame[i__ - 1];
 				    if (! isame[i__ - 1]) {
-					io___131.ciunit = *nout;
-					s_wsfe(&io___131);
-					do_fio(&c__1, (char *)&i__, (ftnlen)
-						sizeof(integer));
-					e_wsfe();
+	                                printf(" ******* FATAL ERROR - PARAMETER NUMBER %d WAS CHANGED INCORRECTLY *******\n",i__);
 				    }
 /* L40: */
 				}
@@ -1586,7 +1109,8 @@ L230:
 					     &a[a_offset], nmax, &b[b_offset],
 					     nmax, &beta, &c__[c_offset], 
 					    nmax, &ct[1], &g[1], &cc[1], &ldc,
-					     eps, &err, fatal, nout, &c_true);
+					     eps, &err, fatal, nout, &c_true, 
+					    (ftnlen)1, (ftnlen)1);
 				    errmax = f2cmax(errmax,err);
 /*                             If got really bad answer, report and */
 /*                             return. */
@@ -1623,76 +1147,44 @@ L100:
 
     if (errmax < *thresh) {
 	if (*iorder == 0) {
-	    io___133.ciunit = *nout;
-	    s_wsfe(&io___133);
-	    do_fio(&c__1, sname, (ftnlen)13);
-	    do_fio(&c__1, (char *)&nc, (ftnlen)sizeof(integer));
-	    e_wsfe();
+            printf("%s PASSED THE COLUMN-MAJOR COMPUTATIONAL TESTS (%d CALLS)\n",sname,nc);
 	}
 	if (*iorder == 1) {
-	    io___134.ciunit = *nout;
-	    s_wsfe(&io___134);
-	    do_fio(&c__1, sname, (ftnlen)13);
-	    do_fio(&c__1, (char *)&nc, (ftnlen)sizeof(integer));
-	    e_wsfe();
+            printf("%s PASSED THE ROW-MAJOR COMPUTATIONAL TESTS (%d CALLS)\n",sname,nc);
 	}
     } else {
 	if (*iorder == 0) {
-	    io___135.ciunit = *nout;
-	    s_wsfe(&io___135);
-	    do_fio(&c__1, sname, (ftnlen)13);
-	    do_fio(&c__1, (char *)&nc, (ftnlen)sizeof(integer));
-	    do_fio(&c__1, (char *)&errmax, (ftnlen)sizeof(doublereal));
-	    e_wsfe();
+            printf("%s COMPLETED THE COLUMN-MAJOR COMPUTATIONAL TESTS (%d CALLS)/n",sname,nc);
+            printf("***** BUT WITH MAXIMUM TEST RATIO %8.2f - SUSPECT *******/n",errmax);
 	}
 	if (*iorder == 1) {
-	    io___136.ciunit = *nout;
-	    s_wsfe(&io___136);
-	    do_fio(&c__1, sname, (ftnlen)13);
-	    do_fio(&c__1, (char *)&nc, (ftnlen)sizeof(integer));
-	    do_fio(&c__1, (char *)&errmax, (ftnlen)sizeof(doublereal));
-	    e_wsfe();
+            printf("%s COMPLETED THE ROW-MAJOR COMPUTATIONAL TESTS (%d CALLS)/n",sname,nc);
+            printf("***** BUT WITH MAXIMUM TEST RATIO %8.2f - SUSPECT *******/n",errmax);
 	}
     }
     goto L130;
 
 L120:
-    io___137.ciunit = *nout;
-    s_wsfe(&io___137);
-    do_fio(&c__1, sname, (ftnlen)13);
-    e_wsfe();
+    printf(" ******* %s FAILED ON CALL NUMBER:\n",sname);
     zprcn1_(nout, &nc, sname, iorder, transa, transb, &m, &n, &k, &alpha, &
-	    lda, &ldb, &beta, &ldc);
+	    lda, &ldb, &beta, &ldc, (ftnlen)12, (ftnlen)1, (ftnlen)1);
 
 L130:
     return 0;
 
-/* L9995: */
+/* 9995 FORMAT( 1X, I6, ': ', A12,'(''', A1, ''',''', A1, ''',', */
+/*     $     3( I3, ',' ), '(', F4.1, ',', F4.1, '), A,', I3, ', B,', I3, */
+/*     $     ',(', F4.1, ',', F4.1, '), C,', I3, ').' ) */
 
 /*     End of ZCHK1. */
 
 } /* zchk1_ */
 
 
-/* Subroutine */ int zprcn1_(integer *nout, integer *nc, char *sname, integer 
-	*iorder, char *transa, char *transb, integer *m, integer *n, integer *
-	k, doublecomplex *alpha, integer *lda, integer *ldb, doublecomplex *
-	beta, integer *ldc)
+/* Subroutine */ int zprcn1_(integer* nout, integer* nc, char* sname, integer* iorder, char* transa, char* transb, integer* m, integer* n, integer* k, doublecomplex* alpha, integer* lda, integer* ldb, doublecomplex* beta, integer* ldc, ftnlen sname_len, ftnlen transa_len, ftnlen transb_len)
 {
-    /* Format strings */
-    static char fmt_9995[] = "(1x,i6,\002: \002,a13,\002(\002,a15,\002,\002,"
-	    "a14,\002,\002,a14,\002,\002)";
-    static char fmt_9994[] = "(10x,3(i3,\002,\002),\002 (\002,f4.1,\002,\002"
-	    ",f4.1,\002) , A,\002,i3,\002, B,\002,i3,\002, (\002,f4.1,\002"
-	    ",\002,f4.1,\002) , C,\002,i3,\002).\002)";
-
     /* Local variables */
-    char crc[14], cta[14], ctb[14];
-
-    /* Fortran I/O blocks */
-    static cilist io___141 = { 0, 0, 0, fmt_9995, 0 };
-    static cilist io___142 = { 0, 0, 0, fmt_9994, 0 };
-
+    static char crc[14], cta[14], ctb[14];
 
     if (*(unsigned char *)transa == 'N') {
 	s_copy(cta, "  CblasNoTrans", (ftnlen)14, (ftnlen)14);
@@ -1713,123 +1205,52 @@ L130:
     } else {
 	s_copy(crc, " CblasColMajor", (ftnlen)14, (ftnlen)14);
     }
-    io___141.ciunit = *nout;
-    s_wsfe(&io___141);
-    do_fio(&c__1, (char *)&(*nc), (ftnlen)sizeof(integer));
-    do_fio(&c__1, sname, (ftnlen)13);
-    do_fio(&c__1, crc, (ftnlen)14);
-    do_fio(&c__1, cta, (ftnlen)14);
-    do_fio(&c__1, ctb, (ftnlen)14);
-    e_wsfe();
-    io___142.ciunit = *nout;
-    s_wsfe(&io___142);
-    do_fio(&c__1, (char *)&(*m), (ftnlen)sizeof(integer));
-    do_fio(&c__1, (char *)&(*n), (ftnlen)sizeof(integer));
-    do_fio(&c__1, (char *)&(*k), (ftnlen)sizeof(integer));
-    do_fio(&c__2, (char *)&(*alpha), (ftnlen)sizeof(doublereal));
-    do_fio(&c__1, (char *)&(*lda), (ftnlen)sizeof(integer));
-    do_fio(&c__1, (char *)&(*ldb), (ftnlen)sizeof(integer));
-    do_fio(&c__2, (char *)&(*beta), (ftnlen)sizeof(doublereal));
-    do_fio(&c__1, (char *)&(*ldc), (ftnlen)sizeof(integer));
-    e_wsfe();
-    return 0;
+    printf("%6d: %s %s %s %s\n",*nc,sname,crc,cta,ctb);
+    printf("%d %d %d (%4.1lf,%4.1lf) , A, %d, B, %d, (%4.1lf,%4.1lf) , C, %d.\n",*m,*n,*k,alpha->r,alpha->i,*lda,*ldb,beta->r,beta->i,*ldc);
+
+return 0;
 } /* zprcn1_ */
 
 
-/* Subroutine */ int zchk2_(char *sname, doublereal *eps, doublereal *thresh, 
-	integer *nout, integer *ntra, logical *trace, logical *rewi, logical *
-	fatal, integer *nidim, integer *idim, integer *nalf, doublecomplex *
-	alf, integer *nbet, doublecomplex *bet, integer *nmax, doublecomplex *
-	a, doublecomplex *aa, doublecomplex *as, doublecomplex *b, 
-	doublecomplex *bb, doublecomplex *bs, doublecomplex *c__, 
-	doublecomplex *cc, doublecomplex *cs, doublecomplex *ct, doublereal *
-	g, integer *iorder)
+/* Subroutine */ int zchk2_(char* sname, doublereal* eps, doublereal* thresh, integer* nout, integer* ntra, logical* trace, logical* rewi, logical* fatal, integer* nidim, integer* idim, integer* nalf, doublecomplex* alf, integer* nbet, doublecomplex* bet, integer* nmax, doublecomplex* a, doublecomplex* aa, doublecomplex* as, doublecomplex* b, doublecomplex* bb, doublecomplex* bs, doublecomplex* c__, doublecomplex* cc, doublecomplex* cs, doublecomplex* ct, doublereal* g, integer* iorder, ftnlen sname_len)
 {
     /* Initialized data */
 
-    static char ichs[2] = "LR";
-    static char ichu[2] = "UL";
-
-    /* Format strings */
-    static char fmt_9994[] = "(\002 ******* FATAL ERROR - ERROR-CALL MYEXIT "
-	    "TAKEN ON VALID\002,\002 CALL *******\002)";
-    static char fmt_9998[] = "(\002 ******* FATAL ERROR - PARAMETER NUMBER"
-	    " \002,i2,\002 WAS CH\002,\002ANGED INCORRECTLY *******\002)";
-    static char fmt_10000[] = "(\002 \002,a13,\002 PASSED THE COLUMN-MAJOR C"
-	    "OMPUTATIONAL TESTS\002,\002 (\002,i6,\002 CALL\002,\002S)\002)";
-    static char fmt_10001[] = "(\002 \002,a13,\002 PASSED THE ROW-MAJOR    C"
-	    "OMPUTATIONAL TESTS\002,\002 (\002,i6,\002 CALL\002,\002S)\002)";
-    static char fmt_10002[] = "(\002 \002,a13,\002 COMPLETED THE COLUMN-MAJO"
-	    "R COMPUTATIONAL \002,\002TESTS (\002,i6,\002 CALLS)\002,/\002 **"
-	    "***** BUT WITH MAXIMUM TEST \002,\002RATIO \002,f8.2,\002 - SUSP"
-	    "ECT *******\002)";
-    static char fmt_10003[] = "(\002 \002,a13,\002 COMPLETED THE ROW-MAJOR  "
-	    "  COMPUTATIONAL \002,\002TESTS (\002,i6,\002 CALLS)\002,/\002 **"
-	    "***** BUT WITH MAXIMUM TEST \002,\002RATIO \002,f8.2,\002 - SUSP"
-	    "ECT *******\002)";
-    static char fmt_9996[] = "(\002 ******* \002,a13,\002 FAILED ON CALL NUM"
-	    "BER:\002)";
+    static char ichs[2+1] = "LR";
+    static char ichu[2+1] = "UL";
 
     /* System generated locals */
     integer a_dim1, a_offset, b_dim1, b_offset, c_dim1, c_offset, i__1, i__2, 
 	    i__3, i__4, i__5, i__6, i__7;
-    alist al__1;
 
     /* Local variables */
-    doublecomplex beta;
-    integer ldas, ldbs, ldcs;
-    logical same;
-    char side[1];
-    logical conj, left, null;
-    char uplo[1];
-    integer i__, m, n;
-    doublecomplex alpha;
-    logical isame[13];
-    char sides[1];
-    extern /* Subroutine */ int zmake_(char *, char *, char *, integer *, 
-	    integer *, doublecomplex *, integer *, doublecomplex *, integer *,
-	     logical *, doublecomplex *);
-    integer nargs;
-    extern /* Subroutine */ int zmmch_(char *, char *, integer *, integer *, 
-	    integer *, doublecomplex *, doublecomplex *, integer *, 
-	    doublecomplex *, integer *, doublecomplex *, doublecomplex *, 
-	    integer *, doublecomplex *, doublereal *, doublecomplex *, 
-	    integer *, doublereal *, doublereal *, logical *, integer *, 
-	    logical *);
-    logical reset;
-    char uplos[1];
-    integer ia, ib;
-    extern /* Subroutine */ int zprcn2_(integer *, integer *, char *, integer 
-	    *, char *, char *, integer *, integer *, doublecomplex *, integer 
-	    *, integer *, doublecomplex *, integer *);
-    integer na, nc, im, in, ms, ns;
-    extern /* Subroutine */ int czhemm_(integer *, char *, char *, integer *, 
-	    integer *, doublecomplex *, doublecomplex *, integer *, 
-	    doublecomplex *, integer *, doublecomplex *, doublecomplex *, 
-	    integer *);
-    doublereal errmax;
-    extern logical lzeres_(char *, char *, integer *, integer *, 
-	    doublecomplex *, doublecomplex *, integer *);
-    extern /* Subroutine */ int czsymm_(integer *, char *, char *, integer *, 
-	    integer *, doublecomplex *, doublecomplex *, integer *, 
-	    doublecomplex *, integer *, doublecomplex *, doublecomplex *, 
-	    integer *);
-    integer laa, lbb, lda, lcc, ldb, ldc, ics;
-    doublecomplex als, bls;
-    integer icu;
-    doublereal err;
-    extern logical lze_(doublecomplex *, doublecomplex *, integer *);
-
-    /* Fortran I/O blocks */
-    static cilist io___181 = { 0, 0, 0, fmt_9994, 0 };
-    static cilist io___184 = { 0, 0, 0, fmt_9998, 0 };
-    static cilist io___186 = { 0, 0, 0, fmt_10000, 0 };
-    static cilist io___187 = { 0, 0, 0, fmt_10001, 0 };
-    static cilist io___188 = { 0, 0, 0, fmt_10002, 0 };
-    static cilist io___189 = { 0, 0, 0, fmt_10003, 0 };
-    static cilist io___190 = { 0, 0, 0, fmt_9996, 0 };
-
-
+    static doublecomplex beta;
+    static integer ldas, ldbs, ldcs;
+    static logical same;
+    static char side[1];
+    static logical isconj, left, null;
+    static char uplo[1];
+    static integer i__, m, n;
+    static doublecomplex alpha;
+    static logical isame[13];
+    static char sides[1];
+    extern /* Subroutine */ int zmake_(char*, char*, char*, integer*, integer*, doublecomplex*, integer*, doublecomplex*, integer*, logical*, doublecomplex*, ftnlen, ftnlen, ftnlen);
+    static integer nargs;
+    extern /* Subroutine */ int zmmch_(char*, char*, integer*, integer*, integer*, doublecomplex*, doublecomplex*, integer*, doublecomplex*, integer*, doublecomplex*, doublecomplex*, integer*, doublecomplex*, doublereal*, doublecomplex*, integer*, doublereal*, doublereal*, logical*, integer*, logical*, ftnlen, ftnlen);
+    static logical reset;
+    static char uplos[1];
+    static integer ia, ib;
+    extern /* Subroutine */ int zprcn2_(integer*, integer*, char*, integer*, char*, char*, integer*, integer*, doublecomplex*, integer*, integer*, doublecomplex*, integer*, ftnlen, ftnlen, ftnlen);
+    static integer na, nc, im, in, ms, ns;
+    extern /* Subroutine */ void czhemm_(integer*, char*, char*, integer*, integer*, doublecomplex*, doublecomplex*, integer*, doublecomplex*, integer*, doublecomplex*, doublecomplex*, integer*, ftnlen, ftnlen);
+    static doublereal errmax;
+    extern logical lzeres_(char*, char*, integer*, integer*, doublecomplex*, doublecomplex*, integer*, ftnlen, ftnlen);
+    extern /* Subroutine */ void czsymm_(integer*, char*, char*, integer*, integer*, doublecomplex*, doublecomplex*, integer*, doublecomplex*, integer*, doublecomplex*, doublecomplex*, integer*, ftnlen, ftnlen);
+    static integer laa, lbb, lda, lcc, ldb, ldc, ics;
+    static doublecomplex als, bls;
+    static integer icu;
+    static doublereal err;
+    extern logical lze_(doublecomplex*, doublecomplex*, integer*);
 
 /*  Tests ZHEMM and ZSYMM. */
 
@@ -1841,6 +1262,17 @@ L130:
 /*     Jeremy Du Croz, Numerical Algorithms Group Ltd. */
 /*     Sven Hammarling, Numerical Algorithms Group Ltd. */
 
+/*     .. Parameters .. */
+/*     .. Scalar Arguments .. */
+/*     .. Array Arguments .. */
+/*     .. Local Scalars .. */
+/*     .. Local Arrays .. */
+/*     .. External Functions .. */
+/*     .. External Subroutines .. */
+/*     .. Intrinsic Functions .. */
+/*     .. Scalars in Common .. */
+/*     .. Common blocks .. */
+/*     .. Data statements .. */
     /* Parameter adjustments */
     --idim;
     --alf;
@@ -1864,7 +1296,8 @@ L130:
     a -= a_offset;
 
     /* Function Body */
-    conj = s_cmp(sname + 7, "he", (ftnlen)2, (ftnlen)2) == 0;
+/*     .. Executable Statements .. */
+    isconj = s_cmp(sname + 7, "he", (ftnlen)2, (ftnlen)2) == 0;
 
     nargs = 12;
     nc = 0;
@@ -1903,7 +1336,7 @@ L130:
 /*           Generate the matrix B. */
 
 	    zmake_("ge", " ", " ", &m, &n, &b[b_offset], nmax, &bb[1], &ldb, &
-		    reset, &c_b1);
+		    reset, &c_b1, (ftnlen)2, (ftnlen)1, (ftnlen)1);
 
 	    for (ics = 1; ics <= 2; ++ics) {
 		*(unsigned char *)side = *(unsigned char *)&ichs[ics - 1];
@@ -1931,7 +1364,8 @@ L130:
 /*                 Generate the hermitian or symmetric matrix A. */
 
 		    zmake_(sname + 7, uplo, " ", &na, &na, &a[a_offset], nmax,
-			     &aa[1], &lda, &reset, &c_b1);
+			     &aa[1], &lda, &reset, &c_b1, (ftnlen)2, (ftnlen)
+			    1, (ftnlen)1);
 
 		    i__3 = *nalf;
 		    for (ia = 1; ia <= i__3; ++ia) {
@@ -1946,7 +1380,8 @@ L130:
 /*                       Generate the matrix C. */
 
 			    zmake_("ge", " ", " ", &m, &n, &c__[c_offset], 
-				    nmax, &cc[1], &ldc, &reset, &c_b1);
+				    nmax, &cc[1], &ldc, &reset, &c_b1, (
+				    ftnlen)2, (ftnlen)1, (ftnlen)1);
 
 			    ++nc;
 
@@ -1992,30 +1427,28 @@ L130:
 			    if (*trace) {
 				zprcn2_(ntra, &nc, sname, iorder, side, uplo, 
 					&m, &n, &alpha, &lda, &ldb, &beta, &
-					ldc)
+					ldc, (ftnlen)12, (ftnlen)1, (ftnlen)1)
 					;
 			    }
 			    if (*rewi) {
-				al__1.aerr = 0;
+/*				al__1.aerr = 0;
 				al__1.aunit = *ntra;
-				f_rew(&al__1);
+				f_rew(&al__1);*/
 			    }
-			    if (conj) {
+			    if (isconj) {
 				czhemm_(iorder, side, uplo, &m, &n, &alpha, &
 					aa[1], &lda, &bb[1], &ldb, &beta, &cc[
-					1], &ldc);
+					1], &ldc, (ftnlen)1, (ftnlen)1);
 			    } else {
 				czsymm_(iorder, side, uplo, &m, &n, &alpha, &
 					aa[1], &lda, &bb[1], &ldb, &beta, &cc[
-					1], &ldc);
+					1], &ldc, (ftnlen)1, (ftnlen)1);
 			    }
 
 /*                       Check if error-exit was taken incorrectly. */
 
 			    if (! infoc_1.ok) {
-				io___181.ciunit = *nout;
-				s_wsfe(&io___181);
-				e_wsfe();
+			    	printf("*** FATAL ERROR - ERROR-CALL MYEXIT TAKEN ON VALID CALL\n");
 				*fatal = TRUE_;
 				goto L110;
 			    }
@@ -2038,7 +1471,7 @@ L130:
 				isame[10] = lze_(&cs[1], &cc[1], &lcc);
 			    } else {
 				isame[10] = lzeres_("ge", " ", &m, &n, &cs[1],
-					 &cc[1], &ldc);
+					 &cc[1], &ldc, (ftnlen)2, (ftnlen)1);
 			    }
 			    isame[11] = ldcs == ldc;
 
@@ -2050,11 +1483,7 @@ L130:
 			    for (i__ = 1; i__ <= i__5; ++i__) {
 				same = same && isame[i__ - 1];
 				if (! isame[i__ - 1]) {
-				    io___184.ciunit = *nout;
-				    s_wsfe(&io___184);
-				    do_fio(&c__1, (char *)&i__, (ftnlen)
-					    sizeof(integer));
-				    e_wsfe();
+                                printf(" ******* FATAL ERROR - PARAMETER NUMBER %d WAS CHANGED INCORRECTLY *******\n",i__);
 				}
 /* L40: */
 			    }
@@ -2072,13 +1501,15 @@ L130:
 					    a_offset], nmax, &b[b_offset], 
 					    nmax, &beta, &c__[c_offset], nmax,
 					     &ct[1], &g[1], &cc[1], &ldc, eps,
-					     &err, fatal, nout, &c_true);
+					     &err, fatal, nout, &c_true, (
+					    ftnlen)1, (ftnlen)1);
 				} else {
 				    zmmch_("N", "N", &m, &n, &n, &alpha, &b[
 					    b_offset], nmax, &a[a_offset], 
 					    nmax, &beta, &c__[c_offset], nmax,
 					     &ct[1], &g[1], &cc[1], &ldc, eps,
-					     &err, fatal, nout, &c_true);
+					     &err, fatal, nout, &c_true, (
+					    ftnlen)1, (ftnlen)1);
 				}
 				errmax = f2cmax(errmax,err);
 /*                          If got really bad answer, report and */
@@ -2112,76 +1543,44 @@ L90:
 
     if (errmax < *thresh) {
 	if (*iorder == 0) {
-	    io___186.ciunit = *nout;
-	    s_wsfe(&io___186);
-	    do_fio(&c__1, sname, (ftnlen)13);
-	    do_fio(&c__1, (char *)&nc, (ftnlen)sizeof(integer));
-	    e_wsfe();
+            printf("%s PASSED THE COLUMN-MAJOR COMPUTATIONAL TESTS (%d CALLS)\n",sname,nc);
 	}
 	if (*iorder == 1) {
-	    io___187.ciunit = *nout;
-	    s_wsfe(&io___187);
-	    do_fio(&c__1, sname, (ftnlen)13);
-	    do_fio(&c__1, (char *)&nc, (ftnlen)sizeof(integer));
-	    e_wsfe();
+            printf("%s PASSED THE ROW-MAJOR COMPUTATIONAL TESTS (%d CALLS)\n",sname,nc);
 	}
     } else {
 	if (*iorder == 0) {
-	    io___188.ciunit = *nout;
-	    s_wsfe(&io___188);
-	    do_fio(&c__1, sname, (ftnlen)13);
-	    do_fio(&c__1, (char *)&nc, (ftnlen)sizeof(integer));
-	    do_fio(&c__1, (char *)&errmax, (ftnlen)sizeof(doublereal));
-	    e_wsfe();
+            printf("%s COMPLETED THE COLUMN-MAJOR COMPUTATIONAL TESTS (%d CALLS)/n",sname,nc);
+            printf("***** BUT WITH MAXIMUM TEST RATIO %8.2f - SUSPECT *******/n",errmax);
 	}
 	if (*iorder == 1) {
-	    io___189.ciunit = *nout;
-	    s_wsfe(&io___189);
-	    do_fio(&c__1, sname, (ftnlen)13);
-	    do_fio(&c__1, (char *)&nc, (ftnlen)sizeof(integer));
-	    do_fio(&c__1, (char *)&errmax, (ftnlen)sizeof(doublereal));
-	    e_wsfe();
+            printf("%s COMPLETED THE ROW-MAJOR COMPUTATIONAL TESTS (%d CALLS)/n",sname,nc);
+            printf("***** BUT WITH MAXIMUM TEST RATIO %8.2f - SUSPECT *******/n",errmax);
 	}
     }
     goto L120;
 
 L110:
-    io___190.ciunit = *nout;
-    s_wsfe(&io___190);
-    do_fio(&c__1, sname, (ftnlen)13);
-    e_wsfe();
+    printf(" ******* %s FAILED ON CALL NUMBER:\n",sname);
     zprcn2_(nout, &nc, sname, iorder, side, uplo, &m, &n, &alpha, &lda, &ldb, 
-	    &beta, &ldc);
+	    &beta, &ldc, (ftnlen)12, (ftnlen)1, (ftnlen)1);
 
 L120:
     return 0;
 
-/* L9995: */
+/* 9995 FORMAT(1X, I6, ': ', A12,'(', 2( '''', A1, ''',' ), 2( I3, ',' ), */
+/*     $      '(', F4.1, ',', F4.1, '), A,', I3, ', B,', I3, ',(', F4.1, */
+/*     $      ',', F4.1, '), C,', I3, ')    .' ) */
 
 /*     End of ZCHK2. */
 
 } /* zchk2_ */
 
 
-/* Subroutine */ int zprcn2_(integer *nout, integer *nc, char *sname, integer 
-	*iorder, char *side, char *uplo, integer *m, integer *n, 
-	doublecomplex *alpha, integer *lda, integer *ldb, doublecomplex *beta,
-	 integer *ldc)
+/* Subroutine */ int zprcn2_(integer* nout, integer* nc, char* sname, integer* iorder, char* side, char* uplo, integer* m, integer* n, doublecomplex* alpha, integer* lda, integer* ldb, doublecomplex* beta, integer* ldc, ftnlen sname_len, ftnlen side_len, ftnlen uplo_len)
 {
-    /* Format strings */
-    static char fmt_9995[] = "(1x,i6,\002: \002,a13,\002(\002,a15,\002,\002,"
-	    "a14,\002,\002,a14,\002,\002)";
-    static char fmt_9994[] = "(10x,2(i3,\002,\002),\002 (\002,f4.1,\002,\002"
-	    ",f4.1,\002), A,\002,i3,\002, B,\002,i3,\002, (\002,f4.1,\002,"
-	    "\002,f4.1,\002), \002,\002C,\002,i3,\002).\002)";
-
     /* Local variables */
-    char cs[14], cu[14], crc[14];
-
-    /* Fortran I/O blocks */
-    static cilist io___194 = { 0, 0, 0, fmt_9995, 0 };
-    static cilist io___195 = { 0, 0, 0, fmt_9994, 0 };
-
+    static char cs[14], cu[14], crc[14];
 
     if (*(unsigned char *)side == 'L') {
 	s_copy(cs, "     CblasLeft", (ftnlen)14, (ftnlen)14);
@@ -2198,123 +1597,57 @@ L120:
     } else {
 	s_copy(crc, " CblasColMajor", (ftnlen)14, (ftnlen)14);
     }
-    io___194.ciunit = *nout;
-    s_wsfe(&io___194);
-    do_fio(&c__1, (char *)&(*nc), (ftnlen)sizeof(integer));
-    do_fio(&c__1, sname, (ftnlen)13);
-    do_fio(&c__1, crc, (ftnlen)14);
-    do_fio(&c__1, cs, (ftnlen)14);
-    do_fio(&c__1, cu, (ftnlen)14);
-    e_wsfe();
-    io___195.ciunit = *nout;
-    s_wsfe(&io___195);
-    do_fio(&c__1, (char *)&(*m), (ftnlen)sizeof(integer));
-    do_fio(&c__1, (char *)&(*n), (ftnlen)sizeof(integer));
-    do_fio(&c__2, (char *)&(*alpha), (ftnlen)sizeof(doublereal));
-    do_fio(&c__1, (char *)&(*lda), (ftnlen)sizeof(integer));
-    do_fio(&c__1, (char *)&(*ldb), (ftnlen)sizeof(integer));
-    do_fio(&c__2, (char *)&(*beta), (ftnlen)sizeof(doublereal));
-    do_fio(&c__1, (char *)&(*ldc), (ftnlen)sizeof(integer));
-    e_wsfe();
-    return 0;
+    printf("%6d: %s %s %s %s\n",*nc,sname,crc,cs,cu);
+    printf("%d %d (%4.1lf,%4.1lf) , A, %d, B, %d, (%4.1lf,%4.1lf) , C, %d.\n",*m,*n,alpha->r,alpha->i,*lda,*ldb,beta->r,beta->i,*ldc);
+
+return 0;
 } /* zprcn2_ */
 
 
-/* Subroutine */ int zchk3_(char *sname, doublereal *eps, doublereal *thresh, 
-	integer *nout, integer *ntra, logical *trace, logical *rewi, logical *
-	fatal, integer *nidim, integer *idim, integer *nalf, doublecomplex *
-	alf, integer *nmax, doublecomplex *a, doublecomplex *aa, 
-	doublecomplex *as, doublecomplex *b, doublecomplex *bb, doublecomplex 
-	*bs, doublecomplex *ct, doublereal *g, doublecomplex *c__, integer *
-	iorder)
+/* Subroutine */ int zchk3_(char* sname, doublereal* eps, doublereal* thresh, integer* nout, integer* ntra, logical* trace, logical* rewi, logical* fatal, integer* nidim, integer* idim, integer* nalf, doublecomplex* alf, integer* nmax, doublecomplex* a, doublecomplex* aa, doublecomplex* as, doublecomplex* b, doublecomplex* bb, doublecomplex* bs, doublecomplex* ct, doublereal* g, doublecomplex* c__, integer* iorder, ftnlen sname_len)
 {
     /* Initialized data */
 
-    static char ichu[2] = "UL";
-    static char icht[3] = "NTC";
-    static char ichd[2] = "UN";
-    static char ichs[2] = "LR";
-
-    /* Format strings */
-    static char fmt_9994[] = "(\002 ******* FATAL ERROR - ERROR-CALL MYEXIT "
-	    "TAKEN ON VALID\002,\002 CALL *******\002)";
-    static char fmt_9998[] = "(\002 ******* FATAL ERROR - PARAMETER NUMBER"
-	    " \002,i2,\002 WAS CH\002,\002ANGED INCORRECTLY *******\002)";
-    static char fmt_10000[] = "(\002 \002,a13,\002 PASSED THE COLUMN-MAJOR C"
-	    "OMPUTATIONAL TESTS\002,\002 (\002,i6,\002 CALL\002,\002S)\002)";
-    static char fmt_10001[] = "(\002 \002,a13,\002 PASSED THE ROW-MAJOR    C"
-	    "OMPUTATIONAL TESTS\002,\002 (\002,i6,\002 CALL\002,\002S)\002)";
-    static char fmt_10002[] = "(\002 \002,a13,\002 COMPLETED THE COLUMN-MAJO"
-	    "R COMPUTATIONAL \002,\002TESTS (\002,i6,\002 CALLS)\002,/\002 **"
-	    "***** BUT WITH MAXIMUM TEST \002,\002RATIO \002,f8.2,\002 - SUSP"
-	    "ECT *******\002)";
-    static char fmt_10003[] = "(\002 \002,a13,\002 COMPLETED THE ROW-MAJOR  "
-	    "  COMPUTATIONAL \002,\002TESTS (\002,i6,\002 CALLS)\002,/\002 **"
-	    "***** BUT WITH MAXIMUM TEST \002,\002RATIO \002,f8.2,\002 - SUSP"
-	    "ECT *******\002)";
-    static char fmt_9996[] = "(\002 ******* \002,a13,\002 FAILED ON CALL NUM"
-	    "BER:\002)";
+    static char ichu[2+1] = "UL";
+    static char icht[3+1] = "NTC";
+    static char ichd[2+1] = "UN";
+    static char ichs[2+1] = "LR";
 
     /* System generated locals */
     integer a_dim1, a_offset, b_dim1, b_offset, c_dim1, c_offset, i__1, i__2, 
 	    i__3, i__4, i__5, i__6, i__7;
     doublecomplex z__1;
-    alist al__1;
 
     /* Local variables */
-    char diag[1];
-    integer ldas, ldbs;
-    logical same;
-    char side[1];
-    logical left, null;
-    char uplo[1];
-    integer i__, j, m, n;
-    doublecomplex alpha;
-    char diags[1];
-    logical isame[13];
-    char sides[1];
-    extern /* Subroutine */ int zmake_(char *, char *, char *, integer *, 
-	    integer *, doublecomplex *, integer *, doublecomplex *, integer *,
-	     logical *, doublecomplex *);
-    integer nargs;
-    extern /* Subroutine */ int zmmch_(char *, char *, integer *, integer *, 
-	    integer *, doublecomplex *, doublecomplex *, integer *, 
-	    doublecomplex *, integer *, doublecomplex *, doublecomplex *, 
-	    integer *, doublecomplex *, doublereal *, doublecomplex *, 
-	    integer *, doublereal *, doublereal *, logical *, integer *, 
-	    logical *);
-    logical reset;
-    char uplos[1];
-    integer ia, na;
-    extern /* Subroutine */ int zprcn3_(integer *, integer *, char *, integer 
-	    *, char *, char *, char *, char *, integer *, integer *, 
-	    doublecomplex *, integer *, integer *);
-    integer nc, im, in, ms, ns;
-    char tranas[1], transa[1];
-    doublereal errmax;
-    extern logical lzeres_(char *, char *, integer *, integer *, 
-	    doublecomplex *, doublecomplex *, integer *);
-    extern /* Subroutine */ int cztrmm_(integer *, char *, char *, char *, 
-	    char *, integer *, integer *, doublecomplex *, doublecomplex *, 
-	    integer *, doublecomplex *, integer *), cztrsm_(integer *, char *, char *, char *, char *, 
-	    integer *, integer *, doublecomplex *, doublecomplex *, integer *,
-	     doublecomplex *, integer *);
-    integer laa, icd, lbb, lda, ldb, ics;
-    doublecomplex als;
-    integer ict, icu;
-    doublereal err;
-    extern logical lze_(doublecomplex *, doublecomplex *, integer *);
-
-    /* Fortran I/O blocks */
-    static cilist io___236 = { 0, 0, 0, fmt_9994, 0 };
-    static cilist io___239 = { 0, 0, 0, fmt_9998, 0 };
-    static cilist io___241 = { 0, 0, 0, fmt_10000, 0 };
-    static cilist io___242 = { 0, 0, 0, fmt_10001, 0 };
-    static cilist io___243 = { 0, 0, 0, fmt_10002, 0 };
-    static cilist io___244 = { 0, 0, 0, fmt_10003, 0 };
-    static cilist io___245 = { 0, 0, 0, fmt_9996, 0 };
-
-
+    static char diag[1];
+    static integer ldas, ldbs;
+    static logical same;
+    static char side[1];
+    static logical left, null;
+    static char uplo[1];
+    static integer i__, j, m, n;
+    static doublecomplex alpha;
+    static char diags[1];
+    static logical isame[13];
+    static char sides[1];
+    extern /* Subroutine */ int zmake_(char*, char*, char*, integer*, integer*, doublecomplex*, integer*, doublecomplex*, integer*, logical*, doublecomplex*, ftnlen, ftnlen, ftnlen);
+    static integer nargs;
+    extern /* Subroutine */ int zmmch_(char*, char*, integer*, integer*, integer*, doublecomplex*, doublecomplex*, integer*, doublecomplex*, integer*, doublecomplex*, doublecomplex*, integer*, doublecomplex*, doublereal*, doublecomplex*, integer*, doublereal*, doublereal*, logical*, integer*, logical*, ftnlen, ftnlen);
+    static logical reset;
+    static char uplos[1];
+    static integer ia, na;
+    extern /* Subroutine */ int zprcn3_(integer*, integer*, char*, integer*, char*, char*, char*, char*, integer*, integer*, doublecomplex*, integer*, integer*, ftnlen, ftnlen, ftnlen, ftnlen, ftnlen);
+    static integer nc, im, in, ms, ns;
+    static char tranas[1], transa[1];
+    static doublereal errmax;
+    extern logical lzeres_(char*, char*, integer*, integer*, doublecomplex*, doublecomplex*, integer*, ftnlen, ftnlen);
+    extern /* Subroutine */ void cztrmm_(integer*, char*, char*, char*, char*, integer*, integer*, doublecomplex*, doublecomplex*, integer*, doublecomplex*, integer*, ftnlen, ftnlen, ftnlen, ftnlen);
+    extern /* Subroutine */ void cztrsm_(integer*, char*, char*, char*, char*, integer*, integer*, doublecomplex*, doublecomplex*, integer*, doublecomplex*, integer*, ftnlen, ftnlen, ftnlen, ftnlen);
+    static integer laa, icd, lbb, lda, ldb, ics;
+    static doublecomplex als;
+    static integer ict, icu;
+    static doublereal err;
+    extern logical lze_(doublecomplex*, doublecomplex*, integer*);
 
 /*  Tests ZTRMM and ZTRSM. */
 
@@ -2326,6 +1659,17 @@ L120:
 /*     Jeremy Du Croz, Numerical Algorithms Group Ltd. */
 /*     Sven Hammarling, Numerical Algorithms Group Ltd. */
 
+/*     .. Parameters .. */
+/*     .. Scalar Arguments .. */
+/*     .. Array Arguments .. */
+/*     .. Local Scalars .. */
+/*     .. Local Arrays .. */
+/*     .. External Functions .. */
+/*     .. External Subroutines .. */
+/*     .. Intrinsic Functions .. */
+/*     .. Scalars in Common .. */
+/*     .. Common blocks .. */
+/*     .. Data statements .. */
     /* Parameter adjustments */
     --idim;
     --alf;
@@ -2346,6 +1690,7 @@ L120:
     a -= a_offset;
 
     /* Function Body */
+/*     .. Executable Statements .. */
 
     nargs = 11;
     nc = 0;
@@ -2421,12 +1766,14 @@ L120:
 
 				zmake_("tr", uplo, diag, &na, &na, &a[
 					a_offset], nmax, &aa[1], &lda, &reset,
-					 &c_b1);
+					 &c_b1, (ftnlen)2, (ftnlen)1, (ftnlen)
+					1);
 
 /*                          Generate the matrix B. */
 
 				zmake_("ge", " ", " ", &m, &n, &b[b_offset], 
-					nmax, &bb[1], &ldb, &reset, &c_b1);
+					nmax, &bb[1], &ldb, &reset, &c_b1, (
+					ftnlen)2, (ftnlen)1, (ftnlen)1);
 
 				++nc;
 
@@ -2471,42 +1818,42 @@ L120:
 					zprcn3_(ntra, &nc, sname, iorder, 
 						side, uplo, transa, diag, &m, 
 						&n, &alpha, &lda, &ldb, (
-						ftnlen)13, (ftnlen)1, (ftnlen)
+						ftnlen)12, (ftnlen)1, (ftnlen)
 						1, (ftnlen)1, (ftnlen)1);
 				    }
 				    if (*rewi) {
-					al__1.aerr = 0;
+/*					al__1.aerr = 0;
 					al__1.aunit = *ntra;
-					f_rew(&al__1);
+					f_rew(&al__1);*/
 				    }
 				    cztrmm_(iorder, side, uplo, transa, diag, 
 					    &m, &n, &alpha, &aa[1], &lda, &bb[
-					    1], &ldb);
+					    1], &ldb, (ftnlen)1, (ftnlen)1, (
+					    ftnlen)1, (ftnlen)1);
 				} else if (s_cmp(sname + 9, "sm", (ftnlen)2, (
 					ftnlen)2) == 0) {
 				    if (*trace) {
 					zprcn3_(ntra, &nc, sname, iorder, 
 						side, uplo, transa, diag, &m, 
 						&n, &alpha, &lda, &ldb, (
-						ftnlen)13, (ftnlen)1, (ftnlen)
+						ftnlen)12, (ftnlen)1, (ftnlen)
 						1, (ftnlen)1, (ftnlen)1);
 				    }
 				    if (*rewi) {
-					al__1.aerr = 0;
+/*					al__1.aerr = 0;
 					al__1.aunit = *ntra;
-					f_rew(&al__1);
+					f_rew(&al__1);*/
 				    }
 				    cztrsm_(iorder, side, uplo, transa, diag, 
 					    &m, &n, &alpha, &aa[1], &lda, &bb[
-					    1], &ldb);
+					    1], &ldb, (ftnlen)1, (ftnlen)1, (
+					    ftnlen)1, (ftnlen)1);
 				}
 
 /*                          Check if error-exit was taken incorrectly. */
 
 				if (! infoc_1.ok) {
-				    io___236.ciunit = *nout;
-				    s_wsfe(&io___236);
-				    e_wsfe();
+                                    printf("*** FATAL ERROR - ERROR-CALL MYEXIT TAKEN ON VALID CALL\n");
 				    *fatal = TRUE_;
 				    goto L150;
 				}
@@ -2531,7 +1878,8 @@ L120:
 				    isame[9] = lze_(&bs[1], &bb[1], &lbb);
 				} else {
 				    isame[9] = lzeres_("ge", " ", &m, &n, &bs[
-					    1], &bb[1], &ldb);
+					    1], &bb[1], &ldb, (ftnlen)2, (
+					    ftnlen)1);
 				}
 				isame[10] = ldbs == ldb;
 
@@ -2543,11 +1891,7 @@ L120:
 				for (i__ = 1; i__ <= i__4; ++i__) {
 				    same = same && isame[i__ - 1];
 				    if (! isame[i__ - 1]) {
-					io___239.ciunit = *nout;
-					s_wsfe(&io___239);
-					do_fio(&c__1, (char *)&i__, (ftnlen)
-						sizeof(integer));
-					e_wsfe();
+                                        printf(" ******* FATAL ERROR - PARAMETER NUMBER %d WAS CHANGED INCORRECTLY *******\n",i__);
 				    }
 /* L50: */
 				}
@@ -2578,7 +1922,8 @@ L120:
 						    c_b1, &c__[c_offset], 
 						    nmax, &ct[1], &g[1], &bb[
 						    1], &ldb, eps, &err, 
-						    fatal, nout, &c_true);
+						    fatal, nout, &c_true, (
+						    ftnlen)1, (ftnlen)1);
 					}
 				    } else if (s_cmp(sname + 9, "sm", (ftnlen)
 					    2, (ftnlen)2) == 0) {
@@ -2612,7 +1957,8 @@ L120:
 						    c_b1, &b[b_offset], nmax, 
 						    &ct[1], &g[1], &bb[1], &
 						    ldb, eps, &err, fatal, 
-						    nout, &c_false);
+						    nout, &c_false, (ftnlen)1,
+						     (ftnlen)1);
 					} else {
 					    zmmch_("N", transa, &m, &n, &n, &
 						    c_b2, &c__[c_offset], 
@@ -2620,7 +1966,8 @@ L120:
 						    &c_b1, &b[b_offset], nmax,
 						     &ct[1], &g[1], &bb[1], &
 						    ldb, eps, &err, fatal, 
-						    nout, &c_false);
+						    nout, &c_false, (ftnlen)1,
+						     (ftnlen)1);
 					}
 				    }
 				    errmax = f2cmax(errmax,err);
@@ -2657,77 +2004,48 @@ L130:
 
     if (errmax < *thresh) {
 	if (*iorder == 0) {
-	    io___241.ciunit = *nout;
-	    s_wsfe(&io___241);
-	    do_fio(&c__1, sname, (ftnlen)13);
-	    do_fio(&c__1, (char *)&nc, (ftnlen)sizeof(integer));
-	    e_wsfe();
+            printf("%s PASSED THE COLUMN-MAJOR COMPUTATIONAL TESTS (%d CALLS)\n",sname,nc);
 	}
 	if (*iorder == 1) {
-	    io___242.ciunit = *nout;
-	    s_wsfe(&io___242);
-	    do_fio(&c__1, sname, (ftnlen)13);
-	    do_fio(&c__1, (char *)&nc, (ftnlen)sizeof(integer));
-	    e_wsfe();
+            printf("%s PASSED THE ROW-MAJOR COMPUTATIONAL TESTS (%d CALLS)\n",sname,nc);
 	}
     } else {
 	if (*iorder == 0) {
-	    io___243.ciunit = *nout;
-	    s_wsfe(&io___243);
-	    do_fio(&c__1, sname, (ftnlen)13);
-	    do_fio(&c__1, (char *)&nc, (ftnlen)sizeof(integer));
-	    do_fio(&c__1, (char *)&errmax, (ftnlen)sizeof(doublereal));
-	    e_wsfe();
+            printf("%s COMPLETED THE COLUMN-MAJOR COMPUTATIONAL TESTS (%d CALLS)/n",sname,nc);
+            printf("***** BUT WITH MAXIMUM TEST RATIO %8.2f - SUSPECT *******/n",errmax);
 	}
 	if (*iorder == 1) {
-	    io___244.ciunit = *nout;
-	    s_wsfe(&io___244);
-	    do_fio(&c__1, sname, (ftnlen)13);
-	    do_fio(&c__1, (char *)&nc, (ftnlen)sizeof(integer));
-	    do_fio(&c__1, (char *)&errmax, (ftnlen)sizeof(doublereal));
-	    e_wsfe();
+            printf("%s COMPLETED THE ROW-MAJOR COMPUTATIONAL TESTS (%d CALLS)/n",sname,nc);
+            printf("***** BUT WITH MAXIMUM TEST RATIO %8.2f - SUSPECT *******/n",errmax);
 	}
     }
     goto L160;
 
 L150:
-    io___245.ciunit = *nout;
-    s_wsfe(&io___245);
-    do_fio(&c__1, sname, (ftnlen)13);
-    e_wsfe();
+    printf(" ******* %s FAILED ON CALL NUMBER:\n",sname);
     if (*trace) {
 	zprcn3_(ntra, &nc, sname, iorder, side, uplo, transa, diag, &m, &n, &
-		alpha, &lda, &ldb);
+		alpha, &lda, &ldb, (ftnlen)12, (ftnlen)1, (ftnlen)1, (ftnlen)
+		1, (ftnlen)1);
     }
 
 L160:
     return 0;
 
-/* L9995: */
+/* 9995 FORMAT(1X, I6, ': ', A12,'(', 4( '''', A1, ''',' ), 2( I3, ',' ), */
+/*     $     '(', F4.1, ',', F4.1, '), A,', I3, ', B,', I3, ')         ', */
+/*     $      '      .' ) */
 
 /*     End of ZCHK3. */
 
 } /* zchk3_ */
 
 
-/* Subroutine */ int zprcn3_(integer *nout, integer *nc, char *sname, integer 
-	*iorder, char *side, char *uplo, char *transa, char *diag, integer *m,
-	 integer *n, doublecomplex *alpha, integer *lda, integer *ldb)
+/* Subroutine */ int zprcn3_(integer* nout, integer* nc, char* sname, integer* iorder, char* side, char* uplo, char* transa, char* diag, integer* m, integer* n, doublecomplex* alpha, integer* lda, integer* ldb, ftnlen sname_len, ftnlen side_len, ftnlen uplo_len, ftnlen transa_len, ftnlen diag_len)
 {
-    /* Format strings */
-    static char fmt_9995[] = "(1x,i6,\002: \002,a13,\002(\002,a15,\002,\002,"
-	    "a14,\002,\002,a14,\002,\002)";
-    static char fmt_9994[] = "(10x,2(a15,\002,\002),2(i3,\002,\002),\002 "
-	    "(\002,f4.1,\002,\002,f4.1,\002), A,\002,i3,\002, B,\002,i3,\002)."
-	    "\002)";
 
     /* Local variables */
-    char ca[14], cd[14], cs[14], cu[14], crc[14];
-
-    /* Fortran I/O blocks */
-    static cilist io___251 = { 0, 0, 0, fmt_9995, 0 };
-    static cilist io___252 = { 0, 0, 0, fmt_9994, 0 };
-
+    static char ca[14], cd[14], cs[14], cu[14], crc[14];
 
     if (*(unsigned char *)side == 'L') {
 	s_copy(cs, "     CblasLeft", (ftnlen)14, (ftnlen)14);
@@ -2756,134 +2074,61 @@ L160:
     } else {
 	s_copy(crc, " CblasColMajor", (ftnlen)14, (ftnlen)14);
     }
-    io___251.ciunit = *nout;
-    s_wsfe(&io___251);
-    do_fio(&c__1, (char *)&(*nc), (ftnlen)sizeof(integer));
-    do_fio(&c__1, sname, (ftnlen)13);
-    do_fio(&c__1, crc, (ftnlen)14);
-    do_fio(&c__1, cs, (ftnlen)14);
-    do_fio(&c__1, cu, (ftnlen)14);
-    e_wsfe();
-    io___252.ciunit = *nout;
-    s_wsfe(&io___252);
-    do_fio(&c__1, ca, (ftnlen)14);
-    do_fio(&c__1, cd, (ftnlen)14);
-    do_fio(&c__1, (char *)&(*m), (ftnlen)sizeof(integer));
-    do_fio(&c__1, (char *)&(*n), (ftnlen)sizeof(integer));
-    do_fio(&c__2, (char *)&(*alpha), (ftnlen)sizeof(doublereal));
-    do_fio(&c__1, (char *)&(*lda), (ftnlen)sizeof(integer));
-    do_fio(&c__1, (char *)&(*ldb), (ftnlen)sizeof(integer));
-    e_wsfe();
-    return 0;
+    printf("%6d: %s %s %s %s\n",*nc,sname,crc,cs,cu);
+    printf("         %s %s %d %d (%4.1lf,%4.1lf) A %d B %d\n",ca,cd,*m,*n,alpha->r,alpha->i,*lda,*ldb);
+
+return 0;
 } /* zprcn3_ */
 
 
-/* Subroutine */ int zchk4_(char *sname, doublereal *eps, doublereal *thresh, 
-	integer *nout, integer *ntra, logical *trace, logical *rewi, logical *
-	fatal, integer *nidim, integer *idim, integer *nalf, doublecomplex *
-	alf, integer *nbet, doublecomplex *bet, integer *nmax, doublecomplex *
-	a, doublecomplex *aa, doublecomplex *as, doublecomplex *b, 
-	doublecomplex *bb, doublecomplex *bs, doublecomplex *c__, 
-	doublecomplex *cc, doublecomplex *cs, doublecomplex *ct, doublereal *
-	g, integer *iorder)
+/* Subroutine */ int zchk4_(char* sname, doublereal* eps, doublereal* thresh, integer* nout, integer* ntra, logical* trace, logical* rewi, logical* fatal, integer* nidim, integer* idim, integer* nalf, doublecomplex* alf, integer* nbet, doublecomplex* bet, integer* nmax, doublecomplex* a, doublecomplex* aa, doublecomplex* as, doublecomplex* b, doublecomplex* bb, doublecomplex* bs, doublecomplex* c__, doublecomplex* cc, doublecomplex* cs, doublecomplex* ct, doublereal* g, integer* iorder, ftnlen sname_len)
 {
     /* Initialized data */
 
-    static char icht[2] = "NC";
-    static char ichu[2] = "UL";
-
-    /* Format strings */
-    static char fmt_9992[] = "(\002 ******* FATAL ERROR - ERROR-CALL MYEXIT "
-	    "TAKEN ON VALID\002,\002 CALL *******\002)";
-    static char fmt_9998[] = "(\002 ******* FATAL ERROR - PARAMETER NUMBER"
-	    " \002,i2,\002 WAS CH\002,\002ANGED INCORRECTLY *******\002)";
-    static char fmt_10000[] = "(\002 \002,a13,\002 PASSED THE COLUMN-MAJOR C"
-	    "OMPUTATIONAL TESTS\002,\002 (\002,i6,\002 CALL\002,\002S)\002)";
-    static char fmt_10001[] = "(\002 \002,a13,\002 PASSED THE ROW-MAJOR    C"
-	    "OMPUTATIONAL TESTS\002,\002 (\002,i6,\002 CALL\002,\002S)\002)";
-    static char fmt_10002[] = "(\002 \002,a13,\002 COMPLETED THE COLUMN-MAJO"
-	    "R COMPUTATIONAL \002,\002TESTS (\002,i6,\002 CALLS)\002,/\002 **"
-	    "***** BUT WITH MAXIMUM TEST \002,\002RATIO \002,f8.2,\002 - SUSP"
-	    "ECT *******\002)";
-    static char fmt_10003[] = "(\002 \002,a13,\002 COMPLETED THE ROW-MAJOR  "
-	    "  COMPUTATIONAL \002,\002TESTS (\002,i6,\002 CALLS)\002,/\002 **"
-	    "***** BUT WITH MAXIMUM TEST \002,\002RATIO \002,f8.2,\002 - SUSP"
-	    "ECT *******\002)";
-    static char fmt_9995[] = "(\002      THESE ARE THE RESULTS FOR COLUMN"
-	    " \002,i3)";
-    static char fmt_9996[] = "(\002 ******* \002,a13,\002 FAILED ON CALL NUM"
-	    "BER:\002)";
+    static char icht[2+1] = "NC";
+    static char ichu[2+1] = "UL";
 
     /* System generated locals */
     integer a_dim1, a_offset, b_dim1, b_offset, c_dim1, c_offset, i__1, i__2, 
 	    i__3, i__4, i__5, i__6, i__7;
     doublecomplex z__1;
-    alist al__1;
 
     /* Local variables */
-    doublecomplex beta;
-    integer ldas, ldcs;
-    logical same, conj;
-    doublecomplex bets;
-    doublereal rals;
-    logical tran, null;
-    char uplo[1];
-    integer i__, j, k, n;
-    doublecomplex alpha;
-    doublereal rbeta;
-    logical isame[13];
-    extern /* Subroutine */ int zmake_(char *, char *, char *, integer *, 
-	    integer *, doublecomplex *, integer *, doublecomplex *, integer *,
-	     logical *, doublecomplex *);
-    integer nargs;
-    extern /* Subroutine */ int zmmch_(char *, char *, integer *, integer *, 
-	    integer *, doublecomplex *, doublecomplex *, integer *, 
-	    doublecomplex *, integer *, doublecomplex *, doublecomplex *, 
-	    integer *, doublecomplex *, doublereal *, doublecomplex *, 
-	    integer *, doublereal *, doublereal *, logical *, integer *, 
-	    logical *);
-    doublereal rbets;
-    logical reset;
-    char trans[1];
-    logical upper;
-    char uplos[1];
-    integer ia, ib, jc, ma, na;
-    extern /* Subroutine */ int zprcn4_(integer *, integer *, char *, integer 
-	    *, char *, char *, integer *, integer *, doublecomplex *, integer 
-	    *, doublecomplex *, integer *);
-    integer nc;
-    extern /* Subroutine */ int zprcn6_(integer *, integer *, char *, integer 
-	    *, char *, char *, integer *, integer *, doublereal *, integer *, 
-	    doublereal *, integer *);
-    integer ik, in, jj, lj, ks, ns;
-    doublereal ralpha;
-    extern /* Subroutine */ int czherk_(integer *, char *, char *, integer *, 
-	    integer *, doublereal *, doublecomplex *, integer *, doublereal *,
-	     doublecomplex *, integer *);
-    doublereal errmax;
-    extern logical lzeres_(char *, char *, integer *, integer *, 
-	    doublecomplex *, doublecomplex *, integer *);
-    char transs[1], transt[1];
-    extern /* Subroutine */ int czsyrk_(integer *, char *, char *, integer *, 
-	    integer *, doublecomplex *, doublecomplex *, integer *, 
-	    doublecomplex *, doublecomplex *, integer *);
-    integer laa, lda, lcc, ldc;
-    doublecomplex als;
-    integer ict, icu;
-    doublereal err;
-    extern logical lze_(doublecomplex *, doublecomplex *, integer *);
-
-    /* Fortran I/O blocks */
-    static cilist io___294 = { 0, 0, 0, fmt_9992, 0 };
-    static cilist io___297 = { 0, 0, 0, fmt_9998, 0 };
-    static cilist io___304 = { 0, 0, 0, fmt_10000, 0 };
-    static cilist io___305 = { 0, 0, 0, fmt_10001, 0 };
-    static cilist io___306 = { 0, 0, 0, fmt_10002, 0 };
-    static cilist io___307 = { 0, 0, 0, fmt_10003, 0 };
-    static cilist io___308 = { 0, 0, 0, fmt_9995, 0 };
-    static cilist io___309 = { 0, 0, 0, fmt_9996, 0 };
-
-
+    static doublecomplex beta;
+    static integer ldas, ldcs;
+    static logical same, isconj;
+    static doublecomplex bets;
+    static doublereal rals;
+    static logical tran, null;
+    static char uplo[1];
+    static integer i__, j, k, n;
+    static doublecomplex alpha;
+    static doublereal rbeta;
+    static logical isame[13];
+    extern /* Subroutine */ int zmake_(char*, char*, char*, integer*, integer*, doublecomplex*, integer*, doublecomplex*, integer*, logical*, doublecomplex*, ftnlen, ftnlen, ftnlen);
+    static integer nargs;
+    extern /* Subroutine */ int zmmch_(char*, char*, integer*, integer*, integer*, doublecomplex*, doublecomplex*, integer*, doublecomplex*, integer*, doublecomplex*, doublecomplex*, integer*, doublecomplex*, doublereal*, doublecomplex*, integer*, doublereal*, doublereal*, logical*, integer*, logical*, ftnlen, ftnlen);
+    static doublereal rbets;
+    static logical reset;
+    static char trans[1];
+    static logical upper;
+    static char uplos[1];
+    static integer ia, ib, jc, ma, na;
+    extern /* Subroutine */ int zprcn4_(integer*, integer*, char*, integer*, char*, char*, integer*, integer*, doublecomplex*, integer*, doublecomplex*, integer*, ftnlen, ftnlen, ftnlen);
+    static integer nc;
+    extern /* Subroutine */ int zprcn6_(integer*, integer*, char*, integer*, char*, char*, integer*, integer*, doublereal*, integer*, doublereal*, integer*, ftnlen, ftnlen, ftnlen);
+    static integer ik, in, jj, lj, ks, ns;
+    static doublereal ralpha;
+    extern /* Subroutine */ int czherk_(integer*, char*, char*, integer*, integer*, doublereal*, doublecomplex*, integer*, doublereal*, doublecomplex*, integer*, ftnlen, ftnlen);
+    static doublereal errmax;
+    extern logical lzeres_(char*, char*, integer*, integer*, doublecomplex*, doublecomplex*, integer*, ftnlen, ftnlen);
+    static char transs[1], transt[1];
+    extern /* Subroutine */ int czsyrk_(integer*, char*, char*, integer*, integer*, doublecomplex*, doublecomplex*, integer*, doublecomplex*, doublecomplex*, integer*, ftnlen, ftnlen);
+    static integer laa, lda, lcc, ldc;
+    static doublecomplex als;
+    static integer ict, icu;
+    static doublereal err;
+    extern logical lze_(doublecomplex*, doublecomplex*, integer*);
 
 /*  Tests ZHERK and ZSYRK. */
 
@@ -2895,6 +2140,17 @@ L160:
 /*     Jeremy Du Croz, Numerical Algorithms Group Ltd. */
 /*     Sven Hammarling, Numerical Algorithms Group Ltd. */
 
+/*     .. Parameters .. */
+/*     .. Scalar Arguments .. */
+/*     .. Array Arguments .. */
+/*     .. Local Scalars .. */
+/*     .. Local Arrays .. */
+/*     .. External Functions .. */
+/*     .. External Subroutines .. */
+/*     .. Intrinsic Functions .. */
+/*     .. Scalars in Common .. */
+/*     .. Common blocks .. */
+/*     .. Data statements .. */
     /* Parameter adjustments */
     --idim;
     --alf;
@@ -2918,12 +2174,15 @@ L160:
     a -= a_offset;
 
     /* Function Body */
-    conj = s_cmp(sname + 7, "he", (ftnlen)2, (ftnlen)2) == 0;
+/*     .. Executable Statements .. */
+    isconj = s_cmp(sname + 7, "he", (ftnlen)2, (ftnlen)2) == 0;
 
     nargs = 10;
     nc = 0;
     reset = TRUE_;
     errmax = 0.;
+    rals = 1.;
+    rbets = 1.;
 
     i__1 = *nidim;
     for (in = 1; in <= i__1; ++in) {
@@ -2946,7 +2205,7 @@ L160:
 	    for (ict = 1; ict <= 2; ++ict) {
 		*(unsigned char *)trans = *(unsigned char *)&icht[ict - 1];
 		tran = *(unsigned char *)trans == 'C';
-		if (tran && ! conj) {
+		if (tran && ! isconj) {
 		    *(unsigned char *)trans = 'T';
 		}
 		if (tran) {
@@ -2970,7 +2229,7 @@ L160:
 /*              Generate the matrix A. */
 
 		zmake_("ge", " ", " ", &ma, &na, &a[a_offset], nmax, &aa[1], &
-			lda, &reset, &c_b1);
+			lda, &reset, &c_b1, (ftnlen)2, (ftnlen)1, (ftnlen)1);
 
 		for (icu = 1; icu <= 2; ++icu) {
 		    *(unsigned char *)uplo = *(unsigned char *)&ichu[icu - 1];
@@ -2980,7 +2239,7 @@ L160:
 		    for (ia = 1; ia <= i__3; ++ia) {
 			i__4 = ia;
 			alpha.r = alf[i__4].r, alpha.i = alf[i__4].i;
-			if (conj) {
+			if (isconj) {
 			    ralpha = alpha.r;
 			    z__1.r = ralpha, z__1.i = 0.;
 			    alpha.r = z__1.r, alpha.i = z__1.i;
@@ -2990,22 +2249,22 @@ L160:
 			for (ib = 1; ib <= i__4; ++ib) {
 			    i__5 = ib;
 			    beta.r = bet[i__5].r, beta.i = bet[i__5].i;
-			    if (conj) {
+			    if (isconj) {
 				rbeta = beta.r;
 				z__1.r = rbeta, z__1.i = 0.;
 				beta.r = z__1.r, beta.i = z__1.i;
 			    }
 			    null = n <= 0;
-			    if (conj) {
-				null = null || (k <= 0 || ralpha == 0.) && 
-					rbeta == 1.;
+			    if (isconj) {
+				null = null ||( (k <= 0 || ralpha == 0.) && 
+					rbeta == 1.);
 			    }
 
 /*                       Generate the matrix C. */
 
 			    zmake_(sname + 7, uplo, " ", &n, &n, &c__[
 				    c_offset], nmax, &cc[1], &ldc, &reset, &
-				    c_b1);
+				    c_b1, (ftnlen)2, (ftnlen)1, (ftnlen)1);
 
 			    ++nc;
 
@@ -3016,7 +2275,7 @@ L160:
 				    trans;
 			    ns = n;
 			    ks = k;
-			    if (conj) {
+			    if (isconj) {
 				rals = ralpha;
 			    } else {
 				als.r = alpha.r, als.i = alpha.i;
@@ -3030,7 +2289,7 @@ L160:
 /* L10: */
 			    }
 			    ldas = lda;
-			    if (conj) {
+			    if (isconj) {
 				rbets = rbeta;
 			    } else {
 				bets.r = beta.r, bets.i = beta.i;
@@ -3047,40 +2306,42 @@ L160:
 
 /*                       Call the subroutine. */
 
-			    if (conj) {
+			    if (isconj) {
 				if (*trace) {
 				    zprcn6_(ntra, &nc, sname, iorder, uplo, 
 					    trans, &n, &k, &ralpha, &lda, &
-					    rbeta, &ldc);
+					    rbeta, &ldc, (ftnlen)12, (ftnlen)
+					    1, (ftnlen)1);
 				}
 				if (*rewi) {
-				    al__1.aerr = 0;
+/*				    al__1.aerr = 0;
 				    al__1.aunit = *ntra;
-				    f_rew(&al__1);
+				    f_rew(&al__1);*/
 				}
 				czherk_(iorder, uplo, trans, &n, &k, &ralpha, 
-					&aa[1], &lda, &rbeta, &cc[1], &ldc);
+					&aa[1], &lda, &rbeta, &cc[1], &ldc, (
+					ftnlen)1, (ftnlen)1);
 			    } else {
 				if (*trace) {
 				    zprcn4_(ntra, &nc, sname, iorder, uplo, 
 					    trans, &n, &k, &alpha, &lda, &
-					    beta, &ldc);
+					    beta, &ldc, (ftnlen)12, (ftnlen)1,
+					     (ftnlen)1);
 				}
 				if (*rewi) {
-				    al__1.aerr = 0;
+/*				    al__1.aerr = 0;
 				    al__1.aunit = *ntra;
-				    f_rew(&al__1);
+				    f_rew(&al__1);*/
 				}
 				czsyrk_(iorder, uplo, trans, &n, &k, &alpha, &
-					aa[1], &lda, &beta, &cc[1], &ldc);
+					aa[1], &lda, &beta, &cc[1], &ldc, (
+					ftnlen)1, (ftnlen)1);
 			    }
 
 /*                       Check if error-exit was taken incorrectly. */
 
 			    if (! infoc_1.ok) {
-				io___294.ciunit = *nout;
-				s_wsfe(&io___294);
-				e_wsfe();
+                                printf("*** FATAL ERROR - ERROR-CALL MYEXIT TAKEN ON VALID CALL\n");
 				*fatal = TRUE_;
 				goto L120;
 			    }
@@ -3093,7 +2354,7 @@ L160:
 				    char *)trans;
 			    isame[2] = ns == n;
 			    isame[3] = ks == k;
-			    if (conj) {
+			    if (isconj) {
 				isame[4] = rals == ralpha;
 			    } else {
 				isame[4] = als.r == alpha.r && als.i == 
@@ -3101,7 +2362,7 @@ L160:
 			    }
 			    isame[5] = lze_(&as[1], &aa[1], &laa);
 			    isame[6] = ldas == lda;
-			    if (conj) {
+			    if (isconj) {
 				isame[7] = rbets == rbeta;
 			    } else {
 				isame[7] = bets.r == beta.r && bets.i == 
@@ -3111,7 +2372,8 @@ L160:
 				isame[8] = lze_(&cs[1], &cc[1], &lcc);
 			    } else {
 				isame[8] = lzeres_(sname + 7, uplo, &n, &n, &
-					cs[1], &cc[1], &ldc);
+					cs[1], &cc[1], &ldc, (ftnlen)2, (
+					ftnlen)1);
 			    }
 			    isame[9] = ldcs == ldc;
 
@@ -3123,11 +2385,7 @@ L160:
 			    for (i__ = 1; i__ <= i__5; ++i__) {
 				same = same && isame[i__ - 1];
 				if (! isame[i__ - 1]) {
-				    io___297.ciunit = *nout;
-				    s_wsfe(&io___297);
-				    do_fio(&c__1, (char *)&i__, (ftnlen)
-					    sizeof(integer));
-				    e_wsfe();
+                                    printf(" ******* FATAL ERROR - PARAMETER NUMBER %d WAS CHANGED INCORRECTLY *******\n",i__);
 				}
 /* L30: */
 			    }
@@ -3140,7 +2398,7 @@ L160:
 
 /*                          Check the result column by column. */
 
-				if (conj) {
+				if (isconj) {
 				    *(unsigned char *)transt = 'C';
 				} else {
 				    *(unsigned char *)transt = 'T';
@@ -3162,7 +2420,8 @@ L160:
 						nmax, &beta, &c__[jj + j * 
 						c_dim1], nmax, &ct[1], &g[1], 
 						&cc[jc], &ldc, eps, &err, 
-						fatal, nout, &c_true);
+						fatal, nout, &c_true, (ftnlen)
+						1, (ftnlen)1);
 				    } else {
 					zmmch_("N", transt, &lj, &c__1, &k, &
 						alpha, &a[jj + a_dim1], nmax, 
@@ -3170,7 +2429,7 @@ L160:
 						c__[jj + j * c_dim1], nmax, &
 						ct[1], &g[1], &cc[jc], &ldc, 
 						eps, &err, fatal, nout, &
-						c_true);
+						c_true, (ftnlen)1, (ftnlen)1);
 				    }
 				    if (upper) {
 					jc += ldc;
@@ -3211,89 +2470,57 @@ L100:
 
     if (errmax < *thresh) {
 	if (*iorder == 0) {
-	    io___304.ciunit = *nout;
-	    s_wsfe(&io___304);
-	    do_fio(&c__1, sname, (ftnlen)13);
-	    do_fio(&c__1, (char *)&nc, (ftnlen)sizeof(integer));
-	    e_wsfe();
+            printf("%s PASSED THE COLUMN-MAJOR COMPUTATIONAL TESTS (%d CALLS)\n",sname,nc);
 	}
 	if (*iorder == 1) {
-	    io___305.ciunit = *nout;
-	    s_wsfe(&io___305);
-	    do_fio(&c__1, sname, (ftnlen)13);
-	    do_fio(&c__1, (char *)&nc, (ftnlen)sizeof(integer));
-	    e_wsfe();
+            printf("%s PASSED THE ROW-MAJOR COMPUTATIONAL TESTS (%d CALLS)\n",sname,nc);
 	}
     } else {
 	if (*iorder == 0) {
-	    io___306.ciunit = *nout;
-	    s_wsfe(&io___306);
-	    do_fio(&c__1, sname, (ftnlen)13);
-	    do_fio(&c__1, (char *)&nc, (ftnlen)sizeof(integer));
-	    do_fio(&c__1, (char *)&errmax, (ftnlen)sizeof(doublereal));
-	    e_wsfe();
+            printf("%s COMPLETED THE COLUMN-MAJOR COMPUTATIONAL TESTS (%d CALLS)/n",sname,nc);
+            printf("***** BUT WITH MAXIMUM TEST RATIO %8.2f - SUSPECT *******/n",errmax);
 	}
 	if (*iorder == 1) {
-	    io___307.ciunit = *nout;
-	    s_wsfe(&io___307);
-	    do_fio(&c__1, sname, (ftnlen)13);
-	    do_fio(&c__1, (char *)&nc, (ftnlen)sizeof(integer));
-	    do_fio(&c__1, (char *)&errmax, (ftnlen)sizeof(doublereal));
-	    e_wsfe();
+            printf("%s COMPLETED THE ROW-MAJOR COMPUTATIONAL TESTS (%d CALLS)/n",sname,nc);
+            printf("***** BUT WITH MAXIMUM TEST RATIO %8.2f - SUSPECT *******/n",errmax);
 	}
     }
     goto L130;
 
 L110:
     if (n > 1) {
-	io___308.ciunit = *nout;
-	s_wsfe(&io___308);
-	do_fio(&c__1, (char *)&j, (ftnlen)sizeof(integer));
-	e_wsfe();
+        printf("      THESE ARE THE RESULTS FOR COLUMN %d:\n",j);
     }
 
 L120:
-    io___309.ciunit = *nout;
-    s_wsfe(&io___309);
-    do_fio(&c__1, sname, (ftnlen)13);
-    e_wsfe();
-    if (conj) {
+    printf(" ******* %s FAILED ON CALL NUMBER:\n",sname);
+    if (isconj) {
 	zprcn6_(nout, &nc, sname, iorder, uplo, trans, &n, &k, &ralpha, &lda, 
-		&rbeta, &ldc);
+		&rbeta, &ldc, (ftnlen)12, (ftnlen)1, (ftnlen)1);
     } else {
 	zprcn4_(nout, &nc, sname, iorder, uplo, trans, &n, &k, &alpha, &lda, &
-		beta, &ldc);
+		beta, &ldc, (ftnlen)12, (ftnlen)1, (ftnlen)1);
     }
 
 L130:
     return 0;
 
-/* L9994: */
-/* L9993: */
+/* 9994 FORMAT(1X, I6, ': ', A12,'(', 2( '''', A1, ''',' ), 2( I3, ',' ), */
+/*     $     F4.1, ', A,', I3, ',', F4.1, ', C,', I3, ')               ', */
+/*     $      '          .' ) */
+/* 9993 FORMAT(1X, I6, ': ', A12,'(', 2( '''', A1, ''',' ), 2( I3, ',' ), */
+/*     $      '(', F4.1, ',', F4.1, ') , A,', I3, ',(', F4.1, ',', F4.1, */
+/*     $      '), C,', I3, ')          .' ) */
 
 /*     End of CCHK4. */
 
 } /* zchk4_ */
 
 
-/* Subroutine */ int zprcn4_(integer *nout, integer *nc, char *sname, integer 
-	*iorder, char *uplo, char *transa, integer *n, integer *k, 
-	doublecomplex *alpha, integer *lda, doublecomplex *beta, integer *ldc)
+/* Subroutine */ int zprcn4_(integer* nout, integer* nc, char* sname, integer* iorder, char* uplo, char* transa, integer* n, integer* k, doublecomplex* alpha, integer* lda, doublecomplex* beta, integer* ldc, ftnlen sname_len, ftnlen uplo_len, ftnlen transa_len)
 {
-    /* Format strings */
-    static char fmt_9995[] = "(1x,i6,\002: \002,a13,\002(\002,3(a15,\002,"
-	    "\002))";
-    static char fmt_9994[] = "(10x,2(i3,\002,\002),\002 (\002,f4.1,\002,\002"
-	    ",f4.1,\002), A,\002,i3,\002, (\002,f4.1,\002,\002,f4.1,\002), C"
-	    ",\002,i3,\002).\002)";
-
     /* Local variables */
-    char ca[14], cu[14], crc[14];
-
-    /* Fortran I/O blocks */
-    static cilist io___313 = { 0, 0, 0, fmt_9995, 0 };
-    static cilist io___314 = { 0, 0, 0, fmt_9994, 0 };
-
+    static char ca[14], cu[14], crc[14];
 
     if (*(unsigned char *)uplo == 'U') {
 	s_copy(cu, "    CblasUpper", (ftnlen)14, (ftnlen)14);
@@ -3312,45 +2539,19 @@ L130:
     } else {
 	s_copy(crc, " CblasColMajor", (ftnlen)14, (ftnlen)14);
     }
-    io___313.ciunit = *nout;
-    s_wsfe(&io___313);
-    do_fio(&c__1, (char *)&(*nc), (ftnlen)sizeof(integer));
-    do_fio(&c__1, sname, (ftnlen)13);
-    do_fio(&c__1, crc, (ftnlen)14);
-    do_fio(&c__1, cu, (ftnlen)14);
-    do_fio(&c__1, ca, (ftnlen)14);
-    e_wsfe();
-    io___314.ciunit = *nout;
-    s_wsfe(&io___314);
-    do_fio(&c__1, (char *)&(*n), (ftnlen)sizeof(integer));
-    do_fio(&c__1, (char *)&(*k), (ftnlen)sizeof(integer));
-    do_fio(&c__2, (char *)&(*alpha), (ftnlen)sizeof(doublereal));
-    do_fio(&c__1, (char *)&(*lda), (ftnlen)sizeof(integer));
-    do_fio(&c__2, (char *)&(*beta), (ftnlen)sizeof(doublereal));
-    do_fio(&c__1, (char *)&(*ldc), (ftnlen)sizeof(integer));
-    e_wsfe();
-    return 0;
+    printf("%6d: %s %s %s %s\n",*nc,sname,crc,cu,ca);
+    printf("(          %d %d (%4.1lf,%4.1lf) A %d (%4.1lf,%4.1lf) C %d\n",*n,*k,alpha->r,alpha->i,*lda,beta->r,beta->i,*ldc);
+
+return 0;
 } /* zprcn4_ */
 
 
 
-/* Subroutine */ int zprcn6_(integer *nout, integer *nc, char *sname, integer 
-	*iorder, char *uplo, char *transa, integer *n, integer *k, doublereal 
-	*alpha, integer *lda, doublereal *beta, integer *ldc)
+/* Subroutine */ int zprcn6_(integer* nout, integer* nc, char* sname, integer* iorder, char* uplo, char* transa, integer* n, integer* k, doublereal* alpha, integer* lda, doublereal* beta, integer* ldc, ftnlen sname_len, ftnlen uplo_len, ftnlen transa_len)
 {
-    /* Format strings */
-    static char fmt_9995[] = "(1x,i6,\002: \002,a13,\002(\002,3(a15,\002,"
-	    "\002))";
-    static char fmt_9994[] = "(10x,2(i3,\002,\002),f4.1,\002, A,\002,i3"
-	    ",\002,\002,f4.1,\002, C,\002,i3,\002).\002)";
 
     /* Local variables */
-    char ca[14], cu[14], crc[14];
-
-    /* Fortran I/O blocks */
-    static cilist io___318 = { 0, 0, 0, fmt_9995, 0 };
-    static cilist io___319 = { 0, 0, 0, fmt_9994, 0 };
-
+    static char ca[14], cu[14], crc[14];
 
     if (*(unsigned char *)uplo == 'U') {
 	s_copy(cu, "    CblasUpper", (ftnlen)14, (ftnlen)14);
@@ -3369,132 +2570,58 @@ L130:
     } else {
 	s_copy(crc, " CblasColMajor", (ftnlen)14, (ftnlen)14);
     }
-    io___318.ciunit = *nout;
-    s_wsfe(&io___318);
-    do_fio(&c__1, (char *)&(*nc), (ftnlen)sizeof(integer));
-    do_fio(&c__1, sname, (ftnlen)13);
-    do_fio(&c__1, crc, (ftnlen)14);
-    do_fio(&c__1, cu, (ftnlen)14);
-    do_fio(&c__1, ca, (ftnlen)14);
-    e_wsfe();
-    io___319.ciunit = *nout;
-    s_wsfe(&io___319);
-    do_fio(&c__1, (char *)&(*n), (ftnlen)sizeof(integer));
-    do_fio(&c__1, (char *)&(*k), (ftnlen)sizeof(integer));
-    do_fio(&c__1, (char *)&(*alpha), (ftnlen)sizeof(doublereal));
-    do_fio(&c__1, (char *)&(*lda), (ftnlen)sizeof(integer));
-    do_fio(&c__1, (char *)&(*beta), (ftnlen)sizeof(doublereal));
-    do_fio(&c__1, (char *)&(*ldc), (ftnlen)sizeof(integer));
-    e_wsfe();
-    return 0;
+    printf("%6d: %s %s %s %s\n",*nc,sname,crc,cu,ca);
+    printf("(          %d %d %4.1lf A %d %4.1lf C %d\n",*n,*k,*alpha,*lda,*beta,*ldc);
+
+return 0;
 } /* zprcn6_ */
 
 
-/* Subroutine */ int zchk5_(char *sname, doublereal *eps, doublereal *thresh, 
-	integer *nout, integer *ntra, logical *trace, logical *rewi, logical *
-	fatal, integer *nidim, integer *idim, integer *nalf, doublecomplex *
-	alf, integer *nbet, doublecomplex *bet, integer *nmax, doublecomplex *
-	ab, doublecomplex *aa, doublecomplex *as, doublecomplex *bb, 
-	doublecomplex *bs, doublecomplex *c__, doublecomplex *cc, 
-	doublecomplex *cs, doublecomplex *ct, doublereal *g, doublecomplex *w,
-	 integer *iorder)
+/* Subroutine */ int zchk5_(char* sname, doublereal* eps, doublereal* thresh, integer* nout, integer* ntra, logical* trace, logical* rewi, logical* fatal, integer* nidim, integer* idim, integer* nalf, doublecomplex* alf, integer* nbet, doublecomplex* bet, integer* nmax, doublecomplex* ab, doublecomplex* aa, doublecomplex* as, doublecomplex* bb, doublecomplex* bs, doublecomplex* c__, doublecomplex* cc, doublecomplex* cs, doublecomplex* ct, doublereal* g, doublecomplex* w, integer* iorder, ftnlen sname_len)
 {
     /* Initialized data */
 
-    static char icht[2] = "NC";
-    static char ichu[2] = "UL";
-
-    /* Format strings */
-    static char fmt_9992[] = "(\002 ******* FATAL ERROR - ERROR-CALL MYEXIT "
-	    "TAKEN ON VALID\002,\002 CALL *******\002)";
-    static char fmt_9998[] = "(\002 ******* FATAL ERROR - PARAMETER NUMBER"
-	    " \002,i2,\002 WAS CH\002,\002ANGED INCORRECTLY *******\002)";
-    static char fmt_10000[] = "(\002 \002,a13,\002 PASSED THE COLUMN-MAJOR C"
-	    "OMPUTATIONAL TESTS\002,\002 (\002,i6,\002 CALL\002,\002S)\002)";
-    static char fmt_10001[] = "(\002 \002,a13,\002 PASSED THE ROW-MAJOR    C"
-	    "OMPUTATIONAL TESTS\002,\002 (\002,i6,\002 CALL\002,\002S)\002)";
-    static char fmt_10002[] = "(\002 \002,a13,\002 COMPLETED THE COLUMN-MAJO"
-	    "R COMPUTATIONAL \002,\002TESTS (\002,i6,\002 CALLS)\002,/\002 **"
-	    "***** BUT WITH MAXIMUM TEST \002,\002RATIO \002,f8.2,\002 - SUSP"
-	    "ECT *******\002)";
-    static char fmt_10003[] = "(\002 \002,a13,\002 COMPLETED THE ROW-MAJOR  "
-	    "  COMPUTATIONAL \002,\002TESTS (\002,i6,\002 CALLS)\002,/\002 **"
-	    "***** BUT WITH MAXIMUM TEST \002,\002RATIO \002,f8.2,\002 - SUSP"
-	    "ECT *******\002)";
-    static char fmt_9995[] = "(\002      THESE ARE THE RESULTS FOR COLUMN"
-	    " \002,i3)";
-    static char fmt_9996[] = "(\002 ******* \002,a13,\002 FAILED ON CALL NUM"
-	    "BER:\002)";
+    static char icht[2+1] = "NC";
+    static char ichu[2+1] = "UL";
 
     /* System generated locals */
     integer c_dim1, c_offset, i__1, i__2, i__3, i__4, i__5, i__6, i__7, i__8;
     doublecomplex z__1, z__2;
-    alist al__1;
 
     /* Local variables */
-    integer jjab;
-    doublecomplex beta;
-    integer ldas, ldbs, ldcs;
-    logical same, conj;
-    doublecomplex bets;
-    logical tran, null;
-    char uplo[1];
-    integer i__, j, k, n;
-    doublecomplex alpha;
-    doublereal rbeta;
-    logical isame[13];
-    extern /* Subroutine */ int zmake_(char *, char *, char *, integer *, 
-	    integer *, doublecomplex *, integer *, doublecomplex *, integer *,
-	     logical *, doublecomplex *);
-    integer nargs;
-    extern /* Subroutine */ int zmmch_(char *, char *, integer *, integer *, 
-	    integer *, doublecomplex *, doublecomplex *, integer *, 
-	    doublecomplex *, integer *, doublecomplex *, doublecomplex *, 
-	    integer *, doublecomplex *, doublereal *, doublecomplex *, 
-	    integer *, doublereal *, doublereal *, logical *, integer *, 
-	    logical *);
-    doublereal rbets;
-    logical reset;
-    char trans[1];
-    logical upper;
-    char uplos[1];
-    integer ia, ib, jc, ma, na, nc;
-    extern /* Subroutine */ int zprcn5_(integer *, integer *, char *, integer 
-	    *, char *, char *, integer *, integer *, doublecomplex *, integer 
-	    *, integer *, doublecomplex *, integer *),
-	     zprcn7_(integer *, integer *, char *, integer *, char *, char *, 
-	    integer *, integer *, doublecomplex *, integer *, integer *, 
-	    doublereal *, integer *);
-    integer ik, in, jj, lj, ks, ns;
-    doublereal errmax;
-    extern logical lzeres_(char *, char *, integer *, integer *, 
-	    doublecomplex *, doublecomplex *, integer *);
-    char transs[1], transt[1];
-    extern /* Subroutine */ int czher2k_(integer *, char *, char *, integer *,
-	     integer *, doublecomplex *, doublecomplex *, integer *, 
-	    doublecomplex *, integer *, doublereal *, doublecomplex *, 
-	    integer *);
-    integer laa, lbb, lda, lcc, ldb, ldc;
-    doublecomplex als;
-    integer ict, icu;
-    extern /* Subroutine */ int czsyr2k_(integer *, char *, char *, integer *,
-	     integer *, doublecomplex *, doublecomplex *, integer *, 
-	    doublecomplex *, integer *, doublecomplex *, doublecomplex *, 
-	    integer *);
-    doublereal err;
-    extern logical lze_(doublecomplex *, doublecomplex *, integer *);
-
-    /* Fortran I/O blocks */
-    static cilist io___362 = { 0, 0, 0, fmt_9992, 0 };
-    static cilist io___365 = { 0, 0, 0, fmt_9998, 0 };
-    static cilist io___373 = { 0, 0, 0, fmt_10000, 0 };
-    static cilist io___374 = { 0, 0, 0, fmt_10001, 0 };
-    static cilist io___375 = { 0, 0, 0, fmt_10002, 0 };
-    static cilist io___376 = { 0, 0, 0, fmt_10003, 0 };
-    static cilist io___377 = { 0, 0, 0, fmt_9995, 0 };
-    static cilist io___378 = { 0, 0, 0, fmt_9996, 0 };
-
-
+    static integer jjab;
+    static doublecomplex beta;
+    static integer ldas, ldbs, ldcs;
+    static logical same, isconj;
+    static doublecomplex bets;
+    static logical tran, null;
+    static char uplo[1];
+    static integer i__, j, k, n;
+    static doublecomplex alpha;
+    static doublereal rbeta;
+    static logical isame[13];
+    extern /* Subroutine */ int zmake_(char*, char*, char*, integer*, integer*, doublecomplex*, integer*, doublecomplex*, integer*, logical*, doublecomplex*, ftnlen, ftnlen, ftnlen);
+    static integer nargs;
+    extern /* Subroutine */ int zmmch_(char*, char*, integer*, integer*, integer*, doublecomplex*, doublecomplex*, integer*, doublecomplex*, integer*, doublecomplex*, doublecomplex*, integer*, doublecomplex*, doublereal*, doublecomplex*, integer*, doublereal*, doublereal*, logical*, integer*, logical*, ftnlen, ftnlen);
+    static doublereal rbets;
+    static logical reset;
+    static char trans[1];
+    static logical upper;
+    static char uplos[1];
+    static integer ia, ib, jc, ma, na, nc;
+    extern /* Subroutine */ int zprcn5_(integer*, integer*, char*, integer*, char*, char*, integer*, integer*, doublecomplex*, integer*, integer*, doublecomplex*, integer*, ftnlen, ftnlen, ftnlen);
+    extern /* Subroutine */ int zprcn7_(integer*, integer*, char*, integer*, char*, char*, integer*, integer*, doublecomplex*, integer*, integer*, doublereal*, integer*, ftnlen, ftnlen, ftnlen);
+    static integer ik, in, jj, lj, ks, ns;
+    static doublereal errmax;
+    extern logical lzeres_(char*, char*, integer*, integer*, doublecomplex*, doublecomplex*, integer*, ftnlen, ftnlen);
+    static char transs[1], transt[1];
+    extern /* Subroutine */ int czher2k_(integer*, char*, char*, integer*, integer*, doublecomplex*, doublecomplex*, integer*, doublecomplex*, integer*, doublereal*, doublecomplex*, integer*, ftnlen, ftnlen);
+    static integer laa, lbb, lda, lcc, ldb, ldc;
+    static doublecomplex als;
+    static integer ict, icu;
+    extern /* Subroutine */ int czsyr2k_(integer*, char*, char*, integer*, integer*, doublecomplex*, doublecomplex*, integer*, doublecomplex*, integer*, doublecomplex*, doublecomplex*, integer*, ftnlen, ftnlen);
+    static doublereal err;
+    extern logical lze_(doublecomplex*, doublecomplex*, integer*);
 
 /*  Tests ZHER2K and ZSYR2K. */
 
@@ -3506,6 +2633,17 @@ L130:
 /*     Jeremy Du Croz, Numerical Algorithms Group Ltd. */
 /*     Sven Hammarling, Numerical Algorithms Group Ltd. */
 
+/*     .. Parameters .. */
+/*     .. Scalar Arguments .. */
+/*     .. Array Arguments .. */
+/*     .. Local Scalars .. */
+/*     .. Local Arrays .. */
+/*     .. External Functions .. */
+/*     .. External Subroutines .. */
+/*     .. Intrinsic Functions .. */
+/*     .. Scalars in Common .. */
+/*     .. Common blocks .. */
+/*     .. Data statements .. */
     /* Parameter adjustments */
     --idim;
     --alf;
@@ -3525,7 +2663,8 @@ L130:
     --ab;
 
     /* Function Body */
-    conj = s_cmp(sname + 7, "he", (ftnlen)2, (ftnlen)2) == 0;
+/*     .. Executable Statements .. */
+    isconj = s_cmp(sname + 7, "he", (ftnlen)2, (ftnlen)2) == 0;
 
     nargs = 12;
     nc = 0;
@@ -3553,7 +2692,7 @@ L130:
 	    for (ict = 1; ict <= 2; ++ict) {
 		*(unsigned char *)trans = *(unsigned char *)&icht[ict - 1];
 		tran = *(unsigned char *)trans == 'C';
-		if (tran && ! conj) {
+		if (tran && ! isconj) {
 		    *(unsigned char *)trans = 'T';
 		}
 		if (tran) {
@@ -3579,10 +2718,12 @@ L130:
 		if (tran) {
 		    i__3 = *nmax << 1;
 		    zmake_("ge", " ", " ", &ma, &na, &ab[1], &i__3, &aa[1], &
-			    lda, &reset, &c_b1);
+			    lda, &reset, &c_b1, (ftnlen)2, (ftnlen)1, (ftnlen)
+			    1);
 		} else {
 		    zmake_("ge", " ", " ", &ma, &na, &ab[1], nmax, &aa[1], &
-			    lda, &reset, &c_b1);
+			    lda, &reset, &c_b1, (ftnlen)2, (ftnlen)1, (ftnlen)
+			    1);
 		}
 
 /*              Generate the matrix B. */
@@ -3592,10 +2733,12 @@ L130:
 		if (tran) {
 		    i__3 = *nmax << 1;
 		    zmake_("ge", " ", " ", &ma, &na, &ab[k + 1], &i__3, &bb[1]
-			    , &ldb, &reset, &c_b1);
+			    , &ldb, &reset, &c_b1, (ftnlen)2, (ftnlen)1, (
+			    ftnlen)1);
 		} else {
 		    zmake_("ge", " ", " ", &ma, &na, &ab[k * *nmax + 1], nmax,
-			     &bb[1], &ldb, &reset, &c_b1);
+			     &bb[1], &ldb, &reset, &c_b1, (ftnlen)2, (ftnlen)
+			    1, (ftnlen)1);
 		}
 
 		for (icu = 1; icu <= 2; ++icu) {
@@ -3611,22 +2754,22 @@ L130:
 			for (ib = 1; ib <= i__4; ++ib) {
 			    i__5 = ib;
 			    beta.r = bet[i__5].r, beta.i = bet[i__5].i;
-			    if (conj) {
+			    if (isconj) {
 				rbeta = beta.r;
 				z__1.r = rbeta, z__1.i = 0.;
 				beta.r = z__1.r, beta.i = z__1.i;
 			    }
 			    null = n <= 0;
-			    if (conj) {
-				null = null || (k <= 0 || alpha.r == 0. && 
-					alpha.i == 0.) && rbeta == 1.;
+			    if (isconj) {
+				null = null ||( (k <= 0 || (alpha.r == 0. && 
+					alpha.i == 0.)) && rbeta == 1.);
 			    }
 
 /*                       Generate the matrix C. */
 
 			    zmake_(sname + 7, uplo, " ", &n, &n, &c__[
 				    c_offset], nmax, &cc[1], &ldc, &reset, &
-				    c_b1);
+				    c_b1, (ftnlen)2, (ftnlen)1, (ftnlen)1);
 
 			    ++nc;
 
@@ -3656,7 +2799,7 @@ L130:
 /* L20: */
 			    }
 			    ldbs = ldb;
-			    if (conj) {
+			    if (isconj) {
 				rbets = rbeta;
 			    } else {
 				bets.r = beta.r, bets.i = beta.i;
@@ -3673,42 +2816,42 @@ L130:
 
 /*                       Call the subroutine. */
 
-			    if (conj) {
+			    if (isconj) {
 				if (*trace) {
 				    zprcn7_(ntra, &nc, sname, iorder, uplo, 
 					    trans, &n, &k, &alpha, &lda, &ldb,
-					     &rbeta, &ldc);
+					     &rbeta, &ldc, (ftnlen)12, (
+					    ftnlen)1, (ftnlen)1);
 				}
 				if (*rewi) {
-				    al__1.aerr = 0;
+/*				    al__1.aerr = 0;
 				    al__1.aunit = *ntra;
-				    f_rew(&al__1);
+				    f_rew(&al__1);*/
 				}
 				czher2k_(iorder, uplo, trans, &n, &k, &alpha, 
 					&aa[1], &lda, &bb[1], &ldb, &rbeta, &
-					cc[1], &ldc);
+					cc[1], &ldc, (ftnlen)1, (ftnlen)1);
 			    } else {
 				if (*trace) {
 				    zprcn5_(ntra, &nc, sname, iorder, uplo, 
 					    trans, &n, &k, &alpha, &lda, &ldb,
-					     &beta, &ldc);
+					     &beta, &ldc, (ftnlen)12, (ftnlen)
+					    1, (ftnlen)1);
 				}
 				if (*rewi) {
-				    al__1.aerr = 0;
+/*				    al__1.aerr = 0;
 				    al__1.aunit = *ntra;
-				    f_rew(&al__1);
+				    f_rew(&al__1);*/
 				}
 				czsyr2k_(iorder, uplo, trans, &n, &k, &alpha, 
 					&aa[1], &lda, &bb[1], &ldb, &beta, &
-					cc[1], &ldc);
+					cc[1], &ldc, (ftnlen)1, (ftnlen)1);
 			    }
 
 /*                       Check if error-exit was taken incorrectly. */
 
 			    if (! infoc_1.ok) {
-				io___362.ciunit = *nout;
-				s_wsfe(&io___362);
-				e_wsfe();
+                                printf("*** FATAL ERROR - ERROR-CALL MYEXIT TAKEN ON VALID CALL\n");
 				*fatal = TRUE_;
 				goto L150;
 			    }
@@ -3726,7 +2869,7 @@ L130:
 			    isame[6] = ldas == lda;
 			    isame[7] = lze_(&bs[1], &bb[1], &lbb);
 			    isame[8] = ldbs == ldb;
-			    if (conj) {
+			    if (isconj) {
 				isame[9] = rbets == rbeta;
 			    } else {
 				isame[9] = bets.r == beta.r && bets.i == 
@@ -3736,7 +2879,7 @@ L130:
 				isame[10] = lze_(&cs[1], &cc[1], &lcc);
 			    } else {
 				isame[10] = lzeres_("he", uplo, &n, &n, &cs[1]
-					, &cc[1], &ldc);
+					, &cc[1], &ldc, (ftnlen)2, (ftnlen)1);
 			    }
 			    isame[11] = ldcs == ldc;
 
@@ -3748,12 +2891,8 @@ L130:
 			    for (i__ = 1; i__ <= i__5; ++i__) {
 				same = same && isame[i__ - 1];
 				if (! isame[i__ - 1]) {
-				    io___365.ciunit = *nout;
-				    s_wsfe(&io___365);
-				    do_fio(&c__1, (char *)&i__, (ftnlen)
-					    sizeof(integer));
-				    e_wsfe();
-				}
+                                    printf(" ******* FATAL ERROR - PARAMETER NUMBER %d WAS CHANGED INCORRECTLY *******\n",i__);
+    				}
 /* L40: */
 			    }
 			    if (! same) {
@@ -3765,7 +2904,7 @@ L130:
 
 /*                          Check the result column by column. */
 
-				if (conj) {
+				if (isconj) {
 				    *(unsigned char *)transt = 'C';
 				} else {
 				    *(unsigned char *)transt = 'T';
@@ -3785,7 +2924,7 @@ L130:
 					i__6 = k;
 					for (i__ = 1; i__ <= i__6; ++i__) {
 					    i__7 = i__;
-					    i__8 = (j - 1 << 1) * *nmax + k + 
+					    i__8 = ((j - 1) << 1) * *nmax + k + 
 						    i__;
 					    z__1.r = alpha.r * ab[i__8].r - 
 						    alpha.i * ab[i__8].i, 
@@ -3794,17 +2933,17 @@ L130:
 						    i__8].r;
 					    w[i__7].r = z__1.r, w[i__7].i = 
 						    z__1.i;
-					    if (conj) {
+					    if (isconj) {
 			  i__7 = k + i__;
 			  d_cnjg(&z__2, &alpha);
-			  i__8 = (j - 1 << 1) * *nmax + i__;
+			  i__8 = ((j - 1) << 1) * *nmax + i__;
 			  z__1.r = z__2.r * ab[i__8].r - z__2.i * ab[i__8].i, 
 				  z__1.i = z__2.r * ab[i__8].i + z__2.i * ab[
 				  i__8].r;
 			  w[i__7].r = z__1.r, w[i__7].i = z__1.i;
 					    } else {
 			  i__7 = k + i__;
-			  i__8 = (j - 1 << 1) * *nmax + i__;
+			  i__8 = ((j - 1) << 1) * *nmax + i__;
 			  z__1.r = alpha.r * ab[i__8].r - alpha.i * ab[i__8]
 				  .i, z__1.i = alpha.r * ab[i__8].i + alpha.i 
 				  * ab[i__8].r;
@@ -3820,11 +2959,12 @@ L130:
 						1], &i__8, &beta, &c__[jj + j 
 						* c_dim1], nmax, &ct[1], &g[1]
 						, &cc[jc], &ldc, eps, &err, 
-						fatal, nout, &c_true);
+						fatal, nout, &c_true, (ftnlen)
+						1, (ftnlen)1);
 				    } else {
 					i__6 = k;
 					for (i__ = 1; i__ <= i__6; ++i__) {
-					    if (conj) {
+					    if (isconj) {
 			  i__7 = i__;
 			  d_cnjg(&z__2, &ab[(k + i__ - 1) * *nmax + j]);
 			  z__1.r = alpha.r * z__2.r - alpha.i * z__2.i, 
@@ -3861,7 +3001,8 @@ L130:
 						i__7, &beta, &c__[jj + j * 
 						c_dim1], nmax, &ct[1], &g[1], 
 						&cc[jc], &ldc, eps, &err, 
-						fatal, nout, &c_true);
+						fatal, nout, &c_true, (ftnlen)
+						1, (ftnlen)1);
 				    }
 				    if (upper) {
 					jc += ldc;
@@ -3905,90 +3046,57 @@ L130:
 
     if (errmax < *thresh) {
 	if (*iorder == 0) {
-	    io___373.ciunit = *nout;
-	    s_wsfe(&io___373);
-	    do_fio(&c__1, sname, (ftnlen)13);
-	    do_fio(&c__1, (char *)&nc, (ftnlen)sizeof(integer));
-	    e_wsfe();
+            printf("%s PASSED THE COLUMN-MAJOR COMPUTATIONAL TESTS (%d CALLS)\n",sname,nc);
 	}
 	if (*iorder == 1) {
-	    io___374.ciunit = *nout;
-	    s_wsfe(&io___374);
-	    do_fio(&c__1, sname, (ftnlen)13);
-	    do_fio(&c__1, (char *)&nc, (ftnlen)sizeof(integer));
-	    e_wsfe();
+            printf("%s PASSED THE ROW-MAJOR COMPUTATIONAL TESTS (%d CALLS)\n",sname,nc);
 	}
     } else {
 	if (*iorder == 0) {
-	    io___375.ciunit = *nout;
-	    s_wsfe(&io___375);
-	    do_fio(&c__1, sname, (ftnlen)13);
-	    do_fio(&c__1, (char *)&nc, (ftnlen)sizeof(integer));
-	    do_fio(&c__1, (char *)&errmax, (ftnlen)sizeof(doublereal));
-	    e_wsfe();
+            printf("%s COMPLETED THE COLUMN-MAJOR COMPUTATIONAL TESTS (%d CALLS)/n",sname,nc);
+            printf("***** BUT WITH MAXIMUM TEST RATIO %8.2f - SUSPECT *******/n",errmax);
 	}
 	if (*iorder == 1) {
-	    io___376.ciunit = *nout;
-	    s_wsfe(&io___376);
-	    do_fio(&c__1, sname, (ftnlen)13);
-	    do_fio(&c__1, (char *)&nc, (ftnlen)sizeof(integer));
-	    do_fio(&c__1, (char *)&errmax, (ftnlen)sizeof(doublereal));
-	    e_wsfe();
+            printf("%s COMPLETED THE ROW-MAJOR COMPUTATIONAL TESTS (%d CALLS)/n",sname,nc);
+            printf("***** BUT WITH MAXIMUM TEST RATIO %8.2f - SUSPECT *******/n",errmax);
 	}
     }
     goto L160;
 
 L140:
     if (n > 1) {
-	io___377.ciunit = *nout;
-	s_wsfe(&io___377);
-	do_fio(&c__1, (char *)&j, (ftnlen)sizeof(integer));
-	e_wsfe();
+        printf("      THESE ARE THE RESULTS FOR COLUMN %d:\n",j);
     }
 
 L150:
-    io___378.ciunit = *nout;
-    s_wsfe(&io___378);
-    do_fio(&c__1, sname, (ftnlen)13);
-    e_wsfe();
-    if (conj) {
+    printf(" ******* %s FAILED ON CALL NUMBER:\n",sname);
+    if (isconj) {
 	zprcn7_(nout, &nc, sname, iorder, uplo, trans, &n, &k, &alpha, &lda, &
-		ldb, &rbeta, &ldc);
+		ldb, &rbeta, &ldc, (ftnlen)12, (ftnlen)1, (ftnlen)1);
     } else {
 	zprcn5_(nout, &nc, sname, iorder, uplo, trans, &n, &k, &alpha, &lda, &
-		ldb, &beta, &ldc);
+		ldb, &beta, &ldc, (ftnlen)12, (ftnlen)1, (ftnlen)1);
     }
 
 L160:
     return 0;
 
-/* L9994: */
-/* L9993: */
+/* 9994 FORMAT(1X, I6, ': ', A12,'(', 2( '''', A1, ''',' ), 2( I3, ',' ), */
+/*     $      '(', F4.1, ',', F4.1, '), A,', I3, ', B,', I3, ',', F4.1, */
+/*     $      ', C,', I3, ')           .' ) */
+/* 9993 FORMAT(1X, I6, ': ', A12,'(', 2( '''', A1, ''',' ), 2( I3, ',' ), */
+/*     $      '(', F4.1, ',', F4.1, '), A,', I3, ', B,', I3, ',(', F4.1, */
+/*     $      ',', F4.1, '), C,', I3, ')    .' ) */
 
 /*     End of ZCHK5. */
 
 } /* zchk5_ */
 
 
-/* Subroutine */ int zprcn5_(integer *nout, integer *nc, char *sname, integer 
-	*iorder, char *uplo, char *transa, integer *n, integer *k, 
-	doublecomplex *alpha, integer *lda, integer *ldb, doublecomplex *beta,
-	 integer *ldc)
+/* Subroutine */ int zprcn5_(integer* nout, integer* nc, char* sname, integer* iorder, char* uplo, char* transa, integer* n, integer* k, doublecomplex* alpha, integer* lda, integer* ldb, doublecomplex* beta, integer* ldc, ftnlen sname_len, ftnlen uplo_len, ftnlen transa_len)
 {
-    /* Format strings */
-    static char fmt_9995[] = "(1x,i6,\002: \002,a13,\002(\002,3(a15,\002,"
-	    "\002))";
-    static char fmt_9994[] = "(10x,2(i3,\002,\002),\002 (\002,f4.1,\002,\002"
-	    ",f4.1,\002), A,\002,i3,\002, B\002,i3,\002, (\002,f4.1,\002,\002"
-	    ",f4.1,\002), C,\002,i3,\002).\002)";
-
     /* Local variables */
-    char ca[14], cu[14], crc[14];
-
-    /* Fortran I/O blocks */
-    static cilist io___382 = { 0, 0, 0, fmt_9995, 0 };
-    static cilist io___383 = { 0, 0, 0, fmt_9994, 0 };
-
+    static char ca[14], cu[14], crc[14];
 
     if (*(unsigned char *)uplo == 'U') {
 	s_copy(cu, "    CblasUpper", (ftnlen)14, (ftnlen)14);
@@ -4007,48 +3115,19 @@ L160:
     } else {
 	s_copy(crc, " CblasColMajor", (ftnlen)14, (ftnlen)14);
     }
-    io___382.ciunit = *nout;
-    s_wsfe(&io___382);
-    do_fio(&c__1, (char *)&(*nc), (ftnlen)sizeof(integer));
-    do_fio(&c__1, sname, (ftnlen)13);
-    do_fio(&c__1, crc, (ftnlen)14);
-    do_fio(&c__1, cu, (ftnlen)14);
-    do_fio(&c__1, ca, (ftnlen)14);
-    e_wsfe();
-    io___383.ciunit = *nout;
-    s_wsfe(&io___383);
-    do_fio(&c__1, (char *)&(*n), (ftnlen)sizeof(integer));
-    do_fio(&c__1, (char *)&(*k), (ftnlen)sizeof(integer));
-    do_fio(&c__2, (char *)&(*alpha), (ftnlen)sizeof(doublereal));
-    do_fio(&c__1, (char *)&(*lda), (ftnlen)sizeof(integer));
-    do_fio(&c__1, (char *)&(*ldb), (ftnlen)sizeof(integer));
-    do_fio(&c__2, (char *)&(*beta), (ftnlen)sizeof(doublereal));
-    do_fio(&c__1, (char *)&(*ldc), (ftnlen)sizeof(integer));
-    e_wsfe();
-    return 0;
+    printf("%6d: %s %s %s %s\n",*nc,sname,crc,cu,ca);
+    printf("%d %d (%4.1lf,%4.1lf) , A, %d, B, %d, (%4.1lf,%4.1lf) , C, %d.\n",*n,*k,alpha->r,alpha->i,*lda,*ldb,beta->r,beta->i,*ldc);
+
+return 0;
 } /* zprcn5_ */
 
 
 
-/* Subroutine */ int zprcn7_(integer *nout, integer *nc, char *sname, integer 
-	*iorder, char *uplo, char *transa, integer *n, integer *k, 
-	doublecomplex *alpha, integer *lda, integer *ldb, doublereal *beta, 
-	integer *ldc)
+/* Subroutine */ int zprcn7_(integer* nout, integer* nc, char* sname, integer* iorder, char* uplo, char* transa, integer* n, integer* k, doublecomplex* alpha, integer* lda, integer* ldb, doublereal* beta, integer* ldc, ftnlen sname_len, ftnlen uplo_len, ftnlen transa_len)
 {
-    /* Format strings */
-    static char fmt_9995[] = "(1x,i6,\002: \002,a13,\002(\002,3(a15,\002,"
-	    "\002))";
-    static char fmt_9994[] = "(10x,2(i3,\002,\002),\002 (\002,f4.1,\002,\002"
-	    ",f4.1,\002), A,\002,i3,\002, B\002,i3,\002,\002,f4.1,\002, C,"
-	    "\002,i3,\002).\002)";
 
     /* Local variables */
-    char ca[14], cu[14], crc[14];
-
-    /* Fortran I/O blocks */
-    static cilist io___387 = { 0, 0, 0, fmt_9995, 0 };
-    static cilist io___388 = { 0, 0, 0, fmt_9994, 0 };
-
+    static char ca[14], cu[14], crc[14];
 
     if (*(unsigned char *)uplo == 'U') {
 	s_copy(cu, "    CblasUpper", (ftnlen)14, (ftnlen)14);
@@ -4067,31 +3146,14 @@ L160:
     } else {
 	s_copy(crc, " CblasColMajor", (ftnlen)14, (ftnlen)14);
     }
-    io___387.ciunit = *nout;
-    s_wsfe(&io___387);
-    do_fio(&c__1, (char *)&(*nc), (ftnlen)sizeof(integer));
-    do_fio(&c__1, sname, (ftnlen)13);
-    do_fio(&c__1, crc, (ftnlen)14);
-    do_fio(&c__1, cu, (ftnlen)14);
-    do_fio(&c__1, ca, (ftnlen)14);
-    e_wsfe();
-    io___388.ciunit = *nout;
-    s_wsfe(&io___388);
-    do_fio(&c__1, (char *)&(*n), (ftnlen)sizeof(integer));
-    do_fio(&c__1, (char *)&(*k), (ftnlen)sizeof(integer));
-    do_fio(&c__2, (char *)&(*alpha), (ftnlen)sizeof(doublereal));
-    do_fio(&c__1, (char *)&(*lda), (ftnlen)sizeof(integer));
-    do_fio(&c__1, (char *)&(*ldb), (ftnlen)sizeof(integer));
-    do_fio(&c__1, (char *)&(*beta), (ftnlen)sizeof(doublereal));
-    do_fio(&c__1, (char *)&(*ldc), (ftnlen)sizeof(integer));
-    e_wsfe();
-    return 0;
+    printf("%6d: %s %s %s %s\n",*nc,sname,crc,cu,ca);
+    printf("%d %d (%4.1lf,%4.1lf), A, %d, B, %d, %4.1lf, C, %d.\n",*n,*k,alpha->r,alpha->i,*lda,*ldb,*beta,*ldc);
+
+return 0;
 } /* zprcn7_ */
 
 
-/* Subroutine */ int zmake_(char *type__, char *uplo, char *diag, integer *m, 
-	integer *n, doublecomplex *a, integer *nmax, doublecomplex *aa, 
-	integer *lda, logical *reset, doublecomplex *transl)
+/* Subroutine */ int zmake_(char* type__, char* uplo, char* diag, integer* m, integer* n, doublecomplex* a, integer* nmax, doublecomplex* aa, integer* lda, logical* reset, doublecomplex* transl, ftnlen type_len, ftnlen uplo_len, ftnlen diag_len)
 {
     /* System generated locals */
     integer a_dim1, a_offset, i__1, i__2, i__3, i__4;
@@ -4099,13 +3161,13 @@ L160:
     doublecomplex z__1, z__2;
 
     /* Local variables */
-    integer ibeg, iend;
-    extern /* Double Complex */ VOID zbeg_(doublecomplex *, logical *);
-    logical unit;
-    integer i__, j;
-    logical lower, upper;
-    integer jj;
-    logical gen, her, tri, sym;
+    static integer ibeg, iend;
+    extern /* Double Complex */ VOID zbeg_(doublecomplex*, logical*);
+    static logical unit;
+    static integer i__, j;
+    static logical lower, upper;
+    static integer jj;
+    static logical gen, her, tri, sym;
 
 
 /*  Generates values for an M by N matrix A. */
@@ -4122,6 +3184,13 @@ L160:
 /*     Jeremy Du Croz, Numerical Algorithms Group Ltd. */
 /*     Sven Hammarling, Numerical Algorithms Group Ltd. */
 
+/*     .. Parameters .. */
+/*     .. Scalar Arguments .. */
+/*     .. Array Arguments .. */
+/*     .. Local Scalars .. */
+/*     .. External Functions .. */
+/*     .. Intrinsic Functions .. */
+/*     .. Executable Statements .. */
     /* Parameter adjustments */
     a_dim1 = *nmax;
     a_offset = 1 + a_dim1 * 1;
@@ -4143,7 +3212,7 @@ L160:
     for (j = 1; j <= i__1; ++j) {
 	i__2 = *m;
 	for (i__ = 1; i__ <= i__2; ++i__) {
-	    if (gen || upper && i__ <= j || lower && i__ >= j) {
+	    if (gen || (upper && i__ <= j) || (lower && i__ >= j)) {
 		i__3 = i__ + j * a_dim1;
 		zbeg_(&z__2, reset);
 		z__1.r = z__2.r + transl->r, z__1.i = z__2.i + transl->i;
@@ -4266,22 +3335,8 @@ L160:
 
 } /* zmake_ */
 
-/* Subroutine */ int zmmch_(char *transa, char *transb, integer *m, integer *
-	n, integer *kk, doublecomplex *alpha, doublecomplex *a, integer *lda, 
-	doublecomplex *b, integer *ldb, doublecomplex *beta, doublecomplex *
-	c__, integer *ldc, doublecomplex *ct, doublereal *g, doublecomplex *
-	cc, integer *ldcc, doublereal *eps, doublereal *err, logical *fatal, 
-	integer *nout, logical *mv)
+/* Subroutine */ int zmmch_(char* transa, char* transb, integer* m, integer* n, integer* kk, doublecomplex* alpha, doublecomplex* a, integer* lda, doublecomplex* b, integer* ldb, doublecomplex* beta, doublecomplex* c__, integer* ldc, doublecomplex* ct, doublereal* g, doublecomplex* cc, integer* ldcc, doublereal* eps, doublereal* err, logical* fatal, integer* nout, logical* mv, ftnlen transa_len, ftnlen transb_len)
 {
-    /* Format strings */
-    static char fmt_9999[] = "(\002 ******* FATAL ERROR - COMPUTED RESULT IS"
-	    " LESS THAN HAL\002,\002F ACCURATE *******\002,/\002             "
-	    "          EXPECTED RE\002,\002SULT                    COMPUTED R"
-	    "ESULT\002)";
-    static char fmt_9998[] = "(1x,i7,2(\002  (\002,g15.6,\002,\002,g15.6,"
-	    "\002)\002))";
-    static char fmt_9997[] = "(\002      THESE ARE THE RESULTS FOR COLUMN"
-	    " \002,i3)";
 
     /* System generated locals */
     integer a_dim1, a_offset, b_dim1, b_offset, c_dim1, c_offset, cc_dim1, 
@@ -4289,18 +3344,11 @@ L160:
     doublereal d__1, d__2, d__3, d__4, d__5, d__6;
     doublecomplex z__1, z__2, z__3, z__4;
 
+    double sqrt(double);
     /* Local variables */
-    doublereal erri;
-    integer i__, j, k;
-    logical trana, tranb, ctrana, ctranb;
-
-    /* Fortran I/O blocks */
-    static cilist io___409 = { 0, 0, 0, fmt_9999, 0 };
-    static cilist io___410 = { 0, 0, 0, fmt_9998, 0 };
-    static cilist io___411 = { 0, 0, 0, fmt_9998, 0 };
-    static cilist io___412 = { 0, 0, 0, fmt_9997, 0 };
-
-
+    static doublereal erri;
+    static integer i__, j, k;
+    static logical trana, tranb, ctrana, ctranb;
 
 /*  Checks the results of the computational tests. */
 
@@ -4312,6 +3360,14 @@ L160:
 /*     Jeremy Du Croz, Numerical Algorithms Group Ltd. */
 /*     Sven Hammarling, Numerical Algorithms Group Ltd. */
 
+/*     .. Parameters .. */
+/*     .. Scalar Arguments .. */
+/*     .. Array Arguments .. */
+/*     .. Local Scalars .. */
+/*     .. Intrinsic Functions .. */
+/*     .. Statement Functions .. */
+/*     .. Statement Function definitions .. */
+/*     .. Executable Statements .. */
     /* Parameter adjustments */
     a_dim1 = *lda;
     a_offset = 1 + a_dim1 * 1;
@@ -4638,35 +3694,19 @@ L160:
 
 L230:
     *fatal = TRUE_;
-    io___409.ciunit = *nout;
-    s_wsfe(&io___409);
-    e_wsfe();
+    printf(" ******* FATAL ERROR - COMPUTED RESULT IS LESS THAN HALF ACCURATE *******\n");
+    printf("         EXPECTED RESULT                    COMPUTED RESULT\n");
     i__1 = *m;
     for (i__ = 1; i__ <= i__1; ++i__) {
 	if (*mv) {
-	    io___410.ciunit = *nout;
-	    s_wsfe(&io___410);
-	    do_fio(&c__1, (char *)&i__, (ftnlen)sizeof(integer));
-	    do_fio(&c__2, (char *)&ct[i__], (ftnlen)sizeof(doublereal));
-	    do_fio(&c__2, (char *)&cc[i__ + j * cc_dim1], (ftnlen)sizeof(
-		    doublereal));
-	    e_wsfe();
-	} else {
-	    io___411.ciunit = *nout;
-	    s_wsfe(&io___411);
-	    do_fio(&c__1, (char *)&i__, (ftnlen)sizeof(integer));
-	    do_fio(&c__2, (char *)&cc[i__ + j * cc_dim1], (ftnlen)sizeof(
-		    doublereal));
-	    do_fio(&c__2, (char *)&ct[i__], (ftnlen)sizeof(doublereal));
-	    e_wsfe();
+            printf("%7d (%15.6g,%15.6g) (%15.6g,%15.6g)\n",i__,ct[i__].r,ct[i__].i,cc[i__+j*cc_dim1].r,cc[i__+j*cc_dim1].i);
+        } else {
+            printf("%7d (%15.6g,%15.6g) (%15.6g,%15.6g)\n",i__,cc[i__+j*cc_dim1].r,cc[i__+j*cc_dim1].i,ct[i__].r,ct[i__].i);
 	}
 /* L240: */
     }
     if (*n > 1) {
-	io___412.ciunit = *nout;
-	s_wsfe(&io___412);
-	do_fio(&c__1, (char *)&j, (ftnlen)sizeof(integer));
-	e_wsfe();
+        printf("      THESE ARE THE RESULTS FOR COLUMN %d\n",j);
     }
 
 L250:
@@ -4677,14 +3717,14 @@ L250:
 
 } /* zmmch_ */
 
-logical lze_(doublecomplex *ri, doublecomplex *rj, integer *lr)
+logical lze_(doublecomplex* ri, doublecomplex* rj, integer* lr)
 {
     /* System generated locals */
     integer i__1, i__2, i__3;
     logical ret_val;
 
     /* Local variables */
-    integer i__;
+    static integer i__;
 
 
 /*  Tests if two arrays are identical. */
@@ -4697,6 +3737,10 @@ logical lze_(doublecomplex *ri, doublecomplex *rj, integer *lr)
 /*     Jeremy Du Croz, Numerical Algorithms Group Ltd. */
 /*     Sven Hammarling, Numerical Algorithms Group Ltd. */
 
+/*     .. Scalar Arguments .. */
+/*     .. Array Arguments .. */
+/*     .. Local Scalars .. */
+/*     .. Executable Statements .. */
     /* Parameter adjustments */
     --rj;
     --ri;
@@ -4722,16 +3766,15 @@ L30:
 
 } /* lze_ */
 
-logical lzeres_(char *type__, char *uplo, integer *m, integer *n, 
-	doublecomplex *aa, doublecomplex *as, integer *lda)
+logical lzeres_(char* type__, char* uplo, integer* m, integer* n, doublecomplex *aa, doublecomplex* as, integer* lda, ftnlen type_len, ftnlen uplo_len)
 {
     /* System generated locals */
     integer aa_dim1, aa_offset, as_dim1, as_offset, i__1, i__2, i__3, i__4;
     logical ret_val;
 
     /* Local variables */
-    integer ibeg, iend, i__, j;
-    logical upper;
+    static integer ibeg, iend, i__, j;
+    static logical upper;
 
 
 /*  Tests if selected elements in two arrays are equal. */
@@ -4746,6 +3789,10 @@ logical lzeres_(char *type__, char *uplo, integer *m, integer *n,
 /*     Jeremy Du Croz, Numerical Algorithms Group Ltd. */
 /*     Sven Hammarling, Numerical Algorithms Group Ltd. */
 
+/*     .. Scalar Arguments .. */
+/*     .. Array Arguments .. */
+/*     .. Local Scalars .. */
+/*     .. Executable Statements .. */
     /* Parameter adjustments */
     as_dim1 = *lda;
     as_offset = 1 + as_dim1 * 1;
@@ -4803,7 +3850,7 @@ logical lzeres_(char *type__, char *uplo, integer *m, integer *n,
 	}
     }
 
-/* L60: */
+/*   60 CONTINUE */
     ret_val = TRUE_;
     goto L80;
 L70:
@@ -4815,7 +3862,7 @@ L80:
 
 } /* lzeres_ */
 
-/* Double Complex */ VOID zbeg_(doublecomplex * ret_val, logical *reset)
+/* Double Complex */ VOID zbeg_(doublecomplex* ret_val, logical* reset)
 {
     /* System generated locals */
     doublereal d__1, d__2;
@@ -4836,6 +3883,11 @@ L80:
 /*     Jeremy Du Croz, Numerical Algorithms Group Ltd. */
 /*     Sven Hammarling, Numerical Algorithms Group Ltd. */
 
+/*     .. Scalar Arguments .. */
+/*     .. Local Scalars .. */
+/*     .. Save statement .. */
+/*     .. Intrinsic Functions .. */
+/*     .. Executable Statements .. */
     if (*reset) {
 /*        Initialize local variables. */
 	mi = 891;
@@ -4873,7 +3925,7 @@ L10:
 
 } /* zbeg_ */
 
-doublereal ddiff_(doublereal *x, doublereal *y)
+doublereal ddiff_(doublereal* x, doublereal* y)
 {
     /* System generated locals */
     doublereal ret_val;
@@ -4887,6 +3939,8 @@ doublereal ddiff_(doublereal *x, doublereal *y)
 /*     Jeremy Du Croz, Numerical Algorithms Group Ltd. */
 /*     Sven Hammarling, Numerical Algorithms Group Ltd. */
 
+/*     .. Scalar Arguments .. */
+/*     .. Executable Statements .. */
     ret_val = *x - *y;
     return ret_val;
 
@@ -4894,4 +3948,4 @@ doublereal ddiff_(doublereal *x, doublereal *y)
 
 } /* ddiff_ */
 
-/* Main program alias */ int zblat3_ () { MAIN__ (); return 0; }
+/* Main program alias */ /*int zblat3_ () { MAIN__ (); }*/
