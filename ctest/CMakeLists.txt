@@ -10,11 +10,6 @@ if (CMAKE_Fortran_COMPILER_ID STREQUAL GNU)
 	set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS} -fno-tree-vectorize")
 endif()
 
-set (USE_GEMM3M 0)
-if (${ARCH} MATCHES x86|x86_64|ia64|mips)
-        set(USE_GEMM3M 1)
-endif ()
-
 if(WIN32)
 FILE(WRITE ${CMAKE_CURRENT_BINARY_DIR}/test_cblas_helper.ps1
 "$ErrorActionPreference = \"Stop\"\n"
