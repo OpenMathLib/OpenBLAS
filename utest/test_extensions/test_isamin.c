@@ -402,13 +402,14 @@ CTEST(isamin, min_idx_in_vec_tail){
 CTEST(isamin, min_idx_in_vec_tail_inc_1){
    blasint i;
    blasint N = ELEMENTS, inc = 1;
-   float x[ELEMENTS * inc];
+   float *x = (float*) (ELEMENTS * inc * sizeof(float));
    for (i = 0; i < N * inc; i ++) {
       x[i] = i + 1000;
    }
 
    x[(N - 1) * inc] = 0.0f;
    blasint index = BLASFUNC(isamin)(&N, x, &inc);
+   free(x);
    ASSERT_EQUAL(N, index);
 }
 
@@ -775,13 +776,14 @@ CTEST(isamin, c_api_min_idx_in_vec_tail){
 CTEST(isamin, c_api_min_idx_in_vec_tail_inc_1){
    blasint i;
    blasint N = ELEMENTS, inc = 1;
-   float x[ELEMENTS * inc];
+   float *x = (float*)malloc(ELEMENTS * inc * sizeof(float));
    for (i = 0; i < N * inc; i ++) {
       x[i] = i + 1000;
    }
 
    x[(N - 1) * inc] = 0.0f;
    blasint index = cblas_isamin(N, x, inc);
+   free(x);
    ASSERT_EQUAL(N - 1, index);
 }
 #endif

@@ -188,7 +188,7 @@ static float check_csbmv(char uplo, blasint n, blasint k, float *alpha, blasint 
     char trans = 'N';
 
     // Symmetric band packed matrix for sbmv
-    float a[lda * n * 2];
+    float *a = (float*) malloc(lda * n * 2 * sizeof(float));
 
     // Fill symmetric packed matrix sp_matrix, vector b_test, vector c_test 
     srand_generate(data_csbmv.sp_matrix, n * (n + 1));
@@ -216,7 +216,7 @@ static float check_csbmv(char uplo, blasint n, blasint k, float *alpha, blasint 
     // Find the differences between output vector caculated by csbmv and cgemv
     for (i = 0; i < n * inc_c * 2; i++)
         data_csbmv.c_test[i] -= data_csbmv.c_verify[i];
-
+    free(a);
     // Find the norm of differences
     return BLASFUNC(scnrm2)(&n, data_csbmv.c_test, &inc_c);
 }
