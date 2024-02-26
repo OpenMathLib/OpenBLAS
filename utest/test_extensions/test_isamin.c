@@ -402,7 +402,7 @@ CTEST(isamin, min_idx_in_vec_tail){
 CTEST(isamin, min_idx_in_vec_tail_inc_1){
    blasint i;
    blasint N = ELEMENTS, inc = 1;
-   float *x = (float*) (ELEMENTS * inc * sizeof(float));
+   float *x = (float*) malloc(ELEMENTS * inc * sizeof(float));
    for (i = 0; i < N * inc; i ++) {
       x[i] = i + 1000;
    }
