@@ -44,10 +44,7 @@ endif
 #this does not work with OpenMP nor with native Windows or Android threads
 # FIXME TBD if this works on OSX, SunOS, POWER and zarch
 ifeq ($(OSNAME), $(filter $(OSNAME),Linux CYGWIN_NT))
-ifneq ($(USE_OPENMP), 1)
-OBJS += test_fork.o
-endif
-OBJS += test_post_fork.o
+OBJS += test_fork.o test_post_fork.o
 endif
 
 ifeq ($(C_COMPILER), PGI)
