@@ -406,8 +406,11 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .ifeqs "\suf_op", "s"
     vpackod.d              \out,   \in,    \in
     \pre_op\()add.\suf_op  \out,   \out,   \in
+.else
+    vor.v \out, \in, \in
 .endif
 .endif
+
 
 .ifnb \more
     GCOMPLEXACC \pre_op, \suf_op, \more
