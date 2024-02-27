@@ -126,7 +126,7 @@ static float check_cgemv(char api, char order, char trans, blasint m, blasint n,
     srand_generate(data_cgemv_t.y_test, m * inc_y * 2);
 
     // Copy vector y for reference funcs
-    for (int i = 0; i < m * inc_y * 2; i++) {
+    for (i = 0; i < m * inc_y * 2; i++) {
         data_cgemv_t.y_verify[i] = data_cgemv_t.y_test[i];
     }
 
