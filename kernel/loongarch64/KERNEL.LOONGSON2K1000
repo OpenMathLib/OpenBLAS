@@ -100,6 +100,9 @@ DTRSMKERNEL_LT  = ../generic/trsm_kernel_LT.c
 DTRSMKERNEL_RN  = ../generic/trsm_kernel_RN.c
 DTRSMKERNEL_RT  = ../generic/trsm_kernel_RT.c
 
+CGEMVNKERNEL = cgemv_n_4_lsx.S
+CGEMVTKERNEL = cgemv_t_4_lsx.S
+
 CGEMMKERNEL  = cgemm_kernel_8x4_lsx.S
 CGEMMINCOPY  = cgemm_ncopy_8_lsx.S
 CGEMMITCOPY  = cgemm_tcopy_8_lsx.S
