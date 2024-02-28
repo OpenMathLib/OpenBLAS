@@ -85,6 +85,12 @@ ZSWAPKERNEL = cswap_lsx.S
 CSUMKERNEL = csum_lsx.S
 ZSUMKERNEL = csum_lsx.S
 
+SGEMVNKERNEL = sgemv_n_lsx.S
+SGEMVTKERNEL = sgemv_t_lsx.S
+
+DGEMVNKERNEL = dgemv_n_lsx.S
+DGEMVTKERNEL = dgemv_t_lsx.S
+
 DGEMMKERNEL    = dgemm_kernel_8x4.S
 DGEMMINCOPY    = dgemm_ncopy_8_lsx.S
 DGEMMITCOPY    = dgemm_tcopy_8_lsx.S
