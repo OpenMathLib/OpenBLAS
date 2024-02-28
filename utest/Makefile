@@ -64,18 +64,18 @@ all : run_test
 
 ifeq ($(OSNAME), AIX)
 ifeq ($(USE_OPENMP), 1)
-$(UTESTBIN): $(OBJS)
+$(UTESTBIN): $(OBJS) ../$(LIBNAME)
 	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $^ ../$(LIBNAME) $(EXTRALIB)
 else
-$(UTESTBIN): $(OBJS)
+$(UTESTBIN): $(OBJS) ../$(LIBNAME)
 	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $^ ../$(LIBNAME) $(EXTRALIB) $(FEXTRALIB)
 endif
 else
-$(UTESTBIN): $(OBJS)
+$(UTESTBIN): $(OBJS) ../$(LIBNAME)
 	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $^ ../$(LIBNAME) $(EXTRALIB) $(FEXTRALIB)
 endif
 
-$(UTESTEXTBIN): $(OBJS_EXT)
+$(UTESTEXTBIN): $(OBJS_EXT) ../$(LIBNAME)
 	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $^ ../$(LIBNAME) $(EXTRALIB) $(FEXTRALIB)
 
 run_test: $(UTESTBIN) $(UTESTEXTBIN)
