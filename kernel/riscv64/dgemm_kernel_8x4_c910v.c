@@ -196,7 +196,7 @@ int CNAME(BLASLONG bm,BLASLONG bn,BLASLONG bk,FLOAT alpha,FLOAT* ba,FLOAT* bb,FL
 		   
 		   asm volatile(
 				"vsetvli    zero, zero, e64,m1 \n\t"
-				"fmv.w.x    ft11, zero         \n\t"
+				"fmv.d.x    ft11, zero         \n\t"
 				"mv         t0,   %[BK]        \n\t"
 				
 				"vfmv.v.f   v16,  ft11         \n\t"

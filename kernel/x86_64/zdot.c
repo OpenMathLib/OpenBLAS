@@ -27,7 +27,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "common.h"
 
-#if (defined(OS_DARWIN) || defined(OS_WINDOWS)) && (defined(__GNUC__) && __GNUC__ > 11) 
+#if (defined(__GNUC__) && __GNUC__ > 11) 
 #pragma GCC optimize("no-tree-vectorize")
 #endif
 
@@ -92,7 +92,7 @@ static void zdot_kernel_8(BLASLONG n, FLOAT *x, FLOAT *y, FLOAT *d)
 #if defined(SMP)
 extern int blas_level1_thread_with_return_value(int mode, BLASLONG m, BLASLONG n,
         BLASLONG k, void *alpha, void *a, BLASLONG lda, void *b, BLASLONG ldb,
-        void *c, BLASLONG ldc, int (*function)(), int nthreads);
+        void *c, BLASLONG ldc, int (*function)(void), int nthreads);
 #endif
                 
                 

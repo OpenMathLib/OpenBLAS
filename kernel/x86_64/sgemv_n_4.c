@@ -27,7 +27,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "common.h"
 
-#if (defined(OS_DARWIN) || defined(OS_WINDOWS)) && (defined(__GNUC__) && __GNUC__ > 11) 
+#if (defined(__GNUC__) && __GNUC__ > 11) 
 #pragma GCC optimize("no-tree-vectorize")
 #endif
 

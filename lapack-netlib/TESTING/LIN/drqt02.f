@@ -27,7 +27,7 @@
 *> \verbatim
 *>
 *> DRQT02 tests DORGRQ, which generates an m-by-n matrix Q with
-*> orthonornmal rows that is defined as the product of k elementary
+*> orthonormal rows that is defined as the product of k elementary
 *> reflectors.
 *>
 *> Given the RQ factorization of an m-by-n matrix A, DRQT02 generates

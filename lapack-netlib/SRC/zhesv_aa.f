@@ -128,7 +128,7 @@
 *>          LWORK is INTEGER
 *>          The length of WORK.  LWORK >= MAX(1,2*N,3*N-2), and for best 
 *>          performance LWORK >= max(1,N*NB), where NB is the optimal
-*>          blocksize for ZHETRF.
+*>          blocksize for ZHETRF_AA.
 *>
 *>          If LWORK = -1, then a workspace query is assumed; the routine
 *>          only calculates the optimal size of the WORK array, returns
@@ -154,7 +154,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup complex16HEsolve
+*> \ingroup hesv_aa
 *
 *  =====================================================================
       SUBROUTINE ZHESV_AA( UPLO, N, NRHS, A, LDA, IPIV, B, LDB, WORK,
@@ -177,7 +177,7 @@
 *
 *     .. Local Scalars ..
       LOGICAL            LQUERY
-      INTEGER            LWKOPT, LWKOPT_HETRF, LWKOPT_HETRS
+      INTEGER            LWKMIN, LWKOPT, LWKOPT_HETRF, LWKOPT_HETRS
 *     ..
 *     .. External Functions ..
       LOGICAL            LSAME
@@ -196,6 +196,7 @@
 *
       INFO = 0
       LQUERY = ( LWORK.EQ.-1 )
+      LWKMIN = MAX( 1, 2*N, 3*N-2 )
       IF( .NOT.LSAME( UPLO, 'U' ) .AND. .NOT.LSAME( UPLO, 'L' ) ) THEN
          INFO = -1
       ELSE IF( N.LT.0 ) THEN
@@ -206,17 +207,17 @@
          INFO = -5
       ELSE IF( LDB.LT.MAX( 1, N ) ) THEN
          INFO = -8
-      ELSE IF( LWORK.LT.MAX(2*N, 3*N-2) .AND. .NOT.LQUERY ) THEN
+      ELSE IF( LWORK.LT.LWKMIN .AND. .NOT.LQUERY ) THEN
          INFO = -10
       END IF
 *
       IF( INFO.EQ.0 ) THEN
          CALL ZHETRF_AA( UPLO, N, A, LDA, IPIV, WORK, -1, INFO )
-         LWKOPT_HETRF = INT( WORK(1) )
+         LWKOPT_HETRF = INT( WORK( 1 ) )
          CALL ZHETRS_AA( UPLO, N, NRHS, A, LDA, IPIV, B, LDB, WORK,
      $                   -1, INFO )
-         LWKOPT_HETRS = INT( WORK(1) )
-         LWKOPT = MAX( LWKOPT_HETRF, LWKOPT_HETRS )
+         LWKOPT_HETRS = INT( WORK( 1 ) )
+         LWKOPT = MAX( LWKMIN, LWKOPT_HETRF, LWKOPT_HETRS )
          WORK( 1 ) = LWKOPT
       END IF
 *

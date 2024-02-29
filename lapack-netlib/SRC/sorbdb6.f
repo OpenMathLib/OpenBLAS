@@ -41,9 +41,8 @@
 *> with respect to the columns of
 *>      Q = [ Q1 ] .
 *>          [ Q2 ]
-*> The Euclidean norm of X must be one and the columns of Q must be
-*> orthonormal. The orthogonalized vector will be zero if and only if it
-*> lies entirely in the range of Q.
+*> The columns of Q must be orthonormal. The orthogonalized vector will
+*> be zero if and only if it lies entirely in the range of Q.
 *>
 *> The projection is computed with at most two iterations of the
 *> classical Gram-Schmidt algorithm, see
@@ -152,7 +151,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup realOTHERcomputational
+*> \ingroup unbdb6
 *
 *  =====================================================================
       SUBROUTINE SORBDB6( M1, M2, N, X1, INCX1, X2, INCX2, Q1, LDQ1, Q2,
@@ -174,7 +173,7 @@
 *
 *     .. Parameters ..
       REAL               ALPHA, REALONE, REALZERO
-      PARAMETER          ( ALPHA = 0.01E0, REALONE = 1.0E0,
+      PARAMETER          ( ALPHA = 0.83E0, REALONE = 1.0E0,
      $                     REALZERO = 0.0E0 )
       REAL               NEGONE, ONE, ZERO
       PARAMETER          ( NEGONE = -1.0E0, ONE = 1.0E0, ZERO = 0.0E0 )
@@ -222,14 +221,16 @@
 *
       EPS = SLAMCH( 'Precision' )
 *
+*     Compute the Euclidean norm of X
+*
+      SCL = REALZERO
+      SSQ = REALZERO
+      CALL SLASSQ( M1, X1, INCX1, SCL, SSQ )
+      CALL SLASSQ( M2, X2, INCX2, SCL, SSQ )
+      NORM = SCL * SQRT( SSQ )
+*
 *     First, project X onto the orthogonal complement of Q's column
 *     space
-*
-*     Christoph Conrads: In debugging mode the norm should be computed
-*     and an assertion added comparing the norm with one. Alas, Fortran
-*     never made it into 1989 when assert() was introduced into the C
-*     programming language.
-      NORM = REALONE
 *
       IF( M1 .EQ. 0 ) THEN
          DO I = 1, N

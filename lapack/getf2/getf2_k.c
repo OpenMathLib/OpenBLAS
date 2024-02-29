@@ -95,7 +95,7 @@ blasint CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa,
       GEMV_N(m - j, j, 0, dm1,  a + j, lda, b, 1, b + j, 1, sb);
 
       jp = j + IAMAX_K(m - j, b + j, 1);
-      if (jp>m) jp = m;        //avoid out of boundary
+      if (jp>m) jp = m;        //avoid out of boundary when the iamax kernel does not cope with NaN in input, see gh issue 723
       ipiv[j + offset] = jp + offset;
       jp--;
       temp1 = *(b + jp);

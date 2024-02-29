@@ -56,7 +56,7 @@
 *>
 *> Note : ZSTEGR and ZSTEMR work only on machines which follow
 *> IEEE-754 floating-point standard in their handling of infinities and
-*> NaNs.  Normal execution may create these exceptiona values and hence
+*> NaNs.  Normal execution may create these exceptional values and hence
 *> may abort due to a floating point exception in environments which
 *> do not conform to the IEEE-754 standard.
 *> \endverbatim

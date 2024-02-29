@@ -61,7 +61,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
    fmov.d s2, s1
    bge $r0,    N, .L999
    slli.d INCX, INCX, BASE_SHIFT
-   bge $r0,    INCX, .L999
+   beq $r0,    INCX, .L999
    srai.d I, N, 3
    bne INCX, TEMP, .L20
    bge $r0,    I, .L15

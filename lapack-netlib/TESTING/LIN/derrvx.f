@@ -699,21 +699,27 @@
 *
       ELSE IF( LSAMEN( 2, C2, 'SA' ) ) THEN
 *
-*        DSYSV_AA
+*        DSYSV_AASEN
 *
-        SRNAMT = 'DSYSV_AA'
-        INFOT = 1
-        CALL DSYSV_AA( '/', 0, 0, A, 1, IP, B, 1, W, 1, INFO )
-        CALL CHKXER( 'DSYSV_AA', INFOT, NOUT, LERR, OK )
-        INFOT = 2
-        CALL DSYSV_AA( 'U', -1, 0, A, 1, IP, B, 1, W, 1, INFO )
-        CALL CHKXER( 'DSYSV_AA', INFOT, NOUT, LERR, OK )
-        INFOT = 3
-        CALL DSYSV_AA( 'U', 0, -1, A, 1, IP, B, 1, W, 1, INFO )
-        CALL CHKXER( 'DSYSV_AA', INFOT, NOUT, LERR, OK )
-        INFOT = 8
-        CALL DSYSV_AA( 'U', 2, 0, A, 2, IP, B, 1, W, 1, INFO )
-        CALL CHKXER( 'DSYSV_AA', INFOT, NOUT, LERR, OK )
+         SRNAMT = 'DSYSV_AA'
+         INFOT = 1
+         CALL DSYSV_AA( '/', 0, 0, A, 1, IP, B, 1, W, 1, INFO )
+         CALL CHKXER( 'DSYSV_AA', INFOT, NOUT, LERR, OK )
+         INFOT = 2
+         CALL DSYSV_AA( 'U', -1, 0, A, 1, IP, B, 1, W, 1, INFO )
+         CALL CHKXER( 'DSYSV_AA', INFOT, NOUT, LERR, OK )
+         INFOT = 3
+         CALL DSYSV_AA( 'U', 0, -1, A, 1, IP, B, 1, W, 1, INFO )
+         CALL CHKXER( 'DSYSV_AA', INFOT, NOUT, LERR, OK )
+         INFOT = 5
+         CALL DSYSV_AA( 'U', 2, 0, A, 1, IP, B, 2, W, 1, INFO )
+         CALL CHKXER( 'DSYSV_AA', INFOT, NOUT, LERR, OK )
+         INFOT = 8
+         CALL DSYSV_AA( 'U', 2, 0, A, 2, IP, B, 1, W, 1, INFO )
+         CALL CHKXER( 'DSYSV_AA', INFOT, NOUT, LERR, OK )
+         INFOT = 10
+         CALL DSYSV_AA( 'U', 3, 1, A, 3, IP, B, 3, W, 6, INFO )
+         CALL CHKXER( 'DSYSV_AA', INFOT, NOUT, LERR, OK )
 *
       ELSE IF( LSAMEN( 2, C2, 'S2' ) ) THEN
 *
@@ -736,12 +742,16 @@
          CALL DSYSV_AA_2STAGE( 'U', 2, 1, A, 1, A, 1, IP, IP, B, 1,
      $                         W, 1, INFO )
          CALL CHKXER( 'DSYSV_AA_2STAGE', INFOT, NOUT, LERR, OK )
+         INFOT = 7
+         CALL DSYSV_AA_2STAGE( 'U', 2, 1, A, 2, A, 1, IP, IP, B, 2,
+     $                         W, 1, INFO )
+         CALL CHKXER( 'DSYSV_AA_2STAGE', INFOT, NOUT, LERR, OK )
          INFOT = 11
          CALL DSYSV_AA_2STAGE( 'U', 2, 1, A, 2, A, 8, IP, IP, B, 1,
      $                         W, 1, INFO )
          CALL CHKXER( 'DSYSV_AA_2STAGE', INFOT, NOUT, LERR, OK )
-         INFOT = 7
-         CALL DSYSV_AA_2STAGE( 'U', 2, 1, A, 2, A, 1, IP, IP, B, 2,
+         INFOT = 13
+         CALL DSYSV_AA_2STAGE( 'U', 2, 1, A, 2, A, 8, IP, IP, B, 2,
      $                         W, 1, INFO )
          CALL CHKXER( 'DSYSV_AA_2STAGE', INFOT, NOUT, LERR, OK )
 *

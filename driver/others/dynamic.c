@@ -220,6 +220,19 @@ extern gotoblas_t gotoblas_COOPERLAKE;
 #else
 #define gotoblas_COOPERLAKE gotoblas_PRESCOTT
 #endif
+#ifdef DYN_SAPPHIRERAPIDS
+extern gotoblas_t gotoblas_SAPPHIRERAPIDS;
+#elif defined(DYN_SKYLAKEX)
+#define gotoblas_SAPPHIRERAPIDS gotoblas_SKYLAKEX
+#elif defined(DYN_HASWELL)
+#define gotoblas_SAPPHIRERAPIDS gotoblas_HASWELL
+#elif defined(DYN_SANDYBRIDGE)
+#define gotoblas_SAPPHIRERAPIDS gotoblas_SANDYBRIDGE
+#elif defined(DYN_NEHALEM)
+#define gotoblas_SAPPHIRERAPIDS gotoblas_NEHALEM
+#else
+#define gotoblas_SAPPHIRERAPIDS gotoblas_PRESCOTT
+#endif
 
 
 #else // not DYNAMIC_LIST
@@ -262,15 +275,18 @@ extern gotoblas_t  gotoblas_EXCAVATOR;
 #define gotoblas_SKYLAKEX gotoblas_SANDYBRIDGE
 #define gotoblas_COOPERLAKE gotoblas_SANDYBRIDGE
 #define gotoblas_ZEN gotoblas_SANDYBRIDGE
+#define gotoblas_SAPPHIRERAPIDS gotoblas_SANDYBRIDGE
 #else
 extern gotoblas_t  gotoblas_HASWELL;
 extern gotoblas_t  gotoblas_ZEN;
 #ifndef NO_AVX512
 extern gotoblas_t  gotoblas_SKYLAKEX;
 extern gotoblas_t  gotoblas_COOPERLAKE;
+extern gotoblas_t  gotoblas_SAPPHIRERAPIDS;
 #else
 #define gotoblas_SKYLAKEX gotoblas_HASWELL
 #define gotoblas_COOPERLAKE gotoblas_HASWELL
+#define gotoblas_SAPPHIRERAPIDS gotoblas_HASWELL
 #endif
 #endif
 #else
@@ -279,6 +295,7 @@ extern gotoblas_t  gotoblas_COOPERLAKE;
 #define gotoblas_HASWELL gotoblas_NEHALEM
 #define gotoblas_SKYLAKEX gotoblas_NEHALEM
 #define gotoblas_COOPERLAKE gotoblas_NEHALEM
+#define gotoblas_SAPPHIRERAPIDS gotoblas_NEHALEM
 #define gotoblas_BULLDOZER gotoblas_BARCELONA
 #define gotoblas_PILEDRIVER gotoblas_BARCELONA
 #define gotoblas_STEAMROLLER gotoblas_BARCELONA
@@ -371,6 +388,31 @@ int support_avx512_bf16(){
   cpuid_count(7, 1, &eax, &ebx, &ecx, &edx);
   if((eax & 32) == 32){
       ret=1;  // CPUID.7.1:EAX[bit 5] indicates whether avx512_bf16 supported or not
+  }
+  return ret;
+#else
+  return 0;
+#endif
+}
+
+#define BIT_AMX_TILE	0x01000000
+#define BIT_AMX_BF16	0x00400000
+#define BIT_AMX_ENBD	0x00060000
+
+int support_amx_bf16() {
+#if !defined(NO_AVX) && !defined(NO_AVX512)
+  int eax, ebx, ecx, edx;
+  int ret=0;
+
+  if (!support_avx512())
+    return 0;
+  // CPUID.7.0:EDX indicates AMX support
+  cpuid_count(7, 0, &eax, &ebx, &ecx, &edx);
+  if ((edx & BIT_AMX_TILE) && (edx & BIT_AMX_BF16)) {
+    // CPUID.D.0:EAX[17:18] indicates AMX enabled
+    cpuid_count(0xd, 0, &eax, &ebx, &ecx, &edx);
+    if ((eax & BIT_AMX_ENBD) == BIT_AMX_ENBD)
+      ret = 1;
   }
   return ret;
 #else
@@ -689,6 +731,8 @@ static gotoblas_t *get_coretype(void){
 	  }
 	}
 	if (model == 15){          // Sapphire Rapids
+	   if(support_amx_bf16())
+	     return &gotoblas_SAPPHIRERAPIDS;
 	   if(support_avx512_bf16())
              return &gotoblas_COOPERLAKE;
           if (support_avx512()) 
@@ -762,7 +806,8 @@ static gotoblas_t *get_coretype(void){
         }      
 	return NULL;
       }
-      case 0xf:
+      break;
+    case 0xf:
       if (model <= 0x2) return &gotoblas_NORTHWOOD;
       return &gotoblas_PRESCOTT;
     }
@@ -941,7 +986,8 @@ static char *corename[] = {
     "Excavator",
     "Zen",
     "SkylakeX",
-    "Cooperlake"
+    "Cooperlake",
+    "SapphireRapids"
 };
 
 char *gotoblas_corename(void) {
@@ -1006,6 +1052,7 @@ char *gotoblas_corename(void) {
   if (gotoblas == &gotoblas_ZEN)          return corename[23];
   if (gotoblas == &gotoblas_SKYLAKEX)     return corename[24];
   if (gotoblas == &gotoblas_COOPERLAKE)   return corename[25];
+  if (gotoblas == &gotoblas_SAPPHIRERAPIDS) return corename[26];
   return corename[0];
 }
 

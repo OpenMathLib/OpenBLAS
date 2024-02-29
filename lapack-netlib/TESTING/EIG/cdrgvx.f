@@ -56,7 +56,7 @@
 *>
 *>    | l**H * (beta A - alpha B) | / ( ulp max( |beta A|, |alpha B| ) )
 *>
-*>     where l**H is the conjugate tranpose of l.
+*>     where l**H is the conjugate transpose of l.
 *>
 *> (2) max over all right eigenvalue/-vector pairs (beta/alpha,r) of
 *>

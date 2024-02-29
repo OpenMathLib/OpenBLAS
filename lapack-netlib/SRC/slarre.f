@@ -51,7 +51,7 @@
 *> SSTEMR to compute the eigenvectors of T.
 *> The accuracy varies depending on whether bisection is used to
 *> find a few eigenvalues or the dqds algorithm (subroutine SLASQ2) to
-*> conpute all and then discard any unwanted one.
+*> compute all and then discard any unwanted one.
 *> As an added benefit, SLARRE also outputs the n
 *> Gerschgorin intervals for the matrices L_i D_i L_i^T.
 *> \endverbatim

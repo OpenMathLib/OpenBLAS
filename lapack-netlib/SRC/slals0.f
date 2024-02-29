@@ -389,6 +389,11 @@
      $                ( POLES( I, 2 ).EQ.ZERO ) ) THEN
                      WORK( I ) = ZERO
                   ELSE
+*
+*                    Use calls to the subroutine SLAMC3 to enforce the
+*                    parentheses (x+y)+z. The goal is to prevent
+*                    optimizing compilers from doing x+(y+z).
+*
                      WORK( I ) = POLES( I, 2 )*Z( I ) /
      $                           ( SLAMC3( POLES( I, 2 ), DSIGJ )-
      $                           DIFLJ ) / ( POLES( I, 2 )+DJ )
@@ -440,6 +445,11 @@
                   IF( Z( J ).EQ.ZERO ) THEN
                      WORK( I ) = ZERO
                   ELSE
+*
+*                    Use calls to the subroutine SLAMC3 to enforce the
+*                    parentheses (x+y)+z. The goal is to prevent
+*                    optimizing compilers from doing x+(y+z).
+*
                      WORK( I ) = Z( J ) / ( SLAMC3( DSIGJ, -POLES( I+1,
      $                           2 ) )-DIFR( I, 1 ) ) /
      $                           ( DSIGJ+POLES( I, 1 ) ) / DIFR( I, 2 )

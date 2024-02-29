@@ -153,6 +153,9 @@
 *>
 *>  Modified by Tzu-Yi Chen, Computer Science Division, University of
 *>    California at Berkeley, USA
+*>
+*>  Refactored by Evert Provoost, Department of Computer Science,
+*>    KU Leuven, Belgium
 *> \endverbatim
 *>
 *  =====================================================================
@@ -181,8 +184,8 @@
       PARAMETER          ( FACTOR = 0.95E+0 )
 *     ..
 *     .. Local Scalars ..
-      LOGICAL            NOCONV
-      INTEGER            I, ICA, IEXC, IRA, J, K, L, M
+      LOGICAL            NOCONV, CANSWAP
+      INTEGER            I, ICA, IRA, J, K, L
       REAL               C, CA, F, G, R, RA, S, SFMAX1, SFMAX2, SFMIN1,
      $                   SFMIN2
 *     ..
@@ -197,7 +200,7 @@
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          ABS, MAX, MIN
-*
+*     ..
 *     Test the input parameters
 *
       INFO = 0
@@ -214,176 +217,192 @@
          RETURN
       END IF
 *
+*     Quick returns.
+*
+      IF( N.EQ.0 ) THEN
+         ILO = 1
+         IHI = 0
+         RETURN
+      END IF
+*
+      IF( LSAME( JOB, 'N' ) ) THEN
+         DO I = 1, N
+            SCALE( I ) = ONE
+         END DO
+         ILO = 1
+         IHI = N
+         RETURN
+      END IF
+*
+*     Permutation to isolate eigenvalues if possible.
+*
       K = 1
       L = N
 *
-      IF( N.EQ.0 )
-     $   GO TO 210
+      IF( .NOT.LSAME( JOB, 'S' ) ) THEN
 *
-      IF( LSAME( JOB, 'N' ) ) THEN
-         DO 10 I = 1, N
-            SCALE( I ) = ONE
-   10    CONTINUE
-         GO TO 210
+*        Row and column exchange.
+*
+         NOCONV = .TRUE.
+         DO WHILE( NOCONV )
+*
+*           Search for rows isolating an eigenvalue and push them down.
+*
+            NOCONV = .FALSE.
+            DO I = L, 1, -1
+               CANSWAP = .TRUE.
+               DO J = 1, L
+                  IF( I.NE.J .AND. A( I, J ).NE.ZERO ) THEN
+                     CANSWAP = .FALSE.
+                     EXIT
+                  END IF
+               END DO
+*
+               IF( CANSWAP ) THEN
+                  SCALE( L ) = I
+                  IF( I.NE.L ) THEN
+                     CALL SSWAP( L, A( 1, I ), 1, A( 1, L ), 1 )
+                     CALL SSWAP( N-K+1, A( I, K ), LDA, A( L, K ), LDA )
+                  END IF
+                  NOCONV = .TRUE.
+*
+                  IF( L.EQ.1 ) THEN
+                     ILO = 1
+                     IHI = 1
+                     RETURN
+                  END IF
+*
+                  L = L - 1
+               END IF
+            END DO
+*
+         END DO
+
+         NOCONV = .TRUE.
+         DO WHILE( NOCONV )
+*
+*           Search for columns isolating an eigenvalue and push them left.
+*
+            NOCONV = .FALSE.
+            DO J = K, L
+               CANSWAP = .TRUE.
+               DO I = K, L
+                  IF( I.NE.J .AND. A( I, J ).NE.ZERO ) THEN
+                     CANSWAP = .FALSE.
+                     EXIT
+                  END IF
+               END DO
+*
+               IF( CANSWAP ) THEN
+                  SCALE( K ) = J
+                  IF( J.NE.K ) THEN
+                     CALL SSWAP( L, A( 1, J ), 1, A( 1, K ), 1 )
+                     CALL SSWAP( N-K+1, A( J, K ), LDA, A( K, K ), LDA )
+                  END IF
+                  NOCONV = .TRUE.
+*
+                  K = K + 1
+               END IF
+            END DO
+*
+         END DO
+*
       END IF
 *
-      IF( LSAME( JOB, 'S' ) )
-     $   GO TO 120
+*     Initialize SCALE for non-permuted submatrix.
 *
-*     Permutation to isolate eigenvalues if possible
-*
-      GO TO 50
-*
-*     Row and column exchange.
-*
-   20 CONTINUE
-      SCALE( M ) = J
-      IF( J.EQ.M )
-     $   GO TO 30
-*
-      CALL SSWAP( L, A( 1, J ), 1, A( 1, M ), 1 )
-      CALL SSWAP( N-K+1, A( J, K ), LDA, A( M, K ), LDA )
-*
-   30 CONTINUE
-      GO TO ( 40, 80 )IEXC
-*
-*     Search for rows isolating an eigenvalue and push them down.
-*
-   40 CONTINUE
-      IF( L.EQ.1 )
-     $   GO TO 210
-      L = L - 1
-*
-   50 CONTINUE
-      DO 70 J = L, 1, -1
-*
-         DO 60 I = 1, L
-            IF( I.EQ.J )
-     $         GO TO 60
-            IF( A( J, I ).NE.ZERO )
-     $         GO TO 70
-   60    CONTINUE
-*
-         M = L
-         IEXC = 1
-         GO TO 20
-   70 CONTINUE
-*
-      GO TO 90
-*
-*     Search for columns isolating an eigenvalue and push them left.
-*
-   80 CONTINUE
-      K = K + 1
-*
-   90 CONTINUE
-      DO 110 J = K, L
-*
-         DO 100 I = K, L
-            IF( I.EQ.J )
-     $         GO TO 100
-            IF( A( I, J ).NE.ZERO )
-     $         GO TO 110
-  100    CONTINUE
-*
-         M = K
-         IEXC = 2
-         GO TO 20
-  110 CONTINUE
-*
-  120 CONTINUE
-      DO 130 I = K, L
+      DO I = K, L
          SCALE( I ) = ONE
-  130 CONTINUE
+      END DO
 *
-      IF( LSAME( JOB, 'P' ) )
-     $   GO TO 210
+*     If we only had to permute, we are done.
+*
+      IF( LSAME( JOB, 'P' ) ) THEN
+         ILO = K
+         IHI = L
+         RETURN
+      END IF
 *
 *     Balance the submatrix in rows K to L.
 *
-*     Iterative loop for norm reduction
+*     Iterative loop for norm reduction.
 *
       SFMIN1 = SLAMCH( 'S' ) / SLAMCH( 'P' )
       SFMAX1 = ONE / SFMIN1
       SFMIN2 = SFMIN1*SCLFAC
       SFMAX2 = ONE / SFMIN2
-  140 CONTINUE
-      NOCONV = .FALSE.
 *
-      DO 200 I = K, L
+      NOCONV = .TRUE.
+      DO WHILE( NOCONV )
+         NOCONV = .FALSE.
 *
-         C = SNRM2( L-K+1, A( K, I ), 1 )
-         R = SNRM2( L-K+1, A( I, K ), LDA )
-         ICA = ISAMAX( L, A( 1, I ), 1 )
-         CA = ABS( A( ICA, I ) )
-         IRA = ISAMAX( N-K+1, A( I, K ), LDA )
-         RA = ABS( A( I, IRA+K-1 ) )
+         DO I = K, L
 *
-*        Guard against zero C or R due to underflow.
+            C = SNRM2( L-K+1, A( K, I ), 1 )
+            R = SNRM2( L-K+1, A( I, K ), LDA )
+            ICA = ISAMAX( L, A( 1, I ), 1 )
+            CA = ABS( A( ICA, I ) )
+            IRA = ISAMAX( N-K+1, A( I, K ), LDA )
+            RA = ABS( A( I, IRA+K-1 ) )
 *
-         IF( C.EQ.ZERO .OR. R.EQ.ZERO )
-     $      GO TO 200
-         G = R / SCLFAC
-         F = ONE
-         S = C + R
-  160    CONTINUE
-         IF( C.GE.G .OR. MAX( F, C, CA ).GE.SFMAX2 .OR.
-     $       MIN( R, G, RA ).LE.SFMIN2 )GO TO 170
-         F = F*SCLFAC
-         C = C*SCLFAC
-         CA = CA*SCLFAC
-         R = R / SCLFAC
-         G = G / SCLFAC
-         RA = RA / SCLFAC
-         GO TO 160
+*           Guard against zero C or R due to underflow.
 *
-  170    CONTINUE
-         G = C / SCLFAC
-  180    CONTINUE
-         IF( G.LT.R .OR. MAX( R, RA ).GE.SFMAX2 .OR.
-     $       MIN( F, C, G, CA ).LE.SFMIN2 )GO TO 190
-            IF( SISNAN( C+F+CA+R+G+RA ) ) THEN
+            IF( C.EQ.ZERO .OR. R.EQ.ZERO ) CYCLE
 *
 *           Exit if NaN to avoid infinite loop
 *
-            INFO = -3
-            CALL XERBLA( 'SGEBAL', -INFO )
-            RETURN
-         END IF
-         F = F / SCLFAC
-         C = C / SCLFAC
-         G = G / SCLFAC
-         CA = CA / SCLFAC
-         R = R*SCLFAC
-         RA = RA*SCLFAC
-         GO TO 180
+            IF( SISNAN( C+CA+R+RA ) ) THEN
+               INFO = -3
+               CALL XERBLA( 'SGEBAL', -INFO )
+               RETURN
+            END IF
 *
-*        Now balance.
+            G = R / SCLFAC
+            F = ONE
+            S = C + R
 *
-  190    CONTINUE
-         IF( ( C+R ).GE.FACTOR*S )
-     $      GO TO 200
-         IF( F.LT.ONE .AND. SCALE( I ).LT.ONE ) THEN
-            IF( F*SCALE( I ).LE.SFMIN1 )
-     $         GO TO 200
-         END IF
-         IF( F.GT.ONE .AND. SCALE( I ).GT.ONE ) THEN
-            IF( SCALE( I ).GE.SFMAX1 / F )
-     $         GO TO 200
-         END IF
-         G = ONE / F
-         SCALE( I ) = SCALE( I )*F
-         NOCONV = .TRUE.
+            DO WHILE( C.LT.G .AND. MAX( F, C, CA ).LT.SFMAX2 .AND.
+     $                MIN( R, G, RA ).GT.SFMIN2 )
+               F = F*SCLFAC
+               C = C*SCLFAC
+               CA = CA*SCLFAC
+               R = R / SCLFAC
+               G = G / SCLFAC
+               RA = RA / SCLFAC
+            END DO
 *
-         CALL SSCAL( N-K+1, G, A( I, K ), LDA )
-         CALL SSCAL( L, F, A( 1, I ), 1 )
+            G = C / SCLFAC
 *
-  200 CONTINUE
+            DO WHILE( G.GE.R .AND. MAX( R, RA ).LT.SFMAX2 .AND.
+     $                MIN( F, C, G, CA ).GT.SFMIN2 )
+               F = F / SCLFAC
+               C = C / SCLFAC
+               G = G / SCLFAC
+               CA = CA / SCLFAC
+               R = R*SCLFAC
+               RA = RA*SCLFAC
+            END DO
 *
-      IF( NOCONV )
-     $   GO TO 140
+*           Now balance.
 *
-  210 CONTINUE
+            IF( ( C+R ).GE.FACTOR*S ) CYCLE
+            IF( F.LT.ONE .AND. SCALE( I ).LT.ONE ) THEN
+               IF( F*SCALE( I ).LE.SFMIN1 ) CYCLE
+            END IF
+            IF( F.GT.ONE .AND. SCALE( I ).GT.ONE ) THEN
+               IF( SCALE( I ).GE.SFMAX1 / F ) CYCLE
+            END IF
+            G = ONE / F
+            SCALE( I ) = SCALE( I )*F
+            NOCONV = .TRUE.
+*
+            CALL SSCAL( N-K+1, G, A( I, K ), LDA )
+            CALL SSCAL( L, F, A( 1, I ), 1 )
+*
+         END DO
+*
+      END DO
+*
       ILO = K
       IHI = L
 *

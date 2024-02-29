@@ -54,7 +54,7 @@
 #define	__volatile__
 #endif
 
-static void __inline blas_lock(volatile BLASULONG *address){
+static __inline void blas_lock(volatile BLASULONG *address){
 
   int ret;
 

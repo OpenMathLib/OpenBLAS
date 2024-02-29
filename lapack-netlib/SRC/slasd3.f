@@ -44,13 +44,6 @@
 *> appropriate calls to SLASD4 and then updates the singular
 *> vectors by matrix multiplication.
 *>
-*> This code makes very mild assumptions about floating point
-*> arithmetic. It will work on machines with a guard digit in
-*> add/subtract, or on those binary machines without guard digits
-*> which subtract like the Cray XMP, Cray YMP, Cray C 90, or Cray 2.
-*> It could conceivably fail on hexadecimal or decimal machines
-*> without guard digits, but we know of none.
-*>
 *> SLASD3 is called from SLASD1.
 *> \endverbatim
 *
@@ -103,7 +96,7 @@
 *>         The leading dimension of the array Q.  LDQ >= K.
 *> \endverbatim
 *>
-*> \param[in,out] DSIGMA
+*> \param[in] DSIGMA
 *> \verbatim
 *>          DSIGMA is REAL array, dimension(K)
 *>         The first K elements of this array contain the old roots
@@ -249,8 +242,8 @@
       REAL               RHO, TEMP
 *     ..
 *     .. External Functions ..
-      REAL               SLAMC3, SNRM2
-      EXTERNAL           SLAMC3, SNRM2
+      REAL               SNRM2
+      EXTERNAL           SNRM2
 *     ..
 *     .. External Subroutines ..
       EXTERNAL           SCOPY, SGEMM, SLACPY, SLASCL, SLASD4, XERBLA
@@ -309,27 +302,6 @@
          END IF
          RETURN
       END IF
-*
-*     Modify values DSIGMA(i) to make sure all DSIGMA(i)-DSIGMA(j) can
-*     be computed with high relative accuracy (barring over/underflow).
-*     This is a problem on machines without a guard digit in
-*     add/subtract (Cray XMP, Cray YMP, Cray C 90 and Cray 2).
-*     The following code replaces DSIGMA(I) by 2*DSIGMA(I)-DSIGMA(I),
-*     which on any of these machines zeros out the bottommost
-*     bit of DSIGMA(I) if it is 1; this makes the subsequent
-*     subtractions DSIGMA(I)-DSIGMA(J) unproblematic when cancellation
-*     occurs. On binary machines with a guard digit (almost all
-*     machines) it does not change DSIGMA(I) at all. On hexadecimal
-*     and decimal machines with a guard digit, it slightly
-*     changes the bottommost bits of DSIGMA(I). It does not account
-*     for hexadecimal or decimal machines without guard digits
-*     (we know of none). We use a subroutine call to compute
-*     2*DSIGMA(I) to prevent optimizing compilers from eliminating
-*     this code.
-*
-      DO 20 I = 1, K
-         DSIGMA( I ) = SLAMC3( DSIGMA( I ), DSIGMA( I ) ) - DSIGMA( I )
-   20 CONTINUE
 *
 *     Keep a copy of Z.
 *

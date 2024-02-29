@@ -1,5 +1,6 @@
 /*********************************************************************/
 /* Copyright 2009, 2010 The University of Texas at Austin.           */
+/* Copyright 2023 The OpenBLAS Project.                              */
 /* All rights reserved.                                              */
 /*                                                                   */
 /* Redistribution and use in source and binary forms, with or        */
@@ -42,10 +43,6 @@
 
 #ifndef DIVIDE_RATE
 #define DIVIDE_RATE 2
-#endif
-
-#ifndef SWITCH_RATIO
-#define SWITCH_RATIO 2
 #endif
 
 //The array of job_t may overflow the stack.
@@ -528,7 +525,13 @@ int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, FLOAT *sa, FLO
   int  mode, mask;
   double dnum, di, dinum;
 
-  if ((nthreads  == 1) || (args -> n < nthreads * SWITCH_RATIO)) {
+#if defined(DYNAMIC_ARCH)
+  int switch_ratio = gotoblas->switch_ratio;
+#else
+  int switch_ratio = SWITCH_RATIO;
+#endif
+
+  if ((nthreads == 1) || (args->n < nthreads * switch_ratio)) {
     SYRK_LOCAL(args, range_m, range_n, sa, sb, 0);
     return 0;
   }

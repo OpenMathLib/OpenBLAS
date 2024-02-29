@@ -105,7 +105,13 @@
 *> \param[in] LWORK
 *> \verbatim
 *>          LWORK is INTEGER
-*>          The dimension of the array WORK. LWORK >= max(1,3*N-2).
+*>          The dimension of the array WORK.
+*>          If MIN(N,NRHS) = 0, LWORK >= 1, else LWORK >= 3*N-2.
+*>
+*>          If LWORK = -1, then a workspace query is assumed; the routine
+*>          only calculates the minimal size of the WORK array, returns
+*>          this value as the first entry of the WORK array, and no error
+*>          message related to LWORK is issued by XERBLA.
 *> \endverbatim
 *>
 *> \param[out] INFO
@@ -123,7 +129,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup realSYcomputational
+*> \ingroup hetrs_aa
 *
 *  =====================================================================
       SUBROUTINE SSYTRS_AA( UPLO, N, NRHS, A, LDA, IPIV, B, LDB,
@@ -141,7 +147,7 @@
 *     ..
 *     .. Array Arguments ..
       INTEGER            IPIV( * )
-      REAL   A( LDA, * ), B( LDB, * ), WORK( * )
+      REAL               A( LDA, * ), B( LDB, * ), WORK( * )
 *     ..
 *
 *  =====================================================================
@@ -151,23 +157,31 @@
 *     ..
 *     .. Local Scalars ..
       LOGICAL            LQUERY, UPPER
-      INTEGER            K, KP, LWKOPT
+      INTEGER            K, KP, LWKMIN
 *     ..
 *     .. External Functions ..
       LOGICAL            LSAME
       EXTERNAL           LSAME
+      REAL               SROUNDUP_LWORK
+      EXTERNAL           SROUNDUP_LWORK
 *     ..
 *     .. External Subroutines ..
       EXTERNAL           SGTSV, SSWAP, SLACPY, STRSM, XERBLA
 *     ..
 *     .. Intrinsic Functions ..
-      INTRINSIC          MAX
+      INTRINSIC          MIN, MAX
 *     ..
 *     .. Executable Statements ..
 *
       INFO = 0
       UPPER = LSAME( UPLO, 'U' )
       LQUERY = ( LWORK.EQ.-1 )
+      IF( MIN( N, NRHS ).EQ.0 ) THEN
+         LWKMIN = 1
+      ELSE
+         LWKMIN = 3*N-2
+      END IF
+*
       IF( .NOT.UPPER .AND. .NOT.LSAME( UPLO, 'L' ) ) THEN
          INFO = -1
       ELSE IF( N.LT.0 ) THEN
@@ -178,21 +192,20 @@
          INFO = -5
       ELSE IF( LDB.LT.MAX( 1, N ) ) THEN
          INFO = -8
-      ELSE IF( LWORK.LT.MAX( 1, 3*N-2 ) .AND. .NOT.LQUERY ) THEN
+      ELSE IF( LWORK.LT.LWKMIN .AND. .NOT.LQUERY ) THEN
          INFO = -10
       END IF
       IF( INFO.NE.0 ) THEN
          CALL XERBLA( 'SSYTRS_AA', -INFO )
          RETURN
       ELSE IF( LQUERY ) THEN
-         LWKOPT = (3*N-2)
-         WORK( 1 ) = LWKOPT
+         WORK( 1 ) = SROUNDUP_LWORK( LWKMIN )
          RETURN
       END IF
 *
 *     Quick return if possible
 *
-      IF( N.EQ.0 .OR. NRHS.EQ.0 )
+      IF( MIN( N, NRHS ).EQ.0 )
      $   RETURN
 *
       IF( UPPER ) THEN

@@ -80,10 +80,6 @@ static FLOAT dm1 = -1.;
 #define DIVIDE_RATE 2
 #endif
 
-#ifndef SWITCH_RATIO
-#define SWITCH_RATIO 2
-#endif
-
 #ifndef LOWER
 #define TRANS
 #endif

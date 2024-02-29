@@ -132,12 +132,16 @@ CSWAPKERNEL  = ../arm/zswap.c
 ZSWAPKERNEL  = ../arm/zswap.c
 
 SGEMVNKERNEL = ../arm/gemv_n.c
+ifndef DGEMVNKERNEL
 DGEMVNKERNEL = ../arm/gemv_n.c
+endif
 CGEMVNKERNEL = ../arm/zgemv_n.c
 ZGEMVNKERNEL = ../arm/zgemv_n.c
 
 SGEMVTKERNEL = ../arm/gemv_t.c
+ifndef DGEMVTKERNEL
 DGEMVTKERNEL = ../arm/gemv_t.c
+endif
 CGEMVTKERNEL = ../arm/zgemv_t.c
 ZGEMVTKERNEL = ../arm/zgemv_t.c
 

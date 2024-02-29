@@ -384,7 +384,7 @@
 *> \verbatim
 *>          D1 is DOUBLE PRECISION array of
 *>                             dimension( max(NN) )
-*>          The eigenvalues of A, as computed by DSTEQR simlutaneously
+*>          The eigenvalues of A, as computed by DSTEQR simultaneously
 *>          with Z.  On exit, the eigenvalues in D1 correspond with the
 *>          matrix in A.
 *> \endverbatim
@@ -666,10 +666,10 @@
       EXTERNAL           ILAENV, DLAMCH, DLARND, DSXT1
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           DCOPY, DLABAD, DLACPY, DLASET, DLASUM, DLATMR,
-     $                   DLATMS, DOPGTR, DORGTR, DPTEQR, DSPT21, DSPTRD,
-     $                   DSTEBZ, DSTECH, DSTEDC, DSTEMR, DSTEIN, DSTEQR,
-     $                   DSTERF, DSTT21, DSTT22, DSYT21, DSYTRD, XERBLA,
+      EXTERNAL           DCOPY, DLACPY, DLASET, DLASUM, DLATMR, DLATMS,
+     $                   DOPGTR, DORGTR, DPTEQR, DSPT21, DSPTRD, DSTEBZ,
+     $                   DSTECH, DSTEDC, DSTEMR, DSTEIN, DSTEQR, DSTERF,
+     $                   DSTT21, DSTT22, DSYT21, DSYTRD, XERBLA,
      $                   DSYTRD_2STAGE
 *     ..
 *     .. Intrinsic Functions ..
@@ -737,7 +737,6 @@
 *
       UNFL = DLAMCH( 'Safe minimum' )
       OVFL = ONE / UNFL
-      CALL DLABAD( UNFL, OVFL )
       ULP = DLAMCH( 'Epsilon' )*DLAMCH( 'Base' )
       ULPINV = ONE / ULP
       LOG2UI = INT( LOG( ULPINV ) / LOG( TWO ) )

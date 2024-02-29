@@ -120,7 +120,7 @@
 *>          The dimension of the array WORK.
 *>          If LWORK = -1, then a workspace query is assumed. The routine
 *>          only calculates the size of the WORK array, returns this
-*>          value as WORK(1), and no error message related to WORK 
+*>          value as WORK(1), and no error message related to WORK
 *>          is issued by XERBLA.
 *> \endverbatim
 *>
@@ -144,7 +144,7 @@
 *>
 *> \verbatim
 *>
-*> These details are particular for this LAPACK implementation. Users should not 
+*> These details are particular for this LAPACK implementation. Users should not
 *> take them for granted. These details may change in the future, and are not likely
 *> true for another LAPACK implementation. These details are relevant if one wants
 *> to try to understand the code. They are not part of the interface.
@@ -160,11 +160,13 @@
 *>  block sizes MB and NB returned by ILAENV, SGEQR will use either
 *>  SLATSQR (if the matrix is tall-and-skinny) or SGEQRT to compute
 *>  the QR factorization.
-*>  This version of SGEMQR will use either SLAMTSQR or SGEMQRT to 
+*>  This version of SGEMQR will use either SLAMTSQR or SGEMQRT to
 *>  multiply matrix Q by another matrix.
 *>  Further Details in SLAMTSQR or SGEMQRT.
 *>
 *> \endverbatim
+*>
+*> \ingroup gemqr
 *>
 *  =====================================================================
       SUBROUTINE SGEMQR( SIDE, TRANS, M, N, K, A, LDA, T, TSIZE,
@@ -187,11 +189,13 @@
 *     ..
 *     .. Local Scalars ..
       LOGICAL            LEFT, RIGHT, TRAN, NOTRAN, LQUERY
-      INTEGER            MB, NB, LW, NBLCKS, MN
+      INTEGER            MB, NB, LW, NBLCKS, MN, MINMNK, LWMIN
 *     ..
 *     .. External Functions ..
       LOGICAL            LSAME
       EXTERNAL           LSAME
+      REAL               SROUNDUP_LWORK
+      EXTERNAL           SROUNDUP_LWORK
 *     ..
 *     .. External Subroutines ..
       EXTERNAL           SGEMQRT, SLAMTSQR, XERBLA
@@ -203,7 +207,7 @@
 *
 *     Test the input arguments
 *
-      LQUERY  = LWORK.EQ.-1
+      LQUERY  = ( LWORK.EQ.-1 )
       NOTRAN  = LSAME( TRANS, 'N' )
       TRAN    = LSAME( TRANS, 'T' )
       LEFT    = LSAME( SIDE, 'L' )
@@ -217,6 +221,13 @@
       ELSE
         LW = MB * NB
         MN = N
+      END IF
+*
+      MINMNK = MIN( M, N, K )
+      IF( MINMNK.EQ.0 ) THEN
+         LWMIN = 1
+      ELSE
+         LWMIN = MAX( 1, LW )
       END IF
 *
       IF( ( MB.GT.K ) .AND. ( MN.GT.K ) ) THEN
@@ -246,12 +257,12 @@
         INFO = -9
       ELSE IF( LDC.LT.MAX( 1, M ) ) THEN
         INFO = -11
-      ELSE IF( ( LWORK.LT.MAX( 1, LW ) ) .AND. ( .NOT.LQUERY ) ) THEN
+      ELSE IF( LWORK.LT.LWMIN .AND. .NOT.LQUERY ) THEN
         INFO = -13
       END IF
 *
       IF( INFO.EQ.0 ) THEN
-        WORK( 1 ) = LW
+        WORK( 1 ) = SROUNDUP_LWORK( LWMIN )
       END IF
 *
       IF( INFO.NE.0 ) THEN
@@ -263,7 +274,7 @@
 *
 *     Quick return if possible
 *
-      IF( MIN( M, N, K ).EQ.0 ) THEN
+      IF( MINMNK.EQ.0 ) THEN
         RETURN
       END IF
 *
@@ -276,7 +287,7 @@
      $                 NB, C, LDC, WORK, LWORK, INFO )
       END IF
 *
-      WORK( 1 ) = LW
+      WORK( 1 ) = SROUNDUP_LWORK( LWMIN )
 *
       RETURN
 *

@@ -159,7 +159,8 @@
 *
 *        Compute Householder transform when M=1
 *
-         CALL CLARFG( N, A, A( 1, MIN( 2, N ) ), LDA, T )
+         CALL CLARFG( N, A( 1, 1 ), A( 1, MIN( 2, N ) ), LDA,
+     &                T( 1, 1 ) )
          T(1,1)=CONJG(T(1,1))
 *
       ELSE

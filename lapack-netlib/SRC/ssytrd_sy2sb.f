@@ -124,7 +124,7 @@
 *> \param[out] WORK
 *> \verbatim
 *>          WORK is REAL array, dimension (LWORK)
-*>          On exit, if INFO = 0, or if LWORK=-1, 
+*>          On exit, if INFO = 0, or if LWORK = -1,
 *>          WORK(1) returns the size of LWORK.
 *> \endverbatim
 *>
@@ -132,7 +132,9 @@
 *> \verbatim
 *>          LWORK is INTEGER
 *>          The dimension of the array WORK which should be calculated
-*>          by a workspace query. LWORK = MAX(1, LWORK_QUERY)
+*>          by a workspace query.
+*>          If N <= KD+1, LWORK >= 1, else LWORK = MAX(1, LWORK_QUERY)
+*>
 *>          If LWORK = -1, then a workspace query is assumed; the routine
 *>          only calculates the optimal size of the WORK array, returns
 *>          this value as the first entry of the WORK array, and no error
@@ -158,7 +160,7 @@
 *> \author Univ. of Colorado Denver 
 *> \author NAG Ltd. 
 *
-*> \ingroup realSYcomputational
+*> \ingroup hetrd_he2hb
 *
 *> \par Further Details:
 *  =====================
@@ -283,7 +285,8 @@
 *     .. External Functions ..
       LOGICAL            LSAME
       INTEGER            ILAENV2STAGE 
-      EXTERNAL           LSAME, ILAENV2STAGE
+      REAL               SROUNDUP_LWORK
+      EXTERNAL           LSAME, ILAENV2STAGE, SROUNDUP_LWORK
 *     ..
 *     .. Executable Statements ..
 *
@@ -293,8 +296,12 @@
       INFO   = 0
       UPPER  = LSAME( UPLO, 'U' )
       LQUERY = ( LWORK.EQ.-1 )
-      LWMIN  = ILAENV2STAGE( 4, 'SSYTRD_SY2SB', '', N, KD, -1, -1 )
-      
+      IF( N.LE.KD+1 ) THEN
+         LWMIN = 1
+      ELSE
+         LWMIN = ILAENV2STAGE( 4, 'SSYTRD_SY2SB', '', N, KD, -1, -1 )
+      END IF
+*
       IF( .NOT.UPPER .AND. .NOT.LSAME( UPLO, 'L' ) ) THEN
          INFO = -1
       ELSE IF( N.LT.0 ) THEN
@@ -313,7 +320,7 @@
          CALL XERBLA( 'SSYTRD_SY2SB', -INFO )
          RETURN
       ELSE IF( LQUERY ) THEN
-         WORK( 1 ) = LWMIN
+         WORK( 1 ) = SROUNDUP_LWORK( LWMIN )
          RETURN
       END IF
 *
@@ -506,7 +513,7 @@
 
       END IF
 *
-      WORK( 1 ) = LWMIN
+      WORK( 1 ) = SROUNDUP_LWORK( LWMIN )
       RETURN
 *
 *     End of SSYTRD_SY2SB

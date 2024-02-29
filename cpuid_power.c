@@ -160,6 +160,7 @@ int detect(void){
   infoCount = HOST_BASIC_INFO_COUNT;
   host_info(mach_host_self(), HOST_BASIC_INFO, (host_info_t)&hostInfo, &infoCount);
 
+  if (hostInfo.cpu_subtype == CPU_SUBTYPE_POWERPC_7400) return CPUTYPE_PPCG4;
   if (hostInfo.cpu_subtype == CPU_SUBTYPE_POWERPC_7450) return CPUTYPE_PPCG4;
   if (hostInfo.cpu_subtype == CPU_SUBTYPE_POWERPC_970)  return CPUTYPE_PPC970;
 

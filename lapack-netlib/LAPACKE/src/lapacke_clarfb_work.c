@@ -60,7 +60,7 @@ lapack_int LAPACKE_clarfb_work( int matrix_layout, char side, char trans,
 
         nrows_v = ( col && left ) ? m : ( ( col && !left ) ? n : ( !col ? k : 1) );
         ncols_v = ( !col && left ) ? m : ( ( !col && !left ) ? n : ( col ? k : 1 ) );
-        uplo = ( ( left && col ) || !( left || col ) ) ? 'l' : 'u';
+        uplo = ( ( forward && col ) || !( forward || col ) ) ? 'l' : 'u';
 
         ldc_t = MAX(1,m);
         ldt_t = MAX(1,k);

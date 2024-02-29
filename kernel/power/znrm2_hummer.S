@@ -134,7 +134,7 @@
 	cmpwi	cr0, N, 0
 	ble	LL(99)
 	cmpwi	cr0, INCX, 0
-	ble	LL(99)
+	beq	LL(99)
 
 	mr	XX, X
 

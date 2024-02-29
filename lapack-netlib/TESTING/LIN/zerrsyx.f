@@ -139,7 +139,7 @@
       IF( LSAMEN( 2, C2, 'SY' ) ) THEN
 *
 *        Test error exits of the routines that use factorization
-*        of a symmetric indefinite matrix with patrial
+*        of a symmetric indefinite matrix with partial
 *        (Bunch-Kaufman) diagonal pivoting method.
 *
 *        ZSYTRF
@@ -525,7 +525,7 @@
       ELSE IF( LSAMEN( 2, C2, 'SP' ) ) THEN
 *
 *        Test error exits of the routines that use factorization
-*        of a symmetric indefinite packed matrix with patrial
+*        of a symmetric indefinite packed matrix with partial
 *        (Bunch-Kaufman) pivoting.
 *
 *        ZSPTRF

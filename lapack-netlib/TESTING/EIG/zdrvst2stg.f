@@ -204,7 +204,7 @@
 *>          Not modified.
 *>
 *>  D1      DOUBLE PRECISION array, dimension (max(NN))
-*>          The eigenvalues of A, as computed by ZSTEQR simlutaneously
+*>          The eigenvalues of A, as computed by ZSTEQR simultaneously
 *>          with Z.  On exit, the eigenvalues in D1 correspond with the
 *>          matrix in A.
 *>          Modified.
@@ -391,7 +391,7 @@
       EXTERNAL           DLAMCH, DLARND, DSXT1
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           ALASVM, DLABAD, DLAFTS, XERBLA, ZHBEV, ZHBEVD,
+      EXTERNAL           ALASVM, DLAFTS, XERBLA, ZHBEV, ZHBEVD,
      $                   ZHBEVX, ZHEEV, ZHEEVD, ZHEEVR, ZHEEVX, ZHET21,
      $                   ZHET22, ZHPEV, ZHPEVD, ZHPEVX, ZLACPY, ZLASET,
      $                   ZHEEVD_2STAGE, ZHEEVR_2STAGE, ZHEEVX_2STAGE,
@@ -453,7 +453,6 @@
 *
       UNFL = DLAMCH( 'Safe minimum' )
       OVFL = DLAMCH( 'Overflow' )
-      CALL DLABAD( UNFL, OVFL )
       ULP = DLAMCH( 'Epsilon' )*DLAMCH( 'Base' )
       ULPINV = ONE / ULP
       RTUNFL = SQRT( UNFL )

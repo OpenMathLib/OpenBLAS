@@ -132,7 +132,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup OTHERauxiliary
+*> \ingroup ilaenv
 *
 *> \par Further Details:
 *  =====================
@@ -355,6 +355,12 @@
             ELSE
                NB = 64
             END IF
+         ELSE IF( SUBNAM( 4: 7 ).EQ.'QP3RK' ) THEN
+            IF( SNAME ) THEN
+               NB = 32
+            ELSE
+               NB = 32
+            END IF
          END IF
       ELSE IF( C2.EQ.'PO' ) THEN
          IF( C3.EQ.'TRF' ) THEN
@@ -541,7 +547,14 @@
             ELSE
                NBMIN = 2
             END IF
+         ELSE IF( SUBNAM( 4: 7 ).EQ.'QP3RK' ) THEN
+            IF( SNAME ) THEN
+               NBMIN = 2
+            ELSE
+               NBMIN = 2
+            END IF
          END IF
+
       ELSE IF( C2.EQ.'SY' ) THEN
          IF( C3.EQ.'TRF' ) THEN
             IF( SNAME ) THEN
@@ -613,6 +626,12 @@
                NX = 128
             END IF
          ELSE IF( C3.EQ.'BRD' ) THEN
+            IF( SNAME ) THEN
+               NX = 128
+            ELSE
+               NX = 128
+            END IF
+         ELSE IF( SUBNAM( 4: 7 ).EQ.'QP3RK' ) THEN
             IF( SNAME ) THEN
                NX = 128
             ELSE

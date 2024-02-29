@@ -1,3 +1,5 @@
+CSUMKERNEL=csum.S
+
 ifndef SNRM2KERNEL
 SNRM2KERNEL = ../arm/nrm2.c
 endif

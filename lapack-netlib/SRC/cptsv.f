@@ -94,8 +94,8 @@
 *>          INFO is INTEGER
 *>          = 0:  successful exit
 *>          < 0:  if INFO = -i, the i-th argument had an illegal value
-*>          > 0:  if INFO = i, the leading minor of order i is not
-*>                positive definite, and the solution has not been
+*>          > 0:  if INFO = i, the leading principal minor of order i
+*>                is not positive, and the solution has not been
 *>                computed.  The factorization has not been completed
 *>                unless i = N.
 *> \endverbatim

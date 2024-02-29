@@ -2,11 +2,16 @@ name: continuous build
 
 on: [push, pull_request]
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
 permissions:
   contents: read # to fetch code (actions/checkout)
 
 jobs:
   build:
+    if: "github.repository == 'OpenMathLib/OpenBLAS'"
     runs-on: ${{ matrix.os }}
 
     strategy:
@@ -37,6 +42,7 @@ jobs:
       - name: Install Dependencies
         run: |
           if [ "$RUNNER_OS" == "Linux" ]; then
+            sudo apt-get update
             sudo apt-get install -y gfortran cmake ccache libtinfo5
           elif [ "$RUNNER_OS" == "macOS" ]; then
             # It looks like "gfortran" isn't working correctly unless "gcc" is re-installed.
@@ -146,44 +152,58 @@ jobs:
 
 
   msys2:
+    if: "github.repository == 'OpenMathLib/OpenBLAS'"
     runs-on: windows-latest
 
     strategy:
       fail-fast: false
       matrix:
-        msystem: [MINGW64, MINGW32, CLANG64]
+        msystem: [UCRT64, MINGW32, CLANG64, CLANG32]
         idx: [int32, int64]
         build-type: [Release]
         include:
-          - msystem: MINGW64
+          - msystem: UCRT64
             idx: int32
-            target-prefix: mingw-w64-x86_64
-            fc-pkg: mingw-w64-x86_64-gcc-fortran
+            target-prefix: mingw-w64-ucrt-x86_64
+            fc-pkg: fc
           - msystem: MINGW32
             idx: int32
             target-prefix: mingw-w64-i686
-            fc-pkg: mingw-w64-i686-gcc-fortran
+            fc-pkg: fc
           - msystem: CLANG64
             idx: int32
             target-prefix: mingw-w64-clang-x86_64
+            fc-pkg: fc
+            # Compiling with Flang 16 seems to cause test errors on machines
+            # with AVX512 instructions. Revisit after MSYS2 distributes Flang 17.
+            no-avx512-flags: -DNO_AVX512=1
+          - msystem: CLANG32
+            idx: int32
+            target-prefix: mingw-w64-clang-i686
+            fc-pkg: cc
             c-lapack-flags: -DC_LAPACK=ON
-          - msystem: MINGW64
+          - msystem: UCRT64
             idx: int64
             idx64-flags: -DBINARY=64 -DINTERFACE64=1
-            target-prefix: mingw-w64-x86_64
-            fc-pkg: mingw-w64-x86_64-gcc-fortran
+            target-prefix: mingw-w64-ucrt-x86_64
+            fc-pkg: fc
           - msystem: CLANG64
             idx: int64
             idx64-flags: -DBINARY=64 -DINTERFACE64=1
             target-prefix: mingw-w64-clang-x86_64
-            c-lapack-flags: -DC_LAPACK=ON
-          - msystem: MINGW64
+            fc-pkg: fc
+            # Compiling with Flang 16 seems to cause test errors on machines
+            # with AVX512 instructions. Revisit after MSYS2 distributes Flang 17.
+            no-avx512-flags: -DNO_AVX512=1
+          - msystem: UCRT64
             idx: int32
-            target-prefix: mingw-w64-x86_64
-            fc-pkg: mingw-w64-x86_64-gcc-fortran
+            target-prefix: mingw-w64-ucrt-x86_64
+            fc-pkg: fc
             build-type: None
         exclude:
           - msystem: MINGW32
+            idx: int64
+          - msystem: CLANG32
             idx: int64
 
     defaults:
@@ -209,7 +229,7 @@ jobs:
           install: >-
             base-devel
             ${{ matrix.target-prefix }}-cc
-            ${{ matrix.fc-pkg }}
+            ${{ matrix.target-prefix }}-${{ matrix.fc-pkg }}
             ${{ matrix.target-prefix }}-cmake
             ${{ matrix.target-prefix }}-ninja
             ${{ matrix.target-prefix }}-ccache
@@ -217,14 +237,21 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Compilation cache
-        uses: actions/cache@v3
-        with:
-          # It looks like this path needs to be hard-coded.
-          path: C:/msys64/home/runneradmin/.ccache
+      - name: Prepare ccache
+        # Get cache location of ccache
+        # Create key that is used in action/cache/restore and action/cache/save steps
+        id: ccache-prepare
+        run: |
+          echo "ccachedir=$(cygpath -m $(ccache -k cache_dir))" >> $GITHUB_OUTPUT
           # We include the commit sha in the cache key, as new cache entries are
           # only created if there is no existing entry for the key yet.
-          key: ccache-msys2-${{ matrix.msystem }}-${{ matrix.idx }}-${{ matrix.build-type }}-${{ github.ref }}-${{ github.sha }}
+          echo "key=ccache-msys2-${{ matrix.msystem }}-${{ matrix.idx }}-${{ matrix.build-type }}-${{ github.ref }}-${{ github.sha }}" >> $GITHUB_OUTPUT
+
+      - name: Restore ccache
+        uses: actions/cache/restore@v3
+        with:
+          path: ${{ steps.ccache-prepare.outputs.ccachedir }}
+          key: ${{ steps.ccache-prepare.outputs.key }}
           # Restore a matching ccache cache entry. Prefer same branch.
           restore-keys: |
             ccache-msys2-${{ matrix.msystem }}-${{ matrix.idx }}-${{ matrix.build-type }}-${{ github.ref }}
@@ -234,9 +261,10 @@ jobs:
         # Limit the maximum size and switch on compression to avoid exceeding the total disk or cache quota.
         run: |
           which ccache
-          test -d ~/.ccache || mkdir -p ~/.ccache
-          echo "max_size = 250M" > ~/.ccache/ccache.conf
-          echo "compression = true" >> ~/.ccache/ccache.conf
+          test -d ${{ steps.ccache-prepare.outputs.ccachedir }} || mkdir -p ${{ steps.ccache-prepare.outputs.ccachedir }}
+          echo "max_size = 250M" > ${{ steps.ccache-prepare.outputs.ccachedir }}/ccache.conf
+          echo "compression = true" >> ${{ steps.ccache-prepare.outputs.ccachedir }}/ccache.conf
+          ccache -p
           ccache -s
           echo $HOME
           cygpath -w $HOME
@@ -253,6 +281,7 @@ jobs:
                 -DTARGET=CORE2 \
                 ${{ matrix.idx64-flags }} \
                 ${{ matrix.c-lapack-flags }} \
+                ${{ matrix.no-avx512-flags }} \
                 -DCMAKE_C_COMPILER_LAUNCHER=ccache \
                 -DCMAKE_Fortran_COMPILER_LAUNCHER=ccache \
                 ..
@@ -264,12 +293,33 @@ jobs:
         continue-on-error: true
         run: ccache -s
 
+      - name: Save ccache
+        # Save the cache after we are done (successfully) building
+        uses: actions/cache/save@v3
+        with:
+          path: ${{ steps.ccache-prepare.outputs.ccachedir }}
+          key: ${{ steps.ccache-prepare.outputs.key }}
+
       - name: Run tests
+        id: run-ctest
         timeout-minutes: 60
         run: cd build && ctest
 
+      - name: Re-run tests
+        if: always() && (steps.run-ctest.outcome == 'failure')
+        timeout-minutes: 60
+        run: |
+          cd build
+          echo "::group::Re-run ctest"
+          ctest --rerun-failed --output-on-failure || true
+          echo "::endgroup::"
+          echo "::group::Log from these tests"
+          [ ! -f Testing/Temporary/LastTest.log ] || cat Testing/Temporary/LastTest.log
+          echo "::endgroup::"
+
 
   cross_build:
+    if: "github.repository == 'OpenMathLib/OpenBLAS'"
     runs-on: ubuntu-22.04
 
     strategy:
@@ -295,6 +345,7 @@ jobs:
 
       - name: Install Dependencies
         run: |
+          sudo apt-get update
           sudo apt-get install -y ccache gcc-${{ matrix.triple }} gfortran-${{ matrix.triple }} libgomp1-${{ matrix.target }}-cross
 
       - name: Compilation cache

@@ -42,6 +42,7 @@ ZRQ    8               List types on next line if 0 < NTYPES <  8
 ZLQ    8               List types on next line if 0 < NTYPES <  8
 ZQL    8               List types on next line if 0 < NTYPES <  8
 ZQP    6               List types on next line if 0 < NTYPES <  6
+ZQK   19               List types on next line if 0 < NTYPES < 19
 ZTZ    3               List types on next line if 0 < NTYPES <  3
 ZLS    6               List types on next line if 0 < NTYPES <  6
 ZEQ

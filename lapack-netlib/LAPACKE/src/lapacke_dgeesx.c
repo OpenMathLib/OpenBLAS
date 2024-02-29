@@ -80,10 +80,13 @@ lapack_int LAPACKE_dgeesx( int matrix_layout, char jobvs, char sort,
     /* Allocate memory for work arrays */
     if( LAPACKE_lsame( sense, 'b' ) || LAPACKE_lsame( sense, 'v' ) ) {
         iwork = (lapack_int*)LAPACKE_malloc( sizeof(lapack_int) * liwork );
-        if( iwork == NULL ) {
-            info = LAPACK_WORK_MEMORY_ERROR;
-            goto exit_level_1;
-        }
+    }
+    else {
+        iwork = (lapack_int*)LAPACKE_malloc( sizeof(lapack_int) * 1 );
+    }
+    if( iwork == NULL ) {
+        info = LAPACK_WORK_MEMORY_ERROR;
+        goto exit_level_1;
     }
     work = (double*)LAPACKE_malloc( sizeof(double) * lwork );
     if( work == NULL ) {
@@ -97,9 +100,7 @@ lapack_int LAPACKE_dgeesx( int matrix_layout, char jobvs, char sort,
     /* Release memory and exit */
     LAPACKE_free( work );
 exit_level_2:
-    if( LAPACKE_lsame( sense, 'b' ) || LAPACKE_lsame( sense, 'v' ) ) {
-        LAPACKE_free( iwork );
-    }
+    LAPACKE_free( iwork );
 exit_level_1:
     if( LAPACKE_lsame( sort, 's' ) ) {
         LAPACKE_free( bwork );

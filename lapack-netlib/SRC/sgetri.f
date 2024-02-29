@@ -107,7 +107,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup realGEcomputational
+*> \ingroup getri
 *
 *  =====================================================================
       SUBROUTINE SGETRI( N, A, LDA, IPIV, WORK, LWORK, INFO )
@@ -138,6 +138,8 @@
 *     .. External Functions ..
       INTEGER            ILAENV
       EXTERNAL           ILAENV
+      REAL               SROUNDUP_LWORK
+      EXTERNAL           SROUNDUP_LWORK
 *     ..
 *     .. External Subroutines ..
       EXTERNAL           SGEMM, SGEMV, SSWAP, STRSM, STRTRI, XERBLA
@@ -151,8 +153,9 @@
 *
       INFO = 0
       NB = ILAENV( 1, 'SGETRI', ' ', N, -1, -1, -1 )
-      LWKOPT = N*NB
-      WORK( 1 ) = LWKOPT
+      LWKOPT = MAX( 1, N*NB )
+      WORK( 1 ) = SROUNDUP_LWORK( LWKOPT )
+*
       LQUERY = ( LWORK.EQ.-1 )
       IF( N.LT.0 ) THEN
          INFO = -1
@@ -250,7 +253,7 @@
      $      CALL SSWAP( N, A( 1, J ), 1, A( 1, JP ), 1 )
    60 CONTINUE
 *
-      WORK( 1 ) = IWS
+      WORK( 1 ) = SROUNDUP_LWORK( IWS )
       RETURN
 *
 *     End of SGETRI

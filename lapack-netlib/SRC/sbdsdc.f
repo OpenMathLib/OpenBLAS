@@ -45,13 +45,6 @@
 *> respectively. SBDSDC can be used to compute all singular values,
 *> and optionally, singular vectors or singular vectors in compact form.
 *>
-*> This code makes very mild assumptions about floating point
-*> arithmetic. It will work on machines with a guard digit in
-*> add/subtract, or on those binary machines without guard digits
-*> which subtract like the Cray X-MP, Cray Y-MP, Cray C-90, or Cray-2.
-*> It could conceivably fail on hexadecimal or decimal machines
-*> without guard digits, but we know of none.  See SLASD3 for details.
-*>
 *> The code currently calls SLASDQ if singular values only are desired.
 *> However, it can be slightly modified to compute singular values
 *> using the divide and conquer method.

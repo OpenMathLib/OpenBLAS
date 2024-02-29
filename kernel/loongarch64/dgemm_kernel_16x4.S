@@ -28,6 +28,31 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "common.h"
 
+/*********************************************************************
+* 2023/06/28 guxiwei
+*        UTEST                  : OK
+*        CTEST                  : OK
+*        TEST                   : OK
+*
+*
+* 2023/06/28 guxiwei
+* Parameter:
+*       DGEMM_DEFAULT_UNROLL_N  4
+*       DGEMM_DEFAULT_UNROLL_M  16
+*       DGEMM_DEFAULT_P         32
+*       DGEMM_DEFAULT_Q         152
+*       DGEMM_DEFAULT_R         858
+*       A_PR1                   1024
+*       B_PR1                   256
+*
+*
+* Performance at Loongson 3A5000 2.5GHz with 5000x5000x5000:
+*       1 thread:       36.0 GFLOPS
+*       2 threads:      71.6 GFLOPS
+*       3 threads:     101.5 GFLOPS
+*       4 threads:     132.8 GFLOPS
+*********************************************************************/
+
 /* Function parameters */
 #define M      $r4   // param 1: bm
 #define N      $r5   // param 2: bn
@@ -68,31 +93,1005 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define U4     $xr4
 #define U5     $xr5
 #define U6     $xr6
-#define D0     $xr7
-#define D1     $xr8
-#define D2     $xr9
-#define D3     $xr10
-#define D4     $xr11
-#define D5     $xr12
-#define D6     $xr13
-#define D7     $xr14
-#define D8     $xr15
-#define D9     $xr16
-#define D10    $xr17
-#define D11    $xr18
-#define D12    $xr19
-#define D13    $xr20
-#define D14    $xr21
-#define D15    $xr22
-#define VALPHA $xr23
+#define U7     $xr7
+#define U8     $xr8
+#define U9     $xr9
+#define U10    $xr10
+#define U11    $xr11
+#define U12    $xr12
+#define U13    $xr13
+#define U14    $xr14
+#define U15    $xr15
+#define D0     $xr16
+#define D1     $xr17
+#define D2     $xr18
+#define D3     $xr19
+#define D4     $xr20
+#define D5     $xr21
+#define D6     $xr22
+#define D7     $xr23
+#define D8     $xr24
+#define D9     $xr25
+#define D10    $xr26
+#define D11    $xr27
+#define D12    $xr28
+#define D13    $xr29
+#define D14    $xr30
+#define D15    $xr31
+#define VALPHA $xr15
 
 /* Prefetch interval */
-#define A_PRE  0x200
+#define A_PRE  0x400
 #define B_PRE  0x100
+
+.macro KERNEL2x16x4
+    xvld     U0,   A0,    0x00
+    xvfmadd.d  D0,  U8, U12, D0
+    xvfmadd.d  D1,  U9, U12, D1
+
+    xvld     U1,   A0,    0x20
+    xvfmadd.d  D2,  U10, U12, D2
+    xvfmadd.d  D3,  U11, U12, D3
+
+    xvld     U2,   A0,    0x40
+    xvfmadd.d  D4,  U8, U13, D4
+    xvfmadd.d  D5,  U9, U13, D5
+
+    xvld     U3,   A0,    0x60
+    xvfmadd.d  D6,  U10, U13, D6
+    xvfmadd.d  D7,  U11, U13, D7
+
+    xvldrepl.d U4,  B0, 0x00
+    xvfmadd.d  D8,  U8, U14, D8
+    xvfmadd.d  D9,  U9, U14, D9
+
+    preld      0,   B0, B_PRE
+    xvldrepl.d U5,  B0, 0x08
+    xvfmadd.d  D10, U10, U14, D10
+    xvfmadd.d  D11, U11, U14, D11
+
+    preld      0,   A0, A_PRE
+    xvldrepl.d U6,  B0, 0x10
+    xvfmadd.d  D12, U8, U15, D12
+    xvfmadd.d  D13, U9, U15, D13
+
+    preld      0,   A0, A_PRE + 0x40
+    xvldrepl.d U7,  B0, 0x18
+    xvfmadd.d  D14, U10, U15, D14
+    xvfmadd.d  D15, U11, U15, D15
+
+    addi.d     A0,  A0, 0x80
+    addi.d     B0,  B0, 0x20
+
+    xvld     U8,   A0,    0x00
+    xvfmadd.d  D0,  U0, U4, D0
+    xvfmadd.d  D1,  U1, U4, D1
+
+    xvld     U9,   A0,    0x20
+    xvfmadd.d  D2,  U2, U4, D2
+    xvfmadd.d  D3,  U3, U4, D3
+
+    xvld     U10,   A0,    0x40
+    xvfmadd.d  D4,  U0, U5, D4
+    xvfmadd.d  D5,  U1, U5, D5
+
+    xvld     U11,   A0,    0x60
+    xvfmadd.d  D6,  U2, U5, D6
+    xvfmadd.d  D7,  U3, U5, D7
+
+    xvldrepl.d U12,  B0, 0x00
+    xvfmadd.d  D8,  U0, U6, D8
+    xvfmadd.d  D9,  U1, U6, D9
+
+    preld      0,   B0, B_PRE
+    xvldrepl.d U13,  B0, 0x08
+    xvfmadd.d  D10, U2, U6, D10
+    xvfmadd.d  D11, U3, U6, D11
+
+    preld      0,   A0, A_PRE
+    xvldrepl.d U14,  B0, 0x10
+    xvfmadd.d  D12, U0, U7, D12
+    xvfmadd.d  D13, U1, U7, D13
+
+    preld      0,   A0, A_PRE + 0x40
+    xvldrepl.d U15,  B0, 0x18
+    xvfmadd.d  D14, U2, U7, D14
+    xvfmadd.d  D15, U3, U7, D15
+
+    addi.d     A0,  A0, 0x80
+    addi.d     B0,  B0, 0x20
+.endm
+
+.macro KERNEL2x16x4_END
+    xvld     U0,   A0,    0x00
+    xvfmadd.d  D0,  U8, U12, D0
+    xvfmadd.d  D1,  U9, U12, D1
+
+    xvld     U1,   A0,    0x20
+    xvfmadd.d  D2,  U10, U12, D2
+    xvfmadd.d  D3,  U11, U12, D3
+
+    xvld     U2,   A0,    0x40
+    xvfmadd.d  D4,  U8, U13, D4
+    xvfmadd.d  D5,  U9, U13, D5
+
+    xvld     U3,   A0,    0x60
+    xvfmadd.d  D6,  U10, U13, D6
+    xvfmadd.d  D7,  U11, U13, D7
+
+    xvldrepl.d U4,  B0, 0x00
+    xvfmadd.d  D8,  U8, U14, D8
+    xvfmadd.d  D9,  U9, U14, D9
+
+    preld      0,   B0, B_PRE
+    xvldrepl.d U5,  B0, 0x08
+    xvfmadd.d  D10, U10, U14, D10
+    xvfmadd.d  D11, U11, U14, D11
+
+    preld      0,   A0, A_PRE
+    xvldrepl.d U6,  B0, 0x10
+    xvfmadd.d  D12, U8, U15, D12
+    xvfmadd.d  D13, U9, U15, D13
+
+    preld      0,   A0, A_PRE + 0x40
+    xvldrepl.d U7,  B0, 0x18
+    xvfmadd.d  D14, U10, U15, D14
+    xvfmadd.d  D15, U11, U15, D15
+
+    addi.d     A0,  A0, 0x80
+    addi.d     B0,  B0, 0x20
+
+    xvfmadd.d  D0,  U0, U4, D0
+    xvfmadd.d  D1,  U1, U4, D1
+
+    xvfmadd.d  D2,  U2, U4, D2
+    xvfmadd.d  D3,  U3, U4, D3
+
+    xvfmadd.d  D4,  U0, U5, D4
+    xvfmadd.d  D5,  U1, U5, D5
+
+    xvfmadd.d  D6,  U2, U5, D6
+    xvfmadd.d  D7,  U3, U5, D7
+
+    xvfmadd.d  D8,  U0, U6, D8
+    xvfmadd.d  D9,  U1, U6, D9
+
+    preld      0,   B0, B_PRE
+    xvfmadd.d  D10, U2, U6, D10
+    xvfmadd.d  D11, U3, U6, D11
+
+    preld      0,   A0, A_PRE
+    xvfmadd.d  D12, U0, U7, D12
+    xvfmadd.d  D13, U1, U7, D13
+
+    preld      0,   A0, A_PRE + 0x40
+    xvfmadd.d  D14, U2, U7, D14
+    xvfmadd.d  D15, U3, U7, D15
+.endm
+
+.macro KERNEL8x16x4
+.rept 4
+    KERNEL2x16x4
+.endr
+.endm
+
+.macro KERNEL8x16x4_END
+.rept 3
+    KERNEL2x16x4
+.endr
+    KERNEL2x16x4_END
+.endm
+
+.macro KERNEL2x8x4
+    xvld     U0,   A0,    0x00
+    xvld     U1,   A0,    0x20
+
+    xvldrepl.d U4,  B0, 0x00
+    xvfmadd.d  D0,  U8, U12, D0
+    xvfmadd.d  D1,  U9, U12, D1
+
+    xvldrepl.d U5,  B0, 0x08
+    xvfmadd.d  D4,  U8, U13, D4
+    xvfmadd.d  D5,  U9, U13, D5
+
+    xvldrepl.d U6,  B0, 0x10
+    xvfmadd.d  D8,  U8, U14, D8
+    xvfmadd.d  D9,  U9, U14, D9
+
+    xvldrepl.d U7,  B0, 0x18
+    xvfmadd.d  D12, U8, U15, D12
+    xvfmadd.d  D13, U9, U15, D13
+
+    addi.d     A0,  A0, 0x40
+    addi.d     B0,  B0, 0x20
+
+    xvld     U8,   A0,    0x00
+    xvld     U9,   A0,    0x20
+
+    xvldrepl.d U12, B0, 0x00
+    xvfmadd.d  D0,  U0, U4, D0
+    xvfmadd.d  D1,  U1, U4, D1
+
+    xvldrepl.d U13, B0, 0x08
+    xvfmadd.d  D4,  U0, U5, D4
+    xvfmadd.d  D5,  U1, U5, D5
+
+    xvldrepl.d U14, B0, 0x10
+    xvfmadd.d  D8,  U0, U6, D8
+    xvfmadd.d  D9,  U1, U6, D9
+
+    xvldrepl.d U15,  B0, 0x18
+    xvfmadd.d  D12, U0, U7, D12
+    xvfmadd.d  D13, U1, U7, D13
+
+    addi.d     A0,  A0, 0x40
+    addi.d     B0,  B0, 0x20
+.endm
+
+.macro KERNEL2x8x4_END
+    xvld     U0,   A0,    0x00
+    xvld     U1,   A0,    0x20
+
+    xvldrepl.d U4,  B0, 0x00
+    xvfmadd.d  D0,  U8, U12, D0
+    xvfmadd.d  D1,  U9, U12, D1
+
+    xvldrepl.d U5,  B0, 0x08
+    xvfmadd.d  D4,  U8, U13, D4
+    xvfmadd.d  D5,  U9, U13, D5
+
+    xvldrepl.d U6,  B0, 0x10
+    xvfmadd.d  D8,  U8, U14, D8
+    xvfmadd.d  D9,  U9, U14, D9
+
+    xvldrepl.d U7,  B0, 0x18
+    xvfmadd.d  D12, U8, U15, D12
+    xvfmadd.d  D13, U9, U15, D13
+
+    addi.d     A0,  A0, 0x40
+    addi.d     B0,  B0, 0x20
+
+    xvfmadd.d  D0,  U0, U4, D0
+    xvfmadd.d  D1,  U1, U4, D1
+
+    xvfmadd.d  D4,  U0, U5, D4
+    xvfmadd.d  D5,  U1, U5, D5
+
+    xvfmadd.d  D8,  U0, U6, D8
+    xvfmadd.d  D9,  U1, U6, D9
+
+    xvfmadd.d  D12, U0, U7, D12
+    xvfmadd.d  D13, U1, U7, D13
+.endm
+
+.macro KERNEL8x8x4
+.rept 4
+    KERNEL2x8x4
+.endr
+.endm
+
+.macro KERNEL8x8x4_END
+.rept 3
+    KERNEL2x8x4
+.endr
+    KERNEL2x8x4_END
+.endm
+
+.macro KERNEL2x4x4
+    xvld     U0,   A0,    0x00
+
+    xvldrepl.d U4,  B0, 0x00
+    xvfmadd.d  D0,  U8, U12, D0
+
+    xvldrepl.d U5,  B0, 0x08
+    xvfmadd.d  D4,  U8, U13, D4
+
+    xvldrepl.d U6,  B0, 0x10
+    xvfmadd.d  D8,  U8, U14, D8
+
+    xvldrepl.d U7,  B0, 0x18
+    xvfmadd.d  D12, U8, U15, D12
+
+    addi.d     A0,  A0, 0x20
+    addi.d     B0,  B0, 0x20
+
+    xvld     U8,   A0,    0x00
+
+    xvldrepl.d U12, B0, 0x00
+    xvfmadd.d  D0,  U0, U4, D0
+
+    xvldrepl.d U13, B0, 0x08
+    xvfmadd.d  D4,  U0, U5, D4
+
+    xvldrepl.d U14, B0, 0x10
+    xvfmadd.d  D8,  U0, U6, D8
+
+    xvldrepl.d U15,  B0, 0x18
+    xvfmadd.d  D12, U0, U7, D12
+
+    addi.d     A0,  A0, 0x20
+    addi.d     B0,  B0, 0x20
+.endm
+
+.macro KERNEL2x4x4_END
+    xvld     U0,   A0,    0x00
+
+    xvldrepl.d U4,  B0, 0x00
+    xvfmadd.d  D0,  U8, U12, D0
+
+    xvldrepl.d U5,  B0, 0x08
+    xvfmadd.d  D4,  U8, U13, D4
+
+    xvldrepl.d U6,  B0, 0x10
+    xvfmadd.d  D8,  U8, U14, D8
+
+    xvldrepl.d U7,  B0, 0x18
+    xvfmadd.d  D12, U8, U15, D12
+
+    addi.d     A0,  A0, 0x20
+    addi.d     B0,  B0, 0x20
+
+    xvfmadd.d  D0,  U0, U4, D0
+    xvfmadd.d  D4,  U0, U5, D4
+    xvfmadd.d  D8,  U0, U6, D8
+    xvfmadd.d  D12, U0, U7, D12
+.endm
+
+.macro KERNEL8x4x4
+.rept 4
+    KERNEL2x4x4
+.endr
+.endm
+
+.macro KERNEL8x4x4_END
+.rept 3
+    KERNEL2x4x4
+.endr
+    KERNEL2x4x4_END
+.endm
+
+.macro KERNEL2x2x4
+    xvldrepl.d     U0,   A0,    0x00
+    xvldrepl.d     U1,   A0,    0x08
+
+    xvfmadd.d   D0,     U8,     U12,    D0
+    xvfmadd.d   D1,     U9,     U12,    D1
+
+    xvld    U4,  B0, 0x00
+    addi.d  A0,  A0, 0x10
+    addi.d  B0,  B0, 0x20
+
+    xvldrepl.d     U8,   A0,    0x00
+    xvldrepl.d     U9,   A0,    0x08
+
+    xvfmadd.d   D0,     U0,     U4,    D0
+    xvfmadd.d   D1,     U1,     U4,    D1
+
+    xvld       U12, B0, 0x00
+    addi.d     A0,  A0, 0x10
+    addi.d     B0,  B0, 0x20
+.endm
+
+.macro KERNEL2x2x4_END
+    xvldrepl.d     U0,   A0,    0x00
+    xvldrepl.d     U1,   A0,    0x08
+
+    xvfmadd.d   D0,     U8,     U12,    D0
+    xvfmadd.d   D1,     U9,     U12,    D1
+
+    xvld    U4,  B0, 0x00
+    addi.d  A0,  A0, 0x10
+    addi.d  B0,  B0, 0x20
+
+    xvfmadd.d   D0,     U0,     U4,    D0
+    xvfmadd.d   D1,     U1,     U4,    D1
+.endm
+
+.macro KERNEL8x2x4
+.rept 4
+    KERNEL2x2x4
+.endr
+.endm
+
+.macro KERNEL8x2x4_END
+.rept 3
+    KERNEL2x2x4
+.endr
+    KERNEL2x2x4_END
+.endm
+
+.macro KERNEL2x1x4
+    xvldrepl.d  U0,     A0,     0x00
+    xvfmadd.d   D0,     U8,     U12,    D0
+    xvld        U4,     B0,     0x00
+
+    addi.d     A0,  A0, 0x08
+    addi.d     B0,  B0, 0x20
+
+    xvldrepl.d  U8,     A0,     0x00
+    xvfmadd.d   D0,     U0,     U4,     D0
+    xvld        U12,    B0,     0x00
+
+    addi.d     A0,  A0, 0x08
+    addi.d     B0,  B0, 0x20
+.endm
+
+.macro KERNEL2x1x4_END
+    xvldrepl.d  U0,     A0,     0x00
+    xvfmadd.d   D0,     U8,     U12,    D0
+    xvld        U4,     B0,     0x00
+
+    addi.d     A0,  A0, 0x08
+    addi.d     B0,  B0, 0x20
+
+    xvfmadd.d   D0,     U0,     U4,     D0
+.endm
+
+.macro KERNEL8x1x4
+.rept 4
+    KERNEL2x1x4
+.endr
+.endm
+
+.macro KERNEL8x1x4_END
+.rept 3
+    KERNEL2x1x4
+.endr
+    KERNEL2x1x4_END
+.endm
+
+.macro KERNEL2x16x2
+    xvld     U0,   A0,    0x00
+    xvfmadd.d  D0,  U8, U12, D0
+    xvfmadd.d  D1,  U9, U12, D1
+
+    xvld     U1,   A0,    0x20
+    xvfmadd.d  D2,  U10, U12, D2
+    xvfmadd.d  D3,  U11, U12, D3
+
+    xvld     U2,   A0,    0x40
+    xvfmadd.d  D4,  U8, U13, D4
+    xvfmadd.d  D5,  U9, U13, D5
+
+    xvld     U3,   A0,    0x60
+    xvfmadd.d  D6,  U10, U13, D6
+    xvfmadd.d  D7,  U11, U13, D7
+
+    xvldrepl.d U4,  B0, 0x00
+    xvldrepl.d U5,  B0, 0x08
+
+    addi.d     A0,  A0, 0x80
+    addi.d     B0,  B0, 0x10
+
+    xvld     U8,   A0,    0x00
+    xvfmadd.d  D0,  U0, U4, D0
+    xvfmadd.d  D1,  U1, U4, D1
+
+    xvld     U9,   A0,    0x20
+    xvfmadd.d  D2,  U2, U4, D2
+    xvfmadd.d  D3,  U3, U4, D3
+
+    xvld     U10,   A0,    0x40
+    xvfmadd.d  D4,  U0, U5, D4
+    xvfmadd.d  D5,  U1, U5, D5
+
+    xvld     U11,   A0,    0x60
+    xvfmadd.d  D6,  U2, U5, D6
+    xvfmadd.d  D7,  U3, U5, D7
+
+    xvldrepl.d U12,  B0, 0x00
+    xvldrepl.d U13,  B0, 0x08
+
+    addi.d     A0,  A0, 0x80
+    addi.d     B0,  B0, 0x10
+.endm
+
+.macro KERNEL2x16x2_END
+    xvld     U0,   A0,    0x00
+    xvfmadd.d  D0,  U8, U12, D0
+    xvfmadd.d  D1,  U9, U12, D1
+
+    xvld     U1,   A0,    0x20
+    xvfmadd.d  D2,  U10, U12, D2
+    xvfmadd.d  D3,  U11, U12, D3
+
+    xvld     U2,   A0,    0x40
+    xvfmadd.d  D4,  U8, U13, D4
+    xvfmadd.d  D5,  U9, U13, D5
+
+    xvld     U3,   A0,    0x60
+    xvfmadd.d  D6,  U10, U13, D6
+    xvfmadd.d  D7,  U11, U13, D7
+
+    xvldrepl.d U4,  B0, 0x00
+    xvldrepl.d U5,  B0, 0x08
+
+    addi.d     A0,  A0, 0x80
+    addi.d     B0,  B0, 0x10
+
+    xvfmadd.d  D0,  U0, U4, D0
+    xvfmadd.d  D1,  U1, U4, D1
+
+    xvfmadd.d  D2,  U2, U4, D2
+    xvfmadd.d  D3,  U3, U4, D3
+
+    xvfmadd.d  D4,  U0, U5, D4
+    xvfmadd.d  D5,  U1, U5, D5
+
+    xvfmadd.d  D6,  U2, U5, D6
+    xvfmadd.d  D7,  U3, U5, D7
+.endm
+
+.macro KERNEL8x16x2
+.rept 4
+    KERNEL2x16x2
+.endr
+.endm
+
+.macro KERNEL8x16x2_END
+.rept 3
+    KERNEL2x16x2
+.endr
+    KERNEL2x16x2_END
+.endm
+
+.macro KERNEL2x8x2
+    xvld     U0,   A0,    0x00
+    xvfmadd.d  D0,  U8, U12, D0
+    xvfmadd.d  D1,  U9, U12, D1
+
+    xvld     U1,   A0,    0x20
+    xvfmadd.d  D4,  U8, U13, D4
+    xvfmadd.d  D5,  U9, U13, D5
+
+    xvldrepl.d U4,  B0, 0x00
+    xvldrepl.d U5,  B0, 0x08
+
+    addi.d     A0,  A0, 0x40
+    addi.d     B0,  B0, 0x10
+
+    xvld     U8,   A0,    0x00
+    xvfmadd.d  D0,  U0, U4, D0
+    xvfmadd.d  D1,  U1, U4, D1
+
+    xvld     U9,   A0,    0x20
+    xvfmadd.d  D4,  U0, U5, D4
+    xvfmadd.d  D5,  U1, U5, D5
+
+    xvldrepl.d U12,  B0, 0x00
+    xvldrepl.d U13,  B0, 0x08
+
+    addi.d     A0,  A0, 0x40
+    addi.d     B0,  B0, 0x10
+.endm
+
+.macro KERNEL2x8x2_END
+    xvld     U0,   A0,    0x00
+    xvfmadd.d  D0,  U8, U12, D0
+    xvfmadd.d  D1,  U9, U12, D1
+
+    xvld     U1,   A0,    0x20
+    xvfmadd.d  D4,  U8, U13, D4
+    xvfmadd.d  D5,  U9, U13, D5
+
+    xvldrepl.d U4,  B0, 0x00
+    xvldrepl.d U5,  B0, 0x08
+
+    addi.d     A0,  A0, 0x40
+    addi.d     B0,  B0, 0x10
+
+    xvfmadd.d  D0,  U0, U4, D0
+    xvfmadd.d  D1,  U1, U4, D1
+
+    xvfmadd.d  D4,  U0, U5, D4
+    xvfmadd.d  D5,  U1, U5, D5
+.endm
+
+.macro KERNEL8x8x2
+.rept 4
+    KERNEL2x8x2
+.endr
+.endm
+
+.macro KERNEL8x8x2_END
+.rept 3
+    KERNEL2x8x2
+ .endr
+    KERNEL2x8x2_END
+.endm
+
+.macro KERNEL2x4x2
+    xvld     U0,   A0,    0x00
+    xvfmadd.d  D0,  U8, U12, D0
+    xvfmadd.d  D4,  U8, U13, D4
+
+    xvldrepl.d U4,  B0, 0x00
+    xvldrepl.d U5,  B0, 0x08
+
+    addi.d     A0,  A0, 0x20
+    addi.d     B0,  B0, 0x10
+
+    xvld     U8,   A0,    0x00
+    xvfmadd.d  D0,  U0, U4, D0
+    xvfmadd.d  D4,  U0, U5, D4
+
+    xvldrepl.d U12,  B0, 0x00
+    xvldrepl.d U13,  B0, 0x08
+
+    addi.d     A0,  A0, 0x20
+    addi.d     B0,  B0, 0x10
+.endm
+
+.macro KERNEL2x4x2_END
+    xvld     U0,   A0,    0x00
+    xvfmadd.d  D0,  U8, U12, D0
+    xvfmadd.d  D4,  U8, U13, D4
+
+    xvldrepl.d U4,  B0, 0x00
+    xvldrepl.d U5,  B0, 0x08
+
+    addi.d     A0,  A0, 0x20
+    addi.d     B0,  B0, 0x10
+
+    xvfmadd.d  D0,  U0, U4, D0
+    xvfmadd.d  D4,  U0, U5, D4
+.endm
+
+.macro KERNEL8x4x2
+.rept 4
+    KERNEL2x4x2
+.endr
+.endm
+
+.macro KERNEL8x4x2_END
+.rept 3
+    KERNEL2x4x2
+.endr
+    KERNEL2x4x2_END
+.endm
+
+.macro KERNEL2x2x2
+    xvld     U0,   A0,    0x00
+    xvfmadd.d  D0,  U8, U12, D0
+    xvfmadd.d  D4,  U8, U13, D4
+
+    xvldrepl.d U4,  B0, 0x00
+    xvldrepl.d U5,  B0, 0x08
+
+    addi.d     A0,  A0, 0x10
+    addi.d     B0,  B0, 0x10
+
+    xvld     U8,   A0,    0x00
+    xvfmadd.d  D0,  U0, U4, D0
+    xvfmadd.d  D4,  U0, U5, D4
+
+    xvldrepl.d U12,  B0, 0x00
+    xvldrepl.d U13,  B0, 0x08
+
+    addi.d     A0,  A0, 0x10
+    addi.d     B0,  B0, 0x10
+.endm
+
+.macro KERNEL2x2x2_END
+    xvld     U0,   A0,    0x00
+    xvfmadd.d  D0,  U8, U12, D0
+    xvfmadd.d  D4,  U8, U13, D4
+
+    xvldrepl.d U4,  B0, 0x00
+    xvldrepl.d U5,  B0, 0x08
+
+    addi.d     A0,  A0, 0x10
+    addi.d     B0,  B0, 0x10
+
+    xvfmadd.d  D0,  U0, U4, D0
+    xvfmadd.d  D4,  U0, U5, D4
+.endm
+
+.macro KERNEL8x2x2
+.rept 4
+    KERNEL2x2x2
+.endr
+.endm
+
+.macro KERNEL8x2x2_END
+.rept 3
+    KERNEL2x2x2
+.endr
+    KERNEL2x2x2_END
+.endm
+
+.macro KERNEL2x1x2
+    xvld     U0,   A0,    0x00
+    xvfmadd.d  D0,  U8, U12, D0
+    xvfmadd.d  D4,  U8, U13, D4
+
+    xvldrepl.d U4,  B0, 0x00
+    xvldrepl.d U5,  B0, 0x08
+
+    addi.d     A0,  A0, 0x08
+    addi.d     B0,  B0, 0x10
+
+    xvld     U8,   A0,    0x00
+    xvfmadd.d  D0,  U0, U4, D0
+    xvfmadd.d  D4,  U0, U5, D4
+
+    xvldrepl.d U12,  B0, 0x00
+    xvldrepl.d U13,  B0, 0x08
+
+    addi.d     A0,  A0, 0x08
+    addi.d     B0,  B0, 0x10
+.endm
+
+.macro KERNEL2x1x2_END
+    xvld     U0,   A0,    0x00
+    xvfmadd.d  D0,  U8, U12, D0
+    xvfmadd.d  D4,  U8, U13, D4
+
+    xvldrepl.d U4,  B0, 0x00
+    xvldrepl.d U5,  B0, 0x08
+
+    addi.d     A0,  A0, 0x08
+    addi.d     B0,  B0, 0x10
+
+    xvfmadd.d  D0,  U0, U4, D0
+    xvfmadd.d  D4,  U0, U5, D4
+.endm
+
+.macro KERNEL8x1x2
+.rept 4
+    KERNEL2x1x2
+.endr
+.endm
+
+.macro KERNEL8x1x2_END
+.rept 3
+    KERNEL2x1x2
+.endr
+    KERNEL2x1x2_END
+.endm
+
+.macro KERNEL2x16x1
+    xvld     U0,   A0,    0x00
+    xvfmadd.d  D0,  U8, U12, D0
+    xvfmadd.d  D1,  U9, U12, D1
+
+    xvld     U1,   A0,    0x20
+    xvfmadd.d  D2,  U10, U12, D2
+    xvfmadd.d  D3,  U11, U12, D3
+
+    xvld     U2,   A0,    0x40
+    xvld     U3,   A0,    0x60
+
+    xvldrepl.d U4,  B0, 0x00
+
+    addi.d     A0,  A0, 0x80
+    addi.d     B0,  B0, 0x08
+
+    xvld     U8,   A0,    0x00
+    xvfmadd.d  D0,  U0, U4, D0
+    xvfmadd.d  D1,  U1, U4, D1
+
+    xvld     U9,   A0,    0x20
+    xvfmadd.d  D2,  U2, U4, D2
+    xvfmadd.d  D3,  U3, U4, D3
+
+    xvld     U10,   A0,    0x40
+    xvld     U11,   A0,    0x60
+
+    xvldrepl.d U12,  B0, 0x00
+
+    addi.d     A0,  A0, 0x80
+    addi.d     B0,  B0, 0x08
+.endm
+
+.macro KERNEL2x16x1_END
+    xvld     U0,   A0,    0x00
+    xvfmadd.d  D0,  U8, U12, D0
+    xvfmadd.d  D1,  U9, U12, D1
+
+    xvld     U1,   A0,    0x20
+    xvfmadd.d  D2,  U10, U12, D2
+    xvfmadd.d  D3,  U11, U12, D3
+
+    xvld     U2,   A0,    0x40
+    xvld     U3,   A0,    0x60
+
+    xvldrepl.d U4,  B0, 0x00
+
+    addi.d     A0,  A0, 0x80
+    addi.d     B0,  B0, 0x08
+
+    xvfmadd.d  D0,  U0, U4, D0
+    xvfmadd.d  D1,  U1, U4, D1
+
+    xvfmadd.d  D2,  U2, U4, D2
+    xvfmadd.d  D3,  U3, U4, D3
+.endm
+
+.macro KERNEL8x16x1
+.rept 4
+    KERNEL2x16x1
+.endr
+.endm
+
+.macro KERNEL8x16x1_END
+.rept 3
+    KERNEL2x16x1
+.endr
+    KERNEL2x16x1_END
+.endm
+
+.macro KERNEL2x8x1
+    xvld     U0,   A0,    0x00
+    xvfmadd.d  D0,  U8, U12, D0
+    xvfmadd.d  D1,  U9, U12, D1
+    xvld     U1,   A0,    0x20
+    xvldrepl.d U4,  B0, 0x00
+
+    addi.d     A0,  A0, 0x40
+    addi.d     B0,  B0, 0x08
+
+    xvld     U8,   A0,    0x00
+    xvfmadd.d  D0,  U0, U4, D0
+    xvfmadd.d  D1,  U1, U4, D1
+    xvld     U9,   A0,    0x20
+    xvldrepl.d U12,  B0, 0x00
+
+    addi.d     A0,  A0, 0x40
+    addi.d     B0,  B0, 0x08
+.endm
+
+.macro KERNEL2x8x1_END
+    xvld     U0,   A0,    0x00
+    xvfmadd.d  D0,  U8, U12, D0
+    xvfmadd.d  D1,  U9, U12, D1
+    xvld     U1,   A0,    0x20
+    xvldrepl.d U4,  B0, 0x00
+
+    addi.d     A0,  A0, 0x40
+    addi.d     B0,  B0, 0x08
+
+    xvfmadd.d  D0,  U0, U4, D0
+    xvfmadd.d  D1,  U1, U4, D1
+.endm
+
+.macro KERNEL8x8x1
+.rept 4
+    KERNEL2x8x1
+.endr
+.endm
+
+.macro KERNEL8x8x1_END
+.rept 3
+    KERNEL2x8x1
+.endr
+    KERNEL2x8x1_END
+.endm
+
+.macro KERNEL2x4x1
+    xvld     U0,   A0,    0x00
+    xvfmadd.d  D0,  U8, U12, D0
+    xvldrepl.d U4,  B0, 0x00
+
+    addi.d     A0,  A0, 0x20
+    addi.d     B0,  B0, 0x08
+
+    xvld     U8,   A0,    0x00
+    xvfmadd.d  D0,  U0, U4, D0
+    xvldrepl.d U12,  B0, 0x00
+
+    addi.d     A0,  A0, 0x20
+    addi.d     B0,  B0, 0x08
+.endm
+
+.macro KERNEL2x4x1_END
+    xvld     U0,   A0,    0x00
+    xvfmadd.d  D0,  U8, U12, D0
+    xvldrepl.d U4,  B0, 0x00
+
+    addi.d     A0,  A0, 0x20
+    addi.d     B0,  B0, 0x08
+
+    xvfmadd.d  D0,  U0, U4, D0
+.endm
+
+.macro KERNEL8x4x1
+.rept 4
+    KERNEL2x4x1
+.endr
+.endm
+
+.macro KERNEL8x4x1_END
+.rept 3
+    KERNEL2x4x1
+.endr
+    KERNEL2x4x1_END
+.endm
+
+.macro KERNEL2x2x1
+    xvld     U0,   A0,    0x00
+    xvfmadd.d  D0,  U8, U12, D0
+    xvldrepl.d U4,  B0, 0x00
+
+    addi.d     A0,  A0, 0x10
+    addi.d     B0,  B0, 0x08
+
+    xvld     U8,   A0,    0x00
+    xvfmadd.d  D0,  U0, U4, D0
+    xvldrepl.d U12,  B0, 0x00
+
+    addi.d     A0,  A0, 0x10
+    addi.d     B0,  B0, 0x08
+.endm
+
+.macro KERNEL2x2x1_END
+    xvld     U0,   A0,    0x00
+    xvfmadd.d  D0,  U8, U12, D0
+    xvldrepl.d U4,  B0, 0x00
+
+    addi.d     A0,  A0, 0x10
+    addi.d     B0,  B0, 0x08
+
+    xvfmadd.d  D0,  U0, U4, D0
+.endm
+
+.macro KERNEL8x2x1
+.rept 4
+    KERNEL2x2x1
+.endr
+.endm
+
+.macro KERNEL8x2x1_END
+.rept 3
+    KERNEL2x2x1
+.endr
+    KERNEL2x2x1_END
+.endm
+
+.macro KERNEL2x1x1
+    xvld     U0,   A0,    0x00
+    xvfmadd.d  D0,  U8, U12, D0
+    xvldrepl.d U4,  B0, 0x00
+
+    addi.d     A0,  A0, 0x08
+    addi.d     B0,  B0, 0x08
+
+    xvld     U8,   A0,    0x00
+    xvfmadd.d  D0,  U0, U4, D0
+    xvldrepl.d U12,  B0, 0x00
+
+    addi.d     A0,  A0, 0x08
+    addi.d     B0,  B0, 0x08
+.endm
+
+.macro KERNEL2x1x1_END
+    xvld     U0,   A0,    0x00
+    xvfmadd.d  D0,  U8, U12, D0
+    xvldrepl.d U4,  B0, 0x00
+
+    addi.d     A0,  A0, 0x08
+    addi.d     B0,  B0, 0x08
+
+    xvfmadd.d  D0,  U0, U4, D0
+.endm
+
+.macro KERNEL8x1x1
+.rept 4
+    KERNEL2x1x1
+.endr
+.endm
+
+.macro KERNEL8x1x1_END
+.rept 3
+    KERNEL2x1x1
+.endr
+    KERNEL2x1x1_END
+.endm
+
 
     PROLOGUE
 
-    addi.d   $sp,   $sp,   -56
+    addi.d   $sp,   $sp,   -120
     /* Store regs */
     SDARG    $r23,  $sp,   0
     SDARG    $r24,  $sp,   8
@@ -100,11 +1099,15 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     SDARG    $r26,  $sp,   24
     SDARG    $r27,  $sp,   32
     ST       $f23,  $sp,   40
-    ST       ALPHA, $sp,   48
-
-    /* VALPHA = {ALPHA, ALPHA, ALPHA, ALPHA} */
-    xvld         VALPHA, $sp,  48
-    xvreplve0.d  VALPHA, VALPHA
+    ST       $f24,  $sp,   48
+    ST       $f25,  $sp,   56
+    ST       $f26,  $sp,   64
+    ST       $f27,  $sp,   72
+    ST       $f28,  $sp,   80
+    ST       $f29,  $sp,   88
+    ST       $f30,  $sp,   96
+    ST       $f31,  $sp,   104
+    ST       ALPHA, $sp,   112
 
 #if defined (TRMMKERNEL) && !defined(LEFT)
     sub.d   OFF,   ZERO,  OFFSET
@@ -115,6 +1118,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     /* if (!(N >> 2)) goto L_N3 */
     srai.d   J,     N,     2     /* J = bn >> 2 */
     andi     N,     N,     0x03
+    xvldrepl.d  VALPHA, $sp, 112 /* When N < 4, VALPHA will not changed */
     beq      ZERO,  J,     .L_N3
 
 .L_J1: /* J-- && This loop include Condition 1 */
@@ -183,32 +1187,32 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     xvfmul.d  D2,  U2, U4
     xvfmul.d  D3,  U3, U4
 
-    xvldrepl.d     U4, B0, 0x08
+    xvldrepl.d     U5, B0, 0x08
     preld          0,   C1,    0x00
     /* line 2 */
-    xvfmul.d  D4,  U0, U4
-    xvfmul.d  D5,  U1, U4
+    xvfmul.d  D4,  U0, U5
+    xvfmul.d  D5,  U1, U5
     preld     0,   C1,    0x40
-    xvfmul.d  D6,  U2, U4
-    xvfmul.d  D7,  U3, U4
+    xvfmul.d  D6,  U2, U5
+    xvfmul.d  D7,  U3, U5
 
-    xvldrepl.d     U4, B0, 0x10
+    xvldrepl.d     U6, B0, 0x10
     preld          0,   C2,    0x00
     /* line 3 */
-    xvfmul.d  D8,  U0, U4
-    xvfmul.d  D9,  U1, U4
+    xvfmul.d  D8,  U0, U6
+    xvfmul.d  D9,  U1, U6
     preld     0,   C2,    0x40
-    xvfmul.d  D10, U2, U4
-    xvfmul.d  D11, U3, U4
+    xvfmul.d  D10, U2, U6
+    xvfmul.d  D11, U3, U6
 
-    xvldrepl.d     U4, B0, 0x18
+    xvldrepl.d     U7, B0, 0x18
     preld          0,   C3,    0x00
     /* line 4 */
-    xvfmul.d  D12, U0, U4
-    xvfmul.d  D13, U1, U4
+    xvfmul.d  D12, U0, U7
+    xvfmul.d  D13, U1, U7
     preld     0,   C3,    0x40
-    xvfmul.d  D14, U2, U4
-    xvfmul.d  D15, U3, U4
+    xvfmul.d  D14, U2, U7
+    xvfmul.d  D15, U3, U7
 
     /* Add stride for A0 and B0 */
     addi.d    A0,  A0, 0x80
@@ -219,314 +1223,28 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     /* if (TL < 1) goto L_L7 */
     beq       ZERO,TL, .L_L7
 
-    /* Calculate 8 sets of D0~D15 */
+    xvld     U8,   A0,    0x00
+    xvld     U9,   A0,    0x20
+    xvld     U10,  A0,    0x40
+    xvld     U11,  A0,    0x60
+
+    addi.d    TL,  TL,  -1
+
+    xvldrepl.d  U12,   B0,  0x00
+    xvldrepl.d  U13,   B0,  0x08
+    xvldrepl.d  U14,   B0,  0x10
+    xvldrepl.d  U15,   B0,  0x18
+    addi.d     A0,  A0, 0x80
+    addi.d     B0,  B0, 0x20
+
+    beq    ZERO,    TL,  .L_TL1_END
 .L_TL1: /* TL-- */
-           /***8-1***/
-    /* Load 16 * 64 from A0 */
-    xvld     U0,   A0,    0x00
-    xvld     U1,   A0,    0x20
-    xvld     U2,   A0,    0x40
-    xvld     U3,   A0,    0x60
-
-    /* Cumulative D0~D15 */
-    xvldrepl.d U4,  B0, 0x00
-    xvfmadd.d  D0,  U0, U4, D0
-    xvfmadd.d  D1,  U1, U4, D1
-    xvfmadd.d  D2,  U2, U4, D2
-    xvfmadd.d  D3,  U3, U4, D3
-    preld      0,   B0, B_PRE
-
-    xvldrepl.d U4,  B0, 0x08
-    xvfmadd.d  D4,  U0, U4, D4
-    xvfmadd.d  D5,  U1, U4, D5
-    xvfmadd.d  D6,  U2, U4, D6
-    xvfmadd.d  D7,  U3, U4, D7
-    preld      0,   A0, A_PRE
-
-    xvldrepl.d U4,  B0, 0x10
-    xvfmadd.d  D8,  U0, U4, D8
-    xvfmadd.d  D9,  U1, U4, D9
-    xvfmadd.d  D10, U2, U4, D10
-    xvfmadd.d  D11, U3, U4, D11
-    preld      0,   A0, A_PRE + 0x40
-
-    xvldrepl.d U4,  B0, 0x18
-    xvfmadd.d  D12, U0, U4, D12
-    xvfmadd.d  D13, U1, U4, D13
-    xvfmadd.d  D14, U2, U4, D14
-    xvfmadd.d  D15, U3, U4, D15
-
-    addi.d     A0,  A0, 0x80
-    addi.d     B0,  B0, 0x20
-
-           /***8-2***/
-    /* Load 16 * 64 from A0 */
-    xvld     U0,   A0,    0x00
-    xvld     U1,   A0,    0x20
-    xvld     U2,   A0,    0x40
-    xvld     U3,   A0,    0x60
-
-    /* Cumulative D0~D15 */
-    xvldrepl.d U4,  B0, 0x00
-    xvfmadd.d  D0,  U0, U4, D0
-    xvfmadd.d  D1,  U1, U4, D1
-    xvfmadd.d  D2,  U2, U4, D2
-    xvfmadd.d  D3,  U3, U4, D3
-    preld      0,   B0, B_PRE
-
-    xvldrepl.d U4,  B0, 0x08
-    xvfmadd.d  D4,  U0, U4, D4
-    xvfmadd.d  D5,  U1, U4, D5
-    xvfmadd.d  D6,  U2, U4, D6
-    xvfmadd.d  D7,  U3, U4, D7
-    preld      0,   A0, A_PRE
-
-    xvldrepl.d U4,  B0, 0x10
-    xvfmadd.d  D8,  U0, U4, D8
-    xvfmadd.d  D9,  U1, U4, D9
-    xvfmadd.d  D10, U2, U4, D10
-    xvfmadd.d  D11, U3, U4, D11
-    preld      0,   A0, A_PRE + 0x40
-
-    xvldrepl.d U4,  B0, 0x18
-    xvfmadd.d  D12, U0, U4, D12
-    xvfmadd.d  D13, U1, U4, D13
-    xvfmadd.d  D14, U2, U4, D14
-    xvfmadd.d  D15, U3, U4, D15
-
-    addi.d     A0,  A0, 0x80
-    addi.d     B0,  B0, 0x20
-
-           /***8-3***/
-    /* Load 16 * 64 from A0 */
-    xvld     U0,   A0,    0x00
-    xvld     U1,   A0,    0x20
-    xvld     U2,   A0,    0x40
-    xvld     U3,   A0,    0x60
-
-    /* Cumulative D0~D15 */
-    xvldrepl.d U4,  B0, 0x00
-    xvfmadd.d  D0,  U0, U4, D0
-    xvfmadd.d  D1,  U1, U4, D1
-    xvfmadd.d  D2,  U2, U4, D2
-    xvfmadd.d  D3,  U3, U4, D3
-    preld      0,   B0, B_PRE
-
-    xvldrepl.d U4,  B0, 0x08
-    xvfmadd.d  D4,  U0, U4, D4
-    xvfmadd.d  D5,  U1, U4, D5
-    xvfmadd.d  D6,  U2, U4, D6
-    xvfmadd.d  D7,  U3, U4, D7
-    preld      0,   A0, A_PRE
-
-    xvldrepl.d U4,  B0, 0x10
-    xvfmadd.d  D8,  U0, U4, D8
-    xvfmadd.d  D9,  U1, U4, D9
-    xvfmadd.d  D10, U2, U4, D10
-    xvfmadd.d  D11, U3, U4, D11
-    preld      0,   A0, A_PRE + 0x40
-
-    xvldrepl.d U4,  B0, 0x18
-    xvfmadd.d  D12, U0, U4, D12
-    xvfmadd.d  D13, U1, U4, D13
-    xvfmadd.d  D14, U2, U4, D14
-    xvfmadd.d  D15, U3, U4, D15
-
-    addi.d     A0,  A0, 0x80
-    addi.d     B0,  B0, 0x20
-
-           /***8-4***/
-    /* Load 16 * 64 from A0 */
-    xvld     U0,   A0,    0x00
-    xvld     U1,   A0,    0x20
-    xvld     U2,   A0,    0x40
-    xvld     U3,   A0,    0x60
-
-    /* Cumulative D0~D15 */
-    xvldrepl.d U4,  B0, 0x00
-    xvfmadd.d  D0,  U0, U4, D0
-    xvfmadd.d  D1,  U1, U4, D1
-    xvfmadd.d  D2,  U2, U4, D2
-    xvfmadd.d  D3,  U3, U4, D3
-    preld      0,   B0, B_PRE
-
-    xvldrepl.d U4,  B0, 0x08
-    xvfmadd.d  D4,  U0, U4, D4
-    xvfmadd.d  D5,  U1, U4, D5
-    xvfmadd.d  D6,  U2, U4, D6
-    xvfmadd.d  D7,  U3, U4, D7
-    preld      0,   A0, A_PRE
-
-    xvldrepl.d U4,  B0, 0x10
-    xvfmadd.d  D8,  U0, U4, D8
-    xvfmadd.d  D9,  U1, U4, D9
-    xvfmadd.d  D10, U2, U4, D10
-    xvfmadd.d  D11, U3, U4, D11
-    preld      0,   A0, A_PRE + 0x40
-
-    xvldrepl.d U4,  B0, 0x18
-    xvfmadd.d  D12, U0, U4, D12
-    xvfmadd.d  D13, U1, U4, D13
-    xvfmadd.d  D14, U2, U4, D14
-    xvfmadd.d  D15, U3, U4, D15
-
-    addi.d     A0,  A0, 0x80
-    addi.d     B0,  B0, 0x20
-
-           /***8-5***/
-    /* Load 16 * 64 from A0 */
-    xvld     U0,   A0,    0x00
-    xvld     U1,   A0,    0x20
-    xvld     U2,   A0,    0x40
-    xvld     U3,   A0,    0x60
-
-    /* Cumulative D0~D15 */
-    xvldrepl.d U4,  B0, 0x00
-    xvfmadd.d  D0,  U0, U4, D0
-    xvfmadd.d  D1,  U1, U4, D1
-    xvfmadd.d  D2,  U2, U4, D2
-    xvfmadd.d  D3,  U3, U4, D3
-    preld      0,   B0, B_PRE
-
-    xvldrepl.d U4,  B0, 0x08
-    xvfmadd.d  D4,  U0, U4, D4
-    xvfmadd.d  D5,  U1, U4, D5
-    xvfmadd.d  D6,  U2, U4, D6
-    xvfmadd.d  D7,  U3, U4, D7
-    preld      0,   A0, A_PRE
-
-    xvldrepl.d U4,  B0, 0x10
-    xvfmadd.d  D8,  U0, U4, D8
-    xvfmadd.d  D9,  U1, U4, D9
-    xvfmadd.d  D10, U2, U4, D10
-    xvfmadd.d  D11, U3, U4, D11
-    preld      0,   A0, A_PRE + 0x40
-
-    xvldrepl.d U4,  B0, 0x18
-    xvfmadd.d  D12, U0, U4, D12
-    xvfmadd.d  D13, U1, U4, D13
-    xvfmadd.d  D14, U2, U4, D14
-    xvfmadd.d  D15, U3, U4, D15
-
-    addi.d     A0,  A0, 0x80
-    addi.d     B0,  B0, 0x20
-
-           /***8-6***/
-    /* Load 16 * 64 from A0 */
-    xvld     U0,   A0,    0x00
-    xvld     U1,   A0,    0x20
-    xvld     U2,   A0,    0x40
-    xvld     U3,   A0,    0x60
-
-    /* Cumulative D0~D15 */
-    xvldrepl.d U4,  B0, 0x00
-    xvfmadd.d  D0,  U0, U4, D0
-    xvfmadd.d  D1,  U1, U4, D1
-    xvfmadd.d  D2,  U2, U4, D2
-    xvfmadd.d  D3,  U3, U4, D3
-    preld      0,   B0, B_PRE
-
-    xvldrepl.d U4,  B0, 0x08
-    xvfmadd.d  D4,  U0, U4, D4
-    xvfmadd.d  D5,  U1, U4, D5
-    xvfmadd.d  D6,  U2, U4, D6
-    xvfmadd.d  D7,  U3, U4, D7
-    preld      0,   A0, A_PRE
-
-    xvldrepl.d U4,  B0, 0x10
-    xvfmadd.d  D8,  U0, U4, D8
-    xvfmadd.d  D9,  U1, U4, D9
-    xvfmadd.d  D10, U2, U4, D10
-    xvfmadd.d  D11, U3, U4, D11
-    preld      0,   A0, A_PRE + 0x40
-
-    xvldrepl.d U4,  B0, 0x18
-    xvfmadd.d  D12, U0, U4, D12
-    xvfmadd.d  D13, U1, U4, D13
-    xvfmadd.d  D14, U2, U4, D14
-    xvfmadd.d  D15, U3, U4, D15
-
-    addi.d     A0,  A0, 0x80
-    addi.d     B0,  B0, 0x20
-
-           /***8-7***/
-    /* Load 16 * 64 from A0 */
-    xvld     U0,   A0,    0x00
-    xvld     U1,   A0,    0x20
-    xvld     U2,   A0,    0x40
-    xvld     U3,   A0,    0x60
-
-    /* Cumulative D0~D15 */
-    xvldrepl.d U4,  B0, 0x00
-    xvfmadd.d  D0,  U0, U4, D0
-    xvfmadd.d  D1,  U1, U4, D1
-    xvfmadd.d  D2,  U2, U4, D2
-    xvfmadd.d  D3,  U3, U4, D3
-    preld      0,   B0, B_PRE
-
-    xvldrepl.d U4,  B0, 0x08
-    xvfmadd.d  D4,  U0, U4, D4
-    xvfmadd.d  D5,  U1, U4, D5
-    xvfmadd.d  D6,  U2, U4, D6
-    xvfmadd.d  D7,  U3, U4, D7
-    preld      0,   A0, A_PRE
-
-    xvldrepl.d U4,  B0, 0x10
-    xvfmadd.d  D8,  U0, U4, D8
-    xvfmadd.d  D9,  U1, U4, D9
-    xvfmadd.d  D10, U2, U4, D10
-    xvfmadd.d  D11, U3, U4, D11
-    preld      0,   A0, A_PRE + 0x40
-
-    xvldrepl.d U4,  B0, 0x18
-    xvfmadd.d  D12, U0, U4, D12
-    xvfmadd.d  D13, U1, U4, D13
-    xvfmadd.d  D14, U2, U4, D14
-    xvfmadd.d  D15, U3, U4, D15
-
-    addi.d     A0,  A0, 0x80
-    addi.d     B0,  B0, 0x20
-
-           /***8-8***/
-    /* Load 16 * 64 from A0 */
-    xvld     U0,   A0,    0x00
-    xvld     U1,   A0,    0x20
-    xvld     U2,   A0,    0x40
-    xvld     U3,   A0,    0x60
-
-    /* Cumulative D0~D15 */
-    xvldrepl.d U4,  B0, 0x00
-    xvfmadd.d  D0,  U0, U4, D0
-    xvfmadd.d  D1,  U1, U4, D1
-    xvfmadd.d  D2,  U2, U4, D2
-    xvfmadd.d  D3,  U3, U4, D3
-    preld      0,   B0, B_PRE
-
-    xvldrepl.d U4,  B0, 0x08
-    xvfmadd.d  D4,  U0, U4, D4
-    xvfmadd.d  D5,  U1, U4, D5
-    xvfmadd.d  D6,  U2, U4, D6
-    xvfmadd.d  D7,  U3, U4, D7
-    preld      0,   A0, A_PRE
-
-    xvldrepl.d U4,  B0, 0x10
-    xvfmadd.d  D8,  U0, U4, D8
-    xvfmadd.d  D9,  U1, U4, D9
-    xvfmadd.d  D10, U2, U4, D10
-    xvfmadd.d  D11, U3, U4, D11
-    preld      0,   A0, A_PRE + 0x40
-
-    xvldrepl.d U4,  B0, 0x18
-    xvfmadd.d  D12, U0, U4, D12
-    xvfmadd.d  D13, U1, U4, D13
-    xvfmadd.d  D14, U2, U4, D14
-    xvfmadd.d  D15, U3, U4, D15
-
-    addi.d     A0,  A0, 0x80
-    addi.d     B0,  B0, 0x20
-
+    KERNEL8x16x4
     addi.d    TL,  TL, -1 /* TL-- */
     blt       ZERO,TL, .L_TL1
+
+.L_TL1_END:
+    KERNEL8x16x4_END
 
    /* Maybe we need calculate the last
     * 7 sets of D0~D15?
@@ -550,23 +1268,23 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     xvfmadd.d  D2,  U2, U4, D2
     xvfmadd.d  D3,  U3, U4, D3
 
-    xvldrepl.d U4,  B0, 0x08
-    xvfmadd.d  D4,  U0, U4, D4
-    xvfmadd.d  D5,  U1, U4, D5
-    xvfmadd.d  D6,  U2, U4, D6
-    xvfmadd.d  D7,  U3, U4, D7
+    xvldrepl.d U5,  B0, 0x08
+    xvfmadd.d  D4,  U0, U5, D4
+    xvfmadd.d  D5,  U1, U5, D5
+    xvfmadd.d  D6,  U2, U5, D6
+    xvfmadd.d  D7,  U3, U5, D7
 
-    xvldrepl.d U4,  B0, 0x10
-    xvfmadd.d  D8,  U0, U4, D8
-    xvfmadd.d  D9,  U1, U4, D9
-    xvfmadd.d  D10, U2, U4, D10
-    xvfmadd.d  D11, U3, U4, D11
+    xvldrepl.d U6,  B0, 0x10
+    xvfmadd.d  D8,  U0, U6, D8
+    xvfmadd.d  D9,  U1, U6, D9
+    xvfmadd.d  D10, U2, U6, D10
+    xvfmadd.d  D11, U3, U6, D11
 
-    xvldrepl.d U4,  B0, 0x18
-    xvfmadd.d  D12, U0, U4, D12
-    xvfmadd.d  D13, U1, U4, D13
-    xvfmadd.d  D14, U2, U4, D14
-    xvfmadd.d  D15, U3, U4, D15
+    xvldrepl.d U7,  B0, 0x18
+    xvfmadd.d  D12, U0, U7, D12
+    xvfmadd.d  D13, U1, U7, D13
+    xvfmadd.d  D14, U2, U7, D14
+    xvfmadd.d  D15, U3, U7, D15
 
     /* Add stride for A0, B0 */
     addi.d     A0,  A0, 0x80
@@ -576,6 +1294,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     blt        ZERO,TL, .L_L71
 
 .L_L0:
+    xvldrepl.d  VALPHA, $sp, 112
 #if defined(TRMMKERNEL)
     xvfmul.d  D0,   D0,  VALPHA
     xvfmul.d  D1,   D1,  VALPHA
@@ -605,24 +1324,24 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     xvfmadd.d D3,  D3,  VALPHA,  U3
 
     /* Load C1  */
-    xvld      U0,  C1,  0x00
-    xvld      U1,  C1,  0x20
-    xvld      U2,  C1,  0x40
-    xvld      U3,  C1,  0x60
-    xvfmadd.d D4,  D4,  VALPHA,  U0
-    xvfmadd.d D5,  D5,  VALPHA,  U1
-    xvfmadd.d D6,  D6,  VALPHA,  U2
-    xvfmadd.d D7,  D7,  VALPHA,  U3
+    xvld      U4,  C1,  0x00
+    xvld      U5,  C1,  0x20
+    xvld      U6,  C1,  0x40
+    xvld      U7,  C1,  0x60
+    xvfmadd.d D4,  D4,  VALPHA,  U4
+    xvfmadd.d D5,  D5,  VALPHA,  U5
+    xvfmadd.d D6,  D6,  VALPHA,  U6
+    xvfmadd.d D7,  D7,  VALPHA,  U7
 
     /* Load C2  */
-    xvld      U0,  C2,  0x00
-    xvld      U1,  C2,  0x20
-    xvld      U2,  C2,  0x40
-    xvld      U3,  C2,  0x60
-    xvfmadd.d D8,  D8,  VALPHA,  U0
-    xvfmadd.d D9,  D9,  VALPHA,  U1
-    xvfmadd.d D10, D10, VALPHA,  U2
-    xvfmadd.d D11, D11, VALPHA,  U3
+    xvld      U8,  C2,  0x00
+    xvld      U9,  C2,  0x20
+    xvld      U10, C2,  0x40
+    xvld      U11, C2,  0x60
+    xvfmadd.d D8,  D8,  VALPHA,  U8
+    xvfmadd.d D9,  D9,  VALPHA,  U9
+    xvfmadd.d D10, D10, VALPHA,  U10
+    xvfmadd.d D11, D11, VALPHA,  U11
 
     /* Load C3  */
     xvld      U0,  C3,  0x00
@@ -727,20 +1446,20 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     xvfmul.d  D0,  U0, U4
     xvfmul.d  D1,  U1, U4
 
-    xvldrepl.d     U4, B0, 0x08
+    xvldrepl.d     U5, B0, 0x08
     /* line 2 */
-    xvfmul.d  D4,  U0, U4
-    xvfmul.d  D5,  U1, U4
+    xvfmul.d  D4,  U0, U5
+    xvfmul.d  D5,  U1, U5
 
-    xvldrepl.d     U4, B0, 0x10
+    xvldrepl.d     U6, B0, 0x10
     /* line 3 */
-    xvfmul.d  D8,  U0, U4
-    xvfmul.d  D9,  U1, U4
+    xvfmul.d  D8,  U0, U6
+    xvfmul.d  D9,  U1, U6
 
-    xvldrepl.d     U4, B0, 0x18
+    xvldrepl.d     U7, B0, 0x18
     /* line 4 */
-    xvfmul.d  D12, U0, U4
-    xvfmul.d  D13, U1, U4
+    xvfmul.d  D12, U0, U7
+    xvfmul.d  D13, U1, U7
 
     /* Add stride for A0 and B0 */
     addi.d    A0,  A0, 0x40
@@ -751,194 +1470,28 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     /* if (TL < 1) goto L_M8_L7 */
     beq       ZERO,TL, .L_M8_L7
 
+    xvld     U8,   A0,    0x00
+    xvld     U9,   A0,    0x20
+
+    addi.d    TL,  TL,  -1
+
+    xvldrepl.d  U12,   B0,  0x00
+    xvldrepl.d  U13,   B0,  0x08
+    xvldrepl.d  U14,   B0,  0x10
+    xvldrepl.d  U15,   B0,  0x18
+    addi.d     A0,  A0, 0x40
+    addi.d     B0,  B0, 0x20
+
+    beq    ZERO,    TL,  .L_M8_TL1_END
+
 .L_M8_TL1: /* TL-- */
-           /***8-1***/
-    /* Load 16 * 64 from A0 */
-    xvld     U0,   A0,    0x00
-    xvld     U1,   A0,    0x20
-
-    xvldrepl.d U4,  B0, 0x00
-    xvfmadd.d  D0,  U0, U4, D0
-    xvfmadd.d  D1,  U1, U4, D1
-
-    xvldrepl.d U4,  B0, 0x08
-    xvfmadd.d  D4,  U0, U4, D4
-    xvfmadd.d  D5,  U1, U4, D5
-
-    xvldrepl.d U4,  B0, 0x10
-    xvfmadd.d  D8,  U0, U4, D8
-    xvfmadd.d  D9,  U1, U4, D9
-
-    xvldrepl.d U4,  B0, 0x18
-    xvfmadd.d  D12, U0, U4, D12
-    xvfmadd.d  D13, U1, U4, D13
-
-    addi.d     A0,  A0, 0x40
-    addi.d     B0,  B0, 0x20
-
-           /***8-2***/
-    xvld     U0,   A0,    0x00
-    xvld     U1,   A0,    0x20
-
-    xvldrepl.d U4,  B0, 0x00
-    xvfmadd.d  D0,  U0, U4, D0
-    xvfmadd.d  D1,  U1, U4, D1
-
-    xvldrepl.d U4,  B0, 0x08
-    xvfmadd.d  D4,  U0, U4, D4
-    xvfmadd.d  D5,  U1, U4, D5
-
-    xvldrepl.d U4,  B0, 0x10
-    xvfmadd.d  D8,  U0, U4, D8
-    xvfmadd.d  D9,  U1, U4, D9
-
-    xvldrepl.d U4,  B0, 0x18
-    xvfmadd.d  D12, U0, U4, D12
-    xvfmadd.d  D13, U1, U4, D13
-
-    addi.d     A0,  A0, 0x40
-    addi.d     B0,  B0, 0x20
-
-           /***8-3***/
-    xvld     U0,   A0,    0x00
-    xvld     U1,   A0,    0x20
-
-    xvldrepl.d U4,  B0, 0x00
-    xvfmadd.d  D0,  U0, U4, D0
-    xvfmadd.d  D1,  U1, U4, D1
-
-    xvldrepl.d U4,  B0, 0x08
-    xvfmadd.d  D4,  U0, U4, D4
-    xvfmadd.d  D5,  U1, U4, D5
-
-    xvldrepl.d U4,  B0, 0x10
-    xvfmadd.d  D8,  U0, U4, D8
-    xvfmadd.d  D9,  U1, U4, D9
-
-    xvldrepl.d U4,  B0, 0x18
-    xvfmadd.d  D12, U0, U4, D12
-    xvfmadd.d  D13, U1, U4, D13
-
-    addi.d     A0,  A0, 0x40
-    addi.d     B0,  B0, 0x20
-
-           /***8-4***/
-    xvld     U0,   A0,    0x00
-    xvld     U1,   A0,    0x20
-
-    xvldrepl.d U4,  B0, 0x00
-    xvfmadd.d  D0,  U0, U4, D0
-    xvfmadd.d  D1,  U1, U4, D1
-
-    xvldrepl.d U4,  B0, 0x08
-    xvfmadd.d  D4,  U0, U4, D4
-    xvfmadd.d  D5,  U1, U4, D5
-
-    xvldrepl.d U4,  B0, 0x10
-    xvfmadd.d  D8,  U0, U4, D8
-    xvfmadd.d  D9,  U1, U4, D9
-
-    xvldrepl.d U4,  B0, 0x18
-    xvfmadd.d  D12, U0, U4, D12
-    xvfmadd.d  D13, U1, U4, D13
-
-    addi.d     A0,  A0, 0x40
-    addi.d     B0,  B0, 0x20
-
-           /***8-5***/
-    xvld     U0,   A0,    0x00
-    xvld     U1,   A0,    0x20
-
-    xvldrepl.d U4,  B0, 0x00
-    xvfmadd.d  D0,  U0, U4, D0
-    xvfmadd.d  D1,  U1, U4, D1
-
-    xvldrepl.d U4,  B0, 0x08
-    xvfmadd.d  D4,  U0, U4, D4
-    xvfmadd.d  D5,  U1, U4, D5
-
-    xvldrepl.d U4,  B0, 0x10
-    xvfmadd.d  D8,  U0, U4, D8
-    xvfmadd.d  D9,  U1, U4, D9
-
-    xvldrepl.d U4,  B0, 0x18
-    xvfmadd.d  D12, U0, U4, D12
-    xvfmadd.d  D13, U1, U4, D13
-
-    addi.d     A0,  A0, 0x40
-    addi.d     B0,  B0, 0x20
-
-           /***8-6***/
-    xvld     U0,   A0,    0x00
-    xvld     U1,   A0,    0x20
-
-    xvldrepl.d U4,  B0, 0x00
-    xvfmadd.d  D0,  U0, U4, D0
-    xvfmadd.d  D1,  U1, U4, D1
-
-    xvldrepl.d U4,  B0, 0x08
-    xvfmadd.d  D4,  U0, U4, D4
-    xvfmadd.d  D5,  U1, U4, D5
-
-    xvldrepl.d U4,  B0, 0x10
-    xvfmadd.d  D8,  U0, U4, D8
-    xvfmadd.d  D9,  U1, U4, D9
-
-    xvldrepl.d U4,  B0, 0x18
-    xvfmadd.d  D12, U0, U4, D12
-    xvfmadd.d  D13, U1, U4, D13
-
-    addi.d     A0,  A0, 0x40
-    addi.d     B0,  B0, 0x20
-
-           /***8-7***/
-    xvld     U0,   A0,    0x00
-    xvld     U1,   A0,    0x20
-
-    xvldrepl.d U4,  B0, 0x00
-    xvfmadd.d  D0,  U0, U4, D0
-    xvfmadd.d  D1,  U1, U4, D1
-
-    xvldrepl.d U4,  B0, 0x08
-    xvfmadd.d  D4,  U0, U4, D4
-    xvfmadd.d  D5,  U1, U4, D5
-
-    xvldrepl.d U4,  B0, 0x10
-    xvfmadd.d  D8,  U0, U4, D8
-    xvfmadd.d  D9,  U1, U4, D9
-
-    xvldrepl.d U4,  B0, 0x18
-    xvfmadd.d  D12, U0, U4, D12
-    xvfmadd.d  D13, U1, U4, D13
-
-    addi.d     A0,  A0, 0x40
-    addi.d     B0,  B0, 0x20
-
-           /***8-8***/
-    xvld     U0,   A0,    0x00
-    xvld     U1,   A0,    0x20
-
-    xvldrepl.d U4,  B0, 0x00
-    xvfmadd.d  D0,  U0, U4, D0
-    xvfmadd.d  D1,  U1, U4, D1
-
-    xvldrepl.d U4,  B0, 0x08
-    xvfmadd.d  D4,  U0, U4, D4
-    xvfmadd.d  D5,  U1, U4, D5
-
-    xvldrepl.d U4,  B0, 0x10
-    xvfmadd.d  D8,  U0, U4, D8
-    xvfmadd.d  D9,  U1, U4, D9
-
-    xvldrepl.d U4,  B0, 0x18
-    xvfmadd.d  D12, U0, U4, D12
-    xvfmadd.d  D13, U1, U4, D13
-
-    addi.d     A0,  A0, 0x40
-    addi.d     B0,  B0, 0x20
+    KERNEL8x8x4
 
     addi.d    TL,  TL, -1 /* TL-- */
     blt       ZERO,TL, .L_M8_TL1
+
+.L_M8_TL1_END:
+    KERNEL8x8x4_END
 
 .L_M8_L7:
     /* if (!(L & 7)) goto L_M8_L0 */
@@ -953,17 +1506,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     xvfmadd.d  D0,  U0, U4, D0
     xvfmadd.d  D1,  U1, U4, D1
 
-    xvldrepl.d U4,  B0, 0x08
-    xvfmadd.d  D4,  U0, U4, D4
-    xvfmadd.d  D5,  U1, U4, D5
+    xvldrepl.d U5,  B0, 0x08
+    xvfmadd.d  D4,  U0, U5, D4
+    xvfmadd.d  D5,  U1, U5, D5
 
-    xvldrepl.d U4,  B0, 0x10
-    xvfmadd.d  D8,  U0, U4, D8
-    xvfmadd.d  D9,  U1, U4, D9
+    xvldrepl.d U6,  B0, 0x10
+    xvfmadd.d  D8,  U0, U6, D8
+    xvfmadd.d  D9,  U1, U6, D9
 
-    xvldrepl.d U4,  B0, 0x18
-    xvfmadd.d  D12, U0, U4, D12
-    xvfmadd.d  D13, U1, U4, D13
+    xvldrepl.d U7,  B0, 0x18
+    xvfmadd.d  D12, U0, U7, D12
+    xvfmadd.d  D13, U1, U7, D13
 
     /* Add stride for A0, B0 */
     addi.d     A0,  A0, 0x40
@@ -973,6 +1526,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     blt        ZERO,TL, .L_M8_L71
 
 .L_M8_L0:
+    xvldrepl.d  VALPHA, $sp, 112
 #if defined(TRMMKERNEL)
     xvfmul.d  D0,   D0,  VALPHA
     xvfmul.d  D1,   D1,  VALPHA
@@ -990,22 +1544,22 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     xvfmadd.d D1,  D1,  VALPHA,  U1
 
     /* Load C1  */
-    xvld      U0,  C1,  0x00
-    xvld      U1,  C1,  0x20
-    xvfmadd.d D4,  D4,  VALPHA,  U0
-    xvfmadd.d D5,  D5,  VALPHA,  U1
+    xvld      U2,  C1,  0x00
+    xvld      U3,  C1,  0x20
+    xvfmadd.d D4,  D4,  VALPHA,  U2
+    xvfmadd.d D5,  D5,  VALPHA,  U3
 
     /* Load C2  */
-    xvld      U0,  C2,  0x00
-    xvld      U1,  C2,  0x20
-    xvfmadd.d D8,  D8,  VALPHA,  U0
-    xvfmadd.d D9,  D9,  VALPHA,  U1
+    xvld      U4,  C2,  0x00
+    xvld      U5,  C2,  0x20
+    xvfmadd.d D8,  D8,  VALPHA,  U4
+    xvfmadd.d D9,  D9,  VALPHA,  U5
 
     /* Load C3  */
-    xvld      U0,  C3,  0x00
-    xvld      U1,  C3,  0x20
-    xvfmadd.d D12, D12, VALPHA,  U0
-    xvfmadd.d D13, D13, VALPHA,  U1
+    xvld      U6,  C3,  0x00
+    xvld      U7,  C3,  0x20
+    xvfmadd.d D12, D12, VALPHA,  U6
+    xvfmadd.d D13, D13, VALPHA,  U7
 #endif   // #if defined(TRMMKERNEL)
 
     /* Store C0 */
@@ -1085,17 +1639,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     /* line 1 */
     xvfmul.d  D0,  U0, U4
 
-    xvldrepl.d     U4, B0, 0x08
+    xvldrepl.d     U5, B0, 0x08
     /* line 2 */
-    xvfmul.d  D4,  U0, U4
+    xvfmul.d  D4,  U0, U5
 
-    xvldrepl.d     U4, B0, 0x10
+    xvldrepl.d     U6, B0, 0x10
     /* line 3 */
-    xvfmul.d  D8,  U0, U4
+    xvfmul.d  D8,  U0, U6
 
-    xvldrepl.d     U4, B0, 0x18
+    xvldrepl.d     U7, B0, 0x18
     /* line 4 */
-    xvfmul.d  D12, U0, U4
+    xvfmul.d  D12, U0, U7
 
     /* Add stride for A0 and B0 */
     addi.d    A0,  A0, 0x20
@@ -1106,153 +1660,27 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     /* if (TL < 1) goto L_M4_L7 */
     beq       ZERO,TL, .L_M4_L7
 
+    xvld     U8,   A0,    0x00
+
+    addi.d    TL,  TL,  -1
+
+    xvldrepl.d  U12,   B0,  0x00
+    xvldrepl.d  U13,   B0,  0x08
+    xvldrepl.d  U14,   B0,  0x10
+    xvldrepl.d  U15,   B0,  0x18
+    addi.d     A0,  A0, 0x20
+    addi.d     B0,  B0, 0x20
+
+    beq    ZERO,    TL,  .L_M4_TL1_END
+
 .L_M4_TL1: /* TL-- */
-           /***8-1***/
-    xvld     U0,   A0,    0x00
+    KERNEL8x4x4
 
-    xvldrepl.d U4,  B0, 0x00
-    xvfmadd.d  D0,  U0, U4, D0
+    addi.d     TL,  TL, -1
+    blt        ZERO,TL, .L_M4_TL1
 
-    xvldrepl.d U4,  B0, 0x08
-    xvfmadd.d  D4,  U0, U4, D4
-
-    xvldrepl.d U4,  B0, 0x10
-    xvfmadd.d  D8,  U0, U4, D8
-
-    xvldrepl.d U4,  B0, 0x18
-    xvfmadd.d  D12, U0, U4, D12
-
-    addi.d     A0,  A0, 0x20
-    addi.d     B0,  B0, 0x20
-
-           /***8-2***/
-    xvld     U0,   A0,    0x00
-
-    xvldrepl.d U4,  B0, 0x00
-    xvfmadd.d  D0,  U0, U4, D0
-
-    xvldrepl.d U4,  B0, 0x08
-    xvfmadd.d  D4,  U0, U4, D4
-
-    xvldrepl.d U4,  B0, 0x10
-    xvfmadd.d  D8,  U0, U4, D8
-
-    xvldrepl.d U4,  B0, 0x18
-    xvfmadd.d  D12, U0, U4, D12
-
-    addi.d     A0,  A0, 0x20
-    addi.d     B0,  B0, 0x20
-
-           /***8-3***/
-    xvld     U0,   A0,    0x00
-
-    xvldrepl.d U4,  B0, 0x00
-    xvfmadd.d  D0,  U0, U4, D0
-
-    xvldrepl.d U4,  B0, 0x08
-    xvfmadd.d  D4,  U0, U4, D4
-
-    xvldrepl.d U4,  B0, 0x10
-    xvfmadd.d  D8,  U0, U4, D8
-
-    xvldrepl.d U4,  B0, 0x18
-    xvfmadd.d  D12, U0, U4, D12
-
-    addi.d     A0,  A0, 0x20
-    addi.d     B0,  B0, 0x20
-
-           /***8-4***/
-    xvld     U0,   A0,    0x00
-
-    xvldrepl.d U4,  B0, 0x00
-    xvfmadd.d  D0,  U0, U4, D0
-
-    xvldrepl.d U4,  B0, 0x08
-    xvfmadd.d  D4,  U0, U4, D4
-
-    xvldrepl.d U4,  B0, 0x10
-    xvfmadd.d  D8,  U0, U4, D8
-
-    xvldrepl.d U4,  B0, 0x18
-    xvfmadd.d  D12, U0, U4, D12
-
-    addi.d     A0,  A0, 0x20
-    addi.d     B0,  B0, 0x20
-
-           /***8-5***/
-    xvld     U0,   A0,    0x00
-
-    xvldrepl.d U4,  B0, 0x00
-    xvfmadd.d  D0,  U0, U4, D0
-
-    xvldrepl.d U4,  B0, 0x08
-    xvfmadd.d  D4,  U0, U4, D4
-
-    xvldrepl.d U4,  B0, 0x10
-    xvfmadd.d  D8,  U0, U4, D8
-
-    xvldrepl.d U4,  B0, 0x18
-    xvfmadd.d  D12, U0, U4, D12
-
-    addi.d     A0,  A0, 0x20
-    addi.d     B0,  B0, 0x20
-
-           /***8-6***/
-    xvld     U0,   A0,    0x00
-
-    xvldrepl.d U4,  B0, 0x00
-    xvfmadd.d  D0,  U0, U4, D0
-
-    xvldrepl.d U4,  B0, 0x08
-    xvfmadd.d  D4,  U0, U4, D4
-
-    xvldrepl.d U4,  B0, 0x10
-    xvfmadd.d  D8,  U0, U4, D8
-
-    xvldrepl.d U4,  B0, 0x18
-    xvfmadd.d  D12, U0, U4, D12
-
-    addi.d     A0,  A0, 0x20
-    addi.d     B0,  B0, 0x20
-
-           /***8-7***/
-    xvld     U0,   A0,    0x00
-
-    xvldrepl.d U4,  B0, 0x00
-    xvfmadd.d  D0,  U0, U4, D0
-
-    xvldrepl.d U4,  B0, 0x08
-    xvfmadd.d  D4,  U0, U4, D4
-
-    xvldrepl.d U4,  B0, 0x10
-    xvfmadd.d  D8,  U0, U4, D8
-
-    xvldrepl.d U4,  B0, 0x18
-    xvfmadd.d  D12, U0, U4, D12
-
-    addi.d     A0,  A0, 0x20
-    addi.d     B0,  B0, 0x20
-
-           /***8-8***/
-    xvld     U0,   A0,    0x00
-
-    xvldrepl.d U4,  B0, 0x00
-    xvfmadd.d  D0,  U0, U4, D0
-
-    xvldrepl.d U4,  B0, 0x08
-    xvfmadd.d  D4,  U0, U4, D4
-
-    xvldrepl.d U4,  B0, 0x10
-    xvfmadd.d  D8,  U0, U4, D8
-
-    xvldrepl.d U4,  B0, 0x18
-    xvfmadd.d  D12, U0, U4, D12
-
-    addi.d     A0,  A0, 0x20
-    addi.d     B0,  B0, 0x20
-
-    addi.d    TL,  TL, -1 /* TL-- */
-    blt       ZERO,TL, .L_M4_TL1
+.L_M4_TL1_END:
+    KERNEL8x4x4_END
 
 .L_M4_L7:
     /* if (!(L & 7)) goto L_M4_L0 */
@@ -1282,6 +1710,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     blt        ZERO,TL, .L_M4_L71
 
 .L_M4_L0:
+    xvldrepl.d  VALPHA, $sp, 112
 #if defined(TRMMKERNEL)
     xvfmul.d  D0,   D0,  VALPHA
     xvfmul.d  D4,   D4,  VALPHA
@@ -1293,16 +1722,16 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     xvfmadd.d D0,  D0,  VALPHA,  U0 /* D0 = U0 + (D0 * VALPHA) */
 
     /* Load C1  */
-    xvld      U0,  C1,  0x00
-    xvfmadd.d D4,  D4,  VALPHA,  U0
+    xvld      U1,  C1,  0x00
+    xvfmadd.d D4,  D4,  VALPHA,  U1
 
     /* Load C2  */
-    xvld      U0,  C2,  0x00
-    xvfmadd.d D8,  D8,  VALPHA,  U0
+    xvld      U2,  C2,  0x00
+    xvfmadd.d D8,  D8,  VALPHA,  U2
 
     /* Load C3  */
-    xvld      U0,  C3,  0x00
-    xvfmadd.d D12, D12, VALPHA,  U0
+    xvld      U3,  C3,  0x00
+    xvfmadd.d D12, D12, VALPHA,  U3
 #endif   // #if defined(TRMMKERNEL)
 
     /* Store C0 */
@@ -1372,23 +1801,13 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif
 
     /* Load 2 * 64 from A0 */
-    xvld     U0,   A0,    0x00
+    xvldrepl.d     U0,   A0,    0x00
+    xvldrepl.d     U1,   A0,    0x08
 
-    xvldrepl.d     U4, B0, 0x00
-    /* line 1 */
-    xvfmul.d  D0,  U0, U4
+    xvld    U4,     B0,     0x00
 
-    xvldrepl.d     U4, B0, 0x08
-    /* line 2 */
-    xvfmul.d  D4,  U0, U4
-
-    xvldrepl.d     U4, B0, 0x10
-    /* line 3 */
-    xvfmul.d  D8,  U0, U4
-
-    xvldrepl.d     U4, B0, 0x18
-    /* line 4 */
-    xvfmul.d  D12, U0, U4
+    xvfmul.d    D0,     U0,     U4
+    xvfmul.d    D1,     U1,     U4
 
     /* Add stride for A0 and B0 */
     addi.d    A0,  A0, 0x10
@@ -1399,154 +1818,23 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     /* if (TL < 1) goto L_M2_L7 */
     beq       ZERO,TL, .L_M2_L7
 
+    xvldrepl.d     U8,   A0,    0x00
+    xvldrepl.d     U9,   A0,    0x08
+
+    addi.d    TL,  TL,  -1
+
+    xvld       U12, B0, 0x00
+    addi.d     A0,  A0, 0x10
+    addi.d     B0,  B0, 0x20
+
+    beq    ZERO,    TL,  .L_M2_TL1_END
 .L_M2_TL1: /* TL-- */
-           /***8-1***/
-    /* Load 2 * 64 from A0 */
-    xvld     U0,   A0,    0x00
-
-    xvldrepl.d U4,  B0, 0x00
-    xvfmadd.d  D0,  U0, U4, D0
-
-    xvldrepl.d U4,  B0, 0x08
-    xvfmadd.d  D4,  U0, U4, D4
-
-    xvldrepl.d U4,  B0, 0x10
-    xvfmadd.d  D8,  U0, U4, D8
-
-    xvldrepl.d U4,  B0, 0x18
-    xvfmadd.d  D12, U0, U4, D12
-
-    addi.d     A0,  A0, 0x10
-    addi.d     B0,  B0, 0x20
-
-           /***8-2***/
-    xvld     U0,   A0,    0x00
-
-    xvldrepl.d U4,  B0, 0x00
-    xvfmadd.d  D0,  U0, U4, D0
-
-    xvldrepl.d U4,  B0, 0x08
-    xvfmadd.d  D4,  U0, U4, D4
-
-    xvldrepl.d U4,  B0, 0x10
-    xvfmadd.d  D8,  U0, U4, D8
-
-    xvldrepl.d U4,  B0, 0x18
-    xvfmadd.d  D12, U0, U4, D12
-
-    addi.d     A0,  A0, 0x10
-    addi.d     B0,  B0, 0x20
-
-           /***8-3***/
-    xvld     U0,   A0,    0x00
-
-    xvldrepl.d U4,  B0, 0x00
-    xvfmadd.d  D0,  U0, U4, D0
-
-    xvldrepl.d U4,  B0, 0x08
-    xvfmadd.d  D4,  U0, U4, D4
-
-    xvldrepl.d U4,  B0, 0x10
-    xvfmadd.d  D8,  U0, U4, D8
-
-    xvldrepl.d U4,  B0, 0x18
-    xvfmadd.d  D12, U0, U4, D12
-
-    addi.d     A0,  A0, 0x10
-    addi.d     B0,  B0, 0x20
-
-           /***8-4***/
-    xvld     U0,   A0,    0x00
-
-    xvldrepl.d U4,  B0, 0x00
-    xvfmadd.d  D0,  U0, U4, D0
-
-    xvldrepl.d U4,  B0, 0x08
-    xvfmadd.d  D4,  U0, U4, D4
-
-    xvldrepl.d U4,  B0, 0x10
-    xvfmadd.d  D8,  U0, U4, D8
-
-    xvldrepl.d U4,  B0, 0x18
-    xvfmadd.d  D12, U0, U4, D12
-
-    addi.d     A0,  A0, 0x10
-    addi.d     B0,  B0, 0x20
-
-           /***8-5***/
-    xvld     U0,   A0,    0x00
-
-    xvldrepl.d U4,  B0, 0x00
-    xvfmadd.d  D0,  U0, U4, D0
-
-    xvldrepl.d U4,  B0, 0x08
-    xvfmadd.d  D4,  U0, U4, D4
-
-    xvldrepl.d U4,  B0, 0x10
-    xvfmadd.d  D8,  U0, U4, D8
-
-    xvldrepl.d U4,  B0, 0x18
-    xvfmadd.d  D12, U0, U4, D12
-
-    addi.d     A0,  A0, 0x10
-    addi.d     B0,  B0, 0x20
-
-           /***8-6***/
-    xvld     U0,   A0,    0x00
-
-    xvldrepl.d U4,  B0, 0x00
-    xvfmadd.d  D0,  U0, U4, D0
-
-    xvldrepl.d U4,  B0, 0x08
-    xvfmadd.d  D4,  U0, U4, D4
-
-    xvldrepl.d U4,  B0, 0x10
-    xvfmadd.d  D8,  U0, U4, D8
-
-    xvldrepl.d U4,  B0, 0x18
-    xvfmadd.d  D12, U0, U4, D12
-
-    addi.d     A0,  A0, 0x10
-    addi.d     B0,  B0, 0x20
-
-           /***8-7***/
-    xvld     U0,   A0,    0x00
-
-    xvldrepl.d U4,  B0, 0x00
-    xvfmadd.d  D0,  U0, U4, D0
-
-    xvldrepl.d U4,  B0, 0x08
-    xvfmadd.d  D4,  U0, U4, D4
-
-    xvldrepl.d U4,  B0, 0x10
-    xvfmadd.d  D8,  U0, U4, D8
-
-    xvldrepl.d U4,  B0, 0x18
-    xvfmadd.d  D12, U0, U4, D12
-
-    addi.d     A0,  A0, 0x10
-    addi.d     B0,  B0, 0x20
-
-           /***8-8***/
-    xvld     U0,   A0,    0x00
-
-    xvldrepl.d U4,  B0, 0x00
-    xvfmadd.d  D0,  U0, U4, D0
-
-    xvldrepl.d U4,  B0, 0x08
-    xvfmadd.d  D4,  U0, U4, D4
-
-    xvldrepl.d U4,  B0, 0x10
-    xvfmadd.d  D8,  U0, U4, D8
-
-    xvldrepl.d U4,  B0, 0x18
-    xvfmadd.d  D12, U0, U4, D12
-
-    addi.d     A0,  A0, 0x10
-    addi.d     B0,  B0, 0x20
+    KERNEL8x2x4
 
     addi.d    TL,  TL, -1 /* TL-- */
     blt       ZERO,TL, .L_M2_TL1
+.L_M2_TL1_END:
+    KERNEL8x2x4_END
 
 .L_M2_L7:
     /* if (!(L & 7)) goto L_M2_L0 */
@@ -1554,20 +1842,13 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     beq       TL,  ZERO,.L_M2_L0
 
 .L_M2_L71:
-    xvld     U0,   A0,    0x00
+    xvldrepl.d     U0,   A0,    0x00
+    xvldrepl.d     U1,   A0,    0x08
 
-    xvldrepl.d U4,  B0, 0x00
-    xvfmadd.d  D0,  U0, U4, D0
+    xvld    U4,  B0, 0x00
 
-    xvldrepl.d U4,  B0, 0x08
-    xvfmadd.d  D4,  U0, U4, D4
-
-    xvldrepl.d U4,  B0, 0x10
-    xvfmadd.d  D8,  U0, U4, D8
-
-    xvldrepl.d U4,  B0, 0x18
-    xvfmadd.d  D12, U0, U4, D12
-
+    xvfmadd.d   D0,     U0,     U4,    D0
+    xvfmadd.d   D1,     U1,     U4,    D1
     /* Add stride for A0, B0 */
     addi.d     A0,  A0, 0x10
     addi.d     B0,  B0, 0x20
@@ -1576,37 +1857,44 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     blt        ZERO,TL, .L_M2_L71
 
 .L_M2_L0:
+    xvldrepl.d  VALPHA, $sp, 112
 #if defined(TRMMKERNEL)
     xvfmul.d  D0,   D0,  VALPHA
-    xvfmul.d  D4,   D4,  VALPHA
-    xvfmul.d  D8,   D8,  VALPHA
-    xvfmul.d  D12,  D12, VALPHA
-#else
-    /* Load C0  */
-    xvld      U0,  C0,  0x00
-    xvfmadd.d D0,  D0,  VALPHA,  U0 /* D0 = U0 + (D0 * VALPHA) */
-
-    /* Load C1  */
-    xvld      U0,  C1,  0x00
-    xvfmadd.d D4,  D4,  VALPHA,  U0
-
-    /* Load C2  */
-    xvld      U0,  C2,  0x00
-    xvfmadd.d D8,  D8,  VALPHA,  U0
-
-    /* Load C3  */
-    xvld      U0,  C3,  0x00
-    xvfmadd.d D12, D12, VALPHA,  U0
-#endif   // #if defined(TRMMKERNEL)
+    xvfmul.d  D1,   D1,  VALPHA
 
     xvstelm.d D0,  C0,  0x00,    0x00
-    xvstelm.d D4,  C1,  0x00,    0x00
-    xvstelm.d D8,  C2,  0x00,    0x00
-    xvstelm.d D12, C3,  0x00,    0x00
-    xvstelm.d D0,  C0,  0x08,    0x01
-    xvstelm.d D4,  C1,  0x08,    0x01
-    xvstelm.d D8,  C2,  0x08,    0x01
-    xvstelm.d D12, C3,  0x08,    0x01
+    xvstelm.d D0,  C1,  0x00,    0x01
+    xvstelm.d D0,  C2,  0x00,    0x02
+    xvstelm.d D0,  C3,  0x00,    0x03
+    xvstelm.d D1,  C0,  0x08,    0x00
+    xvstelm.d D1,  C1,  0x08,    0x01
+    xvstelm.d D1,  C2,  0x08,    0x02
+    xvstelm.d D1,  C3,  0x08,    0x03
+#else
+    xvpackev.d  D4,     D1,     D0
+    xvpackod.d  D5,     D1,     D0
+    /* Load C0  */
+    xvld      U0,  C0,  0x00
+    /* Load C1  */
+    xvld      U1,  C1,  0x00
+    /* Load C2  */
+    xvld      U2,  C2,  0x00
+    /* Load C3  */
+    xvld      U3,  C3,  0x00
+
+    xvpermi.q   U2, U0, 0x20
+    xvpermi.q   U3, U1, 0x20
+
+    xvfmadd.d   D0, D4, VALPHA, U2
+    xvfmadd.d   D1, D5, VALPHA, U3
+
+    vst       $vr16,    C0,      0x00
+    vst       $vr17,    C1,      0x00
+    xvstelm.d D0,  C2,  0x00,    0x02
+    xvstelm.d D1,  C3,  0x00,    0x02
+    xvstelm.d D0,  C2,  0x08,    0x03
+    xvstelm.d D1,  C3,  0x08,    0x03
+#endif   // #if defined(TRMMKERNEL)
 
     /* Add stride for C */
     addi.d    C0,  C0,  0x10
@@ -1666,24 +1954,9 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     move     L,     K /* L = bk */
 #endif
 
-    /* Load 1 * 64 from A0 */
-    xvld     U0,   A0,    0x00
-
-    xvldrepl.d     U4, B0, 0x00
-    /* line 1 */
-    xvfmul.d  D0,  U0, U4
-
-    xvldrepl.d     U4, B0, 0x08
-    /* line 2 */
-    xvfmul.d  D4,  U0, U4
-
-    xvldrepl.d     U4, B0, 0x10
-    /* line 3 */
-    xvfmul.d  D8,  U0, U4
-
-    xvldrepl.d     U4, B0, 0x18
-    /* line 4 */
-    xvfmul.d  D12, U0, U4
+    xvldrepl.d  U0,     A0,     0x00
+    xvld        U4,     B0,     0x00
+    xvfmul.d    D0,     U0,     U4
 
     /* Add stride for A0 and B0 */
     addi.d    A0,  A0, 0x08
@@ -1694,154 +1967,22 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     /* if (TL < 1) goto L_M1_L7 */
     beq       ZERO,TL, .L_M1_L7
 
+    xvldrepl.d  U8,     A0,     0x00
+
+    addi.d     TL,  TL,  -1
+    xvld       U12, B0,  0x00
+    addi.d     A0,  A0,  0x08
+    addi.d     B0,  B0,  0x20
+
+    beq    ZERO,    TL,  .L_M1_TL1_END
+
 .L_M1_TL1: /* TL-- */
-           /***8-1***/
-    /* Load 1 * 64 from A0 */
-    xvld     U0,   A0,    0x00
-
-    xvldrepl.d U4,  B0, 0x00
-    xvfmadd.d  D0,  U0, U4, D0
-
-    xvldrepl.d U4,  B0, 0x08
-    xvfmadd.d  D4,  U0, U4, D4
-
-    xvldrepl.d U4,  B0, 0x10
-    xvfmadd.d  D8,  U0, U4, D8
-
-    xvldrepl.d U4,  B0, 0x18
-    xvfmadd.d  D12, U0, U4, D12
-
-    addi.d     A0,  A0, 0x08
-    addi.d     B0,  B0, 0x20
-
-           /***8-2***/
-    xvld     U0,   A0,    0x00
-
-    xvldrepl.d U4,  B0, 0x00
-    xvfmadd.d  D0,  U0, U4, D0
-
-    xvldrepl.d U4,  B0, 0x08
-    xvfmadd.d  D4,  U0, U4, D4
-
-    xvldrepl.d U4,  B0, 0x10
-    xvfmadd.d  D8,  U0, U4, D8
-
-    xvldrepl.d U4,  B0, 0x18
-    xvfmadd.d  D12, U0, U4, D12
-
-    addi.d     A0,  A0, 0x08
-    addi.d     B0,  B0, 0x20
-
-           /***8-3***/
-    xvld     U0,   A0,    0x00
-
-    xvldrepl.d U4,  B0, 0x00
-    xvfmadd.d  D0,  U0, U4, D0
-
-    xvldrepl.d U4,  B0, 0x08
-    xvfmadd.d  D4,  U0, U4, D4
-
-    xvldrepl.d U4,  B0, 0x10
-    xvfmadd.d  D8,  U0, U4, D8
-
-    xvldrepl.d U4,  B0, 0x18
-    xvfmadd.d  D12, U0, U4, D12
-
-    addi.d     A0,  A0, 0x08
-    addi.d     B0,  B0, 0x20
-
-           /***8-4***/
-    xvld     U0,   A0,    0x00
-
-    xvldrepl.d U4,  B0, 0x00
-    xvfmadd.d  D0,  U0, U4, D0
-
-    xvldrepl.d U4,  B0, 0x08
-    xvfmadd.d  D4,  U0, U4, D4
-
-    xvldrepl.d U4,  B0, 0x10
-    xvfmadd.d  D8,  U0, U4, D8
-
-    xvldrepl.d U4,  B0, 0x18
-    xvfmadd.d  D12, U0, U4, D12
-
-    addi.d     A0,  A0, 0x08
-    addi.d     B0,  B0, 0x20
-
-           /***8-5***/
-    xvld     U0,   A0,    0x00
-
-    xvldrepl.d U4,  B0, 0x00
-    xvfmadd.d  D0,  U0, U4, D0
-
-    xvldrepl.d U4,  B0, 0x08
-    xvfmadd.d  D4,  U0, U4, D4
-
-    xvldrepl.d U4,  B0, 0x10
-    xvfmadd.d  D8,  U0, U4, D8
-
-    xvldrepl.d U4,  B0, 0x18
-    xvfmadd.d  D12, U0, U4, D12
-
-    addi.d     A0,  A0, 0x08
-    addi.d     B0,  B0, 0x20
-
-           /***8-6***/
-    xvld     U0,   A0,    0x00
-
-    xvldrepl.d U4,  B0, 0x00
-    xvfmadd.d  D0,  U0, U4, D0
-
-    xvldrepl.d U4,  B0, 0x08
-    xvfmadd.d  D4,  U0, U4, D4
-
-    xvldrepl.d U4,  B0, 0x10
-    xvfmadd.d  D8,  U0, U4, D8
-
-    xvldrepl.d U4,  B0, 0x18
-    xvfmadd.d  D12, U0, U4, D12
-
-    addi.d     A0,  A0, 0x08
-    addi.d     B0,  B0, 0x20
-
-           /***8-7***/
-    xvld     U0,   A0,    0x00
-
-    xvldrepl.d U4,  B0, 0x00
-    xvfmadd.d  D0,  U0, U4, D0
-
-    xvldrepl.d U4,  B0, 0x08
-    xvfmadd.d  D4,  U0, U4, D4
-
-    xvldrepl.d U4,  B0, 0x10
-    xvfmadd.d  D8,  U0, U4, D8
-
-    xvldrepl.d U4,  B0, 0x18
-    xvfmadd.d  D12, U0, U4, D12
-
-    addi.d     A0,  A0, 0x08
-    addi.d     B0,  B0, 0x20
-
-           /***8-8***/
-    xvld     U0,   A0,    0x00
-
-    xvldrepl.d U4,  B0, 0x00
-    xvfmadd.d  D0,  U0, U4, D0
-
-    xvldrepl.d U4,  B0, 0x08
-    xvfmadd.d  D4,  U0, U4, D4
-
-    xvldrepl.d U4,  B0, 0x10
-    xvfmadd.d  D8,  U0, U4, D8
-
-    xvldrepl.d U4,  B0, 0x18
-    xvfmadd.d  D12, U0, U4, D12
-
-    addi.d     A0,  A0, 0x08
-    addi.d     B0,  B0, 0x20
+    KERNEL8x1x4
 
     addi.d    TL,  TL, -1 /* TL-- */
     blt       ZERO,TL, .L_M1_TL1
+.L_M1_TL1_END:
+    KERNEL8x1x4_END
 
 .L_M1_L7:
     /* if (!(L & 7)) goto L_M1_L0 */
@@ -1849,19 +1990,9 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     beq       TL,  ZERO,.L_M1_L0
 
 .L_M1_L71:
-    xvld     U0,   A0,    0x00
-
-    xvldrepl.d U4,  B0, 0x00
-    xvfmadd.d  D0,  U0, U4, D0
-
-    xvldrepl.d U4,  B0, 0x08
-    xvfmadd.d  D4,  U0, U4, D4
-
-    xvldrepl.d U4,  B0, 0x10
-    xvfmadd.d  D8,  U0, U4, D8
-
-    xvldrepl.d U4,  B0, 0x18
-    xvfmadd.d  D12, U0, U4, D12
+    xvldrepl.d  U0,     A0,     0x00
+    xvld        U4,     B0,     0x00
+    xvfmadd.d   D0,     U0,     U4,    D0
 
     /* Add stride for A0, B0 */
     addi.d     A0,  A0, 0x08
@@ -1871,33 +2002,36 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     blt        ZERO,TL, .L_M1_L71
 
 .L_M1_L0:
+    xvldrepl.d  VALPHA, $sp, 112
 #if defined(TRMMKERNEL)
     xvfmul.d  D0,   D0,  VALPHA
-    xvfmul.d  D4,   D4,  VALPHA
-    xvfmul.d  D8,   D8,  VALPHA
-    xvfmul.d  D12,  D12, VALPHA
-#else
-    /* Load C0  */
-    xvld      U0,  C0,  0x00
-    xvfmadd.d D0,  D0,  VALPHA,  U0 /* D0 = U0 + (D0 * VALPHA) */
-
-    /* Load C1  */
-    xvld      U0,  C1,  0x00
-    xvfmadd.d D4,  D4,  VALPHA,  U0
-
-    /* Load C2  */
-    xvld      U0,  C2,  0x00
-    xvfmadd.d D8,  D8,  VALPHA,  U0
-
-    /* Load C3  */
-    xvld      U0,  C3,  0x00
-    xvfmadd.d D12, D12, VALPHA,  U0
-#endif   // #if defined(TRMMKERNEL)
 
     xvstelm.d D0,  C0,  0x00,    0x00
-    xvstelm.d D4,  C1,  0x00,    0x00
-    xvstelm.d D8,  C2,  0x00,    0x00
-    xvstelm.d D12, C3,  0x00,    0x00
+    xvstelm.d D0,  C1,  0x00,    0x01
+    xvstelm.d D0,  C2,  0x00,    0x02
+    xvstelm.d D0,  C3,  0x00,    0x03
+#else
+    /* Load C0  */
+    xvldrepl.d     U0,  C0,  0x00
+    xvfmadd.d D4,  D0,  VALPHA,  U0
+
+    /* Load C1  */
+    xvldrepl.d     U1,  C1,  0x00
+    xvfmadd.d D5,  D0,  VALPHA,  U1
+
+    /* Load C2  */
+    xvldrepl.d     U2,  C2,  0x00
+    xvfmadd.d D6,  D0,  VALPHA,  U2
+
+    /* Load C3  */
+    xvldrepl.d     U3,  C3,  0x00
+    xvfmadd.d D7,  D0,  VALPHA,  U3
+
+    xvstelm.d D4,  C0,  0x00,    0x00
+    xvstelm.d D5,  C1,  0x00,    0x01
+    xvstelm.d D6,  C2,  0x00,    0x02
+    xvstelm.d D7,  C3,  0x00,    0x03
+#endif   // #if defined(TRMMKERNEL)
 
     /* Add stride for C */
     addi.d    C0,  C0,  0x08
@@ -1951,6 +2085,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //////////////// go back to L_J1 /////////////////
 /////////////////////////////////////////////////
 /************************ Condition 1 if((N >> 2) && (M >> 4)) END !!! ************************/
+
+    xvldrepl.d  VALPHA, $sp, 112
 
 .L_N3:
     andi     J,    N,   2
@@ -2015,12 +2151,12 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     xvfmul.d  D2,  U2, U4
     xvfmul.d  D3,  U3, U4
 
-    xvldrepl.d     U4, B0, 0x08
+    xvldrepl.d     U5, B0, 0x08
     /* line 2 */
-    xvfmul.d  D4,  U0, U4
-    xvfmul.d  D5,  U1, U4
-    xvfmul.d  D6,  U2, U4
-    xvfmul.d  D7,  U3, U4
+    xvfmul.d  D4,  U0, U5
+    xvfmul.d  D5,  U1, U5
+    xvfmul.d  D6,  U2, U5
+    xvfmul.d  D7,  U3, U5
 
     /* Add stride for A0 and B0 */
     addi.d    A0,  A0, 0x80
@@ -2031,185 +2167,27 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     /* if (TL < 1) goto L_N3_L7 */
     beq       ZERO,TL, .L_N3_L7
 
+    xvld     U8,   A0,    0x00
+    xvld     U9,   A0,    0x20
+    xvld     U10,  A0,    0x40
+    xvld     U11,  A0,    0x60
+
+    addi.d    TL,  TL,  -1
+
+    xvldrepl.d  U12,   B0,  0x00
+    xvldrepl.d  U13,   B0,  0x08
+    addi.d     A0,  A0, 0x80
+    addi.d     B0,  B0, 0x10
+
+    beq    ZERO,    TL,  .L_N3_TL1_END
+
 .L_N3_TL1: /* TL-- */
-           /***8-1***/
-    /* Load 16 * 64 from A0 */
-    xvld     U0,   A0,    0x00
-    xvld     U1,   A0,    0x20
-    xvld     U2,   A0,    0x40
-    xvld     U3,   A0,    0x60
-
-    xvldrepl.d U4,  B0, 0x00
-    xvfmadd.d  D0,  U0, U4, D0
-    xvfmadd.d  D1,  U1, U4, D1
-    xvfmadd.d  D2,  U2, U4, D2
-    xvfmadd.d  D3,  U3, U4, D3
-
-    xvldrepl.d U4,  B0, 0x08
-    xvfmadd.d  D4,  U0, U4, D4
-    xvfmadd.d  D5,  U1, U4, D5
-    xvfmadd.d  D6,  U2, U4, D6
-    xvfmadd.d  D7,  U3, U4, D7
-
-    addi.d     A0,  A0, 0x80
-    addi.d     B0,  B0, 0x10
-
-           /***8-2***/
-    /* Load 16 * 64 from A0 */
-    xvld     U0,   A0,    0x00
-    xvld     U1,   A0,    0x20
-    xvld     U2,   A0,    0x40
-    xvld     U3,   A0,    0x60
-
-    xvldrepl.d U4,  B0, 0x00
-    xvfmadd.d  D0,  U0, U4, D0
-    xvfmadd.d  D1,  U1, U4, D1
-    xvfmadd.d  D2,  U2, U4, D2
-    xvfmadd.d  D3,  U3, U4, D3
-
-    xvldrepl.d U4,  B0, 0x08
-    xvfmadd.d  D4,  U0, U4, D4
-    xvfmadd.d  D5,  U1, U4, D5
-    xvfmadd.d  D6,  U2, U4, D6
-    xvfmadd.d  D7,  U3, U4, D7
-
-    addi.d     A0,  A0, 0x80
-    addi.d     B0,  B0, 0x10
-
-           /***8-3***/
-    /* Load 16 * 64 from A0 */
-    xvld     U0,   A0,    0x00
-    xvld     U1,   A0,    0x20
-    xvld     U2,   A0,    0x40
-    xvld     U3,   A0,    0x60
-
-    xvldrepl.d U4,  B0, 0x00
-    xvfmadd.d  D0,  U0, U4, D0
-    xvfmadd.d  D1,  U1, U4, D1
-    xvfmadd.d  D2,  U2, U4, D2
-    xvfmadd.d  D3,  U3, U4, D3
-
-    xvldrepl.d U4,  B0, 0x08
-    xvfmadd.d  D4,  U0, U4, D4
-    xvfmadd.d  D5,  U1, U4, D5
-    xvfmadd.d  D6,  U2, U4, D6
-    xvfmadd.d  D7,  U3, U4, D7
-
-    addi.d     A0,  A0, 0x80
-    addi.d     B0,  B0, 0x10
-
-           /***8-4***/
-    /* Load 16 * 64 from A0 */
-    xvld     U0,   A0,    0x00
-    xvld     U1,   A0,    0x20
-    xvld     U2,   A0,    0x40
-    xvld     U3,   A0,    0x60
-
-    xvldrepl.d U4,  B0, 0x00
-    xvfmadd.d  D0,  U0, U4, D0
-    xvfmadd.d  D1,  U1, U4, D1
-    xvfmadd.d  D2,  U2, U4, D2
-    xvfmadd.d  D3,  U3, U4, D3
-
-    xvldrepl.d U4,  B0, 0x08
-    xvfmadd.d  D4,  U0, U4, D4
-    xvfmadd.d  D5,  U1, U4, D5
-    xvfmadd.d  D6,  U2, U4, D6
-    xvfmadd.d  D7,  U3, U4, D7
-
-    addi.d     A0,  A0, 0x80
-    addi.d     B0,  B0, 0x10
-
-           /***8-5***/
-    /* Load 16 * 64 from A0 */
-    xvld     U0,   A0,    0x00
-    xvld     U1,   A0,    0x20
-    xvld     U2,   A0,    0x40
-    xvld     U3,   A0,    0x60
-
-    xvldrepl.d U4,  B0, 0x00
-    xvfmadd.d  D0,  U0, U4, D0
-    xvfmadd.d  D1,  U1, U4, D1
-    xvfmadd.d  D2,  U2, U4, D2
-    xvfmadd.d  D3,  U3, U4, D3
-
-    xvldrepl.d U4,  B0, 0x08
-    xvfmadd.d  D4,  U0, U4, D4
-    xvfmadd.d  D5,  U1, U4, D5
-    xvfmadd.d  D6,  U2, U4, D6
-    xvfmadd.d  D7,  U3, U4, D7
-
-    addi.d     A0,  A0, 0x80
-    addi.d     B0,  B0, 0x10
-
-           /***8-6***/
-    /* Load 16 * 64 from A0 */
-    xvld     U0,   A0,    0x00
-    xvld     U1,   A0,    0x20
-    xvld     U2,   A0,    0x40
-    xvld     U3,   A0,    0x60
-
-    xvldrepl.d U4,  B0, 0x00
-    xvfmadd.d  D0,  U0, U4, D0
-    xvfmadd.d  D1,  U1, U4, D1
-    xvfmadd.d  D2,  U2, U4, D2
-    xvfmadd.d  D3,  U3, U4, D3
-
-    xvldrepl.d U4,  B0, 0x08
-    xvfmadd.d  D4,  U0, U4, D4
-    xvfmadd.d  D5,  U1, U4, D5
-    xvfmadd.d  D6,  U2, U4, D6
-    xvfmadd.d  D7,  U3, U4, D7
-
-    addi.d     A0,  A0, 0x80
-    addi.d     B0,  B0, 0x10
-
-           /***8-7***/
-    /* Load 16 * 64 from A0 */
-    xvld     U0,   A0,    0x00
-    xvld     U1,   A0,    0x20
-    xvld     U2,   A0,    0x40
-    xvld     U3,   A0,    0x60
-
-    xvldrepl.d U4,  B0, 0x00
-    xvfmadd.d  D0,  U0, U4, D0
-    xvfmadd.d  D1,  U1, U4, D1
-    xvfmadd.d  D2,  U2, U4, D2
-    xvfmadd.d  D3,  U3, U4, D3
-
-    xvldrepl.d U4,  B0, 0x08
-    xvfmadd.d  D4,  U0, U4, D4
-    xvfmadd.d  D5,  U1, U4, D5
-    xvfmadd.d  D6,  U2, U4, D6
-    xvfmadd.d  D7,  U3, U4, D7
-
-    addi.d     A0,  A0, 0x80
-    addi.d     B0,  B0, 0x10
-
-           /***8-8***/
-    /* Load 16 * 64 from A0 */
-    xvld     U0,   A0,    0x00
-    xvld     U1,   A0,    0x20
-    xvld     U2,   A0,    0x40
-    xvld     U3,   A0,    0x60
-
-    xvldrepl.d U4,  B0, 0x00
-    xvfmadd.d  D0,  U0, U4, D0
-    xvfmadd.d  D1,  U1, U4, D1
-    xvfmadd.d  D2,  U2, U4, D2
-    xvfmadd.d  D3,  U3, U4, D3
-
-    xvldrepl.d U4,  B0, 0x08
-    xvfmadd.d  D4,  U0, U4, D4
-    xvfmadd.d  D5,  U1, U4, D5
-    xvfmadd.d  D6,  U2, U4, D6
-    xvfmadd.d  D7,  U3, U4, D7
-
-    addi.d     A0,  A0, 0x80
-    addi.d     B0,  B0, 0x10
+    KERNEL8x16x2
 
     addi.d    TL,  TL, -1 /* TL-- */
     blt       ZERO,TL, .L_N3_TL1
+.L_N3_TL1_END:
+    KERNEL8x16x2_END
 
 .L_N3_L7:
     /* if (!(L & 7)) goto L_N3_L0 */
@@ -2229,12 +2207,11 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     xvfmadd.d  D2,  U2, U4, D2
     xvfmadd.d  D3,  U3, U4, D3
 
-    xvldrepl.d U4,  B0, 0x08
-    xvfmadd.d  D4,  U0, U4, D4
-    xvfmadd.d  D5,  U1, U4, D5
-    xvfmadd.d  D6,  U2, U4, D6
-    xvfmadd.d  D7,  U3, U4, D7
-
+    xvldrepl.d U5,  B0, 0x08
+    xvfmadd.d  D4,  U0, U5, D4
+    xvfmadd.d  D5,  U1, U5, D5
+    xvfmadd.d  D6,  U2, U5, D6
+    xvfmadd.d  D7,  U3, U5, D7
     /* Add stride for A0, B0 */
     addi.d     A0,  A0, 0x80
     addi.d     B0,  B0, 0x10
@@ -2264,14 +2241,14 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     xvfmadd.d D3,  D3,  VALPHA,  U3
 
     /* Load C1  */
-    xvld      U0,  C1,  0x00
-    xvld      U1,  C1,  0x20
-    xvld      U2,  C1,  0x40
-    xvld      U3,  C1,  0x60
-    xvfmadd.d D4,  D4,  VALPHA,  U0
-    xvfmadd.d D5,  D5,  VALPHA,  U1
-    xvfmadd.d D6,  D6,  VALPHA,  U2
-    xvfmadd.d D7,  D7,  VALPHA,  U3
+    xvld      U4,  C1,  0x00
+    xvld      U5,  C1,  0x20
+    xvld      U6,  C1,  0x40
+    xvld      U7,  C1,  0x60
+    xvfmadd.d D4,  D4,  VALPHA,  U4
+    xvfmadd.d D5,  D5,  VALPHA,  U5
+    xvfmadd.d D6,  D6,  VALPHA,  U6
+    xvfmadd.d D7,  D7,  VALPHA,  U7
 #endif // #if defined(TRMMKERNEL)
 
     /* Store C0 */
@@ -2352,10 +2329,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     xvfmul.d  D0,  U0, U4
     xvfmul.d  D1,  U1, U4
 
-    xvldrepl.d     U4, B0, 0x08
+    xvldrepl.d     U5, B0, 0x08
     /* line 2 */
-    xvfmul.d  D4,  U0, U4
-    xvfmul.d  D5,  U1, U4
+    xvfmul.d  D4,  U0, U5
+    xvfmul.d  D5,  U1, U5
 
     /* Add stride for A0 and B0 */
     addi.d    A0,  A0, 0x40
@@ -2366,131 +2343,25 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     /* if (TL < 1) goto L_N3_M8_L7 */
     beq       ZERO,TL, .L_N3_M8_L7
 
+    xvld     U8,   A0,    0x00
+    xvld     U9,   A0,    0x20
+
+    addi.d    TL,  TL,  -1
+
+    xvldrepl.d  U12,   B0,  0x00
+    xvldrepl.d  U13,   B0,  0x08
+    addi.d     A0,  A0, 0x40
+    addi.d     B0,  B0, 0x10
+
+    beq    ZERO,    TL,  .L_N3_M8_TL1_END
+
 .L_N3_M8_TL1: /* TL-- */
-           /***8-1***/
-    /* Load 16 * 64 from A0 */
-    xvld     U0,   A0,    0x00
-    xvld     U1,   A0,    0x20
-
-    xvldrepl.d U4,  B0, 0x00
-    xvfmadd.d  D0,  U0, U4, D0
-    xvfmadd.d  D1,  U1, U4, D1
-
-    xvldrepl.d U4,  B0, 0x08
-    xvfmadd.d  D4,  U0, U4, D4
-    xvfmadd.d  D5,  U1, U4, D5
-
-    addi.d     A0,  A0, 0x40
-    addi.d     B0,  B0, 0x10
-
-           /***8-2***/
-    xvld     U0,   A0,    0x00
-    xvld     U1,   A0,    0x20
-
-    xvldrepl.d U4,  B0, 0x00
-    xvfmadd.d  D0,  U0, U4, D0
-    xvfmadd.d  D1,  U1, U4, D1
-
-    xvldrepl.d U4,  B0, 0x08
-    xvfmadd.d  D4,  U0, U4, D4
-    xvfmadd.d  D5,  U1, U4, D5
-
-    addi.d     A0,  A0, 0x40
-    addi.d     B0,  B0, 0x10
-
-           /***8-3***/
-    xvld     U0,   A0,    0x00
-    xvld     U1,   A0,    0x20
-
-    xvldrepl.d U4,  B0, 0x00
-    xvfmadd.d  D0,  U0, U4, D0
-    xvfmadd.d  D1,  U1, U4, D1
-
-    xvldrepl.d U4,  B0, 0x08
-    xvfmadd.d  D4,  U0, U4, D4
-    xvfmadd.d  D5,  U1, U4, D5
-
-    addi.d     A0,  A0, 0x40
-    addi.d     B0,  B0, 0x10
-
-           /***8-4***/
-    xvld     U0,   A0,    0x00
-    xvld     U1,   A0,    0x20
-
-    xvldrepl.d U4,  B0, 0x00
-    xvfmadd.d  D0,  U0, U4, D0
-    xvfmadd.d  D1,  U1, U4, D1
-
-    xvldrepl.d U4,  B0, 0x08
-    xvfmadd.d  D4,  U0, U4, D4
-    xvfmadd.d  D5,  U1, U4, D5
-
-    addi.d     A0,  A0, 0x40
-    addi.d     B0,  B0, 0x10
-
-           /***8-5***/
-    xvld     U0,   A0,    0x00
-    xvld     U1,   A0,    0x20
-
-    /* Cumulative D0~D15 */
-    xvldrepl.d U4,  B0, 0x00
-    xvfmadd.d  D0,  U0, U4, D0
-    xvfmadd.d  D1,  U1, U4, D1
-
-    xvldrepl.d U4,  B0, 0x08
-    xvfmadd.d  D4,  U0, U4, D4
-    xvfmadd.d  D5,  U1, U4, D5
-
-    addi.d     A0,  A0, 0x40
-    addi.d     B0,  B0, 0x10
-
-           /***8-6***/
-    xvld     U0,   A0,    0x00
-    xvld     U1,   A0,    0x20
-
-    xvldrepl.d U4,  B0, 0x00
-    xvfmadd.d  D0,  U0, U4, D0
-    xvfmadd.d  D1,  U1, U4, D1
-
-    xvldrepl.d U4,  B0, 0x08
-    xvfmadd.d  D4,  U0, U4, D4
-    xvfmadd.d  D5,  U1, U4, D5
-
-    addi.d     A0,  A0, 0x40
-    addi.d     B0,  B0, 0x10
-
-           /***8-7***/
-    xvld     U0,   A0,    0x00
-    xvld     U1,   A0,    0x20
-
-    xvldrepl.d U4,  B0, 0x00
-    xvfmadd.d  D0,  U0, U4, D0
-    xvfmadd.d  D1,  U1, U4, D1
-
-    xvldrepl.d U4,  B0, 0x08
-    xvfmadd.d  D4,  U0, U4, D4
-    xvfmadd.d  D5,  U1, U4, D5
-
-    addi.d     A0,  A0, 0x40
-    addi.d     B0,  B0, 0x10
-
-           /***8-8***/
-    xvld     U0,   A0,    0x00
-    xvld     U1,   A0,    0x20
-
-    xvldrepl.d U4,  B0, 0x00
-    xvfmadd.d  D0,  U0, U4, D0
-    xvfmadd.d  D1,  U1, U4, D1
-
-    xvldrepl.d U4,  B0, 0x08
-    xvfmadd.d  D4,  U0, U4, D4
-    xvfmadd.d  D5,  U1, U4, D5
-
-    addi.d     A0,  A0, 0x40
-    addi.d     B0,  B0, 0x10
+    KERNEL8x8x2
 
     addi.d    TL,  TL, -1 /* TL-- */
     blt       ZERO,TL, .L_N3_M8_TL1
+.L_N3_M8_TL1_END:
+    KERNEL8x8x2_END
 
 .L_N3_M8_L7:
     /* if (!(L & 7)) goto L_N3_M8_L0 */
@@ -2505,9 +2376,9 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     xvfmadd.d  D0,  U0, U4, D0
     xvfmadd.d  D1,  U1, U4, D1
 
-    xvldrepl.d U4,  B0, 0x08
-    xvfmadd.d  D4,  U0, U4, D4
-    xvfmadd.d  D5,  U1, U4, D5
+    xvldrepl.d U5,  B0, 0x08
+    xvfmadd.d  D4,  U0, U5, D4
+    xvfmadd.d  D5,  U1, U5, D5
 
     /* Add stride for A0, B0 */
     addi.d     A0,  A0, 0x40
@@ -2530,10 +2401,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     xvfmadd.d D1,  D1,  VALPHA,  U1
 
     /* Load C1  */
-    xvld      U0,  C1,  0x00
-    xvld      U1,  C1,  0x20
-    xvfmadd.d D4,  D4,  VALPHA,  U0
-    xvfmadd.d D5,  D5,  VALPHA,  U1
+    xvld      U2,  C1,  0x00
+    xvld      U3,  C1,  0x20
+    xvfmadd.d D4,  D4,  VALPHA,  U2
+    xvfmadd.d D5,  D5,  VALPHA,  U3
 #endif // #if defined(TRMMKERNEL)
 
     /* Store C0 */
@@ -2603,9 +2474,9 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     /* line 1 */
     xvfmul.d  D0,  U0, U4
 
-    xvldrepl.d     U4, B0, 0x08
+    xvldrepl.d     U5, B0, 0x08
     /* line 2 */
-    xvfmul.d  D4,  U0, U4
+    xvfmul.d  D4,  U0, U5
 
     /* Add stride for A0 and B0 */
     addi.d    A0,  A0, 0x20
@@ -2616,107 +2487,24 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     /* if (TL < 1) goto L_N3_M4_L7 */
     beq       ZERO,TL, .L_N3_M4_L7
 
+    xvld     U8,   A0,    0x00
+
+    addi.d    TL,  TL,  -1
+
+    xvldrepl.d  U12,   B0,  0x00
+    xvldrepl.d  U13,   B0,  0x08
+    addi.d     A0,  A0, 0x20
+    addi.d     B0,  B0, 0x10
+
+    beq    ZERO,    TL,  .L_N3_M4_TL1_END
+
 .L_N3_M4_TL1: /* TL-- */
-           /***8-1***/
-    /* Load 8 * 64 from A0 */
-    xvld     U0,   A0,    0x00
-
-    xvldrepl.d U4,  B0, 0x00
-    xvfmadd.d  D0,  U0, U4, D0
-
-    xvldrepl.d U4,  B0, 0x08
-    xvfmadd.d  D4,  U0, U4, D4
-
-    addi.d     A0,  A0, 0x20
-    addi.d     B0,  B0, 0x10
-
-           /***8-2***/
-    xvld     U0,   A0,    0x00
-
-    xvldrepl.d U4,  B0, 0x00
-    xvfmadd.d  D0,  U0, U4, D0
-
-    xvldrepl.d U4,  B0, 0x08
-    xvfmadd.d  D4,  U0, U4, D4
-
-    addi.d     A0,  A0, 0x20
-    addi.d     B0,  B0, 0x10
-
-           /***8-3***/
-    xvld     U0,   A0,    0x00
-
-    xvldrepl.d U4,  B0, 0x00
-    xvfmadd.d  D0,  U0, U4, D0
-
-    xvldrepl.d U4,  B0, 0x08
-    xvfmadd.d  D4,  U0, U4, D4
-
-    addi.d     A0,  A0, 0x20
-    addi.d     B0,  B0, 0x10
-
-           /***8-4***/
-    xvld     U0,   A0,    0x00
-
-    xvldrepl.d U4,  B0, 0x00
-    xvfmadd.d  D0,  U0, U4, D0
-
-    xvldrepl.d U4,  B0, 0x08
-    xvfmadd.d  D4,  U0, U4, D4
-
-    addi.d     A0,  A0, 0x20
-    addi.d     B0,  B0, 0x10
-
-           /***8-5***/
-    xvld     U0,   A0,    0x00
-
-    /* Cumulative D0~D15 */
-    xvldrepl.d U4,  B0, 0x00
-    xvfmadd.d  D0,  U0, U4, D0
-
-    xvldrepl.d U4,  B0, 0x08
-    xvfmadd.d  D4,  U0, U4, D4
-
-    addi.d     A0,  A0, 0x20
-    addi.d     B0,  B0, 0x10
-
-           /***8-6***/
-    xvld     U0,   A0,    0x00
-
-    xvldrepl.d U4,  B0, 0x00
-    xvfmadd.d  D0,  U0, U4, D0
-
-    xvldrepl.d U4,  B0, 0x08
-    xvfmadd.d  D4,  U0, U4, D4
-
-    addi.d     A0,  A0, 0x20
-    addi.d     B0,  B0, 0x10
-
-           /***8-7***/
-    xvld     U0,   A0,    0x00
-
-    xvldrepl.d U4,  B0, 0x00
-    xvfmadd.d  D0,  U0, U4, D0
-
-    xvldrepl.d U4,  B0, 0x08
-    xvfmadd.d  D4,  U0, U4, D4
-
-    addi.d     A0,  A0, 0x20
-    addi.d     B0,  B0, 0x10
-
-           /***8-8***/
-    xvld     U0,   A0,    0x00
-
-    xvldrepl.d U4,  B0, 0x00
-    xvfmadd.d  D0,  U0, U4, D0
-
-    xvldrepl.d U4,  B0, 0x08
-    xvfmadd.d  D4,  U0, U4, D4
-
-    addi.d     A0,  A0, 0x20
-    addi.d     B0,  B0, 0x10
+    KERNEL8x4x2
 
     addi.d    TL,  TL, -1 /* TL-- */
     blt       ZERO,TL, .L_N3_M4_TL1
+.L_N3_M4_TL1_END:
+    KERNEL8x4x2_END
 
 .L_N3_M4_L7:
     /* if (!(L & 7)) goto L_N3_M4_L0 */
@@ -2729,8 +2517,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     xvldrepl.d U4,  B0, 0x00
     xvfmadd.d  D0,  U0, U4, D0
 
-    xvldrepl.d U4,  B0, 0x08
-    xvfmadd.d  D4,  U0, U4, D4
+    xvldrepl.d U5,  B0, 0x08
+    xvfmadd.d  D4,  U0, U5, D4
 
     /* Add stride for A0, B0 */
     addi.d     A0,  A0, 0x20
@@ -2749,8 +2537,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     xvfmadd.d D0,  D0,  VALPHA,  U0 /* D0 = U0 + (D0 * VALPHA) */
 
     /* Load C1  */
-    xvld      U0,  C1,  0x00
-    xvfmadd.d D4,  D4,  VALPHA,  U0
+    xvld      U1,  C1,  0x00
+    xvfmadd.d D4,  D4,  VALPHA,  U1
 #endif // #if defined(TRMMKERNEL)
 
     /* Store C0 */
@@ -2830,106 +2618,24 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     /* if (TL < 1) goto L_N3_M2_L7 */
     beq       ZERO,TL, .L_N3_M2_L7
 
+    xvld     U8,   A0,    0x00
+
+    addi.d    TL,  TL,  -1
+
+    xvldrepl.d  U12,   B0,  0x00
+    xvldrepl.d  U13,   B0,  0x08
+    addi.d     A0,  A0, 0x10
+    addi.d     B0,  B0, 0x10
+
+    beq    ZERO,    TL,  .L_N3_M2_TL1_END
+
 .L_N3_M2_TL1: /* TL-- */
-           /***8-1***/
-    /* Load 2 * 64 from A0 */
-    xvld     U0,   A0,    0x00
-
-    xvldrepl.d U4,  B0, 0x00
-    xvfmadd.d  D0,  U0, U4, D0
-
-    xvldrepl.d U4,  B0, 0x08
-    xvfmadd.d  D4,  U0, U4, D4
-
-    addi.d     A0,  A0, 0x10
-    addi.d     B0,  B0, 0x10
-
-           /***8-2***/
-    xvld     U0,   A0,    0x00
-
-    xvldrepl.d U4,  B0, 0x00
-    xvfmadd.d  D0,  U0, U4, D0
-
-    xvldrepl.d U4,  B0, 0x08
-    xvfmadd.d  D4,  U0, U4, D4
-
-    addi.d     A0,  A0, 0x10
-    addi.d     B0,  B0, 0x10
-
-           /***8-3***/
-    xvld     U0,   A0,    0x00
-
-    xvldrepl.d U4,  B0, 0x00
-    xvfmadd.d  D0,  U0, U4, D0
-
-    xvldrepl.d U4,  B0, 0x08
-    xvfmadd.d  D4,  U0, U4, D4
-
-    addi.d     A0,  A0, 0x10
-    addi.d     B0,  B0, 0x10
-
-           /***8-4***/
-    xvld     U0,   A0,    0x00
-
-    xvldrepl.d U4,  B0, 0x00
-    xvfmadd.d  D0,  U0, U4, D0
-
-    xvldrepl.d U4,  B0, 0x08
-    xvfmadd.d  D4,  U0, U4, D4
-
-    addi.d     A0,  A0, 0x10
-    addi.d     B0,  B0, 0x10
-
-           /***8-5***/
-    xvld     U0,   A0,    0x00
-
-    xvldrepl.d U4,  B0, 0x00
-    xvfmadd.d  D0,  U0, U4, D0
-
-    xvldrepl.d U4,  B0, 0x08
-    xvfmadd.d  D4,  U0, U4, D4
-
-    addi.d     A0,  A0, 0x10
-    addi.d     B0,  B0, 0x10
-
-           /***8-6***/
-    xvld     U0,   A0,    0x00
-
-    xvldrepl.d U4,  B0, 0x00
-    xvfmadd.d  D0,  U0, U4, D0
-
-    xvldrepl.d U4,  B0, 0x08
-    xvfmadd.d  D4,  U0, U4, D4
-
-    addi.d     A0,  A0, 0x10
-    addi.d     B0,  B0, 0x10
-
-           /***8-7***/
-    xvld     U0,   A0,    0x00
-
-    xvldrepl.d U4,  B0, 0x00
-    xvfmadd.d  D0,  U0, U4, D0
-
-    xvldrepl.d U4,  B0, 0x08
-    xvfmadd.d  D4,  U0, U4, D4
-
-    addi.d     A0,  A0, 0x10
-    addi.d     B0,  B0, 0x10
-
-           /***8-8***/
-    xvld     U0,   A0,    0x00
-
-    xvldrepl.d U4,  B0, 0x00
-    xvfmadd.d  D0,  U0, U4, D0
-
-    xvldrepl.d U4,  B0, 0x08
-    xvfmadd.d  D4,  U0, U4, D4
-
-    addi.d     A0,  A0, 0x10
-    addi.d     B0,  B0, 0x10
+    KERNEL8x2x2
 
     addi.d    TL,  TL, -1 /* TL-- */
     blt       ZERO,TL, .L_N3_M2_TL1
+.L_N3_M2_TL1_END:
+    KERNEL8x2x2_END
 
 .L_N3_M2_L7:
     /* if (!(L & 7)) goto L_N3_M2_L0 */
@@ -2942,8 +2648,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     xvldrepl.d U4,  B0, 0x00
     xvfmadd.d  D0,  U0, U4, D0
 
-    xvldrepl.d U4,  B0, 0x08
-    xvfmadd.d  D4,  U0, U4, D4
+    xvldrepl.d U5,  B0, 0x08
+    xvfmadd.d  D4,  U0, U5, D4
 
     /* Add stride for A0, B0 */
     addi.d     A0,  A0, 0x10
@@ -2962,8 +2668,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     xvfmadd.d D0,  D0,  VALPHA,  U0 /* D0 = U0 + (D0 * VALPHA) */
 
     /* Load C1  */
-    xvld      U0,  C1,  0x00
-    xvfmadd.d D4,  D4,  VALPHA,  U0
+    xvld      U1,  C1,  0x00
+    xvfmadd.d D4,  D4,  VALPHA,  U1
 #endif // #if defined(TRMMKERNEL)
 
     xvstelm.d D0,  C0,  0x00,    0x00
@@ -3043,106 +2749,24 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     /* if (TL < 1) goto L_N3_M1_L7 */
     beq       ZERO,TL, .L_N3_M1_L7
 
+    xvld     U8,   A0,    0x00
+
+    addi.d    TL,  TL,  -1
+
+    xvldrepl.d  U12,   B0,  0x00
+    xvldrepl.d  U13,   B0,  0x08
+    addi.d     A0,  A0, 0x08
+    addi.d     B0,  B0, 0x10
+
+    beq    ZERO,    TL,  .L_N3_M1_TL1_END
+
 .L_N3_M1_TL1: /* TL-- */
-           /***8-1***/
-    /* Load 1 * 64 from A0 */
-    xvld     U0,   A0,    0x00
-
-    xvldrepl.d U4,  B0, 0x00
-    xvfmadd.d  D0,  U0, U4, D0
-
-    xvldrepl.d U4,  B0, 0x08
-    xvfmadd.d  D4,  U0, U4, D4
-
-    addi.d     A0,  A0, 0x08
-    addi.d     B0,  B0, 0x10
-
-           /***8-2***/
-    xvld     U0,   A0,    0x00
-
-    xvldrepl.d U4,  B0, 0x00
-    xvfmadd.d  D0,  U0, U4, D0
-
-    xvldrepl.d U4,  B0, 0x08
-    xvfmadd.d  D4,  U0, U4, D4
-
-    addi.d     A0,  A0, 0x08
-    addi.d     B0,  B0, 0x10
-
-           /***8-3***/
-    xvld     U0,   A0,    0x00
-
-    xvldrepl.d U4,  B0, 0x00
-    xvfmadd.d  D0,  U0, U4, D0
-
-    xvldrepl.d U4,  B0, 0x08
-    xvfmadd.d  D4,  U0, U4, D4
-
-    addi.d     A0,  A0, 0x08
-    addi.d     B0,  B0, 0x10
-
-           /***8-4***/
-    xvld     U0,   A0,    0x00
-
-    xvldrepl.d U4,  B0, 0x00
-    xvfmadd.d  D0,  U0, U4, D0
-
-    xvldrepl.d U4,  B0, 0x08
-    xvfmadd.d  D4,  U0, U4, D4
-
-    addi.d     A0,  A0, 0x08
-    addi.d     B0,  B0, 0x10
-
-           /***8-5***/
-    xvld     U0,   A0,    0x00
-
-    xvldrepl.d U4,  B0, 0x00
-    xvfmadd.d  D0,  U0, U4, D0
-
-    xvldrepl.d U4,  B0, 0x08
-    xvfmadd.d  D4,  U0, U4, D4
-
-    addi.d     A0,  A0, 0x08
-    addi.d     B0,  B0, 0x10
-
-           /***8-6***/
-    xvld     U0,   A0,    0x00
-
-    xvldrepl.d U4,  B0, 0x00
-    xvfmadd.d  D0,  U0, U4, D0
-
-    xvldrepl.d U4,  B0, 0x08
-    xvfmadd.d  D4,  U0, U4, D4
-
-    addi.d     A0,  A0, 0x08
-    addi.d     B0,  B0, 0x10
-
-           /***8-7***/
-    xvld     U0,   A0,    0x00
-
-    xvldrepl.d U4,  B0, 0x00
-    xvfmadd.d  D0,  U0, U4, D0
-
-    xvldrepl.d U4,  B0, 0x08
-    xvfmadd.d  D4,  U0, U4, D4
-
-    addi.d     A0,  A0, 0x08
-    addi.d     B0,  B0, 0x10
-
-           /***8-8***/
-    xvld     U0,   A0,    0x00
-
-    xvldrepl.d U4,  B0, 0x00
-    xvfmadd.d  D0,  U0, U4, D0
-
-    xvldrepl.d U4,  B0, 0x08
-    xvfmadd.d  D4,  U0, U4, D4
-
-    addi.d     A0,  A0, 0x08
-    addi.d     B0,  B0, 0x10
+    KERNEL8x1x2
 
     addi.d    TL,  TL, -1 /* TL-- */
     blt       ZERO,TL, .L_N3_M1_TL1
+.L_N3_M1_TL1_END:
+    KERNEL8x1x2_END
 
 .L_N3_M1_L7:
     /* if (!(L & 7)) goto L_N3_M1_L0 */
@@ -3155,8 +2779,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     xvldrepl.d U4,  B0, 0x00
     xvfmadd.d  D0,  U0, U4, D0
 
-    xvldrepl.d U4,  B0, 0x08
-    xvfmadd.d  D4,  U0, U4, D4
+    xvldrepl.d U5,  B0, 0x08
+    xvfmadd.d  D4,  U0, U5, D4
 
     /* Add stride for A0, B0 */
     addi.d     A0,  A0, 0x08
@@ -3175,8 +2799,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     xvfmadd.d D0,  D0,  VALPHA,  U0 /* D0 = U0 + (D0 * VALPHA) */
 
     /* Load C1  */
-    xvld      U0,  C1,  0x00
-    xvfmadd.d D4,  D4,  VALPHA,  U0
+    xvld      U1,  C1,  0x00
+    xvfmadd.d D4,  D4,  VALPHA,  U1
 #endif // #if defined(TRMMKERNEL)
 
     xvstelm.d D0,  C0,  0x00,    0x00
@@ -3300,137 +2924,25 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     /* if (TL < 1) goto L_N1_L7 */
     beq       ZERO,TL, .L_N1_L7
 
+    xvld     U8,   A0,    0x00
+    xvld     U9,   A0,    0x20
+    xvld     U10,  A0,    0x40
+    xvld     U11,  A0,    0x60
+
+    addi.d    TL,  TL,  -1
+
+    xvldrepl.d  U12,   B0,  0x00
+    addi.d     A0,  A0, 0x80
+    addi.d     B0,  B0, 0x08
+
+    beq    ZERO,    TL,  .L_N1_TL1_END
 .L_N1_TL1: /* TL-- */
-           /***8-1***/
-    /* Load 16 * 64 from A0 */
-    xvld     U0,   A0,    0x00
-    xvld     U1,   A0,    0x20
-    xvld     U2,   A0,    0x40
-    xvld     U3,   A0,    0x60
-
-    xvldrepl.d U4,  B0, 0x00
-    xvfmadd.d  D0,  U0, U4, D0
-    xvfmadd.d  D1,  U1, U4, D1
-    xvfmadd.d  D2,  U2, U4, D2
-    xvfmadd.d  D3,  U3, U4, D3
-
-    addi.d     A0,  A0, 0x80
-    addi.d     B0,  B0, 0x08
-
-           /***8-2***/
-    /* Load 16 * 64 from A0 */
-    xvld     U0,   A0,    0x00
-    xvld     U1,   A0,    0x20
-    xvld     U2,   A0,    0x40
-    xvld     U3,   A0,    0x60
-
-    xvldrepl.d U4,  B0, 0x00
-    xvfmadd.d  D0,  U0, U4, D0
-    xvfmadd.d  D1,  U1, U4, D1
-    xvfmadd.d  D2,  U2, U4, D2
-    xvfmadd.d  D3,  U3, U4, D3
-
-    addi.d     A0,  A0, 0x80
-    addi.d     B0,  B0, 0x08
-
-           /***8-3***/
-    /* Load 16 * 64 from A0 */
-    xvld     U0,   A0,    0x00
-    xvld     U1,   A0,    0x20
-    xvld     U2,   A0,    0x40
-    xvld     U3,   A0,    0x60
-
-    xvldrepl.d U4,  B0, 0x00
-    xvfmadd.d  D0,  U0, U4, D0
-    xvfmadd.d  D1,  U1, U4, D1
-    xvfmadd.d  D2,  U2, U4, D2
-    xvfmadd.d  D3,  U3, U4, D3
-
-    addi.d     A0,  A0, 0x80
-    addi.d     B0,  B0, 0x08
-
-           /***8-4***/
-    /* Load 16 * 64 from A0 */
-    xvld     U0,   A0,    0x00
-    xvld     U1,   A0,    0x20
-    xvld     U2,   A0,    0x40
-    xvld     U3,   A0,    0x60
-
-    xvldrepl.d U4,  B0, 0x00
-    xvfmadd.d  D0,  U0, U4, D0
-    xvfmadd.d  D1,  U1, U4, D1
-    xvfmadd.d  D2,  U2, U4, D2
-    xvfmadd.d  D3,  U3, U4, D3
-
-    addi.d     A0,  A0, 0x80
-    addi.d     B0,  B0, 0x08
-
-           /***8-5***/
-    /* Load 16 * 64 from A0 */
-    xvld     U0,   A0,    0x00
-    xvld     U1,   A0,    0x20
-    xvld     U2,   A0,    0x40
-    xvld     U3,   A0,    0x60
-
-    xvldrepl.d U4,  B0, 0x00
-    xvfmadd.d  D0,  U0, U4, D0
-    xvfmadd.d  D1,  U1, U4, D1
-    xvfmadd.d  D2,  U2, U4, D2
-    xvfmadd.d  D3,  U3, U4, D3
-
-    addi.d     A0,  A0, 0x80
-    addi.d     B0,  B0, 0x08
-
-           /***8-6***/
-    /* Load 16 * 64 from A0 */
-    xvld     U0,   A0,    0x00
-    xvld     U1,   A0,    0x20
-    xvld     U2,   A0,    0x40
-    xvld     U3,   A0,    0x60
-
-    xvldrepl.d U4,  B0, 0x00
-    xvfmadd.d  D0,  U0, U4, D0
-    xvfmadd.d  D1,  U1, U4, D1
-    xvfmadd.d  D2,  U2, U4, D2
-    xvfmadd.d  D3,  U3, U4, D3
-
-    addi.d     A0,  A0, 0x80
-    addi.d     B0,  B0, 0x08
-
-           /***8-7***/
-    /* Load 16 * 64 from A0 */
-    xvld     U0,   A0,    0x00
-    xvld     U1,   A0,    0x20
-    xvld     U2,   A0,    0x40
-    xvld     U3,   A0,    0x60
-
-    xvldrepl.d U4,  B0, 0x00
-    xvfmadd.d  D0,  U0, U4, D0
-    xvfmadd.d  D1,  U1, U4, D1
-    xvfmadd.d  D2,  U2, U4, D2
-    xvfmadd.d  D3,  U3, U4, D3
-
-    addi.d     A0,  A0, 0x80
-    addi.d     B0,  B0, 0x08
-
-           /***8-8***/
-    /* Load 16 * 64 from A0 */
-    xvld     U0,   A0,    0x00
-    xvld     U1,   A0,    0x20
-    xvld     U2,   A0,    0x40
-    xvld     U3,   A0,    0x60
-
-    xvldrepl.d U4,  B0, 0x00
-    xvfmadd.d  D0,  U0, U4, D0
-    xvfmadd.d  D1,  U1, U4, D1
-    xvfmadd.d  D2,  U2, U4, D2
-    xvfmadd.d  D3,  U3, U4, D3
-
-    addi.d     A0,  A0, 0x80
-    addi.d     B0,  B0, 0x08
+    KERNEL8x16x1
 
     addi.d    TL,  TL, -1 /* TL-- */
     blt       ZERO,TL, .L_N1_TL1
+.L_N1_TL1_END:
+    KERNEL8x16x1_END
 
 .L_N1_L7:
     /* if (!(L & 7)) goto L_N1_L0 */
@@ -3556,98 +3068,24 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     /* if (TL < 1) goto L_N1_M8_L7 */
     beq       ZERO,TL, .L_N1_M8_L7
 
+    xvld     U8,   A0,    0x00
+    xvld     U9,   A0,    0x20
+
+    addi.d    TL,  TL,  -1
+
+    xvldrepl.d  U12,   B0,  0x00
+    addi.d     A0,  A0, 0x40
+    addi.d     B0,  B0, 0x08
+
+    beq    ZERO,    TL,  .L_N1_M8_TL1_END
 .L_N1_M8_TL1: /* TL-- */
-           /***8-1***/
-    /* Load 16 * 64 from A0 */
-    xvld     U0,   A0,    0x00
-    xvld     U1,   A0,    0x20
-
-    xvldrepl.d U4,  B0, 0x00
-    xvfmadd.d  D0,  U0, U4, D0
-    xvfmadd.d  D1,  U1, U4, D1
-
-    addi.d     A0,  A0, 0x40
-    addi.d     B0,  B0, 0x08
-
-           /***8-2***/
-    xvld     U0,   A0,    0x00
-    xvld     U1,   A0,    0x20
-
-    xvldrepl.d U4,  B0, 0x00
-    xvfmadd.d  D0,  U0, U4, D0
-    xvfmadd.d  D1,  U1, U4, D1
-
-    addi.d     A0,  A0, 0x40
-    addi.d     B0,  B0, 0x08
-
-           /***8-3***/
-    xvld     U0,   A0,    0x00
-    xvld     U1,   A0,    0x20
-
-    xvldrepl.d U4,  B0, 0x00
-    xvfmadd.d  D0,  U0, U4, D0
-    xvfmadd.d  D1,  U1, U4, D1
-
-    addi.d     A0,  A0, 0x40
-    addi.d     B0,  B0, 0x08
-
-           /***8-4***/
-    xvld     U0,   A0,    0x00
-    xvld     U1,   A0,    0x20
-
-    xvldrepl.d U4,  B0, 0x00
-    xvfmadd.d  D0,  U0, U4, D0
-    xvfmadd.d  D1,  U1, U4, D1
-
-    addi.d     A0,  A0, 0x40
-    addi.d     B0,  B0, 0x08
-
-           /***8-5***/
-    xvld     U0,   A0,    0x00
-    xvld     U1,   A0,    0x20
-
-    xvldrepl.d U4,  B0, 0x00
-    xvfmadd.d  D0,  U0, U4, D0
-    xvfmadd.d  D1,  U1, U4, D1
-
-    addi.d     A0,  A0, 0x40
-    addi.d     B0,  B0, 0x08
-
-           /***8-6***/
-    xvld     U0,   A0,    0x00
-    xvld     U1,   A0,    0x20
-
-    xvldrepl.d U4,  B0, 0x00
-    xvfmadd.d  D0,  U0, U4, D0
-    xvfmadd.d  D1,  U1, U4, D1
-
-    addi.d     A0,  A0, 0x40
-    addi.d     B0,  B0, 0x08
-
-           /***8-7***/
-    xvld     U0,   A0,    0x00
-    xvld     U1,   A0,    0x20
-
-    xvldrepl.d U4,  B0, 0x00
-    xvfmadd.d  D0,  U0, U4, D0
-    xvfmadd.d  D1,  U1, U4, D1
-
-    addi.d     A0,  A0, 0x40
-    addi.d     B0,  B0, 0x08
-
-           /***8-8***/
-    xvld     U0,   A0,    0x00
-    xvld     U1,   A0,    0x20
-
-    xvldrepl.d U4,  B0, 0x00
-    xvfmadd.d  D0,  U0, U4, D0
-    xvfmadd.d  D1,  U1, U4, D1
-
-    addi.d     A0,  A0, 0x40
-    addi.d     B0,  B0, 0x08
+    KERNEL8x8x1
 
     addi.d    TL,  TL, -1 /* TL-- */
     blt       ZERO,TL, .L_N1_M8_TL1
+
+.L_N1_M8_TL1_END:
+    KERNEL8x8x1_END
 
 .L_N1_M8_L7:
     /* if (!(L & 7)) goto L_N1_M8_L0 */
@@ -3753,81 +3191,23 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     /* if (TL < 1) goto L_N1_M4_L7 */
     beq       ZERO,TL, .L_N1_M4_L7
 
+    xvld     U8,   A0,    0x00
+
+    addi.d    TL,  TL,  -1
+
+    xvldrepl.d  U12,   B0,  0x00
+    addi.d     A0,  A0, 0x20
+    addi.d     B0,  B0, 0x08
+
+    beq    ZERO,    TL,  .L_N1_M4_TL1_END
+
 .L_N1_M4_TL1: /* TL-- */
-           /***8-1***/
-    xvld     U0,   A0,    0x00
-
-    xvldrepl.d U4,  B0, 0x00
-    xvfmadd.d  D0,  U0, U4, D0
-
-    addi.d     A0,  A0, 0x20
-    addi.d     B0,  B0, 0x08
-
-           /***8-2***/
-    xvld     U0,   A0,    0x00
-
-    xvldrepl.d U4,  B0, 0x00
-    xvfmadd.d  D0,  U0, U4, D0
-
-    addi.d     A0,  A0, 0x20
-    addi.d     B0,  B0, 0x08
-
-           /***8-3***/
-    xvld     U0,   A0,    0x00
-
-    xvldrepl.d U4,  B0, 0x00
-    xvfmadd.d  D0,  U0, U4, D0
-
-    addi.d     A0,  A0, 0x20
-    addi.d     B0,  B0, 0x08
-
-           /***8-4***/
-    xvld     U0,   A0,    0x00
-
-    xvldrepl.d U4,  B0, 0x00
-    xvfmadd.d  D0,  U0, U4, D0
-
-    addi.d     A0,  A0, 0x20
-    addi.d     B0,  B0, 0x08
-
-           /***8-5***/
-    xvld     U0,   A0,    0x00
-
-    xvldrepl.d U4,  B0, 0x00
-    xvfmadd.d  D0,  U0, U4, D0
-
-    addi.d     A0,  A0, 0x20
-    addi.d     B0,  B0, 0x08
-
-           /***8-6***/
-    xvld     U0,   A0,    0x00
-
-    xvldrepl.d U4,  B0, 0x00
-    xvfmadd.d  D0,  U0, U4, D0
-
-    addi.d     A0,  A0, 0x20
-    addi.d     B0,  B0, 0x08
-
-           /***8-7***/
-    xvld     U0,   A0,    0x00
-
-    xvldrepl.d U4,  B0, 0x00
-    xvfmadd.d  D0,  U0, U4, D0
-
-    addi.d     A0,  A0, 0x20
-    addi.d     B0,  B0, 0x08
-
-           /***8-8***/
-    xvld     U0,   A0,    0x00
-
-    xvldrepl.d U4,  B0, 0x00
-    xvfmadd.d  D0,  U0, U4, D0
-
-    addi.d     A0,  A0, 0x20
-    addi.d     B0,  B0, 0x08
+    KERNEL8x4x1
 
     addi.d    TL,  TL, -1 /* TL-- */
     blt       ZERO,TL, .L_N1_M4_TL1
+.L_N1_M4_TL1_END:
+    KERNEL8x4x1_END
 
 .L_N1_M4_L7:
     /* if (!(L & 7)) goto L_N1_M4_L0 */
@@ -3927,82 +3307,23 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     /* if (TL < 1) goto L_N1_M2_L7 */
     beq       ZERO,TL, .L_N1_M2_L7
 
+    xvld     U8,   A0,    0x00
+
+    addi.d    TL,  TL,  -1
+
+    xvldrepl.d  U12,   B0,  0x00
+    addi.d     A0,  A0, 0x10
+    addi.d     B0,  B0, 0x08
+
+    beq    ZERO,    TL,  .L_N1_M2_TL1_END
+
 .L_N1_M2_TL1: /* TL-- */
-           /***8-1***/
-    /* Load 2 * 64 from A0 */
-    xvld     U0,   A0,    0x00
-
-    xvldrepl.d U4,  B0, 0x00
-    xvfmadd.d  D0,  U0, U4, D0
-
-    addi.d     A0,  A0, 0x10
-    addi.d     B0,  B0, 0x08
-
-           /***8-2***/
-    xvld     U0,   A0,    0x00
-
-    xvldrepl.d U4,  B0, 0x00
-    xvfmadd.d  D0,  U0, U4, D0
-
-    addi.d     A0,  A0, 0x10
-    addi.d     B0,  B0, 0x08
-
-           /***8-3***/
-    xvld     U0,   A0,    0x00
-
-    xvldrepl.d U4,  B0, 0x00
-    xvfmadd.d  D0,  U0, U4, D0
-
-    addi.d     A0,  A0, 0x10
-    addi.d     B0,  B0, 0x08
-
-           /***8-4***/
-    xvld     U0,   A0,    0x00
-
-    xvldrepl.d U4,  B0, 0x00
-    xvfmadd.d  D0,  U0, U4, D0
-
-    addi.d     A0,  A0, 0x10
-    addi.d     B0,  B0, 0x08
-
-           /***8-5***/
-    xvld     U0,   A0,    0x00
-
-    xvldrepl.d U4,  B0, 0x00
-    xvfmadd.d  D0,  U0, U4, D0
-
-    addi.d     A0,  A0, 0x10
-    addi.d     B0,  B0, 0x08
-
-           /***8-6***/
-    xvld     U0,   A0,    0x00
-
-    xvldrepl.d U4,  B0, 0x00
-    xvfmadd.d  D0,  U0, U4, D0
-
-    addi.d     A0,  A0, 0x10
-    addi.d     B0,  B0, 0x08
-
-           /***8-7***/
-    xvld     U0,   A0,    0x00
-
-    xvldrepl.d U4,  B0, 0x00
-    xvfmadd.d  D0,  U0, U4, D0
-
-    addi.d     A0,  A0, 0x10
-    addi.d     B0,  B0, 0x08
-
-           /***8-8***/
-    xvld     U0,   A0,    0x00
-
-    xvldrepl.d U4,  B0, 0x00
-    xvfmadd.d  D0,  U0, U4, D0
-
-    addi.d     A0,  A0, 0x10
-    addi.d     B0,  B0, 0x08
+    KERNEL8x2x1
 
     addi.d    TL,  TL, -1 /* TL-- */
     blt       ZERO,TL, .L_N1_M2_TL1
+.L_N1_M2_TL1_END:
+    KERNEL8x2x1_END
 
 .L_N1_M2_L7:
     /* if (!(L & 7)) goto L_N1_M2_L0 */
@@ -4101,82 +3422,23 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     /* if (TL < 1) goto L_N1_M1_L7 */
     beq       ZERO,TL, .L_N1_M1_L7
 
+    xvld     U8,   A0,    0x00
+
+    addi.d    TL,  TL,  -1
+
+    xvldrepl.d  U12,   B0,  0x00
+    addi.d     A0,  A0, 0x08
+    addi.d     B0,  B0, 0x08
+
+    beq    ZERO,    TL,  .L_N1_M1_TL1_END
+
 .L_N1_M1_TL1: /* TL-- */
-           /***8-1***/
-    /* Load 1 * 64 from A0 */
-    xvld     U0,   A0,    0x00
-
-    xvldrepl.d U4,  B0, 0x00
-    xvfmadd.d  D0,  U0, U4, D0
-
-    addi.d     A0,  A0, 0x08
-    addi.d     B0,  B0, 0x08
-
-           /***8-2***/
-    xvld     U0,   A0,    0x00
-
-    xvldrepl.d U4,  B0, 0x00
-    xvfmadd.d  D0,  U0, U4, D0
-
-    addi.d     A0,  A0, 0x08
-    addi.d     B0,  B0, 0x08
-
-           /***8-3***/
-    xvld     U0,   A0,    0x00
-
-    xvldrepl.d U4,  B0, 0x00
-    xvfmadd.d  D0,  U0, U4, D0
-
-    addi.d     A0,  A0, 0x08
-    addi.d     B0,  B0, 0x08
-
-           /***8-4***/
-    xvld     U0,   A0,    0x00
-
-    xvldrepl.d U4,  B0, 0x00
-    xvfmadd.d  D0,  U0, U4, D0
-
-    addi.d     A0,  A0, 0x08
-    addi.d     B0,  B0, 0x08
-
-           /***8-5***/
-    xvld     U0,   A0,    0x00
-
-    xvldrepl.d U4,  B0, 0x00
-    xvfmadd.d  D0,  U0, U4, D0
-
-    addi.d     A0,  A0, 0x08
-    addi.d     B0,  B0, 0x08
-
-           /***8-6***/
-    xvld     U0,   A0,    0x00
-
-    xvldrepl.d U4,  B0, 0x00
-    xvfmadd.d  D0,  U0, U4, D0
-
-    addi.d     A0,  A0, 0x08
-    addi.d     B0,  B0, 0x08
-
-           /***8-7***/
-    xvld     U0,   A0,    0x00
-
-    xvldrepl.d U4,  B0, 0x00
-    xvfmadd.d  D0,  U0, U4, D0
-
-    addi.d     A0,  A0, 0x08
-    addi.d     B0,  B0, 0x08
-
-           /***8-8***/
-    xvld     U0,   A0,    0x00
-
-    xvldrepl.d U4,  B0, 0x00
-    xvfmadd.d  D0,  U0, U4, D0
-
-    addi.d     A0,  A0, 0x08
-    addi.d     B0,  B0, 0x08
+    KERNEL8x1x1
 
     addi.d    TL,  TL, -1 /* TL-- */
     blt       ZERO,TL, .L_N1_M1_TL1
+.L_N1_M1_TL1_END:
+    KERNEL8x1x1_END
 
 .L_N1_M1_L7:
     /* if (!(L & 7)) goto L_N1_M1_L0 */
@@ -4243,7 +3505,15 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     LDARG    $r26,  $sp,   24
     LDARG    $r27,  $sp,   32
     LD       $f23,  $sp,   40
-    addi.d   $sp,   $sp,   56
+    LD       $f24,  $sp,   48
+    LD       $f25,  $sp,   56
+    LD       $f26,  $sp,   64
+    LD       $f27,  $sp,   72
+    LD       $f28,  $sp,   80
+    LD       $f29,  $sp,   88
+    LD       $f30,  $sp,   96
+    LD       $f31,  $sp,   104
+    addi.d   $sp,   $sp,   120
 
     jirl    $r0, $r1, 0x0
 

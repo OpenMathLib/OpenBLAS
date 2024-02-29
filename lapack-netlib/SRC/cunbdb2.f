@@ -37,7 +37,7 @@
 *>\verbatim
 *>
 *> CUNBDB2 simultaneously bidiagonalizes the blocks of a tall and skinny
-*> matrix X with orthonomal columns:
+*> matrix X with orthonormal columns:
 *>
 *>                            [ B11 ]
 *>      [ X11 ]   [ P1 |    ] [  0  ]
@@ -173,7 +173,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup complexOTHERcomputational
+*> \ingroup unbdb2
 *
 *> \par Further Details:
 *  =====================
@@ -231,8 +231,8 @@
      $                   XERBLA
 *     ..
 *     .. External Functions ..
-      REAL               SCNRM2
-      EXTERNAL           SCNRM2
+      REAL               SCNRM2, SROUNDUP_LWORK
+      EXTERNAL           SCNRM2, SROUNDUP_LWORK
 *     ..
 *     .. Intrinsic Function ..
       INTRINSIC          ATAN2, COS, MAX, SIN, SQRT
@@ -265,7 +265,7 @@
          LORBDB5 = Q-1
          LWORKOPT = MAX( ILARF+LLARF-1, IORBDB5+LORBDB5-1 )
          LWORKMIN = LWORKOPT
-         WORK(1) = LWORKOPT
+         WORK(1) = SROUNDUP_LWORK(LWORKOPT)
          IF( LWORK .LT. LWORKMIN .AND. .NOT.LQUERY ) THEN
            INFO = -14
          END IF

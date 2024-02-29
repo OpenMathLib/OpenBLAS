@@ -45,7 +45,7 @@ if [ -z "$compiler" ]; then
 	      pathf90 pathf95
 	      pgf95 pgf90 pgf77 pgfortran nvfortran
 	      flang egfortran
-              ifort nagfor ifx ftn crayftn"
+              ifort nagfor ifx ftn crayftn armflang"
 
     for list in $lists; do
         for p in $path; do
@@ -85,7 +85,11 @@ else
 	    *Hewlett*)
 		vendor=CRAY
 		openmp='-fopenmp'
-		;;		
+		;;
+   	    *Arm\ F90*)
+		vendor=FLANG
+		openmp='-fopenmp'
+		;;	
             *GNU*|*GCC*)
 
                 v="${data#*GCC: *\) }"
@@ -101,7 +105,14 @@ else
                         *flang*)
                             vendor=FLANG
                             openmp='-fopenmp'
-                            ;;
+			    data=`$compiler -v 2>&1 > /dev/null `
+                	    v="${data#*version *}"
+                	    v="${v%%*.}"
+                	    major="${v%%.*}"
+                	    if [ "$major" -ge 17 ]; then
+                        	vendor=FLANGNEW
+			    fi	
+			    ;;
                         *ifort*|*ifx*)
                             vendor=INTEL
                             openmp='-fopenmp'
@@ -109,6 +120,9 @@ else
                         *pgf*|*nvf*)
                             vendor=PGI
                             openmp='-mp'
+                            ;;
+                        *xlf*)
+                            vendor=IBM
                             ;;
                         *)
                             vendor=G77
@@ -148,6 +162,10 @@ else
             *'IBM XL'*)
                 vendor=IBM
                 openmp='-openmp'
+		case "$CC" in *gcc*)
+		bu=_
+		;;
+		esac
                 ;;
             *NAG*)
                 vendor=NAG
@@ -216,6 +234,10 @@ else
             *ppuf*|*xlf*)
                 vendor=IBM
                 openmp='-openmp'
+		case "$CC" in *gcc*)
+		bu=_
+		;;
+		esac
                 ;;
             *open64*)
                 vendor=OPEN64
@@ -353,13 +375,6 @@ if [ -n "$link" ]; then
     	    flag=`echo "$flag" | sed 's/\%/\,/g'`
     	    linker_L="$linker_L -Wl,$flag"
     	    ;;
-    	esac
-
-    	case "$flag" in *-lgomp*)
-    	    case "$CC" in *clang*)
-    	        flag="-lomp"
-    	        ;;
-    	    esac
     	esac
 
         case "$flag" in -l*)

@@ -211,13 +211,13 @@
 *>          LRWORK is INTEGER
 *>          The dimension of the array RWORK.
 *>
-*>          If LRWORK = -1, then a workspace query is assumed; the routine
+*>          If LRWORK=-1, then a workspace query is assumed; the routine
 *>          only calculates the optimal size of the WORK and RWORK
 *>          arrays, returns this value as the first entry of the WORK
 *>          and RWORK array, respectively, and no error message related
 *>          to LWORK or LRWORK is issued by XERBLA.
 *> \endverbatim
-*
+*>
 *> \param[out] IWORK
 *> \verbatim
 *>          IWORK is INTEGER array, dimension (M-MIN(P,M-P,Q,M-Q))

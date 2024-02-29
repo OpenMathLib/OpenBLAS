@@ -66,7 +66,7 @@ void NAME(blasint *M, blasint *N, FLOAT *ALPHA, FLOAT *a, blasint *LDA,
   info = 0;
 
 
-  if (lda < MAX(1, m))	info = 6;
+  if (lda < MAX(1, m))	info = 5;
   if (ldc < MAX(1, m))	info = 8;
 
   if (n < 0)		info = 2;
@@ -115,8 +115,8 @@ void CNAME(enum CBLAS_ORDER order,
 
     if (ldc < MAX(1, m))  info = 8;
     if (lda < MAX(1, m))  info = 5;
-    if (n < 0)		  info = 2;
-    if (m < 0)		  info = 1;
+    if (n < 0)		  info = 1;
+    if (m < 0)		  info = 2;
   }
 
   if (info >= 0) {

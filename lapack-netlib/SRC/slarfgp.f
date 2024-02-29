@@ -97,7 +97,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup realOTHERauxiliary
+*> \ingroup larfgp
 *
 *  =====================================================================
       SUBROUTINE SLARFGP( N, ALPHA, X, INCX, TAU )
@@ -122,7 +122,7 @@
 *     ..
 *     .. Local Scalars ..
       INTEGER            J, KNT
-      REAL               BETA, BIGNUM, SAVEALPHA, SMLNUM, XNORM
+      REAL               BETA, BIGNUM, EPS, SAVEALPHA, SMLNUM, XNORM
 *     ..
 *     .. External Functions ..
       REAL               SLAMCH, SLAPY2, SNRM2
@@ -141,9 +141,10 @@
          RETURN
       END IF
 *
+      EPS = SLAMCH( 'Precision' )
       XNORM = SNRM2( N-1, X, INCX )
 *
-      IF( XNORM.EQ.ZERO ) THEN
+      IF( XNORM.LE.EPS*ABS(ALPHA) ) THEN
 *
 *        H  =  [+/-1, 0; I], sign chosen so ALPHA >= 0.
 *

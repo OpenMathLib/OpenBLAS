@@ -290,7 +290,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup complexOTHERcomputational
+*> \ingroup tgsen
 *
 *> \par Further Details:
 *  =====================
@@ -339,7 +339,7 @@
 *>            [ kron(In2, B11)  -kron(B22**H, In1) ].
 *>
 *>  Here, Inx is the identity matrix of size nx and A22**H is the
-*>  conjuguate transpose of A22. kron(X, Y) is the Kronecker product between
+*>  conjugate transpose of A22. kron(X, Y) is the Kronecker product between
 *>  the matrices X and Y.
 *>
 *>  When DIF(2) is small, small changes in (A, B) can cause large changes
@@ -467,6 +467,10 @@
 *     .. Local Arrays ..
       INTEGER            ISAVE( 3 )
 *     ..
+*     .. External Functions ..
+      REAL               SROUNDUP_LWORK
+      EXTERNAL           SROUNDUP_LWORK
+*     ..
 *     .. External Subroutines ..
       REAL               SLAMCH
       EXTERNAL           CLACN2, CLACPY, CLASSQ, CSCAL, CTGEXC, CTGSYL,
@@ -537,7 +541,7 @@
          LIWMIN = 1
       END IF
 *
-      WORK( 1 ) = LWMIN
+      WORK( 1 ) =  SROUNDUP_LWORK(LWMIN)
       IWORK( 1 ) = LIWMIN
 *
       IF( LWORK.LT.LWMIN .AND. .NOT.LQUERY ) THEN
@@ -771,7 +775,7 @@
 *
    70 CONTINUE
 *
-      WORK( 1 ) = LWMIN
+      WORK( 1 ) =  SROUNDUP_LWORK(LWMIN)
       IWORK( 1 ) = LIWMIN
 *
       RETURN

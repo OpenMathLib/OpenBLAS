@@ -40,7 +40,6 @@ int CNAME(BLASLONG rows, BLASLONG cols, FLOAT alpha_r, FLOAT alpha_i, FLOAT *a, 
 
 	if ( rows <= 0     )  return(0);
 	if ( cols <= 0     )  return(0);
-    if ( alpha_r == 1.0 && alpha_i == 0.0 ) return (0); 
 
 	aptr = a;
 	lda *= 2;

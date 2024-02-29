@@ -1,5 +1,6 @@
 /*********************************************************************/
 /* Copyright 2009, 2010 The University of Texas at Austin.           */
+/* Copyright 2023 The OpenBLAS Project                               */
 /* All rights reserved.                                              */
 /*                                                                   */
 /* Redistribution and use in source and binary forms, with or        */
@@ -50,7 +51,7 @@ int CNAME(BLASLONG m, BLASLONG n, IFLOAT *a, BLASLONG lda, IFLOAT *b){
     boffset = b;
 
     j = 0;
-    svbool_t pg = svwhilelt_b32(j, n);
+    svbool_t pg = svwhilelt_b32((uint64_t)j, (uint64_t)n);
     uint32_t active = svcntp_b32(svptrue_b32(), pg);
     do {
 
@@ -66,7 +67,7 @@ int CNAME(BLASLONG m, BLASLONG n, IFLOAT *a, BLASLONG lda, IFLOAT *b){
         aoffset += active * 2;
 
         j += svcntw();
-        pg = svwhilelt_b32(j, n);
+        pg = svwhilelt_b32((uint64_t)j, (uint64_t)n);
         active = svcntp_b32(svptrue_b32(), pg);
 
     } while (svptest_any(svptrue_b32(), pg));

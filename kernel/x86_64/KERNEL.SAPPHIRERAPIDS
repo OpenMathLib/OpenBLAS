@@ -1,6 +1,15 @@
 include $(KERNELDIR)/KERNEL.COOPERLAKE
 
-SBGEMM_SMALL_M_PERMIT = sbgemm_small_kernel_permit_spr.c
+ifneq ($(NO_AVX512BF16), 1)
+SBGEMM_SMALL_M_PERMIT =
+SBGEMM_SMALL_K_NN     =
+SBGEMM_SMALL_K_B0_NN  =
+SBGEMM_SMALL_K_NT     =
+SBGEMM_SMALL_K_B0_NT  =
+SBGEMM_SMALL_K_TN     =
+SBGEMM_SMALL_K_B0_TN  =
+SBGEMM_SMALL_K_TT     =
+SBGEMM_SMALL_K_B0_TT  =
 
 SBGEMM_BETA     = sgemm_beta_skylakex.c
 SBGEMMKERNEL    = sbgemm_kernel_16x16_spr.c
@@ -12,3 +21,4 @@ SBGEMMINCOPYOBJ =  sbgemm_incopy$(TSUFFIX).$(SUFFIX)
 SBGEMMITCOPYOBJ =  sbgemm_itcopy$(TSUFFIX).$(SUFFIX)
 SBGEMMONCOPYOBJ =  sbgemm_oncopy$(TSUFFIX).$(SUFFIX)
 SBGEMMOTCOPYOBJ =  sbgemm_otcopy$(TSUFFIX).$(SUFFIX)
+endif

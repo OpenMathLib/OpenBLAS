@@ -8,7 +8,7 @@
 *  Definition:
 *  ===========
 *
-*       SUBROUTINE ZCHKHE_AA_2STAGE( DOTYPE, NN, NVAL, NNB, NBVAL, 
+*       SUBROUTINE ZCHKHE_AA_2STAGE( DOTYPE, NN, NVAL, NNB, NBVAL,
 *                             NNS, NSVAL, THRESH, TSTERR, NMAX, A,
 *                             AFAC, AINV, B, X, XACT, WORK, RWORK,
 *                             IWORK, NOUT )
@@ -185,7 +185,8 @@
       LOGICAL            DOTYPE( * )
       INTEGER            IWORK( * ), NBVAL( * ), NSVAL( * ), NVAL( * )
       COMPLEX*16         A( * ), AFAC( * ), AINV( * ), B( * ),
-     $                   RWORK( * ), WORK( * ), X( * ), XACT( * )
+     $                   WORK( * ), X( * ), XACT( * )
+      DOUBLE PRECISION   RWORK( * )
 *     ..
 *
 *  =====================================================================
@@ -430,9 +431,9 @@
 *                 block factorization, LWORK is the length of AINV.
 *
                   SRNAMT = 'ZHETRF_AA_2STAGE'
-                  LWORK = MIN(N*NB, 3*NMAX*NMAX)
-                  CALL ZHETRF_AA_2STAGE( UPLO, N, AFAC, LDA, 
-     $                                   AINV, (3*NB+1)*N, 
+                  LWORK = MIN( MAX( 1, N*NB ), 3*NMAX*NMAX )
+                  CALL ZHETRF_AA_2STAGE( UPLO, N, AFAC, LDA,
+     $                                   AINV, MAX( 1, (3*NB+1)*N ),
      $                                   IWORK, IWORK( 1+N ),
      $                                   WORK, LWORK,
      $                                   INFO )

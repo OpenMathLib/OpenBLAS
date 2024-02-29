@@ -253,7 +253,7 @@
 *>          If JOBV = 'V', 'J' then V contains on exit the N-by-N matrix of
 *>                         the right singular vectors;
 *>          If JOBV = 'W', AND (JOBU = 'U' AND JOBT = 'T' AND M = N),
-*>                         then V is used as workspace if the pprocedure
+*>                         then V is used as workspace if the procedure
 *>                         replaces A with A^t. In that case, [U] is computed
 *>                         in V as right singular vectors of A^t and then
 *>                         copied back to the U array. This 'W' option is just
@@ -1386,7 +1386,7 @@
                IF ( CONDR2 .GE. COND_OK ) THEN
 *                 .. save the Householder vectors used for Q3
 *                 (this overwrites the copy of R2, as it will not be
-*                 needed in this branch, but it does not overwritte the
+*                 needed in this branch, but it does not overwrite the
 *                 Huseholder vectors of Q2.).
                   CALL SLACPY( 'U', NR, NR, V, LDV, WORK(2*N+1), N )
 *                 .. and the rest of the information on Q3 is in
@@ -1409,7 +1409,7 @@
             END IF
 *
 *        Second preconditioning finished; continue with Jacobi SVD
-*        The input matrix is lower trinagular.
+*        The input matrix is lower triangular.
 *
 *        Recover the right singular vectors as solution of a well
 *        conditioned triangular matrix equation.
@@ -1454,7 +1454,7 @@
 * :)           .. the input matrix A is very likely a relative of
 *              the Kahan matrix :)
 *              The matrix R2 is inverted. The solution of the matrix equation
-*              is Q3^T*V3 = the product of the Jacobi rotations (appplied to
+*              is Q3^T*V3 = the product of the Jacobi rotations (applied to
 *              the lower triangular L3 from the LQ factorization of
 *              R2=L3*Q3), pre-multiplied with the transposed Q3.
                CALL SGESVJ( 'L', 'U', 'N', NR, NR, V, LDV, SVA, NR, U,

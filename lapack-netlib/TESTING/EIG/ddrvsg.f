@@ -234,7 +234,7 @@
 *>
 *>  B       DOUBLE PRECISION array, dimension (LDB , max(NN))
 *>          Used to hold the symmetric positive definite matrix for
-*>          the generailzed problem.
+*>          the generalized problem.
 *>          On exit, B contains the last matrix actually
 *>          used.
 *>          Modified.
@@ -399,7 +399,7 @@
       EXTERNAL           LSAME, DLAMCH, DLARND
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           DLABAD, DLACPY, DLAFTS, DLASET, DLASUM, DLATMR,
+      EXTERNAL           DLACPY, DLAFTS, DLASET, DLASUM, DLATMR,
      $                   DLATMS, DSBGV, DSBGVD, DSBGVX, DSGT01, DSPGV,
      $                   DSPGVD, DSPGVX, DSYGV, DSYGVD, DSYGVX, XERBLA
 *     ..
@@ -460,7 +460,6 @@
 *
       UNFL = DLAMCH( 'Safe minimum' )
       OVFL = DLAMCH( 'Overflow' )
-      CALL DLABAD( UNFL, OVFL )
       ULP = DLAMCH( 'Epsilon' )*DLAMCH( 'Base' )
       ULPINV = ONE / ULP
       RTUNFL = SQRT( UNFL )

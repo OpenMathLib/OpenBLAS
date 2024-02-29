@@ -107,7 +107,7 @@
 	FMOV	fzero, c1
 
 	cmp	INCX, 0
-	ble	.LL99
+	beq	.LL99
 	sll	INCX, ZBASE_SHIFT, INCX
 
 	add	%sp, -8, %sp

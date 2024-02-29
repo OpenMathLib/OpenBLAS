@@ -21,7 +21,7 @@
     chbmv,chemm,chemv,cher2,cher2k,cher,cherk,scabs1,scamax,
     chpmv,chpr2,chpr,crotg,cscal,csrot,csscal,cswap,scamin,scasum,scnrm2,
     csymm,csyr2k,csyrk,ctbmv,ctbsv,ctpmv,ctpsv,ctrmm,ctrmv,ctrsm,
-    ctrsv,icamax,icamin,cimatcopy,comatcopy,cgeadd,scsum);
+    ctrsv,icamax,icamin,cimatcopy,comatcopy,cgeadd,scsum,cgemmt);
     
 @blasobjsd = (
     damax,damin,dasum,daxpy,daxpby,dcabs1,dcopy,ddot,dgbmv,dgemm,
@@ -29,7 +29,7 @@
     dscal,dsdot,dspmv,dspr2,dimatcopy,domatcopy,
     dspr,dswap,dsymm,dsymv,dsyr2,dsyr2k,dsyr,dsyrk,dtbmv,dtbsv,
     dtpmv,dtpsv,dtrmm,dtrmv,dtrsm,dtrsv,
-        idamax,idamin,idmax,idmin,dgeadd,dsum);
+        idamax,idamin,idmax,idmin,dgeadd,dsum,dgemmt);
     
 @blasobjss = (
     isamax,isamin,ismax,ismin,
@@ -38,7 +38,7 @@
     smax,smin,snrm2,simatcopy,somatcopy,
     srot,srotg,srotm,srotmg,ssbmv,sscal,sspmv,sspr2,sspr,sswap,
     ssymm,ssymv,ssyr2,ssyr2k,ssyr,ssyrk,stbmv,stbsv,stpmv,stpsv,
-    strmm,strmv,strsm,strsv, sgeadd,ssum);
+    strmm,strmv,strsm,strsv, sgeadd,ssum,sgemmt);
      
 @blasobjsz = (
     izamax,izamin,,
@@ -48,7 +48,7 @@
     zhpr,zrotg,zscal,zswap,zsymm,zsyr2k,zsyrk,ztbmv,
     ztbsv,ztpmv,ztpsv,ztrmm,ztrmv,ztrsm,ztrsv,
     zomatcopy, zimatcopy,dzamax,dzamin,dzasum,dznrm2,
-    zgeadd, dzsum);
+    zgeadd, dzsum, zgemmt);
 
 @blasobjs = (lsame, xerbla);
 @bfblasobjs = (sbgemm, sbgemv, sbdot, sbstobf16, sbdtobf16, sbf16tos, dbf16tod);
@@ -60,7 +60,7 @@
     cblas_ctbsv, cblas_ctpmv, cblas_ctpsv, cblas_ctrmm, cblas_ctrmv, cblas_ctrsm, cblas_ctrsv, 
     cblas_scnrm2, cblas_scasum,
     cblas_icamax, cblas_icamin, cblas_icmin, cblas_icmax, cblas_scsum,cblas_cimatcopy,cblas_comatcopy
-    );
+    cblas_cgemmt);
 @cblasobjsd = (
     cblas_dasum, cblas_daxpy, cblas_dcopy, cblas_ddot,
     cblas_dgbmv, cblas_dgemm, cblas_dgemv, cblas_dger, cblas_dnrm2,
@@ -69,7 +69,7 @@
     cblas_dsyr2k, cblas_dsyr, cblas_dsyrk, cblas_dtbmv, cblas_dtbsv, cblas_dtpmv, cblas_dtpsv,
     cblas_dtrmm, cblas_dtrmv, cblas_dtrsm, cblas_dtrsv, cblas_daxpby, cblas_dgeadd,
     cblas_idamax, cblas_idamin, cblas_idmin, cblas_idmax, cblas_dsum,cblas_dimatcopy,cblas_domatcopy
-    );
+    cblas_dgemmt);
     
 @cblasobjss = (
     cblas_sasum, cblas_saxpy, cblas_saxpby,
@@ -80,7 +80,7 @@
     cblas_stbmv, cblas_stbsv, cblas_stpmv, cblas_stpsv, cblas_strmm, cblas_strmv, cblas_strsm,
     cblas_strsv, cblas_sgeadd,
     cblas_isamax, cblas_isamin, cblas_ismin, cblas_ismax, cblas_ssum,cblas_simatcopy,cblas_somatcopy
-    );
+    cblas_sgemmt);
 @cblasobjsz = (
     cblas_dzasum, cblas_dznrm2, cblas_zaxpy, cblas_zcopy, cblas_zdotc, cblas_zdotu, cblas_zdscal,
     cblas_zgbmv, cblas_zgemm, cblas_zgemv, cblas_zgerc, cblas_zgeru, cblas_zhbmv, cblas_zhemm,
@@ -90,7 +90,7 @@
     cblas_ztrsv, cblas_cdotc_sub, cblas_cdotu_sub, cblas_zdotc_sub, cblas_zdotu_sub,
     cblas_zaxpby, cblas_zgeadd,
     cblas_izamax, cblas_izamin, cblas_izmin, cblas_izmax, cblas_dzsum,cblas_zimatcopy,cblas_zomatcopy
-);
+    cblas_zgemmt);
 
 @cblasobjs = (  cblas_xerbla );
 

@@ -1223,7 +1223,7 @@
 *
          SCALOC = MIN( BIGNUM / SCAL, ONE / BUF )
          BUF = BUF * SCALOC
-         CALL SLASCL( 'G', -1, -1, ONE, SCALOC, M, N, C, LDC, IWORK )
+         CALL SLASCL( 'G', -1, -1, ONE, SCALOC, M, N, C, LDC, IWORK(1) )
       END IF
 *
 *     Combine with buffer scaling factor. SCALE will be flushed if

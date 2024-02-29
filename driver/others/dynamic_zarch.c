@@ -13,7 +13,7 @@ extern gotoblas_t gotoblas_Z14;
 
 #define NUM_CORETYPES 4
 
-extern int openblas_verbose();
+extern int openblas_verbose(void);
 extern void openblas_warning(int verbose, const char* msg);
 
 char* gotoblas_corename(void) {

@@ -1418,10 +1418,10 @@
 	movq	M,  %rax
 //If incx==0 || incy==0, avoid unloop and jump to end.
 	cmpq	$0, INCX
-	je  .L58
+	jne  	.L59
 	cmpq	$0, INCY
 	je	.L58
-
+.L59:
 	sarq	$3, %rax
 	jle	.L55
 

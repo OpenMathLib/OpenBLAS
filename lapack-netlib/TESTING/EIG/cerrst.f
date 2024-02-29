@@ -21,7 +21,7 @@
 *>
 *> \verbatim
 *>
-*> CERRST tests the error exits for CHETRD, CUNGTR, CUNMTR, CHPTRD,
+*> CERRST tests the error exits for CHETRD, CHETD2, CUNGTR, CUNMTR, CHPTRD,
 *> CUNGTR, CUPMTR, CSTEQR, CSTEIN, CPTEQR, CHBTRD,
 *> CHEEV, CHEEVX, CHEEVD, CHBEV, CHBEVX, CHBEVD,
 *> CHPEV, CHPEVX, CHPEVD, and CSTEDC.
@@ -94,7 +94,7 @@
       EXTERNAL           CHBEV, CHBEVD, CHBEVX, CHBTRD, CHEEV, CHEEVD,
      $                   CHEEVR, CHEEVX, CHETRD, CHKXER, CHPEV, CHPEVD,
      $                   CHPEVX, CHPTRD, CPTEQR, CSTEDC, CSTEIN, CSTEQR,
-     $                   CUNGTR, CUNMTR, CUPGTR, CUPMTR,
+     $                   CUNGTR, CUNMTR, CUPGTR, CUPMTR, CHETD2,
      $                   CHEEVD_2STAGE, CHEEVR_2STAGE, CHEEVX_2STAGE,
      $                   CHEEV_2STAGE, CHBEV_2STAGE, CHBEVD_2STAGE,
      $                   CHBEVX_2STAGE, CHETRD_2STAGE, CHETRD_HE2HB,
@@ -155,6 +155,20 @@
          CALL CHETRD( 'U', 0, A, 1, D, E, TAU, W, 0, INFO )
          CALL CHKXER( 'CHETRD', INFOT, NOUT, LERR, OK )
          NT = NT + 4
+*
+*        CHETD2
+*
+         SRNAMT = 'CHETD2'
+         INFOT = 1
+         CALL CHETD2( '/', 0, A, 1, D, E, TAU, INFO )
+         CALL CHKXER( 'CHETD2', INFOT, NOUT, LERR, OK )
+         INFOT = 2
+         CALL CHETD2( 'U', -1, A, 1, D, E, TAU, INFO )
+         CALL CHKXER( 'CHETD2', INFOT, NOUT, LERR, OK )
+         INFOT = 4
+         CALL CHETD2( 'U', 2, A, 1, D, E, TAU, INFO )
+         CALL CHKXER( 'CHETD2', INFOT, NOUT, LERR, OK )
+         NT = NT + 3
 *
 *        CHETRD_2STAGE
 *
@@ -628,56 +642,56 @@
          SRNAMT = 'CHEEVX_2STAGE'
          INFOT = 1
          CALL CHEEVX_2STAGE( '/', 'A', 'U', 0, A, 1,
-     $                0.0D0, 0.0D0, 0, 0, 0.0D0,
+     $                0.0, 0.0, 0, 0, 0.0,
      $                M, X, Z, 1, W, 1, RW, IW, I3, INFO )
          CALL CHKXER( 'CHEEVX_2STAGE', INFOT, NOUT, LERR, OK )
          INFOT = 1
          CALL CHEEVX_2STAGE( 'V', 'A', 'U', 0, A, 1,
-     $                0.0D0, 0.0D0, 0, 0, 0.0D0,
+     $                0.0, 0.0, 0, 0, 0.0,
      $                M, X, Z, 1, W, 1, RW, IW, I3, INFO )
          CALL CHKXER( 'CHEEVX_2STAGE', INFOT, NOUT, LERR, OK )
          INFOT = 2
          CALL CHEEVX_2STAGE( 'N', '/', 'U', 0, A, 1,
-     $                0.0D0, 1.0D0, 1, 0, 0.0D0,
+     $                0.0, 1.0, 1, 0, 0.0,
      $                M, X, Z, 1, W, 1, RW, IW, I3, INFO )
          CALL CHKXER( 'CHEEVX_2STAGE', INFOT, NOUT, LERR, OK )
          INFOT = 3
          CALL CHEEVX_2STAGE( 'N', 'A', '/', 0, A, 1,
-     $                0.0D0, 0.0D0, 0, 0, 0.0D0,
+     $                0.0, 0.0, 0, 0, 0.0,
      $                M, X, Z, 1, W, 1, RW, IW, I3, INFO )
          INFOT = 4
          CALL CHEEVX_2STAGE( 'N', 'A', 'U', -1, A, 1,
-     $                0.0D0, 0.0D0, 0, 0, 0.0D0,
+     $                0.0, 0.0, 0, 0, 0.0,
      $                M, X, Z, 1, W, 1, RW, IW, I3, INFO )
          CALL CHKXER( 'CHEEVX_2STAGE', INFOT, NOUT, LERR, OK )
          INFOT = 6
          CALL CHEEVX_2STAGE( 'N', 'A', 'U', 2, A, 1,
-     $                0.0D0, 0.0D0, 0, 0, 0.0D0,
+     $                0.0, 0.0, 0, 0, 0.0,
      $                M, X, Z, 2, W, 3, RW, IW, I3, INFO )
          CALL CHKXER( 'CHEEVX_2STAGE', INFOT, NOUT, LERR, OK )
          INFOT = 8
          CALL CHEEVX_2STAGE( 'N', 'V', 'U', 1, A, 1,
-     $                0.0D0, 0.0D0, 0, 0, 0.0D0,
+     $                0.0, 0.0, 0, 0, 0.0,
      $                M, X, Z, 1, W, 1, RW, IW, I3, INFO )
          CALL CHKXER( 'CHEEVX_2STAGE', INFOT, NOUT, LERR, OK )
          INFOT = 9
          CALL CHEEVX_2STAGE( 'N', 'I', 'U', 1, A, 1,
-     $                0.0D0, 0.0D0, 0, 0, 0.0D0,
+     $                0.0, 0.0, 0, 0, 0.0,
      $                M, X, Z, 1, W, 1, RW, IW, I3, INFO )
          CALL CHKXER( 'CHEEVX_2STAGE', INFOT, NOUT, LERR, OK )
          INFOT = 10
          CALL CHEEVX_2STAGE( 'N', 'I', 'U', 2, A, 2,
-     $                0.0D0, 0.0D0, 2, 1, 0.0D0,
+     $                0.0, 0.0, 2, 1, 0.0,
      $                M, X, Z, 2, W, 3, RW, IW, I3, INFO )
          CALL CHKXER( 'CHEEVX_2STAGE', INFOT, NOUT, LERR, OK )
          INFOT = 15
          CALL CHEEVX_2STAGE( 'N', 'A', 'U', 2, A, 2,
-     $                0.0D0, 0.0D0, 0, 0, 0.0D0,
+     $                0.0, 0.0, 0, 0, 0.0,
      $                M, X, Z, 0, W, 3, RW, IW, I3, INFO )
          CALL CHKXER( 'CHEEVX_2STAGE', INFOT, NOUT, LERR, OK )
          INFOT = 17
          CALL CHEEVX_2STAGE( 'N', 'A', 'U', 2, A, 2,
-     $                0.0D0, 0.0D0, 0, 0, 0.0D0,
+     $                0.0, 0.0, 0, 0, 0.0,
      $                M, X, Z, 2, W, 0, RW, IW, I1, INFO )
          CALL CHKXER( 'CHEEVX_2STAGE', INFOT, NOUT, LERR, OK )
          NT = NT + 11
@@ -734,17 +748,17 @@
          CALL CHKXER( 'CHEEVR', INFOT, NOUT, LERR, OK )
          INFOT = 18
          CALL CHEEVR( 'V', 'I', 'U', 1, A, 1, 0.0E0, 0.0E0, 1, 1, 0.0,
-     $                M, R, Z, 1, IW, Q, 2*N-1, RW, 24*N, IW( 2*N+1 ),
+     $                M, R, Z, 1, IW, Q, 0, RW, 24*N, IW( 2*N+1 ),
      $                10*N, INFO )
          CALL CHKXER( 'CHEEVR', INFOT, NOUT, LERR, OK )
          INFOT = 20
          CALL CHEEVR( 'V', 'I', 'U', 1, A, 1, 0.0E0, 0.0E0, 1, 1, 0.0,
-     $                M, R, Z, 1, IW, Q, 2*N, RW, 24*N-1, IW( 2*N-1 ),
+     $                M, R, Z, 1, IW, Q, 2*N, RW, 0, IW( 2*N-1 ),
      $                10*N, INFO )
          CALL CHKXER( 'CHEEVR', INFOT, NOUT, LERR, OK )
          INFOT = 22
          CALL CHEEVR( 'V', 'I', 'U', 1, A, 1, 0.0E0, 0.0E0, 1, 1, 0.0,
-     $                M, R, Z, 1, IW, Q, 2*N, RW, 24*N, IW, 10*N-1,
+     $                M, R, Z, 1, IW, Q, 2*N, RW, 24*N, IW, 0,
      $                INFO )
          CALL CHKXER( 'CHEEVR', INFOT, NOUT, LERR, OK )
          NT = NT + 12
@@ -755,80 +769,80 @@
          N = 1
          INFOT = 1
          CALL CHEEVR_2STAGE( '/', 'A', 'U', 0, A, 1,
-     $                0.0D0, 0.0D0, 1, 1, 0.0D0,
+     $                0.0, 0.0, 1, 1, 0.0,
      $                M, R, Z, 1, IW, Q, 2*N, RW, 24*N, IW( 2*N+1 ),
      $                10*N, INFO )
          CALL CHKXER( 'CHEEVR_2STAGE', INFOT, NOUT, LERR, OK )
          INFOT = 1
          CALL CHEEVR_2STAGE( 'V', 'A', 'U', 0, A, 1,
-     $                0.0D0, 0.0D0, 1, 1, 0.0D0,
+     $                0.0, 0.0, 1, 1, 0.0,
      $                M, R, Z, 1, IW, Q, 2*N, RW, 24*N, IW( 2*N+1 ),
      $                10*N, INFO )
          CALL CHKXER( 'CHEEVR_2STAGE', INFOT, NOUT, LERR, OK )
          INFOT = 2
          CALL CHEEVR_2STAGE( 'N', '/', 'U', 0, A, 1,
-     $                0.0D0, 0.0D0, 1, 1, 0.0D0,
+     $                0.0, 0.0, 1, 1, 0.0,
      $                M, R, Z, 1, IW, Q, 2*N, RW, 24*N, IW( 2*N+1 ),
      $                10*N, INFO )
          CALL CHKXER( 'CHEEVR_2STAGE', INFOT, NOUT, LERR, OK )
          INFOT = 3
          CALL CHEEVR_2STAGE( 'N', 'A', '/', -1, A, 1,
-     $                0.0D0, 0.0D0, 1, 1, 0.0D0,
+     $                0.0, 0.0, 1, 1, 0.0,
      $                M, R, Z, 1, IW, Q, 2*N, RW, 24*N,
      $                IW( 2*N+1 ), 10*N, INFO )
          CALL CHKXER( 'CHEEVR_2STAGE', INFOT, NOUT, LERR, OK )
          INFOT = 4
          CALL CHEEVR_2STAGE( 'N', 'A', 'U', -1, A, 1,
-     $                0.0D0, 0.0D0, 1, 1, 0.0D0,
+     $                0.0, 0.0, 1, 1, 0.0,
      $                M, R, Z, 1, IW, Q, 2*N, RW, 24*N,
      $                IW( 2*N+1 ), 10*N, INFO )
          CALL CHKXER( 'CHEEVR_2STAGE', INFOT, NOUT, LERR, OK )
          INFOT = 6
          CALL CHEEVR_2STAGE( 'N', 'A', 'U', 2, A, 1,
-     $                0.0D0, 0.0D0, 1, 1, 0.0D0,
+     $                0.0, 0.0, 1, 1, 0.0,
      $                M, R, Z, 1, IW, Q, 2*N, RW, 24*N, IW( 2*N+1 ),
      $                10*N, INFO )
          CALL CHKXER( 'CHEEVR_2STAGE', INFOT, NOUT, LERR, OK )
          INFOT = 8
          CALL CHEEVR_2STAGE( 'N', 'V', 'U', 1, A, 1,
-     $                0.0D0, 0.0D0, 1, 1, 0.0D0,
+     $                0.0, 0.0, 1, 1, 0.0,
      $                M, R, Z, 1, IW, Q, 2*N, RW, 24*N, IW( 2*N+1 ),
      $                10*N, INFO )
          CALL CHKXER( 'CHEEVR_2STAGE', INFOT, NOUT, LERR, OK )
          INFOT = 9
          CALL CHEEVR_2STAGE( 'N', 'I', 'U', 1, A, 1,
-     $                0.0D0, 0.0D0, 0, 1, 0.0D0,
+     $                0.0, 0.0, 0, 1, 0.0,
      $                M, R, Z, 1, IW, Q, 2*N, RW, 24*N, IW( 2*N+1 ),
      $                10*N, INFO )
          CALL CHKXER( 'CHEEVR_2STAGE', INFOT, NOUT, LERR, OK )
          INFOT = 10
          CALL CHEEVR_2STAGE( 'N', 'I', 'U', 2, A, 2,
-     $                0.0D0, 0.0D0, 2, 1, 0.0D0,
+     $                0.0, 0.0, 2, 1, 0.0,
      $                M, R, Z, 1, IW, Q, 2*N, RW, 24*N, IW( 2*N+1 ),
      $                10*N, INFO )
          CALL CHKXER( 'CHEEVR_2STAGE', INFOT, NOUT, LERR, OK )
          INFOT = 15
          CALL CHEEVR_2STAGE( 'N', 'I', 'U', 1, A, 1,
-     $                0.0D0, 0.0D0, 1, 1, 0.0D0,
+     $                0.0, 0.0, 1, 1, 0.0,
      $                M, R, Z, 0, IW, Q, 2*N, RW, 24*N, IW( 2*N+1 ),
      $                10*N, INFO )
          CALL CHKXER( 'CHEEVR_2STAGE', INFOT, NOUT, LERR, OK )
          INFOT = 18
          CALL CHEEVR_2STAGE( 'N', 'I', 'U', 1, A, 1,
-     $                0.0D0, 0.0D0, 1, 1, 0.0D0,
-     $                M, R, Z, 1, IW, Q, 2*N-1, RW, 24*N, IW( 2*N+1 ),
+     $                0.0, 0.0, 1, 1, 0.0,
+     $                M, R, Z, 1, IW, Q, 0, RW, 24*N, IW( 2*N+1 ),
      $                10*N, INFO )
          CALL CHKXER( 'CHEEVR_2STAGE', INFOT, NOUT, LERR, OK )
          INFOT = 20
          CALL CHEEVR_2STAGE( 'N', 'I', 'U', 1, A, 1,
-     $                0.0D0, 0.0D0, 1, 1, 0.0D0,
-     $                M, R, Z, 1, IW, Q, 26*N, RW, 24*N-1, IW( 2*N-1 ),
+     $                0.0, 0.0, 1, 1, 0.0,
+     $                M, R, Z, 1, IW, Q, 26*N, RW, 0, IW( 2*N-1 ),
      $                10*N, INFO )
          CALL CHKXER( 'CHEEVR_2STAGE', INFOT, NOUT, LERR, OK )
          INFOT = 22
          CALL CHEEVR_2STAGE( 'N', 'I', 'U', 1, A, 1,
-     $                0.0D0, 0.0D0, 1, 1, 0.0D0,
-     $                M, R, Z, 1, IW, Q, 26*N, RW, 24*N, IW, 10*N-1,
+     $                0.0, 0.0, 1, 1, 0.0,
+     $                M, R, Z, 1, IW, Q, 26*N, RW, 24*N, IW, 0,
      $                INFO )
          CALL CHKXER( 'CHEEVR_2STAGE', INFOT, NOUT, LERR, OK )
          NT = NT + 13
@@ -1259,65 +1273,65 @@
          SRNAMT = 'CHBEVX_2STAGE'
          INFOT = 1
          CALL CHBEVX_2STAGE( '/', 'A', 'U', 0, 0, A, 1, Q, 1,
-     $                       0.0D0, 0.0D0, 0, 0, 0.0D0,
+     $                       0.0, 0.0, 0, 0, 0.0,
      $                       M, X, Z, 1, W, 0, RW, IW, I3, INFO )
          INFOT = 1
          CALL CHBEVX_2STAGE( 'V', 'A', 'U', 0, 0, A, 1, Q, 1,
-     $                       0.0D0, 0.0D0, 0, 0, 0.0D0,
+     $                       0.0, 0.0, 0, 0, 0.0,
      $                       M, X, Z, 1, W, 0, RW, IW, I3, INFO )
          CALL CHKXER( 'CHBEVX_2STAGE', INFOT, NOUT, LERR, OK )
          INFOT = 2
          CALL CHBEVX_2STAGE( 'N', '/', 'U', 0, 0, A, 1, Q, 1,
-     $                       0.0D0, 1.0D0, 1, 0, 0.0D0,
+     $                       0.0, 1.0, 1, 0, 0.0,
      $                       M, X, Z, 1, W, 0, RW, IW, I3, INFO )
          CALL CHKXER( 'CHBEVX_2STAGE', INFOT, NOUT, LERR, OK )
          INFOT = 3
          CALL CHBEVX_2STAGE( 'N', 'A', '/', 0, 0, A, 1, Q, 1,
-     $                       0.0D0, 0.0D0, 0, 0, 0.0D0,
+     $                       0.0, 0.0, 0, 0, 0.0,
      $                       M, X, Z, 1, W, 0, RW, IW, I3, INFO )
          INFOT = 4
          CALL CHBEVX_2STAGE( 'N', 'A', 'U', -1, 0, A, 1, Q, 1,
-     $                       0.0D0, 0.0D0, 0, 0, 0.0D0,
+     $                       0.0, 0.0, 0, 0, 0.0,
      $                       M, X, Z, 1, W, 0, RW, IW, I3, INFO )
          CALL CHKXER( 'CHBEVX_2STAGE', INFOT, NOUT, LERR, OK )
          INFOT = 5
          CALL CHBEVX_2STAGE( 'N', 'A', 'U', 0, -1, A, 1, Q, 1,
-     $                       0.0D0, 0.0D0, 0, 0, 0.0D0,
+     $                       0.0, 0.0, 0, 0, 0.0,
      $                       M, X, Z, 1, W, 0, RW, IW, I3, INFO )
          CALL CHKXER( 'CHBEVX_2STAGE', INFOT, NOUT, LERR, OK )
          INFOT = 7
          CALL CHBEVX_2STAGE( 'N', 'A', 'U', 2, 1, A, 1, Q, 2,
-     $                       0.0D0, 0.0D0, 0, 0, 0.0D0,
+     $                       0.0, 0.0, 0, 0, 0.0,
      $                       M, X, Z, 2, W, 0, RW, IW, I3, INFO )
          CALL CHKXER( 'CHBEVX_2STAGE', INFOT, NOUT, LERR, OK )
 *         INFOT = 9
 *         CALL CHBEVX_2STAGE( 'V', 'A', 'U', 2, 0, A, 1, Q, 1,
-*     $                       0.0D0, 0.0D0, 0, 0, 0.0D0,
+*     $                       0.0, 0.0, 0, 0, 0.0,
 *     $                       M, X, Z, 2, W, 0, RW, IW, I3, INFO )
 *         CALL CHKXER( 'CHBEVX_2STAGE', INFOT, NOUT, LERR, OK )
          INFOT = 11
          CALL CHBEVX_2STAGE( 'N', 'V', 'U', 1, 0, A, 1, Q, 1,
-     $                       0.0D0, 0.0D0, 0, 0, 0.0D0,
+     $                       0.0, 0.0, 0, 0, 0.0,
      $                       M, X, Z, 1, W, 0, RW, IW, I3, INFO )
          CALL CHKXER( 'CHBEVX_2STAGE', INFOT, NOUT, LERR, OK )
          INFOT = 12
          CALL CHBEVX_2STAGE( 'N', 'I', 'U', 1, 0, A, 1, Q, 1,
-     $                       0.0D0, 0.0D0, 0, 0, 0.0D0,
+     $                       0.0, 0.0, 0, 0, 0.0,
      $                       M, X, Z, 1, W, 0, RW, IW, I3, INFO )
          CALL CHKXER( 'CHBEVX_2STAGE', INFOT, NOUT, LERR, OK )
          INFOT = 13
          CALL CHBEVX_2STAGE( 'N', 'I', 'U', 1, 0, A, 1, Q, 1,
-     $                       0.0D0, 0.0D0, 1, 2, 0.0D0,
+     $                       0.0, 0.0, 1, 2, 0.0,
      $                       M, X, Z, 1, W, 0, RW, IW, I3, INFO )
          CALL CHKXER( 'CHBEVX_2STAGE', INFOT, NOUT, LERR, OK )
          INFOT = 18
          CALL CHBEVX_2STAGE( 'N', 'A', 'U', 2, 0, A, 1, Q, 2,
-     $                       0.0D0, 0.0D0, 0, 0, 0.0D0,
+     $                       0.0, 0.0, 0, 0, 0.0,
      $                       M, X, Z, 0, W, 0, RW, IW, I3, INFO )
          CALL CHKXER( 'CHBEVX_2STAGE', INFOT, NOUT, LERR, OK )
          INFOT = 20
          CALL CHBEVX_2STAGE( 'N', 'A', 'U', 2, 0, A, 1, Q, 2,
-     $                       0.0D0, 0.0D0, 0, 0, 0.0D0,
+     $                       0.0, 0.0, 0, 0, 0.0,
      $                       M, X, Z, 1, W, 0, RW, IW, I3, INFO )
          CALL CHKXER( 'CHBEVX_2STAGE', INFOT, NOUT, LERR, OK )
          NT = NT + 12

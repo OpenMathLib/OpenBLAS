@@ -93,7 +93,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif
 #endif
 
-extern unsigned int openblas_thread_timeout();
+extern unsigned int openblas_thread_timeout(void);
 
 #ifdef SMP_SERVER
 
@@ -112,6 +112,8 @@ extern unsigned int openblas_thread_timeout();
 
 /* We need this global for checking if initialization is finished.  */
 int blas_server_avail   __attribute__((aligned(ATTRIBUTE_SIZE))) = 0;
+
+int blas_omp_threads_local = 1;
 
 /* Local Variables */
 #if   defined(USE_PTHREAD_LOCK)
@@ -973,7 +975,7 @@ void goto_set_num_threads(int num_threads) {
 
     increased_threads = 1;
 
-    for(i = blas_num_threads - 1; i < num_threads - 1; i++){
+    for(i = (blas_num_threads > 0) ? blas_num_threads - 1 : 0; i < num_threads - 1; i++){
 
       atomic_store_queue(&thread_status[i].queue, (blas_queue_t *)0);
       thread_status[i].status = THREAD_STATUS_WAKEUP;

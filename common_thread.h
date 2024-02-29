@@ -53,7 +53,6 @@ extern void goto_set_num_threads(int nthreads);
 /* Global Parameter */
 extern int blas_cpu_number;
 extern int blas_num_threads;
-extern int blas_num_threads_set;
 extern int blas_omp_linked;
 
 #define BLAS_LEGACY	0x8000U
@@ -112,8 +111,9 @@ typedef struct blas_queue {
   struct blas_queue *next;
 
 #if defined( __WIN32__) || defined(__CYGWIN32__) || defined(_WIN32) || defined(__CYGWIN__)
-  CRITICAL_SECTION lock;
-  HANDLE finish;
+  // CRITICAL_SECTION lock;
+  // HANDLE finish;
+  volatile int finished;
 #else
   pthread_mutex_t	 lock;
   pthread_cond_t	 finished;
@@ -136,27 +136,32 @@ typedef struct blas_queue {
 #ifdef SMP_SERVER
 
 extern int blas_server_avail;
+extern int blas_omp_number_max;
+extern int blas_omp_threads_local;
 
 static __inline int num_cpu_avail(int level) {
 
 #ifdef USE_OPENMP
 int openmp_nthreads;
-	if (blas_num_threads_set == 0)
 	openmp_nthreads=omp_get_max_threads();
-	else
-	openmp_nthreads=blas_cpu_number;
+	if (omp_in_parallel()) openmp_nthreads = blas_omp_threads_local;
 #endif
 
 #ifndef USE_OPENMP 
   if (blas_cpu_number == 1
-#endif
-#ifdef USE_OPENMP
-     if (openmp_nthreads == 1 || omp_in_parallel()
+#else
+     if (openmp_nthreads == 1 
 #endif
       ) return 1;        
 
 #ifdef USE_OPENMP
-  if (blas_cpu_number != openmp_nthreads) {
+     if (openmp_nthreads > blas_omp_number_max){
+#ifdef DEBUG
+     fprintf(stderr,"WARNING - more OpenMP threads requested (%d) than available (%d)\n",openmp_nthreads,blas_omp_number_max);
+#endif
+     openmp_nthreads = blas_omp_number_max;
+     }
+     if (blas_cpu_number != openmp_nthreads) {
 	  goto_set_num_threads(openmp_nthreads);
   }
 #endif
@@ -189,27 +194,27 @@ int exec_blas(BLASLONG num_cpu, blas_param_t *param, void *buffer);
 int blas_level1_thread(int mode, BLASLONG m, BLASLONG n, BLASLONG k, void *alpha,
 		       void *a, BLASLONG lda,
 		       void *b, BLASLONG ldb,
-		       void *c, BLASLONG ldc, int (*function)(), int threads);
+		       void *c, BLASLONG ldc, int (*function)(void), int threads);
 
-int gemm_thread_m (int mode, blas_arg_t *, BLASLONG *, BLASLONG *, int (*function)(), void *, void *, BLASLONG);
+int gemm_thread_m (int mode, blas_arg_t *, BLASLONG *, BLASLONG *, int (*function)(blas_arg_t*, BLASLONG*, BLASLONG*,FLOAT *, FLOAT *, BLASLONG ), void *, void *, BLASLONG);
 
-int gemm_thread_n (int mode, blas_arg_t *, BLASLONG *, BLASLONG *, int (*function)(), void *, void *, BLASLONG);
+int gemm_thread_n (int mode, blas_arg_t *, BLASLONG *, BLASLONG *, int (*function)(blas_arg_t*, BLASLONG*, BLASLONG*,FLOAT*, FLOAT*, BLASLONG), void *, void *, BLASLONG);
 
-int gemm_thread_mn(int mode, blas_arg_t *, BLASLONG *, BLASLONG *, int (*function)(), void *, void *, BLASLONG);
+int gemm_thread_mn(int mode, blas_arg_t *, BLASLONG *, BLASLONG *, int (*function)(blas_arg_t*, BLASLONG*, BLASLONG*,FLOAT *, FLOAT *, BLASLONG), void *, void *, BLASLONG);
 
-int gemm_thread_variable(int mode, blas_arg_t *, BLASLONG *, BLASLONG *, int (*function)(), void *, void *, BLASLONG, BLASLONG);
+int gemm_thread_variable(int mode, blas_arg_t *, BLASLONG *, BLASLONG *, int (*function)(blas_arg_t*, BLASLONG*, BLASLONG*,FLOAT *, FLOAT *, BLASLONG), void *, void *, BLASLONG, BLASLONG);
 
 int trsm_thread(int mode, BLASLONG m, BLASLONG n,
 		double alpha_r, double alpha_i,
 		void *a, BLASLONG lda,
-		void *c, BLASLONG ldc, int (*function)(), void *buffer);
+		void *c, BLASLONG ldc, int (*function)(void), void *buffer);
 
-int syrk_thread(int mode, blas_arg_t *, BLASLONG *, BLASLONG *, int (*function)(), void *, void *, BLASLONG);
+int syrk_thread(int mode, blas_arg_t *, BLASLONG *, BLASLONG *, int (*function)(blas_arg_t*, BLASLONG*, BLASLONG*, FLOAT *, FLOAT *, BLASLONG), void*, void*, BLASLONG);
 
 int getrf_thread(int mode, BLASLONG m, BLASLONG n, BLASLONG k,
 		 void *offsetA, BLASLONG lda,
 		 void *offsetB, BLASLONG jb,
-		 void *ipiv, BLASLONG offset, int (*function)(), void *buffer);
+		 void *ipiv, BLASLONG offset, int (*function)(void), void *buffer);
 
 #endif  /* ENDIF ASSEMBLER */
 

@@ -36,6 +36,7 @@ SRQ    8               List types on next line if 0 < NTYPES <  8
 SLQ    8               List types on next line if 0 < NTYPES <  8
 SQL    8               List types on next line if 0 < NTYPES <  8
 SQP    6               List types on next line if 0 < NTYPES <  6
+SQK   19               List types on next line if 0 < NTYPES < 19
 STZ    3               List types on next line if 0 < NTYPES <  3
 SLS    6               List types on next line if 0 < NTYPES <  6
 SEQ

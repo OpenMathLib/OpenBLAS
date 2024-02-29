@@ -91,7 +91,7 @@
 
 void *qalloc(int flags, size_t bytes);
 
-static void INLINE blas_lock(volatile unsigned long *address){
+static INLINE void blas_lock(volatile unsigned long *address){
 
   long int ret, val = 1;
 

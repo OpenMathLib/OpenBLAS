@@ -21,8 +21,8 @@
 *>
 *> \verbatim
 *>
-*> CERRHS tests the error exits for CGEBAK, CGEBAL, CGEHRD, CUNGHR,
-*> CUNMHR, CHSEQR, CHSEIN, and CTREVC.
+*> CERRHS tests the error exits for CGEBAK, CGEBAL, CGEHRD, CGEHD2,
+*> CUNGHR, CUNMHR, CHSEQR, CHSEIN, CTREVC, and CTREVC3.
 *> \endverbatim
 *
 *  Arguments:
@@ -86,7 +86,7 @@
 *     ..
 *     .. External Subroutines ..
       EXTERNAL           CHKXER, CGEBAK, CGEBAL, CGEHRD, CHSEIN, CHSEQR,
-     $                   CUNGHR, CUNMHR, CTREVC
+     $                   CUNGHR, CUNMHR, CTREVC, CTREVC3, CGEHD2
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          REAL
@@ -192,6 +192,29 @@
          CALL CGEHRD( 2, 1, 2, A, 2, TAU, W, 1, INFO )
          CALL CHKXER( 'CGEHRD', INFOT, NOUT, LERR, OK )
          NT = NT + 7
+*
+*        CGEHD2
+*
+         SRNAMT = 'CGEHD2'
+         INFOT = 1
+         CALL CGEHD2( -1, 1, 1, A, 1, TAU, W, INFO )
+         CALL CHKXER( 'CGEHD2', INFOT, NOUT, LERR, OK )
+         INFOT = 2
+         CALL CGEHD2( 0, 0, 0, A, 1, TAU, W, INFO )
+         CALL CHKXER( 'CGEHD2', INFOT, NOUT, LERR, OK )
+         INFOT = 2
+         CALL CGEHD2( 0, 2, 0, A, 1, TAU, W, INFO )
+         CALL CHKXER( 'CGEHD2', INFOT, NOUT, LERR, OK )
+         INFOT = 3
+         CALL CGEHD2( 1, 1, 0, A, 1, TAU, W, INFO )
+         CALL CHKXER( 'CGEHD2', INFOT, NOUT, LERR, OK )
+         INFOT = 3
+         CALL CGEHD2( 0, 1, 1, A, 1, TAU, W, INFO )
+         CALL CHKXER( 'CGEHD2', INFOT, NOUT, LERR, OK )
+         INFOT = 5
+         CALL CGEHD2( 2, 1, 1, A, 1, TAU, W, INFO )
+         CALL CHKXER( 'CGEHD2', INFOT, NOUT, LERR, OK )
+         NT = NT + 6
 *
 *        CUNGHR
 *
@@ -398,6 +421,47 @@
      $                RW, INFO )
          CALL CHKXER( 'CTREVC', INFOT, NOUT, LERR, OK )
          NT = NT + 7
+*
+*        CTREVC3
+*
+         SRNAMT = 'CTREVC3'
+         INFOT = 1
+         CALL CTREVC3( '/', 'A', SEL, 0, A, 1, VL, 1, VR, 1, 0, M, W,
+     $                 LW, RW, 1, INFO )
+         CALL CHKXER( 'CTREVC3', INFOT, NOUT, LERR, OK )
+         INFOT = 2
+         CALL CTREVC3( 'L', '/', SEL, 0, A, 1, VL, 1, VR, 1, 0, M, W,
+     $                 LW, RW, 1, INFO )
+         CALL CHKXER( 'CTREVC3', INFOT, NOUT, LERR, OK )
+         INFOT = 4
+         CALL CTREVC3( 'L', 'A', SEL, -1, A, 1, VL, 1, VR, 1, 0, M, W,
+     $                 LW, RW, 1, INFO )
+         CALL CHKXER( 'CTREVC3', INFOT, NOUT, LERR, OK )
+         INFOT = 6
+         CALL CTREVC3( 'L', 'A', SEL, 2, A, 1, VL, 2, VR, 1, 4, M, W,
+     $                 LW, RW, 2, INFO )
+         CALL CHKXER( 'CTREVC3', INFOT, NOUT, LERR, OK )
+         INFOT = 8
+         CALL CTREVC3( 'L', 'A', SEL, 2, A, 2, VL, 1, VR, 1, 4, M, W,
+     $                 LW, RW, 2, INFO )
+         CALL CHKXER( 'CTREVC3', INFOT, NOUT, LERR, OK )
+         INFOT = 10
+         CALL CTREVC3( 'R', 'A', SEL, 2, A, 2, VL, 1, VR, 1, 4, M, W,
+     $                 LW, RW, 2, INFO )
+         CALL CHKXER( 'CTREVC3', INFOT, NOUT, LERR, OK )
+         INFOT = 11
+         CALL CTREVC3( 'L', 'A', SEL, 2, A, 2, VL, 2, VR, 1, 1, M, W,
+     $                 LW, RW, 2, INFO )
+         CALL CHKXER( 'CTREVC3', INFOT, NOUT, LERR, OK )
+         INFOT = 14
+         CALL CTREVC3( 'L', 'A', SEL, 2, A, 2, VL, 2, VR, 1, 2, M, W,
+     $                 2, RW, 2, INFO )
+         CALL CHKXER( 'CTREVC3', INFOT, NOUT, LERR, OK )
+         INFOT = 16
+         CALL CTREVC3( 'L', 'A', SEL, 2, A, 2, VL, 2, VR, 1, 2, M, W,
+     $                 LW, RW, 1, INFO )
+         CALL CHKXER( 'CTREVC3', INFOT, NOUT, LERR, OK )
+         NT = NT + 9
       END IF
 *
 *     Print a summary line.

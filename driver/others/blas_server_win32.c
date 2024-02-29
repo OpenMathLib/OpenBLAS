@@ -48,34 +48,38 @@
 #endif
 #endif
 
+#ifdef SMP_DEBUG
+#   define MT_TRACE(...) fprintf(stderr, __VA_ARGS__)
+#else
+#   define MT_TRACE(...)
+#endif
+
 /* This is a thread implementation for Win32 lazy implementation */
 
 /* Thread server common information */
-typedef struct{
-  CRITICAL_SECTION lock;
-  HANDLE filled;
-  HANDLE killed;
 
-  blas_queue_t	*queue;    /* Parameter Pointer */
-  int		shutdown;  /* server shutdown flag */
-
-} blas_pool_t;
+static blas_queue_t *work_queue = NULL;
+static HANDLE kickoff_event = NULL;
+static CRITICAL_SECTION queue_lock;
 
 /* We need this global for checking if initialization is finished.   */
 int blas_server_avail = 0;
 
+int blas_omp_threads_local = 1;
+
 /* Local Variables */
 static BLASULONG server_lock       = 0;
 
-static blas_pool_t   pool;
 static HANDLE	    blas_threads   [MAX_CPU_NUMBER];
 static DWORD	    blas_threads_id[MAX_CPU_NUMBER];
+static volatile int thread_target;	// target num of live threads, volatile for cross-thread reads
 
+//
+// Legacy code path
+//
+static void legacy_exec(void *func, int mode, blas_arg_t *args, void *sb) {
 
-
-static void legacy_exec(void *func, int mode, blas_arg_t *args, void *sb){
-
-      if (!(mode & BLAS_COMPLEX)){
+      if (!(mode & BLAS_COMPLEX)) {
 #ifdef EXPRECISION
 	if ((mode & BLAS_PREC) == BLAS_XDOUBLE){
 	  /* REAL / Extended Double */
@@ -90,7 +94,7 @@ static void legacy_exec(void *func, int mode, blas_arg_t *args, void *sb){
 		args -> c, args -> ldc, sb);
 	} else
 #endif
-	  if ((mode & BLAS_PREC) == BLAS_DOUBLE){
+	  if ((mode & BLAS_PREC) == BLAS_DOUBLE) {
 	    /* REAL / Double */
 	    void (*afunc)(BLASLONG, BLASLONG, BLASLONG, double,
 			  double *, BLASLONG, double *, BLASLONG,
@@ -101,7 +105,7 @@ static void legacy_exec(void *func, int mode, blas_arg_t *args, void *sb){
 		  args -> a, args -> lda,
 		  args -> b, args -> ldb,
 		  args -> c, args -> ldc, sb);
-	  } else if ((mode & BLAS_PREC) == BLAS_SINGLE){
+	  } else if ((mode & BLAS_PREC) == BLAS_SINGLE) {
 	    /* REAL / Single */
 	    void (*afunc)(BLASLONG, BLASLONG, BLASLONG, float,
 			  float *, BLASLONG, float *, BLASLONG,
@@ -113,7 +117,7 @@ static void legacy_exec(void *func, int mode, blas_arg_t *args, void *sb){
 		  args -> b, args -> ldb,
 		  args -> c, args -> ldc, sb);
 #ifdef BUILD_BFLOAT16
-          } else if ((mode & BLAS_PREC) == BLAS_BFLOAT16){
+          } else if ((mode & BLAS_PREC) == BLAS_BFLOAT16) {
             /* REAL / BFLOAT16 */
             void (*afunc)(BLASLONG, BLASLONG, BLASLONG, bfloat16,
                           bfloat16 *, BLASLONG, bfloat16 *, BLASLONG,
@@ -124,7 +128,7 @@ static void legacy_exec(void *func, int mode, blas_arg_t *args, void *sb){
                   args -> a, args -> lda,
                   args -> b, args -> ldb,
                   args -> c, args -> ldc, sb);
-          } else if ((mode & BLAS_PREC) == BLAS_STOBF16){
+          } else if ((mode & BLAS_PREC) == BLAS_STOBF16) {
             /* REAL / BLAS_STOBF16 */
             void (*afunc)(BLASLONG, BLASLONG, BLASLONG, float,
                           float *, BLASLONG, bfloat16 *, BLASLONG,
@@ -135,7 +139,7 @@ static void legacy_exec(void *func, int mode, blas_arg_t *args, void *sb){
                   args -> a, args -> lda,
                   args -> b, args -> ldb,
                   args -> c, args -> ldc, sb);
-          } else if ((mode & BLAS_PREC) == BLAS_DTOBF16){
+          } else if ((mode & BLAS_PREC) == BLAS_DTOBF16) {
             /* REAL / BLAS_DTOBF16 */
             void (*afunc)(BLASLONG, BLASLONG, BLASLONG, double,
                           double *, BLASLONG, bfloat16 *, BLASLONG,
@@ -152,7 +156,7 @@ static void legacy_exec(void *func, int mode, blas_arg_t *args, void *sb){
 	  }
       } else {
 #ifdef EXPRECISION
-	if ((mode & BLAS_PREC) == BLAS_XDOUBLE){
+	if ((mode & BLAS_PREC) == BLAS_XDOUBLE) {
 	  /* COMPLEX / Extended Double */
 	  void (*afunc)(BLASLONG, BLASLONG, BLASLONG, xdouble, xdouble,
 			xdouble *, BLASLONG, xdouble *, BLASLONG,
@@ -166,7 +170,7 @@ static void legacy_exec(void *func, int mode, blas_arg_t *args, void *sb){
 		args -> c, args -> ldc, sb);
 	} else
 #endif
-	  if ((mode & BLAS_PREC) == BLAS_DOUBLE){
+	  if ((mode & BLAS_PREC) == BLAS_DOUBLE) {
 	    /* COMPLEX / Double */
 	  void (*afunc)(BLASLONG, BLASLONG, BLASLONG, double, double,
 			double *, BLASLONG, double *, BLASLONG,
@@ -196,88 +200,78 @@ static void legacy_exec(void *func, int mode, blas_arg_t *args, void *sb){
       }
 }
 
-/* This is a main routine of threads. Each thread waits until job is */
-/* queued.                                                           */
-
-static DWORD WINAPI blas_thread_server(void *arg){
+//
+// This is a main routine of threads. Each thread waits until job is queued.
+//
+static DWORD WINAPI blas_thread_server(void *arg) {
 
   /* Thread identifier */
-#ifdef SMP_DEBUG
   BLASLONG  cpu = (BLASLONG)arg;
-#endif
 
   void *buffer, *sa, *sb;
   blas_queue_t	*queue;
-  DWORD action;
-  HANDLE handles[] = {pool.filled, pool.killed};
 
   /* Each server needs each buffer */
   buffer   = blas_memory_alloc(2);
 
-#ifdef SMP_DEBUG
-  fprintf(STDERR, "Server[%2ld] Thread is started!\n", cpu);
-#endif
+  MT_TRACE("Server[%2ld] Thread is started!\n", cpu);
 
-  while (1){
+  while (1) {
 
     /* Waiting for Queue */
 
-#ifdef SMP_DEBUG
-    fprintf(STDERR, "Server[%2ld] Waiting for Queue.\n", cpu);
-#endif
+    MT_TRACE("Server[%2ld] Waiting for Queue.\n", cpu);
 
-    do {
-      action = WaitForMultipleObjects(2, handles, FALSE, INFINITE);
-    } while ((action != WAIT_OBJECT_0) && (action != WAIT_OBJECT_0 + 1));
+    // event raised when work is added to the queue
+    WaitForSingleObject(kickoff_event, INFINITE);
 
-    if (action == WAIT_OBJECT_0 + 1) break;
+    if (cpu > thread_target - 2) {
+      //MT_TRACE("thread [%d] exiting.\n", cpu);
+      break;	// excess thread, so worker thread exits
+    }
 
-#ifdef SMP_DEBUG
-    fprintf(STDERR, "Server[%2ld] Got it.\n", cpu);
-#endif
+    MT_TRACE("Server[%2ld] Got it.\n", cpu);
 
-    EnterCriticalSection(&pool.lock);
+    EnterCriticalSection(&queue_lock);
 
-    queue = pool.queue;
-    if (queue) pool.queue = queue->next;
+    queue = work_queue;
+    if (queue)
+        work_queue = work_queue->next;
 
-    LeaveCriticalSection(&pool.lock);
+    LeaveCriticalSection(&queue_lock);
 
-    if (queue)  {
+    if (queue) {
       int (*routine)(blas_arg_t *, void *, void *, void *, void *, BLASLONG) = queue -> routine;
-
-      if (pool.queue) SetEvent(pool.filled);
 
       sa = queue -> sa;
       sb = queue -> sb;
 
-#ifdef CONSISTENT_FPCSR
-      __asm__ __volatile__ ("ldmxcsr %0" : : "m" (queue -> sse_mode));
-      __asm__ __volatile__ ("fldcw %0"   : : "m" (queue -> x87_mode));
-#endif
+      #ifdef CONSISTENT_FPCSR
+        __asm__ __volatile__ ("ldmxcsr %0" : : "m" (queue -> sse_mode));
+        __asm__ __volatile__ ("fldcw %0"   : : "m" (queue -> x87_mode));
+      #endif
 
-#ifdef SMP_DEBUG
-      fprintf(STDERR, "Server[%2ld] Started.  Mode = 0x%03x M = %3ld N=%3ld K=%3ld\n",
+      MT_TRACE("Server[%2ld] Started.  Mode = 0x%03x M = %3ld N=%3ld K=%3ld\n",
 	      cpu, queue->mode, queue-> args ->m, queue->args->n, queue->args->k);
-#endif
 
       // fprintf(stderr, "queue start[%ld]!!!\n", cpu);
 
-#ifdef MONITOR
-      main_status[cpu] = MAIN_RUNNING1;
-#endif
+      #ifdef MONITOR
+        main_status[cpu] = MAIN_RUNNING1;
+      #endif
 
-      if (sa == NULL) sa = (void *)((BLASLONG)buffer + GEMM_OFFSET_A);
+      if (sa == NULL) 
+        sa = (void *)((BLASLONG)buffer + GEMM_OFFSET_A);
 
       if (sb == NULL) {
-	if (!(queue -> mode & BLAS_COMPLEX)){
+        if (!(queue -> mode & BLAS_COMPLEX)) {
 #ifdef EXPRECISION
-	  if ((queue -> mode & BLAS_PREC) == BLAS_XDOUBLE){
+	  if ((queue -> mode & BLAS_PREC) == BLAS_XDOUBLE) {
 	    sb = (void *)(((BLASLONG)sa + ((XGEMM_P * XGEMM_Q * sizeof(xdouble)
 					+ GEMM_ALIGN) & ~GEMM_ALIGN)) + GEMM_OFFSET_B);
 	  } else
 #endif
-	    if ((queue -> mode & BLAS_PREC) == BLAS_DOUBLE){
+	    if ((queue -> mode & BLAS_PREC) == BLAS_DOUBLE) {
 #ifdef BUILD_DOUBLE
 	      sb = (void *)(((BLASLONG)sa + ((DGEMM_P * DGEMM_Q * sizeof(double)
 					  + GEMM_ALIGN) & ~GEMM_ALIGN)) + GEMM_OFFSET_B);
@@ -311,70 +305,59 @@ static DWORD WINAPI blas_thread_server(void *arg){
             /* Other types in future */
 	    }
 	}
-	queue->sb=sb;
+      	queue->sb=sb;
       }
 
-#ifdef MONITOR
-      main_status[cpu] = MAIN_RUNNING2;
-#endif
+      #ifdef MONITOR
+        main_status[cpu] = MAIN_RUNNING2;
+      #endif
 
       if (!(queue -> mode & BLAS_LEGACY)) {
-
-	(routine)(queue -> args, queue -> range_m, queue -> range_n, sa, sb, queue -> position);
+      	(routine)(queue -> args, queue -> range_m, queue -> range_n, sa, sb, queue -> position);
       } else {
-	legacy_exec(routine, queue -> mode, queue -> args, sb);
+  	    legacy_exec(routine, queue -> mode, queue -> args, sb);
       }
-    }else{
-		continue; //if queue == NULL
-	}
+    } else {
+  		continue; //if queue == NULL
+	  }
 
-#ifdef SMP_DEBUG
-    fprintf(STDERR, "Server[%2ld] Finished!\n", cpu);
-#endif
-
-    EnterCriticalSection(&queue->lock);
-
-    queue -> status = BLAS_STATUS_FINISHED;
-
-    LeaveCriticalSection(&queue->lock);
-
-    SetEvent(queue->finish);
+    MT_TRACE("Server[%2ld] Finished!\n", cpu);
+	
+	  queue->finished = 1;
   }
 
   /* Shutdown procedure */
 
-#ifdef SMP_DEBUG
-  fprintf(STDERR, "Server[%2ld] Shutdown!\n",  cpu);
-#endif
+  MT_TRACE("Server[%2ld] Shutdown!\n",  cpu);
 
   blas_memory_free(buffer);
 
   return 0;
-  }
+}
 
-/* Initializing routine */
-int blas_thread_init(void){
+//
+// Initializing routine
+//
+int blas_thread_init(void) {
   BLASLONG i;
 
   if (blas_server_avail || (blas_cpu_number <= 1)) return 0;
 
   LOCK_COMMAND(&server_lock);
 
-#ifdef SMP_DEBUG
-  fprintf(STDERR, "Initializing Thread(Num. threads = %d)\n",
-	  blas_cpu_number);
-#endif
+  MT_TRACE("Initializing Thread(Num. threads = %d)\n", blas_cpu_number);
 
-  if (!blas_server_avail){
+  if (!blas_server_avail) {
+    // create the kickoff Event
+    kickoff_event = CreateEvent(NULL, TRUE, FALSE, NULL);
 
-    InitializeCriticalSection(&pool.lock);
-    pool.filled = CreateEvent(NULL, FALSE, FALSE, NULL);
-    pool.killed = CreateEvent(NULL, TRUE,  FALSE, NULL);
+    thread_target = blas_cpu_number;
 
-    pool.shutdown = 0;
-    pool.queue    = NULL;
+    InitializeCriticalSection(&queue_lock);
 
-    for(i = 0; i < blas_cpu_number - 1; i++){
+    for(i = 0; i < blas_cpu_number - 1; i++) {
+	    //MT_TRACE("thread_init: creating thread [%d]\n", i);
+
       blas_threads[i] = CreateThread(NULL, 0,
 				     blas_thread_server, (void *)i,
 				     0, &blas_threads_id[i]);
@@ -388,15 +371,12 @@ int blas_thread_init(void){
   return 0;
 }
 
-/*
-   User can call one of two routines.
-
-     exec_blas_async ... immediately returns after jobs are queued.
-
-     exec_blas       ... returns after jobs are finished.
-*/
-
-int exec_blas_async(BLASLONG pos, blas_queue_t *queue){
+//
+//   User can call one of two routines.
+//     exec_blas_async ... immediately returns after jobs are queued.
+//     exec_blas       ... returns after jobs are finished.
+//
+int exec_blas_async(BLASLONG pos, blas_queue_t *queue) {
 
 #if defined(SMP_SERVER)
   // Handle lazy re-init of the thread-pool after a POSIX fork
@@ -409,8 +389,6 @@ int exec_blas_async(BLASLONG pos, blas_queue_t *queue){
   current = queue;
 
   while (current) {
-    InitializeCriticalSection(&current -> lock);
-    current -> finish = CreateEvent(NULL, FALSE, FALSE, NULL);
     current -> position = pos;
 
 #ifdef CONSISTENT_FPCSR
@@ -418,56 +396,71 @@ int exec_blas_async(BLASLONG pos, blas_queue_t *queue){
     __asm__ __volatile__ ("stmxcsr %0" : "=m" (current -> sse_mode));
 #endif
 
+  	current->finished = 0;
     current = current -> next;
     pos ++;
   }
 
-  EnterCriticalSection(&pool.lock);
+  EnterCriticalSection(&queue_lock);
 
-  if (pool.queue) {
-    current = pool.queue;
-    while (current -> next) current = current -> next;
-    current -> next = queue;
-  } else {
-    pool.queue = queue;
+  if (!work_queue)
+  {
+    work_queue = queue;
+  }
+  else
+  {
+	  blas_queue_t *next_item = work_queue;
+
+    // find the end of the work queue
+    while (next_item)
+        next_item = next_item->next;
+
+    // add new work to the end
+    next_item = queue;
   }
 
-  LeaveCriticalSection(&pool.lock);
+  LeaveCriticalSection(&queue_lock);
 
-  SetEvent(pool.filled);
-
-  return 0;
-}
-
-int exec_blas_async_wait(BLASLONG num, blas_queue_t *queue){
-
-#ifdef SMP_DEBUG
-    fprintf(STDERR, "Synchronization Waiting.\n");
-#endif
-
-    while (num){
-#ifdef SMP_DEBUG
-    fprintf(STDERR, "Waiting Queue ..\n");
-#endif
-
-      WaitForSingleObject(queue->finish, INFINITE);
-
-      CloseHandle(queue->finish);
-      DeleteCriticalSection(&queue -> lock);
-
-      queue = queue -> next;
-      num --;
-    }
-
-#ifdef SMP_DEBUG
-    fprintf(STDERR, "Completely Done.\n\n");
-#endif
+  SetEvent(kickoff_event);
 
   return 0;
 }
 
-/* Execute Threads */
-int exec_blas(BLASLONG num, blas_queue_t *queue){
+//
+// Join. Wait for all queued tasks to complete
+//
+int exec_blas_async_wait(BLASLONG num, blas_queue_t *queue) {
+
+  MT_TRACE("Synchronization Waiting.\n");
+
+  while (num) {
+    MT_TRACE("Waiting Queue ..\n");
+
+    while (!queue->finished)
+      YIELDING;
+
+    queue = queue->next;
+    num--;
+  }
+
+  MT_TRACE("Completely Done.\n\n");
+
+	// if work was added to the queue after this batch we can't sleep the worker threads
+	// by resetting the event
+	EnterCriticalSection(&queue_lock);
+
+	if (work_queue == NULL)
+		ResetEvent(kickoff_event);
+
+	LeaveCriticalSection(&queue_lock);
+
+	return 0;
+}
+
+//
+// Execute Threads
+//
+int exec_blas(BLASLONG num, blas_queue_t *queue) {
 
 #if defined(SMP_SERVER) && defined(OS_CYGWIN_NT)
   // Handle lazy re-init of the thread-pool after a POSIX fork
@@ -480,29 +473,33 @@ int exec_blas(BLASLONG num, blas_queue_t *queue){
 
   if ((num <= 0) || (queue == NULL)) return 0;
 
-  if ((num > 1) && queue -> next) exec_blas_async(1, queue -> next);
+  if ((num > 1) && queue -> next) 
+    exec_blas_async(1, queue -> next);
 
   routine = queue -> routine;
 
   if (queue -> mode & BLAS_LEGACY) {
     legacy_exec(routine, queue -> mode, queue -> args, queue -> sb);
-  } else
+  } else {
     if (queue -> mode & BLAS_PTHREAD) {
       void (*pthreadcompat)(void *) = queue -> routine;
       (pthreadcompat)(queue -> args);
     } else
       (routine)(queue -> args, queue -> range_m, queue -> range_n,
-		queue -> sa, queue -> sb, 0);
+    		queue -> sa, queue -> sb, 0);
+  }
 
-  if ((num > 1) && queue -> next) exec_blas_async_wait(num - 1, queue -> next);
+  if ((num > 1) && queue -> next) 
+    exec_blas_async_wait(num - 1, queue -> next);
 
   return 0;
 }
 
-/* Shutdown procedure, but user don't have to call this routine. The */
-/* kernel automatically kill threads.                                */
-
-int BLASFUNC(blas_thread_shutdown)(void){
+//
+// Shutdown procedure, but user don't have to call this routine. The
+// kernel automatically kill threads.
+//
+int BLASFUNC(blas_thread_shutdown)(void) {
 
   int i;
 
@@ -510,11 +507,9 @@ int BLASFUNC(blas_thread_shutdown)(void){
 
   LOCK_COMMAND(&server_lock);
 
-  if (blas_server_avail){
+  if (blas_server_avail) {
 
-    SetEvent(pool.killed);
-
-    for(i = 0; i < blas_num_threads - 1; i++){
+    for (i = 0; i < blas_num_threads - 1; i++) {
       // Could also just use WaitForMultipleObjects
       DWORD wait_thread_value = WaitForSingleObject(blas_threads[i], 50);
 
@@ -528,9 +523,6 @@ int BLASFUNC(blas_thread_shutdown)(void){
       CloseHandle(blas_threads[i]);
     }
 
-    CloseHandle(pool.filled);
-    CloseHandle(pool.killed);
-
     blas_server_avail = 0;
   }
 
@@ -539,6 +531,9 @@ int BLASFUNC(blas_thread_shutdown)(void){
   return 0;
 }
 
+//
+// Legacy function to set numbef of threads
+//
 void goto_set_num_threads(int num_threads)
 {
 	long i;
@@ -552,23 +547,48 @@ void goto_set_num_threads(int num_threads)
 
 	if (num_threads > MAX_CPU_NUMBER) num_threads = MAX_CPU_NUMBER;
 
+	if (blas_server_avail && num_threads < blas_num_threads) {
+		LOCK_COMMAND(&server_lock);
+
+		thread_target = num_threads;
+		
+		SetEvent(kickoff_event);
+
+		for (i = num_threads - 1; i < blas_num_threads - 1; i++) {
+			//MT_TRACE("set_num_threads: waiting on thread [%d] to quit.\n", i);
+
+			WaitForSingleObject(blas_threads[i], INFINITE);
+
+			//MT_TRACE("set_num_threads: thread [%d] has quit.\n", i);
+
+			CloseHandle(blas_threads[i]);
+		}
+
+		blas_num_threads = num_threads;
+		
+		ResetEvent(kickoff_event);
+
+		UNLOCK_COMMAND(&server_lock);
+	}
+
 	if (num_threads > blas_num_threads) {
 
 		LOCK_COMMAND(&server_lock);
 
-		//increased_threads = 1;
-	    if (!blas_server_avail){
+		thread_target = num_threads;
 
-			InitializeCriticalSection(&pool.lock);
-			pool.filled = CreateEvent(NULL, FALSE, FALSE, NULL);
-			pool.killed = CreateEvent(NULL, TRUE,  FALSE, NULL);
+		  //increased_threads = 1;
+	    if (!blas_server_avail) {
+			// create the kickoff Event
+			kickoff_event = CreateEvent(NULL, TRUE, FALSE, NULL);
 
-			pool.shutdown = 0;
-			pool.queue    = NULL;
+			InitializeCriticalSection(&queue_lock);
+
 			blas_server_avail = 1;
 		}
 
-		for(i = blas_num_threads - 1; i < num_threads - 1; i++){
+		for (i = (blas_num_threads > 0) ? blas_num_threads - 1 : 0; i < num_threads - 1; i++) {
+			//MT_TRACE("set_num_threads: creating thread [%d]\n", i);
 
 			blas_threads[i] = CreateThread(NULL, 0,
 				     blas_thread_server, (void *)i,
@@ -583,6 +603,9 @@ void goto_set_num_threads(int num_threads)
 	blas_cpu_number  = num_threads;
 }
 
+//
+// Openblas function to set thread count
+//
 void openblas_set_num_threads(int num)
 {
 	goto_set_num_threads(num);

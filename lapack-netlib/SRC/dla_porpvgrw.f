@@ -134,9 +134,9 @@
 *
       UPPER = LSAME( 'Upper', UPLO )
 *
-*     DPOTRF will have factored only the NCOLSxNCOLS leading minor, so
-*     we restrict the growth search to that minor and use only the first
-*     2*NCOLS workspace entries.
+*     DPOTRF will have factored only the NCOLSxNCOLS leading submatrix,
+*     so we restrict the growth search to that submatrix and use only
+*     the first 2*NCOLS workspace entries.
 *
       RPVGRW = 1.0D+0
       DO I = 1, 2*NCOLS

@@ -1,11 +1,11 @@
 ifeq ($(__BYTE_ORDER__),__ORDER_BIG_ENDIAN__)
 SGEMMKERNEL    =  gemm_kernel.S
-SGEMMINCOPY    =  
-SGEMMITCOPY    =  
+SGEMMINCOPY    =
+SGEMMITCOPY    =
 SGEMMONCOPY    =  ../generic/gemm_ncopy_4.c
 SGEMMOTCOPY    =  ../generic/gemm_tcopy_4.c
-SGEMMINCOPYOBJ =  
-SGEMMITCOPYOBJ =  
+SGEMMINCOPYOBJ =
+SGEMMITCOPYOBJ =
 SGEMMONCOPYOBJ =  sgemm_oncopy$(TSUFFIX).$(SUFFIX)
 SGEMMOTCOPYOBJ =  sgemm_otcopy$(TSUFFIX).$(SUFFIX)
 else

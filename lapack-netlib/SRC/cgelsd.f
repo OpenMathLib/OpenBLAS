@@ -60,12 +60,6 @@
 *> singular values which are less than RCOND times the largest singular
 *> value.
 *>
-*> The divide and conquer algorithm makes very mild assumptions about
-*> floating point arithmetic. It will work on machines with a guard
-*> digit in add/subtract, or on those binary machines without guard
-*> digits which subtract like the Cray X-MP, Cray Y-MP, Cray C-90, or
-*> Cray-2. It could conceivably fail on hexadecimal or decimal machines
-*> without guard digits, but we know of none.
 *> \endverbatim
 *
 *  Arguments:
@@ -210,7 +204,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup complexGEsolve
+*> \ingroup gelsd
 *
 *> \par Contributors:
 *  ==================
@@ -255,13 +249,13 @@
 *     .. External Subroutines ..
       EXTERNAL           CGEBRD, CGELQF, CGEQRF, CLACPY,
      $                   CLALSD, CLASCL, CLASET, CUNMBR,
-     $                   CUNMLQ, CUNMQR, SLABAD, SLASCL,
+     $                   CUNMLQ, CUNMQR, SLASCL,
      $                   SLASET, XERBLA
 *     ..
 *     .. External Functions ..
       INTEGER            ILAENV
-      REAL               CLANGE, SLAMCH
-      EXTERNAL           CLANGE, SLAMCH, ILAENV
+      REAL               CLANGE, SLAMCH, SROUNDUP_LWORK
+      EXTERNAL           CLANGE, SLAMCH, ILAENV, SROUNDUP_LWORK
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          INT, LOG, MAX, MIN, REAL
@@ -373,7 +367,7 @@
             END IF
          END IF
          MINWRK = MIN( MINWRK, MAXWRK )
-         WORK( 1 ) = MAXWRK
+         WORK( 1 ) = SROUNDUP_LWORK(MAXWRK)
          IWORK( 1 ) = LIWORK
          RWORK( 1 ) = LRWORK
 *
@@ -402,7 +396,6 @@
       SFMIN = SLAMCH( 'S' )
       SMLNUM = SFMIN / EPS
       BIGNUM = ONE / SMLNUM
-      CALL SLABAD( SMLNUM, BIGNUM )
 *
 *     Scale A if max entry outside range [SMLNUM,BIGNUM].
 *
@@ -653,7 +646,7 @@
       END IF
 *
    10 CONTINUE
-      WORK( 1 ) = MAXWRK
+      WORK( 1 ) = SROUNDUP_LWORK(MAXWRK)
       IWORK( 1 ) = LIWORK
       RWORK( 1 ) = LRWORK
       RETURN

@@ -105,7 +105,7 @@
 	cmpwi	cr0, N, 0
 	ble-	LL(9999)
 	cmpwi	cr0, INCX, 0
-	ble-	LL(9999)
+	beq-	LL(9999)
 
 	mr	NN, N
 	mr	XX, X

@@ -87,7 +87,7 @@
 *> \verbatim
 *>          NMAX is INTEGER
 *>          The leading dimension of the work arrays.  NMAX >= the
-*>          maximumm value of N in NVAL.
+*>          maximum value of N in NVAL.
 *> \endverbatim
 *>
 *> \param[out] AP

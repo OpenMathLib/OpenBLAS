@@ -54,7 +54,7 @@ void LAPACKE_cgb_trans( int matrix_layout, lapack_int m, lapack_int n,
         }
     } else if ( matrix_layout == LAPACK_ROW_MAJOR ) {
         /* TODO: interchange loops for performance.
-         * This is just reference impemeltation.
+         * This is just reference implementation.
          */
         for( j = 0; j < MIN( n, ldin ); j++ ) {
             for( i = MAX( ku-j, 0 ); i < MIN3( ldout, m+ku-j, kl+ku+1 );

@@ -33,7 +33,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "common.h"
 
-extern int openblas_verbose();
+extern int openblas_verbose(void);
 
 void openblas_warning(int verbose, const char * msg) {
   int current_verbose;

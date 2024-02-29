@@ -58,7 +58,7 @@
 	jle	.L999
 	pxor	%xmm1, %xmm1
 	testq	INCX, INCX
-	jle	.L999
+	je	.L999
 
 	xorq	FLAG, FLAG
 

@@ -98,7 +98,7 @@
 *> \param[in] LWORK
 *> \verbatim
 *>          LWORK is INTEGER
-*>          The dimension of the array WORK.
+*>          The dimension of the array WORK. LWORK >= 1.
 *>          If LWORK = -1 or -2, then a workspace query is assumed. The routine
 *>          only calculates the sizes of the T and WORK arrays, returns these
 *>          values as the first entries of the T and WORK arrays, and no error
@@ -166,6 +166,8 @@
 *>  the LQ factorization.
 *> \endverbatim
 *>
+*> \ingroup gelq
+*>
 *  =====================================================================
       SUBROUTINE SGELQ( M, N, A, LDA, T, TSIZE, WORK, LWORK,
      $                  INFO )
@@ -190,7 +192,8 @@
 *     ..
 *     .. External Functions ..
       LOGICAL            LSAME
-      EXTERNAL           LSAME
+      REAL               SROUNDUP_LWORK
+      EXTERNAL           LSAME, SROUNDUP_LWORK
 *     ..
 *     .. External Subroutines ..
       EXTERNAL           SGELQT, SLASWLQ, XERBLA
@@ -292,9 +295,9 @@
         T( 2 ) = MB
         T( 3 ) = NB
         IF( MINW ) THEN
-          WORK( 1 ) = LWMIN
+          WORK( 1 ) = SROUNDUP_LWORK( LWMIN )
         ELSE
-          WORK( 1 ) = LWREQ
+          WORK( 1 ) = SROUNDUP_LWORK( LWREQ )
         END IF
       END IF
       IF( INFO.NE.0 ) THEN
@@ -319,7 +322,7 @@
      $                LWORK, INFO )
       END IF
 *
-      WORK( 1 ) = LWREQ
+      WORK( 1 ) = SROUNDUP_LWORK( LWREQ )
       RETURN
 *
 *     End of SGELQ

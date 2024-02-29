@@ -188,7 +188,7 @@
          RETURN
       END IF
 *
-*     a) Revert to multiplyers of L
+*     a) Revert to multipliers of L
 *
       CALL ZSYCONVF_ROOK( UPLO, 'R', N, AFAC, LDAFAC, E, IPIV, INFO )
 *

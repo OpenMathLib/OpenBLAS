@@ -87,6 +87,15 @@ macro(ParseMakefileVars MAKEFILE_IN)
       #message(STATUS "skipping ${makefile_line}")
       continue ()
     endif ()
+
+    # Example 1: SBGEMM_SMALL_M_PERMIT =
+    # Unset the variable
+    string(REGEX MATCH "([0-9_a-zA-Z]+)[ \t]*=[ \t]*$" line_match "${makefile_line}")
+    if (NOT "${line_match}" STREQUAL "")
+      set(var_name ${CMAKE_MATCH_1})
+      unset(${var_name})
+    endif()
+
     string(REGEX MATCH "([0-9_a-zA-Z]+)[ \t]*=[ \t]*(.+)$" line_match "${makefile_line}")
     if (NOT "${line_match}" STREQUAL "")
       #message(STATUS "match on ${line_match}")

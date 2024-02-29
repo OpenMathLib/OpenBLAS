@@ -52,11 +52,11 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, BLASLONG posX, BLASLON
     FLOAT *ao;
 #ifdef DOUBLE
     svint64_t index = svindex_s64(0LL, lda);
-    svbool_t pn = svwhilelt_b64(js, n);
+    svbool_t pn = svwhilelt_b64((uint64_t)js, (uint64_t)n);
     int n_active = svcntp_b64(svptrue_b64(), pn);
 #else
     svint32_t index = svindex_s32(0, lda);
-    svbool_t pn = svwhilelt_b32(js, n);
+    svbool_t pn = svwhilelt_b32((uint64_t)js, (uint64_t)n);
     int n_active = svcntp_b32(svptrue_b32(), pn);
 #endif
     do
@@ -123,11 +123,11 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, BLASLONG posX, BLASLON
         posY += n_active;
         js += n_active;
 #ifdef DOUBLE
-        pn = svwhilelt_b64(js, n);
+        pn = svwhilelt_b64((uint64_t)js, (uint64_t)n);
         n_active = svcntp_b64(svptrue_b64(), pn);
     } while (svptest_any(svptrue_b64(), pn));
 #else
-        pn = svwhilelt_b32(js, n);
+        pn = svwhilelt_b32((uint64_t)js, (uint64_t)n);
         n_active = svcntp_b32(svptrue_b32(), pn);
     } while (svptest_any(svptrue_b32(), pn));
 #endif

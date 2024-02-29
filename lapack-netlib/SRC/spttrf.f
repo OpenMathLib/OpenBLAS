@@ -70,8 +70,8 @@
 *>          INFO is INTEGER
 *>          = 0: successful exit
 *>          < 0: if INFO = -k, the k-th argument had an illegal value
-*>          > 0: if INFO = k, the leading minor of order k is not
-*>               positive definite; if k < N, the factorization could not
+*>          > 0: if INFO = k, the leading principal minor of order k
+*>               is not positive; if k < N, the factorization could not
 *>               be completed, while if k = N, the factorization was
 *>               completed, but D(N) <= 0.
 *> \endverbatim

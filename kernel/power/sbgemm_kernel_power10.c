@@ -336,7 +336,6 @@ CNAME (BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alpha, IFLOAT * A,
       if (m & 1)
 	{
 	  IFLOAT *BO = B;
-	  v2sf_t *rowC;
 	  v4sf_t result[4], res[4];
 	  __vector_quad acc0, acc1;
 	  __builtin_mma_xxsetaccz (&acc0);
@@ -492,7 +491,6 @@ CNAME (BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alpha, IFLOAT * A,
 	      if (k > 1)
 		l = (k / 2) << 3;
 	      vec_t *rowA = (vec_t *) & (AO[l << 1]);
-	      vec_t *rowB = (vec_t *) & (BO[l]);
 	      vector short rowB_mrg =
 		{ BO[l], 0, BO[l + 1], 0, BO[l + 2], 0, BO[l + 3], 0 };
 	      MMA (&acc0, (vec_t)rowB_mrg, MERGE_HIGH (rowA[0], vzero));
@@ -570,7 +568,6 @@ CNAME (BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alpha, IFLOAT * A,
       if (m & 1)
 	{
 	  IFLOAT *BO = B;
-	  v2sf_t *rowC;
 	  v4sf_t result[4], res[4];
 	  __vector_quad acc0;
 	  BLASLONG l = 0;

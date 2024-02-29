@@ -78,7 +78,7 @@
 	testl	M, M
 	jle	.L999
 	testl	INCX, INCX
-	jle	.L999
+	je	.L999
 
 	sall	$ZBASE_SHIFT, INCX
 	fldz

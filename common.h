@@ -396,7 +396,7 @@ typedef int blasint;
 #endif
 
 /***
-To alloc job_t on heap or statck.
+To alloc job_t on heap or stack.
 please https://github.com/xianyi/OpenBLAS/issues/246
 ***/
 #if defined(OS_WINDOWS)
@@ -482,6 +482,10 @@ please https://github.com/xianyi/OpenBLAS/issues/246
 #include "common_e2k.h"
 #endif
 
+#ifdef ARCH_CSKY
+#include "common_csky.h"
+#endif
+
 #ifndef ASSEMBLER
 #ifdef OS_WINDOWSSTORE
 typedef char env_var_t[MAX_PATH];
@@ -525,7 +529,7 @@ static inline unsigned long long rpcc(void){
 #endif // !RPCC_DEFINED
 
 #if !defined(BLAS_LOCK_DEFINED) && defined(__GNUC__)
-static void __inline blas_lock(volatile BLASULONG *address){
+static __inline void blas_lock(volatile BLASULONG *address){
 
   do {
     while (*address) {YIELDING;};

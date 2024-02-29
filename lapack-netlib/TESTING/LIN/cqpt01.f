@@ -33,7 +33,8 @@
 *> Householder vectors, and the rest of AF contains a partially updated
 *> matrix.
 *>
-*> This function returns ||A*P - Q*R||/(||norm(A)||*eps*M)
+*> This function returns ||A*P - Q*R|| / ( ||norm(A)||*eps*max(M,N) )
+*> where || . || is matrix one norm.
 *> \endverbatim
 *
 *  Arguments:
@@ -172,28 +173,28 @@
 *
       NORMA = CLANGE( 'One-norm', M, N, A, LDA, RWORK )
 *
-      DO 30 J = 1, K
-         DO 10 I = 1, MIN( J, M )
+      DO J = 1, K
+         DO I = 1, MIN( J, M )
             WORK( ( J-1 )*M+I ) = AF( I, J )
-   10    CONTINUE
-         DO 20 I = J + 1, M
+         END DO
+         DO I = J + 1, M
             WORK( ( J-1 )*M+I ) = ZERO
-   20    CONTINUE
-   30 CONTINUE
-      DO 40 J = K + 1, N
+         END DO
+      END DO
+      DO J = K + 1, N
          CALL CCOPY( M, AF( 1, J ), 1, WORK( ( J-1 )*M+1 ), 1 )
-   40 CONTINUE
+      END DO
 *
       CALL CUNMQR( 'Left', 'No transpose', M, N, K, AF, LDA, TAU, WORK,
      $             M, WORK( M*N+1 ), LWORK-M*N, INFO )
 *
-      DO 50 J = 1, N
+      DO J = 1, N
 *
 *        Compare i-th column of QR and jpvt(i)-th column of A
 *
          CALL CAXPY( M, CMPLX( -ONE ), A( 1, JPVT( J ) ), 1,
      $               WORK( ( J-1 )*M+1 ), 1 )
-   50 CONTINUE
+      END DO
 *
       CQPT01 = CLANGE( 'One-norm', M, N, WORK, M, RWORK ) /
      $         ( REAL( MAX( M, N ) )*SLAMCH( 'Epsilon' ) )

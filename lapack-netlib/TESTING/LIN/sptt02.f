@@ -35,7 +35,7 @@
 *
 *> \param[in] N
 *> \verbatim
-*>          N is INTEGTER
+*>          N is INTEGER
 *>          The order of the matrix A.
 *> \endverbatim
 *>

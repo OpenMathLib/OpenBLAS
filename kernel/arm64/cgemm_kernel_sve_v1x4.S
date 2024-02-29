@@ -240,7 +240,6 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
     add pB, pB, 32
 
-	prfm	PLDL1KEEP, [pA, #A_PRE_SIZE+64]
 .endm
 
 .macro KERNELv1x4_M1
@@ -276,9 +275,6 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     ld1rw  z15.s, p0/z,  [pB, 28]
 
     add pB, pB, 32
-	prfm	PLDL1KEEP, [pA, #A_PRE_SIZE]
-
-	prfm	PLDL1KEEP, [pA, #A_PRE_SIZE+64]
 .endm
 
 .macro KERNELv1x4_M2
@@ -313,11 +309,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	OP_ri	z23.s, p1/m, z2.s, z15.s
     ld1rw  z15.s, p0/z,  [pB, 28]
 
-	prfm	PLDL1KEEP, [pB, #B_PRE_SIZE]
-
     add pB, pB, 32
-
-	prfm	PLDL1KEEP, [pB, #B_PRE_SIZE+64]
 .endm
 
 .macro KERNELv1x4_E
@@ -340,10 +332,6 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	OP_ir	z23.s, p1/m, z3.s, z14.s
 	OP_ii	z22.s, p1/m, z3.s, z15.s
 	OP_ri	z23.s, p1/m, z2.s, z15.s
-
-	prfm	PLDL1KEEP, [pB, #B_PRE_SIZE]
-
-	prfm	PLDL1KEEP, [pB, #B_PRE_SIZE+64]
 
 .endm
 
@@ -383,13 +371,9 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	OP_ii	z22.s, p1/m, z1.s, z15.s
 	OP_ri	z23.s, p1/m, z0.s, z15.s
 
-	prfm	PLDL1KEEP, [pB, #B_PRE_SIZE]
-	prfm	PLDL1KEEP, [pA, #A_PRE_SIZE]
 .endm
 
 .macro SAVEv1x4
-	prfm	PLDL2KEEP, [pCRow0, #C_PRE_SIZE]
-
 	ld2w	{z24.s, z25.s}, p1/z, [pCRow0]
 	fmla	z24.s, p1/m, z16.s, alphaz_R
 	fmls	z24.s, p1/m, z17.s, alphaz_I
@@ -407,8 +391,6 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	st2w 	{z26.s, z27.s}, p1, [pCRow1]
 
 	add	pCRow1, pCRow1, lanes, lsl #3
-	prfm	PLDL2KEEP, [pCRow1, #C_PRE_SIZE]
-
 	ld2w	{z28.s, z29.s}, p1/z, [pCRow2]
 	fmla	z28.s, p1/m, z20.s, alphaz_R
 	fmls	z28.s, p1/m, z21.s, alphaz_I
@@ -425,11 +407,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	fmla	z31.s, p1/m, z23.s, alphaz_R
 	st2w 	{z30.s, z31.s}, p1, [pCRow3]
 
-	prfm	PLDL2KEEP, [pCRow3, #C_PRE_SIZE]
-
 	add	pCRow3, pCRow3, lanes, lsl #3	// pC = pC + lanes  * 2 *4
-
-	prfm	PLDL2KEEP, [pCRow3, #C_PRE_SIZE]
 
 .endm
 
@@ -466,8 +444,6 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .endm
 
 .macro SAVEv1x2
-	prfm	PLDL2KEEP, [pCRow0, #C_PRE_SIZE]
-
 	ld2w	{z24.s, z25.s}, p1/z, [pCRow0]
 	fmla	z24.s, p1/m, z16.s, alphaz_R
 	fmls	z24.s, p1/m, z17.s, alphaz_I
@@ -485,10 +461,6 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	st2w 	{z26.s, z27.s}, p1, [pCRow1]
 
 	add	pCRow1, pCRow1, lanes, lsl #3
-	prfm	PLDL2KEEP, [pCRow1, #C_PRE_SIZE]
-
-	prfm	PLDL2KEEP, [pCRow2, #C_PRE_SIZE]
-
 .endm
 
 /******************************************************************************/
@@ -516,8 +488,6 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .endm
 
 .macro SAVEv1x1
-	prfm	PLDL2KEEP, [pCRow0, #C_PRE_SIZE]
-
 	ld2w	{z24.s, z25.s}, p1/z, [pCRow0]
 	fmla	z24.s, p1/m, z16.s, alphaz_R
 	fmls	z24.s, p1/m, z17.s, alphaz_I
@@ -526,8 +496,6 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	st2w 	{z24.s, z25.s}, p1, [pCRow0]
 
 	add	pCRow0, pCRow0, lanes, lsl #3	// pC = pC + lanes  * 2 *4
-
-	prfm	PLDL2KEEP, [pCRow3, #C_PRE_SIZE]
 
 .endm
 
@@ -552,9 +520,6 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	stp	x24, x25, [sp, #(8 * 16)]
 	stp	x26, x27, [sp, #(9 * 16)]
 	str	x28, [sp, #(10 * 16)]
-
-	prfm	PLDL1KEEP, [origPB]
-	prfm	PLDL1KEEP, [origPA]
 
 	fmov	alphaR, s0
 	dup	    alphaz_R, alphaR
@@ -676,10 +641,6 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	bne	.Lcgemm_kernel_L4_Mv1_46
 
 .Lcgemm_kernel_L4_Mv1_100:
-	prfm	PLDL1KEEP, [pA]
-	prfm	PLDL1KEEP, [pA, #64]
-	prfm	PLDL1KEEP, [origPB]
-
 	SAVEv1x4
 
 .Lcgemm_kernel_L4_Mv1_END:

@@ -239,7 +239,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup realOTHERauxiliary
+*> \ingroup laqr4
 *
 *> \par Contributors:
 *  ==================
@@ -316,7 +316,8 @@
 *     ..
 *     .. External Functions ..
       INTEGER            ILAENV
-      EXTERNAL           ILAENV
+      REAL               SROUNDUP_LWORK
+      EXTERNAL           ILAENV, SROUNDUP_LWORK
 *     ..
 *     .. Local Arrays ..
       REAL               ZDUM( 1, 1 )
@@ -325,7 +326,7 @@
       EXTERNAL           SLACPY, SLAHQR, SLANV2, SLAQR2, SLAQR5
 *     ..
 *     .. Intrinsic Functions ..
-      INTRINSIC          ABS, INT, MAX, MIN, MOD, REAL
+      INTRINSIC          ABS, INT, MAX, MIN, MOD
 *     ..
 *     .. Executable Statements ..
       INFO = 0
@@ -401,7 +402,7 @@
 *        ==== Quick return in case of workspace query. ====
 *
          IF( LWORK.EQ.-1 ) THEN
-            WORK( 1 ) = REAL( LWKOPT )
+            WORK( 1 ) = SROUNDUP_LWORK( LWKOPT )
             RETURN
          END IF
 *
@@ -732,7 +733,7 @@
 *
 *     ==== Return the optimal value of LWORK. ====
 *
-      WORK( 1 ) = REAL( LWKOPT )
+      WORK( 1 ) = SROUNDUP_LWORK( LWKOPT )
 *
 *     ==== End of SLAQR4 ====
 *

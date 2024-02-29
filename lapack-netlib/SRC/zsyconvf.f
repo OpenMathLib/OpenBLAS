@@ -39,7 +39,7 @@
 *> ZSYTRF provided on entry in parameter A into the factorization
 *> output format used in ZSYTRF_RK (or ZSYTRF_BK) that is stored
 *> on exit in parameters A and E. It also converts in place details of
-*> the intechanges stored in IPIV from the format used in ZSYTRF into
+*> the interchanges stored in IPIV from the format used in ZSYTRF into
 *> the format used in ZSYTRF_RK (or ZSYTRF_BK).
 *>
 *> If parameter WAY = 'R':
@@ -48,7 +48,7 @@
 *> (or ZSYTRF_BK) provided on entry in parameters A and E into
 *> the factorization output format used in ZSYTRF that is stored
 *> on exit in parameter A. It also converts in place details of
-*> the intechanges stored in IPIV from the format used in ZSYTRF_RK
+*> the interchanges stored in IPIV from the format used in ZSYTRF_RK
 *> (or ZSYTRF_BK) into the format used in ZSYTRF.
 *>
 *> ZSYCONVF can also convert in Hermitian matrix case, i.e. between
@@ -325,7 +325,7 @@
                   END IF
 *
 *                 Convert IPIV
-*                 There is no interchnge of rows i and and IPIV(i),
+*                 There is no interchange of rows i and and IPIV(i),
 *                 so this should be reflected in IPIV format for
 *                 *SYTRF_RK ( or *SYTRF_BK)
 *
@@ -469,7 +469,7 @@
                   END IF
 *
 *                 Convert IPIV
-*                 There is no interchnge of rows i and and IPIV(i),
+*                 There is no interchange of rows i and and IPIV(i),
 *                 so this should be reflected in IPIV format for
 *                 *SYTRF_RK ( or *SYTRF_BK)
 *
@@ -535,7 +535,7 @@
 *
 *           Revert VALUE
 *           Assign subdiagonal entries of D from array E to
-*           subgiagonal entries of A.
+*           subdiagonal entries of A.
 *
             I = 1
             DO WHILE ( I.LE.N-1 )

@@ -46,3 +46,5 @@ ZGEMMKERNEL    =  zgemm_kernel_4x2_skylakex.c
 
 CASUMKERNEL = casum.c
 ZASUMKERNEL = zasum.c
+CSUMKERNEL = csum.c
+ZSUMKERNEL = zsum.c

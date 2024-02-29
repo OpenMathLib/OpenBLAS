@@ -89,14 +89,14 @@
 *>
 *> \param[in] NBI
 *> \verbatim
-*>          NBI is INTEGER which is the used in the reduciton, 
+*>          NBI is INTEGER which is the used in the reduction, 
 *>          (e.g., the size of the band), needed to compute workspace
 *>          and LHOUS2.
 *> \endverbatim
 *>
 *> \param[in] IBI
 *> \verbatim
-*>          IBI is INTEGER which represent the IB of the reduciton,
+*>          IBI is INTEGER which represent the IB of the reduction,
 *>          needed to compute workspace and LHOUS2.
 *> \endverbatim
 *>

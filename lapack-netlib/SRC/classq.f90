@@ -34,28 +34,15 @@
 !>
 !> \verbatim
 !>
-!> CLASSQ  returns the values  scl  and  smsq  such that
+!> CLASSQ returns the values scale_out and sumsq_out such that
 !>
-!>    ( scl**2 )*smsq = x( 1 )**2 +...+ x( n )**2 + ( scale**2 )*sumsq,
+!>    (scale_out**2)*sumsq_out = x( 1 )**2 +...+ x( n )**2 + (scale**2)*sumsq,
 !>
-!> where  x( i ) = X( 1 + ( i - 1 )*INCX ). The value of  sumsq  is
+!> where x( i ) = X( 1 + ( i - 1 )*INCX ). The value of sumsq is
 !> assumed to be non-negative.
 !>
 !> scale and sumsq must be supplied in SCALE and SUMSQ and
-!> scl and smsq are overwritten on SCALE and SUMSQ respectively.
-!>
-!> If scale * sqrt( sumsq ) > tbig then
-!>    we require:   scale >= sqrt( TINY*EPS ) / sbig   on entry,
-!> and if 0 < scale * sqrt( sumsq ) < tsml then
-!>    we require:   scale <= sqrt( HUGE ) / ssml       on entry,
-!> where
-!>    tbig -- upper threshold for values whose square is representable;
-!>    sbig -- scaling constant for big numbers; \see la_constants.f90
-!>    tsml -- lower threshold for values whose square is representable;
-!>    ssml -- scaling constant for small numbers; \see la_constants.f90
-!> and
-!>    TINY*EPS -- tiniest representable number;
-!>    HUGE     -- biggest representable number.
+!> scale_out and sumsq_out are overwritten on SCALE and SUMSQ respectively.
 !>
 !> \endverbatim
 !
@@ -72,7 +59,7 @@
 !> \verbatim
 !>          X is COMPLEX array, dimension (1+(N-1)*abs(INCX))
 !>          The vector for which a scaled sum of squares is computed.
-!>             x( i )  = X( 1 + ( i - 1 )*INCX ), 1 <= i <= n.
+!>             x( i ) = X( 1 + ( i - 1 )*INCX ), 1 <= i <= n.
 !> \endverbatim
 !>
 !> \param[in] INCX
@@ -82,24 +69,24 @@
 !>          If INCX > 0, X(1+(i-1)*INCX) = x(i) for 1 <= i <= n
 !>          If INCX < 0, X(1-(n-i)*INCX) = x(i) for 1 <= i <= n
 !>          If INCX = 0, x isn't a vector so there is no need to call
-!>          this subroutine.  If you call it anyway, it will count x(1)
+!>          this subroutine. If you call it anyway, it will count x(1)
 !>          in the vector norm N times.
 !> \endverbatim
 !>
 !> \param[in,out] SCALE
 !> \verbatim
 !>          SCALE is REAL
-!>          On entry, the value  scale  in the equation above.
-!>          On exit, SCALE is overwritten with  scl , the scaling factor
+!>          On entry, the value scale in the equation above.
+!>          On exit, SCALE is overwritten by scale_out, the scaling factor
 !>          for the sum of squares.
 !> \endverbatim
 !>
 !> \param[in,out] SUMSQ
 !> \verbatim
 !>          SUMSQ is REAL
-!>          On entry, the value  sumsq  in the equation above.
-!>          On exit, SUMSQ is overwritten with  smsq , the basic sum of
-!>          squares from which  scl  has been factored out.
+!>          On entry, the value sumsq in the equation above.
+!>          On exit, SUMSQ is overwritten by sumsq_out, the basic sum of
+!>          squares from which scale_out has been factored out.
 !> \endverbatim
 !
 !  Authors:
@@ -130,10 +117,10 @@
 !>
 !> \endverbatim
 !
-!> \ingroup OTHERauxiliary
+!> \ingroup lassq
 !
 !  =====================================================================
-subroutine CLASSQ( n, x, incx, scl, sumsq )
+subroutine CLASSQ( n, x, incx, scale, sumsq )
    use LA_CONSTANTS, &
       only: wp=>sp, zero=>szero, one=>sone, &
             sbig=>ssbig, ssml=>sssml, tbig=>stbig, tsml=>stsml
@@ -145,7 +132,7 @@ subroutine CLASSQ( n, x, incx, scl, sumsq )
 !
 !  .. Scalar Arguments ..
    integer :: incx, n
-   real(wp) :: scl, sumsq
+   real(wp) :: scale, sumsq
 !  ..
 !  .. Array Arguments ..
    complex(wp) :: x(*)
@@ -158,10 +145,10 @@ subroutine CLASSQ( n, x, incx, scl, sumsq )
 !
 !  Quick return if possible
 !
-   if( LA_ISNAN(scl) .or. LA_ISNAN(sumsq) ) return
-   if( sumsq == zero ) scl = one
-   if( scl == zero ) then
-      scl = one
+   if( LA_ISNAN(scale) .or. LA_ISNAN(sumsq) ) return
+   if( sumsq == zero ) scale = one
+   if( scale == zero ) then
+      scale = one
       sumsq = zero
    end if
    if (n <= 0) then
@@ -207,15 +194,27 @@ subroutine CLASSQ( n, x, incx, scl, sumsq )
 !  Put the existing sum of squares into one of the accumulators
 !
    if( sumsq > zero ) then
-      ax = scl*sqrt( sumsq )
+      ax = scale*sqrt( sumsq )
       if (ax > tbig) then
-!        We assume scl >= sqrt( TINY*EPS ) / sbig
-         abig = abig + (scl*sbig)**2 * sumsq
+         if (scale > one) then
+            scale = scale * sbig
+            abig = abig + scale * (scale * sumsq)
+         else
+            ! sumsq > tbig^2 => (sbig * (sbig * sumsq)) is representable
+            abig = abig + scale * (scale * (sbig * (sbig * sumsq)))
+         end if
       else if (ax < tsml) then
-!        We assume scl <= sqrt( HUGE ) / ssml
-         if (notbig) asml = asml + (scl*ssml)**2 * sumsq
+         if (notbig) then
+            if (scale < one) then
+               scale = scale * ssml
+               asml = asml + scale * (scale * sumsq)
+            else
+               ! sumsq < tsml^2 => (ssml * (ssml * sumsq)) is representable
+               asml = asml + scale * (scale * (ssml * (ssml * sumsq)))
+            end if
+         end if
       else
-         amed = amed + scl**2 * sumsq
+         amed = amed + scale * (scale * sumsq)
       end if
    end if
 !
@@ -229,7 +228,7 @@ subroutine CLASSQ( n, x, incx, scl, sumsq )
       if (amed > zero .or. LA_ISNAN(amed)) then
          abig = abig + (amed*sbig)*sbig
       end if
-      scl = one / sbig
+      scale = one / sbig
       sumsq = abig
    else if (asml > zero) then
 !
@@ -245,17 +244,17 @@ subroutine CLASSQ( n, x, incx, scl, sumsq )
             ymin = asml
             ymax = amed
          end if
-         scl = one
+         scale = one
          sumsq = ymax**2*( one + (ymin/ymax)**2 )
       else
-         scl = one / ssml
+         scale = one / ssml
          sumsq = asml
       end if
    else
 !
 !     Otherwise all values are mid-range or zero
 !
-      scl = one
+      scale = one
       sumsq = amed
    end if
    return

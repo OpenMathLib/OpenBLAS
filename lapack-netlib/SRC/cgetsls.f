@@ -127,7 +127,7 @@
 *> \param[in] LWORK
 *> \verbatim
 *>          LWORK is INTEGER
-*>          The dimension of the array WORK.
+*>          The dimension of the array WORK. LWORK >= 1.
 *>          If LWORK = -1 or -2, then a workspace query is assumed.
 *>          If LWORK = -1, the routine calculates optimal size of WORK for the
 *>          optimal performance and returns this value in WORK(1).
@@ -154,7 +154,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup complexGEsolve
+*> \ingroup getsls
 *
 *  =====================================================================
       SUBROUTINE CGETSLS( TRANS, M, N, NRHS, A, LDA, B, LDB,
@@ -191,15 +191,15 @@
 *     ..
 *     .. External Functions ..
       LOGICAL            LSAME
-      REAL               SLAMCH, CLANGE
-      EXTERNAL           LSAME, SLABAD, SLAMCH, CLANGE
+      REAL               SLAMCH, CLANGE, SROUNDUP_LWORK
+      EXTERNAL           LSAME, SLAMCH, CLANGE, SROUNDUP_LWORK
 *     ..
 *     .. External Subroutines ..
       EXTERNAL           CGEQR, CGEMQR, CLASCL, CLASET,
      $                   CTRTRS, XERBLA, CGELQ, CGEMLQ
 *     ..
 *     .. Intrinsic Functions ..
-      INTRINSIC          REAL, MAX, MIN, INT
+      INTRINSIC          MAX, MIN, INT
 *     ..
 *     .. Executable Statements ..
 *
@@ -229,7 +229,10 @@
 *
 *     Determine the optimum and minimum LWORK
 *
-       IF( M.GE.N ) THEN
+       IF( MIN( M, N, NRHS ).EQ.0 ) THEN
+         WSIZEO = 1
+         WSIZEM = 1
+       ELSE IF ( M.GE.N ) THEN
          CALL CGEQR( M, N, A, LDA, TQ, -1, WORKQ, -1, INFO2 )
          TSZO = INT( TQ( 1 ) )
          LWO  = INT( WORKQ( 1 ) )
@@ -265,7 +268,7 @@
           INFO = -10
        END IF
 *
-       WORK( 1 ) = REAL( WSIZEO )
+       WORK( 1 ) = SROUNDUP_LWORK( WSIZEO )
 *
       END IF
 *
@@ -274,7 +277,7 @@
         RETURN
       END IF
       IF( LQUERY ) THEN
-        IF( LWORK.EQ.-2 ) WORK( 1 ) = REAL( WSIZEM )
+        IF( LWORK.EQ.-2 ) WORK( 1 ) = SROUNDUP_LWORK( WSIZEM )
         RETURN
       END IF
       IF( LWORK.LT.WSIZEO ) THEN
@@ -297,7 +300,6 @@
 *
        SMLNUM = SLAMCH( 'S' ) / SLAMCH( 'P' )
        BIGNUM = ONE / SMLNUM
-       CALL SLABAD( SMLNUM, BIGNUM )
 *
 *     Scale A, B if max element outside range [SMLNUM,BIGNUM]
 *
@@ -485,7 +487,7 @@
       END IF
 *
    50 CONTINUE
-      WORK( 1 ) = REAL( TSZO + LWO )
+      WORK( 1 ) = SROUNDUP_LWORK( TSZO + LWO )
       RETURN
 *
 *     End of CGETSLS

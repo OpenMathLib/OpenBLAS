@@ -23,7 +23,7 @@
 *>
 *> \verbatim
 *>
-*> ZERRST tests the error exits for ZHETRD, ZUNGTR, CUNMTR, ZHPTRD,
+*> ZERRST tests the error exits for ZHETRD, ZHETD2, ZUNGTR, CUNMTR, ZHPTRD,
 *> ZUNGTR, ZUPMTR, ZSTEQR, CSTEIN, ZPTEQR, ZHBTRD,
 *> ZHEEV, CHEEVX, CHEEVD, ZHBEV, CHBEVX, CHBEVD,
 *> ZHPEV, CHPEVX, CHPEVD, and ZSTEDC.
@@ -95,7 +95,7 @@
       EXTERNAL           CHKXER, ZHBEV, ZHBEVD, ZHBEVX, ZHBTRD, ZHEEV,
      $                   ZHEEVD, ZHEEVR, ZHEEVX, ZHETRD, ZHPEV, ZHPEVD,
      $                   ZHPEVX, ZHPTRD, ZPTEQR, ZSTEDC, ZSTEIN, ZSTEQR,
-     $                   ZUNGTR, ZUNMTR, ZUPGTR, ZUPMTR,
+     $                   ZUNGTR, ZUNMTR, ZUPGTR, ZUPMTR, ZHETD2,
      $                   ZHEEVD_2STAGE, ZHEEVR_2STAGE, ZHEEVX_2STAGE,
      $                   ZHEEV_2STAGE, ZHBEV_2STAGE, ZHBEVD_2STAGE,
      $                   ZHBEVX_2STAGE, ZHETRD_2STAGE
@@ -155,6 +155,20 @@
          CALL ZHETRD( 'U', 0, A, 1, D, E, TAU, W, 0, INFO )
          CALL CHKXER( 'ZHETRD', INFOT, NOUT, LERR, OK )
          NT = NT + 4
+*
+*        ZHETD2
+*
+         SRNAMT = 'ZHETD2'
+         INFOT = 1
+         CALL ZHETD2( '/', 0, A, 1, D, E, TAU, INFO )
+         CALL CHKXER( 'ZHETD2', INFOT, NOUT, LERR, OK )
+         INFOT = 2
+         CALL ZHETD2( 'U', -1, A, 1, D, E, TAU, INFO )
+         CALL CHKXER( 'ZHETD2', INFOT, NOUT, LERR, OK )
+         INFOT = 4
+         CALL ZHETD2( 'U', 2, A, 1, D, E, TAU, INFO )
+         CALL CHKXER( 'ZHETD2', INFOT, NOUT, LERR, OK )
+         NT = NT + 3
 *
 *        ZHETRD_2STAGE
 *
@@ -734,17 +748,17 @@
          CALL CHKXER( 'ZHEEVR', INFOT, NOUT, LERR, OK )
          INFOT = 18
          CALL ZHEEVR( 'V', 'I', 'U', 1, A, 1, 0.0D0, 0.0D0, 1, 1, 0.0D0,
-     $                M, R, Z, 1, IW, Q, 2*N-1, RW, 24*N, IW( 2*N+1 ),
+     $                M, R, Z, 1, IW, Q, 0, RW, 24*N, IW( 2*N+1 ),
      $                10*N, INFO )
          CALL CHKXER( 'ZHEEVR', INFOT, NOUT, LERR, OK )
          INFOT = 20
          CALL ZHEEVR( 'V', 'I', 'U', 1, A, 1, 0.0D0, 0.0D0, 1, 1, 0.0D0,
-     $                M, R, Z, 1, IW, Q, 2*N, RW, 24*N-1, IW( 2*N-1 ),
+     $                M, R, Z, 1, IW, Q, 2*N, RW, 0, IW( 2*N-1 ),
      $                10*N, INFO )
          CALL CHKXER( 'ZHEEVR', INFOT, NOUT, LERR, OK )
          INFOT = 22
          CALL ZHEEVR( 'V', 'I', 'U', 1, A, 1, 0.0D0, 0.0D0, 1, 1, 0.0D0,
-     $                M, R, Z, 1, IW, Q, 2*N, RW, 24*N, IW, 10*N-1,
+     $                M, R, Z, 1, IW, Q, 2*N, RW, 24*N, IW, 0,
      $                INFO )
          CALL CHKXER( 'ZHEEVR', INFOT, NOUT, LERR, OK )
          NT = NT + 12
@@ -816,19 +830,19 @@
          INFOT = 18
          CALL ZHEEVR_2STAGE( 'N', 'I', 'U', 1, A, 1,
      $                0.0D0, 0.0D0, 1, 1, 0.0D0,
-     $                M, R, Z, 1, IW, Q, 2*N-1, RW, 24*N, IW( 2*N+1 ),
+     $                M, R, Z, 1, IW, Q, 0, RW, 24*N, IW( 2*N+1 ),
      $                10*N, INFO )
          CALL CHKXER( 'ZHEEVR_2STAGE', INFOT, NOUT, LERR, OK )
          INFOT = 20
          CALL ZHEEVR_2STAGE( 'N', 'I', 'U', 1, A, 1,
      $                0.0D0, 0.0D0, 1, 1, 0.0D0,
-     $                M, R, Z, 1, IW, Q, 26*N, RW, 24*N-1, IW( 2*N-1 ),
+     $                M, R, Z, 1, IW, Q, 26*N, RW, 0, IW( 2*N-1 ),
      $                10*N, INFO )
          CALL CHKXER( 'ZHEEVR_2STAGE', INFOT, NOUT, LERR, OK )
          INFOT = 22
          CALL ZHEEVR_2STAGE( 'N', 'I', 'U', 1, A, 1,
      $                0.0D0, 0.0D0, 1, 1, 0.0D0,
-     $                M, R, Z, 1, IW, Q, 26*N, RW, 24*N, IW, 10*N-1,
+     $                M, R, Z, 1, IW, Q, 26*N, RW, 24*N, IW, 0,
      $                INFO )
          CALL CHKXER( 'ZHEEVR_2STAGE', INFOT, NOUT, LERR, OK )
          NT = NT + 13

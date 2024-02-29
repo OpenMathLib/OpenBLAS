@@ -31,13 +31,17 @@ flags="$*"
 
 cross_suffix=""
 
-if [ "`dirname \"$compiler_name\"`" != '.' ]; then
-    cross_suffix="$cross_suffix`dirname \"$compiler_name\"`/"
+if [ "`dirname "$compiler_name"`" != '.' ]; then
+    cross_suffix="$cross_suffix`dirname "$compiler_name"`/"
 fi
 
-bn=`basename $compiler_name`
+cn=`echo $compiler_name | sed -e 's/ -.*//'`
+bn=`basename "$cn"`
+
 case "$bn" in
-    *-*) cross_suffix="$cross_suffix${bn%-*}-"
+    *-*) if [ "$bn" != '-' ]; then
+           cross_suffix="$cross_suffix${bn%-*}-"
+         fi
 esac
 
 compiler=""
@@ -87,16 +91,25 @@ case "$data" in
     *ARCH_ZARCH*) architecture=zarch ;;
     *ARCH_RISCV64*) architecture=riscv64 ;;
     *ARCH_LOONGARCH64*) architecture=loongarch64 ;;
+    *ARCH_CSKY*) architecture=csky ;;
 esac
 
 defined=0
 
 if [ "$os" = "AIX" ]; then
-    case "$BINARY" in
-        32) compiler_name="$compiler_name -maix32" ;;
-        64) compiler_name="$compiler_name -maix64" ;;
-    esac
-    defined=1
+    if [ "$compiler" = "GCC" ]; then
+        case "$BINARY" in
+            32) compiler_name="$compiler_name -maix32" ;;
+            64) compiler_name="$compiler_name -maix64" ;;
+        esac
+        defined=1
+    else
+        case "$BINARY" in
+            32) compiler_name="$compiler_name -m32" ;;
+            64) compiler_name="$compiler_name -m64" ;;
+        esac
+        defined=1
+    fi
 fi
 
 case "$architecture" in
@@ -164,7 +177,7 @@ fi
 
 no_msa=0
 if [ "$architecture" = "mips" ] || [ "$architecture" = "mips64" ]; then
-    tmpd="$(mktemp -d)"
+    tmpd=$(mktemp -d 2>/dev/null || mktemp -d -t 'OBC')
     tmpf="$tmpd/a.c"
     code='"addvi.b $w0, $w1, 1"'
     msa_flags='-mmsa -mfp64 -mload-store-pairs'
@@ -176,6 +189,35 @@ if [ "$architecture" = "mips" ] || [ "$architecture" = "mips64" ]; then
     	$compiler_name $flags $args >/dev/null 2>&1
     } || {
     	no_msa=1
+    }
+
+    rm -rf "$tmpd"
+fi
+
+no_lsx=0
+no_lasx=0
+if [ "$architecture" = "loongarch64" ]; then
+    tmpd="$(mktemp -d)"
+    tmplsx="$tmpd/lsx.c"
+    codelsx='"vadd.b $vr0, $vr0, $vr0"'
+    lsx_flags='-march=loongarch64'
+    printf "void main(void){ __asm__ volatile(%s);}\n" "$codelsx" >> "$tmplsx"
+    args="$lsx_flags -o $tmplsx.o $tmplsx"
+    {
+        $compiler_name $flags $args >/dev/null 2>&1
+    } || {
+        no_lsx=1
+    }
+
+    tmplasx="$tmpd/lasx.c"
+    codelasx='"xvadd.b $xr0, $xr0, $xr0"'
+    lasx_flags='-march=loongarch64'
+    printf "void main(void){ __asm__ volatile(%s);}\n" "$codelasx" >> "$tmplasx"
+    args="$lasx_flags -o $tmplasx.o $tmplasx"
+    {
+        $compiler_name $flags $args >/dev/null 2>&1
+    } || {
+        no_lasx=1
     }
 
     rm -rf "$tmpd"
@@ -195,6 +237,7 @@ case "$data" in
     *ARCH_ARM*) architecture=arm ;;
     *ARCH_ZARCH*) architecture=zarch ;;
     *ARCH_LOONGARCH64*) architecture=loongarch64 ;;
+    *ARCH_CSKY*) architecture=csky ;;
 esac
 
 binformat='bin32'
@@ -203,8 +246,9 @@ case "$data" in
 esac
 
 no_avx512=0
+no_avx512bf=0
 if [ "$architecture" = "x86" ] || [ "$architecture" = "x86_64" ]; then
-    tmpd=`mktemp -d`
+    tmpd=$(mktemp -d 2>/dev/null || mktemp -d -t 'OBC')
     tmpf="$tmpd/a.c"
     code='"vbroadcastss -4 * 4(%rsi), %zmm2"'
     printf "#include <immintrin.h>\n\nint main(void){ __asm__ volatile(%s); }\n" "$code" >> "$tmpf"
@@ -221,11 +265,30 @@ if [ "$architecture" = "x86" ] || [ "$architecture" = "x86_64" ]; then
     }
 
     rm -rf "$tmpd"
+    if [ "$no_avx512" -eq 0 ]; then
+    tmpd=$(mktemp -d 2>/dev/null || mktemp -d -t 'OBC')
+    tmpf="$tmpd/a.c"
+    code='"__m512 a= _mm512_dpbf16_ps(a, (__m512bh) _mm512_loadu_si512(%1]), (__m512bh) _mm512_loadu_si512(%2]));"'
+    printf "#include <immintrin.h>\n\nint main(void){ %s; }\n" "$code" >> "$tmpf"
+    if [ "$compiler" = "PGI" ]; then
+        args=" -tp cooperlake -c -o $tmpf.o $tmpf"
+    else
+        args=" -march=cooperlake -c -o $tmpf.o $tmpf"
+    fi
+    no_avx512bf=0
+    {
+        $compiler_name $flags $args >/dev/null 2>&1
+    } || {
+        no_avx512bf=1
+    }
+
+    rm -rf "$tmpd"
+  fi
 fi
 
 no_rv64gv=0
 if [ "$architecture" = "riscv64" ]; then
-    tmpd=`mktemp -d`
+    tmpd=$(mktemp -d 2>/dev/null || mktemp -d -t 'OBC')
     tmpf="$tmpd/a.c"
     code='"vsetvli    zero, zero, e8, m1\n"'
     printf "int main(void){ __asm__ volatile(%s); }\n" "$code" >> "$tmpf"
@@ -241,12 +304,15 @@ fi
 
 no_sve=0
 if [ "$architecture" = "arm64" ]; then
-    tmpd=`mktemp -d`
+    tmpd=$(mktemp -d 2>/dev/null || mktemp -d -t 'OBC')
     tmpf="$tmpd/a.c"
     printf "#include <arm_sve.h>\n\n int main(void){}\n">> "$tmpf"
     args=" -march=armv8-a+sve -c -o $tmpf.o $tmpf"
     no_sve=0
     {
+        $compiler_name $flags $args >/dev/null 2>&1
+    } || {
+        args=" -Msve_intrinsics -c -o $tmpf.o $tmpf"
         $compiler_name $flags $args >/dev/null 2>&1
     } || {
         no_sve=1
@@ -257,7 +323,7 @@ fi
 c11_atomics=0
 case "$data" in
     *HAVE_C11*)
-        tmpd=`mktemp -d`
+        tmpd=$(mktemp -d 2>/dev/null || mktemp -d -t 'OBC')
         tmpf="$tmpd/a.c"
         printf "#include <stdatomic.h>\nint main(void){}\n" >> "$tmpf"
         args=" -c -o $tmpf.o $tmpf"
@@ -365,6 +431,7 @@ done
  [ "$makefile" = "-" ] && {
     [ "$no_rv64gv" -eq 1 ] && printf "NO_RV64GV=1\n"
     [ "$no_avx512" -eq 1 ] && printf "NO_AVX512=1\n"
+    [ "$no_avx512bf" -eq 1 ] && printf "NO_AVX512BF16=1\n"
     [ "$no_avx2" -eq 1 ] && printf "NO_AVX2=1\n"
     [ "$oldgcc" -eq 1 ] && printf "OLDGCC=1\n"
     exit 0
@@ -393,8 +460,11 @@ done
     [ "$no_sve" -eq 1 ] && printf "NO_SVE=1\n"
     [ "$no_rv64gv" -eq 1 ] && printf "NO_RV64GV=1\n"
     [ "$no_avx512" -eq 1 ] && printf "NO_AVX512=1\n"
+    [ "$no_avx512bf" -eq 1 ] && printf "NO_AVX512BF16=1\n"
     [ "$no_avx2" -eq 1 ] && printf "NO_AVX2=1\n"
     [ "$oldgcc" -eq 1 ] && printf "OLDGCC=1\n"
+    [ "$no_lsx" -eq 1 ] && printf "NO_LSX=1\n"
+    [ "$no_lasx" -eq 1 ] && printf "NO_LASX=1\n"
 } >> "$makefile"
 
 os=`echo "$os" | tr '[[:lower:]]' '[[:upper:]]'/ `
@@ -410,6 +480,8 @@ compiler=`echo "$compiler" | tr '[[:lower:]]' '[[:upper:]]' `
     [ -n "$need_fu" ] && printf "#define FUNDERSCORE\t%s\n" "$need_fu"
     [ "$no_msa" -eq 1 ] && printf "#define NO_MSA\t1\n"
     [ "$c11_atomics" -eq 1 ] && printf "#define HAVE_C11\t1\n"
+    [ "$no_lsx" -eq 1 ] && printf "#define NO_LSX\t1\n"
+    [ "$no_lasx" -eq 1 ] && printf "#define NO_LASX\t1\n"
 } >> "$config"
 
 

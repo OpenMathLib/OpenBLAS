@@ -70,7 +70,7 @@
 *     .. Local Scalars ..
       CHARACTER*2        C2
       INTEGER            INFO
-      DOUBLE PRECISION   RCOND, SCALE
+      DOUBLE PRECISION   RCOND, SCALE, SCALES(0)
 *     ..
 *     .. Local Arrays ..
       DOUBLE PRECISION   R1( NMAX ), R2( NMAX ), RW( NMAX )
@@ -245,40 +245,40 @@
 *
          SRNAMT = 'ZLATRS3'
          INFOT = 1
-         CALL ZLATRS3( '/', 'N', 'N', 'N', 0, 0, A, 1, X, 1, SCALE, RW,
-     $                 RW( 2 ), 1, INFO )
+         CALL ZLATRS3( '/', 'N', 'N', 'N', 0, 0, A, 1, X, 1, SCALES,
+     $                 RW, RW( 2 ), 1, INFO )
          CALL CHKXER( 'ZLATRS3', INFOT, NOUT, LERR, OK )
          INFOT = 2
-         CALL ZLATRS3( 'U', '/', 'N', 'N', 0, 0, A, 1, X, 1, SCALE, RW,
-     $                 RW( 2 ), 1, INFO )
+         CALL ZLATRS3( 'U', '/', 'N', 'N', 0, 0, A, 1, X, 1, SCALES,
+     $                 RW, RW( 2 ), 1, INFO )
          CALL CHKXER( 'ZLATRS3', INFOT, NOUT, LERR, OK )
          INFOT = 3
-         CALL ZLATRS3( 'U', 'N', '/', 'N', 0, 0, A, 1, X, 1, SCALE, RW,
-     $                 RW( 2 ), 1, INFO )
+         CALL ZLATRS3( 'U', 'N', '/', 'N', 0, 0, A, 1, X, 1, SCALES,
+     $                 RW, RW( 2 ), 1, INFO )
          CALL CHKXER( 'ZLATRS3', INFOT, NOUT, LERR, OK )
          INFOT = 4
-         CALL ZLATRS3( 'U', 'N', 'N', '/', 0, 0, A, 1, X, 1, SCALE, RW,
-     $                 RW( 2 ), 1, INFO )
+         CALL ZLATRS3( 'U', 'N', 'N', '/', 0, 0, A, 1, X, 1, SCALES,
+     $                 RW, RW( 2 ), 1, INFO )
          CALL CHKXER( 'ZLATRS3', INFOT, NOUT, LERR, OK )
          INFOT = 5
-         CALL ZLATRS3( 'U', 'N', 'N', 'N', -1, 0, A, 1, X, 1, SCALE, RW,
-     $                 RW( 2 ), 1, INFO )
+         CALL ZLATRS3( 'U', 'N', 'N', 'N', -1, 0, A, 1, X, 1, SCALES,
+     $                 RW, RW( 2 ), 1, INFO )
          CALL CHKXER( 'ZLATRS3', INFOT, NOUT, LERR, OK )
          INFOT = 6
-         CALL ZLATRS3( 'U', 'N', 'N', 'N', 0, -1, A, 1, X, 1, SCALE, RW,
-     $                 RW( 2 ), 1, INFO )
+         CALL ZLATRS3( 'U', 'N', 'N', 'N', 0, -1, A, 1, X, 1, SCALES,
+     $                 RW, RW( 2 ), 1, INFO )
          CALL CHKXER( 'ZLATRS3', INFOT, NOUT, LERR, OK )
          INFOT = 8
-         CALL ZLATRS3( 'U', 'N', 'N', 'N', 2, 0, A, 1, X, 1, SCALE, RW,
-     $                 RW( 2 ), 1, INFO )
+         CALL ZLATRS3( 'U', 'N', 'N', 'N', 2, 0, A, 1, X, 1, SCALES,
+     $                 RW, RW( 2 ), 1, INFO )
          CALL CHKXER( 'ZLATRS3', INFOT, NOUT, LERR, OK )
          INFOT = 10
-         CALL ZLATRS3( 'U', 'N', 'N', 'N', 2, 0, A, 2, X, 1, SCALE, RW,
-     $                 RW( 2 ), 1, INFO )
+         CALL ZLATRS3( 'U', 'N', 'N', 'N', 2, 0, A, 2, X, 1, SCALES,
+     $                 RW, RW( 2 ), 1, INFO )
          CALL CHKXER( 'ZLATRS3', INFOT, NOUT, LERR, OK )
          INFOT = 14
-         CALL ZLATRS3( 'U', 'N', 'N', 'N', 1, 0, A, 1, X, 1, SCALE, RW,
-     $                 RW( 2 ), 0, INFO )
+         CALL ZLATRS3( 'U', 'N', 'N', 'N', 1, 0, A, 1, X, 1, SCALES,
+     $                 RW, RW( 2 ), 0, INFO )
          CALL CHKXER( 'ZLATRS3', INFOT, NOUT, LERR, OK )
 *
 *     Test error exits for the packed triangular routines.

@@ -57,7 +57,7 @@
 *>        Z = [ kron(In, A)  -kron(B**H, Im) ]             (2)
 *>            [ kron(In, D)  -kron(E**H, Im) ],
 *>
-*> Ik is the identity matrix of size k and X**H is the conjuguate transpose of X.
+*> Ik is the identity matrix of size k and X**H is the conjugate transpose of X.
 *> kron(X, Y) is the Kronecker product between the matrices X and Y.
 *>
 *> If TRANS = 'C', y in the conjugate transposed system Z**H*y = scale*b

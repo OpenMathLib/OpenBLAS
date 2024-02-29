@@ -135,7 +135,7 @@
       IF( LSAMEN( 2, C2, 'HE' ) ) THEN
 *
 *        Test error exits of the routines that use factorization
-*        of a Hermitian indefinite matrix with patrial
+*        of a Hermitian indefinite matrix with partial
 *        (Bunch-Kaufman) diagonal pivoting method.
 *
 *        ZHETRF
@@ -580,7 +580,7 @@
       ELSE IF( LSAMEN( 2, C2, 'HP' ) ) THEN
 *
 *        Test error exits of the routines that use factorization
-*        of a Hermitian indefinite packed matrix with patrial
+*        of a Hermitian indefinite packed matrix with partial
 *        (Bunch-Kaufman) diagonal pivoting method.
 *
 *        ZHPTRF

@@ -212,13 +212,13 @@
 *>          LRWORK is INTEGER
 *>          The dimension of the array RWORK.
 *>
-*>          If LRWORK = -1, then a workspace query is assumed; the routine
+*>          If LRWORK=-1, then a workspace query is assumed; the routine
 *>          only calculates the optimal size of the WORK and RWORK
 *>          arrays, returns this value as the first entry of the WORK
 *>          and RWORK array, respectively, and no error message related
 *>          to LWORK or LRWORK is issued by XERBLA.
 *> \endverbatim
-*
+*>
 *> \param[out] IWORK
 *> \verbatim
 *>          IWORK is INTEGER array, dimension (M-MIN(P,M-P,Q,M-Q))
@@ -247,7 +247,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup complexOTHERcomputational
+*> \ingroup uncsd2by1
 *
 *  =====================================================================
       SUBROUTINE CUNCSD2BY1( JOBU1, JOBU2, JOBV1T, M, P, Q, X11, LDX11,
@@ -299,7 +299,8 @@
 *     ..
 *     .. External Functions ..
       LOGICAL            LSAME
-      EXTERNAL           LSAME
+      REAL               SROUNDUP_LWORK
+      EXTERNAL           LSAME, SROUNDUP_LWORK
 *     ..
 *     .. Intrinsic Function ..
       INTRINSIC          INT, MAX, MIN
@@ -508,7 +509,7 @@
          LWORKOPT = MAX( IORBDB+LORBDB-1,
      $                   IORGQR+LORGQROPT-1,
      $                   IORGLQ+LORGLQOPT-1 )
-         WORK(1) = LWORKOPT
+         WORK(1) = SROUNDUP_LWORK(LWORKOPT)
          IF( LWORK .LT. LWORKMIN .AND. .NOT.LQUERY ) THEN
             INFO = -19
          END IF

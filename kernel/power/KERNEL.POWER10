@@ -1,6 +1,3 @@
-ifeq ($(HAVE_GAS), 1)
-include $(KERNELDIR)/KERNEL.POWER8
-else
 #SGEMM_BETA = ../generic/gemm_beta.c
 #DGEMM_BETA = ../generic/gemm_beta.c
 #CGEMM_BETA = ../generic/zgemm_beta.c
@@ -19,11 +16,11 @@ SBGEMMOTCOPYOBJ =  sbgemm_otcopy$(TSUFFIX).$(SUFFIX)
 
 STRMMKERNEL	= sgemm_kernel_power10.c
 DTRMMKERNEL	= dgemm_kernel_power10.c
-CTRMMKERNEL	= cgemm_kernel_power10.S
-ZTRMMKERNEL	= zgemm_kernel_power10.S
+CTRMMKERNEL	= cgemm_kernel_power10.c
+ZTRMMKERNEL	= zgemm_kernel_power10.c
 
 SGEMMKERNEL    =  sgemm_kernel_power10.c
-SGEMMINCOPY    = ../generic/gemm_ncopy_16.c
+SGEMMINCOPY    = sgemm_ncopy_16_power.c
 SGEMMITCOPY    = sgemm_tcopy_16_power8.S
 SGEMMONCOPY    =  ../generic/gemm_ncopy_8.c
 SGEMMOTCOPY    = sgemm_tcopy_8_power8.S
@@ -62,10 +59,14 @@ DGEMM_SMALL_K_B0_TT = dgemm_small_kernel_tt_power10.c
 DGEMM_SMALL_K_TN = dgemm_small_kernel_tn_power10.c
 DGEMM_SMALL_K_B0_TN = dgemm_small_kernel_tn_power10.c
 
-CGEMMKERNEL    = cgemm_kernel_power10.S
+CGEMMKERNEL    = cgemm_kernel_power10.c
 #CGEMMKERNEL     = cgemm_kernel_8x4_power8.S
 CGEMMINCOPY    = ../generic/zgemm_ncopy_8.c
+ifeq ($(OSNAME), AIX)
+CGEMMITCOPY    = cgemm_tcopy_8_power8.S
+else
 CGEMMITCOPY    = ../generic/zgemm_tcopy_8.c
+endif
 CGEMMONCOPY    = ../generic/zgemm_ncopy_4.c
 CGEMMOTCOPY    = ../generic/zgemm_tcopy_4.c
 CGEMMONCOPYOBJ =  cgemm_oncopy$(TSUFFIX).$(SUFFIX)
@@ -73,7 +74,7 @@ CGEMMOTCOPYOBJ =  cgemm_otcopy$(TSUFFIX).$(SUFFIX)
 CGEMMINCOPYOBJ =  cgemm_incopy$(TSUFFIX).$(SUFFIX)
 CGEMMITCOPYOBJ =  cgemm_itcopy$(TSUFFIX).$(SUFFIX)
 
-ZGEMMKERNEL    = zgemm_kernel_power10.S
+ZGEMMKERNEL    = zgemm_kernel_power10.c
 ZGEMMONCOPY    = ../generic/zgemm_ncopy_2.c
 ZGEMMOTCOPY    = ../generic/zgemm_tcopy_2.c
 ZGEMMINCOPY    = ../generic/zgemm_ncopy_8.c
@@ -124,6 +125,7 @@ ZTRSMKERNEL_RT	= ../generic/trsm_kernel_RT.c
 #SMINKERNEL   = ../arm/min.c
 #DMINKERNEL   = ../arm/min.c
 #
+ifeq ($(C_COMPILER), GCC)
 ifneq ($(GCCVERSIONGTEQ9),1)
 ISAMAXKERNEL = isamax_power9.S
 else
@@ -146,6 +148,15 @@ IDAMINKERNEL = idamin.c
 ifneq ($(GCCVERSIONGTEQ9),1)
 ICAMINKERNEL = icamin_power9.S
 else
+ICAMINKERNEL = icamin.c
+endif
+else
+ISAMAXKERNEL = isamax.c
+IDAMAXKERNEL = idamax.c
+ICAMAXKERNEL = icamax.c
+IZAMAXKERNEL = izamax.c
+ISAMINKERNEL = isamin.c
+IDAMINKERNEL = idamin.c
 ICAMINKERNEL = icamin.c
 endif
 IZAMINKERNEL = izamin.c
@@ -238,4 +249,3 @@ QCABS_KERNEL	= ../generic/cabs.c
 #Dump kernel
 CGEMM3MKERNEL    = ../generic/zgemm3mkernel_dump.c
 ZGEMM3MKERNEL    = ../generic/zgemm3mkernel_dump.c
-endif

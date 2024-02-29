@@ -283,13 +283,12 @@ The numbers of threads in the thread pool.
 This value is equal or large than blas_cpu_number. This means some threads are sleep.
 */
 int blas_num_threads = 0;
-int blas_num_threads_set = 0;
 
 int  goto_get_num_procs  (void) {
   return blas_cpu_number;
 }
 
-void openblas_fork_handler()
+void openblas_fork_handler(void)
 {
   // This handler shuts down the OpenBLAS-managed PTHREAD pool when OpenBLAS is
   // built with "make USE_OPENMP=0".
@@ -306,9 +305,9 @@ void openblas_fork_handler()
 #endif
 }
 
-extern int openblas_num_threads_env();
-extern int openblas_goto_num_threads_env();
-extern int openblas_omp_num_threads_env();
+extern int openblas_num_threads_env(void);
+extern int openblas_goto_num_threads_env(void);
+extern int openblas_omp_num_threads_env(void);
 
 int blas_get_cpu_number(void){
 #if defined(OS_LINUX) || defined(OS_WINDOWS) || defined(OS_FREEBSD) || defined(OS_OPENBSD) || defined(OS_NETBSD) || defined(OS_DRAGONFLY) || defined(OS_DARWIN) || defined(OS_ANDROID)

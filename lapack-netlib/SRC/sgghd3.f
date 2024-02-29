@@ -179,14 +179,14 @@
 *>
 *> \param[out] WORK
 *> \verbatim
-*>          WORK is REAL array, dimension (LWORK)
+*>          WORK is REAL array, dimension (MAX(1,LWORK))
 *>          On exit, if INFO = 0, WORK(1) returns the optimal LWORK.
 *> \endverbatim
 *>
-*> \param[in]  LWORK
+*> \param[in] LWORK
 *> \verbatim
 *>          LWORK is INTEGER
-*>          The length of the array WORK.  LWORK >= 1.
+*>          The length of the array WORK. LWORK >= 1.
 *>          For optimum performance LWORK >= 6*N*NB, where NB is the
 *>          optimal blocksize.
 *>
@@ -211,7 +211,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup realOTHERcomputational
+*> \ingroup gghd3
 *
 *> \par Further Details:
 *  =====================
@@ -260,14 +260,15 @@
 *     .. External Functions ..
       LOGICAL            LSAME
       INTEGER            ILAENV
-      EXTERNAL           ILAENV, LSAME
+      REAL               SROUNDUP_LWORK
+      EXTERNAL           ILAENV, LSAME, SROUNDUP_LWORK
 *     ..
 *     .. External Subroutines ..
       EXTERNAL           SGGHRD, SLARTG, SLASET, SORM22, SROT, SGEMM,
      $                   SGEMV, STRMV, SLACPY, XERBLA
 *     ..
 *     .. Intrinsic Functions ..
-      INTRINSIC          REAL, MAX
+      INTRINSIC          MAX
 *     ..
 *     .. Executable Statements ..
 *
@@ -275,8 +276,13 @@
 *
       INFO = 0
       NB = ILAENV( 1, 'SGGHD3', ' ', N, ILO, IHI, -1 )
-      LWKOPT = MAX( 6*N*NB, 1 )
-      WORK( 1 ) = REAL( LWKOPT )
+      NH = IHI - ILO + 1
+      IF( NH.LE.1 ) THEN
+         LWKOPT = 1
+      ELSE
+         LWKOPT = 6*N*NB
+      END IF
+      WORK( 1 ) = SROUNDUP_LWORK( LWKOPT )
       INITQ = LSAME( COMPQ, 'I' )
       WANTQ = INITQ .OR. LSAME( COMPQ, 'V' )
       INITZ = LSAME( COMPZ, 'I' )
@@ -325,7 +331,6 @@
 *
 *     Quick return if possible
 *
-      NH = IHI - ILO + 1
       IF( NH.LE.1 ) THEN
          WORK( 1 ) = ONE
          RETURN
@@ -885,7 +890,8 @@
       IF ( JCOL.LT.IHI )
      $   CALL SGGHRD( COMPQ2, COMPZ2, N, JCOL, IHI, A, LDA, B, LDB, Q,
      $                LDQ, Z, LDZ, IERR )
-      WORK( 1 ) = REAL( LWKOPT )
+*
+      WORK( 1 ) = SROUNDUP_LWORK( LWKOPT )
 *
       RETURN
 *

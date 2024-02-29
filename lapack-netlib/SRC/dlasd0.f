@@ -79,10 +79,11 @@
 *>         On exit, E has been destroyed.
 *> \endverbatim
 *>
-*> \param[out] U
+*> \param[in,out] U
 *> \verbatim
 *>          U is DOUBLE PRECISION array, dimension (LDU, N)
-*>         On exit, U contains the left singular vectors.
+*>         On exit, U contains the left singular vectors, 
+*>          if U passed in as (N, N) Identity.
 *> \endverbatim
 *>
 *> \param[in] LDU
@@ -91,10 +92,11 @@
 *>         On entry, leading dimension of U.
 *> \endverbatim
 *>
-*> \param[out] VT
+*> \param[in,out] VT
 *> \verbatim
 *>          VT is DOUBLE PRECISION array, dimension (LDVT, M)
-*>         On exit, VT**T contains the right singular vectors.
+*>         On exit, VT**T contains the right singular vectors,
+*>          if VT passed in as (M, M) Identity.
 *> \endverbatim
 *>
 *> \param[in] LDVT

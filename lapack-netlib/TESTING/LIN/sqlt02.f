@@ -27,7 +27,7 @@
 *> \verbatim
 *>
 *> SQLT02 tests SORGQL, which generates an m-by-n matrix Q with
-*> orthonornmal columns that is defined as the product of k elementary
+*> orthonormal columns that is defined as the product of k elementary
 *> reflectors.
 *>
 *> Given the QL factorization of an m-by-n matrix A, SQLT02 generates

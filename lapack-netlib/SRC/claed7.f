@@ -363,7 +363,7 @@
             RETURN
          END IF
 *
-*     Prepare the INDXQ sorting premutation.
+*     Prepare the INDXQ sorting permutation.
 *
          N1 = K
          N2 = N - K

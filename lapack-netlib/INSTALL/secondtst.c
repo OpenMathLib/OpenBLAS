@@ -422,7 +422,7 @@ static integer c__1000 = 1000;
 
 /* ===================================================================== */
 
-/* Main program */ main(void)
+/* Main program */ int main(void)
 {
     /* Format strings */
     static char fmt_9999[] = "(\002 Time for \002,g10.3,\002 SAXPY ops = "

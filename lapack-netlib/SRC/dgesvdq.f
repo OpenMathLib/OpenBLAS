@@ -365,7 +365,7 @@
 *>   an optimal implementation would do all necessary scaling before calling
 *>   CGESVD and the scaling in CGESVD can be switched off.
 *>   3. Other comments related to code optimization are given in comments in the
-*>   code, enlosed in [[double brackets]].
+*>   code, enclosed in [[double brackets]].
 *> \endverbatim
 *
 *> \par Bugs, examples and comments

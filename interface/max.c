@@ -46,6 +46,12 @@
 
 #ifdef USE_ABS
 
+#if defined(DOUBLE)
+#define ABS fabs
+#else
+#define ABS fabsf
+#endif
+
 #ifndef USE_MIN
 
 /* ABS & MAX */
@@ -92,6 +98,8 @@
 
 #else
 
+#define ABS
+
 #ifndef USE_MIN
 
 /* MAX */
@@ -130,6 +138,12 @@ FLOATRET NAME(blasint *N, FLOAT *x, blasint *INCX){
 
   if (n <= 0) return 0;
 
+#ifndef COMPLEX
+  if (incx == 0) return (ABS(*x));
+#else
+  if (incx == 0) return (ABS(*x) + ABS(*(x+1)));
+#endif
+
   IDEBUG_START;
 
   FUNCTION_PROFILE_START();
@@ -145,13 +159,24 @@ FLOATRET NAME(blasint *N, FLOAT *x, blasint *INCX){
 
 #else
 
+#ifdef COMPLEX
+FLOAT CNAME(blasint n, void *vx, blasint incx){
+  FLOAT *x = (FLOAT*) vx;
+#else
 FLOAT CNAME(blasint n, FLOAT *x, blasint incx){
-
+#endif
+  
   FLOAT ret;
 
   PRINT_DEBUG_CNAME;
 
   if (n <= 0) return 0;
+
+#ifndef COMPLEX
+  if (incx == 0) return (ABS(*x));
+#else
+  if (incx == 0) return (ABS(*x) + ABS(*(x+1)));
+#endif
 
   IDEBUG_START;
 

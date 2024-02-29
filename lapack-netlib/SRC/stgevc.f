@@ -52,7 +52,7 @@
 *>
 *>    S*x = w*P*x,  (y**H)*S = w*(y**H)*P,
 *>
-*> where y**H denotes the conjugate tranpose of y.
+*> where y**H denotes the conjugate transpose of y.
 *> The eigenvalues are not input to this routine, but are computed
 *> directly from the diagonal blocks of S and P.
 *>
@@ -337,7 +337,7 @@
       EXTERNAL           LSAME, SLAMCH
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           SGEMV, SLABAD, SLACPY, SLAG2, SLALN2, XERBLA
+      EXTERNAL           SGEMV, SLACPY, SLAG2, SLALN2, XERBLA
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          ABS, MAX, MIN
@@ -463,7 +463,6 @@
 *
       SAFMIN = SLAMCH( 'Safe minimum' )
       BIG = ONE / SAFMIN
-      CALL SLABAD( SAFMIN, BIG )
       ULP = SLAMCH( 'Epsilon' )*SLAMCH( 'Base' )
       SMALL = SAFMIN*N / ULP
       BIG = ONE / SMALL

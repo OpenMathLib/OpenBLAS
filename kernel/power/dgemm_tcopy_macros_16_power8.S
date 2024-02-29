@@ -38,6 +38,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 * Macros for N=4 and M=16
 **********************************************************************************************/
 
+#ifndef POWER10
 #if defined(_AIX)
 define(`COPY_4x16', `
 #else
@@ -275,6 +276,7 @@ define(`COPY_4x4', `
 #else
 .endm
 #endif
+#endif
 
 
 /**********************************************************************************************
@@ -369,6 +371,7 @@ define(`COPY_4x1', `
 * Macros for N=2 and M=16
 **********************************************************************************************/
 
+#ifndef POWER10
 #if defined(_AIX)
 define(`COPY_2x16', `
 #else
@@ -512,6 +515,7 @@ define(`COPY_2x4', `
 #else
 .endm
 #endif
+#endif
 
 
 /**********************************************************************************************
@@ -580,6 +584,7 @@ define(`COPY_2x1', `
 * Macros for N=1 and M=16
 **********************************************************************************************/
 
+#ifndef POWER10
 #if defined(_AIX)
 define(`COPY_1x16', `
 #else
@@ -674,6 +679,7 @@ define(`COPY_1x4', `
 ')
 #else
 .endm
+#endif
 #endif
 
 

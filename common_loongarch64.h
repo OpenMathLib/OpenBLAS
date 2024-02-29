@@ -83,6 +83,19 @@ static inline int blas_quickdivide(blasint x, blasint y){
   return x / y;
 }
 
+#ifndef NO_AFFINITY
+static inline int WhereAmI(void){
+  int ret = 0, counter = 0;
+  __asm__ volatile (
+    "rdtimel.w  %[counter],   %[id]"
+    : [id]"=r"(ret), [counter]"=r"(counter)
+    :
+    : "memory"
+  );
+  return ret;
+}
+#endif
+
 #ifdef DOUBLE
 #define GET_IMAGE(res)  __asm__ __volatile__("fmov.d %0, $f2" : "=f"(res)  : : "memory")
 #else
@@ -106,12 +119,50 @@ static inline int blas_quickdivide(blasint x, blasint y){
 #define MOV     fmov.d
 #define CMOVT   fsel
 #define MTC     movgr2fr.d
+#define MTG     movfr2gr.d
 #define FABS    fabs.d
+#define FMIN    fmin.d
+#define FMINA   fmina.d
+#define FMAX    fmax.d
+#define FMAXA   fmaxa.d
 #define CMPEQ   fcmp.ceq.d
 #define CMPLE   fcmp.cle.d
 #define CMPLT   fcmp.clt.d
 #define NEG     fneg.d
+#define FFINT   ffint.d.l
+
+#define XVFSUB  xvfsub.d
+#define XVFADD  xvfadd.d
+#define XVFMUL  xvfmul.d
+#define XVFMADD xvfmadd.d
+#define XVFMIN  xvfmin.d
+#define XVFMINA xvfmina.d
+#define XVFMAX  xvfmax.d
+#define XVFMAXA xvfmaxa.d
+#define XVCMPEQ xvfcmp.ceq.d
+#define XVCMPLE xvfcmp.cle.d
+#define XVCMPLT xvfcmp.clt.d
+#define XVMUL   xvfmul.d
+#define XVMSUB  xvfmsub.d
+#define XVNMSUB xvfnmsub.d
+
+#define VFSUB  vfsub.d
+#define VFADD  vfadd.d
+#define VFMUL  vfmul.d
+#define VFMADD vfmadd.d
+#define VFMIN  vfmin.d
+#define VFMINA vfmina.d
+#define VFMAX  vfmax.d
+#define VFMAXA vfmaxa.d
+#define VCMPEQ vfcmp.ceq.d
+#define VCMPLE vfcmp.cle.d
+#define VCMPLT vfcmp.clt.d
+#define VMUL   vfmul.d
+#define VMSUB  vfmsub.d
+#define VNMSUB vfnmsub.d
+
 #else
+
 #define LD      fld.s
 #define ST      fst.s
 #define MADD    fmadd.s
@@ -124,11 +175,48 @@ static inline int blas_quickdivide(blasint x, blasint y){
 #define MOV     fmov.s
 #define CMOVT   fsel
 #define MTC     movgr2fr.w
+#define MTG     movfr2gr.s
 #define FABS    fabs.s
+#define FMIN    fmin.s
+#define FMINA   fmina.s
+#define FMAX    fmax.s
+#define FMAXA   fmaxa.s
 #define CMPEQ   fcmp.ceq.s
 #define CMPLE   fcmp.cle.s
 #define CMPLT   fcmp.clt.s
 #define NEG     fneg.s
+#define FFINT   ffint.s.l
+
+#define XVFSUB  xvfsub.s
+#define XVFADD  xvfadd.s
+#define XVFMUL  xvfmul.s
+#define XVFMADD xvfmadd.s
+#define XVFMIN  xvfmin.s
+#define XVFMINA xvfmina.s
+#define XVFMAX  xvfmax.s
+#define XVFMAXA xvfmaxa.s
+#define XVCMPEQ xvfcmp.ceq.s
+#define XVCMPLE xvfcmp.cle.s
+#define XVCMPLT xvfcmp.clt.s
+#define XVMUL   xvfmul.s
+#define XVMSUB  xvfmsub.s
+#define XVNMSUB xvfnmsub.s
+
+#define VFSUB  vfsub.s
+#define VFADD  vfadd.s
+#define VFMUL  vfmul.s
+#define VFMADD vfmadd.s
+#define VFMIN  vfmin.s
+#define VFMINA vfmina.s
+#define VFMAX  vfmax.s
+#define VFMAXA vfmaxa.s
+#define VCMPEQ vfcmp.ceq.s
+#define VCMPLE vfcmp.cle.s
+#define VCMPLT vfcmp.clt.s
+#define VMUL   vfmul.s
+#define VMSUB  vfmsub.s
+#define VNMSUB vfnmsub.s
+
 #endif /* defined(DOUBLE) */
 
 #if defined(__64BIT__) && defined(USE64BITINT)

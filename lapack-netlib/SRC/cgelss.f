@@ -170,7 +170,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup complexGEsolve
+*> \ingroup gelss
 *
 *  =====================================================================
       SUBROUTINE CGELSS( M, N, NRHS, A, LDA, B, LDB, S, RCOND, RANK,
@@ -214,13 +214,12 @@
 *     .. External Subroutines ..
       EXTERNAL           CBDSQR, CCOPY, CGEBRD, CGELQF, CGEMM, CGEMV,
      $                   CGEQRF, CLACPY, CLASCL, CLASET, CSRSCL, CUNGBR,
-     $                   CUNMBR, CUNMLQ, CUNMQR, SLABAD, SLASCL, SLASET,
-     $                   XERBLA
+     $                   CUNMBR, CUNMLQ, CUNMQR, SLASCL, SLASET, XERBLA
 *     ..
 *     .. External Functions ..
       INTEGER            ILAENV
-      REAL               CLANGE, SLAMCH
-      EXTERNAL           ILAENV, CLANGE, SLAMCH
+      REAL               CLANGE, SLAMCH, SROUNDUP_LWORK
+      EXTERNAL           ILAENV, CLANGE, SLAMCH, SROUNDUP_LWORK
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          MAX, MIN
@@ -362,7 +361,7 @@
             END IF
             MAXWRK = MAX( MINWRK, MAXWRK )
          END IF
-         WORK( 1 ) = MAXWRK
+         WORK( 1 ) = SROUNDUP_LWORK(MAXWRK)
 *
          IF( LWORK.LT.MINWRK .AND. .NOT.LQUERY )
      $      INFO = -12
@@ -388,7 +387,6 @@
       SFMIN = SLAMCH( 'S' )
       SMLNUM = SFMIN / EPS
       BIGNUM = ONE / SMLNUM
-      CALL SLABAD( SMLNUM, BIGNUM )
 *
 *     Scale A if max element outside range [SMLNUM,BIGNUM]
 *
@@ -540,7 +538,7 @@
      $                     LDB, CZERO, WORK, N )
                CALL CLACPY( 'G', N, BL, WORK, N, B( 1, I ), LDB )
    20       CONTINUE
-         ELSE
+         ELSE IF( NRHS.EQ.1 ) THEN
             CALL CGEMV( 'C', N, N, CONE, A, LDA, B, 1, CZERO, WORK, 1 )
             CALL CCOPY( N, WORK, 1, B, 1 )
          END IF
@@ -645,7 +643,7 @@
                CALL CLACPY( 'G', M, BL, WORK( IWORK ), M, B( 1, I ),
      $                      LDB )
    40       CONTINUE
-         ELSE
+         ELSE IF( NRHS.EQ.1 ) THEN
             CALL CGEMV( 'C', M, M, CONE, WORK( IL ), LDWORK, B( 1, 1 ),
      $                  1, CZERO, WORK( IWORK ), 1 )
             CALL CCOPY( M, WORK( IWORK ), 1, B( 1, 1 ), 1 )
@@ -737,7 +735,7 @@
      $                     LDB, CZERO, WORK, N )
                CALL CLACPY( 'F', N, BL, WORK, N, B( 1, I ), LDB )
    60       CONTINUE
-         ELSE
+         ELSE IF( NRHS.EQ.1 ) THEN
             CALL CGEMV( 'C', M, N, CONE, A, LDA, B, 1, CZERO, WORK, 1 )
             CALL CCOPY( N, WORK, 1, B, 1 )
          END IF
@@ -760,7 +758,7 @@
          CALL CLASCL( 'G', 0, 0, BIGNUM, BNRM, N, NRHS, B, LDB, INFO )
       END IF
    70 CONTINUE
-      WORK( 1 ) = MAXWRK
+      WORK( 1 ) = SROUNDUP_LWORK(MAXWRK)
       RETURN
 *
 *     End of CGELSS

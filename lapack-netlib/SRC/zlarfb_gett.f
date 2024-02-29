@@ -452,7 +452,7 @@
          IF( LNOTIDENT ) THEN
 *
 *           col2_(2) Compute W2: = (V1**H) * W2 = (A1**H) * W2,
-*           V1 is not an identy matrix, but unit lower-triangular
+*           V1 is not an identity matrix, but unit lower-triangular
 *           V1 stored in A1 (diagonal ones are not stored).
 *
 *

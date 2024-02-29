@@ -21,10 +21,10 @@
 *>
 *> \verbatim
 *>
-*> DERRST tests the error exits for DSYTRD, DORGTR, DORMTR, DSPTRD,
-*> DOPGTR, DOPMTR, DSTEQR, SSTERF, SSTEBZ, SSTEIN, DPTEQR, DSBTRD,
-*> DSYEV, SSYEVX, SSYEVD, DSBEV, SSBEVX, SSBEVD,
-*> DSPEV, SSPEVX, SSPEVD, DSTEV, SSTEVX, SSTEVD, and SSTEDC.
+*> DERRST tests the error exits for DSYTRD, DSYTD2, DORGTR, DORMTR, DSPTRD,
+*> DOPGTR, DOPMTR, DSTEQR, DSTERF, DSTEBZ, DSTEIN, DPTEQR, DSBTRD,
+*> DSYEV, DSYEVX, DSYEVD, DSBEV, DSBEVX, DSBEVD,
+*> DSPEV, DSPEVX, DSPEVD, DSTEV, DSTEVX, DSTEVD, and DSTEDC.
 *> DSYEVD_2STAGE, DSYEVR_2STAGE, DSYEVX_2STAGE,
 *> DSYEV_2STAGE, DSBEV_2STAGE, DSBEVD_2STAGE,
 *> DSBEVX_2STAGE, DSYTRD_2STAGE, DSYTRD_SY2SB,
@@ -95,7 +95,7 @@
      $                   DSBEV, DSBEVD, DSBEVX, DSBTRD, DSPEV, DSPEVD,
      $                   DSPEVX, DSPTRD, DSTEBZ, DSTEDC, DSTEIN, DSTEQR,
      $                   DSTERF, DSTEV, DSTEVD, DSTEVR, DSTEVX, DSYEV,
-     $                   DSYEVD, DSYEVR, DSYEVX, DSYTRD,
+     $                   DSYEVD, DSYEVR, DSYEVX, DSYTRD, DSYTD2,
      $                   DSYEVD_2STAGE, DSYEVR_2STAGE, DSYEVX_2STAGE,
      $                   DSYEV_2STAGE, DSBEV_2STAGE, DSBEVD_2STAGE,
      $                   DSBEVX_2STAGE, DSYTRD_2STAGE, DSYTRD_SY2SB,
@@ -156,6 +156,20 @@
          CALL DSYTRD( 'U', 0, A, 1, D, E, TAU, W, 0, INFO )
          CALL CHKXER( 'DSYTRD', INFOT, NOUT, LERR, OK )
          NT = NT + 4
+*
+*        DSYTD2
+*
+         SRNAMT = 'DSYTD2'
+         INFOT = 1
+         CALL DSYTD2( '/', 0, A, 1, D, E, TAU, INFO )
+         CALL CHKXER( 'DSYTD2', INFOT, NOUT, LERR, OK )
+         INFOT = 2
+         CALL DSYTD2( 'U', -1, A, 1, D, E, TAU, INFO )
+         CALL CHKXER( 'DSYTD2', INFOT, NOUT, LERR, OK )
+         INFOT = 4
+         CALL DSYTD2( 'U', 2, A, 1, D, E, TAU, INFO )
+         CALL CHKXER( 'DSYTD2', INFOT, NOUT, LERR, OK )
+         NT = NT + 3
 *
 *        DSYTRD_2STAGE
 *
@@ -721,12 +735,12 @@
          CALL CHKXER( 'DSYEVR', INFOT, NOUT, LERR, OK )
          INFOT = 18
          CALL DSYEVR( 'V', 'I', 'U', 1, A, 1, 0.0D0, 0.0D0, 1, 1, 0.0D0,
-     $                M, R, Z, 1, IW, Q, 26*N-1, IW( 2*N+1 ), 10*N,
+     $                M, R, Z, 1, IW, Q, 0, IW( 2*N+1 ), 10*N,
      $                INFO )
          CALL CHKXER( 'DSYEVR', INFOT, NOUT, LERR, OK )
          INFOT = 20
          CALL DSYEVR( 'V', 'I', 'U', 1, A, 1, 0.0D0, 0.0D0, 1, 1, 0.0D0,
-     $                M, R, Z, 1, IW, Q, 26*N, IW( 2*N+1 ), 10*N-1,
+     $                M, R, Z, 1, IW, Q, 26*N, IW( 2*N+1 ), 0,
      $                INFO )
          CALL CHKXER( 'DSYEVR', INFOT, NOUT, LERR, OK )
          NT = NT + 11

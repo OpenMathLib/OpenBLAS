@@ -157,9 +157,9 @@
       CALL CUNM2R( 'Left', 'Conjugate transpose', M, M, K, A, LDA, TAU,
      $             WORK, M, WORK( M*M+1 ), INFO )
 *
-      DO 10 J = 1, M
+      DO J = 1, M
          WORK( ( J-1 )*M+J ) = WORK( ( J-1 )*M+J ) - ONE
-   10 CONTINUE
+      END DO
 *
       CQRT11 = CLANGE( 'One-norm', M, M, WORK, M, RDUMMY ) /
      $         ( REAL( M )*SLAMCH( 'Epsilon' ) )

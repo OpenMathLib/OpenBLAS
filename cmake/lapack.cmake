@@ -52,7 +52,7 @@ set(SLASRC
    sgebrd.f sgecon.f sgeequ.f sgees.f  sgeesx.f sgeev.f  sgeevx.f
    sgehd2.f sgehrd.f sgelq2.f sgelqf.f
    sgels.f  sgelsd.f sgelss.f sgelsy.f sgeql2.f sgeqlf.f
-   sgeqp3.f sgeqr2.f sgeqr2p.f sgeqrf.f sgeqrfp.f sgerfs.f sgerq2.f sgerqf.f
+   sgeqp3.f sgeqp3rk.f sgeqr2.f sgeqr2p.f sgeqrf.f sgeqrfp.f sgerfs.f sgerq2.f sgerqf.f
    sgesc2.f sgesdd.f sgesvd.f sgesvdx.f sgesvx.f sgetc2.f
    sgetrf2.f sgetri.f
    sggbak.f sggbal.f
@@ -67,7 +67,7 @@ set(SLASRC
    slangb.f slange.f slangt.f slanhs.f slansb.f slansp.f
    slansy.f slantb.f slantp.f slantr.f slanv2.f
    slapll.f slapmt.f
-   slaqgb.f slaqge.f slaqp2.f slaqps.f slaqsb.f slaqsp.f slaqsy.f
+   slaqgb.f slaqge.f slaqp2.f slaqps.f slaqp2rk.f slaqp3rk.f slaqsb.f slaqsp.f slaqsy.f
    slaqr0.f slaqr1.f slaqr2.f slaqr3.f slaqr4.f slaqr5.f
    slaqtr.f slar1v.f slar2v.f ilaslr.f ilaslc.f
    slarf.f  slarfb.f slarfb_gett.f slarfg.f slarfgp.f slarft.f slarfx.f slarfy.f slargv.f
@@ -124,7 +124,7 @@ set(SLASRC
    ssbev_2stage.f ssbevx_2stage.f ssbevd_2stage.f ssygv_2stage.f
    sgesvdq.f slaorhr_col_getrfnp.f
    slaorhr_col_getrfnp2.f sorgtsqr.f sorgtsqr_row.f sorhr_col.f 
-   slatrs3.f strsyl3.f sgelst.f)
+   slatrs3.f strsyl3.f sgelst.f sgedmd.f90 sgedmdq.f90)
 
 set(SXLASRC sgesvxx.f sgerfsx.f sla_gerfsx_extended.f sla_geamv.f
    sla_gercond.f sla_gerpvgrw.f ssysvxx.f ssyrfsx.f
@@ -139,7 +139,7 @@ set(CLASRC
    cgbtf2.f cgbtrf.f cgbtrs.f cgebak.f cgebal.f cgebd2.f cgebrd.f
    cgecon.f cgeequ.f cgees.f  cgeesx.f cgeev.f  cgeevx.f
    cgehd2.f cgehrd.f cgelq2.f cgelqf.f
-   cgels.f  cgelsd.f cgelss.f cgelsy.f cgeql2.f cgeqlf.f cgeqp3.f
+   cgels.f  cgelsd.f cgelss.f cgelsy.f cgeql2.f cgeqlf.f cgeqp3.f cgeqp3rk.f
    cgeqr2.f cgeqr2p.f cgeqrf.f cgeqrfp.f cgerfs.f cgerq2.f cgerqf.f
    cgesc2.f cgesdd.f cgesvd.f cgesvdx.f
    cgesvj.f cgejsv.f cgsvj0.f cgsvj1.f
@@ -173,7 +173,7 @@ set(CLASRC
    clanhb.f clanhe.f
    clanhp.f clanhs.f clanht.f clansb.f clansp.f clansy.f clantb.f
    clantp.f clantr.f clapll.f clapmt.f clarcm.f claqgb.f claqge.f
-   claqhb.f claqhe.f claqhp.f claqp2.f claqps.f claqsb.f
+   claqhb.f claqhe.f claqhp.f claqp2.f claqps.f claqp2rk.f claqp3rk.f claqsb.f
    claqr0.f claqr1.f claqr2.f claqr3.f claqr4.f claqr5.f
    claqz0.f claqz1.f claqz2.f claqz3.f
    claqsp.f claqsy.f clar1v.f clar2v.f ilaclr.f ilaclc.f
@@ -187,7 +187,7 @@ set(CLASRC
    cposv.f  cposvx.f cpotrf2.f cpotri.f cpstrf.f cpstf2.f
    cppcon.f cppequ.f cpprfs.f cppsv.f  cppsvx.f cpptrf.f cpptri.f cpptrs.f
    cptcon.f cpteqr.f cptrfs.f cptsv.f  cptsvx.f cpttrf.f cpttrs.f cptts2.f
-   crot.f   cspcon.f csprfs.f cspsv.f
+   crot.f crscl.f cspcon.f csprfs.f cspsv.f
    cspsvx.f csptrf.f csptri.f csptrs.f csrscl.f cstedc.f
    cstegr.f cstein.f csteqr.f csycon.f
    csyrfs.f csysv.f  csysvx.f csytf2.f csytrf.f csytri.f
@@ -223,7 +223,7 @@ set(CLASRC
    chbev_2stage.f chbevx_2stage.f chbevd_2stage.f chegv_2stage.f
    cgesvdq.f claunhr_col_getrfnp.f claunhr_col_getrfnp2.f 
    cungtsqr.f cungtsqr_row.f cunhr_col.f 
-   clatrs3.f ctrsyl3.f cgelst.f)
+   clatrs3.f ctrsyl3.f cgelst.f cgedmd.f90 cgedmdq.f90)
 
 set(CXLASRC cgesvxx.f cgerfsx.f cla_gerfsx_extended.f cla_geamv.f
    cla_gercond_c.f cla_gercond_x.f cla_gerpvgrw.f
@@ -243,7 +243,7 @@ set(DLASRC
    dgebrd.f dgecon.f dgeequ.f dgees.f  dgeesx.f dgeev.f  dgeevx.f
    dgehd2.f dgehrd.f dgelq2.f dgelqf.f
    dgels.f  dgelsd.f dgelss.f dgelsy.f dgeql2.f dgeqlf.f
-   dgeqp3.f dgeqr2.f dgeqr2p.f dgeqrf.f dgeqrfp.f dgerfs.f dgerq2.f dgerqf.f
+   dgeqp3.f dgeqp3rk.f dgeqr2.f dgeqr2p.f dgeqrf.f dgeqrfp.f dgerfs.f dgerq2.f dgerqf.f
    dgesc2.f dgesdd.f dgesvd.f dgesvdx.f dgesvx.f dgetc2.f
    dgetrf2.f dgetri.f
    dggbak.f dggbal.f
@@ -258,7 +258,7 @@ set(DLASRC
    dlangb.f dlange.f dlangt.f dlanhs.f dlansb.f dlansp.f
    dlansy.f dlantb.f dlantp.f dlantr.f dlanv2.f
    dlapll.f dlapmt.f
-   dlaqgb.f dlaqge.f dlaqp2.f dlaqps.f dlaqsb.f dlaqsp.f dlaqsy.f
+   dlaqgb.f dlaqge.f dlaqp2.f dlaqp2rk.f dlaqp3rk.f dlaqps.f dlaqsb.f dlaqsp.f dlaqsy.f
    dlaqr0.f dlaqr1.f dlaqr2.f dlaqr3.f dlaqr4.f dlaqr5.f
    dlaqtr.f dlar1v.f dlar2v.f iladlr.f iladlc.f
    dlarf.f  dlarfb.f dlarfb_gett.f dlarfg.f dlarfgp.f dlarft.f dlarfx.f dlarfy.f
@@ -316,7 +316,7 @@ set(DLASRC
    dsbev_2stage.f dsbevx_2stage.f dsbevd_2stage.f dsygv_2stage.f
    dcombssq.f dgesvdq.f dlaorhr_col_getrfnp.f
    dlaorhr_col_getrfnp2.f dorgtsqr.f dorgtsqr_row.f dorhr_col.f 
-   dlatrs3.f dtrsyl3.f dgelst.f)
+   dlatrs3.f dtrsyl3.f dgelst.f dgedmd.f90 dgedmdq.f90)
 
 set(DXLASRC dgesvxx.f dgerfsx.f dla_gerfsx_extended.f dla_geamv.f
    dla_gercond.f dla_gerpvgrw.f dsysvxx.f dsyrfsx.f
@@ -331,7 +331,7 @@ set(ZLASRC
    zgbtf2.f zgbtrf.f zgbtrs.f zgebak.f zgebal.f zgebd2.f zgebrd.f
    zgecon.f zgeequ.f zgees.f  zgeesx.f zgeev.f  zgeevx.f
    zgehd2.f zgehrd.f zgelq2.f zgelqf.f
-   zgels.f  zgelsd.f zgelss.f zgelsy.f zgeql2.f zgeqlf.f zgeqp3.f
+   zgels.f  zgelsd.f zgelss.f zgelsy.f zgeql2.f zgeqlf.f zgeqp3.f zgeqp3rk.f
    zgeqr2.f zgeqr2p.f zgeqrf.f zgeqrfp.f zgerfs.f zgerq2.f zgerqf.f
    zgesc2.f zgesdd.f zgesvd.f zgesvdx.f zgesvx.f
    zgesvj.f zgejsv.f zgsvj0.f zgsvj1.f
@@ -367,7 +367,7 @@ set(ZLASRC
    zlanhe.f
    zlanhp.f zlanhs.f zlanht.f zlansb.f zlansp.f zlansy.f zlantb.f
    zlantp.f zlantr.f zlapll.f zlapmt.f zlaqgb.f zlaqge.f
-   zlaqhb.f zlaqhe.f zlaqhp.f zlaqp2.f zlaqps.f zlaqsb.f
+   zlaqhb.f zlaqhe.f zlaqhp.f zlaqp2.f zlaqp2rk.f zlaqp3rk.f zlaqps.f zlaqsb.f
    zlaqr0.f zlaqr1.f zlaqr2.f zlaqr3.f zlaqr4.f zlaqr5.f
    zlaqsp.f zlaqsy.f zlar1v.f zlar2v.f ilazlr.f ilazlc.f
    zlarcm.f zlarf.f  zlarfb.f zlarfb_gett.f
@@ -381,7 +381,7 @@ set(ZLASRC
    zposv.f  zposvx.f zpotrf2.f zpotri.f zpotrs.f zpstrf.f zpstf2.f
    zppcon.f zppequ.f zpprfs.f zppsv.f  zppsvx.f zpptrf.f zpptri.f zpptrs.f
    zptcon.f zpteqr.f zptrfs.f zptsv.f  zptsvx.f zpttrf.f zpttrs.f zptts2.f
-   zrot.f   zspcon.f zsprfs.f zspsv.f
+   zrot.f zrscl.f zspcon.f zsprfs.f zspsv.f
    zspsvx.f zsptrf.f zsptri.f zsptrs.f zdrscl.f zstedc.f
    zstegr.f zstein.f zsteqr.f zsycon.f
    zsyrfs.f zsysv.f  zsysvx.f zsytf2.f zsytrf.f zsytri.f
@@ -419,7 +419,7 @@ set(ZLASRC
    zhbev_2stage.f zhbevx_2stage.f zhbevd_2stage.f zhegv_2stage.f
    zgesvdq.f zlaunhr_col_getrfnp.f zlaunhr_col_getrfnp2.f
    zungtsqr.f zungtsqr_row.f zunhr_col.f
-   zlatrs3.f ztrsyl3.f zgelst.f)
+   zlatrs3.f ztrsyl3.f zgelst.f zgedmd.f90 zgedmdq.f90)
 
 set(ZXLASRC zgesvxx.f zgerfsx.f zla_gerfsx_extended.f zla_geamv.f
    zla_gercond_c.f zla_gercond_x.f zla_gerpvgrw.f zsysvxx.f zsyrfsx.f
@@ -436,19 +436,25 @@ if(USE_XBLAS)
   set(ALLXOBJ ${SXLASRC} ${DXLASRC} ${CXLASRC} ${ZXLASRC})
 endif()
 
+if(BUILD_LAPACK_DEPRECATED)
 list(APPEND SLASRC DEPRECATED/sgegs.f DEPRECATED/sgegv.f
+  DEPRECATED/sgelqs.f DEPRECATED/sgeqrs.f
   DEPRECATED/sgeqpf.f DEPRECATED/sgelsx.f DEPRECATED/sggsvd.f
   DEPRECATED/sggsvp.f DEPRECATED/slahrd.f DEPRECATED/slatzm.f DEPRECATED/stzrqf.f)
 list(APPEND DLASRC DEPRECATED/dgegs.f DEPRECATED/dgegv.f
+  DEPRECATED/dgelqs.f DEPRECATED/dgeqrs.f
   DEPRECATED/dgeqpf.f DEPRECATED/dgelsx.f DEPRECATED/dggsvd.f
   DEPRECATED/dggsvp.f DEPRECATED/dlahrd.f DEPRECATED/dlatzm.f DEPRECATED/dtzrqf.f)
 list(APPEND CLASRC DEPRECATED/cgegs.f DEPRECATED/cgegv.f
+  DEPRECATED/cgelqs.f DEPRECATED/cgeqrs.f
   DEPRECATED/cgeqpf.f DEPRECATED/cgelsx.f DEPRECATED/cggsvd.f
   DEPRECATED/cggsvp.f DEPRECATED/clahrd.f DEPRECATED/clatzm.f DEPRECATED/ctzrqf.f)
 list(APPEND ZLASRC DEPRECATED/zgegs.f DEPRECATED/zgegv.f
+  DEPRECATED/zgelqs.f DEPRECATED/zgeqrs.f
   DEPRECATED/zgeqpf.f DEPRECATED/zgelsx.f DEPRECATED/zggsvd.f
   DEPRECATED/zggsvp.f DEPRECATED/zlahrd.f DEPRECATED/zlatzm.f DEPRECATED/ztzrqf.f)
 message(STATUS "Building deprecated routines")
+endif()
 
 set(DSLASRC spotrs.f)
 
@@ -551,7 +557,7 @@ set(SLASRC
    sgebrd.c sgecon.c sgeequ.c sgees.c  sgeesx.c sgeev.c  sgeevx.c
    sgehd2.c sgehrd.c sgelq2.c sgelqf.c
    sgels.c  sgelsd.c sgelss.c sgelsy.c sgeql2.c sgeqlf.c
-   sgeqp3.c sgeqr2.c sgeqr2p.c sgeqrf.c sgeqrfp.c sgerfs.c sgerq2.c sgerqf.c
+   sgeqp3.c sgeqp3rk.c sgeqr2.c sgeqr2p.c sgeqrf.c sgeqrfp.c sgerfs.c sgerq2.c sgerqf.c
    sgesc2.c sgesdd.c sgesvd.c sgesvdx.c sgesvx.c sgetc2.c
    sgetrf2.c sgetri.c
    sggbak.c sggbal.c
@@ -565,7 +571,7 @@ set(SLASRC
    slangb.c slange.c slangt.c slanhs.c slansb.c slansp.c
    slansy.c slantb.c slantp.c slantr.c slanv2.c
    slapll.c slapmt.c
-   slaqgb.c slaqge.c slaqp2.c slaqps.c slaqsb.c slaqsp.c slaqsy.c
+   slaqgb.c slaqge.c slaqp2.c slaqp2rk.c slaqp3rk.c slaqps.c slaqsb.c slaqsp.c slaqsy.c
    slaqr0.c slaqr1.c slaqr2.c slaqr3.c slaqr4.c slaqr5.c
    slaqtr.c slar1v.c slar2v.c ilaslr.c ilaslc.c
    slarf.c  slarfb.c slarfb_gett.c slarfg.c slarfgp.c slarft.c slarfx.c slarfy.c slargv.c
@@ -622,7 +628,7 @@ set(SLASRC
    ssbev_2stage.c ssbevx_2stage.c ssbevd_2stage.c ssygv_2stage.c
    sgesvdq.c slaorhr_col_getrfnp.c
    slaorhr_col_getrfnp2.c sorgtsqr.c sorgtsqr_row.c sorhr_col.c 
-   slatrs3.c strsyl3.c sgelst.c)
+   slatrs3.c strsyl3.c sgelst.c sgedmd.c sgedmdq.c)
 
 set(SXLASRC sgesvxx.c sgerfsx.c sla_gerfsx_extended.c sla_geamv.c
    sla_gercond.c sla_gerpvgrw.c ssysvxx.c ssyrfsx.c
@@ -637,7 +643,7 @@ set(CLASRC
    cgbtf2.c cgbtrf.c cgbtrs.c cgebak.c cgebal.c cgebd2.c cgebrd.c
    cgecon.c cgeequ.c cgees.c  cgeesx.c cgeev.c  cgeevx.c
    cgehd2.c cgehrd.c cgelq2.c cgelqf.c
-   cgels.c  cgelsd.c cgelss.c cgelsy.c cgeql2.c cgeqlf.c cgeqp3.c
+   cgels.c  cgelsd.c cgelss.c cgelsy.c cgeql2.c cgeqlf.c cgeqp3.c cgeqp3rk.c
    cgeqr2.c cgeqr2p.c cgeqrf.c cgeqrfp.c cgerfs.c cgerq2.c cgerqf.c
    cgesc2.c cgesdd.c cgesvd.c cgesvdx.c
    cgesvj.c cgejsv.c cgsvj0.c cgsvj1.c
@@ -671,7 +677,7 @@ set(CLASRC
    clanhb.c clanhe.c
    clanhp.c clanhs.c clanht.c clansb.c clansp.c clansy.c clantb.c
    clantp.c clantr.c clapll.c clapmt.c clarcm.c claqgb.c claqge.c
-   claqhb.c claqhe.c claqhp.c claqp2.c claqps.c claqsb.c
+   claqhb.c claqhe.c claqhp.c claqp2.c claqp2rk.c claqp3rk.c claqps.c claqsb.c
    claqr0.c claqr1.c claqr2.c claqr3.c claqr4.c claqr5.c
    claqsp.c claqsy.c clar1v.c clar2v.c ilaclr.c ilaclc.c
    clarf.c  clarfb.c clarfb_gett.c clarfg.c clarfgp.c clarft.c
@@ -684,7 +690,7 @@ set(CLASRC
    cposv.c  cposvx.c cpotrf2.c cpotri.c cpstrf.c cpstf2.c
    cppcon.c cppequ.c cpprfs.c cppsv.c  cppsvx.c cpptrf.c cpptri.c cpptrs.c
    cptcon.c cpteqr.c cptrfs.c cptsv.c  cptsvx.c cpttrf.c cpttrs.c cptts2.c
-   crot.c   cspcon.c csprfs.c cspsv.c
+   crot.c crscl.c  cspcon.c csprfs.c cspsv.c
    cspsvx.c csptrf.c csptri.c csptrs.c csrscl.c cstedc.c
    cstegr.c cstein.c csteqr.c csycon.c
    csyrfs.c csysv.c  csysvx.c csytf2.c csytrf.c csytri.c
@@ -720,7 +726,7 @@ set(CLASRC
    chbev_2stage.c chbevx_2stage.c chbevd_2stage.c chegv_2stage.c
    cgesvdq.c claunhr_col_getrfnp.c claunhr_col_getrfnp2.c 
    cungtsqr.c cungtsqr_row.c cunhr_col.c 
-   clatrs3.c ctrsyl3.c cgelst.c)
+   clatrs3.c ctrsyl3.c cgelst.c cgedmd.c cgedmdq.c)
 
 set(CXLASRC cgesvxx.c cgerfsx.c cla_gerfsx_extended.c cla_geamv.c
    cla_gercond_c.c cla_gercond_x.c cla_gerpvgrw.c
@@ -740,7 +746,7 @@ set(DLASRC
    dgebrd.c dgecon.c dgeequ.c dgees.c  dgeesx.c dgeev.c  dgeevx.c
    dgehd2.c dgehrd.c dgelq2.c dgelqf.c
    dgels.c  dgelsd.c dgelss.c dgelsy.c dgeql2.c dgeqlf.c
-   dgeqp3.c dgeqr2.c dgeqr2p.c dgeqrf.c dgeqrfp.c dgerfs.c dgerq2.c dgerqf.c
+   dgeqp3.c dgeqp3rk.c dgeqr2.c dgeqr2p.c dgeqrf.c dgeqrfp.c dgerfs.c dgerq2.c dgerqf.c
    dgesc2.c dgesdd.c dgesvd.c dgesvdx.c dgesvx.c dgetc2.c
    dgetrf2.c dgetri.c
    dggbak.c dggbal.c
@@ -754,7 +760,7 @@ set(DLASRC
    dlangb.c dlange.c dlangt.c dlanhs.c dlansb.c dlansp.c
    dlansy.c dlantb.c dlantp.c dlantr.c dlanv2.c
    dlapll.c dlapmt.c
-   dlaqgb.c dlaqge.c dlaqp2.c dlaqps.c dlaqsb.c dlaqsp.c dlaqsy.c
+   dlaqgb.c dlaqge.c dlaqp2.c dlaqp2rk.c dlaqp3rk.c dlaqps.c dlaqsb.c dlaqsp.c dlaqsy.c
    dlaqr0.c dlaqr1.c dlaqr2.c dlaqr3.c dlaqr4.c dlaqr5.c
    dlaqtr.c dlar1v.c dlar2v.c iladlr.c iladlc.c
    dlarf.c  dlarfb.c dlarfb_gett.c dlarfg.c dlarfgp.c dlarft.c dlarfx.c dlarfy.c
@@ -812,7 +818,7 @@ set(DLASRC
    dsbev_2stage.c dsbevx_2stage.c dsbevd_2stage.c dsygv_2stage.c
    dcombssq.c dgesvdq.c dlaorhr_col_getrfnp.c
    dlaorhr_col_getrfnp2.c dorgtsqr.c dorgtsqr_row.c dorhr_col.c 
-   dlatrs3.c dtrsyl3.c dgelst.c)
+   dlatrs3.c dtrsyl3.c dgelst.c dgedmd.c dgedmdq.c)
 
 set(DXLASRC dgesvxx.c dgerfsx.c dla_gerfsx_extended.c dla_geamv.c
    dla_gercond.c dla_gerpvgrw.c dsysvxx.c dsyrfsx.c
@@ -827,7 +833,7 @@ set(ZLASRC
    zgbtf2.c zgbtrf.c zgbtrs.c zgebak.c zgebal.c zgebd2.c zgebrd.c
    zgecon.c zgeequ.c zgees.c  zgeesx.c zgeev.c  zgeevx.c
    zgehd2.c zgehrd.c zgelq2.c zgelqf.c
-   zgels.c  zgelsd.c zgelss.c zgelsy.c zgeql2.c zgeqlf.c zgeqp3.c
+   zgels.c  zgelsd.c zgelss.c zgelsy.c zgeql2.c zgeqlf.c zgeqp3.c zgeqp3rk.c
    zgeqr2.c zgeqr2p.c zgeqrf.c zgeqrfp.c zgerfs.c zgerq2.c zgerqf.c
    zgesc2.c zgesdd.c zgesvd.c zgesvdx.c zgesvx.c
    zgesvj.c zgejsv.c zgsvj0.c zgsvj1.c
@@ -862,7 +868,7 @@ set(ZLASRC
    zlanhe.c
    zlanhp.c zlanhs.c zlanht.c zlansb.c zlansp.c zlansy.c zlantb.c
    zlantp.c zlantr.c zlapll.c zlapmt.c zlaqgb.c zlaqge.c
-   zlaqhb.c zlaqhe.c zlaqhp.c zlaqp2.c zlaqps.c zlaqsb.c
+   zlaqhb.c zlaqhe.c zlaqhp.c zlaqp2.c zlaqp2rk.c zlaqp3rk.c zlaqps.c zlaqsb.c
    zlaqr0.c zlaqr1.c zlaqr2.c zlaqr3.c zlaqr4.c zlaqr5.c
    zlaqsp.c zlaqsy.c zlar1v.c zlar2v.c ilazlr.c ilazlc.c
    zlarcm.c zlarf.c  zlarfb.c zlarfb_gett.c
@@ -876,7 +882,7 @@ set(ZLASRC
    zposv.c  zposvx.c zpotrf2.c zpotri.c zpotrs.c zpstrf.c zpstf2.c
    zppcon.c zppequ.c zpprfs.c zppsv.c  zppsvx.c zpptrf.c zpptri.c zpptrs.c
    zptcon.c zpteqr.c zptrfs.c zptsv.c  zptsvx.c zpttrf.c zpttrs.c zptts2.c
-   zrot.c   zspcon.c zsprfs.c zspsv.c
+   zrot.c zrscl.c  zspcon.c zsprfs.c zspsv.c
    zspsvx.c zsptrf.c zsptri.c zsptrs.c zdrscl.c zstedc.c
    zstegr.c zstein.c zsteqr.c zsycon.c
    zsyrfs.c zsysv.c  zsysvx.c zsytf2.c zsytrf.c zsytri.c
@@ -913,7 +919,8 @@ set(ZLASRC
    zheevd_2stage.c zheev_2stage.c zheevx_2stage.c zheevr_2stage.c
    zhbev_2stage.c zhbevx_2stage.c zhbevd_2stage.c zhegv_2stage.c
    zgesvdq.c zlaunhr_col_getrfnp.c zlaunhr_col_getrfnp2.c
-   zungtsqr.c zungtsqr_row.c zunhr_col.c zlatrs3.c ztrsyl3.c zgelst.c)
+   zungtsqr.c zungtsqr_row.c zunhr_col.c zlatrs3.c ztrsyl3.c zgelst.c
+   zgedmd.c zgedmdq.c)
 
 set(ZXLASRC zgesvxx.c zgerfsx.c zla_gerfsx_extended.c zla_geamv.c
    zla_gercond_c.c zla_gercond_x.c zla_gerpvgrw.c zsysvxx.c zsyrfsx.c
@@ -930,19 +937,25 @@ if(USE_XBLAS)
   set(ALLXOBJ ${SXLASRC} ${DXLASRC} ${CXLASRC} ${ZXLASRC})
 endif()
 
+if(BUILD_LAPACK_DEPRECATED)
 list(APPEND SLASRC DEPRECATED/sgegs.c DEPRECATED/sgegv.c
+  DEPRECATED/sgelqs.c DEPRECATED/sgeqrs.c
   DEPRECATED/sgeqpf.c DEPRECATED/sgelsx.c DEPRECATED/sggsvd.c
   DEPRECATED/sggsvp.c DEPRECATED/slahrd.c DEPRECATED/slatzm.c DEPRECATED/stzrqf.c)
 list(APPEND DLASRC DEPRECATED/dgegs.c DEPRECATED/dgegv.c
+  DEPRECATED/dgelqs.c DEPRECATED/dgeqrs.c
   DEPRECATED/dgeqpf.c DEPRECATED/dgelsx.c DEPRECATED/dggsvd.c
   DEPRECATED/dggsvp.c DEPRECATED/dlahrd.c DEPRECATED/dlatzm.c DEPRECATED/dtzrqf.c)
 list(APPEND CLASRC DEPRECATED/cgegs.c DEPRECATED/cgegv.c
+  DEPRECATED/cgelqs.c DEPRECATED/cgeqrs.c
   DEPRECATED/cgeqpf.c DEPRECATED/cgelsx.c DEPRECATED/cggsvd.c
   DEPRECATED/cggsvp.c DEPRECATED/clahrd.c DEPRECATED/clatzm.c DEPRECATED/ctzrqf.c)
 list(APPEND ZLASRC DEPRECATED/zgegs.c DEPRECATED/zgegv.c
+  DEPRECATED/zgelqs.c DEPRECATED/zgeqrs.c
   DEPRECATED/zgeqpf.c DEPRECATED/zgelsx.c DEPRECATED/zggsvd.c
   DEPRECATED/zggsvp.c DEPRECATED/zlahrd.c DEPRECATED/zlatzm.c DEPRECATED/ztzrqf.c)
 message(STATUS "Building deprecated routines")
+endif()
 
 set(DSLASRC spotrs.c)
 

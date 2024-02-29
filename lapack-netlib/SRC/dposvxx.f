@@ -88,7 +88,7 @@
 *>    where U is an upper triangular matrix and L is a lower triangular
 *>    matrix.
 *>
-*>    3. If the leading i-by-i principal minor is not positive definite,
+*>    3. If the leading principal minor of order i is not positive,
 *>    then the routine returns with INFO = i. Otherwise, the factored
 *>    form of A is used to estimate the condition number of the matrix
 *>    A (see argument RCOND).  If the reciprocal of the condition number

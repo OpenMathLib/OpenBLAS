@@ -420,7 +420,7 @@
                   A( J, K ) = CONJG( A( P, J ) )
                   A( P, J ) = T
    14          CONTINUE
-*              (3) Swap and conjugate corner elements at row-col interserction
+*              (3) Swap and conjugate corner elements at row-col intersection
                A( P, K ) = CONJG( A( P, K ) )
 *              (4) Swap diagonal elements at row-col intersection
                R1 = REAL( A( K, K ) )
@@ -441,7 +441,7 @@
                   A( J, KK ) = CONJG( A( KP, J ) )
                   A( KP, J ) = T
    15          CONTINUE
-*              (3) Swap and conjugate corner elements at row-col interserction
+*              (3) Swap and conjugate corner elements at row-col intersection
                A( KP, KK ) = CONJG( A( KP, KK ) )
 *              (4) Swap diagonal elements at row-col intersection
                R1 = REAL( A( KK, KK ) )
@@ -733,7 +733,7 @@
                   A( J, K ) = CONJG( A( P, J ) )
                   A( P, J ) = T
    44          CONTINUE
-*              (3) Swap and conjugate corner elements at row-col interserction
+*              (3) Swap and conjugate corner elements at row-col intersection
                A( P, K ) = CONJG( A( P, K ) )
 *              (4) Swap diagonal elements at row-col intersection
                R1 = REAL( A( K, K ) )
@@ -754,7 +754,7 @@
                   A( J, KK ) = CONJG( A( KP, J ) )
                   A( KP, J ) = T
    45          CONTINUE
-*              (3) Swap and conjugate corner elements at row-col interserction
+*              (3) Swap and conjugate corner elements at row-col intersection
                A( KP, KK ) = CONJG( A( KP, KK ) )
 *              (4) Swap diagonal elements at row-col intersection
                R1 = REAL( A( KK, KK ) )

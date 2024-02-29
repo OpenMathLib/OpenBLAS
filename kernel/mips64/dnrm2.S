@@ -81,7 +81,7 @@
 	blez	N, .L999
 	MTC	$0,  s1
 
-	blez	INCX, .L999
+	beqz	INCX, .L999
 	dsll	INCX, INCX, BASE_SHIFT
 
 	move	XX, X

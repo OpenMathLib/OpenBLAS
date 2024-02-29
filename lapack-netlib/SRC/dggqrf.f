@@ -173,7 +173,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup doubleOTHERcomputational
+*> \ingroup ggqrf
 *
 *> \par Further Details:
 *  =====================
@@ -250,7 +250,7 @@
       NB2 = ILAENV( 1, 'DGERQF', ' ', N, P, -1, -1 )
       NB3 = ILAENV( 1, 'DORMQR', ' ', N, M, P, -1 )
       NB = MAX( NB1, NB2, NB3 )
-      LWKOPT = MAX( N, M, P )*NB
+      LWKOPT = MAX( 1, MAX( N, M, P )*NB )
       WORK( 1 ) = LWKOPT
       LQUERY = ( LWORK.EQ.-1 )
       IF( N.LT.0 ) THEN
@@ -287,6 +287,7 @@
 *     RQ factorization of N-by-P matrix B: B = T*Z.
 *
       CALL DGERQF( N, P, B, LDB, TAUB, WORK, LWORK, INFO )
+*
       WORK( 1 ) = MAX( LOPT, INT( WORK( 1 ) ) )
 *
       RETURN

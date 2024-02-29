@@ -1,4 +1,7 @@
-#if (( defined(__GNUC__)  && __GNUC__   > 6 ) || (defined(__clang__) && __clang_major__ >= 6)) && defined(__AVX2__)
+#ifdef __NVCOMPILER
+#define NVCOMPVERS ( __NVCOMPILER_MAJOR__ * 100 + __NVCOMPILER_MINOR__ )
+#endif
+#if (( defined(__GNUC__)  && __GNUC__   > 6 && defined(__AVX2__)) || (defined(__clang__) && __clang_major__ >= 6)) || (defined(__NVCOMPILER) && NVCOMPVERS >= 2203 )
 
 #define HAVE_SASUM_KERNEL 1
 

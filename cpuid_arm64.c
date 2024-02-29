@@ -267,8 +267,10 @@ int detect(void)
 	}
 #else
 #ifdef __APPLE__
-	sysctlbyname("hw.cpufamily",&value,&length,NULL,0);
-	if (value ==131287967|| value == 458787763 ) return CPU_VORTEX;
+	sysctlbyname("hw.cpufamily",&value64,&length64,NULL,0);
+	if (value64 ==131287967|| value64 == 458787763 ) return CPU_VORTEX; //A12/M1
+	if (value64 == 3660830781) return CPU_VORTEX; //A15/M2
+	if (value64 == 2271604202) return CPU_VORTEX; //A16/M3
 #endif
 	return CPU_ARMV8;	
 #endif

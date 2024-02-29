@@ -204,7 +204,7 @@
 *>          Not modified.
 *>
 *>  D1      REAL array, dimension (max(NN))
-*>          The eigenvalues of A, as computed by CSTEQR simlutaneously
+*>          The eigenvalues of A, as computed by CSTEQR simultaneously
 *>          with Z.  On exit, the eigenvalues in D1 correspond with the
 *>          matrix in A.
 *>          Modified.
@@ -393,8 +393,8 @@
 *     .. External Subroutines ..
       EXTERNAL           ALASVM, CHBEV, CHBEVD, CHBEVX, CHEEV, CHEEVD,
      $                   CHEEVR, CHEEVX, CHET21, CHET22, CHPEV, CHPEVD,
-     $                   CHPEVX, CLACPY, CLASET, CLATMR, CLATMS, SLABAD,
-     $                   SLAFTS, XERBLA
+     $                   CHPEVX, CLACPY, CLASET, CLATMR, CLATMS, SLAFTS,
+     $                   XERBLA
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          ABS, INT, LOG, MAX, MIN, REAL, SQRT
@@ -451,7 +451,6 @@
 *
       UNFL = SLAMCH( 'Safe minimum' )
       OVFL = SLAMCH( 'Overflow' )
-      CALL SLABAD( UNFL, OVFL )
       ULP = SLAMCH( 'Epsilon' )*SLAMCH( 'Base' )
       ULPINV = ONE / ULP
       RTUNFL = SQRT( UNFL )

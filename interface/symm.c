@@ -166,7 +166,7 @@ void NAME(char *SIDE, char *UPLO,
   int nodes;
 #endif
 # if defined(SMP)
-  int MN;
+  double MN;
 #endif
   blasint info;
   int side;
@@ -264,7 +264,7 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_SIDE Side, enum CBLAS_UPLO Uplo,
   int nodes;
 #endif
 #if defined(SMP)
-  int MN;
+  double MN;
 #endif
 
   PRINT_DEBUG_CNAME;
