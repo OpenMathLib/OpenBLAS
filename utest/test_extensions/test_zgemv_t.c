@@ -126,7 +126,7 @@ static double check_zgemv(char api, char order, char trans, blasint m, blasint n
     drand_generate(data_zgemv_t.y_test, m * inc_y * 2);
 
     // Copy vector y for reference funcs
-    for (int i = 0; i < m * inc_y * 2; i++)
+    for (i = 0; i < m * inc_y * 2; i++)
     {
         data_zgemv_t.y_verify[i] = data_zgemv_t.y_test[i];
     }

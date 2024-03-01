@@ -5,6 +5,24 @@
 TOPDIR = ..
 include $(TOPDIR)/Makefile.system
 
+SUPPORT_GEMM3M = 0
+
+ifeq ($(ARCH), x86)
+SUPPORT_GEMM3M = 1
+endif
+
+ifeq ($(ARCH), x86_64)
+SUPPORT_GEMM3M = 1
+endif
+
+ifeq ($(ARCH), ia64)
+SUPPORT_GEMM3M = 1
+endif
+
+ifeq ($(ARCH), MIPS)
+SUPPORT_GEMM3M = 1
+endif
+
 override CFLAGS += -DADD$(BU) -DCBLAS
 ifeq ($(F_COMPILER),GFORTRAN)
 	override FFLAGS += -fno-tree-vectorize
@@ -144,9 +162,15 @@ all3targets += xdcblat3
 endif
 ifeq ($(BUILD_COMPLEX),1)
 all3targets += xccblat3
+ifeq ($(SUPPORT_GEMM3M),1)
+all3targets += xccblat3_3m
+endif
 endif
 ifeq ($(BUILD_COMPLEX16),1)
 all3targets += xzcblat3
+ifeq ($(SUPPORT_GEMM3M),1)
+all3targets += xzcblat3_3m
+endif
 endif
 
 all3: $(all3targets)
@@ -181,9 +205,9 @@ endif
 endif
 endif
 
-all3_3m: xzcblat3_3m xccblat3_3m
+ifeq ($(SUPPORT_GEMM3M),1)
 ifeq ($(USE_OPENMP), 1)
-ifeq ($(BUILD_SINGLE),1)
+ifeq ($(BUILD_COMPLEX),1)
 	OMP_NUM_THREADS=2 ./xccblat3_3m < cin3_3m
 endif
 ifeq ($(BUILD_COMPLEX16),1)
@@ -195,6 +219,7 @@ ifeq ($(BUILD_COMPLEX),1)
 endif
 ifeq ($(BUILD_COMPLEX16),1)
 	OPENBLAS_NUM_THREADS=2 ./xzcblat3_3m < zin3_3m
+endif
 endif
 endif
 
@@ -271,8 +296,10 @@ xccblat2: $(ctestl2o) c_cblat2.o $(TOPDIR)/$(LIBNAME)
 	$(FC) $(FLDFLAGS) -o xccblat2 c_cblat2.o $(ctestl2o) $(LIB) $(EXTRALIB) $(CEXTRALIB)
 xccblat3: $(ctestl3o) c_cblat3.o $(TOPDIR)/$(LIBNAME)
 	$(FC) $(FLDFLAGS) -o xccblat3 c_cblat3.o $(ctestl3o) $(LIB) $(EXTRALIB) $(CEXTRALIB)
+ifeq ($(SUPPORT_GEMM3M),1)
 xccblat3_3m: $(ctestl3o_3m) c_cblat3_3m.o $(TOPDIR)/$(LIBNAME)
 	$(FC) $(FLDFLAGS) -o xccblat3_3m c_cblat3_3m.o $(ctestl3o_3m) $(LIB) $(EXTRALIB) $(CEXTRALIB)
+endif
 else
 xccblat1: $(ctestl1o) c_cblat1c.o $(TOPDIR)/$(LIBNAME)
 	$(CC) $(CFLAGS) -o xccblat1 c_cblat1c.o $(ctestl1o) $(LIB) $(CEXTRALIB) $(filter-out -lgfortran,$(EXTRALIB)) 
@@ -280,6 +307,10 @@ xccblat2: $(ctestl2o) c_cblat2c.o $(TOPDIR)/$(LIBNAME)
 	$(CC) $(CFLAGS) -o xccblat2 c_cblat2c.o $(ctestl2o) $(LIB) $(CEXTRALIB) $(filter-out -lgfortran,$(EXTRALIB))
 xccblat3: $(ctestl3o) c_cblat3c.o $(TOPDIR)/$(LIBNAME)
 	$(CC) $(CFLAGS) -o xccblat3 c_cblat3c.o $(ctestl3o) $(LIB) $(CEXTRALIB) $(filter-out -lgfortran,$(EXTRALIB))
+ifeq ($(SUPPORT_GEMM3M),1)
+xccblat3_3m: $(ctestl3o_3m) c_cblat3c_3m.o $(TOPDIR)/$(LIBNAME)
+	$(CC) $(CFLAGS) -o xccblat3_3m c_cblat3c_3m.o $(ctestl3o_3m) $(LIB) $(EXTRALIB) $(CEXTRALIB)
+endif
 endif
 endif
 
@@ -293,8 +324,10 @@ xzcblat2: $(ztestl2o) c_zblat2.o $(TOPDIR)/$(LIBNAME)
 	$(FC) $(FLDFLAGS) -o xzcblat2 c_zblat2.o $(ztestl2o) $(LIB) $(EXTRALIB) $(CEXTRALIB)
 xzcblat3: $(ztestl3o) c_zblat3.o $(TOPDIR)/$(LIBNAME)
 	$(FC) $(FLDFLAGS) -o xzcblat3 c_zblat3.o $(ztestl3o) $(LIB) $(EXTRALIB) $(CEXTRALIB)
+ifeq ($(SUPPORT_GEMM3M),1)
 xzcblat3_3m: $(ztestl3o_3m) c_zblat3_3m.o $(TOPDIR)/$(LIBNAME)
 	$(FC) $(FLDFLAGS) -o xzcblat3_3m c_zblat3_3m.o $(ztestl3o_3m) $(LIB) $(EXTRALIB) $(CEXTRALIB)
+endif
 else
 xzcblat1: $(ztestl1o) c_zblat1c.o $(TOPDIR)/$(LIBNAME)
 	$(CC) $(CFLAGS) -o xzcblat1 c_zblat1c.o $(ztestl1o) $(LIB) $(CEXTRALIB) $(filter-out -lgfortran,$(EXTRALIB)) 
@@ -302,6 +335,10 @@ xzcblat2: $(ztestl2o) c_zblat2c.o $(TOPDIR)/$(LIBNAME)
 	$(CC) $(CFLAGS) -o xzcblat2 c_zblat2c.o $(ztestl2o) $(LIB) $(CEXTRALIB) $(filter-out -lgfortran,$(EXTRALIB))
 xzcblat3: $(ztestl3o) c_zblat3c.o $(TOPDIR)/$(LIBNAME)
 	$(CC) $(CFLAGS) -o xzcblat3 c_zblat3c.o $(ztestl3o) $(LIB) $(CEXTRALIB) $(filter-out -lgfortran,$(EXTRALIB))
+ifeq ($(SUPPORT_GEMM3M),1)
+xzcblat3_3m: $(ztestl3o_3m) c_zblat3c_3m.o $(TOPDIR)/$(LIBNAME)
+	$(CC) $(CFLAGS) -o xzcblat3_3m c_zblat3c_3m.o $(ztestl3o_3m) $(LIB) $(EXTRALIB) $(CEXTRALIB)
+endif
 endif
 endif
 

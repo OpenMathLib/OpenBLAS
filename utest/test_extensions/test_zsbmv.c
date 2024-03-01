@@ -188,7 +188,7 @@ static double check_zsbmv(char uplo, blasint n, blasint k, double *alpha, blasin
     char trans = 'N';
 
     // Symmetric band packed matrix for sbmv
-    double a[lda * n * 2];
+    double *a = (double*) malloc(lda * n * 2 * sizeof(double));
 
     // Fill symmetric packed matrix sp_matrix, vector b_test, vector c_test 
     drand_generate(data_zsbmv.sp_matrix, n * (n + 1));
@@ -213,6 +213,7 @@ static double check_zsbmv(char uplo, blasint n, blasint k, double *alpha, blasin
     BLASFUNC(zsbmv)(&uplo, &n, &k, alpha, a, &lda,
                     data_zsbmv.b_test, &inc_b, beta, data_zsbmv.c_test, &inc_c);
 
+    free(a);
     // Find the differences between output vector caculated by zsbmv and zgemv
     for (i = 0; i < n * inc_c * 2; i++)
         data_zsbmv.c_test[i] -= data_zsbmv.c_verify[i];
