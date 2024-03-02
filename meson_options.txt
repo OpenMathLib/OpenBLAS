@@ -1,0 +1,31 @@
+# From CMakeLists
+option('build_without_lapack', type: 'boolean', value: false, description: 'Do not build LAPACK and LAPACKE (Only BLAS or CBLAS)')
+option('build_lapack_deprecated', type: 'boolean', value: true, description: 'When building LAPACK, include also some older, deprecated routines')
+option('build_testing', type: 'boolean', value: true, description: 'Build LAPACK testsuite when building LAPACK')
+option('use_c_lapack', type: 'boolean', value: false, description: 'Build LAPACK from C sources instead of the original Fortran')
+option('build_without_cblas', type: 'boolean', value: false, description: 'Do not build the C interface (CBLAS) to the BLAS functions')
+option('use_locking', type: 'boolean', value: false, description: 'Use locks even in single-threaded builds to make them callable from multiple threads')
+option('use_perl', type: 'boolean', value: false, description: 'Use the older PERL scripts for build preparation instead of universal shell scripts')
+option('no_warmup', type: 'boolean', value: true, description: 'Do not run a benchmark on each startup just to find the best location for the memory buffer')
+option('no_affinity', type: 'boolean', value: true, description: 'Disable support for CPU affinity masks to avoid binding processes from e.g. R or numpy/scipy to a single core')
+option('build_cpp_thread_safety_test', type: 'boolean', value: false, description: 'Run a massively parallel DGEMM test to confirm thread safety of the library (requires OpenMP and about 1.3GB of RAM)')
+option('build_cpp_thread_safety_gemv', type: 'boolean', value: false, description: 'Run a massively parallel DGEMV test to confirm thread safety of the library (requires OpenMP)')
+option('build_static_libs', type: 'boolean', value: false, description: 'Build static library')
+
+# From Makefile
+option('dynamic_arch', type: 'boolean', value: false, description: 'Include support for multiple CPU targets, with automatic selection at runtime (x86/x86_64, aarch64 or ppc only)')
+option('dynamic_older', type: 'boolean', value: false, description: 'Include specific support for older x86 cpu models (Penryn,Dunnington,Atom,Nano,Opteron) with DYNAMIC_ARCH')
+option('no_lapack', type: 'boolean', value: false, description: 'Disable LAPACK')
+option('build_relapack', type: 'boolean', value: false, description: 'Build with ReLAPACK (recursive implementation of several LAPACK functions on top of standard LAPACK)')
+option('no_fortran', type: 'boolean', value: false, description: 'Disable Fortran compiler usage')
+
+# From Makefile.system
+option('relapack_replace', type: 'boolean', value: false, description: 'Replace RELAPACK functions')
+option('build_single', type: 'boolean', value: true, description: 'Build single precision')
+option('build_double', type: 'boolean', value: true, description: 'Build double precision')
+option('build_complex', type: 'boolean', value: true, description: 'Build complex precision')
+option('build_complex16', type: 'boolean', value: true, description: 'Build double complex precision')
+
+# From lapack-netlib
+option('realkind', type : 'string', value : 'd',
+  description : 's: real32  d: real64  c: complex32  z: complex64')

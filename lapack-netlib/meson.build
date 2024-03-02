@@ -2,26 +2,11 @@
 # meson compile -C build
 # meson install --prefix=$HOME/.local/lapack
 
-project('LAPACK', 'fortran',
-  default_options : ['default_library=static', 'libdir=lib/'],
-  version : '3.8.0')
+lapack_major_version = 3 # soversion
+lapack_minor_version = 12
+lapack_patch_version = 0
+lapack_version = f'@lapack_major_version@.@lapack_minor_version@.@lapack_patch_version@'
 
-subdir('BLAS/SRC')
+subdir('BLAS/SRC') # Defines blas
 subdir('SRC')
-
-prec = get_option('realkind')
-
-
-if prec == 'd'
-  bsrc = DBLAS1 + DBLAS2 + DBLAS3
-  lsrc = DZLAUX + DSLASRC
-elif prec == 's'
-  bsrc = SBLAS1 + SBLAS2 + SBLAS3
-  lsrc = SCLAUX + SLASRC
-endif
-
-blas = library('blas', bsrc,
-  install : true)
-
-lapack = library('lapack', lsrc, ALLAUX,
-  install : true)
+subdir('INSTALL')
