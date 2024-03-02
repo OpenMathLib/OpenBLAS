@@ -40,6 +40,7 @@ build_single = get_option('build_single')
 build_double = get_option('build_double')
 build_complex = get_option('build_complex')
 build_complex16 = get_option('build_complex16')
+build_all_prec = get_option('build_all_prec')
 
 # _allblas -- Auxiliary routines for Level 2 and 3 BLAS
 _allblas = library('_allblas',
@@ -270,16 +271,18 @@ _cblas3 = [
 ]
 
 # Start making the blas target
-if build_complex
+if build_complex or build_all_prec
   _blas_netlib_srcs += _cblas1 + _cb1aux + _cblas2 + _cblas3
 endif
-if build_complex16
+if build_complex16 or build_all_prec
   _blas_netlib_srcs += _zblas1 + _zb1aux + _zblas2 + _zblas3
 endif
 
-if prec == 'd' or build_double
+if prec == 'd' or build_double or build_all_prec
   _blas_netlib_srcs += _dblas1 + _dblas2 + _dblas3
-elif prec == 's' or build_single
+endif
+
+if prec == 's' or build_single or build_all_prec
   _blas_netlib_srcs += _sblas1 + _sblas2 + _sblas3
 endif
 
