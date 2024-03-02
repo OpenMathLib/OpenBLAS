@@ -3,13 +3,6 @@
 # _install_aux -- Auxiliary function library
 # _int_cpu_time -- Timing library, Fortran only
 #
-
-prec = get_option('realkind')
-build_single = get_option('build_single')
-build_double = get_option('build_double')
-build_all_prec = get_option('build_all_prec')
-use_c_lapack = get_option('use_c_lapack')
-
 # C / Fortran
 _install_aux_srcs = []
 _ia_linkwith = []

@@ -33,3 +33,10 @@ option('realkind', type : 'string', value : 'd',
 # Meson only
 # This is the equivalent of producing all precisions via make all inside lapack-netlib/blas/src
 option('build_all_prec', type: 'boolean', value: true, description: 'Build all precisions')
+
+# For naming netlib libraries
+option('netlib_blas_name', type: 'string', value: 'refblas', description: 'Name for the Netlib BLAS library')
+option('netlib_cblas_name', type: 'string', value: 'clbas', description: 'Name for the Netlib CBLAS library')
+option('netlib_lapack_name', type: 'string', value: 'lapack', description: 'Name for the Netlib LAPACK library')
+option('netlib_tmglib_name', type: 'string', value: 'tmglib', description: 'Name for the Netlib TMGLIB library')
+option('netlib_lapacke_name', type: 'string', value: 'lapacke', description: 'Name for the Netlib LAPACKE library')
