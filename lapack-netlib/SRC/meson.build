@@ -1,3 +1,25 @@
+# Relevant groups and variables:
+#
+# _allaux -- Auxiliary routines called from all precisions
+#
+# _slaux -- Auxiliary routines called from single precision
+# _dzlaux -- Auxiliary routines called from double precision
+#
+# _dslasrc -- Double-single mixed precision real routines called from single, single-extra, and double precision real LAPACK routines (SLASRC, SXLASRC, DLASRC)
+# _zclasrc -- Double-single mixed precision complex routines called from single, single-extra, and double precision complex LAPACK routines (CLASRC, CXLASRC, ZLASRC)
+#
+# _slasrc -- Single precision real LAPACK routines
+# _sxlasrc -- Single precision real LAPACK routines using extra precision
+# _clasrc -- Single precision complex LAPACK routines
+# _cxlasrc -- Single precision complex LAPACK routines using extra precision
+#
+# _dlasrc -- Double precision real LAPACK routines
+# _dxlasrc -- Double precision real LAPACK routines using extra precision
+# _zlasrc -- Double precision complex LAPACK routines
+# _zxlasrc -- Double precision complex LAPACK routines using extra precision
+#
+# _deprecated -- Deprecated routines in all precisions
+
 ALLAUX = files(
     'ilaenv.f',
     'ilaenv2stage.f',
