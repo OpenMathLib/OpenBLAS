@@ -1,14 +1,19 @@
-project('OpenBLAS', ['c', 'fortran'], default_options: ['c_std=c99'])
+# Conventions:
+# _ implies that the variables are not meant to be used outside here
+# Optionals are applied from the top-level meson_options.txt
+# They are declared at the top
+# Typically derived from (in order) the CMakeLists.txt and Makefiles
+#
+# Installation:
+# meson setup build --buildtype release
+# meson compile -C build
+# meson install --prefix=$HOME/.local/lapack
+#
+# NOTE: This is still a work in progress, the Makefiles are canonical
+project('OpenBLAS', ['c'], default_options: ['c_std=c99'])
 
 # Skip the check for valid CC
 cc = meson.get_compiler('c')
-
-# Conditional?
-add_languages('fortran', native: false)
-ff = meson.get_compiler('fortran')
-if ff.has_argument('-Wno-conversion')
-  add_project_arguments('-Wno-conversion', language: 'fortran')
-endif
 
 # Makefile.system
 # Ignoring all the hostarch checks and conflits for arch in BSD for now

@@ -1,8 +1,3 @@
-# Conventions:
-# _ implies that the variables are not meant to be used outside here
-# Optionals are applied from the top-level meson_options.txt
-# They are declared at the top
-#
 # Derived from the CMakeLists.txt
 #
 # Relevant groups and variables:
