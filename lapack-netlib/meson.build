@@ -10,5 +10,5 @@ lapack_patch_version = 0
 lapack_version = f'@lapack_major_version@.@lapack_minor_version@.@lapack_patch_version@'
 
 subdir('BLAS/SRC') # Defines blas and _allblas
-subdir('INSTALL') # Defines _install_aux
+subdir('INSTALL') # Defines _install_aux and _int_cpu_time
 subdir('SRC') # Defines lapack
