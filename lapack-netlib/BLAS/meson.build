@@ -5,3 +5,8 @@ _netlib_tmglib_name = get_option('netlib_tmglib_name')
 _netlib_lapacke_name = get_option('netlib_lapacke_name')
 
 subdir('SRC')
+
+build_testing = get_option('build_testing')
+if build_testing
+  subdir('TESTING')
+endif
