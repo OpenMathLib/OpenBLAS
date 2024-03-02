@@ -7,17 +7,22 @@
 prec = get_option('realkind')
 build_single = get_option('build_single')
 build_double = get_option('build_double')
-build_complex = get_option('build_complex')
-build_complex16 = get_option('build_complex16')
 build_all_prec = get_option('build_all_prec')
 use_c_lapack = get_option('use_c_lapack')
 
 # C / Fortran
 _install_aux_srcs = []
+_ia_linkwith = []
 
 if not use_c_lapack
   _int_cpu_srcs = [] # Fortran only
   _install_aux_srcs += ['ilaver.f']
+  _ia_linkwith = _allblas # Includes lsame.f
+  # TODO: Delete the one in install in favor of the one from BLAS
+  # The meson build uses the BLAS variant anyway
+  # lsame.f is the same modulo formatting changes as the one in blas/src/lsame.f
+  # lsame.f claims to be from lapack 3.7.0 and has more whitespace but is
+  # otherwise identical to the reference from blas 3.1
 
   if prec == 'd' or build_double or build_all_prec
     _int_cpu_srcs += [
@@ -44,7 +49,7 @@ if not use_c_lapack
                      soversion: lapack_major_version,
                      install: true)
 else
-  _install_aux_srcs += ['ilaver.c']
+  _install_aux_srcs += ['ilaver.c', 'lsame.c']
 
   if prec == 'd' or build_double or build_all_prec
     _install_aux_srcs += [
@@ -61,7 +66,8 @@ else
 endif
 
 _install_aux = library('_install_aux',
-                       sources: install_aux_srcs,
+                       sources: _install_aux_srcs,
+                       link_with: _ia_linkwith,
                        version: lapack_version,
                        soversion: lapack_major_version,
                        install: true)
