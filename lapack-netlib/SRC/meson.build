@@ -13,7 +13,6 @@ ALLAUX = files(
     'iladiag.f',
     'chla_transtype.f',
     '../INSTALL/ilaver.f',
-    '../INSTALL/lsame.f',
     '../INSTALL/slamch.f',
 )
 
@@ -171,7 +170,6 @@ DZLAUX = files(
     'disnan.f',
     'dlartgp.f',
     'dlartgs.f',
-    '../INSTALL/dlamch.f',
     '../INSTALL/dsecnd_INT_CPU_TIME.f',
 )
 
@@ -533,6 +531,7 @@ SLASRC = files(
     'sgelqt3.f',
     'sgemlqt.f',
     'sgetsls.f',
+    'sgetrf.f',
     'sgeqr.f',
     'slatsqr.f',
     'slamtsqr.f',
@@ -560,4 +559,4 @@ SLASRC = files(
     'scombssq.f',
 )
 
-DSLASRC = files('spotrs.f', 'sgetrs.f', 'spotrf.f', 'sgetrf.f')
+DSLASRC = files('spotrs.f', 'sgetrs.f', 'spotrf.f')
