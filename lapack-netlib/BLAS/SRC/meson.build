@@ -30,13 +30,6 @@
 # _sblas3 -- Single precision real BLAS3 routines
 # _cblas3 -- Single precision complex BLAS3 routines
 
-prec = get_option('realkind')
-build_single = get_option('build_single')
-build_double = get_option('build_double')
-build_complex = get_option('build_complex')
-build_complex16 = get_option('build_complex16')
-build_all_prec = get_option('build_all_prec')
-
 # _allblas -- Auxiliary routines for Level 2 and 3 BLAS
 _allblas = library('_allblas',
                    sources: [ 'lsame.f', 'xerbla.f', 'xerbla_array.f' ])
@@ -282,7 +275,7 @@ if prec == 's' or build_single or build_all_prec
 endif
 
 # Create the blas library
-blas = library('blas',
+blas = library(_netlib_blas_name,
                sources: _blas_netlib_srcs,
                link_with: _allblas,
                version: lapack_version,
