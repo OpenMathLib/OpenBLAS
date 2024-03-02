@@ -19,6 +19,6 @@ build_all_prec = get_option('build_all_prec')
 use_c_lapack = get_option('use_c_lapack')
 
 # Sub-directories
-subdir('BLAS') # Defines blas and _allblas
+subdir('BLAS') # Defines netlib_blas and _allblas
 subdir('INSTALL') # Defines _install_aux and _int_cpu_time
-subdir('SRC') # Defines lapack
+subdir('SRC') # Defines netlib_lapack

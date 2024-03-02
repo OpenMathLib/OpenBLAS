@@ -275,7 +275,7 @@ if prec == 's' or build_single or build_all_prec
 endif
 
 # Create the blas library
-blas = library(_netlib_blas_name,
+netlib_blas = library(_netlib_blas_name,
                sources: _blas_netlib_srcs,
                link_with: _allblas,
                version: lapack_version,

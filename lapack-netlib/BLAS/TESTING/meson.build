@@ -48,7 +48,7 @@ foreach _test : _blas_noinput_test_array
   test(_test.get(0),
        executable(_test.get(1),
                   sources : [_test.get(2)],
-                  link_with : blas,
+                  link_with : netlib_blas,
                  ),
       )
 endforeach
@@ -57,7 +57,7 @@ endforeach
 #   test(_test.get(0),
 #        executable(_test.get(1),
 #                   sources : [_test.get(2)],
-#                   link_with : blas,
+#                   link_with : netlib_blas,
 #                  ),
 #        args: ['<', _test.get(3)],
 #        workdir : meson.source_root() + '/lapack-netlib/BLAS/TESTING/',
