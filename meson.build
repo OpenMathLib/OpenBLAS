@@ -24,7 +24,9 @@ cc = meson.get_compiler('c')
 
 # Makefile.system
 # Ignoring all the hostarch checks and conflits for arch in BSD for now
-subdir('lapack-netlib')
+_inc = include_directories('.')
+# subdir('lapack-netlib')
+subdir('interface')
 
 # System configuration
 build_single = get_option('build_single')
