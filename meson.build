@@ -10,7 +10,14 @@
 # meson install --prefix=$HOME/.local/lapack
 #
 # NOTE: This is still a work in progress, the Makefiles are canonical
-project('OpenBLAS', ['c'], default_options: ['c_std=c99'])
+project('OpenBLAS', 'c',
+        default_options: ['c_std=c99'],
+        version: '0.3.26.dev')
+
+openblas_major_version = 0 # soversion
+openblas_minor_version = 3
+openblas_patch_version = '26.dev'
+openblas_version = f'@openblas_major_version@.@openblas_minor_version@.@openblas_patch_version@'
 
 # Skip the check for valid CC
 cc = meson.get_compiler('c')
