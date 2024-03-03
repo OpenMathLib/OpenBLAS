@@ -29,6 +29,8 @@ option('build_complex16', type: 'boolean', value: true, description: 'Build doub
 # From lapack-netlib
 option('realkind', type : 'string', value : 'd',
   description : 's: real32  d: real64  c: complex32  z: complex64')
+option('use_xblas', type : 'boolean', value : false,
+  description : 'Build extended precision (needs XBLAS)')
 
 # Meson only
 # This is the equivalent of producing all precisions via make all inside lapack-netlib/blas/src
