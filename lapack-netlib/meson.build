@@ -17,6 +17,7 @@ build_complex = get_option('build_complex')
 build_complex16 = get_option('build_complex16')
 build_all_prec = get_option('build_all_prec')
 use_c_lapack = get_option('use_c_lapack')
+use_xblas = get_option('use_xblas')
 
 # Sub-directories
 subdir('BLAS') # Defines netlib_blas and _allblas
