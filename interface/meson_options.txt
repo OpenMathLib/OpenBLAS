@@ -1,0 +1,4 @@
+option('no_fblas', type: 'boolean', value: false, description: 'Disable FBLAS')
+option('build_bfloat16', type: 'boolean', value: false, description: 'Enable BFloat16 support')
+option('exprecision', type: 'boolean', value: false, description: 'Enable extended precision')
+option('quad_precision', type: 'boolean', value: false, description: 'Enable quad precision')
