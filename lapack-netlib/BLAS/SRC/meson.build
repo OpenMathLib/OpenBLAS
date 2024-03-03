@@ -259,10 +259,11 @@ _cblas3 = [
 ]
 
 # Start making the blas target
-if build_complex or build_all_prec
+if prec == 'c' or build_complex or build_all_prec
   _blas_netlib_srcs += _cblas1 + _cb1aux + _cblas2 + _cblas3
 endif
-if build_complex16 or build_all_prec
+
+if prec == 'z' or build_complex16 or build_all_prec
   _blas_netlib_srcs += _zblas1 + _zb1aux + _zblas2 + _zblas3
 endif
 

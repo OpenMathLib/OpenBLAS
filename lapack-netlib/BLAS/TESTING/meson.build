@@ -26,7 +26,7 @@ if prec == 'd' or build_double or build_all_prec
 endif
 
 
-if build_complex or build_all_prec
+if prec == 'c' or build_complex or build_all_prec
  _blas_noinput_test_array += [
    ['Test COMPLEX Level 1 BLAS', 'xblat1c', 'cblat1.f'],
  ]
@@ -36,7 +36,7 @@ if build_complex or build_all_prec
  ]
 endif
 
-if build_complex16 or build_all_prec
+if prec == 'z' or build_complex16 or build_all_prec
  _blas_noinput_test_array += [
    ['Test COMPLEX*16 Level 1 BLAS', 'xblat1z', 'zblat1.f'],
  ]
