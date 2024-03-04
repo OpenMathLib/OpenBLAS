@@ -98,6 +98,9 @@ DGEMMOTCOPYOBJ = dgemm_otcopy$(TSUFFIX).$(SUFFIX)
 DGEMVNKERNEL = dgemv_n_8_lasx.S
 DGEMVTKERNEL = dgemv_t_8_lasx.S
 
+DSYMV_U_KERNEL = dsymv_U_lasx.S
+DSYMV_L_KERNEL = dsymv_L_lasx.S
+
 SGEMMKERNEL  = sgemm_kernel_16x8_lasx.S
 SGEMMINCOPY  = sgemm_ncopy_16_lasx.S
 SGEMMITCOPY  = sgemm_tcopy_16_lasx.S
@@ -110,6 +113,9 @@ SGEMMOTCOPYOBJ = sgemm_otcopy$(TSUFFIX).$(SUFFIX)
 
 SGEMVNKERNEL = sgemv_n_8_lasx.S
 SGEMVTKERNEL = sgemv_t_8_lasx.S
+
+SSYMV_U_KERNEL = ssymv_U_lasx.S
+SSYMV_L_KERNEL = ssymv_L_lasx.S
 
 CGEMMKERNEL  = cgemm_kernel_16x4_lasx.S
 CGEMMINCOPY  = cgemm_ncopy_16_lasx.S
