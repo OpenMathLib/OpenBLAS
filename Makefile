@@ -168,8 +168,10 @@ ifndef NO_FBLAS
 	$(MAKE) -C test all
 endif
 endif
+ifneq ($(NO_UTEST), 1)
 ifneq ($(ONLY_CBLAS), 1)
 	$(MAKE) -C utest all
+endif
 endif
 ifneq ($(NO_CBLAS), 1)
 ifneq ($(ONLY_CBLAS), 1)
