@@ -78,7 +78,20 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif
 
 #include <stdio.h>
+#include <stdarg.h>
 #include <string.h>
+FILE *output_stream = NULL;
+int custom_printf(const char *format, ...) {
+    va_list args;
+    va_start(args, format);
+    int ret = vfprintf(output_stream, format, args);
+    va_end(args);
+    return ret;
+}
+
+// Redefine printf to custom_printf
+#define printf custom_printf
+
 #ifdef OS_WINDOWS
 #include <windows.h>
 #endif
@@ -1900,6 +1913,18 @@ static int get_num_cores(void) {
 }
 
 int main(int argc, char *argv[]){
+    char resp = argv[1][0];
+    if (argc > 1 && resp == '3') {
+        output_stream = fopen("config.h", "w");
+        if (!output_stream) {
+            perror("Failed to open config.h for writing");
+            return 1;
+        }
+        // Always generate config.h
+        resp = '1';
+    } else {
+        output_stream = stdout;
+    }
 
 #ifdef FORCE
   char buffer[8192], *p, *q;
@@ -1908,7 +1933,7 @@ int main(int argc, char *argv[]){
 
   if (argc == 1) return 0;
 
-  switch (argv[1][0]) {
+  switch (resp) {
 
   case '0' : /* for Makefile */
 
@@ -2075,7 +2100,11 @@ printf("ELF_VERSION=2\n");
     break;
   }
 
-  fflush(stdout);
+  fflush(output_stream);
+    // Close the file if it was opened
+    if (output_stream != stdout) {
+        fclose(output_stream);
+    }
 
   return 0;
 }
