@@ -22,12 +22,6 @@ openblas_version = f'@openblas_major_version@.@openblas_minor_version@.@openblas
 # Skip the check for valid CC
 cc = meson.get_compiler('c')
 
-# Makefile.system
-# Ignoring all the hostarch checks and conflits for arch in BSD for now
-_inc = include_directories('.')
-# subdir('lapack-netlib')
-subdir('interface')
-
 # System configuration
 build_single = get_option('build_single')
 build_double = get_option('build_double')
@@ -57,7 +51,33 @@ else
     no_affinity = false
 endif
 
-# Example for handling options:
-if build_without_lapack
-    # configure build to exclude LAPACK and LAPACKE
-endif
+# Makefile.prebuild stuff
+# TODO: Handle cpuidemu, and the target falgs
+getarch = executable('getarch',
+          ['getarch.c', 'cpuid.S'])
+getarch_two = executable('getarch_2nd',
+                         ['getarch_2nd.c'])
+config_h = custom_target('gen_config_h',
+                          # input: ['getarch.c'],
+                          output: ['config.h'],
+                          command: [getarch, '3']
+                          )
+
+# run_target('generate_config_h',
+#            command: [meson.current_build_dir() + '/getarch', '1'],
+#            depends: getarch)
+
+# gch = run_command(meson.current_build_dir() + '/getarch', '1')
+# outp = gch.stdout().strip()
+
+# conf_data = configuration_data()
+# configure_file(input : meson.current_build_dir() + '/config.h',
+#   output : 'config.h',
+#   configuration : conf_data)
+
+# Makefile.system
+# Ignoring all the hostarch checks and conflicts for arch in BSD for now
+_inc = include_directories('.')
+# subdir('lapack-netlib')
+subdir('interface')
+# subdir('kernel')
