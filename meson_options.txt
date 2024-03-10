@@ -32,6 +32,9 @@ option('realkind', type : 'string', value : 'd',
 option('use_xblas', type : 'boolean', value : false,
   description : 'Build extended precision (needs XBLAS)')
 
+# From interface/Makefile
+option('build_bfloat16', type: 'boolean', value: false, description: 'Build bfloat16')
+
 # Meson only
 # This is the equivalent of producing all precisions via make all inside lapack-netlib/blas/src
 option('build_all_prec', type: 'boolean', value: true, description: 'Build all precisions')
