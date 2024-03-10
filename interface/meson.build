@@ -1,5 +1,8 @@
 _kinds = []
-real_kinds = ['s', 'd', 'q']
+real_kinds = ['s', 'd']
+if get_option('exprecision')
+  real_kinds += 'q'
+endif
 complex_kinds = ['c', 'z', 'x']
 extended_kinds = ['dx', 'bf16']
 _rules = {
@@ -32,6 +35,10 @@ blas3_roots = [
   'gemmt'
 ]
 
+# addl_srcs = {
+#   'symm': '-DHEMM'
+# }
+
 # Generated
 # TODO: Generated the imax and max via use_abs use_min
 configurations = []
@@ -41,6 +48,10 @@ blas_roots += blas3_roots
 _kinds += real_kinds
 foreach blasi : blas_roots
   sfiles = blasi + '.c'
+  # defs = []
+  # if blasi in addl_srcs
+  #   defs += addl_srcs[blasi]
+  # endif
   foreach tkind : real_kinds
     name = tkind + blasi
     defs = []
