@@ -96,8 +96,8 @@ task:
   - export #LDFLAGS="-L/opt/homebrew/opt/llvm/lib"
   - export #CPPFLAGS="-I/opt/homebrew/opt/llvm/include" 
   - ls /System/Volumes/Data/opt/homebrew
-  - ls /System/Volumes/Data/opt/homebrew/Caskroom/android-ndk
-  - find /System/Volumes/Data/opt/homebrew/Caskroom/android-ndk -name "armv7a-linux-androideabi*-ranlib"
+  - ls -l /System/Volumes/Data/opt/homebrew/Caskroom/
+  - find /System/Volumes/Data/opt/homebrew -name "armv7a-linux-androideabi*-ranlib"
   - #export CC=/Applications/Xcode-13.4.1.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang
   - #export CFLAGS="-O2 -unwindlib=none -Wno-macro-redefined -isysroot /Applications/Xcode-13.4.1.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS16.0.sdk -arch arm64 -miphoneos-version-min=10.0"
   - export CC=/System/Volumes/Data/opt/homebrew/Caskroom/android-ndk/26c/AndroidNDK*.app/Contents/NDK/toolchains/llvm/prebuilt/darwin-x86_64/bin/armv7a-linux-androideabi23-clang
