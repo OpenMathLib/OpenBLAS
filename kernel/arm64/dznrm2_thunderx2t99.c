@@ -345,7 +345,7 @@ FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x)
 #endif
 	FLOAT ssq, scale;
 
-	if (n <= 0 || inc_x <= 0) return 0.0;
+	if (n <= 0 || inc_x == 0) return 0.0;
 
 #if defined(SMP)
 	if (n <= 10000)
