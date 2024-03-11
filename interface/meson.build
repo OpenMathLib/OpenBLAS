@@ -40,6 +40,7 @@ blas3_roots = [
 # }
 
 # Generated
+# NOTE: Remember to check sourcesets as a simpler mechanism
 # TODO: Generated the imax and max via use_abs use_min
 configurations = []
 blas_roots += blas1_roots
