@@ -52,16 +52,76 @@ else
 endif
 
 # Makefile.prebuild stuff
-# TODO: Handle cpuidemu, and the target falgs
-getarch = executable('getarch',
-          ['getarch.c', 'cpuid.S'])
-getarch_two = executable('getarch_2nd',
-                         ['getarch_2nd.c'])
-config_h = custom_target('gen_config_h',
-                          # input: ['getarch.c'],
-                          output: ['config.h'],
-                          command: [getarch, '3']
-                          )
+# TODO: Handle cpuidemu, and the target flags
+# getarch = executable('getarch',
+#           ['getarch.c', 'cpuid.S'])
+# getarch_two = executable('getarch_2nd',
+#                          ['getarch_2nd.c'])
+# config_h = custom_target('gen_config_h',
+#                           # input: ['getarch.c'],
+#                           output: ['config.h'],
+#                           command: [getarch, '3']
+#                           )
+
+_check_prefix = []
+conf_data = configuration_data()
+is_win = build_machine.system() == 'win'
+conf_data.set('OS_WINDOWS', is_win)
+
+getarch_array = [
+ # Redundant, we have build_machine.system() for windows
+ {'checks': ['WIN32', 'WIN64', 'CYGWIN32'], 'addl': ['_WIN64', '_WIN32'], 'name': 'Windows', 'def': ['OS_WINDOWS']},
+ {'checks': ['i386', 'x86_64'], 'addl': ['_M_IX86', '_M_X64'], 'name': 'Intel AMD', 'def': ['INTEL_AMD']},
+ {'checks': ['powerpc', 'ppc', 'POWERPC'], 'addl': ['__powerpc', 'powerpc', 'ppc', '_POWER'], 'name': 'PowerPC', 'def': ['POWER', 'ARCH_POWER']},
+ {'checks': ['zarch', 's390x'], 'name': 'zarch', 'def': ['ARCH_ZARCH', 'ZARCH']},
+ {'checks': ['ia64'], 'name': 'IA64', 'def': ['ARCH_IA64']},
+ {'name': 'Alpha', 'addl': ['__alpha'], 'def': ['ARCH_ALPHA']},
+ {'name': 'SPARC', 'addl': ['sparc'], 'def': ['ARCH_SPARC']},
+ {'checks': ['mips'], 'name': 'MIPS', 'def': ['ARCH_MIPS']},
+ {'name': 'MIPS 64', 'addl': ['__mips64'], 'def': ['ARCH_MIPS64']},
+ {'name': 'LOONGARCH 64', 'addl': ['__loongarch64'], 'def': ['ARCH_LOONGARCH64']},
+ {'name': 'RISCV 64', 'addl': ['__riscv'], 'def': ['ARCH_RISCV64']},
+ {'checks': ['arm'], 'name': 'ARM', 'def': ['ARCH_ARM']},
+ {'checks': ['aarch64'], 'name': 'ARM 64', 'def': ['ARCH_ARM64']},
+]
+
+foreach arch : getarch_array
+  check_str = ''
+  if arch.has_key('checks')
+    foreach check : arch['checks']
+      if check_str == ''
+        check_str += 'defined(__' + check + '__)'
+      else
+        check_str += ' || defined(__' + check + '__)'
+      endif
+    endforeach
+  endif
+  if arch.has_key('addl')
+    foreach check : arch['addl']
+      if check_str == ''
+        check_str += 'defined(' + check + ')'
+      else
+        check_str += ' || defined(' + check + ')'
+      endif
+    endforeach
+  endif
+
+  sname = arch['name']
+  code = f'''
+    #if !(@check_str@)
+    #error "Not @sname@"
+    #endif
+  '''
+  # message(code)
+
+  is_arch = cc.compiles(code, name: arch['name'])
+  foreach def : arch['def']
+    conf_data.set(def, is_arch)
+  endforeach
+endforeach
+
+configure_file(output : 'getarch_conf.h',
+               configuration : conf_data)
 
 # run_target('generate_config_h',
 #            command: [meson.current_build_dir() + '/getarch', '1'],
@@ -79,5 +139,5 @@ config_h = custom_target('gen_config_h',
 # Ignoring all the hostarch checks and conflicts for arch in BSD for now
 _inc = include_directories('.')
 # subdir('lapack-netlib')
-subdir('interface')
+# subdir('interface')
 # subdir('kernel')
