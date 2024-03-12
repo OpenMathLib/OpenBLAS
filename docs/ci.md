@@ -1,4 +1,4 @@
-# CI jobs overview
+# CI jobs
 
 | Arch|Target CPU|OS|Build system|XComp to|C Compiler|Fortran Compiler|threading|DYN_ARCH|INT64|Libraries| CI Provider| CPU  count|
 | ------------|---|---|-----------|-------------|----------|----------------|------|------------|----------|-----------|----------|-------|

@@ -2,40 +2,10 @@
 
 OpenBLAS is an optimized Basic Linear Algebra Subprograms (BLAS) library based on [GotoBLAS2](https://www.tacc.utexas.edu/research-development/tacc-software/gotoblas2) 1.13 BSD version.
 
+OpenBLAS implements low-level routines for performing linear algebra operations such as vector addition, scalar multiplication, dot products, linear combinations, and matrix multiplicationon. OpenBLAS makes these routines available on multiple popular platforms, covering desktop (Windows, Linux, Mac)  and mobile (Android, iOS) operating systems, as well as different architectures (namely x86 and ARM).
+
+The old GotoBLAS documentation can be found [on GitHub](https://github.com/OpenMathLib/OpenBLAS/blob/develop/GotoBLAS_01Readme.txt).
+
 ## License
 
-OpenBLAS is licensed under the 3-clause BSD license. Full license text follows:
-
-Copyright (c) 2011-2015, The OpenBLAS Project  
-All rights reserved.
-
-Redistribution and use in source and binary forms, with or without
-modification, are permitted provided that the following conditions are
-met:
-
-   1. Redistributions of source code must retain the above copyright
-      notice, this list of conditions and the following disclaimer.
-   2. Redistributions in binary form must reproduce the above copyright
-      notice, this list of conditions and the following disclaimer in
-      the documentation and/or other materials provided with the
-      distribution.
-   3. Neither the name of the OpenBLAS project nor the names of
-      its contributors may be used to endorse or promote products
-      derived from this software without specific prior written permission.
- 
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
-AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
-ARE DISCLAIMED. IN NO EVENT SHALL THE OPENBLAS PROJECT OR CONTRIBUTORS BE
-LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
-DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
-SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
-CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
-OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
-USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-## Acknowledgements
-
-This work is partially supported by 
-* Research and Development of Compiler System and Toolchain for Domestic CPU, National S&T Major Projects: Core Electronic Devices, High-end General Chips and Fundamental Software (No.2009ZX01036-001-002)
-* National High-tech R&D Program of China (Grant No.2012AA010903)
+OpenBLAS is licensed under the 3-clause BSD license. The full license can be found [on GitHub](https://github.com/OpenMathLib/OpenBLAS/blob/develop/LICENSE).

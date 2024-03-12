@@ -1,50 +1,10 @@
-# FAQ
+---
+title: FAQ
+---
 
-## General questions
-+ **[What is BLAS? Why is it important?](#whatblas)**
-+ **[What functions are there and how can I call them from my C code?](#whatsinblas)**
-+ **[What is OpenBLAS? Why did you create this project?](#what)**
-+ **[What's the difference between OpenBLAS and GotoBLAS?](#gotoblas)**
-+ **[Where do parameters GEMM_P, GEMM_Q, GEMM_R come from?](#gemmpqr)** 
-+ **[How can I report a bug?](#reportbug)** 
-+ **[How to reference OpenBLAS.](#publication)** 
-+ **[How can I use OpenBLAS in multi-threaded applications?](#multi-threaded)**
-+ **[Does OpenBLAS support sparse matrices and/or vectors ?](#sparse)**
-+ **[What support is there for recent PC hardware ? What about GPU ?](#recent_hardware)** 
-+ **[How about the level 3 BLAS performance on Intel Sandy Bridge?](#sandybridge_perf)**
+<!-- Note: Using title metadata instead of markdown header to avoid "FAQ" being present in the generated TOC. -->
 
-## OS and Compiler
-+ **[How can I call an OpenBLAS function in Microsoft Visual Studio?](#MSVC)**
-+ **[How can I use CBLAS and LAPACKE without C99 complex number support (e.g. in Visual Studio)?](#C99_complex_number)**
-+ **[I get a SEGFAULT with multi-threading on Linux. What's wrong?](#Linux_SEGFAULT)**
-+ **[When I make the library, there is no such instruction: `xgetbv' error. What's wrong?](#xgetbv)** 
-+ **[My build fails due to the linker error "multiple definition of `dlamc3_'". What is the problem?](#patch_missing)**
-+ **[My build worked fine and passed all tests, but running `make lapack-test` ends with segfaults](#xeigtst)**
-+ **[How could I disable OpenBLAS threading affinity on runtime?](#no_affinity)**
-+ **[How to solve undefined reference errors when statically linking against libopenblas.a](#static_link)**
-+ **[Building OpenBLAS for Haswell or Dynamic Arch on RHEL-6, CentOS-6, Rocks-6.1](#binutils)**
-+ **[Building OpenBLAS in QEMU/KVM/XEN](#qemu)**
-+ **[Building OpenBLAS on POWER fails with the IBM XL compiler](#ppcxl)**
-+ **[Replacing system BLAS in Ubuntu/Debian](#debianlts)**
-+ **[I built OpenBLAS for use with some other software, but that software cannot find it](#findblas)**
-+ **[I included cblas.h in my program, but the compiler complains about a missing common.h or functions from it](#installincludes)**
-+ **[Compiling OpenBLAS with gcc's -fbounds-check actually triggers aborts in programs](#boundscheck)**
-+ **[Build fails with lots of errors about undefined ?GEMM_UNROLL_M](#newcpu)**
-+ **[CMAKE/OSX: Build fails with 'argument list too long'](#cmakeosx)**
-+ **[Likely problems with AVX2 support in Docker Desktop for OSX](#xhyve)**
-## Usage
-+ **[Program is Terminated. Because you tried to allocate too many memory regions](#allocmorebuffers)**
-+ **[How to choose TARGET manually at runtime when compiled with DYNAMIC_ARCH](#choose_target_dynamic)**
-+ **[After updating the installed OpenBLAS, a program complains about "undefined symbol gotoblas"](#missgoto)**
-+ **[How can I find out at runtime what options the library was built wih ?](#buildoptions)**
-+ **[After making OpenBLAS, I find that the static library is multithreaded, but the dynamic one is not ?](#wronglibrary)**
-+ **[I want to use OpenBLAS with CUDA in the HPL 2.3 benchmark code but it keeps looking for Intel MKL](#cudahpl)**
-+ **[Multithreaded OpenBLAS runs no faster or is even slower than singlethreaded on my ARMV7 board](#cpusoffline)**
-+ **[Speed varies wildly between individual runs on a typical ARMV8 smartphone processor](#biglittle)** 
-+ **[I cannot get OpenBLAS to use more than a small subset of available cores on a big system](#numthreads)** 
-+ **[Getting "ELF load command address/offset not properly aligned" when loading libopenblas.so](#ELFoffset)**
-+ **[Using OpenBLAS with OpenMP](#OpenMP)**
-<hr noshade="noshade">
+[TOC]
 
 ## General questions
 
@@ -97,7 +57,7 @@ Please provide the following information: CPU, OS, compiler, and OpenBLAS compil
 
 ### <a name="publication"></a>How to reference OpenBLAS.
 
-You can reference our papers in [this page](publications.md). Alternatively, you can cite the OpenBLAS homepage  http://www.openblas.net.
+You can reference our papers in [this page](about.md#publications). Alternatively, you can cite the OpenBLAS homepage  http://www.openblas.net.
 
 ### <a name="multi-threaded"></a>How can I use OpenBLAS in multi-threaded applications?
 

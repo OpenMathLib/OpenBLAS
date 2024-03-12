@@ -20,10 +20,5 @@ nav:
   - build_system.md
   - distributing.md
   - ci.md
-  - machine_list.md
-  - todo.md
-  - ecosystem.md
-  - publications.md
-  - mailing_list.md
-  - donate.md
+  - about.md
   - faq.md

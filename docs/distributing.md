@@ -1,4 +1,4 @@
-# Guidance for redistributing OpenBLAS
+# Redistributing OpenBLAS
 
 !!! note
     This document contains recommendations only - packagers and other
