@@ -185,6 +185,11 @@ Please read `GotoBLAS_01Readme.txt` for older CPU models already supported by th
 - **POWER9**: Optimized Level-3 BLAS (real) and some Level-1,2. PPC64LE with OpenMP only. 
 - **POWER10**: Optimized Level-3 BLAS including SBGEMM and some Level-1,2.
 
+- **AIX**: Dynamic architecture with OpenXL and OpenMP.
+  ```sh
+  make CC=ibm-clang_r FC=xlf TARGET=POWER7 BINARY=64 USE_OPENMP=1 INTERFACE64=1 DYNAMIC_ARCH=1 USE_THREAD=1
+  ```
+
 #### IBM zEnterprise System
 
 - **Z13**: Optimized Level-3 BLAS and Level-1,2
@@ -242,7 +247,7 @@ Please note that it is not possible to combine support for different architectur
 - **NetBSD**: Supported by the community. We don't actively test the library on this OS.
 - **DragonFly BSD**: Supported by the community. We don't actively test the library on this OS.
 - **Android**: Supported by the community. Please read <https://github.com/xianyi/OpenBLAS/wiki/How-to-build-OpenBLAS-for-Android>.
-- **AIX**: Supported on PPC up to POWER8
+- **AIX**: Supported on PPC up to POWER10
 - **Haiku**: Supported by the community. We don't actively test the library on this OS.
 - **SunOS**: Supported by the community. We don't actively test the library on this OS.
 - **Cortex-M**: Supported by the community. Please read <https://github.com/xianyi/OpenBLAS/wiki/How-to-use-OpenBLAS-on-Cortex-M>.
