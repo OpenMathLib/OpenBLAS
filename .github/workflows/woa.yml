@@ -15,7 +15,7 @@ jobs:
     runs-on: windows-latest
     strategy:
       matrix:
-        platform: arm64
+        platform: [arm64]
 
     steps:
     - name: Checkout
