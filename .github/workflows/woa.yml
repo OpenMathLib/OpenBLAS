@@ -1,0 +1,32 @@
+name: windows on arm
+
+on: [push, pull_request]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read # to fetch code (actions/checkout)
+
+jobs:
+  build:
+    if: "github.repository == 'OpenMathLib/OpenBLAS'"
+    runs-on: windows-latest
+    strategy:
+      matrix:
+        platform: arm64
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - name: Install LLVM
+      run: |
+        wget https://github.com/llvm/llvm-project/releases/download/llvmorg-18.1.1/LLVM-18.1.1-woa64.exe
+        LLVM-18.1.1-woa64.exe
+
+    - name: Build
+      run: |
+        make CC=clang-cl FC=flang-new 
+        
