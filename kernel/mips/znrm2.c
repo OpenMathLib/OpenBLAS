@@ -53,7 +53,7 @@ FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x)
 	inc_x2 = 2 * inc_x;
 
 	n *= inc_x2;
-	while(i < n)
+	while(abs(i) < abs(n))
 	{
 
 		if ( x[i] != 0.0 )
