@@ -72,7 +72,7 @@ CTEST(dnrm2,dnrm2_neg_incx)
 	blasint n=5;
 	double res1, res2;
 
-	for (i=0;i<n;i++)x[i]=10.0
+	for (i=0;i<n;i++)x[i]=10.0;
 	res1=BLASFUNC(dnrm2)(&n, x, &incx);
 	res2 = sqrt(500.0);
 	ASSERT_DBL_NEAR_TOL(res2, res1, DOUBLE_EPS);
