@@ -229,7 +229,7 @@ static double nrm2_compute(BLASLONG n, FLOAT *x, BLASLONG inc_x)
 	"	cmp	"N", xzr			\n"
 	"	ble	9f //nrm2_kernel_L999		\n"
 	"	cmp	"INC_X", xzr			\n"
-	"	ble	9f //nrm2_kernel_L999		\n"
+	"	beq	9f //nrm2_kernel_L999		\n"
 	"	cmp	"INC_X", #1			\n"
 	"	bne	5f //nrm2_kernel_S_BEGIN	\n"
 
