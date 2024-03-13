@@ -1,8 +1,6 @@
 ## Mailing list
 
-OpenBLAS users: <https://groups.google.com/forum/#!forum/openblas-users>
-
-OpenBLAS developers: <https://groups.google.com/forum/#!forum/openblas-dev>
+We have a [GitHub discussions](https://github.com/OpenMathLib/OpenBLAS/discussions/) forum to discuss usage and development of OpenBLAS. We also have a [Google group for *users*](https://groups.google.com/forum/#!forum/openblas-users) and a [Google group for *development of*](https://groups.google.com/forum/#!forum/openblas-dev) OpenBLAS. 
 
 ## Donations
 
