@@ -193,7 +193,7 @@ FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x)
         //finish any tail using scalar ops
         i*=gvl*inc_x;
         n*=inc_x;
-        while(abs(i) < abs(n)){
+        while(i< n){
                 if ( x[i] != 0.0 ){
                         FLOAT absxi = ABS( x[i] );
                         if ( scale < absxi ){
