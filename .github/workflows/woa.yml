@@ -23,8 +23,11 @@ jobs:
 
     - name: Install LLVM
       run: |
-        wget https://github.com/llvm/llvm-project/releases/download/llvmorg-18.1.1/LLVM-18.1.1-woa64.exe
-        LLVM-18.1.1-woa64.exe
+        echo %PROCESSOR_ARCHITECTURE%
+        systeminfo
+        gcc -v
+        #wget https://github.com/llvm/llvm-project/releases/download/llvmorg-18.1.1/LLVM-18.1.1-woa64.exe
+        #LLVM-18.1.1-woa64.exe
 
     - name: Build
       run: |
