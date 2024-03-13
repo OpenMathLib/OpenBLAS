@@ -119,7 +119,7 @@ FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x)
         unsigned int stride_x = inc_x * sizeof(FLOAT);
         int idx = 0;
 
-        if( n >= gvl ) // don't pay overheads if we're not doing useful work
+        if( n >= gvl && inc_x > 0 ) // don't pay overheads if we're not doing useful work
         {
                 for(i=0; i<n/gvl; i++){
                         v0 = VLSEV_FLOAT( &x[idx], stride_x, gvl );
