@@ -96,7 +96,7 @@ FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x)
 {
         BLASLONG i=0;
 
-	if (n <= 0 || inc_x <= 0) return(0.0);
+	if (n <= 0 || inc_x == 0) return(0.0);
 
         FLOAT_V_T v_ssq, v_scale, v0, v1, v_zero;
         unsigned int gvl = 0;
@@ -176,7 +176,7 @@ FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x)
                         }
 
                         i += inc_x*2;
-                }while(i<n);
+                }while(abs(i)<abs(n));
         }
 
         return(scale * sqrt(ssq));

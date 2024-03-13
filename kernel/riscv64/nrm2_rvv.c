@@ -101,7 +101,7 @@ FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x)
 {
 	BLASLONG i=0;
 
-	if (n <= 0 || inc_x <= 0) return(0.0);
+	if (n <= 0 || inc_x == 0) return(0.0);
         if(n == 1) return (ABS(x[0]));
 
         unsigned int gvl = 0;
@@ -119,7 +119,7 @@ FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x)
         unsigned int stride_x = inc_x * sizeof(FLOAT);
         int idx = 0;
 
-        if( n >= gvl ) // don't pay overheads if we're not doing useful work
+        if( n >= gvl && inc_x > 0 ) // don't pay overheads if we're not doing useful work
         {
                 for(i=0; i<n/gvl; i++){
                         v0 = VLSEV_FLOAT( &x[idx], stride_x, gvl );
@@ -190,7 +190,7 @@ FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x)
         //finish any tail using scalar ops
         i*=gvl*inc_x;
         n*=inc_x;
-        while(i < n){
+        while(abs(i) < abs(n)){
                 if ( x[i] != 0.0 ){
                         FLOAT absxi = ABS( x[i] );
                         if ( scale < absxi ){
