@@ -176,13 +176,13 @@
     xvilvh.d VX3, x4, x3
     xvst VX2, Y, 0 * SIZE
     xvst VX3, Y, 4 * SIZE
-    addi.d X, Y, 8 * SIZE
+    addi.d Y, Y, 8 * SIZE
 #else
     xvilvl.w VX2, x4 ,x3
     xvilvh.w VX3, x4, x3
     xvst VX2, Y, 0 * SIZE
     xvst VX3, Y, 8 * SIZE
-    addi.d X, Y, 16 * SIZE
+    addi.d Y, Y, 16 * SIZE
 #endif
     addi.d  I, I, -1
     blt $r0, I, .L113
@@ -617,6 +617,7 @@
     xvstelm.d x4, YY, 1 * SIZE, 3
     add.d YY, YY, INCY
     blt $r0, I, .L222
+    move  Y, YY
     b .L997
     .align 3
 #else
@@ -691,6 +692,7 @@
     xvstelm.w x4, YY, 1 * SIZE, 7
     add.d YY, YY, INCY
     blt $r0, I, .L222
+    move  Y, YY
     b .L997
     .align 3
 #endif
@@ -1011,7 +1013,11 @@
 #endif
 
 .L997:
+#ifdef DOUBLE
+    andi I, N, 3
+#else
     andi I, N, 7
+#endif
     bge $r0, I, .L999
     .align 3
 

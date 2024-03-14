@@ -139,9 +139,9 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     xvst VX1, Y, 4 * SIZE
 #else
     xvfmul.s VX0, VX0, VXA
-    addi.d  I, I, -1
     xvst VX0, Y, 0 * SIZE
 #endif
+    addi.d  I, I, -1
     addi.d X, X, 8 * SIZE
     addi.d Y, Y, 8 * SIZE
     blt $r0, I, .L112
@@ -288,6 +288,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     addi.d X, X, 8 * SIZE
     addi.d  I, I, -1
     blt $r0, I, .L121
+    move  Y, YY
     b .L997
     .align 3
 
@@ -334,6 +335,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     add.d YY, YY, INCY
     addi.d X, X, 8 * SIZE
     blt $r0, I, .L122
+    move  Y, YY
     b .L997
     .align 3
 
@@ -425,6 +427,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     add.d YY, YY, INCY
     addi.d  I, I, -1
     blt $r0, I, .L123
+    move  Y, YY
     b .L997
     .align 3
 
@@ -465,6 +468,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     add.d YY, YY, INCY
     addi.d  I, I, -1
     blt $r0, I, .L124
+    move  Y, YY
     b .L997
     .align 3
 
@@ -803,6 +807,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif
     add.d YY, YY, INCY
     blt $r0, I, .L221
+    move  Y, YY
     b .L997
     .align 3
 
@@ -895,6 +900,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif
     add.d YY, YY, INCY
     blt $r0, I, .L222
+    move  Y, YY
     b .L997
     .align 3
 
@@ -987,6 +993,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif
     add.d YY, YY, INCY
     blt $r0, I, .L223
+    move  Y, YY
     b .L997
     .align 3
 
@@ -1027,6 +1034,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     add.d YY, YY, INCY
     addi.d  I, I, -1
     blt $r0, I, .L224
+    move  Y, YY
     b .L997
     .align 3
 
