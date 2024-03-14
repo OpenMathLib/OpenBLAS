@@ -545,13 +545,31 @@ static int gemm_driver(blas_arg_t *args, BLASLONG *range_m, BLASLONG
 		       *range_n, IFLOAT *sa, IFLOAT *sb,
                        BLASLONG nthreads_m, BLASLONG nthreads_n) {
 
-#ifndef USE_OPENMP
-#ifndef OS_WINDOWS
-static pthread_mutex_t  level3_lock    = PTHREAD_MUTEX_INITIALIZER;
+#ifdef USE_OPENMP
+  static omp_lock_t level3_lock, critical_section_lock;
+  static volatile BLASLONG init_lock = 0, omp_lock_initialized = 0,
+                  parallel_section_left = MAX_PARALLEL_NUMBER;
+
+  // Lock initialization; Todo : Maybe this part can be moved to blas_init() in blas_server_omp.c
+  while(omp_lock_initialized == 0)
+  {
+    blas_lock(&init_lock);
+    {
+      if(omp_lock_initialized == 0)
+      {
+        omp_init_lock(&level3_lock);
+        omp_init_lock(&critical_section_lock);
+        omp_lock_initialized = 1;
+        WMB;
+      }
+    blas_unlock(&init_lock);
+    }
+  }
+#elif defined(OS_WINDOWS)
+  CRITICAL_SECTION level3_lock;
+  InitializeCriticalSection((PCRITICAL_SECTION)&level3_lock);
 #else
-CRITICAL_SECTION level3_lock;
-InitializeCriticalSection((PCRITICAL_SECTION)&level3_lock);
-#endif
+  static pthread_mutex_t  level3_lock    = PTHREAD_MUTEX_INITIALIZER;
 #endif
 
   blas_arg_t newarg;
@@ -599,12 +617,28 @@ InitializeCriticalSection((PCRITICAL_SECTION)&level3_lock);
 #endif
 #endif
 
-#ifndef USE_OPENMP
-#ifndef OS_WINDOWS
-pthread_mutex_lock(&level3_lock);
+#ifdef USE_OPENMP
+  omp_set_lock(&level3_lock);
+  omp_set_lock(&critical_section_lock);
+
+  parallel_section_left--;
+  
+  /*
+    How OpenMP locks works with NUM_PARALLEL
+  1) parallel_section_left  = Number of available concurrent executions of OpenBLAS - Number of currently executing OpenBLAS executions
+  2) level3_lock is acting like a master lock or barrier which stops OpenBLAS calls when all the parallel_section are currently busy executing other OpenBLAS calls
+  3) critical_section_lock is used for updating variables shared between threads executing OpenBLAS calls concurrently and for unlocking of master lock whenever required
+  4) Unlock master lock only when we have not already exhausted all the parallel_sections and allow another thread with a OpenBLAS call to enter
+  */
+  if(parallel_section_left != 0) 
+    omp_unset_lock(&level3_lock);
+
+  omp_unset_lock(&critical_section_lock);
+
+#elif defined(OS_WINDOWS)
+  EnterCriticalSection((PCRITICAL_SECTION)&level3_lock);
 #else
-EnterCriticalSection((PCRITICAL_SECTION)&level3_lock);
-#endif
+  pthread_mutex_lock(&level3_lock);
 #endif
 
 #ifdef USE_ALLOC_HEAP
@@ -732,12 +766,24 @@ EnterCriticalSection((PCRITICAL_SECTION)&level3_lock);
   free(job);
 #endif
 
-#ifndef USE_OPENMP
-#ifndef OS_WINDOWS
-  pthread_mutex_unlock(&level3_lock);
-#else
+#ifdef USE_OPENMP
+  omp_set_lock(&critical_section_lock);
+  parallel_section_left++;
+
+  /*
+  Unlock master lock only when all the parallel_sections are already exhausted and one of the thread has completed its OpenBLAS call
+  otherwise just increment the parallel_section_left
+  The master lock is only locked when we have exhausted all the parallel_sections, So only unlock it then and otherwise just increment the count
+  */
+  if(parallel_section_left == 1)
+    omp_unset_lock(&level3_lock);
+  
+  omp_unset_lock(&critical_section_lock);
+
+#elif defined(OS_WINDOWS)
   LeaveCriticalSection((PCRITICAL_SECTION)&level3_lock);
-#endif
+#else
+  pthread_mutex_unlock(&level3_lock);
 #endif
 
   return 0;
