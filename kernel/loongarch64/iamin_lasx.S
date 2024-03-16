@@ -144,7 +144,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     xvfmina.d VM1, VM0, VM1
 #else
     addi.d I, I, -1
-    xvadd.w VI2, VI1, VINC8
+    xvadd.w VI1, VI1, VINC8
+    xvor.v  VI2, VI1, VI1
     xvfmina.s VM1, VX0, VM0
 #endif
     XVCMPEQ VT0, VM0, VM1
@@ -189,6 +190,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     XVFMINA VM0, VM0, VM1
     XVCMPEQ VT0, VM0, VM1
     xvbitsel.v VI0, VINC8, VINC4, VT0
+    // $f9: x1
     fcmp.ceq.d $fcc0, $f15, $f9
     bceqz $fcc0, .L26
     XVCMPLT VT0, VI1, VI0
@@ -357,7 +359,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     xvinsgr2vr.w VX0, t2, 5
     xvinsgr2vr.w VX0, t3, 6
     xvinsgr2vr.w VX0, t4, 7
-    xvadd.w VI2, VI1, VINC8
+    xvadd.w VI1, VI1, VINC8
+    xvor.v  VI2, VI1, VI1
     xvfmina.s VM1, VX0, VM0
     xvfcmp.ceq.s VT0, VM1, VM0
 #endif
@@ -393,7 +396,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     movfr2gr.d i0, $f20
     .align 3
 #else
-    fmov.s $f16, $f20
+    fmov.s $f7, $f20
     .align 3
 
 .L252:
@@ -449,9 +452,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .L292:
     xvfmina.s VM0, VX0, VM0
     xvfcmp.ceq.s VT0, VM0, VX0
-    xvbitsel.v VI0, VI0, VI1, VT0
+    xvbitsel.v VI0, VI0, $xr7, VT0
     movfr2gr.s i0, $f20
-
 #endif
 
 .L21: // N<8

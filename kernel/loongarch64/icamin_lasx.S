@@ -72,12 +72,25 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     FABS a1, a1
     ADD  s1, a1, a0
 #ifdef DOUBLE
-    xvreplve0.d VM0, VM0
     xvxor.v VI3, VI3, VI3 // 0
     li.d I, -1
     xvreplgr2vr.d VI4, I
     xvffint.d.l VI4, VI4 // -1
     bne INCX, TEMP, .L20
+    // Init VM0
+    xvreplve0.d VM0, VM0
+    xvld VX0, X, 0 * SIZE
+    xvld VX1, X, 4 * SIZE
+    xvpickev.d x1, VX1, VX0
+    xvpickod.d x2, VX1, VX0
+    xvfmul.d x3, VI4, x1
+    xvfmul.d x4, VI4, x2
+    xvfcmp.clt.d VT0, x1, VI3
+    xvfcmp.clt.d VINC8, x2, VI3
+    xvbitsel.v x1, x1, x3, VT0
+    xvbitsel.v x2, x2, x4, VINC8
+    xvfadd.d  VM0, x1, x2
+
     addi.d i0, i0, 1
     srai.d I, N, 2
     bge $r0, I, .L21
@@ -100,12 +113,24 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     addi.d i0, i0, 2
     xvinsgr2vr.d VI0, i0, 3 //4
 #else
-    xvreplve0.w VM0, VM0
     xvxor.v VI3, VI3, VI3 // 0
     li.w I, -1
     xvreplgr2vr.w VI4, I
     xvffint.s.w VI4, VI4 // -1
     bne INCX, TEMP, .L20
+    // Init VM0
+    xvld VX0, X, 0 * SIZE
+    xvld VX1, X, 8 * SIZE
+    xvpickev.w x1, VX1, VX0
+    xvpickod.w x2, VX1, VX0
+    xvfmul.s x3, VI4, x1
+    xvfmul.s x4, VI4, x2
+    xvfcmp.clt.s VT0, x1, VI3
+    xvfcmp.clt.s VINC4, x2, VI3
+    xvbitsel.v x1, x1, x3, VT0
+    xvbitsel.v x2, x2, x4, VINC4
+    xvfadd.s  VM0, x1, x2
+
     addi.w i0, i0, 1
     srai.d I, N, 3
     bge $r0, I, .L21
@@ -160,6 +185,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     xvfcmp.clt.d VINC8, x2, VI3
     xvbitsel.v x1, x1, x3, VT0
     xvbitsel.v x2, x2, x4, VINC8
+    addi.d X, X, 8 * SIZE
 #else
     xvadd.w VI1, VI1, VINC8
     xvld VX1, X, 8 * SIZE
@@ -172,11 +198,11 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     xvfcmp.clt.s VINC4, x2, VI3
     xvbitsel.v x1, x1, x3, VT0
     xvbitsel.v x2, x2, x4, VINC4
+    addi.d X, X, 16 * SIZE
 #endif
     XVFADD  x1, x1, x2
     XVFMIN  x3, VM0, x1
     XVCMPEQ VT0, x3, VM0
-    addi.d X, X, 8 * SIZE
     xvbitsel.v VM0, x3, VM0, VT0
     xvbitsel.v VI0, VI1, VI0, VT0
     blt $r0, I, .L10
@@ -214,13 +240,13 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     xvpickve.w x2, VM0, 1
     xvpickve.w x3, VM0, 2
     xvpickve.w x4, VM0, 3
-    xvfcmp.clt.s VT0, x1, x2
+    xvfcmp.clt.s VT0, x2, x1
     xvbitsel.v VM1, x1, x2, VT0
     xvbitsel.v VINC4, VI1, VI2, VT0
-    xvfcmp.clt.s VT0, x3, x4
+    xvfcmp.clt.s VT0, x4, x3
     xvbitsel.v VM0, x3, x4, VT0
     xvbitsel.v VINC8, VI3, VI4, VT0
-    xvfcmp.clt.s VT0, VM0, VM1
+    xvfcmp.clt.s VT0, VM1, VM0
     xvbitsel.v VM0, VM0, VM1, VT0
     xvbitsel.v VI0, VINC8, VINC4, VT0
 #endif
@@ -233,6 +259,34 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .L20: // INCX!=1
 #ifdef DOUBLE
+    // Init VM0
+    ld.d t1, X, 0 * SIZE
+    ld.d t2, X, 1 * SIZE
+    add.d i1, X, INCX
+    ld.d t3, i1, 0 * SIZE
+    ld.d t4, i1, 1 * SIZE
+    add.d i1, i1, INCX
+    xvinsgr2vr.d x1, t1, 0
+    xvinsgr2vr.d x2, t2, 0
+    xvinsgr2vr.d x1, t3, 1
+    xvinsgr2vr.d x2, t4, 1
+    ld.d t1, i1, 0 * SIZE
+    ld.d t2, i1, 1 * SIZE
+    add.d i1, i1, INCX
+    ld.d t3, i1, 0 * SIZE
+    ld.d t4, i1, 1 * SIZE
+    xvinsgr2vr.d x1, t1, 2
+    xvinsgr2vr.d x2, t2, 2
+    xvinsgr2vr.d x1, t3, 3
+    xvinsgr2vr.d x2, t4, 3
+    xvfmul.d x3, VI4, x1
+    xvfmul.d x4, VI4, x2
+    xvfcmp.clt.d VT0, x1, VI3
+    xvfcmp.clt.d VINC8, x2, VI3
+    xvbitsel.v x1, x1, x3, VT0
+    xvbitsel.v x2, x2, x4, VINC8
+    xvfadd.d VM0, x1, x2
+
     addi.d i0, i0, 1
     srai.d I, N, 2
     bge $r0, I, .L21
@@ -240,21 +294,70 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     xvreplgr2vr.d VINC4, i0
     addi.d i0, i0, -7
     xvinsgr2vr.d VI1, i0, 0 //initialize the index value for vectorization
-    addi.d i0, i0, 2
+    addi.d i0, i0, 1
     xvinsgr2vr.d VI1, i0, 1
-    addi.d i0, i0, -1
+    addi.d i0, i0, 1
     xvinsgr2vr.d VI1, i0, 2
-    addi.d i0, i0, 2
+    addi.d i0, i0, 1
     xvinsgr2vr.d VI1, i0, 3
     addi.d i0, i0, 1
     xvinsgr2vr.d VI0, i0, 0 //1
-    addi.d i0, i0, 2
-    xvinsgr2vr.d VI0, i0, 1 //3
-    addi.d i0, i0, -1
-    xvinsgr2vr.d VI0, i0, 2 //2
-    addi.d i0, i0, 2
+    addi.d i0, i0, 1
+    xvinsgr2vr.d VI0, i0, 1 //2
+    addi.d i0, i0, 1
+    xvinsgr2vr.d VI0, i0, 2 //3
+    addi.d i0, i0, 1
     xvinsgr2vr.d VI0, i0, 3 //4
 #else
+    // Init VM0
+    ld.w t1, X, 0 * SIZE
+    ld.w t2, X, 1 * SIZE
+    add.d i1, X, INCX
+    ld.w t3, i1, 0 * SIZE
+    ld.w t4, i1, 1 * SIZE
+    add.d i1, i1, INCX
+    xvinsgr2vr.w x1, t1, 0
+    xvinsgr2vr.w x2, t2, 0
+    xvinsgr2vr.w x1, t3, 1
+    xvinsgr2vr.w x2, t4, 1
+    ld.w t1, i1, 0 * SIZE
+    ld.w t2, i1, 1 * SIZE
+    add.d i1, i1, INCX
+    ld.w t3, i1, 0 * SIZE
+    ld.w t4, i1, 1 * SIZE
+    add.d i1, i1, INCX
+    xvinsgr2vr.w x1, t1, 2
+    xvinsgr2vr.w x2, t2, 2
+    xvinsgr2vr.w x1, t3, 3
+    xvinsgr2vr.w x2, t4, 3
+    ld.w t1, i1, 0 * SIZE
+    ld.w t2, i1, 1 * SIZE
+    add.d i1, i1, INCX
+    ld.w t3, i1, 0 * SIZE
+    ld.w t4, i1, 1 * SIZE
+    add.d i1, i1, INCX
+    xvinsgr2vr.w x1, t1, 4
+    xvinsgr2vr.w x2, t2, 4
+    xvinsgr2vr.w x1, t3, 5
+    xvinsgr2vr.w x2, t4, 5
+    ld.w t1, i1, 0 * SIZE
+    ld.w t2, i1, 1 * SIZE
+    add.d i1, i1, INCX
+    ld.w t3, i1, 0 * SIZE
+    ld.w t4, i1, 1 * SIZE
+    add.d i1, i1, INCX
+    xvinsgr2vr.w x1, t1, 6
+    xvinsgr2vr.w x2, t2, 6
+    xvinsgr2vr.w x1, t3, 7
+    xvinsgr2vr.w x2, t4, 7
+    xvfmul.s x3, VI4, x1
+    xvfmul.s x4, VI4, x2
+    xvfcmp.clt.s VT0, x1, VI3
+    xvfcmp.clt.s VINC8, x2, VI3
+    xvbitsel.v x1, x1, x3, VT0
+    xvbitsel.v x2, x2, x4, VINC8
+    xvfadd.s VM0, x1, x2
+
     addi.w i0, i0, 1
     srai.d I, N, 3
     bge $r0, I, .L21
@@ -264,15 +367,15 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     xvinsgr2vr.w VI1, i0, 0 //initialize the index value for vectorization
     addi.w i0, i0, 1
     xvinsgr2vr.w VI1, i0, 1
-    addi.w i0, i0, 3
+    addi.w i0, i0, 1
     xvinsgr2vr.w VI1, i0, 2
     addi.w i0, i0, 1
     xvinsgr2vr.w VI1, i0, 3
-    addi.w i0, i0, -3
+    addi.w i0, i0, 1
     xvinsgr2vr.w VI1, i0, 4
     addi.w i0, i0, 1
     xvinsgr2vr.w VI1, i0, 5
-    addi.w i0, i0, 3
+    addi.w i0, i0, 1
     xvinsgr2vr.w VI1, i0, 6
     addi.w i0, i0, 1
     xvinsgr2vr.w VI1, i0, 7
@@ -280,15 +383,15 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     xvinsgr2vr.w VI0, i0, 0 //1
     addi.w i0, i0, 1
     xvinsgr2vr.w VI0, i0, 1 //2
-    addi.w i0, i0, 3
-    xvinsgr2vr.w VI0, i0, 2 //5
     addi.w i0, i0, 1
-    xvinsgr2vr.w VI0, i0, 3 //6
-    addi.w i0, i0, -3
-    xvinsgr2vr.w VI0, i0, 4 //3
+    xvinsgr2vr.w VI0, i0, 2 //3
     addi.w i0, i0, 1
-    xvinsgr2vr.w VI0, i0, 5 //4
-    addi.w i0, i0, 3
+    xvinsgr2vr.w VI0, i0, 3 //4
+    addi.w i0, i0, 1
+    xvinsgr2vr.w VI0, i0, 4 //5
+    addi.w i0, i0, 1
+    xvinsgr2vr.w VI0, i0, 5 //6
+    addi.w i0, i0, 1
     xvinsgr2vr.w VI0, i0, 6 //7
     addi.w i0, i0, 1
     xvinsgr2vr.w VI0, i0, 7 //8
@@ -350,7 +453,6 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     xvinsgr2vr.w x2, t2, 4
     xvinsgr2vr.w x1, t3, 5
     xvinsgr2vr.w x2, t4, 5
-    xvadd.w VI1, VI1, VINC8
     ld.w t1, X, 0 * SIZE
     ld.w t2, X, 1 * SIZE
     add.d X, X, INCX
@@ -361,8 +463,6 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     xvinsgr2vr.w x2, t2, 6
     xvinsgr2vr.w x1, t3, 7
     xvinsgr2vr.w x2, t4, 7
-    xvpickev.w x1, VX1, VX0
-    xvpickod.w x2, VX1, VX0
 #endif
     addi.d I, I, -1
     XVFMUL x3, VI4, x1
@@ -410,13 +510,13 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     xvpickve.w x2, VM0, 1
     xvpickve.w x3, VM0, 2
     xvpickve.w x4, VM0, 3
-    xvfcmp.clt.s VT0, x1, x2
+    xvfcmp.clt.s VT0, x2, x1
     xvbitsel.v VM1, x1, x2, VT0
     xvbitsel.v VINC4, VI1, VI2, VT0
-    xvfcmp.clt.s VT0, x3, x4
+    xvfcmp.clt.s VT0, x4, x3
     xvbitsel.v VM0, x3, x4, VT0
     xvbitsel.v VINC8, VI3, VI4, VT0
-    xvfcmp.clt.s VT0, VM0, VM1
+    xvfcmp.clt.s VT0, VM1, VM0
     xvbitsel.v VM0, VM0, VM1, VT0
 #endif
     xvbitsel.v VI0, VINC8, VINC4, VT0
@@ -475,13 +575,13 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     xvpickve.w x2, VM0, 5
     xvpickve.w x3, VM0, 6
     xvpickve.w x4, VM0, 7
-    xvfcmp.clt.s VT0, x1, x2
+    xvfcmp.clt.s VT0, x2, x1
     xvbitsel.v x1, x1, x2, VT0
     xvbitsel.v VINC4, VI1, VI2, VT0
-    xvfcmp.clt.s VT0, x3, x4
+    xvfcmp.clt.s VT0, x4, x3
     xvbitsel.v VM0, x3, x4, VT0
     xvbitsel.v VINC8, VI3, VI4, VT0
-    xvfcmp.clt.s VT0, VM0, x1
+    xvfcmp.clt.s VT0, x1, VM0
     xvbitsel.v VM0, VM0, x1, VT0
     xvbitsel.v VI0, VINC8, VINC4, VT0
     fcmp.ceq.d $fcc0, $f15, $f9
@@ -512,7 +612,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     .align 3
 
 .L292:
-    fcmp.clt.s $fcc0, $f15, $f13
+    fcmp.clt.s $fcc0, $f13, $f15
     fsel $f15, $f15, $f13, $fcc0
     fsel $f20, $f20, $f16, $fcc0
     movfr2gr.s i0, $f20

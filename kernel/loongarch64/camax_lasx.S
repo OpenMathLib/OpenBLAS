@@ -107,15 +107,27 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifdef DOUBLE
     xvpickve.d x1, VM0, 0
     xvpickve.d x2, VM0, 1
-    XVFMAX VM0, x1, x2
+    XVFMAX VX0, x1, x2
+    xvpickve.d x1, VM0, 2
+    xvpickve.d x2, VM0, 3
+    XVFMAX VX1, x1, x2
+    XVFMAX VM0, VX0, VX1
 #else
     xvpickve.w x1, VM0, 0
     xvpickve.w x2, VM0, 1
     xvpickve.w x3, VM0, 2
     xvpickve.w x4, VM0, 3
+    XVFMAX VX0, x1, x2
+    XVFMAX VX1, x3, x4
+    XVFMAX VX0, VX0, VX1
+    xvpickve.w x1, VM0, 4
+    xvpickve.w x2, VM0, 5
+    xvpickve.w x3, VM0, 6
+    xvpickve.w x4, VM0, 7
     XVFMAX VM0, x1, x2
     XVFMAX VM1, x3, x4
     XVFMAX VM0, VM0, VM1
+    XVFMAX VM0, VM0, VX0
 #endif
     b .L23
     .align 3
@@ -150,7 +162,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     FABS t4, t4
     ADD t1, t1, t2
     ADD t3, t3, t4
-    FMAX s1, t1, t3
+    FMAX s2, t1, t3
     LD t1, X, 0 * SIZE
     LD t2, X, 1 * SIZE
     add.d X, X, INCX
@@ -178,13 +190,16 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     ADD t1, t1, t2
     ADD t3, t3, t4
     FMAX s4, t1, t3
+
+    FMAX s1, s1, s2
+    FMAX s3, s3, s4
+    FMAX a0, a0, s3
+    FMAX a0, a0, s1
     blt $r0, I, .L21
     .align 3
 
 .L22:
-    FMAX s1, s1, s2
-    FMAX s3, s3, s4
-    FMAX s1, s1, s3
+    MOV s1, a0
     .align 3
 
 .L23: //N<8
