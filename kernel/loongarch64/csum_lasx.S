@@ -104,7 +104,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     xvfadd.s res1, VX0, res1
     xvfadd.s res1, VX1, res1
     xvfadd.s res1, VX2, res1
-    xvfadd.s res1, VX2, res1
+    xvfadd.s res1, VX3, res1
 #endif
     .align 3
 
@@ -246,7 +246,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     xvfadd.s res1, VX0, res1
     xvfadd.s res1, VX1, res1
     xvfadd.s res1, VX2, res1
-    xvfadd.s res1, VX2, res1
+    xvfadd.s res1, VX3, res1
 #endif
     .align 3
 
