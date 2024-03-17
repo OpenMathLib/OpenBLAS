@@ -14,9 +14,6 @@ _rules = {
   'bf19': ['BFLOAT16'],
 }
 
-sblas_extobs = []
-_defs = []
-
 blas_roots = []
 blas1_roots = [
   # These don't exist as roots.
@@ -42,21 +39,20 @@ blas3_roots = [
 # Generated
 # NOTE: Remember to check sourcesets as a simpler mechanism
 # TODO: Generated the imax and max via use_abs use_min
-configurations = []
+interface_confs = []
 blas_roots += blas1_roots
 blas_roots += blas2_roots
 blas_roots += blas3_roots
 _kinds += real_kinds
-foreach blasi : blas_roots
-  sfiles = blasi + '.c'
-  # defs = []
-  # if blasi in addl_srcs
-  #   defs += addl_srcs[blasi]
+foreach root : blas_roots
+  fname = root + '.c'
+  defs = []
+  # if root in addl_srcs
+  #   defs += addl_srcs[root]
   # endif
-  foreach tkind : real_kinds
-    name = tkind + blasi
-    defs = []
-    configurations += {'defs': defs, 'name': name, 'src': sfiles}
+  foreach prec : real_kinds
+    name = prec + fname
+    interface_confs += {'defs': defs, 'name': name, 'src': fname}
   endforeach
 endforeach
 
@@ -68,7 +64,7 @@ endforeach
 # endif
 
 _static_libs = []
-foreach conf: configurations
+foreach conf: interface_confs
     _static_libs += static_library(
         conf['name'],
         conf['src'],
