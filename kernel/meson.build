@@ -13,14 +13,11 @@ endif
 # NOTE: The def and undefs are from Makefile.L1
 # Construct all PRECsymbKERNEL from src and dir via files(dir + src)
 # For the precs array, the following mapping is used for c_args:
-# undef --> -Uwhatever
-# def --> -Dwhatever
 # addl --> passed AS IS
 base_kops = [
   # Level 1 BLAS
   {
     'base': 'rot',
-    # TODO: A lot of these flags are basically repeating..
     'precs': {
       's' : {
         'dir': 'arm',
@@ -35,48 +32,253 @@ base_kops = [
       'q' : {
         'dir': 'arm',
         'kernel': 'zrot.c',
-        'undef': ['COMPLEX'],
-        'def': ['DXDOUBLE'],
       },
-      # TODO: rot is nonstandard in this instance, taking cs zd xq
-      # The others (scal, swap) take c z x
       'cs' : {
         'dir': 'arm',
         'kernel': 'zrot.c',
-        'undef': ['DOUBLE'],
-        'def': ['COMPLEX'],
       },
       'zd' : {
         'dir': 'arm',
         'kernel': 'zrot.c',
-        'def': ['COMPLEX', 'DOUBLE'],
       },
       'xq' : {
         'dir': 'arm',
         'kernel': 'zrot.c',
-        'def': ['COMPLEX', 'DXDOUBLE'],
       },
     },
   },
-  # {'symb': 'swap',
-  #  'src': {'real': 'swap', 'cmplx': 'zswap', 'ext': '.c'},
-  #  'dir': 'arm', 'precs': _std_dk },
-  # {'symb': 'scal',
-  #  'src': {'real': 'scal', 'cmplx': 'zscal', 'ext': '.c'},
-  #  'dir': 'arm', 'precs': _std_dk },
-  # {'symb': 'copy',
-  #  'src': {'real': 'copy', 'cmplx': 'zcopy', 'ext': '.c'},
-  #  'dir': 'arm', 'precs': _std_dk },
-  # {'symb': 'axpy',
-  #  'src': {'real': 'axpy', 'cmplx': 'zaxpy', 'ext': '.c'},
-  #  'dir': 'arm', 'precs': _std_dk },
-  # {'symb': 'dot',
-  #  'src': {'real': 'dot', 'cmplx': 'zdot', 'ext': '.c'},
-  #  'dir': 'arm', 'precs': _std_dk },
+  {'base': 'swap',
+    'precs': {
+      's' : {
+        'dir': 'arm',
+        'kernel': 'swap.c',
+      },
+      'd' : {
+        'dir': 'arm',
+        'kernel': 'swap.c',
+      },
+      'q' : {
+        'dir': 'arm',
+        'kernel': 'zswap.c',
+      },
+      'c' : {
+        'dir': 'arm',
+        'kernel': 'zswap.c',
+      },
+      'z' : {
+        'dir': 'arm',
+        'kernel': 'zswap.c',
+      },
+      'x' : {
+        'dir': 'arm',
+        'kernel': 'zswap.c',
+      },
+    },
+  },
+  {'base': 'scal',
+    'precs': {
+      's' : {
+        'dir': 'arm',
+        'kernel': 'scal.c',
+      },
+      'd' : {
+        'dir': 'arm',
+        'kernel': 'scal.c',
+      },
+      'q' : {
+        'dir': 'arm',
+        'kernel': 'zscal.c',
+      },
+      'c' : {
+        'dir': 'arm',
+        'kernel': 'zscal.c',
+      },
+      'z' : {
+        'dir': 'arm',
+        'kernel': 'zscal.c',
+      },
+      'x' : {
+        'dir': 'arm',
+        'kernel': 'zscal.c',
+      },
+    },
+  },
+  {'base': 'copy',
+    'precs': {
+      's' : {
+        'dir': 'arm',
+        'kernel': 'copy.c',
+      },
+      'd' : {
+        'dir': 'arm',
+        'kernel': 'copy.c',
+      },
+      'q' : {
+        'dir': 'arm',
+        'kernel': 'zcopy.c',
+      },
+      'c' : {
+        'dir': 'arm',
+        'kernel': 'zcopy.c',
+      },
+      'z' : {
+        'dir': 'arm',
+        'kernel': 'zcopy.c',
+      },
+      'x' : {
+        'dir': 'arm',
+        'kernel': 'zcopy.c',
+      },
+    },
+  },
+  {'base': 'axpy',
+    'precs': {
+      's' : {
+        'dir': 'arm',
+        'kernel': 'axpy.c',
+      },
+      'd' : {
+        'dir': 'arm',
+        'kernel': 'axpy.c',
+      },
+      'q' : {
+        'dir': 'arm',
+        'kernel': 'zaxpy.c',
+      },
+      'c' : {
+        'dir': 'arm',
+        'kernel': 'zaxpy.c',
+      },
+      'z' : {
+        'dir': 'arm',
+        'kernel': 'zaxpy.c',
+      },
+      'x' : {
+        'dir': 'arm',
+        'kernel': 'zaxpy.c',
+      },
+    },
+  },
+  {'base': 'dot',
+    'precs': {
+      's' : {
+        'dir': 'arm',
+        'kernel': 'dot.c',
+      },
+      'd' : {
+        'dir': 'arm',
+        'kernel': 'dot.c',
+      },
+      'q' : {
+        'dir': 'arm',
+        'kernel': 'zdot.c',
+      },
+      'c' : {
+        'dir': 'arm',
+        'kernel': 'zdot.c',
+      },
+      'z' : {
+        'dir': 'arm',
+        'kernel': 'zdot.c',
+      },
+      'x' : {
+        'dir': 'arm',
+        'kernel': 'zdot.c',
+      },
+    },
+  },
+  # xDOTU xDOTC xxDOT aren't present
+  {'base': 'nrm2',
+    'precs': {
+      's' : {
+        'dir': 'arm',
+        'kernel': 'nrm2.c',
+      },
+      'd' : {
+        'dir': 'arm',
+        'kernel': 'nrm2.c',
+      },
+      'q' : {
+        'dir': 'arm',
+        'kernel': 'znrm2.c',
+      },
+      'c' : {
+        'dir': 'arm',
+        'kernel': 'znrm2.c',
+      },
+      'z' : {
+        'dir': 'arm',
+        'kernel': 'znrm2.c',
+      },
+      'x' : {
+        'dir': 'arm',
+        'kernel': 'znrm2.c',
+      },
+    },
+  },
+  {'base': 'asum',
+    'precs': {
+      's' : {
+        'dir': 'arm',
+        'kernel': 'asum.c',
+      },
+      'd' : {
+        'dir': 'arm',
+        'kernel': 'asum.c',
+      },
+      'q' : {
+        'dir': 'arm',
+        'kernel': 'zasum.c',
+      },
+      'c' : {
+        'dir': 'arm',
+        'kernel': 'zasum.c',
+      },
+      'z' : {
+        'dir': 'arm',
+        'kernel': 'zasum.c',
+      },
+      'x' : {
+        'dir': 'arm',
+        'kernel': 'zasum.c',
+      },
+    },
+  },
+  {'base': 'amax',
+    'precs': {
+      's' : {
+        'dir': 'arm',
+        'kernel': 'amax.c',
+      },
+      'd' : {
+        'dir': 'arm',
+        'kernel': 'amax.c',
+      },
+      'q' : {
+        'dir': 'arm',
+        'kernel': 'zamax.c',
+      },
+      'c' : {
+        'dir': 'arm',
+        'kernel': 'zamax.c',
+      },
+      'z' : {
+        'dir': 'arm',
+        'kernel': 'zamax.c',
+      },
+      'x' : {
+        'dir': 'arm',
+        'kernel': 'zamax.c',
+      },
+    },
+  },
 ]
 
 kernel_confs = []
 
+# For the precs array, the following mapping is used for c_args:
+# undef --> -Uwhatever
+# def --> -Dwhatever
 foreach _kop : base_kops
   foreach pkey, pval : _kop['precs']
     kcfg = {
@@ -95,6 +297,30 @@ foreach _kop : base_kops
       kcfg += {
         'undef': ['COMPLEX'],
         'def': ['DOUBLE'],
+      }
+    endif
+    if 'q' == pkey
+      kcfg += {
+        'undef': ['COMPLEX'],
+        'def': ['DXDOUBLE'],
+      }
+    endif
+    # TODO: rot is nonstandard in this instance, taking cs zd xq
+    # The others (scal, swap) take c z x, so we need to use in
+    if 'c' in pkey
+      kcfg += {
+        'undef': ['DOUBLE'],
+        'def': ['COMPLEX'],
+      }
+    endif
+    if 'z' in pkey
+      kcfg += {
+        'def': ['COMPLEX', 'DOUBLE'],
+      }
+    endif
+    if 'x' in pkey
+      kcfg += {
+        'def': ['COMPLEX', 'DXDOUBLE'],
       }
     endif
     message(kcfg)
