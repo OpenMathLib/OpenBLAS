@@ -990,6 +990,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif
     add.d YY, YY, INCY
     blt $r0, I, .L222
+    move Y, YY
     b .L997
     .align 3
 

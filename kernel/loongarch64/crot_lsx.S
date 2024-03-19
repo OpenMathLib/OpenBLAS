@@ -82,6 +82,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     vreplgr2vr.d VXC, t1
     vreplgr2vr.d VXS, t2
     vreplgr2vr.d VXZ, t3
+    srai.d I, N, 1
 #else
     vreplgr2vr.w VXC, t1
     vreplgr2vr.w VXS, t2
