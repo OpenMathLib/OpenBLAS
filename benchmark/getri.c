@@ -92,7 +92,7 @@ int main(int argc, char *argv[]){
 
   if ((p = getenv("OPENBLAS_TEST"))) btest=*p;
   
-  if ((p = getenv("OPENBLAS_LOOPS"))) loops=*p;
+  if ((p = getenv("OPENBLAS_LOOPS"))) loops=atoi(p);
 
   fprintf(stderr, "From : %3d  To : %3d Step = %3d\n", from, to, step);
 
