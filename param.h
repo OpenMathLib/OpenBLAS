@@ -2493,7 +2493,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #endif
 
-#if defined(POWER8)
+#if defined(POWER8) || (defined(POWER9) && defined(OS_AIX))
 
 #define SNUMOPT		16
 #define DNUMOPT		8
@@ -2547,7 +2547,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #endif
 
-#if defined(POWER9)
+#if defined(POWER9) && defined(OS_LINUX)
 
 #define SNUMOPT		16
 #define DNUMOPT		8
