@@ -1,4 +1,5 @@
 site_name: OpenBLAS
+site_url: https://openblas.net/docs/
 theme:
   name: material
   logo: logo.svg

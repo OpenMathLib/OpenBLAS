@@ -13,4 +13,12 @@ jobs:
         with:
           python-version: "3.10"
       - run: pip install mkdocs mkdocs-material
-      - run: mkdocs gh-deploy --force --clean --verbose
+      # mkdocs gh-deploy command only builds to the top-level, hence building then deploying ourselves
+      - run: mkdocs build
+      - name: Deploy docs
+        uses: peaceiris/actions-gh-pages@v3
+        if: ${{ github.ref == 'refs/heads/develop' }}
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./site
+          destination_dir: docs/
