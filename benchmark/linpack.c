@@ -85,7 +85,7 @@ int main(int argc, char *argv[]){
   double time1, time2, timeg1,timeg2;
 
   char *p;
-  if ((p = getenv("OPENBLAS_LOOPS"))) loops=*p;
+  if ((p = getenv("OPENBLAS_LOOPS"))) loops=atoi(p);
   
   argc--;argv++;
 
