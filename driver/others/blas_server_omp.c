@@ -113,6 +113,7 @@ void goto_set_num_threads(int num_threads) {
   blas_cpu_number  = num_threads;
 
   adjust_thread_buffers();
+
 #if defined(ARCH_MIPS64)
   //set parameters for different number of threads.
   blas_set_parameter();
@@ -285,10 +286,9 @@ static void legacy_exec(void *func, int mode, blas_arg_t *args, void *sb){
    }
 }
 
-static void exec_threads(blas_queue_t *queue, int buf_index){
-
+static void exec_threads(int thread_num, blas_queue_t *queue, int *buf_index){
   void *buffer, *sa, *sb;
-  int pos=0, release_flag=0;
+  int release_flag=0;
 
   buffer = NULL;
   sa = queue -> sa;
@@ -305,8 +305,7 @@ static void exec_threads(blas_queue_t *queue, int buf_index){
 
   if ((sa == NULL) && (sb == NULL) && ((queue -> mode & BLAS_PTHREAD) == 0)) {
 
-    pos = omp_get_thread_num();
-    buffer = blas_thread_buffer[buf_index][pos];
+    buffer = blas_thread_buffer[*buf_index][thread_num];
 
     //fallback
     if(buffer==NULL) {
@@ -420,25 +419,38 @@ int exec_blas(BLASLONG num, blas_queue_t *queue){
       }
     }
 
-if (openblas_omp_adaptive_env() != 0) {
+  if (openblas_threads_callback_) {
+#ifndef USE_SIMPLE_THREADED_LEVEL3
+    for (i = 0; i < num; i ++)
+      queue[i].position = i;
+#endif
+    openblas_threads_callback_(openblas_threads_callback_data_, 1, (openblas_dojob_callback) exec_threads, num, sizeof(blas_queue_t), (void*) queue, (void*) &buf_index);
+    return;
+  } else {
+
+    if (openblas_omp_adaptive_env() != 0) {
 #pragma omp parallel for num_threads(num) schedule(OMP_SCHED)
-  for (i = 0; i < num; i ++) {
+      for (i = 0; i < num; i ++) {
 
 #ifndef USE_SIMPLE_THREADED_LEVEL3
-    queue[i].position = i;
+        queue[i].position = i;
 #endif
 
-    exec_threads(&queue[i], buf_index);
-  }
-} else {
+        exec_threads(&queue[i], buf_index);
+      }
+    } else {
+    
 #pragma omp parallel for schedule(OMP_SCHED)
-  for (i = 0; i < num; i ++) {
+
+#pragma omp parallel for schedule(static)
+      for (i = 0; i < num; i ++) {
 
 #ifndef USE_SIMPLE_THREADED_LEVEL3
-    queue[i].position = i;
+        queue[i].position = i;
 #endif
 
-    exec_threads(&queue[i], buf_index);
+        exec_threads(omp_get_thread_num(), &queue[i], &buf_index);
+    }
   }
 }
 

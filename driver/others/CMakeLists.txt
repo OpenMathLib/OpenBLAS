@@ -39,6 +39,7 @@ set(COMMON_SOURCES
   openblas_env.c
   openblas_get_num_procs.c
   openblas_get_num_threads.c
+  blas_server_callback.c
 )
 
 # these need to have NAME/CNAME set, so use GenerateNamedObjects, but don't use standard name mangling
