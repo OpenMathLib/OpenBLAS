@@ -155,10 +155,11 @@ FreeBSD_task:
   freebsd_instance:
     image_family: freebsd-13-2
   install_script:
-  - pkg update -f && pkg upgrade -y && pkg install -y gmake gcc 
+  - pkg update -f && pkg upgrade -y && pkg install -y gmake gcc valgrind
   - ln -s /usr/local/lib/gcc12/libgfortran.so.5.0.0 /usr/lib/libgfortran.so
   compile_script:
-  - gmake CC=clang FC=gfortran USE_OPENMP=1 DEBUG=1 CPP_THREAD_SAFETY_TEST=1 NUM_PARALLEL=3
+  - gmake CC=clang FC=gfortran USE_OPENMP=1 DEBUG=1 CPP_THREAD_SAFETY_TEST=1 NUM_PARALLEL=2
+  - cd cpp_thread_test; valgrind ./dgemv_tester
 
 #task:
 #  name: Windows/LLVM16     --- too slow ---
