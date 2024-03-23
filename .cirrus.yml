@@ -158,7 +158,7 @@ FreeBSD_task:
   - pkg update -f && pkg upgrade -y && pkg install -y gmake gcc 
   - ln -s /usr/local/lib/gcc12/libgfortran.so.5.0.0 /usr/lib/libgfortran.so
   compile_script:
-  - gmake CC=clang FC=gfortran USE_OPENMP=1 DEBUG=1 CPP_THREAD_SAFETY_TEST=1
+  - gmake CC=clang FC=gfortran USE_OPENMP=1 DEBUG=1 CPP_THREAD_SAFETY_TEST=1 NUM_PARALLEL=3
 
 #task:
 #  name: Windows/LLVM16     --- too slow ---
