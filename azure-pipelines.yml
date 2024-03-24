@@ -175,7 +175,7 @@ jobs:
   - script: |
       brew update
       brew install llvm libomp
-      make TARGET=CORE2 USE_OPENMP=1 DYNAMIC_ARCH=1 CC=/usr/local/opt/llvm/bin/clang NOFORTRAN=1
+      make TARGET=CORE2 USE_OPENMP=1 DYNAMIC_ARCH=1 CC=/usr/local/opt/llvm/bin/clang NOFORTRAN=1 DYNAMIC_LIST="NEHALEM HASWELL SKYLAKEX COOPERLAKE"
 
 - job: OSX_OpenMP_Clang_cmake
   pool:
@@ -189,7 +189,7 @@ jobs:
       brew install llvm libomp
       mkdir build
       cd build
-      cmake -DTARGET=CORE2 -DUSE_OPENMP=1 -DINTERFACE64=1 -DDYNAMIC_ARCH=1 -DCMAKE_C_COMPILER=/usr/local/opt/llvm/bin/clang -DNOFORTRAN=1 -DNO_AVX512=1 ..
+      cmake -DTARGET=CORE2 -DUSE_OPENMP=1 -DINTERFACE64=1 -DDYNAMIC_ARCH=1 -DCMAKE_C_COMPILER=/usr/local/opt/llvm/bin/clang -DNOFORTRAN=1 -DDYNAMIC_LIST="NEHALEM HASWELL SKYLAKEX COOPERLAKE" ..
       make
       ctest
       
