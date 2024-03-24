@@ -407,7 +407,7 @@ int exec_blas(BLASLONG num, blas_queue_t *queue){
   }
 #endif
 
-while (true)
+while (true) {
     for(i=0; i < MAX_PARALLEL_NUMBER; i++) {
 #ifdef HAVE_C11
       _Bool inuse = false;
