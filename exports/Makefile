@@ -266,7 +266,7 @@ so : ../$(LIBSONAME) linktest.c
 
 ../$(LIBSONAME) : aix.exp
 	$(CC) $(CFLAGS) $(LDFLAGS)  -shared -o ../$(LIBSONAME) \
-	-Wl,-bE:aix.exp -Wl,-bbigtoc ../$(LIBNAME) $(EXTRALIB)
+	-Wl,-bcdtors:all:-2147481648:s,-bE:aix.exp -Wl,-bbigtoc ../$(LIBNAME) $(EXTRALIB)
 
 aix.exp :
 	/usr/bin/nm -X32_64 -PCpgl ../$(LIBNAME) | /usr/bin/awk '{ if ((($$ 2 == "T") \
