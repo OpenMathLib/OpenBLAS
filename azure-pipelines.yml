@@ -141,7 +141,7 @@ jobs:
 
 - job: OSX_OpenMP
   pool:
-     vmImage: 'macOS-11'
+     vmImage: 'macOS-latest'
   variables:
       OPENBLAS_VERBOSE: 2
   steps:   
@@ -205,7 +205,7 @@ jobs:
   - script: |
       mkdir build
       cd build
-      cmake -DTARGET=CORE2 -DDYNAMIC_ARCH=1 -DDYNAMIC_LIST='NEHALEM HASWELL SKYLAKEX' -DCMAKE_C_COMPILER=gcc-10 -DCMAKE_Fortran_COMPILER=gfortran-10 -DBUILD_SHARED_LIBS=ON ..
+      cmake -DTARGET=CORE2 -DDYNAMIC_ARCH=1 -DDYNAMIC_LIST="NEHALEM HASWELL SKYLAKEX" -DCMAKE_C_COMPILER=gcc-10 -DCMAKE_Fortran_COMPILER=gfortran-10 -DBUILD_SHARED_LIBS=ON ..
       cmake --build .
       ctest
 
