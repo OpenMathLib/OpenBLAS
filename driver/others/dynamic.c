@@ -475,7 +475,7 @@ static gotoblas_t *get_coretype(void){
     case 0x6:
       switch (exmodel) {
       case 0:
-	if (model <= 0x7) return &gotoblas_KATMAI;
+	if (model <= 0x7) {fprintf(stderr," genuine Katmai??? model=%x\n",model); return &gotoblas_KATMAI;}
 	if ((model == 0x8) || (model == 0xa) || (model == 0xb)) return &gotoblas_COPPERMINE;
 	if ((model == 0x9) || (model == 0xd)) return &gotoblas_BANIAS;
 	if (model == 14) return &gotoblas_BANIAS;
@@ -1136,7 +1136,7 @@ void gotoblas_dynamic_init(void) {
   }
 
 #ifdef ARCH_X86
-  if (gotoblas == NULL) gotoblas = &gotoblas_KATMAI;
+  if (gotoblas == NULL) {fprintf(stderr,"unknown 32bit cpu, assuming Katmai\n");gotoblas = &gotoblas_KATMAI;}
 #else
   if (gotoblas == NULL) {
    if (support_avx512_bf16()) gotoblas = &gotoblas_COOPERLAKE;
@@ -1151,8 +1151,9 @@ void gotoblas_dynamic_init(void) {
           gotoblas == &gotoblas_COPPERMINE ||
           gotoblas == &gotoblas_NORTHWOOD ||
           gotoblas == &gotoblas_BANIAS ||
-          gotoblas == &gotoblas_ATHLON)
-          gotoblas = &gotoblas_PRESCOTT;
+          gotoblas == &gotoblas_ATHLON) {
+	      fprintf(stderr,"32bit cpu detected in 64bit system, usiing Prescott\n");
+          gotoblas = &gotoblas_PRESCOTT;}
   }
 #endif
 
