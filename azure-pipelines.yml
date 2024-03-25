@@ -147,8 +147,8 @@ jobs:
   steps:   
   - script: |
       brew update
-      make TARGET=CORE2 DYNAMIC_ARCH=1 USE_OPENMP=1 INTERFACE64=1 CC=gcc-10 FC=gfortran-10 DYNAMIC_LIST="HASWELL"
-      make TARGET=CORE2 DYNAMIC_ARCH=1 USE_OPENMP=1 INTERFACE64=1 CC=gcc-10 FC=gfortran-10 DYNAMIC_LIST="HASWELL" PREFIX=../blasinst install
+      make TARGET=CORE2 DYNAMIC_ARCH=1 USE_OPENMP=1 INTERFACE64=1 CC=gcc FC=gfortran DYNAMIC_LIST="NEHALEM HASWELL SKYlAKEX"
+      make TARGET=CORE2 DYNAMIC_ARCH=1 USE_OPENMP=1 INTERFACE64=1 CC=gcc FC=gfortran DYNAMIC_LIST="NEHALEM HASWELL SKYLAKEX" PREFIX=../blasinst install
       ls -lR ../blasinst
      
 - job: OSX_GCC_Nothreads
