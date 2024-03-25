@@ -142,11 +142,13 @@ jobs:
 - job: OSX_OpenMP
   pool:
      vmImage: 'macOS-11'
+  variables:
+      OPENBLAS_VERBOSE:2
   steps:   
   - script: |
       brew update
-      make TARGET=CORE2 DYNAMIC_ARCH=1 USE_OPENMP=1 INTERFACE64=1 CC=gcc-10 FC=gfortran-10 DYNAMIC_LIST="HASWELL SKYLAKEX"
-      make TARGET=CORE2 DYNAMIC_ARCH=1 USE_OPENMP=1 INTERFACE64=1 CC=gcc-10 FC=gfortran-10 DYNAMIC_LIST="HASWELL SKYLAKEX" PREFIX=../blasinst install
+      make TARGET=CORE2 DYNAMIC_ARCH=1 USE_OPENMP=1 INTERFACE64=1 CC=gcc-10 FC=gfortran-10 DYNAMIC_LIST="HASWELL"
+      make TARGET=CORE2 DYNAMIC_ARCH=1 USE_OPENMP=1 INTERFACE64=1 CC=gcc-10 FC=gfortran-10 DYNAMIC_LIST="HASWELL" PREFIX=../blasinst install
       ls -lR ../blasinst
      
 - job: OSX_GCC_Nothreads
