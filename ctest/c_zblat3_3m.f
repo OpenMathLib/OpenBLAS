@@ -95,7 +95,7 @@
       COMMON             /INFOC/INFOT, NOUTC, OK, LERR
       COMMON             /SRNAMC/SRNAMT
 *     .. Data statements ..
-      DATA               SNAMES/'cblas_zgemm3m ', 'cblas_zhemm ',
+      DATA               SNAMES/'cblas_zgemm3m', 'cblas_zhemm ',
      $                   'cblas_zsymm ', 'cblas_ztrmm ', 'cblas_ztrsm ',
      $                   'cblas_zherk ', 'cblas_zsyrk ', 'cblas_zher2k',
      $                   'cblas_zsyr2k'/
