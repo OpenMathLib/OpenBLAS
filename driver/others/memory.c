@@ -1219,7 +1219,7 @@ UNLOCK_COMMAND(&alloc_lock);
       if (!blas_num_threads) blas_cpu_number = blas_get_cpu_number();
 #endif
 
-#if defined(ARCH_X86) || defined(ARCH_X86_64) || defined(ARCH_IA64) || defined(ARCH_MIPS64) || defined(ARCH_ARM64)
+#if defined(ARCH_X86) || defined(ARCH_X86_64) || defined(ARCH_IA64) || defined(ARCH_MIPS64) || defined(ARCH_ARM64) || defined(ARCH_LOONGARCH64)
 #ifndef DYNAMIC_ARCH
       blas_set_parameter();
 #endif
@@ -2814,7 +2814,7 @@ void *blas_memory_alloc(int procpos){
     if (!blas_num_threads) blas_cpu_number = blas_get_cpu_number();
 #endif
 
-#if defined(ARCH_X86) || defined(ARCH_X86_64) || defined(ARCH_IA64) || defined(ARCH_MIPS64) || defined(ARCH_ARM64)
+#if defined(ARCH_X86) || defined(ARCH_X86_64) || defined(ARCH_IA64) || defined(ARCH_MIPS64) || defined(ARCH_ARM64) || defined(ARCH_LOONGARCH64)
 #ifndef DYNAMIC_ARCH
     blas_set_parameter();
 #endif

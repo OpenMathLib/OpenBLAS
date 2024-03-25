@@ -739,6 +739,100 @@ void blas_set_parameter(void){
 }
 #endif
 
+#if defined(ARCH_LOONGARCH64)
+int get_L3_size() {
+  int ret = 0, id = 0x14;
+  __asm__ volatile (
+    "cpucfg %[ret], %[id]"
+    : [ret]"=r"(ret)
+    : [id]"r"(id)
+    : "memory"
+  );
+  return ((ret & 0xffff) + 1) * pow(2, ((ret >> 16) & 0xff)) * pow(2, ((ret >> 24) & 0x7f)) / 1024 / 1024; // MB
+}
+
+void blas_set_parameter(void){
+#if defined(LOONGSON3R5)
+  int L3_size = get_L3_size();
+#ifdef SMP
+  if(blas_num_threads == 1){
+#endif
+    //single thread
+    if (L3_size == 32){ // 3C5000 and 3D5000
+      sgemm_p = 256;
+      sgemm_q = 384;
+      sgemm_r = 8192;
+
+      dgemm_p = 112;
+      dgemm_q = 289;
+      dgemm_r = 4096;
+
+      cgemm_p = 128;
+      cgemm_q = 256;
+      cgemm_r = 4096;
+
+      zgemm_p = 128;
+      zgemm_q = 128;
+      zgemm_r = 2048;
+    } else { // 3A5000 and 3C5000L
+      sgemm_p = 256;
+      sgemm_q = 384;
+      sgemm_r = 4096;
+
+      dgemm_p = 112;
+      dgemm_q = 300;
+      dgemm_r = 3024;
+
+      cgemm_p = 128;
+      cgemm_q = 256;
+      cgemm_r = 2048;
+
+      zgemm_p = 128;
+      zgemm_q = 128;
+      zgemm_r = 1024;
+    }
+#ifdef SMP
+  }else{
+    //multi thread
+    if (L3_size == 32){ // 3C5000 and 3D5000
+      sgemm_p = 256;
+      sgemm_q = 384;
+      sgemm_r = 1024;
+
+      dgemm_p = 112;
+      dgemm_q = 289;
+      dgemm_r = 342;
+
+      cgemm_p = 128;
+      cgemm_q = 256;
+      cgemm_r = 512;
+
+      zgemm_p = 128;
+      zgemm_q = 128;
+      zgemm_r = 512;
+    } else { // 3A5000 and 3C5000L
+      sgemm_p = 256;
+      sgemm_q = 384;
+      sgemm_r = 2048;
+
+      dgemm_p = 112;
+      dgemm_q = 300;
+      dgemm_r = 738;
+
+      cgemm_p = 128;
+      cgemm_q = 256;
+      cgemm_r = 1024;
+
+      zgemm_p = 128;
+      zgemm_q = 128;
+      zgemm_r = 1024;
+    }
+  }
+#endif
+#endif
+}
+#endif
+
 #if defined(ARCH_ARM64)
 
 void blas_set_parameter(void)
