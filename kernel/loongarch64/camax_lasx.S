@@ -60,6 +60,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     PROLOGUE
     xvxor.v VM0, VM0, VM0
     xvxor.v res0, res0, res0
+    xvxor.v $xr20, $xr20, $xr20
     bge $r0, N, .L999
     bge $r0, INCX, .L999
     li.d TEMP, 1
