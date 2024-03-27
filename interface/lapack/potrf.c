@@ -116,7 +116,7 @@ int NAME(char *UPLO, blasint *N, FLOAT *a, blasint *ldA, blasint *Info){
   int nmax = 128;
 #else 
   int nmax = 64;
-endif
+#endif
   if (args.n <nmax) {
     args.nthreads = 1;
   } else {
