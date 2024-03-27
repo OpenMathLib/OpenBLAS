@@ -108,8 +108,8 @@ task:
       type: text/plain
 
 arm_container:
-    image: node:latest
-  task:
+  image: node:latest
+task:
   name: Neoverse-pthreads
   compile_script:
   - make
