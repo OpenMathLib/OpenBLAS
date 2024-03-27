@@ -107,10 +107,10 @@ task:
       path: "*conf*"
       type: text/plain
 
-task:
-  name: NeoverseN1
-  arm_container:
+arm_container:
     image: node:latest
+  task:
+  name: Neoverse-pthreads
   compile_script:
   - make
   - wget https://gist.github.com/martin-frbg/7790c2cd10f4a56fefd7bb8a8309113f/raw/442dddacd1392c5f43ae7f70d6e315331fa5be49/issue4583.cpp
