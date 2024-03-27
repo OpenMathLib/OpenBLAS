@@ -107,17 +107,18 @@ task:
       path: "*conf*"
       type: text/plain
 
-arm_container:
-  image: node:latest
+
 task:
   name: Neoverse-pthreads
+  arm_container:
+    image: node:latest
   compile_script:
   - make
   - wget https://gist.github.com/martin-frbg/7790c2cd10f4a56fefd7bb8a8309113f/raw/442dddacd1392c5f43ae7f70d6e315331fa5be49/issue4583.cpp
   - g++ -I. -Ilapack-netlib/LAPACKE/include issue4583.cpp libopenblas.a -lgfortran -o issue4583
   - ./issue4583
 
-  task:
+task:
   name: NeoverseN1-ILP64
   arm_container:
     image: node:latest
@@ -128,7 +129,7 @@ task:
   name: NeoverseN1-OMP
   arm_container:
     image: node:latest
-    cpu: 8
+    cpu: 4
   compile_script:
   - make USE_OPENMP=1
 
