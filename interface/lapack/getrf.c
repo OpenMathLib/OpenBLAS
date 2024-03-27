@@ -100,7 +100,7 @@ int NAME(blasint *M, blasint *N, FLOAT *a, blasint *ldA, blasint *ipiv, blasint 
   int nmax = 40000;
 #else 
   int nmax = 10000;
-endif
+#endif
   if (args.m*args.n <nmax) {
     args.nthreads = 1;
   } else {
