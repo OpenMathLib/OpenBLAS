@@ -105,6 +105,14 @@ typedef struct {
   BLASLONG working[MAX_CPU_NUMBER][CACHE_LINE_SIZE * DIVIDE_RATE];
 } job_t;
 
+#ifdef HAVE_C11
+#define atomic_load_long(p)             __atomic_load_n(p, __ATOMIC_RELAXED)
+#define atomic_store_long(p, v)         __atomic_store_n(p, v, __ATOMIC_RELAXED)
+#else
+#define atomic_load_long(p)             (BLASLONG)(*(volatile BLASLONG*)(p))
+#define atomic_store_long(p, v)         (*(volatile BLASLONG *)(p)) = (v)
+#endif
+
 
 #ifndef KERNEL_OPERATION
 #ifndef COMPLEX
@@ -233,14 +241,18 @@ static int inner_thread(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, 
     }
 
 #ifndef LOWER
+    MB;
     for (i = 0; i <= mypos; i++)
-      job[mypos].working[i][CACHE_LINE_SIZE * bufferside] = (BLASLONG)buffer[bufferside];
+      atomic_store_long(&job[mypos].working[i][CACHE_LINE_SIZE * bufferside], (BLASLONG)buffer[bufferside]);
+    //  job[mypos].working[i][CACHE_LINE_SIZE * bufferside] = (BLASLONG)buffer[bufferside];
 #else
+    MB
     for (i = mypos; i < args -> nthreads; i++)
-      job[mypos].working[i][CACHE_LINE_SIZE * bufferside] = (BLASLONG)buffer[bufferside];
+      atomic_store_long(&job[mypos].working[i][CACHE_LINE_SIZE * bufferside], (BLASLONG)buffer[bufferside]);
+//      job[mypos].working[i][CACHE_LINE_SIZE * bufferside] = (BLASLONG)buffer[bufferside];
 #endif
 
-    WMB;
+//    WMB;
   }
 
   min_i = m_to - m_from;
@@ -271,14 +283,21 @@ static int inner_thread(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, 
       for (xxx = range_n[current], bufferside = 0; xxx < range_n[current + 1]; xxx += div_n, bufferside ++) {
 
 	/* thread has to wait */
-	if (current != mypos) while(job[current].working[mypos][CACHE_LINE_SIZE * bufferside] == 0) {YIELDING;};
+	if (current != mypos) 
+	        do {
+           jw =  atomic_load_long(&job[current].working[mypos][CACHE_LINE_SIZE * bufferside]);
+        } while (jw == 0); 
+        MB;
+
+	//while(job[current].working[mypos][CACHE_LINE_SIZE * bufferside] == 0) {YIELDING;};
 
 	KERNEL_OPERATION(min_i, MIN(range_n[current + 1] - xxx, div_n), k, alpha,
 			 sa, (FLOAT *)job[current].working[mypos][CACHE_LINE_SIZE * bufferside],
 			 c, lda, m_from, xxx);
 
 	if (m_from + min_i >= m_to) {
-	  job[current].working[mypos][CACHE_LINE_SIZE * bufferside] &= 0;
+      atomic_store_long(&job[current].working[mypos][CACHE_LINE_SIZE * bufferside], job[current].working[mypos][CACHE_LINE_SIZE * bufferside] &= 0);
+//	  job[current].working[mypos][CACHE_LINE_SIZE * bufferside] &= 0;
 	  WMB;
 	}
       }
@@ -323,7 +342,8 @@ static int inner_thread(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, 
 			     c, lda, is, xxx);
 
 	    if (is + min_i >= m_to) {
-	      job[current].working[mypos][CACHE_LINE_SIZE * bufferside] &= 0;
+      atomic_store_long(&job[current].working[mypos][CACHE_LINE_SIZE * bufferside], job[current].working[mypos][CACHE_LINE_SIZE * bufferside] &= 0);
+//	      job[current].working[mypos][CACHE_LINE_SIZE * bufferside] &= 0;
 	      WMB;
 	    }
 	  }
@@ -337,9 +357,18 @@ static int inner_thread(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, 
 
   for (i = 0; i < args -> nthreads; i++) {
     if (i != mypos) {
-      for (xxx = 0; xxx < DIVIDE_RATE; xxx++) {
+      for (xxx = 0; xxx < DIVIDE_RATE; xxx++)
+      #if 1
+    {
+        do {
+           jw =  atomic_load_long(&job[mypos].working[i][CACHE_LINE_SIZE * xxx]);
+        } while (jw);
+        MB;
+    }
+#else
 	while (job[mypos].working[i][CACHE_LINE_SIZE * xxx] ) {YIELDING;};
-      }
+#endif
+    //  }
     }
   }
 
