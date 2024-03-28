@@ -1,0 +1,25 @@
+site_name: OpenBLAS
+site_url: https://openblas.net/docs/
+theme:
+  name: material
+  logo: logo.svg
+  favicon: logo.svg
+  palette:
+    primary: grey
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
+  - toc:
+      toc_depth: 4
+nav:
+  - index.md
+  - install.md
+  - user_manual.md
+  - extensions.md
+  - developers.md
+  - build_system.md
+  - distributing.md
+  - ci.md
+  - about.md
+  - faq.md

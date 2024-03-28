@@ -1,0 +1,24 @@
+name: Publish docs via GitHub Pages
+on:
+  push:
+    branches:
+      - develop
+jobs:
+  build:
+    name: Deploy docs
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
+        with:
+          python-version: "3.10"
+      - run: pip install mkdocs mkdocs-material
+      # mkdocs gh-deploy command only builds to the top-level, hence building then deploying ourselves
+      - run: mkdocs build
+      - name: Deploy docs
+        uses: peaceiris/actions-gh-pages@v3
+        if: ${{ github.ref == 'refs/heads/develop' }}
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./site
+          destination_dir: docs/
