@@ -113,13 +113,17 @@ int NAME(char *UPLO, blasint *N, FLOAT *a, blasint *ldA, blasint *Info){
 #ifdef SMP
   args.common = NULL;
 #ifndef DOUBLE
-  if (args.n <128)
-#else
-  if (args.n <64)
+  int nmax = 128;
+#else 
+  int nmax = 64;
 #endif
+  if (args.n <nmax) {
     args.nthreads = 1;
-  else
-  args.nthreads = num_cpu_avail(4);
+  } else {
+    args.nthreads = num_cpu_avail(4);
+    if (args.n/args.nthreads <nmax)
+	    args.nthreads = args.n/nmax;
+  }
 
   if (args.nthreads == 1) {
 #endif
