@@ -409,14 +409,14 @@ int exec_blas_async(BLASLONG pos, blas_queue_t *queue) {
   }
   else
   {
-	  blas_queue_t *next_item = work_queue;
+	  blas_queue_t *queue_item = work_queue;
 
     // find the end of the work queue
-    while (next_item)
-        next_item = next_item->next;
+    while (queue_item->next)
+        queue_item = queue_item->next;
 
     // add new work to the end
-    next_item = queue;
+    queue_item->next = queue;
   }
 
   LeaveCriticalSection(&queue_lock);
