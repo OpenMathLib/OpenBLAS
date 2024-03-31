@@ -63,15 +63,62 @@ endforeach
 #   sblas3_srcs += files(['sbgemm.c', 'sbgemmt.c'])
 # endif
 
+interface_confs += {
+  'name': 'cblas_drot',
+  'defs': ['-DCBLAS'],
+  'src': files('rot.c')
+}
+
 _static_libs = []
-foreach conf: interface_confs
-    _static_libs += static_library(
-        conf['name'],
-        conf['src'],
-        include_directories:  _inc,
-        c_args: conf['defs'],
-    )
-endforeach
+# foreach conf: interface_confs
+#     _static_libs += static_library(
+#         conf['name'],
+#         conf['src'],
+#         include_directories:  _inc,
+#         c_args: conf['defs'],
+#     )
+# endforeach
+_static_libs += static_library(
+    'cblas_drot',
+    'rot.c',
+    include_directories:  _inc,
+    c_args: [        '-O2',
+        '-DSMALL_MATRIX_OPT',
+        '-DMAX_STACK_ALLOC=2048',
+        '-Wall',
+        '-m64',
+        '-DF_INTERFACE_GFORT',
+        '-fPIC',
+        '-DSMP_SERVER',
+        '-DNO_WARMUP',
+        '-DMAX_CPU_NUMBER=12',
+        '-DMAX_PARALLEL_NUMBER=1',
+        '-DBUILD_SINGLE=1',
+        '-DBUILD_DOUBLE=1',
+        '-DBUILD_COMPLEX=1',
+        '-DBUILD_COMPLEX16=1',
+        '-msse3',
+        '-mssse3',
+        '-msse4.1',
+        '-mavx',
+        '-mavx2',
+        '-UASMNAME',
+        '-UASMFNAME',
+        '-UNAME',
+        '-UCNAME',
+        '-UCHAR_NAME',
+        '-UCHAR_CNAME',
+        '-DASMNAME=cblas_drot',
+        '-DASMFNAME=cblas_drot_',
+        '-DNAME=cblas_drot_',
+        '-DCNAME=cblas_drot',
+        '-DCHAR_NAME="cblas_drot_"',
+        '-DCHAR_CNAME="cblas_drot"',
+        '-DNO_AFFINITY',
+        '-DDOUBLE',
+        '-UCOMPLEX',
+        '-DCBLAS',],
+)
 
 _interface = static_library('_interface',
                     link_whole: _static_libs)
