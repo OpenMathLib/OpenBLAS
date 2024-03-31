@@ -139,5 +139,8 @@ configure_file(output : 'getarch_conf.h',
 # Ignoring all the hostarch checks and conflicts for arch in BSD for now
 _inc = include_directories('.')
 # subdir('lapack-netlib')
-# subdir('interface')
-# subdir('kernel')
+subdir('interface')
+subdir('kernel')
+
+_openblas = static_library('openblas',
+                    link_whole: [ _interface, _kern])

@@ -397,363 +397,493 @@ base_kops = [
   },
 ]
 
-kernel_confs = []
+# kernel_confs = []
 
-# For the modes array, the following mapping is used for c_args:
-# undef --> -Uwhatever
-# def --> -Dwhatever
-foreach _kop : base_kops
-  foreach pkey, pval : _kop['modes']
-    # TODO: This srcs should be in files() after this is ready
-    # dictionaries with files can't be printed with message
-    kcfg = {
-      'src': pval['dir'] + '/' + pval['kernel'],
-    }
-    if pval.has_key('addl')
-      kcfg += {'addl': pval['addl']}
-    endif
-    if 's' == pkey
-      foreach ext : pval['exts']
-        kcfg += {'name': pkey + _kop['base'] + ext}
-        # Level 1
-        if '_k' == ext
-          kcfg += {
-            'undef': ['COMPLEX', 'DOUBLE']
-          }
-        endif
-        # Level 2
-        if '_n' == ext
-          kcfg += {
-            'undef': ['DOUBLE', 'COMPLEX', 'TRANS'],
-          }
-        endif
-        if '_t' == ext
-          kcfg += {
-            'undef': ['DOUBLE', 'COMPLEX'],
-            'def': ['TRANS']
-          }
-        endif
-        if '_U' == ext
-          kcfg += {
-            'undef': ['DOUBLE', 'COMPLEX', 'LOWER'],
-          }
-        endif
-        if '_L' == ext
-          kcfg += {
-            'undef': ['DOUBLE', 'COMPLEX'],
-            'def': ['LOWER']
-          }
-        endif
-      endforeach
-    endif
-    if 'd' == pkey
-      foreach ext : pval['exts']
-        kcfg += {'name': pkey + _kop['base'] + ext}
-        # Level 1
-        if '_k' == ext
-          kcfg += {
-            'undef': ['COMPLEX'],
-            'def': ['DOUBLE'],
-          }
-        endif
-        # Level 2
-        if '_n' == ext
-          kcfg += {
-            'undef': ['COMPLEX', 'TRANS'],
-            'def': ['DOUBLE']
-          }
-        endif
-        if '_t' == ext
-          kcfg += {
-            'undef': ['COMPLEX'],
-            'def': ['DOUBLE', 'TRANS']
-          }
-        endif
-        if '_U' == ext
-          kcfg += {
-            'undef': ['COMPLEX', 'LOWER'],
-            'def': ['DOUBLE']
-          }
-        endif
-        if '_L' == ext
-          kcfg += {
-            'undef': ['COMPLEX'],
-            'def': ['DOUBLE', 'LOWER']
-          }
-        endif
-      endforeach
-    endif
-    if 'q' == pkey
-      foreach ext : pval['exts']
-        kcfg += {'name': pkey + _kop['base'] + ext}
-        # Level 1
-        if '_k' == ext
-          kcfg += {
-            'undef': ['COMPLEX'],
-            'def': ['XDOUBLE'],
-          }
-        endif
-        # Level 2
-        if '_n' == ext
-          kcfg += {
-            'undef': ['COMPLEX', 'TRANS'],
-            'def': ['XDOUBLE']
-          }
-        endif
-        if '_t' == ext
-          kcfg += {
-            'undef': ['COMPLEX'],
-            'def': ['XDOUBLE', 'TRANS']
-          }
-        endif
-        if '_U' == ext
-          kcfg += {
-            'undef': ['COMPLEX', 'LOWER'],
-            'def': ['XDOUBLE']
-          }
-        endif
-        if '_L' == ext
-          kcfg += {
-            'undef': ['COMPLEX'],
-            'def': ['XDOUBLE', 'LOWER']
-          }
-        endif
-      endforeach
-    endif
-    # TODO: rot is nonstandard in this instance, taking cs zd xq
-    # The others (scal, swap) take c z x, so we need to use in
-    if 'c' in pkey
-      foreach ext : pval['exts']
-        kcfg += {'name': pkey + _kop['base'] + ext}
-        # Level 1
-        if '_k' == ext
-          kcfg += {
-            'undef': ['DOUBLE'],
-            'def': ['COMPLEX'],
-          }
-        endif
-        # Level 2
-        if '_n' == ext
-          kcfg += {
-            'undef': ['DOUBLE', 'TRANS', 'CONJ', 'XCONJ'],
-            'def': ['COMPLEX']
-          }
-        endif
-        if '_t' == ext
-          kcfg += {
-            'undef': ['DOUBLE', 'CONJ', 'XCONJ'],
-            'def': ['COMPLEX', 'TRANS']
-          }
-        endif
-        if '_r' == ext
-          kcfg += {
-            'undef': ['DOUBLE', 'TRANS', 'XCONJ'],
-            'def': ['COMPLEX', 'CONJ']
-          }
-        endif
-        if '_c' == ext
-          kcfg += {
-            'undef': ['DOUBLE', 'XCONJ'],
-            'def': ['COMPLEX', 'TRANS', 'CONJ']
-          }
-        endif
-        if '_o' == ext
-          kcfg += {
-            'undef': ['DOUBLE', 'TRANS', 'CONJ'],
-            'def': ['COMPLEX', 'XCONJ']
-          }
-        endif
-        if '_u' == ext
-          kcfg += {
-            'undef': ['DOUBLE', 'CONJ'],
-            'def': ['COMPLEX', 'TRANS', 'XCONJ']
-          }
-        endif
-        if '_s' == ext
-          kcfg += {
-            'undef': ['DOUBLE', 'TRANS'],
-            'def': ['COMPLEX', 'CONJ', 'XCONJ']
-          }
-        endif
-        if '_d' == ext
-          kcfg += {
-            'undef': ['DOUBLE'],
-            'def': ['COMPLEX', 'TRANS', 'CONJ', 'XCONJ']
-          }
-        endif
-        if '_U' == ext
-          kcfg += {
-            'undef': ['DOUBLE', 'LOWER'],
-            'def': ['COMPLEX']
-          }
-        endif
-        if '_L' == ext
-          kcfg += {
-            'undef': ['DOUBLE'],
-            'def': ['COMPLEX', 'LOWER']
-          }
-        endif
-      endforeach
-    endif
-    if 'z' in pkey
-      foreach ext : pval['exts']
-        kcfg += {'name': pkey + _kop['base'] + ext}
-        # Level 1
-        if '_k' == ext
-          kcfg += {
-            'def': ['COMPLEX', 'DOUBLE'],
-          }
-        endif
-        # Level 2
-        if '_n' == ext
-          kcfg += {
-            'undef': ['CONJ', 'XCONJ', 'TRANS'],
-            'def': ['COMPLEX', 'DOUBLE'],
-          }
-        endif
-        if '_t' == ext
-          kcfg += {
-            'undef': ['CONJ', 'XCONJ'],
-            'def': ['COMPLEX', 'DOUBLE', 'TRANS']
-          }
-        endif
-        if '_r' == ext
-          kcfg += {
-            'undef': ['TRANS', 'XCONJ'],
-            'def': ['COMPLEX', 'DOUBLE', 'CONJ']
-          }
-        endif
-        if '_c' == ext
-          kcfg += {
-            'undef': ['XCONJ'],
-            'def': ['COMPLEX', 'DOUBLE', 'TRANS', 'CONJ']
-          }
-        endif
-        if '_o' == ext
-          kcfg += {
-            'undef': ['CONJ', 'TRANS'],
-            'def': ['COMPLEX', 'DOUBLE', 'XCONJ']
-          }
-        endif
-        if '_u' == ext
-          kcfg += {
-            'undef': ['CONJ'],
-            'def': ['COMPLEX', 'DOUBLE', 'TRANS', 'XCONJ']
-          }
-        endif
-        if '_s' == ext
-          kcfg += {
-            'undef': ['TRANS'],
-            'def': ['COMPLEX', 'DOUBLE', 'CONJ', 'XCONJ']
-          }
-        endif
-        if '_d' == ext
-          kcfg += {
-            'def': ['COMPLEX', 'DOUBLE', 'TRANS', 'CONJ', 'XCONJ']
-          }
-        endif
-        if '_U' == ext
-          kcfg += {
-            'undef': ['LOWER'],
-            'def': ['COMPLEX', 'DOUBLE']
-          }
-        endif
-        if '_L' == ext
-          kcfg += {
-            'def': ['COMPLEX', 'DOUBLE', 'LOWER']
-          }
-        endif
-      endforeach
-    endif
-    if 'x' in pkey
-      foreach ext : pval['exts']
-        kcfg += {'name': pkey + _kop['base'] + ext}
-        # Level 1
-        if '_k' == ext
-          kcfg += {
-            'def': ['COMPLEX', 'XDOUBLE'],
-          }
-        endif
-        # Level 2
-        if '_n' == ext
-          kcfg += {
-            'undef': ['XCONJ', 'CONJ', 'TRANS'],
-            'def': ['XDOUBLE', 'COMPLEX'],
-          }
-        endif
-        if '_t' == ext
-          kcfg += {
-            'undef': ['CONJ', 'XCONJ'],
-            'def': ['XDOUBLE', 'COMPLEX', 'TRANS']
-          }
-        endif
-        if '_r' == ext
-          kcfg += {
-            'undef': ['TRANS', 'XCONJ'],
-            'def': ['XDOUBLE', 'COMPLEX', 'CONJ']
-          }
-        endif
-        if '_c' == ext
-          kcfg += {
-            'undef': ['XCONJ'],
-            'def': ['XDOUBLE', 'COMPLEX', 'TRANS', 'CONJ']
-          }
-        endif
-        if '_o' == ext
-          kcfg += {
-            'undef': ['TRANS', 'CONJ'],
-            'def': ['XDOUBLE', 'COMPLEX', 'XCONJ']
-          }
-        endif
-        if '_u' == ext
-          kcfg += {
-            'undef': ['CONJ'],
-            'def': ['XDOUBLE', 'COMPLEX', 'TRANS', 'XCONJ']
-          }
-        endif
-        if '_s' == ext
-          kcfg += {
-            'undef': ['TRANS'],
-            'def': ['XDOUBLE', 'COMPLEX', 'CONJ', 'XCONJ']
-          }
-        endif
-        if '_d' == ext
-          kcfg += {
-            'def': ['XDOUBLE', 'COMPLEX', 'TRANS', 'CONJ', 'XCONJ']
-          }
-        endif
-        if '_U' == ext
-          kcfg += {
-            'undef': ['LOWER'],
-            'def': ['COMPLEX', 'XDOUBLE']
-          }
-        endif
-        if '_L' == ext
-          kcfg += {
-            'def': ['COMPLEX', 'XDOUBLE', 'LOWER']
-          }
-        endif
-      endforeach
-    endif
-    message(kcfg)
-  endforeach
-endforeach
-
-# foreach root : blas1_roots
-#   fname = root + '.S'
-#   defs = []
-#   foreach prec : real_kinds
-#     name = prec + fname + '_k'
-#     kernel_confs += {'defs': defs, 'name': name, 'src': fname}
+# # For the modes array, the following mapping is used for c_args:
+# # undef --> -Uwhatever
+# # def --> -Dwhatever
+# foreach _kop : base_kops
+#   foreach pkey, pval : _kop['modes']
+#     # TODO: This srcs should be in files() after this is ready
+#     # dictionaries with files can't be printed with message
+#     kcfg = {
+#       'src': pval['dir'] + '/' + pval['kernel'],
+#     }
+#     if pval.has_key('addl')
+#       kcfg += {'addl': pval['addl']}
+#     endif
+#     if 's' == pkey
+#       foreach ext : pval['exts']
+#         kcfg += {'name': pkey + _kop['base'] + ext}
+#         # Level 1
+#         if '_k' == ext
+#           kcfg += {
+#             'undef': ['COMPLEX', 'DOUBLE']
+#           }
+#         endif
+#         # Level 2
+#         if '_n' == ext
+#           kcfg += {
+#             'undef': ['DOUBLE', 'COMPLEX', 'TRANS'],
+#           }
+#         endif
+#         if '_t' == ext
+#           kcfg += {
+#             'undef': ['DOUBLE', 'COMPLEX'],
+#             'def': ['TRANS']
+#           }
+#         endif
+#         if '_U' == ext
+#           kcfg += {
+#             'undef': ['DOUBLE', 'COMPLEX', 'LOWER'],
+#           }
+#         endif
+#         if '_L' == ext
+#           kcfg += {
+#             'undef': ['DOUBLE', 'COMPLEX'],
+#             'def': ['LOWER']
+#           }
+#         endif
+#       endforeach
+#     endif
+#     if 'd' == pkey
+#       foreach ext : pval['exts']
+#         kcfg += {'name': pkey + _kop['base'] + ext}
+#         # Level 1
+#         if '_k' == ext
+#           kcfg += {
+#             'undef': ['COMPLEX'],
+#             'def': ['DOUBLE'],
+#           }
+#         endif
+#         # Level 2
+#         if '_n' == ext
+#           kcfg += {
+#             'undef': ['COMPLEX', 'TRANS'],
+#             'def': ['DOUBLE']
+#           }
+#         endif
+#         if '_t' == ext
+#           kcfg += {
+#             'undef': ['COMPLEX'],
+#             'def': ['DOUBLE', 'TRANS']
+#           }
+#         endif
+#         if '_U' == ext
+#           kcfg += {
+#             'undef': ['COMPLEX', 'LOWER'],
+#             'def': ['DOUBLE']
+#           }
+#         endif
+#         if '_L' == ext
+#           kcfg += {
+#             'undef': ['COMPLEX'],
+#             'def': ['DOUBLE', 'LOWER']
+#           }
+#         endif
+#       endforeach
+#     endif
+#     if 'q' == pkey
+#       foreach ext : pval['exts']
+#         kcfg += {'name': pkey + _kop['base'] + ext}
+#         # Level 1
+#         if '_k' == ext
+#           kcfg += {
+#             'undef': ['COMPLEX'],
+#             'def': ['XDOUBLE'],
+#           }
+#         endif
+#         # Level 2
+#         if '_n' == ext
+#           kcfg += {
+#             'undef': ['COMPLEX', 'TRANS'],
+#             'def': ['XDOUBLE']
+#           }
+#         endif
+#         if '_t' == ext
+#           kcfg += {
+#             'undef': ['COMPLEX'],
+#             'def': ['XDOUBLE', 'TRANS']
+#           }
+#         endif
+#         if '_U' == ext
+#           kcfg += {
+#             'undef': ['COMPLEX', 'LOWER'],
+#             'def': ['XDOUBLE']
+#           }
+#         endif
+#         if '_L' == ext
+#           kcfg += {
+#             'undef': ['COMPLEX'],
+#             'def': ['XDOUBLE', 'LOWER']
+#           }
+#         endif
+#       endforeach
+#     endif
+#     # TODO: rot is nonstandard in this instance, taking cs zd xq
+#     # The others (scal, swap) take c z x, so we need to use in
+#     if 'c' in pkey
+#       foreach ext : pval['exts']
+#         kcfg += {'name': pkey + _kop['base'] + ext}
+#         # Level 1
+#         if '_k' == ext
+#           kcfg += {
+#             'undef': ['DOUBLE'],
+#             'def': ['COMPLEX'],
+#           }
+#         endif
+#         # Level 2
+#         if '_n' == ext
+#           kcfg += {
+#             'undef': ['DOUBLE', 'TRANS', 'CONJ', 'XCONJ'],
+#             'def': ['COMPLEX']
+#           }
+#         endif
+#         if '_t' == ext
+#           kcfg += {
+#             'undef': ['DOUBLE', 'CONJ', 'XCONJ'],
+#             'def': ['COMPLEX', 'TRANS']
+#           }
+#         endif
+#         if '_r' == ext
+#           kcfg += {
+#             'undef': ['DOUBLE', 'TRANS', 'XCONJ'],
+#             'def': ['COMPLEX', 'CONJ']
+#           }
+#         endif
+#         if '_c' == ext
+#           kcfg += {
+#             'undef': ['DOUBLE', 'XCONJ'],
+#             'def': ['COMPLEX', 'TRANS', 'CONJ']
+#           }
+#         endif
+#         if '_o' == ext
+#           kcfg += {
+#             'undef': ['DOUBLE', 'TRANS', 'CONJ'],
+#             'def': ['COMPLEX', 'XCONJ']
+#           }
+#         endif
+#         if '_u' == ext
+#           kcfg += {
+#             'undef': ['DOUBLE', 'CONJ'],
+#             'def': ['COMPLEX', 'TRANS', 'XCONJ']
+#           }
+#         endif
+#         if '_s' == ext
+#           kcfg += {
+#             'undef': ['DOUBLE', 'TRANS'],
+#             'def': ['COMPLEX', 'CONJ', 'XCONJ']
+#           }
+#         endif
+#         if '_d' == ext
+#           kcfg += {
+#             'undef': ['DOUBLE'],
+#             'def': ['COMPLEX', 'TRANS', 'CONJ', 'XCONJ']
+#           }
+#         endif
+#         if '_U' == ext
+#           kcfg += {
+#             'undef': ['DOUBLE', 'LOWER'],
+#             'def': ['COMPLEX']
+#           }
+#         endif
+#         if '_L' == ext
+#           kcfg += {
+#             'undef': ['DOUBLE'],
+#             'def': ['COMPLEX', 'LOWER']
+#           }
+#         endif
+#       endforeach
+#     endif
+#     if 'z' in pkey
+#       foreach ext : pval['exts']
+#         kcfg += {'name': pkey + _kop['base'] + ext}
+#         # Level 1
+#         if '_k' == ext
+#           kcfg += {
+#             'def': ['COMPLEX', 'DOUBLE'],
+#           }
+#         endif
+#         # Level 2
+#         if '_n' == ext
+#           kcfg += {
+#             'undef': ['CONJ', 'XCONJ', 'TRANS'],
+#             'def': ['COMPLEX', 'DOUBLE'],
+#           }
+#         endif
+#         if '_t' == ext
+#           kcfg += {
+#             'undef': ['CONJ', 'XCONJ'],
+#             'def': ['COMPLEX', 'DOUBLE', 'TRANS']
+#           }
+#         endif
+#         if '_r' == ext
+#           kcfg += {
+#             'undef': ['TRANS', 'XCONJ'],
+#             'def': ['COMPLEX', 'DOUBLE', 'CONJ']
+#           }
+#         endif
+#         if '_c' == ext
+#           kcfg += {
+#             'undef': ['XCONJ'],
+#             'def': ['COMPLEX', 'DOUBLE', 'TRANS', 'CONJ']
+#           }
+#         endif
+#         if '_o' == ext
+#           kcfg += {
+#             'undef': ['CONJ', 'TRANS'],
+#             'def': ['COMPLEX', 'DOUBLE', 'XCONJ']
+#           }
+#         endif
+#         if '_u' == ext
+#           kcfg += {
+#             'undef': ['CONJ'],
+#             'def': ['COMPLEX', 'DOUBLE', 'TRANS', 'XCONJ']
+#           }
+#         endif
+#         if '_s' == ext
+#           kcfg += {
+#             'undef': ['TRANS'],
+#             'def': ['COMPLEX', 'DOUBLE', 'CONJ', 'XCONJ']
+#           }
+#         endif
+#         if '_d' == ext
+#           kcfg += {
+#             'def': ['COMPLEX', 'DOUBLE', 'TRANS', 'CONJ', 'XCONJ']
+#           }
+#         endif
+#         if '_U' == ext
+#           kcfg += {
+#             'undef': ['LOWER'],
+#             'def': ['COMPLEX', 'DOUBLE']
+#           }
+#         endif
+#         if '_L' == ext
+#           kcfg += {
+#             'def': ['COMPLEX', 'DOUBLE', 'LOWER']
+#           }
+#         endif
+#       endforeach
+#     endif
+#     if 'x' in pkey
+#       foreach ext : pval['exts']
+#         kcfg += {'name': pkey + _kop['base'] + ext}
+#         # Level 1
+#         if '_k' == ext
+#           kcfg += {
+#             'def': ['COMPLEX', 'XDOUBLE'],
+#           }
+#         endif
+#         # Level 2
+#         if '_n' == ext
+#           kcfg += {
+#             'undef': ['XCONJ', 'CONJ', 'TRANS'],
+#             'def': ['XDOUBLE', 'COMPLEX'],
+#           }
+#         endif
+#         if '_t' == ext
+#           kcfg += {
+#             'undef': ['CONJ', 'XCONJ'],
+#             'def': ['XDOUBLE', 'COMPLEX', 'TRANS']
+#           }
+#         endif
+#         if '_r' == ext
+#           kcfg += {
+#             'undef': ['TRANS', 'XCONJ'],
+#             'def': ['XDOUBLE', 'COMPLEX', 'CONJ']
+#           }
+#         endif
+#         if '_c' == ext
+#           kcfg += {
+#             'undef': ['XCONJ'],
+#             'def': ['XDOUBLE', 'COMPLEX', 'TRANS', 'CONJ']
+#           }
+#         endif
+#         if '_o' == ext
+#           kcfg += {
+#             'undef': ['TRANS', 'CONJ'],
+#             'def': ['XDOUBLE', 'COMPLEX', 'XCONJ']
+#           }
+#         endif
+#         if '_u' == ext
+#           kcfg += {
+#             'undef': ['CONJ'],
+#             'def': ['XDOUBLE', 'COMPLEX', 'TRANS', 'XCONJ']
+#           }
+#         endif
+#         if '_s' == ext
+#           kcfg += {
+#             'undef': ['TRANS'],
+#             'def': ['XDOUBLE', 'COMPLEX', 'CONJ', 'XCONJ']
+#           }
+#         endif
+#         if '_d' == ext
+#           kcfg += {
+#             'def': ['XDOUBLE', 'COMPLEX', 'TRANS', 'CONJ', 'XCONJ']
+#           }
+#         endif
+#         if '_U' == ext
+#           kcfg += {
+#             'undef': ['LOWER'],
+#             'def': ['COMPLEX', 'XDOUBLE']
+#           }
+#         endif
+#         if '_L' == ext
+#           kcfg += {
+#             'def': ['COMPLEX', 'XDOUBLE', 'LOWER']
+#           }
+#         endif
+#       endforeach
+#     endif
+#     message(kcfg)
 #   endforeach
 # endforeach
 
-# _static_libs = []
-# foreach conf: kernel_confs
-#     _static_libs += static_library(
-#         conf['name'],
-#         conf['src'],
-#         include_directories:  _inc,
-#         c_args: conf['defs'],
-#     )
-# endforeach
+# # foreach root : blas1_roots
+# #   fname = root + '.S'
+# #   defs = []
+# #   foreach prec : real_kinds
+# #     name = prec + fname + '_k'
+# #     kernel_confs += {'defs': defs, 'name': name, 'src': fname}
+# #   endforeach
+# # endforeach
+
+# # _static_libs = []
+# # foreach conf: kernel_confs
+# #     _static_libs += static_library(
+# #         conf['name'],
+# #         conf['src'],
+# #         include_directories:  _inc,
+# #         c_args: conf['defs'],
+# #     )
+# # endforeach
+# base_kops = [
+#   {'base': 'axpby',
+#    'modes': {'s': {'dir': 'arm', 'kernel': 'axpby.c', 'exts': ['_k']},
+#              'd': {'dir': 'arm', 'kernel': 'axpby.c', 'exts': ['_k']},
+#              'c': {'dir': 'arm', 'kernel': 'axpby.c', 'exts': ['_k']},
+#              'z': {'dir': 'arm', 'kernel': 'axpby.c', 'exts': ['_k']},
+#             },
+#    }
+# ]
+
+_configs = [
+  # {'name': 'saxpby_k', 'undef': ['COMPLEX', 'DOUBLE'], 'def': [], 'addl': []},
+  # {'name': 'daxpby_k', 'undef': ['COMPLEX'], 'def': ['DOUBLE'], 'addl': []},
+  # {'name': 'caxpby_k', 'undef': ['CONJ', 'DOUBLE'], 'def': ['COMPLEX'], 'addl': []},
+  # {'name': 'zaxpby_k', 'undef': ['CONJ'], 'def': ['COMPLEX', 'DOUBLE'], 'addl': []},
+  # {'name': 'sswap_k', 'undef': ['COMPLEX', 'DOUBLE'], 'def': [], 'addl': []},
+  # {'name': 'dswap_k', 'undef': ['COMPLEX'], 'def': ['DOUBLE'], 'addl': []},
+  # {'name': 'qswap_k', 'undef': ['COMPLEX'], 'def': ['XDOUBLE'], 'addl': []},
+  # {'name': 'cswap_k', 'undef': ['DOUBLE'], 'def': ['COMPLEX'], 'addl': []},
+  # {'name': 'zswap_k', 'undef': [], 'def': ['COMPLEX', 'DOUBLE'], 'addl': []},
+  # {'name': 'xswap_k', 'undef': [], 'def': ['COMPLEX', 'XDOUBLE'], 'addl': []},
+  # {'name': 'srot_k',
+  #  'undef': ['COMPLEX', 'COMPLEX', 'DOUBLE'],
+  #  'def': [],
+  #  'addl': [fma3_flag]},
+  {'name': 'drot_k',
+   'undef': ['COMPLEX', 'COMPLEX'],
+   'def': ['DOUBLE'],
+   'addl': [fma3_flag,
+        '-DSMALL_MATRIX_OPT',
+        '-DMAX_STACK_ALLOC=2048',
+        '-Wall',
+        '-m64',
+        '-DF_INTERFACE_GFORT',
+        '-fPIC',
+        '-DSMP_SERVER',
+        '-DNO_WARMUP',
+        '-DMAX_CPU_NUMBER=12',
+        '-DMAX_PARALLEL_NUMBER=1',
+        '-DBUILD_SINGLE=1',
+        '-DBUILD_DOUBLE=1',
+        '-DBUILD_COMPLEX=1',
+        '-DBUILD_COMPLEX16=1',
+        '-msse3',
+        '-mssse3',
+        '-msse4.1',
+        '-mavx',
+        '-mavx2',
+        '-UASMNAME',
+        '-UASMFNAME',
+        '-UNAME',
+        '-UCNAME',
+        '-UCHAR_NAME',
+        '-UCHAR_CNAME',
+        '-DASMNAME=drot_k',
+        '-DASMFNAME=drot_k_',
+        '-DNAME=drot_k_',
+        '-DCNAME=drot_k',
+        '-DCHAR_NAME="drot_k_"',
+        '-DCHAR_CNAME="drot_k"',
+        '-DNO_AFFINITY',
+        '-DDOUBLE',
+        '-UCOMPLEX',
+        '-DCBLAS',
+           ]},
+  # {'name': 'qrot_k',
+  #  'undef': ['COMPLEX', 'COMPLEX'],
+  #  'def': ['XDOUBLE'],
+  #  'addl': []},
+  # {'name': 'csrot_k',
+  #  'undef': ['DOUBLE'],
+  #  'def': ['COMPLEX', 'COMPLEX'],
+  #  'addl': []},
+  # {'name': 'zdrot_k',
+  #  'undef': [],
+  #  'def': ['COMPLEX', 'COMPLEX', 'DOUBLE'],
+  #  'addl': []},
+  # {'name': 'xqrot_k',
+  #  'undef': [],
+  #  'def': ['COMPLEX', 'COMPLEX', 'XDOUBLE'],
+  #  'addl': []}
+]
+
+kernel_confs = []
+
+foreach _kop : base_kops
+  base = _kop['base']
+  modes = _kop['modes']
+  foreach mode, details : modes
+    dir = details['dir']
+    kernel = details['kernel']
+    exts = details['exts']
+    foreach ext : exts
+      src = join_paths(dir, kernel)
+      foreach cfg : _configs
+        if mode + base + ext == cfg['name']
+          defs = cfg.get('def', [])
+          undefs = cfg.get('undef', [])
+          addl = cfg.get('addl', [])
+          _cargs = []
+          foreach _d : defs
+            _cargs += ('-D' + _d)
+          endforeach
+          foreach _u : undefs
+            _cargs += ('-U' + _u)
+          endforeach
+          foreach _addl : addl
+            _cargs += addl
+          endforeach
+          current_def = {'c_args': _cargs, 'name': cfg['name'], 'src': src}
+          message(current_def)
+          kernel_confs += current_def
+        endif
+      endforeach
+    endforeach
+  endforeach
+endforeach
+
+_kern_libs = []
+foreach conf: kernel_confs
+    _kern_libs += static_library(
+        conf['name'],
+        conf['src'],
+        include_directories:  _inc,
+        c_args: conf['c_args'],
+    )
+endforeach
+
+_kern = static_library('_kern',
+                link_whole: _kern_libs)
