@@ -70,7 +70,16 @@ jobs:
           echo -n > utest/test_dsdot.c
           echo "Due to the qemu versions 7.2 causing utest cases to fail,"
           echo "the utest dsdot:dsdot_n_1 have been temporarily disabled."
-
+      - name: Test compiler
+        run: |
+          ccache ${{ matrix.triple }}-gcc -static -mabi=lp64d -c cpuid_loongarch64.c -o /dev/null && echo "lp64d supported"
+          ./c_check mak conf 'ccache ${{ matrix.triple }}-gcc -static' 'ccache ${{ matrix.triple }}-gfortran -static'
+      - name: 'Upload generated makefile.conf'
+        uses: actions/upload-artifact@v4
+        with:
+          name: makefile-artifact
+          path: mak
+          retention-days: 5
       - name: Build OpenBLAS
         run: make CC='ccache ${{ matrix.triple }}-gcc -static' FC='ccache ${{ matrix.triple }}-gfortran -static' ${{ matrix.opts }} HOSTCC='ccache gcc' -j$(nproc)
 
