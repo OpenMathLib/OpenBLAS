@@ -42,6 +42,7 @@ size_t length64=sizeof(value64);
 #define CPU_CORTEXA57     3
 #define CPU_CORTEXA72     4
 #define CPU_CORTEXA73     5
+#define CPU_CORTEXA76	  23
 #define CPU_NEOVERSEN1    11
 #define CPU_NEOVERSEV1    16
 #define CPU_NEOVERSEN2    17
@@ -89,7 +90,8 @@ static char *cpuname[] = {
   "CORTEXX2",
   "CORTEXA510",
   "CORTEXA710",
-  "FT2000"
+  "FT2000",
+  "CORTEXA76"
 };
 
 static char *cpuname_lower[] = {
@@ -115,7 +117,8 @@ static char *cpuname_lower[] = {
   "cortexx2",
   "cortexa510",
   "cortexa710",
-  "ft2000"
+  "ft2000",
+  "cortexa76"
 };
 
 int get_feature(char *search)
@@ -210,6 +213,8 @@ int detect(void)
 	return CPU_CORTEXX2;
       else if (strstr(cpu_part, "0xd4e")) //X3
 	return CPU_CORTEXX2;
+      else if (strstr(cpu_part, "0xd0b")) 
+	return CPU_CORTEXA76;
     }
     // Qualcomm
     else if (strstr(cpu_implementer, "0x51") && strstr(cpu_part, "0xc00"))
@@ -391,6 +396,7 @@ void get_cpuconfig(void)
 		break;
 
 	    case CPU_NEOVERSEV1:
+	    case CPU_CORTEXA76:
                 printf("#define %s\n", cpuname[d]);
                 printf("#define L1_CODE_SIZE 65536\n");
                 printf("#define L1_CODE_LINESIZE 64\n");
