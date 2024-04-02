@@ -3365,6 +3365,12 @@ is a big desktop or server with abundant cache rather than a phone or embedded d
 #define ZGEMM_DEFAULT_UNROLL_M  4
 #define ZGEMM_DEFAULT_UNROLL_N  4
 
+#if defined(XDOUBLE) || defined(DOUBLE)
+#define SWITCH_RATIO            8
+#else
+#define SWITCH_RATIO            16
+#endif
+
   #define SGEMM_DEFAULT_P 256
   #define DGEMM_DEFAULT_P 128
   #define CGEMM_DEFAULT_P 128
