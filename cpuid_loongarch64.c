@@ -93,6 +93,29 @@ void get_subdirname(void) {
   printf("loongarch64");
 }
 
+void get_cpucount(void)
+{
+  int n=0;
+
+#ifdef __linux
+  FILE *infile;
+  char buffer[2048], *p,*t;
+  p = (char *) NULL ;
+
+  infile = fopen("/proc/cpuinfo", "r");
+
+  while (fgets(buffer, sizeof(buffer), infile))
+  {
+    if (!strncmp("processor", buffer, 9))
+    n++;
+  }
+
+  fclose(infile);
+
+  printf("#define NUM_CORES %d\n",n);
+#endif
+}
+
 void get_cpuconfig(void) {
   uint32_t hwcaps = 0;
   int d = detect();
@@ -135,6 +158,7 @@ void get_cpuconfig(void) {
   hwcaps = (uint32_t)getauxval( AT_HWCAP );
   if (hwcaps & LA_HWCAP_LSX)      printf("#define HAVE_LSX\n");
   if (hwcaps & LA_HWCAP_LASX)     printf("#define HAVE_LASX\n");
+  get_cpucount();
 }
 
 void get_libname(void){
