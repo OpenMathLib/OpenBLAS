@@ -167,6 +167,7 @@ Please read `GotoBLAS_01Readme.txt` for older CPU models already supported by th
 - **Cortex A57**: Optimized Level-3 and Level-2 functions
 - **Cortex A72**: same as A57 ( different cpu specifications)
 - **Cortex A73**: same as A57 (different cpu specifications)
+- **Cortex A76**: same as A57 (different cpu specifications)
 - **Falkor**: same as A57 (different cpu specifications)
 - **ThunderX**: Optimized some Level-1 functions
 - **ThunderX2T99**: Optimized Level-3 BLAS and parts of Levels 1 and 2
