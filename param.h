@@ -3351,6 +3351,41 @@ is a big desktop or server with abundant cache rather than a phone or embedded d
 #define CGEMM_DEFAULT_R 4096
 #define ZGEMM_DEFAULT_R 2048
 
+#elif defined(CORTEXA76)
+
+#define SGEMM_DEFAULT_UNROLL_M  16
+#define SGEMM_DEFAULT_UNROLL_N  4
+
+#define DGEMM_DEFAULT_UNROLL_M  8
+#define DGEMM_DEFAULT_UNROLL_N  4
+
+#define CGEMM_DEFAULT_UNROLL_M  8
+#define CGEMM_DEFAULT_UNROLL_N  4
+
+#define ZGEMM_DEFAULT_UNROLL_M  4
+#define ZGEMM_DEFAULT_UNROLL_N  4
+
+#if defined(XDOUBLE) || defined(DOUBLE)
+#define SWITCH_RATIO            8
+#else
+#define SWITCH_RATIO            16
+#endif
+
+  #define SGEMM_DEFAULT_P 256
+  #define DGEMM_DEFAULT_P 128
+  #define CGEMM_DEFAULT_P 128
+  #define ZGEMM_DEFAULT_P 64
+
+  #define SGEMM_DEFAULT_Q 512
+  #define DGEMM_DEFAULT_Q 256
+  #define CGEMM_DEFAULT_Q 256
+  #define ZGEMM_DEFAULT_Q 256
+
+#define SGEMM_DEFAULT_R 4096
+#define DGEMM_DEFAULT_R 4096
+#define CGEMM_DEFAULT_R 4096
+#define ZGEMM_DEFAULT_R 4096
+
 #elif defined(CORTEXA53) || defined(CORTEXA55)
 
 #define SGEMM_DEFAULT_UNROLL_M  8
