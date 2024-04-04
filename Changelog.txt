@@ -1,5 +1,105 @@
 OpenBLAS ChangeLog
 ====================================================================
+Version 0.3.27
+ 4-Apr-2024
+
+general:
+- added initial (generic) support for the CSKY architecture
+- capped the maximum number of threads used in GEMM, GETRF and POTRF to avoid creating
+  underutilized or idle threads
+- sped up multithreaded POTRF on all platforms
+- added extension openblas_set_num_threads_local() that returns the previous thread count
+- re-evaluated the SGEMV and DGEMV load thresholds to avoid activating multithreading 
+  for too small workloads
+- improved the fallback code used when the precompiled number of threads is exceeded,
+  and made it callable multiple times during the lifetime of an instance
+- added CBLAS interfaces for the BLAS extensions ?AMIN,?AMAX, CAXPYC and ZAXPYC
+- fixed a potential buffer overflow in the interface to the GEMMT kernels
+- fixed use of incompatible pointer types in GEMMT and C/ZAXPBY as flagged by GCC-14
+- fixed unwanted case sensitivity of the character parameters in ?TRTRS
+- sped up the OpenMP thread management code
+- fixed sizing of logical variables in INTERFACE64 builds of the C version of LAPACK
+- fixed inclusion of new LAPACK and LAPACKE functions from LAPACK 3.11 in the shared library
+- added a testsuite for the BLAS extensions
+- modified the error thresholds for SGS/DGS functions in the LAPACK testsuite to suppress
+  spurious errors
+- added support for building the benchmark collection with CMAKE
+- added rewriting of linker options to avoid linking both libgomp and libomp in CMAKE builds
+  with OpenMP enabled that use clang with gfortran
+- fixed building on systems with ucLibc
+- added support for calling ?NRM2 with a negative increment value on all architectures
+- added support for the LLVM18 version of the flang-new compiler
+- fixed handling of the OPENBLAS_LOOPS variable in several benchmarks
+- Integrated fixes from the Reference-LAPACK project:
+  - Increased accuracy in C/ZLARFGP (Reference-LAPACK PR 981)
+  
+x86:
+- fixed handling of NaN and Inf arguments in ZSCAL
+- fixed GEMM3M functions failing in CMAKE builds
+
+x86-64:
+- removed all instances of sched_yield() on Linux and BSD
+- fixed a potential deadlock in the thread server on MSWindows (introduced in 0.3.26)
+- fixed GEMM3M functions failing in CMAKE builds
+- fixed handling of NaN and Inf arguments in ZSCAL
+- added compiler checks for AVX512BF16 compatibility
+- fixed LLVM compiler options for Sapphire Rapids 
+- fixed cpu handling fallbacks for Sapphire Rapids with
+  disabled AVX2 in DYNAMIC_ARCH mode
+- fixed extensions SCSUM and DZSUM
+- improved GEMM performance for ZEN targets
+
+arm:
+- fixed handling of NaN and Inf arguments in ZSCAL
+
+arm64:
+- added initial support for the Cortex-A76 cpu
+- fixed handling of NaN and Inf arguments in ZSCAL
+- fixed default compiler options for gcc (-march and -mtune)
+- added support for ArmCompilerForLinux
+- added support for the NeoverseV2 cpu in DYNAMIC_ARCH builds
+- fixed mishandling of the INTERFACE64 option in CMAKE builds
+- corrected SCSUM kernels (erroneously duplicating SCASUM behaviour)  
+- added SVE-enabled kernels for CSUM/ZSUM
+- worked around an inaccuracy in the NRM2 kernels for NeoverseN1 and Apple M
+
+power:
+- improved performance of SGEMM on POWER8/9/10
+- improved performance of DGEMM on POWER10
+- added support for OpenMP builds with xlc/xlf on AIX
+- improved cpu autodetection for DYNAMIC_ARCH builds on older AIX
+- fixed cpu core counting on AIX
+- added support for building a shared library on AIX
+
+riscv64:
+- added support for the X280 cpu
+- added support for semi-generic RISCV models with vector length 128 or 256
+- added support for compiling with either RVV 0.7.1 or RVV 1.0 standard compilers
+- fixed handling of NaN and Inf arguments in ZSCAL
+- improved cpu model autodetection
+- fixed corner cases in ?AXPBY for C910V
+- fixed handling of zero increments in ?AXPY kernels for C910V
+
+loongarch64:
+- added optimized kernels for ?AMIN and ?AMAX
+- fixed handling of NaN and Inf arguments in ZSCAL
+- fixed handling of corner cases in ?AXPBY
+- fixed computation of SAMIN and DAMIN in LSX mode
+- fixed computation of ?ROT
+- added optimized SSYMV and DSYMV kernels for LSX and LASX mode
+- added optimized CGEMM and ZGEMM kernels for LSX and LASX mode
+- added optimized CGEMV and ZGEMV kernels
+
+mips:
+- fixed utilizing MSA on P5600 and related cpus (broken in 0.3.22)
+- fixed handling of NaN and Inf arguments in ZSCAL
+- fixed mishandling of the INTERFACE64 option in CMAKE builds
+
+zarch:
+- fixed handling of NaN and Inf arguments in ZSCAL
+- fixed calculation of ?SUM on Z13
+
+====================================================================
 Version 0.3.26
  2-Jan-2024
 
