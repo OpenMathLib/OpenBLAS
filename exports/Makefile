@@ -73,6 +73,10 @@ endif
 endif
 endif
 
+ifeq ($(F_COMPILER)$(OSNAME), IBMAIX)
+EXTRALIB += -lxlf90
+endif
+
 ifeq ($(C_COMPILER), PGI)
 EXTRALIB += -pgf90libs
 endif
@@ -132,7 +136,11 @@ libgoto_hpl.def : $(GENSYM)
 	./$(GENSYM) win2khpl $(ARCH) dummy $(EXPRECISION) $(NO_CBLAS) $(NO_LAPACK) $(NO_LAPACKE) $(NEED2UNDERSCORES) $(ONLY_CBLAS) "$(SYMBOLPREFIX)" "$(SYMBOLSUFFIX)" $(BUILD_LAPACK_DEPRECATED) $(BUILD_BFLOAT16) $(BUILD_SINGLE) $(BUILD_DOUBLE) $(BUILD_COMPLEX) $(BUILD_COMPLEX16) > $(@F)
 
 ifeq ($(OSNAME), Darwin)
+ifeq ($(FIXED_LIBNAME),1)
+INTERNALNAME = $(LIBPREFIX)$(LIBNAMESUFFIX).dylib
+else
 INTERNALNAME = $(LIBPREFIX).$(MAJOR_VERSION).dylib
+endif
 endif
 
 ifeq (, $(SYMBOLPREFIX)$(SYMBOLSUFFIX))
@@ -169,7 +177,11 @@ INTERNALNAME = $(LIBPREFIX).so
 FEXTRALIB += -lm
 EXTRALIB += -lm
 else
+ifeq ($(FIXED_LIBNAME),1)
+INTERNALNAME = $(LIBPREFIX)$(LIBNAMESUFFIX).so
+else
 INTERNALNAME = $(LIBPREFIX).so.$(MAJOR_VERSION)
+endif
 endif
 
 ifeq (, $(SYMBOLPREFIX)$(SYMBOLSUFFIX))
@@ -248,6 +260,20 @@ endif
 
 ifeq ($(OSNAME), AIX)
 
+so : ../$(LIBSONAME) linktest.c
+	$(CC) $(CFLAGS) $(LDFLAGS) -w -o linktest linktest.c ../$(LIBSONAME) $(EXTRALIB) && echo OK.
+	rm -f linktest
+
+../$(LIBSONAME) : aix.exp
+	$(CC) $(CFLAGS) $(LDFLAGS)  -shared -o ../$(LIBSONAME) \
+	-Wl,-bcdtors:all:-2147481648:s,-bE:aix.exp -Wl,-bbigtoc ../$(LIBNAME) $(EXTRALIB)
+
+aix.exp :
+	/usr/bin/nm -X32_64 -PCpgl ../$(LIBNAME) | /usr/bin/awk '{ if ((($$ 2 == "T") \
+	|| ($$ 2 == "D") || ($$ 2 == "B") || ($$ 2 == "W") || ($$ 2 == "V") || ($$ 2 == "Z")) && (substr($$ 1,1,1) != ".")) \
+	{ if (($$ 2 == "W") || ($$ 2 == "V") || ($$ 2 == "Z")) { print $$ 1 " weak" } else { print $$ 1 } } }' | \
+	/usr/bin/sort -u > aix.exp
+
 ifeq ($(COMPILER_F77), xlf)
 
 goto32.$(SUFFIX) : ../$(LIBNAME) aix.def
@@ -289,6 +315,11 @@ test : linktest.c
 
 linktest.c : $(GENSYM) ../Makefile.system ../getarch.c
 	./$(GENSYM) linktest  $(ARCH) "$(BU)" $(EXPRECISION) $(NO_CBLAS) $(NO_LAPACK) $(NO_LAPACKE) $(NEED2UNDERSCORES) $(ONLY_CBLAS) "$(SYMBOLPREFIX)" "$(SYMBOLSUFFIX)" $(BUILD_LAPACK_DEPRECATED) $(BUILD_BFLOAT16) $(BUILD_SINGLE) $(BUILD_DOUBLE) $(BUILD_COMPLEX) $(BUILD_COMPLEX16) > linktest.c
+ifeq ($(F_COMPILER), IBM)
+	mv linktest.c linktest.c.FIRST
+	egrep -v 'second_|dsecnd_' linktest.c.FIRST > linktest.c
+	rm linktest.c.FIRST
+endif
 
 clean ::
 	@rm -f *.def *.dylib __.SYMDEF* *.renamed

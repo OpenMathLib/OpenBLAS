@@ -28,25 +28,25 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "common.h"
 
 #if !defined(DOUBLE)
-#define VSETVL(n) vsetvl_e32m4(n)
+#define VSETVL(n) RISCV_RVV(vsetvl_e32m4)(n)
 #define FLOAT_V_T vfloat32m4_t
-#define VLSEV_FLOAT vlse32_v_f32m4
-#define VSSEV_FLOAT vsse32_v_f32m4
-#define VFMACCVF_FLOAT vfmacc_vf_f32m4
-#define VFMVVF_FLOAT vfmv_v_f_f32m4
-#define VFMULVF_FLOAT vfmul_vf_f32m4
-#define VFMSACVF_FLOAT vfmsac_vf_f32m4
-#define VFNMSACVF_FLOAT vfnmsac_vf_f32m4
+#define VLSEV_FLOAT RISCV_RVV(vlse32_v_f32m4)
+#define VSSEV_FLOAT RISCV_RVV(vsse32_v_f32m4)
+#define VFMACCVF_FLOAT RISCV_RVV(vfmacc_vf_f32m4)
+#define VFMVVF_FLOAT RISCV_RVV(vfmv_v_f_f32m4)
+#define VFMULVF_FLOAT RISCV_RVV(vfmul_vf_f32m4)
+#define VFMSACVF_FLOAT RISCV_RVV(vfmsac_vf_f32m4)
+#define VFNMSACVF_FLOAT RISCV_RVV(vfnmsac_vf_f32m4)
 #else
-#define VSETVL(n) vsetvl_e64m4(n)
+#define VSETVL(n) RISCV_RVV(vsetvl_e64m4)(n)
 #define FLOAT_V_T vfloat64m4_t
-#define VLSEV_FLOAT vlse64_v_f64m4
-#define VSSEV_FLOAT vsse64_v_f64m4
-#define VFMACCVF_FLOAT vfmacc_vf_f64m4
-#define VFMVVF_FLOAT vfmv_v_f_f64m4
-#define VFMULVF_FLOAT vfmul_vf_f64m4
-#define VFMSACVF_FLOAT vfmsac_vf_f64m4
-#define VFNMSACVF_FLOAT vfnmsac_vf_f64m4
+#define VLSEV_FLOAT RISCV_RVV(vlse64_v_f64m4)
+#define VSSEV_FLOAT RISCV_RVV(vsse64_v_f64m4)
+#define VFMACCVF_FLOAT RISCV_RVV(vfmacc_vf_f64m4)
+#define VFMVVF_FLOAT RISCV_RVV(vfmv_v_f_f64m4)
+#define VFMULVF_FLOAT RISCV_RVV(vfmul_vf_f64m4)
+#define VFMSACVF_FLOAT RISCV_RVV(vfmsac_vf_f64m4)
+#define VFNMSACVF_FLOAT RISCV_RVV(vfnmsac_vf_f64m4)
 #endif
 
 int CNAME(BLASLONG n, FLOAT alpha_r, FLOAT alpha_i, FLOAT *x, BLASLONG inc_x, FLOAT beta_r, FLOAT beta_i, FLOAT *y, BLASLONG inc_y)
@@ -61,6 +61,82 @@ int CNAME(BLASLONG n, FLOAT alpha_r, FLOAT alpha_i, FLOAT *x, BLASLONG inc_x, FL
 	BLASLONG stride_x, stride_y, ix = 0, iy = 0;
         stride_x = inc_x * 2 * sizeof(FLOAT);
         stride_y = inc_y * 2 * sizeof(FLOAT);
+
+	if (inc_x == 0 || inc_y == 0) {
+
+	FLOAT temp;
+	BLASLONG inc_x2, inc_y2;
+
+	inc_x2 = 2 * inc_x;
+	inc_y2 = 2 * inc_y;
+
+	if ( beta_r == 0.0 && beta_i == 0.0)
+	{
+		if ( alpha_r == 0.0 && alpha_i == 0.0 )
+		{
+
+			while(i < n)
+			{
+				y[iy]   = 0.0 ;
+				y[iy+1] = 0.0 ;
+				iy += inc_y2 ;
+				i++ ;
+			}
+
+		}
+		else
+		{
+
+			while(i < n)
+			{
+				y[iy]   = ( alpha_r * x[ix]   - alpha_i * x[ix+1] ) ;
+				y[iy+1] = ( alpha_r * x[ix+1] + alpha_i * x[ix]   ) ;
+				ix += inc_x2 ;
+				iy += inc_y2 ;
+				i++ ;
+			}
+
+
+		}
+
+	}
+	else
+	{
+		if ( alpha_r == 0.0 && alpha_i == 0.0 )
+		{
+
+			while(i < n)
+			{
+				temp    = ( beta_r * y[iy]   - beta_i * y[iy+1] ) ;
+				y[iy+1] = ( beta_r * y[iy+1] + beta_i * y[iy]   ) ;
+				y[iy]   = temp;
+				iy += inc_y2 ;
+				i++ ;
+			}
+
+		}
+		else
+		{
+
+			while(i < n)
+			{
+				temp    = ( alpha_r * x[ix]   - alpha_i * x[ix+1] ) + ( beta_r * y[iy]   - beta_i * y[iy+1] ) ;
+				y[iy+1] = ( alpha_r * x[ix+1] + alpha_i * x[ix]   ) + ( beta_r * y[iy+1] + beta_i * y[iy]   ) ;
+				y[iy]   = temp;
+				ix += inc_x2 ;
+				iy += inc_y2 ;
+				i++ ;
+			}
+
+
+		}
+
+
+
+	}
+	return(0);
+
+	} else {
 
         if(beta_r == 0.0 && beta_i == 0.0){
                 if(alpha_r == 0.0 && alpha_i == 0.0){
@@ -191,5 +267,6 @@ int CNAME(BLASLONG n, FLOAT alpha_r, FLOAT alpha_i, FLOAT *x, BLASLONG inc_x, FL
                 }
         }
 	return(0);
+	}
 }
 

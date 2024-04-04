@@ -489,5 +489,7 @@ XGEMM3MKERNEL    =  xgemm3m_kernel_2x2.S
 
 SSUMKERNEL = ../arm/sum.c
 DSUMKERNEL = ../arm/sum.c
+CSUMKERNEL = zsum_sse.S
+ZSUMKERNEL = zsum_sse2.S
 
 SOMATCOPY_RT = omatcopy_rt.c

@@ -533,8 +533,12 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_TRANSPOSE TransA, enum CBLAS_TRANS
   MNK = (double) args.m * (double) args.n * (double) args.k;
   if ( MNK <= (SMP_THRESHOLD_MIN  * (double) GEMM_MULTITHREAD_THRESHOLD)  )
 	args.nthreads = 1;
-  else
+  else {
 	args.nthreads = num_cpu_avail(3);
+	if (MNK/args.nthreads < SMP_THRESHOLD_MIN*(double)GEMM_MULTITHREAD_THRESHOLD)
+		args.nthreads = MNK/(SMP_THRESHOLD_MIN*(double)GEMM_MULTITHREAD_THRESHOLD);
+  }
+
   args.common = NULL;
 
  if (args.nthreads == 1) {

@@ -18,8 +18,28 @@
 #ifdef I
 #undef I
 #endif
+#if defined(_WIN64)
+typedef long long BLASLONG;
+typedef unsigned long long BLASULONG;
+#else
+typedef long BLASLONG;
+typedef unsigned long BLASULONG;
+#endif
 
-typedef int integer;
+#ifdef LAPACK_ILP64
+typedef BLASLONG blasint;
+#if defined(_WIN64)
+#define blasabs(x) llabs(x)
+#else
+#define blasabs(x) labs(x)
+#endif
+#else
+typedef int blasint;
+#define blasabs(x) abs(x)
+#endif
+
+typedef blasint integer;
+
 typedef unsigned int uinteger;
 typedef char *address;
 typedef short int shortint;
@@ -33,8 +53,8 @@ static inline _Complex float * _pCf(complex *z) {return (_Complex float*)z;}
 static inline _Complex double * _pCd(doublecomplex *z) {return (_Complex double*)z;}
 #define pCf(z) (*_pCf(z))
 #define pCd(z) (*_pCd(z))
-typedef int logical;
-typedef short int shortlogical;
+typedef blasint logical;
+
 typedef char logical1;
 typedef char integer1;
 
@@ -236,7 +256,7 @@ static char junk[] = "\n@(#)LIBF77 VERSION 19990503\n";
 
 /* procedure parameter types for -A and -C++ */
 
-#define F2C_proc_par_types 1
+
 #ifdef __cplusplus
 typedef logical (*L_fp)(...);
 #else

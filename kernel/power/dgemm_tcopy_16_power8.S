@@ -107,6 +107,9 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #define o0	0
 
+#ifdef POWER10
+#include "dgemm_tcopy_macros_16_power10.S"
+#endif
 #include "dgemm_tcopy_macros_16_power8.S"
 
 #define STACKSIZE 144

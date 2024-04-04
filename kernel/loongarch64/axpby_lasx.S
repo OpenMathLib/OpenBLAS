@@ -57,10 +57,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     PROLOGUE
 
     bge $r0, N, .L999
-    li.d TEMP, 1
     movgr2fr.d a1, $r0
     ffint.s.l a1, a1
-    slli.d  TEMP, TEMP, BASE_SHIFT
     slli.d  INCX, INCX, BASE_SHIFT
     slli.d  INCY, INCY, BASE_SHIFT
     MTG  t1, ALPHA
@@ -75,6 +73,13 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     xvreplgr2vr.w VXB, t2
     xvreplgr2vr.w VXZ, t3
 #endif
+    // If incx == 0 || incy == 0, do one by one
+    and TEMP, INCX, INCY
+    or  I,    N,    N
+    beqz TEMP, .L998
+
+    li.d TEMP, 1
+    slli.d  TEMP, TEMP, BASE_SHIFT
     srai.d I, N, 3
     bne INCX, TEMP, .L20
     bne INCY, TEMP, .L12 // INCX==1 and INCY!=1
@@ -134,9 +139,9 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     xvst VX1, Y, 4 * SIZE
 #else
     xvfmul.s VX0, VX0, VXA
-    addi.d  I, I, -1
     xvst VX0, Y, 0 * SIZE
 #endif
+    addi.d  I, I, -1
     addi.d X, X, 8 * SIZE
     addi.d Y, Y, 8 * SIZE
     blt $r0, I, .L112
@@ -283,6 +288,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     addi.d X, X, 8 * SIZE
     addi.d  I, I, -1
     blt $r0, I, .L121
+    move  Y, YY
     b .L997
     .align 3
 
@@ -329,6 +335,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     add.d YY, YY, INCY
     addi.d X, X, 8 * SIZE
     blt $r0, I, .L122
+    move  Y, YY
     b .L997
     .align 3
 
@@ -420,6 +427,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     add.d YY, YY, INCY
     addi.d  I, I, -1
     blt $r0, I, .L123
+    move  Y, YY
     b .L997
     .align 3
 
@@ -460,6 +468,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     add.d YY, YY, INCY
     addi.d  I, I, -1
     blt $r0, I, .L124
+    move  Y, YY
     b .L997
     .align 3
 
@@ -798,6 +807,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif
     add.d YY, YY, INCY
     blt $r0, I, .L221
+    move  Y, YY
     b .L997
     .align 3
 
@@ -890,6 +900,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif
     add.d YY, YY, INCY
     blt $r0, I, .L222
+    move  Y, YY
     b .L997
     .align 3
 
@@ -982,6 +993,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif
     add.d YY, YY, INCY
     blt $r0, I, .L223
+    move  Y, YY
     b .L997
     .align 3
 
@@ -1022,6 +1034,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     add.d YY, YY, INCY
     addi.d  I, I, -1
     blt $r0, I, .L224
+    move  Y, YY
     b .L997
     .align 3
 

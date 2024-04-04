@@ -54,7 +54,7 @@ int main(int argc, char *argv[]){
   int step =   1;
   int loops =  1;
 
-  if ((p = getenv("OPENBLAS_LOOPS"))) loops=*p;
+  if ((p = getenv("OPENBLAS_LOOPS"))) loops=atoi(p);
 
   double time1,timeg;
 

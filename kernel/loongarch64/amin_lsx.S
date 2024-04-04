@@ -66,7 +66,6 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #else
     vldrepl.w VM0, X, 0
 #endif
-    VFSUB VM0, VM0, VM0
     bne INCX, TEMP, .L20
 
     srai.d I, N, 3
@@ -125,7 +124,6 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .L13:
     FABS $f0, $f0
-    SUB $f0, $f0, $f0
     jirl $r0,  $r1, 0x0
     .align 3
 
@@ -148,7 +146,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     add.d X, X, INCX
     vinsgr2vr.d VX1, t3, 0
     vinsgr2vr.d VX1, t4, 1
-    vfmaxa.d VM1, VX0, VX1
+    vfmina.d VM1, VX0, VX1
     ld.d t1, X, 0 * SIZE
     add.d X, X, INCX
     ld.d t2, X, 0 * SIZE
@@ -161,9 +159,9 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     add.d X, X, INCX
     vinsgr2vr.d VX1, t3, 0
     vinsgr2vr.d VX1, t4, 1
-    vfmaxa.d VM2, VX0, VX1
-    vfmaxa.d VM1, VM1, VM2
-    vfmaxa.d VM0, VM0, VM1
+    vfmina.d VM2, VX0, VX1
+    vfmina.d VM1, VM1, VM2
+    vfmina.d VM0, VM0, VM1
 #else
     ld.w t1, X, 0
     add.d X, X, INCX
@@ -189,8 +187,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     vinsgr2vr.w VX1, t2, 1
     vinsgr2vr.w VX1, t3, 2
     vinsgr2vr.w VX1, t4, 3
-    vfmaxa.s VM1, VX0, VX1
-    vfmaxa.s VM0, VM0, VM1
+    vfmina.s VM1, VX0, VX1
+    vfmina.s VM0, VM0, VM1
 #endif
     addi.d I, I, -1
     blt $r0, I, .L21

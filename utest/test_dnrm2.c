@@ -30,7 +30,7 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
 USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 **********************************************************************************/
-
+#include <math.h>
 #include "openblas_utest.h"
 #if defined(BUILD_DOUBLE)
 
@@ -62,6 +62,19 @@ CTEST(dnrm2,dnrm2_tiny)
 
 	for (i=0;i<n;i++)x[i]=7.457008414e-310;
 	res1=BLASFUNC(dnrm2)(&n, x, &incx);
+	ASSERT_DBL_NEAR_TOL(res2, res1, DOUBLE_EPS);
+}
+CTEST(dnrm2,dnrm2_neg_incx)
+{
+	int i;
+	double x[5];
+	blasint incx=-1;
+	blasint n=5;
+	double res1, res2;
+
+	for (i=0;i<n;i++)x[i]=10.0;
+	res1=BLASFUNC(dnrm2)(&n, x, &incx);
+	res2 = sqrt(500.0);
 	ASSERT_DBL_NEAR_TOL(res2, res1, DOUBLE_EPS);
 }
 #endif

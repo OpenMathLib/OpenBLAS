@@ -66,7 +66,6 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #else
     xvldrepl.w VM0, X, 0
 #endif
-    XVFSUB VM0, VM0, VM0
     bne INCX, TEMP, .L20
 
     srai.d I, N, 4
@@ -161,8 +160,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     xvinsgr2vr.d VX1, t2, 1
     xvinsgr2vr.d VX1, t3, 2
     xvinsgr2vr.d VX1, t4, 3
-    xvfmaxa.d VM1, VX0, VX1
-    xvfmaxa.d VM0, VM0, VM1
+    xvfmina.d VM1, VX0, VX1
+    xvfmina.d VM0, VM0, VM1
 #else
     ld.w t1, X, 0
     add.d X, X, INCX
@@ -188,7 +187,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     xvinsgr2vr.w VM1, t2, 5
     xvinsgr2vr.w VM1, t3, 6
     xvinsgr2vr.w VM1, t4, 7
-    xvfmaxa.s VM0, VM0, VM1
+    xvfmina.s VM0, VM0, VM1
 #endif
     addi.d I, I, -1
     blt $r0, I, .L21

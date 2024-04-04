@@ -365,8 +365,9 @@ GCCVERSIONGT5 := $(shell expr `$(CC) -dumpversion | cut -f1 -d.` \> 5)
 GCCVERSIONGTEQ7 := $(shell expr `$(CC) -dumpversion | cut -f1 -d.` \>= 7)
 GCCVERSIONGTEQ8 := $(shell expr `$(CC) -dumpversion | cut -f1 -d.` \>= 8)
 GCCVERSIONGTEQ9 := $(shell expr `$(CC) -dumpversion | cut -f1 -d.` \>= 9)
-GCCVERSIONGTEQ11 := $(shell expr `$(CC) -dumpversion | cut -f1 -d.` \>= 11)
 GCCVERSIONGTEQ10 := $(shell expr `$(CC) -dumpversion | cut -f1 -d.` \>= 10)
+GCCVERSIONGTEQ11 := $(shell expr `$(CC) -dumpversion | cut -f1 -d.` \>= 11)
+GCCVERSIONGTEQ12 := $(shell expr `$(CC) -dumpversion | cut -f1 -d.` \>= 12)
 # Note that the behavior of -dumpversion is compile-time-configurable for
 # gcc-7.x and newer. Use -dumpfullversion there
 ifeq ($(GCCVERSIONGTEQ7),1)
@@ -873,6 +874,11 @@ endif
 endif
 endif
 
+ifeq ($(ARCH), csky)
+NO_BINARY_MODE	= 1
+BINARY_DEFINED	= 1
+endif
+
 #
 #  C Compiler dependent settings
 #
@@ -1176,7 +1182,7 @@ ifeq ($(F_COMPILER), IBM)
 CCOMMON_OPT += -DF_INTERFACE_IBM
 FEXTRALIB += -lxlf90
 ifeq ($(C_COMPILER), $(filter $(C_COMPILER),GCC CLANG))
-FCOMMON_OPT += -qextname
+FCOMMON_OPT += -qextname -qzerosize
 endif
 # FCOMMON_OPT	+= -qarch=440
 ifdef BINARY64
@@ -1511,16 +1517,28 @@ ifndef LIBSONAMEBASE
 LIBSONAMEBASE = openblas
 endif
 
+ifndef LIBNAMEPREFIX
+LIBNAMEPREFIX =
+endif
+
+SYMPREFIX=$(SYMBOLPREFIX)
+ifeq ($(SYMBOLPREFIX),$(LIBNAMEPREFIX))
+SYMPREFIX=
+endif
+SYMSUFFIX=$(SYMBOLSUFFIX)
+ifeq ($(SYMBOLSUFFIX),$(LIBNAMESUFFIX))
+SYMSUFFIX=
+endif
 ifndef LIBNAMESUFFIX
-LIBNAMEBASE = $(SYMBOLPREFIX)$(LIBSONAMEBASE)$(SYMBOLSUFFIX)
+LIBNAMEBASE = $(SYMPREFIX)$(LIBSONAMEBASE)$(SYMSUFFIX)
 else
-LIBNAMEBASE = $(SYMBOLPREFIX)$(LIBSONAMEBASE)$(SYMBOLSUFFIX)_$(LIBNAMESUFFIX)
+LIBNAMEBASE = $(SYMPREFIX)$(LIBSONAMEBASE)$(SYMSUFFIX)$(LIBNAMESUFFIX)
 endif
 
 ifeq ($(OSNAME), CYGWIN_NT)
-LIBPREFIX = cyg$(LIBNAMEBASE)
+LIBPREFIX = cyg$(LIBNAMEPREFIX)$(LIBNAMEBASE)
 else
-LIBPREFIX = lib$(LIBNAMEBASE)
+LIBPREFIX = lib$(LIBNAMEPREFIX)$(LIBNAMEBASE)
 endif
 
 KERNELDIR	= $(TOPDIR)/kernel/$(ARCH)
@@ -1652,6 +1670,10 @@ ifeq ($(F_COMPILER),CRAY)
 LAPACK_FFLAGS := $(filter-out -msse3 -mssse3 -msse4.1 -mavx -mavx2 -mskylake-avx512 ,$(FFLAGS))
 override FFLAGS := $(filter-out -msse3 -mssse3 -msse4.1 -mavx -mavx2 -mskylake-avx512 ,$(FFLAGS))
 endif
+ifeq ($(F_COMPILER),FLANGNEW)
+LAPACK_FFLAGS := $(filter-out -m32 -m64 -msse3 -mssse3 -msse4.1 -mavx -mavx2 -mskylake-avx512 ,$(FFLAGS))
+override FFLAGS := $(filter-out -m32 -m64 -msse3 -mssse3 -msse4.1 -mavx -mavx2 -mskylake-avx512 ,$(FFLAGS))
+endif
 
 LAPACK_CFLAGS = $(CFLAGS)
 LAPACK_CFLAGS += -DHAVE_LAPACK_CONFIG_H
@@ -1699,14 +1721,14 @@ LIBNAME_P	= $(LIBPREFIX)p$(REVISION)_p.$(LIBSUFFIX)
 endif
 endif
 
+ifeq ($(FIXED_LIBNAME),1)
+	LIBNAME = lib$(LIBNAMEPREFIX)$(LIBSONAMEBASE)$(LIBNAMESUFFIX).$(LIBSUFFIX)
+	LIBNAME_P = lib$(LIBNAMEPREFIX)$(LISOBNAMEBASE)$(LIBNAMESUFFIX)_p.$(LIBSUFFIX)
+endif
 
 LIBDLLNAME   = $(LIBPREFIX).dll
 IMPLIBNAME   = lib$(LIBNAMEBASE).dll.a
-ifneq ($(OSNAME), AIX)
 LIBSONAME    = $(LIBNAME:.$(LIBSUFFIX)=.so)
-else
-LIBSONAME    = $(LIBNAME:.$(LIBSUFFIX)=.a)
-endif
 LIBDYNNAME   = $(LIBNAME:.$(LIBSUFFIX)=.dylib)
 LIBDEFNAME   = $(LIBNAME:.$(LIBSUFFIX)=.def)
 LIBEXPNAME   = $(LIBNAME:.$(LIBSUFFIX)=.exp)

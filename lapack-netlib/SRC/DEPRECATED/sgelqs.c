@@ -52,9 +52,6 @@ static inline _Complex double * _pCd(doublecomplex *z) {return (_Complex double*
 #endif
 #define pCf(z) (*_pCf(z))
 #define pCd(z) (*_pCd(z))
-typedef int logical;
-typedef short int shortlogical;
-typedef char logical1;
 typedef char integer1;
 
 #define TRUE_ (1)
@@ -257,13 +254,6 @@ typedef struct Namelist Namelist;
 #define mymaxloc_(w,s,e,n) dmaxloc_(w,*(s),*(e),n)
 
 /* procedure parameter types for -A and -C++ */
-
-#define F2C_proc_par_types 1
-#ifdef __cplusplus
-typedef logical (*L_fp)(...);
-#else
-typedef logical (*L_fp)();
-#endif
 
 /* Table of constant values */
 

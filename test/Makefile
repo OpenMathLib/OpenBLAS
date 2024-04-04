@@ -4,6 +4,24 @@ ifeq ($(F_COMPILER),GFORTRAN)
         override FFLAGS += -fno-tree-vectorize
 endif
 
+SUPPORT_GEMM3M = 0
+
+ifeq ($(ARCH), x86)
+SUPPORT_GEMM3M = 1
+endif
+
+ifeq ($(ARCH), x86_64)
+SUPPORT_GEMM3M = 1
+endif
+
+ifeq ($(ARCH), ia64)
+SUPPORT_GEMM3M = 1
+endif
+
+ifeq ($(ARCH), MIPS)
+SUPPORT_GEMM3M = 1
+endif
+
 ifeq ($(NOFORTRAN),1)
 all ::
 else
@@ -153,11 +171,20 @@ ifeq ($(BUILD_DOUBLE),1)
 D3=dblat3
 endif
 ifeq ($(BUILD_COMPLEX),1)
+ifeq ($(SUPPORT_GEMM3M),1)
+C3=cblat3 cblat3_3m
+else
 C3=cblat3
 endif
+endif
 ifeq ($(BUILD_COMPLEX16),1)
+ifeq ($(SUPPORT_GEMM3M),1)
+Z3=zblat3 zblat3_3m
+else
 Z3=zblat3
 endif
+endif
+
 
 level3: $(B3) $(S3) $(D3) $(C3) $(Z3)
 
@@ -275,6 +302,9 @@ endif
 ifeq ($(F_COMPILER), IBM)
 ifeq ($(C_COMPILER), GCC)
 CEXTRALIB += -lgomp
+endif
+ifeq ($(C_COMPILER), CLANG)
+CEXTRALIB += -lomp
 endif
 endif
 endif

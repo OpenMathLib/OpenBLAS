@@ -40,6 +40,10 @@ else()
     c_${float_char}blas1.c)
 endif()
   target_link_libraries(x${float_char}cblat1 ${OpenBLAS_LIBNAME})
+  if (USE_OPENMP AND (${CMAKE_Fortran_COMPILER_ID} STREQUAL GNU) AND (${CMAKE_C_COMPILER_ID} STREQUAL Clang))
+        string(REGEX REPLACE "-fopenmp" "" CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS}")
+        target_link_libraries(x${float_char}cblat1 omp pthread)
+  endif()
   if(${CMAKE_SYSTEM_NAME} MATCHES "Linux" OR ${CMAKE_SYSTEM_NAME} MATCHES "FreeBSD" OR ${CMAKE_SYSTEM_NAME} MATCHES "QNX")
       target_link_libraries(x${float_char}cblat1 m)
   endif()
@@ -65,6 +69,10 @@ else()
     constant.c)
 endif()
   target_link_libraries(x${float_char}cblat2 ${OpenBLAS_LIBNAME})
+  if (USE_OPENMP AND (${CMAKE_Fortran_COMPILER_ID} STREQUAL GNU) AND (${CMAKE_C_COMPILER_ID} STREQUAL Clang))
+        string(REGEX REPLACE "-fopenmp" "" CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS}")
+        target_link_libraries(x${float_char}cblat2 omp pthread)
+  endif()
   if(${CMAKE_SYSTEM_NAME} MATCHES "Linux" OR ${CMAKE_SYSTEM_NAME} MATCHES "FreeBSD" OR ${CMAKE_SYSTEM_NAME} MATCHES "QNX")
     target_link_libraries(x${float_char}cblat2 m)
   endif()
@@ -80,6 +88,17 @@ if (NOT NOFORTRAN)
     auxiliary.c
     c_xerbla.c
     constant.c)
+  if (USE_GEMM3M)
+  if ((${float_char} STREQUAL "c") OR (${float_char} STREQUAL "z"))
+  add_executable(x${float_char}cblat3_3m
+    c_${float_char}blat3_3m.f
+    c_${float_char}blas3_3m.c
+    c_${float_char}3chke_3m.c
+    auxiliary.c
+    c_xerbla.c
+    constant.c)
+  endif()
+  endif()
 else()
   add_executable(x${float_char}cblat3
     c_${float_char}blat3c.c
@@ -88,12 +107,44 @@ else()
     auxiliary.c
     c_xerbla.c
     constant.c)
+  if (USE_GEMM3M)
+  if ((${float_char} STREQUAL "c") OR (${float_char} STREQUAL "z"))
+  add_executable(x${float_char}cblat3_3m
+    c_${float_char}blat3c_3m.c
+    c_${float_char}blas3_3m.c
+    c_${float_char}3chke_3m.c
+    auxiliary.c
+    c_xerbla.c
+    constant.c)
+  endif()
+  endif()
 endif()
   target_link_libraries(x${float_char}cblat3 ${OpenBLAS_LIBNAME})
+  if (USE_OPENMP AND (${CMAKE_Fortran_COMPILER_ID} STREQUAL GNU) AND (${CMAKE_C_COMPILER_ID} STREQUAL Clang))
+        string(REGEX REPLACE "-fopenmp" "" CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS}")
+        target_link_libraries(x${float_char}cblat3 omp pthread)
+  endif()
   if(${CMAKE_SYSTEM_NAME} MATCHES "Linux" OR ${CMAKE_SYSTEM_NAME} MATCHES "FreeBSD" OR ${CMAKE_SYSTEM_NAME} MATCHES "QNX")
     target_link_libraries(x${float_char}cblat3 m)
   endif()
+  if (USE_GEMM3M)
+  if ((${float_char} STREQUAL "c") OR (${float_char} STREQUAL "z"))
+  target_link_libraries(x${float_char}cblat3_3m ${OpenBLAS_LIBNAME})
+  if (USE_OPENMP AND (${CMAKE_Fortran_COMPILER_ID} STREQUAL GNU) AND (${CMAKE_C_COMPILER_ID} STREQUAL Clang))
+        string(REGEX REPLACE "-fopenmp" "" CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS}")
+        target_link_libraries(x${float_char}cblat3 omp pthread)
+  endif()
+  if(${CMAKE_SYSTEM_NAME} MATCHES "Linux" OR ${CMAKE_SYSTEM_NAME} MATCHES "FreeBSD" OR ${CMAKE_SYSTEM_NAME} MATCHES "QNX")
+    target_link_libraries(x${float_char}cblat3_3m m)
+  endif()
+  endif()
+  endif()
   add_test(NAME "x${float_char}cblat3"
     COMMAND ${test_helper} $<TARGET_FILE:x${float_char}cblat3> "${PROJECT_SOURCE_DIR}/ctest/${float_char}in3")
-
+    if (USE_GEMM3M)
+    if ((${float_char} STREQUAL "c") OR (${float_char} STREQUAL "z"))
+  add_test(NAME "x${float_char}cblat3_3m"
+    COMMAND ${test_helper} $<TARGET_FILE:x${float_char}cblat3_3m> "${PROJECT_SOURCE_DIR}/ctest/${float_char}in3_3m")
+    endif()
+  endif()
 endforeach()

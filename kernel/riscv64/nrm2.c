@@ -61,7 +61,7 @@ FLOAT CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x)
 	if ( n == 1 ) return( ABS(x[0]) );
 
 	n *= inc_x;
-	while(i < n)
+	while(abs(i) < abs(n))
 	{
 
 		if ( x[i] != 0.0 )

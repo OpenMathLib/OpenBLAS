@@ -67,6 +67,11 @@ static void check_dgemm(double *a, double *b, double *result, double *expected, 
 
 CTEST(fork, safety_after_fork_in_parent)
 {
+#ifdef __UCLIBC__
+#if !defined __UCLIBC_HAS_STUBS__ && !defined __ARCH_USE_MMU__
+exit(0);
+#endif
+#endif
 #ifndef BUILD_DOUBLE
 exit(0);
 #else

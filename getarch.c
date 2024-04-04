@@ -90,7 +90,9 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <sys/sysinfo.h>
 #include <unistd.h>
 #endif
-#if defined(AIX)
+#if defined(_AIX)
+#include <unistd.h>
+#include <sys/systemcfg.h>
 #include <sys/sysinfo.h>
 #endif
 
@@ -150,6 +152,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /* #define FORCE_EV4		*/
 /* #define FORCE_EV5		*/
 /* #define FORCE_EV6		*/
+/* #define FORCE_CSKY		*/
+/* #define FORCE_CK860FV		*/
 /* #define FORCE_GENERIC	*/
 
 #ifdef FORCE_P2
@@ -1327,6 +1331,21 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define CORENAME  "CORTEXA73"
 #endif
 
+#ifdef FORCE_CORTEXA76
+#define FORCE
+#define ARCHITECTURE    "ARM64"
+#define SUBARCHITECTURE "CORTEXA76"
+#define SUBDIRNAME      "arm64"
+#define ARCHCONFIG   "-DCORTEXA76 " \
+       "-DL1_CODE_SIZE=49152 -DL1_CODE_LINESIZE=64 -DL1_CODE_ASSOCIATIVE=3 " \
+       "-DL1_DATA_SIZE=32768 -DL1_DATA_LINESIZE=64 -DL1_DATA_ASSOCIATIVE=2 " \
+       "-DL2_SIZE=2097152 -DL2_LINESIZE=64 -DL2_ASSOCIATIVE=16 " \
+       "-DDTB_DEFAULT_ENTRIES=64 -DDTB_SIZE=4096 " \
+       "-DHAVE_VFPV4 -DHAVE_VFPV3 -DHAVE_VFP -DHAVE_NEON -DARMV8"
+#define LIBNAME   "cortexa76"
+#define CORENAME  "CORTEXA76"
+#endif
+
 #ifdef FORCE_CORTEXX1
 #define FORCE
 #define ARCHITECTURE    "ARM64"
@@ -1677,9 +1696,46 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define LIBNAME   "c910v"
 #define CORENAME  "C910V"
 #endif
+#endif
+#ifdef FORCE_x280
+#define FORCE
+#define ARCHITECTURE    "RISCV64"
+#define SUBARCHITECTURE "x280"
+#define SUBDIRNAME      "riscv64"
+#define ARCHCONFIG   "-Dx280 " \
+       "-DL1_DATA_SIZE=64536 -DL1_DATA_LINESIZE=32 " \
+       "-DL2_SIZE=262144 -DL2_LINESIZE=32 " \
+       "-DDTB_DEFAULT_ENTRIES=128 -DDTB_SIZE=4096 -DL2_ASSOCIATIVE=4 "
+#define LIBNAME   "x280"
+#define CORENAME  "x280"
 #else
 #endif
 
+#ifdef FORCE_RISCV64_ZVL256B
+#define FORCE
+#define ARCHITECTURE    "RISCV64"
+#define SUBARCHITECTURE "RISCV64_ZVL256B"
+#define SUBDIRNAME      "riscv64"
+#define ARCHCONFIG   "-DRISCV64_ZVL256B " \
+       "-DL1_DATA_SIZE=64536 -DL1_DATA_LINESIZE=32 " \
+       "-DL2_SIZE=262144 -DL2_LINESIZE=32 " \
+       "-DDTB_DEFAULT_ENTRIES=128 -DDTB_SIZE=4096 -DL2_ASSOCIATIVE=4 "
+#define LIBNAME   "riscv64_zvl256b"
+#define CORENAME  "RISCV64_ZVL256B"
+#endif
+
+#ifdef FORCE_RISCV64_ZVL128B
+#define FORCE
+#define ARCHITECTURE    "RISCV64"
+#define SUBARCHITECTURE "RISCV64_ZVL128B"
+#define SUBDIRNAME      "riscv64"
+#define ARCHCONFIG "-DRISCV64_ZVL128B "                          \
+                   "-DL1_DATA_SIZE=32768 -DL1_DATA_LINESIZE=32 " \
+                   "-DL2_SIZE=1048576 -DL2_LINESIZE=32 "         \
+                   "-DDTB_DEFAULT_ENTRIES=128 -DDTB_SIZE=4096 -DL2_ASSOCIATIVE=4 "
+#define LIBNAME  "riscv64_zvl128b"
+#define CORENAME "RISCV64_ZVL128B"
+#endif
 
 #if defined(FORCE_E2K) || defined(__e2k__)
 #define FORCE
@@ -1691,6 +1747,33 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define LIBNAME   "generic"
 #define CORENAME  "generic"
 #endif
+
+#ifdef FORCE_CSKY
+#define FORCE
+#define ARCHITECTURE    "CSKY"
+#define SUBARCHITECTURE "CSKY"
+#define SUBDIRNAME      "csky"
+#define ARCHCONFIG   "-DCSKY" \
+       "-DL1_DATA_SIZE=65536 -DL1_DATA_LINESIZE=32 " \
+       "-DL2_SIZE=524288 -DL2_LINESIZE=32 " \
+       "-DDTB_DEFAULT_ENTRIES=64 -DDTB_SIZE=4096 -DL2_ASSOCIATIVE=8 "
+#define LIBNAME   "csky"
+#define CORENAME  "CSKY"
+#endif
+
+#ifdef FORCE_CK860FV
+#define FORCE
+#define ARCHITECTURE    "CSKY"
+#define SUBARCHITECTURE "CK860V"
+#define SUBDIRNAME      "csky"
+#define ARCHCONFIG   "-DCK860FV " \
+       "-DL1_DATA_SIZE=65536 -DL1_DATA_LINESIZE=32 " \
+       "-DL2_SIZE=524288 -DL2_LINESIZE=32 " \
+       "-DDTB_DEFAULT_ENTRIES=64 -DDTB_SIZE=4096 -DL2_ASSOCIATIVE=8 "
+#define LIBNAME   "ck860fv"
+#define CORENAME  "CK860FV"
+#endif
+
 
 #ifndef FORCE
 
@@ -1766,7 +1849,6 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define OPENBLAS_SUPPORTED
 #endif
 
-
 #ifndef OPENBLAS_SUPPORTED
 #error "This arch/CPU is not supported by OpenBLAS."
 #endif
@@ -1805,11 +1887,13 @@ static int get_num_cores(void) {
   
   return count;
 
-#elif defined(AIX)
+#elif defined(_AIX)
   //returns the number of processors which are currently online
   count = sysconf(_SC_NPROCESSORS_ONLN);
   if (count <= 0) count = 2;
-  
+
+  return count;
+
 #else
   return 2;
 #endif
@@ -1831,7 +1915,7 @@ int main(int argc, char *argv[]){
 #ifdef FORCE
     printf("CORE=%s\n", CORENAME);
 #else
-#if defined(INTEL_AMD) || defined(POWER) || defined(__mips__) || defined(__arm__) || defined(__aarch64__) || defined(ZARCH) || defined(sparc) || defined(__loongarch__) || defined(__riscv) || defined(__alpha__)
+#if defined(INTEL_AMD) || defined(POWER) || defined(__mips__) || defined(__arm__) || defined(__aarch64__) || defined(ZARCH) || defined(sparc) || defined(__loongarch__) || defined(__riscv) || defined(__alpha__) || defined(__csky__)
     printf("CORE=%s\n", get_corename());
 #endif
 #endif
@@ -1979,7 +2063,7 @@ printf("ELF_VERSION=2\n");
 #ifdef FORCE
     printf("#define CHAR_CORENAME \"%s\"\n", CORENAME);
 #else
-#if defined(INTEL_AMD) || defined(POWER) || defined(__mips__) || defined(__arm__) || defined(__aarch64__) || defined(ZARCH) || defined(sparc) || defined(__loongarch__) || defined(__riscv)
+#if defined(INTEL_AMD) || defined(POWER) || defined(__mips__) || defined(__arm__) || defined(__aarch64__) || defined(ZARCH) || defined(sparc) || defined(__loongarch__) || defined(__riscv) || defined(__csky__)
     printf("#define CHAR_CORENAME \"%s\"\n", get_corename());
 #endif
 #endif

@@ -37,6 +37,12 @@ ESSL=/opt/ibm/lib
 #LIBESSL = -lesslsmp $(ESSL)/libxlomp_ser.so.1 $(ESSL)/libxlf90_r.so.1 $(ESSL)/libxlfmath.so.1 $(ESSL)/libxlsmp.so.1 /opt/ibm/xlC/13.1.3/lib/libxl.a
 LIBESSL = -lesslsmp  $(ESSL)/libxlf90_r.so.1 $(ESSL)/libxlfmath.so.1 $(ESSL)/libxlsmp.so.1 /opt/ibm/xlC/13.1.3/lib/libxl.a
 
+# x280 temporary workaround for gfortran
+ifeq ($(TARGET), x280)
+CCOMMON_OPT:=$(filter-out -mllvm --riscv-v-vector-bits-min=512,$(CCOMMON_OPT))
+endif
+
+
 ifneq ($(NO_LAPACK), 1)
 GOTO_LAPACK_TARGETS=slinpack.goto dlinpack.goto clinpack.goto zlinpack.goto \
 		    scholesky.goto dcholesky.goto ccholesky.goto zcholesky.goto \

@@ -24,6 +24,8 @@ option(BUILD_LAPACK_DEPRECATED "When building LAPACK, include also some older, d
 
 option(BUILD_TESTING "Build LAPACK testsuite when building LAPACK" ON)
 
+option(BUILD_BENCHMARKS "Build the collection of BLAS/LAPACK benchmarks" OFF)
+
 option(C_LAPACK "Build LAPACK from C sources instead of the original Fortran" OFF)
 
 option(BUILD_WITHOUT_CBLAS "Do not build the C interface (CBLAS) to the BLAS functions" OFF)
@@ -39,6 +41,11 @@ option(USE_LOCKING "Use locks even in single-threaded builds to make them callab
 option(USE_PERL "Use the older PERL scripts for build preparation instead of universal shell scripts" OFF)
 
 option(NO_WARMUP "Do not run a benchmark on each startup just to find the best location for the memory buffer" ON)
+
+option(FIXED_LIBNAME "Use a non-versioned name for the library and no symbolic linking to variant names" OFF)
+
+set(LIBNAMEPREFIX "" CACHE STRING  "Add a prefix to the openblas part of the library name" )
+set(LIBNAMESUFFIX "" CACHE STRING  "Add a suffix after the openblas part of the library name" )
 
 if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
   option(NO_AFFINITY "Disable support for CPU affinity masks to avoid binding processes from e.g. R or numpy/scipy to a single core" ON)
@@ -96,7 +103,7 @@ message(WARNING "CMake support is experimental. It does not yet support all buil
 include("${PROJECT_SOURCE_DIR}/cmake/utils.cmake")
 include("${PROJECT_SOURCE_DIR}/cmake/system.cmake")
 
-set(OpenBLAS_LIBNAME openblas${SUFFIX64_UNDERSCORE})
+set(OpenBLAS_LIBNAME ${LIBNAMEPREFIX}openblas${LIBNAMESUFFIX}${SUFFIX64_UNDERSCORE})
 
 set(BLASDIRS interface driver/level2 driver/level3 driver/others)
 
@@ -323,7 +330,7 @@ if (NOT NOFORTRAN)
   # Build test and ctest
   add_subdirectory(test)
  endif()
-  if (BUILD_TESTING)
+ if (BUILD_TESTING AND NOT BUILD_WITHOUT_LAPACK)
     add_subdirectory(lapack-netlib/TESTING)
   endif()
 endif()
@@ -336,11 +343,12 @@ endif()
     add_subdirectory(cpp_thread_test)
   endif()
 
+if (NOT FIXED_LIBNAME)
 set_target_properties(${OpenBLAS_LIBS} PROPERTIES
   VERSION ${OpenBLAS_MAJOR_VERSION}.${OpenBLAS_MINOR_VERSION}
   SOVERSION ${OpenBLAS_MAJOR_VERSION}
 )
-
+endif()
 if (BUILD_SHARED_LIBS AND BUILD_RELAPACK)
   if (NOT MSVC)
     target_link_libraries(${OpenBLAS_LIBNAME}_shared "-Wl,-allow-multiple-definition")
@@ -452,6 +460,61 @@ if (BUILD_SHARED_LIBS AND NOT ${SYMBOLPREFIX}${SYMBOLSUFFIX} STREQUAL "")
   endif()
 endif()
 
+if (BUILD_BENCHMARKS)
+	#find_package(OpenMP REQUIRED)
+  file(GLOB SOURCES "benchmark/*.c")
+  if (NOT USE_OPENMP)
+  file(GLOB REMFILE "benchmark/smallscaling.c")
+  list(REMOVE_ITEM SOURCES ${REMFILE})
+  endif()
+  if (BUILD_WITHOUT_LAPACK)
+  file(GLOB REMFILE "benchmark/cholesky.c")
+  list(REMOVE_ITEM SOURCES ${REMFILE})
+  file(GLOB REMFILE "benchmark/geev.c")
+  list(REMOVE_ITEM SOURCES ${REMFILE})
+  file(GLOB REMFILE "benchmark/gesv.c")
+  list(REMOVE_ITEM SOURCES ${REMFILE})
+  file(GLOB REMFILE "benchmark/getri.c")
+  list(REMOVE_ITEM SOURCES ${REMFILE})
+  file(GLOB REMFILE "benchmark/potrf.c")
+  list(REMOVE_ITEM SOURCES ${REMFILE})
+  file(GLOB REMFILE "benchmark/spmv.c")
+  list(REMOVE_ITEM SOURCES ${REMFILE})
+  file(GLOB REMFILE "benchmark/symv.c")
+  list(REMOVE_ITEM SOURCES ${REMFILE})
+  file(GLOB REMFILE "benchmark/linpack.c")
+  list(REMOVE_ITEM SOURCES ${REMFILE})
+  endif()
+  if (NOT USE_GEMM3M)
+  file(GLOB REMFILE "benchmark/gemm3m.c")
+  list(REMOVE_ITEM SOURCES ${REMFILE})
+  endif()
+  foreach(source ${SOURCES})
+    get_filename_component(name ${source} NAME_WE)
+    if ((NOT ${name} STREQUAL "zdot-intel") AND (NOT ${name} STREQUAL "cula_wrapper"))
+        set(defines DEFAULT COMPLEX DOUBLE "COMPLEX\;DOUBLE")
+      foreach(define ${defines})
+        set(target_name "benchmark_${name}")
+        if (NOT "${define}" STREQUAL "DEFAULT")
+          string(JOIN "_" define_str ${define})
+          set(target_name "${target_name}_${define_str}")
+        endif()
+        if ((NOT ${target_name} STREQUAL "benchmark_imax_COMPLEX") AND (NOT ${target_name} STREQUAL "benchmark_imax_COMPLEX_DOUBLE") AND
+            (NOT ${target_name} STREQUAL "benchmark_imin_COMPLEX") AND (NOT ${target_name} STREQUAL "benchmark_imin_COMPLEX_DOUBLE") AND
+            (NOT ${target_name} STREQUAL "benchmark_max_COMPLEX") AND (NOT ${target_name} STREQUAL "benchmark_max_COMPLEX_DOUBLE") AND
+            (NOT ${target_name} STREQUAL "benchmark_min_COMPLEX") AND (NOT ${target_name} STREQUAL "benchmark_min_COMPLEX_DOUBLE"))
+          add_executable(${target_name} ${source})
+          target_include_directories(${target_name} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR})
+	    target_link_libraries(${target_name} ${OpenBLAS_LIBNAME} )
+	  #  target_link_libraries(${target_name} ${OpenBLAS_LIBNAME} OpenMP::OpenMP_C)
+          if (NOT "${define}" STREQUAL "DEFAULT")
+            target_compile_definitions(${target_name} PRIVATE ${define})
+          endif()
+        endif()
+      endforeach()
+    endif()
+  endforeach()
+endif()
 
 
 # Install project

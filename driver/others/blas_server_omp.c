@@ -69,6 +69,7 @@
 
 int blas_server_avail = 0;
 int blas_omp_number_max = 0;
+int blas_omp_threads_local = 1;
 
 extern int openblas_omp_adaptive_env(void);
 
@@ -406,7 +407,7 @@ int exec_blas(BLASLONG num, blas_queue_t *queue){
   }
 #endif
 
-  while(true) {
+while (true) {
     for(i=0; i < MAX_PARALLEL_NUMBER; i++) {
 #ifdef HAVE_C11
       _Bool inuse = false;
@@ -419,10 +420,9 @@ int exec_blas(BLASLONG num, blas_queue_t *queue){
         break;
       }
     }
-    if(i != MAX_PARALLEL_NUMBER)
-      break;
-  }
-
+    if (i != MAX_PARALLEL_NUMBER)
+	    break;
+}
 if (openblas_omp_adaptive_env() != 0) {
 #pragma omp parallel for num_threads(num) schedule(OMP_SCHED)
   for (i = 0; i < num; i ++) {

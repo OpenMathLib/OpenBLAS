@@ -239,7 +239,11 @@ set(ZLINTSTRFP zchkrfp.f zdrvrfp.f zdrvrf1.f zdrvrf2.f zdrvrf3.f zdrvrf4.f zerrr
 
 macro(add_lin_executable name)
   add_executable(${name} ${ARGN})
-  target_link_libraries(${name} openblas${SUFFIX64_UNDERSCORE})
+  target_link_libraries(${name} ${LIBNAMEPREFIX}openblas${LIBNAMESUFFIX}${SUFFIX64_UNDERSCORE})
+  if (USE_OPENMP AND (${CMAKE_Fortran_COMPILER_ID} STREQUAL GNU) AND (${CMAKE_C_COMPILER_ID} STREQUAL Clang))
+	string(REGEX REPLACE "-fopenmp" "" CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS}")
+        target_link_libraries(${name} omp pthread)
+  endif()
 #${TMGLIB} ${LAPACK_LIBRARIES} ${BLAS_LIBRARIES})
 endmacro()
 

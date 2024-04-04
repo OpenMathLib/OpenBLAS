@@ -1,5 +1,9 @@
 TOPDIR	= .
 include ./Makefile.system
+LNCMD = ln -fs
+ifeq ($(FIXED_LIBNAME), 1)
+LNCMD = true
+endif
 
 BLASDIRS = interface driver/level2 driver/level3 driver/others
 
@@ -134,23 +138,26 @@ shared : libs netlib $(RELA)
 ifneq ($(NO_SHARED), 1)
 ifeq ($(OSNAME), $(filter $(OSNAME),Linux SunOS Android Haiku FreeBSD DragonFly))
 	@$(MAKE) -C exports so
-	@ln -fs $(LIBSONAME) $(LIBPREFIX).so
-	@ln -fs $(LIBSONAME) $(LIBPREFIX).so.$(MAJOR_VERSION)
+	@$(LNCMD) $(LIBSONAME) $(LIBPREFIX).so
+	@$(LNCMD) $(LIBSONAME) $(LIBPREFIX).so.$(MAJOR_VERSION)
 endif
 ifeq ($(OSNAME), $(filter $(OSNAME),OpenBSD NetBSD))
 	@$(MAKE) -C exports so
-	@ln -fs $(LIBSONAME) $(LIBPREFIX).so
+	@$(LNCMD) $(LIBSONAME) $(LIBPREFIX).so
 endif
 ifeq ($(OSNAME), Darwin)
 	@$(MAKE) -C exports dyn
-	@ln -fs $(LIBDYNNAME) $(LIBPREFIX).dylib
-	@ln -fs $(LIBDYNNAME) $(LIBPREFIX).$(MAJOR_VERSION).dylib
+	@$(LNCMD) $(LIBDYNNAME) $(LIBPREFIX).dylib
+	@$(LNCMD) $(LIBDYNNAME) $(LIBPREFIX).$(MAJOR_VERSION).dylib
 endif
 ifeq ($(OSNAME), WINNT)
 	@$(MAKE) -C exports dll
 endif
 ifeq ($(OSNAME), CYGWIN_NT)
 	@$(MAKE) -C exports dll
+endif
+ifeq ($(OSNAME), AIX)
+	@$(MAKE) -C exports so
 endif
 endif
 
@@ -229,13 +236,13 @@ ifeq ($(INTERFACE64),1)
 endif
 	@echo THELIBNAME=$(LIBNAME) >>  Makefile.conf_last
 	@echo THELIBSONAME=$(LIBSONAME) >>  Makefile.conf_last
-	@-ln -fs $(LIBNAME) $(LIBPREFIX).$(LIBSUFFIX)
+	@-$(LNCMD) $(LIBNAME) $(LIBPREFIX).$(LIBSUFFIX)
 	@touch lib.grd
 
 prof : prof_blas prof_lapack
 
 prof_blas :
-	ln -fs $(LIBNAME_P) $(LIBPREFIX)_p.$(LIBSUFFIX)
+	$(LNCMD) $(LIBNAME_P) $(LIBPREFIX)_p.$(LIBSUFFIX)
 	for d in $(SUBDIRS) ; \
 	do if test -d $$d; then \
 	  $(MAKE) -C $$d prof || exit 1 ; \
@@ -246,7 +253,7 @@ ifeq ($(DYNAMIC_ARCH), 1)
 endif
 
 blas :
-	ln -fs $(LIBNAME) $(LIBPREFIX).$(LIBSUFFIX)
+	$(LNCMD) $(LIBNAME) $(LIBPREFIX).$(LIBSUFFIX)
 	for d in $(BLASDIRS) ; \
 	do if test -d $$d; then \
 	  $(MAKE) -C $$d libs || exit 1 ; \
@@ -254,7 +261,7 @@ blas :
 	done
 
 hpl :
-	ln -fs $(LIBNAME) $(LIBPREFIX).$(LIBSUFFIX)
+	$(LNCMD) $(LIBNAME) $(LIBPREFIX).$(LIBSUFFIX)
 	for d in $(BLASDIRS) ../laswp exports ; \
 	do if test -d $$d; then \
 	  $(MAKE) -C $$d $(@F) || exit 1 ; \
@@ -268,7 +275,7 @@ ifeq ($(DYNAMIC_ARCH), 1)
 endif
 
 hpl_p :
-	ln -fs $(LIBNAME_P) $(LIBPREFIX)_p.$(LIBSUFFIX)
+	$(LNCMD) $(LIBNAME_P) $(LIBPREFIX)_p.$(LIBSUFFIX)
 	for d in $(SUBDIRS) ../laswp exports ; \
 	do if test -d $$d; then \
 	  $(MAKE) -C $$d $(@F) || exit 1 ; \
@@ -310,7 +317,11 @@ endif
 ifeq ($(C_COMPILER)$(F_COMPILER)$(USE_OPENMP), CLANGGFORTRAN1)
 	-@echo "LDFLAGS     = $(FFLAGS) $(EXTRALIB) -lomp" >> $(NETLIB_LAPACK_DIR)/make.inc
 else
+ifeq ($(C_COMPILER)$(F_COMPILER)$(USE_OPENMP), CLANGIBM1)
+	-@echo "LDFLAGS     = $(FFLAGS) $(EXTRALIB) -lomp" >> $(NETLIB_LAPACK_DIR)/make.inc
+else
 	-@echo "LDFLAGS     = $(FFLAGS) $(EXTRALIB)" >> $(NETLIB_LAPACK_DIR)/make.inc
+endif
 endif
 	-@echo "CC          = $(CC)" >> $(NETLIB_LAPACK_DIR)/make.inc
 	-@echo "override CFLAGS      = $(LAPACK_CFLAGS)" >> $(NETLIB_LAPACK_DIR)/make.inc
@@ -401,6 +412,7 @@ lapack-runtest: lapack-test
 
 blas-test:
 	(cd $(NETLIB_LAPACK_DIR)/BLAS/TESTING && rm -f x* *.out)
+
 	$(MAKE) -j 1 -C $(NETLIB_LAPACK_DIR) blas_testing
 	(cd $(NETLIB_LAPACK_DIR)/BLAS/TESTING && cat *.out)
 
