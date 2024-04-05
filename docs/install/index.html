@@ -1,0 +1,1584 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+        <link rel="canonical" href="https://openblas.net/docs/install/">
+      
+      
+        <link rel="prev" href="..">
+      
+      
+        <link rel="next" href="../user_manual/">
+      
+      
+      <link rel="icon" href="../logo.svg">
+      <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.5.17">
+    
+    
+      
+        <title>Install OpenBLAS - OpenBLAS</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.bcfcd587.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="grey" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#install-openblas" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="OpenBLAS" class="md-header__button md-logo" aria-label="OpenBLAS" data-md-component="logo">
+      
+  <img src="../logo.svg" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            OpenBLAS
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Install OpenBLAS
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="OpenBLAS" class="md-nav__button md-logo" aria-label="OpenBLAS" data-md-component="logo">
+      
+  <img src="../logo.svg" alt="logo">
+
+    </a>
+    OpenBLAS
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Home
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Install OpenBLAS
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    Install OpenBLAS
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#quick-install" class="md-nav__link">
+    <span class="md-ellipsis">
+      Quick install
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#source" class="md-nav__link">
+    <span class="md-ellipsis">
+      Source
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#platforms" class="md-nav__link">
+    <span class="md-ellipsis">
+      Platforms
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Platforms">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#linux" class="md-nav__link">
+    <span class="md-ellipsis">
+      Linux
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Linux">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#precompiled-packages" class="md-nav__link">
+    <span class="md-ellipsis">
+      Precompiled packages
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#windows" class="md-nav__link">
+    <span class="md-ellipsis">
+      Windows
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Windows">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#precompiled-packages_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      Precompiled packages
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#visual-studio" class="md-nav__link">
+    <span class="md-ellipsis">
+      Visual Studio
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#windows-on-arm" class="md-nav__link">
+    <span class="md-ellipsis">
+      Windows on Arm
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mingw-import-library" class="md-nav__link">
+    <span class="md-ellipsis">
+      MinGW import library
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mac-osx" class="md-nav__link">
+    <span class="md-ellipsis">
+      Mac OSX
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Mac OSX">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#precompiled-packages_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      Precompiled packages
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#build-on-apple-m1" class="md-nav__link">
+    <span class="md-ellipsis">
+      Build on Apple M1
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#android" class="md-nav__link">
+    <span class="md-ellipsis">
+      Android
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Android">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#prerequisites_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      Prerequisites
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#building-with-android-ndk-using-clang-compiler" class="md-nav__link">
+    <span class="md-ellipsis">
+      Building with android NDK using clang compiler
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#build-armv7-with-clang" class="md-nav__link">
+    <span class="md-ellipsis">
+      Build ARMV7 with clang
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#build-armv8-with-clang" class="md-nav__link">
+    <span class="md-ellipsis">
+      Build ARMV8 with clang
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#alternative-script-which-was-tested-on-osx-with-ndk2136528147" class="md-nav__link">
+    <span class="md-ellipsis">
+      Alternative script which was tested on OSX with NDK(21.3.6528147)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#building-openblas-with-very-old-gcc-based-versions-of-the-ndk-without-fortran" class="md-nav__link">
+    <span class="md-ellipsis">
+      Building OpenBLAS with very old gcc-based versions of the NDK, without Fortran
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#building-openblas-with-fortran" class="md-nav__link">
+    <span class="md-ellipsis">
+      Building OpenBLAS with Fortran
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#linking-openblas-0219-and-earlier-for-armv7" class="md-nav__link">
+    <span class="md-ellipsis">
+      Linking OpenBLAS (0.2.19 and earlier) for ARMV7
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#iphoneios" class="md-nav__link">
+    <span class="md-ellipsis">
+      iPhone/iOS
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mips" class="md-nav__link">
+    <span class="md-ellipsis">
+      MIPS
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#freebsd" class="md-nav__link">
+    <span class="md-ellipsis">
+      FreeBSD
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cortex-m" class="md-nav__link">
+    <span class="md-ellipsis">
+      Cortex-M
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../user_manual/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    User manual
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../extensions/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Extensions
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../developers/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Developer manual
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../build_system/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Build system
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../distributing/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Redistributing OpenBLAS
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ci/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    CI jobs
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../about/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    About
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../faq/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    FAQ
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#quick-install" class="md-nav__link">
+    <span class="md-ellipsis">
+      Quick install
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#source" class="md-nav__link">
+    <span class="md-ellipsis">
+      Source
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#platforms" class="md-nav__link">
+    <span class="md-ellipsis">
+      Platforms
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Platforms">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#linux" class="md-nav__link">
+    <span class="md-ellipsis">
+      Linux
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Linux">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#precompiled-packages" class="md-nav__link">
+    <span class="md-ellipsis">
+      Precompiled packages
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#windows" class="md-nav__link">
+    <span class="md-ellipsis">
+      Windows
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Windows">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#precompiled-packages_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      Precompiled packages
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#visual-studio" class="md-nav__link">
+    <span class="md-ellipsis">
+      Visual Studio
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#windows-on-arm" class="md-nav__link">
+    <span class="md-ellipsis">
+      Windows on Arm
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mingw-import-library" class="md-nav__link">
+    <span class="md-ellipsis">
+      MinGW import library
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mac-osx" class="md-nav__link">
+    <span class="md-ellipsis">
+      Mac OSX
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Mac OSX">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#precompiled-packages_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      Precompiled packages
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#build-on-apple-m1" class="md-nav__link">
+    <span class="md-ellipsis">
+      Build on Apple M1
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#android" class="md-nav__link">
+    <span class="md-ellipsis">
+      Android
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Android">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#prerequisites_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      Prerequisites
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#building-with-android-ndk-using-clang-compiler" class="md-nav__link">
+    <span class="md-ellipsis">
+      Building with android NDK using clang compiler
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#build-armv7-with-clang" class="md-nav__link">
+    <span class="md-ellipsis">
+      Build ARMV7 with clang
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#build-armv8-with-clang" class="md-nav__link">
+    <span class="md-ellipsis">
+      Build ARMV8 with clang
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#alternative-script-which-was-tested-on-osx-with-ndk2136528147" class="md-nav__link">
+    <span class="md-ellipsis">
+      Alternative script which was tested on OSX with NDK(21.3.6528147)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#building-openblas-with-very-old-gcc-based-versions-of-the-ndk-without-fortran" class="md-nav__link">
+    <span class="md-ellipsis">
+      Building OpenBLAS with very old gcc-based versions of the NDK, without Fortran
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#building-openblas-with-fortran" class="md-nav__link">
+    <span class="md-ellipsis">
+      Building OpenBLAS with Fortran
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#linking-openblas-0219-and-earlier-for-armv7" class="md-nav__link">
+    <span class="md-ellipsis">
+      Linking OpenBLAS (0.2.19 and earlier) for ARMV7
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#iphoneios" class="md-nav__link">
+    <span class="md-ellipsis">
+      iPhone/iOS
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mips" class="md-nav__link">
+    <span class="md-ellipsis">
+      MIPS
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#freebsd" class="md-nav__link">
+    <span class="md-ellipsis">
+      FreeBSD
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cortex-m" class="md-nav__link">
+    <span class="md-ellipsis">
+      Cortex-M
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+<h1 id="install-openblas">Install OpenBLAS</h1>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Lists of precompiled packages are not comprehensive, is not meant to validate nor endorse a particular third-party build over others, and may not always lead to the newest version</p>
+</div>
+<h2 id="quick-install">Quick install</h2>
+<p>Precompiled packages have recently become available for a number of platforms through their normal installation procedures, so for users of desktop devices at least, the instructions below are mostly relevant when you want to try the most recent development snapshot from git. See your platform's relevant "Precompiled packages" section.</p>
+<p>The <a href="https://github.com/conda-forge">Conda-Forge</a> project maintains packages for the conda package manager at <a href="https://github.com/conda-forge/openblas-feedstock">https://github.com/conda-forge/openblas-feedstock</a>.</p>
+<h2 id="source">Source</h2>
+<p>Download the latest <a href="https://github.com/xianyi/OpenBLAS/releases">stable version</a> from release page.</p>
+<h2 id="platforms">Platforms</h2>
+<h3 id="linux">Linux</h3>
+<p>Just type <code>make</code> to compile the library.</p>
+<p>Notes:</p>
+<ul>
+<li>OpenBLAS doesn't support g77. Please use gfortran or other Fortran compilers. e.g. <code>make FC=gfortran</code>.</li>
+<li>When building in an emulator (KVM,QEMU etc.) make sure that the combination of CPU features exposed to
+  the virtual environment matches that of an existing CPU to allow detection of the cpu model to succeed. 
+  (With qemu, this can be done by passing <code>-cpu host</code> or a supported model name at invocation)</li>
+</ul>
+<h4 id="precompiled-packages">Precompiled packages</h4>
+<h5 id="debianubuntumintkali">Debian/Ubuntu/Mint/Kali</h5>
+<p>OpenBLAS package is available in default repositories and can act as default BLAS in system</p>
+<p>Example installation commands:
+<div class="highlight"><pre><span></span><code>$<span class="w"> </span>sudo<span class="w"> </span>apt<span class="w"> </span>update
+$<span class="w"> </span>apt<span class="w"> </span>search<span class="w"> </span>openblas
+$<span class="w"> </span>sudo<span class="w"> </span>apt<span class="w"> </span>install<span class="w"> </span>libopenblas-dev
+$<span class="w"> </span>sudo<span class="w"> </span>update-alternatives<span class="w"> </span>--config<span class="w"> </span>libblas.so.3
+</code></pre></div>
+ Alternatively, if distributor's package proves unsatisfactory, you may try latest version of OpenBLAS, <a href="../faq/#debianlts">Following guide in OpenBLAS FAQ</a></p>
+<h5 id="opensusesle">openSuSE/SLE</h5>
+<p>Recent OpenSUSE versions include OpenBLAS in default repositories and also permit OpenBLAS to act as replacement of system-wide BLAS.</p>
+<p>Example installation commands:
+<div class="highlight"><pre><span></span><code>$<span class="w"> </span>sudo<span class="w"> </span>zypper<span class="w"> </span>ref
+$<span class="w"> </span>zypper<span class="w"> </span>se<span class="w"> </span>openblas
+$<span class="w"> </span>sudo<span class="w"> </span>zypper<span class="w"> </span><span class="k">in</span><span class="w"> </span>openblas-devel
+$<span class="w"> </span>sudo<span class="w"> </span>update-alternatives<span class="w"> </span>--config<span class="w"> </span>libblas.so.3
+</code></pre></div>
+Should you be using older OpenSUSE or SLE that provides no OpenBLAS, you can attach optional or experimental openSUSE repository as a new package source to acquire recent build of OpenBLAS following <a href="https://software.opensuse.org/package/openblas">instructions on openSUSE software site</a></p>
+<h5 id="fedoracentosrhel">Fedora/CentOS/RHEL</h5>
+<p>Fedora provides OpenBLAS in default installation repositories.</p>
+<p>To install it try following:
+<div class="highlight"><pre><span></span><code>$<span class="w"> </span>dnf<span class="w"> </span>search<span class="w"> </span>openblas
+$<span class="w"> </span>dnf<span class="w"> </span>install<span class="w"> </span>openblas-devel
+</code></pre></div>
+For CentOS/RHEL/Scientific Linux packages are provided via <a href="https://fedoraproject.org/wiki/EPEL">Fedora EPEL repository</a></p>
+<p>After adding repository and repository keys installation is pretty straightforward:
+<div class="highlight"><pre><span></span><code>$<span class="w"> </span>yum<span class="w"> </span>search<span class="w"> </span>openblas
+$<span class="w"> </span>yum<span class="w"> </span>install<span class="w"> </span>openblas-devel
+</code></pre></div>
+No alternatives mechanism is provided for BLAS, and packages in system repositories are linked against NetLib BLAS or ATLAS BLAS libraries. You may wish to re-package RPMs to use OpenBLAS instead <a href="https://fedoraproject.org/wiki/How_to_create_an_RPM_package">as described here</a></p>
+<h5 id="mageia">Mageia</h5>
+<p>Mageia offers ATLAS and NetLIB LAPACK in base repositories.
+You can build your own OpenBLAS replacement, and once installed in /opt
+TODO: populate /usr/lib64 /usr/include accurately to replicate netlib with update-alternatives</p>
+<h5 id="archmanjaroantergos">Arch/Manjaro/Antergos</h5>
+<div class="highlight"><pre><span></span><code>$<span class="w"> </span>sudo<span class="w"> </span>pacman<span class="w"> </span>-S<span class="w"> </span>openblas
+</code></pre></div>
+<h3 id="windows">Windows</h3>
+<p>The precompiled binaries available with each release (in <a href="https://github.com/xianyi/OpenBLAS/releases">https://github.com/xianyi/OpenBLAS/releases</a>) are
+created with MinGW using an option list of 
+"NUM_THREADS=64 TARGET=GENERIC DYNAMIC_ARCH=1 DYNAMIC_OLDER=1 CONSISTENT_FPCSR=1" - they should work on
+any x86 or x86_64 computer. The zip archive contains the include files, static and dll libraries as well
+as configuration files for getting them found via CMAKE or pkgconfig - just create a suitable folder for
+your OpenBLAS installation and unzip it there. (Note that you will need to edit the provided openblas.pc
+and OpenBLASConfig.cmake to reflect the installation path on your computer, as distributed they have "win"
+or "win64" reflecting the local paths on the system they were built on). Some programs will expect the DLL
+name to be lapack.dll, blas.dll, or (in the case of the statistics package "R") even Rblas.dll to act as a
+direct replacement for whatever other implementation of BLAS and LAPACK they use by default. Just copy the
+openblas.dll to the desired name(s).
+Note that the provided binaries are built with INTERFACE64=0, meaning they use standard 32bit integers for
+array indexing and the like (as is the default for most if not all BLAS and LAPACK implementations). If the
+documentation of whatever program you are using with OpenBLAS mentions 64bit integers (INTERFACE64=1) for
+addressing huge matrix sizes, you will need to build OpenBLAS from source (or open an issue ticket to make
+the demand for such a precompiled build known).</p>
+<h4 id="precompiled-packages_1">Precompiled packages</h4>
+<ul>
+<li><a href="http://sourceforge.net/projects/openblas/files">http://sourceforge.net/projects/openblas/files</a></li>
+<li><a href="https://www.nuget.org/packages?q=openblas">https://www.nuget.org/packages?q=openblas</a></li>
+</ul>
+<h4 id="visual-studio">Visual Studio</h4>
+<p>As of OpenBLAS v0.2.15, we support MinGW and Visual Studio (using CMake to generate visual studio solution files &ndash; note that you will need at least version 3.11 of CMake for linking to work correctly) to build OpenBLAS on Windows.</p>
+<p>Note that you need a Fortran compiler if you plan to build and use the LAPACK functions included with OpenBLAS. The sections below describe using either <code>flang</code> as an add-on to clang/LLVM or <code>gfortran</code> as part of MinGW for this purpose. If you want to use the Intel Fortran compiler <code>ifort</code> for this, be sure to also use the Intel C compiler <code>icc</code> for building the C parts, as the ABI imposed by <code>ifort</code> is incompatible with <code>msvc</code>.</p>
+<h5 id="1-native-msvc-abi">1. Native (MSVC) ABI</h5>
+<p>A fully-optimized OpenBLAS that can be statically or dynamically linked to your application can currently be built for the 64-bit architecture with the LLVM compiler infrastructure. We're going to use Miniconda3 to grab all of the tools we need, since some of them are in an experimental status. Before you begin, you'll need to have Microsoft Visual Studio 2015 or newer installed.</p>
+<ol>
+<li>Install Miniconda3 for 64 bits using <code>winget install --id Anaconda.Miniconda3</code> or easily download from <a href="https://docs.conda.io/en/latest/miniconda.html">conda.io</a>.</li>
+<li>Open the "Anaconda Command Prompt," now available in the Start Menu, or at <code>%USERPROFILE%\miniconda3\shell\condabin\conda-hook.ps1</code>.</li>
+<li>In that command prompt window, use <code>cd</code> to change to the directory where you want to build OpenBLAS</li>
+<li>Now install all of the tools we need:</li>
+</ol>
+<div class="highlight"><pre><span></span><code>conda update -n base conda
+conda config --add channels conda-forge
+conda install -y cmake flang clangdev perl libflang ninja
+</code></pre></div>
+<ol>
+<li>Still in the Anaconda Command Prompt window, activate the MSVC environment for 64 bits with <code>vcvarsall x64</code>. On Windows 11 with Visual Studio 2022, this would be done by invoking:</li>
+</ol>
+<div class="highlight"><pre><span></span><code><span class="s2">&quot;c:\Program Files\Microsoft Visual Studio\2022\Preview\vc\Auxiliary\Build\vcvars64.bat&quot;</span>
+</code></pre></div>
+<p>With VS2019, the command should be the same &ndash; except for the year number, obviously. For other/older versions of MSVC,
+   the VS documentation or a quick search on the web should turn up the exact wording you need.</p>
+<p>Confirm that the environment is active by typing <code>link</code> &ndash; this should return a long list of possible options for the <code>link</code> command. If it just 
+   returns "command not found" or similar, review and retype the call to vcvars64.bat.
+   <strong>NOTE:</strong> if you are working from a Visual Studio Command prompt window instead (so that you do not have to do the vcvars call), you need to invoke 
+   <code>conda activate</code> so that CONDA_PREFIX etc. get set up correctly before proceeding to step 6. Failing to do so will lead to link errors like 
+   libflangmain.lib not getting found later in the build.</p>
+<ol>
+<li>Now configure the project with CMake. Starting in the project directory, execute the following:</li>
+</ol>
+<div class="highlight"><pre><span></span><code>set &quot;LIB=%CONDA_PREFIX%\Library\lib;%LIB%&quot;
+set &quot;CPATH=%CONDA_PREFIX%\Library\include;%CPATH%&quot;
+mkdir build
+cd build
+cmake .. -G &quot;Ninja&quot; -DCMAKE_CXX_COMPILER=clang-cl -DCMAKE_C_COMPILER=clang-cl -DCMAKE_Fortran_COMPILER=flang -DCMAKE_MT=mt -DBUILD_WITHOUT_LAPACK=no -DNOFORTRAN=0 -DDYNAMIC_ARCH=ON -DCMAKE_BUILD_TYPE=Release
+</code></pre></div>
+<p>You may want to add further options in the <code>cmake</code> command here &ndash; for instance, the default only produces a static .lib version of the library. If you would rather have a DLL, add -DBUILD_SHARED_LIBS=ON above. Note that this step only creates some command files and directories, the actual build happens next.</p>
+<ol>
+<li>Build the project:</li>
+</ol>
+<p><div class="highlight"><pre><span></span><code>cmake --build . --config Release
+</code></pre></div>
+   This step will create the OpenBLAS library in the "lib" directory, and various build-time tests in the <code>test</code>, <code>ctest</code> and <code>openblas_utest</code> directories. However it will not separate the header files you might need for building your own programs from those used internally. To put all relevant files in a more convenient arrangement, run the next step.</p>
+<ol>
+<li>Install all relevant files created by the build</li>
+</ol>
+<p><div class="highlight"><pre><span></span><code>cmake --install . --prefix c:\opt -v
+</code></pre></div>
+   This will copy all files that are needed for building and running your own programs with OpenBLAS to the given location, creating appropriate subdirectories for the individual kinds of files. In the case of "C:\opt" as given above, this would be C:\opt\include\openblas for the header files, 
+   C:\opt\bin for the libopenblas.dll and C:\opt\lib for the static library. C:\opt\share holds various support files that enable other cmake-based build scripts to find OpenBLAS automatically.</p>
+<h6 id="visual-studio-2017-c2017-standard">Visual studio 2017+ (C++2017 standard)</h6>
+<p>In newer visual studio versions, Microsoft has changed <a href="https://docs.microsoft.com/en-us/cpp/c-runtime-library/complex-math-support?view=msvc-170#types-used-in-complex-math">how it handles complex types</a>. Even when using a precompiled version of OpenBLAS, you might need to define <code>LAPACK_COMPLEX_CUSTOM</code> in order to define complex types properly for MSVC. For example, some variant of the following might help:</p>
+<div class="highlight"><pre><span></span><code>#if defined(_MSC_VER)
+    #include &lt;complex.h&gt;
+    #define LAPACK_COMPLEX_CUSTOM
+    #define lapack_complex_float _Fcomplex
+    #define lapack_complex_double _Dcomplex
+#endif
+</code></pre></div>
+<p>For reference, see https://github.com/xianyi/OpenBLAS/issues/3661, https://github.com/Reference-LAPACK/lapack/issues/683, and https://stackoverflow.com/questions/47520244/using-openblas-lapacke-in-visual-studio.</p>
+<h6 id="cmake-and-visual-studio">CMake and Visual Studio</h6>
+<p>To build OpenBLAS for the 32-bit architecture, you'll need to use the builtin Visual Studio compilers.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This method may produce binaries which demonstrate significantly lower performance than those built with the other methods. (The Visual Studio compiler does not support the dialect of assembly used in the cpu-specific optimized files, so only the "generic" TARGET which is
+written in pure C will get built. For the same reason it is not possible (and not necessary) to use -DDYNAMIC_ARCH=ON in a Visual Studio build) You may consider building for the 32-bit architecture using the GNU (MinGW) ABI.</p>
+</div>
+<h6 id="1-install-cmake-at-windows"># 1. Install CMake at Windows</h6>
+<h6 id="2-use-cmake-to-generate-visual-studio-solution-files"># 2. Use CMake to generate Visual Studio solution files</h6>
+<div class="highlight"><pre><span></span><code># Do this from Powershell so cmake can find visual studio
+cmake -G &quot;Visual Studio 14 Win64&quot; -DCMAKE_BUILD_TYPE=Release .
+</code></pre></div>
+<h6 id="build-the-solution-at-visual-studio">Build the solution at Visual Studio</h6>
+<p>Note that this step depends on perl, so you'll need to install perl for windows, and put perl on your path so VS can start perl (http://stackoverflow.com/questions/3051049/active-perl-installation-on-windows-operating-system).</p>
+<p>Step 2 will build the OpenBLAS solution, open it in VS, and build the projects. Note that the dependencies do not seem to be automatically configured: if you try to build libopenblas directly, it will fail with a message saying that some .obj files aren't found, but if you build the projects libopenblas depends on before building libopenblas, the build will succeed.</p>
+<h6 id="build-openblas-for-universal-windows-platform">Build OpenBLAS for Universal Windows Platform</h6>
+<p>OpenBLAS can be built for use on the <a href="https://en.wikipedia.org/wiki/Universal_Windows_Platform">Universal Windows Platform</a> using a two step process since commit <a href="https://github.com/xianyi/OpenBLAS/commit/c66b842d66c5516e52804bf5a0544d18b1da1b44">c66b842</a>.</p>
+<h6 id="1-follow-steps-1-and-2-above-to-build-the-visual-studio-solution-files-for-windows-this-builds-the-helper-executables-which-are-required-when-building-the-openblas-visual-studio-solution-files-for-uwp-in-step-2"># 1. Follow steps 1 and 2 above to build the Visual Studio solution files for Windows. This builds the helper executables which are required when building the OpenBLAS Visual Studio solution files for UWP in step 2.</h6>
+<h6 id="2-remove-the-generated-cmakecachetxt-and-cmakefiles-directory-from-the-openblas-source-directory-and-re-run-cmake-with-the-following-options"># 2. Remove the generated CMakeCache.txt and CMakeFiles directory from the OpenBLAS source directory and re-run CMake with the following options:</h6>
+<div class="highlight"><pre><span></span><code># do this to build UWP compatible solution files
+cmake -G &quot;Visual Studio 14 Win64&quot; -DCMAKE_SYSTEM_NAME=WindowsStore -DCMAKE_SYSTEM_VERSION=&quot;10.0&quot; -DCMAKE_SYSTEM_PROCESSOR=AMD64 -DVS_WINRT_COMPONENT=TRUE -DCMAKE_BUILD_TYPE=Release .
+</code></pre></div>
+<h6 id="build-the-solution-with-visual-studio"># Build the solution with Visual Studio</h6>
+<p>This will build the OpenBLAS binaries with the required settings for use with UWP.</p>
+<h5 id="2-gnu-mingw-abi">2. GNU (MinGW) ABI</h5>
+<p>The resulting library can be used in Visual Studio, but it can only be linked dynamically. This configuration has not been thoroughly tested and should be considered experimental.</p>
+<h6 id="incompatible-x86-calling-conventions">Incompatible x86 calling conventions</h6>
+<p>Due to incompatibilities between the calling conventions of MinGW and Visual Studio you will need to make the following modifications ( <strong>32-bit only</strong> ):</p>
+<ol>
+<li>Use the newer GCC 4.7.0. The older GCC (&lt;4.7.0) has an ABI incompatibility for returning aggregate structures larger than 8 bytes with MSVC. </li>
+</ol>
+<h6 id="build-openblas-on-windows-os">Build OpenBLAS on Windows OS</h6>
+<ol>
+<li>Install the MinGW (GCC) compiler suite, either 32-bit (http://www.mingw.org/) or 64-bit (http://mingw-w64.sourceforge.net/). Be sure to install its gfortran package as well (unless you really want to build the BLAS part of OpenBLAS only) and check that gcc and gfortran are the same version &ndash; mixing compilers from different sources or release versions can lead to strange error messages in the linking stage. In addition, please install MSYS with MinGW.</li>
+<li>Build OpenBLAS in the MSYS shell. Usually, you can just type "make". OpenBLAS will detect the compiler and CPU automatically. </li>
+<li>After the build is complete, OpenBLAS will generate the static library "libopenblas.a" and the shared dll library "libopenblas.dll" in the folder. You can type "make PREFIX=/your/installation/path install" to install the library to a certain location.</li>
+</ol>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>We suggest using official MinGW or MinGW-w64 compilers. A user reported that s/he met <code>Unhandled exception</code> by other compiler suite. https://groups.google.com/forum/#!topic/openblas-users/me2S4LkE55w</p>
+</div>
+<p>Note also that older versions of the alternative builds of mingw-w64 available through http://www.msys2.org may contain a defect that leads to a compilation failure accompanied by the error message
+<div class="highlight"><pre><span></span><code>&lt;command-line&gt;:0:4: error: expected identifier or &#39;(&#39; before numeric constant
+</code></pre></div>
+If you encounter this, please upgrade your msys2 setup or see https://github.com/xianyi/OpenBLAS/issues/1503 for a workaround.</p>
+<h6 id="generate-import-library-before-0210-version">Generate import library (before 0.2.10 version)</h6>
+<ol>
+<li>First, you will need to have the <code>lib.exe</code> tool in the Visual Studio command prompt. </li>
+<li>Open the command prompt and type <code>cd OPENBLAS_TOP_DIR/exports</code>, where OPENBLAS_TOP_DIR is the main folder of your OpenBLAS installation.</li>
+<li>For a 32-bit library, type <code>lib /machine:i386 /def:libopenblas.def</code>. For 64-bit, type <code>lib /machine:X64 /def:libopenblas.def</code>.</li>
+<li>This will generate the import library "libopenblas.lib" and the export library "libopenblas.exp" in OPENBLAS_TOP_DIR/exports. Although these two files have the same name, they are totally different.</li>
+</ol>
+<h6 id="generate-import-library-0210-and-after-version">Generate import library (0.2.10 and after version)</h6>
+<ol>
+<li>OpenBLAS already generated the import library "libopenblas.dll.a" for "libopenblas.dll".</li>
+</ol>
+<h6 id="generate-windows-native-pdb-files-from-gccgfortran-build">generate windows native PDB files from gcc/gfortran build</h6>
+<p>Tool to do so is available at https://github.com/rainers/cv2pdb</p>
+<h6 id="use-openblas-dll-library-in-visual-studio">Use OpenBLAS .dll library in Visual Studio</h6>
+<ol>
+<li>Copy the import library (before 0.2.10: "OPENBLAS_TOP_DIR/exports/libopenblas.lib", 0.2.10 and after: "OPENBLAS_TOP_DIR/libopenblas.dll.a") and .dll library "libopenblas.dll" into the same folder(The folder of your project that is going to use the BLAS library. You may need to add the libopenblas.dll.a to the linker input list: properties-&gt;Linker-&gt;Input).</li>
+<li>Please follow the documentation about using third-party .dll libraries in MS Visual Studio 2008 or 2010.  Make sure to link against a library for the correct architecture.  For example, you may receive an error such as "The application was unable to start correctly (0xc000007b)" which typically indicates a mismatch between 32/64-bit libraries.</li>
+</ol>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If you need CBLAS, you should include cblas.h in /your/installation/path/include in Visual Studio.  Please read <a href="http://github.com/xianyi/OpenBLAS/issues/95">this page</a>.</p>
+</div>
+<h6 id="limitations">Limitations</h6>
+<ul>
+<li>Both static and dynamic linking are supported with MinGW.  With Visual Studio, however, only dynamic linking is supported and so you should use the import library.</li>
+<li>Debugging from Visual Studio does not work because MinGW and Visual Studio have incompatible formats for debug information (PDB vs. DWARF/STABS).  You should either debug with GDB on the command-line or with a visual frontend, for instance <a href="http://www.eclipse.org/cdt/">Eclipse</a> or <a href="http://qt.nokia.com/products/developer-tools/">Qt Creator</a>.</li>
+</ul>
+<h4 id="windows-on-arm">Windows on Arm</h4>
+<h5 id="prerequisites">Prerequisites</h5>
+<p>Following tools needs to be installed</p>
+<h6 id="1-download-and-install-clang-for-windows-on-arm">1. Download and install clang for windows on arm</h6>
+<p>Find the latest LLVM build for WoA from <a href="https://releases.llvm.org/">LLVM release page</a></p>
+<p>E.g: LLVM 12 build for WoA64 can be found <a href="https://github.com/llvm/llvm-project/releases/download/llvmorg-12.0.0/LLVM-12.0.0-woa64.exe">here</a></p>
+<p>Run the LLVM installer and ensure that LLVM is added to environment PATH.</p>
+<h6 id="2-download-and-install-classic-flang-for-windows-on-arm">2. Download and install classic flang for windows on arm</h6>
+<p>Classic flang is the only available FORTRAN compiler for windows on arm for now and a pre-release build can be found <a href="https://github.com/kaadam/flang/releases/tag/v0.1">here</a></p>
+<p>There is no installer for classic flang and the zip package can be extracted and the path needs to be added to environment PATH.</p>
+<p>E.g: on PowerShell</p>
+<div class="highlight"><pre><span></span><code>$env:Path += &quot;;C:\flang_woa\bin&quot;
+</code></pre></div>
+<h5 id="build">Build</h5>
+<p>The following steps describe how to build the static library for OpenBLAS with and without LAPACK</p>
+<h6 id="1-build-openblas-static-library-with-blas-and-lapack-routines-with-make">1. Build OpenBLAS static library with BLAS and LAPACK routines with Make</h6>
+<p>Following command can be used to build OpenBLAS static library with BLAS and LAPACK routines</p>
+<div class="highlight"><pre><span></span><code>$<span class="w"> </span>make<span class="w"> </span><span class="nv">CC</span><span class="o">=</span><span class="s2">&quot;clang-cl&quot;</span><span class="w"> </span><span class="nv">HOSTCC</span><span class="o">=</span><span class="s2">&quot;clang-cl&quot;</span><span class="w"> </span><span class="nv">AR</span><span class="o">=</span><span class="s2">&quot;llvm-ar&quot;</span><span class="w"> </span><span class="nv">BUILD_WITHOUT_LAPACK</span><span class="o">=</span><span class="m">0</span><span class="w"> </span><span class="nv">NOFORTRAN</span><span class="o">=</span><span class="m">0</span><span class="w"> </span><span class="nv">DYNAMIC_ARCH</span><span class="o">=</span><span class="m">0</span><span class="w"> </span><span class="nv">TARGET</span><span class="o">=</span>ARMV8<span class="w"> </span><span class="nv">ARCH</span><span class="o">=</span>arm64<span class="w"> </span><span class="nv">BINARY</span><span class="o">=</span><span class="m">64</span><span class="w"> </span><span class="nv">USE_OPENMP</span><span class="o">=</span><span class="m">0</span><span class="w"> </span><span class="nv">PARALLEL</span><span class="o">=</span><span class="m">1</span><span class="w"> </span><span class="nv">RANLIB</span><span class="o">=</span><span class="s2">&quot;llvm-ranlib&quot;</span><span class="w"> </span><span class="nv">MAKE</span><span class="o">=</span>make<span class="w"> </span><span class="nv">F_COMPILER</span><span class="o">=</span>FLANG<span class="w"> </span><span class="nv">FC</span><span class="o">=</span>FLANG<span class="w"> </span><span class="nv">FFLAGS_NOOPT</span><span class="o">=</span><span class="s2">&quot;-march=armv8-a -cpp&quot;</span><span class="w"> </span><span class="nv">FFLAGS</span><span class="o">=</span><span class="s2">&quot;-march=armv8-a -cpp&quot;</span><span class="w"> </span><span class="nv">NEED_PIC</span><span class="o">=</span><span class="m">0</span><span class="w"> </span><span class="nv">HOSTARCH</span><span class="o">=</span>arm64<span class="w"> </span>libs<span class="w"> </span>netlib
+</code></pre></div>
+<h6 id="2-build-static-library-with-blas-routines-using-cmake">2. Build static library with BLAS routines using CMake</h6>
+<p>Classic flang has compatibility issues with cmake hence only BLAS routines can be compiled with CMake</p>
+<div class="highlight"><pre><span></span><code>$<span class="w"> </span>mkdir<span class="w"> </span>build
+$<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>build
+$<span class="w"> </span>cmake<span class="w"> </span>..<span class="w">  </span>-G<span class="w"> </span>Ninja<span class="w"> </span>-DCMAKE_C_COMPILER<span class="o">=</span>clang<span class="w"> </span>-DBUILD_WITHOUT_LAPACK<span class="o">=</span><span class="m">1</span><span class="w"> </span>-DNOFORTRAN<span class="o">=</span><span class="m">1</span><span class="w"> </span>-DDYNAMIC_ARCH<span class="o">=</span><span class="m">0</span><span class="w"> </span>-DTARGET<span class="o">=</span>ARMV8<span class="w"> </span>-DARCH<span class="o">=</span>arm64<span class="w"> </span>-DBINARY<span class="o">=</span><span class="m">64</span><span class="w"> </span>-DUSE_OPENMP<span class="o">=</span><span class="m">0</span><span class="w"> </span>-DCMAKE_SYSTEM_PROCESSOR<span class="o">=</span>ARM64<span class="w"> </span>-DCMAKE_CROSSCOMPILING<span class="o">=</span><span class="m">1</span><span class="w"> </span>-DCMAKE_SYSTEM_NAME<span class="o">=</span>Windows
+$<span class="w"> </span>cmake<span class="w"> </span>--build<span class="w"> </span>.<span class="w"> </span>--config<span class="w"> </span>Release
+</code></pre></div>
+<h6 id="getarchexe-execution-error"><code>getarch.exe</code> execution error</h6>
+<p>If you notice that platform-specific headers by <code>getarch.exe</code> are not generated correctly, It could be due to a known debug runtime DLL issue for arm64 platforms. Please check out <a href="https://linaro.atlassian.net/wiki/spaces/WOAR/pages/28677636097/Debug+run-time+DLL+issue#Workaround">link</a> for the workaround.</p>
+<h4 id="mingw-import-library">MinGW import library</h4>
+<p>Microsoft Windows has this thing called "import libraries". You don't need it in MinGW because the <code>ld</code> linker from GNU Binutils is smart, but you may still want it for whatever reason.</p>
+<h5 id="make-the-def">Make the <code>.def</code></h5>
+<p>Import libraries are compiled from a list of what symbols to use, <code>.def</code>. This should be already in your <code>exports</code> directory: <code>cd OPENBLAS_TOP_DIR/exports</code>.</p>
+<h5 id="making-a-mingw-import-library">Making a MinGW import library</h5>
+<p>MinGW import libraries have the suffix <code>.a</code>, same as static libraries. (It's actually more common to do <code>.dll.a</code>...)</p>
+<p>You need to first prepend <code>libopenblas.def</code> with a line <code>LIBRARY libopenblas.dll</code>:</p>
+<pre><code>cat &lt;(echo "LIBRARY libopenblas.dll") libopenblas.def &gt; libopenblas.def.1
+mv libopenblas.def.1 libopenblas.def
+</code></pre>
+<p>Now it probably looks like:</p>
+<pre><code>LIBRARY libopenblas.dll
+EXPORTS
+   caxpy=caxpy_  @1
+   caxpy_=caxpy_  @2
+       ...
+</code></pre>
+<p>Then, generate the import library: <code>dlltool -d libopenblas.def -l libopenblas.a</code></p>
+<p>Again, there is basically <strong>no point</strong> in making an import library for use in MinGW. It actually slows down linking.</p>
+<h5 id="making-a-msvc-import-library">Making a MSVC import library</h5>
+<p>Unlike MinGW, MSVC absolutely requires an import library. Now the C ABI of MSVC and MinGW are actually identical, so linking is actually okay. (Any incompatibility in the C ABI would be a bug.)</p>
+<p>The import libraries of MSVC have the suffix <code>.lib</code>. They are generated from a <code>.def</code> file using MSVC's <code>lib.exe</code>. See <a href="use_visual_studio.md#generate-import-library-before-0210-version">the MSVC instructions</a>.</p>
+<h5 id="notes">Notes</h5>
+<ul>
+<li>Always remember that MinGW is <strong>not the same</strong> as MSYS2 or Cygwin. MSYS2 and Cygwin are full POSIX environments with a lot of magic such as <code>fork()</code> and its own <code>malloc()</code>. MinGW, which builds on the normal Microsoft C Runtime, has none of that. Be clear about which one you are building for.</li>
+</ul>
+<h3 id="mac-osx">Mac OSX</h3>
+<p>If your CPU is Sandy Bridge, please use Clang version 3.1 and above. The Clang 3.0 will generate the wrong AVX binary code of OpenBLAS.</p>
+<h4 id="precompiled-packages_2">Precompiled packages</h4>
+<p><a href="https://www.macports.org/ports.php?by=name&amp;substr=openblas">https://www.macports.org/ports.php?by=name&amp;substr=openblas</a></p>
+<p><code>brew install openblas</code></p>
+<p>or using the conda package manager from
+<a href="https://github.com/conda-forge/miniforge#download">https://github.com/conda-forge/miniforge#download</a>
+(which also has packages for the new M1 cpu)</p>
+<p><code>conda install openblas</code></p>
+<h4 id="build-on-apple-m1">Build on Apple M1</h4>
+<p>On newer versions of Xcode and on arm64, you might need to compile with a newer macOS target (11.0) than the default (10.8) with <code>MACOSX_DEPLOYMENT_TARGET=11.0</code>, or switch your command-line tools to use an older SDK (e.g., <a href="https://developer.apple.com/download/all/?q=Xcode%2013">13.1</a>).</p>
+<ul>
+<li>without Fortran compiler （cannot build LAPACK)
+  <div class="highlight"><pre><span></span><code>$<span class="w"> </span>make<span class="w"> </span><span class="nv">CC</span><span class="o">=</span>cc<span class="w"> </span><span class="nv">NOFORTRAN</span><span class="o">=</span><span class="m">1</span>
+</code></pre></div></li>
+<li>with Fortran compiler (you could <code>brew install gfortran</code>) https://github.com/xianyi/OpenBLAS/issues/3032
+  <div class="highlight"><pre><span></span><code>$<span class="w"> </span><span class="nb">export</span><span class="w"> </span><span class="nv">MACOSX_DEPLOYMENT_TARGET</span><span class="o">=</span><span class="m">11</span>.0
+$<span class="w"> </span>make<span class="w"> </span><span class="nv">CC</span><span class="o">=</span>cc<span class="w"> </span><span class="nv">FC</span><span class="o">=</span>gfortran
+</code></pre></div></li>
+</ul>
+<h3 id="android">Android</h3>
+<h4 id="prerequisites_1">Prerequisites</h4>
+<p>In addition to the Android NDK, you will need both Perl and a C compiler on the build host as these are currently
+required by the OpenBLAS build environment.</p>
+<h4 id="building-with-android-ndk-using-clang-compiler">Building with android NDK using clang compiler</h4>
+<p>Around version 11 Android NDKs stopped supporting gcc, so you would need to use clang to compile OpenBLAS. clang is supported from OpenBLAS 0.2.20 version onwards. See below sections on how to build with clang for ARMV7 and ARMV8 targets. The same basic principles as described below for ARMV8 should also apply to building an x86 or x86_64 version (substitute something like NEHALEM for the target instead of ARMV8 and replace all the aarch64 in the toolchain paths obviously)
+"Historic" notes:
+Since version 19 the default toolchain is provided as a standalone toolchain, so building one yourself following <a href="http://developer.android.com/ndk/guides/standalone_toolchain.html">building a standalone toolchain</a> should no longer be necessary.
+If you want to use static linking with an old NDK version older than about r17, you need to choose an API level below 23 currently due to NDK bug 272 (https://github.com/android-ndk/ndk/issues/272 , the libc.a lacks a definition of stderr) that will probably be fixed in r17 of the NDK.</p>
+<h4 id="build-armv7-with-clang">Build ARMV7 with clang</h4>
+<p><div class="highlight"><pre><span></span><code>## Set path to ndk-bundle
+export NDK_BUNDLE_DIR=/path/to/ndk-bundle
+
+## Set the PATH to contain paths to clang and arm-linux-androideabi-* utilities
+export PATH=${NDK_BUNDLE_DIR}/toolchains/arm-linux-androideabi-4.9/prebuilt/linux-x86_64/bin:${NDK_BUNDLE_DIR}/toolchains/llvm/prebuilt/linux-x86_64/bin:$PATH
+
+## Set LDFLAGS so that the linker finds the appropriate libgcc
+export LDFLAGS=&quot;-L${NDK_BUNDLE_DIR}/toolchains/arm-linux-androideabi-4.9/prebuilt/linux-x86_64/lib/gcc/arm-linux-androideabi/4.9.x&quot;
+
+## Set the clang cross compile flags
+export CLANG_FLAGS=&quot;-target arm-linux-androideabi -marm -mfpu=vfp -mfloat-abi=softfp --sysroot ${NDK_BUNDLE_DIR}/platforms/android-23/arch-arm -gcc-toolchain ${NDK_BUNDLE_DIR}/toolchains/arm-linux-androideabi-4.9/prebuilt/linux-x86_64/&quot;
+
+#OpenBLAS Compile
+make TARGET=ARMV7 ONLY_CBLAS=1 AR=ar CC=&quot;clang ${CLANG_FLAGS}&quot; HOSTCC=gcc ARM_SOFTFP_ABI=1 -j4
+</code></pre></div>
+On a Mac, it may also be necessary to give the complete path to the <code>ar</code> utility in the make command above, like so:
+<div class="highlight"><pre><span></span><code>AR=${NDK_BUNDLE_DIR}/toolchains/arm-linux-androideabi-4.9/prebuilt/darwin-x86_64/bin/arm-linux-androideabi-gcc-ar
+</code></pre></div>
+otherwise you may get a linker error complaining about a "malformed archive header name at 8" when the native OSX ar command was invoked instead.</p>
+<h4 id="build-armv8-with-clang">Build ARMV8 with clang</h4>
+<p><div class="highlight"><pre><span></span><code>## Set path to ndk-bundle
+export NDK_BUNDLE_DIR=/path/to/ndk-bundle/
+
+## Export PATH to contain directories of clang and aarch64-linux-android-* utilities
+export PATH=${NDK_BUNDLE_DIR}/toolchains/aarch64-linux-android-4.9/prebuilt/linux-x86_64/bin/:${NDK_BUNDLE_DIR}/toolchains/llvm/prebuilt/linux-x86_64/bin:$PATH
+
+## Setup LDFLAGS so that loader can find libgcc and pass -lm for sqrt
+export LDFLAGS=&quot;-L${NDK_BUNDLE_DIR}/toolchains/aarch64-linux-android-4.9/prebuilt/linux-x86_64/lib/gcc/aarch64-linux-android/4.9.x -lm&quot;
+
+## Setup the clang cross compile options
+export CLANG_FLAGS=&quot;-target aarch64-linux-android --sysroot ${NDK_BUNDLE_DIR}/platforms/android-23/arch-arm64 -gcc-toolchain ${NDK_BUNDLE_DIR}/toolchains/aarch64-linux-android-4.9/prebuilt/linux-x86_64/&quot;
+
+## Compile
+make TARGET=ARMV8 ONLY_CBLAS=1 AR=ar CC=&quot;clang ${CLANG_FLAGS}&quot; HOSTCC=gcc -j4
+</code></pre></div>
+Note: Using TARGET=CORTEXA57 in place of ARMV8 will pick up better optimized routines. Implementations for CORTEXA57 target is compatible with all other armv8 targets.</p>
+<p>Note: For NDK 23b, something as simple as 
+<div class="highlight"><pre><span></span><code>export PATH=/opt/android-ndk-r23b/toolchains/llvm/prebuilt/linux-x86_64/bin/:$PATH
+make HOSTCC=gcc CC=/opt/android-ndk-r23b/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android31-clang ONLY_CBLAS=1 TARGET=ARMV8
+</code></pre></div>
+appears to be sufficient on Linux.</p>
+<h4 id="alternative-script-which-was-tested-on-osx-with-ndk2136528147">Alternative script which was tested on OSX with NDK(21.3.6528147)</h4>
+<p>This script will build openblas for 3 architecture (ARMV7,ARMV8,X86) and put them with <code>sudo make install</code> to <code>/opt/OpenBLAS/lib</code>
+<div class="highlight"><pre><span></span><code>export NDK=YOUR_PATH_TO_SDK/Android/sdk/ndk/21.3.6528147
+export TOOLCHAIN=$NDK/toolchains/llvm/prebuilt/darwin-x86_64
+
+make clean
+make \
+    TARGET=ARMV7 \
+    ONLY_CBLAS=1 \
+    CC=&quot;$TOOLCHAIN&quot;/bin/armv7a-linux-androideabi21-clang \
+    AR=&quot;$TOOLCHAIN&quot;/bin/arm-linux-androideabi-ar \
+    HOSTCC=gcc \
+    ARM_SOFTFP_ABI=1 \
+    -j4
+sudo make install
+
+make clean
+make \
+    TARGET=CORTEXA57 \
+    ONLY_CBLAS=1 \
+    CC=$TOOLCHAIN/bin/aarch64-linux-android21-clang \
+    AR=$TOOLCHAIN/bin/aarch64-linux-android-ar \
+    HOSTCC=gcc \
+    -j4
+sudo make install
+
+make clean
+make \
+    TARGET=ATOM \
+    ONLY_CBLAS=1 \
+    CC=&quot;$TOOLCHAIN&quot;/bin/i686-linux-android21-clang \
+    AR=&quot;$TOOLCHAIN&quot;/bin/i686-linux-android-ar \
+    HOSTCC=gcc \
+    ARM_SOFTFP_ABI=1 \
+    -j4
+sudo make install
+
+## This will build for x86_64 
+make clean
+make \
+    TARGET=ATOM BINARY=64\
+    ONLY_CBLAS=1 \
+    CC=&quot;$TOOLCHAIN&quot;/bin/x86_64-linux-android21-clang \
+    AR=&quot;$TOOLCHAIN&quot;/bin/x86_64-linux-android-ar \
+    HOSTCC=gcc \
+    ARM_SOFTFP_ABI=1 \
+    -j4
+sudo make install
+</code></pre></div>
+Also you can find full list of target architectures in <a href="https://github.com/xianyi/OpenBLAS/blob/develop/TargetList.txt">TargetsList.txt</a></p>
+<hr />
+<p>anything below this line should be irrelevant nowadays unless you need to perform software archeology</p>
+<hr />
+<h4 id="building-openblas-with-very-old-gcc-based-versions-of-the-ndk-without-fortran">Building OpenBLAS with very old gcc-based versions of the NDK, without Fortran</h4>
+<p>The prebuilt Android NDK toolchains do not include Fortran, hence parts like LAPACK cannot be built. You can still build OpenBLAS without it. For instructions on how to build OpenBLAS with Fortran, see the <a href="#building-openblas-with-fortran">next section</a>.</p>
+<p>To use easily the prebuilt toolchains, follow <a href="http://developer.android.com/ndk/guides/standalone_toolchain.html">building a standalone toolchain</a> for your desired architecture.
+This would be <code>arm-linux-androideabi-gcc-4.9</code> for ARMV7 and <code>aarch64-linux-android-gcc-4.9</code> for ARMV8.</p>
+<p>You can build OpenBLAS (0.2.19 and earlier) with:
+<div class="highlight"><pre><span></span><code>## Add the toolchain to your path
+export PATH=/path/to/standalone-toolchain/bin:$PATH
+
+## Build without Fortran for ARMV7
+make TARGET=ARMV7 HOSTCC=gcc CC=arm-linux-androideabi-gcc NOFORTRAN=1 libs
+## Build without Fortran for ARMV8
+make TARGET=ARMV8 BINARY=64 HOSTCC=gcc CC=aarch64-linux-android-gcc NOFORTRAN=1 libs
+</code></pre></div></p>
+<p>Since we are cross-compiling, we make the <code>libs</code> recipe, not <code>all</code>. Otherwise you will get errors when trying to link/run tests as versions up to and including 0.2.19 cannot build a shared library for Android. </p>
+<p>From 0.2.20 on, you should leave off the "libs" to get a full build, and you may want to use the softfp ABI instead of the deprecated hardfp one on ARMV7 so you would use 
+<div class="highlight"><pre><span></span><code>## Add the toolchain to your path
+export PATH=/path/to/standalone-toolchain/bin:$PATH
+
+## Build without Fortran for ARMV7
+make TARGET=ARMV7 ARM_SOFTFP_ABI=1 HOSTCC=gcc CC=arm-linux-androideabi-gcc NOFORTRAN=1
+## Build without Fortran for ARMV8
+make TARGET=ARMV8 BINARY=64 HOSTCC=gcc CC=aarch64-linux-android-gcc NOFORTRAN=1
+</code></pre></div></p>
+<p>If you get an error about stdio.h not being found, you need to specify your sysroot in the CFLAGS argument to <code>make</code> like
+<code>CFLAGS=--sysroot=$NDK/platforms/android-16/arch-arm</code>
+When you are done, install OpenBLAS into the desired directory. Be sure to also use all command line options
+here that you specified for building, otherwise errors may occur as it tries to install things you did not build:
+<div class="highlight"><pre><span></span><code>make PREFIX=/path/to/install-dir TARGET=... install
+</code></pre></div></p>
+<h4 id="building-openblas-with-fortran">Building OpenBLAS with Fortran</h4>
+<p>Instructions on how to build the GNU toolchains with Fortran can be found <a href="https://github.com/buffer51/android-gfortran">here</a>. The <a href="https://github.com/buffer51/android-gfortran/releases">Releases section</a> provides prebuilt versions, use the standalone one.</p>
+<p>You can build OpenBLAS with:
+<div class="highlight"><pre><span></span><code>## Add the toolchain to your path
+export PATH=/path/to/standalone-toolchain-with-fortran/bin:$PATH
+
+## Build with Fortran for ARMV7
+make TARGET=ARMV7 HOSTCC=gcc CC=arm-linux-androideabi-gcc FC=arm-linux-androideabi-gfortran libs
+## Build with LAPACK for ARMV8
+make TARGET=ARMV8 BINARY=64 HOSTCC=gcc CC=aarch64-linux-android-gcc FC=aarch64-linux-android-gfortran libs
+</code></pre></div></p>
+<p>As mentioned above you can leave off the <code>libs</code> argument here when building 0.2.20 and later, and you may want to add ARM_SOFTFP_ABI=1 when building for ARMV7.</p>
+<h4 id="linking-openblas-0219-and-earlier-for-armv7">Linking OpenBLAS (0.2.19 and earlier) for ARMV7</h4>
+<p>If you are using <code>ndk-build</code>, you need to set the ABI to hard floating points in your Application.mk:
+<div class="highlight"><pre><span></span><code>APP_ABI := armeabi-v7a-hard
+</code></pre></div></p>
+<p>This will set the appropriate flags for you. If you are not using <code>ndk-build</code>, you will want to add the following flags:
+<div class="highlight"><pre><span></span><code>TARGET_CFLAGS += -mhard-float -D_NDK_MATH_NO_SOFTFP=1
+TARGET_LDFLAGS += -Wl,--no-warn-mismatch -lm_hard
+</code></pre></div></p>
+<p>From 0.2.20 on, it is also possible to build for the softfp ABI by specifying ARM_SOFTFP_ABI=1 during the build.
+In that case, also make sure that all your dependencies are compiled with -mfloat-abi=softfp as well, as mixing
+"hard" and "soft" floating point ABIs in a program will make it crash.</p>
+<h3 id="iphoneios">iPhone/iOS</h3>
+<p>As none of the current developers uses iOS, the following instructions are what was found to work in our Azure CI setup, but as far as we know this builds a fully working OpenBLAS for this platform.</p>
+<p>Go to the directory where you unpacked OpenBLAS,and enter the following commands:
+<div class="highlight"><pre><span></span><code>     CC=/Applications/Xcode_12.4.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang
+
+CFLAGS= -O2 -Wno-macro-redefined -isysroot /Applications/Xcode_12.4.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS14.4.sdk -arch arm64 -miphoneos-version-min=10.0
+
+make TARGET=ARMV8 DYNAMIC_ARCH=1 NUM_THREADS=32 HOSTCC=clang NOFORTRAN=1
+</code></pre></div>
+Adjust MIN_IOS_VERSION as necessary for your installation, e.g. change the version number
+to the minimum iOS version you want to target and execute this file to build the library.</p>
+<h3 id="mips">MIPS</h3>
+<p>For mips targets you will need latest toolchains
+P5600 - MTI GNU/Linux Toolchain
+I6400, P6600 - IMG GNU/Linux Toolchain</p>
+<p>The download link is below
+(http://codescape-mips-sdk.imgtec.com/components/toolchain/2016.05-03/downloads.html)</p>
+<p>You can use following commandlines for builds</p>
+<pre><code>IMG_TOOLCHAIN_DIR={full IMG GNU/Linux Toolchain path including "bin" directory -- for example, /opt/linux_toolchain/bin}
+IMG_GCC_PREFIX=mips-img-linux-gnu
+IMG_TOOLCHAIN=${IMG_TOOLCHAIN_DIR}/${IMG_GCC_PREFIX}
+
+I6400 Build (n32):
+make BINARY=32 BINARY32=1 CC=$IMG_TOOLCHAIN-gcc AR=$IMG_TOOLCHAIN-ar FC="$IMG_TOOLCHAIN-gfortran -EL -mabi=n32" RANLIB=$IMG_TOOLCHAIN-ranlib HOSTCC=gcc CFLAGS="-EL" FFLAGS=$CFLAGS LDFLAGS=$CFLAGS TARGET=I6400
+
+I6400 Build (n64):
+make BINARY=64 BINARY64=1 CC=$IMG_TOOLCHAIN-gcc AR=$IMG_TOOLCHAIN-ar FC="$IMG_TOOLCHAIN-gfortran -EL" RANLIB=$IMG_TOOLCHAIN-ranlib HOSTCC=gcc CFLAGS="-EL" FFLAGS=$CFLAGS LDFLAGS=$CFLAGS TARGET=I6400
+
+P6600 Build (n32):
+make BINARY=32 BINARY32=1 CC=$IMG_TOOLCHAIN-gcc AR=$IMG_TOOLCHAIN-ar FC="$IMG_TOOLCHAIN-gfortran -EL -mabi=n32" RANLIB=$IMG_TOOLCHAIN-ranlib HOSTCC=gcc CFLAGS="-EL" FFLAGS=$CFLAGS LDFLAGS=$CFLAGS TARGET=P6600
+
+P6600 Build (n64):
+make BINARY=64 BINARY64=1 CC=$IMG_TOOLCHAIN-gcc AR=$IMG_TOOLCHAIN-ar FC="$IMG_TOOLCHAIN-gfortran -EL" RANLIB=$IMG_TOOLCHAIN-ranlib HOSTCC=gcc CFLAGS="-EL" FFLAGS="$CFLAGS" LDFLAGS="$CFLAGS" TARGET=P6600
+
+MTI_TOOLCHAIN_DIR={full MTI GNU/Linux Toolchain path including "bin" directory -- for example, /opt/linux_toolchain/bin}
+MTI_GCC_PREFIX=mips-mti-linux-gnu
+MTI_TOOLCHAIN=${IMG_TOOLCHAIN_DIR}/${IMG_GCC_PREFIX}
+
+P5600 Build:
+
+make BINARY=32 BINARY32=1 CC=$MTI_TOOLCHAIN-gcc AR=$MTI_TOOLCHAIN-ar FC="$MTI_TOOLCHAIN-gfortran -EL"    RANLIB=$MTI_TOOLCHAIN-ranlib HOSTCC=gcc CFLAGS="-EL" FFLAGS=$CFLAGS LDFLAGS=$CFLAGS TARGET=P5600
+</code></pre>
+<h3 id="freebsd">FreeBSD</h3>
+<p>You will need to install the following tools from the FreeBSD ports tree:
+* lang/gcc [1]
+* lang/perl5.12
+* ftp/curl
+* devel/gmake
+* devel/patch</p>
+<p>To compile run the command:</p>
+<pre><code>$ gmake CC=gcc46 FC=gfortran46
+</code></pre>
+<p>Note that you need to build with GNU make and manually specify the compiler, otherwhise gcc 4.2 from the base system would be used.</p>
+<p>[1]: <a href="http://www.bsdunix.ch/serendipity/index.php?/archives/345-Removal-of-Fortran-from-the-FreeBSD-base-system.html">Removal of Fortran from the FreeBSD base system</a></p>
+<div class="highlight"><pre><span></span><code>pkg install openblas
+</code></pre></div>
+<p>see <a href="https://www.freebsd.org/ports/index.html">https://www.freebsd.org/ports/index.html</a></p>
+<h3 id="cortex-m">Cortex-M</h3>
+<p>Cortex-M is a widely used microcontroller that is present in a variety of industrial and consumer electronics.
+A common variant of the Cortex-M is the STM32F4xx series. Here, we will give instructions for building for
+the STM32F4xx.</p>
+<p>First, install the embedded arm gcc compiler from the arm website. Then, create the following toolchain file and build as follows.</p>
+<div class="highlight"><pre><span></span><code><span class="c"># cmake .. -G Ninja -DCMAKE_C_COMPILER=arm-none-eabi-gcc -DCMAKE_TOOLCHAIN_FILE:PATH=&quot;toolchain.cmake&quot; -DNOFORTRAN=1 -DTARGET=ARMV5 -DEMBEDDED=1</span>
+
+<span class="nb">set</span><span class="p">(</span><span class="s">CMAKE_SYSTEM_NAME</span><span class="w"> </span><span class="s">Generic</span><span class="p">)</span>
+<span class="nb">set</span><span class="p">(</span><span class="s">CMAKE_SYSTEM_PROCESSOR</span><span class="w"> </span><span class="s">arm</span><span class="p">)</span>
+
+<span class="nb">set</span><span class="p">(</span><span class="s">CMAKE_C_COMPILER</span><span class="w"> </span><span class="s2">&quot;arm-none-eabi-gcc.exe&quot;</span><span class="p">)</span>
+<span class="nb">set</span><span class="p">(</span><span class="s">CMAKE_CXX_COMPILER</span><span class="w"> </span><span class="s2">&quot;arm-none-eabi-g++.exe&quot;</span><span class="p">)</span>
+
+<span class="nb">set</span><span class="p">(</span><span class="s">CMAKE_EXE_LINKER_FLAGS</span><span class="w"> </span><span class="s2">&quot;--specs=nosys.specs&quot;</span><span class="w"> </span><span class="s">CACHE</span><span class="w"> </span><span class="s">INTERNAL</span><span class="w"> </span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+
+<span class="nb">set</span><span class="p">(</span><span class="s">CMAKE_FIND_ROOT_PATH_MODE_PROGRAM</span><span class="w"> </span><span class="s">NEVER</span><span class="p">)</span>
+<span class="nb">set</span><span class="p">(</span><span class="s">CMAKE_FIND_ROOT_PATH_MODE_LIBRARY</span><span class="w"> </span><span class="s">ONLY</span><span class="p">)</span>
+<span class="nb">set</span><span class="p">(</span><span class="s">CMAKE_FIND_ROOT_PATH_MODE_INCLUDE</span><span class="w"> </span><span class="s">ONLY</span><span class="p">)</span>
+<span class="nb">set</span><span class="p">(</span><span class="s">CMAKE_FIND_ROOT_PATH_MODE_PACKAGE</span><span class="w"> </span><span class="s">ONLY</span><span class="p">)</span>
+</code></pre></div>
+<p>In your embedded application, the following functions need to be provided for OpenBLAS to work correctly:</p>
+<div class="highlight"><pre><span></span><code><span class="kt">void</span><span class="w"> </span><span class="nf">free</span><span class="p">(</span><span class="kt">void</span><span class="o">*</span><span class="w"> </span><span class="n">ptr</span><span class="p">);</span>
+<span class="kt">void</span><span class="o">*</span><span class="w"> </span><span class="nf">malloc</span><span class="p">(</span><span class="kt">size_t</span><span class="w"> </span><span class="n">size</span><span class="p">);</span>
+</code></pre></div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If you are developing for an embedded platform, it is your responsibility to make sure that the device has sufficient memory for malloc calls. <a href="https://github.com/embeddedartistry/libmemory">Libmemory</a> provides one implementation of malloc for embedded platforms.</p>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": "..", "features": [], "search": "../assets/javascripts/workers/search.b8dbb3d2.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.1e8ae164.min.js"></script>
+      
+    
+  </body>
+</html>
