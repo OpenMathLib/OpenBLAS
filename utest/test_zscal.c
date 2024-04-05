@@ -11,8 +11,8 @@
 
 CTEST(zscal, i_nan)
 {
-    int N=9;
-    int incX=1;
+    blasint N=9;
+    blasint incX=1;
     double i[] = {0,1, 0,1, 0,1, 0,1, 0,1, 0,1, 0,1, 0,1, 0,1 };
     double nan[] = {NAN,0, NAN,0, NAN,0, NAN,0, NAN,0, NAN,0, NAN,0, NAN,0, NAN,0, NAN,0};
     BLASFUNC(zscal)(&N, i, nan, &incX);
@@ -24,8 +24,8 @@ CTEST(zscal, i_nan)
 
 CTEST(zscal, i_nan_inc_2)
 {
-    int N=9;
-    int incX=1;
+    blasint N=9;
+    blasint incX=1;
     double i[] = {0,1, 0,1, 0,1, 0,1, 0,1, 0,1, 0,1, 0,1, 0,1 };
     double nan[] = {NAN,0, NAN,0, NAN,0, NAN,0, NAN,0, NAN,0, NAN,0, NAN,0, NAN,0, NAN,0,
                     NAN,0, NAN,0, NAN,0, NAN,0, NAN,0, NAN,0, NAN,0, NAN,0, NAN,0, NAN,0};
@@ -38,8 +38,8 @@ CTEST(zscal, i_nan_inc_2)
 
 CTEST(zscal, nan_i)
 {
-    int N=9;
-    int incX=1;
+    blasint N=9;
+    blasint incX=1;
     double i[] = {0,1, 0,1, 0,1, 0,1, 0,1, 0,1, 0,1, 0,1, 0,1 };
     double nan[] = {NAN,0, NAN,0, NAN,0, NAN,0, NAN,0, NAN,0, NAN,0, NAN,0, NAN,0, NAN,0};
     BLASFUNC(zscal)(&N, nan, i, &incX);
@@ -51,8 +51,8 @@ CTEST(zscal, nan_i)
 
 CTEST(zscal, nan_i_inc_2)
 {
-    int N=9;
-    int incX=1;
+    blasint N=9;
+    blasint incX=1;
     double i[] = {0,1, 0,1, 0,1, 0,1, 0,1, 0,1, 0,1, 0,1, 0,1,
                   0,1, 0,1, 0,1, 0,1, 0,1, 0,1, 0,1, 0,1, 0,1 };
     double nan[] = {NAN,0, NAN,0, NAN,0, NAN,0, NAN,0, NAN,0, NAN,0, NAN,0, NAN,0, NAN,0};
@@ -65,8 +65,8 @@ CTEST(zscal, nan_i_inc_2)
 
 CTEST(zscal, i_inf)
 {
-    int N=9;
-    int incX=1;
+    blasint N=9;
+    blasint incX=1;
     double i[] = {0,1, 0,1, 0,1, 0,1, 0,1, 0,1, 0,1, 0,1, 0,1 };
     double inf[] = {INFINITY, 0, INFINITY,0, INFINITY,0, INFINITY,0, INFINITY,0, INFINITY,0, INFINITY,0, INFINITY,0, INFINITY,0};
     BLASFUNC(zscal)(&N, i, inf, &incX);
@@ -78,8 +78,8 @@ CTEST(zscal, i_inf)
 
 CTEST(zscal, i_inf_inc_2)
 {
-    int N=9;
-    int incX=2;
+    blasint N=9;
+    blasint incX=2;
     double i[] = {0,1, 0,1, 0,1, 0,1, 0,1, 0,1, 0,1, 0,1, 0,1 };
     double inf[] = {INFINITY, 0, INFINITY,0, INFINITY,0, INFINITY,0, INFINITY,0, INFINITY,0, INFINITY,0, INFINITY,0, INFINITY,0,
                     INFINITY, 0, INFINITY,0, INFINITY,0, INFINITY,0, INFINITY,0, INFINITY,0, INFINITY,0, INFINITY,0, INFINITY,0};
@@ -92,8 +92,8 @@ CTEST(zscal, i_inf_inc_2)
 
 CTEST(zscal, inf_i)
 {
-    int N=9;
-    int incX=1;
+    blasint N=9;
+    blasint incX=1;
     double i[] = {0,1, 0,1, 0,1, 0,1, 0,1, 0,1, 0,1, 0,1, 0,1 };
     double inf[] = {INFINITY, 0, INFINITY,0, INFINITY,0, INFINITY,0, INFINITY,0, INFINITY,0, INFINITY,0, INFINITY,0, INFINITY,0};
     BLASFUNC(zscal)(&N, inf, i, &incX);
@@ -105,8 +105,8 @@ CTEST(zscal, inf_i)
 
 CTEST(zscal, inf_i_inc_2)
 {
-    int N=9;
-    int incX=2;
+    blasint N=9;
+    blasint incX=2;
     double i[] = {0,1, 0,1, 0,1, 0,1, 0,1, 0,1, 0,1, 0,1, 0,1,
                   0,1, 0,1, 0,1, 0,1, 0,1, 0,1, 0,1, 0,1, 0,1 };
     double inf[] = {INFINITY, 0, INFINITY,0, INFINITY,0, INFINITY,0, INFINITY,0, INFINITY,0, INFINITY,0, INFINITY,0, INFINITY,0};
