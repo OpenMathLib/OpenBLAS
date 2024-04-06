@@ -159,7 +159,7 @@ int main(int argc, char* argv[])
 ```
 
 ```
-gcc -o time_dgemm time_dgemm.c /your/path/libopenblas.a
+gcc -o time_dgemm time_dgemm.c /your/path/libopenblas.a -lpthread
 ./time_dgemm <m> <n> <k>
 ```
 
