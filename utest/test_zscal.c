@@ -11,9 +11,11 @@
 
 CTEST(zscal, i_nan)
 {
+    blasint N=9;
+    blasint incX=1;
     double i[] = {0,1, 0,1, 0,1, 0,1, 0,1, 0,1, 0,1, 0,1, 0,1 };
     double nan[] = {NAN,0, NAN,0, NAN,0, NAN,0, NAN,0, NAN,0, NAN,0, NAN,0, NAN,0, NAN,0};
-    cblas_zscal(9, i, &nan, 1);
+    BLASFUNC(zscal)(&N, i, nan, &incX);
     ASSERT_TRUE(isnan(nan[0]));
     ASSERT_TRUE(isnan(nan[1]));
     ASSERT_TRUE(isnan(nan[16]));
@@ -22,10 +24,12 @@ CTEST(zscal, i_nan)
 
 CTEST(zscal, i_nan_inc_2)
 {
+    blasint N=9;
+    blasint incX=1;
     double i[] = {0,1, 0,1, 0,1, 0,1, 0,1, 0,1, 0,1, 0,1, 0,1 };
     double nan[] = {NAN,0, NAN,0, NAN,0, NAN,0, NAN,0, NAN,0, NAN,0, NAN,0, NAN,0, NAN,0,
                     NAN,0, NAN,0, NAN,0, NAN,0, NAN,0, NAN,0, NAN,0, NAN,0, NAN,0, NAN,0};
-    cblas_zscal(9, i, &nan, 2);
+    BLASFUNC(zscal)(&N, i, nan, &incX);
     ASSERT_TRUE(isnan(nan[0]));
     ASSERT_TRUE(isnan(nan[1]));
     ASSERT_TRUE(isnan(nan[16]));
@@ -34,9 +38,11 @@ CTEST(zscal, i_nan_inc_2)
 
 CTEST(zscal, nan_i)
 {
+    blasint N=9;
+    blasint incX=1;
     double i[] = {0,1, 0,1, 0,1, 0,1, 0,1, 0,1, 0,1, 0,1, 0,1 };
     double nan[] = {NAN,0, NAN,0, NAN,0, NAN,0, NAN,0, NAN,0, NAN,0, NAN,0, NAN,0, NAN,0};
-    cblas_zscal(9, &nan, &i, 1);
+    BLASFUNC(zscal)(&N, nan, i, &incX);
     ASSERT_TRUE(isnan(i[0]));
     ASSERT_TRUE(isnan(i[1]));
     ASSERT_TRUE(isnan(i[16]));
@@ -45,10 +51,12 @@ CTEST(zscal, nan_i)
 
 CTEST(zscal, nan_i_inc_2)
 {
+    blasint N=9;
+    blasint incX=1;
     double i[] = {0,1, 0,1, 0,1, 0,1, 0,1, 0,1, 0,1, 0,1, 0,1,
                   0,1, 0,1, 0,1, 0,1, 0,1, 0,1, 0,1, 0,1, 0,1 };
     double nan[] = {NAN,0, NAN,0, NAN,0, NAN,0, NAN,0, NAN,0, NAN,0, NAN,0, NAN,0, NAN,0};
-    cblas_zscal(9, &nan, &i, 2);
+    BLASFUNC(zscal)(&N, nan, i, &incX);
     ASSERT_TRUE(isnan(i[0]));
     ASSERT_TRUE(isnan(i[1]));
     ASSERT_TRUE(isnan(i[16]));
@@ -57,9 +65,11 @@ CTEST(zscal, nan_i_inc_2)
 
 CTEST(zscal, i_inf)
 {
+    blasint N=9;
+    blasint incX=1;
     double i[] = {0,1, 0,1, 0,1, 0,1, 0,1, 0,1, 0,1, 0,1, 0,1 };
     double inf[] = {INFINITY, 0, INFINITY,0, INFINITY,0, INFINITY,0, INFINITY,0, INFINITY,0, INFINITY,0, INFINITY,0, INFINITY,0};
-    cblas_zscal(9, i, &inf, 1);
+    BLASFUNC(zscal)(&N, i, inf, &incX);
     ASSERT_TRUE(isnan(inf[0]));
     ASSERT_TRUE(isinf(inf[1]));
     ASSERT_TRUE(isnan(inf[16]));
@@ -68,10 +78,12 @@ CTEST(zscal, i_inf)
 
 CTEST(zscal, i_inf_inc_2)
 {
+    blasint N=9;
+    blasint incX=2;
     double i[] = {0,1, 0,1, 0,1, 0,1, 0,1, 0,1, 0,1, 0,1, 0,1 };
     double inf[] = {INFINITY, 0, INFINITY,0, INFINITY,0, INFINITY,0, INFINITY,0, INFINITY,0, INFINITY,0, INFINITY,0, INFINITY,0,
                     INFINITY, 0, INFINITY,0, INFINITY,0, INFINITY,0, INFINITY,0, INFINITY,0, INFINITY,0, INFINITY,0, INFINITY,0};
-    cblas_zscal(9, i, &inf, 2);
+    BLASFUNC(zscal)(&N, i, inf, &incX);
     ASSERT_TRUE(isnan(inf[0]));
     ASSERT_TRUE(isinf(inf[1]));
     ASSERT_TRUE(isnan(inf[16]));
@@ -80,9 +92,11 @@ CTEST(zscal, i_inf_inc_2)
 
 CTEST(zscal, inf_i)
 {
+    blasint N=9;
+    blasint incX=1;
     double i[] = {0,1, 0,1, 0,1, 0,1, 0,1, 0,1, 0,1, 0,1, 0,1 };
     double inf[] = {INFINITY, 0, INFINITY,0, INFINITY,0, INFINITY,0, INFINITY,0, INFINITY,0, INFINITY,0, INFINITY,0, INFINITY,0};
-    cblas_zscal(9, &inf, &i, 1);
+    BLASFUNC(zscal)(&N, inf, i, &incX);
     ASSERT_TRUE(isnan(i[0]));
     ASSERT_TRUE(isinf(i[1]));
     ASSERT_TRUE(isnan(i[16]));
@@ -91,10 +105,12 @@ CTEST(zscal, inf_i)
 
 CTEST(zscal, inf_i_inc_2)
 {
+    blasint N=9;
+    blasint incX=2;
     double i[] = {0,1, 0,1, 0,1, 0,1, 0,1, 0,1, 0,1, 0,1, 0,1,
                   0,1, 0,1, 0,1, 0,1, 0,1, 0,1, 0,1, 0,1, 0,1 };
     double inf[] = {INFINITY, 0, INFINITY,0, INFINITY,0, INFINITY,0, INFINITY,0, INFINITY,0, INFINITY,0, INFINITY,0, INFINITY,0};
-    cblas_zscal(9, &inf, &i, 2);
+    BLASFUNC(zscal)(&N, inf, i, &incX);
     ASSERT_TRUE(isnan(i[0]));
     ASSERT_TRUE(isinf(i[1]));
     ASSERT_TRUE(isnan(i[16]));
