@@ -1248,6 +1248,10 @@ static __inline__ int get_l2_size(void){
 
   int eax, ebx, ecx, edx, l2;
 
+  l2 = readenv_atoi("OPENBLAS_L2_SIZE");
+  if (l2 != 0)
+    return l2;
+
   cpuid(0x80000006, &eax, &ebx, &ecx, &edx);
 
   l2 = BITMASK(ecx, 16, 0xffff);
