@@ -86,6 +86,7 @@ void main()
 ```
 gcc -o test_cblas_open test_cblas_dgemm.c -I /your_path/OpenBLAS/include/ -L/your_path/OpenBLAS/lib -lopenblas -lpthread -lgfortran
 ```
+With runtime error like "error while loading shared libraries: libopenblas.so.0: cannot open shared object file: No such file or directory", you can change the LD_LIBRARY_PATH like this link https://github.com/sermanet/OverFeat/issues/10#issuecomment-40912417.
 
 ### Call BLAS Fortran interface
 
