@@ -26,7 +26,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Print system information
         run: |
@@ -54,7 +54,7 @@ jobs:
           fi
 
       - name: Compilation cache
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: ~/.ccache
           # We include the commit sha in the cache key, as new cache entries are
@@ -200,7 +200,7 @@ jobs:
             ccache:p
 
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Prepare ccache
         # Get cache location of ccache
@@ -213,7 +213,7 @@ jobs:
           echo "key=ccache-msys2-${{ matrix.msystem }}-${{ matrix.idx }}-${{ matrix.build-type }}-${{ github.ref }}-${{ github.sha }}" >> $GITHUB_OUTPUT
 
       - name: Restore ccache
-        uses: actions/cache/restore@v3
+        uses: actions/cache/restore@v4
         with:
           path: ${{ steps.ccache-prepare.outputs.ccachedir }}
           key: ${{ steps.ccache-prepare.outputs.key }}
@@ -267,7 +267,7 @@ jobs:
 
       - name: Save ccache
         # Save the cache after we are done (successfully) building
-        uses: actions/cache/save@v3
+        uses: actions/cache/save@v4
         with:
           path: ${{ steps.ccache-prepare.outputs.ccachedir }}
           key: ${{ steps.ccache-prepare.outputs.key }}
@@ -312,7 +312,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Install Dependencies
         run: |
@@ -320,7 +320,7 @@ jobs:
           sudo apt-get install -y ccache gcc-${{ matrix.triple }} gfortran-${{ matrix.triple }} libgomp1-${{ matrix.target }}-cross
 
       - name: Compilation cache
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: ~/.ccache
           key: ccache-${{ runner.os }}-${{ matrix.target }}-${{ github.ref }}-${{ github.sha }}
