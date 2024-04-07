@@ -158,52 +158,15 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        msystem: [UCRT64, MINGW32, CLANG64, CLANG32]
+        msystem: [UCRT64, MINGW32, CLANG64]
         idx: [int32, int64]
         build-type: [Release]
         include:
           - msystem: UCRT64
             idx: int32
-            target-prefix: mingw-w64-ucrt-x86_64
-            fc-pkg: fc
-          - msystem: MINGW32
-            idx: int32
-            target-prefix: mingw-w64-i686
-            fc-pkg: fc
-          - msystem: CLANG64
-            idx: int32
-            target-prefix: mingw-w64-clang-x86_64
-            fc-pkg: fc
-            # Compiling with Flang 16 seems to cause test errors on machines
-            # with AVX512 instructions. Revisit after MSYS2 distributes Flang 17.
-            no-avx512-flags: -DNO_AVX512=1
-          - msystem: CLANG32
-            idx: int32
-            target-prefix: mingw-w64-clang-i686
-            fc-pkg: cc
-            c-lapack-flags: -DC_LAPACK=ON
-          - msystem: UCRT64
-            idx: int64
-            idx64-flags: -DBINARY=64 -DINTERFACE64=1
-            target-prefix: mingw-w64-ucrt-x86_64
-            fc-pkg: fc
-          - msystem: CLANG64
-            idx: int64
-            idx64-flags: -DBINARY=64 -DINTERFACE64=1
-            target-prefix: mingw-w64-clang-x86_64
-            fc-pkg: fc
-            # Compiling with Flang 16 seems to cause test errors on machines
-            # with AVX512 instructions. Revisit after MSYS2 distributes Flang 17.
-            no-avx512-flags: -DNO_AVX512=1
-          - msystem: UCRT64
-            idx: int32
-            target-prefix: mingw-w64-ucrt-x86_64
-            fc-pkg: fc
             build-type: None
         exclude:
           - msystem: MINGW32
-            idx: int64
-          - msystem: CLANG32
             idx: int64
 
     defaults:
@@ -228,11 +191,13 @@ jobs:
           release: false  # Use pre-installed version
           install: >-
             base-devel
-            ${{ matrix.target-prefix }}-cc
-            ${{ matrix.target-prefix }}-${{ matrix.fc-pkg }}
-            ${{ matrix.target-prefix }}-cmake
-            ${{ matrix.target-prefix }}-ninja
-            ${{ matrix.target-prefix }}-ccache
+          pacboy: >-
+            cc:p
+            fc:p
+            omp:p
+            cmake:p
+            ninja:p
+            ccache:p
 
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -271,23 +236,30 @@ jobs:
 
       - name: Configure OpenBLAS
         run: |
-          mkdir build && cd build
+          declare -a _extra_config
+          if [[ ${idx} == int64 ]]; then
+            _extra_config+=("-DBINARY=64" "-DINTERFACE64=1")
+          fi
+          # Compiling with Flang<=17 seems to cause test errors on machines
+          # with AVX512 instructions. Revisit after MSYS2 distributes Flang 18.
+          if [[ ${MSYSTEM} == CLANG64 ]]; then
+            _extra_config+=("-DNO_AVX512=1")
+          fi
           cmake -DCMAKE_BUILD_TYPE=${{ matrix.build-type }} \
                 -DBUILD_SHARED_LIBS=ON \
                 -DBUILD_STATIC_LIBS=ON \
                 -DDYNAMIC_ARCH=ON \
+                -DUSE_OPENMP=ON \
                 -DUSE_THREAD=ON \
                 -DNUM_THREADS=64 \
                 -DTARGET=CORE2 \
-                ${{ matrix.idx64-flags }} \
-                ${{ matrix.c-lapack-flags }} \
-                ${{ matrix.no-avx512-flags }} \
                 -DCMAKE_C_COMPILER_LAUNCHER=ccache \
                 -DCMAKE_Fortran_COMPILER_LAUNCHER=ccache \
-                ..
+                -Bbuild \
+                -S.
 
       - name: Build OpenBLAS
-        run: cd build && cmake --build .
+        run: cmake --build build
 
       - name: Show ccache status
         continue-on-error: true
@@ -303,15 +275,14 @@ jobs:
       - name: Run tests
         id: run-ctest
         timeout-minutes: 60
-        run: cd build && ctest
+        run: ctest --test-dir build
 
       - name: Re-run tests
         if: always() && (steps.run-ctest.outcome == 'failure')
         timeout-minutes: 60
         run: |
-          cd build
           echo "::group::Re-run ctest"
-          ctest --rerun-failed --output-on-failure || true
+          ctest --test-dir build --rerun-failed --output-on-failure || true
           echo "::endgroup::"
           echo "::group::Log from these tests"
           [ ! -f Testing/Temporary/LastTest.log ] || cat Testing/Temporary/LastTest.log
