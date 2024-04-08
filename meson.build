@@ -201,9 +201,47 @@ add_project_arguments(simd_cargs, language: 'c')
 symnames = ['ASMNAME', 'ASMFNAME', 'NAME', 'CNAME', 'CHAR_NAME', 'CHAR_CNAME']
 
 # Other common options, move later
+# Undefine to help prevent clashes
 foreach symb : symnames
   _cargs += f'-U@symb@'
 endforeach
+# Based on options
+if not build_without_cblas
+  _cargs += '-DCBLAS'
+endif
+if no_affinity
+  _cargs += '-DNO_AFFINITY'
+endif
+if no_warmup
+  _cargs += '-DNO_WARMUP'
+endif
+# Parallel builds
+# TODO: This can be cleaned up significantly
+# Also use multiprocessing.cpu_count()
+# TODO: Handle SMP_SERVER
+num_parallel = get_option('num_parallel')
+if num_parallel > 1
+  _cargs += f'-DMAX_PARALLEL_NUMBER=@num_parallel@'
+endif
+num_cores = get_option('num_cores')
+if num_cores > 0
+  num_threads = num_cores
+else
+  num_threads = 0
+endif
+use_thread = false
+if num_threads > 2
+  use_thread = true
+endif
+if use_thread
+  message('Multi-threading enabled with ' + num_threads.to_string() + ' threads.')
+  _cargs += f'-DMAX_CPU_NUMBER=@num_threads@'
+  _cargs += f'-DSMP_SERVER'
+else
+  if get_option('use_locking')
+    _cargs += '-DUSE_LOCKING'
+  endif
+endif
 
 
 # Ignoring other hostarch checks and conflicts for arch in BSD for now
