@@ -197,6 +197,15 @@ bldroot = meson.build_root()
 _cargs += ['-include', f'@bldroot@/simd_conf.h']
 add_project_arguments(simd_cargs, language: 'c')
 
+# Common symbol related options
+symnames = ['ASMNAME', 'ASMFNAME', 'NAME', 'CNAME', 'CHAR_NAME', 'CHAR_CNAME']
+
+# Other common options, move later
+foreach symb : symnames
+  _cargs += f'-U@symb@'
+endforeach
+
+
 # Ignoring other hostarch checks and conflicts for arch in BSD for now
 _inc = include_directories('.')
 # subdir('lapack-netlib')
