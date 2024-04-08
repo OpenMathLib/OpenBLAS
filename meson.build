@@ -164,58 +164,37 @@ else
   add_project_arguments(f'-DF_INTERFACE_@upper_fcid@', language: 'c')
 endif
 
-sse_args = '-msse'
-sse2_args = '-msse2'
-sse3_args = '-msse3'
-ssse3_args = '-mssse3'
-sse41_args = '-msse4.1'
-fma_args = '-mfma'
-avx_args = '-mavx'
-avx2_args = '-mavx2'
-
-have_sse = cc.has_argument(sse_args)
-have_sse2 = cc.has_argument(sse2_args)
-have_sse3 = cc.has_argument(sse3_args)
-have_ssse3 = cc.has_argument(ssse3_args)
-have_sse41 = cc.has_argument(sse41_args)
-have_fma = cc.has_argument(fma_args)
-have_avx = cc.has_argument(avx_args)
-have_avx2 = cc.has_argument(avx2_args)
+simd_extensions = [
+  {'flag': '-mmmx', 'define': 'HAVE_MMX'},
+  {'flag': '-msse', 'define': 'HAVE_SSE'},
+  {'flag': '-msse2', 'define': 'HAVE_SSE2'},
+  {'flag': '-msse3', 'define': 'HAVE_SSE3'},
+  {'flag': '-mssse3', 'define': 'HAVE_SSSE3'},
+  {'flag': '-msse4.1', 'define': 'HAVE_SSE4_1'},
+  {'flag': '-msse4.2', 'define': 'HAVE_SSE4_2'},
+  {'flag': '-mfma', 'define': 'HAVE_FMA3'},
+  {'flag': '-mavx', 'define': 'HAVE_AVX'},
+  {'flag': '-mavx2', 'define': 'HAVE_AVX2'},
+]
 
 simd_cargs = []
+simd_conf_data = configuration_data()
 
-if have_sse
-  simd_cargs += [sse_args, '-DHAVE_SSE']
-endif
+foreach ext : simd_extensions
+  if cc.has_argument(ext['flag'])
+    simd_cargs += ext['flag']
+    simd_conf_data.set(ext['define'], true)
+  else
+    simd_conf_data.set(ext['define'], false)
+  endif
+endforeach
 
-if have_sse2
-  simd_cargs += [sse2_args, '-DHAVE_SSE2']
-endif
-
-if have_sse3
-  simd_cargs += [sse3_args, '-DHAVE_SSE3']
-endif
-
-if have_ssse3
-  simd_cargs += [ssse3_args, '-DHAVE_SSSE3']
-endif
-
-if have_sse41
-  simd_cargs += [sse41_args, '-DHAVE_SSE41']
-endif
-
-if have_fma
-  simd_cargs += [fma_args, '-DHAVE_FMA']
-endif
-
-if have_avx
-  simd_cargs += [avx_args, '-DHAVE_AVX']
-endif
-
-if have_avx2
-  simd_cargs += [avx2_args, '-DHAVE_AVX2']
-endif
-
+# Generate configuration header
+configure_file(output : 'simd_conf.h',
+               configuration : simd_conf_data)
+# Can't be added as a project argument since it won't be generated until later
+bldroot = meson.build_root()
+_cargs += ['-include', f'@bldroot@/simd_conf.h']
 add_project_arguments(simd_cargs, language: 'c')
 
 # Ignoring other hostarch checks and conflicts for arch in BSD for now

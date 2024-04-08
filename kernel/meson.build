@@ -870,9 +870,10 @@ foreach conf: kernel_confs
         conf['name'],
         conf['src'],
         include_directories:  _inc,
-        c_args: conf['c_args'],
+        c_args: [_cargs, conf['c_args']],
     )
 endforeach
 
 _kern = static_library('_kern',
-                link_whole: _kern_libs)
+                       c_args: _cargs,
+                       link_whole: _kern_libs)
