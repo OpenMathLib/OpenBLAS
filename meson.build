@@ -21,6 +21,13 @@ openblas_version = f'@openblas_major_version@.@openblas_minor_version@.@openblas
 
 # Skip the check for valid CC
 cc = meson.get_compiler('c')
+fc = meson.get_compiler('fortran')
+fc_id = fc.get_id()
+
+# Common args
+_args = []
+_cargs = []
+_fargs = []
 
 # System configuration
 build_single = get_option('build_single')
@@ -146,6 +153,21 @@ if cpu_fam in ['x86_64', 'ppc64', 'ppc']
   ], language:'c')
 endif
 
+if fc_id == 'gcc'
+    add_project_arguments('-DF_INTERFACE_GFORT', language: 'c')
+elif fc_id == 'g95'
+    add_project_arguments('-DF_INTERFACE_G95', language: 'c')
+elif fc_id == 'flang'
+    add_project_arguments('-DF_INTERFACE_FLANG', language: 'c')
+elif fc_id in ['intel', 'intel-cl']
+    add_project_arguments('-DF_INTERFACE_INTEL', language: 'c')
+elif fc_id == 'pathscale'
+    add_project_arguments('-DF_INTERFACE_PATHSCALE', language: 'c')
+elif fc_id == 'pgi'
+    add_project_arguments('-DF_INTERFACE_PGI', language: 'c')
+elif fc_id == 'sun'
+    add_project_arguments('-DF_INTERFACE_SUN', language: 'c')
+endif
 
 # Ignoring other hostarch checks and conflicts for arch in BSD for now
 _inc = include_directories('.')
