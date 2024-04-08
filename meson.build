@@ -35,6 +35,14 @@ build_double = get_option('build_double')
 build_complex = get_option('build_complex')
 build_complex16 = get_option('build_complex16')
 
+# TODO: Be conditional
+_cargs = [
+ '-DBUILD_SINGLE=1',
+ '-DBUILD_DOUBLE=1',
+ '-DBUILD_COMPLEX=1',
+ '-DBUILD_COMPLEX16=1',
+]
+
 # Options from CMakelists
 build_without_lapack = get_option('build_without_lapack')
 build_lapack_deprecated = get_option('build_lapack_deprecated')
