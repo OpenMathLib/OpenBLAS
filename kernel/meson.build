@@ -787,8 +787,6 @@ _configs = [
    'def': ['DOUBLE'],
    'addl': [fma3_flag,
         '-m64',
-        '-DF_INTERFACE_GFORT',
-        '-fPIC',
         '-DSMP_SERVER',
         '-DNO_WARMUP',
         '-DMAX_CPU_NUMBER=12',

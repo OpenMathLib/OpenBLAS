@@ -84,8 +84,6 @@ _static_libs += static_library(
     include_directories:  _inc,
     c_args: [
         '-m64',
-        '-DF_INTERFACE_GFORT',
-        '-fPIC',
         '-DSMP_SERVER',
         '-DNO_WARMUP',
         '-DMAX_CPU_NUMBER=12',
