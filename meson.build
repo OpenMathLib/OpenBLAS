@@ -153,6 +153,10 @@ if cpu_fam in ['x86_64', 'ppc64', 'ppc']
   ], language:'c')
 endif
 
+if cpu_fam == 'x86_64'
+  _cargs += ['-m64']
+endif
+
 if fc_id == 'gcc'
     add_project_arguments('-DF_INTERFACE_GFORT', language: 'c')
 elif fc_id == 'g95'

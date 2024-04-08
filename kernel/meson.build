@@ -786,7 +786,6 @@ _configs = [
    'undef': ['COMPLEX', 'COMPLEX'],
    'def': ['DOUBLE'],
    'addl': [fma3_flag,
-        '-m64',
         '-DSMP_SERVER',
         '-DNO_WARMUP',
         '-DMAX_CPU_NUMBER=12',
