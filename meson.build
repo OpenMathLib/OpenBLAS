@@ -10,7 +10,7 @@
 # meson install --prefix=$HOME/.local/lapack
 #
 # NOTE: This is still a work in progress, the Makefiles are canonical
-project('OpenBLAS', 'c',
+project('OpenBLAS', ['c', 'fortran'],
         default_options: ['c_std=c99'],
         version: '0.3.26.dev')
 
@@ -159,18 +159,9 @@ endif
 
 if fc_id == 'gcc'
     add_project_arguments('-DF_INTERFACE_GFORT', language: 'c')
-elif fc_id == 'g95'
-    add_project_arguments('-DF_INTERFACE_G95', language: 'c')
-elif fc_id == 'flang'
-    add_project_arguments('-DF_INTERFACE_FLANG', language: 'c')
-elif fc_id in ['intel', 'intel-cl']
-    add_project_arguments('-DF_INTERFACE_INTEL', language: 'c')
-elif fc_id == 'pathscale'
-    add_project_arguments('-DF_INTERFACE_PATHSCALE', language: 'c')
-elif fc_id == 'pgi'
-    add_project_arguments('-DF_INTERFACE_PGI', language: 'c')
-elif fc_id == 'sun'
-    add_project_arguments('-DF_INTERFACE_SUN', language: 'c')
+else
+  upper_fcid = fc_id.to_upper()
+  add_project_arguments(f'-DF_INTERFACE_@upper_fcid@', language: 'c')
 endif
 
 sse_args = '-msse'
