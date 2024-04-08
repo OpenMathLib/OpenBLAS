@@ -19,8 +19,8 @@ blas1_roots = [
   # These don't exist as roots.
   # ismax amax isamax amin ismin isamin
   # TODO: Why is dsdot in sblas1objs!?
-  'axpy', 'swap', 'copy', 'scal', 'dot', 'dsdot', 'asum', 'sum', 'nrm2', 'max',
-  'rot', 'rotg', 'rotm', 'rotmg', 'axpby',
+  # 'axpy', 'swap', 'copy', 'scal', 'dot', 'dsdot', 'asum', 'sum', 'nrm2', 'max',
+  'rot'#, 'rotg', 'rotm', 'rotmg', 'axpby',
 ]
 blas2_roots = [
   'gemv', 'ger', 'trsv', 'trmv', 'symv', 'syr', 'syr2', 'gbmv', 'sbmv',
@@ -44,17 +44,28 @@ blas_roots += blas1_roots
 blas_roots += blas2_roots
 blas_roots += blas3_roots
 _kinds += real_kinds
-foreach root : blas_roots
+foreach root : blas1_roots
   fname = root + '.c'
   defs = []
   # if root in addl_srcs
   #   defs += addl_srcs[root]
   # endif
   foreach prec : real_kinds
+    _defs = []
     name = prec + fname
-    interface_confs += {'defs': defs, 'name': name, 'src': fname}
+    if prec == 'd'
+      _defs += ['-UCOMPLEX', '-DDOUBLE']
+    elif prec == 's'
+      _defs += ['-UCOMPLEX', '-UDOUBLE']
+    elif prec == 'cs'
+      _defs += ['-DCOMPLEX', '-UDOUBLE']
+    endif
+    interface_confs += {'defs': _defs,
+                        'name': 'cblas_' + prec + root,
+                        'src': fname}
   endforeach
 endforeach
+message(interface_confs)
 
 # if get_option('bfloat16')
 #   TODO: Handle bfloat16
@@ -63,35 +74,41 @@ endforeach
 #   sblas3_srcs += files(['sbgemm.c', 'sbgemmt.c'])
 # endif
 
-interface_confs += {
-  'name': 'cblas_drot',
-  'defs': ['-DCBLAS'],
-  'src': files('rot.c')
-}
-
 _static_libs = []
-# foreach conf: interface_confs
-#     _static_libs += static_library(
-#         conf['name'],
-#         conf['src'],
-#         include_directories:  _inc,
-#         c_args: conf['defs'],
-#     )
-# endforeach
-_static_libs += static_library(
-    'cblas_drot',
-    'rot.c',
-    include_directories:  _inc,
-    c_args: [_cargs,
-        '-DASMNAME=cblas_drot',
-        '-DASMFNAME=cblas_drot_',
-        '-DNAME=cblas_drot_',
-        '-DCNAME=cblas_drot',
-        '-DCHAR_NAME="cblas_drot_"',
-        '-DCHAR_CNAME="cblas_drot"',
-        '-DDOUBLE',
-        '-UCOMPLEX',],
-)
+foreach conf: interface_confs
+  sym_name = conf['name']
+  sym_underscored = f'@sym_name@_'
+    _static_libs += static_library(
+        sym_name,
+        conf['src'],
+        include_directories:  _inc,
+        c_args: [
+          conf['defs'],
+          _cargs,
+          f'-DASMNAME=@sym_name@',
+          f'-DASMFNAME=@sym_underscored@',
+          f'-DNAME=@sym_underscored@',
+          f'-DCNAME=@sym_name@',
+          f'-DCHAR_NAME="@sym_underscored@"',
+          f'-DCHAR_CNAME="@sym_name@"',
+        ],
+    )
+endforeach
+
+# _static_libs += static_library(
+#     'cblas_drot',
+#     'rot.c',
+#     include_directories:  _inc,
+#     c_args: [_cargs,
+#         '-DASMNAME=cblas_drot',
+#         '-DASMFNAME=cblas_drot_',
+#         '-DNAME=cblas_drot_',
+#         '-DCNAME=cblas_drot',
+#         '-DCHAR_NAME="cblas_drot_"',
+#         '-DCHAR_CNAME="cblas_drot"',
+#         '-DDOUBLE',
+#         '-UCOMPLEX',],
+# )
 
 _interface = static_library('_interface',
                             c_args: _cargs,
