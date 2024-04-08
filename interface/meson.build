@@ -82,10 +82,7 @@ _static_libs += static_library(
     'cblas_drot',
     'rot.c',
     include_directories:  _inc,
-    c_args: [        '-O2',
-        '-DSMALL_MATRIX_OPT',
-        '-DMAX_STACK_ALLOC=2048',
-        '-Wall',
+    c_args: [
         '-m64',
         '-DF_INTERFACE_GFORT',
         '-fPIC',

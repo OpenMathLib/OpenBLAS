@@ -44,6 +44,7 @@ no_affinity = get_option('no_affinity')
 build_cpp_thread_safety_test = get_option('build_cpp_thread_safety_test')
 build_cpp_thread_safety_gemv = get_option('build_cpp_thread_safety_gemv')
 build_static_libs = get_option('build_static_libs')
+max_stack_alloc = get_option('max_stack_alloc')
 
 if host_machine.system() == 'linux'
     no_affinity = true
@@ -136,7 +137,17 @@ configure_file(output : 'getarch_conf.h',
 #   configuration : conf_data)
 
 # Makefile.system
-# Ignoring all the hostarch checks and conflicts for arch in BSD for now
+cpu_fam = target_machine.cpu_family()
+
+if cpu_fam in ['x86_64', 'ppc64', 'ppc']
+  add_project_arguments([
+   '-DSMALL_MATRIX_OPT',
+   f'-DMAX_STACK_ALLOC=@max_stack_alloc@',
+  ], language:'c')
+endif
+
+
+# Ignoring other hostarch checks and conflicts for arch in BSD for now
 _inc = include_directories('.')
 # subdir('lapack-netlib')
 subdir('interface')
