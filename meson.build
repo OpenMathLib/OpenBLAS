@@ -169,6 +169,60 @@ elif fc_id == 'sun'
     add_project_arguments('-DF_INTERFACE_SUN', language: 'c')
 endif
 
+sse_args = '-msse'
+sse2_args = '-msse2'
+sse3_args = '-msse3'
+ssse3_args = '-mssse3'
+sse41_args = '-msse4.1'
+fma_args = '-mfma'
+avx_args = '-mavx'
+avx2_args = '-mavx2'
+
+have_sse = cc.has_argument(sse_args)
+have_sse2 = cc.has_argument(sse2_args)
+have_sse3 = cc.has_argument(sse3_args)
+have_ssse3 = cc.has_argument(ssse3_args)
+have_sse41 = cc.has_argument(sse41_args)
+have_fma = cc.has_argument(fma_args)
+have_avx = cc.has_argument(avx_args)
+have_avx2 = cc.has_argument(avx2_args)
+
+simd_cargs = []
+
+if have_sse
+  simd_cargs += [sse_args, '-DHAVE_SSE']
+endif
+
+if have_sse2
+  simd_cargs += [sse2_args, '-DHAVE_SSE2']
+endif
+
+if have_sse3
+  simd_cargs += [sse3_args, '-DHAVE_SSE3']
+endif
+
+if have_ssse3
+  simd_cargs += [ssse3_args, '-DHAVE_SSSE3']
+endif
+
+if have_sse41
+  simd_cargs += [sse41_args, '-DHAVE_SSE41']
+endif
+
+if have_fma
+  simd_cargs += [fma_args, '-DHAVE_FMA']
+endif
+
+if have_avx
+  simd_cargs += [avx_args, '-DHAVE_AVX']
+endif
+
+if have_avx2
+  simd_cargs += [avx2_args, '-DHAVE_AVX2']
+endif
+
+add_project_arguments(simd_cargs, language: 'c')
+
 # Ignoring other hostarch checks and conflicts for arch in BSD for now
 _inc = include_directories('.')
 # subdir('lapack-netlib')
