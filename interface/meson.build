@@ -83,10 +83,6 @@ _static_libs += static_library(
     'rot.c',
     include_directories:  _inc,
     c_args: [_cargs,
-        '-DSMP_SERVER',
-        '-DNO_WARMUP',
-        '-DMAX_CPU_NUMBER=12',
-        '-DMAX_PARALLEL_NUMBER=1',
         '-DBUILD_SINGLE=1',
         '-DBUILD_DOUBLE=1',
         '-DBUILD_COMPLEX=1',
@@ -97,10 +93,8 @@ _static_libs += static_library(
         '-DCNAME=cblas_drot',
         '-DCHAR_NAME="cblas_drot_"',
         '-DCHAR_CNAME="cblas_drot"',
-        '-DNO_AFFINITY',
         '-DDOUBLE',
-        '-UCOMPLEX',
-        '-DCBLAS',],
+        '-UCOMPLEX',],
 )
 
 _interface = static_library('_interface',
