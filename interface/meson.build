@@ -83,7 +83,6 @@ _static_libs += static_library(
     'rot.c',
     include_directories:  _inc,
     c_args: [
-        '-m64',
         '-DSMP_SERVER',
         '-DNO_WARMUP',
         '-DMAX_CPU_NUMBER=12',
