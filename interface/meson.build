@@ -82,7 +82,7 @@ _static_libs += static_library(
     'cblas_drot',
     'rot.c',
     include_directories:  _inc,
-    c_args: [
+    c_args: [_cargs,
         '-DSMP_SERVER',
         '-DNO_WARMUP',
         '-DMAX_CPU_NUMBER=12',
@@ -110,4 +110,5 @@ _static_libs += static_library(
 )
 
 _interface = static_library('_interface',
-                    link_whole: _static_libs)
+                            c_args: _cargs,
+                            link_whole: _static_libs)
