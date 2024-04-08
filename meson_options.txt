@@ -25,6 +25,7 @@ option('build_single', type: 'boolean', value: true, description: 'Build single 
 option('build_double', type: 'boolean', value: true, description: 'Build double precision')
 option('build_complex', type: 'boolean', value: true, description: 'Build complex precision')
 option('build_complex16', type: 'boolean', value: true, description: 'Build double complex precision')
+option('max_stack_alloc', type: 'integer', value: 2048, description: 'Max stack allocation')
 
 # From lapack-netlib
 option('realkind', type : 'string', value : 'd',
