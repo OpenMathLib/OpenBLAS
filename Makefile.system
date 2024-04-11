@@ -1195,9 +1195,6 @@ endif
 else
 FCOMMON_OPT += -q32
 endif
-ifeq ($(USE_OPENMP), 1)
-FCOMMON_OPT += -openmp
-endif
 endif
 
 ifeq ($(F_COMPILER), PGI)
