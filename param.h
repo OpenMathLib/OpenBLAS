@@ -3547,8 +3547,10 @@ is a big desktop or server with abundant cache rather than a phone or embedded d
 
 #if defined(XDOUBLE) || defined(DOUBLE)
 #define SWITCH_RATIO            8
+#define GEMM_PREFERED_SIZE      4
 #else
 #define SWITCH_RATIO            16
+#define GEMM_PREFERED_SIZE      8
 #endif
 
 #define SGEMM_DEFAULT_UNROLL_M  16
