@@ -811,8 +811,10 @@ ifeq ($(ARCH), arm)
 NO_BINARY_MODE  = 1
 BINARY_DEFINED  = 1
 
+ifneq ($(OS_EMBEDDED), 1)
 CCOMMON_OPT += -marm
 FCOMMON_OPT += -marm
+endif
 
 # If softfp abi is mentioned on the command line, force it.
 ifeq ($(ARM_SOFTFP_ABI), 1)
