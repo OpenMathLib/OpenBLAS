@@ -80,6 +80,7 @@ jobs:
         run: |
           export PATH=$GITHUB_WORKSPACE/qemu-install/bin/:$PATH
           qemu-mips64el ./utest/openblas_utest
+          qemu-mips64el ./utest/openblas_utest_ext
           OPENBLAS_NUM_THREADS=2 qemu-mips64el ./ctest/xscblat1
           OPENBLAS_NUM_THREADS=2 qemu-mips64el ./ctest/xdcblat1
           OPENBLAS_NUM_THREADS=2 qemu-mips64el ./ctest/xccblat1
