@@ -322,6 +322,7 @@ base_kops = [
       },
     },
   },
+  # TODO: Handle the i*amax style
   {'base': 'axpby',
    'modes': {'s': {'dir': 'arm', 'kernel': 'axpby.c', 'exts': ['_k']},
              'd': {'dir': 'arm', 'kernel': 'axpby.c', 'exts': ['_k']},
