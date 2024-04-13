@@ -783,22 +783,13 @@ _configs = [
   #  'def': [],
   #  'addl': [fma3_flag]},
   {'name': 'drot_k',
-   'undef': ['COMPLEX', 'COMPLEX'],
+   'undef': ['COMPLEX'],
    'def': ['DOUBLE'],
-   'addl': [fma3_flag,
-        '-DASMNAME=drot_k',
-        '-DASMFNAME=drot_k_',
-        '-DNAME=drot_k_',
-        '-DCNAME=drot_k',
-        '-DCHAR_NAME="drot_k_"',
-        '-DCHAR_CNAME="drot_k"',
-        '-DDOUBLE',
-        '-UCOMPLEX',
-           ]},
-  # {'name': 'qrot_k',
-  #  'undef': ['COMPLEX', 'COMPLEX'],
-  #  'def': ['XDOUBLE'],
-  #  'addl': []},
+   'addl': [fma3_flag]},
+  {'name': 'qrot_k',
+   'undef': ['COMPLEX'],
+   'def': ['XDOUBLE'],
+   'addl': []},
   # {'name': 'csrot_k',
   #  'undef': ['DOUBLE'],
   #  'def': ['COMPLEX', 'COMPLEX'],
@@ -839,8 +830,22 @@ foreach _kop : base_kops
           foreach _addl : addl
             _cargs += addl
           endforeach
-          current_def = {'c_args': _cargs, 'name': cfg['name'], 'src': src}
-          message(current_def)
+          sym_name = cfg['name']
+          sym_underscored = f'@sym_name@_'
+          current_def = {
+            'c_args': [
+              _cargs,
+              f'-DASMNAME=@sym_name@',
+              f'-DASMFNAME=@sym_underscored@',
+              f'-DNAME=@sym_underscored@',
+              f'-DCNAME=@sym_name@',
+              f'-DCHAR_NAME="@sym_underscored@"',
+              f'-DCHAR_CNAME="@sym_name@"',
+            ],
+            'name': cfg['name'],
+            'src': src
+          }
+          # message(current_def)
           kernel_confs += current_def
         endif
       endforeach
