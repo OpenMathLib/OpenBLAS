@@ -321,8 +321,9 @@
 	MOV	t1, a1
 	daddu	X, X, INCX
 
-	bgtz	I, .L26
 	ADD	s1, s1, t1
+	bgtz	I, .L26
+
 	.align 3
 
 .L999:
