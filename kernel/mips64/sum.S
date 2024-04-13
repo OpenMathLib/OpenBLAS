@@ -327,6 +327,7 @@
 
 .L999:
 	j	$31
+blez I, .L998
 	ADD	s1, s1, s2
-
+.L998:
 	EPILOGUE
