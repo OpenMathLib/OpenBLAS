@@ -61,6 +61,9 @@ foreach root : blas1_roots
       _defs += ['-DCOMPLEX', '-UDOUBLE']
     endif
     interface_confs += {'defs': _defs,
+                        'name': prec + root,
+                        'src': fname}
+    interface_confs += {'defs': _defs + '-DCBLAS',
                         'name': 'cblas_' + prec + root,
                         'src': fname}
   endforeach
