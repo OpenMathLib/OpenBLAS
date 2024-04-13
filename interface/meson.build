@@ -95,21 +95,6 @@ foreach conf: interface_confs
     )
 endforeach
 
-# _static_libs += static_library(
-#     'cblas_drot',
-#     'rot.c',
-#     include_directories:  _inc,
-#     c_args: [_cargs,
-#         '-DASMNAME=cblas_drot',
-#         '-DASMFNAME=cblas_drot_',
-#         '-DNAME=cblas_drot_',
-#         '-DCNAME=cblas_drot',
-#         '-DCHAR_NAME="cblas_drot_"',
-#         '-DCHAR_CNAME="cblas_drot"',
-#         '-DDOUBLE',
-#         '-UCOMPLEX',],
-# )
-
 _interface = static_library('_interface',
                             c_args: _cargs,
                             link_whole: _static_libs)
