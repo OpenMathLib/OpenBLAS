@@ -192,8 +192,8 @@
 	MOV	t2, a2
 	daddu	X, X, INCX
 
-	ADD	s1, s1, t1
 	bgtz	I, .L26
+	ADD	s1, s1, t1
 	ADD	s2, s2, t2
 	.align 3
 
