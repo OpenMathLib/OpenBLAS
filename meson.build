@@ -251,6 +251,15 @@ else
   endif
 endif
 
+# Common maps
+precision_mappings = {
+    's': {'undef': ['COMPLEX', 'DOUBLE'], 'def': []},
+    'd': {'undef': ['COMPLEX'], 'def': ['DOUBLE']},
+    'q': {'undef': ['COMPLEX'], 'def': ['XDOUBLE']},
+    'c': {'undef': ['DOUBLE'], 'def': ['COMPLEX']},
+    'z': {'undef': [], 'def': ['COMPLEX', 'DOUBLE']},
+    'x': {'undef': [], 'def': ['COMPLEX', 'XDOUBLE']},
+}
 
 # Ignoring other hostarch checks and conflicts for arch in BSD for now
 _inc = include_directories('.')
