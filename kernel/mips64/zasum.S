@@ -73,10 +73,10 @@
 	MTC	$0,  s1
 
 	MTC	$0,  s2
+	blez    INCX, .L999
 	dsll	INCX, INCX, ZBASE_SHIFT
 
 	blez	N, .L999
-	blez    INCX, .L999
 	dsra	I, N, 2
 
 	blez	I, .L25
