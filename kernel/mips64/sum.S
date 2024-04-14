@@ -78,8 +78,9 @@
 	blez	N, .L999
 	li	TEMP, SIZE
 
+	bez	INCX, .L01
 	bne	INCX, TEMP, .L20
-	dsra	I, N, 3
+.L01:	dsra	I, N, 3
 
 	blez	I, .L15
 	NOP
