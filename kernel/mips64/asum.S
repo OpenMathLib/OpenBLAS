@@ -73,10 +73,10 @@
 	MTC	$0,  s1
 
 	MTC	$0,  s2
+	blez	INCX, .L999
 	dsll	INCX, INCX, BASE_SHIFT
 
 	blez	N, .L999
-	blez	INCX, .L999
 	li	TEMP, SIZE
 
 	bne	INCX, TEMP, .L20
