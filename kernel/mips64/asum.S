@@ -76,6 +76,7 @@
 	dsll	INCX, INCX, BASE_SHIFT
 
 	blez	N, .L999
+	blez	INCX, .L999
 	li	TEMP, SIZE
 
 	bne	INCX, TEMP, .L20
