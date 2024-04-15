@@ -33,27 +33,26 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #undef OP2
 #undef OP3
 #undef OP4
+#undef OP5
 
-#if !defined(CONJ)
-    #if !defined(XCONJ)
-        #define OP0  -=
-        #define OP1  +=
-        #define OP2  +=
-    #else
-        #define OP0  +=
-        #define OP1  +=
-        #define OP2  -=
-    #endif
+#if (!defined(CONJ) && !defined(XCONJ)) || (defined(CONJ) && defined(XCONJ))
+    #define OP0  -=
+    #define OP1  +=
+    #define OP2  +=
 #else
-    #if !defined(XCONJ)
-        #define OP0  +=
-        #define OP1  -=
-        #define OP2  +=
-    #else
-        #define OP0  -=
-        #define OP1  -=
-        #define OP2  -=
-    #endif
+    #define OP0  +=
+    #define OP1  +=
+    #define OP2  -=
+#endif
+
+#if !defined(XCONJ)
+    #define OP3  -=
+    #define OP4  +=
+    #define OP5  +=
+#else
+    #define OP3  +=
+    #define OP4  -=
+    #define OP5  +=
 #endif
 
 #define ZGEMV_T_8x1()                     \
@@ -124,10 +123,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     res0i = y[0 * inc_y2 + 1];  \
                                 \
     res0r  += alphar * temp0r;  \
-    res0r OP0 alphai * temp0i;  \
+    res0r OP3 alphai * temp0i;  \
                                 \
-    res0i OP1 alphar * temp0i;  \
-    res0i OP2 alphai * temp0r;  \
+    res0i OP4 alphar * temp0i;  \
+    res0i OP5 alphai * temp0r;  \
                                 \
     y[0 * inc_y2] = res0r;      \
     y[0 * inc_y2 + 1] = res0i;  \
