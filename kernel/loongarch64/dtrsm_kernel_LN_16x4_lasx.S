@@ -1029,7 +1029,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .endm
 
     PROLOGUE
-    push_if_used 26, 32
+    push_if_used 9, 8
     PTR_SLLI   LDC,   LDC,   3
     /* if (!(N >> 2)) goto L_N3 */
     PTR_SRAI   J,     N,     2     /* J = bn >> 2 */
@@ -1361,6 +1361,6 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     blt      ZERO,  I,      .L_N1_I1
 .L_N1_M0:
 .L_N0:
-    pop_if_used 26, 32
+    pop_if_used 9, 8
     jirl    $r0, $r1, 0x0
     EPILOGUE

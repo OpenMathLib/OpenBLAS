@@ -955,11 +955,17 @@ endif
 
 ifeq ($(ARCH), loongarch64)
 LA64_ABI=$(shell $(CC) -mabi=lp64d -c $(TOPDIR)/cpuid_loongarch64.c -o /dev/null > /dev/null 2> /dev/null && echo lp64d)
+LA64_ARCH=$(shell $(CC) -march=loongarch64 -c $(TOPDIR)/cpuid_loongarch64.c -o /dev/null > /dev/null 2> /dev/null && echo loongarch64)
 ifneq ($(LA64_ABI), lp64d)
 LA64_ABI=lp64
 endif
+ifneq ($(LA64_ARCH), loongarch64)
+CCOMMON_OPT += -mabi=$(LA64_ABI)
+FCOMMON_OPT += -mabi=$(LA64_ABI)
+else
 CCOMMON_OPT += -march=loongarch64 -mabi=$(LA64_ABI)
 FCOMMON_OPT += -march=loongarch64 -mabi=$(LA64_ABI)
+endif
 endif
 
 endif

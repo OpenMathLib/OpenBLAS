@@ -837,7 +837,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .endm
 
     PROLOGUE
-    push_if_used 26, 32
+    push_if_used 9, 8
     xvreplve0.w   VALPHA,     $xr0
 #if defined (TRMMKERNEL) && !defined(LEFT)
     PTR_SUB   OFF,   ZERO,  OFFSET
@@ -2343,6 +2343,6 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif   // #if defined(TRMMKERNEL)
 .L_N1_M0:
 .L_N0:
-    pop_if_used 26, 32
+    pop_if_used 9, 8
     jirl    $r0, $r1, 0x0
     EPILOGUE
