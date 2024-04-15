@@ -55,6 +55,18 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef ASSEMBLER
 
 
+static __inline int WhereAmI(void){
+  uint64_t ret;
+  __asm__ volatile (
+       "         mrs x0, mpidr_el1 \n"
+       "         and x0, x0, 0xff  \n"
+                 :"=r" (ret)
+                 :: "memory"
+               );
+  if (ret > MAX_CPU_NUMBER) ret = MAX_CPU_NUMBER;
+  return (int)ret;
+}
+
 static __inline void blas_lock(volatile BLASULONG *address){
 
   BLASULONG ret;
