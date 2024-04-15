@@ -252,6 +252,9 @@ else
 endif
 
 # Common maps
+# Naming conventions: https://www.intel.com/content/www/us/en/docs/onemkl/developer-reference-c/2024-1/naming-conventions-for-blas-routines.html
+# Also see:
+# L1: https://www.intel.com/content/www/us/en/docs/onemkl/developer-reference-c/2024-1/blas-level-1-routines-and-functions.html
 precision_mappings = {
     's': {'undef': ['COMPLEX', 'DOUBLE'], 'def': []},
     'd': {'undef': ['COMPLEX'], 'def': ['DOUBLE']},
@@ -259,6 +262,9 @@ precision_mappings = {
     'c': {'undef': ['DOUBLE'], 'def': ['COMPLEX']},
     'z': {'undef': [], 'def': ['COMPLEX', 'DOUBLE']},
     'x': {'undef': [], 'def': ['COMPLEX', 'XDOUBLE']},
+    'cs': {'undef': ['DOUBLE'], 'def': ['COMPLEX']},
+    # zd is the same as z
+    # 'zd': {'undef': [], 'def': ['COMPLEX', 'DOUBLE']},
 }
 
 # Ignoring other hostarch checks and conflicts for arch in BSD for now
