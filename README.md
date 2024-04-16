@@ -188,7 +188,7 @@ Please read `GotoBLAS_01Readme.txt` for older CPU models already supported by th
 
 - **AIX**: Dynamic architecture with OpenXL and OpenMP.
   ```sh
-  make CC=ibm-clang_r FC=xlf TARGET=POWER7 BINARY=64 USE_OPENMP=1 INTERFACE64=1 DYNAMIC_ARCH=1 USE_THREAD=1
+  make CC=ibm-clang_r FC=xlf_r TARGET=POWER7 BINARY=64 USE_OPENMP=1 INTERFACE64=1 DYNAMIC_ARCH=1 USE_THREAD=1
   ```
 
 #### IBM zEnterprise System
