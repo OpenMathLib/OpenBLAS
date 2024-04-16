@@ -137,7 +137,7 @@ libgoto_hpl.def : $(GENSYM)
 
 ifeq ($(OSNAME), Darwin)
 ifeq ($(FIXED_LIBNAME),1)
-INTERNALNAME = $(LIBPREFIX)$(LIBNAMESUFFIX).dylib
+INTERNALNAME = $(LIBPREFIX).dylib
 else
 INTERNALNAME = $(LIBPREFIX).$(MAJOR_VERSION).dylib
 endif
