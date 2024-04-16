@@ -63,7 +63,8 @@ static __inline int WhereAmI(void){
                  :"=r" (ret)
                  :: "memory"
                );
-  if (ret > MAX_CPU_NUMBER) ret = MAX_CPU_NUMBER;
+  ret +=1;
+  if ((int)ret <0) ret = 0;
   return (int)ret;
 }
 
