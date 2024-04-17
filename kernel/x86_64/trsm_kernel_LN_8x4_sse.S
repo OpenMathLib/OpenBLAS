@@ -81,7 +81,7 @@
 #define BORIG	 48(%rsp)
 #define BUFFER	128(%rsp)
 
-#ifdef PENTIUM4
+#if defined(PENTIUM4) || defined(PRESCOTT)
 #define PREFETCH     prefetcht0
 #define PREFETCHW    prefetcht0
 #endif

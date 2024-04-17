@@ -229,7 +229,7 @@ static __inline int blas_quickdivide(unsigned int x, unsigned int y){
 #define EMMS
 #endif
 
-#if defined(CORE2) || defined(PENTIUM4)
+#if defined(CORE2) || defined(PENTIUM4) || defined(PRESCOTT)
 #define movapd	movaps
 #endif
 

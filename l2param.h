@@ -19,7 +19,7 @@
 #define PREFETCHSIZE	64 * 3
 #endif
 
-#ifdef PENTIUM4
+#if defined(PENTIUM4) || defined(PRESCOTT)
 #define ALIGNED_ACCESS
 #define MOVUPS_A	movaps
 #define MOVUPS_XL	movaps

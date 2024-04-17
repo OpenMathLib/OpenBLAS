@@ -39,7 +39,7 @@
 #define ASSEMBLER
 #include "common.h"
 
-#if defined(PENTIUM4) || defined(GENERIC)
+#if defined(PENTIUM4) || defined(PRESCOTT) || defined(GENERIC)
 #define RPREFETCHSIZE	16
 #define WPREFETCHSIZE (RPREFETCHSIZE * 4)
 #define PREFETCH      prefetcht0
@@ -204,7 +204,7 @@
 	movlps	0 * SIZE(AO4), %xmm3
 	movhps	2 * SIZE(AO4), %xmm3
 
-#if defined(PENTIUM4) || defined(GENERIC)
+#if defined(PENTIUM4) || defined(PRESCOTT) || defined(GENERIC)
 	PREFETCH	RPREFETCHSIZE * SIZE(AO1)
 	PREFETCH	RPREFETCHSIZE * SIZE(AO2)
 	PREFETCH	RPREFETCHSIZE * SIZE(AO3)
@@ -362,7 +362,7 @@
 	movlps	0 * SIZE(AO2), %xmm1
 	movhps	2 * SIZE(AO2), %xmm1
 
-#if defined(PENTIUM4) || defined(GENERIC)
+#if defined(PENTIUM4) || defined(PRESCOTT) || defined(GENERIC)
 	PREFETCH	RPREFETCHSIZE * SIZE(AO1)
 	PREFETCH	RPREFETCHSIZE * SIZE(AO2)
 	PREFETCHW	WPREFETCHSIZE * SIZE(BO)
@@ -381,7 +381,7 @@
 	movsd	2 * SIZE(AO2), %xmm3
 	movhpd	3 * SIZE(AO2), %xmm3
 
-#if defined(PENTIUM4) || defined(GENERIC)
+#if defined(PENTIUM4) || defined(PRESCOTT) || defined(GENERIC)
 	PREFETCH	RPREFETCHSIZE * SIZE(AO1)
 	PREFETCH	RPREFETCHSIZE * SIZE(AO2)
 	PREFETCHW	WPREFETCHSIZE * SIZE(BO)

@@ -249,7 +249,7 @@
 	prefetcht0	PREFETCHSIZE * SIZE(X)
 #endif
 
-#ifdef PENTIUM4
+#if defined(PENTIUM4) || defined(PRESCOTT)
 	prefetchnta	PREFETCHSIZE * SIZE(X)
 #endif
 

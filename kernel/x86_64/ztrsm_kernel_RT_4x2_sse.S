@@ -88,7 +88,7 @@
 #define movsd movlps
 #endif
 
-#if defined(PENTIUM4) || defined(CORE2) || defined(PENRYN) || defined(DUNNINGTON) || defined(ATOM) || defined(NANO)
+#if defined(PENTIUM4) || defined(PRESCOTT) || defined(CORE2) || defined(PENRYN) || defined(DUNNINGTON) || defined(ATOM) || defined(NANO)
 #define PREFETCH     prefetcht0
 #define PREFETCHW    prefetcht0
 #define PREFETCHNTA  prefetchnta

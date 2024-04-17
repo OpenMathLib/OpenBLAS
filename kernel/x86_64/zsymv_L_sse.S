@@ -63,7 +63,7 @@
 #define PREFETCHSIZE	(16 * 24)
 #endif
 
-#ifdef PENTIUM4
+#if defined(PENTIUM4) || defined(PRESCOTT)
 #define PREFETCH	prefetcht0
 #define PREFETCHW	prefetcht0
 #define PREFETCHSIZE	(16 * 28)

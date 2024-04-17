@@ -153,7 +153,7 @@
 	movlps	4 * SIZE(AO2), %xmm3
 	movhps	6 * SIZE(AO2), %xmm3
 
-#if defined(PENTIUM4) || defined(GENERIC) || defined(NANO)
+#if defined(PENTIUM4) || defined(PRESCOTT) || defined(GENERIC) || defined(NANO)
 	prefetcht0	RPREFETCHSIZE * SIZE(AO1)
 	prefetcht0	RPREFETCHSIZE * SIZE(AO2)
 	prefetcht0	WPREFETCHSIZE * SIZE(BO)
@@ -197,7 +197,7 @@
 	movsd	6 * SIZE(AO2), %xmm7
 	movhpd	7 * SIZE(AO2), %xmm7
 
-#if defined(PENTIUM4) || defined(GENERIC) || defined(NANO)
+#if defined(PENTIUM4) || defined(PRESCOTT) || defined(GENERIC) || defined(NANO)
 	prefetcht0	RPREFETCHSIZE * SIZE(AO1)
 	prefetcht0	RPREFETCHSIZE * SIZE(AO2)
 	prefetcht0	WPREFETCHSIZE * SIZE(BO)
@@ -316,7 +316,7 @@
 	movlps	4 * SIZE(AO1), %xmm1
 	movhps	6 * SIZE(AO1), %xmm1
 
-#if defined(PENTIUM4) || defined(GENERIC) || defined(NANO)
+#if defined(PENTIUM4) || defined(PRESCOTT) || defined(GENERIC) || defined(NANO)
 	prefetcht0	RPREFETCHSIZE * SIZE(AO1)
 	prefetcht0	WPREFETCHSIZE * SIZE(BO)
 #endif
@@ -339,7 +339,7 @@
 	movsd	6 * SIZE(AO1), %xmm3
 	movhpd	7 * SIZE(AO1), %xmm3
 
-#if defined(PENTIUM4) || defined(GENERIC) || defined(NANO)
+#if defined(PENTIUM4) || defined(PRESCOTT) || defined(GENERIC) || defined(NANO)
 	prefetcht0	RPREFETCHSIZE * SIZE(AO1)
 	prefetcht0	WPREFETCHSIZE * SIZE(BO)
 #endif

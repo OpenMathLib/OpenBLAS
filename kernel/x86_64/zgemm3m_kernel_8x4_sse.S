@@ -1792,7 +1792,7 @@
 	ALIGN_4
 
 .L52:
-#if defined(PENTIUM4) || defined(GENERIC)
+#if defined(PENTIUM4) || defined(PRESCOTT) || defined(GENERIC)
 	movss	 0 * SIZE(B), %xmm0
 	movss	 1 * SIZE(B), %xmm1
 	movss	 2 * SIZE(B), %xmm2
@@ -1880,7 +1880,7 @@
 	ALIGN_4
 
 .L54:
-#if defined(PENTIUM4) || defined(GENERIC)
+#if defined(PENTIUM4) || defined(PRESCOTT) || defined(GENERIC)
 	movss	 0 * SIZE(B), %xmm0
 	movss	 1 * SIZE(B), %xmm1
 
@@ -2763,7 +2763,7 @@
 
 
 .L102:
-#if defined(PENTIUM4) || defined(GENERIC)
+#if defined(PENTIUM4) || defined(PRESCOTT) || defined(GENERIC)
 	movss	 0 * SIZE(B), %xmm0
 	movss	 1 * SIZE(B), %xmm1
 	movss	 2 * SIZE(B), %xmm2
@@ -2851,7 +2851,7 @@
 	ALIGN_4
 
 .L104:
-#if defined(PENTIUM4) || defined(GENERIC)
+#if defined(PENTIUM4) || defined(PRESCOTT) || defined(GENERIC)
 	movss	 0 * SIZE(B), %xmm0
 	shufps	 $0, %xmm0, %xmm0
 	movaps	%xmm0,  0 * SIZE(BO)

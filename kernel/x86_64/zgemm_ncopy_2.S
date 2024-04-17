@@ -74,7 +74,7 @@
 #define WPREFETCHSIZE 48
 #endif
 
-#if defined(PENTIUM4) || defined(GENERIC) || defined(NANO)
+#if defined(PENTIUM4) || defined(PRESCOTT) || defined(GENERIC) || defined(NANO)
 #define RPREFETCHSIZE 32
 #define WPREFETCHSIZE 80
 #endif
@@ -150,7 +150,7 @@
 	movlps	6 * SIZE(AO1), %xmm3
 	movhps	6 * SIZE(AO2), %xmm3
 
-#if defined(PENTIUM4) || defined(GENERIC) || defined(NANO)
+#if defined(PENTIUM4) || defined(PRESCOTT) || defined(GENERIC) || defined(NANO)
 	prefetcht0	RPREFETCHSIZE * SIZE(AO1)
 	prefetcht0	RPREFETCHSIZE * SIZE(AO2)
 
@@ -191,7 +191,7 @@
 	movsd	6 * SIZE(AO2), %xmm7
 	movhpd	7 * SIZE(AO2), %xmm7
 
-#if defined(PENTIUM4) || defined(GENERIC) || defined(NANO)
+#if defined(PENTIUM4) || defined(PRESCOTT) || defined(GENERIC) || defined(NANO)
 	prefetcht0	RPREFETCHSIZE * SIZE(AO1)
 	prefetcht0	RPREFETCHSIZE * SIZE(AO2)
 
@@ -295,7 +295,7 @@
 	movapd	%xmm3,   6 * SIZE(B)
 #endif
 
-#if defined(PENTIUM4) || defined(GENERIC) || defined(NANO)
+#if defined(PENTIUM4) || defined(PRESCOTT) || defined(GENERIC) || defined(NANO)
 	prefetcht0	RPREFETCHSIZE * SIZE(AO1)
 	prefetcht0	RPREFETCHSIZE * SIZE(AO2)
 

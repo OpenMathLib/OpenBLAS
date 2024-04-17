@@ -93,7 +93,7 @@
 #define PREFETCHSIZE (16 * 5 + 8)
 #endif
 
-#if defined(PENTIUM4) || defined(GENERIC)
+#if defined(PENTIUM4) || defined(PRESCOTT) || defined(GENERIC)
 #define PREFETCH     prefetcht0
 #define PREFETCHW    prefetcht0
 #define PREFETCHSIZE  160
@@ -1573,7 +1573,7 @@
 	movaps	%xmm14, 24 * SIZE(BO)
 	movaps	%xmm15, 28 * SIZE(BO)
 
-#if defined(PENTIUM4) || defined(GENERIC)
+#if defined(PENTIUM4) || defined(PRESCOTT) || defined(GENERIC)
         PREFETCHW	128 * SIZE(BO)
 	PREFETCH	112 * SIZE(B)
 #endif

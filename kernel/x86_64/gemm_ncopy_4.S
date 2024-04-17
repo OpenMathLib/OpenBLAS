@@ -39,7 +39,7 @@
 #define ASSEMBLER
 #include "common.h"
 
-#if defined(PENTIUM4) || defined(GENERIC)
+#if defined(PENTIUM4) || defined(PRESCOTT) || defined(GENERIC)
 #define RPREFETCHSIZE	16
 #define WPREFETCHSIZE (RPREFETCHSIZE * 4)
 #define PREFETCH      prefetcht0
