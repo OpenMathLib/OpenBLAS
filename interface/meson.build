@@ -1,29 +1,3 @@
-_kinds = []
-real_kinds = ['s', 'd']
-if get_option('exprecision')
-  real_kinds += 'q'
-endif
-complex_kinds = ['c', 'z', 'x']
-extended_kinds = ['dx', 'bf16']
-
-blas_roots = []
-blas1_roots = [
-  # These don't exist as roots.
-  # ismax amax isamax amin ismin isamin
-  # TODO: Why is dsdot in sblas1objs!?
-  'axpy', 'swap', 'copy', 'scal', 'dot', 'dsdot', 'asum', 'sum', 'nrm2', 'max',
-  'rot'#, 'rotg', 'rotm', 'rotmg', 'axpby',
-]
-blas2_roots = [
-  'gemv', 'ger', 'trsv', 'trmv', 'symv', 'syr', 'syr2', 'gbmv', 'sbmv',
-  'spmv', 'spr', 'spr2', 'tbsv', 'tbmv', 'tpsv', 'tpmv',
-]
-blas3_roots = [
-  # TODO: trmm is trsm with a flag
-  'gemm', 'symm', 'trsm', 'syrk', 'syr2k', 'omatcopy', 'imatcopy', 'geadd',
-  'gemmt'
-]
-
 _blas_roots = [
   # NOTE: q, qx, x, xq do not have cblas_ rules in the Makefile
   # NOTE: https://developer.arm.com/documentation/101004/2310/BLAS-Basic-Linear-Algebra-Subprograms/CBLAS-functions?lang=en
@@ -377,72 +351,72 @@ _blas_roots = [
   },
 ]
 
-# addl_srcs = {
-#   'symm': '-DHEMM'
-# }
+_interface_libs = []
+foreach conf : _blas_roots
+    foreach type : conf['_types']
+      # Seed with common args
+      compiler_args = [_cargs]
+      # Set the type arguments
+      if precision_mappings.get(type).has_key('def')
+        foreach d : precision_mappings[type]['def']
+          compiler_args += ['-D' + d]
+        endforeach
+      endif
+      if precision_mappings.get(type).has_key('undef')
+        foreach u : precision_mappings[type]['undef']
+          compiler_args += ['-U' + u]
+        endforeach
+      endif
 
-# Generated
-# NOTE: Remember to check sourcesets as a simpler mechanism
-# TODO: Generated the imax and max via use_abs use_min
-interface_confs = []
-blas_roots += blas1_roots
-blas_roots += blas2_roots
-blas_roots += blas3_roots
-_kinds += real_kinds
-foreach root : blas1_roots
-  fname = root + '.c'
-  defs = []
-  # if root in addl_srcs
-  #   defs += addl_srcs[root]
-  # endif
-  foreach prec : real_kinds
-    _defs = []
-    name = prec + fname
-    if prec == 'd'
-      _defs += ['-UCOMPLEX', '-DDOUBLE']
-    elif prec == 's'
-      _defs += ['-UCOMPLEX', '-UDOUBLE']
-    elif prec == 'cs'
-      _defs += ['-DCOMPLEX', '-UDOUBLE']
-    endif
-    interface_confs += {'defs': _defs,
-                        'name': prec + root,
-                        'src': fname}
-    interface_confs += {'defs': _defs + '-DCBLAS',
-                        'name': 'cblas_' + prec + root,
-                        'src': fname}
-  endforeach
-endforeach
-message(interface_confs)
+        # Construct the actual symbol names
+        sym_name = conf['base'].replace('?', type)
+        if conf.get('cblas', false)
+          cblas_sym_name = 'cblas_' + sym_name
+        endif
 
-# if get_option('bfloat16')
-#   TODO: Handle bfloat16
-#   sblas1_srcs += files('sbdot.c')
-#   sblas2_srcs += files('sbgemv.c')
-#   sblas3_srcs += files(['sbgemm.c', 'sbgemmt.c'])
-# endif
+        # Construct conditionals
+        if conf.has_key('def')
+          foreach d : conf['def']
+              compiler_args += ['-D' + d]
+          endforeach
+          foreach u : conf['undef']
+              compiler_args += ['-U' + u]
+          endforeach
+        endif
 
-_static_libs = []
-foreach conf: interface_confs
-  sym_name = conf['name']
-  sym_underscored = f'@sym_name@_'
-    _static_libs += static_library(
-        sym_name,
-        conf['src'],
-        include_directories:  _inc,
-        c_args: [
-          conf['defs'],
-          _cargs,
+        # Make mangled symbols
+        # TODO: This might be conditional on other options
+        sym_underscored = f'@sym_name@_'
+        compiler_args += [
           f'-DASMNAME=@sym_name@',
           f'-DASMFNAME=@sym_underscored@',
           f'-DNAME=@sym_underscored@',
           f'-DCNAME=@sym_name@',
           f'-DCHAR_NAME="@sym_underscored@"',
-          f'-DCHAR_CNAME="@sym_name@"',
-        ],
-    )
+          f'-DCHAR_CNAME="@sym_name@"'
+        ]
+
+        # Create the static library for each symbol
+        lib = static_library(
+            sym_name,
+            sources: conf['fname'],
+            include_directories: _inc,
+            c_args: compiler_args
+        )
+        _interface_libs += lib
+
+        # If it's a CBLAS symbol, also create that
+        if conf.get('cblas', false)
+            cblas_lib = static_library(
+                cblas_sym_name,
+                sources: conf['fname'],
+                include_directories: _inc,
+                c_args: compiler_args + ['-DCBLAS']
+            )
+            _interface_libs += cblas_lib
+        endif
+    endforeach
 endforeach
 
-_interface = static_library('_interface',
-                            c_args: _cargs,
-                            link_whole: _static_libs)
+# Create a combined static library linking all individual static libraries
+_interface = static_library('_interface', link_whole: _interface_libs)
