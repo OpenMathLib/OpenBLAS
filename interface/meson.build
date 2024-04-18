@@ -407,6 +407,11 @@ foreach conf : _blas_roots
 
         # If it's a CBLAS symbol, also create that
         if conf.get('cblas', false)
+          if 'q' in type
+            # There are no cblas_q symbols
+            # TODO: Handle edge cases around dz zd sc
+            continue
+          endif
             cblas_lib = static_library(
                 cblas_sym_name,
                 sources: conf['fname'],
