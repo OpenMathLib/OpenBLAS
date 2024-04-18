@@ -173,6 +173,10 @@ NO_AFFINITY = 1
 # If you are compiling for Linux and you have more than 16 numa nodes or more than 256 cpus
 # BIGNUMA = 1
 
+# If you are compiling for an embedded system ("bare metal") like Cortex M series
+# Note that you will have to provide implementations of malloc() and free() in this case
+# EMBEDDED = 1
+
 # Don't use AVX kernel on Sandy Bridge. It is compatible with old compilers
 # and OS. However, the performance is low.
 # NO_AVX = 1
