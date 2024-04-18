@@ -826,6 +826,16 @@ int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, IFLOAT *sa, IF
     if (nthreads_m * nthreads_n > args -> nthreads) {
       nthreads_n = blas_quickdivide(args -> nthreads, nthreads_m);
     }
+    /* The nthreads_m and nthreads_n are adjusted so that the submatrix       */
+    /* to be handled by each thread preferably becomes a square matrix        */
+    /* by minimizing an objective function 'n * nthreads_m + m * nthreads_n'. */
+    /* Objective function come from sum of partitions in m and n.             */
+    /* (n / nthreads_n) + (m / nthreads_m)                                    */
+    /* = (n * nthreads_m + m * nthreads_n) / (nthreads_n * nthreads_m)        */
+    while (nthreads_m % 2 == 0 && n * nthreads_m + m * nthreads_n > n * (nthreads_m / 2) + m * (nthreads_n * 2)) {
+      nthreads_m /= 2;
+      nthreads_n *= 2;
+    }
   }
 
   /* Execute serial or parallel computation */
