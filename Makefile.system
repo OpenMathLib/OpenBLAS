@@ -815,7 +815,7 @@ ifneq ($(EMBEDDED), 1)
 CCOMMON_OPT += -marm
 FCOMMON_OPT += -marm
 else
-CCOMMON_OPT += -DOS_EMBEDDED
+CCOMMON_OPT += -DOS_EMBEDDED -mthumb -mcpu=cortex-m4 -mfloat-abi=hard -mfpu=fpv4-sp-d16
 endif
 
 # If softfp abi is mentioned on the command line, force it.
