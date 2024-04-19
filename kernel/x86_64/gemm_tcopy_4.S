@@ -219,31 +219,41 @@
 	movaps	%xmm3,   12 * SIZE(BO)
 #else
 
+#ifdef PREFETCH
 	PREFETCH	RPREFETCHSIZE * SIZE(AO1)
+#endif
 	movsd	0 * SIZE(AO1), %xmm0
 	movhpd	1 * SIZE(AO1), %xmm0
 	movsd	2 * SIZE(AO1), %xmm1
 	movhpd	3 * SIZE(AO1), %xmm1
 
+#ifdef PREFETCH
 	PREFETCH	RPREFETCHSIZE * SIZE(AO2)
+#endif
 	movsd	0 * SIZE(AO2), %xmm2
 	movhpd	1 * SIZE(AO2), %xmm2
 	movsd	2 * SIZE(AO2), %xmm3
 	movhpd	3 * SIZE(AO2), %xmm3
 
+#ifdef PREFETCH
 	PREFETCH	RPREFETCHSIZE * SIZE(AO3)
+#endif
 	movsd	0 * SIZE(AO3), %xmm4
 	movhpd	1 * SIZE(AO3), %xmm4
 	movsd	2 * SIZE(AO3), %xmm5
 	movhpd	3 * SIZE(AO3), %xmm5
 
+#ifdef PREFETCH
 	PREFETCH	RPREFETCHSIZE * SIZE(AO4)
+#endif
 	movsd	0 * SIZE(AO4), %xmm6
 	movhpd	1 * SIZE(AO4), %xmm6
 	movsd	2 * SIZE(AO4), %xmm7
 	movhpd	3 * SIZE(AO4), %xmm7
 
+#ifdef PREFETCHW
 	PREFETCHW	WPREFETCHSIZE * SIZE(BO)
+#endif
 	movapd	%xmm0,    0 * SIZE(BO)
 	movapd	%xmm1,    2 * SIZE(BO)
 	movapd	%xmm2,    4 * SIZE(BO)
