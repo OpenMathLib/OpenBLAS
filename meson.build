@@ -81,58 +81,30 @@ endif
 
 _check_prefix = []
 conf_data = configuration_data()
-is_win = build_machine.system() == 'win'
+is_win = host_machine.system() == 'windows' or host_machine.system() == 'cygwin'
 conf_data.set('OS_WINDOWS', is_win)
+hostcpu = host_machine.cpu_family()
 
-getarch_array = [
- # Redundant, we have build_machine.system() for windows
- {'checks': ['WIN32', 'WIN64', 'CYGWIN32'], 'addl': ['_WIN64', '_WIN32'], 'name': 'Windows', 'def': ['OS_WINDOWS']},
- {'checks': ['i386', 'x86_64'], 'addl': ['_M_IX86', '_M_X64'], 'name': 'Intel AMD', 'def': ['INTEL_AMD']},
- {'checks': ['powerpc', 'ppc', 'POWERPC'], 'addl': ['__powerpc', 'powerpc', 'ppc', '_POWER'], 'name': 'PowerPC', 'def': ['POWER', 'ARCH_POWER']},
- {'checks': ['zarch', 's390x'], 'name': 'zarch', 'def': ['ARCH_ZARCH', 'ZARCH']},
- {'checks': ['ia64'], 'name': 'IA64', 'def': ['ARCH_IA64']},
- {'name': 'Alpha', 'addl': ['__alpha'], 'def': ['ARCH_ALPHA']},
- {'name': 'SPARC', 'addl': ['sparc'], 'def': ['ARCH_SPARC']},
- {'checks': ['mips'], 'name': 'MIPS', 'def': ['ARCH_MIPS']},
- {'name': 'MIPS 64', 'addl': ['__mips64'], 'def': ['ARCH_MIPS64']},
- {'name': 'LOONGARCH 64', 'addl': ['__loongarch64'], 'def': ['ARCH_LOONGARCH64']},
- {'name': 'RISCV 64', 'addl': ['__riscv'], 'def': ['ARCH_RISCV64']},
- {'checks': ['arm'], 'name': 'ARM', 'def': ['ARCH_ARM']},
- {'checks': ['aarch64'], 'name': 'ARM 64', 'def': ['ARCH_ARM64']},
+defarch_array = [
+ # {'system': ['windows', 'cygwin'], 'def': ['OS_WINDOWS']},
+ {'cpu': ['aarch64'], 'def': ['ARCH_ARGM64']},
+ {'cpu': ['alpha'], 'def': ['ARCH_ALPHA']},
+ {'cpu': ['arm'], 'def': ['ARCH_ARM']},
+ {'cpu': ['x86_64'], 'def': ['INTEL_AMD']},
+ {'cpu': ['s390x'], 'def': ['ARCH_ZARCH', 'ZARCH']},
+ {'cpu': ['ia64'], 'def': ['ARCH_IA64']},
+ {'cpu': ['sparc'], 'def': ['ARCH_SPARC']},
+ {'cpu': ['mips'], 'def': ['ARCH_MIPS']},
+ {'cpu': ['mips64'], 'def': ['ARCH_MIPS64']},
+ {'cpu': ['loongarch64'], 'def': ['ARCH_LOONGARCH64']},
+ {'cpu': ['riscv64'], 'def': ['ARCH_RISCV64']},
+ {'cpu': ['ppc64', 'ppc'], 'def': ['ARCH_POWER', 'POWER']},
 ]
 
-foreach arch : getarch_array
-  check_str = ''
-  if arch.has_key('checks')
-    foreach check : arch['checks']
-      if check_str == ''
-        check_str += 'defined(__' + check + '__)'
-      else
-        check_str += ' || defined(__' + check + '__)'
-      endif
-    endforeach
-  endif
-  if arch.has_key('addl')
-    foreach check : arch['addl']
-      if check_str == ''
-        check_str += 'defined(' + check + ')'
-      else
-        check_str += ' || defined(' + check + ')'
-      endif
-    endforeach
-  endif
-
-  sname = arch['name']
-  code = f'''
-    #if !(@check_str@)
-    #error "Not @sname@"
-    #endif
-  '''
-  # message(code)
-
-  is_arch = cc.compiles(code, name: arch['name'])
+foreach arch : defarch_array
+  is_cpu = hostcpu in arch['cpu']
   foreach def : arch['def']
-    conf_data.set(def, is_arch)
+    conf_data.set(def, is_cpu)
   endforeach
 endforeach
 
