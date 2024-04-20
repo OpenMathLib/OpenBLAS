@@ -58,6 +58,7 @@ OBJS = utest_main2.o
 endif
 ifeq ($(OSNAME), AIX)
 OBJS = utest_main2.o
+OBJS_EXT = $(DIR_EXT)/utest_main2.o
 endif
 
 all : run_test
