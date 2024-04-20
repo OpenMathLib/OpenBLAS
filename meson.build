@@ -238,9 +238,10 @@ precision_mappings = {
     'sc': {'undef': ['DOUBLE'], 'def': ['COMPLEX']},
     'dz': {'def': ['COMPLEX', 'DOUBLE']},
     'zd': {'def': ['COMPLEX', 'DOUBLE']},
-    'qx': {'def': ['COMPLEX', 'DOUBLE']},
-    'xq': {'def': ['COMPLEX', 'DOUBLE']},
+    'qx': {'def': ['COMPLEX', 'XDOUBLE']},
+    'xq': {'def': ['COMPLEX', 'XDOUBLE']},
     '': {}, # special case, for cblas_?dot*_sub
+    # NOTE: Anything with XDOUBLE aka longdouble has no cblas_
     # xq / qx == x
     # sc / cs == c
     # zd / dz is the same as z
@@ -251,7 +252,7 @@ precision_mappings = {
 _inc = include_directories('.')
 # subdir('lapack-netlib')
 subdir('interface')
-# subdir('kernel')
+subdir('kernel')
 
 # _openblas = static_library('openblas',
 #                     link_whole: [ _interface, _kern])
