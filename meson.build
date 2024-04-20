@@ -254,5 +254,5 @@ _inc = include_directories('.')
 subdir('interface')
 subdir('kernel')
 
-# _openblas = static_library('openblas',
-#                     link_whole: [ _interface, _kern])
+_openblas = static_library('openblas',
+                    link_whole: [ _interface, _kern])
