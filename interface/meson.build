@@ -2,19 +2,23 @@ _blas_roots = [
   # NOTE: q, qx, x, xq do not have cblas_ rules in the Makefile
   # NOTE: https://developer.arm.com/documentation/101004/2310/BLAS-Basic-Linear-Algebra-Subprograms/CBLAS-functions?lang=en
   # Level 1
-  { 'base': '?asum', '_types': ['s', 'd', 'q', 'sc', 'dz', 'qx'],
+  { 'base': '?asum', '_types': ['s', 'd', 'q',
+                                'sc', 'dz', 'qx'],
     'fname': 'asum.c',
     'cblas': true,
   },
-  { 'base': '?sum', '_types': ['s', 'd', 'q', 'sc', 'dz', 'qx'],
+  { 'base': '?sum', '_types': ['s', 'd', 'q',
+                               'sc', 'dz', 'qx'],
     'fname': 'sum.c',
     'cblas': true,
   },
-  { 'base': '?amax', '_types': ['s', 'd', 'q', 'sc', 'dz', 'qx'],
+  { 'base': '?amax', '_types': ['s', 'd', 'q',
+                                'sc', 'dz', 'qx'],
     'fname': 'max.c', 'def': [ 'USE_ABS' ], 'undef': [ 'USE_MIN' ],
     'cblas': true,
   },
-  { 'base': '?amin', '_types': ['s', 'd', 'q', 'sc', 'dz', 'qx'],
+  { 'base': '?amin', '_types': ['s', 'd', 'q',
+                                'sc', 'dz', 'qx'],
     'fname': 'max.c', 'def': [ 'USE_ABS', 'USE_MIN' ], 'undef': [ ],
     'cblas': true,
   },
@@ -60,7 +64,8 @@ _blas_roots = [
     'fname': 'zdot.c', 'def': [ 'CBLAS', 'FORCE_USE_STACK', 'CONJ' ], 'undef': [ ],
     'cblas': false, # These don't non-cblas rules Makefile:1623:1627
   },
-  { 'base': '?nrm2', '_types': ['s', 'd', 'q', 'sc', 'dz', 'qx'],
+  { 'base': '?nrm2', '_types': ['s', 'd', 'q',
+                                'sc', 'dz', 'qx'],
     'fname': 'nrm2.c',
     'cblas': true, # q, qx don't have cblas_ rules Makefile:1635,1645
   },
@@ -299,31 +304,38 @@ _blas_roots = [
     'cblas': true,
   },
   # TODO: BUILD_BFLOAT16 here, Makefile:1303
-  { 'base': '?gemm', '_types': ['s', 'd', 'q', 'c', 'z', 'x'],
+  { 'base': '?gemm', '_types': ['s', 'd', 'q',
+                                'c', 'z', 'x'],
     'fname': ['gemm.c', '../param.h'], # TODO: Will this work?
     'cblas': true,
   },
-  { 'base': '?gemmt', '_types': ['s', 'd', 'q', 'c', 'z', 'x'],
+  { 'base': '?gemmt', '_types': ['s', 'd', 'q',
+                                 'c', 'z', 'x'],
     'fname': ['gemmt.c', '../param.h'],
     'cblas': true,
   },
-  { 'base': '?symm', '_types': ['s', 'd', 'q', 'c', 'z', 'x'],
+  { 'base': '?symm', '_types': ['s', 'd', 'q',
+                                'c', 'z', 'x'],
     'fname': 'symm.c',
     'cblas': true,
   },
-  { 'base': '?trmm', '_types': ['s', 'd', 'q', 'c', 'z', 'x'],
+  { 'base': '?trmm', '_types': ['s', 'd', 'q',
+                                'c', 'z', 'x'],
     'fname': 'trsm.c', 'def': [ 'TRMM' ], 'undef': [ ],
     'cblas': true,
   },
-  { 'base': '?trsm', '_types': ['s', 'd', 'q', 'c', 'z', 'x'],
+  { 'base': '?trsm', '_types': ['s', 'd', 'q',
+                                'c', 'z', 'x'],
     'fname': 'trsm.c',
     'cblas': true,
   },
-  { 'base': '?syrk', '_types': ['s', 'd', 'q', 'c', 'z', 'x'],
+  { 'base': '?syrk', '_types': ['s', 'd', 'q',
+                                'c', 'z', 'x'],
     'fname': 'syrk.c',
     'cblas': true,
   },
-  { 'base': '?syr2k', '_types': ['s', 'd', 'q', 'c', 'z', 'x'],
+  { 'base': '?syr2k', '_types': ['s', 'd', 'q',
+                                 'c', 'z', 'x'],
     'fname': 'syr2k.c',
     'cblas': true,
   },
@@ -541,6 +553,11 @@ _blas_roots = [
 _interface_libs = []
 foreach conf : _blas_roots
     foreach type : conf['_types']
+      if 'q' in type or 'x' in type
+        # TODO: Figure out when to build these
+        # These are the XDOUBLE symbols
+        continue
+      endif
       # Seed with common args
       compiler_args = [_cargs]
       # Set the type arguments
@@ -594,7 +611,7 @@ foreach conf : _blas_roots
 
         # If it's a CBLAS symbol, also create that
         if conf.get('cblas', false)
-          if 'q' in type
+          if 'q' in type or 'x' in type
             # There are no cblas_q symbols
             # TODO: Handle edge cases around dz zd sc
             continue
