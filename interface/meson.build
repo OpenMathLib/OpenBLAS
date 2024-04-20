@@ -572,10 +572,13 @@ foreach conf : _blas_roots
         endforeach
       endif
 
-        # Construct the actual symbol names
+        # Construct the actual symbol names, and mangled symbols
+        # TODO: This might be conditional on other options
         sym_name = conf['base'].replace('?', type)
+        sym_underscored = f'@sym_name@_'
         if conf.get('cblas', false)
           cblas_sym_name = 'cblas_' + sym_name
+          cblas_sym_underscored = f'@cblas_sym_name@_'
         endif
 
         # Construct conditionals
@@ -590,22 +593,20 @@ foreach conf : _blas_roots
 
         # Make mangled symbols
         # TODO: This might be conditional on other options
-        sym_underscored = f'@sym_name@_'
-        compiler_args += [
-          f'-DASMNAME=@sym_name@',
-          f'-DASMFNAME=@sym_underscored@',
-          f'-DNAME=@sym_underscored@',
-          f'-DCNAME=@sym_name@',
-          f'-DCHAR_NAME="@sym_underscored@"',
-          f'-DCHAR_CNAME="@sym_name@"'
-        ]
 
         # Create the static library for each symbol
         lib = static_library(
             sym_name,
             sources: conf['fname'],
             include_directories: _inc,
-            c_args: compiler_args
+            c_args: compiler_args + [
+              f'-DASMNAME=@sym_name@',
+              f'-DASMFNAME=@sym_underscored@',
+              f'-DNAME=@sym_underscored@',
+              f'-DCNAME=@sym_name@',
+              f'-DCHAR_NAME="@sym_underscored@"',
+              f'-DCHAR_CNAME="@sym_name@"'
+            ]
         )
         _interface_libs += lib
 
@@ -620,7 +621,15 @@ foreach conf : _blas_roots
                 cblas_sym_name,
                 sources: conf['fname'],
                 include_directories: _inc,
-                c_args: compiler_args + ['-DCBLAS']
+                c_args: compiler_args + [
+                  '-DCBLAS',
+                  f'-DASMNAME=@cblas_sym_name@',
+                  f'-DASMFNAME=@cblas_sym_underscored@',
+                  f'-DNAME=@cblas_sym_underscored@',
+                  f'-DCNAME=@cblas_sym_name@',
+                  f'-DCHAR_NAME="@cblas_sym_underscored@"',
+                  f'-DCHAR_CNAME="@cblas_sym_name@"'
+                ]
             )
             _interface_libs += cblas_lib
         endif
