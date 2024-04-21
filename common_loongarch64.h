@@ -96,6 +96,32 @@ static inline int WhereAmI(void){
 }
 #endif
 
+static inline int get_cpu_model(char *model_name) {
+  FILE *cpuinfo_file = fopen("/proc/cpuinfo", "r");
+  if (!cpuinfo_file) {
+    return 0;
+  }
+  char line[1024];
+  while (fgets(line, sizeof(line), cpuinfo_file)) {
+    if (strstr(line, "model name")) {
+      char *token = strtok(line, ":");
+      token = strtok(NULL, ":");
+      while (*token == ' ')
+        token++;
+      char *end = token + strlen(token) - 1;
+      while (end > token && (*end == '\n' || *end == '\r')) {
+        *end = '\0';
+        end--;
+      }
+      strcpy(model_name, token);
+      fclose(cpuinfo_file);
+      return 1;
+    }
+  }
+  fclose(cpuinfo_file);
+  return 0;
+}
+
 #ifdef DOUBLE
 #define GET_IMAGE(res)  __asm__ __volatile__("fmov.d %0, $f2" : "=f"(res)  : : "memory")
 #else

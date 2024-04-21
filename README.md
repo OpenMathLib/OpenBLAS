@@ -167,6 +167,7 @@ Please read `GotoBLAS_01Readme.txt` for older CPU models already supported by th
 - **Cortex A57**: Optimized Level-3 and Level-2 functions
 - **Cortex A72**: same as A57 ( different cpu specifications)
 - **Cortex A73**: same as A57 (different cpu specifications)
+- **Cortex A76**: same as A57 (different cpu specifications)
 - **Falkor**: same as A57 (different cpu specifications)
 - **ThunderX**: Optimized some Level-1 functions
 - **ThunderX2T99**: Optimized Level-3 BLAS and parts of Levels 1 and 2
@@ -187,7 +188,7 @@ Please read `GotoBLAS_01Readme.txt` for older CPU models already supported by th
 
 - **AIX**: Dynamic architecture with OpenXL and OpenMP.
   ```sh
-  make CC=ibm-clang_r FC=xlf TARGET=POWER7 BINARY=64 USE_OPENMP=1 INTERFACE64=1 DYNAMIC_ARCH=1 USE_THREAD=1
+  make CC=ibm-clang_r FC=xlf_r TARGET=POWER7 BINARY=64 USE_OPENMP=1 INTERFACE64=1 DYNAMIC_ARCH=1 USE_THREAD=1
   ```
 
 #### IBM zEnterprise System
@@ -211,7 +212,7 @@ Please read `GotoBLAS_01Readme.txt` for older CPU models already supported by th
 - **ZVL???B**: Level-3 BLAS and Level-1,2 including vectorised kernels targeting generic RISCV cores with vector support with registers of at least the corresponding width; ZVL128B and ZVL256B are available.
 e.g.:
   ```sh
-make TARGET=RISCV64_ZVL256B CFLAGS="-DTARGET=RISCV64_ZVL256B" \
+    make TARGET=RISCV64_ZVL256B CFLAGS="-DTARGET=RISCV64_ZVL256B" \
     BINARY=64 ARCH=riscv64 CC='clang -target riscv64-unknown-linux-gnu' \
     AR=riscv64-unknown-linux-gnu-ar AS=riscv64-unknown-linux-gnu-gcc \
     LD=riscv64-unknown-linux-gnu-gcc FC=riscv64-unknown-linux-gnu-gfortran \

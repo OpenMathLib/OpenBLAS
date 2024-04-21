@@ -84,6 +84,7 @@ jobs:
         run: |
           export PATH=$GITHUB_WORKSPACE/qemu-install/bin/:$PATH
           qemu-riscv64 ./utest/openblas_utest
+          qemu-riscv64 ./utest/openblas_utest_ext
           OPENBLAS_NUM_THREADS=2 qemu-riscv64 ./ctest/xscblat1
           OPENBLAS_NUM_THREADS=2 qemu-riscv64 ./ctest/xdcblat1
           OPENBLAS_NUM_THREADS=2 qemu-riscv64 ./ctest/xccblat1

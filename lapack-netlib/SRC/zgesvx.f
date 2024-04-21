@@ -302,7 +302,7 @@
 *>
 *> \param[out] RWORK
 *> \verbatim
-*>          RWORK is DOUBLE PRECISION array, dimension (2*N)
+*>          RWORK is DOUBLE PRECISION array, dimension (MAX(1,2*N))
 *>          On exit, RWORK(1) contains the reciprocal pivot growth
 *>          factor norm(A)/norm(U). The "max absolute element" norm is
 *>          used. If RWORK(1) is much less than 1, then the stability

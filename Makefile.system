@@ -811,8 +811,12 @@ ifeq ($(ARCH), arm)
 NO_BINARY_MODE  = 1
 BINARY_DEFINED  = 1
 
+ifneq ($(EMBEDDED), 1)
 CCOMMON_OPT += -marm
 FCOMMON_OPT += -marm
+else
+CCOMMON_OPT += -DOS_EMBEDDED -mthumb -mcpu=cortex-m4 -mfloat-abi=hard -mfpu=fpv4-sp-d16
+endif
 
 # If softfp abi is mentioned on the command line, force it.
 ifeq ($(ARM_SOFTFP_ABI), 1)
@@ -1194,9 +1198,6 @@ endif
 endif
 else
 FCOMMON_OPT += -q32
-endif
-ifeq ($(USE_OPENMP), 1)
-FCOMMON_OPT += -openmp
 endif
 endif
 

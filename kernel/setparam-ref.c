@@ -1066,31 +1066,123 @@ static void init_parameter(void) {
 }
 #else // (ARCH_MIPS64)
 #if (ARCH_LOONGARCH64)
+static int get_L3_size() {
+  int ret = 0, id = 0x14;
+  __asm__ volatile (
+    "cpucfg %[ret], %[id]"
+    : [ret]"=r"(ret)
+    : [id]"r"(id)
+    : "memory"
+  );
+  return ((ret & 0xffff) + 1) * pow(2, ((ret >> 16) & 0xff)) * pow(2, ((ret >> 24) & 0x7f)) / 1024 / 1024; // MB
+}
 static void init_parameter(void) {
 
 #ifdef BUILD_BFLOAT16
   TABLE_NAME.sbgemm_p = SBGEMM_DEFAULT_P;
 #endif
+
+#ifdef BUILD_BFLOAT16
+  TABLE_NAME.sbgemm_r = SBGEMM_DEFAULT_R;
+#endif
+
+#if defined(LOONGSON3R5)
+  int L3_size = get_L3_size();
+#ifdef SMP
+  if(blas_num_threads == 1){
+#endif
+    //single thread
+    if (L3_size == 32){ // 3C5000 and 3D5000
+      TABLE_NAME.sgemm_p = 256;
+      TABLE_NAME.sgemm_q = 384;
+      TABLE_NAME.sgemm_r = 8192;
+
+      TABLE_NAME.dgemm_p = 112;
+      TABLE_NAME.dgemm_q = 289;
+      TABLE_NAME.dgemm_r = 4096;
+
+      TABLE_NAME.cgemm_p = 128;
+      TABLE_NAME.cgemm_q = 256;
+      TABLE_NAME.cgemm_r = 4096;
+
+      TABLE_NAME.zgemm_p = 128;
+      TABLE_NAME.zgemm_q = 128;
+      TABLE_NAME.zgemm_r = 2048;
+    } else { // 3A5000 and 3C5000L
+      TABLE_NAME.sgemm_p = 256;
+      TABLE_NAME.sgemm_q = 384;
+      TABLE_NAME.sgemm_r = 4096;
+
+      TABLE_NAME.dgemm_p = 112;
+      TABLE_NAME.dgemm_q = 300;
+      TABLE_NAME.dgemm_r = 3024;
+
+      TABLE_NAME.cgemm_p = 128;
+      TABLE_NAME.cgemm_q = 256;
+      TABLE_NAME.cgemm_r = 2048;
+
+      TABLE_NAME.zgemm_p = 128;
+      TABLE_NAME.zgemm_q = 128;
+      TABLE_NAME.zgemm_r = 1024;
+    }
+#ifdef SMP
+  }else{
+    //multi thread
+    if (L3_size == 32){ // 3C5000 and 3D5000
+      TABLE_NAME.sgemm_p = 256;
+      TABLE_NAME.sgemm_q = 384;
+      TABLE_NAME.sgemm_r = 1024;
+
+      TABLE_NAME.dgemm_p = 112;
+      TABLE_NAME.dgemm_q = 289;
+      TABLE_NAME.dgemm_r = 342;
+
+      TABLE_NAME.cgemm_p = 128;
+      TABLE_NAME.cgemm_q = 256;
+      TABLE_NAME.cgemm_r = 512;
+
+      TABLE_NAME.zgemm_p = 128;
+      TABLE_NAME.zgemm_q = 128;
+      TABLE_NAME.zgemm_r = 512;
+    } else { // 3A5000 and 3C5000L
+      TABLE_NAME.sgemm_p = 256;
+      TABLE_NAME.sgemm_q = 384;
+      TABLE_NAME.sgemm_r = 2048;
+
+      TABLE_NAME.dgemm_p = 112;
+      TABLE_NAME.dgemm_q = 300;
+      TABLE_NAME.dgemm_r = 738;
+
+      TABLE_NAME.cgemm_p = 128;
+      TABLE_NAME.cgemm_q = 256;
+      TABLE_NAME.cgemm_r = 1024;
+
+      TABLE_NAME.zgemm_p = 128;
+      TABLE_NAME.zgemm_q = 128;
+      TABLE_NAME.zgemm_r = 1024;
+    }
+  }
+#endif
+#else
   TABLE_NAME.sgemm_p = SGEMM_DEFAULT_P;
   TABLE_NAME.dgemm_p = DGEMM_DEFAULT_P;
   TABLE_NAME.cgemm_p = CGEMM_DEFAULT_P;
   TABLE_NAME.zgemm_p = ZGEMM_DEFAULT_P;
 
-#ifdef BUILD_BFLOAT16
-  TABLE_NAME.sbgemm_r = SBGEMM_DEFAULT_R;
-#endif
-  TABLE_NAME.sgemm_r = SGEMM_DEFAULT_R;
-  TABLE_NAME.dgemm_r = DGEMM_DEFAULT_R;
-  TABLE_NAME.cgemm_r = CGEMM_DEFAULT_R;
-  TABLE_NAME.zgemm_r = ZGEMM_DEFAULT_R;
-
-#ifdef BUILD_BFLOAT16
-  TABLE_NAME.sbgemm_q = SBGEMM_DEFAULT_Q;
-#endif
   TABLE_NAME.sgemm_q = SGEMM_DEFAULT_Q;
   TABLE_NAME.dgemm_q = DGEMM_DEFAULT_Q;
   TABLE_NAME.cgemm_q = CGEMM_DEFAULT_Q;
   TABLE_NAME.zgemm_q = ZGEMM_DEFAULT_Q;
+
+  TABLE_NAME.sgemm_r = SGEMM_DEFAULT_R;
+  TABLE_NAME.dgemm_r = DGEMM_DEFAULT_R;
+  TABLE_NAME.cgemm_r = CGEMM_DEFAULT_R;
+  TABLE_NAME.zgemm_r = ZGEMM_DEFAULT_R;
+#endif
+
+#ifdef BUILD_BFLOAT16
+  TABLE_NAME.sbgemm_q = SBGEMM_DEFAULT_Q;
+#endif
 }
 #else // (ARCH_LOONGARCH64)
 #if (ARCH_POWER)
@@ -1247,6 +1339,10 @@ return 256;
 static __inline__ int get_l2_size(void){
 
   int eax, ebx, ecx, edx, l2;
+
+  l2 = readenv_atoi("OPENBLAS_L2_SIZE");
+  if (l2 != 0)
+    return l2;
 
   cpuid(0x80000006, &eax, &ebx, &ecx, &edx);
 

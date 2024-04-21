@@ -296,7 +296,7 @@
 *>
 *> \param[out] WORK
 *> \verbatim
-*>          WORK is DOUBLE PRECISION array, dimension (4*N)
+*>          WORK is DOUBLE PRECISION array, dimension (MAX(1,4*N))
 *>          On exit, WORK(1) contains the reciprocal pivot growth
 *>          factor norm(A)/norm(U). The "max absolute element" norm is
 *>          used. If WORK(1) is much less than 1, then the stability

@@ -91,10 +91,10 @@ IDAMAXKERNEL   = iamax_thunderx2t99.c
 ICAMAXKERNEL   = izamax_thunderx2t99.c
 IZAMAXKERNEL   = izamax_thunderx2t99.c
 
-SNRM2KERNEL    = scnrm2_thunderx2t99.c
-DNRM2KERNEL    = dznrm2_thunderx2t99.c
-CNRM2KERNEL    = scnrm2_thunderx2t99.c
-ZNRM2KERNEL    = dznrm2_thunderx2t99.c
+SNRM2KERNEL    = nrm2.S
+DNRM2KERNEL    = nrm2.S
+CNRM2KERNEL    = znrm2.S
+ZNRM2KERNEL    = znrm2.S
 
 DDOTKERNEL     = dot.c
 SDOTKERNEL     = dot.c

@@ -460,7 +460,6 @@ blas_queue_t *tscq;
 #endif
 
   if(queue) {
-
     exec_threads(cpu, queue, 0);
   }
 
@@ -923,7 +922,7 @@ void goto_set_num_threads(int num_threads) {
 
   blas_cpu_number  = num_threads;
 
-#if defined(ARCH_MIPS64)
+#if defined(ARCH_MIPS64) || defined(ARCH_LOONGARCH64)
 #ifndef DYNAMIC_ARCH
   //set parameters for different number of threads.
   blas_set_parameter();
@@ -1072,10 +1071,18 @@ fprintf(STDERR, "Server[%2ld] Calculation started.  Mode = 0x%03x M = %3ld N=%3l
 #endif
 
 #ifdef MONITOR
-    main_status[cpu] = MAIN_RUNNING1;
+      main_status[cpu] = MAIN_RUNNING1;
 #endif
 
-    if (sa == NULL) sa = (void *)((BLASLONG)buffer + GEMM_OFFSET_A);
+//For Loongson servers, like the 3C5000 (featuring 16 cores), applying an
+//offset to the buffer is essential for minimizing cache conflicts and optimizing performance.
+#if defined(LOONGSON3R5) && !defined(NO_AFFINITY)
+      char model_name[128];
+      get_cpu_model(model_name);
+      if ((strstr(model_name, "3C5000") != NULL) || (strstr(model_name, "3D5000") != NULL))
+        if (sa == NULL) sa = (void *)((BLASLONG)buffer + (WhereAmI() & 0xf) * GEMM_OFFSET_A);
+#endif
+      if (sa == NULL) sa = (void *)((BLASLONG)buffer + GEMM_OFFSET_A);
 
     if (sb == NULL) {
 if (!(queue -> mode & BLAS_COMPLEX)){

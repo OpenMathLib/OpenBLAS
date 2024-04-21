@@ -95,10 +95,12 @@ int NAME(char *UPLO, char* TRANS, char* DIAG, blasint *N, blasint *NRHS, FLOAT *
   if (trans_arg == 'R') trans = 2;
   if (trans_arg == 'C') trans = 3;
 
+  TOUPPER(uplo_arg);
   uplo = -1;
   if (uplo_arg == 'U') uplo = 0;
   if (uplo_arg == 'L') uplo = 1;
 
+  TOUPPER(diag_arg);
   diag = -1;
   if (diag_arg == 'U') diag = 0;
   if (diag_arg == 'N') diag = 1;

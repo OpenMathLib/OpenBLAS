@@ -614,7 +614,13 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #define SYMV_P  8
 
-#define SWITCH_RATIO	16
+#if defined(XDOUBLE) || defined(DOUBLE)
+#define SWITCH_RATIO            4
+#define GEMM_PREFERED_SIZE      4
+#else
+#define SWITCH_RATIO            8
+#define GEMM_PREFERED_SIZE      8
+#endif
 
 #ifdef ARCH_X86
 
@@ -2836,7 +2842,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define SNUMOPT         2
 #define DNUMOPT         2
 
-#define GEMM_DEFAULT_OFFSET_A 0
+#define GEMM_DEFAULT_OFFSET_A 0x20000
 #define GEMM_DEFAULT_OFFSET_B 0
 #define GEMM_DEFAULT_ALIGN 0x0ffffUL
 
@@ -2866,20 +2872,20 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define QGEMM_DEFAULT_UNROLL_M 2
 #define XGEMM_DEFAULT_UNROLL_M 1
 
-#define SGEMM_DEFAULT_P 256
-#define DGEMM_DEFAULT_P 32
+#define SGEMM_DEFAULT_P sgemm_p
+#define DGEMM_DEFAULT_P dgemm_p
 #define CGEMM_DEFAULT_P 128
-#define ZGEMM_DEFAULT_P 128
+#define ZGEMM_DEFAULT_P zgemm_p
 
-#define SGEMM_DEFAULT_R 1024
-#define DGEMM_DEFAULT_R 858
+#define SGEMM_DEFAULT_R sgemm_r
+#define DGEMM_DEFAULT_R dgemm_r
 #define CGEMM_DEFAULT_R 4096
-#define ZGEMM_DEFAULT_R 4096
+#define ZGEMM_DEFAULT_R zgemm_r
 
-#define SGEMM_DEFAULT_Q 256
-#define DGEMM_DEFAULT_Q 152
+#define SGEMM_DEFAULT_Q sgemm_q
+#define DGEMM_DEFAULT_Q dgemm_q
 #define CGEMM_DEFAULT_Q 128
-#define ZGEMM_DEFAULT_Q 128
+#define ZGEMM_DEFAULT_Q zgemm_q
 
 #define SYMV_P  16
 #endif
@@ -3351,6 +3357,41 @@ is a big desktop or server with abundant cache rather than a phone or embedded d
 #define CGEMM_DEFAULT_R 4096
 #define ZGEMM_DEFAULT_R 2048
 
+#elif defined(CORTEXA76)
+
+#define SGEMM_DEFAULT_UNROLL_M  16
+#define SGEMM_DEFAULT_UNROLL_N  4
+
+#define DGEMM_DEFAULT_UNROLL_M  8
+#define DGEMM_DEFAULT_UNROLL_N  4
+
+#define CGEMM_DEFAULT_UNROLL_M  8
+#define CGEMM_DEFAULT_UNROLL_N  4
+
+#define ZGEMM_DEFAULT_UNROLL_M  4
+#define ZGEMM_DEFAULT_UNROLL_N  4
+
+#if defined(XDOUBLE) || defined(DOUBLE)
+#define SWITCH_RATIO            8
+#else
+#define SWITCH_RATIO            16
+#endif
+
+  #define SGEMM_DEFAULT_P 256
+  #define DGEMM_DEFAULT_P 128
+  #define CGEMM_DEFAULT_P 128
+  #define ZGEMM_DEFAULT_P 64
+
+  #define SGEMM_DEFAULT_Q 512
+  #define DGEMM_DEFAULT_Q 256
+  #define CGEMM_DEFAULT_Q 256
+  #define ZGEMM_DEFAULT_Q 256
+
+#define SGEMM_DEFAULT_R 4096
+#define DGEMM_DEFAULT_R 4096
+#define CGEMM_DEFAULT_R 4096
+#define ZGEMM_DEFAULT_R 4096
+
 #elif defined(CORTEXA53) || defined(CORTEXA55)
 
 #define SGEMM_DEFAULT_UNROLL_M  8
@@ -3506,8 +3547,10 @@ is a big desktop or server with abundant cache rather than a phone or embedded d
 
 #if defined(XDOUBLE) || defined(DOUBLE)
 #define SWITCH_RATIO            8
+#define GEMM_PREFERED_SIZE      4
 #else
 #define SWITCH_RATIO            16
+#define GEMM_PREFERED_SIZE      8
 #endif
 
 #define SGEMM_DEFAULT_UNROLL_M  16

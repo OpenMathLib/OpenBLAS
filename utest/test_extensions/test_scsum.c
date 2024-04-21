@@ -62,6 +62,7 @@ CTEST(scsum, step_zero){
    blasint i;
    blasint N = ELEMENTS, inc = 0;
    float x[ELEMENTS];
+   x[0] = 0.0f;
    for (i = 0; i < N  * inc * 2; i ++) {
       x[i] = i + 1000;
    }
@@ -243,6 +244,7 @@ CTEST(scsum, c_api_step_zero){
    blasint i;
    blasint N = ELEMENTS, inc = 0;
    float x[ELEMENTS];
+   x[0] = 0.0f;
    for (i = 0; i < N  * inc * 2; i ++) {
       x[i] = i + 1000;
    }
