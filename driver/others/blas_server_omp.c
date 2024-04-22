@@ -285,7 +285,7 @@ static void legacy_exec(void *func, int mode, blas_arg_t *args, void *sb){
    }
 }
 
-static void exec_threads(blas_queue_t *queue, int buf_index){
+static void exec_threads(int thread_num, blas_queue_t *queue, int buf_index){
 
   void *buffer, *sa, *sb;
   int pos=0, release_flag=0;
@@ -305,7 +305,7 @@ static void exec_threads(blas_queue_t *queue, int buf_index){
 
   if ((sa == NULL) && (sb == NULL) && ((queue -> mode & BLAS_PTHREAD) == 0)) {
 
-    pos = omp_get_thread_num();
+    pos= thread_num;
     buffer = blas_thread_buffer[buf_index][pos];
 
     //fallback
@@ -420,18 +420,25 @@ while (true) {
         break;
       }
     }
-    if (i != MAX_PARALLEL_NUMBER)
-	    break;
-}
-if (openblas_omp_adaptive_env() != 0) {
-#pragma omp parallel for num_threads(num) schedule(OMP_SCHED)
-  for (i = 0; i < num; i ++) {
+    if(i != MAX_PARALLEL_NUMBER)
+      break;
+  }
+  /*For caller-managed threading, if caller has registered the callback, pass exec_thread as callback function*/
+  if (openblas_threads_callback_) {
+#ifndef USE_SIMPLE_THREADED_LEVEL3
+    for (i = 0; i < num; i ++)
+      queue[i].position = i;
+#endif
+    openblas_threads_callback_(1, (openblas_dojob_callback) exec_threads, num, sizeof(blas_queue_t), (void*) queue, buf_index);
+  } else {
 
+ if (openblas_omp_adaptive_env() != 0) {
+ #pragma omp parallel for num_threads(num) schedule(OMP_SCHED)
+  for (i = 0; i < num; i ++) {
 #ifndef USE_SIMPLE_THREADED_LEVEL3
     queue[i].position = i;
 #endif
-
-    exec_threads(&queue[i], buf_index);
+  exec_threads(omp_get_thread_num(), &queue[i], buf_index);
   }
 } else {
 #pragma omp parallel for schedule(OMP_SCHED)
@@ -441,8 +448,9 @@ if (openblas_omp_adaptive_env() != 0) {
     queue[i].position = i;
 #endif
 
-    exec_threads(&queue[i], buf_index);
+  exec_threads(omp_get_thread_num(), &queue[i], buf_index);
   }
+}
 }
 
 #ifdef HAVE_C11
