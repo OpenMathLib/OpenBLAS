@@ -165,7 +165,7 @@ PROLOGUE
     /* store dot in s1 $f8 */
 #ifdef DSDOT
     xvfadd.d  $xr8,   $xr8,    $xr9
-    fsub.s    s2,     s2,      s2,  /* set s2 to 0.0 */
+    fsub.s    s2,     s2,      s2  /* set s2 to 0.0 */
     xvpermi.q $xr0,   $xr8,    0x1
     vfadd.d   $vr8,   $vr8,    $vr0
     vpackod.d $vr0,   $vr8,    $vr8
