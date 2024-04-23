@@ -2,6 +2,7 @@
 ## Author: Hank Anderson <hank@statease.com>
 ## Description: Ported from portion of OpenBLAS/Makefile.system
 ##              Sets C related variables.
+include(CheckCCompilerFlag)
 
 if (${CMAKE_C_COMPILER_ID} STREQUAL "GNU" OR ${CMAKE_C_COMPILER_ID} STREQUAL "LSB" OR ${CMAKE_C_COMPILER_ID} MATCHES "Clang")
 
@@ -36,14 +37,14 @@ if (${CMAKE_C_COMPILER_ID} STREQUAL "GNU" OR ${CMAKE_C_COMPILER_ID} STREQUAL "LS
 
     if (LOONGARCH64)
       if (BINARY64)
-	CHECK_CXX_COMPILER_FLAG("-mabi=lp64d" COMPILER_SUPPORT_LP64D_ABI)
+	CHECK_C_COMPILER_FLAG("-mabi=lp64d" COMPILER_SUPPORT_LP64D_ABI)
         if(COMPILER_SUPPORT_LP64D_ABI)
 	  set(CCOMMON_OPT "${CCOMMON_OPT} -mabi=lp64d")
 	else()
 	  set(CCOMMON_OPT "${CCOMMON_OPT} -mabi=lp64")
 	endif ()
       else ()
-	CHECK_CXX_COMPILER_FLAG("-mabi=ilp32d" COMPILER_SUPPORT_ILP32D_ABI)
+	CHECK_C_COMPILER_FLAG("-mabi=ilp32d" COMPILER_SUPPORT_ILP32D_ABI)
 	if(COMPILER_SUPPORT_ILP32D_ABI)
 	  set(CCOMMON_OPT "${CCOMMON_OPT} -mabi=ilp32d")
 	else()
