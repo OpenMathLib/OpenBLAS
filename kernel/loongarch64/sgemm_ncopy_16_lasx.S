@@ -135,7 +135,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //.L_N0
 
     PROLOGUE
-    push_if_used 26, 32
+    push_if_used 9, 8
 
     move       TD,   DST
     move       TS,   SRC
@@ -458,6 +458,6 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     PTR_ADDI    M,     M,   -1
     blt         ZERO,  M,   .L_N1_M1
 .L_N0:
-    pop_if_used 26, 32
+    pop_if_used 9, 8
     jirl    $r0, $r1, 0x0
     EPILOGUE

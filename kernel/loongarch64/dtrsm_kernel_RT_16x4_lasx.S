@@ -111,33 +111,31 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "dtrsm_kernel_macro.S"
 
-.macro ldrepl_macro start, end, stride
+.macro ldrepl_macro stride:req, index:req, more:vararg
 // Load Ux (x = 0...15)
-.if \start <= \end
-    GLDREPL xv, d, $xr\start, B0, \stride * 8
-    ldrepl_macro %start + 1, \end, %stride + 1
+    GLDREPL xv, d, $xr\index, B0, \index * 8 - \stride * 8
+.ifnb \more
+    ldrepl_macro \stride, \more
 .endif
 .endm
-
-.macro nmsub_macro start0, end0, start1, reg
-// Ux -= reg * Dx
-.if \start0 <= \end0
+.macro nmsub_macro reg:req, start0:req, start1:req, more:vararg
+// Gx -= reg * Ux
     xvfnmsub.d  $xr\start0, \reg, $xr\start1, $xr\start0
-    nmsub_macro %start0 + 1, \end0, %start1 + 1, \reg
+.ifnb \more
+    nmsub_macro \reg, \more
 .endif
 .endm
-
-.macro A_st_macro start, end, stride, N
-// Store Ux(x = 0...15)
-.if \start <= \end
+.macro A_st_macro N:req, stride:req, start:req, more:vararg
+// Store Gx(x = 16...31)
 .if \N == 4
-    xvst    $xr\start, A0, \stride * 0x20
+    xvst    $xr\start, A0, \start * 0x20 - \stride * 0x20
 .elseif \N == 2
-    vst     $vr\start, A0, \stride * 0x10
+    vst     $vr\start, A0, \start * 0x10 - \stride * 0x10
 .elseif \N == 1
-    fst.d   $f\start, A0, \stride * 0x08
+    fst.d   $f\start, A0, \start * 0x08 - \stride * 0x08
 .endif
-    A_st_macro %start + 1, \end, %stride + 1, \N
+.ifnb \more
+    A_st_macro \N, \stride, \more
 .endif
 .endm
 
@@ -148,13 +146,13 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //0
 //2	 3
 // Sequentially extract data from B in row order
-    ldrepl_macro 16, 16, 0
-    ldrepl_macro 17, 18, 2
+    ldrepl_macro 16, 16
+    ldrepl_macro 15, 17, 18
     GMUL xvf, d, U4, D2, U4, U5, D2, U5, U6, D2, U6, U7, D2, U7
-    nmsub_macro 0, 3, 4, D1
+    nmsub_macro D1, 0, 4, 1, 5, 2, 6, 3, 7
     GMUL xvf, d, U0, D0, U0, U1, D0, U1, U2, D0, U2, U3, D0, U3
 // Store A
-    A_st_macro 0, 7, 0, 4
+    A_st_macro 4, 0, 0, 1, 2, 3, 4, 5, 6, 7
 // Store C
     GST xv, , U0,  C0, 0x00, U1,  C0, 0x20, U2,  C0, 0x40, U3,  C0, 0x60, \
               U4,  C1, 0x00, U5,  C1, 0x20, U6,  C1, 0x40, U7,  C1, 0x60
@@ -167,13 +165,13 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //0
 //2	 3
 // Sequentially extract data from B in row order
-    ldrepl_macro 16, 16, 0
-    ldrepl_macro 17, 18, 2
+    ldrepl_macro 16, 16
+    ldrepl_macro 15, 17, 18
     GMUL xvf, d, U2, D2, U2, U3, D2, U3
-    nmsub_macro 0, 1, 2, D1
+    nmsub_macro D1, 0, 2, 1, 3
     GMUL xvf, d, U0, D0, U0, U1, D0, U1
 // Store A
-    A_st_macro 0, 3, 0, 4
+    A_st_macro 4, 0, 0, 1, 2, 3
 // Store C
     GST xv, , U0,  C0, 0x00, U1,  C0, 0x20, \
               U2,  C1, 0x00, U3,  C1, 0x20
@@ -186,13 +184,13 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //0
 //2	 3
 // Sequentially extract data from B in row order
-    ldrepl_macro 16, 16, 0
-    ldrepl_macro 17, 18, 2
+    ldrepl_macro 16, 16
+    ldrepl_macro 15, 17, 18
     GMUL xvf, d, U1, D2, U1
-    nmsub_macro 0, 0, 1, D1
+    nmsub_macro D1, 0, 1
     GMUL xvf, d, U0, D0, U0
 // Store A
-    A_st_macro 0, 1, 0, 4
+    A_st_macro 4, 0, 0, 1
 // Store C
     GST xv, , U0, C0, 0x00, U1, C1, 0x00
 .endm
@@ -204,13 +202,13 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //0
 //2	 3
 // Sequentially extract data from B in row order
-    ldrepl_macro 16, 16, 0
-    ldrepl_macro 17, 18, 2
+    ldrepl_macro 16, 16
+    ldrepl_macro 15, 17, 18
     GMUL xvf, d, U1, D2, U1
-    nmsub_macro 0, 0, 1, D1
+    nmsub_macro D1, 0, 1
     GMUL xvf, d, U0, D0, U0
 // Store A
-    A_st_macro 0, 1, 0, 2
+    A_st_macro 2, 0, 0, 1
 // Store C
     GST v, , $vr0, C0, 0x00, $vr1, C1, 0x00
 .endm
@@ -222,13 +220,13 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //0
 //2	 3
 // Sequentially extract data from B in row order
-    ldrepl_macro 16, 16, 0
-    ldrepl_macro 17, 18, 2
+    ldrepl_macro 16, 16
+    ldrepl_macro 15, 17, 18
     GMUL xvf, d, U1, D2, U1
-    nmsub_macro 0, 0, 1, D1
+    nmsub_macro D1, 0, 1
     GMUL xvf, d, U0, D0, U0
 // Store A
-    A_st_macro 0, 1, 0, 1
+    A_st_macro 1, 0, 0, 1
 // Store C
     GST f, d, $f0, C0, 0x00, $f1, C1, 0x00
 .endm
@@ -242,22 +240,22 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //8	 9	10
 //12 13	14	15
 // Sequentially extract data from B in row order
-    ldrepl_macro 22, 25, 12
+    ldrepl_macro 10, 22, 23, 24, 25
     GMUL xvf, d, U12, D9, U12, U13, D9, U13, U14, D9, U14, U15, D9, U15
-    ldrepl_macro 19, 21, 8
-    nmsub_macro 8, 11, 12, D8
-    ldrepl_macro 17, 18, 4
+    ldrepl_macro 11, 19, 20, 21
+    nmsub_macro D8, 8, 12, 9, 13, 10, 14, 11, 15
+    ldrepl_macro 13, 17, 18
     GMUL xvf, d, U8, D5, U8, U9, D5, U9, U10, D5, U10, U11, D5, U11
-    ldrepl_macro 16, 16, 0
-    nmsub_macro 4, 7, 12, D7
-    nmsub_macro 4, 7, 8, D4
+    ldrepl_macro 16, 16
+    nmsub_macro D7, 4, 12, 5, 13, 6, 14, 7, 15
+    nmsub_macro D4, 4, 8, 5, 9, 6, 10, 7, 11
     GMUL xvf, d, U4, D2, U4, U5, D2, U5, U6, D2, U6, U7, D2, U7
-    nmsub_macro 0, 3, 12, D6
-    nmsub_macro 0, 3, 8, D3
-    nmsub_macro 0, 3, 4, D1
+    nmsub_macro D6, 0, 12, 1, 13, 2, 14, 3, 15
+    nmsub_macro D3, 0, 8, 1, 9, 2, 10, 3, 11
+    nmsub_macro D1, 0, 4, 1, 5, 2, 6, 3, 7
     GMUL xvf, d, U0, D0, U0, U1, D0, U1, U2, D0, U2, U3, D0, U3
 // Store A
-    A_st_macro 0, 15, 0, 4
+    A_st_macro 4, 0, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15
 // Store C
     GST xv, , U0,  C0, 0x00, U1,  C0, 0x20, U2,  C0, 0x40, U3,  C0, 0x60, \
               U4,  C1, 0x00, U5,  C1, 0x20, U6,  C1, 0x40, U7,  C1, 0x60, \
@@ -274,22 +272,22 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //8	 9	10
 //12 13	14	15
 // Sequentially extract data from B in row order
-    ldrepl_macro 22, 25, 12
+    ldrepl_macro 10, 22, 23, 24, 25
     GMUL xvf, d, U6, D9, U6, U7, D9, U7
-    ldrepl_macro 19, 21, 8
-    nmsub_macro 4, 5, 6, D8
-    ldrepl_macro 17, 18, 4
+    ldrepl_macro 11, 19, 20, 21
+    nmsub_macro D8, 4, 6, 5, 7
+    ldrepl_macro 13, 17, 18
     GMUL xvf, d, U4, D5, U4, U5, D5, U5
-    ldrepl_macro 16, 16, 0
-    nmsub_macro 2, 3, 6, D7
-    nmsub_macro 2, 3, 4, D4
+    ldrepl_macro 16, 16
+    nmsub_macro D7, 2, 6, 3, 7
+    nmsub_macro D4, 2, 4, 3, 5
     GMUL xvf, d, U2, D2, U2, U3, D2, U3
-    nmsub_macro 0, 1, 6, D6
-    nmsub_macro 0, 1, 4, D3
-    nmsub_macro 0, 1, 2, D1
+    nmsub_macro D6, 0, 6, 1, 7
+    nmsub_macro D3, 0, 4, 1, 5
+    nmsub_macro D1, 0, 2, 1, 3
     GMUL xvf, d, U0, D0, U0, U1, D0, U1
 // Store A
-    A_st_macro 0, 7, 0, 4
+    A_st_macro 4, 0, 0, 1, 2, 3, 4, 5, 6, 7
 // Store C
     GST xv, , U0, C0, 0x00, U1, C0, 0x20, \
               U2, C1, 0x00, U3, C1, 0x20, \
@@ -306,22 +304,22 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //8	 9	10
 //12 13	14	15
 // Sequentially extract data from B in row order
-    ldrepl_macro 22, 25, 12
+    ldrepl_macro 10, 22, 23, 24, 25
     GMUL xvf, d, U3, D9, U3
-    ldrepl_macro 19, 21, 8
-    nmsub_macro 2, 2, 3, D8
-    ldrepl_macro 17, 18, 4
+    ldrepl_macro 11, 19, 20, 21
+    nmsub_macro D8, 2, 3
+    ldrepl_macro 13, 17, 18
     GMUL xvf, d, U2, D5, U2
-    ldrepl_macro 16, 16, 0
-    nmsub_macro 1, 1, 3, D7
-    nmsub_macro 1, 1, 2, D4
+    ldrepl_macro 16, 16
+    nmsub_macro D7, 1, 3
+    nmsub_macro D4, 1, 2
     GMUL xvf, d, U1, D2, U1
-    nmsub_macro 0, 0, 3, D6
-    nmsub_macro 0, 0, 2, D3
-    nmsub_macro 0, 0, 1, D1
+    nmsub_macro D6, 0, 3
+    nmsub_macro D3, 0, 2
+    nmsub_macro D1, 0, 1
     GMUL xvf, d, U0, D0, U0
 // Store A
-    A_st_macro 0, 3, 0, 4
+    A_st_macro 4, 0, 0, 1, 2, 3
 // Store C
     GST xv, , U0, C0, 0x00, U1, C1, 0x00, U2, C2, 0x00, U3, C3, 0x00
 .endm
@@ -335,22 +333,22 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //8	 9	10
 //12 13	14	15
 // Sequentially extract data from B in row order
-    ldrepl_macro 22, 25, 12
+    ldrepl_macro 10, 22, 23, 24, 25
     GMUL xvf, d, U3, D9, U3
-    ldrepl_macro 19, 21, 8
-    nmsub_macro 2, 2, 3, D8
-    ldrepl_macro 17, 18, 4
+    ldrepl_macro 11, 19, 20, 21
+    nmsub_macro D8, 2, 3
+    ldrepl_macro 13, 17, 18
     GMUL xvf, d, U2, D5, U2
-    ldrepl_macro 16, 16, 0
-    nmsub_macro 1, 1, 3, D7
-    nmsub_macro 1, 1, 2, D4
+    ldrepl_macro 16, 16
+    nmsub_macro D7, 1, 3
+    nmsub_macro D4, 1, 2
     GMUL xvf, d, U1, D2, U1
-    nmsub_macro 0, 0, 3, D6
-    nmsub_macro 0, 0, 2, D3
-    nmsub_macro 0, 0, 1, D1
+    nmsub_macro D6, 0, 3
+    nmsub_macro D3, 0, 2
+    nmsub_macro D1, 0, 1
     GMUL xvf, d, U0, D0, U0
 // Store A
-    A_st_macro 0, 3, 0, 2
+    A_st_macro 2, 0, 0, 1, 2, 3
 // Store C
     GST v, , $vr0, C0, 0x00, $vr1, C1, 0x00, $vr2, C2, 0x00, $vr3, C3, 0x00
 .endm
@@ -364,22 +362,22 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //8	 9	10
 //12 13	14	15
 // Sequentially extract data from B in row order
-    ldrepl_macro 22, 25, 12
+    ldrepl_macro 10, 22, 23, 24, 25
     GMUL xvf, d, U3, D9, U3
-    ldrepl_macro 19, 21, 8
-    nmsub_macro 2, 2, 3, D8
-    ldrepl_macro 17, 18, 4
+    ldrepl_macro 11, 19, 20, 21
+    nmsub_macro D8, 2, 3
+    ldrepl_macro 13, 17, 18
     GMUL xvf, d, U2, D5, U2
-    ldrepl_macro 16, 16, 0
-    nmsub_macro 1, 1, 3, D7
-    nmsub_macro 1, 1, 2, D4
+    ldrepl_macro 16, 16
+    nmsub_macro D7, 1, 3
+    nmsub_macro D4, 1, 2
     GMUL xvf, d, U1, D2, U1
-    nmsub_macro 0, 0, 3, D6
-    nmsub_macro 0, 0, 2, D3
-    nmsub_macro 0, 0, 1, D1
+    nmsub_macro D6, 0, 3
+    nmsub_macro D3, 0, 2
+    nmsub_macro D1, 0, 1
     GMUL xvf, d, U0, D0, U0
 // Store A
-    A_st_macro 0, 3, 0, 1
+    A_st_macro 1, 0, 0, 1, 2, 3
 // Store C
     GST f, d, $f0, C0, 0x00, $f1, C1, 0x00, $f2, C2, 0x00, $f3, C3, 0x00,
 .endm
@@ -399,10 +397,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .L_dsolve_16x1:
     PTR_ADDI    A0,     T1,     -16 * 8
     PTR_ADDI    B0,     T2,     -1 * 8
-    ldrepl_macro 16, 16, 0
+    ldrepl_macro 16, 16
     GMUL xvf, d, U0, D0, U0, U1, D0, U1, U2, D0, U2, U3, D0, U3
     // Store A
-    A_st_macro 0, 3, 0, 4
+    A_st_macro 4, 0, 0, 1, 2, 3
     // Strore C
     GST xv, , U0, C0, 0x00, U1, C0, 0x20, U2, C0, 0x40, U3, C0, 0x60
 .endm
@@ -420,10 +418,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .L_dsolve_8x1:
     PTR_ADDI    A0,     T1,     -8 * 8
     PTR_ADDI    B0,     T2,     -1 * 8
-    ldrepl_macro 16, 16, 0
+    ldrepl_macro 16, 16
     GMUL xvf, d, U0, D0, U0, U1, D0, U1
     // Store A
-    A_st_macro 0, 1, 0, 4
+    A_st_macro 4, 0, 0, 1
     // Strore C
     GST xv, , U0, C0, 0x00, U1, C0, 0x20
 .endm
@@ -440,10 +438,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .L_dsolve_4x1:
     PTR_ADDI    A0,     T1,     -4 * 8
     PTR_ADDI    B0,     T2,     -1 * 8
-    ldrepl_macro 16, 16, 0
+    ldrepl_macro 16, 16
     GMUL xvf, d, U0, D0, U0
     // Store A
-    A_st_macro 0, 0, 0, 4
+    A_st_macro 4, 0, 0
     // Strore C
     GST xv, , U0, C0, 0x00
 .endm
@@ -460,10 +458,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .L_dsolve_2x1:
     PTR_ADDI    A0,     T1,     -2 * 8
     PTR_ADDI    B0,     T2,     -1 * 8
-    ldrepl_macro 16, 16, 0
+    ldrepl_macro 16, 16
     GMUL xvf, d, U0, D0, U0
     // Store A
-    A_st_macro 0, 0, 0, 2
+    A_st_macro 2, 0, 0
     // Strore C
     GST v, , $vr0, C0, 0x00
 .endm
@@ -480,10 +478,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .L_dsolve_1x1:
     PTR_ADDI    A0,     T1,     -1 * 8
     PTR_ADDI    B0,     T2,     -1 * 8
-    ldrepl_macro 16, 16, 0
+    ldrepl_macro 16, 16
     GMUL xvf, d, U0, D0, U0
     // Store A
-    A_st_macro 0, 0, 0, 1
+    A_st_macro 1, 0, 0
     // Strore C
     GST f, d, $f0, C0, 0x00
 .endm
@@ -697,7 +695,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .endm
 
     PROLOGUE
-    push_if_used 26, 32
+    push_if_used 9, 8
     PTR_SLLI    LDC,    LDC,    3
     PTR_SUB     KK,     N,      OFFSET
     PTR_MUL     T0,     N,      LDC
@@ -948,6 +946,6 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     PTR_ADDI    KK,     KK,     -4
     bnez        J,      .L_J1
 .L_N0:
-    pop_if_used 26, 32
+    pop_if_used 9, 8
     jirl    $r0, $r1, 0x0
     EPILOGUE

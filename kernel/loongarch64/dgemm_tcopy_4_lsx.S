@@ -66,7 +66,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define U7     $vr7
 
     PROLOGUE
-    push_if_used 18, 8
+    push_if_used 1, 0
 
     move       S0,     SRC
     move       P0,     DST
@@ -274,7 +274,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     fst.d      F0,    P3,      0x00
 
 .L_M0:
-    pop_if_used 18, 8
+    pop_if_used 1, 0
     jirl       $r0,    $r1,   0x00
 
     EPILOGUE

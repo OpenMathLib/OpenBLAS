@@ -128,31 +128,31 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "dtrsm_kernel_macro.S"
 
-.macro ldrepl_macro start, end, stride
+.macro ldrepl_macro stride:req, index:req, more:vararg
 // Load Ux (x = 0...15)
-.if \start <= \end
-    GLDREPL xv, d, $xr\start, A0, \stride * 8
-    ldrepl_macro %start + 1, \end, %stride + 1
+    GLDREPL xv, d, $xr\index, A0, \index * 8 - \stride * 8
+.ifnb \more
+    ldrepl_macro \stride, \more
 .endif
 .endm
-.macro nmsub_macro start0, end0, start1, reg
+.macro nmsub_macro reg:req, start0:req, start1:req, more:vararg
 // Gx -= reg * Ux
-.if \start0 <= \end0
     xvfnmsub.d  $xr\start0, \reg, $xr\start1, $xr\start0
-    nmsub_macro %start0 + 1, \end0, %start1 + 1, \reg
+.ifnb \more
+    nmsub_macro \reg, \more
 .endif
 .endm
-.macro B_st_macro start, end, stride, N
+.macro B_st_macro N:req, stride:req, start:req, more:vararg
 // Store Gx(x = 16...31)
-.if \start <= \end
 .if \N == 4
-    xvst    $xr\start, B0, \stride * 0x20
+    xvst    $xr\start, B0, \start * 0x20 - \stride * 0x20
 .elseif \N == 2
-    vst     $vr\start, B0, \stride * 0x10
+    vst     $vr\start, B0, \start * 0x10 - \stride * 0x10
 .elseif \N == 1
-    fst.d   $f\start, B0, \stride * 0x08
+    fst.d   $f\start, B0, \start * 0x08 - \stride * 0x08
 .endif
-    B_st_macro %start + 1, \end, %stride + 1, \N
+.ifnb \more
+    B_st_macro \N, \stride, \more
 .endif
 .endm
 
@@ -194,86 +194,93 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //															255
 // Sequentially extract data from A in row order
 // Load 0
-    ldrepl_macro 0, 15, 0
+    ldrepl_macro 0, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15
     GMUL xvf, d, G0, G0, U0
-    nmsub_macro 17, 31, 1, G0
+    nmsub_macro G0, 17, 1, 18, 2, 19, 3, 20, 4, 21, 5, 22, 6, 23, 7, 24, 8, \
+                    25, 9, 26, 10, 27, 11, 28, 12, 29, 13, 30, 14, 31, 15
     PTR_ADDI    A0,      A0,      17 * 8
 // Load 1
-    ldrepl_macro 1, 15, 0
+    ldrepl_macro 1, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15
     GMUL xvf, d, G1, G1, U1
-    nmsub_macro 18, 31, 2, G1
+    nmsub_macro G1, 18, 2, 19, 3, 20, 4, 21, 5, 22, 6, 23, 7, 24, 8, \
+                    25, 9, 26, 10, 27, 11, 28, 12, 29, 13, 30, 14, 31, 15
     PTR_ADDI    A0,      A0,      17 * 8
 // Load 2
-    ldrepl_macro 2, 15, 0
+    ldrepl_macro 2, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15
     GMUL xvf, d, G2, G2, U2
-    nmsub_macro 19, 31, 3, G2
+    nmsub_macro G2, 19, 3, 20, 4, 21, 5, 22, 6, 23, 7, 24, 8, 25, 9, 26, \
+                    10, 27, 11, 28, 12, 29, 13, 30, 14, 31, 15
     PTR_ADDI    A0,      A0,      17 * 8
 // Load 3
-    ldrepl_macro 3, 15, 0
+    ldrepl_macro 3, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15
     GMUL xvf, d, G3, G3, U3
-    nmsub_macro 20, 31, 4, G3
+    nmsub_macro G3, 20, 4, 21, 5, 22, 6, 23, 7, 24, 8, 25, 9, 26, 10, \
+                    27, 11, 28, 12, 29, 13, 30, 14, 31, 15
     PTR_ADDI    A0,      A0,      17 * 8
 // Load 4
-    ldrepl_macro 4, 15, 0
+    ldrepl_macro 4, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15
     GMUL xvf, d, G4, G4, U4
-    nmsub_macro 21, 31, 5, G4
+    nmsub_macro G4, 21, 5, 22, 6, 23, 7, 24, 8, 25, 9, 26, 10, 27, 11, \
+                    28, 12, 29, 13, 30, 14, 31, 15
     PTR_ADDI    A0,      A0,      17 * 8
 // Load 5
-    ldrepl_macro 5, 15, 0
+    ldrepl_macro 5, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15
     GMUL xvf, d, G5, G5, U5
-    nmsub_macro 22, 31, 6, G5
+    nmsub_macro G5, 22, 6, 23, 7, 24, 8, 25, 9, 26, 10, 27, 11, 28, 12, \
+                    29, 13, 30, 14, 31, 15
     PTR_ADDI    A0,      A0,      17 * 8
 // Load 6
-    ldrepl_macro 6, 15, 0
+    ldrepl_macro 6, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15
     GMUL xvf, d, G6, G6, U6
-    nmsub_macro 23, 31, 7, G6
+    nmsub_macro G6, 23, 7, 24, 8, 25, 9, 26, 10, 27, 11, 28, 12, 29, 13, \
+                    30, 14, 31, 15
     PTR_ADDI    A0,      A0,      17 * 8
 // Load 7
-    ldrepl_macro 7, 15, 0
+    ldrepl_macro 7, 7, 8, 9, 10, 11, 12, 13, 14, 15
     GMUL xvf, d, G7, G7, U7
-    nmsub_macro 24, 31, 8, G7
+    nmsub_macro G7, 24, 8, 25, 9, 26, 10, 27, 11, 28, 12, 29, 13, 30, 14, 31, 15
     PTR_ADDI    A0,      A0,      17 * 8
 // Load 8
-    ldrepl_macro 8, 15, 0
+    ldrepl_macro 8, 8, 9, 10, 11, 12, 13, 14, 15
     GMUL xvf, d, G8, G8, U8
-    nmsub_macro 25, 31, 9, G8
+    nmsub_macro G8, 25, 9, 26, 10, 27, 11, 28, 12, 29, 13, 30, 14, 31, 15
     PTR_ADDI    A0,      A0,      17 * 8
 // Load 9
-    ldrepl_macro 9, 15, 0
+    ldrepl_macro 9, 9, 10, 11, 12, 13, 14, 15
     GMUL xvf, d, G9, G9, U9
-    nmsub_macro 26, 31, 10, G9
+    nmsub_macro G9, 26, 10, 27, 11, 28, 12, 29, 13, 30, 14, 31, 15
     PTR_ADDI    A0,      A0,      17 * 8
 // Load 10
-    ldrepl_macro 10, 15, 0
+    ldrepl_macro 10, 10, 11, 12, 13, 14, 15
     GMUL xvf, d, G10, G10, U10
-    nmsub_macro 27, 31, 11, G10
+    nmsub_macro G10, 27, 11, 28, 12, 29, 13, 30, 14, 31, 15
     PTR_ADDI    A0,      A0,      17 * 8
 // Load 11
-    ldrepl_macro 11, 15, 0
+    ldrepl_macro 11, 11, 12, 13, 14, 15
     GMUL xvf, d, G11, G11, U11
-    nmsub_macro 28, 31, 12, G11
+    nmsub_macro G11, 28, 12, 29, 13, 30, 14, 31, 15
     PTR_ADDI    A0,      A0,      17 * 8
 // Load 12
-    ldrepl_macro 12, 15, 0
+    ldrepl_macro 12, 12, 13, 14, 15
     GMUL xvf, d, G12, G12, U12
-    nmsub_macro 29, 31, 13, G12
+    nmsub_macro G12, 29, 13, 30, 14, 31, 15
     PTR_ADDI    A0,      A0,      17 * 8
 // Load 13
-    ldrepl_macro 13, 15, 0
+    ldrepl_macro 13, 13, 14, 15
     GMUL xvf, d, G13, G13, U13
-    nmsub_macro 30, 31, 14, G13
+    nmsub_macro G13, 30, 14, 31, 15
     PTR_ADDI    A0,      A0,      17 * 8
 // Load 14
-    ldrepl_macro 14, 15, 0
+    ldrepl_macro 14, 14, 15
     GMUL xvf, d, G14, G14, U14
-    nmsub_macro 31, 31, 15, G14
+    nmsub_macro G14, 31, 15
     PTR_ADDI    A0,      A0,      17 * 8
 // Load 15
-    ldrepl_macro 15, 15, 0
+    ldrepl_macro 15, 15
     GMUL xvf, d, G15, G15, U15
 // Finally, We can store the result.
 // For B, stored sequentially, and  C, first transpose and then store
-    B_st_macro 16, 31, 0, \N
+    B_st_macro \N, 16, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31
     GTRANSPOSE4x4_D G0, G1, G2, G3, G0, G1, G2, G3, U0, U1
     GTRANSPOSE4x4_D G4, G5, G6, G7, G4, G5, G6, G7, U0, U1
     GTRANSPOSE4x4_D G8, G9, G10, G11, G8, G9, G10, G11, U0, U1
@@ -334,46 +341,46 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //							63
 // Sequentially extract data from A in row order
 // Load 0
-    ldrepl_macro 0, 7, 0
+    ldrepl_macro 0, 0, 1, 2, 3, 4, 5, 6, 7
     GMUL xvf, d, G0, G0, U0
-    nmsub_macro 17, 23, 1, G0
+    nmsub_macro G0, 17, 1, 18, 2, 19, 3, 20, 4, 21, 5, 22, 6, 23, 7
     PTR_ADDI    A0,      A0,      9 * 8
 // Load 1
-    ldrepl_macro 1, 7, 0
+    ldrepl_macro 1, 1, 2, 3, 4, 5, 6, 7
     GMUL xvf, d, G1, G1, U1
-    nmsub_macro 18, 23, 2, G1
+    nmsub_macro G1, 18, 2, 19, 3, 20, 4, 21, 5, 22, 6, 23, 7
     PTR_ADDI    A0,      A0,      9 * 8
 // Load 2
-    ldrepl_macro 2, 7, 0
+    ldrepl_macro 2, 2, 3, 4, 5, 6, 7
     GMUL xvf, d, G2, G2, U2
-    nmsub_macro 19, 23, 3, G2
+    nmsub_macro G2, 19, 3, 20, 4, 21, 5, 22, 6, 23, 7
     PTR_ADDI    A0,      A0,      9 * 8
 // Load 3
-    ldrepl_macro 3, 7, 0
+    ldrepl_macro 3, 3, 4, 5, 6, 7
     GMUL xvf, d, G3, G3, U3
-    nmsub_macro 20, 23, 4, G3
+    nmsub_macro G3, 20, 4, 21, 5, 22, 6, 23, 7
     PTR_ADDI    A0,      A0,      9 * 8
 // Load 4
-    ldrepl_macro 4, 7, 0
+    ldrepl_macro 4, 4, 5, 6, 7
     GMUL xvf, d, G4, G4, U4
-    nmsub_macro 21, 23, 5, G4
+    nmsub_macro G4, 21, 5, 22, 6, 23, 7
     PTR_ADDI    A0,      A0,      9 * 8
 // Load 5
-    ldrepl_macro 5, 7, 0
+    ldrepl_macro 5, 5, 6, 7
     GMUL xvf, d, G5, G5, U5
-    nmsub_macro 22, 23, 6, G5
+    nmsub_macro G5, 22, 6, 23, 7
     PTR_ADDI    A0,      A0,      9 * 8
 // Load 6
-    ldrepl_macro 6, 7, 0
+    ldrepl_macro 6, 6, 7
     GMUL xvf, d, G6, G6, U6
-    nmsub_macro 23, 23, 7, G6
+    nmsub_macro G6, 23, 7
     PTR_ADDI    A0,      A0,      9 * 8
 // Load 7
-    ldrepl_macro 7, 7, 0
+    ldrepl_macro 7, 7
     GMUL xvf, d, G7, G7, U7
 // Finally, We can store the result.
 // For B, stored sequentially, and  C, first transpose and then store
-    B_st_macro 16, 23, 0, \N
+    B_st_macro \N, 16, 16, 17, 18, 19, 20, 21, 22, 23
     GTRANSPOSE4x4_D G0, G1, G2, G3, G0, G1, G2, G3, U0, U1
     GTRANSPOSE4x4_D G4, G5, G6, G7, G4, G5, G6, G7, U0, U1
 .if \N == 4
@@ -437,26 +444,26 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //			15
 // Sequentially extract data from A in row order
 // Load 0
-    ldrepl_macro 0, 3, 0
+    ldrepl_macro 0, 0, 1, 2, 3
     GMUL xvf, d, G0, G0, U0
-    nmsub_macro 17, 19, 1, G0
+    nmsub_macro G0, 17, 1, 18, 2, 19, 3
     PTR_ADDI    A0,      A0,      5 * 8
 // Load 1
-    ldrepl_macro 1, 3, 0
+    ldrepl_macro 1, 1, 2, 3
     GMUL xvf, d, G1, G1, U1
-    nmsub_macro 18, 19, 2, G1
+    nmsub_macro G1, 18, 2, 19, 3
     PTR_ADDI    A0,      A0,      5 * 8
 // Load 2
-    ldrepl_macro 2, 3, 0
+    ldrepl_macro 2, 2, 3
     GMUL xvf, d, G2, G2, U2
-    nmsub_macro 19, 19, 3, G2
+    nmsub_macro G2, 19, 3
     PTR_ADDI    A0,      A0,      5 * 8
 // Load 3
-    ldrepl_macro 3, 3, 0
+    ldrepl_macro 3, 3
     GMUL xvf, d, G3, G3, U3
 // Finally, We can store the result.
 // For B, stored sequentially, and  C, first transpose and then store
-    B_st_macro 16, 19, 0, \N
+    B_st_macro \N, 16, 16, 17, 18, 19
     GTRANSPOSE4x4_D G0, G1, G2, G3, G0, G1, G2, G3, U0, U1
 .if \N == 4
     GST xv, , G0, C0, 0x00, G1, C1, 0x00, G2, C2, 0x00, G3, C3, 0x00
@@ -501,16 +508,16 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //	3
 // Sequentially extract data from A in row order
 // Load 0
-    ldrepl_macro 0, 1, 0
+    ldrepl_macro 0, 0, 1
     GMUL xvf, d, G0, G0, U0
-    nmsub_macro 17, 17, 1, G0
+    nmsub_macro G0, 17, 1
     PTR_ADDI    A0,      A0,      3 * 8
 // Load 1
-    ldrepl_macro 1, 1, 0
+    ldrepl_macro 1, 1
     GMUL xvf, d, G1, G1, U1
 // Finally, We can store the result.
 // For B, stored sequentially, and  C, first transpose and then store
-    B_st_macro 16, 17, 0, \N
+    B_st_macro \N, 16, 16, 17
     GSBUTTERFLY xv, d, U0, U1, G1, G0
 .if \N == 4
     vst       $vr0,     C0,      0x00
@@ -717,7 +724,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .endm
 
     PROLOGUE
-    push_if_used 26, 32
+    push_if_used 9, 8
     PTR_SLLI   LDC,   LDC,   3
     /* if (!(N >> 2)) goto L_N3 */
     PTR_SRAI   J,     N,     2     /* J = bn >> 2 */
@@ -954,6 +961,6 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     PTR_ADD     AA,     AA,     T0 // aa += 1 * k
 .L_N1_M0:
 .L_N0:
-    pop_if_used 26, 32
+    pop_if_used 9, 8
     jirl    $r0, $r1, 0x0
     EPILOGUE
