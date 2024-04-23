@@ -109,12 +109,20 @@
 #define PREFETCHSIZE (8 * 6 + 4)
 #endif
 
+#ifdef PREFETCH
+#define PREFETCH_KERNEL1(xx) PREFETCH	(PREFETCHSIZE     +  0) * SIZE + 1 * (xx) * SIZE(AO) ;
+#define PREFETCH_KERNEL5(xx) PREFETCH	(PREFETCHSIZE     +  8) * SIZE + 1 * (xx) * SIZE(AO) ;
+#else
+#define PREFETCH_KERNEL1(xx)
+#define PREFETCH_KERNEL5(xx)
+#endif
+
 #define KERNEL1(xx) \
 	mulps	%xmm8, %xmm9 ;\
 	addps	%xmm9, %xmm0 ;\
 	movaps	 0 * SIZE + 2 * (xx) * SIZE(BO), %xmm9 ;\
 	mulps	%xmm8, %xmm11 ;\
-	PREFETCH	(PREFETCHSIZE     +  0) * SIZE + 1 * (xx) * SIZE(AO) ;\
+	PREFETCH_KERNEL1(xx) \
 	addps	%xmm11, %xmm1 ;\
 	movaps	 4 * SIZE + 2 * (xx) * SIZE(BO), %xmm11 ;\
 	mulps	%xmm8, %xmm13 ;\
@@ -171,7 +179,7 @@
 	addps	%xmm9, %xmm0 ;\
 	movaps	32 * SIZE + 2 * (xx) * SIZE(BO), %xmm9 ;\
 	mulps	%xmm8, %xmm11 ;\
-	PREFETCH	(PREFETCHSIZE     +  8) * SIZE + 1 * (xx) * SIZE(AO) ;\
+	PREFETCH_KERNEL5(xx) \
 	addps	%xmm11, %xmm1 ;\
 	movaps	36 * SIZE + 2 * (xx) * SIZE(BO), %xmm11 ;\
 	mulps	%xmm8, %xmm13 ;\

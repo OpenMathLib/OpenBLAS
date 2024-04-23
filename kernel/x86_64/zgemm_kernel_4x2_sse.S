@@ -102,6 +102,14 @@
 #define RPREFETCHSIZE (8 *  7 + 4)
 #define WPREFETCHSIZE (8 *  8 + 4)
 
+#ifdef PREFETCH
+#define PREFETCH_KERNEL1(xx) PREFETCH	(PREFETCHSIZE	  +  0) * SIZE + 1 * (xx) * SIZE(AO, %rax, 4) ;
+#define PREFETCH_KERNEL4(xx) PREFETCH	(PREFETCHSIZE     + 16) * SIZE + 1 * (xx) * SIZE(AO, %rax, 4) ;
+#else
+#define PREFETCH_KERNEL1(xx)
+#define PREFETCH_KERNEL4(xx)
+#endif
+
 #ifndef GENERIC
 #define KERNEL1(xx) \
 	mulps	%xmm0, %xmm1 ;\
@@ -111,7 +119,7 @@
 	addps	%xmm3, %xmm9 ;\
 	movaps	-28 * SIZE + 2 * (xx) * SIZE(BO, %rax, 8), %xmm3 ;\
 	mulps	%xmm0, %xmm5 ;\
-	PREFETCH	(PREFETCHSIZE     +  0) * SIZE + 1 * (xx) * SIZE(AO, %rax, 4) ;\
+	PREFETCH_KERNEL1(xx) \
 	mulps	-20 * SIZE + 2 * (xx) * SIZE(BO, %rax, 8), %xmm0 ;\
 	addps	%xmm5, %xmm10 ;\
 	movaps	-24 * SIZE + 2 * (xx) * SIZE(BO, %rax, 8), %xmm5 ;\
@@ -157,7 +165,7 @@
 	mulps	 -4 * SIZE + 2 * (xx) * SIZE(BO, %rax, 8), %xmm6 ;\
 	addps	%xmm5, %xmm14 ;\
 	movaps	  8 * SIZE + 2 * (xx) * SIZE(BO, %rax, 8), %xmm5 ;\
- 	PREFETCH	(PREFETCHSIZE     + 16) * SIZE + 1 * (xx) * SIZE(AO, %rax, 4) ;\
+	PREFETCH_KERNEL4(xx) \
 	addps	%xmm6, %xmm15 ;\
 	movaps	 -4 * SIZE + 1 * (xx) * SIZE(AO, %rax, 4), %xmm6
 
@@ -1026,7 +1034,9 @@
 
 .L22:
 	mulps	%xmm0, %xmm1
+#ifdef PREFETCH
 	PREFETCH	(PREFETCHSIZE +  0) * SIZE(AO)
+#endif
 	addps	%xmm1, %xmm8
 	movaps	-28 * SIZE(BO), %xmm1
 	mulps	%xmm0, %xmm1
@@ -1079,7 +1089,9 @@
 	movaps	  0 * SIZE(AO), %xmm0
 
 	mulps	%xmm2, %xmm1
+#ifdef PREFETCH
 	PREFETCH	(PREFETCHSIZE + 16) * SIZE(AO)
+#endif
 	addps	%xmm1, %xmm8
 	movaps	 36 * SIZE(BO), %xmm1
 	mulps	%xmm2, %xmm1
@@ -1285,7 +1297,9 @@
 
 .L32:
 	mulps	%xmm0, %xmm1
+#ifdef PREFETCH
 	PREFETCH	(PREFETCHSIZE +  0) * SIZE(AO)
+#endif
 	addps	%xmm1, %xmm8
 	movaps	-28 * SIZE(BO), %xmm1
 	mulps	%xmm0, %xmm1
@@ -1679,7 +1693,9 @@
 
 .L52:
 	mulps	%xmm0, %xmm1
+#ifdef PREFETCH
 	PREFETCH	(PREFETCHSIZE +  0) * SIZE(AO)
+#endif
 	mulps	-28 * SIZE(BO), %xmm0
 	addps	%xmm1, %xmm8
 	movaps	-32 * SIZE(BO), %xmm1
@@ -1705,7 +1721,9 @@
 	addps	%xmm0, %xmm13
 	movaps	 32 * SIZE(AO), %xmm0
 
+#ifdef PREFETCH
 	PREFETCH	(PREFETCHSIZE + 16) * SIZE(AO)
+#endif
 
 	mulps	%xmm2, %xmm3
 	mulps	-12 * SIZE(BO), %xmm2
@@ -1733,7 +1751,9 @@
 	addps	%xmm2, %xmm13
 	movaps	 48 * SIZE(AO), %xmm2
 
+#ifdef PREFETCH
 	PREFETCH	(PREFETCHSIZE + 32) * SIZE(AO)
+#endif
 
 	mulps	%xmm4, %xmm5
 	mulps	  4 * SIZE(BO), %xmm4
@@ -1761,7 +1781,9 @@
 	addps	%xmm4, %xmm13
 	movaps	 64 * SIZE(AO), %xmm4
 
+#ifdef PREFETCH
 	PREFETCH	(PREFETCHSIZE + 48) * SIZE(AO)
+#endif
 
 	mulps	%xmm6, %xmm7
 	mulps	 20 * SIZE(BO), %xmm6
@@ -1942,7 +1964,9 @@
 
 .L62:
 	mulps	%xmm0, %xmm1
+#ifdef PREFETCH
 	PREFETCH	(PREFETCHSIZE +  0) * SIZE(AO)
+#endif
 	mulps	-28 * SIZE(BO), %xmm0
 	addps	%xmm1, %xmm8
 	movaps	-24 * SIZE(BO), %xmm1
@@ -1968,7 +1992,9 @@
 	addps	%xmm0, %xmm11
 	movaps    0 * SIZE(AO), %xmm0
 
+#ifdef PREFETCH
 	PREFETCH	(PREFETCHSIZE + 16) * SIZE(AO)
+#endif
 
 	mulps	%xmm2, %xmm5
 	mulps	  4 * SIZE(BO), %xmm2
@@ -2130,7 +2156,9 @@
 
 .L72:
 	mulps	%xmm0, %xmm1
+#ifdef PREFETCH
 	PREFETCH	(PREFETCHSIZE +  0) * SIZE(AO)
+#endif
 	addps	%xmm1, %xmm8
 	movaps	-28 * SIZE(BO), %xmm1
 	mulps	%xmm0, %xmm1

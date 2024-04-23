@@ -442,7 +442,9 @@
 	addpd	  a1,     yy1
 	MOVDDUP(3 * SIZE, A2, a1)
 
+#ifdef PREFETCH
 	PREFETCH	PREFETCHSIZE(A1)
+#endif
 
 	movapd	  xtemp3, xt1
 	mulpd	  a2,     xt1
@@ -465,7 +467,9 @@
 	addpd	  a1,     yy2
 	MOVDDUP(3 * SIZE, A1, a1)
 
+#ifdef PREFETCH
 	PREFETCH	PREFETCHSIZE(XX)
+#endif
 
 	movapd	  xtemp3, xt1
 	movapd	12 * SIZE(XX), xtemp3
@@ -504,7 +508,9 @@
 	addpd	  a2,     yy1
 	MOVDDUP(5 * SIZE, A1, a2)
 
+#ifdef PREFETCH
 	PREFETCH	PREFETCHSIZE(A2)
+#endif
 
 	movlpd	 yy1, 0 * SIZE(YY)
 	movhpd	 yy1, 1 * SIZE(YY)
@@ -532,7 +538,9 @@
 	addpd	  a2,     yy1
 	MOVDDUP(4 * SIZE, A2, a2)
 
+#ifdef PREFETCH
 	PREFETCHW	PREFETCHSIZE(YY)
+#endif
 
 	movapd	  xtemp4, xt1
 	mulpd	  a3,     xt1
