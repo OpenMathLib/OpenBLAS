@@ -248,6 +248,45 @@ precision_mappings = {
     # 'zd': {'undef': [], 'def': ['COMPLEX', 'DOUBLE']},
 }
 
+symb_defs = [
+ {'base': '?asum'},
+ {'base': '?sum'},
+ {'base': '?amax', 'def': [ 'USE_ABS' ], 'undef': [ 'USE_MIN' ]},
+ {'base': '?amin', 'def': [ 'USE_ABS', 'USE_MIN' ], 'undef': []},
+ {'base': '?max', 'def': [], 'undef': [ 'USE_ABS', 'USE_MIN' ]},
+ {'base': '?min', 'def': [ 'USE_MIN' ], 'undef': [ 'USE_ABS' ]},
+ {'base': 'i?max', 'def': [ ], 'undef': [ 'USE_ABS', 'USE_MIN' ]},
+ {'base': 'i?amax', 'def': [ 'USE_ABS' ], 'undef': [ 'USE_MIN' ]},
+ {'base': 'i?amin', 'def': [ 'USE_ABS', 'USE_MIN' ], 'undef': [ ]},
+ {'base': 'i?min', 'def': [ 'USE_MIN' ], 'undef': [ 'USE_ABS' ]},
+ {'base': '?max', 'def': [ ], 'undef': [ 'USE_ABS', 'USE_MIN' ]},
+ {'base': '?min', 'def': [ 'USE_MIN' ], 'undef': [ 'USE_ABS' ]},
+ {'base': '?axpy'},
+ {'base': '?axpyc', 'def': [ 'CONJ' ], 'undef': []},
+ {'base': '?copy'},
+ {'base': '?dot'},
+ {'base': '?dotu', 'def': [], 'undef': [ 'CONJ' ]},
+ {'base': '?dotc', 'def': [ 'CONJ' ], 'undef': []},
+ {'base': '?nrm2'},
+ {'base': '?rot'},
+ {'base': '?rotm'},
+ {'base': '?rotmg'},
+ {'base': '?rotg'},
+ {'base': '?scal'},
+ {'base': '?swap'},
+ {'base': '?dsdot'},
+ {'base': '?ger'},
+ {'base': '?geru', 'def': [], 'undef': [ 'CONJ' ]},
+ {'base': '?gerc', 'def': [ 'CONJ' ], 'undef': []},
+ {'base': '?gemv'},
+ {'base': '?trmv'},
+ {'base': '?trsv'},
+ {'base': '?symv'},
+ {'base': '?syr'},
+ {'base': '?syr2'},
+ {'base': '?gbmv'},
+]
+
 # Ignoring other hostarch checks and conflicts for arch in BSD for now
 _inc = include_directories('.')
 # subdir('lapack-netlib')

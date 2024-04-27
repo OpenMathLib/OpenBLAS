@@ -768,43 +768,6 @@ base_kops = [
 #    }
 # ]
 
-_configs = [
-  # {'name': 'saxpby_k', 'undef': ['COMPLEX', 'DOUBLE'], 'def': [], 'addl': []},
-  # {'name': 'daxpby_k', 'undef': ['COMPLEX'], 'def': ['DOUBLE'], 'addl': []},
-  # {'name': 'caxpby_k', 'undef': ['CONJ', 'DOUBLE'], 'def': ['COMPLEX'], 'addl': []},
-  # {'name': 'zaxpby_k', 'undef': ['CONJ'], 'def': ['COMPLEX', 'DOUBLE'], 'addl': []},
-  # {'name': 'sswap_k', 'undef': ['COMPLEX', 'DOUBLE'], 'def': [], 'addl': []},
-  # {'name': 'dswap_k', 'undef': ['COMPLEX'], 'def': ['DOUBLE'], 'addl': []},
-  # {'name': 'qswap_k', 'undef': ['COMPLEX'], 'def': ['XDOUBLE'], 'addl': []},
-  # {'name': 'cswap_k', 'undef': ['DOUBLE'], 'def': ['COMPLEX'], 'addl': []},
-  # {'name': 'zswap_k', 'undef': [], 'def': ['COMPLEX', 'DOUBLE'], 'addl': []},
-  # {'name': 'xswap_k', 'undef': [], 'def': ['COMPLEX', 'XDOUBLE'], 'addl': []},
-  # {'name': 'srot_k',
-  #  'undef': ['COMPLEX', 'COMPLEX', 'DOUBLE'],
-  #  'def': [],
-  #  'addl': [fma3_flag]},
-  {'name': 'drot_k',
-   'undef': ['COMPLEX'],
-   'def': ['DOUBLE'],
-   'addl': [fma3_flag]},
-  {'name': 'qrot_k',
-   'undef': ['COMPLEX'],
-   'def': ['XDOUBLE'],
-   'addl': []},
-  # {'name': 'csrot_k',
-  #  'undef': ['DOUBLE'],
-  #  'def': ['COMPLEX', 'COMPLEX'],
-  #  'addl': []},
-  # {'name': 'zdrot_k',
-  #  'undef': [],
-  #  'def': ['COMPLEX', 'COMPLEX', 'DOUBLE'],
-  #  'addl': []},
-  # {'name': 'xqrot_k',
-  #  'undef': [],
-  #  'def': ['COMPLEX', 'COMPLEX', 'XDOUBLE'],
-  #  'addl': []}
-]
-
 kernel_confs = []
 
 foreach _kop : base_kops
@@ -816,7 +779,7 @@ foreach _kop : base_kops
     exts = details['exts']
     foreach ext : exts
       src = join_paths(dir, kernel)
-      foreach cfg : _configs
+      foreach cfg : kernel_confs
         if mode + base + ext == cfg['name']
           defs = cfg.get('def', [])
           undefs = cfg.get('undef', [])
