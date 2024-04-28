@@ -62,8 +62,8 @@ base_kops = [
         'exts': ['_k'],
       },
       'q' : {
-        'dir': 'arm',
-        'kernel': 'zswap.c',
+        'dir': 'x86_64',
+        'kernel': 'swap.S',
         'exts': ['_k'],
       },
       'c' : {
@@ -96,8 +96,8 @@ base_kops = [
         'exts': ['_k'],
       },
       'q' : {
-        'dir': 'arm',
-        'kernel': 'zscal.c',
+        'dir': 'x86_64',
+        'kernel': 'scal.S',
         'exts': ['_k'],
       },
       'c' : {
@@ -164,8 +164,8 @@ base_kops = [
         'exts': ['_k'],
       },
       'q' : {
-        'dir': 'arm',
-        'kernel': 'zaxpy.c',
+        'dir': 'x86_64',
+        'kernel': 'axpy.S',
         'exts': ['_k'],
       },
       'c' : {
@@ -198,8 +198,8 @@ base_kops = [
         'exts': ['_k'],
       },
       'q' : {
-        'dir': 'arm',
-        'kernel': 'zdot.c',
+        'dir': 'x86_64',
+        'kernel': 'dot.S',
         'exts': ['_k'],
       },
       'c' : {
