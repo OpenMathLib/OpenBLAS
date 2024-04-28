@@ -361,6 +361,7 @@ foreach _kop : base_kops
     endif
   endif
   foreach mode, details : modes
+    # Generally, one list is required for each foreach
     __cargs = _cargs + _ckop_args
     prec_mode = precision_mappings[mode]
     # Generate the mapping for the type
@@ -376,26 +377,26 @@ foreach _kop : base_kops
     endif
     # Now the rest, one run for each ext, to get the final symbols
     foreach ext, extdat : details['exts']
+      _ext_cargs = [] # Will be wiped for each ext preventing redefinitions
       extmap = ext_mappings[ext]
       if extmap.has_key('def')
         foreach _d : extmap['def']
-          __cargs += ('-D' + _d)
+          _ext_cargs += ('-D' + _d)
         endforeach
       endif
       if extmap.has_key('undef')
         foreach _u : extmap['undef']
-          __cargs += ('-U' + _u)
+          _ext_cargs += ('-U' + _u)
         endforeach
       endif
       # Construct the final paths
       src = join_paths(extdat['dir'], extdat['kernel'])
       if extdat.has_key('addl')
-        __cargs += extdat['addl']
+        _ext_cargs += extdat['addl']
       endif
       sym_name = base.replace('?', mode) + ext
-      message(sym_name)
       sym_underscored = f'@sym_name@_'
-      __cargs += [
+      _ext_cargs += [
         f'-DASMNAME=@sym_name@',
         f'-DASMFNAME=@sym_underscored@',
         f'-DNAME=@sym_underscored@',
@@ -404,11 +405,10 @@ foreach _kop : base_kops
         f'-DCHAR_CNAME="@sym_name@"',
       ]
       current_def = {
-        'c_args': __cargs,
+        'c_args': __cargs + _ext_cargs,
         'name': sym_name,
         'src': src
       }
-      message(__cargs)
       kernel_confs += current_def
     endforeach
   endforeach
