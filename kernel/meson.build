@@ -19,57 +19,57 @@ base_kops = [
         'q': {'exts': {'_k': {'dir': 'arm', 'kernel': 'zrot.c'}}},
         'cs': {'exts': {'_k': {'dir': 'arm', 'kernel': 'zrot.c'}}},
         'zd': {'exts': {'_k': {'dir': 'arm', 'kernel': 'zrot.c'}}},
-        'xq': {'exts': {'_k': {'dir': 'arm', 'kernel': 'zrot.c'}}},
+        'xq': {'exts': {'_k': {'dir': 'x86_64', 'kernel': 'zrot.S'}}},
     },
   },
   { 'base': '?swap',
     'modes': {
         's': {'exts': {'_k': {'dir': 'arm', 'kernel': 'swap.c'}}},
         'd': {'exts': {'_k': {'dir': 'arm', 'kernel': 'swap.c'}}},
-        'q': {'exts': {'_k': {'dir': 'x86_64', 'kernel': 'swap.S'}}},
         'c': {'exts': {'_k': {'dir': 'arm', 'kernel': 'zswap.c'}}},
         'z': {'exts': {'_k': {'dir': 'arm', 'kernel': 'zswap.c'}}},
-        'x': {'exts': {'_k': {'dir': 'arm', 'kernel': 'zswap.c'}}},
+        'q': {'exts': {'_k': {'dir': 'x86_64', 'kernel': 'swap.S'}}},
+        'x': {'exts': {'_k': {'dir': 'x86_64', 'kernel': 'zswap.S'}}},
     },
   },
   { 'base': '?scal',
     'modes': {
         's': {'exts': {'_k': {'dir': 'arm', 'kernel': 'scal.c'}}},
         'd': {'exts': {'_k': {'dir': 'arm', 'kernel': 'scal.c'}}},
-        'q': {'exts': {'_k': {'dir': 'x86_64', 'kernel': 'scal.S'}}},
         'c': {'exts': {'_k': {'dir': 'arm', 'kernel': 'zscal.c'}}},
         'z': {'exts': {'_k': {'dir': 'arm', 'kernel': 'zscal.c'}}},
-        'x': {'exts': {'_k': {'dir': 'arm', 'kernel': 'zscal.c'}}},
+        'q': {'exts': {'_k': {'dir': 'x86_64', 'kernel': 'scal.S'}}},
+        'x': {'exts': {'_k': {'dir': 'x86_64', 'kernel': 'zscal.S'}}},
     },
   },
   { 'base': '?copy',
     'modes': {
         's': {'exts': {'_k': {'dir': 'arm', 'kernel': 'copy.c'}}},
         'd': {'exts': {'_k': {'dir': 'arm', 'kernel': 'copy.c'}}},
-        'q': {'exts': {'_k': {'dir': 'arm', 'kernel': 'zcopy.c'}}},
         'c': {'exts': {'_k': {'dir': 'arm', 'kernel': 'zcopy.c'}}},
         'z': {'exts': {'_k': {'dir': 'arm', 'kernel': 'zcopy.c'}}},
-        'x': {'exts': {'_k': {'dir': 'arm', 'kernel': 'zcopy.c'}}},
+        'q': {'exts': {'_k': {'dir': 'x86_64', 'kernel': 'copy.S'}}},
+        'x': {'exts': {'_k': {'dir': 'x86_64', 'kernel': 'zcopy.S'}}},
     },
   },
   { 'base': '?axpy',
     'modes': {
         's': {'exts': {'_k': {'dir': 'arm', 'kernel': 'axpy.c'}}},
         'd': {'exts': {'_k': {'dir': 'arm', 'kernel': 'axpy.c'}}},
-        'q': {'exts': {'_k': {'dir': 'x86_64', 'kernel': 'axpy.S'}}},
         'c': {'exts': {'_k': {'dir': 'arm', 'kernel': 'zaxpy.c'}}},
         'z': {'exts': {'_k': {'dir': 'arm', 'kernel': 'zaxpy.c'}}},
-        'x': {'exts': {'_k': {'dir': 'arm', 'kernel': 'zaxpy.c'}}},
+        'q': {'exts': {'_k': {'dir': 'x86_64', 'kernel': 'axpy.S'}}},
+        'x': {'exts': {'_k': {'dir': 'x86_64', 'kernel': 'zaxpy.S'}}},
     },
   },
   { 'base': '?dot',
     'modes': {
         's': {'exts': {'_k': {'dir': 'arm', 'kernel': 'dot.c'}}},
         'd': {'exts': {'_k': {'dir': 'arm', 'kernel': 'dot.c'}}},
-        'q': {'exts': {'_k': {'dir': 'x86_64', 'kernel': 'dot.S'}}},
         'c': {'exts': {'_k': {'dir': 'arm', 'kernel': 'zdot.c'}}},
         'z': {'exts': {'_k': {'dir': 'arm', 'kernel': 'zdot.c'}}},
-        'x': {'exts': {'_k': {'dir': 'arm', 'kernel': 'zdot.c'}}},
+        'q': {'exts': {'_k': {'dir': 'x86_64', 'kernel': 'dot.S'}}},
+        'x': {'exts': {'_k': {'dir': 'x86_64', 'kernel': 'zdot.S'}}},
     },
   },
   # TODO(rg): Add dsdotkernel conditionals
@@ -78,30 +78,30 @@ base_kops = [
     'modes': {
         's': {'exts': {'_k': {'dir': 'arm', 'kernel': 'nrm2.c'}}},
         'd': {'exts': {'_k': {'dir': 'arm', 'kernel': 'nrm2.c'}}},
-        'q': {'exts': {'_k': {'dir': 'x86_64', 'kernel': 'nrm2.S'}}},
         'c': {'exts': {'_k': {'dir': 'arm', 'kernel': 'znrm2.c'}}},
         'z': {'exts': {'_k': {'dir': 'arm', 'kernel': 'znrm2.c'}}},
-        'x': {'exts': {'_k': {'dir': 'arm', 'kernel': 'znrm2.c'}}},
+        'q': {'exts': {'_k': {'dir': 'x86_64', 'kernel': 'nrm2.S'}}},
+        'x': {'exts': {'_k': {'dir': 'x86_64', 'kernel': 'znrm2.S'}}},
     },
   },
   { 'base': '?asum',
     'modes': {
         's': {'exts': {'_k': {'dir': 'arm', 'kernel': 'asum.c'}}},
         'd': {'exts': {'_k': {'dir': 'arm', 'kernel': 'asum.c'}}},
-        'q': {'exts': {'_k': {'dir': 'arm', 'kernel': 'zasum.c'}}},
         'c': {'exts': {'_k': {'dir': 'arm', 'kernel': 'zasum.c'}}},
         'z': {'exts': {'_k': {'dir': 'arm', 'kernel': 'zasum.c'}}},
-        'x': {'exts': {'_k': {'dir': 'arm', 'kernel': 'zasum.c'}}},
+        'q': {'exts': {'_k': {'dir': 'x86_64', 'kernel': 'asum.S'}}},
+        'x': {'exts': {'_k': {'dir': 'x86_64', 'kernel': 'zasum.S'}}},
     },
   },
   { 'base': '?amax',
     'modes': {
         's': {'exts': {'_k': {'dir': 'arm', 'kernel': 'amax.c'}}},
         'd': {'exts': {'_k': {'dir': 'arm', 'kernel': 'amax.c'}}},
-        'q': {'exts': {'_k': {'dir': 'arm', 'kernel': 'zamax.c'}}},
         'c': {'exts': {'_k': {'dir': 'arm', 'kernel': 'zamax.c'}}},
         'z': {'exts': {'_k': {'dir': 'arm', 'kernel': 'zamax.c'}}},
-        'x': {'exts': {'_k': {'dir': 'arm', 'kernel': 'zamax.c'}}},
+        'q': {'exts': {'_k': {'dir': 'x86_64', 'kernel': 'amax.S'}}},
+        'x': {'exts': {'_k': {'dir': 'x86_64', 'kernel': 'zamax.S'}}},
     },
   },
   { 'base': '?sum',
@@ -182,14 +182,15 @@ base_kops = [
   # exts are used to find the flags for each modality
   # ext is attached to base (only useful from Level 2)
   # i.e. baseext (e.g., gemv_n, gemv_t, cgeru_k, cgerc_k)
-  {'base': '?gemv',
+  { 'base': '?gemv',
     'modes': {
         's': {
             'exts': {
               # TODO(rg): Where are these coming from??
+              # Most of these have both generic defines and also per-folder defines..
               # Makefile lists sgemv_n_4.c as the source, though there is a sgemv_n.c
-                '_n': {'dir': 'x86_64', 'kernel': 'sgemv_n_4.c'},
-                '_t': {'dir': 'x86_64', 'kernel': 'sgemv_t_4.c'},
+                '_n': {'dir': 'arm', 'kernel': 'gemv_n.c'},
+                '_t': {'dir': 'arm', 'kernel': 'gemv_t.c'},
             }
         },
         'd': {
@@ -200,8 +201,8 @@ base_kops = [
         },
         'q': {
             'exts': {
-                '_n': {'dir': 'arm', 'kernel': 'gemv_n.c'},
-                '_t': {'dir': 'arm', 'kernel': 'gemv_n.c'},
+                '_n': {'dir': 'x86_64', 'kernel': 'qgemv_n.S'},
+                '_t': {'dir': 'x86_64', 'kernel': 'qgemv_t.S'},
             }
         },
         'c': {
@@ -242,105 +243,105 @@ base_kops = [
         },
     },
   },
-  # {'base': '?symv',
-  #   'modes': {
-  #       's': {
-  #           'exts': {
-  #               '_U': {'dir': 'generic', 'kernel': 'symv_k.c'},
-  #               '_L': {'dir': 'generic', 'kernel': 'symv_k.c'},
-  #           }
-  #       },
-  #       'd': {
-  #           'exts': {
-  #               '_U': {'dir': 'generic', 'kernel': 'symv_k.c'},
-  #               '_L': {'dir': 'generic', 'kernel': 'symv_k.c'},
-  #           }
-  #       },
-  #       'q': {
-  #           'exts': {
-  #               '_U': {'dir': 'generic', 'kernel': 'symv_k.c'},
-  #               '_L': {'dir': 'generic', 'kernel': 'symv_k.c'},
-  #           }
-  #       },
-  #       'c': {
-  #           'exts': {
-  #               '_U': {'dir': 'generic', 'kernel': 'symv_k.c'},
-  #               '_L': {'dir': 'generic', 'kernel': 'symv_k.c'},
-  #           }
-  #       },
-  #       'z': {
-  #           'exts': {
-  #               '_U': {'dir': 'generic', 'kernel': 'symv_k.c'},
-  #               '_L': {'dir': 'generic', 'kernel': 'symv_k.c'},
-  #           }
-  #       },
-  #       'x': {
-  #           'exts': {
-  #               '_U': {'dir': 'generic', 'kernel': 'symv_k.c'},
-  #               '_L': {'dir': 'generic', 'kernel': 'symv_k.c'},
-  #           }
-  #       },
-  #   },
-  # },
-  # {'base': '?ger',
-  #   'modes': {
-  #       's': {'exts': {'_k': {'dir': 'generic', 'kernel': 'ger.c'}}},
-  #       'd': {'exts': {'_k': {'dir': 'generic', 'kernel': 'ger.c'}}},
-  #       'q': {'exts': {'_k': {'dir': 'generic', 'kernel': 'ger.c'}}},
-  #   },
-  # },
-  # {'base': '?geru',
-  #   'modes': {
-  #       'c': {'exts': {'_k': {'dir': 'generic', 'kernel': 'zger.c'}}},
-  #       'z': {'exts': {'_k': {'dir': 'generic', 'kernel': 'zger.c'}}},
-  #       'x': {'exts': {'_k': {'dir': 'generic', 'kernel': 'zger.c'}}},
-  #   },
-  # },
-  # {'base': '?gerc',
-  #   'modes': {
-  #       'c': {'exts': {'_k': {'dir': 'generic', 'kernel': 'zger.c'}}},
-  #       'z': {'exts': {'_k': {'dir': 'generic', 'kernel': 'zger.c'}}},
-  #       'x': {'exts': {'_k': {'dir': 'generic', 'kernel': 'zger.c'}}},
-  #   },
-  # },
-  # {'base': '?hemv',
-  #   'modes': {
-  #       'c': {
-  #           'exts': {
-  #               '_U': {'dir': 'generic', 'kernel': 'zhemv_k.c'},
-  #               '_L': {'dir': 'generic', 'kernel': 'zhemv_k.c'},
-  #               '_V': {'dir': 'generic', 'kernel': 'zhemv_k.c'},
-  #               '_M': {'dir': 'generic', 'kernel': 'zhemv_k.c'},
-  #           }
-  #       },
-  #       'z': {
-  #           'exts': {
-  #               '_U': {'dir': 'generic', 'kernel': 'zhemv_k.c'},
-  #               '_L': {'dir': 'generic', 'kernel': 'zhemv_k.c'},
-  #               '_V': {'dir': 'generic', 'kernel': 'zhemv_k.c'},
-  #               '_M': {'dir': 'generic', 'kernel': 'zhemv_k.c'},
-  #           }
-  #       },
-  #       'x': {
-  #           'exts': {
-  #               '_U': {'dir': 'generic', 'kernel': 'zhemv_k.c'},
-  #               '_L': {'dir': 'generic', 'kernel': 'zhemv_k.c'},
-  #               '_V': {'dir': 'generic', 'kernel': 'zhemv_k.c'},
-  #               '_M': {'dir': 'generic', 'kernel': 'zhemv_k.c'},
-  #           }
-  #       },
-  #   },
-  # },
-  # {'base': '?bgemv',
-  #   'modes': {
-  #       's': {
-  #           'exts': {
-  #               '_n': {'dir': 'x86_64', 'kernel': 'sbgemv_n.c'},
-  #               '_t': {'dir': 'x86_64', 'kernel': 'sbgemv_n.c'},
-  #           }
-  #       }
-  #   },
-  # },
+  { 'base': '?symv',
+    'modes': {
+        's': {
+            'exts': {
+                '_U': {'dir': 'generic', 'kernel': 'symv_k.c'},
+                '_L': {'dir': 'generic', 'kernel': 'symv_k.c'},
+            }
+        },
+        'd': {
+            'exts': {
+                '_U': {'dir': 'generic', 'kernel': 'symv_k.c'},
+                '_L': {'dir': 'generic', 'kernel': 'symv_k.c'},
+            }
+        },
+        'c': {
+            'exts': {
+                '_U': {'dir': 'generic', 'kernel': 'zsymv_k.c'},
+                '_L': {'dir': 'generic', 'kernel': 'zsymv_k.c'},
+            }
+        },
+        'z': {
+            'exts': {
+                '_U': {'dir': 'generic', 'kernel': 'zsymv_k.c'},
+                '_L': {'dir': 'generic', 'kernel': 'zsymv_k.c'},
+            }
+        },
+        'q': {
+            'exts': {
+                '_U': {'dir': 'generic', 'kernel': 'symv_k.c'},
+                '_L': {'dir': 'generic', 'kernel': 'symv_k.c'},
+            }
+        },
+        'x': {
+            'exts': {
+                '_U': {'dir': 'generic', 'kernel': 'zsymv_k.c'},
+                '_L': {'dir': 'generic', 'kernel': 'zsymv_k.c'},
+            }
+        },
+    },
+  },
+  { 'base': '?ger',
+    'modes': {
+        's': {'exts': {'_k': {'dir': 'generic', 'kernel': 'ger.c'}}},
+        'd': {'exts': {'_k': {'dir': 'generic', 'kernel': 'ger.c'}}},
+        'q': {'exts': {'_k': {'dir': 'generic', 'kernel': 'ger.c'}}},
+    },
+  },
+  { 'base': '?geru',
+    'modes': {
+        'c': {'exts': {'_k': {'dir': 'generic', 'kernel': 'zger.c'}}},
+        'z': {'exts': {'_k': {'dir': 'generic', 'kernel': 'zger.c'}}},
+        'x': {'exts': {'_k': {'dir': 'generic', 'kernel': 'zger.c'}}},
+    },
+  },
+  { 'base': '?gerc',
+    'modes': {
+        'c': {'exts': {'_k': {'dir': 'generic', 'kernel': 'zger.c'}}},
+        'z': {'exts': {'_k': {'dir': 'generic', 'kernel': 'zger.c'}}},
+        'x': {'exts': {'_k': {'dir': 'generic', 'kernel': 'zger.c'}}},
+    },
+  },
+  { 'base': '?hemv',
+    'modes': {
+        'c': {
+            'exts': {
+                '_U': {'dir': 'generic', 'kernel': 'zhemv_k.c'},
+                '_L': {'dir': 'generic', 'kernel': 'zhemv_k.c'},
+                '_V': {'dir': 'generic', 'kernel': 'zhemv_k.c'},
+                '_M': {'dir': 'generic', 'kernel': 'zhemv_k.c'},
+            }
+        },
+        'z': {
+            'exts': {
+                '_U': {'dir': 'generic', 'kernel': 'zhemv_k.c'},
+                '_L': {'dir': 'generic', 'kernel': 'zhemv_k.c'},
+                '_V': {'dir': 'generic', 'kernel': 'zhemv_k.c'},
+                '_M': {'dir': 'generic', 'kernel': 'zhemv_k.c'},
+            }
+        },
+        'x': {
+            'exts': {
+                '_U': {'dir': 'generic', 'kernel': 'zhemv_k.c'},
+                '_L': {'dir': 'generic', 'kernel': 'zhemv_k.c'},
+                '_V': {'dir': 'generic', 'kernel': 'zhemv_k.c'},
+                '_M': {'dir': 'generic', 'kernel': 'zhemv_k.c'},
+            }
+        },
+    },
+  },
+  { 'base': '?bgemv',
+    'modes': {
+        's': {
+            'exts': {
+                '_n': {'dir': 'x86_64', 'kernel': 'sbgemv_n.c'},
+                '_t': {'dir': 'x86_64', 'kernel': 'sbgemv_n.c'},
+            }
+        }
+    },
+  },
 ]
 
 kernel_confs = []
@@ -418,6 +419,8 @@ endforeach
 
 _kern_libs = []
 foreach conf: kernel_confs
+    message(conf['name'])
+    message(conf)
     _kern_libs += static_library(
         conf['name'],
         conf['src'],
