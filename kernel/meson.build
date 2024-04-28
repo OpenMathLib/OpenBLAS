@@ -283,6 +283,19 @@ base_kops = [
         },
     },
   },
+  { 'base': '?lsame',
+    'modes': {
+        '': {'exts': {'': {'dir': 'generic', 'kernel': 'lsame.c'}}},
+    },
+  },
+  { 'base': '?cabs',
+    'modes': {
+        's': {'exts': {'': {'dir': 'generic', 'kernel': 'cabs.c'}}},
+        'd': {'exts': {'': {'dir': 'generic', 'kernel': 'cabs.c'}}},
+        'q': {'exts': {'': {'dir': 'generic', 'kernel': 'cabs.c'}}},
+    },
+  },
+  # TODO(rg): There's CGEMM3MKERNEL, ZGEMM3MKERNEL in kernel.generic
   { 'base': '?ger',
     'modes': {
         's': {'exts': {'_k': {'dir': 'generic', 'kernel': 'ger.c'}}},
