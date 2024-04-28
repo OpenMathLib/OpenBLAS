@@ -355,6 +355,18 @@ base_kops = [
         }
     },
   },
+  # Level 3 symbols
+  # TODO(rg): Handle the if defines set in arch
+  { 'base': '?gemm_beta',
+    'modes': {
+        's': {'exts': {'': {'dir': 'x86_64', 'kernel': 'gemm_beta.S'}}},
+        'd': {'exts': {'': {'dir': 'x86_64', 'kernel': 'gemm_beta.S'}}},
+        'c': {'exts': {'': {'dir': 'x86_64', 'kernel': 'zgemm_beta.S'}}},
+        'z': {'exts': {'': {'dir': 'x86_64', 'kernel': 'zgemm_beta.S'}}},
+        # 'q': {'exts': {'': {'dir': 'generic', 'kernel': 'gemm_beta.c'}}},
+        # 'x': {'exts': {'': {'dir': 'generic', 'kernel': 'zgemm_beta.c'}}},
+    },
+  },
 ]
 
 kernel_confs = []
