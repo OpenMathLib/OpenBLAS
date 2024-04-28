@@ -249,6 +249,7 @@ precision_mappings = {
 }
 
 ext_mappings = {
+    '': {}, # special case
     '_k': {},
     '_U': {'undef': ['LOWER']},
     '_L': {'def': ['LOWER']},
