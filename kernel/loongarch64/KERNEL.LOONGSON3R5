@@ -85,11 +85,11 @@ ZSWAPKERNEL = cswap_lasx.S
 CSUMKERNEL = csum_lasx.S
 ZSUMKERNEL = csum_lasx.S
 
-DGEMMKERNEL    = dgemm_kernel_16x4.S
+DGEMMKERNEL    = dgemm_kernel_16x6.S
 DGEMMINCOPY    = dgemm_ncopy_16.S
 DGEMMITCOPY    = dgemm_tcopy_16.S
-DGEMMONCOPY    = dgemm_ncopy_4.S
-DGEMMOTCOPY    = dgemm_tcopy_4.S
+DGEMMONCOPY    = gemm_ncopy_6.prefx.c
+DGEMMOTCOPY    = dgemm_tcopy_6.S
 DGEMMINCOPYOBJ = dgemm_incopy$(TSUFFIX).$(SUFFIX)
 DGEMMITCOPYOBJ = dgemm_itcopy$(TSUFFIX).$(SUFFIX)
 DGEMMONCOPYOBJ = dgemm_oncopy$(TSUFFIX).$(SUFFIX)
@@ -153,10 +153,10 @@ ZTRSMKERNEL_LT  = ../generic/trsm_kernel_LT.c
 ZTRSMKERNEL_RN  = ../generic/trsm_kernel_RN.c
 ZTRSMKERNEL_RT  = ../generic/trsm_kernel_RT.c
 
-DTRSMKERNEL_LN  = dtrsm_kernel_LN_16x4_lasx.S
-DTRSMKERNEL_LT  = dtrsm_kernel_LT_16x4_lasx.S
-DTRSMKERNEL_RN  = dtrsm_kernel_RN_16x4_lasx.S
-DTRSMKERNEL_RT  = dtrsm_kernel_RT_16x4_lasx.S
+DTRSMKERNEL_LN  = trsm_kernel_LN_UNROLLN6.c
+DTRSMKERNEL_LT  = trsm_kernel_LT_UNROLLN6.c
+DTRSMKERNEL_RN  = trsm_kernel_RN_UNROLLN6.c
+DTRSMKERNEL_RT  = trsm_kernel_RT_UNROLLN6.c
 
 STRSMKERNEL_LN  = ../generic/trsm_kernel_LN.c
 STRSMKERNEL_LT  = ../generic/trsm_kernel_LT.c
