@@ -248,6 +248,22 @@ precision_mappings = {
     # 'zd': {'undef': [], 'def': ['COMPLEX', 'DOUBLE']},
 }
 
+ext_mappings = {
+    '_k': {},
+    '_U': {'undef': ['LOWER']},
+    '_L': {'def': ['LOWER']},
+    '_V': {'def': ['HEMV', 'HEMVREV'], 'undef': ['LOWER']},
+    '_M': {'def': ['HEMV', 'HEMVREV', 'LOWER']},
+    '_n': {'undef': ['TRANS', 'CONJ', 'XCONJ']},
+    '_t': {'def': ['TRANS'], 'undef': ['CONJ', 'XCONJ']},
+    '_r': {'def': ['CONJ'], 'undef': ['TRANS', 'XCONJ']},
+    '_c': {'def': ['TRANS', 'CONJ'], 'undef': ['XCONJ']},
+    '_o': {'def': ['XCONJ'], 'undef': ['TRANS', 'CONJ']},
+    '_u': {'def': ['TRANS', 'XCONJ'], 'undef': ['CONJ']},
+    '_s': {'def': ['CONJ', 'XCONJ'], 'undef': ['TRANS']},
+    '_d': {'def': ['TRANS', 'CONJ', 'XCONJ']},
+}
+
 symb_defs = [
  {'base': '?asum'},
  {'base': '?sum'},
@@ -288,7 +304,7 @@ symb_defs = [
 ]
 
 # Ignoring other hostarch checks and conflicts for arch in BSD for now
-_inc = include_directories('.')
+_inc = [include_directories('.')]
 # subdir('lapack-netlib')
 subdir('interface')
 subdir('kernel')
