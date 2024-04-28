@@ -182,64 +182,66 @@ base_kops = [
   # exts are used to find the flags for each modality
   # ext is attached to base (only useful from Level 2)
   # i.e. baseext (e.g., gemv_n, gemv_t, cgeru_k, cgerc_k)
-  # {'base': '?gemv',
-  #   'modes': {
-  #       's': {
-  #           'exts': {
-  #               '_n': {'dir': 'arm', 'kernel': 'gemv_n.c'},
-  #               '_t': {'dir': 'arm', 'kernel': 'gemv_n.c'},
-  #           }
-  #       },
-  #       'd': {
-  #           'exts': {
-  #               '_n': {'dir': 'arm', 'kernel': 'gemv_n.c'},
-  #               '_t': {'dir': 'arm', 'kernel': 'gemv_n.c'},
-  #           }
-  #       },
-  #       'q': {
-  #           'exts': {
-  #               '_n': {'dir': 'arm', 'kernel': 'gemv_n.c'},
-  #               '_t': {'dir': 'arm', 'kernel': 'gemv_n.c'},
-  #           }
-  #       },
-  #       'c': {
-  #           'exts': {
-  #               '_n': {'dir': 'arm', 'kernel': 'zgemv_n.c'},
-  #               '_t': {'dir': 'arm', 'kernel': 'zgemv_n.c'},
-  #               '_r': {'dir': 'arm', 'kernel': 'zgemv_n.c'},
-  #               '_c': {'dir': 'arm', 'kernel': 'zgemv_n.c'},
-  #               '_o': {'dir': 'arm', 'kernel': 'zgemv_n.c'},
-  #               '_u': {'dir': 'arm', 'kernel': 'zgemv_n.c'},
-  #               '_s': {'dir': 'arm', 'kernel': 'zgemv_n.c'},
-  #               '_d': {'dir': 'arm', 'kernel': 'zgemv_n.c'},
-  #           }
-  #       },
-  #       'z': {
-  #           'exts': {
-  #               '_n': {'dir': 'arm', 'kernel': 'zgemv_n.c'},
-  #               '_t': {'dir': 'arm', 'kernel': 'zgemv_n.c'},
-  #               '_r': {'dir': 'arm', 'kernel': 'zgemv_n.c'},
-  #               '_c': {'dir': 'arm', 'kernel': 'zgemv_n.c'},
-  #               '_o': {'dir': 'arm', 'kernel': 'zgemv_n.c'},
-  #               '_u': {'dir': 'arm', 'kernel': 'zgemv_n.c'},
-  #               '_s': {'dir': 'arm', 'kernel': 'zgemv_n.c'},
-  #               '_d': {'dir': 'arm', 'kernel': 'zgemv_n.c'},
-  #           }
-  #       },
-  #       'x': {
-  #           'exts': {
-  #               '_n': {'dir': 'arm', 'kernel': 'zgemv_n.c'},
-  #               '_t': {'dir': 'arm', 'kernel': 'zgemv_n.c'},
-  #               '_r': {'dir': 'arm', 'kernel': 'zgemv_n.c'},
-  #               '_c': {'dir': 'arm', 'kernel': 'zgemv_n.c'},
-  #               '_o': {'dir': 'arm', 'kernel': 'zgemv_n.c'},
-  #               '_u': {'dir': 'arm', 'kernel': 'zgemv_n.c'},
-  #               '_s': {'dir': 'arm', 'kernel': 'zgemv_n.c'},
-  #               '_d': {'dir': 'arm', 'kernel': 'zgemv_n.c'},
-  #           }
-  #       },
-  #   },
-  # },
+  {'base': '?gemv',
+    'modes': {
+        's': {
+            'exts': {
+              # TODO(rg): Where are these coming from??
+              # Makefile lists sgemv_n_4.c as the source, though there is a sgemv_n.c
+                '_n': {'dir': 'x86_64', 'kernel': 'sgemv_n_4.c'},
+                '_t': {'dir': 'x86_64', 'kernel': 'sgemv_t_4.c'},
+            }
+        },
+        'd': {
+            'exts': {
+                '_n': {'dir': 'arm', 'kernel': 'gemv_n.c'},
+                '_t': {'dir': 'arm', 'kernel': 'gemv_t.c'},
+            }
+        },
+        'q': {
+            'exts': {
+                '_n': {'dir': 'arm', 'kernel': 'gemv_n.c'},
+                '_t': {'dir': 'arm', 'kernel': 'gemv_n.c'},
+            }
+        },
+        'c': {
+            'exts': {
+                '_n': {'dir': 'arm', 'kernel': 'zgemv_n.c'},
+                '_t': {'dir': 'arm', 'kernel': 'zgemv_n.c'},
+                '_r': {'dir': 'arm', 'kernel': 'zgemv_n.c'},
+                '_c': {'dir': 'arm', 'kernel': 'zgemv_n.c'},
+                '_o': {'dir': 'arm', 'kernel': 'zgemv_n.c'},
+                '_u': {'dir': 'arm', 'kernel': 'zgemv_n.c'},
+                '_s': {'dir': 'arm', 'kernel': 'zgemv_n.c'},
+                '_d': {'dir': 'arm', 'kernel': 'zgemv_n.c'},
+            }
+        },
+        'z': {
+            'exts': {
+                '_n': {'dir': 'arm', 'kernel': 'zgemv_n.c'},
+                '_t': {'dir': 'arm', 'kernel': 'zgemv_n.c'},
+                '_r': {'dir': 'arm', 'kernel': 'zgemv_n.c'},
+                '_c': {'dir': 'arm', 'kernel': 'zgemv_n.c'},
+                '_o': {'dir': 'arm', 'kernel': 'zgemv_n.c'},
+                '_u': {'dir': 'arm', 'kernel': 'zgemv_n.c'},
+                '_s': {'dir': 'arm', 'kernel': 'zgemv_n.c'},
+                '_d': {'dir': 'arm', 'kernel': 'zgemv_n.c'},
+            }
+        },
+        'x': {
+            'exts': {
+                '_n': {'dir': 'arm', 'kernel': 'zgemv_n.c'},
+                '_t': {'dir': 'arm', 'kernel': 'zgemv_n.c'},
+                '_r': {'dir': 'arm', 'kernel': 'zgemv_n.c'},
+                '_c': {'dir': 'arm', 'kernel': 'zgemv_n.c'},
+                '_o': {'dir': 'arm', 'kernel': 'zgemv_n.c'},
+                '_u': {'dir': 'arm', 'kernel': 'zgemv_n.c'},
+                '_s': {'dir': 'arm', 'kernel': 'zgemv_n.c'},
+                '_d': {'dir': 'arm', 'kernel': 'zgemv_n.c'},
+            }
+        },
+    },
+  },
   # {'base': '?symv',
   #   'modes': {
   #       's': {
