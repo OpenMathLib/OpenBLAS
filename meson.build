@@ -84,22 +84,26 @@ conf_data = configuration_data()
 is_win = host_machine.system() == 'windows' or host_machine.system() == 'cygwin'
 conf_data.set('OS_WINDOWS', is_win)
 hostcpu = host_machine.cpu_family()
+conf_data.set('ARCH', hostcpu.to_upper())
 
 defarch_array = [
  # {'system': ['windows', 'cygwin'], 'def': ['OS_WINDOWS']},
  {'cpu': ['aarch64'], 'def': ['ARCH_ARGM64']},
  {'cpu': ['alpha'], 'def': ['ARCH_ALPHA']},
- {'cpu': ['arm'], 'def': ['ARCH_ARM']},
- {'cpu': ['x86_64'], 'def': ['INTEL_AMD']},
+ {'cpu': ['arm'], 'def': ['ARCH_ARM', 'USE_TRMM']},
+ {'cpu': ['x86_64'], 'def': ['INTEL_AMD', 'USE_GEMM3M', 'USE_DIRECT_SGEMM']},
  {'cpu': ['s390x'], 'def': ['ARCH_ZARCH', 'ZARCH']},
- {'cpu': ['ia64'], 'def': ['ARCH_IA64']},
+ {'cpu': ['ia64'], 'def': ['ARCH_IA64', 'USE_GEMM3M']},
  {'cpu': ['sparc'], 'def': ['ARCH_SPARC']},
  {'cpu': ['mips'], 'def': ['ARCH_MIPS']},
- {'cpu': ['mips64'], 'def': ['ARCH_MIPS64']},
+ {'cpu': ['mips64'], 'def': ['ARCH_MIPS64', 'USE_TRMM']},
  {'cpu': ['loongarch64'], 'def': ['ARCH_LOONGARCH64']},
- {'cpu': ['riscv64'], 'def': ['ARCH_RISCV64']},
+ {'cpu': ['riscv64'], 'def': ['ARCH_RISCV64', 'USE_TRMM']},
  {'cpu': ['ppc64', 'ppc'], 'def': ['ARCH_POWER', 'POWER']},
+ {'cpu': ['generic'], 'def': ['USE_TRMM']},
 ]
+
+# TODO(rg): Handle the kenel architectures later
 
 foreach arch : defarch_array
   is_cpu = hostcpu in arch['cpu']
