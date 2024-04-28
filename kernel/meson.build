@@ -184,8 +184,23 @@ kernel_confs = []
 foreach _kop : base_kops
   base = _kop['base']
   modes = _kop['modes']
+  # Generate the symbol flags
+  _ckop_args = []
+  if symb_defs.has_key(base)
+    symb_base = symb_defs[base]
+    if symb_base.has_key('def')
+      foreach _d : symb_base['def']
+        _ckop_args += ('-D' + _d)
+      endforeach
+    endif
+    if symb_base.has_key('undef')
+      foreach _u : symb_base['undef']
+        _ckop_args += ('-U' + _u)
+      endforeach
+    endif
+  endif
   foreach mode, details : modes
-    __cargs = _cargs
+    __cargs = _cargs + _ckop_args
     prec_mode = precision_mappings[mode]
     # Generate the mapping for the type
     if prec_mode.has_key('def')
