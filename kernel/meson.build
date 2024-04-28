@@ -12,7 +12,7 @@ endif
 # addl --> passed AS IS
 base_kops = [
   # Level 1 BLAS
-  { 'base': 'rot',
+  { 'base': '?rot',
     'modes': {
         's': {'exts': {'_k': {'dir': 'arm', 'kernel': 'rot.c', 'addl': [fma3_flag]}}},
         'd': {'exts': {'_k': {'dir': 'arm', 'kernel': 'rot.c', 'addl': [fma3_flag]}}},
@@ -22,7 +22,7 @@ base_kops = [
         'xq': {'exts': {'_k': {'dir': 'arm', 'kernel': 'zrot.c'}}},
     },
   },
-  { 'base': 'swap',
+  { 'base': '?swap',
     'modes': {
         's': {'exts': {'_k': {'dir': 'arm', 'kernel': 'swap.c'}}},
         'd': {'exts': {'_k': {'dir': 'arm', 'kernel': 'swap.c'}}},
@@ -32,7 +32,7 @@ base_kops = [
         'x': {'exts': {'_k': {'dir': 'arm', 'kernel': 'zswap.c'}}},
     },
   },
-  { 'base': 'scal',
+  { 'base': '?scal',
     'modes': {
         's': {'exts': {'_k': {'dir': 'arm', 'kernel': 'scal.c'}}},
         'd': {'exts': {'_k': {'dir': 'arm', 'kernel': 'scal.c'}}},
@@ -42,7 +42,7 @@ base_kops = [
         'x': {'exts': {'_k': {'dir': 'arm', 'kernel': 'zscal.c'}}},
     },
   },
-  { 'base': 'copy',
+  { 'base': '?copy',
     'modes': {
         's': {'exts': {'_k': {'dir': 'arm', 'kernel': 'copy.c'}}},
         'd': {'exts': {'_k': {'dir': 'arm', 'kernel': 'copy.c'}}},
@@ -52,7 +52,7 @@ base_kops = [
         'x': {'exts': {'_k': {'dir': 'arm', 'kernel': 'zcopy.c'}}},
     },
   },
-  { 'base': 'axpy',
+  { 'base': '?axpy',
     'modes': {
         's': {'exts': {'_k': {'dir': 'arm', 'kernel': 'axpy.c'}}},
         'd': {'exts': {'_k': {'dir': 'arm', 'kernel': 'axpy.c'}}},
@@ -62,7 +62,7 @@ base_kops = [
         'x': {'exts': {'_k': {'dir': 'arm', 'kernel': 'zaxpy.c'}}},
     },
   },
-  { 'base': 'dot',
+  { 'base': '?dot',
     'modes': {
         's': {'exts': {'_k': {'dir': 'arm', 'kernel': 'dot.c'}}},
         'd': {'exts': {'_k': {'dir': 'arm', 'kernel': 'dot.c'}}},
@@ -73,7 +73,7 @@ base_kops = [
     },
   },
   # xDOTU xDOTC xxDOT aren't present
-  { 'base': 'nrm2',
+  { 'base': '?nrm2',
     'modes': {
         's': {'exts': {'_k': {'dir': 'arm', 'kernel': 'nrm2.c'}}},
         'd': {'exts': {'_k': {'dir': 'arm', 'kernel': 'nrm2.c'}}},
@@ -83,7 +83,7 @@ base_kops = [
         'x': {'exts': {'_k': {'dir': 'arm', 'kernel': 'znrm2.c'}}},
     },
   },
-  { 'base': 'asum',
+  { 'base': '?asum',
     'modes': {
         's': {'exts': {'_k': {'dir': 'arm', 'kernel': 'asum.c'}}},
         'd': {'exts': {'_k': {'dir': 'arm', 'kernel': 'asum.c'}}},
@@ -93,7 +93,7 @@ base_kops = [
         'x': {'exts': {'_k': {'dir': 'arm', 'kernel': 'zasum.c'}}},
     },
   },
-  { 'base': 'amax',
+  { 'base': '?amax',
     'modes': {
         's': {'exts': {'_k': {'dir': 'arm', 'kernel': 'amax.c'}}},
         'd': {'exts': {'_k': {'dir': 'arm', 'kernel': 'amax.c'}}},
@@ -103,14 +103,15 @@ base_kops = [
         'x': {'exts': {'_k': {'dir': 'arm', 'kernel': 'zamax.c'}}},
     },
   },
-  # # # TODO: Handle the i*amax style
-  # # {'base': 'axpby',
-  # #  'modes': {'s': {'dir': 'arm', 'kernel': 'axpby.c', 'exts': ['_k']},
-  # #            'd': {'dir': 'arm', 'kernel': 'axpby.c', 'exts': ['_k']},
-  # #            'c': {'dir': 'arm', 'kernel': 'axpby.c', 'exts': ['_k']},
-  # #            'z': {'dir': 'arm', 'kernel': 'axpby.c', 'exts': ['_k']},
-  # #           },
-  # # },
+  # TODO: Handle the i*amax style
+  { 'base': '?axpby',
+    'modes': {
+        's': {'exts': {'_k': {'dir': 'arm', 'kernel': 'axpby.c'}}},
+        'd': {'exts': {'_k': {'dir': 'arm', 'kernel': 'axpby.c'}}},
+        'c': {'exts': {'_k': {'dir': 'x86_64', 'kernel': 'zaxpy_sse.S'}}},
+        'z': {'exts': {'_k': {'dir': 'x86_64', 'kernel': 'zaxpy_sse2.S'}}},
+    },
+  },
   # # # Level 2 BLAS
   # # # There are additional sources so now we have srcs
   # # # Ordered as per KERNEL.generic and Makefile.L2
@@ -215,8 +216,8 @@ foreach _kop : base_kops
       if extdat.has_key('addl')
         __cargs += extdat['addl']
       endif
-      message(mode + base + ext)
-      sym_name = mode + base + ext
+      sym_name = base.replace('?', mode) + ext
+      message(sym_name)
       sym_underscored = f'@sym_name@_'
       __cargs += [
         f'-DASMNAME=@sym_name@',
