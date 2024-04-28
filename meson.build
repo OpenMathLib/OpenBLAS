@@ -274,9 +274,18 @@ symb_defs = {
     '?max':   {'undef': ['USE_ABS', 'USE_MIN']},
     '?min':   {'def': ['USE_MIN'], 'undef': ['USE_ABS']},
     '?axpyc': {'def': ['CONJ']},
+    '?dotu':  {'undef': ['CONJ']},
     '?dotc':  {'def': ['CONJ']},
     '?geru':  {'undef': ['CONJ']},
     '?gerc':  {'def': ['CONJ']},
+    '?hemm':  {'def': ['HEMM']},
+    '?herk':  {'def': ['HEMM']},
+    '?her2k':  {'def': ['HEMM']},
+    '?gemm3m':  {'def': ['GEMM3M']},
+    '?symm3m':  {'def': ['GEMM3M']},
+    '?hemm3m':  {'def': ['HEMM', 'GEMM3M']},
+    'cblas_?dotu_sub':  {'def': ['CBLAS', 'FORCE_USE_STACK'], 'undef': ['CONJ']},
+    'cblas_?dotc_sub':  {'def': ['CBLAS', 'FORCE_USE_STACK', 'CONJ']},
 }
 
 # Ignoring other hostarch checks and conflicts for arch in BSD for now

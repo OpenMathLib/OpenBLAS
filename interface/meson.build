@@ -14,19 +14,19 @@ _blas_roots = [
   },
   { 'base': '?amax', '_types': ['s', 'd', 'q',
                                 'sc', 'dz', 'qx'],
-    'fname': 'max.c', 'def': [ 'USE_ABS' ], 'undef': [ 'USE_MIN' ],
+    'fname': 'max.c',
     'cblas': true,
   },
   { 'base': '?amin', '_types': ['s', 'd', 'q',
                                 'sc', 'dz', 'qx'],
-    'fname': 'max.c', 'def': [ 'USE_ABS', 'USE_MIN' ], 'undef': [ ],
+    'fname': 'max.c',
     'cblas': true,
   },
   { 'base': '?max', '_types': ['s', 'd', 'q'],
-    'fname': 'max.c', 'def': [ ], 'undef': [ 'USE_ABS', 'USE_MIN' ],
+    'fname': 'max.c',
   },
   { 'base': '?min', '_types': ['s', 'd', 'q'],
-    'fname': 'max.c', 'def': [ 'USE_MIN' ], 'undef': [ 'USE_ABS' ],
+    'fname': 'max.c',
   },
   { 'base': '?axpy', '_types': ['s', 'd', 'q'],
     'fname': 'axpy.c',
@@ -37,7 +37,7 @@ _blas_roots = [
     'cblas': true,
   },
   { 'base': '?axpyc', '_types': ['c', 'z', 'x'],
-    'fname': 'zaxpy.c', 'def': [ 'CONJ' ], 'undef': [ ],
+    'fname': 'zaxpy.c',
     'cblas': true,
   },
   { 'base': '?copy', '_types': ['s', 'd', 'q', 'c', 'z', 'x'],
@@ -49,19 +49,19 @@ _blas_roots = [
     'cblas': true,
   },
   { 'base': '?dotu', '_types': ['c', 'z', 'x'],
-    'fname': 'zdot.c', 'def': [ ], 'undef': [ 'CONJ' ],
+    'fname': 'zdot.c',
     'cblas': true,
   },
   { 'base': '?dotc', '_types': ['c', 'z', 'x'],
-    'fname': 'zdot.c', 'def': [ 'CONJ' ], 'undef': [ ],
+    'fname': 'zdot.c',
     'cblas': true,
   },
   { 'base': 'cblas_?dotu_sub', '_types': ['c', 'z'],
-    'fname': 'zdot.c', 'def': [ 'CBLAS', 'FORCE_USE_STACK' ], 'undef': [ 'CONJ' ],
+    'fname': 'zdot.c',
     'cblas': false, # These don't non-cblas rules Makefile:1623:1627
   },
   { 'base': 'cblas_?dotc_sub', '_types': ['c', 'z'],
-    'fname': 'zdot.c', 'def': [ 'CBLAS', 'FORCE_USE_STACK', 'CONJ' ], 'undef': [ ],
+    'fname': 'zdot.c',
     'cblas': false, # These don't non-cblas rules Makefile:1623:1627
   },
   { 'base': '?nrm2', '_types': ['s', 'd', 'q',
@@ -123,19 +123,19 @@ _blas_roots = [
   },
   # TODO: Handle BFLOAT16 Makefile 784:795, 1592:1603
   { 'base': 'i?max', '_types': ['s', 'd', 'q', 'c', 'z'], # NOTE: c,z only for cblas, Makefile:1526
-    'fname': 'imax.c', 'def': [ ], 'undef': [ 'USE_ABS', 'USE_MIN' ],
+    'fname': 'imax.c',
     'cblas': true, # TODO: Maybe 'cblas_only': ['c', 'z']
   },
   { 'base': 'i?amax', '_types': ['s', 'd', 'q', 'c', 'z', 'x'],
-    'fname': 'imax.c', 'def': [ 'USE_ABS' ], 'undef': [ 'USE_MIN' ],
+    'fname': 'imax.c',
     'cblas': true,
   },
   { 'base': 'i?amin', '_types': ['s', 'd', 'c', 'z', 'x'],
-    'fname': 'imax.c', 'def': [ 'USE_ABS', 'USE_MIN' ], 'undef': [ ],
+    'fname': 'imax.c',
     'cblas': true,
   },
   { 'base': 'i?min', '_types': ['s', 'd', 'q', 'c', 'z'], # NOTE: c,z only for cblas, Makefile:1532
-    'fname': 'imax.c', 'def': [ 'USE_MIN' ], 'undef': [ 'USE_ABS' ],
+    'fname': 'imax.c',
     'cblas': true,
   },
   # Level 2
@@ -144,11 +144,11 @@ _blas_roots = [
     'cblas': true,
   },
   { 'base': '?geru', '_types': ['c', 'z', 'x'],
-    'fname': 'zger.c', 'def': [ ], 'undef': [ 'CONJ' ],
+    'fname': 'zger.c',
     'cblas': true,
   },
   { 'base': '?gerc', '_types': ['c', 'z', 'x'],
-    'fname': 'zger.c', 'def': [ 'CONJ' ], 'undef': [ ],
+    'fname': 'zger.c',
     'cblas': true,
   },
   # TODO: Handle BFLOAT16 Makefile 941:944
@@ -340,26 +340,26 @@ _blas_roots = [
     'cblas': true,
   },
   { 'base': '?hemm', '_types': ['c', 'z', 'x'],
-    'fname': 'symm.c', 'def': [ 'HEMM' ], 'undef': [ ],
+    'fname': 'symm.c',
     'cblas': true,
   },
   { 'base': '?herk', '_types': ['c', 'z', 'x'],
-    'fname': 'syrk.c', 'def': [ 'HEMM' ], 'undef': [ ],
+    'fname': 'syrk.c',
     'cblas': true,
   },
   { 'base': '?her2k', '_types': ['c', 'z', 'x'],
-    'fname': 'syr2k.c', 'def': [ 'HEMM' ], 'undef': [ ],
+    'fname': 'syr2k.c',
     'cblas': true,
   },
   { 'base': '?gemm3m', '_types': ['c', 'z', 'x'],
-    'fname': 'gemm.c', 'def': [ 'GEMM3M' ], 'undef': [ ],
+    'fname': 'gemm.c',
     'cblas': true,
   },
   { 'base': '?symm3m', '_types': ['c', 'z', 'x'],
-    'fname': 'symm.c', 'def': [ 'GEMM3M' ], 'undef': [ ],
+    'fname': 'symm.c',
   },
   { 'base': '?hemm3m', '_types': ['c', 'z', 'x'],
-    'fname': 'symm.c', 'def': [ 'HEMM', 'GEMM3M' ], 'undef': [ ],
+    'fname': 'symm.c',
   },
   { 'base': '?getf2', '_types': ['s', 'd'],
     'fname': 'lapack/getf2.c',
@@ -560,6 +560,21 @@ foreach conf : _blas_roots
       endif
       # Seed with common args
       compiler_args = [_cargs]
+      # Generate the symbol flags
+      base = conf['base']
+      if symb_defs.has_key(base)
+        symb_base = symb_defs[base]
+        if symb_base.has_key('def')
+          foreach _d : symb_base['def']
+            compiler_args += ('-D' + _d)
+          endforeach
+        endif
+        if symb_base.has_key('undef')
+          foreach _u : symb_base['undef']
+            compiler_args += ('-U' + _u)
+          endforeach
+        endif
+      endif
       # Set the type arguments
       if precision_mappings.get(type).has_key('def')
         foreach d : precision_mappings[type]['def']
