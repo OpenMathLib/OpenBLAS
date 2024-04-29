@@ -39,7 +39,7 @@ static char *rout;
 
 static void F77_xerbla(char *srname, void *vinfo)
 {
-   int info=*(int*)vinfo;
+   blasint info=*(blasint*)vinfo;
 
    if (link_xerbla)
    {
