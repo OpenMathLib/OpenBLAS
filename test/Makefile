@@ -1,6 +1,7 @@
 TOPDIR	= ..
 include ../Makefile.system
 ifeq ($(F_COMPILER),GFORTRAN)
+	override FFLAGS = $(filter_out(-O2 -O3,$(FFLAGS)) -O0
         override FFLAGS += -fno-tree-vectorize
 endif
 
