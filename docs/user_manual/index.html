@@ -732,7 +732,7 @@
 </ul>
 <div class="highlight"><pre><span></span><code>gcc -o test test.c -I/your_path/OpenBLAS/include/ -L/your_path/OpenBLAS/lib -Wl,-rpath,/your_path/OpenBLAS/lib -lopenblas
 </code></pre></div>
-<p>The <code>-Wl,-rpath,/your_path/OpenBLAS/lib</code> option to linker can be omitted if you ran <code>ldconfig</code> to update linker cache, put <code>/your_path/OpenBLAS/lib</code> in <code>/etc/ld.so.conf</code> or a file in <code>/etc/ld.so.conf.d</code>, or installed OpenBLAS in a location part of <code>ld.so</code> default search path. Otherwise, linking at runtime will fail.</p>
+<p>The <code>-Wl,-rpath,/your_path/OpenBLAS/lib</code> option to linker can be omitted if you ran <code>ldconfig</code> to update linker cache, put <code>/your_path/OpenBLAS/lib</code> in <code>/etc/ld.so.conf</code> or a file in <code>/etc/ld.so.conf.d</code>, or installed OpenBLAS in a location that is part of the <code>ld.so</code> default search path (usually /lib,/usr/lib and /usr/local/lib). Alternatively, you can set the environment variable LD_LIBRARY_PATH to point to the folder that contains libopenblas.so. Otherwise, linking at runtime will fail with a message like <code>cannot open shared object file: no such file or directory</code></p>
 <p>If the library is multithreaded, please add <code>-lpthread</code>. If the library contains LAPACK functions, please add <code>-lgfortran</code> or other Fortran libs, although if you only make calls to LAPACKE routines, i.e. your code has <code>#include "lapacke.h"</code> and makes calls to methods like <code>LAPACKE_dgeqrf</code>, <code>-lgfortran</code> is not needed.</p>
 <ul>
 <li>Link static library</li>
