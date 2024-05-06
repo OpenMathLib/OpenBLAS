@@ -253,20 +253,28 @@ precision_mappings = {
 }
 
 ext_mappings = {
+    # TRANSA is only in drivers level2, kernel uses TRANS
+    # LOWER is not there for only for ?ger_thread_U in drivers level2
+    # TODO(rg): Does that, i.e. having (un)used symbols (un)defined matter?
     '': {}, # special case
     '_k': {},
-    '_U': {'undef': ['LOWER']},
+    '_U': {'undef': ['LOWER', 'CONJ', 'XCONJ']},
+    '_C': {'def': ['CONJ'], 'undef': ['XCONJ']},
+    '_V': {'def': ['XCONJ'], 'undef': ['CONJ']},
+    '_D': {'def': ['CONJ', 'XCONJ']},
     '_L': {'def': ['LOWER']},
+    '_LN': {'def': ['LEFT'], 'undef': ['TRANSA']},
+    # Handle HEMV and HEMVREV better
     '_V': {'def': ['HEMV', 'HEMVREV'], 'undef': ['LOWER']},
     '_M': {'def': ['HEMV', 'HEMVREV', 'LOWER']},
-    '_n': {'undef': ['TRANS', 'CONJ', 'XCONJ']},
-    '_t': {'def': ['TRANS'], 'undef': ['CONJ', 'XCONJ']},
-    '_r': {'def': ['CONJ'], 'undef': ['TRANS', 'XCONJ']},
-    '_c': {'def': ['TRANS', 'CONJ'], 'undef': ['XCONJ']},
-    '_o': {'def': ['XCONJ'], 'undef': ['TRANS', 'CONJ']},
-    '_u': {'def': ['TRANS', 'XCONJ'], 'undef': ['CONJ']},
-    '_s': {'def': ['CONJ', 'XCONJ'], 'undef': ['TRANS']},
-    '_d': {'def': ['TRANS', 'CONJ', 'XCONJ']},
+    '_n': {'undef': ['TRANS', 'TRANSA', 'CONJ', 'XCONJ']},
+    '_t': {'def': ['TRANS', 'TRANSA'], 'undef': ['CONJ', 'XCONJ']},
+    '_r': {'def': ['CONJ'], 'undef': ['TRANS', 'TRANSA', 'XCONJ']},
+    '_c': {'def': ['TRANS', 'TRANSA', 'CONJ'], 'undef': ['XCONJ']},
+    '_o': {'def': ['XCONJ'], 'undef': ['TRANS', 'TRANSA', 'CONJ']},
+    '_u': {'def': ['TRANS', 'TRANSA', 'XCONJ'], 'undef': ['CONJ']},
+    '_s': {'def': ['CONJ', 'XCONJ'], 'undef': ['TRANS', 'TRANSA']},
+    '_d': {'def': ['TRANS', 'TRANSA', 'CONJ', 'XCONJ']},
 }
 
 symb_defs = {
@@ -297,6 +305,7 @@ symb_defs = {
 _inc = [include_directories('.')]
 # subdir('lapack-netlib')
 subdir('interface')
+subdir('driver/level2')
 subdir('kernel')
 
 _openblas = static_library('openblas',
