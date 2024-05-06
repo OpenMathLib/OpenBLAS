@@ -109,3 +109,4 @@ benchmark/smallscaling
 CMakeCache.txt
 CMakeFiles/*
 .vscode
+**/__pycache__
