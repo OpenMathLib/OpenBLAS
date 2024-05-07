@@ -964,7 +964,9 @@ static void *alloc_shm(void *address){
   return map_address;
 }
 
-#if defined OS_LINUX  || defined OS_AIX  || defined __sun__  || defined OS_WINDOWS
+#endif
+
+#if ((defined ALLOC_HUGETLB) && (defined OS_LINUX  || defined OS_AIX  || defined __sun__  || defined OS_WINDOWS))
 
 static void alloc_hugetlb_free(struct alloc_t *alloc_info){
 
@@ -1066,7 +1068,8 @@ static void *alloc_hugetlb(void *address){
 }
 #endif
 
-#endif
+
+
 
 #ifdef  ALLOC_HUGETLBFILE
 
