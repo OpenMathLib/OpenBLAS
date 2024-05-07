@@ -76,6 +76,9 @@ int CNAME(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, FLOAT da, FLOAT *x, BLAS
 			saxpy_kernel_64(n1, &x[i], &y[i], da);
 
 		i += n1;
+#if defined(__clang__)
+#pragma clang loop interleave_count(2)
+#endif
 		while(i < n)
 		{
 
