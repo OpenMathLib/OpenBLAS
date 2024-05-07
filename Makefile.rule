@@ -219,6 +219,16 @@ NO_AFFINITY = 1
 # to the user space. If bigphysarea is enabled, it will use it.
 # DEVICEDRIVER_ALLOCATION = 1
 
+# Use large page allocation (called hugepage support in Linux context)
+# for the thread buffers (with access by shared memory operations)
+# HUGETLB_ALLOCATION = 1
+
+# Use large page allocation called hugepages in Linux) based on mmap accessing
+# a memory-backed pseudofile (requires hugetlbfs to be mounted in the system,
+# the example below has it mounted on /hugepages. OpenBLAS will create the backing
+# file as gotoblas.processid in that path)
+# HUGETLBFILE_ALLOCATION = /hugepages
+
 # If you need to synchronize FP CSR between threads (for x86/x86_64 and aarch64 only).
 # CONSISTENT_FPCSR = 1
 
