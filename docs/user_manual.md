@@ -49,7 +49,7 @@ For more information, please read [Installation Guide](install.md).
 gcc -o test test.c -I/your_path/OpenBLAS/include/ -L/your_path/OpenBLAS/lib -Wl,-rpath,/your_path/OpenBLAS/lib -lopenblas
 ```
 
-The `-Wl,-rpath,/your_path/OpenBLAS/lib` option to linker can be omitted if you ran `ldconfig` to update linker cache, put `/your_path/OpenBLAS/lib` in `/etc/ld.so.conf` or a file in `/etc/ld.so.conf.d`, or installed OpenBLAS in a location part of `ld.so` default search path. Otherwise, linking at runtime will fail.
+The `-Wl,-rpath,/your_path/OpenBLAS/lib` option to linker can be omitted if you ran `ldconfig` to update linker cache, put `/your_path/OpenBLAS/lib` in `/etc/ld.so.conf` or a file in `/etc/ld.so.conf.d`, or installed OpenBLAS in a location that is part of the `ld.so` default search path (usually /lib,/usr/lib and /usr/local/lib). Alternatively, you can set the environment variable LD_LIBRARY_PATH to point to the folder that contains libopenblas.so. Otherwise, linking at runtime will fail with a message like `cannot open shared object file: no such file or directory`
 
 If the library is multithreaded, please add `-lpthread`. If the library contains LAPACK functions, please add `-lgfortran` or other Fortran libs, although if you only make calls to LAPACKE routines, i.e. your code has `#include "lapacke.h"` and makes calls to methods like `LAPACKE_dgeqrf`, `-lgfortran` is not needed.
 
@@ -159,7 +159,7 @@ int main(int argc, char* argv[])
 ```
 
 ```
-gcc -o time_dgemm time_dgemm.c /your/path/libopenblas.a
+gcc -o time_dgemm time_dgemm.c /your/path/libopenblas.a -lpthread
 ./time_dgemm <m> <n> <k>
 ```
 

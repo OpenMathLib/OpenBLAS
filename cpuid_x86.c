@@ -1535,6 +1535,7 @@ int get_cpuname(void){
               return CPUTYPE_SANDYBRIDGE;
             else
               return CPUTYPE_NEHALEM;
+	  case 0: // Meteor Lake
           case 7: // Rocket Lake           
 	    if(support_avx512())
               return CPUTYPE_SKYLAKEX;
@@ -1560,6 +1561,19 @@ int get_cpuname(void){
 	      return CPUTYPE_NEHALEM;
         }
         break;
+      case 12: //family 6 exmodel 12
+	switch (model) {
+	  case 15:
+	    if(support_avx512())
+              return CPUTYPE_SAPPHIRERAPIDS;
+            if(support_avx2())
+              return CPUTYPE_HASWELL;
+            if(support_avx())
+	      return CPUTYPE_SANDYBRIDGE;
+	    else
+	    return CPUTYPE_NEHALEM;
+	  }
+	break;
       }
       break;    
     case 0x7:

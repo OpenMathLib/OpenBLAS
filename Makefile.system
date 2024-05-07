@@ -355,7 +355,7 @@ OBJCONV = $(CROSS_SUFFIX)objconv
 # When fortran support was either not detected or actively deselected, only build BLAS.
 ifeq ($(NOFORTRAN), 1)
 C_LAPACK = 1
-override FEXTRALIB =
+override FEXTRALIB = 
 ifeq ($(C_COMPILER), GCC)
 CCOMMON_OPT += -Wno-error=incompatible-pointer-types
 endif

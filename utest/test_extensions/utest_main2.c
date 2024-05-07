@@ -40,7 +40,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define CTEST_ADD_TESTS_MANUALLY
 
 #include "cblas.h"
-#include "openblas_utest.h"
+#include "utest/openblas_utest.h"
 #if 1
 CTEST(amax, samax){
   blasint N=3, inc=1;
