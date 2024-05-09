@@ -308,8 +308,6 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     vinsgr2vr.w x1, t3, 3
     vinsgr2vr.w x2, t4, 3
     addi.d I, I, -1
-    vpickev.w x1, VX1, VX0
-    vpickod.w x2, VX1, VX0
     vfmul.s x3, VI4, x1
     vfmul.s x4, VI4, x2
     vfcmp.clt.s VT0, x1, VI3
