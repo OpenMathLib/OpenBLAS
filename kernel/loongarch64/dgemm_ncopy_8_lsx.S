@@ -268,6 +268,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     addi.d    S2,    S2,  0x08
     addi.d    TD,    TD,  0x10
 .L_N1:
+    andi      J,     N,   0x01
+    beq       ZERO,  J,   .L_N0
     move      S1,    TS
     beq       ZERO,  M,   .L_N0
 .L_M1:
