@@ -1074,13 +1074,10 @@ fprintf(STDERR, "Server[%2ld] Calculation started.  Mode = 0x%03x M = %3ld N=%3l
       main_status[cpu] = MAIN_RUNNING1;
 #endif
 
-//For Loongson servers, like the 3C5000 (featuring 16 cores), applying an
-//offset to the buffer is essential for minimizing cache conflicts and optimizing performance.
-#if defined(LOONGSON3R5) && !defined(NO_AFFINITY)
-      char model_name[128];
-      get_cpu_model(model_name);
-      if ((strstr(model_name, "3C5000") != NULL) || (strstr(model_name, "3D5000") != NULL))
-        if (sa == NULL) sa = (void *)((BLASLONG)buffer + (WhereAmI() & 0xf) * GEMM_OFFSET_A);
+//For target LOONGSON3R5, applying an offset to the buffer is essential
+//for minimizing cache conflicts and optimizing performance.
+#if defined(ARCH_LOONGARCH64) && !defined(NO_AFFINITY)
+      if (sa == NULL) sa = (void *)((BLASLONG)buffer + (WhereAmI() & 0xf) * GEMM_OFFSET_A);
 #endif
       if (sa == NULL) sa = (void *)((BLASLONG)buffer + GEMM_OFFSET_A);
 

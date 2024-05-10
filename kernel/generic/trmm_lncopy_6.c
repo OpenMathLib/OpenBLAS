@@ -41,444 +41,510 @@
 
 int CNAME(BLASLONG m, BLASLONG n, FLOAT *a, BLASLONG lda, BLASLONG posX, BLASLONG posY, FLOAT *b){
 
-  BLASLONG i, js;
-  BLASLONG X;
+    BLASLONG i, js, ii;
+    BLASLONG X;
 
-  FLOAT data01, data02, data03, data04, data05, data06, data07, data08;
-  FLOAT data09, data10, data11, data12, data13, data14, data15, data16;
-  FLOAT *ao1, *ao2, *ao3, *ao4;
+    FLOAT data01, data02, data05, data06;
+    FLOAT *ao1, *ao2, *ao3, *ao4, *ao5, *ao6;
 
-  js = (n >> 2);
+    js = (n / 6);
 
-  if (js > 0){
-    do {
-      X = posX;
+    if (js > 0){
+        do {
+            X = posX;
 
-      if (posX <= posY) {
-	ao1 = a + posY + (posX + 0) * lda;
-	ao2 = a + posY + (posX + 1) * lda;
-	ao3 = a + posY + (posX + 2) * lda;
-	ao4 = a + posY + (posX + 3) * lda;
-      } else {
-	ao1 = a + posX + (posY + 0) * lda;
-	ao2 = a + posX + (posY + 1) * lda;
-	ao3 = a + posX + (posY + 2) * lda;
-	ao4 = a + posX + (posY + 3) * lda;
-      }
+            if (posX <= posY) {
+                ao1 = a + posY + (posX + 0) * lda;
+                ao2 = a + posY + (posX + 1) * lda;
+                ao3 = a + posY + (posX + 2) * lda;
+                ao4 = a + posY + (posX + 3) * lda;
+                ao5 = a + posY + (posX + 4) * lda;
+                ao6 = a + posY + (posX + 5) * lda;
+            } else {
+                ao1 = a + posX + (posY + 0) * lda;
+                ao2 = a + posX + (posY + 1) * lda;
+                ao3 = a + posX + (posY + 2) * lda;
+                ao4 = a + posX + (posY + 3) * lda;
+                ao5 = a + posX + (posY + 4) * lda;
+                ao6 = a + posX + (posY + 5) * lda;
+            }
 
-      i = (m >> 2);
-      if (i > 0) {
-	do {
-	  if (X > posY) {
-	    data01 = *(ao1 + 0);
-	    data02 = *(ao1 + 1);
-	    data03 = *(ao1 + 2);
-	    data04 = *(ao1 + 3);
+        i = (m / 6);
+        if (i > 0) {
+            do {
+                if (X > posY) {
+                    for (ii = 0; ii < 6; ii++){
 
-	    data05 = *(ao2 + 0);
-	    data06 = *(ao2 + 1);
-	    data07 = *(ao2 + 2);
-	    data08 = *(ao2 + 3);
+                        b[  0] = *(ao1 +  0);
+                        b[  1] = *(ao2 +  0);
+                        b[  2] = *(ao3 +  0);
+                        b[  3] = *(ao4 +  0);
+                        b[  4] = *(ao5 +  0);
+                        b[  5] = *(ao6 +  0);
 
-	    data09 = *(ao3 + 0);
-	    data10 = *(ao3 + 1);
-	    data11 = *(ao3 + 2);
-	    data12 = *(ao3 + 3);
+                        ao1 ++;
+                        ao2 ++;
+                        ao3 ++;
+                        ao4 ++;
+                        ao5 ++;
+                        ao6 ++;
+                        b += 6;
+                    }
 
-	    data13 = *(ao4 + 0);
-	    data14 = *(ao4 + 1);
-	    data15 = *(ao4 + 2);
-	    data16 = *(ao4 + 3);
+                } else if (X < posY) {
+                    ao1 += 6 * lda;
+                    ao2 += 6 * lda;
+                    ao3 += 6 * lda;
+                    ao4 += 6 * lda;
+                    ao5 += 6 * lda;
+                    ao6 += 6 * lda;
+                    b += 36;
 
-	    b[ 0] = data01;
-	    b[ 1] = data05;
-	    b[ 2] = data09;
-	    b[ 3] = data13;
-	    b[ 4] = data02;
-	    b[ 5] = data06;
-	    b[ 6] = data10;
-	    b[ 7] = data14;
-
-	    b[ 8] = data03;
-	    b[ 9] = data07;
-	    b[10] = data11;
-	    b[11] = data15;
-	    b[12] = data04;
-	    b[13] = data08;
-	    b[14] = data12;
-	    b[15] = data16;
-
-	    ao1 += 4;
-	    ao2 += 4;
-	    ao3 += 4;
-	    ao4 += 4;
-	    b += 16;
-
-	  } else
-	    if (X < posY) {
-	      ao1 += 4 * lda;
-	      ao2 += 4 * lda;
-	      ao3 += 4 * lda;
-	      ao4 += 4 * lda;
-	      b += 16;
-
-	    } else {
+                } else {
 #ifdef UNIT
-	      data02 = *(ao1 + 1);
-	      data03 = *(ao1 + 2);
-	      data04 = *(ao1 + 3);
-
-	      data07 = *(ao2 + 2);
-	      data08 = *(ao2 + 3);
-
-	      data12 = *(ao3 + 3);
-
-	      b[ 0] = ONE;
-	      b[ 1] = ZERO;
-	      b[ 2] = ZERO;
-	      b[ 3] = ZERO;
-	      b[ 4] = data02;
-	      b[ 5] = ONE;
-	      b[ 6] = ZERO;
-	      b[ 7] = ZERO;
-
-	      b[ 8] = data03;
-	      b[ 9] = data07;
-	      b[10] = ONE;
-	      b[11] = ZERO;
-	      b[12] = data04;
-	      b[13] = data08;
-	      b[14] = data12;
-	      b[15] = ONE;
+                    b[  0] = ONE;
 #else
-	      data01 = *(ao1 + 0);
-	      data02 = *(ao1 + 1);
-	      data03 = *(ao1 + 2);
-	      data04 = *(ao1 + 3);
-
-	      data06 = *(ao2 + 1);
-	      data07 = *(ao2 + 2);
-	      data08 = *(ao2 + 3);
-
-	      data11 = *(ao3 + 2);
-	      data12 = *(ao3 + 3);
-
-	      data16 = *(ao4 + 3);
-
-	      b[ 0] = data01;
-	      b[ 1] = ZERO;
-	      b[ 2] = ZERO;
-	      b[ 3] = ZERO;
-	      b[ 4] = data02;
-	      b[ 5] = data06;
-	      b[ 6] = ZERO;
-	      b[ 7] = ZERO;
-
-	      b[ 8] = data03;
-	      b[ 9] = data07;
-	      b[10] = data11;
-	      b[11] = ZERO;
-	      b[12] = data04;
-	      b[13] = data08;
-	      b[14] = data12;
-	      b[15] = data16;
+                    b[  0] = *(ao1 +  0);
 #endif
-	      ao1 += 4;
-	      ao2 += 4;
-	      ao3 += 4;
-	      ao4 += 4;
-	      b += 16;
-	    }
+                    b[  1] = ZERO;
+                    b[  2] = ZERO;
+                    b[  3] = ZERO;
+                    b[  4] = ZERO;
+                    b[  5] = ZERO;
 
-	  X += 4;
-	  i --;
-	} while (i > 0);
-      }
-
-      i = (m & 3);
-      if (i) {
-
-	if (X > posY) {
-
-	  if (m & 2) {
-	    data01 = *(ao1 + 0);
-	    data02 = *(ao1 + 1);
-	    data03 = *(ao2 + 0);
-	    data04 = *(ao2 + 1);
-	    data05 = *(ao3 + 0);
-	    data06 = *(ao3 + 1);
-	    data07 = *(ao4 + 0);
-	    data08 = *(ao4 + 1);
-
-	    b[ 0] = data01;
-	    b[ 1] = data03;
-	    b[ 2] = data05;
-	    b[ 3] = data07;
-	    b[ 4] = data02;
-	    b[ 5] = data04;
-	    b[ 6] = data06;
-	    b[ 7] = data08;
-
-	    ao1 += 2;
-	    ao2 += 2;
-	    ao3 += 2;
-	    ao4 += 2;
-	    b += 8;
-	  }
-
-	  if (m & 1) {
-	    data01 = *(ao1 + 0);
-	    data02 = *(ao2 + 0);
-	    data03 = *(ao3 + 0);
-	    data04 = *(ao4 + 0);
-
-	    b[ 0] = data01;
-	    b[ 1] = data02;
-	    b[ 2] = data03;
-	    b[ 3] = data04;
-
-	    ao1 += 1;
-	    ao2 += 1;
-	    ao3 += 1;
-	    ao4 += 1;
-	    b += 4;
-	  }
-
-	} else
-	  if (X < posY) {
-	    if (m & 2) {
-	      ao1 += 2 * lda;
-	      ao2 += 2 * lda;
-
-	      b += 8;
-	    }
-
-	    if (m & 1) {
-	      ao1 += lda;
-	      b += 4;
-	    }
-
-	  } else {
+                    b[ 6] = *(ao1 +  1);
 #ifdef UNIT
-	    data05 = *(ao2 + 0);
-	    data09 = *(ao3 + 0);
-	    data13 = *(ao4 + 0);
-
-	    if (i >= 2) {
-	      data10 = *(ao3 + 1);
-	      data14 = *(ao4 + 1);
-	    }
-
-	    if (i >= 3) {
-	      data15 = *(ao4 + 2);
-	    }
-
-	    b[ 0] = ONE;
-	    b[ 1] = data05;
-	    b[ 2] = data09;
-	    b[ 3] = data13;
-	    b += 4;
-
-	    if(i >= 2) {
-	      b[ 0] = ZERO;
-	      b[ 1] = ONE;
-	      b[ 2] = data10;
-	      b[ 3] = data14;
-	      b += 4;
-	    }
-
-	    if (i >= 3) {
-	      b[ 0] = ZERO;
-	      b[ 1] = ZERO;
-	      b[ 2] = ONE;
-	      b[ 3] = data15;
-	      b += 4;
-	    }
+                    b[ 7] = ONE;
 #else
-	    data01 = *(ao1 + 0);
-	    data05 = *(ao2 + 0);
-	    data09 = *(ao3 + 0);
-	    data13 = *(ao4 + 0);
-
-	    if (i >= 2) {
-	      data06 = *(ao2 + 1);
-	      data10 = *(ao3 + 1);
-	      data14 = *(ao4 + 1);
-	    }
-
-	    if (i >= 3) {
-	      data11 = *(ao3 + 2);
-	      data15 = *(ao4 + 2);
-	    }
-
-	    b[ 0] = data01;
-	    b[ 1] = data05;
-	    b[ 2] = data09;
-	    b[ 3] = data13;
-	    b += 4;
-
-	    if(i >= 2) {
-	      b[ 0] = ZERO;
-	      b[ 1] = data06;
-	      b[ 2] = data10;
-	      b[ 3] = data14;
-	      b += 4;
-	    }
-
-	    if (i >= 3) {
-	      b[ 0] = ZERO;
-	      b[ 1] = ZERO;
-	      b[ 2] = data11;
-	      b[ 3] = data15;
-	      b += 4;
-	    }
+                    b[ 7] = *(ao2 +  1);
 #endif
-	  }
-     }
+                    b[ 8] = ZERO;
+                    b[ 9] = ZERO;
+                    b[10] = ZERO;
+                    b[11] = ZERO;
 
-      posY += 4;
-      js --;
-    } while (js > 0);
-  } /* End of main loop */
-
-
-  if (n & 2){
-      X = posX;
-
-      if (posX <= posY) {
-	ao1 = a + posY + (posX + 0) * lda;
-	ao2 = a + posY + (posX + 1) * lda;
-      } else {
-	ao1 = a + posX + (posY + 0) * lda;
-	ao2 = a + posX + (posY + 1) * lda;
-      }
-
-      i = (m >> 1);
-      if (i > 0) {
-	do {
-	  if (X > posY) {
-	    data01 = *(ao1 + 0);
-	    data02 = *(ao1 + 1);
-	    data05 = *(ao2 + 0);
-	    data06 = *(ao2 + 1);
-
-	    b[ 0] = data01;
-	    b[ 1] = data05;
-	    b[ 2] = data02;
-	    b[ 3] = data06;
-
-	    ao1 += 2;
-	    ao2 += 2;
-	    b += 4;
-
-	  } else
-	    if (X < posY) {
-	      ao1 += 2 * lda;
-	      ao2 += 2 * lda;
-	      b += 4;
-	    } else {
+                    b[12] = *(ao1 +  2);
+                    b[13] = *(ao2 +  2);
 #ifdef UNIT
-	      data02 = *(ao1 + 1);
-
-	      b[ 0] = ONE;
-	      b[ 1] = ZERO;
-	      b[ 2] = data02;
-	      b[ 3] = ONE;
+                    b[14] = ONE;
 #else
-	      data01 = *(ao1 + 0);
-	      data02 = *(ao1 + 1);
-	      data06 = *(ao2 + 1);
-
-	      b[ 0] = data01;
-	      b[ 1] = ZERO;
-	      b[ 2] = data02;
-	      b[ 3] = data06;
+                    b[14] = *(ao3 +  2);
 #endif
-	      ao1 += 2;
-	      ao2 += 2;
+                    b[15] = ZERO;
+                    b[16] = ZERO;
+                    b[17] = ZERO;
 
-	      b += 4;
-	    }
-
-	  X += 2;
-	  i --;
-	} while (i > 0);
-      }
-
-      i = (m & 1);
-      if (i) {
-
-	if (X > posY) {
-	  data01 = *(ao1 + 0);
-	  data02 = *(ao2 + 0);
-	  b[ 0] = data01;
-	  b[ 1] = data02;
-
-	  ao1 += 1;
-	  ao2 += 1;
-	  b += 2;
-	} else
-	  if (X < posY) {
-	    ao1 += lda;
-	    b += 2;
-	  } else {
+                    b[18] = *(ao1 +  3);
+                    b[19] = *(ao2 +  3);
+                    b[20] = *(ao3 +  3);
 #ifdef UNIT
-	    data05 = *(ao2 + 0);
-
-	    b[ 0] = ONE;
-	    b[ 1] = data05;
+                    b[21] = ONE;
 #else
-	    data01 = *(ao1 + 0);
-	    data05 = *(ao2 + 0);
-
-	    b[ 0] = data01;
-	    b[ 1] = data05;
+                    b[21] = *(ao4 +  3);
 #endif
-	    b += 2;
-	  }
-      }
-      posY += 2;
-  }
+                    b[22] = ZERO;
+                    b[23] = ZERO;
 
-  if (n & 1){
-      X = posX;
-
-      if (posX <= posY) {
-	ao1 = a + posY + (posX + 0) * lda;
-      } else {
-	ao1 = a + posX + (posY + 0) * lda;
-      }
-
-      i = m;
-      if (i > 0) {
-	do {
-	  if (X > posY) {
-	    data01 = *(ao1 + 0);
-	    b[ 0] = data01;
-	    b += 1;
-	    ao1 += 1;
-	  } else
-	    if (X < posY) {
-	      b += 1;
-	      ao1 += lda;
-	    } else {
+                    b[24] = *(ao1 +  4);
+                    b[25] = *(ao2 +  4);
+                    b[26] = *(ao3 +  4);
+                    b[27] = *(ao4 +  4);
 #ifdef UNIT
-	    b[ 0] = ONE;
+                    b[28] = ONE;
 #else
-	    data01 = *(ao1 + 0);
-	    b[ 0] = data01;
+                    b[28] = *(ao5 +  4);
 #endif
-	    b += 1;
-	    ao1 += 1;
-	    }
+                    b[29] = ZERO;
 
-	  X ++;
-	  i --;
-	} while (i > 0);
-      }
+                    b[30] = *(ao1 +  5);
+                    b[31] = *(ao2 +  5);
+                    b[32] = *(ao3 +  5);
+                    b[33] = *(ao4 +  5);
+                    b[34] = *(ao5 +  5);
+#ifdef UNIT
+                    b[35] = ONE;
+#else
+                    b[35] = *(ao6 +  5);
+#endif
+                    ao1 += 6;
+                    ao2 += 6;
+                    ao3 += 6;
+                    ao4 += 6;
+                    ao5 += 6;
+                    ao6 += 6;
+                    b += 36;
+                }
 
-      posY += 1;
-  }
+                X += 6;
+                i --;
+            } while (i > 0);
+        }
 
-  return 0;
+        i = (m % 6);
+        if (i) {
+
+            if (X > posY) {
+                for (ii = 0; ii < i; ii++){
+                    b[  0] = *(ao1 +  0);
+                    b[  1] = *(ao2 +  0);
+                    b[  2] = *(ao3 +  0);
+                    b[  3] = *(ao4 +  0);
+                    b[  4] = *(ao5 +  0);
+                    b[  5] = *(ao6 +  0);
+
+                    ao1 ++;
+                    ao2 ++;
+                    ao3 ++;
+                    ao4 ++;
+                    ao5 ++;
+                    ao6 ++;
+                    b += 6;
+                }
+
+            } else if (X < posY) {
+
+                b += 6 * i;
+
+            } else {
+#ifdef UNIT
+                b[  0] = ONE;
+#else
+                b[  0] = *(ao1 +  0);
+#endif
+                b[  1] = ZERO;
+                b[  2] = ZERO;
+                b[  3] = ZERO;
+                b[  4] = ZERO;
+                b[  5] = ZERO;
+                b += 6;
+
+                if (i >= 2) {
+                    b[  0] = *(ao1 +  1);
+#ifdef UNIT
+                    b[  1] = ONE;
+#else
+                    b[  1] = *(ao2 +  1);
+#endif
+                    b[  2] = ZERO;
+                    b[  3] = ZERO;
+                    b[  4] = ZERO;
+                    b[  5] = ZERO;
+                    b += 6;
+                }
+
+                if (i >= 3) {
+                    b[  0] = *(ao1 +  2);
+                    b[  1] = *(ao2 +  2);
+#ifdef UNIT
+                    b[  2] = ONE;
+#else
+                    b[  2] = *(ao3 +  2);
+#endif
+                    b[  3] = ZERO;
+                    b[  4] = ZERO;
+                    b[  5] = ZERO;
+                    b += 6;
+                }
+
+                if (i >= 4) {
+                    b[  0] = *(ao1 +  3);
+                    b[  1] = *(ao2 +  3);
+                    b[  2] = *(ao3 +  3);
+#ifdef UNIT
+                    b[  3] = ONE;
+#else
+                    b[  3] = *(ao4 +  3);
+#endif
+                    b[  4] = ZERO;
+                    b[  5] = ZERO;
+                    b += 6;
+                }
+
+                if (i >= 5) {
+                    b[  0] = *(ao1 +  4);
+                    b[  1] = *(ao2 +  4);
+                    b[  2] = *(ao3 +  4);
+                    b[  3] = *(ao4 +  4);
+#ifdef UNIT
+                    b[  4] = ONE;
+#else
+                    b[  4] = *(ao5 +  4);
+#endif
+                    b[  5] = ZERO;
+                    b += 6;
+                }
+            }
+        }
+
+        posY += 6;
+        js --;
+        } while (js > 0);
+    } /* End of main loop */
+
+    if ((n % 6) & 4){
+        X = posX;
+
+        if (posX <= posY) {
+            ao1 = a + posY + (posX + 0) * lda;
+            ao2 = a + posY + (posX + 1) * lda;
+            ao3 = a + posY + (posX + 2) * lda;
+            ao4 = a + posY + (posX + 3) * lda;
+        } else {
+            ao1 = a + posX + (posY + 0) * lda;
+            ao2 = a + posX + (posY + 1) * lda;
+            ao3 = a + posX + (posY + 2) * lda;
+            ao4 = a + posX + (posY + 3) * lda;
+        }
+
+        i = (m >> 1);
+        if (i > 0) {
+        do {
+            if (X > posY) {
+                for (ii = 0; ii < 2; ii++){
+
+                    b[  0] = *(ao1 +  0);
+                    b[  1] = *(ao2 +  0);
+                    b[  2] = *(ao3 +  0);
+                    b[  3] = *(ao4 +  0);
+
+                    ao1 ++;
+                    ao2 ++;
+                    ao3 ++;
+                    ao4 ++;
+                    b += 4;
+                }
+            } else if (X < posY) {
+                ao1 += 2 * lda;
+                ao2 += 2 * lda;
+                ao3 += 2 * lda;
+                ao4 += 2 * lda;
+                b += 8;
+            } else {
+#ifdef UNIT
+                b[  0] = ONE;
+#else
+                b[  0] = *(ao1 +  0);
+#endif
+                b[  1] = ZERO;
+                b[  2] = ZERO;
+                b[  3] = ZERO;
+
+                b[  4] = *(ao1 +  1);
+#ifdef UNIT
+                b[  5] = ONE;
+#else
+                b[  5] = *(ao2 +  1);
+#endif
+                b[  6] = ZERO;
+                b[  7] = ZERO;
+
+                b[  8] = *(ao1 +  2);
+                b[  9] = *(ao2 +  2);
+#ifdef UNIT
+                b[ 10] = ONE;
+#else
+                b[ 10] = *(ao3 +  2);
+#endif
+                b[ 11] = ZERO;
+
+                b[ 12] = *(ao1 +  3);
+                b[ 13] = *(ao2 +  3);
+                b[ 14] = *(ao3 +  3);
+#ifdef UNIT
+                b[ 15] = ONE;
+#else
+                b[ 15] = *(ao4 +  3);
+#endif
+
+                ao1 += 4;
+                ao2 += 4;
+                ao3 += 4;
+                ao4 += 4;
+                b += 16;
+                X += 4;
+                i -= 2;
+                continue;
+            }
+
+            X += 2;
+            i --;
+            } while (i > 0);
+        }
+
+        i = (m & 1);
+        if (i) {
+
+            if (X > posY) {
+                for (ii = 0; ii < i; ii++){
+
+                    b[  0] = *(ao1 +  0);
+                    b[  1] = *(ao2 +  0);
+                    b[  2] = *(ao3 +  0);
+                    b[  3] = *(ao4 +  0);
+
+                    ao1 ++;
+                    ao2 ++;
+                    ao3 ++;
+                    ao4 ++;
+                    b += 4;
+                }
+            } else if (X < posY) {
+                /* ao1 += i * lda;
+                ao2 += i * lda;
+                ao3 += i * lda;
+                ao4 += i * lda; */
+                b += 4 * i;
+            } else {
+#ifdef UNIT
+                b[  0] = ONE;
+#else
+                b[  0] = *(ao1 +  0);
+#endif
+                b[  1] = ZERO;
+                b[  2] = ZERO;
+                b[  3] = ZERO;
+                b += 4;
+            }
+        }
+
+        posY += 4;
+    }
+
+
+    if ((n % 6) & 2){
+        X = posX;
+
+        if (posX <= posY) {
+            ao1 = a + posY + (posX + 0) * lda;
+            ao2 = a + posY + (posX + 1) * lda;
+        } else {
+            ao1 = a + posX + (posY + 0) * lda;
+            ao2 = a + posX + (posY + 1) * lda;
+        }
+
+        i = (m >> 1);
+        if (i > 0) {
+            do {
+                if (X > posY) {
+                    data01 = *(ao1 + 0);
+                    data02 = *(ao1 + 1);
+                    data05 = *(ao2 + 0);
+                    data06 = *(ao2 + 1);
+
+                    b[ 0] = data01;
+                    b[ 1] = data05;
+                    b[ 2] = data02;
+                    b[ 3] = data06;
+
+                    ao1 += 2;
+                    ao2 += 2;
+                    b += 4;
+
+                } else if (X < posY) {
+                    ao1 += 2 * lda;
+                    ao2 += 2 * lda;
+                    b += 4;
+                } else {
+#ifdef UNIT
+                    data02 = *(ao1 + 1);
+
+                    b[ 0] = ONE;
+                    b[ 1] = ZERO;
+                    b[ 2] = data02;
+                    b[ 3] = ONE;
+#else
+                    data01 = *(ao1 + 0);
+                    data02 = *(ao1 + 1);
+                    data06 = *(ao2 + 1);
+
+                    b[ 0] = data01;
+                    b[ 1] = ZERO;
+                    b[ 2] = data02;
+                    b[ 3] = data06;
+#endif
+                    ao1 += 2;
+                    ao2 += 2;
+
+                    b += 4;
+                }
+
+                X += 2;
+                i --;
+            } while (i > 0);
+        }
+
+        i = (m & 1);
+        if (i) {
+
+            if (X > posY) {
+                data01 = *(ao1 + 0);
+                data02 = *(ao2 + 0);
+                b[ 0] = data01;
+                b[ 1] = data02;
+
+                ao1 += 1;
+                ao2 += 1;
+                b += 2;
+            } else if (X < posY) {
+                ao1 += lda;
+                b += 2;
+            } else {
+#ifdef UNIT
+                data05 = *(ao2 + 0);
+
+                b[ 0] = ONE;
+                b[ 1] = data05;
+#else
+                data01 = *(ao1 + 0);
+                data05 = *(ao2 + 0);
+
+                b[ 0] = data01;
+                b[ 1] = data05;
+#endif
+                b += 2;
+            }
+        }
+        posY += 2;
+    }
+
+    if ((n % 6) & 1){
+        X = posX;
+
+        if (posX <= posY) {
+            ao1 = a + posY + (posX + 0) * lda;
+        } else {
+            ao1 = a + posX + (posY + 0) * lda;
+        }
+
+        i = m;
+        if (i > 0) {
+            do {
+                if (X > posY) {
+                    data01 = *(ao1 + 0);
+                    b[ 0] = data01;
+                    b += 1;
+                    ao1 += 1;
+                } else if (X < posY) {
+                    b += 1;
+                    ao1 += lda;
+                } else {
+#ifdef UNIT
+                    b[ 0] = ONE;
+#else
+                    data01 = *(ao1 + 0);
+                    b[ 0] = data01;
+#endif
+                    b += 1;
+                    ao1 += 1;
+                }
+
+                X ++;
+                i --;
+            } while (i > 0);
+        }
+
+        posY += 1;
+    }
+
+    return 0;
 }
