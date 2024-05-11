@@ -33,6 +33,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <stdint.h>
 #include <sys/auxv.h>
+#include <stdio.h>
 
 /*  If LASX extension instructions supported,
  *  using core LOONGSON3R5
