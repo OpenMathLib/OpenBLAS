@@ -224,6 +224,7 @@ CTEST(srotmg, scaled_y_greater_than_scaled_x)
 	}
 }
 
+#ifndef NO_CBLAS
 /**
  * C API specific test
  * Test srotmg by comparing it against pre-calculated values
@@ -411,4 +412,5 @@ CTEST(srotmg, c_api_scaled_y_greater_than_scaled_x)
 		ASSERT_DBL_NEAR_TOL(tr_param[i], te_param[i], SINGLE_EPS);
 	}
 }
+#endif
 #endif

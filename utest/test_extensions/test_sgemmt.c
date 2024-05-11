@@ -73,9 +73,11 @@ static void sgemmt_trusted(char api, enum CBLAS_ORDER order, char uplo, char tra
     if(api == 'F')
         BLASFUNC(sgemm)(&transa, &transb, &m, &m, &k, &alpha, data_sgemmt.a_test, &lda,
                         data_sgemmt.b_test, &ldb, &beta, data_sgemmt.c_gemm, &ldc);
+#ifndef NO_CBLAS
     else
         cblas_sgemm(order, transa, transb, m, m, k, alpha, data_sgemmt.a_test, lda,
                 data_sgemmt.b_test, ldb, beta, data_sgemmt.c_gemm, ldc);
+#endif
 
     if (uplo == 'L' || uplo == CblasLower)
     {
@@ -152,9 +154,11 @@ static float check_sgemmt(char api, enum CBLAS_ORDER order, char uplo, char tran
     if (api == 'F')
         BLASFUNC(sgemmt)(&uplo, &transa, &transb, &m, &k, &alpha, data_sgemmt.a_test,
                          &lda, data_sgemmt.b_test, &ldb, &beta, data_sgemmt.c_test, &ldc);
+#ifndef NO_CBLAS
     else
         cblas_sgemmt(order, uplo, transa, transb, m, k, alpha, data_sgemmt.a_test, lda,
                     data_sgemmt.b_test, ldb, beta, data_sgemmt.c_test, ldc);
+#endif
 
     for (i = 0; i < m * ldc; i++)
         data_sgemmt.c_verify[i] -= data_sgemmt.c_test[i];
@@ -189,9 +193,11 @@ static int check_badargs(char api, enum CBLAS_ORDER order, char uplo, char trans
     if (api == 'F')
         BLASFUNC(sgemmt)(&uplo, &transa, &transb, &m, &k, &alpha, data_sgemmt.a_test,
                          &lda, data_sgemmt.b_test, &ldb, &beta, data_sgemmt.c_test, &ldc);
+#ifndef NO_CBLAS
     else
         cblas_sgemmt(order, uplo, transa, transb, m, k, alpha, data_sgemmt.a_test, lda,
                     data_sgemmt.b_test, ldb, beta, data_sgemmt.c_test, ldc);
+#endif
 
     return check_error();
 }
@@ -480,6 +486,7 @@ CTEST(sgemmt, lower_beta_one)
     ASSERT_DBL_NEAR_TOL(0.0f, norm, SINGLE_EPS);
 }
 
+#ifndef NO_CBLAS
 /**
  * C API specific test
  * Test sgemmt by comparing it against sgemm
@@ -1023,6 +1030,7 @@ CTEST(sgemmt, c_api_rowmajor_lower_beta_one)
 
     ASSERT_DBL_NEAR_TOL(0.0f, norm, SINGLE_EPS);
 }
+#endif
 
 /**
  * Fortran API specific test
@@ -1168,6 +1176,7 @@ CTEST(sgemmt, xerbla_ldc_invalid)
     ASSERT_EQUAL(TRUE, passed);
 }
 
+#ifndef NO_CBLAS
 /**
  * C API specific test.
  * Test error function for an invalid param order.
@@ -1439,4 +1448,5 @@ CTEST(sgemmt, xerbla_c_api_rowmajor_ldc_invalid)
                             M, K, lda, ldb, ldc, expected_info);
     ASSERT_EQUAL(TRUE, passed);
 }
+#endif
 #endif

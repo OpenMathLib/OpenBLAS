@@ -62,10 +62,11 @@ static void dgeadd_trusted(blasint m, blasint n, double alpha, double *aptr,
                            blasint lda, double beta, double *cptr, blasint ldc)
 {
     blasint i;
+    blasint one=1;
 
     for (i = 0; i < n; i++)
     {
-        cblas_daxpby(m, alpha, aptr, 1, beta, cptr, 1);
+        BLASFUNC(daxpby)(&m, &alpha, aptr, &one, &beta, cptr, &one);
         aptr += lda;
         cptr += ldc;
     }
@@ -113,9 +114,11 @@ static double check_dgeadd(char api, OPENBLAS_CONST enum CBLAS_ORDER order,
     if (api == 'F')
         BLASFUNC(dgeadd)(&m, &n, &alpha, data_dgeadd.a_test, &lda,
          &beta, data_dgeadd.c_test, &ldc);
+#ifndef NO_CBLAS
     else
         cblas_dgeadd(order, m, n, alpha, data_dgeadd.a_test, lda,
                      beta, data_dgeadd.c_test, ldc);
+#endif
 
     // Find the differences between output matrix caculated by dgeadd and sgemm
     return dmatrix_difference(data_dgeadd.c_test, data_dgeadd.c_verify, cols, rows, ldc);
@@ -147,9 +150,11 @@ static int check_badargs(char api, OPENBLAS_CONST enum CBLAS_ORDER order,
     if (api == 'F')
         BLASFUNC(dgeadd)(&m, &n, &alpha, data_dgeadd.a_test, &lda,
                          &beta, data_dgeadd.c_test, &ldc);
+#ifndef NO_CBLAS
     else 
         cblas_dgeadd(order, m, n, alpha, data_dgeadd.a_test, lda,
                  beta, data_dgeadd.c_test, ldc);
+#endif
 
     return check_error();
 }
@@ -417,6 +422,7 @@ CTEST(dgeadd, m_zero)
     ASSERT_DBL_NEAR_TOL(0.0, norm, DOUBLE_EPS);
 }
 
+#ifndef NO_CBLAS
 /**
  * C API specific test
  * Test dgeadd by comparing it against reference
@@ -875,4 +881,5 @@ CTEST(dgeadd, c_api_m_zero)
 
     ASSERT_DBL_NEAR_TOL(0.0, norm, DOUBLE_EPS);
 }
+#endif
 #endif

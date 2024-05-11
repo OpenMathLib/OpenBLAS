@@ -331,6 +331,7 @@ CTEST(izamin, min_idx_in_vec_tail){
    ASSERT_EQUAL(N, index);
 }
 
+#ifndef NO_CBLAS
 /**
  * C API specific test
  * Test izamin by comparing it against pre-calculated values
@@ -622,4 +623,5 @@ CTEST(izamin, c_api_min_idx_in_vec_tail){
    blasint index = cblas_izamin(N, x, inc);
    ASSERT_EQUAL(N - 1, index);
 }
+#endif
 #endif

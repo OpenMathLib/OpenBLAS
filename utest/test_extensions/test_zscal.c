@@ -92,8 +92,10 @@ static double check_zscal(char api, blasint n, double *alpha, blasint inc)
 
     if(api == 'F')
         BLASFUNC(zscal)(&n, alpha, data_zscal.x_test, &inc);
+#ifndef NO_CBLAS
     else
         cblas_zscal(n, alpha, data_zscal.x_test, inc);
+#endif
 
     // Find the differences between output vector computed by zscal and zscal_trusted
     for (i = 0; i < n * 2 * inc; i++)
@@ -133,6 +135,7 @@ CTEST(zscal, alpha_r_zero_alpha_i_zero_inc_2)
     ASSERT_DBL_NEAR_TOL(0.0, norm, DOUBLE_EPS);
 }
 
+#ifndef NO_CBLAS
 /**
  * C API specific test
  * Test zscal by comparing it against reference
@@ -162,4 +165,5 @@ CTEST(zscal, c_api_alpha_r_zero_alpha_i_zero_inc_2)
 
     ASSERT_DBL_NEAR_TOL(0.0, norm, DOUBLE_EPS);
 }
+#endif
 #endif
