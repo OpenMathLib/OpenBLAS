@@ -96,6 +96,7 @@ static double check_zaxpby(blasint n, double *alpha, blasint incx, double *beta,
     return BLASFUNC(dznrm2)(&n, data_zaxpby.y_test, &incy_abs);
 }
 
+#ifndef NO_CBLAS
 /**
  * C API specific function
  * Test zaxpby by comparing it with zscal and zaxpy.
@@ -145,6 +146,7 @@ static double c_api_check_zaxpby(blasint n, double *alpha, blasint incx, double 
     // Find the norm of differences
     return cblas_dznrm2(n, data_zaxpby.y_test, incy_abs);
 }
+#endif
 
 /**
  * Fortran API specific test
@@ -387,6 +389,7 @@ CTEST(zaxpby, check_n_zero)
     ASSERT_DBL_NEAR_TOL(0.0, norm, DOUBLE_EPS);
 }
 
+#ifndef NO_CBLAS
 /**
  * C API specific test
  * Test zaxpby by comparing it with zscal and zaxpy.
@@ -627,4 +630,5 @@ CTEST(zaxpby, c_api_check_n_zero)
 
     ASSERT_DBL_NEAR_TOL(0.0, norm, DOUBLE_EPS);
 }
+#endif
 #endif

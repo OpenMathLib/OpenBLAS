@@ -69,7 +69,7 @@ float smatrix_difference(float *a, float *b, blasint cols, blasint rows, blasint
         for (j = 0; j < cols; j++) {
             a_ptr[j] -= b_ptr[j];
         }
-        norm += cblas_snrm2(cols, a_ptr, inc);
+        norm += BLASFUNC(snrm2)(&cols, a_ptr, &inc);
         
         a_ptr += ld;
         b_ptr += ld;
@@ -92,7 +92,7 @@ double dmatrix_difference(double *a, double *b, blasint cols, blasint rows, blas
         for (j = 0; j < cols; j++) {
             a_ptr[j] -= b_ptr[j];
         }
-        norm += cblas_dnrm2(cols, a_ptr, inc);
+        norm += BLASFUNC(dnrm2)(&cols, a_ptr, &inc);
         
         a_ptr += ld;
         b_ptr += ld;

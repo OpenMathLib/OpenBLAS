@@ -65,6 +65,7 @@ static double check_ztrsv(char uplo, char trans, char diag, blasint n, blasint l
 	blasint i;
 	double alpha_conj[] = {1.0, 0.0}; 
 	char trans_verify = trans;
+	char cc[2]="C", cr[2]="R";
 
 	drand_generate(data_ztrsv.a_test, n * lda * 2);
 	drand_generate(data_ztrsv.x_test, n * incx * 2);
@@ -76,8 +77,8 @@ static double check_ztrsv(char uplo, char trans, char diag, blasint n, blasint l
 		data_ztrsv.x_verify[i] = data_ztrsv.x_test[i];
 
 	if (trans == 'R'){
-		cblas_zimatcopy(CblasColMajor, CblasConjNoTrans, n, n, 
-						alpha_conj, data_ztrsv.a_verify, lda, lda);
+		BLASFUNC(zimatcopy)(cc, cr, &n, &n, 
+						alpha_conj, data_ztrsv.a_verify, &lda, &lda);
 		trans_verify = 'N';
 	}
 

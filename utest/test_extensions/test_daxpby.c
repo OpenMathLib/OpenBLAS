@@ -97,6 +97,7 @@ static double check_daxpby(blasint n, double alpha, blasint incx, double beta, b
     return BLASFUNC(dnrm2)(&n, data_daxpby.y_test, &incy_abs);
 }
 
+#ifndef NO_CBLAS
 /**
  * C API specific function
  * Test daxpby by comparing it with dscal and daxpy.
@@ -142,7 +143,7 @@ static double c_api_check_daxpby(blasint n, double alpha, blasint incx, double b
     // Find the norm of differences
     return cblas_dnrm2(n, data_daxpby.y_test, incy_abs);
 }
-
+#endif
 /**
  * Fortran API specific test
  * Test daxpby by comparing it with dscal and daxpy.
@@ -468,6 +469,7 @@ CTEST(daxpby, check_n_zero)
     ASSERT_DBL_NEAR_TOL(0.0, norm, DOUBLE_EPS);
 }
 
+#ifndef NO_CBLAS
 /**
  * C API specific test
  * Test daxpby by comparing it with dscal and daxpy.
@@ -796,4 +798,5 @@ CTEST(daxpby, c_api_check_n_zero)
 
     ASSERT_DBL_NEAR_TOL(0.0, norm, DOUBLE_EPS);
 }
+#endif
 #endif

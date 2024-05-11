@@ -96,7 +96,7 @@ static float check_caxpby(blasint n, float *alpha, blasint incx, float *beta, bl
     // Find the norm of differences
     return BLASFUNC(scnrm2)(&n, data_caxpby.y_test, &incy_abs);
 }
-
+#ifndef NO_CBLAS
 /**
  * C API specific function 
  * Test caxpby by comparing it with cscal and caxpy.
@@ -146,7 +146,7 @@ static float c_api_check_caxpby(blasint n, float *alpha, blasint incx, float *be
     // Find the norm of differences
     return cblas_scnrm2(n, data_caxpby.y_test, incy_abs);
 }
-
+#endif
 /**
  * Fortran API specific test
  * Test caxpby by comparing it with cscal and caxpy.
@@ -388,6 +388,7 @@ CTEST(caxpby, check_n_zero)
     ASSERT_DBL_NEAR_TOL(0.0f, norm, SINGLE_EPS);
 }
 
+#ifndef NO_CBLAS
 /**
  * C API specific test
  * Test caxpby by comparing it with cscal and caxpy.
@@ -628,4 +629,5 @@ CTEST(caxpby, c_api_check_n_zero)
 
     ASSERT_DBL_NEAR_TOL(0.0f, norm, SINGLE_EPS);
 }
+#endif
 #endif

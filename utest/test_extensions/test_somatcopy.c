@@ -94,6 +94,7 @@ static float check_somatcopy(char api, char order, char trans, blasint rows, bla
         BLASFUNC(somatcopy)(&order, &trans, &rows, &cols, &alpha, data_somatcopy.a_test, 
                             &lda, data_somatcopy.b_test, &ldb);
     }
+#ifndef NO_CBLAS
     else {
         if (order == 'C') corder = CblasColMajor;
         if (order == 'R') corder = CblasRowMajor;
@@ -104,7 +105,8 @@ static float check_somatcopy(char api, char order, char trans, blasint rows, bla
         cblas_somatcopy(corder, ctrans, rows, cols, alpha, data_somatcopy.a_test, 
                     lda, data_somatcopy.b_test, ldb);
     }
-    
+#endif
+
     return smatrix_difference(data_somatcopy.b_test, data_somatcopy.b_verify, b_cols, b_rows, ldb);
 }
 
@@ -412,6 +414,7 @@ CTEST(somatcopy, rowmajor_notrans_col_100_row_50)
     ASSERT_DBL_NEAR_TOL(0.0f, norm, SINGLE_EPS);
 }
 
+#ifndef NO_CBLAS
 /**
  * C API specific test
  * Test somatcopy by comparing it against refernce
@@ -503,6 +506,7 @@ CTEST(somatcopy, c_api_rowmajor_notrans_col_100_row_100)
 
     ASSERT_DBL_NEAR_TOL(0.0f, norm, SINGLE_EPS);
 }
+#endif
 
 /**
  * Test error function for an invalid param order.

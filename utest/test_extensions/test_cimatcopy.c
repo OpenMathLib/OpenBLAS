@@ -98,6 +98,7 @@ static float check_cimatcopy(char api, char order, char trans, blasint rows, bla
         BLASFUNC(cimatcopy)(&order, &trans, &rows, &cols, alpha, data_cimatcopy.a_test, 
                             &lda_src, &lda_dst);
     }
+#ifndef NO_CBLAS
     else {
         if (order == 'C') corder = CblasColMajor;
         if (order == 'R') corder = CblasRowMajor;
@@ -108,6 +109,7 @@ static float check_cimatcopy(char api, char order, char trans, blasint rows, bla
         cblas_cimatcopy(corder, ctrans, rows, cols, alpha, data_cimatcopy.a_test, 
                     lda_src, lda_dst);
     }
+#endif
 
     // Find the differences between output matrix computed by cimatcopy and reference func
     return smatrix_difference(data_cimatcopy.a_test, data_cimatcopy.a_verify, cols_out, rows_out, 2*lda_dst);    
@@ -502,6 +504,7 @@ CTEST(cimatcopy, rowmajor_conjtrans_col_50_row_100)
     ASSERT_DBL_NEAR_TOL(0.0f, norm, SINGLE_EPS);
 }
 
+#ifndef NO_CBLAS
 /**
  * C API specific test
  * Test cimatcopy by comparing it against reference
@@ -681,6 +684,7 @@ CTEST(cimatcopy, c_api_rowmajor_conjtrans_col_100_row_100)
 
     ASSERT_DBL_NEAR_TOL(0.0f, norm, SINGLE_EPS);
 }
+#endif
 
 /**
  * Test error function for an invalid param order.
