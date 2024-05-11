@@ -91,8 +91,10 @@ static float check_cscal(char api, blasint n, float *alpha, blasint inc)
 
     if(api == 'F')
         BLASFUNC(cscal)(&n, alpha, data_cscal.x_test, &inc);
+#ifndef NO_CBLAS
     else
         cblas_cscal(n, alpha, data_cscal.x_test, inc);
+#endif
 
     // Find the differences between output vector computed by cscal and cscal_trusted
     for (i = 0; i < n * 2 * inc; i++)
@@ -132,6 +134,7 @@ CTEST(cscal, alpha_r_zero_alpha_i_zero_inc_2)
     ASSERT_DBL_NEAR_TOL(0.0f, norm, SINGLE_EPS);
 }
 
+#ifndef NO_CBLAS
 /**
  * C API specific test
  * Test cscal by comparing it against reference
@@ -161,4 +164,5 @@ CTEST(cscal, c_api_alpha_r_zero_alpha_i_zero_inc_2)
 
     ASSERT_DBL_NEAR_TOL(0.0f, norm, SINGLE_EPS);
 }
+#endif
 #endif

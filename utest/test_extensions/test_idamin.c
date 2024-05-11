@@ -413,6 +413,7 @@ CTEST(idamin, min_idx_in_vec_tail_inc_1){
    ASSERT_EQUAL(N, index);
 }
 
+#ifndef NO_CBLAS
 /**
  * C API specific test
  * Test idamin by comparing it against pre-calculated values
@@ -786,4 +787,5 @@ CTEST(idamin, c_api_min_idx_in_vec_tail_inc_1){
    free(x);
    ASSERT_EQUAL(N - 1, index);
 }
+#endif
 #endif

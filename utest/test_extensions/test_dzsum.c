@@ -221,6 +221,7 @@ CTEST(dzsum, step_2_N_50){
    ASSERT_DBL_NEAR_TOL(0.0, sum, DOUBLE_EPS);
 }
 
+#ifndef NO_CBLAS
 /**
  * C API specific test
  * Test dzsum by comparing it against pre-calculated values
@@ -402,4 +403,5 @@ CTEST(dzsum, c_api_step_2_N_50){
    double sum = cblas_dzsum(N, x, inc);
    ASSERT_DBL_NEAR_TOL(0.0, sum, DOUBLE_EPS);
 }
+#endif
 #endif

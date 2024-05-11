@@ -61,6 +61,10 @@ OBJS = utest_main2.o
 OBJS_EXT = $(DIR_EXT)/utest_main2.o
 endif
 
+ifeq ($(NO_CBLAS), 1)
+override CFLAGS += -DNO_CBLAS 
+endif
+
 all : run_test
 
 ifeq ($(OSNAME), AIX)

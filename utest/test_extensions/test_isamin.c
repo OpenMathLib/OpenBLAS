@@ -412,7 +412,7 @@ CTEST(isamin, min_idx_in_vec_tail_inc_1){
    free(x);
    ASSERT_EQUAL(N, index);
 }
-
+#ifndef NO_CBLAS
 /**
  * C API specific test
  * Test isamin by comparing it against pre-calculated values
@@ -786,4 +786,5 @@ CTEST(isamin, c_api_min_idx_in_vec_tail_inc_1){
    free(x);
    ASSERT_EQUAL(N - 1, index);
 }
+#endif
 #endif

@@ -105,6 +105,7 @@ static double check_zdrot(blasint n, blasint inc_x, blasint inc_y, double *c, do
     return (norm / 2);
 }
 
+#ifndef NO_CBLAS
 /**
  * C API specific function
  * Comapare results computed by zdrot and zaxpby 
@@ -787,4 +788,5 @@ CTEST(zrot, c_api_check_n_zero)
     double norm = c_api_check_zdrot(n, inc_x, inc_y, c, s);
     ASSERT_DBL_NEAR_TOL(0.0, norm, DOUBLE_EPS);
 }
+#endif
 #endif

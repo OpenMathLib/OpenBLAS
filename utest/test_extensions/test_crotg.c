@@ -161,7 +161,7 @@ CTEST(crotg, negative_real_negative_img)
     ASSERT_DBL_NEAR_TOL(-5.26498f, sa[0], SINGLE_EPS);
     ASSERT_DBL_NEAR_TOL(-7.01997f, sa[1], SINGLE_EPS);
 }
-
+#ifndef NO_CBLAS
 /**
  * C API specific test
  * Test crotg by comparing it against pre-calculated values
@@ -287,4 +287,5 @@ CTEST(crotg, c_api_negative_real_negative_img)
     ASSERT_DBL_NEAR_TOL(-5.26498f, sa[0], SINGLE_EPS);
     ASSERT_DBL_NEAR_TOL(-7.01997f, sa[1], SINGLE_EPS);
 }
+#endif
 #endif

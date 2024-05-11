@@ -94,6 +94,7 @@ static double check_domatcopy(char api, char order, char trans, blasint rows, bl
         BLASFUNC(domatcopy)(&order, &trans, &rows, &cols, &alpha, data_domatcopy.a_test, 
                             &lda, data_domatcopy.b_test, &ldb);
     }
+#ifndef NO_CBLAS
     else {
         if (order == 'C') corder = CblasColMajor;
         if (order == 'R') corder = CblasRowMajor;
@@ -104,6 +105,7 @@ static double check_domatcopy(char api, char order, char trans, blasint rows, bl
         cblas_domatcopy(corder, ctrans, rows, cols, alpha, data_domatcopy.a_test, 
                     lda, data_domatcopy.b_test, ldb);
     }
+#endif
     
     return dmatrix_difference(data_domatcopy.b_test, data_domatcopy.b_verify, b_cols, b_rows, ldb);
 }
@@ -412,6 +414,7 @@ CTEST(domatcopy, rowmajor_notrans_col_100_row_50)
     ASSERT_DBL_NEAR_TOL(0.0, norm, DOUBLE_EPS);
 }
 
+#ifndef NO_CBLAS
 /**
  * C API specific test
  * Test domatcopy by comparing it against refernce
@@ -503,6 +506,7 @@ CTEST(domatcopy, c_api_rowmajor_notrans_col_100_row_100)
 
     ASSERT_DBL_NEAR_TOL(0.0, norm, DOUBLE_EPS);
 }
+#endif
 
 /**
  * Test error function for an invalid param order.

@@ -99,6 +99,7 @@ static float check_comatcopy(char api, char order, char trans, blasint rows, bla
         BLASFUNC(comatcopy)(&order, &trans, &rows, &cols, alpha, data_comatcopy.a_test, 
                             &lda, data_comatcopy.b_test, &ldb);
     }
+#ifndef NO_CBLAS
     else {
         if (order == 'C') corder = CblasColMajor;
         if (order == 'R') corder = CblasRowMajor;
@@ -109,6 +110,7 @@ static float check_comatcopy(char api, char order, char trans, blasint rows, bla
         cblas_comatcopy(corder, ctrans, rows, cols, alpha, data_comatcopy.a_test, 
                     lda, data_comatcopy.b_test, ldb);
     }
+#endif
     
     return smatrix_difference(data_comatcopy.b_test, data_comatcopy.b_verify, b_cols, b_rows, ldb*2);
 }
@@ -316,6 +318,7 @@ CTEST(comatcopy, rowmajor_conjtrans_col_100_row_100)
     ASSERT_DBL_NEAR_TOL(0.0f, norm, SINGLE_EPS);
 }
 
+#ifndef NO_CBLAS
 /**
  * C API specific test
  * Test comatcopy by comparing it against refernce
@@ -491,6 +494,7 @@ CTEST(comatcopy, c_api_rowmajor_conjtrans_col_100_row_100)
 
     ASSERT_DBL_NEAR_TOL(0.0f, norm, SINGLE_EPS);
 }
+#endif
 
 /**
  * Test error function for an invalid param order.

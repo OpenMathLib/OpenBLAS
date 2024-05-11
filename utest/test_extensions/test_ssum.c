@@ -221,6 +221,7 @@ CTEST(ssum, step_2_N_50){
    ASSERT_DBL_NEAR_TOL(50.0f, sum, SINGLE_EPS);
 }
 
+#ifndef NO_CBLAS
 /**
  * C API specific test
  * Test ssum by comparing it against pre-calculated values
@@ -402,4 +403,5 @@ CTEST(ssum, c_api_step_2_N_50){
    float sum = cblas_ssum(N, x, inc);
    ASSERT_DBL_NEAR_TOL(50.0f, sum, SINGLE_EPS);
 }
+#endif
 #endif
