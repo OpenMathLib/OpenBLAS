@@ -334,6 +334,9 @@ symb_defs = {
     '?gemm3m':  {'def': ['GEMM3M']},
     '?symm3m':  {'def': ['GEMM3M']},
     '?hemm3m':  {'def': ['HEMM', 'GEMM3M']},
+    '?her_thread':  {'def': ['HER']},
+    '?her2_thread':  {'def': ['HER']},
+    '?hpr_thread':  {'def': ['HEMV']},
     'cblas_?dotu_sub':  {'def': ['CBLAS', 'FORCE_USE_STACK'], 'undef': ['CONJ']},
     'cblas_?dotc_sub':  {'def': ['CBLAS', 'FORCE_USE_STACK', 'CONJ']},
 }
@@ -346,4 +349,4 @@ subdir('driver/level2')
 subdir('kernel')
 
 _openblas = static_library('openblas',
-                    link_whole: [ _interface, _kern])
+                    link_whole: [ _interface, _l2_driver, _kern ])
