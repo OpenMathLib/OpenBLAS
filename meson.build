@@ -184,6 +184,15 @@ add_project_arguments(simd_cargs, language: 'c')
 # Common symbol related options
 symnames = ['ASMNAME', 'ASMFNAME', 'NAME', 'CNAME', 'CHAR_NAME', 'CHAR_CNAME']
 
+# TODO(rg): Maybe make these conditional..
+_cargs += [
+ '-DSMP_SERVER', # This is evidently necessary for the driver/level2
+ '-DBUILD_SINGLE=1',
+ '-DBUILD_DOUBLE=1',
+ '-DBUILD_COMPLEX=1',
+ '-DBUILD_COMPLEX16=1',
+]
+
 # Other common options, move later
 # Undefine to help prevent clashes
 foreach symb : symnames
@@ -260,12 +269,12 @@ ext_mappings = {
     '_k': {},
     '_U': {'undef': ['LOWER', 'CONJ', 'XCONJ']},
     '_C': {'def': ['CONJ'], 'undef': ['XCONJ']},
-    '_V': {'def': ['XCONJ'], 'undef': ['CONJ']},
+    # '_V': {'def': ['XCONJ'], 'undef': ['CONJ']},
     '_D': {'def': ['CONJ', 'XCONJ']},
     '_L': {'def': ['LOWER']},
     '_LN': {'def': ['LEFT'], 'undef': ['TRANSA']},
     # Handle HEMV and HEMVREV better
-    '_V': {'def': ['HEMV', 'HEMVREV'], 'undef': ['LOWER']},
+    '_V': {'def': ['HEMV', 'HEMVREV', 'XCONJ'], 'undef': ['LOWER', 'CONJ']},
     '_M': {'def': ['HEMV', 'HEMVREV', 'LOWER']},
     '_n': {'undef': ['TRANS', 'TRANSA', 'CONJ', 'XCONJ']},
     '_t': {'def': ['TRANS', 'TRANSA'], 'undef': ['CONJ', 'XCONJ']},
@@ -276,6 +285,34 @@ ext_mappings = {
     '_s': {'def': ['CONJ', 'XCONJ'], 'undef': ['TRANS', 'TRANSA']},
     '_d': {'def': ['TRANS', 'TRANSA', 'CONJ', 'XCONJ']},
 }
+
+ext_mappings_l2 = [
+    {'ext': '_NUU', 'def': ['UNIT'], 'undef': ['TRANSA'], 'for': ['s', 'd']},
+    {'ext': '_NUN', 'undef': ['TRANSA', 'UNIT'], 'for': ['s', 'd']},
+    {'ext': '_TLU', 'def': ['UNIT', 'TRANSA'], 'for': ['s', 'd']},
+    {'ext': '_TLN', 'def': ['TRANSA'], 'undef': ['UNIT'], 'for': ['s', 'd']},
+    {'ext': '_NLU', 'def': ['UNIT'], 'undef': ['TRANSA'], 'for': ['s', 'd']},
+    {'ext': '_NLN', 'undef': ['TRANSA', 'UNIT'], 'for': ['s', 'd']},
+    {'ext': '_TUU', 'def': ['UNIT', 'TRANSA'], 'for': ['s', 'd']},
+    {'ext': '_TUN', 'def': ['TRANSA'], 'undef': ['UNIT'], 'for': ['s', 'd']},
+    {'ext': '_NUU', 'def': ['UNIT', 'TRANSA=1'], 'for': ['c', 'x', 'z']},
+    {'ext': '_NUN', 'def': ['TRANSA=1'], 'undef': ['UNIT'], 'for': ['c', 'x', 'z']},
+    {'ext': '_TLU', 'def': ['UNIT', 'TRANSA=2'], 'for': ['c', 'x', 'z']},
+    {'ext': '_TLN', 'def': ['TRANSA=2'], 'undef': ['UNIT'], 'for': ['c', 'x', 'z']},
+    {'ext': '_RLU', 'def': ['UNIT', 'TRANSA=3'], 'for': ['c', 'x', 'z']},
+    {'ext': '_RLN', 'def': ['TRANSA=3'], 'undef': ['UNIT'], 'for': ['c', 'x', 'z']},
+    {'ext': '_CLU', 'def': ['UNIT', 'TRANSA=4'], 'for': ['c', 'x', 'z']},
+    {'ext': '_CLN', 'def': ['TRANSA=4'], 'undef': ['UNIT'], 'for': ['c', 'x', 'z']},
+    {'ext': '_NLU', 'def': ['UNIT', 'TRANSA=1'], 'for': ['c', 'x', 'z']},
+    {'ext': '_NLN', 'def': ['TRANSA=1'], 'undef': ['UNIT'], 'for': ['c', 'x', 'z']},
+    {'ext': '_TUU', 'def': ['UNIT', 'TRANSA=2'], 'for': ['s', 'd']},
+    {'ext': '_TUN', 'def': ['TRANSA=2'], 'undef': ['UNIT'], 'for': ['s', 'd']},
+    {'ext': '_RUU', 'def': ['UNIT', 'TRANSA=3'], 'for': ['c', 'x', 'z']},
+    {'ext': '_RUN', 'def': ['TRANSA=3'], 'undef': ['UNIT'], 'for': ['c', 'x', 'z']},
+    {'ext': '_CUU', 'def': ['UNIT', 'TRANSA=4'], 'for': ['c', 'x', 'z']},
+    {'ext': '_CUN', 'def': ['TRANSA=4'], 'undef': ['UNIT'], 'for': ['c', 'x', 'z']}
+]
+
 
 symb_defs = {
     '?amax':  {'def': ['USE_ABS'], 'undef': ['USE_MIN']},
