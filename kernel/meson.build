@@ -444,8 +444,8 @@ endforeach
 
 _kern_libs = []
 foreach conf: kernel_confs
-    message(conf['name'])
-    message(conf)
+    # message(conf['name'])
+    # message(conf)
     _kern_libs += static_library(
         conf['name'],
         conf['src'],

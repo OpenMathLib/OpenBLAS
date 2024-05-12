@@ -1,6 +1,7 @@
 # Naming conventions can be read from here:
 # https://click.rgoswami.me/intel_blas_names
 # Ported in order from the Makefile
+# TODO(rg): Add the CONJ flags
 driver_kops = [
   { 'base': '?gbmv',
     'sources': {
@@ -535,8 +536,8 @@ endforeach
 # Create the static libraries from the configurations
 _kern_libs = []
 foreach conf : kernel_confs
-    message(conf['name'])
-    message(conf)
+    # message(conf['name'])
+    # message(conf)
     _kern_libs += [static_library(
         conf['name'],
         conf['src'],
