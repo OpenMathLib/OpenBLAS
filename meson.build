@@ -284,6 +284,22 @@ ext_mappings = {
     '_u': {'def': ['TRANS', 'TRANSA', 'XCONJ'], 'undef': ['CONJ']},
     '_s': {'def': ['CONJ', 'XCONJ'], 'undef': ['TRANS', 'TRANSA']},
     '_d': {'def': ['TRANS', 'TRANSA', 'CONJ', 'XCONJ']},
+    '_nn': {'def': ['NN']},
+    '_nt': {'def': ['NT']},
+    '_nr': {'def': ['NR']},
+    '_nc': {'def': ['NC']},
+    '_tn': {'def': ['TN']},
+    '_tt': {'def': ['TT']},
+    '_tr': {'def': ['TR']},
+    '_tc': {'def': ['TC']},
+    '_rn': {'def': ['RN']},
+    '_rt': {'def': ['RT']},
+    '_rr': {'def': ['RR']},
+    '_rc': {'def': ['RC']},
+    '_cn': {'def': ['CN']},
+    '_ct': {'def': ['CT']},
+    '_cr': {'def': ['CR']},
+    '_cc': {'def': ['CC']},
 }
 
 ext_mappings_l2 = [
@@ -313,6 +329,59 @@ ext_mappings_l2 = [
     {'ext': '_CUN', 'def': ['TRANSA=4'], 'undef': ['UNIT'], 'for': ['c', 'x', 'z']}
 ]
 
+ext_mappings_l3 = [
+ {'ext': '_LNUU', 'def': ['UPPER', 'UNIT'], 'undef': ['TRANSA'], 'for': ['s', 'd']},
+ {'ext': '_LNUN', 'def': ['UPPER'], 'undef': ['TRANSA', 'UNIT'], 'for': ['s', 'd']},
+ {'ext': '_LNLU', 'def': ['UNIT'], 'undef': ['TRANSA', 'UPPER'], 'for': ['s', 'd']},
+ {'ext': '_LNLN', 'undef': ['TRANSA', 'UPPER', 'UNIT'], 'for': ['s', 'd', 'q']},
+ {'ext': '_LTUU', 'def': ['TRANSA', 'UPPER', 'UNIT'], 'for': ['s', 'd']},
+ {'ext': '_LTUN', 'def': ['TRANSA', 'UPPER'], 'undef': ['UNIT'], 'for': ['s', 'd']},
+ {'ext': '_LTLU', 'def': ['TRANSA', 'UNIT'], 'undef': ['UPPER'], 'for': ['s', 'd', 'q']},
+ {'ext': '_LTLN', 'def': ['TRANSA'], 'undef': ['UPPER', 'UNIT'], 'for': ['s', 'd']},
+ {'ext': '_RNUU', 'def': ['UPPER', 'UNIT'], 'undef': ['TRANSA'], 'for': ['s', 'd']},
+ {'ext': '_RNUN', 'def': ['UPPER'], 'undef': ['TRANSA', 'UNIT'], 'for': ['s', 'd']},
+ {'ext': '_RNLU', 'def': ['UNIT'], 'undef': ['TRANSA', 'UPPER'], 'for': ['s', 'd']},
+ {'ext': '_RNLN', 'undef': ['TRANSA', 'UPPER', 'UNIT'], 'for': ['s', 'd']},
+ {'ext': '_RTUU', 'def': ['TRANSA', 'UPPER', 'UNIT'], 'for': ['s', 'd']},
+ {'ext': '_RTUN', 'def': ['TRANSA', 'UPPER'], 'undef': ['UNIT'], 'for': ['s', 'd', 'q']},
+ {'ext': '_RTLU', 'def': ['TRANSA', 'UNIT'], 'undef': ['UPPER'], 'for': ['s', 'd', 'q']},
+ {'ext': '_RTLN', 'def': ['TRANSA'], 'undef': ['UPPER', 'UNIT'], 'for': ['s', 'd']},
+
+{'ext': '_LNUU', 'def': ['UPPER', 'UNIT'], 'undef': ['TRANSA', 'CONJ'], 'for': ['c', 'z', 'x']},
+{'ext': '_LNUN', 'def': ['UPPER'], 'undef': ['TRANSA', 'UNIT', 'CONJ'], 'for': ['c', 'z', 'x']},
+{'ext': '_LNLU', 'def': ['UNIT'], 'undef': ['TRANSA', 'UPPER', 'CONJ'], 'for': ['c', 'z', 'x']},
+{'ext': '_LNLN', 'def': [], 'undef': ['TRANSA', 'UPPER', 'UNIT', 'CONJ'], 'for': ['c', 'z', 'x']},
+{'ext': '_LTUU', 'def': ['TRANSA', 'UPPER', 'UNIT'], 'undef': ['CONJ'], 'for': ['c', 'z', 'x']},
+{'ext': '_LTUN', 'def': ['TRANSA', 'UPPER'], 'undef': ['UNIT', 'CONJ'], 'for': ['c', 'z', 'x']},
+{'ext': '_LTLU', 'def': ['TRANSA', 'UNIT'], 'undef': ['UPPER', 'CONJ'], 'for': ['c', 'z', 'x']},
+{'ext': '_LTLN', 'def': ['TRANSA'], 'undef': ['UPPER', 'UNIT', 'CONJ'], 'for': ['c', 'z', 'x']},
+{'ext': '_LRUU', 'def': ['UPPER', 'UNIT', 'CONJ'], 'undef': ['TRANSA'], 'for': ['c', 'z', 'x']},
+{'ext': '_LRUN', 'def': ['UPPER', 'CONJ'], 'undef': ['TRANSA', 'UNIT'], 'for': ['c', 'z', 'x']},
+{'ext': '_LRLU', 'def': ['UNIT', 'CONJ'], 'undef': ['TRANSA', 'UPPER'], 'for': ['c', 'z', 'x']},
+{'ext': '_LRLN', 'def': ['CONJ'], 'undef': ['TRANSA', 'UPPER', 'UNIT'], 'for': ['c', 'z', 'x']},
+{'ext': '_LCUU', 'def': ['TRANSA', 'UPPER', 'UNIT', 'CONJ'], 'undef': [], 'for': ['c', 'z', 'x']},
+{'ext': '_LCUN', 'def': ['TRANSA', 'UPPER', 'CONJ'], 'undef': ['UNIT'], 'for': ['c', 'z', 'x']},
+{'ext': '_LCLU', 'def': ['TRANSA', 'UNIT', 'CONJ'], 'undef': ['UPPER'], 'for': ['c', 'z', 'x']},
+{'ext': '_LCLN', 'def': ['TRANSA', 'CONJ'], 'undef': ['UPPER', 'UNIT'], 'for': ['c', 'z', 'x']},
+{'ext': '_RNUU', 'def': ['UPPER', 'UNIT'], 'undef': ['TRANSA', 'CONJ'], 'for': ['c', 'z', 'x']},
+{'ext': '_RNUN', 'def': ['UPPER'], 'undef': ['TRANSA', 'UNIT', 'CONJ'], 'for': ['c', 'z', 'x']},
+{'ext': '_RNLU', 'def': ['UNIT'], 'undef': ['TRANSA', 'UPPER', 'CONJ'], 'for': ['c', 'z', 'x']},
+{'ext': '_RNLN', 'def': [], 'undef': ['TRANSA', 'UPPER', 'UNIT', 'CONJ'], 'for': ['c', 'z', 'x']},
+{'ext': '_RTUU', 'def': ['TRANSA', 'UPPER', 'UNIT'], 'undef': ['CONJ'], 'for': ['c', 'z', 'x']},
+{'ext': '_RTUN', 'def': ['TRANSA', 'UPPER'], 'undef': ['UNIT', 'CONJ'], 'for': ['c', 'z', 'x']},
+{'ext': '_RTLU', 'def': ['TRANSA', 'UNIT'], 'undef': ['UPPER', 'CONJ'], 'for': ['c', 'z', 'x']},
+{'ext': '_RTLN', 'def': ['TRANSA'], 'undef': ['UPPER', 'UNIT', 'CONJ'], 'for': ['c', 'z', 'x']},
+{'ext': '_RRUU', 'def': ['UPPER', 'UNIT', 'CONJ'], 'undef': ['TRANSA'], 'for': ['c', 'z', 'x']},
+{'ext': '_RRUN', 'def': ['UPPER', 'CONJ'], 'undef': ['TRANSA', 'UNIT'], 'for': ['c', 'z', 'x']},
+{'ext': '_RRLU', 'def': ['UNIT', 'CONJ'], 'undef': ['TRANSA', 'UPPER'], 'for': ['c', 'z', 'x']},
+{'ext': '_RRLN', 'def': ['CONJ'], 'undef': ['TRANSA', 'UPPER', 'UNIT'], 'for': ['c', 'z', 'x']},
+{'ext': '_RCUU', 'def': ['TRANSA', 'UPPER', 'UNIT', 'CONJ'], 'undef': [], 'for': ['c', 'z', 'x']},
+{'ext': '_RCUN', 'def': ['TRANSA', 'UPPER', 'CONJ'], 'undef': ['UNIT'], 'for': ['c', 'z', 'x']},
+{'ext': '_RCLU', 'def': ['TRANSA', 'UNIT', 'CONJ'], 'undef': ['UPPER'], 'for': ['c', 'z', 'x']},
+{'ext': '_RCLN', 'def': ['TRANSA', 'CONJ'], 'undef': ['UPPER', 'UNIT'], 'for': ['c', 'z', 'x']},
+]
+
+# cc -c -O2 -DSMALL_MATRIX_OPT -DMAX_STACK_ALLOC=2048 -Wall -m64 -DF_INTERFACE_GFORT -fPIC -DSMP_SERVER -DNO_WARMUP -DMAX_CPU_NUMBER=12 -DMAX_PARALLEL_NUMBER=1 -DBUILD_SINGLE=1 -DBUILD_DOUBLE=1 -DBUILD_COMPLEX=1 -DBUILD_COMPLEX16=1 -DVERSION=\"0.3.26.dev\" -msse3 -mssse3 -msse4.1 -mavx -mavx2 -mavx2 -UASMNAME -UASMFNAME -UNAME -UCNAME -UCHAR_NAME -UCHAR_CNAME -DASMNAME=strmm_RTUU -DASMFNAME=strmm_RTUU_ -DNAME=strmm_RTUU_ -DCNAME=strmm_RTUU -DCHAR_NAME=\"strmm_RTUU_\" -DCHAR_CNAME=\"strmm_RTUU\" -DNO_AFFINITY -I../.. -UDOUBLE  -UCOMPLEX -UCOMPLEX -UDOUBLE -DTRANSA -DUPPER -DUNIT trmm_R.c -o strmm_RTUU.o
 
 symb_defs = {
     '?amax':  {'def': ['USE_ABS'], 'undef': ['USE_MIN']},
@@ -337,6 +406,7 @@ symb_defs = {
     '?her_thread':  {'def': ['HER']},
     '?her2_thread':  {'def': ['HER']},
     '?hpr_thread':  {'def': ['HEMV']},
+    '?bgemm':  {'def': ['HALF']},
     'cblas_?dotu_sub':  {'def': ['CBLAS', 'FORCE_USE_STACK'], 'undef': ['CONJ']},
     'cblas_?dotc_sub':  {'def': ['CBLAS', 'FORCE_USE_STACK', 'CONJ']},
 }
@@ -346,7 +416,8 @@ _inc = [include_directories('.')]
 # subdir('lapack-netlib')
 subdir('interface')
 subdir('driver/level2')
+subdir('driver/level3')
 subdir('kernel')
 
 _openblas = static_library('openblas',
-                    link_whole: [ _interface, _l2_driver, _kern ])
+                    link_whole: [ _interface, _l2_driver, _l3_driver, _kern ])
