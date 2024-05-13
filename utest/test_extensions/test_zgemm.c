@@ -75,8 +75,8 @@ static double check_zgemm(char transa, char transb, blasint m, blasint n, blasin
     char transb_verify = transb;
     char cc[2]="C", cr[2]="R";
 
-    int arows = k, acols = m;
-    int brows = n, bcols = k;
+    blasint arows = k, acols = m;
+    blasint brows = n, bcols = k;
 
     if (transa == 'T' || transa == 'C'){
         arows = m; acols = k;
