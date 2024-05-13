@@ -74,7 +74,11 @@ static void matrix_vector_product(blasint n, blasint m, blasint lda, blasint inc
 
     for (i = 0; i < n * inc_x; i+= inc_x)
     {
+#ifdef RETURN_BY_STACK
+        BLASFUNC(cdotu)(&result, &lda, a_ptr, &one, x_ptr, &inc_x);
+#else
         result = BLASFUNC(cdotu)(&lda, a_ptr, &one, x_ptr, &inc_x);
+#endif
         x_res[0] = CREAL(result);
         x_res[1] = CIMAG(result);
         a_ptr += lda * 2;
