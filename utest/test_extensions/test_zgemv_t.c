@@ -75,7 +75,7 @@ static void matrix_vector_product(blasint n, blasint m, blasint lda, blasint inc
     for (i = 0; i < n * inc_x; i += inc_x)
     {
 #ifdef RETURN_BY_STACK
-       BLASFUNC(zdotu)(result,&lda, a_ptr, &one, x_ptr, &inc_x);
+       BLASFUNC(zdotu)(&result, &lda, a_ptr, &one, x_ptr, &inc_x);
 #else
        result = BLASFUNC(zdotu)(&lda, a_ptr, &one, x_ptr, &inc_x);
 #endif
