@@ -160,6 +160,12 @@ else()
   endif ()
 endif ()
 
+if (C_LAPACK)
+  if (${CMAKE_C_COMPILER_ID} STREQUAL "GNU")
+    set(CCOMMON_OPT "${CCOMMON_OPT} -Wno-error=incompatible-pointer-types")
+  endif ()
+endif ()
+
 include("${PROJECT_SOURCE_DIR}/cmake/prebuild.cmake")
 if (DEFINED TARGET)
   if (${TARGET} STREQUAL COOPERLAKE AND NOT NO_AVX512)
