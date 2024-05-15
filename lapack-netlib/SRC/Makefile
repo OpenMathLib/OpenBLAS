@@ -101,10 +101,8 @@ SCLAUX = la_constants.o \
    slaset.o slasq1.o slasq2.o slasq3.o slasq4.o slasq5.o slasq6.o \
    slasr.o  slasrt.o slassq.o slasv2.o spttrf.o sstebz.o sstedc.o \
    ssteqr.o ssterf.o slaisnan.o sisnan.o \
-   slartgp.o slartgs.o scombssq.o ../INSTALL/sroundup_lwork.o
-ifneq ($(F_COMPILER), IBM)
-SCLAUX += ../INSTALL/second_$(TIMER).o
-endif
+   slartgp.o slartgs.o scombssq.o ../INSTALL/sroundup_lwork.o \
+   ../INSTALL/second_$(TIMER).o
 endif
 
 ifneq "$(or $(BUILD_DOUBLE),$(BUILD_COMPLEX16))" ""
@@ -126,10 +124,7 @@ DZLAUX = la_constants.o\
    dlasr.o  dlasrt.o dlassq.o dlasv2.o dpttrf.o dstebz.o dstedc.o \
    dsteqr.o dsterf.o dlaisnan.o disnan.o \
    dlartgp.o dlartgs.o ../INSTALL/droundup_lwork.o \
-   ../INSTALL/dlamch.o
-ifneq ($(F_COMPILER), IBM)
-DZLAUX +=  ../INSTALL/dsecnd_$(TIMER).o
-endif
+   ../INSTALL/dlamch.o ../INSTALL/dsecnd_$(TIMER).o
 endif
 
 #ifeq ($(BUILD_SINGLE),1)
