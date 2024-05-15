@@ -38,7 +38,7 @@ if (${CMAKE_SYSTEM_NAME} STREQUAL "Windows")
 
     # Test for supporting MS_ABI
     # removed string parsing in favor of CMake's version comparison -hpa
-    execute_process(COMMAND ${CMAKE_C_COMPILER} -dumpversion OUTPUT_VARIABLE GCC_VERSION)
+    set(GCC_VERSION ${CMAKE_C_COMPILER_VERSION})
     if (${GCC_VERSION} VERSION_GREATER 4.7 OR ${GCC_VERSION} VERSION_EQUAL 4.7)
       # GCC Version >=4.7
       # It is compatible with MSVC ABI.
