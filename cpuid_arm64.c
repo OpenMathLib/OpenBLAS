@@ -46,6 +46,7 @@ size_t length64=sizeof(value64);
 #define CPU_NEOVERSEN1    11
 #define CPU_NEOVERSEV1    16
 #define CPU_NEOVERSEN2    17
+#define CPU_NEOVERSEV2   24
 #define CPU_CORTEXX1      18
 #define CPU_CORTEXX2	  19
 #define CPU_CORTEXA510	  20
@@ -91,7 +92,8 @@ static char *cpuname[] = {
   "CORTEXA510",
   "CORTEXA710",
   "FT2000",
-  "CORTEXA76"
+  "CORTEXA76",
+	"NEOVERSEV2"
 };
 
 static char *cpuname_lower[] = {
@@ -118,7 +120,8 @@ static char *cpuname_lower[] = {
   "cortexa510",
   "cortexa710",
   "ft2000",
-  "cortexa76"
+  "cortexa76",
+	"neoversev2"
 };
 
 int get_feature(char *search)
@@ -213,6 +216,8 @@ int detect(void)
 	return CPU_CORTEXX2;
       else if (strstr(cpu_part, "0xd4e")) //X3
 	return CPU_CORTEXX2;
+      else if (strstr(cpu_part, "0xd4f")) //NVIDIA Grace et al.
+        return CPU_NEOVERSEV2;
       else if (strstr(cpu_part, "0xd0b")) 
 	return CPU_CORTEXA76;
     }
@@ -424,6 +429,23 @@ void get_cpuconfig(void)
                 printf("#define L2_ASSOCIATIVE 8\n");
                 printf("#define DTB_DEFAULT_ENTRIES 48\n");
                 printf("#define DTB_SIZE 4096\n");
+                break;
+      case CPU_NEOVERSEV2:
+                printf("#define ARMV9\n");
+                printf("#define %s\n", cpuname[d]);
+                printf("#define L1_CODE_SIZE 65536\n");
+                printf("#define L1_CODE_LINESIZE 64\n");
+                printf("#define L1_CODE_ASSOCIATIVE 4\n");
+                printf("#define L1_DATA_SIZE 65536\n");
+                printf("#define L1_DATA_LINESIZE 64\n");
+                printf("#define L1_DATA_ASSOCIATIVE 4\n");
+                printf("#define L2_SIZE 1048576\n");
+                printf("#define L2_LINESIZE 64\n");
+                printf("#define L2_ASSOCIATIVE 8\n");
+								// L1 Data TLB = 48 entries
+								// L2 Data TLB = 2048 entries
+                printf("#define DTB_DEFAULT_ENTRIES 48\n");
+                printf("#define DTB_SIZE 4096\n");  // Set to 4096 for symmetry with other configs.
                 break;
 	    case CPU_CORTEXA510:
 	    case CPU_CORTEXA710:
