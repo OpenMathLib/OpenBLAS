@@ -272,7 +272,7 @@ ext_mappings = {
     # '_V': {'def': ['XCONJ'], 'undef': ['CONJ']},
     '_D': {'def': ['CONJ', 'XCONJ']},
     '_L': {'def': ['LOWER']},
-    '_LN': {'def': ['LEFT'], 'undef': ['TRANSA']},
+    '_LN': {'def': ['LEFT'], 'undef': ['TRANSA'], 'except': ['?syrk']},
     # Handle HEMV and HEMVREV better
     '_V': {'def': ['HEMV', 'HEMVREV', 'XCONJ'], 'undef': ['LOWER', 'CONJ']},
     '_M': {'def': ['HEMV', 'HEMVREV', 'LOWER']},
@@ -305,11 +305,8 @@ ext_mappings = {
     '_LL': {'def': ['LOWER', 'NN'], 'undef': ['RSIDE']},
     '_RU': {'def': ['RSIDE', 'NN'], 'undef': ['LOWER']},
     '_RL': {'def': ['RSIDE', 'NN', 'LOWER']},
-    '_UN': {'undef': ['TRANS', 'LOWER']},
-    '_UT': {'def': ['TRANS'], 'undef': ['LOWER']},
-    # TODO(rg): Need to handle the key conflict here for syrk
-    '_LN': {'def': ['LOWER'], 'undef': ['TRANS']},
-    '_LT': {'def': ['TRANS', 'LOWER']},
+    '_UN': {'undef': ['TRANS', 'LOWER'], 'except': ['?syrk']},
+    '_UT': {'def': ['TRANS'], 'undef': ['LOWER'], 'except': ['?syrk']},
 }
 
 ext_mappings_l2 = [
