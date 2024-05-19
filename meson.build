@@ -178,7 +178,6 @@ configure_file(output : 'simd_conf.h',
                configuration : simd_conf_data)
 # Can't be added as a project argument since it won't be generated until later
 bldroot = meson.build_root()
-_cargs += ['-include', f'@bldroot@/simd_conf.h']
 add_project_arguments(simd_cargs, language: 'c')
 
 # Common symbol related options
@@ -199,9 +198,6 @@ foreach symb : symnames
   _cargs += f'-U@symb@'
 endforeach
 # Based on options
-if not build_without_cblas
-  _cargs += '-DCBLAS'
-endif
 if no_affinity
   _cargs += '-DNO_AFFINITY'
 endif

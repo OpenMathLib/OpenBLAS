@@ -1,3 +1,7 @@
+interface_args = ['-include', f'@bldroot@/simd_conf.h']
+if not build_without_cblas
+  interface_args += '-DCBLAS'
+endif
 _blas_roots = [
   # NOTE: q, qx, x, xq do not have cblas_ rules in the Makefile
   # NOTE: https://developer.arm.com/documentation/101004/2310/BLAS-Basic-Linear-Algebra-Subprograms/CBLAS-functions?lang=en
@@ -559,7 +563,7 @@ foreach conf : _blas_roots
         continue
       endif
       # Seed with common args
-      compiler_args = [_cargs]
+      compiler_args = _cargs + interface_args
       # Generate the symbol flags
       base = conf['base']
       if symb_defs.has_key(base)
