@@ -385,6 +385,11 @@ ext_mappings_l3 = [
  {'ext': '_RCLN', 'def': ['TRANSA', 'CONJ'], 'undef': ['UPPER', 'UNIT'], 'for': ['c', 'z', 'x']},
 
  # symm
+ # syrk
+ {'ext': '_UN', 'def': [], 'undef': ['LOWER', 'TRANS'], 'for': ['s', 'd', 'c', 'z']},
+ {'ext': '_UT', 'def': ['TRANS'], 'undef': ['LOWER'], 'for': ['s', 'd', 'c', 'z']},
+ {'ext': '_LN', 'def': ['LOWER'], 'undef': ['TRANS'], 'for': ['s', 'd', 'c', 'z']},
+ {'ext': '_LT', 'def': ['TRANS', 'LOWER'], 'for': ['s', 'd', 'c', 'z']},
 ]
 
  # cc -c -O2 -DSMALL_MATRIX_OPT -DMAX_STACK_ALLOC=2048 -Wall -m64 -DF_INTERFACE_GFORT -fPIC -DSMP_SERVER -DNO_WARMUP -DMAX_CPU_NUMBER=12 -DMAX_PARALLEL_NUMBER=1 -DBUILD_SINGLE=1 -DBUILD_DOUBLE=1 -DBUILD_COMPLEX=1 -DBUILD_COMPLEX16=1 -DVERSION=\"0.3.26.dev\" -msse3 -mssse3 -msse4.1 -mavx -mavx2 -mavx2 -UASMNAME -UASMFNAME -UNAME -UCNAME -UCHAR_NAME -UCHAR_CNAME -DASMNAME=strmm_RTUU -DASMFNAME=strmm_RTUU_ -DNAME=strmm_RTUU_ -DCNAME=strmm_RTUU -DCHAR_NAME=\"strmm_RTUU_\" -DCHAR_CNAME=\"strmm_RTUU\" -DNO_AFFINITY -I../.. -UDOUBLE  -UCOMPLEX -UCOMPLEX -UDOUBLE -DTRANSA -DUPPER -DUNIT trmm_R.c -o strmm_RTUU.o
