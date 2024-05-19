@@ -202,7 +202,7 @@ foreach _kop : driver_kops
           endif
         else
           # Fallback to ext_mappings_l2
-          foreach ext_map : ext_mappings_l2
+          foreach ext_map : ext_mappings_l2 + ext_mappings_l3
             if ext_map['ext'] == ext and mode in ext_map['for']
               if ext_map.has_key('def')
                 foreach _d : ext_map['def']
