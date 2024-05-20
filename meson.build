@@ -268,7 +268,9 @@ ext_mappings = {
     # '_V': {'def': ['XCONJ'], 'undef': ['CONJ']},
     '_D': {'def': ['CONJ', 'XCONJ']},
     '_L': {'def': ['LOWER']},
-    '_LN': {'def': ['LEFT'], 'undef': ['TRANSA'], 'except': ['?syrk', '?syrk_thread', '?syr2k']},
+    '_LN': {'def': ['LEFT'], 'undef': ['TRANSA'],
+            'except': ['?syrk', '?syrk_thread',
+                       '?syr2k', '?herk', '?herk_kernel']},
     # Handle HEMV and HEMVREV better
     '_V': {'def': ['HEMV', 'HEMVREV', 'XCONJ'], 'undef': ['LOWER', 'CONJ']},
     '_M': {'def': ['HEMV', 'HEMVREV', 'LOWER']},
@@ -299,10 +301,13 @@ ext_mappings = {
     # Level 3 symbols
     '_LU': {'def': ['NN'], 'undef': ['LOWER', 'RSIDE']},
     '_LL': {'def': ['LOWER', 'NN'], 'undef': ['RSIDE']},
-    '_RU': {'def': ['RSIDE', 'NN'], 'undef': ['LOWER']},
-    '_RL': {'def': ['RSIDE', 'NN', 'LOWER']},
-    '_UN': {'undef': ['TRANS', 'LOWER'], 'except': ['?syrk']},
+    '_RU': {'def': ['RSIDE', 'NN'], 'undef': ['LOWER'], 'except': ['?hemm', '?hemm_thread']},
+    '_RL': {'def': ['RSIDE', 'NN', 'LOWER'], 'except': ['?hemm', '?hemm_thread']},
+    # TODO(rg): is CONJ OK for interface symbols?
+    '_UN': {'undef': ['TRANS', 'LOWER', 'CONJ'], 'except': ['?syrk']},
     '_UT': {'def': ['TRANS'], 'undef': ['LOWER'], 'except': ['?syrk']},
+    '_UC': {'def': ['TRANS', 'CONJ'], 'undef': ['LOWER']},
+    '_LC': {'def': ['LOWER', 'TRANS', 'CONJ']},
 }
 
 ext_mappings_l2 = [
@@ -388,8 +393,10 @@ ext_mappings_l3 = [
  # syrk
  {'ext': '_UN', 'def': [], 'undef': ['LOWER', 'TRANS'], 'for': ['s', 'd', 'c', 'z']},
  {'ext': '_UT', 'def': ['TRANS'], 'undef': ['LOWER'], 'for': ['s', 'd', 'c', 'z']},
- {'ext': '_LN', 'def': ['LOWER'], 'undef': ['TRANS'], 'for': ['s', 'd', 'c', 'z']},
+ {'ext': '_LN', 'def': ['LOWER'], 'undef': ['TRANS', 'CONJ'], 'for': ['s', 'd', 'c', 'z']},
  {'ext': '_LT', 'def': ['TRANS', 'LOWER'], 'for': ['s', 'd', 'c', 'z']},
+ {'ext': '_RU', 'def': ['RSIDE', 'NC'], 'undef': ['LOWER'], 'for': ['c', 'z']},
+ {'ext': '_RL', 'def': ['RSIDE', 'NC', 'LOWER'], 'for': ['c', 'z']},
 ]
 
  # cc -c -O2 -DSMALL_MATRIX_OPT -DMAX_STACK_ALLOC=2048 -Wall -m64 -DF_INTERFACE_GFORT -fPIC -DSMP_SERVER -DNO_WARMUP -DMAX_CPU_NUMBER=12 -DMAX_PARALLEL_NUMBER=1 -DBUILD_SINGLE=1 -DBUILD_DOUBLE=1 -DBUILD_COMPLEX=1 -DBUILD_COMPLEX16=1 -DVERSION=\"0.3.26.dev\" -msse3 -mssse3 -msse4.1 -mavx -mavx2 -mavx2 -UASMNAME -UASMFNAME -UNAME -UCNAME -UCHAR_NAME -UCHAR_CNAME -DASMNAME=strmm_RTUU -DASMFNAME=strmm_RTUU_ -DNAME=strmm_RTUU_ -DCNAME=strmm_RTUU -DCHAR_NAME=\"strmm_RTUU_\" -DCHAR_CNAME=\"strmm_RTUU\" -DNO_AFFINITY -I../.. -UDOUBLE  -UCOMPLEX -UCOMPLEX -UDOUBLE -DTRANSA -DUPPER -DUNIT trmm_R.c -o strmm_RTUU.o
@@ -409,7 +416,6 @@ symb_defs = {
     '?geru':  {'undef': ['CONJ']},
     '?gerc':  {'def': ['CONJ']},
     '?hemm':  {'def': ['HEMM']},
-    '?herk':  {'def': ['HEMM']},
     '?her2k':  {'def': ['HEMM']},
     '?gemm3m':  {'def': ['GEMM3M']},
     '?symm3m':  {'def': ['GEMM3M']},
@@ -428,6 +434,7 @@ _inc = [include_directories('.')]
 subdir('interface')
 subdir('driver/level2')
 subdir('driver/level3')
+# subdir('driver/others')
 subdir('kernel')
 
 _openblas = static_library('openblas',
