@@ -268,7 +268,7 @@ ext_mappings = {
     # '_V': {'def': ['XCONJ'], 'undef': ['CONJ']},
     '_D': {'def': ['CONJ', 'XCONJ']},
     '_L': {'def': ['LOWER']},
-    '_LN': {'def': ['LEFT'], 'undef': ['TRANSA'], 'except': ['?syrk']},
+    '_LN': {'def': ['LEFT'], 'undef': ['TRANSA'], 'except': ['?syrk', '?syrk_thread', '?syr2k']},
     # Handle HEMV and HEMVREV better
     '_V': {'def': ['HEMV', 'HEMVREV', 'XCONJ'], 'undef': ['LOWER', 'CONJ']},
     '_M': {'def': ['HEMV', 'HEMVREV', 'LOWER']},
