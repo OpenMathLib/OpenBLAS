@@ -349,6 +349,7 @@ _blas_roots = [
   },
   { 'base': '?herk', '_types': ['c', 'z', 'x'],
     'fname': 'syrk.c',
+    'addl': ['-DHEMM'],
     'cblas': true,
   },
   { 'base': '?her2k', '_types': ['c', 'z', 'x'],
@@ -556,102 +557,106 @@ _blas_roots = [
 
 _interface_libs = []
 foreach conf : _blas_roots
-    foreach type : conf['_types']
-      if 'q' in type or 'x' in type
-        # TODO: Figure out when to build these
-        # These are the XDOUBLE symbols
-        continue
-      endif
-      # Seed with common args
-      compiler_args = _cargs + interface_args
-      # Generate the symbol flags
-      base = conf['base']
-      if symb_defs.has_key(base)
-        symb_base = symb_defs[base]
-        if symb_base.has_key('def')
-          foreach _d : symb_base['def']
-            compiler_args += ('-D' + _d)
-          endforeach
-        endif
-        if symb_base.has_key('undef')
-          foreach _u : symb_base['undef']
-            compiler_args += ('-U' + _u)
-          endforeach
-        endif
-      endif
-      # Set the type arguments
-      if precision_mappings.get(type).has_key('def')
-        foreach d : precision_mappings[type]['def']
-          compiler_args += ['-D' + d]
+  foreach type : conf['_types']
+    if 'q' in type or 'x' in type
+      # TODO: Figure out when to build these
+      # These are the XDOUBLE symbols
+      continue
+    endif
+    # Seed with common args
+    compiler_args = _cargs + interface_args
+    # Generate the symbol flags
+    base = conf['base']
+    if symb_defs.has_key(base)
+      symb_base = symb_defs[base]
+      if symb_base.has_key('def')
+        foreach _d : symb_base['def']
+          compiler_args += ('-D' + _d)
         endforeach
       endif
-      if precision_mappings.get(type).has_key('undef')
-        foreach u : precision_mappings[type]['undef']
-          compiler_args += ['-U' + u]
+      if symb_base.has_key('undef')
+        foreach _u : symb_base['undef']
+          compiler_args += ('-U' + _u)
         endforeach
       endif
+    endif
+    # Set the type arguments
+    if precision_mappings.get(type).has_key('def')
+      foreach d : precision_mappings[type]['def']
+        compiler_args += ['-D' + d]
+      endforeach
+    endif
+    if precision_mappings.get(type).has_key('undef')
+      foreach u : precision_mappings[type]['undef']
+        compiler_args += ['-U' + u]
+      endforeach
+    endif
 
-        # Construct the actual symbol names, and mangled symbols
-        # TODO: This might be conditional on other options
-        sym_name = conf['base'].replace('?', type)
-        sym_underscored = f'@sym_name@_'
-        if conf.get('cblas', false)
-          cblas_sym_name = 'cblas_' + sym_name
-          cblas_sym_underscored = f'@cblas_sym_name@_'
+    if conf.has_key('addl')
+      compiler_args += conf['addl']
+    endif
+
+    # Construct the actual symbol names, and mangled symbols
+    # TODO: This might be conditional on other options
+    sym_name = conf['base'].replace('?', type)
+    sym_underscored = f'@sym_name@_'
+    if conf.get('cblas', false)
+      cblas_sym_name = 'cblas_' + sym_name
+      cblas_sym_underscored = f'@cblas_sym_name@_'
+    endif
+
+    # Construct conditionals
+    if conf.has_key('def')
+      foreach d : conf['def']
+        compiler_args += ['-D' + d]
+      endforeach
+      foreach u : conf['undef']
+        compiler_args += ['-U' + u]
+      endforeach
+    endif
+
+    # Make mangled symbols
+    # TODO: This might be conditional on other options
+
+    # Create the static library for each symbol
+    lib = static_library(
+        sym_name,
+        sources: conf['fname'],
+        include_directories: _inc,
+        c_args: compiler_args + [
+          f'-DASMNAME=@sym_name@',
+          f'-DASMFNAME=@sym_underscored@',
+          f'-DNAME=@sym_underscored@',
+          f'-DCNAME=@sym_name@',
+          f'-DCHAR_NAME="@sym_underscored@"',
+          f'-DCHAR_CNAME="@sym_name@"'
+        ]
+    )
+    _interface_libs += lib
+
+      # If it's a CBLAS symbol, also create that
+      if conf.get('cblas', false)
+        if 'q' in type or 'x' in type
+          # There are no cblas_q symbols
+          # TODO: Handle edge cases around dz zd sc
+          continue
         endif
-
-        # Construct conditionals
-        if conf.has_key('def')
-          foreach d : conf['def']
-              compiler_args += ['-D' + d]
-          endforeach
-          foreach u : conf['undef']
-              compiler_args += ['-U' + u]
-          endforeach
-        endif
-
-        # Make mangled symbols
-        # TODO: This might be conditional on other options
-
-        # Create the static library for each symbol
-        lib = static_library(
-            sym_name,
+        cblas_lib = static_library(
+            cblas_sym_name,
             sources: conf['fname'],
             include_directories: _inc,
             c_args: compiler_args + [
-              f'-DASMNAME=@sym_name@',
-              f'-DASMFNAME=@sym_underscored@',
-              f'-DNAME=@sym_underscored@',
-              f'-DCNAME=@sym_name@',
-              f'-DCHAR_NAME="@sym_underscored@"',
-              f'-DCHAR_CNAME="@sym_name@"'
+              '-DCBLAS',
+              f'-DASMNAME=@cblas_sym_name@',
+              f'-DASMFNAME=@cblas_sym_underscored@',
+              f'-DNAME=@cblas_sym_underscored@',
+              f'-DCNAME=@cblas_sym_name@',
+              f'-DCHAR_NAME="@cblas_sym_underscored@"',
+              f'-DCHAR_CNAME="@cblas_sym_name@"'
             ]
         )
-        _interface_libs += lib
-
-        # If it's a CBLAS symbol, also create that
-        if conf.get('cblas', false)
-          if 'q' in type or 'x' in type
-            # There are no cblas_q symbols
-            # TODO: Handle edge cases around dz zd sc
-            continue
-          endif
-            cblas_lib = static_library(
-                cblas_sym_name,
-                sources: conf['fname'],
-                include_directories: _inc,
-                c_args: compiler_args + [
-                  '-DCBLAS',
-                  f'-DASMNAME=@cblas_sym_name@',
-                  f'-DASMFNAME=@cblas_sym_underscored@',
-                  f'-DNAME=@cblas_sym_underscored@',
-                  f'-DCNAME=@cblas_sym_name@',
-                  f'-DCHAR_NAME="@cblas_sym_underscored@"',
-                  f'-DCHAR_CNAME="@cblas_sym_name@"'
-                ]
-            )
-            _interface_libs += cblas_lib
-        endif
+        _interface_libs += cblas_lib
+      endif
     endforeach
 endforeach
 

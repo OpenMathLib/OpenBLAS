@@ -158,6 +158,173 @@ driver_kops = [
                                '_LN', '_LT']},
     }
   },
+  { 'base': '?hemm',
+    'sources': {
+        'zhemm_k.c': {'mode': ['c', 'z'], # 'x'],
+                      # TODO(rg): Do we need ../../param.h ?
+                      # See Makefile:1612
+                      'exts': ['_LU', '_LL',
+                               '_RU', '_RL']},
+    }
+  },
+  { 'base': '?hemm_thread',
+    'sources': {
+        'zhemm_k.c': {'mode': ['c', 'z'], # 'x'],
+                     'addl': ['-DTHREADED_LEVEL3'],
+                     'exts': ['_LU', '_LL',
+                              '_RU', '_RL']},
+    }
+  },
+  { 'base': '?herk',
+    'sources': {
+        'zherk_k.c': {'mode': ['c', 'z'], # 'x'],
+                      'addl': ['-DHERK'],
+                      # TODO(rg): Do we need ../../common.h ?
+                      # See Makefile:1684
+                      'exts': ['_UN', '_UC',
+                               '_LN', '_LC']},
+    }
+  },
+  { 'base': '?herk_kernel',
+    'sources': {
+        'zherk_kernel.c': {'mode': ['c', 'z'], # 'x'],
+                           'addl': ['-DHERK'],
+                           'exts': ['_UN', '_UC',
+                                    '_LN', '_LC']},
+    }
+  },
+  { 'base': '?herk_thread',
+    'sources': {
+        'zherk_k.c': {'mode': ['c', 'z'], # 'x'],
+                      'addl': ['-DHERK', '-DTHREADED_LEVEL3'],
+                      'exts': ['_UN', '_UC',
+                               '_LN', '_LC']},
+    }
+  },
+  { 'base': '?her2k',
+    'sources': {
+        'zher2k_k.c': {'mode': ['c', 'z'], # 'x'],
+                       'addl': ['-DHER2K'],
+                       # TODO(rg): Do we need ../../common.h ?
+                       # See Makefile:1793
+                       'exts': ['_UN', '_UC',
+                                '_LN', '_LC']},
+    }
+  },
+  { 'base': '?her2k_kernel',
+    'sources': {
+        'zher2k_kernel.c': {'mode': ['c', 'z'], # 'x'],
+                            # TODO(rg): Do we need ../../common.h ?
+                            # See Makefile:1793
+                            'exts': ['_UN', '_UC',
+                                     '_LN', '_LC']},
+    }
+  },
+  { 'base': '?gemm3m',
+    'sources': {
+        'gemm3m.c': {'mode': ['c', 'z',],# 'x'],
+                     'srcs': ['level3.c'],
+                     'exts': ['_nn', '_nt',
+                              '_nr', '_nc',
+                              '_tn', '_tt',
+                              '_tr', '_tc',
+                              '_rn', '_rt',
+                              '_rr', '_rc',
+                              '_cn', '_ct',
+                              '_cr', '_cc']},
+    }
+  },
+  # { 'base': '?gemmf',
+  #   'sources': {
+  #       # TODO(rg): This in the makefile:4401 but the file isn't there..
+  #       'zgemmf.c': {'mode': ['c', 'z',],# 'x'],
+  #                    'srcs': ['level3.c'],
+  #                    'exts': ['']},
+  #   }
+  # },
+  { 'base': '?gemm3m_thread',
+    'sources': {
+        'gemm3m.c': {'mode': ['c', 'z',],# 'x'],
+                     'addl': ['-DTHREADED_LEVEL3'],
+                     'srcs': ['level3.c'],
+                     'exts': ['_nn', '_nt',
+                              '_nr', '_nc',
+                              '_tn', '_tt',
+                              '_tr', '_tc',
+                              '_rn', '_rt',
+                              '_rr', '_rc',
+                              '_cn', '_ct',
+                              '_cr', '_cc']},
+    }
+  },
+  { 'base': '?symm3m',
+    'sources': {
+        'symm3m_k.c': {'mode': ['c', 'z'], # 'x'],
+                       'exts': ['_LU', '_LL',
+                                '_RU', '_RL']},
+    }
+  },
+  { 'base': '?symm3m_thread',
+    'sources': {
+        'symm3m_k.c': {'mode': ['c', 'z'], # 'x'],
+                       'addl': ['-DTHREADED_LEVEL3'],
+                       'exts': ['_LU', '_LL',
+                                '_RU', '_RL']},
+    }
+  },
+  { 'base': '?hemm3m',
+    'sources': {
+        'hemm3m_k.c': {'mode': ['c', 'z'], # 'x'],
+                       'exts': ['_LU', '_LL',
+                                '_RU', '_RL']},
+    }
+  },
+  { 'base': '?hemm3m_thread',
+    'sources': {
+        'hemm3m_k.c': {'mode': ['c', 'z'], # 'x'],
+                       'addl': ['-DTHREADED_LEVEL3'],
+                       'exts': ['_LU', '_LL',
+                                '_RU', '_RL']},
+    }
+  },
+  { 'base': '?trsm',
+    'sources': {
+        'trsm_L.c': {'mode': ['s', 'd'],# 'q'],
+                     'exts': ['_LNUU', '_LNUN',
+                              '_LNLU', '_LNLN',
+                              '_LTUU', '_LTUN',
+                              '_LTLU', '_LTLN']},
+        'trsm_R.c': {'mode': ['s', 'd'],# 'q'],
+                     'exts': ['_RNUU', '_RNUN',
+                              '_RNLU', '_RNLN',
+                              '_RTUU', '_RTUN',
+                              '_RTLU', '_RTLN']},
+    }
+  },
+  { 'base': '?trsm',
+    'sources': {
+        'trsm_L.c': {'mode': ['c', 'z'],# 'x'],
+                     'exts': ['_LNUU', '_LNUN',
+                              '_LNLU', '_LNLN',
+                              '_LTUU', '_LTUN',
+                              '_LTLU', '_LTLN',
+                              '_LRUU', '_LRUN',
+                              '_LRLU', '_LRLN',
+                              '_LCUU', '_LCUN',
+                              '_LCLU', '_LCLN',
+                             ]},
+        'trsm_R.c': {'mode': ['c', 'z'],# 'x'],
+                     'exts': ['_RNUU', '_RNUN',
+                              '_RNLU', '_RNLN',
+                              '_RTUU', '_RTUN',
+                              '_RTLU', '_RTLN',
+                              '_RRUU', '_RRUN',
+                              '_RRLU', '_RRLN',
+                              '_RCUU', '_RCUN',
+                              '_RCLU', '_RCLN',
+                             ]},
+    }
+  },
 ]
 
 # Initialize kernel configurations list
