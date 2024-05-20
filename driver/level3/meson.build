@@ -134,6 +134,30 @@ driver_kops = [
                               '_LN', '_LT']},
     }
   },
+  { 'base': '?syrk_thread',
+    'sources': {
+        'syrk_k.c': {'mode': ['s', 'd', # 'q'],
+                              'c', 'z'], # 'x'],
+                     'addl': ['-DTHREADED_LEVEL3'],
+                     'exts': ['_UN', '_UT',
+                              '_LN', '_LT', '']},
+    }
+  },
+  { 'base': '?syrk_kernel',
+    'sources': {
+        'syrk_kernel.c': {'mode': ['s', 'd', # 'q'],
+                                   'c', 'z'], # 'x'],
+                     'exts': ['_U', '_L']},
+    }
+  },
+  { 'base': '?syr2k',
+    'sources': {
+        'syr2k_k.c': {'mode': ['s', 'd', # 'q'],
+                               'c', 'z'], # 'x'],
+                      'exts': ['_UN', '_UT',
+                               '_LN', '_LT']},
+    }
+  },
 ]
 
 # Initialize kernel configurations list
