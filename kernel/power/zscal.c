@@ -38,6 +38,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #pragma GCC optimize "O1"
 
+#if defined(__clang__)
+#pragma clang fp contract(off)
+#endif
+
 #if defined(__VEC__) || defined(__ALTIVEC__)
 #if defined(POWER8) || defined(POWER9)
 #if defined(DOUBLE)
