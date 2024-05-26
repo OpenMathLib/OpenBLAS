@@ -8,6 +8,11 @@ endif
 endif
 endif
 
+ifeq ($(C_COMPILER), CLANG)
+ifeq ($(findstring icx,$(CC)),icx)
+CCOMMON_OPT += -fp-model=consistent
+endif
+endif
 
 ifneq ($(DYNAMIC_ARCH),1)
 ADD_CPUFLAGS = 1
