@@ -6,6 +6,7 @@ on:
 jobs:
   build:
     name: Deploy docs
+    if: "github.repository == 'OpenMathLib/OpenBLAS'"
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
