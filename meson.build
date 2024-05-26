@@ -270,7 +270,8 @@ ext_mappings = {
     '_L': {'def': ['LOWER']},
     '_LN': {'def': ['LEFT'], 'undef': ['TRANSA'],
             'except': ['?syrk', '?syrk_thread',
-                       '?syr2k', '?herk', '?herk_kernel']},
+                       '?syr2k', '?herk', '?herk_kernel',
+                      '?trsm_kernel']},
     # Handle HEMV and HEMVREV better
     '_V': {'def': ['HEMV', 'HEMVREV', 'XCONJ'], 'undef': ['LOWER', 'CONJ']},
     '_M': {'def': ['HEMV', 'HEMVREV', 'LOWER']},
@@ -428,6 +429,7 @@ symb_defs = {
     '?her2_thread':  {'def': ['HER']},
     '?hpr_thread':  {'def': ['HEMV']},
     '?trmm_kernel': {'def': ['TRMMKERNEL']},
+    '?trsm_kernel': {'def': ['TRSMKERNEL']},
     '?bgemm':  {'def': ['HALF']},
     'cblas_?dotu_sub':  {'def': ['CBLAS', 'FORCE_USE_STACK'], 'undef': ['CONJ']},
     'cblas_?dotc_sub':  {'def': ['CBLAS', 'FORCE_USE_STACK', 'CONJ']},
