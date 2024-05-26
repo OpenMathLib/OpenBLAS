@@ -4,6 +4,10 @@
 ##              Sets C related variables.
 include(CheckCCompilerFlag)
 
+if (${CMAKE_C_COMPILER_ID} MATCHES "IntelLLVM")
+  set(CCOMMON_OPT "${CCOMMON_OPT} -fp-model=consistent")
+endif ()
+
 if (${CMAKE_C_COMPILER_ID} STREQUAL "GNU" OR ${CMAKE_C_COMPILER_ID} STREQUAL "LSB" OR ${CMAKE_C_COMPILER_ID} MATCHES "Clang")
   set(CCOMMON_OPT "${CCOMMON_OPT} -Wall")
   set(COMMON_PROF "${COMMON_PROF} -fno-inline")
