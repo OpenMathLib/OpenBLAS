@@ -394,7 +394,7 @@ int CNAME(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, FLOAT da_r, FLOAT da_i, 
 			}
 
 		}
-		else if (da_r < -FLT_MAX || da_r > FLT_MAX) {
+		else if (isinf(da_r)) {
 			while(j < n)
 			{
 					x[i]= NAN;
@@ -410,7 +410,7 @@ int CNAME(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, FLOAT da_r, FLOAT da_i, 
 			while(j < n)
 			{
 				temp0        = -da_i * x[i+1];
-				if (x[i] < -FLT_MAX || x[i] > FLT_MAX)
+				if (isinf(x[i]))
 					temp0 = NAN;
 				x[i+1]       =  da_i * x[i];
 				if ( x[i] == x[i]) //preserve NaN
