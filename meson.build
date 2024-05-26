@@ -303,6 +303,10 @@ ext_mappings = {
     '_LL': {'def': ['LOWER', 'NN'], 'undef': ['RSIDE']},
     '_RU': {'def': ['RSIDE', 'NN'], 'undef': ['LOWER'], 'except': ['?hemm', '?hemm_thread']},
     '_RL': {'def': ['RSIDE', 'NN', 'LOWER'], 'except': ['?hemm', '?hemm_thread']},
+    '_RN': {'undef': ['LEFT', 'TRANSA']},
+    '_RR': {'undef': ['LEFT', 'TRANSA']},
+    '_RT': {'def': ['TRANSA'], 'undef': ['LEFT']},
+    '_RC': {'def': ['TRANSA'], 'undef': ['LEFT']},
     # TODO(rg): is CONJ OK for interface symbols?
     '_UN': {'undef': ['TRANS', 'LOWER', 'CONJ'], 'except': ['?syrk']},
     '_UT': {'def': ['TRANS'], 'undef': ['LOWER'], 'except': ['?syrk']},
@@ -393,8 +397,8 @@ ext_mappings_l3 = [
  # syrk
  {'ext': '_UN', 'def': [], 'undef': ['LOWER', 'TRANS'], 'for': ['s', 'd', 'c', 'z']},
  {'ext': '_UT', 'def': ['TRANS'], 'undef': ['LOWER'], 'for': ['s', 'd', 'c', 'z']},
- {'ext': '_LN', 'def': ['LOWER'], 'undef': ['TRANS', 'CONJ'], 'for': ['s', 'd', 'c', 'z']},
- {'ext': '_LT', 'def': ['TRANS', 'LOWER'], 'for': ['s', 'd', 'c', 'z']},
+ {'ext': '_LN', 'def': ['LOWER'], 'undef': ['TRANS', 'CONJ'], 'for': ['s', 'd', 'c', 'z'], 'except': ['?trmm_kernel']},
+ {'ext': '_LT', 'def': ['TRANS', 'LOWER'], 'for': ['s', 'd', 'c', 'z'], 'except': ['?trmm_kernel']},
  {'ext': '_RU', 'def': ['RSIDE', 'NC'], 'undef': ['LOWER'], 'for': ['c', 'z']},
  {'ext': '_RL', 'def': ['RSIDE', 'NC', 'LOWER'], 'for': ['c', 'z']},
 ]
@@ -423,6 +427,7 @@ symb_defs = {
     '?her_thread':  {'def': ['HER']},
     '?her2_thread':  {'def': ['HER']},
     '?hpr_thread':  {'def': ['HEMV']},
+    '?trmm_kernel': {'def': ['TRMMKERNEL']},
     '?bgemm':  {'def': ['HALF']},
     'cblas_?dotu_sub':  {'def': ['CBLAS', 'FORCE_USE_STACK'], 'undef': ['CONJ']},
     'cblas_?dotc_sub':  {'def': ['CBLAS', 'FORCE_USE_STACK', 'CONJ']},
