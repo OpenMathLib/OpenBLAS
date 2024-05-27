@@ -72,6 +72,18 @@ base_kops = [
         'x': {'exts': {'_k': {'dir': 'x86_64', 'kernel': 'zdot.S'}}},
     },
   },
+  { 'base': '?dotc',
+    'modes': {
+        'c': {'exts': {'_k': {'dir': 'x86_64', 'kernel': 'cdot.c'}}},
+        'z': {'exts': {'_k': {'dir': 'x86_64', 'kernel': 'zdot.c'}}},
+    },
+  },
+  { 'base': '?dotu',
+    'modes': {
+        'c': {'exts': {'_k': {'dir': 'x86_64', 'kernel': 'cdot.c'}}},
+        'z': {'exts': {'_k': {'dir': 'x86_64', 'kernel': 'zdot.c'}}},
+    },
+  },
   # TODO(rg): Add dsdotkernel conditionals
   # xDOTU xDOTC xxDOT aren't present
   { 'base': '?nrm2',
@@ -501,6 +513,8 @@ base_kops = [
     'modes': {
         's': {'exts': {
             '_beta': {'dir': 'generic', 'kernel': 'gemm_beta.c'},
+            '_small_matrix_permit': {'dir': 'generic',
+                                     'kernel': 'gemm_small_matrix_permit.c'},
             # TODO(rg): the _NUM prefixes are arch dependent
             '_incopy': {'dir': 'generic', 'kernel': 'gemm_ncopy_8.c'},
             '_itcopy': {'dir': 'generic', 'kernel': 'gemm_tcopy_8.c'},
@@ -512,6 +526,8 @@ base_kops = [
         }},
         'd': {'exts': {
             '_beta': {'dir': 'generic', 'kernel': 'gemm_beta.c'},
+            '_small_matrix_permit': {'dir': 'generic',
+                                     'kernel': 'gemm_small_matrix_permit.c'},
             '_incopy': {'dir': 'generic', 'kernel': 'gemm_ncopy_8.c'},
             '_itcopy': {'dir': 'generic', 'kernel': 'gemm_tcopy_8.c'},
             '_oncopy': {'dir': 'generic', 'kernel': 'gemm_ncopy_2.c'},
@@ -519,6 +535,8 @@ base_kops = [
         }},
         'c': {'exts': {
             '_beta': {'dir': 'generic', 'kernel': 'zgemm_beta.c'},
+            '_small_matrix_permit': {'dir': 'generic',
+                                     'kernel': 'zgemm_small_matrix_permit.c'},
             '_incopy': {'dir': 'generic', 'kernel': 'zgemm_ncopy_8.c'},
             '_itcopy': {'dir': 'generic', 'kernel': 'zgemm_tcopy_8.c'},
             '_oncopy': {'dir': 'generic', 'kernel': 'zgemm_ncopy_2.c'},
@@ -526,6 +544,8 @@ base_kops = [
         }},
         'z': {'exts': {
             '_beta': {'dir': 'generic', 'kernel': 'zgemm_beta.c'},
+            '_small_matrix_permit': {'dir': 'generic',
+                                     'kernel': 'zgemm_small_matrix_permit.c'},
             '_incopy': {'dir': 'generic', 'kernel': 'zgemm_ncopy_8.c'},
             '_itcopy': {'dir': 'generic', 'kernel': 'zgemm_tcopy_8.c'},
             '_oncopy': {'dir': 'generic', 'kernel': 'zgemm_ncopy_2.c'},
@@ -1003,8 +1023,8 @@ endforeach
 
 _kern_libs = []
 foreach conf: kernel_confs
-    message(conf['name'])
-    message(conf)
+    # message(conf['name'])
+    # message(conf)
     _kern_libs += static_library(
         conf['name'],
         conf['src'],
