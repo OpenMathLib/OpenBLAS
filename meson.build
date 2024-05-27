@@ -294,10 +294,10 @@ ext_mappings = {
     '_rn': {'def': ['RN']},
     '_rt': {'def': ['RT']},
     '_rr': {'def': ['RR']},
-    '_rc': {'def': ['RC']},
+    '_rc': {'def': ['RC=RC']},
     '_cn': {'def': ['CN']},
     '_ct': {'def': ['CT']},
-    '_cr': {'def': ['CR']},
+    '_cr': {'def': ['CR=CR']},
     '_cc': {'def': ['CC']},
     # Level 3 symbols
     '_LU': {'def': ['NN'], 'undef': ['LOWER', 'RSIDE']},
@@ -431,6 +431,7 @@ symb_defs = {
     '?trmm_kernel': {'def': ['TRMMKERNEL']},
     '?trsm_kernel': {'def': ['TRSMKERNEL']},
     '?bgemm':  {'def': ['HALF']},
+    '?gemm_small_kernel_b0': {'def': ['B0']},
     'cblas_?dotu_sub':  {'def': ['CBLAS', 'FORCE_USE_STACK'], 'undef': ['CONJ']},
     'cblas_?dotc_sub':  {'def': ['CBLAS', 'FORCE_USE_STACK', 'CONJ']},
 }
@@ -445,4 +446,5 @@ subdir('driver/level3')
 subdir('kernel')
 
 _openblas = static_library('openblas',
-                    link_whole: [ _interface, _l2_driver, _l3_driver, _kern ])
+                    link_whole: [ _interface, _l2_driver, _l3_driver, _kern ],
+                          install: true)
