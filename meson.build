@@ -26,7 +26,7 @@ fc_id = fc.get_id()
 
 # Common args
 _args = []
-_cargs = []
+_cargs = ['-DMAX_PARALLEL_NUMBER=1']
 _fargs = []
 
 # System configuration
@@ -442,9 +442,9 @@ _inc = [include_directories('.')]
 subdir('interface')
 subdir('driver/level2')
 subdir('driver/level3')
-# subdir('driver/others')
+subdir('driver/others')
 subdir('kernel')
 
 _openblas = static_library('openblas',
-                    link_whole: [ _interface, _l2_driver, _l3_driver, _kern ],
-                          install: true)
+                    link_whole: [ _interface, _l2_driver, _l3_driver, _others, _kern ],
+                    install: true)
