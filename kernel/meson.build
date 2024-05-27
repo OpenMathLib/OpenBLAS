@@ -356,17 +356,6 @@ base_kops = [
     },
   },
   # Level 3 symbols
-  # TODO(rg): Handle the if defines set in arch
-  { 'base': '?gemm_beta',
-    'modes': {
-        's': {'exts': {'': {'dir': 'x86_64', 'kernel': 'gemm_beta.S'}}},
-        'd': {'exts': {'': {'dir': 'x86_64', 'kernel': 'gemm_beta.S'}}},
-        'c': {'exts': {'': {'dir': 'x86_64', 'kernel': 'zgemm_beta.S'}}},
-        'z': {'exts': {'': {'dir': 'x86_64', 'kernel': 'zgemm_beta.S'}}},
-        # 'q': {'exts': {'': {'dir': 'generic', 'kernel': 'gemm_beta.c'}}},
-        # 'x': {'exts': {'': {'dir': 'generic', 'kernel': 'zgemm_beta.c'}}},
-    },
-  },
   { 'base': '?gemm_kernel',
     'modes': {
         's': {'exts': {'': {'dir': 'generic', 'kernel': 'gemmkernel_2x2.c'}}},
@@ -506,6 +495,42 @@ base_kops = [
                            'addl': ['-DNN']}}},
         'z': {'exts': {'': {'dir': 'x86_64', 'kernel': 'zgemm3m_kernel_8x4_sse3.S',
                            'addl': ['-DNN']}}},
+    },
+  },
+  { 'base': '?gemm',
+    'modes': {
+        's': {'exts': {
+            '_beta': {'dir': 'generic', 'kernel': 'gemm_beta.c'},
+            # TODO(rg): the _NUM prefixes are arch dependent
+            '_incopy': {'dir': 'generic', 'kernel': 'gemm_ncopy_8.c'},
+            '_itcopy': {'dir': 'generic', 'kernel': 'gemm_tcopy_8.c'},
+            '_oncopy': {'dir': 'generic', 'kernel': 'gemm_ncopy_2.c'},
+            '_otcopy': {'dir': 'generic', 'kernel': 'gemm_tcopy_4.c'},
+            # TODO(rg): direct and direct_performant are built only conditionally
+            '_direct': {'dir': 'x86_64', 'kernel': 'sgemm_direct_skylakex.c'},
+            '_direct_performant': {'dir': 'x86_64', 'kernel': 'sgemm_direct_performant.c'},
+        }},
+        'd': {'exts': {
+            '_beta': {'dir': 'generic', 'kernel': 'gemm_beta.c'},
+            '_incopy': {'dir': 'generic', 'kernel': 'gemm_ncopy_8.c'},
+            '_itcopy': {'dir': 'generic', 'kernel': 'gemm_tcopy_8.c'},
+            '_oncopy': {'dir': 'generic', 'kernel': 'gemm_ncopy_2.c'},
+            '_otcopy': {'dir': 'generic', 'kernel': 'gemm_tcopy_4.c'},
+        }},
+        'c': {'exts': {
+            '_beta': {'dir': 'generic', 'kernel': 'zgemm_beta.c'},
+            '_incopy': {'dir': 'generic', 'kernel': 'zgemm_ncopy_8.c'},
+            '_itcopy': {'dir': 'generic', 'kernel': 'zgemm_tcopy_8.c'},
+            '_oncopy': {'dir': 'generic', 'kernel': 'zgemm_ncopy_2.c'},
+            '_otcopy': {'dir': 'generic', 'kernel': 'zgemm_tcopy_2.c'},
+        }},
+        'z': {'exts': {
+            '_beta': {'dir': 'generic', 'kernel': 'zgemm_beta.c'},
+            '_incopy': {'dir': 'generic', 'kernel': 'zgemm_ncopy_8.c'},
+            '_itcopy': {'dir': 'generic', 'kernel': 'zgemm_tcopy_8.c'},
+            '_oncopy': {'dir': 'generic', 'kernel': 'zgemm_ncopy_2.c'},
+            '_otcopy': {'dir': 'generic', 'kernel': 'zgemm_tcopy_2.c'},
+        }},
     },
   },
   { 'base': '?trmm',
