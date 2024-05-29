@@ -60,7 +60,7 @@ cblasobjsc="
     cblas_ctbsv cblas_ctpmv cblas_ctpsv cblas_ctrmm cblas_ctrmv cblas_ctrsm cblas_ctrsv
     cblas_scnrm2 cblas_scasum cblas_cgemmt
     cblas_icamax cblas_icamin cblas_icmin cblas_icmax cblas_scsum cblas_cimatcopy cblas_comatcopy
-    cblas_caxpyc cblas_crotg cblas_csrot cblas_scamax cblas_scamin
+    cblas_caxpyc cblas_crotg cblas_csrot cblas_scamax cblas_scamin cblas_cgemm_batch
     "
 cblasobjsd="
     cblas_dasum cblas_daxpy cblas_dcopy cblas_ddot
@@ -70,7 +70,7 @@ cblasobjsd="
     cblas_dsyr2k cblas_dsyr cblas_dsyrk cblas_dtbmv cblas_dtbsv cblas_dtpmv cblas_dtpsv
     cblas_dtrmm cblas_dtrmv cblas_dtrsm cblas_dtrsv cblas_daxpby cblas_dgeadd cblas_dgemmt
     cblas_idamax cblas_idamin cblas_idmin cblas_idmax cblas_dsum cblas_dimatcopy cblas_domatcopy
-    cblas_damax  cblas_damin
+    cblas_damax  cblas_damin cblas_dgemm_batch
     "
 
 cblasobjss="
@@ -82,7 +82,7 @@ cblasobjss="
     cblas_stbmv cblas_stbsv cblas_stpmv cblas_stpsv cblas_strmm cblas_strmv cblas_strsm
     cblas_strsv cblas_sgeadd cblas_sgemmt
     cblas_isamax cblas_isamin cblas_ismin cblas_ismax cblas_ssum cblas_simatcopy cblas_somatcopy
-    cblas_samax cblas_samin
+    cblas_samax cblas_samin cblas_sgemm_batch
     "
 
 cblasobjsz="
@@ -94,12 +94,12 @@ cblasobjsz="
     cblas_ztrsv cblas_cdotc_sub cblas_cdotu_sub cblas_zdotc_sub cblas_zdotu_sub
     cblas_zaxpby cblas_zgeadd cblas_zgemmt
     cblas_izamax cblas_izamin cblas_izmin cblas_izmax cblas_dzsum cblas_zimatcopy cblas_zomatcopy
-    cblas_zaxpyc cblas_zdrot cblas_zrotg cblas_dzamax cblas_dzamin
+    cblas_zaxpyc cblas_zdrot cblas_zrotg cblas_dzamax cblas_dzamin cblas_zgemm_batch
 "
 
 cblasobjs="cblas_xerbla"
 
-bfcblasobjs="cblas_sbgemm cblas_sbgemv cblas_sbdot cblas_sbstobf16 cblas_sbdtobf16 cblas_sbf16tos cblas_dbf16tod"
+bfcblasobjs="cblas_sbgemm cblas_sbgemv cblas_sbdot cblas_sbstobf16 cblas_sbdtobf16 cblas_sbf16tos cblas_dbf16tod cblas_sbgemm_batch"
 
 exblasobjs="
     qamax qamin qasum qaxpy qcabs1 qcopy qdot qgbmv qgemm
