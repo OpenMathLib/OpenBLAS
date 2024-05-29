@@ -169,7 +169,7 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_TRANSPOSE *  transa_array, enum CB
   
   if(args_array == NULL){
     openblas_warning(0, "memory alloc failed!\n");
-    return(1);
+    return;
   }
 
 #ifdef SMP
