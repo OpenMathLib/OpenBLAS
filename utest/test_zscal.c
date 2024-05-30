@@ -117,4 +117,31 @@ CTEST(zscal, inf_i_inc_2)
     ASSERT_TRUE(isinf(i[17]));
 }
 
+CTEST(zscal, i_0inf)
+{
+    blasint N=9;
+    blasint incX=1;
+    double i[] = {0,1, 0,1, 0,1, 0,1, 0,1, 0,1, 0,1, 0,1, 0,1 };
+    double inf[] = {0,INFINITY, 0, INFINITY,0, INFINITY,0, INFINITY,0, INFINITY,0, INFINITY,0, INFINITY,0, INFINITY,0, INFINITY};
+    BLASFUNC(zscal)(&N, i, inf, &incX);
+    ASSERT_TRUE(isinf(inf[0]));
+    ASSERT_TRUE(isnan(inf[1]));
+    ASSERT_TRUE(isinf(inf[16]));
+    ASSERT_TRUE(isnan(inf[17]));
+}
+
+CTEST(zscal, i_0inf_inc_2)
+{
+    blasint N=9;
+    blasint incX=2;
+    double i[] = {0,1, 0,1, 0,1, 0,1, 0,1, 0,1, 0,1, 0,1, 0,1 };
+    double inf[] = {0,INFINITY, 0,INFINITY, 0,INFINITY, 0,INFINITY, 0,INFINITY, 0,INFINITY, 0,INFINITY, 0,INFINITY, 0,INFINITY,
+                    0,INFINITY, 0,INFINITY, 0,INFINITY, 0,INFINITY, 0,INFINITY, 0,INFINITY, 0,INFINITY, 0,INFINITY, 0,INFINITY};
+    BLASFUNC(zscal)(&N, i, inf, &incX);
+    ASSERT_TRUE(isinf(inf[0]));
+    ASSERT_TRUE(isnan(inf[1]));
+    ASSERT_TRUE(isinf(inf[16]));
+    ASSERT_TRUE(isnan(inf[17]));
+}
+
 #endif
