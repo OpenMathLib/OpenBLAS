@@ -1342,7 +1342,7 @@ else(NOT CMAKE_CROSSCOMPILING)
 
   if ("${CMAKE_C_COMPILER_ID}" STREQUAL "MSVC")
     #Use generic for MSVC now
-    message("MSVC")
+    message(STATUS "MSVC")
     set(GETARCH_FLAGS ${GETARCH_FLAGS} -DFORCE_GENERIC)
   else()
     list(APPEND GETARCH_SRC ${PROJECT_SOURCE_DIR}/cpuid.S)
