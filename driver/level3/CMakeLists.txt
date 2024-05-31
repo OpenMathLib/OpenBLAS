@@ -68,6 +68,8 @@ if (USE_THREAD)
 endif ()
 
 foreach (float_type ${FLOAT_TYPES})
+  GenerateNamedObjects("gemm_batch_thread.c" "" "gemm_batch_thread" 0 "" "" false ${float_type})
+
   if (${float_type} STREQUAL "COMPLEX" OR ${float_type} STREQUAL "ZCOMPLEX")
     GenerateCombinationObjects("zherk_kernel.c" "LOWER;CONJ" "U;N" "HERK" 2 "herk_kernel" false ${float_type})
     # TRANS needs to be set/unset when CONJ is set/unset, so can't use it as a combination
