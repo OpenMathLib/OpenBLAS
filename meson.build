@@ -438,7 +438,7 @@ symb_defs = {
 
 # Ignoring other hostarch checks and conflicts for arch in BSD for now
 _inc = [include_directories('.')]
-# subdir('lapack-netlib')
+subdir('lapack-netlib')
 subdir('interface')
 subdir('driver/level2')
 subdir('driver/level3')
