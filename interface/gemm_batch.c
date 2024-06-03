@@ -118,8 +118,8 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_TRANSPOSE *  transa_array, enum CB
 	   blasint * m_array, blasint * n_array, blasint * k_array,
 #ifndef COMPLEX
 	   FLOAT * alpha_array,
-	   FLOAT ** a_array, blasint * lda_array,
-	   FLOAT ** b_array, blasint * ldb_array,
+	   IFLOAT ** a_array, blasint * lda_array,
+	   IFLOAT ** b_array, blasint * ldb_array,
 	   FLOAT * beta_array,
 	   FLOAT ** c_array, blasint * ldc_array, blasint group_count, blasint * group_size) {
 #else
