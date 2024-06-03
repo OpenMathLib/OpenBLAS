@@ -44,7 +44,7 @@ foreach op : others_ops
   endif
 
   # Default compilation arguments
-  c_args = _cargs + ckop_args + addl
+  c_args = _cargs + ckop_args + addl + '-DMAX_PARALLEL_NUMBER=1'
 
   # Generate the symbol name
   sym_name = base
