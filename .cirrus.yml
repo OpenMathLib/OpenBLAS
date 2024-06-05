@@ -41,7 +41,7 @@ macos_instance:
 #  - make CC=gcc-11 FC=gfortran-11 USE_OPENMP=1
   
 macos_instance:
-  image: ghcr.io/cirruslabs/macos-monterey-xcode:latest
+  image: ghcr.io/cirruslabs/macos-sonoma-xcode:latest
 task:
   name: AppleM1/LLVM x86_64 xbuild
   compile_script:
@@ -58,8 +58,8 @@ task:
   - export VALID_ARCHS="i386 x86_64"
   - xcrun --sdk macosx --show-sdk-path
   - xcodebuild -version
-  - export CC=/Applications/Xcode-15.3.0.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang
-  - export CFLAGS="-O2 -unwindlib=none -Wno-macro-redefined -isysroot /Applications/Xcode-15.3.0.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.4.sdk -arch x86_64"
+  - export CC=/Applications/Xcode_15.4.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang
+  - export CFLAGS="-O2 -unwindlib=none -Wno-macro-redefined -isysroot /Applications/Xcode_15.4.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.5.sdk -arch x86_64"
   - make TARGET=CORE2 DYNAMIC_ARCH=1 NUM_THREADS=32 HOSTCC=clang NOFORTRAN=1 RANLIB="ls -l"
   always:
     config_artifacts:
@@ -70,7 +70,7 @@ task:
 #    type: application/octet-streamm
 
 macos_instance:
-  image: ghcr.io/cirruslabs/macos-monterey-xcode:latest
+  image: ghcr.io/cirruslabs/macos-sonoma-xcode:latest
 task:
   name: AppleM1/LLVM armv8-ios xbuild
   compile_script:
@@ -78,8 +78,10 @@ task:
   - export #PATH=/opt/homebrew/opt/llvm/bin:$PATH
   - export #LDFLAGS="-L/opt/homebrew/opt/llvm/lib"
   - export #CPPFLAGS="-I/opt/homebrew/opt/llvm/include" 
-  - export CC=/Applications/Xcode-15.3.0.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang
-  - export CFLAGS="-O2 -unwindlib=none -Wno-macro-redefined -isysroot /Applications/Xcode-15.3.0.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS17.4.sdk -arch arm64 -miphoneos-version-min=10.0"
+  - export CC=/Applications/Xcode_15.4.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang
+  - export CFLAGS="-O2 -unwindlib=none -Wno-macro-redefined -isysroot /Applications/Xcode_15.4.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS17.5.sdk -arch arm64 -miphoneos-version-min=10.0"
+  - xcrun --sdk iphoneos --show-sdk-path
+  - ls -l /Applications
   - make TARGET=ARMV8 NUM_THREADS=32 HOSTCC=clang NOFORTRAN=1 CROSS=1
   always:
     config_artifacts:
@@ -96,11 +98,11 @@ task:
   - export #LDFLAGS="-L/opt/homebrew/opt/llvm/lib"
   - export #CPPFLAGS="-I/opt/homebrew/opt/llvm/include" 
   - ls /System/Volumes/Data/opt/homebrew
-  - ls -l /System/Volumes/Data/opt/homebrew/Caskroom/
+  - ls -l /System/Volumes/Data/opt/homebrew/Caskroom/android-ndk
   - find /System/Volumes/Data/opt/homebrew -name "armv7a-linux-androideabi*-ranlib"
   - #export CC=/Applications/Xcode-13.4.1.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang
   - #export CFLAGS="-O2 -unwindlib=none -Wno-macro-redefined -isysroot /Applications/Xcode-13.4.1.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS16.0.sdk -arch arm64 -miphoneos-version-min=10.0"
-  - export CC=/System/Volumes/Data/opt/homebrew/Caskroom/android-ndk/26c/AndroidNDK*.app/Contents/NDK/toolchains/llvm/prebuilt/darwin-x86_64/bin/armv7a-linux-androideabi23-clang
+  - export CC=/System/Volumes/Data/opt/homebrew/Caskroom/android-ndk/26d/AndroidNDK*.app/Contents/NDK/toolchains/llvm/prebuilt/darwin-x86_64/bin/armv7a-linux-androideabi23-clang
   - make TARGET=ARMV7 ARM_SOFTFP_ABI=1 NUM_THREADS=32 HOSTCC=clang NOFORTRAN=1 RANLIB="ls -l"
   always:
     config_artifacts:
@@ -132,7 +134,7 @@ task:
 FreeBSD_task:
   name: FreeBSD-gcc12
   freebsd_instance:
-    image_family: freebsd-13-2
+    image_family: freebsd-13-3
   install_script:
   - pkg update -f && pkg upgrade -y && pkg install -y gmake gcc
   compile_script:
@@ -143,7 +145,7 @@ FreeBSD_task:
 FreeBSD_task:
   name: freebsd-gcc12-ilp64
   freebsd_instance:
-    image_family: freebsd-13-2
+    image_family: freebsd-13-3
   install_script:
   - pkg update -f && pkg upgrade -y && pkg install -y gmake gcc
   compile_script:
@@ -153,7 +155,7 @@ FreeBSD_task:
 FreeBSD_task:
   name: FreeBSD-clang-openmp
   freebsd_instance:
-    image_family: freebsd-13-2
+    image_family: freebsd-13-3
   install_script:
   - pkg update -f && pkg upgrade -y && pkg install -y gmake gcc 
   - ln -s /usr/local/lib/gcc13/libgfortran.so.5.0.0 /usr/lib/libgfortran.so
