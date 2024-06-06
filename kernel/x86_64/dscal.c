@@ -234,6 +234,11 @@ int CNAME(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, FLOAT da, FLOAT *x, BLAS
 			else x[i] = 0.0;
 		}
 	}
+	else if (isinf(da)){
+		for ( i=n1 ; i<n; i++)
+			if (x[i]==0.) x[i]=NAN;
+			else x[i] *=da;
+	}	
 	else
 	{
 
