@@ -269,6 +269,9 @@ else ifeq ($(ARCH), power)
 SMALL_MATRIX_OPT = 1
 BUILD_BFLOAT16 = 1
 endif
+ifeq ($(ARCH), loongarch64)
+SMALL_MATRIX_OPT = 1
+endif
 ifeq ($(SMALL_MATRIX_OPT), 1)
 CCOMMON_OPT += -DSMALL_MATRIX_OPT
 endif

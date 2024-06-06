@@ -668,7 +668,7 @@ FRC:
 .PHONY: clean cleanobj cleanlib
 clean: cleanobj cleanlib
 cleanobj:
-	rm -f *.o DEPRECATED/*.o
+	rm -f *.o *.mod DEPRECATED/*.o DEPRECATED/*.mod
 cleanlib:
 	rm -f $(LAPACKLIB)
 
