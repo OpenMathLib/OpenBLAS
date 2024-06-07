@@ -168,8 +168,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	cmp	N, xzr
 	ble	.Lscal_kernel_L999
 
-	fcmp	DA, #0.0
-	beq	.Lscal_kernel_zero
+	//fcmp	DA, #0.0
+	//beq	.Lscal_kernel_zero
 
 	cmp	INC_X, #1
 	bne	.Lscal_kernel_S_BEGIN
