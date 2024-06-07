@@ -71,8 +71,9 @@
 	je	.L300		# Alpha != ZERO
 
 /* Alpha == ZERO */
-	cmpl	$1,%esi
-	jne	.L104
+//	cmpl	$1,%esi
+//	jne	.L104
+	jmp	.L104
 
 	movl	%edx, %ecx		# ecx = n
 	sarl	$3,   %ecx		# (n >> 3)
