@@ -35,7 +35,12 @@ int CNAME(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, FLOAT da, FLOAT *x, BLAS
 	{
 
 		if ( da == 0.0 )
-			x[i]=0.0;
+			if (isnan(x[i])||isinf(x[i]))
+				x[i]=NAN;
+			else
+				x[i]=0.0;
+		else if (isnan(da))
+			x[i]=NAN;
 		else
 			x[i] = da * x[i] ;
 
