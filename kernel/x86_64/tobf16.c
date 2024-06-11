@@ -135,7 +135,7 @@ void CNAME(BLASLONG n, FLOAT_TYPE * in, BLASLONG inc_in, bfloat16 * out, BLASLON
     if (n <= 0)  return;
 
 #if defined(SMP)
-    int nthreads = blas_cpu_number(1);
+    int nthreads;
     FLOAT_TYPE dummy_alpha;
     FLOAT_TYPE dummy_c;
 #endif
@@ -144,10 +144,11 @@ void CNAME(BLASLONG n, FLOAT_TYPE * in, BLASLONG inc_in, bfloat16 * out, BLASLON
     if (inc_in == 0 || inc_out == 0 || n <= 100000) {
         nthreads = 1;
     } else {
+        nthreads = num_cpu_avail(1);
         if (n/100000 < 100) {
             nthreads = MAX(nthreads,4);
-        } else {
-            nthreads = MAX(nthreads,16);
+//        } else {
+//            nthreads = MAX(nthreads,16);
         }
     }
 
