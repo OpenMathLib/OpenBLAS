@@ -62,15 +62,6 @@ jobs:
           echo ">>>> PKG_CONFIG" $PKG_CONFIG_PATH
           cat scipy_openblas.pc
 
-        run: |
-          pip install numpy meson meson-python ninja build asv
-          # sudo apt install libopenblas-dev    # XXX
-          pip install scipy_openblas32
-          python -c'import scipy_openblas32 as so; print(so.get_pkg_config())' > scipy_openblas.pc
-          export PKG_CONFIG_PATH=$PWD
-          echo ">>>> PKG_CONFIG" $PKG_CONFIG_PATH
-          cat scipy_openblas.pc
-
       - name: Set and log asv machine configuration
         run: |
           asv machine --yes --config asv.conf.json
