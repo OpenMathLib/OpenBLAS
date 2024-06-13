@@ -39,8 +39,8 @@ jobs:
 
       - name: Download and install loongarch64-toolchain
         run: |
-          wget http://ftp.loongnix.cn/toolchain/llvm/llvm8/clang+llvm_8.0.1-6_amd64-linux-gnu_debian-10.tar.gz
-          wget http://ftp.loongnix.cn/toolchain/gcc/release/loongarch/gcc8/loongson-gnu-toolchain-8.3-x86_64-loongarch64-linux-gnu-rc1.3.tar.xz
+          wget https://github.com/XiWeiGu/loongarch64_toolchain/releases/download/V0.1/clang+llvm_8.0.1-6_amd64-linux-gnu_debian-10.tar.gz
+          wget https://github.com/XiWeiGu/loongarch64_toolchain/releases/download/V0.1/loongson-gnu-toolchain-8.3-x86_64-loongarch64-linux-gnu-rc1.3.tar.xz
           tar -xf clang+llvm_8.0.1-6_amd64-linux-gnu_debian-10.tar.gz -C /opt
           tar -xf loongson-gnu-toolchain-8.3-x86_64-loongarch64-linux-gnu-rc1.3.tar.xz -C /opt
 
