@@ -1,4 +1,4 @@
-name: Benchmark on arm64 graviton cirun
+name: ASV Benchmark on arm64 graviton cirun
 
 on:
   push:
