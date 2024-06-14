@@ -88,7 +88,7 @@ jobs:
         run: |
           case "${{ matrix.build }}" in
             "make")
-              make -j$(nproc) USE_OPENMP=0 CC=gcc-12 FC="ccache ${{ matrix.fortran }}"
+              make -j$(nproc) USE_THREAD=0 USE_LOCKING=1 CC=gcc-12 FC="ccache ${{ matrix.fortran }}"
               ;;
             "cmake")
               mkdir build && cd build
