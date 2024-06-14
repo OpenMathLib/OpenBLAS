@@ -45,7 +45,7 @@ static void* xmalloc(size_t n)
     void* tmp;
     tmp = malloc(n);
     if (tmp == NULL) {
-        fprintf(stderr, "You are about to die\n");
+        fprintf(stderr, "Failed to allocate memory for the test payload.\n");
         exit(1);
     } else {
         return tmp;
