@@ -42,7 +42,7 @@ static void* xmalloc(size_t n)
     void* tmp;
     tmp = malloc(n);
     if (tmp == NULL) {
-        fprintf(stderr, "You are about to die\n");
+        fprintf(stderr, "Failed to allocate memory for the testcase.\n");
         exit(1);
     } else {
         return tmp;
@@ -104,7 +104,7 @@ exit(0);
 
     fork_pid = fork();
     if (fork_pid == -1) {
-        perror(fork");
+        perror("fork");
         CTEST_ERR("Failed to fork process.");
     } else if (fork_pid == 0) {
         // Compute a DGEMM product in the child process to check that the
