@@ -6,6 +6,7 @@ include(CheckCCompilerFlag)
 
 if (${CMAKE_C_COMPILER_ID} MATCHES "IntelLLVM")
   set(CCOMMON_OPT "${CCOMMON_OPT} -fp-model=consistent")
+  set(GCC_VERSION 100)
 endif ()
 
 if (${CMAKE_C_COMPILER_ID} STREQUAL "GNU" OR ${CMAKE_C_COMPILER_ID} STREQUAL "LSB" OR ${CMAKE_C_COMPILER_ID} MATCHES "Clang")
