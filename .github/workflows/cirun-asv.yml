@@ -21,7 +21,7 @@ env:
  # GITHUB_TOKEN: ${{ secrets.OB_BENCH_TOKEN }}
  # BENCHMARKS_REPO: ev-br/ob-bench-asv
   ASV_CONFIG: asv.conf.json
-  MACHINE_NAME: github-actions  # to identify github actions machine as hostname changes everytime
+  MACHINE_NAME: github-actions-cirun-graviton  # to identify github actions machine as hostname changes everytime
 
 jobs:
   build:
@@ -71,6 +71,7 @@ jobs:
 
       - name: Set and log asv machine configuration
         run: |
+          cd benchmark/pybench
           python3 -m asv machine --yes --config asv.conf.json
           echo "Machine Configuration:"
           cat ~/.asv-machine.json
