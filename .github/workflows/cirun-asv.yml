@@ -38,10 +38,6 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0  # To fetch all commits to be able to generate benchmarks html
-      - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.11'
 
       - name: Print system information
         run: |
@@ -52,12 +48,22 @@ jobs:
             exit 1
           fi
 
-      - name: Install dependencies
+      - name: Install system dependencies
         run: |
-          pip install numpy meson meson-python ninja build asv
+          if [ "$RUNNER_OS" == "Linux" ]; then
+            sudo apt update
+            sudo apt-get install -y gfortran cmake ccache libtinfo5 python3-pip pkg-config
+          else
+            echo "::error::$RUNNER_OS not supported"
+            exit 1
+          fi
+
+      - name: Install python dependencies
+        run: |
+          pip3 install numpy meson meson-python ninja build asv
           # sudo apt install libopenblas-dev    # XXX
-          pip install scipy_openblas32
-          python -c'import scipy_openblas32 as so; print(so.get_pkg_config())' > scipy_openblas.pc
+          pip3 install scipy_openblas32
+          python3 -c'import scipy_openblas32 as so; print(so.get_pkg_config())' > scipy_openblas.pc
           export PKG_CONFIG_PATH=$PWD
           echo ">>>> PKG_CONFIG" $PKG_CONFIG_PATH
           cat scipy_openblas.pc
