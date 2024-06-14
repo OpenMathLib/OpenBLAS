@@ -70,27 +70,17 @@ jobs:
 
       - name: Set and log asv machine configuration
         run: |
-          asv machine --yes --config asv.conf.json
+          python3 -m asv machine --yes --config asv.conf.json
           echo "Machine Configuration:"
           cat ~/.asv-machine.json
           rm ~/.asv-machine.json
 
           echo "Setting machine name to $MACHINE_NAME"
-          asv machine --machine $MACHINE_NAME --yes --config $ASV_CONFIG -v
+          python3 -m asv machine --machine $MACHINE_NAME --yes --config $ASV_CONFIG -v
           cat ~/.asv-machine.json
 
           ######################
 
-
-      - name: Install Dependencies
-        run: |
-          if [ "$RUNNER_OS" == "Linux" ]; then
-            sudo apt update
-            sudo apt-get install -y gfortran cmake ccache libtinfo5 python3-pip pkg-config
-          else
-            echo "::error::$RUNNER_OS not supported"
-            exit 1
-          fi
 
       - name: Compilation cache
         uses: actions/cache@v3
