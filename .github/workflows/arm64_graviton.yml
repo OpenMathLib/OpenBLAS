@@ -25,7 +25,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        fortran: [gfortran-13]
+        fortran: [gfortran-12]
         build: [cmake, make]
 
     steps:
@@ -45,7 +45,7 @@ jobs:
         run: |
           if [ "$RUNNER_OS" == "Linux" ]; then
             sudo apt update
-            sudo apt-get install -y gfortran-13 cmake ccache libtinfo5
+            sudo apt-get install -y gfortran-12 cmake ccache libtinfo5
           else
             echo "::error::$RUNNER_OS not supported"
             exit 1
@@ -88,7 +88,7 @@ jobs:
         run: |
           case "${{ matrix.build }}" in
             "make")
-              make -j$(nproc) DYNAMIC_ARCH=1 USE_OPENMP=0 CC=gcc-13 FC="ccache ${{ matrix.fortran }}"
+              make -j$(nproc) DYNAMIC_ARCH=1 USE_OPENMP=0 CC=gcc-12 FC="ccache ${{ matrix.fortran }}"
               ;;
             "cmake")
               mkdir build && cd build
@@ -97,7 +97,7 @@ jobs:
                     -DBUILD_WITHOUT_LAPACK=0 \
                     -DCMAKE_VERBOSE_MAKEFILE=ON \
                     -DCMAKE_BUILD_TYPE=Release \
-                    -DCMAKE_C_COMPILER=gcc-13 \
+                    -DCMAKE_C_COMPILER=gcc-12 \
                     -DCMAKE_Fortran_COMPILER=${{ matrix.fortran }} \
                     -DCMAKE_C_COMPILER_LAUNCHER=ccache \
                     -DCMAKE_Fortran_COMPILER_LAUNCHER=ccache \
