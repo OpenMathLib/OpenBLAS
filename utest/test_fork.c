@@ -33,6 +33,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <sys/types.h>
 #include <sys/wait.h>
+#include <errno.h>
 #include <cblas.h>
 #include "openblas_utest.h"
 
@@ -103,6 +104,7 @@ exit(0);
 
     fork_pid = fork();
     if (fork_pid == -1) {
+        perror(fork");
         CTEST_ERR("Failed to fork process.");
     } else if (fork_pid == 0) {
         // Compute a DGEMM product in the child process to check that the
@@ -113,7 +115,8 @@ exit(0);
         // recursively
         fork_pid_nested = fork();
         if (fork_pid_nested == -1) {
-            CTEST_ERR("Failed to fork process.");
+            perror("fork");
+            CTEST_ERR("Failed to fork nested process.");
             exit(1);
         } else if (fork_pid_nested == 0) {
             check_dgemm(a, b, d, c, n);
