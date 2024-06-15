@@ -1,0 +1,22 @@
+[build-system]
+build-backend = "mesonpy"
+requires = [
+    "meson-python>=0.16.0",
+    "numpy",
+    "scipy_openblas32"
+]
+
+
+
+[project]
+name = "openblas_wrap"
+version = "0.1"
+maintainers = [
+    {name = ".", email = ".@gmail.com"}
+]
+description = "a wrapper"
+requires-python = ">=3.10"
+dependencies = ["numpy>=1.23,<3",
+                "scipy_openblas32"
+]
+
