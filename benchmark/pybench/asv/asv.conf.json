@@ -4,19 +4,19 @@
     "version": 1,
 
     // The name of the project being benchmarked
-    "project": "openblas_wrap",
+    "project": "OpenBLAS",
 
     // The project's homepage
-    "project_url": "https://github.com/ev-br/ob_bench",
+    "project_url": "https://github.com/OpenMathLib/OpenBLAS/",
 
     // The URL or local path of the source code repository for the
     // project being benchmarked
-    "repo": ".",
+    "repo": "../../..",
 
     // The Python project's subdirectory in your repo.  If missing or
     // the empty string, the project is assumed to be located at the root
     // of the repository.
-    // "repo_subdir": "",
+    // "repo_subdir": "benchmarks/pybench/asv",
 
     // Customizable commands for building the project.
     // See asv.conf.json documentation.
