@@ -60,7 +60,7 @@ jobs:
 
       - name: Install python dependencies
         run: |
-          pip3 install numpy meson meson-python ninja build asv
+          pip3 install numpy meson meson-python ninja build asv virtualenv
           # pip3 install scipy_openblas32
           # install the nightly OpenBLAS wheel
           pip install -i https://pypi.anaconda.org/scientific-python-nightly-wheels/simple scipy-openblas32
