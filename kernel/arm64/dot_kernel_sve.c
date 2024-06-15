@@ -108,7 +108,12 @@ dot_kernel_sve(BLASLONG n, FLOAT* x, FLOAT* y)
         [N_] "r" (n),
         [X_] "r" (x),
         [Y_] "r" (y)
-      :);
+      : "cc",
+        "memory",
+        "x0", "x1", "x2", "x3", "x4", "x5", "x6", "x7",
+        "x8", "x9", "x10", "x11", "x12", "x13", "d1", 
+        "z0", "z1"
+  );
 
   return ret;
 }
