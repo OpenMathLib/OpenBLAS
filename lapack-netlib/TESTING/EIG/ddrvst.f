@@ -2819,9 +2819,9 @@ c           LIWEDC = 12
      $                           MAX( UNFL, TEMP3*ULP )
 *
                CALL DLACPY( ' ', N, N, V, LDU, A, LDA )
-
+*
  1750       CONTINUE
-
+*
  1720       CONTINUE
 *
 *           End of Loop -- Check for RESULT(j) > THRESH
