@@ -292,7 +292,10 @@ static void zdot_compute(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLON
 	: "cc",
 	  "memory",
 	  "x0", "x1", "x2", "x3", "x4", "x5",
-	  "d0", "d1", "d2", "d3", "d4", "d5", "d6", "d7"
+	  "d0", "d1", "d2", "d3", "d4", "d5", "d6", "d7",
+	  "v16", "v17", "v18", "v19", "v20", "v21", "v22",
+	  "v23", "v24", "v25", "v26", "v27", "v28", "v29",
+	  "v30", "v31"
 	);
 
 	cf=OPENBLAS_MAKE_COMPLEX_FLOAT(dotr, doti);
