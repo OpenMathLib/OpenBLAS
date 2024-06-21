@@ -2525,6 +2525,7 @@ int get_coretype(void){
       case 0x7:
         switch (exmodel) {
         case 5:
+	case 6:
           if (support_avx2())
             return CORE_ZEN;
           else

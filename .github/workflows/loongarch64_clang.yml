@@ -34,17 +34,29 @@ jobs:
 
       - name: Install APT deps
         run: |
-          sudo add-apt-repository ppa:savoury1/virtualisation
           sudo apt-get update
-          sudo apt-get install autoconf automake autotools-dev ninja-build make ccache \
-          qemu-user-static
+          sudo apt-get install autoconf automake autotools-dev ninja-build make ccache
 
       - name: Download and install loongarch64-toolchain
         run: |
-          wget http://ftp.loongnix.cn/toolchain/llvm/llvm8/clang+llvm_8.0.1-6_amd64-linux-gnu_debian-10.tar.gz
-          wget http://ftp.loongnix.cn/toolchain/gcc/release/loongarch/gcc8/loongson-gnu-toolchain-8.3-x86_64-loongarch64-linux-gnu-rc1.3.tar.xz
+          wget https://github.com/XiWeiGu/loongarch64_toolchain/releases/download/V0.1/clang+llvm_8.0.1-6_amd64-linux-gnu_debian-10.tar.gz
+          wget https://github.com/XiWeiGu/loongarch64_toolchain/releases/download/V0.1/loongson-gnu-toolchain-8.3-x86_64-loongarch64-linux-gnu-rc1.3.tar.xz
           tar -xf clang+llvm_8.0.1-6_amd64-linux-gnu_debian-10.tar.gz -C /opt
           tar -xf loongson-gnu-toolchain-8.3-x86_64-loongarch64-linux-gnu-rc1.3.tar.xz -C /opt
+
+      - name: Checkout qemu
+        uses: actions/checkout@v3
+        with:
+          repository: qemu/qemu
+          path: qemu
+          ref: master
+
+      - name: Install qemu
+        run: |
+          cd qemu
+          ./configure --prefix=$GITHUB_WORKSPACE/qemu-install --target-list=loongarch64-linux-user --disable-system --static
+          make -j$(nproc)
+          make install
 
       - name: Set env
         run: |
@@ -77,46 +89,47 @@ jobs:
 
       - name: Test
         run: |
-          qemu-loongarch64-static ./utest/openblas_utest
-          qemu-loongarch64-static ./utest/openblas_utest_ext
-          OPENBLAS_NUM_THREADS=2 qemu-loongarch64-static ./ctest/xscblat1
-          OPENBLAS_NUM_THREADS=2 qemu-loongarch64-static ./ctest/xdcblat1
-          OPENBLAS_NUM_THREADS=2 qemu-loongarch64-static ./ctest/xccblat1
-          OPENBLAS_NUM_THREADS=2 qemu-loongarch64-static ./ctest/xzcblat1
-          OPENBLAS_NUM_THREADS=2 qemu-loongarch64-static ./ctest/xscblat2 < ./ctest/sin2
-          OPENBLAS_NUM_THREADS=2 qemu-loongarch64-static ./ctest/xdcblat2 < ./ctest/din2
-          OPENBLAS_NUM_THREADS=2 qemu-loongarch64-static ./ctest/xccblat2 < ./ctest/cin2
-          OPENBLAS_NUM_THREADS=2 qemu-loongarch64-static ./ctest/xzcblat2 < ./ctest/zin2
-          OPENBLAS_NUM_THREADS=2 qemu-loongarch64-static ./ctest/xscblat3 < ./ctest/sin3
-          OPENBLAS_NUM_THREADS=2 qemu-loongarch64-static ./ctest/xdcblat3 < ./ctest/din3
-          OPENBLAS_NUM_THREADS=2 qemu-loongarch64-static ./ctest/xccblat3 < ./ctest/cin3
-          OPENBLAS_NUM_THREADS=2 qemu-loongarch64-static ./ctest/xzcblat3 < ./ctest/zin3
-          OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 qemu-loongarch64-static ./test/sblat1
-          OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 qemu-loongarch64-static ./test/dblat1
-          OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 qemu-loongarch64-static ./test/cblat1
-          OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 qemu-loongarch64-static ./test/zblat1
-          OPENBLAS_NUM_THREADS=2 qemu-loongarch64-static ./test/sblat1
-          OPENBLAS_NUM_THREADS=2 qemu-loongarch64-static ./test/dblat1
-          OPENBLAS_NUM_THREADS=2 qemu-loongarch64-static ./test/cblat1
-          OPENBLAS_NUM_THREADS=2 qemu-loongarch64-static ./test/zblat1
+          export PATH=$GITHUB_WORKSPACE/qemu-install/bin/:$PATH
+          qemu-loongarch64 ./utest/openblas_utest
+          qemu-loongarch64 ./utest/openblas_utest_ext
+          OPENBLAS_NUM_THREADS=2 qemu-loongarch64 ./ctest/xscblat1
+          OPENBLAS_NUM_THREADS=2 qemu-loongarch64 ./ctest/xdcblat1
+          OPENBLAS_NUM_THREADS=2 qemu-loongarch64 ./ctest/xccblat1
+          OPENBLAS_NUM_THREADS=2 qemu-loongarch64 ./ctest/xzcblat1
+          OPENBLAS_NUM_THREADS=2 qemu-loongarch64 ./ctest/xscblat2 < ./ctest/sin2
+          OPENBLAS_NUM_THREADS=2 qemu-loongarch64 ./ctest/xdcblat2 < ./ctest/din2
+          OPENBLAS_NUM_THREADS=2 qemu-loongarch64 ./ctest/xccblat2 < ./ctest/cin2
+          OPENBLAS_NUM_THREADS=2 qemu-loongarch64 ./ctest/xzcblat2 < ./ctest/zin2
+          OPENBLAS_NUM_THREADS=2 qemu-loongarch64 ./ctest/xscblat3 < ./ctest/sin3
+          OPENBLAS_NUM_THREADS=2 qemu-loongarch64 ./ctest/xdcblat3 < ./ctest/din3
+          OPENBLAS_NUM_THREADS=2 qemu-loongarch64 ./ctest/xccblat3 < ./ctest/cin3
+          OPENBLAS_NUM_THREADS=2 qemu-loongarch64 ./ctest/xzcblat3 < ./ctest/zin3
+          OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 qemu-loongarch64 ./test/sblat1
+          OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 qemu-loongarch64 ./test/dblat1
+          OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 qemu-loongarch64 ./test/cblat1
+          OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 qemu-loongarch64 ./test/zblat1
+          OPENBLAS_NUM_THREADS=2 qemu-loongarch64 ./test/sblat1
+          OPENBLAS_NUM_THREADS=2 qemu-loongarch64 ./test/dblat1
+          OPENBLAS_NUM_THREADS=2 qemu-loongarch64 ./test/cblat1
+          OPENBLAS_NUM_THREADS=2 qemu-loongarch64 ./test/zblat1
           rm -f ./test/?BLAT2.SUMM
-          OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 qemu-loongarch64-static ./test/sblat2 < ./test/sblat2.dat
-          OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 qemu-loongarch64-static ./test/dblat2 < ./test/dblat2.dat
-          OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 qemu-loongarch64-static ./test/cblat2 < ./test/cblat2.dat
-          OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 qemu-loongarch64-static ./test/zblat2 < ./test/zblat2.dat
+          OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 qemu-loongarch64 ./test/sblat2 < ./test/sblat2.dat
+          OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 qemu-loongarch64 ./test/dblat2 < ./test/dblat2.dat
+          OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 qemu-loongarch64 ./test/cblat2 < ./test/cblat2.dat
+          OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 qemu-loongarch64 ./test/zblat2 < ./test/zblat2.dat
           rm -f ./test/?BLAT2.SUMM
-          OPENBLAS_NUM_THREADS=2 qemu-loongarch64-static ./test/sblat2 < ./test/sblat2.dat
-          OPENBLAS_NUM_THREADS=2 qemu-loongarch64-static ./test/dblat2 < ./test/dblat2.dat
-          OPENBLAS_NUM_THREADS=2 qemu-loongarch64-static ./test/cblat2 < ./test/cblat2.dat
-          OPENBLAS_NUM_THREADS=2 qemu-loongarch64-static ./test/zblat2 < ./test/zblat2.dat
+          OPENBLAS_NUM_THREADS=2 qemu-loongarch64 ./test/sblat2 < ./test/sblat2.dat
+          OPENBLAS_NUM_THREADS=2 qemu-loongarch64 ./test/dblat2 < ./test/dblat2.dat
+          OPENBLAS_NUM_THREADS=2 qemu-loongarch64 ./test/cblat2 < ./test/cblat2.dat
+          OPENBLAS_NUM_THREADS=2 qemu-loongarch64 ./test/zblat2 < ./test/zblat2.dat
           rm -f ./test/?BLAT3.SUMM
-          OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 qemu-loongarch64-static ./test/sblat3 < ./test/sblat3.dat
-          OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 qemu-loongarch64-static ./test/dblat3 < ./test/dblat3.dat
-          OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 qemu-loongarch64-static ./test/cblat3 < ./test/cblat3.dat
-          OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 qemu-loongarch64-static ./test/zblat3 < ./test/zblat3.dat
+          OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 qemu-loongarch64 ./test/sblat3 < ./test/sblat3.dat
+          OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 qemu-loongarch64 ./test/dblat3 < ./test/dblat3.dat
+          OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 qemu-loongarch64 ./test/cblat3 < ./test/cblat3.dat
+          OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 qemu-loongarch64 ./test/zblat3 < ./test/zblat3.dat
           rm -f ./test/?BLAT3.SUMM
-          OPENBLAS_NUM_THREADS=2 qemu-loongarch64-static ./test/sblat3 < ./test/sblat3.dat
-          OPENBLAS_NUM_THREADS=2 qemu-loongarch64-static ./test/dblat3 < ./test/dblat3.dat
-          OPENBLAS_NUM_THREADS=2 qemu-loongarch64-static ./test/cblat3 < ./test/cblat3.dat
-          OPENBLAS_NUM_THREADS=2 qemu-loongarch64-static ./test/zblat3 < ./test/zblat3.dat
+          OPENBLAS_NUM_THREADS=2 qemu-loongarch64 ./test/sblat3 < ./test/sblat3.dat
+          OPENBLAS_NUM_THREADS=2 qemu-loongarch64 ./test/dblat3 < ./test/dblat3.dat
+          OPENBLAS_NUM_THREADS=2 qemu-loongarch64 ./test/cblat3 < ./test/cblat3.dat
+          OPENBLAS_NUM_THREADS=2 qemu-loongarch64 ./test/zblat3 < ./test/zblat3.dat
 

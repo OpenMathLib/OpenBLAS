@@ -570,6 +570,8 @@ static int gemm_driver(blas_arg_t *args, BLASLONG *range_m, BLASLONG
   InitializeCriticalSection((PCRITICAL_SECTION)&level3_lock);
 #else
   static pthread_mutex_t  level3_lock    = PTHREAD_MUTEX_INITIALIZER;
+  static pthread_cond_t  level3_wakeup    = PTHREAD_COND_INITIALIZER;
+  volatile static BLASLONG CPU_AVAILABLE = MAX_CPU_NUMBER;
 #endif
 
   blas_arg_t newarg;
@@ -639,6 +641,12 @@ static int gemm_driver(blas_arg_t *args, BLASLONG *range_m, BLASLONG
   EnterCriticalSection((PCRITICAL_SECTION)&level3_lock);
 #else
   pthread_mutex_lock(&level3_lock);
+  while(CPU_AVAILABLE < nthreads) { 
+    pthread_cond_wait(&level3_wakeup, &level3_lock);
+  } 
+  CPU_AVAILABLE -= nthreads;
+  WMB;
+  pthread_mutex_unlock(&level3_lock);
 #endif
 
 #ifdef USE_ALLOC_HEAP
@@ -783,6 +791,10 @@ static int gemm_driver(blas_arg_t *args, BLASLONG *range_m, BLASLONG
 #elif defined(OS_WINDOWS)
   LeaveCriticalSection((PCRITICAL_SECTION)&level3_lock);
 #else
+  pthread_mutex_lock(&level3_lock);
+  CPU_AVAILABLE += nthreads;
+  WMB;
+  pthread_cond_signal(&level3_wakeup);
   pthread_mutex_unlock(&level3_lock);
 #endif
 
