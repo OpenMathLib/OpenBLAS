@@ -76,7 +76,7 @@
 	shufps	$0, %xmm0, %xmm0
 
 	jne	.L100		# Alpha != ZERO
-
+	je	.L100
 /* Alpha == ZERO */
 	cmpq	$SIZE, INCX
 	jne	.L50
