@@ -74,14 +74,38 @@ static void sscal_kernel_16_zero( BLASLONG n, FLOAT *x )
 
         for( i=0; i<n; i+=8 )
         {
-                x[0] = alpha;
-                x[1] = alpha;
-                x[2] = alpha;
-                x[3] = alpha;
-                x[4] = alpha;
-                x[5] = alpha;
-                x[6] = alpha;
-                x[7] = alpha;
+                if (isfinite(x[0]))
+			x[0] = alpha;
+		else
+			x[0] = NAN;
+		if (isfinite(x[1]))
+                	x[1] = alpha;
+		else
+			x[1] = NAN;
+		if (isfinite(x[2]))
+                	x[2] = alpha;
+		else
+			x[2] = NAN;
+		if (isfinite(x[3]))
+                	x[3] = alpha;
+		else
+			x[3] = NAN;
+		if (isfinite(x[4]))
+                	x[4] = alpha;
+		else
+			x[4] = NAN;
+		if (isfinite(x[5]))
+                	x[5] = alpha;
+		else
+			x[5] = NAN;
+		if (isfinite(x[6]))
+                	x[6] = alpha;
+		else
+			x[6] = NAN;
+		if (isfinite(x[7]))
+                	x[7] = alpha;
+		else
+			x[7] = NAN;
                 x+=8;
         }
 
@@ -109,7 +133,10 @@ int CNAME(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, FLOAT da, FLOAT *x, BLAS
 			{
 				BLASLONG align = ((32 - ((uintptr_t)x & (uintptr_t)0x1F)) >> 2) & 0x7;
 				for (j = 0; j < align; j++) {
-					x[j] = 0.0;
+					if (isfinite(x[j]))
+						x[j] = 0.0;
+					else
+						x[j] = NAN;
 				}
 			}
 			BLASLONG n1 = (n-j) & -32;
@@ -129,8 +156,10 @@ int CNAME(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, FLOAT da, FLOAT *x, BLAS
 
 			while(j < n)
 			{
-
-				x[j]=0.0;
+				if (isfinite(x[j]))
+					x[j]=0.0;
+				else
+					x[j]=NAN;
 				j++;
 			}
 
@@ -178,8 +207,10 @@ int CNAME(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, FLOAT da, FLOAT *x, BLAS
 
 			while(j < n)
 			{
-
-				x[i]=0.0;
+				if (isfinite(x[i]))
+					x[i]=0.0;
+				else
+					x[i]=NAN;
 				i += inc_x ;
 				j++;
 			}
