@@ -79,6 +79,9 @@
 	bc1f	$fcc0, .L50
 	NOP
 
+	bc1t	$fcc0, .L50
+	NOP
+
 	bne	INCX, TEMP, .L20
 	dsra	I, N, 3
 
