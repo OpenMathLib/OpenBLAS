@@ -259,7 +259,7 @@ int CNAME(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, FLOAT da, FLOAT *x,
         {
             for (i = n; i--;)
             {
-                if (isfinite(*x)
+                if (isfinite(*x))
                           *x = 0;
                 else
                           *x = NAN;
