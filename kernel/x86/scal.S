@@ -68,12 +68,12 @@
 	ftst
 	fnstsw	%ax
 	andb	$68, %ah
-	je	.L300		# Alpha != ZERO
+//	je	.L300		# Alpha != ZERO
+	jmp	.L300
 
 /* Alpha == ZERO */
-//	cmpl	$1,%esi
-//	jne	.L104
-	jmp	.L104
+	cmpl	$1,%esi
+	jne	.L104
 
 	movl	%edx, %ecx		# ecx = n
 	sarl	$3,   %ecx		# (n >> 3)
