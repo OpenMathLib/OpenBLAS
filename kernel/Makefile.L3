@@ -80,6 +80,11 @@ M4_AIX := m4 -B16384
 endif
 $(info $$var is [${$(M4_AIX)}])
 endif
+
+ifeq ($(CORE), POWER6)
+USE_TRMM = 1
+endif
+
 ifeq ($(CORE), POWER8)
 ifeq ($(BINARY64),1)
 USE_TRMM = 1
