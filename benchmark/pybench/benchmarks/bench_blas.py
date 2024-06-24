@@ -15,7 +15,7 @@ dtype_map = {
 
 # dnrm2
 
-dnrm2_sizes = [100, 200, 400, 600, 800, 1000]
+dnrm2_sizes = [100, 1000]
 
 def run_dnrm2(n, x, incx, func):
     res = func(x, n, incx=incx)
@@ -35,7 +35,7 @@ def test_nrm2(benchmark, n, variant):
 
 # ddot
 
-ddot_sizes = [100, 200, 400, 600, 800, 1000]
+ddot_sizes = [100, 1000]
 
 def run_ddot(x, y, func):
     res = func(x, y)
@@ -54,7 +54,7 @@ def test_dot(benchmark, n):
 
 # daxpy
 
-daxpy_sizes = [100, 200, 400, 600, 800, 1000]
+daxpy_sizes = [100, 1000]
 
 def run_daxpy(x, y, func):
     res = func(x, y, a=2.0)
@@ -79,7 +79,7 @@ def test_daxpy(benchmark, n, variant):
 
 # dgemm
 
-gemm_sizes = [100, 200, 400, 600, 800, 1000]
+gemm_sizes = [100, 1000]
 
 def run_gemm(a, b, c, func):
     alpha = 1.0
@@ -102,7 +102,7 @@ def test_gemm(benchmark, n, variant):
 
 # dsyrk
 
-syrk_sizes = [100, 200, 400, 600, 800, 1000]
+syrk_sizes = [100, 1000]
 
 
 def run_syrk(a, c, func):
@@ -126,7 +126,7 @@ def test_syrk(benchmark, n, variant):
 
 # linalg.solve
 
-gesv_sizes =  [100, 200, 400, 600, 800, 1000]
+gesv_sizes = [100, 1000]
 
 
 def run_gesv(a, b, func):
@@ -187,7 +187,7 @@ def test_gesdd(benchmark, mn, variant):
 
 # linalg.eigh
 
-syev_sizes = [50, 64, 128, 200]
+syev_sizes = [50, 200]
 
 
 def run_syev(a, lwork, func):
