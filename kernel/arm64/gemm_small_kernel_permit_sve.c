@@ -32,16 +32,14 @@ int CNAME(int transa, int transb, BLASLONG M, BLASLONG N, BLASLONG K, FLOAT alph
   BLASLONG MNK = M * N * K;
 
 #if defined(DOUBLE) // dgemm
-  // TN prefers full copies much earlier
-  if (transa && !transb && MNK > 16*16*16) {
-    return 0;
-  }
-#else // sgemm
-  // TODO!
-#endif
-
   if (MNK <= 64*64*64)
     return 1;
+#else // sgemm
+  if (MNK <= 256*256*256)
+    return 1;
+#endif
+
+
 
   return 0;
 }

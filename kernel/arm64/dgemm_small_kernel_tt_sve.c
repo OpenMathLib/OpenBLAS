@@ -46,15 +46,30 @@ THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   })
 #endif
 
-#define A_ELEMENT_K(m, offset_k) A[(i + (m)) * lda + (k + offset_k)]
+#define RESET_A_POINTER() a_offset = A;
+
+#define CREATE_A_POINTER(m, scale) FLOAT* a_offset##m = a_offset + scale * lda;
+#define UPDATE_A_POINTER(scale) a_offset = a_offset + scale * lda;
+#define A_ELEMENT_K(m, offset_k) *(a_offset##m + (k + offset_k))
 #define A_ELEMENT(m) A_ELEMENT_K(m, 0)
 
-#define B_ELEMENT_K(n, offset_k) B[(k + offset_k) * ldb + (j + (n))]
+#define RESET_B_POINTER() b_offset = B;
+
+#define CREATE_B_POINTER(n, scale) FLOAT* b_offset##n = b_offset + scale;
+#define UPDATE_B_POINTER(scale) b_offset = b_offset + scale;
+#define B_ELEMENT_K(n, offset_k) *(b_offset##n + (k + offset_k) * ldb)
 #define B_ELEMENT(n) B_ELEMENT_K(n, 0)
 
-#define C_ELEMENT(m, n) C[(i + (m)) + (j + (n)) * ldc]
+#define CREATE_C_POINTER(m, scale) FLOAT* c_offset##m = c_offset + scale;
+#define INCR_C_POINTER(m, incr) // c_offset ## m += incr * ldc;
+#define UPDATE_C_POINTER(scale) c_offset += scale;
+#define C_ELEMENT(m, n)                                                        \
+  *(c_offset##m + ((j + n) * ldc)) // C[(i+(m))+(j+(n))*ldc]
 
-#define PACK_ELEMENT_K(m, offset_k) packed_a[(k + offset_k) * 2 * v_size + m]
+// #undef C_ELEMENT
+// #define C_ELEMENT(m, n)             C[(i+(m))+(j+(n))*ldc]
+
+#define PACK_ELEMENT_K(m, offset_k) packed_a[(k + offset_k) * v_size2 + m]
 #define PACK_ELEMENT(m) PACK_ELEMENT_K(m, 0)
 
 // ASIMD
@@ -103,14 +118,13 @@ THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define BROADCAST_LOAD_B(n, offset_k)                                          \
   svfloat64_t b##s##n##_k##offset_k = svdup_f64(B_ELEMENT_K(n, offset_k));
 #define VECTOR_LOAD_A(pg, m, offset_k)                                         \
-  svfloat64_t a##s##m##_k##offset_k =                                          \
-    svld1(pg, &A_ELEMENT_K(v_size * m, offset_k));
+  svfloat64_t a##s##m##_k##offset_k = svld1(pg, &A_ELEMENT_K(m, offset_k));
 #define QUADWORD_LOAD_B(n, offset_k)                                           \
   svfloat64_t b##s##n##_k##offset_k =                                          \
     svld1rq(pg_true, &B_ELEMENT_K(n, offset_k));
 #define GATHER_LOAD_A(pg, m, offset_k)                                         \
   svfloat64_t a##s##m##_k##offset_k =                                          \
-    svld1_gather_index(pg, &A_ELEMENT_K(v_size * m, offset_k), lda_vec);
+    svld1_gather_index(pg, &A_ELEMENT_K(m, offset_k), lda_vec);
 #define PACK_A(m, offset_k)                                                    \
   svst1(pg_first, &PACK_ELEMENT_K(m, offset_k), a##s##m##_k##offset_k);
 #define VECTOR_PACK_A(m, offset_k)                                             \
@@ -134,26 +148,23 @@ THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifdef B0
 #define VECTOR_STORE(pg, m, n)                                                 \
   result##m##n = svmul_m(pg, result##m##n, alpha_vec);                         \
-  svst1(pg, &C_ELEMENT(v_size* m, n), result##m##n);
+  svst1(pg, &C_ELEMENT(m, n), result##m##n);
 #define SCATTER_STORE(pg, m, n)                                                \
   result##m##n = svmul_m(pg, result##m##n, alpha_vec);                         \
-  svst1_scatter_index(                                                         \
-    pg, &C_ELEMENT(v_size* m, n), svindex_u64(0LL, ldc), result##m##n);
+  svst1_scatter_index(pg, &C_ELEMENT(m, n), ldc_vec, result##m##n);
 #else
 #define VECTOR_STORE(pg, m, n)                                                 \
   result##m##n = svmul_m(pg, result##m##n, alpha_vec);                         \
   result##m##n =                                                               \
-    svmla_m(pg, result##m##n, svld1(pg, &C_ELEMENT(v_size * m, n)), beta_vec); \
-  svst1(pg, &C_ELEMENT(v_size* m, n), result##m##n);
+    svmla_m(pg, result##m##n, svld1(pg, &C_ELEMENT(m, n)), beta_vec);          \
+  svst1(pg, &C_ELEMENT(m, n), result##m##n);
 #define SCATTER_STORE(pg, m, n)                                                \
   result##m##n = svmul_m(pg, result##m##n, alpha_vec);                         \
-  result##m##n = svmla_m(                                                      \
-    pg,                                                                        \
-    result##m##n,                                                              \
-    svld1_gather_index(pg, &C_ELEMENT(v_size * m, n), svindex_u64(0LL, ldc)),  \
-    beta_vec);                                                                 \
-  svst1_scatter_index(                                                         \
-    pg, &C_ELEMENT(v_size* m, n), svindex_u64(0LL, ldc), result##m##n);
+  result##m##n = svmla_m(pg,                                                   \
+                         result##m##n,                                         \
+                         svld1_gather_index(pg, &C_ELEMENT(m, n), ldc_vec),    \
+                         beta_vec);                                            \
+  svst1_scatter_index(pg, &C_ELEMENT(m, n), ldc_vec, result##m##n);
 #endif
 
 #ifndef LIKELY
@@ -161,13 +172,6 @@ THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define LIKELY(x) __builtin_expect(!!(x), 1)
 #else
 #define LIKELY(x) (x)
-#endif
-#endif
-#ifndef UNLIKELY
-#ifdef __GNUC__
-#define UNLIKELY(x) __builtin_expect(!!(x), 0)
-#else
-#define UNLIKELY(x) (x)
 #endif
 #endif
 
@@ -216,13 +220,28 @@ CNAME(BLASLONG M,
 
   const int pack_a = M >= v_size2 && N >= 8 && K >= 8 ? 1 : 0;
   FLOAT* packed_a =
-    (pack_a) ? packed_a = (FLOAT*)malloc(K * 2 * v_size * sizeof(FLOAT)) : NULL;
+    (pack_a) ? packed_a = (FLOAT*)malloc(K * v_size2 * sizeof(FLOAT)) : NULL;
+
+  FLOAT* a_offset = A;
+  FLOAT* b_offset = B;
+  FLOAT* c_offset = C;
 
   BLASLONG i = 0;
   for (; i < v_m2; i += v_size2) {
 
+    CREATE_C_POINTER(0, 0);
+    CREATE_C_POINTER(1, v_size);
+    CREATE_A_POINTER(0, 0);
+    CREATE_A_POINTER(1, v_size);
+
     BLASLONG j = 0;
     for (; j < n4; j += 4) {
+
+      CREATE_B_POINTER(0, 0);
+      CREATE_B_POINTER(1, 1);
+      CREATE_B_POINTER(2, 2);
+      CREATE_B_POINTER(3, 3);
+      UPDATE_B_POINTER(4);
 
       BLASLONG k = 0;
       DECLARE_RESULT_VECTOR(0, 0);
@@ -295,8 +314,14 @@ CNAME(BLASLONG M,
       VECTOR_STORE(pg_true, 1, 1);
       VECTOR_STORE(pg_true, 1, 2);
       VECTOR_STORE(pg_true, 1, 3);
+      INCR_C_POINTER(0, 4);
+      INCR_C_POINTER(1, 4);
     }
     for (; j < n2; j += 2) {
+
+      CREATE_B_POINTER(0, 0);
+      CREATE_B_POINTER(1, 1);
+      UPDATE_B_POINTER(2);
 
       BLASLONG k = 0;
       DECLARE_RESULT_VECTOR(0, 0);
@@ -331,8 +356,13 @@ CNAME(BLASLONG M,
       VECTOR_STORE(pg_true, 0, 1);
       VECTOR_STORE(pg_true, 1, 0);
       VECTOR_STORE(pg_true, 1, 1);
+      INCR_C_POINTER(0, 2);
+      INCR_C_POINTER(1, 2);
     }
     for (; j < N; j++) {
+
+      CREATE_B_POINTER(0, 0);
+      UPDATE_B_POINTER(1);
 
       BLASLONG k = 0;
       DECLARE_RESULT_VECTOR(0, 0);
@@ -359,12 +389,27 @@ CNAME(BLASLONG M,
       }
       VECTOR_STORE(pg_true, 0, 0);
       VECTOR_STORE(pg_true, 1, 0);
+      INCR_C_POINTER(0, 1);
+      INCR_C_POINTER(1, 1);
     }
+
+    UPDATE_A_POINTER(v_size2);
+    RESET_B_POINTER();
+    UPDATE_C_POINTER(v_size2);
   }
   for (; i < v_m1; i += v_size) {
 
+    CREATE_C_POINTER(0, 0);
+    CREATE_A_POINTER(0, 0);
+
     BLASLONG j = 0;
     for (; j < n4; j += 4) {
+
+      CREATE_B_POINTER(0, 0);
+      CREATE_B_POINTER(1, 1);
+      CREATE_B_POINTER(2, 2);
+      CREATE_B_POINTER(3, 3);
+      UPDATE_B_POINTER(4);
 
       BLASLONG k = 0;
       DECLARE_RESULT_VECTOR(0, 0);
@@ -386,8 +431,13 @@ CNAME(BLASLONG M,
       VECTOR_STORE(pg_true, 0, 1);
       VECTOR_STORE(pg_true, 0, 2);
       VECTOR_STORE(pg_true, 0, 3);
+      INCR_C_POINTER(0, 4);
     }
     for (; j < n2; j += 2) {
+
+      CREATE_B_POINTER(0, 0);
+      CREATE_B_POINTER(1, 1);
+      UPDATE_B_POINTER(2);
 
       BLASLONG k = 0;
       DECLARE_RESULT_VECTOR(0, 0);
@@ -402,8 +452,12 @@ CNAME(BLASLONG M,
       }
       VECTOR_STORE(pg_true, 0, 0);
       VECTOR_STORE(pg_true, 0, 1);
+      INCR_C_POINTER(0, 2);
     }
     for (; j < N; j++) {
+
+      CREATE_B_POINTER(0, 0);
+      UPDATE_B_POINTER(1);
 
       BLASLONG k = 0;
       DECLARE_RESULT_VECTOR(0, 0);
@@ -415,13 +469,26 @@ CNAME(BLASLONG M,
         UPDATE_RESULT_VECTOR(pg_true, 0, 0, 0);
       }
       VECTOR_STORE(pg_true, 0, 0);
+      INCR_C_POINTER(0, 1);
     }
+
+    UPDATE_A_POINTER(v_size);
+    RESET_B_POINTER();
+    UPDATE_C_POINTER(v_size);
   }
   for (; i < M; i += v_size) {
     const svbool_t pg_tail = svwhilelt_b64((uint64_t)i, (uint64_t)(M));
+    CREATE_C_POINTER(0, 0);
+    CREATE_A_POINTER(0, 0);
 
     BLASLONG j = 0;
     for (; j < n4; j += 4) {
+
+      CREATE_B_POINTER(0, 0);
+      CREATE_B_POINTER(1, 1);
+      CREATE_B_POINTER(2, 2);
+      CREATE_B_POINTER(3, 3);
+      UPDATE_B_POINTER(4);
 
       BLASLONG k = 0;
       DECLARE_RESULT_VECTOR(0, 0);
@@ -443,8 +510,13 @@ CNAME(BLASLONG M,
       VECTOR_STORE(pg_tail, 0, 1);
       VECTOR_STORE(pg_tail, 0, 2);
       VECTOR_STORE(pg_tail, 0, 3);
+      INCR_C_POINTER(0, 4);
     }
     for (; j < n2; j += 2) {
+
+      CREATE_B_POINTER(0, 0);
+      CREATE_B_POINTER(1, 1);
+      UPDATE_B_POINTER(2);
 
       BLASLONG k = 0;
       DECLARE_RESULT_VECTOR(0, 0);
@@ -459,8 +531,12 @@ CNAME(BLASLONG M,
       }
       VECTOR_STORE(pg_tail, 0, 0);
       VECTOR_STORE(pg_tail, 0, 1);
+      INCR_C_POINTER(0, 2);
     }
     for (; j < N; j++) {
+
+      CREATE_B_POINTER(0, 0);
+      UPDATE_B_POINTER(1);
 
       BLASLONG k = 0;
       DECLARE_RESULT_VECTOR(0, 0);
@@ -472,7 +548,12 @@ CNAME(BLASLONG M,
         UPDATE_RESULT_VECTOR(pg_tail, 0, 0, 0);
       }
       VECTOR_STORE(pg_tail, 0, 0);
+      INCR_C_POINTER(0, 1);
     }
+
+    UPDATE_A_POINTER(0);
+    RESET_B_POINTER();
+    UPDATE_C_POINTER(0);
   }
 
   if (pack_a)
