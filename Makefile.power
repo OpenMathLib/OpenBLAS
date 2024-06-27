@@ -93,14 +93,6 @@ FCOMMON_OPT += -O2 -Mrecursive
 endif
 endif
 
-ifeq ($(CORE), POWER6)
-CCOMMON_OPT += -Ofast -mcpu=power6 -fno-fast-math
-ifeq ($(F_COMPILER), IBM)
-FCOMMON_OPT += -O2 -qrecur -qnosave -qarch=pwr6 -qfloat=nomaf -qzerosize
-else
-FCOMMON_OPT += -O2 -frecursive -mcpu=power6 -fno-fast-math
-endif
-endif
 ifeq ($(USE_OPENMP), 1)
 ifneq ($(C_COMPILER), PGI)
 CCOMMON_OPT += -DUSE_OPENMP -fopenmp
