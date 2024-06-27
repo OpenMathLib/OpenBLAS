@@ -705,6 +705,7 @@ static int gemm_driver(blas_arg_t *args, BLASLONG *range_m, BLASLONG
     range_M[num_parts + 1] = range_M[num_parts] + width;
 
     num_parts ++;
+    if (num_parts == nthreads_m) break;
   }
   for (i = num_parts; i < MAX_CPU_NUMBER; i++) {
     range_M[i + 1] = range_M[num_parts];
@@ -752,6 +753,7 @@ static int gemm_driver(blas_arg_t *args, BLASLONG *range_m, BLASLONG
       range_N[num_parts + 1] = range_N[num_parts] + width;
 
       num_parts ++;
+      if (num_parts == nthreads) break;
     }
     for (j = num_parts; j < MAX_CPU_NUMBER; j++) {
       range_N[j + 1] = range_N[num_parts];
