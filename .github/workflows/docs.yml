@@ -9,15 +9,15 @@ jobs:
     if: "github.repository == 'OpenMathLib/OpenBLAS'"
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-python@v2
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
         with:
           python-version: "3.10"
       - run: pip install mkdocs mkdocs-material
       # mkdocs gh-deploy command only builds to the top-level, hence building then deploying ourselves
       - run: mkdocs build
       - name: Deploy docs
-        uses: peaceiris/actions-gh-pages@v3
+        uses: peaceiris/actions-gh-pages@4f9cc6602d3f66b9c108549d475ec49e8ef4d45e # v4.0.0
         if: ${{ github.ref == 'refs/heads/develop' }}
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
