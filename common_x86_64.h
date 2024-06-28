@@ -253,7 +253,7 @@ static __inline unsigned int blas_quickdivide(unsigned int x, unsigned int y){
 #ifndef BUFFERSIZE
 #define BUFFER_SIZE	(32 << 22)
 #else
-#define BUFFER_SIZE	(32 << BUFFERSIZE)
+#define BUFFER_SIZE	(32UL << BUFFERSIZE)
 #endif
 
 #define SEEK_ADDRESS
