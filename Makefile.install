@@ -72,18 +72,18 @@ ifndef NO_CBLAS
 	@echo Generating cblas.h in $(DESTDIR)$(OPENBLAS_INCLUDE_DIR)
 	@cp cblas.h cblas.tmp
 ifdef SYMBOLPREFIX
-	@sed 's/cblas[^( ]*/$(SYMBOLPREFIX)&/g' cblas.tmp > cblas.tmp2
-	@sed 's/openblas[^( ]*/$(SYMBOLPREFIX)&/g'  cblas.tmp2 > cblas.tmp
+	@sed 's/cblas[^() ]*/$(SYMBOLPREFIX)&/g' cblas.tmp > cblas.tmp2
+	@sed 's/openblas[^() ]*/$(SYMBOLPREFIX)&/g'  cblas.tmp2 > cblas.tmp
 	#change back any openblas_complex_float and double that got hit
 	@sed 's/$(SYMBOLPREFIX)openblas_complex_/openblas_complex_/g'  cblas.tmp > cblas.tmp2
-	@sed 's/goto[^( ]*/$(SYMBOLPREFIX)&/g'  cblas.tmp2 > cblas.tmp
+	@sed 's/goto[^() ]*/$(SYMBOLPREFIX)&/g'  cblas.tmp2 > cblas.tmp
 endif
 ifdef SYMBOLSUFFIX
-	@sed 's/cblas[^( ]*/&$(SYMBOLSUFFIX)/g' cblas.tmp > cblas.tmp2
-	@sed 's/openblas[^( ]*/&$(SYMBOLSUFFIX)/g'  cblas.tmp2 > cblas.tmp
+	@sed 's/cblas[^() ]*/&$(SYMBOLSUFFIX)/g' cblas.tmp > cblas.tmp2
+	@sed 's/openblas[^() ]*/&$(SYMBOLSUFFIX)/g'  cblas.tmp2 > cblas.tmp
 	#change back any openblas_complex_float and double that got hit
 	@sed 's/\(openblas_complex_\)\([^ ]*\)$(SYMBOLSUFFIX)/\1\2 /g'  cblas.tmp > cblas.tmp2
-	@sed 's/goto[^( ]*/&$(SYMBOLSUFFIX)/g'  cblas.tmp2 > cblas.tmp
+	@sed 's/goto[^() ]*/&$(SYMBOLSUFFIX)/g'  cblas.tmp2 > cblas.tmp
 endif
 	@sed 's/common/openblas_config/g' cblas.tmp > "$(DESTDIR)$(OPENBLAS_INCLUDE_DIR)/cblas.h"
 endif
