@@ -68,7 +68,8 @@
 	ftst
 	fnstsw	%ax
 	andb	$68, %ah
-	je	.L300		# Alpha != ZERO
+//	je	.L300		# Alpha != ZERO
+	jmp	.L300
 
 /* Alpha == ZERO */
 	cmpl	$1,%esi

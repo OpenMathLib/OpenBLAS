@@ -75,7 +75,7 @@
 	comisd	%xmm0, %xmm1
 	jne	.L100		# Alpha != ZERO
 	jp	.L100		# For Alpha = NaN
-
+	je 	.L100		# disable the Alpha=zero path as it does not handle x=inf or nan
 /* Alpha == ZERO */
 	cmpq	$SIZE, INCX
 	jne	.L50

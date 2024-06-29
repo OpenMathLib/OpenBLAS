@@ -169,8 +169,12 @@ int CNAME(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, FLOAT da, FLOAT *x, BLAS
 			while(j < n1)
 			{
 			
-				x[i]=0.0;
-				x[i+inc_x]=0.0;
+				if (isinf(x[i])||isnan(x[i]))
+					x[i]=NAN;
+				else x[i]=0.0;
+				if (isinf(x[i+inc_x])||isnan(x[i+inc_x]))
+					x[i+inc_x]=NAN;
+				else x[i+inc_x]=0.0;
 				i += 2*inc_x ;
 				j+=2;
 
@@ -179,7 +183,9 @@ int CNAME(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, FLOAT da, FLOAT *x, BLAS
 			while(j < n)
 			{
 			
-				x[i]=0.0;
+				if (isinf(x[i])||isnan(x[i]))
+					x[i]=NAN;
+				else x[i]=0.0;
 				i += inc_x ;
 				j++;
 
@@ -213,9 +219,9 @@ int CNAME(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, FLOAT da, FLOAT *x, BLAS
 	BLASLONG n1 = n & -8;
 	if ( n1 > 0 )
 	{
-		if ( da == 0.0 )
-			dscal_kernel_8_zero(n1 , &da , x);
-		else
+//		if ( da == 0.0 )
+//			dscal_kernel_8_zero(n1 , &da , x);
+//		else
 			dscal_kernel_8(n1 , &da , x);
 	}
 
@@ -223,15 +229,24 @@ int CNAME(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, FLOAT da, FLOAT *x, BLAS
 	{
 		for ( i=n1 ; i<n; i++ )
 		{
-			x[i] = 0.0;
+			if(isinf(x[i])||isnan(x[i]))
+				x[i]=NAN;
+			else x[i] = 0.0;
 		}
 	}
+	else if (isinf(da)){
+		for ( i=n1 ; i<n; i++)
+			if (x[i]==0.) x[i]=NAN;
+			else x[i] *=da;
+	}	
 	else
 	{
 
 		for ( i=n1 ; i<n; i++ )
 		{
-			x[i] *= da;
+			if(isinf(x[i]))
+				x[i]=NAN;
+			else x[i] *= da;
 		}
 	}
 	return(0);

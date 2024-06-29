@@ -71,7 +71,7 @@ int CNAME(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, FLOAT da, FLOAT *x, BLAS
         FLOAT_V_T v0, v1;
         unsigned int gvl = 0;
         if(inc_x == 1){
-                if(da == 0.0){
+                if (0){ //if(da == 0.0){
                         memset(&x[0], 0, n * sizeof(FLOAT));
                 }else{
                         gvl = VSETVL(n);
@@ -96,7 +96,7 @@ int CNAME(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, FLOAT da, FLOAT *x, BLAS
                         }
                 }
         }else{
-                if(da == 0.0){
+                if (0) { //if(da == 0.0){
                         BLASLONG stride_x = inc_x * sizeof(FLOAT);
                         BLASLONG ix = 0;
                         gvl = VSETVL(n);

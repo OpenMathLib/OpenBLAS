@@ -84,8 +84,9 @@
 	cmpwi	cr0, N, 0
 	blelr-	cr0
 
-	fcmpu	cr0, FZERO, ALPHA
-	bne-	cr0, LL(A1I1)
+//	fcmpu	cr0, FZERO, ALPHA
+//	bne-	cr0, LL(A1I1)
+	b LL(A1I1)
 
 	cmpwi	cr0, INCX, SIZE
 	bne-	cr0, LL(A0IN)
