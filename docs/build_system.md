@@ -1,3 +1,8 @@
+This page describes the Make-based build, which is the default/authoritative
+build method. Note that the OpenBLAS repository also supports building with
+CMake (not described here) - that generally works and is tested, however there
+may be small differences between the Make and CMake builds.
+
 !!! warning
     This page is made by someone who is not the developer and should not be considered as an official documentation of the build system. For getting the full picture, it is best to read the Makefiles and understand them yourself.
 
@@ -95,10 +100,21 @@ NUM_PARALLEL    - define this to the number of OpenMP instances that your code m
 ```
 
 
-OpenBLAS uses a fixed set of memory buffers internally, used for communicating and compiling partial results from individual threads.
-For efficiency, the management array structure for these buffers is sized at build time - this makes it necessary to know in advance how
-many threads need to be supported on the target system(s). 
-With OpenMP, there is an additional level of complexity as there may be calls originating from a parallel region in the calling program. If OpenBLAS gets called from a single parallel region, it runs single-threaded automatically to avoid overloading the system by fanning out its own set of threads. 
-In the case that an OpenMP program makes multiple calls from independent regions or instances in parallel, this default serialization is not
-sufficient as the additional caller(s) would compete for the original set of buffers already in use by the first call.
-So if multiple OpenMP runtimes call into OpenBLAS at the same time, then only one of them will be able to make progress while all the rest of them spin-wait for the one available buffer. Setting NUM_PARALLEL to the upper bound on the number of OpenMP runtimes that you can have in a process ensures that there are a sufficient number of buffer sets available
+OpenBLAS uses a fixed set of memory buffers internally, used for communicating
+and compiling partial results from individual threads. For efficiency, the
+management array structure for these buffers is sized at build time - this
+makes it necessary to know in advance how many threads need to be supported on
+the target system(s).
+
+With OpenMP, there is an additional level of complexity as there may be calls
+originating from a parallel region in the calling program. If OpenBLAS gets
+called from a single parallel region, it runs single-threaded automatically to
+avoid overloading the system by fanning out its own set of threads. In the case
+that an OpenMP program makes multiple calls from independent regions or
+instances in parallel, this default serialization is not sufficient as the
+additional caller(s) would compete for the original set of buffers already in
+use by the first call. So if multiple OpenMP runtimes call into OpenBLAS at the
+same time, then only one of them will be able to make progress while all the
+rest of them spin-wait for the one available buffer. Setting `NUM_PARALLEL` to
+the upper bound on the number of OpenMP runtimes that you can have in a process
+ensures that there are a sufficient number of buffer sets available.
