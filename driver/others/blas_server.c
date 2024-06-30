@@ -418,7 +418,7 @@ blas_queue_t *tscq;
 
       tscq = atomic_load_queue(&thread_status[cpu].queue);
 
-	while(!tscq) {
+	while(!tscq || tscq == 0x1) {
 	YIELDING;
 
 	if ((unsigned int)rpcc() - last_tick > thread_timeout) {
