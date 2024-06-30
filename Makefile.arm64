@@ -176,6 +176,16 @@ endif
 endif
 endif
 
+# Detect ARM Neoverse V2.
+ifeq ($(CORE), NEOVERSEV2)
+ifeq (1, $(filter 1,$(GCCVERSIONGTEQ12) $(ISCLANG)))
+CCOMMON_OPT += -march=armv9-a -mtune=neoverse-v2
+ifneq ($(F_COMPILER), NAG)
+FCOMMON_OPT += -march=armv9-a -mtune=neoverse-v2
+endif
+endif
+endif
+
 # Use a53 tunings because a55 is only available in GCC>=8.1
 ifeq ($(CORE), CORTEXA55)
 ifeq (1, $(filter 1,$(GCCVERSIONGTEQ7) $(ISCLANG)))
