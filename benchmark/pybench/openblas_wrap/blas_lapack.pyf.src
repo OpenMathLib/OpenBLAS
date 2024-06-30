@@ -111,6 +111,97 @@ function <prefix4>nrm2(n,x,offx,incx) result(n2)
 
 end function <prefix4>nrm2
 
+
+!
+! Level 2 BLAS
+!
+
+
+subroutine <prefix>gemv(m,n,alpha,a,x,beta,y,offx,incx,offy,incy,trans,rows,cols,ly)
+  ! Computes a matrix-vector product using a general matrix
+  !
+  ! y = gemv(alpha,a,x,beta=0,y=0,offx=0,incx=1,offy=0,incy=0,trans=0)
+  ! Calculate y <- alpha * op(A) * x + beta * y
+
+  callstatement (*f2py_func)((trans?(trans==2?"C":"T"):"N"),&m,&n,&alpha,a,&m, &
+       x+offx,&incx,&beta,y+offy,&incy)
+  callprotoargument char*,F_INT*,F_INT*,<ctype>*,<ctype>*,F_INT*,<ctype>*,F_INT*,<ctype>*, &
+       <ctype>*,F_INT*
+
+  integer optional, intent(in), check(trans>=0 && trans <=2) :: trans = 0
+  integer optional, intent(in), check(incx>0||incx<0) :: incx = 1
+  integer optional, intent(in), check(incy>0||incy<0) :: incy = 1
+  <ftype> intent(in) :: alpha
+  <ftype> intent(in), optional :: beta = <0.0,\0,(0.0\,0.0),\2>
+
+  <ftype> dimension(*), intent(in) :: x
+  <ftype> dimension(ly), intent(in,copy,out), depend(ly),optional :: y
+  integer intent(hide), depend(incy,rows,offy) :: ly = &
+       (y_capi==Py_None?1+offy+(rows-1)*abs(incy):-1)
+  <ftype> dimension(m,n), intent(in) :: a
+  integer depend(a), intent(hide):: m = shape(a,0)
+  integer depend(a), intent(hide):: n = shape(a,1)
+
+  integer optional, intent(in) :: offx=0
+  integer optional, intent(in) :: offy=0
+  check(offx>=0 && offx<len(x)) :: x
+  check(len(x)>offx+(cols-1)*abs(incx)) :: x
+  depend(offx,cols,incx) :: x
+
+  check(offy>=0 && offy<len(y)) :: y
+  check(len(y)>offy+(rows-1)*abs(incy)) :: y
+  depend(offy,rows,incy) :: y
+
+  integer depend(m,n,trans), intent(hide) :: rows = (trans?n:m)
+  integer depend(m,n,trans), intent(hide) :: cols = (trans?m:n)
+
+end subroutine <prefix>gemv
+
+
+subroutine <prefix>gbmv(m,n,kl,ku,alpha,a,lda,x,incx,offx,beta,y,incy,offy,trans,ly)
+  ! Performs one of the matrix-vector operations
+  !
+  !    y := alpha*A*x + beta*y,   or   y := alpha*A**T*x + beta*y,
+  !                               or   y := alpha*A**H*x + beta*y,
+  !
+  ! where alpha and beta are scalars, x and y are vectors and A is an
+  ! m by n band matrix, with kl sub-diagonals and ku super-diagonals.
+
+  callstatement (*f2py_func)((trans?(trans==2?"C":"T"):"N"),&m,&n,&kl,&ku,&alpha,a,&lda,x+offx,&incx,&beta,y+offy,&incy)
+  callprotoargument char*,F_INT*,F_INT*,F_INT*,F_INT*,<ctype>*,<ctype>*,F_INT*,<ctype>*,F_INT*,<ctype>*,<ctype>*,F_INT*
+
+  integer optional,intent(in),check(trans>=0 && trans <=2) :: trans = 0
+  integer intent(in), depend(ku,kl),check(m>=ku+kl+1) :: m
+  integer intent(in),check(n>=0&&n==shape(a,1)),depend(a) :: n
+  integer intent(in),check(kl>=0) :: kl
+  integer intent(in),check(ku>=0) :: ku
+  integer intent(hide),depend(a) :: lda = MAX(shape(a,0),1)
+  integer optional, intent(in),check(incx>0||incx<0) :: incx = 1
+  integer optional, intent(in),check(incy>0||incy<0) :: incy = 1
+  integer intent(hide),depend(m,n,incy,offy,trans) :: ly = &
+      (y_capi==Py_None?1+offy+(trans==0?m-1:n-1)*abs(incy):-1)
+  integer optional, intent(in) :: offx=0
+  integer optional, intent(in) :: offy=0
+
+  <ftype> intent(in) :: alpha
+  <ftype> intent(in),optional :: beta = <0.0,\0,(0.0\,0.0),\2>
+
+  <ftype> dimension(lda,n),intent(in) :: a
+
+  <ftype> dimension(ly), intent(in,out,copy,out=yout),depend(ly),optional :: y
+  check(offy>=0 && offy<len(y)) :: y
+  check(len(y)>offy+(trans==0?m-1:n-1)*abs(incy)) :: y
+  depend(offy,n,incy) :: y
+
+  <ftype> dimension(*), intent(in) :: x
+  check(offx>=0 && offx<len(x)) :: x
+  check(len(x)>offx+(trans==0?n-1:m-1)*abs(incx)) :: x
+  depend(offx,n,incx) :: x
+
+end subroutine <prefix>gbmv
+
+
+
 !
 ! Level 3 BLAS
 !
