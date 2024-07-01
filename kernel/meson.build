@@ -19,7 +19,7 @@ base_kops = [
         'q': {'exts': {'_k': {'dir': 'arm', 'kernel': 'zrot.c'}}},
         'cs': {'exts': {'_k': {'dir': 'arm', 'kernel': 'zrot.c'}}},
         'zd': {'exts': {'_k': {'dir': 'arm', 'kernel': 'zrot.c'}}},
-        'xq': {'exts': {'_k': {'dir': 'x86_64', 'kernel': 'zrot.S'}}},
+        # 'xq': {'exts': {'_k': {'dir': 'x86_64', 'kernel': 'zrot.S'}}},
     },
   },
   { 'base': '?swap',
@@ -38,8 +38,8 @@ base_kops = [
         'd': {'exts': {'_k': {'dir': 'arm', 'kernel': 'scal.c'}}},
         'c': {'exts': {'_k': {'dir': 'arm', 'kernel': 'zscal.c'}}},
         'z': {'exts': {'_k': {'dir': 'arm', 'kernel': 'zscal.c'}}},
-        'q': {'exts': {'_k': {'dir': 'x86_64', 'kernel': 'scal.S'}}},
-        'x': {'exts': {'_k': {'dir': 'x86_64', 'kernel': 'zscal.S'}}},
+        # 'q': {'exts': {'_k': {'dir': 'x86_64', 'kernel': 'scal.S'}}},
+        # 'x': {'exts': {'_k': {'dir': 'x86_64', 'kernel': 'zscal.S'}}},
     },
   },
   { 'base': '?copy',
@@ -310,7 +310,7 @@ base_kops = [
   { 'base': '?gemm3m',
     'modes': {
         'c': {'exts': {
-            '_kernel': {'dir': 'x86_64', 'kernel': 'zgemm3m_kernel_4x8_nehalem.S',
+            '_kernel': {'dir': 'x86_64', 'kernel': 'cgemm3m_kernel_8x4_haswell.c',
                         'addl': ['-DICOPY', '-UUSE_ALPHA']},
             '_oncopyb': {'dir': 'generic', 'kernel': 'zgemm3m_ncopy_4.c',
                         'addl': ['-DUSE_ALPHA']},
@@ -338,7 +338,7 @@ base_kops = [
                         'addl': ['-DUSE_ALPHA', '-DREAL_ONLY']},
         }},
         'z': {'exts': {
-            '_kernel': {'dir': 'x86_64', 'kernel': 'zgemm3m_kernel_4x8_nehalem.S',
+            '_kernel': {'dir': 'x86_64', 'kernel': 'zgemm3m_kernel_4x4_haswell.c',
                         'addl': ['-DICOPY', '-UUSE_ALPHA']},
             '_oncopyb': {'dir': 'generic', 'kernel': 'zgemm3m_ncopy_4.c',
                         'addl': ['-DUSE_ALPHA']},
@@ -592,8 +592,8 @@ base_kops = [
             '_oncopy': {'dir': 'generic', 'kernel': 'gemm_ncopy_4.c'},
             '_otcopy': {'dir': 'generic', 'kernel': 'gemm_tcopy_4.c'},
             # TODO(rg): direct and direct_performant are built only conditionally
-            '_direct': {'dir': 'x86_64', 'kernel': 'sgemm_direct_skylakex.c'},
-            '_direct_performant': {'dir': 'x86_64', 'kernel': 'sgemm_direct_performant.c'},
+            # '_direct': {'dir': 'x86_64', 'kernel': 'sgemm_direct_skylakex.c'},
+            # '_direct_performant': {'dir': 'x86_64', 'kernel': 'sgemm_direct_performant.c'},
         }},
         'd': {'exts': {
             '_beta': {'dir': 'generic', 'kernel': 'gemm_beta.c'},
@@ -1159,6 +1159,9 @@ foreach _kop : base_kops
     endif
   endif
   foreach mode, details : modes
+    if mode == 'x' or mode == 'q'
+      continue
+    endif
     # Generally, one list is required for each foreach
     __cargs = _cargs + _ckop_args
     prec_mode = precision_mappings[mode]
@@ -1237,13 +1240,16 @@ _kern_deps = []
 _is_asm = false
 foreach conf: kernel_confs
   if '.s' in conf['src'] or '.S' in conf['src']
+    message(conf)
     _is_asm = true
   endif
-  if _is_asm
+  # TODO(rg): This should be for all _is_asm
+  if 'dgemm_kernel' in conf['name']
+    message(conf)
     # See https://github.com/mesonbuild/meson/discussions/13374
     _kern_deps += declare_dependency(
         sources: conf['src'],
-        include_directories:  _inc,
+        include_directories: _inc,
         compile_args: conf['c_args'],
     )
   else
