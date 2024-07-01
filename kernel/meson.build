@@ -429,8 +429,8 @@ base_kops = [
   # Level 3 symbols
   { 'base': '?gemm_kernel',
     'modes': {
-        's': {'exts': {'': {'dir': 'generic', 'kernel': 'gemmkernel_2x2.c'}}},
-        'd': {'exts': {'': {'dir': 'generic', 'kernel': 'gemmkernel_2x2.c'}}},
+        's': {'exts': {'': {'dir': 'x86_64', 'kernel': 'sgemm_kernel_8x4_haswell.c'}}},
+        'd': {'exts': {'': {'dir': 'x86_64', 'kernel': 'dgemm_kernel_4x8_haswell.S'}}},
         'c': {
             'exts': {
                 '_n': {'dir': 'generic', 'kernel': 'zgemmkernel_2x2.c', 'addl': ['-DNN']},
@@ -456,10 +456,10 @@ base_kops = [
     'modes': {
         's': {
             'exts': {
-                '_LN': {'dir': 'generic', 'kernel': 'trmmkernel_2x2.c'},
-                '_LT': {'dir': 'generic', 'kernel': 'trmmkernel_2x2.c', 'addl': ['-DLEFT', '-DTRANSA']},
-                '_RN': {'dir': 'generic', 'kernel': 'trmmkernel_2x2.c'},
-                '_RT': {'dir': 'generic', 'kernel': 'trmmkernel_2x2.c'},
+                '_LN': {'dir': 'x86_64', 'kernel': 'sgemm_kernel_8x4_haswell.c'},
+                '_LT': {'dir': 'x86_64', 'kernel': 'sgemm_kernel_8x4_haswell.c', 'addl': ['-DLEFT', '-DTRANSA']},
+                '_RN': {'dir': 'x86_64', 'kernel': 'sgemm_kernel_8x4_haswell.c'},
+                '_RT': {'dir': 'x86_64', 'kernel': 'sgemm_kernel_8x4_haswell.c'},
             }
         },
         'd': {
@@ -589,7 +589,7 @@ base_kops = [
             # TODO(rg): the _NUM prefixes are arch dependent
             '_incopy': {'dir': 'generic', 'kernel': 'gemm_ncopy_8.c'},
             '_itcopy': {'dir': 'generic', 'kernel': 'gemm_tcopy_8.c'},
-            '_oncopy': {'dir': 'generic', 'kernel': 'gemm_ncopy_2.c'},
+            '_oncopy': {'dir': 'generic', 'kernel': 'gemm_ncopy_4.c'},
             '_otcopy': {'dir': 'generic', 'kernel': 'gemm_tcopy_4.c'},
             # TODO(rg): direct and direct_performant are built only conditionally
             '_direct': {'dir': 'x86_64', 'kernel': 'sgemm_direct_skylakex.c'},
@@ -601,7 +601,7 @@ base_kops = [
                                      'kernel': 'gemm_small_matrix_permit.c'},
             '_incopy': {'dir': 'generic', 'kernel': 'gemm_ncopy_8.c'},
             '_itcopy': {'dir': 'generic', 'kernel': 'gemm_tcopy_8.c'},
-            '_oncopy': {'dir': 'generic', 'kernel': 'gemm_ncopy_2.c'},
+            '_oncopy': {'dir': 'generic', 'kernel': 'gemm_ncopy_4.c'},
             '_otcopy': {'dir': 'generic', 'kernel': 'gemm_tcopy_4.c'},
         }},
         'c': {'exts': {
