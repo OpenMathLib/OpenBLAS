@@ -1,3 +1,8 @@
+bld/
+tmpcmake/
+tmpmake/
+meson_symbols.txt
+cmake_symbols.txt
 *.obj
 *.lib
 *.dll
