@@ -1233,16 +1233,29 @@ foreach _kop : base_kops
 endforeach
 
 _kern_libs = []
+_kern_deps = []
+_is_asm = false
 foreach conf: kernel_confs
-    # message(conf['name'])
-    # message(conf)
+  if '.s' in conf['src'] or '.S' in conf['src']
+    _is_asm = true
+  endif
+  if _is_asm
+    # See https://github.com/mesonbuild/meson/discussions/13374
+    _kern_deps += declare_dependency(
+        sources: conf['src'],
+        include_directories:  _inc,
+        compile_args: conf['c_args'],
+    )
+  else
     _kern_libs += static_library(
         conf['name'],
         conf['src'],
         include_directories:  _inc,
         c_args: conf['c_args'],
     )
+  endif
 endforeach
 
 _kern = static_library('_kern',
-                       link_whole: _kern_libs)
+                       link_whole: _kern_libs,
+                       dependencies: _kern_deps)
