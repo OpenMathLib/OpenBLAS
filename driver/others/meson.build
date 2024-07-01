@@ -72,8 +72,6 @@ endforeach
 # Create the static libraries from the configurations
 others_libs = []
 foreach conf : others_confs
-  message(conf['name'])
-  message(conf)
   others_libs += [static_library(
     conf['name'],
     conf['src'],

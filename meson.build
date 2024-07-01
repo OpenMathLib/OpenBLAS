@@ -446,5 +446,11 @@ subdir('driver/others')
 subdir('kernel')
 
 _openblas = static_library('openblas',
-                    link_whole: [ _interface, _l2_driver, _l3_driver, _others, _kern ],
+                    link_whole: [
+                     _interface,
+                     _l2_driver,
+                     _l3_driver,
+                     _others,
+                     _kern,
+                    ],
                     install: true)
