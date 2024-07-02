@@ -9,9 +9,9 @@ package manager.
     The OpenBLAS documentation does not contain API reference documentation for
     BLAS or LAPACK, since these are standardized APIs, the documentation for
     which can be found in other places. If you want to understand every BLAS
-    function and definition, we recommend reading the
-    [Intel MKL reference manual](https://software.intel.com/en-us/intel-mkl/documentation)
-    or the [Netlib BLAS documentation](http://netlib.org/blas/).
+    and LAPACK function and definition, we recommend reading the
+    [Netlib BLAS ](http://netlib.org/blas/) and [Netlib LAPACK](http://netlib.org/lapack/)
+    documentation.
 
     OpenBLAS does contain a limited number of functions that are non-standard,
     these are documented at [OpenBLAS extension functions](extensions.md).

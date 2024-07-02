@@ -8,6 +8,7 @@ This work was or is partially supported by the following grants, contracts and i
 
 * Research and Development of Compiler System and Toolchain for Domestic CPU, National S&T Major Projects: Core Electronic Devices, High-end General Chips and Fundamental Software (No.2009ZX01036-001-002)
 * National High-tech R&D Program of China (Grant No.2012AA010903)
+* [PerfXLab](http://www.perfxlab.com/)
 * Chan Zuckerberg Initiative's Essential Open Source Software for Science program:
     * Cycle 1 grant: [Strengthening NumPy's foundations - growing beyond code](https://figshare.com/articles/journal_contribution/Proposal_NumPy_OpenBLAS_for_Chan_Zuckerberg_Initiative_EOSS_2019_round_1/10302167) (2019-2020)
     * Cycle 3 grant: [Improving usability and sustainability for NumPy and OpenBLAS](https://chanzuckerberg.com/eoss/proposals/improving-usability-and-sustainability-for-numpy-and-openblas/) (2020-2021)
@@ -23,7 +24,7 @@ A list of backers is available [in BACKERS.md](https://github.com/OpenMathLib/Op
 We welcome hardware donations, including the latest CPUs and motherboards.
 
 
-## Users of OpenBLAS
+## Open source users of OpenBLAS
 
 Prominent open source users of OpenBLAS include:
 
