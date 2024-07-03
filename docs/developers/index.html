@@ -60,10 +60,12 @@
   
     
     
+      
     
     
     
-    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="grey" data-md-color-accent="indigo">
+    
+    <body dir="ltr" data-md-color-scheme="slate" data-md-color-primary="blue-grey" data-md-color-accent="indigo">
   
     
     <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
@@ -115,7 +117,33 @@
     </div>
     
       
+        <form class="md-header__option" data-md-component="palette">
+  
     
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="blue-grey" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12c0-2.42-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12 20 8.69Z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="blue-grey" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12 20 8.69Z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var media,input,key,value,palette=__md_get("__palette");if(palette&&palette.color){"(prefers-color-scheme)"===palette.color.media&&(media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']"),palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent"));for([key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
     
     
     
@@ -157,6 +185,18 @@
 </div>
     
     
+      <div class="md-header__source">
+        <a href="https://github.com/OpenMathLib/OpenBLAS" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
   </nav>
   
 </header>
@@ -189,6 +229,18 @@
     </a>
     OpenBLAS
   </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/OpenMathLib/OpenBLAS" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
   
   <ul class="md-nav__list" data-md-scrollfix>
     
@@ -325,9 +377,9 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#source-codes-layout" class="md-nav__link">
+  <a href="#source-code-layout" class="md-nav__link">
     <span class="md-ellipsis">
-      Source codes Layout
+      Source code layout
     </span>
   </a>
   
@@ -343,9 +395,9 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#run-openblas-test" class="md-nav__link">
+  <a href="#running-openblas-tests" class="md-nav__link">
     <span class="md-ellipsis">
-      Run OpenBLAS Test
+      Running OpenBLAS tests
     </span>
   </a>
   
@@ -363,7 +415,7 @@
         <li class="md-nav__item">
   <a href="#adding-autodetection-support-for-a-new-revision-or-variant-of-a-supported-cpu" class="md-nav__link">
     <span class="md-ellipsis">
-      Adding autodetection support for a new revision or variant of a supported cpu
+      Adding autodetection support for a new revision or variant of a supported CPU
     </span>
   </a>
   
@@ -372,7 +424,7 @@
         <li class="md-nav__item">
   <a href="#adding-dedicated-support-for-a-new-cpu-model" class="md-nav__link">
     <span class="md-ellipsis">
-      Adding dedicated support for a new cpu model
+      Adding dedicated support for a new CPU model
     </span>
   </a>
   
@@ -522,9 +574,9 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#source-codes-layout" class="md-nav__link">
+  <a href="#source-code-layout" class="md-nav__link">
     <span class="md-ellipsis">
-      Source codes Layout
+      Source code layout
     </span>
   </a>
   
@@ -540,9 +592,9 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#run-openblas-test" class="md-nav__link">
+  <a href="#running-openblas-tests" class="md-nav__link">
     <span class="md-ellipsis">
-      Run OpenBLAS Test
+      Running OpenBLAS tests
     </span>
   </a>
   
@@ -560,7 +612,7 @@
         <li class="md-nav__item">
   <a href="#adding-autodetection-support-for-a-new-revision-or-variant-of-a-supported-cpu" class="md-nav__link">
     <span class="md-ellipsis">
-      Adding autodetection support for a new revision or variant of a supported cpu
+      Adding autodetection support for a new revision or variant of a supported CPU
     </span>
   </a>
   
@@ -569,7 +621,7 @@
         <li class="md-nav__item">
   <a href="#adding-dedicated-support-for-a-new-cpu-model" class="md-nav__link">
     <span class="md-ellipsis">
-      Adding dedicated support for a new cpu model
+      Adding dedicated support for a new CPU model
     </span>
   </a>
   
@@ -598,9 +650,12 @@
                 
                   
 
+  
+  
+
 
 <h1 id="developer-manual">Developer manual</h1>
-<h2 id="source-codes-layout">Source codes Layout</h2>
+<h2 id="source-code-layout">Source code layout</h2>
 <div class="highlight"><pre><span></span><code>OpenBLAS/  
 ├── benchmark                  Benchmark codes for BLAS
 ├── cmake                      CMakefiles
@@ -647,73 +702,122 @@
 ├── test                        Test codes for BLAS
 └── utest                       Regression test
 </code></pre></div>
-<p>A call tree for <code>dgemm</code> is as following.</p>
+<p>A call tree for <code>dgemm</code> looks as follows:
 <div class="highlight"><pre><span></span><code>interface/gemm.c
         │
 driver/level3/level3.c
         │
 gemm assembly kernels at kernel/
-</code></pre></div>
-<p>To find the kernel currently used for a particular supported cpu, please check the corresponding <code>kernel/$(ARCH)/KERNEL.$(CPU)</code> file.</p>
-<p>Here is an example for <code>kernel/x86_64/KERNEL.HASWELL</code></p>
-<p><div class="highlight"><pre><span></span><code>...
+</code></pre></div></p>
+<p>To find the kernel currently used for a particular supported CPU, please check the corresponding <code>kernel/$(ARCH)/KERNEL.$(CPU)</code> file.</p>
+<p>Here is an example for <code>kernel/x86_64/KERNEL.HASWELL</code>:
+<div class="highlight"><pre><span></span><code>...
 DTRMMKERNEL    =  dtrmm_kernel_4x8_haswell.c
 DGEMMKERNEL    =  dgemm_kernel_4x8_haswell.S
 ...
 </code></pre></div>
 According to the above <code>KERNEL.HASWELL</code>, OpenBLAS Haswell dgemm kernel file is <code>dgemm_kernel_4x8_haswell.S</code>.</p>
 <h2 id="optimizing-gemm-for-a-given-hardware">Optimizing GEMM for a given hardware</h2>
-<p>Read the Goto paper to understand the algorithm.</p>
-<p>Goto, Kazushige; van de Geijn, Robert A. (2008). <a href="http://delivery.acm.org/10.1145/1360000/1356053/a12-goto.pdf?ip=155.68.162.54&amp;id=1356053&amp;acc=ACTIVE%20SERVICE&amp;key=A79D83B43E50B5B8%2EF070BBE7E45C3F17%2E4D4702B0C3E38B35%2E4D4702B0C3E38B35&amp;__acm__=1517932837_edfe766f1e295d9a7830812371e1d173">"Anatomy of High-Performance Matrix Multiplication"</a>. ACM Transactions on Mathematical Software 34 (3): Article 12
-(The above link is available only to ACM members, but this and many related papers is also available on the pages
-of van de Geijn's FLAME project, http://www.cs.utexas.edu/~flame/web/FLAMEPublications.html )</p>
-<p>The <code>driver/level3/level3.c</code> is the implementation of Goto's algorithm. Meanwhile, you can look at <code>kernel/generic/gemmkernel_2x2.c</code>, which is a naive <code>2x2</code> register blocking gemm kernel in C.</p>
-<p>Then,
-* Write optimized assembly kernels. consider instruction pipeline, available registers, memory/cache accessing
-* Tuning cache block size, <code>Mc</code>, <code>Kc</code>, and <code>Nc</code> </p>
-<p>Note that not all of the cpu-specific parameters in param.h are actively used in algorithms. DNUMOPT only appears as a scale factor in profiling output of the level3 syrk interface code, while its counterpart SNUMOPT (aliased as NUMOPT in common.h) is not used anywhere at all. 
-SYMV_P is only used in the generic kernels for the symv and chemv/zhemv functions - at least some of those are usually overridden by cpu-specific implementations, so if you start by cloning the existing implementation for a related cpu you need to check its KERNEL file to see if tuning SYMV_P would have any effect at all. 
-GEMV_UNROLL is only used by some older x86_64 kernels, so not all sections in param.h define it.
-Similarly, not all of the cpu parameters like L2 or L3 cache sizes are necessarily used in current kernels for a given model - by all indications the cpu identification code was imported from some other project originally.</p>
-<h2 id="run-openblas-test">Run OpenBLAS Test</h2>
-<p>We use netlib blas test, cblas test, and LAPACK test. Meanwhile, we use <a href="https://github.com/xianyi/BLAS-Tester">BLAS-Tester</a>, a modified test tool from ATLAS.</p>
+<div class="admonition abstract">
+<p class="admonition-title">Read the Goto paper to understand the algorithm</p>
+<p>Goto, Kazushige; van de Geijn, Robert A. (2008).
+<a href="http://delivery.acm.org/10.1145/1360000/1356053/a12-goto.pdf?ip=155.68.162.54&amp;id=1356053&amp;acc=ACTIVE%20SERVICE&amp;key=A79D83B43E50B5B8%2EF070BBE7E45C3F17%2E4D4702B0C3E38B35%2E4D4702B0C3E38B35&amp;__acm__=1517932837_edfe766f1e295d9a7830812371e1d173">"Anatomy of High-Performance Matrix Multiplication"</a>.
+ACM Transactions on Mathematical Software 34 (3): Article 12</p>
+<p>(The above link is available only to ACM members, but this and many related
+papers is also available on <a href="http://www.cs.utexas.edu/~flame/web/FLAMEPublications.html">the pages of van de Geijn's FLAME project</a>)</p>
+</div>
+<p>The <code>driver/level3/level3.c</code> is the implementation of Goto's algorithm.
+Meanwhile, you can look at <code>kernel/generic/gemmkernel_2x2.c</code>, which is a naive
+<code>2x2</code> register blocking <code>gemm</code> kernel in C. Then:</p>
 <ul>
-<li>Run <code>test</code> and <code>ctest</code> at OpenBLAS. e.g. <code>make test</code> or <code>make ctest</code>.</li>
-<li>Run regression test <code>utest</code> at OpenBLAS.</li>
-<li>Run LAPACK test. e.g. <code>make lapack-test</code>.</li>
-<li>Clone <a href="https://github.com/xianyi/BLAS-Tester">BLAS-Tester</a>, which can compare the OpenBLAS result with netlib reference BLAS.</li>
+<li>Write optimized assembly kernels. Consider instruction pipeline, available registers, memory/cache access.</li>
+<li>Tune cache block sizes (<code>Mc</code>, <code>Kc</code>, and <code>Nc</code>)</li>
 </ul>
-<p>The project makes use of several Continuous Integration (CI) services conveniently interfaced with github to automatically check compilability on a number of platforms.
-Lastly, the testsuites included with "numerically heavy" projects like Julia, NumPy, Octave or QuantumEspresso can be used for regression testing.</p>
+<p>Note that not all of the CPU-specific parameters in <code>param.h</code> are actively used in algorithms.
+<code>DNUMOPT</code> only appears as a scale factor in profiling output of the level3 <code>syrk</code> interface code,
+while its counterpart <code>SNUMOPT</code> (aliased as <code>NUMOPT</code> in <code>common.h</code>) is not used anywhere at all. </p>
+<p><code>SYMV_P</code> is only used in the generic kernels for the <code>symv</code> and <code>chemv</code>/<code>zhemv</code> functions -
+at least some of those are usually overridden by CPU-specific implementations, so if you start
+by cloning the existing implementation for a related CPU you need to check its <code>KERNEL</code> file
+to see if tuning <code>SYMV_P</code> would have any effect at all.</p>
+<p><code>GEMV_UNROLL</code> is only used by some older x86-64 kernels, so not all sections in <code>param.h</code> define it.
+Similarly, not all of the CPU parameters like L2 or L3 cache sizes are necessarily used in current
+kernels for a given model - by all indications the CPU identification code was imported from some
+other project originally.</p>
+<h2 id="running-openblas-tests">Running OpenBLAS tests</h2>
+<p>We use tests for Netlib BLAS, CBLAS, and LAPACK. In addition, we use
+OpenBLAS-specific regression tests. They can be run with Make:</p>
+<ul>
+<li><code>make -C test</code> for BLAS tests</li>
+<li><code>make -C ctest</code> for CBLAS tests</li>
+<li><code>make -C utest</code> for OpenBLAS regression tests</li>
+<li><code>make lapack-test</code> for LAPACK tests</li>
+</ul>
+<p>We also use the <a href="https://github.com/xianyi/BLAS-Tester">BLAS-Tester</a> tests for regression testing.
+It is basically the ATLAS test suite adapted for building with OpenBLAS.</p>
+<p>The project makes use of several Continuous Integration (CI) services
+conveniently interfaced with GitHub to automatically run tests on a number of
+platforms and build configurations.</p>
+<p>Also note that the test suites included with "numerically heavy" projects like
+Julia, NumPy, SciPy, Octave or QuantumEspresso can be used for regression
+testing, when those projects are built such that they use OpenBLAS.</p>
 <h2 id="benchmarking">Benchmarking</h2>
-<p>Several simple C benchmarks for performance testing individual BLAS functions are available in the <code>benchmark</code> folder, and its <code>scripts</code> subdirectory contains corresponding versions for Python, Octave and R.
-Other options include</p>
+<p>A number of benchmarking methods are used by OpenBLAS:</p>
 <ul>
-<li>https://github.com/RoyiAvital/MatlabJuliaMatrixOperationsBenchmark (various matrix operations in Julia and Matlab)</li>
-<li>https://github.com/mmperf/mmperf/ (single-core matrix multiplication)</li>
+<li>Several simple C benchmarks for performance testing individual BLAS functions
+  are available in the <code>benchmark</code> folder. They can be run locally through the
+  <code>Makefile</code> in that directory. And the <code>benchmark/scripts</code> subdirectory
+  contains similar benchmarks that use OpenBLAS via NumPy, SciPy, Octave and R.</li>
+<li>On pull requests, a representative set of functions is tested for performance
+  regressions with Codspeed; results can be viewed at
+  <a href="https://codspeed.io/OpenMathLib/OpenBLAS">https://codspeed.io/OpenMathLib/OpenBLAS</a>.</li>
+<li>The <a href="https://github.com/OpenMathLib/BLAS-Benchmarks">OpenMathLib/BLAS-Benchmarks</a> repository
+  contains an <a href="https://github.com/airspeed-velocity/asv/">Airspeed Velocity</a>-based benchmark
+  suite which is run on several CPU architectures in cron jobs. Results are published
+  to a dashboard: <a href="http://www.openmathlib.org/BLAS-Benchmarks/">http://www.openmathlib.org/BLAS-Benchmarks/</a>.</li>
 </ul>
-<h2 id="adding-autodetection-support-for-a-new-revision-or-variant-of-a-supported-cpu">Adding autodetection support for a new revision or variant of a supported cpu</h2>
-<p>Especially relevant for x86_64, a new cpu model may be a "refresh" (die shrink and/or different number of cores) within an existing
-model family without significant changes to its instruction set. (e.g. Intel Skylake, Kaby Lake etc. still are fundamentally Haswell,
-low end Goldmont etc. are Nehalem). In this case, compilation with the appropriate older TARGET will already lead to a satisfactory build.</p>
+<p>Benchmarking code for BLAS libraries, and specific performance analysis results, can be found
+in a number of places. For example:</p>
+<ul>
+<li><a href="https://github.com/RoyiAvital/MatlabJuliaMatrixOperationsBenchmark">MatlabJuliaMatrixOperationsBenchmark</a>
+  (various matrix operations in Julia and Matlab)</li>
+<li><a href="https://github.com/mmperf/mmperf/">mmperf/mmperf</a> (single-core matrix multiplication)</li>
+</ul>
+<h2 id="adding-autodetection-support-for-a-new-revision-or-variant-of-a-supported-cpu">Adding autodetection support for a new revision or variant of a supported CPU</h2>
+<p>Especially relevant for x86-64, a new CPU model may be a "refresh" (die shrink and/or different number of cores) within an existing
+model family without significant changes to its instruction set (e.g., Intel Skylake and Kaby Lake still are fundamentally the same architecture as Haswell,
+low end Goldmont etc. are Nehalem). In this case, compilation with the appropriate older <code>TARGET</code> will already lead to a satisfactory build.</p>
 <p>To achieve autodetection of the new model, its CPUID (or an equivalent identifier) needs to be added in the <code>cpuid_&lt;architecture&gt;.c</code>
-relevant for its general architecture, with the returned name for the new type set appropriately. For x86 which has the most complex
-cpuid file, there are two functions that need to be edited - get_cpuname() to return e.g. CPUTYPE_HASWELL and get_corename() for the (broader)
-core family returning e.g. CORE_HASWELL. (This information ends up in the Makefile.conf and config.h files generated by <code>getarch</code>. Failure to
-set either will typically lead to a missing definition of the GEMM_UNROLL parameters later in the build, as <code>getarch_2nd</code> will be unable to
-find a matching parameter section in param.h.)</p>
-<p>For architectures where "DYNAMIC_ARCH" builds are supported, a similar but simpler code section for the corresponding runtime detection of the cpu exists in <code>driver/others/dynamic.c</code> (for x86) and <code>driver/others/dynamic_&lt;arch&gt;.c</code> for other architectures.<br />
+relevant for its general architecture, with the returned name for the new type set appropriately. For x86, which has the most complex
+<code>cpuid</code> file, there are two functions that need to be edited: <code>get_cpuname()</code> to return, e.g., <code>CPUTYPE_HASWELL</code> and <code>get_corename()</code> for the (broader)
+core family returning, e.g., <code>CORE_HASWELL</code>.<sup id="fnref:1"><a class="footnote-ref" href="#fn:1">1</a></sup></p>
+<p>For architectures where <code>DYNAMIC_ARCH</code> builds are supported, a similar but simpler code section for the corresponding
+runtime detection of the CPU exists in <code>driver/others/dynamic.c</code> (for x86), and <code>driver/others/dynamic_&lt;arch&gt;.c</code> for other architectures.
 Note that for x86 the CPUID is compared after splitting it into its family, extended family, model and extended model parts, so the single decimal
-number returned by Linux in /proc/cpuinfo for the model has to be converted back to hexadecimal before splitting into its constituent
-digits, e.g. 142 = 8E , translates to extended model 8, model 14.</p>
-<h2 id="adding-dedicated-support-for-a-new-cpu-model">Adding dedicated support for a new cpu model</h2>
-<p>Usually it will be possible to start from an existing model, clone its KERNEL configuration file to the new name to use for this TARGET and eventually replace individual kernels with versions better suited for peculiarities of the new cpu model. In addition, it is necessary to add
-(or clone at first) the corresponding section of GEMM_UNROLL parameters in the toplevel param.h, and possibly to add definitions such as USE_TRMM
-(governing whether TRMM functions use the respective GEMM kernel or a separate source file) to the Makefiles (and CMakeLists.txt) in the kernel
-directory. The new cpu name needs to be added to TargetLists.txt and the cpu autodetection code used by the <code>getarch</code> helper program - contained in
+number returned by Linux in <code>/proc/cpuinfo</code> for the model has to be converted back to hexadecimal before splitting into its constituent
+digits. For example, <code>142 == 8E</code> translates to extended model 8, model 14.</p>
+<h2 id="adding-dedicated-support-for-a-new-cpu-model">Adding dedicated support for a new CPU model</h2>
+<p>Usually it will be possible to start from an existing model, clone its <code>KERNEL</code> configuration file to the new name to use for this
+<code>TARGET</code> and eventually replace individual kernels with versions better suited for peculiarities of the new CPU model.
+In addition, it is necessary to add (or clone at first) the corresponding section of <code>GEMM_UNROLL</code> parameters in the top-level <code>param.h</code>,
+and possibly to add definitions such as <code>USE_TRMM</code> (governing whether <code>TRMM</code> functions use the respective <code>GEMM</code> kernel or a separate source file)
+to the <code>Makefile</code>s (and <code>CMakeLists.txt</code>) in the kernel directory. The new CPU name needs to be added to <code>TargetList.txt</code>,
+and the CPU auto-detection code used by the <code>getarch</code> helper program - contained in
 the <code>cpuid_&lt;architecture&gt;.c</code> file amended to include the CPUID (or equivalent) information processing required (see preceding section).</p>
 <h2 id="adding-support-for-an-entirely-new-architecture">Adding support for an entirely new architecture</h2>
-<p>This endeavour is best started by cloning the entire support structure for 32bit ARM, and within that the ARMV5 cpu in particular as this is implemented through plain C kernels only. An example providing a convenient "shopping list" can be seen in pull request #1526.</p>
+<p>This endeavour is best started by cloning the entire support structure for 32-bit ARM, and within that the ARMv5 CPU in particular,
+as this is implemented through plain C kernels only. An example providing a convenient "shopping list" can be seen in pull request
+<a href="https://github.com/OpenMathLib/OpenBLAS/pull/1526">#1526</a>.</p>
+<div class="footnote">
+<hr />
+<ol>
+<li id="fn:1">
+<p>This information ends up in the <code>Makefile.conf</code> and <code>config.h</code> files generated by <code>getarch</code>. Failure to
+set either will typically lead to a missing definition of the <code>GEMM_UNROLL</code> parameters later in the build,
+as <code>getarch_2nd</code> will be unable to find a matching parameter section in <code>param.h</code>.&#160;<a class="footnote-backref" href="#fnref:1" title="Jump back to footnote 1 in the text">&#8617;</a></p>
+</li>
+</ol>
+</div>
 
 
 
@@ -721,6 +825,38 @@ the <code>cpuid_&lt;architecture&gt;.c</code> file amended to include the CPUID 
 
 
 
+  
+    
+  
+  
+    
+  
+
+
+  <aside class="md-source-file">
+    
+      
+  <span class="md-source-file__fact">
+    <span class="md-icon" title="Last update">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1-2.1-2M12.5 7v5.2l4 2.4-1 1L11 13V7h1.5M11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2v1.8Z"/></svg>
+    </span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">June 30, 2024</span>
+  </span>
+
+    
+    
+      
+  <span class="md-source-file__fact">
+    <span class="md-icon" title="Created">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M14.47 15.08 11 13V7h1.5v5.25l3.08 1.83c-.41.28-.79.62-1.11 1m-1.39 4.84c-.36.05-.71.08-1.08.08-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8c0 .37-.03.72-.08 1.08.69.1 1.33.32 1.92.64.1-.56.16-1.13.16-1.72 0-5.5-4.5-10-10-10S2 6.5 2 12s4.47 10 10 10c.59 0 1.16-.06 1.72-.16-.32-.59-.54-1.23-.64-1.92M18 15v3h-3v2h3v3h2v-3h3v-2h-3v-3h-2Z"/></svg>
+    </span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">August 4, 2023</span>
+  </span>
+
+    
+    
+    
+  </aside>
 
 
 
@@ -742,10 +878,40 @@ the <code>cpuid_&lt;architecture&gt;.c</code> file amended to include the CPUID 
     <div class="md-footer-meta__inner md-grid">
       <div class="md-copyright">
   
+    <div class="md-copyright__highlight">
+      Copyright &copy; 2012- OpenBLAS contributors
+    </div>
+  
   
     Made with
     <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
       Material for MkDocs
+    </a>
+  
+</div>
+      
+        <div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/OpenMathLib/OpenBLAS" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg>
+    </a>
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/OpenMathLib/OpenBLAS/LICENSE" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9 10a3.04 3.04 0 0 1 3-3 3.04 3.04 0 0 1 3 3 3.04 3.04 0 0 1-3 3 3.04 3.04 0 0 1-3-3m3 9 4 1v-3.08A7.54 7.54 0 0 1 12 18a7.54 7.54 0 0 1-4-1.08V20m4-16a5.78 5.78 0 0 0-4.24 1.74A5.78 5.78 0 0 0 6 10a5.78 5.78 0 0 0 1.76 4.23A5.78 5.78 0 0 0 12 16a5.78 5.78 0 0 0 4.24-1.77A5.78 5.78 0 0 0 18 10a5.78 5.78 0 0 0-1.76-4.26A5.78 5.78 0 0 0 12 4m8 6a8.04 8.04 0 0 1-.57 2.8A7.84 7.84 0 0 1 18 15.28V23l-6-2-6 2v-7.72A7.9 7.9 0 0 1 4 10a7.68 7.68 0 0 1 2.33-5.64A7.73 7.73 0 0 1 12 2a7.73 7.73 0 0 1 5.67 2.36A7.68 7.68 0 0 1 20 10Z"/></svg>
     </a>
   
 </div>
@@ -760,7 +926,7 @@ the <code>cpuid_&lt;architecture&gt;.c</code> file amended to include the CPUID 
     </div>
     
     
-    <script id="__config" type="application/json">{"base": "..", "features": [], "search": "../assets/javascripts/workers/search.b8dbb3d2.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    <script id="__config" type="application/json">{"base": "..", "features": ["header.autohide"], "search": "../assets/javascripts/workers/search.b8dbb3d2.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
       <script src="../assets/javascripts/bundle.fe8b6f2b.min.js"></script>
