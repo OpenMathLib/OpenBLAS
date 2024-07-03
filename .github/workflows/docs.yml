@@ -1,8 +1,13 @@
 name: Publish docs via GitHub Pages
+
 on:
   push:
     branches:
       - develop
+  pull_request:
+    branches:
+      - develop
+
 jobs:
   build:
     name: Deploy docs
@@ -10,12 +15,22 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
       - uses: actions/setup-python@v5
         with:
           python-version: "3.10"
-      - run: pip install mkdocs mkdocs-material
-      # mkdocs gh-deploy command only builds to the top-level, hence building then deploying ourselves
-      - run: mkdocs build
+
+      - name: Install MkDocs and doc theme packages
+        run: pip install mkdocs mkdocs-material mkdocs-git-revision-date-localized-plugin
+
+      - name: Build docs site
+        run: mkdocs build
+
+      # mkdocs gh-deploy command only builds to the top-level, hence deploying
+      # with this action instead.
+      # Deploys to http://www.openmathlib.org/OpenBLAS/docs/
       - name: Deploy docs
         uses: peaceiris/actions-gh-pages@4f9cc6602d3f66b9c108549d475ec49e8ef4d45e # v4.0.0
         if: ${{ github.ref == 'refs/heads/develop' }}
