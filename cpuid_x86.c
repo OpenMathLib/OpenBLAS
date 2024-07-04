@@ -1529,6 +1529,7 @@ int get_cpuname(void){
         switch (model) {
           case 5: // Comet Lake H and S
           case 6: // Comet Lake U
+	  case 10: // Meteor Lake
             if(support_avx2())
               return CPUTYPE_HASWELL;
             if(support_avx())
