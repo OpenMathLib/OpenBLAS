@@ -168,6 +168,14 @@ To install OpenBLAS with a package manager on macOS, run:
     for more details).
 
 
+### FreeBSD
+
+You can install OpenBLAS from the FreeBSD [Ports collection](https://www.freebsd.org/ports/index.html):
+```
+pkg install openblas
+```
+
+
 ## Building from source
 
 We recommend download the latest [stable version](https://github.com/OpenMathLib/OpenBLAS/releases)
@@ -521,281 +529,221 @@ In your shell, move to this directory: `cd exports`.
 
 ### Android
 
-#### Prerequisites
+To build OpenBLAS for Android, you will need the following tools installed on your machine:
 
-In addition to the Android NDK, you will need both Perl and a C compiler on the build host as these are currently
-required by the OpenBLAS build environment.
+- [The Android NDK](https://developer.android.com/ndk/)
+- Perl
+- Clang compiler on the build machine
+
+The next two sections below describe how to build with Clang for ARMV7 and
+ARMV8 targets, respectively. The same basic principles as described below for
+ARMV8 should also apply to building an x86 or x86-64 version (substitute
+something like `NEHALEM` for the target instead of `ARMV8`, and replace all the
+`aarch64` in the toolchain paths with `x86` or `x96_64` as appropriate).
+
+!!! info "Historic note"
+
+    Since NDK version 19, the default toolchain is provided as a standalone
+    toolchain, so building one yourself following
+    [building a standalone toolchain](http://developer.android.com/ndk/guides/standalone_toolchain.html)
+    should no longer be necessary.
 
 
-#### Building with android NDK using clang compiler
-Around version 11 Android NDKs stopped supporting gcc, so you would need to use clang to compile OpenBLAS. clang is supported from OpenBLAS 0.2.20 version onwards. See below sections on how to build with clang for ARMV7 and ARMV8 targets. The same basic principles as described below for ARMV8 should also apply to building an x86 or x86_64 version (substitute something like NEHALEM for the target instead of ARMV8 and replace all the aarch64 in the toolchain paths obviously)
-"Historic" notes:
-Since version 19 the default toolchain is provided as a standalone toolchain, so building one yourself following [building a standalone toolchain](http://developer.android.com/ndk/guides/standalone_toolchain.html) should no longer be necessary.
-If you want to use static linking with an old NDK version older than about r17, you need to choose an API level below 23 currently due to NDK bug 272 (https://github.com/android-ndk/ndk/issues/272 , the libc.a lacks a definition of stderr) that will probably be fixed in r17 of the NDK.
+#### Building for ARMV7
 
-#### Build ARMV7 with clang
-```
-## Set path to ndk-bundle
+```bash
+# Set path to ndk-bundle
 export NDK_BUNDLE_DIR=/path/to/ndk-bundle
 
-## Set the PATH to contain paths to clang and arm-linux-androideabi-* utilities
+# Set the PATH to contain paths to clang and arm-linux-androideabi-* utilities
 export PATH=${NDK_BUNDLE_DIR}/toolchains/arm-linux-androideabi-4.9/prebuilt/linux-x86_64/bin:${NDK_BUNDLE_DIR}/toolchains/llvm/prebuilt/linux-x86_64/bin:$PATH
 
-## Set LDFLAGS so that the linker finds the appropriate libgcc
+# Set LDFLAGS so that the linker finds the appropriate libgcc
 export LDFLAGS="-L${NDK_BUNDLE_DIR}/toolchains/arm-linux-androideabi-4.9/prebuilt/linux-x86_64/lib/gcc/arm-linux-androideabi/4.9.x"
 
-## Set the clang cross compile flags
+# Set the clang cross compile flags
 export CLANG_FLAGS="-target arm-linux-androideabi -marm -mfpu=vfp -mfloat-abi=softfp --sysroot ${NDK_BUNDLE_DIR}/platforms/android-23/arch-arm -gcc-toolchain ${NDK_BUNDLE_DIR}/toolchains/arm-linux-androideabi-4.9/prebuilt/linux-x86_64/"
 
 #OpenBLAS Compile
 make TARGET=ARMV7 ONLY_CBLAS=1 AR=ar CC="clang ${CLANG_FLAGS}" HOSTCC=gcc ARM_SOFTFP_ABI=1 -j4
 ```
-On a Mac, it may also be necessary to give the complete path to the `ar` utility in the make command above, like so:
-```
+
+On macOS, it may also be necessary to give the complete path to the `ar`
+utility in the make command above, like so:
+```bash
 AR=${NDK_BUNDLE_DIR}/toolchains/arm-linux-androideabi-4.9/prebuilt/darwin-x86_64/bin/arm-linux-androideabi-gcc-ar
 ```
-otherwise you may get a linker error complaining about a "malformed archive header name at 8" when the native OSX ar command was invoked instead.
+otherwise you may get a linker error complaining like `malformed archive header
+name at 8` when the native macOS `ar` command was invoked instead.
+
  
-#### Build ARMV8 with clang
-```
-## Set path to ndk-bundle
+#### Building for ARMV8
+
+```bash
+# Set path to ndk-bundle
 export NDK_BUNDLE_DIR=/path/to/ndk-bundle/
 
-## Export PATH to contain directories of clang and aarch64-linux-android-* utilities
+# Export PATH to contain directories of clang and aarch64-linux-android-* utilities
 export PATH=${NDK_BUNDLE_DIR}/toolchains/aarch64-linux-android-4.9/prebuilt/linux-x86_64/bin/:${NDK_BUNDLE_DIR}/toolchains/llvm/prebuilt/linux-x86_64/bin:$PATH
 
-## Setup LDFLAGS so that loader can find libgcc and pass -lm for sqrt
+# Setup LDFLAGS so that loader can find libgcc and pass -lm for sqrt
 export LDFLAGS="-L${NDK_BUNDLE_DIR}/toolchains/aarch64-linux-android-4.9/prebuilt/linux-x86_64/lib/gcc/aarch64-linux-android/4.9.x -lm"
 
-## Setup the clang cross compile options
+# Setup the clang cross compile options
 export CLANG_FLAGS="-target aarch64-linux-android --sysroot ${NDK_BUNDLE_DIR}/platforms/android-23/arch-arm64 -gcc-toolchain ${NDK_BUNDLE_DIR}/toolchains/aarch64-linux-android-4.9/prebuilt/linux-x86_64/"
 
-## Compile
+# Compile
 make TARGET=ARMV8 ONLY_CBLAS=1 AR=ar CC="clang ${CLANG_FLAGS}" HOSTCC=gcc -j4
 ```
-Note: Using TARGET=CORTEXA57 in place of ARMV8 will pick up better optimized routines. Implementations for CORTEXA57 target is compatible with all other armv8 targets.
+Note: using `TARGET=CORTEXA57` in place of `ARMV8` will pick up better
+optimized routines. Implementations for the `CORTEXA57` target are compatible
+with all other `ARMV8` targets.
 
-Note: For NDK 23b, something as simple as 
-```
+Note: for NDK 23b, something as simple as:
+```bash
 export PATH=/opt/android-ndk-r23b/toolchains/llvm/prebuilt/linux-x86_64/bin/:$PATH
 make HOSTCC=gcc CC=/opt/android-ndk-r23b/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android31-clang ONLY_CBLAS=1 TARGET=ARMV8
 ```
 appears to be sufficient on Linux.
 
-#### Alternative script which was tested on OSX with NDK(21.3.6528147)
-This script will build openblas for 3 architecture (ARMV7,ARMV8,X86) and put them with `sudo make install` to `/opt/OpenBLAS/lib`
-```
-export NDK=YOUR_PATH_TO_SDK/Android/sdk/ndk/21.3.6528147
-export TOOLCHAIN=$NDK/toolchains/llvm/prebuilt/darwin-x86_64
 
-make clean
-make \
-    TARGET=ARMV7 \
-    ONLY_CBLAS=1 \
-    CC="$TOOLCHAIN"/bin/armv7a-linux-androideabi21-clang \
-    AR="$TOOLCHAIN"/bin/arm-linux-androideabi-ar \
-    HOSTCC=gcc \
-    ARM_SOFTFP_ABI=1 \
+??? note "Alternative build script for 3 architectures"
+
+    This script will build OpenBLAS for 3 architecture (`ARMV7`, `ARMV8`, `X86`) and install them to `/opt/OpenBLAS/lib`.
+    It was tested on macOS with NDK version 21.3.6528147.
+
+    ```bash
+    export NDK=YOUR_PATH_TO_SDK/Android/sdk/ndk/21.3.6528147
+    export TOOLCHAIN=$NDK/toolchains/llvm/prebuilt/darwin-x86_64
+
+    make clean
+    make \
+        TARGET=ARMV7 \
+        ONLY_CBLAS=1 \
+        CC="$TOOLCHAIN"/bin/armv7a-linux-androideabi21-clang \
+        AR="$TOOLCHAIN"/bin/arm-linux-androideabi-ar \
+        HOSTCC=gcc \
+        ARM_SOFTFP_ABI=1 \
+        -j4
+    sudo make install
+
+    make clean
+    make \
+        TARGET=CORTEXA57 \
+        ONLY_CBLAS=1 \
+        CC=$TOOLCHAIN/bin/aarch64-linux-android21-clang \
+        AR=$TOOLCHAIN/bin/aarch64-linux-android-ar \
+        HOSTCC=gcc \
     -j4
-sudo make install
+    sudo make install
 
-make clean
-make \
-    TARGET=CORTEXA57 \
-    ONLY_CBLAS=1 \
-    CC=$TOOLCHAIN/bin/aarch64-linux-android21-clang \
-    AR=$TOOLCHAIN/bin/aarch64-linux-android-ar \
-    HOSTCC=gcc \
-    -j4
-sudo make install
-
-make clean
-make \
-    TARGET=ATOM \
-    ONLY_CBLAS=1 \
+    make clean
+    make \
+        TARGET=ATOM \
+        ONLY_CBLAS=1 \
     CC="$TOOLCHAIN"/bin/i686-linux-android21-clang \
     AR="$TOOLCHAIN"/bin/i686-linux-android-ar \
     HOSTCC=gcc \
     ARM_SOFTFP_ABI=1 \
     -j4
-sudo make install
+    sudo make install
 
-## This will build for x86_64 
-make clean
-make \
-    TARGET=ATOM BINARY=64\
+    ## This will build for x86_64 
+    make clean
+    make \
+        TARGET=ATOM BINARY=64\
     ONLY_CBLAS=1 \
     CC="$TOOLCHAIN"/bin/x86_64-linux-android21-clang \
     AR="$TOOLCHAIN"/bin/x86_64-linux-android-ar \
     HOSTCC=gcc \
     ARM_SOFTFP_ABI=1 \
     -j4
-sudo make install
-```
-Also you can find full list of target architectures in [TargetList.txt](https://github.com/OpenMathLib/OpenBLAS/blob/develop/TargetList.txt)
+    sudo make install
+    ```
+    You can find full list of target architectures in [TargetList.txt](https://github.com/OpenMathLib/OpenBLAS/blob/develop/TargetList.txt)
 
-***
-anything below this line should be irrelevant nowadays unless you need to perform software archeology
-***
-#### Building OpenBLAS with very old gcc-based versions of the NDK, without Fortran
-
-The prebuilt Android NDK toolchains do not include Fortran, hence parts like LAPACK cannot be built. You can still build OpenBLAS without it. For instructions on how to build OpenBLAS with Fortran, see the [next section](#building-openblas-with-fortran).
-
-To use easily the prebuilt toolchains, follow [building a standalone toolchain](http://developer.android.com/ndk/guides/standalone_toolchain.html) for your desired architecture.
-This would be `arm-linux-androideabi-gcc-4.9` for ARMV7 and `aarch64-linux-android-gcc-4.9` for ARMV8.
-
-You can build OpenBLAS (0.2.19 and earlier) with:
-```
-## Add the toolchain to your path
-export PATH=/path/to/standalone-toolchain/bin:$PATH
-
-## Build without Fortran for ARMV7
-make TARGET=ARMV7 HOSTCC=gcc CC=arm-linux-androideabi-gcc NOFORTRAN=1 libs
-## Build without Fortran for ARMV8
-make TARGET=ARMV8 BINARY=64 HOSTCC=gcc CC=aarch64-linux-android-gcc NOFORTRAN=1 libs
-```
-
-Since we are cross-compiling, we make the `libs` recipe, not `all`. Otherwise you will get errors when trying to link/run tests as versions up to and including 0.2.19 cannot build a shared library for Android. 
-
-From 0.2.20 on, you should leave off the "libs" to get a full build, and you may want to use the softfp ABI instead of the deprecated hardfp one on ARMV7 so you would use 
-```
-## Add the toolchain to your path
-export PATH=/path/to/standalone-toolchain/bin:$PATH
-
-## Build without Fortran for ARMV7
-make TARGET=ARMV7 ARM_SOFTFP_ABI=1 HOSTCC=gcc CC=arm-linux-androideabi-gcc NOFORTRAN=1
-## Build without Fortran for ARMV8
-make TARGET=ARMV8 BINARY=64 HOSTCC=gcc CC=aarch64-linux-android-gcc NOFORTRAN=1
-```
-
-If you get an error about stdio.h not being found, you need to specify your sysroot in the CFLAGS argument to `make` like
-```CFLAGS=--sysroot=$NDK/platforms/android-16/arch-arm```
-When you are done, install OpenBLAS into the desired directory. Be sure to also use all command line options
-here that you specified for building, otherwise errors may occur as it tries to install things you did not build:
-```
-make PREFIX=/path/to/install-dir TARGET=... install
-```
-
-#### Building OpenBLAS with Fortran
-
-Instructions on how to build the GNU toolchains with Fortran can be found [here](https://github.com/buffer51/android-gfortran). The [Releases section](https://github.com/buffer51/android-gfortran/releases) provides prebuilt versions, use the standalone one.
-
-You can build OpenBLAS with:
-```
-## Add the toolchain to your path
-export PATH=/path/to/standalone-toolchain-with-fortran/bin:$PATH
-
-## Build with Fortran for ARMV7
-make TARGET=ARMV7 HOSTCC=gcc CC=arm-linux-androideabi-gcc FC=arm-linux-androideabi-gfortran libs
-## Build with LAPACK for ARMV8
-make TARGET=ARMV8 BINARY=64 HOSTCC=gcc CC=aarch64-linux-android-gcc FC=aarch64-linux-android-gfortran libs
-```
-
-As mentioned above you can leave off the `libs` argument here when building 0.2.20 and later, and you may want to add ARM_SOFTFP_ABI=1 when building for ARMV7.
-
-#### Linking OpenBLAS (0.2.19 and earlier) for ARMV7
-
-If you are using `ndk-build`, you need to set the ABI to hard floating points in your Application.mk:
-```
-APP_ABI := armeabi-v7a-hard
-```
-
-This will set the appropriate flags for you. If you are not using `ndk-build`, you will want to add the following flags:
-```
-TARGET_CFLAGS += -mhard-float -D_NDK_MATH_NO_SOFTFP=1
-TARGET_LDFLAGS += -Wl,--no-warn-mismatch -lm_hard
-```
-
-From 0.2.20 on, it is also possible to build for the softfp ABI by specifying ARM_SOFTFP_ABI=1 during the build.
-In that case, also make sure that all your dependencies are compiled with -mfloat-abi=softfp as well, as mixing
-"hard" and "soft" floating point ABIs in a program will make it crash.
 
 ### iPhone/iOS
 
-As none of the current developers uses iOS, the following instructions are what was found to work in our Azure CI setup, but as far as we know this builds a fully working OpenBLAS for this platform.
+As none of the current developers uses iOS, the following instructions are what
+was found to work in our Azure CI setup, but as far as we know this builds a
+fully working OpenBLAS for this platform.
 
 Go to the directory where you unpacked OpenBLAS,and enter the following commands:
-```
-     CC=/Applications/Xcode_12.4.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang
+```bash
+CC=/Applications/Xcode_12.4.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang
 
 CFLAGS= -O2 -Wno-macro-redefined -isysroot /Applications/Xcode_12.4.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS14.4.sdk -arch arm64 -miphoneos-version-min=10.0
 
 make TARGET=ARMV8 DYNAMIC_ARCH=1 NUM_THREADS=32 HOSTCC=clang NOFORTRAN=1
 ```
-Adjust MIN_IOS_VERSION as necessary for your installation, e.g. change the version number
+Adjust `MIN_IOS_VERSION` as necessary for your installation. E.g., change the version number
 to the minimum iOS version you want to target and execute this file to build the library.
+
 
 ### MIPS
 
-For mips targets you will need latest toolchains
-P5600 - MTI GNU/Linux Toolchain
-I6400, P6600 - IMG GNU/Linux Toolchain
+For MIPS targets you will need latest toolchains:
 
-The download link is below
-(http://codescape-mips-sdk.imgtec.com/components/toolchain/2016.05-03/downloads.html)
+- P5600 - MTI GNU/Linux Toolchain
+- I6400, P6600 - IMG GNU/Linux Toolchain
 
-You can use following commandlines for builds
+You can use following commandlines for builds:
 
+```bash
+IMG_TOOLCHAIN_DIR={full IMG GNU/Linux Toolchain path including "bin" directory -- for example, /opt/linux_toolchain/bin}
+IMG_GCC_PREFIX=mips-img-linux-gnu
+IMG_TOOLCHAIN=${IMG_TOOLCHAIN_DIR}/${IMG_GCC_PREFIX}
 
-    IMG_TOOLCHAIN_DIR={full IMG GNU/Linux Toolchain path including "bin" directory -- for example, /opt/linux_toolchain/bin}
-    IMG_GCC_PREFIX=mips-img-linux-gnu
-    IMG_TOOLCHAIN=${IMG_TOOLCHAIN_DIR}/${IMG_GCC_PREFIX}
+# I6400 Build (n32):
+make BINARY=32 BINARY32=1 CC=$IMG_TOOLCHAIN-gcc AR=$IMG_TOOLCHAIN-ar FC="$IMG_TOOLCHAIN-gfortran -EL -mabi=n32" RANLIB=$IMG_TOOLCHAIN-ranlib HOSTCC=gcc CFLAGS="-EL" FFLAGS=$CFLAGS LDFLAGS=$CFLAGS TARGET=I6400
 
-    I6400 Build (n32):
-    make BINARY=32 BINARY32=1 CC=$IMG_TOOLCHAIN-gcc AR=$IMG_TOOLCHAIN-ar FC="$IMG_TOOLCHAIN-gfortran -EL -mabi=n32" RANLIB=$IMG_TOOLCHAIN-ranlib HOSTCC=gcc CFLAGS="-EL" FFLAGS=$CFLAGS LDFLAGS=$CFLAGS TARGET=I6400
+# I6400 Build (n64):
+make BINARY=64 BINARY64=1 CC=$IMG_TOOLCHAIN-gcc AR=$IMG_TOOLCHAIN-ar FC="$IMG_TOOLCHAIN-gfortran -EL" RANLIB=$IMG_TOOLCHAIN-ranlib HOSTCC=gcc CFLAGS="-EL" FFLAGS=$CFLAGS LDFLAGS=$CFLAGS TARGET=I6400
 
-    I6400 Build (n64):
-    make BINARY=64 BINARY64=1 CC=$IMG_TOOLCHAIN-gcc AR=$IMG_TOOLCHAIN-ar FC="$IMG_TOOLCHAIN-gfortran -EL" RANLIB=$IMG_TOOLCHAIN-ranlib HOSTCC=gcc CFLAGS="-EL" FFLAGS=$CFLAGS LDFLAGS=$CFLAGS TARGET=I6400
+# P6600 Build (n32):
+make BINARY=32 BINARY32=1 CC=$IMG_TOOLCHAIN-gcc AR=$IMG_TOOLCHAIN-ar FC="$IMG_TOOLCHAIN-gfortran -EL -mabi=n32" RANLIB=$IMG_TOOLCHAIN-ranlib HOSTCC=gcc CFLAGS="-EL" FFLAGS=$CFLAGS LDFLAGS=$CFLAGS TARGET=P6600
 
-    P6600 Build (n32):
-    make BINARY=32 BINARY32=1 CC=$IMG_TOOLCHAIN-gcc AR=$IMG_TOOLCHAIN-ar FC="$IMG_TOOLCHAIN-gfortran -EL -mabi=n32" RANLIB=$IMG_TOOLCHAIN-ranlib HOSTCC=gcc CFLAGS="-EL" FFLAGS=$CFLAGS LDFLAGS=$CFLAGS TARGET=P6600
+# P6600 Build (n64):
+make BINARY=64 BINARY64=1 CC=$IMG_TOOLCHAIN-gcc AR=$IMG_TOOLCHAIN-ar FC="$IMG_TOOLCHAIN-gfortran -EL" RANLIB=$IMG_TOOLCHAIN-ranlib HOSTCC=gcc CFLAGS="-EL" FFLAGS="$CFLAGS" LDFLAGS="$CFLAGS" TARGET=P6600
 
-    P6600 Build (n64):
-    make BINARY=64 BINARY64=1 CC=$IMG_TOOLCHAIN-gcc AR=$IMG_TOOLCHAIN-ar FC="$IMG_TOOLCHAIN-gfortran -EL" RANLIB=$IMG_TOOLCHAIN-ranlib HOSTCC=gcc CFLAGS="-EL" FFLAGS="$CFLAGS" LDFLAGS="$CFLAGS" TARGET=P6600
+MTI_TOOLCHAIN_DIR={full MTI GNU/Linux Toolchain path including "bin" directory -- for example, /opt/linux_toolchain/bin}
+MTI_GCC_PREFIX=mips-mti-linux-gnu
+MTI_TOOLCHAIN=${IMG_TOOLCHAIN_DIR}/${IMG_GCC_PREFIX}
 
-    MTI_TOOLCHAIN_DIR={full MTI GNU/Linux Toolchain path including "bin" directory -- for example, /opt/linux_toolchain/bin}
-    MTI_GCC_PREFIX=mips-mti-linux-gnu
-    MTI_TOOLCHAIN=${IMG_TOOLCHAIN_DIR}/${IMG_GCC_PREFIX}
+# P5600 Build:
 
-    P5600 Build:
+make BINARY=32 BINARY32=1 CC=$MTI_TOOLCHAIN-gcc AR=$MTI_TOOLCHAIN-ar FC="$MTI_TOOLCHAIN-gfortran -EL"    RANLIB=$MTI_TOOLCHAIN-ranlib HOSTCC=gcc CFLAGS="-EL" FFLAGS=$CFLAGS LDFLAGS=$CFLAGS TARGET=P5600
+```
 
-    make BINARY=32 BINARY32=1 CC=$MTI_TOOLCHAIN-gcc AR=$MTI_TOOLCHAIN-ar FC="$MTI_TOOLCHAIN-gfortran -EL"    RANLIB=$MTI_TOOLCHAIN-ranlib HOSTCC=gcc CFLAGS="-EL" FFLAGS=$CFLAGS LDFLAGS=$CFLAGS TARGET=P5600
 
 ### FreeBSD
 
 You will need to install the following tools from the FreeBSD ports tree:
-* lang/gcc [1]
+
+* lang/gcc
 * lang/perl5.12
 * ftp/curl
 * devel/gmake
 * devel/patch
 
 To compile run the command:
-
-    $ gmake CC=gcc46 FC=gfortran46
-
-Note that you need to build with GNU make and manually specify the compiler, otherwhise gcc 4.2 from the base system would be used.
-
-[1]: [Removal of Fortran from the FreeBSD base system](http://www.bsdunix.ch/serendipity/index.php?/archives/345-Removal-of-Fortran-from-the-FreeBSD-base-system.html)
-
-
-```
-pkg install openblas
+```bash
+$ gmake CC=gcc FC=gfortran
 ```
 
-see <https://www.freebsd.org/ports/index.html>
 
 ### Cortex-M
 
-Cortex-M is a widely used microcontroller that is present in a variety of industrial and consumer electronics.
-A common variant of the Cortex-M is the STM32F4xx series. Here, we will give instructions for building for
-the STM32F4xx.
+Cortex-M is a widely used microcontroller that is present in a variety of
+industrial and consumer electronics. A common variant of the Cortex-M is the
+`STM32F4xx` series. Here, we will give instructions for building for that
+series.
 
-First, install the embedded arm gcc compiler from the arm website. Then, create the following toolchain file and build as follows.
+First, install the embedded Arm GCC compiler from the Arm website. Then, create
+the following `toolchain.cmake` file:
 
 ```cmake
-# cmake .. -G Ninja -DCMAKE_C_COMPILER=arm-none-eabi-gcc -DCMAKE_TOOLCHAIN_FILE:PATH="toolchain.cmake" -DNOFORTRAN=1 -DTARGET=ARMV5 -DEMBEDDED=1
-
 set(CMAKE_SYSTEM_NAME Generic)
 set(CMAKE_SYSTEM_PROCESSOR arm)
 
@@ -810,14 +758,20 @@ set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
 set(CMAKE_FIND_ROOT_PATH_MODE_PACKAGE ONLY)
 ```
 
-In your embedded application, the following functions need to be provided for OpenBLAS to work correctly:
+Then build OpenBLAS with:
+```bash
+$ cmake .. -G Ninja -DCMAKE_C_COMPILER=arm-none-eabi-gcc -DCMAKE_TOOLCHAIN_FILE:PATH="toolchain.cmake" -DNOFORTRAN=1 -DTARGET=ARMV5 -DEMBEDDED=1
+```
 
+In your embedded application, the following functions need to be provided for OpenBLAS to work correctly:
 ```C
 void free(void* ptr);
 void* malloc(size_t size);
 ```
 
 !!! note
-    If you are developing for an embedded platform, it is your responsibility to make sure that the device has sufficient memory for malloc calls. [Libmemory][2] provides one implementation of malloc for embedded platforms.
 
-[2]: https://github.com/embeddedartistry/libmemory
+    If you are developing for an embedded platform, it is your responsibility
+    to make sure that the device has sufficient memory for `malloc` calls.
+    [Libmemory](https://github.com/embeddedartistry/libmemory)
+    provides one implementation of `malloc` for embedded platforms.
