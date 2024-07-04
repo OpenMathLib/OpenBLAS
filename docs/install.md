@@ -1,108 +1,203 @@
 # Install OpenBLAS
 
+OpenBLAS can be installed through package managers or from source. If you only
+want to use OpenBLAS rather than make changes to it, we recommend installing a
+pre-built binary package with your package manager of choice.
+
+This page contains an overview of installing with package managers as well as
+from source. For the latter, see [further down on this page](#building-from-source).
+
+
+## Installing with a package manager
+
 !!! note
-    Lists of precompiled packages are not comprehensive, is not meant to validate nor endorse a particular third-party build over others, and may not always lead to the newest version
+    Almost every package manager provides OpenBLAS packages; the list on this
+    page is not comprehensive. If your package manager of choice isn't shown
+    here, please search its package database for `openblas` or `libopenblas`.
 
-
-## Quick install
-
-Precompiled packages have recently become available for a number of platforms through their normal installation procedures, so for users of desktop devices at least, the instructions below are mostly relevant when you want to try the most recent development snapshot from git. See your platform's relevant "Precompiled packages" section.
-
-The [Conda-Forge](https://github.com/conda-forge) project maintains packages for the conda package manager at <https://github.com/conda-forge/openblas-feedstock>.
-
-## Source
-Download the latest [stable version](https://github.com/xianyi/OpenBLAS/releases) from release page.
-
-## Platforms
 
 ### Linux
 
-Just type `make` to compile the library.
+On Linux, OpenBLAS can be installed with the system package manager, or with a
+package manager like [Conda](https://docs.conda.io/en/latest/)
+(or alternative package managers for the conda-forge ecosystem, like
+[Mamba](https://mamba.readthedocs.io/en/latest/),
+[Micromamba](https://mamba.readthedocs.io/en/latest/user_guide/micromamba.html),
+or [Pixi](https://pixi.sh/latest/#windows-installer)),
+[Spack](https://spack.io/), or [Nix](https://nixos.org/). For the latter set of
+tools, the package name in all cases is `openblas`. Since package management in
+quite a few of these tools is declarative (i.e., managed by adding `openblas`
+to a metadata file describing the dependencies for your project or
+environment), we won't attempt to give detailed instructions for these tools here.
 
-Notes:
+Linux distributions typically split OpenBLAS up in two packages: one containing
+the library itself (typically named `openblas` or `libopenblas`), and one containing headers,
+pkg-config and CMake files (typically named the same as the package for the
+library with `-dev` or `-devel` appended; e.g., `openblas-devel`). Please keep
+in mind that if you want to install OpenBLAS in order to use it directly in
+your own project, you will need to install both of those packages.
 
-* OpenBLAS doesn't support g77. Please use gfortran or other Fortran compilers. e.g. `make FC=gfortran`.
-* When building in an emulator (KVM,QEMU etc.) make sure that the combination of CPU features exposed to
-  the virtual environment matches that of an existing CPU to allow detection of the cpu model to succeed. 
-  (With qemu, this can be done by passing `-cpu host` or a supported model name at invocation)
+Distro-specific installation commands:
 
+=== "Debian/Ubuntu/Mint/Kali"
 
-#### Precompiled packages
+    ```bash
+    $ sudo apt update
+    $ sudo apt install libopenblas-dev
+    ```
+    OpenBLAS can be configured as the default BLAS through the `update-alternatives` mechanism:
 
-##### Debian/Ubuntu/Mint/Kali
- OpenBLAS package is available in default repositories and can act as default BLAS in system
+    ```bash
+    $ sudo update-alternatives --config libblas.so.3
+    ```
 
-Example installation commands:
-```bash
-$ sudo apt update
-$ apt search openblas
-$ sudo apt install libopenblas-dev
-$ sudo update-alternatives --config libblas.so.3
-```
- Alternatively, if distributor's package proves unsatisfactory, you may try latest version of OpenBLAS, [Following guide in OpenBLAS FAQ](faq.md#debianlts)
- 
-##### openSuSE/SLE
- Recent OpenSUSE versions include OpenBLAS in default repositories and also permit OpenBLAS to act as replacement of system-wide BLAS.
+=== "openSUSE/SLE"
 
- Example installation commands:
-```bash
-$ sudo zypper ref
-$ zypper se openblas
-$ sudo zypper in openblas-devel
-$ sudo update-alternatives --config libblas.so.3
-``` 
-Should you be using older OpenSUSE or SLE that provides no OpenBLAS, you can attach optional or experimental openSUSE repository as a new package source to acquire recent build of OpenBLAS following [instructions on openSUSE software site](https://software.opensuse.org/package/openblas)
+    ```bash
+    $ sudo zypper refresh
+    $ sudo zypper install openblas-devel
+    ```
 
-##### Fedora/CentOS/RHEL
-Fedora provides OpenBLAS in default installation repositories.
+    OpenBLAS can be configured as the default BLAS through the `update-alternatives` mechanism:
+    ```bash
+    $ sudo update-alternatives --config libblas.so.3
+    ```
 
-To install it try following:
-```bash
-$ dnf search openblas
-$ dnf install openblas-devel
-```
-For CentOS/RHEL/Scientific Linux packages are provided via [Fedora EPEL repository](https://fedoraproject.org/wiki/EPEL)
+=== "Fedora/CentOS/RHEL"
 
-After adding repository and repository keys installation is pretty straightforward:
-```bash
-$ yum search openblas
-$ yum install openblas-devel
-```
-No alternatives mechanism is provided for BLAS, and packages in system repositories are linked against NetLib BLAS or ATLAS BLAS libraries. You may wish to re-package RPMs to use OpenBLAS instead [as described here](https://fedoraproject.org/wiki/How_to_create_an_RPM_package)
+    ```bash
+    $ dnf check-update
+    $ dnf install openblas-devel
+    ```
 
-##### Mageia
-Mageia offers ATLAS and NetLIB LAPACK in base repositories.
-You can build your own OpenBLAS replacement, and once installed in /opt
-TODO: populate /usr/lib64 /usr/include accurately to replicate netlib with update-alternatives
+    !!! warning
 
-##### Arch/Manjaro/Antergos
-```bash
-$ sudo pacman -S openblas
-```
+        Fedora does not ship the pkg-config files for OpenBLAS. Instead, it wants you to
+        link against [FlexiBLAS](https://www.mpi-magdeburg.mpg.de/projects/flexiblas) (which
+        uses OpenBLAS by default as its backend on Fedora), which you can install with:
+
+        ```bash
+        $ dnf install flexiblas-devel
+        ```
+
+    For CentOS and RHEL, OpenBLAS packages are provided via the [Fedora EPEL repository](https://fedoraproject.org/wiki/EPEL).
+    After adding that repository and its repository keys, you can install
+    `openblas-devel` with either `dnf` or `yum`.
+
+=== "Arch/Manjaro/Antergos"
+
+    ```bash
+    $ sudo pacman -S openblas
+    ```
+
 
 ### Windows
 
-The precompiled binaries available with each release (in <https://github.com/xianyi/OpenBLAS/releases>) are
-created with MinGW using an option list of 
-"NUM_THREADS=64 TARGET=GENERIC DYNAMIC_ARCH=1 DYNAMIC_OLDER=1 CONSISTENT_FPCSR=1" - they should work on
-any x86 or x86_64 computer. The zip archive contains the include files, static and dll libraries as well
-as configuration files for getting them found via CMAKE or pkgconfig - just create a suitable folder for
-your OpenBLAS installation and unzip it there. (Note that you will need to edit the provided openblas.pc
-and OpenBLASConfig.cmake to reflect the installation path on your computer, as distributed they have "win"
-or "win64" reflecting the local paths on the system they were built on). Some programs will expect the DLL
-name to be lapack.dll, blas.dll, or (in the case of the statistics package "R") even Rblas.dll to act as a
-direct replacement for whatever other implementation of BLAS and LAPACK they use by default. Just copy the
-openblas.dll to the desired name(s).
-Note that the provided binaries are built with INTERFACE64=0, meaning they use standard 32bit integers for
-array indexing and the like (as is the default for most if not all BLAS and LAPACK implementations). If the
-documentation of whatever program you are using with OpenBLAS mentions 64bit integers (INTERFACE64=1) for
-addressing huge matrix sizes, you will need to build OpenBLAS from source (or open an issue ticket to make
-the demand for such a precompiled build known).
+=== "Conda-forge"
 
-#### Precompiled packages
+    OpenBLAS can be installed with `conda` (or `mamba`, `micromamba`, or
+    `pixi`) from conda-forge:
+    ```
+    conda install openblas
+    ```
 
-* <http://sourceforge.net/projects/openblas/files>
-* <https://www.nuget.org/packages?q=openblas>
+    Conda-forge provides a method for switching the default BLAS implementation
+    used by all packages. To use that for OpenBLAS, install `libblas=*=*openblas`
+    (see [the docs on this mechanism](https://conda-forge.org/docs/maintainer/knowledge_base/#switching-blas-implementation)
+    for more details).
+
+=== "vcpkg"
+
+    OpenBLAS can be installed with vcpkg:
+    ```cmd
+    # In classic mode:
+    vcpkg install openblas
+
+    # Or in manifest mode:
+    vcpkg add port openblas
+    ```
+
+=== "OpenBLAS releases"
+
+    Windows is the only platform for which binaries are made available by the
+    OpenBLAS project itself. They can be downloaded from the GitHub
+    Releases](https://github.com/OpenMathLib/OpenBLAS/releases) page. These
+    binaries are built with MinGW, using the following build options:
+    ```
+    NUM_THREADS=64 TARGET=GENERIC DYNAMIC_ARCH=1 DYNAMIC_OLDER=1 CONSISTENT_FPCSR=1 INTERFACE=0
+    ```
+    There are separate packages for x86-64 and x86. The zip archive contains
+    the include files, static and shared libraries, as well as configuration
+    files for getting them found via CMake or pkg-config. To use these
+    binaries, create a suitable folder for your OpenBLAS installation and unzip
+    the `.zip` bundle there (note that you will need to edit the provided
+    `openblas.pc` and `OpenBLASConfig.cmake` to reflect the installation path
+    on your computer, as distributed they have "win" or "win64" reflecting the
+    local paths on the system they were built on).
+
+    Note that the same binaries can be downloaded
+    [from SourceForge](http://sourceforge.net/projects/openblas/files); this is
+    mostly of historical interest.
+
+
+### macOS
+
+To install OpenBLAS with a package manager on macOS, run:
+
+=== "Homebrew"
+
+    ```zsh
+    % brew install openblas
+    ```
+
+=== "MacPorts"
+
+    ```zsh
+    % sudo port install OpenBLAS-devel
+    ```
+
+=== "Conda-forge"
+
+    ```zsh
+    % conda install openblas
+    ```
+
+    Conda-forge provides a method for switching the default BLAS implementation
+    used by all packages. To use that for OpenBLAS, install `libblas=*=*openblas`
+    (see [the docs on this mechanism](https://conda-forge.org/docs/maintainer/knowledge_base/#switching-blas-implementation)
+    for more details).
+
+
+## Building from source
+
+We recommend download the latest [stable version](https://github.com/OpenMathLib/OpenBLAS/releases)
+from the GitHub Releases page, or checking it out from a git tag, rather than a
+dev version from the `develop` branch.
+
+!!! tip
+
+    The User manual contains [a section with detailed information on compiling OpenBLAS](user_manual.md#compiling-openblas),
+    including how to customize builds and how to cross-compile. Please read
+    that documentation first. This page contains only platform-specific build
+    information, and assumes you already understand the general build system
+    invocations to build OpenBLAS, with the specific build options you want to
+    control multi-threading and other non-platform-specific behavior).
+
+
+### Linux and macOS
+
+Ensure you have C and Fortran compilers installed, then simply type `make` to compile the library.
+There are no other build dependencies, nor unusual platform-specific
+environment variables to set or other system setup to do.
+
+!!! note
+
+    When building in an emulator (KVM, QEMU, etc.), please make sure that the combination of CPU features exposed to
+    the virtual environment matches that of an existing CPU to allow detection of the CPU model to succeed.
+    (With `qemu`, this can be done by passing `-cpu host` or a supported model name at invocation).
+
+
+### Windows
 
 #### Visual Studio
 
@@ -181,7 +276,7 @@ In newer visual studio versions, Microsoft has changed [how it handles complex t
 #endif
 ```
 
-For reference, see https://github.com/xianyi/OpenBLAS/issues/3661, https://github.com/Reference-LAPACK/lapack/issues/683, and https://stackoverflow.com/questions/47520244/using-openblas-lapacke-in-visual-studio.
+For reference, see https://github.com/OpenMathLib/OpenBLAS/issues/3661, https://github.com/Reference-LAPACK/lapack/issues/683, and https://stackoverflow.com/questions/47520244/using-openblas-lapacke-in-visual-studio.
 
 ###### CMake and Visual Studio
 
@@ -208,7 +303,7 @@ Step 2 will build the OpenBLAS solution, open it in VS, and build the projects. 
 
 ###### Build OpenBLAS for Universal Windows Platform
 
-OpenBLAS can be built for use on the [Universal Windows Platform](https://en.wikipedia.org/wiki/Universal_Windows_Platform) using a two step process since commit [c66b842](https://github.com/xianyi/OpenBLAS/commit/c66b842d66c5516e52804bf5a0544d18b1da1b44).
+OpenBLAS can be built for use on the [Universal Windows Platform](https://en.wikipedia.org/wiki/Universal_Windows_Platform) using a two step process since commit [c66b842](https://github.com/OpenMathLib/OpenBLAS/commit/c66b842d66c5516e52804bf5a0544d18b1da1b44).
 
 ####### 1. Follow steps 1 and 2 above to build the Visual Studio solution files for Windows. This builds the helper executables which are required when building the OpenBLAS Visual Studio solution files for UWP in step 2.
 
@@ -246,7 +341,7 @@ Note also that older versions of the alternative builds of mingw-w64 available t
 ```
 <command-line>:0:4: error: expected identifier or '(' before numeric constant
 ```
-If you encounter this, please upgrade your msys2 setup or see https://github.com/xianyi/OpenBLAS/issues/1503 for a workaround.
+If you encounter this, please upgrade your msys2 setup or see https://github.com/OpenMathLib/OpenBLAS/issues/1503 for a workaround.
 
 ###### Generate import library (before 0.2.10 version)
 
@@ -266,7 +361,7 @@ Tool to do so is available at https://github.com/rainers/cv2pdb
 1. Please follow the documentation about using third-party .dll libraries in MS Visual Studio 2008 or 2010.  Make sure to link against a library for the correct architecture.  For example, you may receive an error such as "The application was unable to start correctly (0xc000007b)" which typically indicates a mismatch between 32/64-bit libraries.
 
 !!! note
-    If you need CBLAS, you should include cblas.h in /your/installation/path/include in Visual Studio.  Please read [this page](http://github.com/xianyi/OpenBLAS/issues/95).
+    If you need CBLAS, you should include cblas.h in /your/installation/path/include in Visual Studio.  Please read [this page](http://github.com/OpenMathLib/OpenBLAS/issues/95).
 
 ###### Limitations
 * Both static and dynamic linking are supported with MinGW.  With Visual Studio, however, only dynamic linking is supported and so you should use the import library.
@@ -365,35 +460,6 @@ The import libraries of MSVC have the suffix `.lib`. They are generated from a `
 
 * Always remember that MinGW is **not the same** as MSYS2 or Cygwin. MSYS2 and Cygwin are full POSIX environments with a lot of magic such as `fork()` and its own `malloc()`. MinGW, which builds on the normal Microsoft C Runtime, has none of that. Be clear about which one you are building for.
 
-### Mac OSX
-
-If your CPU is Sandy Bridge, please use Clang version 3.1 and above. The Clang 3.0 will generate the wrong AVX binary code of OpenBLAS.
-
-#### Precompiled packages
-
-<https://www.macports.org/ports.php?by=name&substr=openblas>
-
-`brew install openblas`
-
-or using the conda package manager from
-<https://github.com/conda-forge/miniforge#download>
-(which also has packages for the new M1 cpu)
-
- `conda install openblas`
-
-#### Build on Apple M1
-
-On newer versions of Xcode and on arm64, you might need to compile with a newer macOS target (11.0) than the default (10.8) with `MACOSX_DEPLOYMENT_TARGET=11.0`, or switch your command-line tools to use an older SDK (e.g., [13.1](https://developer.apple.com/download/all/?q=Xcode%2013)).
-
-* without Fortran compiler （cannot build LAPACK)
-  ```bash
-  $ make CC=cc NOFORTRAN=1
-  ```
-* with Fortran compiler (you could `brew install gfortran`) https://github.com/xianyi/OpenBLAS/issues/3032
-  ```bash
-  $ export MACOSX_DEPLOYMENT_TARGET=11.0
-  $ make CC=cc FC=gfortran
-  ```
 
 ### Android
 
@@ -508,7 +574,7 @@ make \
     -j4
 sudo make install
 ```
-Also you can find full list of target architectures in [TargetsList.txt](https://github.com/xianyi/OpenBLAS/blob/develop/TargetList.txt)
+Also you can find full list of target architectures in [TargetList.txt](https://github.com/OpenMathLib/OpenBLAS/blob/develop/TargetList.txt)
 
 ***
 anything below this line should be irrelevant nowadays unless you need to perform software archeology
