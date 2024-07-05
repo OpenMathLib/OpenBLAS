@@ -28,6 +28,9 @@ jobs:
           - target: RISCV64_ZVL256B
             opts: TARGET=RISCV64_ZVL256B BINARY=64 ARCH=riscv64
             qemu_cpu: rv64,g=true,c=true,v=true,vext_spec=v1.0,vlen=256,elen=64
+          - target: DYNAMIC_ARCH=1
+            opts: TARGET=RISCV64_GENERIC BINARY=64 ARCH=riscv64 DYNAMIC_ARCH=1
+            qemu_cpu: rv64,g=true,c=true,v=true,vext_spec=v1.0,vlen=256,elen=64
 
     steps:
       - name: Checkout repository
