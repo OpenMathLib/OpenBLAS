@@ -67,17 +67,17 @@ build options you plan to set.
 ### Cross compile
 
 Set `CC` and `FC` to point to the cross toolchains, and set `HOSTCC` to your host C compiler.
-The target must be specified explicitly when cross compiling.
+The target must be specified explicitly when cross compiling. The `CROSS=1` flag should be specified.
 
 Examples:
 
 * On an x86 box, compile this library for a loongson3a CPU:
   ```sh
-  make BINARY=64 CC=mips64el-unknown-linux-gnu-gcc FC=mips64el-unknown-linux-gnu-gfortran HOSTCC=gcc TARGET=LOONGSON3A
+  make BINARY=64 CC=mips64el-unknown-linux-gnu-gcc FC=mips64el-unknown-linux-gnu-gfortran HOSTCC=gcc TARGET=LOONGSON3A CROSS=1
   ```
   or same with the newer mips-crosscompiler put out by Loongson that defaults to the 32bit ABI:
   ```sh
-  make HOSTCC=gcc CC='/opt/mips-loongson-gcc7.3-linux-gnu/2019.06-29/bin/mips-linux-gnu-gcc -mabi=64' FC='/opt/mips-loongson-gcc7.3-linux-gnu/2019.06-29/bin/mips-linux-gnu-gfortran -mabi=64' TARGET=LOONGSON3A
+  make HOSTCC=gcc CC='/opt/mips-loongson-gcc7.3-linux-gnu/2019.06-29/bin/mips-linux-gnu-gcc -mabi=64' FC='/opt/mips-loongson-gcc7.3-linux-gnu/2019.06-29/bin/mips-linux-gnu-gfortran -mabi=64' TARGET=LOONGSON3A CROSS=1
   ```
 
 * On an x86 box, compile this library for a loongson3a CPU with loongcc (based on Open64) compiler:
