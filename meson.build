@@ -141,12 +141,12 @@ if cpu_fam == 'x86_64'
   _cargs += ['-m64']
 endif
 
-if fc_id == 'gcc'
-    add_project_arguments('-DF_INTERFACE_GFORT', language: 'c')
-else
-  upper_fcid = fc_id.to_upper()
-  add_project_arguments(f'-DF_INTERFACE_@upper_fcid@', language: 'c')
-endif
+# if fc_id == 'gcc'
+#     add_project_arguments('-DF_INTERFACE_GFORT', language: 'c')
+# else
+#   upper_fcid = fc_id.to_upper()
+#   add_project_arguments(f'-DF_INTERFACE_@upper_fcid@', language: 'c')
+# endif
 
 simd_extensions = [
   {'flag': '-mmmx', 'define': 'HAVE_MMX'},
@@ -430,6 +430,7 @@ symb_defs = {
     '?hpr_thread':  {'def': ['HEMV']},
     '?trmm_kernel': {'def': ['TRMMKERNEL']},
     '?trsm_kernel': {'def': ['TRSMKERNEL']},
+    '?dsdot': {'def': ['DSDOT']},
     '?bgemm':  {'def': ['HALF']},
     '?gemm_small_kernel_b0': {'def': ['B0']},
     'cblas_?dotu_sub':  {'def': ['CBLAS', 'FORCE_USE_STACK'], 'undef': ['CONJ']},
