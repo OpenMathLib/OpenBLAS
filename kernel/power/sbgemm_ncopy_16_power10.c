@@ -37,7 +37,10 @@
 /*********************************************************************/
 
 #include <stdio.h>
+#include <altivec.h>
 #include "common.h"
+
+typedef uint32_t vec_bf16x2 __attribute__ ((vector_size (16)));
 
 int CNAME(BLASLONG m, BLASLONG n, IFLOAT *a, BLASLONG lda, IFLOAT *b){
   BLASLONG i, j;
@@ -82,7 +85,84 @@ int CNAME(BLASLONG m, BLASLONG n, IFLOAT *a, BLASLONG lda, IFLOAT *b){
       aoffset16 = aoffset15 + lda;
       aoffset += 16 * lda;
 
-      i = (m >> 1);
+      i = (m >> 3);
+      if (i > 0) {
+        do {
+          vec_bf16x2 vtemp01 = *(vec_bf16x2 *)(aoffset1);
+          vec_bf16x2 vtemp02 = *(vec_bf16x2 *)(aoffset2);
+          vec_bf16x2 vtemp03 = *(vec_bf16x2 *)(aoffset3);
+          vec_bf16x2 vtemp04 = *(vec_bf16x2 *)(aoffset4);
+          vec_bf16x2 vtemp05 = *(vec_bf16x2 *)(aoffset5);
+          vec_bf16x2 vtemp06 = *(vec_bf16x2 *)(aoffset6);
+          vec_bf16x2 vtemp07 = *(vec_bf16x2 *)(aoffset7);
+          vec_bf16x2 vtemp08 = *(vec_bf16x2 *)(aoffset8);
+          vec_bf16x2 vtemp09 = *(vec_bf16x2 *)(aoffset9);
+          vec_bf16x2 vtemp10 = *(vec_bf16x2 *)(aoffset10);
+          vec_bf16x2 vtemp11 = *(vec_bf16x2 *)(aoffset11);
+          vec_bf16x2 vtemp12 = *(vec_bf16x2 *)(aoffset12);
+          vec_bf16x2 vtemp13 = *(vec_bf16x2 *)(aoffset13);
+          vec_bf16x2 vtemp14 = *(vec_bf16x2 *)(aoffset14);
+          vec_bf16x2 vtemp15 = *(vec_bf16x2 *)(aoffset15);
+          vec_bf16x2 vtemp16 = *(vec_bf16x2 *)(aoffset16);
+
+          vec_bf16x2 vtemp17 = vec_mergeh(vtemp01, vtemp03);
+          vec_bf16x2 vtemp18 = vec_mergel(vtemp01, vtemp03);
+          vec_bf16x2 vtemp19 = vec_mergeh(vtemp02, vtemp04);
+          vec_bf16x2 vtemp20 = vec_mergel(vtemp02, vtemp04);
+          vec_bf16x2 vtemp21 = vec_mergeh(vtemp05, vtemp07);
+          vec_bf16x2 vtemp22 = vec_mergel(vtemp05, vtemp07);
+          vec_bf16x2 vtemp23 = vec_mergeh(vtemp06, vtemp08);
+          vec_bf16x2 vtemp24 = vec_mergel(vtemp06, vtemp08);
+          vec_bf16x2 vtemp25 = vec_mergeh(vtemp09, vtemp11);
+          vec_bf16x2 vtemp26 = vec_mergel(vtemp09, vtemp11);
+          vec_bf16x2 vtemp27 = vec_mergeh(vtemp10, vtemp12);
+          vec_bf16x2 vtemp28 = vec_mergel(vtemp10, vtemp12);
+          vec_bf16x2 vtemp29 = vec_mergeh(vtemp13, vtemp15);
+          vec_bf16x2 vtemp30 = vec_mergel(vtemp13, vtemp15);
+          vec_bf16x2 vtemp31 = vec_mergeh(vtemp14, vtemp16);
+          vec_bf16x2 vtemp32 = vec_mergel(vtemp14, vtemp16);
+
+          *(vec_bf16x2 *)(boffset +   0) = vec_mergeh(vtemp17, vtemp19);
+          *(vec_bf16x2 *)(boffset +   8) = vec_mergeh(vtemp21, vtemp23);
+          *(vec_bf16x2 *)(boffset +  16) = vec_mergeh(vtemp25, vtemp27);
+          *(vec_bf16x2 *)(boffset +  24) = vec_mergeh(vtemp29, vtemp31);
+          *(vec_bf16x2 *)(boffset +  32) = vec_mergel(vtemp17, vtemp19);
+          *(vec_bf16x2 *)(boffset +  40) = vec_mergel(vtemp21, vtemp23);
+          *(vec_bf16x2 *)(boffset +  48) = vec_mergel(vtemp25, vtemp27);
+          *(vec_bf16x2 *)(boffset +  56) = vec_mergel(vtemp29, vtemp31);
+          *(vec_bf16x2 *)(boffset +  64) = vec_mergeh(vtemp18, vtemp20);
+          *(vec_bf16x2 *)(boffset +  72) = vec_mergeh(vtemp22, vtemp24);
+          *(vec_bf16x2 *)(boffset +  80) = vec_mergeh(vtemp26, vtemp28);
+          *(vec_bf16x2 *)(boffset +  88) = vec_mergeh(vtemp30, vtemp32);
+          *(vec_bf16x2 *)(boffset +  96) = vec_mergel(vtemp18, vtemp20);
+          *(vec_bf16x2 *)(boffset + 104) = vec_mergel(vtemp22, vtemp24);
+          *(vec_bf16x2 *)(boffset + 112) = vec_mergel(vtemp26, vtemp28);
+          *(vec_bf16x2 *)(boffset + 120) = vec_mergel(vtemp30, vtemp32);
+
+          aoffset1  += 8;
+          aoffset2  += 8;
+          aoffset3  += 8;
+          aoffset4  += 8;
+          aoffset5  += 8;
+          aoffset6  += 8;
+          aoffset7  += 8;
+          aoffset8  += 8;
+          aoffset9  += 8;
+          aoffset10 += 8;
+          aoffset11 += 8;
+          aoffset12 += 8;
+          aoffset13 += 8;
+          aoffset14 += 8;
+          aoffset15 += 8;
+          aoffset16 += 8;
+
+          boffset   += 128;
+
+          i--;
+        } while (i > 0);
+      }
+
+      i = (m & 7) >> 1;
       if (i > 0){
 	do{
 	  ctemp01 = *(aoffset1 +  0);
