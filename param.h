@@ -2553,7 +2553,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #endif
 
-#if defined(POWER9) && defined(OS_LINUX)
+#if defined(POWER9) && (defined(OS_LINUX) || defined(OS_FREEBSD))
 
 #define SNUMOPT		16
 #define DNUMOPT		8
