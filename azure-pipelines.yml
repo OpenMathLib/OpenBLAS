@@ -136,7 +136,7 @@ jobs:
       cmake -G "Ninja" -DCMAKE_C_COMPILER=cl -DCMAKE_Fortran_COMPILER=flang-new -DC_LAPACK=1 -DCMAKE_MT=mt -DCMAKE_BUILD_TYPE=Release -DMSVC_STATIC_CRT=ON ..
       cmake --build . --config Release
       ctest
-
+      ctest --rerun-failed --output-on-failure
 
 
 - job: OSX_OpenMP
