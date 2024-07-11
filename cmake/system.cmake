@@ -615,7 +615,7 @@ if (${CMAKE_SYSTEM_NAME} STREQUAL "Windows")
 endif ()
 
 if (CMAKE_Fortran_COMPILER)
-if (${F_COMPILER} STREQUAL "NAG" OR ${F_COMPILER} STREQUAL "CRAY" OR CMAKE_Fortran_COMPILER_ID MATCHES "LLVMFlang.*")
+if ("${F_COMPILER}" STREQUAL "NAG" OR "${F_COMPILER}" STREQUAL "CRAY" OR CMAKE_Fortran_COMPILER_ID MATCHES "LLVMFlang.*")
   set(FILTER_FLAGS "-msse3;-mssse3;-msse4.1;-mavx;-mavx2,-mskylake-avx512")
   if (CMAKE_Fortran_COMPILER_ID MATCHES "LLVMFlang.*")
 message(STATUS "removing fortran flags")
