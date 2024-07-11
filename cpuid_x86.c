@@ -1529,6 +1529,7 @@ int get_cpuname(void){
         switch (model) {
           case 5: // Comet Lake H and S
           case 6: // Comet Lake U
+	  case 10: // Meteor Lake
             if(support_avx2())
               return CPUTYPE_HASWELL;
             if(support_avx())
@@ -2391,10 +2392,10 @@ int get_coretype(void){
 	  else
 	  return CORE_NEHALEM;
 	}
-      case 15:
-	if (model <= 0x2) return CORE_NORTHWOOD;
-	else return CORE_PRESCOTT;
       }
+    case 15:
+      if (model <= 0x2) return CORE_NORTHWOOD;
+      else return CORE_PRESCOTT;
     }
   }
 

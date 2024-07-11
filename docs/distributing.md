@@ -49,7 +49,7 @@ settings):
    to provide an ILP64 interface build as well, use a symbol suffix to avoid
    symbol name clashes (see the next section).
 
-[^1] All major distributions do include LAPACK as of mid 2023 as far as we
+[^1]: All major distributions do include LAPACK as of mid 2023 as far as we
 know. Older versions of Arch Linux did not, and that was known to cause
 problems.
 

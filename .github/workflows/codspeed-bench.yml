@@ -139,6 +139,13 @@ jobs:
           cd build/openblas_wrap
           python -c'import _flapack; print(dir(_flapack))'
 
+      - name: Run benchmarks under pytest-benchmark
+        run: |
+          cd benchmark/pybench
+          pip install pytest-benchmark
+          export PYTHONPATH=$PWD/build-install/lib/python${{matrix.pyver}}/site-packages/
+          OPENBLAS_NUM_THREADS=1 pytest benchmarks/bench_blas.py -k 'gesdd'
+
       - name: Run benchmarks
         uses: CodSpeedHQ/action@v2
         with:
