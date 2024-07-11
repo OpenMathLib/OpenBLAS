@@ -2392,10 +2392,10 @@ int get_coretype(void){
 	  else
 	  return CORE_NEHALEM;
 	}
-      case 15:
-	if (model <= 0x2) return CORE_NORTHWOOD;
-	else return CORE_PRESCOTT;
       }
+    case 15:
+      if (model <= 0x2) return CORE_NORTHWOOD;
+      else return CORE_PRESCOTT;
     }
   }
 
