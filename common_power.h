@@ -841,17 +841,17 @@ Lmcount$lazy_ptr:
 #endif
 
 #if defined(PPC440)
-#define BUFFER_SIZE     (  2 << 20)
+#define BUFFER_SIZE     (  2UL << 20)
 #elif defined(PPC440FP2)
-#define BUFFER_SIZE     ( 16 << 20)
+#define BUFFER_SIZE     ( 16UL << 20)
 #elif defined(POWER6) || defined(POWER8) || defined(POWER9) || defined(POWER10)
-#define BUFFER_SIZE     ( 64 << 22)
+#define BUFFER_SIZE     ( 64UL << 22)
 #else
-#define BUFFER_SIZE     ( 16 << 20)
+#define BUFFER_SIZE     ( 16UL << 20)
 #endif
 #ifdef DYNAMIC_ARCH
 #undef BUFFER_SIZE
-#define BUFFER_SIZE (64 << 22)
+#define BUFFER_SIZE (64UL << 22)
 #endif
 
 #ifndef PAGESIZE
