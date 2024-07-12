@@ -51,6 +51,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
     bge $r0, N, .L999
     bge $r0, INCX, .L999
+    ld.d t1, $sp, 0 // Load dummy2
     li.d TEMP, 1
     movgr2fr.d a1, $r0
     FFINT  a1, a1
@@ -58,10 +59,14 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     FFINT  a2, a2
     slli.d TEMP, TEMP, BASE_SHIFT
     slli.d INCX, INCX, BASE_SHIFT
+    slli.d t1,   t1,   BASE_SHIFT
+    CMPEQ  $fcc0, ALPHA, a1
+    bcnez  $fcc0, .L20   //ALPHA==0
     CMPEQ  $fcc0, ALPHA, a2
     bcnez $fcc0, .L999  //ALPHA==1 return
+.L1:
     srai.d I, N, 3
-    beq INCX, TEMP, .L30    //ALPHA!=1 and INCX==1
+    beq INCX, TEMP, .L30    //ALPHA !=0|1 and INCX==1
     MTG  TEMP, ALPHA
 #ifdef DOUBLE
     vreplgr2vr.d VALPHA, TEMP
@@ -71,7 +76,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     move XX, X
     .align 3
 
-.L10:   //ALPHA!=1 and INCX!=1
+.L10:   //ALPHA !=0|1 and INCX!=1
     bge $r0, I, .L32
     .align 3
 
@@ -167,6 +172,79 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     addi.d  I, I, -1
     blt $r0, I, .L11
     b .L32
+    .align 3
+
+.L20:
+    beq t1, TEMP, .L1 // if dummp2 == 1, do not directly copy 0
+    srai.d I, N, 3
+    beq INCX, TEMP, .L24
+    bge $r0, I, .L22
+    .align 3
+
+.L21:
+    ST a1, X, 0
+    add.d X, X, INCX
+    ST a1, X, 0
+    add.d X, X, INCX
+    ST a1, X, 0
+    add.d X, X, INCX
+    ST a1, X, 0
+    add.d X, X, INCX
+    ST a1, X, 0
+    add.d X, X, INCX
+    ST a1, X, 0
+    add.d X, X, INCX
+    ST a1, X, 0
+    add.d X, X, INCX
+    ST a1, X, 0
+    add.d X, X, INCX
+    addi.d  I, I, -1
+    blt $r0, I, .L21
+    .align 3
+
+.L22:
+    andi I, N, 7
+    bge $r0, I, .L999
+    .align 3
+
+.L23:
+    ST  a1, X, 0 * SIZE
+    addi.d I, I, -1
+    add.d X, X, INCX
+    blt $r0, I, .L23
+    jirl $r0, $r1, 0
+    .align 3
+
+.L24:
+    bge $r0, I, .L26 /*N<8 INCX==1*/
+    .align 3
+
+.L25:
+    vxor.v VX0, VX0, VX0
+    vst VX0, X, 0 * SIZE
+#ifdef DOUBLE
+    vst VX0, X, 2 * SIZE
+    vst VX0, X, 4 * SIZE
+    vst VX0, X, 6 * SIZE
+#else
+    vst VX0, X, 4 * SIZE
+#endif
+    addi.d I, I, -1
+    addi.d X, X, 8 * SIZE
+    blt $r0, I, .L25
+    .align 3
+
+.L26:
+    andi I, N, 7
+    bge $r0, I, .L999
+    .align 3
+
+.L27:
+    ST  a1, X, 0 * SIZE
+    addi.d I, I, -1
+    addi.d X, X, SIZE
+    blt $r0, I, .L27
+    jirl $r0, $r1, 0
     .align 3
 
 .L30:
