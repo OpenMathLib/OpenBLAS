@@ -15,6 +15,7 @@ others_ops = [
   { 'base': 'blas_server', 'source': 'blas_server.c' },
   { 'base': 'divtable', 'source': 'divtable.c', 'addl': ['-UDOUBLE'] },
   { 'base': 'blasL1thread', 'source': 'blas_l1_thread.c' },
+  { 'base': 'servercallback', 'source': 'blas_server_callback.c' },
   { 'base': 'parameter', 'source': 'parameter.c' }
 ]
 
