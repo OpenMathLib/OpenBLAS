@@ -18,6 +18,7 @@ else ()
     test_zscal.c
     test_amin.c
     test_axpby.c
+    test_gemv.c
   )
 endif ()
 
