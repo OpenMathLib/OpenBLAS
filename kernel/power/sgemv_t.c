@@ -79,15 +79,32 @@ static void sgemv_kernel_4x8(BLASLONG n, BLASLONG lda, FLOAT *ap, FLOAT *x, FLOA
         }
     
   
-    y[0] += alpha * (temp0[0] + temp0[1]+temp0[2] + temp0[3]);
-    y[1] += alpha * (temp1[0] + temp1[1]+temp1[2] + temp1[3]);
-    y[2] += alpha * (temp2[0] + temp2[1]+temp2[2] + temp2[3]);
-    y[3] += alpha * (temp3[0] + temp3[1]+temp3[2] + temp3[3]);
+    register __vector float t0, t1, t2, t3;
+    register __vector float a = { alpha, alpha, alpha, alpha };
+     __vector float *v_y = (__vector float*) y;
 
-    y[4] += alpha * (temp4[0] + temp4[1]+temp4[2] + temp4[3]);
-    y[5] += alpha * (temp5[0] + temp5[1]+temp5[2] + temp5[3]);
-    y[6] += alpha * (temp6[0] + temp6[1]+temp6[2] + temp6[3]);
-    y[7] += alpha * (temp7[0] + temp7[1]+temp7[2] + temp7[3]);
+    t0 = vec_mergeh(temp0, temp2);
+    t1 = vec_mergel(temp0, temp2);
+    t2 = vec_mergeh(temp1, temp3);
+    t3 = vec_mergel(temp1, temp3);
+    temp0 = vec_mergeh(t0, t2);
+    temp1 = vec_mergel(t0, t2);
+    temp2 = vec_mergeh(t1, t3);
+    temp3 = vec_mergel(t1, t3);
+    temp0 += temp1 + temp2 + temp3;
+
+    t0 = vec_mergeh(temp4, temp6);
+    t1 = vec_mergel(temp4, temp6);
+    t2 = vec_mergeh(temp5, temp7);
+    t3 = vec_mergel(temp5, temp7);
+    temp4 = vec_mergeh(t0, t2);
+    temp5 = vec_mergel(t0, t2);
+    temp6 = vec_mergeh(t1, t3);
+    temp7 = vec_mergel(t1, t3);
+    temp4 += temp5 + temp6 + temp7;
+
+    v_y[0] += a * temp0;
+    v_y[1] += a * temp4;
 
 }
  
@@ -116,10 +133,21 @@ static void sgemv_kernel_4x4(BLASLONG n, BLASLONG lda, FLOAT *ap, FLOAT *x, FLOA
         temp3 += v_x[i] * va3[i]; 
     }
  
-    y[0] += alpha * (temp0[0] + temp0[1]+temp0[2] + temp0[3]);
-    y[1] += alpha * (temp1[0] + temp1[1]+temp1[2] + temp1[3]);
-    y[2] += alpha * (temp2[0] + temp2[1]+temp2[2] + temp2[3]);
-    y[3] += alpha * (temp3[0] + temp3[1]+temp3[2] + temp3[3]);
+    register __vector float t0, t1, t2, t3;
+    register __vector float a = { alpha, alpha, alpha, alpha };
+     __vector float *v_y = (__vector float*) y;
+
+    t0 = vec_mergeh(temp0, temp2);
+    t1 = vec_mergel(temp0, temp2);
+    t2 = vec_mergeh(temp1, temp3);
+    t3 = vec_mergel(temp1, temp3);
+    temp0 = vec_mergeh(t0, t2);
+    temp1 = vec_mergel(t0, t2);
+    temp2 = vec_mergeh(t1, t3);
+    temp3 = vec_mergel(t1, t3);
+    temp0 += temp1 + temp2 + temp3;
+
+    v_y[0] += a * temp0;
 
 }
  
