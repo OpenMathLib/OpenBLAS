@@ -396,10 +396,10 @@ ext_mappings_l3 = [
 
  # symm
  # syrk
- {'ext': '_UN', 'def': [], 'undef': ['LOWER', 'TRANS'], 'for': ['s', 'd', 'c', 'z']},
- {'ext': '_UT', 'def': ['TRANS'], 'undef': ['LOWER'], 'for': ['s', 'd', 'c', 'z']},
- {'ext': '_LN', 'def': ['LOWER'], 'undef': ['TRANS', 'CONJ'], 'for': ['s', 'd', 'c', 'z'], 'except': ['?trmm_kernel']},
- {'ext': '_LT', 'def': ['TRANS', 'LOWER'], 'for': ['s', 'd', 'c', 'z'], 'except': ['?trmm_kernel']},
+ {'ext': '_UN', 'def': [], 'undef': ['LOWER', 'TRANS', 'CONJ'], 'for': ['s', 'd', 'c', 'z']},
+ {'ext': '_UT', 'def': ['TRANS'], 'undef': ['LOWER', 'CONJ'], 'for': ['s', 'd', 'c', 'z']},
+ {'ext': '_LN', 'def': ['LOWER'], 'undef': ['TRANS', 'CONJ'], 'for': ['s', 'd', 'c', 'z']},
+ {'ext': '_LT', 'def': ['TRANS', 'LOWER'], 'undef': ['CONJ'], 'for': ['s', 'd', 'c', 'z']},
  {'ext': '_RU', 'def': ['RSIDE', 'NC'], 'undef': ['LOWER'], 'for': ['c', 'z']},
  {'ext': '_RL', 'def': ['RSIDE', 'NC', 'LOWER'], 'for': ['c', 'z']},
 ]
