@@ -209,6 +209,7 @@ CNAME(BLASLONG M,
 #endif
 {
   const uint64_t v_size = svcntw();
+  const uint64_t v_size2 = v_size * 2;
   const svbool_t pg_true = svptrue_b32();
   const svbool_t pg_quad = svwhilelt_b32(0, 4);
   const svbool_t pg_first = svwhilelt_b32(0, 1);
@@ -217,9 +218,10 @@ CNAME(BLASLONG M,
   const svfloat32_t beta_vec = svdup_f32(beta);
 #endif
   const BLASLONG n4 = N & -4;
+  const BLASLONG v_m2 = M & -v_size2;
   const BLASLONG v_m1 = M & -v_size;
 
-  const int pack_b = M >= v_size && N >= 8 && K >= 8 ? 1 : 0;
+  const int pack_b = M >= v_size2 && N >= 8 && K >= 8 ? 1 : 0;
   FLOAT* packed_b =
     (pack_b) ? packed_b = (FLOAT*)malloc(K * 4 * sizeof(FLOAT)) : NULL;
 
@@ -240,16 +242,21 @@ CNAME(BLASLONG M,
     CREATE_B_POINTER(3, 3);
 
     BLASLONG i = 0;
-    for (; i < v_m1; i += v_size) {
+    for (; i < v_m2; i += v_size2) {
 
       CREATE_A_POINTER(0, 0);
-      UPDATE_A_POINTER(v_size);
+      CREATE_A_POINTER(1, v_size);
+      UPDATE_A_POINTER(v_size2);
 
       BLASLONG k = 0;
       DECLARE_RESULT_VECTOR(0, 0);
       DECLARE_RESULT_VECTOR(0, 1);
       DECLARE_RESULT_VECTOR(0, 2);
       DECLARE_RESULT_VECTOR(0, 3);
+      DECLARE_RESULT_VECTOR(1, 0);
+      DECLARE_RESULT_VECTOR(1, 1);
+      DECLARE_RESULT_VECTOR(1, 2);
+      DECLARE_RESULT_VECTOR(1, 3);
 
       if (LIKELY(packed_b != NULL)) {
         if (i == 0) {
@@ -262,6 +269,11 @@ CNAME(BLASLONG M,
             UPDATE_RESULT_VECTOR_QUADWORD(0, 1, 0, 1, 0);
             UPDATE_RESULT_VECTOR_QUADWORD(0, 2, 0, 2, 0);
             UPDATE_RESULT_VECTOR_QUADWORD(0, 3, 0, 3, 0);
+            VECTOR_LOAD_A(pg_true, 1, 0);
+            UPDATE_RESULT_VECTOR_QUADWORD(1, 0, 0, 0, 0);
+            UPDATE_RESULT_VECTOR_QUADWORD(1, 1, 0, 1, 0);
+            UPDATE_RESULT_VECTOR_QUADWORD(1, 2, 0, 2, 0);
+            UPDATE_RESULT_VECTOR_QUADWORD(1, 3, 0, 3, 0);
           }
         } else {
           for (; k < K; k++) {
@@ -272,7 +284,62 @@ CNAME(BLASLONG M,
             UPDATE_RESULT_VECTOR_QUADWORD(0, 1, 0, 1, 0);
             UPDATE_RESULT_VECTOR_QUADWORD(0, 2, 0, 2, 0);
             UPDATE_RESULT_VECTOR_QUADWORD(0, 3, 0, 3, 0);
+            VECTOR_LOAD_A(pg_true, 1, 0);
+            UPDATE_RESULT_VECTOR_QUADWORD(1, 0, 0, 0, 0);
+            UPDATE_RESULT_VECTOR_QUADWORD(1, 1, 0, 1, 0);
+            UPDATE_RESULT_VECTOR_QUADWORD(1, 2, 0, 2, 0);
+            UPDATE_RESULT_VECTOR_QUADWORD(1, 3, 0, 3, 0);
           }
+        }
+      } else {
+        for (; k < K; k++) {
+
+          QUADWORD_LOAD_B(0, 0);
+          VECTOR_LOAD_A(pg_true, 0, 0);
+          UPDATE_RESULT_VECTOR_QUADWORD(0, 0, 0, 0, 0);
+          UPDATE_RESULT_VECTOR_QUADWORD(0, 1, 0, 1, 0);
+          UPDATE_RESULT_VECTOR_QUADWORD(0, 2, 0, 2, 0);
+          UPDATE_RESULT_VECTOR_QUADWORD(0, 3, 0, 3, 0);
+          VECTOR_LOAD_A(pg_true, 1, 0);
+          UPDATE_RESULT_VECTOR_QUADWORD(1, 0, 0, 0, 0);
+          UPDATE_RESULT_VECTOR_QUADWORD(1, 1, 0, 1, 0);
+          UPDATE_RESULT_VECTOR_QUADWORD(1, 2, 0, 2, 0);
+          UPDATE_RESULT_VECTOR_QUADWORD(1, 3, 0, 3, 0);
+        }
+      }
+      VECTOR_STORE(pg_true, 0, 0);
+      VECTOR_STORE(pg_true, 0, 1);
+      VECTOR_STORE(pg_true, 0, 2);
+      VECTOR_STORE(pg_true, 0, 3);
+      VECTOR_STORE(pg_true, 1, 0);
+      VECTOR_STORE(pg_true, 1, 1);
+      VECTOR_STORE(pg_true, 1, 2);
+      VECTOR_STORE(pg_true, 1, 3);
+      INCR_C_POINTER(0, v_size2);
+      INCR_C_POINTER(1, v_size2);
+      INCR_C_POINTER(2, v_size2);
+      INCR_C_POINTER(3, v_size2);
+    }
+    for (; i < v_m1; i += v_size) {
+
+      CREATE_A_POINTER(0, 0);
+      UPDATE_A_POINTER(v_size);
+
+      BLASLONG k = 0;
+      DECLARE_RESULT_VECTOR(0, 0);
+      DECLARE_RESULT_VECTOR(0, 1);
+      DECLARE_RESULT_VECTOR(0, 2);
+      DECLARE_RESULT_VECTOR(0, 3);
+
+      if (LIKELY(packed_b != NULL)) {
+        for (; k < K; k++) {
+
+          UNPACK_QUADWORD_B(0, 0);
+          VECTOR_LOAD_A(pg_true, 0, 0);
+          UPDATE_RESULT_VECTOR_QUADWORD(0, 0, 0, 0, 0);
+          UPDATE_RESULT_VECTOR_QUADWORD(0, 1, 0, 1, 0);
+          UPDATE_RESULT_VECTOR_QUADWORD(0, 2, 0, 2, 0);
+          UPDATE_RESULT_VECTOR_QUADWORD(0, 3, 0, 3, 0);
         }
       } else {
         for (; k < K; k++) {
@@ -346,6 +413,28 @@ CNAME(BLASLONG M,
     CREATE_B_POINTER(0, 0);
 
     BLASLONG i = 0;
+    for (; i < v_m2; i += v_size2) {
+
+      CREATE_A_POINTER(0, 0);
+      CREATE_A_POINTER(1, v_size);
+      UPDATE_A_POINTER(v_size2);
+
+      BLASLONG k = 0;
+      DECLARE_RESULT_VECTOR(0, 0);
+      DECLARE_RESULT_VECTOR(1, 0);
+
+      for (; k < K; k++) {
+
+        BROADCAST_LOAD_B(0, 0);
+        VECTOR_LOAD_A(pg_true, 0, 0);
+        UPDATE_RESULT_VECTOR(pg_true, 0, 0, 0);
+        VECTOR_LOAD_A(pg_true, 1, 0);
+        UPDATE_RESULT_VECTOR(pg_true, 1, 0, 0);
+      }
+      VECTOR_STORE(pg_true, 0, 0);
+      VECTOR_STORE(pg_true, 1, 0);
+      INCR_C_POINTER(0, v_size2);
+    }
     for (; i < v_m1; i += v_size) {
 
       CREATE_A_POINTER(0, 0);

@@ -80,25 +80,12 @@ THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   float64x2_t a##m##_k##offset_k = vld1q_dup_f64(&A_ELEMENT_K(m, offset_k));
 #define LOAD_A1(m, offset_k)                                                   \
   float64_t a##m##_k##offset_k = A_ELEMENT_K(m, offset_k);
-#define VECTOR_LOAD_B_K2(n, offset_k)                                          \
-  float64x2_t b##k##n##_k##offset_k = vld1q_f64(&B_ELEMENT_K(n, offset_k));
-#define TRANSPOSE_B2_K2(n0, n1, offset_k0, offset_k1)                          \
-  float64x2_t b##n0##_k##offset_k0 =                                           \
-    vzip1q_f64(b##k##n0##_k##offset_k0, b##k##n1##_k##offset_k0);              \
-  float64x2_t b##n0##_k##offset_k1 =                                           \
-    vzip2q_f64(b##k##n0##_k##offset_k0, b##k##n1##_k##offset_k0);
-
-#define SCALE_B2_K2(n0, offset_k0, offset_k1)                                  \
-  svfloat64_t b##s##n0##_k##offset_k0 = svdup_neonq_f64(b##n0##_k##offset_k0); \
-  svfloat64_t b##s##n0##_k##offset_k1 = svdup_neonq_f64(b##n0##_k##offset_k1);
 #define GATHER_LOAD_B2(n, offset_k)                                            \
   float64x2_t b##n##_k##offset_k = vdupq_n_f64(B_ELEMENT_K(n, offset_k));      \
   b##n##_k##offset_k =                                                         \
     vsetq_lane_f64(B_ELEMENT_K(n + 1, offset_k), b##n##_k##offset_k, 1);
 #define VECTOR_UNPACK_B2(n, offset_k)                                          \
   float64x2_t b##n##_k##offset_k = vld1q_f64(&PACK_ELEMENT_K(n, offset_k));
-#define VECTOR_PACK_B2(n, offset_k)                                            \
-  vst1q_f64(&PACK_ELEMENT_K(n, offset_k), b##n##_k##offset_k);
 #define PACK_B0(n, offset_k)                                                   \
   PACK_ELEMENT_K(n, offset_k) = vget_lane_f64(b##n##_k##offset_k, 0);
 #define UPDATE_RESULT_VECTOR2(m, n, offset_k)                                  \
@@ -128,9 +115,6 @@ THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   svfloat64_t b##s##n##_k##offset_k = svdup_f64(B_ELEMENT_K(n, offset_k));
 #define VECTOR_LOAD_A(pg, m, offset_k)                                         \
   svfloat64_t a##s##m##_k##offset_k = svld1(pg, &A_ELEMENT_K(m, offset_k));
-#define QUADWORD_LOAD_B(n, offset_k)                                           \
-  svfloat64_t b##s##n##_k##offset_k =                                          \
-    svld1rq(pg_true, &B_ELEMENT_K(n, offset_k));
 #define GATHER_LOAD_A(pg, m, offset_k)                                         \
   svfloat64_t a##s##m##_k##offset_k =                                          \
     svld1_gather_index(pg, &A_ELEMENT_K(m, offset_k), lda_vec);
@@ -226,7 +210,6 @@ CNAME(BLASLONG M,
   const BLASLONG v_m1 = M & -v_size;
   const BLASLONG n4 = N & -4;
   const BLASLONG n2 = N & -2;
-  const BLASLONG k2 = K & -2;
 
   const int pack_a = M >= v_size2 && N >= 8 && K >= 8 ? 1 : 0;
   FLOAT* packed_a =
@@ -266,6 +249,7 @@ CNAME(BLASLONG M,
       if (LIKELY(packed_a != NULL)) {
         if (j == 0) {
           for (; k < K; k++) {
+
             BROADCAST_LOAD_B(0, 0);
             GATHER_LOAD_A(pg_true, 0, 0);
             VECTOR_PACK_A(0, 0);
@@ -285,6 +269,7 @@ CNAME(BLASLONG M,
           }
         } else {
           for (; k < K; k++) {
+
             BROADCAST_LOAD_B(0, 0);
             UNPACK_VECTOR_A(0, 0);
             UPDATE_RESULT_VECTOR(pg_true, 0, 0, 0);
@@ -345,6 +330,7 @@ CNAME(BLASLONG M,
 
       if (LIKELY(packed_a != NULL)) {
         for (; k < K; k++) {
+
           BROADCAST_LOAD_B(0, 0);
           UNPACK_VECTOR_A(0, 0);
           UPDATE_RESULT_VECTOR(pg_true, 0, 0, 0);
@@ -356,6 +342,7 @@ CNAME(BLASLONG M,
         }
       } else {
         for (; k < K; k++) {
+
           BROADCAST_LOAD_B(0, 0);
           GATHER_LOAD_A(pg_true, 0, 0);
           UPDATE_RESULT_VECTOR(pg_true, 0, 0, 0);
