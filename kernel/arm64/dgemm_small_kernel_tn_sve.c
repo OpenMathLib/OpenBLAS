@@ -265,43 +265,7 @@ CNAME(BLASLONG M,
 
       if (LIKELY(packed_a != NULL)) {
         if (j == 0) {
-          for (; k < k2; k += 2) {
-
-            VECTOR_LOAD_B_K2(0, 0);
-            VECTOR_LOAD_B_K2(1, 0);
-            TRANSPOSE_B2_K2(0, 1, 0, 1);
-            SCALE_B2_K2(0, 0, 1);
-            GATHER_LOAD_A(pg_true, 0, 0);
-            VECTOR_PACK_A(0, 0);
-            UPDATE_RESULT_VECTOR_QUADWORD(0, 0, 0, 0, 0);
-            UPDATE_RESULT_VECTOR_QUADWORD(0, 1, 0, 1, 0);
-            GATHER_LOAD_A(pg_true, 0, 1);
-            VECTOR_PACK_A(0, 1);
-            UPDATE_RESULT_VECTOR_QUADWORD(0, 0, 0, 0, 1);
-            UPDATE_RESULT_VECTOR_QUADWORD(0, 1, 0, 1, 1);
-            VECTOR_LOAD_B_K2(2, 0);
-            VECTOR_LOAD_B_K2(3, 0);
-            TRANSPOSE_B2_K2(2, 3, 0, 1);
-            SCALE_B2_K2(2, 0, 1);
-            UPDATE_RESULT_VECTOR_QUADWORD(0, 2, 2, 0, 0);
-            UPDATE_RESULT_VECTOR_QUADWORD(0, 3, 2, 1, 0);
-            UPDATE_RESULT_VECTOR_QUADWORD(0, 2, 2, 0, 1);
-            UPDATE_RESULT_VECTOR_QUADWORD(0, 3, 2, 1, 1);
-            GATHER_LOAD_A(pg_true, 1, 0);
-            VECTOR_PACK_A(1, 0);
-            UPDATE_RESULT_VECTOR_QUADWORD(1, 0, 0, 0, 0);
-            UPDATE_RESULT_VECTOR_QUADWORD(1, 1, 0, 1, 0);
-            UPDATE_RESULT_VECTOR_QUADWORD(1, 2, 2, 0, 0);
-            UPDATE_RESULT_VECTOR_QUADWORD(1, 3, 2, 1, 0);
-            GATHER_LOAD_A(pg_true, 1, 1);
-            VECTOR_PACK_A(1, 1);
-            UPDATE_RESULT_VECTOR_QUADWORD(1, 0, 0, 0, 1);
-            UPDATE_RESULT_VECTOR_QUADWORD(1, 1, 0, 1, 1);
-            UPDATE_RESULT_VECTOR_QUADWORD(1, 2, 2, 0, 1);
-            UPDATE_RESULT_VECTOR_QUADWORD(1, 3, 2, 1, 1);
-          }
           for (; k < K; k++) {
-
             BROADCAST_LOAD_B(0, 0);
             GATHER_LOAD_A(pg_true, 0, 0);
             VECTOR_PACK_A(0, 0);
@@ -320,39 +284,7 @@ CNAME(BLASLONG M,
             UPDATE_RESULT_VECTOR(pg_true, 1, 3, 0);
           }
         } else {
-          for (; k < k2; k += 2) {
-
-            VECTOR_LOAD_B_K2(0, 0);
-            VECTOR_LOAD_B_K2(1, 0);
-            TRANSPOSE_B2_K2(0, 1, 0, 1);
-            SCALE_B2_K2(0, 0, 1);
-            UNPACK_VECTOR_A(0, 0);
-            UPDATE_RESULT_VECTOR_QUADWORD(0, 0, 0, 0, 0);
-            UPDATE_RESULT_VECTOR_QUADWORD(0, 1, 0, 1, 0);
-            UNPACK_VECTOR_A(0, 1);
-            UPDATE_RESULT_VECTOR_QUADWORD(0, 0, 0, 0, 1);
-            UPDATE_RESULT_VECTOR_QUADWORD(0, 1, 0, 1, 1);
-            VECTOR_LOAD_B_K2(2, 0);
-            VECTOR_LOAD_B_K2(3, 0);
-            TRANSPOSE_B2_K2(2, 3, 0, 1);
-            SCALE_B2_K2(2, 0, 1);
-            UPDATE_RESULT_VECTOR_QUADWORD(0, 2, 2, 0, 0);
-            UPDATE_RESULT_VECTOR_QUADWORD(0, 3, 2, 1, 0);
-            UPDATE_RESULT_VECTOR_QUADWORD(0, 2, 2, 0, 1);
-            UPDATE_RESULT_VECTOR_QUADWORD(0, 3, 2, 1, 1);
-            UNPACK_VECTOR_A(1, 0);
-            UPDATE_RESULT_VECTOR_QUADWORD(1, 0, 0, 0, 0);
-            UPDATE_RESULT_VECTOR_QUADWORD(1, 1, 0, 1, 0);
-            UPDATE_RESULT_VECTOR_QUADWORD(1, 2, 2, 0, 0);
-            UPDATE_RESULT_VECTOR_QUADWORD(1, 3, 2, 1, 0);
-            UNPACK_VECTOR_A(1, 1);
-            UPDATE_RESULT_VECTOR_QUADWORD(1, 0, 0, 0, 1);
-            UPDATE_RESULT_VECTOR_QUADWORD(1, 1, 0, 1, 1);
-            UPDATE_RESULT_VECTOR_QUADWORD(1, 2, 2, 0, 1);
-            UPDATE_RESULT_VECTOR_QUADWORD(1, 3, 2, 1, 1);
-          }
           for (; k < K; k++) {
-
             BROADCAST_LOAD_B(0, 0);
             UNPACK_VECTOR_A(0, 0);
             UPDATE_RESULT_VECTOR(pg_true, 0, 0, 0);
@@ -370,37 +302,6 @@ CNAME(BLASLONG M,
           }
         }
       } else {
-        for (; k < k2; k += 2) {
-
-          VECTOR_LOAD_B_K2(0, 0);
-          VECTOR_LOAD_B_K2(1, 0);
-          TRANSPOSE_B2_K2(0, 1, 0, 1);
-          SCALE_B2_K2(0, 0, 1);
-          GATHER_LOAD_A(pg_true, 0, 0);
-          UPDATE_RESULT_VECTOR_QUADWORD(0, 0, 0, 0, 0);
-          UPDATE_RESULT_VECTOR_QUADWORD(0, 1, 0, 1, 0);
-          GATHER_LOAD_A(pg_true, 0, 1);
-          UPDATE_RESULT_VECTOR_QUADWORD(0, 0, 0, 0, 1);
-          UPDATE_RESULT_VECTOR_QUADWORD(0, 1, 0, 1, 1);
-          VECTOR_LOAD_B_K2(2, 0);
-          VECTOR_LOAD_B_K2(3, 0);
-          TRANSPOSE_B2_K2(2, 3, 0, 1);
-          SCALE_B2_K2(2, 0, 1);
-          UPDATE_RESULT_VECTOR_QUADWORD(0, 2, 2, 0, 0);
-          UPDATE_RESULT_VECTOR_QUADWORD(0, 3, 2, 1, 0);
-          UPDATE_RESULT_VECTOR_QUADWORD(0, 2, 2, 0, 1);
-          UPDATE_RESULT_VECTOR_QUADWORD(0, 3, 2, 1, 1);
-          GATHER_LOAD_A(pg_true, 1, 0);
-          UPDATE_RESULT_VECTOR_QUADWORD(1, 0, 0, 0, 0);
-          UPDATE_RESULT_VECTOR_QUADWORD(1, 1, 0, 1, 0);
-          UPDATE_RESULT_VECTOR_QUADWORD(1, 2, 2, 0, 0);
-          UPDATE_RESULT_VECTOR_QUADWORD(1, 3, 2, 1, 0);
-          GATHER_LOAD_A(pg_true, 1, 1);
-          UPDATE_RESULT_VECTOR_QUADWORD(1, 0, 0, 0, 1);
-          UPDATE_RESULT_VECTOR_QUADWORD(1, 1, 0, 1, 1);
-          UPDATE_RESULT_VECTOR_QUADWORD(1, 2, 2, 0, 1);
-          UPDATE_RESULT_VECTOR_QUADWORD(1, 3, 2, 1, 1);
-        }
         for (; k < K; k++) {
 
           BROADCAST_LOAD_B(0, 0);
@@ -443,27 +344,7 @@ CNAME(BLASLONG M,
       DECLARE_RESULT_VECTOR(1, 1);
 
       if (LIKELY(packed_a != NULL)) {
-        for (; k < k2; k += 2) {
-
-          VECTOR_LOAD_B_K2(0, 0);
-          VECTOR_LOAD_B_K2(1, 0);
-          TRANSPOSE_B2_K2(0, 1, 0, 1);
-          SCALE_B2_K2(0, 0, 1);
-          UNPACK_VECTOR_A(0, 0);
-          UPDATE_RESULT_VECTOR_QUADWORD(0, 0, 0, 0, 0);
-          UPDATE_RESULT_VECTOR_QUADWORD(0, 1, 0, 1, 0);
-          UNPACK_VECTOR_A(0, 1);
-          UPDATE_RESULT_VECTOR_QUADWORD(0, 0, 0, 0, 1);
-          UPDATE_RESULT_VECTOR_QUADWORD(0, 1, 0, 1, 1);
-          UNPACK_VECTOR_A(1, 0);
-          UPDATE_RESULT_VECTOR_QUADWORD(1, 0, 0, 0, 0);
-          UPDATE_RESULT_VECTOR_QUADWORD(1, 1, 0, 1, 0);
-          UNPACK_VECTOR_A(1, 1);
-          UPDATE_RESULT_VECTOR_QUADWORD(1, 0, 0, 0, 1);
-          UPDATE_RESULT_VECTOR_QUADWORD(1, 1, 0, 1, 1);
-        }
         for (; k < K; k++) {
-
           BROADCAST_LOAD_B(0, 0);
           UNPACK_VECTOR_A(0, 0);
           UPDATE_RESULT_VECTOR(pg_true, 0, 0, 0);
@@ -474,27 +355,7 @@ CNAME(BLASLONG M,
           UPDATE_RESULT_VECTOR(pg_true, 1, 1, 0);
         }
       } else {
-        for (; k < k2; k += 2) {
-
-          VECTOR_LOAD_B_K2(0, 0);
-          VECTOR_LOAD_B_K2(1, 0);
-          TRANSPOSE_B2_K2(0, 1, 0, 1);
-          SCALE_B2_K2(0, 0, 1);
-          GATHER_LOAD_A(pg_true, 0, 0);
-          UPDATE_RESULT_VECTOR_QUADWORD(0, 0, 0, 0, 0);
-          UPDATE_RESULT_VECTOR_QUADWORD(0, 1, 0, 1, 0);
-          GATHER_LOAD_A(pg_true, 0, 1);
-          UPDATE_RESULT_VECTOR_QUADWORD(0, 0, 0, 0, 1);
-          UPDATE_RESULT_VECTOR_QUADWORD(0, 1, 0, 1, 1);
-          GATHER_LOAD_A(pg_true, 1, 0);
-          UPDATE_RESULT_VECTOR_QUADWORD(1, 0, 0, 0, 0);
-          UPDATE_RESULT_VECTOR_QUADWORD(1, 1, 0, 1, 0);
-          GATHER_LOAD_A(pg_true, 1, 1);
-          UPDATE_RESULT_VECTOR_QUADWORD(1, 0, 0, 0, 1);
-          UPDATE_RESULT_VECTOR_QUADWORD(1, 1, 0, 1, 1);
-        }
         for (; k < K; k++) {
-
           BROADCAST_LOAD_B(0, 0);
           GATHER_LOAD_A(pg_true, 0, 0);
           UPDATE_RESULT_VECTOR(pg_true, 0, 0, 0);
@@ -570,27 +431,6 @@ CNAME(BLASLONG M,
       DECLARE_RESULT_VECTOR(0, 2);
       DECLARE_RESULT_VECTOR(0, 3);
 
-      for (; k < k2; k += 2) {
-
-        VECTOR_LOAD_B_K2(0, 0);
-        VECTOR_LOAD_B_K2(1, 0);
-        TRANSPOSE_B2_K2(0, 1, 0, 1);
-        SCALE_B2_K2(0, 0, 1);
-        GATHER_LOAD_A(pg_true, 0, 0);
-        UPDATE_RESULT_VECTOR_QUADWORD(0, 0, 0, 0, 0);
-        UPDATE_RESULT_VECTOR_QUADWORD(0, 1, 0, 1, 0);
-        GATHER_LOAD_A(pg_true, 0, 1);
-        UPDATE_RESULT_VECTOR_QUADWORD(0, 0, 0, 0, 1);
-        UPDATE_RESULT_VECTOR_QUADWORD(0, 1, 0, 1, 1);
-        VECTOR_LOAD_B_K2(2, 0);
-        VECTOR_LOAD_B_K2(3, 0);
-        TRANSPOSE_B2_K2(2, 3, 0, 1);
-        SCALE_B2_K2(2, 0, 1);
-        UPDATE_RESULT_VECTOR_QUADWORD(0, 2, 2, 0, 0);
-        UPDATE_RESULT_VECTOR_QUADWORD(0, 3, 2, 1, 0);
-        UPDATE_RESULT_VECTOR_QUADWORD(0, 2, 2, 0, 1);
-        UPDATE_RESULT_VECTOR_QUADWORD(0, 3, 2, 1, 1);
-      }
       for (; k < K; k++) {
 
         BROADCAST_LOAD_B(0, 0);
@@ -619,19 +459,6 @@ CNAME(BLASLONG M,
       DECLARE_RESULT_VECTOR(0, 0);
       DECLARE_RESULT_VECTOR(0, 1);
 
-      for (; k < k2; k += 2) {
-
-        VECTOR_LOAD_B_K2(0, 0);
-        VECTOR_LOAD_B_K2(1, 0);
-        TRANSPOSE_B2_K2(0, 1, 0, 1);
-        SCALE_B2_K2(0, 0, 1);
-        GATHER_LOAD_A(pg_true, 0, 0);
-        UPDATE_RESULT_VECTOR_QUADWORD(0, 0, 0, 0, 0);
-        UPDATE_RESULT_VECTOR_QUADWORD(0, 1, 0, 1, 0);
-        GATHER_LOAD_A(pg_true, 0, 1);
-        UPDATE_RESULT_VECTOR_QUADWORD(0, 0, 0, 0, 1);
-        UPDATE_RESULT_VECTOR_QUADWORD(0, 1, 0, 1, 1);
-      }
       for (; k < K; k++) {
 
         BROADCAST_LOAD_B(0, 0);
@@ -686,27 +513,6 @@ CNAME(BLASLONG M,
       DECLARE_RESULT_VECTOR(0, 2);
       DECLARE_RESULT_VECTOR(0, 3);
 
-      for (; k < k2; k += 2) {
-
-        VECTOR_LOAD_B_K2(0, 0);
-        VECTOR_LOAD_B_K2(1, 0);
-        TRANSPOSE_B2_K2(0, 1, 0, 1);
-        SCALE_B2_K2(0, 0, 1);
-        GATHER_LOAD_A(pg_tail, 0, 0);
-        UPDATE_RESULT_VECTOR_QUADWORD(0, 0, 0, 0, 0);
-        UPDATE_RESULT_VECTOR_QUADWORD(0, 1, 0, 1, 0);
-        GATHER_LOAD_A(pg_tail, 0, 1);
-        UPDATE_RESULT_VECTOR_QUADWORD(0, 0, 0, 0, 1);
-        UPDATE_RESULT_VECTOR_QUADWORD(0, 1, 0, 1, 1);
-        VECTOR_LOAD_B_K2(2, 0);
-        VECTOR_LOAD_B_K2(3, 0);
-        TRANSPOSE_B2_K2(2, 3, 0, 1);
-        SCALE_B2_K2(2, 0, 1);
-        UPDATE_RESULT_VECTOR_QUADWORD(0, 2, 2, 0, 0);
-        UPDATE_RESULT_VECTOR_QUADWORD(0, 3, 2, 1, 0);
-        UPDATE_RESULT_VECTOR_QUADWORD(0, 2, 2, 0, 1);
-        UPDATE_RESULT_VECTOR_QUADWORD(0, 3, 2, 1, 1);
-      }
       for (; k < K; k++) {
 
         BROADCAST_LOAD_B(0, 0);
@@ -735,19 +541,6 @@ CNAME(BLASLONG M,
       DECLARE_RESULT_VECTOR(0, 0);
       DECLARE_RESULT_VECTOR(0, 1);
 
-      for (; k < k2; k += 2) {
-
-        VECTOR_LOAD_B_K2(0, 0);
-        VECTOR_LOAD_B_K2(1, 0);
-        TRANSPOSE_B2_K2(0, 1, 0, 1);
-        SCALE_B2_K2(0, 0, 1);
-        GATHER_LOAD_A(pg_tail, 0, 0);
-        UPDATE_RESULT_VECTOR_QUADWORD(0, 0, 0, 0, 0);
-        UPDATE_RESULT_VECTOR_QUADWORD(0, 1, 0, 1, 0);
-        GATHER_LOAD_A(pg_tail, 0, 1);
-        UPDATE_RESULT_VECTOR_QUADWORD(0, 0, 0, 0, 1);
-        UPDATE_RESULT_VECTOR_QUADWORD(0, 1, 0, 1, 1);
-      }
       for (; k < K; k++) {
 
         BROADCAST_LOAD_B(0, 0);

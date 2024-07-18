@@ -35,11 +35,9 @@ int CNAME(int transa, int transb, BLASLONG M, BLASLONG N, BLASLONG K, FLOAT alph
   if (MNK <= 64*64*64)
     return 1;
 #else // sgemm
-  if (MNK <= 256*256*256)
+  if (MNK <= 64*64*64)
     return 1;
 #endif
-
-
 
   return 0;
 }
