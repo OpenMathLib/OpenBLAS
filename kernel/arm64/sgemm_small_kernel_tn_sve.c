@@ -218,6 +218,7 @@ CNAME(BLASLONG M,
 
   const BLASLONG v_m2 = M & -v_size2;
   const BLASLONG v_m1 = M & -v_size;
+  const BLASLONG n8 = N & -8;
   const BLASLONG n4 = N & -4;
 
   const int pack_a = M >= v_size2 && N >= 8 && K >= 8 ? 1 : 0;
@@ -237,23 +238,35 @@ CNAME(BLASLONG M,
     CREATE_A_POINTER(1, v_size);
 
     BLASLONG j = 0;
-    for (; j < n4; j += 4) {
+    for (; j < n8; j += 8) {
 
       CREATE_B_POINTER(0, 0);
       CREATE_B_POINTER(1, 1);
       CREATE_B_POINTER(2, 2);
       CREATE_B_POINTER(3, 3);
-      UPDATE_B_POINTER(4);
+      CREATE_B_POINTER(4, 4);
+      CREATE_B_POINTER(5, 5);
+      CREATE_B_POINTER(6, 6);
+      CREATE_B_POINTER(7, 7);
+      UPDATE_B_POINTER(8);
 
       BLASLONG k = 0;
       DECLARE_RESULT_VECTOR(0, 0);
       DECLARE_RESULT_VECTOR(0, 1);
       DECLARE_RESULT_VECTOR(0, 2);
       DECLARE_RESULT_VECTOR(0, 3);
+      DECLARE_RESULT_VECTOR(0, 4);
+      DECLARE_RESULT_VECTOR(0, 5);
+      DECLARE_RESULT_VECTOR(0, 6);
+      DECLARE_RESULT_VECTOR(0, 7);
       DECLARE_RESULT_VECTOR(1, 0);
       DECLARE_RESULT_VECTOR(1, 1);
       DECLARE_RESULT_VECTOR(1, 2);
       DECLARE_RESULT_VECTOR(1, 3);
+      DECLARE_RESULT_VECTOR(1, 4);
+      DECLARE_RESULT_VECTOR(1, 5);
+      DECLARE_RESULT_VECTOR(1, 6);
+      DECLARE_RESULT_VECTOR(1, 7);
 
       if (LIKELY(packed_a != NULL)) {
         if (j == 0) {
@@ -275,6 +288,18 @@ CNAME(BLASLONG M,
             BROADCAST_LOAD_B(3, 0);
             UPDATE_RESULT_VECTOR(pg_true, 0, 3, 0);
             UPDATE_RESULT_VECTOR(pg_true, 1, 3, 0);
+            BROADCAST_LOAD_B(4, 0);
+            UPDATE_RESULT_VECTOR(pg_true, 0, 4, 0);
+            UPDATE_RESULT_VECTOR(pg_true, 1, 4, 0);
+            BROADCAST_LOAD_B(5, 0);
+            UPDATE_RESULT_VECTOR(pg_true, 0, 5, 0);
+            UPDATE_RESULT_VECTOR(pg_true, 1, 5, 0);
+            BROADCAST_LOAD_B(6, 0);
+            UPDATE_RESULT_VECTOR(pg_true, 0, 6, 0);
+            UPDATE_RESULT_VECTOR(pg_true, 1, 6, 0);
+            BROADCAST_LOAD_B(7, 0);
+            UPDATE_RESULT_VECTOR(pg_true, 0, 7, 0);
+            UPDATE_RESULT_VECTOR(pg_true, 1, 7, 0);
           }
         } else {
           for (; k < K; k++) {
@@ -293,7 +318,105 @@ CNAME(BLASLONG M,
             BROADCAST_LOAD_B(3, 0);
             UPDATE_RESULT_VECTOR(pg_true, 0, 3, 0);
             UPDATE_RESULT_VECTOR(pg_true, 1, 3, 0);
+            BROADCAST_LOAD_B(4, 0);
+            UPDATE_RESULT_VECTOR(pg_true, 0, 4, 0);
+            UPDATE_RESULT_VECTOR(pg_true, 1, 4, 0);
+            BROADCAST_LOAD_B(5, 0);
+            UPDATE_RESULT_VECTOR(pg_true, 0, 5, 0);
+            UPDATE_RESULT_VECTOR(pg_true, 1, 5, 0);
+            BROADCAST_LOAD_B(6, 0);
+            UPDATE_RESULT_VECTOR(pg_true, 0, 6, 0);
+            UPDATE_RESULT_VECTOR(pg_true, 1, 6, 0);
+            BROADCAST_LOAD_B(7, 0);
+            UPDATE_RESULT_VECTOR(pg_true, 0, 7, 0);
+            UPDATE_RESULT_VECTOR(pg_true, 1, 7, 0);
           }
+        }
+      } else {
+        for (; k < K; k++) {
+
+          BROADCAST_LOAD_B(0, 0);
+          GATHER_LOAD_A(pg_true, 0, 0);
+          UPDATE_RESULT_VECTOR(pg_true, 0, 0, 0);
+          BROADCAST_LOAD_B(1, 0);
+          UPDATE_RESULT_VECTOR(pg_true, 0, 1, 0);
+          GATHER_LOAD_A(pg_true, 1, 0);
+          UPDATE_RESULT_VECTOR(pg_true, 1, 0, 0);
+          UPDATE_RESULT_VECTOR(pg_true, 1, 1, 0);
+          BROADCAST_LOAD_B(2, 0);
+          UPDATE_RESULT_VECTOR(pg_true, 0, 2, 0);
+          UPDATE_RESULT_VECTOR(pg_true, 1, 2, 0);
+          BROADCAST_LOAD_B(3, 0);
+          UPDATE_RESULT_VECTOR(pg_true, 0, 3, 0);
+          UPDATE_RESULT_VECTOR(pg_true, 1, 3, 0);
+          BROADCAST_LOAD_B(4, 0);
+          UPDATE_RESULT_VECTOR(pg_true, 0, 4, 0);
+          UPDATE_RESULT_VECTOR(pg_true, 1, 4, 0);
+          BROADCAST_LOAD_B(5, 0);
+          UPDATE_RESULT_VECTOR(pg_true, 0, 5, 0);
+          UPDATE_RESULT_VECTOR(pg_true, 1, 5, 0);
+          BROADCAST_LOAD_B(6, 0);
+          UPDATE_RESULT_VECTOR(pg_true, 0, 6, 0);
+          UPDATE_RESULT_VECTOR(pg_true, 1, 6, 0);
+          BROADCAST_LOAD_B(7, 0);
+          UPDATE_RESULT_VECTOR(pg_true, 0, 7, 0);
+          UPDATE_RESULT_VECTOR(pg_true, 1, 7, 0);
+        }
+      }
+      VECTOR_STORE(pg_true, 0, 0);
+      VECTOR_STORE(pg_true, 0, 1);
+      VECTOR_STORE(pg_true, 0, 2);
+      VECTOR_STORE(pg_true, 0, 3);
+      VECTOR_STORE(pg_true, 0, 4);
+      VECTOR_STORE(pg_true, 0, 5);
+      VECTOR_STORE(pg_true, 0, 6);
+      VECTOR_STORE(pg_true, 0, 7);
+      VECTOR_STORE(pg_true, 1, 0);
+      VECTOR_STORE(pg_true, 1, 1);
+      VECTOR_STORE(pg_true, 1, 2);
+      VECTOR_STORE(pg_true, 1, 3);
+      VECTOR_STORE(pg_true, 1, 4);
+      VECTOR_STORE(pg_true, 1, 5);
+      VECTOR_STORE(pg_true, 1, 6);
+      VECTOR_STORE(pg_true, 1, 7);
+      INCR_C_POINTER(0, 8);
+      INCR_C_POINTER(1, 8);
+    }
+    for (; j < n4; j += 4) {
+
+      CREATE_B_POINTER(0, 0);
+      CREATE_B_POINTER(1, 1);
+      CREATE_B_POINTER(2, 2);
+      CREATE_B_POINTER(3, 3);
+      UPDATE_B_POINTER(4);
+
+      BLASLONG k = 0;
+      DECLARE_RESULT_VECTOR(0, 0);
+      DECLARE_RESULT_VECTOR(0, 1);
+      DECLARE_RESULT_VECTOR(0, 2);
+      DECLARE_RESULT_VECTOR(0, 3);
+      DECLARE_RESULT_VECTOR(1, 0);
+      DECLARE_RESULT_VECTOR(1, 1);
+      DECLARE_RESULT_VECTOR(1, 2);
+      DECLARE_RESULT_VECTOR(1, 3);
+
+      if (LIKELY(packed_a != NULL)) {
+        for (; k < K; k++) {
+
+          BROADCAST_LOAD_B(0, 0);
+          UNPACK_VECTOR_A(0, 0);
+          UPDATE_RESULT_VECTOR(pg_true, 0, 0, 0);
+          BROADCAST_LOAD_B(1, 0);
+          UPDATE_RESULT_VECTOR(pg_true, 0, 1, 0);
+          UNPACK_VECTOR_A(1, 0);
+          UPDATE_RESULT_VECTOR(pg_true, 1, 0, 0);
+          UPDATE_RESULT_VECTOR(pg_true, 1, 1, 0);
+          BROADCAST_LOAD_B(2, 0);
+          UPDATE_RESULT_VECTOR(pg_true, 0, 2, 0);
+          UPDATE_RESULT_VECTOR(pg_true, 1, 2, 0);
+          BROADCAST_LOAD_B(3, 0);
+          UPDATE_RESULT_VECTOR(pg_true, 0, 3, 0);
+          UPDATE_RESULT_VECTOR(pg_true, 1, 3, 0);
         }
       } else {
         for (; k < K; k++) {
@@ -369,6 +492,58 @@ CNAME(BLASLONG M,
     CREATE_A_POINTER(0, 0);
 
     BLASLONG j = 0;
+    for (; j < n8; j += 8) {
+
+      CREATE_B_POINTER(0, 0);
+      CREATE_B_POINTER(1, 1);
+      CREATE_B_POINTER(2, 2);
+      CREATE_B_POINTER(3, 3);
+      CREATE_B_POINTER(4, 4);
+      CREATE_B_POINTER(5, 5);
+      CREATE_B_POINTER(6, 6);
+      CREATE_B_POINTER(7, 7);
+      UPDATE_B_POINTER(8);
+
+      BLASLONG k = 0;
+      DECLARE_RESULT_VECTOR(0, 0);
+      DECLARE_RESULT_VECTOR(0, 1);
+      DECLARE_RESULT_VECTOR(0, 2);
+      DECLARE_RESULT_VECTOR(0, 3);
+      DECLARE_RESULT_VECTOR(0, 4);
+      DECLARE_RESULT_VECTOR(0, 5);
+      DECLARE_RESULT_VECTOR(0, 6);
+      DECLARE_RESULT_VECTOR(0, 7);
+
+      for (; k < K; k++) {
+
+        BROADCAST_LOAD_B(0, 0);
+        GATHER_LOAD_A(pg_true, 0, 0);
+        UPDATE_RESULT_VECTOR(pg_true, 0, 0, 0);
+        BROADCAST_LOAD_B(1, 0);
+        UPDATE_RESULT_VECTOR(pg_true, 0, 1, 0);
+        BROADCAST_LOAD_B(2, 0);
+        UPDATE_RESULT_VECTOR(pg_true, 0, 2, 0);
+        BROADCAST_LOAD_B(3, 0);
+        UPDATE_RESULT_VECTOR(pg_true, 0, 3, 0);
+        BROADCAST_LOAD_B(4, 0);
+        UPDATE_RESULT_VECTOR(pg_true, 0, 4, 0);
+        BROADCAST_LOAD_B(5, 0);
+        UPDATE_RESULT_VECTOR(pg_true, 0, 5, 0);
+        BROADCAST_LOAD_B(6, 0);
+        UPDATE_RESULT_VECTOR(pg_true, 0, 6, 0);
+        BROADCAST_LOAD_B(7, 0);
+        UPDATE_RESULT_VECTOR(pg_true, 0, 7, 0);
+      }
+      VECTOR_STORE(pg_true, 0, 0);
+      VECTOR_STORE(pg_true, 0, 1);
+      VECTOR_STORE(pg_true, 0, 2);
+      VECTOR_STORE(pg_true, 0, 3);
+      VECTOR_STORE(pg_true, 0, 4);
+      VECTOR_STORE(pg_true, 0, 5);
+      VECTOR_STORE(pg_true, 0, 6);
+      VECTOR_STORE(pg_true, 0, 7);
+      INCR_C_POINTER(0, 8);
+    }
     for (; j < n4; j += 4) {
 
       CREATE_B_POINTER(0, 0);
@@ -429,6 +604,58 @@ CNAME(BLASLONG M,
     CREATE_A_POINTER(0, 0);
 
     BLASLONG j = 0;
+    for (; j < n8; j += 8) {
+
+      CREATE_B_POINTER(0, 0);
+      CREATE_B_POINTER(1, 1);
+      CREATE_B_POINTER(2, 2);
+      CREATE_B_POINTER(3, 3);
+      CREATE_B_POINTER(4, 4);
+      CREATE_B_POINTER(5, 5);
+      CREATE_B_POINTER(6, 6);
+      CREATE_B_POINTER(7, 7);
+      UPDATE_B_POINTER(8);
+
+      BLASLONG k = 0;
+      DECLARE_RESULT_VECTOR(0, 0);
+      DECLARE_RESULT_VECTOR(0, 1);
+      DECLARE_RESULT_VECTOR(0, 2);
+      DECLARE_RESULT_VECTOR(0, 3);
+      DECLARE_RESULT_VECTOR(0, 4);
+      DECLARE_RESULT_VECTOR(0, 5);
+      DECLARE_RESULT_VECTOR(0, 6);
+      DECLARE_RESULT_VECTOR(0, 7);
+
+      for (; k < K; k++) {
+
+        BROADCAST_LOAD_B(0, 0);
+        GATHER_LOAD_A(pg_tail, 0, 0);
+        UPDATE_RESULT_VECTOR(pg_tail, 0, 0, 0);
+        BROADCAST_LOAD_B(1, 0);
+        UPDATE_RESULT_VECTOR(pg_tail, 0, 1, 0);
+        BROADCAST_LOAD_B(2, 0);
+        UPDATE_RESULT_VECTOR(pg_tail, 0, 2, 0);
+        BROADCAST_LOAD_B(3, 0);
+        UPDATE_RESULT_VECTOR(pg_tail, 0, 3, 0);
+        BROADCAST_LOAD_B(4, 0);
+        UPDATE_RESULT_VECTOR(pg_tail, 0, 4, 0);
+        BROADCAST_LOAD_B(5, 0);
+        UPDATE_RESULT_VECTOR(pg_tail, 0, 5, 0);
+        BROADCAST_LOAD_B(6, 0);
+        UPDATE_RESULT_VECTOR(pg_tail, 0, 6, 0);
+        BROADCAST_LOAD_B(7, 0);
+        UPDATE_RESULT_VECTOR(pg_tail, 0, 7, 0);
+      }
+      VECTOR_STORE(pg_tail, 0, 0);
+      VECTOR_STORE(pg_tail, 0, 1);
+      VECTOR_STORE(pg_tail, 0, 2);
+      VECTOR_STORE(pg_tail, 0, 3);
+      VECTOR_STORE(pg_tail, 0, 4);
+      VECTOR_STORE(pg_tail, 0, 5);
+      VECTOR_STORE(pg_tail, 0, 6);
+      VECTOR_STORE(pg_tail, 0, 7);
+      INCR_C_POINTER(0, 8);
+    }
     for (; j < n4; j += 4) {
 
       CREATE_B_POINTER(0, 0);
