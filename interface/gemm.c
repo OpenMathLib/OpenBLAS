@@ -47,22 +47,29 @@
 #define SMP_THRESHOLD_MIN 65536.0
 #ifdef XDOUBLE
 #define ERROR_NAME "QGEMM "
+#define GEMV BLASFUNC(qgemv)
 #elif defined(DOUBLE)
 #define ERROR_NAME "DGEMM "
+#define GEMV BLASFUNC(dgemv)
 #elif defined(BFLOAT16)
 #define ERROR_NAME "SBGEMM "
+#define GEMV BLASFUNC(sbgemv)
 #else
 #define ERROR_NAME "SGEMM "
+#define GEMV BLASFUNC(sgemv)
 #endif
 #else
 #define SMP_THRESHOLD_MIN 8192.0
 #ifndef GEMM3M
 #ifdef XDOUBLE
 #define ERROR_NAME "XGEMM "
+#define GEMV BLASFUNC(xgemv)
 #elif defined(DOUBLE)
 #define ERROR_NAME "ZGEMM "
+#define GEMV BLASFUNC(zgemv)
 #else
 #define ERROR_NAME "CGEMM "
+#define GEMV BLASFUNC(cgemv)
 #endif
 #else
 #ifdef XDOUBLE
@@ -189,6 +196,16 @@ void NAME(char *TRANSA, char *TRANSB,
   char transA, transB;
   IFLOAT *buffer;
   IFLOAT *sa, *sb;
+
+#if !defined(COMPLEX) && !defined(DOUBLE) && !defined(BFLOAT16)
+#if 1
+  if (*N == 1) {
+      GEMV(TRANSA, K, M, alpha, a, ldA, b, N, beta, c, N);
+//SUBROUTINE SGEMV(TRANS,M,N,ALPHA,A,LDA,X,INCX,BETA,Y,INCY)
+      return;
+  }
+#endif
+#endif
 
 #ifdef SMP
   double MNK;
