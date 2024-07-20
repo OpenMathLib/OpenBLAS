@@ -29,7 +29,8 @@ THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <arm_neon.h>
 #include <arm_sve.h>
-#ifdef __ARM_NEON_SVE_BRIDGE
+#if defined(__ARM_NEON_SVE_BRIDGE) && defined(__has_include) &&                \
+  __has_include(<arm_neon_sve_bridge.h>)
 #include <arm_neon_sve_bridge.h>
 #else
 #define svdup_neonq_f32(fixed_reg)                                             \
