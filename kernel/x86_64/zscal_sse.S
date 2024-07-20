@@ -76,7 +76,7 @@
 	pxor	%xmm15, %xmm15
 	comiss	%xmm0, %xmm15
 	jne	.L100		# Alpha_r != ZERO
-
+	jp	.L100		# Alpha_r == NAN	
 	comiss	%xmm1, %xmm15
 	jne	.L100		# Alpha_i != ZERO
 
