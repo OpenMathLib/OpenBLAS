@@ -48,6 +48,7 @@
 #define X	ARG2
 #define INCX	ARG3
 #endif
+#define FLAG    %r9
 
 #define XX	%r10
 #define I	%rax
@@ -60,8 +61,10 @@
 #ifdef WINDOWS_ABI
 	movq	40(%rsp), X
 	movq	48(%rsp), INCX
-
+	movq	64(%rsp), FLAG
 	movaps	%xmm3, %xmm0
+#else
+	movq    24(%rsp), FLAG
 #endif
 
 	SAVEREGISTERS
@@ -75,6 +78,8 @@
 	comisd	%xmm0, %xmm1
 	jne	.L100		# Alpha != ZERO
 	jp	.L100		# For Alpha = NaN
+
+	cmpq $1, FLAG
 	je 	.L100		# disable the Alpha=zero path as it does not handle x=inf or nan
 /* Alpha == ZERO */
 	cmpq	$SIZE, INCX
