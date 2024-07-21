@@ -30,7 +30,11 @@ else
 ifeq ($(ARCH),loongarch64)
 COMMONOBJS += dynamic_loongarch64.$(SUFFIX)
 else
+ifeq ($(ARCH),riscv64)
+COMMONOBJS += dynamic_riscv64.$(SUFFIX) detect_riscv64.$(SUFFIX)
+else
 COMMONOBJS	+=  dynamic.$(SUFFIX)
+endif
 endif
 endif
 endif
@@ -106,7 +110,11 @@ else
 ifeq ($(ARCH),loongarch64)
 HPLOBJS = memory.$(SUFFIX) xerbla.$(SUFFIX) dynamic_loongarch64.$(SUFFIX)
 else
+ifeq ($(ARCH),riscv64)
+HPLOBJS = memory.$(SUFFIX) xerbla.$(SUFFIX) dynamic_riscv64.$(SUFFIX) detect_riscv64.$(SUFFIX)
+else
 HPLOBJS = memory.$(SUFFIX) xerbla.$(SUFFIX) dynamic.$(SUFFIX)
+endif
 endif
 endif
 endif
@@ -208,6 +216,9 @@ addx.$(SUFFIX) : $(ARCH)/addx.c
 
 mulx.$(SUFFIX) : $(ARCH)/mulx.c
 	$(CC) $(CFLAGS) -c -DXDOUBLE -UCOMPLEX $< -o $(@F)
+
+detect_riscv64.$(SUFFIX): detect_riscv64.c
+	$(CC) $(CFLAGS) -c -march=rv64imafdcv $< -o $(@F)
 
 xerbla.$(PSUFFIX) : xerbla.c
 	$(CC) $(PFLAGS) -c $< -o $(@F)

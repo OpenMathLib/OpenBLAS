@@ -864,15 +864,15 @@ LL(22):
 	LFD	f22, 10 * SIZE(BO)
 	LFD	f23, 11 * SIZE(BO)
 
-	FMADD	f2,  f18, f24, f2
-	FMADD	f3,  f19, f24, f3
-	FMADD	f6,  f18, f25, f6
-	FMADD	f7,  f19, f25, f7
+	FMADD	f0,  f18, f24, f0
+	FMADD	f1,  f19, f24, f1
+	FMADD	f4,  f18, f25, f4
+	FMADD	f5,  f19, f25, f5
 
-	FMADD	f10, f18, f26, f10
-	FMADD	f11, f19, f26, f11
-	FMADD	f14, f18, f27, f14
-	FMADD	f15, f19, f27, f15
+	FMADD	f8, f18, f26, f8
+	FMADD	f9, f19, f26, f9
+	FMADD	f12, f18, f27, f12
+	FMADD	f13, f19, f27, f13
 
 	LFD	f16,  4 * SIZE(AO)
 	LFD	f17,  5 * SIZE(AO)
@@ -899,15 +899,15 @@ LL(22):
 	LFD	f22, 18 * SIZE(BO)
 	LFD	f23, 19 * SIZE(BO)
 
-	FMADD	f2,  f18, f24, f2
-	FMADD	f3,  f19, f24, f3
-	FMADD	f6,  f18, f25, f6
-	FMADD	f7,  f19, f25, f7
+	FMADD	f0,  f18, f24, f0
+	FMADD	f1,  f19, f24, f1
+	FMADD	f4,  f18, f25, f4
+	FMADD	f5,  f19, f25, f5
 
-	FMADD	f10, f18, f26, f10
-	FMADD	f11, f19, f26, f11
-	FMADD	f14, f18, f27, f14
-	FMADD	f15, f19, f27, f15
+	FMADD	f8, f18, f26, f8
+	FMADD	f9, f19, f26, f9
+	FMADD	f12, f18, f27, f12
+	FMADD	f13, f19, f27, f13
 
 	LFD	f16,  8 * SIZE(AO)
 	LFD	f17,  9 * SIZE(AO)
@@ -923,14 +923,6 @@ LL(22):
 	addi	BO, BO, 16 * SIZE
 	bdnz	LL(22)
 
-	fadd	f0,  f2,  f0
-	fadd	f1,  f3,  f1
-	fadd	f4,  f6,  f4
-	fadd	f5,  f7,  f5
-	fadd	f8,  f10, f8
-	fadd	f9,  f11, f9
-	fadd	f12, f14, f12
-	fadd	f13, f15, f13
 	.align 4
 
 LL(25):
@@ -1161,10 +1153,10 @@ LL(32):
 	LFD	f22, 10 * SIZE(BO)
 	LFD	f23, 11 * SIZE(BO)
 
-	FMADD	f1,  f17, f24, f1
-	FMADD	f5,  f17, f25, f5
-	FMADD	f9,  f17, f26, f9
-	FMADD	f13, f17, f27, f13
+	FMADD	f0,  f17, f24, f0
+	FMADD	f4,  f17, f25, f4
+	FMADD	f8,  f17, f26, f8
+	FMADD	f12, f17, f27, f12
 
 	LFD	f24, 12 * SIZE(BO)
 	LFD	f25, 13 * SIZE(BO)
@@ -1181,10 +1173,10 @@ LL(32):
 	LFD	f22, 18 * SIZE(BO)
 	LFD	f23, 19 * SIZE(BO)
 
-	FMADD	f1,  f19, f24, f1
-	FMADD	f5,  f19, f25, f5
-	FMADD	f9,  f19, f26, f9
-	FMADD	f13, f19, f27, f13
+	FMADD	f0,  f19, f24, f0
+	FMADD	f4,  f19, f25, f4
+	FMADD	f8,  f19, f26, f8
+	FMADD	f12, f19, f27, f12
 
 	LFD	f16,  4 * SIZE(AO)
 	LFD	f17,  5 * SIZE(AO)
@@ -1200,10 +1192,6 @@ LL(32):
 	addi	BO, BO, 16 * SIZE
 	bdnz	LL(32)
 
-	fadd	f0,  f1,   f0
-	fadd	f4,  f5,   f4
-	fadd	f8,  f9,   f8
-	fadd	f12, f13, f12
 	.align 4
 
 LL(35):
@@ -1691,10 +1679,10 @@ LL(52):
 	FMADD	f2,  f16, f21, f2
 	FMADD	f3,  f17, f21, f3
 
-	FMADD	f4,  f18, f22, f4
-	FMADD	f5,  f19, f22, f5
-	FMADD	f6,  f18, f23, f6
-	FMADD	f7,  f19, f23, f7
+	FMADD	f0,  f18, f22, f0
+	FMADD	f1,  f19, f22, f1
+	FMADD	f2,  f18, f23, f2
+	FMADD	f3,  f19, f23, f3
 
 	LFD	f16,  4 * SIZE(AO)
 	LFD	f17,  5 * SIZE(AO)
@@ -1711,10 +1699,10 @@ LL(52):
 	FMADD	f2,  f16, f25, f2
 	FMADD	f3,  f17, f25, f3
 
-	FMADD	f4,  f18, f26, f4
-	FMADD	f5,  f19, f26, f5
-	FMADD	f6,  f18, f27, f6
-	FMADD	f7,  f19, f27, f7
+	FMADD	f0,  f18, f26, f0
+	FMADD	f1,  f19, f26, f1
+	FMADD	f2,  f18, f27, f2
+	FMADD	f3,  f19, f27, f3
 
 	LFD	f16,  8 * SIZE(AO)
 	LFD	f17,  9 * SIZE(AO)
@@ -1775,21 +1763,11 @@ LL(58):
 	LFD	f18, 0 * SIZE(CO2)
 	LFD	f19, 1 * SIZE(CO2)
 
-	FADD	f0, f4,  f0
-	FADD	f1, f5,  f1
-	FADD	f2, f6,  f2
-	FADD	f3, f7,  f3
-
 	FMADD	f0,  f0, f30, f16
 	FMADD	f1,  f1, f30, f17
 	FMADD	f2,  f2, f30, f18
 	FMADD	f3,  f3, f30, f19
 #else
-	FADD	f0, f4,  f0
-	FADD	f1, f5,  f1
-	FADD	f2, f6,  f2
-	FADD	f3, f7,  f3
-
 	FMUL	f0,  f0, f30
 	FMUL	f1,  f1, f30
 	FMUL	f2,  f2, f30
@@ -1916,8 +1894,8 @@ LL(60):
 LL(62):
 	FMADD	f0,  f16, f20, f0
 	FMADD	f1,  f16, f21, f1
-	FMADD	f2,  f17, f22, f2
-	FMADD	f3,  f17, f23, f3
+	FMADD	f0,  f17, f22, f0
+	FMADD	f1,  f17, f23, f1
 
 	LFD	f20,  8 * SIZE(BO)
 	LFD	f21,  9 * SIZE(BO)
@@ -1926,8 +1904,8 @@ LL(62):
 
 	FMADD	f0,  f18, f24, f0
 	FMADD	f1,  f18, f25, f1
-	FMADD	f2,  f19, f26, f2
-	FMADD	f3,  f19, f27, f3
+	FMADD	f0,  f19, f26, f0
+	FMADD	f1,  f19, f27, f1
 
 	LFD	f16,  4 * SIZE(AO)
 	LFD	f17,  5 * SIZE(AO)
@@ -1986,15 +1964,9 @@ LL(68):
 	LFD	f16, 0 * SIZE(CO1)
 	LFD	f18, 0 * SIZE(CO2)
 
-	FADD	f0, f2, f0
-	FADD	f1, f3, f1
-
 	FMADD	f0,  f0,  f30, f16
 	FMADD	f1,  f1,  f30, f18
 #else
-	FADD	f0, f2, f0
-	FADD	f1, f3, f1
-
 	FMUL	f0,  f0,  f30
 	FMUL	f1,  f1,  f30
 #endif
@@ -2006,7 +1978,6 @@ LL(68):
  	fmr	f1,  f0
 	fmr	f4,  f0
 	fmr	f5,  f0
-
 
 #ifdef TRMMKERNEL
 #if ( defined(LEFT) &&  defined(TRANSA)) || \
@@ -2332,8 +2303,8 @@ LL(80):
 LL(82):
 	FMADD	f0,  f16, f20, f0
 	FMADD	f1,  f17, f20, f1
-	FMADD	f2,  f18, f21, f2
-	FMADD	f3,  f19, f21, f3
+	FMADD	f0,  f18, f21, f0
+	FMADD	f1,  f19, f21, f1
 
 	LFD	f16,  4 * SIZE(AO)
 	LFD	f17,  5 * SIZE(AO)
@@ -2342,8 +2313,8 @@ LL(82):
 
 	FMADD	f0,  f16, f22, f0
 	FMADD	f1,  f17, f22, f1
-	FMADD	f2,  f18, f23, f2
-	FMADD	f3,  f19, f23, f3
+	FMADD	f0,  f18, f23, f0
+	FMADD	f1,  f19, f23, f1
 
 	LFD	f16,  8 * SIZE(AO)
 	LFD	f17,  9 * SIZE(AO)
@@ -2401,15 +2372,9 @@ LL(88):
 	LFD	f16, 0 * SIZE(CO1)
 	LFD	f17, 1 * SIZE(CO1)
 
-	FADD	f0, f2, f0
-	FADD	f1, f3, f1
-
 	FMADD	f0,  f0, f30, f16
 	FMADD	f1,  f1, f30, f17
 #else
-	FADD	f0, f2, f0
-	FADD	f1, f3, f1
-
 	FMUL	f0,  f0, f30
 	FMUL	f1,  f1, f30
 #endif
@@ -2418,9 +2383,6 @@ LL(88):
 	STFD	f1,  1 * SIZE(CO1)
 
 	lfs	f0,  FZERO
- 	fmr	f1,  f0
-	fmr	f2,  f0
-	fmr	f3,  f0
 
 	addi	CO1, CO1, 2 * SIZE
 
@@ -2512,9 +2474,9 @@ LL(90):
 
 LL(92):
 	FMADD	f0,  f16, f20, f0
-	FMADD	f1,  f17, f21, f1
-	FMADD	f2,  f18, f22, f2
-	FMADD	f3,  f19, f23, f3
+	FMADD	f0,  f17, f21, f0
+	FMADD	f0,  f18, f22, f0
+	FMADD	f0,  f19, f23, f0
 
 	LFD	f16,  4 * SIZE(AO)
 	LFD	f17,  5 * SIZE(AO)
@@ -2527,9 +2489,9 @@ LL(92):
 	LFD	f23,  7 * SIZE(BO)
 
 	FMADD	f0,  f16, f20, f0
-	FMADD	f1,  f17, f21, f1
-	FMADD	f2,  f18, f22, f2
-	FMADD	f3,  f19, f23, f3
+	FMADD	f0,  f17, f21, f0
+	FMADD	f0,  f18, f22, f0
+	FMADD	f0,  f19, f23, f0
 
 	LFD	f16,  8 * SIZE(AO)
 	LFD	f17,  9 * SIZE(AO)
@@ -2583,16 +2545,8 @@ LL(98):
 #ifndef TRMMKERNEL
 	LFD	f16, 0 * SIZE(CO1)
 
-	FADD	f0, f1, f0
-	FADD	f2, f3, f2
-	FADD	f0, f2, f0
-
 	FMADD	f0,  f0,  f30, f16
 #else
-	FADD	f0, f1, f0
-	FADD	f2, f3, f2
-	FADD	f0, f2, f0
-
 	FMUL	f0,  f0,  f30
 #endif
 

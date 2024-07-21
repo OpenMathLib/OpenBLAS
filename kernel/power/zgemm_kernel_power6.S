@@ -1159,9 +1159,9 @@ LL(20):
 
 LL(22):
 	FMA1	f0,  f16, f20, f0
-	FMA4	f3,  f17, f20, f3
 	FMA2	f1,  f16, f21, f1
-	FMA3	f2,  f17, f21, f2
+	FMA4	f1,  f17, f20, f1
+	FMA3	f0,  f17, f21, f0
 
 	LFD	f28,  4 * SIZE(AO)
 	LFD	f29,  5 * SIZE(AO)
@@ -1169,9 +1169,9 @@ LL(22):
 	LFD	f31,  7 * SIZE(AO)
 
 	FMA1	f4,  f16, f22, f4
-	FMA4	f7,  f17, f22, f7
 	FMA2	f5,  f16, f23, f5
-	FMA3	f6,  f17, f23, f6
+	FMA4	f5,  f17, f22, f5
+	FMA3	f4,  f17, f23, f4
 
 	LFD	f20,  8 * SIZE(BO)
 	LFD	f21,  9 * SIZE(BO)
@@ -1179,14 +1179,14 @@ LL(22):
 	LFD	f23, 11 * SIZE(BO)
 
 	FMA1	f8,  f16, f24, f8
-	FMA4	f11, f17, f24, f11
 	FMA2	f9,  f16, f25, f9
-	FMA3	f10, f17, f25, f10
+	FMA4	f9, f17, f24, f9
+	FMA3	f8, f17, f25, f8
 
 	FMA1	f12, f16, f26, f12
-	FMA4	f15, f17, f26, f15
 	FMA2	f13, f16, f27, f13
-	FMA3	f14, f17, f27, f14
+	FMA4	f13, f17, f26, f13
+	FMA3	f12, f17, f27, f12
 
 	LFD	f24, 12 * SIZE(BO)
 	LFD	f25, 13 * SIZE(BO)
@@ -1194,14 +1194,14 @@ LL(22):
 	LFD	f27, 15 * SIZE(BO)
 
 	FMA1	f0,  f18, f20, f0
-	FMA4	f3,  f19, f20, f3
 	FMA2	f1,  f18, f21, f1
-	FMA3	f2,  f19, f21, f2
+	FMA4	f1,  f19, f20, f1
+	FMA3	f0,  f19, f21, f0
 
 	FMA1	f4,  f18, f22, f4
-	FMA4	f7,  f19, f22, f7
 	FMA2	f5,  f18, f23, f5
-	FMA3	f6,  f19, f23, f6
+	FMA4	f5,  f19, f22, f5
+	FMA3	f4,  f19, f23, f4
 
 	LFD	f20, 16 * SIZE(BO)
 	LFD	f21, 17 * SIZE(BO)
@@ -1209,14 +1209,14 @@ LL(22):
 	LFD	f23, 19 * SIZE(BO)
 
 	FMA1	f8,  f18, f24, f8
-	FMA4	f11, f19, f24, f11
 	FMA2	f9,  f18, f25, f9
-	FMA3	f10, f19, f25, f10
+	FMA4	f9, f19, f24, f9
+	FMA3	f8, f19, f25, f8
 
 	FMA1	f12, f18, f26, f12
-	FMA4	f15, f19, f26, f15
 	FMA2	f13, f18, f27, f13
-	FMA3	f14, f19, f27, f14
+	FMA4	f13, f19, f26, f13
+	FMA3	f12, f19, f27, f12
 
 	LFD	f24, 20 * SIZE(BO)
 	LFD	f25, 21 * SIZE(BO)
@@ -1224,9 +1224,9 @@ LL(22):
 	LFD	f27, 23 * SIZE(BO)
 
 	FMA1	f0,  f28, f20, f0
-	FMA4	f3,  f29, f20, f3
 	FMA2	f1,  f28, f21, f1
-	FMA3	f2,  f29, f21, f2
+	FMA4	f1,  f29, f20, f1
+	FMA3	f0,  f29, f21, f0
 
 	LFD	f16,  8 * SIZE(AO)
 	LFD	f17,  9 * SIZE(AO)
@@ -1234,9 +1234,9 @@ LL(22):
 	LFD	f19, 11 * SIZE(AO)
 
 	FMA1	f4,  f28, f22, f4
-	FMA4	f7,  f29, f22, f7
 	FMA2	f5,  f28, f23, f5
-	FMA3	f6,  f29, f23, f6
+	FMA4	f5,  f29, f22, f5
+	FMA3	f4,  f29, f23, f4
 
 	LFD	f20, 24 * SIZE(BO)
 	LFD	f21, 25 * SIZE(BO)
@@ -1244,14 +1244,14 @@ LL(22):
 	LFD	f23, 27 * SIZE(BO)
 
 	FMA1	f8,  f28, f24, f8
-	FMA4	f11, f29, f24, f11
 	FMA2	f9,  f28, f25, f9
-	FMA3	f10, f29, f25, f10
+	FMA4	f9, f29, f24, f9
+	FMA3	f8, f29, f25, f8
 
 	FMA1	f12, f28, f26, f12
-	FMA4	f15, f29, f26, f15
 	FMA2	f13, f28, f27, f13
-	FMA3	f14, f29, f27, f14
+	FMA4	f13, f29, f26, f13
+	FMA3	f12, f29, f27, f12
 
 	LFD	f24, 28 * SIZE(BO)
 	LFD	f25, 29 * SIZE(BO)
@@ -1259,14 +1259,14 @@ LL(22):
 	LFD	f27, 31 * SIZE(BO)
 
 	FMA1	f0,  f30, f20, f0
-	FMA4	f3,  f31, f20, f3
 	FMA2	f1,  f30, f21, f1
-	FMA3	f2,  f31, f21, f2
+	FMA4	f1,  f31, f20, f1
+	FMA3	f0,  f31, f21, f0
 
 	FMA1	f4,  f30, f22, f4
-	FMA4	f7,  f31, f22, f7
 	FMA2	f5,  f30, f23, f5
-	FMA3	f6,  f31, f23, f6
+	FMA4	f5,  f31, f22, f5
+	FMA3	f4,  f31, f23, f4
 
 	LFD	f20, 32 * SIZE(BO)
 	LFD	f21, 33 * SIZE(BO)
@@ -1274,14 +1274,14 @@ LL(22):
 	LFD	f23, 35 * SIZE(BO)
 
 	FMA1	f8,  f30, f24, f8
-	FMA4	f11, f31, f24, f11
 	FMA2	f9,  f30, f25, f9
-	FMA3	f10, f31, f25, f10
+	FMA4	f9, f31, f24, f9
+	FMA3	f8, f31, f25, f8
 
 	FMA1	f12, f30, f26, f12
-	FMA4	f15, f31, f26, f15
 	FMA2	f13, f30, f27, f13
-	FMA3	f14, f31, f27, f14
+	FMA4	f13, f31, f26, f13
+	FMA3	f12, f31, f27, f12
 
 	LFD	f24, 36 * SIZE(BO)
 	LFD	f25, 37 * SIZE(BO)
@@ -1318,14 +1318,14 @@ LL(25):
 
 LL(26):
 	FMA1	f0,  f16, f20, f0
-	FMA4	f3,  f17, f20, f3
 	FMA2	f1,  f16, f21, f1
-	FMA3	f2,  f17, f21, f2
+	FMA4	f1,  f17, f20, f1
+	FMA3	f0,  f17, f21, f0
 
 	FMA1	f4,  f16, f22, f4
-	FMA4	f7,  f17, f22, f7
 	FMA2	f5,  f16, f23, f5
-	FMA3	f6,  f17, f23, f6
+	FMA4	f5,  f17, f22, f5
+	FMA3	f4,  f17, f23, f4
 
 	LFD	f20,  8 * SIZE(BO)
 	LFD	f21,  9 * SIZE(BO)
@@ -1333,14 +1333,14 @@ LL(26):
 	LFD	f23, 11 * SIZE(BO)
 
 	FMA1	f8,  f16, f24, f8
-	FMA4	f11, f17, f24, f11
 	FMA2	f9,  f16, f25, f9
-	FMA3	f10, f17, f25, f10
+	FMA4	f9, f17, f24, f9
+	FMA3	f8, f17, f25, f8
 
 	FMA1	f12, f16, f26, f12
-	FMA4	f15, f17, f26, f15
 	FMA2	f13, f16, f27, f13
-	FMA3	f14, f17, f27, f14
+	FMA4	f13, f17, f26, f13
+	FMA3	f12, f17, f27, f12
 
 	LFD	f16,  2 * SIZE(AO)
 	LFD	f17,  3 * SIZE(AO)
@@ -1363,47 +1363,42 @@ LL(28):
 	LFD	f18, 0 * SIZE(CO2)
 	LFD	f19, 1 * SIZE(CO2)
 
-	FADD	f0,  f0,  f2
-	FADD	f1,  f1,  f3
-	FADD	f4,  f4,  f6
-	FADD	f5,  f5,  f7
-
 	LFD	f20, 0 * SIZE(CO3)
 	LFD	f21, 1 * SIZE(CO3)
 	LFD	f22, 0 * SIZE(CO4)
 	LFD	f23, 1 * SIZE(CO4)
 
-	FADD	f8,  f8,  f10
-	FADD	f9,  f9,  f11
-	FADD	f12, f12, f14
-	FADD	f13, f13, f15
+	fmr   f2, f0
+	fmr   f3, f1
+	fmr   f6, f4
+	fmr   f7, f5
 
-	FNMSUB	f24, f31, f1, f16
-	FMADD	f25, f31, f0, f17
-	FNMSUB	f26, f31, f5, f18
-	FMADD	f27, f31, f4, f19
+	FMADD	f24,  f30, f0, f16
+	FMADD	f25,  f30, f1, f17
+	FMADD	f26,  f30, f4,  f18
+	FMADD	f27,  f30, f5,  f19
 
-	FMADD	f0,  f30, f0, f24
-	FMADD	f1,  f30, f1, f25
-	FMADD	f4,  f30, f4,  f26
-	FMADD	f5,  f30, f5,  f27
+	FNMSUB	f0, f31, f3, f24
+	FMADD	f1, f31, f2, f25
+	FNMSUB	f4, f31, f7, f26
+	FMADD	f5, f31, f6, f27
 
-	FNMSUB	f24, f31, f9,  f20
-	FMADD	f25, f31, f8,  f21
-	FNMSUB	f26, f31, f13, f22
-	FMADD	f27, f31, f12, f23
+	fmr   f10, f8
+	fmr   f11, f9
+	fmr   f14, f12
+	fmr   f15, f13
 
-	FMADD	f8,  f30, f8,  f24
-	FMADD	f9,  f30, f9,  f25
-	FMADD	f12,  f30, f12, f26
-	FMADD	f13,  f30, f13, f27
+	FMADD	f24,  f30, f8,  f20
+	FMADD	f25,  f30, f9,  f21
+	FMADD	f26,  f30, f12, f22
+	FMADD	f27,  f30, f13, f23
+
+	FNMSUB	f8, f31, f11,  f24
+	FMADD	f9, f31, f10,  f25
+	FNMSUB	f12, f31, f15, f26
+	FMADD	f13, f31, f14, f27
 
 #else
-	FADD	f0,  f0,  f2
-	FADD	f1,  f1,  f3
-	FADD	f4,  f4,  f6
-	FADD	f5,  f5,  f7
-
 	FMUL	f16, f31, f1
 	FMUL	f17, f31, f0
 	FMUL	f18, f31, f5
@@ -1413,11 +1408,6 @@ LL(28):
 	FMADD	f1,  f30, f1, f17
 	FMSUB	f4,  f30, f4, f18
 	FMADD	f5,  f30, f5, f19
-
-	FADD	f8,  f8,  f10
-	FADD	f9,  f9,  f11
-	FADD	f12, f12, f14
-	FADD	f13, f13, f15
 
 	FMUL	f20, f31, f9
 	FMUL	f21, f31, f8
@@ -1616,15 +1606,15 @@ LL(32):
 	FMA2	f5,  f16, f23, f5
 	FMA2	f7,  f18, f23, f7
 
-	FMA4	f9,  f17, f20, f9
-	FMA4	f11, f19, f20, f11
-	FMA3	f8,  f17, f21, f8
-	FMA3	f10, f19, f21, f10
+	FMA4	f1,  f17, f20, f1
+	FMA4	f3, f19, f20, f3
+	FMA3	f0,  f17, f21, f0
+	FMA3	f2, f19, f21, f2
 
-	FMA4	f13, f17, f22, f13
-	FMA4	f15, f19, f22, f15
-	FMA3	f12, f17, f23, f12
-	FMA3	f14, f19, f23, f14
+	FMA4	f5, f17, f22, f5
+	FMA4	f7, f19, f22, f7
+	FMA3	f4, f17, f23, f4
+	FMA3	f6, f19, f23, f6
 
 	LFD	f20,  8 * SIZE(BO)
 	LFD	f21,  9 * SIZE(BO)
@@ -1646,15 +1636,15 @@ LL(32):
 	FMA2	f5,  f28, f27, f5
 	FMA2	f7,  f30, f27, f7
 
-	FMA4	f9,  f29, f24, f9
-	FMA4	f11, f31, f24, f11
-	FMA3	f8,  f29, f25, f8
-	FMA3	f10, f31, f25, f10
+	FMA4	f1,  f29, f24, f1
+	FMA4	f3, f31, f24, f3
+	FMA3	f0,  f29, f25, f0
+	FMA3	f2, f31, f25, f2
 
-	FMA4	f13, f29, f26, f13
-	FMA4	f15, f31, f26, f15
-	FMA3	f12, f29, f27, f12
-	FMA3	f14, f31, f27, f14
+	FMA4	f5, f29, f26, f5
+	FMA4	f7, f31, f26, f7
+	FMA3	f4, f29, f27, f4
+	FMA3	f6, f31, f27, f6
 
 	LFD	f24, 12 * SIZE(BO)
 	LFD	f25, 13 * SIZE(BO)
@@ -1676,15 +1666,15 @@ LL(32):
 	FMA2	f5,  f16, f23, f5
 	FMA2	f7,  f18, f23, f7
 
-	FMA4	f9,  f17, f20, f9
-	FMA4	f11, f19, f20, f11
-	FMA3	f8,  f17, f21, f8
-	FMA3	f10, f19, f21, f10
+	FMA4	f1,  f17, f20, f1
+	FMA4	f3, f19, f20, f3
+	FMA3	f0,  f17, f21, f0
+	FMA3	f2, f19, f21, f2
 
-	FMA4	f13, f17, f22, f13
-	FMA4	f15, f19, f22, f15
-	FMA3	f12, f17, f23, f12
-	FMA3	f14, f19, f23, f14
+	FMA4	f5, f17, f22, f5
+	FMA4	f7, f19, f22, f7
+	FMA3	f4, f17, f23, f4
+	FMA3	f6, f19, f23, f6
 
 	LFD	f20, 16 * SIZE(BO)
 	LFD	f21, 17 * SIZE(BO)
@@ -1706,15 +1696,15 @@ LL(32):
 	FMA2	f5,  f28, f27, f5
 	FMA2	f7,  f30, f27, f7
 
-	FMA4	f9,  f29, f24, f9
-	FMA4	f11, f31, f24, f11
-	FMA3	f8,  f29, f25, f8
-	FMA3	f10, f31, f25, f10
+	FMA4	f1,  f29, f24, f1
+	FMA4	f3, f31, f24, f3
+	FMA3	f0,  f29, f25, f0
+	FMA3	f2, f31, f25, f2
 
-	FMA4	f13, f29, f26, f13
-	FMA4	f15, f31, f26, f15
-	FMA3	f12, f29, f27, f12
-	FMA3	f14, f31, f27, f14
+	FMA4	f5, f29, f26, f5
+	FMA4	f7, f31, f26, f7
+	FMA3	f4, f29, f27, f4
+	FMA3	f6, f31, f27, f6
 
 	LFD	f24, 20 * SIZE(BO)
 	LFD	f25, 21 * SIZE(BO)
@@ -1736,15 +1726,15 @@ LL(32):
 	FMA2	f5,  f16, f23, f5
 	FMA2	f7,  f18, f23, f7
 
-	FMA4	f9,  f17, f20, f9
-	FMA4	f11, f19, f20, f11
-	FMA3	f8,  f17, f21, f8
-	FMA3	f10, f19, f21, f10
+	FMA4	f1,  f17, f20, f1
+	FMA4	f3, f19, f20, f3
+	FMA3	f0,  f17, f21, f0
+	FMA3	f2, f19, f21, f2
 
-	FMA4	f13, f17, f22, f13
-	FMA4	f15, f19, f22, f15
-	FMA3	f12, f17, f23, f12
-	FMA3	f14, f19, f23, f14
+	FMA4	f5, f17, f22, f5
+	FMA4	f7, f19, f22, f7
+	FMA3	f4, f17, f23, f4
+	FMA3	f6, f19, f23, f6
 
 	LFD	f20, 24 * SIZE(BO)
 	LFD	f21, 25 * SIZE(BO)
@@ -1766,15 +1756,15 @@ LL(32):
 	FMA2	f5,  f28, f27, f5
 	FMA2	f7,  f30, f27, f7
 
-	FMA4	f9,  f29, f24, f9
-	FMA4	f11, f31, f24, f11
-	FMA3	f8,  f29, f25, f8
-	FMA3	f10, f31, f25, f10
+	FMA4	f1,  f29, f24, f1
+	FMA4	f3, f31, f24, f3
+	FMA3	f0,  f29, f25, f0
+	FMA3	f2, f31, f25, f2
 
-	FMA4	f13, f29, f26, f13
-	FMA4	f15, f31, f26, f15
-	FMA3	f12, f29, f27, f12
-	FMA3	f14, f31, f27, f14
+	FMA4	f5, f29, f26, f5
+	FMA4	f7, f31, f26, f7
+	FMA3	f4, f29, f27, f4
+	FMA3	f6, f31, f27, f6
 
 	LFD	f24, 28 * SIZE(BO)
 	LFD	f25, 29 * SIZE(BO)
@@ -1796,15 +1786,15 @@ LL(32):
 	FMA2	f5,  f16, f23, f5
 	FMA2	f7,  f18, f23, f7
 
-	FMA4	f9,  f17, f20, f9
-	FMA4	f11, f19, f20, f11
-	FMA3	f8,  f17, f21, f8
-	FMA3	f10, f19, f21, f10
+	FMA4	f1,  f17, f20, f1
+	FMA4	f3, f19, f20, f3
+	FMA3	f0,  f17, f21, f0
+	FMA3	f2, f19, f21, f2
 
-	FMA4	f13, f17, f22, f13
-	FMA4	f15, f19, f22, f15
-	FMA3	f12, f17, f23, f12
-	FMA3	f14, f19, f23, f14
+	FMA4	f5, f17, f22, f5
+	FMA4	f7, f19, f22, f7
+	FMA3	f4, f17, f23, f4
+	FMA3	f6, f19, f23, f6
 
 	LFD	f20, 32 * SIZE(BO)
 	LFD	f21, 33 * SIZE(BO)
@@ -1826,15 +1816,15 @@ LL(32):
 	FMA2	f5,  f28, f27, f5
 	FMA2	f7,  f30, f27, f7
 
-	FMA4	f9,  f29, f24, f9
-	FMA4	f11, f31, f24, f11
-	FMA3	f8,  f29, f25, f8
-	FMA3	f10, f31, f25, f10
+	FMA4	f1,  f29, f24, f1
+	FMA4	f3, f31, f24, f3
+	FMA3	f0,  f29, f25, f0
+	FMA3	f2, f31, f25, f2
 
-	FMA4	f13, f29, f26, f13
-	FMA4	f15, f31, f26, f15
-	FMA3	f12, f29, f27, f12
-	FMA3	f14, f31, f27, f14
+	FMA4	f5, f29, f26, f5
+	FMA4	f7, f31, f26, f7
+	FMA3	f4, f29, f27, f4
+	FMA3	f6, f31, f27, f6
 
 	LFD	f24, 36 * SIZE(BO)
 	LFD	f25, 37 * SIZE(BO)
@@ -1883,20 +1873,20 @@ LL(36):
 	FMA2	f5,  f16, f23, f5
 	FMA2	f7,  f18, f23, f7
 
-	FMA4	f9,  f17, f20, f9
-	FMA4	f11, f19, f20, f11
-	FMA3	f8,  f17, f21, f8
-	FMA3	f10, f19, f21, f10
+	FMA4	f1,  f17, f20, f1
+	FMA4	f3, f19, f20, f3
+	FMA3	f0,  f17, f21, f0
+	FMA3	f2, f19, f21, f2
 
 	LFD	f16,  4 * SIZE(AO)
 	LFD	f18,  6 * SIZE(AO)
 	LFD	f20,  4 * SIZE(BO)
 	LFD	f21,  5 * SIZE(BO)
 
-	FMA4	f13, f17, f22, f13
-	FMA4	f15, f19, f22, f15
-	FMA3	f12, f17, f23, f12
-	FMA3	f14, f19, f23, f14
+	FMA4	f5, f17, f22, f5
+	FMA4	f7, f19, f22, f7
+	FMA3	f4, f17, f23, f4
+	FMA3	f6, f19, f23, f6
 
 	LFD	f17,  5 * SIZE(AO)
 	LFD	f19,  7 * SIZE(AO)
@@ -1916,52 +1906,42 @@ LL(38):
 	LFD	f18, 2 * SIZE(CO1)
 	LFD	f19, 3 * SIZE(CO1)
 
-	FADD	f0, f0, f8
-	FADD	f1, f1, f9
-	FADD	f2, f2, f10
-	FADD	f3, f3, f11
-
 	LFD	f20, 0 * SIZE(CO2)
 	LFD	f21, 1 * SIZE(CO2)
 	LFD	f22, 2 * SIZE(CO2)
 	LFD	f23, 3 * SIZE(CO2)
 
-	FADD	f4, f4, f12
-	FADD	f5, f5, f13
-	FADD	f6, f6, f14
-	FADD	f7, f7, f15
+	fmr f8,  f0
+	fmr f9,  f1
+	fmr f10, f2
+	fmr f11, f3
 
-	FNMSUB	f24, f31, f1, f16
-	FMADD	f25, f31, f0, f17
-	FNMSUB	f26, f31, f3, f18
-	FMADD	f27, f31, f2, f19
+	FMADD	f24,  f30, f0, f16
+	FMADD	f25,  f30, f1, f17
+	FMADD	f26,  f30, f2, f18
+	FMADD	f27,  f30, f3, f19
 
-	FMADD	f0,  f30, f0, f24
-	FMADD	f1,  f30, f1, f25
-	FMADD	f2,  f30, f2, f26
-	FMADD	f3,  f30, f3, f27
+	FNMSUB	f0, f31, f9, f24
+	FMADD	f1, f31, f8, f25
+	FNMSUB	f2, f31, f11, f26
+	FMADD	f3, f31, f10, f27
 
-	FNMSUB	f24, f31, f5, f20
-	FMADD	f25, f31, f4, f21
-	FNMSUB	f26, f31, f7, f22
-	FMADD	f27, f31, f6, f23
+	fmr f12, f4
+	fmr f13, f5
+	fmr f14, f6
+	fmr f15, f7
 
-	FMADD	f4,  f30, f4,  f24
-	FMADD	f5,  f30, f5,  f25
-	FMADD	f6,  f30, f6,  f26
-	FMADD	f7,  f30, f7,  f27
+	FMADD	f24,  f30, f4,  f20
+	FMADD	f25,  f30, f5,  f21
+	FMADD	f26,  f30, f6,  f22
+	FMADD	f27,  f30, f7,  f23
+
+	FNMSUB	f4, f31, f13, f24
+	FMADD	f5, f31, f12, f25
+	FNMSUB	f6, f31, f15, f26
+	FMADD	f7, f31, f14, f27
 
 #else
-	FADD	f0, f0, f8
-	FADD	f1, f1, f9
-	FADD	f2, f2, f10
-	FADD	f3, f3, f11
-
-	FADD	f4, f4, f12
-	FADD	f5, f5, f13
-	FADD	f6, f6, f14
-	FADD	f7, f7, f15
-
 	FMUL	f16, f31, f1
 	FMUL	f17, f31, f0
 	FMUL	f18, f31, f3
@@ -2101,14 +2081,14 @@ LL(40):
 
 LL(42):
 	FMA1	f0,  f16, f20, f0
-	FMA4	f3,  f17, f20, f3
 	FMA2	f1,  f16, f21, f1
-	FMA3	f2,  f17, f21, f2
+	FMA4	f1,  f17, f20, f1
+	FMA3	f0,  f17, f21, f0
 
 	FMA1	f4,  f16, f22, f4
-	FMA4	f7,  f17, f22, f7
 	FMA2	f5,  f16, f23, f5
-	FMA3	f6,  f17, f23, f6
+	FMA4	f5,  f17, f22, f5
+	FMA3	f4,  f17, f23, f4
 
 	LFD	f16,  2 * SIZE(AO)
 	LFD	f17,  3 * SIZE(AO)
@@ -2119,14 +2099,14 @@ LL(42):
 	LFD	f23,  7 * SIZE(BO)
 
 	FMA1	f0,  f16, f20, f0
-	FMA4	f3,  f17, f20, f3
 	FMA2	f1,  f16, f21, f1
-	FMA3	f2,  f17, f21, f2
+	FMA4	f1,  f17, f20, f1
+	FMA3	f0,  f17, f21, f0
 
 	FMA1	f4,  f16, f22, f4
-	FMA4	f7,  f17, f22, f7
 	FMA2	f5,  f16, f23, f5
-	FMA3	f6,  f17, f23, f6
+	FMA4	f5,  f17, f22, f5
+	FMA3	f4,  f17, f23, f4
 
 	LFD	f16,  4 * SIZE(AO)
 	LFD	f17,  5 * SIZE(AO)
@@ -2137,14 +2117,14 @@ LL(42):
 	LFD	f23, 11 * SIZE(BO)
 
 	FMA1	f0,  f16, f20, f0
-	FMA4	f3,  f17, f20, f3
 	FMA2	f1,  f16, f21, f1
-	FMA3	f2,  f17, f21, f2
+	FMA4	f1,  f17, f20, f1
+	FMA3	f0,  f17, f21, f0
 
 	FMA1	f4,  f16, f22, f4
-	FMA4	f7,  f17, f22, f7
 	FMA2	f5,  f16, f23, f5
-	FMA3	f6,  f17, f23, f6
+	FMA4	f5,  f17, f22, f5
+	FMA3	f4,  f17, f23, f4
 
 	LFD	f16,  6 * SIZE(AO)
 	LFD	f17,  7 * SIZE(AO)
@@ -2155,14 +2135,14 @@ LL(42):
 	LFD	f23, 15 * SIZE(BO)
 
 	FMA1	f0,  f16, f20, f0
-	FMA4	f3,  f17, f20, f3
 	FMA2	f1,  f16, f21, f1
-	FMA3	f2,  f17, f21, f2
+	FMA4	f1,  f17, f20, f1
+	FMA3	f0,  f17, f21, f0
 
 	FMA1	f4,  f16, f22, f4
-	FMA4	f7,  f17, f22, f7
 	FMA2	f5,  f16, f23, f5
-	FMA3	f6,  f17, f23, f6
+	FMA4	f5,  f17, f22, f5
+	FMA3	f4,  f17, f23, f4
 
 	LFD	f16,  8 * SIZE(AO)
 	LFD	f17,  9 * SIZE(AO)
@@ -2202,14 +2182,14 @@ LL(45):
 
 LL(46):
 	FMA1	f0,  f16, f20, f0
-	FMA4	f3,  f17, f20, f3
 	FMA2	f1,  f16, f21, f1
-	FMA3	f2,  f17, f21, f2
+	FMA4	f1,  f17, f20, f1
+	FMA3	f0,  f17, f21, f0
 
 	FMA1	f4,  f16, f22, f4
-	FMA4	f7,  f17, f22, f7
 	FMA2	f5,  f16, f23, f5
-	FMA3	f6,  f17, f23, f6
+	FMA4	f5,  f17, f22, f5
+	FMA3	f4,  f17, f23, f4
 
 	LFD	f16,  2 * SIZE(AO)
 	LFD	f17,  3 * SIZE(AO)
@@ -2231,27 +2211,22 @@ LL(48):
 	LFD	f20, 0 * SIZE(CO2)
 	LFD	f21, 1 * SIZE(CO2)
 
-	FADD	f0,  f0,  f2
-	FADD	f1,  f1,  f3
-	FADD	f4,  f4,  f6
-	FADD	f5,  f5,  f7
+	fmr f2, f0
+	fmr f3, f1
+	fmr f6, f4
+	fmr f7, f5
 
-	FNMSUB	f24, f31, f1, f16
-	FMADD	f25, f31, f0, f17
-	FNMSUB	f26, f31, f5, f20
-	FMADD	f27, f31, f4, f21
+	FMADD	f24,  f30, f0, f16
+	FMADD	f25,  f30, f1, f17
+	FMADD	f26,  f30, f4,  f20
+	FMADD	f27,  f30, f5,  f21
 
-	FMADD	f0,  f30, f0, f24
-	FMADD	f1,  f30, f1, f25
-	FMADD	f4,  f30, f4,  f26
-	FMADD	f5,  f30, f5,  f27
+	FNMSUB	f0, f31, f3, f24
+	FMADD	f1, f31, f2, f25
+	FNMSUB	f4, f31, f7, f26
+	FMADD	f5, f31, f6, f27
 
 #else
-	FADD	f0,  f0,  f2
-	FADD	f1,  f1,  f3
-	FADD	f4,  f4,  f6
-	FADD	f5,  f5,  f7
-
 	FMUL	f16, f31, f1
 	FMUL	f17, f31, f0
 	FMUL	f18, f31, f5
@@ -2401,10 +2376,10 @@ LL(52):
 	FMA2	f1,  f16, f21, f1
 	FMA2	f3,  f18, f21, f3
 
-	FMA4	f9,  f17, f20, f9
-	FMA4	f11, f19, f20, f11
-	FMA3	f8,  f17, f21, f8
-	FMA3	f10, f19, f21, f10
+	FMA4	f1,  f17, f20, f1
+	FMA4	f3, f19, f20, f3
+	FMA3	f0,  f17, f21, f0
+	FMA3	f2, f19, f21, f2
 
 	LFD	f16,  4 * SIZE(AO)
 	LFD	f17,  5 * SIZE(AO)
@@ -2416,10 +2391,10 @@ LL(52):
 	FMA2	f1,  f16, f23, f1
 	FMA2	f3,  f18, f23, f3
 
-	FMA4	f9,  f17, f22, f9
-	FMA4	f11, f19, f22, f11
-	FMA3	f8,  f17, f23, f8
-	FMA3	f10, f19, f23, f10
+	FMA4	f1,  f17, f22, f1
+	FMA4	f3, f19, f22, f3
+	FMA3	f0,  f17, f23, f0
+	FMA3	f2, f19, f23, f2
 
 	LFD	f16,  8 * SIZE(AO)
 	LFD	f17,  9 * SIZE(AO)
@@ -2436,10 +2411,10 @@ LL(52):
 	FMA2	f1,  f16, f21, f1
 	FMA2	f3,  f18, f21, f3
 
-	FMA4	f9,  f17, f20, f9
-	FMA4	f11, f19, f20, f11
-	FMA3	f8,  f17, f21, f8
-	FMA3	f10, f19, f21, f10
+	FMA4	f1,  f17, f20, f1
+	FMA4	f3, f19, f20, f3
+	FMA3	f0,  f17, f21, f0
+	FMA3	f2, f19, f21, f2
 
 	LFD	f16, 12 * SIZE(AO)
 	LFD	f17, 13 * SIZE(AO)
@@ -2451,10 +2426,10 @@ LL(52):
 	FMA2	f1,  f16, f23, f1
 	FMA2	f3,  f18, f23, f3
 
-	FMA4	f9,  f17, f22, f9
-	FMA4	f11, f19, f22, f11
-	FMA3	f8,  f17, f23, f8
-	FMA3	f10, f19, f23, f10
+	FMA4	f1,  f17, f22, f1
+	FMA4	f3, f19, f22, f3
+	FMA3	f0,  f17, f23, f0
+	FMA3	f2, f19, f23, f2
 
 	LFD	f16, 16 * SIZE(AO)
 	LFD	f17, 17 * SIZE(AO)
@@ -2471,10 +2446,10 @@ LL(52):
 	FMA2	f1,  f16, f21, f1
 	FMA2	f3,  f18, f21, f3
 
-	FMA4	f9,  f17, f20, f9
-	FMA4	f11, f19, f20, f11
-	FMA3	f8,  f17, f21, f8
-	FMA3	f10, f19, f21, f10
+	FMA4	f1,  f17, f20, f1
+	FMA4	f3, f19, f20, f3
+	FMA3	f0,  f17, f21, f0
+	FMA3	f2, f19, f21, f2
 
 	LFD	f16, 20 * SIZE(AO)
 	LFD	f17, 21 * SIZE(AO)
@@ -2486,10 +2461,10 @@ LL(52):
 	FMA2	f1,  f16, f23, f1
 	FMA2	f3,  f18, f23, f3
 
-	FMA4	f9,  f17, f22, f9
-	FMA4	f11, f19, f22, f11
-	FMA3	f8,  f17, f23, f8
-	FMA3	f10, f19, f23, f10
+	FMA4	f1,  f17, f22, f1
+	FMA4	f3, f19, f22, f3
+	FMA3	f0,  f17, f23, f0
+	FMA3	f2, f19, f23, f2
 
 	LFD	f16, 24 * SIZE(AO)
 	LFD	f17, 25 * SIZE(AO)
@@ -2506,10 +2481,10 @@ LL(52):
 	FMA2	f1,  f16, f21, f1
 	FMA2	f3,  f18, f21, f3
 
-	FMA4	f9,  f17, f20, f9
-	FMA4	f11, f19, f20, f11
-	FMA3	f8,  f17, f21, f8
-	FMA3	f10, f19, f21, f10
+	FMA4	f1,  f17, f20, f1
+	FMA4	f3, f19, f20, f3
+	FMA3	f0,  f17, f21, f0
+	FMA3	f2, f19, f21, f2
 
 	LFD	f16, 28 * SIZE(AO)
 	LFD	f17, 29 * SIZE(AO)
@@ -2521,10 +2496,10 @@ LL(52):
 	FMA2	f1,  f16, f23, f1
 	FMA2	f3,  f18, f23, f3
 
-	FMA4	f9,  f17, f22, f9
-	FMA4	f11, f19, f22, f11
-	FMA3	f8,  f17, f23, f8
-	FMA3	f10, f19, f23, f10
+	FMA4	f1,  f17, f22, f1
+	FMA4	f3, f19, f22, f3
+	FMA3	f0,  f17, f23, f0
+	FMA3	f2, f19, f23, f2
 
 	LFD	f16, 32 * SIZE(AO)
 	LFD	f17, 33 * SIZE(AO)
@@ -2573,10 +2548,10 @@ LL(56):
 	LFD	f16,  4 * SIZE(AO)
 	LFD	f18,  6 * SIZE(AO)
 
-	FMA4	f9,  f17, f20, f9
-	FMA4	f11, f19, f20, f11
-	FMA3	f8,  f17, f21, f8
-	FMA3	f10, f19, f21, f10
+	FMA4	f1,  f17, f20, f1
+	FMA4	f3, f19, f20, f3
+	FMA3	f0,  f17, f21, f0
+	FMA3	f2, f19, f21, f2
 
 	LFD	f17,  5 * SIZE(AO)
 	LFD	f19,  7 * SIZE(AO)
@@ -2595,27 +2570,22 @@ LL(58):
 	LFD	f18, 2 * SIZE(CO1)
 	LFD	f19, 3 * SIZE(CO1)
 
-	FADD	f0, f0, f8
-	FADD	f1, f1, f9
-	FADD	f2, f2, f10
-	FADD	f3, f3, f11
+	fmr f8,  f0
+	fmr f9,  f1
+	fmr f10, f2
+	fmr f11, f3
 
-	FNMSUB	f24, f31, f1, f16
-	FMADD	f25, f31, f0, f17
-	FNMSUB	f26, f31, f3, f18
-	FMADD	f27, f31, f2, f19
+	FMADD	f24,  f30, f0, f16
+	FMADD	f25,  f30, f1, f17
+	FMADD	f26,  f30, f2, f18
+	FMADD	f27,  f30, f3, f19
 
-	FMADD	f0,  f30, f0, f24
-	FMADD	f1,  f30, f1, f25
-	FMADD	f2,  f30, f2, f26
-	FMADD	f3,  f30, f3, f27
+	FNMSUB	f0, f31, f9, f24
+	FMADD	f1, f31, f8, f25
+	FNMSUB	f2, f31, f11, f26
+	FMADD	f3, f31, f10, f27
 
 #else
-	FADD	f0, f0, f8
-	FADD	f1, f1, f9
-	FADD	f2, f2, f10
-	FADD	f3, f3, f11
-
 	FMUL	f16, f31, f1
 	FMUL	f17, f31, f0
 	FMUL	f18, f31, f3
@@ -2735,9 +2705,9 @@ LL(60):
 
 LL(62):
 	FMA1	f0,  f16, f20, f0
-	FMA4	f3,  f17, f20, f3
 	FMA2	f1,  f16, f21, f1
-	FMA3	f2,  f17, f21, f2
+	FMA4	f1,  f17, f20, f1
+	FMA3	f0,  f17, f21, f0
 
 	LFD	f16,  4 * SIZE(AO)
 	LFD	f17,  5 * SIZE(AO)
@@ -2745,9 +2715,9 @@ LL(62):
 	LFD	f21,  5 * SIZE(BO)
 
 	FMA1	f0,  f18, f22, f0
-	FMA4	f3,  f19, f22, f3
 	FMA2	f1,  f18, f23, f1
-	FMA3	f2,  f19, f23, f2
+	FMA4	f1,  f19, f22, f1
+	FMA3	f0,  f19, f23, f0
 
 	LFD	f18,  6 * SIZE(AO)
 	LFD	f19,  7 * SIZE(AO)
@@ -2755,9 +2725,9 @@ LL(62):
 	LFD	f23,  7 * SIZE(BO)
 
 	FMA1	f0,  f16, f20, f0
-	FMA4	f3,  f17, f20, f3
 	FMA2	f1,  f16, f21, f1
-	FMA3	f2,  f17, f21, f2
+	FMA4	f1,  f17, f20, f1
+	FMA3	f0,  f17, f21, f0
 
 	LFD	f16,  8 * SIZE(AO)
 	LFD	f17,  9 * SIZE(AO)
@@ -2765,9 +2735,9 @@ LL(62):
 	LFD	f21,  9 * SIZE(BO)
 
 	FMA1	f0,  f18, f22, f0
-	FMA4	f3,  f19, f22, f3
 	FMA2	f1,  f18, f23, f1
-	FMA3	f2,  f19, f23, f2
+	FMA4	f1,  f19, f22, f1
+	FMA3	f0,  f19, f23, f0
 
 	LFD	f18, 10 * SIZE(AO)
 	LFD	f19, 11 * SIZE(AO)
@@ -2803,11 +2773,11 @@ LL(65):
 
 LL(66):
 	FMA1	f0,  f16, f20, f0
-	FMA4	f3,  f17, f20, f3
-	LFD	f20,  2 * SIZE(BO)
 	FMA2	f1,  f16, f21, f1
 	LFD	f16,  2 * SIZE(AO)
-	FMA3	f2,  f17, f21, f2
+	FMA4	f1,  f17, f20, f1
+	LFD	f20,  2 * SIZE(BO)
+	FMA3	f0,  f17, f21, f0
 	LFD	f17,  3 * SIZE(AO)
 
 	LFD	f21,  3 * SIZE(BO)
@@ -2821,19 +2791,16 @@ LL(68):
 	LFD	f16, 0 * SIZE(CO1)
 	LFD	f17, 1 * SIZE(CO1)
 
-	FADD	f0,  f0,  f2
-	FADD	f1,  f1,  f3
+	fmr f2, f0
+	fmr f3, f1
 
-	FNMSUB	f24, f31, f1, f16
-	FMADD	f25, f31, f0, f17
+	FMADD	f24,  f30, f0, f16
+	FMADD	f25,  f30, f1, f17
 
-	FMADD	f0,  f30, f0, f24
-	FMADD	f1,  f30, f1, f25
+	FNMSUB	f0, f31, f3, f24
+	FMADD	f1, f31, f2, f25
 
 #else
-
-	FADD	f0,  f0,  f2
-	FADD	f1,  f1,  f3
 
 	FMUL	f16, f31, f1
 	FMUL	f17, f31, f0
