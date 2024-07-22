@@ -68,11 +68,39 @@ else
 endif
 
 # Makefile.prebuild stuff
-# TODO: Handle cpuidemu, and the target flags
+# TODO(rg): Generate within meson
 # getarch = executable('getarch',
 #           ['getarch.c', 'cpuid.S'])
 # getarch_two = executable('getarch_2nd',
 #                          ['getarch_2nd.c'])
+cchk=custom_target(
+  'c_checks',
+  output: ['Makefile_c.conf', 'config_c.h'],
+  input: ['ctest.c'],
+  command: [find_program('c_check'), 'Makefile_c.conf', 'config_c.h', 'gcc'],
+)
+fchk=custom_target(
+  'f_checks',
+  output: ['Makefile_f.conf', 'config_f.h'],
+  command: [find_program('f_check'), 'Makefile_f.conf', 'config_f.h', 'gfortran'],
+)
+fs = import('fs')
+basic_config = custom_target(
+  'basic_config',
+  output: ['config.h'],
+  input: [cchk, fchk],
+  command: [find_program('python'),
+            'write_file.py', 'config.h',
+            'config_c.h', 'config_f.h']
+)
+
+getarch = executable('getarch',
+          ['getarch.c', 'cpuid.S', basic_config,])
+getarch_two = executable('getarch_2nd',
+                         ['getarch_2nd.c', basic_config,])
+# gch = run_command('c_check', 'Makefile.conf', 'config.h', 'gcc')
+# run_command('f_check', 'Makefile.conf', 'config.h', 'gcc')
+# outp = gch.stdout().strip()
 # config_h = custom_target('gen_config_h',
 #                           # input: ['getarch.c'],
 #                           output: ['config.h'],
