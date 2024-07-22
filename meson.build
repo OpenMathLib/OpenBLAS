@@ -455,3 +455,13 @@ _openblas = static_library('openblas',
                      _kern,
                     ],
                     install: true)
+
+
+pkg = import ('pkgconfig')
+pkg_ver = meson.project_version()
+pkg.generate(_openblas,
+             name: 'openblas',
+             filebase: 'openblas',
+             description: 'OpenBLAS via meson build',
+             version: f'@pkg_ver@_meson',
+            )
