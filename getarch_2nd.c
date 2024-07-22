@@ -1,6 +1,12 @@
 #include <stdio.h>
 #ifndef BUILD_KERNEL
+
+#ifndef BUILD_WITH_MESON
 #include "config.h"
+#else
+#include "_config_for_getarch_2nd.h"
+#endif
+
 #else
 #include "config_kernel.h"
 #endif

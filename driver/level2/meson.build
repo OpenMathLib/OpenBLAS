@@ -540,7 +540,7 @@ foreach conf : kernel_confs
     # message(conf)
     _kern_libs += [static_library(
         conf['name'],
-        conf['src'],
+        [conf['src'], config_h],
         include_directories: _inc,
         c_args: conf['c_args'],
     )]

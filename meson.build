@@ -11,7 +11,7 @@
 #
 # NOTE: This is still a work in progress, the Makefiles are canonical
 project('OpenBLAS', ['c', 'fortran'],
-        default_options: ['c_std=c99', 'pkg.relocatable=true'],
+        default_options: ['c_std=c99', 'pkgconfig.relocatable=true'],
         version: '0.3.26.dev')
 
 openblas_major_version = 0 # soversion
@@ -67,46 +67,6 @@ else
     no_affinity = false
 endif
 
-# Makefile.prebuild stuff
-# TODO(rg): Generate within meson
-# getarch = executable('getarch',
-#           ['getarch.c', 'cpuid.S'])
-# getarch_two = executable('getarch_2nd',
-#                          ['getarch_2nd.c'])
-cchk=custom_target(
-  'c_checks',
-  output: ['Makefile_c.conf', 'config_c.h'],
-  input: ['ctest.c'],
-  command: [find_program('c_check'), 'Makefile_c.conf', 'config_c.h', 'gcc'],
-)
-fchk=custom_target(
-  'f_checks',
-  output: ['Makefile_f.conf', 'config_f.h'],
-  command: [find_program('f_check'), 'Makefile_f.conf', 'config_f.h', 'gfortran'],
-)
-fs = import('fs')
-basic_config = custom_target(
-  'basic_config',
-  output: ['config.h'],
-  input: [cchk, fchk],
-  command: [find_program('python'),
-            'write_file.py', 'config.h',
-            'config_c.h', 'config_f.h']
-)
-
-getarch = executable('getarch',
-          ['getarch.c', 'cpuid.S', basic_config,])
-getarch_two = executable('getarch_2nd',
-                         ['getarch_2nd.c', basic_config,])
-# gch = run_command('c_check', 'Makefile.conf', 'config.h', 'gcc')
-# run_command('f_check', 'Makefile.conf', 'config.h', 'gcc')
-# outp = gch.stdout().strip()
-# config_h = custom_target('gen_config_h',
-#                           # input: ['getarch.c'],
-#                           output: ['config.h'],
-#                           command: [getarch, '3']
-#                           )
-
 _check_prefix = []
 conf_data = configuration_data()
 is_win = host_machine.system() == 'windows' or host_machine.system() == 'cygwin'
@@ -142,18 +102,6 @@ endforeach
 
 configure_file(output : 'getarch_conf.h',
                configuration : conf_data)
-
-# run_target('generate_config_h',
-#            command: [meson.current_build_dir() + '/getarch', '1'],
-#            depends: getarch)
-
-# gch = run_command(meson.current_build_dir() + '/getarch', '1')
-# outp = gch.stdout().strip()
-
-# conf_data = configuration_data()
-# configure_file(input : meson.current_build_dir() + '/config.h',
-#   output : 'config.h',
-#   configuration : conf_data)
 
 # Makefile.system
 cpu_fam = target_machine.cpu_family()
@@ -464,6 +412,46 @@ symb_defs = {
     'cblas_?dotu_sub':  {'def': ['CBLAS', 'FORCE_USE_STACK'], 'undef': ['CONJ']},
     'cblas_?dotc_sub':  {'def': ['CBLAS', 'FORCE_USE_STACK', 'CONJ']},
 }
+
+# config.h file generation
+
+run_command('c_check', 'Makefile.conf', './build/_config_1.h', 'gcc')
+run_command('f_check', 'Makefile.conf', './build/_config_1.h', 'gfortran')
+
+getarch = executable('getarch', ['getarch.c', 'cpuid.S'])
+
+_config_2h = custom_target('_config_2h',
+                           output: '_config_2.h',
+                           command: [getarch, '1'],
+                           depends: [getarch],
+                           capture: true,
+                          )
+
+_config_for_getarch_2nd_h = custom_target('_config_for_getarch_2nd_h',
+                                          output: '_config_for_getarch_2nd.h',
+                                          command: [find_program('cat'), './_config_1.h', _config_2h],
+                                          depends: [_config_2h],
+                                          capture: true,
+                                         )
+
+getarch_2nd = executable('getarch_2nd',
+                         ['getarch_2nd.c', _config_for_getarch_2nd_h],
+                         c_args: ['-DGEMM_MULTITHREAD_THRESHOLD=4', '-DBUILD_WITH_MESON']
+                        )
+
+_config_3h = custom_target('_config_3h',
+                           output: '_config_3.h',
+                           command: [getarch_2nd, '1'],
+                           depends: [getarch_2nd],
+                           capture: true,
+                          )
+
+config_h = custom_target('config_h',
+                         output: 'config.h',
+                         command: [find_program('cat'), _config_for_getarch_2nd_h, _config_3h],
+                         depends: [_config_3h],
+                         capture: true,
+                        )
 
 # Ignoring other hostarch checks and conflicts for arch in BSD for now
 _inc = [include_directories('.')]
