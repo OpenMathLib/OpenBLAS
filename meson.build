@@ -11,7 +11,7 @@
 #
 # NOTE: This is still a work in progress, the Makefiles are canonical
 project('OpenBLAS', ['c', 'fortran'],
-        default_options: ['c_std=c99'],
+        default_options: ['c_std=c99', 'pkg.relocatable=true'],
         version: '0.3.26.dev')
 
 openblas_major_version = 0 # soversion
@@ -456,6 +456,24 @@ _openblas = static_library('openblas',
                     ],
                     install: true)
 
+# Handle headers
+fs = import('fs')
+
+if not get_option('build_without_lapack')
+  lapacke_root = 'lapack-netlib/LAPACKE/include'
+  lapacke_headers = [ 'lapack.h', 'lapacke_config.h', 'lapacke.h', 'lapacke_mangling.h', 'lapacke_utils.h', ]
+
+  foreach head : lapacke_headers
+    fs.copyfile(f'@lapacke_root@/@head@',
+                install_dir: 'include',
+                install: true)
+  endforeach
+
+endif
+
+# TODO(rg) Generate these
+# 'cblas.h', 'f77blas.h', 'openblas_config.h',
+# install_headers(lapacke_headers)
 
 pkg = import ('pkgconfig')
 pkg_ver = meson.project_version()
