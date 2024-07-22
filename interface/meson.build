@@ -621,7 +621,7 @@ foreach conf : _blas_roots
     # Create the static library for each symbol
     lib = static_library(
         sym_name,
-        sources: conf['fname'],
+        sources: [conf['fname'], config_h],
         include_directories: _inc,
         c_args: compiler_args + [
           f'-DASMNAME=@sym_name@',
@@ -643,7 +643,7 @@ foreach conf : _blas_roots
         endif
         cblas_lib = static_library(
             cblas_sym_name,
-            sources: conf['fname'],
+            sources: [conf['fname'], config_h],
             include_directories: _inc,
             c_args: compiler_args + [
               '-DCBLAS',
