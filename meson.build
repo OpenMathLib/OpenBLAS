@@ -22,6 +22,7 @@ openblas_version = f'@openblas_major_version@.@openblas_minor_version@.@openblas
 # Skip the check for valid CC
 cc = meson.get_compiler('c')
 fc = meson.get_compiler('fortran')
+cc_id = cc.get_id()
 fc_id = fc.get_id()
 
 # Common args
@@ -415,8 +416,10 @@ symb_defs = {
 
 # config.h file generation
 
-run_command('c_check', 'Makefile.conf', './build/_config_1.h', 'gcc')
-run_command('f_check', 'Makefile.conf', './build/_config_1.h', 'gfortran')
+_config_1_path = meson.current_build_dir() / '_config_1.h'
+_join_files_py = '../join_files.py'
+run_command('./c_check', 'Makefile.conf', _config_1_path, cc_id, check: true)
+run_command('./f_check', 'Makefile.conf', _config_1_path, fc_id, check: true)
 
 getarch = executable('getarch', ['getarch.c', 'cpuid.S'])
 
@@ -429,7 +432,12 @@ _config_2h = custom_target('_config_2h',
 
 _config_for_getarch_2nd_h = custom_target('_config_for_getarch_2nd_h',
                                           output: '_config_for_getarch_2nd.h',
-                                          command: [find_program('cat'), './_config_1.h', _config_2h],
+                                          command: [
+                                            find_program('python'),
+                                            _join_files_py,
+                                            _config_1_path,
+                                            _config_2h,
+                                          ],
                                           depends: [_config_2h],
                                           capture: true,
                                          )
@@ -448,7 +456,12 @@ _config_3h = custom_target('_config_3h',
 
 config_h = custom_target('config_h',
                          output: 'config.h',
-                         command: [find_program('cat'), _config_for_getarch_2nd_h, _config_3h],
+                         command: [
+                           find_program('python'),
+                           _join_files_py,
+                           _config_for_getarch_2nd_h,
+                           _config_3h,
+                         ],
                          depends: [_config_3h],
                          capture: true,
                         )

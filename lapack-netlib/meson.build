@@ -1,5 +1,6 @@
 add_languages('fortran', native: false)
 ff = meson.get_compiler('fortran')
+# TODO(mtsokol): make it a local setting
 # if ff.has_argument('-Wno-conversion')
 #   add_project_arguments('-Wno-conversion', language: 'fortran')
 # endif
