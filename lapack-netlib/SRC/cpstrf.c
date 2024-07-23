@@ -256,7 +256,7 @@ static char junk[] = "\n@(#)LIBF77 VERSION 19990503\n";
 #define myceiling_(w) {ceil(w)}
 #define myhuge_(w) {HUGE_VAL}
 //#define mymaxloc_(w,s,e,n) {if (sizeof(*(w)) == sizeof(double)) dmaxloc_((w),*(s),*(e),n); else dmaxloc_((w),*(s),*(e),n);}
-#define mymaxloc_(w,s,e,n) dmaxloc_(w,*(s),*(e),n)
+#define mymaxloc_(w,s,e,n) smaxloc_(w,*(s),*(e),n)
 
 /* procedure parameter types for -A and -C++ */
 
