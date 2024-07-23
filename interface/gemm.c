@@ -493,6 +493,11 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_TRANSPOSE TransA, enum CBLAS_TRANS
 
   if ((args.m == 0) || (args.n == 0)) return;
 
+#if 0
+  fprintf(stderr, "m = %4d  n = %d  k = %d  lda = %4d  ldb = %4d  ldc = %4d\n",
+	 args.m, args.n, args.k, args.lda, args.ldb, args.ldc);
+#endif
+
 #if !defined(GEMM3M) && !defined(COMPLEX)
   // Check if we can convert GEMM -> GEMV
   if (args.k != 0) {
