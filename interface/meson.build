@@ -1,7 +1,7 @@
 interface_args = ['-include', f'@bldroot@/simd_conf.h']
-if not build_without_cblas
-  interface_args += '-DCBLAS'
-endif
+# if not build_without_cblas
+#   interface_args += '-DCBLAS'
+# endif
 _blas_roots = [
   # NOTE: q, qx, x, xq do not have cblas_ rules in the Makefile
   # NOTE: https://developer.arm.com/documentation/101004/2310/BLAS-Basic-Linear-Algebra-Subprograms/CBLAS-functions?lang=en
