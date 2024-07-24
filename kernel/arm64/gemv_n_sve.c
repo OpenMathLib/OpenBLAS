@@ -47,45 +47,209 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define SV_DUP svdup_f32
 #endif
 
-int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1, FLOAT alpha, FLOAT *a, BLASLONG lda, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG inc_y, FLOAT *buffer)
+int CNAME(BLASLONG M, BLASLONG N, BLASLONG dummy1, FLOAT alpha, FLOAT *a, BLASLONG lda, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG inc_y, FLOAT *buffer)
 {
-  BLASLONG i;
-  BLASLONG ix,iy;
-  BLASLONG j;
-  FLOAT *a_ptr;
-  FLOAT temp;
+  const uint64_t v_size = SV_COUNT();
+  const uint64_t v_size2 = v_size * 2;
+  const svbool_t pg_true = SV_TRUE();
+#ifndef DOUBLE
+  const BLASLONG n8 = N & -8;
+#endif
+  const BLASLONG n4 = N & -4;
+#ifdef DOUBLE
+  const BLASLONG n2 = N & -2;
+#endif
+  const BLASLONG v_m1 = M & -v_size;
+  const BLASLONG v_m2 = M & -v_size2;
 
-  ix = 0;
-  a_ptr = a;
+  BLASLONG ix = 0;
 
   if (inc_y == 1) {
-    uint64_t sve_size = SV_COUNT();
-    for (j = 0; j < n; j++) {
-      SV_TYPE temp_vec = SV_DUP(alpha * x[ix]);
-      i = 0;
-      svbool_t pg = SV_WHILE(i, m);
-      while (svptest_any(SV_TRUE(), pg)) {
-        SV_TYPE a_vec = svld1(pg, a_ptr + i);
-        SV_TYPE y_vec = svld1(pg, y + i);
-        y_vec = svmla_x(pg, y_vec, temp_vec, a_vec);
-        svst1(pg, y + i, y_vec);
-        i += sve_size;
-        pg = SV_WHILE(i, m);
+    BLASLONG j = 0;
+    if (inc_x == 1) {
+#ifndef DOUBLE
+      for (; j < n8; j += 8) {
+        SV_TYPE temp_vec1 = svmul_x(pg_true, svld1rq(pg_true, &x[ix]), alpha);
+        SV_TYPE temp_vec2 = svmul_x(pg_true, svld1rq(pg_true, &x[ix + 4]), alpha);
+
+        BLASLONG i = 0;
+        for (; i < v_m1; i += v_size) {
+          SV_TYPE a_vec1 = svld1(pg_true, a + i);
+          SV_TYPE a_vec2 = svld1(pg_true, a + i + lda);
+          SV_TYPE a_vec3 = svld1(pg_true, a + i + lda * 2);
+          SV_TYPE a_vec4 = svld1(pg_true, a + i + lda * 3);
+          SV_TYPE a_vec5 = svld1(pg_true, a + i + lda * 4);
+          SV_TYPE a_vec6 = svld1(pg_true, a + i + lda * 5);
+          SV_TYPE a_vec7 = svld1(pg_true, a + i + lda * 6);
+          SV_TYPE a_vec8 = svld1(pg_true, a + i + lda * 7);
+          SV_TYPE y_vec = svld1(pg_true, y + i);
+          y_vec = svmla_lane(y_vec, a_vec1, temp_vec1, 0);
+          y_vec = svmla_lane(y_vec, a_vec2, temp_vec1, 1);
+          y_vec = svmla_lane(y_vec, a_vec3, temp_vec1, 2);
+          y_vec = svmla_lane(y_vec, a_vec4, temp_vec1, 3);
+          y_vec = svmla_lane(y_vec, a_vec5, temp_vec2, 0);
+          y_vec = svmla_lane(y_vec, a_vec6, temp_vec2, 1);
+          y_vec = svmla_lane(y_vec, a_vec7, temp_vec2, 2);
+          y_vec = svmla_lane(y_vec, a_vec8, temp_vec2, 3);
+          svst1(pg_true, y + i, y_vec);
+        }
+
+        for (; i < M; i += v_size) {
+          svbool_t pg = SV_WHILE(i, M);
+          SV_TYPE a_vec1 = svld1(pg, a + i);
+          SV_TYPE a_vec2 = svld1(pg, a + i + lda);
+          SV_TYPE a_vec3 = svld1(pg, a + i + lda * 2);
+          SV_TYPE a_vec4 = svld1(pg, a + i + lda * 3);
+          SV_TYPE a_vec5 = svld1(pg, a + i + lda * 4);
+          SV_TYPE a_vec6 = svld1(pg, a + i + lda * 5);
+          SV_TYPE a_vec7 = svld1(pg, a + i + lda * 6);
+          SV_TYPE a_vec8 = svld1(pg, a + i + lda * 7);
+
+          SV_TYPE y_vec = svld1(pg, y + i);
+          y_vec = svmla_lane(y_vec, a_vec1, temp_vec1, 0);
+          y_vec = svmla_lane(y_vec, a_vec2, temp_vec1, 1);
+          y_vec = svmla_lane(y_vec, a_vec3, temp_vec1, 2);
+          y_vec = svmla_lane(y_vec, a_vec4, temp_vec1, 3);
+          y_vec = svmla_lane(y_vec, a_vec5, temp_vec2, 0);
+          y_vec = svmla_lane(y_vec, a_vec6, temp_vec2, 1);
+          y_vec = svmla_lane(y_vec, a_vec7, temp_vec2, 2);
+          y_vec = svmla_lane(y_vec, a_vec8, temp_vec2, 3);
+          svst1(pg, y + i, y_vec);
+        }
+
+        a += lda * 8;
+        ix += 8;
       }
-      a_ptr += lda;
+      for (; j < n4; j += 4) {
+        SV_TYPE temp_vec1 = svmul_x(pg_true, svld1rq(pg_true, &x[ix]), alpha);
+
+        BLASLONG i = 0;
+        for (; i < v_m1; i += v_size) {
+          SV_TYPE a_vec1 = svld1(pg_true, a + i);
+          SV_TYPE a_vec2 = svld1(pg_true, a + i + lda);
+          SV_TYPE a_vec3 = svld1(pg_true, a + i + lda * 2);
+          SV_TYPE a_vec4 = svld1(pg_true, a + i + lda * 3);
+          SV_TYPE y_vec = svld1(pg_true, y + i);
+          y_vec = svmla_lane(y_vec, a_vec1, temp_vec1, 0);
+          y_vec = svmla_lane(y_vec, a_vec2, temp_vec1, 1);
+          y_vec = svmla_lane(y_vec, a_vec3, temp_vec1, 2);
+          y_vec = svmla_lane(y_vec, a_vec4, temp_vec1, 3);
+          svst1(pg_true, y + i, y_vec);
+        }
+
+        for (; i < M; i += v_size) {
+          svbool_t pg = SV_WHILE(i, M);
+          SV_TYPE a_vec1 = svld1(pg, a + i);
+          SV_TYPE a_vec2 = svld1(pg, a + i + lda);
+          SV_TYPE a_vec3 = svld1(pg, a + i + lda * 2);
+          SV_TYPE a_vec4 = svld1(pg, a + i + lda * 3);
+
+          SV_TYPE y_vec = svld1(pg, y + i);
+          y_vec = svmla_lane(y_vec, a_vec1, temp_vec1, 0);
+          y_vec = svmla_lane(y_vec, a_vec2, temp_vec1, 1);
+          y_vec = svmla_lane(y_vec, a_vec3, temp_vec1, 2);
+          y_vec = svmla_lane(y_vec, a_vec4, temp_vec1, 3);
+          svst1(pg, y + i, y_vec);
+        }
+
+        a += lda * 4;
+        ix += 4;
+      }
+#else
+      for (; j < n4; j += 4) {
+        SV_TYPE temp_vec1 = svmul_x(pg_true, svld1rq(pg_true, &x[ix]), alpha);
+        SV_TYPE temp_vec2 = svmul_x(pg_true, svld1rq(pg_true, &x[ix + 2]), alpha);
+
+        BLASLONG i = 0;
+        for (; i < v_m1; i += v_size) {
+          SV_TYPE a_vec1 = svld1(pg_true, a + i);
+          SV_TYPE a_vec2 = svld1(pg_true, a + i + lda);
+          SV_TYPE a_vec3 = svld1(pg_true, a + i + lda * 2);
+          SV_TYPE a_vec4 = svld1(pg_true, a + i + lda * 3);
+          SV_TYPE y_vec = svld1(pg_true, y + i);
+          y_vec = svmla_lane(y_vec, a_vec1, temp_vec1, 0);
+          y_vec = svmla_lane(y_vec, a_vec2, temp_vec1, 1);
+          y_vec = svmla_lane(y_vec, a_vec3, temp_vec2, 0);
+          y_vec = svmla_lane(y_vec, a_vec4, temp_vec2, 1);
+          svst1(pg_true, y + i, y_vec);
+        }
+        for (; i < M; i += v_size) {
+          svbool_t pg = SV_WHILE(i, M);
+          SV_TYPE a_vec1 = svld1(pg, a + i);
+          SV_TYPE a_vec2 = svld1(pg, a + i + lda);
+          SV_TYPE a_vec3 = svld1(pg, a + i + lda * 2);
+          SV_TYPE a_vec4 = svld1(pg, a + i + lda * 3);
+          SV_TYPE y_vec = svld1(pg, y + i);
+          y_vec = svmla_lane(y_vec, a_vec1, temp_vec1, 0);
+          y_vec = svmla_lane(y_vec, a_vec2, temp_vec1, 1);
+          y_vec = svmla_lane(y_vec, a_vec3, temp_vec2, 0);
+          y_vec = svmla_lane(y_vec, a_vec4, temp_vec2, 1);
+          svst1(pg, y + i, y_vec);
+        }
+
+        a += lda * 4;
+        ix += 4;
+      }
+      for (; j < n2; j += 2) {
+        SV_TYPE temp_vec1 = svmul_x(pg_true, svld1rq(pg_true, &x[ix]), alpha);
+
+        BLASLONG i = 0;
+        for (; i < v_m1; i += v_size) {
+          SV_TYPE a_vec1 = svld1(pg_true, a + i);
+          SV_TYPE a_vec2 = svld1(pg_true, a + i + lda);
+          SV_TYPE y_vec = svld1(pg_true, y + i);
+          y_vec = svmla_lane(y_vec, a_vec1, temp_vec1, 0);
+          y_vec = svmla_lane(y_vec, a_vec2, temp_vec1, 1);
+          svst1(pg_true, y + i, y_vec);
+        }
+        for (; i < M; i += v_size) {
+          svbool_t pg = SV_WHILE(i, M);
+          SV_TYPE a_vec1 = svld1(pg, a + i);
+          SV_TYPE a_vec2 = svld1(pg, a + i + lda);
+          SV_TYPE y_vec = svld1(pg, y + i);
+          y_vec = svmla_lane(y_vec, a_vec1, temp_vec1, 0);
+          y_vec = svmla_lane(y_vec, a_vec2, temp_vec1, 1);
+          svst1(pg, y + i, y_vec);
+        }
+
+        a += lda * 2;
+        ix += 2;
+      }
+#endif
+    }
+
+    for (; j < N; j++) {
+      SV_TYPE temp_vec1 = SV_DUP(alpha * x[ix]);
+      SV_TYPE temp_vec2 = temp_vec1;
+      
+      BLASLONG i = 0;
+      for (; i < v_m1; i += v_size) {
+        SV_TYPE a_vec = svld1(pg_true, a + i);
+        SV_TYPE y_vec = svld1(pg_true, y + i);
+        y_vec = svmla_x(pg_true, y_vec, temp_vec1, a_vec);
+        svst1(pg_true, y + i, y_vec);
+      }
+      for (; i < M; i += v_size) {
+        svbool_t pg = SV_WHILE(i, M);
+        SV_TYPE a_vec = svld1(pg, a + i);
+        SV_TYPE y_vec = svld1(pg, y + i);
+        y_vec = svmla_x(pg, y_vec, temp_vec1, a_vec);
+        svst1(pg, y + i, y_vec);
+      }
+      a += lda;
       ix += inc_x;
     }
     return(0);
   }
 
-  for (j = 0; j < n; j++) {
-    temp = alpha * x[ix];
-    iy = 0;
-    for (i = 0; i < m; i++) {
-      y[iy] += temp * a_ptr[i];
+  for (BLASLONG j = 0; j < N; j++) {
+    FLOAT temp = alpha * x[ix];
+    BLASLONG iy = 0;
+    for (BLASLONG i = 0; i < M; i++) {
+      y[iy] += temp * a[i];
       iy += inc_y;
     }
-    a_ptr += lda;
+    a += lda;
     ix += inc_x;
   }
   return (0);
