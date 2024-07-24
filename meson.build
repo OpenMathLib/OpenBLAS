@@ -512,3 +512,7 @@ pkg.generate(_openblas,
              description: 'OpenBLAS via meson build',
              version: f'@pkg_ver@_meson',
             )
+
+if build_testing
+  subdir('utest')
+endif
