@@ -274,8 +274,17 @@ endif
 ifeq ($(ARCH), loongarch64)
 SMALL_MATRIX_OPT = 1
 endif
+ifeq ($(ARCH), arm64)
+GEMM_GEMV_FORWARD = 1
+endif
+
 ifeq ($(SMALL_MATRIX_OPT), 1)
 CCOMMON_OPT += -DSMALL_MATRIX_OPT
+endif
+ifeq ($(GEMM_GEMV_FORWARD), 1)
+ifneq ($(ONLY_CBLAS), 1)
+CCOMMON_OPT += -DGEMM_GEMV_FORWARD
+endif
 endif
 
 # This operation is expensive, so execution should be once.
