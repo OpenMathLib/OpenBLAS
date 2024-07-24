@@ -95,7 +95,7 @@ int CNAME(BLASLONG M, BLASLONG N, BLASLONG dummy1, FLOAT alpha, FLOAT *a, BLASLO
         }
 
         for (; i < M; i += v_size) {
-          svbool_t pg = SV_WHILE(i, M);
+          svbool_t pg = SV_WHILE((uint64_t)i, (uint64_t)M);
           SV_TYPE a_vec1 = svld1(pg, a + i);
           SV_TYPE a_vec2 = svld1(pg, a + i + lda);
           SV_TYPE a_vec3 = svld1(pg, a + i + lda * 2);
@@ -138,7 +138,7 @@ int CNAME(BLASLONG M, BLASLONG N, BLASLONG dummy1, FLOAT alpha, FLOAT *a, BLASLO
         }
 
         for (; i < M; i += v_size) {
-          svbool_t pg = SV_WHILE(i, M);
+          svbool_t pg = SV_WHILE((uint64_t)i, (uint64_t)M);
           SV_TYPE a_vec1 = svld1(pg, a + i);
           SV_TYPE a_vec2 = svld1(pg, a + i + lda);
           SV_TYPE a_vec3 = svld1(pg, a + i + lda * 2);
@@ -174,7 +174,7 @@ int CNAME(BLASLONG M, BLASLONG N, BLASLONG dummy1, FLOAT alpha, FLOAT *a, BLASLO
           svst1(pg_true, y + i, y_vec);
         }
         for (; i < M; i += v_size) {
-          svbool_t pg = SV_WHILE(i, M);
+          svbool_t pg = SV_WHILE((uint64_t)i, (uint64_t)M);
           SV_TYPE a_vec1 = svld1(pg, a + i);
           SV_TYPE a_vec2 = svld1(pg, a + i + lda);
           SV_TYPE a_vec3 = svld1(pg, a + i + lda * 2);
@@ -203,7 +203,7 @@ int CNAME(BLASLONG M, BLASLONG N, BLASLONG dummy1, FLOAT alpha, FLOAT *a, BLASLO
           svst1(pg_true, y + i, y_vec);
         }
         for (; i < M; i += v_size) {
-          svbool_t pg = SV_WHILE(i, M);
+          svbool_t pg = SV_WHILE((uint64_t)i, (uint64_t)M);
           SV_TYPE a_vec1 = svld1(pg, a + i);
           SV_TYPE a_vec2 = svld1(pg, a + i + lda);
           SV_TYPE y_vec = svld1(pg, y + i);
@@ -230,7 +230,7 @@ int CNAME(BLASLONG M, BLASLONG N, BLASLONG dummy1, FLOAT alpha, FLOAT *a, BLASLO
         svst1(pg_true, y + i, y_vec);
       }
       for (; i < M; i += v_size) {
-        svbool_t pg = SV_WHILE(i, M);
+        svbool_t pg = SV_WHILE((uint64_t)i, (uint64_t)M);
         SV_TYPE a_vec = svld1(pg, a + i);
         SV_TYPE y_vec = svld1(pg, y + i);
         y_vec = svmla_x(pg, y_vec, temp_vec1, a_vec);
