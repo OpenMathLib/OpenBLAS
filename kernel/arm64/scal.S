@@ -33,7 +33,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define	X_COPY	x5	/* X vector address */
 #define	INC_X	x4	/* X stride */
 #define I	x1	/* loop variable */
-
+#define FLAG    x9
 /*******************************************************************************
 * Macro definitions
 *******************************************************************************/
@@ -168,9 +168,14 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	cmp	N, xzr
 	ble	.Lscal_kernel_L999
 
-	//fcmp	DA, #0.0
-	//beq	.Lscal_kernel_zero
+	ldr	FLAG, [sp]
+	cmp	FLAG, #1
+	beq	.Lscal_kernel_nansafe
 
+	fcmp	DA, #0.0
+	beq	.Lscal_kernel_zero
+
+.Lscal_kernel_nansafe:
 	cmp	INC_X, #1
 	bne	.Lscal_kernel_S_BEGIN
 

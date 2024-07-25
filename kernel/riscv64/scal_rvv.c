@@ -56,7 +56,7 @@ int CNAME(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, FLOAT da, FLOAT *x, BLAS
     FLOAT_V_T v0;
  
     if(inc_x == 1) {
-        if(da == 0.0) {
+        if(dummy2 == 0 && da == 0.0) {
             int gvl = VSETVL_MAX;
             v0 = VFMVVF_FLOAT(0.0, gvl);
             for (size_t vl; n > 0; n -= vl, x += vl) {
@@ -75,7 +75,7 @@ int CNAME(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, FLOAT da, FLOAT *x, BLAS
     } else {
         BLASLONG stride_x = inc_x * sizeof(FLOAT);
 
-        if(da == 0.0) {
+        if(dummy2 == 0 && da == 0.0) {
             int gvl = VSETVL_MAX;
             v0 = VFMVVF_FLOAT(0.0, gvl);
             for (size_t vl; n > 0; n -= vl, x += vl*inc_x) {

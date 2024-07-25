@@ -74,7 +74,7 @@
 	pxor	%xmm15, %xmm15
 	comisd	%xmm0, %xmm15
 	jne	.L30		# Alpha_r != ZERO
-
+	jp	.L30
 	comisd	%xmm1, %xmm15
 	jne	.L30		# Alpha_i != ZERO
 

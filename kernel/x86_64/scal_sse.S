@@ -60,8 +60,10 @@
 #ifdef WINDOWS_ABI
 	movq	40(%rsp), X
 	movq	48(%rsp), INCX
-
+	movq	64(%rsp), %r9
 	movaps	%xmm3, %xmm0
+#else
+	movq    24(%rsp), %r9
 #endif
 
 	SAVEREGISTERS
@@ -76,6 +78,8 @@
 	shufps	$0, %xmm0, %xmm0
 
 	jne	.L100		# Alpha != ZERO
+
+	cmpq   $1, %r9
 	je	.L100
 /* Alpha == ZERO */
 	cmpq	$SIZE, INCX
