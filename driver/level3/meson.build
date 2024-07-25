@@ -143,6 +143,11 @@ driver_kops = [
                               '_LN', '_LT', '']},
     }
   },
+  { 'base': 'syrk_thread',
+    'sources': {
+        'syrk_thread.c': {'mode': [''], 'exts': ['']}
+    }
+  },
   { 'base': '?syrk_kernel',
     'sources': {
         'syrk_kernel.c': {'mode': ['s', 'd', # 'q'],
@@ -156,6 +161,12 @@ driver_kops = [
                                'c', 'z'], # 'x'],
                       'exts': ['_UN', '_UT',
                                '_LN', '_LT']},
+    }
+  },
+  { 'base': '?syr2k_kernel',
+    'sources': {
+        'syr2k_kernel.c': {'mode': ['s', 'd', 'c', 'z'],
+                           'exts': ['_U', '_L']},
     }
   },
   { 'base': '?hemm',
