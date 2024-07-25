@@ -29,27 +29,34 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 int CNAME(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, FLOAT da, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG inc_y, FLOAT *dummy, BLASLONG dummy2)
 {
-	BLASLONG i=0,j=0;
+    BLASLONG i = 0, j = 0;
 
-	while(j < n)
-	{
+    // Resolved issue 4728 when the caller is {s/d}scal
+    if (da == 0.0 && dummy2 == 1)
+    {
+        while(j < n)
+        {
+            x[i] = da * x[i] ;
 
-		if ( da == 0.0 )
-			if (isnan(x[i])||isinf(x[i]))
-				x[i]=NAN;
-			else
-				x[i]=0.0;
-		else if (isnan(da))
-			x[i]=NAN;
-		else
-			x[i] = da * x[i] ;
+            i += inc_x ;
+            j++;
+        }
+    }
+    else
+    {
+        while(j < n)
+        {
 
-		i += inc_x ;
-		j++;
+            if ( da == 0.0 )
+                x[i] = 0.0;
+            else
+                x[i] = da * x[i] ;
 
-	}
-	return 0;
-
+            i += inc_x ;
+            j++;
+        }
+    }
+    return 0;
 }
 
 

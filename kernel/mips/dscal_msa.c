@@ -42,7 +42,7 @@ int CNAME(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, FLOAT da, FLOAT *x,
 
     if (1 == inc_x)
     {
-        if (0)     //if (0.0 == da )
+        if (0.0 == da && !dummy2)
         {
             v2f64 zero_v = {0.0, 0.0};
 
@@ -240,14 +240,12 @@ int CNAME(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, FLOAT da, FLOAT *x,
     }
     else
     {
-        if (da == 0.0)
+        if (da == 0.0 && !dummy2)
         {
             for (i = n; i--;)
-            {         
-                if (isfinite(*x))
-                          *x = 0.0;
-                else
-                          *x = NAN;
+            {
+                *x = 0.0;
+
                 x += inc_x;
             }
         }

@@ -14,7 +14,7 @@ UTESTEXTBIN=openblas_utest_ext
 include $(TOPDIR)/Makefile.system
 
 OBJS=utest_main.o test_min.o test_amax.o test_ismin.o test_rotmg.o test_axpy.o test_dotu.o test_dsdot.o test_swap.o test_rot.o test_dnrm2.o test_zscal.o \
-     test_amin.o test_axpby.o
+     test_amin.o test_axpby.o test_gemv.o
 #test_rot.o test_swap.o test_axpy.o test_dotu.o test_dsdot.o test_fork.o
 OBJS_EXT=utest_main.o $(DIR_EXT)/xerbla.o $(DIR_EXT)/common.o 
 OBJS_EXT+=$(DIR_EXT)/test_isamin.o $(DIR_EXT)/test_idamin.o $(DIR_EXT)/test_icamin.o $(DIR_EXT)/test_izamin.o 

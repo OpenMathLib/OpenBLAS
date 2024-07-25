@@ -85,7 +85,7 @@ void CNAME(blasint n, FLOAT alpha, FLOAT *x, blasint incx){
   if (nthreads == 1) {
 #endif
 
-  SCAL_K(n, 0, 0, alpha, x, incx, NULL, 0, NULL, 0);
+  SCAL_K(n, 0, 0, alpha, x, incx, NULL, 0, NULL, 1);
 
 #ifdef SMP
   } else {
@@ -102,7 +102,7 @@ void CNAME(blasint n, FLOAT alpha, FLOAT *x, blasint incx){
 #else
 		       &alpha,
 #endif
-		       x, incx, NULL, 0, NULL, 0,  (int (*)(void))SCAL_K, nthreads);
+		       x, incx, NULL, 0, NULL, 1,  (int (*)(void))SCAL_K, nthreads);
 
   }
 #endif
