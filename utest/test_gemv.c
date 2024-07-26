@@ -12,6 +12,7 @@
 
 CTEST(sgemv, 0_nan_inf)
 {
+    int i;
     blasint N = 17;
     blasint incX = 1;
     blasint incY = 1;
@@ -24,19 +25,20 @@ CTEST(sgemv, 0_nan_inf)
 
     memset(A, 0, sizeof(A));
     memset(X, 0, sizeof(X));
-    for (int i = 0; i < (N - 1); i += 2)
+    for (i = 0; i < (N - 1); i += 2)
     {
         Y[i]     = NAN;
         Y[i + 1] = INFINITY;
     }
     Y[N - 1] = NAN;
     BLASFUNC(sgemv)(&trans, &N, &N, &alpha, A, &N, X, &incX, &beta, Y, &incY);
-    for (int i = 0; i < N; i ++)
+    for (i = 0; i < N; i ++)
         ASSERT_TRUE(Y[i] == 0.0);
 }
 
 CTEST(sgemv, 0_nan_inf_incy_2)
 {
+    int i;
     blasint N  = 17;
     blasint Ny = 33;
     blasint incX = 1;
@@ -52,7 +54,7 @@ CTEST(sgemv, 0_nan_inf_incy_2)
     memset(A, 0, sizeof(A));
     memset(X, 0, sizeof(X));
     memset(Y, 0, sizeof(Y));
-    for (int i = 0; i < (N - 1); i += 2)
+    for (i = 0; i < (N - 1); i += 2)
     {
         ay[0]   = NAN;
         ay     += 2;
@@ -61,7 +63,7 @@ CTEST(sgemv, 0_nan_inf_incy_2)
     }
     Y[Ny - 1] = NAN;
     BLASFUNC(sgemv)(&trans, &N, &N, &alpha, A, &N, X, &incX, &beta, Y, &incY);
-    for (int i = 0; i < Ny; i ++)
+    for (i = 0; i < Ny; i ++)
         ASSERT_TRUE(Y[i] == 0.0);
 }
 
@@ -70,6 +72,7 @@ CTEST(sgemv, 0_nan_inf_incy_2)
 #ifdef BUILD_DOUBLE
 CTEST(dgemv, 0_nan_inf)
 {
+    int i;
     blasint N = 17;
     blasint incX = 1;
     blasint incY = 1;
@@ -82,19 +85,20 @@ CTEST(dgemv, 0_nan_inf)
 
     memset(A, 0, sizeof(A));
     memset(X, 0, sizeof(X));
-    for (int i = 0; i < (N - 1); i += 2)
+    for (i = 0; i < (N - 1); i += 2)
     {
         Y[i]     = NAN;
         Y[i + 1] = INFINITY;
     }
     Y[N - 1] = NAN;
     BLASFUNC(dgemv)(&trans, &N, &N, &alpha, A, &N, X, &incX, &beta, Y, &incY);
-    for (int i = 0; i < N; i ++)
+    for (i = 0; i < N; i ++)
         ASSERT_TRUE(Y[i] == 0.0);
 }
 
 CTEST(dgemv, 0_nan_inf_incy_2)
 {
+    int i;
     blasint N  = 17;
     blasint Ny = 33;
     blasint incX = 1;
@@ -110,7 +114,7 @@ CTEST(dgemv, 0_nan_inf_incy_2)
     memset(A, 0, sizeof(A));
     memset(X, 0, sizeof(X));
     memset(Y, 0, sizeof(Y));
-    for (int i = 0; i < (N - 1); i += 2)
+    for (i = 0; i < (N - 1); i += 2)
     {
         ay[0]   = NAN;
         ay     += 2;
@@ -119,7 +123,7 @@ CTEST(dgemv, 0_nan_inf_incy_2)
     }
     Y[Ny - 1] = NAN;
     BLASFUNC(dgemv)(&trans, &N, &N, &alpha, A, &N, X, &incX, &beta, Y, &incY);
-    for (int i = 0; i < Ny; i ++)
+    for (i = 0; i < Ny; i ++)
         ASSERT_TRUE(Y[i] == 0.0);
 }
 
