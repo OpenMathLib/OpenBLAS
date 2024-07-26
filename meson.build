@@ -515,5 +515,6 @@ pkg.generate(_openblas,
 
 if build_testing
   subdir('test')
+  subdir('ctest')
   subdir('utest')
 endif
