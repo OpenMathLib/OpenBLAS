@@ -7,13 +7,14 @@
 #ifndef INFINITY
 #define INFINITY 1.0/0.0
 #endif
+#define N 17
+#define Ny 33
 
 #ifdef BUILD_SINGLE
 
 CTEST(sgemv, 0_nan_inf)
 {
     int i;
-    blasint N = 17;
     blasint incX = 1;
     blasint incY = 1;
     float alpha = 0.0;
@@ -39,8 +40,6 @@ CTEST(sgemv, 0_nan_inf)
 CTEST(sgemv, 0_nan_inf_incy_2)
 {
     int i;
-    blasint N  = 17;
-    blasint Ny = 33;
     blasint incX = 1;
     blasint incY = 2;
     float alpha = 0.0;
@@ -73,7 +72,6 @@ CTEST(sgemv, 0_nan_inf_incy_2)
 CTEST(dgemv, 0_nan_inf)
 {
     int i;
-    blasint N = 17;
     blasint incX = 1;
     blasint incY = 1;
     double alpha = 0.0;
@@ -99,8 +97,6 @@ CTEST(dgemv, 0_nan_inf)
 CTEST(dgemv, 0_nan_inf_incy_2)
 {
     int i;
-    blasint N  = 17;
-    blasint Ny = 33;
     blasint incX = 1;
     blasint incY = 2;
     double alpha = 0.0;
