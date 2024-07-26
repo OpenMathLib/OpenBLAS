@@ -234,14 +234,10 @@ def test_gesdd(benchmark, mn, variant):
     gesdd = ow.get_func('gesdd', variant)
     u, s, vt, info = benchmark(run_gesdd, a, lwork, gesdd)
 
-    if variant != 's':
-        # On entry to SLASCL parameter number  4 had an illegal value
-        # under codspeed (cannot repro locally or on CI w/o codspeed)
-        # https://github.com/OpenMathLib/OpenBLAS/issues/4776
-        assert info == 0
+    assert info == 0
 
-        atol = {'s': 1e-5, 'd': 1e-13}
-        np.testing.assert_allclose(u @ np.diag(s) @ vt, a, atol=atol[variant])
+    atol = {'s': 1e-5, 'd': 1e-13}
+    np.testing.assert_allclose(u @ np.diag(s) @ vt, a, atol=atol[variant])
 
 
 # linalg.eigh
