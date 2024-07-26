@@ -43,7 +43,7 @@ int CNAME(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, FLOAT da, FLOAT *x, BLAS
 	if ( (n <= 0) || (inc_x <= 0))
 		return(0);
 	
-	if (dummy2 == 0) {
+	if (dummy2 == 1) {
 		while(j < n)
 		{
 
