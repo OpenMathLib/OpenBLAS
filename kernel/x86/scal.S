@@ -65,7 +65,7 @@
 #else
 	movl	32(%esp),%edi
 	movl	36(%esp),%esi
-	movl	54(%esp),%ecx
+	movl	52(%esp),%ecx
 #endif
 
 	ftst
