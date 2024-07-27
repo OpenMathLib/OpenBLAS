@@ -356,6 +356,9 @@ if [ "$compiler" = "GCC" ]; then
         no_avx2=0
         oldgcc=0
         data=`$compiler_name -dumpversion`
+        case "$data" in *-*)
+            data="${data%-*}"
+        esac
         case "$data" in *.*.*)
             data="${data%.*}"
         esac
