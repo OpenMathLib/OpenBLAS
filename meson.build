@@ -12,11 +12,11 @@
 # NOTE: This is still a work in progress, the Makefiles are canonical
 project('OpenBLAS', ['c', 'fortran'],
         default_options: ['c_std=c99', 'pkgconfig.relocatable=true'],
-        version: '0.3.26.dev')
+        version: '0.3.27.dev')
 
 openblas_major_version = 0 # soversion
 openblas_minor_version = 3
-openblas_patch_version = '26.dev'
+openblas_patch_version = '27.dev'
 openblas_version = f'@openblas_major_version@.@openblas_minor_version@.@openblas_patch_version@'
 
 # Skip the check for valid CC
@@ -124,6 +124,8 @@ endif
 #   upper_fcid = fc_id.to_upper()
 #   add_project_arguments(f'-DF_INTERFACE_@upper_fcid@', language: 'c')
 # endif
+
+py3 = find_program('python')
 
 simd_extensions = [
   {'flag': '-mmmx', 'define': 'HAVE_MMX'},
@@ -433,7 +435,7 @@ _config_2h = custom_target('_config_2h',
 _config_for_getarch_2nd_h = custom_target('_config_for_getarch_2nd_h',
                                           output: '_config_for_getarch_2nd.h',
                                           command: [
-                                            find_program('python'),
+                                            py3,
                                             _join_files_py,
                                             _config_1_path,
                                             _config_2h,
@@ -457,7 +459,7 @@ _config_3h = custom_target('_config_3h',
 config_h = custom_target('config_h',
                          output: 'config.h',
                          command: [
-                           find_program('python'),
+                           py3,
                            _join_files_py,
                            _config_for_getarch_2nd_h,
                            _config_3h,
