@@ -61,6 +61,8 @@ build_cpp_thread_safety_test = get_option('build_cpp_thread_safety_test')
 build_cpp_thread_safety_gemv = get_option('build_cpp_thread_safety_gemv')
 build_static_libs = get_option('build_static_libs')
 max_stack_alloc = get_option('max_stack_alloc')
+quad_prec = get_option('quad_precision')
+exprecision = get_option('exprecision')
 
 if host_machine.system() == 'linux'
     no_affinity = true
@@ -502,9 +504,43 @@ if not get_option('build_without_lapack')
 
 endif
 
-# TODO(rg) Generate these
-# 'cblas.h', 'f77blas.h', 'openblas_config.h',
-# install_headers(lapacke_headers)
+# Paths to necessary files for header generation
+fconfig_h = meson.build_root() / 'config.h'
+fconfig_last = meson.build_root() / 'config_last.h'
+template = meson.source_root() / 'openblas_config_template.h'
+common_interface = meson.source_root() / 'common_interface.h'
+cblas = meson.source_root() / 'cblas.h'
+
+# Prepare config_last.h from config.h
+pcl = custom_target('prepare_config_last',
+  output : 'config_last.h',
+  command : [py3, meson.source_root() / 'prepare_config_last.py',
+             '--config', fconfig_h,
+             '--output', fconfig_last,
+             quad_prec ? '--quad-precision' : [],
+             exprecision ? '--exprecision' : [],
+            ],
+  build_by_default : true,
+  depends: config_h,
+)
+
+# Generate the headers
+custom_target('gen_install_headers',
+  output : ['openblas_config.h', 'f77blas.h', 'cblas.h'],
+  command : [py3, meson.source_root() / 'gen_install_headers.py',
+             '--dest-dir', meson.build_root(),
+             '--version', meson.project_version(),
+             '--config-last', fconfig_last,
+             '--template', template,
+             '--common-interface', common_interface,
+             '--cblas', cblas,
+             not get_option('no_fortran') ? '--generate-f77blas' : [],
+             not get_option('build_without_cblas') ? '--generate-cblas' : [],
+            ],
+  install : true,
+  install_dir : 'include',
+  depends : pcl,
+)
 
 pkg = import ('pkgconfig')
 pkg_ver = meson.project_version()

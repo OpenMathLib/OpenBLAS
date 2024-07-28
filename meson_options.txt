@@ -43,11 +43,14 @@ option('use_xblas', type : 'boolean', value : false,
 
 # From / for interface/Makefile
 option('build_bfloat16', type: 'boolean', value: false, description: 'Build bfloat16')
-option('exprecision', type: 'boolean', value: false, description: 'Build the q suffixes')
+# option('exprecision', type: 'boolean', value: false, description: 'Build the q suffixes')
 
 # Meson only
 # This is the equivalent of producing all precisions via make all inside lapack-netlib/blas/src
 option('build_all_prec', type: 'boolean', value: true, description: 'Build all precisions')
+# For installation, maps to
+option('quad_precision', type: 'boolean', value: false, description: 'Build quad precision')
+option('exprecision', type: 'boolean', value: false, description: 'Build extended precision')
 
 # For naming netlib libraries
 option('netlib_blas_name', type: 'string', value: 'refblas', description: 'Name for the Netlib BLAS library')
