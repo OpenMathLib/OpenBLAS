@@ -278,7 +278,7 @@ endif
 
 ifeq ($(CORE), A64FX)
 ifeq (1, $(filter 1,$(GCCVERSIONGTEQ10) $(ISCLANG)))
-ifeq (1, $(filter 1,$(GCCMINORVERSIONGTEQ3) $(ISCLANG)))
+ifeq (1, $(filter 1,$(GCCMINORVERSIONGTEQ3) $(GCCVERSIONGTEQ11) $(ISCLANG)))
 CCOMMON_OPT += -march=armv8.2-a+sve -mtune=a64fx
 ifneq ($(F_COMPILER), NAG)
 FCOMMON_OPT += -march=armv8.2-a+sve -mtune=a64fx
