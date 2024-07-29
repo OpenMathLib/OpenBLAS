@@ -4,9 +4,8 @@ others_ops = [
   { 'base': 'xerbla', 'source': 'xerbla.c' },
   { 'base': 'openblas_set_num_threads', 'source': 'openblas_set_num_threads.c' },
   { 'base': 'openblas_get_num_threads', 'source': 'openblas_get_num_threads.c', 'addl': [
-    '-O2', '-DSMALL_MATRIX_OPT', '-DMAX_PARALLEL_NUMBER=1', '-DMAX_STACK_ALLOC=2048', '-Wall', '-DF_OTHERS_GFORT',
-    '-fPIC', '-DSMP_SERVER', '-DNO_WARMUP', '-DMAX_CPU_NUMBER=12', '-DVERSION="0.3.26.dev"', '-msse3', '-mssse3',
-    '-msse4.1', '-mavx', '-mavx2'
+    '-DSMALL_MATRIX_OPT', '-Wall', '-DF_OTHERS_GFORT',
+    '-DSMP_SERVER', '-DNO_WARMUP', '-DMAX_CPU_NUMBER=12',
   ]},
   { 'base': 'openblas_get_num_procs', 'source': 'openblas_get_num_procs.c' },
   { 'base': 'openblas_get_parallel', 'source': 'openblas_get_parallel.c' },
