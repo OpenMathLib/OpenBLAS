@@ -34,6 +34,7 @@ _test_input_array = {
 }
 
 _test_runner = executable('test_runner', sources: ['test_runner.c'], install: false)
+ctest_inc = _inc + [include_directories('.')]
 
 foreach lvl : ['l1', 'l2', 'l3', 'l3_3m']
     details = _test_input_array[lvl]
@@ -51,8 +52,8 @@ foreach lvl : ['l1', 'l2', 'l3', 'l3_3m']
             sources: mapped_sources + [config_h],
             link_with: [_openblas],
             dependencies: [dependency('threads')],
-            include_directories: include_directories('..'),
-            c_args: ['-I..', '-I.', '-DADD_', '-DCBLAS'],
+            include_directories: ctest_inc,
+            c_args: ['-DADD_', '-DCBLAS'],
         )
 
         _args = [f'./@op_name@']
