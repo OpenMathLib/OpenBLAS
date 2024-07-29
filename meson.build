@@ -27,7 +27,8 @@ fc_id = fc.get_id()
 
 # Common args
 _args = []
-_cargs = ['-DMAX_PARALLEL_NUMBER=1']
+# TODO(rg): Max parallel number should be conditional
+_cargs = ['-DMAX_PARALLEL_NUMBER=1', f'-DVERSION=@openblas_version@']
 _fargs = []
 
 # System configuration
