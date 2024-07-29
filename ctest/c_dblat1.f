@@ -44,9 +44,12 @@
             CALL CHECK3(SFAC)
          END IF
 *        -- Print
-         IF (PASS) WRITE (NOUT,99998)
+         IF (PASS) THEN
+            WRITE (NOUT,99998)
+         ELSE
+            CALL ABORT
+        END IF
    20 CONTINUE
-      STOP
 *
 99999 FORMAT (' Real CBLAS Test Program Results',/1X)
 99998 FORMAT ('                                    ----- PASS -----')
@@ -136,7 +139,7 @@
             CALL STEST1(SS,DS1(K),DS1(K),SFAC)
          ELSE
             WRITE (NOUT,*) ' Shouldn''t be here in CHECK0'
-            STOP
+            CALL ABORT
          END IF
    20 CONTINUE
    40 RETURN
@@ -229,7 +232,7 @@
                CALL ITEST1(IDAMAXTEST(N,SX,INCX),ITRUE2(NP1))
             ELSE
                WRITE (NOUT,*) ' Shouldn''t be here in CHECK1'
-               STOP
+               CALL ABORT
             END IF
    60    CONTINUE
    80 CONTINUE
@@ -384,7 +387,7 @@
                CALL STEST(LENY,SY,STY,SSIZE2(1,1),1.0D0)
             ELSE
                WRITE (NOUT,*) ' Shouldn''t be here in CHECK2'
-               STOP
+               CALL ABORT
             END IF
   100    CONTINUE
   120 CONTINUE
@@ -472,7 +475,7 @@
    70          CONTINUE      
                ELSE
                WRITE (NOUT,*) ' Shouldn''t be here in CHECK3'
-               STOP
+               CALL ABORT
             END IF
    40    CONTINUE
    60 CONTINUE
