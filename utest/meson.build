@@ -84,12 +84,14 @@ sources_utest_ext = [
     dir_ext / 'test_csbmv.c',
 ]
 
+utest_inc = _inc + [include_directories('.')]
+
 openblas_utest_exec = executable(
     'openblas_utest',
     sources: sources_utest,
     link_with: _openblas,
     dependencies: [dependency('threads')],
-    include_directories: ['..', '.'],
+    include_directories: utest_inc,
     c_args: _cargs,
 )
 
@@ -98,8 +100,11 @@ openblas_utest_ext_exec = executable(
     sources: sources_utest_ext,
     link_with: _openblas,
     dependencies: [dependency('threads')],
-    include_directories: ['..', '.'],
-    c_args: _cargs,
+    # This hack is required as `utest/test_extensions/common.c` needs
+    # `common.h` from the source root, not `utest/test_extensions` directory
+    # one. Also, `config.h` is needed that lives in the build directory.
+    implicit_include_directories: false,
+    c_args: _cargs + ['-I..', '-I../build'],
 )
 
 test('openblas_utest_tests', openblas_utest_exec)

@@ -468,7 +468,7 @@ foreach _kop : driver_kops
         _ext_cargs = []
 
         # Check ext_mappings first
-        if ext_mappings.has_key(ext)
+        if ext_mappings.has_key(ext) and (not ext_mappings[ext].has_key('except') or base not in ext_mappings[ext]['except'])
           extmap = ext_mappings[ext]
           if extmap.has_key('def')
             foreach _d : extmap['def']
@@ -482,7 +482,7 @@ foreach _kop : driver_kops
           endif
         else
           # Fallback to ext_mappings_l2
-          foreach ext_map : ext_mappings_l2
+          foreach ext_map : ext_mappings_l2 + ext_mappings_l3
             if ext_map['ext'] == ext and mode in ext_map['for']
               if ext_map.has_key('def')
                 foreach _d : ext_map['def']

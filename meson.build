@@ -245,18 +245,42 @@ ext_mappings = {
     # TODO(rg): Does that, i.e. having (un)used symbols (un)defined matter?
     '': {}, # special case
     '_k': {},
-    '_U': {'undef': ['LOWER', 'CONJ', 'XCONJ']},
+    '_U': {
+      'undef': ['LOWER', 'CONJ', 'XCONJ'],
+      'except': [
+        '?hemv', '?hemv_thread', '?hpmv', '?hpmv_thread', '?her', '?her_thread',
+        '?her2', '?her2_thread', '?hpr2', '?hpr2_thread',
+      ],
+    },
     '_C': {'def': ['CONJ'], 'undef': ['XCONJ']},
-    # '_V': {'def': ['XCONJ'], 'undef': ['CONJ']},
     '_D': {'def': ['CONJ', 'XCONJ']},
-    '_L': {'def': ['LOWER']},
+    '_L': {
+      'def': ['LOWER'],
+      'except': [
+        '?hemv', '?hemv_thread', '?hpmv', '?hpmv_thread', '?her', '?her_thread',
+        '?her2', '?her2_thread', '?hpr2', '?hpr2_thread',
+      ],
+    },
     '_LN': {'def': ['LEFT'], 'undef': ['TRANSA'],
             'except': ['?syrk', '?syrk_thread',
                        '?syr2k', '?herk', '?herk_kernel',
-                      '?trsm_kernel']},
+                       '?trsm_kernel', '?her2k', '?her2k_kernel']},
     # Handle HEMV and HEMVREV better
-    '_V': {'def': ['HEMV', 'HEMVREV', 'XCONJ'], 'undef': ['LOWER', 'CONJ']},
-    '_M': {'def': ['HEMV', 'HEMVREV', 'LOWER']},
+    '_V': {
+      'def': ['HEMV', 'HEMVREV', 'XCONJ'],
+      'undef': ['LOWER', 'CONJ'],
+      'except': [
+        '?hemv', '?hemv_thread', '?hpmv', '?hpmv_thread', '?her', '?her_thread',
+        '?her2', '?her2_thread', '?hpr2', '?hpr2_thread',
+      ],
+    },
+    '_M': {
+      'def': ['HEMV', 'HEMVREV', 'LOWER'],
+      'except': [
+        '?hemv', '?hemv_thread', '?hpmv', '?hpmv_thread', '?her', '?her_thread',
+        '?her2', '?her2_thread', '?hpr2', '?hpr2_thread',
+      ],
+    },
     '_n': {'undef': ['TRANS', 'TRANSA', 'CONJ', 'XCONJ']},
     '_t': {'def': ['TRANS', 'TRANSA'], 'undef': ['CONJ', 'XCONJ']},
     '_r': {'def': ['CONJ'], 'undef': ['TRANS', 'TRANSA', 'XCONJ']},
@@ -298,30 +322,30 @@ ext_mappings = {
 }
 
 ext_mappings_l2 = [
-    {'ext': '_NUU', 'def': ['UNIT'], 'undef': ['TRANSA'], 'for': ['s', 'd']},
-    {'ext': '_NUN', 'undef': ['TRANSA', 'UNIT'], 'for': ['s', 'd']},
-    {'ext': '_TLU', 'def': ['UNIT', 'TRANSA'], 'for': ['s', 'd']},
-    {'ext': '_TLN', 'def': ['TRANSA'], 'undef': ['UNIT'], 'for': ['s', 'd']},
-    {'ext': '_NLU', 'def': ['UNIT'], 'undef': ['TRANSA'], 'for': ['s', 'd']},
-    {'ext': '_NLN', 'undef': ['TRANSA', 'UNIT'], 'for': ['s', 'd']},
-    {'ext': '_TUU', 'def': ['UNIT', 'TRANSA'], 'for': ['s', 'd']},
-    {'ext': '_TUN', 'def': ['TRANSA'], 'undef': ['UNIT'], 'for': ['s', 'd']},
-    {'ext': '_NUU', 'def': ['UNIT', 'TRANSA=1'], 'for': ['c', 'x', 'z']},
-    {'ext': '_NUN', 'def': ['TRANSA=1'], 'undef': ['UNIT'], 'for': ['c', 'x', 'z']},
-    {'ext': '_TLU', 'def': ['UNIT', 'TRANSA=2'], 'for': ['c', 'x', 'z']},
-    {'ext': '_TLN', 'def': ['TRANSA=2'], 'undef': ['UNIT'], 'for': ['c', 'x', 'z']},
-    {'ext': '_RLU', 'def': ['UNIT', 'TRANSA=3'], 'for': ['c', 'x', 'z']},
-    {'ext': '_RLN', 'def': ['TRANSA=3'], 'undef': ['UNIT'], 'for': ['c', 'x', 'z']},
-    {'ext': '_CLU', 'def': ['UNIT', 'TRANSA=4'], 'for': ['c', 'x', 'z']},
-    {'ext': '_CLN', 'def': ['TRANSA=4'], 'undef': ['UNIT'], 'for': ['c', 'x', 'z']},
-    {'ext': '_NLU', 'def': ['UNIT', 'TRANSA=1'], 'for': ['c', 'x', 'z']},
-    {'ext': '_NLN', 'def': ['TRANSA=1'], 'undef': ['UNIT'], 'for': ['c', 'x', 'z']},
-    {'ext': '_TUU', 'def': ['UNIT', 'TRANSA=2'], 'for': ['s', 'd']},
-    {'ext': '_TUN', 'def': ['TRANSA=2'], 'undef': ['UNIT'], 'for': ['s', 'd']},
-    {'ext': '_RUU', 'def': ['UNIT', 'TRANSA=3'], 'for': ['c', 'x', 'z']},
-    {'ext': '_RUN', 'def': ['TRANSA=3'], 'undef': ['UNIT'], 'for': ['c', 'x', 'z']},
-    {'ext': '_CUU', 'def': ['UNIT', 'TRANSA=4'], 'for': ['c', 'x', 'z']},
-    {'ext': '_CUN', 'def': ['TRANSA=4'], 'undef': ['UNIT'], 'for': ['c', 'x', 'z']}
+    {'ext': '_NUU', 'def': ['UNIT'], 'undef': ['TRANSA', 'LOWER'], 'for': ['s', 'd']},
+    {'ext': '_NUN', 'undef': ['TRANSA', 'UNIT', 'LOWER'], 'for': ['s', 'd']},
+    {'ext': '_TLU', 'def': ['UNIT', 'TRANSA', 'LOWER'], 'for': ['s', 'd']},
+    {'ext': '_TLN', 'def': ['TRANSA', 'LOWER'], 'undef': ['UNIT'], 'for': ['s', 'd']},
+    {'ext': '_NLU', 'def': ['UNIT', 'LOWER'], 'undef': ['TRANSA'], 'for': ['s', 'd']},
+    {'ext': '_NLN', 'def': ['LOWER'], 'undef': ['TRANSA', 'UNIT'], 'for': ['s', 'd']},
+    {'ext': '_TUU', 'def': ['UNIT', 'TRANSA'], 'undef': ['LOWER'], 'for': ['s', 'd']},
+    {'ext': '_TUN', 'def': ['TRANSA'], 'undef': ['UNIT', 'LOWER'], 'for': ['s', 'd']},
+    {'ext': '_NUU', 'def': ['UNIT', 'TRANSA=1'], 'undef': ['LOWER'], 'for': ['c', 'x', 'z']},
+    {'ext': '_NUN', 'def': ['TRANSA=1'], 'undef': ['UNIT', 'LOWER'], 'for': ['c', 'x', 'z']},
+    {'ext': '_TLU', 'def': ['UNIT', 'TRANSA=2', 'LOWER'], 'for': ['c', 'x', 'z']},
+    {'ext': '_TLN', 'def': ['TRANSA=2', 'LOWER'], 'undef': ['UNIT'], 'for': ['c', 'x', 'z']},
+    {'ext': '_RLU', 'def': ['UNIT', 'TRANSA=3', 'LOWER'], 'for': ['c', 'x', 'z']},
+    {'ext': '_RLN', 'def': ['TRANSA=3', 'LOWER'], 'undef': ['UNIT'], 'for': ['c', 'x', 'z']},
+    {'ext': '_CLU', 'def': ['UNIT', 'TRANSA=4', 'LOWER'], 'for': ['c', 'x', 'z']},
+    {'ext': '_CLN', 'def': ['TRANSA=4', 'LOWER'], 'undef': ['UNIT'], 'for': ['c', 'x', 'z']},
+    {'ext': '_NLU', 'def': ['UNIT', 'TRANSA=1', 'LOWER'], 'for': ['c', 'x', 'z']},
+    {'ext': '_NLN', 'def': ['TRANSA=1', 'LOWER'], 'undef': ['UNIT'], 'for': ['c', 'x', 'z']},
+    {'ext': '_TUU', 'def': ['UNIT', 'TRANSA=2'], 'undef': ['LOWER'], 'for': ['c', 'x', 'z']},
+    {'ext': '_TUN', 'def': ['TRANSA=2'], 'undef': ['UNIT', 'LOWER'], 'for': ['c', 'x', 'z']},
+    {'ext': '_RUU', 'def': ['UNIT', 'TRANSA=3'], 'undef': ['LOWER'], 'for': ['c', 'x', 'z']},
+    {'ext': '_RUN', 'def': ['TRANSA=3'], 'undef': ['UNIT', 'LOWER'], 'for': ['c', 'x', 'z']},
+    {'ext': '_CUU', 'def': ['UNIT', 'TRANSA=4'], 'undef': ['LOWER'], 'for': ['c', 'x', 'z']},
+    {'ext': '_CUN', 'def': ['TRANSA=4'], 'undef': ['UNIT', 'LOWER'], 'for': ['c', 'x', 'z']}
 ]
 
 ext_mappings_l3 = [
@@ -384,6 +408,11 @@ ext_mappings_l3 = [
  {'ext': '_LT', 'def': ['TRANS', 'LOWER'], 'undef': ['CONJ'], 'for': ['s', 'd', 'c', 'z']},
  {'ext': '_RU', 'def': ['RSIDE', 'NC'], 'undef': ['LOWER'], 'for': ['c', 'z']},
  {'ext': '_RL', 'def': ['RSIDE', 'NC', 'LOWER'], 'for': ['c', 'z']},
+ # hem hemv_thread
+ {'ext': '_U', 'def': ['HEMV', 'HER'], 'undef': ['LOWER'], 'for': ['c', 'z']},
+ {'ext': '_L', 'def': ['HEMV', 'HER', 'LOWER'], 'for': ['c', 'z']},
+ {'ext': '_V', 'def': ['HEMVREV', 'HERREV'], 'undef': ['LOWER'], 'for': ['c', 'z']},
+ {'ext': '_M', 'def': ['HEMVREV', 'HERREV', 'LOWER'], 'for': ['c', 'z']}
 ]
 
  # cc -c -O2 -DSMALL_MATRIX_OPT -DMAX_STACK_ALLOC=2048 -Wall -m64 -DF_INTERFACE_GFORT -fPIC -DSMP_SERVER -DNO_WARMUP -DMAX_CPU_NUMBER=12 -DMAX_PARALLEL_NUMBER=1 -DBUILD_SINGLE=1 -DBUILD_DOUBLE=1 -DBUILD_COMPLEX=1 -DBUILD_COMPLEX16=1 -DVERSION=\"0.3.26.dev\" -msse3 -mssse3 -msse4.1 -mavx -mavx2 -mavx2 -UASMNAME -UASMFNAME -UNAME -UCNAME -UCHAR_NAME -UCHAR_CNAME -DASMNAME=strmm_RTUU -DASMFNAME=strmm_RTUU_ -DNAME=strmm_RTUU_ -DCNAME=strmm_RTUU -DCHAR_NAME=\"strmm_RTUU_\" -DCHAR_CNAME=\"strmm_RTUU\" -DNO_AFFINITY -I../.. -UDOUBLE  -UCOMPLEX -UCOMPLEX -UDOUBLE -DTRANSA -DUPPER -DUNIT trmm_R.c -o strmm_RTUU.o
@@ -403,6 +432,7 @@ symb_defs = {
     '?geru':  {'undef': ['CONJ']},
     '?gerc':  {'def': ['CONJ']},
     '?hemm':  {'def': ['HEMM']},
+    '?herk': {'def': ['HEMM']},
     '?her2k':  {'def': ['HEMM']},
     '?gemm3m':  {'def': ['GEMM3M']},
     '?symm3m':  {'def': ['GEMM3M']},

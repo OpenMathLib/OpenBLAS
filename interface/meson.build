@@ -349,7 +349,6 @@ _blas_roots = [
   },
   { 'base': '?herk', '_types': ['c', 'z', 'x'],
     'fname': 'syrk.c',
-    'addl': ['-DHEMM'],
     'cblas': true,
   },
   { 'base': '?her2k', '_types': ['c', 'z', 'x'],

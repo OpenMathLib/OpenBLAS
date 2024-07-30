@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 
 int main(int argc, char *argv[]) {
     if (argc != 2 && argc != 3) {
@@ -16,7 +15,7 @@ int main(int argc, char *argv[]) {
     }
 
     int result = system(command);
-    if (result != 0) {
+    if (result != EXIT_SUCCESS) {
         fprintf(stderr, "Error: Command '%s' failed with return code %d.\n", command, result);
         return EXIT_FAILURE;
     }
