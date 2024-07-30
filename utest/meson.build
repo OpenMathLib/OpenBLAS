@@ -104,8 +104,7 @@ openblas_utest_ext_exec = executable(
     # `common.h` from the source root, not `utest/test_extensions` directory
     # one. Also, `config.h` is needed that lives in the build directory.
     implicit_include_directories: false,
-    include_directories: _inc,
-    c_args: _cargs + [f'-I@global_bld_dir@'],
+    c_args: _cargs + [f'-I@prj_src_dir@', f'-I@prj_bld_dir@'],
 )
 
 test('openblas_utest_tests', openblas_utest_exec)
