@@ -24,6 +24,7 @@ cc = meson.get_compiler('c')
 fc = meson.get_compiler('fortran')
 cc_id = cc.get_id()
 fc_id = fc.get_id()
+global_bld_dir = meson.global_build_root()
 
 # Common args
 _args = []
