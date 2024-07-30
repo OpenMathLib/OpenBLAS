@@ -115,6 +115,7 @@ int CNAME(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, FLOAT da, FLOAT *x,
           x[i] = 0.0;
         else
           x[i] = NAN;
+        j++;
         }
       }
     } else {
