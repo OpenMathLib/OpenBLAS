@@ -1,7 +1,7 @@
 pipeline {
     agent { 
         docker {
-            image 'osuosl/ubuntu-ppc64le'
+            image 'osuosl/ubuntu-ppc64le:22.04'
         }
     }
     stages {
