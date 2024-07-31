@@ -356,7 +356,10 @@ int CNAME(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, FLOAT da_r, FLOAT da_i,
       while (j < n) {
 
         x[i] = res;
-        x[i + 1] = res;
+	if (!isinf(x[i + 1]))
+          x[i + 1] = res;
+	else
+	  x[i + 1] = NAN;
         i += 2;
         j++;
 
