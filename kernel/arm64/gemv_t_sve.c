@@ -59,20 +59,46 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1, FLOAT alpha, FLOAT *a, BLASLO
   a_ptr = a;
 
   if (inc_x == 1) {
+    svbool_t pg_true = SV_TRUE();
     uint64_t sve_size = SV_COUNT();
+    uint64_t sve_size2 = sve_size * 2;
+    BLASLONG m1 = m & -sve_size;
+    BLASLONG m2 = m & -sve_size2;
+
     for (j = 0; j < n; j++) {
+      BLASLONG i = 0;
+
+      SV_TYPE temp_vec_v2_0 = SV_DUP(0.0);
+      SV_TYPE temp_vec_v2_1 = SV_DUP(0.0);
+      for (; i < m2; i += sve_size2) {
+        SV_TYPE a_vec0 = svld1(pg_true, a_ptr + i);
+        SV_TYPE x_vec0 = svld1(pg_true, x + i);
+        SV_TYPE a_vec1 = svld1(pg_true, a_ptr + i + sve_size);
+        SV_TYPE x_vec1 = svld1(pg_true, x + i + sve_size);
+        temp_vec_v2_0 = svmla_m(pg_true, temp_vec_v2_0, a_vec0, x_vec0);
+        temp_vec_v2_1 = svmla_m(pg_true, temp_vec_v2_1, a_vec1, x_vec1);
+      }
+
+      SV_TYPE temp_vec_v1 = SV_DUP(0.0);
+      for (; i < m1; i += sve_size) {
+        SV_TYPE a_vec0 = svld1(pg_true, a_ptr + i);
+        SV_TYPE x_vec0 = svld1(pg_true, x + i);
+        temp_vec_v1 = svmla_m(pg_true, temp_vec_v1, a_vec0, x_vec0);
+      }
+
       SV_TYPE temp_vec = SV_DUP(0.0);
-      i = 0;
-      svbool_t pg = SV_WHILE(i, m);
-      while (svptest_any(SV_TRUE(), pg)) {
+      for (; i < m; i += sve_size) {
+        svbool_t pg = SV_WHILE(i, m);
         SV_TYPE a_vec = svld1(pg, a_ptr + i);
         SV_TYPE x_vec = svld1(pg, x + i);
         temp_vec = svmla_m(pg, temp_vec, a_vec, x_vec);
-        i += sve_size;
-        pg = SV_WHILE(i, m);
       }
-      temp = svaddv(SV_TRUE(), temp_vec);
-      y[iy] += alpha * temp;
+
+      y[iy] += alpha * (
+        (svaddv(SV_TRUE(), temp_vec_v2_0) + svaddv(SV_TRUE(), temp_vec)) +
+        (svaddv(SV_TRUE(), temp_vec_v2_1) + svaddv(SV_TRUE(), temp_vec_v1))
+      );
+
       iy += inc_y;
       a_ptr += lda;
     }
