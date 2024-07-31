@@ -397,7 +397,6 @@ int CNAME(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, FLOAT da_r, FLOAT da_i,
       while (j < n) {
 
         temp0 = da_r * x[i];
-	if (isinf(x[i]))
         x[i + 1] = da_r * x[i + 1];
         x[i] = temp0;
         i += 2;
