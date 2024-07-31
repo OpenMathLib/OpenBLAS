@@ -234,12 +234,23 @@ int CNAME(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, FLOAT da_r, FLOAT da_i,
       } else {
 
         while (j < n1) {
-
-          temp0 = -da_i * x[i + 1];
-          x[i + 1] = da_i * x[i];
+          if (isnan(x[i]) || isinf(x[i]))
+            temp0   = NAN;
+	  else
+	    temp0 = -da_i * x[i + 1];
+	  if (!isinf(x[i + 1]))
+            x[i + 1] = da_i * x[i];
+	  else
+	    x[i + 1] = NAN;
           x[i] = temp0;
-          temp1 = -da_i * x[i + 1 + inc_x];
-          x[i + 1 + inc_x] = da_i * x[i + inc_x];
+	  if (isnan(x[i+inc_x]) || isinf(x[i+inc_x]))
+	    temp1 = NAN;
+	  else
+	    temp1 = -da_i * x[i + 1 + inc_x];
+	  if (!isinf(x[i + 1 + inc_x]))
+            x[i + 1 + inc_x] = da_i * x[i + inc_x];
+	  else
+	    x[i + 1 + inc_x] = NAN;
           x[i + inc_x] = temp1;
           i += 2 * inc_x;
           j += 2;
@@ -247,9 +258,14 @@ int CNAME(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, FLOAT da_r, FLOAT da_i,
         }
 
         while (j < n) {
-
-          temp0 = -da_i * x[i + 1];
-          x[i + 1] = da_i * x[i];
+	  if (isnan(x[i]) || isinf(x[i]))
+	    temp0 = NAN;
+	  else
+            temp0 = -da_i * x[i + 1];
+	  if (isinf(x[i + 1]))
+	    x[i + 1] = NAN;
+	  else
+            x[i + 1] = da_i * x[i];
           x[i] = temp0;
           i += inc_x;
           j++;
@@ -332,26 +348,42 @@ int CNAME(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, FLOAT da_r, FLOAT da_i,
     j = n1;
   }
 
-  if (da_r == 0.0) {
+  if (da_r == 0.0 || isnan(da_r)) {
 
     if (da_i == 0.0) {
-
+      float res = 0.0;
+      if (isnan(da_r)) res = da_r;
       while (j < n) {
 
-        x[i] = 0.0;
-        x[i + 1] = 0.0;
+        x[i] = res;
+        x[i + 1] = res;
         i += 2;
         j++;
 
       }
+    } else if (isinf(da_r)) {
+        while(j < n)
+        {
+
+	  x[i]= NAN;
+          x[i+1] = da_r;
+          i += 2 ;
+          j++;
+
+        }
 
     } else {
 
       while (j < n) {
 
         temp0 = -da_i * x[i + 1];
-        x[i + 1] = da_i * x[i];
-        x[i] = temp0;
+	if (isinf(x[i])) temp0 = NAN;
+	if (!isinf(x[i + 1]))
+          x[i + 1] = da_i * x[i];
+	else
+	  x[i + 1] = NAN;
+	if (x[i] == x[i])
+          x[i] = temp0;
         i += 2;
         j++;
 
