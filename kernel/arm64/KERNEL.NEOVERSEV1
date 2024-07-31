@@ -1,1 +1,4 @@
 include $(KERNELDIR)/KERNEL.ARMV8SVE
+
+SGEMVTKERNEL = gemv_t_sve.c
+DGEMVTKERNEL = gemv_t_sve.c
