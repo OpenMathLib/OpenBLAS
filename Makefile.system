@@ -277,6 +277,12 @@ endif
 ifeq ($(ARCH), arm64)
 GEMM_GEMV_FORWARD = 1
 endif
+ifeq($(ARCH), riscv)
+GEMM_GEMV_FORWARD = 1
+endif
+ifeq ($(ARCH), power)
+GEMM_GEMV_FORWARD = 1
+endif
 
 ifeq ($(SMALL_MATRIX_OPT), 1)
 CCOMMON_OPT += -DSMALL_MATRIX_OPT
