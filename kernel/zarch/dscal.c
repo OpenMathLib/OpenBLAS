@@ -96,28 +96,28 @@ int CNAME(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, FLOAT da, FLOAT *x,
   if (inc_x == 1) {
 
     if (da == 0.0) {
+    
       if (dummy2 == 0) {
-      BLASLONG n1 = n & -16;
-      if (n1 > 0) {
+        BLASLONG n1 = n & -16;
+        if (n1 > 0) {
+          dscal_kernel_16_zero(n1, x);
+          j = n1;
+        }
 
-        dscal_kernel_16_zero(n1, x);
-        j = n1;
-      }
-
-      while (j < n) {
-
-        x[j] = 0.0;
-        j++;
-      }
-    } else {
-      while (j < n) {
-        if (!isnan(x[i])&& !isinf(x[i]))
-          x[i] = 0.0;
-        else
-          x[i] = NAN;
-        j++;
+        while (j < n) {
+          x[j] = 0.0;
+          j++;
+        }
+      } else {
+        while (j < n) {
+          if (isfinite(x[j]))
+            x[j] = 0.0;
+          else
+            x[j] = NAN;
+          j++;
         }
       }
+      
     } else {
 
       BLASLONG n1 = n & -16;
