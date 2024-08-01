@@ -277,7 +277,7 @@ endif
 ifeq ($(ARCH), arm64)
 GEMM_GEMV_FORWARD = 1
 endif
-ifeq($(ARCH), riscv)
+ifeq ($(ARCH), riscv)
 GEMM_GEMV_FORWARD = 1
 endif
 ifeq ($(ARCH), power)
