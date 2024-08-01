@@ -67,10 +67,18 @@ max_stack_alloc = get_option('max_stack_alloc')
 quad_prec = get_option('quad_precision')
 exprecision = get_option('exprecision')
 
-if host_machine.system() == 'linux'
+is_linux = host_machine.system() == 'linux'
+is_darwin = host_machine.system() == 'darwin'
+
+if is_linux
     no_affinity = true
+    asm_name_prefix = ''
+elif is_darwin
+    no_affinity = true
+    asm_name_prefix = '_'
 else
     no_affinity = false
+    asm_name_prefix = ''
 endif
 
 _check_prefix = []

@@ -1,6 +1,5 @@
 name: meson build
 
-#on: [push, pull_request]
 on:
   push:
     branches:
@@ -21,11 +20,12 @@ permissions:
 jobs:
   build:
     if: "github.repository == 'HaoZeke/OpenBLAS'"
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
 
     strategy:
       fail-fast: false
       matrix:
+        os: [ubuntu-latest, macos-latest]
         build: [meson]
         fortran: [gfortran]
         openmp: [0]
