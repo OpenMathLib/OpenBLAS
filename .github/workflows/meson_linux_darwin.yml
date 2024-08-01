@@ -1,6 +1,5 @@
 name: meson build
 
-#on: [push, pull_request]
 on:
   push:
     branches:
@@ -21,11 +20,12 @@ permissions:
 jobs:
   build:
     if: "github.repository == 'HaoZeke/OpenBLAS'"
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
 
     strategy:
       fail-fast: false
       matrix:
+        os: [ubuntu-latest, macos-13]
         build: [meson]
         fortran: [gfortran]
         openmp: [0]
@@ -37,7 +37,14 @@ jobs:
 
       - name: Print system information
         run: |
-          cat /proc/cpuinfo
+          if [ "$RUNNER_OS" == "Linux" ]; then
+            cat /proc/cpuinfo
+          elif [ "$RUNNER_OS" == "macOS" ]; then
+            sysctl -a | grep machdep.cpu
+          else
+            echo "::error::$RUNNER_OS not supported"
+            exit 1
+          fi
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
@@ -46,7 +53,17 @@ jobs:
 
       - name: Install dependencies
         run: |
-          sudo apt-get install -y gfortran libtinfo5
+          if [ "$RUNNER_OS" == "Linux" ]; then
+            sudo apt-get install -y gfortran libtinfo5
+          elif [ "$RUNNER_OS" == "macOS" ]; then
+            # It looks like "gfortran" isn't working correctly unless "gcc" is re-installed.
+            brew reinstall gcc
+            brew install coreutils
+            brew install llvm
+          else
+            echo "::error::$RUNNER_OS not supported"
+            exit 1
+          fi
       - name: Install packages
         run: |
           python -m pip install meson ninja

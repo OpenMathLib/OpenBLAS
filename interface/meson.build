@@ -626,12 +626,12 @@ foreach conf : _blas_roots
         sources: [conf['fname'], config_h],
         include_directories: _inc,
         c_args: compiler_args + [
-          f'-DASMNAME=@sym_name@',
-          f'-DASMFNAME=@sym_underscored@',
+          f'-DASMNAME=@asm_name_prefix@@sym_name@',
+          f'-DASMFNAME=@asm_name_prefix@@sym_underscored@',
           f'-DNAME=@sym_underscored@',
           f'-DCNAME=@sym_name@',
           f'-DCHAR_NAME="@sym_underscored@"',
-          f'-DCHAR_CNAME="@sym_name@"'
+          f'-DCHAR_CNAME="@sym_name@"',
         ]
     )
     _interface_libs += lib
@@ -649,12 +649,12 @@ foreach conf : _blas_roots
             include_directories: _inc,
             c_args: compiler_args + [
               '-DCBLAS',
-              f'-DASMNAME=@cblas_sym_name@',
-              f'-DASMFNAME=@cblas_sym_underscored@',
+              f'-DASMNAME=@asm_name_prefix@@cblas_sym_name@',
+              f'-DASMFNAME=@asm_name_prefix@@cblas_sym_underscored@',
               f'-DNAME=@cblas_sym_underscored@',
               f'-DCNAME=@cblas_sym_name@',
               f'-DCHAR_NAME="@cblas_sym_underscored@"',
-              f'-DCHAR_CNAME="@cblas_sym_name@"'
+              f'-DCHAR_CNAME="@cblas_sym_name@"',
             ]
         )
         _interface_libs += cblas_lib
