@@ -57,19 +57,24 @@
 #ifdef XDOUBLE
 	movl	44(%esp),%edi
 	movl	48(%esp),%esi
+	movl    64(%esp),%ecx
 #elif defined(DOUBLE)
 	movl	36(%esp),%edi
 	movl	40(%esp),%esi
+	movl	56(%esp),%ecx
 #else
 	movl	32(%esp),%edi
 	movl	36(%esp),%esi
+	movl	52(%esp),%ecx
 #endif
 
 	ftst
 	fnstsw	%ax
 	andb	$68, %ah
-//	je	.L300		# Alpha != ZERO
-	jmp	.L300
+	je	.L300		# Alpha != ZERO
+
+	cmpl	$1,%ecx		# dummy2 flag
+	je	.L300
 
 /* Alpha == ZERO */
 	cmpl	$1,%esi

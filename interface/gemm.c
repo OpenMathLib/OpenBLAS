@@ -1,4 +1,5 @@
 /*********************************************************************/
+/* Copyright 2024 The OpenBLAS Project                               */
 /* Copyright 2009, 2010 The University of Texas at Austin.           */
 /* All rights reserved.                                              */
 /*                                                                   */
@@ -47,12 +48,16 @@
 #define SMP_THRESHOLD_MIN 65536.0
 #ifdef XDOUBLE
 #define ERROR_NAME "QGEMM "
+#define GEMV BLASFUNC(qgemv)
 #elif defined(DOUBLE)
 #define ERROR_NAME "DGEMM "
+#define GEMV BLASFUNC(dgemv)
 #elif defined(BFLOAT16)
 #define ERROR_NAME "SBGEMM "
+#define GEMV BLASFUNC(sbgemv)
 #else
 #define ERROR_NAME "SGEMM "
+#define GEMV BLASFUNC(sgemv)
 #endif
 #else
 #define SMP_THRESHOLD_MIN 8192.0
@@ -491,6 +496,52 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_TRANSPOSE TransA, enum CBLAS_TRANS
 #if 0
   fprintf(stderr, "m = %4d  n = %d  k = %d  lda = %4d  ldb = %4d  ldc = %4d\n",
 	 args.m, args.n, args.k, args.lda, args.ldb, args.ldc);
+#endif
+
+#if defined(GEMM_GEMV_FORWARD) && !defined(GEMM3M) && !defined(COMPLEX)
+  // Check if we can convert GEMM -> GEMV
+  if (args.k != 0) {
+    if (args.n == 1) {
+      blasint inc_x = 1;
+      blasint inc_y = 1;
+      // These were passed in as blasint, but the struct translates them to blaslong
+      blasint m = args.m;
+      blasint n = args.k;
+      blasint lda = args.lda;
+      // Create new transpose parameters
+      char NT = 'N';
+      if (transa & 1) {
+        NT = 'T';
+        m = args.k;
+        n = args.m;
+      }
+      if (transb & 1) {
+        inc_x = args.ldb;
+      }
+      GEMV(&NT, &m, &n, args.alpha, args.a, &lda, args.b, &inc_x, args.beta, args.c, &inc_y);
+      return;
+    }
+    if (args.m == 1) {
+      blasint inc_x = args.lda;
+      blasint inc_y = args.ldc;
+      // These were passed in as blasint, but the struct translates them to blaslong
+      blasint m = args.k;
+      blasint n = args.n;
+      blasint ldb = args.ldb;
+      // Create new transpose parameters
+      char NT = 'T';
+      if (transa & 1) {
+        inc_x = 1;
+      }
+      if (transb & 1) {
+        NT = 'N';
+        m = args.n;
+        n = args.k;
+      }
+      GEMV(&NT, &m, &n, args.alpha, args.b, &ldb, args.a, &inc_x, args.beta, args.c, &inc_y);
+      return;
+    }
+  }
 #endif
 
   IDEBUG_START;

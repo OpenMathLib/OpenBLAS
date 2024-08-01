@@ -1,5 +1,5 @@
 /***************************************************************************
-Copyright (c) 2016, The OpenBLAS Project
+Copyright (c) 2024, The OpenBLAS Project
 All rights reserved.
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -27,36 +27,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "common.h"
 
-int CNAME(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, FLOAT da, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG inc_y, FLOAT *dummy, BLASLONG dummy2)
+int CNAME(int transa, int transb, BLASLONG M, BLASLONG N, BLASLONG K, FLOAT alpha, FLOAT beta)
 {
-    BLASLONG i = 0, j = 0;
+  BLASLONG MNK = M * N * K;
 
-    // Resolved issue 4728 when the caller is {s/d}scal
-    if (da == 0.0 && dummy2 == 1)
-    {
-        while(j < n)
-        {
-            x[i] = da * x[i] ;
+#if defined(DOUBLE) // dgemm
+  if (MNK <= 64*64*64)
+    return 1;
+#else // sgemm
+  if (MNK <= 64*64*64)
+    return 1;
+#endif
 
-            i += inc_x ;
-            j++;
-        }
-    }
-    else
-    {
-        while(j < n)
-        {
-
-            if ( da == 0.0 )
-                x[i] = 0.0;
-            else
-                x[i] = da * x[i] ;
-
-            i += inc_x ;
-            j++;
-        }
-    }
-    return 0;
+  return 0;
 }
-
-

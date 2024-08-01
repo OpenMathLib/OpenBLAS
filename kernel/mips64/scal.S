@@ -48,6 +48,7 @@
 #define TEMP	$3
 
 #define XX	$5
+#define DUMMY2 	$6
 
 #define ALPHA	$f15
 
@@ -73,13 +74,13 @@
 	blez	N, .L999
 	dsll	INCX, INCX, BASE_SHIFT
 
-	CMPEQ	$fcc0, ALPHA, a1
-	NOP
+	CMPEQ	$fcc0,  ALPHA, a1
+	LDARG   DUMMY2, 8($sp)
 
 	bc1f	$fcc0, .L50
-	NOP
+	dsll    DUMMY2, DUMMY2, BASE_SHIFT
 
-	bc1t	$fcc0, .L50
+	beq     DUMMY2, TEMP, .L50 // If dummy2 == 1, do not directly copy 0
 	NOP
 
 	bne	INCX, TEMP, .L20

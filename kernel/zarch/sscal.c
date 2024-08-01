@@ -95,21 +95,31 @@ int CNAME(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, FLOAT da, FLOAT *x,
 
   if (inc_x == 1) {
 
-    if (da == 0.0) {
+    if (da == 0.0 || !isfinite(da)) {
+      if (dummy2 == 0) {
+        BLASLONG n1 = n & -32;
+        if (n1 > 0) {
 
-      BLASLONG n1 = n & -32;
-      if (n1 > 0) {
+          sscal_kernel_32_zero(n1, x);
+          j = n1;
+        }
 
-        sscal_kernel_32_zero(n1, x);
-        j = n1;
+        while (j < n) {
+
+          x[j] = 0.0;
+          j++;
+        }
+      } else {
+        float res = 0.0;
+        if (!isfinite(da)) res = NAN;
+        while (j < n) {
+          if (isfinite(x[i]))
+            x[j] = res;
+          else
+            x[j] = NAN;
+          j++;
+        }
       }
-
-      while (j < n) {
-
-        x[j] = 0.0;
-        j++;
-      }
-
     } else {
 
       BLASLONG n1 = n & -32;
@@ -126,26 +136,37 @@ int CNAME(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, FLOAT da, FLOAT *x,
 
   } else {
 
-    if (da == 0.0) {
+    if (da == 0.0 || !isfinite(da)) {
+      if (dummy2 == 0) {
+        BLASLONG n1 = n & -2;
 
-      BLASLONG n1 = n & -2;
+        while (j < n1) {
 
-      while (j < n1) {
+          x[i] = 0.0;
+          x[i + inc_x] = 0.0;
 
-        x[i] = 0.0;
-        x[i + inc_x] = 0.0;
+          i += inc_x * 2;
+          j += 2;
 
-        i += inc_x * 2;
-        j += 2;
+        }
+        while (j < n) {
 
-      }
-      while (j < n) {
-
-        x[i] = 0.0;
-        i += inc_x;
-        j++;
-      }
-
+          x[i] = 0.0;
+          i += inc_x;
+          j++;
+        }
+      } else {
+        while (j < n) {
+          float res = 0.0;
+          if (!isfinite(da)) res = NAN;
+          if (isfinite(x[i]))
+            x[i] = res;
+          else
+            x[i] = NAN;
+          i += inc_x;
+          j++;
+        }
+      }     
     } else {
       BLASLONG n1 = n & -2;
 

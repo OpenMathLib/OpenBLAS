@@ -47,9 +47,11 @@
 #ifndef __64BIT__
 #define X r6
 #define INCX r7
+#define FLAG r11
 #else
 #define X r7
 #define INCX r8
+#define FLAG r12
 #endif
 #endif
 
@@ -57,9 +59,11 @@
 #if !defined(__64BIT__) && defined(DOUBLE)
 #define X r8
 #define INCX r9
+#define FLAG r13
 #else
 #define X r7
 #define INCX r8
+#define FLAG r12
 #endif
 #endif
 
@@ -84,9 +88,12 @@
 	cmpwi	cr0, N, 0
 	blelr-	cr0
 
-//	fcmpu	cr0, FZERO, ALPHA
-//	bne-	cr0, LL(A1I1)
-	b LL(A1I1)
+	fcmpu	cr0, FZERO, ALPHA
+	bne-	cr0, LL(A1I1)
+
+	ld      FLAG,    48+64+8(SP)
+	cmpwi   cr0, FLAG, 1
+	beq-   cr0, LL(A1I1)
 
 	cmpwi	cr0, INCX, SIZE
 	bne-	cr0, LL(A0IN)

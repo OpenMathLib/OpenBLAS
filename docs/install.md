@@ -245,7 +245,7 @@ newer installed.
     On Windows 11 with Visual Studio 2022, this would be done by invoking:
     
     ```shell
-    "c:\Program Files\Microsoft Visual Studio\2022\Preview\vc\Auxiliary\Build\vcvars64.bat"
+    "c:\Program Files\Microsoft Visual Studio\2022\Community\vc\Auxiliary\Build\vcvars64.bat"
     ```
    
     With VS2019, the command should be the same (except for the year number of course).

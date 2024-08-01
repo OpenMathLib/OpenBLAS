@@ -1218,6 +1218,37 @@ endif ()
     set(ZGEMM_UNROLL_M 4)
     set(ZGEMM_UNROLL_N 4)
     set(SYMV_P 16)
+  elseif ("${TCORE}" STREQUAL "A64FX")
+    file(APPEND ${TARGET_CONF_TEMP}
+      "#define L1_CODE_SIZE\t65536\n"
+      "#define L1_CODE_LINESIZE\t256\n"
+      "#define L1_CODE_ASSOCIATIVE\t8\n"
+      "#define L1_DATA_SIZE\t32768\n"
+      "#define L1_DATA_LINESIZE\t256\n"
+      "#define L1_DATA_ASSOCIATIVE\t8\n"
+      "#define L2_SIZE\t8388608\n\n"
+      "#define L2_LINESIZE\t256\n"
+      "#define L2_ASSOCIATIVE\t8\n"
+      "#define L3_SIZE\t0\n\n"
+      "#define L3_LINESIZE\t0\n\n"
+      "#define L3_ASSOCIATIVE\t0\n\n"
+      "#define DTB_DEFAULT_ENTRIES\t64\n"
+      "#define DTB_SIZE\t4096\n"
+      "#define HAVE_VFPV4\n"
+      "#define HAVE_VFPV3\n"
+      "#define HAVE_VFP\n"
+      "#define HAVE_NEON\n"
+      "#define HAVE_SVE\n"
+      "#define ARMV8\n")
+    set(SGEMM_UNROLL_M 4)
+    set(SGEMM_UNROLL_N 8)
+    set(DGEMM_UNROLL_M 2)
+    set(DGEMM_UNROLL_N 8)
+    set(CGEMM_UNROLL_M 2)
+    set(CGEMM_UNROLL_N 4)
+    set(ZGEMM_UNROLL_M 2)
+    set(ZGEMM_UNROLL_N 4)
+    set(SYMV_P 16)
   elseif ("${TCORE}" STREQUAL "P5600")
     file(APPEND ${TARGET_CONF_TEMP}
       "#define L2_SIZE 1048576\n"
