@@ -391,7 +391,7 @@ endif ()
 if (X86_64 OR ${CORE} STREQUAL POWER10)
   set(SMALL_MATRIX_OPT TRUE)
 endif ()
-if (ARM64)
+if (ARM64 OR RISCV64 OR POWER)
   set(GEMM_GEMV_FORWARD TRUE)
 endif ()
 
