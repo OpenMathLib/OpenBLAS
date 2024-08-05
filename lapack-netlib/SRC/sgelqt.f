@@ -18,7 +18,7 @@
 *>
 *> \verbatim
 *>
-*> DGELQT computes a blocked LQ factorization of a real M-by-N matrix A
+*> SGELQT computes a blocked LQ factorization of a real M-by-N matrix A
 *> using the compact WY representation of Q.
 *> \endverbatim
 *
@@ -93,7 +93,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup doubleGEcomputational
+*> \ingroup gelqt
 *
 *> \par Further Details:
 *  =====================
