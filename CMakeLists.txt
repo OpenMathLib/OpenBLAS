@@ -256,6 +256,10 @@ if (${CMAKE_SYSTEM_NAME} MATCHES "AIX|Android|Linux|FreeBSD|OpenBSD|NetBSD|Drago
   endif()
 endif()
 
+if (APPLE AND BUILD_SHARED_LIBS)
+set(CMAKE_MACOSX_RPATH ON)
+endif()
+
 # Seems that this hack doesn't required since macOS 11 Big Sur
 if (APPLE AND BUILD_SHARED_LIBS AND CMAKE_HOST_SYSTEM_VERSION VERSION_LESS 20)
   set (CMAKE_C_USE_RESPONSE_FILE_FOR_OBJECTS 1)
