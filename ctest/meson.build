@@ -49,7 +49,7 @@ foreach lvl : ['l1', 'l2', 'l3', 'l3_3m']
 
         executable(
             op_name,
-            sources: mapped_sources + [config_h],
+            sources: mapped_sources,
             link_with: [_openblas],
             dependencies: [dependency('threads')],
             include_directories: ctest_inc,

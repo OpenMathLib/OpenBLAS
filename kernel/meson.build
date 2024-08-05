@@ -1509,7 +1509,7 @@ _is_asm = false
 foreach conf: kernel_confs
   _kern_libs += static_library(
       conf['name'],
-      [conf['src'], config_h],
+      conf['src'],
       include_directories:  _inc,
       c_args: conf['c_args'],
       # See gh discussion 13374 for why, basically .S are coded as fortran..

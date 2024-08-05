@@ -1,16 +1,9 @@
 #include <stdio.h>
 #ifndef BUILD_KERNEL
-
-#ifdef BUILD_WITH_MESON
-#include "_config_for_getarch_2nd.h"
-#else
 #include "config.h"
-#endif
-
 #else
 #include "config_kernel.h"
 #endif
-
 #if (defined(__WIN32__) || defined(__WIN64__) || defined(__CYGWIN32__) || defined(__CYGWIN64__) || defined(_WIN32) || defined(_WIN64)) && defined(__64BIT__)
 typedef long long BLASLONG;
 typedef unsigned long long BLASULONG;
