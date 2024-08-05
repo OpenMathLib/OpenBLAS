@@ -52,12 +52,12 @@ foreach op : others_ops
 
   # Add standard flags for naming conventions
   c_args += [
-    '-DASMNAME=@0@'.format(sym_name),
-    '-DASMFNAME=@0@_'.format(sym_name),
-    '-DNAME=@0@_'.format(sym_name),
-    '-DCNAME=@0@'.format(sym_name),
-    '-DCHAR_NAME="@0@_"'.format(sym_name),
-    '-DCHAR_CNAME="@0@"'.format(sym_name)
+    f'-DASMNAME=@asm_name_prefix@@sym_name@',
+    f'-DASMFNAME=@asm_name_prefix@@sym_name@_',
+    f'-DNAME=@sym_name@_',
+    f'-DCNAME=@sym_name@',
+    f'-DCHAR_NAME="@sym_name@_"',
+    f'-DCHAR_CNAME="@sym_name@"',
   ]
 
   # Append the current configuration

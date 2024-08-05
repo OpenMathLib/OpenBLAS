@@ -1486,8 +1486,8 @@ foreach _kop : base_kops
       sym_name = base.replace('?', mode) + ext
       sym_underscored = f'@sym_name@_'
       _ext_cargs += [
-        f'-DASMNAME=@sym_name@',
-        f'-DASMFNAME=@sym_underscored@',
+        f'-DASMNAME=@asm_name_prefix@@sym_name@',
+        f'-DASMFNAME=@asm_name_prefix@@sym_underscored@',
         f'-DNAME=@sym_underscored@',
         f'-DCNAME=@sym_name@',
         f'-DCHAR_NAME="@sym_underscored@"',
