@@ -109,7 +109,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup realOTHERauxiliary
+*> \ingroup lanv2
 *
 *> \par Further Details:
 *  =====================
@@ -144,7 +144,7 @@
 *     ..
 *     .. Local Scalars ..
       REAL               AA, BB, BCMAX, BCMIS, CC, CS1, DD, EPS, P, SAB,
-     $                   SAC, SCALE, SIGMA, SN1, TAU, TEMP, Z, SAFMIN, 
+     $                   SAC, SCALE, SIGMA, SN1, TAU, TEMP, Z, SAFMIN,
      $                   SAFMN2, SAFMX2
       INTEGER            COUNT
 *     ..
@@ -249,9 +249,13 @@
 *           Compute [ A  B ] = [ CS  SN ] [ AA  BB ]
 *                   [ C  D ]   [-SN  CS ] [ CC  DD ]
 *
+*           Note: Some of the multiplications are wrapped in parentheses to
+*                 prevent compilers from using FMA instructions. See
+*                 https://github.com/Reference-LAPACK/lapack/issues/1031.
+*
             A = AA*CS + CC*SN
-            B = BB*CS + DD*SN
-            C = -AA*SN + CC*CS
+            B = ( BB*CS ) + ( DD*SN )
+            C = -( AA*SN ) + ( CC*CS )
             D = -BB*SN + DD*CS
 *
             TEMP = HALF*( A+D )
