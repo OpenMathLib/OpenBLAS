@@ -1,5 +1,4 @@
 sources_utest = [
-    config_h,
     'utest_main.c',
     'test_min.c',
     'test_amax.c',
@@ -18,7 +17,6 @@ sources_utest = [
 
 dir_ext = 'test_extensions'
 sources_utest_ext = [
-    config_h,
     'utest_main.c',
     dir_ext / 'xerbla.c',
     dir_ext / 'common.c',

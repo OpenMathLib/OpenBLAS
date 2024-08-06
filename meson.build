@@ -462,55 +462,31 @@ symb_defs = {
 
 # config.h file generation
 
-_config_1_path = meson.current_build_dir() / '_config_1.h'
-_join_files_py = '../join_files.py'
-run_command('./c_check', 'Makefile.conf', _config_1_path, cc_id, check: true)
-run_command('./f_check', 'Makefile.conf', _config_1_path, fc_id, check: true)
+_config_h = meson.current_build_dir() / 'config.h'
+run_command('./c_check', 'Makefile.conf', _config_h, cc_id, check: true)
+run_command('./f_check', 'Makefile.conf', _config_h, fc_id, check: true)
 
-getarch = executable('getarch', ['getarch.c', 'cpuid.S'])
+run_command(cc_id, '-o', 'getarch', 'getarch.c', 'cpuid.S', check: true)
+_getarch_result = run_command('./getarch', '1', check: true, capture: true)
+run_command(py3,
+            './write_to_file.py',
+            _getarch_result.stdout(),
+            _config_h,
+            check: true)
 
-_config_2h = custom_target('_config_2h',
-                           output: '_config_2.h',
-                           command: [getarch, '1'],
-                           depends: [getarch],
-                           capture: true,
-                          )
-
-_config_for_getarch_2nd_h = custom_target('_config_for_getarch_2nd_h',
-                                          output: '_config_for_getarch_2nd.h',
-                                          command: [
-                                            py3,
-                                            _join_files_py,
-                                            _config_1_path,
-                                            _config_2h,
-                                          ],
-                                          depends: [_config_2h],
-                                          capture: true,
-                                         )
-
-getarch_2nd = executable('getarch_2nd',
-                         ['getarch_2nd.c', _config_for_getarch_2nd_h],
-                         c_args: ['-DGEMM_MULTITHREAD_THRESHOLD=4', '-DBUILD_WITH_MESON']
-                        )
-
-_config_3h = custom_target('_config_3h',
-                           output: '_config_3.h',
-                           command: [getarch_2nd, '1'],
-                           depends: [getarch_2nd],
-                           capture: true,
-                          )
-
-config_h = custom_target('config_h',
-                         output: 'config.h',
-                         command: [
-                           py3,
-                           _join_files_py,
-                           _config_for_getarch_2nd_h,
-                           _config_3h,
-                         ],
-                         depends: [_config_3h],
-                         capture: true,
-                        )
+run_command(cc_id,
+            '-DGEMM_MULTITHREAD_THRESHOLD=4',
+            '-I.',
+            f'-I@prj_bld_dir@',
+            '-o', 'getarch_2nd',
+            'getarch_2nd.c',
+            capture: true, check: true)
+_getarch_2nd_result = run_command('./getarch_2nd', '1', check: true, capture: true)
+run_command(py3,
+            './write_to_file.py',
+            _getarch_2nd_result.stdout(),
+            _config_h,
+            check: true)
 
 # Ignoring other hostarch checks and conflicts for arch in BSD for now
 _inc = [include_directories('.')]
@@ -563,7 +539,6 @@ pcl = custom_target('prepare_config_last',
              exprecision ? '--exprecision' : [],
             ],
   build_by_default : true,
-  depends: config_h,
 )
 
 # Generate the headers
