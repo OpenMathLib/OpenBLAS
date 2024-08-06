@@ -45,6 +45,10 @@ else
 LAPACK_NOOPT := $(filter-out -O0 -O1 -O2 -O3 -Ofast -O -Og -Os,$(LAPACK_FFLAGS))
 endif
 
+ifdef LAPACK_STRLEN
+LAPACK_FFLAGS += -DLAPACK_STRLEN=$(LAPACK_STRLEN)
+endif
+
 SUBDIRS_ALL = $(SUBDIRS) test ctest utest exports benchmark ../laswp ../bench cpp_thread_test
 
 .PHONY : all libs netlib $(RELA) test ctest shared install
