@@ -22,6 +22,8 @@ option(BUILD_WITHOUT_LAPACK "Do not build LAPACK and LAPACKE (Only BLAS or CBLAS
 
 option(BUILD_LAPACK_DEPRECATED "When building LAPACK, include also some older, deprecated routines" ON)
 
+set(LAPACK_STRLEN "" CACHE STRING "When building LAPACK, use this type (e.g. \"int\") for character lengths (defaults to size_t)")
+
 option(BUILD_TESTING "Build LAPACK testsuite when building LAPACK" ON)
 
 option(BUILD_BENCHMARKS "Build the collection of BLAS/LAPACK benchmarks" OFF)
