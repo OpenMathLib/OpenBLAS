@@ -24,19 +24,27 @@ _test_input_array = {
         'sources': testl3_src,
         'input_file': '?in3',
     },
-    'l3_3m': {
-        'base': 'x?cblat3_3m',
-        'has_dat': true,
-        'types': ['c', 'z'],
-        'sources': testl3_3m_src,
-        'input_file': '?in3_3m',
-    },
 }
+
+lvls = ['l1', 'l2', 'l3']
+
+if conf_hdat.has('ARCH_X86_64') or conf_hdat.has('ARCH_X86')
+    _test_input_array += {
+        'l3_3m': {
+            'base': 'x?cblat3_3m',
+            'has_dat': true,
+            'types': ['c', 'z'],
+            'sources': testl3_3m_src,
+            'input_file': '?in3_3m',
+        }
+    }
+    lvls += 'l3_3m'
+endif
 
 _test_runner = executable('test_runner', sources: ['test_runner.c'], install: false)
 ctest_inc = _inc + [include_directories('.')]
 
-foreach lvl : ['l1', 'l2', 'l3', 'l3_3m']
+foreach lvl : lvls
     details = _test_input_array[lvl]
 
     foreach type : details['types']
