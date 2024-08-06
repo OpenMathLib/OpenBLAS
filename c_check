@@ -385,6 +385,7 @@ if [ "$architecture" != "$hostarch" ]; then
     [ "$hostarch" = "mips64" ] && [ "$architecture" = "mips" ] && cross=0
 fi
 
+[ "$EMBEDDED" != 0 ] && cross=1
 [ "$os" != "$hostos" ] && cross=1
 [ "$os" = "Android" ] && [ "$hostos" = "Linux" ] && [ -n "$TERMUX_APP_PID" ] \
     && cross=0
