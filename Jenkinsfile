@@ -7,7 +7,7 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-                sh 'make clean && make TARGET=Z13'
+                sh 'make clean && make TARGET=ZARCH_GENERIC'
             }
         }
     }
