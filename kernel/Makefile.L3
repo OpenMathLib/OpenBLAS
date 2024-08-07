@@ -17,15 +17,6 @@ ifeq ($(ARCH), ia64)
 USE_GEMM3M = 1
 endif
 
-ifneq ($(DYNAMIC_ARCH), 1)
-ifeq ($(TARGET), GENERIC)
-USE_GEMM3M = 0
-endif
-else
-ifeq ($(CORE), GENERIC)
-USE_GEMM3M = 0
-endif
-endif
 
 ifeq ($(ARCH), arm)
 USE_TRMM = 1
