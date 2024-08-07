@@ -2,7 +2,9 @@
 ## Author: Hank Anderson <hank@statease.com>
 ##
 
-cmake_minimum_required(VERSION 2.8.5...3.0)
+cmake_minimum_required(VERSION 2.8.5)
+
+cmake_policy(SET CMP0042 NEW)
 
 project(OpenBLAS C ASM)
 
