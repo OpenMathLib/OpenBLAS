@@ -189,8 +189,11 @@ endif
 endif
 
 
+ifeq ($(SUPPORT_GEMM3M),1)
+level3: $(B3) $(S3) $(D3) $(C3) $(Z3) level3_3m
+else
 level3: $(B3) $(S3) $(D3) $(C3) $(Z3)
-
+endif
 
 ifneq ($(CROSS), 1)
 	rm -f ?BLAT3.SUMM
@@ -263,7 +266,7 @@ endif
 endif
 
 
-level3_3m : zblat3_3m cblat3_3m
+level3_3m: zblat3_3m cblat3_3m
 ifneq ($(CROSS), 1)
 	rm -f ?BLAT3_3M.SUMM
 	OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 ./cblat3_3m < ./cblat3_3m.dat
