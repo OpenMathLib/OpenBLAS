@@ -1,5 +1,128 @@
 OpenBLAS ChangeLog
 ====================================================================
+Version 0.3.28
+ 8-Aug-2024
+
+general:
+- Reworked the unfinished implementation of HUGETLB from GotoBLAS
+  for allocating huge memory pages as buffers on suitable systems
+- Changed the unfinished implementation of GEMM3M for the generic
+  target on all architectures to at least forward to regular GEMM
+- Improved multithreaded GEMM performance for large non-skinny matrices
+- Improved BLAS3 performance on larger multicore systems through improved
+  parallelism
+- Improved performance of the initial memory allocation by reducing
+  locking overhead
+- Improved performance of GBMV at small problem sizes by introducing
+  a size barrier for the switch to multithreading
+- Added an implementation of the CBLAS_GEMM_BATCH extension
+- Fixed miscompilation of CAXPYC and ZAXPYC on all architectures in 
+  CMAKE builds (error introduced in 0.3.27)
+- Fixed corner cases involving the handling of NAN and INFINITY
+  arguments in ?SCAL on all architectures
+- Added support for cross-compiling to WEBM with CMAKE (in addition
+  to the already present makefile support)
+- Fixed NAN handling and potential accuracy issues in compilations with
+  Intel ICX by supplying a suitable fp-model option by default
+- The contents of the github project wiki have been converted into
+  a new set of documentation included with the source code.
+- It is now possible to register a callback function that replaces
+  the built-in support for multithreading with an external backend
+  like TBB (openblas_set_threads_callback_function)
+- Fixed potential duplication of suffixes in shared library naming
+- Improved C compiler detection by the build system to tolerate more
+  naming variants for gcc builds
+- Fixed an unnecessary dependency of the utest on CBLAS
+- Fixed spurious error reports from the BLAS extensions utest
+- Fixed unwanted invocation of the GEMM3M tests in cross-compilation
+- Fixed a flaw in the makefile build that could lead to the pkgconfig
+  file containing an entry of UNKNOWN for the target cpu after installing
+- Integrated fixes from the Reference-LAPACK project:
+  - Fixed uninitialized variables in the LAPACK tests for ?QP3RK (PR 961)
+  - Fixed potential bounds error in ?UNHR_COL/?ORHR_COL (PR 1018)
+  - Fixed potential infinite loop in the LAPACK testsuite (PR 1024)
+  - Make the variable type used for hidden length arguments configurable (PR 1025)  
+  - Fixed SYTRD workspace computation and various typos (PR 1030)
+  - Prevent compiler use of FMA that could increase numerical error in ?GEEVX (PR 1033)
+
+x86-64:
+- reverted thread management under Windows to its state before 0.3.26
+  due to signs of race conditions in some circumstances now under study
+- fixed accidental selection of the unoptimized generic SBGEMM kernel
+  in CMAKE builds for CooperLake and SapphireRapids targets
+- fixed a potential thread buffer overrun in SBSTOBF16 on small systems
+- fixed an accuracy issue in ZSCAL introduced in 0.3.26
+- fixed compilation with CMAKE and recent releases of LLVM
+- added support for Intel Emerald Rapids and Meteor Lake cpus
+- added autodetection support for the Zhaoxin KX-7000 cpu
+- fixed autodetection of Intel Prescott (probably broken since 0.3.19)
+- fixed compilation for older targets with the Yocto SDK
+- fixed compilation of the converter-generated C versions
+  of the LAPACK sources with gcc-14
+- improved compiler options when building with CMAKE and LLVM for
+  AVX512-capable targets
+- added support for supplying the L2 cache size via an environment
+  variable (OPENBLAS_L2_SIZE) in case it is not correctly reported
+  (as in some VM configurations)
+- improved the error message shown when thread creation fails on startup
+- fixed setting the rpath entry of the dylib in CMAKE builds on MacOS
+
+arm:
+- fixed building for baremetal targets with make
+
+arm64:
+- Added a fast path forwarding SGEMM and DGEMM calls with a 1xN or Mx1
+  matrix to the corresponding GEMV kernel 
+- added optimized SGEMV and DGEMV kernels for A64FX
+- added optimized SVE kernels for small-matrix GEMM
+- added A64FX to the cpu list for DYNAMIC_ARCH
+- fixed building with support for cpu affinity
+- worked around accuracy problems with C/ZNRM2 on NeoverseN1 and
+  Apple M targets
+- improved GEMM performance on Neoverse V1
+- fixed compilation for NEOVERSEN2 with older compilers
+- fixed potential miscompilation of the SVE SDOT and DDOT kernels
+- fixed potential miscompilation of the non-SVE CDOT and ZDOT kernels
+- fixed a potential overflow when using very large user-defined BUFFERSIZE
+- fixed setting the rpath entry of the dylib in CMAKE builds on MacOS
+
+power:
+- Added a fast path forwarding SGEMM and DGEMM calls with a 1xN or Mx1
+  matrix to the corresponding GEMV kernel 
+- significantly improved performance of SBGEMM on POWER10
+- fixed compilation with OpenMP and the XLF compiler
+- fixed building of the BLAS extension utests under AIX
+- fixed building of parts of the LAPACK testsuite with XLF
+- fixed CSWAP/ZSWAP on big-endian POWER10 targets
+- fixed a performance regression in SAXPY on POWER10 with OpenXL
+- fixed accuracy issues in CSCAL/ZSCAL when compiled with LLVM
+- fixed building for POWER9 under FreeBSD
+- fixed a potential overflow when using very large user-defined BUFFERSIZE
+- fixed an accuracy issue in the POWER6 kernels for GEMM and GEMV
+
+riscv64:
+- Added a fast path forwarding SGEMM and DGEMM calls with a 1xN or Mx1
+  matrix to the corresponding GEMV kernel 
+- fixed building for RISCV64_GENERIC with OpenMP enabled
+- added DYNAMIC_ARCH support (comprising GENERIC_RISCV64 and the two
+  RVV 1.0 targets with vector length of 128 and 256)
+- worked around the ZVL128B kernels for AXPBY mishandling the special
+  case of zero Y increment
+
+loongarch64:
+- improved GEMM performance on servers of the 3C5000 generation
+- improved performance and stability of DGEMM
+- improved GEMV and TRSM kernels for LSX and LASX vector ABIs
+- fixed CMAKE compilation with the INTERFACE64 option set
+- fixed compilation with CMAKE
+- worked around spurious errors flagged by the BLAS3 tests
+- worked around a miscompilation of the POTRS utest by gcc 14.1
+
+mips64:
+- fixed ASUM and SUM kernels to accept negative step sizes in X
+- fixed complex GEMV kernels for MSA
+
+====================================================================
 Version 0.3.27
  4-Apr-2024
 
