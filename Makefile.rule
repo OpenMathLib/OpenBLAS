@@ -3,7 +3,7 @@
 #
 
 # This library's version
-VERSION = 0.3.28
+VERSION = 0.3.28.dev
 
 # If you set this prefix, the library name will be lib$(LIBNAMESUFFIX)openblas.a
 # and lib$(LIBNAMESUFFIX)openblas.so, with a matching soname in the shared library
