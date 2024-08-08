@@ -90,57 +90,175 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define PTR_FST   fst.d
 #endif
 
-// The max registers available to the user which
-// do not need to be preserved across calls.
-// Ref: https://loongson.github.io/LoongArch-Documentation/LoongArch-ELF-ABI-CN.html
-#define MAX_INT_CALLER_SAVED 17
-#define MAX_FP_CALLER_SAVED  24
-
 .altmacro // Enable alternate macro mode
 
+/*
+ * Pushing and popping static registers into/from the stack.
+ * regs : number of static general-purpose registers, greater than or equal to 0, less than or equal to 9
+ * fregs: number of static floating-point registers, greater than or equal to 0, less than or equal to 8
+ */
 .macro push_if_used regs, fregs
-.if \regs > MAX_INT_CALLER_SAVED
-    PTR_ADDI      $sp,    $sp,    -((\regs - MAX_INT_CALLER_SAVED) << REG_LOG)
-    push_regs 0, \regs - MAX_INT_CALLER_SAVED - 1
+.if \regs > 0
+    PTR_ADDI    $sp,    $sp,    -(\regs << REG_LOG)
+    push_regs 0, \regs - 1
 .endif
-.if \fregs > MAX_FP_CALLER_SAVED
-    PTR_ADDI      $sp,    $sp,    -((\fregs - MAX_FP_CALLER_SAVED) << FREG_LOG)
-    push_fregs 0, \fregs - MAX_FP_CALLER_SAVED - 1
+.if \fregs > 0
+    PTR_ADDI     $sp,    $sp,    -(\fregs << FREG_LOG)
+    push_fregs 0, \fregs - 1
 .endif
 .endm // End push_if_used
+
 .macro pop_if_used regs, fregs
-.if \fregs > MAX_FP_CALLER_SAVED
-    pop_fregs 0, \fregs - MAX_FP_CALLER_SAVED - 1
-    PTR_ADDI      $sp,    $sp,    (\fregs - MAX_FP_CALLER_SAVED) << FREG_LOG
+.if \fregs > 0
+    pop_fregs 0, \fregs - 1
+    PTR_ADDI    $sp,    $sp,     \fregs << FREG_LOG
 .endif
-.if \regs > MAX_INT_CALLER_SAVED
-    pop_regs 0, \regs - MAX_INT_CALLER_SAVED - 1
-    PTR_ADDI      $sp,    $sp,    (\regs - MAX_INT_CALLER_SAVED) << REG_LOG
+.if \regs > 0
+    pop_regs 0, \regs - 1
+    PTR_ADDI   $sp,    $sp,      \regs << REG_LOG
 .endif
 .endm // End pop_if_used
+
 .macro push_regs from, to
-    PTR_ST    $s\()\from,     $sp,    \from << REG_LOG
+#ifdef __clang__
+.if \to >= 0
+    PTR_ST    $s0, $sp, 0 << REG_LOG
+.endif
+.if \to >= 1
+    PTR_ST    $s1, $sp, 1 << REG_LOG
+.endif
+.if \to >= 2
+    PTR_ST    $s2, $sp, 2 << REG_LOG
+.endif
+.if \to >= 3
+    PTR_ST    $s3, $sp, 3 << REG_LOG
+.endif
+.if \to >= 4
+    PTR_ST    $s4, $sp, 4 << REG_LOG
+.endif
+.if \to >= 5
+    PTR_ST    $s5, $sp, 5 << REG_LOG
+.endif
+.if \to >= 6
+    PTR_ST    $s6, $sp, 6 << REG_LOG
+.endif
+.if \to >= 7
+    PTR_ST    $s7, $sp, 7 << REG_LOG
+.endif
+.if \to >= 8
+    PTR_ST    $s8, $sp, 8 << REG_LOG
+.endif
+#else
+    PTR_ST    $s\()\from,       $sp,    \from << REG_LOG
 .if \to - \from
     push_regs %from + 1, \to
 .endif
+#endif
 .endm // End push_regs
+
 .macro pop_regs from, to
+#ifdef __clang__
+.if \to >= 0
+    PTR_LD    $s0, $sp, 0 << REG_LOG
+.endif
+.if \to >= 1
+    PTR_LD    $s1, $sp, 1 << REG_LOG
+.endif
+.if \to >= 2
+    PTR_LD    $s2, $sp, 2 << REG_LOG
+.endif
+.if \to >= 3
+    PTR_LD    $s3, $sp, 3 << REG_LOG
+.endif
+.if \to >= 4
+    PTR_LD    $s4, $sp, 4 << REG_LOG
+.endif
+.if \to >= 5
+    PTR_LD    $s5, $sp, 5 << REG_LOG
+.endif
+.if \to >= 6
+    PTR_LD    $s6, $sp, 6 << REG_LOG
+.endif
+.if \to >= 7
+    PTR_LD    $s7, $sp, 7 << REG_LOG
+.endif
+.if \to >= 8
+    PTR_LD    $s8, $sp, 8 << REG_LOG
+.endif
+#else
     PTR_LD    $s\()\from,     $sp,    \from << REG_LOG
 .if \to - \from
     pop_regs %from + 1, \to
 .endif
+#endif
 .endm // End pop_regs
+
 .macro push_fregs from, to
+#ifdef __clang__
+.if \to >= 0
+    PTR_FST    $fs0, $sp, 0 << FREG_LOG
+.endif
+.if \to >= 1
+    PTR_FST    $fs1, $sp, 1 << FREG_LOG
+.endif
+.if \to >= 2
+    PTR_FST    $fs2, $sp, 2 << FREG_LOG
+.endif
+.if \to >= 3
+    PTR_FST    $fs3, $sp, 3 << FREG_LOG
+.endif
+.if \to >= 4
+    PTR_FST    $fs4, $sp, 4 << FREG_LOG
+.endif
+.if \to >= 5
+    PTR_FST    $fs5, $sp, 5 << FREG_LOG
+.endif
+.if \to >= 6
+    PTR_FST    $fs6, $sp, 6 << FREG_LOG
+.endif
+.if \to >= 7
+    PTR_FST    $fs7, $sp, 7 << FREG_LOG
+.endif
+#else
     PTR_FST   $fs\()\from,    $sp,    \from << FREG_LOG
 .if \to - \from
     push_fregs %from + 1, \to
 .endif
+#endif
 .endm // End push_fregs
+
 .macro pop_fregs from, to
+#ifdef __clang__
+.if \to >= 0
+    PTR_FLD    $fs0, $sp, 0 << FREG_LOG
+.endif
+.if \to >= 1
+    PTR_FLD    $fs1, $sp, 1 << FREG_LOG
+.endif
+.if \to >= 2
+    PTR_FLD    $fs2, $sp, 2 << FREG_LOG
+.endif
+.if \to >= 3
+    PTR_FLD    $fs3, $sp, 3 << FREG_LOG
+.endif
+.if \to >= 4
+    PTR_FLD    $fs4, $sp, 4 << FREG_LOG
+.endif
+.if \to >= 5
+    PTR_FLD    $fs5, $sp, 5 << FREG_LOG
+.endif
+.if \to >= 6
+    PTR_FLD    $fs6, $sp, 6 << FREG_LOG
+.endif
+.if \to >= 7
+    PTR_FLD    $fs7, $sp, 7 << FREG_LOG
+.endif
+#else
     PTR_FLD   $fs\()\from,    $sp,    \from << FREG_LOG
 .if \to - \from
     pop_fregs %from + 1, \to
 .endif
+#endif
 .endm // End pop_fregs
 
 //
@@ -275,7 +393,11 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // GXOR
 //
 .macro GXOR pre_op:req, suf_op:req, out:req, in0:req, in1:req, more:vararg
-    \pre_op\()xor.\suf_op    \out,   \in0,   \in1
+.ifnb \pre_op
+    \pre_op\()xor.v    \out,   \in0,   \in1
+.else
+    xor.\suf_op        \out,   \in0,   \in1
+.endif
 .ifnb \more
     GXOR \pre_op, \suf_op, \more
 .endif
@@ -307,6 +429,48 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     GPRELD \more
 .endif
 .endm
+//
+// GPACKEV
+//
+.macro GPACKEV pre_op:req, suf_op:req, out:req, in0:req, in1:req, more:vararg
+    \pre_op\()packev.\suf_op   \out,  \in0,  \in1
+.ifnb \more
+    GPACKEV \pre_op, \suf_op, \more
+.endif
+.endm
+//
+// GPACKOD
+//
+.macro GPACKOD pre_op:req, suf_op:req, out:req, in0:req, in1:req, more:vararg
+    \pre_op\()packod.\suf_op   \out,  \in0,  \in1
+.ifnb \more
+    GPACKOD \pre_op, \suf_op, \more
+.endif
+.endm
+//
+// GSHUF4I
+//
+.macro GSHUF4I pre_op:req, suf_op:req, out:req, in0:req, in1:req /* imm */, more:vararg
+    \pre_op\()shuf4i.\suf_op  \out,  \in0,  \in1
+.ifnb \more
+    GSHUF4I \pre_op, \suf_op, \more
+.endif
+.endm
+
+.macro TRANSF2G name, pre_op:req, suf_op:req, more:vararg
+.ifeqs "\pre_op\()\suf_op", "vfs"
+    \name v, w, \more
+.endif
+.ifeqs "\pre_op\()\suf_op", "vfd"
+    \name v, d, \more
+.endif
+.ifeqs "\pre_op\()\suf_op", "xvfs"
+    \name  xv, w, \more
+.endif
+.ifeqs "\pre_op\()\suf_op", "xvfd"
+    \name xv, d, \more
+.endif
+.endm
 
 //
 // Compound instructions
@@ -314,60 +478,95 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // GACC: Accumulate the values of vector registers
 //
 .macro GACC pre_op:req, suf_op:req, out:req, in:req, more:vararg
-.ifeqs "\pre_op", "xvf"
+.ifeqs "\pre_op\()\suf_op", "xvfd"
     xvpermi.q              \out,   \in,    0x01
     \pre_op\()add.\suf_op  \in,    \out,   \in
     xvpackod.d             \out,   \in,    \in
     \pre_op\()add.\suf_op  \out,   \out,   \in
-.ifeqs "\suf_op", "s"
+.endif
+.ifeqs "\pre_op\()\suf_op", "xvfs"
+    xvpermi.q              \out,   \in,    0x01
+    \pre_op\()add.\suf_op  \in,    \out,   \in
+    xvpackod.d             \out,   \in,    \in
+    \pre_op\()add.\suf_op  \out,   \out,   \in
     xvpackod.w             \in,    \out,   \out
     \pre_op\()add.\suf_op  \out,   \out,   \in
 .endif
-.endif
-
-.ifeqs "\pre_op", "vf"
+.ifeqs "\pre_op\()\suf_op", "vfd"
     vpackod.d              \out,   \in,    \in
     \pre_op\()add.\suf_op  \out,   \out,   \in
-.ifeqs "\suf_op", "s"
+.endif
+.ifeqs "\pre_op\()\suf_op", "vfs"
+    vpackod.d              \out,   \in,    \in
+    \pre_op\()add.\suf_op  \out,   \out,   \in
     vpackod.w              \in,    \out,   \out
     \pre_op\()add.\suf_op  \out,   \out,   \in
 .endif
-.endif
 
-.ifeqs "\pre_op", "xv"
+.ifeqs "\pre_op\()\suf_op", "xvd"
     xvpermi.q              \out,   \in,    0x01
     \pre_op\()add.\suf_op  \in,    \out,   \in
     xvpackod.d             \out,   \in,    \in
     \pre_op\()add.\suf_op  \out,   \out,   \in
-.ifnc "\suf_op", "d"
+.endif
+.ifeqs "\pre_op\()\suf_op", "xvw"
+    xvpermi.q              \out,   \in,    0x01
+    \pre_op\()add.\suf_op  \in,    \out,   \in
+    xvpackod.d             \out,   \in,    \in
+    \pre_op\()add.\suf_op  \out,   \out,   \in
     xvpackod.w             \in,    \out,   \out
     \pre_op\()add.\suf_op  \out,   \out,   \in
-.ifnc "\suf_op", "w"
+.endif
+.ifeqs "\pre_op\()\suf_op", "xvh"
+    xvpermi.q              \out,   \in,    0x01
+    \pre_op\()add.\suf_op  \in,    \out,   \in
+    xvpackod.d             \out,   \in,    \in
+    \pre_op\()add.\suf_op  \out,   \out,   \in
+    xvpackod.w             \in,    \out,   \out
+    \pre_op\()add.\suf_op  \out,   \out,   \in
     xvpackod.h             \in,    \out,   \out
     \pre_op\()add.\suf_op  \out,   \out,   \in
-.ifnc "\suf_op", "h"
+.endif
+.ifeqs "\pre_op\()\suf_op", "xvb"
+    xvpermi.q              \out,   \in,    0x01
+    \pre_op\()add.\suf_op  \in,    \out,   \in
+    xvpackod.d             \out,   \in,    \in
+    \pre_op\()add.\suf_op  \out,   \out,   \in
+    xvpackod.w             \in,    \out,   \out
+    \pre_op\()add.\suf_op  \out,   \out,   \in
+    xvpackod.h             \in,    \out,   \out
+    \pre_op\()add.\suf_op  \out,   \out,   \in
     xvpackod.b             \in,    \out,   \out
     \pre_op\()add.\suf_op  \out,   \out,   \in
 .endif
-.endif
-.endif
-.endif
 
-.ifeqs "\pre_op", "v"
+.ifeqs "\pre_op\()\suf_op", "vd"
     vpackod.d              \out,   \in,    \in
     \pre_op\()add.\suf_op  \out,   \out,   \in
-.ifnc "\suf_op", "d"
+.endif
+.ifeqs "\pre_op\()\suf_op", "vw"
+    vpackod.d              \out,   \in,    \in
+    \pre_op\()add.\suf_op  \out,   \out,   \in
     vpackod.w              \in,    \out,   \out
     \pre_op\()add.\suf_op  \out,   \out,   \in
-.ifnc "\suf_op", "w"
+.endif
+.ifeqs "\pre_op\()\suf_op", "vh"
+    vpackod.d              \out,   \in,    \in
+    \pre_op\()add.\suf_op  \out,   \out,   \in
+    vpackod.w              \in,    \out,   \out
+    \pre_op\()add.\suf_op  \out,   \out,   \in
     vpackod.h              \in,    \out,   \out
     \pre_op\()add.\suf_op  \out,   \out,   \in
-.ifnc "\suf_op", "h"
+.endif
+.ifeqs "\pre_op\()\suf_op", "vb"
+    vpackod.d              \out,   \in,    \in
+    \pre_op\()add.\suf_op  \out,   \out,   \in
+    vpackod.w              \in,    \out,   \out
+    \pre_op\()add.\suf_op  \out,   \out,   \in
+    vpackod.h              \in,    \out,   \out
+    \pre_op\()add.\suf_op  \out,   \out,   \in
     vpackod.b              \in,    \out,   \out
     \pre_op\()add.\suf_op  \out,   \out,   \in
-.endif
-.endif
-.endif
 .endif
 
 .ifnb \more
@@ -391,26 +590,26 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // Note: When "pre_op = xvf && suf_op = s", in will be modified.
 //
 .macro GCOMPLEXACC pre_op:req, suf_op:req, out:req, in:req, more:vararg
-.ifeqs "\pre_op", "xvf"
+.ifeqs "\pre_op\()\suf_op", "xvfd"
     xvpermi.q              \out,   \in,    0x01
-.ifeqs "\suf_op", "s"
+    \pre_op\()add.\suf_op  \out,   \out,   \in
+.endif
+
+.ifeqs "\pre_op\()\suf_op", "xvfs"
+    xvpermi.q              \out,   \in,    0x01
     \pre_op\()add.\suf_op  \in,    \out,   \in
     xvpackod.d             \out,   \in,    \in
     \pre_op\()add.\suf_op  \out,   \out,   \in
-.else
-    \pre_op\()add.\suf_op  \out,   \out,   \in
-.endif
 .endif
 
-.ifeqs "\pre_op", "vf"
-.ifeqs "\suf_op", "s"
-    vpackod.d              \out,   \in,    \in
-    \pre_op\()add.\suf_op  \out,   \out,   \in
-.else
+.ifeqs "\pre_op\()\suf_op", "vfd"
     vor.v \out, \in, \in
 .endif
-.endif
 
+.ifeqs "\pre_op\()\suf_op", "vfs"
+    vpackod.d              \out,   \in,    \in
+    \pre_op\()add.\suf_op  \out,   \out,   \in
+.endif
 
 .ifnb \more
     GCOMPLEXACC \pre_op, \suf_op, \more
@@ -430,56 +629,21 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // suf_op: s or d, differentiate between single precision or double precision complex numbers
 //
 .macro GCOMPLEXMUL xconj=0, pre_op:req, suf_op:req, out:req, in0:req, in1:req, tmp0:req, tmp1:req, tmp2:req, more:vararg
-.ifeqs "\pre_op", "xvf"
-    xvxor.v           \tmp1,     \tmp1,     \tmp1
-.ifeqs "\suf_op", "s"
-    xvpackev.w  \tmp0,     \in0,      \in0
-.else
-    xvpackev.d  \tmp0,     \in0,      \in0
-.endif
-.else
-    vxor.v           \tmp1,     \tmp1,     \tmp1
-.ifeqs "\suf_op", "s"
-    vpackev.w  \tmp0,     \in0,      \in0
-.else
-    vpackev.d  \tmp0,     \in0,      \in0
-.endif
-.endif
+    TRANSF2G GXOR, \pre_op, s, \tmp1, \tmp1, \tmp1
+    TRANSF2G GPACKEV, \pre_op, \suf_op, \tmp0, \in0, \in0
 
     \pre_op\()sub.\suf_op    \tmp1,     \tmp1,     \in0
 
-.ifeqs "\pre_op", "xvf"
+.ifeqs "\xconj", "0"
+    TRANSF2G GPACKOD, \pre_op, \suf_op, \tmp1, \in0, \tmp1
+.else
+    TRANSF2G GPACKOD, \pre_op, \suf_op, \tmp1, \tmp1, \in0
+.endif
+
 .ifeqs "\suf_op", "s"
-.ifeqs "\xconj", "0"
-    xvpackod.w  \tmp1,     \in0,      \tmp1
+    TRANSF2G GSHUF4I, \pre_op, \suf_op, \tmp2, \in1, 0xb1
 .else
-    xvpackod.w  \tmp1,     \tmp1,     \in0
-.endif
-    xvshuf4i.w  \tmp2,     \in1,      0xb1
-.else
-.ifeqs "\xconj", "0"
-    xvpackod.d  \tmp1,     \in0,      \tmp1
-.else
-    xvpackod.d  \tmp1,     \tmp1,     \in0
-.endif
-    xvshuf4i.d  \tmp2,     \in1,      0x0b
-.endif
-.else
-.ifeqs "\suf_op", "s"
-.ifeqs "\xconj", "0"
-    vpackod.w  \tmp1,     \in0,      \tmp1
-.else
-    vpackod.w  \tmp1,     \tmp1,     \in0
-.endif
-    vshuf4i.w  \tmp2,     \in1,      0xb1
-.else
-.ifeqs "\xconj", "0"
-    vpackod.d  \tmp1,     \in0,      \tmp1
-.else
-    vpackod.d  \tmp1,     \tmp1,     \in0
-.endif
-    vshuf4i.d  \tmp2,     \in1,      0x0b
-.endif
+    TRANSF2G GSHUF4I, \pre_op, \suf_op, \tmp2, \in1, 0x0b
 .endif
 
     \pre_op\()mul.\suf_op    \out,      \tmp0,     \in1
@@ -512,112 +676,58 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // suf_op: s or d, differentiate between single precision or double precision complex numbers
 //
 .macro GCOMPLEXMADD xconj=0, conj=0, pre_op:req, suf_op:req, out:req, in0:req, in1:req, in2:req, tmp0:req, tmp1:req, tmp2:req, more:vararg
-.ifeqs "\pre_op", "xvf"
-    xvxor.v           \tmp1,     \tmp1,     \tmp1
-.ifeqs "\suf_op", "s"
-    xvpackev.w  \tmp0,     \in0,      \in0
-.else
-    xvpackev.d  \tmp0,     \in0,      \in0
-.endif
-.else
-    vxor.v           \tmp1,     \tmp1,     \tmp1
-.ifeqs "\suf_op", "s"
-    vpackev.w  \tmp0,     \in0,      \in0
-.else
-    vpackev.d  \tmp0,     \in0,      \in0
-.endif
-.endif
+    TRANSF2G GXOR, \pre_op, s, \tmp1, \tmp1, \tmp1
+    TRANSF2G GPACKEV, \pre_op, \suf_op, \tmp0, \in0, \in0
 
     \pre_op\()madd.\suf_op   \tmp2,      \tmp0,     \in1,      \in2
-.ifeqs "\conj", "1"
+
+.ifeqs "\conj\()\suf_op", "1s"
     \pre_op\()nmsub.\suf_op  \tmp0,      \tmp0,     \in1,      \in2
-.ifeqs "\pre_op", "xvf"
-.ifeqs "\suf_op", "s"
-    xvshuf4i.w  \tmp0,     \tmp0,      0xb1
-    xvpackev.w  \out,      \tmp0,      \tmp2
-.else
-    xvshuf4i.d  \tmp0,     \tmp0,      0x0b
-    xvpackev.d  \out,      \tmp0,      \tmp2
+    TRANSF2G GSHUF4I, \pre_op, \suf_op, \tmp0, \tmp0, 0xb1
+    TRANSF2G GPACKEV, \pre_op, \suf_op, \out, \tmp0, \tmp2
 .endif
-.else
-.ifeqs "\suf_op", "s"
-    vshuf4i.w  \tmp0,     \tmp0,      0xb1
-    vpackev.w  \out,      \tmp0,      \tmp2
-.else
-    vshuf4i.d  \tmp0,     \tmp0,      0x0b
-    vpackev.d  \out,      \tmp0,      \tmp2
+.ifeqs "\conj\()\suf_op", "1d"
+    \pre_op\()nmsub.\suf_op  \tmp0,      \tmp0,     \in1,      \in2
+    TRANSF2G GSHUF4I, \pre_op, \suf_op, \tmp0, \tmp0, 0x0b
+    TRANSF2G GPACKEV, \pre_op, \suf_op, \out, \tmp0, \tmp2
 .endif
-.endif /* pre_op = xvf */
-.else
+.ifeqs "\conj", "0"
     \pre_op\()add.\suf_op    \out,     \tmp2,     \tmp1
-.endif /* conj = 1 */
+.endif
 
     \pre_op\()sub.\suf_op    \tmp1,     \tmp1,     \in0
 
-.ifeqs "\pre_op", "xvf"
-.ifeqs "\suf_op", "s"
-.ifeqs "\conj",  "0"
-.ifeqs "\xconj", "0"
-    xvpackod.w  \tmp1,     \in0,      \tmp1
-.else
-    xvpackod.w  \tmp1,     \tmp1,     \in0
+.ifeqs "\xconj\()\conj\()\suf_op", "00s"
+    TRANSF2G GPACKOD, \pre_op, \suf_op, \tmp1, \in0, \tmp1
+    TRANSF2G GSHUF4I, \pre_op, \suf_op, \tmp2, \in1, 0xb1
 .endif
-.else
-.ifeqs "\xconj", "0"
-    xvpackod.w  \tmp1,     \in0,     \in0
-.else
-    xvpackod.w  \tmp1,     \tmp1,     \tmp1
+.ifeqs "\xconj\()\conj\()\suf_op", "10s"
+    TRANSF2G GPACKOD, \pre_op, \suf_op, \tmp1, \tmp1, \in0
+    TRANSF2G GSHUF4I, \pre_op, \suf_op, \tmp2, \in1, 0xb1
 .endif
+.ifeqs "\xconj\()\conj\()\suf_op", "01s"
+    TRANSF2G GPACKOD, \pre_op, \suf_op, \tmp1, \in0, \in0
+    TRANSF2G GSHUF4I, \pre_op, \suf_op, \tmp2, \in1, 0xb1
 .endif
-    xvshuf4i.w  \tmp2,     \in1,      0xb1
-.else
-.ifeqs "\conj",  "0"
-.ifeqs "\xconj", "0"
-    xvpackod.d  \tmp1,     \in0,      \tmp1
-.else
-    xvpackod.d  \tmp1,     \tmp1,     \in0
+.ifeqs "\xconj\()\conj\()\suf_op", "11s"
+    TRANSF2G GPACKOD, \pre_op, \suf_op, \tmp1, \tmp1, \tmp1
+    TRANSF2G GSHUF4I, \pre_op, \suf_op, \tmp2, \in1, 0xb1
 .endif
-.else
-.ifeqs "\xconj", "0"
-    xvpackod.d  \tmp1,     \in0,     \in0
-.else
-    xvpackod.d  \tmp1,     \tmp1,    \tmp1
+.ifeqs "\xconj\()\conj\()\suf_op", "00d"
+    TRANSF2G GPACKOD, \pre_op, \suf_op, \tmp1, \in0, \tmp1
+    TRANSF2G GSHUF4I, \pre_op, \suf_op, \tmp2, \in1, 0x0b
 .endif
+.ifeqs "\xconj\()\conj\()\suf_op", "10d"
+    TRANSF2G GPACKOD, \pre_op, \suf_op, \tmp1, \tmp1, \in0
+    TRANSF2G GSHUF4I, \pre_op, \suf_op, \tmp2, \in1, 0x0b
 .endif
-    xvshuf4i.d  \tmp2,     \in1,      0x0b
+.ifeqs "\xconj\()\conj\()\suf_op", "01d"
+    TRANSF2G GPACKOD, \pre_op, \suf_op, \tmp1, \in0, \in0
+    TRANSF2G GSHUF4I, \pre_op, \suf_op, \tmp2, \in1, 0x0b
 .endif
-.else
-.ifeqs "\suf_op", "s"
-.ifeqs "\conj",  "0"
-.ifeqs "\xconj", "0"
-    vpackod.w  \tmp1,     \in0,      \tmp1
-.else
-    vpackod.w  \tmp1,     \tmp1,     \in0
-.endif
-.else
-.ifeqs "\xconj", "0"
-    vpackod.w  \tmp1,     \in0,     \in0
-.else
-    vpackod.w  \tmp1,     \tmp1,    \tmp1
-.endif
-.endif
-    vshuf4i.w  \tmp2,     \in1,      0xb1
-.else
-.ifeqs "\conj",  "0"
-.ifeqs "\xconj", "0"
-    vpackod.d  \tmp1,     \in0,      \tmp1
-.else
-    vpackod.d  \tmp1,     \tmp1,     \in0
-.endif
-.else
-.ifeqs "\xconj", "0"
-    vpackod.d  \tmp1,     \in0,     \in0
-.else
-    vpackod.d  \tmp1,     \tmp1,    \tmp1
-.endif
-.endif
-    vshuf4i.d  \tmp2,     \in1,      0x0b
-.endif
+.ifeqs "\xconj\()\conj\()\suf_op", "11d"
+    TRANSF2G GPACKOD, \pre_op, \suf_op, \tmp1, \tmp1, \tmp1
+    TRANSF2G GSHUF4I, \pre_op, \suf_op, \tmp2, \in1, 0x0b
 .endif
 
     \pre_op\()madd.\suf_op   \out,      \tmp1,     \tmp2,     \out

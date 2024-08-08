@@ -107,6 +107,7 @@ static float check_csrot(blasint n, blasint inc_x, blasint inc_y, float *c, floa
     return (norm / 2);
 }
 
+#ifndef NO_CBLAS
 /**
  * C API specific function
  * Comapare results computed by csrot and caxpby 
@@ -789,4 +790,5 @@ CTEST(crot, c_api_check_n_zero)
     float norm = c_api_check_csrot(n, inc_x, inc_y, c, s);
     ASSERT_DBL_NEAR_TOL(0.0f, norm, SINGLE_EPS);
 }
+#endif
 #endif

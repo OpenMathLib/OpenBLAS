@@ -409,14 +409,6 @@ LL(11):
 	fmr	 y06, y01
 	fmr	 y07, y01
 	fmr	 y08, y01
-	fmr	 y09, y01
-	fmr	 y10, y01
-	fmr	 y11, y01
-	fmr	 y12, y01
-	fmr	 y13, y01
-	fmr	 y14, y01
-	fmr	 y15, y01
-	fmr	 y16, y01
 
 	DCBT(Y1, PREC)
 
@@ -465,24 +457,24 @@ LL(12):
 	FMADD	y08, a8, b1, y08
 	LFD	a8,  2 * SIZE(AO8)
 
-	FMADD	y09, a1, b2, y09
+	FMADD	y01, a1, b2, y01
 	LFD	a1,  3 * SIZE(AO1)
-	FMADD	y10, a2, b2, y10
+	FMADD	y02, a2, b2, y02
 	LFD	a2,  3 * SIZE(AO2)
 
-	FMADD	y11, a3, b2, y11
+	FMADD	y03, a3, b2, y03
 	LFD	a3,  3 * SIZE(AO3)
-	FMADD	y12, a4, b2, y12
+	FMADD	y04, a4, b2, y04
 	LFD	a4,  3 * SIZE(AO4)
 
-	FMADD	y13, a5, b2, y13
+	FMADD	y05, a5, b2, y05
 	LFD	a5,  3 * SIZE(AO5)
-	FMADD	y14, a6, b2, y14
+	FMADD	y06, a6, b2, y06
 	LFD	a6,  3 * SIZE(AO6)
 
-	FMADD	y15, a7, b2, y15
+	FMADD	y07, a7, b2, y07
 	LFD	a7,  3 * SIZE(AO7)
-	FMADD	y16, a8, b2, y16
+	FMADD	y08, a8, b2, y08
 	LFD	a8,  3 * SIZE(AO8)
 
 	FMADD	y01, a1, b3, y01
@@ -505,24 +497,24 @@ LL(12):
 	FMADD	y08, a8, b3, y08
 	LFD	a8,  4 * SIZE(AO8)
 
-	FMADD	y09, a1, b4, y09
+	FMADD	y01, a1, b4, y01
 	LFD	a1,  5 * SIZE(AO1)
-	FMADD	y10, a2, b4, y10
+	FMADD	y02, a2, b4, y02
 	LFD	a2,  5 * SIZE(AO2)
 
-	FMADD	y11, a3, b4, y11
+	FMADD	y03, a3, b4, y03
 	LFD	a3,  5 * SIZE(AO3)
-	FMADD	y12, a4, b4, y12
+	FMADD	y04, a4, b4, y04
 	LFD	a4,  5 * SIZE(AO4)
 
-	FMADD	y13, a5, b4, y13
+	FMADD	y05, a5, b4, y05
 	LFD	a5,  5 * SIZE(AO5)
-	FMADD	y14, a6, b4, y14
+	FMADD	y06, a6, b4, y06
 	LFD	a6,  5 * SIZE(AO6)
 
-	FMADD	y15, a7, b4, y15
+	FMADD	y07, a7, b4, y07
 	LFD	a7,  5 * SIZE(AO7)
-	FMADD	y16, a8, b4, y16
+	FMADD	y08, a8, b4, y08
 	LFD	a8,  5 * SIZE(AO8)
 
 	LFD	b1,  9 * SIZE(BO)
@@ -550,24 +542,24 @@ LL(12):
 	FMADD	y08, a8, b5, y08
 	LFD	a8,  6 * SIZE(AO8)
 
-	FMADD	y09, a1, b6, y09
+	FMADD	y01, a1, b6, y01
 	LFD	a1,  7 * SIZE(AO1)
-	FMADD	y10, a2, b6, y10
+	FMADD	y02, a2, b6, y02
 	LFD	a2,  7 * SIZE(AO2)
 
-	FMADD	y11, a3, b6, y11
+	FMADD	y03, a3, b6, y03
 	LFD	a3,  7 * SIZE(AO3)
-	FMADD	y12, a4, b6, y12
+	FMADD	y04, a4, b6, y04
 	LFD	a4,  7 * SIZE(AO4)
 
-	FMADD	y13, a5, b6, y13
+	FMADD	y05, a5, b6, y05
 	LFD	a5,  7 * SIZE(AO5)
-	FMADD	y14, a6, b6, y14
+	FMADD	y06, a6, b6, y06
 	LFD	a6,  7 * SIZE(AO6)
 
-	FMADD	y15, a7, b6, y15
+	FMADD	y07, a7, b6, y07
 	LFD	a7,  7 * SIZE(AO7)
-	FMADD	y16, a8, b6, y16
+	FMADD	y08, a8, b6, y08
 	LFD	a8,  7 * SIZE(AO8)
 
 	FMADD	y01, a1, b7, y01
@@ -590,24 +582,24 @@ LL(12):
 	FMADD	y08, a8, b7, y08
 	LFD	a8,  8 * SIZE(AO8)
 
-	FMADD	y09, a1, b8, y09
+	FMADD	y01, a1, b8, y01
 	LFD	a1,  9 * SIZE(AO1)
-	FMADD	y10, a2, b8, y10
+	FMADD	y02, a2, b8, y02
 	LFD	a2,  9 * SIZE(AO2)
 
-	FMADD	y11, a3, b8, y11
+	FMADD	y03, a3, b8, y03
 	LFD	a3,  9 * SIZE(AO3)
-	FMADD	y12, a4, b8, y12
+	FMADD	y04, a4, b8, y04
 	LFD	a4,  9 * SIZE(AO4)
 
-	FMADD	y13, a5, b8, y13
+	FMADD	y05, a5, b8, y05
 	LFD	a5,  9 * SIZE(AO5)
-	FMADD	y14, a6, b8, y14
+	FMADD	y06, a6, b8, y06
 	LFD	a6,  9 * SIZE(AO6)
 
-	FMADD	y15, a7, b8, y15
+	FMADD	y07, a7, b8, y07
 	LFD	a7,  9 * SIZE(AO7)
-	FMADD	y16, a8, b8, y16
+	FMADD	y08, a8, b8, y08
 	LFD	a8,  9 * SIZE(AO8)
 
 	LFD	b5, 13 * SIZE(BO)
@@ -640,24 +632,24 @@ LL(12):
 	FMADD	y08, a8, b1, y08
 	LFD	a8, 10 * SIZE(AO8)
 
-	FMADD	y09, a1, b2, y09
+	FMADD	y01, a1, b2, y01
 	LFD	a1, 11 * SIZE(AO1)
-	FMADD	y10, a2, b2, y10
+	FMADD	y02, a2, b2, y02
 	LFD	a2, 11 * SIZE(AO2)
 
-	FMADD	y11, a3, b2, y11
+	FMADD	y03, a3, b2, y03
 	LFD	a3, 11 * SIZE(AO3)
-	FMADD	y12, a4, b2, y12
+	FMADD	y04, a4, b2, y04
 	LFD	a4, 11 * SIZE(AO4)
 
-	FMADD	y13, a5, b2, y13
+	FMADD	y05, a5, b2, y05
 	LFD	a5, 11 * SIZE(AO5)
-	FMADD	y14, a6, b2, y14
+	FMADD	y06, a6, b2, y06
 	LFD	a6, 11 * SIZE(AO6)
 
-	FMADD	y15, a7, b2, y15
+	FMADD	y07, a7, b2, y07
 	LFD	a7, 11 * SIZE(AO7)
-	FMADD	y16, a8, b2, y16
+	FMADD	y08, a8, b2, y08
 	LFD	a8, 11 * SIZE(AO8)
 
 	FMADD	y01, a1, b3, y01
@@ -680,24 +672,24 @@ LL(12):
 	FMADD	y08, a8, b3, y08
 	LFD	a8, 12 * SIZE(AO8)
 
-	FMADD	y09, a1, b4, y09
+	FMADD	y01, a1, b4, y01
 	LFD	a1, 13 * SIZE(AO1)
-	FMADD	y10, a2, b4, y10
+	FMADD	y02, a2, b4, y02
 	LFD	a2, 13 * SIZE(AO2)
 
-	FMADD	y11, a3, b4, y11
+	FMADD	y03, a3, b4, y03
 	LFD	a3, 13 * SIZE(AO3)
-	FMADD	y12, a4, b4, y12
+	FMADD	y04, a4, b4, y04
 	LFD	a4, 13 * SIZE(AO4)
 
-	FMADD	y13, a5, b4, y13
+	FMADD	y05, a5, b4, y05
 	LFD	a5, 13 * SIZE(AO5)
-	FMADD	y14, a6, b4, y14
+	FMADD	y06, a6, b4, y06
 	LFD	a6, 13 * SIZE(AO6)
 
-	FMADD	y15, a7, b4, y15
+	FMADD	y07, a7, b4, y07
 	LFD	a7, 13 * SIZE(AO7)
-	FMADD	y16, a8, b4, y16
+	FMADD	y08, a8, b4, y08
 	LFD	a8, 13 * SIZE(AO8)
 
 	LFD	b1, 17 * SIZE(BO)
@@ -725,24 +717,24 @@ LL(12):
 	FMADD	y08, a8, b5, y08
 	LFD	a8, 14 * SIZE(AO8)
 
-	FMADD	y09, a1, b6, y09
+	FMADD	y01, a1, b6, y01
 	LFD	a1, 15 * SIZE(AO1)
-	FMADD	y10, a2, b6, y10
+	FMADD	y02, a2, b6, y02
 	LFD	a2, 15 * SIZE(AO2)
 
-	FMADD	y11, a3, b6, y11
+	FMADD	y03, a3, b6, y03
 	LFD	a3, 15 * SIZE(AO3)
-	FMADD	y12, a4, b6, y12
+	FMADD	y04, a4, b6, y04
 	LFD	a4, 15 * SIZE(AO4)
 
-	FMADD	y13, a5, b6, y13
+	FMADD	y05, a5, b6, y05
 	LFD	a5, 15 * SIZE(AO5)
-	FMADD	y14, a6, b6, y14
+	FMADD	y06, a6, b6, y06
 	LFD	a6, 15 * SIZE(AO6)
 
-	FMADD	y15, a7, b6, y15
+	FMADD	y07, a7, b6, y07
 	LFD	a7, 15 * SIZE(AO7)
-	FMADD	y16, a8, b6, y16
+	FMADD	y08, a8, b6, y08
 	LFD	a8, 15 * SIZE(AO8)
 
 	FMADD	y01, a1, b7, y01
@@ -765,14 +757,14 @@ LL(12):
 	FMADD	y08, a8, b7, y08
 	LFD	a8, 16 * SIZE(AO8)
 
-	FMADD	y09, a1, b8, y09
+	FMADD	y01, a1, b8, y01
 	LFD	a1, 17 * SIZE(AO1)
-	FMADD	y10, a2, b8, y10
+	FMADD	y02, a2, b8, y02
 	LFD	a2, 17 * SIZE(AO2)
 
-	FMADD	y11, a3, b8, y11
+	FMADD	y03, a3, b8, y03
 	LFD	a3, 17 * SIZE(AO3)
-	FMADD	y12, a4, b8, y12
+	FMADD	y04, a4, b8, y04
 	LFD	a4, 17 * SIZE(AO4)
 
 	addi	AO1, AO1, 16 * SIZE
@@ -780,14 +772,14 @@ LL(12):
 	addi	AO3, AO3, 16 * SIZE
 	addi	AO4, AO4, 16 * SIZE
 
-	FMADD	y13, a5, b8, y13
+	FMADD	y05, a5, b8, y05
 	LFD	a5, 17 * SIZE(AO5)
-	FMADD	y14, a6, b8, y14
+	FMADD	y06, a6, b8, y06
 	LFD	a6, 17 * SIZE(AO6)
 
-	FMADD	y15, a7, b8, y15
+	FMADD	y07, a7, b8, y07
 	LFD	a7, 17 * SIZE(AO7)
-	FMADD	y16, a8, b8, y16
+	FMADD	y08, a8, b8, y08
 	LFD	a8, 17 * SIZE(AO8)
 
 	LFD	b5, 21 * SIZE(BO)
@@ -830,24 +822,24 @@ LL(13):
 	FMADD	y08, a8, b1, y08
 	LFD	a8,  2 * SIZE(AO8)
 
-	FMADD	y09, a1, b2, y09
+	FMADD	y01, a1, b2, y01
 	LFD	a1,  3 * SIZE(AO1)
-	FMADD	y10, a2, b2, y10
+	FMADD	y02, a2, b2, y02
 	LFD	a2,  3 * SIZE(AO2)
 
-	FMADD	y11, a3, b2, y11
+	FMADD	y03, a3, b2, y03
 	LFD	a3,  3 * SIZE(AO3)
-	FMADD	y12, a4, b2, y12
+	FMADD	y04, a4, b2, y04
 	LFD	a4,  3 * SIZE(AO4)
 
-	FMADD	y13, a5, b2, y13
+	FMADD	y05, a5, b2, y05
 	LFD	a5,  3 * SIZE(AO5)
-	FMADD	y14, a6, b2, y14
+	FMADD	y06, a6, b2, y06
 	LFD	a6,  3 * SIZE(AO6)
 
-	FMADD	y15, a7, b2, y15
+	FMADD	y07, a7, b2, y07
 	LFD	a7,  3 * SIZE(AO7)
-	FMADD	y16, a8, b2, y16
+	FMADD	y08, a8, b2, y08
 	LFD	a8,  3 * SIZE(AO8)
 
 	FMADD	y01, a1, b3, y01
@@ -870,24 +862,24 @@ LL(13):
 	FMADD	y08, a8, b3, y08
 	LFD	a8,  4 * SIZE(AO8)
 
-	FMADD	y09, a1, b4, y09
+	FMADD	y01, a1, b4, y01
 	LFD	a1,  5 * SIZE(AO1)
-	FMADD	y10, a2, b4, y10
+	FMADD	y02, a2, b4, y02
 	LFD	a2,  5 * SIZE(AO2)
 
-	FMADD	y11, a3, b4, y11
+	FMADD	y03, a3, b4, y03
 	LFD	a3,  5 * SIZE(AO3)
-	FMADD	y12, a4, b4, y12
+	FMADD	y04, a4, b4, y04
 	LFD	a4,  5 * SIZE(AO4)
 
-	FMADD	y13, a5, b4, y13
+	FMADD	y05, a5, b4, y05
 	LFD	a5,  5 * SIZE(AO5)
-	FMADD	y14, a6, b4, y14
+	FMADD	y06, a6, b4, y06
 	LFD	a6,  5 * SIZE(AO6)
 
-	FMADD	y15, a7, b4, y15
+	FMADD	y07, a7, b4, y07
 	LFD	a7,  5 * SIZE(AO7)
-	FMADD	y16, a8, b4, y16
+	FMADD	y08, a8, b4, y08
 	LFD	a8,  5 * SIZE(AO8)
 
 	LFD	b1,  9 * SIZE(BO)
@@ -915,24 +907,24 @@ LL(13):
 	FMADD	y08, a8, b5, y08
 	LFD	a8,  6 * SIZE(AO8)
 
-	FMADD	y09, a1, b6, y09
+	FMADD	y01, a1, b6, y01
 	LFD	a1,  7 * SIZE(AO1)
-	FMADD	y10, a2, b6, y10
+	FMADD	y02, a2, b6, y02
 	LFD	a2,  7 * SIZE(AO2)
 
-	FMADD	y11, a3, b6, y11
+	FMADD	y03, a3, b6, y03
 	LFD	a3,  7 * SIZE(AO3)
-	FMADD	y12, a4, b6, y12
+	FMADD	y04, a4, b6, y04
 	LFD	a4,  7 * SIZE(AO4)
 
-	FMADD	y13, a5, b6, y13
+	FMADD	y05, a5, b6, y05
 	LFD	a5,  7 * SIZE(AO5)
-	FMADD	y14, a6, b6, y14
+	FMADD	y06, a6, b6, y06
 	LFD	a6,  7 * SIZE(AO6)
 
-	FMADD	y15, a7, b6, y15
+	FMADD	y07, a7, b6, y07
 	LFD	a7,  7 * SIZE(AO7)
-	FMADD	y16, a8, b6, y16
+	FMADD	y08, a8, b6, y08
 	LFD	a8,  7 * SIZE(AO8)
 
 	FMADD	y01, a1, b7, y01
@@ -955,24 +947,24 @@ LL(13):
 	FMADD	y08, a8, b7, y08
 	LFD	a8,  8 * SIZE(AO8)
 
-	FMADD	y09, a1, b8, y09
+	FMADD	y01, a1, b8, y01
 	LFD	a1,  9 * SIZE(AO1)
-	FMADD	y10, a2, b8, y10
+	FMADD	y02, a2, b8, y02
 	LFD	a2,  9 * SIZE(AO2)
 
-	FMADD	y11, a3, b8, y11
+	FMADD	y03, a3, b8, y03
 	LFD	a3,  9 * SIZE(AO3)
-	FMADD	y12, a4, b8, y12
+	FMADD	y04, a4, b8, y04
 	LFD	a4,  9 * SIZE(AO4)
 
-	FMADD	y13, a5, b8, y13
+	FMADD	y05, a5, b8, y05
 	LFD	a5,  9 * SIZE(AO5)
-	FMADD	y14, a6, b8, y14
+	FMADD	y06, a6, b8, y06
 	LFD	a6,  9 * SIZE(AO6)
 
-	FMADD	y15, a7, b8, y15
+	FMADD	y07, a7, b8, y07
 	LFD	a7,  9 * SIZE(AO7)
-	FMADD	y16, a8, b8, y16
+	FMADD	y08, a8, b8, y08
 	LFD	a8,  9 * SIZE(AO8)
 
 	LFD	b5, 13 * SIZE(BO)
@@ -1000,24 +992,24 @@ LL(13):
 	FMADD	y08, a8, b1, y08
 	LFD	a8, 10 * SIZE(AO8)
 
-	FMADD	y09, a1, b2, y09
+	FMADD	y01, a1, b2, y01
 	LFD	a1, 11 * SIZE(AO1)
-	FMADD	y10, a2, b2, y10
+	FMADD	y02, a2, b2, y02
 	LFD	a2, 11 * SIZE(AO2)
 
-	FMADD	y11, a3, b2, y11
+	FMADD	y03, a3, b2, y03
 	LFD	a3, 11 * SIZE(AO3)
-	FMADD	y12, a4, b2, y12
+	FMADD	y04, a4, b2, y04
 	LFD	a4, 11 * SIZE(AO4)
 
-	FMADD	y13, a5, b2, y13
+	FMADD	y05, a5, b2, y05
 	LFD	a5, 11 * SIZE(AO5)
-	FMADD	y14, a6, b2, y14
+	FMADD	y06, a6, b2, y06
 	LFD	a6, 11 * SIZE(AO6)
 
-	FMADD	y15, a7, b2, y15
+	FMADD	y07, a7, b2, y07
 	LFD	a7, 11 * SIZE(AO7)
-	FMADD	y16, a8, b2, y16
+	FMADD	y08, a8, b2, y08
 	LFD	a8, 11 * SIZE(AO8)
 
 	FMADD	y01, a1, b3, y01
@@ -1040,24 +1032,24 @@ LL(13):
 	FMADD	y08, a8, b3, y08
 	LFD	a8, 12 * SIZE(AO8)
 
-	FMADD	y09, a1, b4, y09
+	FMADD	y01, a1, b4, y01
 	LFD	a1, 13 * SIZE(AO1)
-	FMADD	y10, a2, b4, y10
+	FMADD	y02, a2, b4, y02
 	LFD	a2, 13 * SIZE(AO2)
 
-	FMADD	y11, a3, b4, y11
+	FMADD	y03, a3, b4, y03
 	LFD	a3, 13 * SIZE(AO3)
-	FMADD	y12, a4, b4, y12
+	FMADD	y04, a4, b4, y04
 	LFD	a4, 13 * SIZE(AO4)
 
-	FMADD	y13, a5, b4, y13
+	FMADD	y05, a5, b4, y05
 	LFD	a5, 13 * SIZE(AO5)
-	FMADD	y14, a6, b4, y14
+	FMADD	y06, a6, b4, y06
 	LFD	a6, 13 * SIZE(AO6)
 
-	FMADD	y15, a7, b4, y15
+	FMADD	y07, a7, b4, y07
 	LFD	a7, 13 * SIZE(AO7)
-	FMADD	y16, a8, b4, y16
+	FMADD	y08, a8, b4, y08
 	LFD	a8, 13 * SIZE(AO8)
 
 	FMADD	y01, a1, b5, y01
@@ -1080,24 +1072,24 @@ LL(13):
 	FMADD	y08, a8, b5, y08
 	LFD	a8, 14 * SIZE(AO8)
 
-	FMADD	y09, a1, b6, y09
+	FMADD	y01, a1, b6, y01
 	LFD	a1, 15 * SIZE(AO1)
-	FMADD	y10, a2, b6, y10
+	FMADD	y02, a2, b6, y02
 	LFD	a2, 15 * SIZE(AO2)
 
-	FMADD	y11, a3, b6, y11
+	FMADD	y03, a3, b6, y03
 	LFD	a3, 15 * SIZE(AO3)
-	FMADD	y12, a4, b6, y12
+	FMADD	y04, a4, b6, y04
 	LFD	a4, 15 * SIZE(AO4)
 
-	FMADD	y13, a5, b6, y13
+	FMADD	y05, a5, b6, y05
 	LFD	a5, 15 * SIZE(AO5)
-	FMADD	y14, a6, b6, y14
+	FMADD	y06, a6, b6, y06
 	LFD	a6, 15 * SIZE(AO6)
 
-	FMADD	y15, a7, b6, y15
+	FMADD	y07, a7, b6, y07
 	LFD	a7, 15 * SIZE(AO7)
-	FMADD	y16, a8, b6, y16
+	FMADD	y08, a8, b6, y08
 	LFD	a8, 15 * SIZE(AO8)
 
 	FMADD	y01, a1, b7, y01
@@ -1120,20 +1112,20 @@ LL(13):
 	FMADD	y08, a8, b7, y08
 	LFD	a8, 16 * SIZE(AO8)
 
-	FMADD	y09, a1, b8, y09
-	FMADD	y10, a2, b8, y10
-	FMADD	y11, a3, b8, y11
-	FMADD	y12, a4, b8, y12
+	FMADD	y01, a1, b8, y01
+	FMADD	y02, a2, b8, y02
+	FMADD	y03, a3, b8, y03
+	FMADD	y04, a4, b8, y04
 
 	addi	AO1, AO1, 16 * SIZE
 	addi	AO2, AO2, 16 * SIZE
 	addi	AO3, AO3, 16 * SIZE
 	addi	AO4, AO4, 16 * SIZE
 
-	FMADD	y13, a5, b8, y13
-	FMADD	y14, a6, b8, y14
-	FMADD	y15, a7, b8, y15
-	FMADD	y16, a8, b8, y16
+	FMADD	y05, a5, b8, y05
+	FMADD	y06, a6, b8, y06
+	FMADD	y07, a7, b8, y07
+	FMADD	y08, a8, b8, y08
 
 	addi	AO5, AO5, 16 * SIZE
 	addi	AO6, AO6, 16 * SIZE
@@ -1180,21 +1172,21 @@ LL(14):
 	FMADD	y08, a8, b1, y08
 	LFD	a8,  2 * SIZE(AO8)
 
-	FMADD	y09, a1, b2, y09
+	FMADD	y01, a1, b2, y01
 	LFD	a1,  3 * SIZE(AO1)
-	FMADD	y10, a2, b2, y10
+	FMADD	y02, a2, b2, y02
 	LFD	a2,  3 * SIZE(AO2)
-	FMADD	y11, a3, b2, y11
+	FMADD	y03, a3, b2, y03
 	LFD	a3,  3 * SIZE(AO3)
-	FMADD	y12, a4, b2, y12
+	FMADD	y04, a4, b2, y04
 	LFD	a4,  3 * SIZE(AO4)
-	FMADD	y13, a5, b2, y13
+	FMADD	y05, a5, b2, y05
 	LFD	a5,  3 * SIZE(AO5)
-	FMADD	y14, a6, b2, y14
+	FMADD	y06, a6, b2, y06
 	LFD	a6,  3 * SIZE(AO6)
-	FMADD	y15, a7, b2, y15
+	FMADD	y07, a7, b2, y07
 	LFD	a7,  3 * SIZE(AO7)
-	FMADD	y16, a8, b2, y16
+	FMADD	y08, a8, b2, y08
 	LFD	a8,  3 * SIZE(AO8)
 
 	LFD	b5,  5 * SIZE(BO)
@@ -1219,21 +1211,21 @@ LL(14):
 	FMADD	y08, a8, b3, y08
 	LFD	a8,  4 * SIZE(AO8)
 
-	FMADD	y09, a1, b4, y09
+	FMADD	y01, a1, b4, y01
 	LFD	a1,  5 * SIZE(AO1)
-	FMADD	y10, a2, b4, y10
+	FMADD	y02, a2, b4, y02
 	LFD	a2,  5 * SIZE(AO2)
-	FMADD	y11, a3, b4, y11
+	FMADD	y03, a3, b4, y03
 	LFD	a3,  5 * SIZE(AO3)
-	FMADD	y12, a4, b4, y12
+	FMADD	y04, a4, b4, y04
 	LFD	a4,  5 * SIZE(AO4)
-	FMADD	y13, a5, b4, y13
+	FMADD	y05, a5, b4, y05
 	LFD	a5,  5 * SIZE(AO5)
-	FMADD	y14, a6, b4, y14
+	FMADD	y06, a6, b4, y06
 	LFD	a6,  5 * SIZE(AO6)
-	FMADD	y15, a7, b4, y15
+	FMADD	y07, a7, b4, y07
 	LFD	a7,  5 * SIZE(AO7)
-	FMADD	y16, a8, b4, y16
+	FMADD	y08, a8, b4, y08
 	LFD	a8,  5 * SIZE(AO8)
 
 	FMADD	y01, a1, b5, y01
@@ -1253,21 +1245,21 @@ LL(14):
 	FMADD	y08, a8, b5, y08
 	LFD	a8,  6 * SIZE(AO8)
 
-	FMADD	y09, a1, b6, y09
+	FMADD	y01, a1, b6, y01
 	LFD	a1,  7 * SIZE(AO1)
-	FMADD	y10, a2, b6, y10
+	FMADD	y02, a2, b6, y02
 	LFD	a2,  7 * SIZE(AO2)
-	FMADD	y11, a3, b6, y11
+	FMADD	y03, a3, b6, y03
 	LFD	a3,  7 * SIZE(AO3)
-	FMADD	y12, a4, b6, y12
+	FMADD	y04, a4, b6, y04
 	LFD	a4,  7 * SIZE(AO4)
-	FMADD	y13, a5, b6, y13
+	FMADD	y05, a5, b6, y05
 	LFD	a5,  7 * SIZE(AO5)
-	FMADD	y14, a6, b6, y14
+	FMADD	y06, a6, b6, y06
 	LFD	a6,  7 * SIZE(AO6)
-	FMADD	y15, a7, b6, y15
+	FMADD	y07, a7, b6, y07
 	LFD	a7,  7 * SIZE(AO7)
-	FMADD	y16, a8, b6, y16
+	FMADD	y08, a8, b6, y08
 	LFD	a8,  7 * SIZE(AO8)
 
 	FMADD	y01, a1, b7, y01
@@ -1287,21 +1279,21 @@ LL(14):
 	FMADD	y08, a8, b7, y08
 	LFD	a8,  8 * SIZE(AO8)
 
-	FMADD	y09, a1, b8, y09
+	FMADD	y01, a1, b8, y01
 	addi	AO1, AO1, 8 * SIZE
-	FMADD	y10, a2, b8, y10
+	FMADD	y02, a2, b8, y02
 	addi	AO2, AO2, 8 * SIZE
-	FMADD	y11, a3, b8, y11
+	FMADD	y03, a3, b8, y03
 	addi	AO3, AO3, 8 * SIZE
-	FMADD	y12, a4, b8, y12
+	FMADD	y04, a4, b8, y04
 	addi	AO4, AO4, 8 * SIZE
-	FMADD	y13, a5, b8, y13
+	FMADD	y05, a5, b8, y05
 	addi	AO5, AO5, 8 * SIZE
-	FMADD	y14, a6, b8, y14
+	FMADD	y06, a6, b8, y06
 	addi	AO6, AO6, 8 * SIZE
-	FMADD	y15, a7, b8, y15
+	FMADD	y07, a7, b8, y07
 	addi	AO7, AO7, 8 * SIZE
-	FMADD	y16, a8, b8, y16
+	FMADD	y08, a8, b8, y08
 	addi	AO8, AO8, 8 * SIZE
 	addi	BO,  BO,  8 * SIZE
 	.align 4
@@ -1341,21 +1333,21 @@ LL(15):
 	FMADD	y08, a8, b1, y08
 	LFD	a8,  2 * SIZE(AO8)
 
-	FMADD	y09, a1, b2, y09
+	FMADD	y01, a1, b2, y01
 	LFD	a1,  3 * SIZE(AO1)
-	FMADD	y10, a2, b2, y10
+	FMADD	y02, a2, b2, y02
 	LFD	a2,  3 * SIZE(AO2)
-	FMADD	y11, a3, b2, y11
+	FMADD	y03, a3, b2, y03
 	LFD	a3,  3 * SIZE(AO3)
-	FMADD	y12, a4, b2, y12
+	FMADD	y04, a4, b2, y04
 	LFD	a4,  3 * SIZE(AO4)
-	FMADD	y13, a5, b2, y13
+	FMADD	y05, a5, b2, y05
 	LFD	a5,  3 * SIZE(AO5)
-	FMADD	y14, a6, b2, y14
+	FMADD	y06, a6, b2, y06
 	LFD	a6,  3 * SIZE(AO6)
-	FMADD	y15, a7, b2, y15
+	FMADD	y07, a7, b2, y07
 	LFD	a7,  3 * SIZE(AO7)
-	FMADD	y16, a8, b2, y16
+	FMADD	y08, a8, b2, y08
 	LFD	a8,  3 * SIZE(AO8)
 
 	FMADD	y01, a1, b3, y01
@@ -1376,21 +1368,21 @@ LL(15):
 	FMADD	y08, a8, b3, y08
 	LFD	a8,  4 * SIZE(AO8)
 
-	FMADD	y09, a1, b4, y09
+	FMADD	y01, a1, b4, y01
 	addi	AO1, AO1, 4 * SIZE
-	FMADD	y10, a2, b4, y10
+	FMADD	y02, a2, b4, y02
 	addi	AO2, AO2, 4 * SIZE
-	FMADD	y11, a3, b4, y11
+	FMADD	y03, a3, b4, y03
 	addi	AO3, AO3, 4 * SIZE
-	FMADD	y12, a4, b4, y12
+	FMADD	y04, a4, b4, y04
 	addi	AO4, AO4, 4 * SIZE
-	FMADD	y13, a5, b4, y13
+	FMADD	y05, a5, b4, y05
 	addi	AO5, AO5, 4 * SIZE
-	FMADD	y14, a6, b4, y14
+	FMADD	y06, a6, b4, y06
 	addi	AO6, AO6, 4 * SIZE
-	FMADD	y15, a7, b4, y15
+	FMADD	y07, a7, b4, y07
 	addi	AO7, AO7, 4 * SIZE
-	FMADD	y16, a8, b4, y16
+	FMADD	y08, a8, b4, y08
 	addi	AO8, AO8, 4 * SIZE
 	addi	BO,  BO,  4 * SIZE
 	.align 4
@@ -1428,22 +1420,22 @@ LL(16):
 	FMADD	y08, a8, b1, y08
 	LFD	a8,  2 * SIZE(AO8)
 
-	FMADD	y09, a1, b2, y09
+	FMADD	y01, a1, b2, y01
 	addi	AO1, AO1, 2 * SIZE
 	addi	AO2, AO2, 2 * SIZE
-	FMADD	y10, a2, b2, y10
+	FMADD	y02, a2, b2, y02
 	addi	AO3, AO3, 2 * SIZE
 	addi	AO4, AO4, 2 * SIZE
-	FMADD	y11, a3, b2, y11
-	FMADD	y12, a4, b2, y12
+	FMADD	y03, a3, b2, y03
+	FMADD	y04, a4, b2, y04
 	addi	AO5, AO5, 2 * SIZE
 	addi	AO6, AO6, 2 * SIZE
-	FMADD	y13, a5, b2, y13
-	FMADD	y14, a6, b2, y14
+	FMADD	y05, a5, b2, y05
+	FMADD	y06, a6, b2, y06
 	addi	AO7, AO7, 2 * SIZE
 	addi	AO8, AO8, 2 * SIZE
-	FMADD	y15, a7, b2, y15
-	FMADD	y16, a8, b2, y16
+	FMADD	y07, a7, b2, y07
+	FMADD	y08, a8, b2, y08
 	addi	BO,  BO,  2 * SIZE
 	.align 4
 
@@ -1486,15 +1478,6 @@ LL(18):
 	LFD	a7,  7 * SIZE(CO)
 	LFD	a8,  8 * SIZE(CO)
 
-	FADD	y01, y09, y01
-	FADD	y02, y10, y02
-	FADD	y03, y11, y03
-	FADD	y04, y12, y04
-	FADD	y05, y13, y05
-	FADD	y06, y14, y06
-	FADD	y07, y15, y07
-	FADD	y08, y16, y08
-
 	FMADD	a1, alpha, y01, a1
 	FMADD	a2, alpha, y02, a2
 	FMADD	a3, alpha, y03, a3
@@ -1529,15 +1512,6 @@ LL(19):
 	LFDUX	a6, CO, INCY
 	LFDUX	a7, CO, INCY
 	LFDUX	a8, CO, INCY
-
-	FADD	y01, y09, y01
-	FADD	y02, y10, y02
-	FADD	y03, y11, y03
-	FADD	y04, y12, y04
-	FADD	y05, y13, y05
-	FADD	y06, y14, y06
-	FADD	y07, y15, y07
-	FADD	y08, y16, y08
 
 	FMADD	a1, alpha, f0, a1
 	FMADD	a2, alpha, f1, a2
@@ -1580,10 +1554,6 @@ LL(20):
 	fmr	 y02, y01
 	fmr	 y03, y01
 	fmr	 y04, y01
-	fmr	 y09, y01
-	fmr	 y10, y01
-	fmr	 y11, y01
-	fmr	 y12, y01
 
 	DCBT(Y1, PREC)
 
@@ -1621,13 +1591,13 @@ LL(22):
 	FMADD	y04, a4, b1, y04
 	LFD	a4,  3 * SIZE(AO4)
 
-	FMADD	y09, a5, b2, y09
+	FMADD	y01, a5, b2, y01
 	LFD	a5,  4 * SIZE(AO1)
-	FMADD	y10, a6, b2, y10
+	FMADD	y02, a6, b2, y02
 	LFD	a6,  4 * SIZE(AO2)
-	FMADD	y11, a7, b2, y11
+	FMADD	y03, a7, b2, y03
 	LFD	a7,  4 * SIZE(AO3)
-	FMADD	y12, a8, b2, y12
+	FMADD	y04, a8, b2, y04
 	LFD	a8,  4 * SIZE(AO4)
 
 	FMADD	y01, a1, b3, y01
@@ -1639,13 +1609,13 @@ LL(22):
 	FMADD	y04, a4, b3, y04
 	LFD	a4,  5 * SIZE(AO4)
 
-	FMADD	y09, a5, b4, y09
+	FMADD	y01, a5, b4, y01
 	LFD	a5,  6 * SIZE(AO1)
-	FMADD	y10, a6, b4, y10
+	FMADD	y02, a6, b4, y02
 	LFD	a6,  6 * SIZE(AO2)
-	FMADD	y11, a7, b4, y11
+	FMADD	y03, a7, b4, y03
 	LFD	a7,  6 * SIZE(AO3)
-	FMADD	y12, a8, b4, y12
+	FMADD	y04, a8, b4, y04
 	LFD	a8,  6 * SIZE(AO4)
 
 	LFD	b1,  9 * SIZE(BO)
@@ -1662,13 +1632,13 @@ LL(22):
 	FMADD	y04, a4, b5, y04
 	LFD	a4,  7 * SIZE(AO4)
 
-	FMADD	y09, a5, b6, y09
+	FMADD	y01, a5, b6, y01
 	LFD	a5,  8 * SIZE(AO1)
-	FMADD	y10, a6, b6, y10
+	FMADD	y02, a6, b6, y02
 	LFD	a6,  8 * SIZE(AO2)
-	FMADD	y11, a7, b6, y11
+	FMADD	y03, a7, b6, y03
 	LFD	a7,  8 * SIZE(AO3)
-	FMADD	y12, a8, b6, y12
+	FMADD	y04, a8, b6, y04
 	LFD	a8,  8 * SIZE(AO4)
 
 	FMADD	y01, a1, b7, y01
@@ -1680,13 +1650,13 @@ LL(22):
 	FMADD	y04, a4, b7, y04
 	LFD	a4,  9 * SIZE(AO4)
 
-	FMADD	y09, a5, b8, y09
+	FMADD	y01, a5, b8, y01
 	LFD	a5, 10 * SIZE(AO1)
-	FMADD	y10, a6, b8, y10
+	FMADD	y02, a6, b8, y02
 	LFD	a6, 10 * SIZE(AO2)
-	FMADD	y11, a7, b8, y11
+	FMADD	y03, a7, b8, y03
 	LFD	a7, 10 * SIZE(AO3)
-	FMADD	y12, a8, b8, y12
+	FMADD	y04, a8, b8, y04
 	LFD	a8, 10 * SIZE(AO4)
 
 	LFD	b5, 13 * SIZE(BO)
@@ -1703,13 +1673,13 @@ LL(22):
 	FMADD	y04, a4, b1, y04
 	LFD	a4, 11 * SIZE(AO4)
 
-	FMADD	y09, a5, b2, y09
+	FMADD	y01, a5, b2, y01
 	LFD	a5, 12 * SIZE(AO1)
-	FMADD	y10, a6, b2, y10
+	FMADD	y02, a6, b2, y02
 	LFD	a6, 12 * SIZE(AO2)
-	FMADD	y11, a7, b2, y11
+	FMADD	y03, a7, b2, y03
 	LFD	a7, 12 * SIZE(AO3)
-	FMADD	y12, a8, b2, y12
+	FMADD	y04, a8, b2, y04
 	LFD	a8, 12 * SIZE(AO4)
 
 	FMADD	y01, a1, b3, y01
@@ -1721,13 +1691,13 @@ LL(22):
 	FMADD	y04, a4, b3, y04
 	LFD	a4, 13 * SIZE(AO4)
 
-	FMADD	y09, a5, b4, y09
+	FMADD	y01, a5, b4, y01
 	LFD	a5, 14 * SIZE(AO1)
-	FMADD	y10, a6, b4, y10
+	FMADD	y02, a6, b4, y02
 	LFD	a6, 14 * SIZE(AO2)
-	FMADD	y11, a7, b4, y11
+	FMADD	y03, a7, b4, y03
 	LFD	a7, 14 * SIZE(AO3)
-	FMADD	y12, a8, b4, y12
+	FMADD	y04, a8, b4, y04
 	LFD	a8, 14 * SIZE(AO4)
 
 	LFD	b1, 17 * SIZE(BO)
@@ -1744,13 +1714,13 @@ LL(22):
 	FMADD	y04, a4, b5, y04
 	LFD	a4, 15 * SIZE(AO4)
 
-	FMADD	y09, a5, b6, y09
+	FMADD	y01, a5, b6, y01
 	LFD	a5, 16 * SIZE(AO1)
-	FMADD	y10, a6, b6, y10
+	FMADD	y02, a6, b6, y02
 	LFD	a6, 16 * SIZE(AO2)
-	FMADD	y11, a7, b6, y11
+	FMADD	y03, a7, b6, y03
 	LFD	a7, 16 * SIZE(AO3)
-	FMADD	y12, a8, b6, y12
+	FMADD	y04, a8, b6, y04
 	LFD	a8, 16 * SIZE(AO4)
 
 	FMADD	y01, a1, b7, y01
@@ -1762,13 +1732,13 @@ LL(22):
 	FMADD	y04, a4, b7, y04
 	LFD	a4, 17 * SIZE(AO4)
 
-	FMADD	y09, a5, b8, y09
+	FMADD	y01, a5, b8, y01
 	LFD	a5, 18 * SIZE(AO1)
-	FMADD	y10, a6, b8, y10
+	FMADD	y02, a6, b8, y02
 	LFD	a6, 18 * SIZE(AO2)
-	FMADD	y11, a7, b8, y11
+	FMADD	y03, a7, b8, y03
 	LFD	a7, 18 * SIZE(AO3)
-	FMADD	y12, a8, b8, y12
+	FMADD	y04, a8, b8, y04
 	LFD	a8, 18 * SIZE(AO4)
 
 	LFD	b5, 21 * SIZE(BO)
@@ -1800,13 +1770,13 @@ LL(23):
 	FMADD	y04, a4, b1, y04
 	LFD	a4,  3 * SIZE(AO4)
 
-	FMADD	y09, a5, b2, y09
+	FMADD	y01, a5, b2, y01
 	LFD	a5,  4 * SIZE(AO1)
-	FMADD	y10, a6, b2, y10
+	FMADD	y02, a6, b2, y02
 	LFD	a6,  4 * SIZE(AO2)
-	FMADD	y11, a7, b2, y11
+	FMADD	y03, a7, b2, y03
 	LFD	a7,  4 * SIZE(AO3)
-	FMADD	y12, a8, b2, y12
+	FMADD	y04, a8, b2, y04
 	LFD	a8,  4 * SIZE(AO4)
 
 	FMADD	y01, a1, b3, y01
@@ -1818,13 +1788,13 @@ LL(23):
 	FMADD	y04, a4, b3, y04
 	LFD	a4,  5 * SIZE(AO4)
 
-	FMADD	y09, a5, b4, y09
+	FMADD	y01, a5, b4, y01
 	LFD	a5,  6 * SIZE(AO1)
-	FMADD	y10, a6, b4, y10
+	FMADD	y02, a6, b4, y02
 	LFD	a6,  6 * SIZE(AO2)
-	FMADD	y11, a7, b4, y11
+	FMADD	y03, a7, b4, y03
 	LFD	a7,  6 * SIZE(AO3)
-	FMADD	y12, a8, b4, y12
+	FMADD	y04, a8, b4, y04
 	LFD	a8,  6 * SIZE(AO4)
 
 	LFD	b1,  9 * SIZE(BO)
@@ -1841,13 +1811,13 @@ LL(23):
 	FMADD	y04, a4, b5, y04
 	LFD	a4,  7 * SIZE(AO4)
 
-	FMADD	y09, a5, b6, y09
+	FMADD	y01, a5, b6, y01
 	LFD	a5,  8 * SIZE(AO1)
-	FMADD	y10, a6, b6, y10
+	FMADD	y02, a6, b6, y02
 	LFD	a6,  8 * SIZE(AO2)
-	FMADD	y11, a7, b6, y11
+	FMADD	y03, a7, b6, y03
 	LFD	a7,  8 * SIZE(AO3)
-	FMADD	y12, a8, b6, y12
+	FMADD	y04, a8, b6, y04
 	LFD	a8,  8 * SIZE(AO4)
 
 	FMADD	y01, a1, b7, y01
@@ -1859,13 +1829,13 @@ LL(23):
 	FMADD	y04, a4, b7, y04
 	LFD	a4,  9 * SIZE(AO4)
 
-	FMADD	y09, a5, b8, y09
+	FMADD	y01, a5, b8, y01
 	LFD	a5, 10 * SIZE(AO1)
-	FMADD	y10, a6, b8, y10
+	FMADD	y02, a6, b8, y02
 	LFD	a6, 10 * SIZE(AO2)
-	FMADD	y11, a7, b8, y11
+	FMADD	y03, a7, b8, y03
 	LFD	a7, 10 * SIZE(AO3)
-	FMADD	y12, a8, b8, y12
+	FMADD	y04, a8, b8, y04
 	LFD	a8, 10 * SIZE(AO4)
 
 	LFD	b5, 13 * SIZE(BO)
@@ -1882,13 +1852,13 @@ LL(23):
 	FMADD	y04, a4, b1, y04
 	LFD	a4, 11 * SIZE(AO4)
 
-	FMADD	y09, a5, b2, y09
+	FMADD	y01, a5, b2, y01
 	LFD	a5, 12 * SIZE(AO1)
-	FMADD	y10, a6, b2, y10
+	FMADD	y02, a6, b2, y02
 	LFD	a6, 12 * SIZE(AO2)
-	FMADD	y11, a7, b2, y11
+	FMADD	y03, a7, b2, y03
 	LFD	a7, 12 * SIZE(AO3)
-	FMADD	y12, a8, b2, y12
+	FMADD	y04, a8, b2, y04
 	LFD	a8, 12 * SIZE(AO4)
 
 	FMADD	y01, a1, b3, y01
@@ -1900,13 +1870,13 @@ LL(23):
 	FMADD	y04, a4, b3, y04
 	LFD	a4, 13 * SIZE(AO4)
 
-	FMADD	y09, a5, b4, y09
+	FMADD	y01, a5, b4, y01
 	LFD	a5, 14 * SIZE(AO1)
-	FMADD	y10, a6, b4, y10
+	FMADD	y02, a6, b4, y02
 	LFD	a6, 14 * SIZE(AO2)
-	FMADD	y11, a7, b4, y11
+	FMADD	y03, a7, b4, y03
 	LFD	a7, 14 * SIZE(AO3)
-	FMADD	y12, a8, b4, y12
+	FMADD	y04, a8, b4, y04
 	LFD	a8, 14 * SIZE(AO4)
 
 	FMADD	y01, a1, b5, y01
@@ -1918,13 +1888,13 @@ LL(23):
 	FMADD	y04, a4, b5, y04
 	LFD	a4, 15 * SIZE(AO4)
 
-	FMADD	y09, a5, b6, y09
+	FMADD	y01, a5, b6, y01
 	LFD	a5, 16 * SIZE(AO1)
-	FMADD	y10, a6, b6, y10
+	FMADD	y02, a6, b6, y02
 	LFD	a6, 16 * SIZE(AO2)
-	FMADD	y11, a7, b6, y11
+	FMADD	y03, a7, b6, y03
 	LFD	a7, 16 * SIZE(AO3)
-	FMADD	y12, a8, b6, y12
+	FMADD	y04, a8, b6, y04
 	LFD	a8, 16 * SIZE(AO4)
 
 	FMADD	y01, a1, b7, y01
@@ -1932,10 +1902,10 @@ LL(23):
 	FMADD	y03, a3, b7, y03
 	FMADD	y04, a4, b7, y04
 
-	FMADD	y09, a5, b8, y09
-	FMADD	y10, a6, b8, y10
-	FMADD	y11, a7, b8, y11
-	FMADD	y12, a8, b8, y12
+	FMADD	y01, a5, b8, y01
+	FMADD	y02, a6, b8, y02
+	FMADD	y03, a7, b8, y03
+	FMADD	y04, a8, b8, y04
 
 	addi	AO1, AO1, 16 * SIZE
 	addi	AO2, AO2, 16 * SIZE
@@ -1975,13 +1945,13 @@ LL(24):
 	FMADD	y04, a4, b1, y04
 	LFD	a4,  3 * SIZE(AO4)
 
-	FMADD	y09, a5, b2, y09
+	FMADD	y01, a5, b2, y01
 	LFD	a5,  4 * SIZE(AO1)
-	FMADD	y10, a6, b2, y10
+	FMADD	y02, a6, b2, y02
 	LFD	a6,  4 * SIZE(AO2)
-	FMADD	y11, a7, b2, y11
+	FMADD	y03, a7, b2, y03
 	LFD	a7,  4 * SIZE(AO3)
-	FMADD	y12, a8, b2, y12
+	FMADD	y04, a8, b2, y04
 	LFD	a8,  4 * SIZE(AO4)
 
 	FMADD	y01, a1, b3, y01
@@ -1993,13 +1963,13 @@ LL(24):
 	FMADD	y04, a4, b3, y04
 	LFD	a4,  5 * SIZE(AO4)
 
-	FMADD	y09, a5, b4, y09
+	FMADD	y01, a5, b4, y01
 	LFD	a5,  6 * SIZE(AO1)
-	FMADD	y10, a6, b4, y10
+	FMADD	y02, a6, b4, y02
 	LFD	a6,  6 * SIZE(AO2)
-	FMADD	y11, a7, b4, y11
+	FMADD	y03, a7, b4, y03
 	LFD	a7,  6 * SIZE(AO3)
-	FMADD	y12, a8, b4, y12
+	FMADD	y04, a8, b4, y04
 	LFD	a8,  6 * SIZE(AO4)
 
 	LFD	b1,  5 * SIZE(BO)
@@ -2016,13 +1986,13 @@ LL(24):
 	FMADD	y04, a4, b1, y04
 	LFD	a4,  7 * SIZE(AO4)
 
-	FMADD	y09, a5, b2, y09
+	FMADD	y01, a5, b2, y01
 	LFD	a5,  8 * SIZE(AO1)
-	FMADD	y10, a6, b2, y10
+	FMADD	y02, a6, b2, y02
 	LFD	a6,  8 * SIZE(AO2)
-	FMADD	y11, a7, b2, y11
+	FMADD	y03, a7, b2, y03
 	LFD	a7,  8 * SIZE(AO3)
-	FMADD	y12, a8, b2, y12
+	FMADD	y04, a8, b2, y04
 	LFD	a8,  8 * SIZE(AO4)
 
 	FMADD	y01, a1, b3, y01
@@ -2030,13 +2000,13 @@ LL(24):
 	FMADD	y03, a3, b3, y03
 	FMADD	y04, a4, b3, y04
 
-	FMADD	y09, a5, b4, y09
+	FMADD	y01, a5, b4, y01
 	addi	AO1, AO1, 8 * SIZE
-	FMADD	y10, a6, b4, y10
+	FMADD	y02, a6, b4, y02
 	addi	AO2, AO2, 8 * SIZE
-	FMADD	y11, a7, b4, y11
+	FMADD	y03, a7, b4, y03
 	addi	AO3, AO3, 8 * SIZE
-	FMADD	y12, a8, b4, y12
+	FMADD	y04, a8, b4, y04
 	addi	AO4, AO4, 8 * SIZE
 
 	addi	BO,  BO,  8 * SIZE
@@ -2070,13 +2040,13 @@ LL(25):
 	FMADD	y04, a4, b1, y04
 	LFD	a4,  3 * SIZE(AO4)
 
-	FMADD	y09, a5, b2, y09
+	FMADD	y01, a5, b2, y01
 	LFD	a5,  4 * SIZE(AO1)
-	FMADD	y10, a6, b2, y10
+	FMADD	y02, a6, b2, y02
 	LFD	a6,  4 * SIZE(AO2)
-	FMADD	y11, a7, b2, y11
+	FMADD	y03, a7, b2, y03
 	LFD	a7,  4 * SIZE(AO3)
-	FMADD	y12, a8, b2, y12
+	FMADD	y04, a8, b2, y04
 	LFD	a8,  4 * SIZE(AO4)
 
 	FMADD	y01, a1, b3, y01
@@ -2084,13 +2054,13 @@ LL(25):
 	FMADD	y03, a3, b3, y03
 	FMADD	y04, a4, b3, y04
 
-	FMADD	y09, a5, b4, y09
+	FMADD	y01, a5, b4, y01
 	addi	AO1, AO1, 4 * SIZE
-	FMADD	y10, a6, b4, y10
+	FMADD	y02, a6, b4, y02
 	addi	AO2, AO2, 4 * SIZE
-	FMADD	y11, a7, b4, y11
+	FMADD	y03, a7, b4, y03
 	addi	AO3, AO3, 4 * SIZE
-	FMADD	y12, a8, b4, y12
+	FMADD	y04, a8, b4, y04
 	addi	AO4, AO4, 4 * SIZE
 	addi	BO,  BO,  4 * SIZE
 	.align 4
@@ -2117,13 +2087,13 @@ LL(26):
 	FMADD	y03, a3, b1, y03
 	FMADD	y04, a4, b1, y04
 
-	FMADD	y09, a5, b2, y09
+	FMADD	y01, a5, b2, y01
 	addi	AO1, AO1, 2 * SIZE
-	FMADD	y10, a6, b2, y10
+	FMADD	y02, a6, b2, y02
 	addi	AO2, AO2, 2 * SIZE
-	FMADD	y11, a7, b2, y11
+	FMADD	y03, a7, b2, y03
 	addi	AO3, AO3, 2 * SIZE
-	FMADD	y12, a8, b2, y12
+	FMADD	y04, a8, b2, y04
 	addi	AO4, AO4, 2 * SIZE
 	addi	BO,  BO,  2 * SIZE
 	.align 4
@@ -2156,11 +2126,6 @@ LL(28):
 	LFD	a3,  3 * SIZE(CO)
 	LFD	a4,  4 * SIZE(CO)
 
-	FADD	y01, y09, y01
-	FADD	y02, y10, y02
-	FADD	y03, y11, y03
-	FADD	y04, y12, y04
-
 	FMADD	a1, alpha, y01, a1
 	FMADD	a2, alpha, y02, a2
 	FMADD	a3, alpha, y03, a3
@@ -2180,11 +2145,6 @@ LL(29):
 	LFDUX	a2, CO, INCY
 	LFDUX	a3, CO, INCY
 	LFDUX	a4, CO, INCY
-
-	FADD	y01, y09, y01
-	FADD	y02, y10, y02
-	FADD	y03, y11, y03
-	FADD	y04, y12, y04
 
 	FMADD	a1, alpha, f0, a1
 	FMADD	a2, alpha, f1, a2
@@ -2209,12 +2169,6 @@ LL(30):
 
 	lfd	 y01, FZERO
 	fmr	 y02, y01
-	fmr	 y03, y01
-	fmr	 y04, y01
-	fmr	 y09, y01
-	fmr	 y10, y01
-	fmr	 y11, y01
-	fmr	 y12, y01
 
 	DCBT(Y1, PREC)
 
@@ -2247,18 +2201,18 @@ LL(32):
 	LFD	a1,  5 * SIZE(AO1)
 	FMADD	y02, a2, b1, y02
 	LFD	a2,  5 * SIZE(AO2)
-	FMADD	y03, a3, b2, y03
+	FMADD	y01, a3, b2, y01
 	LFD	a3,  6 * SIZE(AO1)
-	FMADD	y04, a4, b2, y04
+	FMADD	y02, a4, b2, y02
 	LFD	a4,  6 * SIZE(AO2)
 
-	FMADD	y09, a5, b3, y09
+	FMADD	y01, a5, b3, y01
 	LFD	a5,  7 * SIZE(AO1)
-	FMADD	y10, a6, b3, y10
+	FMADD	y02, a6, b3, y02
 	LFD	a6,  7 * SIZE(AO2)
-	FMADD	y11, a7, b4, y11
+	FMADD	y01, a7, b4, y01
 	LFD	a7,  8 * SIZE(AO1)
-	FMADD	y12, a8, b4, y12
+	FMADD	y02, a8, b4, y02
 	LFD	a8,  8 * SIZE(AO2)
 
 	LFD	b1,  9 * SIZE(BO)
@@ -2270,18 +2224,18 @@ LL(32):
 	LFD	a1,  9 * SIZE(AO1)
 	FMADD	y02, a2, b5, y02
 	LFD	a2,  9 * SIZE(AO2)
-	FMADD	y03, a3, b6, y03
+	FMADD	y01, a3, b6, y01
 	LFD	a3, 10 * SIZE(AO1)
-	FMADD	y04, a4, b6, y04
+	FMADD	y02, a4, b6, y02
 	LFD	a4, 10 * SIZE(AO2)
 
-	FMADD	y09, a5, b7, y09
+	FMADD	y01, a5, b7, y01
 	LFD	a5, 11 * SIZE(AO1)
-	FMADD	y10, a6, b7, y10
+	FMADD	y02, a6, b7, y02
 	LFD	a6, 11 * SIZE(AO2)
-	FMADD	y11, a7, b8, y11
+	FMADD	y01, a7, b8, y01
 	LFD	a7, 12 * SIZE(AO1)
-	FMADD	y12, a8, b8, y12
+	FMADD	y02, a8, b8, y02
 	LFD	a8, 12 * SIZE(AO2)
 
 	LFD	b5, 13 * SIZE(BO)
@@ -2293,18 +2247,18 @@ LL(32):
 	LFD	a1, 13 * SIZE(AO1)
 	FMADD	y02, a2, b1, y02
 	LFD	a2, 13 * SIZE(AO2)
-	FMADD	y03, a3, b2, y03
+	FMADD	y01, a3, b2, y01
 	LFD	a3, 14 * SIZE(AO1)
-	FMADD	y04, a4, b2, y04
+	FMADD	y02, a4, b2, y02
 	LFD	a4, 14 * SIZE(AO2)
 
-	FMADD	y09, a5, b3, y09
+	FMADD	y01, a5, b3, y01
 	LFD	a5, 15 * SIZE(AO1)
-	FMADD	y10, a6, b3, y10
+	FMADD	y02, a6, b3, y02
 	LFD	a6, 15 * SIZE(AO2)
-	FMADD	y11, a7, b4, y11
+	FMADD	y01, a7, b4, y01
 	LFD	a7, 16 * SIZE(AO1)
-	FMADD	y12, a8, b4, y12
+	FMADD	y02, a8, b4, y02
 	LFD	a8, 16 * SIZE(AO2)
 
 	LFD	b1, 17 * SIZE(BO)
@@ -2316,18 +2270,18 @@ LL(32):
 	LFD	a1, 17 * SIZE(AO1)
 	FMADD	y02, a2, b5, y02
 	LFD	a2, 17 * SIZE(AO2)
-	FMADD	y03, a3, b6, y03
+	FMADD	y01, a3, b6, y01
 	LFD	a3, 18 * SIZE(AO1)
-	FMADD	y04, a4, b6, y04
+	FMADD	y02, a4, b6, y02
 	LFD	a4, 18 * SIZE(AO2)
 
-	FMADD	y09, a5, b7, y09
+	FMADD	y01, a5, b7, y01
 	LFD	a5, 19 * SIZE(AO1)
-	FMADD	y10, a6, b7, y10
+	FMADD	y02, a6, b7, y02
 	LFD	a6, 19 * SIZE(AO2)
-	FMADD	y11, a7, b8, y11
+	FMADD	y01, a7, b8, y01
 	LFD	a7, 20 * SIZE(AO1)
-	FMADD	y12, a8, b8, y12
+	FMADD	y02, a8, b8, y02
 	LFD	a8, 20 * SIZE(AO2)
 
 	LFD	b5, 21 * SIZE(BO)
@@ -2349,18 +2303,18 @@ LL(33):
 	LFD	a1,  5 * SIZE(AO1)
 	FMADD	y02, a2, b1, y02
 	LFD	a2,  5 * SIZE(AO2)
-	FMADD	y03, a3, b2, y03
+	FMADD	y01, a3, b2, y01
 	LFD	a3,  6 * SIZE(AO1)
-	FMADD	y04, a4, b2, y04
+	FMADD	y02, a4, b2, y02
 	LFD	a4,  6 * SIZE(AO2)
 
-	FMADD	y09, a5, b3, y09
+	FMADD	y01, a5, b3, y01
 	LFD	a5,  7 * SIZE(AO1)
-	FMADD	y10, a6, b3, y10
+	FMADD	y02, a6, b3, y02
 	LFD	a6,  7 * SIZE(AO2)
-	FMADD	y11, a7, b4, y11
+	FMADD	y01, a7, b4, y01
 	LFD	a7,  8 * SIZE(AO1)
-	FMADD	y12, a8, b4, y12
+	FMADD	y02, a8, b4, y02
 	LFD	a8,  8 * SIZE(AO2)
 
 	LFD	b1,  9 * SIZE(BO)
@@ -2372,18 +2326,18 @@ LL(33):
 	LFD	a1,  9 * SIZE(AO1)
 	FMADD	y02, a2, b5, y02
 	LFD	a2,  9 * SIZE(AO2)
-	FMADD	y03, a3, b6, y03
+	FMADD	y01, a3, b6, y01
 	LFD	a3, 10 * SIZE(AO1)
-	FMADD	y04, a4, b6, y04
+	FMADD	y02, a4, b6, y02
 	LFD	a4, 10 * SIZE(AO2)
 
-	FMADD	y09, a5, b7, y09
+	FMADD	y01, a5, b7, y01
 	LFD	a5, 11 * SIZE(AO1)
-	FMADD	y10, a6, b7, y10
+	FMADD	y02, a6, b7, y02
 	LFD	a6, 11 * SIZE(AO2)
-	FMADD	y11, a7, b8, y11
+	FMADD	y01, a7, b8, y01
 	LFD	a7, 12 * SIZE(AO1)
-	FMADD	y12, a8, b8, y12
+	FMADD	y02, a8, b8, y02
 	LFD	a8, 12 * SIZE(AO2)
 
 	LFD	b5, 13 * SIZE(BO)
@@ -2395,29 +2349,29 @@ LL(33):
 	LFD	a1, 13 * SIZE(AO1)
 	FMADD	y02, a2, b1, y02
 	LFD	a2, 13 * SIZE(AO2)
-	FMADD	y03, a3, b2, y03
+	FMADD	y01, a3, b2, y01
 	LFD	a3, 14 * SIZE(AO1)
-	FMADD	y04, a4, b2, y04
+	FMADD	y02, a4, b2, y02
 	LFD	a4, 14 * SIZE(AO2)
 
-	FMADD	y09, a5, b3, y09
+	FMADD	y01, a5, b3, y01
 	LFD	a5, 15 * SIZE(AO1)
-	FMADD	y10, a6, b3, y10
+	FMADD	y02, a6, b3, y02
 	LFD	a6, 15 * SIZE(AO2)
-	FMADD	y11, a7, b4, y11
+	FMADD	y01, a7, b4, y01
 	LFD	a7, 16 * SIZE(AO1)
-	FMADD	y12, a8, b4, y12
+	FMADD	y02, a8, b4, y02
 	LFD	a8, 16 * SIZE(AO2)
 
 	FMADD	y01, a1, b5, y01
 	FMADD	y02, a2, b5, y02
-	FMADD	y03, a3, b6, y03
-	FMADD	y04, a4, b6, y04
+	FMADD	y01, a3, b6, y01
+	FMADD	y02, a4, b6, y02
 
-	FMADD	y09, a5, b7, y09
-	FMADD	y10, a6, b7, y10
-	FMADD	y11, a7, b8, y11
-	FMADD	y12, a8, b8, y12
+	FMADD	y01, a5, b7, y01
+	FMADD	y02, a6, b7, y02
+	FMADD	y01, a7, b8, y01
+	FMADD	y02, a8, b8, y02
 
 	addi	AO1, AO1, 16 * SIZE
 	addi	AO2, AO2, 16 * SIZE
@@ -2454,32 +2408,32 @@ LL(34):
 	LFD	a1,  5 * SIZE(AO1)
 	FMADD	y02, a2, b1, y02
 	LFD	a2,  5 * SIZE(AO2)
-	FMADD	y09, a3, b2, y09
+	FMADD	y01, a3, b2, y01
 	LFD	a3,  6 * SIZE(AO1)
-	FMADD	y10, a4, b2, y10
+	FMADD	y02, a4, b2, y02
 	LFD	a4,  6 * SIZE(AO2)
 
 	FMADD	y01, a5, b3, y01
 	LFD	a5,  7 * SIZE(AO1)
 	FMADD	y02, a6, b3, y02
 	LFD	a6,  7 * SIZE(AO2)
-	FMADD	y09, a7, b4, y09
+	FMADD	y01, a7, b4, y01
 	LFD	a7,  8 * SIZE(AO1)
-	FMADD	y10, a8, b4, y10
+	FMADD	y02, a8, b4, y02
 	LFD	a8,  8 * SIZE(AO2)
 
 	FMADD	y01, a1, b5, y01
 	FMADD	y02, a2, b5, y02
-	FMADD	y09, a3, b6, y09
-	FMADD	y10, a4, b6, y10
+	FMADD	y01, a3, b6, y01
+	FMADD	y02, a4, b6, y02
 
 	FMADD	y01, a5, b7, y01
 	addi	AO1, AO1, 8 * SIZE
 	FMADD	y02, a6, b7, y02
 	addi	AO2, AO2, 8 * SIZE
-	FMADD	y09, a7, b8, y09
+	FMADD	y01, a7, b8, y01
 	addi	BO,  BO,  8 * SIZE
-	FMADD	y10, a8, b8, y10
+	FMADD	y02, a8, b8, y02
 	nop
 	.align 4
 
@@ -2504,17 +2458,17 @@ LL(35):
 
 	FMADD	y01, a1, b1, y01
 	FMADD	y02, a2, b1, y02
-	FMADD	y09, a3, b2, y09
-	FMADD	y10, a4, b2, y10
+	FMADD	y01, a3, b2, y01
+	FMADD	y02, a4, b2, y02
 
 	FMADD	y01, a5, b3, y01
 	addi	AO1, AO1, 4 * SIZE
 	FMADD	y02, a6, b3, y02
 	addi	AO2, AO2, 4 * SIZE
 
-	FMADD	y09, a7, b4, y09
+	FMADD	y01, a7, b4, y01
 	addi	BO,  BO,  4 * SIZE
-	FMADD	y10, a8, b4, y10
+	FMADD	y02, a8, b4, y02
 	.align 4
 
 LL(36):
@@ -2531,8 +2485,8 @@ LL(36):
 
 	FMADD	y01, a1, b1, y01
 	FMADD	y02, a2, b1, y02
-	FMADD	y09, a3, b2, y09
-	FMADD	y10, a4, b2, y10
+	FMADD	y01, a3, b2, y01
+	FMADD	y02, a4, b2, y02
 
 	addi	AO1, AO1, 2 * SIZE
 	addi	AO2, AO2, 2 * SIZE
@@ -2560,14 +2514,6 @@ LL(38):
 	LFD	a1,  1 * SIZE(CO)
 	LFD	a2,  2 * SIZE(CO)
 
-	FADD	y01, y03, y01
-	FADD	y02, y04, y02
-	FADD	y09, y11, y09
-	FADD	y10, y12, y10
-
-	FADD	y01, y09, y01
-	FADD	y02, y10, y02
-
 	FMADD	a1, alpha, y01, a1
 	FMADD	a2, alpha, y02, a2
 
@@ -2581,14 +2527,6 @@ LL(38):
 LL(39):
 	LFDUX	a1, CO, INCY
 	LFDUX	a2, CO, INCY
-
-	FADD	y01, y03, y01
-	FADD	y02, y04, y02
-	FADD	y09, y11, y09
-	FADD	y10, y12, y10
-
-	FADD	y01, y09, y01
-	FADD	y02, y10, y02
 
 	FMADD	a1, alpha, f0, a1
 	FMADD	a2, alpha, f1, a2
@@ -2606,13 +2544,6 @@ LL(40):
 	mr     BO, XP
 
 	lfd	 y01, FZERO
-	fmr	 y02, y01
-	fmr	 y03, y01
-	fmr	 y04, y01
-	fmr	 y09, y01
-	fmr	 y10, y01
-	fmr	 y11, y01
-	fmr	 y12, y01
 
 	DCBT(Y1, PREC)
 
@@ -2646,17 +2577,17 @@ LL(42):
 	LFD	a1,  9 * SIZE(AO1)
 	LFD	b1,  9 * SIZE(BO)
 
-	FMADD	y02, a2, b2, y02
+	FMADD	y01, a2, b2, y01
 	nop
 	LFD	a2, 10 * SIZE(AO1)
 	LFD	b2, 10 * SIZE(BO)
 
-	FMADD	y03, a3, b3, y03
+	FMADD	y01, a3, b3, y01
 	nop
 	LFD	a3, 11 * SIZE(AO1)
 	LFD	b3, 11 * SIZE(BO)
 
-	FMADD	y04, a4, b4, y04
+	FMADD	y01, a4, b4, y01
 	nop
 	LFD	a4, 12 * SIZE(AO1)
 	LFD	b4, 12 * SIZE(BO)
@@ -2666,17 +2597,17 @@ LL(42):
 	LFD	a5, 13 * SIZE(AO1)
 	LFD	b5, 13 * SIZE(BO)
 
-	FMADD	y02, a6, b6, y02
+	FMADD	y01, a6, b6, y01
 	nop
 	LFD	a6, 14 * SIZE(AO1)
 	LFD	b6, 14 * SIZE(BO)
 
-	FMADD	y03, a7, b7, y03
+	FMADD	y01, a7, b7, y01
 	nop
 	LFD	a7, 15 * SIZE(AO1)
 	LFD	b7, 15 * SIZE(BO)
 
-	FMADD	y04, a8, b8, y04
+	FMADD	y01, a8, b8, y01
 	nop
 	LFD	a8, 16 * SIZE(AO1)
 	LFD	b8, 16 * SIZE(BO)
@@ -2686,17 +2617,17 @@ LL(42):
 	LFD	a1, 17 * SIZE(AO1)
 	LFD	b1, 17 * SIZE(BO)
 
-	FMADD	y02, a2, b2, y02
+	FMADD	y01, a2, b2, y01
 	nop
 	LFD	a2, 18 * SIZE(AO1)
 	LFD	b2, 18 * SIZE(BO)
 
-	FMADD	y03, a3, b3, y03
+	FMADD	y01, a3, b3, y01
 	nop
 	LFD	a3, 19 * SIZE(AO1)
 	LFD	b3, 19 * SIZE(BO)
 
-	FMADD	y04, a4, b4, y04
+	FMADD	y01, a4, b4, y01
 	nop
 	LFD	a4, 20 * SIZE(AO1)
 	LFD	b4, 20 * SIZE(BO)
@@ -2706,17 +2637,17 @@ LL(42):
 	LFD	a5, 21 * SIZE(AO1)
 	LFD	b5, 21 * SIZE(BO)
 
-	FMADD	y02, a6, b6, y02
+	FMADD	y01, a6, b6, y01
 	nop
 	LFD	a6, 22 * SIZE(AO1)
 	LFD	b6, 22 * SIZE(BO)
 
-	FMADD	y03, a7, b7, y03
+	FMADD	y01, a7, b7, y01
 	nop
 	LFD	a7, 23 * SIZE(AO1)
 	LFD	b7, 23 * SIZE(BO)
 
-	FMADD	y04, a8, b8, y04
+	FMADD	y01, a8, b8, y01
 	nop
 	LFD	a8, 24 * SIZE(AO1)
 	LFD	b8, 24 * SIZE(BO)
@@ -2733,17 +2664,17 @@ LL(43):
 	LFD	a1,  9 * SIZE(AO1)
 	LFD	b1,  9 * SIZE(BO)
 
-	FMADD	y02, a2, b2, y02
+	FMADD	y01, a2, b2, y01
 	nop
 	LFD	a2, 10 * SIZE(AO1)
 	LFD	b2, 10 * SIZE(BO)
 
-	FMADD	y03, a3, b3, y03
+	FMADD	y01, a3, b3, y01
 	nop
 	LFD	a3, 11 * SIZE(AO1)
 	LFD	b3, 11 * SIZE(BO)
 
-	FMADD	y04, a4, b4, y04
+	FMADD	y01, a4, b4, y01
 	nop
 	LFD	a4, 12 * SIZE(AO1)
 	LFD	b4, 12 * SIZE(BO)
@@ -2753,34 +2684,34 @@ LL(43):
 	LFD	a5, 13 * SIZE(AO1)
 	LFD	b5, 13 * SIZE(BO)
 
-	FMADD	y02, a6, b6, y02
+	FMADD	y01, a6, b6, y01
 	nop
 	LFD	a6, 14 * SIZE(AO1)
 	LFD	b6, 14 * SIZE(BO)
 
-	FMADD	y03, a7, b7, y03
+	FMADD	y01, a7, b7, y01
 	nop
 	LFD	a7, 15 * SIZE(AO1)
 	LFD	b7, 15 * SIZE(BO)
 
-	FMADD	y04, a8, b8, y04
+	FMADD	y01, a8, b8, y01
 	nop
 	LFD	a8, 16 * SIZE(AO1)
 	LFD	b8, 16 * SIZE(BO)
 
 	FMADD	y01, a1, b1, y01
-	FMADD	y02, a2, b2, y02
-	FMADD	y03, a3, b3, y03
-	FMADD	y04, a4, b4, y04
+	FMADD	y01, a2, b2, y01
+	FMADD	y01, a3, b3, y01
+	FMADD	y01, a4, b4, y01
 
 	FMADD	y01, a5, b5, y01
 	addi	AO1, AO1, 16 * SIZE
-	FMADD	y02, a6, b6, y02
+	FMADD	y01, a6, b6, y01
 	addi	BO,  BO,  16 * SIZE
 
-	FMADD	y03, a7, b7, y03
+	FMADD	y01, a7, b7, y01
 	nop
-	FMADD	y04, a8, b8, y04
+	FMADD	y01, a8, b8, y01
 	nop
 	.align 4
 
@@ -2811,17 +2742,17 @@ LL(44):
 	LFD	b8,  8 * SIZE(BO)
 
 	FMADD	y01, a1, b1, y01
-	FMADD	y02, a2, b2, y02
-	FMADD	y03, a3, b3, y03
-	FMADD	y04, a4, b4, y04
+	FMADD	y01, a2, b2, y01
+	FMADD	y01, a3, b3, y01
+	FMADD	y01, a4, b4, y01
 
 	FMADD	y01, a5, b5, y01
 	addi	AO1, AO1, 8 * SIZE
-	FMADD	y02, a6, b6, y02
+	FMADD	y01, a6, b6, y01
 	addi	BO,  BO,  8 * SIZE
-	FMADD	y03, a7, b7, y03
+	FMADD	y01, a7, b7, y01
 	nop
-	FMADD	y04, a8, b8, y04
+	FMADD	y01, a8, b8, y01
 	nop
 	.align 4
 
@@ -2841,12 +2772,12 @@ LL(45):
 
 	FMADD	y01, a1, b1, y01
 	addi	AO1, AO1, 4 * SIZE
-	FMADD	y02, a2, b2, y02
+	FMADD	y01, a2, b2, y01
 	addi	AO2, AO2, 4 * SIZE
 
-	FMADD	y03, a3, b3, y03
+	FMADD	y01, a3, b3, y01
 	addi	BO,  BO,  4 * SIZE
-	FMADD	y04, a4, b4, y04
+	FMADD	y01, a4, b4, y01
 	nop
 	.align 4
 
@@ -2861,7 +2792,7 @@ LL(46):
 
 	FMADD	y01, a1, b1, y01
 	addi	AO1, AO1, 2 * SIZE
-	FMADD	y02, a2, b2, y02
+	FMADD	y01, a2, b2, y01
 	addi	BO,  BO,  2 * SIZE
 	.align 4
 
@@ -2882,10 +2813,6 @@ LL(48):
 
 	LFD	a1,  1 * SIZE(CO)
 
-	FADD	y01, y02, y01
-	FADD	y03, y04, y03
-	FADD	y01, y03, y01
-
 	FMADD	a1, alpha, y01, a1
 	STFD	a1,  1 * SIZE(CO)
 	b	LL(99)
@@ -2893,9 +2820,7 @@ LL(48):
 
 LL(49):
 	LFDUX	a1, CO, INCY
-	FADD	y01, y02, y01
-	FADD	y03, y04, y03
-	FADD	y01, y03, y01
+
 	FMADD	a1, alpha, f0, a1
 	STFDUX	a1, BO, INCY
 	.align 4

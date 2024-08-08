@@ -25,10 +25,16 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
 USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
+#if 1
 
+#include "zgemmkernel_2x2.c"
+
+
+#else
 #include "common.h"
 
 int CNAME(BLASLONG bm, BLASLONG bn, BLASLONG bk, FLOAT alphar, FLOAT alphai, FLOAT * ba, FLOAT * bb, FLOAT * C, BLASLONG ldc)
 {
   return 0;
 }
+#endif

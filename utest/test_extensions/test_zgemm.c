@@ -73,9 +73,10 @@ static double check_zgemm(char transa, char transb, blasint m, blasint n, blasin
 	double alpha_conj[] = {1.0, 0.0}; 
 	char transa_verify = transa;
     char transb_verify = transb;
+    char cc[2]="C", cr[2]="R";
 
-    int arows = k, acols = m;
-    int brows = n, bcols = k;
+    blasint arows = k, acols = m;
+    blasint brows = n, bcols = k;
 
     if (transa == 'T' || transa == 'C'){
         arows = m; acols = k;
@@ -99,12 +100,12 @@ static double check_zgemm(char transa, char transb, blasint m, blasint n, blasin
 		data_zgemm.c_verify[i] = data_zgemm.c_test[i];
 
 	if (transa == 'R'){
-		cblas_zimatcopy(CblasColMajor, CblasConjNoTrans, arows, acols, alpha_conj, data_zgemm.a_verify, lda, lda);
+		BLASFUNC(zimatcopy)(cc, cr, &arows, &acols, alpha_conj, data_zgemm.a_verify, &lda, &lda);
 		transa_verify = 'N';
 	}
 
     if (transb == 'R'){
-		cblas_zimatcopy(CblasColMajor, CblasConjNoTrans, brows, bcols, alpha_conj, data_zgemm.b_verify, ldb, ldb);
+		BLASFUNC(zimatcopy)(cc, cr, &brows, &bcols, alpha_conj, data_zgemm.b_verify, &ldb, &ldb);
 	    transb_verify = 'N';
 	}
 

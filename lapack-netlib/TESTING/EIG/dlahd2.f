@@ -534,8 +534,8 @@
      $      / ' 2: norm( I - Q'' Q )   / ( m ulp )',
      $      / ' 3: norm( I - PT PT'' )   / ( n ulp )',
      $      / ' 4: norm( Y - Q'' C )   / ( norm(Y) max(m,nrhs) ulp )' )
- 9968 FORMAT( / ' Tests performed:  See sdrvst.f' )
- 9967 FORMAT( / ' Tests performed:  See cdrvst.f' )
+ 9968 FORMAT( / ' Tests performed:  See ddrvst.f' )
+ 9967 FORMAT( / ' Tests performed:  See zdrvst.f' )
 *
 *     End of DLAHD2
 *

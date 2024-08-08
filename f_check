@@ -86,7 +86,7 @@ else
 		vendor=CRAY
 		openmp='-fopenmp'
 		;;
-   	    *Arm\ F90*)
+   	    *Arm\ F90*|*F90\ Flang*)
 		vendor=FLANG
 		openmp='-fopenmp'
 		;;	

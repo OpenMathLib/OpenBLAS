@@ -25,6 +25,7 @@ if (USE_THREAD)
     ${BLAS_SERVER}
     divtable.c # TODO: Makefile has -UDOUBLE
     blas_l1_thread.c
+    blas_server_callback.c
   )
 
   if (NOT NO_AFFINITY)
@@ -51,6 +52,8 @@ if (DYNAMIC_ARCH)
     list(APPEND COMMON_SOURCES dynamic_arm64.c)
   elseif (POWER)
     list(APPEND COMMON_SOURCES dynamic_power.c)
+  elseif (RISCV64)
+    list(APPEND COMMON_SOURCES dynamic_riscv64.c detect_riscv64.c)
   else ()  
     list(APPEND COMMON_SOURCES dynamic.c)
   endif ()  

@@ -1,11 +1,12 @@
-# Guidance for redistributing OpenBLAS
+# Redistributing OpenBLAS
 
-*We note that this document contains recommendations only - packagers and other
-redistributors are in charge of how OpenBLAS is built and distributed in their
-systems, and may have good reasons to deviate from the guidance given on this
-page. These recommendations are aimed at general packaging systems, with a user
-base that typically is large, open source (or freely available at least), and
-doesn't behave uniformly or that the packager is directly connected with.*
+!!! note
+    This document contains recommendations only - packagers and other
+    redistributors are in charge of how OpenBLAS is built and distributed in their
+    systems, and may have good reasons to deviate from the guidance given on this
+    page. These recommendations are aimed at general packaging systems, with a user
+    base that typically is large, open source (or freely available at least), and
+    doesn't behave uniformly or that the packager is directly connected with.*
 
 OpenBLAS has a large number of build-time options which can be used to change
 how it behaves at runtime, how artifacts or symbols are named, etc. Variation
@@ -48,7 +49,7 @@ settings):
    to provide an ILP64 interface build as well, use a symbol suffix to avoid
    symbol name clashes (see the next section).
 
-[^1] All major distributions do include LAPACK as of mid 2023 as far as we
+[^1]: All major distributions do include LAPACK as of mid 2023 as far as we
 know. Older versions of Arch Linux did not, and that was known to cause
 problems.
 

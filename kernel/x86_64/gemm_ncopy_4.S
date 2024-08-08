@@ -189,12 +189,16 @@
 	movss	%xmm6,   6 * SIZE(B)
 	movss	%xmm7,   7 * SIZE(B)
 
+#ifdef PREFETCH
 	PREFETCH	RPREFETCHSIZE * SIZE(AO1)
 	PREFETCH	RPREFETCHSIZE * SIZE(AO2)
 	PREFETCH	RPREFETCHSIZE * SIZE(AO3)
 	PREFETCH	RPREFETCHSIZE * SIZE(AO4)
+#endif
 
+#ifdef PREFETCHW
 	PREFETCHW	WPREFETCHSIZE * SIZE(B)
+#endif
 
 	movss	%xmm8,   8 * SIZE(B)
 	movss	%xmm9,   9 * SIZE(B)
@@ -205,29 +209,39 @@
 	movss	%xmm14, 14 * SIZE(B)
 	movss	%xmm15, 15 * SIZE(B)
 #else
+#ifdef PREFETCH
 	PREFETCH	RPREFETCHSIZE * SIZE(AO1)
+#endif
 	movsd	0 * SIZE(AO1), %xmm0
 	movhpd	0 * SIZE(AO2), %xmm0
 	movsd	1 * SIZE(AO1), %xmm2
 	movhpd	1 * SIZE(AO2), %xmm2
+#ifdef PREFETCH
 	PREFETCH	RPREFETCHSIZE * SIZE(AO2)
+#endif
 	movsd	2 * SIZE(AO1), %xmm4
 	movhpd	2 * SIZE(AO2), %xmm4
 	movsd	3 * SIZE(AO1), %xmm6
 	movhpd	3 * SIZE(AO2), %xmm6
 
+#ifdef PREFETCH
 	PREFETCH	RPREFETCHSIZE * SIZE(AO3)
+#endif
 	movsd	0 * SIZE(AO3), %xmm1
 	movhpd	0 * SIZE(AO4), %xmm1
 	movsd	1 * SIZE(AO3), %xmm3
 	movhpd	1 * SIZE(AO4), %xmm3
+#ifdef PREFETCH
 	PREFETCH	RPREFETCHSIZE * SIZE(AO4)
+#endif
 	movsd	2 * SIZE(AO3), %xmm5
 	movhpd	2 * SIZE(AO4), %xmm5
 	movsd	3 * SIZE(AO3), %xmm7
 	movhpd	3 * SIZE(AO4), %xmm7
 
+#ifdef PREFETCHW
 	PREFETCHW	WPREFETCHSIZE * SIZE(B)
+#endif
 	movapd	%xmm0,   0 * SIZE(B)
 	movapd	%xmm1,   2 * SIZE(B)
 	movapd	%xmm2,   4 * SIZE(B)
@@ -342,10 +356,14 @@
 	movapd	%xmm3,   6 * SIZE(B)
 #endif
 
+#ifdef PREFETCH
 	PREFETCH	RPREFETCHSIZE * SIZE(AO1)
 	PREFETCH	RPREFETCHSIZE * SIZE(AO2)
+#endif
 
+#ifdef PREFETCHW
 	PREFETCHW	WPREFETCHSIZE * SIZE(B)
+#endif
 
 	addq	$4 * SIZE, AO1
 	addq	$4 * SIZE, AO2

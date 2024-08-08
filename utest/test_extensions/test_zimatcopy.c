@@ -98,6 +98,7 @@ static double check_zimatcopy(char api, char order, char trans, blasint rows, bl
         BLASFUNC(zimatcopy)(&order, &trans, &rows, &cols, alpha, data_zimatcopy.a_test, 
                             &lda_src, &lda_dst);
     }
+#ifndef NO_CBLAS
     else {
         if (order == 'C') corder = CblasColMajor;
         if (order == 'R') corder = CblasRowMajor;
@@ -108,6 +109,7 @@ static double check_zimatcopy(char api, char order, char trans, blasint rows, bl
         cblas_zimatcopy(corder, ctrans, rows, cols, alpha, data_zimatcopy.a_test, 
                     lda_src, lda_dst);
     }
+#endif
 
     // Find the differences between output matrix computed by zimatcopy and reference func
     return dmatrix_difference(data_zimatcopy.a_test, data_zimatcopy.a_verify, cols_out, rows_out, lda_dst*2);    
@@ -502,6 +504,7 @@ CTEST(zimatcopy, rowmajor_conjtrans_col_50_row_100)
     ASSERT_DBL_NEAR_TOL(0.0, norm, DOUBLE_EPS);
 }
 
+#ifndef NO_CBLAS
 /**
  * C API specific test
  * Test zimatcopy by comparing it against reference
@@ -681,6 +684,7 @@ CTEST(zimatcopy, c_api_rowmajor_conjtrans_col_100_row_100)
 
     ASSERT_DBL_NEAR_TOL(0.0, norm, DOUBLE_EPS);
 }
+#endif
 
 /**
  * Test error function for an invalid param order.

@@ -264,7 +264,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
     PROLOGUE
     PTR_LD     INC_Y,  $sp,    0
-    push_if_used 17 + 8, 30
+    push_if_used 8, 6
     PTR_ADDI   K,      $r0,     0x01
     PTR_SUB    I,      INC_X,   K
     maskeqz    I,      K,       I  /* if(inc_x == 1) I = 0; else I = 1; */
@@ -294,6 +294,6 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .L_GAP_1: /* if (incx != 1) */
     ZGEMV_T_LASX GAP_1, X4_GAP
 .L_END:
-    pop_if_used 17 + 8, 30
+    pop_if_used 8, 6
     jirl    $r0, $r1, 0x0
     EPILOGUE

@@ -134,6 +134,12 @@ VERSION = 0.3.28
 # Build LAPACK Deprecated functions since LAPACK 3.6.0
 BUILD_LAPACK_DEPRECATED = 1
 
+# The variable type assumed for the length of character arguments when passing
+# data between Fortran LAPACK and C BLAS (defaults to "size_t", but older GCC
+# versions used "int"). Mismatches will not cause runtime failures but may result
+# in build warnings or errors when building with link-time optimization (LTO)
+# LAPACK_STRLEN=int
+
 # Build RecursiveLAPACK on top of LAPACK
 # BUILD_RELAPACK = 1
 # Have RecursiveLAPACK actually replace standard LAPACK routines instead of 
@@ -172,6 +178,10 @@ NO_AFFINITY = 1
 
 # If you are compiling for Linux and you have more than 16 numa nodes or more than 256 cpus
 # BIGNUMA = 1
+
+# If you are compiling for an embedded system ("bare metal") like Cortex M series
+# Note that you will have to provide implementations of malloc() and free() in this case
+# EMBEDDED = 1
 
 # Don't use AVX kernel on Sandy Bridge. It is compatible with old compilers
 # and OS. However, the performance is low.
@@ -214,6 +224,16 @@ NO_AFFINITY = 1
 # Using special device driver for mapping physically contiguous memory
 # to the user space. If bigphysarea is enabled, it will use it.
 # DEVICEDRIVER_ALLOCATION = 1
+
+# Use large page allocation (called hugepage support in Linux context)
+# for the thread buffers (with access by shared memory operations)
+# HUGETLB_ALLOCATION = 1
+
+# Use large page allocation called hugepages in Linux) based on mmap accessing
+# a memory-backed pseudofile (requires hugetlbfs to be mounted in the system,
+# the example below has it mounted on /hugepages. OpenBLAS will create the backing
+# file as gotoblas.processid in that path)
+# HUGETLBFILE_ALLOCATION = /hugepages
 
 # If you need to synchronize FP CSR between threads (for x86/x86_64 and aarch64 only).
 # CONSISTENT_FPCSR = 1

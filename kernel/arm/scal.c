@@ -43,9 +43,9 @@ int CNAME(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, FLOAT da, FLOAT *x, BLAS
 	if ( (n <= 0) || (inc_x <= 0))
 		return(0);
 	
-
-	while(j < n)
-	{
+	if (dummy2 == 0) {
+		while(j < n)
+		{
 
 		if ( da == 0.0 )
 			x[i]=0.0;
@@ -54,7 +54,25 @@ int CNAME(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, FLOAT da, FLOAT *x, BLAS
 
 		i += inc_x ;
 		j++;
+		}
+	} else {
+	
+		while(j < n)
+		{
 
+		if ( da == 0.0 )
+			if (!isnan(x[i]) && !isinf(x[i])) {
+			x[i]=0.0;
+			} else {
+			x[i]=NAN;
+			}
+		else
+			x[i] = da * x[i] ;
+
+		i += inc_x ;
+		j++;
+
+		}
 	}
 	return 0;
 

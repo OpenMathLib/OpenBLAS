@@ -31,27 +31,28 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #undef OP0
 #undef OP1
 #undef OP2
+#undef OP3
+#undef OP4
+#undef OP5
 
-#if !defined(CONJ)
-    #if !defined(XCONJ)
-        #define OP0  -=
-        #define OP1  +=
-        #define OP2  +=
-    #else
-        #define OP0  +=
-        #define OP1  +=
-        #define OP2  -=
-    #endif
+#if (!defined(CONJ) && !defined(XCONJ)) || (defined(CONJ) && defined(XCONJ))
+    #define OP0  -=
+    #define OP1  +=
+    #define OP2  +=
 #else
-    #if !defined(XCONJ)
-        #define OP0  +=
-        #define OP1  -=
-        #define OP2  +=
-    #else
-        #define OP0  -=
-        #define OP1  -=
-        #define OP2  -=
-    #endif
+    #define OP0  +=
+    #define OP1  +=
+    #define OP2  -=
+#endif
+
+#if !defined(XCONJ)
+    #define OP3  -=
+    #define OP4  +=
+    #define OP5  +=
+#else
+    #define OP3  +=
+    #define OP4  -=
+    #define OP5  +=
 #endif
 
 #define CGEMV_T_8x4()                        \
@@ -268,22 +269,22 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     res3i = y[3 * inc_y2 + 1];  \
                                 \
     res0r  += alphar * temp0r;  \
-    res0r OP0 alphai * temp0i;  \
+    res0r OP3 alphai * temp0i;  \
     res1r  += alphar * temp1r;  \
-    res1r OP0 alphai * temp1i;  \
+    res1r OP3 alphai * temp1i;  \
     res2r  += alphar * temp2r;  \
-    res2r OP0 alphai * temp2i;  \
+    res2r OP3 alphai * temp2i;  \
     res3r  += alphar * temp3r;  \
-    res3r OP0 alphai * temp3i;  \
+    res3r OP3 alphai * temp3i;  \
                                 \
-    res0i OP1 alphar * temp0i;  \
-    res0i OP2 alphai * temp0r;  \
-    res1i OP1 alphar * temp1i;  \
-    res1i OP2 alphai * temp1r;  \
-    res2i OP1 alphar * temp2i;  \
-    res2i OP2 alphai * temp2r;  \
-    res3i OP1 alphar * temp3i;  \
-    res3i OP2 alphai * temp3r;  \
+    res0i OP4 alphar * temp0i;  \
+    res0i OP5 alphai * temp0r;  \
+    res1i OP4 alphar * temp1i;  \
+    res1i OP5 alphai * temp1r;  \
+    res2i OP4 alphar * temp2i;  \
+    res2i OP5 alphai * temp2r;  \
+    res3i OP4 alphar * temp3i;  \
+    res3i OP5 alphai * temp3r;  \
                                 \
     y[0 * inc_y2] = res0r;      \
     y[1 * inc_y2] = res1r;      \
@@ -303,14 +304,14 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     res1i = y[1 * inc_y2 + 1];  \
                                 \
     res0r  += alphar * temp0r;  \
-    res0r OP0 alphai * temp0i;  \
+    res0r OP3 alphai * temp0i;  \
     res1r  += alphar * temp1r;  \
-    res1r OP0 alphai * temp1i;  \
+    res1r OP3 alphai * temp1i;  \
                                 \
-    res0i OP1 alphar * temp0i;  \
-    res0i OP2 alphai * temp0r;  \
-    res1i OP1 alphar * temp1i;  \
-    res1i OP2 alphai * temp1r;  \
+    res0i OP4 alphar * temp0i;  \
+    res0i OP5 alphai * temp0r;  \
+    res1i OP4 alphar * temp1i;  \
+    res1i OP5 alphai * temp1r;  \
                                 \
     y[0 * inc_y2] = res0r;      \
     y[1 * inc_y2] = res1r;      \
@@ -324,10 +325,10 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     res0i = y[0 * inc_y2 + 1];  \
                                 \
     res0r  += alphar * temp0r;  \
-    res0r OP0 alphai * temp0i;  \
+    res0r OP3 alphai * temp0i;  \
                                 \
-    res0i OP1 alphar * temp0i;  \
-    res0i OP2 alphai * temp0r;  \
+    res0i OP4 alphar * temp0i;  \
+    res0i OP5 alphai * temp0r;  \
                                 \
     y[0 * inc_y2] = res0r;      \
     y[0 * inc_y2 + 1] = res0i;  \

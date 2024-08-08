@@ -2772,7 +2772,7 @@ c           LIWEDC = 12
                      RESULT( NTEST ) = ULPINV
                      RESULT( NTEST+1 ) = ULPINV
                      RESULT( NTEST+2 ) = ULPINV
-                     GO TO 700
+                     GO TO 1750
                   END IF
                END IF
 *
@@ -2797,13 +2797,13 @@ c           LIWEDC = 12
                      RETURN
                   ELSE
                      RESULT( NTEST ) = ULPINV
-                     GO TO 700
+                     GO TO 1750
                   END IF
                END IF
 *
                IF( M3.EQ.0 .AND. N.GT.0 ) THEN
                   RESULT( NTEST ) = ULPINV
-                  GO TO 700
+                  GO TO 1750
                END IF
 *
 *              Do test 78 (or +54)
@@ -2819,6 +2819,8 @@ c           LIWEDC = 12
      $                           MAX( UNFL, TEMP3*ULP )
 *
                CALL SLACPY( ' ', N, N, V, LDU, A, LDA )
+*
+ 1750       CONTINUE
 *
  1720       CONTINUE
 *

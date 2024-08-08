@@ -964,7 +964,9 @@ static void *alloc_shm(void *address){
   return map_address;
 }
 
-#if defined OS_LINUX  || defined OS_AIX  || defined __sun__  || defined OS_WINDOWS
+#endif
+
+#if ((defined ALLOC_HUGETLB) && (defined OS_LINUX  || defined OS_AIX  || defined __sun__  || defined OS_WINDOWS))
 
 static void alloc_hugetlb_free(struct alloc_t *alloc_info){
 
@@ -1066,7 +1068,8 @@ static void *alloc_hugetlb(void *address){
 }
 #endif
 
-#endif
+
+
 
 #ifdef  ALLOC_HUGETLBFILE
 
@@ -1165,11 +1168,10 @@ void *blas_memory_alloc(int procpos){
 #ifdef ALLOC_DEVICEDRIVER
     alloc_devicedirver,
 #endif
-/* Hugetlb implicitly assumes ALLOC_SHM */
-#ifdef ALLOC_SHM
+#ifdef ALLOC_SHM && !defined(ALLOC_HUGETLB)
     alloc_shm,
 #endif
-#if ((defined ALLOC_SHM) && (defined OS_LINUX  || defined OS_AIX  || defined __sun__  || defined OS_WINDOWS))
+#if ((defined ALLOC_HUGETLB) && (defined OS_LINUX  || defined OS_AIX  || defined __sun__  || defined OS_WINDOWS))
     alloc_hugetlb,
 #endif
 #ifdef ALLOC_MMAP
@@ -1189,7 +1191,6 @@ void *blas_memory_alloc(int procpos){
   void *(**func)(void *address);
   struct alloc_t * alloc_info;
   struct alloc_t ** alloc_table;
-
 
 #if defined(SMP) && !defined(USE_OPENMP)
 int mi;
@@ -1219,7 +1220,7 @@ UNLOCK_COMMAND(&alloc_lock);
       if (!blas_num_threads) blas_cpu_number = blas_get_cpu_number();
 #endif
 
-#if defined(ARCH_X86) || defined(ARCH_X86_64) || defined(ARCH_IA64) || defined(ARCH_MIPS64) || defined(ARCH_ARM64)
+#if defined(ARCH_X86) || defined(ARCH_X86_64) || defined(ARCH_IA64) || defined(ARCH_MIPS64) || defined(ARCH_ARM64) || defined(ARCH_LOONGARCH64)
 #ifndef DYNAMIC_ARCH
       blas_set_parameter();
 #endif
@@ -1282,7 +1283,7 @@ UNLOCK_COMMAND(&alloc_lock);
         }
 #endif
 
-#if (defined ALLOC_SHM) && (defined OS_LINUX  || defined OS_AIX  || defined __sun__  || defined OS_WINDOWS)
+#if (defined ALLOC_HUGETLB) && (defined OS_LINUX  || defined OS_AIX  || defined __sun__  || defined OS_WINDOWS)
         if ((*func == alloc_hugetlb) && (map_address != (void *)-1)) hugetlb_allocated = 1;
 #endif
 
@@ -2494,7 +2495,7 @@ static void *alloc_devicedirver(void *address){
 
 #endif
 
-#ifdef ALLOC_SHM
+#if defined(ALLOC_SHM) && !defined(ALLOC_HUGETLB)
 
 static void alloc_shm_free(struct release_t *release){
 
@@ -2506,7 +2507,9 @@ static void alloc_shm_free(struct release_t *release){
 static void *alloc_shm(void *address){
   void *map_address;
   int shmid;
-
+#ifdef DEBUG
+ fprintf(stderr,"alloc_shm got called\n");
+#endif
   shmid = shmget(IPC_PRIVATE, BUFFER_SIZE,IPC_CREAT | 0600);
 
   map_address = (void *)shmat(shmid, address, 0);
@@ -2533,6 +2536,7 @@ static void *alloc_shm(void *address){
 
   return map_address;
 }
+#endif
 
 #if defined OS_LINUX  || defined OS_AIX  || defined __sun__  || defined OS_WINDOWS
 
@@ -2562,6 +2566,10 @@ static void *alloc_hugetlb(void *address){
 
   void *map_address = (void *)-1;
 
+#ifdef DEBUG
+fprintf(stderr,"alloc_hugetlb got called\n");
+#endif
+
 #if defined(OS_LINUX) || defined(OS_AIX)
   int shmid;
 
@@ -2583,7 +2591,7 @@ static void *alloc_hugetlb(void *address){
 
     if (map_address != (void *)-1){
       shmctl(shmid, IPC_RMID, 0);
-    }
+    }else printf("alloc_hugetlb failed\n");
   }
 #endif
 
@@ -2645,7 +2653,6 @@ static void *alloc_hugetlb(void *address){
 }
 #endif
 
-#endif
 
 #ifdef  ALLOC_HUGETLBFILE
 
@@ -2739,7 +2746,7 @@ struct newmemstruct
 };
 static volatile struct newmemstruct *newmemory;
 
-static int memory_initialized = 0;
+static volatile int memory_initialized = 0;
 static int memory_overflowed = 0;
 /*       Memory allocation routine           */
 /* procpos ... indicates where it comes from */
@@ -2762,11 +2769,10 @@ void *blas_memory_alloc(int procpos){
 #ifdef ALLOC_DEVICEDRIVER
     alloc_devicedirver,
 #endif
-/* Hugetlb implicitly assumes ALLOC_SHM */
-#ifdef ALLOC_SHM
+#if defined(ALLOC_SHM) && !defined(ALLOC_HUGETLB)
     alloc_shm,
 #endif
-#if ((defined ALLOC_SHM) && (defined OS_LINUX  || defined OS_AIX  || defined __sun__  || defined OS_WINDOWS))
+#if ((defined ALLOC_HUGETLB) && (defined OS_LINUX  || defined OS_AIX  || defined __sun__  || defined OS_WINDOWS))
     alloc_hugetlb,
 #endif
 #ifdef ALLOC_MMAP
@@ -2785,13 +2791,11 @@ void *blas_memory_alloc(int procpos){
   };
   void *(**func)(void *address);
 
-#if defined(USE_OPENMP)
   if (!memory_initialized) {
+#if defined(SMP) && !defined(USE_OPENMP)
+    LOCK_COMMAND(&alloc_lock);
+    if (!memory_initialized) {
 #endif
-
-  LOCK_COMMAND(&alloc_lock);
-
-  if (!memory_initialized) {
 
 #if defined(WHEREAMI) && !defined(USE_OPENMP)
     for (position = 0; position < NUM_BUFFERS; position ++){
@@ -2814,19 +2818,19 @@ void *blas_memory_alloc(int procpos){
     if (!blas_num_threads) blas_cpu_number = blas_get_cpu_number();
 #endif
 
-#if defined(ARCH_X86) || defined(ARCH_X86_64) || defined(ARCH_IA64) || defined(ARCH_MIPS64) || defined(ARCH_ARM64)
+#if defined(ARCH_X86) || defined(ARCH_X86_64) || defined(ARCH_IA64) || defined(ARCH_MIPS64) || defined(ARCH_ARM64) || defined(ARCH_LOONGARCH64)
 #ifndef DYNAMIC_ARCH
     blas_set_parameter();
 #endif
 #endif
 
     memory_initialized = 1;
-
+    WMB;
+#if defined(SMP) && !defined(USE_OPENMP)
   }
   UNLOCK_COMMAND(&alloc_lock);
-#if defined(USE_OPENMP)
-  }
 #endif
+}
 
 #ifdef DEBUG
   printf("Alloc Start ...\n");
@@ -2945,8 +2949,22 @@ void *blas_memory_alloc(int procpos){
         }
 #endif
 
-#if (defined ALLOC_SHM) && (defined OS_LINUX  || defined OS_AIX  || defined __sun__  || defined OS_WINDOWS)
+#if (defined ALLOC_HUGETLB) && (defined OS_LINUX  || defined OS_AIX  || defined __sun__  || defined OS_WINDOWS)
         if ((*func == alloc_hugetlb) && (map_address != (void *)-1)) hugetlb_allocated = 1;
+#ifdef DEBUG
+	if (hugetlb_allocated) printf("allocating via shared memory with large page support (hugetlb)\n");
+#endif
+#endif
+
+#if (defined ALLOC_SHM) && (defined OS_LINUX  || defined OS_AIX  || defined __sun__  || defined OS_WINDOWS)
+#ifdef DEBUG
+	printf("allocating via shared memory\n");
+#endif
+        if ((*func == alloc_shm) && (map_address == (void *)-1)) {
+#ifndef OS_WINDOWS
+            fprintf(stderr, "OpenBLAS Warning ... shared memory allocation was failed.\n");
+#endif
+	}
 #endif
 
         func ++;
@@ -3061,10 +3079,23 @@ allocation2:
         }
 #endif
 
-#if (defined ALLOC_SHM) && (defined OS_LINUX  || defined OS_AIX  || defined __sun__  || defined OS_WINDOWS)
+#if (defined ALLOC_HUGETLB) && (defined OS_LINUX  || defined OS_AIX  || defined __sun__  || defined OS_WINDOWS)
+#ifdef DEBUG
+	fprintf(stderr,"OpenBLAS: allocating via shared memory with large page support (hugetlb)\n");
+#endif
         if ((*func == alloc_hugetlb) && (map_address != (void *)-1)) hugetlb_allocated = 1;
 #endif
 
+#if (defined ALLOC_SHM) && (defined OS_LINUX  || defined OS_AIX  || defined __sun__  || defined OS_WINDOWS)
+#ifdef DEBUG
+	fprintf(stderr,"allocating via shared memory\n");
+#endif
+        if ((*func == alloc_shm) && (map_address == (void *)-1)) {
+#ifndef OS_WINDOWS
+            fprintf(stderr, "OpenBLAS Warning ... shared memory allocation was failed.\n");
+#endif
+	}
+#endif
         func ++;
       }
 

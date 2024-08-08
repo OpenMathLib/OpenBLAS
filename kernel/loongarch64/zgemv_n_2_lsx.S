@@ -253,7 +253,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
     PROLOGUE
     PTR_LD     INC_Y,  $sp,    0
-    push_if_used 17 + 7, 31
+    push_if_used 7, 7
     PTR_ADDI   K,      $r0,     0x01
     PTR_SUB    I,      INC_X,   K
     PTR_SUB    J,      INC_Y,   K
@@ -291,6 +291,6 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .L_GAP_1_1: /* if (inc_x != 1) && (incy != 1) */
     ZGEMV_N_LSX GAP_1_1, X_2_GAP, X_1, Y_2_GAP, Y_1
 .L_END:
-    pop_if_used 17 + 7, 31
+    pop_if_used 7, 7
     jirl    $r0, $r1, 0x0
     EPILOGUE

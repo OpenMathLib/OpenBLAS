@@ -37,7 +37,7 @@ SBLASOBJS	+= \
 	ssyrk_UN.$(SUFFIX) ssyrk_UT.$(SUFFIX) ssyrk_LN.$(SUFFIX) ssyrk_LT.$(SUFFIX) \
 	ssyr2k_UN.$(SUFFIX) ssyr2k_UT.$(SUFFIX) ssyr2k_LN.$(SUFFIX) ssyr2k_LT.$(SUFFIX) \
 	ssyrk_kernel_U.$(SUFFIX)  ssyrk_kernel_L.$(SUFFIX) \
-	ssyr2k_kernel_U.$(SUFFIX) ssyr2k_kernel_L.$(SUFFIX)
+	ssyr2k_kernel_U.$(SUFFIX) ssyr2k_kernel_L.$(SUFFIX) sgemm_batch_thread.$(SUFFIX)
 
 DBLASOBJS	+= \
 	dgemm_nn.$(SUFFIX) dgemm_nt.$(SUFFIX) dgemm_tn.$(SUFFIX) dgemm_tt.$(SUFFIX) \
@@ -53,7 +53,7 @@ DBLASOBJS	+= \
 	dsyrk_UN.$(SUFFIX) dsyrk_UT.$(SUFFIX) dsyrk_LN.$(SUFFIX) dsyrk_LT.$(SUFFIX) \
 	dsyr2k_UN.$(SUFFIX) dsyr2k_UT.$(SUFFIX) dsyr2k_LN.$(SUFFIX) dsyr2k_LT.$(SUFFIX) \
 	dsyrk_kernel_U.$(SUFFIX)  dsyrk_kernel_L.$(SUFFIX) \
-	dsyr2k_kernel_U.$(SUFFIX) dsyr2k_kernel_L.$(SUFFIX)
+	dsyr2k_kernel_U.$(SUFFIX) dsyr2k_kernel_L.$(SUFFIX) dgemm_batch_thread.$(SUFFIX)
 
 QBLASOBJS	+= \
 	qgemm_nn.$(SUFFIX) qgemm_nt.$(SUFFIX) qgemm_tn.$(SUFFIX) qgemm_tt.$(SUFFIX) \
@@ -103,7 +103,7 @@ CBLASOBJS	+= \
 	cherk_kernel_LN.$(SUFFIX)  cherk_kernel_LC.$(SUFFIX) \
 	csyr2k_kernel_U.$(SUFFIX)  csyr2k_kernel_L.$(SUFFIX) \
 	cher2k_kernel_UN.$(SUFFIX) cher2k_kernel_UC.$(SUFFIX) \
-	cher2k_kernel_LN.$(SUFFIX) cher2k_kernel_LC.$(SUFFIX)
+	cher2k_kernel_LN.$(SUFFIX) cher2k_kernel_LC.$(SUFFIX) cgemm_batch_thread.$(SUFFIX)
 
 ZBLASOBJS	+= \
 	zgemm_nn.$(SUFFIX) zgemm_cn.$(SUFFIX) zgemm_tn.$(SUFFIX) zgemm_nc.$(SUFFIX) \
@@ -137,7 +137,7 @@ ZBLASOBJS	+= \
 	zherk_kernel_LN.$(SUFFIX)  zherk_kernel_LC.$(SUFFIX) \
 	zsyr2k_kernel_U.$(SUFFIX)  zsyr2k_kernel_L.$(SUFFIX) \
 	zher2k_kernel_UN.$(SUFFIX) zher2k_kernel_UC.$(SUFFIX) \
-	zher2k_kernel_LN.$(SUFFIX) zher2k_kernel_LC.$(SUFFIX)
+	zher2k_kernel_LN.$(SUFFIX) zher2k_kernel_LC.$(SUFFIX) zgemm_batch_thread.$(SUFFIX)
 
 
 XBLASOBJS	+= \
@@ -2941,6 +2941,21 @@ gemm_thread_variable.$(PSUFFIX) : gemm_thread_variable.c ../../common.h
 
 beta_thread.$(PSUFFIX) : beta_thread.c ../../common.h
 	$(CC) -c $(PFLAGS) $< -o $(@F)
+
+sbgemm_batch_thread.$(SUFFIX) : gemm_batch_thread.c ../../common.h
+	$(CC) -c $(CFLAGS) $< -o $(@F)
+	
+sgemm_batch_thread.$(SUFFIX) : gemm_batch_thread.c ../../common.h
+	$(CC) -c $(CFLAGS) $< -o $(@F)
+
+dgemm_batch_thread.$(SUFFIX) : gemm_batch_thread.c ../../common.h
+	$(CC) -c $(CFLAGS) $< -o $(@F)
+
+cgemm_batch_thread.$(SUFFIX) : gemm_batch_thread.c ../../common.h
+	$(CC) -c $(CFLAGS) $< -o $(@F)
+
+zgemm_batch_thread.$(SUFFIX) : gemm_batch_thread.c ../../common.h
+	$(CC) -c $(CFLAGS) $< -o $(@F)
 
 
 sbgemm_thread_nn.$(PSUFFIX) : gemm.c level3_thread.c ../../param.h

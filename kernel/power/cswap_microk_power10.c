@@ -58,6 +58,16 @@ static void cswap_kernel_32 (long n, float *x, float *y)
        "lxvp            62, 224(%3)     \n\t"
 
 
+#if (__BYTE_ORDER__ == __ORDER_BIG_ENDIAN__)
+       "stxv            32, 0(%3)       \n\t"
+       "stxv            33, 16(%3)      \n\t"
+       "stxv            34, 32(%3)      \n\t"
+       "stxv            35, 48(%3)      \n\t"
+       "stxv            36, 64(%3)      \n\t"
+       "stxv            37, 80(%3)      \n\t"
+       "stxv            38, 96(%3)      \n\t"
+       "stxv            39, 112(%3)     \n\t"
+#else
        "stxv		33, 0(%3)	\n\t"
        "stxv		32, 16(%3)	\n\t"
        "stxv		35, 32(%3)	\n\t"
@@ -66,9 +76,20 @@ static void cswap_kernel_32 (long n, float *x, float *y)
        "stxv		36, 80(%3)	\n\t"
        "stxv		39, 96(%3)	\n\t"
        "stxv		38, 112(%3)	\n\t"
+#endif
 
        "addi		%3, %3, 128	\n\t"
 
+#if (__BYTE_ORDER__ == __ORDER_BIG_ENDIAN__)
+       "stxv            40, 0(%3)       \n\t"
+       "stxv            41, 16(%3)      \n\t"
+       "stxv            42, 32(%3)      \n\t"
+       "stxv            43, 48(%3)      \n\t"
+       "stxv            44, 64(%3)      \n\t"
+       "stxv            45, 80(%3)      \n\t"
+       "stxv            46, 96(%3)      \n\t"
+       "stxv            47, 112(%3)     \n\t"
+#else
        "stxv		41, 0(%3)	\n\t"
        "stxv		40, 16(%3)	\n\t"
        "stxv		43, 32(%3)	\n\t"
@@ -77,9 +98,20 @@ static void cswap_kernel_32 (long n, float *x, float *y)
        "stxv		44, 80(%3)	\n\t"
        "stxv		47, 96(%3)	\n\t"
        "stxv		46, 112(%3)	\n\t"
+#endif
 
        "addi		%3, %3, 128	\n\t"
 
+#if (__BYTE_ORDER__ == __ORDER_BIG_ENDIAN__)
+       "stxv            48, 0(%4)       \n\t"
+       "stxv            49, 16(%4)      \n\t"
+       "stxv            50, 32(%4)      \n\t"
+       "stxv            51, 48(%4)      \n\t"
+       "stxv            52, 64(%4)      \n\t"
+       "stxv            53, 80(%4)      \n\t"
+       "stxv            54, 96(%4)      \n\t"
+       "stxv            55, 112(%4)     \n\t"
+#else
        "stxv		49, 0(%4)	\n\t"
        "stxv		48, 16(%4)	\n\t"
        "stxv		51, 32(%4)	\n\t"
@@ -88,9 +120,20 @@ static void cswap_kernel_32 (long n, float *x, float *y)
        "stxv		52, 80(%4)	\n\t"
        "stxv		55, 96(%4)	\n\t"
        "stxv		54, 112(%4)	\n\t"
+#endif
 
        "addi		%4, %4, 128	\n\t"
 
+#if (__BYTE_ORDER__ == __ORDER_BIG_ENDIAN__)
+       "stxv            56, 0(%4)       \n\t"
+       "stxv            57, 16(%4)      \n\t"
+       "stxv            58, 32(%4)      \n\t"
+       "stxv            59, 48(%4)      \n\t"
+       "stxv            60, 64(%4)      \n\t"
+       "stxv            61, 80(%4)      \n\t"
+       "stxv            62, 96(%4)      \n\t"
+       "stxv            63, 112(%4)     \n\t"
+#else
        "stxv		57, 0(%4)	\n\t"
        "stxv		56, 16(%4)	\n\t"
        "stxv		59, 32(%4)	\n\t"
@@ -99,6 +142,7 @@ static void cswap_kernel_32 (long n, float *x, float *y)
        "stxv		60, 80(%4)	\n\t"
        "stxv		63, 96(%4)	\n\t"
        "stxv		62, 112(%4)	\n\t"
+#endif
 
        "addi		%4, %4, 128	\n\t"
 

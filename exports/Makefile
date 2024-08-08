@@ -137,7 +137,7 @@ libgoto_hpl.def : $(GENSYM)
 
 ifeq ($(OSNAME), Darwin)
 ifeq ($(FIXED_LIBNAME),1)
-INTERNALNAME = $(LIBPREFIX)$(LIBNAMESUFFIX).dylib
+INTERNALNAME = $(LIBPREFIX).dylib
 else
 INTERNALNAME = $(LIBPREFIX).$(MAJOR_VERSION).dylib
 endif
@@ -178,7 +178,7 @@ FEXTRALIB += -lm
 EXTRALIB += -lm
 else
 ifeq ($(FIXED_LIBNAME),1)
-INTERNALNAME = $(LIBPREFIX)$(LIBNAMESUFFIX).so
+INTERNALNAME = $(LIBPREFIX).so
 else
 INTERNALNAME = $(LIBPREFIX).so.$(MAJOR_VERSION)
 endif
@@ -315,11 +315,6 @@ test : linktest.c
 
 linktest.c : $(GENSYM) ../Makefile.system ../getarch.c
 	./$(GENSYM) linktest  $(ARCH) "$(BU)" $(EXPRECISION) $(NO_CBLAS) $(NO_LAPACK) $(NO_LAPACKE) $(NEED2UNDERSCORES) $(ONLY_CBLAS) "$(SYMBOLPREFIX)" "$(SYMBOLSUFFIX)" $(BUILD_LAPACK_DEPRECATED) $(BUILD_BFLOAT16) $(BUILD_SINGLE) $(BUILD_DOUBLE) $(BUILD_COMPLEX) $(BUILD_COMPLEX16) > linktest.c
-ifeq ($(F_COMPILER), IBM)
-	mv linktest.c linktest.c.FIRST
-	egrep -v 'second_|dsecnd_' linktest.c.FIRST > linktest.c
-	rm linktest.c.FIRST
-endif
 
 clean ::
 	@rm -f *.def *.dylib __.SYMDEF* *.renamed

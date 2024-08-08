@@ -120,6 +120,11 @@ extern gotoblas_t  gotoblas_CORTEXA55;
 #else
 #define gotoblas_CORTEXA55 gotoblas_ARMV8
 #endif
+#ifdef DYN_A64FX
+extern gotoblas_t gotoblas_A64FX;
+#else
+#define gotoblas_A64FX gotoblas_ARMV8
+#endif
 #else
 extern gotoblas_t  gotoblas_CORTEXA53;
 #define gotoblas_CORTEXA55 gotoblas_CORTEXA53
@@ -136,10 +141,12 @@ extern gotoblas_t  gotoblas_NEOVERSEN1;
 extern gotoblas_t  gotoblas_NEOVERSEV1;
 extern gotoblas_t  gotoblas_NEOVERSEN2;
 extern gotoblas_t  gotoblas_ARMV8SVE;
+extern gotoblas_t  gotoblas_A64FX;
 #else
 #define gotoblas_NEOVERSEV1 gotoblas_ARMV8
 #define gotoblas_NEOVERSEN2 gotoblas_ARMV8
 #define gotoblas_ARMV8SVE   gotoblas_ARMV8
+#define gotoblas_A64FX      gotoblas_ARMV8
 #endif
 extern gotoblas_t  gotoblas_THUNDERX3T110;
 #endif
@@ -149,7 +156,7 @@ extern void openblas_warning(int verbose, const char * msg);
 #define FALLBACK_VERBOSE 1
 #define NEOVERSEN1_FALLBACK "OpenBLAS : Your OS does not support SVE instructions. OpenBLAS is using Neoverse N1 kernels as a fallback, which may give poorer performance.\n"
 
-#define NUM_CORETYPES   17
+#define NUM_CORETYPES   18
 
 /*
  * In case asm/hwcap.h is outdated on the build system, make sure
@@ -184,6 +191,7 @@ static char *corename[] = {
   "thunderx3t110",
   "cortexa55",
   "armv8sve",
+  "a64fx",
   "unknown"
 };
 
@@ -205,6 +213,7 @@ char *gotoblas_corename(void) {
   if (gotoblas == &gotoblas_THUNDERX3T110) return corename[14];
   if (gotoblas == &gotoblas_CORTEXA55)    return corename[15];
   if (gotoblas == &gotoblas_ARMV8SVE)     return corename[16];
+  if (gotoblas == &gotoblas_A64FX)        return corename[17];
   return corename[NUM_CORETYPES];
 }
 
@@ -241,6 +250,7 @@ static gotoblas_t *force_coretype(char *coretype) {
     case 14: return (&gotoblas_THUNDERX3T110);
     case 15: return (&gotoblas_CORTEXA55);
     case 16: return (&gotoblas_ARMV8SVE);
+    case 17: return (&gotoblas_A64FX);
   }
   snprintf(message, 128, "Core not found: %s\n", coretype);
   openblas_warning(1, message);
@@ -344,6 +354,15 @@ static gotoblas_t *get_coretype(void) {
           return &gotoblas_THUNDERX2T99;
         case 0x0b8: // ThunderX3
           return &gotoblas_THUNDERX3T110;
+      }
+      break;
+    case 0x46: // Fujitsu
+      switch (part)
+      {
+#ifndef NO_SVE
+        case 0x001: // A64FX
+          return &gotoblas_A64FX;
+#endif
       }
       break;
     case 0x48: // HiSilicon

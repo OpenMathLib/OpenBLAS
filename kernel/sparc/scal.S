@@ -120,8 +120,10 @@
 
 	FCLR(29)
 
-	FCMP	ALPHA, FZERO
-	fbne	.LL100
+//	FCMP	ALPHA, FZERO
+//	fbne	.LL100
+	b	.LL100
+
 	sll	INCX, BASE_SHIFT, INCX
 
 	cmp	INCX, SIZE

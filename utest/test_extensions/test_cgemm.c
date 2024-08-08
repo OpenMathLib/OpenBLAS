@@ -73,9 +73,10 @@ static float check_cgemm(char transa, char transb, blasint m, blasint n, blasint
 	float alpha_conj[] = {1.0f, 0.0f}; 
 	char transa_verify = transa;
     char transb_verify = transb;
+    char cc[2]="C", cr[2]="R";
 
-    int arows = k, acols = m;
-    int brows = n, bcols = k;
+    blasint arows = k, acols = m;
+    blasint brows = n, bcols = k;
 
     if (transa == 'T' || transa == 'C'){
         arows = m; acols = k;
@@ -99,12 +100,12 @@ static float check_cgemm(char transa, char transb, blasint m, blasint n, blasint
 		data_cgemm.c_verify[i] = data_cgemm.c_test[i];
 
 	if (transa == 'R'){
-		cblas_cimatcopy(CblasColMajor, CblasConjNoTrans, arows, acols, alpha_conj, data_cgemm.a_verify, lda, lda);
+		BLASFUNC(cimatcopy)(cc, cr, &arows, &acols, alpha_conj, data_cgemm.a_verify, &lda, &lda);
 		transa_verify = 'N';
 	}
 
     if (transb == 'R'){
-		cblas_cimatcopy(CblasColMajor, CblasConjNoTrans, brows, bcols, alpha_conj, data_cgemm.b_verify, ldb, ldb);
+		BLASFUNC(cimatcopy)(cc, cr, &brows, &bcols, alpha_conj, data_cgemm.b_verify, &ldb, &ldb);
 		transb_verify = 'N';
 	}
 

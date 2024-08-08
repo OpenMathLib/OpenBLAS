@@ -188,7 +188,7 @@ Please read `GotoBLAS_01Readme.txt` for older CPU models already supported by th
 
 - **AIX**: Dynamic architecture with OpenXL and OpenMP.
   ```sh
-  make CC=ibm-clang_r FC=xlf TARGET=POWER7 BINARY=64 USE_OPENMP=1 INTERFACE64=1 DYNAMIC_ARCH=1 USE_THREAD=1
+  make CC=ibm-clang_r FC=xlf_r TARGET=POWER7 BINARY=64 USE_OPENMP=1 INTERFACE64=1 DYNAMIC_ARCH=1 USE_THREAD=1
   ```
 
 #### IBM zEnterprise System
@@ -233,6 +233,8 @@ On **ARMV8**, it enables support for CortexA53, CortexA57, CortexA72, CortexA73,
 For **POWER**, the list encompasses POWER6, POWER8 and POWER9. POWER10 is additionally available if a sufficiently recent compiler is used for the build.
 
 on **ZARCH** it comprises Z13 and Z14 as well as generic zarch support.
+
+On **riscv64**, DYNAMIC_ARCH enables support for riscv64_zvl128b and riscv64_zvl256b in addition to generic riscv64 support.  A compiler that supports RVV 1.0 is required to build OpenBLAS for riscv64 when DYNAMIC_ARCH is enabled.
 
 The `TARGET` option can be used in conjunction with `DYNAMIC_ARCH=1` to specify which cpu model should be assumed for all the
 common code in the library, usually you will want to set this to the oldest model you expect to encounter.

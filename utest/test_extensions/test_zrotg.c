@@ -162,6 +162,7 @@ CTEST(zrotg, negative_real_negative_img)
     ASSERT_DBL_NEAR_TOL(-7.01997150991369, sa[1], DOUBLE_EPS);
 }
 
+#ifndef NO_CBLAS
 /**
  * C API specific test
  * Test zrotg by comparing it against pre-calculated values
@@ -287,4 +288,5 @@ CTEST(zrotg, c_api_negative_real_negative_img)
     ASSERT_DBL_NEAR_TOL(-5.26497863243527, sa[0], DOUBLE_EPS);
     ASSERT_DBL_NEAR_TOL(-7.01997150991369, sa[1], DOUBLE_EPS);
 }
+#endif
 #endif

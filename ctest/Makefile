@@ -25,6 +25,9 @@ endif
 
 override CFLAGS += -DADD$(BU) -DCBLAS
 ifeq ($(F_COMPILER),GFORTRAN)
+ifneq (, $(filter $(CORE),LOONGSON3R3 LOONGSON3R4))
+	override FFLAGS = $(filter_out(-O2 -O3,$(FFLAGS))) -O0
+endif
 	override FFLAGS += -fno-tree-vectorize
 endif
 override TARGET_ARCH=
@@ -203,7 +206,6 @@ ifeq ($(BUILD_COMPLEX16),1)
 	OPENBLAS_NUM_THREADS=2 ./xzcblat3 < zin3
 endif
 endif
-endif
 
 ifeq ($(SUPPORT_GEMM3M),1)
 ifeq ($(USE_OPENMP), 1)
@@ -222,7 +224,7 @@ ifeq ($(BUILD_COMPLEX16),1)
 endif
 endif
 endif
-
+endif
 
 
 

@@ -268,9 +268,29 @@ SMALL_MATRIX_OPT = 1
 else ifeq ($(ARCH), power)
 SMALL_MATRIX_OPT = 1
 BUILD_BFLOAT16 = 1
+else ifeq ($(ARCH), arm64)
+SMALL_MATRIX_OPT = 1
 endif
+ifeq ($(ARCH), loongarch64)
+SMALL_MATRIX_OPT = 1
+endif
+ifeq ($(ARCH), arm64)
+GEMM_GEMV_FORWARD = 1
+endif
+ifeq ($(ARCH), riscv)
+GEMM_GEMV_FORWARD = 1
+endif
+ifeq ($(ARCH), power)
+GEMM_GEMV_FORWARD = 1
+endif
+
 ifeq ($(SMALL_MATRIX_OPT), 1)
 CCOMMON_OPT += -DSMALL_MATRIX_OPT
+endif
+ifeq ($(GEMM_GEMV_FORWARD), 1)
+ifneq ($(ONLY_CBLAS), 1)
+CCOMMON_OPT += -DGEMM_GEMV_FORWARD
+endif
 endif
 
 # This operation is expensive, so execution should be once.
@@ -356,6 +376,9 @@ OBJCONV = $(CROSS_SUFFIX)objconv
 ifeq ($(NOFORTRAN), 1)
 C_LAPACK = 1
 override FEXTRALIB = 
+ifeq ($(C_COMPILER), GCC)
+CCOMMON_OPT += -Wno-error=incompatible-pointer-types
+endif
 endif
 
 ifeq ($(C_COMPILER), GCC)
@@ -683,6 +706,7 @@ ifneq ($(NO_SVE), 1)
 DYNAMIC_CORE += NEOVERSEV1
 DYNAMIC_CORE += NEOVERSEN2
 DYNAMIC_CORE += ARMV8SVE
+DYNAMIC_CORE += A64FX
 endif
 DYNAMIC_CORE += THUNDERX
 DYNAMIC_CORE += THUNDERX2T99
@@ -707,6 +731,17 @@ endif
 
 ifeq ($(ARCH), loongarch64)
 DYNAMIC_CORE = LOONGSON3R5 LOONGSON2K1000 LOONGSONGENERIC
+endif
+
+ifeq ($(ARCH), riscv64)
+DYNAMIC_CORE = RISCV64_GENERIC
+DYNAMIC_CORE += RISCV64_ZVL128B
+DYNAMIC_CORE += RISCV64_ZVL256B
+ifdef DYNAMIC_LIST
+override DYNAMIC_CORE = RISCV64_GENERIC $(DYNAMIC_LIST)
+XCCOMMON_OPT = -DDYNAMIC_LIST -DDYN_RISCV64_GENERIC
+XCCOMMON_OPT += $(foreach dcore,$(DYNAMIC_LIST),-DDYN_$(dcore))
+endif
 endif
 
 ifeq ($(ARCH), zarch)
@@ -811,8 +846,12 @@ ifeq ($(ARCH), arm)
 NO_BINARY_MODE  = 1
 BINARY_DEFINED  = 1
 
+ifneq ($(EMBEDDED), 1)
 CCOMMON_OPT += -marm
 FCOMMON_OPT += -marm
+else
+CCOMMON_OPT += -DOS_EMBEDDED -mthumb -mcpu=cortex-m4 -mfloat-abi=hard -mfpu=fpv4-sp-d16
+endif
 
 # If softfp abi is mentioned on the command line, force it.
 ifeq ($(ARM_SOFTFP_ABI), 1)
@@ -955,11 +994,17 @@ endif
 
 ifeq ($(ARCH), loongarch64)
 LA64_ABI=$(shell $(CC) -mabi=lp64d -c $(TOPDIR)/cpuid_loongarch64.c -o /dev/null > /dev/null 2> /dev/null && echo lp64d)
+LA64_ARCH=$(shell $(CC) -march=loongarch64 -c $(TOPDIR)/cpuid_loongarch64.c -o /dev/null > /dev/null 2> /dev/null && echo loongarch64)
 ifneq ($(LA64_ABI), lp64d)
 LA64_ABI=lp64
 endif
+ifneq ($(LA64_ARCH), loongarch64)
+CCOMMON_OPT += -mabi=$(LA64_ABI)
+FCOMMON_OPT += -mabi=$(LA64_ABI)
+else
 CCOMMON_OPT += -march=loongarch64 -mabi=$(LA64_ABI)
 FCOMMON_OPT += -march=loongarch64 -mabi=$(LA64_ABI)
+endif
 endif
 
 endif
@@ -1194,9 +1239,6 @@ endif
 endif
 else
 FCOMMON_OPT += -q32
-endif
-ifeq ($(USE_OPENMP), 1)
-FCOMMON_OPT += -openmp
 endif
 endif
 
@@ -1582,12 +1624,22 @@ ifdef FUNCTION_PROFILE
 CCOMMON_OPT	+= -DFUNCTION_PROFILE
 endif
 
+ifdef SHMEM_ALLOCATION
+ifneq ($(SHMEM_ALLOCATION), 0)
+CCOMMON_OPT	+= -DALLOC_SHM
+endif
+endif
+
 ifdef HUGETLB_ALLOCATION
+ifneq ($(HUGETLB_ALLOCATION), 0)
 CCOMMON_OPT	+= -DALLOC_HUGETLB
+endif
 endif
 
 ifdef HUGETLBFILE_ALLOCATION
+ifneq ($(HUGETLBFILE_ALLOCATION), 0)
 CCOMMON_OPT	+= -DALLOC_HUGETLBFILE -DHUGETLB_FILE_NAME=$(HUGETLBFILE_ALLOCATION)
+endif
 endif
 
 ifdef STATIC_ALLOCATION

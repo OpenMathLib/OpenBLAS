@@ -65,6 +65,7 @@ static struct DATA_CGEMV_T data_cgemv_t;
 static void matrix_vector_product(blasint n, blasint m, blasint lda, blasint inc_x)
 {
     blasint i;
+    blasint one=1;
     float *a_ptr = data_cgemv_t.a_verify;
     float *x_ptr = data_cgemv_t.x_test;
     float *x_res = data_cgemv_t.x_verify;
@@ -73,7 +74,11 @@ static void matrix_vector_product(blasint n, blasint m, blasint lda, blasint inc
 
     for (i = 0; i < n * inc_x; i+= inc_x)
     {
-        result = cblas_cdotu(lda, a_ptr, 1, x_ptr, inc_x);
+#ifdef RETURN_BY_STACK
+        BLASFUNC(cdotu)(&result, &lda, a_ptr, &one, x_ptr, &inc_x);
+#else
+        result = BLASFUNC(cdotu)(&lda, a_ptr, &one, x_ptr, &inc_x);
+#endif
         x_res[0] = CREAL(result);
         x_res[1] = CIMAG(result);
         a_ptr += lda * 2;
@@ -153,6 +158,7 @@ static float check_cgemv(char api, char order, char trans, blasint m, blasint n,
         BLASFUNC(cgemv)(&trans, &m, &n, alpha, data_cgemv_t.a_test, 
                         &lda, data_cgemv_t.x_test, &inc_x, beta, data_cgemv_t.y_test, &inc_y);
     }
+#ifndef NO_CBLAS
     else {
         if (order == 'C') corder = CblasColMajor;
         if (order == 'R') corder = CblasRowMajor;
@@ -173,13 +179,14 @@ static float check_cgemv(char api, char order, char trans, blasint m, blasint n,
         cblas_cgemv(corder, ctrans, m, n, alpha, data_cgemv_t.a_test, 
                         lda, data_cgemv_t.x_test, inc_x, beta, data_cgemv_t.y_test, inc_y);
     }
+#endif
 
     // Find the differences between output vector caculated by cgemv and reference funcs
     for (i = 0; i < m * inc_y * 2; i++)
         data_cgemv_t.y_test[i] -= data_cgemv_t.y_verify[i];
 
     // Find the norm of differences
-    return cblas_scnrm2(m, data_cgemv_t.y_test, inc_y);
+    return BLASFUNC(scnrm2)(&m, data_cgemv_t.y_test, &inc_y);
 }
 
 /**
@@ -213,6 +220,7 @@ static int check_badargs(char order, char trans, blasint m, blasint n,
     return check_error();
 }
 
+#ifndef NO_CBLAS
 /**
  * C API specific function
  * Check if error function was called with expected function name
@@ -1129,4 +1137,5 @@ CTEST(cgemv, c_api_xerbla_invalid_order_col_major)
     int passed = c_api_check_badargs(corder, ctrans, m, n, lda, inc_x, inc_y, expected_info);
     ASSERT_EQUAL(TRUE, passed);
 }
+#endif
 #endif

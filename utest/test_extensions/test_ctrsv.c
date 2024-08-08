@@ -65,6 +65,7 @@ static float check_ctrsv(char uplo, char trans, char diag, blasint n, blasint ld
 	blasint i;
 	float alpha_conj[] = {1.0f, 0.0f}; 
 	char trans_verify = trans;
+	char cc[2]="C", cr[2]="R";
 
 	srand_generate(data_ctrsv.a_test, n * lda * 2);
 	srand_generate(data_ctrsv.x_test, n * incx * 2);
@@ -76,8 +77,8 @@ static float check_ctrsv(char uplo, char trans, char diag, blasint n, blasint ld
 		data_ctrsv.x_verify[i] = data_ctrsv.x_test[i];
 
 	if (trans == 'R'){
-		cblas_cimatcopy(CblasColMajor, CblasConjNoTrans, n, n, 
-						alpha_conj, data_ctrsv.a_verify, lda, lda);
+		BLASFUNC(cimatcopy)(cc, cr, &n, &n, 
+						alpha_conj, data_ctrsv.a_verify, &lda, &lda);
 		trans_verify = 'N';
 	}
 

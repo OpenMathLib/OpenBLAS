@@ -43,21 +43,21 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 static void dscal_kernel_8( BLASLONG n, FLOAT *da , FLOAT *x )
 {
 
-	BLASLONG i;
-	FLOAT alpha = *da;
+    BLASLONG i;
+    FLOAT alpha = *da;
 
-	for( i=0; i<n; i+=8 )
-	{
-		x[0] *= alpha;	
-		x[1] *= alpha;	
-		x[2] *= alpha;	
-		x[3] *= alpha;	
-		x[4] *= alpha;	
-		x[5] *= alpha;	
-		x[6] *= alpha;	
-		x[7] *= alpha;	
-		x+=8;
-	}
+    for( i=0; i<n; i+=8 )
+    {
+        x[0] *= alpha;
+        x[1] *= alpha;
+        x[2] *= alpha;
+        x[3] *= alpha;
+        x[4] *= alpha;
+        x[5] *= alpha;
+        x[6] *= alpha;
+        x[7] *= alpha;
+        x+=8;
+    }
 
 }
 
@@ -65,19 +65,19 @@ static void dscal_kernel_8( BLASLONG n, FLOAT *da , FLOAT *x )
 static void dscal_kernel_8_zero( BLASLONG n, FLOAT *alpha , FLOAT *x )
 {
 
-	BLASLONG i;
-	for( i=0; i<n; i+=8 )
-	{
-		x[0] = 0.0;	
-		x[1] = 0.0;	
-		x[2] = 0.0;	
-		x[3] = 0.0;	
-		x[4] = 0.0;	
-		x[5] = 0.0;	
-		x[6] = 0.0;	
-		x[7] = 0.0;	
-		x+=8;
-	}
+    BLASLONG i;
+    for( i=0; i<n; i+=8 )
+    {
+        x[0] = 0.0;
+        x[1] = 0.0;
+        x[2] = 0.0;
+        x[3] = 0.0;
+        x[4] = 0.0;
+        x[5] = 0.0;
+        x[6] = 0.0;
+        x[7] = 0.0;
+        x+=8;
+    }
 
 }
 
@@ -89,51 +89,51 @@ static void dscal_kernel_inc_8(BLASLONG n, FLOAT *alpha, FLOAT *x, BLASLONG inc_
 static void dscal_kernel_inc_8(BLASLONG n, FLOAT *alpha, FLOAT *x, BLASLONG inc_x)
 {
 
-	FLOAT *x1=NULL;
-	BLASLONG inc_x3;
+    FLOAT *x1=NULL;
+    BLASLONG inc_x3;
 
-	inc_x <<= 3;
-	inc_x3 = (inc_x << 1) + inc_x;
+    inc_x <<= 3;
+    inc_x3 = (inc_x << 1) + inc_x;
 
         __asm__  __volatile__
         (
-        "movddup               (%3), %%xmm0                 \n\t"  // alpha     
+        "movddup (%3),      %%xmm0              \n\t"  // alpha
 
-	"leaq		(%1,%4,4), %2		            \n\t"
+        "leaq    (%1,%4,4), %2                  \n\t"
 
-        ".p2align 4                                          \n\t"
+        ".p2align 4                             \n\t"
 
-        "1:                                                 \n\t"
-	"movsd	(%1)     , %%xmm4			    \n\t"
-	"movhpd (%1,%4,1), %%xmm4			    \n\t"
-	"movsd	(%1,%4,2), %%xmm5			    \n\t"
-	"movhpd (%1,%5,1), %%xmm5			    \n\t"
+        "1:                                     \n\t"
+        "movsd  (%1)     , %%xmm4               \n\t"
+        "movhpd (%1,%4,1), %%xmm4               \n\t"
+        "movsd  (%1,%4,2), %%xmm5               \n\t"
+        "movhpd (%1,%5,1), %%xmm5               \n\t"
 
-	"movsd	(%2)     , %%xmm6			    \n\t"
-	"movhpd (%2,%4,1), %%xmm6			    \n\t"
-	"movsd	(%2,%4,2), %%xmm7			    \n\t"
-	"movhpd (%2,%5,1), %%xmm7			    \n\t"
+        "movsd  (%2)     , %%xmm6               \n\t"
+        "movhpd (%2,%4,1), %%xmm6               \n\t"
+        "movsd  (%2,%4,2), %%xmm7               \n\t"
+        "movhpd (%2,%5,1), %%xmm7               \n\t"
 
-	"mulpd  %%xmm0, %%xmm4				    \n\t"
-	"mulpd  %%xmm0, %%xmm5				    \n\t"
-	"mulpd  %%xmm0, %%xmm6				    \n\t"
-	"mulpd  %%xmm0, %%xmm7				    \n\t"
+        "mulpd  %%xmm0, %%xmm4                  \n\t"
+        "mulpd  %%xmm0, %%xmm5                  \n\t"
+        "mulpd  %%xmm0, %%xmm6                  \n\t"
+        "mulpd  %%xmm0, %%xmm7                  \n\t"
 
-	"movsd  %%xmm4 , (%1)				    \n\t"
-	"movhpd %%xmm4 , (%1,%4,1)			    \n\t"
-	"movsd  %%xmm5 , (%1,%4,2)			    \n\t"
-	"movhpd %%xmm5 , (%1,%5,1)			    \n\t"
+        "movsd  %%xmm4 , (%1)                   \n\t"
+        "movhpd %%xmm4 , (%1,%4,1)              \n\t"
+        "movsd  %%xmm5 , (%1,%4,2)              \n\t"
+        "movhpd %%xmm5 , (%1,%5,1)              \n\t"
 
-	"movsd  %%xmm6 , (%2)				    \n\t"
-	"movhpd %%xmm6 , (%2,%4,1)			    \n\t"
-	"movsd  %%xmm7 , (%2,%4,2)			    \n\t"
-	"movhpd %%xmm7 , (%2,%5,1)			    \n\t"
+        "movsd  %%xmm6 , (%2)                   \n\t"
+        "movhpd %%xmm6 , (%2,%4,1)              \n\t"
+        "movsd  %%xmm7 , (%2,%4,2)              \n\t"
+        "movhpd %%xmm7 , (%2,%5,1)              \n\t"
 
-	"leaq   (%1,%4,8), %1				    \n\t"
-	"leaq   (%2,%4,8), %2				    \n\t"
+        "leaq   (%1,%4,8), %1                   \n\t"
+        "leaq   (%2,%4,8), %2                   \n\t"
 
-	"subq	$8, %0					    \n\t"
-	"jnz    1b					    \n\t"
+        "subq   $8, %0                          \n\t"
+        "jnz    1b                              \n\t"
 
         :
           "+r" (n),     // 0
@@ -150,91 +150,97 @@ static void dscal_kernel_inc_8(BLASLONG n, FLOAT *alpha, FLOAT *x, BLASLONG inc_
           "%xmm12", "%xmm13", "%xmm14", "%xmm15",
           "memory"
         );
-
-
 }
 
 int CNAME(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, FLOAT da, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG inc_y, FLOAT *dummy, BLASLONG dummy2)
 {
-	BLASLONG i=0,j=0;
+    BLASLONG i = 0, j = 0;
 
-	if ( inc_x != 1 )
-	{
-
-		if ( da == 0.0 )
-		{
-
-			BLASLONG n1 = n & -2;
-
-			while(j < n1)
-			{
-			
-				x[i]=0.0;
-				x[i+inc_x]=0.0;
-				i += 2*inc_x ;
-				j+=2;
-
-			}
-
-			while(j < n)
-			{
-			
-				x[i]=0.0;
-				i += inc_x ;
-				j++;
-
-			}
-		}
-		else
-		{
-
-			BLASLONG n1 = n & -8;
-			if ( n1 > 0 )
-			{
-				dscal_kernel_inc_8(n1, &da, x, inc_x);
-				i = n1 * inc_x;
-				j = n1;
-		        }			
-
-			while(j < n)
-			{
-			
-				x[i] *= da;
-				i += inc_x ;
-				j++;
-
-			}
-
-		}
-
-		return(0);
-	}
-
-	BLASLONG n1 = n & -8;
-	if ( n1 > 0 )
-	{
-		if ( da == 0.0 )
-			dscal_kernel_8_zero(n1 , &da , x);
-		else
-			dscal_kernel_8(n1 , &da , x);
-	}
-
-	if ( da == 0.0 )
-	{
-		for ( i=n1 ; i<n; i++ )
-		{
-			x[i] = 0.0;
-		}
-	}
-	else
-	{
-
-		for ( i=n1 ; i<n; i++ )
-		{
-			x[i] *= da;
-		}
-	}
-	return(0);
+    // Resolved issue 4728 when the caller is dscal
+    if (dummy2 == 1 && da == 0.0)
+    {
+        if ( inc_x != 1 )
+        {
+            BLASLONG n1 = n & -8;
+            if ( n1 > 0 )
+            {
+                dscal_kernel_inc_8(n1, &da, x, inc_x);
+                i = n1 * inc_x;
+                j = n1;
+            }
+            while(j < n)
+            {
+                x[i] *= da;
+                i += inc_x ;
+                j++;
+            }
+        }
+        else
+        {
+            BLASLONG n1 = n & -8;
+            if ( n1 > 0)
+                dscal_kernel_8(n1 , &da , x);
+            for ( i = n1 ; i < n; i++ )
+                x[i] *= da;
+        }
+    }
+    else
+    {
+        if ( inc_x != 1 )
+        {
+            if( da == 0.0)
+            {
+                BLASLONG n1 = n & -2;
+                while(j < n1)
+                {
+                    x[i] = 0.0;
+                    x[i+inc_x] = 0.0;
+                    i += 2 * inc_x ;
+                    j += 2;
+                }
+                while(j < n)
+                {
+                    x[i] = 0.0;
+                    i += inc_x ;
+                    j++;
+                }
+            }
+            else
+            {
+                BLASLONG n1 = n & -8;
+                if ( n1 > 0 )
+                {
+                    dscal_kernel_inc_8(n1, &da, x, inc_x);
+                    i = n1 * inc_x;
+                    j = n1;
+                }
+                while(j < n)
+                {
+                    x[i] *= da;
+                    i += inc_x ;
+                    j++;
+                }
+            }
+        }
+        else
+        {
+            if ( da == 0.0 )
+            {
+                BLASLONG n1 = n & -8;
+                if ( n1 > 0)
+                   dscal_kernel_8_zero(n1, &da, x);
+                for ( i = n1 ; i < n; i++ )
+                    x[i] = 0.0;
+            }
+            else
+            {
+                BLASLONG n1 = n & -8;
+                if ( n1 > 0)
+                    dscal_kernel_8(n1 , &da , x);
+                for ( i = n1 ; i < n; i++ )
+                    x[i] *= da;
+            }
+        }
+    }
+    return(0);
 }
-
-

@@ -79,7 +79,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define D7     $vr15
 
     PROLOGUE
-    push_if_used 26, 32
+    push_if_used 0, 0
     move       TD,   DST
     move       TS,   SRC
     slli.d     TL,   LDA,  0x03
@@ -268,6 +268,8 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     addi.d    S2,    S2,  0x08
     addi.d    TD,    TD,  0x10
 .L_N1:
+    andi      J,     N,   0x01
+    beq       ZERO,  J,   .L_N0
     move      S1,    TS
     beq       ZERO,  M,   .L_N0
 .L_M1:
@@ -278,6 +280,6 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     addi.d    M,     M,   -1
     blt       ZERO,  M,   .L_M1
 .L_N0:
-    pop_if_used 26, 32
+    pop_if_used 0, 0
     jirl       $r0,  $r1,  0x00
     EPILOGUE

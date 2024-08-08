@@ -198,6 +198,9 @@ In chronological order:
 * PingTouGe Semiconductor Co., Ltd.
   * [2020-10] Add RISC-V Vector (0.7.1) support. Optimize BLAS kernels for Xuantie C910
 
+* Jake Arkinstall <https://github.com/jake-arkinstall>
+  * [2021-02-10] Remove in-source configure_file to enable builds in read-only contexts (issue #3100, PR #3101)
+
 * River Dillon <oss@outerpassage.net>
   * [2021-07-10] fix compilation with musl libc
 

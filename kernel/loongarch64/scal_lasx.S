@@ -52,18 +52,21 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     bge $r0, N, .L999
     bge $r0, INCX, .L999
     li.d TEMP, 1
+    ld.d t1, $sp,  0 // Load dummp2
     movgr2fr.d a1, $r0
     FFINT  a1, a1
     movgr2fr.d a2, TEMP
     FFINT  a2, a2
     slli.d TEMP, TEMP, BASE_SHIFT
     slli.d INCX, INCX, BASE_SHIFT
+    slli.d t1,   t1,   BASE_SHIFT
     CMPEQ  $fcc0, ALPHA, a1
     bcnez  $fcc0, .L20   //ALPHA==0
     CMPEQ  $fcc0, ALPHA, a2
     bcnez $fcc0, .L999  //ALPHA==1 return
+.L1:
     srai.d I, N, 3
-    beq INCX, TEMP, .L30    //ALPHA！=0|1 and INCX==1
+    beq INCX, TEMP, .L30    //ALPHA !=0|1 and INCX==1
     MTG  TEMP, ALPHA
 #ifdef DOUBLE
     xvreplgr2vr.d VALPHA, TEMP
@@ -73,7 +76,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     move XX, X
     .align 3
 
-.L10:   //ALPHA！=0|1 and INCX!=1
+.L10:   //ALPHA !=0|1 and INCX!=1
     bge $r0, I, .L32
     .align 3
 .L11:
@@ -168,6 +171,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     .align 3
 
 .L20:
+    beq  t1, TEMP, .L1 // if dummp2 == 1, do not directly copy 0
     srai.d I, N, 3
     beq INCX, TEMP, .L24
     bge $r0, I, .L22

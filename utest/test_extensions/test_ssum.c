@@ -62,6 +62,7 @@ CTEST(ssum, step_zero){
    blasint i;
    blasint N = ELEMENTS, inc = 0;
    float x[ELEMENTS];
+   x[0] = 0.0f;
    for (i = 0; i < N  * inc; i ++) {
       x[i] = i + 1000;
    }
@@ -220,6 +221,7 @@ CTEST(ssum, step_2_N_50){
    ASSERT_DBL_NEAR_TOL(50.0f, sum, SINGLE_EPS);
 }
 
+#ifndef NO_CBLAS
 /**
  * C API specific test
  * Test ssum by comparing it against pre-calculated values
@@ -243,6 +245,7 @@ CTEST(ssum, c_api_step_zero){
    blasint i;
    blasint N = ELEMENTS, inc = 0;
    float x[ELEMENTS];
+   x[0] = 0.0f;
    for (i = 0; i < N  * inc; i ++) {
       x[i] = i + 1000;
    }
@@ -400,4 +403,5 @@ CTEST(ssum, c_api_step_2_N_50){
    float sum = cblas_ssum(N, x, inc);
    ASSERT_DBL_NEAR_TOL(50.0f, sum, SINGLE_EPS);
 }
+#endif
 #endif

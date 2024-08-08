@@ -570,6 +570,8 @@ static int gemm_driver(blas_arg_t *args, BLASLONG *range_m, BLASLONG
   InitializeCriticalSection((PCRITICAL_SECTION)&level3_lock);
 #else
   static pthread_mutex_t  level3_lock    = PTHREAD_MUTEX_INITIALIZER;
+  static pthread_cond_t  level3_wakeup    = PTHREAD_COND_INITIALIZER;
+  volatile static BLASLONG CPU_AVAILABLE = MAX_CPU_NUMBER;
 #endif
 
   blas_arg_t newarg;
@@ -639,6 +641,12 @@ static int gemm_driver(blas_arg_t *args, BLASLONG *range_m, BLASLONG
   EnterCriticalSection((PCRITICAL_SECTION)&level3_lock);
 #else
   pthread_mutex_lock(&level3_lock);
+  while(CPU_AVAILABLE < nthreads) { 
+    pthread_cond_wait(&level3_wakeup, &level3_lock);
+  } 
+  CPU_AVAILABLE -= nthreads;
+  WMB;
+  pthread_mutex_unlock(&level3_lock);
 #endif
 
 #ifdef USE_ALLOC_HEAP
@@ -783,6 +791,10 @@ static int gemm_driver(blas_arg_t *args, BLASLONG *range_m, BLASLONG
 #elif defined(OS_WINDOWS)
   LeaveCriticalSection((PCRITICAL_SECTION)&level3_lock);
 #else
+  pthread_mutex_lock(&level3_lock);
+  CPU_AVAILABLE += nthreads;
+  WMB;
+  pthread_cond_signal(&level3_wakeup);
   pthread_mutex_unlock(&level3_lock);
 #endif
 
@@ -825,6 +837,16 @@ int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, IFLOAT *sa, IF
     nthreads_n = (n + switch_ratio * nthreads_m - 1) / (switch_ratio * nthreads_m);
     if (nthreads_m * nthreads_n > args -> nthreads) {
       nthreads_n = blas_quickdivide(args -> nthreads, nthreads_m);
+    }
+    /* The nthreads_m and nthreads_n are adjusted so that the submatrix       */
+    /* to be handled by each thread preferably becomes a square matrix        */
+    /* by minimizing an objective function 'n * nthreads_m + m * nthreads_n'. */
+    /* Objective function come from sum of partitions in m and n.             */
+    /* (n / nthreads_n) + (m / nthreads_m)                                    */
+    /* = (n * nthreads_m + m * nthreads_n) / (nthreads_n * nthreads_m)        */
+    while (nthreads_m % 2 == 0 && n * nthreads_m + m * nthreads_n > n * (nthreads_m / 2) + m * (nthreads_n * 2)) {
+      nthreads_m /= 2;
+      nthreads_n *= 2;
     }
   }
 
