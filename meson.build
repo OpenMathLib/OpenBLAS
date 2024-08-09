@@ -463,15 +463,22 @@ symb_defs = {
 # config.h file generation
 
 _config_h = meson.current_build_dir() / 'config.h'
-run_command('./c_check', 'Makefile.conf', _config_h, cc_id, check: true)
-run_command('./f_check', 'Makefile.conf', _config_h, fc_id, check: true)
+_makefile_conf = meson.current_build_dir() / 'Makefile.conf'
+run_command('./c_check', _makefile_conf, _config_h, cc_id, check: true)
+run_command('./f_check', _makefile_conf, _config_h, fc_id, check: true)
 
 run_command(cc_id, '-o', 'getarch', 'getarch.c', 'cpuid.S', check: true)
-_getarch_result = run_command('./getarch', '1', check: true, capture: true)
+_getarch_1_result = run_command('./getarch', '1', check: true, capture: true)
 run_command(py3,
             './write_to_file.py',
-            _getarch_result.stdout(),
+            _getarch_1_result.stdout(),
             _config_h,
+            check: true)
+_getarch_0_result = run_command('./getarch', '0', check: true, capture: true)
+run_command(py3,
+            './write_to_file.py',
+            _getarch_0_result.stdout(),
+            _makefile_conf,
             check: true)
 
 run_command(cc_id,
@@ -481,12 +488,44 @@ run_command(cc_id,
             '-o', 'getarch_2nd',
             'getarch_2nd.c',
             capture: true, check: true)
-_getarch_2nd_result = run_command('./getarch_2nd', '1', check: true, capture: true)
+_getarch_2nd_1_result = run_command('./getarch_2nd', '1', check: true, capture: true)
 run_command(py3,
             './write_to_file.py',
-            _getarch_2nd_result.stdout(),
+            _getarch_2nd_1_result.stdout(),
             _config_h,
             check: true)
+_getarch_2nd_0_result = run_command('./getarch_2nd', '0', check: true, capture: true)
+run_command(py3,
+            './write_to_file.py',
+            _getarch_2nd_0_result.stdout(),
+            _makefile_conf,
+            check: true)
+
+
+_read_config_py = './read_config.py'
+
+run_command(py3,
+            _read_config_py,
+            _config_h,
+            check: true)
+
+keyval = import('keyval')
+conf_kv = keyval.load(meson.current_build_dir() / 'config.kconf')
+# NOTE(rg): conf_kv doesn't do any parsing, setup manually
+conf_hdat = configuration_data()
+foreach key,val : conf_kv
+  if 'CHAR' in key
+       conf_hdat.set_quoted(key, val)
+    else
+      conf_hdat.set(key, val)
+  endif
+endforeach
+
+makefile_conf_kv = keyval.load(meson.current_build_dir() / 'Makefile.conf')
+makefile_conf_dat = configuration_data()
+foreach key,val : makefile_conf_kv
+  makefile_conf_dat.set(key, val)
+endforeach
 
 # Ignoring other hostarch checks and conflicts for arch in BSD for now
 _inc = [include_directories('.')]

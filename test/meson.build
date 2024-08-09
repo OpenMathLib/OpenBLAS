@@ -8,12 +8,16 @@ _test_input_array = [
     {'id': 'cblat1', 'has_dat': false},
     {'id': 'cblat2', 'has_dat': true},
     {'id': 'cblat3', 'has_dat': true},
-    {'id': 'cblat3_3m', 'has_dat': true},
     {'id': 'zblat1', 'has_dat': false},
     {'id': 'zblat2', 'has_dat': true},
     {'id': 'zblat3', 'has_dat': true},
-    {'id': 'zblat3_3m', 'has_dat': true},
 ]
+
+if conf_hdat.has('ARCH_X86_64') or conf_hdat.has('ARCH_X86')
+    _test_input_array += [
+        {'id': 'cblat3_3m', 'has_dat': true}, {'id': 'zblat3_3m', 'has_dat': true},
+    ]
+endif
 
 _test_runner = executable('test_runner', sources: ['test_runner.c'], install: false)
 
