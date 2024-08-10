@@ -2680,7 +2680,7 @@ static int sbgemv_kernel_1x128_lda_direct(BLASLONG m, BLASLONG n, float alpha, b
     BLASLONG tag_n_32x  = n & (~31);
     BLASLONG tag_n_128x = n & (~127);
 
-    __m512 accum512_bridge[8];
+    __m512 accum512_bridge[16];
     __m512 accum512_t_0, accum512_t_1, accum512_t_2, accum512_t_3;
     __m256 accum256_0;
     __m128 accum128;
