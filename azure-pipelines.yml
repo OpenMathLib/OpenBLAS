@@ -141,7 +141,7 @@ jobs:
 
 - job: OSX_OpenMP
   pool:
-     vmImage: 'macOS-12'
+     vmImage: 'macOS-latest'
   steps:   
   - script: |
       brew update
