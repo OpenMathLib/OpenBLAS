@@ -45,7 +45,8 @@ nav:
   - user_manual.md
   - extensions.md
   - developers.md
-  - build_system.md
+  - make_build_system.md
+  - meson_build_system.md
   - distributing.md
   - ci.md
   - about.md
