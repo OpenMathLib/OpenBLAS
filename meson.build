@@ -27,6 +27,9 @@ fc_id = fc.get_id()
 prj_bld_dir = meson.project_build_root()
 prj_src_dir = meson.project_source_root()
 
+pkg = import('pkgconfig')
+pkg_ver = meson.project_version()
+
 # Common args
 _args = []
 # TODO(rg): Max parallel number should be conditional
@@ -537,14 +540,22 @@ subdir('driver/others')
 subdir('kernel')
 
 _openblas = static_library('openblas',
-                    link_whole: [
-                     _interface,
-                     _l2_driver,
-                     _l3_driver,
-                     _others,
-                     _kern,
-                    ],
-                    install: true)
+                           link_whole: [
+                            _interface,
+                            _l2_driver,
+                            _l3_driver,
+                            _others,
+                            _kern,
+                           ],
+                           install: true,
+                          )
+
+_openblas_so = shared_library('openblas',
+                              link_whole: [_openblas],
+                              dependencies: [dependency('threads')],
+                              override_options: ['b_lundef=false', 'b_asneeded=false'],
+                              install: true,
+                             )
 
 # Handle headers
 fs = import('fs')
@@ -598,13 +609,12 @@ custom_target('gen_install_headers',
   depends : pcl,
 )
 
-pkg = import ('pkgconfig')
-pkg_ver = meson.project_version()
 pkg.generate(_openblas,
              name: 'openblas',
-             filebase: 'openblas',
+             filebase: 'meson-openblas',
              description: 'OpenBLAS via meson build',
              version: f'@pkg_ver@_meson',
+             install_dir: '../../pkgconfig',
             )
 
 if build_testing
