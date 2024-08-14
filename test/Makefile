@@ -2,7 +2,7 @@ TOPDIR	= ..
 include ../Makefile.system
 ifeq ($(F_COMPILER),GFORTRAN)
 ifneq (, $(filter $(CORE),LOONGSON3R3 LOONGSON3R4))
-	override FFLAGS = $(filter_out(-O2 -O3,$(FFLAGS))) -O0
+	override FFLAGS := $(filter_out(-O2 -O3,$(FFLAGS))) -O0
 endif
         override FFLAGS += -fno-tree-vectorize
 endif
