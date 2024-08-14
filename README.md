@@ -85,6 +85,8 @@ Examples:
   make CC=loongcc FC=loongf95 HOSTCC=gcc TARGET=LOONGSON3A CROSS=1 CROSS_SUFFIX=mips64el-st-linux-gnu-   NO_LAPACKE=1 NO_SHARED=1 BINARY=32
   ```
 
+When compiling for a more modern CPU TARGET of the same architecture, e.g. TARGET=SKYLAKEX on a HASWELL host, option "CROSS=1" can be used to suppress the automatic invocation of the tests at the end of the build.
+
 ### Debug version
 
 A debug version can be built using `make DEBUG=1`.
