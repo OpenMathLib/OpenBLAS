@@ -8,7 +8,7 @@ project(OpenBLAS C ASM)
 
 set(OpenBLAS_MAJOR_VERSION 0)
 set(OpenBLAS_MINOR_VERSION 3)
-set(OpenBLAS_PATCH_VERSION 27.dev)
+set(OpenBLAS_PATCH_VERSION 28.dev)
 
 set(OpenBLAS_VERSION "${OpenBLAS_MAJOR_VERSION}.${OpenBLAS_MINOR_VERSION}.${OpenBLAS_PATCH_VERSION}")
 
@@ -22,6 +22,8 @@ option(BUILD_WITHOUT_LAPACK "Do not build LAPACK and LAPACKE (Only BLAS or CBLAS
 
 option(BUILD_LAPACK_DEPRECATED "When building LAPACK, include also some older, deprecated routines" ON)
 
+set(LAPACK_STRLEN "" CACHE STRING "When building LAPACK, use this type (e.g. \"int\") for character lengths (defaults to size_t)")
+
 option(BUILD_TESTING "Build LAPACK testsuite when building LAPACK" ON)
 
 option(BUILD_BENCHMARKS "Build the collection of BLAS/LAPACK benchmarks" OFF)
@@ -30,7 +32,7 @@ option(C_LAPACK "Build LAPACK from C sources instead of the original Fortran" OF
 
 option(BUILD_WITHOUT_CBLAS "Do not build the C interface (CBLAS) to the BLAS functions" OFF)
 
-option(DYNAMIC_ARCH "Include support for multiple CPU targets, with automatic selection at runtime (x86/x86_64, aarch64 or ppc only)" OFF)
+option(DYNAMIC_ARCH "Include support for multiple CPU targets, with automatic selection at runtime (x86/x86_64, aarch64, ppc or RISCV64-RVV1.0 only)" OFF)
 
 option(DYNAMIC_OLDER "Include specific support for older x86 cpu models (Penryn,Dunnington,Atom,Nano,Opteron) with DYNAMIC_ARCH" OFF)
 
@@ -254,6 +256,10 @@ if (${CMAKE_SYSTEM_NAME} MATCHES "AIX|Android|Linux|FreeBSD|OpenBSD|NetBSD|Drago
   if(BUILD_SHARED_LIBS)
     target_link_libraries(${OpenBLAS_LIBNAME}_shared m)
   endif()
+endif()
+
+if (APPLE AND BUILD_SHARED_LIBS)
+set(CMAKE_MACOSX_RPATH ON)
 endif()
 
 # Seems that this hack doesn't required since macOS 11 Big Sur

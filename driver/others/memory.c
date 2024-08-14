@@ -2769,7 +2769,7 @@ void *blas_memory_alloc(int procpos){
 #ifdef ALLOC_DEVICEDRIVER
     alloc_devicedirver,
 #endif
-#ifdef ALLOC_SHM && !defined(ALLOC_HUGETLB)
+#if defined(ALLOC_SHM) && !defined(ALLOC_HUGETLB)
     alloc_shm,
 #endif
 #if ((defined ALLOC_HUGETLB) && (defined OS_LINUX  || defined OS_AIX  || defined __sun__  || defined OS_WINDOWS))

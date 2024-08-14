@@ -3,7 +3,7 @@
 #
 
 # This library's version
-VERSION = 0.3.27.dev
+VERSION = 0.3.28.dev
 
 # If you set this prefix, the library name will be lib$(LIBNAMESUFFIX)openblas.a
 # and lib$(LIBNAMESUFFIX)openblas.so, with a matching soname in the shared library
@@ -133,6 +133,12 @@ VERSION = 0.3.27.dev
 
 # Build LAPACK Deprecated functions since LAPACK 3.6.0
 BUILD_LAPACK_DEPRECATED = 1
+
+# The variable type assumed for the length of character arguments when passing
+# data between Fortran LAPACK and C BLAS (defaults to "size_t", but older GCC
+# versions used "int"). Mismatches will not cause runtime failures but may result
+# in build warnings or errors when building with link-time optimization (LTO)
+# LAPACK_STRLEN=int
 
 # Build RecursiveLAPACK on top of LAPACK
 # BUILD_RELAPACK = 1
