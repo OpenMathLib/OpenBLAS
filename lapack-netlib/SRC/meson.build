@@ -496,16 +496,17 @@ endif
 
 # Create the blas library
 netlib_lapack = library(_netlib_lapack_name,
-               sources: _lapack_netlib_srcs,
-               link_with: _libs,
-               version: lapack_version,
-               soversion: lapack_major_version,
-               install: true)
+                        sources: _lapack_netlib_srcs,
+                        link_with: _libs,
+                        version: lapack_version,
+                        soversion: lapack_major_version,
+                        install: true,
+                       )
 
 pkg.generate(netlib_lapack,
              name: 'lapack',
              filebase: 'meson-lapack',
              description: 'lapack via meson build',
              version: f'@pkg_ver@_lapack',
-             install_dir: '../../pkgconfig',
+             install_dir: pkg_install_dir,
             )

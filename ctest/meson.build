@@ -58,7 +58,7 @@ foreach lvl : lvls
         executable(
             op_name,
             sources: mapped_sources,
-            link_with: [_openblas],
+            link_with: [openblas_static],
             dependencies: [dependency('threads')],
             include_directories: ctest_inc,
             c_args: ['-DADD_', '-DCBLAS'],
