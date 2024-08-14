@@ -87,7 +87,7 @@ utest_inc = _inc + [include_directories('.')]
 openblas_utest_exec = executable(
     'openblas_utest',
     sources: sources_utest,
-    link_with: _openblas,
+    link_with: openblas_static,
     dependencies: [dependency('threads')],
     include_directories: utest_inc,
     c_args: _cargs,
@@ -96,7 +96,7 @@ openblas_utest_exec = executable(
 openblas_utest_ext_exec = executable(
     'openblas_utest_ext',
     sources: sources_utest_ext,
-    link_with: _openblas,
+    link_with: openblas_static,
     dependencies: [dependency('threads')],
     # This hack is required as `utest/test_extensions/common.c` needs
     # `common.h` from the source root, not `utest/test_extensions` directory
