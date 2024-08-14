@@ -880,10 +880,8 @@ lapackobjs2c="$lapackobjs2c
 #    clatrs3
 
 lapackobjs2d="$lapackobjs2d
-    dgelqs
     dgelst
     dgeqp3rk
-    dgeqrs
     dlaqp2rk
     dlaqp3rk
     dlarmm
@@ -897,10 +895,8 @@ lapackobjs2d="$lapackobjs2d
 #    dlaqz4
 
 lapackobjs2z="$lapackobjs2z
-    zgelqs
     zgelst
     zgeqp3rk
-    zgeqrs
     zlaqp2rk
     zlaqp3rk
     zlatrs3
@@ -918,6 +914,7 @@ lapack_extendedprecision_objs="
 "
 
 lapack_deprecated_objsc="
+    cgelqs  cgeqrs
     cgegs   cggsvd
     cgegv   cggsvp
     cgelsx  clahrd
@@ -926,6 +923,7 @@ lapack_deprecated_objsc="
     "
 
 lapack_deprecated_objsd="
+    dgelqs  dgeqrs
     dgegs   dgeqpf
     dgegv   dggsvd
     dgelsx  dggsvp
@@ -933,6 +931,8 @@ lapack_deprecated_objsd="
   dlatzm  dtzrqf"
 
 lapack_deprecated_objss="
+  sgelqs
+  sgeqrs
   sgelsx
   sgegs
   sgegv
@@ -945,6 +945,8 @@ lapack_deprecated_objss="
   "
 
 lapack_deprecated_objsz="
+  zgelqs
+  zgeqrs
   zgegs
   zgegv
   zgelsx
