@@ -1076,7 +1076,11 @@ fprintf(STDERR, "Server[%2ld] Calculation started.  Mode = 0x%03x M = %3ld N=%3l
       main_status[cpu] = MAIN_RUNNING1;
 #endif
 
-if (buffer == NULL) blas_thread_buffer[cpu] = blas_memory_alloc(2);
+if (buffer == NULL) {
+	blas_thread_buffer[cpu] = blas_memory_alloc(2);
+	buffer = blas_thread_buffer[cpu];
+}      
+
 	
 //For target LOONGSON3R5, applying an offset to the buffer is essential
 //for minimizing cache conflicts and optimizing performance.
