@@ -1527,6 +1527,19 @@ int get_cpuname(void){
       break;
       case 10: //family 6 exmodel 10
         switch (model) {
+	  case 13: // Granite Rapids
+	  if(support_amx_bf16())
+	    return CPUTYPE_SAPPHIRERAPIDS;
+	  if(support_avx512_bf16())
+            return CPUTYPE_COOPERLAKE;	
+          if(support_avx512())
+            return CPUTYPE_SKYLAKEX;
+          if(support_avx2())
+            return CPUTYPE_HASWELL;
+          if(support_avx())
+            return CPUTYPE_SANDYBRIDGE;
+          else
+          return CPUTYPE_NEHALEM;
           case 5: // Comet Lake H and S
           case 6: // Comet Lake U
 	  case 10: // Meteor Lake
@@ -2352,8 +2365,22 @@ int get_coretype(void){
 
       case 10:
         switch (model) {
+	  case 13: // Granite Rapids
+	  if(support_amx_bf16())
+	    return CORE_SAPPHIRERAPIDS;
+	  if(support_avx512_bf16())
+            return CORE_COOPERLAKE;	
+          if(support_avx512())
+            return CORE_SKYLAKEX;
+          if(support_avx2())
+            return CORE_HASWELL;
+          if(support_avx())
+	    return CORE_SANDYBRIDGE;
+	  else
+	    return CORE_NEHALEM;
 	  case 5: // Comet Lake H and S
     	  case 6: // Comet Lake U
+	  case 10: // Meteor Lake
             if(support_avx())
   #ifndef NO_AVX2
               return CORE_HASWELL;
@@ -2362,6 +2389,7 @@ int get_coretype(void){
   #endif
             else
               return CORE_NEHALEM;
+	  case 0: // Meteor Lake
 	  case 7:// Rocket Lake
 #ifndef NO_AVX512
 	  if(support_avx512())

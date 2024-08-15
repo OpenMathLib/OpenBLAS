@@ -131,11 +131,11 @@
 	sd	$21,  40($sp)
 	sd	$22,  48($sp)
 
-	ST	$f24, 56($sp)
-	ST	$f25, 64($sp)
-	ST	$f26, 72($sp)
-	ST	$f27, 80($sp)
-	ST	$f28, 88($sp)
+	sdc1	$f24, 56($sp)
+	sdc1	$f25, 64($sp)
+	sdc1	$f26, 72($sp)
+	sdc1	$f27, 80($sp)
+	sdc1	$f28, 88($sp)
 
 #if defined(TRMMKERNEL)
 	sd	$23,  96($sp)
@@ -146,10 +146,10 @@
 #endif
 
 #ifndef __64BIT__
-	ST	$f20,120($sp)
-	ST	$f21,128($sp)
-	ST	$f22,136($sp)
-	ST	$f23,144($sp)
+	sdc1	$f20,120($sp)
+	sdc1	$f21,128($sp)
+	sdc1	$f22,136($sp)
+	sdc1	$f23,144($sp)
 #endif
 
 	.align	4
@@ -4000,11 +4000,11 @@
 	ld	$21,  40($sp)
 	ld	$22,  48($sp)
 
-	LD	$f24, 56($sp)
-	LD	$f25, 64($sp)
-	LD	$f26, 72($sp)
-	LD	$f27, 80($sp)
-	LD	$f28, 88($sp)
+	ldc1	$f24, 56($sp)
+	ldc1	$f25, 64($sp)
+	ldc1	$f26, 72($sp)
+	ldc1	$f27, 80($sp)
+	ldc1	$f28, 88($sp)
 
 #if defined(TRMMKERNEL)
 	ld	$23,  96($sp)
@@ -4013,10 +4013,10 @@
 #endif
 
 #ifndef __64BIT__
-	LD	$f20,120($sp)
-	LD	$f21,128($sp)
-	LD	$f22,136($sp)
-	LD	$f23,144($sp)
+	ldc1	$f20,120($sp)
+	ldc1	$f21,128($sp)
+	ldc1	$f22,136($sp)
+	ldc1	$f23,144($sp)
 #endif
 
 	daddiu	$sp,$sp,STACKSIZE
