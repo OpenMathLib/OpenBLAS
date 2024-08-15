@@ -114,8 +114,10 @@ void goto_set_num_threads(int num_threads) {
 
   adjust_thread_buffers();
 #if defined(ARCH_MIPS64) || defined(ARCH_LOONGARCH64)
+#ifndef DYNAMIC_ARCH
   //set parameters for different number of threads.
   blas_set_parameter();
+#endif
 #endif
 
 }
