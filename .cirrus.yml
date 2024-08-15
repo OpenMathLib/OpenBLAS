@@ -89,11 +89,11 @@ task:
       type: text/plain
 
 macos_instance:
-  image: ghcr.io/cirruslabs/macos-monterey-xcode:latest
+  image: ghcr.io/cirruslabs/macos-sonoma-xcode:latest
 task:
   name: AppleM1/LLVM armv7-androidndk xbuild
   compile_script:
-  - brew install android-ndk
+  - brew install --cask android-ndk
   - export #PATH=/opt/homebrew/opt/llvm/bin:$PATH
   - export #LDFLAGS="-L/opt/homebrew/opt/llvm/lib"
   - export #CPPFLAGS="-I/opt/homebrew/opt/llvm/include" 
