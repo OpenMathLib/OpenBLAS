@@ -1098,16 +1098,16 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     SDARG    $r25,  $sp,   16
     SDARG    $r26,  $sp,   24
     SDARG    $r27,  $sp,   32
-    ST       $f23,  $sp,   40
-    ST       $f24,  $sp,   48
-    ST       $f25,  $sp,   56
-    ST       $f26,  $sp,   64
-    ST       $f27,  $sp,   72
-    ST       $f28,  $sp,   80
-    ST       $f29,  $sp,   88
-    ST       $f30,  $sp,   96
-    ST       $f31,  $sp,   104
-    ST       ALPHA, $sp,   112
+    fst.d       $f23,  $sp,   40
+    fst.d       $f24,  $sp,   48
+    fst.d       $f25,  $sp,   56
+    fst.d       $f26,  $sp,   64
+    fst.d       $f27,  $sp,   72
+    fst.d       $f28,  $sp,   80
+    fst.d       $f29,  $sp,   88
+    fst.d       $f30,  $sp,   96
+    fst.d       $f31,  $sp,   104
+    fst.d       ALPHA, $sp,   112
 
 #if defined (TRMMKERNEL) && !defined(LEFT)
     sub.d   OFF,   ZERO,  OFFSET
@@ -3504,15 +3504,15 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     LDARG    $r25,  $sp,   16
     LDARG    $r26,  $sp,   24
     LDARG    $r27,  $sp,   32
-    LD       $f23,  $sp,   40
-    LD       $f24,  $sp,   48
-    LD       $f25,  $sp,   56
-    LD       $f26,  $sp,   64
-    LD       $f27,  $sp,   72
-    LD       $f28,  $sp,   80
-    LD       $f29,  $sp,   88
-    LD       $f30,  $sp,   96
-    LD       $f31,  $sp,   104
+    fld.d       $f23,  $sp,   40
+    fld.d       $f24,  $sp,   48
+    fld.d       $f25,  $sp,   56
+    fld.d       $f26,  $sp,   64
+    fld.d       $f27,  $sp,   72
+    fld.d       $f28,  $sp,   80
+    fld.d       $f29,  $sp,   88
+    fld.d       $f30,  $sp,   96
+    fld.d       $f31,  $sp,   104
     addi.d   $sp,   $sp,   120
 
     jirl    $r0, $r1, 0x0
