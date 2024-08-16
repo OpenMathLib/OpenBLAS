@@ -202,9 +202,9 @@ main (int argc, char *argv[])
     return ret;
   }
 
-  k = 1;
   for (x = 1; x <= loop; x++)
   {
+    k = (x == 0) ? 0 : 1;
     float *A = (float *)malloc_safe(x * x * sizeof(FLOAT));
     float *B = (float *)malloc_safe(x * sizeof(FLOAT));
     float *C = (float *)malloc_safe(x * sizeof(FLOAT));
