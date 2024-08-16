@@ -96,7 +96,7 @@ main (int argc, char *argv[])
   char transA = 'N', transB = 'N';
   float alpha = 1.0, beta = 0.0;
 
-  for (x = 0; x <= loop; x++)
+  for (x = 1; x <= loop; x++)
   {
     if ((x > 100) && (x != SBGEMM_LARGEST)) continue;
     m = k = n = x;
