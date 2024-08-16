@@ -203,7 +203,7 @@ main (int argc, char *argv[])
   }
 
   k = 1;
-  for (x = 0; x <= loop; x++)
+  for (x = 1; x <= loop; x++)
   {
     float *A = (float *)malloc_safe(x * x * sizeof(FLOAT));
     float *B = (float *)malloc_safe(x * sizeof(FLOAT));
