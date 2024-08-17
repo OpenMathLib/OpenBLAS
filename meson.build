@@ -510,7 +510,8 @@ _read_config_py = './read_config.py'
 
 run_command(py3,
             _read_config_py,
-            _config_h,
+            '--file1', _config_h,
+            '--build_dir', meson.current_build_dir(),
             check: true)
 
 keyval = import('keyval')
