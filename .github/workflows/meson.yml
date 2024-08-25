@@ -18,7 +18,7 @@ permissions:
   contents: read # to fetch code (actions/checkout)
 
 jobs:
-  build:
+  build-linux-dariwn:
     if: "github.repository == 'HaoZeke/OpenBLAS'"
     runs-on: ${{ matrix.os }}
 
@@ -64,6 +64,61 @@ jobs:
             echo "::error::$RUNNER_OS not supported"
             exit 1
           fi
+      - name: Install packages
+        run: |
+          python -m pip install meson ninja
+      - name: Build OpenBLAS
+        run: |
+          meson setup build --buildtype release
+          meson compile -C build
+      - name: Run tests
+        run: |
+          meson test -C build -v
+
+  build-windows:
+    if: "github.repository == 'HaoZeke/OpenBLAS'"
+    runs-on: windows-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        msystem: [UCRT64]
+        idx: [int64]
+        build-type: [Release]
+        fc-pkg: [fc]
+        target-prefix: [mingw-w64-ucrt-x86_64]
+
+    defaults:
+      run:
+        # Use MSYS2 bash as default shell
+        shell: msys2 {0}
+
+    env:
+      CHERE_INVOKING: 1
+
+    steps:
+      - name: Get CPU name
+        shell: pwsh
+        run : |
+          Get-CIMInstance -Class Win32_Processor | Select-Object -Property Name
+
+      - name: Install build dependencies
+        uses: msys2/setup-msys2@v2
+        with:
+          msystem: ${{ matrix.msystem }}
+          update: true
+          release: false  # Use pre-installed version
+          install: >-
+            base-devel
+            ${{ matrix.target-prefix }}-cc
+            ${{ matrix.target-prefix }}-${{ matrix.fc-pkg }}
+            ${{ matrix.target-prefix }}-make
+            ${{ matrix.target-prefix }}-ninja
+          #${{ matrix.target-prefix }}-meson
+
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
       - name: Install packages
         run: |
           python -m pip install meson ninja
