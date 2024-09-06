@@ -228,11 +228,13 @@ ZSWAPKERNEL  = zswap.c
 #
 
 SGEMVNKERNEL = sgemv_n.c
+SBGEMVNKERNEL = sbgemv_n_power10.c
 DGEMVNKERNEL = dgemv_n_power10.c
 CGEMVNKERNEL = cgemv_n.c
 ZGEMVNKERNEL =  zgemv_n_power10.c
 #
 SGEMVTKERNEL = sgemv_t.c
+SBGEMVTKERNEL = sbgemv_t_power10.c
 DGEMVTKERNEL = dgemv_t_power10.c
 CGEMVTKERNEL = cgemv_t.c
 ZGEMVTKERNEL = zgemv_t_4.c

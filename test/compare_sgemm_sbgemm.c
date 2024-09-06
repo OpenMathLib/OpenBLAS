@@ -202,16 +202,18 @@ main (int argc, char *argv[])
     return ret;
   }
 
+  for (l = 0; l < 2; l++) {  // l = 1 to test inc_x & inc_y not equal to one.
   for (x = 1; x <= loop; x++)
   {
-    k = (x == 0) ? 0 : 1;
+    m = l + 1;
+    k = (x == 0) ? 0 : m;
     float *A = (float *)malloc_safe(x * x * sizeof(FLOAT));
-    float *B = (float *)malloc_safe(x * sizeof(FLOAT));
-    float *C = (float *)malloc_safe(x * sizeof(FLOAT));
+    float *B = (float *)malloc_safe(x * sizeof(FLOAT) * m);
+    float *C = (float *)malloc_safe(x * sizeof(FLOAT) * m);
     bfloat16_bits *AA = (bfloat16_bits *)malloc_safe(x * x * sizeof(bfloat16_bits));
-    bfloat16_bits *BB = (bfloat16_bits *)malloc_safe(x * sizeof(bfloat16_bits));
+    bfloat16_bits *BB = (bfloat16_bits *)malloc_safe(x * sizeof(bfloat16_bits) * m);
     float *DD = (float *)malloc_safe(x * sizeof(FLOAT));
-    float *CC = (float *)malloc_safe(x * sizeof(FLOAT));
+    float *CC = (float *)malloc_safe(x * sizeof(FLOAT) * m);
     if ((A == NULL) || (B == NULL) || (C == NULL) || (AA == NULL) || (BB == NULL) ||
         (DD == NULL) || (CC == NULL))
       return 1;
@@ -226,9 +228,9 @@ main (int argc, char *argv[])
         sbstobf16_(&one, &A[j*x+i], &one, &atmp, &one);
         AA[j * x + i].v = atmp;
       }
-      B[j] = ((FLOAT) rand () / (FLOAT) RAND_MAX) + 0.5;
-      sbstobf16_(&one, &B[j], &one, &btmp, &one);
-      BB[j].v = btmp;
+      B[j*m] = ((FLOAT) rand () / (FLOAT) RAND_MAX) + 0.5;
+      sbstobf16_(&one, &B[j*m], &one, &btmp, &one);
+      BB[j*m].v = btmp;
     }
     for (y = 0; y < 2; y++)
     {
@@ -238,9 +240,9 @@ main (int argc, char *argv[])
         transA = 'T';
       }
 
-      memset(CC, 0, x * sizeof(FLOAT));
+      memset(CC, 0, x * m * sizeof(FLOAT));
       memset(DD, 0, x * sizeof(FLOAT));
-      memset(C, 0, x * sizeof(FLOAT));
+      memset(C, 0, x * m * sizeof(FLOAT));
 
       SGEMV (&transA, &x, &x, &alpha, A, &x, B, &k, &beta, C, &k);
       SBGEMV (&transA, &x, &x, &alpha, (bfloat16*) AA, &x, (bfloat16*) BB, &k, &beta, CC, &k);
@@ -248,15 +250,15 @@ main (int argc, char *argv[])
       for (j = 0; j < x; j++)
         for (i = 0; i < x; i++)
           if (transA == 'N') {
-            DD[i] += float16to32 (AA[j * x + i]) * float16to32 (BB[j]);
+            DD[i] += float16to32 (AA[j * x + i]) * float16to32 (BB[j*m]);
           } else if (transA == 'T') {
-            DD[j] += float16to32 (AA[j * x + i]) * float16to32 (BB[i]);
+            DD[j] += float16to32 (AA[j * x + i]) * float16to32 (BB[i*m]);
           }
 
       for (j = 0; j < x; j++) {
-        if (fabs (CC[j] - C[j]) > 1.0)
+        if (fabs (CC[j*m] - C[j*m]) > 1.0)
           ret++;
-        if (fabs (CC[j] - DD[j]) > 1.0)
+        if (fabs (CC[j*m] - DD[j]) > 1.0)
           ret++;
       }
     }
@@ -267,6 +269,7 @@ main (int argc, char *argv[])
     free(BB);
     free(DD);
     free(CC);
+  }
   }
 
   if (ret != 0)
