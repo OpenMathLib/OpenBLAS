@@ -252,6 +252,11 @@ FORCEINLINE void copy_y_beta(BLASLONG n, FLOAT *src, FLOAT *dest, BLASLONG inc_s
 {
   if (beta == 0) {
     memset(dest, 0, sizeof(FLOAT) * n);
+  } else if (beta == 1) {
+    for (BLASLONG i = 0; i < n; i++) {
+      *dest++ = *src;
+      src += inc_src;
+    }
   } else {
     for (BLASLONG i = 0; i < n; i++) {
       *dest++ = *src * beta;
@@ -265,6 +270,11 @@ FORCEINLINE void copy_y(BLASLONG n, FLOAT *src, FLOAT *dest, BLASLONG inc_src, F
   if (beta == 0) {
     for (BLASLONG i = 0; i < n; i++) {
       *dest = *src++;
+      dest += inc_src;
+    }
+  } else if (beta == 1) {
+    for (BLASLONG i = 0; i < n; i++) {
+      *dest += *src++;
       dest += inc_src;
     }
   } else {
