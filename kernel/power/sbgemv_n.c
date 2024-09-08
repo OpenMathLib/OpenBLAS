@@ -31,8 +31,10 @@ static void BF16GEMV_N_beta(BLASLONG n, FLOAT *output_vector, FLOAT *input_vecto
 {
   if (beta == 0) {
     memset(output_vector, 0, sizeof(FLOAT) * n);
-  } else if ((output_vector != input_vector) && (beta == 1)) {
-    memcpy(output_vector, input_vector, sizeof(FLOAT) * n);
+  } else if (beta == 1) {
+    if (output_vector != input_vector) {
+      memcpy(output_vector, input_vector, sizeof(FLOAT) * n);
+    }
   } else {
     vec_f32 b = { beta, beta, beta, beta };
 
