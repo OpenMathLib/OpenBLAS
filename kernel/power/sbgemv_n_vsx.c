@@ -64,13 +64,11 @@ static void BF16GEMV_N_VSX_1(BLASLONG n, IFLOAT **ap, IFLOAT *xo, FLOAT *y, FLOA
   n &= 7;
   if (n > 4) {
     BLASLONG n3 = n & 3;
-    vy0[0] = v_y[(i * 2) + 0];
-    vy0[1] = vec_loadN_f32(&v_y[(i * 2) + 1], n3);
+    vec_loadN2_f32(vy0, &v_y[(i * 2) + 0], n3);
 
     vec_loadN_mult2(v_x0, &va0[i], n, zero, vy0);
 
-    v_y[(i * 2) + 0] = vy0[0];
-    vec_storeN_f32(vy0[1], &v_y[(i * 2) + 1], n3);
+    vec_storeN2_f32(vy0, &v_y[(i * 2) + 0], n3);
   } else if (n) {
     vec_f32 vy0 = vec_loadN_f32(&v_y[(i * 2) + 0], n);
 
@@ -116,14 +114,12 @@ static void BF16GEMV_N_VSX_2(BLASLONG n, IFLOAT **ap, IFLOAT *xo, FLOAT *y, FLOA
   n &= 7;
   if (n > 4) {
     BLASLONG n3 = n & 3;
-    vy0[0] = v_y[(i * 2) + 0];
-    vy0[1] = vec_loadN_f32(&v_y[(i * 2) + 1], n3);
+    vec_loadN2_f32(vy0, &v_y[(i * 2) + 0], n3);
 
     vec_loadN_mult2(v_x0, &va0[i], n, zero, vy0);
     vec_loadN_mult2(v_x1, &va1[i], n, zero, vy0);
 
-    v_y[(i * 2) + 0] = vy0[0];
-    vec_storeN_f32(vy0[1], &v_y[(i * 2) + 1], n3);
+    vec_storeN2_f32(vy0, &v_y[(i * 2) + 0], n3);
   } else if (n) {
     vec_f32 vy0 = vec_loadN_f32(&v_y[(i * 2) + 0], n);
 
@@ -178,16 +174,14 @@ static void BF16GEMV_N_VSX_4(BLASLONG n, IFLOAT **ap, IFLOAT *xo, FLOAT *y, FLOA
   n &= 7;
   if (n > 4) {
     BLASLONG n3 = n & 3;
-    vy0[0] = v_y[(i * 2) + 0];
-    vy0[1] = vec_loadN_f32(&v_y[(i * 2) + 1], n3);
+    vec_loadN2_f32(vy0, &v_y[(i * 2) + 0], n3);
 
     vec_loadN_mult2(v_x0, &va0[i], n, zero, vy0);
     vec_loadN_mult2(v_x1, &va1[i], n, zero, vy0);
     vec_loadN_mult2(v_x2, &va2[i], n, zero, vy0);
     vec_loadN_mult2(v_x3, &va3[i], n, zero, vy0);
 
-    v_y[(i * 2) + 0] = vy0[0];
-    vec_storeN_f32(vy0[1], &v_y[(i * 2) + 1], n3);
+    vec_storeN2_f32(vy0, &v_y[(i * 2) + 0], n3);
   } else if (n) {
     vec_f32 vy0 = vec_loadN_f32(&v_y[(i * 2) + 0], n);
 
@@ -263,8 +257,7 @@ static void BF16GEMV_N_VSX_8(BLASLONG n, IFLOAT **ap, IFLOAT *xo, FLOAT *y, BLAS
   n &= 7;
   if (n > 4) {
     BLASLONG n3 = n & 3;
-    vy0[0] = v_y[(i * 2) + 0];
-    vy0[1] = vec_loadN_f32(&v_y[(i * 2) + 1], n3);
+    vec_loadN2_f32(vy0, &v_y[(i * 2) + 0], n3);
 
     vec_loadN_mult2(v_x0, &va0[i], n, zero, vy0);
     vec_loadN_mult2(v_x1, &va1[i], n, zero, vy0);
@@ -275,8 +268,7 @@ static void BF16GEMV_N_VSX_8(BLASLONG n, IFLOAT **ap, IFLOAT *xo, FLOAT *y, BLAS
     vec_loadN_mult2(v_x6, &vb2[i], n, zero, vy0);
     vec_loadN_mult2(v_x7, &vb3[i], n, zero, vy0);
 
-    v_y[(i * 2) + 0] = vy0[0];
-    vec_storeN_f32(vy0[1], &v_y[(i * 2) + 1], n3);
+    vec_storeN2_f32(vy0, &v_y[(i * 2) + 0], n3);
   } else
   if (n) {
     vec_f32 vy0 = vec_loadN_f32(&v_y[(i * 2) + 0], n);

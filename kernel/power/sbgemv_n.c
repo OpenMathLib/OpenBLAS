@@ -75,12 +75,10 @@ static void BF16GEMV_N_beta(BLASLONG n, FLOAT *output_vector, FLOAT *input_vecto
     n &= 7;
     if (n > 4) {
       BLASLONG n3 = n & 3;
-      v_inp0[0] = in[(i * 2) + 0];
-      v_inp0[1] = vec_loadN_f32(&in[(i * 2) + 1], n3);
+      vec_loadN2_f32(v_inp0, &in[(i * 2) + 0], n3);
       v_inp0[0] *= b;
       v_inp0[1] *= b;
-      out[(i * 2) + 0] = v_inp0[0];
-      vec_storeN_f32(v_inp0[1], &out[(i * 2) + 1], n3);
+      vec_storeN2_f32(v_inp0, &out[(i * 2) + 0], n3);
     } else if (n) {
       v_inp0[0] = vec_loadN_f32(&in[(i * 2) + 0], n);
       v_inp0[0] *= b;

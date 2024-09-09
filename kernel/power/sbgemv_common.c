@@ -138,6 +138,12 @@ FORCEINLINE vec_f32 vec_loadN_f32(void *src, BLASLONG n)
   return (vec_f32)vec_loadN(src, n * (sizeof(FLOAT) / sizeof(IFLOAT)));
 }
 
+FORCEINLINE void vec_loadN2_f32(vec_f32 *data, vec_f32 *src, BLASLONG n)
+{
+  data[0] = src[0];
+  data[1] = vec_loadN_f32(&src[1], n);
+}
+
 FORCEINLINE void vec_storeN_f32(vec_f32 data, void *dst, BLASLONG n)
 {
   FLOAT *dst2 = (FLOAT *)(dst);
@@ -158,6 +164,12 @@ FORCEINLINE void vec_storeN_f32(vec_f32 data, void *dst, BLASLONG n)
     dst2[n2] = data2[n2];
   }
 #endif
+}
+
+FORCEINLINE void vec_storeN2_f32(vec_f32 *data, vec_f32 *dst, BLASLONG n)
+{
+  dst[0] = data[0];
+  vec_storeN_f32(data[1], &dst[1], n);
 }
 
 FORCEINLINE vec_f32 vec_mult(vec_f32 *inp, vec_bf16 in0, vec_bf16 zero)
