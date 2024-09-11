@@ -380,7 +380,7 @@ static doublereal c_b43 = 1.;
     static integer i__;
     extern /* Subroutine */ int ctest_(integer*, doublecomplex*, doublecomplex*, doublecomplex*, doublereal*);
     static doublecomplex mwpcs[5], mwpct[5];
-    extern /* Subroutine */ int zscaltest_(integer*, doublereal*, doublecomplex*, integer*), itest1_(integer*, integer*), stest1_(doublereal*, doublereal*, doublereal*, doublereal*);
+    extern /* Subroutine */ int zscaltest_(integer*, doublecomplex*, doublecomplex*, integer*), itest1_(integer*, integer*), stest1_(doublereal*, doublereal*, doublereal*, doublereal*);
     static doublecomplex cx[8];
     extern doublereal dznrm2test_(integer*, doublecomplex*, integer*);
     static integer np1;
@@ -595,7 +595,7 @@ static doublereal c_b43 = 1.;
     static integer ki;
     extern /* Subroutine */ int zdotutest_(integer*, doublecomplex*, integer*, doublecomplex*, integer*, doublecomplex*), zswaptest_(integer*, doublecomplex*, integer*, doublecomplex*, integer*);
     static integer kn;
-    extern /* Subroutine */ int zaxpytest_(integer*, doublereal*, doublecomplex*, integer*, doublecomplex*, integer*);
+    extern /* Subroutine */ int zaxpytest_(integer*, doublecomplex*, doublecomplex*, integer*, doublecomplex*, integer*);
     static doublecomplex cx[7], cy[7];
     static integer mx, my;
 
