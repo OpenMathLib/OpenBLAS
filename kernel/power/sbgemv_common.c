@@ -300,7 +300,7 @@ FORCEINLINE void copy_y(BLASLONG n, FLOAT *src, FLOAT *dest, BLASLONG inc_src, F
 FORCEINLINE void add_y(BLASLONG n, FLOAT *src, FLOAT *dest, BLASLONG inc_dest)
 {
   for (BLASLONG i = 0; i < n; i++) {
-    *dest += *src++;
+    *dest = *src++;
     dest += inc_dest;
   }
 }
