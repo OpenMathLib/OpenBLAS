@@ -69,7 +69,7 @@ jobs:
           mv *.bottle.tar.gz bottles
 
       - name: Upload bottle
-        uses: actions/upload-artifact@v1
+        uses: actions/upload-artifact@v3
         with:
           name: openblas--HEAD.catalina.bottle.tar.gz
           path: bottles
