@@ -212,7 +212,7 @@ jobs:
      vmImage: 'macOS-latest'
   variables:
      LD_LIBRARY_PATH: /usr/local/opt/llvm/lib
-     MACOS_HPCKIT_URL: https://registrationcenter-download.intel.com/akdlm/irc_nas/17643/m_HPCKit_p_2021.2.0.2903_offline.dmg
+     MACOS_HPCKIT_URL: https://registrationcenter-download.intel.com/akdlm/IRC_NAS/edb4dc2f-266f-47f2-8d56-21bc7764e119/m_HPCKit_p_2023.2.0.49443.dmg
      LIBRARY_PATH: /usr/local/opt/llvm/lib
      MACOS_FORTRAN_COMPONENTS: intel.oneapi.mac.ifort-compiler
   steps:   
