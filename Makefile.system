@@ -376,9 +376,6 @@ OBJCONV = $(CROSS_SUFFIX)objconv
 ifeq ($(NOFORTRAN), 1)
 C_LAPACK = 1
 override FEXTRALIB = 
-ifeq ($(C_COMPILER), GCC)
-CCOMMON_OPT += -Wno-error=incompatible-pointer-types
-endif
 endif
 
 ifeq ($(C_COMPILER), GCC)
