@@ -269,8 +269,7 @@ static void BF16GEMV_N_VSX_8(BLASLONG n, IFLOAT **ap, IFLOAT *xo, FLOAT *y, BLAS
     vec_loadN_mult2(v_x7, &vb3[i], n, zero, vy0);
 
     vec_storeN2_f32(vy0, &v_y[(i * 2) + 0], n3);
-  } else
-  if (n) {
+  } else if (n) {
     vec_f32 vy0 = vec_loadN_f32(&v_y[(i * 2) + 0], n);
 
     vy0 += vec_loadNHi_multi2(v_x0, &va0[i], n, zero);
