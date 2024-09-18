@@ -572,7 +572,7 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_TRANSPOSE TransA, enum CBLAS_TRANS
 
   buffer = (XFLOAT *)blas_memory_alloc(0);
 
-//For target LOONGSON3R5, applying an offset to the buffer is essential
+//For LOONGARCH64, applying an offset to the buffer is essential
 //for minimizing cache conflicts and optimizing performance.
 #if defined(ARCH_LOONGARCH64) && !defined(NO_AFFINITY)
   sa = (XFLOAT *)((BLASLONG)buffer + (WhereAmI() & 0xf) * GEMM_OFFSET_A);
