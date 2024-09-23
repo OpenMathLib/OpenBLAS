@@ -111,7 +111,7 @@ FORCEINLINE vec_f32 vec_loadNHi_mult(vec_bf16 *in, vec_f32 v_inp0, BLASLONG n, v
   return (v_inp0 * v_in00);
 }
 
-FORCEINLINE vec_f32 vec_loadNHi_multi2(vec_f32 v_x0, vec_bf16 *in, BLASLONG n, vec_bf16 zero)
+FORCEINLINE vec_f32 vec_loadNHi_mult2(vec_f32 v_x0, vec_bf16 *in, BLASLONG n, vec_bf16 zero)
 {
   vec_f32 v_in00 = vec_loadNHi(in, n, zero);
 

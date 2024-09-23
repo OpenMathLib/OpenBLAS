@@ -87,6 +87,10 @@ static void BF16GEMV_N_beta(BLASLONG n, FLOAT *output_vector, FLOAT *input_vecto
   }
 }
 
+#if (defined(_ARCH_PWR10) && (defined(USE_BFGEMV_8_N_MMA) || (!defined(USE_BFGEMV_N_MMA) && defined(USE_BFGEMV_8_N_VSX)))) || (!defined(_ARCH_PWR10) && defined(USE_BFGEMV_8_N_VSX))
+#define USE_N_8
+#endif
+
 int CNAME(BLASLONG m, BLASLONG n, FLOAT alpha, IFLOAT *a, BLASLONG lda, IFLOAT *x, BLASLONG inc_x, FLOAT beta, FLOAT *y, BLASLONG inc_y)
 {
   IFLOAT *x_ptr, *ap[4];
@@ -100,7 +104,9 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT alpha, IFLOAT *a, BLASLONG lda, IFLOAT *
   y_ptr = y;
 
   BLASLONG lda4 = lda << 2;
+#ifdef USE_N_8
   BLASLONG lda8 = lda << 3;
+#endif
   BLASLONG NB = NBMAX;
   BLASLONG m2 = (m & (NBMAX - 1));
 
@@ -126,6 +132,7 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT alpha, IFLOAT *a, BLASLONG lda, IFLOAT *
     ap[3] = ap[2] + lda;
 
     if (inc_x == 1) {
+#ifdef USE_N_8
       for (BLASLONG j = 0; j + 8 <= n; j += 8) {
         BF16GEMV_N_8(NB, ap, x_ptr, ybuffer, lda4, alpha);
         ap[0] += lda8;
@@ -135,9 +142,16 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT alpha, IFLOAT *a, BLASLONG lda, IFLOAT *
         x_ptr += 8;
       }
       if (n & 4) {
+#else
+      for (BLASLONG j = 0; j + 4 <= n; j += 4) {
+#endif
         BF16GEMV_N_4(NB, ap, x_ptr, ybuffer, alpha);
         ap[0] += lda4;
         ap[1] += lda4;
+#ifndef USE_N_8
+        ap[2] += lda4;
+        ap[3] += lda4;
+#endif
         x_ptr += 4;
       }
       if (n & 2) {
@@ -149,6 +163,7 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT alpha, IFLOAT *a, BLASLONG lda, IFLOAT *
         BF16GEMV_N_1(NB, ap, x_ptr, ybuffer, alpha);
       }
     } else {
+#ifdef USE_N_8
       for (BLASLONG j = 0; j + 8 <= n; j += 8) {
         copy_x(8, x_ptr, xbuffer, inc_x);
         BF16GEMV_N_8(NB, ap, xbuffer, ybuffer, lda4, alpha);
@@ -159,10 +174,17 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT alpha, IFLOAT *a, BLASLONG lda, IFLOAT *
         x_ptr += 8 * inc_x;
       }
       if (n & 4) {
+#else
+      for (BLASLONG j = 0; j + 4 <= n; j += 4) {
+#endif
         copy_x(4, x_ptr, xbuffer, inc_x);
         BF16GEMV_N_4(NB, ap, xbuffer, ybuffer, alpha);
         ap[0] += lda4;
         ap[1] += lda4;
+#ifndef USE_N_8
+        ap[2] += lda4;
+        ap[3] += lda4;
+#endif
         x_ptr += 4 * inc_x;
       }
       if (n & 2) {

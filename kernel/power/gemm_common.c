@@ -4,6 +4,8 @@
 
 #include <altivec.h>
 
+#define NBMAX 4096
+
 #define FORCEINLINE      inline __attribute__((always_inline))
 
 #ifdef __clang__

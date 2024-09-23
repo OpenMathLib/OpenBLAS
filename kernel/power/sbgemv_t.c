@@ -27,6 +27,11 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #ifndef SBGEMV_T_COMMON_C
 #define SBGEMV_T_COMMON_C
+
+#if (defined(_ARCH_PWR10) && (defined(USE_BFGEMV_8_T_MMA) || (!defined(USE_BFGEMV_N_MMA) && defined(USE_BFGEMV_8_T_VSX)))) || (!defined(_ARCH_PWR10) && defined(USE_BFGEMV_8_T_VSX))
+#define USE_T_8
+#endif
+
 int CNAME(BLASLONG m, BLASLONG n, FLOAT alpha, IFLOAT *a, BLASLONG lda, IFLOAT *x, BLASLONG inc_x, FLOAT beta, FLOAT *y, BLASLONG inc_y)
 {
   IFLOAT *xbuffer, *a_ptr;
@@ -39,7 +44,9 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT alpha, IFLOAT *a, BLASLONG lda, IFLOAT *
   xbuffer = buffer;
 
   BLASLONG lda4 = lda << 2;
+#ifdef USE_T_8
   BLASLONG lda8 = lda << 3;
+#endif
   BLASLONG NB = NBMAX;
   BLASLONG m2 = (m & (NBMAX - 1));
 
@@ -60,12 +67,16 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT alpha, IFLOAT *a, BLASLONG lda, IFLOAT *
     }
 
     if (inc_y == 1) {
+#ifdef USE_T_8
       for (BLASLONG j = 0; j + 8 <= n; j += 8) {
         BF16GEMV_T_8(NB, lda, a_ptr, xbuffer, y_ptr, alpha, beta);
         y_ptr += 8;
         a_ptr += lda8;
       }
       if (n & 4) {
+#else
+      for (BLASLONG j = 0; j + 4 <= n; j += 4) {
+#endif
         BF16GEMV_T_4(NB, lda, a_ptr, xbuffer, y_ptr, alpha, beta);
         y_ptr += 4;
         a_ptr += lda4;
@@ -79,6 +90,7 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT alpha, IFLOAT *a, BLASLONG lda, IFLOAT *
         BF16GEMV_T_1(NB, lda, a_ptr, xbuffer, y_ptr, alpha, beta);
       }
     } else {
+#ifdef USE_T_8
       for (BLASLONG j = 0; j + 8 <= n; j += 8) {
         memset(ybuffer, 0, sizeof(FLOAT) * 8);
         BF16GEMV_T_8(NB, lda, a_ptr, xbuffer, ybuffer, alpha, beta);
@@ -87,6 +99,9 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT alpha, IFLOAT *a, BLASLONG lda, IFLOAT *
         a_ptr += lda8;
       }
       if (n & 4) {
+#else
+      for (BLASLONG j = 0; j + 4 <= n; j += 4) {
+#endif
         memset(ybuffer, 0, sizeof(FLOAT) * 4);
         BF16GEMV_T_4(NB, lda, a_ptr, xbuffer, ybuffer, alpha, beta);
         copy_y(4, ybuffer, y_ptr, inc_y, beta);
