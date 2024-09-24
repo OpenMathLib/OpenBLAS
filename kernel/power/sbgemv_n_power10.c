@@ -68,10 +68,10 @@ static void BF16GEMV_N_MMA_1(BLASLONG n, IFLOAT **ap, IFLOAT *xo, FLOAT *y, FLOA
   vec_make_mult1(v_x0, false);
 
   for (; i + 8 <= n8; i += 8) {
-    vec_load8_pair(vy0, &v_y[(i * 2) + 0]);
-
     vec_load_mult184_mma(&temp[0], &va0[i +  0], &v_x0[ 0]);
     vec_load_mult184_mma(&temp[2], &va0[i +  4], &v_x0[ 0]);
+
+    vec_load8_pair(vy0, &v_y[(i * 2) + 0]);
 
     vec_reduce88_mma(&temp[0], temp0 +  0, v_alpha, vy0 +  0);
 
@@ -79,9 +79,9 @@ static void BF16GEMV_N_MMA_1(BLASLONG n, IFLOAT **ap, IFLOAT *xo, FLOAT *y, FLOA
   }
 
   if (n8 & 4) {
-    vec_load4_pair(vy0, &v_y[(i * 2) + 0]);
-
     vec_load_mult184_mma(&temp[0], &va0[i + 0], &v_x0[ 0]);
+
+    vec_load4_pair(vy0, &v_y[(i * 2) + 0]);
 
     vec_reduce84_mma(&temp[0], temp0, v_alpha, vy0);
 
@@ -95,9 +95,9 @@ static void BF16GEMV_N_MMA_1(BLASLONG n, IFLOAT **ap, IFLOAT *xo, FLOAT *y, FLOA
   vec_f32 vy0[2*4];
 
   for (; i + 4 <= n8; i += 4) {
-    vec_load4_pair(vy0, &v_y[(i * 2) + 0]);
-
     vec_load_mult18_mma(&temp[0], &va0[i + 0], v_x0[ 0]);
+
+    vec_load4_pair(vy0, &v_y[(i * 2) + 0]);
 
     vec_reduce8_mma(&temp[0], temp0, v_alpha, vy0);
 
@@ -106,9 +106,9 @@ static void BF16GEMV_N_MMA_1(BLASLONG n, IFLOAT **ap, IFLOAT *xo, FLOAT *y, FLOA
 #endif
 
   for (; i < n8; i++) {
-    vec_load_pair(vy0, &v_y[(i * 2) + 0]);
-
     vec_load_mult12_mma(&temp[0], &va0[i], v_x0[ 0]);
+
+    vec_load_pair(vy0, &v_y[(i * 2) + 0]);
 
     vec_reduce2_mma(&temp[0], temp0, v_alpha, vy0);
 
@@ -117,18 +117,18 @@ static void BF16GEMV_N_MMA_1(BLASLONG n, IFLOAT **ap, IFLOAT *xo, FLOAT *y, FLOA
 
   n &= 7;
   if (n > 4) {
+    vec_loadN_mult12_mma(&temp[0], &va0[i], v_x0[ 0], n);
+
     BLASLONG n3 = n & 3;
     vec_loadN2_f32(vy0, &v_y[(i * 2) + 0], n3);
-
-    vec_loadN_mult12_mma(&temp[0], &va0[i], v_x0[ 0], n);
 
     vec_reduce2_mma(&temp[0], temp0, v_alpha, vy0);
 
     vec_storeN2_f32(vy0, &v_y[(i * 2) + 0], n3);
   } else if (n) {
-    vy0[0] = vec_loadN_f32(&v_y[(i * 2) + 0], n);
-
     vec_loadN_mult11_mma(&temp[0], &va0[i], v_x0[ 0], n);
+
+    vy0[0] = vec_loadN_f32(&v_y[(i * 2) + 0], n);
 
     vec_reduce1_mma(&temp[0], temp0, v_alpha, vy0);
 
@@ -163,9 +163,9 @@ static void BF16GEMV_N_MMA_2(BLASLONG n, IFLOAT **ap, IFLOAT *xo, FLOAT *y, FLOA
   vec_make_mult1(v_x0, false);
 
   for (; i + 8 <= n8; i += 8) {
-    vec_load8_pair(vy0, &v_y[(i * 2) + 0]);
-
     vec_load_mult288a_mma(&temp[0], &va0[i +  0], &va1[i +  0], &v_x0[ 0]);
+
+    vec_load8_pair(vy0, &v_y[(i * 2) + 0]);
 
     vec_reduce88_mma(&temp[0], temp0 +  0, v_alpha, vy0 +  0);
 
@@ -173,9 +173,9 @@ static void BF16GEMV_N_MMA_2(BLASLONG n, IFLOAT **ap, IFLOAT *xo, FLOAT *y, FLOA
   }
 
   if (n8 & 4) {
-    vec_load4_pair(vy0, &v_y[(i * 2) + 0]);
-
     vec_load_mult284a_mma(&temp[0], &va0[i + 0], &va1[i + 0], &v_x0[ 0]);
+
+    vec_load4_pair(vy0, &v_y[(i * 2) + 0]);
 
     vec_reduce84_mma(&temp[0], temp0, v_alpha, vy0);
 
@@ -189,9 +189,9 @@ static void BF16GEMV_N_MMA_2(BLASLONG n, IFLOAT **ap, IFLOAT *xo, FLOAT *y, FLOA
   v_x0[0] = vec_loadN(x_bf, 2);
 
   for (; i + 4 <= n8; i += 4) {
-    vec_load4_pair(vy0, &v_y[(i * 2) + 0]);
-
     vec_load_mult28a_mma(&temp[0], &va0[i + 0], &va1[i + 0], v_x0[ 0]);
+
+    vec_load4_pair(vy0, &v_y[(i * 2) + 0]);
 
     vec_reduce8_mma(&temp[0], temp0, v_alpha, vy0);
 
@@ -200,9 +200,9 @@ static void BF16GEMV_N_MMA_2(BLASLONG n, IFLOAT **ap, IFLOAT *xo, FLOAT *y, FLOA
 #endif
 
   for (; i < n8; i++) {
-    vec_load_pair(vy0, &v_y[(i * 2) + 0]);
-
     vec_load_mult22a_mma(&temp[0], &va0[i], &va1[i], v_x0[ 0]);
+
+    vec_load_pair(vy0, &v_y[(i * 2) + 0]);
 
     vec_reduce2_mma(&temp[0], temp0, v_alpha, vy0);
 
@@ -211,18 +211,18 @@ static void BF16GEMV_N_MMA_2(BLASLONG n, IFLOAT **ap, IFLOAT *xo, FLOAT *y, FLOA
 
   n &= 7;
   if (n > 4) {
+    vec_loadN_mult22a_mma(&temp[0], &va0[i], &va1[i], v_x0[ 0], n);
+
     BLASLONG n3 = n & 3;
     vec_loadN2_f32(vy0, &v_y[(i * 2) + 0], n3);
-
-    vec_loadN_mult22a_mma(&temp[0], &va0[i], &va1[i], v_x0[ 0], n);
 
     vec_reduce2_mma(&temp[0], temp0, v_alpha, vy0);
 
     vec_storeN2_f32(vy0, &v_y[(i * 2) + 0], n3);
   } else if (n) {
-    vy0[0] = vec_loadN_f32(&v_y[(i * 2) + 0], n);
-
     vec_loadN_mult11a_mma(&temp[0], &va0[i], &va1[i], v_x0[ 0], n);
+
+    vy0[0] = vec_loadN_f32(&v_y[(i * 2) + 0], n);
 
     vec_reduce1_mma(&temp[0], temp0, v_alpha, vy0);
 
@@ -261,10 +261,10 @@ static void BF16GEMV_N_MMA_4(BLASLONG n, IFLOAT **ap, IFLOAT *xo, FLOAT *y, FLOA
   vec_make_mult2(v_x0);
 
   for (; i + 8 <= n8; i += 8) {
-    vec_load8_pair(vy0, &v_y[(i * 2) + 0]);
-
     vec_load_mult288a_mma(&temp[0], &va0[i +  0], &va1[i +  0], &v_x0[ 0]);
     vec_load_mult288b_mma(&temp[0], &va2[i +  0], &va3[i +  0], &v_x0[ 4]);
+
+    vec_load8_pair(vy0, &v_y[(i * 2) + 0]);
 
     vec_reduce88_mma(&temp[0], temp0 +  0, v_alpha, vy0 +  0);
 
@@ -272,10 +272,10 @@ static void BF16GEMV_N_MMA_4(BLASLONG n, IFLOAT **ap, IFLOAT *xo, FLOAT *y, FLOA
   }
 
   if (n8 & 4) {
-    vec_load4_pair(vy0, &v_y[(i * 2) + 0]);
-
     vec_load_mult284a_mma(&temp[0], &va0[i + 0], &va1[i + 0], &v_x0[ 0]);
     vec_load_mult284b_mma(&temp[0], &va2[i + 0], &va3[i + 0], &v_x0[ 4]);
+
+    vec_load4_pair(vy0, &v_y[(i * 2) + 0]);
 
     vec_reduce84_mma(&temp[0], temp0, v_alpha, vy0);
 
@@ -291,10 +291,10 @@ static void BF16GEMV_N_MMA_4(BLASLONG n, IFLOAT **ap, IFLOAT *xo, FLOAT *y, FLOA
   v_x0[ 4] = (vec_bf16)vec_splat((vec_f32)v_x0[0], 1);
 
   for (; i + 4 <= n8; i += 4) {
-    vec_load4_pair(vy0, &v_y[(i * 2) + 0]);
-
     vec_load_mult28a_mma(&temp[0], &va0[i + 0], &va1[i + 0], v_x0[ 0]);
     vec_load_mult28b_mma(&temp[0], &va2[i + 0], &va3[i + 0], v_x0[ 4]);
+
+    vec_load4_pair(vy0, &v_y[(i * 2) + 0]);
 
     vec_reduce8_mma(&temp[0], temp0, v_alpha, vy0);
 
@@ -303,10 +303,10 @@ static void BF16GEMV_N_MMA_4(BLASLONG n, IFLOAT **ap, IFLOAT *xo, FLOAT *y, FLOA
 #endif
 
   for (; i < n8; i++) {
-    vec_load_pair(vy0, &v_y[(i * 2) + 0]);
-
     vec_load_mult22a_mma(&temp[0], &va0[i], &va1[i], v_x0[ 0]);
     vec_load_mult22b_mma(&temp[0], &va2[i], &va3[i], v_x0[ 4]);
+
+    vec_load_pair(vy0, &v_y[(i * 2) + 0]);
 
     vec_reduce2_mma(&temp[0], temp0, v_alpha, vy0);
 
@@ -315,20 +315,20 @@ static void BF16GEMV_N_MMA_4(BLASLONG n, IFLOAT **ap, IFLOAT *xo, FLOAT *y, FLOA
 
   n &= 7;
   if (n > 4) {
-    BLASLONG n3 = n & 3;
-    vec_loadN2_f32(vy0, &v_y[(i * 2) + 0], n3);
-
     vec_loadN_mult22a_mma(&temp[0], &va0[i], &va1[i], v_x0[ 0], n);
     vec_loadN_mult22b_mma(&temp[0], &va2[i], &va3[i], v_x0[ 4], n);
+
+    BLASLONG n3 = n & 3;
+    vec_loadN2_f32(vy0, &v_y[(i * 2) + 0], n3);
 
     vec_reduce2_mma(&temp[0], temp0, v_alpha, vy0);
 
     vec_storeN2_f32(vy0, &v_y[(i * 2) + 0], n3);
   } else if (n) {
-    vy0[0] = vec_loadN_f32(&v_y[(i * 2) + 0], n);
-
     vec_loadN_mult11a_mma(&temp[0], &va0[i], &va1[i], v_x0[ 0], n);
     vec_loadN_mult11b_mma(&temp[0], &va2[i], &va3[i], v_x0[ 4], n);
+
+    vy0[0] = vec_loadN_f32(&v_y[(i * 2) + 0], n);
 
     vec_reduce1_mma(&temp[0], temp0, v_alpha, vy0);
 
@@ -376,12 +376,12 @@ static void BF16GEMV_N_MMA_8(BLASLONG n, IFLOAT **ap, IFLOAT *xo, FLOAT *y, BLAS
   vec_make_mult4(v_x0);
 
   for (; i + 8 <= n8; i += 8) {
-    vec_load8_pair(vy0, &v_y[(i * 2) + 0]);
-
     vec_load_mult288a_mma(&temp[0], &va0[i +  0], &va1[i +  0], &v_x0[ 0]);
     vec_load_mult288b_mma(&temp[0], &va2[i +  0], &va3[i +  0], &v_x0[ 4]);
     vec_load_mult288b_mma(&temp[0], &vb0[i +  0], &vb1[i +  0], &v_x0[ 8]);
     vec_load_mult288b_mma(&temp[0], &vb2[i +  0], &vb3[i +  0], &v_x0[12]);
+
+    vec_load8_pair(vy0, &v_y[(i * 2) + 0]);
 
     vec_reduce88_mma(&temp[0], temp0 +  0, v_alpha, vy0 +  0);
 
@@ -389,12 +389,12 @@ static void BF16GEMV_N_MMA_8(BLASLONG n, IFLOAT **ap, IFLOAT *xo, FLOAT *y, BLAS
   }
 
   if (n8 & 4) {
-    vec_load4_pair(vy0, &v_y[(i * 2) + 0]);
-
     vec_load_mult284a_mma(&temp[0], &va0[i + 0], &va1[i + 0], &v_x0[ 0]);
     vec_load_mult284b_mma(&temp[0], &va2[i + 0], &va3[i + 0], &v_x0[ 4]);
     vec_load_mult284b_mma(&temp[0], &vb0[i + 0], &vb1[i + 0], &v_x0[ 8]);
     vec_load_mult284b_mma(&temp[0], &vb2[i + 0], &vb3[i + 0], &v_x0[12]);
+
+    vec_load4_pair(vy0, &v_y[(i * 2) + 0]);
 
     vec_reduce84_mma(&temp[0], temp0, v_alpha, vy0);
 
@@ -412,12 +412,12 @@ static void BF16GEMV_N_MMA_8(BLASLONG n, IFLOAT **ap, IFLOAT *xo, FLOAT *y, BLAS
   v_x0[12] = (vec_bf16)vec_splat((vec_f32)v_x0[0], 3);
 
   for (; i + 4 <= n8; i += 4) {
-    vec_load4_pair(vy0, &v_y[(i * 2) + 0]);
-
     vec_load_mult28a_mma(&temp[0], &va0[i + 0], &va1[i + 0], v_x0[ 0]);
     vec_load_mult28b_mma(&temp[0], &va2[i + 0], &va3[i + 0], v_x0[ 4]);
     vec_load_mult28b_mma(&temp[0], &vb0[i + 0], &vb1[i + 0], v_x0[ 8]);
     vec_load_mult28b_mma(&temp[0], &vb2[i + 0], &vb3[i + 0], v_x0[12]);
+
+    vec_load4_pair(vy0, &v_y[(i * 2) + 0]);
 
     vec_reduce8_mma(&temp[0], temp0, v_alpha, vy0);
 
@@ -426,12 +426,12 @@ static void BF16GEMV_N_MMA_8(BLASLONG n, IFLOAT **ap, IFLOAT *xo, FLOAT *y, BLAS
 #endif
 
   for (; i < n8; i++) {
-    vec_load_pair(vy0, &v_y[(i * 2) + 0]);
-
     vec_load_mult22a_mma(&temp[0], &va0[i], &va1[i], v_x0[ 0]);
     vec_load_mult22b_mma(&temp[0], &va2[i], &va3[i], v_x0[ 4]);
     vec_load_mult22b_mma(&temp[0], &vb0[i], &vb1[i], v_x0[ 8]);
     vec_load_mult22b_mma(&temp[0], &vb2[i], &vb3[i], v_x0[12]);
+
+    vec_load_pair(vy0, &v_y[(i * 2) + 0]);
 
     vec_reduce2_mma(&temp[0], temp0, v_alpha, vy0);
 
@@ -440,24 +440,24 @@ static void BF16GEMV_N_MMA_8(BLASLONG n, IFLOAT **ap, IFLOAT *xo, FLOAT *y, BLAS
 
   n &= 7;
   if (n > 4) {
-    BLASLONG n3 = n & 3;
-    vec_loadN2_f32(vy0, &v_y[(i * 2) + 0], n3);
-
     vec_loadN_mult22a_mma(&temp[0], &va0[i], &va1[i], v_x0[ 0], n);
     vec_loadN_mult22b_mma(&temp[0], &va2[i], &va3[i], v_x0[ 4], n);
     vec_loadN_mult22b_mma(&temp[0], &vb0[i], &vb1[i], v_x0[ 8], n);
     vec_loadN_mult22b_mma(&temp[0], &vb2[i], &vb3[i], v_x0[12], n);
 
+    BLASLONG n3 = n & 3;
+    vec_loadN2_f32(vy0, &v_y[(i * 2) + 0], n3);
+
     vec_reduce2_mma(&temp[0], temp0, v_alpha, vy0);
 
     vec_storeN2_f32(vy0, &v_y[(i * 2) + 0], n3);
   } else if (n) {
-    vy0[0] = vec_loadN_f32(&v_y[(i * 2) + 0], n);
-
     vec_loadN_mult11a_mma(&temp[0], &va0[i], &va1[i], v_x0[ 0], n);
     vec_loadN_mult11b_mma(&temp[0], &va2[i], &va3[i], v_x0[ 4], n);
     vec_loadN_mult11b_mma(&temp[0], &vb0[i], &vb1[i], v_x0[ 8], n);
     vec_loadN_mult11b_mma(&temp[0], &vb2[i], &vb3[i], v_x0[12], n);
+
+    vy0[0] = vec_loadN_f32(&v_y[(i * 2) + 0], n);
 
     vec_reduce1_mma(&temp[0], temp0, v_alpha, vy0);
 
