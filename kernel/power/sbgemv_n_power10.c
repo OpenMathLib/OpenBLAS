@@ -119,12 +119,12 @@ static void BF16GEMV_N_MMA_1(BLASLONG n, IFLOAT **ap, IFLOAT *xo, FLOAT *y, FLOA
   if (n > 4) {
     vec_loadN_mult12_mma(&temp[0], &va0[i], v_x0[ 0], n);
 
-    BLASLONG n3 = n & 3;
-    vec_loadN2_f32(vy0, &v_y[(i * 2) + 0], n3);
+    n &= 3;
+    vec_loadN2_f32(vy0, &v_y[(i * 2) + 0], n);
 
     vec_reduce2_mma(&temp[0], temp0, v_alpha, vy0);
 
-    vec_storeN2_f32(vy0, &v_y[(i * 2) + 0], n3);
+    vec_storeN2_f32(vy0, &v_y[(i * 2) + 0], n);
   } else if (n) {
     vec_loadN_mult11_mma(&temp[0], &va0[i], v_x0[ 0], n);
 
@@ -213,12 +213,12 @@ static void BF16GEMV_N_MMA_2(BLASLONG n, IFLOAT **ap, IFLOAT *xo, FLOAT *y, FLOA
   if (n > 4) {
     vec_loadN_mult22a_mma(&temp[0], &va0[i], &va1[i], v_x0[ 0], n);
 
-    BLASLONG n3 = n & 3;
-    vec_loadN2_f32(vy0, &v_y[(i * 2) + 0], n3);
+    n &= 3;
+    vec_loadN2_f32(vy0, &v_y[(i * 2) + 0], n);
 
     vec_reduce2_mma(&temp[0], temp0, v_alpha, vy0);
 
-    vec_storeN2_f32(vy0, &v_y[(i * 2) + 0], n3);
+    vec_storeN2_f32(vy0, &v_y[(i * 2) + 0], n);
   } else if (n) {
     vec_loadN_mult11a_mma(&temp[0], &va0[i], &va1[i], v_x0[ 0], n);
 
@@ -318,12 +318,12 @@ static void BF16GEMV_N_MMA_4(BLASLONG n, IFLOAT **ap, IFLOAT *xo, FLOAT *y, FLOA
     vec_loadN_mult22a_mma(&temp[0], &va0[i], &va1[i], v_x0[ 0], n);
     vec_loadN_mult22b_mma(&temp[0], &va2[i], &va3[i], v_x0[ 4], n);
 
-    BLASLONG n3 = n & 3;
-    vec_loadN2_f32(vy0, &v_y[(i * 2) + 0], n3);
+    n &= 3;
+    vec_loadN2_f32(vy0, &v_y[(i * 2) + 0], n);
 
     vec_reduce2_mma(&temp[0], temp0, v_alpha, vy0);
 
-    vec_storeN2_f32(vy0, &v_y[(i * 2) + 0], n3);
+    vec_storeN2_f32(vy0, &v_y[(i * 2) + 0], n);
   } else if (n) {
     vec_loadN_mult11a_mma(&temp[0], &va0[i], &va1[i], v_x0[ 0], n);
     vec_loadN_mult11b_mma(&temp[0], &va2[i], &va3[i], v_x0[ 4], n);
@@ -445,12 +445,12 @@ static void BF16GEMV_N_MMA_8(BLASLONG n, IFLOAT **ap, IFLOAT *xo, FLOAT *y, BLAS
     vec_loadN_mult22b_mma(&temp[0], &vb0[i], &vb1[i], v_x0[ 8], n);
     vec_loadN_mult22b_mma(&temp[0], &vb2[i], &vb3[i], v_x0[12], n);
 
-    BLASLONG n3 = n & 3;
-    vec_loadN2_f32(vy0, &v_y[(i * 2) + 0], n3);
+    n &= 3;
+    vec_loadN2_f32(vy0, &v_y[(i * 2) + 0], n);
 
     vec_reduce2_mma(&temp[0], temp0, v_alpha, vy0);
 
-    vec_storeN2_f32(vy0, &v_y[(i * 2) + 0], n3);
+    vec_storeN2_f32(vy0, &v_y[(i * 2) + 0], n);
   } else if (n) {
     vec_loadN_mult11a_mma(&temp[0], &va0[i], &va1[i], v_x0[ 0], n);
     vec_loadN_mult11b_mma(&temp[0], &va2[i], &va3[i], v_x0[ 4], n);
