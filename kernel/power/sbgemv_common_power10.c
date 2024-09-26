@@ -525,6 +525,42 @@ FORCEINLINE void vec_store4_pair(vec_f32 *v_y, vec_f32 *vy0)
   vec_store_pair(v_y + 6, vy0 + 6);
 }
 
+FORCEINLINE void vec_setzero_2(__vector_quad *temp0)
+{
+  __builtin_mma_xxsetaccz(&temp0[0]);
+  __builtin_mma_xxsetaccz(&temp0[1]);
+}
+
+FORCEINLINE void vec_setzero_4(__vector_quad *temp0)
+{
+  vec_setzero_2(temp0 + 0);
+  vec_setzero_2(temp0 + 2);
+}
+
+FORCEINLINE void vec_setzero_8(__vector_quad *temp0)
+{
+  vec_setzero_4(temp0 + 0);
+  vec_setzero_4(temp0 + 4);
+}
+
+FORCEINLINE void vec_reduce_2(vec_f32 *temp00, __vector_quad *temp0)
+{
+  __builtin_mma_disassemble_acc((void*)(temp00 +  0), &temp0[0]);
+  __builtin_mma_disassemble_acc((void*)(temp00 +  4), &temp0[1]);
+}
+
+FORCEINLINE void vec_reduce_4(vec_f32 *temp00, __vector_quad *temp0)
+{
+  vec_reduce_2(temp00 +  0, temp0 + 0);
+  vec_reduce_2(temp00 +  8, temp0 + 2);
+}
+
+FORCEINLINE void vec_reduce_8(vec_f32 *temp00, __vector_quad *temp0)
+{
+  vec_reduce_4(temp00 +  0, temp0 + 0);
+  vec_reduce_4(temp00 + 16, temp0 + 4);
+}
+
 #ifdef USE_MERGE_MMA
 FORCEINLINE void vec_load8_pair(vec_f32 *vy0, vec_f32 *v_y)
 {

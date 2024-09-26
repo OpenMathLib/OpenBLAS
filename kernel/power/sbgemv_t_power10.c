@@ -101,8 +101,7 @@ static void BF16GEMV_T_MMA_2(BLASLONG n, BLASLONG lda, IFLOAT *ap, IFLOAT *x, FL
   vec_f32 temp00[4*2];
   vec_bf16 inp[4];
 
-  __builtin_mma_xxsetaccz(&temp0[0]);
-  __builtin_mma_xxsetaccz(&temp0[1]);
+  vec_setzero_2(&temp0[0]);
 
   a0 = ap;
   a1 = ap + lda;
@@ -141,8 +140,7 @@ static void BF16GEMV_T_MMA_2(BLASLONG n, BLASLONG lda, IFLOAT *ap, IFLOAT *x, FL
     vec_loadN_mult12a_mma(&temp0[0], &va0[i], &va1[i], inp[0], n);
   }
 
-  __builtin_mma_disassemble_acc((void*)(temp00 + 0), &temp0[0]);
-  __builtin_mma_disassemble_acc((void*)(temp00 + 4), &temp0[1]);
+  vec_reduce_2(temp00, &temp0[0]);
 
   y[0] = (alpha * (temp00[0][0] + temp00[1][1] + temp00[2][2] + temp00[3][3])) + (beta * y[0]);
   y[1] = (alpha * (temp00[4][0] + temp00[5][1] + temp00[6][2] + temp00[7][3])) + (beta * y[1]);
@@ -156,10 +154,7 @@ static void BF16GEMV_T_MMA_4(BLASLONG n, BLASLONG lda, IFLOAT *ap, IFLOAT *x, FL
   vec_f32 temp00[4*4];
   vec_bf16 inp[4];
 
-  __builtin_mma_xxsetaccz(&temp0[0]);
-  __builtin_mma_xxsetaccz(&temp0[1]);
-  __builtin_mma_xxsetaccz(&temp0[2]);
-  __builtin_mma_xxsetaccz(&temp0[3]);
+  vec_setzero_4(&temp0[0]);
 
   a0 = ap;
   a1 = ap + lda;
@@ -202,10 +197,7 @@ static void BF16GEMV_T_MMA_4(BLASLONG n, BLASLONG lda, IFLOAT *ap, IFLOAT *x, FL
     vec_loadN_mult14_mma(&temp0[0], &va0[i], &va1[i], &va2[i], &va3[i], inp[0], n);
   }
 
-  __builtin_mma_disassemble_acc((void*)(temp00 +  0), &temp0[0]);
-  __builtin_mma_disassemble_acc((void*)(temp00 +  4), &temp0[1]);
-  __builtin_mma_disassemble_acc((void*)(temp00 +  8), &temp0[2]);
-  __builtin_mma_disassemble_acc((void*)(temp00 + 12), &temp0[3]);
+  vec_reduce_4(temp00, &temp0[0]);
 
   vec_f32 t0, t1, t2, t3, t4, t5, t6, t7;
   vec_f32 a = { alpha, alpha, alpha, alpha };
@@ -239,23 +231,17 @@ static void BF16GEMV_T_MMA_8(BLASLONG n, BLASLONG lda, IFLOAT *ap, IFLOAT *x, FL
   vec_f32 temp00[4*8];
   vec_bf16 inp[4];
 
-  __builtin_mma_xxsetaccz(&temp0[0]);
-  __builtin_mma_xxsetaccz(&temp0[1]);
-  __builtin_mma_xxsetaccz(&temp0[2]);
-  __builtin_mma_xxsetaccz(&temp0[3]);
-  __builtin_mma_xxsetaccz(&temp0[4]);
-  __builtin_mma_xxsetaccz(&temp0[5]);
-  __builtin_mma_xxsetaccz(&temp0[6]);
-  __builtin_mma_xxsetaccz(&temp0[7]);
+  vec_setzero_8(&temp0[0]);
 
+  BLASLONG lda4 = lda << 2;
   a0 = ap;
   a1 = ap + lda;
   a2 = a1 + lda;
   a3 = a2 + lda;
-  a4 = a3 + lda;
-  a5 = a4 + lda;
-  a6 = a5 + lda;
-  a7 = a6 + lda;
+  a4 = a0 + lda4;
+  a5 = a1 + lda4;
+  a6 = a2 + lda4;
+  a7 = a3 + lda4;
   va0 = (vec_bf16 *)a0;
   va1 = (vec_bf16 *)a1;
   va2 = (vec_bf16 *)a2;
@@ -301,14 +287,7 @@ static void BF16GEMV_T_MMA_8(BLASLONG n, BLASLONG lda, IFLOAT *ap, IFLOAT *x, FL
     vec_loadN_mult14_mma(&temp0[4], &va4[i], &va5[i], &va6[i], &va7[i], inp[0], n);
   }
 
-  __builtin_mma_disassemble_acc((void*)(temp00 +  0), &temp0[0]);
-  __builtin_mma_disassemble_acc((void*)(temp00 +  4), &temp0[1]);
-  __builtin_mma_disassemble_acc((void*)(temp00 +  8), &temp0[2]);
-  __builtin_mma_disassemble_acc((void*)(temp00 + 12), &temp0[3]);
-  __builtin_mma_disassemble_acc((void*)(temp00 + 16), &temp0[4]);
-  __builtin_mma_disassemble_acc((void*)(temp00 + 20), &temp0[5]);
-  __builtin_mma_disassemble_acc((void*)(temp00 + 24), &temp0[6]);
-  __builtin_mma_disassemble_acc((void*)(temp00 + 28), &temp0[7]);
+  vec_reduce_8(temp00, &temp0[0]);
 
   vec_f32 t0, t1, t2, t3, t4, t5, t6, t7, t10, t11, t12, t13, t14, t15, t16, t17;
   vec_f32 a = { alpha, alpha, alpha, alpha };

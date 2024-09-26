@@ -198,14 +198,15 @@ static void BF16GEMV_T_VSX_8(BLASLONG n, BLASLONG lda, IFLOAT *ap, IFLOAT *x, FL
   vec_bf16 zero = { 0, 0, 0, 0, 0, 0, 0, 0 };
   vec_f32 inp[2];
 
+  BLASLONG lda4 = lda << 2;
   a0 = ap;
   a1 = ap + lda;
   a2 = a1 + lda;
   a3 = a2 + lda;
-  a4 = a3 + lda;
-  a5 = a4 + lda;
-  a6 = a5 + lda;
-  a7 = a6 + lda;
+  a4 = a0 + lda4;
+  a5 = a1 + lda4;
+  a6 = a2 + lda4;
+  a7 = a3 + lda4;
   va0 = (vec_bf16 *)a0;
   va1 = (vec_bf16 *)a1;
   va2 = (vec_bf16 *)a2;
