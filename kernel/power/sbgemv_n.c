@@ -202,10 +202,8 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT alpha, IFLOAT *a, BLASLONG lda, IFLOAT *
     a += NB;
     if (inc_y != 1) {
       move_y(NB, ybuffer, y_ptr, inc_y);
-      y_ptr += (NB * inc_y);
-    } else {
-      y_ptr += NB;
     }
+    y_ptr += (NB * inc_y);
   }
 
   return 0;

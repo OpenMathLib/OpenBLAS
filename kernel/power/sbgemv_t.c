@@ -124,6 +124,7 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT alpha, IFLOAT *a, BLASLONG lda, IFLOAT *
 
     a += NB;
     x += NB * inc_x;
+    beta = (FLOAT)1;
   }
 
   return 0;
