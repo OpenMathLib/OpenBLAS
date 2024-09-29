@@ -388,7 +388,7 @@ if (NEED_PIC)
   endif()
 endif ()
 
-if (X86_64 OR ${CORE} STREQUAL POWER10)
+if (X86_64 OR ${CORE} STREQUAL POWER10 OR ARM64)
   set(SMALL_MATRIX_OPT TRUE)
 endif ()
 if (ARM64)
