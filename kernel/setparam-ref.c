@@ -1086,7 +1086,7 @@ static void init_parameter(void) {
   TABLE_NAME.sbgemm_r = SBGEMM_DEFAULT_R;
 #endif
 
-#if defined(LOONGSON3R5)
+#if defined(LA464)
   int L3_size = get_L3_size();
 #ifdef SMP
   if(blas_num_threads == 1){

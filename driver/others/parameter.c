@@ -752,7 +752,7 @@ int get_L3_size() {
 }
 
 void blas_set_parameter(void){
-#if defined(LOONGSON3R5)
+#if defined(LA464)
   int L3_size = get_L3_size();
 #ifdef SMP
   if(blas_num_threads == 1){
