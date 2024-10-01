@@ -80,7 +80,7 @@ static void BF16GEMV_N_VSX_1(BLASLONG n, IFLOAT **ap, IFLOAT *xo, FLOAT *y, FLOA
   } else if (n) {
     vy0[0] = vec_loadN_f32(&v_y[(i * 2) + 0], n);
 
-    vy0[0] += vec_loadNHi_mult2(v_x0, &va0[i], n, zero);
+    vy0[0] += vec_loadNHi_mult(&va0[i], v_x0, n, zero);
 
     vec_storeN_f32(vy0[0], &v_y[(i * 2) + 0], n);
   }
@@ -131,8 +131,8 @@ static void BF16GEMV_N_VSX_2(BLASLONG n, IFLOAT **ap, IFLOAT *xo, FLOAT *y, FLOA
   } else if (n) {
     vy0[0] = vec_loadN_f32(&v_y[(i * 2) + 0], n);
 
-    vy0[0] += vec_loadNHi_mult2(v_x0, &va0[i], n, zero);
-    vy0[0] += vec_loadNHi_mult2(v_x1, &va1[i], n, zero);
+    vy0[0] += vec_loadNHi_mult(&va0[i], v_x0, n, zero);
+    vy0[0] += vec_loadNHi_mult(&va1[i], v_x1, n, zero);
 
     vec_storeN_f32(vy0[0], &v_y[(i * 2) + 0], n);
   }
@@ -193,10 +193,10 @@ static void BF16GEMV_N_VSX_4(BLASLONG n, IFLOAT **ap, IFLOAT *xo, FLOAT *y, FLOA
   } else if (n) {
     vy0[0] = vec_loadN_f32(&v_y[(i * 2) + 0], n);
 
-    vy0[0] += vec_loadNHi_mult2(v_x0, &va0[i], n, zero);
-    vy0[0] += vec_loadNHi_mult2(v_x1, &va1[i], n, zero);
-    vy0[0] += vec_loadNHi_mult2(v_x2, &va2[i], n, zero);
-    vy0[0] += vec_loadNHi_mult2(v_x3, &va3[i], n, zero);
+    vy0[0] += vec_loadNHi_mult(&va0[i], v_x0, n, zero);
+    vy0[0] += vec_loadNHi_mult(&va1[i], v_x1, n, zero);
+    vy0[0] += vec_loadNHi_mult(&va2[i], v_x2, n, zero);
+    vy0[0] += vec_loadNHi_mult(&va3[i], v_x3, n, zero);
 
     vec_storeN_f32(vy0[0], &v_y[(i * 2) + 0], n);
   }
@@ -281,14 +281,14 @@ static void BF16GEMV_N_VSX_8(BLASLONG n, IFLOAT **ap, IFLOAT *xo, FLOAT *y, BLAS
   } else if (n) {
     vy0[0] = vec_loadN_f32(&v_y[(i * 2) + 0], n);
 
-    vy0[0] += vec_loadNHi_mult2(v_x0, &va0[i], n, zero);
-    vy0[0] += vec_loadNHi_mult2(v_x1, &va1[i], n, zero);
-    vy0[0] += vec_loadNHi_mult2(v_x2, &va2[i], n, zero);
-    vy0[0] += vec_loadNHi_mult2(v_x3, &va3[i], n, zero);
-    vy0[0] += vec_loadNHi_mult2(v_x4, &vb0[i], n, zero);
-    vy0[0] += vec_loadNHi_mult2(v_x5, &vb1[i], n, zero);
-    vy0[0] += vec_loadNHi_mult2(v_x6, &vb2[i], n, zero);
-    vy0[0] += vec_loadNHi_mult2(v_x7, &vb3[i], n, zero);
+    vy0[0] += vec_loadNHi_mult(&va0[i], v_x0, n, zero);
+    vy0[0] += vec_loadNHi_mult(&va1[i], v_x1, n, zero);
+    vy0[0] += vec_loadNHi_mult(&va2[i], v_x2, n, zero);
+    vy0[0] += vec_loadNHi_mult(&va3[i], v_x3, n, zero);
+    vy0[0] += vec_loadNHi_mult(&vb0[i], v_x4, n, zero);
+    vy0[0] += vec_loadNHi_mult(&vb1[i], v_x5, n, zero);
+    vy0[0] += vec_loadNHi_mult(&vb2[i], v_x6, n, zero);
+    vy0[0] += vec_loadNHi_mult(&vb3[i], v_x7, n, zero);
 
     vec_storeN_f32(vy0[0], &v_y[(i * 2) + 0], n);
   }
