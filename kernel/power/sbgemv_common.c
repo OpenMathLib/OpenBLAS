@@ -58,9 +58,9 @@ FORCEINLINE vec_f32 vec_load_mult(vec_bf16 *in, vec_f32 *inp, vec_bf16 zero)
   return vec_mult(inp, in0, zero);
 }
 
-FORCEINLINE void vec_load_vec2(vec_bf16 *in, BLASLONG i, vec_f32 *v_x0, vec_bf16 zero)
+FORCEINLINE void vec_load_vec2(vec_bf16 *in, vec_f32 *v_x0, vec_bf16 zero)
 {
-  vec_bf16 inp = (vec_bf16)vec_load_vec(&in[i]);
+  vec_bf16 inp = (vec_bf16)vec_load_vec(in);
 
   v_x0[0] = BF16_HI(inp, zero);
   v_x0[1] = BF16_LO(inp, zero);
@@ -89,9 +89,9 @@ FORCEINLINE vec_f32 vec_loadN_mult(vec_bf16 *in, vec_f32 *inp, BLASLONG n, vec_b
   return vec_mult(inp, in0, zero);
 }
 
-FORCEINLINE void vec_loadN_vec2(vec_bf16 *in, BLASLONG i, vec_f32 *v_x0, BLASLONG n, vec_bf16 zero)
+FORCEINLINE void vec_loadN_vec2(vec_bf16 *in, vec_f32 *v_x0, BLASLONG n, vec_bf16 zero)
 {
-  vec_bf16 inp = vec_loadN(&in[i], n);
+  vec_bf16 inp = vec_loadN(in, n);
 
   v_x0[0] = BF16_HI(inp, zero);
   v_x0[1] = BF16_LO(inp, zero);
