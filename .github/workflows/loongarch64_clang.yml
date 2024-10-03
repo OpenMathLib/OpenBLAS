@@ -20,6 +20,12 @@ jobs:
             opts: NO_SHARED=1 DYNAMIC_ARCH=1 TARGET=LOONGSON3R5
           - target: LOONGSON2K1000
             opts: NO_SHARED=1 DYNAMIC_ARCH=1 TARGET=LOONGSON2K1000
+          - target: LA64_GENERIC
+            opts: NO_SHARED=1 DYNAMIC_ARCH=1 TARGET=LA64_GENERIC
+          - target: LA464
+            opts: NO_SHARED=1 DYNAMIC_ARCH=1 TARGET=LA464
+          - target: LA264
+            opts: NO_SHARED=1 DYNAMIC_ARCH=1 TARGET=LA264
           - target: DYNAMIC_ARCH
             opts: NO_SHARED=1 DYNAMIC_ARCH=1 TARGET=GENERIC
 
