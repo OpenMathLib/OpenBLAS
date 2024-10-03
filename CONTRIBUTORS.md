@@ -226,3 +226,7 @@ In chronological order:
 
 * Dirreke <https://github.com/mseminatore>
   * [2024-01-16] Add basic support for the CSKY architecture
+
+* Aniket P. Garade <https://github.com/garadeaniket> , Sushil Pratap Singh <https://github.com/SushilPratap04> , Juliya 
+  James
+  * [2024-10-4] Optimized  gemv , scal , srot and scal BLAS routines using ARM SVE
