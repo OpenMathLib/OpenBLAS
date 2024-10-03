@@ -122,7 +122,10 @@ FORCEINLINE void copy_x(BLASLONG n, IFLOAT *src, IFLOAT *dest, BLASLONG inc_src)
 FORCEINLINE void copy_y_beta(BLASLONG n, FLOAT *src, FLOAT *dest, BLASLONG inc_src, FLOAT beta)
 {
   if (beta == 0) {
-    memset(dest, 0, sizeof(FLOAT) * n);
+    for (BLASLONG i = 0; i < n; i++) {
+      *dest++ = (FLOAT)0;
+      src += inc_src;
+    }
   } else if (beta == 1) {
     for (BLASLONG i = 0; i < n; i++) {
       *dest++ = *src;
@@ -161,6 +164,66 @@ FORCEINLINE void move_y(BLASLONG n, FLOAT *src, FLOAT *dest, BLASLONG inc_dest)
   for (BLASLONG i = 0; i < n; i++) {
     *dest = *src++;
     dest += inc_dest;
+  }
+}
+
+static void BF16GEMV_N_beta(BLASLONG n, FLOAT *output_vector, FLOAT *input_vector, FLOAT beta)
+{
+  if (beta == 0) {
+    memset(output_vector, 0, sizeof(FLOAT) * n);
+  } else if (beta == 1) {
+    if (output_vector != input_vector) {
+      memcpy(output_vector, input_vector, sizeof(FLOAT) * n);
+    }
+  } else {
+    vec_f32 b = { beta, beta, beta, beta };
+
+    vec_f32 *in = (vec_f32 *)input_vector;
+    vec_f32 *out = (vec_f32 *)output_vector;
+
+    BLASLONG n8 = n / 8;
+    BLASLONG i = 0;
+    vec_f32 v_inp0[2];
+
+    for (; i + 4 <= n8; i += 4) {
+      vec_f32 v_inp1[2], v_inp2[2], v_inp3[2];
+      vec_load_pair(v_inp0, &in[(i * 2) + 0]);
+      vec_load_pair(v_inp1, &in[(i * 2) + 2]);
+      vec_load_pair(v_inp2, &in[(i * 2) + 4]);
+      vec_load_pair(v_inp3, &in[(i * 2) + 6]);
+      v_inp0[0] *= b;
+      v_inp0[1] *= b;
+      v_inp1[0] *= b;
+      v_inp1[1] *= b;
+      v_inp2[0] *= b;
+      v_inp2[1] *= b;
+      v_inp3[0] *= b;
+      v_inp3[1] *= b;
+      vec_store_pair(&out[(i * 2) + 0], v_inp0);
+      vec_store_pair(&out[(i * 2) + 2], v_inp1);
+      vec_store_pair(&out[(i * 2) + 4], v_inp2);
+      vec_store_pair(&out[(i * 2) + 6], v_inp3);
+    }
+
+    for (; i < n8; i++) {
+      vec_load_pair(v_inp0, &in[(i * 2) + 0]);
+      v_inp0[0] *= b;
+      v_inp0[1] *= b;
+      vec_store_pair(&out[(i * 2) + 0], v_inp0);
+    }
+
+    n &= 7;
+    if (n > 4) {
+      BLASLONG n3 = n & 3;
+      vec_loadN2_f32(v_inp0, &in[(i * 2) + 0], n3);
+      v_inp0[0] *= b;
+      v_inp0[1] *= b;
+      vec_storeN2_f32(v_inp0, &out[(i * 2) + 0], n3);
+    } else if (n) {
+      v_inp0[0] = vec_loadN_f32(&in[(i * 2) + 0], n);
+      v_inp0[0] *= b;
+      vec_storeN_f32(v_inp0[0], &out[(i * 2) + 0], n);
+    }
   }
 }
 #endif

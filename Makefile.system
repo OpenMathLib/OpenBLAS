@@ -282,6 +282,7 @@ GEMM_GEMV_FORWARD = 1
 endif
 ifeq ($(ARCH), power)
 GEMM_GEMV_FORWARD = 1
+GEMM_GEMV_FORWARD_BF16 = 1
 endif
 
 ifeq ($(SMALL_MATRIX_OPT), 1)

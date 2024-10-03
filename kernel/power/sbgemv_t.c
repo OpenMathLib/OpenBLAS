@@ -41,6 +41,10 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT alpha, IFLOAT *a, BLASLONG lda, IFLOAT *
 
   if ((m < 1) || (n < 1)) return 0;
 
+  if (inc_y == 1) {
+    BF16GEMV_N_beta(n, y, y, beta);
+  }
+
   xbuffer = buffer;
 
   BLASLONG lda4 = lda << 2;
@@ -58,18 +62,21 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT alpha, IFLOAT *a, BLASLONG lda, IFLOAT *
     }
 
     a_ptr = a;
+    a += NB;
     y_ptr = y;
 
     if (inc_x != 1) {
       copy_x(NB, x, xbuffer, inc_x);
+      x += NB * inc_x;
     } else {
       xbuffer = x;
+      x += NB;
     }
 
     if (inc_y == 1) {
 #ifdef USE_T_8
       for (BLASLONG j = 0; j + 8 <= n; j += 8) {
-        BF16GEMV_T_8(NB, lda, a_ptr, xbuffer, y_ptr, alpha, beta);
+        BF16GEMV_T_8(NB, lda, a_ptr, xbuffer, y_ptr, alpha);
         y_ptr += 8;
         a_ptr += lda8;
       }
@@ -77,23 +84,23 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT alpha, IFLOAT *a, BLASLONG lda, IFLOAT *
 #else
       for (BLASLONG j = 0; j + 4 <= n; j += 4) {
 #endif
-        BF16GEMV_T_4(NB, lda, a_ptr, xbuffer, y_ptr, alpha, beta);
+        BF16GEMV_T_4(NB, lda, a_ptr, xbuffer, y_ptr, alpha);
         y_ptr += 4;
         a_ptr += lda4;
       }
       if (n & 2) {
-        BF16GEMV_T_2(NB, lda, a_ptr, xbuffer, y_ptr, alpha, beta);
+        BF16GEMV_T_2(NB, lda, a_ptr, xbuffer, y_ptr, alpha);
         y_ptr += 2;
         a_ptr += (lda * 2);
       }
       if (n & 1) {
-        BF16GEMV_T_1(NB, lda, a_ptr, xbuffer, y_ptr, alpha, beta);
+        BF16GEMV_T_1(NB, lda, a_ptr, xbuffer, y_ptr, alpha);
       }
     } else {
 #ifdef USE_T_8
       for (BLASLONG j = 0; j + 8 <= n; j += 8) {
         memset(ybuffer, 0, sizeof(FLOAT) * 8);
-        BF16GEMV_T_8(NB, lda, a_ptr, xbuffer, ybuffer, alpha, beta);
+        BF16GEMV_T_8(NB, lda, a_ptr, xbuffer, ybuffer, alpha);
         copy_y(8, ybuffer, y_ptr, inc_y, beta);
         y_ptr += 8 * inc_y;
         a_ptr += lda8;
@@ -103,28 +110,25 @@ int CNAME(BLASLONG m, BLASLONG n, FLOAT alpha, IFLOAT *a, BLASLONG lda, IFLOAT *
       for (BLASLONG j = 0; j + 4 <= n; j += 4) {
 #endif
         memset(ybuffer, 0, sizeof(FLOAT) * 4);
-        BF16GEMV_T_4(NB, lda, a_ptr, xbuffer, ybuffer, alpha, beta);
+        BF16GEMV_T_4(NB, lda, a_ptr, xbuffer, ybuffer, alpha);
         copy_y(4, ybuffer, y_ptr, inc_y, beta);
         y_ptr += 4 * inc_y;
         a_ptr += lda4;
       }
       if (n & 2) {
         memset(ybuffer, 0, sizeof(FLOAT) * 4);
-        BF16GEMV_T_2(NB, lda, a_ptr, xbuffer, ybuffer, alpha, beta);
+        BF16GEMV_T_2(NB, lda, a_ptr, xbuffer, ybuffer, alpha);
         copy_y(2, ybuffer, y_ptr, inc_y, beta);
         y_ptr += 2 * inc_y;
         a_ptr += (lda * 2);
       }
       if (n & 1) {
         memset(ybuffer, 0, sizeof(FLOAT) * 4);
-        BF16GEMV_T_1(NB, lda, a_ptr, xbuffer, ybuffer, alpha, beta);
+        BF16GEMV_T_1(NB, lda, a_ptr, xbuffer, ybuffer, alpha);
         copy_y(1, ybuffer, y_ptr, inc_y, beta);
       }
+      beta = (FLOAT)1;
     }
-
-    a += NB;
-    x += NB * inc_x;
-    beta = (FLOAT)1;
   }
 
   return 0;

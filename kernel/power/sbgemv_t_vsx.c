@@ -40,7 +40,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #define USE_BFGEMV_8_T_VSX
 
-static void BF16GEMV_T_VSX_1(BLASLONG n, BLASLONG lda, IFLOAT *ap, IFLOAT *x, FLOAT *y, FLOAT alpha, FLOAT beta)
+static void BF16GEMV_T_VSX_1(BLASLONG n, BLASLONG lda, IFLOAT *ap, IFLOAT *x, FLOAT *y, FLOAT alpha)
 {
   IFLOAT *a0;
   vec_bf16 *va0, *v_x;
@@ -71,10 +71,10 @@ static void BF16GEMV_T_VSX_1(BLASLONG n, BLASLONG lda, IFLOAT *ap, IFLOAT *x, FL
     temp0 += vec_loadNHi_mult(&va0[i], inp[0], n, zero);
   }
 
-  y[0] = (alpha * (temp0[0] + temp0[1] + temp0[2] + temp0[3])) + (beta * y[0]);
+  y[0] += (alpha * (temp0[0] + temp0[1] + temp0[2] + temp0[3]));
 }
 
-static void BF16GEMV_T_VSX_2(BLASLONG n, BLASLONG lda, IFLOAT *ap, IFLOAT *x, FLOAT *y, FLOAT alpha, FLOAT beta)
+static void BF16GEMV_T_VSX_2(BLASLONG n, BLASLONG lda, IFLOAT *ap, IFLOAT *x, FLOAT *y, FLOAT alpha)
 {
   IFLOAT *a0, *a1;
   vec_bf16 *va0, *va1, *v_x;
@@ -111,11 +111,11 @@ static void BF16GEMV_T_VSX_2(BLASLONG n, BLASLONG lda, IFLOAT *ap, IFLOAT *x, FL
     temp1 += vec_loadNHi_mult(&va1[i], inp[0], n, zero);
   }
 
-  y[0] = (alpha * (temp0[0] + temp0[1] + temp0[2] + temp0[3])) + (beta * y[0]);
-  y[1] = (alpha * (temp1[0] + temp1[1] + temp1[2] + temp1[3])) + (beta * y[1]);
+  y[0] += (alpha * (temp0[0] + temp0[1] + temp0[2] + temp0[3]));
+  y[1] += (alpha * (temp1[0] + temp1[1] + temp1[2] + temp1[3]));
 }
 
-static void BF16GEMV_T_VSX_4(BLASLONG n, BLASLONG lda, IFLOAT *ap, IFLOAT *x, FLOAT *y, FLOAT alpha, FLOAT beta)
+static void BF16GEMV_T_VSX_4(BLASLONG n, BLASLONG lda, IFLOAT *ap, IFLOAT *x, FLOAT *y, FLOAT alpha)
 {
   IFLOAT *a0, *a1, *a2, *a3;
   vec_bf16 *va0, *va1, *va2, *va3, *v_x;
@@ -166,7 +166,6 @@ static void BF16GEMV_T_VSX_4(BLASLONG n, BLASLONG lda, IFLOAT *ap, IFLOAT *x, FL
 
   vec_f32 t0, t1, t2, t3;
   vec_f32 a = { alpha, alpha, alpha, alpha };
-  vec_f32 b = { beta, beta, beta, beta };
   vec_f32 *v_y = (vec_f32 *) y;
 
   t0 = vec_mergeh(temp0, temp2);
@@ -179,11 +178,11 @@ static void BF16GEMV_T_VSX_4(BLASLONG n, BLASLONG lda, IFLOAT *ap, IFLOAT *x, FL
   temp3 = vec_mergel(t1, t3);
   temp0 += temp1 + temp2 + temp3;
 
-  v_y[0] = (a * temp0) + (b * v_y[0]);
+  v_y[0] += (a * temp0);
 }
 
 #ifdef USE_BFGEMV_8_T_VSX
-static void BF16GEMV_T_VSX_8(BLASLONG n, BLASLONG lda, IFLOAT *ap, IFLOAT *x, FLOAT *y, FLOAT alpha, FLOAT beta)
+static void BF16GEMV_T_VSX_8(BLASLONG n, BLASLONG lda, IFLOAT *ap, IFLOAT *x, FLOAT *y, FLOAT alpha)
 {
   IFLOAT *a0, *a1, *a2, *a3, *a4, *a5, *a6, *a7;
   vec_bf16 *va0, *va1, *va2, *va3, *va4, *va5, *va6, *va7, *v_x;
@@ -259,7 +258,6 @@ static void BF16GEMV_T_VSX_8(BLASLONG n, BLASLONG lda, IFLOAT *ap, IFLOAT *x, FL
 
   vec_f32 t0, t1, t2, t3, t10, t11, t12, t13;
   vec_f32 a = { alpha, alpha, alpha, alpha };
-  vec_f32 b = { beta, beta, beta, beta };
   vec_f32 *v_y = (vec_f32 *) y;
 
   t0 = vec_mergeh(temp0, temp2);
@@ -283,8 +281,8 @@ static void BF16GEMV_T_VSX_8(BLASLONG n, BLASLONG lda, IFLOAT *ap, IFLOAT *x, FL
   temp4 += temp5 + temp6 + temp7;
 
   vec_load_pair(inp, v_y);
-  inp[0] = (a * temp0) + (b * inp[0]);
-  inp[1] = (a * temp4) + (b * inp[1]);
+  inp[0] += (a * temp0);
+  inp[1] += (a * temp4);
   vec_store_pair(v_y, inp);
 }
 #endif
