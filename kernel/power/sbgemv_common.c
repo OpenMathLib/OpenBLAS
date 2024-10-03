@@ -121,12 +121,12 @@ FORCEINLINE void copy_x(BLASLONG n, IFLOAT *src, IFLOAT *dest, BLASLONG inc_src)
 
 FORCEINLINE void copy_y_beta(BLASLONG n, FLOAT *src, FLOAT *dest, BLASLONG inc_src, FLOAT beta)
 {
-  if (beta == 0) {
+  if (beta == (FLOAT)0) {
     for (BLASLONG i = 0; i < n; i++) {
       *dest++ = (FLOAT)0;
       src += inc_src;
     }
-  } else if (beta == 1) {
+  } else if (beta == (FLOAT)1) {
     for (BLASLONG i = 0; i < n; i++) {
       *dest++ = *src;
       src += inc_src;
@@ -141,12 +141,12 @@ FORCEINLINE void copy_y_beta(BLASLONG n, FLOAT *src, FLOAT *dest, BLASLONG inc_s
 
 FORCEINLINE void copy_y(BLASLONG n, FLOAT *src, FLOAT *dest, BLASLONG inc_src, FLOAT beta)
 {
-  if (beta == 0) {
+  if (beta == (FLOAT)0) {
     for (BLASLONG i = 0; i < n; i++) {
       *dest = *src++;
       dest += inc_src;
     }
-  } else if (beta == 1) {
+  } else if (beta == (FLOAT)1) {
     for (BLASLONG i = 0; i < n; i++) {
       *dest += *src++;
       dest += inc_src;
@@ -169,9 +169,9 @@ FORCEINLINE void move_y(BLASLONG n, FLOAT *src, FLOAT *dest, BLASLONG inc_dest)
 
 static void BF16GEMV_N_beta(BLASLONG n, FLOAT *output_vector, FLOAT *input_vector, FLOAT beta)
 {
-  if (beta == 0) {
+  if (beta == (FLOAT)0) {
     memset(output_vector, 0, sizeof(FLOAT) * n);
-  } else if (beta == 1) {
+  } else if (beta == (FLOAT)1) {
     if (output_vector != input_vector) {
       memcpy(output_vector, input_vector, sizeof(FLOAT) * n);
     }
