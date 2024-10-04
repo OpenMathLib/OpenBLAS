@@ -281,9 +281,13 @@ REALNAME: ;\
 #define GNUSTACK
 #endif /* defined(__linux__) && defined(__ELF__) */
 
+#ifdef __clang__
+#define EPILOGUE .end
+#else
 #define EPILOGUE      \
     .end    REALNAME ;\
     GNUSTACK
+#endif
 
 #define PROFCODE
 

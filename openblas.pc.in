@@ -4,4 +4,4 @@ Version: ${version}
 URL: https://github.com/xianyi/OpenBLAS
 Libs: -L${libdir} -l${libprefix}openblas${libnamesuffix}
 Libs.private: ${extralib}
-Cflags: -I${includedir}
+Cflags: -I${includedir} ${omp_opt}

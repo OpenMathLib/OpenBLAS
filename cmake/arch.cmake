@@ -94,6 +94,10 @@ if (DYNAMIC_ARCH)
     endif ()
   endif ()
 
+  if (LOONGARCH64)
+    set(DYNAMIC_CORE LOONGSONGENERIC LOONGSON2K1000 LOONGSON3R5)
+  endif ()
+
   if (EXISTS ${PROJECT_SOURCE_DIR}/config_kernel.h)
 	  message (FATAL_ERROR "Your build directory contains a file config_kernel.h, probably from a previous compilation with make. This will conflict with the cmake compilation and cause strange compiler errors - please remove the file before trying again")
   endif ()

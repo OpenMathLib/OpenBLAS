@@ -380,9 +380,6 @@ OBJCONV = $(CROSS_SUFFIX)objconv
 ifeq ($(NOFORTRAN), 1)
 C_LAPACK = 1
 override FEXTRALIB = 
-ifeq ($(C_COMPILER), GCC)
-CCOMMON_OPT += -Wno-error=incompatible-pointer-types
-endif
 endif
 
 ifeq ($(C_COMPILER), GCC)
@@ -734,7 +731,7 @@ endif
 endif
 
 ifeq ($(ARCH), loongarch64)
-DYNAMIC_CORE = LOONGSON3R5 LOONGSON2K1000 LOONGSONGENERIC
+DYNAMIC_CORE = LA64_GENERIC LA264 LA464
 endif
 
 ifeq ($(ARCH), riscv64)
@@ -1727,8 +1724,8 @@ LAPACK_FFLAGS := $(filter-out -msse3 -mssse3 -msse4.1 -mavx -mavx2 -mskylake-avx
 override FFLAGS := $(filter-out -msse3 -mssse3 -msse4.1 -mavx -mavx2 -mskylake-avx512 ,$(FFLAGS))
 endif
 ifeq ($(F_COMPILER),FLANGNEW)
-LAPACK_FFLAGS := $(filter-out -m32 -m64 -msse3 -mssse3 -msse4.1 -mavx -mavx2 -mskylake-avx512 ,$(FFLAGS))
-override FFLAGS := $(filter-out -m32 -m64 -msse3 -mssse3 -msse4.1 -mavx -mavx2 -mskylake-avx512 ,$(FFLAGS))
+LAPACK_FFLAGS := $(filter-out -m32 -m64 -msse3 -mssse3 -msse4.1 -mavx -mavx2 -mskylake-avx512 -mtune=% -mabi=% ,$(FFLAGS))
+override FFLAGS := $(filter-out -m32 -m64 -msse3 -mssse3 -msse4.1 -mavx -mavx2 -mskylake-avx512 -mtune=% -mabi=% ,$(FFLAGS))
 endif
 
 LAPACK_CFLAGS = $(CFLAGS)
