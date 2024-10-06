@@ -63,6 +63,8 @@
 #endif
 #endif
 
+#define FLAG	r11
+
 #define FZERO	f0
 #define ALPHA	f1
 
@@ -87,6 +89,10 @@
 
 	fcmpu	cr0, FZERO, ALPHA
 	bne-	cr0, LL(A1I1)
+
+        lwz     FLAG, FRAMESLOT(0)(SP)
+        cmpwi   cr0, FLAG, 1
+        beq-    cr0, LL(A1I1)
 
 	srawi.	r0, N, 4
 	mtspr	CTR, r0
