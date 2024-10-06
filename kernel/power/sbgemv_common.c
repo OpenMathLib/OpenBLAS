@@ -122,10 +122,7 @@ FORCEINLINE void copy_x(BLASLONG n, IFLOAT *src, IFLOAT *dest, BLASLONG inc_src)
 FORCEINLINE void copy_y_beta(BLASLONG n, FLOAT *src, FLOAT *dest, BLASLONG inc_src, FLOAT beta)
 {
   if (beta == (FLOAT)0) {
-    for (BLASLONG i = 0; i < n; i++) {
-      *dest++ = (FLOAT)0;
-      src += inc_src;
-    }
+    memset(dest, 0, n * sizeof(FLOAT));
   } else if (beta == (FLOAT)1) {
     for (BLASLONG i = 0; i < n; i++) {
       *dest++ = *src;
@@ -139,13 +136,18 @@ FORCEINLINE void copy_y_beta(BLASLONG n, FLOAT *src, FLOAT *dest, BLASLONG inc_s
   }
 }
 
+FORCEINLINE void move_y(BLASLONG n, FLOAT *src, FLOAT *dest, BLASLONG inc_dest)
+{
+  for (BLASLONG i = 0; i < n; i++) {
+    *dest = *src++;
+    dest += inc_dest;
+  }
+}
+
 FORCEINLINE void copy_y(BLASLONG n, FLOAT *src, FLOAT *dest, BLASLONG inc_src, FLOAT beta)
 {
   if (beta == (FLOAT)0) {
-    for (BLASLONG i = 0; i < n; i++) {
-      *dest = *src++;
-      dest += inc_src;
-    }
+    move_y(n, src, dest, inc_src);
   } else if (beta == (FLOAT)1) {
     for (BLASLONG i = 0; i < n; i++) {
       *dest += *src++;
@@ -156,14 +158,6 @@ FORCEINLINE void copy_y(BLASLONG n, FLOAT *src, FLOAT *dest, BLASLONG inc_src, F
       *dest = *src++ + (beta * *dest);
       dest += inc_src;
     }
-  }
-}
-
-FORCEINLINE void move_y(BLASLONG n, FLOAT *src, FLOAT *dest, BLASLONG inc_dest)
-{
-  for (BLASLONG i = 0; i < n; i++) {
-    *dest = *src++;
-    dest += inc_dest;
   }
 }
 
