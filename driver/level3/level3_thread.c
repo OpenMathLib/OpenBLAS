@@ -742,7 +742,7 @@ static int gemm_driver(blas_arg_t *args, BLASLONG *range_m, BLASLONG
     num_parts  = 0;
     while (n > 0){
       width = blas_quickdivide(n + nthreads - num_parts - 1, nthreads - num_parts);
-      if (width < switch_ratio) {
+      if (width < switch_ratio && width > 1) {
         width = switch_ratio;
       }
       width = round_up(n, width, GEMM_PREFERED_SIZE);
