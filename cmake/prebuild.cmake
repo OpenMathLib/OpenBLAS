@@ -1349,7 +1349,7 @@ endif ()
       "#define DTB_DEFAULT_ENTRIES 128\n"
       "#define DTB_SIZE 4096\n"
       "#define L2_ASSOCIATIVE 4\n")
-  elseif ("${TCORE}" STREQUAL "LOONGSONGENERIC")
+  elseif ("${TCORE}" STREQUAL "LA64_GENERIC")
     file(APPEND ${TARGET_CONF_TEMP}
       "#define DTB_DEFAULT_ENTRIES 64\n")
       set(SGEMM_UNROLL_M 2)
@@ -1364,7 +1364,7 @@ endif ()
       set(CGEMM3M_UNROLL_N 8)
       set(ZGEMM3M_UNROLL_M 2)
       set(ZGEMM3M_UNROLL_N 8)
-  elseif ("${TCORE}" STREQUAL "LOONGSON2K1000")
+  elseif ("${TCORE}" STREQUAL "LA264")
     file(APPEND ${TARGET_CONF_TEMP}
       "#define DTB_DEFAULT_ENTRIES 64\n")
       set(HAVE_LSX  1)
@@ -1380,7 +1380,7 @@ endif ()
       set(CGEMM3M_UNROLL_N 8)
       set(ZGEMM3M_UNROLL_M 8)
       set(ZGEMM3M_UNROLL_N 4)
-  elseif ("${TCORE}" STREQUAL "LOONGSON3R5")
+  elseif ("${TCORE}" STREQUAL "LA464")
     file(APPEND ${TARGET_CONF_TEMP}
       "#define DTB_DEFAULT_ENTRIES 64\n")
       set(HAVE_LASX 1)
