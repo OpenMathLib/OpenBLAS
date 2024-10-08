@@ -221,6 +221,26 @@ e.g.:
     HOSTCC=gcc HOSTFC=gfortran -j
   ```
 
+#### LOONGARCH64
+
+- **LA64_GENERIC**: Optimized Level-3, Level-2 and Level-1 BLAS with scalar instruction
+  ```sh
+  make HOSTCC=gcc TARGET=LA64_GENERIC CC=loongarch64-unknown-linux-gnu-gcc FC=loongarch64-unknown-linux-gnu-gfortran USE_SIMPLE_THREADED_LEVEL3=1
+  ```
+  The old-style TARGET=LOONGSONGENERIC is still supported
+
+- **LA264**: Optimized Level-3, Level-2 and Level-1 BLAS with LSX instruction
+  ```sh
+  make HOSTCC=gcc TARGET=LA264 CC=loongarch64-unknown-linux-gnu-gcc FC=loongarch64-unknown-linux-gnu-gfortran USE_SIMPLE_THREADED_LEVEL3=1
+  ```
+  The old-style TARGET=LOONGSON2K1000 is still supported
+
+- **LA464**: Optimized Level-3, Level-2 and Level-1 BLAS with LASX instruction
+  ```sh
+  make HOSTCC=gcc TARGET=LA464 CC=loongarch64-unknown-linux-gnu-gcc FC=loongarch64-unknown-linux-gnu-gfortran USE_SIMPLE_THREADED_LEVEL3=1
+  ```
+  The old-style TARGET=LOONGSON3R5 is still supported
+
 ### Support for multiple targets in a single library
 
 OpenBLAS can be built for multiple targets with runtime detection of the target cpu by specifiying `DYNAMIC_ARCH=1` in Makefile.rule, on the gmake command line or as `-DDYNAMIC_ARCH=TRUE` in cmake.
@@ -237,6 +257,8 @@ For **POWER**, the list encompasses POWER6, POWER8 and POWER9. POWER10 is additi
 on **ZARCH** it comprises Z13 and Z14 as well as generic zarch support.
 
 On **riscv64**, DYNAMIC_ARCH enables support for riscv64_zvl128b and riscv64_zvl256b in addition to generic riscv64 support.  A compiler that supports RVV 1.0 is required to build OpenBLAS for riscv64 when DYNAMIC_ARCH is enabled.
+
+On **LoongArch64**, it comprises LA264 and LA464 as well as generic LoongArch64 support.
 
 The `TARGET` option can be used in conjunction with `DYNAMIC_ARCH=1` to specify which cpu model should be assumed for all the
 common code in the library, usually you will want to set this to the oldest model you expect to encounter.
