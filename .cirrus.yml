@@ -95,10 +95,10 @@ task:
   compile_script:
   - brew install --cask android-ndk
   - export ANDROID_NDK_HOME="/System/Volumes/Data/opt/homebrew/share/android-ndk"
-  - ls /System/Volumes/Data/opt/homebrew/share/android-ndk
+  - ls /System/Volumes/Data/opt/homebrew/share/android-ndk/prebuilt
   - #find / -name "*android-ndk*"
-  - äfind /opt/homebrew -name "armv7a-linux-androideabi*-ranlib"
-  - export CC=/System/Volumes/Data/opt/homebrew/share/android-ndk/27b/AndroidNDK*.app/Contents/NDK/toolchains/llvm/prebuilt/darwin-x86_64/bin/armv7a-linux-androideabi23-clang
+  - #find /opt/homebrew -name "armv7a-linux-androideabi*-ranlib"
+  - export CC=/System/Volumes/Data/opt/homebrew/share/android-ndk/prebuilt/27b/AndroidNDK*.app/Contents/NDK/toolchains/llvm/prebuilt/darwin-x86_64/bin/armv7a-linux-androideabi23-clang
   - make TARGET=ARMV7 ARM_SOFTFP_ABI=1 NUM_THREADS=32 HOSTCC=clang NOFORTRAN=1 RANLIB="ls -l"
   always:
     config_artifacts:
