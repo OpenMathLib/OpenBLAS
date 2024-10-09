@@ -1,5 +1,5 @@
-macos_instance:
-  image: ghcr.io/cirruslabs/macos-monterey-xcode:latest
+#macos_instance:
+#  image: ghcr.io/cirruslabs/macos-monterey-xcode:latest
 
 #task:
 #  name: AppleM1/LLVM
@@ -98,7 +98,8 @@ task:
   - export #LDFLAGS="-L/opt/homebrew/opt/llvm/lib"
   - export #CPPFLAGS="-I/opt/homebrew/opt/llvm/include"
   - export ANDROID_NDK_HOME="/opt/homebrew/share/android-ndk"
-  - ls /opt/homebrew
+  - ls /Users/admin/android-sdk
+  - ls /Users/admin/android-ndk
   - ls -l /System/Volumes/Data/opt/homebrew/Caskroom/android-ndk
   - find /opt/homebrew -name "armv7a-linux-androideabi*-ranlib"
   - #export CC=/Applications/Xcode-13.4.1.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang
