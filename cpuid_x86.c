@@ -1689,6 +1689,7 @@ int get_cpuname(void){
 	    return CPUTYPE_BARCELONA;
         }
       case 10: // Zen3/4
+      case 11: // Zen5
 #ifndef NO_AVX512
           if(support_avx512_bf16())
             return CPUTYPE_COOPERLAKE;
@@ -2479,7 +2480,7 @@ int get_coretype(void){
 	  }
 	  break;
 	}
-      } else if (exfamily == 8 || exfamily == 10) {
+      } else if (exfamily == 8 || exfamily == 10 || exfamily == 11) {
 	switch (model) {
 	case 1:
 	  // AMD Ryzen
