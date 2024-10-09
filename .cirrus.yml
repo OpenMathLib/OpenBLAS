@@ -94,11 +94,11 @@ task:
   name: AppleM1/LLVM armv7-androidndk xbuild
   compile_script:
   - brew install --cask android-ndk
-  - export ANDROID_NDK_HOME="/Users/admin/android-sdk/ndk"
-  - ls /Users/admin/android-sdk/ndk/25.2.9519653
-  - find / -name "*android-ndk*"
-  - find /opt/homebrew -name "armv7a-linux-androideabi*-ranlib"
-  - export CC=/Users/admin/android-sdk/ndk/25.2.9519653/AndroidNDK*.app/Contents/NDK/toolchains/llvm/prebuilt/darwin-x86_64/bin/armv7a-linux-androideabi23-clang
+  - export ANDROID_NDK_HOME="/System/Volumes/Data/opt/homebrew/share/android-ndk"
+  - ls /System/Volumes/Data/opt/homebrew/share/android-ndk
+  - #find / -name "*android-ndk*"
+  - äfind /opt/homebrew -name "armv7a-linux-androideabi*-ranlib"
+  - export CC=/System/Volumes/Data/opt/homebrew/share/android-ndk/27b/AndroidNDK*.app/Contents/NDK/toolchains/llvm/prebuilt/darwin-x86_64/bin/armv7a-linux-androideabi23-clang
   - make TARGET=ARMV7 ARM_SOFTFP_ABI=1 NUM_THREADS=32 HOSTCC=clang NOFORTRAN=1 RANLIB="ls -l"
   always:
     config_artifacts:
