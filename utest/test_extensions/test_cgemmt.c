@@ -81,6 +81,28 @@ static void cgemmt_trusted(char api, enum CBLAS_ORDER order, char uplo, char tra
 
     ldc *= 2;
 
+#ifndef NO_CBLAS
+    if (order == CblasRowMajor) {
+    if (uplo == 'U' || uplo == CblasUpper)
+    {
+        for (i = 0; i < m; i++)
+            for (j = i * 2; j < m * 2; j+=2){
+                data_cgemmt.c_verify[i * ldc + j] =
+                    data_cgemmt.c_gemm[i * ldc + j];
+                data_cgemmt.c_verify[i * ldc + j + 1] =
+                    data_cgemmt.c_gemm[i * ldc + j + 1];
+            }
+    } else {
+        for (i = 0; i < m; i++)
+            for (j = 0; j <= i * 2; j+=2){
+                data_cgemmt.c_verify[i * ldc + j] =
+                    data_cgemmt.c_gemm[i * ldc + j];
+                data_cgemmt.c_verify[i * ldc + j + 1] =
+                    data_cgemmt.c_gemm[i * ldc + j + 1];
+            }
+    }
+    } else 
+#endif
     if (uplo == 'L' || uplo == CblasLower)
     {
         for (i = 0; i < m; i++)
