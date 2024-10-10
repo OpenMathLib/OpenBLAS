@@ -94,7 +94,7 @@ task:
   name: AppleM1/LLVM armv7-androidndk xbuild
   compile_script:
   - brew install --cask android-ndk
-  - export ANDROID_NDK_HOME="/opt/homebrew/share/android-ndk""
+  - export ANDROID_NDK_HOME="/opt/homebrew/share/android-ndk"
   - export CC=/opt/homebrew/share/android-ndk/toolchains/llvm/prebuilt/darwin-x86_64/bin/armv7a-linux-androideabi23-clang
   - make TARGET=ARMV7 ARM_SOFTFP_ABI=1 NUM_THREADS=32 HOSTCC=clang NOFORTRAN=1 RANLIB="ls -l"
   always:
