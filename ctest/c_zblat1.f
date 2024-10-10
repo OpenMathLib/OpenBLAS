@@ -38,9 +38,12 @@
             CALL CHECK1(SFAC)
          END IF
 *        -- Print
-         IF (PASS) WRITE (NOUT,99998)
+         IF (PASS) THEN
+            WRITE (NOUT,99998)
+         ELSE
+            CALL ABORT
+        END IF
    20 CONTINUE
-      STOP
 *
 99999 FORMAT (' Complex CBLAS Test Program Results',/1X)
 99998 FORMAT ('                                    ----- PASS -----')
@@ -228,7 +231,7 @@
                CALL ITEST1(IZAMAXTEST(N,CX,INCX),ITRUE3(NP1))
             ELSE
                WRITE (NOUT,*) ' Shouldn''t be here in CHECK1'
-               STOP
+               CALL ABORT
             END IF
 *
    40    CONTINUE
@@ -512,7 +515,7 @@
                CALL CTEST(LENY,CY,CT10Y(1,KN,KI),CSIZE3,1.0D0)
             ELSE
                WRITE (NOUT,*) ' Shouldn''t be here in CHECK2'
-               STOP
+               CALL ABORT
             END IF
 *
    40    CONTINUE
