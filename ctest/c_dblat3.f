@@ -10,7 +10,7 @@
 *  'DBLAT3.SNAP'     NAME OF SNAPSHOT OUTPUT FILE
 *  -1                UNIT NUMBER OF SNAPSHOT FILE (NOT USED IF .LT. 0)
 *  F        LOGICAL FLAG, T TO REWIND SNAPSHOT FILE AFTER EACH RECORD.
-*  F        LOGICAL FLAG, T TO STOP ON FAILURES.
+*  F        LOGICAL FLAG, T TO CALL ABORT ON FAILURES.
 *  T        LOGICAL FLAG, T TO TEST ERROR EXITS.
 *  2        0 TO TEST COLUMN-MAJOR, 1 TO TEST ROW-MAJOR, 2 TO TEST BOTH
 *  16.0     THRESHOLD VALUE OF TEST RATIO
@@ -189,7 +189,7 @@
      $      GO TO 50
    40 CONTINUE
       WRITE( NOUT, FMT = 9990 )SNAMET
-      STOP
+      CALL ABORT
    50 LTEST( I ) = LTESTT
       GO TO 30
 *
@@ -232,7 +232,7 @@
       SAME = LDE( CC, CT, N )
       IF( .NOT.SAME.OR.ERR.NE.ZERO )THEN
          WRITE( NOUT, FMT = 9989 )TRANSA, TRANSB, SAME, ERR
-         STOP
+         CALL ABORT
       END IF
       TRANSB = 'T'
       CALL DMMCH( TRANSA, TRANSB, N, 1, N, ONE, AB, NMAX,
@@ -241,7 +241,7 @@
       SAME = LDE( CC, CT, N )
       IF( .NOT.SAME.OR.ERR.NE.ZERO )THEN
          WRITE( NOUT, FMT = 9989 )TRANSA, TRANSB, SAME, ERR
-         STOP
+         CALL ABORT
       END IF
       DO 120 J = 1, N
          AB( J, NMAX + 1 ) = N - J + 1
@@ -259,7 +259,7 @@
       SAME = LDE( CC, CT, N )
       IF( .NOT.SAME.OR.ERR.NE.ZERO )THEN
          WRITE( NOUT, FMT = 9989 )TRANSA, TRANSB, SAME, ERR
-         STOP
+         CALL ABORT
       END IF
       TRANSB = 'T'
       CALL DMMCH( TRANSA, TRANSB, N, 1, N, ONE, AB, NMAX,
@@ -268,7 +268,7 @@
       SAME = LDE( CC, CT, N )
       IF( .NOT.SAME.OR.ERR.NE.ZERO )THEN
          WRITE( NOUT, FMT = 9989 )TRANSA, TRANSB, SAME, ERR
-         STOP
+         CALL ABORT
       END IF
 *
 *     Test each subroutine in turn.
@@ -379,7 +379,9 @@
       IF( TRACE )
      $   CLOSE ( NTRA )
       CLOSE ( NOUT )
-      STOP
+      IF( FATAL ) THEN
+         CALL ABORT
+      END IF
 *
 10002 FORMAT( ' COLUMN-MAJOR AND ROW-MAJOR DATA LAYOUTS ARE TESTED' )
 10001 FORMAT( ' ROW-MAJOR DATA LAYOUT IS TESTED' )

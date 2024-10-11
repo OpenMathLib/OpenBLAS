@@ -105,7 +105,7 @@
 *
       READ( NIN, FMT = * )SUMMRY
       READ( NIN, FMT = * )NOUT
-      OPEN( NOUT, FILE = SUMMRY, STATUS = 'NEW' )
+      OPEN( NOUT, FILE = SUMMRY, STATUS = 'REPLACE' )
       NOUTC = NOUT
 *
 *     Read name and unit number for snapshot output file and open file.
@@ -114,7 +114,7 @@
       READ( NIN, FMT = * )NTRA
       TRACE = NTRA.GE.0
       IF( TRACE )THEN
-         OPEN( NTRA, FILE = SNAPS, STATUS = 'NEW' )
+         OPEN( NTRA, FILE = SNAPS, STATUS = 'REPLACE' )
       END IF
 *     Read the flag that directs rewinding of the snapshot file.
       READ( NIN, FMT = * )REWI
