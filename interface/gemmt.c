@@ -319,8 +319,8 @@ void CNAME(enum CBLAS_ORDER order, enum CBLAS_UPLO Uplo,
 		lda = LDB;
 		ldb = LDA;
 
-		if (Uplo == CblasUpper) uplo = 0;
-		if (Uplo == CblasLower) uplo = 1;
+		if (Uplo == CblasUpper) uplo = 1;
+		if (Uplo == CblasLower) uplo = 0;
 
 		if (TransB == CblasNoTrans)
 			transa = 0;
