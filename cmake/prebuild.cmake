@@ -167,7 +167,7 @@ if (DEFINED CORE AND CMAKE_CROSSCOMPILING AND NOT (${HOST_OS} STREQUAL "WINDOWSS
       set(HAVE_SSE2 1)
       set(HAVE_SSE3 1)
       set(HAVE_SSSE3 1)
-      ifeq (${BINARY},32)
+      if (NOT BINARY64)
       set(SGEMM_UNROLL_M 8)
       set(SGEMM_UNROLL_N 2)
       set(DGEMM_UNROLL_M 4)
