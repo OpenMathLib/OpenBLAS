@@ -3,16 +3,11 @@
 #include "common.h"
 
 #include <altivec.h>
+#include <inttypes.h>
 
 #define NBMAX 4096
 
 #define FORCEINLINE      inline __attribute__((always_inline))
-
-#ifdef __clang__
-#define uint16_t         unsigned short
-#define uint32_t         unsigned int
-#define uint64_t         unsigned long long
-#endif
 
 #ifdef _ARCH_PWR10
 #ifdef __has_builtin
