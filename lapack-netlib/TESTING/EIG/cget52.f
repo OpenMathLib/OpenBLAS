@@ -256,7 +256,7 @@
          END IF
          CALL CGEMV( TRANS, N, N, ACOEFF, A, LDA, E( 1, JVEC ), 1,
      $               CZERO, WORK( N*( JVEC-1 )+1 ), 1 )
-         CALL CGEMV( TRANS, N, N, -BCOEFF, B, LDA, E( 1, JVEC ), 1,
+         CALL CGEMV( TRANS, N, N, -BCOEFF, B, LDB, E( 1, JVEC ), 1,
      $               CONE, WORK( N*( JVEC-1 )+1 ), 1 )
    10 CONTINUE
 *
