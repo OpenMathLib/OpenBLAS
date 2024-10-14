@@ -293,7 +293,7 @@
                BCOEFR = SCALE*SALFR
                CALL DGEMV( TRANS, N, N, ACOEF, A, LDA, E( 1, JVEC ), 1,
      $                     ZERO, WORK( N*( JVEC-1 )+1 ), 1 )
-               CALL DGEMV( TRANS, N, N, -BCOEFR, B, LDA, E( 1, JVEC ),
+               CALL DGEMV( TRANS, N, N, -BCOEFR, B, LDB, E( 1, JVEC ),
      $                     1, ONE, WORK( N*( JVEC-1 )+1 ), 1 )
             ELSE
 *
@@ -323,16 +323,16 @@
 *
                CALL DGEMV( TRANS, N, N, ACOEF, A, LDA, E( 1, JVEC ), 1,
      $                     ZERO, WORK( N*( JVEC-1 )+1 ), 1 )
-               CALL DGEMV( TRANS, N, N, -BCOEFR, B, LDA, E( 1, JVEC ),
+               CALL DGEMV( TRANS, N, N, -BCOEFR, B, LDB, E( 1, JVEC ),
      $                     1, ONE, WORK( N*( JVEC-1 )+1 ), 1 )
-               CALL DGEMV( TRANS, N, N, BCOEFI, B, LDA, E( 1, JVEC+1 ),
+               CALL DGEMV( TRANS, N, N, BCOEFI, B, LDB, E( 1, JVEC+1 ),
      $                     1, ONE, WORK( N*( JVEC-1 )+1 ), 1 )
 *
                CALL DGEMV( TRANS, N, N, ACOEF, A, LDA, E( 1, JVEC+1 ),
      $                     1, ZERO, WORK( N*JVEC+1 ), 1 )
-               CALL DGEMV( TRANS, N, N, -BCOEFI, B, LDA, E( 1, JVEC ),
+               CALL DGEMV( TRANS, N, N, -BCOEFI, B, LDB, E( 1, JVEC ),
      $                     1, ONE, WORK( N*JVEC+1 ), 1 )
-               CALL DGEMV( TRANS, N, N, -BCOEFR, B, LDA, E( 1, JVEC+1 ),
+               CALL DGEMV( TRANS, N, N, -BCOEFR, B, LDB, E( 1, JVEC+1 ),
      $                     1, ONE, WORK( N*JVEC+1 ), 1 )
             END IF
          END IF
