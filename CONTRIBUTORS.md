@@ -228,5 +228,5 @@ In chronological order:
   * [2024-01-16] Add basic support for the CSKY architecture
 
 * Aniket P. Garade <https://github.com/garadeaniket> , Sushil Pratap Singh <https://github.com/SushilPratap04> , Juliya 
-  James
-  * [2024-10-15] Optimized scal , srot and swap Level-1 BLAS routines using ARM SVE
+  James <https://github.com/Juliya32>
+  * [2024-10-15] Optimized scal , rot and swap Level-1 BLAS routines using ARM SVE
