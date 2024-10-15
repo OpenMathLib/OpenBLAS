@@ -229,4 +229,4 @@ In chronological order:
 
 * Aniket P. Garade <https://github.com/garadeaniket> , Sushil Pratap Singh <https://github.com/SushilPratap04> , Juliya 
   James
-  * [2024-10-4] Optimized  gemv , scal , srot and swap BLAS routines using ARM SVE
+  * [2024-10-15] Optimized scal , srot and swap Level-1 BLAS routines using ARM SVE
