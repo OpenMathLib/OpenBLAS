@@ -11,6 +11,9 @@ if (CMAKE_Fortran_COMPILER_ID STREQUAL GNU)
 endif()
 
 if(WIN32)
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -O0")
+set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS} -O0")
+
 FILE(WRITE ${CMAKE_CURRENT_BINARY_DIR}/test_cblas_helper.ps1
 "$ErrorActionPreference = \"Stop\"\n"
 "Get-Content $args[1] | & $args[0]\n"
