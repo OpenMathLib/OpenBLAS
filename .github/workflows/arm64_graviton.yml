@@ -45,7 +45,7 @@ jobs:
         run: |
           if [ "$RUNNER_OS" == "Linux" ]; then
             sudo apt update
-            sudo apt-get install -y gfortran cmake ccache libtinfo5
+            sudo apt-get install -y gfortran cmake ccache libtinfo5 python-is-python3
           else
             echo "::error::$RUNNER_OS not supported"
             exit 1
@@ -127,6 +127,8 @@ jobs:
               echo "::endgroup::"
               echo "::group::Tests in 'utest' directory"
               make -C utest $MAKE_FLAGS FC="ccache ${{ matrix.fortran }}"
+              echo "::endgroup::"
+              make $MAKE_FLAGS FC="ccache ${{ matrix.fortran }}" lapack-test
               echo "::endgroup::"
               ;;
             "cmake")
