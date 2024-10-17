@@ -254,8 +254,10 @@ On **riscv64**, DYNAMIC_ARCH enables support for riscv64_zvl128b and riscv64_zvl
 
 On **LoongArch64**, it comprises LA264 and LA464 as well as generic LoongArch64 support.
 
-The `TARGET` option can be used in conjunction with `DYNAMIC_ARCH=1` to specify which cpu model should be assumed for all the
-common code in the library, usually you will want to set this to the oldest model you expect to encounter.
+The `TARGET` option can - and usually **should** - be used in conjunction with `DYNAMIC_ARCH=1` to specify which cpu model should be assumed for all the common code in the library, usually you will want to set this to the oldest model you expect to encounter.
+Failure to specify this may lead to advanced instructions being used by the compiler, just because the build host happens to support them. This is most likely to happen when aggressive optimization options are in effect, and the resulting library may then crash with an
+illegal instruction error on weaker hardware, before it even reaches the BLAS routines specifically included for that cpu.
+
 Please note that it is not possible to combine support for different architectures, so no combined 32 and 64 bit or x86_64 and arm64 in the same library.
 
 ### Supported OS
