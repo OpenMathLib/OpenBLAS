@@ -70,6 +70,7 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /*********************************************************************/
 
 #include "common.h"
+#include <stdbool.h>
 #if defined(OS_LINUX) || defined(OS_NETBSD) || defined(OS_DARWIN) || defined(OS_ANDROID) || defined(OS_SUNOS) || defined(OS_FREEBSD) || defined(OS_OPENBSD) || defined(OS_DRAGONFLY) || defined(OS_HAIKU)
 #include <dlfcn.h>
 #include <errno.h>
@@ -575,6 +576,25 @@ int blas_thread_init(void){
       if (thread_timeout_env > 30) thread_timeout_env = 30;
       thread_timeout = (1 << thread_timeout_env);
     }
+    /*
+     * Our threads should not deal with signals from the rest of the
+     * application - mask everything temporarily in this thread, so threads we
+     * launch will inherit that mask, and block all signal delivery. This
+     * should not fail, but make it best-effort.
+     */
+    sigset_t sigset_block_all, sigset_restore;
+    ret = sigfillset(&sigset_block_all);
+    bool needSigmaskRestore = false;
+    if (ret != 0) {
+      fprintf(STDERR, "OpenBLAS blas_thread_init: sigfillset failed to block signals: %s", strerror(ret));
+    } else {
+      ret = pthread_sigmask(SIG_BLOCK, &sigset_block_all, &sigset_restore);
+      if (ret != 0) {
+        fprintf(STDERR, "OpenBLAS blas_thread_init: failed to block signals: pthread_sigmask: %s", strerror(ret));
+      } else {
+        needSigmaskRestore = true;
+      }
+    }
 
     for(i = 0; i < blas_num_threads - 1; i++){
 
@@ -592,7 +612,7 @@ int blas_thread_init(void){
 		     &blas_thread_server, (void *)i);
 #endif
       if(ret!=0){
-	struct rlimit rlim;
+        struct rlimit rlim;
         const char *msg = strerror(ret);
         fprintf(STDERR, "OpenBLAS blas_thread_init: pthread_create failed for thread %ld of %d: %s\n", i+1,blas_num_threads,msg);
 	fprintf(STDERR, "OpenBLAS blas_thread_init: ensure that your address space and process count limits are big enough (ulimit -a)\n");
@@ -603,6 +623,11 @@ int blas_thread_init(void){
                   "%ld current, %ld max\n", (long)(rlim.rlim_cur), (long)(rlim.rlim_max));
         }
 #endif
+        if (needSigmaskRestore) {
+          // Attempt to restore sigmask if required, before raising SIGINT.
+          pthread_sigmask(SIG_SETMASK, &sigset_restore, NULL);
+          needSigmaskRestore = false;
+        }
         if(0 != raise(SIGINT)) {
           fprintf(STDERR, "OpenBLAS blas_thread_init: calling exit(3)\n");
           exit(EXIT_FAILURE);
@@ -616,6 +641,14 @@ int blas_thread_init(void){
 #endif
 
     blas_server_avail = 1;
+
+    if (needSigmaskRestore) {
+      // Attempt to restore sigmask if required, before raising SIGINT.
+      ret = pthread_sigmask(SIG_SETMASK, &sigset_restore, NULL);
+      if (ret != 0) {
+        fprintf(STDERR, "OpenBLAS blas_thread_init: failed to restore signal mask: pthread_signask: %s", strerror(ret));
+      }
+    }
   }
 
   UNLOCK_COMMAND(&server_lock);
