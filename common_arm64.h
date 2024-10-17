@@ -44,8 +44,6 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define RMB  __asm__ __volatile__ ("dmb  ishld" : : : "memory")
 #endif
 
-#define INLINE inline
-
 #if defined( F_INTERFACE_FLANG) || defined(F_INTERFACE_PGI)
 #define RETURN_BY_STACK
 #else
