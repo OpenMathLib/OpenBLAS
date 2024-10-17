@@ -103,6 +103,7 @@ goto :: slinpack.goto dlinpack.goto clinpack.goto zlinpack.goto \
        sgetri.goto dgetri.goto cgetri.goto zgetri.goto \
        spotrf.goto dpotrf.goto cpotrf.goto zpotrf.goto \
        ssymm.goto dsymm.goto csymm.goto zsymm.goto \
+       somatcopy.goto domatcopy.goto comatcopy.goto zomatcopy.goto \
        saxpby.goto daxpby.goto caxpby.goto zaxpby.goto $(GOTO_HALF_TARGETS)
 
 acml :: slinpack.acml dlinpack.acml clinpack.acml zlinpack.acml \
@@ -276,6 +277,7 @@ goto :: sgemm.goto dgemm.goto cgemm.goto zgemm.goto \
        samin.goto damin.goto camin.goto zamin.goto \
        smin.goto dmin.goto \
        saxpby.goto daxpby.goto caxpby.goto zaxpby.goto \
+       somatcopy.goto domatcopy.goto comatcopy.goto zomatcopy.goto \
        snrm2.goto dnrm2.goto scnrm2.goto dznrm2.goto $(GOTO_LAPACK_TARGETS) $(GOTO_HALF_TARGETS)
 
 acml :: slinpack.acml dlinpack.acml clinpack.acml zlinpack.acml \
@@ -2906,6 +2908,29 @@ dznrm2.goto : dznrm2.$(SUFFIX) ../$(LIBNAME)
 dznrm2.atlas : dznrm2.$(SUFFIX)
 	-$(CC) $(CFLAGS) -o $(@F) $^ $(LIBATLAS) $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB)
 
+###################################################################################################
+
+############################################ SOMATCOPY ############################################
+somatcopy.goto : somatcopy.$(SUFFIX) ../$(LIBNAME)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+
+###################################################################################################
+
+############################################ DOMATCOPY ############################################
+domatcopy.goto : domatcopy.$(SUFFIX) ../$(LIBNAME)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+
+###################################################################################################
+
+############################################ COMATCOPY ############################################
+comatcopy.goto : comatcopy.$(SUFFIX) ../$(LIBNAME)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
+
+###################################################################################################
+
+############################################ ZOMATCOPY ############################################
+zomatcopy.goto : zomatcopy.$(SUFFIX) ../$(LIBNAME)
+	$(CC) $(CFLAGS) -o $(@F) $^ $(CEXTRALIB) $(EXTRALIB) $(FEXTRALIB) -lm
 
 ###################################################################################################
 
@@ -3433,6 +3458,18 @@ scnrm2.$(SUFFIX) : nrm2.c
 	$(CC) $(CFLAGS) -c -DCOMPLEX -UDOUBLE -o $(@F) $^
 
 dznrm2.$(SUFFIX) : nrm2.c
+	$(CC) $(CFLAGS) -c -DCOMPLEX -DDOUBLE -o $(@F) $^
+
+somatcopy.$(SUFFIX) : omatcopy.c
+	$(CC) $(CFLAGS) -c -UCOMPLEX -UDOUBLE -o $(@F) $^
+
+domatcopy.$(SUFFIX) : omatcopy.c
+	$(CC) $(CFLAGS) -c -UCOMPLEX -DDOUBLE -o $(@F) $^
+
+comatcopy.$(SUFFIX) : omatcopy.c
+	$(CC) $(CFLAGS) -c -DCOMPLEX -UDOUBLE -o $(@F) $^
+
+zomatcopy.$(SUFFIX) : omatcopy.c
 	$(CC) $(CFLAGS) -c -DCOMPLEX -DDOUBLE -o $(@F) $^
 
 
