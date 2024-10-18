@@ -430,6 +430,7 @@ void get_cpuconfig(void)
                 printf("#define L2_ASSOCIATIVE 8\n");
                 printf("#define DTB_DEFAULT_ENTRIES 48\n");
                 printf("#define DTB_SIZE 4096\n");
+		printf("#define HAVE_SVE 1\n");
                 break;
       case CPU_NEOVERSEV2:
                 printf("#define ARMV9\n");
