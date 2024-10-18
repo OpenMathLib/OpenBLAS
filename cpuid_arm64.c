@@ -401,6 +401,7 @@ void get_cpuconfig(void)
 		break;
 
 	    case CPU_NEOVERSEV1:
+		printf("#define HAVE_SVE 1\n");
 	    case CPU_CORTEXA76:
                 printf("#define %s\n", cpuname[d]);
                 printf("#define L1_CODE_SIZE 65536\n");
@@ -429,9 +430,11 @@ void get_cpuconfig(void)
                 printf("#define L2_ASSOCIATIVE 8\n");
                 printf("#define DTB_DEFAULT_ENTRIES 48\n");
                 printf("#define DTB_SIZE 4096\n");
+		printf("#define HAVE_SVE 1\n");
                 break;
       case CPU_NEOVERSEV2:
                 printf("#define ARMV9\n");
+	        printf("#define HAVE_SVE 1\n");
                 printf("#define %s\n", cpuname[d]);
                 printf("#define L1_CODE_SIZE 65536\n");
                 printf("#define L1_CODE_LINESIZE 64\n");
@@ -452,6 +455,7 @@ void get_cpuconfig(void)
 	    case CPU_CORTEXX1:
 	    case CPU_CORTEXX2:
 		printf("#define ARMV9\n");
+		printf("#define HAVE_SVE 1\n");
                 printf("#define %s\n", cpuname[d]);
                 printf("#define L1_CODE_SIZE 65536\n");
                 printf("#define L1_CODE_LINESIZE 64\n");
@@ -568,6 +572,7 @@ void get_cpuconfig(void)
 		break;
 	    case CPU_A64FX:
 		printf("#define A64FX\n");
+		printf("#define HAVE_SVE 1\n");
     		printf("#define L1_CODE_SIZE 65535\n");
     		printf("#define L1_DATA_SIZE 65535\n");
     		printf("#define L1_DATA_LINESIZE 256\n");
