@@ -172,4 +172,9 @@ DGEMM_SMALL_K_TN = dgemm_small_kernel_tn_lasx.S
 DGEMM_SMALL_K_B0_TN = dgemm_small_kernel_tn_lasx.S
 DGEMM_SMALL_K_TT = dgemm_small_kernel_tt_lasx.S
 DGEMM_SMALL_K_B0_TT = dgemm_small_kernel_tt_lasx.S
+
+SOMATCOPY_RT = somatcopy_rt_lasx.c
+SOMATCOPY_RN = somatcopy_rn_lasx.c
+SOMATCOPY_CT = somatcopy_ct_lasx.c
+SOMATCOPY_CN = somatcopy_cn_lasx.c
 endif
