@@ -28,7 +28,12 @@
 #define USE_VECTOR_PAIRS
 #endif
 
+#ifdef _AIX
+#include<stdbool.h>
+typedef __vector unsigned short vec_bf16;
+#else
 typedef __vector IFLOAT        vec_bf16;
+#endif
 typedef __vector FLOAT         vec_f32;
 typedef __vector unsigned char vec_uc8;
 
