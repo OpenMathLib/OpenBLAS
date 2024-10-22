@@ -124,6 +124,22 @@ task:
   compile_script:
   - make USE_OPENMP=1
 
+task:
+  name: NeoverseN1-NVHPC
+  arm_container:
+    image: node:latest
+    cpu: 1
+  nvcompiler_cache:
+    folder: /opt/nvidia
+    populate_script:
+    - wget https://developer.download.nvidia.com/hpc-sdk/23.7/nvhpc_2023_237_Linux_aarch64_cuda_12.2.tar.gz
+    - tar xpzf nvhpc_2023_237_Linux_aarch64_cuda_12.2.tar.gz
+    - export NVHPC_SILENT=true
+    - export NVHPC_INSTALL_DIR=/opt/nvidia
+    - nvhpc_2023_237_Linux_aarch64_cuda_12.2/install
+  compile_script:
+  - make CC=/opt/nvidia/hpc_sdk/Linux_aarch64/23.7/compilers/bin/nvc FC=/opt/nvidia/hpc_sdk/Linux_aarch64/23.7/compilers/bin/nvfortran
+
 FreeBSD_task:
   name: FreeBSD-gcc12
   freebsd_instance:
