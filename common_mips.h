@@ -37,8 +37,6 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define WMB __sync_synchronize()
 #define RMB __sync_synchronize()
 
-#define INLINE inline
-
 #define RETURN_BY_COMPLEX
 
 #ifndef ASSEMBLER
