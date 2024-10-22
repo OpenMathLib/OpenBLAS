@@ -3671,8 +3671,10 @@ Until then, just keep it different than DGEMM_DEFAULT_UNROLL_N to keep copy rout
 
 #if defined(XDOUBLE) || defined(DOUBLE)
 #define SWITCH_RATIO            8
+#define GEMM_PREFERED_SIZE      4
 #else
 #define SWITCH_RATIO            16
+#define GEMM_PREFERED_SIZE      8
 #endif
 
 #define SGEMM_DEFAULT_UNROLL_M  4 // Actually 1VL (8) but kept seperate to keep copies seperate
@@ -3689,13 +3691,13 @@ Until then, just keep it different than DGEMM_DEFAULT_UNROLL_N to keep copy rout
 #define ZGEMM_DEFAULT_UNROLL_N  4
 #define ZGEMM_DEFAULT_UNROLL_MN  16
 
-#define SGEMM_DEFAULT_P 128
-#define DGEMM_DEFAULT_P 160
+#define SGEMM_DEFAULT_P 240
+#define DGEMM_DEFAULT_P 240
 #define CGEMM_DEFAULT_P 128
 #define ZGEMM_DEFAULT_P 128
 
-#define SGEMM_DEFAULT_Q 352
-#define DGEMM_DEFAULT_Q 128
+#define SGEMM_DEFAULT_Q 640
+#define DGEMM_DEFAULT_Q 320
 #define CGEMM_DEFAULT_Q 224
 #define ZGEMM_DEFAULT_Q 112
 
@@ -3705,6 +3707,14 @@ Until then, just keep it different than DGEMM_DEFAULT_UNROLL_N to keep copy rout
 #define ZGEMM_DEFAULT_R 4096
 
 #else /* Other/undetected ARMv8 cores */
+
+#if defined(XDOUBLE) || defined(DOUBLE)
+#define SWITCH_RATIO            8
+#define GEMM_PREFERED_SIZE      4
+#else
+#define SWITCH_RATIO            16
+#define GEMM_PREFERED_SIZE      8
+#endif
 
 #define SGEMM_DEFAULT_UNROLL_M  16
 #define SGEMM_DEFAULT_UNROLL_N  4
@@ -3718,13 +3728,13 @@ Until then, just keep it different than DGEMM_DEFAULT_UNROLL_N to keep copy rout
 #define ZGEMM_DEFAULT_UNROLL_M  4
 #define ZGEMM_DEFAULT_UNROLL_N  4
 
-#define SGEMM_DEFAULT_P	128
-#define DGEMM_DEFAULT_P	160
+#define SGEMM_DEFAULT_P	240
+#define DGEMM_DEFAULT_P	240
 #define CGEMM_DEFAULT_P 128
 #define ZGEMM_DEFAULT_P 128
 
-#define SGEMM_DEFAULT_Q 352
-#define DGEMM_DEFAULT_Q 128
+#define SGEMM_DEFAULT_Q 640
+#define DGEMM_DEFAULT_Q 320
 #define CGEMM_DEFAULT_Q 224
 #define ZGEMM_DEFAULT_Q 112
 
