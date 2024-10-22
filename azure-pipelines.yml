@@ -58,6 +58,32 @@ jobs:
       docker run --privileged intel_sde
     displayName: 'Run AVX512 SkylakeX docker build / test'
 
+- job: Intel_SDE_sr
+  pool:
+    vmImage: 'ubuntu-latest'
+  steps:
+  - script: |
+      # at the time of writing the available Azure Ubuntu vm image
+      # does not support AVX512VL, so use more recent LTS version
+      echo "FROM ubuntu:bionic
+      COPY . /tmp/openblas
+      RUN apt-get -y update && apt-get -y install \\
+          cmake \\
+          gfortran \\
+          make \\
+          python \\
+          wget
+      RUN mkdir /tmp/SDE && cd /tmp/SDE && \\
+          mkdir sde-external-9.21.1-2023-04-24-lin && \\
+          wget --quiet -O sde-external-9.21.1-2023-04-24-lin.tar.xz https://downloadmirror.intel.com/777395/sde-external-9.21.1-2023-04-24-lin.tar.xz && \\
+          tar -xJvf sde-external-9.21.1-2023-04-24-lin.tar.xz -C /tmp/SDE/sde-external-9.21.1-2023-04-24-lin --strip-components=1
+      RUN cd /tmp/openblas && CC=gcc make QUIET_MAKE=1 DYNAMIC_ARCH=1 NUM_THREADS=32 BINARY=64
+      CMD cd /tmp/openblas && echo 0 > /proc/sys/kernel/yama/ptrace_scope && CC=gcc OPENBLAS_VERBOSE=2 /tmp/SDE/sde-external-9.21.1-2023-04-24-lin/sde64 -cpuid_in /tmp/SDE/sde-external-9.21.1-2023-04-24-lin/misc/cpuid/spr/cpuid.def -- make lapack_test DYNAMIC_ARCH=1 NUM_THREADS=32 BINARY=64" > Dockerfile
+      docker build -t intel_sde .
+      # we need a privileged docker run for sde process attachment
+      docker run --privileged intel_sde
+    displayName: 'Run SapphireRapids docker build / test'
+    
 - job: Windows_cl
   pool:
      vmImage: 'windows-latest'
