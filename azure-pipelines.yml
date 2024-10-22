@@ -283,6 +283,22 @@ jobs:
      /Applications/Xcode_14.2.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang --version
      make TARGET=ARMV8 DYNAMIC_ARCH=1 NUM_THREADS=32 HOSTCC=clang NOFORTRAN=1
 
+- job: OSX_xbuild_DYN_ARM64_cmake
+  pool:
+     vmImage: 'macOS-11'
+  variables:
+     CC: /Applications/Xcode_12.5.1.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang
+     CFLAGS: -O2 -Wno-macro-redefined -isysroot /Applications/Xcode_12.5.1.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk -arch arm64
+  steps:
+  - script: |
+     ls /Applications/Xcode_12.5.1.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs
+     /Applications/Xcode_12.5.1.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -arch arm64 --print-supported-cpus
+     /Applications/Xcode_11.7.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang --version
+     mkdir build
+     cd build
+     cmake -DTARGET=ARMV8 -DDYNAMIC_ARCH=1 -DCMAKE_SYSTEM_NAME=Linux -DCNAME_SYSTEM_VERSION=6.2 -DCMAKE_CROSSCOMPILING=1 -DNUM_THREADS=32 -DNOFORTRAN=1 ..
+     make
+
 - job: ALPINE_MUSL
   pool:
      vmImage: 'ubuntu-latest'
