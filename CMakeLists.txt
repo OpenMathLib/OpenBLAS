@@ -100,6 +100,41 @@ if(MSVC AND MSVC_STATIC_CRT)
   endforeach()
 endif()
 
+# Set default optimization level
+if (NOT MSVC)
+  # Check if user specified optimization level in COMMON_OPT flags.
+  string(REGEX MATCH "-O[0-9]|-Ofast|-Og|-Os" OPENBLAS_COMMON_OPT_OFLAGS
+         "${COMMON_OPT} ${CCOMMON_OPT} ${FCOMMON_OPT}")
+
+  string(TOUPPER "${CMAKE_BUILD_TYPE}" CMAKE_BUILD_TYPE)
+  if (NOT "${OPENBLAS_COMMON_OPT_OFLAGS}" STREQUAL "")
+    # Filter out optimization level from cmake's default flags.
+    # They would override the optimization level set in COMMON_OPTs.
+    set(CompilerLangs
+        C
+        CXX
+        Fortran
+        ASM
+        )
+    foreach(CompilerLang ${CompilerLangs})
+      string(REGEX REPLACE "-O[0-9]|-Ofast|-Og|-Os" ""
+             CMAKE_${CompilerLang}_FLAGS_${CMAKE_BUILD_TYPE}
+             "${CMAKE_${CompilerLang}_FLAGS_${CMAKE_BUILD_TYPE}}")
+    endforeach()
+  endif ()
+  # Prepend default optimization level to COMMON_OPTs.
+  # These flags might be overridden by cmake's default flags.
+  if ("${CMAKE_BUILD_TYPE}" STREQUAL "DEBUG")
+    set(COMMON_OPT "-Og ${COMMON_OPT}")
+    set(CCOMMON_OPT "-Og ${CCOMMON_OPT}")
+    set(FCOMMON_OPT "-Og ${FCOMMON_OPT}")
+  else ()
+    set(COMMON_OPT "-O2 ${COMMON_OPT}")
+    set(CCOMMON_OPT "-O2 ${CCOMMON_OPT}")
+    set(FCOMMON_OPT "-O2 ${FCOMMON_OPT}")
+  endif ()
+endif ()
+
 message(WARNING "CMake support is experimental. It does not yet support all build options and may not produce the same Makefiles that OpenBLAS ships with.")
 
 include("${PROJECT_SOURCE_DIR}/cmake/utils.cmake")
