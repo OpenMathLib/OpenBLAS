@@ -744,7 +744,7 @@ f"> */
 	    *, integer *, real *, integer *, real *, integer *);
     real smlnum;
     logical lquery;
-    extern /* Subroutine */ int strtrs_(char *, char *, char *, integer *, 
+    extern /* Subroutine */ void strtrs_(char *, char *, char *, integer *, 
 	    integer *, real *, integer *, real *, integer *, integer *);
     extern void sgemlqt_(char *, char *, integer *, 
 	    integer *, integer *, integer *, real *, integer *, real *, 

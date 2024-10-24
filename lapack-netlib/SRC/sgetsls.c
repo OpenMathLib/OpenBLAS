@@ -711,7 +711,7 @@ static integer c__0 = 0;
     integer wsizem, wsizeo;
     logical lquery;
     integer lw1, lw2;
-    extern /* Subroutine */ int strtrs_(char *, char *, char *, integer *, 
+    extern /* Subroutine */ void strtrs_(char *, char *, char *, integer *, 
 	    integer *, real *, integer *, real *, integer *, integer *);
     integer mnk, lwm, lwo;
 

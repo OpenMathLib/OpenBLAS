@@ -725,7 +725,7 @@ f"> */
 	    complex *, complex *, integer *, complex *, integer *, integer *);
     integer lwkopt;
     logical lquery;
-    extern /* Subroutine */ int ctrtrs_(char *, char *, char *, integer *, 
+    extern /* Subroutine */ void ctrtrs_(char *, char *, char *, integer *, 
 	    integer *, complex *, integer *, complex *, integer *, integer *);
 
 

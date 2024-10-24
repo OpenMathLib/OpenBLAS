@@ -473,7 +473,7 @@ f"> */
 	    integer *, integer *), sormrq_(char *, char *, 
 	    integer *, integer *, integer *, real *, integer *, real *, real *
 	    , integer *, real *, integer *, integer *);
-    extern int strtrs_(char *, char *, char *, integer *, integer *, real *, 
+    extern void strtrs_(char *, char *, char *, integer *, integer *, real *, 
 	    integer *, real *, integer *, integer *);
 
 

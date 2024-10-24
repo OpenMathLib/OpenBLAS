@@ -730,7 +730,7 @@ f"> */
 	    doublereal *, integer *, integer *);
     integer lwkopt;
     logical lquery;
-    extern /* Subroutine */ int dtrtrs_(char *, char *, char *, integer *, 
+    extern /* Subroutine */ void dtrtrs_(char *, char *, char *, integer *, 
 	    integer *, doublereal *, integer *, doublereal *, integer *, 
 	    integer *);
 

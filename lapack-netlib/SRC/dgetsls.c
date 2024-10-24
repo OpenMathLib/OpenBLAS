@@ -713,7 +713,7 @@ static integer c__0 = 0;
     doublereal bignum, smlnum;
     integer wsizem, wsizeo;
     logical lquery;
-    extern /* Subroutine */ int dtrtrs_(char *, char *, char *, integer *, 
+    extern /* Subroutine */ void dtrtrs_(char *, char *, char *, integer *, 
 	    integer *, doublereal *, integer *, doublereal *, integer *, 
 	    integer *);
     integer lw1, lw2, mnk, lwm, lwo;

@@ -716,7 +716,7 @@ static integer c__0 = 0;
     integer wsizem, wsizeo;
     logical lquery;
     integer lw1, lw2;
-    extern /* Subroutine */ int ztrtrs_(char *, char *, char *, integer *, 
+    extern /* Subroutine */ void ztrtrs_(char *, char *, char *, integer *, 
 	    integer *, doublecomplex *, integer *, doublecomplex *, integer *,
 	     integer *);
     integer mnk;
