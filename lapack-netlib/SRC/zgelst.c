@@ -752,7 +752,7 @@ f"> */
 	    doublecomplex *, integer *, doublecomplex *, integer *, 
 	    doublecomplex *, integer *);
     logical lquery;
-    extern /* Subroutine */ int ztrtrs_(char *, char *, char *, integer *, 
+    extern /* Subroutine */ void ztrtrs_(char *, char *, char *, integer *, 
 	    integer *, doublecomplex *, integer *, doublecomplex *, integer *,
 	     integer *);
     extern void zgemlqt_(char *, char *, 

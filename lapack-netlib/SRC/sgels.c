@@ -485,7 +485,7 @@ static integer c__0 = 0;
     extern /* Subroutine */ void sormqr_(char *, char *, integer *, integer *, 
 	    integer *, real *, integer *, real *, real *, integer *, real *, 
 	    integer *, integer *);
-    extern int strtrs_(char *, char *, 
+    extern void strtrs_(char *, char *, 
 	    char *, integer *, integer *, real *, integer *, real *, integer *
 	    , integer *);
 

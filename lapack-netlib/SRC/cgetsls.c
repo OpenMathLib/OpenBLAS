@@ -713,7 +713,7 @@ static integer c__0 = 0;
     real bignum, smlnum;
     integer wsizem, wsizeo;
     logical lquery;
-    extern /* Subroutine */ int ctrtrs_(char *, char *, char *, integer *, 
+    extern /* Subroutine */ void ctrtrs_(char *, char *, char *, integer *, 
 	    integer *, complex *, integer *, complex *, integer *, integer *);
     integer lw1, lw2, mnk;
     real dum[1];

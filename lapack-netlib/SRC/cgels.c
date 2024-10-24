@@ -739,7 +739,7 @@ static integer c__0 = 0;
 	    complex *, complex *, integer *, complex *, integer *, integer *);
     real smlnum;
     logical lquery;
-    extern /* Subroutine */ int ctrtrs_(char *, char *, char *, integer *, 
+    extern /* Subroutine */ void ctrtrs_(char *, char *, char *, integer *, 
 	    integer *, complex *, integer *, complex *, integer *, integer *);
 
 

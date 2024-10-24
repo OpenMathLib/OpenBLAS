@@ -747,7 +747,7 @@ f"> */
     integer mnnrhs;
     doublereal smlnum;
     logical lquery;
-    extern /* Subroutine */ int dtrtrs_(char *, char *, char *, integer *, 
+    extern /* Subroutine */ void dtrtrs_(char *, char *, char *, integer *, 
 	    integer *, doublereal *, integer *, doublereal *, integer *, 
 	    integer *);
     extern void dgemlqt_(char *, char *, 

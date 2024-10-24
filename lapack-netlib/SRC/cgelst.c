@@ -748,7 +748,7 @@ f"> */
     integer mnnrhs;
     real smlnum;
     logical lquery;
-    extern /* Subroutine */ int ctrtrs_(char *, char *, char *, integer *, 
+    extern /* Subroutine */ void ctrtrs_(char *, char *, char *, integer *, 
 	    integer *, complex *, integer *, complex *, integer *, integer *);
     extern void cgemlqt_(char *, char *, integer *, 
 	    integer *, integer *, integer *, complex *, integer *, complex *, 
