@@ -1,6 +1,6 @@
 /*********************************************************************/
 /* Copyright 2009, 2010 The University of Texas at Austin.           */
-/* Copyright 2023-2024 The OpenBLAS Project                          */
+/* Copyright 2023-2025 The OpenBLAS Project                          */
 /* All rights reserved.                                              */
 /*                                                                   */
 /* Redistribution and use in source and binary forms, with or        */
@@ -105,6 +105,11 @@ extern gotoblas_t  gotoblas_NEOVERSEV1;
 #else
 #define gotoblas_NEOVERSEV1 gotoblas_ARMV8
 #endif
+#ifdef DYN_NEOVERSEV2
+extern gotoblas_t  gotoblas_NEOVERSEV2;
+#else
+#define gotoblas_NEOVERSEV2 gotoblas_ARMV8
+#endif
 #ifdef DYN_NEOVERSEN2
 extern gotoblas_t gotoblas_NEOVERSEN2;
 #else
@@ -139,18 +144,20 @@ extern gotoblas_t  gotoblas_EMAG8180;
 extern gotoblas_t  gotoblas_NEOVERSEN1;
 #ifndef NO_SVE
 extern gotoblas_t  gotoblas_NEOVERSEV1;
+extern gotoblas_t  gotoblas_NEOVERSEV2; 
 extern gotoblas_t  gotoblas_NEOVERSEN2;
 extern gotoblas_t  gotoblas_ARMV8SVE;
 extern gotoblas_t  gotoblas_A64FX;
 #else
 #define gotoblas_NEOVERSEV1 gotoblas_ARMV8
+#define gotoblas_NEOVERSEV2 gotoblas_ARMV8 
 #define gotoblas_NEOVERSEN2 gotoblas_ARMV8
 #define gotoblas_ARMV8SVE   gotoblas_ARMV8
 #define gotoblas_A64FX      gotoblas_ARMV8
 #endif
 extern gotoblas_t  gotoblas_THUNDERX3T110;
 #endif
-#define gotoblas_NEOVERSEV2 gotoblas_NEOVERSEV1
+
 
 extern void openblas_warning(int verbose, const char * msg);
 #define FALLBACK_VERBOSE 1
