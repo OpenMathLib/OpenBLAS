@@ -394,6 +394,14 @@ $cross = 0 if (($os eq "Android") && ($hostos eq "Linux") && ($ENV{TERMUX_APP_PI
 
 $openmp = "" if $ENV{USE_OPENMP} != 1;
 
+$have_omp_pause_resource_all=0;
+if ($ENV{USE_OPENMP} == 1) {
+    if (system("$compiler_name $flags $openmp -o ctest3 ctest3.c") == 0) {
+        $have_omp_pause_resource_all=1;
+    }
+    unlink "ctest3.o", "ctest3", "ctest3.exe";
+}
+
 $linker_L = "";
 $linker_l = "";
 $linker_a = "";
@@ -472,6 +480,7 @@ print MAKEFILE "NO_AVX2=1\n" if $no_avx2 eq 1;
 print MAKEFILE "OLDGCC=1\n" if $oldgcc eq 1;
 print MAKEFILE "NO_LSX=1\n" if $no_lsx eq 1;
 print MAKEFILE "NO_LASX=1\n" if $no_lasx eq 1;
+print MAKEFILE "HAVE_OMP_PAUSE_RESOURCE_ALL=1\n" if $have_omp_pause_resource_all eq 1;
 
 $os           =~ tr/[a-z]/[A-Z]/;
 $architecture =~ tr/[a-z]/[A-Z]/;
@@ -487,6 +496,7 @@ print CONFFILE "#define HAVE_MSA\t1\n"  if $have_msa eq 1;
 print CONFFILE "#define HAVE_C11\t1\n" if $c11_atomics eq 1;
 print CONFFILE "#define NO_LSX\t1\n" if $no_lsx eq 1;
 print CONFFILE "#define NO_LASX\t1\n" if $no_lasx eq 1;
+print CONFFILE "#define HAVE_OMP_PAUSE_RESOURCE_ALL\t1\n" if $have_omp_pause_resource_all eq 1;
 
 
 if ($os eq "LINUX") {
