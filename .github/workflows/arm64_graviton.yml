@@ -20,13 +20,15 @@ permissions:
 jobs:
   build:
     if: "github.repository == 'OpenMathLib/OpenBLAS'"
-    runs-on: "cirun-aws-runner-graviton--${{ github.run_id }}"
 
     strategy:
       fail-fast: false
       matrix:
         fortran: [gfortran]
         build: [cmake, make]
+        os: ["cirun-aws-runner-graviton--${{ github.run_id }}", ubuntu-22.04-arm]
+    
+    runs-on: ${{ matrix.os }}
 
     steps:
       - name: Checkout repository
