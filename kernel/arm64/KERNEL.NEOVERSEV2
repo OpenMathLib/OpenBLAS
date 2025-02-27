@@ -1,1 +1,19 @@
 include $(KERNELDIR)/KERNEL.ARMV8SVE
+
+SGEMM_SMALL_K_NT = sgemm_small_kernel_nt_asimd.c
+SGEMM_SMALL_K_B0_NT = sgemm_small_kernel_nt_asimd.c
+SGEMM_SMALL_K_NN = sgemm_small_kernel_nn_asimd.c
+SGEMM_SMALL_K_B0_NN = sgemm_small_kernel_nn_asimd.c
+SGEMM_SMALL_K_TT = sgemm_small_kernel_tt_asimd.c
+SGEMM_SMALL_K_B0_TT = sgemm_small_kernel_tt_asimd.c
+SGEMM_SMALL_K_TN = sgemm_small_kernel_tn_asimd.c
+SGEMM_SMALL_K_B0_TN = sgemm_small_kernel_tn_asimd.c
+
+DGEMM_SMALL_K_NT = dgemm_small_kernel_nt_asimd.c
+DGEMM_SMALL_K_B0_NT = dgemm_small_kernel_nt_asimd.c
+DGEMM_SMALL_K_NN = dgemm_small_kernel_nn_asimd.c
+DGEMM_SMALL_K_B0_NN = dgemm_small_kernel_nn_asimd.c
+DGEMM_SMALL_K_TT = dgemm_small_kernel_tt_asimd.c
+DGEMM_SMALL_K_B0_TT = dgemm_small_kernel_tt_asimd.c
+DGEMM_SMALL_K_TN = dgemm_small_kernel_tn_asimd.c
+DGEMM_SMALL_K_B0_TN = dgemm_small_kernel_tn_asimd.c

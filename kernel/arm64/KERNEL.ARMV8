@@ -143,6 +143,15 @@ endif
 SGEMMONCOPYOBJ =  sgemm_oncopy$(TSUFFIX).$(SUFFIX)
 SGEMMOTCOPYOBJ =  sgemm_otcopy$(TSUFFIX).$(SUFFIX)
 
+SGEMM_SMALL_K_NT = sgemm_small_kernel_nt_asimd.c
+SGEMM_SMALL_K_B0_NT = sgemm_small_kernel_nt_asimd.c
+SGEMM_SMALL_K_NN = sgemm_small_kernel_nn_asimd.c
+SGEMM_SMALL_K_B0_NN = sgemm_small_kernel_nn_asimd.c
+SGEMM_SMALL_K_TT = sgemm_small_kernel_tt_asimd.c
+SGEMM_SMALL_K_B0_TT = sgemm_small_kernel_tt_asimd.c
+SGEMM_SMALL_K_TN = sgemm_small_kernel_tn_asimd.c
+SGEMM_SMALL_K_B0_TN = sgemm_small_kernel_tn_asimd.c
+
 DGEMMKERNEL    =  dgemm_kernel_$(DGEMM_UNROLL_M)x$(DGEMM_UNROLL_N).S
 DTRMMKERNEL    =  dtrmm_kernel_$(DGEMM_UNROLL_M)x$(DGEMM_UNROLL_N).S
 
@@ -170,6 +179,15 @@ endif
 
 DGEMMONCOPYOBJ =  dgemm_oncopy$(TSUFFIX).$(SUFFIX)
 DGEMMOTCOPYOBJ =  dgemm_otcopy$(TSUFFIX).$(SUFFIX)
+
+DGEMM_SMALL_K_NT = dgemm_small_kernel_nt_asimd.c
+DGEMM_SMALL_K_B0_NT = dgemm_small_kernel_nt_asimd.c
+DGEMM_SMALL_K_NN = dgemm_small_kernel_nn_asimd.c
+DGEMM_SMALL_K_B0_NN = dgemm_small_kernel_nn_asimd.c
+DGEMM_SMALL_K_TT = dgemm_small_kernel_tt_asimd.c
+DGEMM_SMALL_K_B0_TT = dgemm_small_kernel_tt_asimd.c
+DGEMM_SMALL_K_TN = dgemm_small_kernel_tn_asimd.c
+DGEMM_SMALL_K_B0_TN = dgemm_small_kernel_tn_asimd.c
 
 CGEMMKERNEL    =  cgemm_kernel_$(CGEMM_UNROLL_M)x$(CGEMM_UNROLL_N).S
 CTRMMKERNEL    =  ctrmm_kernel_$(CGEMM_UNROLL_M)x$(CGEMM_UNROLL_N).S

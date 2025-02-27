@@ -132,14 +132,14 @@ SGEMMONCOPYOBJ =  sgemm_oncopy$(TSUFFIX).$(SUFFIX)
 SGEMMOTCOPYOBJ =  sgemm_otcopy$(TSUFFIX).$(SUFFIX)
 
 SGEMM_SMALL_M_PERMIT = gemm_small_kernel_permit_sve.c
-SGEMM_SMALL_K_NT = sgemm_small_kernel_nt_sve.c
-SGEMM_SMALL_K_B0_NT = sgemm_small_kernel_nt_sve.c
-SGEMM_SMALL_K_NN = sgemm_small_kernel_nn_sve.c
-SGEMM_SMALL_K_B0_NN = sgemm_small_kernel_nn_sve.c
-SGEMM_SMALL_K_TT = sgemm_small_kernel_tt_sve.c
-SGEMM_SMALL_K_B0_TT = sgemm_small_kernel_tt_sve.c
-SGEMM_SMALL_K_TN = sgemm_small_kernel_tn_sve.c
-SGEMM_SMALL_K_B0_TN = sgemm_small_kernel_tn_sve.c
+# SGEMM_SMALL_K_NT = sgemm_small_kernel_nt_sve.c
+# SGEMM_SMALL_K_B0_NT = sgemm_small_kernel_nt_sve.c
+# SGEMM_SMALL_K_NN = sgemm_small_kernel_nn_sve.c
+# SGEMM_SMALL_K_B0_NN = sgemm_small_kernel_nn_sve.c
+# SGEMM_SMALL_K_TT = sgemm_small_kernel_tt_sve.c
+# SGEMM_SMALL_K_B0_TT = sgemm_small_kernel_tt_sve.c
+# SGEMM_SMALL_K_TN = sgemm_small_kernel_tn_sve.c
+# SGEMM_SMALL_K_B0_TN = sgemm_small_kernel_tn_sve.c
 
 STRMMUNCOPY_M  =  trmm_uncopy_sve_v1.c
 STRMMLNCOPY_M  =  trmm_lncopy_sve_v1.c
@@ -163,14 +163,14 @@ DGEMMONCOPYOBJ =  dgemm_oncopy$(TSUFFIX).$(SUFFIX)
 DGEMMOTCOPYOBJ =  dgemm_otcopy$(TSUFFIX).$(SUFFIX)
 
 DGEMM_SMALL_M_PERMIT = gemm_small_kernel_permit_sve.c
-DGEMM_SMALL_K_NT = dgemm_small_kernel_nt_sve.c
-DGEMM_SMALL_K_B0_NT = dgemm_small_kernel_nt_sve.c
-DGEMM_SMALL_K_NN = dgemm_small_kernel_nn_sve.c
-DGEMM_SMALL_K_B0_NN = dgemm_small_kernel_nn_sve.c
-DGEMM_SMALL_K_TT = dgemm_small_kernel_tt_sve.c
-DGEMM_SMALL_K_B0_TT = dgemm_small_kernel_tt_sve.c
-DGEMM_SMALL_K_TN = dgemm_small_kernel_tn_sve.c
-DGEMM_SMALL_K_B0_TN = dgemm_small_kernel_tn_sve.c
+# DGEMM_SMALL_K_NT = dgemm_small_kernel_nt_sve.c
+# DGEMM_SMALL_K_B0_NT = dgemm_small_kernel_nt_sve.c
+# DGEMM_SMALL_K_NN = dgemm_small_kernel_nn_sve.c
+# DGEMM_SMALL_K_B0_NN = dgemm_small_kernel_nn_sve.c
+# DGEMM_SMALL_K_TT = dgemm_small_kernel_tt_sve.c
+# DGEMM_SMALL_K_B0_TT = dgemm_small_kernel_tt_sve.c
+# DGEMM_SMALL_K_TN = dgemm_small_kernel_tn_sve.c
+# DGEMM_SMALL_K_B0_TN = dgemm_small_kernel_tn_sve.c
 
 DTRMMUNCOPY_M  =  trmm_uncopy_sve_v1.c
 DTRMMLNCOPY_M  =  trmm_lncopy_sve_v1.c
@@ -227,3 +227,21 @@ ZHEMMUTCOPY_M    =  zhemm_utcopy_sve.c
 
 ZSYMMUCOPY_M    =  zsymm_ucopy_sve.c
 ZSYMMLCOPY_M    =  zsymm_lcopy_sve.c
+
+SGEMM_SMALL_K_NT = sgemm_small_kernel_nt_asimd.c
+SGEMM_SMALL_K_B0_NT = sgemm_small_kernel_nt_asimd.c
+SGEMM_SMALL_K_NN = sgemm_small_kernel_nn_asimd.c
+SGEMM_SMALL_K_B0_NN = sgemm_small_kernel_nn_asimd.c
+SGEMM_SMALL_K_TT = sgemm_small_kernel_tt_asimd.c
+SGEMM_SMALL_K_B0_TT = sgemm_small_kernel_tt_asimd.c
+SGEMM_SMALL_K_TN = sgemm_small_kernel_tn_asimd.c
+SGEMM_SMALL_K_B0_TN = sgemm_small_kernel_tn_asimd.c
+
+DGEMM_SMALL_K_NT = dgemm_small_kernel_nt_asimd.c
+DGEMM_SMALL_K_B0_NT = dgemm_small_kernel_nt_asimd.c
+DGEMM_SMALL_K_NN = dgemm_small_kernel_nn_asimd.c
+DGEMM_SMALL_K_B0_NN = dgemm_small_kernel_nn_asimd.c
+DGEMM_SMALL_K_TT = dgemm_small_kernel_tt_asimd.c
+DGEMM_SMALL_K_B0_TT = dgemm_small_kernel_tt_asimd.c
+DGEMM_SMALL_K_TN = dgemm_small_kernel_tn_asimd.c
+DGEMM_SMALL_K_B0_TN = dgemm_small_kernel_tn_asimd.c
