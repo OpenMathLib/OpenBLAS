@@ -1,5 +1,5 @@
 /***************************************************************************
-Copyright (c) 2020, The OpenBLAS Project
+Copyright (c) 2020,2025 The OpenBLAS Project
 All rights reserved.
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -202,6 +202,8 @@ main (int argc, char *argv[])
     return ret;
   }
 
+  for (beta = 0; beta < 3; beta += 1) {
+  for (alpha = 0; alpha < 3; alpha += 1) {
   for (l = 0; l < 2; l++) {  // l = 1 to test inc_x & inc_y not equal to one.
   for (x = 1; x <= loop; x++)
   {
@@ -230,7 +232,10 @@ main (int argc, char *argv[])
       B[j << l] = ((FLOAT) rand () / (FLOAT) RAND_MAX) + 0.5;
       sbstobf16_(&one, &B[j << l], &one, &btmp, &one);
       BB[j << l].v = btmp;
+      
+      CC[j << l] = C[j << l] = ((FLOAT) rand () / (FLOAT) RAND_MAX) + 0.5;
     }
+
     for (y = 0; y < 2; y++)
     {
       if (y == 0) {
@@ -246,12 +251,14 @@ main (int argc, char *argv[])
       SGEMV (&transA, &x, &x, &alpha, A, &x, B, &k, &beta, C, &k);
       SBGEMV (&transA, &x, &x, &alpha, (bfloat16*) AA, &x, (bfloat16*) BB, &k, &beta, CC, &k);
 
+      for (int i = 0; i < x; i ++) DD[i] *= beta;
+
       for (j = 0; j < x; j++)
         for (i = 0; i < x; i++)
           if (transA == 'N') {
-            DD[i] += float16to32 (AA[j * x + i]) * float16to32 (BB[j << l]);
+            DD[i] += alpha * float16to32 (AA[j * x + i]) * float16to32 (BB[j << l]);
           } else if (transA == 'T') {
-            DD[j] += float16to32 (AA[j * x + i]) * float16to32 (BB[i << l]);
+            DD[j] += alpha * float16to32 (AA[j * x + i]) * float16to32 (BB[i << l]);
           }
 
       for (j = 0; j < x; j++) {
@@ -268,8 +275,10 @@ main (int argc, char *argv[])
     free(BB);
     free(DD);
     free(CC);
-  }
-  }
+  } // x
+  } // l
+  } // alpha
+  } // beta
 
   if (ret != 0)
     fprintf (stderr, "FATAL ERROR SBGEMV - Return code: %d\n", ret);
