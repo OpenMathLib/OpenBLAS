@@ -577,6 +577,7 @@ set(SLASRC
    slarf.c  slarfb.c slarfb_gett.c slarfg.c slarfgp.c slarft.c slarfx.c slarfy.c slargv.c
    slarrv.c slartv.c
    slarz.c  slarzb.c slarzt.c slasy2.c
+   slaswp.c
    slasyf.c slasyf_rook.c slasyf_rk.c slasyf_aa.c
    slatbs.c slatdf.c slatps.c slatrd.c slatrs.c slatrz.c
    sopgtr.c sopmtr.c sorg2l.c sorg2r.c
@@ -611,6 +612,7 @@ set(SLASRC
    stptrs.c
    strcon.c strevc.c strevc3.c strexc.c strrfs.c strsen.c strsna.c strsyl.c
    strtrs.c stzrzf.c sstemr.c
+   strti2.c
    slansf.c spftrf.c spftri.c spftrs.c ssfrk.c stfsm.c stftri.c stfttp.c
    stfttr.c stpttf.c stpttr.c strttf.c strttp.c
    sgejsv.c sgesvj.c sgsvj0.c sgsvj1.c
@@ -749,6 +751,7 @@ set(DLASRC
    dgeqp3.c dgeqp3rk.c dgeqr2.c dgeqr2p.c dgeqrf.c dgeqrfp.c dgerfs.c dgerq2.c dgerqf.c
    dgesc2.c dgesdd.c dgesvd.c dgesvdx.c dgesvx.c dgetc2.c
    dgetrf2.c dgetri.c
+   dtrti2.c dlaswp.c
    dggbak.c dggbal.c
    dgges.c  dgges3.c dggesx.c dggev.c  dggev3.c dggevx.c
    dggglm.c dgghrd.c dgghd3.c dgglse.c dggqrf.c
