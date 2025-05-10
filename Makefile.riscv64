@@ -1,6 +1,6 @@
 ifeq ($(CORE), C910V)
-CCOMMON_OPT += -march=rv64imafdcv0p7_zfh_xtheadc -mabi=lp64d -mtune=c920
-FCOMMON_OPT += -march=rv64imafdcv0p7_zfh_xtheadc -mabi=lp64d -mtune=c920 -static
+CCOMMON_OPT += -march=rv64imafdc_zfh_xtheadc_xtheadvector -mabi=lp64d -mtune=c920
+FCOMMON_OPT += -march=rv64imafdc_zfh_xtheadc_xtheadvector -mabi=lp64d -mtune=c920 -static
 endif
 ifeq ($(CORE), x280)
 CCOMMON_OPT += -march=rv64imafdcv_zba_zbb_zfh_zvl512b -mabi=lp64d 
