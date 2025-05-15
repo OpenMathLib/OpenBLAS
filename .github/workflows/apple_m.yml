@@ -11,7 +11,7 @@ permissions:
 
 jobs:
   build:
-    if: "github.repository == 'OpenMathLib/OpenBLAS'"
+    if: "github.repository == 'guoyuanplct/OpenBLAS'"
     runs-on: macos-14
 
     strategy:
