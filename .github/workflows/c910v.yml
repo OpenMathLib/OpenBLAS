@@ -13,6 +13,7 @@ jobs:
   TEST:
     if: "github.repository == 'OpenMathLib/OpenBLAS'"
     runs-on: ubuntu-latest
+    timeout-minutes: 70
     env:
       xuetie_toolchain: https://occ-oss-prod.oss-cn-hangzhou.aliyuncs.com/resource//1698113812618
       toolchain_file_name: Xuantie-900-gcc-linux-5.10.4-glibc-x86_64-V2.8.0-20231018.tar.gz
@@ -84,8 +85,6 @@ jobs:
       - name: test
         run: |
           export PATH=$GITHUB_WORKSPACE/qemu-install/bin/:$PATH
-          qemu-riscv64 ./utest/openblas_utest
-          qemu-riscv64 ./utest/openblas_utest_ext
           OPENBLAS_NUM_THREADS=2 qemu-riscv64 ./ctest/xscblat1
           OPENBLAS_NUM_THREADS=2 qemu-riscv64 ./ctest/xdcblat1
           OPENBLAS_NUM_THREADS=2 qemu-riscv64 ./ctest/xccblat1
@@ -125,4 +124,6 @@ jobs:
           OPENBLAS_NUM_THREADS=2 qemu-riscv64 ./test/sblat3 < ./test/sblat3.dat
           OPENBLAS_NUM_THREADS=2 qemu-riscv64 ./test/dblat3 < ./test/dblat3.dat
           OPENBLAS_NUM_THREADS=2 qemu-riscv64 ./test/cblat3 < ./test/cblat3.dat
+          qemu-riscv64 ./utest/openblas_utest_ext
+          qemu-riscv64 ./utest/openblas_utest
           OPENBLAS_NUM_THREADS=2 qemu-riscv64 ./test/zblat3 < ./test/zblat3.dat
