@@ -30,7 +30,7 @@
 #define COMMON_B_H
 
 // for now, only support DYNAMIC_ARCH = 0 case.
-
+#ifndef DYNAMIC_ARCH
 #define	BGEMM_ONCOPY		bgemm_oncopy
 #define	BGEMM_OTCOPY		bgemm_otcopy
 #define	BGEMM_INCOPY		bgemm_incopy
@@ -38,6 +38,17 @@
 
 #define	BGEMM_BETA		bgemm_beta
 #define BGEMM_KERNEL            bgemm_kernel
+
+#else
+
+#define	BGEMM_ONCOPY		gotoblas -> bgemm_oncopy
+#define	BGEMM_OTCOPY		gotoblas -> bgemm_otcopy
+#define	BGEMM_INCOPY		gotoblas -> bgemm_incopy
+#define	BGEMM_ITCOPY		gotoblas -> bgemm_itcopy
+#define	BGEMM_BETA		gotoblas -> bgemm_beta
+#define	BGEMM_KERNEL		gotoblas -> bgemm_kernel
+
+#endif
 
 #define	BGEMM_NN		bgemm_nn
 #define	BGEMM_CN		bgemm_tn

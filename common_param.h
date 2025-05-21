@@ -49,6 +49,21 @@ typedef struct {
   int switch_ratio;
   int offsetA, offsetB, align;
 
+#if BUILD_BFLOAT16_ONLY == 1
+  int bgemm_p, bgemm_q, bgemm_r;
+  int bgemm_unroll_m, bgemm_unroll_n, bgemm_unroll_mn;
+  int sbgemm_align_k;
+
+  int    (*bgemm_kernel   )(BLASLONG, BLASLONG, BLASLONG, bfloat16, bfloat16 *, bfloat16 *, bfloat16 *, BLASLONG);
+  int    (*bgemm_beta     )(BLASLONG, BLASLONG, BLASLONG, bfloat16, bfloat16 *, BLASLONG, bfloat16 *, BLASLONG, bfloat16 *, BLASLONG);
+
+  int    (*bgemm_incopy   )(BLASLONG, BLASLONG, bfloat16 *, BLASLONG, bfloat16 *);
+  int    (*bgemm_itcopy   )(BLASLONG, BLASLONG, bfloat16 *, BLASLONG, bfloat16 *);
+  int    (*bgemm_oncopy   )(BLASLONG, BLASLONG, bfloat16 *, BLASLONG, bfloat16 *);
+  int    (*bgemm_otcopy   )(BLASLONG, BLASLONG, bfloat16 *, BLASLONG, bfloat16 *);
+
+#endif
+
 #if BUILD_BFLOAT16 == 1
   int sbgemm_p, sbgemm_q, sbgemm_r;
   int sbgemm_unroll_m, sbgemm_unroll_n, sbgemm_unroll_mn;
@@ -1228,6 +1243,15 @@ extern gotoblas_t *gotoblas;
 #define GEMM_ALIGN	gotoblas -> align
 
 #define HAVE_EX_L2	gotoblas -> exclusive_cache
+
+#if (BUILD_BFLOAT16_ONLY==1)
+#define	SBGEMM_P		gotoblas -> bgemm_p
+#define	SBGEMM_Q		gotoblas -> bgemm_q
+#define	SBGEMM_R		gotoblas -> bgemm_r
+#define	SBGEMM_UNROLL_M	gotoblas -> bgemm_unroll_m
+#define	SBGEMM_UNROLL_N	gotoblas -> bgemm_unroll_n
+#define	SBGEMM_UNROLL_MN	gotoblas -> bgemm_unroll_mn
+#endif
 
 #if (BUILD_BFLOAT16==1)
 #define	SBGEMM_P		gotoblas -> sbgemm_p

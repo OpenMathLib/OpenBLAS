@@ -1,6 +1,6 @@
 /*********************************************************************/
 /* Copyright 2009, 2010 The University of Texas at Austin.           */
-/* Copyright 2023 The OpenBLAS Project.                              */
+/* Copyright 2023, 2025 The OpenBLAS Project.                              */
 /* All rights reserved.                                              */
 /*                                                                   */
 /* Redistribution and use in source and binary forms, with or        */
@@ -55,6 +55,20 @@ gotoblas_t TABLE_NAME = {
   SWITCH_RATIO,
 
   GEMM_DEFAULT_OFFSET_A, GEMM_DEFAULT_OFFSET_B, GEMM_DEFAULT_ALIGN,
+
+#ifdef BUILD_BFLOAT16_ONLY
+  0, 0, 0,
+  BGEMM_DEFAULT_UNROLL_M, BGEMM_DEFAULT_UNROLL_N,
+#ifdef BGEMM_DEFAULT_UNROLL_MN
+ BGEMM_DEFAULT_UNROLL_MN,
+#else
+ MAX(BGEMM_DEFAULT_UNROLL_M, BGEMM_DEFAULT_UNROLL_N),
+#endif
+  BGEMM_ALIGN_K,
+  bgemm_kernelTS, bgemm_betaTS,
+  bgemm_incopyTS, bgemm_itcopyTS,
+  bgemm_oncopyTS, bgemm_otcopyTS,
+#endif
 
 #ifdef BUILD_BFLOAT16
   0, 0, 0,
