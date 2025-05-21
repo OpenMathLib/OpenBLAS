@@ -1,0 +1,58 @@
+/***************************************************************************
+ * Copyright (c) 2025, The OpenBLAS Project
+ * All rights reserved.
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are
+ * met:
+ * 1. Redistributions of source code must retain the above copyright
+ * notice, this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright
+ * notice, this list of conditions and the following disclaimer in
+ * the documentation and/or other materials provided with the
+ * distribution.
+ * 3. Neither the name of the OpenBLAS project nor the names of
+ * its contributors may be used to endorse or promote products
+ * derived from this software without specific prior written permission.
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE OPENBLAS PROJECT OR CONTRIBUTORS BE
+ * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ * *****************************************************************************/
+
+#ifndef COMMON_B_H
+#define COMMON_B_H
+
+// for now, only support DYNAMIC_ARCH = 0 case.
+
+#define	BGEMM_ONCOPY		bgemm_oncopy
+#define	BGEMM_OTCOPY		bgemm_otcopy
+#define	BGEMM_INCOPY		bgemm_incopy
+#define	BGEMM_ITCOPY		bgemm_itcopy
+
+#define	BGEMM_BETA		bgemm_beta
+#define BGEMM_KERNEL            bgemm_kernel
+
+#define	BGEMM_NN		bgemm_nn
+#define	BGEMM_CN		bgemm_tn
+#define	BGEMM_TN		bgemm_tn
+#define	BGEMM_NC		bgemm_nt
+#define	BGEMM_NT		bgemm_nt
+#define	BGEMM_CC		bgemm_tt
+#define	BGEMM_CT		bgemm_tt
+#define	BGEMM_TC		bgemm_tt
+#define	BGEMM_TT		bgemm_tt
+#define	BGEMM_NR		bgemm_nn
+#define	BGEMM_TR		bgemm_tn
+#define	BGEMM_CR		bgemm_tn
+#define	BGEMM_RN		bgemm_nn
+#define	BGEMM_RT		bgemm_nt
+#define	BGEMM_RC		bgemm_nt
+#define	BGEMM_RR		bgemm_nn
+#endif

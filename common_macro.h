@@ -1,5 +1,6 @@
 /*********************************************************************/
 /* Copyright 2009, 2010 The University of Texas at Austin.           */
+/* Copyright 2025 The OpenBLAS Project.						                   */
 /* All rights reserved.                                              */
 /*                                                                   */
 /* Redistribution and use in source and binary forms, with or        */
@@ -39,6 +40,7 @@
 #ifndef COMMON_MACRO
 #define COMMON_MACRO
 
+#include "common_b.h"
 #include "common_sb.h"
 #include "common_s.h"
 #include "common_d.h"
@@ -657,8 +659,35 @@
 #define GEMM_SMALL_KERNEL_B0_TN    DGEMM_SMALL_KERNEL_B0_TN
 #define GEMM_SMALL_KERNEL_B0_TT    DGEMM_SMALL_KERNEL_B0_TT
 
-#elif defined(BFLOAT16)
+#elif defined(BFLOAT16_ONLY)
+#define GEMM_BETA               BGEMM_BETA
+#define	GEMM_KERNEL_N		BGEMM_KERNEL
+#define	GEMM_KERNEL_L		BGEMM_KERNEL
+#define	GEMM_KERNEL_R		BGEMM_KERNEL
+#define	GEMM_KERNEL_B		BGEMM_KERNEL
 
+#define	GEMM_NN			BGEMM_NN
+#define	GEMM_CN			BGEMM_TN
+#define	GEMM_TN			BGEMM_TN
+#define	GEMM_NC			BGEMM_NT
+#define	GEMM_NT			BGEMM_NT
+#define	GEMM_CC			BGEMM_TT
+#define	GEMM_CT			BGEMM_TT
+#define	GEMM_TC			BGEMM_TT
+#define	GEMM_TT			BGEMM_TT
+#define	GEMM_NR			BGEMM_NN
+#define	GEMM_TR			BGEMM_TN
+#define	GEMM_CR			BGEMM_TN
+#define	GEMM_RN			BGEMM_NN
+#define	GEMM_RT			BGEMM_NT
+#define	GEMM_RC			BGEMM_NT
+#define	GEMM_RR			BGEMM_NN
+#define	GEMM_ONCOPY		BGEMM_ONCOPY
+#define	GEMM_OTCOPY		BGEMM_OTCOPY
+#define	GEMM_INCOPY		BGEMM_INCOPY
+#define	GEMM_ITCOPY		BGEMM_ITCOPY
+
+#elif defined(BFLOAT16)
 #define D_TO_BF16_K     SBDTOBF16_K
 #define D_BF16_TO_K     DBF16TOD_K
 #define S_TO_BF16_K     SBSTOBF16_K
@@ -2618,6 +2647,9 @@
       || defined(ARCH_LOONGARCH64) || defined(ARCH_E2K) || defined(ARCH_ALPHA))
 extern BLASLONG gemm_offset_a;
 extern BLASLONG gemm_offset_b;
+extern BLASLONG bgemm_p;
+extern BLASLONG bgemm_q;
+extern BLASLONG bgemm_r;
 extern BLASLONG sbgemm_p;
 extern BLASLONG sbgemm_q;
 extern BLASLONG sbgemm_r;

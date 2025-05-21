@@ -1,5 +1,5 @@
 /*****************************************************************************
-Copyright (c) 2011-2023, The OpenBLAS Project
+Copyright (c) 2011-2023, 2025 The OpenBLAS Project
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -72,10 +72,17 @@ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef PARAM_H
 #define PARAM_H
 
+#define BGEMM_DEFAULT_UNROLL_N 4
+#define BGEMM_DEFAULT_UNROLL_M 8
+#define BGEMM_DEFAULT_UNROLL_MN 32
+#define BGEMM_DEFAULT_P 256
+#define BGEMM_DEFAULT_R 256
+#define BGEMM_DEFAULT_Q 256
+#define BGEMM_ALIGN_K 1  // must be 2^x
 
 #define SBGEMM_DEFAULT_UNROLL_N 4
-#define SBGEMM_DEFAULT_UNROLL_M 8
-#define SBGEMM_DEFAULT_UNROLL_MN 32
+#define SBGEMM_DEFAULT_UNROLL_M 4
+#define SBGEMM_DEFAULT_UNROLL_MN 4
 #define SBGEMM_DEFAULT_P 256
 #define SBGEMM_DEFAULT_R 256
 #define SBGEMM_DEFAULT_Q 256
@@ -3555,6 +3562,13 @@ is a big desktop or server with abundant cache rather than a phone or embedded d
 #define SWITCH_RATIO            16
 #define GEMM_PREFERED_SIZE      8
 #endif
+
+#undef BGEMM_ALIGN_K
+#undef BGEMM_DEFAULT_UNROLL_M
+#undef BGEMM_DEFAULT_UNROLL_N
+#define BGEMM_ALIGN_K 8
+#define BGEMM_DEFAULT_UNROLL_M 4
+#define BGEMM_DEFAULT_UNROLL_N 4
 
 #undef SBGEMM_ALIGN_K
 #undef SBGEMM_DEFAULT_UNROLL_M

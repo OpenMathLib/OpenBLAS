@@ -56,6 +56,9 @@
 #elif defined(BFLOAT16)
 #define ERROR_NAME "SBGEMM "
 #define GEMV BLASFUNC(sbgemv)
+#elif defined(BFLOAT16_ONLY)
+#define ERROR_NAME "BGEMM "
+#undef GEMM_GEMV_FORWARD
 #else
 #define ERROR_NAME "SGEMM "
 #define GEMV BLASFUNC(sgemv)

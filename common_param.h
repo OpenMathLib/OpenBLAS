@@ -1,6 +1,6 @@
 /*********************************************************************/
 /* Copyright 2009, 2010 The University of Texas at Austin.           */
-/* Copyright 2023 The OpenBLAS Project.                              */
+/* Copyright 2023, 2025 The OpenBLAS Project.                        */
 /* All rights reserved.                                              */
 /*                                                                   */
 /* Redistribution and use in source and binary forms, with or        */
@@ -1357,6 +1357,19 @@ extern gotoblas_t *gotoblas;
 #define HAVE_EX_L2	0
 #endif
 
+#if (BUILD_BFLOAT16_ONLY == 1)
+#define	BGEMM_P		BGEMM_DEFAULT_P
+#define	BGEMM_Q		BGEMM_DEFAULT_Q
+#define	BGEMM_R		BGEMM_DEFAULT_R
+#define BGEMM_UNROLL_M	BGEMM_DEFAULT_UNROLL_M
+#define BGEMM_UNROLL_N	BGEMM_DEFAULT_UNROLL_N
+#ifdef  BGEMM_DEFAULT_UNROLL_MN
+#define BGEMM_UNROLL_MN	BGEMM_DEFAULT_UNROLL_MN
+#else
+#define BGEMM_UNROLL_MN	MAX((BGEMM_UNROLL_M), (BGEMM_UNROLL_N))
+#endif
+#endif
+
 #if (BUILD_BFLOAT16 == 1)
 #define	SBGEMM_P		SBGEMM_DEFAULT_P
 #define	SBGEMM_Q		SBGEMM_DEFAULT_Q
@@ -1517,6 +1530,18 @@ extern gotoblas_t *gotoblas;
 #define GEMM_DEFAULT_R		SBGEMM_DEFAULT_R
 #define GEMM_DEFAULT_UNROLL_M	SBGEMM_DEFAULT_UNROLL_M
 #define GEMM_DEFAULT_UNROLL_N	SBGEMM_DEFAULT_UNROLL_N
+#elif defined(BFLOAFT16_ONLY)
+#define GEMM_P			BGEMM_P
+#define GEMM_Q			BGEMM_Q
+#define GEMM_R			BGEMM_R
+#define GEMM_UNROLL_M		BGEMM_UNROLL_M
+#define GEMM_UNROLL_N		BGEMM_UNROLL_N
+#define GEMM_UNROLL_MN		BGEMM_UNROLL_MN
+#define GEMM_DEFAULT_P		BGEMM_DEFAULT_P
+#define GEMM_DEFAULT_Q		BGEMM_DEFAULT_Q
+#define GEMM_DEFAULT_R		BGEMM_DEFAULT_R
+#define GEMM_DEFAULT_UNROLL_M	BGEMM_DEFAULT_UNROLL_M
+#define GEMM_DEFAULT_UNROLL_N	BGEMM_DEFAULT_UNROLL_N
 #else
 #define GEMM_P			SGEMM_P
 #define GEMM_Q			SGEMM_Q
