@@ -55,4 +55,21 @@
 #define	BGEMM_RT		bgemm_nt
 #define	BGEMM_RC		bgemm_nt
 #define	BGEMM_RR		bgemm_nn
+
+#define	BGEMM_THREAD_NN		bgemm_thread_nn
+#define	BGEMM_THREAD_CN		bgemm_thread_tn
+#define	BGEMM_THREAD_TN		bgemm_thread_tn
+#define	BGEMM_THREAD_NC		bgemm_thread_nt
+#define	BGEMM_THREAD_NT		bgemm_thread_nt
+#define	BGEMM_THREAD_CC		bgemm_thread_tt
+#define	BGEMM_THREAD_CT		bgemm_thread_tt
+#define	BGEMM_THREAD_TC		bgemm_thread_tt
+#define	BGEMM_THREAD_TT		bgemm_thread_tt
+#define	BGEMM_THREAD_NR		bgemm_thread_nn
+#define	BGEMM_THREAD_TR		bgemm_thread_tn
+#define	BGEMM_THREAD_CR		bgemm_thread_tn
+#define	BGEMM_THREAD_RN		bgemm_thread_nn
+#define	BGEMM_THREAD_RT		bgemm_thread_nt
+#define	BGEMM_THREAD_RC		bgemm_thread_nt
+#define	BGEMM_THREAD_RR		bgemm_thread_nn
 #endif
