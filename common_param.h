@@ -52,7 +52,7 @@ typedef struct {
 #if BUILD_BFLOAT16_ONLY == 1
   int bgemm_p, bgemm_q, bgemm_r;
   int bgemm_unroll_m, bgemm_unroll_n, bgemm_unroll_mn;
-  int sbgemm_align_k;
+  int bgemm_align_k;
 
   int    (*bgemm_kernel   )(BLASLONG, BLASLONG, BLASLONG, bfloat16, bfloat16 *, bfloat16 *, bfloat16 *, BLASLONG);
   int    (*bgemm_beta     )(BLASLONG, BLASLONG, BLASLONG, bfloat16, bfloat16 *, BLASLONG, bfloat16 *, BLASLONG, bfloat16 *, BLASLONG);
@@ -1245,12 +1245,12 @@ extern gotoblas_t *gotoblas;
 #define HAVE_EX_L2	gotoblas -> exclusive_cache
 
 #if (BUILD_BFLOAT16_ONLY==1)
-#define	SBGEMM_P		gotoblas -> bgemm_p
-#define	SBGEMM_Q		gotoblas -> bgemm_q
-#define	SBGEMM_R		gotoblas -> bgemm_r
-#define	SBGEMM_UNROLL_M	gotoblas -> bgemm_unroll_m
-#define	SBGEMM_UNROLL_N	gotoblas -> bgemm_unroll_n
-#define	SBGEMM_UNROLL_MN	gotoblas -> bgemm_unroll_mn
+#define	BGEMM_P		gotoblas -> bgemm_p
+#define	BGEMM_Q		gotoblas -> bgemm_q
+#define	BGEMM_R		gotoblas -> bgemm_r
+#define	BGEMM_UNROLL_M	gotoblas -> bgemm_unroll_m
+#define	BGEMM_UNROLL_N	gotoblas -> bgemm_unroll_n
+#define	BGEMM_UNROLL_MN	gotoblas -> bgemm_unroll_mn
 #endif
 
 #if (BUILD_BFLOAT16==1)
