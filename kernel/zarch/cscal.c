@@ -276,7 +276,7 @@ int CNAME(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, FLOAT da_r, FLOAT da_i,
 
     } else {
 
-      if (da_i == 0.0 && dummy2 == 0) {
+      if (da_i == 0.0) {
         BLASLONG n1 = n & -2;
 
         while (j < n1) {
