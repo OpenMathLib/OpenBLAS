@@ -339,7 +339,7 @@ int CNAME(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, FLOAT da_r, FLOAT da_i,
         cscal_kernel_16_zero(n1, x);
       else
         cscal_kernel_16_zero_r(n1, alpha, x);
-    else if (da_i == 0)
+    else if (da_i == 0 && !isnan(da_r))
       cscal_kernel_16_zero_i(n1, alpha, x);
     else
       cscal_kernel_16(n1, da_r, da_i, x);
