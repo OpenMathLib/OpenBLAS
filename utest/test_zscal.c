@@ -442,6 +442,33 @@ CTEST(cscal, i_0inf_inc_2)
     ASSERT_TRUE(isnan(inf[17]));
 }
 
+CTEST(cscal, i00_NAN)
+{
+    blasint N=9;
+    blasint incX=1;
+    float i[] = {0,0, 0,0, 0,0, 0,0, 0,0, 0,0, 0,0, 0,0, 0,0 };
+    float nan[] = {NAN, 0, NAN,0, NAN,0, NAN,0, NAN,0, NAN,0, NAN,0, NAN,0, NAN,0};
+    BLASFUNC(cscal)(&N, i, nan, &incX);
+    ASSERT_TRUE(isnan(nan[0]));
+    ASSERT_TRUE(isnan(nan[1]));
+    ASSERT_TRUE(isnan(nan[16]));
+    ASSERT_TRUE(isnan(nan[17]));
+}
+
+CTEST(cscal, i00_NAN_incx_2)
+{
+    blasint N=9;
+    blasint incX=2;
+    float i[] = {0,0, 0,0, 0,0, 0,0, 0,0, 0,0, 0,0, 0,0, 0,0 };
+    float nan[] = {0,NAN, 0,NAN, 0,NAN, 0,NAN, 0,NAN, 0,NAN, 0,NAN, 0,NAN, 0,NAN,
+                   0,NAN, 0,NAN, 0,NAN, 0,NAN, 0,NAN, 0,NAN, 0,NAN, 0,NAN, 0,NAN};
+    BLASFUNC(cscal)(&N, i, nan, &incX);
+    ASSERT_TRUE(isnan(nan[0]));
+    ASSERT_TRUE(isnan(nan[1]));
+    ASSERT_TRUE(isnan(nan[16]));
+    ASSERT_TRUE(isnan(nan[17]));
+}
+
 #endif
 
 #ifdef BUILD_COMPLEX16
@@ -586,6 +613,33 @@ CTEST(zscal, i_0inf_inc_2)
     ASSERT_TRUE(isnan(inf[1]));
     ASSERT_TRUE(isinf(inf[16]));
     ASSERT_TRUE(isnan(inf[17]));
+}
+
+CTEST(zscal, i00_NAN)
+{
+    blasint N=9;
+    blasint incX=1;
+    double i[] = {0,0, 0,0, 0,0, 0,0, 0,0, 0,0, 0,0, 0,0, 0,0 };
+    double nan[] = {NAN, 0, NAN,0, NAN,0, NAN,0, NAN,0, NAN,0, NAN,0, NAN,0, NAN,0};
+    BLASFUNC(zscal)(&N, i, nan, &incX);
+    ASSERT_TRUE(isnan(nan[0]));
+    ASSERT_TRUE(isnan(nan[1]));
+    ASSERT_TRUE(isnan(nan[16]));
+    ASSERT_TRUE(isnan(nan[17]));
+}
+
+CTEST(zscal, i00_NAN_incx_2)
+{
+    blasint N=9;
+    blasint incX=2;
+    double i[] = {0,0, 0,0, 0,0, 0,0, 0,0, 0,0, 0,0, 0,0, 0,0 };
+    double nan[] = {0,NAN, 0,NAN, 0,NAN, 0,NAN, 0,NAN, 0,NAN, 0,NAN, 0,NAN, 0,NAN,
+                    0,NAN, 0,NAN, 0,NAN, 0,NAN, 0,NAN, 0,NAN, 0,NAN, 0,NAN, 0,NAN};
+    BLASFUNC(zscal)(&N, i, nan, &incX);
+    ASSERT_TRUE(isnan(nan[0]));
+    ASSERT_TRUE(isnan(nan[1]));
+    ASSERT_TRUE(isnan(nan[16]));
+    ASSERT_TRUE(isnan(nan[17]));
 }
 
 #endif
