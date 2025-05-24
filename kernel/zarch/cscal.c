@@ -205,11 +205,11 @@ int CNAME(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, FLOAT da_r, FLOAT da_i,
   if (inc_x != 1) {
     inc_x <<= 1;
 
-    if (da_r == 0.0 && !dummy2) {
+    if (da_r == 0.0) {
 
       BLASLONG n1 = n & -2;
 
-      if (da_i == 0.0) {
+      if (da_i == 0.0 && dummy2 == 0) {
 
         while (j < n1) {
 
@@ -276,7 +276,7 @@ int CNAME(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, FLOAT da_r, FLOAT da_i,
 
     } else {
 
-      if (da_i == 0.0) {
+      if (da_i == 0.0 && dummy2 == 0) {
         BLASLONG n1 = n & -2;
 
         while (j < n1) {
@@ -334,8 +334,8 @@ int CNAME(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, FLOAT da_r, FLOAT da_i,
     alpha[0] = da_r;
     alpha[1] = da_i;
 
-    if (da_r == 0.0 &&!dummy2)
-      if (da_i == 0)
+    if (da_r == 0.0)
+      if (da_i == 0 && dummy2 == 0)
         cscal_kernel_16_zero(n1, x);
       else
         cscal_kernel_16_zero_r(n1, alpha, x);
@@ -350,7 +350,7 @@ int CNAME(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, FLOAT da_r, FLOAT da_i,
 
   if (da_r == 0.0 || isnan(da_r)) {
 
-    if (da_i == 0.0) {
+    if (da_i == 0.0 && dummy2 == 0) {
       float res = 0.0;
       if (isnan(da_r)) res = da_r;
       while (j < n) {
