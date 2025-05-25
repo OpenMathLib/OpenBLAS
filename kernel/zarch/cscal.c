@@ -261,7 +261,7 @@ int CNAME(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, FLOAT da_r, FLOAT da_i,
 	  }
           i += inc_x;
           j++;
-
+	 }
         }
       } else {
 
