@@ -433,9 +433,13 @@ int CNAME(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, FLOAT da_r, FLOAT da_i,
 			x[i + 1] = NAN;
 		else
 			x[i + 1] = da_r * x[i + 1];
+	} else {
+		if (isnan(x[i]))
+			x[i + 1] = NAN;
+		else
+	        x[i + 1] = da_r * x[i + 1];
 	}
-        x[i + 1] = da_r * x[i + 1];
-        x[i] = temp0;
+	x[i] = temp0;
         i += 2;
         j++;
 
