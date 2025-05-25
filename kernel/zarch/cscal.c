@@ -239,7 +239,7 @@ int CNAME(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, FLOAT da_r, FLOAT da_i,
           x[i] = 0.0;
           x[i + 1] = 0.0;
 	  }
-	  if (isnan(x[i+incx]) || isinf(x[i+incx]) || isnan(x[i+1+incx])) {
+	  if (isnan(x[i+inc_x]) || isinf(x[i+inc_x]) || isnan(x[i+1+inc_x])) {
           x[i + inc_x] = NAN;
           x[i + 1 + inc_x] = NAN;
 	  } else {
