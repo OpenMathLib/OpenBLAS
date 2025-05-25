@@ -370,9 +370,9 @@ int CNAME(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, FLOAT da_r, FLOAT da_i,
       if (da_i == 0 && dummy2 == 0)
         cscal_kernel_16_zero(n1, x);
       else {
-	if (dummy2 == 0)
+/*	if (dummy2 == 0)
         cscal_kernel_16_zero_r(n1, alpha, x);
-	else
+	else*/
 	cscal_kernel_16(n1, da_r, da_i, x);
       }
     else if (da_i == 0 && !isnan(da_r))
