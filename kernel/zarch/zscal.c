@@ -245,8 +245,9 @@ int CNAME(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, FLOAT da_r, FLOAT da_i,
 		x[i + inc_x + 1] = 0.;
 	}
 	i += 2 * inc_x;
-	i += 2;
+	j += 2;
 	}
+	       
 	while (j < n) {
 	if (isnan(x[i]) || isinf(x[i]) || isnan(x[i+1])) {
 		x[i] = NAN;
@@ -257,8 +258,8 @@ int CNAME(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, FLOAT da_r, FLOAT da_i,
 	}
 		i += inc_x;
 		j++;
+        }
        }
-
       } else {
 
         while (j < n1) {
