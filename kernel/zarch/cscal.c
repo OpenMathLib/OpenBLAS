@@ -359,7 +359,7 @@ int CNAME(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, FLOAT da_r, FLOAT da_i,
       if (isnan(da_r)) res = da_r;
       while (j < n) {
 	if (dummy2)
-		if (isnan(x[i])|| !isnan(x[i+1])) rea=NAN;
+		if (isnan(x[i])|| !isnan(x[i+1])) res=NAN;
         x[i] = res;
         x[i + 1] = res;
         i += 2;
