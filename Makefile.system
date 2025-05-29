@@ -1544,6 +1544,9 @@ ifeq ($(USE_TLS), 1)
 CCOMMON_OPT += -DUSE_TLS
 endif
 
+ifeq ($(BUILD_BFLOAT16_ONLY), 1)
+CCOMMON_OPT += -DBUILD_BFLOAT16_ONLY
+endif
 ifeq ($(BUILD_BFLOAT16), 1)
 CCOMMON_OPT += -DBUILD_BFLOAT16
 endif
@@ -1888,6 +1891,7 @@ export FUNCTION_PROFILE
 export TARGET_CORE
 export NO_AVX512
 export NO_AVX2
+export BUILD_BFLOAT16_ONLY
 export BUILD_BFLOAT16
 export NO_LSX
 export NO_LASX
@@ -1912,7 +1916,7 @@ export ZGEMM3M_UNROLL_M
 export ZGEMM3M_UNROLL_N
 export XGEMM3M_UNROLL_M
 export XGEMM3M_UNROLL_N
-
+# Todo: add bgemm unroll factors
 
 ifdef USE_CUDA
 export CUDADIR

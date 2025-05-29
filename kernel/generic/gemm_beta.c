@@ -71,11 +71,15 @@ f32tobfloat16(float f32)
 #define F32TOBF16(x) x
 #endif
 
-
-int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1, FLOAT beta_in,
+#if defined(BFLOAT16_ONLY)
+int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1, float beta,
 	  IFLOAT *dummy2, BLASLONG dummy3, IFLOAT *dummy4, BLASLONG dummy5,
 	  FLOAT *c, BLASLONG ldc){
-
+#else
+int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1, FLOAT beta,
+	  IFLOAT *dummy2, BLASLONG dummy3, IFLOAT *dummy4, BLASLONG dummy5,
+	  FLOAT *c, BLASLONG ldc){
+#endif
 
   BLASLONG i, j;
   BLASLONG chunk, remain;
@@ -83,25 +87,24 @@ int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1, FLOAT beta_in,
   c_offset = c;
   chunk = m >> 3;
   remain = m & 7;
-  float beta = BF16TOF32(beta_in);
 
   if (beta == ZERO){
 	  for(j=n; j>0; j--){
 		c_offset1 = c_offset;
 		c_offset += ldc;
 		for(i=chunk; i>0; i--){
-			*(c_offset1 + 0) = ZERO;
-			*(c_offset1 + 1) = ZERO;
-			*(c_offset1 + 2) = ZERO;
-			*(c_offset1 + 3) = ZERO;
-			*(c_offset1 + 4) = ZERO;
-			*(c_offset1 + 5) = ZERO;
-			*(c_offset1 + 6) = ZERO;
-			*(c_offset1 + 7) = ZERO;
+			*(c_offset1 + 0) = F32TOBF16(ZERO);
+			*(c_offset1 + 1) = F32TOBF16(ZERO);
+			*(c_offset1 + 2) = F32TOBF16(ZERO);
+			*(c_offset1 + 3) = F32TOBF16(ZERO);
+			*(c_offset1 + 4) = F32TOBF16(ZERO);
+			*(c_offset1 + 5) = F32TOBF16(ZERO);
+			*(c_offset1 + 6) = F32TOBF16(ZERO);
+			*(c_offset1 + 7) = F32TOBF16(ZERO);
 			c_offset1 += 8;
 		}
 		for(i=remain; i>0; i--){
-			*c_offset1 = ZERO;
+			*c_offset1 = F32TOBF16(ZERO);
 			c_offset1 ++;
 		}
 	  }

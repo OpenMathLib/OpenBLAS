@@ -239,7 +239,11 @@ static int inner_thread(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, 
   BLASLONG k, lda, ldb, ldc;
   BLASLONG m_from, m_to, n_from, n_to;
 
+#if defined(BUILD_BFLOAT16_ONLY)
+  float *alpha, *beta;
+#else  
   FLOAT *alpha, *beta;
+#endif
   IFLOAT *a, *b;
   FLOAT *c;
   job_t *job = (job_t *)args -> common;
@@ -277,8 +281,14 @@ static int inner_thread(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n, 
   ldb = LDB;
   ldc = LDC;
 
+#if defined(BUILD_BFLOAT16_ONLY)
+  alpha = (float *)args -> alpha;
+  beta  = (float *)args -> beta;
+#else  
   alpha = (FLOAT *)args -> alpha;
   beta  = (FLOAT *)args -> beta;
+#endif
+
 
   /* Initialize 2D CPU distribution */
   nthreads_m = args -> nthreads;

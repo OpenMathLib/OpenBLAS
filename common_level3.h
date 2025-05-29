@@ -54,7 +54,7 @@ void sgemm_direct(BLASLONG M, BLASLONG N, BLASLONG K,
 
 int sgemm_direct_performant(BLASLONG M, BLASLONG N, BLASLONG K);
 
-int bgemm_beta(BLASLONG, BLASLONG, BLASLONG, bfloat16,
+int bgemm_beta(BLASLONG, BLASLONG, BLASLONG, float,
 	       bfloat16 *, BLASLONG, bfloat16 *, BLASLONG, bfloat16 *, BLASLONG);
 int sbgemm_beta(BLASLONG, BLASLONG, BLASLONG, float,
 	       bfloat16 *, BLASLONG, bfloat16 *, BLASLONG, float *, BLASLONG);
@@ -513,7 +513,7 @@ int xher2k_kernel_LN(BLASLONG m, BLASLONG n, BLASLONG k, xdouble alpha_r, xdoubl
 int xher2k_kernel_LC(BLASLONG m, BLASLONG n, BLASLONG k, xdouble alpha_r, xdouble alpha_i, xdouble *a, xdouble *b, xdouble *c, BLASLONG ldc, BLASLONG offset, int flag);
 
 // add bgemm kernel
-int bgemm_kernel(BLASLONG, BLASLONG, BLASLONG, bfloat16,  bfloat16 *, bfloat16 *, bfloat16 *, BLASLONG);
+int bgemm_kernel(BLASLONG, BLASLONG, BLASLONG, float,  bfloat16 *, bfloat16 *, bfloat16 *, BLASLONG);
 int sbgemm_kernel(BLASLONG, BLASLONG, BLASLONG, float,  bfloat16 *, bfloat16 *, float *, BLASLONG);
 int sgemm_kernel(BLASLONG, BLASLONG, BLASLONG, float,  float  *, float  *, float  *, BLASLONG);
 int dgemm_kernel(BLASLONG, BLASLONG, BLASLONG, double, double *, double *, double *, BLASLONG);

@@ -78,11 +78,11 @@
 
 #ifdef ALPHA_ONE
 int sbgemm_kernel_neoversev1_alpha_one(BLASLONG m, BLASLONG n, BLASLONG k,
-                                       FLOAT alpha, IFLOAT *A, IFLOAT *B,
+                                       float alpha, IFLOAT *A, IFLOAT *B,
                                        FLOAT *C, BLASLONG ldc)
 #else
 int sbgemm_kernel_neoversev1_alpha(BLASLONG m, BLASLONG n, BLASLONG k,
-                                   FLOAT alpha, IFLOAT *A, IFLOAT *B, FLOAT *C,
+                                   float alpha, IFLOAT *A, IFLOAT *B, FLOAT *C,
                                    BLASLONG ldc)
 #endif
 {

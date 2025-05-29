@@ -481,8 +481,8 @@ void BLASFUNC(xhbmv)(char *, blasint *, blasint *, xdouble *, xdouble *, blasint
 		    xdouble *, blasint *, xdouble *, xdouble *, blasint *);
 
 /* Level 3 routines */
-void BLASFUNC(bgemm)(char *, char *, blasint *, blasint *, blasint *, bfloat16 *,
-	   bfloat16 *, blasint *, bfloat16 *, blasint *, bfloat16 *, bfloat16 *, blasint *);
+void BLASFUNC(bgemm)(char *, char *, blasint *, blasint *, blasint *, float *,
+	   bfloat16 *, blasint *, bfloat16 *, blasint *, float *, bfloat16 *, blasint *);
 void BLASFUNC(sbgemm)(char *, char *, blasint *, blasint *, blasint *, float *,
 	   bfloat16 *, blasint *, bfloat16 *, blasint *, float *, float *, blasint *);
 void BLASFUNC(sgemm)(char *, char *, blasint *, blasint *, blasint *, float *,

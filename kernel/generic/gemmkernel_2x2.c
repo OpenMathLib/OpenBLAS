@@ -1,5 +1,32 @@
+/***************************************************************************
+Copyright (c) 2025 The OpenBLAS Project
+All rights reserved.
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are
+met:
+1. Redistributions of source code must retain the above copyright
+notice, this list of conditions and the following disclaimer.
+2. Redistributions in binary form must reproduce the above copyright
+notice, this list of conditions and the following disclaimer in
+the documentation and/or other materials provided with the
+distribution.
+3. Neither the name of the OpenBLAS project nor the names of
+its contributors may be used to endorse or promote products
+derived from this software without specific prior written permission.
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ARE DISCLAIMED. IN NO EVENT SHALL THE OPENBLAS PROJECT OR CONTRIBUTORS BE
+LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE
+GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF
+THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+*****************************************************************************/
+
 #include "common.h"
-#if defined(BFLOAT16) && defined(BFLOAT16CONVERSION)
+#if (defined(BFLOAT16) || defined(BFLOAT16_ONLY))&& defined(BFLOAT16CONVERSION)
 static float
 bfloat16tof32 (bfloat16 f16)
 {
@@ -12,12 +39,29 @@ bfloat16tof32 (bfloat16 f16)
 #endif
   return result;
 }
+
+static bfloat16 f32tobfloat16(float f32) {
+  unsigned short *q = (unsigned short *)(&f32);
+#if __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__
+  return q[0];
+#else
+  return q[1];
+#endif
+}
+
 #define BF16TOF32(x) (bfloat16tof32(x))
+#define F32TOBF16(x) (f32tobfloat16(x))
 #else
 #define BF16TOF32(x) x
+#define F32TOBF16(x) x
 #endif
+
+#ifdef BFLOAT16_ONLY
+int CNAME(BLASLONG bm,BLASLONG bn,BLASLONG bk, float alpha,IFLOAT* ba,IFLOAT* bb,FLOAT* C,BLASLONG ldc
+#else
 int CNAME(BLASLONG bm,BLASLONG bn,BLASLONG bk,FLOAT alpha,IFLOAT* ba,IFLOAT* bb,FLOAT* C,BLASLONG ldc
-#ifdef TRMMKERNEL
+#endif
+  #ifdef TRMMKERNEL
 		,BLASLONG offset
 #endif
 		)
@@ -90,13 +134,17 @@ int CNAME(BLASLONG bm,BLASLONG bn,BLASLONG bk,FLOAT alpha,IFLOAT* ba,IFLOAT* bb,
                   ptrbb = ptrbb+2;
                }
              res0 = res0*alpha;
-             C0[0] = C0[0]+res0;
+             C0[0] = F32TOBF16(BF16TOF32(C0[0])+res0);
+             //printf("i = %d, j = %d, r = %.2f\n", i, j , BF16TOF32(C0[0]));
              res1 = res1*alpha;
-             C0[1] = C0[1]+res1;
+             C0[1] = F32TOBF16(BF16TOF32(C0[1])+res1);
+             //printf("i = %d, j = %d, r = %.2f\n", i, j , BF16TOF32(C0[1]));
              res2 = res2*alpha;
-             C1[0] = C1[0]+res2;
+             C1[0] = F32TOBF16(BF16TOF32(C1[0])+res2);
+             //printf("i = %d, j = %d, r = %.2f\n", i, j , BF16TOF32(C1[0]));
              res3 = res3*alpha;
-             C1[1] = C1[1]+res3;
+             C1[1] = F32TOBF16(BF16TOF32(C1[1])+res3);
+             //printf("i = %d, j = %d, r = %.2f\n", i, j , BF16TOF32(C1[1]));
              C0 = C0+2;
              C1 = C1+2;
           }
@@ -116,9 +164,11 @@ int CNAME(BLASLONG bm,BLASLONG bn,BLASLONG bk,FLOAT alpha,IFLOAT* ba,IFLOAT* bb,
                   ptrbb = ptrbb+2;
                }
              res0 = res0*alpha;
-             C0[0] = C0[0]+res0;
+             C0[0] = F32TOBF16(BF16TOF32(C0[0])+res0);
+             //printf("i = %d, j = %d, r = %.2f\n", i, j , BF16TOF32(C0[0]));
              res1 = res1*alpha;
-             C1[0] = C1[0]+res1;
+             C1[0] = F32TOBF16(BF16TOF32(C1[1])+res1);
+             //printf("i = %d, j = %d, r = %.2f\n", i, j , BF16TOF32(C1[0]));
              C0 = C0+1;
              C1 = C1+1;
           }
@@ -147,9 +197,11 @@ int CNAME(BLASLONG bm,BLASLONG bn,BLASLONG bk,FLOAT alpha,IFLOAT* ba,IFLOAT* bb,
                   ptrbb = ptrbb+1;
                }
              res0 = res0*alpha;
-             C0[0] = C0[0]+res0;
+             C0[0] = F32TOBF16(BF16TOF32(C0[0])+res0);
+             //printf("i = %d, j = %d, r = %.2f\n", i, j , BF16TOF32(C0[0]));
              res1 = res1*alpha;
-             C0[1] = C0[1]+res1;
+             C0[1] = F32TOBF16(BF16TOF32(C0[1])+res1);
+             //printf("i = %d, j = %d, r = %.2f\n", i, j , BF16TOF32(C0[1]));
              C0 = C0+2;
           }
         for (i=0; i<(bm&1); i+=1)
@@ -165,7 +217,8 @@ int CNAME(BLASLONG bm,BLASLONG bn,BLASLONG bk,FLOAT alpha,IFLOAT* ba,IFLOAT* bb,
                   ptrbb = ptrbb+1;
                }
              res0 = res0*alpha;
-             C0[0] = C0[0]+res0;
+             C0[0] = F32TOBF16(BF16TOF32(C0[0])+res0);
+             //printf("i = %d, j = %d, r = %.2f\n", i, j , BF16TOF32(C0[0]));
              C0 = C0+1;
           }
         k = (bk<<0);

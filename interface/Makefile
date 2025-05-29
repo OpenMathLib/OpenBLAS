@@ -53,6 +53,10 @@ SBBLAS3OBJS    = sbgemm.$(SUFFIX) sbgemmt.$(SUFFIX) sbgemmtr.$(SUFFIX)
 SBEXTOBJS      = sbstobf16.$(SUFFIX) sbdtobf16.$(SUFFIX) sbf16tos.$(SUFFIX) dbf16tod.$(SUFFIX)
 endif
 
+ifeq ($(BUILD_BFLOAT16_ONLY), 1)
+BBLAS3OBJ = bgemm.$(SUFFIX)
+endif
+
 DBLAS1OBJS    = \
 		daxpy.$(SUFFIX) dswap.$(SUFFIX) \
 		dcopy.$(SUFFIX) dscal.$(SUFFIX) \
@@ -291,6 +295,10 @@ CSBBLAS3OBJS = cblas_sbgemm.$(SUFFIX) cblas_sbgemmt.$(SUFFIX) cblas_sbgemmtr.$(S
 CSBEXTOBJS   = cblas_sbstobf16.$(SUFFIX) cblas_sbdtobf16.$(SUFFIX) cblas_sbf16tos.$(SUFFIX) cblas_dbf16tod.$(SUFFIX)
 endif
 
+ifeq ($(BUILD_BFLOAT16_ONLY), 1)
+CBBLAS3OBJS = cblas_bgemm.$(SUFFIX)
+endif
+
 CDBLAS1OBJS   = \
 	cblas_idamax.$(SUFFIX) cblas_idamin.$(SUFFIX) cblas_dasum.$(SUFFIX) cblas_daxpy.$(SUFFIX) \
 	cblas_dcopy.$(SUFFIX) cblas_ddot.$(SUFFIX) \
@@ -388,6 +396,7 @@ SBLAS3OBJS   += $(CSBLAS3OBJS)
 SBBLAS1OBJS  += $(CSBBLAS1OBJS)
 SBBLAS2OBJS  += $(CSBBLAS2OBJS)
 SBBLAS3OBJS  += $(CSBBLAS3OBJS)
+BBLAS3OBJ    += $(CBBLAS3OBJS)
 DBLAS1OBJS   += $(CDBLAS1OBJS)
 DBLAS2OBJS   += $(CDBLAS2OBJS)
 DBLAS3OBJS   += $(CDBLAS3OBJS)
@@ -403,6 +412,7 @@ SBEXTOBJS     += $(CSBEXTOBJS)
 CBAUXOBJS += $(CXERBLAOBJ)
 endif
 
+BBLASOBJS    = $(BBLAS3OBJ)
 SBLASOBJS    = $(SBLAS1OBJS) $(SBLAS2OBJS) $(SBLAS3OBJS)
 SBBLASOBJS   = $(SBBLAS1OBJS) $(SBBLAS2OBJS) $(SBBLAS3OBJS)
 DBLASOBJS    = $(DBLAS1OBJS) $(DBLAS2OBJS) $(DBLAS3OBJS)
@@ -550,7 +560,7 @@ level1 : $(SBEXTOBJS) $(SBBLAS1OBJS) $(SBLAS1OBJS) $(DBLAS1OBJS) $(QBLAS1OBJS) $
 level2 : $(SBBLAS2OBJS) $(SBLAS2OBJS) $(DBLAS2OBJS) $(QBLAS2OBJS) $(CBLAS2OBJS) $(ZBLAS2OBJS) $(XBLAS2OBJS)
 	$(AR) $(ARFLAGS) -ru $(TOPDIR)/$(LIBNAME) $^
 
-level3 : $(SBBLAS3OBJS) $(SBLAS3OBJS) $(DBLAS3OBJS) $(QBLAS3OBJS) $(CBLAS3OBJS) $(ZBLAS3OBJS) $(XBLAS3OBJS) 
+level3 : $(BBLAS3OBJ) $(SBBLAS3OBJS) $(SBLAS3OBJS) $(DBLAS3OBJS) $(QBLAS3OBJS) $(CBLAS3OBJS) $(ZBLAS3OBJS) $(XBLAS3OBJS) 
 	$(AR) $(ARFLAGS) -ru $(TOPDIR)/$(LIBNAME) $^
 
 aux :	$(CBAUXOBJS)
@@ -1309,6 +1319,11 @@ sbgemmtr.$(SUFFIX) sbgemmtr.$(PSUFFIX) : sbgemmt.c ../param.h
 	$(CC) -c $(CFLAGS) -DRNAME $< -o $(@F)
 endif
 
+ifeq ($(BUILD_BFLOAT16_ONLY), 1)
+bgemm.$(SUFFIX) : gemm.c ../param.h
+	$(CC) -c $(CFLAGS) $< -o $(@F)
+endif
+
 sgemm.$(SUFFIX) sgemm.$(PSUFFIX) : gemm.c ../param.h
 	$(CC) -c $(CFLAGS) $< -o $(@F)
 
@@ -1965,6 +1980,11 @@ cblas_sgemm.$(SUFFIX) cblas_sgemm.$(PSUFFIX) : gemm.c ../param.h
 
 ifeq ($(BUILD_BFLOAT16),1)
 cblas_sbgemm.$(SUFFIX) cblas_sbgemm.$(PSUFFIX) : gemm.c ../param.h
+	$(CC) -DCBLAS -c $(CFLAGS) $< -o $(@F)
+endif
+
+ifeq ($(BUILD_BFLOAT16_ONLY),1)
+cblas_bgemm.$(SUFFIX) cblas_bgemm.$(PSUFFIX) : gemm.c ../param.h
 	$(CC) -DCBLAS -c $(CFLAGS) $< -o $(@F)
 endif
 

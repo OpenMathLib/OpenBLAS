@@ -35,7 +35,7 @@
 #undef ALPHA_ONE
 #include "sbgemm_kernel_4x4_neoversev1_impl.c"
 
-int CNAME(BLASLONG m, BLASLONG n, BLASLONG k, FLOAT alpha, IFLOAT *A, IFLOAT *B,
+int CNAME(BLASLONG m, BLASLONG n, BLASLONG k, float alpha, IFLOAT *A, IFLOAT *B,
           FLOAT *C, BLASLONG ldc) {
   if (alpha == 1.0f)
     return sbgemm_kernel_neoversev1_alpha_one(m, n, k, alpha, A, B, C, ldc);

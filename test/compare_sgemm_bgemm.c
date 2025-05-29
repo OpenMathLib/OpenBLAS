@@ -57,10 +57,8 @@ int main(int argc, char *argv[]) {
   char transA = 'N', transB = 'N';
 
   float alpha = 1.0, beta = 0.0;
-  bfloat16 alpha_bf16 = convert_to_bf16(alpha),
-           beta_bf16 = convert_to_bf16(beta);
 
-  for (x = 1; x <= BGEMM_LARGEST; x++) {
+  for (x = 1; x <= loop; x++) {
     if ((x > 100) && (x != BGEMM_LARGEST))
       continue;
     m = k = n = x;
@@ -79,14 +77,14 @@ int main(int argc, char *argv[]) {
 
     for (int i = 0; i < m; i++) {
       for (int j = 0; j < k; j++) {
-        AA[i * k + j] = (i * k + j + 1) % 100;
+        AA[i * k + j] = (i * k + j + 1) % 5;
         A[i * k + j] = AA[i * k + j];
       }
     }
 
     for (int i = 0; i < n; i++) {
       for (int j = 0; j < k; j++) {
-        BB[i * k + j] = (i * k + j + 1) % 100;
+        BB[i * k + j] = (i * k + j + 1) % 5;
         B[i * k + j] = BB[i * k + j];
       }
     }
@@ -102,23 +100,73 @@ int main(int argc, char *argv[]) {
       } else {
         transB = 'T';
       }
+      // printf("******** x = %d, y = %d********\n", x, y);
+      // printf("Matrix AA (m x k):\n");
+      // for (int i = 0; i < m; i++) {
+      //   for (int j = 0; j < k; j++) {
+      //     printf("%.2f ", (float)AA[i * k + j]);  // or %4.1f if float
+      //   }
+      //   printf("\n");
+      // }
+
+      // printf("Matrix A (copy of AA):\n");
+      // for (int i = 0; i < m; i++) {
+      //   for (int j = 0; j < k; j++) {
+      //     printf("%.2f ", A[i * k + j]);
+      //   }
+      //   printf("\n");
+      // }
+
+      // printf("Matrix BB (n x k):\n");
+      // for (int i = 0; i < n; i++) {
+      //   for (int j = 0; j < k; j++) {
+      //     printf("%.2f ", (float)BB[i * k + j]);
+      //   }
+      //   printf("\n");
+      // }
+
+      // printf("Matrix B (copy of BB):\n");
+      // for (int i = 0; i < n; i++) {
+      //   for (int j = 0; j < k; j++) {
+      //     printf("%.2f ", B[i * k + j]);
+      //   }
+      //   printf("\n");
+      // }
 
       memset(C, 0, m * n * sizeof(FLOAT));
       memset(CC, 0, m * n * sizeof(bfloat16));
-      SGEMM(&transA, &transB, &m, &n, &k, &alpha_bf16, A, &m, B, &k, &beta_bf16,
+      SGEMM(&transA, &transB, &m, &n, &k, &alpha, A, &m, B, &k, &beta,
             C, &m);
       BGEMM(&transA, &transB, &m, &n, &k, &alpha, (bfloat16 *)AA, &m,
             (bfloat16 *)BB, &k, &beta, (bfloat16 *)CC, &m);
+      
+
+      // printf("Matrix CC (n x m):\n");
+      // for (int i = 0; i < n; i++) {
+      //   for (int j = 0; j < m; j++) {
+      //     printf("%.2f ", (float)CC[i * m + j]);
+      //   }
+      //   printf("\n");
+      // }
+
+      // printf("Matrix C :\n");
+      // for (int i = 0; i < n; i++) {
+      //   for (int j = 0; j < k; j++) {
+      //     printf("%.2f ", C[i * k + j]);
+      //   }
+      //   printf("\n");
+      // }
 
       for (i = 0; i < n; i++) {
         for (j = 0; j < m; j++) {
-          for (l = 0; l < k; l++) {
-            if (fabs(CC[i * m + j] - C[i * m + j]) > 1.0) {
-              ret++;
+            if (fabs((float)CC[i * m + j] - C[i * m + j]) > 1.0) {
+              ret ++;
             }
-          }
         }
       }
+
+      printf("x = %d, err = %d\n", x, ret);
+      ret = 0;
     }
 
     free(A);

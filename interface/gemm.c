@@ -250,6 +250,15 @@ static inline int get_gemm_optimal_nthreads(double MNK) {
 
 #ifndef CBLAS
 
+#ifdef BFLOAT16_ONLY
+void NAME(char *TRANSA, char *TRANSB,
+	  blasint *M, blasint *N, blasint *K,
+	  float *alpha,
+	  IFLOAT *a, blasint *ldA,
+	  IFLOAT *b, blasint *ldB,
+	  float *beta,
+	  FLOAT *c, blasint *ldC){
+#else
 void NAME(char *TRANSA, char *TRANSB,
 	  blasint *M, blasint *N, blasint *K,
 	  FLOAT *alpha,
@@ -257,7 +266,7 @@ void NAME(char *TRANSA, char *TRANSB,
 	  IFLOAT *b, blasint *ldB,
 	  FLOAT *beta,
 	  FLOAT *c, blasint *ldC){
-
+#endif
   blas_arg_t args;
 
   int transa, transb, nrowa, nrowb;
@@ -366,11 +375,19 @@ void NAME(char *TRANSA, char *TRANSB,
 void CNAME(enum CBLAS_ORDER order, enum CBLAS_TRANSPOSE TransA, enum CBLAS_TRANSPOSE TransB,
 	   blasint m, blasint n, blasint k,
 #ifndef COMPLEX
+  #ifdef BFLOAT16_ONLY
+	   float alpha,
+	   IFLOAT *a, blasint lda,
+	   IFLOAT *b, blasint ldb,
+	   float beta,
+	   FLOAT *c, blasint ldc) {
+  #else
 	   FLOAT alpha,
 	   IFLOAT *a, blasint lda,
 	   IFLOAT *b, blasint ldb,
 	   FLOAT beta,
 	   FLOAT *c, blasint ldc) {
+  #endif
 #else
 	   void *valpha,
 	   void *va, blasint lda,

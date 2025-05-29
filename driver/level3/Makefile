@@ -52,6 +52,13 @@ ifeq ($(BUILD_BFLOAT16),1)
 SBBLASOBJS       += sbgemm_nn.$(SUFFIX) sbgemm_nt.$(SUFFIX) sbgemm_tn.$(SUFFIX) sbgemm_tt.$(SUFFIX)
 endif
 
+ifeq ($(BUILD_BFLOAT16_ONLY),1)
+BBLASOBJS       += bgemm_nn.$(SUFFIX) bgemm_nt.$(SUFFIX) bgemm_tn.$(SUFFIX) bgemm_tt.$(SUFFIX)
+endif
+
+BLASOBJS	+= \
+	gemm_nn.$(SUFFIX) gemm_nt.$(SUFFIX) gemm_tn.$(SUFFIX) gemm_tt.$(SUFFIX)
+
 SBLASOBJS	+= \
 	sgemm_nn.$(SUFFIX) sgemm_nt.$(SUFFIX) sgemm_tn.$(SUFFIX) sgemm_tt.$(SUFFIX) \
 	strmm_LNUU.$(SUFFIX) strmm_LNUN.$(SUFFIX) strmm_LNLU.$(SUFFIX) strmm_LNLN.$(SUFFIX) \
@@ -376,6 +383,18 @@ endif
 
 all ::
 
+bgemm_nn.$(SUFFIX) : gemm.c level3.c ../../param.h
+	$(CC) $(CFLAGS) $(BLOCKS) -c -DHALF -UDOUBLE -UCOMPLEX -DNN $< -o $(@F)
+
+bgemm_nt.$(SUFFIX) : gemm.c level3.c ../../param.h
+	$(CC) $(CFLAGS) $(BLOCKS) -c -DHALF -UDOUBLE -UCOMPLEX -DNT $< -o $(@F)
+
+bgemm_tn.$(SUFFIX) : gemm.c level3.c ../../param.h
+	$(CC) $(CFLAGS) $(BLOCKS) -c -DHALF -UDOUBLE -UCOMPLEX -DTN $< -o $(@F)
+
+bgemm_tt.$(SUFFIX) : gemm.c level3.c ../../param.h
+	$(CC) $(CFLAGS) $(BLOCKS) -c -DHALF -UDOUBLE -UCOMPLEX -DTT $< -o $(@F)
+
 sbgemm_nn.$(SUFFIX) : gemm.c level3.c ../../param.h
 	$(CC) $(CFLAGS) $(BLOCKS) -c -DHALF -UDOUBLE -UCOMPLEX -DNN $< -o $(@F)
 
@@ -432,8 +451,8 @@ cgemm_nt.$(SUFFIX) : gemm.c level3.c  ../../param.h
 
 cgemm_nr.$(SUFFIX) : gemm.c level3.c  ../../param.h
 	$(CC) $(CFLAGS) $(BLOCKS) -c -UDOUBLE -DCOMPLEX -DNR $< -o $(@F)
-
 cgemm_nc.$(SUFFIX) : gemm.c level3.c  ../../param.h
+
 	$(CC) $(CFLAGS) $(BLOCKS) -c -UDOUBLE -DCOMPLEX -DNC $< -o $(@F)
 
 cgemm_tn.$(SUFFIX) : gemm.c level3.c  ../../param.h

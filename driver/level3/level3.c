@@ -43,9 +43,11 @@
 #if !defined(XDOUBLE) || !defined(QUAD_PRECISION)
 #ifndef COMPLEX
 #define BETA_OPERATION(M_FROM, M_TO, N_FROM, N_TO, BETA, C, LDC) \
-	GEMM_BETA((M_TO) - (M_FROM), (N_TO - N_FROM), 0, \
-		  BETA[0], NULL, 0, NULL, 0, \
-		  (FLOAT *)(C) + ((M_FROM) + (N_FROM) * (LDC)) * COMPSIZE, LDC)
+  do {                                                                        \
+    GEMM_BETA((M_TO) - (M_FROM), (N_TO - N_FROM), 0,                          \
+              BETA[0], NULL, 0, NULL, 0,                                      \
+              (FLOAT *)(C) + ((M_FROM) + (N_FROM) * (LDC)) * COMPSIZE, LDC);  \
+  } while (0)
 #else
 #define BETA_OPERATION(M_FROM, M_TO, N_FROM, N_TO, BETA, C, LDC) \
 	GEMM_BETA((M_TO) - (M_FROM), (N_TO - N_FROM), 0, \
@@ -189,7 +191,11 @@
 int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n,
 		  XFLOAT *sa, XFLOAT *sb, BLASLONG dummy){
   BLASLONG k, lda, ldb, ldc;
+#if defined(BUILD_BFLOAT16_ONLY)
+  float *alpha, *beta;
+#else  
   FLOAT *alpha, *beta;
+#endif
   IFLOAT *a, *b;
   FLOAT *c;
   BLASLONG m_from, m_to, n_from, n_to;
@@ -224,8 +230,14 @@ int CNAME(blas_arg_t *args, BLASLONG *range_m, BLASLONG *range_n,
   ldb = LDB;
   ldc = LDC;
 
+#if defined(BUILD_BFLOAT16_ONLY)
+  alpha = (float *)args -> alpha;
+  beta  = (float *)args -> beta;
+#else  
   alpha = (FLOAT *)args -> alpha;
   beta  = (FLOAT *)args -> beta;
+#endif
+
 
   m_from = 0;
   m_to   = M;

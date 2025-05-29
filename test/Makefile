@@ -1,3 +1,31 @@
+###############################################################################
+# Copyright (c) 2025, The OpenBLAS Project
+# All rights reserved.
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are
+# met:
+# 1. Redistributions of source code must retain the above copyright
+#    notice, this list of conditions and the following disclaimer.
+# 2. Redistributions in binary form must reproduce the above copyright
+#    notice, this list of conditions and the following disclaimer in
+#    the documentation and/or other materials provided with the
+#    distribution.
+# 3. Neither the name of the OpenBLAS project nor the names of
+#    its contributors may be used to endorse or promote products
+#    derived from this software without specific prior written permission.
+# 
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+# AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+# IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+# ARE DISCLAIMED. IN NO EVENT SHALL THE OPENBLAS PROJECT OR CONTRIBUTORS BE
+# LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+# CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+# SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+# CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+# ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+# POSSIBILITY OF SUCH DAMAGE.
+###############################################################################
 TOPDIR	= ..
 include ../Makefile.system
 ifeq ($(F_COMPILER),GFORTRAN)
@@ -164,6 +192,9 @@ endif
 endif
 endif
 
+ifeq ($(BUILD_BFLOAT16_ONLY),1)
+BF3= test_bgemm
+endif
 ifeq ($(BUILD_BFLOAT16),1)
 B3= test_sbgemm
 endif
@@ -192,11 +223,15 @@ endif
 ifeq ($(SUPPORT_GEMM3M),1)
 level3: $(B3) $(S3) $(D3) $(C3) $(Z3) level3_3m
 else
-level3: $(B3) $(S3) $(D3) $(C3) $(Z3)
+level3: $(BF3) $(B3) $(S3) $(D3) $(C3) $(Z3)
 endif
 
 ifneq ($(CROSS), 1)
 	rm -f ?BLAT3.SUMM
+ifeq ($(BUILD_BFLOAT16_ONLY),1)
+	OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 ./test_bgemm > BBLAT3.SUMM
+	@$(GREP) -q FATAL SBBLAT3.SUMM && cat BBLAT3.SUMM || exit 0
+endif
 ifeq ($(BUILD_BFLOAT16),1)
 	OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 ./test_sbgemm > SBBLAT3.SUMM
 	@$(GREP) -q FATAL SBBLAT3.SUMM && cat SBBLAT3.SUMM || exit 0
@@ -366,6 +401,11 @@ zblat3 : zblat3.$(SUFFIX) ../$(LIBNAME)
 	$(FC) $(FLDFLAGS) -o zblat3 zblat3.$(SUFFIX) ../$(LIBNAME) $(EXTRALIB) $(CEXTRALIB)
 endif
 
+ifeq ($(BUILD_BFLOAT16_ONLY),1)
+test_bgemm : compare_sgemm_bgemm.c ../$(LIBNAME)
+	$(CC) $(CLDFLAGS) -o test_bgemm compare_sgemm_bgemm.c ../$(LIBNAME) $(EXTRALIB) $(CEXTRALIB)
+endif
+
 ifeq ($(BUILD_BFLOAT16),1)
 test_sbgemm : compare_sgemm_sbgemm.c ../$(LIBNAME)
 	$(CC) $(CLDFLAGS) -o test_sbgemm compare_sgemm_sbgemm.c ../$(LIBNAME) $(EXTRALIB) $(CEXTRALIB)
@@ -387,7 +427,7 @@ clean:
 	@rm -f *.$(SUFFIX) *.$(PSUFFIX) gmon.$(SUFFIX)ut *.SUMM *.cxml *.exe *.pdb *.dwf \
 	sblat1 dblat1 cblat1 zblat1 \
 	sblat2 dblat2 cblat2 zblat2 \
-	test_sbgemm sblat3 dblat3 cblat3 zblat3 \
+	test_bgemm test_sbgemm sblat3 dblat3 cblat3 zblat3 \
 	sblat1p dblat1p cblat1p zblat1p \
 	sblat2p dblat2p cblat2p zblat2p \
 	sblat3p dblat3p cblat3p zblat3p \
