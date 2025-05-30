@@ -77,15 +77,16 @@ int main(int argc, char *argv[]) {
 
     for (int i = 0; i < m; i++) {
       for (int j = 0; j < k; j++) {
-        AA[i * k + j] = (i * k + j + 1) % 5;
-        A[i * k + j] = AA[i * k + j];
+        A[i * k + j] = ((FLOAT) rand () / (FLOAT) RAND_MAX) + 0.5;
+        AA[i * k + j] =  A[i * k + j] ;
       }
     }
 
     for (int i = 0; i < n; i++) {
       for (int j = 0; j < k; j++) {
-        BB[i * k + j] = (i * k + j + 1) % 5;
-        B[i * k + j] = BB[i * k + j];
+        // BB[i * k + j] = (i * k + j + 1) % 100;
+        B[i * k + j] = ((FLOAT) rand () / (FLOAT) RAND_MAX) + 0.5;
+        BB[i * k + j] =  B[i * k + j] ;
       }
     }
 
