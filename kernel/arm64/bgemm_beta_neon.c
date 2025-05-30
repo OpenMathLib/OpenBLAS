@@ -30,9 +30,74 @@
 
 #include <arm_neon.h>
 
-int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1, FLOAT beta, IFLOAT *dummy2,
+int CNAME(BLASLONG m, BLASLONG n, BLASLONG dummy1, float beta, IFLOAT *dummy2,
           BLASLONG dummy3, IFLOAT *dummy4, BLASLONG dummy5, FLOAT *c,
           BLASLONG ldc) {
-            printf("running bgemm_beta...\n");
+    BLASLONG i, j;
+    BLASLONG chunk, remain;
+    
+    bfloat16_t *ptr_c, *ptr_c0;
+
+    bfloat16x8_t x0, z0;
+    float32x4_t y0, y1;
+      
+    float x, z;
+
+    bfloat16_t zero_bf16 = vcvth_bf16_f32(0.0f); 
+    bfloat16x8_t zeros = vdupq_n_bf16(zero_bf16);
+
+    float32x4_t beta_neon = vdupq_n_f32(beta);
+
+    ptr_c = (bfloat16_t *)c;
+    
+    chunk = m >> 3;
+    remain = m & 7;
+
+    if (beta == 0.0f){
+      for (j = 0; j < n; j ++){
+        ptr_c0 = ptr_c;
+        ptr_c += ldc;
+
+        for (i = 0; i < chunk; i ++){
+          vst1q_bf16(ptr_c0, zeros);
+          ptr_c0 += 8;
+        }
+
+        for (i = 0; i < remain; i ++){
+          ptr_c0[0] = zero_bf16;
+          ptr_c0 ++;
+        }
+      }
+    } else {
+      for (j = 0; j < n; j ++){
+        ptr_c0 = ptr_c;
+        ptr_c += ldc;
+
+        for (i = 0; i < chunk; i ++){
+          x0 = vld1q_bf16(ptr_c0);
+
+          y0 = vcvtq_low_f32_bf16(x0);
+          y1 = vcvtq_high_f32_bf16(x0);
+
+          y0 = vmulq_f32(y0, beta_neon);
+          y1 = vmulq_f32(y1, beta_neon);
+
+          z0 = vcvtq_low_bf16_f32(y0);
+          z0 = vcvtq_high_bf16_f32(z0, y1);
+          
+          vst1q_bf16(ptr_c0, z0);
+
+          ptr_c0 += 8;
+        }
+
+        for (i = 0; i < remain; i ++){
+          x = vcvtah_f32_bf16(ptr_c0[0]);
+          z = vcvth_bf16_f32(x * beta);
+
+          ptr_c0[0] = z;
+          ptr_c0 ++;
+        }
+      } 
+    }
     return 0;
 };

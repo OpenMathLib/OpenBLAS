@@ -22,3 +22,17 @@ SBGEMVNKERNEL = sbgemv_n_neon.c
 SBGEMVTKERNEL = sbgemv_t_bfdot.c
 
 endif
+
+ifeq ($(BUILD_BFLOAT16_ONLY), 1)
+BGEMM_BETA    =  bgemm_beta_neon.c
+BGEMMKERNEL    = bgemm_kernel_$(BGEMM_UNROLL_M)x$(BGEMM_UNROLL_N)_neoversev1.c
+BGEMMINCOPY    = sbgemm_ncopy_$(BGEMM_UNROLL_M)_neoversev1.c
+BGEMMITCOPY    = sbgemm_tcopy_$(BGEMM_UNROLL_M)_neoversev1.c
+BGEMMINCOPYOBJ =  bgemm_incopy$(TSUFFIX).$(SUFFIX)
+BGEMMITCOPYOBJ =  bgemm_itcopy$(TSUFFIX).$(SUFFIX)
+BGEMMONCOPY    = sbgemm_ncopy_$(BGEMM_UNROLL_N)_neoversev1.c
+BGEMMOTCOPY    = sbgemm_tcopy_$(BGEMM_UNROLL_N)_neoversev1.c
+BGEMMONCOPYOBJ =  bgemm_oncopy$(TSUFFIX).$(SUFFIX)
+BGEMMOTCOPYOBJ =  bgemm_otcopy$(TSUFFIX).$(SUFFIX)
+
+endif
