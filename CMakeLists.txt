@@ -246,11 +246,8 @@ endif ()
 # add objects to the openblas lib
 if(NOT NO_LAPACK)
   add_library(LAPACK_OVERRIDES OBJECT ${LA_SOURCES})
-  if (USE_OPENMP AND (NOT NOFORTRAN))
-    # Disable OpenMP for LAPACK Fortran codes on Windows.
-    if(NOT ${CMAKE_SYSTEM_NAME} STREQUAL "Windows")
-      target_link_libraries(LAPACK_OVERRIDES OpenMP::OpenMP_Fortran)
-    endif()
+  if (USE_OPENMP AND (NOT NOFORTRAN) AND (NOT MSVC))
+    target_link_libraries(LAPACK_OVERRIDES OpenMP::OpenMP_Fortran)
   endif()
   list(APPEND TARGET_OBJS "$<TARGET_OBJECTS:LAPACK_OVERRIDES>")
 endif()
