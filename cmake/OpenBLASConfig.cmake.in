@@ -48,9 +48,17 @@
 
 set(PN OpenBLAS)
 
+include(CMakeFindDependencyMacro)
+
 # need to check that the @USE_*@ evaluate to something cmake can perform boolean logic upon
 if(@USE_OPENMP@)
     set(${PN}_openmp_FOUND 1)
+    enable_language(C)
+    find_dependency(OpenMP COMPONENTS C REQUIRED)
+    if(NOT @NOFORTRAN@)
+        enable_language(Fortran)
+        find_package(OpenMP COMPONENTS Fortran REQUIRED)
+    endif()
 elseif(@USE_THREAD@)
     set(${PN}_pthread_FOUND 1)
 else()

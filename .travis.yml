@@ -211,7 +211,7 @@ matrix:
 #        - CMAKE=1
 #    - <<: *test-cmake
 #      env:
-#        - CMAKE=1 CMAKE_ARGS="-DNOFORTRAN=1"
+#        - CMAKE=1 CMAKE_ARGS="-DNOFORTRAN=ON"
 #    - <<: *test-cmake
 #      compiler: gcc
 #      env:

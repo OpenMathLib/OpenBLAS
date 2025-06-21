@@ -32,6 +32,6 @@ jobs:
       run: |
        mkdir build && cd build
        ${{ env.OHOS_NDK_CMAKE }} ${{ env.COMMON_CMAKE_OPTIONS }} -DOHOS_ARCH="arm64-v8a" \
-       -DTARGET=ARMV8 -DNOFORTRAN=1 ..
+       -DTARGET=ARMV8 -DNOFORTRAN=ON ..
        ${{ env.OHOS_NDK_CMAKE }} --build . -j $(nproc)
        

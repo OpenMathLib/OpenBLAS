@@ -270,7 +270,7 @@ newer installed.
     set "CPATH=%CONDA_PREFIX%\Library\include;%CPATH%"
     mkdir build
     cd build
-    cmake .. -G "Ninja" -DCMAKE_CXX_COMPILER=clang-cl -DCMAKE_C_COMPILER=clang-cl -DCMAKE_Fortran_COMPILER=flang -DCMAKE_MT=mt -DBUILD_WITHOUT_LAPACK=no -DNOFORTRAN=0 -DDYNAMIC_ARCH=ON -DCMAKE_BUILD_TYPE=Release
+    cmake .. -G "Ninja" -DCMAKE_CXX_COMPILER=clang-cl -DCMAKE_C_COMPILER=clang-cl -DCMAKE_Fortran_COMPILER=flang -DCMAKE_MT=mt -DBUILD_WITHOUT_LAPACK=no -DNOFORTRAN=OFF -DDYNAMIC_ARCH=ON -DCMAKE_BUILD_TYPE=Release
     ```
 
     You may want to add further options in the `cmake` command here. For
@@ -736,7 +736,7 @@ contains no Fortran compiler):
 ```bash
 /opt/ohos-sdk/linux/native/build-tools/cmake/bin/cmake \
       -DCMAKE_TOOLCHAIN_FILE=/opt/ohos-sdk/linux/native/build/cmake/ohos.toolchain.cmake \
-      -DOHOS_ARCH="arm64-v8a" -DTARGET=ARMV8 -DNOFORTRAN=1 ..
+      -DOHOS_ARCH="arm64-v8a" -DTARGET=ARMV8 -DNOFORTRAN=ON ..
 ```
 Additional other OpenBLAS build options like `USE_OPENMP=1` or `DYNAMIC_ARCH=1`
 will probably work too. Finally do the build:
@@ -823,7 +823,7 @@ set(CMAKE_FIND_ROOT_PATH_MODE_PACKAGE ONLY)
 
 Then build OpenBLAS with:
 ```bash
-$ cmake .. -G Ninja -DCMAKE_C_COMPILER=arm-none-eabi-gcc -DCMAKE_TOOLCHAIN_FILE:PATH="toolchain.cmake" -DNOFORTRAN=1 -DTARGET=ARMV5 -DEMBEDDED=1
+$ cmake .. -G Ninja -DCMAKE_C_COMPILER=arm-none-eabi-gcc -DCMAKE_TOOLCHAIN_FILE:PATH="toolchain.cmake" -DNOFORTRAN=ON -DTARGET=ARMV5 -DEMBEDDED=1
 ```
 
 In your embedded application, the following functions need to be provided for OpenBLAS to work correctly:

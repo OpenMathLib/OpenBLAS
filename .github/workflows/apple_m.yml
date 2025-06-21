@@ -104,7 +104,7 @@ jobs:
                     -DUSE_OPENMP=${{matrix.openmp}} \
                     -DOpenMP_Fortran_LIB_NAMES=omp \
                     -DINTERFACE64=${{matrix.ilp64}} \
-                    -DNOFORTRAN=0 \
+                    -DNOFORTRAN=OFF \
                     -DBUILD_WITHOUT_LAPACK=0 \
                     -DCMAKE_VERBOSE_MAKEFILE=ON \
                     -DCMAKE_BUILD_TYPE=Release \
