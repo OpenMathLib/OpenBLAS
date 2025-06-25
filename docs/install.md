@@ -241,7 +241,17 @@ newer installed.
    conda config --add channels conda-forge
    conda install -y cmake flang clangdev perl libflang ninja
    ```
-5.  Still in the Anaconda Command Prompt window, activate the 64-bit MSVC environment with `vcvarsall x64`.
+   Note that conda may install older versions of these packages. Check [conda-forge/flang](https://anaconda.org/conda-forge/flang),
+   [conda-forge/clangdev](https://anaconda.org/conda-forge/clangdev) and [conda-forge/libflang](https://anaconda.org/conda-forge/libflang) to
+   find the latest common version of these packages. The latest flang compiler also needs the most recent cmake package, see
+   [conda-forge/cmake](https://anaconda.org/conda-forge/cmake). for the latest version, and use `conda list` to see if your 
+   packages are latest. If they are not, install the latest versions by substituting the versions you just found for the items
+   in angle brackets.
+   ```
+   conda install -y cmake=<latest-cmake-version>  flang=<latest-verrsion> clangdev=<latest-version> libflang=<latest-version>
+   ```
+   
+6.  Still in the Anaconda Command Prompt window, activate the 64-bit MSVC environment with `vcvarsall x64`.
     On Windows 11 with Visual Studio 2022, this would be done by invoking:
     
     ```shell
@@ -264,13 +274,20 @@ newer installed.
         proceeding to step 6. Failing to do so will lead to link errors like
         `libflangmain.lib` not getting found later in the build.
 
-6.  Now configure the project with CMake. Starting in the project directory, execute the following:
+7.  Now configure the project with CMake. Start by finding the full paths to `clang-cl` and `flang`:
+    ```
+    where clang-cl
+    where flang
+    ```
+    Note the full paths and substitute these for the items in angle brackets below. If the 
+    full paths are not used, you may end up using other LLVM compilers that are installed 
+    on your system that are found earlier in the `PATH`.
     ```
     set "LIB=%CONDA_PREFIX%\Library\lib;%LIB%"
     set "CPATH=%CONDA_PREFIX%\Library\include;%CPATH%"
     mkdir build
     cd build
-    cmake .. -G "Ninja" -DCMAKE_CXX_COMPILER=clang-cl -DCMAKE_C_COMPILER=clang-cl -DCMAKE_Fortran_COMPILER=flang -DCMAKE_MT=mt -DBUILD_WITHOUT_LAPACK=no -DNOFORTRAN=0 -DDYNAMIC_ARCH=ON -DCMAKE_BUILD_TYPE=Release
+    cmake .. -G "Ninja" -DCMAKE_CXX_COMPILER=<path-to:clang-cl> -DCMAKE_C_COMPILER=<path-to:clang-cl> -DCMAKE_Fortran_COMPILER=<path-to:flang> -DCMAKE_MT=mt -DBUILD_WITHOUT_LAPACK=no -DNOFORTRAN=0 -DDYNAMIC_ARCH=ON -DCMAKE_BUILD_TYPE=Release
     ```
 
     You may want to add further options in the `cmake` command here. For
@@ -279,7 +296,7 @@ newer installed.
     this step only creates some command files and directories, the actual build
     happens next.
 
-7.  Build the project:
+8.  Build the project:
 
     ```
     cmake --build . --config Release
@@ -290,7 +307,7 @@ newer installed.
     for building your own programs from those used internally. To put all
     relevant files in a more convenient arrangement, run the next step.
 
-8.  Install all relevant files created by the build:
+9.  Install all relevant files created by the build:
 
     ```
     cmake --install . --prefix c:\opt -v
