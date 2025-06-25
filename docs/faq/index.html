@@ -1524,7 +1524,7 @@ like Intel Haswell. There once was an effort to build an OpenCL implementation t
 <h3 id="how-about-the-level-3-blas-performance-on-intel-sandy-bridge"><a name="sandybridge_perf"></a>How about the level 3 BLAS performance on Intel Sandy Bridge?</h3>
 <p>We obtained a performance comparable with Intel MKL that actually outperformed Intel MKL in some cases.
 Here is the result of the DGEMM subroutine's performance on Intel Core i5-2500K Windows 7 SP1 64-bit:
-<img alt="Single Thread DGEMM Performance on Intel Desktop Sandy Bridge" src="http://xianyi.github.com/OpenBLAS/dgemm_snb_1thread.png" /></p>
+<img alt="Single Thread DGEMM Performance on Intel Desktop Sandy Bridge" src="../dgemm_snb_1thread.png" /></p>
 <hr noshade="noshade">
 
 <h2 id="os-and-compiler">OS and Compiler</h2>
@@ -1612,8 +1612,8 @@ lead to compiler error messages about an "ABI change" when compiling AVX512 code
 <h3 id="building-openblas-on-power-fails-with-ibm-xl"><a name="ppcxl"></a>Building OpenBLAS on POWER fails with IBM XL</h3>
 <pre><code>Trying to compile OpenBLAS with IBM XL ends with error messages about unknown register names
 </code></pre>
-<p>like "vs32". Working around these by using known alternate names for the vector registers only leads to another assembler error about unsupported constraints. This is a known deficiency in the IBM compiler at least up to and including 16.1.0 (and in the POWER version of clang, from which it is derived) - use gcc instead. (See issues #1078
-and #1699 for related discussions)</p>
+<p>like "vs32". Working around these by using known alternate names for the vector registers only leads to another assembler error about unsupported constraints. This is a known deficiency in the IBM compiler at least up to and including 16.1.0 (and in the POWER version of clang, from which it is derived) - use gcc instead. (See issues <a href="https://github.com/OpenMathLib/OpenBLAS/issues/1078">#1078</a>
+and <a href="https://github.com/OpenMathLib/OpenBLAS/issues/1699">#1699</a> for related discussions)</p>
 <h3 id="replacing-system-blasupdating-apt-openblas-in-mintubuntudebian"><a name="debianlts"></a>Replacing system BLAS/updating APT OpenBLAS in Mint/Ubuntu/Debian</h3>
 <p>Debian and Ubuntu LTS versions provide OpenBLAS package which is not updated after initial release, and under circumstances one might want to use more recent version of OpenBLAS e.g. to get support for newer CPUs</p>
 <p>Ubuntu and Debian provides 'alternatives' mechanism to comfortably replace BLAS and LAPACK libraries systemwide.</p>
@@ -1645,7 +1645,7 @@ path (usually either /usr/local/include, /opt/OpenBLAS/include or whatever you s
 <h3 id="compiling-openblas-with-gccs-fbounds-check-actually-triggers-aborts-in-programs"><a name="boundscheck"></a>Compiling OpenBLAS with gcc's -fbounds-check actually triggers aborts in programs</h3>
 <p>This is due to different interpretations of the (informal) standard for passing characters as arguments between C and FORTRAN functions. As the method for storing text differs in the two languages, when C calls Fortran the text length is passed as an "invisible" additional parameter.
 Historically, this has not been required when the text is just a single character, so older code like the Reference-LAPACK bundled with OpenBLAS
-does not do it. Recently gcc's checking has changed to require it, but there is no consensus yet if and how the existing LAPACK (and many other codebases) should adapt. (And for actual compilation, gcc has mostly backtracked and provided compatibility options - hence the default build settings in the OpenBLAS Makefiles add -fno-optimize-sibling-calls to the gfortran options to prevent miscompilation with "affected" versions. See ticket 2154 in the issue tracker for more details and links) </p>
+does not do it. Recently gcc's checking has changed to require it, but there is no consensus yet if and how the existing LAPACK (and many other codebases) should adapt. (And for actual compilation, gcc has mostly backtracked and provided compatibility options - hence the default build settings in the OpenBLAS Makefiles add -fno-optimize-sibling-calls to the gfortran options to prevent miscompilation with "affected" versions. See ticket <a href="https://github.com/OpenMathLib/OpenBLAS/issues/2154">#2154</a> in the issue tracker for more details and links)</p>
 <hr noshade="noshade">
 
 <h3 id="build-fails-with-lots-of-errors-about-undefined-gemm_unroll_m"><a name="newcpu"></a>Build fails with lots of errors about undefined ?GEMM_UNROLL_M</h3>
@@ -1715,7 +1715,7 @@ from the main thread of your program (i.e. outside of omp parallel constructs), 
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="January 4, 2025 15:55:43 UTC">January 4, 2025</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="June 21, 2025 09:35:02 UTC">June 21, 2025</span>
   </span>
 
     
