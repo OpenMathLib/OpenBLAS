@@ -52,7 +52,7 @@ TARGET_FLAGS = -mips64r6
 endif
 
 ifeq ($(TARGET), C910V)
-TARGET_FLAGS = -march=rv64gcv0p7_zfh_xtheadc -mabi=lp64d
+TARGET_FLAGS = -march=rv64gc_zfh_xtheadc_xtheadvector -mabi=lp64d
 endif
 
 ifeq ($(TARGET), CK860FV)
