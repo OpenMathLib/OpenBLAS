@@ -37,114 +37,114 @@ double CNAME(BLASLONG n, FLOAT *x, BLASLONG inc_x, FLOAT *y, BLASLONG inc_y)
         vfloat32m2_t vx, vy;
         unsigned int gvl = 0;
         vfloat64m1_t v_res, v_z0;
-        gvl = vsetvlmax_e64m1();
-        v_res = vfmv_v_f_f64m1(0, gvl);
-        v_z0 = vfmv_v_f_f64m1(0, gvl);
+        gvl = __riscv_vsetvlmax_e64m1();
+        v_res = __riscv_vfmv_v_f_f64m1(0, gvl);
+        v_z0 = __riscv_vfmv_v_f_f64m1(0, gvl);
 
         if(inc_x == 1 && inc_y == 1){
-                gvl = vsetvl_e64m4(n);
-                vr = vfmv_v_f_f64m4(0, gvl);
+                gvl = __riscv_vsetvl_e64m4(n);
+                vr = __riscv_vfmv_v_f_f64m4(0, gvl);
                 for(i=0,j=0; i<n/gvl; i++){
-                        vx = vle32_v_f32m2(&x[j], gvl);
-                        vy = vle32_v_f32m2(&y[j], gvl);
-                        vr = vfwmacc_vv_f64m4(vr, vx, vy, gvl);
+                        vx = __riscv_vle32_v_f32m2(&x[j], gvl);
+                        vy = __riscv_vle32_v_f32m2(&y[j], gvl);
+                        vr = __riscv_vfwmacc_vv_f64m4(vr, vx, vy, gvl);
                         j += gvl;
                 }
                 if(j > 0){
-                        v_res = vfredusum_vs_f64m4_f64m1(v_res, vr, v_z0, gvl);
-                        dot += (double)vfmv_f_s_f64m1_f64(v_res);
+                        v_res = __riscv_vfredusum_vs_f64m4_f64m1(vr, v_z0, gvl);
+                        dot += (double)__riscv_vfmv_f_s_f64m1_f64(v_res);
                 }
                 //tail
                 if(j < n){
-                        gvl = vsetvl_e64m4(n-j);
-                        vx = vle32_v_f32m2(&x[j], gvl);
-                        vy = vle32_v_f32m2(&y[j], gvl);
-                        vfloat64m4_t vz = vfmv_v_f_f64m4(0, gvl);
-                        //vr = vfdot_vv_f32m2(vx, vy, gvl);
-                        vr = vfwmacc_vv_f64m4(vz, vx, vy, gvl);
-                        v_res = vfredusum_vs_f64m4_f64m1(v_res, vr, v_z0, gvl);
-                        dot += (double)vfmv_f_s_f64m1_f64(v_res);
+                        gvl = __riscv_vsetvl_e64m4(n-j);
+                        vx = __riscv_vle32_v_f32m2(&x[j], gvl);
+                        vy = __riscv_vle32_v_f32m2(&y[j], gvl);
+                        vfloat64m4_t vz = __riscv_vfmv_v_f_f64m4(0, gvl);
+                        //vr = __riscv_vfdot_vv_f32m2(vx, vy, gvl);
+                        vr = __riscv_vfwmacc_vv_f64m4(vz, vx, vy, gvl);
+                        v_res = __riscv_vfredusum_vs_f64m4_f64m1(vr, v_z0, gvl);
+                        dot += (double)__riscv_vfmv_f_s_f64m1_f64(v_res);
                 }
         }else if(inc_y == 1){
-                gvl = vsetvl_e64m4(n);
-                vr = vfmv_v_f_f64m4(0, gvl);
+                gvl = __riscv_vsetvl_e64m4(n);
+                vr = __riscv_vfmv_v_f_f64m4(0, gvl);
                  int stride_x = inc_x * sizeof(FLOAT);
                 for(i=0,j=0; i<n/gvl; i++){
-                        vx = vlse32_v_f32m2(&x[j*inc_x], stride_x, gvl);
-                        vy = vle32_v_f32m2(&y[j], gvl);
-                        vr = vfwmacc_vv_f64m4(vr, vx, vy, gvl);
+                        vx = __riscv_vlse32_v_f32m2(&x[j*inc_x], stride_x, gvl);
+                        vy = __riscv_vle32_v_f32m2(&y[j], gvl);
+                        vr = __riscv_vfwmacc_vv_f64m4(vr, vx, vy, gvl);
                         j += gvl;
                 }
                 if(j > 0){
-                        v_res = vfredusum_vs_f64m4_f64m1(v_res, vr, v_z0, gvl);
-                        dot += (double)vfmv_f_s_f64m1_f64(v_res);
+                        v_res = __riscv_vfredusum_vs_f64m4_f64m1(vr, v_z0, gvl);
+                        dot += (double)__riscv_vfmv_f_s_f64m1_f64(v_res);
 
                 }
                 //tail
                 if(j < n){
-                        gvl = vsetvl_e64m4(n-j);
-                        vx = vlse32_v_f32m2(&x[j*inc_x], stride_x, gvl);
-                        vy = vle32_v_f32m2(&y[j], gvl);
-                        vfloat64m4_t vz = vfmv_v_f_f64m4(0, gvl);
-                        //vr = vfdot_vv_f32m2(vx, vy, gvl);
-                        vr = vfwmacc_vv_f64m4(vz, vx, vy, gvl);
-                        v_res = vfredusum_vs_f64m4_f64m1(v_res, vr, v_z0, gvl);
-                        dot += (double)vfmv_f_s_f64m1_f64(v_res);
+                        gvl = __riscv_vsetvl_e64m4(n-j);
+                        vx = __riscv_vlse32_v_f32m2(&x[j*inc_x], stride_x, gvl);
+                        vy = __riscv_vle32_v_f32m2(&y[j], gvl);
+                        vfloat64m4_t vz = __riscv_vfmv_v_f_f64m4(0, gvl);
+                        //vr = __riscv_vfdot_vv_f32m2(vx, vy, gvl);
+                        vr = __riscv_vfwmacc_vv_f64m4(vz, vx, vy, gvl);
+                        v_res = __riscv_vfredusum_vs_f64m4_f64m1(vr, v_z0, gvl);
+                        dot += (double)__riscv_vfmv_f_s_f64m1_f64(v_res);
 
                 }
         }else if(inc_x == 1){
-                gvl = vsetvl_e64m4(n);
-                vr = vfmv_v_f_f64m4(0, gvl);
+                gvl = __riscv_vsetvl_e64m4(n);
+                vr = __riscv_vfmv_v_f_f64m4(0, gvl);
                  int stride_y = inc_y * sizeof(FLOAT);
                 for(i=0,j=0; i<n/gvl; i++){
-                        vx = vle32_v_f32m2(&x[j], gvl);
-                        vy = vlse32_v_f32m2(&y[j*inc_y], stride_y, gvl);
-                        vr = vfwmacc_vv_f64m4(vr, vx, vy, gvl);
+                        vx = __riscv_vle32_v_f32m2(&x[j], gvl);
+                        vy = __riscv_vlse32_v_f32m2(&y[j*inc_y], stride_y, gvl);
+                        vr = __riscv_vfwmacc_vv_f64m4(vr, vx, vy, gvl);
                         j += gvl;
                 }
                 if(j > 0){
-                        v_res = vfredusum_vs_f64m4_f64m1(v_res, vr, v_z0, gvl);
-                        dot += (double)vfmv_f_s_f64m1_f64(v_res);
+                        v_res = __riscv_vfredusum_vs_f64m4_f64m1(vr, v_z0, gvl);
+                        dot += (double)__riscv_vfmv_f_s_f64m1_f64(v_res);
 
                 }
                 //tail
                 if(j < n){
-                        gvl = vsetvl_e64m4(n-j);
-                        vx = vle32_v_f32m2(&x[j], gvl);
-                        vy = vlse32_v_f32m2(&y[j*inc_y], stride_y, gvl);
-                        vfloat64m4_t vz = vfmv_v_f_f64m4(0, gvl);
-                        //vr = vfdot_vv_f32m2(vx, vy, gvl);
-                        vr = vfwmacc_vv_f64m4(vz, vx, vy, gvl);
-                        v_res = vfredusum_vs_f64m4_f64m1(v_res, vr, v_z0, gvl);
-                        dot += (double)vfmv_f_s_f64m1_f64(v_res);
+                        gvl = __riscv_vsetvl_e64m4(n-j);
+                        vx = __riscv_vle32_v_f32m2(&x[j], gvl);
+                        vy = __riscv_vlse32_v_f32m2(&y[j*inc_y], stride_y, gvl);
+                        vfloat64m4_t vz = __riscv_vfmv_v_f_f64m4(0, gvl);
+                        //vr = __riscv_vfdot_vv_f32m2(vx, vy, gvl);
+                        vr = __riscv_vfwmacc_vv_f64m4(vz, vx, vy, gvl);
+                        v_res = __riscv_vfredusum_vs_f64m4_f64m1(vr, v_z0, gvl);
+                        dot += (double)__riscv_vfmv_f_s_f64m1_f64(v_res);
 
                 }
         }else{
-                gvl = vsetvl_e64m4(n);
-                vr = vfmv_v_f_f64m4(0, gvl);
+                gvl = __riscv_vsetvl_e64m4(n);
+                vr = __riscv_vfmv_v_f_f64m4(0, gvl);
                  int stride_x = inc_x * sizeof(FLOAT);
                  int stride_y = inc_y * sizeof(FLOAT);
                 for(i=0,j=0; i<n/gvl; i++){
-                        vx = vlse32_v_f32m2(&x[j*inc_x], stride_x, gvl);
-                        vy = vlse32_v_f32m2(&y[j*inc_y], stride_y, gvl);
-                        vr = vfwmacc_vv_f64m4(vr, vx, vy, gvl);
+                        vx = __riscv_vlse32_v_f32m2(&x[j*inc_x], stride_x, gvl);
+                        vy = __riscv_vlse32_v_f32m2(&y[j*inc_y], stride_y, gvl);
+                        vr = __riscv_vfwmacc_vv_f64m4(vr, vx, vy, gvl);
                         j += gvl;
                 }
                 if(j > 0){
-                        v_res = vfredusum_vs_f64m4_f64m1(v_res, vr, v_z0, gvl);
-                        dot += (double)vfmv_f_s_f64m1_f64(v_res);
+                        v_res = __riscv_vfredusum_vs_f64m4_f64m1(vr, v_z0, gvl);
+                        dot += (double)__riscv_vfmv_f_s_f64m1_f64(v_res);
 
                 }
                 //tail
                 if(j < n){
-                        gvl = vsetvl_e64m4(n-j);
-                        vx = vlse32_v_f32m2(&x[j*inc_x], stride_x, gvl);
-                        vy = vlse32_v_f32m2(&y[j*inc_y], stride_y, gvl);
-                        vfloat64m4_t vz = vfmv_v_f_f64m4(0, gvl);
-                        //vr = vfdot_vv_f32m2(vx, vy, gvl);
-                        vr = vfwmacc_vv_f64m4(vz, vx, vy, gvl);
-                        v_res = vfredusum_vs_f64m4_f64m1(v_res, vr, v_z0, gvl);
-                        dot += (double)vfmv_f_s_f64m1_f64(v_res);
+                        gvl = __riscv_vsetvl_e64m4(n-j);
+                        vx = __riscv_vlse32_v_f32m2(&x[j*inc_x], stride_x, gvl);
+                        vy = __riscv_vlse32_v_f32m2(&y[j*inc_y], stride_y, gvl);
+                        vfloat64m4_t vz = __riscv_vfmv_v_f_f64m4(0, gvl);
+                        //vr = __riscv_vfdot_vv_f32m2(vx, vy, gvl);
+                        vr = __riscv_vfwmacc_vv_f64m4(vz, vx, vy, gvl);
+                        v_res = __riscv_vfredusum_vs_f64m4_f64m1(vr, v_z0, gvl);
+                        dot += (double)__riscv_vfmv_f_s_f64m1_f64(v_res);
 
                 }
         }
