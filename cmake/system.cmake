@@ -412,20 +412,6 @@ else ()
   endif ()
 endif ()
 
-if (USE_OPENMP)
-  find_package(OpenMP COMPONENTS C REQUIRED)
-  set(CCOMMON_OPT "${CCOMMON_OPT} -DUSE_OPENMP")
-  if (NOT NOFORTRAN)
-    find_package(OpenMP COMPONENTS Fortran REQUIRED)
-    # Avoid mixed OpenMP linkage
-    get_target_property(OMP_C_LIB OpenMP::OpenMP_C INTERFACE_LINK_LIBRARIES)
-    get_target_property(OMP_Fortran_LIB OpenMP::OpenMP_Fortran INTERFACE_LINK_LIBRARIES)
-    if (NOT OMP_C_LIB STREQUAL OMP_Fortran_LIB)
-      message(FATAL_ERROR "Multiple OpenMP runtime libraries detected. Mixed OpenMP runtime linkage is dangerous. You may pass -DOpenMP_LANG_LIB_NAMES and -DOpenMP_omp_LIBRARY to manually choose the OpenMP library.")
-    endif()
-  endif ()
-endif ()
-
 if (BINARY64)
   if (INTERFACE64)
     # CCOMMON_OPT += -DUSE64BITINT
@@ -723,6 +709,15 @@ if (LAPACK_STRLEN)
 	set (LAPACK_FFLAGS "${LAPACK_FFLAGS} -DLAPACK_STRLEN=${LAPACK_STRLEN}")
 endif()
 set(LAPACK_FPFLAGS "${LAPACK_FPFLAGS} ${FPFLAGS}")
+
+#Disable -fopenmp for LAPACK Fortran codes on Windows.
+if (${CMAKE_SYSTEM_NAME} STREQUAL "Windows")
+  set(FILTER_FLAGS "-fopenmp;-mp;-openmp;-xopenmp=parallel")
+  foreach (FILTER_FLAG ${FILTER_FLAGS})
+    string(REPLACE ${FILTER_FLAG} "" LAPACK_FFLAGS ${LAPACK_FFLAGS})
+    string(REPLACE ${FILTER_FLAG} "" LAPACK_FPFLAGS ${LAPACK_FPFLAGS})
+  endforeach ()
+endif ()
 
 if (CMAKE_Fortran_COMPILER)
   if ("${F_COMPILER}" STREQUAL "NAGFOR" OR "${F_COMPILER}" STREQUAL "CRAY" OR CMAKE_Fortran_COMPILER_ID MATCHES "LLVMFlang.*")

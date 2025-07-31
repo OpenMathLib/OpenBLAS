@@ -108,7 +108,6 @@ jobs:
               mkdir build && cd build
               cmake -DDYNAMIC_ARCH=1 \
                     -DUSE_OPENMP=${{matrix.openmp}} \
-                    -DOpenMP_Fortran_LIB_NAMES=omp \
                     -DINTERFACE64=${{matrix.ilp64}} \
                     -DNOFORTRAN=0 \
                     -DBUILD_WITHOUT_LAPACK=0 \

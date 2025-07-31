@@ -88,7 +88,3 @@ endif ()
 #endif
 
 add_library(driver_others OBJECT ${OPENBLAS_SRC} ${MEMORY} ${SMP_SOURCES} ${COMMON_SOURCES})
-
-if (USE_OPENMP)
-  target_link_libraries(driver_others OpenMP::OpenMP_C)
-endif()

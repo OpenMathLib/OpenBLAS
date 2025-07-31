@@ -1470,9 +1470,6 @@ endif ()
     if (USE_GEMM3M)
       target_compile_definitions(kernel${TSUFFIX} PRIVATE USE_GEMM3M)
     endif()
-    if (USE_OPENMP)
-      target_link_libraries(kernel${TSUFFIX} OpenMP::OpenMP_C)
-    endif()
 endfunction ()
 
 

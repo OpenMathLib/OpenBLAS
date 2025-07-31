@@ -289,7 +289,3 @@ if ( BUILD_BFLOAT16 AND NO_FBLAS )
 endif()
 
 add_library(interface OBJECT ${OPENBLAS_SRC})
-
-if (USE_OPENMP)
-  target_link_libraries(interface OpenMP::OpenMP_C)
-endif()
