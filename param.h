@@ -4274,5 +4274,38 @@ Until then, just keep it different than DGEMM_DEFAULT_UNROLL_N to keep copy rout
 #define SHUFPS_39	shufps	$0x39,
 #endif
 
+#if defined(ARCH_X86)
+#ifndef CGEMM3M_DEFAULT_R
+#define CGEMM3M_DEFAULT_R 12288
+#endif
+
+#ifndef CGEMM3M_DEFAULT_UNROLL_M
+#define CGEMM3M_DEFAULT_UNROLL_M 8
+#endif
+
+#ifndef CGEMM3M_DEFAULT_P
+#define CGEMM3M_DEFAULT_P 320
+#endif
+
+#ifndef CGEMM3M_DEFAULT_Q
+#define CGEMM3M_DEFAULT_Q 224
+#endif
+
+#ifndef ZGEMM3M_DEFAULT_R
+#define ZGEMM3M_DEFAULT_R 12288
+#endif
+
+#ifndef ZGEMM3M_DEFAULT_Q
+#define ZGEMM3M_DEFAULT_Q 224
+#endif
+
+#ifndef ZGEMM3M_DEFAULT_P
+#define ZGEMM3M_DEFAULT_P 224
+#endif
+
+#ifndef ZGEMM3M_DEFAULT_UNROLL_M
+#define ZGEMM3M_DEFAULT_UNROLL_M 4
+#endif
+#endif
 
 #endif
