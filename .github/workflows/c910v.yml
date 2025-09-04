@@ -14,8 +14,8 @@ jobs:
     if: "github.repository == 'OpenMathLib/OpenBLAS'"
     runs-on: ubuntu-latest
     env:
-      xuetie_toolchain: https://occ-oss-prod.oss-cn-hangzhou.aliyuncs.com/resource//1749714096626
-      toolchain_file_name: Xuantie-900-gcc-linux-6.6.0-glibc-x86_64-V3.1.0-20250522.tar.gz
+      xuetie_toolchain: https://occ-oss-prod.oss-cn-hangzhou.aliyuncs.com/resource//1755679709552
+      toolchain_file_name: Xuantie-900-gcc-linux-6.6.0-glibc-x86_64-V3.2.0-20250627.tar.gz
     strategy:
       fail-fast: false
       matrix:
@@ -77,7 +77,7 @@ jobs:
         run: |
             wget ${xuetie_toolchain}/${toolchain_file_name}
             tar -xvf ${toolchain_file_name} -C /opt
-            export PATH="/opt/Xuantie-900-gcc-linux-6.6.0-glibc-x86_64-V3.1.0/bin:$PATH"
+            export PATH="/opt/Xuantie-900-gcc-linux-6.6.0-glibc-x86_64-V3.2.0/bin:$PATH"
 
             make CC='ccache ${{ matrix.triple }}-gcc -static' FC='ccache ${{ matrix.triple }}-gfortran -static' ${{ matrix.opts }} HOSTCC='ccache gcc' -j$(nproc)
 
