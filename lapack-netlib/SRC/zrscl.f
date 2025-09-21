@@ -113,6 +113,7 @@
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          ABS
+      INTRINSIC          HUGE
 *     ..
 *     .. Executable Statements ..
 *
@@ -120,6 +121,11 @@
 *
       IF( N.LE.0 )
      $   RETURN
+*
+      IF( SA.GT.HUGE(SA) .OR. SA.LT.-HUGE(SA) ) THEN
+         CALL ZDSCAL( N, SA, SX, INCX )
+         RETURN
+      END IF
 *
 *     Get machine parameters
 *
