@@ -436,7 +436,7 @@ ifeq (x$(XCVER), x 15)
 CCOMMON_OPT += -Wl,-ld_classic
 FCOMMON_OPT += -Wl,-ld_classic
 endif
-ifeq (x$(XCVER), x 16)
+ifeq ($(shell [ $(XCVER) -ge 16 ] && echo yes),yes)
 ifeq ($(F_COMPILER), GFORTRAN)
 override CEXTRALIB := $(filter-out(-lto_library, $(CEXTRALIB))) 
 endif
